@@ -42,7 +42,7 @@ const std::string Shader::NORMAL_TEXTURE_ALIAS = "EmberTerrain/NormalTexture";
 const std::string Shader::COMPOSITE_MAP_ALIAS = "EmberTerrain/CompositeMap";
 
 Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool UseNormalMapping) :
-		Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager), mUseNormalMapping(UseNormalMapping)
+		Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager), mUseNormalMapping(UseNormalMapping), mUseCompositeMap(false)
 {
 }
 
@@ -91,12 +91,14 @@ void Shader::buildPasses(bool normalMapped)
 		shaderPass = addPass();
 	}
 
+	int activeLayersCount = 0;
 	if (shaderPass) {
 		for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
 			const TerrainPageSurfaceLayer* surfaceLayer = I->second;
 
 			if (I == mTerrainPageSurfaces.begin()) {
 				shaderPass->setBaseLayer(surfaceLayer);
+				activeLayersCount++;
 			} else {
 				if (surfaceLayer->intersects(*mGeometry)) {
 					if (!shaderPass->hasRoomForLayer(surfaceLayer)) {
@@ -107,11 +109,18 @@ void Shader::buildPasses(bool normalMapped)
 						}
 					}
 					shaderPass->addLayer(*mGeometry, surfaceLayer);
+					activeLayersCount++;
 				}
 			}
 		}
 	} else {
 		S_LOG_WARNING("Could not create pass in Shader terrain technique.");
+	}
+	//If the number of active layers are more than 2 we should use a composite map.
+	if (activeLayersCount > 2) {
+		mUseCompositeMap = true;
+	} else {
+		mUseCompositeMap = false;
 	}
 }
 
@@ -179,61 +188,63 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 		}
 	}
 
-	// Create a technique which renders using the pre-rendered composite map
-	technique = material->createTechnique();
-	technique->setShadowCasterMaterial(shadowCasterMaterial);
-	technique->setLodIndex(currentLodIndex++);
-	// Use it for everything farther away than this limit
-	//TODO: calculate this based on the size of each page and the size of the texture instead of having it fixed
-	lodList.push_back(200);
-	// Pretty sure we can always fit this into one pass
-	Ogre::Pass* pass = technique->createPass();
-	std::string cmVertexProgramName = "Lighting/NormalTexture/";
-	if (mIncludeShadows) {
-		cmVertexProgramName += "ShadowVp";
-	} else {
-		cmVertexProgramName += "SimpleVp";
-	}
-	pass->setVertexProgram(cmVertexProgramName);
-	pass->setFragmentProgram("SplattingFp/1" + materialSuffix);
-
-	Ogre::TextureUnitState* normalMapTextureUnitState = pass->createTextureUnitState();
-
-	// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
-	// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
-	normalMapTextureUnitState->setTextureNameAlias(NORMAL_TEXTURE_ALIAS);
-	normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-
-	if (mIncludeShadows) {
-		for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
-			Ogre::TextureUnitState* shadowMapTus = pass->createTextureUnitState();
-			shadowMapTus->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
-			shadowMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
-			shadowMapTus->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
-		}
-	}
-
-	Ogre::TextureUnitState* compositeMapTus = pass->createTextureUnitState();
-	compositeMapTus->setTextureNameAlias(COMPOSITE_MAP_ALIAS);
-	compositeMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-
-	try {
-		Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-		float scales[1] = { 1.0f };
-		fpParams->setNamedConstant("scales", scales, 1); // The composite map spreads over the entire terrain, no uv scaling needed
+	if (mUseCompositeMap) {
+		// Create a technique which renders using the pre-rendered composite map
+		technique = material->createTechnique();
+		technique->setShadowCasterMaterial(shadowCasterMaterial);
+		technique->setLodIndex(currentLodIndex++);
+		// Use it for everything farther away than this limit
+		//TODO: calculate this based on the size of each page and the size of the texture instead of having it fixed
+		lodList.push_back(200);
+		// Pretty sure we can always fit this into one pass
+		Ogre::Pass* pass = technique->createPass();
+		std::string cmVertexProgramName = "Lighting/NormalTexture/";
 		if (mIncludeShadows) {
-			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
-			if (pssmSetup) {
-				Ogre::Vector4 splitPoints;
-				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
-				for (int i = 0; i < 3; i++) {
-					splitPoints[i] = splitPointList[i];
-				}
-				fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
+			cmVertexProgramName += "ShadowVp";
+		} else {
+			cmVertexProgramName += "SimpleVp";
+		}
+		pass->setVertexProgram(cmVertexProgramName);
+		pass->setFragmentProgram("SplattingFp/1" + materialSuffix);
+
+		Ogre::TextureUnitState* normalMapTextureUnitState = pass->createTextureUnitState();
+
+		// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
+		// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
+		normalMapTextureUnitState->setTextureNameAlias(NORMAL_TEXTURE_ALIAS);
+		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+
+		if (mIncludeShadows) {
+			for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+				Ogre::TextureUnitState* shadowMapTus = pass->createTextureUnitState();
+				shadowMapTus->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
+				shadowMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
+				shadowMapTus->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
 			}
 		}
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
+
+		Ogre::TextureUnitState* compositeMapTus = pass->createTextureUnitState();
+		compositeMapTus->setTextureNameAlias(COMPOSITE_MAP_ALIAS);
+		compositeMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+
+		try {
+			Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+			float scales[1] = { 1.0f };
+			fpParams->setNamedConstant("scales", scales, 1); // The composite map spreads over the entire terrain, no uv scaling needed
+			if (mIncludeShadows) {
+				Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
+				if (pssmSetup) {
+					Ogre::Vector4 splitPoints;
+					Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
+					for (int i = 0; i < 3; i++) {
+						splitPoints[i] = splitPointList[i];
+					}
+					fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
+				}
+			}
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when setting fragment program parameters." << ex);
+		}
 	}
 
 	//Now also add a "Low" technique, for use in the compass etc.
@@ -265,17 +276,18 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
 {
 	material->removeAllTechniques();
+	if (mUseCompositeMap) {
 
-	Ogre::Technique* technique = material->createTechnique();
+		Ogre::Technique* technique = material->createTechnique();
 
-	std::string materialSuffix = "/NoLighting";
-	for (auto& shaderPass : mPasses) {
-		Ogre::Pass* pass = technique->createPass();
-		if (!shaderPass->finalize(*pass, managedTextures, false, materialSuffix)) {
-			return false;
+		std::string materialSuffix = "/NoLighting";
+		for (auto& shaderPass : mPasses) {
+			Ogre::Pass* pass = technique->createPass();
+			if (!shaderPass->finalize(*pass, managedTextures, false, materialSuffix)) {
+				return false;
+			}
 		}
 	}
-
 	return true;
 }
 

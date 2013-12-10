@@ -108,6 +108,15 @@ protected:
 	bool mUseNormalMapping;
 
 	/**
+	 * @brief Whether to use a composite map.
+	 *
+	 * The composite map should only be used if many layers are active.
+	 * The downside to using a composite map is that it uses a lot of texture memory. Hence it should only
+	 * be activated when there's a significant performance boost from using it.
+	 */
+	bool mUseCompositeMap;
+
+	/**
 	 * @brief Adds a new pass to the list of passes.
 	 * @return The new pass.
 	 */

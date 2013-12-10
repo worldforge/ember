@@ -53,6 +53,16 @@ EmberTerrain::~EmberTerrain()
 	mUnloader();
 }
 
+void EmberTerrain::setIndex(const IPageDataProvider::OgreIndex& index)
+{
+	mIndex = index;
+}
+
+const IPageDataProvider::OgreIndex& EmberTerrain::getIndex() const
+{
+	return mIndex;
+}
+
 }
 }
 }

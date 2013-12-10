@@ -17,11 +17,11 @@
  */
 
 #include "OgreTerrainMaterialGeneratorEmber.h"
+#include "EmberTerrain.h"
 #include "../techniques/Shader.h"
 #include "../../TerrainPageDataProvider.h"
 #include "framework/LoggingInstance.h"
 
-#include <OgreTerrain.h>
 
 namespace Ember
 {
@@ -45,18 +45,30 @@ void OgreTerrainMaterialGeneratorEmber::requestOptions(Ogre::Terrain* terrain)
 	terrain->_setMorphRequired(false);
 	terrain->_setNormalMapRequired(true);
 	terrain->_setLightMapRequired(false, false);
-	terrain->_setCompositeMapRequired(true);
+
+	EmberTerrain* emberTerrain = static_cast<EmberTerrain*>(terrain);
+
+	// Allocate in main thread so no race conditions
+	IPageData* pageData = mDataProvider.getPageData(emberTerrain->getIndex());
+	if (pageData->getCompositeMapMaterial().isNull() || pageData->getCompositeMapMaterial()->getNumTechniques() == 0) {
+		terrain->_setCompositeMapRequired(false);
+	} else {
+		terrain->_setCompositeMapRequired(true);
+	}
+
 }
 
 Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrain* terrain)
 {
-	// calculate page index from position
-	long indexX = (terrain->getPosition().x - mOriginX) / terrain->getWorldSize();
-	long indexY = -(terrain->getPosition().z - mOriginZ) / terrain->getWorldSize();
+	const EmberTerrain* emberTerrain = static_cast<const EmberTerrain*>(terrain);
 
-	S_LOG_INFO("Loading material for terrain page: " << "[" << indexX << "|" << indexY << "]");
+	const auto index = emberTerrain->getIndex();
 
-	Ogre::MaterialPtr mat = mDataProvider.getPageData(IPageDataProvider::OgreIndex(indexX, indexY))->getMaterial();
+	IPageData* pageData = mDataProvider.getPageData(index);
+
+	S_LOG_INFO("Loading material for terrain page: " << "[" << index.first << "|" << index.second << "]");
+
+	Ogre::MaterialPtr mat = pageData->getMaterial();
 
 	assert(!mat.isNull() && "Returned terrain material must be non-empty");
 	if (mat.isNull()) {
@@ -66,7 +78,10 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 
 	Ogre::AliasTextureNamePairList aliases;
 	aliases[Techniques::Shader::NORMAL_TEXTURE_ALIAS] = terrain->getTerrainNormalMap()->getName();
-	aliases[Techniques::Shader::COMPOSITE_MAP_ALIAS] = terrain->getCompositeMap()->getName();
+	auto compositeMap = terrain->getCompositeMap();
+	if (!compositeMap.isNull()) {
+		aliases[Techniques::Shader::COMPOSITE_MAP_ALIAS] = compositeMap->getName();
+	}
 
 	bool success = mat->applyTextureAliases(aliases);
 	if (!success) {

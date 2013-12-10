@@ -76,7 +76,10 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 		std::function<void()> unloader = [=] {mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y));};
 
 		// Allocate in main thread so no race conditions
-		slot->instance = OGRE_NEW EmberTerrain(unloader, mSceneManager);
+		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager);
+		terrain->setIndex(IPageDataProvider::OgreIndex(x, y));
+
+		slot->instance = terrain;
 		slot->instance->setResourceGroup(mResourceGroup);
 		// Use shared pool of buffers
 		slot->instance->setGpuBufferAllocator(&mBufferAllocator);
