@@ -196,7 +196,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 	ss << shaderSuffix;
 	std::string fragmentProgramName(ss.str());
 
-	if (shaderSuffix == "NoLighting") {
+	if (shaderSuffix == "/NoLighting") {
 		pass.setMaxSimultaneousLights(0);
 	} else {
 		pass.setMaxSimultaneousLights(3);
