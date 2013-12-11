@@ -24,9 +24,13 @@
 #include "TerrainPageGeometry.h"
 
 #include "framework/LoggingInstance.h"
+#include "framework/TimedLog.h"
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
+
+#include <sstream>
+
 namespace Ember
 {
 namespace OgreView
@@ -65,6 +69,7 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskEx
 
 void TerrainMaterialCompilationTask::executeTaskInMainThread()
 {
+	TimedLog timedLog("TerrainMaterialCompilationTask::executeTaskInMainThread");
 	for (CompilationInstanceStore::const_iterator J = mMaterialRecompilations.begin(); J != mMaterialRecompilations.end(); ++J) {
 		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
 		TerrainPage* page = J->second;
@@ -74,6 +79,9 @@ void TerrainMaterialCompilationTask::executeTaskInMainThread()
 		S_LOG_VERBOSE("Recompiled material for terrain page " << "[" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]");
 		mSignal(page); // Notify the terrain system of the material change
 		delete compilationInstance;
+		std::stringstream ss;
+		ss << "Compiled for page [" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]";
+		timedLog.report(ss.str());
 	}
 	updateSceneManagersAfterMaterialsChange();
 }

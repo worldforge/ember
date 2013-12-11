@@ -143,13 +143,13 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 
 	if (useShadows) {
 		for (unsigned int i = 0; i < mShadowLayers; ++i) {
-			S_LOG_VERBOSE("Adding shadow layer.");
 			Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
 
 			textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
 			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
 			textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
 		}
+		S_LOG_VERBOSE("Added " << mShadowLayers << " shadow layers.");
 	}
 
 	// should we use a base pass?

@@ -69,8 +69,7 @@ std::vector<const TerrainPageSurfaceLayer*>& ShaderPassBlendMapBatch::getLayers(
 void ShaderPassBlendMapBatch::assignCombinedBlendMapTexture(Ogre::TexturePtr texture)
 {
 	if (std::find(mSyncedTextures.begin(), mSyncedTextures.end(), texture->getName()) == mSyncedTextures.end()) {
-		TimedLog log("ShaderPassBlendMapBatch::assignCombinedBlendMapTexture");
-		log.report("image loaded");
+		TimedLog log("ShaderPassBlendMapBatch::assignCombinedBlendMapTexture", true);
 
 		//blit the whole image to the hardware buffer
 		Ogre::PixelBox sourceBox(mCombinedBlendMapImage.getResolution(), mCombinedBlendMapImage.getResolution(), 1, Ogre::PF_B8G8R8A8, mCombinedBlendMapImage.getData());

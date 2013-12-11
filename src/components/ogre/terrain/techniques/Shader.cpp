@@ -126,6 +126,8 @@ void Shader::buildPasses(bool normalMapped)
 
 bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
 {
+	S_LOG_VERBOSE("Compiling terrain page material " << material->getName());
+
 	// Preserve any texture name aliases that may have been set
 	Ogre::AliasTextureNamePairList aliases;
 	for (Ogre::Material::TechniqueIterator I = material->getTechniqueIterator(); I.hasMoreElements();) {
