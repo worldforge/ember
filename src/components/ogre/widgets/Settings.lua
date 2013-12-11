@@ -458,6 +458,15 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
+				{
+					label = "Auto movement mode",
+					helpString = "If true, Ember will automatically switch to movement mode after entering the world",
+					
+					section = "input",
+					key = "automovementmode",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
+				},
 			},
 		},
 		{
