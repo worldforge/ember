@@ -41,8 +41,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainPageSurfaceCompiler::TerrainPageSurfaceCompiler(ICompilerTechniqueProvider& compilerTechniqueProvider)
-: mCompilerTechniqueProvider(compilerTechniqueProvider)
+TerrainPageSurfaceCompiler::TerrainPageSurfaceCompiler(ICompilerTechniqueProvider& compilerTechniqueProvider) :
+		mCompilerTechniqueProvider(compilerTechniqueProvider)
 {
 }
 
@@ -60,8 +60,8 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompila
 
 }
 
-TerrainPageSurfaceCompilationInstance::TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique, std::set<std::string>& managedTextures)
-: mTechnique(technique), mManagedTextures(managedTextures)
+TerrainPageSurfaceCompilationInstance::TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique, std::set<std::string>& managedTextures) :
+		mTechnique(technique), mManagedTextures(managedTextures)
 {
 
 }
@@ -78,12 +78,34 @@ bool TerrainPageSurfaceCompilationInstance::prepare()
 
 bool TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material)
 {
-	return mTechnique->compileMaterial(material, mManagedTextures);
+	try {
+		bool result = mTechnique->compileMaterial(material, mManagedTextures);
+		if (!result) {
+			material->removeAllTechniques();
+		}
+		return result;
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when compiling material " << material->getName() <<
+				". It's probably in an invalid state and will be reset (with blank terrain pages as a probable result)." << ex);
+		material->removeAllTechniques();
+		return false;
+	}
 }
 
 bool TerrainPageSurfaceCompilationInstance::compileCompositeMap(Ogre::MaterialPtr material)
 {
-	return mTechnique->compileCompositeMapMaterial(material, mManagedTextures);
+	try {
+		bool result = mTechnique->compileCompositeMapMaterial(material, mManagedTextures);
+		if (!result) {
+			material->removeAllTechniques();
+		}
+		return result;
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when compiling material " << material->getName() <<
+				". It's probably in an invalid state and will be reset (with blank terrain pages as a probable result)." << ex);
+		material->removeAllTechniques();
+		return false;
+	}
 }
 }
 }
