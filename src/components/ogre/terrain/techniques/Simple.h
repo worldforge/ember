@@ -47,15 +47,15 @@ public:
 	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
 
     virtual bool prepareMaterial();
-    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures);
-	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures);
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
+	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
 
 protected:
 
-	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer);
-	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material);
+	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer) const;
+	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material) const;
 
-	Ogre::TexturePtr updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow);
+	Ogre::TexturePtr updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow) const;
 
 
 };

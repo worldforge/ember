@@ -38,8 +38,8 @@ namespace Terrain
 namespace Techniques
 {
 
-ShaderPassBlendMapBatch::ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize, bool useNormalMapping) :
-	mShaderPass(shaderPass), mCombinedBlendMapImage(new Image::ImageBuffer(imageSize, 4)), mUseNormalMapping(useNormalMapping)
+ShaderPassBlendMapBatch::ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize) :
+	mShaderPass(shaderPass), mCombinedBlendMapImage(new Image::ImageBuffer(imageSize, 4))
 {
 	//reset the blendMap image
 	mCombinedBlendMapImage.reset();
@@ -90,7 +90,7 @@ void ShaderPassBlendMapBatch::assignCombinedBlendMapTexture(Ogre::TexturePtr tex
 	}
 }
 
-void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture)
+void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture, bool useNormalMapping)
 {
 	//add our blend map textures first
 	assignCombinedBlendMapTexture(texture);
@@ -108,7 +108,7 @@ void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr textur
 		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
 		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
-		if (mUseNormalMapping) {
+		if (useNormalMapping) {
 			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
 			std::string normalTextureName = layer->getNormalTextureName();
 			if (normalTextureName.empty()) {

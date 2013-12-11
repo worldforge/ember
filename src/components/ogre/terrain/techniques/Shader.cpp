@@ -124,7 +124,7 @@ void Shader::buildPasses(bool normalMapped)
 	}
 }
 
-bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
+bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
 {
 	S_LOG_VERBOSE("Compiling terrain page material " << material->getName());
 
@@ -178,8 +178,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	technique = material->createTechnique();
 	technique->setLodIndex(currentLodIndex++);
 	technique->setShadowCasterMaterial(shadowCasterMaterial);
-	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
-		ShaderPass* shaderPass(*I);
+	for (auto& shaderPass : mPasses) {
 		Ogre::Pass* pass = technique->createPass();
 		if (!shaderPass->finalize(*pass, managedTextures, mIncludeShadows, materialSuffix)) {
 			return false;
@@ -254,8 +253,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	technique->setLodIndex(currentLodIndex++);
 	technique->setSchemeName("Low");
 
-	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
-		ShaderPass* shaderPass(*I);
+	for (auto& shaderPass : mPasses) {
 		Ogre::Pass* pass = technique->createPass();
 		if (!shaderPass->finalize(*pass, managedTextures, false, "/Simple")) {
 			return false;
@@ -275,7 +273,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	return true;
 }
 
-bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
+bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
 {
 	material->removeAllTechniques();
 	if (mUseCompositeMap) {

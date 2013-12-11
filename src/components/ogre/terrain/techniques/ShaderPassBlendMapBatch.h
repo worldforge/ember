@@ -49,7 +49,7 @@ typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
 class ShaderPassBlendMapBatch
 {
 public:
-	ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize, bool useNormalMapping = false);
+	ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize);
 	virtual ~ShaderPassBlendMapBatch();
 
 	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -57,7 +57,7 @@ public:
 	std::vector<const TerrainPageSurfaceLayer*>& getLayers();
 	Image& getCombinedBlendMapImage();
 
-	virtual void finalize(Ogre::Pass& pass, Ogre::TexturePtr texture);
+	virtual void finalize(Ogre::Pass& pass, Ogre::TexturePtr texture, bool useNormalMapping);
 
 protected:
 

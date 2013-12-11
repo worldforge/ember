@@ -111,7 +111,7 @@ ShaderPassBlendMapBatch* ShaderPass::getCurrentBatch()
 
 ShaderPassBlendMapBatch* ShaderPass::createNewBatch()
 {
-	ShaderPassBlendMapBatch* batch = new ShaderPassBlendMapBatch(*this, getBlendMapPixelWidth(), mUseNormalMapping);
+	ShaderPassBlendMapBatch* batch = new ShaderPassBlendMapBatch(*this, getBlendMapPixelWidth());
 	return batch;
 }
 
@@ -177,7 +177,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 	// add our blendMap textures first
 	for (BlendMapBatchStore::const_iterator I = mBlendMapBatches.begin(); I != mBlendMapBatches.end(); ++I) {
 		ShaderPassBlendMapBatch* batch = *I;
-		batch->finalize(pass, getCombinedBlendMapTexture(pass.getIndex(), i++, managedTextures));
+		batch->finalize(pass, getCombinedBlendMapTexture(pass.getIndex(), i++, managedTextures), mUseNormalMapping);
 	}
 
 	//we provide different fragment programs for different amounts of textures used, so we need to determine which one to use.

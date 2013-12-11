@@ -76,7 +76,7 @@ public:
      * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
      * @return False if something went wrong during compilation.
      */
-    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) = 0;
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const = 0;
 
 	/**
 	 * @brief Compiles a previously prepared material for the terrain composite map. May not be implemented.
@@ -86,7 +86,7 @@ public:
      * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
 	 * @return False if something went wrong during compilation or if the technique does not support generating composite maps.
 	 */
-	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) = 0;
+	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const = 0;
 };
 
 /**

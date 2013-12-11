@@ -58,7 +58,7 @@ bool Simple::prepareMaterial()
 	return true;
 }
 
-bool Simple::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
+bool Simple::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
 {
 	material->removeAllTechniques();
 	Ogre::Technique* technique = material->createTechnique();
@@ -89,7 +89,7 @@ bool Simple::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	return true;
 }
 
-void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material)
+void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material) const
 {
 	Ogre::Pass* shadowPass = technique->createPass();
 
@@ -106,7 +106,7 @@ void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terr
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 }
 
-Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow)
+Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow) const
 {
 	//we need an unique name for our alpha texture
 	std::stringstream shadowTextureNameSS;
@@ -189,7 +189,7 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 //
 // }
 //
-Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer)
+Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer) const
 {
 	//check if we instead can reuse the existing pass
 	// 	if (technique->getNumPasses() != 0) {
@@ -261,7 +261,7 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 
 }
 
-bool Simple::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
+bool Simple::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
 {
 	// Does not support composite maps
 	return false;
