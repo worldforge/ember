@@ -254,12 +254,12 @@ void TerrainHandler::addPage(TerrainPage* page)
 
 	auto oldPage = mTerrainPages[pos.x()][pos.y()];
 	if (oldPage) {
-		delete oldPage;
-		mTerrainPages[pos.x()][pos.y()] = nullptr;
 		auto pageIter = std::find(mPages.begin(), mPages.end(), oldPage);
 		if (pageIter != mPages.end()) {
 			mPages.erase(pageIter);
 		}
+		delete oldPage;
+		mTerrainPages[pos.x()][pos.y()] = nullptr;
 	}
 
 	mTerrainPages[pos.x()][pos.y()] = page;
