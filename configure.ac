@@ -603,10 +603,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/sounddefinitions/Makefile
 		 src/components/ogre/authoring/Makefile
 		 src/components/ogre/authoring/entityrecipes/Makefile
-		 src/components/ogre/SceneManagers/Makefile
-		 src/components/ogre/SceneManagers/EmberPagingSceneManager/Makefile
-		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile
-		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
 		 src/components/entitymapping/Makefile
 		 src/components/cegui/Makefile
 		 src/components/cegui/bindings/Makefile
