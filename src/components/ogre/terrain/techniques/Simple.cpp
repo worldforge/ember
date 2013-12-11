@@ -66,7 +66,7 @@ bool Simple::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 		const TerrainPageSurfaceLayer* surfaceLayer = I->second;
 		if (I == mTerrainPageSurfaces.begin()) {
 			Ogre::Pass* pass = technique->createPass();
-			pass->setLightingEnabled(false);
+			pass->setLightingEnabled(true);
 			//add the first layer of the terrain, no alpha or anything
 			Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
 			textureUnitState->setTextureScale(1.0f / surfaceLayer->getScale(), 1.0f / surfaceLayer->getScale());
@@ -94,7 +94,7 @@ void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terr
 	Ogre::Pass* shadowPass = technique->createPass();
 
 	shadowPass->setSceneBlending(Ogre::SBT_MODULATE);
-	shadowPass->setLightingEnabled(false);
+	shadowPass->setLightingEnabled(true);
 	shadowPass->setFog(true, Ogre::FOG_NONE);
 
 	Ogre::TextureUnitState * textureUnitStateSplat = shadowPass->createTextureUnitState();
@@ -240,7 +240,7 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 	Ogre::Pass* pass = technique->createPass();
 
 	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-	pass->setLightingEnabled(false);
+	pass->setLightingEnabled(true);
 
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
 	textureUnitState->setTextureName(layer->getDiffuseTextureName());
