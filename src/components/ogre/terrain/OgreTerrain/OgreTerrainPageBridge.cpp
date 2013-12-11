@@ -31,38 +31,52 @@ namespace Terrain
 {
 
 OgreTerrainPageBridge::OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, IndexType index) :
-		mTerrainGroup(terrainGroup), mIndex(index), mHeightData(nullptr)
+		mTerrainGroup(terrainGroup), mIndex(index)
 {
 
 }
 
 OgreTerrainPageBridge::~OgreTerrainPageBridge()
 {
-	delete[] mHeightData;
+	mHeightData.reset();
 }
 
 void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 {
 	S_LOG_VERBOSE("Updating terrain page height data: [" << mIndex.first << "," << mIndex.second << "]");
-	if (auto terrain = mTerrainGroup.getTerrain(mIndex.first, mIndex.second)) {
-		float* heightData = terrain->getHeightData();
-		geometry.updateOgreHeightData(heightData);
-		terrain->dirty();
-	} else {
-		mHeightData = new float[mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize()];
-		geometry.updateOgreHeightData(mHeightData);
+
+	//Make a copy of the shared ptr, making sure it can't be deleted by the terrainPageReady() method
+	std::shared_ptr<float> heightData = mHeightData;
+
+	if (!heightData) {
+		heightData.reset(new float[mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize()]);
+		geometry.updateOgreHeightData(heightData.get());
 	}
+	//If the mHeightData field has been reset by the terrainPageReady() method we'll now
+	mHeightData = heightData;
+
+
 }
 
 void OgreTerrainPageBridge::terrainPageReady()
 {
-	if (mHeightData) {
-		S_LOG_INFO("Finished loading terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
-		mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData);
-		// No need to keep height data around since it is copied on call
-		delete[] mHeightData;
-		mHeightData = nullptr;
+	std::shared_ptr<float> heightDataPtr = mHeightData;
+	// No need to keep height data around since it is copied on call.
+	//Note that the data won't be deleted until heightDataPtr runs out of scope, unless updateTerrain(...) is active at the same time.
+	mHeightData.reset();
+	S_LOG_INFO("Finished loading terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
+	if (heightDataPtr) {
+		auto terrain = mTerrainGroup.getTerrain(mIndex.first, mIndex.second);
+		if (terrain && terrain->getHeightData()) {
+			float* heightData = terrain->getHeightData();
+			memcpy(heightData, heightDataPtr.get(), sizeof(heightDataPtr.get()));
+			terrain->dirty();
+		} else {
+			mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, heightDataPtr.get());
+		}
+
 	}
+	heightDataPtr.reset();
 	// Notify waiting threads such as OgreTerrainDefiner
 	mConditionVariable.notify_all();
 }

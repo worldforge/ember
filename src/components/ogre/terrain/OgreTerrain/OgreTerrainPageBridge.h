@@ -68,7 +68,16 @@ private:
 
 	IndexType mIndex;
 
-	float* mHeightData;
+	/**
+	 * @brief The height data, in Ogre format.
+	 *
+	 * This is updated in a background thread through a call to updateTerrain(...), and then transfered to
+	 * the terrain component in terrainPageReady().
+	 * We're using a shared_ptr to make sure that the data isn't deleted if different threads are accessing
+	 * updateTerrain() and terrainPageReady() at the same time (without having to use locks).
+	 */
+	std::shared_ptr<float> mHeightData;
+
 };
 
 } /* namespace Terrain */
