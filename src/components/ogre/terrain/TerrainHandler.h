@@ -234,11 +234,19 @@ public:
 	int getPageIndexSize() const;
 
 	/**
-	 * @brief Adds a new page to the manager,
+	 * @brief Adds a new page to the handler.
 	 *
 	 * @param page A terrain page instance.
 	 */
 	void addPage(TerrainPage* page);
+
+
+	/**
+	 * @brief Destroys a page, removing it from the handler and deleting the instance.
+	 *
+	 * @param page A terrain page instance.
+	 */
+	void destroyPage(TerrainPage* page);
 
 	/**
 	 * @brief Reloads the terrain found at the specified positions.

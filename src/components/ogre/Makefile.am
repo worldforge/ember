@@ -67,7 +67,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/ShadowUpdateTask.cpp terrain/PlantQueryTask.cpp \
 	terrain/HeightMapFlatSegment.cpp terrain/Segment.cpp terrain/SegmentHolder.cpp terrain/SegmentManager.cpp \
 	terrain/foliage/PlantPopulator.cpp terrain/foliage/ClusterPopulator.cpp terrain/foliage/Vegetation.cpp terrain/TerrainHandler.cpp \
-	terrain/techniques/CompilerTechniqueProvider.cpp terrain/ITerrainObserver.h \
+	terrain/techniques/CompilerTechniqueProvider.cpp terrain/ITerrainObserver.h terrain/TerrainPageDeletionTask.cpp \
 \
 	widgets/ActionBarInput.cpp widgets/ActionBarIcon.cpp widgets/ActionBarIconSlot.cpp widgets/ActionBarIconDragDropTarget.cpp widgets/ActionBarIconManager.cpp widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -169,7 +169,7 @@ noinst_HEADERS = \
 	terrain/TerrainShaderParser.h terrain/TerrainUpdateTask.h terrain/ShadowUpdateTask.h terrain/PlantQueryTask.h \
 	terrain/HeightMapFlatSegment.h terrain/IHeightMapSegment.h terrain/Segment.h terrain/SegmentHolder.h \
 	terrain/SegmentManager.h terrain/PlantInstance.h terrain/foliage/PlantPopulator.h terrain/foliage/ClusterPopulator.h terrain/foliage/Vegetation.h \
-	terrain/TerrainHandler.h terrain/ICompilerTechniqueProvider.h terrain/techniques/CompilerTechniqueProvider.h \
+	terrain/TerrainHandler.h terrain/ICompilerTechniqueProvider.h terrain/techniques/CompilerTechniqueProvider.h terrain/TerrainPageDeletionTask.h \
 \
 	widgets/ActionBarInput.h widgets/ActionBarIcon.h widgets/ActionBarIconSlot.h widgets/ActionBarIconDragDropTarget.h widgets/ActionBarIconManager.h \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \

@@ -32,6 +32,7 @@
 #include "TerrainMod.h"
 #include "TerrainInfo.h"
 #include "TerrainPageCreationTask.h"
+#include "TerrainPageDeletionTask.h"
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainAreaUpdateTask.h"
 #include "TerrainAreaAddTask.h"
@@ -254,12 +255,7 @@ void TerrainHandler::addPage(TerrainPage* page)
 
 	auto oldPage = mTerrainPages[pos.x()][pos.y()];
 	if (oldPage) {
-		auto pageIter = std::find(mPages.begin(), mPages.end(), oldPage);
-		if (pageIter != mPages.end()) {
-			mPages.erase(pageIter);
-		}
-		delete oldPage;
-		mTerrainPages[pos.x()][pos.y()] = nullptr;
+		destroyPage(oldPage);
 	}
 
 	mTerrainPages[pos.x()][pos.y()] = page;
@@ -268,6 +264,18 @@ void TerrainHandler::addPage(TerrainPage* page)
 	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
 	std::set<TerrainPage*> pagesToUpdate;
 	pagesToUpdate.insert(page);
+}
+
+void TerrainHandler::destroyPage(TerrainPage* page)
+{
+	const Domain::TerrainPosition& pos = page->getWFPosition();
+	auto pageIter = std::find(mPages.begin(), mPages.end(), page);
+	if (pageIter != mPages.end()) {
+		mPages.erase(pageIter);
+	}
+	mTerrainPages[pos.x()][pos.y()] = nullptr;
+	//We should delete the page first when all existing tasks are completed. This is because some of them might refer to the page.
+	mTaskQueue->enqueueTask(new TerrainPageDeletionTask(page));
 }
 
 int TerrainHandler::getPageIndexSize() const
@@ -307,6 +315,10 @@ void TerrainHandler::removeBridge(const Domain::TerrainIndex& index)
 {
 	PageBridgeStore::iterator I = mPageBridges.find(index);
 	if (I != mPageBridges.end()) {
+		auto page = I->second->getTerrainPage();
+		if (page) {
+			destroyPage(page);
+		}
 		mPageBridges.erase(I);
 	}
 }
