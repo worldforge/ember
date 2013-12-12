@@ -275,7 +275,10 @@ void TerrainHandler::destroyPage(TerrainPage* page)
 	}
 	mTerrainPages[pos.x()][pos.y()] = nullptr;
 	//We should delete the page first when all existing tasks are completed. This is because some of them might refer to the page.
-	mTaskQueue->enqueueTask(new TerrainPageDeletionTask(page));
+	if (!mTaskQueue->enqueueTask(new TerrainPageDeletionTask(page))) {
+		//If the task queue is inactive there's no risk of deleting it.
+		delete page;
+	}
 }
 
 int TerrainHandler::getPageIndexSize() const
@@ -392,12 +395,18 @@ void TerrainHandler::setUpTerrainPageAtIndex(const Domain::TerrainIndex& index, 
 		if (mLightning) {
 			sunDirection = mLightning->getMainLightDirection();
 		}
-		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, index, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection));
+		if (!mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, index, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
+			//We need to alert the bridge since it's holding up a thread waiting for this call.
+			bridge->terrainPageReady();
+		}
 	} else {
 		TerrainPage* page = mTerrainPages[x][y];
 		TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*page, getSegmentManager(), getDefaultHeight()));
 
-		mTaskQueue->enqueueTask(new TerrainPageReloadTask(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent()));
+		if (!mTaskQueue->enqueueTask(new TerrainPageReloadTask(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent()))) {
+			//We need to alert the bridge since it's holding up a thread waiting for this call.
+			bridge->terrainPageReady();
+		}
 	}
 }
 
