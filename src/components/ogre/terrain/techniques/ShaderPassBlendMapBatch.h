@@ -65,8 +65,6 @@ protected:
 
 	OgreImage mCombinedBlendMapImage;
 	LayerStore mLayers;
-	bool mUseNormalMapping;
-
 
 	/**
 	 * @brief A collection of names of textures which have already been synced with the image, to prevent us from blitting when we don't need.
