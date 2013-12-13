@@ -55,6 +55,7 @@ private:
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;
 	std::set<TerrainPage*> mPages;
+	std::set<ITerrainPageBridgePtr> mBridgesToNotify;
 
 };
 

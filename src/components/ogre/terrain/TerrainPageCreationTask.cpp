@@ -70,13 +70,8 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 void TerrainPageCreationTask::executeTaskInMainThread()
 {
 	if (mPage) {
-
 		S_LOG_VERBOSE("Adding loaded terrain page to TerrainHandler: " << "[" << mPage->getWFIndex().first << "|" << mPage->getWFIndex().second <<"]");
 		mTerrainHandler.addPage(mPage);
-
-		if (mBridge.get()) {
-			mBridge->terrainPageReady();
-		}
 	}
 }
 

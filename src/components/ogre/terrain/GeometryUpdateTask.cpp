@@ -73,21 +73,24 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 		const ITerrainPageBridgePtr& bridge = I->second;
 		if (bridge.get()) {
 			bridge->updateTerrain(*geometry);
+			mBridgesToNotify.insert(bridge);
 		}
 	}
-
 	for (BridgeBoundGeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
 		TerrainPage* page = &(I->first)->getPage();
 		mPages.insert(page);
 	}
+
 	//Release Segment references as soon as we can
 	mGeometry.clear();
 }
 
 void GeometryUpdateTask::executeTaskInMainThread()
 {
+	for (auto bridgePtr : mBridgesToNotify) {
+		bridgePtr->terrainPageReady();
+	}
 	mHandler.EventAfterTerrainUpdate(mAreas, mPages);
-
 }
 }
 

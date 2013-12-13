@@ -61,7 +61,7 @@ public:
 	virtual void updateTerrain(TerrainPageGeometry& geometry) = 0;
 	
 	/**
-	 *    @brief Notifies class in the ogre side about the page being ready (after being created or so).
+	 *    @brief Notifies class in the ogre side about the page being ready (after being created or modified).
 	 */
 	virtual void terrainPageReady() = 0;
 	

@@ -64,13 +64,14 @@ void OgreTerrainPageBridge::terrainPageReady()
 	// No need to keep height data around since it is copied on call.
 	//Note that the data won't be deleted until heightDataPtr runs out of scope, unless updateTerrain(...) is active at the same time.
 	mHeightData.reset();
-	S_LOG_INFO("Finished loading terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
+	S_LOG_INFO("Finished loading or updating terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
 	if (heightDataPtr) {
 		auto terrain = mTerrainGroup.getTerrain(mIndex.first, mIndex.second);
 		if (terrain && terrain->getHeightData()) {
 			float* heightData = terrain->getHeightData();
-			memcpy(heightData, heightDataPtr.get(), sizeof(heightDataPtr.get()));
+			memcpy(heightData, heightDataPtr.get(), sizeof(float) * terrain->getSize() * terrain->getSize());
 			terrain->dirty();
+			terrain->update();
 		} else {
 			mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, heightDataPtr.get());
 		}
