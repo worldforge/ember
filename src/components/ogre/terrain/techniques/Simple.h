@@ -52,10 +52,10 @@ public:
 
 protected:
 
-	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer) const;
-	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material) const;
+	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer, std::set<std::string>& managedTextures) const;
+	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
 
-	Ogre::TexturePtr updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow) const;
+	Ogre::TexturePtr updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow, std::set<std::string>& managedTextures) const;
 
 
 };
