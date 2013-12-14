@@ -298,6 +298,7 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 
 		mSignals.EventMovementControllerCreated.emit();
 		mSignals.EventCreatedAvatarEntity.emit(emberEntity);
+		mTerrainManager->startPaging();
 		EventGotAvatar();
 	} else {
 		S_LOG_CRITICAL("Somehow got a null avatar entity.");

@@ -112,10 +112,14 @@ void TerrainManager::loadTerrainOptions()
 
 	getTerrainAdapter()->setResourceGroupName("General");
 
-	getTerrainAdapter()->setCamera(&getScene().getMainCamera());
-
 	getTerrainAdapter()->setUninitializedHeight(mHandler->getDefaultHeight());
 
+}
+
+void TerrainManager::startPaging()
+{
+	//Setting the camera will start the paging system
+	getTerrainAdapter()->setCamera(&getScene().getMainCamera());
 }
 
 bool TerrainManager::getHeight(const Domain::TerrainPosition& atPosition, float& height) const

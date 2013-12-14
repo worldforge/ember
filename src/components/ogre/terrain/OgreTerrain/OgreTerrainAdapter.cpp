@@ -57,7 +57,6 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 
 	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
 	mPageManager->setPageProvider(&mTerrainPageProvider);
-	mPageManager->addCamera(mainCamera);
 
 	//This will overwrite the default 2Dgrid strategy with our own, which loads pages close to the camera first.
 	mPageManager->addStrategy(mPageStrategy);
