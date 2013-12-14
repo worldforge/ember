@@ -70,7 +70,6 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 
 	Ogre::MaterialPtr mat = pageData->getMaterial();
 
-	assert(!mat.isNull() && "Returned terrain material must be non-empty");
 	if (mat.isNull()) {
 		S_LOG_WARNING("Terrain material was not found!");
 		return Ogre::MaterialManager::getSingleton().getByName(ERROR_MATERIAL);
