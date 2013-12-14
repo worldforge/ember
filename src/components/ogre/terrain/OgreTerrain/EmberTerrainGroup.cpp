@@ -23,6 +23,7 @@
 #include "EmberTerrainGroup.h"
 #include "EmberTerrain.h"
 #include "components/ogre/TerrainPageDataProvider.h"
+#include "framework/LoggingInstance.h"
 
 #include <OgreRoot.h>
 
@@ -68,6 +69,10 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 {
 	assert(mPageDataProvider);
 	if (!slot->instance) {
+
+		if (slot->def.importData == nullptr) {
+			return;
+		}
 
 		long x = slot->x;
 		long y = slot->y;
