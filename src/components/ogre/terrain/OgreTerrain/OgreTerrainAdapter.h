@@ -133,16 +133,6 @@ private:
 	CameraFocusedGrid2DPageStrategy* mPageStrategy;
 };
 
-class FlatTerrainDefiner: public Ogre::TerrainPagedWorldSection::TerrainDefiner
-{
-public:
-	virtual void define(Ogre::TerrainGroup *terrainGroup, long x, long y) {
-		terrainGroup->defineTerrain(x, y, &terrainGroup->getDefaultImportSettings());
-		terrainGroup->loadTerrain(x, y, false);
-	}
-};
-
-
 } /* namespace Terrain */
 } /* namespace OgreView */
 } /* namespace Ember */
