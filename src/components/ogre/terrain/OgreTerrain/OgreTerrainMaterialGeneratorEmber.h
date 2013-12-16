@@ -106,6 +106,22 @@ public:
 
 protected:
 	IPageDataProvider& mDataProvider;
+
+	/**
+	 * @brief A template material to use whenever an error material is needed.
+	 *
+	 * Since the terrain system takes care of destroying any materials used in pages we can't use this directly; we need to use a clone.
+	 */
+	Ogre::MaterialPtr mErrorMaterialTemplate;
+
+	/**
+	 * @brief Gets a clone of the supplied material, or creates a clone if none is found.
+	 * @param templateMaterial A template material.
+	 * @param suffix A suffix used together with the name of the template material.
+	 * @return A valid material pointer.
+	 */
+	Ogre::MaterialPtr getOrCreateMaterialClone(Ogre::MaterialPtr templateMaterial, const std::string& suffix);
+
 };
 } /* Terrain */
 } /* OgreView */
