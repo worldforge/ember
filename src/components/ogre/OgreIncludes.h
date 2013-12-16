@@ -225,6 +225,8 @@ class Texture;
 class TextureManager;
 class TransformKeyFrame;
 class Timer;
+template< typename T >
+struct TRect;
 class UserObjectBindings;
 class Vector2;
 class Vector3;
