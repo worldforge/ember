@@ -36,8 +36,8 @@ namespace OgreView
 namespace Terrain
 {
 
-EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize, Ogre::Real terrainWorldSize) :
-		Ogre::TerrainGroup(sm, align, terrainSize, terrainWorldSize), mPageDataProvider(nullptr)
+EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize, Ogre::Real terrainWorldSize, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal) :
+		Ogre::TerrainGroup(sm, align, terrainSize, terrainWorldSize), mPageDataProvider(nullptr), mTerrainShownSignal(terrainShownSignal)
 {
 }
 
@@ -81,7 +81,7 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 		std::function<void()> unloader = [=] {mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y));};
 
 		// Allocate in main thread so no race conditions
-		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager);
+		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager, EventTerrainAreaUpdated, mTerrainShownSignal);
 		terrain->setIndex(IPageDataProvider::OgreIndex(x, y));
 
 		slot->instance = terrain;

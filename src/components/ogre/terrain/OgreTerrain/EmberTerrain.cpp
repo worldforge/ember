@@ -31,8 +31,8 @@ namespace OgreView
 namespace Terrain
 {
 
-EmberTerrain::EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* sm) :
-		Ogre::Terrain(sm), mUnloader(unloader)
+EmberTerrain::EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* sm, sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal) :
+		Ogre::Terrain(sm), mUnloader(unloader), mTerrainAreaUpdatedSignal(terrainAreaUpdatedSignal), mTerrainShownSignal(terrainShownSignal)
 {
 	//This is a hack to prevent the Terrain class from creating blend map textures.
 	//Since we provide our own material with its own blend maps we don't want the
@@ -61,6 +61,27 @@ void EmberTerrain::setIndex(const IPageDataProvider::OgreIndex& index)
 const IPageDataProvider::OgreIndex& EmberTerrain::getIndex() const
 {
 	return mIndex;
+}
+
+void EmberTerrain::handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ)
+{
+
+	bool wasUpdatingDerivedData = mDerivedDataUpdateInProgress;
+	auto dirtyRect = mDirtyDerivedDataRect;
+	bool wasLoaded = mIsLoaded;
+	Ogre::Terrain::handleResponse(res, srcQ);
+	if (mIsLoaded && !wasLoaded) {
+		//The page is now loaded, while it wasn't before
+		const Ogre::AxisAlignedBox& bbox = getWorldAABB();
+		Ogre::TRect<Ogre::Real> rect(bbox.getMinimum().x, bbox.getMinimum().z, bbox.getMaximum().x, bbox.getMaximum().z);
+		mTerrainShownSignal(rect);
+	}
+	if (!mDerivedDataUpdateInProgress && wasUpdatingDerivedData) {
+		//We've finished updating derived data and should signal that we've altered.
+		Ogre::TRect<Ogre::Real> rect(dirtyRect.left, dirtyRect.top, dirtyRect.right, dirtyRect.bottom);
+
+		mTerrainAreaUpdatedSignal(rect);
+	}
 }
 
 }

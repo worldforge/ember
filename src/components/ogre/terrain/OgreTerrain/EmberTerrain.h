@@ -23,6 +23,7 @@
 
 #include <OgreTerrain.h>
 
+#include <sigc++/signal.h>
 #include <functional>
 
 namespace Ember
@@ -47,7 +48,7 @@ public:
 	 * @param unloader An unloader function, called upon destruction.
 	 * @param sm
 	 */
-	EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* sm);
+	EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* sm, sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal);
 	virtual ~EmberTerrain();
 
 	/**
@@ -62,6 +63,9 @@ public:
 	 */
 	const IPageDataProvider::OgreIndex& getIndex() const;
 
+	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ);
+
+
 protected:
 
 	/**
@@ -73,6 +77,19 @@ protected:
 	 * @brief The index of the page in the paging component.
 	 */
 	IPageDataProvider::OgreIndex mIndex;
+
+	/**
+	 * @brief Signal emitted when an area of the terrain has been updated.
+	 * The argument is the area (in world coordinates) that was updated.
+	 */
+	sigc::signal<void, Ogre::TRect<Ogre::Real>>& mTerrainAreaUpdatedSignal;
+
+	/**
+	 * @brief Signal emitted when a page has been shown for the first time.
+	 * The argument is the area (in world coordinates) that was shown.
+	 */
+	sigc::signal<void, const Ogre::TRect<Ogre::Real>>& mTerrainShownSignal;
+
 
 };
 

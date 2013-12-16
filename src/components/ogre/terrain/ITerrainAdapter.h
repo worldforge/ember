@@ -26,6 +26,8 @@
 
 #include "domain/Types.h"
 #include "../OgreIncludes.h"
+#include <sigc++/slot.h>
+#include <sigc++/connection.h>
 #include <string>
 
 namespace Ember {
@@ -216,6 +218,13 @@ public:
 	 * @param pageDataProvider The page data provider
 	 */
 	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider) = 0;
+
+	/**
+	 * @brief Binds a slot to be signalled when a new page is shown for the first time.
+	 * The slot is called when the page has been fully loaded and is visible in the world.
+	 * @param slot A slot.
+	 */
+	virtual sigc::connection bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& slot) = 0;
 
 };
 }

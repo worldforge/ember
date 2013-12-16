@@ -24,6 +24,7 @@
 
 #include <OgreTerrainPagedWorldSection.h>
 
+#include <sigc++/signal.h>
 #include <memory>
 
 namespace Ogre
@@ -103,11 +104,19 @@ public:
 
 	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider);
 
+	virtual sigc::connection bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal);
+
 private:
 	Ogre::Real mLoadRadius;
 	Ogre::Real mHoldRadius;
 
 	Ogre::SceneManager& mSceneManager;
+
+	/**
+	 * @brief Signal emitted when a page has been shown for the first time.
+	 * The argument is the area (in world coordinates) that was shown.
+	 */
+	sigc::signal<void, const Ogre::TRect<Ogre::Real>> mTerrainShownSignal;
 
 	Ogre::PageManager* mPageManager;
 	Ogre::TerrainPaging* mTerrainPaging;

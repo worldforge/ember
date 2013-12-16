@@ -20,6 +20,7 @@
 #define EMBERTERRAINGROUP_H_
 
 #include <OgreTerrainGroup.h>
+#include <sigc++/signal.h>
 
 namespace Ember
 {
@@ -38,7 +39,7 @@ namespace Terrain
 class EmberTerrainGroup: public Ogre::TerrainGroup
 {
 public:
-	EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize, Ogre::Real terrainWorldSize);
+	EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize, Ogre::Real terrainWorldSize, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal);
 	virtual ~EmberTerrainGroup();
 
 	void loadAllTerrains(bool synchronous = false);
@@ -53,6 +54,12 @@ public:
 	 */
 	void setPageDataProvider(IPageDataProvider* pageDataProvider);
 
+	/**
+	 * @brief Signal emitted when an area of the terrain has been updated.
+	 * The argument is the area (in world coordinates) that was updated.
+	 */
+	sigc::signal<void, Ogre::TRect<Ogre::Real>> EventTerrainAreaUpdated;
+
 
 protected:
 
@@ -60,6 +67,12 @@ protected:
 	 * @brief The page data provider is kept here since it needs to be told when a TerrainPage is destroyed.
 	 */
 	IPageDataProvider* mPageDataProvider;
+
+	/**
+	 * @brief Signal emitted when a page has been shown for the first time.
+	 * The argument is the area (in world coordinates) that was shown.
+	 */
+	sigc::signal<void, const Ogre::TRect<Ogre::Real>>& mTerrainShownSignal;
 
 	void loadEmberTerrainImpl(Ogre::TerrainGroup::TerrainSlot* slot, bool synchronous);
 

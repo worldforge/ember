@@ -31,6 +31,7 @@
 #include <sigc++/slot.h>
 
 #include <OgreFrameListener.h>
+#include <OgreCommon.h>
 
 #include <memory>
 
@@ -218,6 +219,15 @@ public:
 	 */
 	sigc::signal<void, TerrainPage&> EventTerrainPageGeometryUpdated;
 
+	/**
+	 * @brief Emitted when a terrain page is shown for the first time.
+	 *
+	 * This is emitted when a terrain page has finished loading and is shown to the user.
+	 * The argument is a collection of areas, in world Ogre units, that makes up the pages and is now shown.
+	 */
+	sigc::signal<void, std::vector<Ogre::TRect<Ogre::Real>>> EventTerrainShown;
+
+
 protected:
 
 	/**
@@ -288,6 +298,14 @@ protected:
 	 * @brief Called at the end of a main loop cycle.
 	 */
 	void application_CycleProcessed(const TimeFrame& timeframe, unsigned int frameActionMask);
+
+	/**
+	 * @brief Bound to the adapter and called when a page is first shown.
+	 *
+	 * The signal will be passed on to EventTerrainShown
+	 * @param rect
+	 */
+	void adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect);
 
 };
 

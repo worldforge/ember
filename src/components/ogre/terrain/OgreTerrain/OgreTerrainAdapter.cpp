@@ -43,9 +43,8 @@ namespace Terrain
 {
 
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
-		mLoadRadius(300), mHoldRadius(mLoadRadius * 2), mSceneManager(sceneManager), mPageManager(OGRE_NEW Ogre::PageManager()), mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)), mPagedWorld(nullptr), mTerrainPagedWorldSection(nullptr), mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()), mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))), mPageDataProvider(nullptr), mMaterialGenerator(nullptr), mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager))
+		mLoadRadius(300), mHoldRadius(mLoadRadius * 2), mSceneManager(sceneManager), mPageManager(OGRE_NEW Ogre::PageManager()), mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)), mPagedWorld(nullptr), mTerrainPagedWorldSection(nullptr), mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()), mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1), mTerrainShownSignal)), mPageDataProvider(nullptr), mMaterialGenerator(nullptr), mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager))
 {
-
 
 	// Other params
 	mTerrainGlobalOptions->setSkirtSize(1.0f);
@@ -210,7 +209,7 @@ ITerrainObserver* OgreTerrainAdapter::createObserver()
 {
 	// This is a hack. Our custom material generator fires an event whenever a terrain area is updated
 	if (mMaterialGenerator) {
-		return new OgreTerrainObserver(mMaterialGenerator->EventTerrainAreaUpdated);
+		return new OgreTerrainObserver(mTerrainGroup->EventTerrainAreaUpdated);
 	} else {
 		return nullptr;
 	}
@@ -238,6 +237,12 @@ void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider
 	mTerrainGlobalOptions->setDefaultMaterialGenerator(Ogre::TerrainMaterialGeneratorPtr(mMaterialGenerator));
 	mTerrainGroup->setPageDataProvider(pageDataProvider);
 }
+
+sigc::connection OgreTerrainAdapter::bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal)
+{
+	return mTerrainShownSignal.connect(signal);
+}
+
 
 } /* namespace Terrain */
 } /* namespace OgreView */

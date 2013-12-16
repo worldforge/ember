@@ -91,6 +91,9 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 	mHandler->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_AfterTerrainUpdate));
 	mHandler->EventWorldSizeChanged.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_WorldSizeChanged));
 	mHandler->EventTerrainMaterialRecompiled.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_TerrainPageMaterialRecompiled));
+
+	sigc::slot<void, const Ogre::TRect<Ogre::Real>> slot = sigc::mem_fun(*this, &TerrainManager::adapter_terrainShown);
+	adapter->bindTerrainShown(slot);
 }
 
 TerrainManager::~TerrainManager()
@@ -310,6 +313,16 @@ void TerrainManager::application_CycleProcessed(const TimeFrame& timeframe, unsi
 TerrainHandler& TerrainManager::getHandler()
 {
 	return *mHandler;
+}
+
+
+void TerrainManager::adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect)
+{
+	std::vector<Ogre::TRect<Ogre::Real>> areas;
+	areas.push_back(rect);
+
+	EventTerrainShown(areas);
+
 }
 
 
