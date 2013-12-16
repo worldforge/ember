@@ -296,8 +296,24 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 
 	Domain::TerrainPosition wfPos(Convert::toWF(query.getCenter()));
 
-	int xIndex = static_cast<int> (floor(wfPos.x() / mTerrain->getResolution()));
-	int yIndex = static_cast<int> (floor(wfPos.y() / mTerrain->getResolution()));
+	Domain::TerrainIndex index(std::floor(query.getCenter().x / (mPageIndexSize - 1)), -std::floor(query.getCenter().y / (mPageIndexSize - 1)));
+
+	//If there's either no terrain page created, or it's not shown, we shouldn't create any foliage at this moment.
+	//Later on when the terrain page actually is shown, the TerrainManager::EventTerrainShown signal will be emitted
+	//and the foliage reloaded.
+	//The main reasons for this are twofold:
+	//1) Calculating foliage occupies the task queue at the expense of creating terrain page data. We much rather would want the pages to be created before foliage is handled.
+	//2) If foliage is shown before the page is shown it just looks strange, with foliage levitating in the empty air.
+	auto bridgeI = mPageBridges.find(index);
+	if (bridgeI == mPageBridges.end()) {
+		return;
+	}
+	if (!bridgeI->second->isPageShown()) {
+		return;
+	}
+
+	int xIndex = static_cast<int> (std::floor(wfPos.x() / mTerrain->getResolution()));
+	int yIndex = static_cast<int> (std::floor(wfPos.y() / mTerrain->getResolution()));
 	SegmentRefPtr segmentRef = mSegmentManager->getSegmentReference(xIndex, yIndex);
 	if (segmentRef.get()) {
 		Ogre::ColourValue defaultShadowColour;
