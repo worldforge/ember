@@ -187,7 +187,7 @@ void OgreTerrainAdapter::reloadPage(const Domain::TerrainIndex& index)
 
 void OgreTerrainAdapter::reloadPageMaterial(const Domain::TerrainIndex& index)
 {
-	if (mTerrainPagedWorldSection) {
+	if (mTerrainGroup) {
 		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
 		if (page) {
 			// This is a trick to get the terrain to reload it's material
