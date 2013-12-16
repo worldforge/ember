@@ -43,7 +43,7 @@ namespace Terrain
 {
 
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
-		mLoadRadius(300), mHoldRadius(mLoadRadius * 2), mSceneManager(sceneManager), mPageManager(OGRE_NEW Ogre::PageManager()), mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)), mPagedWorld(nullptr), mTerrainPagedWorldSection(nullptr), mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()), mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1), mTerrainShownSignal)), mPageDataProvider(nullptr), mMaterialGenerator(nullptr), mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager))
+		mLoadRadius(300), mHoldRadius(mLoadRadius * 2), mSceneManager(sceneManager), mPageManager(OGRE_NEW Ogre::PageManager()), mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)), mPagedWorld(nullptr), mTerrainPagedWorldSection(nullptr), mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()), mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1), mTerrainShownSignal)), mPageDataProvider(nullptr), mMaterialGenerator(OGRE_NEW OgreTerrainMaterialGeneratorEmber()), mMaterialProfile(nullptr), mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager))
 {
 
 	// Other params
@@ -51,6 +51,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 	mTerrainGlobalOptions->setCastsDynamicShadows(true);
 	mTerrainGlobalOptions->setMaxPixelError(8);
 	mTerrainGlobalOptions->setCompositeMapSize(512);
+	mTerrainGlobalOptions->setDefaultMaterialGenerator(mMaterialGenerator);
 
 	setPageSize(terrainPageSize);
 
@@ -69,6 +70,7 @@ OgreTerrainAdapter::~OgreTerrainAdapter()
 	OGRE_DELETE mPageManager;
 	OGRE_DELETE mTerrainGlobalOptions;
 	OGRE_DELETE mPageStrategy;
+	OGRE_DELETE mMaterialProfile;
 }
 
 int OgreTerrainAdapter::getPageSize()
@@ -89,9 +91,6 @@ void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
 	origin.z = mTerrainGroup->getTerrainWorldSize() / 2;
 	origin.y = 0;
 	mTerrainGroup->setOrigin(origin);
-	if (mMaterialGenerator) {
-		mMaterialGenerator->setOrigin(origin.x, origin.z);
-	}
 
 	if (mTerrainPagedWorldSection) {
 		mTerrainPagedWorldSection->getGridStrategyData()->setOrigin(mTerrainGroup->getOrigin());
@@ -207,12 +206,7 @@ std::string OgreTerrainAdapter::getDebugInfo()
 
 ITerrainObserver* OgreTerrainAdapter::createObserver()
 {
-	// This is a hack. Our custom material generator fires an event whenever a terrain area is updated
-	if (mMaterialGenerator) {
-		return new OgreTerrainObserver(mTerrainGroup->EventTerrainAreaUpdated);
-	} else {
-		return nullptr;
-	}
+	return new OgreTerrainObserver(mTerrainGroup->EventTerrainAreaUpdated);
 }
 
 void OgreTerrainAdapter::destroyObserver(ITerrainObserver* observer)
@@ -231,10 +225,9 @@ std::pair<bool, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray
 void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider)
 {
 	mPageDataProvider = pageDataProvider;
-	// Use our own material generator
-	// Initialized here because it needs a IPageDataProvider
-	mMaterialGenerator = OGRE_NEW OgreTerrainMaterialGeneratorEmber(*mPageDataProvider, mTerrainGroup->getOrigin().x, mTerrainGroup->getOrigin().z);
-	mTerrainGlobalOptions->setDefaultMaterialGenerator(Ogre::TerrainMaterialGeneratorPtr(mMaterialGenerator));
+	auto materialGenerator = mTerrainGlobalOptions->getDefaultMaterialGenerator();
+	mMaterialProfile = OGRE_NEW EmberTerrainProfile(*mPageDataProvider, materialGenerator.get());
+	materialGenerator->setActiveProfile(mMaterialProfile);
 	mTerrainGroup->setPageDataProvider(pageDataProvider);
 }
 

@@ -128,7 +128,8 @@ private:
 	EmberTerrainGroup* mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
-	OgreTerrainMaterialGeneratorEmber* mMaterialGenerator;
+	Ogre::TerrainMaterialGeneratorPtr mMaterialGenerator;
+	Ogre::TerrainMaterialGenerator::Profile* mMaterialProfile;
 	CameraFocusedGrid2DPageStrategy* mPageStrategy;
 };
 
