@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2013 Samuel Kogler
+   Some parts Copyright (c) 2000-2013 Torus Knot Software Ltd
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -21,7 +22,9 @@
 #include "../techniques/Shader.h"
 #include "../../TerrainPageDataProvider.h"
 #include "framework/LoggingInstance.h"
+#include <OgreTerrain.h>
 
+using namespace Ogre;
 
 namespace Ember
 {
@@ -107,15 +110,34 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generateForCompositeMap(con
 }
 void OgreTerrainMaterialGeneratorEmber::updateCompositeMap(const Ogre::Terrain* terrain, const Ogre::Rect& rect)
 {
-	size_t compSize = terrain->getCompositeMap()->getWidth();
-	// The rectangle that is to be updated - Using the full texture size here
-	Ogre::Rect imgRect;
-	imgRect.top = 0;
-	imgRect.left = 0;
-	imgRect.right = compSize;
-	imgRect.bottom = compSize;
 
-	_renderCompositeMap(compSize, imgRect, terrain->getCompositeMapMaterial(), terrain->getCompositeMap());
+	//This code is copied Ogre::TerrainMaterialGenerator::Profile::updateCompositeMap and thus licensed under the MIT license used by Ogre
+
+	// convert point-space rect into image space
+	size_t compSize = terrain->getCompositeMap()->getWidth();
+	Rect imgRect;
+	Vector3 inVec, outVec;
+	inVec.x = rect.left;
+	inVec.y = rect.bottom - 1; // this is 'top' in image space, also make inclusive
+	terrain->convertPosition(Ogre::Terrain::POINT_SPACE, inVec, Ogre::Terrain::TERRAIN_SPACE, outVec);
+	imgRect.left = outVec.x * compSize;
+	imgRect.top = (1.0f - outVec.y) * compSize;
+	inVec.x = rect.right - 1;
+	inVec.y = rect.top; // this is 'bottom' in image space
+	terrain->convertPosition(Ogre::Terrain::POINT_SPACE, inVec, Ogre::Terrain::TERRAIN_SPACE, outVec);
+	imgRect.right = outVec.x * (Real)compSize + 1;
+	imgRect.bottom = (1.0 - outVec.y) * compSize + 1;
+
+	imgRect.left = std::max(0L, imgRect.left);
+	imgRect.top = std::max(0L, imgRect.top);
+	imgRect.right = std::min((long)compSize, imgRect.right);
+	imgRect.bottom = std::min((long)compSize, imgRect.bottom);
+
+
+	_renderCompositeMap(
+		compSize, imgRect,
+		terrain->getCompositeMapMaterial(),
+		terrain->getCompositeMap());
 
 }
 
