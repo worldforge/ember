@@ -156,6 +156,7 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	}
 #endif
 
+	createIcon();
 	mMainVideoSurface = SDL_SetVideoMode(width, height, 0, flags); // create an SDL window
 
 	SDL_SysWMinfo info;
@@ -214,7 +215,6 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	console.registerCommand(BINDCOMMAND, this);
 	console.registerCommand(UNBINDCOMMAND, this);
 
-	createIcon();
 	setGeometry(width, height);
 
 	if (!ToggleFullscreen) {
