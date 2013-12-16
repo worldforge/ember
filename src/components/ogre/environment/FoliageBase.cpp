@@ -58,6 +58,7 @@ FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager, const Terrain:
 	mTerrainManager.getHandler().EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_LayerUpdated));
 	mTerrainManager.getHandler().EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_EventShaderCreated));
 	mTerrainManager.getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_AfterTerrainUpdate));
+	mTerrainManager.EventTerrainShown.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_TerrainShown));
 
 }
 
@@ -117,6 +118,15 @@ void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::Ax
 			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(area));
 
 			mPagedGeometry->reloadGeometryPages(ogreExtent);
+		}
+	}
+}
+
+void FoliageBase::TerrainManager_TerrainShown(const std::vector<Ogre::TRect<Ogre::Real>>& areas)
+{
+	if (mPagedGeometry) {
+		for (auto& area : areas) {
+			mPagedGeometry->reloadGeometryPages(area);
 		}
 	}
 }
