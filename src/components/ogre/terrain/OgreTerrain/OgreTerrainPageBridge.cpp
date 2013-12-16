@@ -55,7 +55,6 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 	//If the mHeightData field has been reset by the terrainPageReady() method we'll now
 	mHeightData = heightData;
 
-
 }
 
 void OgreTerrainPageBridge::terrainPageReady()
@@ -80,6 +79,12 @@ void OgreTerrainPageBridge::terrainPageReady()
 	heightDataPtr.reset();
 	// Notify waiting threads such as OgreTerrainDefiner
 	mConditionVariable.notify_all();
+}
+
+bool OgreTerrainPageBridge::isPageShown() const
+{
+	auto terrain = mTerrainGroup.getTerrain(mIndex.first, mIndex.second);
+	return terrain != nullptr && terrain->isLoaded();
 }
 
 } /* namespace Terrain */

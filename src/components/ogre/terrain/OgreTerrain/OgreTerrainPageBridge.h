@@ -53,6 +53,8 @@ public:
 
 	virtual void terrainPageReady();
 
+	virtual bool isPageShown() const;
+
 	/** 
 	 * The mutex used by OgreTerrainDefiner to wait for the loading of a terrain page to be finished.
 	 */
