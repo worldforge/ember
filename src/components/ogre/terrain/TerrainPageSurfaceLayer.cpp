@@ -71,11 +71,24 @@ void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Ima
 {
 	SegmentVector validSegments = geometry.getValidSegments();
 	for (SegmentVector::const_iterator I = validSegments.begin(); I != validSegments.end(); ++I) {
-		if (mShader.checkIntersect(*I->segment)) {
-			Mercator::Surface* surface = getSurfaceForSegment(I->segment);
+		Mercator::Segment* segment = I->segment;
+		if (mShader.checkIntersect(*segment)) {
+			Mercator::Surface* surface = getSurfaceForSegment(segment);
 			if (surface && surface->isValid()) {
-				WFImage sourceImage(new Image::ImageBuffer(I->segment->getSize(), 1, surface->getData()));
-				image.blit(sourceImage, channel, ((int)I->index.x() * I->segment->getSize()), ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * I->segment->getSize()));
+				Image::ImageBuffer* textureBitmap = new Image::ImageBuffer(segment->getResolution(), 1);
+				auto srcPtr = surface->getData();
+				auto dataPtr = textureBitmap->getData();
+				auto segmentSize = segment->getSize();
+				for (int i = 0; i < segment->getResolution(); ++i) {
+					for (int j = 0; j < segment->getResolution(); ++j) {
+						//interpolate four samples to get the fragment coverage
+						*dataPtr = (unsigned char)((srcPtr[(i * segmentSize) + j] + srcPtr[(i * segmentSize) + j + 1] + srcPtr[((i + 1) * segmentSize) + j] + srcPtr[((i + 1) * segmentSize) + j + 1]) / 4);
+						dataPtr++;
+					}
+				}
+
+				WFImage sourceImage(textureBitmap);
+				image.blit(sourceImage, channel, ((int)I->index.x() * segment->getResolution()), ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * segment->getResolution()));
 			}
 		}
 	}

@@ -206,11 +206,8 @@ private:
 
 inline int TerrainPage::getBlendMapSize() const
 {
-	// Each segment has a 65x65 blend map
-	// This makes it easier to blit the segment blend maps.
-	// The GPU does interpolation in the shader anyways, so a few pixels larger map should not make a difference.
-	// TODO SK: use value from mercator for this.
-	return std::ceil((mPageSize - 1) / 65.0) * 65;
+	//While the page size calculates the size in number of vertices, the blend map should use pixel size, which is one less.
+	return (getPageSize() - 1);
 }
 }
 }
