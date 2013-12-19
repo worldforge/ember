@@ -26,6 +26,7 @@
 #include "Base.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/terrain/TerrainPage.h"
+#include "components/ogre/terrain/OgreImage.h"
 
 namespace Ember {
 namespace OgreView {
@@ -44,7 +45,16 @@ class Simple : public Base
 {
 public:
 
+	/**
+	 * @brief Used for preparing layer data in the background, to be used in the foreground when compiling the material.
+	 */
+	struct Layer {
+		const TerrainPageSurfaceLayer& surfaceLayer;
+		OgreImage* blendMap;
+	};
+
 	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
+	virtual ~Simple();
 
     virtual bool prepareMaterial();
     virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
@@ -52,10 +62,18 @@ public:
 
 protected:
 
-	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer, std::set<std::string>& managedTextures) const;
+	/**
+	 * @brief The layers that are active for the geometry.
+	 *
+	 * This is prepared in the background.
+	 */
+	std::list<Layer> mLayers;
+
+	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const Layer& layer, std::set<std::string>& managedTextures) const;
 	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
 
 	Ogre::TexturePtr updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow, std::set<std::string>& managedTextures) const;
+
 
 
 };
