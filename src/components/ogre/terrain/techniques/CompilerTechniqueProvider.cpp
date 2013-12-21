@@ -50,7 +50,7 @@ CompilerTechniqueProvider::CompilerTechniqueProvider(ShaderManager& shaderManage
 
 }
 
-TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
+TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) const
 {
 	std::string preferredTech("");
 	if (EmberServices::getSingleton().getConfigService().itemExists("terrain", "preferredtechnique")) {

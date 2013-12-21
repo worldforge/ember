@@ -53,13 +53,17 @@ public:
 		OgreImage* blendMap;
 	};
 
-	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
+	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
 	virtual ~Simple();
 
     virtual bool prepareMaterial();
     virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
 	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
-
+	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const;
+	virtual bool requiresPregenShadow() const
+	{
+		return true;
+	}
 protected:
 
 	/**
@@ -69,11 +73,17 @@ protected:
 	 */
 	std::list<Layer> mLayers;
 
+	/**
+	 * Contains the shadow data, computed in the background and transferred to a texture in the foreground.
+	 */
+	OgreImage* mLightingImage;
+
 	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const Layer& layer, std::set<std::string>& managedTextures) const;
 	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
 
 	Ogre::TexturePtr updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow, std::set<std::string>& managedTextures) const;
 
+	void addLightingPass(Ogre::Technique* technique, std::set<std::string>& managedTextures) const;
 
 
 };

@@ -50,7 +50,7 @@ public:
 	 */
 	CompilerTechniqueProvider(ShaderManager& shaderManager, Ogre::SceneManager& sceneManager);
 
-	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const;
+	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) const;
 
 protected:
 

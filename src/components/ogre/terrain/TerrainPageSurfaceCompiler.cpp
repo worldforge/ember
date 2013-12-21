@@ -54,7 +54,7 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 	}
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow)
+TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
 {
 	return new TerrainPageSurfaceCompilationInstance(mCompilerTechniqueProvider.createTechnique(geometry, terrainPageSurfaces, terrainPageShadow), mManagedTextures);
 
@@ -107,6 +107,17 @@ bool TerrainPageSurfaceCompilationInstance::compileCompositeMap(Ogre::MaterialPt
 		return false;
 	}
 }
+
+std::string TerrainPageSurfaceCompilationInstance::getShadowTextureName(const Ogre::MaterialPtr& material) const
+{
+	return mTechnique->getShadowTextureName(material);
+}
+
+bool TerrainPageSurfaceCompilationInstance::requiresPregenShadow() const
+{
+	return mTechnique->requiresPregenShadow();
+}
+
 }
 }
 }

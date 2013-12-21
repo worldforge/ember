@@ -21,6 +21,7 @@
 #include "TerrainPage.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainPageSurface.h"
+#include "TerrainPageShadow.h"
 #include "TerrainPageGeometry.h"
 
 #include "framework/LoggingInstance.h"
@@ -59,6 +60,10 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskEx
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
 		(*J)->repopulate();
 		TerrainPageSurfaceCompilationInstance* compilationInstance = (*J)->getPage().getSurface()->createSurfaceCompilationInstance(*J);
+		//If the technique requires a pregenerated shadow we must also populate normals.
+		if (compilationInstance->requiresPregenShadow()) {
+			(*J)->repopulate(true);
+		}
 		if (compilationInstance->prepare()) {
 			mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &(*J)->getPage()));
 		}
@@ -77,6 +82,7 @@ void TerrainMaterialCompilationTask::executeTaskInMainThread()
 		S_LOG_VERBOSE("Compiling terrain page composite map material");
 		compilationInstance->compileCompositeMap(page->getCompositeMapMaterial());
 		S_LOG_VERBOSE("Recompiled material for terrain page " << "[" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]");
+		page->getSurface()->getShadow()->setShadowTextureName(compilationInstance->getShadowTextureName(page->getMaterial()));
 		mSignal(page); // Notify the terrain system of the material change
 		delete compilationInstance;
 		std::stringstream ss;
