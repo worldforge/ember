@@ -18,6 +18,14 @@
 
 #include "ShadowUpdateTask.h"
 #include "TerrainPage.h"
+#include "TerrainPageSurface.h"
+#include "TerrainPageShadow.h"
+#include "TerrainPageGeometry.h"
+
+#include <OgreTextureManager.h>
+#include <OgreImage.h>
+#include <OgreRoot.h>
+#include <OgreHardwarePixelBuffer.h>
 
 namespace Ember
 {
@@ -27,8 +35,8 @@ namespace OgreView
 namespace Terrain
 {
 
-ShadowUpdateTask::ShadowUpdateTask(const PageVector& pages, const WFMath::Vector<3>& lightDirection)
-: mPages(pages), mLightDirection(lightDirection)
+ShadowUpdateTask::ShadowUpdateTask(const GeometryPtrVector& pageGeometries, const WFMath::Vector<3>& lightDirection) :
+		mPageGeometries(pageGeometries), mLightDirection(lightDirection)
 {
 
 }
@@ -39,16 +47,48 @@ ShadowUpdateTask::~ShadowUpdateTask()
 
 void ShadowUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
-//	for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-//		(*I)->updateShadow(mLightDirection);
-//	}
+	for (auto& pageGeometry : mPageGeometries) {
+		auto& page = pageGeometry->getPage();
+		auto shadow = page.getSurface()->getShadow();
+		if (shadow) {
+			auto shadowTextureName = shadow->getShadowTextureName();
+			if (shadowTextureName != "") {
+				pageGeometry->repopulate(true);
+				shadow->setLightDirection(mLightDirection);
+				shadow->updateShadow(*pageGeometry.get());
+			}
+		}
+	}
 }
 
 void ShadowUpdateTask::executeTaskInMainThread()
 {
+	for (auto& pageGeometry : mPageGeometries) {
+		auto& page = pageGeometry->getPage();
+		auto shadow = page.getSurface()->getShadow();
+		if (shadow) {
+			auto shadowTextureName = shadow->getShadowTextureName();
+			if (shadowTextureName != "") {
+				Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName));
+				if (!texture.isNull()) {
+					Ogre::Image ogreImage;
+					shadow->loadIntoImage(ogreImage);
+
+					texture->loadImage(ogreImage);
+
+					//blit the whole image to the hardware buffer
+					Ogre::PixelBox sourceBox(ogreImage.getPixelBox());
+					//blit for each mipmap
+					for (unsigned int i = 0; i <= texture->getNumMipmaps(); ++i) {
+						Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
+						hardwareBuffer->blitFromMemory(sourceBox);
+					}
+				}
+			}
+		}
+	}
 
 }
-
 
 }
 

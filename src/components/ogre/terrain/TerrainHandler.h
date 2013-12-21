@@ -22,6 +22,8 @@
 #include "Types.h"
 #include "domain/IHeightProvider.h"
 
+#include <wfmath/vector.h>
+
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 #include <sigc++/slot.h>
@@ -497,6 +499,14 @@ protected:
 	SegmentManager* mSegmentManager;
 
 	/**
+	 * @brief The angle used when lighting for precomputed shadows was last updated.
+	 *
+	 * We need to keep track of this in order to know when to update the precomputed shadows (once every hour).
+	 * This is only of used when using the fixed function pipeline (which requries precomputed shadows).
+	 */
+	WFMath::Vector<3> mLastLightingUpdateAngle;
+
+	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
 	 *
 	 * For performance reasons we want to batch together multiple request for shader updates, so we can do them all at once, normally on frameEnded(). By calling this method the supplied shader will be marked for updating.
@@ -543,6 +553,14 @@ protected:
 	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
 	 */
 	void buildHeightmap();
+
+	/**
+	 * @brief Called each frame.
+	 * @param
+	 * @param
+	 */
+	void frameProcessed(const TimeFrame&, unsigned int);
+
 };
 
 inline const std::list<TerrainShader*>& TerrainHandler::getBaseShaders() const

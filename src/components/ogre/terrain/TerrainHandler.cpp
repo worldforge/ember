@@ -27,6 +27,7 @@
 #include "TerrainShader.h"
 #include "TerrainPage.h"
 #include "TerrainPageShadow.h"
+#include "TerrainPageSurface.h"
 #include "TerrainPageGeometry.h"
 #include "TerrainArea.h"
 #include "TerrainMod.h"
@@ -62,6 +63,7 @@
 #include "framework/tasks/TemplateNamedTask.h"
 #include "framework/tasks/TaskExecutionContext.h"
 #include "framework/TimeFrame.h"
+#include "framework/MainLoopController.h"
 
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
@@ -92,7 +94,7 @@ private:
 
 public:
 	BasePointRetrieveTask(Mercator::Terrain& terrain, sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback) :
-		mTerrain(terrain), mAsyncCallback(asyncCallback)
+			mTerrain(terrain), mAsyncCallback(asyncCallback)
 	{
 	}
 	virtual ~BasePointRetrieveTask()
@@ -122,7 +124,7 @@ private:
 
 public:
 	TerrainPageReloadTask(TerrainHandler& handler, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry, const ShaderStore& shaders, const WFMath::AxisBox<2>& area) :
-		mHandler(handler), mBridge(bridge), mGeometry(geometry), mShaders(shaders), mArea(area)
+			mHandler(handler), mBridge(bridge), mGeometry(geometry), mShaders(shaders), mArea(area)
 	{
 	}
 
@@ -157,7 +159,7 @@ public:
 };
 
 TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-	mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
+		mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
 {
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
@@ -169,6 +171,8 @@ TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniquePro
 	//The mercator buffers are one size larger than the resolution
 	mHeightMapBufferProvider = new HeightMapBufferProvider(mTerrain->getResolution() + 1);
 	mHeightMap = new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution());
+
+	MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &TerrainHandler::frameProcessed));
 
 }
 
@@ -312,8 +316,8 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 		return;
 	}
 
-	int xIndex = static_cast<int> (std::floor(wfPos.x() / mTerrain->getResolution()));
-	int yIndex = static_cast<int> (std::floor(wfPos.y() / mTerrain->getResolution()));
+	int xIndex = static_cast<int>(std::floor(wfPos.x() / mTerrain->getResolution()));
+	int yIndex = static_cast<int>(std::floor(wfPos.y() / mTerrain->getResolution()));
 	SegmentRefPtr segmentRef = mSegmentManager->getSegmentReference(xIndex, yIndex);
 	if (segmentRef.get()) {
 		Ogre::ColourValue defaultShadowColour;
@@ -385,11 +389,11 @@ const TerrainInfo& TerrainHandler::getTerrainInfo() const
 TerrainPage* TerrainHandler::getTerrainPageAtPosition(const Domain::TerrainPosition& worldPosition) const
 {
 
-	int xRemainder = static_cast<int> (getMin().x()) % (getPageMetersSize());
-	int yRemainder = static_cast<int> (getMin().y()) % (getPageMetersSize());
+	int xRemainder = static_cast<int>(getMin().x()) % (getPageMetersSize());
+	int yRemainder = static_cast<int>(getMin().y()) % (getPageMetersSize());
 
-	int xIndex = static_cast<int> (floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
-	int yIndex = static_cast<int> (ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
+	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
+	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 
 	return getTerrainPageAtIndex(Domain::TerrainIndex(xIndex, yIndex));
 }
@@ -453,12 +457,25 @@ void TerrainHandler::setLightning(ILightning* lightning)
 
 void TerrainHandler::updateShadows()
 {
-	//	if (mLightning) {
-	//		WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
-	//		mTaskQueue->enqueueTask(new Tasks::SerialTask(new ShadowUpdateTask(mPages, sunDirection), new TerrainMaterialCompilationTask(mPages)));
-	//	} else {
-	//		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
-	//	}
+	if (mLightning) {
+		//Only update if there's a shadow texture set.
+		if (!mPages.empty()) {
+			auto page = mPages.front();
+			if (page->getSurface() && page->getSurface()->getShadow() && page->getSurface()->getShadow()->getShadowTextureName() != "") {
+				S_LOG_VERBOSE("Updating precomputed shadows.");
+				WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
+
+				GeometryPtrVector geometry;
+				for (auto& page : mPages) {
+					geometry.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())));
+				}
+
+				mTaskQueue->enqueueTask(new ShadowUpdateTask(geometry, sunDirection));
+			}
+		}
+	} else {
+		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
+	}
 }
 
 float TerrainHandler::getDefaultHeight() const
@@ -604,6 +621,18 @@ void TerrainHandler::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* t
 		mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders, mAreas, terrainArea->getEntityId()));
 	}
 }
+
+void TerrainHandler::frameProcessed(const TimeFrame&, unsigned int)
+{
+	if (mLightning) {
+		//Update shadows every hour
+		if (!mLastLightingUpdateAngle.isValid() || WFMath::Angle(mLightning->getMainLightDirection(), mLastLightingUpdateAngle) > (WFMath::numeric_constants<float>::pi() / 12)) {
+			updateShadows();
+			mLastLightingUpdateAngle = mLightning->getMainLightDirection();
+		}
+	}
+}
+
 }
 
 }
