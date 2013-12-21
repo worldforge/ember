@@ -77,14 +77,16 @@ TerrainPageGeometry::~TerrainPageGeometry()
 {
 }
 
-void TerrainPageGeometry::repopulate()
+void TerrainPageGeometry::repopulate(bool alsoNormals)
 {
 	for (SegmentRefStore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
 		for (SegmentRefColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			Mercator::Segment& segment = J->second->getMercatorSegment();
 			if (!segment.isValid()) {
 				segment.populate();
-				//segment->populateNormals();
+			}
+			if (alsoNormals && !segment.getNormals()) {
+				segment.populateNormals();
 			}
 		}
 	}
