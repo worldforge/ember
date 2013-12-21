@@ -43,7 +43,7 @@ namespace Terrain
 {
 
 TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider))
+	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider)), mShadow(new TerrainPageShadow(terrainPage))
 {
 	//create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
@@ -61,6 +61,7 @@ TerrainPageSurface::~TerrainPageSurface()
 	}
 	Ogre::MaterialManager::getSingleton().remove(mMaterialName);
 	Ogre::MaterialManager::getSingleton().remove(mMaterialName + "/CompositeMap");
+	delete mShadow;
 }
 
 const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getLayers() const
@@ -115,8 +116,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 	for (TerrainPageSurfaceLayerStore::const_iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		constLayers.insert(SurfaceLayerStore::value_type(I->first, I->second));
 	}
-	//TODO: Add shadow
-	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, nullptr);
+	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow);
 }
 
 TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader)
@@ -125,6 +125,12 @@ TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLay
 	mLayers.insert(TerrainPageSurfaceLayerStore::value_type(surfaceIndex, terrainSurface));
 	return terrainSurface;
 }
+
+TerrainPageShadow* TerrainPageSurface::getShadow() const
+{
+	return mShadow;
+}
+
 
 }
 

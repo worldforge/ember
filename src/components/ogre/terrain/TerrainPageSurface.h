@@ -103,12 +103,21 @@ public:
 
 	TerrainPageSurfaceLayer* updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate);
 
+	/**
+	 * @brief Gets the precomputed shadow attached to this surface.
+	 *
+	 * This is only of interest if the fixed function pipeline is used, since that requries precomputed shadows.
+	 * @return The shadow instance.
+	 */
+	TerrainPageShadow* getShadow() const;
+
 protected:
 
 	std::string mMaterialName;
 	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::unique_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
+	TerrainPageShadow* mShadow;
 
 };
 
