@@ -446,6 +446,11 @@ protected:
 	 * @param graphicalChangeAdapter An adapter for graphical change events.
 	 */
 	void initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter);
+
+	/**
+	 * @brief Called when the environment has been setup.
+	 */
+	void environment_setup();
 };
 
 /**

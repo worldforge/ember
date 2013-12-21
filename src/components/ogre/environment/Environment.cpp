@@ -100,6 +100,7 @@ void Environment::setFirmamentEnabled(bool enabled)
 		try {
 			mProvider->createFirmament();
 			mEnabledFirmamentProvider = mProvider;
+			EventEnvironmentSetup.emit();
 		} catch (...) {
 			if (mFallbackProvider) {
 				S_LOG_FAILURE("Error when creating environment, trying with fallback provider.");

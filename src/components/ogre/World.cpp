@@ -100,6 +100,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 
 	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
 	mTerrainManager->getHandler().setLightning(mEnvironment->getSun());
+	mEnvironment->EventEnvironmentSetup.connect(sigc::mem_fun(*this, &World::environment_setup));
 
 	//set the background colour to black
 	mViewport->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
@@ -337,7 +338,11 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 		delete mFoliage;
 		mFoliage = 0;
 	}
+}
 
+void World::environment_setup()
+{
+	mTerrainManager->getHandler().setLightning(mEnvironment->getSun());
 }
 
 void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter)

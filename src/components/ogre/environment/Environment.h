@@ -145,6 +145,11 @@ public:
 	 */
 	sigc::signal<void, const Ogre::ColourValue&> EventUpdatedAmbientLight;
 
+	/**
+	 * @brief Emitted when the environment has been setup.
+	 */
+	sigc::signal<void> EventEnvironmentSetup;
+
 private:
 
 	IEnvironmentProvider* mProvider, *mFallbackProvider, *mEnabledFirmamentProvider;
