@@ -99,6 +99,13 @@ protected:
 
 	Adapters::Eris::RuleTreeAdapter* mRuleTreeAdapter;
 
+	CEGUI::PushButton* mCreateButton;
+
+	/**
+	 * @brief Keep track of the currently selected type, mainly for fast lookups in typeService_BoundType.
+	 */
+	std::string mCurrentType;
+
 
 	void buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 
@@ -106,6 +113,9 @@ protected:
 	bool typeTree_SelectionChanged(const CEGUI::EventArgs& args);
 
 	void updatePreview();
+
+	void typeService_BoundType(Eris::TypeInfo* typeInfo);
+
 };
 }
 

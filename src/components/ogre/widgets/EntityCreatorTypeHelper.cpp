@@ -68,7 +68,7 @@ namespace Gui
 {
 
 EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
-		mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mRuleTreeAdapter(0)
+		mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mRuleTreeAdapter(0), mCreateButton(nullptr)
 {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
@@ -87,13 +87,17 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	typeTree.setSortingEnabled(true);
 
 	typeTree.subscribeEvent(CEGUI::Tree::EventSelectionChanged, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::typeTree_SelectionChanged, this));
-	pushButton.subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
+	mCreateButton = &pushButton;
+	mCreateButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
 
 	mRuleTreeAdapter = new Adapters::Eris::RuleTreeAdapter(mConnection, typeTree);
 	mRuleTreeAdapter->refresh("game_entity");
 
 	mModelPreviewRenderer = new ModelRenderer(&modelPreview, "modelPreview");
 	mModelPreviewManipulator = new CameraEntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
+
+
+	mConnection.getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityCreatorTypeHelper::typeService_BoundType));
 
 }
 
@@ -102,13 +106,39 @@ void EntityCreatorTypeHelper::updatePreview()
 	if (mModelPreviewRenderer && mRuleTreeAdapter) {
 		auto typeData = mRuleTreeAdapter->getSelectedRule();
 		if (typeData.isValid()) {
+			//check if the type is bound
+			mCurrentType = typeData->getId();
+			auto type = mConnection.getTypeService()->getTypeByName(typeData->getId());
+			if (type && type->isBound()) {
+				//update the model preview window
+				mModelPreviewRenderer->showModel(typeData->getId());
+				mModelPreviewRenderer->showFull();
+				//we want to zoom in a little
+				mModelPreviewRenderer->setCameraDistance(0.7);
+				mCreateButton->setEnabled(true);
+			} else {
+				mModelPreviewRenderer->showModel("");
+				mCreateButton->setEnabled(false);
+			}
+		} else {
+			mModelPreviewRenderer->showModel("");
+			mCreateButton->setEnabled(false);
+		}
+	}
+}
+
+void EntityCreatorTypeHelper::typeService_BoundType(Eris::TypeInfo* typeInfo)
+{
+	//If the type that's now bound is the one that's currently handled, update the preview
+	if (mModelPreviewRenderer && mRuleTreeAdapter && typeInfo->getName() == mCurrentType) {
+		auto typeData = mRuleTreeAdapter->getSelectedRule();
+		if (typeData.isValid()) {
 			//update the model preview window
 			mModelPreviewRenderer->showModel(typeData->getId());
 			mModelPreviewRenderer->showFull();
 			//we want to zoom in a little
 			mModelPreviewRenderer->setCameraDistance(0.7);
-		} else {
-			mModelPreviewRenderer->showModel("");
+			mCreateButton->setEnabled(true);
 		}
 	}
 }
