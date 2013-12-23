@@ -41,7 +41,7 @@ namespace Techniques
 const std::string Shader::NORMAL_TEXTURE_ALIAS = "EmberTerrain/NormalTexture";
 const std::string Shader::COMPOSITE_MAP_ALIAS = "EmberTerrain/CompositeMap";
 
-Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool UseNormalMapping) :
+Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool UseNormalMapping) :
 		Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager), mUseNormalMapping(UseNormalMapping), mUseCompositeMap(false)
 {
 }

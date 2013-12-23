@@ -21,6 +21,7 @@
 
 #include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
+#include <wfmath/vector.h>
 #include <vector>
 #include <map>
 #include <string>
@@ -60,8 +61,9 @@ public:
 	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
 	 * @param signalMaterialRecompiled A signal which will be passed on and emitted once a material for a terrain page has been recompiled.
+	 * @param lightDirection The main light direction.
 	 */
-	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled);
+	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection);
 
 	/**
 	 * @brief Ctor.
@@ -70,8 +72,9 @@ public:
 	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
 	 * @param signalMaterialRecompiled A signal which will be passed on and emitted once a material for a terrain page has been recompiled.
+	 * @param lightDirection The main light direction.
 	 */
-	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled);
+	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection);
 
 	virtual ~TerrainShaderUpdateTask();
 
@@ -105,6 +108,11 @@ private:
 	 * @brief A signal to pass on to the material recompilation task;
 	 */
 	sigc::signal<void, TerrainPage*>& mSignalMaterialRecompiled;
+
+	/**
+	 * @brief The main light direction.
+	 */
+	const WFMath::Vector<3> mLightDirection;
 
 };
 

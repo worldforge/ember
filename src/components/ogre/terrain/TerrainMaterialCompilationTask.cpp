@@ -40,13 +40,13 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage* >& signal) :
-	mGeometry(geometry), mSignal(signal)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection) :
+	mGeometry(geometry), mSignal(signal), mLightDirection(lightDirection)
 {
 }
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry, sigc::signal<void, TerrainPage* >& signal) :
-	mSignal(signal)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection) :
+	mSignal(signal), mLightDirection(lightDirection)
 {
 	mGeometry.push_back(geometry);
 }
@@ -59,10 +59,12 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskEx
 {
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
 		(*J)->repopulate();
-		TerrainPageSurfaceCompilationInstance* compilationInstance = (*J)->getPage().getSurface()->createSurfaceCompilationInstance(*J);
+		TerrainPage& page = (*J)->getPage();
+		TerrainPageSurfaceCompilationInstance* compilationInstance = page.getSurface()->createSurfaceCompilationInstance(*J);
 		//If the technique requires a pregenerated shadow we must also populate normals.
 		if (compilationInstance->requiresPregenShadow()) {
 			(*J)->repopulate(true);
+			page.getSurface()->getShadow()->updateShadow(**J);
 		}
 		if (compilationInstance->prepare()) {
 			mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &(*J)->getPage()));

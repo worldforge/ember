@@ -47,7 +47,7 @@ public:
      * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
      * @param terrainPageShadow An optional shadow.
      */
-	Base(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
+	Base(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
 
 	/**
 	 * @brief Dtor.
@@ -81,7 +81,7 @@ protected:
 	/**
 	 * @brief An optional shadow.
 	 */
-	TerrainPageShadow* mTerrainPageShadow;
+	const TerrainPageShadow* mTerrainPageShadow;
 
 	/**
 	 * @brief The affected page.

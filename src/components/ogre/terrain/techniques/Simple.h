@@ -53,7 +53,7 @@ public:
 		OgreImage* blendMap;
 	};
 
-	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
+	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
 	virtual ~Simple();
 
     virtual bool prepareMaterial();

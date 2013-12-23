@@ -30,11 +30,6 @@
 #include "components/ogre/terrain/TerrainPageShadow.h"
 #include "components/ogre/terrain/OgreImage.h"
 
-#include "components/ogre/EmberOgre.h"
-#include "components/ogre/World.h"
-#include "components/ogre/Convert.h"
-#include "components/ogre/environment/Environment.h"
-
 #include <OgreTechnique.h>
 #include <OgrePass.h>
 #include <OgreTextureUnitState.h>
@@ -53,7 +48,7 @@ namespace Terrain
 namespace Techniques
 {
 
-Simple::Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) :
+Simple::Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
 		Base(geometry, terrainPageSurfaces, terrainPageShadow), mLightingImage(0)
 {
 
@@ -79,12 +74,6 @@ bool Simple::prepareMaterial()
 				surfaceLayer->fillImage(*mGeometry, *image, 0);
 			}
 		}
-	}
-
-	//Do lighting
-	if (mTerrainPageShadow) {
-		mTerrainPageShadow->setLightDirection(EmberOgre::getSingleton().getWorld()->getEnvironment()->getSun()->getMainLightDirection());
-		mTerrainPageShadow->updateShadow(*mGeometry);
 	}
 	return true;
 }

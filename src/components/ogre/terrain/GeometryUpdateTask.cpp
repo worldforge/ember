@@ -33,8 +33,8 @@ namespace OgreView
 namespace Terrain
 {
 
-GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages, const std::vector<WFMath::AxisBox<2>>& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
-	mGeometry(pages), mAreas(areas), mHandler(handler), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages, const std::vector<WFMath::AxisBox<2>>& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3> lightDirection) :
+	mGeometry(pages), mAreas(areas), mHandler(handler), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap), mLightDirection(lightDirection)
 {
 
 }
@@ -64,7 +64,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
 
-		context.executeTask(new TerrainShaderUpdateTask(geometries, shaderList, mAreas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled));
+		context.executeTask(new TerrainShaderUpdateTask(geometries, shaderList, mAreas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mLightDirection));
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
 

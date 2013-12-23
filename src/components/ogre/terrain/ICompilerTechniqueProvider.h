@@ -56,7 +56,7 @@ public:
 	 * @param terrainPageSurfaces The surfaces attached to the geometry.
 	 * @param terrainPageShadow An optional shadow for the geometry.
 	 */
-	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) const = 0;
+	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const = 0;
 
 };
 

@@ -42,7 +42,6 @@
 #include "TerrainModChangeTask.h"
 #include "TerrainModRemoveTask.h"
 #include "TerrainUpdateTask.h"
-#include "TerrainMaterialCompilationTask.h"
 
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
@@ -121,10 +120,11 @@ private:
 	TerrainPageGeometryPtr mGeometry;
 	const ShaderStore mShaders;
 	const WFMath::AxisBox<2> mArea;
+	const WFMath::Vector<3> mMainLightDirection;
 
 public:
-	TerrainPageReloadTask(TerrainHandler& handler, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry, const ShaderStore& shaders, const WFMath::AxisBox<2>& area) :
-			mHandler(handler), mBridge(bridge), mGeometry(geometry), mShaders(shaders), mArea(area)
+	TerrainPageReloadTask(TerrainHandler& handler, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry, const ShaderStore& shaders, const WFMath::AxisBox<2>& area, const WFMath::Vector<3>& mainLightDirection) :
+			mHandler(handler), mBridge(bridge), mGeometry(geometry), mShaders(shaders), mArea(area), mMainLightDirection(mainLightDirection)
 	{
 	}
 
@@ -143,7 +143,7 @@ public:
 		areas.push_back(mArea);
 		GeometryPtrVector geometries;
 		geometries.push_back(mGeometry);
-		context.executeTask(new TerrainShaderUpdateTask(geometries, shaders, areas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled));
+		context.executeTask(new TerrainShaderUpdateTask(geometries, shaders, areas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mMainLightDirection));
 		if (mBridge.get()) {
 			mBridge->updateTerrain(*mGeometry);
 		}
@@ -358,7 +358,7 @@ void TerrainHandler::pollTasks(const TimeFrame& timeFrame)
 		}
 		//use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
 		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
-			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, EventLayerUpdated, EventTerrainMaterialRecompiled), 0);
+			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, EventLayerUpdated, EventTerrainMaterialRecompiled, mLightning->getMainLightDirection()), 0);
 		}
 		mShadersToUpdate.clear();
 	}
@@ -377,7 +377,7 @@ void TerrainHandler::updateAllPages()
 
 	//Update all shaders on all pages
 	for (ShaderStore::const_iterator I = mShaderMap.begin(); I != mShaderMap.end(); ++I) {
-		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, areas, EventLayerUpdated, EventTerrainMaterialRecompiled), 0);
+		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, areas, EventLayerUpdated, EventTerrainMaterialRecompiled, mLightning->getMainLightDirection()), 0);
 	}
 }
 
@@ -423,7 +423,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const Domain::TerrainIndex& index, 
 		TerrainPage* page = mTerrainPages[x][y];
 		TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*page, getSegmentManager(), getDefaultHeight()));
 
-		if (!mTaskQueue->enqueueTask(new TerrainPageReloadTask(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent()))) {
+		if (!mTaskQueue->enqueueTask(new TerrainPageReloadTask(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
 			//We need to alert the bridge since it's holding up a thread waiting for this call.
 			bridge->terrainPageReady();
 		}
@@ -525,7 +525,7 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 			bridgePtr = J->second;
 		}
 		geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
-		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
+		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap, mLightning->getMainLightDirection()));
 	}
 }
 
