@@ -65,6 +65,11 @@ public:
 
 	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ);
 
+	/**
+	 * @brief Regenerates the material used by the page.
+	 */
+	void regenerateMaterial();
+
 
 protected:
 

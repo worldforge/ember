@@ -24,6 +24,7 @@
 #include "components/ogre/TerrainPageDataProvider.h"
 #include "OgreTerrainMaterialGeneratorEmber.h"
 #include "EmberTerrainGroup.h"
+#include "EmberTerrain.h"
 #include "CameraFocusedGrid2DPageStrategy.h"
 
 #include <OgreSceneManager.h>
@@ -186,14 +187,12 @@ void OgreTerrainAdapter::reloadPage(const Domain::TerrainIndex& index)
 void OgreTerrainAdapter::reloadPageMaterial(const Domain::TerrainIndex& index)
 {
 	if (mTerrainGroup) {
-		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
+		EmberTerrain* page = static_cast<EmberTerrain*>(mTerrainGroup->getTerrain(index.first, index.second));
 		if (page) {
-			// This is a trick to get the terrain to reload it's material
-			page->addLayer(0, 0.0, nullptr);
-			page->removeLayer(0);
 			//We must tell the page what area needs updating. For now we'll update the whole page.
 			//But we should really look into only updating the area that has changed.
 			page->_dirtyCompositeMapRect(Ogre::Rect(0, 0, page->getSize(), page->getSize()));
+			page->regenerateMaterial();
 			page->updateCompositeMap();
 		}
 	}

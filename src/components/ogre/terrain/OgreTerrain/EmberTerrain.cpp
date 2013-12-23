@@ -84,6 +84,14 @@ void EmberTerrain::handleResponse(const Ogre::WorkQueue::Response* res, const Og
 	}
 }
 
+void EmberTerrain::regenerateMaterial()
+{
+	mMaterialDirty = true;
+	mMaterialGenerator->requestOptions(this);
+	getMaterial();
+}
+
+
 }
 }
 }
