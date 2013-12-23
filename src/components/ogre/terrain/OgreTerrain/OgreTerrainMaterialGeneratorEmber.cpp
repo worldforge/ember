@@ -109,7 +109,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terra
 
 	const auto& index = emberTerrain->getIndex();
 
-	S_LOG_INFO("Loading composite map material for terrain page: " << "[" << index.first << "|" << index.second << "]");
+	S_LOG_VERBOSE("Loading composite map material for terrain page: " << "[" << index.first << "|" << index.second << "]");
 
 	IPageData* pageData = mDataProvider.getPageData(index);
 	if (!pageData) {
