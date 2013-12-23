@@ -74,8 +74,6 @@ namespace Terrain
 TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider)), mIsFoliageShown(false), mTerrainAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
 {
-	loadTerrainOptions();
-
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
@@ -108,15 +106,6 @@ TerrainManager::~TerrainManager()
 	delete mHandler;
 	delete mVegetation;
 	delete mCompilerTechniqueProvider;
-}
-
-void TerrainManager::loadTerrainOptions()
-{
-
-	getTerrainAdapter()->setResourceGroupName("General");
-
-	getTerrainAdapter()->setUninitializedHeight(mHandler->getDefaultHeight());
-
 }
 
 void TerrainManager::startPaging()
@@ -246,30 +235,8 @@ void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* p
 void TerrainManager::initializeTerrain()
 {
 	ITerrainAdapter* adapter = getTerrainAdapter();
-	if (adapter) {
-		const TerrainInfo& terrainInfo = mHandler->getTerrainInfo();
-		adapter->setWorldPagesDimensions(terrainInfo.getTotalNumberOfPagesY(), terrainInfo.getTotalNumberOfPagesX(), terrainInfo.getPageOffsetY(), terrainInfo.getPageOffsetX());
-
-		adapter->loadScene();
-		const WFMath::AxisBox<2>& worldSize = terrainInfo.getWorldSizeInIndices();
-		//		float heightMin = std::numeric_limits<float>::min();
-		//		float heightMax = std::numeric_limits<float>::max();
-		//		if (heightMax < heightMin) {
-		float heightMin = -100;
-		float heightMax = 100;
-		//		}
-		Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
-
-		std::stringstream ss;
-		ss << worldBox;
-		S_LOG_INFO("New size of the world: " << ss.str());
-
-		adapter->resize(worldBox, 16);
-
-		S_LOG_INFO("Pages: X: " << terrainInfo.getTotalNumberOfPagesX() << " Y: " << terrainInfo.getTotalNumberOfPagesY() << " Total: " << terrainInfo.getTotalNumberOfPagesX() * terrainInfo.getTotalNumberOfPagesY());
-		S_LOG_INFO("Page offset: X" << terrainInfo.getPageOffsetX() << " Y: " << terrainInfo.getPageOffsetY());
-
-	}
+	assert(adapter);
+	adapter->loadScene();
 }
 bool TerrainManager::isFoliageShown() const
 {

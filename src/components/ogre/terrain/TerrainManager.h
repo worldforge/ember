@@ -264,8 +264,6 @@ protected:
 
 	void initializeTerrain();
 
-	void loadTerrainOptions();
-
 	/**
 	 * @brief Iterates through all TerrainPages and shows or hides the foliage.
 	 */

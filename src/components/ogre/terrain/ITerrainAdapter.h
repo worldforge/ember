@@ -83,46 +83,12 @@ public:
 	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z) = 0;
 	
 	/**
-	 * @brief Sets the new dimensions of the world, in pages.
-	 *
-	 * Since the underlying terrain engine often works with pages, it needs to know exactly how many to load.
-	 * @param numberOfPagesHeight The total number of pages in Ogre x space.
-	 * @param numberOfPagesWidth The total number of pages in Ogre z space.
-	 * @param heightOffsetInPages How much the terrain should be offset in x space in order to get the terrain point 0 to align with the world 0.
-	 * @param widthOffsetInPages How much the terrain should be offset in z space in order to get the terrain point 0 to align with the world 0.
-	 */
-	virtual void setWorldPagesDimensions(int numberOfPagesWidth, int numberOfPagesHeight, int widthOffsetInPages, int heightOffsetInPages) = 0;
-
-	/**
 	 * @brief Sets the main camera used.
 	 *
 	 * The terrain system needs to know where the main camera is in order to properly calculate proper LOD levels and similiar.
 	 * @param camera The main camera.
 	 */
 	virtual void setCamera(Ogre::Camera* camera) = 0;
-
-	/**
-	 * @brief Sets the name of the resource group from where the terrain engine should load its resources.
-	 *
-	 * @param groupName The name of a resource group.
-	 */
-	virtual void setResourceGroupName(const std::string& groupName) = 0;
-
-	/**
-	 * @brief Loads terrain engine specific options from a file. This is specific for each terrain engine.
-	 *
-	 * @param filePath The absolute path to the file with the options.
-	 */
-	virtual void loadOptions(const std::string& filePath) = 0;
-
-	/**
-	 * @brief Sets the new dimensions of the world.
-	 *
-	 * Call this whenever the bounds of the world changes. It allows the terrain engine to update it's internal structures for better space partitioning and similiar things.
-	 * @param newSize The new size of the world.
-	 * @param levels The number of levels for which to generate partitioning blocks. 16 should be a good number.
-	 */
-	virtual void resize(Ogre::AxisAlignedBox newSize, int levels) = 0;
 
 	/**
 	 * @brief Loads the whole scene.
@@ -136,34 +102,6 @@ public:
 	 */
 	virtual void reset() = 0;
 
-	/**
-	 * @brief Sets an arbitrary option.
-	 *
-	 * @param strKey The key of the option to set.
-	 * @param pValue The value to set.
-	 */
-	virtual void setOption(const std::string& strKey, const void* pValue) = 0;
-
-	/**
-	 * @brief Gets an arbitrary option.
-	 *
-	 * @param strKey The key of the option to get.
-	 * @param pDestValue The value of the option.
-	 */
-	virtual void getOption(const std::string& strKey, void* pDestValue) = 0;
-	
-
-	/**
-	 * @brief Sets the height used by any uninitialized terrain.
-	 *
-	 * Uninitialized terrain often surrounds the main terrain. This might be because the server not yet has sent terrain data.
-	 * However, since uninitialized terrain often abruptly differs from the surrounding terrain there will be very large drops, which will affect the LOD, often leading to these edge segments having the highest LOD possible.
-	 * By specifying a height used by these segment the application can tell the terrain renderer to not include these heights when doing LOD calculations.
-	 * @param height The height of any uninitialized terrain.
-	 */
-	virtual void setUninitializedHeight(float height) = 0;
-
-	
 	/**
 	 * @brief Reloads all pages.
 	 *

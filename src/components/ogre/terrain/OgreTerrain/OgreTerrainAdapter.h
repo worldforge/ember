@@ -65,25 +65,11 @@ public:
 
 	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z);
 
-	virtual void setWorldPagesDimensions(int numberOfPagesWidth, int numberOfPagesHeight, int widthOffsetInPages, int heightOffsetInPages);
-
 	virtual void setCamera(Ogre::Camera* camera);
-
-	virtual void setResourceGroupName(const std::string& groupName);
-
-	virtual void loadOptions(const std::string& filePath);
-
-	virtual void resize(Ogre::AxisAlignedBox newSize, int levels);
 
 	virtual void loadScene();
 
 	virtual void reset();
-
-	virtual void setOption(const std::string& strKey, const void* pValue);
-
-	virtual void getOption(const std::string& strKey, void* pDestValue);
-
-	virtual void setUninitializedHeight(float height);
 
 	virtual void reloadAllPages();
 

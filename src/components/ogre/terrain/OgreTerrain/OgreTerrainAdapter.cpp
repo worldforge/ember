@@ -117,10 +117,6 @@ Ogre::Real OgreTerrainAdapter::getHeightAt(const Ogre::Real x, const Ogre::Real 
 	return Ogre::Real(height);
 }
 
-void OgreTerrainAdapter::setWorldPagesDimensions(int numberOfPagesWidth, int numberOfPagesHeight, int widthOffsetInPages, int heightOffsetInPages)
-{
-}
-
 void OgreTerrainAdapter::setCamera(Ogre::Camera* camera)
 {
 	if (!mPageManager->hasCamera(camera)) {
@@ -130,18 +126,6 @@ void OgreTerrainAdapter::setCamera(Ogre::Camera* camera)
 		}
 		mPageManager->addCamera(camera);
 	}
-}
-
-void OgreTerrainAdapter::setResourceGroupName(const std::string& groupName)
-{
-}
-
-void OgreTerrainAdapter::loadOptions(const std::string& filePath)
-{
-}
-
-void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
-{
 }
 
 void OgreTerrainAdapter::loadScene()
@@ -156,17 +140,6 @@ void OgreTerrainAdapter::reset()
 	mTerrainPagedWorldSection->removeAllPages();
 }
 
-void OgreTerrainAdapter::setOption(const std::string& strKey, const void* pValue)
-{
-}
-
-void OgreTerrainAdapter::getOption(const std::string& strKey, void* pDestValue)
-{
-}
-
-void OgreTerrainAdapter::setUninitializedHeight(float height)
-{
-}
 
 void OgreTerrainAdapter::reloadAllPages()
 {
