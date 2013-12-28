@@ -503,29 +503,31 @@ void TerrainHandler::reloadTerrain(const std::vector<Domain::TerrainPosition>& p
 
 void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 {
-	std::set<TerrainPage*> pagesToUpdate;
-	for (std::vector<WFMath::AxisBox<2>>::const_iterator I(areas.begin()); I != areas.end(); ++I) {
-		const WFMath::AxisBox<2>& area = *I;
-		for (PageVector::const_iterator pageI = mPages.begin(); pageI != mPages.end(); ++pageI) {
-			TerrainPage* page = *pageI;
-			if (WFMath::Contains(page->getWorldExtent(), area, false) || WFMath::Intersect(page->getWorldExtent(), area, false) || WFMath::Contains(area, page->getWorldExtent(), false)) {
-				pagesToUpdate.insert(page);
+	if (mTaskQueue->isActive()) {
+		std::set<TerrainPage*> pagesToUpdate;
+		for (std::vector<WFMath::AxisBox<2>>::const_iterator I(areas.begin()); I != areas.end(); ++I) {
+			const WFMath::AxisBox<2>& area = *I;
+			for (PageVector::const_iterator pageI = mPages.begin(); pageI != mPages.end(); ++pageI) {
+				TerrainPage* page = *pageI;
+				if (WFMath::Contains(page->getWorldExtent(), area, false) || WFMath::Intersect(page->getWorldExtent(), area, false) || WFMath::Contains(area, page->getWorldExtent(), false)) {
+					pagesToUpdate.insert(page);
+				}
 			}
 		}
-	}
 
-	EventBeforeTerrainUpdate(areas, pagesToUpdate);
-	//Spawn a separate task for each page to not bog down processing with all pages at once
-	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
-		BridgeBoundGeometryPtrVector geometryToUpdate;
-		TerrainPage* page = *I;
-		ITerrainPageBridgePtr bridgePtr;
-		PageBridgeStore::const_iterator J = mPageBridges.find(page->getWFIndex());
-		if (J != mPageBridges.end()) {
-			bridgePtr = J->second;
+		EventBeforeTerrainUpdate(areas, pagesToUpdate);
+		//Spawn a separate task for each page to not bog down processing with all pages at once
+		for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+			BridgeBoundGeometryPtrVector geometryToUpdate;
+			TerrainPage* page = *I;
+			ITerrainPageBridgePtr bridgePtr;
+			PageBridgeStore::const_iterator J = mPageBridges.find(page->getWFIndex());
+			if (J != mPageBridges.end()) {
+				bridgePtr = J->second;
+			}
+			geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
+			mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap, mLightning->getMainLightDirection()));
 		}
-		geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
-		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap, mLightning->getMainLightDirection()));
 	}
 }
 
@@ -556,12 +558,16 @@ void TerrainHandler::addTerrainMod(TerrainMod* terrainMod)
 
 void TerrainHandler::TerrainMod_Changed(TerrainMod* terrainMod)
 {
-	mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod, *this, mTerrainMods));
+	if (mTaskQueue->isActive()) {
+		mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod, *this, mTerrainMods));
+	}
 }
 
 void TerrainHandler::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
-	mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, terrainMod->getEntityId(), *this, mTerrainMods));
+	if (mTaskQueue->isActive()) {
+		mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, terrainMod->getEntityId(), *this, mTerrainMods));
+	}
 }
 
 void TerrainHandler::addArea(TerrainArea& terrainArea)

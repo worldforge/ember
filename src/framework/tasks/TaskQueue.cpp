@@ -152,6 +152,12 @@ void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
 	}
 }
 
+bool TaskQueue::isActive() const
+{
+	return mActive;
+}
+
+
 }
 
 }

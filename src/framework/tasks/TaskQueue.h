@@ -93,6 +93,12 @@ public:
 	 */
 	void deactivate();
 
+	/**
+	 * @brief Returns true if the queue is active.
+	 * @return True if queue is active.
+	 */
+	bool isActive() const;
+
 protected:
 
 	/**
