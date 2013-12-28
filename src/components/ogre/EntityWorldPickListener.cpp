@@ -166,8 +166,8 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 
 	} else if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(EmberEntityUserObject::SharedPtr)) {
-			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(pickedMovable->getUserAny()).get();
+		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().getType() == typeid(EmberEntityUserObject::SharedPtr)) {
+			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(pickedMovable->getUserObjectBindings().getUserAny()).get();
 			//refit the opcode mesh to adjust for changes in the mesh (for example animations)
 			anUserObject->refit();
 

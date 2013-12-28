@@ -205,7 +205,7 @@ ICollisionDetector* SimpleWater::createCollisionDetector()
 bool SimpleWater::setUserAny(const Ogre::Any &anything)
 {
 	if (mWaterEntity) {
-		mWaterEntity->setUserAny(anything);
+		mWaterEntity->getUserObjectBindings().setUserAny(anything);
 		return true;
 	}
 	return false;

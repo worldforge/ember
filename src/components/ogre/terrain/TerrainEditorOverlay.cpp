@@ -145,10 +145,10 @@ void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySc
 {
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(BasePointUserObject::SharedPtr)) {
+		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().getType() == typeid(BasePointUserObject::SharedPtr)) {
 			continuePicking = false;
 			if (mousePickerArgs.pickType == MPT_PRESS) {
-				mPickedUserObject = Ogre::any_cast<BasePointUserObject::SharedPtr>(pickedMovable->getUserAny()).get();
+				mPickedUserObject = Ogre::any_cast<BasePointUserObject::SharedPtr>(pickedMovable->getUserObjectBindings().getUserAny()).get();
 			}
 		}
 	}
@@ -261,7 +261,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			basepointNode->attachObject(entity);
 
 			BasePointUserObject* userObject = new BasePointUserObject(Domain::TerrainPosition(x, y), basepoint, basepointNode);
-			entity->setUserAny(Ogre::Any(BasePointUserObject::SharedPtr(userObject)));
+			entity->getUserObjectBindings().setUserAny(Ogre::Any(BasePointUserObject::SharedPtr(userObject)));
 
 			//store the base point user object
 			std::stringstream ss_;
