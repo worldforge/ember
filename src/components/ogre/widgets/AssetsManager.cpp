@@ -98,21 +98,19 @@ TexturePair AssetsManager::showTexture(const std::string textureName)
 
 }
 
-TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageSetName)
+TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageName)
 {
 	// 	if (mOgreCEGUITexture) {
 	// 		GUIManager::getSingleton().getGuiRenderer()->destroyTexture(mOgreCEGUITexture);
 	// 		mOgreCEGUITexture = 0;
 	// 	}
 
-	if (CEGUI::ImageManager::getSingleton().isDefined(imageSetName)) {
-		CEGUI::ImageManager::getSingleton().destroy(imageSetName);
-	}
 	auto renderer = CEGUI::System::getSingleton().getRenderer();
 
 	CEGUI::Texture* ogreCEGUITexture;
 	if (renderer->isTextureDefined(texturePtr->getName())) {
 		ogreCEGUITexture = &renderer->getTexture(texturePtr->getName());
+		static_cast<CEGUI::OgreTexture*>(ogreCEGUITexture)->setOgreTexture(texturePtr);
 	} else {
 		//create a CEGUI texture from our Ogre texture
 		S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
@@ -120,7 +118,12 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 	}
 
 	//assign our image element to the StaticImage widget
-	CEGUI::Image* textureImage = &CEGUI::ImageManager::getSingleton().create("BasicImage", imageSetName);
+	CEGUI::Image* textureImage;
+	if (CEGUI::ImageManager::getSingleton().isDefined(imageName)) {
+		textureImage = &CEGUI::ImageManager::getSingleton().get(imageName);
+	} else {
+		textureImage = &CEGUI::ImageManager::getSingleton().create("BasicImage", imageName);
+	}
 
 	CEGUI::BasicImage* basicImage = static_cast<CEGUI::BasicImage*>(textureImage);
 	basicImage->setTexture(ogreCEGUITexture);
