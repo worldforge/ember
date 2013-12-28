@@ -194,11 +194,6 @@ TerrainHandler::~TerrainHandler()
 	delete mSegmentManager;
 
 	delete mTerrain;
-	//There should be no areas left
-	assert(!mAreas.size());
-	//There should be no mods left
-	assert(!mTerrainMods.size());
-
 }
 
 void TerrainHandler::shutdown()
@@ -279,9 +274,13 @@ void TerrainHandler::destroyPage(TerrainPage* page)
 	}
 	mTerrainPages[pos.x()][pos.y()] = nullptr;
 	//We should delete the page first when all existing tasks are completed. This is because some of them might refer to the page.
-	if (!mTaskQueue->enqueueTask(new TerrainPageDeletionTask(page))) {
-		//If the task queue is inactive there's no risk of deleting it.
+	if (!mTaskQueue->isActive()) {
 		delete page;
+	} else {
+		if (!mTaskQueue->enqueueTask(new TerrainPageDeletionTask(page))) {
+			//If the task queue is inactive there's no risk of deleting it.
+			delete page;
+		}
 	}
 }
 
