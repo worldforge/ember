@@ -283,7 +283,7 @@ RenderedCompassImpl::~RenderedCompassImpl()
 {
 	//We should probably not do this ourselves, since it will corrupt the material.
 	if (!mTexture.isNull()) {
-		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
+		Ogre::TextureManager::getSingleton().remove(mTexture->getHandle());
 	}
 
 	if (mCamera) {
@@ -292,7 +292,7 @@ RenderedCompassImpl::~RenderedCompassImpl()
 
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 	if (!mCompassMaterial.isNull()) {
-		Ogre::MaterialManager::getSingleton().remove(mCompassMaterial->getName());
+		Ogre::MaterialManager::getSingleton().remove(mCompassMaterial->getHandle());
 	}
 
 	OGRE_DELETE mMapRectangle;
@@ -340,7 +340,7 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
 				if ((mCompassMaterialMapTUS = pass->getTextureUnitState("Background"))) {
 					//Make sure that the compass material is using the map texture for the base rendering
-					mCompassMaterialMapTUS->setTextureName(mMap->getTexture()->getName());
+					mCompassMaterialMapTUS->setTexture(mMap->getTexture());
 
 					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompass", "Gui", Ogre::TEX_TYPE_2D, 128, 128, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
 					mRenderTexture = mTexture->getBuffer()->getRenderTarget();
