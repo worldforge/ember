@@ -71,8 +71,9 @@ public:
 	 * @note If the queue is being shut down, the task will not be queued and a warning will be written to the log.
 	 * @param task The task to add. Note that ownership will be transferred.
 	 * @param listener An optional listener. Note that ownership won't be transferred.
+	 * @return False if the task couldn't be enqueued, probably because the task queue is inactive.
 	 */
-	void enqueueTask(ITask* task, ITaskExecutionListener* listener = 0);
+	bool enqueueTask(ITask* task, ITaskExecutionListener* listener = 0);
 
 	/**
 	 * @brief Goes through all processed tasks, handled them and then deletes them
@@ -91,6 +92,12 @@ public:
 	 * The latter means that a call to this is blocking until all tasks are done.
 	 */
 	void deactivate();
+
+	/**
+	 * @brief Returns true if the queue is active.
+	 * @return True if queue is active.
+	 */
+	bool isActive() const;
 
 protected:
 

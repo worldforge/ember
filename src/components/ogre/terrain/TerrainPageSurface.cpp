@@ -43,7 +43,7 @@ namespace Terrain
 {
 
 TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider))
+	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider)), mShadow(new TerrainPageShadow(terrainPage))
 {
 	//create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
@@ -59,6 +59,9 @@ TerrainPageSurface::~TerrainPageSurface()
 	for (TerrainPageSurfaceLayerStore::iterator I(mLayers.begin()); I != mLayers.end(); ++I) {
 		delete I->second;
 	}
+	Ogre::MaterialManager::getSingleton().remove(mMaterialName);
+	Ogre::MaterialManager::getSingleton().remove(mMaterialName + "/CompositeMap");
+	delete mShadow;
 }
 
 const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getLayers() const
@@ -91,13 +94,19 @@ int TerrainPageSurface::getNumberOfSegmentsPerAxis() const
 
 unsigned int TerrainPageSurface::getPixelWidth() const
 {
-	return mTerrainPage.getAlphaTextureSize();
+	return mTerrainPage.getBlendMapSize();
 }
 
 const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 {
 	std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve(mMaterialName, "General");
-	return static_cast<Ogre::MaterialPtr>(result.first);
+	return result.first.staticCast<Ogre::Material>();
+}
+
+const Ogre::MaterialPtr TerrainPageSurface::getCompositeMapMaterial() const
+{
+	std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve(mMaterialName + "/CompositeMap", "General");
+	return result.first.staticCast<Ogre::Material>();
 }
 
 TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const
@@ -107,8 +116,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 	for (TerrainPageSurfaceLayerStore::const_iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		constLayers.insert(SurfaceLayerStore::value_type(I->first, I->second));
 	}
-	//TODO: Add shadow
-	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, 0);
+	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow);
 }
 
 TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader)
@@ -117,6 +125,12 @@ TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLay
 	mLayers.insert(TerrainPageSurfaceLayerStore::value_type(surfaceIndex, terrainSurface));
 	return terrainSurface;
 }
+
+TerrainPageShadow* TerrainPageSurface::getShadow() const
+{
+	return mShadow;
+}
+
 
 }
 

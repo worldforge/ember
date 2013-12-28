@@ -22,10 +22,12 @@
 
 #include "Scene.h"
 #include "ISceneRenderingTechnique.h"
+#include "terrain/OgreTerrain/OgreTerrainAdapter.h"
+
+#include "services/config/ConfigService.h"
+
 #include "framework/LoggingInstance.h"
 
-#include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 
 #include <OgreRoot.h>
 
@@ -37,16 +39,12 @@ namespace OgreView
 Scene::Scene() :
 		mSceneManager(0), mMainCamera(0)
 {
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManagerInstance");
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR);
 
-	//We need to call init scene since a lot of components used by the scene manager are thus created.
-	//Calling "setWorldGeometry" will trigger a call to InitScene
-	Ogre::DataStreamPtr emptyDataStream;
-	mSceneManager->setWorldGeometry(emptyDataStream);
+	S_LOG_INFO("Using SceneManager: " << mSceneManager->getTypeName());
 
 	//create the main camera, we will of course have a couple of different cameras, but this will be the main one
 	mMainCamera = mSceneManager->createCamera("MainCamera");
-
 }
 
 Scene::~Scene()
@@ -60,6 +58,7 @@ Scene::~Scene()
 
 Ogre::SceneManager& Scene::getSceneManager() const
 {
+	assert(mSceneManager);
 	return *mSceneManager;
 }
 
@@ -97,18 +96,19 @@ ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& nam
 	return 0;
 }
 
-void Scene::registerPageDataProvider(IPageDataProvider* pageDataProvider)
+Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 {
-	static_cast<EmberPagingSceneManager*>(mSceneManager)->registerProvider(pageDataProvider);
-}
+	ConfigService& configService(EmberServices::getSingleton().getConfigService());
+	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
 
-Terrain::ISceneManagerAdapter* Scene::createAdapter()
-{
-	return new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&>(*mSceneManager));
+	assert(mSceneManager);
+	assert(mMainCamera);
+	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera, pageSize);
 }
 
 Ogre::Camera& Scene::getMainCamera() const
 {
+	assert(mMainCamera);
 	return *mMainCamera;
 }
 

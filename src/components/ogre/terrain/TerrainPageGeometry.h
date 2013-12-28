@@ -125,8 +125,9 @@ public:
 
 	/**
 	 * @brief Repopulates the segments which make up the page.
+	 * @param alsoNormals If normals also should be populated. Default is false.
 	 */
-	void repopulate();
+	void repopulate(bool alsoNormals = false);
 
 
 	/**

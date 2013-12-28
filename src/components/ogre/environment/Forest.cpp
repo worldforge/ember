@@ -44,7 +44,7 @@
 #include "../terrain/TerrainInfo.h"
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainHandler.h"
-#include "../terrain/ISceneManagerAdapter.h"
+#include "../terrain/ITerrainAdapter.h"
 
 namespace Ember
 {

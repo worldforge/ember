@@ -30,6 +30,8 @@
 #include "components/ogre/IMovementProvider.h"
 #include "components/ogre/IWorldPickListener.h"
 
+#include "components/ogre/terrain/ITerrainAdapter.h"
+
 #include "services/config/ConfigListenerContainer.h"
 #include "services/input/Input.h"
 
@@ -50,6 +52,9 @@
 #include <OgreRay.h>
 #include <OgreVector3.h>
 
+#include <memory>
+#include <algorithm>
+
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #endif
@@ -63,9 +68,10 @@ namespace OgreView
 namespace Camera
 {
 
-MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera) :
-		mSceneManager(sceneManager), mCamera(camera), mCameraMount(0), mWindow(window), mClosestPickingDistance(10000), mCameraRaySceneQuery(0), mAvatarTerrainCursor(new AvatarTerrainCursor(camera)), mCameraOrientationChangedThisFrame(false), mMovementProvider(0), mCameraSettings(new CameraSettings), mConfigListenerContainer(new ConfigListenerContainer())
+MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera, Terrain::ITerrainAdapter& terrainAdapter) :
+		mSceneManager(sceneManager), mCamera(camera), mCameraMount(0), mWindow(window), mClosestPickingDistance(10000), mCameraRaySceneQuery(0), mAvatarTerrainCursor(new AvatarTerrainCursor(camera, terrainAdapter)), mCameraOrientationChangedThisFrame(false), mMovementProvider(0), mCameraSettings(new CameraSettings), mConfigListenerContainer(new ConfigListenerContainer()), mTerrainAdapter(terrainAdapter)
 {
+	mTerrainResultWorldFragment.fragmentType = Ogre::SceneQuery::WFT_SINGLE_INTERSECTION;
 
 	mCamera.setAutoAspectRatio(true);
 
@@ -183,6 +189,8 @@ void MainCamera::markCameraNodeAsDirty()
 
 void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs)
 {
+	//TODO performance: use Ogre::RaySceneQueryListener so not all results have to be returned to increase performance
+
 	//Handle different pick requests differently.
 	//For mouse press and hover events, we want the listeners to perform a line check to see what's being picked.
 	//For all other pressed we however want the listeners to act on the previous results.
@@ -190,19 +198,19 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 	//between pressing the mouse button and getting a selection menu, we want to present the items which were under the
 	//mouse at the time the mouse button was pressed.
 	if (mousePickerArgs.pickType == MPT_PRESS || mousePickerArgs.pickType == MPT_HOVER) {
-		//now check the entity picking
-		Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
+		// First, calculate the ray between camera and screen coordinates
+		Ogre::Ray cameraRay = getCamera().getCameraToViewportRay(mouseX, mouseY);
 		bool continuePicking = true;
 		unsigned int queryMask = 0;
 
 		WorldPickListenersStore participatingListeners;
-		for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
+		for (auto listener : mPickListeners) {
 			bool willParticipate = false;
 			unsigned int pickerQueryMask = 0;
-			(*I)->initializePickingContext(willParticipate, pickerQueryMask, mousePickerArgs);
+			listener->initializePickingContext(willParticipate, pickerQueryMask, mousePickerArgs);
 			if (willParticipate) {
 				queryMask |= pickerQueryMask;
-				participatingListeners.push_back(*I);
+				participatingListeners.push_back(listener);
 			}
 		}
 
@@ -210,17 +218,34 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 		if (participatingListeners.size() != 0) {
 			mCameraRaySceneQuery->setQueryMask(queryMask);
 			// Start a new ray query
-			Ogre::Ray cameraRay = getCamera().getCameraToViewportRay(mouseX, mouseY);
-
 			mCameraRaySceneQuery->setRay(cameraRay);
 			mCameraRaySceneQuery->execute();
+			//now check the entity picking
+			Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
+
+			// Manually add results for terrain since they have to be queried in a different way
+			std::pair<bool, Ogre::Vector3> terrainIntersectionResult = mTerrainAdapter.rayIntersects(cameraRay);
+
+			if (terrainIntersectionResult.first) {
+				Ogre::RaySceneQueryResultEntry terrainResultEntry;
+
+				mTerrainResultWorldFragment.singleIntersection = terrainIntersectionResult.second;
+
+				terrainResultEntry.worldFragment = &mTerrainResultWorldFragment;
+				terrainResultEntry.distance = terrainIntersectionResult.second.distance(cameraRay.getOrigin());
+				terrainResultEntry.movable = nullptr;
+
+				// Insert at correct position because the listeners expect results sorted by distance
+				auto insertion_iterator = std::lower_bound(queryResult.begin(), queryResult.end(), terrainResultEntry);
+				queryResult.insert(insertion_iterator, terrainResultEntry);
+			}
 
 			Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin();
 			Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end();
 			if (rayIterator != rayIterator_end) {
 				for (; rayIterator != rayIterator_end && continuePicking; rayIterator++) {
-					for (WorldPickListenersStore::iterator I = participatingListeners.begin(); I != participatingListeners.end(); ++I) {
-						(*I)->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
+					for (auto listener : participatingListeners) {
+						listener->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
 						if (!continuePicking) {
 							break;
 						}
@@ -228,17 +253,15 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 				}
 			}
 
-			for (WorldPickListenersStore::iterator I = participatingListeners.begin(); I != participatingListeners.end(); ++I) {
-				(*I)->endPickingContext(mousePickerArgs);
+			for (auto listener : participatingListeners) {
+				listener->endPickingContext(mousePickerArgs);
 			}
 		}
 	} else {
 		for (auto listener : mPickListeners) {
 			listener->processDelayedPick(mousePickerArgs);
 		}
-
 	}
-
 }
 
 void MainCamera::setClosestPickingDistance(Ogre::Real distance)
@@ -384,8 +407,7 @@ void MainCamera::removeWorldPickListener(IWorldPickListener* worldPickListener)
 
 void MainCamera::createRayQueries(Ogre::SceneManager& sceneManager)
 {
-	mCameraRaySceneQuery = sceneManager.createRayQuery(Ogre::Ray(), 0);
-	mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+	mCameraRaySceneQuery = sceneManager.createRayQuery(Ogre::Ray());
 	mCameraRaySceneQuery->setSortByDistance(true);
 }
 

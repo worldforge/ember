@@ -78,6 +78,9 @@ void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String 
 	}
 }
 
+void MeshSerializerListener::processMeshCompleted(Ogre::Mesh*)
+{
+}
 
 }
 }

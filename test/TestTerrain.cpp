@@ -11,9 +11,12 @@
 #include "components/ogre/terrain/TerrainDefPoint.h"
 #include "components/ogre/terrain/TerrainInfo.h"
 #include "components/ogre/terrain/TerrainMod.h"
+#include "components/ogre/terrain/TerrainPageSurfaceCompiler.h"
+#include "components/ogre/ILightning.h"
 
 #include "framework/Exception.h"
 #include "framework/TimeFrame.h"
+#include "framework/MainLoopController.h"
 
 #include <Eris/Entity.h>
 
@@ -37,12 +40,44 @@ using namespace Ember::Domain;
 namespace Ember
 {
 
+class DummyTerrainTechnique : public TerrainPageSurfaceCompilerTechnique
+{
+    virtual bool prepareMaterial()
+    {
+    	return true;
+    }
+
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
+    {
+    	return true;
+    }
+
+    virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
+    {
+    	return true;
+    }
+
+
+	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const
+    {
+    	return "";
+    }
+
+
+	virtual bool requiresPregenShadow() const
+	{
+    	return false;
+    }
+
+
+};
+
 class DummyCompilerTechniqueProvider: public ICompilerTechniqueProvider
 {
 public:
 	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
 	{
-		return 0;
+		return new DummyTerrainTechnique();
 	}
 
 };
@@ -75,6 +110,33 @@ public:
 		pageReady = true;
 	}
 
+	virtual bool isPageShown() const
+	{
+		return true;
+	}
+
+
+};
+
+class DummyLightning : public ILightning {
+public:
+	/**
+	 * @brief Gets the direction of the main light, in world space.
+	 * @returns The direction of the main light, in world space.
+	 */
+	virtual WFMath::Vector<3> getMainLightDirection() const
+	{
+		return WFMath::Vector<3>::ZERO();
+	}
+
+	/**
+	 * @brief Gets the default ambient light colour.
+	 * @returns The default ambient light colour.
+	 */
+	virtual Ogre::ColourValue getAmbientLightColour() const
+	{
+		return Ogre::ColourValue::Black;
+	}
 };
 
 class DummyEntity: public Eris::Entity
@@ -246,7 +308,7 @@ public:
 	TestTerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
 		Terrain::TerrainHandler(pageIndexSize, compilerTechniqueProvider)
 	{
-
+		mLightning = new DummyLightning();
 	}
 
 	Mercator::Terrain* getTerrain()
@@ -419,6 +481,8 @@ public:
 	void testApplyMod()
 	{
 
+		bool shouldQuit, pollEris;
+		MainLoopController loopController(shouldQuit, pollEris);
 		Ogre::Root root;
 
 		TerrainSetup terrainSetup;

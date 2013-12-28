@@ -32,12 +32,14 @@
 #include "../Avatar.h"
 #include "../OgreInfo.h"
 #include "../terrain/Map.h"
-#include "../terrain/ISceneManagerAdapter.h"
+#include "../terrain/ITerrainAdapter.h"
 #include "../terrain/ITerrainObserver.h"
 
 #include "framework/LoggingInstance.h"
 
 #include <Ogre.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
 
 #include <CEGUI/Image.h>
 #include <CEGUI/Rect.h>
@@ -82,8 +84,8 @@ void DelayedCompassRenderer::queueRendering()
 	mRenderNextFrame = true;
 }
 
-Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ISceneManagerAdapter& sceneManagerAdapter) :
-		mMap(new Map(sceneManager)), mCompassImpl(compassImpl), mSceneManagerAdapter(sceneManagerAdapter), mTerrainObserver(sceneManagerAdapter.createObserver()), mDelayedRenderer(*this)
+Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& terrainAdapter) :
+		mMap(new Map(sceneManager)), mCompassImpl(compassImpl), mTerrainAdapter(terrainAdapter), mTerrainObserver(terrainAdapter.createObserver()), mDelayedRenderer(*this)
 {
 	mMap->initialize();
 	if (compassImpl) {
@@ -96,7 +98,7 @@ Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Te
 
 Compass::~Compass()
 {
-	mSceneManagerAdapter.destroyObserver(mTerrainObserver);
+	mTerrainAdapter.destroyObserver(mTerrainObserver);
 }
 
 Terrain::Map& Compass::getMap()

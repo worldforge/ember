@@ -47,10 +47,10 @@ namespace Ogre {
         @param createParams If any parameters are required to create an instance,
             they should be supplied here as name / value pairs
         */
-//        ResourcePtr create(const std::string& name, const std::string& group, 
+//        ResourcePtr createResource(const std::string& name, const std::string& group, 
 //            bool isManual = false, ManualResourceLoader* loader = 0, 
  //           const NameValuePairList* createParams = 0);
-        Ogre::ResourcePtr create(const std::string& name, const std::string& group);
+        Ogre::ResourcePtr createResource(const std::string& name, const std::string& group);
 
 		/** Caused all currently loaded resources to be reloaded.
 		@remarks
@@ -133,7 +133,8 @@ namespace Ogre {
 
         /** Retrieves a pointer to a resource by name, or null if the resource does not exist.
         */
-        Ogre::ResourcePtr getByName(const std::string& name);
+        Ogre::ResourcePtr getResourceByName(const std::string& name);
+
         /** Retrieves a pointer to a resource by handle, or null if the resource does not exist.
         */
         Ogre::ResourcePtr getByHandle(Ogre::ResourceHandle handle);

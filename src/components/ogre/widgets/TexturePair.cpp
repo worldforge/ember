@@ -36,7 +36,7 @@ TexturePair::TexturePair(const Ogre::TexturePtr& ogreTexture, const CEGUI::Image
 }
 
 TexturePair::TexturePair() :
-	mOgreTexture(0), mTextureImage(0)
+	mTextureImage(0)
 {
 }
 

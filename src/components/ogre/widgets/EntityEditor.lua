@@ -128,7 +128,7 @@ EntityEditor = {
 							wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
 							local container = self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 							--by adding the window again we make sure that it's at the bottom of the child window list
-							wrapper.outercontainer:addChild(wrapper.container)
+							CEGUI.toSequentialLayoutContainer(wrapper.outercontainer):swapChildren(wrapper.container, container)
 
 							--due to a bug in CEGUI (at least in 0.7.9) we need to force a re-layout
 							--and notify screen area changed. Else the last window in the layout 
@@ -218,9 +218,9 @@ EntityEditor = {
 						if adapterWrapper then
 							wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 							local newPrototype = {}
-							self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
-							--by adding the window again we make sure that it's at the bottom of the child window list
-							wrapper.outercontainer:addChild(wrapper.container)
+							local container = self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+							--make sure we always keep the "new item" window at the bottom
+							CEGUI.toSequentialLayoutContainer(wrapper.outercontainer):swapChildren(wrapper.container, container)
 							
 							--due to a bug in CEGUI (at least in 0.7.9) we need to force a re-layout
 							--and notify screen area changed. Else the last window in the layout 
@@ -378,9 +378,9 @@ EntityEditor = {
 						if adapterWrapper then
 							local newPrototype = {}
 							wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-							self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
-							--by adding the window again we make sure that it's at the bottom of the child window list
-							wrapper.outercontainer:addChild(wrapper.container)
+							local container = self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+							--make sure we always keep the "new item" window at the bottom
+							CEGUI.toSequentialLayoutContainer(wrapper.outercontainer):swapChildren(wrapper.container, container)
 						end
 					end
 				end

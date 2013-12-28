@@ -36,19 +36,18 @@
 #include <OgreFrameListener.h>
 #include <sigc++/trackable.h>
 
+namespace Ogre
+{
+class SceneManagerFactory;
+}
+
 namespace Ember
 {
 namespace OgreView
 {
 
-class EmberPagingSceneManager;
-class EmberPagingSceneManagerFactory;
 class MeshSerializerListener;
 
-namespace Lod
-{
-class EmberOgreRoot;
-}
 /**
  @brief A class used for setting up Ogre.
 
@@ -82,10 +81,10 @@ public:
 	Ogre::RenderWindow* getRenderWindow() const;
 
 	/**
-	 * @brief Chooses and sets up the correct scene manager.
-	 * @return The newly created scene manager.
+	 * @brief Gets the ogre overlay system, which is initialized in createOgreSystem.
+	 * @return The ogre overlay system, nullptr if not initialized.
 	 */
-	Ogre::SceneManager* chooseSceneManager();
+	Ogre::OverlaySystem* getOverlaySystem() const;
 
 	/**
 	 * @brief Shuts down the Ogre system.
@@ -104,7 +103,7 @@ private:
 	/**
 	 * @brief Holds the Ogre root object.
 	 */
-	Lod::EmberOgreRoot* mRoot;
+	Ogre::Root* mRoot;
 
 	/**
 	 * @brief Holds the main render window.
@@ -114,12 +113,17 @@ private:
 	/**
 	 We'll use our own scene manager factory.
 	 */
-	EmberPagingSceneManagerFactory* mSceneManagerFactory;
+	Ogre::SceneManagerFactory* mSceneManagerFactory;
 
 	/**
 	 * @brief Provides the ability to use relative paths for skeletons in meshes.
 	 */
 	MeshSerializerListener* mMeshSerializerListener;
+
+	/**
+	 * @brief The Ogre overlay system
+	 */
+	Ogre::OverlaySystem* mOverlaySystem;
 
 #ifdef BUILD_WEBEMBER
 	/**
@@ -153,6 +157,11 @@ private:
 inline Ogre::RenderWindow* OgreSetup::getRenderWindow() const
 {
 	return mRenderWindow;
+}
+
+inline Ogre::OverlaySystem* OgreSetup::getOverlaySystem() const
+{
+	return mOverlaySystem;
 }
 
 }

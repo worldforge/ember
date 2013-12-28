@@ -41,12 +41,22 @@ class ShaderPass;
  *
  * @brief A shader based technique.
  *
- * This technique will use shaders for drawing the terrain. The coverage for the different layers will be combined into one combined texture, where each channel represents one layer.
+ * This technique will use shaders for drawing the terrain. The blend map for the different layers will be combined into one combined texture, where each channel represents one layer.
  *
 */
 class Shader : public Base
 {
 public:
+
+	/**
+	 * @brief The alias name for the normal texture used in shaders.
+	 */
+	static const std::string NORMAL_TEXTURE_ALIAS;
+
+	/**
+	 * @brief The alias name for the composite map texture used in shaders.
+	 */
+	static const std::string COMPOSITE_MAP_ALIAS;
 
     /**
      * @brief Ctor.
@@ -55,8 +65,9 @@ public:
      * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
      * @param terrainPageShadow An optional shadow.
      * @param sceneManager The scene manager which will hold the terrain.
+	 * @param useNormalMapping Whether to use normal mapping.
      */
-	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager);
+	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool useNormalMapping = false);
 
 	/**
 	 * @brief Dtor.
@@ -64,7 +75,9 @@ public:
     virtual ~Shader();
 
     virtual bool prepareMaterial();
-    virtual bool compileMaterial(Ogre::MaterialPtr material);
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
+
+	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
 
 protected:
 	typedef std::vector<ShaderPass*> PassStore;
@@ -84,7 +97,42 @@ protected:
 	 */
 	PassStore mPasses;
 
-	virtual ShaderPass* addPass();
+	/**
+	 * @brief A collection of passes for the material, only used if normal mapping enabled.
+	 */
+	PassStore mPassesNormalMapped;
+
+	/**
+	 * @brief Whether to use normal mapping.
+	 */
+	bool mUseNormalMapping;
+
+	/**
+	 * @brief Whether to use a composite map.
+	 *
+	 * The composite map should only be used if many layers are active.
+	 * The downside to using a composite map is that it uses a lot of texture memory. Hence it should only
+	 * be activated when there's a significant performance boost from using it.
+	 */
+	bool mUseCompositeMap;
+
+	/**
+	 * @brief Adds a new pass to the list of passes.
+	 * @return The new pass.
+	 */
+	ShaderPass* addPass();
+
+	/**
+	 * @brief Adds a new normal mapped pass to the list of normal mapped passes.
+	 * @return The new pass.
+	 */
+	ShaderPass* addPassNormalMapped();
+
+	/**
+	 * @brief Build all required passes.
+	 * @param normalMapped Whether the passes should use normal mapped shaders.
+	 */
+	void buildPasses(bool normalMapped);
 
 	/**
 	 * @brief Adds the first layer.

@@ -91,6 +91,8 @@ public:
 
 	const Ogre::MaterialPtr getMaterial() const;
 
+	const Ogre::MaterialPtr getCompositeMapMaterial() const;
+
 	/**
 	 * @brief Recompiles the material.
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
@@ -101,12 +103,21 @@ public:
 
 	TerrainPageSurfaceLayer* updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate);
 
+	/**
+	 * @brief Gets the precomputed shadow attached to this surface.
+	 *
+	 * This is only of interest if the fixed function pipeline is used, since that requries precomputed shadows.
+	 * @return The shadow instance.
+	 */
+	TerrainPageShadow* getShadow() const;
+
 protected:
 
 	std::string mMaterialName;
 	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::unique_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
+	TerrainPageShadow* mShadow;
 
 };
 

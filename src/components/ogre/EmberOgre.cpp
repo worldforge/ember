@@ -27,7 +27,6 @@
 #endif
 
 #include "EmberOgre.h"
-#include "lod/QueuedProgressiveMeshGenerator.h"
 #include "lod/PMInjectorSignaler.h"
 
 // Headers to stop compile problems from headers
@@ -117,6 +116,8 @@
 #include <Eris/View.h>
 
 #include <OgreSceneManager.h>
+#include <OgreOverlaySystem.h>
+#include <OgreQueuedProgressiveMeshGenerator.h>
 
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
 
@@ -142,12 +143,12 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-		mInput(0), mOgreSetup(nullptr), mRoot(0), mSceneMgr(0), mWindow(0), mScreen(0), mShaderManager(0), mShaderDetailManager(nullptr), mAutomaticGraphicsLevelManager(nullptr), mGeneralCommandMapper(new InputCommandMapper("general")), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
+		mInput(0), mOgreSetup(nullptr), mRoot(0), mSceneManagerOutOfWorld(0), mWindow(0), mScreen(0), mShaderManager(0), mShaderDetailManager(nullptr), mAutomaticGraphicsLevelManager(nullptr), mGeneralCommandMapper(new InputCommandMapper("general")), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
 		//mJesus(0),
 		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
-		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mPMWorker(0), mPMInjector(0)
+		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mCameraOutOfWorld(0), mWorld(0), mPMInjectorSignaler(0)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -198,15 +199,16 @@ EmberOgre::~EmberOgre()
 	delete mScreen;
 
 	if (mOgreSetup.get()) {
+		// Deregister the overlay system before deleting it in OgreSetup::shutdown
+		if(mSceneManagerOutOfWorld) {
+			mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
+		}
 		mOgreSetup->shutdown();
 		mOgreSetup.reset();
 		EventOgreDestroyed();
 	}
 
-	// I don't know how to flush the Ogre::WorkQueue safely so we need to delete these
-	// after the destructor of Ogre::Root to make sure the queue is flushed and we can delete it safely.
-	delete mPMWorker;
-	delete mPMInjector;
+	delete mPMInjectorSignaler;
 
 	//Ogre is destroyed already, so we can't deregister this: we'll just destroy it
 	delete mLogObserver;
@@ -330,6 +332,19 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 
 	mEntityRecipeManager = new Authoring::EntityRecipeManager();
 
+	// Create the scene manager used for the main menu and load screen
+	mSceneManagerOutOfWorld = mRoot->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
+
+	//create the camera for the main menu and load screen
+	mCameraOutOfWorld = mSceneManagerOutOfWorld->createCamera("MainMenuCamera");
+	Ogre::Viewport* viewPort = mWindow->addViewport(mCameraOutOfWorld);
+	//set the background colour to black
+	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
+	mCameraOutOfWorld->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
+
+	// Register the overlay system so that GUI overlays are shown
+	mSceneManagerOutOfWorld->addRenderQueueListener(mOgreSetup->getOverlaySystem());
+
 	//Create a resource loader which loads all the resources we need.
 	mResourceLoader = new OgreResourceLoader();
 	mResourceLoader->initialize();
@@ -338,18 +353,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool)configSrv.getValue("media", "preloadmedia");
 	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool)configSrv.getValue("wfut", "enabled");
 
-
 	//start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	mResourceLoader->loadBootstrap();
-
-	mSceneMgr = mOgreSetup->chooseSceneManager();
-
-	//create the main camera, we will of course have a couple of different cameras, but this will be the main one
-	mOgreMainCamera = mSceneMgr->createCamera("MainCamera");
-	Ogre::Viewport* viewPort = mWindow->addViewport(mOgreMainCamera);
-	//set the background colour to black
-	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
-	mOgreMainCamera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
 
 	mScreen = new Screen(*mWindow);
 
@@ -362,8 +367,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		Gui::LoadingBar loadingBar(*mWindow, mainLoopController);
 
 		// Needed for QueuedProgressiveMeshGenerator.
-		mPMWorker = new Lod::PMWorker();
-		mPMInjector = new Lod::PMInjectorSignaler();
+		mPMInjectorSignaler = new Lod::PMInjectorSignaler();
+		Ogre::PMInjector::getSingleton().setInjectorListener(mPMInjectorSignaler);
 
 		Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
 		if (useWfut) {
@@ -380,9 +385,9 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		loadingBar.setVersionText(std::string("Version ") + VERSION);
 
 		// Turn off rendering of everything except overlays
-		mSceneMgr->clearSpecialCaseRenderQueues();
-		mSceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
-		mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
+		mSceneManagerOutOfWorld->clearSpecialCaseRenderQueues();
+		mSceneManagerOutOfWorld->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
+		mSceneManagerOutOfWorld->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
 
 		if (useWfut) {
 			S_LOG_INFO("Updating media.");
@@ -434,8 +439,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		//setupJesus();
 
 		// Back to full rendering
-		mSceneMgr->clearSpecialCaseRenderQueues();
-		mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
+		mSceneManagerOutOfWorld->clearSpecialCaseRenderQueues();
+		mSceneManagerOutOfWorld->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
 
 		mMaterialEditor = new Authoring::MaterialEditor();
 
@@ -605,7 +610,7 @@ void EmberOgre::EntityFactory_BeingDeleted()
 	mWorld = 0;
 	EventWorldDestroyed.emit();
 	mWindow->removeAllViewports();
-	mWindow->addViewport(mOgreMainCamera);
+	mWindow->addViewport(mCameraOutOfWorld);
 
 	//This is an excellent place to force garbage collection of all scripting environments.
 	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();

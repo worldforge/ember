@@ -32,7 +32,7 @@ namespace Lod
 {
 
 LodDistance::LodDistance() :
-	mReductionMethod(LodLevel::VRM_PROPORTIONAL),
+	mReductionMethod(Ogre::LodLevel::VRM_PROPORTIONAL),
 	mReductionValue(0.5f)
 {
 
@@ -110,46 +110,6 @@ LodDistance& LodDefinition::createDistance(Ogre::Real distance)
 {
 	assert(mManualLod.find(distance) == mManualLod.end());
 	return mManualLod[distance];
-}
-
-LodDefinitionPtr::LodDefinitionPtr(const Ogre::ResourcePtr& r) :
-	Ogre::SharedPtr<LodDefinition>()
-{
-	// lock & copy other mutex pointer
-	OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
-	{
-		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME);
-		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME);
-		pRep = static_cast<LodDefinition*>(r.getPointer());
-		pUseCount = r.useCountPointer();
-		if (pUseCount) {
-			++(*pUseCount);
-		}
-	}
-}
-
-LodDefinitionPtr& LodDefinitionPtr::operator= (const Ogre::ResourcePtr& r)
-{
-	if (pRep == static_cast<LodDefinition*>(r.getPointer())) {
-		return *this;
-	}
-	release();
-	// lock & copy other mutex pointer
-	OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
-	{
-		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME);
-		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME);
-		pRep = static_cast<LodDefinition*>(r.getPointer());
-		pUseCount = r.useCountPointer();
-		if (pUseCount) {
-			++(*pUseCount);
-		}
-	} else {
-		// RHS must be a null pointer
-		assert(r.isNull() && "RHS must be null if it has no mutex!");
-		setNull();
-	}
-	return *this;
 }
 
 }

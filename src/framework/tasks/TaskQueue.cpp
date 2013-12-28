@@ -69,14 +69,16 @@ void TaskQueue::deactivate()
 	}
 }
 
-void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
+bool TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
 {
 	std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
 	if (mActive) {
 		mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
 		mUnprocessedQueueCond.notify_one();
+		return true;
 	} else {
-		S_LOG_WARNING("Tried to enqueue a task on a task queue which isn't active (i.e. is shutting down).");
+		S_LOG_WARNING("Tried to enqueue the task " << task->getName() << " on a task queue which isn't active (i.e. is shutting down).");
+		return false;
 	}
 
 }
@@ -149,6 +151,12 @@ void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
 		}
 	}
 }
+
+bool TaskQueue::isActive() const
+{
+	return mActive;
+}
+
 
 }
 

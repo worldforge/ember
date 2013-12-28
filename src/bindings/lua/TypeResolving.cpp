@@ -31,6 +31,7 @@
 #include "components/ogre/EntityWorldPickListener.h"
 
 
+
 namespace Ember
 {
 
@@ -42,7 +43,7 @@ namespace Lua
  */
 
 template <>
-const char* resolveLuaTypename<const Ember::OgreView::Lod::LodConfig>(){return "Ember::OgreView::Lod::LodConfig";}
+const char* resolveLuaTypename<const Ogre::LodConfig>(){return "Ogre::LodConfig";}
 template <>
 const char* resolveLuaTypename<const Ember::OgreView::EmberEntity>(){return "Ember::OgreView::EmberEntity";}
 template <>

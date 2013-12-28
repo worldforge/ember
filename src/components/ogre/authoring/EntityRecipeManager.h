@@ -51,10 +51,13 @@ public:
 	 */
 	virtual ~EntityRecipeManager();
 
-	/**
-	 * Creates new resource.
-	 */
-	virtual Ogre::ResourcePtr create(const Ogre::String& name, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0, const Ogre::NameValuePairList* createParams = 0);
+	/// Create a new EntityRecipe
+	/// @see ResourceManager::createResource
+	EntityRecipePtr create (const Ogre::String& name, const Ogre::String& group,
+			bool isManual = false, Ogre::ManualResourceLoader* loader = 0,
+			const Ogre::NameValuePairList* createParams = 0);
+
+	virtual Ogre::ResourcePtr createResource(const Ogre::String& name, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0, const Ogre::NameValuePairList* createParams = 0);
 
 	/**
 	 * Parse a script file.

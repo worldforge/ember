@@ -58,11 +58,18 @@ EntityRecipeManager::~EntityRecipeManager()
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
-Ogre::ResourcePtr EntityRecipeManager::create(const Ogre::String& name, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
+EntityRecipePtr EntityRecipeManager::create (const Ogre::String& name, const Ogre::String& group,
+        bool isManual, Ogre::ManualResourceLoader* loader,
+        const Ogre::NameValuePairList* createParams)
 {
-	Ogre::ResourcePtr ret = getByName(name);
+    return createResource(name, group, isManual, loader, createParams).staticCast<EntityRecipe>();
+}
+
+Ogre::ResourcePtr EntityRecipeManager::createResource(const Ogre::String& name, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
+{
+	Ogre::ResourcePtr ret = getResourceByName(name);
 	if (ret.isNull()) {
-		return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
+		return Ogre::ResourceManager::createResource(name, group, isManual, loader, createParams);
 	}
 	S_LOG_WARNING("EntityRecipe with name " << name << " already exists.");
 	return Ogre::ResourcePtr();

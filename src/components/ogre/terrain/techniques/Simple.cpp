@@ -29,6 +29,7 @@
 #include "components/ogre/terrain/TerrainPageGeometry.h"
 #include "components/ogre/terrain/TerrainPageShadow.h"
 #include "components/ogre/terrain/OgreImage.h"
+
 #include <OgreTechnique.h>
 #include <OgrePass.h>
 #include <OgreTextureUnitState.h>
@@ -48,39 +49,59 @@ namespace Techniques
 {
 
 Simple::Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
-	Base(geometry, terrainPageSurfaces, terrainPageShadow)
+		Base(geometry, terrainPageSurfaces, terrainPageShadow), mLightingImage(0)
 {
 
+}
+
+Simple::~Simple()
+{
+	for (auto& layer : mLayers) {
+		delete layer.blendMap;
+	}
+	delete mLightingImage;
 }
 
 bool Simple::prepareMaterial()
 {
-	return true;
-}
-
-bool Simple::compileMaterial(Ogre::MaterialPtr material)
-{
-	material->removeAllTechniques();
-	Ogre::Technique* technique = material->createTechnique();
-	for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
-		const TerrainPageSurfaceLayer* surfaceLayer = I->second;
-		if (I == mTerrainPageSurfaces.begin()) {
-			Ogre::Pass* pass = technique->createPass();
-			pass->setLightingEnabled(false);
-			//add the first layer of the terrain, no alpha or anything
-			Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-			textureUnitState->setTextureScale(1.0f / surfaceLayer->getScale(), 1.0f / surfaceLayer->getScale());
-			textureUnitState->setTextureName(surfaceLayer->getDiffuseTextureName());
-			textureUnitState->setTextureCoordSet(0);
-		} else {
+	for (auto entry : mTerrainPageSurfaces) {
+		auto surfaceLayer = entry.second;
+		if (surfaceLayer != mTerrainPageSurfaces.begin()->second) {
 			if (surfaceLayer->intersects(*mGeometry)) {
-				addPassToTechnique(*mGeometry, technique, surfaceLayer);
+				mLayers.emplace_back(Layer { *surfaceLayer, new OgreImage(new Image::ImageBuffer(mPage.getBlendMapSize(), 1)) });
+				OgreImage* image = mLayers.back().blendMap;
+				image->reset();
+				surfaceLayer->fillImage(*mGeometry, *image, 0);
 			}
 		}
 	}
-	if (mTerrainPageShadow) {
-		addShadow(technique, mTerrainPageShadow, material);
+	return true;
+}
+
+bool Simple::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
+{
+	material->removeAllTechniques();
+	Ogre::Technique* technique = material->createTechnique();
+	if (!mTerrainPageSurfaces.empty()) {
+		//First add a base pass
+		auto surfaceLayer = mTerrainPageSurfaces.begin()->second;
+		Ogre::Pass* pass = technique->createPass();
+		pass->setLightingEnabled(false);
+		Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
+		textureUnitState->setTextureScale(1.0f / surfaceLayer->getScale(), 1.0f / surfaceLayer->getScale());
+		textureUnitState->setTextureName(surfaceLayer->getDiffuseTextureName());
+		textureUnitState->setTextureCoordSet(0);
+
+		for (auto& layer : mLayers) {
+			addPassToTechnique(*mGeometry, technique, layer, managedTextures);
+		}
 	}
+	if (mTerrainPageShadow) {
+		addShadow(technique, mTerrainPageShadow, material, managedTextures);
+	}
+
+//	addLightingPass(technique, managedTextures);
+
 	material->load();
 	if (material->getNumSupportedTechniques() == 0) {
 		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
@@ -89,16 +110,57 @@ bool Simple::compileMaterial(Ogre::MaterialPtr material)
 	return true;
 }
 
-void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material)
+void Simple::addLightingPass(Ogre::Technique* technique, std::set<std::string>& managedTextures) const
+{
+	Ogre::Pass* lightingPass = technique->createPass();
+
+	lightingPass->setSceneBlending(Ogre::SBT_MODULATE);
+	lightingPass->setLightingEnabled(false);
+
+	Ogre::TextureUnitState * textureUnitStateSplat = lightingPass->createTextureUnitState();
+
+	//we need an unique name for our alpha texture
+	std::stringstream lightingTextureNameSS;
+	lightingTextureNameSS << technique->getParent()->getName() << "_lighting";
+	const Ogre::String lightingTextureName(lightingTextureNameSS.str());
+
+	Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(lightingTextureName));
+	if (texture.isNull()) {
+		texture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(lightingTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getBlendMapSize(), mPage.getBlendMapSize(), 1, Ogre::PF_L8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+		managedTextures.insert(texture->getName());
+	}
+
+	Ogre::Image ogreImage;
+	ogreImage.loadDynamicImage(const_cast<unsigned char*>(mLightingImage->getData()), mLightingImage->getResolution(), mLightingImage->getResolution(), 1, Ogre::PF_L8);
+
+	texture->loadImage(ogreImage);
+
+	//blit the whole image to the hardware buffer
+	Ogre::PixelBox sourceBox(ogreImage.getPixelBox());
+	//blit for each mipmap
+	for (unsigned int i = 0; i <= texture->getNumMipmaps(); ++i) {
+		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
+		hardwareBuffer->blitFromMemory(sourceBox);
+	}
+
+	textureUnitStateSplat->setTextureName(texture->getName());
+
+	textureUnitStateSplat->setTextureCoordSet(0);
+	textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
+
+}
+
+void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
 {
 	Ogre::Pass* shadowPass = technique->createPass();
 
 	shadowPass->setSceneBlending(Ogre::SBT_MODULATE);
 	shadowPass->setLightingEnabled(false);
-	shadowPass->setFog(true, Ogre::FOG_NONE);
+//	shadowPass->setFog(true, Ogre::FOG_NONE);
 
 	Ogre::TextureUnitState * textureUnitStateSplat = shadowPass->createTextureUnitState();
-	Ogre::TexturePtr texture = updateShadowTexture(material, terrainPageShadow);
+	Ogre::TexturePtr texture = updateShadowTexture(material, terrainPageShadow, managedTextures);
 	textureUnitStateSplat->setTextureName(texture->getName());
 
 	textureUnitStateSplat->setTextureCoordSet(0);
@@ -106,16 +168,14 @@ void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terr
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 }
 
-Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow)
+Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow, std::set<std::string>& managedTextures) const
 {
-	//we need an unique name for our alpha texture
-	std::stringstream shadowTextureNameSS;
-	shadowTextureNameSS << material->getName() << "_shadow";
-	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
+	auto shadowTextureName = getShadowTextureName(material);
 
-	Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr> (Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName));
+	Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName));
 	if (texture.isNull()) {
-		texture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getAlphaTextureSize(), mPage.getAlphaTextureSize(), 1, Ogre::PF_L8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+		texture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getBlendMapSize(), mPage.getBlendMapSize(), 1, Ogre::PF_L8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+		managedTextures.insert(texture->getName());
 	}
 
 	Ogre::Image ogreImage;
@@ -133,6 +193,14 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 
 	return texture;
 }
+
+std::string Simple::getShadowTextureName(const Ogre::MaterialPtr& material) const
+{
+	std::stringstream shadowTextureNameSS;
+	shadowTextureNameSS << material->getName() << "_shadow";
+	return shadowTextureNameSS.str();
+}
+
 
 // void TerrainPageSurfaceCompiler::addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& splatTextureName) {
 //
@@ -189,7 +257,7 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 //
 // }
 //
-Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer)
+Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const Layer& layer, std::set<std::string>& managedTextures) const
 {
 	//check if we instead can reuse the existing pass
 	// 	if (technique->getNumPasses() != 0) {
@@ -203,53 +271,54 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 	//
 	// 	}
 
-	OgreImage ogreImage(new Image::ImageBuffer(mPage.getAlphaTextureSize(), 1));
-	ogreImage.reset();
-	layer->fillImage(geometry, ogreImage, 0);
+	const OgreImage& ogreImage = *layer.blendMap;
 	Ogre::Image image;
 
-	image.loadDynamicImage(ogreImage.getData(), ogreImage.getResolution(), ogreImage.getResolution(), 1, Ogre::PF_A8);
+	image.loadDynamicImage(const_cast<unsigned char*>(ogreImage.getData()), ogreImage.getResolution(), ogreImage.getResolution(), 1, Ogre::PF_A8);
 
 	std::stringstream splatTextureNameSS;
 	splatTextureNameSS << "terrain_" << mPage.getWFPosition().x() << "_" << mPage.getWFPosition().y() << "_" << technique->getNumPasses();
 	const Ogre::String splatTextureName(splatTextureNameSS.str());
-	Ogre::TexturePtr coverageTexture;
+	Ogre::TexturePtr blendMapTexture;
 	if (Ogre::Root::getSingletonPtr()->getTextureManager()->resourceExists(splatTextureName)) {
-		coverageTexture = static_cast<Ogre::TexturePtr> (Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(splatTextureName));
-		coverageTexture->loadImage(image);
+		blendMapTexture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(splatTextureName));
+		blendMapTexture->loadImage(image);
 
-		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(coverageTexture->getBuffer());
+		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(blendMapTexture->getBuffer());
 		//blit the whole image to the hardware buffer
 		Ogre::PixelBox sourceBox(image.getPixelBox());
 		hardwareBuffer->blitFromMemory(sourceBox);
 	} else {
-		coverageTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadImage(splatTextureName, "General", image, Ogre::TEX_TYPE_2D, 0);
+		blendMapTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadImage(splatTextureName, "General", image, Ogre::TEX_TYPE_2D, 0);
+		managedTextures.insert(blendMapTexture->getName());
 	}
 
 	//we need to create the image, update it and then destroy it again (to keep the memory usage down)
-	//	if (layer->getCoverageTextureName() == "") {
+	//	if (layer->getBlendMapTextureName() == "") {
 	//		//no texture yet; let's create one
-	//		layer->createCoverageImage();
-	//		layer->updateCoverageImage(geometry);
+	//		layer->createBlendMapImage();
+	//		layer->updateBlendMapImage(geometry);
 	//		layer->createTexture();
 	//	} else {
 	//		//a texture exists, so we just need to update the image
-	//		layer->updateCoverageImage(geometry); //calling this will also update the texture since the method will blit the image onto it
+	//		layer->updateBlendMapImage(geometry); //calling this will also update the texture since the method will blit the image onto it
 	//	}
 
 	Ogre::Pass* pass = technique->createPass();
 
 	pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+	pass->setAmbient(1, 1, 1);
+	pass->setDiffuse(1, 1, 1, 1);
 	pass->setLightingEnabled(false);
 
 	Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-	textureUnitState->setTextureName(layer->getDiffuseTextureName());
+	textureUnitState->setTextureName(layer.surfaceLayer.getDiffuseTextureName());
 	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	textureUnitState->setTextureCoordSet(0);
-	textureUnitState->setTextureScale(1.0f / layer->getScale(), 1.0f / layer->getScale());
+	textureUnitState->setTextureScale(1.0f / layer.surfaceLayer.getScale(), 1.0f / layer.surfaceLayer.getScale());
 
 	Ogre::TextureUnitState * textureUnitStateSplat = pass->createTextureUnitState();
-	textureUnitStateSplat->setTextureName(coverageTexture->getName());
+	textureUnitStateSplat->setTextureName(blendMapTexture->getName());
 
 	textureUnitStateSplat->setTextureCoordSet(0);
 	textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
@@ -259,6 +328,12 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 	textureUnitStateSplat->setColourOperationEx(Ogre::LBX_SOURCE1, Ogre::LBS_CURRENT, Ogre::LBS_CURRENT);
 	return pass;
 
+}
+
+bool Simple::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
+{
+	// Does not support composite maps
+	return false;
 }
 
 }

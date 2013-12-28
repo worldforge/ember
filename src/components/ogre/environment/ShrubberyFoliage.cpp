@@ -36,7 +36,7 @@
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainLayerDefinition.h"
 
-#include "../terrain/ISceneManagerAdapter.h"
+#include "../terrain/ITerrainAdapter.h"
 
 #include "pagedgeometry/include/PagedGeometry.h"
 #include "pagedgeometry/include/BatchPage.h"
@@ -78,7 +78,7 @@ void ShrubberyFoliage::initialize()
 
 	mPagedGeometry->addDetailLevel<Forests::BatchPage>(64, 32);
 
-	mLoader = new FoliageLoader(mTerrainManager.getAdapter()->getSceneManager(), mTerrainManager, mTerrainLayerDefinition, mFoliageDefinition, *mPagedGeometry);
+	mLoader = new FoliageLoader(mTerrainManager.getScene().getSceneManager(), mTerrainManager, mTerrainLayerDefinition, mFoliageDefinition, *mPagedGeometry);
  	mPagedGeometry->setPageLoader(mLoader);
 
 	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();

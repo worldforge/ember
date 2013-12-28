@@ -61,7 +61,7 @@ protected:
 	ShaderManager& mShaderManager;
 
 	/**
-	 * @brief The scene manager which handles the terrain.
+	 * @brief The scene manager.
 	 */
 	Ogre::SceneManager& mSceneManager;
 };

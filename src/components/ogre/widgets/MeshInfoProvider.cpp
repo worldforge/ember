@@ -20,11 +20,9 @@
 #include "components/ogre/lod/LodManager.h"
 #include "components/ogre/lod/LodDefinition.h"
 #include "components/ogre/lod/LodDefinitionManager.h"
-#include "components/ogre/lod/EmberOgreMesh.h"
 #include <OgrePrerequisites.h>
 #include <OgreMesh.h>
 #include <OgreSubMesh.h>
-#include <OgreProgressiveMesh.h>
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
 #include <sstream>

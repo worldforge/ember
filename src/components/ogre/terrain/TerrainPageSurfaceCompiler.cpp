@@ -32,6 +32,8 @@
 #include "../ShaderManager.h"
 #include "../EmberOgre.h"
 
+#include <OgreTextureManager.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -39,23 +41,27 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainPageSurfaceCompiler::TerrainPageSurfaceCompiler(ICompilerTechniqueProvider& compilerTechniqueProvider)
-: mCompilerTechniqueProvider(compilerTechniqueProvider)
+TerrainPageSurfaceCompiler::TerrainPageSurfaceCompiler(ICompilerTechniqueProvider& compilerTechniqueProvider) :
+		mCompilerTechniqueProvider(compilerTechniqueProvider)
 {
 }
 
 TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 {
+	//Clean up any textures that were created for the specific page.
+	for (auto& textureName : mManagedTextures) {
+		Ogre::TextureManager::getSingleton().remove(textureName);
+	}
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
+TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
 {
-	return new TerrainPageSurfaceCompilationInstance(mCompilerTechniqueProvider.createTechnique(geometry, terrainPageSurfaces, terrainPageShadow));
+	return new TerrainPageSurfaceCompilationInstance(mCompilerTechniqueProvider.createTechnique(geometry, terrainPageSurfaces, terrainPageShadow), mManagedTextures);
 
 }
 
-TerrainPageSurfaceCompilationInstance::TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique)
-: mTechnique(technique)
+TerrainPageSurfaceCompilationInstance::TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique, std::set<std::string>& managedTextures) :
+		mTechnique(technique), mManagedTextures(managedTextures)
 {
 
 }
@@ -72,7 +78,44 @@ bool TerrainPageSurfaceCompilationInstance::prepare()
 
 bool TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material)
 {
-	return mTechnique->compileMaterial(material);
+	try {
+		bool result = mTechnique->compileMaterial(material, mManagedTextures);
+		if (!result) {
+			material->removeAllTechniques();
+		}
+		return result;
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when compiling material " << material->getName() <<
+				". It's probably in an invalid state and will be reset (with blank terrain pages as a probable result)." << ex);
+		material->removeAllTechniques();
+		return false;
+	}
+}
+
+bool TerrainPageSurfaceCompilationInstance::compileCompositeMap(Ogre::MaterialPtr material)
+{
+	try {
+		bool result = mTechnique->compileCompositeMapMaterial(material, mManagedTextures);
+		if (!result) {
+			material->removeAllTechniques();
+		}
+		return result;
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when compiling material " << material->getName() <<
+				". It's probably in an invalid state and will be reset (with blank terrain pages as a probable result)." << ex);
+		material->removeAllTechniques();
+		return false;
+	}
+}
+
+std::string TerrainPageSurfaceCompilationInstance::getShadowTextureName(const Ogre::MaterialPtr& material) const
+{
+	return mTechnique->getShadowTextureName(material);
+}
+
+bool TerrainPageSurfaceCompilationInstance::requiresPregenShadow() const
+{
+	return mTechnique->requiresPregenShadow();
 }
 
 }

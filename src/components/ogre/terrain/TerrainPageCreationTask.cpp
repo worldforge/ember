@@ -26,6 +26,7 @@
 #include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
+#include "framework/LoggingInstance.h"
 
 namespace Ember
 {
@@ -62,19 +63,15 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 	std::vector<WFMath::AxisBox<2>> areas;
 	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
-	context.executeTask(new GeometryUpdateTask(geometry, areas, mTerrainHandler, mTerrainHandler.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
+	context.executeTask(new GeometryUpdateTask(geometry, areas, mTerrainHandler, mTerrainHandler.getAllShaders(), mHeightMapBufferProvider, mHeightMap, mMainLightDirection));
 
 }
 
 void TerrainPageCreationTask::executeTaskInMainThread()
 {
 	if (mPage) {
-
+		S_LOG_VERBOSE("Adding loaded terrain page to TerrainHandler: " << "[" << mPage->getWFIndex().first << "|" << mPage->getWFIndex().second <<"]");
 		mTerrainHandler.addPage(mPage);
-
-		if (mBridge.get()) {
-			mBridge->terrainPageReady();
-		}
 	}
 }
 

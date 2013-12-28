@@ -48,7 +48,7 @@ public:
 	 */
 	ITerrainPageBridge() : mTerrainPage(0) {}
 	/**
-	 *    @brief Ctor.
+	 *    @brief Dtor.
 	 */
 	virtual ~ITerrainPageBridge() {}
 	
@@ -61,7 +61,7 @@ public:
 	virtual void updateTerrain(TerrainPageGeometry& geometry) = 0;
 	
 	/**
-	 *    @brief Notifies class in the ogre side about the page being ready (after being created or so).
+	 *    @brief Notifies class in the Ogre side about the page being ready (after being created or modified).
 	 */
 	virtual void terrainPageReady() = 0;
 	
@@ -72,17 +72,26 @@ public:
 	TerrainPage* getTerrainPage() const;
 
 	/**
-	 *    @brief Binds the bridge to a TerrainPage.
+	 * @brief Binds the bridge to a TerrainPage.
 	 * @param terrainPage 
 	 */
 	void bindToTerrainPage(TerrainPage* terrainPage);
 
 	/**
-	 *    @brief Unbinds from a TerrainPage.
+	 * @brief Unbinds from a TerrainPage.
 	 * Call this when the TerrainPage to which this bridge is connected to is destroyed. If not, you run the risk of segfaults since the bridge will still keep a pointer to the now deleted TerrainPage.
 	 */
 	void unbindFromTerrainPage();
 	
+	/**
+	 * @brief Returns true if the page is shown.
+	 *
+	 * The page might be in preparation stages and not actually shown to the user.
+	 * @return True if the page has finished loading and is shown.
+	 */
+	virtual bool isPageShown() const = 0;
+
+
 protected:
 
 

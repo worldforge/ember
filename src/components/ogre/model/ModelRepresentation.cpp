@@ -142,8 +142,8 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
 		}
 
 		//if we already have set up a collision object we must reload it
-		if (!mModel.getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(mModel.getUserAny()).get();
+		if (!mModel.getUserObjectBindings().getUserAny().isEmpty()) {
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(mModel.getUserObjectBindings().getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				userObject->getCollisionDetector()->reload();
 			}
@@ -225,7 +225,7 @@ void ModelRepresentation::connectEntities()
 	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
 	EmberEntityUserObject* userObject = new EmberEntityUserObject(getEntity(), collisionDetector);
-	getModel().setUserAny(Ogre::Any(EmberEntityUserObject::SharedPtr(userObject)));
+	getModel().getUserObjectBindings().setUserAny(Ogre::Any(EmberEntityUserObject::SharedPtr(userObject)));
 
 }
 
@@ -244,7 +244,7 @@ void ModelRepresentation::model_Reloaded()
 
 void ModelRepresentation::model_Resetting()
 {
-	mModel.setUserAny(Ogre::Any());
+	mModel.getUserObjectBindings().setUserAny(Ogre::Any());
 }
 
 void ModelRepresentation::processOutfit(const Atlas::Message::MapType&)
@@ -458,8 +458,8 @@ void ModelRepresentation::entity_TaskRemoved(Eris::Task*)
 void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize)
 {
 	if (visualization == "CollisionObject") {
-		if (!getModel().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(getModel().getUserAny()).get();
+		if (!getModel().getUserObjectBindings().getUserAny().isEmpty()) {
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(getModel().getUserObjectBindings().getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				userObject->getCollisionDetector()->setVisualize(visualize);
 			}
@@ -470,8 +470,8 @@ void ModelRepresentation::setVisualize(const std::string& visualization, bool vi
 bool ModelRepresentation::getVisualize(const std::string& visualization) const
 {
 	if (visualization == "CollisionObject") {
-		if (!getModel().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(getModel().getUserAny()).get();
+		if (!getModel().getUserObjectBindings().getUserAny().isEmpty()) {
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(getModel().getUserObjectBindings().getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				return userObject->getCollisionDetector()->getVisualize();
 			}

@@ -21,10 +21,17 @@
 #include "TerrainPage.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainPageSurface.h"
+#include "TerrainPageShadow.h"
 #include "TerrainPageGeometry.h"
+
+#include "framework/LoggingInstance.h"
+#include "framework/TimedLog.h"
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
+
+#include <sstream>
+
 namespace Ember
 {
 namespace OgreView
@@ -33,12 +40,13 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry) :
-	mGeometry(geometry)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection) :
+	mGeometry(geometry), mSignal(signal), mLightDirection(lightDirection)
 {
 }
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection) :
+	mSignal(signal), mLightDirection(lightDirection)
 {
 	mGeometry.push_back(geometry);
 }
@@ -51,7 +59,13 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskEx
 {
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
 		(*J)->repopulate();
-		TerrainPageSurfaceCompilationInstance* compilationInstance = (*J)->getPage().getSurface()->createSurfaceCompilationInstance(*J);
+		TerrainPage& page = (*J)->getPage();
+		TerrainPageSurfaceCompilationInstance* compilationInstance = page.getSurface()->createSurfaceCompilationInstance(*J);
+		//If the technique requires a pregenerated shadow we must also populate normals.
+		if (compilationInstance->requiresPregenShadow()) {
+			(*J)->repopulate(true);
+			page.getSurface()->getShadow()->updateShadow(**J);
+		}
 		if (compilationInstance->prepare()) {
 			mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &(*J)->getPage()));
 		}
@@ -62,11 +76,20 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskEx
 
 void TerrainMaterialCompilationTask::executeTaskInMainThread()
 {
+	TimedLog timedLog("TerrainMaterialCompilationTask::executeTaskInMainThread");
 	for (CompilationInstanceStore::const_iterator J = mMaterialRecompilations.begin(); J != mMaterialRecompilations.end(); ++J) {
 		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
 		TerrainPage* page = J->second;
 		compilationInstance->compile(page->getMaterial());
+		S_LOG_VERBOSE("Compiling terrain page composite map material");
+		compilationInstance->compileCompositeMap(page->getCompositeMapMaterial());
+		S_LOG_VERBOSE("Recompiled material for terrain page " << "[" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]");
+		page->getSurface()->getShadow()->setShadowTextureName(compilationInstance->getShadowTextureName(page->getMaterial()));
+		mSignal(page); // Notify the terrain system of the material change
 		delete compilationInstance;
+		std::stringstream ss;
+		ss << "Compiled for page [" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]";
+		timedLog.report(ss.str());
 	}
 	updateSceneManagersAfterMaterialsChange();
 }

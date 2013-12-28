@@ -42,7 +42,7 @@ public:
     
 	virtual void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name);
 	virtual void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name);
-
+	virtual void processMeshCompleted(Ogre::Mesh*);
 };
 
 }

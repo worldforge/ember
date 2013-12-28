@@ -496,7 +496,11 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 {
 	//switch to movement mode, since it appears most people don't know how to change from gui mode
-	getInput().setInputMode(Input::IM_MOVEMENT);
+	varconf::Variable var;
+	if (!EmberServices::getSingleton().getConfigService().getValue("input", "automovementmode", var)
+			|| (var.is_bool() && (bool)var == true)) {
+		getInput().setInputMode(Input::IM_MOVEMENT);
+	}
 }
 
 void GUIManager::EmberOgre_WorldCreated(World& world)

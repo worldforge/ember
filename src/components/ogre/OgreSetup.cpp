@@ -31,11 +31,6 @@
 #include "MeshSerializerListener.h"
 #include "lod/ScaledPixelCountLodStrategy.h"
 
-// Should be before GL/glx.h for OGRE < 1.6.2
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-
-#include "lod/EmberOgreRoot.h"
-
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/input/Input.h"
@@ -61,6 +56,9 @@
 #include <OgreMeshManager.h>
 #include <OgreAnimation.h>
 #include <OgreStringConverter.h>
+#include <OgreSceneManager.h>
+#include <OgreOverlaySystem.h>
+#include <OgreRoot.h>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_syswm.h>
@@ -72,7 +70,7 @@ namespace OgreView
 {
 
 OgreSetup::OgreSetup() :
-		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."), mRoot(0), mRenderWindow(0), mSceneManagerFactory(0), mMeshSerializerListener(0)
+		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."), mRoot(0), mRenderWindow(0), mSceneManagerFactory(0), mMeshSerializerListener(0), mOverlaySystem(nullptr)
 #ifdef BUILD_WEBEMBER
 ,mOgreWindowProvider(0)
 #endif
@@ -113,6 +111,8 @@ void OgreSetup::shutdown()
 			mRenderWindow = 0;
 		}
 	}
+	delete mOverlaySystem;
+	mOverlaySystem = nullptr;
 	delete mRoot;
 	mRoot = 0;
 	S_LOG_INFO("Ogre shut down.");
@@ -135,7 +135,9 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	}
 
 	std::string pluginExtension = ".so";
-	mRoot = new Lod::EmberOgreRoot("", "ogre.cfg", "");
+	mRoot = new Ogre::Root("", "ogre.cfg", "");
+
+	mOverlaySystem = new Ogre::OverlaySystem();
 
 	//we will try to load the plugins from series of different location, with the hope of getting at least one right
 	std::vector<std::string> pluginLocations;
@@ -226,11 +228,15 @@ bool OgreSetup::showConfigurationDialog()
 		result = configurator.configure();
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when showing configuration window." << ex);
+		delete mOverlaySystem;
+		mOverlaySystem = 0;
 		delete mRoot;
 		mRoot = 0;
 		createOgreSystem();
 		throw ex;
 	}
+	delete mOverlaySystem;
+	mOverlaySystem = 0;
 	delete mRoot;
 	mRoot = 0;
 	if (result == OgreConfigurator::OC_CANCEL) {
@@ -383,10 +389,10 @@ Ogre::Root* OgreSetup::configure(void)
 	setStandardValues();
 
 	// Create new scene manager factory
-	mSceneManagerFactory = new EmberPagingSceneManagerFactory();
+	//mSceneManagerFactory = new EmberPagingSceneManagerFactory();
 
-	// Register our factory
-	mRoot->addSceneManagerFactory(mSceneManagerFactory);
+	//// Register our factory
+	//mRoot->addSceneManagerFactory(mSceneManagerFactory);
 
 	return mRoot;
 }
@@ -423,11 +429,6 @@ void OgreSetup::setStandardValues()
 	Ogre::LodStrategy* lodStrategy = OGRE_NEW Lod::ScaledPixelCountLodStrategy();
 	Ogre::LodStrategyManager::getSingleton().addStrategy(lodStrategy);
 
-}
-
-Ogre::SceneManager* OgreSetup::chooseSceneManager()
-{
-	return mRoot->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
 }
 
 void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen)

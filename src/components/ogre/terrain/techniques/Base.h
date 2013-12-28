@@ -54,6 +54,18 @@ public:
 	 */
 	virtual ~Base();
 
+	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const
+	{
+		return "";
+	}
+
+	virtual bool requiresPregenShadow() const
+	{
+		return false;
+	}
+
+
+
 protected:
 
 	/**

@@ -16,6 +16,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+namespace Ogre
+{
+
+class LodConfig
+{
+};
+
+}
+
 namespace Ember
 {
 namespace OgreView
@@ -23,16 +32,12 @@ namespace OgreView
 namespace Lod
 {
 
-class LodConfig
-{
-};
-
 class PMInjectorSignaler
 {
 public:
 	static Ember::OgreView::Lod::PMInjectorSignaler& getSingleton();
 
-	sigc::signal<void, Ember::OgreView::Lod::LodConfig*> LodInjected;
+	sigc::signal<void, Ogre::LodConfig*> LodInjected;
 	
 };
 

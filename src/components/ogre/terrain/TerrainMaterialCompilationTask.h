@@ -21,6 +21,8 @@
 
 #include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
+#include <wfmath/vector.h>
+#include <sigc++/signal.h>
 #include <vector>
 
 namespace Ember
@@ -45,14 +47,17 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param pages The pages which needs to have their material recompiled.
+	 * @param signal The signal to emit once the compilation is finished.
+	 * @param lightDirection The main light direction.
 	 */
-	TerrainMaterialCompilationTask(const GeometryPtrVector& geometry);
+	TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection);
 
 	/**
 	 * @brief Ctor.
 	 * @param page The page which needs to have its material recompiled.
+	 * @param lightDirection The main light direction.
 	 */
-	TerrainMaterialCompilationTask(TerrainPageGeometryPtr pageGeometry);
+	TerrainMaterialCompilationTask(TerrainPageGeometryPtr pageGeometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection);
 
 	/**
 	 * @brief Dtor.
@@ -78,6 +83,17 @@ private:
 	 * @brief The compilation instances and their corresponding pages.
 	 */
 	CompilationInstanceStore mMaterialRecompilations;
+
+
+	/**
+	 * @brief A signal to emit once the update is done.
+	 */
+	sigc::signal<void, TerrainPage* >& mSignal;
+
+	/**
+	 * @brief The main light direction.
+	 */
+	const WFMath::Vector<3> mLightDirection;
 
 	/**
 	 * @brief This needs to be called after materials have changed to make sure that Ogre flushes it's material caches.

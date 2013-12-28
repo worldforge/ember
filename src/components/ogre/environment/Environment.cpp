@@ -100,6 +100,7 @@ void Environment::setFirmamentEnabled(bool enabled)
 		try {
 			mProvider->createFirmament();
 			mEnabledFirmamentProvider = mProvider;
+			EventEnvironmentSetup.emit();
 		} catch (...) {
 			if (mFallbackProvider) {
 				S_LOG_FAILURE("Error when creating environment, trying with fallback provider.");
@@ -155,6 +156,28 @@ void Environment::setWorldPosition(float longitudeDegrees, float latitudeDegrees
 void Environment::setWaterEnabled(bool enabled)
 {
 	mProvider->setWaterEnabled(enabled);
+}
+
+WFMath::Vector<3> Environment::getMainLightDirection() const
+{
+	if (mEnabledFirmamentProvider && mEnabledFirmamentProvider->getSun()) {
+		return mEnabledFirmamentProvider->getSun()->getMainLightDirection();
+	} else if (mProvider && mProvider->getSun()) {
+		return mProvider->getSun()->getMainLightDirection();
+	}
+	//If no provider, just point downwards.
+	return WFMath::Vector<3>(0, 0, -1);
+}
+
+Ogre::ColourValue Environment::getAmbientLightColour() const
+{
+	if (mEnabledFirmamentProvider && mEnabledFirmamentProvider->getSun()) {
+		return mEnabledFirmamentProvider->getSun()->getAmbientLightColour();
+	} else if (mProvider && mProvider->getSun()) {
+		return mProvider->getSun()->getAmbientLightColour();
+	}
+	//If no provider, use white
+	return Ogre::ColourValue::White;
 }
 
 }

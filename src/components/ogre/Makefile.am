@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-SUBDIRS = SceneManagers authoring environment data sounddefinitions scripting widgets
+SUBDIRS = authoring environment data sounddefinitions scripting widgets
 #carpenter jesus ogreopcode
 
 noinst_LIBRARIES = libEmberOgre.a
@@ -29,7 +29,7 @@ libEmberOgre_a_SOURCES = \
 	environment/FoliageDetailManager.cpp \
 	gui/ActiveWidgetHandler.cpp gui/CursorWorldListener.cpp \
 \
-	lod/EmberOgreMesh.cpp lod/EmberOgreMeshManager.cpp lod/EmberOgreRoot.cpp lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/OgreSmallVector.cpp lod/ProgressiveMeshGenerator.cpp lod/QueuedProgressiveMeshGenerator.cpp lod/XMLLodDefinitionSerializer.cpp lod/PMInjectorSignaler.cpp \
+	lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/XMLLodDefinitionSerializer.cpp lod/PMInjectorSignaler.cpp \
 	lod/ScaledPixelCountLodStrategy.cpp \
 \
 	mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp \
@@ -43,6 +43,10 @@ libEmberOgre_a_SOURCES = \
 	sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp \
 	sound/SoundEntity.cpp sound/SoundGroup.cpp sound/SoundGroupDefinition.cpp sound/XMLSoundDefParser.cpp \
 \
+	terrain/OgreTerrain/OgreTerrainMaterialGeneratorEmber.cpp \
+	terrain/OgreTerrain/OgreTerrainDefiner.cpp \
+	terrain/OgreTerrain/OgreTerrainAdapter.cpp terrain/OgreTerrain/OgreTerrainObserver.cpp terrain/OgreTerrain/OgreTerrainPageBridge.cpp terrain/OgreTerrain/OgreTerrainPageProvider.cpp \
+	terrain/OgreTerrain/EmberTerrainGroup.cpp terrain/OgreTerrain/EmberTerrain.cpp terrain/OgreTerrain/CameraFocusedGrid2DPageStrategy.cpp \
 	terrain/Map.cpp terrain/TerrainArea.cpp \
 	terrain/TerrainAreaParser.cpp terrain/TerrainEditor.cpp \
 	terrain/TerrainManager.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp \
@@ -52,9 +56,9 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp \
 	terrain/PlantAreaQuery.cpp terrain/PlantAreaQueryResult.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp \
 	terrain/TerrainShaderUpdateTask.cpp terrain/TerrainAreaUpdateTask.cpp \
-	terrain/techniques/Shader.cpp terrain/techniques/ShaderNormalMapped.cpp terrain/techniques/ShaderNormalMappedPass.cpp \
-	terrain/techniques/ShaderNormalMappedPassCoverageBatch.cpp terrain/techniques/ShaderPass.cpp \
-	terrain/techniques/ShaderPassCoverageBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp \
+	terrain/techniques/Shader.cpp \
+	terrain/techniques/ShaderPass.cpp \
+	terrain/techniques/ShaderPassBlendMapBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp \
 	terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp terrain/TerrainMaterialCompilationTask.cpp \
 	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/Buffer.cpp terrain/HeightMapBuffer.cpp \
 	terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp \
@@ -63,7 +67,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/ShadowUpdateTask.cpp terrain/PlantQueryTask.cpp \
 	terrain/HeightMapFlatSegment.cpp terrain/Segment.cpp terrain/SegmentHolder.cpp terrain/SegmentManager.cpp \
 	terrain/foliage/PlantPopulator.cpp terrain/foliage/ClusterPopulator.cpp terrain/foliage/Vegetation.cpp terrain/TerrainHandler.cpp \
-	terrain/techniques/CompilerTechniqueProvider.cpp terrain/ITerrainObserver.h \
+	terrain/techniques/CompilerTechniqueProvider.cpp terrain/ITerrainObserver.h terrain/TerrainPageDeletionTask.cpp \
 \
 	widgets/ActionBarInput.cpp widgets/ActionBarIcon.cpp widgets/ActionBarIconSlot.cpp widgets/ActionBarIconDragDropTarget.cpp widgets/ActionBarIconManager.cpp widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -102,7 +106,7 @@ libEmberOgre_a_SOURCES = \
 	
 # OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
-dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
+dist_conf_DATA = ogre.cfg resources.cfg
 
 
 noinst_HEADERS = \
@@ -129,7 +133,7 @@ noinst_HEADERS = \
 \
 	gui/ActiveWidgetHandler.h gui/CursorWorldListener.h \
 \
-	lod/EmberOgreMesh.h lod/EmberOgreMeshManager.h lod/EmberOgreRoot.h lod/LodDefinition.h lod/LodDefinitionManager.h lod/LodManager.h lod/OgreSmallVector.h lod/ProgressiveMeshGenerator.h lod/QueuedProgressiveMeshGenerator.h lod/XMLLodDefinitionSerializer.h  lod/PMInjectorSignaler.h lod/LodConfig.h  \
+	lod/LodDefinition.h lod/LodDefinitionManager.h lod/LodManager.h lod/XMLLodDefinitionSerializer.h  lod/PMInjectorSignaler.h \
 	lod/ScaledPixelCountLodStrategy.h \
 \
 	mapping/EmberEntityMappingManager.h mapping/XMLEntityMappingDefinitionSerializer.h \
@@ -143,16 +147,20 @@ noinst_HEADERS = \
 	sound/SoundAction.h sound/SoundDefinition.h sound/SoundDefinitionManager.h sound/SoundEntity.h \
 	sound/SoundGroup.h sound/SoundGroupDefinition.h sound/XMLSoundDefParser.h \
 \
-	terrain/ISceneManagerAdapter.h terrain/ITerrainPageBridge.h terrain/Map.h terrain/TerrainArea.h \
+	terrain/OgreTerrain/OgreTerrainMaterialGeneratorEmber.h \
+	terrain/OgreTerrain/OgreTerrainDefiner.h \
+	terrain/OgreTerrain/OgreTerrainAdapter.h terrain/OgreTerrain/OgreTerrainObserver.h terrain/OgreTerrain/OgreTerrainPageBridge.h terrain/OgreTerrain/OgreTerrainPageProvider.h\
+	terrain/OgreTerrain/EmberTerrainGroup.h terrain/OgreTerrain/EmberTerrain.h terrain/OgreTerrain/CameraFocusedGrid2DPageStrategy.h \
+	terrain/ITerrainAdapter.h terrain/ITerrainPageBridge.h terrain/Map.h terrain/TerrainArea.h \
 	terrain/TerrainAreaParser.h terrain/TerrainEditor.h terrain/TerrainManager.h terrain/TerrainInfo.h terrain/TerrainLayerDefinition.h terrain/TerrainLayerDefinitionManager.h \
 	terrain/TerrainMod.h terrain/TerrainPage.h terrain/TerrainPageGeometry.h terrain/TerrainPageShadow.h terrain/TerrainPageSurface.h \
 	terrain/TerrainPageSurfaceCompiler.h terrain/TerrainPageSurfaceLayer.h \
 	terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h  terrain/PlantAreaQueryResult.h terrain/TerrainParser.h \
 	terrain/TerrainPageCreationTask.h terrain/Types.h terrain/TerrainAreaUpdateTask.h \
 	terrain/TerrainShaderUpdateTask.h \
-	terrain/techniques/Shader.h terrain/techniques/ShaderNormalMapped.h terrain/techniques/ShaderNormalMappedPass.h \
-	terrain/techniques/ShaderNormalMappedPassCoverageBatch.h terrain/techniques/ShaderPass.h \
-	terrain/techniques/ShaderPassCoverageBatch.h terrain/techniques/Simple.h terrain/techniques/Base.h \
+	terrain/techniques/Shader.h \
+	terrain/techniques/ShaderPass.h \
+	terrain/techniques/ShaderPassBlendMapBatch.h terrain/techniques/Simple.h terrain/techniques/Base.h \
 	terrain/Image.h terrain/OgreImage.h terrain/WFImage.h terrain/TerrainMaterialCompilationTask.h \
 	terrain/HeightMapSegment.h terrain/HeightMap.h terrain/Buffer.h terrain/HeightMapBuffer.h \
 	terrain/HeightMapBufferProvider.h terrain/HeightMapUpdateTask.h terrain/TerrainAreaTaskBase.h terrain/TerrainAreaAddTask.h \
@@ -161,7 +169,7 @@ noinst_HEADERS = \
 	terrain/TerrainShaderParser.h terrain/TerrainUpdateTask.h terrain/ShadowUpdateTask.h terrain/PlantQueryTask.h \
 	terrain/HeightMapFlatSegment.h terrain/IHeightMapSegment.h terrain/Segment.h terrain/SegmentHolder.h \
 	terrain/SegmentManager.h terrain/PlantInstance.h terrain/foliage/PlantPopulator.h terrain/foliage/ClusterPopulator.h terrain/foliage/Vegetation.h \
-	terrain/TerrainHandler.h terrain/ICompilerTechniqueProvider.h terrain/techniques/CompilerTechniqueProvider.h \
+	terrain/TerrainHandler.h terrain/ICompilerTechniqueProvider.h terrain/techniques/CompilerTechniqueProvider.h terrain/TerrainPageDeletionTask.h \
 \
 	widgets/ActionBarInput.h widgets/ActionBarIcon.h widgets/ActionBarIconSlot.h widgets/ActionBarIconDragDropTarget.h widgets/ActionBarIconManager.h \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \

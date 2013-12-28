@@ -40,44 +40,47 @@ void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel
 		return;
 	}
 
-	//	if (imageToBlit.getResolution() == getResolution() && widthOffset == 0 && heightOffset == 0) {
-	//		const unsigned char* sourcePtr = imageToBlit.getData();
-	//		unsigned char* destPtr = getData() + destinationChannel;
-	//
-	//		for (unsigned int i = 0; i < imageToBlit.getSize(); ++i) {
-	//			*destPtr = *sourcePtr;
-	//			destPtr += mChannels;
-	//			sourcePtr++;
-	//		}
-	//	} else {
-	//	unsigned int width = imageToBlit.getSize();
-	unsigned int width = 64;
+	unsigned int width = imageToBlit.getResolution();
 	size_t i, j;
 
 	size_t wfSegmentWidth = width * getChannels();
 	size_t ogreImageWidth = getResolution() * getChannels();
 
 	const unsigned char* sourcePtr = imageToBlit.getData();
-	unsigned char* destPtr = getData() + destinationChannel;
 
-	unsigned char* dataEnd = getData() + getSize();
+	unsigned char* destStart = getData() + destinationChannel;
 
-	unsigned char* end = destPtr + (getChannels() * getResolution() * ((width - 1) + heightOffset)) + (((width - 1) + widthOffset) * getChannels());
+	unsigned char* destEnd = getData() + getSize();
+	const unsigned int channels = getChannels();
 
-	unsigned char* tempPtr = end;
+	//Consider the bitmap with a coord system where (0,0) is in the upper left and dataEnd is in the lower right.
+	//Since Ogre uses a different coord system than WF we need to first place the write pointer at the lower right of
+	//where we want to blit. We will the work our ways upwards to the left (while advancing normally on the WF bitmap).
+	//The math is thus:
+	//start with the beginning of the bitmap:
+	// destStart
+	//then adjust it vertically using the offset
+	// destStart + (channels * getResolution() * (heightOffset
+	//however, we also need to adjust it more so that it's actually on on the lower line of where we want to blit
+	// destStart + (channels * getResolution() * (heightOffset + (width - 1)))
+	//now add with width offset
+	// destStart + (channels * getResolution() * (heightOffset + (width - 1))) + (widthOffset * channels)
+	//and then finally make sure that we're positioned at the lower right
+	// destStart + (channels * getResolution() * (heightOffset + (width - 1))) + (widthOffset * channels) + wfSegmentWidth
+	unsigned char* writePtr = destStart + (channels * getResolution() * (heightOffset + (width - 1))) + (widthOffset * channels) + wfSegmentWidth;
+
+
 	for (i = 0; i < width; ++i) {
-		tempPtr -= wfSegmentWidth;
+		writePtr -= wfSegmentWidth;
 		for (j = 0; j < width; ++j) {
-			if (tempPtr >= getData() && tempPtr < dataEnd) {
-				*(tempPtr) = *(sourcePtr + j);
-			}
+			assert(writePtr >= destStart && writePtr < destEnd);
+			*(writePtr) = *(sourcePtr + j);
 			//advance the number of channels
-			tempPtr += getChannels();
+			writePtr += channels;
 		}
-		tempPtr -= ogreImageWidth;
+		writePtr -= ogreImageWidth;
 		sourcePtr += imageToBlit.getResolution();
 	}
-	//	}
 }
 
 void OgreImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset)

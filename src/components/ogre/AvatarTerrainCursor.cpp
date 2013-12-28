@@ -32,6 +32,7 @@
 #include "EmberOgre.h"
 #include "services/input/Input.h"
 #include "framework/Time.h"
+#include "terrain/ITerrainAdapter.h"
 
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
@@ -40,26 +41,20 @@
 namespace Ember {
 namespace OgreView {
 
-	AvatarTerrainCursor::AvatarTerrainCursor(Ogre::Camera& camera)
+	AvatarTerrainCursor::AvatarTerrainCursor(Ogre::Camera& camera, Terrain::ITerrainAdapter& terrainAdapter)
 	: mLastUpdated(0)
 	, mLastTerrainPosition(Ogre::Vector3::ZERO)
 	, mLastMouseX(-1)
 	, mLastMouseY(-1)
 	, mCamera(camera)
-	, mTerrainCursorRayQuery(0)
 	, mUpdatePositionThreshold(AvatarTerrainCursor::DEFAULT_THRESHOLD_MILLIS)
+	, mTerrainAdapter(terrainAdapter)
 	{
-		mTerrainCursorRayQuery = camera.getSceneManager()->createRayQuery(Ogre::Ray(), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-		mTerrainCursorRayQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
-		mTerrainCursorRayQuery->setSortByDistance(true);
-		mTerrainCursorRayQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-
 		registerConfigListener("input", "terraincheckinterval", sigc::mem_fun(*this, &AvatarTerrainCursor::Config_TerrainCheckInterval));
 	}
 
 	AvatarTerrainCursor::~AvatarTerrainCursor()
 	{
-		mCamera.getSceneManager()->destroyQuery( mTerrainCursorRayQuery );
 	}
 
 	unsigned int AvatarTerrainCursor::getThreshold()
@@ -106,25 +101,15 @@ namespace OgreView {
 			mLastCameraPosition = mCamera.getDerivedPosition();
 			mLastCameraOrientation = mCamera.getDerivedOrientation();
 
-			// Start a new ray query
+			// Check if camera ray intersects terrain
 			Ogre::Ray cameraRay(mCamera.getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition));
-			mTerrainCursorRayQuery->setRay(cameraRay);
-			mTerrainCursorRayQuery->execute();
+			std::pair<bool, Ogre::Vector3> intersectResult = mTerrainAdapter.rayIntersects(cameraRay);
 
-			// Can we avoid the iterator, and just use the result ?
-			const Ogre::RaySceneQueryResult& queryResult(mTerrainCursorRayQuery->getLastResults());
-			Ogre::RaySceneQueryResult::const_iterator rayIterator(queryResult.begin());
-			if (rayIterator != queryResult.end()) {
-				const Ogre::RaySceneQueryResultEntry& entry(*rayIterator);
-
-				if (entry.worldFragment) {
-					mLastTerrainPosition = entry.worldFragment->singleIntersection;
-					updated = true;
-// 					S_LOG_VERBOSE("getTerrainCursorPosition : Update ("<< mLastMouseX << "," << mLastMouseY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));
-				} else {
-					S_LOG_WARNING("Picked something else than a world fragment even though we specified only terrain. Something is wrong with the ray check methods.");
-				}
+			if (intersectResult.first) {
+				mLastTerrainPosition = intersectResult.second;
+				updated = true;
 			}
+// 					S_LOG_VERBOSE("getTerrainCursorPosition : Update ("<< mLastMouseX << "," << mLastMouseY << ")->" << Ogre::StringConverter::toString(mLastTerrainPosition));
 		}
 		*position = &mLastTerrainPosition;
 // 		S_LOG_VERBOSE("getTerrainCursorPosition : return");

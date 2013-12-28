@@ -69,9 +69,10 @@ function Performance.framestarted(timeSinceLastFrame)
 		end
 		--ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n"
 		
-		if Performance.terrainManager ~= nil then
-			statString = statString .. "\n" .. Performance.terrainManager:getAdapter():getDebugInfo()
-		end
+        -- NOTE: commented out because currently, it does not work and breaks the widget
+	    -- if Performance.terrainManager ~= nil then
+	    -- 	statString = statString .. "\n" .. Performance.terrainManager:getAdapter():getDebugInfo()
+	    -- end
 	
 		Performance.mainText:setText(statString)
 	end

@@ -119,7 +119,7 @@ bool Model::create(const std::string& modelType)
 	static const Ogre::String groupName("ModelDefinitions");
 	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
 	try {
-		mDefinition = ModelDefinitionManager::getSingleton().load(modelType, groupName);
+		mDefinition = ModelDefinitionManager::getSingleton().load(modelType, groupName).staticCast<ModelDefinition>();
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << "." << ex);
 		return false;
@@ -937,7 +937,7 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 			//This of course means that there's still an issue when the camera is below the water
 			//(as the water, being rendered first, will prevent the particles from being rendered). That will need to be solved.
 			std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve((*I)->getOgreParticleSystem()->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-			Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(result.first);
+			Ogre::MaterialPtr materialPtr = result.first.staticCast<Ogre::Material>();
 			if (!materialPtr.isNull()) {
 				if (materialPtr->isTransparent()) {
 					(*I)->getOgreParticleSystem()->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);

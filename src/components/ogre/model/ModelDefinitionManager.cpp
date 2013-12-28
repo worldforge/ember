@@ -86,22 +86,43 @@ ModelDefinitionManager::~ModelDefinitionManager()
 
 }
 
-
-
-
-Ogre::ResourcePtr ModelDefinitionManager::create(const Ogre::String& name, const Ogre::String& group,
-bool isManual, Ogre::ManualResourceLoader* loader,
-const Ogre::NameValuePairList* createParams)
+ModelDefinitionPtr ModelDefinitionManager::create (const Ogre::String& name, const Ogre::String& group,
+        bool isManual, Ogre::ManualResourceLoader* loader,
+        const Ogre::NameValuePairList* createParams)
 {
-	Ogre::ResourcePtr ret = getByName(name);
+    return createResource(name, group, isManual, loader, createParams).staticCast<ModelDefinition>();
+}
+
+Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
+		const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
+		const Ogre::NameValuePairList* params)
+{
+	Ogre::ResourcePtr ret = getResourceByName(name);
 	if (ret.isNull())
 	{
-		return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
+		return OGRE_NEW ModelDefinition(this, name, handle, group, isManual, loader);
 	}
 	//Report this. We count on this happening a lot (user media overriding shared media for example), so we will not consider it a failure.
 	S_LOG_INFO("ModelDefinition with name " << name << " already exists.");
-	return Ogre::ResourcePtr();
+	return nullptr;
+}
 
+Ogre::ResourcePtr ModelDefinitionManager::createResource(const Ogre::String& name, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* params)
+{
+	// Call creation implementation
+	Ogre::ResourcePtr ret = Ogre::ResourcePtr(
+			createImpl(name, getNextHandle(), group, isManual, loader, params));
+
+	if (ret.isNull())
+		return ret;
+
+	if (params)
+		ret->setParameterList(*params);
+
+	addImpl(ret);
+	// Tell resource group manager
+	Ogre::ResourceGroupManager::getSingleton()._notifyResourceCreated(ret);
+	return ret;
 }
 
 void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
@@ -121,11 +142,6 @@ std::string ModelDefinitionManager::exportScript(ModelDefinitionPtr definition)
 	}
 }
 
-Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList*)
-{
-	return new ModelDefinition(this, name, handle, group, isManual, loader);
-}
-
 const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
 {
 	std::vector<std::string> meshes;
@@ -135,6 +151,12 @@ const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
 	}
 	meshesVector.setNull();
 	return meshes;
+}
+
+
+ModelDefinitionPtr ModelDefinitionManager::getByName(const Ogre::String& name, const Ogre::String& groupName)
+{
+    return getResourceByName(name, groupName).staticCast<ModelDefinition>();
 }
 
 bool ModelDefinitionManager::getShowModels() const

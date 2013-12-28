@@ -24,6 +24,7 @@
 #define EMBEROGRE_ENVIRONMENTFOLIAGEBASE_H
 
 #include "components/ogre/terrain/Types.h"
+#include "components/ogre/OgreIncludes.h"
 
 #include <sigc++/trackable.h>
 
@@ -135,6 +136,7 @@ protected:
 	void TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const Terrain::AreaStore& areas);
 	void TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader);
 	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages);
+	void TerrainManager_TerrainShown(const std::vector<Ogre::TRect<Ogre::Real>>& areas);
 
 };
 

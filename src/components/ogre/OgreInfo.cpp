@@ -162,7 +162,12 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 				Ogre::ResourcePtr resource = resourceI.getNext();
 				if (resource->isLoaded()) {
 					std::string reloadable = resource->isReloadable() ? " reloadable" : "";
-					outputStream << "   " << resource->getName() << " ( " << resource->getSize() << " bytes)" << reloadable << std::endl;
+					outputStream << "   " << resource->getName() << " ( " << resource->getSize() << " bytes)" << reloadable;
+					Ogre::Texture* texture = dynamic_cast<Ogre::Texture*>(resource.get());
+					if (texture) {
+						outputStream << texture->getWidth() << "x" << texture->getHeight() << " ";
+					}
+					outputStream << std::endl;
 					loadedResourceCount++;
 				}
 				resourceCount++;

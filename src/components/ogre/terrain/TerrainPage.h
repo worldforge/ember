@@ -30,6 +30,7 @@
 #include <wfmath/axisbox.h>
 
 #include <vector>
+#include <cmath>
 
 namespace WFMath
 {
@@ -121,6 +122,12 @@ public:
 	const Ogre::MaterialPtr getMaterial() const;
 
 	/**
+	 * @brief The material used for rendering a page's composite map. The composite map is a precomputed version of the terrain texture(with blending, maybe shadows etc) which can be used to render far away pages faster.
+	 * @return The composite map material.
+	 */
+	const Ogre::MaterialPtr getCompositeMapMaterial() const;
+
+	/**
 	 * @brief Adds a shader to the page, meaning that it will be used in rendering.
 	 * @param shader The new shader to add.
 	 */
@@ -141,10 +148,10 @@ public:
 	int getPageSize() const;
 
 	/**
-	 * @brief The size in pixels of one side of the AlphaTexture. This is in sizes of 64.
+	 * @brief The size in pixels of one side of the blend map.
 	 * @return
 	 */
-	int getAlphaTextureSize() const;
+	int getBlendMapSize() const;
 
 	/**
 	 * @brief Gets the extent of this page in meters, in worldforge space.
@@ -191,16 +198,16 @@ private:
 	const WFMath::AxisBox<2> mExtent;
 
 	/**
-	 * @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
+	 * @brief How much to scale the blend map. This is done to avoid pixelated terrain (a blur filter is applied).
 	 * This value is taken from the config file.
 	 */
-	unsigned int getAlphaMapScale() const;
+	unsigned int getBlendMapScale() const;
 };
 
-inline int TerrainPage::getAlphaTextureSize() const
+inline int TerrainPage::getBlendMapSize() const
 {
+	//While the page size calculates the size in number of vertices, the blend map should use pixel size, which is one less.
 	return (getPageSize() - 1);
-
 }
 }
 }

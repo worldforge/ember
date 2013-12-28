@@ -39,7 +39,7 @@
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
-#include "ISceneManagerAdapter.h"
+#include "ITerrainAdapter.h"
 
 #include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
@@ -101,7 +101,12 @@ const Ogre::MaterialPtr TerrainPage::getMaterial() const
 	return mTerrainSurface->getMaterial();
 }
 
-unsigned int TerrainPage::getAlphaMapScale() const
+const Ogre::MaterialPtr TerrainPage::getCompositeMapMaterial() const
+{
+	return mTerrainSurface->getCompositeMapMaterial();
+}
+
+unsigned int TerrainPage::getBlendMapScale() const
 {
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 	if (configSrv.itemExists("terrain", "scalealphamap")) {
@@ -129,7 +134,7 @@ TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 	layer->setDiffuseTextureName(shader->getLayerDefinition().getDiffuseTextureName());
 	layer->setNormalTextureName(shader->getLayerDefinition().getNormalMapTextureName());
 	//get the scale by dividing the total size of the page with the size of each tile
-	float scale = getAlphaTextureSize() / shader->getLayerDefinition().getTileSize();
+	float scale = getBlendMapSize() / shader->getLayerDefinition().getTileSize();
 	layer->setScale(scale);
 	return layer;
 }

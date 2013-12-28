@@ -49,7 +49,7 @@ renderdistance = "100.0"
 #plugindir="/usr/lib/OGRE/"
 #the plugins to load. This will differ some on windows and unix
 #plugins="RenderSystem_GL,RenderSystem_Direct3D9,Plugin_ParticleFX,Plugin_CgProgramManager"
-plugins="RenderSystem_GL,Plugin_ParticleFX,Plugin_CgProgramManager"
+plugins="RenderSystem_GL,Plugin_ParticleFX,Plugin_CgProgramManager,Plugin_OctreeSceneManager"
 #if set to true, the config dialog won't be shown and the settings in ogre.cfg will be used instead
 suppressconfigdialog = false
 #if set to true, the application will be double buffered, which means that everything is rendered into a separate backbuffer, which is then copied to the main screen buffer when appropriate. This will in some cases reduce tearing.
@@ -95,6 +95,12 @@ usedebuglodcolors = false
 
 #the preferred terrain technique. Available values are: ShaderNormalMapped, Shader, Base
 preferredtechnique = Shader
+
+#The size of single terrain pages. Should be one of 64, 128, 256, 512.
+pagesize = "256"
+
+#The distance from the camera at which terrain pages are loaded. Affects how fast the initial loading is as well as the memory usage and performance in-game.
+loadradius = "300"
 
 [caelum]
 #a colour value (rgba) for how much the ambient light should be multiplied
@@ -144,6 +150,8 @@ terraincheckinterval=100
 catchmouse=true
 #The max time, in milliseconds, to wait between a mouse press and release to consider a "click". This only applies when clicking on the world; i.e. it has no effect on the GUI.
 clickthreshold=200
+#if true, Ember will automatically enter "movement mode" when entering world
+automovementmode=true
 
 [lua]
 #if true, the lua debug library will be loaded

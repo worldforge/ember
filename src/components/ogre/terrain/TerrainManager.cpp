@@ -27,7 +27,7 @@
 #include "TerrainShader.h"
 #include "TerrainPage.h"
 
-#include "ISceneManagerAdapter.h"
+#include "ITerrainAdapter.h"
 
 #include "TerrainLayerDefinition.h"
 #include "PlantAreaQuery.h"
@@ -71,14 +71,15 @@ namespace Terrain
 {
 
 
-TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider)), mIsFoliageShown(false), mSceneManagerAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
+TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal) :
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider)), mIsFoliageShown(false), mTerrainAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
 {
-	loadTerrainOptions();
-
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
+	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique));
+	registerConfigListener("terrain", "pagesize", sigc::mem_fun(*this, &TerrainManager::config_TerrainPageSize));
+	registerConfigListener("terrain", "loadradius", sigc::mem_fun(*this, &TerrainManager::config_TerrainLoadRadius));
 
 	shaderManager.EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), &shaderManager));
 
@@ -87,6 +88,10 @@ TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, Shad
 	mHandler->EventShaderCreated.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_ShaderCreated));
 	mHandler->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_AfterTerrainUpdate));
 	mHandler->EventWorldSizeChanged.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_WorldSizeChanged));
+	mHandler->EventTerrainMaterialRecompiled.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_TerrainPageMaterialRecompiled));
+
+	sigc::slot<void, const Ogre::TRect<Ogre::Real>> slot = sigc::mem_fun(*this, &TerrainManager::adapter_terrainShown);
+	adapter->bindTerrainShown(slot);
 }
 
 TerrainManager::~TerrainManager()
@@ -95,28 +100,18 @@ TerrainManager::~TerrainManager()
 
 	//We must make sure that any tasks are purged in the handler before we destroy the terrain adapter.
     mHandler->shutdown();
+    getTerrainAdapter()->reset();
 
-    getAdapter()->reset();
-
-	delete mSceneManagerAdapter;
-
+	delete mTerrainAdapter;
 	delete mHandler;
-
 	delete mVegetation;
 	delete mCompilerTechniqueProvider;
 }
 
-void TerrainManager::loadTerrainOptions()
+void TerrainManager::startPaging()
 {
-
-	getAdapter()->setResourceGroupName("General");
-
-	getAdapter()->loadOptions(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "terrain.cfg");
-
-	getAdapter()->setCamera(&getScene().getMainCamera());
-
-	getAdapter()->setUninitializedHeight(mHandler->getDefaultHeight());
-
+	//Setting the camera will start the paging system
+	getTerrainAdapter()->setCamera(&getScene().getMainCamera());
 }
 
 bool TerrainManager::getHeight(const Domain::TerrainPosition& atPosition, float& height) const
@@ -131,9 +126,9 @@ const TerrainInfo& TerrainManager::getTerrainInfo() const
 }
 
 
-ISceneManagerAdapter* TerrainManager::getAdapter() const
+ITerrainAdapter* TerrainManager::getTerrainAdapter() const
 {
-	return mSceneManagerAdapter;
+	return mTerrainAdapter;
 }
 
 void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback)
@@ -173,18 +168,39 @@ void TerrainManager::config_Foliage(const std::string& section, const std::strin
 	updateFoliageVisibility();
 }
 
+void TerrainManager::config_TerrainTechnique(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	//TODO this is a bit crude and does more updates than necessary
+	mHandler->updateAllPages();
+}
+
+void TerrainManager::config_TerrainPageSize(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_int()) {
+		unsigned int size = static_cast<unsigned int>(static_cast<int>(variable)) + 1;
+		mTerrainAdapter->setPageSize(size);
+		mHandler->setPageSize(size);
+		mHandler->updateAllPages();
+	}
+}
+
+void TerrainManager::config_TerrainLoadRadius(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_int()) {
+		unsigned int radius = static_cast<unsigned int>(static_cast<int>(variable));
+		mTerrainAdapter->setLoadRadius(Ogre::Real(radius));
+	}
+}
+
 void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages)
 {
 
 	for (std::set<TerrainPage*>::const_iterator I = pages.begin(); I != pages.end(); ++I) {
 		TerrainPage* page = *I;
-		Ogre::Vector2 targetPage = Convert::toOgre<Ogre::Vector2>(page->getWFPosition());
+		const Domain::TerrainIndex& index = page->getWFIndex();
 
-		//note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
-		Ogre::Vector2 adjustedOgrePos(targetPage.x + mHandler->getTerrainInfo().getPageOffsetY(), targetPage.y + mHandler->getTerrainInfo().getPageOffsetX());
-
-		S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-		getAdapter()->reloadPage(static_cast<unsigned int> (adjustedOgrePos.x), static_cast<unsigned int> (adjustedOgrePos.y));
+		S_LOG_VERBOSE("Updating terrain page [" << index.first << "|" << index.second << "]");
+		getTerrainAdapter()->reloadPage(index);
 		EventTerrainPageGeometryUpdated.emit(*page);
 	}
 }
@@ -209,35 +225,18 @@ void TerrainManager::terrainHandler_WorldSizeChanged()
 
 }
 
+void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* page)
+{
+	if (mTerrainAdapter) {
+		mTerrainAdapter->reloadPageMaterial(page->getWFIndex());
+	}
+}
+
 void TerrainManager::initializeTerrain()
 {
-	ISceneManagerAdapter* adapter = getAdapter();
-	if (adapter) {
-		const TerrainInfo& terrainInfo = mHandler->getTerrainInfo();
-		adapter->setWorldPagesDimensions(terrainInfo.getTotalNumberOfPagesY(), terrainInfo.getTotalNumberOfPagesX(), terrainInfo.getPageOffsetY(), terrainInfo.getPageOffsetX());
-
-		adapter->loadScene();
-		const WFMath::AxisBox<2>& worldSize = terrainInfo.getWorldSizeInIndices();
-		//		float heightMin = std::numeric_limits<float>::min();
-		//		float heightMax = std::numeric_limits<float>::max();
-		//		if (heightMax < heightMin) {
-		float heightMin = -100;
-		float heightMax = 100;
-		//		}
-		Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
-
-		std::stringstream ss;
-		ss << worldBox;
-		S_LOG_INFO("New size of the world: " << ss.str());
-
-		adapter->resize(worldBox, 16);
-
-		S_LOG_INFO("Pages: X: " << terrainInfo.getTotalNumberOfPagesX() << " Y: " << terrainInfo.getTotalNumberOfPagesY() << " Total: " << terrainInfo.getTotalNumberOfPagesX() * terrainInfo.getTotalNumberOfPagesY());
-		S_LOG_INFO("Page offset: X" << terrainInfo.getPageOffsetX() << " Y: " << terrainInfo.getPageOffsetY());
-
-		//load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
-		adapter->loadFirstPage();
-	}
+	ITerrainAdapter* adapter = getTerrainAdapter();
+	assert(adapter);
+	adapter->loadScene();
 }
 bool TerrainManager::isFoliageShown() const
 {
@@ -281,6 +280,16 @@ void TerrainManager::application_CycleProcessed(const TimeFrame& timeframe, unsi
 TerrainHandler& TerrainManager::getHandler()
 {
 	return *mHandler;
+}
+
+
+void TerrainManager::adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect)
+{
+	std::vector<Ogre::TRect<Ogre::Real>> areas;
+	areas.push_back(rect);
+
+	EventTerrainShown(areas);
+
 }
 
 

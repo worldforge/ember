@@ -29,9 +29,6 @@
 #include "SegmentManager.h"
 
 #include "TerrainPage.h"
-#include "OgreImage.h"
-#include "WFImage.h"
-#include "Buffer.h"
 #include "components/ogre/Convert.h"
 #include <Mercator/Segment.h>
 #include <wfmath/stream.h>
@@ -80,14 +77,16 @@ TerrainPageGeometry::~TerrainPageGeometry()
 {
 }
 
-void TerrainPageGeometry::repopulate()
+void TerrainPageGeometry::repopulate(bool alsoNormals)
 {
 	for (SegmentRefStore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
 		for (SegmentRefColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			Mercator::Segment& segment = J->second->getMercatorSegment();
 			if (!segment.isValid()) {
 				segment.populate();
-				//segment->populateNormals();
+			}
+			if (alsoNormals && !segment.getNormals()) {
+				segment.populateNormals();
 			}
 		}
 	}
@@ -113,7 +112,6 @@ float TerrainPageGeometry::getMaxHeight() const
 }
 void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 {
-
 	float* heightDataPtr = heightData;
 	unsigned int sizeOfBitmap = mPage.getVerticeCount();
 	//Set the height of any uninitialized part to the default height. This might be optimized better though.
@@ -125,8 +123,8 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 		for (SegmentRefColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			Mercator::Segment& segment = J->second->getMercatorSegment();
 			if (segment.isValid()) {
-				//Note that we add one to the x position here. That's to adjust for the slight mismatch between the WF Mercator::Segments and the Ogre space.
-				blitSegmentToOgre(heightData, segment, (I->first * 64) + 1, ((mPage.getNumberOfSegmentsPerAxis() - J->first - 1) * 64));
+				blitSegmentToOgre(heightData, segment, I->first * segment.getResolution(), 
+						J->first * segment.getResolution());
 			}
 		}
 	}
@@ -135,7 +133,6 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startY)
 {
 	int segmentWidth = segment.getSize();
-	int i, j;
 	int pageWidth = mPage.getPageSize();
 	size_t ogreDataSize = pageWidth * pageWidth;
 
@@ -143,20 +140,16 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 	float* destPtr = ogreHeightData;
 
 	float* dataEnd = ogreHeightData + ogreDataSize;
-
-	float* end = destPtr + (pageWidth * ((segmentWidth - 1) + startY)) + (((segmentWidth - 1) + startX));
-
-	float* tempPtr = end;
-	for (i = 0; i < segmentWidth; ++i) {
-		tempPtr -= segmentWidth;
-		for (j = 0; j < segmentWidth; ++j) {
-
-			if (tempPtr >= ogreHeightData && tempPtr < dataEnd) {
-				*(tempPtr) = *(sourcePtr + j);
+	
+	// copy points line-by line
+	float* tempPtr = destPtr + pageWidth * startY + startX;
+	for (int i = 0; i < segmentWidth; ++i) {
+		for (int j = 0; j < segmentWidth; ++j) {
+			if ((tempPtr + j) >= ogreHeightData && (tempPtr + j) < dataEnd) {
+				*(tempPtr + j) = *(sourcePtr + j);
 			}
-			tempPtr += 1;
 		}
-		tempPtr -= pageWidth;
+		tempPtr += pageWidth;
 		sourcePtr += segmentWidth;
 	}
 }

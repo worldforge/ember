@@ -162,7 +162,7 @@ void ShaderManager::init()
 bool ShaderManager::checkMaterial(const std::string& materialName, const std::string& schemeName)
 {
 	// OGRE scheme is switched in caller
-	Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().load(materialName, "General"));
+	Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().load(materialName, "General").staticCast<Ogre::Material>();
 	if (material->getNumSupportedTechniques() == 0) {
 		S_LOG_INFO("The material '" << material->getName() << "' has no supported techniques with scheme " << schemeName << ". The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;

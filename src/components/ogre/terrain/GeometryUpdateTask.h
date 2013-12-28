@@ -22,6 +22,7 @@
 #include "framework/tasks/ITask.h"
 #include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
+#include <wfmath/vector.h>
 #include <set>
 
 namespace Ember
@@ -39,7 +40,7 @@ class HeightMap;
 class GeometryUpdateTask : public Tasks::TemplateNamedTask<GeometryUpdateTask>
 {
 public:
-	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2>>& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
+	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2>>& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3> lightDirection);
 	virtual ~GeometryUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
@@ -55,6 +56,9 @@ private:
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;
 	std::set<TerrainPage*> mPages;
+	std::set<ITerrainPageBridgePtr> mBridgesToNotify;
+	const WFMath::Vector<3> mLightDirection;
+
 
 };
 

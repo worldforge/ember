@@ -299,6 +299,11 @@ protected:
 	MovementController* mMovementController;
 
 	/**
+	 * @brief The terrain manager, owned by this instance.
+	 */
+	Terrain::TerrainManager* mTerrainManager;
+
+	/**
 	 * @brief The main camera, which handles input to be shown in the main viewpoint.
 	 */
 	Camera::MainCamera* mMainCamera;
@@ -345,11 +350,6 @@ protected:
 	 */
 	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
 
-	/**
-	 * @brief The terrain manager, owned by this instance.
-	 */
-	Terrain::TerrainManager* mTerrainManager;
-
 	TerrainEntityManager* mTerrainEntityManager;
 
 	/**
@@ -363,7 +363,7 @@ protected:
 	RenderDistanceManager* mRenderDistanceManager;
 
 	/**
-	 * @brief The page data provider for the EmberPagingSceneManager.
+	 * @brief The page data provider for the terrain rendering system.
 	 */
 	IPageDataProvider* mPageDataProvider;
 
@@ -446,6 +446,7 @@ protected:
 	 * @param graphicalChangeAdapter An adapter for graphical change events.
 	 */
 	void initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter);
+
 };
 
 /**

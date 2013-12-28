@@ -26,6 +26,7 @@
 #include "Base.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/terrain/TerrainPage.h"
+#include "components/ogre/terrain/OgreImage.h"
 
 namespace Ember {
 namespace OgreView {
@@ -44,17 +45,45 @@ class Simple : public Base
 {
 public:
 
+	/**
+	 * @brief Used for preparing layer data in the background, to be used in the foreground when compiling the material.
+	 */
+	struct Layer {
+		const TerrainPageSurfaceLayer& surfaceLayer;
+		OgreImage* blendMap;
+	};
+
 	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
+	virtual ~Simple();
 
     virtual bool prepareMaterial();
-    virtual bool compileMaterial(Ogre::MaterialPtr material);
-
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
+	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
+	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const;
+	virtual bool requiresPregenShadow() const
+	{
+		return true;
+	}
 protected:
 
-	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer);
-	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material);
+	/**
+	 * @brief The layers that are active for the geometry.
+	 *
+	 * This is prepared in the background.
+	 */
+	std::list<Layer> mLayers;
 
-	Ogre::TexturePtr updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow);
+	/**
+	 * Contains the shadow data, computed in the background and transferred to a texture in the foreground.
+	 */
+	OgreImage* mLightingImage;
+
+	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const Layer& layer, std::set<std::string>& managedTextures) const;
+	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow, Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
+
+	Ogre::TexturePtr updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow, std::set<std::string>& managedTextures) const;
+
+	void addLightingPass(Ogre::Technique* technique, std::set<std::string>& managedTextures) const;
 
 
 };

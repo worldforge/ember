@@ -74,7 +74,7 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 		mEntity->setRenderingDistance(300);
 		mEntity->setQueryFlags(MousePicker::CM_UNDEFINED);
 
-		mEntity->setUserAny(Ogre::Any(&mUserObject));
+		mEntity->getUserObjectBindings().setUserAny(Ogre::Any(&mUserObject));
 
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating polygon point marker entity." << ex);

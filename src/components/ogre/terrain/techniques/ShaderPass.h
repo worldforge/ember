@@ -24,6 +24,7 @@
 #include <wfmath/point.h>
 #include <vector>
 #include <string>
+#include <set>
 
 namespace Ember
 {
@@ -40,15 +41,15 @@ class TerrainPageShadow;
 namespace Techniques
 {
 
-class ShaderPassCoverageBatch;
+class ShaderPassBlendMapBatch;
 
 typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
 
 class ShaderPass
 {
 public:
-friend class ShaderPassCoverageBatch;
-	ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position);
+friend class ShaderPassBlendMapBatch;
+	ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping = false);
 	virtual ~ShaderPass();
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -58,34 +59,37 @@ friend class ShaderPassCoverageBatch;
 	virtual bool hasRoomForLayer(const TerrainPageSurfaceLayer* layer);
 
 	/**
-	 * @brief Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
+	 * @brief Creates the combined final blend maps and sets the shader params. Be sure to call this before you load the material.
+     * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
 	 * @param useShadows Whether to use shadows or not in the pass.
 	 * @param shaderSuffix A suffix to add to the shader name. This allows you to make it use a somewhat different shader depending on graphics level etc.
 	 * @return True if the creation of the pass was successful.
 	 */
-	virtual bool finalize(Ogre::Pass& pass, bool useShadows = true, const std::string shaderSuffix = "") const;
+	virtual bool finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows = true, const std::string shaderSuffix = "") const;
 
 	LayerStore& getLayers();
 
 protected:
-	typedef std::vector<ShaderPassCoverageBatch*> CoverageBatchStore;
+	typedef std::vector<ShaderPassBlendMapBatch*> BlendMapBatchStore;
 
-	void assignCombinedCoverageTexture();
-	ShaderPassCoverageBatch* getCurrentBatch();
-	virtual ShaderPassCoverageBatch* createNewBatch();
+	void assignCombinedBlendMapTexture();
+	ShaderPassBlendMapBatch* getCurrentBatch();
+	virtual ShaderPassBlendMapBatch* createNewBatch();
 
-	unsigned int getCoveragePixelWidth() const;
-	Ogre::TexturePtr getCombinedCoverageTexture(size_t passIndex, size_t batchIndex) const;
+	unsigned int getBlendMapPixelWidth() const;
+	Ogre::TexturePtr getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const;
 
 	float mScales[16];
-	CoverageBatchStore mCoverageBatches;
+	BlendMapBatchStore mBlendMapBatches;
 	LayerStore mLayers;
 	const TerrainPageSurfaceLayer* mBaseLayer;
 	Ogre::SceneManager& mSceneManager;
-	int mCoveragePixelWidth;
+	int mBlendMapPixelWidth;
 	WFMath::Point<2> mPosition;
 
 	unsigned int mShadowLayers;
+
+	bool mUseNormalMapping;
 };
 }
 

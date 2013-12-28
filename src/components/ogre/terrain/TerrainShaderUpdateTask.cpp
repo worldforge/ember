@@ -22,6 +22,7 @@
 #include "TerrainPageSurface.h"
 #include "TerrainMaterialCompilationTask.h"
 #include "framework/tasks/TaskExecutionContext.h"
+#include "framework/LoggingInstance.h"
 
 #include <wfmath/axisbox.h>
 #include <wfmath/intersect.h>
@@ -34,14 +35,14 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal) :
-	mGeometry(geometry), mAreas(areas), mSignal(signal)
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection) :
+	mGeometry(geometry), mAreas(areas), mSignal(signal), mSignalMaterialRecompiled(signalMaterialRecompiled), mLightDirection(lightDirection)
 {
 	mShaders.push_back(shader);
 }
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal) :
-	mGeometry(geometry), mShaders(shaders), mAreas(areas), mSignal(signal)
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection) :
+	mGeometry(geometry), mShaders(shaders), mAreas(areas), mSignal(signal), mSignalMaterialRecompiled(signalMaterialRecompiled), mLightDirection(lightDirection)
 {
 }
 
@@ -71,14 +72,13 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 		}
 	}
 
-	context.executeTask(new TerrainMaterialCompilationTask(updatedPages));
+	context.executeTask(new TerrainMaterialCompilationTask(updatedPages, mSignalMaterialRecompiled, mLightDirection));
 	//Release Segment references as soon as we can
 	mGeometry.clear();
 }
 
 void TerrainShaderUpdateTask::executeTaskInMainThread()
 {
-
 	for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
 		mSignal(*I, mAreas);
 	}

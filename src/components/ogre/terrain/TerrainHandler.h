@@ -22,6 +22,8 @@
 #include "Types.h"
 #include "domain/IHeightProvider.h"
 
+#include <wfmath/vector.h>
+
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 #include <sigc++/slot.h>
@@ -57,7 +59,7 @@ class TerrainArea;
 class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
-class ISceneManagerAdapter;
+class ITerrainAdapter;
 class ITerrainPageBridge;
 class ICompilerTechniqueProvider;
 class HeightMap;
@@ -89,7 +91,7 @@ public:
 	 * @param pageIndexSize The size of one side of a page, in indices.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-	TerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
+	TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
 
 	/**
 	 * @brief Dtor.
@@ -103,6 +105,12 @@ public:
 	 * it to complete.
 	 */
 	void shutdown();
+
+	/**
+	 * @brief Sets the size of the width of one page, in indices. This must be a power of two + 1 and at least 65.
+	 * @param pageSize The number of vertices along one side of a page. Must be a power of two + 1 and at least 65.
+	 */
+	void setPageSize(unsigned int pageSize);
 
 	/**
 	 * @brief Returns the height at the specified position in the world.
@@ -228,11 +236,19 @@ public:
 	int getPageIndexSize() const;
 
 	/**
-	 * @brief Adds a new page to the manager,
+	 * @brief Adds a new page to the handler.
 	 *
 	 * @param page A terrain page instance.
 	 */
 	void addPage(TerrainPage* page);
+
+
+	/**
+	 * @brief Destroys a page, removing it from the handler and deleting the instance.
+	 *
+	 * @param page A terrain page instance.
+	 */
+	void destroyPage(TerrainPage* page);
 
 	/**
 	 * @brief Reloads the terrain found at the specified positions.
@@ -356,6 +372,11 @@ public:
 	 */
 	sigc::signal<void> EventWorldSizeChanged;
 
+	/**
+	 * @brief Emitted after a terrain material has been recompiled.
+	 */
+	sigc::signal<void, TerrainPage* > EventTerrainMaterialRecompiled;
+
 protected:
 
 	typedef std::map<Domain::TerrainIndex, std::shared_ptr<ITerrainPageBridge>> PageBridgeStore;
@@ -363,7 +384,7 @@ protected:
 	/**
 	 * @brief The size in indices of one side of a page.
 	 */
-	int mPageIndexSize;
+	unsigned int mPageIndexSize;
 
 	/**
 	 * @brief The terrain page surface compiler technique provider which allows Ogre Material instances to be generated for the terrain pages.
@@ -478,6 +499,14 @@ protected:
 	SegmentManager* mSegmentManager;
 
 	/**
+	 * @brief The angle used when lighting for precomputed shadows was last updated.
+	 *
+	 * We need to keep track of this in order to know when to update the precomputed shadows (once every hour).
+	 * This is only of used when using the fixed function pipeline (which requries precomputed shadows).
+	 */
+	WFMath::Vector<3> mLastLightingUpdateAngle;
+
+	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
 	 *
 	 * For performance reasons we want to batch together multiple request for shader updates, so we can do them all at once, normally on frameEnded(). By calling this method the supplied shader will be marked for updating.
@@ -524,6 +553,14 @@ protected:
 	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
 	 */
 	void buildHeightmap();
+
+	/**
+	 * @brief Called each frame.
+	 * @param
+	 * @param
+	 */
+	void frameProcessed(const TimeFrame&, unsigned int);
+
 };
 
 inline const std::list<TerrainShader*>& TerrainHandler::getBaseShaders() const

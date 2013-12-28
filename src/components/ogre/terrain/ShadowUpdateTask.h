@@ -33,12 +33,13 @@ namespace Terrain
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Async task for updating shadows for pages.
+ * @brief Async task for updating precomputed shadows for pages.
+ * This is only of use when using the fixed function pipeline.
  */
 class ShadowUpdateTask : public Tasks::TemplateNamedTask<ShadowUpdateTask>
 {
 public:
-	ShadowUpdateTask(const PageVector& pages, const WFMath::Vector<3>& lightDirection);
+	ShadowUpdateTask(const GeometryPtrVector& pageGeometries, const WFMath::Vector<3>& lightDirection);
 	virtual ~ShadowUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
@@ -46,7 +47,8 @@ public:
 	virtual void executeTaskInMainThread();
 private:
 
-	const PageVector mPages;
+	GeometryPtrVector mPageGeometries;
+
 	const WFMath::Vector<3> mLightDirection;
 };
 

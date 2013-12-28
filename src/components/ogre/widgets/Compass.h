@@ -32,6 +32,7 @@
 namespace Ogre
 {
 class Rectangle2D;
+class Overlay;
 }
 
 namespace Ember {
@@ -41,7 +42,7 @@ namespace Terrain
 {
 class Map;
 class MapView;
-class ISceneManagerAdapter;
+class ITerrainAdapter;
 class ITerrainObserver;
 }
 
@@ -101,7 +102,7 @@ protected:
 class Compass
 {
 public:
-    Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ISceneManagerAdapter& sceneManagerAdapter);
+    Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& sceneManagerAdapter);
 
     virtual ~Compass();
 
@@ -135,9 +136,9 @@ protected:
 	ICompassImpl* mCompassImpl;
 
 	/**
-	 * @brief A scene manager adapter, from which we'll obtain a terrain observer.
+	 * @brief A terrain adapter, from which we'll obtain a terrain observer.
 	 */
-	Terrain::ISceneManagerAdapter& mSceneManagerAdapter;
+	Terrain::ITerrainAdapter& mTerrainAdapter;
 
 	/**
 	 * @brief A terrain observer, which observes when parts of the terrain is shown.

@@ -29,7 +29,7 @@ namespace OgreView
 {
 namespace Terrain
 {
-class ISceneManagerAdapter;
+class ITerrainAdapter;
 }
 class EmberEntity;
 class ISceneRenderingTechnique;
@@ -90,9 +90,11 @@ public:
 	 */
 	ISceneRenderingTechnique* removeRenderingTechnique(const std::string& name);
 
-	void registerPageDataProvider(IPageDataProvider* pageDataProvider);
-
-	Terrain::ISceneManagerAdapter* createAdapter();
+	/**
+	 * @brief Creates a terrain adapter which can be used to communicate with the terrain rendering system.
+	 * @return An instance of the terrain adapter
+	 */
+	Terrain::ITerrainAdapter* createTerrainAdapter();
 
 	/**
 	 * @brief Gets the main camera of the scene.

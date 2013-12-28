@@ -25,9 +25,12 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include "Types.h"
+
+#include <OgreMaterial.h>
+
 #include <memory>
 #include <map>
-#include <OgreMaterial.h>
+#include <set>
 
 namespace Ember {
 namespace OgreView {
@@ -70,9 +73,34 @@ public:
      *
      * This is called in the main thread, and thus has full access to the Ogre system. It's expected that all heavy lifting has occurred in prepareMaterial, and any code here merely handled the setup of the Ogre structures needed.
      * @param material The material which will be used for the terrain geometry.
+     * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
      * @return False if something went wrong during compilation.
      */
-    virtual bool compileMaterial(Ogre::MaterialPtr material) = 0;
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const = 0;
+
+	/**
+	 * @brief Compiles a previously prepared material for the terrain composite map. May not be implemented.
+	 *
+	 * This is called in the main thread, and thus has full access to the Ogre system. It's expected that all heavy lifting has occurred in prepareMaterial, and any code here merely handled the setup of the Ogre structures needed.
+	 * @param material The material which will be used for rendering of the terrain composite map.
+     * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
+	 * @return False if something went wrong during compilation or if the technique does not support generating composite maps.
+	 */
+	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const = 0;
+
+	/**
+	 * @brief Get shadow texture name, if such has been created.
+	 * @return A texture name, or empty if none is used.
+	 */
+	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const = 0;
+
+	/**
+	 * @brief Returns true if a precomputed shadow is required.
+	 * @return True if a precomputed shadow is required.
+	 */
+	virtual bool requiresPregenShadow() const = 0;
+
+
 };
 
 /**
@@ -89,13 +117,14 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param technique The technique to use. Ownership is passed to this instance.
+     * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
 	 */
-	TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique);
+	TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique, std::set<std::string>& managedTextures);
 
 	/**
 	 * @brief Dtor.
 	 */
-	~TerrainPageSurfaceCompilationInstance();
+	virtual ~TerrainPageSurfaceCompilationInstance();
 
 	/**
 	 * @brief Prepares the surface. This is called in a background thread.
@@ -110,12 +139,36 @@ public:
 	 */
 	bool compile(Ogre::MaterialPtr material);
 
+	/**
+	 * @brief Compiles the surface composite map. This is called in the main thread.
+	 * @param material The material which will be used for the terrain geometry.
+	 * @return False if something went wrong during compilation or composite maps are not supported by the used technique.
+	 */
+	bool compileCompositeMap(Ogre::MaterialPtr material);
+
+	/**
+	 * @brief Get shadow texture name, if such has been created.
+	 * @return A texture name, or empty if none is used.
+	 */
+	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const;
+
+	/**
+	 * @brief Returns true if a precomputed shadow is required.
+	 * @return True if a precomputed shadow is required.
+	 */
+	virtual bool requiresPregenShadow() const;
+
 private:
 
 	/**
 	 * @brief The technique to use. Owned by this instance.
 	 */
 	TerrainPageSurfaceCompilerTechnique* mTechnique;
+
+	/**
+     * A set of textures created in the process. These will be destroyed when the page is destroyed.
+	 */
+	std::set<std::string>& mManagedTextures;
 };
 
 /**
@@ -146,7 +199,7 @@ public:
      * @param terrainPageShadow An optional shadow.
      * @return A compilation instance.
      */
-    TerrainPageSurfaceCompilationInstance* createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const;
+    TerrainPageSurfaceCompilationInstance* createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
 
 private:
 
@@ -154,6 +207,11 @@ private:
      * @brief The compiler technique provider, which creates new techniques.
      */
     ICompilerTechniqueProvider& mCompilerTechniqueProvider;
+
+    /**
+     * A set of textures created in the process. These will be destroyed when this instance is destroyed.
+     */
+    std::set<std::string> mManagedTextures;
 
     /**
      * @brief Selects and creates a new technique. The selection depends on hardware being used and features required.

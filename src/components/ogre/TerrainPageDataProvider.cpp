@@ -27,7 +27,7 @@ namespace Ember
 namespace OgreView
 {
 TerrainPageData::TerrainPageData(Terrain::TerrainPage* page) :
-	mPage(page)
+		mPage(page)
 {
 }
 
@@ -43,8 +43,16 @@ Ogre::MaterialPtr TerrainPageData::getMaterial()
 	return Ogre::MaterialPtr();
 }
 
+Ogre::MaterialPtr TerrainPageData::getCompositeMapMaterial()
+{
+	if (mPage) {
+		return mPage->getCompositeMapMaterial();
+	}
+	return Ogre::MaterialPtr();
+}
+
 TerrainPageDataProvider::TerrainPageDataProvider(Terrain::TerrainHandler& handler) :
-	mHandler(handler)
+		mHandler(handler)
 {
 
 }
@@ -74,8 +82,7 @@ void TerrainPageDataProvider::removeBridge(const OgreIndex& ogreIndexPosition)
 
 Domain::TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition)
 {
-	//TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
-	return Domain::TerrainIndex(ogreIndexPosition.first - mHandler.getTerrainInfo().getPageOffsetY(), -(ogreIndexPosition.second - mHandler.getTerrainInfo().getPageOffsetX()));
+	return Domain::TerrainIndex(ogreIndexPosition.first, ogreIndexPosition.second);
 }
 
 }

@@ -40,6 +40,7 @@
 #include "TerrainPageDataProvider.h"
 #include "terrain/TerrainManager.h"
 #include "terrain/TerrainHandler.h"
+#include "terrain/ITerrainAdapter.h"
 
 #include "camera/MainCamera.h"
 #include "camera/ThirdPersonCameraMount.h"
@@ -51,6 +52,8 @@
 #include "environment/SimpleEnvironment.h"
 
 #include "services/config/ConfigListenerContainer.h"
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 
 #include "framework/MainLoopController.h"
 
@@ -71,23 +74,32 @@ namespace Ember
 namespace OgreView
 {
 
-World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals, Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())), mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
+World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals,
+		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()),
+		mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0),
+		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventFrameProcessed)),
+		mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *mTerrainManager->getTerrainAdapter())),
+		mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)),
+		mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr),
+		mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)),
+		mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)),
+		mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),
+		mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
 {
-
-	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventFrameProcessed);
-	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 	mAfterTerrainUpdateConnection = mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
 	mTerrainEntityManager = new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager());
 
 	mPageDataProvider = new TerrainPageDataProvider(mTerrainManager->getHandler());
-	mScene->registerPageDataProvider(mPageDataProvider);
+	mTerrainManager->getTerrainAdapter()->setPageDataProvider(mPageDataProvider);
+
+	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 
 	mEnvironment = new Environment::Environment(mScene->getSceneManager(), *mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
 
 	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
-	mTerrainManager->getHandler().setLightning(mEnvironment->getSun());
+	mTerrainManager->getHandler().setLightning(mEnvironment);
 
 	//set the background colour to black
 	mViewport->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
@@ -160,6 +172,7 @@ Eris::View& World::getView() const
 
 Scene& World::getScene() const
 {
+	assert(mScene);
 	return *mScene;
 }
 
@@ -175,16 +188,19 @@ Avatar* World::getAvatar() const
 
 MotionManager& World::getMotionManager() const
 {
+	assert(mMotionManager);
 	return *mMotionManager;
 }
 
 Camera::MainCamera& World::getMainCamera() const
 {
+	assert(mMainCamera);
 	return *mMainCamera;
 }
 
 EmberEntityFactory& World::getEntityFactory() const
 {
+	assert(mEmberEntityFactory);
 	return *mEmberEntityFactory;
 }
 
@@ -200,27 +216,32 @@ EmberEntity* World::getEmberEntity(const std::string & eid) const
 
 EntityWorldPickListener& World::getEntityPickListener() const
 {
+	assert(mEntityWorldPickListener);
 	return *mEntityWorldPickListener;
 }
 
 Authoring::AuthoringManager& World::getAuthoringManager() const
 {
+	assert(mAuthoringManager);
 	//This can never be null.
 	return *mAuthoringManager;
 }
 
 Terrain::TerrainManager& World::getTerrainManager() const
 {
+	assert(mTerrainManager);
 	return *mTerrainManager;
 }
 
 Lod::LodLevelManager& World::getLodLevelManager() const
 {
+	assert(mLodLevelManager);
 	return *mLodLevelManager;
 }
 
 RenderDistanceManager& World::getRenderDistanceManager() const
 {
+	assert(mRenderDistanceManager);
 	return *mRenderDistanceManager;
 }
 
@@ -236,6 +257,7 @@ Environment::Foliage* World::getFoliage() const
 
 Eris::Calendar& World::getCalendar() const
 {
+	assert(mCalendar);
 	return *mCalendar;
 }
 
@@ -261,7 +283,7 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 	if (entity) {
 		EmberEntity& emberEntity = static_cast<EmberEntity&>(*entity);
 		//Set up the third person avatar camera and switch to it.
-		mAvatar = new Avatar(emberEntity, *mScene, mMainCamera->getCameraSettings());
+		mAvatar = new Avatar(emberEntity, *mScene, mMainCamera->getCameraSettings(), *(mTerrainManager->getTerrainAdapter()));
 		mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
 		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
 		mMovementController = new MovementController(*mAvatar, *mMainCamera);
@@ -276,6 +298,7 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 
 		mSignals.EventMovementControllerCreated.emit();
 		mSignals.EventCreatedAvatarEntity.emit(emberEntity);
+		mTerrainManager->startPaging();
 		EventGotAvatar();
 	} else {
 		S_LOG_CRITICAL("Somehow got a null avatar entity.");
@@ -314,7 +337,6 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 		delete mFoliage;
 		mFoliage = 0;
 	}
-
 }
 
 void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter)

@@ -34,6 +34,12 @@
 namespace Ember {
 namespace OgreView {
 
+
+namespace Terrain
+{
+class ITerrainAdapter;
+}
+
 	/**
 	 * @brief Provides an easy way to get the terrain position currently under the cursor.
 	 *
@@ -56,7 +62,7 @@ namespace OgreView {
 		const static int DEFAULT_THRESHOLD_MILLIS = 100;
 
 		/* C and D */
-		AvatarTerrainCursor(Ogre::Camera& camera);
+		AvatarTerrainCursor(Ogre::Camera& camera, Terrain::ITerrainAdapter& terrainAdapter);
 		virtual ~AvatarTerrainCursor();
 
 		/**
@@ -108,13 +114,6 @@ namespace OgreView {
 		Ogre::Camera& mCamera;
 
 		/**
-		@brief The main ray query.
-
-		This is expensive to create, so we'll keep a reference around during the whole lifetime.
-		*/
-		Ogre::RaySceneQuery *mTerrainCursorRayQuery;
-
-		/**
 		@brief Threshold for updates in milliseconds.
 		*/
 		unsigned int mUpdatePositionThreshold;
@@ -132,6 +131,12 @@ namespace OgreView {
 		Used to determine whether the camera has moved and whether we thus perhaps need to execute a new ray check.
 		*/
 		Ogre::Quaternion mLastCameraOrientation;
+
+		/**
+		@brief The terrain adapter used to find where the cursor intersects with the terrain.
+		*/
+		Terrain::ITerrainAdapter& mTerrainAdapter;
+
 
 		void Config_TerrainCheckInterval(const std::string& section, const std::string& key, varconf::Variable& variable);
 

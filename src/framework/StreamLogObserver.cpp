@@ -23,8 +23,26 @@
 #include "StreamLogObserver.h"
 #include <boost/date_time.hpp>
 #include <thread>
+#include <atomic>
 
 namespace Ember {
+
+/**
+ * @brief Simple class used for giving a sequential identifier to threads.
+ */
+class ThreadIdentifier
+{
+public:
+	std::string id;
+	static std::atomic<int> sCounter;
+	ThreadIdentifier()
+	{
+		std::stringstream ss;
+		ss << sCounter++;
+		id = ss.str();
+	}
+};
+std::atomic<int> ThreadIdentifier::sCounter;
 
     /**
      * Creates a new StreamLogObserver using default values.
@@ -72,9 +90,11 @@ namespace Ember {
         myOut.width(2);			
         myOut << currentTime.time_of_day().seconds();
         if (mDetailed) {
+        	//We don't expect many threads to be created, so we'll use a static variable.
+        	static std::map<std::thread::id, ThreadIdentifier> threadIdentifiers;
         	myOut << "(";
 			myOut.width(8);
-			myOut << ((currentTime - mStart).total_microseconds()) << ":"<<  std::this_thread::get_id() <<")";
+			myOut << ((currentTime - mStart).total_microseconds()) << ":"<< threadIdentifiers[std::this_thread::get_id()].id <<")";
         }
         myOut << "] ";
 

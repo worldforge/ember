@@ -42,28 +42,6 @@ class TerrainPage;
 class TerrainPageGeometry;
 class OgreImage;
 
-class ITerrainPageShadowTechnique
-{
-public:
-
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~ITerrainPageShadowTechnique() {}
-
-    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const WFMath::Vector<3>& lightDirection, const Ogre::ColourValue& lightColour) const = 0;
-
-protected:
-};
-
-class SimpleTerrainPageShadowTechnique : public ITerrainPageShadowTechnique
-{
-public:
-    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const WFMath::Vector<3>& lightDirection, const Ogre::ColourValue& lightColour) const;
-
-protected:
-};
-
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
@@ -74,23 +52,47 @@ public:
 
 	virtual ~TerrainPageShadow();
 
-	void setShadowTechnique(const ITerrainPageShadowTechnique* shadowTechnique);
-
 	void setLightDirection(const WFMath::Vector<3>& lightDirection);
 
 	void updateShadow(const TerrainPageGeometry& geometry);
 
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
-
 	void loadIntoImage(Ogre::Image& ogreImage) const;
+
+	/**
+	 * @brief Sets an optional shadow texture name.
+	 *
+	 * This refers to a precomputed shadow texture in Ogre. Note that this only is of use when using
+	 * the fixed function pipeline which requires precomputed shadows.
+	 *
+	 * @param shadowTextureName The name of the shadow texture.
+	 */
+	void setShadowTextureName(const std::string& shadowTextureName);
+
+	/**
+	 * @brief Gets an optional shadow texture name.
+	 *
+	 * This refers to a precomputed shadow texture in Ogre. Note that this only is of use when using
+	 * the fixed function pipeline which requires precomputed shadows.
+	 *
+	 * @return A name of a texture in Ogre, or an empty string if there's no shadow texture.
+	 */
+	const std::string& getShadowTextureName() const;
+
 
 protected:
 	const TerrainPage& mTerrainPage;
-	const ITerrainPageShadowTechnique* mShadowTechnique;
 	WFMath::Vector<3> mLightDirection;
 
-	std::shared_ptr<OgreImage> mImage;
+	OgreImage* mImage;
+
+	/**
+	 * @brief An optional shadow texture name.
+	 *
+	 * This refers to a precomputed shadow texture in Ogre. Note that this only is of use when using
+	 * the fixed function pipeline which requires precomputed shadows.
+	 */
+	std::string mShadowTextureName;
+
 };
 
 }
