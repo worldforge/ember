@@ -26,6 +26,7 @@
 #include "IEnvironmentProvider.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/ConsoleObject.h"
+#include <wfmath/vector.h>
 #include <sigc++/signal.h>
 
 namespace Ember
@@ -56,7 +57,7 @@ class Forest;
  *
  * Note that the actual instances used are provided by an instance of IEnvironmentProvider.
  */
-class Environment: public ConsoleObject
+class Environment: public ConsoleObject, public ILightning
 {
 public:
 
@@ -138,6 +139,19 @@ public:
 	 * @param enabled True if the water should enabled.
 	 */
 	void setWaterEnabled(bool enabled);
+
+	/**
+	 * @brief Gets the direction of the main light, in world space.
+	 * @returns The direction of the main light, in world space.
+	 */
+	virtual WFMath::Vector<3> getMainLightDirection() const;
+
+	/**
+	 * @brief Gets the default ambient light colour.
+	 * @returns The default ambient light colour.
+	 */
+	virtual Ogre::ColourValue getAmbientLightColour() const;
+
 
 	/**
 	 * @brief Emitted when the world ambient light is changed.

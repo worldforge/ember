@@ -447,10 +447,6 @@ protected:
 	 */
 	void initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter);
 
-	/**
-	 * @brief Called when the environment has been setup.
-	 */
-	void environment_setup();
 };
 
 /**
