@@ -38,7 +38,7 @@ function EntityCreator:RecipesList_SelectionChanged(args)
 end
 
 function EntityCreator:createFromType(name, type)
-	self.typesCreator.recipe = Ember.OgreView.Authoring.EntityRecipe:new_local(name, "")
+	self.typesCreator.recipe = Ember.OgreView.Authoring.EntityRecipe:new_local(name, type:getName())
 	self.recipe = self.typesCreator.recipe
 	self.helper:setRecipe(self.typesCreator.recipe)
 	self.helper:toggleCreateMode()

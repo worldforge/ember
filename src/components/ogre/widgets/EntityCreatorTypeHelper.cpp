@@ -157,10 +157,8 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args)
 		if (typeData.isValid()) {
 			try {
 				std::string name;
-				if (mName.getText().length() > 0) {
+				if (!mName.getText().empty()) {
 					name = mName.getText().c_str();
-				} else {
-					name = typeData->getId();
 				}
 				//TODO: this has been refactored; perhaps we should also change the signal to not use a TypeInfo...
 
