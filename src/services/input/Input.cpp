@@ -75,6 +75,7 @@
 #endif
 
 #include <sstream>
+#include <algorithm>
 
 template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
 
