@@ -45,7 +45,7 @@ namespace Ember
 {
 
 EntityImporter::EntityImporter(Eris::Account& account) :
-		EntityImporterBase::EntityImporterBase(account.getId(), account.getActiveCharacters().begin()->second->getId()), mAccount(account)
+		EntityImporterBase(account.getId(), account.getActiveCharacters().begin()->second->getId()), mAccount(account)
 {
 }
 
