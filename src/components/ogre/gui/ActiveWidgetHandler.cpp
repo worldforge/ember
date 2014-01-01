@@ -36,7 +36,7 @@ namespace OgreView {
 namespace Gui {
 
 ActiveWidgetHandler::ActiveWidgetHandler(GUIManager& guiManager)
-: mLastMode(Input::IM_GUI), mGuiManager(guiManager)
+: mLastMode(Input::IM_GUI), mGuiManager(guiManager), mLastActiveWindow(nullptr)
 {
 
 	//connect to the changing of input mode since we want to deactivate the current active input window when switching from gui mode to movement mode
