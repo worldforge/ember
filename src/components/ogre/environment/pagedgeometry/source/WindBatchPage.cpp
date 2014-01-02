@@ -478,7 +478,7 @@ void WindBatchPage::_updateShaders()
 
 						params->setNamedConstantFromTime("time", 1);
 
-						if(shaderLanguage.compare("glsl"))
+						if(shaderLanguage.compare("glsl") == 0)
 						{
 							//glsl can use the built in gl_ModelViewProjectionMatrix
 							params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);

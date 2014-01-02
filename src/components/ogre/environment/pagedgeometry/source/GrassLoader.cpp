@@ -740,9 +740,10 @@ void GrassLayerBase::_updateShaders()
 					pass->setVertexProgram(vsName);
 					GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
 
-					if(shaderLanguage.compare("glsl"))
+					if (shaderLanguage.compare("glsl") == 0) {
 						//glsl can use the built in gl_ModelViewProjectionMatrix
 						params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+					}
 					params->setNamedAutoConstant("camPos", GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
 					params->setNamedAutoConstant("fadeRange", GpuProgramParameters::ACT_CUSTOM, 1);
 

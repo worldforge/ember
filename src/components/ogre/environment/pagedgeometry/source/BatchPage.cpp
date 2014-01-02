@@ -519,8 +519,7 @@ void BatchPage::_updateShaders()
 							//params->setNamedAutoConstant("matAmbient", GpuProgramParameters::ACT_SURFACE_AMBIENT_COLOUR);
 						}
 
-						if(shaderLanguage.compare("glsl"))
-						{
+						if (shaderLanguage.compare("glsl") == 0) {
 							//glsl can use the built in gl_ModelViewProjectionMatrix
 							params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 						} else {
