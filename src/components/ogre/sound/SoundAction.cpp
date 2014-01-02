@@ -78,7 +78,7 @@ namespace OgreView
 		SoundGroup* newGroup = new SoundGroup();
 
 		const SoundGroupDefinition::SoundDefinitionStore& soundDefinitions = groupModel->getSoundDefinitions();
-		for (SoundGroupDefinition::SoundDefinitionStore::const_iterator I; I != soundDefinitions.end(); I++)
+		for (SoundGroupDefinition::SoundDefinitionStore::const_iterator I = soundDefinitions.begin(); I != soundDefinitions.end(); I++)
 		{
 			// Register Individual samples
 			const SoundDefinition& thisModel = *I;
