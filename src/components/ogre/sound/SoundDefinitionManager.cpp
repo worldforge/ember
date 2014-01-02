@@ -82,25 +82,17 @@ SoundGroupDefinition* SoundDefinitionManager::createSoundGroupDefinition(const s
 	if (!newModel)
 	{
 		newModel = new SoundGroupDefinition();
-		if (newModel)
-		{
-			#ifdef THREAD_SAFE
-			pthread_mutex_lock(&mGroupModelsMutex);
-			#endif
+		#ifdef THREAD_SAFE
+		pthread_mutex_lock(&mGroupModelsMutex);
+		#endif
 
-			mSoundGroupDefinitions[name] = newModel;
+		mSoundGroupDefinitions[name] = newModel;
 
-			#ifdef THREAD_SAFE
-			pthread_mutex_unlock(&mGroupModelsMutex);
-			#endif
+		#ifdef THREAD_SAFE
+		pthread_mutex_unlock(&mGroupModelsMutex);
+		#endif
 
-			return newModel;
-		}
-		else
-		{
-			S_LOG_FAILURE("Failed to allocate sound group model " << name);
-			return nullptr;
-		}
+		return newModel;
 	}
 	else
 	{

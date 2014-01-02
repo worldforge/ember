@@ -35,12 +35,6 @@ distribution.
 
 #define TIXML_USE_STL
 
-#ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4530 )
-#pragma warning( disable : 4786 )
-#endif
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -73,11 +67,6 @@ distribution.
 		// Microsoft visual studio, version 2005 and higher.
 		#define TIXML_SNPRINTF _snprintf_s
 		#define TIXML_SNSCANF  _snscanf_s
-	#elif defined(_MSC_VER) && (_MSC_VER >= 1200 )
-		// Microsoft visual studio, version 6 and higher.
-		//#pragma message( "Using _sn* functions." )
-		#define TIXML_SNPRINTF _snprintf
-		#define TIXML_SNSCANF  _snscanf
 	#elif defined(__GNUC__) && (__GNUC__ >= 3 )
 		// GCC version 3 and higher.s
 		//#warning( "Using sn* functions." )
@@ -1778,9 +1767,6 @@ private:
 };
 
 }
-#ifdef _MSC_VER
-#pragma warning( pop )
-#endif
 
 #ifndef FROM_TINYXML
 typedef Ember::TiXmlAttribute TiXmlAttribute;
