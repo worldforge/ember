@@ -205,9 +205,6 @@ Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType)
 		return mIconStore.getIcon(key);
 	} else {
 		Icon* icon = mIconStore.createIcon(key);
-		if (icon && erisType) {
-
-		}
 		return icon;
 	}
 }

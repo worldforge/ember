@@ -198,7 +198,7 @@ bool Model::createActualModel()
 
 			for (auto& partDef : submodelDef->getPartDefinitions()) {
 				SubModelPart& part = submodel->createSubModelPart(partDef->getName());
-				std::string groupName("");
+				//std::string groupName("");
 
 				if (partDef->getSubEntityDefinitions().size() > 0) {
 					for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {

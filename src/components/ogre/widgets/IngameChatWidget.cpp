@@ -615,7 +615,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 		std::vector<std::string>::const_iterator I = responses.begin();
 		std::vector<std::string>::const_iterator I_end = responses.end();
 		int i = 0;
-		std::stringstream ss;
+		//std::stringstream ss;
 
 		for (; I != I_end; ++I) {
 			std::stringstream ss_;

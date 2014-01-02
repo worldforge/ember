@@ -80,8 +80,8 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 							//is texture unit specified
 							if (tokens.size() == 6) {
 								std::string textureUnitIndexString = tokens[3];
-								std::string property = tokens[4];
-								std::string value = tokens[5];
+								//std::string property = tokens[4];
+								//std::string value = tokens[5];
 
 								int textureUnitIndex = Ogre::StringConverter::parseInt(textureUnitIndexString);
 

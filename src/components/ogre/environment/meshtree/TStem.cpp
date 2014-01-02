@@ -910,8 +910,8 @@ void TStem::AddLeavesVertices(Real **pVertexArray, RGBA **pVertexColorArray, con
 	  pLeaf = mVectorOfLeaves[i];
 	  u16NbVertices = (uint)pLeaf->size();
       iLeafType = Round( mpTree->GetRandomValue(3.99) );
-      fTexCoordOffsetU = 0.5 * (iLeafType / 2);
-      fTexCoordOffsetV = 0.5 * (iLeafType % 2);
+      fTexCoordOffsetU = 0.5 * (Ogre::Real)(iLeafType / 2);
+      fTexCoordOffsetV = 0.5 * (Ogre::Real)(iLeafType % 2);
 
       for (j=0; j<u16NbVertices; j++)
 	  {

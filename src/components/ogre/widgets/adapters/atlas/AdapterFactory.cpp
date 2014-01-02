@@ -409,7 +409,7 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 		CEGUI::WindowManager& windowManager = CEGUI::WindowManager::getSingleton();
 
 		std::string finalFileName(GUIManager::getSingleton().getLayoutDir() + layoutfile);
-		std::stringstream ss;
+		//std::stringstream ss;
 		CEGUI::Window* window = windowManager.loadLayoutFromFile(finalFileName);
 		if (window) {
 			if (container) {

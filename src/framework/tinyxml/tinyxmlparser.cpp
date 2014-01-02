@@ -440,7 +440,7 @@ const char* TiXmlBase::ReadName( const char* p, TIXML_STRING * name, TiXmlEncodi
 const char* TiXmlBase::GetEntity( const char* p, char* value, int* length, TiXmlEncoding encoding )
 {
 	// Presume an entity, and pull it out.
-    TIXML_STRING ent;
+    //TIXML_STRING ent;
 	int i;
 	*length = 0;
 
@@ -1135,11 +1135,6 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data, TiXmlEnc
 		{
 			// Try to read an attribute:
 			TiXmlAttribute* attrib = new TiXmlAttribute();
-			if ( !attrib )
-			{
-				if ( document ) document->SetError( TIXML_ERROR_OUT_OF_MEMORY, pErr, data, encoding );
-				return 0;
-			}
 
 			attrib->SetDocument( document );
 			pErr = p;
@@ -1186,12 +1181,6 @@ const char* TiXmlElement::ReadValue( const char* p, TiXmlParsingData* data, TiXm
 		{
 			// Take what we have, make a text element.
 			TiXmlText* textNode = new TiXmlText( "" );
-
-			if ( !textNode )
-			{
-				if ( document ) document->SetError( TIXML_ERROR_OUT_OF_MEMORY, 0, 0, encoding );
-				    return 0;
-			}
 
 			if ( TiXmlBase::IsWhiteSpaceCondensed() )
 			{

@@ -43,7 +43,7 @@ namespace Caelum
 	PrecipitationController::PrecipitationController(
             Ogre::SceneManager *sceneMgr)
     {
-		Ogre::String uniqueId = Ogre::StringConverter::toString((size_t)this);
+		//Ogre::String uniqueId = Ogre::StringConverter::toString((size_t)this);
 		mSceneMgr = sceneMgr;
 
         setAutoDisableThreshold (0.001);
