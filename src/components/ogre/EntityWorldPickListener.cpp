@@ -189,9 +189,9 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 							mContinuePickingThisContext = false;
 							return;
 						} else {
-							if (mResult.size() && mResult[mResult.size() - 1].distance > collisionResult.distance) {
+							if (!mResult.empty() && mResult[mResult.size() - 1].distance > collisionResult.distance) {
 								//If the last result is transparent, add another result, but if it's not replace it.
-								if (mResult.size() && !mResult[mResult.size() - 1].isTransparent) {
+								if (!mResult[mResult.size() - 1].isTransparent) {
 									mResult.pop_back();
 								}
 							} else {
