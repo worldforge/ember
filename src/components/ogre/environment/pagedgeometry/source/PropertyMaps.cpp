@@ -177,7 +177,7 @@ float DensityMap::_getDensityAt_Bilinear(float x, float z, const TRect<Real> &ma
 
 	uint32 xIndex = xIndexFloat;
 	uint32 zIndex = zIndexFloat;
-	if (xIndex < 0 || zIndex < 0 || xIndex >= mapWidth-1 || zIndex >= mapHeight-1)
+	if (xIndex >= mapWidth-1 || zIndex >= mapHeight-1)
 		return 0.0f;
 
 	float xRatio = xIndexFloat - xIndex;
@@ -387,7 +387,7 @@ uint32 ColorMap::_getColorAt_Bilinear(float x, float z, const TRect<Real> &mapBo
 
 	uint32 xIndex = xIndexFloat;
 	uint32 zIndex = zIndexFloat;
-	if (xIndex < 0 || zIndex < 0 || xIndex > mapWidth-1 || zIndex > mapHeight-1)
+	if (xIndex > mapWidth-1 || zIndex > mapHeight-1)
 		return 0xFFFFFFFF;
 
 	float xRatio = xIndexFloat - xIndex;
