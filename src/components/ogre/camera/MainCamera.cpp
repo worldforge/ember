@@ -130,14 +130,12 @@ void MainCamera::Config_ClipDistances(const std::string& section, const std::str
 		mCamera.setNearClipDistance(nearDistance);
 
 		//set the far clip distance high to make sure that the sky is completely shown
-		if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE)) {
-			/*		//NOTE: this won't currently work with the sky
-			 mCamera.setFarClipDistance(0);*/
-
-			mCamera.setFarClipDistance(farDistance);
-		} else {
-			mCamera.setFarClipDistance(farDistance);
-		}
+		//if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE)) {
+		//	//NOTE: this won't currently work with the sky
+		//	mCamera.setFarClipDistance(0);
+		//} else {
+		mCamera.setFarClipDistance(farDistance);
+		//}
 	}
 }
 
