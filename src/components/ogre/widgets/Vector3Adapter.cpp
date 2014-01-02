@@ -67,7 +67,7 @@ const Ogre::Vector3& Vector3Adapter::getValue() const
 	if (mXWindow) {
 		mVector.x = Ogre::StringConverter::parseReal( mXWindow->getText().c_str());
 	}
-	if (mXWindow) {
+	if (mYWindow) {
 		mVector.y = Ogre::StringConverter::parseReal( mYWindow->getText().c_str());
 	}
 	if (mZWindow) {
