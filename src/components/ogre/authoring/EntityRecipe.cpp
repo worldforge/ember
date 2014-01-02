@@ -280,8 +280,8 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 			codec.poll();
 		}
 
-		// Read decoder queue
-		while (decoder.queueSize() > 0) {
+		// Read decoder queue; only read the first item.
+		if (decoder.queueSize() > 0) {
 			Atlas::Message::MapType m = decoder.popMessage();
 			Eris::TypeInfo* erisType = typeService.getTypeByName(getEntityType());
 			if (erisType) {
