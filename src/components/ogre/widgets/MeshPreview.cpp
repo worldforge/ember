@@ -137,10 +137,10 @@ MeshPreviewMeshInstance::MeshPreviewMeshInstance(Ogre::Entity* entity): mEntity(
 void MeshPreviewMeshInstance::startAnimation(const std::string& name)
 {
 	Ogre::AnimationState* state = mEntity->getAnimationState(name);
-	state->setLoop(true);
 	if (state == 0) {
 		return;
 	}
+	state->setLoop(true);
 	state->setEnabled(true);
 	mActiveAnimations.insert(AnimationStore::value_type(name, state));
 
