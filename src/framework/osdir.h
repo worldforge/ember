@@ -123,7 +123,7 @@ namespace oslink
 					// First check the attributes trying to access a non-directory with 
 					// FindFirstFile takes ages
 					DWORD attrs = GetFileAttributes(aName.c_str());
-					if ( (attrs == 0xFFFFFFFF) || ((attrs && FILE_ATTRIBUTE_DIRECTORY) == 0) )
+					if ( (attrs == 0xFFFFFFFF) || ((attrs & FILE_ATTRIBUTE_DIRECTORY) == 0) )
 					{
 						willfail = true;
 						return;
@@ -155,7 +155,6 @@ namespace oslink
 			}
 			std::string next()
 				{
-					std::string prev = current;
 					WIN32_FIND_DATA entry;
 					int ok = FindNextFile(handle, &entry);
 					if (!ok)
