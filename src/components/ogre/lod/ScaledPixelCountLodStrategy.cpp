@@ -115,7 +115,8 @@ namespace Lod {
         default:
             {
                 // This case is not covered for obvious reasons
-                throw;
+                assert(0);
+				return 0;
             }
         }
     }
