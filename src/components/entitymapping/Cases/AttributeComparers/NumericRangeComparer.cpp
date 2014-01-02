@@ -44,7 +44,7 @@ NumericRangeComparer::NumericRangeComparer(NumericComparer* minComparer, Numeric
 
 bool NumericRangeComparer::test(float value)
 {
-	return mMinComparer->test(value) && mMinComparer->test(value);
+	return mMinComparer->test(value) && mMaxComparer->test(value);
 }
 
 
