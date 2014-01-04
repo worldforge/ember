@@ -289,6 +289,7 @@ function AssetsManager:selectMaterial(submesh)
 			list:ensureItemIsVisible(item)
 		else
 			list:clearAllSelections()
+			log.info("There's no material '" .. materialName .. "' available.")
 		end
 	end
 end
