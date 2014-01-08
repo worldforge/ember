@@ -40,9 +40,9 @@ namespace Ember {
 class Tokeniser
 {
 	protected:
+	const std::string mDelimeters;
 	std::string::size_type mPos, mLastPos;
 	std::string mTokenString;
-	const std::string mDelimeters;
 	
 	public:
 
