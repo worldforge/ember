@@ -54,6 +54,8 @@ public:
 	 */
 	void setPageDataProvider(IPageDataProvider* pageDataProvider);
 
+	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ);
+
 	/**
 	 * @brief Signal emitted when an area of the terrain has been updated.
 	 * The argument is the area (in world coordinates) that was updated.
@@ -73,6 +75,11 @@ protected:
 	 * The argument is the area (in world coordinates) that was shown.
 	 */
 	sigc::signal<void, const Ogre::TRect<Ogre::Real>>& mTerrainShownSignal;
+
+	/**
+	 * @brief Keeps track of the number of currently loading tasks.
+	 */
+	static unsigned int sLoadingTaskNum;
 
 	void loadEmberTerrainImpl(Ogre::TerrainGroup::TerrainSlot* slot, bool synchronous);
 

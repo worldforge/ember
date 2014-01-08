@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2013 Erik Ogenvik
 
+
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
@@ -29,12 +30,16 @@
 
 #include <functional>
 
+using namespace Ogre;
+
 namespace Ember
 {
 namespace OgreView
 {
 namespace Terrain
 {
+
+unsigned int EmberTerrainGroup::sLoadingTaskNum;
 
 EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize, Ogre::Real terrainWorldSize, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal) :
 		Ogre::TerrainGroup(sm, align, terrainSize, terrainWorldSize), mPageDataProvider(nullptr), mTerrainShownSignal(terrainShownSignal)
@@ -43,6 +48,11 @@ EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alig
 
 EmberTerrainGroup::~EmberTerrainGroup()
 {
+	while (sLoadingTaskNum > 0) {
+		OGRE_THREAD_SLEEP(2);
+		Root::getSingleton().getWorkQueue()->processResponses();
+	}
+
 }
 
 void EmberTerrainGroup::loadAllTerrains(bool synchronous /*= false*/)
@@ -78,7 +88,7 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 		long y = slot->y;
 
 		//The unloader function tells the page data provider that it should remove any terrain page bridge it has registered.
-		std::function<void()> unloader = [=] {mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y));};
+		std::function < void() > unloader = [=] {mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y));};
 
 		// Allocate in main thread so no race conditions
 		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager, EventTerrainAreaUpdated, mTerrainShownSignal);
@@ -92,9 +102,42 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 		LoadRequest req;
 		req.slot = slot;
 		req.origin = this;
-		++LoadRequest::loadingTaskNum;
+		++sLoadingTaskNum;
 		Ogre::Root::getSingleton().getWorkQueue()->addRequest(mWorkQueueChannel, WORKQUEUE_LOAD_REQUEST, Ogre::Any(req), 0, synchronous);
 
+	}
+}
+
+void EmberTerrainGroup::handleResponse(const WorkQueue::Response* res, const WorkQueue* srcQ)
+{
+	--sLoadingTaskNum;
+
+	LoadRequest lreq = any_cast<LoadRequest>(res->getRequest()->getData());
+
+	if (res->succeeded()) {
+		TerrainSlot* slot = lreq.slot;
+		Ogre::Terrain* terrain = slot->instance;
+		if (terrain) {
+			terrain->setPosition(getTerrainSlotPosition(slot->x, slot->y));
+
+			if (mAutoUpdateLod) {
+				terrain->load(-1, false);
+			} else {
+				terrain->load(0, true);
+			}
+
+			for (int i = -1; i <= 1; ++i) {
+				for (int j = -1; j <= 1; ++j) {
+					if (i != 0 || j != 0) {
+						connectNeighbour(slot, i, j);
+					}
+				}
+
+			}
+		}
+	} else {
+		S_LOG_FAILURE("Failed to prepare terrain at " << lreq.slot->x << ", " << lreq.slot->y << ". Error: " << res->getMessages());
+		lreq.slot->freeInstance();
 	}
 }
 
@@ -102,7 +145,6 @@ void EmberTerrainGroup::setPageDataProvider(IPageDataProvider* pageDataProvider)
 {
 	mPageDataProvider = pageDataProvider;
 }
-
 
 }
 }
