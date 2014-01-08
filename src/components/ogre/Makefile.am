@@ -1,6 +1,5 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 SUBDIRS = authoring environment data sounddefinitions scripting widgets
-#carpenter jesus ogreopcode
 
 noinst_LIBRARIES = libEmberOgre.a
 
@@ -104,7 +103,6 @@ libEmberOgre_a_SOURCES = \
 	EntityObserverBase.cpp TerrainPageDataProvider.cpp Scene.cpp ForestRenderingTechnique.cpp World.cpp \
 	Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp CompositionAction.cpp GraphicalChangeAdapter.cpp
 	
-# OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
 dist_conf_DATA = ogre.cfg resources.cfg
 
@@ -213,4 +211,3 @@ noinst_HEADERS = \
 	EntityObserverBase.h TerrainPageDataProvider.h ILightning.h Scene.h ForestRenderingTechnique.h \
 	ISceneRenderingTechnique.h World.h EmberOgreSignals.h Screen.h ShapeVisual.h TerrainEntityManager.h \
 	OgreConfigurator.h CompositionAction.h GraphicalChangeAdapter.h
-#OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h
