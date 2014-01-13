@@ -90,8 +90,20 @@ do
 			# -quality 95 is suitable for photos
 			# -depth 8 guarantees that the pixeldepth is 8: we don't have any floating point textures yet
 			#echo "convert $origfile -quality 95 -depth 8 -resize  $newfile"
-	
-			convert $origfile -quality 95 -depth 8 -resize "${textureSize}x${textureSize}>" $newfile
+			
+			#For some reason (bug in Ogre? in ImageMagick? in FreeImage?) Ogre doesn't properly recognize
+			#greyscale textures unless they have 256 colours. The "convert" call will optimize the images
+			#and reduce the palette. To prevent it from doing this to greyscale images we must first find
+			#those that are such, and then supply the "-colors 256" directive to "convert" in order for it
+			#to preserve the palette.
+			isgrayscale=`identify $origfile 2>/dev/null | grep -c '256c'`
+			
+			if [ "$isgrayscale" == '1' ]
+			then
+				colourdirective=" -colors 256 "
+			fi
+			
+			convert $origfile -quality 95 -depth 8 $colourdirective -resize "${textureSize}x${textureSize}>" $newfile
 			echo "Converted $filename to max ${textureSize}x${textureSize}"
 		fi
 	fi
