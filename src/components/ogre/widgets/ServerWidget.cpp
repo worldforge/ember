@@ -97,12 +97,12 @@ void ServerWidget::buildWidget()
 
 	if (loadMainSheet("ServerWidget.layout", "Server/")) {
 
-		CEGUI::PushButton* okButton = static_cast<CEGUI::PushButton*> (getWindow("NoCharactersAlert/OkButton"));
+		CEGUI::PushButton* okButton = static_cast<CEGUI::PushButton*> (mMainWindow->getWindow("NoCharactersAlert/OkButton"));
 		if (okButton) {
 			BIND_CEGUI_EVENT(okButton, CEGUI::PushButton::EventClicked, ServerWidget::OkButton_Click);
 		}
 
-		CEGUI::PushButton* entityDestroyedOkButton = static_cast<CEGUI::PushButton*> (getWindow("EntityDestroyed/OkButton"));
+		CEGUI::PushButton* entityDestroyedOkButton = static_cast<CEGUI::PushButton*> (mMainWindow->getWindow("EntityDestroyed/OkButton"));
 		if (entityDestroyedOkButton) {
 			BIND_CEGUI_EVENT(entityDestroyedOkButton, CEGUI::PushButton::EventClicked, ServerWidget::EntityDestroyedOkButton_Click);
 		}
