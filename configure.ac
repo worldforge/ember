@@ -346,15 +346,17 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 AC_SUBST(OGRE_REAL_TYPE, $REAL_TYPE)
 
 CEGUI_VERSION=0.8.3
-PKG_CHECK_MODULES(CEGUI, CEGUI-0 >= $CEGUI_VERSION,
+CEGUI_PKG=CEGUI-0
+PKG_CHECK_MODULES(CEGUI, $CEGUI_PKG >= $CEGUI_VERSION,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LIBS="$LIBS $CEGUI_LIBS"
+		AC_SUBST(CEGUI_MODULEDIR, `pkg-config $CEGUI_PKG --variable=moduledir`)
 	],
 	[
 		AC_MSG_ERROR([Couldn't find CEGUI or tests failed:
 $CEGUI_PKG_ERRORS
-Please go to http://crayzedsgui.sourceforge.net to get the latest, or check
+Please go to http://www.cegui.org.uk to get the latest, or check
 config.log to see why the tests failed, and fix it.])
 	])
 	
