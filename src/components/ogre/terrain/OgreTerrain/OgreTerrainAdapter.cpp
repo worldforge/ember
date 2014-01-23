@@ -137,13 +137,17 @@ void OgreTerrainAdapter::loadScene()
 
 void OgreTerrainAdapter::reset()
 {
-	mTerrainPagedWorldSection->removeAllPages();
+	if (mTerrainPagedWorldSection) {
+		mTerrainPagedWorldSection->removeAllPages();
+	}
 }
 
 
 void OgreTerrainAdapter::reloadAllPages()
 {
-	mTerrainPagedWorldSection->removeAllPages();
+	if (mTerrainPagedWorldSection) {
+		mTerrainPagedWorldSection->removeAllPages();
+	}
 }
 
 void OgreTerrainAdapter::reloadPage(const Domain::TerrainIndex& index)
