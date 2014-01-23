@@ -304,11 +304,17 @@ void GUIManager::view_EntityCreated(Eris::Entity* entity)
 	EmberEntity* emberEntity = static_cast<EmberEntity*>(entity);
 	//The Entity has a shorter lifespan than ours, so we don't need to store references to the connections.
 	emberEntity->EventTalk.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Talk), emberEntity));
+	emberEntity->Emote.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Emote), emberEntity));
 }
 
 void GUIManager::entity_Talk(const Domain::EntityTalk& entityTalk, EmberEntity* entity)
 {
 	AppendIGChatLine.emit(entityTalk, entity);
+}
+
+void GUIManager::entity_Emote(const std::string& description, EmberEntity* entity)
+{
+	AppendAvatarImaginary(entity->getName() + " " + description);
 }
 
 void GUIManager::scriptingServiceStopping()

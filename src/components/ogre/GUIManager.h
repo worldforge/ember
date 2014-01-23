@@ -380,6 +380,9 @@ protected:
 	 */
 	void entity_Talk(const Domain::EntityTalk& entityTalk, EmberEntity* entity);
 
+	void entity_Emote(const std::string& description, EmberEntity* entity);
+
+
 	/**
 	 Adapter for CEGUI which will send input events to CEGUI
 	 */

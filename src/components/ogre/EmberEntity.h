@@ -391,10 +391,6 @@ protected:
 	 */
 	virtual void onAction(const Atlas::Objects::Operation::RootOperation& act);
 	/**
-	 *    @copydoc Eris::Entity::onImaginary()
-	 */
-	virtual void onImaginary(const Atlas::Objects::Root& act);
-	/**
 	 *    @copydoc Eris::Entity::onSoundAction()
 	 */
 	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);

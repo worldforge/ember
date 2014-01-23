@@ -221,21 +221,6 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 	Entity::onAction(act);
 }
 
-void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
-{
-	Atlas::Message::Element attr;
-	if (act->copyAttr("description", attr) && attr.isString()) {
-		std::string message = getName() + " " + attr.asString() + ".";
-
-		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
-
-		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << attr.String());
-	}
-
-	Entity::onImaginary(act);
-
-}
-
 const std::vector<std::string>& EmberEntity::getSuggestedResponses() const
 {
 	return mSuggestedResponses;
