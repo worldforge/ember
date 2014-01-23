@@ -107,7 +107,7 @@ bool LoggedInState::createCharacter(const std::string& name, const std::string& 
 {
 	ConsoleBackend::getSingleton().pushMessage("Creating char...", "important");
 	std::string msg;
-	msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
+	msg = "Creating character of type '" + type + "' with name '" + name + "' and sex '" + sex + "'.";
 	ConsoleBackend::getSingleton().pushMessage(msg, "info");
 
 	S_LOG_INFO("Creating character.");
@@ -143,7 +143,7 @@ bool LoggedInState::logout()
 {
 	Eris::Result result = mAccount.logout();
 	if (result != Eris::NO_ERR) {
-		//If something went wrong when loggíng out, just disconnect.
+		//If something went wrong when logging out, just disconnect.
 		disconnect();
 	}
 
@@ -152,25 +152,14 @@ bool LoggedInState::logout()
 
 void LoggedInState::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
 {
-	S_LOG_INFO("Got Character Info");
-	ConsoleBackend::getSingleton().pushMessage("Got character info", "info");
-
+	S_LOG_INFO("Got character info");
 	getSignals().GotCharacterInfo.emit(info);
 }
 
 void LoggedInState::gotAllCharacters()
 {
-	S_LOG_INFO("Got All Characters");
-	ConsoleBackend::getSingleton().pushMessage("Got all characters", "info");
-	Eris::CharacterMap cm = mAccount.getCharacters();
-	Eris::CharacterMap::iterator i;
-	for (i = cm.begin(); i != cm.end(); i++) {
-		std::string msg;
-		msg = "Character ID: [" + (*i).first + "].";
-		ConsoleBackend::getSingleton().pushMessage(msg, "info");
-	}
+	S_LOG_INFO("Got all characters");
 	getSignals().GotAllCharacters.emit(&mAccount);
-
 }
 
 void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar)
