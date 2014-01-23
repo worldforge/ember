@@ -4,7 +4,7 @@ AssetsManager = {}
 
 --Reloads a resource
 function AssetsManager:reloadResource(manager, resourceName)
-	local resourcePtr = manager:getByName(resourceName)
+	local resourcePtr = manager:getResourceByName(resourceName)
 	if resourcePtr:isNull() == false then
 		local resource = resourcePtr:get()
 		resource:reload()
