@@ -479,7 +479,16 @@ bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
 	//The admin character should always be transient.
 	//NOTE: This is currently not handled in Cyphesis, as it allows no extra parameters. Nonetheless we'll keep it here, since it's a prudent thing to do.
 	extraProperties.insert(std::make_pair("transient", -1.0f));
-	EmberServices::getSingleton().getServerService().createCharacter("The Creator", "female", "creator", "Almighty", "", extraProperties);
+
+	//If there are any spawn points defined we'll use the first one.
+	//It would be nice if we could present the user with an option to choose amongst many,
+	//or just to spawn at origo. But for now this will do in its simplicity.
+	const Eris::SpawnPointMap& spawnPoints = mAccount->getSpawnPoints();
+	std::string spawn;
+	if (!spawnPoints.empty()) {
+		spawn = spawnPoints.begin()->second.getName();
+	}
+	EmberServices::getSingleton().getServerService().createCharacter("The Creator", "female", "creator", "Almighty", spawn, extraProperties);
 	return true;
 }
 

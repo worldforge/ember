@@ -28,6 +28,7 @@
 #include <Eris/Connection.h>
 #include <Eris/Response.h>
 #include <Eris/CustomEntities.h>
+#include <Eris/SpawnPoint.h>
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -86,6 +87,16 @@ void LocalServerAdminCreator::server_GotAccount(Eris::Account* account)
 
 void LocalServerAdminCreator::server_LoginSuccess(Eris::Account* account)
 {
-	mServerService.createCharacter("admin", "female", "creator", "", "", Atlas::Message::MapType());
+	//If there are any spawn points defined we'll use the first one.
+	//It would be nice if we could present the user with an option to choose amongst many,
+	//or just to spawn at origo. But for now this will do in its simplicity.
+	const Eris::SpawnPointMap& spawnPoints = account->getSpawnPoints();
+	std::string spawn;
+	if (!spawnPoints.empty()) {
+		spawn = spawnPoints.begin()->second.getName();
+	}
+
+
+	mServerService.createCharacter("admin", "female", "creator", "", spawn, Atlas::Message::MapType());
 }
 }
