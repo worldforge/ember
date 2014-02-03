@@ -14,5 +14,13 @@ class Connection : public BaseConnection {
     
     /// final disconnect (or hard disocnnect) notifcation
     sigc::signal<void> Disconnected;
+    
+    /**
+    Emitted when a non-fatal error occurs. Tthese are nearly always network
+    related, such as connections being lost, or host names not found. The
+    connection will be placed into the DISCONNECTED state after the signal
+    is emitted; thus the current state (when the failure occured) is still valid
+    during the callback */
+    sigc::signal<void, const std::string&> Failure;    
 };
 }

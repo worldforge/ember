@@ -196,6 +196,11 @@ function ServerBrowser:Server_GotConnection(connection)
 		self.widget:show()
 		self.widget:getMainWindow():activate()
 	end)
+	connect(self.connectors, connection.Failure, function()
+		self.widget:show()
+		self.widget:getMainWindow():activate()
+	end)
+	
 end
 
 function ServerBrowser:Server_StatusChanged(status)
