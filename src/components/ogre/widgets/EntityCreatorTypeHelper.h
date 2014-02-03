@@ -26,6 +26,7 @@
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include <sigc++/signal.h>
+#include <sigc++/trackable.h>
 
 namespace CEGUI
 {
@@ -68,7 +69,7 @@ class EntityTextureManipulator;
  * A helper class for creating simple entities directly from entity types.
  * The helper binds to a tree widget, which will be filled with entity types.
  */
-class EntityCreatorTypeHelper
+class EntityCreatorTypeHelper : public virtual sigc::trackable
 {
 public:
 
