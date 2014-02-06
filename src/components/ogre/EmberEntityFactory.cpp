@@ -76,7 +76,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*entity, mScene);
 	EntityMapping::EntityMapping* mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, creator, &mView);
-	if (!mapping) {
+	if (mapping) {
 	    entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityFactory::deleteMapping), mapping));
 	    mapping->initialize();
 	}
