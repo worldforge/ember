@@ -349,14 +349,12 @@ void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter)
 }
 
 DelayedFoliageInitializer::DelayedFoliageInitializer(sigc::slot<void> callback, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
-		mCallback(callback), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
+		mCallback(callback), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::TimedEvent(boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();})), mTotalElapsedTime(0)
 {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload
 	//by delaying the foliage we can thus in most cases avoid those reloads
 	//wait three seconds
-	mTimeout->Expired.connect(sigc::mem_fun(this, &DelayedFoliageInitializer::timout_Expired));
-
 }
 
 DelayedFoliageInitializer::~DelayedFoliageInitializer()
@@ -371,7 +369,7 @@ void DelayedFoliageInitializer::timout_Expired()
 		mCallback();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
-		mTimeout->reset(mIntervalMs);
+		mTimeout = new Eris::TimedEvent(boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();});
 	}
 }
 

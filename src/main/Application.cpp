@@ -79,6 +79,7 @@ TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 #include <sys/stat.h>
 
 #include <boost/thread.hpp>
+#include <boost/asio.hpp>
 
 #ifndef HAVE_SIGHANDLER_T
 typedef void (*sighandler_t)(int);
@@ -164,7 +165,7 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."), mScriptingResourceProvider(0)
+		mIoService(new boost::asio::io_service()), mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."), mScriptingResourceProvider(0)
 
 {
 
@@ -180,6 +181,8 @@ Application::~Application()
 
 	//When shutting down make sure to delete all pending objects from Eris. This is mainly because we want to be able to track memory leaks.
 	Eris::execDeleteLaters();
+
+	delete mIoService;
 
 	delete mOgreView;
 	delete mServices;
@@ -290,14 +293,68 @@ void Application::mainLoopStep(long minMicrosecondsPerFrame)
 
 void Application::mainLoop()
 {
-	const ptime currentTime = microsec_clock::local_time();
+	DesiredFpsListener desiredFpsListener;
+
+	Input& input(Input::getSingleton());
+	ptime currentTime;
+	boost::asio::io_service:: work work(*mIoService);
+	boost::asio::deadline_timer nextFrameTimer(*mIoService);
 	mLastTimeInputProcessingStart = currentTime;
 	mLastTimeInputProcessingEnd = currentTime;
 	mLastTimeMainLoopStepEnded = currentTime;
-	DesiredFpsListener desiredFpsListener;
-	while (mShouldQuit == false) {
-		mainLoopStep(desiredFpsListener.getMicrosecondsPerFrame());
-	}
+	do {
+		try {
+			S_LOG_INFO("Start new frame.");
+			unsigned int frameActionMask = 0;
+			TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(desiredFpsListener.getMicrosecondsPerFrame()));
+			if (mWorldView) {
+				mWorldView->update();
+			}
+
+			currentTime = microsec_clock::local_time();
+			mMainLoopController.EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).total_microseconds() / 1000000.0f);
+			mLastTimeInputProcessingStart = currentTime;
+			input.processInput();
+			frameActionMask |= MainLoopController::FA_INPUT;
+
+			currentTime = microsec_clock::local_time();
+			mMainLoopController.EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).total_microseconds() / 1000000.0f);
+			mLastTimeInputProcessingEnd = currentTime;
+
+			bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
+			if (updatedRendering) {
+				frameActionMask |= MainLoopController::FA_GRAPHICS;
+			}
+			mServices->getSoundService().cycle();
+			frameActionMask |= MainLoopController::FA_SOUND;
+
+			mOgreView->processBackgroundTasks(TimeFrame(boost::posix_time::microseconds(100)));
+
+			bool renderNextFrame = false;
+			nextFrameTimer.expires_from_now(timeFrame.getRemainingTime());
+			nextFrameTimer.async_wait([&](boost::system::error_code ec) {
+				if (!ec) {
+					renderNextFrame = true;
+				}
+			});
+			//Keep on running IO handlers until we need to render again
+			do {
+				mIoService->run_one();
+			} while (!renderNextFrame && !mShouldQuit);
+			nextFrameTimer.cancel();
+
+			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
+
+			mLastTimeMainLoopStepEnded = microsec_clock::local_time();
+		} catch (const std::exception& ex) {
+			S_LOG_CRITICAL("Got exception, shutting down." << ex);
+			throw;
+		} catch (...) {
+			S_LOG_CRITICAL("Got unknown exception, shutting down.");
+			throw;
+		}
+
+	} while (!mShouldQuit);
 }
 
 void Application::prepareComponents()
@@ -309,7 +366,7 @@ void Application::initializeServices()
 	// Initialize Ember services
 	std::cout << "Initializing Ember services" << std::endl;
 
-	mServices = new EmberServices();
+	mServices = new EmberServices(*mIoService);
 	// Initialize the Configuration Service
 	ConfigService& configService = mServices->getConfigService();
 	configService.start();

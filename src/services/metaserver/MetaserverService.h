@@ -30,6 +30,14 @@
 
 #include <string>
 
+namespace boost
+{
+namespace asio
+{
+class io_service;
+}
+}
+
 namespace Ember {
 
 /**
@@ -49,6 +57,7 @@ class MetaserverService: public Service,
     //======================================================================
     private:
 
+	boost::asio::io_service& mIoService;
     Eris::Meta* mMetaserver;
 //     Eris::ServerList serverlist;
 //     bool listed;
@@ -65,7 +74,7 @@ class MetaserverService: public Service,
 	public:
 	
     /** Creates a new ConfigService using default values. */
-    MetaserverService();
+    MetaserverService(boost::asio::io_service& io_service);
 
 
     /** Deletes a ConfigService instance. */

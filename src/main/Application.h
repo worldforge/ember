@@ -75,6 +75,14 @@ namespace Eris
 class View;
 }
 
+namespace boost
+{
+namespace asio
+{
+class io_service;
+}
+}
+
 /**
  * @brief The main namespace for Ember.
  *
@@ -181,6 +189,8 @@ public:
 	Eris::View* getMainView();
 
 private:
+
+	boost::asio::io_service* mIoService;
 
 	/**
 	 * @brief The main Ogre graphical view.

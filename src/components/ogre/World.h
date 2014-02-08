@@ -483,7 +483,7 @@ protected:
 	unsigned int mIntervalMs;
 	unsigned int mMaxTimeMs;
 
-	Eris::Timeout* mTimeout;
+	Eris::TimedEvent* mTimeout;
 	unsigned int mTotalElapsedTime;
 
 	/**

@@ -35,8 +35,8 @@
 namespace Ember
 {
 
-NonConnectedState::NonConnectedState(ServerServiceSignals& signals) :
-	Connect("connect", this, "Connect to a server."), mSignals(signals), mChildState(0)
+NonConnectedState::NonConnectedState(ServerServiceSignals& signals, boost::asio::io_service& io_service) :
+	Connect("connect", this, "Connect to a server."), mSignals(signals), mIoService(io_service), mChildState(nullptr)
 {
 }
 
@@ -49,7 +49,7 @@ void NonConnectedState::destroyChildState()
 	//Make sure to sever the connection, so that we don't end up in an infinite loop if something goes wrong when shutting down.
 	mDisconnectedConnection.disconnect();
 	delete mChildState;
-	mChildState = 0;
+	mChildState = nullptr;
 }
 
 ServerServiceSignals& NonConnectedState::getSignals() const
@@ -68,7 +68,7 @@ IState& NonConnectedState::getTopState()
 bool NonConnectedState::connect(const std::string& host, short port)
 {
 	destroyChildState();
-	mChildState = new ConnectingState(*this, host, port);
+	mChildState = new ConnectingState(*this, mIoService, host, port);
 	if (!mChildState->connect()) {
 		destroyChildState();
 	} else {
@@ -76,13 +76,13 @@ bool NonConnectedState::connect(const std::string& host, short port)
 		mDisconnectedConnection = mChildState->getConnection().Disconnected.connect(sigc::mem_fun(*this, &NonConnectedState::disconnected));
 	}
 
-	return mChildState != 0;
+	return mChildState != nullptr;
 }
 
 bool NonConnectedState::connectLocal(const std::string& socket)
 {
 	destroyChildState();
-	mChildState = new ConnectingState(*this, socket);
+	mChildState = new ConnectingState(*this, mIoService, socket);
 	if (!mChildState->connect()) {
 		destroyChildState();
 	} else {
@@ -90,7 +90,7 @@ bool NonConnectedState::connectLocal(const std::string& socket)
 		mDisconnectedConnection = mChildState->getConnection().Disconnected.connect(sigc::mem_fun(*this, &NonConnectedState::disconnected));
 	}
 
-	return mChildState != 0;
+	return mChildState != nullptr;
 }
 
 

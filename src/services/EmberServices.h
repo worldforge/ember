@@ -22,6 +22,14 @@
 
 #include "framework/Singleton.h"
 
+namespace boost
+{
+namespace asio
+{
+class io_service;
+}
+}
+
 namespace Ember
 {
 
@@ -65,7 +73,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	EmberServices();
+	EmberServices(boost::asio::io_service& io_service);
 
 	/**
 	 * @brief Dtor.

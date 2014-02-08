@@ -32,6 +32,13 @@
 #include <sigc++/object_slot.h>
 #include <memory>
 
+namespace boost
+{
+namespace asio
+{
+class io_service;
+}
+}
 
 namespace Eris
 {
@@ -69,7 +76,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	ServerService();
+	ServerService(boost::asio::io_service& io_service);
 
 	/**
 	 * @brief Dtor.
@@ -261,6 +268,8 @@ private:
 	void destroyedAvatar();
 
 	IServerAdapter& getAdapter();
+
+	boost::asio::io_service& mIoService;
 
 	Eris::Connection* mConnection;
 	Eris::Account* mAccount;

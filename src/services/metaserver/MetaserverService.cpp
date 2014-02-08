@@ -54,8 +54,8 @@ namespace Ember
 typedef std::list<Eris::ServerInfo> svrl;
 typedef svrl::iterator Iter;
 
-MetaserverService::MetaserverService() :
-	mMetaserver(0), MetaRefresh("meta_refresh", this, "Refresh the meta server listing."), MetaAbort("meta_abort", this, "Abort the meta server update process.")
+MetaserverService::MetaserverService(boost::asio::io_service& io_service) :
+	mIoService(io_service), mMetaserver(0), MetaRefresh("meta_refresh", this, "Refresh the meta server listing."), MetaAbort("meta_abort", this, "Abort the meta server update process.")
 //   , MetaList("meta_list", this, "List all servers.")
 {
 	setName("Metaserver Service");
@@ -87,7 +87,7 @@ Service::Status MetaserverService::start()
 	}
 
 	S_LOG_INFO("Connecting to meta server at address " << metaserverHostname << ".");
-	mMetaserver = new Eris::Meta(metaserverHostname, 20);
+	mMetaserver = new Eris::Meta(mIoService, metaserverHostname, 20);
 	mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
 	mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
 	mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));

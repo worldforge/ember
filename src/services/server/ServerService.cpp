@@ -26,19 +26,20 @@
 #include "NonConnectedAdapter.h"
 #include "NonConnectedState.h"
 
+#include <boost/asio.hpp>
+
 //Needed for the "access" function.
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #else
 #include <unistd.h>
-#include <skstream/skstream_unix.h>
 #endif
 
 namespace Ember
 {
 
-ServerService::ServerService() :
-		mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this))
+ServerService::ServerService(boost::asio::io_service& io_service) :
+		mIoService(io_service), mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this, io_service))
 {
 	setName("Server Service");
 	setDescription("Service for Server session");
@@ -132,19 +133,19 @@ bool ServerService::hasLocalSocket(const std::string& socketPath)
 #ifdef _WIN32
 	return false;
 #else
+
 	//check that the socket file is available and that we can connect to it
 	if (access(socketPath.c_str(), 0) != 0) {
 		return false;
 	}
 
-	//TODO: this is a little overkill since it results in a SIGPIP in the server
-	//For now it will do, but we should check the validity of the socket in a better way.
-	unix_socket_stream socket(socketPath.c_str(), true);
-	if (socket.is_open()) {
-		socket.close();
-		return true;
+	try {
+		boost::asio::local::stream_protocol::socket socket(mIoService);
+		socket.connect(boost::asio::local::stream_protocol::endpoint(socketPath));
+		return socket.is_open();
+	} catch (...) {
+		return false;
 	}
-	return false;
 #endif
 }
 

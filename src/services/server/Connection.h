@@ -21,6 +21,14 @@
 
 #include <Eris/Connection.h>
 
+namespace boost
+{
+namespace asio
+{
+class io_service;
+}
+}
+
 namespace Ember
 {
 
@@ -42,7 +50,7 @@ public:
 	 * @param debug Whether we should connect in debug mode.
 	 * @param listener An optional listener. Ownership will be transferred to this instance.
 	 */
-	Connection(const std::string &clientName, const std::string& host, short port, bool debug, IConnectionListener* listener);
+	Connection(boost::asio::io_service& io_service, const std::string &clientName, const std::string& host, short port, IConnectionListener* listener);
 
 	/**
 	 * @brief Ctor. for connecting to a local socket.
@@ -51,7 +59,7 @@ public:
 	 * @param debug Whether we should connect in debug mode.
 	 * @param listener An optional listener. Ownership will be transferred to this instance.
 	 */
-	Connection(const std::string &clientName, const std::string& socket, bool debug, IConnectionListener* listener);
+	Connection(boost::asio::io_service& io_service, const std::string &clientName, const std::string& socket, IConnectionListener* listener);
 	virtual ~Connection();
 
 	virtual void send(const Atlas::Objects::Root &obj);

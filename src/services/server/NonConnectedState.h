@@ -30,6 +30,14 @@
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
 
+namespace boost
+{
+namespace asio
+{
+class io_service;
+}
+}
+
 namespace Ember
 {
 
@@ -41,7 +49,7 @@ class ConnectingState;
 class NonConnectedState: public virtual sigc::trackable, public IState, public ConsoleObject
 {
 public:
-	NonConnectedState(ServerServiceSignals& signals);
+	NonConnectedState(ServerServiceSignals& signals, boost::asio::io_service& io_service);
 	virtual ~NonConnectedState();
 
 	virtual void destroyChildState();
@@ -86,6 +94,8 @@ public:
 private:
 
 	ServerServiceSignals& mSignals;
+
+	boost::asio::io_service& mIoService;
 
 	ConnectingState* mChildState;
 

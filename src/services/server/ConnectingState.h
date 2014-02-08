@@ -23,6 +23,14 @@
 
 #include "Connection.h"
 
+namespace boost
+{
+namespace asio
+{
+class io_service;
+}
+}
+
 namespace Ember
 {
 
@@ -43,14 +51,14 @@ public:
 	 * @param host The hostname of the remote host.
 	 * @param port The port on the remote host.
 	 */
-	ConnectingState(IState& parentState, const std::string& host, short port);
+	ConnectingState(IState& parentState, boost::asio::io_service& io_service, const std::string& host, short port);
 
 	/**
 	 * @brief Ctor. for connecting to a local socket.
 	 * @param parent State The parent state.
 	 * @param socket The path to the local socket.
 	 */
-	ConnectingState(IState& parentState, const std::string& socket);
+	ConnectingState(IState& parentState, boost::asio::io_service& io_service, const std::string& socket);
 	virtual ~ConnectingState();
 
 	bool connect();

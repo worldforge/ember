@@ -62,7 +62,7 @@ private:
 	/**
 	 The timeout object which provides timeout functionality.
 	 */
-	Eris::Timeout mTimeout;
+	Eris::TimedEvent mTimeout;
 
 	/**
 	 *    Called when the time has expired.
