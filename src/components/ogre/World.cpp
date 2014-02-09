@@ -60,7 +60,8 @@
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 #include <Eris/Calendar.h>
-#include <Eris/TimedEventService.h>
+#include <Eris/EventService.h>
+#include <Eris/Connection.h>
 
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
@@ -170,6 +171,12 @@ Eris::View& World::getView() const
 {
 	return mView;
 }
+
+Eris::EventService& World::getEventService() const
+{
+	return mView.getAvatar()->getConnection()->getEventService();
+}
+
 
 Scene& World::getScene() const
 {
@@ -350,7 +357,7 @@ void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter)
 }
 
 DelayedFoliageInitializer::DelayedFoliageInitializer(sigc::slot<void> callback, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
-		mCallback(callback), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::TimedEvent(boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();})), mTotalElapsedTime(0)
+		mCallback(callback), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::TimedEvent(view.getAvatar()->getConnection()->getEventService(), boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();})), mTotalElapsedTime(0)
 {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload
@@ -370,7 +377,7 @@ void DelayedFoliageInitializer::timout_Expired()
 		mCallback();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
-		mTimeout = new Eris::TimedEvent(boost::posix_time::milliseconds(mIntervalMs), [&](){this->timout_Expired();});
+		mTimeout = new Eris::TimedEvent(mView.getAvatar()->getConnection()->getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&](){this->timout_Expired();});
 	}
 }
 

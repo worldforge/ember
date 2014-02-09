@@ -72,16 +72,8 @@
 
 namespace Eris
 {
+class Session;
 class View;
-class TimedEventService;
-}
-
-namespace boost
-{
-namespace asio
-{
-class io_service;
-}
 }
 
 /**
@@ -184,9 +176,7 @@ public:
 
 private:
 
-	boost::asio::io_service* mIoService;
-
-	Eris::TimedEventService* mTimedEventService;
+	Eris::Session* mSession;
 
 	/**
 	 * @brief The main Ogre graphical view.

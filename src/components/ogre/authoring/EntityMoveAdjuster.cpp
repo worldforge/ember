@@ -34,8 +34,8 @@ namespace OgreView
 {
 namespace Authoring
 {
-EntityMoveAdjustmentInstance::EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity) :
-	mEntity(entity), mTimeout(boost::posix_time::milliseconds(1500), [&](){this->timout_Expired();}), mMoveAdjuster(moveAdjuster)
+EntityMoveAdjustmentInstance::EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity, Eris::EventService& eventService) :
+	mEntity(entity), mTimeout(eventService, boost::posix_time::milliseconds(1500), [&](){this->timout_Expired();}), mMoveAdjuster(moveAdjuster)
 {
 }
 
@@ -45,8 +45,8 @@ void EntityMoveAdjustmentInstance::timout_Expired()
 	mMoveAdjuster->removeInstance(this);
 }
 
-EntityMoveAdjuster::EntityMoveAdjuster(EntityMoveManager* manager) :
-	mManager(manager)
+EntityMoveAdjuster::EntityMoveAdjuster(EntityMoveManager* manager, Eris::EventService& eventService) :
+	mManager(manager), mEventService(eventService)
 {
 	mManager->EventStartMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_StartMoving));
 	mManager->EventFinishedMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_FinishedMoving));
@@ -64,7 +64,7 @@ void EntityMoveAdjuster::removeInstance(EntityMoveAdjustmentInstance* instance)
 void EntityMoveAdjuster::EntityMoveManager_FinishedMoving()
 {
 	if (mActiveEntity) {
-		EntityMoveAdjustmentInstance* instance = new EntityMoveAdjustmentInstance(this, mActiveEntity);
+		EntityMoveAdjustmentInstance* instance = new EntityMoveAdjustmentInstance(this, mActiveEntity, mEventService);
 		mInstances.push_back(instance);
 		mActiveEntity = 0;
 	}

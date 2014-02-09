@@ -32,13 +32,6 @@
 #include <sigc++/object_slot.h>
 #include <memory>
 
-namespace boost
-{
-namespace asio
-{
-class io_service;
-}
-}
 
 namespace Eris
 {
@@ -49,6 +42,7 @@ class Lobby;
 class Account;
 class Entity;
 class TransferInfo;
+class Session;
 }
 
 namespace Ember
@@ -76,7 +70,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	ServerService(boost::asio::io_service& io_service);
+	ServerService(Eris::Session& session);
 
 	/**
 	 * @brief Dtor.
@@ -269,7 +263,7 @@ private:
 
 	IServerAdapter& getAdapter();
 
-	boost::asio::io_service& mIoService;
+	Eris::Session& mSession;
 
 	Eris::Connection* mConnection;
 	Eris::Account* mAccount;

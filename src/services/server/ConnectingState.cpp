@@ -35,8 +35,8 @@
 
 namespace Ember
 {
-ConnectingState::ConnectingState(IState& parentState, boost::asio::io_service& io_service, const std::string& host, short port) :
-	StateBase<ConnectedState>::StateBase(parentState), mConnection(io_service, std::string("Ember ") + VERSION, host, port, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false), mIoService(io_service)
+ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, const std::string& host, short port) :
+	StateBase<ConnectedState>::StateBase(parentState), mConnection(session, std::string("Ember ") + VERSION, host, port, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false)
 {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
@@ -46,8 +46,8 @@ ConnectingState::ConnectingState(IState& parentState, boost::asio::io_service& i
 	//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 }
 
-ConnectingState::ConnectingState(IState& parentState, boost::asio::io_service& io_service, const std::string& socket) :
-	StateBase<ConnectedState>::StateBase(parentState), mConnection(io_service, std::string("Ember ") + VERSION, socket, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false), mIoService(io_service)
+ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, const std::string& socket) :
+	StateBase<ConnectedState>::StateBase(parentState), mConnection(session, std::string("Ember ") + VERSION, socket, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false)
 {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));

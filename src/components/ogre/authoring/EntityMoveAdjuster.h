@@ -23,7 +23,7 @@
 #ifndef EMBEROGREENTITYMOVEADJUSTER_H
 #define EMBEROGREENTITYMOVEADJUSTER_H
 
-#include <Eris/TimedEventService.h>
+#include <Eris/EventService.h>
 #include <vector>
 
 namespace Ember
@@ -51,7 +51,7 @@ public:
 	 * @param entity
 	 * @return
 	 */
-	EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity);
+	EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity, Eris::EventService& eventService);
 
 private:
 	/**
@@ -90,7 +90,7 @@ public:
 	 * @param manager
 	 * @return
 	 */
-	EntityMoveAdjuster(EntityMoveManager* manager);
+	EntityMoveAdjuster(EntityMoveManager* manager, Eris::EventService& eventService);
 private:
 	typedef std::vector<EntityMoveAdjustmentInstance*> MoveAdjustmentInstanceStore;
 
@@ -130,6 +130,8 @@ private:
 	 A reference to the manager.
 	 */
 	EntityMoveManager* mManager;
+
+	Eris::EventService& mEventService;
 };
 
 }

@@ -23,12 +23,9 @@
 
 #include "Connection.h"
 
-namespace boost
+namespace Eris
 {
-namespace asio
-{
-class io_service;
-}
+class Session;
 }
 
 namespace Ember
@@ -51,14 +48,14 @@ public:
 	 * @param host The hostname of the remote host.
 	 * @param port The port on the remote host.
 	 */
-	ConnectingState(IState& parentState, boost::asio::io_service& io_service, const std::string& host, short port);
+	ConnectingState(IState& parentState, Eris::Session& session, const std::string& host, short port);
 
 	/**
 	 * @brief Ctor. for connecting to a local socket.
 	 * @param parent State The parent state.
 	 * @param socket The path to the local socket.
 	 */
-	ConnectingState(IState& parentState, boost::asio::io_service& io_service, const std::string& socket);
+	ConnectingState(IState& parentState, Eris::Session& session, const std::string& socket);
 	virtual ~ConnectingState();
 
 	bool connect();
@@ -78,12 +75,6 @@ private:
 	 * Since that won't happen if we disconnect because of a failure we need to do that ourselves when shutting down.
 	 */
 	bool mHasSignalledDisconnected;
-
-	/**
-	 * @brief Used for delayed deletion of the child state of the parent state.
-	 */
-	boost::asio::io_service& mIoService;
-
 
 	void connected();
 

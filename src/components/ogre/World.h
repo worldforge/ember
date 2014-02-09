@@ -40,6 +40,7 @@ class Connection;
 class Entity;
 class TimedEvent;
 class Calendar;
+class EventService;
 }
 
 namespace varconf
@@ -149,6 +150,8 @@ public:
 	 * @returns The Eris view of the server side world.
 	 */
 	Eris::View& getView() const;
+
+	Eris::EventService& getEventService() const;
 
 	/**
 	 * @brief Gets the main avatar instance.

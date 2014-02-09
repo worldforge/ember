@@ -23,19 +23,12 @@
 #include "NonConnectedAdapter.h"
 #include "framework/ConsoleObject.h"
 
-
-#include <Eris/TimedEventService.h>
-
-
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
 
-namespace boost
+namespace Eris
 {
-namespace asio
-{
-class io_service;
-}
+class Session;
 }
 
 namespace Ember
@@ -49,7 +42,7 @@ class ConnectingState;
 class NonConnectedState: public virtual sigc::trackable, public IState, public ConsoleObject
 {
 public:
-	NonConnectedState(ServerServiceSignals& signals, boost::asio::io_service& io_service);
+	NonConnectedState(ServerServiceSignals& signals, Eris::Session& session);
 	virtual ~NonConnectedState();
 
 	virtual void destroyChildState();
@@ -95,7 +88,7 @@ private:
 
 	ServerServiceSignals& mSignals;
 
-	boost::asio::io_service& mIoService;
+	Eris::Session& mSession;
 
 	ConnectingState* mChildState;
 

@@ -23,9 +23,9 @@
 #endif
 
 #include <Eris/View.h>
-#include <Eris/PollDefault.h>
 #include <Eris/DeleteLater.h>
-#include <Eris/TimedEventService.h>
+#include <Eris/EventService.h>
+#include <Eris/Session.h>
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -166,7 +166,7 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mIoService(new boost::asio::io_service()), mTimedEventService(new Eris::TimedEventService(*mIoService)), mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."), mScriptingResourceProvider(0)
+		mSession(new Eris::Session()), mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."), mScriptingResourceProvider(0)
 
 {
 
@@ -183,7 +183,7 @@ Application::~Application()
 	//When shutting down make sure to delete all pending objects from Eris. This is mainly because we want to be able to track memory leaks.
 	Eris::execDeleteLaters();
 
-	delete mIoService;
+	delete mSession;
 
 	delete mOgreView;
 	delete mServices;
@@ -223,14 +223,13 @@ void Application::mainLoop()
 
 	Input& input(Input::getSingleton());
 	ptime currentTime;
-	boost::asio::io_service::work work(*mIoService);
-	boost::asio::deadline_timer nextFrameTimer(*mIoService);
 	mLastTimeInputProcessingStart = currentTime;
 	mLastTimeInputProcessingEnd = currentTime;
 	do {
 		try {
 			S_LOG_INFO("Start new frame.");
 			unsigned int frameActionMask = 0;
+//			auto nextFrameTime = boost::posix_time::microsec_clock::local_time() + boost::posix_time::microseconds(desiredFpsListener.getMicrosecondsPerFrame());
 			TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(desiredFpsListener.getMicrosecondsPerFrame()));
 			if (mWorldView) {
 				mWorldView->update();
@@ -255,18 +254,8 @@ void Application::mainLoop()
 
 			mOgreView->processBackgroundTasks(TimeFrame(boost::posix_time::microseconds(100)));
 
-			bool renderNextFrame = false;
-			nextFrameTimer.expires_from_now(timeFrame.getRemainingTime());
-			nextFrameTimer.async_wait([&](boost::system::error_code ec) {
-				if (!ec) {
-					renderNextFrame = true;
-				}
-			});
 			//Keep on running IO handlers until we need to render again
-			do {
-				mIoService->run_one();
-			} while (!renderNextFrame && !mShouldQuit);
-			nextFrameTimer.cancel();
+			mSession->getEventService().runEvents(timeFrame.getRemainingTime(), mShouldQuit);
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 
@@ -290,7 +279,7 @@ void Application::initializeServices()
 	// Initialize Ember services
 	std::cout << "Initializing Ember services" << std::endl;
 
-	mServices = new EmberServices(*mIoService);
+	mServices = new EmberServices(*mSession);
 	// Initialize the Configuration Service
 	ConfigService& configService = mServices->getConfigService();
 	configService.start();

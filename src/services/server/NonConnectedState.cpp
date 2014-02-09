@@ -35,8 +35,8 @@
 namespace Ember
 {
 
-NonConnectedState::NonConnectedState(ServerServiceSignals& signals, boost::asio::io_service& io_service) :
-	Connect("connect", this, "Connect to a server."), mSignals(signals), mIoService(io_service), mChildState(nullptr)
+NonConnectedState::NonConnectedState(ServerServiceSignals& signals, Eris::Session& session) :
+	Connect("connect", this, "Connect to a server."), mSignals(signals), mSession(session), mChildState(nullptr)
 {
 }
 
@@ -68,7 +68,7 @@ IState& NonConnectedState::getTopState()
 bool NonConnectedState::connect(const std::string& host, short port)
 {
 	destroyChildState();
-	mChildState = new ConnectingState(*this, mIoService, host, port);
+	mChildState = new ConnectingState(*this, mSession, host, port);
 	if (!mChildState->connect()) {
 		destroyChildState();
 	} else {
@@ -82,7 +82,7 @@ bool NonConnectedState::connect(const std::string& host, short port)
 bool NonConnectedState::connectLocal(const std::string& socket)
 {
 	destroyChildState();
-	mChildState = new ConnectingState(*this, mIoService, socket);
+	mChildState = new ConnectingState(*this, mSession, socket);
 	if (!mChildState->connect()) {
 		destroyChildState();
 	} else {

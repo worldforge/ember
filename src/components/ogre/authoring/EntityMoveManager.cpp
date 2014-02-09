@@ -61,7 +61,7 @@ void EntityMoveInstance::cleanup()
 }
 
 EntityMoveManager::EntityMoveManager(World& world) :
-	Move("move", this, "Moves an entity."), mWorld(world), mMoveAdapter(world.getMainCamera()), mAdjuster(this)
+	Move("move", this, "Moves an entity."), mWorld(world), mMoveAdapter(world.getMainCamera()), mAdjuster(this, world.getEventService())
 {
 	GUIManager::getSingleton().EventEntityAction.connect(sigc::mem_fun(*this, &EntityMoveManager::GuiManager_EntityAction));
 }

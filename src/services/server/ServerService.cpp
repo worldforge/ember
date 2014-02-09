@@ -26,6 +26,7 @@
 #include "NonConnectedAdapter.h"
 #include "NonConnectedState.h"
 
+#include <Eris/Session.h>
 #include <boost/asio.hpp>
 
 //Needed for the "access" function.
@@ -38,8 +39,8 @@
 namespace Ember
 {
 
-ServerService::ServerService(boost::asio::io_service& io_service) :
-		mIoService(io_service), mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this, io_service))
+ServerService::ServerService(Eris::Session& session) :
+		mSession(session), mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this, session))
 {
 	setName("Server Service");
 	setDescription("Service for Server session");
@@ -140,7 +141,7 @@ bool ServerService::hasLocalSocket(const std::string& socketPath)
 	}
 
 	try {
-		boost::asio::local::stream_protocol::socket socket(mIoService);
+		boost::asio::local::stream_protocol::socket socket(mSession.getIoService());
 		socket.connect(boost::asio::local::stream_protocol::endpoint(socketPath));
 		return socket.is_open();
 	} catch (...) {

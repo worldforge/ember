@@ -95,12 +95,12 @@ namespace Ember{
 		return *mServerSettingsService;
 	}
 
-	EmberServices::EmberServices(boost::asio::io_service& io_service)
+	EmberServices::EmberServices(Eris::Session& session)
 	: mLoggingService(new LoggingService())
 	, mScriptingService(new ScriptingService())
 	, mSoundService(new SoundService())
-	, mServerService(new ServerService(io_service))
-	, mMetaserverService(new MetaserverService(io_service))
+	, mServerService(new ServerService(session))
+	, mMetaserverService(new MetaserverService(session))
 	, mInputService(new InputService())
 	, mWfutService(new WfutService())
 	, mConfigService(new ConfigService())

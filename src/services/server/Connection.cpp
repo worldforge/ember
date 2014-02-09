@@ -20,15 +20,17 @@
 #include "ServerService.h"
 #include "IConnectionListener.h"
 #include "framework/LoggingInstance.h"
+
+#include <Eris/Session.h>
 namespace Ember
 {
-Connection::Connection(boost::asio::io_service& io_service, const std::string& clientName, const std::string& host, short port, IConnectionListener* listener) :
-		Eris::Connection(io_service, clientName, host, port), mListener(listener)
+Connection::Connection(Eris::Session& session, const std::string& clientName, const std::string& host, short port, IConnectionListener* listener) :
+		Eris::Connection(session.getIoService(), session.getEventService(), clientName, host, port), mListener(listener)
 {
 }
 
-Connection::Connection(boost::asio::io_service& io_service, const std::string& clientName, const std::string& socket, IConnectionListener* listener) :
-		Eris::Connection(io_service, clientName, socket), mListener(listener)
+Connection::Connection(Eris::Session& session, const std::string& clientName, const std::string& socket, IConnectionListener* listener) :
+		Eris::Connection(session.getIoService(), session.getEventService(), clientName, socket), mListener(listener)
 {
 }
 

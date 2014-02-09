@@ -36,7 +36,7 @@
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 #include <Eris/Entity.h>
-#include <Eris/TimedEventService.h>
+#include <Eris/EventService.h>
 
 #include <Atlas/Objects/RootEntity.h>
 
@@ -236,7 +236,7 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	}
 	teleportsOutputFile.close();
 
-	mTransferEvent = new Eris::TimedEvent(boost::posix_time::seconds(0), [=](){
+	mTransferEvent = new Eris::TimedEvent(mAccount.getConnection()->getEventService(), boost::posix_time::seconds(0), [=](){
 		this->transfer(transferInfo);
 	});
 }
