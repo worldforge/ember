@@ -24,7 +24,6 @@
 #include "ConnectedState.h"
 #include "ServerServiceSignals.h"
 #include "ServerServiceConnectionListener.h"
-#include "DestroyChildStateEvent.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
@@ -37,7 +36,7 @@
 namespace Ember
 {
 ConnectingState::ConnectingState(IState& parentState, boost::asio::io_service& io_service, const std::string& host, short port) :
-	StateBase<ConnectedState>::StateBase(parentState), mConnection(io_service, std::string("Ember ") + VERSION, host, port, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false), mDeleteChildState(0)
+	StateBase<ConnectedState>::StateBase(parentState), mConnection(io_service, std::string("Ember ") + VERSION, host, port, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false), mIoService(io_service)
 {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
@@ -48,7 +47,7 @@ ConnectingState::ConnectingState(IState& parentState, boost::asio::io_service& i
 }
 
 ConnectingState::ConnectingState(IState& parentState, boost::asio::io_service& io_service, const std::string& socket) :
-	StateBase<ConnectedState>::StateBase(parentState), mConnection(io_service, std::string("Ember ") + VERSION, socket, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false), mDeleteChildState(0)
+	StateBase<ConnectedState>::StateBase(parentState), mConnection(io_service, std::string("Ember ") + VERSION, socket, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false), mIoService(io_service)
 {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
@@ -64,7 +63,6 @@ ConnectingState::~ConnectingState()
 		//If we get a failure there's a great risk that the Disconnected signal isn't emitted. We'll therefore do it ourselves.
 		mConnection.Disconnected.emit();
 	}
-	delete mDeleteChildState;
 }
 
 bool ConnectingState::connect()
@@ -127,10 +125,13 @@ void ConnectingState::gotFailure(const std::string & msg)
 
 	//Don't destroy ourselves here, since the connection will then be destroyed
 	//(and the connection code which triggered this callback will do some stuff once this callback is done, hence we can't delete that)
-	if (!mDeleteChildState) {
-		mDeleteChildState = new DestroyChildStateEvent(getParentState());
-		Eris::TimedEventService::instance()->registerEvent(mDeleteChildState);
-	}
+
+//	mChildStateDeleter->
+//
+//	if (!mDeleteChildState) {
+//		mDeleteChildState = new DestroyChildStateEvent(getParentState());
+//		Eris::TimedEventService::instance()->registerEvent(mDeleteChildState);
+//	}
 }
 
 }

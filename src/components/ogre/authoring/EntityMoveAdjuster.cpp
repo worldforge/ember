@@ -35,7 +35,7 @@ namespace OgreView
 namespace Authoring
 {
 EntityMoveAdjustmentInstance::EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity) :
-	mEntity(entity), mTimeout(1500, [&](){this->timout_Expired();}), mMoveAdjuster(moveAdjuster)
+	mEntity(entity), mTimeout(boost::posix_time::milliseconds(1500), [&](){this->timout_Expired();}), mMoveAdjuster(moveAdjuster)
 {
 }
 

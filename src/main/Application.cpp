@@ -25,6 +25,7 @@
 #include <Eris/View.h>
 #include <Eris/PollDefault.h>
 #include <Eris/DeleteLater.h>
+#include <Eris/TimedEventService.h>
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -165,7 +166,7 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mIoService(new boost::asio::io_service()), mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."), mScriptingResourceProvider(0)
+		mIoService(new boost::asio::io_service()), mTimedEventService(new Eris::TimedEventService(*mIoService)), mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."), mScriptingResourceProvider(0)
 
 {
 
@@ -297,7 +298,7 @@ void Application::mainLoop()
 
 	Input& input(Input::getSingleton());
 	ptime currentTime;
-	boost::asio::io_service:: work work(*mIoService);
+	boost::asio::io_service::work work(*mIoService);
 	boost::asio::deadline_timer nextFrameTimer(*mIoService);
 	mLastTimeInputProcessingStart = currentTime;
 	mLastTimeInputProcessingEnd = currentTime;

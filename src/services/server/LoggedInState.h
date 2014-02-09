@@ -29,6 +29,7 @@ namespace Eris
 {
 class Account;
 class Avatar;
+class TimedEvent;
 }
 
 namespace Ember
@@ -74,9 +75,9 @@ private:
 	/**
 	 * @brief Handles any transfer operation.
 	 *
-	 * This needs to occur separate since it's required that it's implemented through Eris Timeout events.
+	 * This needs to occur separate since it's required that it's implemented through Eris TimedEvent events.
 	 */
-	TransferEvent* mTransferEvent;
+	Eris::TimedEvent* mTransferEvent;
 
 	/**
 	 * @brief Any optional transfer infos attached to this server.

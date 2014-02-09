@@ -82,7 +82,7 @@ private:
 	/**
 	 * @brief Used for delayed deletion of the child state of the parent state.
 	 */
-	DestroyChildStateEvent* mDeleteChildState;
+	boost::asio::io_service& mIoService;
 
 
 	void connected();

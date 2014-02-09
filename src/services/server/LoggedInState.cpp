@@ -24,7 +24,6 @@
 #include "ServerServiceSignals.h"
 #include "EnteredWorldState.h"
 #include "TransferInfoStringSerializer.h"
-#include "TransferEvent.h"
 #include "AvatarTransferInfo.h"
 
 #include "services/config/ConfigService.h"
@@ -37,6 +36,7 @@
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 #include <Eris/Entity.h>
+#include <Eris/TimedEventService.h>
 
 #include <Atlas/Objects/RootEntity.h>
 
@@ -236,8 +236,9 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	}
 	teleportsOutputFile.close();
 
-	mTransferEvent = new TransferEvent(*this, transferInfo);
-	Eris::TimedEventService::instance()->registerEvent(mTransferEvent);
+	mTransferEvent = new Eris::TimedEvent(boost::posix_time::seconds(0), [=](){
+		this->transfer(transferInfo);
+	});
 }
 
 void LoggedInState::gotAvatarDeactivated(Eris::Avatar* avatar)

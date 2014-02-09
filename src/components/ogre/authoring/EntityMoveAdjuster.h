@@ -23,7 +23,7 @@
 #ifndef EMBEROGREENTITYMOVEADJUSTER_H
 #define EMBEROGREENTITYMOVEADJUSTER_H
 
-#include <Eris/Timeout.h>
+#include <Eris/TimedEventService.h>
 #include <vector>
 
 namespace Ember

@@ -60,6 +60,7 @@
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 #include <Eris/Calendar.h>
+#include <Eris/TimedEventService.h>
 
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
@@ -369,7 +370,7 @@ void DelayedFoliageInitializer::timout_Expired()
 		mCallback();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
-		mTimeout = new Eris::TimedEvent(boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();});
+		mTimeout = new Eris::TimedEvent(boost::posix_time::milliseconds(mIntervalMs), [&](){this->timout_Expired();});
 	}
 }
 

@@ -73,6 +73,7 @@
 namespace Eris
 {
 class View;
+class TimedEventService;
 }
 
 namespace boost
@@ -191,6 +192,8 @@ public:
 private:
 
 	boost::asio::io_service* mIoService;
+
+	Eris::TimedEventService* mTimedEventService;
 
 	/**
 	 * @brief The main Ogre graphical view.

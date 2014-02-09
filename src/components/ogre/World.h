@@ -38,7 +38,7 @@ namespace Eris
 class View;
 class Connection;
 class Entity;
-class Timeout;
+class TimedEvent;
 class Calendar;
 }
 
