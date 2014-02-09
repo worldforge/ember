@@ -137,13 +137,6 @@ public:
 	virtual ~Application();
 
 	/**
-	 * @brief Performs one step of the main loop.
-	 * You only need to call this each "frame" if you're not using mainLoop().
-	 * @param minMicrosecondsPerFrame If the fps is capped, this is the minimum microseconds needed to spend on each frame.
-	 */
-	void mainLoopStep(long minMicrosecondsPerFrame);
-
-	/**
 	 * @brief Enters the main loop.
 	 * Will loop through the application until it exits. In most cases you want to call this for the main loop. However, if you want to handle all looping yourself you can call mainLoopStep() manually.
 	 */

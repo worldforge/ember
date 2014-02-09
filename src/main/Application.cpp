@@ -217,81 +217,6 @@ void Application::registerComponents()
 	mOgreView = new OgreView::EmberOgre();
 }
 
-void Application::mainLoopStep(long minMicrosecondsPerFrame)
-{
-	TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(minMicrosecondsPerFrame));
-	Input& input(Input::getSingleton());
-	ptime currentTime;
-	unsigned int frameActionMask = 0;
-	try {
-
-		if (mWorldView) {
-			mWorldView->update();
-		}
-
-		currentTime = microsec_clock::local_time();
-		mMainLoopController.EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).total_microseconds() / 1000000.0f);
-		mLastTimeInputProcessingStart = currentTime;
-		input.processInput();
-		frameActionMask |= MainLoopController::FA_INPUT;
-
-		currentTime = microsec_clock::local_time();
-		mMainLoopController.EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).total_microseconds() / 1000000.0f);
-		mLastTimeInputProcessingEnd = currentTime;
-
-		bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
-		if (updatedRendering) {
-			frameActionMask |= MainLoopController::FA_GRAPHICS;
-		}
-		mServices->getSoundService().cycle();
-		frameActionMask |= MainLoopController::FA_SOUND;
-
-		if (mPollEris) {
-			//First do at least one Eris poll each frame
-			Eris::PollDefault::poll(0);
-			//Use at least 400 microseconds to allow for background polling. This is to allow for some fps degradation when a lot of assets needs to be loaded (instead of just choking up completely).
-			bool backgroundTasksLeft = mOgreView->processBackgroundTasks(TimeFrame(boost::posix_time::microseconds(400)));
-			while (timeFrame.isTimeLeft()) {
-				if (backgroundTasksLeft) {
-					//If there are background tasks left we should alternate between polling those and polling Eris
-					Eris::PollDefault::poll(0);
-					backgroundTasksLeft = mOgreView->processBackgroundTasks(TimeFrame(boost::posix_time::microseconds(100)));
-				} else {
-					//If there's still time in the frame and no background tasks, do as many Eris polls as possible within the time frame
-					Eris::PollDefault::poll(timeFrame.getRemainingTime().total_milliseconds());
-				}
-			}
-			frameActionMask |= MainLoopController::FA_ERIS;
-		} else {
-			//Use at least 400 microseconds to allow for background polling. This is to allow for some fps degradation when a lot of assets needs to be loaded (instead of just choking up completely).
-			mOgreView->processBackgroundTasks(TimeFrame(std::max<boost::posix_time::time_duration>(timeFrame.getRemainingTime(), boost::posix_time::microseconds(400))));
-		}
-
-		mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
-
-		//If we should cap the fps so that each frame should take a minimum amount of time,
-		//we need to see if we should sleep a little.
-		if (minMicrosecondsPerFrame > 0) {
-			if (timeFrame.isTimeLeft()) {
-				try {
-					boost::this_thread::sleep(timeFrame.getRemainingTime());
-				} catch (const boost::thread_interrupted& ex) {
-				}
-			}
-		}
-		mLastTimeMainLoopStepEnded = microsec_clock::local_time();
-	} catch (const std::exception& ex) {
-		S_LOG_CRITICAL("Got exception, shutting down." << ex);
-		throw;
-	} catch (const std::string& ex) {
-		S_LOG_CRITICAL("Got exception, shutting down." << ex);
-		throw;
-	} catch (...) {
-		S_LOG_CRITICAL("Got unknown exception, shutting down.");
-		throw;
-	}
-}
-
 void Application::mainLoop()
 {
 	DesiredFpsListener desiredFpsListener;
@@ -302,7 +227,6 @@ void Application::mainLoop()
 	boost::asio::deadline_timer nextFrameTimer(*mIoService);
 	mLastTimeInputProcessingStart = currentTime;
 	mLastTimeInputProcessingEnd = currentTime;
-	mLastTimeMainLoopStepEnded = currentTime;
 	do {
 		try {
 			S_LOG_INFO("Start new frame.");
@@ -346,7 +270,6 @@ void Application::mainLoop()
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 
-			mLastTimeMainLoopStepEnded = microsec_clock::local_time();
 		} catch (const std::exception& ex) {
 			S_LOG_CRITICAL("Got exception, shutting down." << ex);
 			throw;
