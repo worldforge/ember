@@ -158,8 +158,8 @@ public:
 
 };
 
-TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-		mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
+TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider, Eris::EventService& eventService) :
+		mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1, eventService)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
 {
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
@@ -204,7 +204,7 @@ void TerrainHandler::shutdown()
 void TerrainHandler::setPageSize(unsigned int pageSize)
 {
 	// Wait for all current tasks to finish
-	mTaskQueue->pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
+//	mTaskQueue->pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
 	// Delete all page-related data
 	mPageBridges.clear();
 	for (auto& page : mPages) {
@@ -347,7 +347,7 @@ void TerrainHandler::removeBridge(const Domain::TerrainIndex& index)
 
 void TerrainHandler::pollTasks(const TimeFrame& timeFrame)
 {
-	mTaskQueue->pollProcessedTasks(timeFrame);
+//	mTaskQueue->pollProcessedTasks(timeFrame);
 
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {

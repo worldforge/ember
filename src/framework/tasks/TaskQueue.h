@@ -26,6 +26,11 @@
 #include <condition_variable>
 #include <mutex>
 
+namespace Eris
+{
+class EventService;
+}
+
 namespace Ember
 {
 
@@ -58,7 +63,7 @@ public:
 	 * @brief Ctor.
 	 * @param numberOfExecutors The number of concurrent task executors to use.
 	 */
-	TaskQueue(unsigned int numberOfExecutors);
+	TaskQueue(unsigned int numberOfExecutors, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
@@ -74,14 +79,6 @@ public:
 	 * @return False if the task couldn't be enqueued, probably because the task queue is inactive.
 	 */
 	bool enqueueTask(ITask* task, ITaskExecutionListener* listener = 0);
-
-	/**
-	 * @brief Goes through all processed tasks, handled them and then deletes them
-	 * Call this often in the main thread (every frame or so).
-	 * By setting timeFrame you can limit the amount of time the queue will spend on processed tasks. This is useful for keeping framerate up.
-	 * @param timeFrame The time allowed for polling. After the time is up, the method will return.
-	 */
-	void pollProcessedTasks(TimeFrame timeFrame);
 
 	/**
 	 * @brief Deactivates the queue.
@@ -111,6 +108,8 @@ protected:
 	 */
 	typedef std::vector<TaskExecutor*> TaskExecutorStore;
 
+	Eris::EventService& mEventService;
+
 	/**
 	 * @brief A collection of unprocessed task units, which is a tuple of a task and a listener.
 	 */
@@ -120,7 +119,7 @@ protected:
 	 * @brief A collection of processed task units. These will need to be executed in the main thread before they can be deleted.
 	 * @see pollProcessedTasks()
 	 */
-	TaskUnitQueue mProcessedTaskUnits;
+	std::shared_ptr<TaskUnitQueue> mProcessedTaskUnits;
 
 	/**
 	 * @brief The executors used by the queue.
@@ -131,11 +130,6 @@ protected:
 	 * @brief A mutex used whenever the unprocessed queue is accessed.
 	 */
 	std::mutex mUnprocessedQueueMutex;
-
-	/**
-	 * @brief A mutex used whenever the processed queue is accessed.
-	 */
-	std::mutex mProcessedQueueMutex;
 
 	/**
 	 * @brief A condition variable used for letting threads sleep while waiting for new tasks.

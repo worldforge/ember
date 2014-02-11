@@ -220,6 +220,7 @@ void Application::registerComponents()
 void Application::mainLoop()
 {
 	DesiredFpsListener desiredFpsListener;
+	Eris::EventService& eventService = mSession->getEventService();
 
 	Input& input(Input::getSingleton());
 	ptime currentTime;
@@ -227,9 +228,7 @@ void Application::mainLoop()
 	mLastTimeInputProcessingEnd = currentTime;
 	do {
 		try {
-			S_LOG_INFO("Start new frame.");
 			unsigned int frameActionMask = 0;
-//			auto nextFrameTime = boost::posix_time::microsec_clock::local_time() + boost::posix_time::microseconds(desiredFpsListener.getMicrosecondsPerFrame());
 			TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(desiredFpsListener.getMicrosecondsPerFrame()));
 			if (mWorldView) {
 				mWorldView->update();
@@ -255,7 +254,7 @@ void Application::mainLoop()
 			mOgreView->processBackgroundTasks(TimeFrame(boost::posix_time::microseconds(100)));
 
 			//Keep on running IO handlers until we need to render again
-			mSession->getEventService().runEvents(timeFrame.getRemainingTime(), mShouldQuit);
+			eventService.runEvents(timeFrame.getRemainingTime(), mShouldQuit);
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 

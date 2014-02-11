@@ -39,6 +39,11 @@ namespace Mercator {
 	class BasePoint;
 }
 
+namespace Eris
+{
+class EventService;
+}
+
 namespace Ember
 {
 class TimeFrame;
@@ -91,7 +96,7 @@ public:
 	 * @param pageIndexSize The size of one side of a page, in indices.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-	TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
+	TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.

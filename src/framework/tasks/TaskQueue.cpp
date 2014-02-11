@@ -24,6 +24,8 @@
 
 #include "framework/LoggingInstance.h"
 
+#include <Eris/EventService.h>
+
 #include <cassert>
 
 namespace Ember
@@ -32,8 +34,8 @@ namespace Ember
 namespace Tasks
 {
 
-TaskQueue::TaskQueue(unsigned int numberOfExecutors) :
-	mActive(true)
+TaskQueue::TaskQueue(unsigned int numberOfExecutors, Eris::EventService& eventService) :
+		mEventService(eventService), mProcessedTaskUnits(new TaskUnitQueue()), mActive(true)
 {
 	S_LOG_VERBOSE("Creating task queue with " << numberOfExecutors << " executors.");
 	for (unsigned int i = 0; i < numberOfExecutors; ++i) {
@@ -51,7 +53,7 @@ void TaskQueue::deactivate()
 {
 	if (mActive) {
 		{
-			std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
+			std::unique_lock < std::mutex > l(mUnprocessedQueueMutex);
 			mActive = false;
 		}
 		mUnprocessedQueueCond.notify_all();
@@ -63,15 +65,23 @@ void TaskQueue::deactivate()
 		}
 
 		//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
-		pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
-		assert(mProcessedTaskUnits.empty());
+		//By adding a new handler we make sure that when this handler is invoked we've cleared the queue of any existing handlers.
+		bool queueCleared = false;
+		mEventService.runOnMainThread([&]() {
+			queueCleared = true;
+		});
+		do {
+			mEventService.runEvents(boost::posix_time::seconds(10), queueCleared);
+		} while (!queueCleared);
+
+		assert(mProcessedTaskUnits->empty());
 		assert(mUnprocessedTaskUnits.empty());
 	}
 }
 
 bool TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
 {
-	std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
+	std::unique_lock < std::mutex > l(mUnprocessedQueueMutex);
 	if (mActive) {
 		mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
 		mUnprocessedQueueCond.notify_one();
@@ -87,7 +97,7 @@ TaskUnit* TaskQueue::fetchNextTask()
 {
 	//The semantics of this method is that if a null pointer is returned the task executor is required to exit its main processing loop, since this indicates that the queue is shuttin down.
 	TaskUnit* taskUnit(0);
-	std::unique_lock<std::mutex> lock(mUnprocessedQueueMutex);
+	std::unique_lock < std::mutex > lock(mUnprocessedQueueMutex);
 	if (mUnprocessedTaskUnits.empty()) {
 		if (!mActive) {
 			return 0;
@@ -103,24 +113,8 @@ TaskUnit* TaskQueue::fetchNextTask()
 
 void TaskQueue::addProcessedTask(TaskUnit* taskUnit)
 {
-	std::unique_lock<std::mutex> l(mProcessedQueueMutex);
-	mProcessedTaskUnits.push(taskUnit);
-}
-
-void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
-{
-	TaskUnitQueue processedCopy;
-	{
-		std::unique_lock<std::mutex> l(mProcessedQueueMutex);
-		processedCopy = mProcessedTaskUnits;
-		if (!mProcessedTaskUnits.empty()) {
-			mProcessedTaskUnits = TaskUnitQueue();
-		}
-	}
-	while (!processedCopy.empty()) {
-
-		TaskUnit* taskUnit = processedCopy.front();
-		processedCopy.pop();
+	//Make sure that the task is handled on the main queue.
+	mEventService.runOnMainThread([taskUnit]() {
 		try {
 			taskUnit->executeInMainThread();
 		} catch (const std::exception& ex) {
@@ -135,28 +129,14 @@ void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
 		} catch (...) {
 			S_LOG_FAILURE("Unknown error when deleting task in main thread.");
 		}
-		//Try to keep the time spent here each frame down, to keep the framerate up.
-		if (!timeFrame.isTimeLeft()) {
-			break;
-		}
-	}
-	//If there are any unprocessed tasks, put them back at the front of the queue.
-	if (!processedCopy.empty()) {
-		std::unique_lock<std::mutex> l(mProcessedQueueMutex);
-		TaskUnitQueue queueCopy(mProcessedTaskUnits);
-		mProcessedTaskUnits = processedCopy;
-		while (!queueCopy.empty()) {
-			mProcessedTaskUnits.push(queueCopy.front());
-			queueCopy.pop();
-		}
-	}
+	});
+
 }
 
 bool TaskQueue::isActive() const
 {
 	return mActive;
 }
-
 
 }
 

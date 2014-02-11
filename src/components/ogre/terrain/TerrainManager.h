@@ -47,6 +47,10 @@ namespace Mercator {
 	class BasePoint;
 }
 
+namespace Eris {
+class EventService;
+}
+
 namespace Ember {
 
 class TimeFrame;
@@ -107,7 +111,7 @@ public:
 	 * @param shaderManager The shader manager.
 	 * @param frameProcessedSignal A signal emitted when one main loop cycle has ended.
 	 */
-	TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal);
+	TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
