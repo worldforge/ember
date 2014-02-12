@@ -138,22 +138,6 @@ public:
 		 */
 		LS_MATERIAL_LOADING,
 		/**
-		 * @brief The Materials have been loaded.
-		 */
-		LS_MATERIAL_LOADED,
-		/**
-		 * @brief The Textures are being prepared.
-		 */
-		LS_TEXTURES_PREPARING,
-		/**
-		 * @brief The Texture have been prepared.
-		 */
-		LS_TEXTURES_PREPARED,
-		/**
-		 * @brief The Textures are loading.
-		 */
-		LS_TEXTURES_LOADING,
-		/**
 		 * @brief Loading is done.
 		 */
 		LS_DONE
@@ -172,8 +156,15 @@ public:
 	virtual ~ModelBackgroundLoader();
 
 	/**
-	 * @brief Polls the loading state (which might occur in a background thread).
-	 * If the loading state has progressed it will be updated.
+	 * @brief Starts the polling loop.
+	 *
+	 * If the model isn't yet loaded, we're in either of two states.
+	 * We're either waiting for background loading tickets to complete. In this case nothing will be done. @see operationCompleted
+	 * Or we don't have any background tickets currently, but bailed out early in the loading process in order to allow for interleaving with the event loop.
+	 * In the latter case a new call to "poll" will be posted to the event loop.
+	 *
+	 * The result of this is that this method only should be called externally once.
+	 *
 	 * @return True if the loading is complete.
 	 */
 	bool poll();
@@ -189,6 +180,11 @@ public:
 	 */
 	void reloadModel();
 
+	/**
+	 * @brief Detach the loader from the model.
+	 *
+	 * This should be called from the Model's destructor.
+	 */
 	void detachFromModel();
 
 protected:
@@ -198,6 +194,9 @@ protected:
 	 */
 	Model* mModel;
 
+	/**
+	 * @brief Handles event interleaving.
+	 */
 	Eris::EventService& mEventService;
 
 	/**
@@ -215,6 +214,21 @@ protected:
 	 * @brief A listener.
 	 */
 	ModelBackgroundLoaderListener mListener;
+
+	/**
+	 * @brief Keeps track of the currently processed submodel.
+	 */
+	size_t mSubModelLoadingIndex;
+
+	/**
+	 * @brief A set of textures that needs to be loaded.
+	 */
+	std::set<Ogre::TexturePtr> mTexturesToLoad;
+
+	/**
+	 * @brief A set of materials that needs to be loaded.
+	 */
+	std::set<Ogre::MaterialPtr> mMaterialsToLoad;
 
 	/**
 	 * @brief Adds a loading ticket.
@@ -248,6 +262,11 @@ protected:
 	 */
 	bool isThereTimeLeft(long long maxTimeMilliseconds);
 
+	/**
+	 * @brief Polls the loading state (which might occur in a background thread).
+	 * If the loading state has progressed it will be updated.
+	 * @return True if the loading is complete.
+	 */
 	bool performLoading();
 
 };
