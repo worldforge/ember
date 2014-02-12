@@ -40,6 +40,8 @@
 #include <OgrePass.h>
 #include <OgreTextureUnitState.h>
 
+#include <Eris/EventService.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -49,80 +51,91 @@ namespace Model
 {
 
 ModelBackgroundLoaderListener::ModelBackgroundLoaderListener(ModelBackgroundLoader& loader) :
-		mLoader(&loader)
+		mLoader(loader)
 {
 
 }
 void ModelBackgroundLoaderListener::operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result)
 {
-	if (mLoader) {
-		mLoader->operationCompleted(ticket, result, this);
-	}
-	delete this;
+	mLoader.operationCompleted(ticket, result, this);
 }
 
-void ModelBackgroundLoaderListener::detachFromLoader()
-{
-	mLoader = 0;
-}
 
-ModelBackgroundLoader::ModelBackgroundLoader(Model& model) :
-		mModel(model), mState(LS_UNINITIALIZED)
+ModelBackgroundLoader::ModelBackgroundLoader(Model* model, Eris::EventService& eventService) :
+		mModel(model), mEventService(eventService), mState(LS_UNINITIALIZED), mListener(*this)
 {
 }
 
 ModelBackgroundLoader::~ModelBackgroundLoader()
 {
-	for (ListenerStore::iterator I = mListeners.begin(); I != mListeners.end(); ++I) {
-		(*I)->detachFromLoader();
+	for (auto& ticket : mTickets) {
+		Ogre::ResourceBackgroundQueue::getSingleton().abortRequest(ticket);
 	}
 }
 
-bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
+bool ModelBackgroundLoader::poll()
+{
+	bool result = performLoading();
+	if (result) {
+		return true;
+	} else {
+		if (areAllTicketsProcessed()) {
+			auto self = this->shared_from_this();
+			mEventService.runOnMainThread([this, self]() {
+				if (this->mModel) {
+					bool result = this->poll();
+					if (result) {
+						this->reloadModel();
+					}
+				}
+			});
+		}
+		return false;
+	}
+}
+
+bool ModelBackgroundLoader::performLoading()
 {
 #if OGRE_THREAD_SUPPORT
 	if (mState == LS_UNINITIALIZED) {
 		//Start to load the meshes
-		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) {
+		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel->getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel->getDefinition()->getSubModelDefinitions().end(); ++I_subModels) {
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			if (meshPtr.isNull() || (!meshPtr->isPrepared() && !meshPtr->isLoading() && !meshPtr->isLoaded())) {
 				try {
-					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
+					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
 					if (ticket) {
 						addTicket(ticket);
 					}
 				} catch (const std::exception& ex) {
-					S_LOG_FAILURE("Could not load the mesh " << (*I_subModels)->getMeshName() << " when loading model " << mModel.getName() << "." << ex);
+					S_LOG_FAILURE("Could not load the mesh " << (*I_subModels)->getMeshName() << " when loading model " << mModel->getName() << "." << ex);
 					continue;
 				}
 			}
 		}
 		mState = LS_MESH_PREPARING;
-		return poll(timeFrame);
+		return performLoading();
 	} else if (mState == LS_MESH_PREPARING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MESH_PREPARED;
-			return poll(timeFrame);
+			return performLoading();
 		}
 	} else if (mState == LS_MESH_PREPARED) {
-		for (auto submodelDef : mModel.getDefinition()->getSubModelDefinitions()) {
+		for (auto submodelDef : mModel->getDefinition()->getSubModelDefinitions()) {
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName()));
 			if (!meshPtr.isNull()) {
 				if (!meshPtr->isLoaded()) {
 #if OGRE_THREAD_SUPPORT == 1
-					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MeshManager::getSingleton().getResourceType(), meshPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
+					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MeshManager::getSingleton().getResourceType(), meshPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, mListener);
 					if (ticket) {
 						//						meshPtr->setBackgroundLoaded(true);
 						addTicket(ticket);
 					}
 #else
-					if (!timeFrame.isTimeLeft()) {
-						return false;
-					}
 					try {
 						meshPtr->load();
 					} catch (const std::exception& ex) {
-						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModel.getName() << "." << ex);
+						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModel->getName() << "." << ex);
 						continue;
 					}
 #endif
@@ -130,15 +143,15 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 			}
 		}
 		mState = LS_MESH_LOADING;
-		return poll(timeFrame);
+		return performLoading();
 	} else if (mState == LS_MESH_LOADING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MESH_LOADED;
-			return poll(timeFrame);
+			return performLoading();
 		}
 	} else if (mState == LS_MESH_LOADED) {
 
-		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) {
+		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel->getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel->getDefinition()->getSubModelDefinitions().end(); ++I_subModels) {
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			if (!meshPtr.isNull()) {
 				if (meshPtr->isLoaded()) {
@@ -146,7 +159,7 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 						Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
 						if (materialPtr.isNull() || (!materialPtr->isPrepared() && !materialPtr->isLoading() && !materialPtr->isLoaded())) {
 //							S_LOG_VERBOSE("Preparing material " << materialPtr->getName());
-							Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(), submesh->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
+							Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(), submesh->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
 							if (ticket) {
 								addTicket(ticket);
 							}
@@ -162,7 +175,7 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 							Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
 							if (materialPtr.isNull() || (!materialPtr->isPrepared() && !materialPtr->isLoading() && !materialPtr->isLoaded())) {
 //								S_LOG_VERBOSE("Preparing material " << materialName);
-								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(), materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
+								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(), materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
 								if (ticket) {
 									addTicket(ticket);
 								}
@@ -174,21 +187,21 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 		}
 
 		mState = LS_MATERIAL_PREPARING;
-		return poll(timeFrame);
+		return performLoading();
 	} else if (mState == LS_MATERIAL_PREPARING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MATERIAL_PREPARED;
-			return poll(timeFrame);
+			return performLoading();
 		}
 	} else if (mState == LS_MATERIAL_PREPARED) {
-		for (auto submodelDef : mModel.getDefinition()->getSubModelDefinitions()) {
+		for (auto submodelDef : mModel->getDefinition()->getSubModelDefinitions()) {
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName()));
 			for (auto submesh : meshPtr->getSubMeshIterator()) {
 				Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
 				if (!materialPtr.isNull() && !materialPtr->isLoaded()) {
 
 #if OGRE_THREAD_SUPPORT == 1
-					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
+					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, mListener);
 					if (ticket) {
 						//						materialPtr->setBackgroundLoaded(true);
 						addTicket(ticket);
@@ -205,9 +218,6 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 								Ogre::TextureUnitState* tus = tusIter.getNext();
 								unsigned int frames = tus->getNumFrames();
 								for (unsigned int i = 0; i < frames; ++i) {
-									if (!timeFrame.isTimeLeft()) {
-										return false;
-									}
 									//This will automatically load the texture.
 //									S_LOG_VERBOSE("Loading texture " << tus->getTextureName());
 									Ogre::TexturePtr texturePtr = tus->_getTexturePtr(i);
@@ -215,11 +225,9 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 							}
 						}
 					}
-					if (!timeFrame.isTimeLeft()) {
-						return false;
-					}
 //					S_LOG_VERBOSE("Loading material " << materialPtr->getName());
 					materialPtr->load();
+					return false;
 #endif
 
 				}
@@ -232,7 +240,7 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 							Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
 							if (!materialPtr.isNull() && !materialPtr->isLoaded()) {
 #if OGRE_THREAD_SUPPORT == 1
-								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
+								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, mListener);
 								if (ticket) {
 									addTicket(ticket);
 								}
@@ -248,9 +256,6 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 											Ogre::TextureUnitState* tus = tusIter.getNext();
 											unsigned int frames = tus->getNumFrames();
 											for (unsigned int i = 0; i < frames; ++i) {
-												if (!timeFrame.isTimeLeft()) {
-													return false;
-												}
 												//This will automatically load the texture.
 //												S_LOG_VERBOSE("Loading texture " << tus->getTextureName());
 												Ogre::TexturePtr texturePtr = tus->_getTexturePtr(i);
@@ -258,11 +263,9 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 										}
 									}
 								}
-								if (!timeFrame.isTimeLeft()) {
-									return false;
-								}
 //								S_LOG_VERBOSE("Loading material " << materialPtr->getName());
 								materialPtr->load();
+								return false;
 #endif
 							}
 						}
@@ -272,13 +275,12 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 		}
 
 		mState = LS_MATERIAL_LOADING;
-		return poll(timeFrame);
+		return performLoading();
 	} else if (mState == LS_MATERIAL_LOADING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_DONE;
 			return true;
 		}
-
 	} else {
 		return true;
 	}
@@ -291,20 +293,26 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 
 void ModelBackgroundLoader::operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result, ModelBackgroundLoaderListener* listener)
 {
-	ListenerStore::iterator I_listener = std::find(mListeners.begin(), mListeners.end(), listener);
-	if (I_listener != mListeners.end()) {
-		mListeners.erase(I_listener);
-	}
-
-	TicketStore::iterator I = std::find(mTickets.begin(), mTickets.end(), ticket);
+	auto I = mTickets.find(ticket);
 	if (I != mTickets.end()) {
 		mTickets.erase(I);
+	}
+	if (mTickets.empty()) {
+		auto self = this->shared_from_this();
+		mEventService.runOnMainThread([this, self]() {
+			if (this->mModel) {
+				bool result = this->poll();
+				if (result) {
+					this->reloadModel();
+				}
+			}
+		});
 	}
 }
 
 bool ModelBackgroundLoader::areAllTicketsProcessed()
 {
-	return mTickets.size() == 0;
+	return mTickets.empty();
 }
 
 ModelBackgroundLoader::LoadingState ModelBackgroundLoader::getState() const
@@ -314,19 +322,20 @@ ModelBackgroundLoader::LoadingState ModelBackgroundLoader::getState() const
 
 void ModelBackgroundLoader::reloadModel()
 {
-	mModel.reload();
+	mModel->reload();
+}
+
+void ModelBackgroundLoader::detachFromModel()
+{
+	mModel = nullptr;
+	for (auto& ticket : mTickets) {
+		Ogre::ResourceBackgroundQueue::getSingleton().abortRequest(ticket);
+	}
 }
 
 void ModelBackgroundLoader::addTicket(Ogre::BackgroundProcessTicket ticket)
 {
-	mTickets.push_back(ticket);
-}
-
-ModelBackgroundLoaderListener* ModelBackgroundLoader::createListener()
-{
-	ModelBackgroundLoaderListener* listener = new ModelBackgroundLoaderListener(*this);
-	mListeners.push_back(listener);
-	return listener;
+	mTickets.insert(ticket);
 }
 
 }

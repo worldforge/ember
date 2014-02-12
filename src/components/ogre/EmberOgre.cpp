@@ -242,12 +242,6 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 	}
 }
 
-bool EmberOgre::processBackgroundTasks(const TimeFrame& timeFrame)
-{
-	return mModelDefinitionManager->pollBackgroundLoaders(timeFrame);
-}
-
-
 void EmberOgre::clearDirtyPassLists()
 {
 	if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
@@ -270,7 +264,7 @@ void EmberOgre::shutdownGui()
 	mGUIManager = 0;
 }
 
-bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
+bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris::EventService& eventService)
 {
 	if (mRoot) {
 		throw Exception("EmberOgre::setup has already been called.");
@@ -318,7 +312,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 
 	std::string exportDir(configSrv.getHomeDirectory() + "/user-media/data/");
 	//Create the model definition manager
-	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir);
+	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
 
 	mLodDefinitionManager = new Lod::LodDefinitionManager(exportDir);
 	mLodManager = new Lod::LodManager();

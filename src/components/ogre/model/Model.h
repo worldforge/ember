@@ -30,6 +30,11 @@
 #include <memory>
 #include <unordered_map>
 
+namespace Eris
+{
+class EventService;
+}
+
 namespace Ember
 {
 namespace OgreView
@@ -320,7 +325,7 @@ protected:
 	 * @param modelType
 	 * @return
 	 */
-	bool create(const std::string& modelType); // create model of specific type
+	bool create(const std::string& modelType, Eris::EventService& eventService); // create model of specific type
 
 	bool createActualModel();
 
@@ -414,7 +419,7 @@ protected:
 
 	std::unique_ptr<AttachPointWrapperStore> mAttachPoints;
 
-	ModelBackgroundLoader* mBackgroundLoader;
+	std::shared_ptr<ModelBackgroundLoader> mBackgroundLoader;
 
 	/**
 	 * @brief A store of the movable objects which make up this model.
@@ -442,11 +447,10 @@ inline const Model::SubModelSet& Model::getSubmodels() const
 class ModelFactory: public Ogre::MovableObjectFactory
 {
 protected:
+	Eris::EventService& mEventService;
 	Ogre::MovableObject* createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList* params);
 public:
-	ModelFactory()
-	{
-	}
+	ModelFactory(Eris::EventService& eventService);
 	virtual ~ModelFactory()
 	{
 	}

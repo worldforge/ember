@@ -71,7 +71,7 @@ void TaskQueue::deactivate()
 			queueCleared = true;
 		});
 		do {
-			mEventService.runEvents(boost::posix_time::seconds(10), queueCleared);
+			mEventService.processEvents(boost::posix_time::seconds(10), queueCleared);
 		} while (!queueCleared);
 
 		assert(mProcessedTaskUnits->empty());

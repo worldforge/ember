@@ -66,16 +66,15 @@ Model::Model(const std::string& name) :
 }
 Model::~Model()
 {
+	if (mBackgroundLoader) {
+		mBackgroundLoader->detachFromModel();
+	}
 	resetSubmodels();
 	resetParticles();
 	resetLights();
 	if (!mDefinition.isNull()) {
 		mDefinition->removeModelInstance(this);
 	}
-	if (mBackgroundLoader) {
-		ModelDefinitionManager::getSingleton().removeBackgroundLoader(mBackgroundLoader);
-	}
-	delete mBackgroundLoader;
 	S_LOG_VERBOSE("Deleted "<< getName());
 }
 
@@ -109,7 +108,7 @@ void Model::reload()
 	Reloaded.emit();
 }
 
-bool Model::create(const std::string& modelType)
+bool Model::create(const std::string& modelType, Eris::EventService& eventService)
 {
 	if (!mDefinition.isNull() && mDefinition->isValid()) {
 		S_LOG_WARNING("Trying to call create('" + modelType + "') on a Model instance that already have been created as a '" + mDefinition->getName() + "'.");
@@ -128,6 +127,11 @@ bool Model::create(const std::string& modelType)
 		S_LOG_FAILURE("Model of type " << modelType << " from group " << groupName << " is not valid.");
 		return false;
 	} else {
+#if OGRE_THREAD_SUPPORT
+		if (!mBackgroundLoader) {
+			mBackgroundLoader = std::make_shared<ModelBackgroundLoader>(this, eventService);
+		}
+#endif
 		mDefinition->addModelInstance(this);
 		return true;
 		/*		bool success =  createFromDefn();
@@ -149,22 +153,17 @@ void Model::_notifyManager(Ogre::SceneManager* man)
 
 bool Model::createFromDefn()
 {
-	TimedLog timedLog("Model::createFromDefn");
+	TimedLog timedLog(std::string("Model::createFromDefn ") + getDefinition()->getName());
 	// create instance of model from definition
 	mScale = mDefinition->mScale;
 	mRotation = mDefinition->mRotation;
 
 #if OGRE_THREAD_SUPPORT
-	if (!mBackgroundLoader) {
-		mBackgroundLoader = new ModelBackgroundLoader(*this);
-	}
-
-	if (mBackgroundLoader->poll(TimeFrame(boost::posix_time::seconds(0)))) {
+	if (mBackgroundLoader->poll()) {
 		timedLog.report("Initial poll.");
 		return createActualModel();
 	}
 	else {
-		ModelDefinitionManager::getSingleton().addBackgroundLoader(mBackgroundLoader);
 		setRenderingDistance(mDefinition->getRenderingDistance());
 		return true;
 	}
@@ -175,7 +174,7 @@ bool Model::createFromDefn()
 
 bool Model::createActualModel()
 {
-	TimedLog timedLog("Model::createActualModel");
+	TimedLog timedLog(std::string("Model::createActualModel") + getDefinition()->getName());
 	Ogre::SceneManager* sceneManager = _getManager();
 	std::vector<std::string> showPartVector;
 
@@ -989,6 +988,11 @@ const Model::AttachPointWrapperStore* Model::getAttachedPoints() const
 
 Ogre::String ModelFactory::FACTORY_TYPE_NAME = "Model";
 //-----------------------------------------------------------------------
+ModelFactory::ModelFactory(Eris::EventService& eventService) : mEventService(eventService)
+{
+
+}
+
 const Ogre::String& ModelFactory::getType(void) const
 {
 	return FACTORY_TYPE_NAME;
@@ -1002,7 +1006,7 @@ Ogre::MovableObject* ModelFactory::createInstanceImpl(const Ogre::String& name, 
 		auto ni = params->find("modeldefinition");
 		if (ni != params->end()) {
 			Model* model = new Model(name);
-			model->create(ni->second);
+			model->create(ni->second, mEventService);
 			return model;
 		}
 

@@ -48,7 +48,7 @@ namespace OgreView
 {
 namespace Model {
 
-ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirectory) : mShowModels(true), mModelFactory(0), mExportDirectory(exportDirectory)
+ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirectory, Eris::EventService& eventService) : mShowModels(true), mModelFactory(0), mExportDirectory(exportDirectory)
 {
 	mLoadOrder = 300.0f;
 	mResourceType = "ModelDefinition";
@@ -61,7 +61,7 @@ ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirector
 
 
 	//register factories
-	mModelFactory = new ModelFactory();
+	mModelFactory = new ModelFactory(eventService);
 	Ogre::Root::getSingleton().addMovableObjectFactory(mModelFactory);
 
 }
@@ -168,45 +168,6 @@ void ModelDefinitionManager::setShowModels(bool show)
 {
 	mShowModels = show;
 }
-
-void ModelDefinitionManager::addBackgroundLoader(ModelBackgroundLoader* loader)
-{
-	if (std::find(mBackgroundLoaders.begin(), mBackgroundLoaders.end(), loader) == mBackgroundLoaders.end()) {
-		mBackgroundLoaders.push_back(loader);
-	}
-}
-
-void ModelDefinitionManager::removeBackgroundLoader(ModelBackgroundLoader* loader)
-{
-	BackgroundLoaderStore::iterator I = std::find(mBackgroundLoaders.begin(), mBackgroundLoaders.end(), loader);
-	if (I != mBackgroundLoaders.end()) {
-		mBackgroundLoaders.erase(I);
-	}
-}
-
-
-bool ModelDefinitionManager::pollBackgroundLoaders(const TimeFrame& timeFrame)
-{
-	if (!mBackgroundLoaders.empty()) {
-		TimedLog timedLog("ModelDefinitionManager::pollBackgroundLoaders", true);
-		for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();)
-		{
-			BackgroundLoaderStore::iterator I_copy = I;
-			ModelBackgroundLoader* loader(*I);
-			++I;
-			if (loader->poll(timeFrame)) {
-				mBackgroundLoaders.erase(I_copy);
-				loader->reloadModel();
-				timedLog.report();
-			}
-			if (!timeFrame.isTimeLeft()) {
-				return !mBackgroundLoaders.empty();
-			}
-		}
-	}
-	return false;
-}
-
 
 }
 }

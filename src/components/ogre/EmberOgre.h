@@ -33,6 +33,7 @@
 
 namespace Eris
 {
+class EventService;
 class View;
 class Connection;
 class Entity;
@@ -214,19 +215,12 @@ public:
 	bool renderOneFrame(const TimeFrame& timeFrame);
 
 	/**
-	 * @param timeFrame The time frame within which we can operate while still keeping up the desired frame rate.
-	 * @return True if there are more tasks left in the queue which weren't handled within the time frame.
-	 */
-	bool processBackgroundTasks(const TimeFrame& timeFrame);
-
-
-	/**
 	 * @brief Sets up the application - returns false if the user chooses to abandon configuration.
 	 * @param input The main input.
 	 * @param mainLoopController The main loop instance.
 	 * @return True if setup was successful.
 	 */
-	bool setup(Input& input, MainLoopController& mainLoopController);
+	bool setup(Input& input, MainLoopController& mainLoopController, Eris::EventService& eventService);
 
 	/**
 	 * @brief Shuts down the gui.

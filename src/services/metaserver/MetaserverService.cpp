@@ -88,7 +88,7 @@ Service::Status MetaserverService::start()
 	}
 
 	S_LOG_INFO("Connecting to meta server at address " << metaserverHostname << ".");
-	mMetaserver = new Eris::Meta(mSession.getIoService(), metaserverHostname, 20);
+	mMetaserver = new Eris::Meta(mSession.getIoService(), mSession.getEventService(), metaserverHostname, 20);
 	mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
 	mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
 	mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));

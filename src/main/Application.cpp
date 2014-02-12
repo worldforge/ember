@@ -23,7 +23,6 @@
 #endif
 
 #include <Eris/View.h>
-#include <Eris/DeleteLater.h>
 #include <Eris/EventService.h>
 #include <Eris/Session.h>
 
@@ -180,9 +179,6 @@ Application::~Application()
 
 	mServices->getServerService().stop(0);
 
-	//When shutting down make sure to delete all pending objects from Eris. This is mainly because we want to be able to track memory leaks.
-	Eris::execDeleteLaters();
-
 	delete mSession;
 
 	delete mOgreView;
@@ -251,10 +247,8 @@ void Application::mainLoop()
 			mServices->getSoundService().cycle();
 			frameActionMask |= MainLoopController::FA_SOUND;
 
-			mOgreView->processBackgroundTasks(TimeFrame(boost::posix_time::microseconds(100)));
-
-			//Keep on running IO handlers until we need to render again
-			eventService.runEvents(timeFrame.getRemainingTime(), mShouldQuit);
+			//Keep on running IO and handlers until we need to render again
+			eventService.processEvents(timeFrame.getRemainingTime(), mShouldQuit);
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 
@@ -473,7 +467,7 @@ void Application::start()
 {
 
 	try {
-		if (!mOgreView->setup(Input::getSingleton(), mMainLoopController)) {
+		if (!mOgreView->setup(Input::getSingleton(), mMainLoopController, mSession->getEventService())) {
 			//The setup was cancelled, return.
 			return;
 		}

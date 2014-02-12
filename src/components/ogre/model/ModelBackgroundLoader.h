@@ -27,6 +27,13 @@
 
 #include <OgreResourceBackgroundQueue.h>
 
+#include <memory>
+
+namespace Eris
+{
+class EventService;
+}
+
 namespace Ember
 {
 class TimeFrame;
@@ -55,6 +62,10 @@ public:
 	 */
 	ModelBackgroundLoaderListener(ModelBackgroundLoader& loader);
 
+	virtual ~ModelBackgroundLoaderListener()
+	{
+	}
+
 	/**
 	 * @brief Called in the main thread when the background operation has completed.
 	 * Upon completion, the loader, if such an instance exists, will be notified of this. After this has happened, this instance will delete itself.
@@ -74,15 +85,7 @@ private:
 	/**
 	 * @brief The loader to which this listener is attached, or null if it is detached.
 	 */
-	ModelBackgroundLoader* mLoader;
-
-	/**
-	 * @brief Dtor.
-	 * This is private to make sure that an instance of this only can be deleted by itself (through a call to operationCompleted()).
-	 */
-	virtual ~ModelBackgroundLoaderListener()
-	{
-	}
+	ModelBackgroundLoader& mLoader;
 
 };
 
@@ -92,7 +95,7 @@ private:
 
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class ModelBackgroundLoader
+class ModelBackgroundLoader : public std::enable_shared_from_this<ModelBackgroundLoader>
 {
 	friend class ModelBackgroundLoaderListener;
 public:
@@ -155,14 +158,13 @@ public:
 		 */
 		LS_DONE
 	};
-	typedef std::list<Ogre::BackgroundProcessTicket, Ogre::STLAllocator<Ogre::BackgroundProcessTicket, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GENERAL>> > TicketStore;
-	typedef std::vector<ModelBackgroundLoaderListener*> ListenerStore;
+	typedef std::set<Ogre::BackgroundProcessTicket> TicketStore;
 
 	/**
 	 * @brief Ctor.
 	 * @param model The model which will be loaded.
 	 */
-	ModelBackgroundLoader(Model& model);
+	ModelBackgroundLoader(Model* model, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
@@ -172,10 +174,9 @@ public:
 	/**
 	 * @brief Polls the loading state (which might occur in a background thread).
 	 * If the loading state has progressed it will be updated.
-	 * @param timeFrame A time frame which can be used to query if there's any time left in the frame to perform actions.
 	 * @return True if the loading is complete.
 	 */
-	bool poll(const TimeFrame& timeFrame);
+	bool poll();
 
 	/**
 	 * @brief Gets the current loading state.
@@ -188,12 +189,16 @@ public:
 	 */
 	void reloadModel();
 
+	void detachFromModel();
+
 protected:
 
 	/**
 	 * @brief The model which will be loaded.
 	 */
-	Model& mModel;
+	Model* mModel;
+
+	Eris::EventService& mEventService;
 
 	/**
 	 * @brief The background loading tickets held by this instance.
@@ -207,10 +212,9 @@ protected:
 	LoadingState mState;
 
 	/**
-	 * @brief A store of all listeners created by this instance.
-	 * At destruction time, if there are any listeners left, these must be detached (they cannot be deleted by this class).
+	 * @brief A listener.
 	 */
-	ListenerStore mListeners;
+	ModelBackgroundLoaderListener mListener;
 
 	/**
 	 * @brief Adds a loading ticket.
@@ -243,6 +247,8 @@ protected:
 	 * @return True if there's time left.
 	 */
 	bool isThereTimeLeft(long long maxTimeMilliseconds);
+
+	bool performLoading();
 
 };
 

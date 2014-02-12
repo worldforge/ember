@@ -31,6 +31,9 @@
 
 #include <OgreResourceManager.h>
 
+namespace Eris {
+class EventService;
+}
 
 namespace Ember {
 class TimeFrame;
@@ -57,7 +60,7 @@ public:
 	 *
 	 * @param exportDirectory The path to the export directory, where exported models will be stored.
 	 */
-	ModelDefinitionManager(const std::string& exportDirectory);
+	ModelDefinitionManager(const std::string& exportDirectory, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
@@ -132,31 +135,6 @@ public:
 	 * @param show If false, all models will be hidden. If true, each model will use its normal visibility setting.
 	 */
 	void setShowModels(bool show);
-	
-	/**
-	 * @brief Adds a new background loader which will be polled each frame.
-	 * The loader will automatically be removed from the internal queue when the loading is complete.
-	 * Note that ownership won't be transferred.
-	 * Adding the same loader multiple times won't cause any errors.
-	 * @param loader The background loader which will be polled every frame.
-	 */
-	void addBackgroundLoader(ModelBackgroundLoader* loader);
-	
-	/**
-	 * @brief Removes a background loader from the list of loaders which will be polled every frame.
-	 * This will not delete the loader.
-	 * @param loader The loader that should be rmeoved. This should be an instance already submitted through a call to addBackgroundLoader(), but nothing will happen if it's not already added.
-	 */
-	void removeBackgroundLoader(ModelBackgroundLoader* loader);
-	
-	/**
-	 * @brief Polls all of the background loaders.
-	 * Call this each frame.
-	 * All of the background loaders will have their poll() method called. If the background loader has finished loading it will be removed from the store of loaders and the model will be reloaded.
-	 * @param timeFrame A time frame which can be used to query if there's any time left in the frame to perform actions.
-	 * @return True if there are more tasks left in the queue which weren't handled within the time frame.
-	 */
-	bool pollBackgroundLoaders(const TimeFrame& timeFrame);
 	
 protected:
 
