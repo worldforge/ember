@@ -192,6 +192,10 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}
+	//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
+	//FIXME This is a little hackish; how can we improve it to not require special cases?
+	} else if (m_view->getTopLevel() == this) {
+		return;
 	} else {
 		try {
 			setAttachment(0);
@@ -366,8 +370,12 @@ IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const
 void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation)
 {
 	if (graphicalRepresentation != mGraphicalRepresentation) {
-		//We must delete the attachment before we delete the graphical representation.
-		setAttachment(0);
+		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
+		//FIXME This is a little hackish; how can we improve it to not require special cases?
+		if (m_view->getTopLevel() != this) {
+			//We must delete the attachment before we delete the graphical representation.
+			setAttachment(0);
+		}
 		delete mGraphicalRepresentation;
 		mGraphicalRepresentation = graphicalRepresentation;
 		onLocationChanged(getLocation()); //This is needed to generate a new attachment.
