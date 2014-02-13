@@ -65,14 +65,7 @@ void TaskQueue::deactivate()
 		}
 
 		//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
-		//By adding a new handler we make sure that when this handler is invoked we've cleared the queue of any existing handlers.
-		bool queueCleared = false;
-		mEventService.runOnMainThread([&]() {
-			queueCleared = true;
-		});
-		do {
-			mEventService.processEvents(boost::posix_time::seconds(10), queueCleared);
-		} while (!queueCleared);
+		mEventService.processAllHandlers();
 
 		assert(mProcessedTaskUnits->empty());
 		assert(mUnprocessedTaskUnits.empty());
