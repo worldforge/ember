@@ -68,7 +68,11 @@ void MovementControllerInputListener::input_MouseButtonPressed(Input::MouseButto
 
 void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode)
 {
-	if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
+	if (mode == Input::IM_GUI){
+		mController.mMovementDirection.x() = 0;
+		mController.mMovementDirection.y() = 0;
+		mController.mMovementDirection.z() = 0;	
+	}else if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
 		mController.mMovementDirection.y() = 0;
 	}
 }
