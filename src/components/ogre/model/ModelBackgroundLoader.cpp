@@ -136,6 +136,7 @@ bool ModelBackgroundLoader::performLoading()
 					}
 #else
 					try {
+						S_LOG_VERBOSE("Loading mesh in background loader: " << meshPtr->getName());
 						meshPtr->load();
 					} catch (const std::exception& ex) {
 						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModel->getName() << "." << ex);
@@ -203,110 +204,80 @@ bool ModelBackgroundLoader::performLoading()
 			return performLoading();
 		}
 	} else if (mState == LS_MATERIAL_PREPARED) {
-		Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
-		for (auto submodelDef : mModel->getDefinition()->getSubModelDefinitions()) {
-			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName()));
-			for (auto submesh : meshPtr->getSubMeshIterator()) {
-				Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
-				if (!materialPtr.isNull() && !materialPtr->isLoaded()) {
+		for (auto& materialPtr : mMaterialsToLoad) {
+			if (!materialPtr.isNull() && !materialPtr->isLoaded()) {
 
 #if OGRE_THREAD_SUPPORT == 1
-					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, mListener);
-					if (ticket) {
-						//						materialPtr->setBackgroundLoaded(true);
-						addTicket(ticket);
-					}
-#else
-					Ogre::Material::TechniqueIterator techIter = materialPtr->getSupportedTechniqueIterator();
-					while (techIter.hasMoreElements()) {
-						Ogre::Technique* tech = techIter.getNext();
-						Ogre::Technique::PassIterator passIter = tech->getPassIterator();
-						while (passIter.hasMoreElements()) {
-							Ogre::Pass* pass = passIter.getNext();
-							Ogre::Pass::TextureUnitStateIterator tusIter = pass->getTextureUnitStateIterator();
-							while (tusIter.hasMoreElements()) {
-								Ogre::TextureUnitState* tus = tusIter.getNext();
-								unsigned int frames = tus->getNumFrames();
-								for (unsigned int i = 0; i < frames; ++i) {
-									const auto& textureName = tus->getFrameTextureName(i);
-									auto texturePtr = textureManager.getByName(textureName);
-									if (!texturePtr.isNull()) {
-										mTexturesToLoad.insert(texturePtr);
-									}
-								}
-							}
-						}
-					}
-#endif
-
+				Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, mListener);
+				if (ticket) {
+					//						materialPtr->setBackgroundLoaded(true);
+					addTicket(ticket);
 				}
-			}
-			for (auto partDefinition : submodelDef->getPartDefinitions()) {
-				if (partDefinition->getSubEntityDefinitions().size() > 0) {
-					for (auto subEntityDefinition : partDefinition->getSubEntityDefinitions()) {
-						const std::string& materialName = subEntityDefinition->getMaterialName();
-						if (materialName != "") {
-							Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
-							if (!materialPtr.isNull() && !materialPtr->isLoaded()) {
-#if OGRE_THREAD_SUPPORT == 1
-								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, mListener);
+#else
+				Ogre::Material::TechniqueIterator techIter = materialPtr->getSupportedTechniqueIterator();
+				while (techIter.hasMoreElements()) {
+					Ogre::Technique* tech = techIter.getNext();
+					Ogre::Technique::PassIterator passIter = tech->getPassIterator();
+					while (passIter.hasMoreElements()) {
+						Ogre::Pass* pass = passIter.getNext();
+						Ogre::Pass::TextureUnitStateIterator tusIter = pass->getTextureUnitStateIterator();
+						while (tusIter.hasMoreElements()) {
+							Ogre::TextureUnitState* tus = tusIter.getNext();
+							unsigned int frames = tus->getNumFrames();
+							for (unsigned int i = 0; i < frames; ++i) {
+								const auto& textureName = tus->getFrameTextureName(i);
+								mTexturesToLoad.insert(textureName);
+								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::TextureManager::getSingleton().getResourceType(), textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
 								if (ticket) {
 									addTicket(ticket);
 								}
-#else
-								Ogre::Material::TechniqueIterator techIter = materialPtr->getSupportedTechniqueIterator();
-								while (techIter.hasMoreElements()) {
-									Ogre::Technique* tech = techIter.getNext();
-									Ogre::Technique::PassIterator passIter = tech->getPassIterator();
-									while (passIter.hasMoreElements()) {
-										Ogre::Pass* pass = passIter.getNext();
-										Ogre::Pass::TextureUnitStateIterator tusIter = pass->getTextureUnitStateIterator();
-										while (tusIter.hasMoreElements()) {
-											Ogre::TextureUnitState* tus = tusIter.getNext();
-											unsigned int frames = tus->getNumFrames();
-											for (unsigned int i = 0; i < frames; ++i) {
-												const auto& textureName = tus->getFrameTextureName(i);
-												auto texturePtr = textureManager.getByName(textureName);
-												if (!texturePtr.isNull()) {
-													mTexturesToLoad.insert(texturePtr);
-												}
-											}
-										}
-									}
-								}
-#endif
 							}
 						}
 					}
 				}
+#endif
 			}
 		}
-		mState = LS_MATERIAL_LOADING;
+		mState = LS_TEXTURE_PREPARING;
 		return false;
-	} else if (mState == LS_MATERIAL_LOADING) {
+	} else if (mState == LS_TEXTURE_PREPARING) {
 		if (areAllTicketsProcessed()) {
-			if (!mTexturesToLoad.empty()) {
-				auto I = mTexturesToLoad.begin();
-				auto texture = *I;
+			mState = LS_TEXTURE_PREPARED;
+			return performLoading();
+		}
+	} else if (mState == LS_TEXTURE_PREPARED) {
+		if (!mTexturesToLoad.empty()) {
+			auto I = mTexturesToLoad.begin();
+			auto textureName = *I;
+			mTexturesToLoad.erase(I);
+			auto texture = Ogre::TextureManager::getSingleton().getByName(textureName);
+			if (!texture.isNull() && !texture->isLoaded()) {
 				try {
+					S_LOG_VERBOSE("Loading texture in background loader: " << texture->getName());
 					texture->load();
 				} catch (const std::exception& e) {
 					S_LOG_WARNING("Error when loading texture " << texture->getName() << e);
 				}
-				mTexturesToLoad.erase(I);
 				return false;
 			}
-
+		}
+		mState = LS_MATERIAL_LOADING;
+		return performLoading();
+	} else if (mState == LS_MATERIAL_LOADING) {
+		if (areAllTicketsProcessed()) {
 			if (!mMaterialsToLoad.empty()) {
 				auto I = mMaterialsToLoad.begin();
 				auto material = *I;
-				try {
-					material->load();
-				} catch (const std::exception& e) {
-					S_LOG_WARNING("Error when loading material " << material->getName() << e);
-				}
 				mMaterialsToLoad.erase(I);
-				return false;
+				if (!material->isLoaded()) {
+					try {
+						S_LOG_VERBOSE("Loading material in background loader: " << material->getName());
+						material->load();
+					} catch (const std::exception& e) {
+						S_LOG_WARNING("Error when loading material " << material->getName() << e);
+					}
+					return false;
+				}
 			}
 
 			mState = LS_DONE;

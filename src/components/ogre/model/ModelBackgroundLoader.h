@@ -134,6 +134,14 @@ public:
 		 */
 		LS_MATERIAL_PREPARED,
 		/**
+		 * @brief Textures are being prepared.
+		 */
+		LS_TEXTURE_PREPARING,
+		/**
+		 * @brief Textures have been prepared.
+		 */
+		LS_TEXTURE_PREPARED,
+		/**
 		 * @brief The Materials are loading.
 		 */
 		LS_MATERIAL_LOADING,
@@ -223,7 +231,7 @@ protected:
 	/**
 	 * @brief A set of textures that needs to be loaded.
 	 */
-	std::set<Ogre::TexturePtr> mTexturesToLoad;
+	std::set<std::string> mTexturesToLoad;
 
 	/**
 	 * @brief A set of materials that needs to be loaded.
