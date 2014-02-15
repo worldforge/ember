@@ -193,13 +193,13 @@ int main(int argc, char **argv)
 			app.initializeServices();
 
 			app.start();
-			std::cout << "Ember shut down successfully." << std::endl;
 		}
 	} catch (const std::exception& ex)
 	{
 		std::cerr << "Unexpected error, aborting.\n\r\t" << ex.what() << std::endl;
 		exitStatus = 1;
 	}
+    std::cout << "Ember shut down successfully." << std::endl;
 
 	return exitStatus;
 }
