@@ -23,6 +23,8 @@
 #ifndef EMBERLOG_H
 #define EMBERLOG_H
 
+#include <boost/date_time/posix_time/ptime.hpp>
+
 #include <cstdarg>
 #include <string>
 #include <list>
@@ -134,6 +136,21 @@ public:
 	{
 		END_MESSAGE = 0
 	};
+
+	/**
+	 * @brief Counter for the current frame.
+	 *
+	 * Used when providing detailed log output. This needs to be set from outside.
+	 */
+    static long long sCurrentFrame;
+
+    /**
+     * @brief Start time of the current frame.
+     *
+	 * Used when providing detailed log output. This needs to be set from outside.
+     */
+    static boost::posix_time::ptime sCurrentFrameStartMilliseconds;
+
 
 	/**
 	 * @brief Adds a message presented by various options, a format string and variable params like in printf using also the same format specifications.

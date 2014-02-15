@@ -94,7 +94,7 @@ std::atomic<int> ThreadIdentifier::sCounter;
         	static std::map<std::thread::id, ThreadIdentifier> threadIdentifiers;
         	myOut << "(";
 			myOut.width(8);
-			myOut << ((currentTime - mStart).total_microseconds()) << ":"<< threadIdentifiers[std::this_thread::get_id()].id <<")";
+			myOut << ((currentTime - mStart).total_microseconds()) << ":"<< threadIdentifiers[std::this_thread::get_id()].id << ":" << Log::sCurrentFrame << ":" << (currentTime - Log::sCurrentFrameStartMilliseconds).total_milliseconds() << ")";
         }
         myOut << "] ";
 

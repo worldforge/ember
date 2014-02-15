@@ -60,6 +60,11 @@ int Log::sNumberOfExternalObservers = 0;
 
 StdOutLogObserver Log::sStdOutLogObserver;
 
+long long Log::sCurrentFrame = 0;
+boost::posix_time::ptime Log::sCurrentFrameStartMilliseconds;
+
+
+
 void Log::log (const char *message, ...)
 {
 	va_list vl;

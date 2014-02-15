@@ -224,6 +224,8 @@ void Application::mainLoop()
 	mLastTimeInputProcessingEnd = currentTime;
 	do {
 		try {
+			Log::sCurrentFrameStartMilliseconds = microsec_clock::local_time();
+
 			unsigned int frameActionMask = 0;
 			TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(desiredFpsListener.getMicrosecondsPerFrame()));
 			if (mWorldView) {

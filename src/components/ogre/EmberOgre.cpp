@@ -112,6 +112,8 @@
 
 #include "OgreResourceProvider.h"
 
+#include "framework/Log.h"
+
 #include <Eris/Connection.h>
 #include <Eris/View.h>
 
@@ -221,6 +223,9 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 {
+	Log::sCurrentFrame = mRoot->getNextFrameNumber();
+
+
 	if (mInput->isApplicationVisible()) {
 		//If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
