@@ -174,7 +174,7 @@ bool Model::createFromDefn()
 
 bool Model::createActualModel()
 {
-	TimedLog timedLog(std::string("Model::createActualModel") + getDefinition()->getName());
+	TimedLog timedLog(std::string("Model::createActualModel ") + getDefinition()->getName());
 	Ogre::SceneManager* sceneManager = _getManager();
 	std::vector<std::string> showPartVector;
 
