@@ -205,7 +205,7 @@ bool ModelBackgroundLoader::performLoading()
 		}
 	} else if (mState == LS_MATERIAL_PREPARED) {
 		for (auto& materialPtr : mMaterialsToLoad) {
-			if (!materialPtr.isNull() && !materialPtr->isLoaded()) {
+			if (!materialPtr.isNull()) {
 
 #if OGRE_THREAD_SUPPORT == 1
 				Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, mListener);
