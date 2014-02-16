@@ -20,6 +20,9 @@
 #define TIMEDLOG_H_
 
 #include <string>
+#ifdef ENABLE_TIMED_LOG
+#include <chrono>
+#endif
 
 namespace Ember
 {
@@ -68,12 +71,12 @@ private:
 	/**
 	 * @brief The start of the logging, in milliseconds.
 	 */
-	long long mStartMilliseconds;
+	std::chrono::steady_clock::time_point mStart;
 
 	/**
 	 * @brief If report() has been called, record the last time of that.
 	 */
-	long long mLastReportMilliseconds;
+	std::chrono::steady_clock::time_point mLastReport;
 
 #endif
 };

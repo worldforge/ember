@@ -21,16 +21,14 @@
 
 #include "TimedLog.h"
 
-#include "Time.h"
 #include "LoggingInstance.h"
 
 namespace Ember
 {
 #ifdef ENABLE_TIMED_LOG
 TimedLog::TimedLog(const std::string& logName, bool reportStart) :
-	mLogName(logName), mStartMilliseconds(0), mLastReportMilliseconds(0)
+	mLogName(logName), mStart(std::chrono::steady_clock::now())
 {
-	mStartMilliseconds = Time::currentTimeMillis();
 	if (reportStart) {
 		S_LOG_VERBOSE("Started task '" << mLogName << "'.");
 	}
@@ -38,29 +36,34 @@ TimedLog::TimedLog(const std::string& logName, bool reportStart) :
 
 TimedLog::~TimedLog()
 {
-	long long currentTime = Time::currentTimeMillis();
-	S_LOG_VERBOSE("Ended task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds.");
+	auto currentTime = std::chrono::steady_clock::now();
+	auto microDuration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - mStart);
+	S_LOG_VERBOSE("Ended task '" << mLogName << "' after " << microDuration.count() << " microseconds.");
 }
 
 void TimedLog::report()
 {
-	long long currentTime = Time::currentTimeMillis();
-	if (mLastReportMilliseconds) {
-		S_LOG_VERBOSE("Reported on task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds, "<< currentTime - mLastReportMilliseconds <<" since last reported time.");
+	auto currentTime = std::chrono::steady_clock::now();
+	auto microDuration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - mStart);
+	if (mLastReport.time_since_epoch().count()) {
+		auto microLastReportDuration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - mLastReport);
+		S_LOG_VERBOSE("Reported on task '" << mLogName << "' after " << microDuration.count() << " microseconds, "<< microLastReportDuration.count() <<" since last reported time.");
 	} else {
-		S_LOG_VERBOSE("Reported on task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds.");
+		S_LOG_VERBOSE("Reported on task '" << mLogName << "' after " << microDuration.count() << " microseconds.");
 	}
-	mLastReportMilliseconds = currentTime;
+	mLastReport = currentTime;
 }
 void TimedLog::report(const std::string& reportName)
 {
-	long long currentTime = Time::currentTimeMillis();
-	if (mLastReportMilliseconds) {
-		S_LOG_VERBOSE("Reported '" << reportName << "' on task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds, "<< currentTime - mLastReportMilliseconds <<" since last reported time.");
+	auto currentTime = std::chrono::steady_clock::now();
+	auto microDuration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - mStart);
+	if (mLastReport.time_since_epoch().count()) {
+		auto microLastReportDuration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - mLastReport);
+		S_LOG_VERBOSE("Reported '" << reportName << "' on task '" << mLogName << "' after " << microDuration.count() << " microseconds, "<< microLastReportDuration.count() <<" since last reported time.");
 	} else {
-		S_LOG_VERBOSE("Reported '" << reportName << "' on task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds.");
+		S_LOG_VERBOSE("Reported '" << reportName << "' on task '" << mLogName << "' after " << microDuration.count() << " microseconds.");
 	}
-	mLastReportMilliseconds = currentTime;
+	mLastReport = currentTime;
 }
 #else
 TimedLog::TimedLog(const std::string& logName, bool reportStart)
