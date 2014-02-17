@@ -48,8 +48,11 @@ void NonConnectedState::destroyChildState()
 {
 	//Make sure to sever the connection, so that we don't end up in an infinite loop if something goes wrong when shutting down.
 	mDisconnectedConnection.disconnect();
-	delete mChildState;
-	mChildState = nullptr;
+	if (mChildState) {
+		mChildState->destroyChildState();
+		delete mChildState;
+		mChildState = nullptr;
+	}
 }
 
 ServerServiceSignals& NonConnectedState::getSignals() const

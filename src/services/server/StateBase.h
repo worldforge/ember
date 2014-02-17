@@ -53,12 +53,18 @@ public:
 
 	virtual void transfer(const Eris::TransferInfo& transferInfo);
 
+	void destroyChildState();
+
 
 protected:
 
 	IState& getParentState() const;
 
 	ServerServiceSignals& getSignals() const;
+
+	virtual StateBaseCore* getCoreChildState();
+
+	virtual void clearChildState();
 
 private:
 
@@ -76,8 +82,6 @@ public:
 
 	virtual ~StateBase();
 
-	virtual void destroyChildState();
-
 	virtual IState& getTopState();
 
 protected:
@@ -85,6 +89,10 @@ protected:
 	virtual void setChildState(TChildState* childState);
 
 	TChildState* getChildState() const;
+
+    virtual StateBaseCore* getCoreChildState();
+
+    virtual void clearChildState();
 
 private:
 
@@ -139,6 +147,27 @@ inline void StateBaseCore::transfer(const Eris::TransferInfo& transferInfo)
 	mParentState.transfer(transferInfo);
 }
 
+inline void StateBaseCore::destroyChildState()
+{
+	auto child = getCoreChildState();
+	if (child) {
+		//Guard to allow this method to be called multiple times within the same stack.
+		clearChildState();
+		child->destroyChildState();
+		delete child;
+	}
+}
+
+inline StateBaseCore* StateBaseCore::getCoreChildState()
+{
+	return nullptr;
+}
+
+inline void StateBaseCore::clearChildState()
+{
+}
+
+
 
 inline IServerAdapter& StateBaseCore::getServerAdapter()
 {
@@ -163,18 +192,22 @@ inline StateBase<void>::~StateBase()
 {
 }
 
-template<typename TChildState>
-inline void StateBase<TChildState>::destroyChildState()
+template<>
+inline StateBaseCore* StateBase<void>::getCoreChildState()
 {
-	//Guard to allow this method to be called multiple times within the same stack.
-	TChildState* childState = mChildState;
-	mChildState = 0;
-	delete childState;
+    return nullptr;
 }
 
-template<>
-inline void StateBase<void>::destroyChildState()
+template<typename TChildState>
+inline StateBaseCore* StateBase<TChildState>::getCoreChildState()
 {
+    return mChildState;
+}
+
+template<typename TChildState>
+inline void StateBase<TChildState>::clearChildState()
+{
+	mChildState = nullptr;
 }
 
 template<>
