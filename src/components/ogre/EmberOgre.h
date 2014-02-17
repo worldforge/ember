@@ -104,8 +104,6 @@ class EntityRecipeManager;
 
 class GUIManager;
 
-class Jesus;
-
 class EmberEntity;
 
 class OgreResourceLoader;
@@ -175,12 +173,6 @@ public:
 	AutomaticGraphicsLevelManager* getAutomaticGraphicsLevelManager() const;
 	
 	/**
-	 * @brief Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
-	 *
-	 * @return The main Jesus instance.
-	 */
-	//	Jesus* getJesus() const;
-	/**
 	 * @brief Gets the main render window.
 	 *
 	 * The system can contains many different render windows, but there's only one that's the main window.
@@ -201,11 +193,6 @@ public:
 	 * @returns A World instance, or null if no such exists. The instance is created first when the client has connected and received an Eris::View instance.
 	 */
 	World* getWorld() const;
-
-	/**
-	 * @brief Emitted when the Jesus subsystem has been created.
-	 */
-	//	sigc::signal<void, Jesus*> EventCreatedJesus;
 
 	/**
 	 * @brief Renders one frame.
@@ -320,12 +307,6 @@ protected:
 	Authoring::EntityRecipeManager* mEntityRecipeManager;
 
 	/**
-	 * @brief Main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
-	 *
-	 * @note The Jesus and Carpenter system hasn't been touched in quite a while, and it's not certain that it will remain in Ember.
-	 */
-	//	Jesus* mJesus;
-	/**
 	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
 	 */
 	OgreLogObserver* mLogObserver;
@@ -421,10 +402,6 @@ protected:
 	 */
 	void EntityFactory_BeingDeleted();
 
-	/**
-	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
-	 */
-	//	void setupJesus();
 	/**
 	 * @brief Preloads the media, thus avoiding frame rate drops ingame.
 	 *

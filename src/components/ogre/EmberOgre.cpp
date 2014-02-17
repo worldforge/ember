@@ -76,17 +76,12 @@
 #include "lod/LodDefinitionManager.h"
 #include "lod/LodManager.h"
 
-//#include "ogreopcode/include/OgreCollisionManager.h"
-//#include "OpcodeCollisionDetectorVisualizer.h"
 
 #include "authoring/EntityRecipeManager.h"
 
 #include "ShaderManager.h"
 #include "ShaderDetailManager.h"
 #include "AutoGraphicsLevelManager.h"
-
-//#include "jesus/Jesus.h"
-//#include "jesus/XMLJesusSerializer.h"
 
 #include "framework/osdir.h"
 
@@ -146,10 +141,7 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 
 EmberOgre::EmberOgre() :
 		mInput(0), mOgreSetup(nullptr), mRoot(0), mSceneManagerOutOfWorld(0), mWindow(0), mScreen(0), mShaderManager(0), mShaderDetailManager(nullptr), mAutomaticGraphicsLevelManager(nullptr), mGeneralCommandMapper(new InputCommandMapper("general")), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
-		//mJesus(0),
 		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr),
-		//mCollisionManager(0),
-		//mCollisionDetectorVisualizer(0),
 		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mCameraOutOfWorld(0), mWorld(0), mPMInjectorSignaler(0)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
@@ -159,10 +151,7 @@ EmberOgre::~EmberOgre()
 {
 	delete mWorld;
 	delete mModelRepresentationManager;
-	//	delete mCollisionDetectorVisualizer;
-	//	delete mCollisionManager;
 	delete mMaterialEditor;
-	//	delete mJesus;
 
 	EmberServices::getSingleton().getSoundService().setResourceProvider(0);
 	delete mSoundManager;
@@ -433,10 +422,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 			throw Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
 		}
 
-		//this should be in a separate class, a separate plugin even
-		//disable for now, since it's not used
-		//setupJesus();
-
 		// Back to full rendering
 		mSceneManagerOutOfWorld->clearSpecialCaseRenderQueues();
 		mSceneManagerOutOfWorld->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
@@ -503,92 +488,6 @@ void EmberOgre::preloadMedia(void)
 	}
 
 }
-
-//void EmberOgre::setupJesus()
-//{
-//@note Disabled for now since it's not really used. Perhaps we should put this into a more dynamically loadable structure?
-
-//	const std::string datadir = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
-//
-//	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
-//	mJesus = new Jesus(carpenter);
-//	XMLJesusSerializer serializer(mJesus);
-//
-//	std::string dir(EmberServices::getSingleton().getConfigService().getSharedDataDirectory() + "carpenter/blockspec");
-//
-//	std::string filename;
-//
-//	//oslink::directory needs to be destroyed before a new one can be used, regular copy constructor doesn't seem to work
-//	//we could also use new/delete, but scopes works as well
-//	{
-//		oslink::directory osdir(dir);
-//		while (osdir) {
-//			filename = osdir.next();
-//			S_LOG_VERBOSE( "Loading blockspec: " << filename );
-//			serializer.loadBlockSpec(dir + "/" + filename);
-//		}
-//	}
-//	//load all buildingblockspecs
-//	dir = EmberServices::getSingleton().getConfigService().getSharedDataDirectory() + "carpenter/modelblockspecs";
-//		{
-//		oslink::directory osdir(dir);
-//		while (osdir) {
-//			filename = osdir.next();
-//			S_LOG_VERBOSE( "Loading buildingblockspecC: " << filename);
-//			serializer.loadBuildingBlockSpecDefinition(dir + "/" + filename);
-//		}
-//	}
-//	//load all modelmappings
-//	dir = EmberServices::getSingleton().getConfigService().getSharedDataDirectory() + "jesus/modelmappings";
-//	{
-//		oslink::directory osdir(dir);
-//		while (osdir) {
-//			filename = osdir.next();
-//			S_LOG_VERBOSE( "Loading modelmapping: " <<  filename );
-//			serializer.loadModelBlockMapping(dir + "/" + filename);
-//		}
-//	}
-//
-//	//load all global blueprints
-//	dir = EmberServices::getSingleton().getConfigService().getSharedDataDirectory() + "carpenter/blueprints";
-//	{
-//		oslink::directory osdir(dir);
-//		while (osdir) {
-//			filename = osdir.next();
-//			S_LOG_VERBOSE(  "Loading blueprint: " << filename );
-//			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
-//			if (blueprint) {
-//				blueprint->compile();
-//				bool result = mJesus->addBluePrint(blueprint);
-//				if (!result)
-//				{
-//					S_LOG_FAILURE( "Could not add blueprint: " << filename);
-//				}
-//			}
-//		}
-//	}
-//	//load all local blueprints
-//	dir = EmberServices::getSingleton().getConfigService().getHomeDirectory() + "carpenter/blueprints";
-//	{
-//		oslink::directory osdir(dir);
-//		while (osdir) {
-//			filename = osdir.next();
-//			S_LOG_VERBOSE( "Loading local blueprint: " << filename );
-//			Carpenter::BluePrint* blueprint = serializer.loadBlueprint(dir + "/" + filename);
-//			if (blueprint) {
-//				blueprint->compile();
-//				bool result = mJesus->addBluePrint(blueprint);
-//				if (!result)
-//				{
-//					S_LOG_FAILURE(  "Could not add blueprint: " << filename );
-//				}
-//			}
-//		}
-//	}
-//
-//
-//	EventCreatedJesus.emit(mJesus);
-//}
 
 void EmberOgre::Server_GotView(Eris::View* view)
 {

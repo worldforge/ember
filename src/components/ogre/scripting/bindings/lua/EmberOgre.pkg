@@ -1,8 +1,5 @@
 $#include "required.h"
 
-//$pfile "Carpenter.pkg"
-
-
 $pfile "MainCamera.pkg"
 $pfile "Screen.pkg"
 $pfile "MovementController.pkg"
@@ -64,7 +61,6 @@ $pfile "ModelRepresentation.pkg"
 $pfile "ModelRepresentationManager.pkg"
 $pfile "SubModel.pkg"
 $pfile "ModelDefinition.pkg"
-//$pfile "Jesus.pkg"
 
 $pfile "Convert.pkg"
 

@@ -68,7 +68,6 @@ class EmberEntity;
 struct EntityPickResult;
 struct MousePickerArgs;
 class EmberEntityFactory;
-class Jesus;
 class World;
 class MotionManager;
 class GUIManager;
