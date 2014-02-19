@@ -379,6 +379,7 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 		delete mGraphicalRepresentation;
 		mGraphicalRepresentation = graphicalRepresentation;
 		onLocationChanged(getLocation()); //This is needed to generate a new attachment.
+		EventChangedGraphicalRepresentation();
 	}
 }
 

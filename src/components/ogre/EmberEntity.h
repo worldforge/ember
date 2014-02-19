@@ -316,6 +316,11 @@ public:
 
 	sigc::signal<void, const Domain::EntityTalk&> EventTalk;
 
+	/**
+	 * @brief Emitted when the graphical representation changes.
+	 */
+	sigc::signal<void> EventChangedGraphicalRepresentation;
+
 protected:
 
 	/**
