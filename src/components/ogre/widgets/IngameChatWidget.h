@@ -29,6 +29,7 @@
 #include <Eris/Entity.h>
 #include <OgreMovableObject.h>
 #include <unordered_map>
+#include <functional>
 
 namespace Ember {
 
@@ -73,22 +74,22 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 	class MovableObjectListener : public Ogre::MovableObject::Listener
 	{
 		public:
-			MovableObjectListener(EntityObserver& entityObserver, Model::ModelRepresentation& modelRepresentation);
+			MovableObjectListener(Label& label, Ogre::MovableObject& movableObject);
 			virtual ~MovableObjectListener();
 
 			virtual bool objectRendering (const Ogre::MovableObject * movableObject, const Ogre::Camera * camera);
 			void setObserving(bool isObserving);
 
 		private:
-			EntityObserver& mEntityObserver;
-			Model::ModelRepresentation& mModelRepresentation;
+			Label& mLabel;
+			Ogre::MovableObject& mMovableObject;
 			bool mIsObserving;
 	};
 
 	class EntityObserver : public virtual sigc::trackable
 	{
 		public:
-			EntityObserver(IngameChatWidget& chatWidget, Model::ModelRepresentation& modelRepresentation);
+			EntityObserver(IngameChatWidget& chatWidget, EmberEntity& entity);
 			virtual ~EntityObserver();
 			void updateLabel(const Ogre::Camera * camera);
 
@@ -105,9 +106,8 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 
 		protected:
 			IngameChatWidget& mChatWidget;
-			Model::ModelRepresentation& mModelRepresentation;
+			EmberEntity& mEntity;
 			Label* mLabel;
-			MovableObjectListener mMovableObjectListener;
 			Eris::Entity::AttrChangedSlot mExternalSlot; //, mNameSlot;
 
 			void showLabel();
@@ -117,6 +117,8 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			void entity_BeingDeleted();
 			void entity_Say(const Atlas::Objects::Root& talk);
 			void entity_attributeChanged(const Atlas::Message::Element& attributeValue);
+
+			void entity_GraphicalRepresentationChanged();
 
 
 	};
@@ -153,8 +155,9 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			 */
 			EmberEntity* getEntity();
 
-			void setModelRepresentation(Model::ModelRepresentation* modelRepresentation);
+			void attachToEntity(EmberEntity* entity, Ogre::MovableObject* movableObject);
 
+			void setVisible(bool visible);
 			void setActive(bool active);
 			bool getActive() const;
 			void markForRender();
@@ -200,15 +203,29 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			 */
 			void reset();
 
+			void objectRendering(const Ogre::Camera * camera);
+
 		protected:
 			CEGUI::Window* mWindow;
-			Model::ModelRepresentation* mModelRepresentation;
+			Ogre::MovableObject* mMovableObject;
+			MovableObjectListener* mMovableObjectListener;
+			EmberEntity* mEntity;
 			CEGUI::WindowManager* mWindowManager;
 			IngameChatWidget& mContainerWidget;
 
+			/**
+			 * @brief If true, the label is actively monitoring an entity.
+			 */
 			bool mActive;
-			/// CEGUI window name prefix
-			const std::string mPrefix;
+
+			/**
+			 * @brief If true, the label is visible to the user.
+			 */
+			bool mVisible;
+
+			/**
+			 * @brief If true, the label should be shown on the next frame rendering.
+			 */
 			bool mRenderNextFrame;
 			ChatText* mChatText;
 
@@ -338,10 +355,21 @@ typedef std::unordered_map<std::string, Label*> LabelMap;
 typedef std::vector<Label*> LabelStore;
 typedef std::stack<Label*> LabelStack;
 typedef std::unordered_map<std::string, EntityObserver*> EntityObserverStore;
-typedef std::vector<Eris::TypeInfo*> TypeInfoStore;
 friend class IngameChatWidget::EntityObserver;
 
 public:
+	/**
+	 * @brief Static function called when we want to enable labels for an entity.
+	 * Be sure to check that the function is valid before calling it.
+	 */
+	static std::function<void(EmberEntity&)> sEnableForEntity;
+
+	/**
+	 * @brief Static function called when we want to disable labels for an entity.
+	 * Be sure to check that the function is valid before calling it.
+	 */
+	static std::function<void(EmberEntity&)> sDisableForEntity;
+
 	IngameChatWidget();
     virtual ~IngameChatWidget();
 	void buildWidget();
@@ -361,18 +389,6 @@ public:
 protected:
 
 	/**
-	 * @brief Listen to the Eris::View::EntitySeen event.
-	 * @param entity The seen entity.
-	 */
-	void View_EntitySeen(Eris::Entity* entity);
-
-	/**
-	 * @brief Listen to the Eris::View::EntityCreated event.
-	 * @param entity The created entity.
-	 */
-	void View_EntityCreated(Eris::Entity* entity);
-
-	/**
 	 * @brief Listen to the world created event, and attach listeners.
 	 * @param world The new world.
 	 */
@@ -382,12 +398,12 @@ protected:
 	void Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
-	 * @brief Called whenever an entity has arrived from the server.
+	 * @brief Called whenever labels should be enabled for an entity.
 	 *
-	 * Either through being seen or being created. This will inspect the entity and set up any observers if needed.
-	 * @param entity A newly created or seen entity.
+	 * @param entity An entity.
 	 */
-	void entityArrivedFromServer(EmberEntity& entity);
+	void enableForEntity(EmberEntity& entity);
+	void disableForEntity(EmberEntity& entity);
 
 	/**
 	 * @brief Listen to any "talk" entity action and respond by bringing up the detached chat widget for the entity.
@@ -397,8 +413,6 @@ protected:
 	void GUIManager_EntityAction(const std::string& action, EmberEntity* entity);
 
 	EntityObserverStore mEntityObservers;
-
-	TypeInfoStore mLabelTypes;
 
 	/**
 	 * @brief The length in seconds a window should be shown after it has been activated.
