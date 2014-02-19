@@ -63,6 +63,10 @@ void AttributeObserver::observeEntity(Eris::Entity* entity)
 	if (entity) {
 		mSlot = sigc::mem_fun(*this, &AttributeObserver::attributeChanged);
 		entity->observe(mAttributeName, mSlot);
+		//If the attribute already exists, trigger a test now.
+		if (entity->hasAttr(mAttributeName)) {
+			attributeChanged(entity->valueOfAttr(mAttributeName));
+		}
 	}
 }
 
