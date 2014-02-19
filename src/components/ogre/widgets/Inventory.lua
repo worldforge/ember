@@ -391,34 +391,41 @@ end
 
 function Inventory:setupDoll(avatarEntity)
 	self.doll = {}
-	local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
-	if model ~= nil then
-		self.doll.image = self.widget:getWindow("DollImage")
-		self.doll.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.doll.image, "doll")
-		self.doll.renderer:setActive(false)
-		
-		self.doll.renderer:showModel(model:getDefinition():get():getName())
-		self.doll.renderer:setCameraDistance(0.75)
-		self.doll.renderer:updateRender()
-				
-		self.doll.rightHand = self:createDollSlot("right_hand_wield", self.doll.image:getChild("RightHand"), "Drop an entity here to attach it to the right hand.", "")
-		self.doll.rightHandOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.rightHand, "")
-		
-		self.doll.torso = self:createDollSlot("outfit.body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.", "body")
-		self.doll.torsoOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.torso, "body")
-		
-		self.doll.back = self:createDollSlot("outfit.back", self.doll.image:getChild("Back"), "Drop an entity here to attach it to the back.", "back")
-		self.doll.backOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.back, "back")
+	self.doll.image = self.widget:getWindow("DollImage")
+	self.doll.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.doll.image, "doll")
+	self.doll.renderer:setActive(false)
 
-		self.doll.head = self:createDollSlot("outfit.head", self.doll.image:getChild("Head"), "Drop an entity here to attach it to the head.", "head")
-		self.doll.headOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.head, "head")
+	self.doll.rightHand = self:createDollSlot("right_hand_wield", self.doll.image:getChild("RightHand"), "Drop an entity here to attach it to the right hand.", "")
+	self.doll.rightHandOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.rightHand, "")
 	
-		self.doll.legs = self:createDollSlot("outfit.legs", self.doll.image:getChild("Legs"), "Drop an entity here to attach it to the legs.", "legs")
-		self.doll.legsOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.legs, "legs")
+	self.doll.torso = self:createDollSlot("outfit.body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.", "body")
+	self.doll.torsoOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.torso, "body")
+	
+	self.doll.back = self:createDollSlot("outfit.back", self.doll.image:getChild("Back"), "Drop an entity here to attach it to the back.", "back")
+	self.doll.backOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.back, "back")
+
+	self.doll.head = self:createDollSlot("outfit.head", self.doll.image:getChild("Head"), "Drop an entity here to attach it to the head.", "head")
+	self.doll.headOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.head, "head")
+
+	self.doll.legs = self:createDollSlot("outfit.legs", self.doll.image:getChild("Legs"), "Drop an entity here to attach it to the legs.", "legs")
+	self.doll.legsOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.legs, "legs")
+	
+	self.doll.feet = self:createDollSlot("outfit.feet", self.doll.image:getChild("Feet"), "Drop an entity here to attach it to the feet.", "feet")
+	self.doll.feetOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.feet, "feet")
 		
-		self.doll.feet = self:createDollSlot("outfit.feet", self.doll.image:getChild("Feet"), "Drop an entity here to attach it to the feet.", "feet")
-		self.doll.feetOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.feet, "feet")
+	local representationUpdate = function()
+		local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
+		if model ~= nil then
+			self.doll.renderer:showModel(model:getDefinition():get():getName())
+			self.doll.renderer:setCameraDistance(0.75)
+			self.doll.renderer:updateRender()
+		end
 	end
+	
+	representationUpdate()
+	
+	table.insert(self.connectors, createConnector(avatarEntity.EventChangedGraphicalRepresentation):connect(representationUpdate))
+	
 end
 
 function Inventory:updateDoll()
