@@ -19,6 +19,7 @@
 #include "framework/MainLoopController.h"
 
 #include <Eris/Entity.h>
+#include <Eris/EventService.h>
 
 #include <Atlas/Message/Element.h>
 
@@ -305,8 +306,8 @@ class TestTerrainHandler: public Terrain::TerrainHandler
 {
 public:
 
-	TestTerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-		Terrain::TerrainHandler(pageIndexSize, compilerTechniqueProvider)
+	TestTerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider, Eris::EventService& es) :
+		Terrain::TerrainHandler(pageIndexSize, compilerTechniqueProvider, es)
 	{
 		mLightning = new DummyLightning();
 	}
@@ -331,11 +332,14 @@ public:
 class TerrainSetup
 {
 public:
+	boost::asio::io_service io_service;
+	Eris::EventService es;
 	DummyCompilerTechniqueProvider compilerTechniqueProvider;
 	TestTerrainHandler terrainHandler;
 
+
 	TerrainSetup() :
-		terrainHandler(513, compilerTechniqueProvider)
+		es(io_service), terrainHandler(513, compilerTechniqueProvider, es)
 	{
 	}
 
@@ -357,7 +361,7 @@ public:
 		terrainHandler.updateTerrain(terrainDefPoints);
 		Timer timer;
 		do {
-			terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
+			es.processAllHandlers();
 		} while (!timer.hasElapsed(5000) && !worldSizeChangedListener.getCompletedCount());
 		return worldSizeChangedListener.getCompletedCount() > 0;
 	}
@@ -377,7 +381,7 @@ public:
 		{
 			Timer timer;
 			do {
-				terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
+				es.processAllHandlers();
 			} while ((!timer.hasElapsed(5000)) && (!bridge1->pageReady || !bridge2->pageReady || !bridge3->pageReady || !bridge4->pageReady));
 		}
 		CPPUNIT_ASSERT(bridge1->pageReady);
@@ -401,7 +405,7 @@ public:
 		{
 			Timer timer;
 			do {
-				terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
+				es.processAllHandlers();
 			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 		}
 		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
@@ -467,7 +471,7 @@ public:
 		{
 			Timer timer;
 			do {
-				terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
+				terrainSetup.es.processAllHandlers();
 			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 		}
 		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
@@ -569,7 +573,7 @@ public:
 			{
 				Timer timer;
 				do {
-					terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
+					terrainSetup.es.processAllHandlers();
 				} while (afterTerrainUpdateListener.getCompletedCount() < 4);
 			}
 			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
@@ -591,7 +595,7 @@ public:
 			{
 				Timer timer;
 				do {
-					terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
+					terrainSetup.es.processAllHandlers();
 //				} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 				} while (afterTerrainUpdateListener.getCompletedCount() < 4);
 			}
@@ -612,7 +616,7 @@ public:
 			{
 				Timer timer;
 				do {
-					terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
+					terrainSetup.es.processAllHandlers();
 				} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 			}
 			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);

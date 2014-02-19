@@ -10,7 +10,12 @@
 #include "framework/tasks/TaskExecutionContext.h"
 #include "framework/Exception.h"
 
+#include <Eris/EventService.h>
+
 #include <wfmath/timestamp.h>
+
+#include <boost/asio.hpp>
+
 #define _GLIBCXX_USE_NANOSLEEP 1
 #include <thread>
 #include <chrono>
@@ -156,12 +161,14 @@ class TaskTestCase: public CppUnit::TestFixture
 
 	CPPUNIT_TEST_SUITE_END();
 
+	boost::asio::io_service io_service;
 public:
 	void testSimpleTaskRun()
 	{
 		int counter = 0;
 		{
-			Tasks::TaskQueue taskQueue(1);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(1, es);
 			taskQueue.enqueueTask(new CounterTask(counter));
 		}
 		CPPUNIT_ASSERT(counter == 0);
@@ -171,11 +178,12 @@ public:
 	{
 		int counter = 0;
 		{
-			Tasks::TaskQueue taskQueue(1);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(1, es);
 			taskQueue.enqueueTask(new CounterTask(counter));
 			//200 ms should be enough... This isn't deterministic though.
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
-			taskQueue.pollProcessedTasks(TimeFrame(boost::posix_time::milliseconds(100000)));
+			es.processAllHandlers();
 			CPPUNIT_ASSERT(counter == 0);
 		}
 
@@ -185,7 +193,8 @@ public:
 	{
 		int counter = 0;
 		{
-			Tasks::TaskQueue taskQueue(2);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(2, es);
 			taskQueue.enqueueTask(new CounterTask(counter));
 		}
 		CPPUNIT_ASSERT(counter == 0);
@@ -195,7 +204,8 @@ public:
 	{
 		int counter = 0;
 		{
-			Tasks::TaskQueue taskQueue(1);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(1, es);
 			taskQueue.enqueueTask(new CounterTask(counter, 200));
 			taskQueue.enqueueTask(new CounterTask(counter));
 		}
@@ -206,7 +216,8 @@ public:
 	{
 		int counter = 0;
 		{
-			Tasks::TaskQueue taskQueue(2);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(2, es);
 			taskQueue.enqueueTask(new CounterTask(counter, 200));
 			taskQueue.enqueueTask(new CounterTask(counter));
 		}
@@ -218,7 +229,8 @@ public:
 		SimpleListener listener;
 		int counter = 0;
 		{
-			Tasks::TaskQueue taskQueue(1);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(1, es);
 			taskQueue.enqueueTask(new CounterTask(counter), &listener);
 		}
 		CPPUNIT_ASSERT(counter == 0);
@@ -231,7 +243,8 @@ public:
 		SimpleListener listener;
 		int counter = 0;
 		{
-			Tasks::TaskQueue taskQueue(1);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(1, es);
 			taskQueue.enqueueTask(new CounterTaskBackgroundException(counter), &listener);
 		}
 		CPPUNIT_ASSERT(counter == 1);
@@ -247,7 +260,8 @@ public:
 		TimeHolder time2;
 		TimeHolder time3;
 		{
-			Tasks::TaskQueue taskQueue(1);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(1, es);
 			taskQueue.enqueueTask(new TimeTask(time1), &listener1);
 			taskQueue.enqueueTask(new TimeTask(time2), &listener2);
 			taskQueue.enqueueTask(new TimeTask(time3), &listener3);
@@ -269,7 +283,8 @@ public:
 		TimeHolder time2;
 		TimeHolder time3;
 		{
-			Tasks::TaskQueue taskQueue(1);
+			Eris::EventService es(io_service);
+			Tasks::TaskQueue taskQueue(1, es);
 			taskQueue.enqueueTask(new TimeTask(time1, new TimeTask(time2), &listener2), &listener1);
 			taskQueue.enqueueTask(new TimeTask(time3), &listener3);
 		}
