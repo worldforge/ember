@@ -327,15 +327,6 @@ public:
 	ICompilerTechniqueProvider& getCompilerTechniqueProvider();
 
 	/**
-	 * @brief Polls the tasks queue.
-	 *
-	 * Call this at a regular interval.
-	 *
-	 * @param timeFrame The time frame allowed for polling.
-	 */
-	void pollTasks(const TimeFrame& timeFrame);
-
-	/**
 	 * @brief Updates all pages.
 	 */
 	void updateAllPages();
@@ -400,6 +391,8 @@ protected:
 	@brief Information about the world, such as size and number of pages.
 	*/
 	std::unique_ptr<TerrainInfo> mTerrainInfo;
+
+	Eris::EventService& mEventService;
 
 	/**
 	 * @brief The main Mercator terrain instance, which holds all of the Mercator terrain structures.
@@ -565,6 +558,14 @@ protected:
 	 * @param
 	 */
 	void frameProcessed(const TimeFrame&, unsigned int);
+
+	/**
+	 * @brief Updates shaders needing updating.
+	 *
+	 * @see mShadersToUpdate
+	 *
+	 */
+	void updateShaders();
 
 };
 

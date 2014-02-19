@@ -80,7 +80,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
 		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()),
 		mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0),
-		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventFrameProcessed, view.getAvatar()->getConnection()->getEventService())),
+		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getAvatar()->getConnection()->getEventService())),
 		mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *mTerrainManager->getTerrainAdapter())),
 		mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)),
 		mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr),

@@ -64,6 +64,8 @@
 #include "framework/TimeFrame.h"
 #include "framework/MainLoopController.h"
 
+#include <Eris/EventService.h>
+
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
@@ -159,7 +161,7 @@ public:
 };
 
 TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider, Eris::EventService& eventService) :
-		mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1, eventService)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
+		mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mEventService(eventService), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1, eventService)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
 {
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
@@ -240,6 +242,9 @@ void TerrainHandler::markShaderForUpdate(const TerrainShader* shader, const WFMa
 	if (shader) {
 		ShaderUpdateRequest& updateRequest = mShadersToUpdate[shader];
 		updateRequest.Areas.push_back(affectedArea);
+		mEventService.runOnMainThread([&](){
+			updateShaders();
+		});
 	}
 }
 
@@ -345,10 +350,8 @@ void TerrainHandler::removeBridge(const Domain::TerrainIndex& index)
 	}
 }
 
-void TerrainHandler::pollTasks(const TimeFrame& timeFrame)
+void TerrainHandler::updateShaders()
 {
-//	mTaskQueue->pollProcessedTasks(timeFrame);
-
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {
 		GeometryPtrVector geometry;

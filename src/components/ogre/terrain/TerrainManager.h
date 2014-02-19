@@ -109,9 +109,8 @@ public:
 	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain manager will take ownership of the adapter and will destroy it upon it's destruction.
 	 * @param scene The world scene.
 	 * @param shaderManager The shader manager.
-	 * @param frameProcessedSignal A signal emitted when one main loop cycle has ended.
 	 */
-	TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal, Eris::EventService& eventService);
+	TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
@@ -295,11 +294,6 @@ protected:
 	 * @param shaderManager The shader manager, which contains information on the graphics level set.
 	 */
 	void shaderManager_LevelChanged(ShaderManager* shaderManager);
-
-	/**
-	 * @brief Called at the end of a main loop cycle.
-	 */
-	void application_CycleProcessed(const TimeFrame& timeframe, unsigned int frameActionMask);
 
 	/**
 	 * @brief Bound to the adapter and called when a page is first shown.

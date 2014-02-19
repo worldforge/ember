@@ -71,7 +71,7 @@ namespace Terrain
 {
 
 
-TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal, Eris::EventService& eventService) :
+TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)), mIsFoliageShown(false), mTerrainAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -82,8 +82,6 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 	registerConfigListener("terrain", "loadradius", sigc::mem_fun(*this, &TerrainManager::config_TerrainLoadRadius));
 
 	shaderManager.EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), &shaderManager));
-
-	cycleProcessedSignal.connect(sigc::mem_fun(*this, &TerrainManager::application_CycleProcessed));
 
 	mHandler->EventShaderCreated.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_ShaderCreated));
 	mHandler->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_AfterTerrainUpdate));
@@ -270,11 +268,6 @@ Scene& TerrainManager::getScene() const
 void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {
 	mHandler->updateAllPages();
-}
-
-void TerrainManager::application_CycleProcessed(const TimeFrame& timeframe, unsigned int frameActionMask)
-{
-	mHandler->pollTasks(timeframe);
 }
 
 TerrainHandler& TerrainManager::getHandler()
