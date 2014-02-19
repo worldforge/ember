@@ -844,6 +844,7 @@
         <entitymatch>
             <case>
                 <caseparam type="equals">human</caseparam>
+                <action type="display-label" />
                 <action type="display-model">male</action>
                 <action type="display-part">bare_torso</action>
                 <action type="display-part">bare_legs</action>

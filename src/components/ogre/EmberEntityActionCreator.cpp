@@ -30,6 +30,7 @@
 #include "CompositionAction.h"
 #include "components/ogre/environment/OceanAction.h"
 #include "components/ogre/environment/WorldAction.h"
+#include "components/ogre/widgets/LabelAction.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 #include "EmberEntity.h"
 
@@ -60,6 +61,9 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 			aCase->addAction(action);
 		} else if (J->getType() == "hide-model") {
 			EmberEntityHideModelAction* action = new EmberEntityHideModelAction(mEntity);
+			aCase->addAction(action);
+		} else if (J->getType() == "display-label") {
+			auto action = new Gui::LabelAction(mEntity);
 			aCase->addAction(action);
 		} else if (J->getType() == "display-ocean") {
 			Environment::OceanAction* action = new Environment::OceanAction(mEntity);
