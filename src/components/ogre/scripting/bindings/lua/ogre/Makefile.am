@@ -14,7 +14,7 @@ CLEANFILES = Ogre.cxx
 TOLUA_PKGS = Ogre.pkg OgreAxisAlignedBox.pkg OgreColourValue.pkg OgreEntity.pkg OgreGpuProgram.pkg OgreGpuProgramManager.pkg OgreHighLevelGpuProgram.pkg \
  OgreHighLevelGpuProgramManager.pkg OgreIteratorWrappers.pkg OgreMaterial.pkg OgreMaterialManager.pkg OgreMaterialSerializer.pkg OgreMath.pkg OgreMesh.pkg \
  OgreMeshManager.pkg OgreNode.pkg OgreQuaternion.pkg OgreRenderTarget.pkg OgreRenderWindow.pkg OgreResource.pkg OgreResourceManager.pkg OgreRoot.pkg \
- OgreSceneNode.pkg OgreSubEntity.pkg OgreSubMesh.pkg OgreTexture.pkg OgreTextureManager.pkg OgreVector3.pkg OgreSceneManager.pkg
+ OgreSceneNode.pkg OgreSubEntity.pkg OgreSubMesh.pkg OgreTexture.pkg OgreTextureManager.pkg OgreVector3.pkg OgreSceneManager.pkg OgreLodConfig.pkg OgreLodStrategy.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 Ogre.cxx: $(TOLUA_PKGS)
 
