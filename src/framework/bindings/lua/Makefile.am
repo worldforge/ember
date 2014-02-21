@@ -17,3 +17,12 @@ Framework.cxx: $(TOLUA_PKGS)
 noinst_HEADERS = required.h
 
 bindings: clean all
+
+check:
+	@set -e; cd $(srcdir) && for filename in *.pkg ; do \
+		if [[ "$(TOLUA_PKGS)" != *$${filename}* ]] ;\
+		then \
+			echo "The file $${filename} exists in $(srcdir) but is not referenced in the Makefile.am. Either remove it if it's not used, or update the Makefile.am"; \
+		  	exit 1; \
+		fi \
+	done;

@@ -8,6 +8,9 @@ SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
 noinst_LIBRARIES = liblua_EmberOgre.a
+#if CHECK_BINDINGS
+#BUILT_SOURCES = EmberOgre.cxx
+#endif
 liblua_EmberOgre_a_SOURCES = EmberOgre.cxx
 
 CLEANFILES = EmberOgre.cxx
@@ -26,3 +29,12 @@ EmberOgre.cxx: $(TOLUA_PKGS)
 noinst_HEADERS = required.h GUIManager_helper.h
 
 bindings: clean all
+
+check:
+	@set -e; cd $(srcdir) && for filename in *.pkg ; do \
+		if [[ "$(TOLUA_PKGS)" != *$${filename}* ]] ;\
+		then \
+			echo "The file $${filename} exists in $(srcdir) but is not referenced in the Makefile.am. Either remove it if it's not used, or update the Makefile.am"; \
+		  	exit 1; \
+		fi \
+	done;
