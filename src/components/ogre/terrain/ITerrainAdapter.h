@@ -65,13 +65,13 @@ public:
 	 * @brief Sets the size of the width of one page, in indices. This must be a power of two + 1 and at least 65. Depending on the implementation, this might require a full reload.
 	 * @param size The number of vertices along one side of a page. Must be a power of two + 1 and at least 65.
 	 */
-	virtual void setPageSize(const unsigned int size) = 0;
+	virtual void setPageSize(unsigned int size) = 0;
 
 	/**
 	 * @brief Sets the distance from the camera at which terrain pages are loaded.
 	 * @param loadRadius The distance from the camera at which terrain pages are loaded.
 	 */
-	virtual void setLoadRadius(const Ogre::Real& loadRadius) = 0;
+	virtual void setLoadRadius(Ogre::Real loadRadius) = 0;
 
 	/**
 	 * @brief Returns the height at the given position.
@@ -80,7 +80,7 @@ public:
 	 * @param z The y position, in world coords.
 	 * @return The height at the specified position.
 	 */
-	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z) = 0;
+	virtual Ogre::Real getHeightAt(Ogre::Real x, Ogre::Real z) = 0;
 	
 	/**
 	 * @brief Sets the main camera used.

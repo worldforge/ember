@@ -61,9 +61,9 @@ public:
 
 	virtual void setPageSize(unsigned int pageSize);
 
-	virtual void setLoadRadius(const Ogre::Real& loadRadius);
+	virtual void setLoadRadius(Ogre::Real loadRadius);
 
-	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z);
+	virtual Ogre::Real getHeightAt(Ogre::Real x, Ogre::Real z);
 
 	virtual void setCamera(Ogre::Camera* camera);
 

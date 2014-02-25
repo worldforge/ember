@@ -99,7 +99,7 @@ void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
 	}
 }
 
-void OgreTerrainAdapter::setLoadRadius(const Ogre::Real& loadRadius)
+void OgreTerrainAdapter::setLoadRadius(Ogre::Real loadRadius)
 {
 	mLoadRadius = loadRadius;
 	mHoldRadius = mLoadRadius * 2;
@@ -109,7 +109,7 @@ void OgreTerrainAdapter::setLoadRadius(const Ogre::Real& loadRadius)
 	}
 }
 
-Ogre::Real OgreTerrainAdapter::getHeightAt(const Ogre::Real x, const Ogre::Real z)
+Ogre::Real OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z)
 {
 	Ogre::Terrain* foundTerrain = nullptr;
 	float height = mTerrainGroup->getHeightAtWorldPosition(x, 0.0, z, &foundTerrain);
