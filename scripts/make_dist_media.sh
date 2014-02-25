@@ -158,7 +158,7 @@ cp -a ${original_media}/resources/ogre/ogre_scripts/COPYING ./resources/ogre/ogr
 
 echo "Copying gui files"
 cd ${shared_dir}
-grep -orIE --no-filename "Imagefile=\"[^\"]*\"" ${srcdir}/src/components/cegui/datafiles/imagesets/*.imageset | sed -e 's/Imagefile=\"//g' | sed -e 's/\"//g' > ${media_textures_list}
+grep -orIE --no-filename "imagefile=\"[^\"]*\"" ${srcdir}/src/components/cegui/datafiles/imagesets/*.imageset | sed -e 's/imagefile=\"//g' | sed -e 's/\"//g' > ${media_textures_list}
 cd ${original_media} ; tar cf - `cat ${media_textures_list} ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
