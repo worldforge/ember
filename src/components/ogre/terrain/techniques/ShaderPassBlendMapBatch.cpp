@@ -112,7 +112,7 @@ void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr textur
 			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
 			std::string normalTextureName = layer->getNormalTextureName();
 			if (normalTextureName.empty()) {
-				normalTextureName = "3d_objects/primitives/textures/onepixel/N.png";
+				normalTextureName = "dynamic/onepixel";
 			}
 			normalMapTextureUnitState->setTextureName(normalTextureName);
 			normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);

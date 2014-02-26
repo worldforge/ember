@@ -36,6 +36,8 @@ namespace Terrain
 namespace Techniques
 {
 
+class OnePixelMaterialGenerator;
+
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A compiler technique provider which uses the base techniques found in the OgreView::Terrain::Techniques namespace.
@@ -49,6 +51,8 @@ public:
 	 * @param sceneManager The scene manager which handles the terrain.
 	 */
 	CompilerTechniqueProvider(ShaderManager& shaderManager, Ogre::SceneManager& sceneManager);
+
+	virtual ~CompilerTechniqueProvider();
 
 	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const;
 
@@ -64,6 +68,11 @@ protected:
 	 * @brief The scene manager.
 	 */
 	Ogre::SceneManager& mSceneManager;
+
+	/**
+	 * @brief Handles generation of the one pixel texture used as dummy normal map in the shader technique.
+	 */
+	OnePixelMaterialGenerator* mOnePixelMaterialGenerator;
 };
 
 }

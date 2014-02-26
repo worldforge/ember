@@ -166,7 +166,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 			std::string normalTextureName = mBaseLayer->getNormalTextureName();
 			if (normalTextureName.empty()) {
 				//Since the shader always expects a normal texture we need to supply a dummy one if no specific one exists.
-				normalTextureName = "3d_objects/primitives/textures/onepixel/N.png";
+				normalTextureName = "dynamic/onepixel";
 			}
 			normalMapTextureUnitState->setTextureName(normalTextureName);
 			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);

@@ -23,6 +23,7 @@
 #include "CompilerTechniqueProvider.h"
 #include "Shader.h"
 #include "Simple.h"
+#include "OnePixelMaterialGenerator.h"
 
 #include "components/ogre/ShaderManager.h"
 
@@ -33,6 +34,7 @@
 #include <OgreGpuProgramManager.h>
 #include <OgreRenderSystem.h>
 #include <OgreRenderSystemCapabilities.h>
+#include <OgreTextureManager.h>
 
 namespace Ember
 {
@@ -44,17 +46,28 @@ namespace Terrain
 
 namespace Techniques
 {
-CompilerTechniqueProvider::CompilerTechniqueProvider(ShaderManager& shaderManager, Ogre::SceneManager& sceneManager)
-: mShaderManager(shaderManager), mSceneManager(sceneManager)
+CompilerTechniqueProvider::CompilerTechniqueProvider(ShaderManager& shaderManager, Ogre::SceneManager& sceneManager) :
+		mShaderManager(shaderManager), mSceneManager(sceneManager), mOnePixelMaterialGenerator(new OnePixelMaterialGenerator())
 {
+	//Our shaders use the one pixel normal texture whenever there's no existing normal map, so we need to create it.
+	const std::string onePixelMaterialName("dynamic/onepixel");
+	if (Ogre::TextureManager::getSingleton().resourceExists(onePixelMaterialName)) {
+		S_LOG_WARNING("Texture '" << onePixelMaterialName << "' already existed when CompilerTechniqueProvider was created; this should not be the case.");
+	} else {
+		Ogre::TextureManager::getSingleton().createManual(onePixelMaterialName, "General", Ogre::TEX_TYPE_2D, 1, 1, 0, Ogre::PF_R8G8B8, Ogre::TU_DEFAULT, mOnePixelMaterialGenerator);
+	}
+}
 
+CompilerTechniqueProvider::~CompilerTechniqueProvider()
+{
+	Ogre::TextureManager::getSingleton().remove("dynamic/onepixel");
 }
 
 TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
 {
 	std::string preferredTech("");
 	if (EmberServices::getSingleton().getConfigService().itemExists("terrain", "preferredtechnique")) {
-		preferredTech = static_cast<std::string> (EmberServices::getSingleton().getConfigService().getValue("terrain", "preferredtechnique"));
+		preferredTech = static_cast<std::string>(EmberServices::getSingleton().getConfigService().getValue("terrain", "preferredtechnique"));
 	}
 
 	bool shaderSupport = false;
