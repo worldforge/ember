@@ -61,6 +61,7 @@ CompilerTechniqueProvider::CompilerTechniqueProvider(ShaderManager& shaderManage
 CompilerTechniqueProvider::~CompilerTechniqueProvider()
 {
 	Ogre::TextureManager::getSingleton().remove("dynamic/onepixel");
+	delete mOnePixelMaterialGenerator;
 }
 
 TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
