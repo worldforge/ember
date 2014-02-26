@@ -33,6 +33,10 @@ emberlibs = \
 	$(top_builddir)/src/components/cegui/bindings/lua/liblua_Cegui.a \
 	$(top_builddir)/src/components/lua/libLua.a \
 	$(top_builddir)/src/components/cegui/libCEGUI.a \
+	$(top_builddir)/src/components/navigation/libnavigation.a \
+	$(top_builddir)/src/components/navigation/external/RecastDetour/DetourTileCache/libDetourTileCache.a \
+	$(top_builddir)/src/components/navigation/external/RecastDetour/Detour/libDetour.a \
+	$(top_builddir)/src/components/navigation/external/RecastDetour/Recast/libRecast.a \
 	$(top_builddir)/src/services/libServices.a \
 	$(top_builddir)/src/services/config/libConfigService.a \
 	$(top_builddir)/src/services/input/libInputService.a \

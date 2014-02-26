@@ -643,6 +643,12 @@ AC_CONFIG_FILES([Makefile
 		 src/components/cegui/Makefile
 		 src/components/cegui/bindings/Makefile
 		 src/components/cegui/bindings/lua/Makefile
+		 src/components/navigation/Makefile
+		 src/components/navigation/external/Makefile
+		 src/components/navigation/external/RecastDetour/Makefile
+		 src/components/navigation/external/RecastDetour/Recast/Makefile
+		 src/components/navigation/external/RecastDetour/Detour/Makefile
+		 src/components/navigation/external/RecastDetour/DetourTileCache/Makefile
 		 test/Makefile
 		 src/extensions/webember/Makefile
 		 src/domain/Makefile

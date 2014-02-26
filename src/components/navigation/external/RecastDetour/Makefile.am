@@ -1,0 +1,1 @@
+SUBDIRS = Recast Detour DetourTileCache
