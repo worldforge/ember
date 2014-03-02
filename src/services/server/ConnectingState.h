@@ -22,6 +22,7 @@
 #include "StateBase.h"
 
 #include "Connection.h"
+#include "ConnectedState.h"
 
 namespace Eris
 {
@@ -31,7 +32,6 @@ class Session;
 namespace Ember
 {
 
-class ConnectedState;
 class DestroyChildStateEvent;
 
 /**

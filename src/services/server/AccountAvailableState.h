@@ -20,13 +20,13 @@
 #define ACCOUNTAVAILABLESTATE_H_
 
 #include "StateBase.h"
+#include "LoggedInState.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include <Eris/Account.h>
 
 namespace Ember
 {
-class LoggedInState;
 
 /**
  * @brief State for when a connection to a server has been made, but the user has not yet logged in.

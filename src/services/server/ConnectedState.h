@@ -20,6 +20,7 @@
 #define CONNECTEDSTATE_H_
 
 #include "StateBase.h"
+#include "AccountAvailableState.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include <Eris/Account.h>
@@ -31,8 +32,6 @@ class Connection;
 
 namespace Ember
 {
-
-class AccountAvailableState;
 
 /**
  * @brief State for when a connection to a server has been made.

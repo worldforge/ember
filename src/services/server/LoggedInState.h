@@ -20,6 +20,8 @@
 #define LOGGEDINSTATE_H_
 
 #include "StateBase.h"
+#include "EnteredWorldState.h"
+
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 
@@ -36,7 +38,6 @@ namespace Ember
 {
 
 class TransferEvent;
-class EnteredWorldState;
 class AvatarTransferInfo;
 
 /**
