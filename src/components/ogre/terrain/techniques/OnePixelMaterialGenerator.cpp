@@ -37,10 +37,7 @@ void OnePixelMaterialGenerator::loadResource(Ogre::Resource* resource)
 {
 
 	Ogre::Texture* texture = static_cast<Ogre::Texture*>(resource);
-	static char data[3];
-	data[0] = 0xFF;
-	data[1] = 0x7F;
-	data[2] = 0x7F;
+	static Ogre::uchar data[3] = {0xFF, 0x7F, 0x7F};
 
 	Ogre::DataStreamPtr stream(new Ogre::MemoryDataStream(&data, 3, false, true));
 	Ogre::Image image;
