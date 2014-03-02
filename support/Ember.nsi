@@ -11,10 +11,10 @@
 ;General
 
   ; The name of the installer
-  Name "Ember-0.6.3"
+  Name "Ember-0.7.2"
 
   ; The file to write
-  OutFile "Ember-0.6.3.exe"
+  OutFile "Ember-0.7.2.exe"
 
   ; The default installation directory
   InstallDir $PROGRAMFILES\Worldforge\Ember
