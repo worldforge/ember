@@ -52,7 +52,7 @@ namespace Model
 {
 
 class ActionDefinition;
-class SoundDefinition;
+struct SoundDefinition;
 class Model;
 class Action;
 class ModelMount;

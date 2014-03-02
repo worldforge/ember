@@ -49,7 +49,7 @@ class ModelDefinition;
 class SubEntityDefinition;
 
 class ActionDefinition;
-class SoundDefinition;
+struct SoundDefinition;
 class AnimationDefinition;
 struct AnimationPartDefinition;
 struct ActivationDefinition;

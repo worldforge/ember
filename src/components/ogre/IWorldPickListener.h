@@ -27,7 +27,7 @@
 
 namespace Ogre
 {
-class RaySceneQueryResultEntry;
+struct RaySceneQueryResultEntry;
 class Ray;
 }
 

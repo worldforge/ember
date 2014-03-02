@@ -28,7 +28,7 @@
 
 namespace Ogre {
 template<typename>
-class TRect;
+struct TRect;
 }
 
 namespace WFMath
