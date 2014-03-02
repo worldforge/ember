@@ -5,7 +5,9 @@
 //These will speed up windows.h, by excluding rarely used functions.
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
+#ifndef _WIN32_IE
 #define _WIN32_IE 0x0500
+#endif
 #include <windows.h>
 #include <tchar.h>
 #include <io.h>
