@@ -352,7 +352,13 @@ PKG_CHECK_MODULES(CEGUI, $CEGUI_PKG >= $CEGUI_VERSION,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LIBS="$LIBS $CEGUI_LIBS"
-		AC_SUBST(CEGUI_MODULEDIR, `pkg-config $CEGUI_PKG --variable=moduledir`)
+		CEGUI_PREFIX=`pkg-config $CEGUI_PKG --variable=prefix`
+		CEGUI_MODULEDIR=`pkg-config $CEGUI_PKG --variable=moduledir`
+		dnl Try to figure out the relative path of the module dir, to use in ember.in. 
+		dnl This of course won't work if the prefix isn't part of the module dir path. 
+		CEGUI_MODULE_SUBDIR=${CEGUI_MODULEDIR#$CEGUI_PREFIX}
+		AC_SUBST(CEGUI_MODULEDIR)
+		AC_SUBST(CEGUI_MODULE_SUBDIR)
 	],
 	[
 		AC_MSG_ERROR([Couldn't find CEGUI or tests failed:

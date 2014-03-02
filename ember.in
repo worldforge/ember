@@ -31,7 +31,7 @@ done
 # Note that because of an issue with how CEGUI 0.8.2 detects dynamic libraries we need to include the CEGUI_MODULEDIR path
 if [ "$prefix" != "@prefix@" ]; then
   prefix_arg="--prefix $prefix"
-  export LD_LIBRARY_PATH=$prefix/lib:@CEGUI_MODULEDIR@${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+  export LD_LIBRARY_PATH=$prefix/lib:$prefix@CEGUI_MODULE_SUBDIR@${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 else
   prefix_arg=
   export LD_LIBRARY_PATH=@prefix@/lib:@CEGUI_MODULEDIR@${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
