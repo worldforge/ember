@@ -146,8 +146,10 @@ void MovementController::runCommand(const std::string &command, const std::strin
 {
 	if (RunToggle == command) {
 		mIsRunning = true;
+		EventMovementModeChanged(getMode());
 	} else if (RunToggle.getInverseCommand() == command) {
 		mIsRunning = false;
+		EventMovementModeChanged(getMode());
 	} else if (ToggleCameraAttached == command) {
 		if (mIsFreeFlying) {
 			setCameraFreeFlying(false);

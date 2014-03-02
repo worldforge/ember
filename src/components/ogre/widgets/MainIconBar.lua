@@ -102,6 +102,7 @@ function MainIconBar:buildWidget()
 			self.movementModeIcon:getContainer():setVisible(true)
 			connect(self.connectors, emberOgre:getWorld():getMovementController().EventMovementModeChanged, 
 				function(mode)
+					--When the movement mode is changed (i.e. walking or running) we need to update the images on the movement mode icon as well as the cursor image
 					if self.currentMode == Ember.Input.IM_MOVEMENT then
 						self:checkMovementMode()
 					end
@@ -166,13 +167,6 @@ function MainIconBar:Input_InputModeChanged(inputMode)
 	else
 		--delegate to another method since movement mode can either be running or walking (perhaps swimming or flying in the future?)
 		self:checkMovementMode();
-	end
-end
-
---When the movement mode is changed (i.e. walking or running) we need to update the images on the movement mode icon as well as the cursor image
-function MainIconBar:MovementController_MovementModeChanged(mode)
-	if self.currentMode == Ember.Input.IM_MOVEMENT then
-		self:checkMovementMode()
 	end
 end
 
