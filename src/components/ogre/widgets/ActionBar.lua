@@ -195,11 +195,13 @@ function ActionBar:loadSavedAttributes()
 			self.entityCandidates.AddedEntityToInventory_connector:disconnect()
 		end
 	end
-	
-	self.timer = Eris.Timeout:new_local(10000)
-	self.timer.disconnect = function()
-		self.entityCandidates.AddedEntityToInventory_connector:disconnect()
-	end
+
+--Here's a timer which removes the entity listener after 10 seconds. It's currently disabled since we've refactored the timeout functionality in Eris 1.4.
+--We should however look into doing this differently than using a timer. We should instead listen to when all of the entity's inventory has been loaded after the initial sight.	
+--	self.timer = Eris.Timeout:new_local(10000)
+--	self.timer.disconnect = function()
+--		self.entityCandidates.AddedEntityToInventory_connector:disconnect()
+--	end
 	
 	self.timer.disconnect_connector = createConnector(self.timer.Expired):connect(self.timer.disconnect)
 	self.entityCandidates.AddedEntityToInventory_connector = createConnector(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(self.entityCandidates.AddedEntityToInventory)
