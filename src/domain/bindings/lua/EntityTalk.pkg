@@ -67,4 +67,3 @@ public:
 };
 }
 } /* namespace Ember */
-#endif /* ENTITYTALK_H_ */

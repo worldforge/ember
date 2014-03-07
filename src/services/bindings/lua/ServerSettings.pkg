@@ -77,4 +77,3 @@ public:
 
 }
 
-#endif /* EMBER_SERVICES_SERVERSETTINGS_H_ */

@@ -50,4 +50,3 @@ public:
 
 }
 }
-#endif /* SCREEN_H_ */
