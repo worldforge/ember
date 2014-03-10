@@ -311,6 +311,15 @@ protected:
 	Authoring::EntityMaker* mEntityMaker;
 
 	/**
+	 * @brief True if client side predication is enabled.
+	 *
+	 * This will make the client ignore movement updates sent from the server is the client already is moving.
+	 */
+	bool mClientSidePredictionEnabled;
+
+	WFMath::Vector<3> mPositionAdjustmentRequired;
+
+	/**
 	 * @brief This method will determine if it's ok to send a small movement change, such as a small deviation direction during an already begun movement to the server.
 	 */
 	bool isOkayToSendRotationMovementChangeToServer();
@@ -341,6 +350,8 @@ protected:
 	 * @brief Listen to child entities being removed from the avatar entity and emit the inventory removal event.
 	 */
 	void entity_ChildRemoved(Eris::Entity* childEntity);
+
+	void application_BeforeInputProcessing(float timeSinceLastEvent);
 
 	/**
 	 * @brief After input has been processed we'll do a check to see if we've changed velocity or orientation, and therefore needs to send an update to the server.

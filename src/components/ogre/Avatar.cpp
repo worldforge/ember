@@ -54,6 +54,7 @@
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
+#include <Eris/ServerInfo.h>
 
 #include <OgreRoot.h>
 
@@ -69,10 +70,12 @@ namespace OgreView
 {
 
 Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
-	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager(), terrainAdapter)), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(nullptr), mIsMovingServerOnly(false), mScene(scene), mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
+	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager(), terrainAdapter)), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(nullptr), mIsMovingServerOnly(false), mScene(scene), mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection())), mClientSidePredictionEnabled(true), mPositionAdjustmentRequired(0, 0, 0)
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
+
+	MainLoopController::getSingleton().EventBeforeInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_BeforeInputProcessing));
 	MainLoopController::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
 
 	registerConfigListener("general", "logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
@@ -108,6 +111,23 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 	mErisAvatarEntity.getView()->AvatarEntityDeleted.connect(sigc::mem_fun(*this, &Avatar::viewEntityDeleted));
 
 	attachCameraToEntity();
+
+	Eris::ServerInfo serverInfo;
+	erisAvatarEntity.getView()->getAvatar()->getConnection()->getServerInfo(serverInfo);
+	//Server side movement is incorrect on all versions of cyphesis up to 0.6.3, so we need to disable the client side prediction.
+	if (serverInfo.getServer() == "cyphesis") {
+		auto versionNumbers = Ember::Tokeniser::split(serverInfo.getVersion(), ".");
+		if (versionNumbers.size() == 3) {
+			try {
+				if (std::stoi(versionNumbers[0]) == 0 && (std::stoi(versionNumbers[1]) < 6 || (std::stoi(versionNumbers[1]) == 6 && std::stoi(versionNumbers[2]) <= 2))) {
+					S_LOG_INFO("Disabling client side prediction since server is of earlier version of cyphesis.");
+					mClientSidePredictionEnabled = false;
+				}
+			} catch (...) {
+				//If there's an exception from using std::stoi we'll just ignore it and assume it's a server which properly handles movement.
+			}
+		}
+	}
 }
 
 Avatar::~Avatar()
@@ -159,8 +179,36 @@ void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds)
 	mMinIntervalOfRotationChanges = milliseconds;
 }
 
+void Avatar::application_BeforeInputProcessing(float timeSinceLastEvent)
+{
+//	mCurrentMovement = WFMath::Vector<3>::ZERO();
+}
+
 void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 {
+	if (mIsMovingServerOnly && mErisAvatarEntity.isMoving()) {
+		mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
+		mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
+	}
+
+	if (mPositionAdjustmentRequired != WFMath::Vector<3>::ZERO()) {
+		auto magnitude = mPositionAdjustmentRequired.mag();
+		if (magnitude < 0.01) {
+			mClientSideAvatarPosition += mPositionAdjustmentRequired;
+			mPositionAdjustmentRequired = WFMath::Vector<3>::ZERO();
+			S_LOG_VERBOSE("apply all");
+		} else {
+			auto movementThisFrame = magnitude * 0.7 * timeSinceLastEvent;
+			auto positionAdjustment = mPositionAdjustmentRequired * movementThisFrame;
+			S_LOG_VERBOSE("adjustment mag: " << mPositionAdjustmentRequired.mag() << " this frame: " << movementThisFrame << " frame time:" << timeSinceLastEvent);
+			mClientSideAvatarPosition += positionAdjustment;
+			mPositionAdjustmentRequired -= positionAdjustment;
+		}
+		if (mErisAvatarEntity.getAttachment()) {
+			mErisAvatarEntity.getAttachment()->updatePosition();
+		}
+	}
+
 	attemptMove();
 }
 
@@ -338,14 +386,29 @@ void Avatar::avatar_Moved()
 	//	}
 	if (mCurrentMovementState.movement == WFMath::Vector<3>::ZERO()) {
 		mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
-		mClientSideAvatarPosition = mErisAvatarEntity.getPosition();
-		if (mErisAvatarEntity.getVelocity() != WFMath::Vector<3>::ZERO()) {
+		if (mErisAvatarEntity.isMoving()) {
 			mIsMovingServerOnly = true;
 		} else {
 			mIsMovingServerOnly = false;
+
+			mPositionAdjustmentRequired = mErisAvatarEntity.getPosition() - mClientSideAvatarPosition;
+			S_LOG_VERBOSE("adjustment required: " << mPositionAdjustmentRequired.mag());
+			//If the movement is large enough we should just teleport to the new location directly
+//			if (mPositionAdjustmentRequired.mag() > 2) {
+//				S_LOG_VERBOSE("teleporting");
+//				mPositionAdjustmentRequired = WFMath::Vector<3>::ZERO();
+//				mClientSideAvatarPosition = mErisAvatarEntity.getPosition();
+//				if (mErisAvatarEntity.getAttachment()) {
+//					mErisAvatarEntity.getAttachment()->updatePosition();
+//				}
+//			}
 		}
+//		mClientSideAvatarPosition = mErisAvatarEntity.getPosition();
 	} else {
 		mIsMovingServerOnly = false;
+//		if (mErisAvatarEntity.getVelocity() != mCurrentMovementState.movement) {
+//			mPositionAdjustmentRequired = mErisAvatarEntity.getPosition() - mClientSideAvatarPosition;
+//		}
 	}
 }
 
@@ -381,49 +444,50 @@ void Avatar::Config_LogChatMessages(const std::string& section, const std::strin
 WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
-	WFMath::Point<3> pos = mErisAvatarEntity.getPredictedPos();
-	return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
-//	//If the avatar entity is moving, we're note moving on the client side, and we haven't sent something to the server lately, we should assume that we're moving as a result of server side actions, and therefore use the server side position
-//	//	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
-//	//		bool clientSideMovement = false;
-//	//		if (mLastTransmittedMovements.size()) {
-//	//			long long currentTime = EmberServices::getSingleton().getTimeService().currentTimeMillis();
-//	//			if ((currentTime - mLastTransmittedMovements.rbegin()->first) < 1000) {
-//	//				clientSideMovement = true;
-//	//			}
-//	//		}
-//	//		if (!clientSideMovement) {
-//	//			return mErisAvatarEntity.getPredictedPos();
-//	//		}
-//	//
-//	//	}
+//	WFMath::Point<3> pos = mErisAvatarEntity.getPredictedPos();
+//	return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
+	//If the avatar entity is moving, we're note moving on the client side, and we haven't sent something to the server lately, we should assume that we're moving as a result of server side actions, and therefore use the server side position
+	//	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
+	//		bool clientSideMovement = false;
+	//		if (mLastTransmittedMovements.size()) {
+	//			long long currentTime = EmberServices::getSingleton().getTimeService().currentTimeMillis();
+	//			if ((currentTime - mLastTransmittedMovements.rbegin()->first) < 1000) {
+	//				clientSideMovement = true;
+	//			}
+	//		}
+	//		if (!clientSideMovement) {
+	//			return mErisAvatarEntity.getPredictedPos();
+	//		}
+	//
+	//	}
 //	if (mIsMovingServerOnly) {
-//		return mErisAvatarEntity.getPredictedPos();
+//		WFMath::Point<3> pos = mErisAvatarEntity.getPredictedPos();
+//		return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
 //	} else {
-//		return mClientSideAvatarPosition;
+		return mClientSideAvatarPosition;
 //	}
 }
 
 WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
-	return mErisAvatarEntity.getOrientation().isValid() ? mErisAvatarEntity.getOrientation() : WFMath::Quaternion().identity();
+//	return mErisAvatarEntity.getOrientation().isValid() ? mErisAvatarEntity.getOrientation() : WFMath::Quaternion().identity();
 //	if (mIsMovingServerOnly) {
-//		return mErisAvatarEntity.getOrientation();
+//		return mErisAvatarEntity.getOrientation().isValid() ? mErisAvatarEntity.getOrientation() : WFMath::Quaternion().identity();
 //	} else {
-//		return mClientSideAvatarOrientation;
+		return mClientSideAvatarOrientation;
 //	}
 }
 
 WFMath::Vector<3> Avatar::getClientSideAvatarVelocity() const
 {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
-	return mErisAvatarEntity.getVelocity().isValid() ? mErisAvatarEntity.getVelocity() : WFMath::Vector<3>::ZERO();
-//	if (mIsMovingServerOnly) {
-//		return mErisAvatarEntity.getVelocity();
-//	} else {
-//		return mCurrentMovementState.movement;
-//	}
+//	return mErisAvatarEntity.getVelocity().isValid() ? mErisAvatarEntity.getVelocity() : WFMath::Vector<3>::ZERO();
+	if (mIsMovingServerOnly) {
+		return mErisAvatarEntity.getVelocity().isValid() ? mErisAvatarEntity.getVelocity() : WFMath::Vector<3>::ZERO();
+	} else {
+		return mCurrentMovementState.movement;
+	}
 }
 
 void Avatar::viewEntityDeleted() {
