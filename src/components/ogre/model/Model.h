@@ -23,7 +23,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "ModelDefinition.h"
 #include "ParticleSystem.h"
-#include "Action.h"
+#include "ModelAction.h"
 #include "ModelPart.h"
 #include <OgreEntity.h>
 #include <sigc++/signal.h>

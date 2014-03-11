@@ -24,7 +24,7 @@
 #define EMBEROGRE_MODEL_MAPPING_MATCHESATTRIBUTEDEPENDENTMATCH_H
 
 #include <Atlas/Message/Element.h>
-#include "Observers/AttributeObserver.h"
+#include "Observers/MatchAttributeObserver.h"
 
 namespace Ember {
 
@@ -53,11 +53,11 @@ public:
     /**
     Use the supplied observer to observe changes to the attribute. The supplied observer will be managed by this class.
     */
-    void setAttributeObserver(Observers::AttributeObserver* observer);
+    void setMatchAttributeObserver(Observers::MatchAttributeObserver* observer);
 
 protected:
 
-	std::unique_ptr<Observers::AttributeObserver> mAttributeObserver;
+	std::unique_ptr<Observers::MatchAttributeObserver> mMatchAttributeObserver;
 };
 }
 

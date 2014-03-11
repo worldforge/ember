@@ -70,8 +70,8 @@ void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute, bool t
 
 void OutfitMatch::setEntity(Eris::Entity* entity)
 {
-	//observe the attribute by the use of an AttributeObserver
-	mAttributeObserver->observeEntity(entity);
+	//observe the attribute by the use of an MatchAttributeObserver
+	mMatchAttributeObserver->observeEntity(entity);
 }
 
 void OutfitMatch::setEntityCreationObserver(Observers::EntityCreationObserver* observer)

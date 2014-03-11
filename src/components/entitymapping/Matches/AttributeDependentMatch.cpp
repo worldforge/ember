@@ -25,7 +25,7 @@
 #endif
 
 #include "AttributeDependentMatch.h"
-#include "Observers/AttributeObserver.h"
+#include "Observers/MatchAttributeObserver.h"
 
 namespace Ember {
 
@@ -38,7 +38,7 @@ namespace Matches {
 
 
 AttributeDependentMatch::AttributeDependentMatch()
-: mAttributeObserver(nullptr)
+: mMatchAttributeObserver(nullptr)
 {
 }
 
@@ -46,9 +46,9 @@ AttributeDependentMatch::~AttributeDependentMatch()
 {
 }
 
-void AttributeDependentMatch::setAttributeObserver(Observers::AttributeObserver* observer)
+void AttributeDependentMatch::setMatchAttributeObserver(Observers::MatchAttributeObserver* observer)
 {
-	mAttributeObserver = std::unique_ptr<Observers::AttributeObserver>(observer);
+	mMatchAttributeObserver = std::unique_ptr<Observers::MatchAttributeObserver>(observer);
 }
 
 

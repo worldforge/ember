@@ -1,5 +1,5 @@
 //
-// C++ Implementation: AttributeObserver
+// C++ Implementation: MatchAttributeObserver
 //
 // Description:
 //
@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 
-#include "AttributeObserver.h"
+#include "MatchAttributeObserver.h"
 
 #include "../../EntityMapping.h"
 #include <Atlas/Message/Element.h>
@@ -42,26 +42,26 @@ namespace Matches {
 
 namespace Observers {
 
-AttributeObserver::AttributeObserver(Matches::AttributeDependentMatch* match,const std::string& attributeName)
+MatchAttributeObserver::MatchAttributeObserver(Matches::AttributeDependentMatch* match,const std::string& attributeName)
 : mMatch(match), mAttributeName(attributeName)
 {
 }
 
-AttributeObserver::AttributeObserver(Matches::AttributeMatch* match)
+MatchAttributeObserver::MatchAttributeObserver(Matches::AttributeMatch* match)
 : mMatch(match), mAttributeName(match->getAttributeName())
 {
 }
 
-void AttributeObserver::attributeChanged( const Atlas::Message::Element& attributeValue)
+void MatchAttributeObserver::attributeChanged( const Atlas::Message::Element& attributeValue)
 {
 	mMatch->testAttribute(attributeValue, true);
 }
 
-void AttributeObserver::observeEntity(Eris::Entity* entity)
+void MatchAttributeObserver::observeEntity(Eris::Entity* entity)
 {
 	mSlot.disconnect();
 	if (entity) {
-		mSlot = sigc::mem_fun(*this, &AttributeObserver::attributeChanged);
+		mSlot = sigc::mem_fun(*this, &MatchAttributeObserver::attributeChanged);
 		entity->observe(mAttributeName, mSlot);
 		//If the attribute already exists, trigger a test now.
 		if (entity->hasAttr(mAttributeName)) {

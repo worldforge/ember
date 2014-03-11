@@ -25,7 +25,7 @@
 #include "SubModel.h"
 #include "SubModelPart.h"
 #include "AnimationSet.h"
-#include "Action.h"
+#include "ModelAction.h"
 #include "ParticleSystem.h"
 #include "ParticleSystemBinding.h"
 #include "ModelPart.h"

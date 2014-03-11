@@ -22,7 +22,7 @@
 #include "ModelDefinition.h"
 #include "SubModel.h"
 #include "ParticleSystemBinding.h"
-#include "Action.h"
+#include "ModelAction.h"
 #include "ModelMount.h"
 #include "ModelPartReactivatorVisitor.h"
 

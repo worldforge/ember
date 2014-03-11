@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 
-#include "Action.h"
+#include "ModelAction.h"
 
 namespace Ember {
 namespace OgreView {

@@ -50,7 +50,7 @@
 #include "Matches/OutfitMatch.h"
 #include "Matches/AttributeMatch.h"
 #include "Matches/EntityTypeMatch.h"
-#include "Matches/Observers/AttributeObserver.h"
+#include "Matches/Observers/MatchAttributeObserver.h"
 #include "Matches/Observers/EntityCreationObserver.h"
 
 #include "IActionCreator.h"
@@ -264,8 +264,8 @@ void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& m
 	AttributeMatch* match = new AttributeMatch(attributeName, internalAttributeName);
 	aCase->addMatch( match);
 
-	AttributeObserver* observer = new AttributeObserver(match, internalAttributeName);
-	match->setAttributeObserver(observer);
+	MatchAttributeObserver* observer = new MatchAttributeObserver(match, internalAttributeName);
+	match->setMatchAttributeObserver(observer);
 
 	addAttributeCases(match, matchDefinition);
 
@@ -290,9 +290,9 @@ void EntityMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& matc
 		addOutfitCases(match, matchDefinition);
 
 
-		//observe the attribute by the use of an AttributeObserver
-		AttributeObserver* observer= new AttributeObserver(match, "outfit");
-		match->setAttributeObserver(observer);
+		//observe the attribute by the use of an MatchAttributeObserver
+		MatchAttributeObserver* observer= new MatchAttributeObserver(match, "outfit");
+		match->setMatchAttributeObserver(observer);
 
 		EntityCreationObserver* entityObserver = new EntityCreationObserver(*match);
 		match->setEntityCreationObserver(entityObserver);

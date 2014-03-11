@@ -1,5 +1,5 @@
 //
-// C++ Interface: AttributeObserver
+// C++ Interface: MatchAttributeObserver
 //
 // Description:
 //
@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_MODEL_MAPPING_MATCHES_OBSERVERSATTRIBUTEOBSERVER_H
-#define EMBEROGRE_MODEL_MAPPING_MATCHES_OBSERVERSATTRIBUTEOBSERVER_H
+#ifndef EMBEROGRE_MODEL_MAPPING_MATCHES_OBSERVERSMatchAttributeObserver_H
+#define EMBEROGRE_MODEL_MAPPING_MATCHES_OBSERVERSMatchAttributeObserver_H
 
 #include <sigc++/trackable.h>
 #include "../../EntityMapping.h"
@@ -46,12 +46,12 @@ namespace Observers {
 	Observes changes to a specific attribute and automatically pass changes on the Match that the observer is attached to.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class AttributeObserver : public virtual sigc::trackable
+class MatchAttributeObserver : public virtual sigc::trackable
 {
 public:
 
-	AttributeObserver(AttributeMatch* match) ;
-	AttributeObserver(AttributeDependentMatch* match, const std::string& attributeName);
+	MatchAttributeObserver(AttributeMatch* match) ;
+	MatchAttributeObserver(AttributeDependentMatch* match, const std::string& attributeName);
 
 	/**
 	Sets the entity to observe.

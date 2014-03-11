@@ -73,7 +73,7 @@ class AttributeMatch;
 class OutfitMatch;
 
 namespace Observers {
-class AttributeObserver;
+class MatchAttributeObserver;
 class EntityCreationObserver;
 
 }
@@ -114,7 +114,7 @@ class EntityMapping
 {
 public:
 	typedef std::vector<Cases::CaseBase*> CaseBaseStore;
-	typedef std::vector<Matches::Observers::AttributeObserver*> AttributeObserverStore;
+	typedef std::vector<Matches::Observers::MatchAttributeObserver*> MatchAttributeObserverStore;
     EntityMapping(Eris::Entity& entity);
 
     ~EntityMapping();
