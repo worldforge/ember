@@ -448,6 +448,9 @@ void Input::pasteFromClipboard(char*& text, size_t& length)
 
 	length = scraplen;
 	text = scrap;
+#else
+	text = nullptr;
+	length = 0;
 #endif // WITHOUT_SCRAP
 }
 
