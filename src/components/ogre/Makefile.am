@@ -6,7 +6,7 @@ noinst_LIBRARIES = libEmberOgre.a
 
 
 libEmberOgre_a_SOURCES = \
-	authoring/DetachedEntity.cpp authoring/EntityMoveAdjuster.cpp \
+	authoring/ConsoleDevTools.cpp authoring/DetachedEntity.cpp authoring/EntityMoveAdjuster.cpp \
 	authoring/EntityMoveManager.cpp authoring/EntityMover.cpp authoring/EntityMoverBase.cpp authoring/EntityRecipe.cpp authoring/EntityRecipeManager.cpp authoring/GUIAdapter.cpp \
 	authoring/GUIAdapterBindings.cpp authoring/MaterialEditor.cpp authoring/MovementAdapter.cpp authoring/Polygon.cpp authoring/PolygonPoint.cpp \
 	authoring/PolygonPointMovement.cpp authoring/PolygonPointMover.cpp authoring/PolygonPointPickListener.cpp \
@@ -109,7 +109,7 @@ dist_conf_DATA = ogre.cfg resources.cfg
 
 
 noinst_HEADERS = \
-	authoring/DetachedEntity.h authoring/EntityMoveAdjuster.h authoring/EntityMoveManager.h \
+	authoring/ConsoleDevTools.h authoring/DetachedEntity.h authoring/EntityMoveAdjuster.h authoring/EntityMoveManager.h \
 	authoring/EntityMover.h authoring/EntityMoverBase.h authoring/EntityRecipe.h authoring/EntityRecipeManager.h authoring/GUIAdapter.h authoring/GUIAdapterBindings.h \
 	authoring/IMovementBridge.h authoring/IPolygonPositionProvider.h authoring/MaterialEditor.h authoring/MovementAdapter.h authoring/Polygon.h \
 	authoring/PolygonPoint.h authoring/PolygonPointMovement.h authoring/PolygonPointMover.h authoring/PolygonPointPickListener.h \

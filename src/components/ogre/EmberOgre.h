@@ -103,6 +103,8 @@ class EntityRecipeManager;
 
 }
 
+class ConsoleDevTools;
+
 class GUIManager;
 
 class OgreResourceLoader;
@@ -380,6 +382,8 @@ protected:
 	 * @brief Signals, when a Lod is injected.
 	 */
 	Lod::PMInjectorSignaler* mPMInjectorSignaler;
+
+	ConsoleDevTools* mConsoleDevTools;
 
 	/**
 	 * @brief Gets the main Eris View instance, which is the main inteface to the world.

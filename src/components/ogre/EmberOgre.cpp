@@ -88,6 +88,7 @@
 #include "framework/Exception.h"
 #include "OgreLogObserver.h"
 #include "OgreResourceLoader.h"
+#include "authoring/ConsoleDevTools.h"
 
 #include "EmberEntityFactory.h"
 
@@ -152,6 +153,8 @@ EmberOgre::~EmberOgre()
 	delete mWorld;
 	delete mModelRepresentationManager;
 	delete mMaterialEditor;
+
+	delete mConsoleDevTools;
 
 	EmberServices::getSingleton().getSoundService().setResourceProvider(0);
 	delete mSoundManager;
@@ -427,6 +430,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		mMaterialEditor = new Authoring::MaterialEditor();
 
 		mModelRepresentationManager = new Model::ModelRepresentationManager();
+
+		mConsoleDevTools = new ConsoleDevTools;
 
 		loadingBar.finish();
 	}
