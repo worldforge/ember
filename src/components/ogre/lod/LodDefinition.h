@@ -73,6 +73,12 @@ public:
 	void setReductionMethod(Ogre::LodLevel::VertexReductionMethod reductionMethod);
 
 	/**
+	 * @brief Sets the vertex reduction method of the Lod distance. You should not use this if possible.
+	 *        This is required for lua bindings.
+	 */
+	void setReductionMethod(int reductionMethod);
+
+	/**
 	 * @brief Returns the vertex reduction value of the Lod distance, which is used in automatic vertex reduction.
 	 */
 	float getReductionValue() const;
@@ -265,6 +271,10 @@ inline Ogre::LodLevel::VertexReductionMethod LodDistance::getReductionMethod() c
 inline void LodDistance::setReductionMethod(Ogre::LodLevel::VertexReductionMethod reductionMethod)
 {
 	mReductionMethod = reductionMethod;
+}
+inline void LodDistance::setReductionMethod(int reductionMethod)
+{
+	mReductionMethod = (Ogre::LodLevel::VertexReductionMethod) reductionMethod;
 }
 
 inline float LodDistance::getReductionValue() const

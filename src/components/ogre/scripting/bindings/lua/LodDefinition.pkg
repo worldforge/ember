@@ -44,12 +44,16 @@ public:
 	 * @brief Returns the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
 	 */
 	Ogre::LodLevel::VertexReductionMethod getReductionMethod() const;
-
+	// Above method with returning an int casted enum value to overcome tolua type safety issues.
+	int getReductionMethod @ getReductionMethodInt() const;
+	
 	/**
 	 * @brief Sets the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
 	 */
 	void setReductionMethod(Ogre::LodLevel::VertexReductionMethod reductionMethod);
-
+	// Above method with returning an int casted enum value to overcome tolua type safety issues.
+	void setReductionMethod(int reductionMethod);
+	
 	/**
 	 * @brief Returns the vertex reduction value of the Lod Distance, which is used in automatic vertex reduction.
 	 */

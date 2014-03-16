@@ -29,7 +29,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumSystem.h"
 #include "CameraBoundElement.h"
 #include "SkyDome.h"
-#include "Sun.h"
+#include "SphereSun.h"
 #include "Moon.h"
 #include "UniversalClock.h"
 #include "Astronomy.h"

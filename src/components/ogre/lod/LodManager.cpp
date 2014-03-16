@@ -86,6 +86,7 @@ void LodManager::loadLod(Ogre::MeshPtr mesh, const LodDefinition& def)
 			// Automatic vertex reduction
 			Ogre::LodConfig lodConfig;
 			lodConfig.mesh = mesh;
+			lodConfig.strategy = strategy;
 			const LodDefinition::LodDistanceMap& data = def.getManualLodData();
 			if (def.getStrategy() == LodDefinition::LS_DISTANCE) {
 				// TODO: Use C++11 lambda, instead of template.

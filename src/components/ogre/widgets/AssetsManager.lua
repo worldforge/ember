@@ -207,15 +207,18 @@ function AssetsManager:showMesh(meshName)
 	lodlevelsList = CEGUI.toListbox(lodlevelsList)
 	lodlevelsList:resetList()
 	local loddef = self.meshes.current.lodDefPtr.get()
-	
-	local distances = loddef:createListOfDistances()
-	local size = distances:size()
-	for i = 0, size - 1 do
-		local value = self:round(distances[i], 6)
-		local item = Ember.OgreView.Gui.ColouredListItem:new(tostring(value), value) 
-		lodlevelsList:addItem(item)
+	if not loddef then
+		lodDefManager:create(self:getLodDefName(mesh:getName()), mesh:getGroup())
+		loddef = self.meshes.current.lodDefPtr.get()
 	end
-	self:LODSortDistances()
+    local distances = loddef:createListOfDistances()
+    local size = distances:size()
+        for i = 0, size - 1 do
+            local value = self:round(distances[i], 6)
+            local item = Ember.OgreView.Gui.ColouredListItem:new(tostring(value), value) 
+            lodlevelsList:addItem(item)
+        end
+	    self:LODSortDistances()
 	local window = self.widget:getWindow("SubmeshInfoText")
 	window:setText("")
 	-- TODO: Save changes before switching to other mesh
@@ -550,7 +553,7 @@ function AssetsManager:LODLoad(dist)
 	
 	local combobox = self.widget:getWindow("LODReductionTypeCombobox")
 	combobox = CEGUI.toCombobox(combobox)
-	combobox:setItemSelectState(distdef:getReductionMethod(), true)
+	combobox:setItemSelectState(distdef:getReductionMethodInt(), true)
 	
 	if not self.meshes.current.scrollOnStack then
 		self:LODUpdateScroll(true, true)
@@ -560,7 +563,9 @@ function AssetsManager:LODLoad(dist)
 end
 
 function AssetsManager:LODUpdate()
-	if not self.meshes.current.updateOnStack then -- recursion protection
+    
+	local loddef = self.meshes.current.lodDefPtr.get()
+	if not self.meshes.current.updateOnStack and loddef then -- recursion protection
 		self.meshes.current.updateOnStack = true
 		self:LODSave(self.meshes.current.selectedDistance)
 		self.meshes.current.selectedDistance = self:LODGetSelected()
@@ -604,6 +609,7 @@ function AssetsManager:LODUpdateForcedLevel()
 	if shouldForce and dist then
 		local mesh = self.meshes.current.meshPtr.get()
 		local loddef = self.meshes.current.lodDefPtr.get()
+		if not loddef then return end
 		-- fix rounding problems.
 		if loddef:getStrategy() == 0 then
 			-- distance Lod strategy
@@ -623,6 +629,7 @@ end
 
 function AssetsManager:LODAdd(distance)
 	local loddef = self.meshes.current.lodDefPtr.get()
+	if not loddef then return end
 	distance = tonumber(distance)
 	if not distance or loddef:hasLodDistance(distance) then return end
 	
@@ -717,11 +724,11 @@ function AssetsManager:LODUpdateScroll(shouldUpdateText, shouldUpdateScroll, val
 	
 	local scrollSize
 	local stepSize
-	if distdef:getReductionMethod() == 0 then
+	if distdef:getReductionMethodInt() == 0 then
 		-- Proportional
 		scrollSize = 1
 		stepSize = 0.01
-	elseif distdef:getReductionMethod() == 1 then
+	elseif distdef:getReductionMethodInt() == 1 then
 		-- Constant
 		local mesh = self.meshes.current.meshPtr.get()
 		scrollSize = Ember.OgreView.Gui.MeshInfoProvider:calcUniqueVertexCount(mesh)
@@ -1053,7 +1060,7 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 		
-		self.widget:getWindow("LODValueScroll"):subscribeEvent("ScrollPosChanged", function(args)
+		self.widget:getWindow("LODValueScroll"):subscribeEvent("ScrollPositionChanged", function(args)
 			if not self.meshes.current.scrollOnStack then
 				self.meshes.current.scrollOnStack = true
 				local scroll = self.widget:getWindow("LODValueScroll")

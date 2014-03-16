@@ -26,7 +26,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "ImageStarfield.h"
 #include "PointStarfield.h"
 #include "SkyLight.h"
-#include "Sun.h"
+#include "SphereSun.h"
 #include "Moon.h"
 #include "CloudSystem.h"
 #include "SkyDome.h"

@@ -27,7 +27,7 @@
 #include "CaelumSun.h"
 #include "caelum/include/CaelumSystem.h"
 #include "components/ogre/Convert.h"
-#include "caelum/include/Sun.h"
+#include "caelum/include/SphereSun.h"
 
 #include "framework/Tokeniser.h"
 
