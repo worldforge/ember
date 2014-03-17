@@ -25,22 +25,22 @@ devmedia:
 	mkdir -p $(datadir)/ember/media/
 	rsync -rtvzu amber.worldforge.org::media-dev $(datadir)/ember/media/
 	
-# releasemedia:
-# 	echo "I will now try to download the release media from sourceforge. If this doesn't work, consider using the releasemediarsync make target instead."
-# 	mkdir -p $(datadir)/ember/media/
-# #create a temporary directory
-# 	ourtempdir=`mktemp -d`
-# #get the file
-# 	wget http://downloads.sourceforge.net/worldforge/ember-media-$(VERSION).tar.bz2 $(ourtempdir)
-# #unpack to our temporary directory
-# 	tar -jxf $(ourtempdir)/ember-media-$(VERSION).tar.bz2 $(ourtempdir)
-# #move to the correct location
-# 	mv $(ourtempdir)/ember-media-$(VERSION)/* $(datadir)/ember/media/
-# #clean up
-# 	rm -rf $(ourtempdir)
+releasemedia:
+	echo "I will now try to download the release media from sourceforge. If this doesn't work, consider getting the release media yourself from http://downloads.sourceforge.net/worldforge/ember-media-$(VERSION).tar.bz2."
+	mkdir -p $(datadir)/ember/media/
+#create a temporary directory
+	$(eval ourtempdir := $(shell mktemp -d))
+#get the file
+	wget http://downloads.sourceforge.net/worldforge/ember-media-$(VERSION).tar.bz2 -P $(ourtempdir)
+#unpack to our temporary directory
+	tar -jxf $(ourtempdir)/ember-media-$(VERSION).tar.bz2 -C $(ourtempdir)
+#move to the correct location
+	cp -r $(ourtempdir)/ember-media-$(VERSION)/media/shared/* $(datadir)/ember/media/shared/
+#clean up
+	rm -rf $(ourtempdir)
 
 releasemediarsync:
-	echo "I will now use rsync to update the release media from amber.worldforge.org. If this doesn't work, consider getting the release media yourself from http://sourceforge.net/project/showfiles.php?group_id=11799."
+	echo "I will now use rsync to update the release media from amber.worldforge.org. If this doesn't work, consider getting the release media yourself from http://downloads.sourceforge.net/worldforge/ember-media-$(VERSION).tar.bz2."
 	mkdir -p $(datadir)/ember/media/
 	rsync -rtvzu amber.worldforge.org::media-$(VERSION) $(datadir)/ember/media/
 	
