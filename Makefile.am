@@ -31,7 +31,7 @@ releasemedia:
 #create a temporary directory
 	$(eval ourtempdir := $(shell mktemp -d))
 #get the file
-	wget http://downloads.sourceforge.net/worldforge/ember-media-$(VERSION).tar.bz2 -P $(ourtempdir)
+	curl -C - -OL http://downloads.sourceforge.net/worldforge/ember-media-$(VERSION).tar.bz2 -P $(ourtempdir)
 #unpack to our temporary directory
 	tar -jxf $(ourtempdir)/ember-media-$(VERSION).tar.bz2 -C $(ourtempdir)
 #move to the correct location
