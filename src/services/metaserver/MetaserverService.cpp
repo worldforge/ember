@@ -99,6 +99,13 @@ bool MetaserverService::start()
 	return true;
 }
 
+void MetaserverService::stop()
+{
+	mMetaserver->cancel();
+	Service::stop();
+}
+
+
 void MetaserverService::gotFailure(const string& msg)
 {
 	S_LOG_WARNING("Got Meta-server error: " << msg);

@@ -178,10 +178,13 @@ Application::~Application()
 	configService.saveConfig(configService.getHomeDirectory() + "/ember.conf", varconf::USER);
 
 	mServices->getServerService().stop();
+	mServices->getMetaserverService().stop();
 
-	delete mSession;
+	mSession->getEventService().processAllHandlers();
 
 	delete mOgreView;
+
+	delete mSession;
 	delete mServices;
 	delete mScriptingResourceProvider;
 	S_LOG_INFO("Ember shut down normally.");
