@@ -81,7 +81,7 @@ public:
 	 * @param snappedToEntity If snapping can happen, this is the entity to which it can be snapped.
 	 * @returns True if it could be snapped.
 	 */
-	bool testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity* snappedToEntity);
+	bool testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity** snappedToEntity);
 
 protected:
 	/**

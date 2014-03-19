@@ -24,9 +24,11 @@
 #include "config.h"
 #endif
 
-#include <cstdlib>
 #include "NumberAdapter.h"
 #include "../../ColouredListItem.h"
+
+#include <wfmath/const.h>
+#include <cstdlib>
 
 namespace Ember {
 namespace OgreView {
@@ -86,7 +88,7 @@ void NumberAdapter::fillElementFromGui()
 
 bool NumberAdapter::_hasChanges()
 {
-	return mOriginalValue.asNum() != getValue().asNum();
+	return !WFMath::Equal(mOriginalValue.asNum(), getValue().asNum());
 }
 
 void NumberAdapter::addSuggestion(const std::string& suggestedValue)

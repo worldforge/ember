@@ -62,7 +62,7 @@ public:
 	 * This is useful for people used to flight simulators.
 	 * @return True if the vertical movement of the camera should be inverted.
 	 */
-	float getInvertCamera() const;
+	bool getInvertCamera() const;
 
 private:
 
@@ -102,7 +102,7 @@ inline float CameraSettings::getDegreesPerMouseUnit() const
 	return mDegreesPerMouseUnit;
 }
 
-inline float CameraSettings::getInvertCamera() const
+inline bool CameraSettings::getInvertCamera() const
 {
 	return mInvertCamera;
 }

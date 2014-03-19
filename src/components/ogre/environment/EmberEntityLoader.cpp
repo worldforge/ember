@@ -240,7 +240,7 @@ void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity)
 	}
 }
 
-void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberEntity* entity)
+void EmberEntityLoader::EmberEntity_VisibilityChanged(bool, EmberEntity* entity)
 {
 	WFMath::Point<3> viewPos = entity->getViewPosition();
 	if (viewPos.isValid()) {

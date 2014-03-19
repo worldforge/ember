@@ -27,6 +27,8 @@
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>
 
+#include <wfmath/const.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -87,7 +89,7 @@ Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
 	}
 
-	if (degrees.valueDegrees()) {
+	if (!WFMath::Equal(.0f, degrees.valueDegrees())) {
 		mCameraPitchNode->pitch(degrees);
 
 		//We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
@@ -102,7 +104,7 @@ Ogre::Degree ThirdPersonCameraMount::yaw(float relativeMovement)
 {
 	Ogre::Degree degrees(mCameraSettings.getDegreesPerMouseUnit() * relativeMovement);
 
-	if (degrees.valueDegrees()) {
+	if (!WFMath::Equal(.0f, degrees.valueDegrees())) {
 		mCameraRootNode->yaw(degrees);
 
 		//We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
@@ -178,7 +180,7 @@ bool ThirdPersonCameraMount::adjustForTerrain()
 	//For now we'll only check against the terrain
 	const Ogre::Vector3 direction(-mCamera->getDerivedDirection());
 	//If the direction if pointing straight upwards we'll end up in an infinite loop in the ray query
-	if (direction.z != 0) {
+	if (!WFMath::Equal(direction.z, 0)) {
 		mAdjustTerrainRay.setDirection(direction);
 		mAdjustTerrainRay.setOrigin(mCameraRootNode->_getDerivedPosition());
 
@@ -191,7 +193,7 @@ bool ThirdPersonCameraMount::adjustForTerrain()
 				return true;
 			} else {
 				//we hit some terrain beyond the max distance of the camera, so set it to the "default" distance
-				if (mWantedCameraDistance != mCurrentCameraDistance) {
+				if (!WFMath::Equal(mWantedCameraDistance, mCurrentCameraDistance)) {
 					setActualCameraDistance(mWantedCameraDistance);
 				}
 				return false;
@@ -201,7 +203,7 @@ bool ThirdPersonCameraMount::adjustForTerrain()
 	return false;
 }
 
-bool ThirdPersonCameraMount::frameStarted(const Ogre::FrameEvent& event)
+bool ThirdPersonCameraMount::frameStarted(const Ogre::FrameEvent&)
 {
 	if (mIsAdjustedToTerrain && mCamera) {
 		if (mCamera->getDerivedPosition() != mLastPosition) {
@@ -212,7 +214,7 @@ bool ThirdPersonCameraMount::frameStarted(const Ogre::FrameEvent& event)
 	return true;
 }
 
-void ThirdPersonCameraMount::Config_AdjustToTerrain(const std::string& section, const std::string& key, varconf::Variable& variable)
+void ThirdPersonCameraMount::Config_AdjustToTerrain(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_bool()) {
 		mIsAdjustedToTerrain = static_cast<bool>(variable);

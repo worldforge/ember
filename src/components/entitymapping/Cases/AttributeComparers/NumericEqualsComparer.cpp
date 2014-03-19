@@ -25,6 +25,7 @@
 #endif
 
 #include "NumericEqualsComparer.h"
+#include <wfmath/const.h>
 
 namespace Ember {
 
@@ -42,7 +43,7 @@ NumericEqualsComparer::NumericEqualsComparer(float value) : NumericValueHolder(v
 
 bool NumericEqualsComparer::test(float value)
 {
-	return value == mValue;
+	return WFMath::Equal(value, mValue);
 }
 
 

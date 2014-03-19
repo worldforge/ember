@@ -52,7 +52,7 @@ void TerrainUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContex
 	int terrainRes = mTerrain.getResolution();
 	for (TerrainDefPointStore::const_iterator I = mTerrainPoints.begin(); I != mTerrainPoints.end(); ++I) {
 		Mercator::BasePoint bp;
-		if (mTerrain.getBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
+		if (mTerrain.getBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp) && (WFMath::Equal(I->getHeight(), bp.height()))) {
 			S_LOG_VERBOSE("Point [" << I->getPosition().x() << "," << I->getPosition().y() << "] unchanged");
 			continue;
 		} else {

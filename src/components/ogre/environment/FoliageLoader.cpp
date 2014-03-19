@@ -65,7 +65,7 @@ FoliageLoader::~FoliageLoader()
 
 bool FoliageLoader::preparePage(::Forests::PageInfo &page)
 {
-	if (mLatestPlantsResult && mLatestPlantsResult->getQuery().getCenter().x == page.centerPoint.x && mLatestPlantsResult->getQuery().getCenter().y == page.centerPoint.z) {
+	if (mLatestPlantsResult && WFMath::Equal(mLatestPlantsResult->getQuery().getCenter().x, page.centerPoint.x) && WFMath::Equal(mLatestPlantsResult->getQuery().getCenter().y, page.centerPoint.z)) {
 		return true;
 	} else {
 		PlantAreaQuery query(mTerrainLayerDefinition, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
@@ -76,7 +76,7 @@ bool FoliageLoader::preparePage(::Forests::PageInfo &page)
 	}
 }
 
-void FoliageLoader::loadPage(::Forests::PageInfo &page)
+void FoliageLoader::loadPage(::Forests::PageInfo&)
 {
 	Ogre::ColourValue colour(1, 1, 1, 1);
 	int plantNo = 0;

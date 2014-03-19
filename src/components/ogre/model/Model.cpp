@@ -188,7 +188,7 @@ bool Model::createActualModel()
 				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
 			}
 
-			if (mDefinition->getRenderingDistance()) {
+			if (mDefinition->getRenderingDistance() > .0f) {
 				entity->setRenderingDistance(mDefinition->getRenderingDistance());
 			}
 

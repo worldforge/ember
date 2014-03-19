@@ -71,7 +71,7 @@ RenderedColourStringTextComponent::RenderedColourStringTextComponent(const Strin
 {
 }
 
-void RenderedColourStringTextComponent::draw(const CEGUI::Window* ref_wnd, CEGUI::GeometryBuffer& buffer, const CEGUI::Vector2f& position, const CEGUI::ColourRect* mod_colours, const CEGUI::Rectf* clip_rect, const float vertical_space, const float space_extra) const
+void RenderedColourStringTextComponent::draw(const CEGUI::Window* ref_wnd, CEGUI::GeometryBuffer& buffer, const CEGUI::Vector2f& position, const CEGUI::ColourRect* /*mod_colours*/, const CEGUI::Rectf* clip_rect, const float vertical_space, const float space_extra) const
 {
 	RenderedStringTextComponent::draw(ref_wnd, buffer, position, 0, clip_rect, vertical_space, space_extra);
 }

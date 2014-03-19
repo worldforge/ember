@@ -46,9 +46,10 @@ void AuthoringVisualizationCollisionDetector::refit()
 {
 }
 
-void AuthoringVisualizationCollisionDetector::setVisualize(bool visualize)
+void AuthoringVisualizationCollisionDetector::setVisualize(bool)
 {
 }
+
 bool AuthoringVisualizationCollisionDetector::getVisualize() const
 {
 	return false;

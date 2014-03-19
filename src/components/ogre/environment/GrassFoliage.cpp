@@ -80,7 +80,7 @@ void GrassFoliage::initialize()
 	const WFMath::AxisBox<2>& worldSize = mTerrainManager.getTerrainInfo().getWorldSizeInIndices();
 
 	::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
-	if (ogreBounds.width() != ogreBounds.height()) {
+	if (!WFMath::Equal(ogreBounds.width(), ogreBounds.height())) {
 		if (ogreBounds.width() > ogreBounds.height()) {
 			float difference = ogreBounds.width() - ogreBounds.height();
 			ogreBounds.bottom += difference;

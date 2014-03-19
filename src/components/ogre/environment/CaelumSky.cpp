@@ -67,7 +67,7 @@ CaelumSky::~CaelumSky()
 {
 }
 
-void CaelumSky::Config_CloudSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CaelumSky::Config_CloudSpeed(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_string() && mCaelumSystem->getCloudSystem()) {
 		Ogre::Vector2 vector;
@@ -78,13 +78,13 @@ void CaelumSky::Config_CloudSpeed(const std::string& section, const std::string&
 	}
 }
 
-void CaelumSky::Config_CloudBlendTime(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CaelumSky::Config_CloudBlendTime(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_double() && mCaelumSystem->getCloudSystem()) {
 		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudBlendTime(static_cast<double> (variable));
 	}
 }
-void CaelumSky::Config_CloudCover(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CaelumSky::Config_CloudCover(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_double() && mCaelumSystem->getCloudSystem()) {
 		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudCover(static_cast<double> (variable));
@@ -100,7 +100,7 @@ float CaelumSky::getDensity() const
 	return mCaelumSystem->getGlobalFogDensityMultiplier();
 }
 
-bool CaelumSky::frameEnded(const Ogre::FrameEvent & event)
+bool CaelumSky::frameEnded(const Ogre::FrameEvent &)
 {
 	return true;
 }

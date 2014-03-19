@@ -120,7 +120,7 @@ void MovementAdapterWorkerTerrainCursor::update()
 	updatePosition(true);
 }
 
-bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent& event)
+bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent&)
 {
 	updatePosition();
 	return true;

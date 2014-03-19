@@ -118,7 +118,7 @@ const CameraSettings& MainCamera::getCameraSettings() const
 	return *mCameraSettings;
 }
 
-void MainCamera::Config_ClipDistances(const std::string& section, const std::string& key, varconf::Variable& variable)
+void MainCamera::Config_ClipDistances(const std::string& /*section*/, const std::string& /*key*/, varconf::Variable& variable)
 {
 	if (variable.is_string()) {
 		Tokeniser tokeniser(variable);
@@ -139,7 +139,7 @@ void MainCamera::Config_ClipDistances(const std::string& section, const std::str
 	}
 }
 
-void MainCamera::Config_Compositors(const std::string& section, const std::string& key, varconf::Variable& variable)
+void MainCamera::Config_Compositors(const std::string& /*section*/, const std::string& /*key*/, varconf::Variable& variable)
 {
 	if (variable.is_string()) {
 		const std::vector<std::string> tokens = Tokeniser::split(variable.as_string(), ",");
@@ -312,7 +312,7 @@ void MainCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mo
 
 			bool moved = false;
 			if (motion.xRelativeMovement) {
-				moved = mCameraMount->yaw(motion.xRelativeMovement).valueDegrees() || moved;
+				moved = mCameraMount->yaw(motion.xRelativeMovement).valueDegrees();
 			}
 			if (motion.yRelativeMovement) {
 				moved = mCameraMount->pitch(motion.yRelativeMovement).valueDegrees() || moved;

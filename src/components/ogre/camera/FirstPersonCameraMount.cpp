@@ -25,6 +25,8 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
+#include <wfmath/const.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -98,7 +100,7 @@ Ogre::Degree FirstPersonCameraMount::pitch(float relativeMovement)
 		degrees = std::max<float>(degrees.valueDegrees(), -90 - pitch.valueDegrees());
 	}
 
-	if (degrees.valueDegrees() != 0) {
+	if (!WFMath::Equal(.0f, degrees.valueDegrees())) {
 		mCameraPitchNode->pitch(degrees);
 		mCameraPitchNode->_update(true, false);
 	}
@@ -111,7 +113,7 @@ Ogre::Degree FirstPersonCameraMount::yaw(float relativeMovement)
 {
 	Ogre::Degree degrees(mCameraSettings.getDegreesPerMouseUnit() * relativeMovement);
 
-	if (degrees.valueDegrees()) {
+	if (!WFMath::Equal(.0f, degrees.valueDegrees())) {
 		//Yaw in relation to the world to prevent the camera being tilted when it's yawed along with being pitched
 		mCameraRootNode->yaw(degrees);
 

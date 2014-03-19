@@ -40,7 +40,7 @@ LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string
 	mConnector->connect(luaMethod);
 }
 
-LuaConsoleObject::LuaConsoleObject(const std::string& command, lua_Object luaMethod, const std::string& description) :
+LuaConsoleObject::LuaConsoleObject(const std::string& command, lua_Object /*luaMethod */, const std::string& description) :
 	mCommandWrapper(command, this, description)
 {
 	mConnector = new TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>(StringValueAdapter(), StringValueAdapter());

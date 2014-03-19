@@ -58,7 +58,7 @@ Connector* Connector::connect(const std::string& luaMethod, lua_Object selfIndex
 	return this;
 }
 
-Connector* Connector::connect(lua_Object luaMethod, lua_Object selfIndex)
+Connector* Connector::connect(lua_Object /*luaMethod */, lua_Object selfIndex)
 {
 	if (!mConnector) {
 		S_LOG_WARNING("Tried to connect lua method to a non existent signal.");

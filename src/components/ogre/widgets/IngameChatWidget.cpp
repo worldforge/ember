@@ -454,7 +454,7 @@ void IngameChatWidget::Label::updateEntityName()
 	//if the entity is controlled by a player, mark that
 	if (getEntity()->hasAttr("external")) {
 		const Atlas::Message::Element& externalAttr = getEntity()->valueOfAttr("external");
-		if (externalAttr.isNum() && externalAttr.asNum() == 1) {
+		if (externalAttr.isInt() && externalAttr.asInt() == 1) {
 			entityName = "!" + getEntity()->getName() + "!";
 		}
 	}

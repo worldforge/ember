@@ -36,11 +36,11 @@ namespace EntityMapping {
 
 namespace Actions {
 
-void DummyAction::activate(ChangeContext& context)
+void DummyAction::activate(ChangeContext&)
 {
 };
 
-void DummyAction::deactivate(ChangeContext& context)
+void DummyAction::deactivate(ChangeContext&)
 {
 };
 

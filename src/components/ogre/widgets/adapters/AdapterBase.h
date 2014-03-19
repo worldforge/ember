@@ -398,7 +398,7 @@ bool AdapterBase<ValueType>::isRemoved() const
 }
 
 template<typename ValueType>
-void AdapterBase<ValueType>::addSuggestion(const std::string& suggestedValue)
+void AdapterBase<ValueType>::addSuggestion(const std::string& /*suggestedValue*/)
 {
 	// default implementation doesn't support suggestions
 }

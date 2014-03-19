@@ -122,7 +122,7 @@ void AuthoringManager::simpleEntityVisualizationBeingDeleted(EmberEntity* entity
 	hideSimpleEntityVisualization(*entity);
 }
 
-void AuthoringManager::runCommand(const std::string &command, const std::string &args)
+void AuthoringManager::runCommand(const std::string &command, const std::string &)
 {
 	if (DisplayAuthoringVisualizations == command) {
 		EmberServices::getSingleton().getConfigService().setValue("authoring", "visualizations", true);
@@ -131,7 +131,7 @@ void AuthoringManager::runCommand(const std::string &command, const std::string 
 	}
 }
 
-void AuthoringManager::config_AuthoringVisualizations(const std::string& section, const std::string& key, varconf::Variable& variable)
+void AuthoringManager::config_AuthoringVisualizations(const std::string& section, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_bool()) {
 		if (static_cast<bool> (variable)) {

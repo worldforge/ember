@@ -80,7 +80,7 @@ void EntityMover::cleanup()
 {
 	mNodeAttachment.setControlDelegate(mPreviousControlDelegate);
 }
-void EntityMover::newEntityPosition(const Ogre::Vector3& position)
+void EntityMover::newEntityPosition(const Ogre::Vector3&)
 {
 	mNodeAttachment.updatePosition();
 }

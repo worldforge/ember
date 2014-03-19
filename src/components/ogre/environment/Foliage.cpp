@@ -115,7 +115,7 @@ void Foliage::reloadAtPosition(const WFMath::Point<2>& worldPosition)
 	}
 }
 
-bool Foliage::frameStarted(const Ogre::FrameEvent& evt)
+bool Foliage::frameStarted(const Ogre::FrameEvent&)
 {
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
 		(*I)->frameStarted();

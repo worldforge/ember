@@ -160,7 +160,7 @@ bool BooleanValueAdapter::pushValue(lua_State* state, const bool& value)
 	return true;
 }
 
-bool EmptyValueAdapter::pushValue(lua_State* state, const Empty& value)
+bool EmptyValueAdapter::pushValue(lua_State*, const Empty&)
 {
 	return false;
 }

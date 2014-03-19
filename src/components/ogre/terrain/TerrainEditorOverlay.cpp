@@ -112,7 +112,7 @@ void BasePointUserObject::updateMarking()
 		if (mIsMoving) {
 			entity->setMaterialName("/global/authoring/point/moving");
 		} else {
-			if (mCanonicalHeight != getBasePointMarkerNode()->_getDerivedPosition().y) {
+			if (!WFMath::Equal(mCanonicalHeight, getBasePointMarkerNode()->_getDerivedPosition().y)) {
 				entity->setMaterialName("/global/authoring/point/moved");
 			} else {
 				entity->setMaterialName("/global/authoring/point");
@@ -384,14 +384,14 @@ void TerrainEditorOverlay::createAction(bool alsoCommit)
 		//lets get how much it moved
 		float distance = mCurrentUserObject->getBasePointMarkerNode()->getPosition().y - mCurrentUserObject->getBasePoint().height();
 		//only register an action if it has been moved
-		if (distance != 0) {
+		if (!WFMath::Equal(distance, .0f)) {
 			TerrainEditBasePointMovement movement(distance, mCurrentUserObject->getPosition());
 			TerrainEditAction action;
 			action.getMovements().push_back(movement);
 
 			for (BasePointUserObjectSet::iterator I = mSecondaryUserObjects.begin(); I != mSecondaryUserObjects.end(); ++I) {
 				distance = (*I)->getBasePointMarkerNode()->getPosition().y - (*I)->getBasePoint().height();
-				if (distance != 0) {
+				if (!WFMath::Equal(distance, .0f)) {
 					TerrainEditBasePointMovement movement(distance, (*I)->getPosition());
 					action.getMovements().push_back(movement);
 				}

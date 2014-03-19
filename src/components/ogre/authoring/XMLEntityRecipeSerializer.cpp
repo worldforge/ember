@@ -243,7 +243,7 @@ void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, TiXmlEle
 	entRecipe->associateBindings();
 }
 
-void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr entRecipe, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode)
+void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr /*entRecipe*/, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode)
 {
 	S_LOG_VERBOSE("  Reading bind adapters.");
 	for (TiXmlElement* elem = bindAdaptersNode->FirstChildElement(); elem != 0; elem = elem->NextSiblingElement()) {

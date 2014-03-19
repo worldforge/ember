@@ -86,7 +86,7 @@ void DetachedEntity::addToMovementPredition()
 {
 }
 
-Eris::Entity* DetachedEntity::getEntity(const std::string& id)
+Eris::Entity* DetachedEntity::getEntity(const std::string&)
 {
 	return 0;
 }

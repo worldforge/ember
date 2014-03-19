@@ -162,7 +162,7 @@ bool FoliageDetailManager::setFoliageDensity(float density)
 	return true;
 }
 
-void FoliageDetailManager::Config_FoliageDensity(const std::string& section, const std::string& key, varconf::Variable& variable)
+void FoliageDetailManager::Config_FoliageDensity(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_double()) {
 		float density = static_cast<double>(variable);
@@ -170,7 +170,7 @@ void FoliageDetailManager::Config_FoliageDensity(const std::string& section, con
 	}
 }
 
-void FoliageDetailManager::Config_FoliageFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable)
+void FoliageDetailManager::Config_FoliageFarDistance(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_double()) {
 		float distanceFactor = static_cast<double>(variable);

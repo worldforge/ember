@@ -101,8 +101,8 @@ void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 	WFMath::Point<3> finalPosition(position);
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustment;
-		EmberEntity* entity(0);
-		if (mSnapping.get() && mSnapping->testSnapTo(position, getOrientation(), adjustment, entity)) {
+		EmberEntity* entity = nullptr;
+		if (mSnapping.get() && mSnapping->testSnapTo(position, getOrientation(), adjustment, &entity)) {
 			finalPosition = finalPosition.shift(adjustment);
 		}
 
@@ -124,7 +124,7 @@ void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
 		Moved.emit();
 	}
 }
-void EntityMoverBase::setRotation(int axis, WFMath::CoordType angle)
+void EntityMoverBase::setRotation(int /*axis*/, WFMath::CoordType /*angle*/)
 {
 	//not implemented yet
 }
@@ -148,7 +148,7 @@ void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 	}
 }
 
-void EntityMoverBase::newEntityPosition(const Ogre::Vector3& position)
+void EntityMoverBase::newEntityPosition(const Ogre::Vector3& /*position*/)
 {
 }
 

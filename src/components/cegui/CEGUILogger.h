@@ -73,7 +73,7 @@ public:
         - true if events should be added to the end of the current file.
         - false if the current contents of the file should be discarded.
      */
-    virtual void setLogFilename(const CEGUI::String& filename, bool append = false) {}
+    virtual void setLogFilename(const CEGUI::String& /*filename */, bool /*append */ = false) {}
 private:
 	void Config_MinimumLogLevel(const std::string& section, const std::string& key, varconf::Variable& variable);
 

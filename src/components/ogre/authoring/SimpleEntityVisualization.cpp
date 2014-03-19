@@ -87,7 +87,7 @@ void SimpleEntityVisualization::entity_Moved()
 	updatePositionAndOrientation();
 }
 
-void SimpleEntityVisualization::entity_BboxChanged(const Atlas::Message::Element& attributeValue)
+void SimpleEntityVisualization::entity_BboxChanged(const Atlas::Message::Element& /*attributeValue*/)
 {
 	updateBbox();
 }

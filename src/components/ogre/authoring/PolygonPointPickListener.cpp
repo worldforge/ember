@@ -48,7 +48,7 @@ PolygonPointPickListener::~PolygonPointPickListener()
 {
 }
 
-void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
+void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& /*cameraRay */, const MousePickerArgs& mousePickerArgs)
 {
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
@@ -62,7 +62,7 @@ void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::Ra
 	}
 }
 
-void PolygonPointPickListener::processDelayedPick(const MousePickerArgs& mousePickerArgs) {
+void PolygonPointPickListener::processDelayedPick(const MousePickerArgs& /*mousePickerArgs*/) {
 	//We don't do any delayed selection
 }
 
@@ -78,7 +78,7 @@ void PolygonPointPickListener::initializePickingContext(bool& willParticipate, u
 
 }
 
-void PolygonPointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
+void PolygonPointPickListener::endPickingContext(const MousePickerArgs& /*mousePickerArgs*/)
 {
 	if (mPickedUserObject) {
 		EventPickedPoint.emit(mPickedUserObject->getPoint());

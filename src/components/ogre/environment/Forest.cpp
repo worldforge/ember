@@ -46,6 +46,8 @@
 #include "../terrain/TerrainHandler.h"
 #include "../terrain/ITerrainAdapter.h"
 
+#include <wfmath/const.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -80,7 +82,7 @@ void Forest::initialize()
 		mTrees->setPageSize(64); //Set the size of each page of geometry
 
 		::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
-		if (ogreBounds.width() != ogreBounds.height()) {
+		if (!WFMath::Equal(ogreBounds.width(), ogreBounds.height())) {
 			if (ogreBounds.width() > ogreBounds.height()) {
 				float difference = ogreBounds.width() - ogreBounds.height();
 				ogreBounds.bottom += difference;

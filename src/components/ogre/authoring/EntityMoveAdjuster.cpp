@@ -75,7 +75,7 @@ void EntityMoveAdjuster::EntityMoveManager_CancelledMoving()
 	mActiveEntity = 0;
 }
 
-void EntityMoveAdjuster::EntityMoveManager_StartMoving(EmberEntity& entity, EntityMover& mover)
+void EntityMoveAdjuster::EntityMoveManager_StartMoving(EmberEntity& entity, EntityMover&)
 {
 	mActiveEntity = &entity;
 }

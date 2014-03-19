@@ -48,7 +48,7 @@ namespace Environment {
 /// @param camera        The camera on which the lensflare effect will appear.
 /// @param SceneMgr      Pointer on the SceneManager.
 /* ------------------------------------------------------------------------- */
-LensFlare::LensFlare(Camera* camera, SceneManager* SceneMgr) : mLightNode(0)
+LensFlare::LensFlare(Camera* camera, SceneManager* SceneMgr) : mHaloSet(nullptr), mBurstSet(nullptr), mLightNode(nullptr)
 {
 	mSceneMgr      = SceneMgr;
 	mCamera        = camera;

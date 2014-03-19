@@ -52,7 +52,7 @@ public:
 	MovementAdapterWorkerBase(MovementAdapter& adapter);
 	virtual ~MovementAdapterWorkerBase();
 
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+	virtual bool injectMouseMove(const MouseMotion&, bool&)
 	{
 		return true;
 	}

@@ -126,7 +126,7 @@ void CaelumEnvironment::setupWater()
 
 }
 
-void CaelumEnvironment::setupCaelum(::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
+void CaelumEnvironment::setupCaelum(::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera&)
 {
 
 	Ogre::Root* root = Ogre::Root::getSingletonPtr();

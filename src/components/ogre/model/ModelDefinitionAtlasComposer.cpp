@@ -70,7 +70,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	model->getParentNode()->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
 
 	Ogre::AxisAlignedBox aabb(model->getWorldBoundingBox(true));
-	if (scale != 0 && scale != 1.0f) {
+	if (scale != .0f && scale != 1.0f) {
 		aabb.scale(Ogre::Vector3(scale, scale, scale));
 	}
 	WFMath::AxisBox<3> wfmathAabb(Convert::toWF(aabb));

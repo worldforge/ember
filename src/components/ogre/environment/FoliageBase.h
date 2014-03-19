@@ -105,7 +105,7 @@ public:
 	 * @param newDensity the new density factor in float, where 1 implies normal or full density and 0 implies no density.
 	 * @note Should be overriden in the deriving foliage layer to provide ability to set the far distance. 
 	 */
-	virtual void setDensity(float newDensity) { }
+	virtual void setDensity(float) { }
 	
 	/**
 	 * @brief Sets the far distance factor of the foliage.
@@ -114,7 +114,7 @@ public:
 	 * @param factor the new far distance factor, where 1 implies normal or max far distance and 0 implies minimum far distance;
 	 * @note Should be overriden in the deriving foliage layer to provide ability to set the far distance. 
 	 */
-	virtual void setFarDistance(float factor) { };
+	virtual void setFarDistance(float) { };
 
 protected:
 

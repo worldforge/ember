@@ -92,7 +92,7 @@ Ogre::ColourValue CaelumSun::getAmbientLightColour() const
 	return mSun->getMainLight()->getDiffuseColour();
 }
 
-void CaelumSun::Config_SunAmbientMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CaelumSun::Config_SunAmbientMultiplier(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	Ogre::ColourValue colour;
 	if (parse(variable, colour) && mSun) {
@@ -100,7 +100,7 @@ void CaelumSun::Config_SunAmbientMultiplier(const std::string& section, const st
 	}
 }
 
-void CaelumSun::Config_SunDiffuseMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CaelumSun::Config_SunDiffuseMultiplier(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	Ogre::ColourValue colour;
 	if (parse(variable, colour) && mSun) {
@@ -108,7 +108,7 @@ void CaelumSun::Config_SunDiffuseMultiplier(const std::string& section, const st
 	}
 }
 
-void CaelumSun::Config_SunSpecularMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CaelumSun::Config_SunSpecularMultiplier(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	Ogre::ColourValue colour;
 	if (parse(variable, colour) && mSun) {

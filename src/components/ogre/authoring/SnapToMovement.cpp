@@ -75,7 +75,7 @@ SnapToMovement::~SnapToMovement()
 
 }
 
-bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity* snappedToEntity)
+bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity** snappedToEntity)
 {
 	try {
 		for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
@@ -182,7 +182,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	mSceneManager.destroyQuery(query);
 	if (closestSnapping.get()) {
 		adjustment = closestSnapping->adjustment;
-		snappedToEntity = closestSnapping->entity;
+		*snappedToEntity = closestSnapping->entity;
 		return true;
 	}
 	return false;

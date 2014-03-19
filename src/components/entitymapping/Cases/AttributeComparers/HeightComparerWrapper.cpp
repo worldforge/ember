@@ -43,7 +43,7 @@ HeightComparerWrapper::HeightComparerWrapper(NumericComparer* comparer, Eris::En
 {
 }
 
-bool HeightComparerWrapper::testAttribute(const Atlas::Message::Element& attribute)
+bool HeightComparerWrapper::testAttribute(const Atlas::Message::Element&)
 {
 	return mEntity.hasBBox() && (mNumericComparer->test(mEntity.getBBox().upperBound(2) - mEntity.getBBox().lowerBound(2)));
 }

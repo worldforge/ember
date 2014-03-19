@@ -83,7 +83,7 @@ void FoliageLayer::configure(Terrain::TerrainManager* terrainManager, const Terr
 	mDensity = atof(foliageDefinition->getParameter("density").c_str());
 }
 
-unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume, bool& isAvailable)
+unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float densityFactor, float /*volume*/, bool& isAvailable)
 {
 	if (mLatestPlantsResult) {
 		isAvailable = true;
@@ -99,7 +99,7 @@ unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float den
 
 }
 
-unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount)
+unsigned int FoliageLayer::_populateGrassList(PageInfo /*page*/, float *posBuff, unsigned int grassCount)
 {
 	unsigned int finalGrassCount = 0;
 	if (mLatestPlantsResult) {

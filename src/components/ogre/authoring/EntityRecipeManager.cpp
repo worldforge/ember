@@ -80,7 +80,7 @@ void EntityRecipeManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::S
 	mXmlSerializer.parseScript(stream, groupName);
 }
 
-Ogre::Resource* EntityRecipeManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
+Ogre::Resource* EntityRecipeManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* /*createParams*/)
 {
 	return new EntityRecipe(this, name, handle, group, isManual, loader);
 }

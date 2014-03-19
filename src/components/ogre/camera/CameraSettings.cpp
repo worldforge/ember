@@ -38,14 +38,14 @@ CameraSettings::~CameraSettings()
 {
 }
 
-void CameraSettings::Config_DegreesPerMouseUnit(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CameraSettings::Config_DegreesPerMouseUnit(const std::string& /*section*/, const std::string& /*key*/, varconf::Variable& variable)
 {
 	if (variable.is_double()) {
 		mDegreesPerMouseUnit = static_cast<double>(variable);
 	}
 }
 
-void CameraSettings::Config_InvertCamera(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CameraSettings::Config_InvertCamera(const std::string& /*section*/, const std::string& /*key*/, varconf::Variable& variable)
 {
 	if (variable.is_bool()) {
 		mInvertCamera = static_cast<bool>(variable);

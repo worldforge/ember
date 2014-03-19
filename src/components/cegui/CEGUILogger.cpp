@@ -70,7 +70,7 @@ void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel lev
 }
 
 
-void CEGUILogger::Config_MinimumLogLevel(const std::string& section, const std::string& key, varconf::Variable& variable)
+void CEGUILogger::Config_MinimumLogLevel(const std::string& section, const std::string& /*key */, varconf::Variable& variable)
 {
 	std::string newLogLevel(variable);
 	
