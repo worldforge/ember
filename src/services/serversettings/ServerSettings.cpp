@@ -32,20 +32,19 @@ namespace Services
 {
 
 ServerSettings::ServerSettings() :
-	mConfig(new varconf::Config())
+	Service("Server settings"), mConfig(new varconf::Config())
 {
-	setName("Server settings Service");
 }
 
 ServerSettings::~ServerSettings()
 {
 }
 
-Service::Status ServerSettings::start()
+bool ServerSettings::start()
 {
 	readFromDisk();
 	setRunning(true);
-	return Service::OK;
+	return true;
 }
 
 void ServerSettings::stop()

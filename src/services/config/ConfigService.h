@@ -177,7 +177,7 @@ namespace Ember
 			 * Starts ConfigService.  Returns status.
 			 *
 			 */
-			Service::Status start ( void );
+			bool start();
 
 			/**
 			 * Stops ConfigService.

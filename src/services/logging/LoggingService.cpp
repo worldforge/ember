@@ -36,19 +36,15 @@
 namespace Ember {
 
 
-Service::Status LoggingService::start ()
+bool LoggingService::start ()
 {
 	setRunning(true);
-	setStatus(Service::OK);
-	return Service::OK;
+	return true;
 }
 
-LoggingService::LoggingService () : Service()
+LoggingService::LoggingService () : Service("Logging")
 {
 	//set service properties
-	
-	setName("Logging");
-	setDescription("Passes Eris log messages on to the logger.");
 	
 	mErisLogReciever = std::unique_ptr<ErisLogReciever>(new ErisLogReciever());
 }

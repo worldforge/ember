@@ -64,7 +64,7 @@ public:
 	/**
 	 * @copydoc Service::start()
 	 */
-	Service::Status start();
+	bool start();
 
 	/**
 	 * @copydoc Service::stop()

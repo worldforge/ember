@@ -47,7 +47,7 @@ class LoggingService : public Service
 	*/
 	virtual ~LoggingService();
 
-	virtual Service::Status start();
+	virtual bool start();
 
 private:
 

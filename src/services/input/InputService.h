@@ -41,7 +41,7 @@ public:
 
     virtual ~InputService();
 
-	virtual Service::Status start();
+	virtual bool start();
     
     virtual void stop();
     

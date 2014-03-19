@@ -114,7 +114,7 @@ namespace Ember
 	const std::string ConfigService::GETVALUE ( "get_value" );
 
 	ConfigService::ConfigService() :
-	Service()
+	Service("Configuration")
 	, mSharedDataDir( "" )
 	, mEtcDir( "" )
 	, mHomeDir ( "" )
@@ -141,9 +141,6 @@ namespace Ember
 		mSharedDataDir = EMBER_DATADIR "/ember/";
 		mEtcDir = EMBER_SYSCONFDIR "/ember/";
 #endif
-
-		setName ( "Configuration Service" );
-		setDescription ( "Service for management of Ember user-defined configuration" );
 
 	}
 
@@ -248,7 +245,7 @@ namespace Ember
 		return ( hasItem ( section, key ) && getValue ( section, key ) == value );
 	}
 
-	Service::Status ConfigService::start()
+	bool ConfigService::start()
 	{
 		mGlobalConfig->sige.connect ( sigc::mem_fun ( *this, &ConfigService::configError ) );
 		mGlobalConfig->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
@@ -258,7 +255,7 @@ namespace Ember
 		mInstanceConfig->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
 		registerConsoleCommands();
 		setRunning ( true );
-		return Service::OK;
+		return true;
 	}
 
 	void ConfigService::stop()

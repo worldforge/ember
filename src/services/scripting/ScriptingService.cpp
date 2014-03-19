@@ -36,9 +36,8 @@
 namespace Ember {
 
 ScriptingService::ScriptingService()
-: LoadScript("loadscript", this, "Loads a script."), mResourceProvider(nullptr), mAlwaysLookup(false)
+: Service("Scripting"), LoadScript("loadscript", this, "Loads a script."), mResourceProvider(nullptr), mAlwaysLookup(false)
 {
-	setName("Scripting Service");
 }
 
 
@@ -59,10 +58,10 @@ void ScriptingService::stop()
 	}
 }
 
-Service::Status ScriptingService::start()
+bool ScriptingService::start()
 {
 	setRunning(true);
-	return Service::OK;
+	return true;
 }
 
 void ScriptingService::loadScript(const std::string& script)

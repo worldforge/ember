@@ -56,26 +56,20 @@ typedef std::list<Eris::ServerInfo> svrl;
 typedef svrl::iterator Iter;
 
 MetaserverService::MetaserverService(Eris::Session& session) :
-	mSession(session), mMetaserver(0), MetaRefresh("meta_refresh", this, "Refresh the meta server listing."), MetaAbort("meta_abort", this, "Abort the meta server update process.")
+	Service("Metaserver"), mSession(session), mMetaserver(nullptr), MetaRefresh("meta_refresh", this, "Refresh the meta server listing."), MetaAbort("meta_abort", this, "Abort the meta server update process.")
 //   , MetaList("meta_list", this, "List all servers.")
 {
-	setName("Metaserver Service");
-	setDescription("Service for Metaserver session");
-	// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
-	//        setStatus( Service::Status::OK );
 	S_LOG_INFO("Metaserver Service created");
 }
 
-/* dtor */
 MetaserverService::~MetaserverService()
 {
 	delete mMetaserver;
 }
 
 /* Method for starting this service 	*/
-Service::Status MetaserverService::start()
+bool MetaserverService::start()
 {
-	setStatus(Service::OK);
 	setRunning(true);
 
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
@@ -102,14 +96,7 @@ Service::Status MetaserverService::start()
 	//     listed = false;
 
 
-	return Service::OK;
-}
-
-/* Interface method for stopping this service 	*/
-void MetaserverService::stop()
-{
-	Service::stop();
-	setStatus(Service::OK);
+	return true;
 }
 
 void MetaserverService::gotFailure(const string& msg)

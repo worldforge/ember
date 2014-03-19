@@ -30,9 +30,8 @@
 namespace Ember {
 
 InputService::InputService()
-: mInput(nullptr)
+: Service("Input"), mInput(nullptr)
 {
-	setName("Input Service");
 }
 
 
@@ -45,13 +44,13 @@ Input& InputService::getInput()
 	return *mInput.get();
 }
 
-Service::Status InputService::start()
+bool InputService::start()
 {
 	if (!mInput.get()) {
 		mInput = std::unique_ptr<Input>(new Input());
 	}
 	setRunning(true);
-	return Service::OK;
+	return true;
 }
 
 void InputService::stop()

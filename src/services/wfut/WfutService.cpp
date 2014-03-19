@@ -37,6 +37,7 @@ namespace Ember {
 
 
 WfutService::WfutService()
+: Service("Update")
 {
 	mDownloadCompleteSlot = sigc::mem_fun(this, &WfutService::wfutSession_DownloadComplete);
 	mDownloadFailureSlot = sigc::mem_fun(this, &WfutService::wfutSession_DownloadFailed);
@@ -44,7 +45,6 @@ WfutService::WfutService()
 	mUpdatesCalculatedSlot = sigc::mem_fun(this, &WfutService::wfutSession_UpdatesCalculated);
 	
 	mSession = std::unique_ptr<WfutSession>(new WfutSession(mDownloadCompleteSlot, mDownloadFailureSlot, mServerListDownloadingSlot, mUpdatesCalculatedSlot));
-	setName("Update Service");
 }
 
 
@@ -52,11 +52,11 @@ WfutService::~WfutService()
 {
 }
 
-Service::Status WfutService::start()
+bool WfutService::start()
 {
 	mSession->init();
 	setRunning(true);
-	return Service::OK;
+	return true;
 }
 
 // void WfutService::stop(int code)

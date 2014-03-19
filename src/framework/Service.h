@@ -36,47 +36,13 @@ namespace Ember
  */
 class Service: public virtual sigc::trackable
 {
-	//======================================================================
-	// Public Constants
-	//======================================================================
-public:
-
-	/**
-	 * Contains the different error states that a service can be in.  <p>
-	 * <ul>
-	 * <li> OK          - Service working normally.  </li>
-	 * <li> NOTE        - Service working, but there is something that may need user attention.  </li>
-	 * <li> WARNING     - Service is working to some degree, but there was some problems encountered, or non-critical parts that are not working.  </li>
-	 * <li> FAILURE     - Service is not working.  A resource it depends on is not present, or the service is unimplemented.  </li>
-	 * <li> CRITICAL    - Service detected internal errors in itself or the system that can lead to data loss or other serious problems.  </li>
-	 * </ul>
-	 *
-	 * (The difference between FAILURE and CRITICAL is basically that FAILURE
-	 * means that the rest of the system may still work fine, while CRITICAL means
-	 * that the whole system is likely to be unstable.)
-	 */
-	enum Status
-	{
-		OK = 0,
-		NOTE = 1,
-		WARNING = 2,
-		FAILURE = 3,
-		CRITICAL = 4
-	};
-
 private:
 
 	/** Stores the unique name of the service */
-	std::string mName;
-
-	/** Stores the description of the service */
-	std::string mDescription;
+	const std::string mName;
 
 	/** Tells if the service is running or not */
 	bool mRunning;
-
-	/** Current status code */
-	Status mStatus;
 
 	/** Don't allow copy constructor. */
 	Service(const Service &source);
@@ -84,7 +50,7 @@ private:
 public:
 
 	/** Creates a new Service using default values. */
-	Service();
+	Service(const std::string& name);
 
 	/**
 	 * @brief Dtor.
@@ -93,36 +59,23 @@ public:
 	 */
 	virtual ~Service();
 
-	/** Returns the name of this Service. */
-	virtual const std::string& getName() const;
-
-	/** Returns the description of this Service. */
-	virtual const std::string& getDescription() const;
-
-	/** Returns the status of this Service. */
-	virtual Service::Status getStatus() const;
-
 	/** Returns true if the service is currently running. */
 	virtual bool isRunning() const;
 
 	/**
 	 * This method is used to start the service.
-	 * It should take care of aquiring needed resources, initializing
+	 * It should take care of acquiring needed resources, initializing
 	 * data structures, and so on. <p>
 	 *
-	 * If the initialization suceeds, it should also call setRunning( true )
+	 * If the initialization succeeds, it should also call setRunning( true )
 	 * to indicate that the service is running.  <p>
-	 *
-	 * If initialization fails, it should set appropriate status code and
-	 * status text.  It could also write an entry into a log through the logging
-	 * service.  <p>
 	 *
 	 * This method must be implemented by all inheriting classes.  <p>
 	 *
 	 *
-	 * @returns success or error code
+	 * @returns true if successful
 	 */
-	virtual Status start() = 0;
+	virtual bool start() = 0;
 
 	/**
 	 * This method stops the service, and frees any used resources.
@@ -144,16 +97,6 @@ public:
 
 protected:
 
-	/** Sets the name of this Service. */
-	virtual void setName(const std::string& name);
-
-	/** Sets the description of this Service. */
-	virtual void setDescription(const std::string& description);
-
-	/**
-	 * Sets the description of this Service.
-	 */
-	virtual void setStatus(Service::Status status);
 
 	/** Specifies whether this service is currently running or not. */
 	virtual void setRunning(bool running);

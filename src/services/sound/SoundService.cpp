@@ -46,19 +46,18 @@ namespace Ember
 {
 /* Constructor */
 SoundService::SoundService()
+: Service("Sound")
 #ifdef _MSC_VER
-	: mContext(0), mDevice(0), mResourceProvider(0)
+	, mContext(0), mDevice(0), mResourceProvider(0)
 #else
-	: mResourceProvider(0)
+	, mResourceProvider(0)
 #endif
 , mEnabled(false)
 {
-	setName("Sound Service");
-	setDescription("Service for reproduction of sound effects and background music");
 }
 
 /* Method for starting this service */
-Service::Status SoundService::start()
+bool SoundService::start()
 {
 	S_LOG_INFO("Sound Service starting");
 	
@@ -79,14 +78,14 @@ Service::Status SoundService::start()
 			if (!mDevice) {
 				mEnabled = false;
 				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
-				return Service::FAILURE;
+				return false;
 			}
 	
 			mContext = alcCreateContext(mDevice, nullptr);
 			if (!mContext) {
 				mEnabled = false;
 				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
-				return Service::FAILURE;
+				return false;
 			}
 			mEnabled = alcMakeContextCurrent(mContext) == ALC_TRUE;
 		#endif
@@ -96,7 +95,7 @@ Service::Status SoundService::start()
 	}
 	
 	setRunning(true);
-	return Service::OK;
+	return true;
 }
 
 /* Interface method for stopping this service */
@@ -126,7 +125,6 @@ void SoundService::stop()
  	}
 	mEnabled = false;
 	Service::stop();
-	setStatus(Service::OK);
 }
 
 bool SoundService::isEnabled() const

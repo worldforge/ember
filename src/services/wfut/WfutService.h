@@ -47,7 +47,7 @@ public:
 
     virtual ~WfutService();
     
-    virtual Service::Status start();
+    virtual bool start();
     
     
     void startUpdate(const std::string &serverRoot,

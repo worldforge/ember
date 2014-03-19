@@ -40,10 +40,8 @@ namespace Ember
 {
 
 ServerService::ServerService(Eris::Session& session) :
-		mSession(session), mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this, session))
+		Service("Server"), mSession(session), mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this, session))
 {
-	setName("Server Service");
-	setDescription("Service for Server session");
 
 	GotAccount.connect(sigc::mem_fun(*this, &ServerService::gotAccount));
 	GotAvatar.connect(sigc::mem_fun(*this, &ServerService::gotAvatar));
@@ -59,12 +57,11 @@ ServerService::~ServerService()
 }
 
 /* Method for starting this service 	*/
-Service::Status ServerService::start()
+bool ServerService::start()
 {
-	setStatus(Service::OK);
 	setRunning(true);
 
-	return Service::OK;
+	return true;
 
 }
 
@@ -72,7 +69,6 @@ Service::Status ServerService::start()
 void ServerService::stop()
 {
 	Service::stop();
-	setStatus(Service::OK);
 
 	disconnect();
 }

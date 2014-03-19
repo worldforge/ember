@@ -79,7 +79,7 @@ public:
 
 	bool isConnected() const;
 
-	Service::Status start();
+	bool start();
 
 	void stop();
 

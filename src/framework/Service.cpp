@@ -28,29 +28,14 @@
 namespace Ember
 {
 
-Service::Service() :
-	mRunning(false), mStatus(OK)
+Service::Service(const std::string& name) :
+	mName(name), mRunning(false)
 {
 }
 
 Service::~Service()
 {
 	assert(!mRunning); //Make sure that stop() is called before the destruction of the service.
-}
-
-const std::string& Service::getName() const
-{
-	return mName;
-}
-
-const std::string& Service::getDescription() const
-{
-	return mDescription;
-}
-
-Service::Status Service::getStatus() const
-{
-	return mStatus;
 }
 
 bool Service::isRunning() const
@@ -62,21 +47,6 @@ void Service::stop()
 {
 	EventStopping.emit();
 	setRunning(false);
-}
-
-void Service::setName(const std::string& name)
-{
-	mName = name;
-}
-
-void Service::setDescription(const std::string& description)
-{
-	mDescription = description;
-}
-
-void Service::setStatus(Service::Status status)
-{
-	mStatus = status;
 }
 
 void Service::setRunning(bool running)
