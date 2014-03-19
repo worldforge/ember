@@ -43,7 +43,7 @@ public:
 
 	virtual Service::Status start();
     
-    virtual void stop(int code);
+    virtual void stop();
     
     /**
      * @brief Returns the main input instance.

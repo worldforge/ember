@@ -23,47 +23,42 @@
 #include "Service.h"
 #include "LoggingInstance.h"
 
+#include <cassert>
+
 namespace Ember
 {
 
 Service::Service() :
-	myRunning(false), myStatus(OK)
+	mRunning(false), mStatus(OK)
 {
 }
 
 Service::~Service()
 {
-	if (myRunning) {
-		stop(0);
-	}
+	assert(!mRunning); //Make sure that stop() is called before the destruction of the service.
 }
 
 const std::string& Service::getName() const
 {
-	return myName;
+	return mName;
 }
 
 const std::string& Service::getDescription() const
 {
-	return myDescription;
+	return mDescription;
 }
 
 Service::Status Service::getStatus() const
 {
-	return myStatus;
+	return mStatus;
 }
 
 bool Service::isRunning() const
 {
-	return myRunning;
+	return mRunning;
 }
 
-const std::string& Service::getStatusText() const
-{
-	return myStatusText;
-}
-
-void Service::stop(int code)
+void Service::stop()
 {
 	EventStopping.emit();
 	setRunning(false);
@@ -71,30 +66,25 @@ void Service::stop(int code)
 
 void Service::setName(const std::string& name)
 {
-	myName = name;
+	mName = name;
 }
 
 void Service::setDescription(const std::string& description)
 {
-	myDescription = description;
+	mDescription = description;
 }
 
 void Service::setStatus(Service::Status status)
 {
-	myStatus = status;
+	mStatus = status;
 }
 
 void Service::setRunning(bool running)
 {
-	if (myRunning && !running) {
-		S_LOG_INFO("Service '"<< myName <<"' stopped.");
+	if (mRunning && !running) {
+		S_LOG_INFO("Service '"<< mName <<"' stopped.");
 	}
-	myRunning = running;
-}
-
-void Service::setStatusText(const std::string& statusText)
-{
-	myStatusText = statusText;
+	mRunning = running;
 }
 
 }

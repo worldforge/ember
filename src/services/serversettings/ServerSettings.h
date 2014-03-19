@@ -70,7 +70,7 @@ public:
 	/**
 	 * @copydoc Service::stop()
 	 */
-	void stop(int code);
+	void stop();
 
 	/**
 	 * @brief Checks for the existence of a specific key.

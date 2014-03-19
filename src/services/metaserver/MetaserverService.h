@@ -87,7 +87,7 @@ class MetaserverService: public Service,
 	
     Service::Status start();
 
-    void stop(int code) ;
+    void stop() ;
     
 	
 	

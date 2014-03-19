@@ -177,7 +177,7 @@ Application::~Application()
 	ConfigService& configService = mServices->getConfigService();
 	configService.saveConfig(configService.getHomeDirectory() + "/ember.conf", varconf::USER);
 
-	mServices->getServerService().stop(0);
+	mServices->getServerService().stop();
 
 	delete mSession;
 

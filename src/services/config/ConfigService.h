@@ -182,9 +182,8 @@ namespace Ember
 			/**
 			 * Stops ConfigService.
 			 *
-			 * @param stop code.
 			 */
-			void stop ( int code );
+			void stop();
 
 			/**
 			 * Returns true if the key exists in the section given.

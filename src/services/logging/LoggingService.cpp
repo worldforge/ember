@@ -43,14 +43,6 @@ Service::Status LoggingService::start ()
 	return Service::OK;
 }
 
-void LoggingService::stop(int code)
-{
-	Service::stop(code);
-}
-
-
-
-
 LoggingService::LoggingService () : Service()
 {
 	//set service properties

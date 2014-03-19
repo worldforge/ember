@@ -54,9 +54,9 @@ Service::Status InputService::start()
 	return Service::OK;
 }
 
-void InputService::stop(int code)
+void InputService::stop()
 {
-	Service::stop(code);
+	Service::stop();
 	mInput.reset();
 }
 

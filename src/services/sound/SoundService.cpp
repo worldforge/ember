@@ -57,11 +57,6 @@ SoundService::SoundService()
 	setDescription("Service for reproduction of sound effects and background music");
 }
 
-/* dtor */
-SoundService::~SoundService()
-{
-}
-
 /* Method for starting this service */
 Service::Status SoundService::start()
 {
@@ -105,7 +100,7 @@ Service::Status SoundService::start()
 }
 
 /* Interface method for stopping this service */
-void SoundService::stop(int code)
+void SoundService::stop()
 {
 	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
 		S_LOG_WARNING("Found a still registered SoundInstance when shutting down sound service. This shouldn't normally happen, since all instances should be handled by their proper owners and removed well in advance of the SoundService shutting down. We'll now delete the instance, which might lead to a segfault or similar problem as the instance owner might still expect it to be existing.");
@@ -131,7 +126,7 @@ void SoundService::stop(int code)
 // 		#endif
 // 	}
 	mEnabled = false;
-	Service::stop(code);
+	Service::stop();
 	setStatus(Service::OK);
 }
 

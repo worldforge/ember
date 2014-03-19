@@ -106,9 +106,9 @@ Service::Status MetaserverService::start()
 }
 
 /* Interface method for stopping this service 	*/
-void MetaserverService::stop(int code)
+void MetaserverService::stop()
 {
-	Service::stop(code);
+	Service::stop();
 	setStatus(Service::OK);
 }
 

@@ -52,7 +52,7 @@ public:
 
 	virtual Service::Status start();
     
-    virtual void stop(int code);
+    virtual void stop();
 	
     /**
     Console command for loading scripts.

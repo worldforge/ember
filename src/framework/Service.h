@@ -67,19 +67,16 @@ public:
 private:
 
 	/** Stores the unique name of the service */
-	std::string myName;
+	std::string mName;
 
 	/** Stores the description of the service */
-	std::string myDescription;
+	std::string mDescription;
 
 	/** Tells if the service is running or not */
-	bool myRunning;
+	bool mRunning;
 
 	/** Current status code */
-	Status myStatus;
-
-	/** Textual description of the current status, especially if it is some problem. */
-	std::string myStatusText;
+	Status mStatus;
 
 	/** Don't allow copy constructor. */
 	Service(const Service &source);
@@ -107,15 +104,6 @@ public:
 
 	/** Returns true if the service is currently running. */
 	virtual bool isRunning() const;
-
-	/**
-	 * Returns the textual status message for this Service.
-	 * It is a description of the current status,
-	 * especially if there is some problem.
-	 * (If everything is fine, then this can be empty, as the status code can be
-	 * used to determine this.)
-	 */
-	virtual const std::string& getStatusText() const;
 
 	/**
 	 * This method is used to start the service.
@@ -146,10 +134,8 @@ public:
 	 * Otherwise this method should be overridden, and setRunning( false )
 	 * should be called if the service was stopped.  <p>
 	 *
-	 * @ param code code which represents the cause of the service halt
-	 * TODO(zzorn): What do we need it for?
 	 */
-	virtual void stop(int code);
+	virtual void stop();
 
 	/**
 	 * Emitted when the server has stopped.
@@ -169,17 +155,8 @@ protected:
 	 */
 	virtual void setStatus(Service::Status status);
 
-	/** Specifies wether this service is currently running or not. */
+	/** Specifies whether this service is currently running or not. */
 	virtual void setRunning(bool running);
-
-	/**
-	 * Sets the textual status message for this Service.
-	 * It is a description of the current status,
-	 * especially if there is some problem.
-	 * (If everything is fine, then this can be empty, as the status code can be
-	 * used to determine this.)
-	 */
-	virtual void setStatusText(const std::string& statusText);
 
 }; // Service
 

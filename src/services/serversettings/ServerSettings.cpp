@@ -48,9 +48,9 @@ Service::Status ServerSettings::start()
 	return Service::OK;
 }
 
-void ServerSettings::stop(int code)
+void ServerSettings::stop()
 {
-	Service::stop(code);
+	Service::stop();
 	writeToDisk();
 }
 

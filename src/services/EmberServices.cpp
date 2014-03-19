@@ -40,15 +40,42 @@ namespace Ember{
 
 	EmberServices::~EmberServices()
 	{
-		delete mLoggingService;
-		delete mScriptingService;
-		delete mSoundService;
-		delete mServerService;
-		delete mMetaserverService;
-		delete mInputService;
-		delete mWfutService;
-		delete mConfigService;
-		delete mServerSettingsService;
+		if (mWfutService) {
+			mWfutService->stop();
+			delete mWfutService;
+		}
+		if (mServerService) {
+			mServerService->stop();
+			delete mServerService;
+		}
+		if (mServerSettingsService) {
+			mServerSettingsService->stop();
+			delete mServerSettingsService;
+		}
+		if (mMetaserverService) {
+			mMetaserverService->stop();
+			delete mMetaserverService;
+		}
+		if (mScriptingService) {
+			mScriptingService->stop();
+			delete mScriptingService;
+		}
+		if (mSoundService) {
+			mSoundService->stop();
+			delete mSoundService;
+		}
+		if (mInputService) {
+			mInputService->stop();
+			delete mInputService;
+		}
+		if (mConfigService) {
+			mConfigService->stop();
+			delete mConfigService;
+		}
+		if (mLoggingService) {
+			mLoggingService->stop();
+			delete mLoggingService;
+		}
 	}
 
 	LoggingService& EmberServices::getLoggingService()

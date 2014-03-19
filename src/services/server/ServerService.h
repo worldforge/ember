@@ -81,7 +81,7 @@ public:
 
 	Service::Status start();
 
-	void stop(int code);
+	void stop();
 
 	/**
 	 * @brief Connects to a remote host.

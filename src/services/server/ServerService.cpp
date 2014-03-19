@@ -69,9 +69,9 @@ Service::Status ServerService::start()
 }
 
 /* Interface method for stopping this service 	*/
-void ServerService::stop(int code)
+void ServerService::stop()
 {
-	Service::stop(code);
+	Service::stop();
 	setStatus(Service::OK);
 
 	disconnect();

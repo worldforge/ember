@@ -49,10 +49,6 @@ class LoggingService : public Service
 
 	virtual Service::Status start();
 
-    virtual void stop(int code);
-
-
-
 private:
 
 	std::unique_ptr<ErisLogReciever> mErisLogReciever;

@@ -62,11 +62,6 @@ public:
 	SoundService();
 
 	/**
-	 * @brief Dtor.
-	 */
-	virtual ~SoundService();
-
-	/**
 	 * @copydoc Service::start()
 	 */
 	Service::Status start();
@@ -74,7 +69,7 @@ public:
 	/**
 	 * @copydoc Service::stop()
 	 */
-	void stop(int code);
+	void stop();
 
 	/**
 	 * @copydoc ConsoleObject::runCommand()

@@ -36,7 +36,7 @@
 namespace Ember {
 
 ScriptingService::ScriptingService()
-: LoadScript("loadscript", this, "Loads a script."), mResourceProvider(0), mAlwaysLookup(false)
+: LoadScript("loadscript", this, "Loads a script."), mResourceProvider(nullptr), mAlwaysLookup(false)
 {
 	setName("Scripting Service");
 }
@@ -44,16 +44,15 @@ ScriptingService::ScriptingService()
 
 ScriptingService::~ScriptingService()
 {
-	stop(0);
 	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 	{
 		delete I->second;
 	}
 }
 
-void ScriptingService::stop(int code)
+void ScriptingService::stop()
 {
-	Service::stop(code);
+	Service::stop();
 	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 	{
 		I->second->stop();

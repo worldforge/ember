@@ -145,7 +145,6 @@ namespace Ember
 		setName ( "Configuration Service" );
 		setDescription ( "Service for management of Ember user-defined configuration" );
 
-		setStatusText ( "Configuration Service status OK." );
 	}
 
 	ConfigService::~ConfigService()
@@ -262,9 +261,9 @@ namespace Ember
 		return Service::OK;
 	}
 
-	void ConfigService::stop ( int code )
+	void ConfigService::stop()
 	{
-		Service::stop ( code );
+		Service::stop();
 		deregisterConsoleCommands();
 		return;
 	}
