@@ -113,18 +113,17 @@ void SoundService::stop()
 	}
 	mBaseSamples.clear();
 	
-//this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
-// 	if (isEnabled()) {
-// 		#ifndef __WIN32__
-// 			alutExit();
-// 		#else
-// 			alcMakeContextCurrent(nullptr);
-// 			alcDestroyContext(mContext);
-// 			alcCloseDevice(mDevice);
-// 			mDevice = 0;
-// 			mContext = 0;
-// 		#endif
-// 	}
+ 	if (isEnabled()) {
+ 		#ifndef __WIN32__
+ 			alutExit();
+ 		#else
+ 			alcMakeContextCurrent(nullptr);
+ 			alcDestroyContext(mContext);
+ 			alcCloseDevice(mDevice);
+ 			mDevice = 0;
+ 			mContext = 0;
+ 		#endif
+ 	}
 	mEnabled = false;
 	Service::stop();
 	setStatus(Service::OK);
