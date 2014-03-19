@@ -156,8 +156,6 @@ EmberOgre::~EmberOgre()
 	EmberServices::getSingleton().getSoundService().setResourceProvider(0);
 	delete mSoundManager;
 
-	EmberServices::getSingleton().getScriptingService().setResourceProvider(0);
-
 	EventGUIManagerBeingDestroyed();
 	//Right before we destroy the GUI manager we want to force a garbage collection of all scripting providers. The main reason is that there might be widgets which have been shut down, and they should be collected.
 	EmberServices::getSingleton().getScriptingService().forceGCForAllProviders();
