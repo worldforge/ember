@@ -17,6 +17,7 @@ libtool
 ltmain.sh
 missing
 config.status
+test-driver
 ember
 ember-media.spec
 ember.dox
