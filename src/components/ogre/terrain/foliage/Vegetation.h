@@ -9,6 +9,7 @@
 #define VEGETATION_H_
 
 #include "components/ogre/terrain/Types.h"
+#include <cstdlib>
 #include <map>
 
 namespace Ember
