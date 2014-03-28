@@ -28,6 +28,7 @@
 #include "OgreSetup.h"
 #include "OgreInfo.h"
 #include "OgreConfigurator.h"
+#include "OgrePluginLoader.h"
 #include "MeshSerializerListener.h"
 #include "lod/ScaledPixelCountLodStrategy.h"
 
@@ -138,81 +139,21 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	mRoot = new Ogre::Root("", "ogre.cfg", "");
 
 	mOverlaySystem = new Ogre::OverlaySystem();
-
-	//we will try to load the plugins from series of different location, with the hope of getting at least one right
-	std::vector<std::string> pluginLocations;
-
+	
+	if (configSrv.itemExists("ogre", "plugindir")) {
+		std::string pluginDir(configSrv.getValue("ogre", "plugindir"));
+		mPluginLoader.addPluginDir(pluginDir);
+	}
+//Load plugins from config file
 	if (configSrv.itemExists("ogre", "plugins")) {
 		std::string plugins(configSrv.getValue("ogre", "plugins"));
-		//if it's defined in the config, use that location first
-		if (configSrv.itemExists("ogre", "plugindir")) {
-			std::string pluginDir(configSrv.getValue("ogre", "plugindir"));
-			pluginLocations.push_back(pluginDir);
-		}
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-		pluginExtension = ".dll";
-		pluginLocations.push_back("."); //on windows we'll bundle the dll files in the same directory as the executable
-#elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-		pluginExtension = ".so";
-		std::string pluginDir = configSrv.getPrefix();
-		pluginDir += "/lib/OGRE";
-		pluginLocations.push_back(pluginDir);
-
-#ifdef ENABLE_BINRELOC
-		//binreloc might be used
-		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
-		std::string libDir(br_libdir);
-		free(br_libdir);
-		pluginLocations.push_back(libDir + "/OGRE");
-#endif
-#ifdef OGRE_PLUGINDIR
-		//also try with the plugindir defined for Ogre
-		pluginLocations.push_back(OGRE_PLUGINDIR);
-#endif
-		//enter the usual locations if Ogre is installed system wide, with local installations taking precedence
-		pluginLocations.push_back("/usr/local/lib/OGRE");
-		pluginLocations.push_back("/usr/lib/OGRE");
-#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-		// On Mac, plugins are found in Resources in the Main (Application) bundle, then in the Ogre framework bundle
-		pluginExtension = "";
-		std::string pluginDir = configSrv.getSharedDataDirectory();
-		pluginLocations.push_back(pluginDir);
-		pluginDir += "/../Plugins";
-		pluginLocations.push_back(pluginDir);
-		pluginLocations.push_back("");
-#endif
 		Tokeniser tokeniser(plugins, ",");
 		std::string token = tokeniser.nextToken();
 		while (token != "") {
-			std::string pluginPath;
-			bool pluginLoaded = false;
-			for (std::vector<std::string>::iterator I = pluginLocations.begin(); I != pluginLocations.end(); ++I) {
-				pluginPath = (*I) + "/" + token + pluginExtension;
-				S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
-				try {
-					mRoot->loadPlugin(pluginPath);
-					pluginLoaded = true;
-					break;
-				} catch (...) {
-					pluginPath = (*I) + "/" + token + "_d" + pluginExtension;
-					S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
-					try {
-						mRoot->loadPlugin(pluginPath);
-						pluginLoaded = true;
-						break;
-					} catch (...) {
-					}
-				}
-			}
-			if (pluginLoaded) {
-				S_LOG_INFO("Successfully loaded the plugin '" << token << "' from '" << pluginPath << "'.");
-			} else {
-				S_LOG_FAILURE("Failed to load the plugin '" << token << "'!");
-			}
+			mPluginLoader.loadPlugin(token);
 			token = tokeniser.nextToken();
 		}
 	}
-
 	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory() << "'.");
 	}

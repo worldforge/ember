@@ -96,7 +96,7 @@ libEmberOgre_a_SOURCES = \
 	EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp \
 	MotionManager.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
-	OgreResourceProvider.cpp OgreWindowProvider.cpp OgreSetup.cpp NodeAttachment.cpp \
+	OgreResourceProvider.cpp OgreWindowProvider.cpp OgreSetup.cpp OgrePluginLoader.cpp NodeAttachment.cpp \
 	ShaderManager.cpp ShaderDetailManager.cpp ShadowCameraSetup.cpp ShadowDetailManager.cpp SimpleRenderContext.cpp RenderDistanceManager.cpp AutoGraphicsLevelManager.cpp \
 	XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \
 	DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
@@ -202,7 +202,7 @@ noinst_HEADERS = \
 	EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h \
 	IWorldPickListener.h Convert.h MediaUpdater.h MeshCollisionDetector.h \
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
-	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreWindowProvider.h OgreSetup.h \
+	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreWindowProvider.h OgreSetup.h OgrePluginLoader.h \
 	ShaderManager.h ShaderDetailManager.h ShadowCameraSetup.h ShadowDetailManager.h RenderDistanceManager.h AutoGraphicsLevelManager.h\
 	SimpleRenderContext.h XMLHelper.h \
 	WorldAttachment.h NodeAttachment.h IMovable.h IAnimated.h \

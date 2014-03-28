@@ -25,6 +25,7 @@
 
 #include "EmberOgrePrerequisites.h"
 #include "OgreIncludes.h"
+#include "OgrePluginLoader.h"
 
 #ifdef BUILD_WEBEMBER
 #include "OgreWindowProvider.h"
@@ -124,6 +125,13 @@ private:
 	 * @brief The Ogre overlay system
 	 */
 	Ogre::OverlaySystem* mOverlaySystem;
+	/**
+	 * @brief Ogre plugin loader, which handles OS specific and build specific differences.
+	 *
+	 * Don't destroy it before Ogre::Root, even if it works for you with dynamic builds,
+	 * because on static builds it would destroy the plugins!
+	 */
+	OgrePluginLoader mPluginLoader;
 
 #ifdef BUILD_WEBEMBER
 	/**
