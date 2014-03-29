@@ -321,6 +321,8 @@ void Avatar::attachCameraToEntity()
 	mHasChangedLocation = true;
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
+
+
 }
 
 void Avatar::avatar_Moved()

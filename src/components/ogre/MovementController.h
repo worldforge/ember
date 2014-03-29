@@ -36,8 +36,17 @@
 
 namespace Ember {
 class EmberEntity;
+class IHeightProvider;
+namespace Navigation
+{
+class Awareness;
+class Steering;
+}
 namespace OgreView {
 
+namespace Authoring {
+class AwarenessVisualizer;
+}
 namespace Camera {
 class FirstPersonCameraMount;
 class MainCamera;
@@ -95,7 +104,7 @@ public:
      * @param avatar The main avatar.
      * @param camera The main camera.
      */
-    MovementController(Avatar& avatar, Camera::MainCamera& camera);
+    MovementController(Avatar& avatar, Camera::MainCamera& camera, IHeightProvider& heightProvider);
 
 	virtual ~MovementController();
 
@@ -166,6 +175,10 @@ public:
 
 	bool isCameraFreeFlying() const;
 
+	Navigation::Awareness& getAwareness() const;
+
+	const ConsoleCommandWrapper RefreshAwareness;
+
 protected:
 
 	/**
@@ -211,6 +224,12 @@ protected:
 	std::unique_ptr<FreeFlyingCameraMotionHandler> mFreeFlyingMotionHandler;
 	std::unique_ptr<Camera::FirstPersonCameraMount> mCameraMount;
 	bool mIsFreeFlying;
+
+	Navigation::Awareness* mAwareness;
+
+	Authoring::AwarenessVisualizer* mAwarenessVisualizer;
+
+	Navigation::Steering* mSteering;
 };
 
 

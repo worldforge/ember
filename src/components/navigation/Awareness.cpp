@@ -21,8 +21,16 @@
 #endif
 
 #include "Awareness.h"
+#include "fastlz.h"
 
-#include "external/RecastDetour/Detour/Include/DetourNavMeshQuery.h"
+#include "DetourNavMesh.h"
+#include "DetourNavMeshQuery.h"
+#include "DetourNavMeshBuilder.h"
+#include "DetourTileCache.h"
+#include "DetourTileCacheBuilder.h"
+#include "DetourCommon.h"
+
+#include "domain/IHeightProvider.h"
 
 #include <Eris/View.h>
 #include <Eris/Avatar.h>
@@ -35,22 +43,176 @@
 #include <vector>
 #include <cstring>
 
+#define MAX_PATHPOLY      256 // max number of polygons in a path
+#define MAX_PATHVERT      512 // most verts in a path
 namespace Ember
 {
 namespace Navigation
 {
 
-Awareness::Awareness(Eris::View& view, const WFMath::AxisBox<3>& extent) :
-		mView(view), mExtent(extent), m_ctx(new rcContext), m_triareas(nullptr), m_solid(nullptr), m_chf(nullptr), m_cset(nullptr), m_pmesh(nullptr), m_dmesh(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery())
-{
-}
+// This value specifies how many layers (or "floors") each navmesh tile is expected to have.
+static const int EXPECTED_LAYERS_PER_TILE = 1;
 
-Awareness::~Awareness()
+struct FastLZCompressor: public dtTileCacheCompressor
 {
-}
+	virtual ~FastLZCompressor()
+	{
+	}
 
-void Awareness::buildNavMesh()
+	virtual int maxCompressedSize(const int bufferSize)
+	{
+		return (int)(bufferSize * 1.05f);
+	}
+
+	virtual dtStatus compress(const unsigned char* buffer, const int bufferSize, unsigned char* compressed, const int /*maxCompressedSize*/, int* compressedSize)
+	{
+		*compressedSize = fastlz_compress((const void * const )buffer, bufferSize, compressed);
+		return DT_SUCCESS;
+	}
+
+	virtual dtStatus decompress(const unsigned char* compressed, const int compressedSize, unsigned char* buffer, const int maxBufferSize, int* bufferSize)
+	{
+		*bufferSize = fastlz_decompress(compressed, compressedSize, buffer, maxBufferSize);
+		return *bufferSize < 0 ? DT_FAILURE : DT_SUCCESS;
+	}
+};
+
+struct LinearAllocator: public dtTileCacheAlloc
 {
+	unsigned char* buffer;
+	int capacity;
+	int top;
+	int high;
+
+	LinearAllocator(const int cap) :
+			buffer(0), capacity(0), top(0), high(0)
+	{
+		resize(cap);
+	}
+
+	virtual ~LinearAllocator()
+	{
+		dtFree(buffer);
+	}
+
+	void resize(const int cap)
+	{
+		if (buffer)
+			dtFree(buffer);
+		buffer = (unsigned char*)dtAlloc(cap, DT_ALLOC_PERM);
+		capacity = cap;
+	}
+
+	virtual void reset()
+	{
+		high = dtMax(high, top);
+		top = 0;
+	}
+
+	virtual void* alloc(const int size)
+	{
+		if (!buffer)
+			return 0;
+		if (top + size > capacity)
+			return 0;
+		unsigned char* mem = &buffer[top];
+		top += size;
+		return mem;
+	}
+
+	virtual void free(void* /*ptr*/)
+	{
+		// Empty
+	}
+};
+
+struct MeshProcess: public dtTileCacheMeshProcess
+{
+
+	inline MeshProcess()
+	{
+	}
+
+	virtual ~MeshProcess()
+	{
+	}
+
+	virtual void process(struct dtNavMeshCreateParams* params, unsigned char* polyAreas, unsigned short* polyFlags)
+	{
+		// Update poly flags from areas.
+		for (int i = 0; i < params->polyCount; ++i) {
+			if (polyAreas[i] == DT_TILECACHE_WALKABLE_AREA)
+				polyAreas[i] = SAMPLE_POLYAREA_GROUND;
+
+			if (polyAreas[i] == SAMPLE_POLYAREA_GROUND || polyAreas[i] == SAMPLE_POLYAREA_GRASS || polyAreas[i] == SAMPLE_POLYAREA_ROAD) {
+				polyFlags[i] = SAMPLE_POLYFLAGS_WALK;
+			} else if (polyAreas[i] == SAMPLE_POLYAREA_WATER) {
+				polyFlags[i] = SAMPLE_POLYFLAGS_SWIM;
+			} else if (polyAreas[i] == SAMPLE_POLYAREA_DOOR) {
+				polyFlags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
+			}
+		}
+	}
+};
+
+struct TileCacheData
+{
+	unsigned char* data;
+	int dataSize;
+};
+
+static const int MAX_LAYERS = 32;
+
+struct RasterizationContext
+{
+	RasterizationContext() :
+			solid(0), triareas(0), lset(0), chf(0), ntiles(0)
+	{
+		memset(tiles, 0, sizeof(TileCacheData) * MAX_LAYERS);
+	}
+
+	~RasterizationContext()
+	{
+		rcFreeHeightField(solid);
+		delete[] triareas;
+		rcFreeHeightfieldLayerSet(lset);
+		rcFreeCompactHeightfield(chf);
+		for (int i = 0; i < MAX_LAYERS; ++i) {
+			dtFree(tiles[i].data);
+			tiles[i].data = 0;
+		}
+	}
+
+	rcHeightfield* solid;
+	unsigned char* triareas;
+	rcHeightfieldLayerSet* lset;
+	rcCompactHeightfield* chf;
+	TileCacheData tiles[MAX_LAYERS];
+	int ntiles;
+};
+
+struct InputGeometry
+{
+	std::vector<float> verts;
+	std::vector<int> tris;
+	std::vector<WFMath::RotBox<2>> entityAreas;
+};
+
+Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
+		mView(view), mHeightProvider(heightProvider), m_ctx(new rcContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
+{
+
+	m_talloc = new LinearAllocator(128000);
+	m_tcomp = new FastLZCompressor;
+	m_tmproc = new MeshProcess;
+
+	// Setup the default query filter
+	mFilter = new dtQueryFilter();
+	mFilter->setIncludeFlags(0xFFFF);    // Include all
+	mFilter->setExcludeFlags(0);         // Exclude none
+	// Area flags for polys to consider in search, and their cost
+	mFilter->setAreaCost(SAMPLE_POLYAREA_GROUND, 1.0f);
+
 	auto avatarBbox = mView.getAvatar()->getEntity()->getBBox();
 
 	//radius of our agent; should be taken from the entity, but we'll assume it's a standard human
@@ -58,358 +220,265 @@ void Awareness::buildNavMesh()
 	//height of our agent
 	float h = avatarBbox.highCorner().z() - avatarBbox.lowCorner().z();
 
-	const WFMath::Point<3>& lower = mExtent.lowCorner();
-	const WFMath::Point<3>& upper = mExtent.highCorner();
-//    WFMath::AxisBox<3> bbox(lower, upper);
-//    WFMath::Point<2> lower(std::min(m_start.x(), m_destination.x()),
-//            std::min(m_start.y(), m_destination.y()));
-//    WFMath::Point<2> upper(std::max(m_start.x(), m_destination.x()),
-//            std::max(m_start.y(), m_destination.y()));
-	//Make it slightly larger
-//	WFMath::Vector<3> size = upper - lower;
-//	lower.shift(-size / 2);
-//	upper.shift(size / 2);
+	auto extent = view.getTopLevel()->getBBox();
+	const WFMath::Point<3>& lower = extent.lowCorner();
+	const WFMath::Point<3>& upper = extent.highCorner();
 
-	WFMath::AxisBox<3> areaBbox(lower, upper);
-
+	//Recast uses y for the vertical axis
 	m_cfg.bmin[0] = lower.x();
-	m_cfg.bmin[1] = lower.y();
-	m_cfg.bmin[2] = lower.z();
+	m_cfg.bmin[2] = lower.y();
+	m_cfg.bmin[1] = std::min(-20.f, lower.z());
 	m_cfg.bmax[0] = upper.x();
-	m_cfg.bmax[1] = upper.y();
-	m_cfg.bmax[2] = upper.z();
+	m_cfg.bmax[2] = upper.y();
+	m_cfg.bmax[1] = std::max(50.f, upper.z());
+
+	int gw = 0, gh = 0;
+	float cellsize = r / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
+	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, cellsize, &gw, &gh);
+	const int tilesize = 80; //This equals 16 meters
+	const int tilewidth = (gw + tilesize - 1) / tilesize;
+	const int tileheight = (gh + tilesize - 1) / tilesize;
+
+	// Max tiles and max polys affect how the tile IDs are caculated.
+	// There are 22 bits available for identifying a tile and a polygon.
+	int tileBits = rcMin((int)dtIlog2(dtNextPow2(tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE)), 14);
+	if (tileBits > 14)
+		tileBits = 14;
+	int polyBits = 22 - tileBits;
+	unsigned int maxTiles = 1 << tileBits;
+	unsigned int maxPolysPerTile = 1 << polyBits;
 
 	//For an explanation of these values see http://digestingduck.blogspot.se/2009/08/recast-settings-uncovered.html
 
-	m_cfg.cs = r / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
-//    m_cfg.ch = m_cfg.cs / 2.0f; //Height of one voxel; should really only come into play when doing 3d traversal
-	m_cfg.ch = upper.z() - lower.z(); //For 2d traversal make the voxel size as large as possible
+	m_cfg.cs = cellsize;
+	m_cfg.ch = m_cfg.cs / 2.0f; //Height of one voxel; should really only come into play when doing 3d traversal
+//	m_cfg.ch = std::max(upper.z() - lower.z(), 100.0f); //For 2d traversal make the voxel size as large as possible
 	m_cfg.walkableHeight = std::ceil(h / m_cfg.ch); //This is in voxels
 	m_cfg.walkableClimb = 100; //TODO: implement proper system for limiting climbing; for now just use a large voxel number
 	m_cfg.walkableRadius = std::ceil(r / m_cfg.cs);
-	m_cfg.walkableSlopeAngle = WFMath::numeric_constants<float>::pi() / 4.0f; //TODO: implement proper system for limiting climbing; for now just use vertical angle
+	m_cfg.walkableSlopeAngle = 70; //TODO: implement proper system for limiting climbing; for now just use 70 degrees
 
 	m_cfg.maxEdgeLen = m_cfg.walkableRadius * 8.0f;
 	m_cfg.maxSimplificationError = 1.3f;
 	m_cfg.minRegionArea = (int)rcSqr(8);
 	m_cfg.mergeRegionArea = (int)rcSqr(20);
 
-	std::vector<float> verts;
-	std::vector<int> tris;
+	m_cfg.tileSize = tilesize;
+	m_cfg.borderSize = m_cfg.walkableRadius + 3; // Reserve enough padding.
+	m_cfg.width = m_cfg.tileSize + m_cfg.borderSize * 2;
+	m_cfg.height = m_cfg.tileSize + m_cfg.borderSize * 2;
+//	m_cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cfg.cs * m_detailSampleDist;
+//	m_cfg.detailSampleMaxError = m_cfg.m_cellHeight * m_detailSampleMaxError;
 
-	//start with the ground
-	//for now just use a flat area
+	// Tile cache params.
+	dtTileCacheParams tcparams;
+	memset(&tcparams, 0, sizeof(tcparams));
+	rcVcopy(tcparams.orig, m_cfg.bmin);
+	tcparams.cs = m_cfg.cs;
+	tcparams.ch = m_cfg.ch;
+	tcparams.width = (int)m_cfg.tileSize;
+	tcparams.height = (int)m_cfg.tileSize;
+	tcparams.walkableHeight = h;
+	tcparams.walkableRadius = r;
+	tcparams.walkableClimb = m_cfg.walkableClimb;
+//	tcparams.maxSimplificationError = m_edgeMaxError;
+	tcparams.maxTiles = tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE;
+	tcparams.maxObstacles = 128;
 
-	auto areaHeight = (upper.z() - lower.z()) * 0.5;
-	verts.push_back(lower.x());
-	verts.push_back(lower.y());
-	verts.push_back(areaHeight);
+	dtFreeTileCache(m_tileCache);
 
-	verts.push_back(lower.x());
-	verts.push_back(upper.y());
-	verts.push_back(areaHeight);
+	dtStatus status;
 
-	verts.push_back(upper.x());
-	verts.push_back(upper.y());
-	verts.push_back(areaHeight);
-
-	verts.push_back(upper.x());
-	verts.push_back(lower.y());
-	verts.push_back(areaHeight);
-
-	tris.push_back(0);
-	tris.push_back(1);
-	tris.push_back(2);
-
-	tris.push_back(0);
-	tris.push_back(2);
-	tris.push_back(3);
-
-
-
-
-	auto entity = mView.getTopLevel();
-	for (size_t i = 0; i < entity->numContained(); ++i) {
-		addEntity(*entity->getContained(i), verts, tris);
-	}
-
-	size_t ntris = tris.size() / 3;
-	size_t nverts = verts.size() / 3;
-
-	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cs, &m_cfg.width, &m_cfg.height);
-
-	m_solid = rcAllocHeightfield();
-	if (!m_solid) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
+	m_tileCache = dtAllocTileCache();
+	if (!m_tileCache) {
+		m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not allocate tile cache.");
 		return;
 	}
-	if (!rcCreateHeightfield(m_ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.bmin, m_cfg.bmax, m_cfg.cs, m_cfg.ch)) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
+	status = m_tileCache->init(&tcparams, m_talloc, m_tcomp, m_tmproc);
+	if (dtStatusFailed(status)) {
+		m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not init tile cache.");
 		return;
 	}
 
-	// Allocate array that can hold triangle area types.
-	// If you have multiple meshes you need to process, allocate
-	// and array which can hold the max number of triangles you need to process.
-	m_triareas = new unsigned char[ntris];
-	if (!m_triareas) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'm_triareas' (%d).", ntris);
+	dtFreeNavMesh(m_navMesh);
+
+	m_navMesh = dtAllocNavMesh();
+	if (!m_navMesh) {
+		m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not allocate navmesh.");
 		return;
 	}
 
-	// Find triangles which are walkable based on their slope and rasterize them.
-	// If your input data is multiple meshes, you can transform them here, calculate
-	// the are type for each of the meshes and rasterize them.
-	memset(m_triareas, 0, ntris * sizeof(unsigned char));
-	rcMarkWalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle, verts.data(), nverts, tris.data(), ntris, m_triareas);
-	rcRasterizeTriangles(m_ctx, verts.data(), nverts, tris.data(), m_triareas, ntris, *m_solid, m_cfg.walkableClimb);
+	dtNavMeshParams params;
+	memset(&params, 0, sizeof(params));
+	rcVcopy(params.orig, m_cfg.bmin);
+	params.tileWidth = tilesize * cellsize;
+	params.tileHeight = tilesize * cellsize;
+	params.maxTiles = maxTiles;
+	params.maxPolys = maxPolysPerTile;
 
-//    if (!m_keepInterResults) {
-	delete[] m_triareas;
-	m_triareas = 0;
-//    }
-
-	//
-	// Step 3. Filter walkables surfaces.
-	//
-
-	// Once all geoemtry is rasterized, we do initial pass of filtering to
-	// remove unwanted overhangs caused by the conservative rasterization
-	// as well as filter spans where the character cannot possibly stand.
-	rcFilterLowHangingWalkableObstacles(m_ctx, m_cfg.walkableClimb, *m_solid);
-	rcFilterLedgeSpans(m_ctx, m_cfg.walkableHeight, m_cfg.walkableClimb, *m_solid);
-	rcFilterWalkableLowHeightSpans(m_ctx, m_cfg.walkableHeight, *m_solid);
-
-	//
-	// Step 4. Partition walkable surface to simple regions.
-	//
-
-	// Compact the heightfield so that it is faster to handle from now on.
-	// This will result more cache coherent data as well as the neighbours
-	// between walkable cells will be calculated.
-	m_chf = rcAllocCompactHeightfield();
-	if (!m_chf) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'chf'.");
-		return;
-	}
-	if (!rcBuildCompactHeightfield(m_ctx, m_cfg.walkableHeight, m_cfg.walkableClimb, *m_solid, *m_chf)) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build compact data.");
+	status = m_navMesh->init(&params);
+	if (dtStatusFailed(status)) {
+		m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not init navmesh.");
 		return;
 	}
 
-//    if (!m_keepInterResults) {
-	rcFreeHeightField(m_solid);
-	m_solid = 0;
-//    }
-
-	// Erode the walkable area by agent radius.
-	if (!rcErodeWalkableArea(m_ctx, m_cfg.walkableRadius, *m_chf)) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
+	status = m_navQuery->init(m_navMesh, 2048);
+	if (dtStatusFailed(status)) {
+		m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not init Detour navmesh query");
 		return;
 	}
-
-	// (Optional) Mark areas.
-//    const ConvexVolume* vols = m_geom->getConvexVolumes();
-//    for (int i = 0; i < m_geom->getConvexVolumeCount(); ++i)
-//        rcMarkConvexPolyArea(m_ctx, vols[i].verts, vols[i].nverts, vols[i].hmin,
-//                vols[i].hmax, (unsigned char)vols[i].area, *m_chf);
-
-//    if (m_monotonePartitioning) {
-//        // Partition the walkable surface into simple regions without holes.
-//        // Monotone partitioning does not need distancefield.
-//        if (!rcBuildRegionsMonotone(m_ctx, *m_chf, 0, m_cfg.minRegionArea,
-//                m_cfg.mergeRegionArea)) {
-//            m_ctx->log(RC_LOG_ERROR,
-//                    "buildNavigation: Could not build regions.");
-//            return;
-//        }
-//    } else {
-	// Prepare for region partitioning, by calculating distance field along the walkable surface.
-	if (!rcBuildDistanceField(m_ctx, *m_chf)) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build distance field.");
-		return;
-	}
-
-	// Partition the walkable surface into simple regions without holes.
-	if (!rcBuildRegions(m_ctx, *m_chf, 0, m_cfg.minRegionArea, m_cfg.mergeRegionArea)) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build regions.");
-		return;
-	}
-//    }
-
-	//
-	// Step 5. Trace and simplify region contours.
-	//
-
-	// Create contours.
-	m_cset = rcAllocContourSet();
-	if (!m_cset) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'cset'.");
-		return;
-	}
-	if (!rcBuildContours(m_ctx, *m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen, *m_cset)) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create contours.");
-		return;
-	}
-
-	//
-	// Step 6. Build polygons mesh from contours.
-	//
-
-	// Build polygon navmesh from the contours.
-	m_pmesh = rcAllocPolyMesh();
-	if (!m_pmesh) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'pmesh'.");
-		return;
-	}
-	if (!rcBuildPolyMesh(m_ctx, *m_cset, m_cfg.maxVertsPerPoly, *m_pmesh)) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not triangulate contours.");
-		return;
-	}
-
-	//
-	// Step 7. Create detail mesh which allows to access approximate height on each polygon.
-	//
-
-	m_dmesh = rcAllocPolyMeshDetail();
-	if (!m_dmesh) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'pmdtl'.");
-		return;
-	}
-
-	if (!rcBuildPolyMeshDetail(m_ctx, *m_pmesh, *m_chf, m_cfg.detailSampleDist, m_cfg.detailSampleMaxError, *m_dmesh)) {
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build detail mesh.");
-		return;
-	}
-
-//    if (!m_keepInterResults) {
-	rcFreeCompactHeightfield(m_chf);
-	m_chf = 0;
-	rcFreeContourSet(m_cset);
-	m_cset = 0;
-//    }
-
-	// At this point the navigation mesh data is ready, you can access it from m_pmesh.
-	// See duDebugDrawPolyMesh or dtCreateNavMeshData as examples how to access the data.
-
-	//
-	// (Optional) Step 8. Create Detour data from Recast poly mesh.
-	//
-
-	unsigned char* navData = 0;
-	int navDataSize = 0;
-
-	// Update poly flags from areas.
-//        for (int i = 0; i < m_pmesh->npolys; ++i)
-//        {
-//            if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
-//                m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
-//
-//            if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
-//                m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
-//                m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
-//            {
-//                m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK;
-//            }
-//            else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_WATER)
-//            {
-//                m_pmesh->flags[i] = SAMPLE_POLYFLAGS_SWIM;
-//            }
-//            else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
-//            {
-//                m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
-//            }
-//        }
-//
-//    dtNavMeshCreateParams params;
-//    memset(&params, 0, sizeof(params));
-//    params.verts = m_pmesh->verts;
-//    params.vertCount = m_pmesh->nverts;
-//    params.polys = m_pmesh->polys;
-//    params.polyAreas = m_pmesh->areas;
-//    params.polyFlags = m_pmesh->flags;
-//    params.polyCount = m_pmesh->npolys;
-//    params.nvp = m_pmesh->nvp;
-//    params.detailMeshes = m_dmesh->meshes;
-//    params.detailVerts = m_dmesh->verts;
-//    params.detailVertsCount = m_dmesh->nverts;
-//    params.detailTris = m_dmesh->tris;
-//    params.detailTriCount = m_dmesh->ntris;
-//    params.offMeshConVerts = 0;
-//    params.offMeshConRad = 0;
-//    params.offMeshConDir = 0;
-//    params.offMeshConAreas = 0;
-//    params.offMeshConFlags = 0;
-//    params.offMeshConUserID = 0;
-//    params.offMeshConCount = 0;
-//    params.walkableHeight = h;
-//    params.walkableRadius = r;
-//    params.walkableClimb = h / 2;
-//    rcVcopy(params.bmin, m_pmesh->bmin);
-//    rcVcopy(params.bmax, m_pmesh->bmax);
-//    params.cs = m_cfg.cs;
-//    params.ch = m_cfg.ch;
-//    params.buildBvTree = true;
-//
-//    if (!dtCreateNavMeshData(&params, &navData, &navDataSize)) {
-//        m_ctx->log(RC_LOG_ERROR, "Could not build Detour navmesh.");
-//        return;
-//    }
-//
-//    m_navMesh = dtAllocNavMesh();
-//    if (!m_navMesh) {
-//        dtFree(navData);
-//        m_ctx->log(RC_LOG_ERROR, "Could not create Detour navmesh");
-//        return;
-//    }
-//
-//    dtStatus status;
-//
-//    status = m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
-//    if (dtStatusFailed(status)) {
-//        dtFree(navData);
-//        m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh");
-//        return;
-//    }
-//
-//    status = m_navQuery->init(m_navMesh, 2048);
-//    if (dtStatusFailed(status)) {
-//        m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh query");
-//        return;
-//    }
-//
-//    dtQueryFilter filter;
-//    dtPolyRef startRef, endRef;
-//
-//    float start[3];
-//    start[0] = m_start.x();
-//    start[1] = m_start.y();
-////    start[2] = m_start.z();
-//    start[2] = areaHeight;
-//
-//    float destination[3];
-//    destination[0] = m_destination.x();
-//    destination[1] = m_destination.y();
-////    start[2] = m_start.z();
-//    destination[2] = areaHeight;
-//
-//    float extent[3];
-//    extent[0] = extent[1] = 5;
-//    extent[2] = 100;
-//
-//    m_navQuery->findNearestPoly(start, extent, &filter, &startRef, 0);
-//    m_navQuery->findNearestPoly(destination, extent, &filter, &endRef, 0);
-//
-//    if (!startRef || !endRef) {
-//        return;
-//    }
-
-//    m_navQuery->findPath(startRef, endRef, start, destination, filter, );
 
 }
 
-void Awareness::addEntity(Eris::Entity& entity, std::vector<float>& verts, std::vector<int>& tris)
+Awareness::~Awareness()
 {
+}
+
+void Awareness::buildTilesAroundAvatar()
+{
+
+}
+
+int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path)
+{
+
+	float pStartPos[] { start.x(), start.z(), start.y() };
+	float pEndPos[] { end.x(), end.z(), end.y() };
+	float extent[] { 2, 100, 2 };
+
+	dtStatus status;
+	dtPolyRef StartPoly;
+	float StartNearest[3];
+	dtPolyRef EndPoly;
+	float EndNearest[3];
+	dtPolyRef PolyPath[MAX_PATHPOLY];
+	int nPathCount = 0;
+	float StraightPath[MAX_PATHVERT * 3];
+	int nVertCount = 0;
+
+	// find the start polygon
+	status = m_navQuery->findNearestPoly(pStartPos, extent, mFilter, &StartPoly, StartNearest);
+	if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
+		return -1; // couldn't find a polygon
+
+	// find the end polygon
+	status = m_navQuery->findNearestPoly(pEndPos, extent, mFilter, &EndPoly, EndNearest);
+	if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
+		return -2; // couldn't find a polygon
+
+	status = m_navQuery->findPath(StartPoly, EndPoly, StartNearest, EndNearest, mFilter, PolyPath, &nPathCount, MAX_PATHPOLY);
+	if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
+		return -3; // couldn't create a path
+	if (nPathCount == 0)
+		return -4; // couldn't find a path
+
+	status = m_navQuery->findStraightPath(StartNearest, EndNearest, PolyPath, nPathCount, StraightPath, NULL, NULL, &nVertCount, MAX_PATHVERT);
+	if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
+		return -5; // couldn't create a path
+	if (nVertCount == 0)
+		return -6; // couldn't find a path
+
+	// At this point we have our path.
+	for (int nVert = 0; nVert < nVertCount; nVert++) {
+		path.push_back(WFMath::Point<3>(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 2], StraightPath[(nVert * 3) + 1]));
+	}
+
+	return nVertCount;
+}
+
+void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area)
+{
+
+//adjust area to fit with tiles
+
+	float tilesize = m_cfg.tileSize * m_cfg.cs;
+	WFMath::Point<3> lowCorner = area.lowCorner();
+	WFMath::Point<3> highCorner = area.highCorner();
+
+	if (lowCorner.x() < m_cfg.bmin[0]) {
+		lowCorner.x() = m_cfg.bmin[0];
+	}
+	if (lowCorner.y() < m_cfg.bmin[2]) {
+		lowCorner.y() = m_cfg.bmin[2];
+	}
+	if (lowCorner.x() > m_cfg.bmax[0]) {
+		lowCorner.x() = m_cfg.bmax[0];
+	}
+	if (lowCorner.y() > m_cfg.bmax[2]) {
+		lowCorner.y() = m_cfg.bmax[2];
+	}
+
+	if (highCorner.x() < m_cfg.bmin[0]) {
+		highCorner.x() = m_cfg.bmin[0];
+	}
+	if (highCorner.y() < m_cfg.bmin[2]) {
+		highCorner.y() = m_cfg.bmin[2];
+	}
+	if (highCorner.x() > m_cfg.bmax[0]) {
+		highCorner.x() = m_cfg.bmax[0];
+	}
+	if (highCorner.y() > m_cfg.bmax[2]) {
+		highCorner.y() = m_cfg.bmax[2];
+	}
+
+	int tileMinXIndex = (lowCorner.x() - m_cfg.bmin[0]) / tilesize;
+	int tileMaxXIndex = (highCorner.x() - m_cfg.bmin[0]) / tilesize;
+	int tileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
+	int tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
+
+	lowCorner.x() = m_cfg.bmin[0] + (tileMinXIndex * tilesize);
+	lowCorner.y() = m_cfg.bmin[2] + (tileMinYIndex * tilesize);
+	lowCorner.z() = m_cfg.bmin[1];
+	highCorner.x() = m_cfg.bmin[0] + ((tileMaxXIndex + 1) * tilesize);
+	highCorner.y() = m_cfg.bmin[2] + ((tileMaxYIndex + 1) * tilesize);
+	highCorner.z() = m_cfg.bmax[1];
+
+	WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(lowCorner.x(), lowCorner.y()), WFMath::Point<2>(highCorner.x(), highCorner.y()));
+
+	std::vector<WFMath::RotBox<2>> entityAreas;
+
+//Collect entities
+	auto entity = mView.getTopLevel();
+	for (size_t i = 0; i < entity->numContained(); ++i) {
+		buildEntityAreas(*entity->getContained(i), adjustedArea, entityAreas);
+	}
+
+//Now build tiles
+
+	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
+		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
+			TileCacheData tiles[MAX_LAYERS];
+			memset(tiles, 0, sizeof(tiles));
+
+			int ntiles = rasterizeTileLayers(entityAreas, tx, ty, m_cfg, tiles, MAX_LAYERS);
+
+			for (int j = 0; j < ntiles; ++j) {
+				TileCacheData* tile = &tiles[j];
+
+				dtTileCacheLayerHeader* header = (dtTileCacheLayerHeader*)tile->data;
+				dtTileRef tileRef = m_tileCache->getTileRef(m_tileCache->getTileAt(header->tx, header->ty, header->tlayer));
+				if (tileRef) {
+					m_tileCache->removeTile(tileRef, NULL, NULL);
+				}
+				dtStatus status = m_tileCache->addTile(tile->data, tile->dataSize, DT_COMPRESSEDTILE_FREE_DATA, 0);  // Add compressed tiles to tileCache
+				if (dtStatusFailed(status)) {
+					dtFree(tile->data);
+					tile->data = 0;
+					continue;
+				}
+			}
+
+			m_tileCache->buildNavMeshTilesAt(tx, ty, m_navMesh);
+
+		}
+	}
+}
+
+void Awareness::buildEntityAreas(Eris::Entity& entity, const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas)
+{
+	if (&entity == mView.getAvatar()->getEntity() || !entity.hasBBox()) {
+		return;
+	}
 
 	bool isSolid = true;
 	if (entity.hasAttr("solid")) {
@@ -433,105 +502,329 @@ void Awareness::addEntity(Eris::Entity& entity, std::vector<float>& verts, std::
 		auto orientation = entity.getViewOrientation();
 		if (pos.isValid() && orientation.isValid()) {
 
-			auto bbox = entity.getBBox();
-			bbox.shift(WFMath::Vector<3>(pos));
-			if (WFMath::Contains(mExtent, bbox, false)) {
-				auto lc = bbox.lowCorner();
-				auto hc = bbox.highCorner();
-				lc.rotate(orientation, bbox.getCenter());
-				hc.rotate(orientation, bbox.getCenter());
+			WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
+			double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
 
-				size_t vertStart = verts.size();
+			WFMath::RotMatrix<2> rm;
+			rm.rotation(theta);
 
-				verts.push_back(lc.x());
-				verts.push_back(lc.y());
-				verts.push_back(lc.z());
+			auto& bbox = entity.getBBox();
+			WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().y());
+			WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().y());
 
-				verts.push_back(hc.x());
-				verts.push_back(lc.y());
-				verts.push_back(lc.z());
+			WFMath::RotBox<2> rotbox(WFMath::Point<2>::ZERO(), highCorner - lowCorner, WFMath::RotMatrix<2>().identity());
+			rotbox.shift(WFMath::Vector<2>(lowCorner.x(), lowCorner.y()));
+			rotbox.rotatePoint(rm, WFMath::Point<2>::ZERO());
 
-				verts.push_back(hc.x());
-				verts.push_back(hc.y());
-				verts.push_back(lc.z());
+			rotbox.shift(WFMath::Vector<2>(pos.x(), pos.y()));
 
-				verts.push_back(lc.x());
-				verts.push_back(hc.y());
-				verts.push_back(lc.z());
-
-				verts.push_back(lc.x());
-				verts.push_back(lc.y());
-				verts.push_back(hc.z());
-
-				verts.push_back(hc.x());
-				verts.push_back(lc.y());
-				verts.push_back(hc.z());
-
-				verts.push_back(hc.x());
-				verts.push_back(hc.y());
-				verts.push_back(hc.z());
-
-				verts.push_back(lc.x());
-				verts.push_back(hc.y());
-				verts.push_back(hc.z());
-
-				tris.push_back(vertStart + 0);
-				tris.push_back(vertStart + 4);
-				tris.push_back(vertStart + 1);
-
-				tris.push_back(vertStart + 0);
-				tris.push_back(vertStart + 5);
-				tris.push_back(vertStart + 1);
-
-				tris.push_back(vertStart + 1);
-				tris.push_back(vertStart + 5);
-				tris.push_back(vertStart + 2);
-
-				tris.push_back(vertStart + 1);
-				tris.push_back(vertStart + 6);
-				tris.push_back(vertStart + 2);
-
-				tris.push_back(vertStart + 2);
-				tris.push_back(vertStart + 6);
-				tris.push_back(vertStart + 3);
-
-				tris.push_back(vertStart + 2);
-				tris.push_back(vertStart + 7);
-				tris.push_back(vertStart + 3);
-
-				tris.push_back(vertStart + 3);
-				tris.push_back(vertStart + 7);
-				tris.push_back(vertStart + 0);
-
-				tris.push_back(vertStart + 3);
-				tris.push_back(vertStart + 4);
-				tris.push_back(vertStart + 0);
-
-				tris.push_back(vertStart + 0);
-				tris.push_back(vertStart + 3);
-				tris.push_back(vertStart + 2);
-
-				tris.push_back(vertStart + 0);
-				tris.push_back(vertStart + 2);
-				tris.push_back(vertStart + 1);
-
-				tris.push_back(vertStart + 4);
-				tris.push_back(vertStart + 7);
-				tris.push_back(vertStart + 6);
-
-				tris.push_back(vertStart + 4);
-				tris.push_back(vertStart + 6);
-				tris.push_back(vertStart + 5);
+			if (WFMath::Contains(extent, rotbox, false) || WFMath::Intersect(extent, rotbox, false)) {
+				areas.push_back(rotbox);
 			}
 		}
 	}
 
 	if (!isSimple) {
 		for (size_t i = 0; i < entity.numContained(); ++i) {
-			addEntity(*entity.getContained(i), verts, tris);
+			buildEntityAreas(*entity.getContained(i), extent, areas);
+		}
+	}
+}
+
+int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, const rcConfig& cfg, TileCacheData* tiles, const int maxTiles)
+{
+	std::vector<float> vertsVector;
+	std::vector<int> trisVector;
+
+	FastLZCompressor comp;
+	RasterizationContext rc;
+
+// Tile bounds.
+	const float tcs = cfg.tileSize * cfg.cs;
+
+	rcConfig tcfg;
+	memcpy(&tcfg, &cfg, sizeof(tcfg));
+
+	tcfg.bmin[0] = cfg.bmin[0] + tx * tcs;
+	tcfg.bmin[1] = cfg.bmin[1];
+	tcfg.bmin[2] = cfg.bmin[2] + ty * tcs;
+	tcfg.bmax[0] = cfg.bmin[0] + (tx + 1) * tcs;
+	tcfg.bmax[1] = cfg.bmax[1];
+	tcfg.bmax[2] = cfg.bmin[2] + (ty + 1) * tcs;
+	tcfg.bmin[0] -= tcfg.borderSize * tcfg.cs;
+	tcfg.bmin[2] -= tcfg.borderSize * tcfg.cs;
+	tcfg.bmax[0] += tcfg.borderSize * tcfg.cs;
+	tcfg.bmax[2] += tcfg.borderSize * tcfg.cs;
+
+//First define all vertices. Get one extra vertex in each direction so that there's no cutoff at the tile's edges.
+	for (int y = tcfg.bmin[2] - 1; y < tcfg.bmax[2] + 1; ++y) {
+		for (int x = tcfg.bmin[0] - 1; x < tcfg.bmax[0] + 1; ++x) {
+			float height;
+			mHeightProvider.getHeight(TerrainPosition(x, y), height);
+			vertsVector.push_back(x);
+			vertsVector.push_back(height);
+			vertsVector.push_back(y);
 		}
 	}
 
+	int sizeX = (int)tcfg.bmax[0] - (int)tcfg.bmin[0] + 2;
+	int sizeY = (int)tcfg.bmax[2] - (int)tcfg.bmin[2] + 2;
+
+//Then define the triangles
+	for (int y = 0; y < (sizeY - 1); y++) {
+		for (int x = 0; x < (sizeX - 1); x++) {
+			size_t vertPtr = (y * sizeY) + x;
+			//make a square, including the vertices to the right and below
+			trisVector.push_back(vertPtr);
+			trisVector.push_back(vertPtr + sizeX);
+			trisVector.push_back(vertPtr + 1);
+
+			trisVector.push_back(vertPtr + 1);
+			trisVector.push_back(vertPtr + sizeX);
+			trisVector.push_back(vertPtr + 1 + sizeX);
+		}
+	}
+
+	float* verts = vertsVector.data();
+	int* tris = trisVector.data();
+	const int nverts = vertsVector.size() / 3;
+	const int ntris = trisVector.size() / 3;
+
+// Allocate voxel heightfield where we rasterize our input data to.
+	rc.solid = rcAllocHeightfield();
+	if (!rc.solid) {
+		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
+		return 0;
+	}
+	if (!rcCreateHeightfield(m_ctx, *rc.solid, tcfg.width, tcfg.height, tcfg.bmin, tcfg.bmax, tcfg.cs, tcfg.ch)) {
+		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
+		return 0;
+	}
+
+// Allocate array that can hold triangle flags.
+// If you have multiple meshes you need to process, allocate
+// and array which can hold the max number of triangles you need to process.
+//	rc.triareas = new unsigned char[chunkyMesh->maxTrisPerChunk];
+	rc.triareas = new unsigned char[ntris];
+	if (!rc.triareas) {
+		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'm_triareas' (%d).", ntris / 3);
+		return 0;
+	}
+
+	memset(rc.triareas, 0, ntris * sizeof(unsigned char));
+	rcMarkWalkableTriangles(m_ctx, tcfg.walkableSlopeAngle, verts, nverts, tris, ntris, rc.triareas);
+
+	rcRasterizeTriangles(m_ctx, verts, nverts, tris, rc.triareas, ntris, *rc.solid, tcfg.walkableClimb);
+
+// Once all geometry is rasterized, we do initial pass of filtering to
+// remove unwanted overhangs caused by the conservative rasterization
+// as well as filter spans where the character cannot possibly stand.
+	rcFilterLowHangingWalkableObstacles(m_ctx, tcfg.walkableClimb, *rc.solid);
+	rcFilterLedgeSpans(m_ctx, tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid);
+	rcFilterWalkableLowHeightSpans(m_ctx, tcfg.walkableHeight, *rc.solid);
+
+	rc.chf = rcAllocCompactHeightfield();
+	if (!rc.chf) {
+		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'chf'.");
+		return 0;
+	}
+	if (!rcBuildCompactHeightfield(m_ctx, tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid, *rc.chf)) {
+		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build compact data.");
+		return 0;
+	}
+
+// Erode the walkable area by agent radius.
+	if (!rcErodeWalkableArea(m_ctx, tcfg.walkableRadius, *rc.chf)) {
+		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
+		return 0;
+	}
+
+// Mark areas.
+	for (auto& rotbox : entityAreas) {
+		float verts[3 * 4];
+
+		verts[0] = rotbox.getCorner(1).x();
+		verts[1] = 0;
+		verts[2] = rotbox.getCorner(1).y();
+
+		verts[3] = rotbox.getCorner(3).x();
+		verts[4] = 0;
+		verts[5] = rotbox.getCorner(3).y();
+
+		verts[6] = rotbox.getCorner(2).x();
+		verts[7] = 0;
+		verts[8] = rotbox.getCorner(2).y();
+
+		verts[9] = rotbox.getCorner(0).x();
+		verts[10] = 0;
+		verts[11] = rotbox.getCorner(0).y();
+
+		rcMarkConvexPolyArea(m_ctx, verts, 4, tcfg.bmin[1], tcfg.bmax[1], SAMPLE_POLYAREA_DOOR, *rc.chf);
+	}
+
+	rc.lset = rcAllocHeightfieldLayerSet();
+	if (!rc.lset) {
+		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'lset'.");
+		return 0;
+	}
+	if (!rcBuildHeightfieldLayers(m_ctx, *rc.chf, tcfg.borderSize, tcfg.walkableHeight, *rc.lset)) {
+		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build heighfield layers.");
+		return 0;
+	}
+
+	rc.ntiles = 0;
+	for (int i = 0; i < rcMin(rc.lset->nlayers, MAX_LAYERS); ++i) {
+		TileCacheData* tile = &rc.tiles[rc.ntiles++];
+		const rcHeightfieldLayer* layer = &rc.lset->layers[i];
+
+		// Store header
+		dtTileCacheLayerHeader header;
+		header.magic = DT_TILECACHE_MAGIC;
+		header.version = DT_TILECACHE_VERSION;
+
+		// Tile layer location in the navmesh.
+		header.tx = tx;
+		header.ty = ty;
+		header.tlayer = i;
+		dtVcopy(header.bmin, layer->bmin);
+		dtVcopy(header.bmax, layer->bmax);
+
+		// Tile info.
+		header.width = (unsigned char)layer->width;
+		header.height = (unsigned char)layer->height;
+		header.minx = (unsigned char)layer->minx;
+		header.maxx = (unsigned char)layer->maxx;
+		header.miny = (unsigned char)layer->miny;
+		header.maxy = (unsigned char)layer->maxy;
+		header.hmin = (unsigned short)layer->hmin;
+		header.hmax = (unsigned short)layer->hmax;
+
+		dtStatus status = dtBuildTileCacheLayer(&comp, &header, layer->heights, layer->areas, layer->cons, &tile->data, &tile->dataSize);
+		if (dtStatusFailed(status)) {
+			return 0;
+		}
+	}
+
+// Transfer ownsership of tile data from build context to the caller.
+	int n = 0;
+	for (int i = 0; i < rcMin(rc.ntiles, maxTiles); ++i) {
+		tiles[n++] = rc.tiles[i];
+		rc.tiles[i].data = 0;
+		rc.tiles[i].dataSize = 0;
+	}
+
+	return n;
+}
+
+void Awareness::processTiles(const WFMath::AxisBox<2>& area, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
+{
+	float bmin[] { area.lowCorner().x(), -100, area.lowCorner().y() };
+	float bmax[] { area.highCorner().x(), 100, area.highCorner().y() };
+
+	dtCompressedTileRef tilesRefs[256];
+	int ntiles;
+	dtStatus status = m_tileCache->queryTiles(bmin, bmax, tilesRefs, &ntiles, 256);
+	if (status == DT_SUCCESS) {
+		std::vector<const dtCompressedTile*> tiles(ntiles);
+		for (int i = 0; i < ntiles; ++i) {
+			tiles[i] = m_tileCache->getTileByRef(tilesRefs[i]);
+		}
+		processTiles(tiles, processor);
+	}
+}
+
+void Awareness::processTile(const int tx, const int ty, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
+{
+	dtCompressedTileRef tilesRefs[MAX_LAYERS];
+	const int ntiles = m_tileCache->getTilesAt(tx, ty, tilesRefs, MAX_LAYERS);
+
+	std::vector<const dtCompressedTile*> tiles(ntiles);
+	for (int i = 0; i < ntiles; ++i) {
+		tiles[i] = m_tileCache->getTileByRef(tilesRefs[i]);
+	}
+
+	processTiles(tiles, processor);
+}
+
+void Awareness::processAllTiles(const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
+{
+	int ntiles = m_tileCache->getTileCount();
+	std::vector<const dtCompressedTile*> tiles(ntiles);
+	for (int i = 0; i < ntiles; ++i) {
+		tiles[i] = m_tileCache->getTile(i);
+	}
+
+	processTiles(tiles, processor);
+
+}
+
+void Awareness::processTiles(std::vector<const dtCompressedTile*> tiles, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
+{
+	struct TileCacheBuildContext
+	{
+		inline TileCacheBuildContext(struct dtTileCacheAlloc* a) :
+				layer(0), lcset(0), lmesh(0), alloc(a)
+		{
+		}
+		inline ~TileCacheBuildContext()
+		{
+			purge();
+		}
+		void purge()
+		{
+			dtFreeTileCacheLayer(alloc, layer);
+			layer = 0;
+			dtFreeTileCacheContourSet(alloc, lcset);
+			lcset = 0;
+			dtFreeTileCachePolyMesh(alloc, lmesh);
+			lmesh = 0;
+		}
+		struct dtTileCacheLayer* layer;
+		struct dtTileCacheContourSet* lcset;
+		struct dtTileCachePolyMesh* lmesh;
+		struct dtTileCacheAlloc* alloc;
+	};
+
+	dtTileCacheAlloc* talloc = m_tileCache->getAlloc();
+	dtTileCacheCompressor* tcomp = m_tileCache->getCompressor();
+	const dtTileCacheParams* params = m_tileCache->getParams();
+
+	for (const dtCompressedTile* tile : tiles) {
+
+		talloc->reset();
+
+		TileCacheBuildContext bc(talloc);
+		const int walkableClimbVx = (int)(params->walkableClimb / params->ch);
+		dtStatus status;
+
+		// Decompress tile layer data.
+		status = dtDecompressTileCacheLayer(talloc, tcomp, tile->data, tile->dataSize, &bc.layer);
+		if (dtStatusFailed(status))
+			return;
+
+		// Build navmesh
+		status = dtBuildTileCacheRegions(talloc, *bc.layer, walkableClimbVx);
+		if (dtStatusFailed(status))
+			return;
+
+//TODO this part is replicated from navmesh tile building in DetourTileCache. Maybe that can be reused. Also is it really necessary to do an extra navmesh rebuild from compressed tile just to draw it? Can't I just draw it somewhere where the navmesh is rebuilt?
+		bc.lcset = dtAllocTileCacheContourSet(talloc);
+		if (!bc.lcset)
+			return;
+		status = dtBuildTileCacheContours(talloc, *bc.layer, walkableClimbVx, params->maxSimplificationError, *bc.lcset);
+		if (dtStatusFailed(status))
+			return;
+
+		bc.lmesh = dtAllocTileCachePolyMesh(talloc);
+		if (!bc.lmesh)
+			return;
+		status = dtBuildTileCachePolyMesh(talloc, *bc.lcset, *bc.lmesh);
+		if (dtStatusFailed(status))
+			return;
+
+		processor(m_tileCache->getTileRef(tile), *bc.lmesh, tile->header->bmin, params->cs, params->ch, *bc.layer);
+
+	}
 }
 
 }

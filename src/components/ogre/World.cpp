@@ -294,7 +294,7 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 		mAvatar = new Avatar(emberEntity, *mScene, mMainCamera->getCameraSettings(), *(mTerrainManager->getTerrainAdapter()));
 		mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
 		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
-		mMovementController = new MovementController(*mAvatar, *mMainCamera);
+		mMovementController = new MovementController(*mAvatar, *mMainCamera, *mTerrainManager);
 		mMainCamera->setMovementProvider(mMovementController);
 		mMainCamera->attachToMount(&mAvatar->getCameraMount());
 

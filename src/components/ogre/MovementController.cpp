@@ -34,6 +34,10 @@
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
 #include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/ITerrainAdapter.h"
+#include "components/ogre/authoring/AwarenessVisualizer.h"
+
+#include "components/navigation/Awareness.h"
+#include "components/navigation/Steering.h"
 
 #include "services/input/Input.h"
 #include "services/EmberServices.h"
@@ -41,6 +45,9 @@
 
 #include "framework/Tokeniser.h"
 #include "framework/LoggingInstance.h"
+
+#include <Eris/Avatar.h>
+#include <Eris/View.h>
 
 #include <OgreRoot.h>
 
@@ -52,7 +59,7 @@ namespace OgreView
 {
 
 MovementControllerInputListener::MovementControllerInputListener(MovementController& controller) :
-	mController(controller)
+		mController(controller)
 {
 	Input::getSingleton().EventMouseButtonPressed.connect(sigc::mem_fun(*this, &MovementControllerInputListener::input_MouseButtonPressed));
 	Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &MovementControllerInputListener::input_MouseButtonReleased));
@@ -68,21 +75,21 @@ void MovementControllerInputListener::input_MouseButtonPressed(Input::MouseButto
 
 void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode)
 {
-	if (mode == Input::IM_GUI){
+	if (mode == Input::IM_GUI) {
 		mController.mMovementDirection.x() = 0;
 		mController.mMovementDirection.y() = 0;
-		mController.mMovementDirection.z() = 0;	
-	}else if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
+		mController.mMovementDirection.z() = 0;
+	} else if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
 		mController.mMovementDirection.y() = 0;
 	}
 }
 
-MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camera) :
-	RunToggle("+run", this, "Toggle running mode."), ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."), MovementMoveForward("+movement_move_forward", this, "Move forward."), MovementMoveBackward("+movement_move_backward", this, "Move backward."), MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."), MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."), MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."), MovementStrafeRight("+movement_strafe_right", this, "Strafe right."), CameraOnAvatar("camera_on_avatar", this, "Positions the free flying camera on the avatar.")
-	/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
-	 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
-	//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
-			, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false)
+MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camera, IHeightProvider& heightProvider) :
+		RunToggle("+run", this, "Toggle running mode."), ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."), MovementMoveForward("+movement_move_forward", this, "Move forward."), MovementMoveBackward("+movement_move_backward", this, "Move backward."), MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."), MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."), MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."), MovementStrafeRight("+movement_strafe_right", this, "Strafe right."), CameraOnAvatar("camera_on_avatar", this, "Positions the free flying camera on the avatar."), RefreshAwareness("refreshawareness", this, "")
+		/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
+		 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
+		//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
+				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider)), mAwarenessVisualizer(new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager())), mSteering(new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar()))
 {
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT);
@@ -99,8 +106,8 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 				mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getPredictedPos()));
 				mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
 			}
-			mFreeFlyingMotionHandler = std::unique_ptr<FreeFlyingCameraMotionHandler>(new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
-			mCameraMount = std::unique_ptr<Camera::FirstPersonCameraMount>(new Camera::FirstPersonCameraMount(mCamera.getCameraSettings(), mAvatar.getScene().getSceneManager()));
+			mFreeFlyingMotionHandler = std::unique_ptr < FreeFlyingCameraMotionHandler > (new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
+			mCameraMount = std::unique_ptr < Camera::FirstPersonCameraMount > (new Camera::FirstPersonCameraMount(mCamera.getCameraSettings(), mAvatar.getScene().getSceneManager()));
 			mCameraMount->setMotionHandler(mFreeFlyingMotionHandler.get());
 			mCameraMount->attachToNode(mFreeFlyingNode);
 		} else {
@@ -114,6 +121,10 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 }
 MovementController::~MovementController()
 {
+	delete mSteering;
+	delete mAwarenessVisualizer;
+	delete mAwareness;
+
 	if (mFreeFlyingNode) {
 		mFreeFlyingNode->getCreator()->destroySceneNode(mFreeFlyingNode);
 	}
@@ -137,10 +148,10 @@ void MovementController::setCameraFreeFlying(bool freeFlying)
 	}
 }
 
-bool MovementController::isCameraFreeFlying() const {
+bool MovementController::isCameraFreeFlying() const
+{
 	return mIsFreeFlying;
 }
-
 
 void MovementController::runCommand(const std::string &command, const std::string &args)
 {
@@ -203,6 +214,14 @@ void MovementController::runCommand(const std::string &command, const std::strin
 		if (mFreeFlyingNode && mAvatar.getEmberEntity().getPosition().isValid()) {
 			mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getViewPosition()));
 		}
+	} else if (RefreshAwareness == command) {
+//		//		WFMath::AxisBox<3> area(WFMath::Point<3>(mErisAvatarEntity.getViewPosition().x() - 32, mErisAvatarEntity.getViewPosition().y() - 32, -10), WFMath::Point<3>(mErisAvatarEntity.getViewPosition().x() + 32, mErisAvatarEntity.getViewPosition().y() + 32, 50));
+//		WFMath::AxisBox<3> area(WFMath::Point<3>(mAvatar.getEmberEntity().getViewPosition().x() - 2, mAvatar.getEmberEntity().getViewPosition().y() - 2, -10), WFMath::Point<3>(mAvatar.getEmberEntity().getViewPosition().x() + 2, mAvatar.getEmberEntity().getViewPosition().y() + 2, 50));
+//		mAwareness->addAwarenessArea(area);
+//		//		WFMath::AxisBox<2> area2d(WFMath::Point<2>(mErisAvatarEntity.getViewPosition().x() - 32, mErisAvatarEntity.getViewPosition().y() - 32), WFMath::Point<2>(mErisAvatarEntity.getViewPosition().x() + 32, mErisAvatarEntity.getViewPosition().y() + 32));
+//		WFMath::AxisBox<2> area2d(WFMath::Point<2>(mAvatar.getEmberEntity().getViewPosition().x() - 2, mAvatar.getEmberEntity().getViewPosition().y() - 2), WFMath::Point<2>(mAvatar.getEmberEntity().getViewPosition().x() + 2, mAvatar.getEmberEntity().getViewPosition().y() + 2));
+//		mAwarenessVisualizer->buildVisualization(area2d);
+		mAwarenessVisualizer->buildVisualizationForAllTiles();
 	}
 }
 
@@ -237,11 +256,13 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 	//		mDecalNode->setPosition(Ogre::Vector3(point.x, height, point.z));
 	//		mDecalNode->setVisible(true);
 	//	}
-
-	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3>>(point);
-	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
-
-	EmberServices::getSingleton().getServerService().moveToPoint(atlasPos);
+//
+	WFMath::Point<3> atlasPos = Convert::toWF<WFMath::Point<3>>(point);
+	mSteering->setDestination(atlasPos);
+	mAwarenessVisualizer->buildVisualizationForAllTiles();
+	mSteering->startSteering();
+//
+//	EmberServices::getSingleton().getServerService().moveToPoint(atlasPos);
 }
 
 void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity)
@@ -292,11 +313,15 @@ void MovementController::createDecal(Ogre::Vector3 position)
 		mDecalNode->attachObject(mDecalObject);
 		// 	mDecalNode->showBoundingBox(true);
 
-
 		// 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when creating terrain decal." << ex);
 	}
+}
+
+Navigation::Awareness& MovementController::getAwareness() const
+{
+	return *mAwareness;
 }
 
 }

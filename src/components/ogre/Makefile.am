@@ -13,7 +13,7 @@ libEmberOgre_a_SOURCES = \
 	authoring/PolygonPointUserObject.cpp authoring/PolygonRenderer.cpp authoring/XMLEntityRecipeSerializer.cpp authoring/SnapToMovement.cpp \
 	authoring/AuthoringHandler.cpp authoring/AuthoringManager.cpp authoring/AuthoringVisualization.cpp authoring/AuthoringVisualizationCollisionDetector.cpp \
 	authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RulesFetcher.cpp authoring/RuleEditor.cpp \
-	authoring/SimpleEntityVisualization.cpp authoring/EntityMaker.cpp \
+	authoring/SimpleEntityVisualization.cpp authoring/EntityMaker.cpp authoring/AwarenessVisualizer.cpp \
 \
 	lod/LodLevelManager.cpp \
 \
@@ -116,7 +116,7 @@ noinst_HEADERS = \
 	authoring/PolygonPointUserObject.h authoring/PolygonRenderer.h authoring/XMLEntityRecipeSerializer.h authoring/SnapToMovement.h \
 	authoring/AuthoringHandler.h authoring/AuthoringManager.h authoring/AuthoringVisualization.h authoring/AuthoringVisualizationCollisionDetector.h \
 	authoring/AuthoringVisualizationMover.h authoring/AuthoringMoverConnector.h authoring/RulesFetcher.h  authoring/RuleEditor.h \
-	authoring/SimpleEntityVisualization.h authoring/EntityMaker.h \
+	authoring/SimpleEntityVisualization.h authoring/EntityMaker.h authoring/AwarenessVisualizer.h \
 \
 	lod/LodLevelManager.h \
 \

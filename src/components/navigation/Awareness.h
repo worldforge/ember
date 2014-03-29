@@ -21,14 +21,21 @@
 
 #include "external/RecastDetour/Recast/Include/Recast.h"
 
+
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
 
+#include <list>
 #include <vector>
-
+#include <functional>
 
 class dtNavMeshQuery;
 class dtNavMesh;
+class dtTileCache;
+class dtTileCachePolyMesh;
+class dtTileCacheLayer;
+class dtCompressedTile;
+class dtQueryFilter;
 
 namespace Eris
 {
@@ -38,38 +45,68 @@ class Entity;
 
 namespace Ember
 {
+class IHeightProvider;
 namespace Navigation
 {
+
+struct TileCacheData;
+struct InputGeometry;
+
+enum SamplePolyAreas
+{
+	SAMPLE_POLYAREA_GROUND, SAMPLE_POLYAREA_WATER, SAMPLE_POLYAREA_ROAD, SAMPLE_POLYAREA_DOOR, SAMPLE_POLYAREA_GRASS, SAMPLE_POLYAREA_JUMP,
+};
+enum SamplePolyFlags
+{
+	SAMPLE_POLYFLAGS_WALK = 0x01,      // Ability to walk (ground, grass, road)
+	SAMPLE_POLYFLAGS_SWIM = 0x02,      // Ability to swim (water).
+	SAMPLE_POLYFLAGS_DOOR = 0x04,      // Ability to move through doors.
+	SAMPLE_POLYFLAGS_JUMP = 0x08,      // Ability to jump.
+	SAMPLE_POLYFLAGS_DISABLED = 0x10,		// Disabled polygon
+	SAMPLE_POLYFLAGS_ALL = 0xffff      // All abilities.
+};
 
 class Awareness
 {
 public:
-	Awareness(Eris::View& view, const WFMath::AxisBox<3>& extent);
+	Awareness(Eris::View& view, IHeightProvider& heightProvider);
 	virtual ~Awareness();
 
+	void addAwarenessArea(const WFMath::AxisBox<3>& area);
+
+	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path);
+
+	void processTile(const int tx, const int ty, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
+	void processTiles(const WFMath::AxisBox<2>& area, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
+	void processAllTiles(const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
 
 
 protected:
 
 	Eris::View& mView;
-	const WFMath::AxisBox<3> mExtent;
+	IHeightProvider& mHeightProvider;
+
+	struct LinearAllocator* m_talloc;
+	struct FastLZCompressor* m_tcomp;
+	struct MeshProcess* m_tmproc;
 
 	rcContext* m_ctx;
-	unsigned char* m_triareas;
-	rcHeightfield* m_solid;
-	rcCompactHeightfield* m_chf;
-	rcContourSet* m_cset;
-	rcPolyMesh* m_pmesh;
-	rcPolyMeshDetail* m_dmesh;
 	rcConfig m_cfg;
+
+	dtTileCache* m_tileCache;
 
 	dtNavMesh* m_navMesh;
 	dtNavMeshQuery* m_navQuery;
+	dtQueryFilter* mFilter;
 
-	void buildNavMesh();
+	void buildTilesAroundAvatar();
 
+	void buildEntityAreas(Eris::Entity& entity, const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas);
 
-	void addEntity(Eris::Entity& entity, std::vector<float>& verts, std::vector<int>& tris);
+	int rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, const rcConfig& cfg, TileCacheData* tiles, const int maxTiles);
+
+	void processTiles(std::vector<const dtCompressedTile*> tiles, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
+
 };
 
 }
