@@ -24,6 +24,7 @@
 #include <wfmath/axisbox.h>
 
 #include <string>
+#include <list>
 
 class dtTileCachePolyMesh;
 class dtTileCacheLayer;
@@ -50,10 +51,13 @@ public:
 
 	void buildVisualizationForAllTiles();
 
+	void visualizePath(const std::list<WFMath::Point<3>>& path);
+
 protected:
 	Navigation::Awareness& mAwareness;
 	Ogre::SceneManager& mSceneManager;
 	Ogre::SceneNode* mSceneNode;
+	Ogre::ManualObject* mPath;
 
 	void createMesh(unsigned int tileRef, dtTileCachePolyMesh& pmesh, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer);
 	void CreateRecastPolyMesh(const std::string& name, const unsigned short *verts, const int nverts, const unsigned short *polys, const int npolys, const unsigned char *areas, const int maxpolys, const unsigned short *regions, const int nvp, const float cs, const float ch, const float *orig, bool colorRegions);

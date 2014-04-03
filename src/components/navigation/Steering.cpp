@@ -46,7 +46,7 @@ Steering::~Steering()
 {
 }
 
-void Steering::setDestination(const WFMath::Point<3>& viewPosition)
+bool Steering::setDestination(const WFMath::Point<3>& viewPosition)
 {
 	mViewDestination = viewPosition;
 	mPath.clear();
@@ -56,12 +56,14 @@ void Steering::setDestination(const WFMath::Point<3>& viewPosition)
 	WFMath::Point<3> low(std::min(entityViewPosition.x(), mViewDestination.x()), std::min(entityViewPosition.y(), mViewDestination.y()), -100);
 	WFMath::Point<3> high(std::max(entityViewPosition.x(), mViewDestination.x()), std::max(entityViewPosition.y(), mViewDestination.y()), 100);
 
+	//Increase the area a little, by 16 meters in each direction.
 	low -= WFMath::Vector<3>(16, 16, 0);
 	high += WFMath::Vector<3>(16, 16, 0);
 
 	mAwareness.addAwarenessArea(WFMath::AxisBox<3>(low, high, true));
 
 	int result = mAwareness.findPath(entityViewPosition, viewPosition, mPath);
+	return result > 0;
 }
 
 void Steering::startSteering()
@@ -71,6 +73,11 @@ void Steering::startSteering()
 void Steering::stopSteering()
 {
 	mSteeringEnabled = false;
+}
+
+const std::list<WFMath::Point<3>>& Steering::getPath() const
+{
+	return mPath;
 }
 
 void Steering::frameProcessed(const TimeFrame&, unsigned int)

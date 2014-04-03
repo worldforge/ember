@@ -23,6 +23,8 @@
 
 #include <list>
 
+#include <sigc++/trackable.h>
+
 namespace Eris
 {
 class Avatar;
@@ -36,16 +38,18 @@ namespace Navigation
 
 class Awareness;
 
-class Steering
+class Steering : public virtual sigc::trackable
 {
 public:
 	Steering(Awareness& awareness, Eris::Avatar& avatar);
 	virtual ~Steering();
 
-	void setDestination(const WFMath::Point<3>& viewPosition);
+	bool setDestination(const WFMath::Point<3>& viewPosition);
 
 	void startSteering();
 	void stopSteering();
+
+	const std::list<WFMath::Point<3>>& getPath() const;
 
 private:
 

@@ -344,7 +344,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 
 	float pStartPos[] { start.x(), start.z(), start.y() };
 	float pEndPos[] { end.x(), end.z(), end.y() };
-	float extent[] { 2, 100, 2 };
+	float extent[] { 2, 100, 2 }; //Look two meters in each direction
 
 	dtStatus status;
 	dtPolyRef StartPoly;
@@ -476,18 +476,21 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area)
 
 void Awareness::buildEntityAreas(Eris::Entity& entity, const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas)
 {
-	if (&entity == mView.getAvatar()->getEntity() || !entity.hasBBox()) {
+	if (&entity == mView.getAvatar()->getEntity()) {
 		return;
 	}
 
-	bool isSolid = true;
-	if (entity.hasAttr("solid")) {
+	//The entity is solid (i.e. can be collided with) if it has a bbox and the "solid" property isn't set to false (or 0 as it's an int).
+	bool isSolid = entity.hasBBox();
+	//No need to check if the entity has no bbox.
+	if (isSolid && entity.hasAttr("solid")) {
 		auto solidElement = entity.valueOfAttr("solid");
 		if (solidElement.isInt() && solidElement.asInt() == 0) {
 			isSolid = false;
 		}
 	}
 
+	//If an entity is "simple" it means that we shouldn't consider any of its child entities. Like with a character with an inventory.
 	bool isSimple = false;
 	if (entity.hasAttr("simple")) {
 		auto simpleElement = entity.valueOfAttr("simple");
@@ -604,7 +607,6 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 // Allocate array that can hold triangle flags.
 // If you have multiple meshes you need to process, allocate
 // and array which can hold the max number of triangles you need to process.
-//	rc.triareas = new unsigned char[chunkyMesh->maxTrisPerChunk];
 	rc.triareas = new unsigned char[ntris];
 	if (!rc.triareas) {
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'm_triareas' (%d).", ntris / 3);
@@ -705,7 +707,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 		}
 	}
 
-// Transfer ownsership of tile data from build context to the caller.
+// Transfer ownership of tile data from build context to the caller.
 	int n = 0;
 	for (int i = 0; i < rcMin(rc.ntiles, maxTiles); ++i) {
 		tiles[n++] = rc.tiles[i];

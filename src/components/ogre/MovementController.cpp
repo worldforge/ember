@@ -259,6 +259,7 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 //
 	WFMath::Point<3> atlasPos = Convert::toWF<WFMath::Point<3>>(point);
 	mSteering->setDestination(atlasPos);
+	mAwarenessVisualizer->visualizePath(mSteering->getPath());
 	mAwarenessVisualizer->buildVisualizationForAllTiles();
 	mSteering->startSteering();
 //

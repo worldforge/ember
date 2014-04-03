@@ -21,8 +21,9 @@
 #endif
 
 #include "AwarenessVisualizer.h"
-#include "components/navigation/Awareness.h"
+#include "components/ogre/Convert.h"
 
+#include "components/navigation/Awareness.h"
 #include "components/navigation/external/RecastDetour/DetourTileCache/Include/DetourTileCache.h"
 #include "components/navigation/external/RecastDetour/DetourTileCache/Include/DetourTileCacheBuilder.h"
 
@@ -44,11 +45,22 @@ namespace Authoring
 AwarenessVisualizer::AwarenessVisualizer(Navigation::Awareness& awareness, Ogre::SceneManager& sceneManager) :
 		mAwareness(awareness), mSceneManager(sceneManager), mSceneNode(sceneManager.getRootSceneNode()->createChildSceneNode())
 {
+	mPath = mSceneManager.createManualObject("RecastMOPath");
+	mPath->setDynamic(true); //We'll be updating this a lot
+	mPath->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE - 1); //We want to render the lines on top of everything, so that they aren't hidden by anything
+	mSceneNode->attachObject(mPath);
 }
 
 AwarenessVisualizer::~AwarenessVisualizer()
 {
+	//All of the objects attached to the scene node are owned by this instance, so we should destroy them.
+	while (mSceneNode->numAttachedObjects()) {
+		auto movable = mSceneNode->detachObject((unsigned short int)0);
+		mSceneManager.destroyMovableObject(movable);
+	}
 	mSceneManager.destroySceneNode(mSceneNode);
+
+	//Note that we don't have to destroy the path since that's destroyed as it was attached to the scene node.
 }
 
 void AwarenessVisualizer::buildVisualization(const WFMath::AxisBox<2>& area)
@@ -69,7 +81,6 @@ void AwarenessVisualizer::buildVisualizationForAllTiles()
 
 	mAwareness.processAllTiles(processor);
 }
-
 
 void AwarenessVisualizer::createMesh(unsigned int tileRef, dtTileCachePolyMesh& mesh, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)
 {
@@ -112,7 +123,6 @@ void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const un
 	static Ogre::ColourValue m_navmeshGroundPolygonCol(0, 0.7, 0);       // Green
 	static Ogre::ColourValue m_navmeshOtherPolygonCol(0, 0.175, 0);     // Dark green
 	static Ogre::ColourValue m_pathCol(1, 0, 0);         // Red
-
 
 	// When drawing regions choose different random colors for each region
 	Ogre::ColourValue* regionColors = NULL;
@@ -301,6 +311,16 @@ void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const un
 
 	delete[] regionColors;
 
+}
+
+void AwarenessVisualizer::visualizePath(const std::list<WFMath::Point<3>>& path)
+{
+	mPath->clear();
+	mPath->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
+	for (auto& point : path) {
+		mPath->position(Convert::toOgre(point));
+	}
+	mPath->end();
 }
 
 }
