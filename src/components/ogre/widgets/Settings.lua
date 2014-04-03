@@ -576,6 +576,24 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
+				{
+					label = "Show navigation tiles",
+					helpString = "Shows the tiles built when navigating in the world.",
+					
+					section = "authoring",
+					key = "visualizerecasttiles",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
+				},
+				{
+					label = "Show navigation path",
+					helpString = "Shows the path used by navigation.",
+					
+					section = "authoring",
+					key = "visualizerecastpath",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
+				},
 			},
 		},
 	}

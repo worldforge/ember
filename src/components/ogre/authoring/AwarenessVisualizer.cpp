@@ -43,24 +43,57 @@ namespace Authoring
 {
 
 AwarenessVisualizer::AwarenessVisualizer(Navigation::Awareness& awareness, Ogre::SceneManager& sceneManager) :
-		mAwareness(awareness), mSceneManager(sceneManager), mSceneNode(sceneManager.getRootSceneNode()->createChildSceneNode())
+		mAwareness(awareness), mSceneManager(sceneManager), mTileSceneNode(sceneManager.getRootSceneNode()->createChildSceneNode()), mPathSceneNode(sceneManager.getRootSceneNode()->createChildSceneNode()), mTileVisualizationEnabled(false)
 {
 	mPath = mSceneManager.createManualObject("RecastMOPath");
 	mPath->setDynamic(true); //We'll be updating this a lot
 	mPath->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE - 1); //We want to render the lines on top of everything, so that they aren't hidden by anything
-	mSceneNode->attachObject(mPath);
+	//Remove from the overhead map.
+	mPath->setVisibilityFlags(mPath->getVisibilityFlags() & ~Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+	mPathSceneNode->attachObject(mPath);
+
+	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &AwarenessVisualizer::Awareness_TileUpdated));
 }
 
 AwarenessVisualizer::~AwarenessVisualizer()
 {
 	//All of the objects attached to the scene node are owned by this instance, so we should destroy them.
-	while (mSceneNode->numAttachedObjects()) {
-		auto movable = mSceneNode->detachObject((unsigned short int)0);
+	while (mTileSceneNode->numAttachedObjects()) {
+		auto movable = mTileSceneNode->detachObject((unsigned short int)0);
 		mSceneManager.destroyMovableObject(movable);
 	}
-	mSceneManager.destroySceneNode(mSceneNode);
+	mSceneManager.destroySceneNode(mTileSceneNode);
+	mSceneManager.destroySceneNode(mPathSceneNode);
 
 	//Note that we don't have to destroy the path since that's destroyed as it was attached to the scene node.
+}
+
+void AwarenessVisualizer::setTileVisualizationEnabled(bool enabled)
+{
+	if (enabled) {
+		if (!mTileVisualizationEnabled) {
+			buildVisualizationForAllTiles();
+		}
+	} else {
+		if (mTileVisualizationEnabled) {
+			while (mTileSceneNode->numAttachedObjects()) {
+				auto movable = mTileSceneNode->detachObject((unsigned short int)0);
+				mSceneManager.destroyMovableObject(movable);
+			}
+		}
+	}
+	mTileVisualizationEnabled = enabled;
+}
+
+void AwarenessVisualizer::Awareness_TileUpdated(int tx, int ty)
+{
+	if (mTileVisualizationEnabled) {
+		std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)> processor = [this](unsigned int tileRef, dtTileCachePolyMesh& pmesh, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer) {
+			createMesh(tileRef, pmesh, origin, cellsize, cellheight, layer);
+		};
+
+		mAwareness.processTile(tx, ty, processor);
+	}
 }
 
 void AwarenessVisualizer::buildVisualization(const WFMath::AxisBox<2>& area)
@@ -103,13 +136,13 @@ void AwarenessVisualizer::createMesh(unsigned int tileRef, dtTileCachePolyMesh& 
 		regions[i] = (const unsigned short)regs[i];
 	}
 
-	CreateRecastPolyMesh(name, verts, nverts, polys, npolys, areas, maxpolys, regions, nvp, cellsize, cellheight, origin, true);
+	createRecastPolyMesh(name, verts, nverts, polys, npolys, areas, maxpolys, regions, nvp, cellsize, cellheight, origin, true);
 
 	delete[] regions;
 
 }
 
-void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const unsigned short *verts, const int nverts, const unsigned short *polys, const int npolys, const unsigned char *areas, const int maxpolys, const unsigned short *regions, const int nvp, const float cs, const float ch, const float *orig, bool colorRegions)
+void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const unsigned short *verts, const int nverts, const unsigned short *polys, const int npolys, const unsigned char *areas, const int maxpolys, const unsigned short *regions, const int nvp, const float cs, const float ch, const float *orig, bool colorRegions)
 {
 
 	// Demo specific parameters
@@ -143,7 +176,9 @@ void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const un
 			pRecastMOWalk->clear();
 		} else {
 			pRecastMOWalk = mSceneManager.createManualObject("RecastMOWalk_" + name);
-			mSceneNode->attachObject(pRecastMOWalk);
+			//Remove from the overhead map.
+			pRecastMOWalk->setVisibilityFlags(pRecastMOWalk->getVisibilityFlags() & ~Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+			mTileSceneNode->attachObject(pRecastMOWalk);
 		}
 		pRecastMOWalk->begin("/global/authoring/awareness", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 		for (int i = 0; i < npolys; ++i) {    // go through all polygons
@@ -191,7 +226,9 @@ void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const un
 			pRecastMONeighbour->clear();
 		} else {
 			pRecastMONeighbour = mSceneManager.createManualObject("RecastMONeighbour_" + name);
-			mSceneNode->attachObject(pRecastMONeighbour);
+			//Remove from the overhead map.
+			pRecastMONeighbour->setVisibilityFlags(pRecastMONeighbour->getVisibilityFlags() & ~Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+			mTileSceneNode->attachObject(pRecastMONeighbour);
 		}
 
 		pRecastMONeighbour->begin("/global/authoring/awareness", Ogre::RenderOperation::OT_LINE_LIST);
@@ -232,7 +269,9 @@ void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const un
 			pRecastMOBoundary->clear();
 		} else {
 			pRecastMOBoundary = mSceneManager.createManualObject("RecastMOBoundary_" + name);
-			mSceneNode->attachObject(pRecastMOBoundary);
+			//Remove from the overhead map.
+			pRecastMOBoundary->setVisibilityFlags(pRecastMOBoundary->getVisibilityFlags() & ~Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+			mTileSceneNode->attachObject(pRecastMOBoundary);
 		}
 
 		pRecastMOBoundary->begin("/global/authoring/awareness", Ogre::RenderOperation::OT_LINE_LIST);
@@ -316,11 +355,13 @@ void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const un
 void AwarenessVisualizer::visualizePath(const std::list<WFMath::Point<3>>& path)
 {
 	mPath->clear();
-	mPath->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
-	for (auto& point : path) {
-		mPath->position(Convert::toOgre(point));
+	if (!path.empty()) {
+		mPath->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
+		for (auto& point : path) {
+			mPath->position(Convert::toOgre(point));
+		}
+		mPath->end();
 	}
-	mPath->end();
 }
 
 }

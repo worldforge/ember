@@ -480,6 +480,8 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 
 			m_tileCache->buildNavMeshTilesAt(tx, ty, m_navMesh);
 
+			EventTileUpdated(tx, ty);
+
 		}
 	}
 }

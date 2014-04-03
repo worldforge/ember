@@ -37,6 +37,7 @@
 namespace Ember {
 class EmberEntity;
 class IHeightProvider;
+class ConfigListenerContainer;
 namespace Navigation
 {
 class Awareness;
@@ -175,9 +176,11 @@ public:
 
 	bool isCameraFreeFlying() const;
 
+	/**
+	 * @brief Accessor for the Awareness instance.
+	 * @return The Awareness instance.
+	 */
 	Navigation::Awareness& getAwareness() const;
-
-	const ConsoleCommandWrapper RefreshAwareness;
 
 protected:
 
@@ -207,6 +210,11 @@ protected:
 
 	void Entity_Moved();
 
+	void Config_VisualizeRecastTiles(const std::string&, const std::string&, varconf::Variable& var);
+
+	void Config_VisualizeRecastPath(const std::string&, const std::string&, varconf::Variable& var);
+
+
 	/**
 	A decal object for showing a decal on the terrain when the user uses the "move to here" functionality.
 	The decal will be shown at the destination, and removed when the user either gets close to it, or aborts the "move to here" movement (for example by moving manually).
@@ -227,11 +235,30 @@ protected:
 	std::unique_ptr<Camera::FirstPersonCameraMount> mCameraMount;
 	bool mIsFreeFlying;
 
+	/**
+	 * @brief Handles awareness about the world around the avatar.
+	 */
 	Navigation::Awareness* mAwareness;
 
+	/**
+	 * @brief Optionally visualizes the awareness.
+	 */
 	Authoring::AwarenessVisualizer* mAwarenessVisualizer;
 
+	/**
+	 * @brief Handles steering of the avatar.
+	 */
 	Navigation::Steering* mSteering;
+
+	/**
+	 * @brief Listens to changes to the configuration.
+	 */
+	ConfigListenerContainer* mConfigListenerContainer;
+
+	/**
+	 * @brief True if the path used for steering should be visualized.
+	 */
+	bool mVisualizePath;
 };
 
 

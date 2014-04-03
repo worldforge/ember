@@ -21,9 +21,10 @@
 
 #include "external/RecastDetour/Recast/Include/Recast.h"
 
-
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
+
+#include <sigc++/signal.h>
 
 #include <list>
 #include <vector>
@@ -80,6 +81,7 @@ public:
 	void processTiles(const WFMath::AxisBox<2>& area, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
 	void processAllTiles(const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
 
+	sigc::signal<void, int, int> EventTileUpdated;
 
 protected:
 

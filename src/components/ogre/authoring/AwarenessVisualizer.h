@@ -53,14 +53,20 @@ public:
 
 	void visualizePath(const std::list<WFMath::Point<3>>& path);
 
+	void setTileVisualizationEnabled(bool enabled);
+
 protected:
 	Navigation::Awareness& mAwareness;
 	Ogre::SceneManager& mSceneManager;
-	Ogre::SceneNode* mSceneNode;
+	Ogre::SceneNode* mTileSceneNode;
+	Ogre::SceneNode* mPathSceneNode;
 	Ogre::ManualObject* mPath;
 
+	bool mTileVisualizationEnabled;
+
 	void createMesh(unsigned int tileRef, dtTileCachePolyMesh& pmesh, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer);
-	void CreateRecastPolyMesh(const std::string& name, const unsigned short *verts, const int nverts, const unsigned short *polys, const int npolys, const unsigned char *areas, const int maxpolys, const unsigned short *regions, const int nvp, const float cs, const float ch, const float *orig, bool colorRegions);
+	void createRecastPolyMesh(const std::string& name, const unsigned short *verts, const int nverts, const unsigned short *polys, const int npolys, const unsigned char *areas, const int maxpolys, const unsigned short *regions, const int nvp, const float cs, const float ch, const float *orig, bool colorRegions);
+	void Awareness_TileUpdated(int tx, int ty);
 
 };
 
