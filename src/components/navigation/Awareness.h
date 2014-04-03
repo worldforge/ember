@@ -52,18 +52,18 @@ namespace Navigation
 struct TileCacheData;
 struct InputGeometry;
 
-enum SamplePolyAreas
+enum PolyAreas
 {
-	SAMPLE_POLYAREA_GROUND, SAMPLE_POLYAREA_WATER, SAMPLE_POLYAREA_ROAD, SAMPLE_POLYAREA_DOOR, SAMPLE_POLYAREA_GRASS, SAMPLE_POLYAREA_JUMP,
+	POLYAREA_GROUND, POLYAREA_WATER, POLYAREA_ROAD, POLYAREA_DOOR, POLYAREA_GRASS, POLYAREA_JUMP,
 };
-enum SamplePolyFlags
+enum PolyFlags
 {
-	SAMPLE_POLYFLAGS_WALK = 0x01,      // Ability to walk (ground, grass, road)
-	SAMPLE_POLYFLAGS_SWIM = 0x02,      // Ability to swim (water).
-	SAMPLE_POLYFLAGS_DOOR = 0x04,      // Ability to move through doors.
-	SAMPLE_POLYFLAGS_JUMP = 0x08,      // Ability to jump.
-	SAMPLE_POLYFLAGS_DISABLED = 0x10,		// Disabled polygon
-	SAMPLE_POLYFLAGS_ALL = 0xffff      // All abilities.
+	POLYFLAGS_WALK = 0x01,      // Ability to walk (ground, grass, road)
+	POLYFLAGS_SWIM = 0x02,      // Ability to swim (water).
+	POLYFLAGS_DOOR = 0x04,      // Ability to move through doors.
+	POLYFLAGS_JUMP = 0x08,      // Ability to jump.
+	POLYFLAGS_DISABLED = 0x10,		// Disabled polygon
+	POLYFLAGS_ALL = 0xffff      // All abilities.
 };
 
 class Awareness
@@ -72,7 +72,7 @@ public:
 	Awareness(Eris::View& view, IHeightProvider& heightProvider);
 	virtual ~Awareness();
 
-	void addAwarenessArea(const WFMath::AxisBox<3>& area);
+	void addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdate);
 
 	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path);
 

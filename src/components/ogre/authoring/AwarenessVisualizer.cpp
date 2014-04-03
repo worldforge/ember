@@ -147,7 +147,7 @@ void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const un
 		}
 		pRecastMOWalk->begin("/global/authoring/awareness", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 		for (int i = 0; i < npolys; ++i) {    // go through all polygons
-			if (areas[i] == Navigation::SAMPLE_POLYAREA_GROUND || areas[i] == DT_TILECACHE_WALKABLE_AREA) {
+			if (areas[i] == Navigation::POLYAREA_GROUND || areas[i] == DT_TILECACHE_WALKABLE_AREA) {
 				const unsigned short* p = &polys[i * nvp * 2];
 
 				unsigned short vi[3];
@@ -170,7 +170,7 @@ void AwarenessVisualizer::CreateRecastPolyMesh(const std::string& name, const un
 						if (colorRegions) {
 							pRecastMOWalk->colour(regionColors[regions[i]]);  // Assign vertex color
 						} else {
-							if (areas[i] == Navigation::SAMPLE_POLYAREA_GROUND)
+							if (areas[i] == Navigation::POLYAREA_GROUND)
 								pRecastMOWalk->colour(m_navmeshGroundPolygonCol);
 							else
 								pRecastMOWalk->colour(m_navmeshOtherPolygonCol);

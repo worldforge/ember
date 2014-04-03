@@ -142,14 +142,14 @@ struct MeshProcess: public dtTileCacheMeshProcess
 		// Update poly flags from areas.
 		for (int i = 0; i < params->polyCount; ++i) {
 			if (polyAreas[i] == DT_TILECACHE_WALKABLE_AREA)
-				polyAreas[i] = SAMPLE_POLYAREA_GROUND;
+				polyAreas[i] = POLYAREA_GROUND;
 
-			if (polyAreas[i] == SAMPLE_POLYAREA_GROUND || polyAreas[i] == SAMPLE_POLYAREA_GRASS || polyAreas[i] == SAMPLE_POLYAREA_ROAD) {
-				polyFlags[i] = SAMPLE_POLYFLAGS_WALK;
-			} else if (polyAreas[i] == SAMPLE_POLYAREA_WATER) {
-				polyFlags[i] = SAMPLE_POLYFLAGS_SWIM;
-			} else if (polyAreas[i] == SAMPLE_POLYAREA_DOOR) {
-				polyFlags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
+			if (polyAreas[i] == POLYAREA_GROUND || polyAreas[i] == POLYAREA_GRASS || polyAreas[i] == POLYAREA_ROAD) {
+				polyFlags[i] = POLYFLAGS_WALK;
+			} else if (polyAreas[i] == POLYAREA_WATER) {
+				polyFlags[i] = POLYFLAGS_SWIM;
+			} else if (polyAreas[i] == POLYAREA_DOOR) {
+				polyFlags[i] = POLYFLAGS_WALK | POLYFLAGS_DOOR;
 			}
 		}
 	}
@@ -211,7 +211,8 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	mFilter->setIncludeFlags(0xFFFF);    // Include all
 	mFilter->setExcludeFlags(0);         // Exclude none
 	// Area flags for polys to consider in search, and their cost
-	mFilter->setAreaCost(SAMPLE_POLYAREA_GROUND, 1.0f);
+	mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
+
 
 	auto avatarBbox = mView.getAvatar()->getEntity()->getBBox();
 
@@ -386,7 +387,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 	return nVertCount;
 }
 
-void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area)
+void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdate)
 {
 
 //adjust area to fit with tiles
@@ -447,6 +448,15 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area)
 
 	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
 		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
+			if (!forceUpdate) {
+				//If we're not forcing an update, just check if there's any tile already.
+				auto tile = m_tileCache->getTileAt(tx, ty, 0);
+				if (tile) {
+					continue;
+				}
+			}
+
+
 			TileCacheData tiles[MAX_LAYERS];
 			memset(tiles, 0, sizeof(tiles));
 
@@ -511,9 +521,15 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, const WFMath::AxisBox<2>&
 			WFMath::RotMatrix<2> rm;
 			rm.rotation(theta);
 
-			auto& bbox = entity.getBBox();
+			auto bbox = entity.getBBox();
+
 			WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().y());
 			WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().y());
+
+			//Expand the box a little so that we can navigate around it without being stuck on it.
+			//We'll use 0.4 meters, but this should ideally be the radius of the avatar.
+			highCorner += WFMath::Vector<2>(0.4, 0.4);
+			lowCorner -= WFMath::Vector<2>(0.4, 0.4);
 
 			WFMath::RotBox<2> rotbox(WFMath::Point<2>::ZERO(), highCorner - lowCorner, WFMath::RotMatrix<2>().identity());
 			rotbox.shift(WFMath::Vector<2>(lowCorner.x(), lowCorner.y()));
@@ -661,7 +677,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 		verts[10] = 0;
 		verts[11] = rotbox.getCorner(0).y();
 
-		rcMarkConvexPolyArea(m_ctx, verts, 4, tcfg.bmin[1], tcfg.bmax[1], SAMPLE_POLYAREA_DOOR, *rc.chf);
+		rcMarkConvexPolyArea(m_ctx, verts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
 	}
 
 	rc.lset = rcAllocHeightfieldLayerSet();

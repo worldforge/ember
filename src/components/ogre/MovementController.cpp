@@ -93,6 +93,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 {
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT);
+	avatar.getEmberEntity().Moved.connect(sigc::mem_fun(*this, &MovementController::Entity_Moved));
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 
@@ -259,11 +260,20 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 //
 	WFMath::Point<3> atlasPos = Convert::toWF<WFMath::Point<3>>(point);
 	mSteering->setDestination(atlasPos);
-	mAwarenessVisualizer->visualizePath(mSteering->getPath());
 	mAwarenessVisualizer->buildVisualizationForAllTiles();
+	mSteering->updatePath();
+	mAwarenessVisualizer->visualizePath(mSteering->getPath());
 	mSteering->startSteering();
 //
 //	EmberServices::getSingleton().getServerService().moveToPoint(atlasPos);
+}
+
+void MovementController::Entity_Moved()
+{
+	if (mSteering->isEnabled()) {
+		mSteering->updatePath();
+		mAwarenessVisualizer->visualizePath(mSteering->getPath());
+	}
 }
 
 void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity)

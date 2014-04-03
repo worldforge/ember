@@ -205,6 +205,8 @@ protected:
 	*/
 	void createDecal(Ogre::Vector3 position);
 
+	void Entity_Moved();
+
 	/**
 	A decal object for showing a decal on the terrain when the user uses the "move to here" functionality.
 	The decal will be shown at the destination, and removed when the user either gets close to it, or aborts the "move to here" movement (for example by moving manually).

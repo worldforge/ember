@@ -44,10 +44,12 @@ public:
 	Steering(Awareness& awareness, Eris::Avatar& avatar);
 	virtual ~Steering();
 
-	bool setDestination(const WFMath::Point<3>& viewPosition);
+	void setDestination(const WFMath::Point<3>& viewPosition);
+	bool updatePath();
 
 	void startSteering();
 	void stopSteering();
+	bool isEnabled() const;
 
 	const std::list<WFMath::Point<3>>& getPath() const;
 

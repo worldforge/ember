@@ -46,10 +46,9 @@ Steering::~Steering()
 {
 }
 
-bool Steering::setDestination(const WFMath::Point<3>& viewPosition)
+void Steering::setDestination(const WFMath::Point<3>& viewPosition)
 {
 	mViewDestination = viewPosition;
-	mPath.clear();
 
 	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
 
@@ -60,9 +59,15 @@ bool Steering::setDestination(const WFMath::Point<3>& viewPosition)
 	low -= WFMath::Vector<3>(16, 16, 0);
 	high += WFMath::Vector<3>(16, 16, 0);
 
-	mAwareness.addAwarenessArea(WFMath::AxisBox<3>(low, high, true));
+	mAwareness.addAwarenessArea(WFMath::AxisBox<3>(low, high, true), false);
 
-	int result = mAwareness.findPath(entityViewPosition, viewPosition, mPath);
+}
+
+bool Steering::updatePath()
+{
+	mPath.clear();
+
+	int result = mAwareness.findPath(mAvatar.getEntity()->getViewPosition(), mViewDestination, mPath);
 	return result > 0;
 }
 
@@ -70,9 +75,15 @@ void Steering::startSteering()
 {
 	mSteeringEnabled = true;
 }
+
 void Steering::stopSteering()
 {
 	mSteeringEnabled = false;
+}
+
+bool Steering::isEnabled() const
+{
+	return mSteeringEnabled;
 }
 
 const std::list<WFMath::Point<3>>& Steering::getPath() const
@@ -86,23 +97,30 @@ void Steering::frameProcessed(const TimeFrame&, unsigned int)
 		if (!mPath.empty()) {
 			auto entity = mAvatar.getEntity();
 			const auto& finalDestination = mPath.back();
-			if (WFMath::Distance(finalDestination, entity->getViewPosition()) < 0.1f) {
+			auto entity3dPosition = entity->getViewPosition();
+			const WFMath::Point<2> entityPosition(entity3dPosition.x(), entity3dPosition.y());
+			if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < 0.1f) {
 				//We've arrived at our destination. If we're moving we should stop.
 				if (entity->isMoving()) {
 					mAvatar.moveInDirection(WFMath::Vector<3>::ZERO());
 				}
 				stopSteering();
 			} else {
-				auto nextWaypoint = mPath.front();
-				if (WFMath::Distance(nextWaypoint, entity->getViewPosition()) < 0.1f) {
+				//We should send a move op is we're either not moving, or we've reached a waypoint.
+				bool needToMove = !entity->isMoving();
+				WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().y());
+				if (WFMath::Distance(nextWaypoint, entityPosition) < 0.1f) {
 					mPath.pop_front();
-					nextWaypoint = mPath.front();
+					nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().y());
+					needToMove = true;
 				}
-				WFMath::Vector<3> direction = nextWaypoint - entity->getViewPosition();
-				direction.normalize();
-				direction *= 5;
+				if (needToMove) {
+					WFMath::Vector<2> direction = nextWaypoint - entityPosition;
+					direction.normalize();
+					direction *= 5;
 
-				mAvatar.moveInDirection(direction);
+					mAvatar.moveInDirection(WFMath::Vector<3>(direction.x(), direction.y(), 0));
+				}
 			}
 		}
 	}
