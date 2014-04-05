@@ -41,18 +41,6 @@ class IHeightProvider;
 namespace OgreView
 {
 
-namespace Model
-{
-class Model;
-}
-
-namespace Terrain
-{
-class TerrainArea;
-class TerrainMod;
-class TerrainDefPoint;
-}
-
 class IGraphicalRepresentation;
 class IEntityAttachment;
 class IEntityControlDelegate;
@@ -303,6 +291,20 @@ public:
 	void accept(IEntityVisitor& visitor);
 
 	/**
+	 * @brief Accepts a visitor function.
+	 * This is used to allow for easy traversal of the entity hierarchy.
+	 * @param visitor The visitor function. If the function returns true child entities will be traversed too.
+	 */
+	void accept(std::function<bool(const EmberEntity&)>& visitor) const;
+
+	/**
+	 * @brief Accepts a visitor function.
+	 * This is used to allow for easy traversal of the entity hierarchy.
+	 * @param visitor The visitor function. If the function returns true child entities will be traversed too.
+	 */
+	void accept(std::function<bool(EmberEntity&)>& visitor);
+
+	/**
 	 * @brief Gets the height at the local position.
 	 * @param localPosition A position local to the entity.
 	 * @return The height at the location.
@@ -333,18 +335,6 @@ protected:
 	 @brief Sometimes when talking to an entity, the server will provide suggested responses. These are stored here.
 	 */
 	std::vector<std::string> mSuggestedResponses;
-
-//	/**
-//	 * @brief If there's a terrain area belonging to this entity, that's stored here.
-//	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
-//	 */
-//	std::unique_ptr<Terrain::TerrainArea> mTerrainArea;
-//
-//	/**
-//	 * @brief If a terrainmod belongs to this entity, it's stored here.
-//	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
-//	 */
-//	std::unique_ptr<Terrain::TerrainMod> mTerrainMod;
 
 	/**
 	 * @brief The positioning mode the entity is in, like gravity affected, fixed or floating.

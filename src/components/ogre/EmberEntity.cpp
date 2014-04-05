@@ -69,7 +69,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 
 	if (getPredictedPos().isValid()) {
 		std::stringstream ss;
-		ss << "Entity " << getId() << " (" << getName() << ", "<< getType()->getName() <<") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
+		ss << "Entity " << getId() << " (" << getName() << ", " << getType()->getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
 		S_LOG_VERBOSE(ss.str());
 	}
 
@@ -121,9 +121,9 @@ float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 
 	WFMath::Point<3> predictedPos = getPredictedPos();
 	if (predictedPos.isValid()) {
-	    return predictedPos.z();
+		return predictedPos.z();
 	} else {
-	    return 0.0f;
+		return 0.0f;
 	}
 }
 
@@ -192,8 +192,8 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}
-	//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
-	//FIXME This is a little hackish; how can we improve it to not require special cases?
+		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
+		//FIXME This is a little hackish; how can we improve it to not require special cases?
 	} else if (m_view->getTopLevel() == this) {
 		return;
 	} else {
@@ -436,6 +436,30 @@ void EmberEntity::accept(IEntityVisitor& visitor)
 		EmberEntity* entity = getEmberContained(i);
 		if (entity) {
 			entity->accept(visitor);
+		}
+	}
+}
+
+void EmberEntity::accept(std::function<bool(EmberEntity&)>& visitor)
+{
+	if (visitor(*this)) {
+		for (unsigned int i = 0; i < numContained(); ++i) {
+			EmberEntity* entity = getEmberContained(i);
+			if (entity) {
+				entity->accept(visitor);
+			}
+		}
+	}
+}
+
+void EmberEntity::accept(std::function<bool(const EmberEntity&)>& visitor) const
+{
+	if (visitor(*this)) {
+		for (unsigned int i = 0; i < numContained(); ++i) {
+			EmberEntity* entity = getEmberContained(i);
+			if (entity) {
+				entity->accept(visitor);
+			}
 		}
 	}
 }
