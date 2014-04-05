@@ -28,6 +28,8 @@
 
 #include <list>
 #include <vector>
+#include <set>
+#include <map>
 #include <functional>
 
 class dtNavMeshQuery;
@@ -74,6 +76,7 @@ public:
 	virtual ~Awareness();
 
 	void addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdate);
+	size_t rebuildDirtyTiles();
 
 	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path);
 
@@ -101,13 +104,28 @@ protected:
 	dtNavMeshQuery* m_navQuery;
 	dtQueryFilter* mFilter;
 
-	void buildTilesAroundAvatar();
+	std::set<std::pair<int, int>> mDirtyTiles;
+	std::set<Eris::Entity*> mDirtyEntities;
+	std::map<Eris::Entity*, WFMath::RotBox<2>> mEntityAreas;
 
-	void buildEntityAreas(Eris::Entity& entity, const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas);
+	int mAwareTileMinXIndex;
+	int mAwareTileMaxXIndex;
+	int mAwareTileMinYIndex;
+	int mAwareTileMaxYIndex;
+
+	void rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>& entityAreas);
+
+	void buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, WFMath::RotBox<2>>& entityAreas);
+	void findEntityAreas(const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas);
 
 	int rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, const rcConfig& cfg, TileCacheData* tiles, const int maxTiles);
 
 	void processTiles(std::vector<const dtCompressedTile*> tiles, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
+	void markTilesAsDirty(const WFMath::AxisBox<2>& area);
+	void findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const;
+
+	void View_EntitySeen(Eris::Entity* entity);
+	void Entity_Moved(Eris::Entity* entity);
 
 };
 

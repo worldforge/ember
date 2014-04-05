@@ -232,6 +232,8 @@ bool MovementController::frameStarted(const Ogre::FrameEvent& event)
 		}
 	}
 
+	mAwareness->rebuildDirtyTiles();
+
 	return true;
 }
 

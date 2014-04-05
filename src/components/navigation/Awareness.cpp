@@ -31,6 +31,7 @@
 #include "DetourCommon.h"
 
 #include "domain/IHeightProvider.h"
+#include "domain/EmberEntity.h"
 
 #include <Eris/View.h>
 #include <Eris/Avatar.h>
@@ -38,6 +39,8 @@
 #include <wfmath/wfmath.h>
 
 #include <Atlas/Message/Element.h>
+
+#include <sigc++/bind.h>
 
 #include <cmath>
 #include <vector>
@@ -213,7 +216,6 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	// Area flags for polys to consider in search, and their cost
 	mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
 
-
 	auto avatarBbox = mView.getAvatar()->getEntity()->getBBox();
 
 	//radius of our agent; should be taken from the entity, but we'll assume it's a standard human
@@ -329,15 +331,121 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 		return;
 	}
 
+	view.EntitySeen.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen));
+	view.EntityCreated.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen));
+
+	auto avatarEntity = mView.getAvatar()->getEntity();
+	std::function<bool(EmberEntity&)> attachListenersFunction = [&](EmberEntity& entity) {
+		if (&entity != avatarEntity) {
+			entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), &entity));
+		}
+		return true;
+	};
+
+	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
+	entity->accept(attachListenersFunction);
+	for (size_t i = 0; i < entity->numContained(); ++i) {
+		buildEntityAreas(*entity->getContained(i), mEntityAreas);
+	}
 }
 
 Awareness::~Awareness()
 {
 }
 
-void Awareness::buildTilesAroundAvatar()
+void Awareness::View_EntitySeen(Eris::Entity* entity)
 {
+	buildEntityAreas(*entity, mEntityAreas);
+	entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
+}
 
+void Awareness::Entity_Moved(Eris::Entity* entity)
+{
+	std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+
+	buildEntityAreas(*entity, areas);
+
+	for (auto& entry : areas) {
+		markTilesAsDirty(entry.second.boundingBox());
+		auto existingI = mEntityAreas.find(entry.first);
+		if (existingI != mEntityAreas.end()) {
+			//The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
+			markTilesAsDirty(existingI->second.boundingBox());
+			existingI->second = entry.second;
+		} else {
+			mEntityAreas.insert(entry);
+		}
+	}
+}
+
+void Awareness::markTilesAsDirty(const WFMath::AxisBox<2>& area)
+{
+	int tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex;
+	findAffectedTiles(area, tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex);
+	tileMinXIndex = std::max(tileMinXIndex, mAwareTileMinXIndex);
+	tileMaxXIndex = std::min(tileMaxXIndex, mAwareTileMaxXIndex);
+	tileMinYIndex = std::max(tileMinYIndex, mAwareTileMinYIndex);
+	tileMaxYIndex = std::min(tileMaxYIndex, mAwareTileMaxYIndex);
+	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
+		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
+			mDirtyTiles.insert(std::make_pair(tx, ty));
+		}
+	}
+}
+
+size_t Awareness::rebuildDirtyTiles()
+{
+	if (!mDirtyTiles.empty()) {
+		auto tileIndexI = mDirtyTiles.begin();
+
+		float tilesize = m_cfg.tileSize * m_cfg.cs;
+		WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(m_cfg.bmin[0] + (tileIndexI->first * tilesize), m_cfg.bmin[2] + (tileIndexI->second * tilesize)), WFMath::Point<2>(m_cfg.bmin[0] + ((tileIndexI->first + 1) * tilesize), m_cfg.bmin[2] + ((tileIndexI->second + 1) * tilesize)));
+
+		std::vector<WFMath::RotBox<2>> entityAreas;
+		findEntityAreas(adjustedArea, entityAreas);
+
+		rebuildTile(tileIndexI->first, tileIndexI->second, entityAreas);
+		mDirtyTiles.erase(tileIndexI);
+	}
+	return mDirtyTiles.size();
+}
+
+void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const
+{
+	float tilesize = m_cfg.tileSize * m_cfg.cs;
+	WFMath::Point<2> lowCorner = area.lowCorner();
+	WFMath::Point<2> highCorner = area.highCorner();
+
+	if (lowCorner.x() < m_cfg.bmin[0]) {
+		lowCorner.x() = m_cfg.bmin[0];
+	}
+	if (lowCorner.y() < m_cfg.bmin[2]) {
+		lowCorner.y() = m_cfg.bmin[2];
+	}
+	if (lowCorner.x() > m_cfg.bmax[0]) {
+		lowCorner.x() = m_cfg.bmax[0];
+	}
+	if (lowCorner.y() > m_cfg.bmax[2]) {
+		lowCorner.y() = m_cfg.bmax[2];
+	}
+
+	if (highCorner.x() < m_cfg.bmin[0]) {
+		highCorner.x() = m_cfg.bmin[0];
+	}
+	if (highCorner.y() < m_cfg.bmin[2]) {
+		highCorner.y() = m_cfg.bmin[2];
+	}
+	if (highCorner.x() > m_cfg.bmax[0]) {
+		highCorner.x() = m_cfg.bmax[0];
+	}
+	if (highCorner.y() > m_cfg.bmax[2]) {
+		highCorner.y() = m_cfg.bmax[2];
+	}
+
+	tileMinXIndex = (lowCorner.x() - m_cfg.bmin[0]) / tilesize;
+	tileMaxXIndex = (highCorner.x() - m_cfg.bmin[0]) / tilesize;
+	tileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
+	tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
 }
 
 int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path)
@@ -422,32 +530,33 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 		highCorner.y() = m_cfg.bmax[2];
 	}
 
-	int tileMinXIndex = (lowCorner.x() - m_cfg.bmin[0]) / tilesize;
-	int tileMaxXIndex = (highCorner.x() - m_cfg.bmin[0]) / tilesize;
-	int tileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
-	int tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
+	mAwareTileMinXIndex = (lowCorner.x() - m_cfg.bmin[0]) / tilesize;
+	mAwareTileMaxXIndex = (highCorner.x() - m_cfg.bmin[0]) / tilesize;
+	mAwareTileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
+	mAwareTileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
 
-	lowCorner.x() = m_cfg.bmin[0] + (tileMinXIndex * tilesize);
-	lowCorner.y() = m_cfg.bmin[2] + (tileMinYIndex * tilesize);
+	lowCorner.x() = m_cfg.bmin[0] + (mAwareTileMinXIndex * tilesize);
+	lowCorner.y() = m_cfg.bmin[2] + (mAwareTileMinYIndex * tilesize);
 	lowCorner.z() = m_cfg.bmin[1];
-	highCorner.x() = m_cfg.bmin[0] + ((tileMaxXIndex + 1) * tilesize);
-	highCorner.y() = m_cfg.bmin[2] + ((tileMaxYIndex + 1) * tilesize);
+	highCorner.x() = m_cfg.bmin[0] + ((mAwareTileMaxXIndex + 1) * tilesize);
+	highCorner.y() = m_cfg.bmin[2] + ((mAwareTileMaxYIndex + 1) * tilesize);
 	highCorner.z() = m_cfg.bmax[1];
 
 	WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(lowCorner.x(), lowCorner.y()), WFMath::Point<2>(highCorner.x(), highCorner.y()));
 
-	std::vector<WFMath::RotBox<2>> entityAreas;
-
 //Collect entities
-	auto entity = mView.getTopLevel();
-	for (size_t i = 0; i < entity->numContained(); ++i) {
-		buildEntityAreas(*entity->getContained(i), adjustedArea, entityAreas);
-	}
+	std::vector<WFMath::RotBox<2>> entityAreas;
+	findEntityAreas(adjustedArea, entityAreas);
+
+//	auto entity = mView.getTopLevel();
+//	for (size_t i = 0; i < entity->numContained(); ++i) {
+//		buildEntityAreas(*entity->getContained(i), adjustedArea, entityAreas);
+//	}
 
 //Now build tiles
 
-	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
-		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
+	for (int tx = mAwareTileMinXIndex; tx <= mAwareTileMaxXIndex; ++tx) {
+		for (int ty = mAwareTileMinYIndex; ty <= mAwareTileMaxYIndex; ++ty) {
 			if (!forceUpdate) {
 				//If we're not forcing an update, just check if there's any tile already.
 				auto tile = m_tileCache->getTileAt(tx, ty, 0);
@@ -456,37 +565,41 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 				}
 			}
 
-
-			TileCacheData tiles[MAX_LAYERS];
-			memset(tiles, 0, sizeof(tiles));
-
-			int ntiles = rasterizeTileLayers(entityAreas, tx, ty, m_cfg, tiles, MAX_LAYERS);
-
-			for (int j = 0; j < ntiles; ++j) {
-				TileCacheData* tile = &tiles[j];
-
-				dtTileCacheLayerHeader* header = (dtTileCacheLayerHeader*)tile->data;
-				dtTileRef tileRef = m_tileCache->getTileRef(m_tileCache->getTileAt(header->tx, header->ty, header->tlayer));
-				if (tileRef) {
-					m_tileCache->removeTile(tileRef, NULL, NULL);
-				}
-				dtStatus status = m_tileCache->addTile(tile->data, tile->dataSize, DT_COMPRESSEDTILE_FREE_DATA, 0);  // Add compressed tiles to tileCache
-				if (dtStatusFailed(status)) {
-					dtFree(tile->data);
-					tile->data = 0;
-					continue;
-				}
-			}
-
-			m_tileCache->buildNavMeshTilesAt(tx, ty, m_navMesh);
-
-			EventTileUpdated(tx, ty);
-
+			rebuildTile(tx, ty, entityAreas);
 		}
 	}
 }
 
-void Awareness::buildEntityAreas(Eris::Entity& entity, const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas)
+void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>& entityAreas)
+{
+	TileCacheData tiles[MAX_LAYERS];
+	memset(tiles, 0, sizeof(tiles));
+
+	int ntiles = rasterizeTileLayers(entityAreas, tx, ty, m_cfg, tiles, MAX_LAYERS);
+
+	for (int j = 0; j < ntiles; ++j) {
+		TileCacheData* tile = &tiles[j];
+
+		dtTileCacheLayerHeader* header = (dtTileCacheLayerHeader*)tile->data;
+		dtTileRef tileRef = m_tileCache->getTileRef(m_tileCache->getTileAt(header->tx, header->ty, header->tlayer));
+		if (tileRef) {
+			m_tileCache->removeTile(tileRef, NULL, NULL);
+		}
+		dtStatus status = m_tileCache->addTile(tile->data, tile->dataSize, DT_COMPRESSEDTILE_FREE_DATA, 0);  // Add compressed tiles to tileCache
+		if (dtStatusFailed(status)) {
+			dtFree(tile->data);
+			tile->data = 0;
+			continue;
+		}
+	}
+
+	m_tileCache->buildNavMeshTilesAt(tx, ty, m_navMesh);
+
+	EventTileUpdated(tx, ty);
+
+}
+
+void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, WFMath::RotBox<2>>& entityAreas)
 {
 	if (&entity == mView.getAvatar()->getEntity()) {
 		return;
@@ -506,8 +619,8 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, const WFMath::AxisBox<2>&
 	bool isSimple = false;
 	if (entity.hasAttr("simple")) {
 		auto simpleElement = entity.valueOfAttr("simple");
-		if (simpleElement.isInt() && simpleElement.asInt() == 0) {
-			isSimple = false;
+		if (simpleElement.isInt() && simpleElement.asInt() == 1) {
+			isSimple = true;
 		}
 	}
 
@@ -539,15 +652,24 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, const WFMath::AxisBox<2>&
 
 			rotbox.shift(WFMath::Vector<2>(pos.x(), pos.y()));
 
-			if (WFMath::Contains(extent, rotbox, false) || WFMath::Intersect(extent, rotbox, false)) {
-				areas.push_back(rotbox);
-			}
+			entityAreas.insert(std::make_pair(&entity, rotbox));
 		}
 	}
 
 	if (!isSimple) {
 		for (size_t i = 0; i < entity.numContained(); ++i) {
-			buildEntityAreas(*entity.getContained(i), extent, areas);
+			buildEntityAreas(*entity.getContained(i), entityAreas);
+		}
+	}
+}
+
+void Awareness::findEntityAreas(const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas)
+{
+
+	for (auto& entry : mEntityAreas) {
+		auto& rotbox = entry.second;
+		if (WFMath::Contains(extent, rotbox, false) || WFMath::Intersect(extent, rotbox, false)) {
+			areas.push_back(rotbox);
 		}
 	}
 }
