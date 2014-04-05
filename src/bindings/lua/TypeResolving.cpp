@@ -45,7 +45,7 @@ namespace Lua
 template <>
 const char* resolveLuaTypename<const Ogre::LodConfig>(){return "Ogre::LodConfig";}
 template <>
-const char* resolveLuaTypename<const Ember::OgreView::EmberEntity>(){return "Ember::OgreView::EmberEntity";}
+const char* resolveLuaTypename<const Ember::EmberEntity>(){return "Ember::EmberEntity";}
 template <>
 const char* resolveLuaTypename<const Ogre::Camera>(){return "Ogre::Camera";}
 template <>

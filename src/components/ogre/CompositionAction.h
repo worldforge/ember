@@ -24,9 +24,9 @@
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
-class EmberEntity;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

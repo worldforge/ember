@@ -16,19 +16,20 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "components/ogre/IGraphicalRepresentation.h"
+#ifndef MODELREPRESENTATION_H_
+#define MODELREPRESENTATION_H_
+
 #include "components/ogre/OgreIncludes.h"
-#include "components/ogre/EmberEntity.h"
 #include "components/ogre/IAnimated.h"
-#include <vector>
-#include <list>
+#include "domain/IGraphicalRepresentation.h"
+#include "domain/EmberEntity.h"
 #include <OgreMath.h>
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 #include <sigc++/trackable.h>
+#include <vector>
+#include <list>
 
-#ifndef MODELREPRESENTATION_H_
-#define MODELREPRESENTATION_H_
 
 namespace Eris
 {
@@ -37,13 +38,13 @@ class Entity;
 
 namespace Ember
 {
+class EmberEntity;
 namespace EntityMapping
 {
 class EntityMapping;
 }
 namespace OgreView
 {
-class EmberEntity;
 class SoundEntity;
 class Scene;
 

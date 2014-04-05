@@ -21,7 +21,7 @@
 #include "AuthoringVisualizationMover.h"
 #include "components/ogre/World.h"
 #include "components/ogre/Scene.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "framework/LoggingInstance.h"
 #include <Eris/View.h>
 #include <Eris/Entity.h>

@@ -22,7 +22,7 @@
 #endif
 #include "GUIManager.h"
 #include "EmberOgre.h"
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "GUICEGUIAdapter.h"
 #include "World.h"
 

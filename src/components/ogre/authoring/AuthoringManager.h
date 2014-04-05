@@ -40,13 +40,9 @@ class Entity;
 namespace Ember
 {
 class ConfigListenerContainer;
-}
-
-namespace Ember
-{
+class EmberEntity;
 namespace OgreView
 {
-class EmberEntity;
 class World;
 
 /**

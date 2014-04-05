@@ -28,6 +28,7 @@
 
 namespace Ember
 {
+class EmberEntity;
 namespace EntityMapping
 {
 class EntityMapping;
@@ -35,7 +36,6 @@ class EntityMapping;
 namespace OgreView
 {
 
-class EmberEntity;
 class Scene;
 
 /**

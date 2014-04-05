@@ -39,12 +39,12 @@ class AttributeObserver;
 
 namespace Ember
 {
+class IGraphicalRepresentation;
+class EmberEntity;
 namespace OgreView
 {
 
-class IGraphicalRepresentation;
 class INodeProvider;
-class EmberEntity;
 
 namespace Model
 {

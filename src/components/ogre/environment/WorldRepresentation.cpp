@@ -21,7 +21,7 @@
 #endif
 #include "WorldRepresentation.h"
 #include "Environment.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 namespace Ember
 {

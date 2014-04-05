@@ -28,9 +28,8 @@
 #include "../ListBinder.h"
 
 namespace Ember {
-namespace OgreView {
-
 class EmberEntity;
+namespace OgreView {
 
 namespace Gui {
 

@@ -30,7 +30,7 @@
 #include "terrain/TerrainShaderParser.h"
 #include "terrain/TerrainDefPoint.h"
 
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 #include <OgreSceneManager.h>
 

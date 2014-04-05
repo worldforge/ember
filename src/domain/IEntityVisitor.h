@@ -21,8 +21,6 @@
 
 namespace Ember
 {
-namespace OgreView
-{
 
 class EmberEntity;
 
@@ -44,8 +42,6 @@ public:
 	 */
 	virtual void visit(EmberEntity& entity) = 0;
 };
-
-}
 
 }
 

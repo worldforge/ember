@@ -33,7 +33,7 @@ class MovementController
 	 * @param point 
 	 * @param locationEntity 
 	 */
-	void teleportTo(const Ogre::Vector3& point, Ember::OgreView::EmberEntity* locationEntity);
+	void teleportTo(const Ogre::Vector3& point, Ember::EmberEntity* locationEntity);
 	
 	MovementControllerMode::Mode getMode() const;
 	

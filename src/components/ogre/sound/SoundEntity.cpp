@@ -27,7 +27,7 @@
 
 #include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/Model.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 #include "services/sound/SoundInstance.h"
 #include "services/sound/SoundSource.h"

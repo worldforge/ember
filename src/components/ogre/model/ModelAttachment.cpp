@@ -17,10 +17,10 @@
  */
 #include "ModelAttachment.h"
 
-#include "components/ogre/IGraphicalRepresentation.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/IGraphicalRepresentation.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/HiddenAttachment.h"
-#include "components/ogre/IEntityAttachment.h"
+#include "domain/IEntityAttachment.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/Convert.h"

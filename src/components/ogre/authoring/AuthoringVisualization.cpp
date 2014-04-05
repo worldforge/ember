@@ -18,12 +18,12 @@
 
 #include "AuthoringVisualization.h"
 #include "AuthoringVisualizationCollisionDetector.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/OgreInfo.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/MousePicker.h"
-#include "components/ogre/IEntityControlDelegate.h"
+#include "domain/IEntityControlDelegate.h"
 
 #include "framework/LoggingInstance.h"
 #include <OgreSceneNode.h>

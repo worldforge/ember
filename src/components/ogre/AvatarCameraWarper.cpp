@@ -22,7 +22,7 @@
 
 #include "AvatarCameraWarper.h"
 #include "MovementController.h"
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "camera/MainCamera.h"
 #include "framework/MainLoopController.h"
 #include "framework/Tokeniser.h"

@@ -24,7 +24,7 @@
 #define EMBEROGREEMBERENTITYHIDEMODELACTION_H
 
 #include "EmberOgrePrerequisites.h"
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 #include "components/entitymapping/Actions/Action.h"
 

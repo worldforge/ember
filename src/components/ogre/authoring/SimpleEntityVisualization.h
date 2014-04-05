@@ -39,11 +39,9 @@ class Element;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
-
-class EmberEntity;
-
 namespace Authoring
 {
 

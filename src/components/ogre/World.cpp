@@ -25,7 +25,7 @@
 #include "authoring/EntityMoveManager.h"
 #include "Scene.h"
 #include "EntityWorldPickListener.h"
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "EmberOgreSignals.h"
 #include "ForestRenderingTechnique.h"
 #include "RenderDistanceManager.h"

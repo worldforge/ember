@@ -33,7 +33,7 @@
 #include "../EmberOgre.h"
 #include "../Convert.h"
 #include "../Avatar.h"
-#include "../EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "../World.h"
 
 #include "services/EmberServices.h"

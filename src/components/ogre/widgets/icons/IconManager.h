@@ -32,9 +32,8 @@ namespace Eris
 }
 
 namespace Ember {
+class EmberEntity;
 namespace OgreView {
-
-	class EmberEntity;
 
 namespace Gui {
 

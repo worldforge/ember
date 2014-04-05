@@ -37,10 +37,9 @@ class BasePoint;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
-
-class EmberEntity;
 namespace Camera
 {
 class MainCamera;

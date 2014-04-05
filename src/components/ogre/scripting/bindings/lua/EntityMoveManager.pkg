@@ -31,7 +31,7 @@ class EntityMoveManager
 {
 public:
 
-	void startMove(EmberEntity& entity);
+	void startMove(Ember::EmberEntity& entity);
 	
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
@@ -43,7 +43,7 @@ public:
 	/**
 	* Emitted when the movement of an entity starts
 	*/
-	sigc::signal<void, EmberEntity&, EntityMover&> EventStartMoving;
+	sigc::signal<void, Ember::EmberEntity&, EntityMover&> EventStartMoving;
 	
 	/**
 	* Emitted when the movement of an entity has finished.

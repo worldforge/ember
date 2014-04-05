@@ -22,7 +22,7 @@
 
 #include "EntityTooltip.h"
 #include "components/ogre/World.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/widgets/icons/IconManager.h"
 #include "components/ogre/widgets/icons/Icon.h"
 

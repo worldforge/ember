@@ -25,7 +25,7 @@
 #endif
 
 #include "SnapToMovement.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/Convert.h"
 #include "framework/LoggingInstance.h"

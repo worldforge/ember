@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 #include "EmberEntityUserObject.h"
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "ICollisionDetector.h"
 #include "model/Model.h"
 

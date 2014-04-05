@@ -19,16 +19,14 @@
 #ifndef OCEANREPRESENTATION_H_
 #define OCEANREPRESENTATION_H_
 
-#include "components/ogre/IGraphicalRepresentation.h"
+#include "domain/IGraphicalRepresentation.h"
 #include <sigc++/trackable.h>
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
-
-class EmberEntity;
-
 namespace Environment
 {
 

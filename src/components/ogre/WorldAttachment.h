@@ -19,7 +19,7 @@
 #ifndef WORLDATTACHMENT_H_
 #define WORLDATTACHMENT_H_
 
-#include "components/ogre/IEntityAttachment.h"
+#include "domain/IEntityAttachment.h"
 
 namespace Ogre
 {
@@ -28,6 +28,8 @@ class SceneNode;
 
 namespace Ember
 {
+class EmberEntity;
+class IGraphicalRepresentation;
 namespace Domain
 {
 class IHeightProvider;
@@ -40,9 +42,7 @@ namespace Terrain
 class TerrainManager;
 }
 
-class IGraphicalRepresentation;
 class WorldEmberEntity;
-class EmberEntity;
 
 class WorldAttachment: public IEntityAttachment
 {

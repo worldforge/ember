@@ -48,11 +48,11 @@ struct MouseMotion;
 class InputCommandMapper;
 class Input;
 class ConfigListenerContainer;
+class EmberEntity;
 
 namespace OgreView
 {
 class Avatar;
-class EmberEntity;
 struct EntityPickResult;
 class IWorldPickListener;
 class IMovementProvider;

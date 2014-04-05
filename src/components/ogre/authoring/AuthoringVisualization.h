@@ -23,12 +23,10 @@
 
 namespace Ember
 {
+class EmberEntity;
+class IEntityControlDelegate;
 namespace OgreView
 {
-
-class IEntityControlDelegate;
-class EmberEntity;
-
 namespace Authoring
 {
 

@@ -37,7 +37,7 @@ public:
 	void setSlot(Ember::OgreView::Gui::EntityIconSlot* slot);
 	Ember::OgreView::Gui::EntityIconSlot* getSlot();
 	void setTooltipText(const std::string& text);
-	Ember::OgreView::EmberEntity* getEntity();
+	Ember::EmberEntity* getEntity();
 	bool operator==(const Ember::OgreView::Gui::EntityIcon& value);
 	
 };

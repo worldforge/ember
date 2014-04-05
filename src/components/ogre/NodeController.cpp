@@ -18,7 +18,7 @@
 
 #include "NodeController.h"
 
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/MotionManager.h"
 #include "components/ogre/NodeAttachment.h"
 

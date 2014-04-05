@@ -34,6 +34,7 @@
 namespace Ember {
 
 class CommandHistory;
+class EmberEntity;
 
 namespace OgreView {
 
@@ -47,7 +48,6 @@ class ModelRepresentation;
 }
 class GUIManager;
 class Widget;
-class EmberEntity;
 class World;
 
 namespace Gui {

@@ -18,7 +18,7 @@
 
 #include "ModelFitting.h"
 
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 namespace Ember
 {

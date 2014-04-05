@@ -33,8 +33,8 @@ namespace CEGUI {
 }
 
 namespace Ember {
-namespace OgreView {
 class EmberEntity;
+namespace OgreView {
 
 namespace Gui {
 

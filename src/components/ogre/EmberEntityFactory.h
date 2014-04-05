@@ -41,6 +41,7 @@ class Avatar;
 
 namespace Ember
 {
+class EmberEntity;
 namespace EntityMapping
 {
 class EntityMapping;
@@ -48,7 +49,6 @@ class EntityMapping;
 namespace OgreView
 {
 
-class EmberEntity;
 class ViewEmberEntity;
 class WorldEmberEntity;
 class Scene;

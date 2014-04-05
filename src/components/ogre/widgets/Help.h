@@ -27,9 +27,9 @@
 #include "framework/ConsoleObject.h"
 
 namespace Ember {
+class EmberEntity;
 namespace OgreView {
 class GUIManager;
-class EmberEntity;
 namespace Gui {
 class Widget;
 

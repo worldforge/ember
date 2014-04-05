@@ -18,10 +18,10 @@
 
 #include "NodeAttachment.h"
 
-#include "components/ogre/IGraphicalRepresentation.h"
-#include "components/ogre/IEntityControlDelegate.h"
+#include "domain/IGraphicalRepresentation.h"
+#include "domain/IEntityControlDelegate.h"
 #include "components/ogre/INodeProvider.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/NodeController.h"
 #include "components/ogre/SceneNodeProvider.h"

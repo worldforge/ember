@@ -27,10 +27,10 @@
 #include "IWorldPickListener.h"
 #include "framework/ConsoleObject.h"
 #include <Eris/EntityRef.h>
+#include <OgreVector3.h>
 #include <sigc++/signal.h>
 #include <memory>
 #include <vector>
-#include <OgreVector3.h>
 
 namespace Eris
 {
@@ -39,10 +39,10 @@ class View;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 
-class EmberEntity;
 class EntityWorldPickListener;
 class EmberEntityFactory;
 class Scene;

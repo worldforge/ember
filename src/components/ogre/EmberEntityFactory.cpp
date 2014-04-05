@@ -22,7 +22,7 @@
 
 #include "EmberEntityFactory.h"
 
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/Avatar.h"
 #include "components/ogre/EmberEntityActionCreator.h"
 

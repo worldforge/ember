@@ -24,8 +24,6 @@
 
 namespace Ember
 {
-namespace OgreView
-{
 
 class EmberEntity;
 
@@ -56,7 +54,6 @@ public:
 	virtual const std::string& getType() const = 0;
 
 };
-}
 
 }
 

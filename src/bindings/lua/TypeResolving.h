@@ -61,10 +61,10 @@ struct MouseMotion;
 namespace Domain
 {
 class EntityTalk;
+class EmberEntity;
 }
 namespace OgreView
 {
-class EmberEntity;
 struct EntityPickResult;
 struct MousePickerArgs;
 class EmberEntityFactory;

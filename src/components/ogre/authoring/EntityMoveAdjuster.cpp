@@ -25,7 +25,7 @@
 #endif
 
 #include "EntityMoveAdjuster.h"
-#include "../EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "EntityMoveManager.h"
 
 namespace Ember

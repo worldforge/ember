@@ -23,10 +23,10 @@
 
 namespace Ember
 {
+class IEntityControlDelegate;
 namespace OgreView
 {
 
-class IEntityControlDelegate;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>

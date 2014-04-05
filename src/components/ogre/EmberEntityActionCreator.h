@@ -30,9 +30,9 @@
 #include "components/entitymapping/IActionCreator.h"
 
 namespace Ember {
+class EmberEntity;
 namespace OgreView {
 
-class EmberEntity;
 class Scene;
 
 /**

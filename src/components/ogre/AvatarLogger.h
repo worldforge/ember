@@ -32,13 +32,13 @@
 
 
 namespace Ember {
+class EmberEntity;
 namespace Domain {
 class EntityTalk;
 }
 namespace OgreView {
 
 class Avatar;
-class EmberEntity;
 
 /**
 	@brief Handles logging of ingame events such as chat to a file.

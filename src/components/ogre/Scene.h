@@ -25,13 +25,13 @@
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 namespace Terrain
 {
 class ITerrainAdapter;
 }
-class EmberEntity;
 class ISceneRenderingTechnique;
 class IPageDataProvider;
 

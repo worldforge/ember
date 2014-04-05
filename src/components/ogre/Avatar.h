@@ -45,6 +45,7 @@ class Entity;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 
@@ -65,7 +66,6 @@ namespace Terrain
 class ITerrainAdapter;
 }
 
-class EmberEntity;
 class AvatarLogger;
 class AvatarLoggerParent;
 class AvatarAttachmentController;

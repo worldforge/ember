@@ -8,7 +8,7 @@ namespace Ember {
 namespace OgreView {
 namespace Terrain {
 class TerrainArea{
-    TerrainArea(EmberEntity& entity);
+    TerrainArea(Ember::EmberEntity& entity);
 	bool init();
 	
 	inline Mercator::Area* getArea() const { return mArea; }

@@ -64,7 +64,7 @@ public:
 	 * @param id The unique id for the entity.
 	 * @return An instance of EmberEntity or null if no entity with the specified id could be found.
 	 */
-	Ember::OgreView::EmberEntity* getEmberEntity(const std::string& eid) const;
+	Ember::EmberEntity* getEmberEntity(const std::string& eid) const;
 	
 	/**
 	 * @brief Gets the world entity pick listener, which listens to pick events for entities.

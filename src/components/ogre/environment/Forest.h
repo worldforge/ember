@@ -38,6 +38,7 @@ namespace Ogre
 	class Vector3;
 }
 namespace Ember {
+class EmberEntity;
 namespace OgreView {
 
 namespace Terrain
@@ -48,7 +49,6 @@ namespace Model {
 class ModelRepresentation;
 }
 
-class EmberEntity;
 
 namespace Environment {
 

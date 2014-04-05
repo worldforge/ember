@@ -19,7 +19,7 @@
 #ifndef EMBEROGRE_EMBERENTITY_H
 #define EMBEROGRE_EMBERENTITY_H
 
-#include "components/ogre/IVisualizable.h"
+#include "IVisualizable.h"
 
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
@@ -33,18 +33,16 @@ class View;
 
 namespace Ember
 {
-namespace Domain
-{
-class EntityTalk;
-class IHeightProvider;
-}
-namespace OgreView
-{
-
 class IGraphicalRepresentation;
 class IEntityAttachment;
 class IEntityControlDelegate;
 class IEntityVisitor;
+namespace Domain
+{
+class IHeightProvider;
+class EntityTalk;
+
+}
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -440,7 +438,6 @@ inline EmberEntity::PositioningMode EmberEntity::getPositioningMode() const
 	return mPositioningMode;
 }
 
-}
 
 }
 

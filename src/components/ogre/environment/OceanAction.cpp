@@ -20,7 +20,7 @@
 #include "OceanRepresentation.h"
 #include "Environment.h"
 
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/World.h"
 

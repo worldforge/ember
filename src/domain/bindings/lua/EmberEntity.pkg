@@ -1,5 +1,6 @@
+$#include "domain/EmberEntity.h"
+
 namespace Ember {
-namespace OgreView {
 class EmberEntity : public Eris::Entity {
 
 	enum PositioningMode
@@ -60,7 +61,7 @@ class EmberEntity : public Eris::Entity {
 	 */
 	void dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const;
 	
-	Ember::OgreView::EmberEntity* getAttachedEntity(const std::string& namedPoint);
+	Ember::EmberEntity* getAttachedEntity(const std::string& namedPoint);
 	
 	/**
 	 * @brief Emitted when the graphical representation changes.
@@ -68,5 +69,4 @@ class EmberEntity : public Eris::Entity {
 	sigc::signal<void> EventChangedGraphicalRepresentation;
 	
 };
-}
 }

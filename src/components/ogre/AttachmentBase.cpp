@@ -18,8 +18,8 @@
 
 #include "AttachmentBase.h"
 
-#include "components/ogre/EmberEntity.h"
-#include "components/ogre/IGraphicalRepresentation.h"
+#include "domain/EmberEntity.h"
+#include "domain/IGraphicalRepresentation.h"
 
 namespace Ember
 {

@@ -90,7 +90,7 @@ libEmberOgre_a_SOURCES = \
 \
 	Avatar.cpp AvatarCameraWarper.cpp \
 	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
-	EmberEntity.cpp EmberEntityActionCreator.cpp \
+	EmberEntityActionCreator.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
 	EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp \
 	EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
@@ -196,7 +196,7 @@ noinst_HEADERS = \
 \
 	Avatar.h AvatarCameraWarper.h MovementController.h \
 	AvatarLogger.h AvatarTerrainCursor.h \
-	EmberEntity.h EmberEntityActionCreator.h EmberEntityFactory.h \
+	EmberEntityActionCreator.h EmberEntityFactory.h \
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgreFileSystem.h EmberOgrePrerequisites.h \
 	EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h \
@@ -204,12 +204,12 @@ noinst_HEADERS = \
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreWindowProvider.h OgreSetup.h \
 	ShaderManager.h ShaderDetailManager.h ShadowCameraSetup.h ShadowDetailManager.h RenderDistanceManager.h AutoGraphicsLevelManager.h\
-	SimpleRenderContext.h XMLHelper.h IGraphicalRepresentation.h \
-	IEntityAttachment.h  WorldAttachment.h NodeAttachment.h IMovable.h IAnimated.h \
-	IEntityControlDelegate.h NodeController.h DelegatingNodeController.h \
+	SimpleRenderContext.h XMLHelper.h \
+	WorldAttachment.h NodeAttachment.h IMovable.h IAnimated.h \
+	NodeController.h DelegatingNodeController.h \
 	AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h \
 	AttachmentBase.h AvatarCameraMotionHandler.h FreeFlyingCameraMotionHandler.h \
-	ICollisionDetector.h INodeProvider.h SceneNodeProvider.h IVisualizable.h IEntityVisitor.h \
+	ICollisionDetector.h INodeProvider.h SceneNodeProvider.h \
 	EntityObserverBase.h TerrainPageDataProvider.h ILightning.h Scene.h ForestRenderingTechnique.h \
 	ISceneRenderingTechnique.h World.h EmberOgreSignals.h Screen.h ShapeVisual.h TerrainEntityManager.h \
 	OgreConfigurator.h CompositionAction.h GraphicalChangeAdapter.h

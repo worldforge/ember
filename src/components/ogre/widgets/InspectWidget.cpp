@@ -28,7 +28,7 @@
 
 #include "ColouredListItem.h"
 #include "../GUIManager.h"
-#include "../EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "../World.h"
 #include "components/ogre/authoring/AuthoringManager.h"
 

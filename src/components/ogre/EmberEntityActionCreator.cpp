@@ -32,7 +32,7 @@
 #include "components/ogre/environment/WorldAction.h"
 #include "components/ogre/widgets/LabelAction.h"
 #include "components/entitymapping/Cases/CaseBase.h"
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 using namespace Ember::EntityMapping;
 

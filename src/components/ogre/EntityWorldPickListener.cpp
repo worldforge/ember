@@ -28,7 +28,7 @@
 #include "EmberEntityUserObject.h"
 #include "Scene.h"
 
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 #include "MousePicker.h"
 

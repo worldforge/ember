@@ -33,7 +33,7 @@
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 #include "../EmberOgre.h"
-#include "../EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/NodeAttachment.h"
 
 namespace Ember

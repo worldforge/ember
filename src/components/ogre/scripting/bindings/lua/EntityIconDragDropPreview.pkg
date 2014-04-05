@@ -47,7 +47,7 @@ public:
 	 */
 	WFMath::Quaternion getDropOrientation() const;
 	
-	sigc::signal<void, EmberEntity*> EventEntityFinalized;
+	sigc::signal<void, Ember::EmberEntity*> EventEntityFinalized;
 };
 
 }

@@ -33,7 +33,7 @@
 #include "../model/ModelDefinition.h"
 #include "../model/SubModel.h"
 #include "components/ogre/Convert.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/model/ModelRepresentation.h"
 
 #include <sigc++/bind.h>

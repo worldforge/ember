@@ -63,6 +63,7 @@ class InputCommandMapper;
 class Input;
 class MainLoopController;
 class TimeFrame;
+class EmberEntity;
 namespace OgreView
 {
 
@@ -103,8 +104,6 @@ class EntityRecipeManager;
 }
 
 class GUIManager;
-
-class EmberEntity;
 
 class OgreResourceLoader;
 

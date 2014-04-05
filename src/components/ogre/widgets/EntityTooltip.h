@@ -29,8 +29,8 @@ class Window;
 }
 
 namespace Ember {
-namespace OgreView {
 class EmberEntity;
+namespace OgreView {
 class World;
 namespace Gui {
 

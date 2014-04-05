@@ -6,10 +6,6 @@ $pfile "MovementController.pkg"
 $pfile "Avatar.pkg"
 $pfile "EmberEntityFactory.pkg"
 
-$pfile "EmberEntity.pkg"
-
-$pfile "IGraphicalRepresentation.pkg"
-
 $pfile "Environment.pkg"
 
 
@@ -129,7 +125,7 @@ class EmberOgre
 	Ogre::RenderWindow* getRenderWindow() const;
 	
 	sigc::signal<void, Ember::OgreView::EmberEntityFactory&> EventCreatedEmberEntityFactory;
-	sigc::signal<void, Ember::OgreView::EmberEntity&> EventCreatedAvatarEntity;
+	sigc::signal<void, Ember::EmberEntity&> EventCreatedAvatarEntity;
 		
 	sigc::signal<void, Ember::OgreView::GUIManager&> EventGUIManagerCreated;
 	sigc::signal<void, Ember::OgreView::GUIManager&> EventGUIManagerInitialized;

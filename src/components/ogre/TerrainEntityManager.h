@@ -37,9 +37,9 @@ class View;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
-class EmberEntity;
 namespace Terrain
 {
 class TerrainHandler;

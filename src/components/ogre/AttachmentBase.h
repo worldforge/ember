@@ -19,7 +19,7 @@
 #ifndef ATTACHMENTBASE_H_
 #define ATTACHMENTBASE_H_
 
-#include "components/ogre/IEntityAttachment.h"
+#include "domain/IEntityAttachment.h"
 
 namespace WFMath
 {
@@ -33,12 +33,12 @@ class SceneNode;
 
 namespace Ember
 {
+class EmberEntity;
+class IGraphicalRepresentation;
+class IEntityControlDelegate;
 namespace OgreView
 {
 
-class IGraphicalRepresentation;
-class EmberEntity;
-class IEntityControlDelegate;
 
 /**
  * @brief Abstract base class for all attachments which require both a valid parent and child entity.

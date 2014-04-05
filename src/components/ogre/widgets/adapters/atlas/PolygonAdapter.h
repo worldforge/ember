@@ -27,7 +27,7 @@
 #include "components/ogre/authoring/Polygon.h"
 #include "components/ogre/authoring/PolygonPointMovement.h"
 #include "components/ogre/authoring/IPolygonPositionProvider.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 namespace CEGUI
 {
@@ -37,10 +37,9 @@ class PushButton;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
-
-class EmberEntity;
 namespace Authoring
 {
 class Polygon;

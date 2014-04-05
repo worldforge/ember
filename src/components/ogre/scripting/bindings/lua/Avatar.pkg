@@ -8,7 +8,7 @@ class Avatar
 	Ogre::SceneNode* getAvatarSceneNode() const;
 
 	
-	EmberEntity& getEmberEntity();
+	Ember::EmberEntity& getEmberEntity();
 	
 	
 	/**
@@ -19,8 +19,8 @@ class Avatar
 	 */
 	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
 
-	sigc::signal<void, Ember::OgreView::EmberEntity* > EventAddedEntityToInventory;
-	sigc::signal<void, Ember::OgreView::EmberEntity* > EventRemovedEntityFromInventory;
+	sigc::signal<void, Ember::EmberEntity* > EventAddedEntityToInventory;
+	sigc::signal<void, Ember::EmberEntity* > EventRemovedEntityFromInventory;
 	
 	/**
 	 * @brief Emitted when the entity the avatar controls is deleted on the server.

@@ -9,7 +9,7 @@ noinst_LIBRARIES = liblua_Domain.a
 liblua_Domain_a_SOURCES = Domain.cxx
 
 CLEANFILES = Domain.cxx
-TOLUA_PKGS = Domain.pkg EntityTalk.pkg
+TOLUA_PKGS = Domain.pkg EntityTalk.pkg EmberEntity.pkg IGraphicalRepresentation.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 Domain.cxx: $(TOLUA_PKGS)
 

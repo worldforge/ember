@@ -23,8 +23,6 @@
 
 namespace Ember
 {
-namespace OgreView
-{
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -58,7 +56,6 @@ public:
 	 */
 	virtual bool getVisualize(const std::string& visualization) const = 0;
 };
-}
 
 }
 

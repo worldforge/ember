@@ -52,6 +52,7 @@ namespace Ember
 {
 class Input;
 class ConfigListenerContainer;
+class EmberEntity;
 namespace OgreView
 {
 
@@ -93,7 +94,6 @@ class EmberEntityFactory;
 class MotionManager;
 class Scene;
 class EmberOgreSignals;
-class EmberEntity;
 class ICameraMotionHandler;
 class IPageDataProvider;
 class EntityWorldPickListener;

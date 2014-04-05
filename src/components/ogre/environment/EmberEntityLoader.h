@@ -32,12 +32,12 @@
 #define EMBERENTITYLOADER_USEBATCH 0
 
 namespace Ember {
+class EmberEntity;
 namespace OgreView {
 
 namespace Model {
 class ModelRepresentation;
 }
-class EmberEntity;
 
 namespace Environment {
 

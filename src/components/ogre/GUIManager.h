@@ -60,6 +60,7 @@ class ConfigService;
 
 class ServerServiceSignals;
 class MainLoopController;
+class EmberEntity;
 
 namespace Domain
 {
@@ -74,7 +75,6 @@ class CEGUILogger;
 namespace OgreView
 {
 
-class EmberEntity;
 class GUICEGUIAdapter;
 class MovementController;
 class World;

@@ -19,7 +19,7 @@
 #ifndef AUTHORINGHANDLER_H_
 #define AUTHORINGHANDLER_H_
 
-#include "components/ogre/IEntityVisitor.h"
+#include "domain/IEntityVisitor.h"
 #include "components/ogre/EntityObserverBase.h"
 #include <unordered_map>
 #include <sigc++/trackable.h>
@@ -31,9 +31,9 @@ class Entity;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
-class EmberEntity;
 class World;
 
 namespace Authoring

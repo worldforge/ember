@@ -23,11 +23,11 @@
 
 namespace Ember
 {
+class IGraphicalRepresentation;
+class EmberEntity;
 namespace OgreView
 {
 
-class IGraphicalRepresentation;
-class EmberEntity;
 
 
 /**

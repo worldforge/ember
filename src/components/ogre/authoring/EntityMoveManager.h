@@ -32,10 +32,10 @@
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 
-class EmberEntity;
 class World;
 
 namespace Authoring

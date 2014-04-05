@@ -23,6 +23,7 @@
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 
@@ -33,7 +34,6 @@ class TerrainManager;
 
 class GUIManager;
 class MotionManager;
-class EmberEntity;
 class EmberEntityFactory;
 class World;
 

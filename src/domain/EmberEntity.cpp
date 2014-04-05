@@ -24,11 +24,11 @@
 #include "IGraphicalRepresentation.h"
 #include "IEntityAttachment.h"
 #include "IEntityVisitor.h"
+#include "EntityTalk.h"
+#include "IHeightProvider.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/MultiLineListFormatter.h"
 #include "framework/LoggingInstance.h"
-#include "domain/EntityTalk.h"
-#include "domain/IHeightProvider.h"
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -40,8 +40,6 @@
 #include <sstream>
 
 namespace Ember
-{
-namespace OgreView
 {
 
 const std::string EmberEntity::MODE_FLOATING("floating");
@@ -474,5 +472,4 @@ void EmberEntity::setCompositionMode(EmberEntity::CompositionMode mode)
 	mCompositionMode = mode;
 }
 
-}
 }

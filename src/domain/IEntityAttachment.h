@@ -19,7 +19,7 @@
 #ifndef IENTITYATTACHMENT_H_
 #define IENTITYATTACHMENT_H_
 
-#include "components/ogre/IVisualizable.h"
+#include "IVisualizable.h"
 
 #include <string>
 
@@ -30,8 +30,6 @@ template<int> class Vector;
 }
 
 namespace Ember
-{
-namespace OgreView
 {
 
 class IGraphicalRepresentation;
@@ -124,7 +122,6 @@ public:
 
 };
 
-}
 
 }
 

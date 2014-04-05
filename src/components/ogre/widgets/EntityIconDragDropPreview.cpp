@@ -29,7 +29,6 @@
 #include "QuickHelp.h"
 
 #include "EntityIcon.h"
-#include "components/ogre/EmberEntity.h"
 #include "../authoring/DetachedEntity.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/Model.h"
@@ -39,6 +38,8 @@
 #include "components/entitymapping/Definitions/CaseDefinition.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 
+#include "domain/EmberEntity.h"
+
 #include <Eris/TypeInfo.h>
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
@@ -47,10 +48,10 @@
 using namespace Ember;
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 
-class EmberEntity;
 
 namespace Gui
 {

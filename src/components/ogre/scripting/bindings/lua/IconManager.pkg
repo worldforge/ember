@@ -40,11 +40,11 @@ public:
 
     ~IconManager();
     
-    Icon* getIcon(int pixelWidth, Ember::OgreView::EmberEntity* entity);
+    Icon* getIcon(int pixelWidth, Ember::EmberEntity* entity);
     Icon* getIcon(int pixelWidth, Eris::TypeInfo* erisType);
 
     void render(Icon& icon, const std::string& modelName);
-    void render(Icon& icon, Ember::OgreView::EmberEntity& entity);
+    void render(Icon& icon, Ember::EmberEntity& entity);
     void render(Icon& icon, Eris::TypeInfo& erisType);
 };
 

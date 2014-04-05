@@ -20,8 +20,8 @@
 
 #include "Model.h"
 #include "ModelRepresentation.h"
-#include "components/ogre/EmberEntity.h"
-#include "components/ogre/IGraphicalRepresentation.h"
+#include "domain/EmberEntity.h"
+#include "domain/IGraphicalRepresentation.h"
 
 
 template<> Ember::OgreView::Model::ModelRepresentationManager* Ember::Singleton<Ember::OgreView::Model::ModelRepresentationManager>::ms_Singleton = 0;

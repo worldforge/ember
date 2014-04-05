@@ -27,7 +27,7 @@
 #include "TerrainArea.h"
 #include "TerrainAreaParser.h"
 
-#include "../EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 #include "framework/LoggingInstance.h"
 

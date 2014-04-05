@@ -35,6 +35,7 @@ class Entity;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 
@@ -42,7 +43,6 @@ namespace Model
 {
 class Model;
 }
-class EmberEntity;
 class ICollisionDetector;
 
 /**

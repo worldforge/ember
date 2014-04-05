@@ -30,7 +30,7 @@
 #include "HelpMessage.h"
 
 #include "../GUIManager.h"
-#include "../EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 #include "../EmberOgre.h"
 #include "../World.h"

@@ -28,8 +28,6 @@ class Quaternion;
 
 namespace Ember
 {
-namespace OgreView
-{
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -67,8 +65,6 @@ public:
 	 */
 	virtual const WFMath::Vector<3>& getVelocity() const = 0;
 };
-
-}
 
 }
 

@@ -25,7 +25,7 @@
 #endif
 #include "EmberEntityPartAction.h"
 
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 

@@ -28,9 +28,9 @@ class ModelRepresentationManager
 public:
 	static ModelRepresentationManager& getSingleton();
 
-	Model* getModelForEntity(EmberEntity& entity) const;
+	Model* getModelForEntity(Ember::EmberEntity& entity) const;
 
-	ModelRepresentation* getRepresentationForEntity(EmberEntity& entity) const;
+	ModelRepresentation* getRepresentationForEntity(Ember::EmberEntity& entity) const;
 };
 
 }

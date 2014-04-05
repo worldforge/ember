@@ -32,7 +32,7 @@ namespace OgreView {
  */
 struct EntityPickResult
 {
-	Ember::OgreView::EmberEntity* entity;
+	Ember::EmberEntity* entity;
 	Ogre::Vector3 position;
 	float distance;
 };

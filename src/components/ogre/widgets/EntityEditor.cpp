@@ -29,7 +29,7 @@
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/World.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/ShapeVisual.h"
 #include "components/ogre/Avatar.h"
 #include "components/ogre/terrain/TerrainManager.h"

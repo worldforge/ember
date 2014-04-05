@@ -11,8 +11,6 @@
 
 #include "components/ogre/EmberEntityFactory.h"
 
-#include "components/ogre/EmberEntity.h"
-
 #include "components/ogre/environment/Environment.h"
 
 #include "components/ogre/MousePicker.h"

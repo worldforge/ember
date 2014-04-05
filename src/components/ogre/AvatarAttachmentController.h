@@ -19,7 +19,7 @@
 #ifndef AVATARATTACHMENTCONTROLLER_H_
 #define AVATARATTACHMENTCONTROLLER_H_
 
-#include "components/ogre/IEntityControlDelegate.h"
+#include "domain/IEntityControlDelegate.h"
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 #include <wfmath/vector.h>

@@ -21,7 +21,7 @@
 #endif
 
 #include "CompositionAction.h"
-#include "EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 namespace Ember
 {

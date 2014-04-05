@@ -19,7 +19,7 @@
 #ifndef INODEPROVIDER_H_
 #define INODEPROVIDER_H_
 
-#include "components/ogre/IVisualizable.h"
+#include "domain/IVisualizable.h"
 
 namespace Ogre
 {

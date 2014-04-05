@@ -39,7 +39,7 @@ public:
 	Ember::OgreView::Gui::EntityIconSlot* createSlot(unsigned int pixelSize = 64);
 	void destroySlot(Ember::OgreView::Gui::EntityIconSlot* slot);
 	
-	Ember::OgreView::Gui::EntityIcon* createIcon(Ember::OgreView::Gui::Icons::Icon* icon,  Ember::OgreView::EmberEntity* entity, unsigned int pixelSize = 64);
+	Ember::OgreView::Gui::EntityIcon* createIcon(Ember::OgreView::Gui::Icons::Icon* icon,  Ember::EmberEntity* entity, unsigned int pixelSize = 64);
 	void destroyIcon(Ember::OgreView::Gui::EntityIcon* icon);
 	
 	sigc::signal<void, Ember::OgreView::Gui::EntityIcon*> EventIconDragStart;

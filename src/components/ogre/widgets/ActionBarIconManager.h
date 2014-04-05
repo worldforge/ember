@@ -32,8 +32,8 @@ class ServerInfo;
 }
 
 namespace Ember {
-namespace OgreView {
 class EmberEntity;
+namespace OgreView {
 class GUIManager;
 namespace Gui {
 

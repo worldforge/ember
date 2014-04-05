@@ -35,6 +35,7 @@
 
 
 namespace Ember {
+class EmberEntity;
 namespace OgreView {
 
 namespace Camera {
@@ -43,7 +44,6 @@ class MainCamera;
 }
 class FreeFlyingCameraMotionHandler;
 class Avatar;
-class EmberEntity;
 
 class GUIManager;
 

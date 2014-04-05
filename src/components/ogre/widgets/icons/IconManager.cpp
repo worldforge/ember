@@ -28,7 +28,7 @@
 
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/World.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/SimpleRenderContext.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"

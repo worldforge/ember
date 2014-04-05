@@ -25,7 +25,7 @@
 #endif
 
 #include "LensFlare.h"
-#include "../EmberEntity.h"
+#include "domain/EmberEntity.h"
 
 #include <OgreColourValue.h>
 #include <OgreVector3.h>

@@ -26,7 +26,7 @@
 
 #include "EntityMover.h"
 #include "EntityMoveManager.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/World.h"

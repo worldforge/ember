@@ -28,10 +28,10 @@
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 
-class EmberEntity;
 
 /**
  * @brief Show a certain part of a Model.

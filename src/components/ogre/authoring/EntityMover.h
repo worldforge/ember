@@ -25,7 +25,7 @@
 
 #include "EntityMoverBase.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "components/ogre/IEntityControlDelegate.h"
+#include "domain/IEntityControlDelegate.h"
 
 #include <wfmath/point.h>
 

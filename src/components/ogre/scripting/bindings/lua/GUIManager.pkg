@@ -9,11 +9,11 @@ class GUIManager
 	//from Singleton
 	static GUIManager& getSingleton( void );
 
-	sigc::signal<void, const Ember::Domain::EntityTalk&, Ember::OgreView::EmberEntity*> AppendIGChatLine;
-	sigc::signal<void, const std::string&, Ember::OgreView::EmberEntity*> AppendOOGChatLine;
+	sigc::signal<void, const Ember::Domain::EntityTalk&, Ember::EmberEntity*> AppendIGChatLine;
+	sigc::signal<void, const std::string&, Ember::EmberEntity*> AppendOOGChatLine;
 	sigc::signal<void, const std::string&> AppendAvatarImaginary;
 	
-	sigc::signal<void, const std::string&, Ember::OgreView::EmberEntity*> EventEntityAction;
+	sigc::signal<void, const std::string&, Ember::EmberEntity*> EventEntityAction;
 	
 	sigc::signal<void, float> EventFrameStarted;
 	
@@ -23,7 +23,7 @@ class GUIManager
 	void removeWidget(Ember::OgreView::Gui::Widget* widget);
 	void addWidget(Ember::OgreView::Gui::Widget* widget);
 
-	void EmitEntityAction(const std::string& action, Ember::OgreView::EmberEntity* entity);
+	void EmitEntityAction(const std::string& action, Ember::EmberEntity* entity);
 
 	CEGUI::Window* getMainSheet() const;
 

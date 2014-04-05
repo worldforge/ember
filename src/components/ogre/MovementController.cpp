@@ -22,7 +22,7 @@
 #endif
 #include "MovementController.h"
 
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/GUIManager.h"
 #include "components/ogre/Avatar.h"
 #include "components/ogre/OgreInfo.h"

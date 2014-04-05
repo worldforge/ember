@@ -28,7 +28,7 @@
 #include "components/ogre/Avatar.h"
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/GUIManager.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/World.h"
 

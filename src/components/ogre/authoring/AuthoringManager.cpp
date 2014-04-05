@@ -21,7 +21,7 @@
 #include "SimpleEntityVisualization.h"
 #include "components/ogre/World.h"
 #include "components/ogre/Scene.h"
-#include "components/ogre/EmberEntity.h"
+#include "domain/EmberEntity.h"
 #include "components/ogre/Avatar.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
