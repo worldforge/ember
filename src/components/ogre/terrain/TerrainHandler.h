@@ -87,7 +87,7 @@ class PlantPopulator;
  *
  * Most terrain handling functions are implemented as Tasks, which are performed on a Task queue. As much work as possible is done in background threads, and then synced with both Ogre and the Mercator representations in the main thread.
  */
-class TerrainHandler : public virtual sigc::trackable, public Ember::Domain::IHeightProvider
+class TerrainHandler : public virtual sigc::trackable, public Ember::IHeightProvider
 {
 public:
 
@@ -126,7 +126,7 @@ public:
 	 * @param height The height, in world space, at the specified position.
 	 * @returns True if there was a valid, populated segment at the position (and therefore also a valid height).
 	 */
-	bool getHeight(const Domain::TerrainPosition& atPosition, float& height) const;
+	bool getHeight(const TerrainPosition& atPosition, float& height) const;
 
 	/**
 	 * @brief Updates the terrain with new terrain points.
@@ -141,14 +141,14 @@ public:
 	 *
 	 * @return
 	 */
-	const Domain::TerrainPosition getMax() const;
+	const TerrainPosition getMax() const;
 
 	/**
 	 * @brief Gets the min boundaries of the terrain.
 	 *
 	 * @return
 	 */
-	const Domain::TerrainPosition getMin() const;
+	const TerrainPosition getMin() const;
 
 	/**
 	 * @brief Gets the size of one terrain segment.
@@ -189,14 +189,14 @@ public:
 	 * @param index The index to create the new page on.
 	 * @param bridge The bridge to which will bind the page to a graphical representation. Ownership of this will be transferred.
 	 */
-	void setUpTerrainPageAtIndex(const Domain::TerrainIndex& index, ITerrainPageBridge* bridge);
+	void setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge);
 
 	/**
 	 * @brief Removes an already registered bridge at the specified index.
 	 *
 	 * @param index The index of the bridge.
 	 */
-	void removeBridge(const Domain::TerrainIndex& index);
+	void removeBridge(const TerrainIndex& index);
 
 	/**
 	 * @brief Returns a TerrainPage.
@@ -204,7 +204,7 @@ public:
 	 * @param convertToWFTerrainIndex The index for which we want to get a page for.
 	 * @return An instance of terrain page, or null if there was no existing one.
 	 */
-	TerrainPage* getTerrainPageAtIndex(const Domain::TerrainIndex& index) const;
+	TerrainPage* getTerrainPageAtIndex(const TerrainIndex& index) const;
 
 	/**
 	 * @brief Gets the page at the specified position in the world. If no page can be found, a null pointer is returned.
@@ -212,7 +212,7 @@ public:
 	 * @param worldPosition The position in world space to get the terrain page for.
 	 * @return An terrain page, or null of no page can be found at the specified position.
 	 */
-	TerrainPage* getTerrainPageAtPosition(const Domain::TerrainPosition& worldPosition) const;
+	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition) const;
 
 	/**
 	 * @brief Accessor for the main terrain info instance.
@@ -261,7 +261,7 @@ public:
 	 * Calling this method will update both the internal Mercator heightfield data as well as the Ogre graphical representation, and will trigger updates of any dependent featues (such as the foliage).
 	 * @param positions A vector of terrain positions, in world space. The terrain found at these positions will be reloaded. Note that if there's any pages between these positions, these will not be updated.
 	 */
-	void reloadTerrain(const std::vector<Domain::TerrainPosition>& positions);
+	void reloadTerrain(const std::vector<TerrainPosition>& positions);
 
 	/**
 	 * @brief Reloads the terrain found at the specified areas.
@@ -375,7 +375,7 @@ public:
 
 protected:
 
-	typedef std::map<Domain::TerrainIndex, std::shared_ptr<ITerrainPageBridge>> PageBridgeStore;
+	typedef std::map<TerrainIndex, std::shared_ptr<ITerrainPageBridge>> PageBridgeStore;
 
 	/**
 	 * @brief The size in indices of one side of a page.

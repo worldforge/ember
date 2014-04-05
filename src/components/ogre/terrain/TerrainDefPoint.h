@@ -49,7 +49,7 @@ class TerrainDefPoint
 	 * @brief Gets the position of the definition point, in world units.
 	 * @return The position of the point.
 	 */
-	const Domain::TerrainPosition& getPosition() const;
+	const TerrainPosition& getPosition() const;
 
 	/**
 	 * @brief Gets the height of the definition point, in world units.
@@ -62,7 +62,7 @@ class TerrainDefPoint
 	/**
 	The position of the point, in world units.
 	*/
-	Domain::TerrainPosition mPosition;
+	TerrainPosition mPosition;
 
 	/**
 	The height of the point, in world units.

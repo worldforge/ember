@@ -40,7 +40,7 @@ public:
 	
 	Ogre::SceneNode* getBasePointMarkerNode() const;
 	
-	const Ember::Domain::TerrainPosition& getPosition() const;
+	const Ember::TerrainPosition& getPosition() const;
 	
 	/**
 	 *    Gets the current height of the base point.
@@ -78,7 +78,7 @@ class TerrainEditBasePointMovement
 {
 
 float getVerticalMovement() const;
-const Ember::Domain::TerrainPosition& getPosition() const;
+const Ember::TerrainPosition& getPosition() const;
 
 };
 

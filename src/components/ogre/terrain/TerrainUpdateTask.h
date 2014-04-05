@@ -61,7 +61,7 @@ private:
 	bool& mHasTerrainInfo;
 	SegmentManager& mSegmentManager;
 
-	std::vector<Domain::TerrainPosition> mUpdatedPositions;
+	std::vector<TerrainPosition> mUpdatedPositions;
 	UpdateBasePointStore mUpdatedBasePoints;
 };
 

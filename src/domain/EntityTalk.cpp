@@ -28,8 +28,6 @@
 
 namespace Ember
 {
-namespace Domain
-{
 
 EntityTalk::EntityTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 {
@@ -98,8 +96,6 @@ const std::vector<std::string>& EntityTalk::getAddressedEntityIds() const
 const std::vector<std::string>& EntityTalk::getSuggestedResponses() const
 {
 	return mSuggestedResponses;
-}
-
 }
 
 }

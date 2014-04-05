@@ -112,7 +112,7 @@ void TerrainManager::startPaging()
 	getTerrainAdapter()->setCamera(&getScene().getMainCamera());
 }
 
-bool TerrainManager::getHeight(const Domain::TerrainPosition& atPosition, float& height) const
+bool TerrainManager::getHeight(const TerrainPosition& atPosition, float& height) const
 {
 	return mHandler->getHeight(atPosition, height);
 }
@@ -195,7 +195,7 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 
 	for (std::set<TerrainPage*>::const_iterator I = pages.begin(); I != pages.end(); ++I) {
 		TerrainPage* page = *I;
-		const Domain::TerrainIndex& index = page->getWFIndex();
+		const TerrainIndex& index = page->getWFIndex();
 
 		S_LOG_VERBOSE("Updating terrain page [" << index.first << "|" << index.second << "]");
 		getTerrainAdapter()->reloadPage(index);

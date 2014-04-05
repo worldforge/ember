@@ -25,8 +25,6 @@
 
 namespace Ember
 {
-namespace Domain
-{
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -100,6 +98,5 @@ private:
 	 */
 	std::vector<std::string> mAddressedEntityIds;
 };
-}
 } /* namespace Ember */
 #endif /* ENTITYTALK_H_ */

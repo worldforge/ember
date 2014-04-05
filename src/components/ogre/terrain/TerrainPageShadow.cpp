@@ -68,12 +68,12 @@ void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 	int pageSizeInMeters = pageSizeInVertices - 1;
 
 	//since Ogre uses a different coord system than WF, we have to do some conversions here
-	Domain::TerrainPosition origPosition(0, pageSizeInMeters - 1);
+	TerrainPosition origPosition(0, pageSizeInMeters - 1);
 
 	WFMath::Vector<3> wfLightDirection = mLightDirection;
 	wfLightDirection = wfLightDirection.normalize(1);
 
-	Domain::TerrainPosition position(origPosition);
+	TerrainPosition position(origPosition);
 
 	auto data = mImage->getData();
 

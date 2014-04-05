@@ -99,7 +99,7 @@ class Vegetation;
  *
  * It works closely with EmberTerrainPageSource.
  */
-class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackable, public ConsoleObject, public ConfigListenerContainer, public Ember::Domain::IHeightProvider
+class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackable, public ConsoleObject, public ConfigListenerContainer, public Ember::IHeightProvider
 {
 public:
 
@@ -173,7 +173,7 @@ public:
 	 * @param height The height, in world space, at the specified position.
 	 * @returns True if there was a valid, populated segment at the position (and therefore also a valid height).
 	 */
-	virtual bool getHeight(const Domain::TerrainPosition& atPosition, float& height) const;
+	virtual bool getHeight(const TerrainPosition& atPosition, float& height) const;
 
 	/**
 	 * @brief Accessor for the main terrain info instance.

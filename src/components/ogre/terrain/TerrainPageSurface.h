@@ -79,7 +79,7 @@ public:
 	 * @brief The position of the page in Worldforge space
 	 * @return
 	 */
-	const Domain::TerrainPosition& getWFPosition() const;
+	const TerrainPosition& getWFPosition() const;
 
 	/**
 	 * @brief The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.

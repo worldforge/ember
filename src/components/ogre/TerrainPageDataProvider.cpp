@@ -80,9 +80,9 @@ void TerrainPageDataProvider::removeBridge(const OgreIndex& ogreIndexPosition)
 	mHandler.removeBridge(convertToWFTerrainIndex(ogreIndexPosition));
 }
 
-Domain::TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition)
+TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition)
 {
-	return Domain::TerrainIndex(ogreIndexPosition.first, ogreIndexPosition.second);
+	return TerrainIndex(ogreIndexPosition.first, ogreIndexPosition.second);
 }
 
 }

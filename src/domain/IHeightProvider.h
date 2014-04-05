@@ -23,8 +23,6 @@
 
 namespace Ember
 {
-namespace Domain
-{
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -54,7 +52,6 @@ public:
 
 };
 
-}
 }
 
 #endif /* EMBER_DOMAIN_IHEIGHTPROVIDER_H_ */

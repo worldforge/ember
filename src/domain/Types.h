@@ -31,7 +31,6 @@ template<int> class Point;
 }
 
 namespace Ember {
-namespace Domain {
 
 /**
  * @brief A 2d position in the world.
@@ -43,6 +42,5 @@ typedef WFMath::Point<2> TerrainPosition;
  */
 typedef std::pair<int, int> TerrainIndex;
 
-}
 }
 #endif //EMBER_DOMAIN_TYPES_H

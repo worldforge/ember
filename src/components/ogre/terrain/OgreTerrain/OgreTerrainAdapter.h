@@ -73,9 +73,9 @@ public:
 
 	virtual void reloadAllPages();
 
-	virtual void reloadPage(const Domain::TerrainIndex& index);
+	virtual void reloadPage(const TerrainIndex& index);
 
-	virtual void reloadPageMaterial(const Domain::TerrainIndex& index);
+	virtual void reloadPageMaterial(const TerrainIndex& index);
 
 	virtual std::string getDebugInfo();
 

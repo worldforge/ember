@@ -37,12 +37,9 @@ class IGraphicalRepresentation;
 class IEntityAttachment;
 class IEntityControlDelegate;
 class IEntityVisitor;
-namespace Domain
-{
 class IHeightProvider;
 class EntityTalk;
 
-}
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -309,12 +306,12 @@ public:
 	 */
 	virtual float getHeight(const WFMath::Point<2>& localPosition) const;
 
-	void setHeightProvider(Domain::IHeightProvider* heightProvider);
+	void setHeightProvider(IHeightProvider* heightProvider);
 
 	CompositionMode getCompositionMode() const;
 	void setCompositionMode(CompositionMode mode);
 
-	sigc::signal<void, const Domain::EntityTalk&> EventTalk;
+	sigc::signal<void, const EntityTalk&> EventTalk;
 
 	/**
 	 * @brief Emitted when the graphical representation changes.
@@ -369,7 +366,7 @@ protected:
 	/**
 	 * @brief An optional height provider attached to this entity.
 	 */
-	Domain::IHeightProvider* mHeightProvider;
+	IHeightProvider* mHeightProvider;
 
 	/**
 	 *    @copydoc Eris::Entity::onTalk()

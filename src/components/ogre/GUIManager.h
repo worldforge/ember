@@ -61,11 +61,7 @@ class ConfigService;
 class ServerServiceSignals;
 class MainLoopController;
 class EmberEntity;
-
-namespace Domain
-{
 class EntityTalk;
-}
 namespace Cegui
 {
 class ColouredRenderedStringParser;
@@ -128,7 +124,7 @@ public:
 	 */
 	virtual ~GUIManager();
 
-	sigc::signal<void, const Domain::EntityTalk&, EmberEntity*> AppendIGChatLine;
+	sigc::signal<void, const EntityTalk&, EmberEntity*> AppendIGChatLine;
 	sigc::signal<void, const std::string&, EmberEntity*> AppendOOGChatLine;
 	sigc::signal<void, const std::string&> AppendAvatarImaginary;
 
@@ -378,7 +374,7 @@ protected:
 	 * @param entityTalk The entity talk struct, containing all useful entity talk data.
 	 * @param entity The entity which spoke.
 	 */
-	void entity_Talk(const Domain::EntityTalk& entityTalk, EmberEntity* entity);
+	void entity_Talk(const EntityTalk& entityTalk, EmberEntity* entity);
 
 	void entity_Emote(const std::string& description, EmberEntity* entity);
 

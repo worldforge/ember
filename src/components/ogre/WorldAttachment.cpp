@@ -40,7 +40,7 @@ namespace Ember
 namespace OgreView
 {
 
-WorldAttachment::WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Domain::IHeightProvider& heightProvider) :
+WorldAttachment::WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, IHeightProvider& heightProvider) :
 	mWorldEntity(worldEntity), mWorldNode(worldNode), mHeightProvider(heightProvider)
 {
 	//set the position to always 0, 0, 0

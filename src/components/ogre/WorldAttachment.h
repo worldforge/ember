@@ -30,10 +30,7 @@ namespace Ember
 {
 class EmberEntity;
 class IGraphicalRepresentation;
-namespace Domain
-{
 class IHeightProvider;
-}
 namespace OgreView
 {
 
@@ -47,7 +44,7 @@ class WorldEmberEntity;
 class WorldAttachment: public IEntityAttachment
 {
 public:
-	WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Domain::IHeightProvider& heightProvider);
+	WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, IHeightProvider& heightProvider);
 	virtual ~WorldAttachment();
 
 	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
@@ -85,7 +82,7 @@ protected:
 
 	EmberEntity& mWorldEntity;
 	Ogre::SceneNode* mWorldNode;
-	Domain::IHeightProvider& mHeightProvider;
+	IHeightProvider& mHeightProvider;
 
 };
 

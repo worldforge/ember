@@ -84,7 +84,7 @@ AvatarLogger::~AvatarLogger()
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
 }
 
-void AvatarLogger::GUIManager_AppendIGChatLine(const Domain::EntityTalk& entityTalk, EmberEntity* entity)
+void AvatarLogger::GUIManager_AppendIGChatLine(const EntityTalk& entityTalk, EmberEntity* entity)
 {
 	*mChatLogger << "[" << Time::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << entityTalk.getMessage() << std::endl;
 }

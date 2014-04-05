@@ -101,7 +101,7 @@ const char* resolveLuaTypename<const Ember::OgreView::GUIManager>(){return "Embe
 template <>
 const char* resolveLuaTypename<const Eris::TypeInfo>(){return "Eris::TypeInfo";}
 template <>
-const char* resolveLuaTypename<const Ember::Domain::EntityTalk>(){return "Ember::Domain::EntityTalk";}
+const char* resolveLuaTypename<const Ember::EntityTalk>(){return "Ember::EntityTalk";}
 template <>
 const char* resolveLuaTypename<const Ember::MouseMotion>(){return "Ember::MouseMotion";}
 

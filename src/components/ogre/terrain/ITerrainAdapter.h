@@ -115,14 +115,14 @@ public:
 	 *
 	 * @param index The index of the page.
 	 */
-	virtual void reloadPage(const Domain::TerrainIndex& index) = 0;
+	virtual void reloadPage(const TerrainIndex& index) = 0;
 
 	/**
 	 * @brief Reloads the material of a single page.
 	 *
 	 * @param index The index of the page.
 	 */
-	virtual void reloadPageMaterial(const Domain::TerrainIndex& index) = 0;
+	virtual void reloadPageMaterial(const TerrainIndex& index) = 0;
 
 	/**
 	 * @brief Provide a short debug information string to be shown in game, for the benefit of the developer.

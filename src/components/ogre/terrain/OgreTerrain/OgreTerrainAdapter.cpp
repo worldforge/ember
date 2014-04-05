@@ -150,7 +150,7 @@ void OgreTerrainAdapter::reloadAllPages()
 	}
 }
 
-void OgreTerrainAdapter::reloadPage(const Domain::TerrainIndex& index)
+void OgreTerrainAdapter::reloadPage(const TerrainIndex& index)
 {
 	if (mTerrainPagedWorldSection) {
 		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
@@ -161,7 +161,7 @@ void OgreTerrainAdapter::reloadPage(const Domain::TerrainIndex& index)
 	}
 }
 
-void OgreTerrainAdapter::reloadPageMaterial(const Domain::TerrainIndex& index)
+void OgreTerrainAdapter::reloadPageMaterial(const TerrainIndex& index)
 {
 	if (mTerrainGroup) {
 		EmberTerrain* page = static_cast<EmberTerrain*>(mTerrainGroup->getTerrain(index.first, index.second));

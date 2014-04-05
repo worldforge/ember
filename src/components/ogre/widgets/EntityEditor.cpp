@@ -110,7 +110,7 @@ protected:
 	/**
 	 * @brief Provides height data.
 	 */
-	const Domain::IHeightProvider& mHeightProvider;
+	const IHeightProvider& mHeightProvider;
 
 	/**
 	 * @brief The location we want marked.
@@ -128,7 +128,7 @@ public:
 		WFMath::Point<3> adjustedPoint(mPoint);
 
 		float height = adjustedPoint.z();
-		if (mHeightProvider.getHeight(Domain::TerrainPosition(mPoint.x(), mPoint.y()), height)) {
+		if (mHeightProvider.getHeight(TerrainPosition(mPoint.x(), mPoint.y()), height)) {
 			adjustedPoint.z() = height;
 		}
 
@@ -154,7 +154,7 @@ public:
 	 * @param terrainManager Provides height data.
 	 * @param point The location which will be marked.
 	 */
-	EntityPointMarker(Eris::Entity& entity, Ogre::SceneManager& sceneManager, const Domain::IHeightProvider& heightProvider, const WFMath::Point<3>& point) :
+	EntityPointMarker(Eris::Entity& entity, Ogre::SceneManager& sceneManager, const IHeightProvider& heightProvider, const WFMath::Point<3>& point) :
 			mEntity(entity), mMarkerEntity(0), mMarkerNode(0), mMarkerDirectionIndicator(0), mHeightProvider(heightProvider), mPoint(point)
 	{
 		mMarkerNode = sceneManager.getRootSceneNode()->createChildSceneNode();

@@ -82,7 +82,7 @@ TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(TerrainPageGeometry& ge
 	return 0;
 }
 
-const Domain::TerrainPosition& TerrainPageSurface::getWFPosition() const
+const TerrainPosition& TerrainPageSurface::getWFPosition() const
 {
 	return mTerrainPage.getWFPosition();
 }

@@ -9,7 +9,7 @@ class GUIManager
 	//from Singleton
 	static GUIManager& getSingleton( void );
 
-	sigc::signal<void, const Ember::Domain::EntityTalk&, Ember::EmberEntity*> AppendIGChatLine;
+	sigc::signal<void, const Ember::EntityTalk&, Ember::EmberEntity*> AppendIGChatLine;
 	sigc::signal<void, const std::string&, Ember::EmberEntity*> AppendOOGChatLine;
 	sigc::signal<void, const std::string&> AppendAvatarImaginary;
 	

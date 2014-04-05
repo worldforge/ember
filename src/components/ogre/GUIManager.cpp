@@ -306,7 +306,7 @@ void GUIManager::view_EntityCreated(Eris::Entity* entity)
 	emberEntity->Emote.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Emote), emberEntity));
 }
 
-void GUIManager::entity_Talk(const Domain::EntityTalk& entityTalk, EmberEntity* entity)
+void GUIManager::entity_Talk(const EntityTalk& entityTalk, EmberEntity* entity)
 {
 	AppendIGChatLine.emit(entityTalk, entity);
 }

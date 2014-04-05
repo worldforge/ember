@@ -86,7 +86,7 @@ void EmberEntity::adjustPosition()
 	}
 }
 
-void EmberEntity::setHeightProvider(Domain::IHeightProvider* heightProvider)
+void EmberEntity::setHeightProvider(IHeightProvider* heightProvider)
 {
 	mHeightProvider = heightProvider;
 }
@@ -127,7 +127,7 @@ float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 
 void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 {
-	Domain::EntityTalk entityTalk(talkArgs);
+	EntityTalk entityTalk(talkArgs);
 
 	//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 	mSuggestedResponses = entityTalk.getSuggestedResponses();

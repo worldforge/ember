@@ -255,7 +255,7 @@ const ShaderStore& TerrainHandler::getAllShaders() const
 
 void TerrainHandler::addPage(TerrainPage* page)
 {
-	const Domain::TerrainPosition& pos = page->getWFPosition();
+	const TerrainPosition& pos = page->getWFPosition();
 
 	auto oldPage = mTerrainPages[pos.x()][pos.y()];
 	if (oldPage) {
@@ -272,7 +272,7 @@ void TerrainHandler::addPage(TerrainPage* page)
 
 void TerrainHandler::destroyPage(TerrainPage* page)
 {
-	const Domain::TerrainPosition& pos = page->getWFPosition();
+	const TerrainPosition& pos = page->getWFPosition();
 	auto pageIter = std::find(mPages.begin(), mPages.end(), page);
 	if (pageIter != mPages.end()) {
 		mPages.erase(pageIter);
@@ -302,9 +302,9 @@ int TerrainHandler::getPageMetersSize() const
 void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
 {
 
-	Domain::TerrainPosition wfPos(Convert::toWF(query.getCenter()));
+	TerrainPosition wfPos(Convert::toWF(query.getCenter()));
 
-	Domain::TerrainIndex index(std::floor(query.getCenter().x / (mPageIndexSize - 1)), -std::floor(query.getCenter().y / (mPageIndexSize - 1)));
+	TerrainIndex index(std::floor(query.getCenter().x / (mPageIndexSize - 1)), -std::floor(query.getCenter().y / (mPageIndexSize - 1)));
 
 	//If there's either no terrain page created, or it's not shown, we shouldn't create any foliage at this moment.
 	//Later on when the terrain page actually is shown, the TerrainManager::EventTerrainShown signal will be emitted
@@ -338,7 +338,7 @@ ICompilerTechniqueProvider& TerrainHandler::getCompilerTechniqueProvider()
 	return mCompilerTechniqueProvider;
 }
 
-void TerrainHandler::removeBridge(const Domain::TerrainIndex& index)
+void TerrainHandler::removeBridge(const TerrainIndex& index)
 {
 	PageBridgeStore::iterator I = mPageBridges.find(index);
 	if (I != mPageBridges.end()) {
@@ -388,7 +388,7 @@ const TerrainInfo& TerrainHandler::getTerrainInfo() const
 	return *mTerrainInfo;
 }
 
-TerrainPage* TerrainHandler::getTerrainPageAtPosition(const Domain::TerrainPosition& worldPosition) const
+TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
 {
 
 	int xRemainder = static_cast<int>(getMin().x()) % (getPageMetersSize());
@@ -397,10 +397,10 @@ TerrainPage* TerrainHandler::getTerrainPageAtPosition(const Domain::TerrainPosit
 	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
 	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 
-	return getTerrainPageAtIndex(Domain::TerrainIndex(xIndex, yIndex));
+	return getTerrainPageAtIndex(TerrainIndex(xIndex, yIndex));
 }
 
-void TerrainHandler::setUpTerrainPageAtIndex(const Domain::TerrainIndex& index, ITerrainPageBridge* bridge)
+void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge)
 {
 	//_fpreset();
 
@@ -432,7 +432,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const Domain::TerrainIndex& index, 
 	}
 }
 
-TerrainPage* TerrainHandler::getTerrainPageAtIndex(const Domain::TerrainIndex& index) const
+TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) const
 {
 
 	TerrainPagestore::const_iterator I = mTerrainPages.find(index.first);
@@ -445,7 +445,7 @@ TerrainPage* TerrainHandler::getTerrainPageAtIndex(const Domain::TerrainIndex& i
 	return 0;
 }
 
-bool TerrainHandler::getHeight(const Domain::TerrainPosition& point, float& height) const
+bool TerrainHandler::getHeight(const TerrainPosition& point, float& height) const
 {
 	WFMath::Vector<3> vector;
 
@@ -491,11 +491,11 @@ bool TerrainHandler::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	return true;
 }
 
-void TerrainHandler::reloadTerrain(const std::vector<Domain::TerrainPosition>& positions)
+void TerrainHandler::reloadTerrain(const std::vector<TerrainPosition>& positions)
 {
 	std::vector<WFMath::AxisBox<2>> areas;
-	for (std::vector<Domain::TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
-		const Domain::TerrainPosition& worldPosition(*I);
+	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
+		const TerrainPosition& worldPosition(*I);
 		//Make an area which will cover the area affected by the basepoint
 		int res = mTerrain->getResolution();
 		areas.push_back(WFMath::AxisBox<2>(worldPosition - WFMath::Vector<2>(res, res), worldPosition + WFMath::Vector<2>(res, res)));
@@ -533,12 +533,12 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 	}
 }
 
-const Domain::TerrainPosition TerrainHandler::getMax() const
+const TerrainPosition TerrainHandler::getMax() const
 {
 	return mTerrainInfo->getWorldSizeInIndices().highCorner();
 }
 
-const Domain::TerrainPosition TerrainHandler::getMin() const
+const TerrainPosition TerrainHandler::getMin() const
 {
 	return mTerrainInfo->getWorldSizeInIndices().lowCorner();
 }

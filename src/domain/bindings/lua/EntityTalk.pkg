@@ -20,8 +20,6 @@ $#include "domain/EntityTalk.h"
 
 namespace Ember
 {
-namespace Domain
-{
 
 class EntityTalk
 {
@@ -65,5 +63,4 @@ public:
 	const std::vector<std::string>& getSuggestedResponses() const;
 
 };
-}
 } /* namespace Ember */

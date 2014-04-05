@@ -27,7 +27,7 @@ namespace Terrain
 {
 
 
-const Domain::TerrainPosition& TerrainDefPoint::getPosition() const
+const TerrainPosition& TerrainDefPoint::getPosition() const
 {
 	return mPosition;
 }

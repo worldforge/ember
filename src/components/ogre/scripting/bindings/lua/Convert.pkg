@@ -1,10 +1,9 @@
 
 namespace Ember {
-namespace Domain {
 class TerrainPosition
 {
 	bool isValid() const;
-	Ember::Domain::TerrainPosition& setToOrigin();
+	Ember::TerrainPosition& setToOrigin();
 	
   /// access the first component of a point
   float x() const;
@@ -17,7 +16,6 @@ class TerrainPosition
 
 
 };
-}
 namespace OgreView {
 
 

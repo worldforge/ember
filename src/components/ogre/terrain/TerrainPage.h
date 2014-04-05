@@ -83,7 +83,7 @@ public:
 	 * @param pageSize The size of one side of a page.
 	 * @param compilerTechniqueProvider A provider for terrain surface compiler techniques.
 	 */
-	TerrainPage(const Domain::TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
+	TerrainPage(const TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
 
 	/**
 	 * @brief Dtor.
@@ -107,13 +107,13 @@ public:
 	 * @brief The index position of the page in Worldforge space.
 	 * @return The index position of the page.
 	 */
-	const Domain::TerrainPosition& getWFPosition() const;
+	const TerrainPosition& getWFPosition() const;
 
 	/**
 	 * @brief The index of the page in the Worldforge space.
 	 * @return The index of the page.
 	 */
-	const Domain::TerrainIndex& getWFIndex() const;
+	const TerrainIndex& getWFIndex() const;
 
 	/**
 	 * @brief The material used for the page.
@@ -171,14 +171,14 @@ public:
 	 * @param normal The normal will be placed here.
 	 * @return True if a valid normal could be found at the specified position.
 	 */
-	bool getNormal(const Domain::TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
+	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
 private:
 
 	/**
 	 * @brief Page index.
 	 */
-	Domain::TerrainIndex mIndex;
+	TerrainIndex mIndex;
 
 	/**
 	 * @brief The size of one side of the page.
@@ -188,7 +188,7 @@ private:
 	/**
 	 * @brief Internal position
 	 */
-	Domain::TerrainPosition mPosition;
+	TerrainPosition mPosition;
 
 	std::unique_ptr<TerrainPageSurface> mTerrainSurface;
 

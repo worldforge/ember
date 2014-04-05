@@ -99,7 +99,7 @@ protected:
 	/**
 	 * @brief Converts the ogre index position to wf local index.
 	 */
-	Domain::TerrainIndex convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition);
+	TerrainIndex convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition);
 
 };
 

@@ -58,11 +58,8 @@ class TypeInfo;
 namespace Ember
 {
 struct MouseMotion;
-namespace Domain
-{
 class EntityTalk;
 class EmberEntity;
-}
 namespace OgreView
 {
 struct EntityPickResult;

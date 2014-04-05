@@ -79,7 +79,7 @@ class BasePointUserObject
 public:
 	typedef std::shared_ptr<BasePointUserObject> SharedPtr;
 
-	BasePointUserObject(const Domain::TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode);
+	BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode);
 
 	/**
 	 *    Accesses the base point
@@ -115,7 +115,7 @@ public:
 	 * @brief Gets the terrain position of this base point.
 	 * @return The terrain position.
 	 */
-	const Domain::TerrainPosition& getPosition() const;
+	const TerrainPosition& getPosition() const;
 
 	/**
 	 *    Updated the vertical position of the base point.
@@ -159,7 +159,7 @@ private:
 	/**
 	 * @brief The terrain position of the marker.
 	 */
-	const Domain::TerrainPosition mPosition;
+	const TerrainPosition mPosition;
 
 	/**
 	 * @brief The canonical height, i.e. the height which corresponds to the current height on the server.
@@ -242,7 +242,7 @@ public:
 	 @param the vertical movement in meters
 	 @param the affected position
 	 */
-	TerrainEditBasePointMovement(Ogre::Real verticalMovement, Domain::TerrainPosition position);
+	TerrainEditBasePointMovement(Ogre::Real verticalMovement, TerrainPosition position);
 
 	/**
 	 * Gets the vertical movement in meters.
@@ -252,11 +252,11 @@ public:
 	/**
 	 * Gets the affected position.
 	 */
-	const Domain::TerrainPosition& getPosition() const;
+	const TerrainPosition& getPosition() const;
 
 private:
 	Ogre::Real mVerticalMovement;
-	Domain::TerrainPosition mPosition;
+	TerrainPosition mPosition;
 };
 
 class TerrainEditorOverlay: public IInputAdapter, public virtual sigc::trackable
@@ -299,7 +299,7 @@ public:
 	 * @param The position in the terrain to get the BasePointUserObject for.
 	 * @returns A valid BasePointUserObject or null if none found.
 	 */
-	BasePointUserObject* getUserObject(const Domain::TerrainPosition& terrainIndex);
+	BasePointUserObject* getUserObject(const TerrainPosition& terrainIndex);
 
 	/**
 	 *    Undoes the last action, if there are any.
