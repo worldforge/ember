@@ -351,6 +351,18 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 
 Awareness::~Awareness()
 {
+	dtFreeNavMesh(m_navMesh);
+	dtFreeNavMeshQuery(m_navQuery);
+	delete mFilter;
+
+	dtFreeTileCache(m_tileCache);
+
+
+	delete m_tmproc;
+	delete m_tcomp;
+	delete m_talloc;
+
+	delete m_ctx;
 }
 
 void Awareness::View_EntitySeen(Eris::Entity* entity)
