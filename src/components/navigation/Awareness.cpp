@@ -230,10 +230,10 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	//Recast uses y for the vertical axis
 	m_cfg.bmin[0] = lower.x();
 	m_cfg.bmin[2] = lower.y();
-	m_cfg.bmin[1] = std::min(-20.f, lower.z());
+	m_cfg.bmin[1] = std::min(-500.f, lower.z());
 	m_cfg.bmax[0] = upper.x();
 	m_cfg.bmax[2] = upper.y();
-	m_cfg.bmax[1] = std::max(50.f, upper.z());
+	m_cfg.bmax[1] = std::max(500.f, upper.z());
 
 	int gw = 0, gh = 0;
 	float cellsize = r / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
@@ -428,7 +428,9 @@ void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileM
 		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
 			std::pair<int, int> index(tx, ty);
 			if (mAwareTiles.find(index) != mAwareTiles.end()) {
-				mDirtyAwareTiles.insert(index);
+				if (mDirtyAwareTiles.insert(index).second) {
+					mDirtyAwareOrderedTiles.push_back(index);
+				}
 			} else {
 				mDirtyUnwareTiles.insert(index);
 			}
@@ -442,16 +444,18 @@ void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileM
 size_t Awareness::rebuildDirtyTiles()
 {
 	if (!mDirtyAwareTiles.empty()) {
-		auto tileIndexI = mDirtyAwareTiles.begin();
+		const auto tileIndexI = mDirtyAwareOrderedTiles.begin();
+		const auto& tileIndex = *tileIndexI;
 
 		float tilesize = m_cfg.tileSize * m_cfg.cs;
-		WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(m_cfg.bmin[0] + (tileIndexI->first * tilesize), m_cfg.bmin[2] + (tileIndexI->second * tilesize)), WFMath::Point<2>(m_cfg.bmin[0] + ((tileIndexI->first + 1) * tilesize), m_cfg.bmin[2] + ((tileIndexI->second + 1) * tilesize)));
+		WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(m_cfg.bmin[0] + (tileIndex.first * tilesize), m_cfg.bmin[2] + (tileIndex.second * tilesize)), WFMath::Point<2>(m_cfg.bmin[0] + ((tileIndex.first + 1) * tilesize), m_cfg.bmin[2] + ((tileIndex.second + 1) * tilesize)));
 
 		std::vector<WFMath::RotBox<2>> entityAreas;
 		findEntityAreas(adjustedArea, entityAreas);
 
-		rebuildTile(tileIndexI->first, tileIndexI->second, entityAreas);
-		mDirtyAwareTiles.erase(tileIndexI);
+		rebuildTile(tileIndex.first, tileIndex.second, entityAreas);
+		mDirtyAwareTiles.erase(tileIndex);
+		mDirtyAwareOrderedTiles.erase(tileIndexI);
 	}
 	return mDirtyAwareTiles.size();
 }
@@ -541,7 +545,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 	return nVertCount;
 }
 
-void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area)
+void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine)
 {
 
 	WFMath::AxisBox<2> axisbox = area.boundingBox();
@@ -608,6 +612,7 @@ void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area)
 
 	auto oldDirtyAwareTiles = mDirtyAwareTiles;
 	mDirtyAwareTiles.clear();
+	mDirtyAwareOrderedTiles.clear();
 	mAwareTiles.clear();
 	bool wereDirtyTiles = !mDirtyAwareTiles.empty();
 	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
@@ -617,19 +622,43 @@ void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area)
 			if (WFMath::Intersect(area, tileBounds, false) || WFMath::Contains(area, tileBounds, false)) {
 
 				std::pair<int, int> index(tx, ty);
+				bool insertFront = false, insertBack = false;
 				//If the tile was marked as dirty in the old aware tiles, retain it as such
 				if (oldDirtyAwareTiles.find(index) != oldDirtyAwareTiles.end()) {
-					mDirtyAwareTiles.insert(index);
+					if (focusLine.isValid() && WFMath::Intersect(focusLine, tileBounds, false)) {
+						insertFront = true;
+					} else {
+						insertBack = true;
+					}
 				} else if (mDirtyUnwareTiles.find(index) != mDirtyUnwareTiles.end()) {
 					//if the tile was marked as dirty in the unaware tiles we'll move it to the dirty aware collection.
-					mDirtyAwareTiles.insert(index);
+					if (focusLine.isValid() && WFMath::Intersect(focusLine, tileBounds, false)) {
+						insertFront = true;
+					} else {
+						insertBack = true;
+					}
 				} else {
 					//The tile wasn't marked as dirty in any set, but it might be that it hasn't been processed before.
 					auto tile = m_tileCache->getTileAt(tx, ty, 0);
 					if (!tile) {
-						mDirtyAwareTiles.insert(index);
+						if (focusLine.isValid() && WFMath::Intersect(focusLine, tileBounds, false)) {
+							insertFront = true;
+						} else {
+							insertBack = true;
+						}
 					}
 				}
+
+				if (insertFront) {
+					if (mDirtyAwareTiles.insert(index).second) {
+						mDirtyAwareOrderedTiles.push_front(index);
+					}
+				} else if (insertBack) {
+					if (mDirtyAwareTiles.insert(index).second) {
+						mDirtyAwareOrderedTiles.push_back(index);
+					}
+				}
+
 				mDirtyUnwareTiles.erase(index);
 
 				mAwareTiles.insert(index);

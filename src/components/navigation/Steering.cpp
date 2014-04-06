@@ -31,6 +31,7 @@
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/rotbox.h>
+#include <wfmath/segment.h>
 
 namespace Ember
 {
@@ -73,7 +74,7 @@ void Steering::setDestination(const WFMath::Point<3>& viewPosition)
 	area.orientation() = WFMath::RotMatrix<2>().identity();
 	area.rotatePoint(rm, entityPosition2d);
 
-	mAwareness.addAwarenessArea(area);
+	mAwareness.addAwarenessArea(area, WFMath::Segment<2>(entityPosition2d, destination2d));
 
 }
 

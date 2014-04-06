@@ -76,7 +76,7 @@ public:
 	Awareness(Eris::View& view, IHeightProvider& heightProvider);
 	virtual ~Awareness();
 
-	void addAwarenessArea(const WFMath::RotBox<2>& area);
+	void addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine);
 	size_t rebuildDirtyTiles();
 
 	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path);
@@ -110,6 +110,7 @@ protected:
 
 	std::set<std::pair<int, int>> mDirtyUnwareTiles;
 	std::set<std::pair<int, int>> mDirtyAwareTiles;
+	std::list<std::pair<int, int>> mDirtyAwareOrderedTiles;
 
 
 	std::set<Eris::Entity*> mDirtyEntities;
