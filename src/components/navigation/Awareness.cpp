@@ -358,7 +358,6 @@ Awareness::~Awareness()
 
 	dtFreeTileCache(m_tileCache);
 
-
 	delete m_tmproc;
 	delete m_tcomp;
 	delete m_talloc;
@@ -542,14 +541,16 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 	return nVertCount;
 }
 
-void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdate)
+void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area)
 {
+
+	WFMath::AxisBox<2> axisbox = area.boundingBox();
 
 //adjust area to fit with tiles
 
 	float tilesize = m_cfg.tileSize * m_cfg.cs;
-	WFMath::Point<3> lowCorner = area.lowCorner();
-	WFMath::Point<3> highCorner = area.highCorner();
+	WFMath::Point<2> lowCorner = axisbox.lowCorner();
+	WFMath::Point<2> highCorner = axisbox.highCorner();
 
 	if (lowCorner.x() < m_cfg.bmin[0]) {
 		lowCorner.x() = m_cfg.bmin[0];
@@ -582,14 +583,14 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 	int tileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
 	int tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
 
-	lowCorner.x() = m_cfg.bmin[0] + (tileMinXIndex * tilesize);
-	lowCorner.y() = m_cfg.bmin[2] + (tileMinYIndex * tilesize);
-	lowCorner.z() = m_cfg.bmin[1];
-	highCorner.x() = m_cfg.bmin[0] + ((tileMaxXIndex + 1) * tilesize);
-	highCorner.y() = m_cfg.bmin[2] + ((tileMaxYIndex + 1) * tilesize);
-	highCorner.z() = m_cfg.bmax[1];
-
-	WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(lowCorner.x(), lowCorner.y()), WFMath::Point<2>(highCorner.x(), highCorner.y()));
+//	lowCorner.x() = m_cfg.bmin[0] + (tileMinXIndex * tilesize);
+//	lowCorner.y() = m_cfg.bmin[2] + (tileMinYIndex * tilesize);
+//	lowCorner.z() = m_cfg.bmin[1];
+//	highCorner.x() = m_cfg.bmin[0] + ((tileMaxXIndex + 1) * tilesize);
+//	highCorner.y() = m_cfg.bmin[2] + ((tileMaxYIndex + 1) * tilesize);
+//	highCorner.z() = m_cfg.bmax[1];
+//
+//	WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(lowCorner.x(), lowCorner.y()), WFMath::Point<2>(highCorner.x(), highCorner.y()));
 
 //Collect entities
 //	std::vector<WFMath::RotBox<2>> entityAreas;
@@ -602,6 +603,8 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 
 //Now build tiles
 //	markTilesAsDirty(mAwareTileMinXIndex, mAwareTileMaxXIndex, mAwareTileMinYIndex, mAwareTileMaxYIndex);
+	const float tcs = m_cfg.tileSize * m_cfg.cs;
+	const float tileBorderSize = m_cfg.borderSize * m_cfg.cs;
 
 	auto oldDirtyAwareTiles = mDirtyAwareTiles;
 	mDirtyAwareTiles.clear();
@@ -609,23 +612,27 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 	bool wereDirtyTiles = !mDirtyAwareTiles.empty();
 	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
 		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
-			std::pair<int, int> index(tx, ty);
-			//If the tile was marked as dirty in the old aware tiles, retain it as such
-			if (oldDirtyAwareTiles.find(index) != oldDirtyAwareTiles.end()) {
-				mDirtyAwareTiles.insert(index);
-			} else if (mDirtyUnwareTiles.find(index) != mDirtyUnwareTiles.end()) {
-				//if the tile was marked as dirty in the unaware tiles we'll move it to the dirty aware collection.
-				mDirtyAwareTiles.insert(index);
-			} else {
-				//The tile wasn't marked as dirty in any set, but it might be that it hasn't been processed before.
-				auto tile = m_tileCache->getTileAt(tx, ty, 0);
-				if (!tile) {
-					mDirtyAwareTiles.insert(index);
-				}
-			}
-			mDirtyUnwareTiles.erase(index);
+			// Tile bounds.
+			WFMath::AxisBox<2> tileBounds(WFMath::Point<2>((m_cfg.bmin[0] + tx * tcs) - tileBorderSize, (m_cfg.bmin[2] + ty * tcs) - tileBorderSize), WFMath::Point<2>((m_cfg.bmin[0] + (tx + 1) * tcs) + tileBorderSize, (m_cfg.bmin[2] + (ty + 1) * tcs) + tileBorderSize));
+			if (WFMath::Intersect(area, tileBounds, false) || WFMath::Contains(area, tileBounds, false)) {
 
-			mAwareTiles.insert(index);
+				std::pair<int, int> index(tx, ty);
+				//If the tile was marked as dirty in the old aware tiles, retain it as such
+				if (oldDirtyAwareTiles.find(index) != oldDirtyAwareTiles.end()) {
+					mDirtyAwareTiles.insert(index);
+				} else if (mDirtyUnwareTiles.find(index) != mDirtyUnwareTiles.end()) {
+					//if the tile was marked as dirty in the unaware tiles we'll move it to the dirty aware collection.
+					mDirtyAwareTiles.insert(index);
+				} else {
+					//The tile wasn't marked as dirty in any set, but it might be that it hasn't been processed before.
+					auto tile = m_tileCache->getTileAt(tx, ty, 0);
+					if (!tile) {
+						mDirtyAwareTiles.insert(index);
+					}
+				}
+				mDirtyUnwareTiles.erase(index);
+
+				mAwareTiles.insert(index);
 //
 //
 //			if (tx >= mAwareTileMinXIndex && tx <= mAwareTileMaxXIndex && ty >= mAwareTileMinYIndex && ty <= mAwareTileMaxYIndex) {
@@ -646,6 +653,7 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 //			markTilesAsDirty(tx, ty);
 
 //			rebuildTile(tx, ty, entityAreas);
+			}
 		}
 	}
 

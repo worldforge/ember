@@ -76,7 +76,7 @@ public:
 	Awareness(Eris::View& view, IHeightProvider& heightProvider);
 	virtual ~Awareness();
 
-	void addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdate);
+	void addAwarenessArea(const WFMath::RotBox<2>& area);
 	size_t rebuildDirtyTiles();
 
 	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path);

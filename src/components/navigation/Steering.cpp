@@ -30,6 +30,7 @@
 
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
+#include <wfmath/rotbox.h>
 
 namespace Ember
 {
@@ -37,7 +38,7 @@ namespace Navigation
 {
 
 Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
-		mAwareness(awareness), mAvatar(avatar), mSteeringEnabled(false), mUpdateNeeded(false)
+		mAwareness(awareness), mAvatar(avatar), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16)
 {
 	MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &Steering::frameProcessed));
 	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &Steering::Awareness_TileUpdated));
@@ -53,14 +54,26 @@ void Steering::setDestination(const WFMath::Point<3>& viewPosition)
 
 	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
 
-	WFMath::Point<3> low(std::min(entityViewPosition.x(), mViewDestination.x()), std::min(entityViewPosition.y(), mViewDestination.y()), -100);
-	WFMath::Point<3> high(std::max(entityViewPosition.x(), mViewDestination.x()), std::max(entityViewPosition.y(), mViewDestination.y()), 100);
+	WFMath::Point<2> destination2d(viewPosition.x(), viewPosition.y());
+	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.y());
 
-	//Increase the area a little, by 16 meters in each direction.
-	low -= WFMath::Vector<3>(16, 16, 0);
-	high += WFMath::Vector<3>(16, 16, 0);
+	WFMath::Vector<2> direction(destination2d - entityPosition2d);
+	double theta = atan2(direction.y(), direction.x()); // rotation about Z
+	WFMath::RotMatrix<2> rm;
+	rm.rotation(theta);
 
-	mAwareness.addAwarenessArea(WFMath::AxisBox<3>(low, high, true), false);
+	WFMath::Point<2> start = entityPosition2d;
+	start -= WFMath::Vector<2>(mPadding, mPadding);
+
+	WFMath::Vector<2> size(direction.mag() + (mPadding * 2), mPadding * 2);
+
+	WFMath::RotBox<2> area;
+	area.size() = size;
+	area.corner0() = start;
+	area.orientation() = WFMath::RotMatrix<2>().identity();
+	area.rotatePoint(rm, entityPosition2d);
+
+	mAwareness.addAwarenessArea(area);
 
 }
 
@@ -135,7 +148,6 @@ void Steering::Awareness_TileUpdated(int tx, int ty)
 {
 	mUpdateNeeded = true;
 }
-
 
 }
 }
