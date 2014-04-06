@@ -70,20 +70,53 @@ enum PolyFlags
 	POLYFLAGS_ALL = 0xffff      // All abilities.
 };
 
+
+/**
+ * @brief Handles awareness of the Avatar's surroundings for the purpose of path finding and steering.
+ *
+ * The Recast and Detour libraries are used to maintain a map of the surrounding world.
+ * In order for this to be effective we use a concept of "awareness area". Whenever a path needs to be found the
+ * awareness area first needs to be defined. This is the area within which we'll keep up to date navigational data as entities
+ * are discovered or moves. The awareness area is typically an area which will encompass the terrain between the
+ * avatar and the destination, together with some padding.
+ *
+ * Note that this class currently is optimized for a flat world with only one layer. Furthermore all entities are only
+ * handled through their bounding box. As the world progresses and support for more complex geometry is added, as well
+ * as more complete physics simulation, this class needs to be expanded.
+ *
+ * Internally this class uses a dtTileCache to manage the tiles. Since the world is dynamic we need to manage the
+ * navmeshes through tiles in order to keep the resource usage down.
+ */
 class Awareness : public virtual sigc::trackable
 {
 public:
+	/**
+	 * A callback function for processing tiles.
+	 */
+	typedef std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)> TileProcessor;
 	Awareness(Eris::View& view, IHeightProvider& heightProvider);
 	virtual ~Awareness();
 
+	/**
+	 * @brief Sets the area of awareness.
+	 *
+	 * An optional segment can also be supplied. Any tile which intersects the segment will get processing precedence.
+	 * @param area The area which makes up the awareness area.
+	 * @param focusLine An optional segment for tile precedence.
+	 */
 	void addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine);
-	size_t rebuildDirtyTiles();
+
+	/**
+	 * @brief Rebuilds a dirty tile if any such exists.
+	 * @return The number of dirty tiles remaining.
+	 */
+	size_t rebuildDirtyTile();
 
 	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path);
 
-	void processTile(const int tx, const int ty, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
-	void processTiles(const WFMath::AxisBox<2>& area, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
-	void processAllTiles(const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
+	void processTile(const int tx, const int ty, const TileProcessor& processor) const;
+	void processTiles(const WFMath::AxisBox<2>& area, const TileProcessor& processor) const;
+	void processAllTiles(const TileProcessor& processor) const;
 
 	sigc::signal<void, int, int> EventTileUpdated;
 	sigc::signal<void> EventTileDirty;
@@ -106,20 +139,43 @@ protected:
 	dtNavMeshQuery* m_navQuery;
 	dtQueryFilter* mFilter;
 
+	/**
+	 * @brief A set of all of the tiles that currently are inside our awareness area.
+	 */
 	std::set<std::pair<int, int>> mAwareTiles;
 
+	/**
+	 * @brief A set of tiles that are dirty, but aren't in our current awareness area.
+	 *
+	 * When the awareness area is changed this will be used to check if any existing tile needs to be rebuilt.
+	 */
 	std::set<std::pair<int, int>> mDirtyUnwareTiles;
+
+	/**
+	 * @brief A set of tiles that are dirty and are in our current awareness area.
+	 *
+	 * These needs to be rebuilt as soon as possible.
+	 * @note The contents of the set is mirrored in mDirtyAwareOrderedTiles.
+	 */
 	std::set<std::pair<int, int>> mDirtyAwareTiles;
+
+	/**
+	 * @brief An ordered list of tiles that are dirty and are in our current awareness area.
+	 *
+	 * When rebuilding tiles we'll use the ordered list instead of the mDirtyAwareTiles set.
+	 * The reason is that we want to have some control of the order of tile buildings, so that those
+	 * tiles that are in a straight line between the entity and the destination are built first.
+	 * @note The contents of the set is mirrored in mDirtyAwareTiles.
+	 */
 	std::list<std::pair<int, int>> mDirtyAwareOrderedTiles;
 
 
-	std::set<Eris::Entity*> mDirtyEntities;
+	/**
+	 * @brief The view resolved areas for each entity.
+	 *
+	 * This information is used when determining what tiles to rebuild when entities are moved.
+	 */
 	std::map<Eris::Entity*, WFMath::RotBox<2>> mEntityAreas;
-
-	int mAwareTileMinXIndex;
-	int mAwareTileMaxXIndex;
-	int mAwareTileMinYIndex;
-	int mAwareTileMaxYIndex;
 
 	void rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>& entityAreas);
 

@@ -163,7 +163,7 @@ MovementController::~MovementController()
 
 void MovementController::tileRebuild()
 {
-	int dirtyTiles = mAwareness->rebuildDirtyTiles();
+	int dirtyTiles = mAwareness->rebuildDirtyTile();
 	if (dirtyTiles) {
 		auto marker = mActiveMarker;
 		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker] {if (*marker) {this->tileRebuild();}});

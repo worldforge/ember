@@ -202,7 +202,7 @@ struct InputGeometry
 };
 
 Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
-		mView(view), mHeightProvider(heightProvider), m_ctx(new rcContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mAwareTileMinXIndex(1), mAwareTileMaxXIndex(-1), mAwareTileMinYIndex(1), mAwareTileMaxYIndex(-1)
+		mView(view), mHeightProvider(heightProvider), m_ctx(new rcContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
 {
 
 	m_talloc = new LinearAllocator(128000);
@@ -413,10 +413,6 @@ void Awareness::markTilesAsDirty(const WFMath::AxisBox<2>& area)
 {
 	int tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex;
 	findAffectedTiles(area, tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex);
-//	tileMinXIndex = std::max(tileMinXIndex, mAwareTileMinXIndex);
-//	tileMaxXIndex = std::min(tileMaxXIndex, mAwareTileMaxXIndex);
-//	tileMinYIndex = std::max(tileMinYIndex, mAwareTileMinYIndex);
-//	tileMaxYIndex = std::min(tileMaxYIndex, mAwareTileMaxYIndex);
 	markTilesAsDirty(tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex);
 }
 
@@ -441,7 +437,7 @@ void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileM
 	}
 }
 
-size_t Awareness::rebuildDirtyTiles()
+size_t Awareness::rebuildDirtyTile()
 {
 	if (!mDirtyAwareTiles.empty()) {
 		const auto tileIndexI = mDirtyAwareOrderedTiles.begin();
@@ -587,26 +583,8 @@ void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
 	int tileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
 	int tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
 
-//	lowCorner.x() = m_cfg.bmin[0] + (tileMinXIndex * tilesize);
-//	lowCorner.y() = m_cfg.bmin[2] + (tileMinYIndex * tilesize);
-//	lowCorner.z() = m_cfg.bmin[1];
-//	highCorner.x() = m_cfg.bmin[0] + ((tileMaxXIndex + 1) * tilesize);
-//	highCorner.y() = m_cfg.bmin[2] + ((tileMaxYIndex + 1) * tilesize);
-//	highCorner.z() = m_cfg.bmax[1];
-//
-//	WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(lowCorner.x(), lowCorner.y()), WFMath::Point<2>(highCorner.x(), highCorner.y()));
 
-//Collect entities
-//	std::vector<WFMath::RotBox<2>> entityAreas;
-//	findEntityAreas(adjustedArea, entityAreas);
-
-//	auto entity = mView.getTopLevel();
-//	for (size_t i = 0; i < entity->numContained(); ++i) {
-//		buildEntityAreas(*entity->getContained(i), adjustedArea, entityAreas);
-//	}
-
-//Now build tiles
-//	markTilesAsDirty(mAwareTileMinXIndex, mAwareTileMaxXIndex, mAwareTileMinYIndex, mAwareTileMaxYIndex);
+	//Now mark tiles
 	const float tcs = m_cfg.tileSize * m_cfg.cs;
 	const float tileBorderSize = m_cfg.borderSize * m_cfg.cs;
 
@@ -622,7 +600,10 @@ void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
 			if (WFMath::Intersect(area, tileBounds, false) || WFMath::Contains(area, tileBounds, false)) {
 
 				std::pair<int, int> index(tx, ty);
-				bool insertFront = false, insertBack = false;
+				//If true we should insert in the front of the dirty tiles list.
+				bool insertFront = false;
+				//If true we should insert in the back of the dirty tiles list.
+				bool insertBack = false;
 				//If the tile was marked as dirty in the old aware tiles, retain it as such
 				if (oldDirtyAwareTiles.find(index) != oldDirtyAwareTiles.end()) {
 					if (focusLine.isValid() && WFMath::Intersect(focusLine, tileBounds, false)) {
@@ -662,34 +643,9 @@ void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
 				mDirtyUnwareTiles.erase(index);
 
 				mAwareTiles.insert(index);
-//
-//
-//			if (tx >= mAwareTileMinXIndex && tx <= mAwareTileMaxXIndex && ty >= mAwareTileMinYIndex && ty <= mAwareTileMaxYIndex) {
-//				//There already were a tile in the previous awareness area; skip it now.
-//				continue;
-//			}
-//
-//			if (!forceUpdate) {
-//				//If we're not forcing an update, just check if there's any tile already.
-//				auto tile = m_tileCache->getTileAt(tx, ty, 0);
-//				if (tile) {
-//					continue;
-//				}
-//			}
-
-//			mDirtyTiles.insert(std::make_pair(tx, ty));
-
-//			markTilesAsDirty(tx, ty);
-
-//			rebuildTile(tx, ty, entityAreas);
 			}
 		}
 	}
-
-	mAwareTileMinXIndex = tileMinXIndex;
-	mAwareTileMaxXIndex = tileMaxXIndex;
-	mAwareTileMinYIndex = tileMinYIndex;
-	mAwareTileMaxYIndex = tileMaxYIndex;
 
 	if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
 		EventTileDirty();
