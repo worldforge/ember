@@ -85,6 +85,7 @@ public:
 	void processAllTiles(const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
 
 	sigc::signal<void, int, int> EventTileUpdated;
+	sigc::signal<void> EventTileDirty;
 
 protected:
 
@@ -122,6 +123,7 @@ protected:
 
 	void processTiles(std::vector<const dtCompressedTile*> tiles, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
 	void markTilesAsDirty(const WFMath::AxisBox<2>& area);
+	void markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileMinYIndex, int tileMaxYIndex);
 	void findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const;
 
 	void View_EntitySeen(Eris::Entity* entity);

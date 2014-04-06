@@ -48,6 +48,8 @@
 
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
+#include <Eris/Connection.h>
+#include <Eris/EventService.h>
 
 #include <OgreRoot.h>
 
@@ -98,6 +100,19 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT);
 	avatar.getEmberEntity().Moved.connect(sigc::mem_fun(*this, &MovementController::Entity_Moved));
 
+	mAwareness->EventTileDirty.connect([this] {
+		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([&]() {this->tileRebuild();});
+	});
+
+	mAwareness->EventTileUpdated.connect([&](int,int){
+		if (mSteering->isEnabled()) {
+			mSteering->updatePath();
+			if (mVisualizePath) {
+				mAwarenessVisualizer->visualizePath(mSteering->getPath());
+			}
+		}
+	});
+
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	mMovementCommandMapper.bindToInput(Input::getSingleton());
@@ -140,6 +155,14 @@ MovementController::~MovementController()
 		mDecalObject->_getManager()->destroyMovableObject(mDecalObject);
 	}
 	Ogre::Root::getSingleton().removeFrameListener(this);
+}
+
+void MovementController::tileRebuild()
+{
+	int dirtyTiles = mAwareness->rebuildDirtyTiles();
+	if (dirtyTiles) {
+		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([&] {this->tileRebuild();});
+	}
 }
 
 void MovementController::setCameraFreeFlying(bool freeFlying)
@@ -232,7 +255,7 @@ bool MovementController::frameStarted(const Ogre::FrameEvent& event)
 		}
 	}
 
-	mAwareness->rebuildDirtyTiles();
+//	mAwareness->rebuildDirtyTiles();
 
 	return true;
 }

@@ -37,9 +37,10 @@ namespace Navigation
 {
 
 Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
-		mAwareness(awareness), mAvatar(avatar), mSteeringEnabled(false)
+		mAwareness(awareness), mAvatar(avatar), mSteeringEnabled(false), mUpdateNeeded(false)
 {
 	MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &Steering::frameProcessed));
+	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &Steering::Awareness_TileUpdated));
 }
 
 Steering::~Steering()
@@ -68,6 +69,7 @@ bool Steering::updatePath()
 	mPath.clear();
 
 	int result = mAwareness.findPath(mAvatar.getEntity()->getViewPosition(), mViewDestination, mPath);
+	mUpdateNeeded = false;
 	return result > 0;
 }
 
@@ -93,6 +95,9 @@ const std::list<WFMath::Point<3>>& Steering::getPath() const
 
 void Steering::frameProcessed(const TimeFrame&, unsigned int)
 {
+	if (mUpdateNeeded) {
+		updatePath();
+	}
 	if (mSteeringEnabled) {
 		if (!mPath.empty()) {
 			auto entity = mAvatar.getEntity();
@@ -125,6 +130,12 @@ void Steering::frameProcessed(const TimeFrame&, unsigned int)
 		}
 	}
 }
+
+void Steering::Awareness_TileUpdated(int tx, int ty)
+{
+	mUpdateNeeded = true;
+}
+
 
 }
 }

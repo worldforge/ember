@@ -61,9 +61,10 @@ private:
 	WFMath::Point<3> mViewDestination;
 	std::list<WFMath::Point<3>> mPath;
 	bool mSteeringEnabled;
+	bool mUpdateNeeded;
 
 	void frameProcessed(const TimeFrame&, unsigned int);
-
+	void Awareness_TileUpdated(int tx, int ty);
 };
 
 }

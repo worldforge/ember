@@ -202,7 +202,7 @@ struct InputGeometry
 };
 
 Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
-		mView(view), mHeightProvider(heightProvider), m_ctx(new rcContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
+		mView(view), mHeightProvider(heightProvider), m_ctx(new rcContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mAwareTileMinXIndex(1), mAwareTileMaxXIndex(-1), mAwareTileMinYIndex(1), mAwareTileMaxYIndex(-1)
 {
 
 	m_talloc = new LinearAllocator(128000);
@@ -386,10 +386,20 @@ void Awareness::markTilesAsDirty(const WFMath::AxisBox<2>& area)
 	tileMaxXIndex = std::min(tileMaxXIndex, mAwareTileMaxXIndex);
 	tileMinYIndex = std::max(tileMinYIndex, mAwareTileMinYIndex);
 	tileMaxYIndex = std::min(tileMaxYIndex, mAwareTileMaxYIndex);
+	markTilesAsDirty(tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex);
+}
+
+void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileMinYIndex, int tileMaxYIndex)
+{
+	bool wereDirtyTiles = !mDirtyTiles.empty();
+
 	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
 		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
 			mDirtyTiles.insert(std::make_pair(tx, ty));
 		}
+	}
+	if (!wereDirtyTiles && !mDirtyTiles.empty()) {
+		EventTileDirty();
 	}
 }
 
@@ -530,23 +540,23 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 		highCorner.y() = m_cfg.bmax[2];
 	}
 
-	mAwareTileMinXIndex = (lowCorner.x() - m_cfg.bmin[0]) / tilesize;
-	mAwareTileMaxXIndex = (highCorner.x() - m_cfg.bmin[0]) / tilesize;
-	mAwareTileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
-	mAwareTileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
+	int tileMinXIndex = (lowCorner.x() - m_cfg.bmin[0]) / tilesize;
+	int tileMaxXIndex = (highCorner.x() - m_cfg.bmin[0]) / tilesize;
+	int tileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
+	int tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
 
-	lowCorner.x() = m_cfg.bmin[0] + (mAwareTileMinXIndex * tilesize);
-	lowCorner.y() = m_cfg.bmin[2] + (mAwareTileMinYIndex * tilesize);
+	lowCorner.x() = m_cfg.bmin[0] + (tileMinXIndex * tilesize);
+	lowCorner.y() = m_cfg.bmin[2] + (tileMinYIndex * tilesize);
 	lowCorner.z() = m_cfg.bmin[1];
-	highCorner.x() = m_cfg.bmin[0] + ((mAwareTileMaxXIndex + 1) * tilesize);
-	highCorner.y() = m_cfg.bmin[2] + ((mAwareTileMaxYIndex + 1) * tilesize);
+	highCorner.x() = m_cfg.bmin[0] + ((tileMaxXIndex + 1) * tilesize);
+	highCorner.y() = m_cfg.bmin[2] + ((tileMaxYIndex + 1) * tilesize);
 	highCorner.z() = m_cfg.bmax[1];
 
 	WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(lowCorner.x(), lowCorner.y()), WFMath::Point<2>(highCorner.x(), highCorner.y()));
 
 //Collect entities
-	std::vector<WFMath::RotBox<2>> entityAreas;
-	findEntityAreas(adjustedArea, entityAreas);
+//	std::vector<WFMath::RotBox<2>> entityAreas;
+//	findEntityAreas(adjustedArea, entityAreas);
 
 //	auto entity = mView.getTopLevel();
 //	for (size_t i = 0; i < entity->numContained(); ++i) {
@@ -554,19 +564,40 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 //	}
 
 //Now build tiles
+//	markTilesAsDirty(mAwareTileMinXIndex, mAwareTileMaxXIndex, mAwareTileMinYIndex, mAwareTileMaxYIndex);
 
-	for (int tx = mAwareTileMinXIndex; tx <= mAwareTileMaxXIndex; ++tx) {
-		for (int ty = mAwareTileMinYIndex; ty <= mAwareTileMaxYIndex; ++ty) {
-			if (!forceUpdate) {
-				//If we're not forcing an update, just check if there's any tile already.
-				auto tile = m_tileCache->getTileAt(tx, ty, 0);
-				if (tile) {
-					continue;
-				}
+	bool wereDirtyTiles = !mDirtyTiles.empty();
+	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
+		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
+			if (tx >= mAwareTileMinXIndex && tx <= mAwareTileMaxXIndex && ty >= mAwareTileMinYIndex && ty <= mAwareTileMaxYIndex) {
+				//There already were a tile in the previous awareness area; skip it now.
+				continue;
 			}
+//
+//			if (!forceUpdate) {
+//				//If we're not forcing an update, just check if there's any tile already.
+//				auto tile = m_tileCache->getTileAt(tx, ty, 0);
+//				if (tile) {
+//					continue;
+//				}
+//			}
 
-			rebuildTile(tx, ty, entityAreas);
+			mDirtyTiles.insert(std::make_pair(tx, ty));
+
+//			markTilesAsDirty(tx, ty);
+
+//			rebuildTile(tx, ty, entityAreas);
 		}
+	}
+
+	mAwareTileMinXIndex = tileMinXIndex;
+	mAwareTileMaxXIndex = tileMaxXIndex;
+	mAwareTileMinYIndex = tileMinYIndex;
+	mAwareTileMaxYIndex = tileMaxYIndex;
+
+
+	if (!wereDirtyTiles && !mDirtyTiles.empty()) {
+		EventTileDirty();
 	}
 }
 
@@ -761,9 +792,9 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 // Once all geometry is rasterized, we do initial pass of filtering to
 // remove unwanted overhangs caused by the conservative rasterization
 // as well as filter spans where the character cannot possibly stand.
-	rcFilterLowHangingWalkableObstacles(m_ctx, tcfg.walkableClimb, *rc.solid);
-	rcFilterLedgeSpans(m_ctx, tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid);
-	rcFilterWalkableLowHeightSpans(m_ctx, tcfg.walkableHeight, *rc.solid);
+//	rcFilterLowHangingWalkableObstacles(m_ctx, tcfg.walkableClimb, *rc.solid);
+//	rcFilterLedgeSpans(m_ctx, tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid);
+//	rcFilterWalkableLowHeightSpans(m_ctx, tcfg.walkableHeight, *rc.solid);
 
 	rc.chf = rcAllocCompactHeightfield();
 	if (!rc.chf) {

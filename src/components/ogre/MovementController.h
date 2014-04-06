@@ -214,6 +214,8 @@ protected:
 
 	void Config_VisualizeRecastPath(const std::string&, const std::string&, varconf::Variable& var);
 
+	void tileRebuild();
+
 
 	/**
 	A decal object for showing a decal on the terrain when the user uses the "move to here" functionality.
