@@ -91,8 +91,10 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 		/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
 		 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
 		//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
-				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider)), mAwarenessVisualizer(new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager())), mSteering(new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar())), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false)
+				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider)), mAwarenessVisualizer(new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager())), mSteering(new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar())), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false), mActiveMarker(new bool)
 {
+
+	*mActiveMarker = true;
 
 	mConfigListenerContainer->registerConfigListenerWithDefaults("authoring", "visualizerecasttiles", sigc::mem_fun(*this, &MovementController::Config_VisualizeRecastTiles), false);
 	mConfigListenerContainer->registerConfigListenerWithDefaults("authoring", "visualizerecastpath", sigc::mem_fun(*this, &MovementController::Config_VisualizeRecastPath), false);
@@ -100,11 +102,12 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT);
 	avatar.getEmberEntity().Moved.connect(sigc::mem_fun(*this, &MovementController::Entity_Moved));
 
-	mAwareness->EventTileDirty.connect([this] {
-		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([&]() {this->tileRebuild();});
+	auto marker = mActiveMarker;
+	mAwareness->EventTileDirty.connect([this, marker] {
+		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker]() {if (*marker) {this->tileRebuild();}});
 	});
 
-	mAwareness->EventTileUpdated.connect([&](int,int){
+	mAwareness->EventTileUpdated.connect([&](int,int) {
 		if (mSteering->isEnabled()) {
 			mSteering->updatePath();
 			if (mVisualizePath) {
@@ -140,6 +143,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 }
 MovementController::~MovementController()
 {
+	*mActiveMarker = false;
 	delete mConfigListenerContainer;
 	delete mSteering;
 	delete mAwarenessVisualizer;
@@ -161,7 +165,8 @@ void MovementController::tileRebuild()
 {
 	int dirtyTiles = mAwareness->rebuildDirtyTiles();
 	if (dirtyTiles) {
-		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([&] {this->tileRebuild();});
+		auto marker = mActiveMarker;
+		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker] {if (*marker) {this->tileRebuild();}});
 	}
 }
 

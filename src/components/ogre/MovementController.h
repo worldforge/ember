@@ -261,6 +261,11 @@ protected:
 	 * @brief True if the path used for steering should be visualized.
 	 */
 	bool mVisualizePath;
+
+	/**
+	 * @brief An active marker used for cancelling EventService handlers.
+	 */
+	std::shared_ptr<bool> mActiveMarker;
 };
 
 
