@@ -25,6 +25,7 @@
 #include <wfmath/point.h>
 
 #include <sigc++/signal.h>
+#include <sigc++/trackable.h>
 
 #include <list>
 #include <vector>
@@ -69,7 +70,7 @@ enum PolyFlags
 	POLYFLAGS_ALL = 0xffff      // All abilities.
 };
 
-class Awareness
+class Awareness : public virtual sigc::trackable
 {
 public:
 	Awareness(Eris::View& view, IHeightProvider& heightProvider);
@@ -105,7 +106,12 @@ protected:
 	dtNavMeshQuery* m_navQuery;
 	dtQueryFilter* mFilter;
 
-	std::set<std::pair<int, int>> mDirtyTiles;
+	std::set<std::pair<int, int>> mAwareTiles;
+
+	std::set<std::pair<int, int>> mDirtyUnwareTiles;
+	std::set<std::pair<int, int>> mDirtyAwareTiles;
+
+
 	std::set<Eris::Entity*> mDirtyEntities;
 	std::map<Eris::Entity*, WFMath::RotBox<2>> mEntityAreas;
 
@@ -128,6 +134,7 @@ protected:
 
 	void View_EntitySeen(Eris::Entity* entity);
 	void Entity_Moved(Eris::Entity* entity);
+	void Entity_BeingDeleted(Eris::Entity* entity);
 
 };
 

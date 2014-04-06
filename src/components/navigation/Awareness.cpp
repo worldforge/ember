@@ -338,6 +338,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	std::function<bool(EmberEntity&)> attachListenersFunction = [&](EmberEntity& entity) {
 		if (&entity != avatarEntity) {
 			entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), &entity));
+			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
 		}
 		return true;
 	};
@@ -367,8 +368,15 @@ Awareness::~Awareness()
 
 void Awareness::View_EntitySeen(Eris::Entity* entity)
 {
-	buildEntityAreas(*entity, mEntityAreas);
+	std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+	buildEntityAreas(*entity, areas);
+	for (auto& entry : areas) {
+		markTilesAsDirty(entry.second.boundingBox());
+		mEntityAreas.insert(entry);
+	}
+
 	entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
+	entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), entity));
 }
 
 void Awareness::Entity_Moved(Eris::Entity* entity)
@@ -390,35 +398,52 @@ void Awareness::Entity_Moved(Eris::Entity* entity)
 	}
 }
 
+void Awareness::Entity_BeingDeleted(Eris::Entity* entity)
+{
+	std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+
+	buildEntityAreas(*entity, areas);
+
+	for (auto& entry : areas) {
+		markTilesAsDirty(entry.second.boundingBox());
+	}
+	mEntityAreas.erase(entity);
+}
+
 void Awareness::markTilesAsDirty(const WFMath::AxisBox<2>& area)
 {
 	int tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex;
 	findAffectedTiles(area, tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex);
-	tileMinXIndex = std::max(tileMinXIndex, mAwareTileMinXIndex);
-	tileMaxXIndex = std::min(tileMaxXIndex, mAwareTileMaxXIndex);
-	tileMinYIndex = std::max(tileMinYIndex, mAwareTileMinYIndex);
-	tileMaxYIndex = std::min(tileMaxYIndex, mAwareTileMaxYIndex);
+//	tileMinXIndex = std::max(tileMinXIndex, mAwareTileMinXIndex);
+//	tileMaxXIndex = std::min(tileMaxXIndex, mAwareTileMaxXIndex);
+//	tileMinYIndex = std::max(tileMinYIndex, mAwareTileMinYIndex);
+//	tileMaxYIndex = std::min(tileMaxYIndex, mAwareTileMaxYIndex);
 	markTilesAsDirty(tileMinXIndex, tileMaxXIndex, tileMinYIndex, tileMaxYIndex);
 }
 
 void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileMinYIndex, int tileMaxYIndex)
 {
-	bool wereDirtyTiles = !mDirtyTiles.empty();
+	bool wereDirtyTiles = !mDirtyAwareTiles.empty();
 
 	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
 		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
-			mDirtyTiles.insert(std::make_pair(tx, ty));
+			std::pair<int, int> index(tx, ty);
+			if (mAwareTiles.find(index) != mAwareTiles.end()) {
+				mDirtyAwareTiles.insert(index);
+			} else {
+				mDirtyUnwareTiles.insert(index);
+			}
 		}
 	}
-	if (!wereDirtyTiles && !mDirtyTiles.empty()) {
+	if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
 		EventTileDirty();
 	}
 }
 
 size_t Awareness::rebuildDirtyTiles()
 {
-	if (!mDirtyTiles.empty()) {
-		auto tileIndexI = mDirtyTiles.begin();
+	if (!mDirtyAwareTiles.empty()) {
+		auto tileIndexI = mDirtyAwareTiles.begin();
 
 		float tilesize = m_cfg.tileSize * m_cfg.cs;
 		WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(m_cfg.bmin[0] + (tileIndexI->first * tilesize), m_cfg.bmin[2] + (tileIndexI->second * tilesize)), WFMath::Point<2>(m_cfg.bmin[0] + ((tileIndexI->first + 1) * tilesize), m_cfg.bmin[2] + ((tileIndexI->second + 1) * tilesize)));
@@ -427,9 +452,9 @@ size_t Awareness::rebuildDirtyTiles()
 		findEntityAreas(adjustedArea, entityAreas);
 
 		rebuildTile(tileIndexI->first, tileIndexI->second, entityAreas);
-		mDirtyTiles.erase(tileIndexI);
+		mDirtyAwareTiles.erase(tileIndexI);
 	}
-	return mDirtyTiles.size();
+	return mDirtyAwareTiles.size();
 }
 
 void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const
@@ -578,13 +603,35 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 //Now build tiles
 //	markTilesAsDirty(mAwareTileMinXIndex, mAwareTileMaxXIndex, mAwareTileMinYIndex, mAwareTileMaxYIndex);
 
-	bool wereDirtyTiles = !mDirtyTiles.empty();
+	auto oldDirtyAwareTiles = mDirtyAwareTiles;
+	mDirtyAwareTiles.clear();
+	mAwareTiles.clear();
+	bool wereDirtyTiles = !mDirtyAwareTiles.empty();
 	for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
 		for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
-			if (tx >= mAwareTileMinXIndex && tx <= mAwareTileMaxXIndex && ty >= mAwareTileMinYIndex && ty <= mAwareTileMaxYIndex) {
-				//There already were a tile in the previous awareness area; skip it now.
-				continue;
+			std::pair<int, int> index(tx, ty);
+			//If the tile was marked as dirty in the old aware tiles, retain it as such
+			if (oldDirtyAwareTiles.find(index) != oldDirtyAwareTiles.end()) {
+				mDirtyAwareTiles.insert(index);
+			} else if (mDirtyUnwareTiles.find(index) != mDirtyUnwareTiles.end()) {
+				//if the tile was marked as dirty in the unaware tiles we'll move it to the dirty aware collection.
+				mDirtyAwareTiles.insert(index);
+			} else {
+				//The tile wasn't marked as dirty in any set, but it might be that it hasn't been processed before.
+				auto tile = m_tileCache->getTileAt(tx, ty, 0);
+				if (!tile) {
+					mDirtyAwareTiles.insert(index);
+				}
 			}
+			mDirtyUnwareTiles.erase(index);
+
+			mAwareTiles.insert(index);
+//
+//
+//			if (tx >= mAwareTileMinXIndex && tx <= mAwareTileMaxXIndex && ty >= mAwareTileMinYIndex && ty <= mAwareTileMaxYIndex) {
+//				//There already were a tile in the previous awareness area; skip it now.
+//				continue;
+//			}
 //
 //			if (!forceUpdate) {
 //				//If we're not forcing an update, just check if there's any tile already.
@@ -594,7 +641,7 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 //				}
 //			}
 
-			mDirtyTiles.insert(std::make_pair(tx, ty));
+//			mDirtyTiles.insert(std::make_pair(tx, ty));
 
 //			markTilesAsDirty(tx, ty);
 
@@ -607,8 +654,7 @@ void Awareness::addAwarenessArea(const WFMath::AxisBox<3>& area, bool forceUpdat
 	mAwareTileMinYIndex = tileMinYIndex;
 	mAwareTileMaxYIndex = tileMaxYIndex;
 
-
-	if (!wereDirtyTiles && !mDirtyTiles.empty()) {
+	if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
 		EventTileDirty();
 	}
 }
