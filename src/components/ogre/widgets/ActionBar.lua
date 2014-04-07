@@ -202,8 +202,8 @@ function ActionBar:loadSavedAttributes()
 --	self.timer.disconnect = function()
 --		self.entityCandidates.AddedEntityToInventory_connector:disconnect()
 --	end
-	
-	self.timer.disconnect_connector = createConnector(self.timer.Expired):connect(self.timer.disconnect)
+--	
+--	self.timer.disconnect_connector = createConnector(self.timer.Expired):connect(self.timer.disconnect)
 	self.entityCandidates.AddedEntityToInventory_connector = createConnector(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(self.entityCandidates.AddedEntityToInventory)
 	
 end
