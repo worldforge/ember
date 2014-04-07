@@ -1,4 +1,4 @@
-$#include "required.h"
+$#include "AtlasBindingHelpers.h"
 
 $pfile "Message/Element.pkg"
 $pfile "Message/MEncoder.pkg"

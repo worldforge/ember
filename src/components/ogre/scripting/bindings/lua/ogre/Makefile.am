@@ -18,8 +18,6 @@ TOLUA_PKGS = Ogre.pkg OgreAxisAlignedBox.pkg OgreColourValue.pkg OgreEntity.pkg 
 EXTRA_DIST = $(TOLUA_PKGS)
 Ogre.cxx: $(TOLUA_PKGS)
 
-noinst_HEADERS = required.h
-
 bindings: clean all
 
 check:

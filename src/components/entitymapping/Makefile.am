@@ -14,7 +14,7 @@ noinst_HEADERS = Actions/Action.h Actions/DummyAction.h Cases/AttributeCase.h \
 	Definitions/CaseDefinition.h Definitions/DefinitionBase.h Definitions/MatchDefinition.h \
 	Definitions/EntityMappingDefinition.h IActionCreator.h Matches/AbstractMatch.h \
 	Matches/AttributeDependentMatch.h Matches/AttributeMatch.h Matches/EntityTypeMatch.h Matches/MatchBase.h \
-	Matches/Observers/AttributeObserver.h Matches/Observers/EntityCreationObserver.h Matches/OutfitMatch.h \
+	Matches/Observers/MatchAttributeObserver.h Matches/Observers/EntityCreationObserver.h Matches/OutfitMatch.h \
 	EntityMapping.h EntityMappingCreator.h EntityMappingManager.h IVisitor.h
 libEntityMapping_a_SOURCES = Actions/Action.cpp Actions/DummyAction.cpp \
 	Cases/AttributeCase.cpp Cases/AttributeComparers/AttributeComparerWrapper.cpp \
@@ -29,5 +29,5 @@ libEntityMapping_a_SOURCES = Actions/Action.cpp Actions/DummyAction.cpp \
 	Definitions/DefinitionBase.cpp Definitions/MatchDefinition.cpp Definitions/EntityMappingDefinition.cpp \
 	Matches/AbstractMatch.cpp Matches/AttributeDependentMatch.cpp \
 	Matches/AttributeMatch.cpp Matches/EntityTypeMatch.cpp Matches/MatchBase.cpp \
-	Matches/Observers/AttributeObserver.cpp Matches/Observers/EntityCreationObserver.cpp Matches/OutfitMatch.cpp \
+	Matches/Observers/MatchAttributeObserver.cpp Matches/Observers/EntityCreationObserver.cpp Matches/OutfitMatch.cpp \
 	EntityMapping.cpp EntityMappingCreator.cpp EntityMappingManager.cpp 

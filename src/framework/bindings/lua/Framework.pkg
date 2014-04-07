@@ -1,4 +1,8 @@
-$#include "required.h"
+$#include "framework/ConsoleBackend.h"
+$#include "framework/Tokeniser.h"
+$#include "framework/LoggingInstance.h"
+
+
 
 $pfile "ConsoleBackend.pkg"
 $pfile "Tokeniser.pkg"

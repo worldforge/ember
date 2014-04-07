@@ -12,7 +12,6 @@ CLEANFILES = Atlas.cxx
 TOLUA_PKGS = Atlas.pkg Message/Element.pkg Message/MEncoder.pkg Message/QueuedDecoder.pkg Message/DecoderBase.pkg Codecs/Bach.pkg Codecs/Packed.pkg Codecs/XML.pkg Objects/Root.pkg Formatter.pkg Codec.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 Atlas.cxx: $(TOLUA_PKGS)
-noinst_HEADERS = required.h
 
 bindings: clean all
 

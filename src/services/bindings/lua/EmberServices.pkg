@@ -1,4 +1,6 @@
-$#include "required.h"
+$#include <sigc++/sigc++.h>
+$#include "framework/IScriptingProvider.h"
+
 
 
 $#include "services/EmberServices.h"

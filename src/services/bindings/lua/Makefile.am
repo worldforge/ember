@@ -12,7 +12,6 @@ CLEANFILES = EmberServices.cxx
 TOLUA_PKGS = ConfigService.pkg EmberServices.pkg IInputAdapter.pkg Input.pkg InputService.pkg LoggingService.pkg MetaserverService.pkg ScriptingService.pkg ServerService.pkg ServerSettings.pkg ServerSettingsCredentials.pkg AvatarTransferInfo.pkg LocalServerAdminCreator.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 EmberServices.cxx: $(TOLUA_PKGS)
-noinst_HEADERS = required.h
 
 bindings: clean all
 

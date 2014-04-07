@@ -33,7 +33,7 @@ libEmberOgre_a_SOURCES = \
 \
 	mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp \
 \
-	model/Action.cpp model/AnimationSet.cpp model/Model.cpp \
+	model/ModelAction.cpp model/AnimationSet.cpp model/Model.cpp \
 	model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp \
 	model/ModelDefinitionManager.cpp model/ModelPart.cpp model/ParticleSystem.cpp model/ParticleSystemBinding.cpp model/SubModel.cpp \
 	model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp \
@@ -137,7 +137,7 @@ noinst_HEADERS = \
 \
 	mapping/EmberEntityMappingManager.h mapping/XMLEntityMappingDefinitionSerializer.h \
 \
-	model/Action.h model/AnimationSet.h model/Model.h model/ModelBackgroundLoader.h \
+	model/ModelAction.h model/AnimationSet.h model/Model.h model/ModelBackgroundLoader.h \
 	model/ModelDefinition.h model/ModelDefinitionAtlasComposer.h model/ModelDefinitionManager.h model/ModelPart.h \
 	model/ParticleSystem.h model/ParticleSystemBinding.h model/SubModel.h model/SubModelPart.h \
 	model/XMLModelDefinitionSerializer.h model/ModelRepresentation.h model/ModelRepresentationManager.h \

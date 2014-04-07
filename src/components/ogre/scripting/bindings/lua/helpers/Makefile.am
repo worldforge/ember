@@ -13,7 +13,7 @@ TOLUA_PKGS = Helpers.pkg OgreUtils.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 Helpers.cxx: $(TOLUA_PKGS)
 
-noinst_HEADERS = required.h OgreUtils.h
+noinst_HEADERS = OgreUtils.h
 
 bindings: clean all
 

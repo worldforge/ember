@@ -1,4 +1,4 @@
-$#include "components/ogre/model/Action.h"
+$#include "components/ogre/model/ModelAction.h"
 
 namespace Ember {
 namespace OgreView {
