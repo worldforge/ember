@@ -118,6 +118,7 @@ void Steering::frameProcessed(const TimeFrame&, unsigned int)
 			const auto& finalDestination = mPath.back();
 			auto entity3dPosition = entity->getViewPosition();
 			const WFMath::Point<2> entityPosition(entity3dPosition.x(), entity3dPosition.y());
+			//First check if we've arrived at our actual destination.
 			if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < 0.1f) {
 				//We've arrived at our destination. If we're moving we should stop.
 				if (entity->isMoving()) {
@@ -134,11 +135,17 @@ void Steering::frameProcessed(const TimeFrame&, unsigned int)
 					needToMove = true;
 				}
 				if (needToMove) {
-					WFMath::Vector<2> direction = nextWaypoint - entityPosition;
-					direction.normalize();
-					direction *= 5;
 
-					mAvatar.moveInDirection(WFMath::Vector<3>(direction.x(), direction.y(), 0));
+					if (mPath.size() == 1) {
+						//if the next waypoint is the destination we should send a "move to position" update to the server, to make sure that we stop when we've arrived.
+						//otherwise, if there's too much lag, we might end up overshooting our destination and will have to double back
+						mAvatar.moveToPoint(WFMath::Point<3>(nextWaypoint.x(), nextWaypoint.y(), entity3dPosition.z()));
+					} else {
+						WFMath::Vector<2> direction = nextWaypoint - entityPosition;
+						direction.normalize();
+						direction *= 5;
+						mAvatar.moveInDirection(WFMath::Vector<3>(direction.x(), direction.y(), 0));
+					}
 				}
 			}
 		}
