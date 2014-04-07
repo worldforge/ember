@@ -248,6 +248,13 @@ void MovementController::runCommand(const std::string &command, const std::strin
 			mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getViewPosition()));
 		}
 	}
+	if (mMovementDirection != WFMath::Vector<3>::ZERO()) {
+		mSteering->stopSteering();
+		if (mVisualizePath) {
+			//By visualizing an empty path we'll remove any lingering path.
+			mAwarenessVisualizer->visualizePath(std::list<WFMath::Point<3>>());
+		}
+	}
 }
 
 bool MovementController::frameStarted(const Ogre::FrameEvent& event)
