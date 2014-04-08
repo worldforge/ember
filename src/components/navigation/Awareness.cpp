@@ -33,6 +33,8 @@
 #include "domain/IHeightProvider.h"
 #include "domain/EmberEntity.h"
 
+#include "framework/LoggingInstance.h"
+
 #include <Eris/View.h>
 #include <Eris/Avatar.h>
 #include <Eris/Entity.h>
@@ -201,8 +203,24 @@ struct InputGeometry
 	std::vector<WFMath::RotBox<2>> entityAreas;
 };
 
+class AwarenessContext: public rcContext
+{
+protected:
+	virtual void doLog(const rcLogCategory category, const char* msg, const int len)
+	{
+		if (category == RC_LOG_PROGRESS) {
+			S_LOG_VERBOSE("Recast: " << msg);
+		} else if (category == RC_LOG_WARNING) {
+			S_LOG_WARNING("Recast: " << msg);
+		} else {
+			S_LOG_FAILURE("Recast: " << msg);
+		}
+	}
+
+};
+
 Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
-		mView(view), mHeightProvider(heightProvider), m_ctx(new rcContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
+		mView(view), mHeightProvider(heightProvider), m_ctx(new AwarenessContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
 {
 
 	m_talloc = new LinearAllocator(128000);
