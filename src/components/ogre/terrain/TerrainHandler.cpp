@@ -452,6 +452,12 @@ bool TerrainHandler::getHeight(const TerrainPosition& point, float& height) cons
 	return mHeightMap->getHeightAndNormal(point.x(), point.y(), height, vector);
 }
 
+void TerrainHandler::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
+{
+	mHeightMap->blitHeights(xMin, xMax, yMin, yMax, heights);
+}
+
+
 void TerrainHandler::setLightning(ILightning* lightning)
 {
 	mLightning = lightning;

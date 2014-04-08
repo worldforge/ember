@@ -128,6 +128,15 @@ public:
 	 */
 	bool getHeight(const TerrainPosition& atPosition, float& height) const;
 
+    /**
+     * @brief Performs a fast copy of the raw height data for the supplied area.
+     * @param xMin Minimum x coord of the area.
+     * @param xMax Maximum x coord of the area.
+     * @param yMin Minimum y coord of the area.
+     * @param yMax Maximum y coord of the area.
+     * @param heights A vector into which heigh data will be placed. This should preferably already have a capacity reserved.
+     */
+	void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
 	/**
 	 * @brief Updates the terrain with new terrain points.
 	 *

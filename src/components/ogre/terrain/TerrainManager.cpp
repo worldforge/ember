@@ -117,6 +117,11 @@ bool TerrainManager::getHeight(const TerrainPosition& atPosition, float& height)
 	return mHandler->getHeight(atPosition, height);
 }
 
+void TerrainManager::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
+{
+	mHandler->blitHeights(xMin, xMax, yMin, yMax, heights);
+}
+
 
 const TerrainInfo& TerrainManager::getTerrainInfo() const
 {

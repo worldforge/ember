@@ -40,7 +40,7 @@ namespace Terrain
 {
 
 HeightMap::HeightMap(float defaultLevel, unsigned int segmentResolution) :
-	mDefaultLevel(defaultLevel), mSegmentResolution(segmentResolution)
+		mDefaultLevel(defaultLevel), mSegmentResolution(segmentResolution)
 {
 
 }
@@ -51,7 +51,7 @@ HeightMap::~HeightMap()
 
 void HeightMap::insert(int xIndex, int yIndex, IHeightMapSegment* segment)
 {
-	mSegments[xIndex][yIndex] = std::shared_ptr<IHeightMapSegment>(segment);
+	mSegments[xIndex][yIndex] = std::shared_ptr < IHeightMapSegment > (segment);
 }
 
 bool HeightMap::remove(int xIndex, int yIndex)
@@ -65,6 +65,41 @@ bool HeightMap::remove(int xIndex, int yIndex)
 		}
 	}
 	return false;
+}
+
+void HeightMap::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
+{
+
+	int xSize = xMax - xMin;
+
+	int segmentXMin = I_ROUND(floor(xMin / (double)mSegmentResolution));
+	int segmentXMax = I_ROUND(floor(xMax / (double)mSegmentResolution));
+	int segmentYMin = I_ROUND(floor(yMin / (double)mSegmentResolution));
+	int segmentYMax = I_ROUND(floor(yMax / (double)mSegmentResolution));
+
+	for (int segmentX = segmentXMin; segmentX <= segmentXMax; ++segmentX) {
+		for (int segmentY = segmentYMin; segmentY <= segmentYMax; ++segmentY) {
+
+			auto segmentPtr = getSegment(segmentX, segmentY);
+			auto segment = segmentPtr.get();
+
+			int segmentXStart = segmentX * mSegmentResolution;
+			int segmentYStart = segmentY * mSegmentResolution;
+			int dataXOffset = segmentXStart - xMin;
+			int dataYOffset = segmentYStart - yMin;
+
+			int xStart = std::max(xMin - segmentXStart, 0);
+			int yStart = std::max(yMin - segmentYStart, 0);
+			int xEnd = std::min<int>(xMax - segmentXStart, mSegmentResolution);
+			int yEnd = std::min<int>(yMax - segmentYStart, mSegmentResolution);
+
+			for (int x = xStart; x < xEnd; ++x) {
+				for (int y = yStart; y < yEnd; ++y) {
+					heights[((dataYOffset + y) * xSize) + (dataXOffset + x)] = segment->getHeight(x, y);
+				}
+			}
+		}
+	}
 }
 
 float HeightMap::getHeight(float x, float y) const
