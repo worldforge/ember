@@ -559,7 +559,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 	return nVertCount;
 }
 
-void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine)
+void Awareness::setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine)
 {
 
 	WFMath::AxisBox<2> axisbox = area.boundingBox();

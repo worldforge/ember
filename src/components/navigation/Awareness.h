@@ -104,7 +104,7 @@ public:
 	 * @param area The area which makes up the awareness area.
 	 * @param focusLine An optional segment for tile precedence.
 	 */
-	void addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine);
+	void setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine);
 
 	/**
 	 * @brief Rebuilds a dirty tile if any such exists.
