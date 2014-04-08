@@ -583,7 +583,6 @@ void Awareness::addAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
 	int tileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
 	int tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
 
-
 	//Now mark tiles
 	const float tcs = m_cfg.tileSize * m_cfg.cs;
 	const float tileBorderSize = m_cfg.borderSize * m_cfg.cs;
@@ -782,13 +781,22 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 	tcfg.bmax[2] += tcfg.borderSize * tcfg.cs;
 
 //First define all vertices. Get one extra vertex in each direction so that there's no cutoff at the tile's edges.
+	int heightsXMin = tcfg.bmin[0] - 1;
+	int heightsXMax = tcfg.bmax[0] + 1;
+	int heightsYMin = tcfg.bmin[2] - 1;
+	int heightsYMax = tcfg.bmax[2] + 1;
+
+	//Blit height values with 1 meter interval
+	std::vector<float> heights((heightsXMax - heightsXMin) * (heightsYMax - heightsYMin));
+	mHeightProvider.blitHeights(heightsXMin, heightsXMax, heightsYMin, heightsYMax, heights);
+
+	float* heightData = heights.data();
 	for (int y = tcfg.bmin[2] - 1; y < tcfg.bmax[2] + 1; ++y) {
 		for (int x = tcfg.bmin[0] - 1; x < tcfg.bmax[0] + 1; ++x) {
-			float height;
-			mHeightProvider.getHeight(TerrainPosition(x, y), height);
 			vertsVector.push_back(x);
-			vertsVector.push_back(height);
+			vertsVector.push_back(*heightData);
 			vertsVector.push_back(y);
+			heightData++;
 		}
 	}
 
@@ -827,8 +835,6 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 	}
 
 // Allocate array that can hold triangle flags.
-// If you have multiple meshes you need to process, allocate
-// and array which can hold the max number of triangles you need to process.
 	rc.triareas = new unsigned char[ntris];
 	if (!rc.triareas) {
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'm_triareas' (%d).", ntris / 3);
@@ -843,6 +849,9 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 // Once all geometry is rasterized, we do initial pass of filtering to
 // remove unwanted overhangs caused by the conservative rasterization
 // as well as filter spans where the character cannot possibly stand.
+
+	//NOTE: These are disabled for now since we currently only handle a simple 2d height map
+	//with bounding boxes snapped to the ground. If this changes these calls probably needs to be activated.
 //	rcFilterLowHangingWalkableObstacles(m_ctx, tcfg.walkableClimb, *rc.solid);
 //	rcFilterLedgeSpans(m_ctx, tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid);
 //	rcFilterWalkableLowHeightSpans(m_ctx, tcfg.walkableHeight, *rc.solid);
