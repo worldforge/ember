@@ -72,6 +72,7 @@ void MovementControllerInputListener::input_MouseButtonPressed(Input::MouseButto
 {
 	if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
 		mController.mMovementDirection.y() = 1;
+		mController.stopSteering();
 	}
 }
 
@@ -249,13 +250,19 @@ void MovementController::runCommand(const std::string &command, const std::strin
 		}
 	}
 	if (mMovementDirection != WFMath::Vector<3>::ZERO()) {
-		mSteering->stopSteering();
-		if (mVisualizePath) {
-			//By visualizing an empty path we'll remove any lingering path.
-			mAwarenessVisualizer->visualizePath(std::list<WFMath::Point<3>>());
-		}
+		stopSteering();
 	}
 }
+
+void MovementController::stopSteering()
+{
+	mSteering->stopSteering();
+	if (mVisualizePath) {
+		//By visualizing an empty path we'll remove any lingering path.
+		mAwarenessVisualizer->visualizePath(std::list<WFMath::Point<3>>());
+	}
+}
+
 
 bool MovementController::frameStarted(const Ogre::FrameEvent& event)
 {

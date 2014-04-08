@@ -53,9 +53,14 @@ void Steering::setDestination(const WFMath::Point<3>& viewPosition)
 {
 	mViewDestination = viewPosition;
 
+	setAwareness();
+}
+
+void Steering::setAwareness()
+{
 	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
 
-	WFMath::Point<2> destination2d(viewPosition.x(), viewPosition.y());
+	WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.y());
 	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.y());
 
 	WFMath::Vector<2> direction(destination2d - entityPosition2d);
@@ -78,6 +83,7 @@ void Steering::setDestination(const WFMath::Point<3>& viewPosition)
 
 }
 
+
 bool Steering::updatePath()
 {
 	mPath.clear();
@@ -94,7 +100,21 @@ void Steering::startSteering()
 
 void Steering::stopSteering()
 {
+	if (!mSteeringEnabled) {
+		return;
+	}
 	mSteeringEnabled = false;
+
+	//When we stopped steering we'll retain an awareness around the avatar.
+	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
+
+	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.y());
+
+	WFMath::RotBox<2> area;
+	area.size() = WFMath::Vector<2>(mPadding * 2, mPadding * 2);
+	area.corner0() = entityPosition2d - WFMath::Vector<2>(mPadding, mPadding);
+	area.orientation() = WFMath::RotMatrix<2>().identity();
+	mAwareness.setAwarenessArea(area, WFMath::Segment<2>());
 }
 
 bool Steering::isEnabled() const

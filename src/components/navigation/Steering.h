@@ -65,6 +65,8 @@ private:
 
 	float mPadding;
 
+	void setAwareness();
+
 	void frameProcessed(const TimeFrame&, unsigned int);
 	void Awareness_TileUpdated(int tx, int ty);
 };
