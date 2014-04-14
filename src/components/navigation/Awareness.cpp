@@ -29,6 +29,7 @@
 #include "DetourTileCache.h"
 #include "DetourTileCacheBuilder.h"
 #include "DetourCommon.h"
+#include "DetourObstacleAvoidance.h"
 
 #include "domain/IHeightProvider.h"
 #include "domain/EmberEntity.h"
@@ -47,9 +48,11 @@
 #include <cmath>
 #include <vector>
 #include <cstring>
+#include <queue>
 
 #define MAX_PATHPOLY      256 // max number of polygons in a path
 #define MAX_PATHVERT      512 // most verts in a path
+#define MAX_OBSTACLES_CIRCLES 4 // max number of circle obstacles to consider when doing avoidance
 namespace Ember
 {
 namespace Navigation
@@ -220,7 +223,7 @@ protected:
 };
 
 Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
-		mView(view), mHeightProvider(heightProvider), m_ctx(new AwarenessContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
+		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), m_ctx(new AwarenessContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
 {
 
 	m_talloc = new LinearAllocator(128000);
@@ -234,7 +237,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	// Area flags for polys to consider in search, and their cost
 	mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
 
-	auto avatarBbox = mView.getAvatar()->getEntity()->getBBox();
+	auto avatarBbox = mAvatarEntity->getBBox();
 
 	//radius of our agent; should be taken from the entity, but we'll assume it's a standard human
 	float r = 0.4f;
@@ -349,16 +352,51 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 		return;
 	}
 
+	mObstacleAvoidanceQuery = dtAllocObstacleAvoidanceQuery();
+	mObstacleAvoidanceQuery->init(MAX_OBSTACLES_CIRCLES, 0);
+
+	mObstacleAvoidanceParams = new dtObstacleAvoidanceParams;
+	mObstacleAvoidanceParams->velBias = 0.4f;
+	mObstacleAvoidanceParams->weightDesVel = 2.0f;
+	mObstacleAvoidanceParams->weightCurVel = 0.75f;
+	mObstacleAvoidanceParams->weightSide = 0.75f;
+	mObstacleAvoidanceParams->weightToi = 2.5f;
+	mObstacleAvoidanceParams->horizTime = 2.5f;
+	mObstacleAvoidanceParams->gridSize = 33;
+	mObstacleAvoidanceParams->adaptiveDivs = 7;
+	mObstacleAvoidanceParams->adaptiveRings = 2;
+	mObstacleAvoidanceParams->adaptiveDepth = 5;
+
+	mAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Awareness::AvatarEntity_LocationChanged));
+
 	view.EntitySeen.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen));
 	view.EntityCreated.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen));
 
-	auto avatarEntity = mView.getAvatar()->getEntity();
 	std::function<bool(EmberEntity&)> attachListenersFunction = [&](EmberEntity& entity) {
-		if (&entity != avatarEntity) {
-			entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), &entity));
-			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
+		if (&entity != mAvatarEntity) {
+			//Only observe entities that have a bounding box.
+			if (entity.hasBBox() && entity.getBBox().isValid()) {
+				auto result = mObservedEntities.emplace(&entity, EntityConnections());
+				EntityConnections& connections = result.first->second;
+				connections.locationChanged = entity.LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), &entity));
+				entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
+
+				//Only actively observe the entity if it has the same location as the avatar.
+				if (entity.getLocation() == mCurrentLocation) {
+					connections.isIgnored = false;
+					if (entity.hasAttr("velocity")) {
+						mMovingEntities.push_back(&entity);
+						connections.isMoving = true;
+					} else {
+						connections.moved = entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), &entity));
+						connections.isMoving = false;
+					}
+				} else {
+					connections.isIgnored = true;
+				}
+			}
+			return true;
 		}
-		return true;
 	};
 
 	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
@@ -370,6 +408,9 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 
 Awareness::~Awareness()
 {
+	delete mObstacleAvoidanceParams;
+	dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
+
 	dtFreeNavMesh(m_navMesh);
 	dtFreeNavMeshQuery(m_navQuery);
 	delete mFilter;
@@ -385,46 +426,292 @@ Awareness::~Awareness()
 
 void Awareness::View_EntitySeen(Eris::Entity* entity)
 {
-	std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
-	buildEntityAreas(*entity, areas);
-	for (auto& entry : areas) {
-		markTilesAsDirty(entry.second.boundingBox());
-		mEntityAreas.insert(entry);
-	}
+	if (entity->hasBBox() && entity->getBBox().isValid()) {
+		//We always want to connect to the location changed signal
+		auto result = mObservedEntities.emplace(entity, EntityConnections());
+		EntityConnections& connections = result.first->second;
+		connections.locationChanged = entity->LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), entity));
+		connections.isMoving = false;
+		entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), entity));
 
-	entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
-	entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), entity));
+//		//Check if the entity belongs to either the avatar or an entity which is "simple".
+//		Eris::Entity* location = entity->getLocation();
+//		while (location) {
+//			if (location == mAvatarEntity) {
+//				connections.isIgnored = true;
+//				return;
+//			}
+//			if (location->hasAttr("simple")) {
+//				auto simpleElement = location->valueOfAttr("simple");
+//				if (simpleElement.isInt() && simpleElement.asInt() == 1) {
+//					connections.isIgnored = true;
+//					return;
+//				}
+//			}
+//			location = location->getLocation();
+//		}
+		//Only actively observe the entity if it has the same location as the avatar.
+		if (entity->getLocation() == mCurrentLocation) {
+			connections.isIgnored = false;
+
+			if (entity->hasAttr("velocity")) {
+				connections.isMoving = true;
+				mMovingEntities.push_back(entity);
+			} else {
+
+				std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+				buildEntityAreas(*entity, areas);
+				for (auto& entry : areas) {
+					markTilesAsDirty(entry.second.boundingBox());
+					mEntityAreas.insert(entry);
+				}
+
+				connections.moved = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
+				connections.isMoving = false;
+			}
+
+		} else {
+			connections.isIgnored = true;
+		}
+
+	}
 }
 
 void Awareness::Entity_Moved(Eris::Entity* entity)
 {
-	std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
-
-	buildEntityAreas(*entity, areas);
-
-	for (auto& entry : areas) {
-		markTilesAsDirty(entry.second.boundingBox());
-		auto existingI = mEntityAreas.find(entry.first);
+//If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
+	if (entity->hasAttr("velocity")) {
+		mMovingEntities.push_back(entity);
+		auto I = mObservedEntities.find(entity);
+		//No need to listen to more Moved events.
+		I->second.moved.disconnect();
+		I->second.isMoving = true;
+		auto existingI = mEntityAreas.find(entity);
 		if (existingI != mEntityAreas.end()) {
-			//The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
+			//The entity already was registered; mark those tiles where the entity previously were as dirty.
 			markTilesAsDirty(existingI->second.boundingBox());
-			existingI->second = entry.second;
-		} else {
-			mEntityAreas.insert(entry);
+			mEntityAreas.erase(entity);
 		}
+	} else {
+		std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+
+		buildEntityAreas(*entity, areas);
+
+		for (auto& entry : areas) {
+			markTilesAsDirty(entry.second.boundingBox());
+			auto existingI = mEntityAreas.find(entry.first);
+			if (existingI != mEntityAreas.end()) {
+				//The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
+				markTilesAsDirty(existingI->second.boundingBox());
+				existingI->second = entry.second;
+			} else {
+				mEntityAreas.insert(entry);
+			}
+		}
+
 	}
+
+}
+
+struct EntityCollisionEntry
+{
+	float distance;
+	Eris::Entity* entity;
+	WFMath::Point<2> viewPosition;
+	WFMath::Ball<2> viewRadius;
+};
+
+bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity) const
+{
+	typedef std::pair<int, Eris::Entity*> EntityEntry;
+	auto comp = []( EntityCollisionEntry& a, EntityCollisionEntry& b ) {return a.distance < b.distance;};
+	std::priority_queue<EntityCollisionEntry, std::vector<EntityCollisionEntry>, decltype( comp )> nearestEntities(comp);
+
+	WFMath::Ball<2> playerRadius(position, 5);
+
+	for (auto entity : mMovingEntities) {
+
+		if (entity->isVisible()) {
+
+			//All of the entities have the same location as we have, so we don't need to resolve the position in the world.
+
+			WFMath::Point<3> pos = entity->getPredictedPos();
+			if (!pos.isValid()) {
+				continue;
+			}
+
+			//TODO: calculate 2d bounding sphere instead of 3d
+			WFMath::Point<2> entityView2dPos(pos.x(), pos.y());
+			WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->getBBox().boundingSphereSloppy().radius());
+
+			if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
+				nearestEntities.push(EntityCollisionEntry( { WFMath::Distance(position, entityView2dPos), entity, entityView2dPos, entityViewRadius }));
+			}
+		}
+
+	}
+
+	if (!nearestEntities.empty()) {
+		mObstacleAvoidanceQuery->reset();
+		int i = 0;
+		while (!nearestEntities.empty() && i < MAX_OBSTACLES_CIRCLES) {
+			const EntityCollisionEntry& entry = nearestEntities.top();
+			auto entity = entry.entity;
+			float pos[] { entry.viewPosition.x(), 0, entry.viewPosition.y() };
+			float vel[] { entity->getPredictedVelocity().x(), 0, entity->getPredictedVelocity().y() };
+			mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
+			nearestEntities.pop();
+			++i;
+		}
+
+		float pos[] { position.x(), 0, position.y() };
+		float vel[] { desiredVelocity.x(), 0, desiredVelocity.y() };
+		float dvel[] { desiredVelocity.x(), 0, desiredVelocity.y() };
+		float nvel[] { 0, 0, 0 };
+		float desiredSpeed = desiredVelocity.mag();
+
+		auto samples = mObstacleAvoidanceQuery->sampleVelocityAdaptive(pos, 0.4f, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams, nullptr);
+		if (samples > 0) {
+			if (!WFMath::Equal(vel[0], nvel[0]) || !WFMath::Equal(vel[2], nvel[2])) {
+				newVelocity.x() = nvel[0];
+				newVelocity.y() = nvel[2];
+				newVelocity.setValid(true);
+				return true;
+			}
+		}
+
+	}
+	return false;
+
 }
 
 void Awareness::Entity_BeingDeleted(Eris::Entity* entity)
 {
-	std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+	auto I = mObservedEntities.find(entity);
+	if (I != mObservedEntities.end()) {
+		if (!I->second.isIgnored) {
+			if (I->second.isMoving) {
+				mMovingEntities.remove(entity);
+			} else {
+				std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
 
-	buildEntityAreas(*entity, areas);
+				buildEntityAreas(*entity, areas);
 
-	for (auto& entry : areas) {
-		markTilesAsDirty(entry.second.boundingBox());
+				for (auto& entry : areas) {
+					markTilesAsDirty(entry.second.boundingBox());
+				}
+				mEntityAreas.erase(entity);
+			}
+			mObservedEntities.erase(entity);
+		}
 	}
-	mEntityAreas.erase(entity);
+}
+
+void Awareness::AvatarEntity_LocationChanged(Eris::Entity*)
+{
+	//TODO: rebuild awareness as the location has changed
+}
+
+void Awareness::Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entity)
+{
+	auto I = mObservedEntities.find(entity);
+	if (I != mObservedEntities.end()) {
+		EntityConnections& connections = I->second;
+
+		if (entity->getLocation() == mCurrentLocation) {
+			assert(connections.moved == false);
+			connections.isIgnored = false;
+			//Entity was ignored but shouldn't be anymore
+			if (entity->hasAttr("velocity")) {
+				connections.isMoving = true;
+				mMovingEntities.push_back(entity);
+			} else {
+
+				//The position of the entity is invalid at this; the Moved signal will be emitted after the LocationChanged signal.
+
+//				std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+//				buildEntityAreas(*entity, areas);
+//				for (auto& entry : areas) {
+//					markTilesAsDirty(entry.second.boundingBox());
+//					mEntityAreas.insert(entry);
+//				}
+
+				connections.moved = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
+			}
+		} else {
+			//Only sever connections if the entity wasn't already ignored.
+			if (!connections.isIgnored) {
+				if (connections.isMoving) {
+					assert(connections.moved == false);
+					mMovingEntities.remove(entity);
+				} else {
+					assert(connections.moved == true);
+					connections.moved.disconnect();
+
+					auto areasI = mEntityAreas.find(entity);
+					if (areasI != mEntityAreas.end()) {
+						markTilesAsDirty(areasI->second.boundingBox());
+						mEntityAreas.erase(areasI);
+					}
+				}
+				connections.isIgnored = true;
+			}
+		}
+
+//		//Check if the entity belongs to either the avatar or an entity which is "simple".
+//		Eris::Entity* location = entity->getLocation();
+//		while (location) {
+//			if (location == mAvatarEntity) {
+//				shouldBeIgnored = true;
+//				break;
+//			}
+//			if (location->hasAttr("simple")) {
+//				auto simpleElement = location->valueOfAttr("simple");
+//				if (simpleElement.isInt() && simpleElement.asInt() == 1) {
+//					shouldBeIgnored = true;
+//					break;
+//				}
+//			}
+//			location = location->getLocation();
+//		}
+//
+//		if (shouldBeIgnored) {
+//			//We should remove the entity from awareness.
+//			if (!connections.isIgnored) {
+//				if (connections.isMoving) {
+//					mMovingEntities.remove(entity);
+//				} else {
+//					connections.moved.disconnect();
+//					std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+//
+//					buildEntityAreas(*entity, areas);
+//
+//					for (auto& entry : areas) {
+//						markTilesAsDirty(entry.second.boundingBox());
+//					}
+//					mEntityAreas.erase(entity);
+//				}
+//			}
+//			connections.isIgnored = true;
+//		} else if (connections.isIgnored) {
+//			//Entity was ignored but shouldn't be anymore
+//			if (entity->hasAttr("velocity")) {
+//				connections.isMoving = true;
+//				mMovingEntities.push_back(entity);
+//			} else {
+//
+//				std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+//				buildEntityAreas(*entity, areas);
+//				for (auto& entry : areas) {
+//					markTilesAsDirty(entry.second.boundingBox());
+//					mEntityAreas.insert(entry);
+//				}
+//
+//				connections.moved = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
+//			}
+//
+//		}
+	}
 }
 
 void Awareness::markTilesAsDirty(const WFMath::AxisBox<2>& area)
@@ -529,12 +816,12 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 	float StraightPath[MAX_PATHVERT * 3];
 	int nVertCount = 0;
 
-	// find the start polygon
+// find the start polygon
 	status = m_navQuery->findNearestPoly(pStartPos, extent, mFilter, &StartPoly, StartNearest);
 	if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
 		return -1; // couldn't find a polygon
 
-	// find the end polygon
+// find the end polygon
 	status = m_navQuery->findNearestPoly(pEndPos, extent, mFilter, &EndPoly, EndNearest);
 	if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
 		return -2; // couldn't find a polygon
@@ -551,7 +838,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 	if (nVertCount == 0)
 		return -6; // couldn't find a path
 
-	// At this point we have our path.
+// At this point we have our path.
 	for (int nVert = 0; nVert < nVertCount; nVert++) {
 		path.push_back(WFMath::Point<3>(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 2], StraightPath[(nVert * 3) + 1]));
 	}
@@ -601,7 +888,7 @@ void Awareness::setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
 	int tileMinYIndex = (lowCorner.y() - m_cfg.bmin[2]) / tilesize;
 	int tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
 
-	//Now mark tiles
+//Now mark tiles
 	const float tcs = m_cfg.tileSize * m_cfg.cs;
 	const float tileBorderSize = m_cfg.borderSize * m_cfg.cs;
 
@@ -700,13 +987,17 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
 
 void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, WFMath::RotBox<2>>& entityAreas)
 {
-	if (&entity == mView.getAvatar()->getEntity()) {
+	if (&entity == mAvatarEntity) {
 		return;
 	}
 
-	//The entity is solid (i.e. can be collided with) if it has a bbox and the "solid" property isn't set to false (or 0 as it's an int).
+	if (entity.hasAttr("velocity")) {
+		return;
+	}
+
+//The entity is solid (i.e. can be collided with) if it has a bbox and the "solid" property isn't set to false (or 0 as it's an int).
 	bool isSolid = entity.hasBBox();
-	//No need to check if the entity has no bbox.
+//No need to check if the entity has no bbox.
 	if (isSolid && entity.hasAttr("solid")) {
 		auto solidElement = entity.valueOfAttr("solid");
 		if (solidElement.isInt() && solidElement.asInt() == 0) {
@@ -714,7 +1005,7 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 		}
 	}
 
-	//If an entity is "simple" it means that we shouldn't consider any of its child entities. Like with a character with an inventory.
+//If an entity is "simple" it means that we shouldn't consider any of its child entities. Like with a character with an inventory.
 	bool isSimple = false;
 	if (entity.hasAttr("simple")) {
 		auto simpleElement = entity.valueOfAttr("simple");
@@ -755,11 +1046,11 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 		}
 	}
 
-	if (!isSimple) {
-		for (size_t i = 0; i < entity.numContained(); ++i) {
-			buildEntityAreas(*entity.getContained(i), entityAreas);
-		}
-	}
+//	if (!isSimple) {
+//		for (size_t i = 0; i < entity.numContained(); ++i) {
+//			buildEntityAreas(*entity.getContained(i), entityAreas);
+//		}
+//	}
 }
 
 void Awareness::findEntityAreas(const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas)
@@ -804,7 +1095,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 	int heightsYMin = tcfg.bmin[2] - 1;
 	int heightsYMax = tcfg.bmax[2] + 1;
 
-	//Blit height values with 1 meter interval
+//Blit height values with 1 meter interval
 	std::vector<float> heights((heightsXMax - heightsXMin) * (heightsYMax - heightsYMin));
 	mHeightProvider.blitHeights(heightsXMin, heightsXMax, heightsYMin, heightsYMax, heights);
 
@@ -868,8 +1159,8 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 // remove unwanted overhangs caused by the conservative rasterization
 // as well as filter spans where the character cannot possibly stand.
 
-	//NOTE: These are disabled for now since we currently only handle a simple 2d height map
-	//with bounding boxes snapped to the ground. If this changes these calls probably needs to be activated.
+//NOTE: These are disabled for now since we currently only handle a simple 2d height map
+//with bounding boxes snapped to the ground. If this changes these calls probably needs to be activated.
 //	rcFilterLowHangingWalkableObstacles(m_ctx, tcfg.walkableClimb, *rc.solid);
 //	rcFilterLedgeSpans(m_ctx, tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid);
 //	rcFilterWalkableLowHeightSpans(m_ctx, tcfg.walkableHeight, *rc.solid);

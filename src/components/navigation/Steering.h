@@ -20,6 +20,7 @@
 #define STEERING_H_
 
 #include <wfmath/point.h>
+#include <wfmath/vector.h>
 
 #include <list>
 
@@ -38,7 +39,7 @@ namespace Navigation
 
 class Awareness;
 
-class Steering : public virtual sigc::trackable
+class Steering: public virtual sigc::trackable
 {
 public:
 	Steering(Awareness& awareness, Eris::Avatar& avatar);
@@ -51,7 +52,23 @@ public:
 	void stopSteering();
 	bool isEnabled() const;
 
+	void setSpeed(float speed);
+
 	const std::list<WFMath::Point<3>>& getPath() const;
+
+	/**
+	 * @brief Returns true if we've just sent a movement update to the server and thus expect an update in return.
+	 *
+	 * This is useful to know whether any movement update received from the server was instigated by us or not.
+	 * @return
+	 */
+	bool getIsExpectingServerMovement() const;
+
+	/**
+	 * @brief Sets if we're expecting an update from the server.
+	 * @param expected
+	 */
+	void setIsExpectingServerMovement(bool expected);
 
 private:
 
@@ -65,10 +82,18 @@ private:
 
 	float mPadding;
 
+	float mSpeed;
+
+	bool mExpectingServerMovement;
+	WFMath::Vector<2> mLastSentVelocity;
+
 	void setAwareness();
 
 	void frameProcessed(const TimeFrame&, unsigned int);
 	void Awareness_TileUpdated(int tx, int ty);
+
+	void moveInDirection(const WFMath::Vector<2>& direction);
+	void moveToPoint(const WFMath::Point<3>& point);
 };
 
 }

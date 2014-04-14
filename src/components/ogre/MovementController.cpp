@@ -328,10 +328,14 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 void MovementController::Entity_Moved()
 {
 	if (mSteering->isEnabled()) {
-		mSteering->updatePath();
-		if (mVisualizePath) {
-			mAwarenessVisualizer->visualizePath(mSteering->getPath());
-		}
+//		if (!mSteering->getIsExpectingServerMovement()) {
+			mSteering->updatePath();
+			if (mVisualizePath) {
+				mAwarenessVisualizer->visualizePath(mSteering->getPath());
+			}
+//		} else {
+			mSteering->setIsExpectingServerMovement(false);
+//		}
 	}
 }
 

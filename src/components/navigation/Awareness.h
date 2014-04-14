@@ -26,11 +26,13 @@
 
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
+#include <sigc++/connection.h>
 
 #include <list>
 #include <vector>
 #include <set>
 #include <map>
+#include <unordered_map>
 #include <functional>
 
 class dtNavMeshQuery;
@@ -40,6 +42,8 @@ class dtTileCachePolyMesh;
 class dtTileCacheLayer;
 class dtCompressedTile;
 class dtQueryFilter;
+class dtObstacleAvoidanceQuery;
+struct dtObstacleAvoidanceParams;
 
 namespace Eris
 {
@@ -68,6 +72,15 @@ enum PolyFlags
 	POLYFLAGS_JUMP = 0x08,      // Ability to jump.
 	POLYFLAGS_DISABLED = 0x10,		// Disabled polygon
 	POLYFLAGS_ALL = 0xffff      // All abilities.
+};
+
+
+struct EntityConnections
+{
+	sigc::connection locationChanged;
+	sigc::connection moved;
+	bool isMoving;
+	bool isIgnored;
 };
 
 
@@ -118,6 +131,8 @@ public:
 	void processTiles(const WFMath::AxisBox<2>& area, const TileProcessor& processor) const;
 	void processAllTiles(const TileProcessor& processor) const;
 
+	bool avoidObstacles(const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity) const;
+
 	sigc::signal<void, int, int> EventTileUpdated;
 	sigc::signal<void> EventTileDirty;
 
@@ -125,6 +140,16 @@ protected:
 
 	Eris::View& mView;
 	IHeightProvider& mHeightProvider;
+
+	/**
+	 * @brief Keep a reference to the avatar entity for fast lookup.
+	 */
+	Eris::Entity* mAvatarEntity;
+
+	/**
+	 * @brief Keep a reference to the current location of the avatar for fast lookup.
+	 */
+	Eris::Entity* mCurrentLocation;
 
 	struct LinearAllocator* m_talloc;
 	struct FastLZCompressor* m_tcomp;
@@ -138,6 +163,8 @@ protected:
 	dtNavMesh* m_navMesh;
 	dtNavMeshQuery* m_navQuery;
 	dtQueryFilter* mFilter;
+	dtObstacleAvoidanceQuery* mObstacleAvoidanceQuery;
+	dtObstacleAvoidanceParams* mObstacleAvoidanceParams;
 
 	/**
 	 * @brief A set of all of the tiles that currently are inside our awareness area.
@@ -177,6 +204,10 @@ protected:
 	 */
 	std::map<Eris::Entity*, WFMath::RotBox<2>> mEntityAreas;
 
+	std::unordered_map<Eris::Entity*, EntityConnections> mObservedEntities;
+
+	std::list<Eris::Entity*> mMovingEntities;
+
 	void rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>& entityAreas);
 
 	void buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, WFMath::RotBox<2>>& entityAreas);
@@ -192,6 +223,9 @@ protected:
 	void View_EntitySeen(Eris::Entity* entity);
 	void Entity_Moved(Eris::Entity* entity);
 	void Entity_BeingDeleted(Eris::Entity* entity);
+	void Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entity);
+	void AvatarEntity_LocationChanged(Eris::Entity* oldLoc);
+
 
 };
 
