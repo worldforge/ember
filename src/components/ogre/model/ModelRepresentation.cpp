@@ -72,10 +72,16 @@ const char * const ModelRepresentation::ACTION_FLOAT("float");
 ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping) :
 		mEntity(entity), mModel(model), mScene(scene), mMapping(mapping), mCurrentMovementAction(0), mActiveAction(0), mTaskAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
 {
-	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
-	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
-	mEntity.TaskAdded.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskAdded));
-	mEntity.TaskRemoved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskRemoved));
+	//Only connect if we have actions to act on
+	if (!model.getDefinition()->getActionDefinitions().empty()) {
+		mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
+		mEntity.TaskAdded.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskAdded));
+		mEntity.TaskRemoved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskRemoved));
+	}
+	//Only connect if we have particles
+	if (mModel.hasParticles()) {
+		mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
+	}
 
 //listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	mModel.Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
