@@ -111,7 +111,8 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 
 Avatar::~Avatar()
 {
-	mErisAvatarEntity.setAttachmentControlDelegate(0);
+	//The Eris entity is already deleted when this is called.
+	//mErisAvatarEntity.setAttachmentControlDelegate(0);
 	delete mAvatarAttachmentController;
 	delete mEntityMaker;
 }
