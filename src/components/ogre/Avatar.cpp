@@ -93,6 +93,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 	}
 
 	mErisAvatarEntity.LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
+	mErisAvatarEntity.EventChangedGraphicalRepresentation.connect(sigc::mem_fun(*this, &Avatar::attachCameraToEntity));
 	mErisAvatarEntity.Moved.connect(sigc::mem_fun(*this, &Avatar::avatar_Moved));
 	mErisAvatarEntity.ChildAdded.connect(sigc::mem_fun(*this, &Avatar::entity_ChildAdded));
 	mErisAvatarEntity.ChildRemoved.connect(sigc::mem_fun(*this, &Avatar::entity_ChildRemoved));
@@ -106,7 +107,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 
 	mErisAvatarEntity.getView()->AvatarEntityDeleted.connect(sigc::mem_fun(*this, &Avatar::viewEntityDeleted));
 
-
+	attachCameraToEntity();
 }
 
 Avatar::~Avatar()
@@ -308,6 +309,11 @@ void Avatar::movedInWorld()
 }
 
 void Avatar::avatar_LocationChanged(Eris::Entity* entity)
+{
+	attachCameraToEntity();
+}
+
+void Avatar::attachCameraToEntity()
 {
 	mCameraMount->attachToNode(getAvatarSceneNode());
 

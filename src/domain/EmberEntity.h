@@ -417,11 +417,17 @@ protected:
 	void parsePositioningModeChange(const Atlas::Message::Element& v);
 
 	/**
-	 * @brief Reattaches all child entities.
+	 * @brief Re-attaches all child entities.
 	 * This will iterate through all child entities recursively, and ask them to reattach themselves (i.e. create a new attachment).
 	 * You usually call this when the attachment has changed, and the child attachments needs to be updated.
 	 */
 	void reattachChildren();
+
+	/**
+	 * @brief Updates the attachment.
+	 * Call this when the location changes or if something else causes the graphical representation to change.
+	 */
+	void updateAttachment();
 
 };
 

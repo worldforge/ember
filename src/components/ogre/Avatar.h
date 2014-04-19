@@ -378,6 +378,14 @@ protected:
 	 */
 	void viewEntityDeleted();
 
+	/**
+	 * @brief Attach the camera to the entity.
+	 *
+	 * Call this when the location of the entity, or its graphical representation, has changed.
+	 */
+	void attachCameraToEntity();
+
+
 
 };
 

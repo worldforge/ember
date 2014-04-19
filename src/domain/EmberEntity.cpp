@@ -177,6 +177,14 @@ IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const
 }
 void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
+	updateAttachment();
+
+	Eris::Entity::onLocationChanged(oldLocation);
+
+}
+
+void EmberEntity::updateAttachment()
+{
 	//Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
 
@@ -196,15 +204,13 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 		return;
 	} else {
 		try {
-			setAttachment(0);
+			setAttachment(nullptr);
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when setting attachment for entity." << ex);
 		}
 	}
-
-	Eris::Entity::onLocationChanged(oldLocation);
-
 }
+
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 {
@@ -372,11 +378,11 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 		//FIXME This is a little hackish; how can we improve it to not require special cases?
 		if (m_view->getTopLevel() != this) {
 			//We must delete the attachment before we delete the graphical representation.
-			setAttachment(0);
+			setAttachment(nullptr);
 		}
 		delete mGraphicalRepresentation;
 		mGraphicalRepresentation = graphicalRepresentation;
-		onLocationChanged(getLocation()); //This is needed to generate a new attachment.
+		updateAttachment();
 		EventChangedGraphicalRepresentation();
 	}
 }
@@ -397,7 +403,7 @@ void EmberEntity::reattachChildren()
 	for (unsigned int i = 0; i < numContained(); ++i) {
 		EmberEntity* entity = getEmberContained(i);
 		if (entity) {
-			entity->onLocationChanged(entity->getEmberLocation());
+			entity->updateAttachment();
 			entity->reattachChildren();
 		}
 	}
