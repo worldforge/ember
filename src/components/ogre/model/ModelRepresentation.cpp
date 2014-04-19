@@ -89,12 +89,6 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scen
 
 	mModel.setQueryFlags(MousePicker::CM_ENTITY);
 
-	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similiar entities with synched animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */
-	Action* idleaction = mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
-	if (idleaction) {
-		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
-	}
-
 	//start out with the default movement mode
 	onMovementModeChanged(ModelRepresentation::MM_DEFAULT);
 
@@ -214,6 +208,13 @@ void ModelRepresentation::initFromModel()
 //		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
 //		forest->addEmberEntity(this);
 	}
+
+	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similar entities with synchronized animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */
+	Action* idleaction = mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
+	if (idleaction) {
+		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
+	}
+
 
 }
 
