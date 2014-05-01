@@ -92,7 +92,9 @@ AC_MSG_RESULT([
 
 	])
 	
-AM_PATH_SDL([1.2.0],,
+
+SDL_VERSION="2.0.0"
+AM_PATH_SDL2([$SDL_VERSION],,
 [
   AC_MSG_ERROR(Couldn't find SDL or insufficent version found. Please goto http://www.libsdl.org/ and get at least version $SDL_VERSION)
 ])
