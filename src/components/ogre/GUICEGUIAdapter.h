@@ -42,7 +42,7 @@ class OgreRenderer;
 namespace Ember {
 namespace OgreView {
 
-typedef std::map<SDLKey, CEGUI::Key::Scan> SDLKeyMap;
+typedef std::map<SDL_Scancode, CEGUI::Key::Scan> SDLKeyMap;
 
 /**
  * @author Erik Hjortsberg
@@ -66,8 +66,8 @@ public:
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
 	virtual bool injectChar(int character);
-	virtual bool injectKeyDown(const SDLKey& key);
-	virtual bool injectKeyUp(const SDLKey& key);
+	virtual bool injectKeyDown(const SDL_Scancode& key);
+	virtual bool injectKeyUp(const SDL_Scancode& key);
     
 private:
 	CEGUI::System *mGuiSystem;

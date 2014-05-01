@@ -54,13 +54,13 @@ class Input
 	@param the key event
 	@param true if ember is in gui mode
 	*/
- 	sigc::signal<void, const SDL_keysym&, Ember::Input::InputMode> EventKeyPressed;
+ 	sigc::signal<void, const SDL_Keysym&, Ember::Input::InputMode> EventKeyPressed;
 	
 	/**emitted when a key has been released in movement mode
 	@param the key event
 	@param true if ember is in gui mode
 	*/
- 	sigc::signal<void, const SDL_keysym&, Ember::Input::InputMode> EventKeyReleased;
+ 	sigc::signal<void, const SDL_Keysym&, Ember::Input::InputMode> EventKeyReleased;
 	
 	/**emitted when the mouse has moved
 	note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals
@@ -96,7 +96,7 @@ class Input
 	 * @param  
 	 * @return 
 	 */
-	bool isKeyDown(const SDLKey&) const;
+	bool isKeyDown(const SDL_Scancode&) const;
 
 	
 	

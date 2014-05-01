@@ -348,8 +348,8 @@ public:
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
 	virtual bool injectChar(int character);
-	virtual bool injectKeyDown(const SDLKey& key);
-	virtual bool injectKeyUp(const SDLKey& key);
+	virtual bool injectKeyDown(const SDL_Scancode& key);
+	virtual bool injectKeyUp(const SDL_Scancode& key);
 private:
 	typedef std::map<std::string, BasePointUserObject*> BasePointUserObjectStore;
 	typedef std::set<BasePointUserObject*> BasePointUserObjectSet;

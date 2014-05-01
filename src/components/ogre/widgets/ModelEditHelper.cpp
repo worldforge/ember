@@ -56,7 +56,7 @@ void RotateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freezeMo
 
 	Ogre::Quaternion rotate;
 	//rotate the modelnode
-	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+	if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 		rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mRenderContext.getCameraOrientation().zAxis());
 	} else {
 		rotate.FromAngleAxis(Ogre::Degree(-motion.xRelativeMovement * 180), mRenderContext.getCameraOrientation().yAxis());
@@ -91,7 +91,7 @@ void TranslateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freez
 	Ogre::TagPoint* tagPoint = mAttachPointHelper.getTagPoint();
 
 	Ogre::Vector3 translate;
-	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+	if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 		translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
 	} else {
 		translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
@@ -292,12 +292,12 @@ bool ModelEditHelper::injectChar(int character)
 	return true;
 }
 
-bool ModelEditHelper::injectKeyDown(const SDLKey& key)
+bool ModelEditHelper::injectKeyDown(const SDL_Scancode&)
 {
 	return true;
 }
 
-bool ModelEditHelper::injectKeyUp(const SDLKey& key)
+bool ModelEditHelper::injectKeyUp(const SDL_Scancode&)
 {
 	return true;
 }

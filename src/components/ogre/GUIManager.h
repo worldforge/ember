@@ -349,7 +349,7 @@ protected:
 
 	void EmberOgre_WorldDestroyed();
 
-	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);
+	void pressedKey(const SDL_Keysym& key, Input::InputMode inputMode);
 
 	/**
 	 * @brief Called when a new View instance is created.

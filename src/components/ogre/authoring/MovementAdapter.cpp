@@ -195,13 +195,13 @@ bool MovementAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 
 	} else if (button == Input::MouseWheelUp) {
 		int movementDegrees = 10;
-		if (Input::getSingleton().isKeyDown(SDLK_LSHIFT) || Input::getSingleton().isKeyDown(SDLK_RSHIFT)) {
+		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT)) {
 			movementDegrees = 1;
 		}
 		mBridge->yaw(movementDegrees);
 	} else if (button == Input::MouseWheelDown) {
 		int movementDegrees = 10;
-		if (Input::getSingleton().isKeyDown(SDLK_LSHIFT) || Input::getSingleton().isKeyDown(SDLK_RSHIFT)) {
+		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT)) {
 			movementDegrees = 1;
 		}
 		mBridge->yaw(-movementDegrees);
@@ -215,11 +215,11 @@ bool MovementAdapter::injectChar(int character)
 	return true;
 }
 
-bool MovementAdapter::injectKeyDown(const SDLKey& key)
+bool MovementAdapter::injectKeyDown(const SDL_Scancode& key)
 {
 	if (mWorker) {
 		//by pressing and holding shift we'll allow the user to position it with more precision. We do this by switching the worker instances.
-		if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) {
+		if (key == SDL_SCANCODE_LSHIFT || key == SDL_SCANCODE_RSHIFT) {
 			delete mWorker;
 			mWorker = new MovementAdapterWorkerDiscrete(*this);
 		}
@@ -227,12 +227,12 @@ bool MovementAdapter::injectKeyDown(const SDLKey& key)
 	return true;
 }
 
-bool MovementAdapter::injectKeyUp(const SDLKey& key)
+bool MovementAdapter::injectKeyUp(const SDL_Scancode& key)
 {
-	if (key == SDLK_ESCAPE) {
+	if (key == SDL_SCANCODE_ESCAPE) {
 		cancelMovement();
 		return false;
-	} else if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) {
+	} else if (key == SDL_SCANCODE_LSHIFT || key == SDL_SCANCODE_RSHIFT) {
 		if (mWorker) {
 			delete mWorker;
 			mWorker = new MovementAdapterWorkerTerrainCursor(*this);

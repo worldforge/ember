@@ -55,18 +55,10 @@
 #include "platform/platform_windows.h"
 #endif
 
-#ifndef WITHOUT_SCRAP
-#include "framework/scrap.h"
-#endif // WITHOUT_SCRAP
-#ifdef _MSC_VER
 #include <SDL.h>
 #include <SDL_syswm.h>
 #include <SDL_keyboard.h>
-#else
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
-#include <SDL/SDL_keyboard.h>
-#endif
+#include <SDL_video.h>
 
 #ifndef __APPLE__
 #ifndef _WIN32
@@ -94,23 +86,23 @@ Input::Input() :
 	mMousePosition.yRelativePosition = 0.0f;
 
 	//we don't want to send a injectChar to the gui for some keys, put them here
-	mNonCharKeys.insert(SDLK_ESCAPE);
-	mNonCharKeys.insert(SDLK_F1);
-	mNonCharKeys.insert(SDLK_F2);
-	mNonCharKeys.insert(SDLK_F3);
-	mNonCharKeys.insert(SDLK_F4);
-	mNonCharKeys.insert(SDLK_F5);
-	mNonCharKeys.insert(SDLK_F6);
-	mNonCharKeys.insert(SDLK_F7);
-	mNonCharKeys.insert(SDLK_F8);
-	mNonCharKeys.insert(SDLK_F9);
-	mNonCharKeys.insert(SDLK_F10);
-	mNonCharKeys.insert(SDLK_F11);
-	mNonCharKeys.insert(SDLK_F12);
-	mNonCharKeys.insert(SDLK_BACKSPACE);
-	mNonCharKeys.insert(SDLK_TAB);
-	mNonCharKeys.insert(SDLK_RETURN);
-	mNonCharKeys.insert(SDLK_DELETE);
+	mNonCharKeys.insert(SDL_SCANCODE_ESCAPE);
+	mNonCharKeys.insert(SDL_SCANCODE_F1);
+	mNonCharKeys.insert(SDL_SCANCODE_F2);
+	mNonCharKeys.insert(SDL_SCANCODE_F3);
+	mNonCharKeys.insert(SDL_SCANCODE_F4);
+	mNonCharKeys.insert(SDL_SCANCODE_F5);
+	mNonCharKeys.insert(SDL_SCANCODE_F6);
+	mNonCharKeys.insert(SDL_SCANCODE_F7);
+	mNonCharKeys.insert(SDL_SCANCODE_F8);
+	mNonCharKeys.insert(SDL_SCANCODE_F9);
+	mNonCharKeys.insert(SDL_SCANCODE_F10);
+	mNonCharKeys.insert(SDL_SCANCODE_F11);
+	mNonCharKeys.insert(SDL_SCANCODE_F12);
+	mNonCharKeys.insert(SDL_SCANCODE_BACKSPACE);
+	mNonCharKeys.insert(SDL_SCANCODE_TAB);
+	mNonCharKeys.insert(SDL_SCANCODE_RETURN);
+	mNonCharKeys.insert(SDL_SCANCODE_DELETE);
 
 	//If building WebEmber on Linux we shouldn't initialize SDL here, as that's done separately in another thread.
 #if !defined(BUILD_WEBEMBER) || defined(_WIN32) || defined(__APPLE__)
@@ -132,70 +124,30 @@ Input::~Input()
 std::string Input::createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable, bool centered, bool handleOpenGL)
 {
 	mHandleOpenGL = handleOpenGL;
-	int flags = SDL_HWSURFACE;
+	int flags = SDL_WINDOW_SHOWN;
 
 	if (resizable) {
-		flags |= SDL_RESIZABLE;
+		flags |= SDL_WINDOW_RESIZABLE;
 	}
 
 	if (mHandleOpenGL) {
-		flags |= SDL_OPENGL;
+		flags |= SDL_WINDOW_OPENGL;
 	}
 
 	if (fullscreen) {
-		flags |= SDL_FULLSCREEN;
+		flags |= SDL_WINDOW_FULLSCREEN;
 	}
-
-	//On Windows we'll use another method to center the window once it has been created.
-	//In addition, if the environment variable is set on windows, it will never be cleared.
-	//As a result, every time the window is resized it will be adjusted to be centered.
-#ifndef _WIN32
-	if (centered) {
-		//Some versions of SDL_putenv accepts only a non-const char array.
-		char centered[] = "SDL_VIDEO_CENTERED=center";
-		SDL_putenv(centered);
-	}
-#endif
 
 	createIcon();
-	mMainVideoSurface = SDL_SetVideoMode(width, height, 0, flags); // create an SDL window
+	mMainVideoSurface = SDL_CreateWindow("Ember", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags); // create an SDL window
 
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version);
 
-	SDL_GetWMInfo(&info);
-
-#ifdef _WIN32
-	if (centered) {
-		HWND hwnd = info.window;
-		HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-		if (hMonitor) {
-
-			MONITORINFO mon;
-			memset(&mon, 0, sizeof(MONITORINFO));
-			mon.cbSize = sizeof(MONITORINFO);
-			GetMonitorInfo(hMonitor, &mon);
-
-			RECT r;
-			GetWindowRect(hwnd, &r);
-
-			int winWidth = r.right - r.left;
-			int winLeft = mon.rcWork.left + (mon.rcWork.right - mon.rcWork.left) / 2 - winWidth/2;
-
-			int winHeight = r.bottom - r.top;
-			int winTop = mon.rcWork.top + (mon.rcWork.bottom - mon.rcWork.top) / 2 - winHeight/2;
-			winTop = std::max(winTop, 0);
-
-			SetWindowPos(hwnd, 0, winLeft, winTop, 0, 0, SWP_NOSIZE);
-		}
-	}
-#endif	
-
-	SDL_WM_SetCaption("Ember", "ember");
+	SDL_GetWindowWMInfo(mMainVideoSurface, &info);
 
 	SDL_ShowCursor(0);
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+//	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
 	std::stringstream ss;
 #ifdef __APPLE__
@@ -206,12 +158,6 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	ss << info.info.x11.window;
 #endif
 
-	//must initialize the clipboard support
-#ifndef WITHOUT_SCRAP
-	if (init_scrap() < 0) {
-		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
-	}
-#endif // WITHOUT_SCRAP
 	ConsoleBackend& console = ConsoleBackend::getSingleton();
 	console.registerCommand(BINDCOMMAND, this);
 	console.registerCommand(UNBINDCOMMAND, this);
@@ -239,7 +185,7 @@ void Input::shutdownInteraction()
 	mMainVideoSurface = 0;
 
 	//Release the mouse for safety's sake.
-	SDL_WM_GrabInput(SDL_GRAB_OFF);
+	SDL_SetWindowGrab(mMainVideoSurface, SDL_FALSE);
 	S_LOG_INFO("Shutting down SDL.");
 	SDL_Quit();
 	S_LOG_INFO("SDL shut down.");
@@ -269,7 +215,7 @@ void Input::createIcon()
 	//We'll use the emberIcon struct. This isn't needed on WIN32 or OSX as the icon is provided through different means.
 	mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64 * 3, rmask, gmask, bmask, 0);
 	if (mIconSurface) {
-		SDL_WM_SetIcon(mIconSurface, 0);
+		SDL_SetWindowIcon(mMainVideoSurface, mIconSurface);
 	}
 
 #endif // !BUILD_WEBEMBER
@@ -293,8 +239,6 @@ void Input::attach(IWindowProvider* windowProvider)
 	setGeometry(width, height);
 
 	SDL_ShowCursor(0);
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
 #ifdef _WIN32
 	if (width && height)
@@ -340,28 +284,23 @@ void Input::attach(IWindowProvider* windowProvider)
 #ifndef __APPLE__
 #ifndef _WIN32
 
-	//The SDL_WINDOWID hack will result in no X events being caught on X11; we need to inform X11 that we want them anyway.
-	SDL_SysWMinfo info;
-	XSetWindowAttributes attributes;
-
-	SDL_VERSION(&info.version);
-	// this is important!
-	SDL_GetWMInfo(&info);
-
-	info.info.x11.lock_func();
-
-	attributes.event_mask = KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
-	XChangeWindowAttributes(info.info.x11.display, info.info.x11.window, CWEventMask, &attributes);
-	info.info.x11.unlock_func();
+//	//The SDL_WINDOWID hack will result in no X events being caught on X11; we need to inform X11 that we want them anyway.
+//	SDL_SysWMinfo info;
+//	XSetWindowAttributes attributes;
+//
+//	SDL_VERSION(&info.version);
+//	// this is important!
+//	SDL_GetWindowWMInfo(mMainVideoSurface, &info);
+//
+//	info.info.x11.lock_func();
+//
+//	attributes.event_mask = KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
+//	XChangeWindowAttributes(info.info.x11.display, info.info.x11.window, CWEventMask, &attributes);
+//	info.info.x11.unlock_func();
 
 #endif
 #endif
 	//must initialize the clipboard support
-#ifndef WITHOUT_SCRAP
-	if (init_scrap() < 0) {
-		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
-	}
-#endif // WITHOUT_SCRAP
 	ConsoleBackend& console = ConsoleBackend::getSingleton();
 	console.registerCommand(BINDCOMMAND, this);
 	console.registerCommand(UNBINDCOMMAND, this);
@@ -372,8 +311,11 @@ void Input::setGeometry(int width, int height)
 {
 	mScreenWidth = width;
 	mScreenHeight = height;
-	if (mMainVideoSurface->h != height || mMainVideoSurface->w != width) {
-		mMainVideoSurface = SDL_SetVideoMode(width, height, mMainVideoSurface->format->BitsPerPixel, mMainVideoSurface->flags);
+	int existingHeight, existingWidth;
+	SDL_GetWindowSize(mMainVideoSurface, &existingWidth, &existingHeight);
+
+	if (existingHeight != height || existingWidth != width) {
+		SDL_SetWindowSize(mMainVideoSurface, width, height);
 		EventSizeChanged.emit(width, height);
 	}
 }
@@ -412,7 +354,7 @@ void Input::runCommand(const std::string &command, const std::string &args)
 			}
 		}
 	} else if (ToggleFullscreen && *ToggleFullscreen == command) {
-		setFullscreen((mMainVideoSurface->flags & SDL_FULLSCREEN) == 0);
+		setFullscreen((SDL_GetWindowFlags(mMainVideoSurface) & SDL_WINDOW_FULLSCREEN) == 0);
 	}
 }
 
@@ -433,25 +375,19 @@ void Input::setMovementModeEnabled(bool value)
 
 void Input::writeToClipboard(char* text, size_t length)
 {
-#ifndef WITHOUT_SCRAP
-	put_scrap(T('T','E','X','T'), length, text);
-#endif // WITHOUT_SCRAP
+	SDL_SetClipboardText(text);
 }
 
 void Input::pasteFromClipboard(char*& text, size_t& length)
 {
-#ifndef WITHOUT_SCRAP
-	static char *scrap = 0;
-	int scraplen;
+	char* sdl_text = SDL_GetClipboardText();
 
-	get_scrap(T('T','E','X','T'), &scraplen, &scrap);
+	length = strlen(sdl_text);
 
-	length = scraplen;
-	text = scrap;
-#else
-	text = nullptr;
-	length = 0;
-#endif // WITHOUT_SCRAP
+	text = (char*)malloc(length);
+	strcpy(text, sdl_text);
+
+	SDL_free(sdl_text);
 }
 
 void Input::registerCommandMapper(InputCommandMapper* mapper)
@@ -469,12 +405,12 @@ bool Input::isApplicationVisible()
 	if (mWindowProvider) {
 		return mWindowProvider->isWindowVisible();
 	}
-	return SDL_GetAppState() & SDL_APPACTIVE;
+	return SDL_GetWindowFlags(mMainVideoSurface) & SDL_WINDOW_SHOWN;
 }
 
 bool Input::isApplicationFocused()
 {
-	return SDL_GetAppState() & SDL_APPMOUSEFOCUS;
+	return SDL_GetWindowFlags(mMainVideoSurface) & SDL_WINDOW_MOUSE_FOCUS;
 }
 
 void Input::startInteraction()
@@ -493,7 +429,7 @@ void Input::processInput()
 	if (mWindowProvider) {
 		mWindowProvider->processInput();
 	}
-	SDL_GL_SwapBuffers();
+//	SDL_GL_SwapBuffers();
 }
 
 void Input::pollMouse(float secondsSinceLast)
@@ -502,10 +438,10 @@ void Input::pollMouse(float secondsSinceLast)
 	mMouseState = SDL_GetMouseState(&mouseX, &mouseY);
 
 	//has the mouse moved?
-	Uint8 appState = SDL_GetAppState();
-	if (appState & SDL_APPMOUSEFOCUS) {
+	auto appState = SDL_GetWindowFlags(mMainVideoSurface);
+	if (appState & SDL_WINDOW_MOUSE_FOCUS) {
 		//Wait with grabbing the mouse until the app has input focus.
-		if (mMouseGrabbingRequested && (appState & SDL_APPINPUTFOCUS)) {
+		if (mMouseGrabbingRequested && (appState & SDL_WINDOW_INPUT_FOCUS)) {
 			setMouseGrab(true);
 		}
 		if (mMousePosition.xPixelPosition != mouseX || mMousePosition.yPixelPosition != mouseY) {
@@ -542,7 +478,7 @@ void Input::pollMouse(float secondsSinceLast)
 			}
 
 			if (freezeMouse) {
-				SDL_WarpMouse(mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
+//				SDL_WarpMouse(mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
 			} else {
 				mMousePosition.xPixelPosition = mouseX;
 				mMousePosition.yPixelPosition = mouseY;
@@ -642,37 +578,40 @@ void Input::pollEvents(float secondsSinceLast)
 
 					EventMouseButtonPressed.emit(MouseButtonMiddle, mCurrentInputMode);
 
-				} else if (event.button.button == SDL_BUTTON_WHEELUP) {
-					EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
-					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
-						IInputAdapter* adapter = *I;
-						++I;
-						if (!(adapter)->injectMouseButtonDown(Input::MouseWheelUp))
-							break;
-					}
-				} else if (event.button.button == SDL_BUTTON_WHEELDOWN) {
-					EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
-					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
-						IInputAdapter* adapter = *I;
-						++I;
-						if (!(adapter)->injectMouseButtonDown(Input::MouseWheelDown))
-							break;
-					}
 				}
 			}
 			break;
-		case SDL_ACTIVEEVENT:
-			if (event.active.state & SDL_APPACTIVE) {
-				EventWindowActive.emit(event.active.gain);
-//On Windows we get a corrupted screen if we just switch to non-fullscreen here.
+		case SDL_MOUSEWHEEL:
+			if (event.wheel.x > 0) {
+				EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
+				for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+					IInputAdapter* adapter = *I;
+					++I;
+					if (!(adapter)->injectMouseButtonDown(Input::MouseWheelUp))
+						break;
+				}
+			} else if (event.wheel.x < 0) {
+				EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
+				for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+					IInputAdapter* adapter = *I;
+					++I;
+					if (!(adapter)->injectMouseButtonDown(Input::MouseWheelDown))
+						break;
+				}
+			}
+			break;
+		case SDL_WINDOWEVENT:
+			if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
+				EventWindowActive.emit(true);
+			} else if (event.window.event == SDL_WINDOWEVENT_HIDDEN) {
+				EventWindowActive.emit(false);
+				//On Windows we get a corrupted screen if we just switch to non-fullscreen here.
 #ifndef _WIN32
 				lostFocus();
 #endif
+			} else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+				setGeometry(event.window.data1, event.window.data2);
 			}
-			break;
-
-		case SDL_VIDEORESIZE:
-			setGeometry(event.resize.w, event.resize.h);
 			break;
 		}
 	}
@@ -694,17 +633,17 @@ void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 #endif
 	} else {
 		if (keyEvent.type == SDL_KEYDOWN) {
-			mKeysPressed.insert(keyEvent.keysym.sym);
+			mKeysPressed.insert(keyEvent.keysym.scancode);
 			keyPressed(keyEvent);
 		} else {
-			mKeysPressed.erase(keyEvent.keysym.sym);
+			mKeysPressed.erase(keyEvent.keysym.scancode);
 			keyReleased(keyEvent);
 		}
 	}
 
 }
 
-bool Input::isKeyDown(const SDLKey &key) const
+bool Input::isKeyDown(const SDL_Scancode &key) const
 {
 	return mKeysPressed.find(key) != mKeysPressed.end();
 }
@@ -718,16 +657,16 @@ void Input::keyPressed(const SDL_KeyboardEvent &keyEvent)
 		for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
 			IInputAdapter* adapter = *I;
 			++I;
-			if (!(adapter)->injectKeyDown(keyEvent.keysym.sym))
+			if (!(adapter)->injectKeyDown(keyEvent.keysym.scancode))
 				break;
 		}
 
 		// now character
-		if (mNonCharKeys.find(keyEvent.keysym.sym) == mNonCharKeys.end()) {
+		if (mNonCharKeys.find(keyEvent.keysym.scancode) == mNonCharKeys.end()) {
 			for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
 				IInputAdapter* adapter = *I;
 				++I;
-				if (!(adapter)->injectChar(keyEvent.keysym.unicode))
+				if (!(adapter)->injectChar(keyEvent.keysym.sym))
 					break;
 			}
 		}
@@ -746,7 +685,7 @@ void Input::keyReleased(const SDL_KeyboardEvent &keyEvent)
 		for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
 			IInputAdapter* adapter = *I;
 			++I;
-			if (!(adapter)->injectKeyUp(keyEvent.keysym.sym))
+			if (!(adapter)->injectKeyUp(keyEvent.keysym.scancode))
 				break;
 		}
 	}
@@ -829,15 +768,7 @@ void Input::Config_InvertCamera(const std::string& section, const std::string& k
 
 void Input::setFullscreen(bool enabled)
 {
-	int newFlags = mMainVideoSurface->flags;
-
-	if (enabled) {
-		newFlags |= SDL_FULLSCREEN;
-	} else {
-		newFlags &= ~SDL_FULLSCREEN;
-	}
-	mMainVideoSurface = SDL_SetVideoMode(mMainVideoSurface->w, mMainVideoSurface->h, mMainVideoSurface->format->BitsPerPixel, newFlags);
-
+	SDL_SetWindowFullscreen(mMainVideoSurface, enabled ? SDL_WINDOW_FULLSCREEN : 0);
 }
 
 bool Input::hasWindow() const
@@ -855,19 +786,19 @@ void Input::lostFocus()
 
 void Input::setMouseGrab(bool enabled)
 {
-	if (!enabled) {
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
-		mMouseGrabbingRequested = false;
-	} else {
-		Uint8 appState = SDL_GetAppState();
-		if (enabled && !(appState & SDL_APPMOUSEFOCUS)) {
-			mMouseGrabbingRequested = true;
-		} else {
-			S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
-			SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
-			mMouseGrabbingRequested = false;
-		}
-	}
+//	if (!enabled) {
+//		SDL_WM_GrabInput(SDL_GRAB_OFF);
+//		mMouseGrabbingRequested = false;
+//	} else {
+//		Uint8 appState = SDL_GetAppState();
+//		if (enabled && !(appState & SDL_APPMOUSEFOCUS)) {
+//			mMouseGrabbingRequested = true;
+//		} else {
+//			S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
+//			SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
+//			mMouseGrabbingRequested = false;
+//		}
+//	}
 }
 
 }

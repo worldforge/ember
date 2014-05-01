@@ -459,7 +459,7 @@ bool GUIManager::isInGUIMode() const
 	return getInput().getInputMode() == Input::IM_GUI;
 }
 
-void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
+void GUIManager::pressedKey(const SDL_Keysym& key, Input::InputMode inputMode)
 {
 	if (((key.mod & KMOD_CTRL)|| (key.mod & KMOD_LCTRL) || (key.mod & KMOD_RCTRL))) {
 		if (key.sym == SDLK_c) {

@@ -41,13 +41,13 @@ public:
 	 * @param key 
 	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
 	 */
-	virtual bool injectKeyDown(const SDLKey& key) = 0;
+	virtual bool injectKeyDown(const SDL_Scancode& key) = 0;
 	/**
 	 *    Injects a key up event. Returns false if the event shouldn't be processed any more.
 	 * @param key 
 	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
 	 */
-	virtual bool injectKeyUp(const SDLKey& key) = 0;
+	virtual bool injectKeyUp(const SDL_Scancode& key) = 0;
 };
 
 }

@@ -61,9 +61,9 @@
 #include <OgreOverlaySystem.h>
 #include <OgreRoot.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
-#include <SDL/SDL_keyboard.h>
+#include <SDL.h>
+#include <SDL_syswm.h>
+#include <SDL_keyboard.h>
 
 namespace Ember
 {

@@ -305,7 +305,7 @@ bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& free
 {
 	float multiplier(15.0f);
 	//hard coded to allow the shift button to increase the speed
-	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+	if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT)) {
 		multiplier *= 5;
 	}
 
@@ -353,12 +353,12 @@ bool TerrainEditorOverlay::injectChar(int character)
 	return true;
 }
 
-bool TerrainEditorOverlay::injectKeyDown(const SDLKey& key)
+bool TerrainEditorOverlay::injectKeyDown(const SDL_Scancode&)
 {
 	return true;
 }
 
-bool TerrainEditorOverlay::injectKeyUp(const SDLKey& key)
+bool TerrainEditorOverlay::injectKeyUp(const SDL_Scancode&)
 {
 	return true;
 }

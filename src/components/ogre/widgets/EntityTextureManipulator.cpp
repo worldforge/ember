@@ -70,12 +70,12 @@ bool EntityTextureManipulator::injectChar(int character)
 	return true;
 }
 
-bool EntityTextureManipulator::injectKeyDown(const SDLKey& key)
+bool EntityTextureManipulator::injectKeyDown(const SDL_Scancode&)
 {
 	return true;
 }
 
-bool EntityTextureManipulator::injectKeyUp(const SDLKey& key)
+bool EntityTextureManipulator::injectKeyUp(const SDL_Scancode&)
 {
 	return true;
 }
@@ -133,10 +133,10 @@ DirectEntityTextureManipulator::~DirectEntityTextureManipulator()
 bool DirectEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 
-	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+	if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT)) {
 		//translate the modelnode
 		Ogre::Vector3 translate;
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 			translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
 		} else {
 			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
@@ -147,7 +147,7 @@ bool DirectEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, 
 		//rotate the modelnode
 		Ogre::Quaternion rotate;
 		//rotate the modelnode
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 			rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().zAxis());
 		} else {
 			rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().yAxis());
@@ -175,10 +175,10 @@ CameraEntityTextureManipulator::~CameraEntityTextureManipulator()
 bool CameraEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 
-	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+	if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT)) {
 		//translate the modelnode
 		Ogre::Vector3 translate;
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 			translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
 		} else {
 			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
@@ -187,7 +187,7 @@ bool CameraEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, 
 		mTexture.getRenderContext()->getCameraRootNode()->translate(translate);
 	} else {
 		//rotate the modelnode
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 			mTexture.getRenderContext()->rollCamera(Ogre::Degree(motion.xRelativeMovement * 180));
 		} else {
 			mTexture.getRenderContext()->yawCamera(Ogre::Degree(motion.xRelativeMovement * 180));
@@ -213,10 +213,10 @@ CombinedEntityTextureManipulator::~CombinedEntityTextureManipulator()
 bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	if (mLeftMouseButtonDown) {
-		if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT)) {
 			//translate the modelnode
 			Ogre::Vector3 translate;
-			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 				translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
 			} else {
 				translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
@@ -225,7 +225,7 @@ bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion
 			mTexture.getRenderContext()->getCameraRootNode()->translate(translate);
 		} else {
 			//rotate the modelnode
-			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 				mTexture.getRenderContext()->rollCamera(Ogre::Degree(motion.xRelativeMovement * 180));
 			} else {
 				mTexture.getRenderContext()->yawCamera(Ogre::Degree(motion.xRelativeMovement * 180));
@@ -233,10 +233,10 @@ bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion
 			}
 		}
 	} else {
-		if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT)) {
 			//translate the modelnode
 			Ogre::Vector3 translate;
-			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 				translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
 			} else {
 				translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
@@ -247,7 +247,7 @@ bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion
 			//rotate the modelnode
 			Ogre::Quaternion rotate;
 			//rotate the modelnode
-			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 				rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().zAxis());
 			} else {
 				rotate.FromAngleAxis(Ogre::Degree(-motion.xRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().yAxis());

@@ -125,7 +125,7 @@ PolygonPoint* PolygonPointMover::getActivePoint() const
 	return &mPoint;
 }
 
-void PolygonPointMover::input_KeyPressed(const SDL_keysym& key, Input::InputMode /*mode*/)
+void PolygonPointMover::input_KeyPressed(const SDL_Keysym& key, Input::InputMode /*mode*/)
 {
 	if (key.sym == SDLK_LCTRL || key.sym == SDLK_RCTRL) {
 		if (!mNewPoint) {
@@ -136,7 +136,7 @@ void PolygonPointMover::input_KeyPressed(const SDL_keysym& key, Input::InputMode
 	}
 }
 
-void PolygonPointMover::input_KeyReleased(const SDL_keysym& key, Input::InputMode /*mode*/)
+void PolygonPointMover::input_KeyReleased(const SDL_Keysym& key, Input::InputMode /*mode*/)
 {
 	if (key.sym == SDLK_LCTRL || key.sym == SDLK_RCTRL) {
 		if (mNewPoint) {

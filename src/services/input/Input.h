@@ -34,7 +34,7 @@
 #include <sigc++/slot.h>
 #include <sigc++/signal.h>
 
-#include <SDL_keysym.h>
+#include <SDL_keyboard.h>
 
 #include <set>
 #include <list>
@@ -47,8 +47,9 @@ typedef unsigned int uint32_t;
 #endif
 
 struct SDL_KeyboardEvent;
-struct SDL_keysym;
+struct SDL_Keysym;
 struct SDL_Surface;
+struct SDL_Window;
 
 namespace varconf
 {
@@ -64,7 +65,7 @@ class InputCommandMapper;
 class ConfigListenerContainer;
 class MainLoopController;
 
-typedef std::set<SDLKey> KeysSet;
+typedef std::set<SDL_Scancode> KeysSet;
 typedef std::list<IInputAdapter*> IInputAdapterStore;
 
 /**
@@ -276,13 +277,13 @@ public:
 	 * @param the key event
 	 * @param true if the application is in gui mode
 	 */
-	sigc::signal<void, const SDL_keysym&, Input::InputMode> EventKeyPressed;
+	sigc::signal<void, const SDL_Keysym&, Input::InputMode> EventKeyPressed;
 
 	/** @brief Emitted when a key has been released in movement mode.
 	 * @param the key event
 	 * @param true if the application is in gui mode
 	 */
-	sigc::signal<void, const SDL_keysym&, Input::InputMode> EventKeyReleased;
+	sigc::signal<void, const SDL_Keysym&, Input::InputMode> EventKeyReleased;
 
 	/** @brief Emitted when the mouse has moved.
 	 * Note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals although the relative position will have changed.
@@ -333,7 +334,7 @@ public:
 	 * @param  key The key to check for.
 	 * @return True if the key is down.
 	 */
-	bool isKeyDown(const SDLKey& key) const;
+	bool isKeyDown(const SDL_Scancode& key) const;
 
 	/**
 	 * @brief Sets the window geometry. Call this whenever the size of the window has changed.
@@ -611,7 +612,7 @@ private:
 	 *
 	 * This is only used if the createWindow method is used.
 	 */
-	SDL_Surface* mMainVideoSurface;
+	SDL_Window* mMainVideoSurface;
 
 	/**
 	 * @brief Whether to invert relative movement.
