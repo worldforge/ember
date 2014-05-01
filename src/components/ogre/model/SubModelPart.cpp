@@ -74,13 +74,18 @@ const std::string& SubModelPart::getName() const
 void SubModelPart::show()
 {
 	for (SubModelPartEntityStore::const_iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
+		const std::string* materialName;
 		if (I->Definition && I->Definition->getMaterialName() != "") {
-			I->SubEntity->setMaterialName(I->Definition->getMaterialName());
+			materialName = &I->Definition->getMaterialName();
 		} else {
 			//if no material name is set in the ModelDefinition, use the default one from the mesh
-			I->SubEntity->setMaterialName(I->SubEntity->getSubMesh()->getMaterialName());
+			materialName = &I->SubEntity->getSubMesh()->getMaterialName();
 		}
 
+		if (*materialName != I->SubEntity->getMaterialName()) {
+			//TODO: store the material ptr in the definition so we'll avoid a lookup in setMaterialName
+			I->SubEntity->setMaterialName(*materialName);
+		}
 		I->SubEntity->setVisible(true);
 	}
 }
