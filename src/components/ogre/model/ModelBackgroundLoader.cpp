@@ -298,17 +298,17 @@ void ModelBackgroundLoader::operationCompleted(Ogre::BackgroundProcessTicket tic
 	auto I = mTickets.find(ticket);
 	if (I != mTickets.end()) {
 		mTickets.erase(I);
-	}
-	if (mTickets.empty()) {
-		auto self = this->shared_from_this();
-		mEventService.runOnMainThread([this, self]() {
-			if (this->mModel) {
-				bool result = this->poll();
-				if (result) {
-					this->reloadModel();
+		if (mTickets.empty()) {
+			auto self = this->shared_from_this();
+			mEventService.runOnMainThread([this, self]() {
+				if (this->mModel) {
+					bool result = this->poll();
+					if (result) {
+						this->reloadModel();
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 }
 
@@ -332,6 +332,7 @@ void ModelBackgroundLoader::detachFromModel()
 	mModel = nullptr;
 	for (auto& ticket : mTickets) {
 		Ogre::ResourceBackgroundQueue::getSingleton().abortRequest(ticket);
+		mTickets.clear();
 	}
 }
 
