@@ -15,7 +15,7 @@ noinst_HEADERS = AttributeObserver.h ConsoleBackend.h ConsoleCommandWrapper.h Co
 	LogObserver.h LoggingInstance.h Service.h Singleton.h StreamLogObserver.h Tokeniser.h \
 	XMLCodec.h binreloc.h osdir.h TimedLog.h Time.h MultiLineListFormatter.h TimeFrame.h \
 	CommandHistory.h ShutdownException.h MainLoopController.h FileResourceProvider.h EntityExporterBase.h EntityExporter.h EntityImporterBase.h EntityImporter.h AtlasMessageLoader.h TinyXmlCodec.h \
-	AtlasPresentationBridge.h AtlasObjectDecoder.h
+	AtlasPresentationBridge.h AtlasObjectDecoder.h utf8.h utf8/checked.h utf8/core.h utf8/unchecked.h
 
 if !HAVE_LIBTINYXML
 libFramework_a_SOURCES += tinyxml/tinystr.cpp tinyxml/tinyxml.cpp tinyxml/tinyxmlerror.cpp \
