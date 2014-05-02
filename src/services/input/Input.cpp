@@ -408,16 +408,25 @@ void Input::processInput()
 	mLastTick = ticks;
 	pollMouse(secondsSinceLast);
 	pollEvents(secondsSinceLast);
-	if (mWindowProvider) {
-		mWindowProvider->processInput();
-	}
+//	if (mWindowProvider) {
+//		mWindowProvider->processInput();
+//	}
 //	SDL_GL_SwapBuffers();
 }
 
 void Input::pollMouse(float secondsSinceLast)
 {
-	int mouseX, mouseY;
+	int mouseX, mouseY, mouseRelativeX, mouseRelativeY;
 	mMouseState = SDL_GetMouseState(&mouseX, &mouseY);
+	if (mCurrentInputMode == IM_GUI) {
+		mouseRelativeX = (mMousePosition.xPixelPosition - mouseX);
+		mouseRelativeY = (mMousePosition.yPixelPosition - mouseY);
+	} else {
+		SDL_GetRelativeMouseState(&mouseRelativeX, &mouseRelativeY);
+		//Due to legacy code we need to flip the sign on the relative mouse movement when using the SDL2 method.
+		mouseRelativeX = -mouseRelativeX;
+		mouseRelativeY = -mouseRelativeY;
+	}
 
 	//has the mouse moved?
 	auto appState = SDL_GetWindowFlags(mMainVideoSurface);
@@ -426,20 +435,20 @@ void Input::pollMouse(float secondsSinceLast)
 		if (mMouseGrabbingRequested && (appState & SDL_WINDOW_INPUT_FOCUS)) {
 			setMouseGrab(true);
 		}
-		if (mMousePosition.xPixelPosition != mouseX || mMousePosition.yPixelPosition != mouseY) {
+		if (mouseRelativeX != 0 || mouseRelativeY != 0) {
 
 			//we'll calculate the mouse movement difference and send the values to those
 			//listening to the MouseMoved event
 			float diffX, diffY;
-			diffX = (mMousePosition.xPixelPosition - mouseX) / mScreenWidth;
-			diffY = (mMousePosition.yPixelPosition - mouseY) / mScreenHeight;
+			diffX = mouseRelativeX / mScreenWidth;
+			diffY = mouseRelativeY / mScreenHeight;
 			MouseMotion motion;
 			motion.xPosition = mouseX;
 			motion.yPosition = mouseY;
 			motion.xRelativeMovement = diffX * mInvertMouse;
 			motion.yRelativeMovement = diffY * mInvertMouse;
-			motion.xRelativeMovementInPixels = (mMousePosition.xPixelPosition - mouseX) * mInvertMouse;
-			motion.yRelativeMovementInPixels = (mMousePosition.yPixelPosition - mouseY) * mInvertMouse;
+			motion.xRelativeMovementInPixels = mouseRelativeX * mInvertMouse;
+			motion.yRelativeMovementInPixels = mouseRelativeY * mInvertMouse;
 			motion.timeSinceLastMovement = secondsSinceLast;
 
 			EventMouseMoved.emit(motion, mCurrentInputMode);
@@ -460,7 +469,7 @@ void Input::pollMouse(float secondsSinceLast)
 			}
 
 			if (freezeMouse) {
-//				SDL_WarpMouse(mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
+				SDL_WarpMouseInWindow(mMainVideoSurface, mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
 			} else {
 				mMousePosition.xPixelPosition = mouseX;
 				mMousePosition.yPixelPosition = mouseY;
@@ -788,6 +797,7 @@ void Input::lostFocus()
 
 void Input::setMouseGrab(bool enabled)
 {
+	SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE);
 //	if (!enabled) {
 //		SDL_WM_GrabInput(SDL_GRAB_OFF);
 //		mMouseGrabbingRequested = false;
