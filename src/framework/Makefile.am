@@ -6,14 +6,14 @@ noinst_LIBRARIES = libFramework.a
 
 libFramework_a_SOURCES = AttributeObserver.cpp ConsoleBackend.cpp ConsoleCommandWrapper.cpp \
 	DeepAttributeObserver.cpp DirectAttributeObserver.cpp Exception.cpp Log.cpp LoggingInstance.cpp StreamLogObserver.cpp \
-	Tokeniser.cpp XMLCodec.cpp binreloc.cpp scrap.cpp TimedLog.cpp Time.cpp MultiLineListFormatter.cpp Service.cpp TimeFrame.cpp \
+	Tokeniser.cpp XMLCodec.cpp binreloc.cpp TimedLog.cpp Time.cpp MultiLineListFormatter.cpp Service.cpp TimeFrame.cpp \
 	CommandHistory.cpp MainLoopController.cpp FileResourceProvider.cpp EntityExporterBase.cpp EntityExporter.cpp EntityImporterBase.cpp EntityImporter.cpp AtlasMessageLoader.cpp TinyXmlCodec.cpp \
 	AtlasPresentationBridge.cpp AtlasObjectDecoder.cpp
 
 noinst_HEADERS = AttributeObserver.h ConsoleBackend.h ConsoleCommandWrapper.h ConsoleObject.h \
 	DeepAttributeObserver.h DirectAttributeObserver.h Exception.h IGameView.h IResourceProvider.h IScriptingProvider.h Log.h \
 	LogObserver.h LoggingInstance.h Service.h Singleton.h StreamLogObserver.h Tokeniser.h \
-	XMLCodec.h binreloc.h osdir.h scrap.h TimedLog.h Time.h MultiLineListFormatter.h TimeFrame.h \
+	XMLCodec.h binreloc.h osdir.h TimedLog.h Time.h MultiLineListFormatter.h TimeFrame.h \
 	CommandHistory.h ShutdownException.h MainLoopController.h FileResourceProvider.h EntityExporterBase.h EntityExporter.h EntityImporterBase.h EntityImporter.h AtlasMessageLoader.h TinyXmlCodec.h \
 	AtlasPresentationBridge.h AtlasObjectDecoder.h
 
