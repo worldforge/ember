@@ -600,11 +600,6 @@ private:
 	int mScreenWidth, mScreenHeight;
 
 	/**
-	 * @brief The icon shown in the top of the window.
-	 */
-	SDL_Surface* mIconSurface;
-
-	/**
 	 * @brief The main video surface.
 	 *
 	 * This is only used if the createWindow method is used.
