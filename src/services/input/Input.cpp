@@ -291,12 +291,9 @@ void Input::attach(IWindowProvider* windowProvider)
 
 void Input::setGeometry(int width, int height)
 {
-	mScreenWidth = width;
-	mScreenHeight = height;
-	int existingHeight, existingWidth;
-	SDL_GetWindowSize(mMainVideoSurface, &existingWidth, &existingHeight);
-
-	if (existingHeight != height || existingWidth != width) {
+	if (mScreenHeight != height || mScreenWidth != width) {
+		mScreenWidth = width;
+		mScreenHeight = height;
 		SDL_SetWindowSize(mMainVideoSurface, width, height);
 		EventSizeChanged.emit(width, height);
 	}
@@ -408,9 +405,9 @@ void Input::processInput()
 	mLastTick = ticks;
 	pollMouse(secondsSinceLast);
 	pollEvents(secondsSinceLast);
-//	if (mWindowProvider) {
-//		mWindowProvider->processInput();
-//	}
+	if (mWindowProvider) {
+		mWindowProvider->processInput();
+	}
 //	SDL_GL_SwapBuffers();
 }
 
@@ -779,7 +776,7 @@ void Input::Config_InvertCamera(const std::string& section, const std::string& k
 
 void Input::setFullscreen(bool enabled)
 {
-	SDL_SetWindowFullscreen(mMainVideoSurface, enabled ? SDL_WINDOW_FULLSCREEN : 0);
+	SDL_SetWindowFullscreen(mMainVideoSurface, enabled ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
 bool Input::hasWindow() const
@@ -798,6 +795,8 @@ void Input::lostFocus()
 void Input::setMouseGrab(bool enabled)
 {
 	SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE);
+	//We must reset the relative mouse state reporting.
+	SDL_GetRelativeMouseState(0, 0);
 //	if (!enabled) {
 //		SDL_WM_GrabInput(SDL_GRAB_OFF);
 //		mMouseGrabbingRequested = false;
