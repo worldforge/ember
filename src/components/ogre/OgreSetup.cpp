@@ -271,7 +271,7 @@ Ogre::Root* OgreSetup::configure(void)
 #endif
 #endif
 
-	mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
+	mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, fullscreen, &misc);
 
 	Input::getSingleton().EventSizeChanged.connect(sigc::mem_fun(*this, &OgreSetup::input_SizeChanged));
 

@@ -79,7 +79,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(nullptr), mScreenWidth(0), mScreenHeight(0), mIconSurface(0), mMainVideoSurface(0), mInvertMouse(1), mHandleOpenGL(false)
+		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(nullptr), mScreenWidth(0), mScreenHeight(0), mIconSurface(0), mMainVideoSurface(0), mInvertMouse(1), mHandleOpenGL(false), mMainWindowId(0)
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -117,12 +117,19 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	}
 
 	if (fullscreen) {
-		flags |= SDL_WINDOW_FULLSCREEN;
+		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
 	createIcon();
+	if (mMainVideoSurface) {
+		SDL_DestroyWindow(mMainVideoSurface);
+		mMainVideoSurface = nullptr;
+		mMainWindowId = 0;
+	}
 	mMainVideoSurface = SDL_CreateWindow("Ember", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags); // create an SDL window
 
+	mMainWindowId = SDL_GetWindowID(mMainVideoSurface);
+	SDL_GetWindowSize(mMainVideoSurface, &mScreenWidth, &mScreenHeight);
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version);
 
@@ -437,8 +444,8 @@ void Input::pollMouse(float secondsSinceLast)
 			//we'll calculate the mouse movement difference and send the values to those
 			//listening to the MouseMoved event
 			float diffX, diffY;
-			diffX = mouseRelativeX / mScreenWidth;
-			diffY = mouseRelativeY / mScreenHeight;
+			diffX = mouseRelativeX / (float)mScreenWidth;
+			diffY = mouseRelativeY / (float)mScreenHeight;
 			MouseMotion motion;
 			motion.xPosition = mouseX;
 			motion.yPosition = mouseY;
@@ -592,16 +599,18 @@ void Input::pollEvents(float secondsSinceLast)
 			}
 			break;
 		case SDL_WINDOWEVENT:
-			if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
-				EventWindowActive.emit(true);
-			} else if (event.window.event == SDL_WINDOWEVENT_HIDDEN) {
-				EventWindowActive.emit(false);
-				//On Windows we get a corrupted screen if we just switch to non-fullscreen here.
+			if (event.window.windowID == mMainWindowId) {
+				if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
+					EventWindowActive.emit(true);
+				} else if (event.window.event == SDL_WINDOWEVENT_HIDDEN) {
+					EventWindowActive.emit(false);
+					//On Windows we get a corrupted screen if we just switch to non-fullscreen here.
 #ifndef _WIN32
-				lostFocus();
+					lostFocus();
 #endif
-			} else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-				setGeometry(event.window.data1, event.window.data2);
+				} else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+					setGeometry(event.window.data1, event.window.data2);
+				}
 			}
 			break;
 		}

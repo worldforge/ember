@@ -597,7 +597,7 @@ private:
 	/**
 	 @brief The dimensions of the window.
 	 */
-	float mScreenWidth, mScreenHeight;
+	int mScreenWidth, mScreenHeight;
 
 	/**
 	 * @brief The icon shown in the top of the window.
@@ -624,6 +624,11 @@ private:
 	 * This is true for OSX and on Windows when OpenGL is used (but obviously not when DirectX is used).
 	 */
 	bool mHandleOpenGL;
+
+	/**
+	 * @brief The id of the main window, if available.
+	 */
+	uint32_t mMainWindowId;
 
 };
 
