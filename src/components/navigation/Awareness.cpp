@@ -395,8 +395,8 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 					connections.isIgnored = true;
 				}
 			}
-			return true;
 		}
+		return true;
 	};
 
 	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
