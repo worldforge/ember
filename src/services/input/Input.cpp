@@ -50,6 +50,7 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
 #include "framework/MainLoopController.h"
+#include "framework/utf8.h"
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -84,25 +85,6 @@ Input::Input() :
 	mMousePosition.yPixelPosition = 0;
 	mMousePosition.xRelativePosition = 0.0f;
 	mMousePosition.yRelativePosition = 0.0f;
-
-	//we don't want to send a injectChar to the gui for some keys, put them here
-	mNonCharKeys.insert(SDL_SCANCODE_ESCAPE);
-	mNonCharKeys.insert(SDL_SCANCODE_F1);
-	mNonCharKeys.insert(SDL_SCANCODE_F2);
-	mNonCharKeys.insert(SDL_SCANCODE_F3);
-	mNonCharKeys.insert(SDL_SCANCODE_F4);
-	mNonCharKeys.insert(SDL_SCANCODE_F5);
-	mNonCharKeys.insert(SDL_SCANCODE_F6);
-	mNonCharKeys.insert(SDL_SCANCODE_F7);
-	mNonCharKeys.insert(SDL_SCANCODE_F8);
-	mNonCharKeys.insert(SDL_SCANCODE_F9);
-	mNonCharKeys.insert(SDL_SCANCODE_F10);
-	mNonCharKeys.insert(SDL_SCANCODE_F11);
-	mNonCharKeys.insert(SDL_SCANCODE_F12);
-	mNonCharKeys.insert(SDL_SCANCODE_BACKSPACE);
-	mNonCharKeys.insert(SDL_SCANCODE_TAB);
-	mNonCharKeys.insert(SDL_SCANCODE_RETURN);
-	mNonCharKeys.insert(SDL_SCANCODE_DELETE);
 
 	//If building WebEmber on Linux we shouldn't initialize SDL here, as that's done separately in another thread.
 #if !defined(BUILD_WEBEMBER) || defined(_WIN32) || defined(__APPLE__)
@@ -502,6 +484,9 @@ void Input::pollEvents(float secondsSinceLast)
 		case SDL_KEYUP:
 			keyChanged(event.key);
 			break;
+		case SDL_TEXTINPUT:
+			textInput(event.text);
+			break;
 		case SDL_QUIT:
 			if (mMainLoopController) {
 				mMainLoopController->requestQuit();
@@ -582,7 +567,7 @@ void Input::pollEvents(float secondsSinceLast)
 			}
 			break;
 		case SDL_MOUSEWHEEL:
-			if (event.wheel.x > 0) {
+			if (event.wheel.y > 0) {
 				EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
 				for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
 					IInputAdapter* adapter = *I;
@@ -590,7 +575,7 @@ void Input::pollEvents(float secondsSinceLast)
 					if (!(adapter)->injectMouseButtonDown(Input::MouseWheelUp))
 						break;
 				}
-			} else if (event.wheel.x < 0) {
+			} else if (event.wheel.y < 0) {
 				EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
 				for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
 					IInputAdapter* adapter = *I;
@@ -613,6 +598,33 @@ void Input::pollEvents(float secondsSinceLast)
 				setGeometry(event.window.data1, event.window.data2);
 			}
 			break;
+		}
+	}
+}
+
+void Input::textInput(const SDL_TextInputEvent &textEvent)
+{
+	if (mCurrentInputMode == IM_GUI) {
+
+		const char* text = textEvent.text;
+		size_t len = 0;
+		for (; len < 4; len++) {
+			if (text[len] == 0) {
+				break;
+			}
+		}
+
+		std::vector<int> utf32result;
+		utf8::utf8to32(text, text + len, std::back_inserter(utf32result));
+		if (!utf32result.empty()) {
+			int character = utf32result.front();
+			for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
+				IInputAdapter* adapter = *I;
+				++I;
+				if (!(adapter)->injectChar(character)) {
+					break;
+				}
+			}
 		}
 	}
 }
@@ -659,16 +671,6 @@ void Input::keyPressed(const SDL_KeyboardEvent &keyEvent)
 			++I;
 			if (!(adapter)->injectKeyDown(keyEvent.keysym.scancode))
 				break;
-		}
-
-		// now character
-		if (mNonCharKeys.find(keyEvent.keysym.scancode) == mNonCharKeys.end()) {
-			for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
-				IInputAdapter* adapter = *I;
-				++I;
-				if (!(adapter)->injectChar(keyEvent.keysym.sym))
-					break;
-			}
 		}
 	}
 	if (!mSuppressForCurrentEvent) {

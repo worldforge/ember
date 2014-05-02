@@ -47,6 +47,7 @@ typedef unsigned int uint32_t;
 #endif
 
 struct SDL_KeyboardEvent;
+struct SDL_TextInputEvent;
 struct SDL_Keysym;
 struct SDL_Surface;
 struct SDL_Window;
@@ -475,6 +476,7 @@ private:
 	void pollEvents(float secondsSinceLast);
 
 	void keyChanged(const SDL_KeyboardEvent &keyEvent);
+	void textInput(const SDL_TextInputEvent &textEvent);
 
 	void keyPressed(const SDL_KeyboardEvent &keyEvent);
 	void keyReleased(const SDL_KeyboardEvent &keyEvent);
@@ -511,11 +513,6 @@ private:
 	 * @brief The current input mode.
 	 */
 	InputMode mCurrentInputMode;
-
-	/**
-	 @brief Keys which should not be injected as chars, ie. enter, backspace etc.
-	 */
-	KeysSet mNonCharKeys;
 
 	/**
 	 @brief A set of the keys that are currently pressed.
