@@ -44,7 +44,6 @@
 #endif
 
 #ifdef _WIN32
-#include <float.h>
 #include "platform/platform_windows.h"
 #else
 #include "framework/binreloc.h"
@@ -240,12 +239,6 @@ Ogre::Root* OgreSetup::configure(void)
 #ifdef __APPLE__
 	handleOpenGL = true;
 #endif
-#ifdef _WIN32
-	//Only apply if we're using the OpenGL render plugin.
-	if (mRoot->getRenderSystem()->getName() == "OpenGL Rendering Subsystem") {
-		handleOpenGL = true;
-	}
-#endif
 
 	std::string windowId = Input::getSingleton().createWindow(width, height, fullscreen, true, true, handleOpenGL);
 
@@ -255,17 +248,9 @@ Ogre::Root* OgreSetup::configure(void)
 	misc["currentGLContext"] = Ogre::String("true");
 	misc["macAPI"] = Ogre::String("cocoa");
 #else
+//We should use "externalWindowHandle" on Windows, and "parentWindowHandle" on Linux.
 #ifdef _WIN32
-	SDL_SysWMinfo wmInfo;
-	SDL_VERSION(&wmInfo.version);
-	SDL_GetWMInfo(&wmInfo);
-
-	size_t winHandle = reinterpret_cast<size_t>(wmInfo.window);
-	size_t winGlContext = reinterpret_cast<size_t>(wmInfo.hglrc);
-
-	misc["externalWindowHandle"] = Ogre::StringConverter::toString(winHandle);
-	misc["externalGLContext"] = Ogre::StringConverter::toString(winGlContext);
-	misc["externalGLControl"] = Ogre::String("True");
+	misc["externalWindowHandle"] = windowId;
 #else
 	misc["parentWindowHandle"] = windowId;
 #endif
@@ -316,12 +301,6 @@ Ogre::Root* OgreSetup::configure(void)
 	Input::getSingleton().attach(mOgreWindowProvider);
 
 #endif // BUILD_WEBEMBER
-#ifdef _WIN32
-	//do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
-	_fpreset();
-	_controlfp(_PC_64, _MCW_PC);
-	_controlfp(_RC_NEAR , _MCW_RC);
-#endif
 
 	mRenderWindow->setActive(true);
 	mRenderWindow->setAutoUpdated(true);

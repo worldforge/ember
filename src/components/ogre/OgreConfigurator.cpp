@@ -116,20 +116,13 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	misc["currentGLContext"] = Ogre::String("true");
 	misc["macAPI"] = Ogre::String("cocoa");
 #else
+//We should use "externalWindowHandle" on Windows, and "parentWindowHandle" on Linux.
 #ifdef _WIN32
-	SDL_SysWMinfo wmInfo;
-	SDL_VERSION(&wmInfo.version);
-	SDL_GetWMInfo(&wmInfo);
-
-	size_t winHandle = reinterpret_cast<size_t>(wmInfo.window);
-	size_t winGlContext = reinterpret_cast<size_t>(wmInfo.hglrc);
-
-	misc["externalWindowHandle"] = Ogre::StringConverter::toString(winHandle);
-	misc["externalGLContext"] = Ogre::StringConverter::toString(winGlContext);
-	misc["externalGLControl"] = Ogre::String("True");
+	misc["externalWindowHandle"] = windowId;
 #else
 	misc["parentWindowHandle"] = windowId;
 #endif
+
 #endif
 
 	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", width, height, false, &misc);
