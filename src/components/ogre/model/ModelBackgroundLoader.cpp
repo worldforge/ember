@@ -332,8 +332,8 @@ void ModelBackgroundLoader::detachFromModel()
 	mModel = nullptr;
 	for (auto& ticket : mTickets) {
 		Ogre::ResourceBackgroundQueue::getSingleton().abortRequest(ticket);
-		mTickets.clear();
 	}
+	mTickets.clear();
 }
 
 void ModelBackgroundLoader::addTicket(Ogre::BackgroundProcessTicket ticket)
