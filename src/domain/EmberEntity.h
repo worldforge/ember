@@ -26,6 +26,8 @@
 
 #include <Eris/ViewEntity.h>
 
+#include <functional>
+
 namespace Eris
 {
 class View;
