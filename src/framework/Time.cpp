@@ -22,25 +22,29 @@
 
 #include "Time.h"
 
+#include <boost/date_time/c_time.hpp>
+
 // for the stringstream
 #include <sstream>
 #include <iomanip>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <ctime>
 
 namespace Ember
 {
 
 void Time::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
-	boost::posix_time::ptime currentTime = boost::posix_time::second_clock::local_time();
+	// latest version of boost::posix_time seems to be broken on win32. Fallback to boost::date_time::c_time
+	tm storage;
+	time_t t = time(nullptr);
+	tm* now = boost::date_time::c_time::localtime(&t, &storage); // Thread-safe version of localtime
 
-	year = currentTime.date().year();
-	month = currentTime.date().month();
-	day = currentTime.date().day();
-	hour = currentTime.time_of_day().hours();
-	minute = currentTime.time_of_day().minutes();
-	second = currentTime.time_of_day().seconds();
+	second = now->tm_sec;
+	minute = now->tm_min;
+	hour = now->tm_hour;
+	day = now->tm_mday;
+	month = now->tm_mon + 1;
+	year = now->tm_year + 1900;
 }
 
 std::string Time::getLocalTimeStr()
