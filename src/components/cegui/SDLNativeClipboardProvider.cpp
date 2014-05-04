@@ -16,31 +16,37 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef SCRAPNATIVECLIPBOARDPROVIDER_H_
-#define SCRAPNATIVECLIPBOARDPROVIDER_H_
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include <CEGUI/Clipboard.h>
+#include "SDLNativeClipboardProvider.h"
+#include "services/input/Input.h"
 
 namespace Ember
 {
 namespace Cegui
 {
 
-/**
- * @brief A native clipboard provider which will interface with Input.
- *
- * This allows the CEGUI clipboard to interact with the native one, through the
- * Input service.
- */
-class ScrapNativeClipboardProvider: public CEGUI::NativeClipboardProvider
+SDLNativeClipboardProvider::~SDLNativeClipboardProvider()
 {
-public:
-	virtual ~ScrapNativeClipboardProvider();
+}
 
-	void sendToClipboard(const CEGUI::String &mimeType, void *buffer, size_t size);
-	void retrieveFromClipboard(CEGUI::String &mimeType, void *&buffer, size_t &size);
-};
+void SDLNativeClipboardProvider::sendToClipboard(const CEGUI::String &mimeType, void *buffer, size_t size)
+{
+
+	if (mimeType == "text/plain") {
+		Input::getSingleton().writeToClipboard((char*)buffer, size);
+	}
+}
+
+void SDLNativeClipboardProvider::retrieveFromClipboard(CEGUI::String &mimeType, void *&buffer, size_t &size)
+{
+	mimeType = "text/plain";
+
+	Input::getSingleton().pasteFromClipboard((char*&)buffer, size);
+
+}
 
 }
 }
-#endif /* SCRAPNATIVECLIPBOARDPROVIDER_H_ */

@@ -402,7 +402,7 @@ public:
 
 	/**
 	 * @brief Writes the supplied text to the system clipboard.
-	 * This works on all platform, by using the scrap.cpp code found in framework.
+	 * This works on all platform by using SDL2.
 	 * @param text The text to write.
 	 * @param length The length of the text.
 	 */

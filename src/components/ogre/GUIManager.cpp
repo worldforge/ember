@@ -41,7 +41,7 @@
 
 #include "components/cegui/CEGUILogger.h"
 #include "components/cegui/ColouredRenderedStringParser.h"
-#include "components/cegui/ScrapNativeClipboardProvider.h"
+#include "components/cegui/SDLNativeClipboardProvider.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 
@@ -145,13 +145,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 			// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 			throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
-
-#ifndef WITHOUT_SCRAP
-		// TODO: Add win32 support when upgrading to CEGUI 0.9.
-		// https://bitbucket.org/cegui/cegui/src/1b6147f1e655885ff49b3ff58a76b0f030e936e3/cegui/src/Win32ClipboardProvider.cpp
-		mNativeClipboardProvider = new Ember::Cegui::ScrapNativeClipboardProvider();
+		mNativeClipboardProvider = new Ember::Cegui::SDLNativeClipboardProvider();
 		mGuiSystem->getClipboard()->setNativeProvider(mNativeClipboardProvider);
-#endif
+
 		mRenderedStringParser = new Cegui::ColouredRenderedStringParser();
 		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser);
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
