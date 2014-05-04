@@ -436,6 +436,7 @@ void Input::processInput()
 
 void Input::pollMouse(float secondsSinceLast)
 {
+	SDL_PumpEvents(); // Loop through all pending system events to get the latest mouse position.
 	int mouseX, mouseY, mouseRelativeX, mouseRelativeY;
 	mMouseState = SDL_GetMouseState(&mouseX, &mouseY);
 	if (mCurrentInputMode == IM_GUI) {
