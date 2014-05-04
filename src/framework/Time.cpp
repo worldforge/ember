@@ -26,6 +26,7 @@
 
 // for the stringstream
 #include <sstream>
+#include <chrono>
 #include <iomanip>
 #include <ctime>
 
@@ -74,8 +75,9 @@ std::string Time::getLocalTimeStr()
 
 long long Time::currentTimeMillis()
 {
-	static boost::posix_time::ptime const epoch(boost::gregorian::date(1970, 1, 1));
-	return (boost::posix_time::microsec_clock::universal_time() - epoch).total_milliseconds();
+	// Determine miliseconds since epoch (1970.01.01) with C++11 chrono.
+	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 }
 
 }
