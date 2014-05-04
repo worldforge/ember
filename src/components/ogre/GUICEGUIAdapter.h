@@ -24,9 +24,12 @@
 #define EMBEROGREGUICEGUIADAPTER_H
 
 #include "EmberOgrePrerequisites.h"
+
 #include <CEGUI/System.h>
 #include <CEGUI/EventArgs.h>
 #include <CEGUI/InputEvent.h> 
+
+#include <OgreFrameListener.h>
 
 #include "services/input/IInputAdapter.h"
 #include "services/input/Input.h"
@@ -49,7 +52,10 @@ typedef std::map<SDL_Scancode, CEGUI::Key::Scan> SDLKeyMap;
  *
  * @brief Provides an adapter between the input system and CEGUI.
  */
-class GUICEGUIAdapter : public IInputAdapter {
+class GUICEGUIAdapter :
+	public IInputAdapter,
+	public Ogre::FrameListener
+{
 public:
 
     /**
@@ -69,6 +75,8 @@ public:
 	virtual bool injectKeyDown(const SDL_Scancode& key);
 	virtual bool injectKeyUp(const SDL_Scancode& key);
     
+	bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+
 private:
 	CEGUI::System *mGuiSystem;
 	CEGUI::OgreRenderer *mGuiRenderer;

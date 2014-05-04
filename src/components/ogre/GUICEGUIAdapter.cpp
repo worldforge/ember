@@ -29,6 +29,9 @@
 #include <CEGUI/GlobalEventSet.h>
 #include <CEGUI/widgets/Editbox.h>
 #include <CEGUI/widgets/MultiLineEditbox.h>
+#include <CEGUI/RendererModules/Ogre/Renderer.h>
+
+#include <OgreRoot.h>
 
 namespace Ember {
 namespace OgreView {
@@ -38,6 +41,10 @@ mGuiSystem(system)
 , mGuiRenderer(renderer)
 , mGuiContext(system->getDefaultGUIContext())
 {
+
+	// We will use our own injection.
+	renderer->setRenderingEnabled(false);
+	Ogre::Root::getSingleton().addFrameListener(this);
 
 	//lookup table for sdl scancodes and CEGUI keys
 	mKeyMap[SDL_SCANCODE_BACKSPACE] = CEGUI::Key::Backspace;
@@ -150,6 +157,7 @@ mGuiSystem(system)
 
 GUICEGUIAdapter::~GUICEGUIAdapter()
 {
+	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
 bool GUICEGUIAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
@@ -276,6 +284,12 @@ bool GUICEGUIAdapter::injectKeyUp(const SDL_Scancode& key)
 
 }
 
+bool GUICEGUIAdapter::frameRenderingQueued(const Ogre::FrameEvent& evt)
+{
+	Input::getSingleton().processInput();
+	CEGUI::System::getSingleton().renderAllGUIContexts();
+	return true;
+}
 
 
 }
