@@ -58,7 +58,7 @@ void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain)
 	EmberTerrain* emberTerrain = static_cast<EmberTerrain*>(terrain);
 
 	// Allocate in main thread so no race conditions
-	IPageData* pageData = mDataProvider.getPageData(emberTerrain->getIndex());
+	std::unique_ptr<IPageData> pageData(mDataProvider.getPageData(emberTerrain->getIndex()));
 	if (!pageData || pageData->getCompositeMapMaterial().isNull() || pageData->getCompositeMapMaterial()->getNumTechniques() == 0) {
 		terrain->_setCompositeMapRequired(false);
 	} else {
@@ -111,7 +111,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terra
 
 	S_LOG_VERBOSE("Loading composite map material for terrain page: " << "[" << index.first << "|" << index.second << "]");
 
-	IPageData* pageData = mDataProvider.getPageData(index);
+	std::unique_ptr<IPageData> pageData(mDataProvider.getPageData(index));
 	if (!pageData) {
 		S_LOG_WARNING("Could not find corresponding page data for OgreTerrain at " << "[" << index.first << "|" << index.second << "]");
 		return getOrCreateMaterialClone(mErrorMaterialTemplate, terrain->getMaterialName() + "_comp");

@@ -65,6 +65,12 @@ void Segment::invalidate()
 {
 	mSegmentInvalidator(mSegment);
 }
+
+bool Segment::hasSegment() const
+{
+	return mSegment != nullptr;
+}
+
 }
 
 }

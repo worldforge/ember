@@ -91,6 +91,12 @@ public:
 	 */
 	virtual void invalidate();
 
+	/**
+	 * @brief Returns true if a Mercator::Segment instance exists.
+	 * @return
+	 */
+	bool hasSegment() const;
+
 protected:
 
 	/**

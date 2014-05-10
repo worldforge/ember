@@ -134,9 +134,17 @@ std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& ke
 
 	Segment* fakeSegment = new Segment(xIndex, yIndex, segmentProvider, invalidate);
 
+	//When using fake segments we must delete the mercator segment when we delete the Segment instance.
+	auto deleter = [](Segment* p) {
+		if (p->hasSegment()) {
+			delete &p->getMercatorSegment();
+		}
+		delete p;
+	};
+
 	//In contrast to regular Segments which refer to actual instances of Mercator::Segment we'll
 	//just delete the fake segments once they are of no use no more.
-	return std::shared_ptr<Segment>(fakeSegment);
+	return std::shared_ptr<Segment>(fakeSegment, deleter);
 }
 
 void SegmentManager::addSegment(Mercator::Segment& segment)
