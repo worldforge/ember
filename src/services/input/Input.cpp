@@ -229,6 +229,9 @@ void Input::createIcon()
 void Input::attach(IWindowProvider* windowProvider)
 {
 
+	//TODO: this code probably doesn't work with SDL2.
+	//This should be redesigned to use the new features found in SDL2 which allows SDL to attach to an already created window
+
 	//The windowProvider should not be nullptr.
 	assert(windowProvider);
 	mWindowProvider = windowProvider;
@@ -246,17 +249,6 @@ void Input::attach(IWindowProvider* windowProvider)
 	SDL_ShowCursor(0);
 
 #ifdef _WIN32
-	if (width && height)
-	{
-		// if width = 0 and height = 0, the window is fullscreen
-
-		// This is necessary to allow the window to move
-		//  on WIN32 systems. Without this, the window resets
-		//  to the smallest possible size after moving.
-		//SDL_SetVideoMode(width, height, 0, 0);// first 0: BitPerPixel,
-											  // second 0: flags (fullscreen/...)
-											  // neither are needed as Ogre sets these
-	}
 
 	static SDL_SysWMinfo pInfo;
 	SDL_VERSION(&pInfo.version);
@@ -286,26 +278,6 @@ void Input::attach(IWindowProvider* windowProvider)
 	RegisterRawInputDevices(&Rid, 1, sizeof(Rid));
 #endif
 
-#ifndef __APPLE__
-#ifndef _WIN32
-
-//	//The SDL_WINDOWID hack will result in no X events being caught on X11; we need to inform X11 that we want them anyway.
-//	SDL_SysWMinfo info;
-//	XSetWindowAttributes attributes;
-//
-//	SDL_VERSION(&info.version);
-//	// this is important!
-//	SDL_GetWindowWMInfo(mMainVideoSurface, &info);
-//
-//	info.info.x11.lock_func();
-//
-//	attributes.event_mask = KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
-//	XChangeWindowAttributes(info.info.x11.display, info.info.x11.window, CWEventMask, &attributes);
-//	info.info.x11.unlock_func();
-
-#endif
-#endif
-	//must initialize the clipboard support
 	ConsoleBackend& console = ConsoleBackend::getSingleton();
 	console.registerCommand(BINDCOMMAND, this);
 	console.registerCommand(UNBINDCOMMAND, this);
@@ -431,7 +403,6 @@ void Input::processInput()
 	if (mWindowProvider) {
 		mWindowProvider->processInput();
 	}
-//	SDL_GL_SwapBuffers();
 }
 
 void Input::pollMouse(float secondsSinceLast)
@@ -528,12 +499,6 @@ void Input::pollEvents(float secondsSinceLast)
 			if (event.button.state == SDL_RELEASED) {
 				if (event.button.button == SDL_BUTTON_RIGHT) {
 					//right mouse button released
-
-					//if there's two right mouse clicks withing 0.25 seconds from each others, it's a double click
-					/*		if (mTimeSinceLastRightMouseClick < 0.25) {
-					 toggleInputMode();
-
-					 }*/
 					mTimeSinceLastRightMouseClick = 0.0f;
 					//toggleInputMode();
 					EventMouseButtonReleased.emit(MouseButtonRight, mCurrentInputMode);
@@ -664,9 +629,6 @@ void Input::textInput(const SDL_TextInputEvent &textEvent)
 
 void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 {
-	//catch paste key presses
-
-	//check for paste actions
 //On windows the OS will handle alt-tab independently, so we don't need to check here
 #ifndef _WIN32
 	if ((keyEvent.keysym.mod & KMOD_LALT) && (keyEvent.keysym.sym == SDLK_TAB)) {
@@ -816,7 +778,6 @@ void Input::lostFocus()
 	setInputMode(Input::IM_GUI);
 	setMouseGrab(false);
 	setFullscreen(false);
-//	EventWindowFocusChange.emit();
 }
 
 void Input::setMouseGrab(bool enabled)
@@ -824,19 +785,6 @@ void Input::setMouseGrab(bool enabled)
 	SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE);
 	//We must reset the relative mouse state reporting.
 	SDL_GetRelativeMouseState(0, 0);
-//	if (!enabled) {
-//		SDL_WM_GrabInput(SDL_GRAB_OFF);
-//		mMouseGrabbingRequested = false;
-//	} else {
-//		Uint8 appState = SDL_GetAppState();
-//		if (enabled && !(appState & SDL_APPMOUSEFOCUS)) {
-//			mMouseGrabbingRequested = true;
-//		} else {
-//			S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
-//			SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
-//			mMouseGrabbingRequested = false;
-//		}
-//	}
 }
 
 }

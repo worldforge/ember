@@ -315,12 +315,6 @@ public:
 	sigc::signal<void, InputMode> EventChangedInputMode;
 
 	/**
-	 * @brief Emitted when the user has changed the window focus, which usually means Alt-Tab switching.
-	 * If the application is in mouse grab mode we should probably release it.
-	 */
-	sigc::signal<void> EventWindowFocusChange;
-
-	/**
 	 @brief Emitted when the window is minimized or un-mininized.
 	 @param True if the window is active, false it it's minimized.
 	 */

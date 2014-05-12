@@ -93,7 +93,6 @@ void OgreWindowProvider::windowFocusChange(Ogre::RenderWindow* rw)
 {
 	Input& input = Input::getSingleton();
 	input.setInputMode(Input::IM_GUI);
-	input.EventWindowFocusChange.emit();
 	input.setMouseGrab(false);
 }
 }
