@@ -465,8 +465,8 @@ void Input::pollMouse(float secondsSinceLast)
 			} else {
 				mMousePosition.xPixelPosition = mouseX;
 				mMousePosition.yPixelPosition = mouseY;
-				mMousePosition.xRelativePosition = mouseX / mScreenWidth;
-				mMousePosition.yRelativePosition = mouseY / mScreenHeight;
+				mMousePosition.xRelativePosition = mouseX / (float)mScreenWidth;
+				mMousePosition.yRelativePosition = mouseY / (float)mScreenHeight;
 			}
 
 		}
