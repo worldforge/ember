@@ -25,7 +25,7 @@
 #define EMBEROGREINPUTCOMMANDMAPPER_H
 
 #include "Input.h"
-#include <SDL.h>
+#include <SDL_scancode.h>
 #include <vector>
 #include <map>
 

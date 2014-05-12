@@ -53,15 +53,8 @@
 #include <X11/Xutil.h>
 #endif
 
-#ifdef _MSC_VER
-#include <SDL.h>
 #include <SDL_syswm.h>
 #include <SDL_keyboard.h>
-#else
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
-#include <SDL/SDL_keyboard.h>
-#endif
 
 #include <stdexcept>
 #include <iostream>

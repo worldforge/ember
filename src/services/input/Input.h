@@ -34,7 +34,7 @@
 #include <sigc++/slot.h>
 #include <sigc++/signal.h>
 
-#include <SDL_keyboard.h>
+#include <SDL_scancode.h>
 
 #include <set>
 #include <list>
