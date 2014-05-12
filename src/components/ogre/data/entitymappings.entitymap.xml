@@ -644,19 +644,19 @@
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">1</caseparam>
-						<action type="display-part">1</action>
+						<action type="display-model">cart</action>
 					</case>
 					<case>
 						<caseparam type="equals">2</caseparam>
-						<action type="display-part">2</action>
+						<action type="display-model">cart2</action>
 					</case>
 					<case>
 						<caseparam type="equals">3</caseparam>
-						<action type="display-part">3</action>
+						<action type="display-model">cart3</action>
 					</case>
 					<case>
 						<caseparam type="equals">4</caseparam>
-						<action type="display-part">4</action>
+						<action type="display-model">cart4</action>
 					</case>
 				</attributematch>
 			</case>
