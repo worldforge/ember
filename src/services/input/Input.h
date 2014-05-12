@@ -51,6 +51,7 @@ struct SDL_TextInputEvent;
 struct SDL_Keysym;
 struct SDL_Surface;
 struct SDL_Window;
+union SDL_Event;
 
 namespace varconf
 {
@@ -329,6 +330,14 @@ public:
 	 * @brief Emitted when the size of the main window has changed.
 	 */
 	sigc::signal<void, int, int> EventSizeChanged;
+
+	/**
+	 * @brief Emitted when an SDL event has been received.
+	 *
+	 * This should only be used for special circumstances where the normal event handling isn't sufficient.
+	 * The signal is emitted before the regular event is processed in pollEvents.
+	 */
+	sigc::signal<void, const SDL_Event&> EventSDLEventReceived;
 
 	/**
 	 * @brief Returns true if the supplied key is down.

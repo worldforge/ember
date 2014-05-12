@@ -508,6 +508,7 @@ void Input::pollEvents(float secondsSinceLast)
 	mTimeSinceLastRightMouseClick += secondsSinceLast;
 	static SDL_Event event;
 	while (SDL_PollEvent(&event)) {
+		EventSDLEventReceived(event);
 		switch (event.type) {
 		/* Look for a keypress */
 		case SDL_KEYDOWN:

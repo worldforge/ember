@@ -43,6 +43,8 @@
 #include "extensions/webember/WebEmberManager.h"
 #endif
 
+#include <RenderSystems/GL/OgreGLContext.h>
+
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #else
@@ -59,6 +61,7 @@
 #include <OgreSceneManager.h>
 #include <OgreOverlaySystem.h>
 #include <OgreRoot.h>
+
 
 #include <SDL.h>
 #include <SDL_syswm.h>
@@ -260,6 +263,9 @@ Ogre::Root* OgreSetup::configure(void)
 
 	Input::getSingleton().EventSizeChanged.connect(sigc::mem_fun(*this, &OgreSetup::input_SizeChanged));
 
+	registerOpenGLContextFix();
+
+
 #else //BUILD_WEBEMBER == true
 	//In webember we will disable the config dialog.
 	//Also we will use fixed resolution and windowed mode.
@@ -370,6 +376,40 @@ void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int&
 		fullscreen = (opt->second.currentValue == "Yes");
 	}
 
+}
+
+void OgreSetup::registerOpenGLContextFix()
+{
+	/**
+	 * This is needed to combat a bug found at least on KDE 4.14.4 when using OpenGL in the window manager.
+	 * For some reason the OpenGL context of the application somtimes is altered when the window is minimized and restored.
+	 * This results in segfaults when Ogre then tries to issue OpenGL commands.
+	 * The exact cause and reasons for this bug are unknown, but by making sure that the OpenGL context is set each
+	 * time the window is resized, minimized or restored we seem to avoid the bug.
+	 *
+	 */
+	Ogre::GLContext* ogreGLcontext = nullptr;
+	mRenderWindow->getCustomAttribute("GLCONTEXT", &ogreGLcontext);
+	if (ogreGLcontext) {
+		S_LOG_INFO("Registering OpenGL context loss fix.");
+		Input::getSingleton().EventSDLEventReceived.connect([=](const SDL_Event& event) {
+			if (event.type == SDL_WINDOWEVENT) {
+				switch (event.window.event) {
+					case SDL_WINDOWEVENT_SHOWN:
+					case SDL_WINDOWEVENT_HIDDEN:
+					case SDL_WINDOWEVENT_RESIZED:
+					case SDL_WINDOWEVENT_SIZE_CHANGED:
+					case SDL_WINDOWEVENT_MINIMIZED:
+					case SDL_WINDOWEVENT_MAXIMIZED:
+					case SDL_WINDOWEVENT_RESTORED:
+					ogreGLcontext->setCurrent();
+					break;
+					default:
+					break;
+				}
+			}
+		});
+	}
 }
 
 }

@@ -160,6 +160,17 @@ private:
 
 	void input_SizeChanged(unsigned int width, unsigned int height);
 
+	/**
+	 * @brief Registers the OpenGL Context fix.
+	 *
+	 * This is needed to combat a bug found at least on KDE 4.14.4 when using OpenGL in the window manager.
+	 * For some reason the OpenGL context of the application sometimes is altered when the window is minimized and restored.
+	 * This results in segfaults when Ogre then tries to issue OpenGL commands.
+	 * The exact cause and reasons for this bug are unknown, but by making sure that the OpenGL context is set each
+	 * time the window is resized, minimized or restored we seem to avoid the bug.
+	 */
+	void registerOpenGLContextFix();
+
 };
 
 inline Ogre::RenderWindow* OgreSetup::getRenderWindow() const
