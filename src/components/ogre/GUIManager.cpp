@@ -121,6 +121,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 
 		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
 		mGuiRenderer = &CEGUI::OgreRenderer::create(*window);
+
+		//We'll do our own rendering, interleaved with Ogre's, so we'll turn off the automatic rendering.
+		mGuiRenderer->setRenderingEnabled(false);
+		mGuiRenderer->setFrameControlExecutionEnabled(false);
+
 		mOgreResourceProvider = &CEGUI::OgreRenderer::createOgreResourceProvider();
 		mOgreResourceProvider->setDefaultResourceGroup("Gui");
 
@@ -282,6 +287,11 @@ void GUIManager::initialize()
 		}
 	}
 
+}
+
+void GUIManager::render()
+{
+	CEGUI::System::getSingleton().renderAllGUIContexts();
 }
 
 void GUIManager::input_SizeChanged(int width, int height)

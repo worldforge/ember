@@ -215,7 +215,6 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 {
 	Log::sCurrentFrame = mRoot->getNextFrameNumber();
 
-
 	if (mInput->isApplicationVisible()) {
 		//If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
@@ -223,9 +222,19 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 			mRoot->clearEventTimes();
 		}
 		try {
-			//No need to do this each frame
-			//clearDirtyPassLists();
-			mRoot->renderOneFrame();
+
+			//We're not using the mRoot->renderOneFrame functionality because we want to do
+			//input processing and UI updates while waiting for queued render calls, before we call swapBuffers().
+			mRoot->_fireFrameStarted();
+			mRoot->_updateAllRenderTargets();
+			mWindow->update(false);
+			//Do input and render the UI at the last moment, to make sure that the UI is responsive.
+			mInput->processInput();
+			mGUIManager->render();
+
+			mWindow->swapBuffers();
+			mRoot->_fireFrameEnded();
+
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);
 		}
@@ -304,6 +313,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	}
 
 	mWindow = mOgreSetup->getRenderWindow();
+	//We'll control the rendering ourself and need to turn off the autoupdating.
+	mWindow->setAutoUpdated(false);
 
 	std::string exportDir(configSrv.getHomeDirectory() + "/user-media/data/");
 	//Create the model definition manager

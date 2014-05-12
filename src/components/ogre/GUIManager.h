@@ -26,7 +26,6 @@
 #include "framework/ConsoleObject.h"
 
 #include <OgreFrameListener.h>
-#include <CEGUI/Vector.h>
 #include <sigc++/trackable.h>
 #include <SDL.h>
 #include <stack>
@@ -134,6 +133,13 @@ public:
 	 @brief Emitted every frame.
 	 */
 	sigc::signal<void, float> EventFrameStarted;
+
+	/**
+	 * @brief Renders the GUI.
+	 *
+	 * This should normally only be called from the main loop.
+	 */
+	void render();
 
 	/**
 	 * @brief Emits an action for a certain entity.
