@@ -39,6 +39,7 @@
 #include <set>
 #include <list>
 #include <unordered_map>
+#include <chrono>
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -536,7 +537,7 @@ private:
 	/**
 	 @brief Store the last tick count, to use for looking up how much time has elapsed since our last event polling.
 	 */
-	uint32_t mLastTick;
+	std::chrono::system_clock::time_point mLastTick;
 
 	/**
 	 * @brief The last positions of the mouse.
