@@ -223,7 +223,7 @@ protected:
 };
 
 Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
-		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), m_ctx(new AwarenessContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
+		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), mAvatarRadius(0.4f), m_ctx(new AwarenessContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
 {
 
 	m_talloc = new LinearAllocator(128000);
@@ -237,12 +237,18 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	// Area flags for polys to consider in search, and their cost
 	mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
 
-	auto avatarBbox = mAvatarEntity->getBBox();
+	//height of our agent, default to 2 meters unless there's a bbox
+	float h = 2.0f;
 
-	//radius of our agent; should be taken from the entity, but we'll assume it's a standard human
-	float r = 0.4f;
-	//height of our agent
-	float h = avatarBbox.highCorner().z() - avatarBbox.lowCorner().z();
+	if (mAvatarEntity->hasBBox() && mAvatarEntity->getBBox().isValid()) {
+		auto avatarBbox = mAvatarEntity->getBBox();
+		//get the radius from the avatar entity
+		WFMath::AxisBox<2> avatar2dBbox(WFMath::Point<2>(avatarBbox.lowCorner().x(), avatarBbox.lowCorner().y()), WFMath::Point<2>(avatarBbox.highCorner().x(), avatarBbox.highCorner().y()));
+		mAvatarRadius = std::max(0.2f, avatar2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
+
+		//height of our agent
+		h = avatarBbox.highCorner().z() - avatarBbox.lowCorner().z();
+	}
 
 	auto extent = view.getTopLevel()->getBBox();
 	const WFMath::Point<3>& lower = extent.lowCorner();
@@ -257,7 +263,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	m_cfg.bmax[1] = std::max(500.f, upper.z());
 
 	int gw = 0, gh = 0;
-	float cellsize = r / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
+	float cellsize = mAvatarRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
 	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, cellsize, &gw, &gh);
 	const int tilesize = 80; //This equals 16 meters
 	const int tilewidth = (gw + tilesize - 1) / tilesize;
@@ -279,7 +285,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 //	m_cfg.ch = std::max(upper.z() - lower.z(), 100.0f); //For 2d traversal make the voxel size as large as possible
 	m_cfg.walkableHeight = std::ceil(h / m_cfg.ch); //This is in voxels
 	m_cfg.walkableClimb = 100; //TODO: implement proper system for limiting climbing; for now just use a large voxel number
-	m_cfg.walkableRadius = std::ceil(r / m_cfg.cs);
+	m_cfg.walkableRadius = std::ceil(mAvatarRadius / m_cfg.cs);
 	m_cfg.walkableSlopeAngle = 70; //TODO: implement proper system for limiting climbing; for now just use 70 degrees
 
 	m_cfg.maxEdgeLen = m_cfg.walkableRadius * 8.0f;
@@ -303,7 +309,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	tcparams.width = (int)m_cfg.tileSize;
 	tcparams.height = (int)m_cfg.tileSize;
 	tcparams.walkableHeight = h;
-	tcparams.walkableRadius = r;
+	tcparams.walkableRadius = mAvatarRadius;
 	tcparams.walkableClimb = m_cfg.walkableClimb;
 //	tcparams.maxSimplificationError = m_edgeMaxError;
 	tcparams.maxTiles = tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE;
@@ -479,7 +485,7 @@ void Awareness::View_EntitySeen(Eris::Entity* entity)
 
 void Awareness::Entity_Moved(Eris::Entity* entity)
 {
-//If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
+	//If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
 	if (entity->hasAttr("velocity")) {
 		mMovingEntities.push_back(entity);
 		auto I = mObservedEntities.find(entity);
@@ -513,17 +519,18 @@ void Awareness::Entity_Moved(Eris::Entity* entity)
 
 }
 
-struct EntityCollisionEntry
-{
-	float distance;
-	Eris::Entity* entity;
-	WFMath::Point<2> viewPosition;
-	WFMath::Ball<2> viewRadius;
-};
+
 
 bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity) const
 {
-	typedef std::pair<int, Eris::Entity*> EntityEntry;
+	struct EntityCollisionEntry
+	{
+		float distance;
+		Eris::Entity* entity;
+		WFMath::Point<2> viewPosition;
+		WFMath::Ball<2> viewRadius;
+	};
+
 	auto comp = []( EntityCollisionEntry& a, EntityCollisionEntry& b ) {return a.distance < b.distance;};
 	std::priority_queue<EntityCollisionEntry, std::vector<EntityCollisionEntry>, decltype( comp )> nearestEntities(comp);
 
@@ -570,7 +577,7 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
 		float nvel[] { 0, 0, 0 };
 		float desiredSpeed = desiredVelocity.mag();
 
-		auto samples = mObstacleAvoidanceQuery->sampleVelocityAdaptive(pos, 0.4f, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams, nullptr);
+		auto samples = mObstacleAvoidanceQuery->sampleVelocityAdaptive(pos, mAvatarRadius, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams, nullptr);
 		if (samples > 0) {
 			if (!WFMath::Equal(vel[0], nvel[0]) || !WFMath::Equal(vel[2], nvel[2])) {
 				newVelocity.x() = nvel[0];
@@ -1032,9 +1039,9 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 			WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().y());
 
 			//Expand the box a little so that we can navigate around it without being stuck on it.
-			//We'll use 0.4 meters, but this should ideally be the radius of the avatar.
-			highCorner += WFMath::Vector<2>(0.4, 0.4);
-			lowCorner -= WFMath::Vector<2>(0.4, 0.4);
+			//We'll the radius of the avatar.
+			highCorner += WFMath::Vector<2>(mAvatarRadius, mAvatarRadius);
+			lowCorner -= WFMath::Vector<2>(mAvatarRadius, mAvatarRadius);
 
 			WFMath::RotBox<2> rotbox(WFMath::Point<2>::ZERO(), highCorner - lowCorner, WFMath::RotMatrix<2>().identity());
 			rotbox.shift(WFMath::Vector<2>(lowCorner.x(), lowCorner.y()));
@@ -1090,18 +1097,20 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 	tcfg.bmax[2] += tcfg.borderSize * tcfg.cs;
 
 //First define all vertices. Get one extra vertex in each direction so that there's no cutoff at the tile's edges.
-	int heightsXMin = tcfg.bmin[0] - 1;
-	int heightsXMax = tcfg.bmax[0] + 1;
-	int heightsYMin = tcfg.bmin[2] - 1;
-	int heightsYMax = tcfg.bmax[2] + 1;
+	int heightsXMin = std::floor(tcfg.bmin[0]) - 1;
+	int heightsXMax = std::ceil(tcfg.bmax[0]) + 1;
+	int heightsYMin = std::floor(tcfg.bmin[2]) - 1;
+	int heightsYMax = std::ceil(tcfg.bmax[2]) + 1;
+	int sizeX = heightsXMax - heightsXMin;
+	int sizeY = heightsYMax - heightsYMin;
 
 //Blit height values with 1 meter interval
-	std::vector<float> heights((heightsXMax - heightsXMin) * (heightsYMax - heightsYMin));
+	std::vector<float> heights(sizeX * sizeY);
 	mHeightProvider.blitHeights(heightsXMin, heightsXMax, heightsYMin, heightsYMax, heights);
 
 	float* heightData = heights.data();
-	for (int y = tcfg.bmin[2] - 1; y < tcfg.bmax[2] + 1; ++y) {
-		for (int x = tcfg.bmin[0] - 1; x < tcfg.bmax[0] + 1; ++x) {
+	for (int y = heightsYMin; y < heightsYMax; ++y) {
+		for (int x = heightsXMin; x < heightsXMax; ++x) {
 			vertsVector.push_back(x);
 			vertsVector.push_back(*heightData);
 			vertsVector.push_back(y);
@@ -1109,13 +1118,11 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 		}
 	}
 
-	int sizeX = (int)tcfg.bmax[0] - (int)tcfg.bmin[0] + 2;
-	int sizeY = (int)tcfg.bmax[2] - (int)tcfg.bmin[2] + 2;
 
 //Then define the triangles
 	for (int y = 0; y < (sizeY - 1); y++) {
 		for (int x = 0; x < (sizeX - 1); x++) {
-			size_t vertPtr = (y * sizeY) + x;
+			size_t vertPtr = (y * sizeX) + x;
 			//make a square, including the vertices to the right and below
 			trisVector.push_back(vertPtr);
 			trisVector.push_back(vertPtr + sizeX);

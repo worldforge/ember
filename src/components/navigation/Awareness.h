@@ -155,6 +155,11 @@ protected:
 	struct FastLZCompressor* m_tcomp;
 	struct MeshProcess* m_tmproc;
 
+	/**
+	 * @brief The radius of the avatar.
+	 */
+	float mAvatarRadius;
+
 	rcContext* m_ctx;
 	rcConfig m_cfg;
 
