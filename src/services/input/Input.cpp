@@ -397,9 +397,8 @@ void Input::processInput()
 {
 
 	auto newTick = std::chrono::system_clock::now();
-	auto microsecondsSinceLast = std::chrono::duration_cast<std::chrono::microseconds>(newTick - mLastTick).count();
+	float secondsSinceLast = std::chrono::duration_cast<std::chrono::duration<float>>(newTick - mLastTick).count();
 
-	float secondsSinceLast = microsecondsSinceLast * 1000000.0f;
 	mLastTick = newTick;
 	pollMouse(secondsSinceLast);
 	pollEvents(secondsSinceLast);
