@@ -440,22 +440,6 @@ void Awareness::View_EntitySeen(Eris::Entity* entity)
 		connections.isMoving = false;
 		entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), entity));
 
-//		//Check if the entity belongs to either the avatar or an entity which is "simple".
-//		Eris::Entity* location = entity->getLocation();
-//		while (location) {
-//			if (location == mAvatarEntity) {
-//				connections.isIgnored = true;
-//				return;
-//			}
-//			if (location->hasAttr("simple")) {
-//				auto simpleElement = location->valueOfAttr("simple");
-//				if (simpleElement.isInt() && simpleElement.asInt() == 1) {
-//					connections.isIgnored = true;
-//					return;
-//				}
-//			}
-//			location = location->getLocation();
-//		}
 		//Only actively observe the entity if it has the same location as the avatar.
 		if (entity->getLocation() == mCurrentLocation) {
 			connections.isIgnored = false;
@@ -628,21 +612,11 @@ void Awareness::Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entit
 		if (entity->getLocation() == mCurrentLocation) {
 			assert(connections.moved == false);
 			connections.isIgnored = false;
-			//Entity was ignored but shouldn't be anymore
+			//Entity was ignored but shouldn't be anymore. We should check if the entity is moving or stationary.
 			if (entity->hasAttr("velocity")) {
 				connections.isMoving = true;
 				mMovingEntities.push_back(entity);
 			} else {
-
-				//The position of the entity is invalid at this; the Moved signal will be emitted after the LocationChanged signal.
-
-//				std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
-//				buildEntityAreas(*entity, areas);
-//				for (auto& entry : areas) {
-//					markTilesAsDirty(entry.second.boundingBox());
-//					mEntityAreas.insert(entry);
-//				}
-
 				connections.moved = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
 			}
 		} else {
@@ -664,60 +638,6 @@ void Awareness::Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entit
 				connections.isIgnored = true;
 			}
 		}
-
-//		//Check if the entity belongs to either the avatar or an entity which is "simple".
-//		Eris::Entity* location = entity->getLocation();
-//		while (location) {
-//			if (location == mAvatarEntity) {
-//				shouldBeIgnored = true;
-//				break;
-//			}
-//			if (location->hasAttr("simple")) {
-//				auto simpleElement = location->valueOfAttr("simple");
-//				if (simpleElement.isInt() && simpleElement.asInt() == 1) {
-//					shouldBeIgnored = true;
-//					break;
-//				}
-//			}
-//			location = location->getLocation();
-//		}
-//
-//		if (shouldBeIgnored) {
-//			//We should remove the entity from awareness.
-//			if (!connections.isIgnored) {
-//				if (connections.isMoving) {
-//					mMovingEntities.remove(entity);
-//				} else {
-//					connections.moved.disconnect();
-//					std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
-//
-//					buildEntityAreas(*entity, areas);
-//
-//					for (auto& entry : areas) {
-//						markTilesAsDirty(entry.second.boundingBox());
-//					}
-//					mEntityAreas.erase(entity);
-//				}
-//			}
-//			connections.isIgnored = true;
-//		} else if (connections.isIgnored) {
-//			//Entity was ignored but shouldn't be anymore
-//			if (entity->hasAttr("velocity")) {
-//				connections.isMoving = true;
-//				mMovingEntities.push_back(entity);
-//			} else {
-//
-//				std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
-//				buildEntityAreas(*entity, areas);
-//				for (auto& entry : areas) {
-//					markTilesAsDirty(entry.second.boundingBox());
-//					mEntityAreas.insert(entry);
-//				}
-//
-//				connections.moved = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
-//			}
-//
-//		}
 	}
 }
 
@@ -1012,14 +932,6 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 		}
 	}
 
-//If an entity is "simple" it means that we shouldn't consider any of its child entities. Like with a character with an inventory.
-	bool isSimple = false;
-	if (entity.hasAttr("simple")) {
-		auto simpleElement = entity.valueOfAttr("simple");
-		if (simpleElement.isInt() && simpleElement.asInt() == 1) {
-			isSimple = true;
-		}
-	}
 
 	if (isSolid) {
 		//we now have to get the location of the entity in world space
@@ -1052,12 +964,6 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 			entityAreas.insert(std::make_pair(&entity, rotbox));
 		}
 	}
-
-//	if (!isSimple) {
-//		for (size_t i = 0; i < entity.numContained(); ++i) {
-//			buildEntityAreas(*entity.getContained(i), entityAreas);
-//		}
-//	}
 }
 
 void Awareness::findEntityAreas(const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas)
@@ -1356,7 +1262,6 @@ void Awareness::processTiles(std::vector<const dtCompressedTile*> tiles, const s
 		if (dtStatusFailed(status))
 			return;
 
-//TODO this part is replicated from navmesh tile building in DetourTileCache. Maybe that can be reused. Also is it really necessary to do an extra navmesh rebuild from compressed tile just to draw it? Can't I just draw it somewhere where the navmesh is rebuilt?
 		bc.lcset = dtAllocTileCacheContourSet(talloc);
 		if (!bc.lcset)
 			return;
