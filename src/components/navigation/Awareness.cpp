@@ -45,6 +45,11 @@
 
 #include <sigc++/bind.h>
 
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index/sequenced_index.hpp>
+
 #include <cmath>
 #include <vector>
 #include <cstring>
@@ -60,6 +65,40 @@ namespace Navigation
 
 // This value specifies how many layers (or "floors") each navmesh tile is expected to have.
 static const int EXPECTED_LAYERS_PER_TILE = 1;
+
+using namespace boost::multi_index;
+
+template<typename TItem>
+class MRUList
+{
+public:
+
+	void insert(const TItem& item)
+	{
+		auto p = mItems.push_front(item);
+
+		if (!p.second) {
+			mItems.relocate(mItems.begin(), p.first);
+		}
+	}
+
+	TItem pop_back()
+	{
+		TItem back = mItems.back();
+		mItems.pop_back();
+		return back;
+	}
+
+	std::size_t size() const
+	{
+		return mItems.size();
+	}
+
+
+private:
+	multi_index_container<TItem, indexed_by<sequenced<>, hashed_unique<identity<TItem> > > > mItems;
+
+};
 
 struct FastLZCompressor: public dtTileCacheCompressor
 {
@@ -223,8 +262,9 @@ protected:
 };
 
 Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
-		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), mAvatarRadius(0.4f), m_ctx(new AwarenessContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
+		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), mAvatarRadius(0.4f), mDesiredTilesAmount(64), m_ctx(new AwarenessContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
 {
+	mActiveTileList = new MRUList<std::pair<int, int>>();
 
 	m_talloc = new LinearAllocator(128000);
 	m_tcomp = new FastLZCompressor;
@@ -428,6 +468,7 @@ Awareness::~Awareness()
 	delete m_talloc;
 
 	delete m_ctx;
+	delete mActiveTileList;
 }
 
 void Awareness::View_EntitySeen(Eris::Entity* entity)
@@ -502,8 +543,6 @@ void Awareness::Entity_Moved(Eris::Entity* entity)
 	}
 
 }
-
-
 
 bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity) const
 {
@@ -688,6 +727,40 @@ size_t Awareness::rebuildDirtyTile()
 	return mDirtyAwareTiles.size();
 }
 
+void Awareness::pruneTiles()
+{
+	//remove any tiles that aren't used
+	if (mActiveTileList->size() > mAwareTiles.size()) {
+		if (mActiveTileList->size() > mDesiredTilesAmount) {
+			auto entry = mActiveTileList->pop_back();
+
+			dtCompressedTileRef tilesRefs[MAX_LAYERS];
+			const int ntiles = m_tileCache->getTilesAt(entry.first, entry.second, tilesRefs, MAX_LAYERS);
+			for (int i = 0; i < ntiles; ++i) {
+				const dtCompressedTile* tile = m_tileCache->getTileByRef(tilesRefs[i]);
+				float min[3];
+				int tx = tile->header->tx;
+				int ty = tile->header->ty;
+				int tlayer = tile->header->tlayer;
+				rcVcopy(min, tile->header->bmin);
+				m_tileCache->removeTile(tilesRefs[i], NULL, NULL);
+				EventTileRemoved(tx, ty, tlayer);
+			}
+
+		}
+	}
+}
+
+bool Awareness::needsPruning() const
+{
+	return (mActiveTileList->size() > mDesiredTilesAmount) && (mActiveTileList->size() > mAwareTiles.size());
+}
+
+void Awareness::setDesiredTilesAmount(size_t amount)
+{
+	mDesiredTilesAmount = amount;
+}
+
 void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const
 {
 	float tilesize = m_cfg.tileSize * m_cfg.cs;
@@ -726,7 +799,7 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
 	tileMaxYIndex = (highCorner.y() - m_cfg.bmin[2]) / tilesize;
 }
 
-int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path)
+int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path) const
 {
 
 	float pStartPos[] { start.x(), start.z(), start.y() };
@@ -874,6 +947,8 @@ void Awareness::setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
 				mDirtyUnwareTiles.erase(index);
 
 				mAwareTiles.insert(index);
+
+				mActiveTileList->insert(index);
 			}
 		}
 	}
@@ -931,7 +1006,6 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 			isSolid = false;
 		}
 	}
-
 
 	if (isSolid) {
 		//we now have to get the location of the entity in world space
@@ -1023,7 +1097,6 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 			heightData++;
 		}
 	}
-
 
 //Then define the triangles
 	for (int y = 0; y < (sizeY - 1); y++) {

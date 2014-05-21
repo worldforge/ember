@@ -53,6 +53,7 @@ AwarenessVisualizer::AwarenessVisualizer(Navigation::Awareness& awareness, Ogre:
 	mPathSceneNode->attachObject(mPath);
 
 	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &AwarenessVisualizer::Awareness_TileUpdated));
+	mAwareness.EventTileRemoved.connect(sigc::mem_fun(*this, &AwarenessVisualizer::Awareness_TileRemoved));
 }
 
 AwarenessVisualizer::~AwarenessVisualizer()
@@ -96,6 +97,26 @@ void AwarenessVisualizer::Awareness_TileUpdated(int tx, int ty)
 	}
 }
 
+void AwarenessVisualizer::Awareness_TileRemoved(int tx, int ty, int tlayer)
+{
+	if (mTileVisualizationEnabled) {
+
+		std::stringstream ss;
+		ss << tx << "_" << ty << "_" << tlayer;
+		std::string name(ss.str());
+
+		if (mSceneManager.hasManualObject("RecastMOWalk_" + name)) {
+			mSceneManager.destroyManualObject("RecastMOWalk_" + name);
+		}
+		if (mSceneManager.hasManualObject("RecastMONeighbour_" + name)) {
+			mSceneManager.destroyManualObject("RecastMONeighbour_" + name);
+		}
+		if (mSceneManager.hasManualObject("RecastMOBoundary_" + name)) {
+			mSceneManager.destroyManualObject("RecastMOBoundary_" + name);
+		}
+	}
+}
+
 void AwarenessVisualizer::buildVisualization(const WFMath::AxisBox<2>& area)
 {
 	std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)> processor = [this](unsigned int tileRef, dtTileCachePolyMesh& pmesh, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer) {
@@ -118,7 +139,7 @@ void AwarenessVisualizer::buildVisualizationForAllTiles()
 void AwarenessVisualizer::createMesh(unsigned int tileRef, dtTileCachePolyMesh& mesh, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)
 {
 	std::stringstream ss;
-	ss << origin[0] << "_" << origin[2];
+	ss << layer.header->tx << "_" << layer.header->ty << "_" << layer.header->tlayer;
 	std::string name(ss.str());
 
 	const int nvp = mesh.nvp;

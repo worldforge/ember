@@ -218,6 +218,8 @@ protected:
 
 	void stopSteering();
 
+	void schedulePruning();
+
 
 	/**
 	A decal object for showing a decal on the terrain when the user uses the "move to here" functionality.

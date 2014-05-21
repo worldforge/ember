@@ -56,6 +56,8 @@ namespace Ember
 class IHeightProvider;
 namespace Navigation
 {
+template <typename T>
+class MRUList;
 
 struct TileCacheData;
 struct InputGeometry;
@@ -75,6 +77,12 @@ enum PolyFlags
 };
 
 
+/**
+ * @brief Keeps track of the connections and state of a specific entity.
+ *
+ * We don't need to observe all entities in the same way; some are ignored, and some are moving.
+ * Instances of this keep track of this information.
+ */
 struct EntityConnections
 {
 	sigc::connection locationChanged;
@@ -125,15 +133,62 @@ public:
 	 */
 	size_t rebuildDirtyTile();
 
-	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path);
+	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path) const;
 
 	void processTile(const int tx, const int ty, const TileProcessor& processor) const;
 	void processTiles(const WFMath::AxisBox<2>& area, const TileProcessor& processor) const;
 	void processAllTiles(const TileProcessor& processor) const;
 
+	/**
+	 * @brief Tries to avoid near obstacles.
+	 * @param position The position of the avatar.
+	 * @param desiredVelocity The desired velocity.
+	 * @param newVelocity The calculated new velocity.
+	 * @return True if the velocity had to be changed in order to avoid obstacles.
+	 */
 	bool avoidObstacles(const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity) const;
 
+	/**
+	 * @brief Prunes a tile if possible and needed.
+	 *
+	 * This removes a tile that isn't in the current awareness area, if needed.
+	 */
+	void pruneTiles();
+
+	/**
+	 * @brief Returns true if there are tiles that needs to be removed.
+	 *
+	 * Call pruneTiles() to actually remove tiles.
+	 * @return True if there are tiles that needs pruning.
+	 */
+	bool needsPruning() const;
+
+	/**
+	 * @brief Sets the desired tile amount.
+	 * @param amount The new desired tile amount.
+	 */
+	void setDesiredTilesAmount(size_t amount);
+
+	/**
+	 * @brief Emitted when a tile is updated.
+	 * @param int Tile x index.
+	 * @param int Tile y index.
+	 */
 	sigc::signal<void, int, int> EventTileUpdated;
+
+	/**
+	 * @brief Emitted when a tile is removed.
+	 * @param int Tile x index.
+	 * @param int Tile y index.
+	 * @param int Tile layer.
+	 */
+	sigc::signal<void, int, int, int> EventTileRemoved;
+
+	/**
+	 * @brief Emitted when a tile has been marked as dirty.
+	 *
+	 * Any controlling code should call rebuildDirtyTile() to rebuild the dirty tiles.
+	 */
 	sigc::signal<void> EventTileDirty;
 
 protected:
@@ -159,6 +214,16 @@ protected:
 	 * @brief The radius of the avatar.
 	 */
 	float mAvatarRadius;
+
+	/**
+	 * @brief The desired amount of tiles to keep active.
+	 *
+	 * If the number of unused tiles (i.e. not part of the current awareness) exceed this number
+	 * any controller should prune the tiles.
+	 * @see pruneTiles()
+	 * @see needsPruning()
+	 */
+	size_t mDesiredTilesAmount;
 
 	rcContext* m_ctx;
 	rcConfig m_cfg;
@@ -201,7 +266,6 @@ protected:
 	 */
 	std::list<std::pair<int, int>> mDirtyAwareOrderedTiles;
 
-
 	/**
 	 * @brief The view resolved areas for each entity.
 	 *
@@ -212,6 +276,14 @@ protected:
 	std::unordered_map<Eris::Entity*, EntityConnections> mObservedEntities;
 
 	std::list<Eris::Entity*> mMovingEntities;
+
+	/**
+	 * @brief A Most Recently Used list of active tiles.
+	 *
+	 * Whenever a tile is added to the awareness area it has it's priority increased within this list.
+	 * This makes sure that those tiles that are at the back of the list always are the least used ones.
+	 */
+	MRUList<std::pair<int, int>>* mActiveTileList;
 
 	void rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>& entityAreas);
 

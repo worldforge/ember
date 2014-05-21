@@ -261,6 +261,9 @@ void MovementController::stopSteering()
 		//By visualizing an empty path we'll remove any lingering path.
 		mAwarenessVisualizer->visualizePath(std::list<WFMath::Point<3>>());
 	}
+	if (mAwareness->needsPruning()) {
+		schedulePruning();
+	}
 }
 
 
@@ -323,6 +326,20 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 		mAwarenessVisualizer->visualizePath(mSteering->getPath());
 	}
 	mSteering->startSteering();
+
+	if (mAwareness->needsPruning()) {
+		schedulePruning();
+	}
+}
+
+void MovementController::schedulePruning()
+{
+	mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this]() {
+			this->mAwareness->pruneTiles();
+			if (mAwareness->needsPruning()) {
+				schedulePruning();
+			}
+		}, mActiveMarker);
 }
 
 void MovementController::Entity_Moved()
