@@ -23,8 +23,6 @@
 #include "Steering.h"
 #include "Awareness.h"
 
-#include "framework/MainLoopController.h"
-
 #include <Eris/Avatar.h>
 #include <Eris/Entity.h>
 
@@ -41,7 +39,6 @@ namespace Navigation
 Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
 		mAwareness(awareness), mAvatar(avatar), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(5), mExpectingServerMovement(false)
 {
-	MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &Steering::frameProcessed));
 	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &Steering::Awareness_TileUpdated));
 }
 
@@ -133,7 +130,7 @@ const std::list<WFMath::Point<3>>& Steering::getPath() const
 	return mPath;
 }
 
-void Steering::frameProcessed(const TimeFrame&, unsigned int)
+void Steering::update()
 {
 	if (mSteeringEnabled) {
 		if (mUpdateNeeded) {

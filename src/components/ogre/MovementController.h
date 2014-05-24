@@ -28,7 +28,6 @@
 #include "framework/ConsoleObject.h"
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
-#include <OgreFrameListener.h>
 
 #include <wfmath/vector.h>
 #include <sigc++/trackable.h>
@@ -38,6 +37,7 @@ namespace Ember {
 class EmberEntity;
 class IHeightProvider;
 class ConfigListenerContainer;
+class TimeFrame;
 namespace Navigation
 {
 class Awareness;
@@ -92,8 +92,7 @@ protected:
 Controls the avatar. All avatar movement is handled by an instance of this class.
 */
 class MovementController
-: public Ogre::FrameListener,
-public virtual sigc::trackable,
+: public virtual sigc::trackable,
 public ConsoleObject,
 public IMovementProvider
 {
@@ -108,11 +107,6 @@ public:
     MovementController(Avatar& avatar, Camera::MainCamera& camera, IHeightProvider& heightProvider);
 
 	virtual ~MovementController();
-
-	/**
-	Each frame we check if we should update the avatar.
-	*/
-	virtual bool frameStarted(const Ogre::FrameEvent & event);
 
 
 	/**
@@ -213,6 +207,11 @@ protected:
 	void stopSteering();
 
 	void schedulePruning();
+
+	/**
+	 * @brief Called each frame.
+	 */
+	void frameProcessed(const TimeFrame&, unsigned int);
 
 
 	/**

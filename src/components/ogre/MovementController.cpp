@@ -45,6 +45,7 @@
 
 #include "framework/Tokeniser.h"
 #include "framework/LoggingInstance.h"
+#include "framework/MainLoopController.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
@@ -116,6 +117,9 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 			}
 		});
 
+		MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &MovementController::frameProcessed));
+
+
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not setup awareness; steering and path finding will be disabled." << ex);
 	}
@@ -126,8 +130,6 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT);
 	avatar.getEmberEntity().Moved.connect(sigc::mem_fun(*this, &MovementController::Entity_Moved));
 
-
-	Ogre::Root::getSingleton().addFrameListener(this);
 
 	mMovementCommandMapper.bindToInput(Input::getSingleton());
 	Input::getSingleton().setMovementModeEnabled(true);
@@ -169,7 +171,6 @@ MovementController::~MovementController()
 	if (mDecalObject) {
 		mDecalObject->_getManager()->destroyMovableObject(mDecalObject);
 	}
-	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
 void MovementController::tileRebuild()
@@ -281,7 +282,7 @@ void MovementController::stopSteering()
 }
 
 
-bool MovementController::frameStarted(const Ogre::FrameEvent& event)
+void MovementController::frameProcessed(const TimeFrame&, unsigned int)
 {
 
 	if (mDecalObject) {
@@ -290,8 +291,10 @@ bool MovementController::frameStarted(const Ogre::FrameEvent& event)
 			mDecalNode->setVisible(false);
 		}
 	}
+	if (mSteering) {
+		mSteering->update();
+	}
 
-	return true;
 }
 
 void MovementController::Config_VisualizeRecastTiles(const std::string&, const std::string&, varconf::Variable& var)

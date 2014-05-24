@@ -70,6 +70,13 @@ public:
 	 */
 	void setIsExpectingServerMovement(bool expected);
 
+	/**
+	 * @brief Updates the steering.
+	 *
+	 * Call this often when steering is enabled.
+	 */
+	void update();
+
 private:
 
 	Awareness& mAwareness;
@@ -89,7 +96,6 @@ private:
 
 	void setAwareness();
 
-	void frameProcessed(const TimeFrame&, unsigned int);
 	void Awareness_TileUpdated(int tx, int ty);
 
 	void moveInDirection(const WFMath::Vector<2>& direction);
