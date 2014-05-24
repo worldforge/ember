@@ -176,12 +176,6 @@ public:
 
 	bool isCameraFreeFlying() const;
 
-	/**
-	 * @brief Accessor for the Awareness instance.
-	 * @return The Awareness instance.
-	 */
-	Navigation::Awareness& getAwareness() const;
-
 protected:
 
 	/**

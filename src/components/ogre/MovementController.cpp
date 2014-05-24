@@ -92,10 +92,33 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 		/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
 		 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
 		//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
-				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider)), mAwarenessVisualizer(new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager())), mSteering(new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar())), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false), mActiveMarker(new bool)
+				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(nullptr), mAwarenessVisualizer(nullptr), mSteering(nullptr), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false), mActiveMarker(new bool)
 {
 
 	*mActiveMarker = true;
+
+	try {
+		mAwareness = new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider);
+		mAwarenessVisualizer = new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager());
+		mSteering = new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar());
+
+		auto marker = mActiveMarker;
+		mAwareness->EventTileDirty.connect([this, marker] {
+			mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker]() {if (*marker) {this->tileRebuild();}});
+		});
+
+		mAwareness->EventTileUpdated.connect([&](int,int) {
+			if (mSteering->isEnabled()) {
+				mSteering->updatePath();
+				if (mVisualizePath) {
+					mAwarenessVisualizer->visualizePath(mSteering->getPath());
+				}
+			}
+		});
+
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Could not setup awareness; steering and path finding will be disabled." << ex);
+	}
 
 	mConfigListenerContainer->registerConfigListenerWithDefaults("authoring", "visualizerecasttiles", sigc::mem_fun(*this, &MovementController::Config_VisualizeRecastTiles), false);
 	mConfigListenerContainer->registerConfigListenerWithDefaults("authoring", "visualizerecastpath", sigc::mem_fun(*this, &MovementController::Config_VisualizeRecastPath), false);
@@ -103,19 +126,6 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT);
 	avatar.getEmberEntity().Moved.connect(sigc::mem_fun(*this, &MovementController::Entity_Moved));
 
-	auto marker = mActiveMarker;
-	mAwareness->EventTileDirty.connect([this, marker] {
-		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker]() {if (*marker) {this->tileRebuild();}});
-	});
-
-	mAwareness->EventTileUpdated.connect([&](int,int) {
-		if (mSteering->isEnabled()) {
-			mSteering->updatePath();
-			if (mVisualizePath) {
-				mAwarenessVisualizer->visualizePath(mSteering->getPath());
-			}
-		}
-	});
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 
@@ -164,10 +174,12 @@ MovementController::~MovementController()
 
 void MovementController::tileRebuild()
 {
-	int dirtyTiles = mAwareness->rebuildDirtyTile();
-	if (dirtyTiles) {
-		auto marker = mActiveMarker;
-		mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker] {if (*marker) {this->tileRebuild();}});
+	if (mAwareness) {
+		int dirtyTiles = mAwareness->rebuildDirtyTile();
+		if (dirtyTiles) {
+			auto marker = mActiveMarker;
+			mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker] {if (*marker) {this->tileRebuild();}});
+		}
 	}
 }
 
@@ -256,13 +268,15 @@ void MovementController::runCommand(const std::string &command, const std::strin
 
 void MovementController::stopSteering()
 {
-	mSteering->stopSteering();
-	if (mVisualizePath) {
-		//By visualizing an empty path we'll remove any lingering path.
-		mAwarenessVisualizer->visualizePath(std::list<WFMath::Point<3>>());
-	}
-	if (mAwareness->needsPruning()) {
-		schedulePruning();
+	if (mSteering) {
+		mSteering->stopSteering();
+		if (mVisualizePath) {
+			//By visualizing an empty path we'll remove any lingering path.
+			mAwarenessVisualizer->visualizePath(std::list<WFMath::Point<3>>());
+		}
+		if (mAwareness->needsPruning()) {
+			schedulePruning();
+		}
 	}
 }
 
@@ -277,21 +291,19 @@ bool MovementController::frameStarted(const Ogre::FrameEvent& event)
 		}
 	}
 
-//	mAwareness->rebuildDirtyTiles();
-
 	return true;
 }
 
 void MovementController::Config_VisualizeRecastTiles(const std::string&, const std::string&, varconf::Variable& var)
 {
-	if (var.is_bool()) {
+	if (var.is_bool() && mAwarenessVisualizer) {
 		mAwarenessVisualizer->setTileVisualizationEnabled((bool)var);
 	}
 }
 
 void MovementController::Config_VisualizeRecastPath(const std::string&, const std::string&, varconf::Variable& var)
 {
-	if (var.is_bool()) {
+	if (var.is_bool() && mAwarenessVisualizer) {
 		mVisualizePath = (bool)var;
 		if (!mVisualizePath) {
 			//By visualizing an empty path we'll remove any lingering path.
@@ -319,16 +331,18 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 	//		mDecalNode->setVisible(true);
 	//	}
 //
-	WFMath::Point<3> atlasPos = Convert::toWF<WFMath::Point<3>>(point);
-	mSteering->setDestination(atlasPos);
-	mSteering->updatePath();
-	if (mVisualizePath) {
-		mAwarenessVisualizer->visualizePath(mSteering->getPath());
-	}
-	mSteering->startSteering();
+	if (mSteering) {
+		WFMath::Point<3> atlasPos = Convert::toWF<WFMath::Point<3>>(point);
+		mSteering->setDestination(atlasPos);
+		mSteering->updatePath();
+		if (mVisualizePath && mAwarenessVisualizer) {
+			mAwarenessVisualizer->visualizePath(mSteering->getPath());
+		}
+		mSteering->startSteering();
 
-	if (mAwareness->needsPruning()) {
-		schedulePruning();
+		if (mAwareness->needsPruning()) {
+			schedulePruning();
+		}
 	}
 }
 
@@ -344,7 +358,7 @@ void MovementController::schedulePruning()
 
 void MovementController::Entity_Moved()
 {
-	if (mSteering->isEnabled()) {
+	if (mSteering && mSteering->isEnabled()) {
 //		if (!mSteering->getIsExpectingServerMovement()) {
 			mSteering->updatePath();
 			if (mVisualizePath) {
@@ -408,11 +422,6 @@ void MovementController::createDecal(Ogre::Vector3 position)
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when creating terrain decal." << ex);
 	}
-}
-
-Navigation::Awareness& MovementController::getAwareness() const
-{
-	return *mAwareness;
 }
 
 }
