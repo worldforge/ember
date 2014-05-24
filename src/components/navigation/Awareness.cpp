@@ -261,7 +261,7 @@ protected:
 
 };
 
-Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
+Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, int tileSize) :
 		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), mAvatarRadius(0.4f), mDesiredTilesAmount(64), m_ctx(new AwarenessContext()), m_tileCache(nullptr), m_navMesh(nullptr), m_navQuery(dtAllocNavMeshQuery()), mFilter(nullptr)
 {
 	mActiveTileList = new MRUList<std::pair<int, int>>();
@@ -305,9 +305,8 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	int gw = 0, gh = 0;
 	float cellsize = mAvatarRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
 	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, cellsize, &gw, &gh);
-	const int tilesize = 80; //This equals 16 meters
-	const int tilewidth = (gw + tilesize - 1) / tilesize;
-	const int tileheight = (gh + tilesize - 1) / tilesize;
+	const int tilewidth = (gw + tileSize - 1) / tileSize;
+	const int tileheight = (gh + tileSize - 1) / tileSize;
 
 	// Max tiles and max polys affect how the tile IDs are caculated.
 	// There are 22 bits available for identifying a tile and a polygon.
@@ -333,7 +332,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	m_cfg.minRegionArea = (int)rcSqr(8);
 	m_cfg.mergeRegionArea = (int)rcSqr(20);
 
-	m_cfg.tileSize = tilesize;
+	m_cfg.tileSize = tileSize;
 	m_cfg.borderSize = m_cfg.walkableRadius + 3; // Reserve enough padding.
 	m_cfg.width = m_cfg.tileSize + m_cfg.borderSize * 2;
 	m_cfg.height = m_cfg.tileSize + m_cfg.borderSize * 2;
@@ -381,8 +380,8 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider) :
 	dtNavMeshParams params;
 	memset(&params, 0, sizeof(params));
 	rcVcopy(params.orig, m_cfg.bmin);
-	params.tileWidth = tilesize * cellsize;
-	params.tileHeight = tilesize * cellsize;
+	params.tileWidth = tileSize * cellsize;
+	params.tileHeight = tileSize * cellsize;
 	params.maxTiles = maxTiles;
 	params.maxPolys = maxPolysPerTile;
 

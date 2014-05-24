@@ -115,7 +115,14 @@ public:
 	 * A callback function for processing tiles.
 	 */
 	typedef std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)> TileProcessor;
-	Awareness(Eris::View& view, IHeightProvider& heightProvider);
+
+	/**
+	 * @brief Ctor.
+	 * @param view The world view.
+	 * @param heightProvider A height provider, used for getting terrain height data.
+	 * @param tileSize The size, in voxels, of one side of a tile. The larger this is the longer each tile takes to generate, but the overhead of managing tiles is decreased.
+	 */
+	Awareness(Eris::View& view, IHeightProvider& heightProvider, int tileSize = 64);
 	virtual ~Awareness();
 
 	/**
