@@ -25,6 +25,7 @@
 #include <list>
 
 #include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 
 namespace Eris
 {
@@ -39,6 +40,9 @@ namespace Navigation
 
 class Awareness;
 
+/**
+ * @brief Handles steering of an avatar, with path finding and obstacle avoidance.
+ */
 class Steering: public virtual sigc::trackable
 {
 public:
@@ -46,7 +50,19 @@ public:
 	virtual ~Steering();
 
 	void setDestination(const WFMath::Point<3>& viewPosition);
+	/**
+	 * @brief Updates the path.
+	 * @return True if a path was found.
+	 */
 	bool updatePath();
+
+	/**
+	 * @brief Requests an update of the path.
+	 *
+	 * The actual update will be deferred to when updatePath() is called, which normally happens
+	 * with a call to update()
+	 */
+	void requestUpdate();
 
 	void startSteering();
 	void stopSteering();
@@ -76,6 +92,11 @@ public:
 	 * Call this often when steering is enabled.
 	 */
 	void update();
+
+	/**
+	 * @brief Emitted when the path has been updated.
+	 */
+	sigc::signal<void> EventPathUpdated;
 
 private:
 

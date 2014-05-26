@@ -213,6 +213,8 @@ protected:
 	 */
 	void frameProcessed(const TimeFrame&, unsigned int);
 
+	void Steering_PathUpdated();
+
 
 	/**
 	A decal object for showing a decal on the terrain when the user uses the "move to here" functionality.

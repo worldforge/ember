@@ -91,13 +91,21 @@ bool Steering::updatePath()
 	mPath.clear();
 
 	int result = mAwareness.findPath(mAvatar.getEntity()->getViewPosition(), mViewDestination, mPath);
+	EventPathUpdated();
 	mUpdateNeeded = false;
 	return result > 0;
 }
 
+void Steering::requestUpdate()
+{
+	mUpdateNeeded = true;
+}
+
+
 void Steering::startSteering()
 {
 	mSteeringEnabled = true;
+	mExpectingServerMovement = false;
 }
 
 void Steering::stopSteering()
@@ -106,6 +114,7 @@ void Steering::stopSteering()
 		return;
 	}
 	mSteeringEnabled = false;
+	mExpectingServerMovement = false;
 	mLastSentVelocity = WFMath::Vector<2>();
 
 	//When we stopped steering we'll retain an awareness around the avatar.
@@ -118,6 +127,11 @@ void Steering::stopSteering()
 	area.corner0() = entityPosition2d - WFMath::Vector<2>(mPadding, mPadding);
 	area.orientation() = WFMath::RotMatrix<2>().identity();
 	mAwareness.setAwarenessArea(area, WFMath::Segment<2>());
+
+	//reset path
+	mPath = std::list<WFMath::Point<3>>();
+	EventPathUpdated();
+
 }
 
 bool Steering::isEnabled() const
@@ -136,15 +150,15 @@ void Steering::update()
 		if (mUpdateNeeded) {
 			updatePath();
 		}
+		auto entity = mAvatar.getEntity();
 		if (!mPath.empty()) {
-			auto entity = mAvatar.getEntity();
 			const auto& finalDestination = mPath.back();
 			auto entity3dPosition = entity->getViewPosition();
 			const WFMath::Point<2> entityPosition(entity3dPosition.x(), entity3dPosition.y());
 			//First check if we've arrived at our actual destination.
 			if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < 0.1f) {
 				//We've arrived at our destination. If we're moving we should stop.
-				if (entity->isMoving() && mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
+				if (mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
 					moveInDirection(WFMath::Vector<2>::ZERO());
 				}
 				stopSteering();
@@ -206,6 +220,12 @@ void Steering::update()
 						moveInDirection(velocity);
 					}
 				}
+			}
+		} else {
+			//We are steering, but the path is empty, which means we can't find any path. If we're moving we should stop movement.
+			//But we won't stop steering; perhaps we'll find a path later.
+			if (mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
+				moveInDirection(WFMath::Vector<2>::ZERO());
 			}
 		}
 	}

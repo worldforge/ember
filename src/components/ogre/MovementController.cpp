@@ -102,6 +102,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 		mAwareness = new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider);
 		mAwarenessVisualizer = new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager());
 		mSteering = new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar());
+		mSteering->EventPathUpdated.connect(sigc::mem_fun(*this, &MovementController::Steering_PathUpdated));
 
 		auto marker = mActiveMarker;
 		mAwareness->EventTileDirty.connect([this, marker] {
@@ -110,10 +111,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 
 		mAwareness->EventTileUpdated.connect([&](int,int) {
 			if (mSteering->isEnabled()) {
-				mSteering->updatePath();
-				if (mVisualizePath) {
-					mAwarenessVisualizer->visualizePath(mSteering->getPath());
-				}
+				mSteering->requestUpdate();
 			}
 		});
 
@@ -271,10 +269,6 @@ void MovementController::stopSteering()
 {
 	if (mSteering) {
 		mSteering->stopSteering();
-		if (mVisualizePath) {
-			//By visualizing an empty path we'll remove any lingering path.
-			mAwarenessVisualizer->visualizePath(std::list<WFMath::Point<3>>());
-		}
 		if (mAwareness->needsPruning()) {
 			schedulePruning();
 		}
@@ -338,9 +332,6 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 		WFMath::Point<3> atlasPos = Convert::toWF<WFMath::Point<3>>(point);
 		mSteering->setDestination(atlasPos);
 		mSteering->updatePath();
-		if (mVisualizePath && mAwarenessVisualizer) {
-			mAwarenessVisualizer->visualizePath(mSteering->getPath());
-		}
 		mSteering->startSteering();
 
 		if (mAwareness->needsPruning()) {
@@ -362,16 +353,18 @@ void MovementController::schedulePruning()
 void MovementController::Entity_Moved()
 {
 	if (mSteering && mSteering->isEnabled()) {
-//		if (!mSteering->getIsExpectingServerMovement()) {
-			mSteering->updatePath();
-			if (mVisualizePath) {
-				mAwarenessVisualizer->visualizePath(mSteering->getPath());
-			}
-//		} else {
-			mSteering->setIsExpectingServerMovement(false);
-//		}
+		mSteering->requestUpdate();
+		mSteering->setIsExpectingServerMovement(false);
 	}
 }
+
+void MovementController::Steering_PathUpdated()
+{
+	if (mVisualizePath) {
+		mAwarenessVisualizer->visualizePath(mSteering->getPath());
+	}
+}
+
 
 void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity)
 {
