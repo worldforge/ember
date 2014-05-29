@@ -767,7 +767,9 @@ void Awareness::pruneTiles()
 				int ty = tile->header->ty;
 				int tlayer = tile->header->tlayer;
 				rcVcopy(min, tile->header->bmin);
-				m_tileCache->removeTile(tilesRefs[i], NULL, NULL);
+				mTileCache->removeTile(tilesRefs[i], NULL, NULL);
+				mNavMesh->removeTile(mNavMesh->getTileRefAt(tx,ty,tlayer), 0, 0);
+
 				EventTileRemoved(tx, ty, tlayer);
 			}
 
