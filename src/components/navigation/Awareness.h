@@ -141,10 +141,34 @@ public:
 	 */
 	size_t rebuildDirtyTile();
 
+	/**
+	 * @brief Finds a path from the start to the finish.
+	 * @param start A starting position.
+	 * @param end A finish position.
+	 * @param path The waypoints of the path will be stored here.
+	 * @return The number of waypoints in the path. 0 if no path could be found.
+	 */
 	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path) const;
 
+	/**
+	 * @brief Process the tile at the specified index.
+	 * @param tx X index.
+	 * @param ty Y index.
+	 * @param processor A processing callback.
+	 */
 	void processTile(const int tx, const int ty, const TileProcessor& processor) const;
+
+	/**
+	 * @brief Process the tiles within the specified area.
+	 * @param area A world area.
+	 * @param processor A processing callback.
+	 */
 	void processTiles(const WFMath::AxisBox<2>& area, const TileProcessor& processor) const;
+
+	/**
+	 * @brief Process all existing tiles.
+	 * @param processor A processing callback.
+	 */
 	void processAllTiles(const TileProcessor& processor) const;
 
 	/**
@@ -222,9 +246,9 @@ protected:
 	 */
 	std::list<sigc::connection> mSignalConnections;
 
-	struct LinearAllocator* m_talloc;
-	struct FastLZCompressor* m_tcomp;
-	struct MeshProcess* m_tmproc;
+	struct LinearAllocator* mTalloc;
+	struct FastLZCompressor* mTcomp;
+	struct MeshProcess* mTmproc;
 
 	/**
 	 * @brief The radius of the avatar.
@@ -241,13 +265,28 @@ protected:
 	 */
 	size_t mDesiredTilesAmount;
 
-	rcContext* m_ctx;
-	rcConfig m_cfg;
+	/**
+	 * @brief The main Recast context.
+	 */
+	rcContext* mCtx;
 
-	dtTileCache* m_tileCache;
+	/**
+	 * @brief The Recast configuration.
+	 */
+	rcConfig mCfg;
 
-	dtNavMesh* m_navMesh;
-	dtNavMeshQuery* m_navQuery;
+	/**
+	 * @brief The main Detour tile cache.
+	 *
+	 * This keeps track of all the tiles.
+	 */
+	dtTileCache* mTileCache;
+
+	/**
+	 * @brief
+	 */
+	dtNavMesh* mNavMesh;
+	dtNavMeshQuery* mNavQuery;
 	dtQueryFilter* mFilter;
 	dtObstacleAvoidanceQuery* mObstacleAvoidanceQuery;
 	dtObstacleAvoidanceParams* mObstacleAvoidanceParams;
@@ -289,8 +328,19 @@ protected:
 	 */
 	std::map<Eris::Entity*, WFMath::RotBox<2>> mEntityAreas;
 
+	/**
+	 * @brief Keeps track of all currently observed entities.
+	 */
 	std::unordered_map<Eris::Entity*, EntityConnections> mObservedEntities;
 
+	/**
+	 * @brief Keeps track of all entities that are moving.
+	 *
+	 * Moving entities aren't included in the navmesh generation and updates, but are instead
+	 * considered when doing obstacle avoidance.
+	 * It's expected that moving entities should be rather small and have a uniform shape, since they
+	 * internally are represented as 2d circles.
+	 */
 	std::list<Eris::Entity*> mMovingEntities;
 
 	/**
@@ -301,16 +351,73 @@ protected:
 	 */
 	MRUList<std::pair<int, int>>* mActiveTileList;
 
+	/**
+	 * @brief Rebuild the tile at the specific index.
+	 * @param tx X index.
+	 * @param ty Y index.
+	 * @param entityAreas A list of entities, projected as 2d rotation boxes, which affects the tile.
+	 */
 	void rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>& entityAreas);
 
+	/**
+	 * @brief Calculates the 2d rotbox area of the entity and adds it to the supplied map of areas.
+	 * @param entity An entity.
+	 * @param entityAreas A map of areas.
+	 */
 	void buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, WFMath::RotBox<2>>& entityAreas);
+
+	/**
+	 * Find entity 2d rotbox areas within the supplied extent.
+	 * @param extent An extent in world units.
+	 * @param areas A vector of areas.
+	 */
 	void findEntityAreas(const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas);
 
-	int rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, const rcConfig& cfg, TileCacheData* tiles, const int maxTiles);
+	/**
+	 * @brief Rasterizes the tile at the specified index.
+	 * @param entityAreas The entity areas that affects the tile.
+	 * @param tx X index.
+	 * @param ty Y index.
+	 * @param tiles Out parameter for the tiles.
+	 * @param maxTiles The maximum number of tile layers to create.
+	 * @return The number of tile layers that were created.
+	 */
+	int rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, TileCacheData* tiles, const int maxTiles);
 
+	/**
+	 * @brief Applies the supplied processor on the supplied tiles.
+	 * @param tiles A collection of tile references.
+	 * @param processor A processor function.
+	 */
 	void processTiles(std::vector<const dtCompressedTile*> tiles, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
+
+	/**
+	 * @brief Marks all tiles within the area as dirty.
+	 *
+	 * Dirty tiles will be rebuilt.
+	 * @param area An area.
+	 */
 	void markTilesAsDirty(const WFMath::AxisBox<2>& area);
+	/**
+	 * @brief Marks all tiles within an indexed area as dirty.
+	 *
+	 * Dirty tiles will be rebuilt.
+	 *
+	 * @param tileMinXIndex Min X index.
+	 * @param tileMaxXIndex Max X index.
+	 * @param tileMinYIndex Min Y index.
+	 * @param tileMaxYIndex Max Y index.
+	 */
 	void markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileMinYIndex, int tileMaxYIndex);
+
+	/**
+	 * @brief Find the tiles affected by the supplied area.
+	 * @param area An area in world units.
+	 * @param tileMinXIndex Min X index.
+	 * @param tileMaxXIndex Max X index.
+	 * @param tileMinYIndex Min Y index.
+	 * @param tileMaxYIndex Max Y index.
+	 */
 	void findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const;
 
 	void View_EntitySeen(Eris::Entity* entity);
