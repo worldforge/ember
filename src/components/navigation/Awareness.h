@@ -87,6 +87,7 @@ struct EntityConnections
 {
 	sigc::connection locationChanged;
 	sigc::connection moved;
+	sigc::connection beingDeleted;
 	bool isMoving;
 	bool isIgnored;
 };
@@ -108,7 +109,7 @@ struct EntityConnections
  * Internally this class uses a dtTileCache to manage the tiles. Since the world is dynamic we need to manage the
  * navmeshes through tiles in order to keep the resource usage down.
  */
-class Awareness : public virtual sigc::trackable
+class Awareness
 {
 public:
 	/**
@@ -212,6 +213,14 @@ protected:
 	 * @brief Keep a reference to the current location of the avatar for fast lookup.
 	 */
 	Eris::Entity* mCurrentLocation;
+
+	/**
+	 * @brief Tracks signal connected to this, so that they can be severed when shutting down.
+	 *
+	 * Note that we don't inherit from sigc::trackable since we're connecting to signals on all entities, which we then
+	 * manage ourselves through EntityConnections.
+	 */
+	std::list<sigc::connection> mSignalConnections;
 
 	struct LinearAllocator* m_talloc;
 	struct FastLZCompressor* m_tcomp;

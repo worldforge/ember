@@ -409,10 +409,10 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, int tile
 		mObstacleAvoidanceParams->adaptiveRings = 2;
 		mObstacleAvoidanceParams->adaptiveDepth = 5;
 
-		mAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Awareness::AvatarEntity_LocationChanged));
+		mSignalConnections.push_back(mAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Awareness::AvatarEntity_LocationChanged)));
 
-		view.EntitySeen.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen));
-		view.EntityCreated.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen));
+		mSignalConnections.push_back(view.EntitySeen.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen)));
+		mSignalConnections.push_back(view.EntityCreated.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen)));
 
 		std::function<bool(EmberEntity&)> attachListenersFunction = [&](EmberEntity& entity) {
 			if (&entity != mAvatarEntity) {
@@ -421,7 +421,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, int tile
 					auto result = mObservedEntities.emplace(&entity, EntityConnections());
 					EntityConnections& connections = result.first->second;
 					connections.locationChanged = entity.LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), &entity));
-					entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
+					connections.beingDeleted = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
 
 					//Only actively observe the entity if it has the same location as the avatar.
 					if (entity.getLocation() == mCurrentLocation) {
@@ -468,6 +468,16 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, int tile
 
 Awareness::~Awareness()
 {
+	//disconnect signals when shutting down
+	for (auto& connection : mSignalConnections) {
+		connection.disconnect();
+	}
+	for (auto& observed : mObservedEntities) {
+		observed.second.locationChanged.disconnect();
+		observed.second.moved.disconnect();
+		observed.second.beingDeleted.disconnect();
+	}
+
 	delete mObstacleAvoidanceParams;
 	dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
 
@@ -493,7 +503,7 @@ void Awareness::View_EntitySeen(Eris::Entity* entity)
 		EntityConnections& connections = result.first->second;
 		connections.locationChanged = entity->LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), entity));
 		connections.isMoving = false;
-		entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), entity));
+		connections.beingDeleted = entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), entity));
 
 		//Only actively observe the entity if it has the same location as the avatar.
 		if (entity->getLocation() == mCurrentLocation) {
