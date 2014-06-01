@@ -146,7 +146,7 @@ public:
 	 * @param start A starting position.
 	 * @param end A finish position.
 	 * @param path The waypoints of the path will be stored here.
-	 * @return The number of waypoints in the path. 0 if no path could be found.
+	 * @return The number of waypoints in the path. 0 if no path could be found. A negative values means that something went wrong.
 	 */
 	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path) const;
 

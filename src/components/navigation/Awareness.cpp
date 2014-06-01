@@ -14,6 +14,43 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+ Some portions of this file include code taken from the OgreCrowd project, which has the copyrights and license as described below.
+ These portions are the findPath() and processTiles() methods.
+
+    OgreCrowd
+    ---------
+
+    Copyright (c) 2012 Jonas Hauquier
+
+    Additional contributions by:
+
+    - mkultra333
+    - Paul Wilson
+
+    Sincere thanks and to:
+
+    - Mikko Mononen (developer of Recast navigation libraries)
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+
+
  */
 
 #ifdef HAVE_CONFIG_H
@@ -21,7 +58,7 @@
 #endif
 
 #include "Awareness.h"
-#include "fastlz.h"
+#include "AwarenessUtils.h"
 
 #include "DetourNavMesh.h"
 #include "DetourNavMeshQuery.h"
@@ -69,6 +106,10 @@ static const int EXPECTED_LAYERS_PER_TILE = 1;
 
 using namespace boost::multi_index;
 
+/**
+ * @brief A Most Recently Used list implemented using boost::multi_index.
+ *
+ */
 template<typename TItem>
 class MRUList
 {
@@ -101,143 +142,6 @@ private:
 
 };
 
-struct FastLZCompressor: public dtTileCacheCompressor
-{
-	virtual ~FastLZCompressor()
-	{
-	}
-
-	virtual int maxCompressedSize(const int bufferSize)
-	{
-		return (int)(bufferSize * 1.05f);
-	}
-
-	virtual dtStatus compress(const unsigned char* buffer, const int bufferSize, unsigned char* compressed, const int /*maxCompressedSize*/, int* compressedSize)
-	{
-		*compressedSize = fastlz_compress((const void * const )buffer, bufferSize, compressed);
-		return DT_SUCCESS;
-	}
-
-	virtual dtStatus decompress(const unsigned char* compressed, const int compressedSize, unsigned char* buffer, const int maxBufferSize, int* bufferSize)
-	{
-		*bufferSize = fastlz_decompress(compressed, compressedSize, buffer, maxBufferSize);
-		return *bufferSize < 0 ? DT_FAILURE : DT_SUCCESS;
-	}
-};
-
-struct LinearAllocator: public dtTileCacheAlloc
-{
-	unsigned char* buffer;
-	int capacity;
-	int top;
-	int high;
-
-	LinearAllocator(const int cap) :
-			buffer(0), capacity(0), top(0), high(0)
-	{
-		resize(cap);
-	}
-
-	virtual ~LinearAllocator()
-	{
-		dtFree(buffer);
-	}
-
-	void resize(const int cap)
-	{
-		if (buffer)
-			dtFree(buffer);
-		buffer = (unsigned char*)dtAlloc(cap, DT_ALLOC_PERM);
-		capacity = cap;
-	}
-
-	virtual void reset()
-	{
-		high = dtMax(high, top);
-		top = 0;
-	}
-
-	virtual void* alloc(const int size)
-	{
-		if (!buffer)
-			return 0;
-		if (top + size > capacity)
-			return 0;
-		unsigned char* mem = &buffer[top];
-		top += size;
-		return mem;
-	}
-
-	virtual void free(void* /*ptr*/)
-	{
-		// Empty
-	}
-};
-
-struct MeshProcess: public dtTileCacheMeshProcess
-{
-
-	inline MeshProcess()
-	{
-	}
-
-	virtual ~MeshProcess()
-	{
-	}
-
-	virtual void process(struct dtNavMeshCreateParams* params, unsigned char* polyAreas, unsigned short* polyFlags)
-	{
-		// Update poly flags from areas.
-		for (int i = 0; i < params->polyCount; ++i) {
-			if (polyAreas[i] == DT_TILECACHE_WALKABLE_AREA)
-				polyAreas[i] = POLYAREA_GROUND;
-
-			if (polyAreas[i] == POLYAREA_GROUND || polyAreas[i] == POLYAREA_GRASS || polyAreas[i] == POLYAREA_ROAD) {
-				polyFlags[i] = POLYFLAGS_WALK;
-			} else if (polyAreas[i] == POLYAREA_WATER) {
-				polyFlags[i] = POLYFLAGS_SWIM;
-			} else if (polyAreas[i] == POLYAREA_DOOR) {
-				polyFlags[i] = POLYFLAGS_WALK | POLYFLAGS_DOOR;
-			}
-		}
-	}
-};
-
-struct TileCacheData
-{
-	unsigned char* data;
-	int dataSize;
-};
-
-static const int MAX_LAYERS = 32;
-
-struct RasterizationContext
-{
-	RasterizationContext() :
-			solid(0), triareas(0), lset(0), chf(0), ntiles(0)
-	{
-		memset(tiles, 0, sizeof(TileCacheData) * MAX_LAYERS);
-	}
-
-	~RasterizationContext()
-	{
-		rcFreeHeightField(solid);
-		delete[] triareas;
-		rcFreeHeightfieldLayerSet(lset);
-		rcFreeCompactHeightfield(chf);
-		for (int i = 0; i < MAX_LAYERS; ++i) {
-			dtFree(tiles[i].data);
-			tiles[i].data = 0;
-		}
-	}
-
-	rcHeightfield* solid;
-	unsigned char* triareas;
-	rcHeightfieldLayerSet* lset;
-	rcCompactHeightfield* chf;
-	TileCacheData tiles[MAX_LAYERS];
-	int ntiles;
-};
 
 struct InputGeometry
 {

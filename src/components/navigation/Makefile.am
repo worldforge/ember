@@ -6,4 +6,4 @@ AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -I$(srcdir)/external/Re
 
 libnavigation_a_SOURCES = Awareness.cpp fastlz.c Steering.cpp Loitering.cpp
 
-noinst_HEADERS = Awareness.h fastlz.h Steering.h Loitering.h
+noinst_HEADERS = Awareness.h fastlz.h Steering.h Loitering.h AwarenessUtils.h
