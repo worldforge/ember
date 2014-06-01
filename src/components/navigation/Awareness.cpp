@@ -263,7 +263,7 @@ protected:
 };
 
 Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, int tileSize) :
-		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), mTalloc(nullptr), mTcomp(nullptr), mTmproc(nullptr), mAvatarRadius(0.4f), mDesiredTilesAmount(64), mCtx(new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mActiveTileList(nullptr)
+		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), mTalloc(nullptr), mTcomp(nullptr), mTmproc(nullptr), mAvatarRadius(0.4f), mDesiredTilesAmount(128), mCtx(new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mActiveTileList(nullptr)
 {
 	try {
 		mActiveTileList = new MRUList<std::pair<int, int>>();
