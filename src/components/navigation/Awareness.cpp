@@ -594,7 +594,6 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
 				continue;
 			}
 
-			//TODO: calculate 2d bounding sphere instead of 3d
 			WFMath::Point<2> entityView2dPos(pos.x(), pos.y());
 			WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->getBBox().boundingSphereSloppy().radius());
 
