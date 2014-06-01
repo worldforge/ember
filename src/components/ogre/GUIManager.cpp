@@ -97,6 +97,12 @@ unsigned long GUIManager::msAutoGenId(0);
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController) :
 		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Cegui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0), mNativeClipboardProvider(nullptr)
 {
+
+//Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
+#ifndef CEGUI_HAS_FREETYPE
+# CEGUI is not built with Freetype
+#endif
+
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
 	serverSignals.GotView.connect(sigc::mem_fun(*this, &GUIManager::server_GotView));

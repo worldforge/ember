@@ -361,6 +361,20 @@ PKG_CHECK_MODULES(CEGUI, $CEGUI_PKG >= $CEGUI_VERSION,
 		CEGUI_MODULE_SUBDIR=${CEGUI_MODULEDIR#$CEGUI_PREFIX}
 		AC_SUBST(CEGUI_MODULEDIR)
 		AC_SUBST(CEGUI_MODULE_SUBDIR)
+
+		#Check that CEGUI is built with FreeType support. This seems to be a common error.
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+			#include <CEGUI/Config.h>
+			]],
+			[[
+			#ifdef CEGUI_HAS_FREETYPE
+			// CEGUI is built with Freetype
+			#else
+			# CEGUI is not built with Freetype
+			#endif
+			]])],
+			[], [AC_MSG_ERROR([[You must build CEGUI with Freetype support.]])])	
+
 	],
 	[
 		AC_MSG_ERROR([Couldn't find CEGUI or tests failed:
