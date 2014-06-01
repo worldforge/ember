@@ -22,6 +22,7 @@
 
 #include "Steering.h"
 #include "Awareness.h"
+#include "Loitering.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/Entity.h>
@@ -37,24 +38,30 @@ namespace Navigation
 {
 
 Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
-		mAwareness(awareness), mAvatar(avatar), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(5), mExpectingServerMovement(false)
+		mAwareness(awareness), mAvatar(avatar), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(5), mExpectingServerMovement(false), mLoitering(nullptr)
 {
 	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &Steering::Awareness_TileUpdated));
 }
 
 Steering::~Steering()
 {
+	delete mLoitering;
 }
 
 void Steering::setDestination(const WFMath::Point<3>& viewPosition)
 {
 	mViewDestination = viewPosition;
+	mUpdateNeeded = true;
 
 	setAwareness();
 }
 
 void Steering::setAwareness()
 {
+	//If we are loitering we should stop that now.
+	delete mLoitering;
+	mLoitering = nullptr;
+
 	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
 
 	WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.y());
@@ -85,7 +92,6 @@ void Steering::setSpeed(float speed)
 	mSpeed = speed;
 }
 
-
 bool Steering::updatePath()
 {
 	mPath.clear();
@@ -100,7 +106,6 @@ void Steering::requestUpdate()
 {
 	mUpdateNeeded = true;
 }
-
 
 void Steering::startSteering()
 {
@@ -117,16 +122,9 @@ void Steering::stopSteering()
 	mExpectingServerMovement = false;
 	mLastSentVelocity = WFMath::Vector<2>();
 
-	//When we stopped steering we'll retain an awareness around the avatar.
-	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
-
-	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.y());
-
-	WFMath::RotBox<2> area;
-	area.size() = WFMath::Vector<2>(mPadding * 2, mPadding * 2);
-	area.corner0() = entityPosition2d - WFMath::Vector<2>(mPadding, mPadding);
-	area.orientation() = WFMath::RotMatrix<2>().identity();
-	mAwareness.setAwarenessArea(area, WFMath::Segment<2>());
+	//When we stopped steering we'll retain an awareness around the avatar. We'll do this by "loitering".
+	delete mLoitering;
+	mLoitering = new Loitering(mAwareness, mAvatar, WFMath::Vector<2>(mPadding * 2, mPadding * 2));
 
 	//reset path
 	mPath = std::list<WFMath::Point<3>>();
@@ -268,3 +266,4 @@ void Steering::setIsExpectingServerMovement(bool expected)
 
 }
 }
+
