@@ -322,7 +322,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, int tile
 			if (&entity != mAvatarEntity) {
 				//Only observe entities that have a bounding box.
 				if (entity.hasBBox() && entity.getBBox().isValid()) {
-					auto result = mObservedEntities.emplace(&entity, EntityConnections());
+					auto result = mObservedEntities.insert(std::make_pair(&entity, EntityConnections()));
 					EntityConnections& connections = result.first->second;
 					connections.locationChanged = entity.LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), &entity));
 					connections.beingDeleted = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
@@ -403,7 +403,7 @@ void Awareness::View_EntitySeen(Eris::Entity* entity)
 {
 	if (entity->hasBBox() && entity->getBBox().isValid()) {
 		//We always want to connect to the location changed signal
-		auto result = mObservedEntities.emplace(entity, EntityConnections());
+		auto result = mObservedEntities.insert(std::make_pair(entity, EntityConnections()));
 		EntityConnections& connections = result.first->second;
 		connections.locationChanged = entity->LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), entity));
 		connections.isMoving = false;
