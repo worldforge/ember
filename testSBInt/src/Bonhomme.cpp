@@ -18,7 +18,7 @@
 */
 
 
-/* If the skeleton used for Bonhomme has never been maped, we can see it with this variable */
+/* If the skeleton used for Bonhomme has never been maped, we can see it with this variable. */
 static bool firstCall(true);
 
 
