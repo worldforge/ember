@@ -2,6 +2,7 @@
 #define APP_H
 
 	#include <Ogre.h>
+    #include "Sb.h"
 	#include "Input.h"
 
 class App
@@ -18,6 +19,7 @@ public:
 
     static Ogre::Root* getRootSingleton();
     static Ogre::SceneManager* getSceneManagerSingleton();
+    SbManager* getSbManagerSingleton();
 
 
 private:
@@ -26,6 +28,8 @@ private:
     Ogre::SceneManager *mSceneMgr;
     Ogre::Camera *mCamera;
     InputListener *mInputListener;
+    double mITime;
+    SbManager *mSbManager;
 };
 
 #endif

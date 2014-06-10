@@ -19,11 +19,11 @@ App::~App()
 
 bool App::start()
 {
-	/* Création de l'objet Root */
+	/* Root creation. */
 	mRoot = new Ogre::Root("plugins.cfg", "ogre.cfg", "Ogre.log");
 
 
-	/* Chargement des ressources */
+	/* Ressource loading. */
 
 	Ogre::ConfigFile configFile;
 	configFile.load("resources.cfg");
@@ -46,24 +46,24 @@ bool App::start()
 
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	/* Configuration du système */
+	/* System configuration. */
 	if(!(mRoot->restoreConfig() || mRoot->showConfigDialog()))
 	{
 		return false;
 	}
 
-	/* Récupération de la fenêtre */
-	mWindow = mRoot->initialise(true, "Une application de zér0");
+	/* Window getting. */
+	mWindow = mRoot->initialise(true, "Ogre test");
 
-	/* Création de la scène */
-	mSceneMgr = mRoot->createSceneManager("DefaultSceneManager", "Mon Scene Manager");
+	/* Scene creation. */
+	mSceneMgr = mRoot->createSceneManager("DefaultSceneManager", "myscmng");
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(1.0f, 1.0f, 1.0f));
 	createScene();
 
-	/* Création du FrameListener */
+	/* FrameListener creation. */
 	createFrameListener();
 
-	/* Lancement de la boucle infinie */
+	/* Infinite loop. */
 	bool loop;
 	Ogre::FrameEvent event;
 
@@ -87,7 +87,7 @@ bool App::start()
 
 void App::createScene()
 {
-	/* Ajout d'une caméra */
+	/* Camera. */
 	mCamera = mSceneMgr->createCamera("PlayerCam");
 	mCamera->setPosition(Ogre::Vector3(0,1,3));
 	mCamera->lookAt(Ogre::Vector3(0,1,-20));
@@ -97,7 +97,7 @@ void App::createScene()
 	vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 	mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
-	/* Création d'un bonhomme */
+	/* Bonhomme. */
 	Bonhomme bonhomme("monBonhomme");
 	bonhomme.addToScene();
 	bonhomme.animate("trns_walk");
@@ -117,4 +117,9 @@ Ogre::Root* App::getRootSingleton()
 Ogre::SceneManager* App::getSceneManagerSingleton()
 {
 	return application->mSceneMgr;
+}
+
+SbManager* App::getSbManager()
+{
+	return application->mSbManager;
 }
