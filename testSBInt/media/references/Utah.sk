@@ -1,0 +1,663 @@
+# SK Skeleton Definition
+# File generated with export_sk.mel v0.5
+
+set_name ChrUtah
+
+skeleton
+root initial_base
+{ offset 0.00000 101.11739 0.00000
+
+  joint base
+  { offset -0.00000 0.04743 0.00000
+    channel XPos 0 free
+    channel YPos 0 free
+    channel ZPos 0 free
+    channel Quat
+
+    joint l_hip
+    { offset 10.80129 -9.23447 0.00000
+      channel Quat
+
+      joint l_knee
+      { offset 0.00000 -39.76455 3.24468
+        channel Quat
+
+        joint l_ankle
+        { offset -0.00000 -43.99902 -7.71913
+          channel Quat
+
+          joint l_forefoot
+          { offset 0.00000 -6.87970 17.75912
+            channel Quat
+
+            joint l_toe
+            { offset 0.00000 0.04672 12.34884
+              channel Quat
+            }
+          }
+        }
+      }
+    }
+
+    joint r_hip
+    { offset -10.80129 -9.23440 -0.00000
+      channel Quat
+
+      joint r_knee
+      { offset -0.00000 -39.76451 3.24469
+        channel Quat
+
+        joint r_ankle
+        { offset 0.00000 -43.99913 -7.71912
+          channel Quat
+
+          joint r_forefoot
+          { offset -0.00000 -6.87970 17.75911
+            channel Quat
+
+            joint r_toe
+            { offset 0.00000 0.04672 12.34885
+              channel Quat
+            }
+          }
+        }
+      }
+    }
+
+    joint spine1
+    { offset 0.00000 7.78362 0.00000
+      channel Quat
+
+      joint spine2
+      { offset 0.00000 9.92536 -0.00000
+        channel Quat
+
+        joint spine3
+        { offset -0.00000 11.17190 0.00000
+          channel Quat
+
+          joint spine4
+          { offset -0.00000 23.04366 -1.90999
+            channel Quat
+
+            joint spine5
+            { offset 0.00000 7.78760 0.81628
+              channel Quat
+
+              joint skullbase
+              { offset -0.00000 5.00000 1.09371
+                channel Quat
+
+                joint face_top_parent
+                { offset -0.03897 3.90985 -1.94202
+
+                  joint brow_parent_left
+                  { offset 2.82000 3.82837 12.93123
+
+                    joint brow01_left
+                    { offset -1.78087 0.20663 2.48134
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+
+                    joint brow02_left
+                    { offset 0.07277 0.68431 2.11585
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+
+                    joint brow03_left
+                    { offset 1.59081 0.71240 1.28377
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+
+                    joint brow04_left
+                    { offset 2.97738 0.27186 -0.23344
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+                  }
+
+                  joint ear_left
+                  { offset 8.97618 1.00000 1.48345
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint ear_right
+                  { offset -8.97619 0.99994 1.48345
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint upper_nose_left
+                  { offset 1.40497 0.71834 14.78291
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+
+                    joint lower_nose_left
+                    { offset 0.99800 -2.45500 0.14500
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+                  }
+
+                  joint upper_nose_right
+                  { offset -1.40497 0.71831 14.78291
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+
+                    joint lower_nose_right
+                    { offset -0.99800 -2.45486 0.14499
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+                  }
+
+                  joint lower_eyelid_left
+                  { offset 3.54025 2.25272 13.73159
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint upper_eyelid_left
+                  { offset 3.44765 3.03848 14.03621
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint eyeball_left
+                  { offset 3.32826 2.98313 11.56465
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint brow_parent_right
+                  { offset -2.74206 3.82837 12.93123
+
+                    joint brow01_right
+                    { offset 1.70293 0.20677 2.48133
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+
+                    joint brow02_right
+                    { offset -0.15071 0.68439 2.11584
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+
+                    joint brow03_right
+                    { offset -1.66874 0.71243 1.28377
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+
+                    joint brow04_right
+                    { offset -3.05531 0.27200 -0.23343
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+                    }
+                  }
+
+                  joint lower_eyelid_right
+                  { offset -3.54027 2.25267 13.73159
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint upper_eyelid_right
+                  { offset -3.44764 3.03845 14.03621
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint eyeball_right
+                  { offset -3.32825 2.98297 11.56465
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+                }
+
+                joint joint18
+                { offset 0.00000 18.70120 0.00225
+                }
+
+                joint face_bottom_parent
+                { offset -0.00000 0.14519 1.28957
+
+                  joint Lip_top_left
+                  { offset 1.94153 -0.38181 11.94017
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint cheek_low_left
+                  { offset 7.23000 -0.63418 5.78502
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint Cheek_up_left
+                  { offset 5.08700 2.41100 10.69200
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint Lip_out_left
+                  { offset 3.42544 -1.10297 10.96878
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint Lip_top_mid
+                  { offset -0.02000 -0.06090 12.48943
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint Cheek_up_right
+                  { offset -5.08699 2.41095 10.69199
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint cheek_low_right
+                  { offset -7.23001 -0.63431 5.78502
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint Lip_top_right
+                  { offset -1.94153 -0.38193 11.94018
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint Lip_out_right
+                  { offset -3.42543 -1.10309 10.96878
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+                  }
+
+                  joint Jaw
+                  { offset -0.03897 -0.57735 1.75093
+                    channel XPos 0 free
+                    channel YPos 0 free
+                    channel ZPos 0 free
+                    channel Quat
+
+                    joint Jaw_back
+                    { offset 0.00000 -2.24582 0.80053
+
+                      joint Jaw_front
+                      { offset -0.00000 -3.02623 9.88130
+
+                        joint Lip_bttm_mid
+                        { offset -0.05256 4.71027 0.23381
+                          channel XPos 0 free
+                          channel YPos 0 free
+                          channel ZPos 0 free
+                          channel Quat
+                        }
+
+                        joint Lip_bttm_left
+                        { offset 1.84357 4.57510 -0.57239
+                          channel XPos 0 free
+                          channel YPos 0 free
+                          channel ZPos 0 free
+                          channel Quat
+                        }
+
+                        joint Lip_bttm_right
+                        { offset -1.84357 4.57501 -0.57238
+                          channel XPos 0 free
+                          channel YPos 0 free
+                          channel ZPos 0 free
+                          channel Quat
+                        }
+                      }
+                    }
+
+                    joint Tongue_back
+                    { offset -0.00000 -0.94259 3.03698
+                      channel XPos 0 free
+                      channel YPos 0 free
+                      channel ZPos 0 free
+                      channel Quat
+
+                      joint Tongue_mid
+                      { offset 0.03897 0.20855 2.83828
+                        channel XPos 0 free
+                        channel YPos 0 free
+                        channel ZPos 0 free
+                        channel Quat
+
+                        joint Tongue_front
+                        { offset -0.03897 0.47254 3.71188
+                          channel XPos 0 free
+                          channel YPos 0 free
+                          channel ZPos 0 free
+                          channel Quat
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          joint l_sternoclavicular
+          { offset 1.00000 14.64205 5.73290
+            channel Quat
+
+            joint l_acromioclavicular
+            { offset 7.00000 3.42964 -5.73290
+
+              joint l_shoulder
+              { offset 11.68874 -1.53489 0.00000
+                channel Quat
+
+                joint l_elbow
+                { offset 24.31126 -1.07163 -0.03048
+                  channel Quat
+
+                  joint l_forearm
+                  { offset 13.99834 0.21530 0.61766
+                    channel Quat
+
+                    joint l_wrist
+                    { offset 13.99834 0.21530 0.61766
+                      channel Quat
+
+                      joint l_thumb1
+                      { offset 3.58562 -2.42518 5.73177
+                        channel Quat
+
+                        joint l_thumb2
+                        { offset 2.61477 -1.54065 2.51578
+                          channel Quat
+
+                          joint l_thumb3
+                          { offset 1.77464 -1.28135 1.76976
+                            channel Quat
+
+                            joint l_thumb4
+                            { offset 1.89414 -1.19607 1.68555
+                            }
+                          }
+                        }
+                      }
+
+                      joint l_index1
+                      { offset 8.13002 -1.04057 4.49806
+                        channel Quat
+
+                        joint l_index2
+                        { offset 4.64062 -0.35238 -0.00458
+                          channel Quat
+
+                          joint l_index3
+                          { offset 2.41032 0.04724 -0.03317
+                            channel Quat
+
+                            joint l_index4
+                            { offset 2.39982 0.03361 0.05501
+                            }
+                          }
+                        }
+                      }
+
+                      joint l_middle1
+                      { offset 8.58792 -0.88602 1.48565
+                        channel Quat
+
+                        joint l_middle2
+                        { offset 5.19901 -0.35553 -0.00435
+                          channel Quat
+
+                          joint l_middle3
+                          { offset 2.49932 0.04614 -0.00327
+                            channel Quat
+
+                            joint l_middle4
+                            { offset 1.93226 0.04614 -0.00327
+                            }
+                          }
+                        }
+                      }
+
+                      joint l_ring1
+                      { offset 7.87740 -1.18629 -0.92858
+                        channel Quat
+
+                        joint l_ring2
+                        { offset 5.51904 -0.35926 -0.15320
+                          channel Quat
+
+                          joint l_ring3
+                          { offset 2.91059 0.04907 -0.06312
+                            channel Quat
+
+                            joint l_ring4
+                            { offset 2.02086 0.04082 -0.03271
+                            }
+                          }
+                        }
+                      }
+
+                      joint l_pinky1
+                      { offset 7.27432 -1.56506 -3.34389
+                        channel Quat
+
+                        joint l_pinky2
+                        { offset 4.46604 0.03715 -0.00263
+                          channel Quat
+
+                          joint l_pinky3
+                          { offset 2.36734 -0.37898 0.02713
+                            channel Quat
+
+                            joint l_pinky4
+                            { offset 1.83572 0.03623 -0.06221
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          joint r_sternoclavicular
+          { offset -1.00000 14.64195 5.73289
+            channel Quat
+
+            joint r_acromioclavicular
+            { offset -7.00000 3.42964 -5.73290
+
+              joint r_shoulder
+              { offset -11.68874 -1.53470 0.00000
+                channel Quat
+
+                joint r_elbow
+                { offset -24.31127 -1.07168 -0.03048
+                  channel Quat
+
+                  joint r_forearm
+                  { offset -13.99824 0.21519 0.61766
+                    channel Quat
+
+                    joint r_wrist
+                    { offset -13.99855 0.21549 0.61766
+                      channel Quat
+
+                      joint r_thumb1
+                      { offset -3.58536 -2.42529 5.73178
+                        channel Quat
+
+                        joint r_thumb2
+                        { offset -2.61488 -1.54076 2.51576
+                          channel Quat
+
+                          joint r_thumb3
+                          { offset -1.77455 -1.28138 1.76976
+                            channel Quat
+
+                            joint r_thumb4
+                            { offset -1.89414 -1.19607 1.68555
+                            }
+                          }
+                        }
+                      }
+
+                      joint r_index1
+                      { offset -8.12993 -1.04059 4.49807
+                        channel Quat
+
+                        joint r_index2
+                        { offset -4.64058 -0.35235 -0.00457
+                          channel Quat
+
+                          joint r_index3
+                          { offset -2.41036 0.04724 -0.03316
+                            channel Quat
+
+                            joint r_index4
+                            { offset -2.39982 0.03361 0.05501
+                            }
+                          }
+                        }
+                      }
+
+                      joint r_middle1
+                      { offset -8.58774 -0.88605 1.48566
+                        channel Quat
+
+                        joint r_middle2
+                        { offset -5.19897 -0.35570 -0.00436
+                          channel Quat
+
+                          joint r_middle3
+                          { offset -2.49936 0.04633 -0.00326
+                            channel Quat
+
+                            joint r_middle4
+                            { offset -1.93227 0.04614 -0.00327
+                            }
+                          }
+                        }
+                      }
+
+                      joint r_ring1
+                      { offset -7.87725 -1.18628 -0.92858
+                        channel Quat
+
+                        joint r_ring2
+                        { offset -5.51901 -0.35936 -0.15320
+                          channel Quat
+
+                          joint r_ring3
+                          { offset -2.91054 0.04907 -0.06312
+                            channel Quat
+
+                            joint r_ring4
+                            { offset -2.02085 0.04082 -0.03271
+                            }
+                          }
+                        }
+                      }
+
+                      joint r_pinky1
+                      { offset -7.27405 -1.56515 -3.34389
+                        channel Quat
+
+                        joint r_pinky2
+                        { offset -4.46623 0.03719 -0.00263
+                          channel Quat
+
+                          joint r_pinky3
+                          { offset -2.36738 -0.37917 0.02713
+                            channel Quat
+
+                            joint r_pinky4
+                            { offset -1.83572 0.03623 -0.06221
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+end
