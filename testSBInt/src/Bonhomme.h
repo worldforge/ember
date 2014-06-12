@@ -2,27 +2,35 @@
 #define BONHOMME_H
 
 	#include <Ogre.h>
+	#include <sb/SmartBody.h>
+	#include <string>
 
-	#define BONHOMME_SK_PATH "BonhommeSkeleton.skeleton.xml"
+	#define SINBAD 1
+	#define BONHOMME_SK_PATH "Sinbad.skeleton"//"humanoid.skeleton"
+	#define BONHOMME_MESH_PATH "Sinbad.mesh"//"male_new.mesh"
 	#define BONHOMME_JOINTMAP_NAME "BonhommeJointMap"
+	#define BONHOMME_SB_SK_PATH (std::string(BONHOMME_SK_PATH) + std::string(".xml"))
 
 class Bonhomme
 {
 public:
 	Bonhomme(Ogre::String const &name);
-	~Bonhomme();
+	~Bonhomme(void);
 
-	void addToScene();
+	void addToScene(void);
 	void animate(Ogre::String const &animName, bool loop = true);
 	void stop(Ogre::String const &animName);
 	void updateAnimation(Ogre::String const &animName, Ogre::Real offset);
+	void updateBonePositions(void);
 
 
 private:
 	Ogre::Entity *mEntity;
+	SmartBody::SBCharacter *mCharacter;
 	
-	SmartBody::SBJointMap* Bonhomme::mapSkeleton();
-	SmartBody::SBSkeleton* Bonhomme::getSbSkeleton();
+	void mapSkeleton(void);
+	SmartBody::SBSkeleton* getSbSkeleton(void);
+	void setManualControl(void);
 };
 
 #endif

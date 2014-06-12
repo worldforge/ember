@@ -44,6 +44,8 @@ void InputListener::startOIS()
 
 	windowResized(mWindow);
 	Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
+
+    Ogre::LogManager::getSingletonPtr()->logMessage("*** OIS initialized ***");
 }
 
 void InputListener::windowResized(Ogre::RenderWindow* wnd)

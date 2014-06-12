@@ -4,6 +4,8 @@
 	#include <Ogre.h>
     #include "Sb.h"
 	#include "Input.h"
+    
+    #define MEDIA_PATH "media/"
 
 class App
 {
@@ -19,7 +21,7 @@ public:
 
     static Ogre::Root* getRootSingleton();
     static Ogre::SceneManager* getSceneManagerSingleton();
-    SbManager* getSbManagerSingleton();
+    static SbManager* getSbManagerSingleton();
 
 
 private:

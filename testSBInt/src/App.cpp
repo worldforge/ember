@@ -4,13 +4,16 @@
 static App *application = NULL; 
 
 
-App::App() : mRoot(0)
+App::App()
+	: mRoot(0)
 {
+	mSbManager = new SbManager();
 	application = this;
 }
 
 App::~App()
 {
+	delete mSbManager;
 	delete mInputListener;
     delete mRoot;
 
@@ -55,23 +58,27 @@ bool App::start()
 	/* Window getting. */
 	mWindow = mRoot->initialise(true, "Ogre test");
 
+	/* FrameListener creation. */
+	createFrameListener();
+
+	/* SbManager initialization. */
+	mSbManager->initialize(MEDIA_PATH);
+
 	/* Scene creation. */
 	mSceneMgr = mRoot->createSceneManager("DefaultSceneManager", "myscmng");
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(1.0f, 1.0f, 1.0f));
 	createScene();
 
-	/* FrameListener creation. */
-	createFrameListener();
-
 	/* Infinite loop. */
 	bool loop;
 	Ogre::FrameEvent event;
+	mITime = Ogre::Root::getSingleton().getTimer()->getMilliseconds() / 1000.0f;
 
 	while(true)
 	{
 		Ogre::WindowEventUtilities::messagePump();
 		Bonhomme bonhomme("monBonhomme");
-		bonhomme.updateAnimation("trns_walk", 0.001);
+//		bonhomme.updateAnimation("actn_chop_down_0", 0.001);
 
 		bool loop = mInputListener->frameRenderingQueued(event);
 		if (!loop)
@@ -88,10 +95,10 @@ bool App::start()
 void App::createScene()
 {
 	/* Camera. */
-	mCamera = mSceneMgr->createCamera("PlayerCam");
-	mCamera->setPosition(Ogre::Vector3(0,1,3));
-	mCamera->lookAt(Ogre::Vector3(0,1,-20));
-	mCamera->setNearClipDistance(1);
+	mCamera = mSceneMgr->createCamera("PlayerCam"); 
+	mCamera->setPosition(Ogre::Vector3(0, 0, 20));
+	mCamera->lookAt(Ogre::Vector3(0, 0, -300));
+	mCamera->setNearClipDistance(5);
 
 	Ogre::Viewport* vp = mWindow->addViewport(mCamera);
 	vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
@@ -100,7 +107,7 @@ void App::createScene()
 	/* Bonhomme. */
 	Bonhomme bonhomme("monBonhomme");
 	bonhomme.addToScene();
-	bonhomme.animate("trns_walk");
+//	bonhomme.animate("actn_chop_down_0");
 }
 
 void App::createFrameListener()
@@ -119,7 +126,7 @@ Ogre::SceneManager* App::getSceneManagerSingleton()
 	return application->mSceneMgr;
 }
 
-SbManager* App::getSbManager()
+SbManager* App::getSbManagerSingleton()
 {
 	return application->mSbManager;
 }
