@@ -11,8 +11,8 @@ public:
 	~Retarget(void);
 
 private:
-	SBRetargetManager *mManager;
-	SBRetarger *mRetarget;
+	SmartBody::SBRetargetManager *mManager;
+	SmartBody::SBRetarget *mRetarget;
 	std::string mSrcName;
 	std::string mTgtName;
 

@@ -1,7 +1,8 @@
 #include "Retarget.h"
+#include "App.h"
 
 Retarget::Retarget(std::string const &srcSkName, std::string const &tgtSkName)
-	: mSrcName(srcSkName), mTgtName(tgtSkName), mRetarget(0);
+	: mSrcName(srcSkName), mTgtName(tgtSkName), mRetarget(0)
 {
 	mManager = App::getSbManagerSingleton()->getScene()->getRetargetManager();
 	mRetarget = mManager->getRetarget(srcSkName, tgtSkName);
@@ -47,7 +48,7 @@ void Retarget::createInstance(void)
 	
 	/* Creation of the retarget instance. */
 	mRetarget = mManager->createRetarget(mSrcName, mTgtName);
-	mRetarget.initRetarget(endJoints, relJoints);
+	mRetarget->initRetarget(endJoints, relJoints);
 }
 
 

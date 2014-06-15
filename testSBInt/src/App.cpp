@@ -73,16 +73,19 @@ bool App::start()
 	bool loop;
 	Ogre::FrameEvent event;
 	mITime = Ogre::Root::getSingleton().getTimer()->getMilliseconds() / 1000.0f;
+	mSbManager->startSimulation();
 
 	while(true)
 	{
 		Ogre::WindowEventUtilities::messagePump();
-		Bonhomme bonhomme("monBonhomme");
+
 //		bonhomme.updateAnimation("actn_chop_down_0", 0.001);
 
 		bool loop = mInputListener->frameRenderingQueued(event);
 		if (!loop)
 			return true;
+
+		mSbManager->updateSimulation();
 
 		if(!mRoot->renderOneFrame())
 			return false;

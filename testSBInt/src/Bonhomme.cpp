@@ -1,6 +1,7 @@
 #include "Bonhomme.h"
 #include "App.h"
 #include "Sb.h"
+#include "LocomotionBehav.h"
 
 /* TODO
 
@@ -14,7 +15,6 @@
 
 /* This skeleton is used for each instance of Bonhomme */
 static bool firstCall(true);
-
 
 
 Bonhomme::Bonhomme(Ogre::String const &name)
@@ -39,6 +39,12 @@ Bonhomme::Bonhomme(Ogre::String const &name)
 
 		/* Set manually controled mode on the skeleton */
 		setManualControl();
+
+		/* Add behaviors and controllers. */
+		mCharacter->createStandardControllers();
+		LocomotionBehav locomotion;
+		locomotion.setup();
+		locomotion.retarget(name);
 	}
 }
 
@@ -223,15 +229,22 @@ void Bonhomme::updateBonePositions(void)
 	{
 		/* We get the joint by its index. */
 		SmartBody::SBJoint *joint = sbSk->getJoint(j);
-		SrQuat orientation = joint->quat()->value();
 
-		/* The position vector are relative to the original position. */
-		Ogre::Vector3 position(joint->getPosition().x, joint->getPosition().y, joint->getPosition().z);
-		Ogre::Quaternion quaternion(orientation.w, orientation.x, orientation.y, orientation.z);
+		/* If it exists, we get the corresponding bone by the name of the joint (which is the one in Ogre, due to our jointMap). */
+		if (ogreSk->hasBone(joint->getName()))
+		{	
+			Ogre::Bone* bone = ogreSk->getBone(joint->getName());
 
-		/* We get the corresponding bone by the name of the joint (which is the one in Ogre, due to our jointMap). */
-		Ogre::Bone* bone = ogreSk->getBone(joint->getName());
-		bone->setPosition(bone->getInitialPosition() + position);
-		bone->setOrientation(quaternion);
+			/* We get the position of the joint. */
+			SrQuat orientation = joint->quat()->value();
+
+			/* The position vector are relative to the original position. */
+			Ogre::Vector3 position(joint->getPosition().x, joint->getPosition().y, joint->getPosition().z);
+			Ogre::Quaternion quaternion(orientation.w, orientation.x, orientation.y, orientation.z);
+
+			/* We update the bone positions in Ogre. */
+			bone->setPosition(bone->getInitialPosition() + position);
+			bone->setOrientation(quaternion);
+		}
 	}
 }
