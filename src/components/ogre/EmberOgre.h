@@ -379,6 +379,11 @@ protected:
 	World* mWorld;
 
 	/**
+	 * @brief The SmartBody Manager, allowing to create the interface between SmartBody library and the Ogre scene.
+	 */
+	SmartBodyManager *mSmartBodyManager;
+
+	/**
 	 * @brief Signals, when a Lod is injected.
 	 */
 	Lod::PMInjectorSignaler* mPMInjectorSignaler;
