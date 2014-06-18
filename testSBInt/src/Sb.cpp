@@ -34,7 +34,7 @@ void SbManager::initialize(std::string const &mediaPath)
 
 	/* We load the assets. */
 	mScene->getAssetManager()->addAssetPath("motion", "references/locomotion");
-	mScene->getAssetManager()->addAssetPath("motion", "sinbad");
+	mScene->getAssetManager()->addAssetPath("motion", BONHOMME_OGRE);
 	mScene->getAssetManager()->loadAssets();
 
 	/* We get the simulation manager and the bml processor. */

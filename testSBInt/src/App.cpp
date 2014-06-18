@@ -99,9 +99,15 @@ void App::createScene()
 {
 	/* Camera. */
 	mCamera = mSceneMgr->createCamera("PlayerCam"); 
+#if SINBAD
 	mCamera->setPosition(Ogre::Vector3(0, 0, 20));
 	mCamera->lookAt(Ogre::Vector3(0, 0, -300));
 	mCamera->setNearClipDistance(5);
+#else
+	mCamera->setPosition(Ogre::Vector3(0, 1, 3));
+	mCamera->lookAt(Ogre::Vector3(0, 0, -300));
+	mCamera->setNearClipDistance(1);
+#endif
 
 	Ogre::Viewport* vp = mWindow->addViewport(mCamera);
 	vp->setBackgroundColour(Ogre::ColourValue(0,0,0));

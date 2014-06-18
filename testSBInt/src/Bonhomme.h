@@ -5,14 +5,16 @@
 	#include <sb/SmartBody.h>
 	#include <string>
 
-	#define SINBAD 1
+	#define SINBAD 0
 
 #if SINBAD
 	#define BONHOMME_SK_PATH "Sinbad.skeleton"
 	#define BONHOMME_MESH_PATH "Sinbad.mesh"
+	#define BONHOMME_OGRE "sinbad"
 #else
 	#define BONHOMME_SK_PATH "humanoid.skeleton"
 	#define BONHOMME_MESH_PATH "male_new.mesh"
+	#define BONHOMME_OGRE "bonhomme"
 #endif
 	#define BONHOMME_JOINTMAP_NAME "BonhommeJointMap"
 	#define BONHOMME_SB_SK_PATH (std::string(BONHOMME_SK_PATH) + std::string(".xml"))

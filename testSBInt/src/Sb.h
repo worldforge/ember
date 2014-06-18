@@ -9,7 +9,7 @@
 	#define MOVE_WALK std::string("ChrUtah_Walk001")
 	#define MOVE_TURN std::string("ChrUtah_Turn90Lf01")
 
-	#define MOVE MOVE_WALK
+	#define MOVE MOVE_NONE
 
 class SbManager
 {
