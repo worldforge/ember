@@ -5,16 +5,16 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodySkeletonMap::SmartBodySkeletonMap(std::string const &skeleton)
+SmartBodySkeletonMap::SmartBodySkeletonMap(const std::string& skeleton)
 	: mName(skeleton)
 {
-	mMap.open(skeleton + EMBER_SMARTBODY_MAP_EXTENSION, std::ios::in);
-	mHasMap = mMap.is_open();
+	std::ifstream mapFile(EMBER_SMARTBODY_ASSETS_MAPS + skeleton + EMBER_SMARTBODY_MAP_EXTENSION, std::ios::in);
+	mHasMap = mapFile.is_open();
 
 	if (mHasMap)
 	{
-		mHasMap = parseMapFile();
-		mMap.close();
+		mHasMap = parseMapFile(mapFile);
+		mapFile.close();
 	}
 }
 
@@ -29,10 +29,10 @@ bool SmartBodySkeletonMap::exists()
 }
 
 
-void SmartBodySkeletonMap::setMap()
+void SmartBodySkeletonMap::setMap(SmartBodyManager const *sbManager)
 {
-	SmartBody::SBSkeleton *skeleton = mAssetManager->getSkeleton(mName);
-	SmartBody::SBJointMap *jointMap = mScene->getJointMapManager()->createJointMap(mName);
+	SmartBody::SBSkeleton *skeleton = sbManager->getAssetManager()->getSkeleton(mName);
+	SmartBody::SBJointMap *jointMap = sbManager->getScene()->getJointMapManager()->createJointMap(mName);
 
 	//Creation of the joint map.
 	for (int i = 0; i < mBones.size(); i ++)
@@ -44,12 +44,12 @@ void SmartBodySkeletonMap::setMap()
 	jointMap->applySkeleton(skeleton);
 }
 
-bool SmartBodySkeletonMap::parseMapFile()
+bool SmartBodySkeletonMap::parseMapFile(std::ifstream& mapFile)
 {
-	while (!mMap.eof())
+	while (!mapFile.eof())
 	{
 		std::string line;
-		mMap >> line;
+		mapFile >> line;
 
 		//The delimiter between the two names is the arrow '->'.
 		size_t delim = line.find("->");
