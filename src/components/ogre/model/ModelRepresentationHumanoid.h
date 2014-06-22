@@ -19,6 +19,7 @@
 #ifndef MODELREPRESENTATIONHUMANOID_H_
 #define MODELREPRESENTATIONHUMANOID_H_
 
+#include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/OgreIncludes.h"
 #include "components/ogre/IAnimated.h"
 #include "domain/IGraphicalRepresentation.h"
@@ -29,7 +30,13 @@
 #include <sigc++/trackable.h>
 #include <vector>
 #include <list>
+#include <string>
 
+
+namespace SmartBody
+{
+class SBCharacter;
+}
 
 namespace Eris
 {
@@ -39,6 +46,8 @@ class Entity;
 namespace Ember
 {
 class EmberEntity;
+class SmartBodyManager;
+
 namespace EntityMapping
 {
 class EntityMapping;
@@ -56,7 +65,6 @@ struct SoundDefinition;
 class Model;
 class Action;
 class ModelMount;
-class ModelRepresentation;
 
 typedef std::list<Action*> ActionStore;
 typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
@@ -127,6 +135,11 @@ public:
 	void setLocalVelocity(const WFMath::Vector<3>& velocity);
 
 protected:
+
+	/**
+	 * @brief The corresponding SmartBody character.
+	 */
+	SmartBody::SBCharacter *mCharacter;
 
 	/**
 	 * @brief The type name for the class.

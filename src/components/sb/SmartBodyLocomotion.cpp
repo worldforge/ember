@@ -32,7 +32,7 @@ bool SmartBodyLocomotion::setup(bool check /*= true */)
 
 void SmartBodyLocomotion::retarget(SmartBody::SBCharacter& character)
 {
-	SmartBodyBehaviors::retarget();
+	SmartBodyBehaviors::retarget(character);
 
 	character.addJointTrajectoryConstraint("l_forefoot", "base");
 	character.addJointTrajectoryConstraint("r_forefoot", "base");
@@ -256,13 +256,13 @@ void SmartBodyLocomotion::locomotionSetup()
 void SmartBodyLocomotion::startingSetup()
 {
 	//Generates the mirror animations for StopToWalk, Idle_ToWalk_Turn90 and Idle_ToWalk_Turn 180.
-	SmartBody::SBMotion *mirrorMotion1 = scene->getAssetManager()->getMotion("ChrUtah_StopToWalkRt01");
+	SmartBody::SBMotion *mirrorMotion1 = mAssetManager->getMotion("ChrUtah_StopToWalkRt01");
 	mirrorMotion1->mirror("ChrUtah_StopToWalkLf01", mSkelRefName);
 
-	SmartBody::SBMotion *mirrorMotion2 = scene->getAssetManager()->getMotion("ChrUtah_Idle01_ToWalk01_Turn90Lf01");
+	SmartBody::SBMotion *mirrorMotion2 = mAssetManager->getMotion("ChrUtah_Idle01_ToWalk01_Turn90Lf01");
 	mirrorMotion2->mirror("ChrUtah_Idle01_ToWalk01_Turn90Rt01", mSkelRefName);
 
-	SmartBody::SBMotion *mirrorMotion3 = scene->getAssetManager()->getMotion("ChrUtah_Idle01_ToWalk01_Turn180Lf01");
+	SmartBody::SBMotion *mirrorMotion3 = mAssetManager->getMotion("ChrUtah_Idle01_ToWalk01_Turn180Lf01");
 	mirrorMotion2->mirror("ChrUtah_Idle01_ToWalk01_Turn180Rt01", mSkelRefName);
 
 	//Gets the original set of motions.

@@ -1,10 +1,15 @@
 #ifndef SMARTBODYSKELETONMAP_H
 #define SMARTBODYSKELETONMAP_H
 
-#include "SmartBodyManager.h"
+#include <fstream>
+#include <string>
+#include <vector>
+
 
 namespace Ember
 {
+
+class SmartBodyManager;
 
 /**
  @brief Represents a joint map for a skeleton.
@@ -26,7 +31,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodySkeletonMap(std::string const &skeleton);
+	SmartBodySkeletonMap(const std::string& skeleton);
 
 	/**
 	 * @brief Dtor.
@@ -37,12 +42,12 @@ public:
 	/**
 	 * @brief Create the joint map and assign it to the skeleton.
 	 */
-	void setMap(SmartBodyManager const *sbManager);
+	void setMap(SmartBodyManager const *sbManager) const;
 
 	/**
 	 * @brief Check that the map exists (namely that the map file exists, and that it is correctly written).
 	 */
-	bool exists();
+	bool exists() const;
 
 private:
 
@@ -54,7 +59,7 @@ private:
 	/**
 	 * @brief Contains the names of the bones : {OgreBoneName, SBJointName}.
 	 */
-	std::vector<std::string[2]> mBones;
+	std::vector<std::string>mBones;
 
 	/**
 	 * @brief States that the map exists.
@@ -65,7 +70,7 @@ private:
 	/**
 	 * @brief Parse the file.
 	 */	
-	bool SmartBodySkeletonMap::parseMapFile(std::ifstream& mapFile);
+	bool parseMapFile(std::ifstream& mapFile);
 	
 };
 

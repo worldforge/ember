@@ -10,5 +10,8 @@
 	#include <sb/SBRetarget.h>
 	#include <sb/SBRetargetManager.h>
 	#include <sb/SBMotion.h>
+	#include <sb/SBAnimationStateManager.h>
+	#include <sb/SBAnimationState.h>
+	#include <sb/SBAnimationTransition.h>
 
 #endif

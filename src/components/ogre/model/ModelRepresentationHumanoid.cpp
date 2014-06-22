@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "ModelRepresentationHumanoid.h"
 #include "ModelRepresentation.h"
 
 #include "Model.h"
@@ -43,6 +44,8 @@
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/EntityMappingManager.h"
 
+#include "components/sb/SmartBodyManager.h"
+
 #include <OgreException.h>
 
 #include <OgreSceneNode.h>
@@ -69,50 +72,22 @@ const char * const ModelRepresentation::ACTION_WALK("walk");
 const char * const ModelRepresentation::ACTION_SWIM("swim");
 const char * const ModelRepresentation::ACTION_FLOAT("float");*/
 
-ModelRepresentationHumanoid::ModelRepresentationHumanoid(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping, SmartBodyManager *sbManager, const std::string& sbSkName) :
-		mEntity(entity), mModel(model), mScene(scene), mMapping(mapping), mCurrentMovementAction(0), mActiveAction(0), mTaskAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
+ModelRepresentationHumanoid::ModelRepresentationHumanoid(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping, SmartBodyManager *sbManager, const std::string& sbSkName)
+	: ModelRepresentation::ModelRepresentation(entity, model, scene, mapping)
 {
-	//Only connect if we have actions to act on
-	if (!model.getDefinition()->getActionDefinitions().empty()) {
-		mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
-		mEntity.TaskAdded.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskAdded));
-		mEntity.TaskRemoved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskRemoved));
-	}
-	//Only connect if we have particles
-	if (mModel.hasParticles()) {
-		mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
-	}
-
-	//listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
-	mModel.Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
-	mModel.Resetting.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Resetting));
-
-	mModel.setQueryFlags(MousePicker::CM_ENTITY);
-
-	//start out with the default movement mode
-	onMovementModeChanged(ModelRepresentation::MM_DEFAULT);
-
 	//Create the SmartBody character.
-	mCharacter = sbManager->createCharacter(entity.getName(), mModel.getDefinition()->getName(), sbSkName);
+	mCharacter = sbManager->createCharacter(*model.getSkeletonOwnerEntity(), model.getDefinition()->getName(), sbSkName);
 }
 
 ModelRepresentationHumanoid::~ModelRepresentationHumanoid()
 {
 	//TODO : Destroy the Sb character ?
 
-	const RenderingDefinition* renderingDef = mModel.getDefinition()->getRenderingDefinition();
-	if (renderingDef && renderingDef->getScheme() != "") {
-		mScene.deregisterEntityWithTechnique(mEntity, renderingDef->getScheme());
-	}
+}
 
-	delete mSoundEntity;
-
-	mModel._getManager()->destroyMovableObject(&mModel);
-
-	//make sure it's not in the MotionManager
-	//TODO: keep a marker in the entity so we don't need to call this for all entities
-	MotionManager::getSingleton().removeAnimated(mEntity.getId());
-
+void ModelRepresentationHumanoid::initFromModel()
+{
+	return;
 }
 
 const std::string& ModelRepresentationHumanoid::getType() const
@@ -124,6 +99,37 @@ const std::string& ModelRepresentationHumanoid::getTypeNameForClass()
 {
 	return sTypeName;
 }
+
+void ModelRepresentationHumanoid::updateAnimation(float timeSlice)
+{
+	return;
+}
+
+ModelRepresentation::MovementMode ModelRepresentationHumanoid::getMovementMode() const
+{
+	return ModelRepresentation::getMovementMode();
+}
+
+void ModelRepresentationHumanoid::setLocalVelocity(const WFMath::Vector<3>& velocity)
+{
+	return;
+}
+
+void ModelRepresentationHumanoid::onMovementModeChanged(MovementMode newMode)
+{
+	return;
+}
+
+void ModelRepresentationHumanoid::parseMovementMode(const WFMath::Vector<3>& velocity)
+{
+	return;
+}
+
+void ModelRepresentationHumanoid::resetAnimations()
+{
+	return;
+}
+
 
 
 }

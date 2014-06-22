@@ -18,7 +18,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyLocomotion(std::string const &motionPath = "", std::string const &skeletonRef = "", SmartBodyManager *manager);
+	SmartBodyLocomotion(std::string const &motionPath, std::string const &skeletonRef, SmartBodyManager *manager);
 
 	/**
 	 * @brief Dtor.
@@ -29,7 +29,7 @@ public:
 	/**
 	 * @brief Setup the locomotion behavior set.
 	 */
-	void setup(bool check = true);
+	bool setup(bool check = true);
 
 	/**
 	 * @brief Retarget the locomotion set to another character.

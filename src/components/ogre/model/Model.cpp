@@ -527,6 +527,11 @@ bool Model::getDisplaySkeleton(void) const
 	return false;
 }
 
+Ogre::Entity* Model::getSkeletonOwnerEntity(void) const
+{
+	return mSkeletonOwnerEntity;
+}
+
 bool Model::isLoaded() const
 {
 	//If there's no background loader available the model is loaded in the main thread, and therefore is considered to be loaded already.

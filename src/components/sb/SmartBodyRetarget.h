@@ -24,19 +24,19 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	Retarget(const std::string& srcSkName, const std::string& tgtSkName, SmartBody::RetargetManager *manager);
+	SmartBodyRetarget(const std::string& srcSkName, const std::string& tgtSkName, SmartBody::SBRetargetManager *manager);
 
 	/**
 	 * @brief Dtor.
 	 */
-	~Retarget(void);
+	~SmartBodyRetarget(void);
 
 private:
 
 	/**
 	 * @brief Create an instance of SBRetarget.
 	 */
-	void createInstance(const std::string& srcSk, const std::string& tgtSk, SmartBody::RetargetManager *manager);
+	void createInstance(const std::string& srcSk, const std::string& tgtSk, SmartBody::SBRetargetManager *manager);
 };
 
 }

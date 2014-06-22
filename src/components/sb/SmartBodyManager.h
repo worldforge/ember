@@ -5,8 +5,15 @@
 #include <SmartBody.h>
 
 
+namespace Ogre
+{
+class Entity;
+}
+
 namespace Ember
 {
+
+class SmartBodyLocomotion;
 
 /**
  @brief This class is here to set up the SmartBody library.
@@ -17,24 +24,24 @@ namespace Ember
  @author Céline NOEL <celine.noel.7294@gmail.com>
 
  */
-class SmartBodyManager:
+class SmartBodyManager
 {
 public:
 
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyManager();
+	SmartBodyManager(void);
 
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodyManager();
+	~SmartBodyManager(void);
 
 	/**
 	 * @brief Initializes the object, and by the way, the SmartBody library.
 	 */
-	void initialize();
+	void initialize(void);
 
 	/**
 	 * @brief Sets sbName to the name of the SmartBody skeleton corresponding to ogreName (returns false if not possible).
@@ -52,17 +59,17 @@ public:
 	/**
 	 * @brief Creates a new SmartBody character and initialize him (skeleton, behaviors, etc.).
 	 */
-	void createCharacter(const std::string& entityName, const std::string& group, const std::string& ogreSkName);
+	SmartBody::SBCharacter* createCharacter(const Ogre::Entity& entity, const std::string& group, const std::string& sbSkName);
 
 	/**
 	 * @brief Returns the scene.
 	 */
-	SmartBody::SBScene* getScene();
+	SmartBody::SBScene* getScene(void) const;
 
 	/**
 	 * @brief Returns the asset manager.
 	 */
-	SmartBody::SBAssetManager* getAssetManager();
+	SmartBody::SBAssetManager* getAssetManager(void) const;
 
 private:
 
@@ -100,12 +107,12 @@ private:
 	/**
 	 * @brief Adds the asset paths for SmartBody (the paths are set in SmartBodyConsts.h).
 	 */
-	void addAssetPaths();
+	void addAssetPaths(void);
 
 	/**
 	 * @brief Loads and set up all the behaviors.
 	 */
-	void loadAllBehaviors();
+	void loadAllBehaviors(void);
 
 	/**
 	 * @brief Retarget all the behaviors on the given character.
@@ -115,7 +122,7 @@ private:
 	/**
 	 * @brief Sets or unsets manual control over the (Ogre) skeleton of the entity given as parameter.
 	 */
-	void setManualControl(const std::string& entityName, bool mode = true);
+	void setManualControl(const Ogre::Entity& entity, bool mode = true);
 
 };
 

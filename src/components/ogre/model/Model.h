@@ -304,6 +304,11 @@ public:
 	bool getDisplaySkeleton(void) const;
 
 	/**
+	 * @brief Returns the Ogre entity associated to this model.
+	 */
+	Ogre::Entity* getSkeletonOwnerEntity(void) const;
+
+	/**
 	 * @brief Whether the model has been fully loaded.
 	 * @return True if all assets that make up the model, i.e. meshes and materials, have been loaded.
 	 */

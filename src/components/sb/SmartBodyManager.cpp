@@ -1,5 +1,11 @@
 #include "SmartBodyManager.h"
 #include "SmartBodyPathConsts.h"
+#include "SmartBodyLocomotion.h"
+#include "SmartBodySkeletonMap.h"
+
+#include <OgreSkeletonInstance.h>
+#include <OgreEntity.h>
+#include <OgreBone.h>
 
 //#define NDEBUG
 #include <cassert>
@@ -9,13 +15,12 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodyManager::SmartBodyManager()
+SmartBodyManager::SmartBodyManager(void)
 	: mScene(nullptr), mAssetManager(nullptr), mSimulation(nullptr), mProcessor(nullptr), mIsInit(false), mLocomotion(nullptr)
 {
-	
 }
 
-SmartBodyManager::~SmartBodyManager()
+SmartBodyManager::~SmartBodyManager(void)
 {
 	delete mLocomotion;
 	delete mScene;
@@ -23,14 +28,14 @@ SmartBodyManager::~SmartBodyManager()
 
 
 //public.
-void SmartBodyManager::initialize()
+void SmartBodyManager::initialize(void)
 {
 	//Initialization of SmartBody library.
-	mScene = SmartBody::getScene();
+	mScene = SmartBody::SBScene::getScene();
 	mScene->start();
 
 	//Set the member parameters.
-	mAssetLoader = mScene->getAssetManager();
+	mAssetManager = mScene->getAssetManager();
 	mSimulation = mScene->getSimulationManager();
 	mProcessor = mScene->getBmlProcessor();
 
@@ -47,13 +52,13 @@ void SmartBodyManager::initialize()
 	mIsInit = true;
 }
 
-void SmartBodyManager::addAssetPaths()
+void SmartBodyManager::addAssetPaths(void) 
 {
 	//Character skeletons.
 	mAssetManager->addAssetPath("motion", EMBER_SMARTBODY_ASSETS_SKELETONS);
 }
 
-void SmartBodyManager::loadAllBehaviors()
+void SmartBodyManager::loadAllBehaviors(void)
 {
 	/* Should we load the behaviors at the beginning or when they are used for the first time... 
 	I think it is better at the beginning because it can take time, and this is not good to have lagging during the simulation.
@@ -106,7 +111,7 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load)
 		if (map.exists())
 		{
 			//Finally, map the skeleton.
-			map.setMap();
+			map.setMap(this);
 		}
 
 		return true;
@@ -116,15 +121,14 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load)
 }
 
 //public.
-void SmartBodyManager::createCharacter(const std::string& entityName, const std::string& group, const std::string& ogreSkName)
+SmartBody::SBCharacter* SmartBodyManager::createCharacter(const Ogre::Entity& entity, const std::string& group, const std::string& sbSkName)
 {
 	assert(mIsInit);
 
 	//Create SB character.
-	SmartBody::SBCharacter *character = mScene->createCharacter(entityName, group);
+	SmartBody::SBCharacter *character = mScene->createCharacter(entity.getName(), group);
 
 	//Create SB skeleton.
-	std::string sbSkName(ogreName.substr(ogreName.rfind('/') + 1) + std::string(EMBER_SMARTBODY_SKELETON_EXTENSION));
 	SmartBody::SBSkeleton *skeleton = mScene->createSkeleton(sbSkName);
 
 	//Associate the skeleton to the character.
@@ -132,17 +136,18 @@ void SmartBodyManager::createCharacter(const std::string& entityName, const std:
 
 	//Set manually controlled mode on the Ogre skeleton.
 	// TODO : verify that the manual control doesn't prevent the character from using classical animations.
-	setManualControl(entityName);
+	setManualControl(entity);
 
 	//Add behaviors and controllers.
 	character->createStandardControllers();
 	retargetAllBehaviors(*character);
+
+	return character;
 }
 
-void SmartBodyManager::setManualControl(const std::string& entityName, bool mode)
+void SmartBodyManager::setManualControl(const Ogre::Entity& entity, bool mode)
 {
-	Ogre::SceneManager* sceneManager = _getManager()
-	Ogre::Skeleton* skeleton = sceneManager->getEntity(entityName)->getSkeleton();
+	Ogre::SkeletonInstance *skeleton = entity.getSkeleton();
 	Ogre::Skeleton::BoneIterator it = skeleton->getBoneIterator(); 
 
 	while (it.hasMoreElements()) 
@@ -152,13 +157,13 @@ void SmartBodyManager::setManualControl(const std::string& entityName, bool mode
 }
 
 //public.
-SmartBody::SBScene* SmartBodyManager::getScene()
+SmartBody::SBScene* SmartBodyManager::getScene(void) const
 {
 	return mScene;
 }
 
 //public.
-SmartBody::SBAssetManager* SmartBodyManager::getAssetManager()
+SmartBody::SBAssetManager* SmartBodyManager::getAssetManager(void) const
 {
 	return mAssetManager;
 }

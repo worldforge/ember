@@ -35,6 +35,10 @@
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/IVisitor.h"
 #include "components/entitymapping/Cases/CaseBase.h"
+#include "components/sb/SmartBodyManager.h"
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/model/ModelRepresentationHumanoid.h"
+#include <OgreSkeletonInstance.h>
 
 namespace Ember
 {
@@ -115,14 +119,14 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 		}
 
 		//See if this model possesses a SmartBody skeleton.
-		Ogre::SkeletonInstance *skeleton = getSkeleton();
+		Ogre::SkeletonInstance *skeleton = model->getSkeleton();
 		if (skeleton) 
 		{
-			SmartBodyManager *sbManager = Ember::getSingleton()->getSmartBodyManager();
+			SmartBodyManager *sbManager = OgreView::EmberOgre::getSingleton().getSmartBodyManager();
 
 			//Get the name that the SmartBody skeleton should have.
 			std::string sbSkName(0);
-			sbManager->setCorrespondingSkeletonName(sbSkName, skeleton->getName)
+			sbManager->setCorrespondingSkeletonName(sbSkName, skeleton->getName());
 
 			//If the skeleton exists for SmartBody, then create the corresponding character.
 			if (sbManager->hasSkeleton(sbSkName))
@@ -130,21 +134,24 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 				//Create the model representation set for SmartBody humanoid character.
 				Model::ModelRepresentationHumanoid* representation = new Model::ModelRepresentationHumanoid(mEntity, *model, mScene, mMapping,
 						sbManager, sbSkName);
+				mEntity.setGraphicalRepresentation(representation);
+				representation->initFromModel();
 			}
 
 			else
 			{
 				Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
+				mEntity.setGraphicalRepresentation(representation);
+				representation->initFromModel();
 			}
 		}
 
 		else
 		{
 			Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
-		}
-		
-		mEntity.setGraphicalRepresentation(representation);
-		representation->initFromModel();
+			mEntity.setGraphicalRepresentation(representation);
+			representation->initFromModel();
+		}		
 	}
 }
 

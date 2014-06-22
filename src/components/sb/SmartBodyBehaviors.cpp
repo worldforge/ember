@@ -91,7 +91,7 @@ void SmartBodyBehaviors::retarget(SmartBody::SBCharacter& character)
 	std::string skelName = character.getSkeleton()->getName();
 
 	//Creation of the retargeting object.
-	Retarget retarget(mSkelRefName, skelName, mRetargetManager);
+	SmartBodyRetarget retarget(mSkelRefName, skelName, mRetargetManager);
 }
 
 }

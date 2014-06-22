@@ -1,5 +1,7 @@
 #include "SmartBodySkeletonMap.h"
 #include "SmartBodyPathConsts.h"
+#include "SmartBodyManager.h"
+
 
 using namespace Ember;
 namespace Ember
@@ -23,21 +25,21 @@ SmartBodySkeletonMap::~SmartBodySkeletonMap()
 }
 
 
-bool SmartBodySkeletonMap::exists()
+bool SmartBodySkeletonMap::exists() const
 {
 	return mHasMap;
 }
 
 
-void SmartBodySkeletonMap::setMap(SmartBodyManager const *sbManager)
+void SmartBodySkeletonMap::setMap(SmartBodyManager const *sbManager) const
 {
 	SmartBody::SBSkeleton *skeleton = sbManager->getAssetManager()->getSkeleton(mName);
 	SmartBody::SBJointMap *jointMap = sbManager->getScene()->getJointMapManager()->createJointMap(mName);
 
 	//Creation of the joint map.
-	for (int i = 0; i < mBones.size(); i ++)
+	for (int i = 0; i < mBones.size(); i += 2)
 	{
-		jointMap->setMapping(mBones[i][0], mBones[i][1]);
+		jointMap->setMapping(mBones[i], mBones[i ++]);
 	}
 
 	//Application of the map to the skeleton.
@@ -62,8 +64,11 @@ bool SmartBodySkeletonMap::parseMapFile(std::ifstream& mapFile)
 		bones[0] = line.substr(0, delim - 1);
 		bones[1] = line.substr(delim + 2, line.size() - 1);
 
-		mBones.push_back(bones);
+		mBones.push_back(bones[0]);
+		mBones.push_back(bones[1]);
 	}
 
 	return true;
+}
+
 }
