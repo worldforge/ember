@@ -123,16 +123,22 @@ bool Model::create(const std::string& modelType, Eris::EventService& eventServic
 		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << "." << ex);
 		return false;
 	}
-	if (false && !mDefinition->isValid()) {
+	if (false && !mDefinition->isValid()) 
+	{
 		S_LOG_FAILURE("Model of type " << modelType << " from group " << groupName << " is not valid.");
 		return false;
-	} else {
+	} 
+
+	else 
+	{
 #if OGRE_THREAD_SUPPORT
-		if (!mBackgroundLoader) {
+		if (!mBackgroundLoader) 
+		{
 			mBackgroundLoader = std::make_shared<ModelBackgroundLoader>(this, eventService);
 		}
 #endif
 		mDefinition->addModelInstance(this);
+
 		return true;
 		/*		bool success =  createFromDefn();
 		 if (!success) {
@@ -269,6 +275,7 @@ bool Model::createActualModel()
 	for (auto& part : showPartVector) {
 		showPart(part);
 	}
+
 	return true;
 }
 

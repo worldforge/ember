@@ -64,6 +64,8 @@ class Input;
 class MainLoopController;
 class TimeFrame;
 class EmberEntity;
+class SmartBodyManager;
+
 namespace OgreView
 {
 
@@ -194,6 +196,13 @@ public:
 	 * @returns A World instance, or null if no such exists. The instance is created first when the client has connected and received an Eris::View instance.
 	 */
 	World* getWorld() const;
+
+	/**
+	 * @brief Gets the SmartBodyManager instance.
+	 *
+	 * @returns The SmartBodyManager instance, or null if no such exists.
+	 */
+	SmartBodyManager* getSmartBodyManager() const;
 
 	/**
 	 * @brief Renders one frame.

@@ -44,6 +44,7 @@
 #include "EmberOgrePrerequisites.h"
 
 #include "World.h"
+#include "components/sb/SmartBodyManager.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -143,8 +144,8 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 EmberOgre::EmberOgre() :
 		mInput(0), mOgreSetup(nullptr), mRoot(0), mSceneManagerOutOfWorld(0), mWindow(0), mScreen(0), mShaderManager(0), mShaderDetailManager(nullptr), mAutomaticGraphicsLevelManager(nullptr), 
 		mGeneralCommandMapper(new InputCommandMapper("general")), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
-		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr), mSmartBodyManager(nullptr),
-		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mCameraOutOfWorld(0), mWorld(0), mPMInjectorSignaler(0), mConsoleDevTools(nullptr)
+		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr),
+		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mCameraOutOfWorld(0), mWorld(0), mSmartBodyManager(nullptr), mPMInjectorSignaler(0), mConsoleDevTools(nullptr)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -468,6 +469,11 @@ World* EmberOgre::getWorld() const
 Screen& EmberOgre::getScreen() const
 {
 	return *mScreen;
+}
+
+SmartBodyManager* EmberOgre::getSmartBodyManager() const
+{
+	return mSmartBodyManager;
 }
 
 void EmberOgre::checkForConfigFiles()

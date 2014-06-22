@@ -114,11 +114,37 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 			modelDef->reloadAllInstances();
 		}
 
-		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
+		//See if this model possesses a SmartBody skeleton.
+		Ogre::SkeletonInstance *skeleton = getSkeleton();
+		if (skeleton) 
+		{
+			SmartBodyManager *sbManager = Ember::getSingleton()->getSmartBodyManager();
+
+			//Get the name that the SmartBody skeleton should have.
+			std::string sbSkName(0);
+			sbManager->setCorrespondingSkeletonName(sbSkName, skeleton->getName)
+
+			//If the skeleton exists for SmartBody, then create the corresponding character.
+			if (sbManager->hasSkeleton(sbSkName))
+			{
+				//Create the model representation set for SmartBody humanoid character.
+				Model::ModelRepresentationHumanoid* representation = new Model::ModelRepresentationHumanoid(mEntity, *model, mScene, mMapping,
+						sbManager, sbSkName);
+			}
+
+			else
+			{
+				Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
+			}
+		}
+
+		else
+		{
+			Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
+		}
+		
 		mEntity.setGraphicalRepresentation(representation);
 		representation->initFromModel();
-
-
 	}
 }
 

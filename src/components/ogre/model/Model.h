@@ -103,7 +103,7 @@ public:
 	static const Ogre::String sMovableType;
 
 	/**
-	 * @brief Ctor.
+	 * @brief Dtor.
 	 */
 	virtual ~Model();
 
