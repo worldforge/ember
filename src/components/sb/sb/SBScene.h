@@ -1,7 +1,7 @@
 #ifndef SBSCENE_H
 #define SBSCENE_H
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBTypes.h>
 #include <sb/SBObject.h>
 #include <sb/SBScript.h>

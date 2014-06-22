@@ -22,11 +22,11 @@
 *      Marcus Thiebaux, USC
 */
 
-#include <vhcl.h>
-# include <sr/sr_model.h>
+#include <vhcl/vhcl.h>
+#include <sr/sr_model.h>
 
-# include <sk/sk_skeleton.h>
-# include <sk/sk_posture.h>
+#include <sk/sk_skeleton.h>
+#include <sk/sk_posture.h>
 #include <queue>
 #include <sb/SBJoint.h>
 #include <sb/SBScene.h>

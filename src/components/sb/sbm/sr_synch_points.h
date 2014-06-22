@@ -25,7 +25,7 @@
 
 #include <sb/SBTypes.h>
 #include <stdio.h>
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 #include <sbm/sr_linear_curve.h>
 
 /*

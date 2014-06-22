@@ -135,9 +135,10 @@ BOOST_REQUIRE
 BOOST_THREADS
 BOOST_DATE_TIME
 BOOST_SYSTEM
+BOOST_FILESYSTEM
 
-LDFLAGS="$LDFLAGS $BOOST_THREAD_LDFLAGS $BOOST_DATE_TIME_LDFLAGS $BOOST_SYSTEM_LDFLAGS"
-LIBS="$LIBS $BOOST_THREAD_LIBS $BOOST_DATE_TIME_LIBS $BOOST_SYSTEM_LIBS"
+LDFLAGS="$LDFLAGS $BOOST_THREAD_LDFLAGS $BOOST_DATE_TIME_LDFLAGS $BOOST_SYSTEM_LDFLAGS $BOOST_FILESYSTEM_LDFLAGS"
+LIBS="$LIBS $BOOST_THREAD_LIBS $BOOST_DATE_TIME_LIBS $BOOST_SYSTEM_LIBS $BOOST_FILESYSTEM_LIBS"
 CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
 
 AC_ARG_ENABLE(webember,
@@ -563,6 +564,19 @@ if test "$ac_use_gprof_code" = "yes"; then
 fi
 
 
+AC_CHECK_LIB(ode, [dBodyCreate], [],
+    AC_MSG_ERROR([Couldn't find ODE library.]))
+LIBS="-lode $LIBS"
+
+AC_SUBST(XERCES_CFLAGS)
+AC_SUBST(XERCES_LDFLAGS)
+LIBS="-lxerces-c $LIBS"
+	
+LIBS="-lblas $LIBS"
+
+LIBS="-llapack $LIBS"
+
+
 
 
 
@@ -649,6 +663,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/navigation/external/RecastDetour/Recast/Makefile
 		 src/components/navigation/external/RecastDetour/Detour/Makefile
 		 src/components/navigation/external/RecastDetour/DetourTileCache/Makefile
+		 src/components/sb/Makefile
 		 test/Makefile
 		 src/extensions/webember/Makefile
 		 src/domain/Makefile

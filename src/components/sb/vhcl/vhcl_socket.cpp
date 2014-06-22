@@ -18,7 +18,7 @@
    along with VHMsg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include "vhcl_socket.h"
 
 #include <string>

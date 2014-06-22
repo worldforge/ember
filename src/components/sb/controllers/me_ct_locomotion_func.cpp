@@ -24,7 +24,7 @@
 
 //#include "sb/sbm_character.hpp"
 #include "sbm/gwiz_math.h"
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 
 SrMat get_gmat(SkJoint* from_joint, int depth, SrArray<SrQuat>& quat)
 {

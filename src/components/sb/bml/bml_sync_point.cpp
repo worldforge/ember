@@ -21,7 +21,7 @@
  *      Ed Fast, USC
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include "bml_sync_point.hpp"
 

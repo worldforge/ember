@@ -28,7 +28,7 @@ using namespace gwiz;
 #include <sb/SBCharacter.h>
 #include <sb/SBSkeleton.h>
 #include <sb/SBJoint.h>
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 
 //////////////////////////////////////////////////////////////////////////////////
 

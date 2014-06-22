@@ -21,7 +21,7 @@
 #include "controllers/me_ct_gaze.h"
 #include "sbm/lin_win.h"
 using namespace gwiz;
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 #include <sb/SBSimulationManager.h>
 #include <sb/SBScene.h>
 #include <sb/SBPawn.h>

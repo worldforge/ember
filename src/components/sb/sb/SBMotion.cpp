@@ -1,4 +1,4 @@
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include "SBMotion.h"
 #include <sb/SBScene.h>
 #include <sr/sr_euler.h>

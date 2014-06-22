@@ -1,7 +1,7 @@
 #ifndef _SBPHYSICSMANAGER_H_
 #define _SBPHYSICSMANAGER_H_
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBTypes.h>
 #include <sb/SBService.h>
 

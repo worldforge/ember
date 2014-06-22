@@ -27,7 +27,7 @@
 #include <sb/SBTypes.h>
 #include <string>
 #include <sstream>
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/dom/DOM.hpp>

@@ -1,7 +1,7 @@
 #ifndef _SBJOINTMAP_H_
 #define _SBJOINTMAP_H_
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBTypes.h>
 #include <map>
 #include <vector>

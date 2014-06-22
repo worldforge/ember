@@ -2,7 +2,7 @@
 #include <sr/sr_vec.h>
 #include <sb/SBAttribute.h>
 #include <sb/SBAttributeManager.h>
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 
 namespace SmartBody {
 

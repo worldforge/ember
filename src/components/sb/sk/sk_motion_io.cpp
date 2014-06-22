@@ -24,7 +24,7 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include <stdlib.h>
 #include <sk/sk_motion.h>
 #include <iostream>

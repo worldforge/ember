@@ -1,5 +1,5 @@
 #include "SBAssetHandler.h"
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <boost/version.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>

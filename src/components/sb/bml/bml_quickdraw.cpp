@@ -20,7 +20,7 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include <string>
 
 

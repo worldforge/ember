@@ -20,17 +20,17 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <stdio.h>
-# include <sr/sr_timer.h>
-#include <vhcl_log.h>
+#include <stdio.h>
+#include <sr/sr_timer.h>
+#include <vhcl/vhcl_log.h>
 
-# ifdef SR_TARGET_WINDOWS // defined in sr.h
-# include <windows.h>
-# include <sys/timeb.h>
-# else 
-# include <sys/stat.h>
-# include <sys/time.h>
-# endif
+#ifdef SR_TARGET_WINDOWS // defined in sr.h
+#include <windows.h>
+#include <sys/timeb.h>
+#else 
+#include <sys/stat.h>
+#include <sys/time.h>
+#endif
 
 //======================= SrUtcTimer =====================================
 

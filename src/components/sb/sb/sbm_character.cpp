@@ -17,7 +17,7 @@
 *      http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <sb/SBTypes.h>
 #include "sb/sbm_character.hpp"

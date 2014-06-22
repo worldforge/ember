@@ -23,7 +23,7 @@
  *      Ed Fast, USC
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include "bml.hpp"
 

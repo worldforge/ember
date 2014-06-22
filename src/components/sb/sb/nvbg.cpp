@@ -1,5 +1,5 @@
 #include "nvbg.h"
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include <sb/SBAttribute.h>
 
 namespace SmartBody 

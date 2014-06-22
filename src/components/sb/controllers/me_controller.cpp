@@ -31,7 +31,7 @@
 #include <sr/sr_euler.h>
 #include <controllers/me_prune_policy.hpp>
 #include <controllers/me_default_prune_policy.hpp>
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 #include <controllers/me_controller_tree_root.hpp>
 #include <sb/sbm_pawn.hpp>
 #include <sb/SBMotion.h>

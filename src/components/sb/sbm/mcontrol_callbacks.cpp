@@ -1,4 +1,4 @@
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #ifdef EMBER_SB_VHMSG
 #ifndef __native_client__
 #ifndef SB_NO_VHMSG

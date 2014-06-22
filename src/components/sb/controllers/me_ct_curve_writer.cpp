@@ -20,7 +20,7 @@
  *      
  */
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <controllers/me_ct_curve_writer.hpp>
 
 std::string MeCtCurveWriter::TYPE = "MeCtCurveWriter";

@@ -20,7 +20,7 @@
  *      
  */
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <controllers/me_ct_channel_writer.hpp>
 
 #include <cstdlib>

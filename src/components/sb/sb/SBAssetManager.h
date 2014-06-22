@@ -1,7 +1,7 @@
 	#ifndef _SBASSETMANAGER_H_
 #define _SBASSETMANAGER_H_
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBTypes.h>
 #include <sb/SBObject.h>
 #include <map>

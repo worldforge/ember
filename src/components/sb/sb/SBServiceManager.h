@@ -2,7 +2,7 @@
 #define _SBSERVICEMANAGER_H_
 
 #include <sb/SBTypes.h>
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBObject.h>
 #include <string>
 #include <map>

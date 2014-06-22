@@ -21,7 +21,7 @@
  */
 
 #include "controllers/me_ct_gaze_alg.h"
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 
 using namespace gwiz;
 

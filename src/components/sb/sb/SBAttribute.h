@@ -1,7 +1,7 @@
 #ifndef _SBATTRIBUTE_H
 #define _SBATTRIBUTE_H
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBTypes.h>
 #include <sb/SBSubject.h>
 #include <string>

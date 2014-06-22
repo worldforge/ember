@@ -27,7 +27,7 @@
 #include "sr_arg_buff.h"
 
 #include <string.h>
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 
 #define MAX_CMD_ARGL 8192
 

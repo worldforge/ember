@@ -1,7 +1,7 @@
 #ifndef _SBPAWN_H_
 #define _SBPAWN_H_
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBTypes.h>
 #include <sb/sbm_pawn.hpp>
 

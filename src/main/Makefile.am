@@ -1,4 +1,5 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+AM_LDFLAGS = -lxerces-c -lode
 
 #WARNING: use only absolute path in this file, because its included from webember, which has different working directory!
 
@@ -29,6 +30,7 @@ emberlibs = \
 	$(top_builddir)/src/components/ogre/environment/caelum/libCaelum.a \
 	$(top_builddir)/src/components/ogre/environment/pagedgeometry/libpagedgeometry.a \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
+	$(top_builddir)/src/components/sb/libEmberSmartBody.a \
 	$(top_builddir)/src/components/entitymapping/libEntityMapping.a \
 	$(top_builddir)/src/components/cegui/bindings/lua/liblua_Cegui.a \
 	$(top_builddir)/src/components/lua/libLua.a \

@@ -20,7 +20,7 @@
  *      Andrew n marshall, USC
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <controllers/me_controller_context.hpp>
 #include <controllers/me_evaluation_logger.hpp>

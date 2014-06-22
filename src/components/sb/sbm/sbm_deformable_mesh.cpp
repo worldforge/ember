@@ -1,5 +1,5 @@
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include "sbm_deformable_mesh.h"
 

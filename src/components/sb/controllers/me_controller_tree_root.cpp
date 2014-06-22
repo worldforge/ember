@@ -22,7 +22,7 @@
  *      Ed Fast, USC
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <list>
 #include <vector>

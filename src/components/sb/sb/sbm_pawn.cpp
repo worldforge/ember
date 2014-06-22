@@ -18,7 +18,7 @@
 *
 */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include <sb/SBTypes.h>
 
 #include "sbm_pawn.hpp"

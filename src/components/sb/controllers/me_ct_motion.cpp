@@ -21,7 +21,7 @@
  *      Andrew n marshall, USC
  */
 
-#include "vhcl_log.h"
+#include <vhcl/vhcl_log.h>
 
 #include <controllers/me_ct_motion.h>
 #include <sb/SBEvent.h>

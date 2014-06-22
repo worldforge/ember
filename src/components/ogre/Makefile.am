@@ -1,8 +1,9 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -I$(top_srcdir)/src/components/sb -DPREFIX=\"@prefix@\"
 SUBDIRS = authoring environment data sounddefinitions scripting widgets
 
 noinst_LIBRARIES = libEmberOgre.a
 
+libEmberOgre_a_LIBADD = $(top_builddir)/src/components/sb/libEmberSmartBody.a
 
 
 libEmberOgre_a_SOURCES = \
@@ -36,7 +37,7 @@ libEmberOgre_a_SOURCES = \
 	model/ModelAction.cpp model/AnimationSet.cpp model/Model.cpp \
 	model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp \
 	model/ModelDefinitionManager.cpp model/ModelPart.cpp model/ParticleSystem.cpp model/ParticleSystemBinding.cpp model/SubModel.cpp \
-	model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp \
+	model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp model/ModelRepresentationHumanoid.cpp \
 	model/ModelRepresentationManager.cpp model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelFitting.cpp model/ModelPartReactivatorVisitor.cpp\
 \
 	sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp \
@@ -140,7 +141,7 @@ noinst_HEADERS = \
 	model/ModelAction.h model/AnimationSet.h model/Model.h model/ModelBackgroundLoader.h \
 	model/ModelDefinition.h model/ModelDefinitionAtlasComposer.h model/ModelDefinitionManager.h model/ModelPart.h \
 	model/ParticleSystem.h model/ParticleSystemBinding.h model/SubModel.h model/SubModelPart.h \
-	model/XMLModelDefinitionSerializer.h model/ModelRepresentation.h model/ModelRepresentationManager.h \
+	model/XMLModelDefinitionSerializer.h model/ModelRepresentation.h model/ModelRepresentationManager.h model/ModelRepresentationHumanoid.cpp \
 	model/ModelMount.h model/ModelAttachment.h model/ModelBoneProvider.h model/ModelFitting.h model/ModelPartReactivatorVisitor.h \
 \
 	sound/SoundAction.h sound/SoundDefinition.h sound/SoundDefinitionManager.h sound/SoundEntity.h \

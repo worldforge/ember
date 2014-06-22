@@ -22,7 +22,7 @@
  *      Ed Fast, USC
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #define USE_FESTIVAL_RELAY 0
 #define USE_CEREPROC_RELAY 0

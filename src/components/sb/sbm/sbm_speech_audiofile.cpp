@@ -21,7 +21,7 @@
  *      Ashok Basawapatna, USC (no longer)
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include "sbm_speech_audiofile.hpp"
 #include "sbm/BMLDefs.h"
 

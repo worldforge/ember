@@ -1,7 +1,7 @@
 #ifndef _SBRETARGET_H_
 #define _SBRETARGET_H_
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBTypes.h>
 #include <sr/sr_quat.h>
 #include <string>

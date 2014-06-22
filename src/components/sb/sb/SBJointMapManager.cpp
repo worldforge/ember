@@ -1,4 +1,4 @@
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include "SBJointMapManager.h"
 #include <sb/SBJointMap.h>
 

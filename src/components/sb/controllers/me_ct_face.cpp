@@ -24,7 +24,7 @@
 //#include "sbm_pawn.hpp"
 #include "sbm/gwiz_math.h"
 #include "controllers/me_ct_face.h"
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 #include <sstream>
 #include <sbm/action_unit.hpp>
 #include <sb/sbm_pawn.hpp>

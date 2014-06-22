@@ -25,7 +25,7 @@
 #include "sbm/gwiz_math.h"
 using namespace gwiz;
 
-#include <vhcl_log.h>
+#include <vhcl/vhcl_log.h>
 
 #include "sbm/sbm_constants.h"
 #include <bml/bml.hpp>

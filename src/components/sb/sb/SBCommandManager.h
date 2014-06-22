@@ -1,7 +1,7 @@
 #ifndef _SBCOMMANDMANAGER_H_
 #define _SBCOMMANDMANAGER_H_
 
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 #include <sb/SBObject.h>
 #include <sbm/sr_cmd_map.h>
 #include <sbm/sr_cmd_seq.h>

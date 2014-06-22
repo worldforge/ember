@@ -18,7 +18,7 @@
 
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <iostream>
 #include <sstream>

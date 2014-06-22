@@ -21,7 +21,7 @@
  *      Ed Fast, USC
  */
 
-#include "vhcl.h"
+#include <vhcl/vhcl.h>
 #include <iostream>
 #include <sstream>
 #include <string>
