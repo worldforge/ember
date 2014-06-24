@@ -19,13 +19,13 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_PATH_ARRAY_H
-# define SR_PATH_ARRAY_H
+#ifndef SR_PATH_ARRAY_H
+#define SR_PATH_ARRAY_H
 
 /** \file sr_path_array.h 
  * array of file paths */
-#include <sb/SBTypes.h>
-# include <sr/sr_string_array.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_string_array.h"
 
 //============================== SrPathArray ===============================
 

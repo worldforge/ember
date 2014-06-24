@@ -1,8 +1,8 @@
 #ifndef _SBCONTROLLER_
 #define _SBCONTROLLER_
 
-#include <sb/SBTypes.h>
-#include "controllers/me_controller.h"
+#include "SBTypes.h"
+#include "components/sb/controllers/me_controller.h"
 
 namespace SmartBody {
 

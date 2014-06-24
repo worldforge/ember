@@ -20,9 +20,9 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <math.h>
-# include <sr/sr_vec.h>
-# include <sr/sr_vec2.h>
+#include <math.h>
+#include "sr_vec.h"
+#include "sr_vec2.h"
 #include <boost/lexical_cast.hpp>
 
 //===========================================================================
@@ -242,7 +242,7 @@ SrInput& operator>> ( SrInput& in, SrVec& v )
    return in >> v.x >> v.y >> v.z;
  }
 
-#include <sr/sr_mat.h>
+#include "sr_mat.h"
 
 SrVec rotatePoint(SrVec point, SrVec origin, SrVec direction, float angle)
 {

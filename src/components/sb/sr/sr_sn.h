@@ -19,20 +19,20 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_SN_H
-# define SR_SN_H
+#ifndef SR_SN_H
+#define SR_SN_H
 
 /** \file sr_sn.h 
  * base scene node class
  */
 
-#include <sb/SBTypes.h>
-# include <sr/sr_box.h>
-# include <sr/sr_mat.h>
-# include <sr/sr_event.h>
-# include <sr/sr_array.h>
-# include <sr/sr_material.h>
-# include <sr/sr_shared_class.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_box.h"
+#include "sr_mat.h"
+#include "sr_event.h"
+#include "sr_array.h"
+#include "sr_material.h"
+#include "sr_shared_class.h"
 
 //======================================= SrSn ====================================
 

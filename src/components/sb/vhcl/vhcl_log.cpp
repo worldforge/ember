@@ -19,7 +19,7 @@
 */
 
 
-#include <vhcl/vhcl.h>
+#include "vhcl.h"
 
 #include <string>
 

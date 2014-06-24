@@ -20,13 +20,13 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <sr/sr_box.h>
-# include <sr/sr_mat.h>
-# include <sr/sr_vec2.h>
-# include <sr/sr_lines.h>
+#include "sr_box.h"
+#include "sr_mat.h"
+#include "sr_vec2.h"
+#include "sr_lines.h"
 
-//# define SR_USE_TRACE1 // Constructor and Destructor
-//# include <sr/sr_trace.h>
+//#define SR_USE_TRACE1 // Constructor and Destructor
+//#include "sr_trace.h"
 
 //======================================= SrLines ====================================
 

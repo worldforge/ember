@@ -1,15 +1,15 @@
 #ifndef _SBATTRIBUTE_H
 #define _SBATTRIBUTE_H
 
-#include <vhcl/vhcl.h>
-#include <sb/SBTypes.h>
-#include <sb/SBSubject.h>
+#include "components/sb/vhcl/vhcl.h"
+#include "SBTypes.h"
+#include "SBSubject.h"
 #include <string>
 #include <vector>
 #include <map>
 #include <limits>
-#include <sr/sr_vec.h>
-#include <sr/sr_mat.h>
+#include "components/sb/sr/sr_vec.h"
+#include "components/sb/sr/sr_mat.h"
 
 namespace SmartBody {
 

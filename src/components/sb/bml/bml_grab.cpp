@@ -20,30 +20,30 @@
  *      Wei-Wen Feng, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include <iostream>
 #include <sstream>
 #include <string>
 
 #include <xercesc/util/XMLStringTokenizer.hpp>
 
-#include <sr/sr_vec.h>
-#include <sr/sr_alg.h>
+#include "components/sb/sr/sr_vec.h"
+#include "components/sb/sr/sr_alg.h"
 
 #include "bml_grab.hpp"
 
 
-#include "controllers/me_ct_hand.hpp"
-#include "controllers/me_controller_tree_root.hpp"
+#include "components/sb/controllers/me_ct_hand.hpp"
+#include "components/sb/controllers/me_controller_tree_root.hpp"
 
 #include "bml_target.hpp"
 #include "bml_xml_consts.hpp"
-#include "sbm/xercesc_utils.hpp"
-#include "sbm/BMLDefs.h"
-#include <sb/SBSkeleton.h>
-#include <sb/SBReach.h>
-#include <sb/SBScene.h>
-#include <sb/SBSimulationManager.h>
+#include "components/sb/sbm/xercesc_utils.hpp"
+#include "components/sb/sbm/BMLDefs.h"
+#include "components/sb/sb/SBSkeleton.h"
+#include "components/sb/sb/SBReach.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBSimulationManager.h"
 
 #define TEST_GAZE_LOCOMOTION 0 // set to 1 if want to test gaze+locomotion control when reaching
 

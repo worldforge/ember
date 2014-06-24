@@ -19,7 +19,7 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <sr/sr_material.h>
+#include "sr_material.h"
 #include <string>
 
 SrMaterial::SrMaterial () :

@@ -22,13 +22,13 @@
  */
 
 #include <math.h>
-#include <sr/sr_model.h>
-#include <sk/sk_joint.h>
-#include <sk/sk_skeleton.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBScene.h>
-#include <sb/SBJointMapManager.h>
-#include <sb/SBJointMap.h>
+#include "components/sb/sr/sr_model.h"
+#include "sk_joint.h"
+#include "sk_skeleton.h"
+#include "components/sb/sb/SBSkeleton.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBJointMapManager.h"
+#include "components/sb/sb/SBJointMap.h"
 
 //============================= SkJoint ============================
 

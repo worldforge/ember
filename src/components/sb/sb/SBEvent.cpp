@@ -1,9 +1,9 @@
 //#include "vhcl_log.h"
 #include "SBEvent.h"
-#include <sb/SBScene.h>
-#include <sb/SBCommandManager.h>
-#include <sb/SBScene.h>
-#include <sb/SBAttribute.h>
+#include "SBScene.h"
+#include "SBCommandManager.h"
+#include "SBScene.h"
+#include "SBAttribute.h"
 
 #include <boost/algorithm/string/replace.hpp>
 

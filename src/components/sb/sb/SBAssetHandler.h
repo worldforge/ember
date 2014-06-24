@@ -1,8 +1,8 @@
 #ifndef _SBASSETHANDLER_H_
 #define _SBASSETHANDLER_H_
 
-#include <sb/SBTypes.h>
-#include <sb/SBAsset.h>
+#include "SBTypes.h"
+#include "SBAsset.h"
 #include <vector>
 #include <string>
 

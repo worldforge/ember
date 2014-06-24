@@ -9,13 +9,13 @@
 #include "me_ct_ccd_IK.hpp"
 #include "me_ct_constraint.hpp"
 
-#include <sr/planner/sk_pos_planner.h>	// ?
-#include <sr/planner/sk_blend_planner.h> // ?
-#include <sb/SBColObject.h>
-#include <sb/sbm_pawn.hpp>
+#include "components/sb/sr/planner/sk_pos_planner.h"	// ?
+#include "components/sb/sr/planner/sk_blend_planner.h" // ?
+#include "components/sb/sb/SBColObject.h"
+#include "components/sb/sb/sbm_pawn.hpp"
 
-#include <controllers/MeCtReachEngine.h>
-#include <sb/SBController.h>
+#include "MeCtReachEngine.h"
+#include "components/sb/sb/SBController.h"
 
 class ReachStateData;
 class ReachStateInterface;

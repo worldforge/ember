@@ -1,7 +1,7 @@
 #ifndef SBANIMATIONTRANSITIONRULE_H
 #define SBANIMATIONTRANSITIONRULE_H
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 
 namespace SmartBody {
 

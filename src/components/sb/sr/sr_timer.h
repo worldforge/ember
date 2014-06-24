@@ -20,14 +20,14 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_TIMER_H
-# define SR_TIMER_H
+#ifndef SR_TIMER_H
+#define SR_TIMER_H
 
 /** \file sr_timer.h 
  * Measure time and execution per second rates.*/
 
-#include <sb/SBTypes.h>
-#include <sr/sr.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr.h"
 
 /*! \class SrUtcTimer sr_timer.h
     \brief Get UTC time in seconds  */

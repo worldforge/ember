@@ -5,22 +5,22 @@
 #include <sstream>
 #include <string>
 #include <math.h>
-#include <external/parser/GotIter.h>
-#include <external/parser/Wrd.h>
-#include <external/parser/InputTree.h>
-#include <external/parser/Bchart.h>
-#include <external/parser/ECArgs.h>
-#include <external/parser/MeChart.h>
-#include <external/parser/extraMain.h>
-#include <external/parser/AnsHeap.h>
-#include <external/parser/UnitRules.h>
-#include <external/parser/Params.h>
-#include <external/parser/TimeIt.h>
-#include <external/parser/ewDciTokStrm.h>
-#include <external/parser/Link.h>
-#include <external/parser/InputTree.h>
+#include "components/sb/external/parser/GotIter.h"
+#include "components/sb/external/parser/Wrd.h"
+#include "components/sb/external/parser/InputTree.h"
+#include "components/sb/external/parser/Bchart.h"
+#include "components/sb/external/parser/ECArgs.h"
+#include "components/sb/external/parser/MeChart.h"
+#include "components/sb/external/parser/extraMain.h"
+#include "components/sb/external/parser/AnsHeap.h"
+#include "components/sb/external/parser/UnitRules.h"
+#include "components/sb/external/parser/Params.h"
+#include "components/sb/external/parser/TimeIt.h"
+#include "components/sb/external/parser/ewDciTokStrm.h"
+#include "components/sb/external/parser/Link.h"
+#include "components/sb/external/parser/InputTree.h"
 
-#include <sb/SBParseNode.h>
+#include "SBParseNode.h"
 
 #define log2(x) (log (x) / M_LN2)
 

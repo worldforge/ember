@@ -1,13 +1,13 @@
 #ifndef _SBOBJECT_H_
 #define _SBOBJECT_H_
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <map>
 #include <string>
 #include <vector>
 #include "SBObserver.h"
 #include "SBSubject.h"
-#include <sr/sr_mat.h>
+#include "components/sb/sr/sr_mat.h"
 
 namespace SmartBody {
 

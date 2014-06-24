@@ -26,10 +26,10 @@
 
 #include <vector>
 
-#include <controllers/me_ct_unary.hpp>
-#include <controllers/me_controller_context_proxy.hpp>
+#include "me_ct_unary.hpp"
+#include "me_controller_context_proxy.hpp"
 
-#include <sbm/sr_linear_curve.h>
+#include "components/sb/sbm/sr_linear_curve.h"
 
 class MeCtBlend : public MeCtUnary  {
 public:

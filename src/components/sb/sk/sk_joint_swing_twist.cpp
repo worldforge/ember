@@ -21,10 +21,10 @@
  *      Andrew n marshall, USC
  */
 
-# include <math.h>
+#include <math.h>
 
-# include <sr/sr_alg.h>
-# include <sk/sk_joint_swing_twist.h>
+#include "components/sb/sr/sr_alg.h"
+#include "sk_joint_swing_twist.h"
 
 //============================= SkJointSwingTwist ============================
 

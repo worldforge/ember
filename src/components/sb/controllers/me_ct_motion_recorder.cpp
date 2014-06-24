@@ -1,6 +1,6 @@
-#include <controllers/me_ct_motion_recorder.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBScene.h>
+#include "me_ct_motion_recorder.h"
+#include "components/sb/sb/SBSkeleton.h"
+#include "components/sb/sb/SBScene.h"
 
 std::string MeCtMotionRecorder::CONTROLLER_TYPE = "MeCtMotionRecorder";
 

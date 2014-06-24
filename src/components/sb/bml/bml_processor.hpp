@@ -25,12 +25,12 @@
 #ifndef BML_PROCESSOR_HPP
 #define BML_PROCESSOR_HPP
 
-#include <sb/SBTypes.h>
+#include "components/sb/sb/SBTypes.h"
 
-#include "sbm/sr_hash_map.h"
-#include "sbm/xercesc_utils.hpp"
+#include "components/sb/sbm/sr_hash_map.h"
+#include "components/sb/sbm/xercesc_utils.hpp"
 #include "bml.hpp"
-#include <sbm/sr_arg_buff.h>
+#include "components/sb/sbm/sr_arg_buff.h"
 
 // Use Boost Smart Point Impl until TR1 is finalized
 #include <boost/shared_ptr.hpp>

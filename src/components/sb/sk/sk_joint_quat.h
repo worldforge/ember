@@ -21,11 +21,11 @@
  *      Andrew n marshall, USC
  */
 
-# ifndef SK_JOINT_QUAT_H
-# define SK_JOINT_QUAT_H
+#ifndef SK_JOINT_QUAT_H
+#define SK_JOINT_QUAT_H
 
-#include <sb/SBTypes.h>
-# include <sr/sr_quat.h>
+#include "components/sb/sb/SBTypes.h"
+#include "components/sb/sr/sr_quat.h"
 
 class SkJoint;
 

@@ -1,7 +1,7 @@
 #ifndef _NVBG_H
 #define _NVBG_H
 
-#include <sb/SBObject.h>
+#include "SBObject.h"
 #include <string>
 
 namespace SmartBody 

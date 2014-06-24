@@ -24,10 +24,10 @@
 #ifndef ME_CT_EXAMPLES_H
 #define ME_CT_EXAMPLES_H
 
-#include <sk/sk_skeleton.h>
-#include <sb/SBController.h>
+#include "components/sb/sk/sk_skeleton.h"
+#include "components/sb/sb/SBController.h"
 
-#include "sbm/gwiz_math.h"
+#include "components/sb/sbm/gwiz_math.h"
 
 #ifndef TRUE
 #define TRUE 1

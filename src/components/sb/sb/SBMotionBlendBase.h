@@ -1,8 +1,8 @@
 #ifndef _SBMOTIONBLENDBASE_H
 #define _SBMOTIONBLENDBASE_H
 
-#include <sb/SBTypes.h>
-#include <sb/SBAnimationState.h>
+#include "SBTypes.h"
+#include "SBAnimationState.h"
 class MeCtBlendEngine;
 
 namespace SmartBody {

@@ -21,14 +21,14 @@
  *      Andrew n marshall, USC
  */
 
-# include <stdlib.h>
-# include <string.h>
+#include <stdlib.h>
+#include <string.h>
 
-# include <sr/sr_buffer.h>
+#include "sr_buffer.h"
 
 //=== SrBuffer =======================================================================
 
-# define BUF(i) ((char*)buffer)+(sizeofx*(i))
+#define BUF(i) ((char*)buffer)+(sizeofx*(i))
 
 void* sr_buffer_size ( void* buffer, int sizeofx, int& size, int newsize )
  { 

@@ -19,18 +19,18 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include <sr/sr_string_array.h>
-#include <sr/sr_model.h>
-#include <sb/SBTypes.h>
+#include "sr_string_array.h"
+#include "sr_model.h"
+#include "components/sb/sb/SBTypes.h"
 
 #if defined(EMBER_SB_GPU) && !defined (__ANDROID__) && !defined(SB_IPHONE)
-#include <sbm/GPU/SbmTexture.h>
+#include "components/sb/sbm/GPU/SbmTexture.h"
 #endif
 
-//# define SR_USE_TRACE1    // keyword tracking
-//# include <sr/sr_trace.h>
+//#define SR_USE_TRACE1    // keyword tracking
+//#include "sr_trace.h"
 
-# define GETID(n,A) in>>n; if (n>0) n--; else if (n<0) n+=A.size()
+#define GETID(n,A) in>>n; if (n>0) n--; else if (n<0) n+=A.size()
  
 static void get_face ( SrInput& in, SrModel& m, int& vc, int& vt, int& vn )
  {

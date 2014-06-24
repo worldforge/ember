@@ -19,13 +19,13 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_MAT_H
-# define SR_MAT_H
+#ifndef SR_MAT_H
+#define SR_MAT_H
 
 /** \file sr_mat.h 
  * A 4x4 matrix */
-#include <sb/SBTypes.h>
-# include <sr/sr_vec.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_vec.h"
 
 /*! \class SrMat sr_mat.h
     \brief A 4x4 matrix

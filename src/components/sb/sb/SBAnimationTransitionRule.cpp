@@ -1,5 +1,5 @@
 #include "SBAnimationTransitionRule.h"
-#include <sb/SBCharacter.h>
+#include "SBCharacter.h"
 
 namespace SmartBody {
 

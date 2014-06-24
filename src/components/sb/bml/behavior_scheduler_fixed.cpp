@@ -20,7 +20,7 @@
  *      Andrew n marshall, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include <map>
 

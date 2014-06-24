@@ -1,6 +1,6 @@
 #include <map>
 #include <boost/foreach.hpp>
-#include "controllers/me_ct_inverse_interpolation.h"
+#include "me_ct_inverse_interpolation.h"
 
 
 #define FREE_DATA(data) if (data) delete data; data=NULL;

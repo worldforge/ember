@@ -1,8 +1,8 @@
-#include "controllers/me_ct_pose_postprocessing.hpp"
+#include "me_ct_pose_postprocessing.hpp"
 #include <assert.h>
 #include <boost/foreach.hpp>
-#include <sr/sr_timer.h>
-#include <sbm/gwiz_math.h>
+#include "components/sb/sr/sr_timer.h"
+#include "components/sb/sbm/gwiz_math.h"
 using namespace gwiz;
 
 std::string MeCtPosePostProcessing::CONTROLLER_TYPE = "PostProcessing";

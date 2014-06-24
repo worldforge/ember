@@ -21,13 +21,13 @@
  *      Andrew n marshall, USC
  */
 
-#include "sbm/lin_win.h"
+#include "lin_win.h"
 
 #include "sr_cmd_seq.h"
 #include "sr_arg_buff.h"
 
 #include <string.h>
-#include <vhcl/vhcl_log.h>
+#include "components/sb/vhcl/vhcl_log.h"
 
 #define MAX_CMD_ARGL 8192
 

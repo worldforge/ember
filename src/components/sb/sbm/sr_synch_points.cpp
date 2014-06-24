@@ -20,9 +20,9 @@
  *      Marcus Thiebaux, USC
  */
 
-#include <sbm/sr_synch_points.h>
+#include "sr_synch_points.h"
 #include <math.h>
-#include <sbm/lin_win.h>
+#include "lin_win.h"
 
 
 //////////////////////////////////////////////////////////////////

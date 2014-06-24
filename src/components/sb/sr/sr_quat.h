@@ -22,13 +22,13 @@
 /** \file sr_quat.h 
  * Quaternion for rotations */
 
-# ifndef SR_QUAT_H
-# define SR_QUAT_H
+#ifndef SR_QUAT_H
+#define SR_QUAT_H
 
-#include <sb/SBTypes.h>
-# include <cmath>
-# include <sr/sr_vec.h> 
-# include <sr/sr_mat.h> 
+#include "components/sb/sb/SBTypes.h"
+#include <cmath>
+#include "sr_vec.h"
+#include "sr_mat.h" 
 
 /*! \class SrQuat sr_quat.h
     \brief Quaternion for rotations. 

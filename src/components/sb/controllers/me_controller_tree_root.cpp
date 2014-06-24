@@ -22,22 +22,22 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include <list>
 #include <vector>
 #include <iostream>
 #include <algorithm>
 
-#include <controllers/me_controller_tree_root.hpp>
-#include <controllers/me_ct_container.hpp>
+#include "me_controller_tree_root.hpp"
+#include "me_ct_container.hpp"
 
-#include <sr/sr.h>
-#include <sk/sk_channel_array.h>
+#include "components/sb/sr/sr.h"
+#include "components/sb/sk/sk_channel_array.h"
 
-#include <sb/sbm_pawn.hpp>
-#include <sb/SBSimulationManager.h>
-#include <sb/SBScene.h>
+#include "components/sb/sb/sbm_pawn.hpp"
+#include "components/sb/sb/SBSimulationManager.h"
+#include "components/sb/sb/SBScene.h"
 
 
 using namespace std;

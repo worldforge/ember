@@ -22,12 +22,12 @@
 
 /** Hash table functions */
 
-# ifndef SR_HASH_TABLE_H
-# define SR_HASH_TABLE_H
+#ifndef SR_HASH_TABLE_H
+#define SR_HASH_TABLE_H
 
-#include <sb/SBTypes.h>
-# include <sr/sr_array.h>
-# include <sr/sr_shared_class.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_array.h"
+#include "sr_shared_class.h"
 
 #define SR_HASH_TABLE_OVERRIDE	( 0 )
 

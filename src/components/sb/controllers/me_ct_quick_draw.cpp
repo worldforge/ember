@@ -21,12 +21,12 @@
  *      Andrew n marshall, USC
  */
 
-#include "controllers/me_ct_quick_draw.h"
-#include <vhcl/vhcl_log.h>
+#include "me_ct_quick_draw.h"
+#include "components/sb/vhcl/vhcl_log.h"
 
 using namespace gwiz;
 
-#include "sbm/sbm_constants.h"
+#include "components/sb/sbm/sbm_constants.h"
 
 #define DFL_CTRL_TIME_INDT		( 0.3f )
 #define DFL_CTRL_TIME_OUTDT		( 0.3f )

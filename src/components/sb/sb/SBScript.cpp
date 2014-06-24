@@ -1,6 +1,6 @@
 #include "SBScript.h"
-#include <sb/SBAttribute.h>
-#include <sb/SBScene.h>
+#include "SBAttribute.h"
+#include "SBScene.h"
 
 namespace SmartBody {
 

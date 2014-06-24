@@ -1,15 +1,15 @@
-#include <sb/SBJointMap.h>
-#include "sk/sk_channel_array.h"
-#include "sr/sr_string.h"
-#include <sb/SBMotion.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBPawn.h>
-#include <sb/SBScene.h>
+#include "SBJointMap.h"
+#include "components/sb/sk/sk_channel_array.h"
+#include "components/sb/sr/sr_string.h"
+#include "SBMotion.h"
+#include "SBSkeleton.h"
+#include "SBPawn.h"
+#include "SBScene.h"
 #include <cstring>
 #include <boost/version.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-#include <controllers/me_controller_tree_root.hpp>
+#include "components/sb/controllers/me_controller_tree_root.hpp"
 #include <boost/algorithm/string/replace.hpp>
 
 #define USE_STL_MAP 0

@@ -1,11 +1,11 @@
 #include "MiniBrain.h"
 
-#include <sb/SBCharacter.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBScene.h>
-#include <sb/SBCommandManager.h>
-#include <controllers/me_ct_scheduler2.h>
-#include <controllers/me_ct_gaze.h>
+#include "SBCharacter.h"
+#include "SBSkeleton.h"
+#include "SBScene.h"
+#include "SBCommandManager.h"
+#include "components/sb/controllers/me_ct_scheduler2.h"
+#include "components/sb/controllers/me_ct_gaze.h"
 
 namespace SmartBody 
 {

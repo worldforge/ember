@@ -1,5 +1,5 @@
 #include "SBRetargetManager.h"
-#include <sb/SBRetarget.h>
+#include "SBRetarget.h"
 
 
 namespace SmartBody {

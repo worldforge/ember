@@ -26,18 +26,18 @@
 #include <iostream>
 #include <sstream>
 
-#include <controllers/me_controller.h>
-#include <sr/sr_quat.h>
-#include <sr/sr_euler.h>
-#include <controllers/me_prune_policy.hpp>
-#include <controllers/me_default_prune_policy.hpp>
-#include <vhcl/vhcl_log.h>
-#include <controllers/me_controller_tree_root.hpp>
-#include <sb/sbm_pawn.hpp>
-#include <sb/SBMotion.h>
-#include <sb/SBScene.h>
+#include "me_controller.h"
+#include "components/sb/sr/sr_quat.h"
+#include "components/sb/sr/sr_euler.h"
+#include "me_prune_policy.hpp"
+#include "me_default_prune_policy.hpp"
+#include "components/sb/vhcl/vhcl_log.h"
+#include "me_controller_tree_root.hpp"
+#include "components/sb/sb/sbm_pawn.hpp"
+#include "components/sb/sb/SBMotion.h"
+#include "components/sb/sb/SBScene.h"
 
-#include "sbm/lin_win.h"
+#include "components/sb/sbm/lin_win.h"
 using namespace std;
 
 #define WARN_ON_INVALID_BUFFER_INDEX (1)

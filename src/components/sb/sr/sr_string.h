@@ -24,11 +24,11 @@
 /** \file sr_string.h 
  * Dynamic string */
 
-# ifndef SR_STRING_H
-# define SR_STRING_H
+#ifndef SR_STRING_H
+#define SR_STRING_H
 
-#include <sb/SBTypes.h>
-# include <sr/sr.h> 
+#include "components/sb/sb/SBTypes.h"
+#include "sr.h" 
 
 /*! \class SrString sr_string.h
     \brief Resizable dynamic string

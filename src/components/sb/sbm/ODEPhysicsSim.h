@@ -4,7 +4,7 @@
 
 #include <ode/ode.h>
 #include <ode/common.h>
-#include <sb/SBPhysicsSim.h>
+#include "components/sb/sb/SBPhysicsSim.h"
 
 class ODEObj
 {

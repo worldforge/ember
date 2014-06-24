@@ -1,9 +1,9 @@
 #ifndef _SBBEHAVIOR_H_
 #define _SBBEHAVIOR_H_
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <string>
-#include <sr/sr_vec.h>
+#include "components/sb/sr/sr_vec.h"
 
 namespace SmartBody {
 

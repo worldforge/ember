@@ -23,10 +23,10 @@
 #ifndef ME_CT_LOCOMOTION_JOINT_INFO_HPP
 #define ME_CT_LOCOMOTION_JOINT_INFO_HPP
 
-#include "sbm/lin_win.h"
-#include <controllers/me_controller.h>
+#include "components/sb/sbm/lin_win.h"
+#include "me_controller.h"
 
-//#include "controllers/me_ct_locomotion_limb.hpp"
+//#include "me_ct_locomotion_limb.hpp"
 
 class MeCtLocomotionLimb;
 

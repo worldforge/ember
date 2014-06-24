@@ -1,10 +1,10 @@
 #ifndef _SBSTATEMANAGER_H
 #define _SBSTATEMANAGER_H
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <string>
 #include <vector>
-#include <sr/sr_vec.h>
+#include "components/sb/sr/sr_vec.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/labeled_graph.hpp>
 #undef INTMAX_C

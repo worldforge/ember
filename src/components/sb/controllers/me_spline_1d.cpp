@@ -20,7 +20,7 @@
  *      Andrew n marshall, USC
  */
 
-#include <controllers/me_spline_1d.hpp>
+#include "me_spline_1d.hpp"
 
 #include <limits>
 #include <algorithm>

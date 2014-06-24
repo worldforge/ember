@@ -20,7 +20,7 @@
  *      Andrew n marshall, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include <string>
 #include <iostream>
@@ -29,22 +29,22 @@
 #include <string>
 
 #include "sbm_test_cmds.hpp"
-#include "bml/bml.hpp"  // for #define USE_RECIPIENT
-#include <controllers/me_ct_scheduler2.h>
-#include <controllers/me_ct_channel_writer.hpp>
-#include <sb/SBScene.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBSimulationManager.h>
-#include <sb/SBCommandManager.h>
+#include "components/sb/bml/bml.hpp"  // for #define USE_RECIPIENT
+#include "components/sb/controllers/me_ct_scheduler2.h"
+#include "components/sb/controllers/me_ct_channel_writer.hpp"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBAssetManager.h"
+#include "components/sb/sb/SBSimulationManager.h"
+#include "components/sb/sb/SBCommandManager.h"
 #ifdef EMBER_SB_VHMSG
-	#include <sb/SBVHMsgManager.h>
+	#include "components/sb/sb/SBVHMsgManager.h"
 #endif
-#include <sb/SBBmlProcessor.h>
-#include <sb/SBAttribute.h>
+#include "components/sb/sb/SBBmlProcessor.h"
+#include "components/sb/sb/SBAttribute.h"
 #include <boost/filesystem.hpp>
 #include <boost/version.hpp>
-#include <bml/bml_processor.hpp>
-#include <sbm/BMLDefs.h>
+#include "components/sb/bml/bml_processor.hpp"
+#include "BMLDefs.h"
 
 
 using namespace std;

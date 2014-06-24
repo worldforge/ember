@@ -23,16 +23,16 @@
  *      Marcus Thiebaux, USC
  */
 
-# ifndef SK_MOTION_H
-# define SK_MOTION_H
+#ifndef SK_MOTION_H
+#define SK_MOTION_H
 
-#include <sb/SBTypes.h>
-# include <sr/sr_input.h>
-# include <sr/sr_shared_class.h>
-# include <sk/sk_channel_array.h>
-# include <sbm/sr_synch_points.h>
-# include <sb/SBAsset.h>
-# include <queue>
+#include "components/sb/sb/SBTypes.h"
+#include "components/sb/sr/sr_input.h"
+#include "components/sb/sr/sr_shared_class.h"
+#include "sk_channel_array.h"
+#include "components/sb/sbm/sr_synch_points.h"
+#include "components/sb/sb/SBAsset.h"
+#include <queue>
 
 class SkPosture;
 class SkSkeleton;

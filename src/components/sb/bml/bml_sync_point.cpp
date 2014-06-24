@@ -21,7 +21,7 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include "bml_sync_point.hpp"
 
@@ -30,7 +30,7 @@
 #include "bml.hpp"
 #include "bml_exception.hpp"
 #include "bml_xml_consts.hpp"
-#include "sbm/BMLDefs.h"
+#include "components/sb/sbm/BMLDefs.h"
 
 
 using namespace std;

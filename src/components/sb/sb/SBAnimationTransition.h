@@ -1,10 +1,10 @@
 #ifndef _SBTRANSITION_H_
 #define _SBTRANSITION_H_
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <vector>
-#include <sb/PABlend.h>
-#include <sb/SBObject.h>
+#include "PABlend.h"
+#include "SBObject.h"
 
 class PABlend;
 

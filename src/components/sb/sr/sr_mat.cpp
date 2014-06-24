@@ -19,11 +19,11 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <math.h>
+#include <math.h>
 
-# include <sr/sr_mat.h>
+#include "sr_mat.h"
 #include <boost/lexical_cast.hpp>
-//# include <sr/sr_utils.h>
+//#include <sr/sr_utils.h>
 
 //================================== Static Data ===================================
 
@@ -37,22 +37,22 @@ const SrMat SrMat::id   ( 1.0, 0.0, 0.0, 0.0,
                           0.0, 0.0, 1.0, 0.0, 
                           0.0, 0.0, 0.0, 1.0 );
 
-# define E11 e[0]
-# define E12 e[1]
-# define E13 e[2]
-# define E14 e[3]
-# define E21 e[4]
-# define E22 e[5]
-# define E23 e[6]
-# define E24 e[7]
-# define E31 e[8]
-# define E32 e[9]
-# define E33 e[10]
-# define E34 e[11]
-# define E41 e[12]
-# define E42 e[13]
-# define E43 e[14]
-# define E44 e[15]
+#define E11 e[0]
+#define E12 e[1]
+#define E13 e[2]
+#define E14 e[3]
+#define E21 e[4]
+#define E22 e[5]
+#define E23 e[6]
+#define E24 e[7]
+#define E31 e[8]
+#define E32 e[9]
+#define E33 e[10]
+#define E34 e[11]
+#define E41 e[12]
+#define E42 e[13]
+#define E43 e[14]
+#define E44 e[15]
 
 //==================================== SrMat ========================================
 
@@ -269,7 +269,7 @@ void SrMat::rot ( const SrVec& from, const SrVec& to )
 
 void SrMat::projxy ( SrVec p1, SrVec p2, SrVec p3 )
  {
-   # define PROJERR(d) { sr_out.warning ("degenerated input(%d) in SrMat::projxy()!\n",d); return; }
+   #define PROJERR(d) { sr_out.warning ("degenerated input(%d) in SrMat::projxy()!\n",d); return; }
 
    SrMat m(SrMat::NotInitialized);
    float ca, sa, v;

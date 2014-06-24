@@ -23,12 +23,12 @@
 #ifndef BML_SPEECH_HPP
 #define BML_SPEECH_HPP
 
-#include <sb/SBTypes.h>
+#include "components/sb/sb/SBTypes.h"
 
 #include <exception>
 
 #include "bml.hpp"
-#include "sbm/sbm_speech.hpp"
+#include "components/sb/sbm/sbm_speech.hpp"
 
 
 // Forward Declaration

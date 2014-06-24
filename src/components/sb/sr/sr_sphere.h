@@ -20,14 +20,14 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_SPHERE_H
-# define SR_SPHERE_H
+#ifndef SR_SPHERE_H
+#define SR_SPHERE_H
 
 /** \file sr_sphere.h 
  * a sphere
  */
-#include <sb/SBTypes.h>
-# include <sr/sr_vec.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_vec.h"
 
 class SrBox;
 

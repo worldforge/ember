@@ -1,6 +1,6 @@
 #include <map>
 #include <boost/foreach.hpp>
-#include "controllers/me_ct_barycentric_interpolation.h"
+#include "me_ct_barycentric_interpolation.h"
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 

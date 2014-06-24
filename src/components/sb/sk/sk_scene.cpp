@@ -21,17 +21,17 @@
  *      Andrew n marshall, USC
  */
  
-#include <sr/sr_lines.h>
-#include <sr/sr_model.h>
-#include <sr/sr_sphere.h>
-#include <sr/sr_cylinder.h>
-#include <sr/sr_sn_matrix.h>
-#include <sr/sr_sn_shape.h>
+#include "components/sb/sr/sr_lines.h"
+#include "components/sb/sr/sr_model.h"
+#include "components/sb/sr/sr_sphere.h"
+#include "components/sb/sr/sr_cylinder.h"
+#include "components/sb/sr/sr_sn_matrix.h"
+#include "components/sb/sr/sr_sn_shape.h"
 
-#include <sk/sk_scene.h>
-#include <sk/sk_skeleton.h>
-#include <sk/sk_joint.h>
-#include <vhcl/vhcl.h>
+#include "sk_scene.h"
+#include "sk_skeleton.h"
+#include "sk_joint.h"
+#include "components/sb/vhcl/vhcl.h"
 
 
 #define DEF_CYL_RADIUS 0.5f

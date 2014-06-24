@@ -1,11 +1,11 @@
-#include <sb/SBMotionBlendBase.h>
-#include <sb/SBMotion.h>
-#include <sb/SBCharacter.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBScene.h>
+#include "SBMotionBlendBase.h"
+#include "SBMotion.h"
+#include "SBCharacter.h"
+#include "SBSkeleton.h"
+#include "SBScene.h"
 
 #include <boost/algorithm/string.hpp>
-#include <controllers/MeCtBlendEngine.h> // ?
+#include "components/sb/controllers/MeCtBlendEngine.h" // ?
 
 namespace SmartBody {
 

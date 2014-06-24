@@ -20,13 +20,13 @@
  *      Andrew n marshall, USC
  */
 
-# ifndef ME_PRUNE_POLICY_HPP
-# define ME_PRUNE_POLICY_HPP
+#ifndef ME_PRUNE_POLICY_HPP
+#define ME_PRUNE_POLICY_HPP
 
 
 class MePrunePolicy;
 
-#include <controllers/me_controller.h>
+#include "me_controller.h"
 
 
 

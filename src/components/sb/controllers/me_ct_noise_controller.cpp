@@ -1,7 +1,7 @@
-#include "controllers/me_ct_noise_controller.h"
-#include <sr/sr_euler.h>
+#include "me_ct_noise_controller.h"
+#include "components/sb/sr/sr_euler.h"
 
-#include <sb/SBSkeleton.h>
+#include "components/sb/sb/SBSkeleton.h"
 
 std::string MeCtNoiseController::CONTROLLER_TYPE = "NoiseController";
 

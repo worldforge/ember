@@ -20,7 +20,7 @@
  *      Yuyu Xu, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -30,12 +30,12 @@
 #include "bml_saccade.hpp"
 
 
-#include "controllers/me_ct_saccade.h"
+#include "components/sb/controllers/me_ct_saccade.h"
 
 #include "bml_xml_consts.hpp"
 #include "bml_event.hpp"
-#include "sbm/xercesc_utils.hpp"
-#include "sbm/BMLDefs.h"
+#include "components/sb/sbm/xercesc_utils.hpp"
+#include "components/sb/sbm/BMLDefs.h"
 
 using namespace std;
 using namespace BML;

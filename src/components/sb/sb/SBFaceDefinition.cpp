@@ -1,10 +1,10 @@
 #include "SBFaceDefinition.h"
 
-#include <sk/sk_motion.h>
-#include "sbm/action_unit.hpp"
-#include <sb/SBMotion.h>
-#include <sb/SBScene.h>
-#include <sb/SBAssetManager.h>
+#include "components/sb/sk/sk_motion.h"
+#include "components/sb/sbm/action_unit.hpp"
+#include "SBMotion.h"
+#include "SBScene.h"
+#include "SBAssetManager.h"
 #include <fstream>
 
 

@@ -20,15 +20,15 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SK_SCENE_H
-# define SK_SCENE_H
+#ifndef SK_SCENE_H
+#define SK_SCENE_H
 
 //================================ SkScene =================================================
 
-#include <sb/SBTypes.h>
-#include <sr/sr_array.h>
-#include <sr/sr_sn_group.h>
-#include <sr/sr_sn_shape.h>
+#include "components/sb/sb/SBTypes.h"
+#include "components/sb/sr/sr_array.h"
+#include "components/sb/sr/sr_sn_group.h"
+#include "components/sb/sr/sr_sn_shape.h"
 
 class SrModel;
 class SkJoint;

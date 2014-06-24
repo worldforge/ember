@@ -23,14 +23,14 @@
 #ifndef ME_EVALUATION_LOGGER
 #define ME_EVALUATION_LOGGER
 
-#include <sr/sr_shared_class.h>
-#include <sk/sk_channel_array.h>
+#include "components/sb/sr/sr_shared_class.h"
+#include "components/sb/sk/sk_channel_array.h"
 
 // Predeclare class because of circular reference:
 class MeEvaluationLogger;
 
-#include <controllers/me_controller.h>
-#include <controllers/me_controller_context.hpp>
+#include "me_controller.h"
+#include "me_controller_context.hpp"
 
 
 

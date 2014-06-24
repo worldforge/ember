@@ -20,10 +20,10 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
  
-# include <sr/sr_event.h>
+#include "sr_event.h"
 
-//# define SR_USE_TRACE1  
-//# include <sr/sr_trace.h>
+//#define SR_USE_TRACE1  
+//#include "sr_trace.h"
 
 //===================================== SrEvent =================================
 

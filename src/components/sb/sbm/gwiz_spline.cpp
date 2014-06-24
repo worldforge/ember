@@ -20,7 +20,7 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "sbm/gwiz_math.h"
+#include "gwiz_math.h"
 
 using namespace gwiz;
 

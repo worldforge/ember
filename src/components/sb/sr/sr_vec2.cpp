@@ -20,9 +20,9 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <math.h>
-# include <sr/sr_vec2.h>
-# include <sr/sr_geo2.h>
+#include <math.h>
+#include "sr_vec2.h"
+#include "sr_geo2.h"
 
 //============================= static data ================================
 
@@ -225,7 +225,7 @@ int compare_polar ( const SrVec2* v1, const SrVec2* v2 )
 void barycentric ( const SrPnt2& p1, const SrPnt2& p2, const SrPnt2& p3, const SrPnt2& p,
                    float& u, float& v, float& w )
  {
-   # define DET3(a,b,c,d,e,f,g,h,i) a*e*i +b*f*g +d*h*c -c*e*g -b*d*i -a*f*h
+   #define DET3(a,b,c,d,e,f,g,h,i) a*e*i +b*f*g +d*h*c -c*e*g -b*d*i -a*f*h
    float A  = DET3 ( p1.x, p2.x, p3.x, p1.y, p2.y, p3.y, 1, 1, 1 );
    float A1 = DET3 (  p.x, p2.x, p3.x,  p.y, p2.y, p3.y, 1, 1, 1 );
    float A2 = DET3 ( p1.x,  p.x, p3.x, p1.y,  p.y, p3.y, 1, 1, 1 );

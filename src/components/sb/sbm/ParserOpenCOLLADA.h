@@ -25,13 +25,13 @@
 
 #include <fstream>
 #include <stdio.h>
-#include "sbm/xercesc_utils.hpp"
-#include "sk/sk_skeleton.h"
-#include "sk/sk_motion.h"
-#include <sb/SBJoint.h>
-#include <sr/sr_material.h>
+#include "xercesc_utils.hpp"
+#include "components/sb/sk/sk_skeleton.h"
+#include "components/sb/sk/sk_motion.h"
+#include "components/sb/sb/SBJoint.h"
+#include "components/sb/sr/sr_material.h"
 
-#include "sbm/gwiz_math.h"
+#include "gwiz_math.h"
 
 typedef std::map<std::string, std::vector<SrVec> > VecListMap;
 class DeformableMesh;

@@ -23,14 +23,14 @@
  */
 
 
-# ifndef ME_CT_POSE_H
-# define ME_CT_POSE_H
+#ifndef ME_CT_POSE_H
+#define ME_CT_POSE_H
 
 //=================================== MeCtPose =====================================
 
-# include <sb/SBController.h>
-# include <sk/sk_posture.h>
-# include <sk/sk_motion.h>
+#include "components/sb/sb/SBController.h"
+#include "components/sb/sk/sk_posture.h"
+#include "components/sb/sk/sk_motion.h"
 
 /*! This controller sends always a same posture, ie, makes the associated
     channels to rest in a same pose. The rest pose can be defined in several

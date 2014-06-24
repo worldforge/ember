@@ -1,7 +1,7 @@
-# include <sr/sr_random.h>
-# include <controllers/me_ct_data_interpolation.h>
-# include "sk_blend_cfg.h"
-# include "sk_blend_cfg_manager.h"
+#include "components/sb/sr/sr_random.h"
+#include "components/sb/controllers/me_ct_data_interpolation.h"
+#include "sk_blend_cfg.h"
+#include "sk_blend_cfg_manager.h"
 
 //=================================== SkPosCfg =====================================
 

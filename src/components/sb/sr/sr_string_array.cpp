@@ -20,15 +20,15 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <sr/sr_string_array.h>
+#include "sr_string_array.h"
 
-//# define SR_USE_TRACE1
-//# include <sr/sr_trace.h>
+//#define SR_USE_TRACE1
+//#include "sr_trace.h"
 
 //====================== SrStringArray ==========================
 
-# define SETZERO(i,ini,size) for(i=ini;i<size;i++) SrArray<char*>::set(i,0)
-# define DELETE(i,ini,size) for(i=ini;i<size;i++) delete SrArray<char*>::get(i)
+#define SETZERO(i,ini,size) for(i=ini;i<size;i++) SrArray<char*>::set(i,0)
+#define DELETE(i,ini,size) for(i=ini;i<size;i++) delete SrArray<char*>::get(i)
 
 SrStringArray::SrStringArray ( int s, int c )
               :SrArray<char*>(s,c)

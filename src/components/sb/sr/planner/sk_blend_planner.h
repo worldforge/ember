@@ -1,12 +1,12 @@
 
-# ifndef SK_BLEND_PLANNER_H
-# define SK_BLEND_PLANNER_H
+#ifndef SK_BLEND_PLANNER_H
+#define SK_BLEND_PLANNER_H
 
-# include <sr/sr_lines.h>
-# include <sr/planner/sr_cfg_manager.h>
-# include <sr/planner/sr_cfg_planner.h>
+#include "components/sb/sr/sr_lines.h"
+#include "sr_cfg_manager.h"
+#include "sr_cfg_planner.h"
 
-# include "sk_blend_cfg_manager.h"
+#include "sk_blend_cfg_manager.h"
 
 //=================================== SkArmPlanner =====================================
 

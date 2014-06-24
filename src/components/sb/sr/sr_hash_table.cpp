@@ -22,7 +22,7 @@
  *      Ed Fast, USC
  */
 
-# include <sr/sr_hash_table.h>
+#include "sr_hash_table.h"
 #include <stdlib.h>
 #include <stdio.h>
 //#include <time.h>

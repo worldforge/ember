@@ -21,8 +21,8 @@
  *      Andrew n marshall, USC
  */
 
-# include <sk/sk_channel.h>
-# include <sk/sk_joint.h>
+#include "sk_channel.h"
+#include "sk_joint.h"
 
 //============================= SkChannel ============================
 
@@ -224,7 +224,7 @@ bool SkChannel::valid ( Type type, SkJoint::RotType r ) // static
 
 SkChannel::Type SkChannel::get_type ( const char* s ) // static
  {
-   # define IS(st) sr_compare(s,st)==0
+   #define IS(st) sr_compare(s,st)==0
    if ( IS("Swing") ) return SkChannel::Swing;
    if ( IS("Twist") ) return SkChannel::Twist;
    if ( IS("Quat") ) return SkChannel::Quat;

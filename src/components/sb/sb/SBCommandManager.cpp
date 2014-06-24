@@ -1,16 +1,16 @@
 #include "SBCommandManager.h"
-#include <sb/SBScene.h>
-#include <sb/SBAttribute.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBSimulationManager.h>
+#include "SBScene.h"
+#include "SBAttribute.h"
+#include "SBAssetManager.h"
+#include "SBSimulationManager.h"
 #include <sstream>
-#include <sbm/mcontrol_callbacks.h>
-#include <sbm/MiscCommands.h>
-#include <sbm/sbm_test_cmds.hpp>
-#include <sbm/text_speech.h> // ?
-#include <sbm/local_speech.h> // ?
-#include <bml/bml_processor.hpp>
-#include <bml/bml.hpp>
+#include "components/sb/sbm/mcontrol_callbacks.h"
+#include "components/sb/sbm/MiscCommands.h"
+#include "components/sb/sbm/sbm_test_cmds.hpp"
+#include "components/sb/sbm/text_speech.h" // ?
+#include "components/sb/sbm/local_speech.h" // ?
+#include "components/sb/bml/bml_processor.hpp"
+#include "components/sb/bml/bml.hpp"
 
 
 SequenceManager::SequenceManager()

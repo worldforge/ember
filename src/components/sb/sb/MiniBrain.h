@@ -1,7 +1,7 @@
 #ifndef _MINIBRAIN_H_
 #define _MINIBRAIN_H_
 
-#include <sr/sr_vec.h>
+#include "components/sb/sr/sr_vec.h"
 #include <map>
 #include <string>
 #include <list>

@@ -1,9 +1,9 @@
 #include "SBRetarget.h"
-#include <sb/SBSkeleton.h>
-#include <sb/SBJoint.h>
-#include <sb/SBScene.h>
-#include <sk/sk_motion.h>
-#include <sb/SBMotion.h>
+#include "SBSkeleton.h"
+#include "SBJoint.h"
+#include "SBScene.h"
+#include "components/sb/sk/sk_motion.h"
+#include "SBMotion.h"
 #include <queue>
 
 #define ELITE_HACK 0

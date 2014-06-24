@@ -1,12 +1,12 @@
 #include "SBBmlProcessor.h"
 
-#include <sb/SBSimulationManager.h>
-#include <sb/SBCommandManager.h>
+#include "SBSimulationManager.h"
+#include "SBCommandManager.h"
 #ifdef EMBER_SB_VHMSG
-#include <sb/SBVHMsgManager.h>
+#include "SBVHMsgManager.h"
 #endif
-#include <sb/SBScene.h>
-#include <bml/bml_processor.hpp>
+#include "SBScene.h"
+#include "components/sb/bml/bml_processor.hpp"
 
 namespace SmartBody {
 

@@ -1,9 +1,9 @@
 #include "SBSimulationManager.h"
-#include <sb/SBScene.h>
-#include <sb/SBScript.h>
-//#include <sb/SBSteerManager.h>
-#include <sbm/time_regulator.h>
-#include <sbm/time_profiler.h>
+#include "SBScene.h"
+#include "SBScript.h"
+//#include "SBSteerManager.h"
+#include "components/sb/sbm/time_regulator.h"
+#include "components/sb/sbm/time_profiler.h"
 
 
 namespace SmartBody {

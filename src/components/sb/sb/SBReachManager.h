@@ -1,7 +1,7 @@
 #ifndef _SBREACHMANAGER_H_
 #define _SBREACHMANAGER_H_
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <string>
 #include <map>
 

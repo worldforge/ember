@@ -21,12 +21,12 @@
 #ifndef SBM_PAWN_HPP
 #define SBM_PAWN_HPP
 
-#include <sb/SBTypes.h>
-#include <sk/sk_scene.h>
-#include <sk/sk_skeleton.h>
-#include <sb/SBColObject.h>
-#include <sb/SBPhysicsSim.h>
-#include <sb/SBObject.h>
+#include "SBTypes.h"
+#include "components/sb/sk/sk_scene.h"
+#include "components/sb/sk/sk_skeleton.h"
+#include "SBColObject.h"
+#include "SBPhysicsSim.h"
+#include "SBObject.h"
 #ifdef EMBER_SB_STEER
 	#include <SteerLib.h> // ?
 #endif
@@ -50,7 +50,7 @@ class MeControllerTreeRoot;
 class DeformableMesh;
 class DeformableMeshInstance;
 #else
-#include <sbm/sbm_deformable_mesh.h>
+#include "components/sb/sbm/sbm_deformable_mesh.h"
 #endif
 
 

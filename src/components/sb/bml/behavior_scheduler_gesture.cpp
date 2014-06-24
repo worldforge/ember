@@ -1,4 +1,4 @@
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include "bml.hpp"
 #include "behavior_scheduler_gesture.hpp"

@@ -17,7 +17,7 @@
  *      http://www.gnu.org/licenses/lgpl-3.0.txt
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include <stdlib.h>
 #include <exception>
 #include <iostream>
@@ -28,8 +28,8 @@
 #include <stack>
 #include <map>
 
-#include "sbm/sr_arg_buff.h"
-#include <sbm/lin_win.h>
+#include "components/sb/sbm/sr_arg_buff.h"
+#include "components/sb/sbm/lin_win.h"
 
 #include <xercesc/util/XMLStringTokenizer.hpp>
 #include "bml_exception.hpp"
@@ -54,22 +54,22 @@
 #include "bml_states.hpp"
 #include "bml_noise.hpp"
 
-#include "controllers/me_ct_examples.h"
-#include "controllers/me_ct_gaze.h"
-#include "controllers/me_ct_pose.h"
-#include "sbm/BMLDefs.h"
+#include "components/sb/controllers/me_ct_examples.h"
+#include "components/sb/controllers/me_ct_gaze.h"
+#include "components/sb/controllers/me_ct_pose.h"
+#include "components/sb/sbm/BMLDefs.h"
 
 #include <boost/version.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <sb/SBAnimationState.h>
-#include <sb/SBAnimationStateManager.h>
-#include <sb/nvbg.h>
-#include <sb/SBSimulationManager.h>
-#include <sb/SBScene.h>
-#include <sb/SBMotion.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBBmlProcessor.h>
+#include "components/sb/sb/SBAnimationState.h"
+#include "components/sb/sb/SBAnimationStateManager.h"
+#include "components/sb/sb/nvbg.h"
+#include "components/sb/sb/SBSimulationManager.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBMotion.h"
+#include "components/sb/sb/SBAssetManager.h"
+#include "components/sb/sb/SBBmlProcessor.h"
 
 using namespace BML;
 using namespace SmartBody;

@@ -24,7 +24,7 @@
 #define BML_ANIMATION_HPP
 
 #include "bml.hpp"
-#include "sbm/BMLDefs.h"
+#include "components/sb/sbm/BMLDefs.h"
 
 // Forward Declaration
 

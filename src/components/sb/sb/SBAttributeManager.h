@@ -1,7 +1,7 @@
 #ifndef DATTRIBUTEMANAGER_H
 #define DATTRIBUTEMANAGER_H
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include "SBSubject.h"
 #include <map>
 #include <vector>

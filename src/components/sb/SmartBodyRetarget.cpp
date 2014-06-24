@@ -1,8 +1,8 @@
 #include "SmartBodyRetarget.h"
 #include "SmartBodyManager.h"
 
-#include <sb/SBRetargetManager.h>
-#include <sb/SBRetarget.h>
+#include "sb/SBRetargetManager.h"
+#include "sb/SBRetarget.h"
 
 #include <vector>
 

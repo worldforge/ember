@@ -17,10 +17,10 @@
 *      http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
-#include <sb/SBTypes.h>
-#include "sb/sbm_character.hpp"
+#include "SBTypes.h"
+#include "sbm_character.hpp"
 
 #include <stdio.h>
 
@@ -30,77 +30,77 @@
 #include <cstring>
 #include <map>
 
-#include <sk/sk_skeleton.h>
-#include <sk/sk_motion.h>
-#include "sbm/sr_path_list.h"
-#include "sbm/sbm_constants.h"
-#include <sbm/general_param_setting.h> 
-#include <sbm/action_unit.hpp>
-#include <controllers/me_prune_policy.hpp> 
-#include <controllers/me_ct_blend.hpp> 
-#include <controllers/me_ct_time_shift_warp.hpp> 
+#include "components/sb/sk/sk_skeleton.h"
+#include "components/sb/sk/sk_motion.h"
+#include "components/sb/sbm/sr_path_list.h"
+#include "components/sb/sbm/sbm_constants.h"
+#include "components/sb/sbm/general_param_setting.h" 
+#include "components/sb/sbm/action_unit.hpp"
+#include "components/sb/controllers/me_prune_policy.hpp" 
+#include "components/sb/controllers/me_ct_blend.hpp" 
+#include "components/sb/controllers/me_ct_time_shift_warp.hpp" 
 
-#include "sbm/mcontrol_callbacks.h"
-#include "sb/SBScene.h"
-#include <controllers/me_spline_1d.hpp> 
-#include <controllers/me_ct_interpolator.h> 
-#include "sbm/sr_curve_builder.h" 
-#include "sbm/lin_win.h"
-#include "sbm/sbm_speech.hpp" // ?
-#include "sbm/general_param_setting.h" 
+#include "components/sb/sbm/mcontrol_callbacks.h"
+#include "SBScene.h"
+#include "components/sb/controllers/me_spline_1d.hpp" 
+#include "components/sb/controllers/me_ct_interpolator.h" 
+#include "components/sb/sbm/sr_curve_builder.h" 
+#include "components/sb/sbm/lin_win.h"
+#include "components/sb/sbm/sbm_speech.hpp" // ?
+#include "components/sb/sbm/general_param_setting.h" 
 #ifdef EMBER_SB_STEER
-	#include <sbm/PPRAISteeringAgent.h> 
+	#include "components/sb/sbm/PPRAISteeringAgent.h>"
 #endif
 #include <boost/filesystem/operations.hpp>
-#include <sb/SBSkeleton.h>
-#include <sb/SBMotion.h>
-#include <sb/SBScene.h>
-#include <sb/SBJoint.h>
+#include "SBSkeleton.h"
+#include "SBMotion.h"
+#include "SBScene.h"
+#include "SBJoint.h"
 #ifdef EMBER_SB_BONEBUS
-	#include <sb/SBBoneBusManager.h>
+	#include "SBBoneBusManager.h"
 #endif
-#include <sb/SBAssetManager.h>
+#include "SBAssetManager.h"
 #ifdef EMBER_SB_STEER
-	#include <sb/SBSteerManager.h>
+	#include "SBSteerManager.h"
 #endif
-#include <sb/SBSimulationManager.h>
+#include "SBSimulationManager.h"
 #ifdef EMBER_SB_STEER
-	#include <sb/SBSteerAgent.h>
+	#include "SBSteerAgent.h"
 #endif
-#include <sb/SBAnimationStateManager.h>
-#include <sb/SBAnimationState.h>
-#include <sb/SBSceneListener.h>
-#include <sb/SBFaceDefinition.h>
-#include <controllers/me_ct_examples.h> 
-#include <controllers/me_ct_motion_player.h> 
-#include <controllers/me_ct_pose.h> 
-#include <controllers/me_ct_quick_draw.h>
-#include <controllers/me_ct_noise_controller.h> // ?
-#include <controllers/me_ct_motion_recorder.h>
-#include <controllers/me_ct_scheduler2.h>
-#include <controllers/me_ct_eyelid.h>
-#include <controllers/me_ct_param_animation.h> 
-#include <controllers/me_ct_saccade.h> 
-#include <controllers/me_ct_basic_locomotion.h>
-#include <controllers/me_ct_gaze.h>
-#include <controllers/me_ct_example_body_reach.hpp>
-#include <controllers/me_ct_breathing.h>
-#include <controllers/me_ct_hand.hpp> 
-#include <controllers/me_ct_face.h>
-#include <controllers/me_ct_curve_writer.hpp>
-#include <controllers/me_controller_tree_root.hpp>
-#include <controllers/me_ct_reach.hpp>
-#include <controllers/me_ct_example_body_reach.hpp>
-#include <controllers/me_ct_pose_postprocessing.hpp>
-#include <controllers/me_ct_motion_graph.hpp>
+#include "SBAnimationStateManager.h"
+#include "SBAnimationState.h"
+#include "SBSceneListener.h"
+#include "SBFaceDefinition.h"
+#include "components/sb/controllers/me_ct_examples.h" 
+#include "components/sb/controllers/me_ct_motion_player.h" 
+#include "components/sb/controllers/me_ct_pose.h" 
+#include "components/sb/controllers/me_ct_quick_draw.h"
+#include "components/sb/controllers/me_ct_noise_controller.h" // ?
+#include "components/sb/controllers/me_ct_motion_recorder.h"
+#include "components/sb/controllers/me_ct_scheduler2.h"
+#include "components/sb/controllers/me_ct_eyelid.h"
+#include "components/sb/controllers/me_ct_param_animation.h" 
+#include "components/sb/controllers/me_ct_saccade.h" 
+#include "components/sb/controllers/me_ct_basic_locomotion.h"
+#include "components/sb/controllers/me_ct_gaze.h"
+#include "components/sb/controllers/me_ct_example_body_reach.hpp"
+#include "components/sb/controllers/me_ct_breathing.h"
+#include "components/sb/controllers/me_ct_hand.hpp" 
+#include "components/sb/controllers/me_ct_face.h"
+#include "components/sb/controllers/me_ct_curve_writer.hpp"
+#include "components/sb/controllers/me_controller_tree_root.hpp"
+#include "components/sb/controllers/me_ct_reach.hpp"
+#include "components/sb/controllers/me_ct_example_body_reach.hpp"
+#include "components/sb/controllers/me_ct_pose_postprocessing.hpp"
+#include "components/sb/controllers/me_ct_motion_graph.hpp"
 
-#include <controllers/me_ct_data_receiver.h>
-#include <controllers/me_ct_physics_controller.h>
+#include "components/sb/controllers/me_ct_data_receiver.h"
+#include "components/sb/controllers/me_ct_physics_controller.h"
 
 // android does not use GPU shader for now
 #ifdef EMBER_SB_GPU
 #if !defined(__ANDROID__) && !defined(__FLASHPLAYER__) && !defined(SB_IPHONE)
-#include <sbm/GPU/SbmDeformableMeshGPU.h> // ?
+#include "components/sb/sbm/GPU/SbmDeformableMeshGPU.h" // ?
 #endif
 #endif
 

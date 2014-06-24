@@ -20,8 +20,8 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "sbm/gwiz_math.h"
-//#include "sbm/lin_win.h"
+#include "gwiz_math.h"
+//#include "lin_win.h"
 
 //int gwiz::temp_read2( void ) { return( temp_test ); }
 

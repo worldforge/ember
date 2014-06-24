@@ -21,14 +21,14 @@
  *      Andrew n marshall, USC
  */
 
-# ifndef SK_CHANNEL_ARRAY_H
-# define SK_CHANNEL_ARRAY_H
+#ifndef SK_CHANNEL_ARRAY_H
+#define SK_CHANNEL_ARRAY_H
 
-#include <sb/SBTypes.h>
-#include <sr/sr_buffer.h>
-#include <sr/sr_shared_class.h>
+#include "components/sb/sb/SBTypes.h"
+#include "components/sb/sr/sr_buffer.h"
+#include "components/sb/sr/sr_shared_class.h"
 
-#include <sk/sk_channel.h>
+#include "sk_channel.h"
 #include <string>
 #include <vector>
 #include <map>

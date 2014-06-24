@@ -23,13 +23,13 @@
 #ifndef _ME_CT_PARAM_ANIMATION_H_
 #define _ME_CT_PARAM_ANIMATION_H_
 
-#include <sb/SBTypes.h>
-#include <controllers/me_ct_container.hpp>
-#include <sb/SBCharacter.h>
-#include <controllers/me_ct_param_animation_utilities.h>
-#include <sb/PABlend.h>
-#include <controllers/me_ct_motion_example.hpp>
-#include <controllers/me_ct_jacobian_IK.hpp>
+#include "components/sb/sb/SBTypes.h"
+#include "me_ct_container.hpp"
+#include "components/sb/sb/SBCharacter.h"
+#include "me_ct_param_animation_utilities.h"
+#include "components/sb/sb/PABlend.h"
+#include "me_ct_motion_example.hpp"
+#include "me_ct_jacobian_IK.hpp"
 
 
 class PABlend;

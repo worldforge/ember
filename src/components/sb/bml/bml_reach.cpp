@@ -21,26 +21,26 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include <iostream>
 #include <sstream>
 #include <string>
 
 #include <xercesc/util/XMLStringTokenizer.hpp>
 
-#include <sr/sr_vec.h>
-#include <sr/sr_alg.h>
+#include "components/sb/sr/sr_vec.h"
+#include "components/sb/sr/sr_alg.h"
 
 #include "bml_reach.hpp"
 
 
-#include "controllers/me_ct_reach.hpp"
-#include "controllers/me_ct_data_driven_reach.hpp"
+#include "components/sb/controllers/me_ct_reach.hpp"
+#include "components/sb/controllers/me_ct_data_driven_reach.hpp"
 
 #include "bml_target.hpp"
 #include "bml_xml_consts.hpp"
-#include "sbm/xercesc_utils.hpp"
-#include "sbm/BMLDefs.h"
+#include "components/sb/sbm/xercesc_utils.hpp"
+#include "components/sb/sbm/BMLDefs.h"
 
 #define TEST_GAZE_LOCOMOTION 0 // set to 1 if want to test gaze+locomotion control when reaching
 

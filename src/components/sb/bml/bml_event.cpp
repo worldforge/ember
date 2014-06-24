@@ -20,15 +20,15 @@
  *      Andrew n marshall, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include <iostream>
 #include <sstream>
 
 
 #include "bml_event.hpp"
 #include "bml_xml_consts.hpp"
-#include "sbm/BMLDefs.h"
-#include "sbm/xercesc_utils.hpp"
+#include "components/sb/sbm/BMLDefs.h"
+#include "components/sb/sbm/xercesc_utils.hpp"
 
 using namespace std;
 using namespace BML;

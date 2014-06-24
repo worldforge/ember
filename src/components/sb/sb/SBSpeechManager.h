@@ -1,8 +1,8 @@
 #ifndef _SBSPEECHMANAGER_H_
 #define _SBSPEECHMANAGER_H_
 
-#include <sb/SBTypes.h>
-#include <sb/SBObject.h>
+#include "SBTypes.h"
+#include "SBObject.h"
 
 class remote_speech;
 class local_speech;

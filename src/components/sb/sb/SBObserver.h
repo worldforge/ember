@@ -1,7 +1,7 @@
 #ifndef DOBSERVER_H
 #define DOBSERVER_H
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <set>
 
 namespace SmartBody {

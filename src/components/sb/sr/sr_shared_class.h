@@ -19,10 +19,10 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_SHARED_CLASS_H
-# define SR_SHARED_CLASS_H
+#ifndef SR_SHARED_CLASS_H
+#define SR_SHARED_CLASS_H
 
-#include <sb/SBTypes.h>
+#include "components/sb/sb/SBTypes.h"
 #define USE_SHARE_PTR 1
 /*! \file sr_shared_class.h 
     reference counter for smart-pointer like behavior.

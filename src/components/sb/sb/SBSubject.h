@@ -2,7 +2,7 @@
 #define DSUBJECT_H
 
 #include <set>
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 
 namespace SmartBody {
 

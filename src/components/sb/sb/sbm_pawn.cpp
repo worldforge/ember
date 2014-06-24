@@ -18,46 +18,46 @@
 *
 */
 
-#include <vhcl/vhcl.h>
-#include <sb/SBTypes.h>
+#include "components/sb/vhcl/vhcl.h"
+#include "SBTypes.h"
 
 #include "sbm_pawn.hpp"
-#include <sb/SBSimulationManager.h>
-#include <sb/SBScene.h>
+#include "SBSimulationManager.h"
+#include "SBScene.h"
 
 #ifdef EMBER_SB_PYTHON
 	#ifndef __native_client__
-	#include <sb/SBPythonClass.h>
+	#include "SBPythonClass.h"
 	#endif
 #endif
 
-#include <sb/SBSceneListener.h>
+#include "SBSceneListener.h"
 #ifdef EMBER_SB_BONEBUS
-	#include <sb/SBBoneBusManager.h>
+	#include "SBBoneBusManager.h"
 #endif
 #ifdef EMBER_SB_STEER
-	#include <sb/SBSteerManager.h>
+	#include "SBSteerManager.h"
 #endif
-#include <sb/SBPhysicsManager.h>
-#include <sb/SBCollisionManager.h>
-#include <sb/SBSceneListener.h>
+#include "SBPhysicsManager.h"
+#include "SBCollisionManager.h"
+#include "SBSceneListener.h"
 #ifdef EMBER_SB_WSP
-	#include <sb/SBWSPManager.h> // ?
+	#include "SBWSPManager.h" // ?
 #endif
-#include <controllers/me_controller_tree_root.hpp>
-#include <controllers/me_ct_channel_writer.hpp>
-#include <controllers/me_ct_curve_writer.hpp>
-#include "sbm/sbm_constants.h"
+#include "components/sb/controllers/me_controller_tree_root.hpp"
+#include "components/sb/controllers/me_ct_channel_writer.hpp"
+#include "components/sb/controllers/me_ct_curve_writer.hpp"
+#include "components/sb/sbm/sbm_constants.h"
 #ifdef EMBER_SB_STEER
-	#include <sbm/SteerSuiteEngineDriver.h> // ?
+	#include "components/sb/sbm/SteerSuiteEngineDriver.h" // ?
 #endif
-#include <sbm/sr_arg_buff.h>
-#include "sbm/sbm_deformable_mesh.h"
+#include "components/sb/sbm/sr_arg_buff.h"
+#include "components/sb/sbm/sbm_deformable_mesh.h"
 
 #if !defined(EMBER_SB_GPU) || defined(__ANDROID__) || defined(SB_IPHONE) || defined(__native_client__) || defined(__FLASHPLAYER__)
-#include <sbm/sbm_deformable_mesh.h>
+#include "components/sb/sbm/sbm_deformable_mesh.h"
 #else
-#include <sbm/GPU/SbmDeformableMeshGPU.h> // ?
+#include "components/sb/sbm/GPU/SbmDeformableMeshGPU.h" // ?
 #endif
 
 #include <string.h>
@@ -73,10 +73,10 @@
 
 #endif
 
-#include "sr/sr_model.h"
-#include "sr/sr_euler.h"
-#include <sb/SBSkeleton.h>
-#include <sr/sr_sn_matrix.h>
+#include "components/sb/sr/sr_model.h"
+#include "components/sb/sr/sr_euler.h"
+#include "SBSkeleton.h"
+#include "components/sb/sr/sr_sn_matrix.h"
 
 using namespace std;
 

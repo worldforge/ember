@@ -24,12 +24,12 @@
 /** \file sr_tree.h 
  * A red-black balanced search tree */
 
-# ifndef SR_TREE_H
-# define SR_TREE_H
+#ifndef SR_TREE_H
+#define SR_TREE_H
 
-#include <sb/SBTypes.h>
-# include <sr/sr_class_manager.h>
-# include <sr/sr_output.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_class_manager.h"
+#include "sr_output.h"
 
 /*! \class SrTreeNode sr_tree_node.h
     \brief A red-black node for SrTree

@@ -20,7 +20,7 @@
  *      Andrew n marshall, USC
  */
 
-#include "controllers/me_controller_context_proxy.hpp"
+#include "me_controller_context_proxy.hpp"
 
 
 

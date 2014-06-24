@@ -20,8 +20,8 @@
  *      
  */
 
-#include <vhcl/vhcl.h>
-#include <controllers/me_ct_channel_writer.hpp>
+#include "components/sb/vhcl/vhcl.h"
+#include "me_ct_channel_writer.hpp"
 
 #include <cstdlib>
 #include <sstream>

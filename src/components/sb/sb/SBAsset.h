@@ -1,8 +1,8 @@
 #ifndef _SBASSET_H_
 #define _SBASSET_H_
 
-#include <sb/SBTypes.h>
-#include <sb/SBObject.h>
+#include "SBTypes.h"
+#include "SBObject.h"
 
 namespace SmartBody {
 

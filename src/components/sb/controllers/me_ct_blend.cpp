@@ -21,8 +21,8 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
-#include <controllers/me_ct_blend.hpp>
+#include "components/sb/vhcl/vhcl.h"
+#include "me_ct_blend.hpp"
 
 
 #include <iostream>
@@ -31,9 +31,9 @@
 #include <vector>
 #include <set>
 
-#include <controllers/me_controller_context_proxy.hpp>
-#include <controllers/me_controller_context_proxy.hpp>
-#include <controllers/me_evaluation_logger.hpp>
+#include "me_controller_context_proxy.hpp"
+#include "me_controller_context_proxy.hpp"
+#include "me_evaluation_logger.hpp"
 
 
 using namespace std;

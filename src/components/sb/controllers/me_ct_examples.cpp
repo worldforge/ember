@@ -21,14 +21,14 @@
 *      Andrew n marshall, USC
 */
 
-#include "controllers/me_ct_examples.h"
-#include "sbm/gwiz_math.h"
+#include "me_ct_examples.h"
+#include "components/sb/sbm/gwiz_math.h"
 using namespace gwiz;
 
-#include <vhcl/vhcl_log.h>
+#include "components/sb/vhcl/vhcl_log.h"
 
-#include "sbm/sbm_constants.h"
-#include <bml/bml.hpp>
+#include "components/sb/sbm/sbm_constants.h"
+#include "components/sb/bml/bml.hpp"
 
 ///////////////////////////////////////////////////////////////////////////
 

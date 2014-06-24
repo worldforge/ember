@@ -1,17 +1,17 @@
 #include "SBPawn.h"
 
-#include <sbm/mcontrol_callbacks.h>
-#include <sb/SBAttribute.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBScene.h>
-#include <sb/SBPhysicsManager.h>
-#include <sb/SBCollisionManager.h>
-#include <sb/SBColObject.h>
-#include <sb/SBPhysicsSim.h>
-#include <sb/SBSimulationManager.h>
-#include <sb/SBScene.h>
-#include <sbm/sbm_deformable_mesh.h>
-#include <sbm/gwiz_math.h>
+#include "components/sb/sbm/mcontrol_callbacks.h"
+#include "SBAttribute.h"
+#include "SBSkeleton.h"
+#include "SBScene.h"
+#include "SBPhysicsManager.h"
+#include "SBCollisionManager.h"
+#include "SBColObject.h"
+#include "SBPhysicsSim.h"
+#include "SBSimulationManager.h"
+#include "SBScene.h"
+#include "components/sb/sbm/sbm_deformable_mesh.h"
+#include "components/sb/sbm/gwiz_math.h"
 
 namespace SmartBody {
 

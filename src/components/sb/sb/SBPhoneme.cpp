@@ -1,5 +1,5 @@
 #include "SBPhoneme.h"
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 namespace SmartBody{
 

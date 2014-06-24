@@ -1,13 +1,13 @@
 
-# ifndef SK_BLEND_CFG_H
-# define SK_BLEND_CFG_H
+#ifndef SK_BLEND_CFG_H
+#define SK_BLEND_CFG_H
 
-# include "sr_cfg_manager.h"
-# include "sr_cfg_planner.h"
-# include <sr/sr_vec.h>
-# include <vector>
-#include <sb/SBColObject.h>
-#include <controllers/me_ct_motion_example.hpp>
+#include "sr_cfg_manager.h"
+#include "sr_cfg_planner.h"
+#include "components/sb/sr/sr_vec.h"
+#include <vector>
+#include "components/sb/sb/SBColObject.h"
+#include "components/sb/controllers/me_ct_motion_example.hpp"
 
 //=================================== SkPosCfg =====================================
 

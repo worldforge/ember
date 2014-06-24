@@ -20,10 +20,10 @@
  *      Andrew n marshall, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
-#include "bml/bml.hpp"
-#include "bml/behavior_scheduler_constant_speed.hpp"
+#include "bml.hpp"
+#include "behavior_scheduler_constant_speed.hpp"
 
 using namespace std;
 using namespace BML;

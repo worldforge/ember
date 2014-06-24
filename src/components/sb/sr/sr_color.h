@@ -20,16 +20,16 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_COLOR_H
-# define SR_COLOR_H
+#ifndef SR_COLOR_H
+#define SR_COLOR_H
 
 /** \file sr_color.h 
  * A color definition
  */
 
-#include <sb/SBTypes.h>
-# include <sr/sr_input.h>
-# include <sr/sr_output.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_input.h"
+#include "sr_output.h"
 
 /*! \class SrColor sr_color.h
     \brief specifies a color

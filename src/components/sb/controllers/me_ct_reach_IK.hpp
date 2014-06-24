@@ -1,6 +1,6 @@
 #pragma once
-#include "controllers/me_ct_IK.hpp"
-#include "sbm/gwiz_math.h"
+#include "me_ct_IK.hpp"
+#include "components/sb/sbm/gwiz_math.h"
 
 class MeCtReachIK :
 	public MeCtIK

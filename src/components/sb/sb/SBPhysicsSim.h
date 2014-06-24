@@ -1,11 +1,11 @@
 #ifndef _SBPhysicsSIM_H_ 
 #define _SBPhysicsSIM_H_ 
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <deque>
 #include "SBColObject.h"
-#include <sb/SBObject.h>
-#include <sb/SBJoint.h>
+#include "SBObject.h"
+#include "SBJoint.h"
 
 namespace SmartBody
 {

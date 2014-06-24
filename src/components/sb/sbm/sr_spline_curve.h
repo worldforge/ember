@@ -1,7 +1,7 @@
 #ifndef SR_SPLINE_CURVE_H
 #define SR_SPLINE_CURVE_H
 
-#include "sbm/gwiz_math.h"
+#include "gwiz_math.h"
 
 class srSplineCurve {
 

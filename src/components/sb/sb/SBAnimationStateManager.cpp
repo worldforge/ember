@@ -1,12 +1,12 @@
 #include "SBAnimationStateManager.h"
 
-#include <sb/SBAnimationState.h>
-#include <sb/SBMotionBlendBase.h>
-#include <sb/SBAnimationTransition.h>
-#include <sb/SBCharacter.h>
-#include <sb/SBScene.h>
-#include <sb/SBSceneListener.h>
-#include <controllers/me_ct_param_animation.h>
+#include "SBAnimationState.h"
+#include "SBMotionBlendBase.h"
+#include "SBAnimationTransition.h"
+#include "SBCharacter.h"
+#include "SBScene.h"
+#include "SBSceneListener.h"
+#include "components/sb/controllers/me_ct_param_animation.h"
 
 namespace SmartBody {
 

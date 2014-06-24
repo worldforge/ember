@@ -22,7 +22,7 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #define USE_FESTIVAL_RELAY 0
 #define USE_CEREPROC_RELAY 0
@@ -62,12 +62,12 @@
 #include <float.h>
 #include "time.h"
 
-#include "sbm/xercesc_utils.hpp"
+#include "xercesc_utils.hpp"
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
-#include "sbm/BMLDefs.h"
-#include <sb/SBScene.h>
-#include <sb/SBCommandManager.h>
+#include "BMLDefs.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBCommandManager.h"
 
 
 using namespace std;

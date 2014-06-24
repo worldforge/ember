@@ -22,9 +22,9 @@
  *      Ed Fast, USC
  */
  
-# include <sk/sk_skeleton.h>
-# include <sk/sk_posture.h>
-# include <sr/sr_vec.h>
+#include "sk_skeleton.h"
+#include "sk_posture.h"
+#include "components/sb/sr/sr_vec.h"
 
 
 //=========================== SkPostureDfJoints ===============================

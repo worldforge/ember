@@ -19,12 +19,12 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <stdarg.h> 
-# include <stdlib.h> 
-# include <stdio.h>
+#include <stdarg.h> 
+#include <stdlib.h> 
+#include <stdio.h>
 
-# include <sr/sr_output.h>
-# include <sr/sr_string.h>
+#include "sr_output.h"
+#include "sr_string.h"
 
 //============================== Global data ====================================
 

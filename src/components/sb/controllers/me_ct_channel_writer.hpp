@@ -23,7 +23,7 @@
 #ifndef ME_CT_CHANNEL_WRITER_HPP
 #define ME_CT_CHANNEL_WRITER_HPP
 
-#include <sb/SBController.h>
+#include "components/sb/sb/SBController.h"
 
 
 /**

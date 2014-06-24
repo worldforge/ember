@@ -25,7 +25,7 @@
 #ifndef BML_SYNC_POINT_HPP
 #define BML_SYNC_POINT_HPP
 
-#include <sb/SBTypes.h>
+#include "components/sb/sb/SBTypes.h"
 
 #include <string>
 #include <list>
@@ -33,7 +33,7 @@
 //#include <limits>
 
 #include "bml_types.hpp"
-#include "bml/behavior_span.hpp"
+#include "behavior_span.hpp"
 
 
 

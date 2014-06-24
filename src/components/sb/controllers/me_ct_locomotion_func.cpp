@@ -20,11 +20,11 @@
  *      Jingqiao Fu, USC
  */
 
-#include "controllers/me_ct_locomotion_func.hpp"
+#include "me_ct_locomotion_func.hpp"
 
-//#include "sb/sbm_character.hpp"
-#include "sbm/gwiz_math.h"
-#include <vhcl/vhcl_log.h>
+//#include "components/sb/sb/sbm_character.hpp"
+#include "components/sb/sbm/gwiz_math.h"
+#include "components/sb/vhcl/vhcl_log.h"
 
 SrMat get_gmat(SkJoint* from_joint, int depth, SrArray<SrQuat>& quat)
 {

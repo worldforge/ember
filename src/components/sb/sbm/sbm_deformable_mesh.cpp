@@ -1,17 +1,17 @@
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include "sbm_deformable_mesh.h"
 
 #include <fstream>
 
-#include <sb/SBSkeleton.h>
-#include <sb/SBScene.h>
-#include <sr/sr_sn_group.h>
-#include <sr/sr_random.h>
-#include <sbm/gwiz_math.h>
+#include "components/sb/sb/SBSkeleton.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sr/sr_sn_group.h"
+#include "components/sb/sr/sr_random.h"
+#include "gwiz_math.h"
 #ifdef EMBER_SB_TEXTURE
-	#include <sbm/GPU/SbmTexture.h>
+	#include "GPU/SbmTexture.h"
 #endif
 #include <boost/algorithm/string.hpp>
 #ifdef EMBER_SB_BINARYMESH

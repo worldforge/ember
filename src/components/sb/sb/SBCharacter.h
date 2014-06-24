@@ -1,9 +1,9 @@
 #ifndef _SBCHARACTER_H_
 #define _SBCHARACTER_H_
 
-#include <sb/SBTypes.h>
-#include <sb/sbm_character.hpp>
-#include <sb/SBMotion.h>
+#include "SBTypes.h"
+#include "sbm_character.hpp"
+#include "SBMotion.h"
 
 namespace SmartBody {
 

@@ -25,18 +25,18 @@
 #define ME_CT_SCHEDULER2_H
 
 //=================================== MeCtScheduler2 =====================================
-#include <sb/SBTypes.h>
+#include "components/sb/sb/SBTypes.h"
 #include <map>
 #include <vector>
 
 
-#include <controllers/me_ct_container.hpp>
-#include <controllers/me_ct_unary.hpp>
+#include "me_ct_container.hpp"
+#include "me_ct_unary.hpp"
 
 // Use Boost Smart Point Impl until TR1 is finalized
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
-#include <bml/bml_sync_point.hpp> // ?
+#include "components/sb/bml/bml_sync_point.hpp" // ?
 
 /*! The scheduler maps each controller to its internal channel array, so that
     after evaluation, the values are copied and blended into the scheduler buffer */

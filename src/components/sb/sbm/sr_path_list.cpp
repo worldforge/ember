@@ -3,7 +3,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/version.hpp>
 #include <boost/algorithm/string.hpp>
-#include <sb/SBScene.h>
+#include "components/sb/sb/SBScene.h"
 
 srPathList::srPathList()
 {

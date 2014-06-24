@@ -1,17 +1,17 @@
 
-# ifndef SK_BLEND_CFG_MANAGER_H
-# define SK_BLEND_CFG_MANAGER_H
+#ifndef SK_BLEND_CFG_MANAGER_H
+#define SK_BLEND_CFG_MANAGER_H
 
-# include "sr_cfg_manager.h"
-# include "sr_cfg_planner.h"
-# include "sk_blend_cfg.h"
-# include "sk_pos_cfg.h"
+#include "sr_cfg_manager.h"
+#include "sr_cfg_planner.h"
+#include "sk_blend_cfg.h"
+#include "sk_pos_cfg.h"
 
-#include <controllers/me_ct_motion_parameter.h>
-#include <controllers/me_ct_motion_example.hpp>
+#include "components/sb/controllers/me_ct_motion_parameter.h"
+#include "components/sb/controllers/me_ct_motion_example.hpp"
 
-# include <sr/sr_box.h>
-# include <sk/sk_joint.h>
+#include "components/sb/sr/sr_box.h"
+#include "components/sb/sk/sk_joint.h"
 //================================ SkPosCfgManager =====================================
 
 class SkBlendPlanner;

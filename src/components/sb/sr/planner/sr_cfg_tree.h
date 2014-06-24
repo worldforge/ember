@@ -1,11 +1,11 @@
 
-# ifndef SR_CFG_TREE_H
-# define SR_CFG_TREE_H
+#ifndef SR_CFG_TREE_H
+#define SR_CFG_TREE_H
 
-# include <sr/sr_set.h>
-//# include <sr/sr_cfg_manager.h>
-# include "sr_cfg_manager.h"
-# include "sr_cfg_path.h"
+#include "components/sb/sr/sr_set.h"
+//#include <sr/sr_cfg_manager.h>
+#include "sr_cfg_manager.h"
+#include "sr_cfg_path.h"
 
 class SrCfgTreeBase;
 

@@ -25,12 +25,12 @@
 #ifndef ME_CT_GAZE_H
 #define ME_CT_GAZE_H
 
-#include <sb/SBTypes.h>
-#include <sk/sk_skeleton.h>
-#include <sb/SBController.h>
+#include "components/sb/sb/SBTypes.h"
+#include "components/sb/sk/sk_skeleton.h"
+#include "components/sb/sb/SBController.h"
 
-#include "sbm/gwiz_math.h"
-#include "controllers/me_ct_gaze_joint.h"
+#include "components/sb/sbm/gwiz_math.h"
+#include "me_ct_gaze_joint.h"
 #include "me_blend_cover.h"
 
 #define TEST_SENSOR 0

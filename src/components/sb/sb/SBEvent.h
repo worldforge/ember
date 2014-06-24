@@ -1,10 +1,10 @@
 #ifndef _SBMEVENT_H
 #define _SBMEVENT_H
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <map>
 #include <string>
-#include <sb/SBObject.h>
+#include "SBObject.h"
 
 namespace SmartBody {
 

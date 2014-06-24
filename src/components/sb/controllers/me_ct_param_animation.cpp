@@ -17,23 +17,23 @@
  *      http://www.gnu.org/licenses/lgpl-3.0.txt
  */
 
-#include "controllers/me_ct_param_animation.h"
+#include "me_ct_param_animation.h"
 
-#include <sb/SBCharacter.h>
-#include <sb/SBAnimationState.h>
-#include <sb/SBAnimationStateManager.h>
-#include <sb/SBAnimationTransition.h>
-#include <sb/SBAnimationTransitionRule.h>
-#include <sb/SBMotionBlendBase.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBSimulationManager.h>
-#include <sb/SBScene.h>
-#include <sb/SBSceneListener.h>
-#include <sb/SBRetargetManager.h>
-#include <sb/SBRetarget.h>
-#include <sr/sr_euler.h>
-#include <sr/sr_mat.h>
-#include "controllers/MotionAnalysis.h"
+#include "components/sb/sb/SBCharacter.h"
+#include "components/sb/sb/SBAnimationState.h"
+#include "components/sb/sb/SBAnimationStateManager.h"
+#include "components/sb/sb/SBAnimationTransition.h"
+#include "components/sb/sb/SBAnimationTransitionRule.h"
+#include "components/sb/sb/SBMotionBlendBase.h"
+#include "components/sb/sb/SBSkeleton.h"
+#include "components/sb/sb/SBSimulationManager.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBSceneListener.h"
+#include "components/sb/sb/SBRetargetManager.h"
+#include "components/sb/sb/SBRetarget.h"
+#include "components/sb/sr/sr_euler.h"
+#include "components/sb/sr/sr_mat.h"
+#include "MotionAnalysis.h"
 
 std::string MeCtParamAnimation::Context::CONTEXT_TYPE = "MeCtParamAnimation::Context";
 std::string MeCtParamAnimation::CONTROLLER_TYPE = "MeCtParamAnimation";

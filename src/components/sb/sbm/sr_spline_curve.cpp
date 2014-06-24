@@ -20,7 +20,7 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "sbm/lin_win.h"
+#include "lin_win.h"
 #include "sr_spline_curve.h"
 
 using namespace gwiz;

@@ -24,9 +24,9 @@
 #define ME_CT_IK_HPP
 
 
-#include <controllers/me_controller.h>
-#include "controllers/me_ct_IK_scenario.hpp"
-#include <sb/SBTypes.h>
+#include "me_controller.h"
+#include "me_ct_IK_scenario.hpp"
+#include "components/sb/sb/SBTypes.h"
 
 #pragma once
 

@@ -1,15 +1,15 @@
 #ifndef SBM_DEFORMABLE_MESH_H
 #define SBM_DEFORMABLE_MESH_H
 
-#include <sb/SBTypes.h>
+#include "components/sb/sb/SBTypes.h"
 #include <vector>
 #include <string>
 #include <map>
-#include <sr/sr_sn_shape.h>
-#include <sk/sk_skeleton.h>
-#include <sr/sr_model.h>
-#include <sb/SBAsset.h>
-#include <sb/SBCharacter.h>
+#include "components/sb/sr/sr_sn_shape.h"
+#include "components/sb/sk/sk_skeleton.h"
+#include "components/sb/sr/sr_model.h"
+#include "components/sb/sb/SBAsset.h"
+#include "components/sb/sb/SBCharacter.h"
 
 
 typedef std::vector<SkJoint*> SkJointList;

@@ -1,24 +1,24 @@
 #pragma once
-#include "controllers/me_ct_data_interpolation.h"
-//#include <sr/sr.h>
+#include "me_ct_data_interpolation.h"
+//#include "components/sb/sr/sr.h"
 
 // for Inverse Blending Optimize() (steepest descent)
-# define OPTM_MAX_ITER 80
-# define OPTM_ADDL_ITER 30
-# define OPTM_ITER_STEP 0.01f
-# define OPTM_WT_UPBOUND 1.0f
-# define OPTM_WT_LOBOUND 0.0f
-# define OPTM_NO_HIT_TERM_TH 12
+#define OPTM_MAX_ITER 80
+#define OPTM_ADDL_ITER 30
+#define OPTM_ITER_STEP 0.01f
+#define OPTM_WT_UPBOUND 1.0f
+#define OPTM_WT_LOBOUND 0.0f
+#define OPTM_NO_HIT_TERM_TH 12
 
 // for Inverse Blending OptimizeGradDes() (gradient descent)
-# define OPTMGD_MAX_ITER 20
-# define OPTMGD_ADDL_ITER 20
-# define OPTMGD_NO_HIT_TERM_TH 12
-# define OPTMGD_ITER_STEP 0.01f
-# define OPTMGD_WT_UPBOUND 1.0f
-# define OPTMGD_WT_LOBOUND 0.0f
-# define OPTMGD_MAGNI_TH 0.70f // ignore small partial derivatives ( < 0.7x of largest desc)
-# define OPTMGD_PATL_DEV_QTY 4 // max qty of partial derivatives
+#define OPTMGD_MAX_ITER 20
+#define OPTMGD_ADDL_ITER 20
+#define OPTMGD_NO_HIT_TERM_TH 12
+#define OPTMGD_ITER_STEP 0.01f
+#define OPTMGD_WT_UPBOUND 1.0f
+#define OPTMGD_WT_LOBOUND 0.0f
+#define OPTMGD_MAGNI_TH 0.70f // ignore small partial derivatives ( < 0.7x of largest desc)
+#define OPTMGD_PATL_DEV_QTY 4 // max qty of partial derivatives
 
 
 class InverseInterpolation : public KNNBaseInterpolator

@@ -21,15 +21,15 @@
  *      Ashok Basawapatna, USC (no longer)
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include "sbm_speech_audiofile.hpp"
-#include "sbm/BMLDefs.h"
+#include "BMLDefs.h"
 
 #include "rapidxml_utils.hpp"
 #include <fstream>
-#include <sb/SBScene.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBCommandManager.h>
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBAssetManager.h"
+#include "components/sb/sb/SBCommandManager.h"
 
 #include <boost/version.hpp>
 #include <boost/filesystem/operations.hpp>

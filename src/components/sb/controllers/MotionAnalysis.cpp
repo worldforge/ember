@@ -1,11 +1,11 @@
 #include "MotionAnalysis.h"
-#include <sb/SBScene.h>
-#include <sb/SBAssetManager.h>
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBAssetManager.h"
 #ifdef EMBER_SB_STEER
-	#include <sb/SBNavigationMesh.h>
+	#include "components/sb/sb/SBNavigationMesh.h"
 #endif
 #ifdef EMBER_SB_HEIGHTFIELD
-	#include <sbm/Heightfield.h> // ?
+	#include "components/sb/sbm/Heightfield.h" // ?
 #endif
 /************************************************************************/
 /* Locomotion Leg Cycle                                                 */

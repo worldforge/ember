@@ -20,27 +20,27 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <stdio.h>
-# include <math.h>
+#include <stdio.h>
+#include <math.h>
 
-# include <sr/sr_geo2.h>
+#include "sr_geo2.h"
 
 // This file is designed to be as most as possible independent of other sr types
 
 //================================= Macros =========================================
 
-# define gABS(x)                  (x>0? (x):-(x))
-# define gMAX(a,b)                (a>b? (a):(b))
-# define gSWAP(a,b)               { tmp=a; a=b; b=tmp; }
-# define gOUTXY(a,b)              printf("(%+6.4f,%+6.4f) ", a, b )
-# define gOUTL                    printf("\n");
-# define gEPS                     1.0E-14 // doubles have 15 decimals
-# define gNEXTZERO(a)             ( (a)>-(gEPS) && (a)<(gEPS) )
+#define gABS(x)                  (x>0? (x):-(x))
+#define gMAX(a,b)                (a>b? (a):(b))
+#define gSWAP(a,b)               { tmp=a; a=b; b=tmp; }
+#define gOUTXY(a,b)              printf("(%+6.4f,%+6.4f) ", a, b )
+#define gOUTL                    printf("\n");
+#define gEPS                     1.0E-14 // doubles have 15 decimals
+#define gNEXTZERO(a)             ( (a)>-(gEPS) && (a)<(gEPS) )
 
 // The following macro can be defined to activate some extra operations that
 // try to get more precise results in the functions of this file. Normally
 // these extra operations are not worth to activate
-// # define gMAXPREC 
+// #define gMAXPREC 
 
 //================================= funcs =====================================
 
@@ -232,7 +232,7 @@ bool sr_in_circle ( double p1x, double p1y, double p2x, double p2y, double p3x, 
 void sr_barycentric ( double p1x, double p1y, double p2x, double p2y, double p3x, double p3y,
                       double px, double py, double& u, double& v, double& w )
  {
-   # define DET3(a,b,c,d,e,f,g,h,i) a*e*i +b*f*g +d*h*c -c*e*g -b*d*i -a*f*h
+   #define DET3(a,b,c,d,e,f,g,h,i) a*e*i +b*f*g +d*h*c -c*e*g -b*d*i -a*f*h
    double A  = DET3 ( p1x, p2x, p3x, p1y, p2y, p3y, 1, 1, 1 );
    double A1 = DET3 (  px, p2x, p3x,  py, p2y, p3y, 1, 1, 1 );
    double A2 = DET3 ( p1x,  px, p3x, p1y,  py, p3y, 1, 1, 1 );

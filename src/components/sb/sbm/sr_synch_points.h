@@ -23,10 +23,10 @@
 #ifndef SR_SYNCH_POINTS_H
 #define SR_SYNCH_POINTS_H
 
-#include <sb/SBTypes.h>
+#include "components/sb/sb/SBTypes.h"
 #include <stdio.h>
-#include <vhcl/vhcl_log.h>
-#include <sbm/sr_linear_curve.h>
+#include "components/sb/vhcl/vhcl_log.h"
+#include "sr_linear_curve.h"
 
 /*
 	srSynchPoints:

@@ -7,11 +7,11 @@ class text_speech;
 
 
 #include <string>
-#include <sb/SBCommandManager.h>
-#include "sbm/sbm_speech.hpp"
+#include "components/sb/sb/SBCommandManager.h"
+#include "sbm_speech.hpp"
 #include "sr_hash_map.h"
 #include "sr_arg_buff.h"
-#include "sb/sbm_character.hpp"
+#include "components/sb/sb/sbm_character.hpp"
 // Predeclare class
 
 class srCmdSeq;

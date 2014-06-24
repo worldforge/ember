@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
 #include "me_ct_IK_scenario.hpp"
-#include "sbm/gwiz_math.h"
+#include "components/sb/sbm/gwiz_math.h"
 #include "me_ct_ublas.hpp"
 
 enum NodeQuatType { QUAT_INIT = 0, QUAT_REF, QUAT_PREVREF, QUAT_CUR, QUAT_DUMMY, QUAT_SIZE };

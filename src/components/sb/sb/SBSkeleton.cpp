@@ -3,11 +3,11 @@
 #include "SBPawn.h"
 #include "SBAttribute.h"
 
-#include <sb/SBScene.h>
-#include <sb/SBCharacter.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBSceneListener.h>
-#include <sr/sr_string.h>
+#include "SBScene.h"
+#include "SBCharacter.h"
+#include "SBAssetManager.h"
+#include "SBSceneListener.h"
+#include "components/sb/sr/sr_string.h"
 
 namespace SmartBody {
 

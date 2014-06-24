@@ -1,42 +1,42 @@
 #include "MiscCommands.h"
 
 
-#include <sbm/mcontrol_callbacks.h>
-#include <sbm/local_speech.h>
-#include <sbm/text_speech.h>
-#include <sbm/sbm_speech_audiofile.hpp>
-#include <sb/SBPhysicsManager.h>
+#include "mcontrol_callbacks.h"
+#include "local_speech.h"
+#include "text_speech.h"
+#include "sbm_speech_audiofile.hpp"
+#include "components/sb/sb/SBPhysicsManager.h"
 #ifdef EMBER_SB_BONEBUS
-	#include <sb/SBBoneBusManager.h>
+	#include "components/sb/sb/SBBoneBusManager.h"
 #endif
-#include <sb/SBAssetManager.h>
-#include <sb/sbm_pawn.hpp>
-#include <sb/sbm_character.hpp>
-#include <sb/SBSceneListener.h>
-#include <sb/SBSpeechManager.h>
-#include <sb/SBScene.h>
-#include <sb/SBMotion.h>
-#include <sb/SBSimulationManager.h>
-#include <sb/SBCommandManager.h>
-#include <sb/SBBmlProcessor.h>
-#include <sb/SBReach.h>
-#include <sb/SBTypes.h>
-#include <bml/bml_processor.hpp>
-#include <controllers/me_ct_scheduler2.h>
-#include <controllers/me_ct_blend.hpp>
-#include <controllers/me_ct_gaze.h>
-#include <controllers/me_ct_eyelid.h>
-#include <controllers/me_controller_tree_root.hpp>
-#include <controllers/me_ct_channel_writer.hpp>
-#include <controllers/MeCtReachEngine.h>
-#include <controllers/me_ct_example_body_reach.hpp>
+#include "components/sb/sb/SBAssetManager.h"
+#include "components/sb/sb/sbm_pawn.hpp"
+#include "components/sb/sb/sbm_character.hpp"
+#include "components/sb/sb/SBSceneListener.h"
+#include "components/sb/sb/SBSpeechManager.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBMotion.h"
+#include "components/sb/sb/SBSimulationManager.h"
+#include "components/sb/sb/SBCommandManager.h"
+#include "components/sb/sb/SBBmlProcessor.h"
+#include "components/sb/sb/SBReach.h"
+#include "components/sb/sb/SBTypes.h"
+#include "components/sb/bml/bml_processor.hpp"
+#include "components/sb/controllers/me_ct_scheduler2.h"
+#include "components/sb/controllers/me_ct_blend.hpp"
+#include "components/sb/controllers/me_ct_gaze.h"
+#include "components/sb/controllers/me_ct_eyelid.h"
+#include "components/sb/controllers/me_controller_tree_root.hpp"
+#include "components/sb/controllers/me_ct_channel_writer.hpp"
+#include "components/sb/controllers/MeCtReachEngine.h"
+#include "components/sb/controllers/me_ct_example_body_reach.hpp"
 #include <boost/filesystem/operations.hpp>
 #include <boost/version.hpp>
 
 // android does not use GPU shader for now
 #if !defined(__ANDROID__) && !defined(__FLASHPLAYER__) && !defined(SB_IPHONE)
 #ifdef EMBER_SB_GPU
-#include <sbm/GPU/SbmDeformableMeshGPU.h>
+#include "GPU/SbmDeformableMeshGPU.h"
 #endif
 #endif
 

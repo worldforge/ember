@@ -1,7 +1,7 @@
 #ifndef _SBPHONEME_H_
 #define _SBPHONEME_H_
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <vector>
 #include <string>
 #include <map>

@@ -20,15 +20,15 @@
  *      Yuyu Xu, USC
  */
 
-#include "controllers/me_ct_param_animation_utilities.h"
-#include <sbm/gwiz_math.h>
+#include "me_ct_param_animation_utilities.h"
+#include "components/sb/sbm/gwiz_math.h"
 
-#include <sr/sr_euler.h>
-#include <sb/SBAnimationState.h>
-#include <sb/SBAnimationStateManager.h>
-#include <sb/SBEvent.h>
-#include <sb/SBScene.h>
-#include <sb/SBMotion.h>
+#include "components/sb/sr/sr_euler.h"
+#include "components/sb/sb/SBAnimationState.h"
+#include "components/sb/sb/SBAnimationStateManager.h"
+#include "components/sb/sb/SBEvent.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBMotion.h"
 #include <math.h>
 
 const double timeThreshold = 0.05;

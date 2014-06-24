@@ -20,23 +20,23 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# include <sr/sr_euler.h>
-# include <sr/sr_mat.h>
-# include <math.h>
-#include "sbm/gwiz_math.h"
+#include "sr_euler.h"
+#include "sr_mat.h"
+#include <math.h>
+#include "components/sb/sbm/gwiz_math.h"
 
-//# define SR_USE_TRACE1
-//# include <sr/sr_trace.h>
+//#define SR_USE_TRACE1
+//#include "sr_trace.h"
 
-# define ISZERO(a) ( (a)>-(srtiny) && (a)<(srtiny) )
+#define ISZERO(a) ( (a)>-(srtiny) && (a)<(srtiny) )
 
-# define EQUAL(a,b) ( ( (a)>(b)? ((a)-(b)):((b)-(a)) )<=(srtiny) )
+#define EQUAL(a,b) ( ( (a)>(b)? ((a)-(b)):((b)-(a)) )<=(srtiny) )
 
-# define GETSINCOS double cx=cos(rx); double cy=cos(ry); double cz=cos(rz); \
+#define GETSINCOS double cx=cos(rx); double cy=cos(ry); double cz=cos(rz); \
                    double sx=sin(rx); double sy=sin(ry); double sz=sin(rz)
 
-# define ATAN2(x,y) (float) atan2 ( (double)x, (double)y )
-# define NORM(x,y) sqrt(double(x)*double(x)+double(y)*double(y))
+#define ATAN2(x,y) (float) atan2 ( (double)x, (double)y )
+#define NORM(x,y) sqrt(double(x)*double(x)+double(y)*double(y))
 
 //============================ Get Angles ================================
 

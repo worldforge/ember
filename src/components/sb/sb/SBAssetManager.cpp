@@ -1,30 +1,30 @@
 #include "SBAssetManager.h"
-#include <sb/SBSkeleton.h>
-#include <sb/SBMotion.h>
-#include <sb/SBScene.h>
-#include <sb/SBSceneListener.h>
-#include <sb/SBSkeleton.h>
+#include "SBSkeleton.h"
+#include "SBMotion.h"
+#include "SBScene.h"
+#include "SBSceneListener.h"
+#include "SBSkeleton.h"
 #ifdef EMBER_SB_STEER
-	#include <sb/SBNavigationMesh.h>
+	#include "SBNavigationMesh.h"
 #endif
 #ifdef EMBER_SB_OTHFMT
-	#include <sb/SBAssetHandlerSk.h> // ?
-	#include <sb/SBAssetHandlerCOLLADA.h> // ?
-	#include <sb/SBAssetHandlerAsf.h> // ?
-	#include <sb/SBAssetHandlerObj.h> // ?
+	#include "SBAssetHandlerSk.h" // ?
+	#include "SBAssetHandlerCOLLADA.h" // ?
+	#include "SBAssetHandlerAsf.h" // ?
+	#include "SBAssetHandlerObj.h" // ?
 #endif
-#include <sb/SBAssetHandlerOgre.h> // ?
-#include <sb/SBAssetHandlerSkm.h> // ?
+#include "SBAssetHandlerOgre.h" // ?
+#include "SBAssetHandlerSkm.h" // ?
 #ifdef EMBER_SB_MOTIONBINARY
-	#include <sb/SBAssetHandlerSkmb.h> // ?
+	#include "SBAssetHandlerSkmb.h" // ?
 #endif
 #ifdef EMBER_SB_OTHFMT
-	#include <sb/SBAssetHandlerBvh.h> // ?
-	#include <sb/SBAssetHandlerAmc.h> // ?
-	#include <sb/SBAssetHandlerPly.h> // ?
+	#include "SBAssetHandlerBvh.h" // ?
+	#include "SBAssetHandlerAmc.h" // ?
+	#include "SBAssetHandlerPly.h" // ?
 #endif
 #ifdef EMBER_SB_MESHBINARY
-	#include <sb/SBAssetHandlerSBMeshBinary.h> // ?
+	#include "SBAssetHandlerSBMeshBinary.h" // ?
 #endif
 #include <boost/version.hpp>
 #include <boost/filesystem/path.hpp>
@@ -32,17 +32,17 @@
 #include <boost/filesystem/convenience.hpp>
 #include <boost/algorithm/string.hpp>
 #ifdef EMBER_SB_OTHFMT
-	#include <sbm/ParserBVH.h> // ?
-	#include <sbm/ParserOpenCOLLADA.h> // ?
-	#include <sbm/ParserCOLLADAFast.h> // ?
-	#include <sbm/ParserASFAMC.h> // ?
-	#include <sbm/ParserBVH.h> // ?
-	#include <sbm/ParserFBX.h> // ?
+	#include "components/sb/sbm/ParserBVH.h" // ?
+	#include "components/sb/sbm/ParserOpenCOLLADA.h" // ?
+	#include "components/sb/sbm/ParserCOLLADAFast.h" // ?
+	#include "components/sb/sbm/ParserASFAMC.h" // ?
+	#include "components/sb/sbm/ParserBVH.h" // ?
+	#include "components/sb/sbm/ParserFBX.h" // ?
 #endif
-#include <sbm/ParserOgre.h> // ?
-#include <sbm/lin_win.h>
-#include <sbm/sr_path_list.h>
-#include <sbm/sbm_constants.h>
+#include "components/sb/sbm/ParserOgre.h" // ?
+#include "components/sb/sbm/lin_win.h"
+#include "components/sb/sbm/sr_path_list.h"
+#include "components/sb/sbm/sbm_constants.h"
 
 #ifdef WIN32
 #include <direct.h>

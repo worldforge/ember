@@ -1,6 +1,6 @@
 
-# include <sr/sr_random.h>
-# include "sk_pos_planner.h"
+#include "components/sb/sr/sr_random.h"
+#include "sk_pos_planner.h"
 
 //=================================== SkPosCfgManager =====================================
 

@@ -21,7 +21,7 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -32,13 +32,13 @@
 #include "bml_event.hpp"
 
 
-#include "controllers/me_ct_gaze.h"
+#include "components/sb/controllers/me_ct_gaze.h"
 
 #include "bml_target.hpp"
 #include "bml_xml_consts.hpp"
-#include "sbm/xercesc_utils.hpp"
-#include "sbm/BMLDefs.h"
-#include "controllers/me_controller_tree_root.hpp"
+#include "components/sb/sbm/xercesc_utils.hpp"
+#include "components/sb/sbm/BMLDefs.h"
+#include "components/sb/controllers/me_controller_tree_root.hpp"
 
 
 #define LOG_GAZE_PARAMS				(0)

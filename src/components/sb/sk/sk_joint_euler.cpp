@@ -22,10 +22,10 @@
  *      Ed Fast, USC
  */
 
-# include <math.h>
+#include <math.h>
 
-# include <sr/sr.h>
-# include <sk/sk_joint_euler.h>
+#include "components/sb/sr/sr.h"
+#include "sk_joint_euler.h"
 
 //============================= SkJointEuler ============================
 

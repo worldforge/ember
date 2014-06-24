@@ -23,11 +23,11 @@
 /** \file sr_triangle.h 
  * A triangle in 3d space */
 
-# ifndef SR_TRIANGLE_H
-# define SR_TRIANGLE_H
+#ifndef SR_TRIANGLE_H
+#define SR_TRIANGLE_H
 
-#include <sb/SBTypes.h>
-# include <sr/sr_vec.h> 
+#include "components/sb/sb/SBTypes.h"
+#include "sr_vec.h"
 
 /*! \class SrTriangle sr_triangle.h
     \brief A triangle in 3d space. 

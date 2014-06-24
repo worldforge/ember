@@ -1,12 +1,12 @@
 #include "SBAssetHandlerSkm.h"
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include <boost/version.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/algorithm/string.hpp>
-#include <sb/SBMotion.h>
-#include <sb/SBScene.h>
+#include "SBMotion.h"
+#include "SBScene.h"
 
 namespace SmartBody {
 

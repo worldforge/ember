@@ -21,9 +21,9 @@
  */
 
 #include <math.h>
-#include "sbm/time_profiler.h"
-#include "sbm/lin_win.h"
-#include <vhcl/vhcl.h>
+#include "time_profiler.h"
+#include "lin_win.h"
+#include "components/sb/vhcl/vhcl.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 

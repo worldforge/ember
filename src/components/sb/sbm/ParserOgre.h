@@ -24,12 +24,12 @@
 #define _PARSER_OGRRESKELETON_H_
 
 #include <fstream>
-#include "sbm/sbm_deformable_mesh.h"
-#include "sbm/xercesc_utils.hpp"
-#include "sk/sk_skeleton.h"
-#include "sk/sk_motion.h"
+#include "sbm_deformable_mesh.h"
+#include "xercesc_utils.hpp"
+#include "components/sb/sk/sk_skeleton.h"
+#include "components/sb/sk/sk_motion.h"
 
-#include "sbm/gwiz_math.h"
+#include "gwiz_math.h"
 
 namespace SmartBody {
 

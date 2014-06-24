@@ -20,18 +20,18 @@
  *      Marcus Thiebaux, USC
  */
 
-# ifndef ME_CT_QUICK_DRAW_H
-# define ME_CT_QUICK_DRAW_H
+#ifndef ME_CT_QUICK_DRAW_H
+#define ME_CT_QUICK_DRAW_H
 
 //////////////////////////////////////////////////////////////////////////////////
 
-#include <sr/sr_hash_table.h>
-#include <sr/sr_buffer.h>
-#include <sk/sk_motion.h>
-#include <sk/sk_skeleton.h>
-#include <sb/SBController.h>
+#include "components/sb/sr/sr_hash_table.h"
+#include "components/sb/sr/sr_buffer.h"
+#include "components/sb/sk/sk_motion.h"
+#include "components/sb/sk/sk_skeleton.h"
+#include "components/sb/sb/SBController.h"
 
-#include "sbm/gwiz_math.h"
+#include "components/sb/sbm/gwiz_math.h"
 
 // ASSUME: right handed quick-draw motion only
 // DETERMINE: if handedness can be extracted from raw motion

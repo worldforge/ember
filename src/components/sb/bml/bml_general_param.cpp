@@ -20,20 +20,20 @@
  *      Yuyu Xu, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include <iostream>
 #include <sstream>
 #include <string>
 
-#include <sb/SBScene.h>
+#include "components/sb/sb/SBScene.h"
 
-#include "sbm/xercesc_utils.hpp"
+#include "components/sb/sbm/xercesc_utils.hpp"
 #include "bml_general_param.hpp"
-#include "sbm/general_param_setting.h"
+#include "components/sb/sbm/general_param_setting.h"
 #include "bml_xml_consts.hpp"
-#include "sbm/BMLDefs.h"
-#include "controllers/me_ct_channel_writer.hpp"
+#include "components/sb/sbm/BMLDefs.h"
+#include "components/sb/controllers/me_ct_channel_writer.hpp"
 
 
 

@@ -1,8 +1,8 @@
 #pragma once
-#include "controllers/me_ct_data_driven_reach.hpp"
-#include "controllers/me_ct_motion_example.hpp"
-#include <sb/SBSkeleton.h>
-#include <sb/SBJoint.h>
+#include "me_ct_data_driven_reach.hpp"
+#include "me_ct_motion_example.hpp"
+#include "components/sb/sb/SBSkeleton.h"
+#include "components/sb/sb/SBJoint.h"
 
 class MotionParameter
 {

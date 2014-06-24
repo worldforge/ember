@@ -1,6 +1,6 @@
 #pragma once
 #include "me_ct_data_driven_reach.hpp"
-#include "sbm/sr_linear_curve.h"
+#include "components/sb/sbm/sr_linear_curve.h"
 
 /************************************************************************/
 /* Time warp function maps a reference time to the actual time in a     */

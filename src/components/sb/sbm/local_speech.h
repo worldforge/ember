@@ -28,11 +28,11 @@
 // Predeclare class
 
 #include <string>
-#include "sbm/sbm_speech.hpp"
+#include "sbm_speech.hpp"
 #include "remote_speech.h"
 #include "sr_hash_map.h"
 #include "sr_arg_buff.h"
-#include "sb/sbm_character.hpp"
+#include "components/sb/sb/sbm_character.hpp"
 // Predeclare class
 
 struct SpeechRequestMessageData;

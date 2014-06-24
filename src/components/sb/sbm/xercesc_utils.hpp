@@ -24,10 +24,10 @@
 #ifndef XERCESC_UTILS_HPP
 #define XERCESC_UTILS_HPP
 
-#include <sb/SBTypes.h>
+#include "components/sb/sb/SBTypes.h"
 #include <string>
 #include <sstream>
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/dom/DOM.hpp>

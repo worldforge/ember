@@ -1,14 +1,14 @@
-#include "controllers/me_ct_hand.hpp"
-#include <sb/SBScene.h>
+#include "me_ct_hand.hpp"
+#include "components/sb/sb/SBScene.h"
 #include <assert.h>
 #include <sstream>
 #include <algorithm>
 #include <time.h>
 #include <boost/foreach.hpp>
-#include <sb/sbm_character.hpp>
-#include <sb/SBReach.h>
+#include "components/sb/sb/sbm_character.hpp"
+#include "components/sb/sb/SBReach.h"
 
-#include "controllers/MeCtReachEngine.h"
+#include "MeCtReachEngine.h"
 using namespace boost;
 
 

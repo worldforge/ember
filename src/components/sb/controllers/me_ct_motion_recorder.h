@@ -1,8 +1,8 @@
 #ifndef _ME_CT_MOTION_RECORDER_H
 #define _ME_CT_MOTION_RECORDER_H
 
-#include <sb/SBController.h>
-#include <sb/SBCharacter.h>
+#include "components/sb/sb/SBController.h"
+#include "components/sb/sb/SBCharacter.h"
 #include <string>
 
 class MeCtMotionRecorder : public SmartBody::SBController

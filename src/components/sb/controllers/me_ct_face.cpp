@@ -22,15 +22,15 @@
  */
 
 //#include "sbm_pawn.hpp"
-#include "sbm/gwiz_math.h"
-#include "controllers/me_ct_face.h"
-#include <vhcl/vhcl_log.h>
+#include "components/sb/sbm/gwiz_math.h"
+#include "me_ct_face.h"
+#include "components/sb/vhcl/vhcl_log.h"
 #include <sstream>
-#include <sbm/action_unit.hpp>
-#include <sb/sbm_pawn.hpp>
-#include <sb/sbm_character.hpp>
-#include <sb/SBScene.h>
-#include <sbm/sbm_deformable_mesh.h>
+#include "components/sb/sbm/action_unit.hpp"
+#include "components/sb/sb/sbm_pawn.hpp"
+#include "components/sb/sb/sbm_character.hpp"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sbm/sbm_deformable_mesh.h"
 //////////////////////////////////////////////////////////////////////////////////
 
 std::string MeCtFace::type_name = "Face";

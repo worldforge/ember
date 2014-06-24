@@ -23,12 +23,12 @@
 /** \file sr_vec.h 
  * Three dimensional vector */
 
-# ifndef SR_VEC_H
-# define SR_VEC_H
+#ifndef SR_VEC_H
+#define SR_VEC_H
 
-#include <sb/SBTypes.h>
-# include <sr/sr_input.h> 
-# include <sr/sr_output.h> 
+#include "components/sb/sb/SBTypes.h"
+#include "sr_input.h" 
+#include "sr_output.h" 
 #include <string>
 
 class SrVec;

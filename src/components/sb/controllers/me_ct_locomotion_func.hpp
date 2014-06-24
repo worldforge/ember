@@ -23,15 +23,15 @@
 #ifndef ME_CT_LOCOMOTION_FUNC_HPP
 #define ME_CT_LOCOMOTION_FUNC_HPP
 
-#include <sr/sr_hash_table.h>
-#include <sr/sr_buffer.h>
-#include <sr/sr_shared_class.h>
-#include <sk/sk_channel_array.h>
-#include <sk/sk_motion.h>
-#include <sk/sk_posture.h>
-#include <sk/sk_skeleton.h>
+#include "components/sb/sr/sr_hash_table.h"
+#include "components/sb/sr/sr_buffer.h"
+#include "components/sb/sr/sr_shared_class.h"
+#include "components/sb/sk/sk_channel_array.h"
+#include "components/sb/sk/sk_motion.h"
+#include "components/sb/sk/sk_posture.h"
+#include "components/sb/sk/sk_skeleton.h"
 
-#include "controllers/me_ct_locomotion_joint_info.hpp"
+#include "me_ct_locomotion_joint_info.hpp"
 
 #pragma once
 

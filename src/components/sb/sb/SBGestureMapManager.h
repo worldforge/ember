@@ -1,7 +1,7 @@
 #ifndef _SBGESTUREMAPMANAGER_H_
 #define _SBGESTUREMAPMANAGER_H_
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <string>
 #include <map>
 #include <vector>

@@ -21,16 +21,16 @@
  *      Andrew n marshall, USC
  */
 
-# ifndef SR_BUFFER_H
-# define SR_BUFFER_H
+#ifndef SR_BUFFER_H
+#define SR_BUFFER_H
 
 /** \file sr_buffer.h 
  * fast buffer memory management template */
-#include <sb/SBTypes.h>
-# include <algorithm> 
-# include <sr/sr.h> 
-# include <sr/sr_input.h> 
-# include <sr/sr_output.h> 
+#include "components/sb/sb/SBTypes.h"
+#include <algorithm> 
+#include "sr.h" 
+#include "sr_input.h" 
+#include "sr_output.h" 
 
 /*! Allocates memory with sizeofx*newsize bytes using the C function realloc. 
     If newsize is zero, buffer is freed and both buffer and size becomes zero.

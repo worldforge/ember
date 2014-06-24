@@ -1,7 +1,7 @@
 #ifndef _SBJOINTMAPMANAGER_
 #define _SBJOINTMAPMANAGER_
 
-#include <sb/SBTypes.h>
+#include "SBTypes.h"
 #include <string>
 #include <vector>
 #include <map>

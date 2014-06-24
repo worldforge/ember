@@ -20,14 +20,14 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_BOX_H
-# define SR_BOX_H
+#ifndef SR_BOX_H
+#define SR_BOX_H
 
 /** \file sr_box.h 
  * 3d axis-aligned box
  */
-#include <sb/SBTypes.h>
-# include <sr/sr_vec.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_vec.h"
 
 class SrMat;
 

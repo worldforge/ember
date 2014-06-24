@@ -20,7 +20,7 @@
  *      Andrew n marshall, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
 #include <iostream>
 #include <sstream>
@@ -29,10 +29,10 @@
 #include "bml_animation.hpp"
 
 #include "bml_xml_consts.hpp"
-#include <sb/SBSkeleton.h>
-#include <sb/SBMotion.h>
-#include <sb/SBScene.h>
-#include <sb/SBAssetManager.h>
+#include "components/sb/sb/SBSkeleton.h"
+#include "components/sb/sb/SBMotion.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBAssetManager.h"
 
 using namespace std;
 using namespace BML;

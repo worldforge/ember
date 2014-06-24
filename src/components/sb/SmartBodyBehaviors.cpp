@@ -2,10 +2,10 @@
 #include "SmartBodyRetarget.h"
 #include "SmartBodyManager.h"
 
-#include <sb/SBAssetManager.h>
-#include <sb/SBCharacter.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBScene.h>
+#include "sb/SBAssetManager.h"
+#include "sb/SBCharacter.h"
+#include "sb/SBSkeleton.h"
+#include "sb/SBScene.h"
 
 
 

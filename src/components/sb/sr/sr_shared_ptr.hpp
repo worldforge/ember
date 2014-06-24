@@ -26,7 +26,7 @@
 #ifndef SR_SHARED_PTR_HPP
 #define SR_SHARED_PTR_HPP
 
-#include "sr/sr_shared_class.h"
+#include "sr_shared_class.h"
 #include <boost/intrusive_ptr.hpp>
 
 

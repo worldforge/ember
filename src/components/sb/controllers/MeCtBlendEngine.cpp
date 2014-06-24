@@ -4,13 +4,13 @@
 #include <time.h>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <sr/sr_timer.h>
+#include "components/sb/sr/sr_timer.h"
 #include "MeCtBlendEngine.h"
 
-#include "controllers/me_ct_barycentric_interpolation.h"
-#include "controllers/me_ct_inverse_interpolation.h"
-#include <sb/SBEvent.h>
-#include <sb/SBMotion.h>
+#include "me_ct_barycentric_interpolation.h"
+#include "me_ct_inverse_interpolation.h"
+#include "components/sb/sb/SBEvent.h"
+#include "components/sb/sb/SBMotion.h"
 
 
 /************************************************************************/

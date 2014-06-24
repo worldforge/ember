@@ -1,9 +1,9 @@
 #ifndef _SBRETARGET_H_
 #define _SBRETARGET_H_
 
-#include <vhcl/vhcl.h>
-#include <sb/SBTypes.h>
-#include <sr/sr_quat.h>
+#include "components/sb/vhcl/vhcl.h"
+#include "SBTypes.h"
+#include "components/sb/sr/sr_quat.h"
 #include <string>
 #include <vector>
 #include <map>

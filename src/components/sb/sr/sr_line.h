@@ -24,11 +24,11 @@
 
 /**  Three dimensional line */
 
-# ifndef SR_LINE_H
-# define SR_LINE_H
+#ifndef SR_LINE_H
+#define SR_LINE_H
 
-#include <sb/SBTypes.h>
-# include <sr/sr_vec.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_vec.h"
 
 class SrBox;
 class SrInput;

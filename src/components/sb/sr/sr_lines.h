@@ -20,18 +20,18 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-# ifndef SR_LINES_H
-# define SR_LINES_H
+#ifndef SR_LINES_H
+#define SR_LINES_H
 
 /** \file sr_lines.h 
  * manages a set of lines
  */
-#include <sb/SBTypes.h>
-#include <sr/sr_vec.h>
-#include <sr/sr_box.h>
-#include <sr/sr_color.h>
-#include <sr/sr_array.h>
-#include <sr/sr_polygon.h>
+#include "components/sb/sb/SBTypes.h"
+#include "sr_vec.h"
+#include "sr_box.h"
+#include "sr_color.h"
+#include "sr_array.h"
+#include "sr_polygon.h"
 
 /*! \class SrLines sr_lines.h
     \brief a set of lines

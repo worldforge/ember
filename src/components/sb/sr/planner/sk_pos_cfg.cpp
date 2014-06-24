@@ -1,8 +1,8 @@
 
-# include <sr/sr_random.h>
+#include "components/sb/sr/sr_random.h"
 
-# include "sk_pos_cfg.h"
-# include "sk_pos_cfg_manager.h"
+#include "sk_pos_cfg.h"
+#include "sk_pos_cfg_manager.h"
 
 void ColSphere::setSphere( const SrVec& pt, const float r )
 {

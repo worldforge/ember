@@ -1,4 +1,4 @@
-#include "sbm/BMLDefs.h"
+#include "BMLDefs.h"
 
 namespace BML
 {

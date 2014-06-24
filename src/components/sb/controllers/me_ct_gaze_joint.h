@@ -23,10 +23,10 @@
 #ifndef ME_CT_GAZE_JOINT_H
 #define ME_CT_GAZE_JOINT_H
 
-#include <sk/sk_skeleton.h>
-#include <controllers/me_controller.h>
+#include "components/sb/sk/sk_skeleton.h"
+#include "me_controller.h"
 
-#include "sbm/gwiz_math.h"
+#include "components/sb/sbm/gwiz_math.h"
 
 #ifndef TRUE
 #define TRUE 1

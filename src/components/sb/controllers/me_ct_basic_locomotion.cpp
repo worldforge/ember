@@ -20,7 +20,7 @@
  *      Yuyu Xu, ICT USC
  */
 
-#include "controllers/me_ct_basic_locomotion.h"
+#include "me_ct_basic_locomotion.h"
 
 
 std::string MeCtBasicLocomotion::_type_name = "BasicLocomotion";

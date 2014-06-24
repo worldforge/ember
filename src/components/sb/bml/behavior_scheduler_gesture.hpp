@@ -2,7 +2,7 @@
 #define BEHAVIOR_SCHEDULER_GESTURE_HPP
 
 #include "behavior_scheduler.hpp"
-#include "controllers/me_controller.h"
+#include "components/sb/controllers/me_controller.h"
 
 
 namespace BML {

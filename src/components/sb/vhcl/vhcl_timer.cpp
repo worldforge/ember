@@ -18,7 +18,7 @@
    along with VHMsg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <vhcl/vhcl.h>
+#include "vhcl.h"
 
 #if defined(WIN_BUILD)
 #include <windows.h>

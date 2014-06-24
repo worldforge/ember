@@ -24,7 +24,7 @@
 //      This file should be included at the top of every source file,
 //      even before standard includes.  For example:
 //
-//         #include <vhcl/vhcl.h>
+//         #include "vhcl.h"
 //         #include "foo.h"
 //
 //         #include <windows.h>
@@ -37,7 +37,7 @@
 //            return 0;
 //         }
 //
-//      - #include <vhcl/vhcl.h> should go at the top of source files
+//      - #include "vhcl.h" should go at the top of source files
 //      - It should *not* go in header files
 //      - Public headers have their own common header.  See vhcl_public.h.
 //      - It can be used in or as a precompiled header.

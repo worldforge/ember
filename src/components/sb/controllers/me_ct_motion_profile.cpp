@@ -1,4 +1,4 @@
-#include "controllers/me_ct_motion_profile.h"
+#include "me_ct_motion_profile.h"
 
 /************************************************************************/
 /* Piece-wise Linear Curve                                              */

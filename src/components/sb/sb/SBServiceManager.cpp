@@ -1,5 +1,5 @@
 #include "SBServiceManager.h"
-#include <sb/SBService.h>
+#include "SBService.h"
 
 namespace SmartBody {
 

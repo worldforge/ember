@@ -20,18 +20,18 @@
  *      Marcus Thiebaux, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 #include <string>
 
 
 #include "bml_quickdraw.hpp"
-#include "controllers/me_ct_quick_draw.h"
+#include "components/sb/controllers/me_ct_quick_draw.h"
 #include "bml_target.hpp"
-#include "sbm/xercesc_utils.hpp"
-#include "sbm/BMLDefs.h"
-#include <sb/SBScene.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBMotion.h>
+#include "components/sb/sbm/xercesc_utils.hpp"
+#include "components/sb/sbm/BMLDefs.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBAssetManager.h"
+#include "components/sb/sb/SBMotion.h"
 
 char* DEFAULT_QUICKDRAW_ANIM	= (char*)"AdultM_FastDraw001";
 

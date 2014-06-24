@@ -20,12 +20,12 @@
  *      Andrew n marshall, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "components/sb/vhcl/vhcl.h"
 
-#include <controllers/me_controller_context.hpp>
-#include <controllers/me_evaluation_logger.hpp>
-#include <sb/SBSimulationManager.h>
-#include <sb/SBScene.h>
+#include "me_controller_context.hpp"
+#include "me_evaluation_logger.hpp"
+#include "components/sb/sb/SBSimulationManager.h"
+#include "components/sb/sb/SBScene.h"
 
 
 MeControllerContext::MeControllerContext()

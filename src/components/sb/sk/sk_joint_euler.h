@@ -21,13 +21,13 @@
  *      Andrew n marshall, USC
  */
 
-# ifndef SK_JOINT_EULER_H
-# define SK_JOINT_EULER_H
+#ifndef SK_JOINT_EULER_H
+#define SK_JOINT_EULER_H
 
-# include <sr/sr_mat.h>
+#include "components/sb/sr/sr_mat.h"
 
-# include <sk/sk_vec_limits.h>
-# include <sk/sk_joint_quat.h>
+#include "sk_vec_limits.h"
+#include "sk_joint_quat.h"
 
 //============================= SkJointEuler ============================
 

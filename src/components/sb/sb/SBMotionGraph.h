@@ -1,11 +1,11 @@
 #ifndef _SBMOTIONGRAPH_H
 #define _SBMOTIONGRAPH_H
 
-#include <sb/SBTypes.h>
-#include <sb/SBAnimationState.h>
-#include <sb/SBRetarget.h>
+#include "SBTypes.h"
+#include "SBAnimationState.h"
+#include "SBRetarget.h"
 /*#include <sbm/SteerPath.h> */
-#include "controllers/me_ct_ublas.hpp"
+#include "components/sb/controllers/me_ct_ublas.hpp"
 
 class MotionTimeWarpFunc;
 

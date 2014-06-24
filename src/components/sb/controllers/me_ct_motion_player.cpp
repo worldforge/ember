@@ -20,14 +20,14 @@
  *      Yuyu Xu, USC
  */
 
-#include <controllers/me_ct_motion_player.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBMotion.h>
-#include <sb/SBScene.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBCharacter.h>
-#include <sb/SBRetargetManager.h>
-#include <sb/SBRetarget.h>
+#include "me_ct_motion_player.h"
+#include "components/sb/sb/SBSkeleton.h"
+#include "components/sb/sb/SBMotion.h"
+#include "components/sb/sb/SBScene.h"
+#include "components/sb/sb/SBAssetManager.h"
+#include "components/sb/sb/SBCharacter.h"
+#include "components/sb/sb/SBRetargetManager.h"
+#include "components/sb/sb/SBRetarget.h"
 
 std::string MeCtMotionPlayer::Context::CONTEXT_TYPE = "MeCtMotionPlayer::Context";
 std::string MeCtMotionPlayer::CONTROLLER_TYPE = "MeCtMotionPlayer";

@@ -1,14 +1,14 @@
 #include "SBCollisionManager.h"
-#include <sb/SBAttribute.h>
-#include <sb/SBScene.h>
-#include <sb/SBCharacter.h>
+#include "SBAttribute.h"
+#include "SBScene.h"
+#include "SBCharacter.h"
 #ifdef EMBER_SB_STEER
-	#include <sb/SBSteerManager.h>
+	#include "SBSteerManager.h"
 #endif
-#include <sb/SBSimulationManager.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBEvent.h>
-#include <sbm/ODEPhysicsSim.h>
+#include "SBSimulationManager.h"
+#include "SBSkeleton.h"
+#include "SBEvent.h"
+#include "components/sb/sbm/ODEPhysicsSim.h"
 #include <boost/lexical_cast.hpp>
 
 
