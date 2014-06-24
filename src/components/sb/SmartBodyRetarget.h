@@ -2,7 +2,12 @@
 #define RETARGET_H
 
 	#include <string>
-	#include <SmartBody.h>
+
+
+namespace SmartBody
+{
+class SBRetargetManager;
+}
 
 namespace Ember
 {

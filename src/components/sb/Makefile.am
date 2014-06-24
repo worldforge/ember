@@ -30,7 +30,7 @@ libEmberSmartBody_a_SOURCES = \
 
 noinst_HEADERS = \
 \
-	SmartBody.h SmartBodyManager.h SmartBodyPathConsts.h SmartBodySkeletonMap.h SmartBodyBehaviors.h SmartBodyLocomotion.h SmartBodyRetarget.h \
+	SmartBodyManager.h SmartBodyPathConsts.h SmartBodySkeletonMap.h SmartBodyBehaviors.h SmartBodyLocomotion.h SmartBodyRetarget.h \
 \
 	bml/behavior_scheduler_constant_speed.hpp bml/behavior_scheduler_fixed.hpp bml/behavior_scheduler_gesture.hpp bml/behavior_scheduler.hpp bml/behavior_span.hpp bml/bml_animation.hpp bml/bml_bodyreach.hpp bml/bml_constraint.hpp bml/bml_event.hpp bml/bml_exception.hpp bml/bml_face.hpp bml/bml_gaze.hpp bml/bml_general_param.hpp bml/bml_gesture.hpp bml/bml_grab.hpp bml/bml.hpp bml/bml_interrupt.hpp bml/bml_locomotion.hpp bml/bml_noise.hpp bml/bml_processor.hpp bml/bml_quickdraw.hpp bml/bml_reach.hpp bml/bml_saccade.hpp bml/bml_schedule.hpp bml/bml_speech.hpp bml/bml_states.hpp bml/bml_sync_point.hpp bml/bml_target.hpp bml/bml_types.hpp bml/bml_xml_consts.hpp \
 \

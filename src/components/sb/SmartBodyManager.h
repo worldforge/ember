@@ -1,9 +1,19 @@
 #ifndef SMARTBODYMANAGER_H
 #define SMARTBODYMANAGER_H
 
+	#include <string>
 
-#include <SmartBody.h>
 
+namespace SmartBody
+{
+
+class SBScene;
+class SBCharacter;
+class SBAssetManager;
+class SBSimulationManager;
+class SBBmlProcessor;
+
+}
 
 namespace Ogre
 {
@@ -60,6 +70,11 @@ public:
 	 * @brief Creates a new SmartBody character and initialize him (skeleton, behaviors, etc.).
 	 */
 	SmartBody::SBCharacter* createCharacter(const Ogre::Entity& entity, const std::string& group, const std::string& sbSkName);
+
+	/**
+	 * @brief Removes a character from the scene.
+	 */
+	void removeCharacter(SmartBody::SBCharacter *character);
 
 	/**
 	 * @brief Returns the scene.

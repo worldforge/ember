@@ -1,6 +1,12 @@
 #include "SmartBodyRetarget.h"
 #include "SmartBodyManager.h"
 
+#include <sb/SBRetargetManager.h>
+#include <sb/SBRetarget.h>
+
+#include <vector>
+
+
 using namespace Ember;
 namespace Ember
 {

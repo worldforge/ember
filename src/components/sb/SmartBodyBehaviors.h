@@ -3,8 +3,18 @@
 
 	#include <string>
 	#include <vector>
-	#include <SmartBody.h>
 
+
+namespace SmartBody
+{
+
+class SBCharacter;
+class SBAssetManager;
+class SBAnimationBlendManager;
+class SBRetargetManager;
+class SBMotion;
+
+}
 
 namespace Ember
 {

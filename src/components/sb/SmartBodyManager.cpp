@@ -3,6 +3,13 @@
 #include "SmartBodyLocomotion.h"
 #include "SmartBodySkeletonMap.h"
 
+#include <sb/SBScene.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBAssetManager.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBBmlProcessor.h>
+
 #include <OgreSkeletonInstance.h>
 #include <OgreEntity.h>
 #include <OgreBone.h>
@@ -143,6 +150,12 @@ SmartBody::SBCharacter* SmartBodyManager::createCharacter(const Ogre::Entity& en
 	retargetAllBehaviors(*character);
 
 	return character;
+}
+
+//public.
+void SmartBodyManager::removeCharacter(SmartBody::SBCharacter *character)
+{
+	mScene->removeCharacter(character->getName());
 }
 
 void SmartBodyManager::setManualControl(const Ogre::Entity& entity, bool mode)
