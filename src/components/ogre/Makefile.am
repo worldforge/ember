@@ -92,7 +92,7 @@ libEmberOgre_a_SOURCES = \
 	Avatar.cpp AvatarCameraWarper.cpp \
 	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
 	EmberEntityActionCreator.cpp \
-	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
+	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp EmberEntityHumanoidModelAction.cpp \
 	EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp \
 	EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp \
@@ -198,7 +198,7 @@ noinst_HEADERS = \
 	Avatar.h AvatarCameraWarper.h MovementController.h \
 	AvatarLogger.h AvatarTerrainCursor.h \
 	EmberEntityActionCreator.h EmberEntityFactory.h \
-	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
+	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityHumanoidModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgreFileSystem.h EmberOgrePrerequisites.h \
 	EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h \
 	IWorldPickListener.h Convert.h MediaUpdater.h MeshCollisionDetector.h \

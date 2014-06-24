@@ -29,6 +29,7 @@
 namespace Ember
 {
 class EmberEntity;
+
 namespace EntityMapping
 {
 class EntityMapping;
@@ -38,6 +39,12 @@ namespace OgreView
 
 class Scene;
 
+namespace Model
+{
+class Model;
+class ModelRepresentation;
+}
+
 /**
  * @brief Show a certain Model.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -45,7 +52,7 @@ class Scene;
 class EmberEntityModelAction: public EntityMapping::Actions::Action
 {
 public:
-	EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene, EntityMapping::EntityMapping& mMapping);
+	EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene, EntityMapping::EntityMapping& modelMapping);
 	virtual ~EmberEntityModelAction();
 
 	virtual void activate(EntityMapping::ChangeContext& context);
@@ -64,6 +71,13 @@ protected:
 	EntityMapping::EntityMapping& mMapping;
 
 	void ChangeContext_ContextComplete();
+
+private:
+
+	/**
+	 * @brief Creates the corresponding ModelRepresentation.
+	 */
+	virtual Model::ModelRepresentation* createModelRepresentation(Model::Model& model);
 
 };
 

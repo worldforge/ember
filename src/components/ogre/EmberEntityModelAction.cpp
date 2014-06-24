@@ -35,10 +35,6 @@
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/IVisitor.h"
 #include "components/entitymapping/Cases/CaseBase.h"
-#include "components/sb/SmartBodyManager.h"
-#include "components/ogre/EmberOgre.h"
-#include "components/ogre/model/ModelRepresentationHumanoid.h"
-#include <OgreSkeletonInstance.h>
 
 namespace Ember
 {
@@ -101,9 +97,10 @@ EmberEntityModelAction::~EmberEntityModelAction()
 }
 
 void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
-{
+{	
 	Model::Model* model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
-	if (!model || model->getDefinition()->getName() != mModelName) {
+	if (!model || model->getDefinition()->getName() != mModelName) 
+	{
 		mEntity.setGraphicalRepresentation(0);
 		model = Model::Model::createModel(mScene.getSceneManager(), mModelName, mEntity.getId());
 		model->setVisible(mEntity.isVisible());
@@ -118,40 +115,9 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 			modelDef->reloadAllInstances();
 		}
 
-		//See if this model possesses a SmartBody skeleton.
-		Ogre::SkeletonInstance *skeleton = model->getSkeleton();
-		if (skeleton) 
-		{
-			SmartBodyManager *sbManager = OgreView::EmberOgre::getSingleton().getSmartBodyManager();
-
-			//Get the name that the SmartBody skeleton should have.
-			std::string sbSkName(0);
-			sbManager->setCorrespondingSkeletonName(sbSkName, skeleton->getName());
-
-			//If the skeleton exists for SmartBody, then create the corresponding character.
-			if (sbManager->hasSkeleton(sbSkName))
-			{
-				//Create the model representation set for SmartBody humanoid character.
-				Model::ModelRepresentationHumanoid* representation = new Model::ModelRepresentationHumanoid(mEntity, *model, mScene, mMapping,
-						sbManager, sbSkName);
-				mEntity.setGraphicalRepresentation(representation);
-				representation->initFromModel();
-			}
-
-			else
-			{
-				Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
-				mEntity.setGraphicalRepresentation(representation);
-				representation->initFromModel();
-			}
-		}
-
-		else
-		{
-			Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
-			mEntity.setGraphicalRepresentation(representation);
-			representation->initFromModel();
-		}		
+		Model::ModelRepresentation *representation = createModelRepresentation(*model);
+		mEntity.setGraphicalRepresentation(representation);
+		representation->initFromModel();
 	}
 }
 
@@ -169,6 +135,12 @@ void EmberEntityModelAction::ChangeContext_ContextComplete()
 		ModelReactivatorVisitor visitor;
 		mMapping.getRootEntityMatch().accept(visitor);
 	}
+}
+
+Model::ModelRepresentation* EmberEntityModelAction::createModelRepresentation(Model::Model& model)
+{
+	Model::ModelRepresentation *representation = new Model::ModelRepresentation(mEntity, model, mScene, mMapping);
+	return representation;
 }
 
 }

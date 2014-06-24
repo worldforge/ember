@@ -25,6 +25,7 @@
 #endif
 #include "EmberEntityActionCreator.h"
 #include "EmberEntityModelAction.h"
+#include "EmberEntityHumanoidModelAction.h"
 #include "EmberEntityHideModelAction.h"
 #include "EmberEntityPartAction.h"
 #include "CompositionAction.h"
@@ -53,25 +54,49 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 {
 	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+
 		if (J->getType() == "display-part") {
+
 			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, J->getValue());
 			aCase->addAction(action);
-		} else if (J->getType() == "display-model") {
+		} 
+
+		else if (J->getType() == "display-model") {
+
 			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getValue(), mScene, modelMapping);
 			aCase->addAction(action);
-		} else if (J->getType() == "hide-model") {
+		} 
+
+		else if (J->getType() == "display-humanoid") {
+
+			EmberEntityHumanoidModelAction* action = new EmberEntityHumanoidModelAction(mEntity, J->getValue(), mScene, modelMapping);
+			aCase->addAction(action);
+		} 
+
+		else if (J->getType() == "hide-model") {
+
 			EmberEntityHideModelAction* action = new EmberEntityHideModelAction(mEntity);
 			aCase->addAction(action);
-		} else if (J->getType() == "display-label") {
+		}
+
+		else if (J->getType() == "display-label") {
+
 			auto action = new Gui::LabelAction(mEntity);
 			aCase->addAction(action);
-		} else if (J->getType() == "display-ocean") {
+		} 
+
+		else if (J->getType() == "display-ocean") {
+
 			Environment::OceanAction* action = new Environment::OceanAction(mEntity);
 			aCase->addAction(action);
-		} else if (J->getType() == "enable-composition") {
+		} 
+
+		else if (J->getType() == "enable-composition") {
 			CompositionAction* action = new CompositionAction(mEntity, J->getValue());
 			aCase->addAction(action);
-		} else if (J->getType() == "display-world") {
+		} 
+
+		else if (J->getType() == "display-world") {
 			aCase->addAction(new Environment::WorldAction(mEntity));
 		}
 	}
