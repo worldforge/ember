@@ -22,8 +22,11 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodyManager::SmartBodyManager(void)
-	: mScene(nullptr), mAssetManager(nullptr), mSimulation(nullptr), mProcessor(nullptr), mIsInit(false), mLocomotion(nullptr)
+
+// mScene stays as a pointer and not a reference, because the call the SBScene::getScene() allocates it. Consequently, is has to be deleted at the end.
+SmartBodyManager::SmartBodyManager(void) 
+	: mScene(SmartBody::SBScene::getScene()), mAssetManager(*mScene->getAssetManager()), mSimulation(*mScene->getSimulationManager()),
+	  mProcessor(*mScene->getBmlProcessor()), mIsInit(false), mLocomotion(nullptr)
 {
 }
 
@@ -38,13 +41,8 @@ SmartBodyManager::~SmartBodyManager(void)
 void SmartBodyManager::initialize(void)
 {
 	//Initialization of SmartBody library.
-	mScene = SmartBody::SBScene::getScene();
+	//TODO : suppress ? I think this line do nothing X.X
 	mScene->start();
-
-	//Set the member parameters.
-	mAssetManager = mScene->getAssetManager();
-	mSimulation = mScene->getSimulationManager();
-	mProcessor = mScene->getBmlProcessor();
 
 	//Set the media path : where to find the assets.
 	mScene->setMediaPath(EMBER_SMARTBODY_MEDIAPATH);
@@ -62,17 +60,13 @@ void SmartBodyManager::initialize(void)
 void SmartBodyManager::addAssetPaths(void) 
 {
 	//Character skeletons.
-	mAssetManager->addAssetPath("motion", EMBER_SMARTBODY_ASSETS_SKELETONS);
+	mAssetManager.addAssetPath("motion", EMBER_SMARTBODY_ASSETS_SKELETONS);
 }
 
 void SmartBodyManager::loadAllBehaviors(void)
 {
-	/* Should we load the behaviors at the beginning or when they are used for the first time... 
-	I think it is better at the beginning because it can take time, and this is not good to have lagging during the simulation.
-	*/
-
 	//Locomotion behavior.
-	mLocomotion = new SmartBodyLocomotion(EMBER_SMARTBODY_ASSETS_LOCOMOTION, EMBER_SMARTBODY_SKELETON_LOCOMOTION, this);
+	mLocomotion = new SmartBodyLocomotion(EMBER_SMARTBODY_ASSETS_LOCOMOTION, EMBER_SMARTBODY_SKELETON_LOCOMOTION, *this);
 	mLocomotion->setup();
 }
 
@@ -99,7 +93,7 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load)
 {
 	assert(mIsInit);
 
-	if (mAssetManager->getSkeleton(skName))
+	if (mAssetManager.getSkeleton(skName))
 	{
 		return true;
 	}
@@ -107,8 +101,8 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load)
 	else if (load)
 	{
 		//Try to load the skeleton.
-		mAssetManager->loadAsset(skName);
-		if (!mAssetManager->getSkeleton(skName))
+		mAssetManager.loadAsset(skName);
+		if (!mAssetManager.getSkeleton(skName))
 		{
 			return false;
 		}
@@ -118,7 +112,7 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load)
 		if (map.exists())
 		{
 			//Finally, map the skeleton.
-			map.setMap(this);
+			map.setMap(*this);
 		}
 
 		return true;
@@ -170,13 +164,13 @@ void SmartBodyManager::setManualControl(const Ogre::Entity& entity, bool mode)
 }
 
 //public.
-SmartBody::SBScene* SmartBodyManager::getScene(void) const
+SmartBody::SBScene& SmartBodyManager::getScene(void) const
 {
-	return mScene;
+	return *mScene;
 }
 
 //public.
-SmartBody::SBAssetManager* SmartBodyManager::getAssetManager(void) const
+SmartBody::SBAssetManager& SmartBodyManager::getAssetManager(void) const
 {
 	return mAssetManager;
 }

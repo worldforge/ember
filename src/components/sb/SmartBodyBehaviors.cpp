@@ -13,20 +13,12 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodyBehaviors::SmartBodyBehaviors(const std::string& motionPath, const std::string& skeletonRef, SmartBodyManager *manager)
-	: mSkelRefName(skeletonRef), mSetup(false)
+SmartBodyBehaviors::SmartBodyBehaviors(const std::string& motionPath, const std::string& skeletonRef, SmartBodyManager& manager)
+	: mSkelRefName(skeletonRef), mSetup(false), mAssetManager(manager.getAssetManager()), mBlendManager(*manager.getScene().getBlendManager()),
+	  mRetargetManager(*manager.getScene().getRetargetManager())
 {
-	//Sets the asset manager. 
-	mAssetManager = manager->getAssetManager();
-
-	//Sets the blend manager. 
-	mBlendManager = manager->getScene()->getBlendManager();	
-
-	//Sets the retargeting manager.
-	mRetargetManager = manager->getScene()->getRetargetManager();
-
 	//Loads the assets.
-	mAssetManager->loadAssetsFromPath(motionPath);
+	mAssetManager.loadAssetsFromPath(motionPath);
 }
 
 SmartBodyBehaviors::~SmartBodyBehaviors()
@@ -53,7 +45,7 @@ bool SmartBodyBehaviors::setup(bool check)
 
 bool SmartBodyBehaviors::assetsExist(void)
 {
-	if (!mAssetManager->getSkeleton(mSkelRefName))
+	if (!mAssetManager.getSkeleton(mSkelRefName))
 	{
 		//std::cout << "Error : " + mSkelRefName + " does not exists." << std::endl;
 		return false;
@@ -62,7 +54,7 @@ bool SmartBodyBehaviors::assetsExist(void)
 	std::vector<std::string> motions = getMotions();
 	for (int i = 0; i < motions.size(); i ++)
 	{
-		SmartBody::SBMotion *motion = mAssetManager->getMotion(motions[i]);
+		SmartBody::SBMotion *motion = mAssetManager.getMotion(motions[i]);
 
 		if (!motion)
 		{
@@ -83,9 +75,9 @@ void SmartBodyBehaviors::setupBehaviors(void)
 	int size = motions.size();
 	for (int i = 0; i < size; i ++)
 	{
-		SmartBody::SBMotion *motion = mAssetManager->getMotion(motions[i]);
+		SmartBody::SBMotion *motion = mAssetManager.getMotion(motions[i]);
 		motion->setMotionSkeletonName(mSkelRefName);
-		setupMotion(motion);
+		setupMotion(*motion);
 	}		
 }
 

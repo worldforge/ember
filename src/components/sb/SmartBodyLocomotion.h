@@ -18,7 +18,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyLocomotion(std::string const &motionPath, std::string const &skeletonRef, SmartBodyManager *manager);
+	SmartBodyLocomotion(std::string const &motionPath, std::string const &skeletonRef, SmartBodyManager& manager);
 
 	/**
 	 * @brief Dtor.
@@ -42,7 +42,7 @@ private:
 	/**
 	 * @brief Create the build joint trajectories for this motion.
 	 */
-	void setupMotion(SmartBody::SBMotion *motion);
+	void setupMotion(SmartBody::SBMotion& motion);
 
 	/**
 	 * @brief Gets the name of all the motions contained in the locomotion set.

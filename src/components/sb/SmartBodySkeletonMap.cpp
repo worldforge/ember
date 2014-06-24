@@ -37,10 +37,10 @@ bool SmartBodySkeletonMap::exists() const
 }
 
 
-void SmartBodySkeletonMap::setMap(SmartBodyManager const *sbManager) const
+void SmartBodySkeletonMap::setMap(const SmartBodyManager& sbManager) const
 {
-	SmartBody::SBSkeleton *skeleton = sbManager->getAssetManager()->getSkeleton(mName);
-	SmartBody::SBJointMap *jointMap = sbManager->getScene()->getJointMapManager()->createJointMap(mName);
+	SmartBody::SBSkeleton *skeleton = sbManager.getAssetManager().getSkeleton(mName);
+	SmartBody::SBJointMap *jointMap = sbManager.getScene().getJointMapManager()->createJointMap(mName);
 
 	//Creation of the joint map.
 	for (int i = 0; i < mBones.size(); i += 2)

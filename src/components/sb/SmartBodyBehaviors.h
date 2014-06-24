@@ -39,7 +39,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyBehaviors(std::string const &motionPath, std::string const &skeletonRef, SmartBodyManager *manager);
+	SmartBodyBehaviors(std::string const &motionPath, std::string const &skeletonRef, SmartBodyManager& manager);
 
 	/**
 	 * @brief Dtor.
@@ -66,19 +66,19 @@ protected:
 	std::string mSkelRefName;
 
 	/**
-	 * @brief Pointer to the asset manager.
+	 * @brief Reference to the asset manager.
 	 */
-	SmartBody::SBAssetManager *mAssetManager;
+	SmartBody::SBAssetManager& mAssetManager;
 
 	/**
-	 * @brief Pointer to the animation blend manager.
+	 * @brief Reference to the animation blend manager.
 	 */
-	SmartBody::SBAnimationBlendManager *mBlendManager;
+	SmartBody::SBAnimationBlendManager& mBlendManager;
 
 	/**
-	 * @brief Pointer to the retarget manager.
+	 * @brief Reference to the retarget manager.
 	 */
-	SmartBody::SBRetargetManager *mRetargetManager;
+	SmartBody::SBRetargetManager& mRetargetManager;
 
 	/**
 	 * @brief Stating that setup has been effectuated.
@@ -91,7 +91,7 @@ protected:
 	 */
 	void setupBehaviors(void);
 
-	virtual void setupMotion(SmartBody::SBMotion *motion) = 0;
+	virtual void setupMotion(SmartBody::SBMotion& motion) = 0;
 
 	virtual std::vector<std::string> getMotions(void) = 0;
 

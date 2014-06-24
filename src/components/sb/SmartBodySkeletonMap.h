@@ -42,7 +42,7 @@ public:
 	/**
 	 * @brief Create the joint map and assign it to the skeleton.
 	 */
-	void setMap(SmartBodyManager const *sbManager) const;
+	void setMap(const SmartBodyManager& sbManager) const;
 
 	/**
 	 * @brief Check that the map exists (namely that the map file exists, and that it is correctly written).

@@ -15,7 +15,7 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodyLocomotion::SmartBodyLocomotion(const std::string& motionPath, const std::string& skeletonRef, SmartBodyManager *manager)
+SmartBodyLocomotion::SmartBodyLocomotion(const std::string& motionPath, const std::string& skeletonRef, SmartBodyManager& manager)
 	: SmartBodyBehaviors::SmartBodyBehaviors(motionPath, skeletonRef, manager)
 {
 }
@@ -52,12 +52,12 @@ void SmartBodyLocomotion::retarget(SmartBody::SBCharacter& character)
 
 
 
-void SmartBodyLocomotion::setupMotion(SmartBody::SBMotion *motion)
+void SmartBodyLocomotion::setupMotion(SmartBody::SBMotion& motion)
 {
-	motion->buildJointTrajectory("l_forefoot", "base");
-	motion->buildJointTrajectory("r_forefoot", "base");
-	motion->buildJointTrajectory("l_ankle", "base");
-	motion->buildJointTrajectory("r_ankle", "base");
+	motion.buildJointTrajectory("l_forefoot", "base");
+	motion.buildJointTrajectory("r_forefoot", "base");
+	motion.buildJointTrajectory("l_ankle", "base");
+	motion.buildJointTrajectory("r_ankle", "base");
 }
 
 
@@ -134,11 +134,11 @@ std::vector<std::string> SmartBodyLocomotion::getMotionsForLocomotionSetup(void)
 void SmartBodyLocomotion::locomotionSetup()
 {	
 	//If the blend is already existing, we don't need to do anything. 
-	if (mBlendManager->getBlend("allLocomotion") != NULL)
+	if (mBlendManager.getBlend("allLocomotion") != NULL)
 		return;
 
 	//Creates a new stateManager refering to the original skeleton.
-	SmartBody::SBAnimationBlend3D *blend = mBlendManager->createBlend3D("allLocomotion");
+	SmartBody::SBAnimationBlend3D *blend = mBlendManager.createBlend3D("allLocomotion");
 	blend->setBlendSkeleton(mSkelRefName);
 
 	//We get the original set of motions.
@@ -189,7 +189,7 @@ void SmartBodyLocomotion::locomotionSetup()
 	}
 
 	//We then set the correct parameters for each motion in the blend. 
-	SmartBody::SBSkeleton *skeleton = mAssetManager->getSkeleton(mSkelRefName);
+	SmartBody::SBSkeleton *skeleton = mAssetManager.getSkeleton(mSkelRefName);
 	SmartBody::SBJoint *joint = skeleton->getJointByName("base");
 
 	float directions[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, -90, 90, -90};
@@ -199,7 +199,7 @@ void SmartBodyLocomotion::locomotionSetup()
 
 	for (int i = 0; i < size; i ++)
 	{
-		motion = mAssetManager->getMotion(motions[i]);
+		motion = mAssetManager.getMotion(motions[i]);
 		motion->connect(skeleton);
 
 		points = blend->getCorrespondencePoints(i);
@@ -266,13 +266,13 @@ void SmartBodyLocomotion::locomotionSetup()
 void SmartBodyLocomotion::startingSetup()
 {
 	//Generates the mirror animations for StopToWalk, Idle_ToWalk_Turn90 and Idle_ToWalk_Turn 180.
-	SmartBody::SBMotion *mirrorMotion1 = mAssetManager->getMotion("ChrUtah_StopToWalkRt01");
+	SmartBody::SBMotion *mirrorMotion1 = mAssetManager.getMotion("ChrUtah_StopToWalkRt01");
 	mirrorMotion1->mirror("ChrUtah_StopToWalkLf01", mSkelRefName);
 
-	SmartBody::SBMotion *mirrorMotion2 = mAssetManager->getMotion("ChrUtah_Idle01_ToWalk01_Turn90Lf01");
+	SmartBody::SBMotion *mirrorMotion2 = mAssetManager.getMotion("ChrUtah_Idle01_ToWalk01_Turn90Lf01");
 	mirrorMotion2->mirror("ChrUtah_Idle01_ToWalk01_Turn90Rt01", mSkelRefName);
 
-	SmartBody::SBMotion *mirrorMotion3 = mAssetManager->getMotion("ChrUtah_Idle01_ToWalk01_Turn180Lf01");
+	SmartBody::SBMotion *mirrorMotion3 = mAssetManager.getMotion("ChrUtah_Idle01_ToWalk01_Turn180Lf01");
 	mirrorMotion2->mirror("ChrUtah_Idle01_ToWalk01_Turn180Rt01", mSkelRefName);
 
 	//Gets the original set of motions.
@@ -304,10 +304,10 @@ void SmartBodyLocomotion::startingSetup()
 	//Sets the blend manager for each side.
 	for (int i = 0; i < 2; i ++)
 	{
-		if (mBlendManager->getBlend(blendNames[i]) != 0)
+		if (mBlendManager.getBlend(blendNames[i]) != 0)
 			continue;
 
-		SmartBody::SBAnimationBlend1D *blend = mBlendManager->createBlend1D(blendNames[i]);
+		SmartBody::SBAnimationBlend1D *blend = mBlendManager.createBlend1D(blendNames[i]);
 		blend->setBlendSkeleton(mSkelRefName);
 
 		for (int j = 0; j < 3; j ++)
@@ -324,10 +324,10 @@ void SmartBodyLocomotion::startingSetup()
 
 void SmartBodyLocomotion::idleTurnSetup()
 {	
-	if (mBlendManager->getBlend("allIdleTurn") != 0)
+	if (mBlendManager.getBlend("allIdleTurn") != 0)
 		return;
 
-	SmartBody::SBAnimationBlend1D *blend = mBlendManager->createBlend1D("allIdleTurn");
+	SmartBody::SBAnimationBlend1D *blend = mBlendManager.createBlend1D("allIdleTurn");
 
 	std::vector<std::string> motions;
 	motions.push_back("ChrUtah_Idle001");
@@ -368,10 +368,10 @@ void SmartBodyLocomotion::idleTurnSetup()
 
 void SmartBodyLocomotion::stepSetup()
 {
-	if (mBlendManager->getBlend("allStep") != 0)
+	if (mBlendManager.getBlend("allStep") != 0)
 		return;
 
-	SmartBody::SBAnimationBlend2D *blend = mBlendManager->createBlend2D("allStep");
+	SmartBody::SBAnimationBlend2D *blend = mBlendManager.createBlend2D("allStep");
 	blend->setBlendSkeleton(mSkelRefName);
 
 	std::vector<std::string> motions;
@@ -416,7 +416,7 @@ void SmartBodyLocomotion::stepSetup()
 		blend->addCorrespondencePoints(motions, points[i]);
 	}
 
-	SmartBody::SBSkeleton *skeleton = mAssetManager->getSkeleton(mSkelRefName);
+	SmartBody::SBSkeleton *skeleton = mAssetManager.getSkeleton(mSkelRefName);
 	SmartBody::SBJoint *joint = skeleton->getJointByName("base");
 
 	SmartBody::SBMotion *motion;
@@ -425,7 +425,7 @@ void SmartBodyLocomotion::stepSetup()
 
 	for (int i = 0; i < 7; i ++)
 	{
-		motion = mAssetManager->getMotion(motions[i]);
+		motion = mAssetManager.getMotion(motions[i]);
 		motion->connect(skeleton);
 
 		pts = blend->getCorrespondencePoints(i);
@@ -444,16 +444,16 @@ void SmartBodyLocomotion::stepSetup()
 
 void SmartBodyLocomotion::transitionSetup()
 {	
-	if (mBlendManager->getTransition("allStartingLeft", "allLocomotion") == 0)
+	if (mBlendManager.getTransition("allStartingLeft", "allLocomotion") == 0)
 	{
-		SmartBody::SBAnimationTransition *transition = mBlendManager->createTransition("allStartingLeft", "allLocomotion");
+		SmartBody::SBAnimationTransition *transition = mBlendManager.createTransition("allStartingLeft", "allLocomotion");
 		transition->setEaseInInterval("ChrUtah_Meander01", 0.4, 0.78);
 		transition->addEaseOutInterval("ChrUtah_StopToWalkLf01", 0.54, 0.83);
 	}
 
-	if (mBlendManager->getTransition("allStartingRight", "allLocomotion") == 0)
+	if (mBlendManager.getTransition("allStartingRight", "allLocomotion") == 0)
 	{
-		SmartBody::SBAnimationTransition *transition = mBlendManager->createTransition("allStartingRight", "allLocomotion");
+		SmartBody::SBAnimationTransition *transition = mBlendManager.createTransition("allStartingRight", "allLocomotion");
 		transition->setEaseInInterval("ChrUtah_Meander01", 1.1, 1.5);
 		transition->addEaseOutInterval("ChrUtah_StopToWalkRt01", 0.54, 0.83);
 	}

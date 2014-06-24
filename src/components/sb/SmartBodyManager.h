@@ -79,34 +79,34 @@ public:
 	/**
 	 * @brief Returns the scene.
 	 */
-	SmartBody::SBScene* getScene(void) const;
+	SmartBody::SBScene& getScene(void) const;
 
 	/**
 	 * @brief Returns the asset manager.
 	 */
-	SmartBody::SBAssetManager* getAssetManager(void) const;
+	SmartBody::SBAssetManager& getAssetManager(void) const;
 
 private:
 
 	/**
-	 * @brief SmartBody scene.
+	 * @brief The SmartBody scene.
 	 */
 	SmartBody::SBScene *mScene;
 
 	/**
 	 * @brief SmartBody asset manager.
 	 */
-	SmartBody::SBAssetManager *mAssetManager;
+	SmartBody::SBAssetManager& mAssetManager;
 
 	/**
 	 * @brief SmartBody simulation object.
 	 */
-	SmartBody::SBSimulationManager *mSimulation;
+	SmartBody::SBSimulationManager& mSimulation;
 
 	/**
 	 * @brief SmartBody BML Processor.
 	 */
-	SmartBody::SBBmlProcessor *mProcessor;
+	SmartBody::SBBmlProcessor& mProcessor;
 
 	/**
 	 * @brief Locomotion behavior.

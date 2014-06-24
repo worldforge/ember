@@ -11,9 +11,9 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodyRetarget::SmartBodyRetarget(const std::string& srcSkName, const std::string& tgtSkName, SmartBody::SBRetargetManager *manager)
+SmartBodyRetarget::SmartBodyRetarget(const std::string& srcSkName, const std::string& tgtSkName, SmartBody::SBRetargetManager& manager)
 {
-	SmartBody::SBRetarget *retarget = manager->getRetarget(srcSkName, tgtSkName);
+	SmartBody::SBRetarget *retarget = manager.getRetarget(srcSkName, tgtSkName);
 
 	//If retarget is NULL, then the instance has never been set and we must create it.
 	if (!retarget)
@@ -28,7 +28,7 @@ SmartBodyRetarget::~SmartBodyRetarget(void)
 }
 
 
-void SmartBodyRetarget::createInstance(const std::string& srcSk, const std::string& tgtSk, SmartBody::SBRetargetManager *manager)
+void SmartBodyRetarget::createInstance(const std::string& srcSk, const std::string& tgtSk, SmartBody::SBRetargetManager& manager)
 {
 	//Sets the end joints.
 	std::vector<std::string> endJoints;
@@ -54,7 +54,7 @@ void SmartBodyRetarget::createInstance(const std::string& srcSk, const std::stri
 	relJoints.push_back("l_acromioclavicular");
 	
 	//Creation of the retarget instance.
-	SmartBody::SBRetarget *retarget = manager->createRetarget(srcSk, tgtSk);
+	SmartBody::SBRetarget *retarget = manager.createRetarget(srcSk, tgtSk);
 	retarget->initRetarget(endJoints, relJoints);
 }
 
