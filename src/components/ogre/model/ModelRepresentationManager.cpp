@@ -20,6 +20,7 @@
 
 #include "Model.h"
 #include "ModelRepresentation.h"
+#include "ModelRepresentationHumanoid.h"
 #include "domain/EmberEntity.h"
 #include "domain/IGraphicalRepresentation.h"
 
@@ -44,7 +45,11 @@ ModelRepresentationManager::~ModelRepresentationManager()
 Model* ModelRepresentationManager::getModelForEntity(EmberEntity& entity) const
 {
 	IGraphicalRepresentation* representation = entity.getGraphicalRepresentation();
-	if (representation && representation->getType() == ModelRepresentation::getTypeNameForClass()) {
+	if (representation && (
+			representation->getType() == ModelRepresentation::getTypeNameForClass() ||
+		 	representation->getType() == ModelRepresentationHumanoid::getTypeNameForClass() )
+	   )
+	{
 		return &static_cast<ModelRepresentation*>(representation)->getModel();
 	}
 	return 0;
@@ -53,7 +58,11 @@ Model* ModelRepresentationManager::getModelForEntity(EmberEntity& entity) const
 ModelRepresentation* ModelRepresentationManager::getRepresentationForEntity(EmberEntity& entity) const
 {
 	IGraphicalRepresentation* representation = entity.getGraphicalRepresentation();
-	if (representation && representation->getType() == ModelRepresentation::getTypeNameForClass()) {
+	if (representation && (
+			representation->getType() == ModelRepresentation::getTypeNameForClass() ||
+		 	representation->getType() == ModelRepresentationHumanoid::getTypeNameForClass() )
+	   )
+	{
 		return static_cast<ModelRepresentation*>(representation);
 	}
 	return 0;

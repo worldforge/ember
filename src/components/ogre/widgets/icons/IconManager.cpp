@@ -111,7 +111,7 @@ public:
 	{
 		EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 		for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-			if (J->getType() == "display-model") {
+			if (J->getType() == "display-model" || J->getType() == "display-humanoid") {
 				mModelName = J->getValue();
 			}
 		}

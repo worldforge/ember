@@ -76,9 +76,9 @@ protected:
 	 */
 	static std::string sTypeName;
 
-
-private:
-
+	/**
+	* @brief Create the character representation in SmartBody.
+	*/
 	void createSmartBodyCharacter(void);
 };
 

@@ -41,8 +41,8 @@ public:
 	virtual ~EmberEntityHumanoidModelAction(void);
 
 
-private:
-
+protected:
+	
 	/**
 	 * @brief Creates the corresponding ModelRepresentationHumanoid.
 	 */

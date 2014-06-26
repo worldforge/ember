@@ -542,7 +542,7 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 						const EntityMapping::Definitions::CaseDefinition& firstCase = *first;
 						if (firstCase.getActions().begin() != firstCase.getActions().end()) {
 							const EntityMapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
-							if (firstAction.getType() == "display-model") {
+							if (firstAction.getType() == "display-model" || firstAction.getType() == "display-humanoid") {
 								//update the model preview window
 								mModelPreviewRenderer->showModel(firstAction.getValue());
 								//mModelPreviewRenderer->showFull();

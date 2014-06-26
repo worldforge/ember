@@ -72,8 +72,6 @@ protected:
 
 	void ChangeContext_ContextComplete();
 
-private:
-
 	/**
 	 * @brief Creates the corresponding ModelRepresentation.
 	 */
