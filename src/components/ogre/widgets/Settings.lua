@@ -374,7 +374,7 @@ function SettingsWidget:buildSettingsUi()
 					key = "pagesize",
 
 					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new_local(value, true) end,
-					suggestions = {64, 128, 256, 512},
+					suggestions = {64, 128, 256, 512, 1024, 2048},
 				},
 				{
 					label = "Terrain load radius",
@@ -384,7 +384,7 @@ function SettingsWidget:buildSettingsUi()
 					key = "loadradius",
 
 					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new_local(value, true) end,
-					suggestions = {100, 300, 500},
+					suggestions = {100, 300, 500, 700, 900, 1100, 1300, 1500, 2000, 3000},
 				},
 
 			},
