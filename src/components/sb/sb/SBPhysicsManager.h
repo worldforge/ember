@@ -1,9 +1,9 @@
 #ifndef _SBPHYSICSMANAGER_H_
 #define _SBPHYSICSMANAGER_H_
 
-#include "components/sb/vhcl/vhcl.h"
-#include "SBTypes.h"
-#include "SBService.h"
+#include <vhcl/vhcl.h>
+#include <sb/SBTypes.h>
+#include <sb/SBService.h>
 
 class ODEPhysicsSim;
 

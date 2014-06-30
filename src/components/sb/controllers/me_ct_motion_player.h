@@ -23,9 +23,9 @@
 #ifndef _ME_CT_MOTION_PLAYER_H
 #define _ME_CT_MOTION_PLAYER_H
 
-#include "me_ct_container.hpp"
-#include "me_ct_motion.h"
-#include "components/sb/sb/sbm_character.hpp"
+#include <controllers/me_ct_container.hpp>
+#include <controllers/me_ct_motion.h>
+#include <sb/sbm_character.hpp>
 
 #include <string>
 

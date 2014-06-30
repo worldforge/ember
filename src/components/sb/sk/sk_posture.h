@@ -21,13 +21,13 @@
  *      Andrew n marshall, USC
  */
 
-#ifndef SK_POSTURE_H
-#define SK_POSTURE_H
+# ifndef SK_POSTURE_H
+# define SK_POSTURE_H
 
-#include "components/sb/sr/sr_vec.h"
-#include "components/sb/sr/sr_buffer.h"
+# include <sr/sr_vec.h>
+# include <sr/sr_buffer.h>
 
-#include "sk_channel_array.h"
+# include <sk/sk_channel_array.h>
 
 class SkSkeleton;
 

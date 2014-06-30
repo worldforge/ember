@@ -21,10 +21,10 @@
  *      Andrew n marshall, USC
  */
 
-#ifndef SK_VEC_LIMITS_H
-#define SK_VEC_LIMITS_H
+# ifndef SK_VEC_LIMITS_H
+# define SK_VEC_LIMITS_H
 
-#include "components/sb/sr/sr.h"
+# include <sr/sr.h>
 
 /*! SkVecLimits maintains a vector and min/max limits for its three (x,y,z) coordinates. */
 class SkVecLimits

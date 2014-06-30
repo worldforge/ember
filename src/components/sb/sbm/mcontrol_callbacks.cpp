@@ -1,4 +1,4 @@
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 #ifdef EMBER_SB_VHMSG
 #ifndef __native_client__
 #ifndef SB_NO_VHMSG
@@ -15,53 +15,53 @@
 #include <boost/version.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/replace.hpp>
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBAssetManager.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBPhysicsManager.h"
-#include "components/sb/sb/SBSpeechManager.h" // ?
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
+#include <sb/SBMotion.h>
+#include <sb/SBAssetManager.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBPhysicsManager.h>
+#include <sb/SBSpeechManager.h> // ?
 #ifdef EMBER_SB_VHMSG
-#include "components/sb/sb/SBVHMsgManager.h"
+#include <sb/SBVHMsgManager.h>
 #endif
 #ifdef EMBER_SB_BONEBUS
-	#include "components/sb/sb/SBBoneBusManager.h"
+	#include <sb/SBBoneBusManager.h>
 #endif
-#include "components/sb/sb/SBAnimationState.h"
-#include "components/sb/sb/SBAnimationStateManager.h"
-#include "components/sb/sb/SBAnimationTransition.h"
+#include <sb/SBAnimationState.h>
+#include <sb/SBAnimationStateManager.h>
+#include <sb/SBAnimationTransition.h>
 #ifdef EMBER_SB_VHMSG
-#include "components/sb/sb/SBVHMsgManager.h" 
+#include <sb/SBVHMsgManager.h> 
 #endif
-#include "components/sb/sb/SBCommandManager.h"
+#include <sb/SBCommandManager.h>
 #ifdef EMBER_SB_WSP
-	#include "components/sb/sb/SBWSPManager.h" // ?
+	#include <sb/SBWSPManager.h> // ?
 #endif
-#include "components/sb/controllers/me_ct_param_animation.h"
-#include "components/sb/controllers/me_ct_data_receiver.h" 
-#include "components/sb/controllers/me_ct_scheduler2.h"
-#include "components/sb/controllers/me_ct_breathing.h"
-#include "components/sb/controllers/me_controller_tree_root.hpp"
+#include <controllers/me_ct_param_animation.h>
+#include <controllers/me_ct_data_receiver.h> 
+#include <controllers/me_ct_scheduler2.h>
+#include <controllers/me_ct_breathing.h>
+#include <controllers/me_controller_tree_root.hpp>
 #ifdef EMBER_SB_STEER
-	#include "PPRAISteeringAgent.h>"// ?
+	#include <sbm/PPRAISteeringAgent.h> // ?
 #endif
 #ifdef EMBER_SB_CAMERA
-	#include "components/sb/sr/sr_camera.h"
+	#include <sr/sr_camera.h>
 #endif
 #ifdef EMBER_SB_HEIGHTFIELD
-	#include "Heightfield.h"
+	#include <sbm/Heightfield.h>
 #endif
 #ifdef EMBER_SB_KINECT
-	#include "KinectProcessor.h" // ?
+	#include <sbm/KinectProcessor.h> // ?
 #endif
-#include "local_speech.h" // ?
-#include "components/sb/sr/sr_timer.h"
+#include <sbm/local_speech.h> // ?
+#include <sr/sr_timer.h>
 
-#include "action_unit.hpp"
+#include <sbm/action_unit.hpp>
 #ifdef EMBER_SB_VHMSG
 #ifndef SB_NO_VHMSG
-#include "vhmsg.h"
+#include <vhmsg.h>
 #endif
 #endif
 
@@ -87,15 +87,15 @@
 #endif
 #endif
 
-#include "components/sb/sr/sr_model.h"
-#include "components/sb/sb/sbm_pawn.hpp"
-#include "components/sb/sb/SBEvent.h"
-#include "rapidxml_utils.hpp"// ?
+#include "sr/sr_model.h"
+#include "sb/sbm_pawn.hpp"
+#include "sb/SBEvent.h"
+#include <sbm/rapidxml_utils.hpp> // ?
 #ifdef EMBER_SB_OTHERFMT
-	#include "ParserCOLLADAFast.h" // ?
+	#include "sbm/ParserCOLLADAFast.h" // ?
 #endif
-#include "ParserOpenCOLLADA.h" // ?
-#include "ParserOgre.h" // ?
+#include "sbm/ParserOpenCOLLADA.h" // ?
+#include "sbm/ParserOgre.h" // ?
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -103,27 +103,27 @@
 #ifdef EMBER_SB_OTHERFMT
 	#include "ParserFBX.h" // ?
 #endif
-#include "components/sb/sb/SBCharacter.h"
-#include "BMLDefs.h"
+#include "sb/SBCharacter.h"
+#include <sbm/BMLDefs.h>
 #ifdef EMBER_SB_STEER
-	#include "components/sb/sb/SBSteerManager.h"
+	#include <sb/SBSteerManager.h>
 #endif
-#include "components/sb/sb/SBJointMapManager.h"
-#include "components/sb/sb/SBJointMap.h"
-#include "components/sb/sb/SBAnimationState.h"
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBScene.h"
+#include <sb/SBJointMapManager.h>
+#include <sb/SBJointMap.h>
+#include <sb/SBAnimationState.h>
+#include <sb/SBMotion.h>
+#include <sb/SBScene.h>
 #include <math.h>
 #ifdef EMBER_SB_DEBUGGER
-	#include "components/sb/sb/SBDebuggerServer.h" // ?
-	#include "components/sb/sb/SBDebuggerClient.h" // ?
+	#include <sb/SBDebuggerServer.h> // ?
+	#include <sb/SBDebuggerClient.h> // ?
 #endif
 #ifdef EMBER_SB_WSP
-	#include "wsp.h" // ?
+	#include <wsp.h> // ?
 #endif
 
-#include "components/sb/controllers/me_ct_gaze.h"
-#include "components/sb/controllers/me_ct_motion_player.h"
+#include <controllers/me_ct_gaze.h>
+#include <controllers/me_ct_motion_player.h>
 
 #ifdef USE_GOOGLE_PROFILER
 #include <google/profiler.h>

@@ -19,16 +19,16 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_POLYGONS_H
-#define SR_POLYGONS_H
+# ifndef SR_POLYGONS_H
+# define SR_POLYGONS_H
 
 /** \file sr_polygons.h
  * maintains an array of polygons
  */
-#include "components/sb/sb/SBTypes.h"
-#include "sr_array.h"
-#include "sr_polygon.h"
-#include "sr_shared_class.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_array.h>
+# include <sr/sr_polygon.h>
+# include <sr/sr_shared_class.h>
 
 /*! \class SrPolygons sr_polygons.h
     \brief maintains an array of polygons

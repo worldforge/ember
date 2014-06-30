@@ -26,12 +26,12 @@
 * \author Institute for Creative Technologies, USC
 */
 
-#include "me_ct_breathing.h"
-#include "components/sb/sbm/gwiz_math.h"
-#include "components/sb/sr/sr_output.h"
+#include <controllers/me_ct_breathing.h>
+#include <sbm/gwiz_math.h>
+#include <sr/sr_output.h>
 #include <cstdio>
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBScene.h"
+#include <sb/SBMotion.h>
+#include <sb/SBScene.h>
 
 
 std::string MeCtBreathing::type_name = "Breathing";

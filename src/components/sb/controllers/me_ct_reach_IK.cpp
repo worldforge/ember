@@ -1,5 +1,5 @@
 #include "me_ct_reach_IK.hpp"
-#include "components/sb/sr/sr_alg.h"
+#include <sr/sr_alg.h>
 
 
 MeCtReachIK::MeCtReachIK(void)

@@ -1,6 +1,6 @@
 
-#include <stdlib.h>
-#include "sr_set.h"
+# include <stdlib.h>
+# include <sr/sr_set.h>
 
 //============================= SrSetBasic ================================
 

@@ -1,7 +1,7 @@
 #include "SBReachManager.h"
 
-#include "SBScene.h"
-#include "SBReach.h"
+#include <sb/SBScene.h>
+#include <sb/SBReach.h>
 
 namespace SmartBody {
 

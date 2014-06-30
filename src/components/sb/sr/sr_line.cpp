@@ -20,11 +20,11 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include <math.h>
-#include "sr_box.h"
-#include "sr_line.h"
-#include "sr_input.h"
-#include "sr_output.h"
+# include <math.h>
+# include <sr/sr_box.h>
+# include <sr/sr_line.h>
+# include <sr/sr_input.h>
+# include <sr/sr_output.h>
 
 //===========================================================================
 
@@ -92,7 +92,7 @@ int SrLine::intersects_box ( const SrBox& box, float& t1, float& t2, SrVec* vp )
    int side[6];
    int tsize=0;
 
-   #define INTERSECT(s) if ( intersects_square(p1,p2,p3,p4,t[tsize]) ) { side[tsize]=s; tsize++; }
+   # define INTERSECT(s) if ( intersects_square(p1,p2,p3,p4,t[tsize]) ) { side[tsize]=s; tsize++; }
 
    box.get_side ( p1, p2, p3, p4, 0 );
    INTERSECT(0);

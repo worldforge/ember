@@ -23,12 +23,12 @@
 /** \file sr_vec2.h 
  * Two dimensional vec2tor */
 
-#ifndef SR_VEC2_H
-#define SR_VEC2_H
+# ifndef SR_VEC2_H
+# define SR_VEC2_H
 
-#include "components/sb/sb/SBTypes.h"
-#include "sr_input.h" 
-#include "sr_output.h" 
+#include <sb/SBTypes.h>
+# include <sr/sr_input.h> 
+# include <sr/sr_output.h> 
 
 
 class SrVec2;

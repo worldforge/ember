@@ -23,24 +23,24 @@
  *      Ed Fast, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
 #include <queue>
 
-#include "sk_motion.h"
-#include "sk_posture.h"
-#include "sk_skeleton.h"
-#include "components/sb/sb/SBEvent.h"
-#include "components/sb/sbm/gwiz_math.h"
+# include <sk/sk_motion.h>
+# include <sk/sk_posture.h>
+# include <sk/sk_skeleton.h>
+#include <sb/SBEvent.h>
+#include <sbm/gwiz_math.h>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBRetarget.h"
-#include "components/sb/external/perlin/perlin.h"
+#include <sb/SBMotion.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBRetarget.h>
+#include <external/perlin/perlin.h>
 
 using namespace gwiz;
 

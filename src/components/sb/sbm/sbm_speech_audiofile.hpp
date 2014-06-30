@@ -24,11 +24,11 @@
 #ifndef SBM_SPEECH_AUDIOFILE_HPP
 #define SBM_SPEECH_AUDIOFILE_HPP
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 //#include <hash_map>
 #include <map>
 
-#include "sbm_speech.hpp"
+#include "sbm/sbm_speech.hpp"
 #include "rapidxml.hpp"
 
 namespace SmartBody

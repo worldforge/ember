@@ -20,7 +20,7 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "me_ct_gaze.h"
+#include "controllers/me_ct_gaze.h"
 
 /*
 	Original key mapping intended to bracket spine between

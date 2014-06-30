@@ -20,14 +20,14 @@
  *      Andrew n marshall, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-#include "xercesc_utils.hpp"
+#include "sbm/xercesc_utils.hpp"
 
 #include <xercesc/framework/MemBufInputSource.hpp>
 

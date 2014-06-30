@@ -19,15 +19,15 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_OUTPUT_H
-#define SR_OUTPUT_H
+# ifndef SR_OUTPUT_H
+# define SR_OUTPUT_H
 
 /** \file sr_output.h 
  * Output to file, function, string or stdout */
 
-#include "components/sb/sb/SBTypes.h"
-#include <stdio.h>
-#include "sr.h"
+#include <sb/SBTypes.h>
+# include <stdio.h>
+# include <sr/sr.h>
 
 class SrString;
 

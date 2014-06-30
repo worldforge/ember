@@ -21,8 +21,8 @@
  */
 
 #include <stdio.h>
-#include "sr_timer.h"
-#include "components/sb/vhcl/vhcl_log.h"
+#include <sr/sr_timer.h>
+#include <vhcl/vhcl_log.h>
 
 #ifdef SR_TARGET_WINDOWS // defined in sr.h
 #include <windows.h>

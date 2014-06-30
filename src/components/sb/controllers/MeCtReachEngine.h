@@ -1,12 +1,12 @@
 #pragma once
-#include "me_ct_data_interpolation.h"
-#include "me_ct_barycentric_interpolation.h"
-#include "me_ct_motion_parameter.h"
-#include "me_ct_motion_profile.h"
-#include "me_ct_jacobian_IK.hpp"
-#include "me_ct_ccd_IK.hpp"
-#include "me_ct_constraint.hpp"
-#include "components/sb/sb/sbm_pawn.hpp"
+#include "controllers/me_ct_data_interpolation.h"
+#include "controllers/me_ct_barycentric_interpolation.h"
+#include "controllers/me_ct_motion_parameter.h"
+#include "controllers/me_ct_motion_profile.h"
+#include "controllers/me_ct_jacobian_IK.hpp"
+#include "controllers/me_ct_ccd_IK.hpp"
+#include "controllers/me_ct_constraint.hpp"
+#include <sb/sbm_pawn.hpp>
 
 class SbmCharacter;
 class ReachStateData;

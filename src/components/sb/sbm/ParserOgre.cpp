@@ -19,7 +19,7 @@
  */
 
 #include "ParserOgre.h"
-#include "components/sb/sr/sr_euler.h"
+#include "sr/sr_euler.h"
 #include <boost/version.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -31,15 +31,15 @@
 #include <string>
 #include <fstream>
 #include <stdio.h>
-#include "BMLDefs.h"
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBTypes.h"
-#include "components/sb/sb/SBScene.h"
+#include <sbm/BMLDefs.h>
+#include <sb/SBMotion.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBTypes.h>
+#include <sb/SBScene.h>
 
 /*
 #if !defined (__ANDROID__) && !defined(SB_IPHONE)
-#include "GPU/SbmTexture.h"
+#include <sbm/GPU/SbmTexture.h>
 #endif */
 
 

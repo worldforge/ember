@@ -34,7 +34,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "components/sb/sbm/sbm_speech.hpp"
+#include "sbm/sbm_speech.hpp"
 
 namespace BML {
     typedef double time_sec;  // An attempt to generalize the floating point format

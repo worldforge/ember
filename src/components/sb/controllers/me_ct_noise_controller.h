@@ -1,9 +1,9 @@
 #ifndef	_ME_CT_NOISE_CONTROLLER_H_
 #define _ME_CT_NOISE_CONTROLLER_H_
 
-#include "components/sb/sb/SBController.h"
-#include "components/sb/sb/sbm_character.hpp"
-#include "components/sb/external/perlin/perlin.h"
+#include <sb/SBController.h>
+#include <sb/sbm_character.hpp>
+#include <external/perlin/perlin.h>
 #include <map>
 
 class MeCtNoiseController : public SmartBody::SBController

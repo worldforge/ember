@@ -1,7 +1,7 @@
 #ifndef _SBBEHAVIORSETMANAGER_
 #define _SBBEHAVIORSETMANAGER_
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <map>
 #include <vector>
 #include "SBBehaviorSet.h"

@@ -1,7 +1,7 @@
 #pragma once
-#include "me_ct_motion_example.hpp"
-#include "components/sb/sbm/sr_linear_curve.h"
-#include "components/sb/sbm/sr_spline_curve.h"
+#include "controllers/me_ct_motion_example.hpp"
+#include <sbm/sr_linear_curve.h>
+#include <sbm/sr_spline_curve.h>
 
 class ProfileCurve
 {

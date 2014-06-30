@@ -20,11 +20,11 @@
  *      Marcelo Kallmann, USC (currently at UC Merced)
  */
 
-#ifndef SK_JOINT_POS_H
-#define SK_JOINT_POS_H
+# ifndef SK_JOINT_POS_H
+# define SK_JOINT_POS_H
 
-#include "components/sb/sb/SBTypes.h"
-#include "sk_vec_limits.h"
+#include <sb/SBTypes.h>
+# include <sk/sk_vec_limits.h>
 
 class SkJoint;
 

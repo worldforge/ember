@@ -1,8 +1,8 @@
 #include "SBGestureMap.h"
 
-#include "SBCharacter.h"
-#include "SBScene.h"
-#include "SBMotion.h"
+#include <sb/SBCharacter.h>
+#include <sb/SBScene.h>
+#include <sb/SBMotion.h>
 #include <cstdlib>
 #include <ctime> 
 #include <math.h>

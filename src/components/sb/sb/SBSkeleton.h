@@ -1,8 +1,8 @@
 #ifndef _SBSKELETON_H_
 #define _SBSKELETON_H_
 
-#include "SBTypes.h"
-#include "components/sb/sk/sk_skeleton.h"
+#include <sb/SBTypes.h>
+#include <sk/sk_skeleton.h>
 #include <string>
 
 

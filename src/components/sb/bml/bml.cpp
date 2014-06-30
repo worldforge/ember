@@ -23,7 +23,7 @@
  *      Ed Fast, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include "bml.hpp"
 
@@ -38,25 +38,25 @@
 #include "bml_speech.hpp"
 #include "bml_xml_consts.hpp"
 
-#include "components/sb/controllers/me_ct_blend.hpp"
-#include "components/sb/controllers/me_ct_blend.hpp"
-#include "components/sb/controllers/me_ct_param_animation.h"
-#include "components/sb/controllers/me_ct_scheduler2.h"
-#include "components/sb/controllers/me_ct_gaze.h"
-#include "components/sb/controllers/me_controller_tree_root.hpp"
+#include "controllers/me_ct_blend.hpp"
+#include "controllers/me_ct_blend.hpp"
+#include "controllers/me_ct_param_animation.h"
+#include "controllers/me_ct_scheduler2.h"
+#include "controllers/me_ct_gaze.h"
+#include "controllers/me_controller_tree_root.hpp"
 
-#include "components/sb/sbm/BMLDefs.h"
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBAnimationState.h"
-#include "components/sb/sb/SBAnimationStateManager.h"
-#include "components/sb/sb/SBBehavior.h"
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBGestureMapManager.h"
-#include "components/sb/sb/SBGestureMap.h"
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBCommandManager.h"
-#include "components/sb/sbm/ParserOpenCOLLADA.h"
+#include "sbm/BMLDefs.h"
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
+#include <sb/SBAnimationState.h>
+#include <sb/SBAnimationStateManager.h>
+#include <sb/SBBehavior.h>
+#include <sb/SBMotion.h>
+#include <sb/SBGestureMapManager.h>
+#include <sb/SBGestureMap.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBCommandManager.h>
+#include <sbm/ParserOpenCOLLADA.h>
 
 using namespace std;
 using namespace BML;

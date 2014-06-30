@@ -20,9 +20,9 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-//#include <math.h>
-#include "sr_triangle.h"
-//#include "sr_vec2.h"
+//# include <math.h>
+# include <sr/sr_triangle.h>
+//# include <sr/sr_vec2.h>
 
 // ==================== static funcs ====================================
 
@@ -55,7 +55,7 @@ static void matposmult ( const SrVec& v, const float M[9], SrVec &r ) // r = v M
 /*    
 static SrVec barycentric ( const SrPnt2& a, const SrPnt2& b, const SrPnt2& c, const SrPnt2& p )
  {
-   #define DET3(a,b,c,d,e,f,g,h,i) a*e*i +b*f*g +d*h*c -c*e*g -b*d*i -a*f*h
+   # define DET3(a,b,c,d,e,f,g,h,i) a*e*i +b*f*g +d*h*c -c*e*g -b*d*i -a*f*h
    float A  = DET3 ( a.x, b.x, c.x, a.y, b.y, c.y, 1, 1, 1 );
    float A1 = DET3 ( p.x, b.x, c.x, p.y, b.y, c.y, 1, 1, 1 );
    float A2 = DET3 ( a.x, p.x, c.x, a.y, p.y, c.y, 1, 1, 1 );

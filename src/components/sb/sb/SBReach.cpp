@@ -1,7 +1,7 @@
 #include "SBReach.h"
-#include "SBCharacter.h"
-#include "SBMotion.h"
-#include "components/sb/controllers/MeCtBodyReachState.h"
+#include <sb/SBCharacter.h>
+#include <sb/SBMotion.h>
+#include <controllers/MeCtBodyReachState.h>
 
 namespace SmartBody {
 

@@ -24,13 +24,13 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 #include <stdlib.h>
-#include "sk_motion.h"
+#include <sk/sk_motion.h>
 #include <iostream>
 #include <sstream>
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBJointMap.h"
+#include <sb/SBMotion.h>
+#include <sb/SBJointMap.h>
 
 using namespace std;
 

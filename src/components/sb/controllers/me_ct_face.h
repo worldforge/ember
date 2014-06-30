@@ -21,20 +21,20 @@
  *      Andrew n marshall, USC
  */
 
-#ifndef ME_CT_FACE_H
-#define ME_CT_FACE_H
+# ifndef ME_CT_FACE_H
+# define ME_CT_FACE_H
 
 //////////////////////////////////////////////////////////////////////////////////
 
-#include "components/sb/sr/sr_hash_table.h"
-#include "components/sb/sr/sr_buffer.h"
-#include "components/sb/sk/sk_motion.h"
-#include "components/sb/sk/sk_skeleton.h"
-#include "me_controller.h"
-#include "components/sb/sb/SBFaceDefinition.h"
-#include "components/sb/sbm/sr_hash_map.h"
-#include "components/sb/sb/SBController.h"
-#include "components/sb/sb/SBCharacter.h"
+#include <sr/sr_hash_table.h>
+#include <sr/sr_buffer.h>
+#include <sk/sk_motion.h>
+#include <sk/sk_skeleton.h>
+#include <controllers/me_controller.h>
+#include <sb/SBFaceDefinition.h>
+#include "sbm/sr_hash_map.h"
+#include "sb/SBController.h"
+#include "sb/SBCharacter.h"
 #include <vector>
 
 /*

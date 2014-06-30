@@ -23,7 +23,7 @@
 #ifndef ME_CT_GAZE_ALG_H
 #define ME_CT_GAZE_ALG_H
 
-#include "components/sb/sbm/gwiz_math.h"
+#include "sbm/gwiz_math.h"
 
 //////////////////////////////////////////////////////////////////////////
 

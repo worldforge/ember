@@ -1,10 +1,10 @@
-#include "me_ct_physics_controller.h"
-#include "components/sb/sr/sr_euler.h"
+#include "controllers/me_ct_physics_controller.h"
+#include <sr/sr_euler.h>
 
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBEvent.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBSceneListener.h"
+#include <sb/SBSkeleton.h>
+#include <sb/SBEvent.h>
+#include <sb/SBScene.h>
+#include <sb/SBSceneListener.h>
 
 std::string MeCtPhysicsController::CONTROLLER_TYPE = "PhysicsController";
 

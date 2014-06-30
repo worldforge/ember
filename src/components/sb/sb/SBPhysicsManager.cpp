@@ -1,16 +1,16 @@
 #include "SBPhysicsManager.h"
 #ifdef EMBER_SB_PYTHON
 #ifndef __native_client__
-#include "SBPythonClass.h"
+#include <sb/SBPythonClass.h>
 #endif
 #endif
 
-#include "SBSimulationManager.h"
-#include "SBScene.h"
-#include "SBCharacter.h"
-#include "SBSkeleton.h"
-#include "SBPhysicsSim.h"
-#include "components/sb/sbm/ODEPhysicsSim.h"
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBPhysicsSim.h>
+#include <sbm/ODEPhysicsSim.h>
 
 #ifdef __ANDROID__
 #define USE_PHYSICS_CHARACTER 0

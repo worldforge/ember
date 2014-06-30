@@ -4,18 +4,18 @@
 #include <time.h>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
-#include "components/sb/sr/sr_timer.h"
+#include <sr/sr_timer.h>
 
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBCommandManager.h"
-#include "components/sb/sb/SBEvent.h"
-#include "components/sb/sb/sbm_character.hpp"
-#include "components/sb/sb/SBCharacter.h"
+#include <sb/SBScene.h>
+#include <sb/SBCommandManager.h>
+#include <sb/SBEvent.h>
+#include <sb/sbm_character.hpp>
+#include <sb/SBCharacter.h>
 #include "me_ct_example_body_reach.hpp"
 #include "me_ct_barycentric_interpolation.h"
 
 #include "MeCtBodyReachState.h"
-#include "me_ct_example_body_reach.hpp"
+#include <controllers/me_ct_example_body_reach.hpp>
 
 using namespace boost;
 

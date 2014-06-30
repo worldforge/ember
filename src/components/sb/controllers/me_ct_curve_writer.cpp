@@ -20,8 +20,8 @@
  *      
  */
 
-#include "components/sb/vhcl/vhcl.h"
-#include "me_ct_curve_writer.hpp"
+#include <vhcl/vhcl.h>
+#include <controllers/me_ct_curve_writer.hpp>
 
 std::string MeCtCurveWriter::TYPE = "MeCtCurveWriter";
 

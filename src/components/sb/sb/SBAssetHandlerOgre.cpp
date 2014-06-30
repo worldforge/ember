@@ -1,18 +1,18 @@
 #include "SBAssetHandlerOgre.h"
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 #include <boost/version.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/algorithm/string.hpp>
-#include "SBMotion.h"
-#include "SBScene.h"
-#include "SBSkeleton.h"
-#include "SBJoint.h"
-#include "SBAssetManager.h"
-#include "components/sb/sbm/ParserOgre.h"
+#include <sb/SBMotion.h>
+#include <sb/SBScene.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBJoint.h>
+#include <sb/SBAssetManager.h>
+#include <sbm/ParserOgre.h>
 #ifdef EMBER_SB_GPU
-	#include "components/sb/sbm/GPU/SbmDeformableMeshGPU.h"
+	#include <sbm/GPU/SbmDeformableMeshGPU.h>
 #endif
 
 namespace SmartBody {

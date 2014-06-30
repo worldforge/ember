@@ -1,13 +1,13 @@
 #ifndef _SBJOINT_H_
 #define _SBJOINT_H_
 
-#include "SBTypes.h"
-#include "components/sb/sk/sk_joint.h"
-#include "SBColObject.h"
+#include <sb/SBTypes.h>
+#include <sk/sk_joint.h>
+#include <sb/SBColObject.h>
 #include <string>
 
 #ifdef __native_client__
-#include "SBSkeleton.h"
+#include <sb/SBSkeleton.h>
 #endif
 
 namespace SmartBody {

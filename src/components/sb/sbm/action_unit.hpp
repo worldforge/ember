@@ -22,9 +22,9 @@
 
 #include <map>
 
-#include "components/sb/sr/sr_shared_class.h"
-#include "components/sb/sr/sr_shared_ptr.hpp"
-#include "components/sb/sk/sk_motion.h"
+#include <sr/sr_shared_class.h>
+#include <sr/sr_shared_ptr.hpp>
+#include <sk/sk_motion.h>
 
 
 /**

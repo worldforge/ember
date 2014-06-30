@@ -23,8 +23,8 @@
 #ifndef ME_TIME_SHIFT_WARP_HPP
 #define ME_TIME_SHIFT_WARP_HPP
 
-#include "me_ct_unary.hpp"
-#include "components/sb/sbm/sr_linear_curve.h"
+#include <controllers/me_ct_unary.hpp>
+#include <sbm/sr_linear_curve.h>
 
 class MeCtTimeShiftWarp : public MeCtUnary {
 public:

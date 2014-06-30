@@ -1,7 +1,7 @@
 #include "MeCtBodyReachState.h"
-#include "components/sb/sb/SBEvent.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBPawn.h"
+#include <sb/SBEvent.h>
+#include <sb/SBScene.h>
+#include <sb/SBPawn.h>
 
 #include <boost/lexical_cast.hpp>
 

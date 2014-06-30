@@ -1,5 +1,5 @@
 #pragma once
-#include "me_ct_example_body_reach.hpp"
+#include "controllers/me_ct_example_body_reach.hpp"
 
 namespace SmartBody {
 	class SBPawn;

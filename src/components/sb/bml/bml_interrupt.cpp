@@ -20,20 +20,20 @@
  *      Andrew n marshall, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <iostream>
 #include <sstream>
 #include <string>
 
-#include "components/sb/sb/SBScene.h"
+#include <sb/SBScene.h>
 
 
 #include "bml_processor.hpp"
 #include "bml_interrupt.hpp"
-#include "components/sb/sbm/xercesc_utils.hpp"
+#include "sbm/xercesc_utils.hpp"
 #include "bml_xml_consts.hpp"
-#include "components/sb/sbm/BMLDefs.h"
+#include "sbm/BMLDefs.h"
 
 
 using namespace std;

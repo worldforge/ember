@@ -19,12 +19,12 @@
  *
  **/
 
-#ifndef SR_TRACE_H
+# ifndef SR_TRACE_H
 # define SR_TRACE_H
 
 # if defined(SR_USE_TRACE) || defined(SR_USE_TRACE1) || defined(SR_USE_TRACE2) || defined(SR_USE_TRACE3) || defined(SR_USE_TRACE4) || defined(SR_USE_TRACE5) || defined(SR_USE_TRACE6) || defined(SR_USE_TRACE7) || defined(SR_USE_TRACE8) || defined(SR_USE_TRACE9)
 #  ifndef SR_TRACE_OSTREAM
-#   include "sr/sr_output.h"
+#   include <SR/sr_output.h>
 #   define SR_TRACE_OSTREAM sr_out
 #  endif 
 # endif
@@ -38,57 +38,57 @@
 # endif
 
 # if defined(SR_USE_TRACE1) || defined(SR_USE_TRACE)
-#  define SR_TRACE1(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE1(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE1(msg) 
+# define SR_TRACE1(msg) 
 # endif
 
 # if defined(SR_USE_TRACE2) || defined(SR_USE_TRACE)
-#  define SR_TRACE2(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE2(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE2(msg) 
+# define SR_TRACE2(msg) 
 # endif
 
 # if defined(SR_USE_TRACE3) || defined(SR_USE_TRACE)
-#  define SR_TRACE3(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE3(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE3(msg) 
+# define SR_TRACE3(msg) 
 # endif
 
 # if defined(SR_USE_TRACE4) || defined(SR_USE_TRACE)
-#  define SR_TRACE4(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE4(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE4(msg) 
+# define SR_TRACE4(msg) 
 # endif
 
 # if defined(SR_USE_TRACE5) || defined(SR_USE_TRACE)
-#  define SR_TRACE5(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE5(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE5(msg) 
+# define SR_TRACE5(msg) 
 # endif
 
 # if defined(SR_USE_TRACE6) || defined(SR_USE_TRACE)
-#  define SR_TRACE6(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE6(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE6(msg) 
+# define SR_TRACE6(msg) 
 # endif
 
 # if defined(SR_USE_TRACE7) || defined(SR_USE_TRACE)
-#  define SR_TRACE7(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE7(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE7(msg) 
+# define SR_TRACE7(msg) 
 # endif
 
 # if defined(SR_USE_TRACE8) || defined(SR_USE_TRACE)
-#  define SR_TRACE8(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE8(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE8(msg) 
+# define SR_TRACE8(msg) 
 # endif
 
 # if defined(SR_USE_TRACE9) || defined(SR_USE_TRACE)
-#  define SR_TRACE9(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
+# define SR_TRACE9(msg) SR_TRACE_OSTREAM << SR_TRACE_MSG << msg << '\n'
 # else
-#  define SR_TRACE9(msg) 
+# define SR_TRACE9(msg) 
 # endif
 
 #endif // SR_TRACE_H

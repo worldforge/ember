@@ -1,5 +1,5 @@
 #include "ParserOpenCOLLADA.h"
-#include "components/sb/sr/sr_euler.h"
+#include "sr/sr_euler.h"
 #include <boost/version.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -9,12 +9,12 @@
 #include <algorithm>
 #include <cctype>
 #include <string>
-#include "BMLDefs.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBAssetManager.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBMotion.h"
-#include "sbm_deformable_mesh.h"
+#include <sbm/BMLDefs.h>
+#include <sb/SBScene.h>
+#include <sb/SBAssetManager.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBMotion.h>
+#include <sbm/sbm_deformable_mesh.h>
 
 
 DOMNode* ParserOpenCOLLADA::getNode(const std::string& nodeName, DOMNode* node)

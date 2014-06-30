@@ -21,15 +21,15 @@
  *      Andrew n marshall, USC
  */
 
-#ifndef SR_ARRAY_H
-#define SR_ARRAY_H
+# ifndef SR_ARRAY_H
+# define SR_ARRAY_H
 
 /** \file sr_array.h 
  * fast resizeable array template */
-#include "components/sb/sb/SBTypes.h"
-#include "sr.h" 
-#include "sr_input.h" 
-#include "sr_output.h" 
+#include <sb/SBTypes.h>
+# include <sr/sr.h> 
+# include <sr/sr_input.h> 
+# include <sr/sr_output.h> 
 
 /*! \class SrArrayBase sr_array.h
     \brief Fast resizeable array base class

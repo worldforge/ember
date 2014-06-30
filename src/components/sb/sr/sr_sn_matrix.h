@@ -20,15 +20,15 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_SN_MATRIX_H
-#define SR_SN_MATRIX_H
+# ifndef SR_SN_MATRIX_H
+# define SR_SN_MATRIX_H
 
 /** \file sr_sn_mat.h 
  * matrix transformation
  */
 
-#include "components/sb/sb/SBTypes.h"
-#include "sr_sn.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_sn.h>
 
 //======================================= SrSnMatrix ====================================
 

@@ -1,7 +1,7 @@
 #ifndef _SBPARSETREE_H_
 #define _SBPARSETREE_H_
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <string>
 #include <vector>
 

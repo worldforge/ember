@@ -22,18 +22,18 @@
  */
 
 
-#ifndef ME_CT_MOTION_H
-#define ME_CT_MOTION_H
+# ifndef ME_CT_MOTION_H
+# define ME_CT_MOTION_H
 
 //=================================== MeCtMotion =====================================
 
-#include "components/sb/sr/sr_hash_table.h"
-#include "components/sb/sr/sr_buffer.h"
+# include <sr/sr_hash_table.h>
+# include <sr/sr_buffer.h>
 
-#include "components/sb/sk/sk_motion.h"
+# include <sk/sk_motion.h>
 
-#include "components/sb/sb/SBController.h"
-#include "components/sb/sb/SBCharacter.h"
+# include <sb/SBController.h>
+#include <sb/SBCharacter.h>
 #include <queue>
 
 #include "me_ct_constraint.hpp"

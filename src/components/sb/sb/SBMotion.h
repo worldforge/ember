@@ -1,10 +1,10 @@
 #ifndef _SBMOTION_H
 #define _SBMOTION_H
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <vector>
 #include <string>
-#include "components/sb/sk/sk_motion.h"
+#include <sk/sk_motion.h>
 
 namespace SmartBody {
 

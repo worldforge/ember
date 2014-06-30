@@ -30,24 +30,24 @@
 #include <map>
 #include <limits>
 
-#include "components/sb/sb/SBTypes.h"
-#include "components/sb/controllers/me_ct_gaze.h"
-#include "bml_types.hpp"
-#include "bml_sync_point.hpp"
-#include "behavior_span.hpp"
-#include "behavior_scheduler.hpp"
-#include "behavior_scheduler_constant_speed.hpp" // temporary, for BEHAVIOR_TIMING_BY_DURATION macro
-#include "behavior_scheduler_gesture.hpp"
+#include <sb/SBTypes.h>
+#include <controllers/me_ct_gaze.h>
+#include "bml/bml_types.hpp"
+#include "bml/bml_sync_point.hpp"
+#include "bml/behavior_span.hpp"
+#include "bml/behavior_scheduler.hpp"
+#include "bml/behavior_scheduler_constant_speed.hpp" // temporary, for BEHAVIOR_TIMING_BY_DURATION macro
+#include "bml/behavior_scheduler_gesture.hpp"
 
 
-#include "components/sb/sb/sbm_character.hpp"
+#include "sb/sbm_character.hpp"
 
-#include "components/sb/sbm/xercesc_utils.hpp"
+#include "sbm/xercesc_utils.hpp"
 
 // Motion Engine & Controllers...
-#include "components/sb/controllers/me_ct_motion.h"
-#include "components/sb/controllers/me_ct_examples.h"
-#include "components/sb/controllers/me_prune_policy.hpp"
+#include <controllers/me_ct_motion.h>
+#include "controllers/me_ct_examples.h"
+#include <controllers/me_prune_policy.hpp>
 
 #include "bml_sync_point.hpp"
 

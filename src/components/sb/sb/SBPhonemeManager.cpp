@@ -1,7 +1,7 @@
-#include "SBPhonemeManager.h"
-#include "SBPhoneme.h"
+#include <sb/SBPhonemeManager.h>
+#include <sb/SBPhoneme.h>
 #include <algorithm>
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 namespace SmartBody {
 

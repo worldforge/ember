@@ -64,7 +64,7 @@
 
 ////////////////////////////////
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 
 #include <math.h>
 #include <stdio.h>

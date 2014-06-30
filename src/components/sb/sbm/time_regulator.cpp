@@ -20,7 +20,7 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +28,7 @@
 #include <unistd.h>
 #endif
 
-#include "time_regulator.h"
+#include "sbm/time_regulator.h"
 
 #ifdef WIN32
 #ifndef WIN32_LEAN_AND_MEAN

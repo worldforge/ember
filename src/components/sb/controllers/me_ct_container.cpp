@@ -20,12 +20,12 @@
  *      Andrew n marshall, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
-#include "me_ct_container.hpp"
+#include <controllers/me_ct_container.hpp>
 
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBScene.h"
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
 
 
 //////////////////////////////////////////////////////////////

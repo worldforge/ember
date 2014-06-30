@@ -20,15 +20,15 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_CLASS_MANAGER_H
-#define SR_CLASS_MANAGER_H
+# ifndef SR_CLASS_MANAGER_H
+# define SR_CLASS_MANAGER_H
 
 /** \file sr_class_manager.h 
  * Generic way to allocate, io and compare classes */
-#include "components/sb/sb/SBTypes.h"
-#include "sr_input.h"
-#include "sr_output.h"
-#include "sr_shared_class.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_input.h>
+# include <sr/sr_output.h>
+# include <sr/sr_shared_class.h>
 
 class SrClassManagerBase : public SrSharedClass
  { protected :

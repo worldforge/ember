@@ -1,4 +1,4 @@
-#include "lin_win.h"
+#include "sbm/lin_win.h"
 
 #ifdef WIN32
 

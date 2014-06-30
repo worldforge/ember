@@ -2,7 +2,7 @@
 #include "SBSkeleton.h"
 #include "SBCharacter.h"
 #include "SBScene.h"
-#include "components/sb/sk/sk_skeleton.h"
+#include <sk/sk_skeleton.h>
 
 #include <queue>
 

@@ -18,7 +18,7 @@
 
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <iostream>
 #include <sstream>
@@ -30,17 +30,17 @@
 #include "bml_exception.hpp"
 #include "bml_xml_consts.hpp"
 #include "bml_processor.hpp"
-#include "components/sb/sbm/BMLDefs.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBPhoneme.h"
-#include "components/sb/sb/SBPhonemeManager.h"
-#include "components/sb/sb/SBCommandManager.h"
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBCharacter.h"
-#include "components/sb/sbm/sbm_speech_audiofile.hpp"
-#include "components/sb/controllers/me_ct_scheduler2.h"
-#include "components/sb/controllers/me_ct_blend.hpp"
-#include "components/sb/controllers/me_ct_face.h"
+#include "sbm/BMLDefs.h"
+#include <sb/SBScene.h>
+#include <sb/SBPhoneme.h>
+#include <sb/SBPhonemeManager.h>
+#include <sb/SBCommandManager.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBCharacter.h>
+#include <sbm/sbm_speech_audiofile.hpp>
+#include <controllers/me_ct_scheduler2.h>
+#include <controllers/me_ct_blend.hpp>
+#include <controllers/me_ct_face.h>
 
 using namespace std;
 using namespace BML;

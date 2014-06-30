@@ -20,16 +20,16 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_EVENT_H
-#define SR_EVENT_H
+# ifndef SR_EVENT_H
+# define SR_EVENT_H
 
 /** \file sr_event.h 
  * A user-generated window-event
  */
-#include "components/sb/sb/SBTypes.h"
-#include "sr_vec2.h"
-#include "sr_line.h"
-#include "sr_output.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_vec2.h>
+# include <sr/sr_line.h>
+# include <sr/sr_output.h>
 
 /*! \class SrEvent sr_event.h
     \brief Keeps a window event

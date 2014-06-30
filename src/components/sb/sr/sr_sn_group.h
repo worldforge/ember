@@ -19,15 +19,15 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_SN_GROUP_H
-#define SR_SN_GROUP_H
+# ifndef SR_SN_GROUP_H
+# define SR_SN_GROUP_H
 
 /** \file sr_sn_group.h 
  * groups scene nodes
  */
 
-#include "components/sb/sb/SBTypes.h"
-#include "sr_sn.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_sn.h>
 
 //======================================= SrSnGroup ====================================
 

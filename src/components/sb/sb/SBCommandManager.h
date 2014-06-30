@@ -1,10 +1,10 @@
 #ifndef _SBCOMMANDMANAGER_H_
 #define _SBCOMMANDMANAGER_H_
 
-#include "components/sb/vhcl/vhcl.h"
-#include "SBObject.h"
-#include "components/sb/sbm/sr_cmd_map.h"
-#include "components/sb/sbm/sr_cmd_seq.h"
+#include <vhcl/vhcl.h>
+#include <sb/SBObject.h>
+#include <sbm/sr_cmd_map.h>
+#include <sbm/sr_cmd_seq.h>
 
 
 class SequenceManager

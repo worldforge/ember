@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "components/sb/vhcl/vhcl_log.h"
+#include <vhcl/vhcl_log.h>
 
 #include "sr_hash_map.h"
 

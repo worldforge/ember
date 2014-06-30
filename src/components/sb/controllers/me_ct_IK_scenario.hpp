@@ -24,10 +24,10 @@
 #define ME_CT_IK_SCENARIO_HPP
 
 
-#include "me_controller.h"
+#include <controllers/me_controller.h>
 #include "me_ct_locomotion_func.hpp"
 
-#include "components/sb/sr/sr_vec2.h"
+#include <sr/sr_vec2.h>
 
 #pragma once
 

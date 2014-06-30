@@ -2,11 +2,11 @@
 #include "me_ct_reach_IK.hpp"
 #include "me_ct_locomotion_func.hpp"
 
-#include "components/sb/sr/sr_alg.h"
+#include <sr/sr_alg.h>
 #include <algorithm>
 #include <boost/foreach.hpp>
-#include "components/sb/sbm/gwiz_math.h"
-#include "components/sb/sb/SBScene.h"
+#include <sbm/gwiz_math.h>
+#include <sb/SBScene.h>
 
 const float PI_CONST = 3.14159265358979323846f;
 const MeCtIKJointLimit limb_joint_limit[] = { 							

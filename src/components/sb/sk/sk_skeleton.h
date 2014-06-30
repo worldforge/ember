@@ -22,18 +22,18 @@
  *      Marcus Thiebaux, USC
  */
 
-#ifndef SK_SKELETON_H
-#define SK_SKELETON_H
+# ifndef SK_SKELETON_H
+# define SK_SKELETON_H
 
-#include "components/sb/sb/SBTypes.h"
-#include "components/sb/sr/sr_string.h"
-#include "components/sb/sr/sr_hash_table.h"
-#include "components/sb/sr/sr_shared_class.h"
-#include "components/sb/sr/sr_box.h"
-#include "sk_joint.h"
-#include "sk_channel_array.h"
-#include "sk_posture.h"
-#include "components/sb/sb/SBAsset.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_string.h>
+# include <sr/sr_hash_table.h>
+# include <sr/sr_shared_class.h>
+# include <sr/sr_box.h>
+# include <sk/sk_joint.h>
+# include <sk/sk_channel_array.h>
+# include <sk/sk_posture.h>
+#include <sb/SBAsset.h>
 
 class SrStringArray;
 class SrVarTable;

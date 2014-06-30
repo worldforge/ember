@@ -23,10 +23,10 @@
 /** \file sr_euler.h 
  * euler angles tools */
 
-#ifndef SR_EULER_H
-#define SR_EULER_H
+# ifndef SR_EULER_H
+# define SR_EULER_H
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 //================================ Angles from Mat ================================
 
 class SrMat;

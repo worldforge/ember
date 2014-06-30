@@ -20,12 +20,12 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "me_ct_gaze_joint.h"
-#include "me_ct_gaze_alg.h"
+#include "controllers/me_ct_gaze_joint.h"
+#include "controllers/me_ct_gaze_alg.h"
 using namespace gwiz;
-#include "components/sb/vhcl/vhcl_log.h"
+#include <vhcl/vhcl_log.h>
 
-#include "components/sb/sr/sr_alg.h"
+#include <sr/sr_alg.h>
 
 #define ENABLE_FORWARD_RAY  		1
 #define USE_OLD_GAZE 0

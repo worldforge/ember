@@ -1,10 +1,10 @@
 #ifndef _SBGESTUREMAP_H_
 #define _SBGESTUREMAP_H_
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <string>
 #include <vector>
-#include "SBObject.h"
+#include <sb/SBObject.h>
 
 namespace SmartBody {
 

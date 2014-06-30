@@ -20,7 +20,7 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include "sk_vec_limits.h"
+# include <sk/sk_vec_limits.h>
 
 //============================= SkVecLimits ============================
 

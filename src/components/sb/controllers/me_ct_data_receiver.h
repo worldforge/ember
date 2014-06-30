@@ -1,8 +1,8 @@
 #ifndef _ME_CT_DATA_RECEIVER_H_
 #define _ME_CT_DATA_RECEIVER_H_
 
-#include "components/sb/sb/SBController.h"
-#include "components/sb/sk/sk_skeleton.h"
+#include <sb/SBController.h>
+#include <sk/sk_skeleton.h>
 #include <map>
 
 class MeCtDataReceiver : public SmartBody::SBController

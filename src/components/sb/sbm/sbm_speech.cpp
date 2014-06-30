@@ -20,9 +20,9 @@
  *      Andrew n marshall, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
-#include "sbm_speech.hpp"
+#include "sbm/sbm_speech.hpp"
 
 
 using namespace std;

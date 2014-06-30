@@ -3,12 +3,12 @@
 #include "SmartBodyLocomotion.h"
 #include "SmartBodySkeletonMap.h"
 
-#include "sb/SBScene.h"
-#include "sb/SBCharacter.h"
-#include "sb/SBSkeleton.h"
-#include "sb/SBAssetManager.h"
-#include "sb/SBSimulationManager.h"
-#include "sb/SBBmlProcessor.h"
+#include <sb/SBScene.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBAssetManager.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBBmlProcessor.h>
 
 #include <OgreSkeletonInstance.h>
 #include <OgreEntity.h>

@@ -1,7 +1,7 @@
 #ifndef _SIMULATIONMANAGER_H
 #define _SIMULATIONMANAGER_H
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 
 class TimeRegulator;
 class TimeIntervalProfiler;

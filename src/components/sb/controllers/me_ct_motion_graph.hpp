@@ -21,12 +21,12 @@
 */
 
 #pragma once
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 #include <map>
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBCharacter.h"
-#include "components/sb/sb/SBController.h"
-#include "components/sb/sb/SBMotionGraph.h"
+#include <sb/SBSkeleton.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBController.h>
+#include <sb/SBMotionGraph.h>
 #include "me_ct_constraint.hpp"
 
 

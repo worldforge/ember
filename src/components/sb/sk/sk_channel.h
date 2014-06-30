@@ -20,11 +20,11 @@
  *      Marcelo Kallmann, USC (currently at UC Merced)
  */
 
-#ifndef SK_CHANNEL_H
-#define SK_CHANNEL_H
+# ifndef SK_CHANNEL_H
+# define SK_CHANNEL_H
 
-#include "components/sb/sb/SBTypes.h"
-#include "sk_joint.h"
+#include <sb/SBTypes.h>
+# include <sk/sk_joint.h>
 
 /*! SkChannel manipulates a joint according to the specified
     channel. A channel can be seen as an extension of a DOF

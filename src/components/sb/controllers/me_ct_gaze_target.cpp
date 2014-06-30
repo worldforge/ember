@@ -21,8 +21,8 @@
  *      Ed Fast, USC
  */
 
-#include "me_ct_gaze.h"
-#include "components/sb/sbm/lin_win.h"
+#include "controllers/me_ct_gaze.h"
+#include "sbm/lin_win.h"
 using namespace gwiz;
 
 #if 0

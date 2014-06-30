@@ -25,8 +25,8 @@
 
 #include <stdio.h>
 #include <iostream>
-#include "sr_hash_map.h"
-#include "time_regulator.h"
+#include "sbm/sr_hash_map.h"
+#include "sbm/time_regulator.h"
 
 #define DEFAULT_BYPASS			true
 #define DEFAULT_ENABLED			true

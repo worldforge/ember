@@ -23,7 +23,7 @@
 #ifndef BML_EVENT_HPP
 #define BML_EVENT_HPP
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 #include "bml.hpp"
 
 

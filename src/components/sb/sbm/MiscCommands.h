@@ -2,8 +2,8 @@
 #define _MISC_COMMANDS_H
 
 #include <string>
-#include "sr_arg_buff.h"
-#include "components/sb/sb/SBCommandManager.h"
+#include <sbm/sr_arg_buff.h>
+#include <sb/SBCommandManager.h>
 
 
 class SbmPawn;

@@ -20,16 +20,16 @@
  *      Yuyu Xu, USC
  */
 
-#include "me_ct_saccade.h"
+#include "controllers/me_ct_saccade.h"
 #include <cstdlib>
 #include <ctime> 
 #include <math.h>
 
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBCharacter.h"
-#include "components/sb/sb/SBAttributeManager.h"
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBAttributeManager.h>
 
 using namespace gwiz;
 std::string MeCtSaccade::CONTROLLER_TYPE = "Saccade";

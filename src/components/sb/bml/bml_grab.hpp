@@ -24,7 +24,7 @@
 #define BML_GRAB_HPP
 
 #include "bml.hpp"
-#include "components/sb/sbm/BMLDefs.h"
+#include "sbm/BMLDefs.h"
 
 // Forward Declaration
 

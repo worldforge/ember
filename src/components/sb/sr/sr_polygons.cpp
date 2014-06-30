@@ -19,11 +19,11 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include "sr_box.h"
-#include "sr_polygons.h"
+# include <sr/sr_box.h>
+# include <sr/sr_polygons.h>
 
-//#define SR_USE_TRACE1 // Constructor and Destructor
-//#include "sr_trace.h"
+//# define SR_USE_TRACE1 // Constructor and Destructor
+//# include <sr/sr_trace.h>
 
 //============================= SrPolygons ==================================
 

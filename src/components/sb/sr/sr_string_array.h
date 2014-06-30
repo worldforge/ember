@@ -21,13 +21,13 @@
  *      Andrew n marshall, USC
  */
 
-#ifndef SR_STRING_ARRAY_H
-#define SR_STRING_ARRAY_H
+# ifndef SR_STRING_ARRAY_H
+# define SR_STRING_ARRAY_H
 
 /** \file sr_string_array.h 
  * resizeable array of strings */
-#include "components/sb/sb/SBTypes.h"
-#include "sr_array.h" 
+#include <sb/SBTypes.h>
+# include <sr/sr_array.h> 
 
 /*! \class SrStringArray sr_string_array.h
     \brief resizeable array of strings

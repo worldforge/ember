@@ -1,6 +1,6 @@
 #include "nvbg.h"
-#include "components/sb/vhcl/vhcl.h"
-#include "SBAttribute.h"
+#include <vhcl/vhcl.h>
+#include <sb/SBAttribute.h>
 
 namespace SmartBody 
 {

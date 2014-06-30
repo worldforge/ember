@@ -1,6 +1,6 @@
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 #include "SBJointMapManager.h"
-#include "SBJointMap.h"
+#include <sb/SBJointMap.h>
 
 namespace SmartBody {
 

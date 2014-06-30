@@ -24,7 +24,7 @@
 #ifndef SR_ARG_BUFFER_H
 #define SR_ARG_BUFFER_H
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 #include <stdlib.h>
 
 

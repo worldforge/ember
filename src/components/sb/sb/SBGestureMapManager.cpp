@@ -1,6 +1,6 @@
 #include "SBGestureMapManager.h"
-#include "SBScene.h"
-#include "SBGestureMap.h"
+#include <sb/SBScene.h>
+#include <sb/SBGestureMap.h>
 
 namespace SmartBody {
 

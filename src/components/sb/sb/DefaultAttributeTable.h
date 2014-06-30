@@ -1,7 +1,7 @@
 #ifndef DEFAULT_ATTRIBUTE_TABLE_H
 #define DEFAULT_ATTRIBUTE_TABLE_H
 
-#include "SBAttribute.h"
+#include <sb/SBAttribute.h>
 #include <vector>
 #include <map>
 #include <string>

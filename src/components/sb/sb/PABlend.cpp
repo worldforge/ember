@@ -20,13 +20,13 @@
  *      Yuyu Xu, USC
  */
 
-#include "PABlend.h"
-#include "components/sb/controllers/me_ct_param_animation_utilities.h"
-#include "components/sb/sr/sr_euler.h"
-#include "components/sb/controllers/me_ct_ublas.hpp"
+#include "sb/PABlend.h"
+#include "controllers/me_ct_param_animation_utilities.h"
+#include <sr/sr_euler.h>
+#include <controllers/me_ct_ublas.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
-#include "SBEvent.h"
+#include <sb/SBEvent.h>
 /*
 #ifdef USE_TETGEN
 #include <external/tetgen/tetgen.h>

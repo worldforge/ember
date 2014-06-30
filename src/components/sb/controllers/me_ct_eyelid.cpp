@@ -20,15 +20,15 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "components/sb/sbm/gwiz_math.h"
+#include "sbm/gwiz_math.h"
 using namespace gwiz;
 
-#include "me_ct_eyelid.h"
-#include "components/sb/sb/sbm_pawn.hpp"
-#include "components/sb/sb/SBCharacter.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBJoint.h"
-#include "components/sb/vhcl/vhcl_log.h"
+#include "controllers/me_ct_eyelid.h"
+#include <sb/sbm_pawn.hpp>
+#include <sb/SBCharacter.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBJoint.h>
+#include <vhcl/vhcl_log.h>
 
 //////////////////////////////////////////////////////////////////////////////////
 

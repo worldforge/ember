@@ -1,7 +1,7 @@
 #ifndef _SBRETARGETMANAGER_H_
 #define _SBRETARGETMANAGER_H_
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <string>
 #include <map>
 #include <vector>

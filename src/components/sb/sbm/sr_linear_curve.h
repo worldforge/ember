@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 //#include <vhcl_log.h>
-#include "gwiz_math.h"
+#include "sbm/gwiz_math.h"
 #include "sr_spline_curve.h"
 
 #define ENABLE_OBJ_KEY_CT	0

@@ -1,7 +1,9 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -I$(top_srcdir)/src/components/sb -DPREFIX=\"@prefix@\"
 SUBDIRS = authoring environment data sounddefinitions scripting widgets
 
 noinst_LIBRARIES = libEmberOgre.a
+
+libEmberOgre_a_LIBADD = $(top_builddir)/src/components/sb/libEmberSmartBody.a
 
 
 libEmberOgre_a_SOURCES = \

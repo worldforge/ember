@@ -1,8 +1,8 @@
 #ifndef SB_NO_ODE_PHYSICS
 #include "ODEPhysicsSim.h"
 
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBCollisionManager.h"
+#include <sb/SBScene.h>
+#include <sb/SBCollisionManager.h>
 
 /************************************************************************/
 /* Physics Sim ODE                                                      */

@@ -27,12 +27,12 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#include "me_ct_container.hpp"
-#include "me_ct_motion.h"
+#include <controllers/me_ct_container.hpp>
+#include <controllers/me_ct_motion.h>
 #include <map>
 #include <string>
-#include "me_spline_1d.hpp"
-#include "components/sb/sb/sbm_character.hpp"
+#include <controllers/me_spline_1d.hpp>
+#include <sb/sbm_character.hpp>
 
 
 class MeCtInterpolator : public MeCtContainer

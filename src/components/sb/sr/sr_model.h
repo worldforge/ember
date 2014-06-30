@@ -19,8 +19,8 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_MODEL_H
-#define SR_MODEL_H
+# ifndef SR_MODEL_H
+# define SR_MODEL_H
 
 /** \file sr_model.h
  * 3d model based on a triangle list
@@ -29,16 +29,16 @@
 class SrCylinder;
 class SrSphere;
 
-#include "components/sb/sb/SBTypes.h"
-#include "sr_box.h"
-#include "sr_vec.h"
-#include "sr_mat.h"
-#include "sr_vec2.h"
-#include "sr_line.h"
-#include "sr_string.h"
-#include "sr_material.h"
-#include "sr_string_array.h"
-#include "sr_shared_class.h"
+# include <sb/SBTypes.h>
+# include <sr/sr_box.h>
+# include <sr/sr_vec.h>
+# include <sr/sr_mat.h>
+# include <sr/sr_vec2.h>
+# include <sr/sr_line.h>
+# include <sr/sr_string.h>
+# include <sr/sr_material.h>
+# include <sr/sr_string_array.h>
+# include <sr/sr_shared_class.h>
 #include <map>
 #include <string>
 #include <vector>

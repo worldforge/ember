@@ -1,8 +1,8 @@
 #ifndef  __SBM_CHARACTER_LISTENER__
 #define  __SBM_CHARACTER_LISTENER__
 #include <string>
-#include "SBTypes.h"
-#include "SBObject.h"
+#include <sb/SBTypes.h>
+#include <sb/SBObject.h>
 
 namespace SmartBody
 {

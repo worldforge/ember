@@ -1,10 +1,10 @@
 #ifndef _MOTION_ANALYSIS_H_
 #define _MOTION_ANALYSIS_H_
 
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBCharacter.h"
-#include "components/sb/sb/SBAnimationState.h"
+#include <sb/SBMotion.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBAnimationState.h>
 #include "me_ct_param_animation_utilities.h"
 #include "me_ct_motion_example.hpp"
 #include "me_ct_ccd_IK.hpp"

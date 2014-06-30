@@ -1,8 +1,8 @@
 #include "SBService.h"
-#include "SBSubject.h"
-#include "SBAttribute.h"
-#include "SBPawn.h"
-#include "SBCharacter.h"
+#include <sb/SBSubject.h>
+#include <sb/SBAttribute.h>
+#include <sb/SBPawn.h>
+#include <sb/SBCharacter.h>
 
 namespace SmartBody {
 

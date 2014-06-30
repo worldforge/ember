@@ -2,11 +2,11 @@
 #include "SmartBodyPathConsts.h"
 #include "SmartBodyManager.h"
 
-#include "sb/SBSkeleton.h"
-#include "sb/SBAssetManager.h"
-#include "sb/SBJointMapManager.h"
-#include "sb/SBJointMap.h"
-#include "sb/SBScene.h"
+#include <sb/SBSkeleton.h>
+#include <sb/SBAssetManager.h>
+#include <sb/SBJointMapManager.h>
+#include <sb/SBJointMap.h>
+#include <sb/SBScene.h>
 
 
 using namespace Ember;

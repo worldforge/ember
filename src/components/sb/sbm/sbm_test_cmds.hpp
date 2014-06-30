@@ -20,7 +20,7 @@
 #ifndef SBM_TEST_CMDS_HPP
 #define SBM_TEST_CMDS_HPP
 
-#include "components/sb/sb/SBCommandManager.h"
+#include <sb/SBCommandManager.h>
 #include "sr_arg_buff.h"
 
 

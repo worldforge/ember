@@ -1,11 +1,11 @@
 
-#ifndef SR_HEAP_H
-#define SR_HEAP_H
+# ifndef SR_HEAP_H
+# define SR_HEAP_H
 
 /** \file sr_heap.h 
  * Template for a heap based on SrArray. */
-#include "components/sb/sb/SBTypes.h"
-#include "sr_array.h" 
+#include <sb/SBTypes.h>
+# include <sr/sr_array.h> 
 
 /*! \class SrHeap sr_heap.h
     \brief Heap based on a SrArray 

@@ -20,12 +20,12 @@
  *      Yuyu Xu, USC
  */
 
-#include "me_ct_interpolator.h"
-#include "me_ct_param_animation.h"
-#include "components/sb/sb/SBAnimationStateManager.h"
-#include "components/sb/sb/SBAnimationState.h"
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBScene.h"
+#include <controllers/me_ct_interpolator.h>
+#include <controllers/me_ct_param_animation.h>
+#include <sb/SBAnimationStateManager.h>
+#include <sb/SBAnimationState.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
 
 std::string MeCtInterpolator::Context::CONTEXT_TYPE = "MeCtInterpolator::Context";
 std::string MeCtInterpolator::CONTROLLER_TYPE = "MeCtInterpolator";

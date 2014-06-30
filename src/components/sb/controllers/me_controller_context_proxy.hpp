@@ -24,7 +24,7 @@
 #define ME_CONTROLLER_CONTEXT_PROXY_HPP
 
 
-#include "me_controller_context.hpp"
+#include "controllers/me_controller_context.hpp"
 
 
 /**

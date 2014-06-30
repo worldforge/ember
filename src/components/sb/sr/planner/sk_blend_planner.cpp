@@ -1,6 +1,6 @@
 
-#include "components/sb/sr/sr_random.h"
-#include "sk_blend_planner.h"
+# include <sr/sr_random.h>
+# include "sk_blend_planner.h"
 
 //===================================== SkArmPlanner ====================================
 

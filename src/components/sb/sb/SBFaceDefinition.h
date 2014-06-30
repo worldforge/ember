@@ -1,11 +1,11 @@
 #ifndef _SBFACEDEFINITION_H_
 #define _SBFACEDEFINITION_H_
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <map>
 #include <vector>
 #include <string>
-#include "SBObject.h"
+#include <sb/SBObject.h>
 
 /**
  *  Maps viseme ids to the related motion.

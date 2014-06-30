@@ -1,9 +1,9 @@
 #ifndef _SBPARSER_H_
 #define _SBPARSER_H_
 
-#include "SBTypes.h"
-#include "components/sb/vhcl/vhcl.h"
-#include "components/sb/external/parser/Params.h"
+#include <sb/SBTypes.h>
+#include <vhcl/vhcl.h>
+#include <external/parser/Params.h>
 
 class InputTree;
 

@@ -1,10 +1,10 @@
 #include "SBColObject.h"
 #include "SBPhysicsSim.h"
-#include "components/sb/sbm/gwiz_math.h"
-#include "components/sb/sbm/ODEPhysicsSim.h"
+#include <sbm/gwiz_math.h>
+#include <sbm/ODEPhysicsSim.h>
 #include <ode/collision.h>
-#include "SBCollisionManager.h"
-#include "SBScene.h"
+#include <sb/SBCollisionManager.h>
+#include <sb/SBScene.h>
 
 SrVec SBTransform::localToGlobal( const SrVec& vLocal )
 {

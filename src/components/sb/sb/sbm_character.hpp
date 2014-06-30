@@ -20,24 +20,24 @@
 #ifndef SBM_CHARACTER_HPP
 #define SBM_CHARACTER_HPP
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <float.h>
 #include <iostream>
 #include <string>
 #include <set>
 #include <map>
 
-#include "SBPawn.h"
-#include "SBFaceDefinition.h"
+#include <sb/SBPawn.h>
+#include <sb/SBFaceDefinition.h>
 #define MeCtSchedulerClass MeCtScheduler2
 
 
 #include "sbm_pawn.hpp"
 
-#include "nvbg.h"
-#include "MiniBrain.h"  // ?
+#include <sb/nvbg.h>
+#include <sb/MiniBrain.h>  // ?
 
-//#include "components/sb/controllers/me_spline_1d.hpp"
+//#include <controllers/me_spline_1d.hpp>
 class MeCtMotionPlayer;
 class MeCtPAnimation;
 class MeCtParamAnimation;

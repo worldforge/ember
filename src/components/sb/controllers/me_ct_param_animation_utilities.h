@@ -23,15 +23,15 @@
 #ifndef _ME_CT_PARAM_ANIMATION_UTILITIES_H_
 #define _ME_CT_PARAM_ANIMATION_UTILITIES_H_
 
-#include "components/sb/sb/SBTypes.h"
-#include "components/sb/sk/sk_motion.h"
-#include "me_controller.h"
-#include "me_ct_channel_writer.hpp"
-#include "components/sb/sbm/sr_linear_curve.h"
-#include "components/sb/sb/sbm_pawn.hpp"
-#include "components/sb/sb/PABlend.h"
-#include "components/sb/sb/SBAnimationTransition.h"
-#include "components/sb/sb/SBRetarget.h"
+#include <sb/SBTypes.h>
+#include <sk/sk_motion.h>
+#include <controllers/me_controller.h>
+#include <controllers/me_ct_channel_writer.hpp>
+#include <sbm/sr_linear_curve.h>
+#include <sb/sbm_pawn.hpp>
+#include <sb/PABlend.h>
+#include <sb/SBAnimationTransition.h>
+#include <sb/SBRetarget.h>
 
 #define LoopHandle 0
 const int rotType = 132;

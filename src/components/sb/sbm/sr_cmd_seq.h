@@ -24,7 +24,7 @@
 #define SR_COMMAND_SEQUENCE_H
 
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 #include <stdio.h>
 #include "sbm_constants.h"
 #include <string>

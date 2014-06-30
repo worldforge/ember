@@ -20,10 +20,10 @@
  *      Marcelo Kallmann, USC (currently at UC Merced)
  */
 
-#include <math.h>
+# include <math.h>
 
-#include "sk_joint_quat.h"
-#include "sk_joint.h"
+# include <sk/sk_joint_quat.h>
+# include <sk/sk_joint.h>
 
 //============================= SrSkQuat ============================
 

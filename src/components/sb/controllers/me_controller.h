@@ -29,18 +29,18 @@
 #include <list>
 #include <vector>
 
-#include "components/sb/sb/SBTypes.h"
-#include "components/sb/sr/sr_hash_table.h"
-#include "components/sb/sr/sr_buffer.h"
-#include "components/sb/sr/sr_shared_class.h"
-#include "components/sb/sk/sk_channel_array.h"
-#include "components/sb/sk/sk_motion.h"
-#include "components/sb/sk/sk_posture.h"
-#include "components/sb/sk/sk_skeleton.h"
-#include "components/sb/sb/SBObject.h"
-#include "components/sb/sb/SBAttribute.h"
-#include "components/sb/sb/DefaultAttributeTable.h"
-#include "me_controller_context.hpp"
+#include <sb/SBTypes.h>
+#include <sr/sr_hash_table.h>
+#include <sr/sr_buffer.h>
+#include <sr/sr_shared_class.h>
+#include <sk/sk_channel_array.h>
+#include <sk/sk_motion.h>
+#include <sk/sk_posture.h>
+#include <sk/sk_skeleton.h>
+#include <sb/SBObject.h>
+#include <sb/SBAttribute.h>
+#include <sb/DefaultAttributeTable.h>
+#include <controllers/me_controller_context.hpp>
 
 
 // Predeclare class because of circular reference:

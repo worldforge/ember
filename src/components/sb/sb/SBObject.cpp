@@ -1,8 +1,8 @@
 #include "SBObject.h"
-#include "components/sb/sr/sr_vec.h"
-#include "SBAttribute.h"
-#include "SBAttributeManager.h"
-#include "components/sb/vhcl/vhcl.h"
+#include <sr/sr_vec.h>
+#include <sb/SBAttribute.h>
+#include <sb/SBAttributeManager.h>
+#include <vhcl/vhcl.h>
 
 namespace SmartBody {
 

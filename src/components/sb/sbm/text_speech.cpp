@@ -9,15 +9,15 @@
 #include <float.h>
 #include "time.h"
 
-#include "xercesc_utils.hpp"
+#include "sbm/xercesc_utils.hpp"
 #include "text_speech.h"
-#include "components/sb/sb/SBScene.h"
+#include <sb/SBScene.h>
 #ifdef EMBER_SB_BONEBUS
-	#include "components/sb/sb/SBBoneBusManager.h"
+	#include <sb/SBBoneBusManager.h>
 #endif
-#include "components/sb/sb/SBSpeechManager.h"
-#include "components/sb/sb/SBSimulationManager.h"
-#include "BMLDefs.h"
+#include <sb/SBSpeechManager.h>
+#include <sb/SBSimulationManager.h>
+#include "sbm/BMLDefs.h"
 
 
 using namespace std;

@@ -24,13 +24,13 @@
 #ifndef _PABLEND_H_
 #define _PABLEND_H_
 
-#include "SBTypes.h"
-#include "components/sb/sr/sr_triangle.h"
-#include "components/sb/sr/sr_vec.h"
+#include <sb/SBTypes.h>
+#include <sr/sr_triangle.h>
+#include <sr/sr_vec.h>
 #include <string>
 #include <vector>
-#include "SBMotion.h"
-#include "SBObject.h"
+#include <sb/SBMotion.h>
+#include <sb/SBObject.h>
 
 namespace SmartBody {
 	class SBMotionEvent;

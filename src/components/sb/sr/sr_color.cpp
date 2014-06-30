@@ -20,7 +20,7 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
  
-#include "sr_color.h"
+# include <sr/sr_color.h>
 
 //========================================= static =======================================
 

@@ -1,10 +1,10 @@
 #ifndef _SBASSETHANDLERSK_H_
 #define _SBASSETHANDLERSK_H_
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <vector>
-#include "SBAsset.h"
-#include "SBAssetHandler.h"
+#include <sb/SBAsset.h>
+#include <sb/SBAssetHandler.h>
 
 
 namespace SmartBody {

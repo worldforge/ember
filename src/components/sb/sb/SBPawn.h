@@ -1,9 +1,9 @@
 #ifndef _SBPAWN_H_
 #define _SBPAWN_H_
 
-#include "components/sb/vhcl/vhcl.h"
-#include "SBTypes.h"
-#include "sbm_pawn.hpp"
+#include <vhcl/vhcl.h>
+#include <sb/SBTypes.h>
+#include <sb/sbm_pawn.hpp>
 
 namespace SmartBody {
 

@@ -3,14 +3,14 @@
 #include <algorithm>
 #include <time.h>
 #include <boost/foreach.hpp>
-#include "components/sb/sr/sr_euler.h"
-#include "me_ct_motion_example.hpp"
-#include "me_ct_motion_parameter.h"
-#include "me_ct_motion_profile.h"
-#include "me_ct_ublas.hpp"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBRetarget.h"
-#include "components/sb/sb/SBRetargetManager.h"
+#include <sr/sr_euler.h>
+#include "controllers/me_ct_motion_example.hpp"
+#include "controllers/me_ct_motion_parameter.h"
+#include "controllers/me_ct_motion_profile.h"
+#include "controllers/me_ct_ublas.hpp"
+#include <sb/SBScene.h>
+#include <sb/SBRetarget.h>
+#include <sb/SBRetargetManager.h>
 
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC

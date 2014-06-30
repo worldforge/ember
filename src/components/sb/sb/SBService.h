@@ -1,10 +1,10 @@
 #ifndef _SBSERVICE_H_
 #define _SBSERVICE_H_
 
-#include "SBTypes.h"
-#include "SBObject.h"
+#include <sb/SBTypes.h>
+#include <sb/SBObject.h>
 #ifdef __native_client__
-#include "SBCharacter.h"
+#include <sb/SBCharacter.h>
 #endif
 namespace SmartBody {
 

@@ -1,12 +1,12 @@
 
-#ifndef SR_CFG_PLANNER_H
-#define SR_CFG_PLANNER_H
+# ifndef SR_CFG_PLANNER_H
+# define SR_CFG_PLANNER_H
 
-//#include <sr/sr_cfg_path.h>
-//#include <sr/sr_cfg_tree.h>
-#include "components/sb/sr/sr_heap.h"
-#include "sr_cfg_path.h"
-#include "sr_cfg_tree.h"
+//# include <sr/sr_cfg_path.h>
+//# include <sr/sr_cfg_tree.h>
+# include <sr/sr_heap.h>
+# include "sr_cfg_path.h"
+# include "sr_cfg_tree.h"
 
 /*! A single-query, bidirectional, lazy and sampling-based planner */
 class SrCfgPlannerBase : public SrSharedClass

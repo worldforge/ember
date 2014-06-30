@@ -1,13 +1,13 @@
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <boost/algorithm/string.hpp> 
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBAnimationState.h"
-#include "components/sb/sb/SBAnimationStateManager.h"
-#include "components/sb/controllers/me_ct_param_animation.h"
+#include <sb/SBScene.h>
+#include <sb/SBAnimationState.h>
+#include <sb/SBAnimationStateManager.h>
+#include <controllers/me_ct_param_animation.h>
 #include "bml_states.hpp"
 
 #include "bml_xml_consts.hpp"

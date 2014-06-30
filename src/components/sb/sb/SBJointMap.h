@@ -1,13 +1,13 @@
 #ifndef _SBJOINTMAP_H_
 #define _SBJOINTMAP_H_
 
-#include "components/sb/vhcl/vhcl.h"
-#include "SBTypes.h"
+#include <vhcl/vhcl.h>
+#include <sb/SBTypes.h>
 #include <map>
 #include <vector>
 #include <string>
-#include "components/sb/sk/sk_joint.h"
-#include "SBObject.h"
+#include <sk/sk_joint.h>
+#include <sb/SBObject.h>
 #include <boost/bimap/bimap.hpp>
 
 

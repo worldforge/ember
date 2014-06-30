@@ -1,11 +1,11 @@
 
-#ifndef SR_CFG_PATH_H
-#define SR_CFG_PATH_H
+# ifndef SR_CFG_PATH_H
+# define SR_CFG_PATH_H
 
-#include "components/sb/sr/sr_output.h"
-#include "components/sb/sr/sr_array.h"
-//#include <SR/sr_cfg_manager.h>
-#include "sr_cfg_manager.h"
+# include <sr/sr_output.h>
+# include <sr/sr_array.h>
+//# include <SR/sr_cfg_manager.h>
+# include "sr_cfg_manager.h"
 
 /*! SrCfgPathBase manages a sequence of configurations, describing
     a path in configuration space. */

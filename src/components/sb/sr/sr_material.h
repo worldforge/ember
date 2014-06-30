@@ -23,13 +23,13 @@
  * specifies a material
  */
 
-#ifndef SR_MATERIAL_H
-#define SR_MATERIAL_H
+# ifndef SR_MATERIAL_H
+# define SR_MATERIAL_H
 
-#include "components/sb/sb/SBTypes.h"
-#include "sr_input.h" 
-#include "sr_output.h" 
-#include "sr_color.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_input.h> 
+# include <sr/sr_output.h> 
+# include <sr/sr_color.h>
 
 /*! \class SrMaterial sr_material.h
     \brief specifies a material

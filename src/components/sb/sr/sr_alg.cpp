@@ -20,21 +20,21 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include <math.h>
+# include <math.h>
 
-#include "sr.h"
-#include "sr_alg.h"
+# include <sr/sr.h>
+# include <sr/sr_alg.h>
 
 /*-------------------------------------------------------------------*/
 /* Functions to solve polynomials of 2nd, 3rt and 4th degree.        */
 /* Source: graphics gems                                             */
 /*-------------------------------------------------------------------*/
 
-#define aMAXFLOAT    3.40282347E+38
-#define aEPSILON     1e-9
-#define aEPSILON2    0.00001
-#define aISZERO(x)   ((x) > -aEPSILON && (x) < aEPSILON)
-#define aCBRT(x)     ((x) > 0.0 ? pow((double)(x), 1.0/3.0) : \
+# define aMAXFLOAT    3.40282347E+38
+# define aEPSILON     1e-9
+# define aEPSILON2    0.00001
+# define aISZERO(x)   ((x) > -aEPSILON && (x) < aEPSILON)
+# define aCBRT(x)     ((x) > 0.0 ? pow((double)(x), 1.0/3.0) : \
                       ((x) < 0.0 ? -pow((double)-(x), 1.0/3.0) : 0.0))
 
 int sr_solve_quadric_polynomial ( double c[3], double s[2] )

@@ -1,8 +1,8 @@
-#include "me_ct_constraint.hpp"
+#include "controllers/me_ct_constraint.hpp"
 #include <assert.h>
 #include <boost/foreach.hpp>
-#include "components/sb/sr/sr_timer.h"
-#include "components/sb/sbm/gwiz_math.h"
+#include <sr/sr_timer.h>
+#include <sbm/gwiz_math.h>
 using namespace gwiz;
 
 std::string MeCtConstraint::CONTROLLER_TYPE = "Constraint";

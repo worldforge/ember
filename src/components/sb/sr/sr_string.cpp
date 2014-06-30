@@ -20,19 +20,19 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
  
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h> 
-#include <stdio.h>
+# include <ctype.h>
+# include <string.h>
+# include <stdlib.h>
+# include <stdarg.h> 
+# include <stdio.h>
 
-#include "sr_string.h"
-#include "sr_input.h"
+# include <sr/sr_string.h>
+# include <sr/sr_input.h>
 
-//#define SR_USE_TRACE1 // constructors / destructors
-//#define SR_USE_TRACE2 // member functions
-//#define SR_USE_TRACE3 // set() member function
-//#include "sr_trace.h"
+//# define SR_USE_TRACE1 // constructors / destructors
+//# define SR_USE_TRACE2 // member functions
+//# define SR_USE_TRACE3 // set() member function
+//# include <sr/sr_trace.h>
 
 char *SrString::_empty = (char*)"";
 

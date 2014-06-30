@@ -5,58 +5,58 @@
 
 #define BOOST_NO_CXX11_SCOPED_ENUMS
 
-#include "SBTypes.h"
-#include "SBObject.h"
-#include "SBCharacter.h"
-#include "SBMotion.h"
-#include "SBScript.h"
-#include "SBEvent.h"
-#include "SBPhoneme.h"
-#include "SBSimulationManager.h"
-#include "SBBmlProcessor.h"
-#include "SBAnimationState.h"
-#include "SBAnimationTransition.h"
-#include "SBAnimationStateManager.h"
-#include "SBReach.h"
-#include "SBReachManager.h"
+#include <sb/SBTypes.h>
+#include <sb/SBObject.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBMotion.h>
+#include <sb/SBScript.h>
+#include <sb/SBEvent.h>
+#include <sb/SBPhoneme.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBBmlProcessor.h>
+#include <sb/SBAnimationState.h>
+#include <sb/SBAnimationTransition.h>
+#include <sb/SBAnimationStateManager.h>
+#include <sb/SBReach.h>
+#include <sb/SBReachManager.h>
 #ifdef EMBER_SB_STEER
-	#include "SBSteerAgent.h"
-	#include "SBSteerManager.h"
+	#include <sb/SBSteerAgent.h>
+	#include <sb/SBSteerManager.h>
 #endif
-#include "SBServiceManager.h" 
-#include "SBService.h"
-#include "SBPhysicsManager.h"
+#include <sb/SBServiceManager.h> 
+#include <sb/SBService.h>
+#include <sb/SBPhysicsManager.h>
 #ifdef EMBER_SB_BONEBUS
-	#include "SBBoneBusManager.h"
+	#include <sb/SBBoneBusManager.h>
 #endif
-#include "SBGestureMap.h"
-#include "SBGestureMapManager.h" 
-#include "SBJointMapManager.h" 
-#include "SBCollisionManager.h"
-#include "SBPhonemeManager.h"
-#include "SBBehaviorSetManager.h" // ???
-#include "SBRetargetManager.h" 
-#include "SBAssetManager.h"
-#include "SBSpeechManager.h" // ?
-#include "SBCommandManager.h"
+#include <sb/SBGestureMap.h>
+#include <sb/SBGestureMapManager.h> 
+#include <sb/SBJointMapManager.h> 
+#include <sb/SBCollisionManager.h>
+#include <sb/SBPhonemeManager.h>
+#include <sb/SBBehaviorSetManager.h> // ???
+#include <sb/SBRetargetManager.h> 
+#include <sb/SBAssetManager.h>
+#include <sb/SBSpeechManager.h> // ?
+#include <sb/SBCommandManager.h>
 #ifdef EMBER_SB_WSP
-	#include "SBWSPManager.h" // ???
+	#include <sb/SBWSPManager.h> // ???
 #endif
 #ifdef EMBER_SB_STEER
-	#include "SBNavigationMeshManager.h"
+	#include <sb/SBNavigationMeshManager.h>
 #endif
-#include "SBSkeleton.h"
-#include "SBParser.h"
-#include "SBRetarget.h"
+#include <sb/SBSkeleton.h>
+#include <sb/SBParser.h>
+#include <sb/SBRetarget.h>
 #ifdef EMBER_SB_DEBUGGER
-	#include "SBDebuggerServer.h" // ?
-	#include "SBDebuggerClient.h" // ?
+	#include <sb/SBDebuggerServer.h> // ?
+	#include <sb/SBDebuggerClient.h> // ?
 	#include <sb/SBDebuggerUtility.h> // ?
 #endif
 #ifdef EMBER_SB_VHMSG
-#include "SBVHMsgManager.h"
+#include <sb/SBVHMsgManager.h>
 #endif
-#include "SBMotionGraph.h" 
+#include <sb/SBMotionGraph.h> 
 #ifdef EMBER_SB_AUDIO
 	#include <sbm/sbm_audio.h>
 #endif
@@ -66,48 +66,48 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
-#include "nvbg.h" // ?
-#include "SBJointMap.h"
-#include "SBSceneListener.h"
+#include <sb/nvbg.h> // ?
+#include <sb/SBJointMap.h>
+#include <sb/SBSceneListener.h>
 #ifdef EMBER_SB_STEER
-	#include "SBNavigationMesh.h"
+	#include <sb/SBNavigationMesh.h>
 #endif
 #ifdef EMBER_SB_OTHERFMT
-	#include "components/sb/sbm/ParserBVH.h" // ?
-#include "components/sb/sbm/ParserCOLLADAFast.h" // ?
+	#include <sbm/ParserBVH.h> // ?
+#include <sbm/ParserCOLLADAFast.h> // ?
 #endif
-#include "components/sb/sbm/ParserOpenCOLLADA.h" // ?
-#include "components/sb/sbm/ParserOgre.h" // ?
+#include <sbm/ParserOpenCOLLADA.h> // ?
+#include <sbm/ParserOgre.h> // ?
 #ifdef EMBER_SB_HEIGHTFIELD
-	#include "components/sb/sbm/Heightfield.h" // ?
+	#include <sbm/Heightfield.h> // ?
 #endif
-#include "components/sb/sbm/action_unit.hpp"
-#include "components/sb/sbm/xercesc_utils.hpp" // ?
+#include <sbm/action_unit.hpp>
+#include <sbm/xercesc_utils.hpp> // ?
 #ifdef EMBER_SB_CAMERA
-	#include "components/sb/sr/sr_camera.h" 
+	#include <sr/sr_camera.h> 
 #endif
-#include "components/sb/controllers/me_ct_gaze.h"
-#include "components/sb/controllers/me_ct_eyelid.h"
-#include "components/sb/controllers/me_ct_breathing.h"
-#include "components/sb/controllers/me_ct_example_body_reach.hpp"
-#include "components/sb/controllers/me_ct_saccade.h"
+#include <controllers/me_ct_gaze.h>
+#include <controllers/me_ct_eyelid.h>
+#include <controllers/me_ct_breathing.h>
+#include <controllers/me_ct_example_body_reach.hpp>
+#include <controllers/me_ct_saccade.h>
 #ifdef EMBER_SB_KINECT
-	#include "components/sb/sbm/KinectProcessor.h"
+	#include <sbm/KinectProcessor.h>
 #endif
-#include "components/sb/controllers/me_controller_tree_root.hpp"
-#include "components/sb/sr/sr_sn_group.h"
+#include <controllers/me_controller_tree_root.hpp>
+#include <sr/sr_sn_group.h>
 #ifdef EMBER_SB_GNU
 #if !defined(SB_IPHONE) && !defined(__ANDROID__)
 #include <sbm/GPU/SbmShader.h> // ??
 #endif
 #if !defined(SB_IPHONE)
-#include "components/sb/sbm/GPU/SbmTexture.h" // ??
+#include <sbm/GPU/SbmTexture.h> // ??
 #endif
 #endif
 #ifdef EMBER_SB_KINECT
-	#include "components/sb/sbm/KinectProcessor.h"
+	#include <sbm/KinectProcessor.h>
 #endif
-#include "components/sb/sr/sr_sn_group.h"
+#include <sr/sr_sn_group.h>
 #include <fstream>
 #include <sstream>
 // for minizip compression

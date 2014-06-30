@@ -23,10 +23,10 @@
 /** \file sr_alg.h 
  * few algebra functions */
 
-#ifndef SR_ALG_H
-#define SR_ALG_H
+# ifndef SR_ALG_H
+# define SR_ALG_H
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 
 /*! Solve polynomials of 2nd degree. The coefficients are given in c,
     where c[i] is the coefficient of the i-th power of the unknown variable.

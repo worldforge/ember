@@ -1,10 +1,10 @@
 #pragma once
-#include "me_ct_data_driven_reach.hpp"
-#include "me_ct_motion_timewarp.hpp"
-#include "me_ct_ublas.hpp"
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBJoint.h"
+#include "controllers/me_ct_data_driven_reach.hpp"
+#include "controllers/me_ct_motion_timewarp.hpp"
+#include "controllers/me_ct_ublas.hpp"
+#include <sb/SBMotion.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBJoint.h>
 
 using namespace std;
 

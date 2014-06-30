@@ -23,11 +23,11 @@
 #ifndef _ME_CT_SACCADE_H_
 #define _ME_CT_SACCADE_H_
 
-#include "components/sb/sb/SBController.h"
-#include "components/sb/sb/sbm_character.hpp"
-#include "components/sb/sk/sk_skeleton.h"
-#include "components/sb/sbm/gwiz_math.h"
-#include "components/sb/sbm/sr_linear_curve.h"
+#include <sb/SBController.h>
+#include <sb/sbm_character.hpp>
+#include <sk/sk_skeleton.h>
+#include "sbm/gwiz_math.h"
+#include "sbm/sr_linear_curve.h"
 
 class MeCtSaccade : public SmartBody::SBController
 {

@@ -19,13 +19,13 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
  
-#include <math.h>
-#include "sr_box.h"
-#include "sr_geo2.h"
-#include "sr_polygon.h"
+# include <math.h>
+# include <sr/sr_box.h>
+# include <sr/sr_geo2.h>
+# include <sr/sr_polygon.h>
 
-//#define SR_USE_TRACE1 
-//#include "sr_trace.h"
+//# define SR_USE_TRACE1 
+//# include <sr/sr_trace.h>
  
 //=================================== SrPolygon =================================================
 
@@ -272,8 +272,8 @@ void SrPolygon::remove_collinear_vertices ( float epsilon )
     }
  }
 
-//#define SE_CCW(ax,ay,bx,by,cx,cy) ((ax*by) + (bx*cy) + (cx*ay) - (bx*ay) - (cx*by) - (ax*cy))
-//#define VCCW(p1,p2,p3) SE_CCW(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y)
+//# define SE_CCW(ax,ay,bx,by,cx,cy) ((ax*by) + (bx*cy) + (cx*ay) - (bx*ay) - (cx*by) - (ax*cy))
+//# define VCCW(p1,p2,p3) SE_CCW(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y)
 
 static void grow_corner
        ( const SrVec2& v1, const SrVec2& v2, const SrVec2& v3,

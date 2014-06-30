@@ -1,8 +1,8 @@
 
-#ifndef SR_RANDOM_H
-#define SR_RANDOM_H
+# ifndef SR_RANDOM_H
+# define SR_RANDOM_H
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 /** \file sr_random.h 
  * Random number generation */
 

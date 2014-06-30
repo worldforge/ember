@@ -1,5 +1,5 @@
 #pragma once
-#include "me_ct_data_interpolation.h"
+#include "controllers/me_ct_data_interpolation.h"
 
 // general simplex
 // a 1D simplex is a line segment, a 2D simplex is a triangle, and a 3D simplex is a tetrahedron

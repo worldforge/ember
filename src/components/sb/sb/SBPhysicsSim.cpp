@@ -1,13 +1,13 @@
 #include "SBPhysicsSim.h"
 
-#include "SBScene.h"
-#include "SBPhysicsManager.h"
-#include "SBCharacter.h"
-#include "SBSkeleton.h"
-#include "SBAttribute.h"
-#include "components/sb/sr/sr_output.h"
-#include "components/sb/sbm/gwiz_math.h"
-#include "components/sb/controllers/me_ct_ublas.hpp"
+#include <sb/SBScene.h>
+#include <sb/SBPhysicsManager.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBAttribute.h>
+#include <sr/sr_output.h>
+#include <sbm/gwiz_math.h>
+#include <controllers/me_ct_ublas.hpp>
 
 
 //#include <boost/math/special_functions/fpclassify.hpp>

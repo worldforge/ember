@@ -30,11 +30,11 @@
 #include <limits>
 #include <set>
 
-#include "components/sb/sr/sr_shared_ptr.hpp"  // uses boost
-#include "components/sb/sk/sk_skeleton.h"
-#include "components/sb/sk/sk_channel_array.h"
-#include "me_controller_context.hpp"
-#include "me_evaluation_logger.hpp"
+#include <sr/sr_shared_ptr.hpp>  // uses boost
+#include <sk/sk_skeleton.h>
+#include <sk/sk_channel_array.h>
+#include <controllers/me_controller_context.hpp>
+#include <controllers/me_evaluation_logger.hpp>
 
 class SbmPawn;
 

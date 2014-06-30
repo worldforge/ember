@@ -21,17 +21,17 @@
  *      Andrew n marshall, USC
  */
 
-#include "components/sb/vhcl/vhcl_log.h"
+#include <vhcl/vhcl_log.h>
 
-#include "me_ct_motion.h"
-#include "components/sb/sb/SBEvent.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/sbm_pawn.hpp"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBRetargetManager.h"
-#include "components/sb/sb/SBRetarget.h"
-#include "components/sb/sb/SBMotion.h"
-#include "components/sb/sb/SBSkeleton.h"
+#include <controllers/me_ct_motion.h>
+#include <sb/SBEvent.h>
+#include <sb/SBScene.h>
+#include <sb/sbm_pawn.hpp>
+#include <sb/SBScene.h>
+#include <sb/SBRetargetManager.h>
+#include <sb/SBRetarget.h>
+#include <sb/SBMotion.h>
+#include <sb/SBSkeleton.h>
 
 //=================================== MeCtMotion =====================================
 

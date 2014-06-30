@@ -1,7 +1,7 @@
-#include "me_ct_motion_graph.hpp"
-#include "components/sb/sb/SBRetargetManager.h"
-#include "components/sb/sb/SBRetarget.h"
-#include "components/sb/sb/SBScene.h"
+#include "controllers/me_ct_motion_graph.hpp"
+#include <sb/SBRetargetManager.h>
+#include <sb/SBRetarget.h>
+#include <sb/SBScene.h>
 
 std::string MeCtMotionGraph::CONTROLLER_TYPE = "MotionGraph";
 

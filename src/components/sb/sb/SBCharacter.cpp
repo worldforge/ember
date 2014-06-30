@@ -1,46 +1,46 @@
 #include "SBCharacter.h"
-#include "SBSkeleton.h"
+#include <sb/SBSkeleton.h>
 
-#include "components/sb/sbm/mcontrol_callbacks.h" 
-#include "SBController.h"
-#include "components/sb/bml/bml_types.hpp"
-#include "components/sb/bml/bml_speech.hpp"
-#include "SBBehavior.h"
+#include <sbm/mcontrol_callbacks.h> 
+#include "sb/SBController.h"
+#include "bml/bml_types.hpp"
+#include "bml/bml_speech.hpp"
+#include "sb/SBBehavior.h"
 #ifdef EMBER_SB_STEER
-	#include "components/sb/sbm/PPRAISteeringAgent.h>"
-	#include "SBSteerAgent.h"
+	#include <sbm/PPRAISteeringAgent.h> 
+	#include <sb/SBSteerAgent.h>
 #endif
-#include "SBPhysicsManager.h"
+#include <sb/SBPhysicsManager.h>
 #ifdef EMBER_SB_STEER
-	#include "SBSteerManager.h"
-	#include "SBSteerAgent.h"
+	#include <sb/SBSteerManager.h>
+	#include <sb/SBSteerAgent.h>
 #endif
-#include "SBPhoneme.h" 
-#include "SBPhonemeManager.h" 
-#include "SBAssetManager.h"
-#include "SBScene.h"
-#include "SBSpeechManager.h"
-#include "SBSimulationManager.h"
-#include "SBBmlProcessor.h"
-#include "SBReach.h"
-#include "SBSceneListener.h"
-#include "SBMotionGraph.h" 
-#include "components/sb/controllers/me_ct_motion_recorder.h"
-#include "components/sb/controllers/me_ct_scheduler2.h" 
-#include "components/sb/controllers/me_ct_scheduler2.h" 
-#include "components/sb/controllers/me_ct_gaze.h"
-#include "components/sb/controllers/me_controller_tree_root.hpp" 
-#include "components/sb/controllers/me_ct_curve_writer.hpp" 
-#include "components/sb/controllers/me_ct_channel_writer.hpp" 
-#include "components/sb/controllers/me_ct_saccade.h"
-#include "components/sb/controllers/me_ct_motion_graph.hpp"
-#include "components/sb/sbm/remote_speech.h"
-#include "components/sb/sbm/local_speech.h"
-#include "components/sb/sbm/text_speech.h"
-#include "components/sb/sbm/sbm_speech_audiofile.hpp"
-#include "components/sb/bml/bml_processor.hpp"
-#include "components/sb/sk/sk_channel_array.h"
-#include "components/sb/sr/sr_random.h"
+#include <sb/SBPhoneme.h> 
+#include <sb/SBPhonemeManager.h> 
+#include <sb/SBAssetManager.h>
+#include <sb/SBScene.h>
+#include <sb/SBSpeechManager.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBBmlProcessor.h>
+#include <sb/SBReach.h>
+#include <sb/SBSceneListener.h>
+#include <sb/SBMotionGraph.h> 
+#include <controllers/me_ct_motion_recorder.h>
+#include <controllers/me_ct_scheduler2.h> 
+#include <controllers/me_ct_scheduler2.h> 
+#include <controllers/me_ct_gaze.h>
+#include <controllers/me_controller_tree_root.hpp> 
+#include <controllers/me_ct_curve_writer.hpp> 
+#include <controllers/me_ct_channel_writer.hpp> 
+#include <controllers/me_ct_saccade.h>
+#include <controllers/me_ct_motion_graph.hpp>
+#include <sbm/remote_speech.h>
+#include <sbm/local_speech.h>
+#include <sbm/text_speech.h>
+#include <sbm/sbm_speech_audiofile.hpp>
+#include <bml/bml_processor.hpp>
+#include <sk/sk_channel_array.h>
+#include <sr/sr_random.h>
 
 namespace SmartBody {
 

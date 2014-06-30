@@ -20,19 +20,19 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_INPUT_H
-#define SR_INPUT_H
+# ifndef SR_INPUT_H
+# define SR_INPUT_H
 
 /** \file sr_input.h 
  * parses input file or string */
 
 // sr_array.h cannot be included here because of circular references
-#include "components/sb/sb/SBTypes.h"
-#include <stdio.h>
-#include "sr_string.h"
+#include <sb/SBTypes.h>
+# include <stdio.h>
+# include <sr/sr_string.h>
 
 /*! Defines which characters are considered as delimiters. */
-#define SR_INPUT_DELIMITERS "{}[]();,.=+-/^*%:&|!~<>#?@\\\'"
+# define SR_INPUT_DELIMITERS "{}[]();,.=+-/^*%:&|!~<>#?@\\\'"
 
 /*! \class SrInput sr_input.h
     \brief Parses a file or string buffer

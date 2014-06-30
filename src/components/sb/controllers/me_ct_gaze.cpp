@@ -18,15 +18,15 @@
  */
 
 
-#include "me_ct_gaze.h"
-#include "components/sb/sbm/lin_win.h"
+#include "controllers/me_ct_gaze.h"
+#include "sbm/lin_win.h"
 using namespace gwiz;
-#include "components/sb/vhcl/vhcl_log.h"
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBPawn.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/sbm_pawn.hpp"
+#include <vhcl/vhcl_log.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
+#include <sb/SBPawn.h>
+#include <sb/SBSkeleton.h>
+#include <sb/sbm_pawn.hpp>
 
 //#define DFL_GAZE_HEAD_SPEED 180.0
 //#define DFL_GAZE_EYE_SPEED  1000.0
@@ -73,7 +73,7 @@ const float MeCtGaze::DEFAULT_SMOOTHING_CERVICAL = 0.5f;
 const float MeCtGaze::DEFAULT_SMOOTHING_EYEBALL  = 0.0f;
 
 #if TEST_SENSOR
-#include "me_ct_gaze_sensor.h"
+#include "controllers/me_ct_gaze_sensor.h"
 void test_sensor_callback( int id, int status )	{
 	LOG( "test_sensor_callback: id:%d status:%d\n", id, status );
 }

@@ -1,16 +1,16 @@
 #ifndef SBSCENE_H
 #define SBSCENE_H
 
-#include "components/sb/vhcl/vhcl.h"
-#include "SBTypes.h"
-#include "SBObject.h"
-#include "SBScript.h"
+#include <vhcl/vhcl.h>
+#include <sb/SBTypes.h>
+#include <sb/SBObject.h>
+#include <sb/SBScript.h>
 #include <map>
 #include <sstream>
 #ifdef EMBER_SB_VIEWER
-	#include "components/sb/sr/sr_viewer.h"
+	#include <sr/sr_viewer.h>
 #endif
-#include "components/sb/sbm/general_param_setting.h"
+#include <sbm/general_param_setting.h>
 
 #ifndef SB_NO_PYTHON
 #ifdef EMBER_SB_PYTHON

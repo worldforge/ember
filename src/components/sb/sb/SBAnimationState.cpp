@@ -1,16 +1,16 @@
 #include "SBAnimationState.h"
-#include "components/sb/controllers/MotionAnalysis.h"
-#include "SBMotion.h"
-#include "SBCharacter.h"
-#include "SBScene.h"
-#include "SBSkeleton.h"
-#include "SBEvent.h"
-#include "SBAssetManager.h"
+#include <controllers/MotionAnalysis.h>
+#include <sb/SBMotion.h>
+#include <sb/SBCharacter.h>
+#include <sb/SBScene.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBEvent.h>
+#include <sb/SBAssetManager.h>
 
 #include <boost/algorithm/string.hpp>
 
-#include "components/sb/sr/sr.h"
-#include "components/sb/sr/sr_lines.h"
+#include <sr/sr.h>
+#include <sr/sr_lines.h>
 
 namespace SmartBody {
 

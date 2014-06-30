@@ -1,9 +1,9 @@
 
-#include "sr_cfg_path.h"
-#include "components/sb/sr/sr_random.h"
+# include "sr_cfg_path.h"
+# include <sr/sr_random.h>
 
-//#define SR_USE_TRACE1    // 
-#include "components/sb/sr/sr_trace.h"
+//# define SR_USE_TRACE1    // 
+# include <sr/sr_trace.h>
 
 //================================ SrCfgPathBase ========================================
 

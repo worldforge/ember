@@ -1,7 +1,7 @@
 #ifndef _SBREACH_H_
 #define _SBREACH_H_
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <string>
 #include <vector>
 #include <set>

@@ -22,8 +22,8 @@
 
 #include "me_ct_IK_scenario.hpp"
 
-#include "components/sb/sb/sbm_character.hpp"
-#include "components/sb/sbm/gwiz_math.h"
+#include "sb/sbm_character.hpp"
+#include "sbm/gwiz_math.h"
 
 
 const char* MeCtIKScenario::TYPE = "MeCtIKScenario";

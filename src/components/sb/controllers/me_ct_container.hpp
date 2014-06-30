@@ -23,8 +23,8 @@
 #ifndef ME_CT_CONTAINER_HPP
 #define ME_CT_CONTAINER_HPP
 
-#include "components/sb/sb/SBController.h"
-#include "me_controller_context_proxy.hpp"
+#include <sb/SBController.h>
+#include <controllers/me_controller_context_proxy.hpp>
 
 
 /**

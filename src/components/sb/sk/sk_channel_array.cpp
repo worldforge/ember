@@ -22,11 +22,11 @@
 *      Marcus Thiebaux, USC
 */
 
-#include "sk_channel_array.h"
-#include "sk_skeleton.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBJointMapManager.h"
-#include "components/sb/sb/SBJointMap.h"
+# include <sk/sk_channel_array.h>
+# include <sk/sk_skeleton.h>
+#include <sb/SBScene.h>
+#include <sb/SBJointMapManager.h>
+#include <sb/SBJointMap.h>
 
 //============================= SkChannelArray ============================
 //  A persistent empty SkChannelArray returned by empty_channel_array().

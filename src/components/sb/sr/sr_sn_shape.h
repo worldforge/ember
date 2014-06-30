@@ -20,14 +20,14 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_SN_SHAPE_H
-#define SR_SN_SHAPE_H
+# ifndef SR_SN_SHAPE_H
+# define SR_SN_SHAPE_H
 
 /** \file sr_sn_shape.h 
  * shape base and template class
  */
-#include "components/sb/sb/SBTypes.h"
-#include "sr_sn.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_sn.h>
 
 //================================ SrSnShapeBase ====================================
 

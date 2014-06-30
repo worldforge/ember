@@ -1,12 +1,12 @@
 #ifndef _SBCOLOBJECT_H_
 #define _SBCOLOBJECT_H_
 
-#include "SBTypes.h"
-#include "components/sb/sr/sr_mat.h"
-#include "components/sb/sr/sr_quat.h"
-#include "components/sb/sr/sr_vec.h"
-#include "components/sb/sr/sr_model.h"
-#include "components/sb/sr/sr_color.h"
+#include <sb/SBTypes.h>
+#include <sr/sr_mat.h>
+#include <sr/sr_quat.h>
+#include <sr/sr_vec.h>
+#include <sr/sr_model.h>
+#include <sr/sr_color.h>
 #include <vector>
 #include <list>
 #include <map>

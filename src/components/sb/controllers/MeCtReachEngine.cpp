@@ -4,15 +4,15 @@
 #include <time.h>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include "components/sb/sr/sr_timer.h"
+#include <sr/sr_timer.h>
 #include "MeCtReachEngine.h"
 
-#include "me_ct_barycentric_interpolation.h"
-#include "me_ct_inverse_interpolation.h"
-#include "components/sb/sb/SBEvent.h"
+#include "controllers/me_ct_barycentric_interpolation.h"
+#include "controllers/me_ct_inverse_interpolation.h"
+#include <sb/SBEvent.h>
 #include "MeCtBodyReachState.h"
-#include "components/sb/sb/sbm_character.hpp"
-#include "components/sb/sb/SBCharacter.h"
+#include <sb/sbm_character.hpp>
+#include <sb/SBCharacter.h>
 
 
 

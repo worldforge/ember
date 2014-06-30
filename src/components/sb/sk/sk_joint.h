@@ -22,20 +22,20 @@
 *      Andrew n marshall, USC
 */
 
-#ifndef SK_JOINT_H
-#define SK_JOINT_H
+# ifndef SK_JOINT_H
+# define SK_JOINT_H
 
-#include "components/sb/sb/SBTypes.h"
-#include "components/sb/sr/sr_mat.h"
-#include "components/sb/sr/sr_quat.h"
-#include "components/sb/sr/sr_array.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_mat.h>
+# include <sr/sr_quat.h>
+# include <sr/sr_array.h>
 
-#include "sk_joint_name.h"
-#include "sk_joint_pos.h"
-#include "sk_joint_quat.h"
-#include "sk_joint_euler.h"
-#include "sk_joint_swing_twist.h"
-#include "components/sb/sb/SBObject.h"
+# include <sk/sk_joint_name.h>
+# include <sk/sk_joint_pos.h>
+# include <sk/sk_joint_quat.h>
+# include <sk/sk_joint_euler.h>
+# include <sk/sk_joint_swing_twist.h>
+#include <sb/SBObject.h>
 
 #include <string>
 #include <vector>

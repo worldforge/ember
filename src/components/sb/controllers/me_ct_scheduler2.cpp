@@ -17,24 +17,24 @@
  *      http://www.gnu.org/licenses/lgpl-3.0.txt
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <string>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
 
-#include "components/sb/sk/sk_skeleton.h"
+#include <sk/sk_skeleton.h>
 
-#include "me_ct_examples.h"
-#include "me_ct_scheduler2.h"
-#include "me_ct_blend.hpp"
-#include "me_ct_time_shift_warp.hpp"
-#include "me_ct_motion.h"
-#include "me_ct_interpolator.h"
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBScene.h"
-#include "me_prune_policy.hpp"
+#include <controllers/me_ct_examples.h>
+#include <controllers/me_ct_scheduler2.h>
+#include <controllers/me_ct_blend.hpp>
+#include <controllers/me_ct_time_shift_warp.hpp>
+#include <controllers/me_ct_motion.h>
+#include <controllers/me_ct_interpolator.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
+#include <controllers/me_prune_policy.hpp>
 
 
 using namespace std;

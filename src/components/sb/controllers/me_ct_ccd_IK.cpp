@@ -1,4 +1,4 @@
-#include "me_ct_ccd_IK.hpp"
+#include "controllers/me_ct_ccd_IK.hpp"
 #include <algorithm>
 
 MeCtCCDIK::MeCtCCDIK( void )

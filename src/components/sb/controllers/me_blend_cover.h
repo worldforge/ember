@@ -23,7 +23,7 @@
 #ifndef ME_BLEND_COVER
 #define ME_BLEND_COVER
 
-#include "components/sb/sbm/sr_hash_map.h"
+#include "sbm/sr_hash_map.h"
 
 class MeBlendCoverMap	{
 	

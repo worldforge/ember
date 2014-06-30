@@ -1,13 +1,13 @@
-#ifndef _SBASSETMANAGER_H_
+	#ifndef _SBASSETMANAGER_H_
 #define _SBASSETMANAGER_H_
 
-#include "components/sb/vhcl/vhcl.h"
-#include "SBTypes.h"
-#include "SBObject.h"
+#include <vhcl/vhcl.h>
+#include <sb/SBTypes.h>
+#include <sb/SBObject.h>
 #include <map>
 #include <boost/filesystem/path.hpp>
-#include "components/sb/sbm/sbm_deformable_mesh.h"
-#include "SBAssetHandler.h"
+#include <sbm/sbm_deformable_mesh.h>
+#include <sb/SBAssetHandler.h>
 
 class srPathList;
 

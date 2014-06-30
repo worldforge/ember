@@ -23,12 +23,12 @@
 /** \file sr_geo2.h 
  * 2d geometric primitives */
 
-#ifndef SR_GEO2_H
-#define SR_GEO2_H
+# ifndef SR_GEO2_H
+# define SR_GEO2_H
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 
-#define SR_CCW(ax,ay,bx,by,cx,cy)  ((ax*by)-(bx*ay)+(bx*cy)-(cx*by)+(cx*ay)-(ax*cy))
+# define SR_CCW(ax,ay,bx,by,cx,cy)  ((ax*by)-(bx*ay)+(bx*cy)-(cx*by)+(cx*ay)-(ax*cy))
 
 /*! Returns true if segments (p1,p2) and (p3,p4) intersect, and false otherwise. */
 SBAPI bool sr_segments_intersect ( double p1x, double p1y, double p2x, double p2y,

@@ -1,8 +1,8 @@
 #include "SBSpeechManager.h"
-#include "components/sb/sbm/remote_speech.h"
-#include "components/sb/sbm/local_speech.h"
-#include "components/sb/sbm/text_speech.h"
-#include "components/sb/sbm/sbm_speech_audiofile.hpp"
+#include <sbm/remote_speech.h>
+#include <sbm/local_speech.h>
+#include <sbm/text_speech.h>
+#include <sbm/sbm_speech_audiofile.hpp>
 
 
 namespace SmartBody {

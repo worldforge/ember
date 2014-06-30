@@ -19,15 +19,15 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_POLYGON_H
-#define SR_POLYGON_H
+# ifndef SR_POLYGON_H
+# define SR_POLYGON_H
 
 /** \file sr_polygon.h
  * A polygon described by an array of 2d points
  */
-#include "components/sb/sb/SBTypes.h"
-#include "sr_vec2.h"
-#include "sr_array.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_vec2.h>
+# include <sr/sr_array.h>
 
 class SrBox;
 

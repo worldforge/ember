@@ -1,5 +1,5 @@
 #include "SBAttribute.h"
-#include "SBObject.h"
+#include "sb/SBObject.h"
 
 #include <sstream>
 #include <limits>

@@ -21,33 +21,33 @@
  *		Yuyu Xu, ICT USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 #include <iostream>
 #include <sstream>
 #include <string>
 
 #include <xercesc/util/XMLStringTokenizer.hpp>
-#include "components/sb/controllers/me_ct_channel_writer.hpp"
-#include "components/sb/controllers/me_ct_param_animation.h"
+#include <controllers/me_ct_channel_writer.hpp>
+#include <controllers/me_ct_param_animation.h>
 #ifdef EMBER_SB_STEER
-	#include "components/sb/sbm/PPRAISteeringAgent.h"
+	#include <sbm/PPRAISteeringAgent.h>
 #endif
 
 #include "bml_locomotion.hpp"
 #include "bml_event.hpp"
 
 
-#include "components/sb/sb/SBSimulationManager.h"
-#include "components/sb/sb/SBScene.h"
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
 
 #include "bml_xml_consts.hpp"
-#include "components/sb/sbm/xercesc_utils.hpp"
-#include "components/sb/sbm/BMLDefs.h"
+#include "sbm/xercesc_utils.hpp"
+#include "sbm/BMLDefs.h"
 #include <boost/lexical_cast.hpp>
 #ifdef EMBER_SB_STEER
-	#include "components/sb/sb/SBSteerManager.h"
+	#include <sb/SBSteerManager.h>
 #endif
-#include "components/sb/sb/SBCommandManager.h"
+#include <sb/SBCommandManager.h>
 
 ////// XML ATTRIBUTES
 

@@ -20,14 +20,14 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include "sr_tree.h"
+# include <sr/sr_tree.h>
 
-//#define SR_USE_TRACE1   
-//#include "sr_trace.h"
+//# define SR_USE_TRACE1   
+//# include <sr/sr_trace.h>
 
-#define BLACK(x) ((x)->color==SrTreeNode::Black)
-#define RED(x)   ((x)->color==SrTreeNode::Red)
-#define NIL      SrTreeNode::null
+# define BLACK(x) ((x)->color==SrTreeNode::Black)
+# define RED(x)   ((x)->color==SrTreeNode::Red)
+# define NIL      SrTreeNode::null
 
 /*==========================================================================
   Note:

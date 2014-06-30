@@ -20,11 +20,11 @@
 #ifndef BML_TARGET_HPP
 #define BML_TARGET_HPP
 
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sk/sk_joint.h"
+#include <sb/SBScene.h>
+#include <sk/sk_joint.h>
 #include <xercesc/util/XMLStringTokenizer.hpp>
 
-#include "components/sb/sbm/xercesc_utils.hpp"
+#include "sbm/xercesc_utils.hpp"
 
 
 // Forward Declaration

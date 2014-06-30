@@ -20,10 +20,10 @@
  *      Jingqiao Fu
  */
 
-#include "me_ct_IK.hpp"
+#include "controllers/me_ct_IK.hpp"
 
-#include "components/sb/sb/sbm_character.hpp"
-#include "components/sb/sbm/gwiz_math.h"
+#include "sb/sbm_character.hpp"
+#include "sbm/gwiz_math.h"
 
 
 const char* MeCtIK::TYPE = "MeCtIK";

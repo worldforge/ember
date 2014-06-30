@@ -1,4 +1,4 @@
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <iostream>
 #include <sstream>
@@ -6,23 +6,23 @@
 
 #include "bml_gesture.hpp"
 
-#include "components/sb/sb/SBScene.h"
+#include "sb/SBScene.h"
 #include "bml_xml_consts.hpp"
-#include "components/sb/sb/SBGestureMap.h"
-#include "components/sb/sb/SBAssetManager.h"
-#include "components/sb/sb/SBGestureMapManager.h"
+#include <sb/SBGestureMap.h>
+#include <sb/SBAssetManager.h>
+#include <sb/SBGestureMapManager.h>
 #ifdef EMBER_SB_STEER
-	#include "components/sb/sb/SBSteerManager.h"
-	#include "components/sb/sb/SBSteerAgent.h"
+	#include <sb/SBSteerManager.h>
+	#include <sb/SBSteerAgent.h>
 #endif
-#include "components/sb/sb/SBBehavior.h"
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/controllers/me_ct_motion.h"
-#include "components/sb/controllers/me_ct_scheduler2.h"
+#include <sb/SBBehavior.h>
+#include <sb/SBSkeleton.h>
+#include <controllers/me_ct_motion.h>
+#include <controllers/me_ct_scheduler2.h>
 #ifdef EMBER_SB_STEER
-	#include "components/sb/sbm/PPRAISteeringAgent.h"
+	#include <sbm/PPRAISteeringAgent.h>
 #endif
-#include "components/sb/sb/SBMotion.h"
+#include <sb/SBMotion.h>
 
 using namespace std;
 using namespace BML;

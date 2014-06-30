@@ -20,15 +20,15 @@
  *      Andrew n marshall, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include <iostream>
 #include <sstream>
 #include <string>
 
 #include "bml_target.hpp"
-#include "components/sb/sbm/BMLDefs.h"
-#include "components/sb/sb/SBScene.h"
+#include "sbm/BMLDefs.h"
+#include <sb/SBScene.h>
 
 
 #define DEBUG_BML_TARGET				(0)

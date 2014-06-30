@@ -1,18 +1,18 @@
-#include "SBMotionGraph.h"
-#include "SBScene.h"
-#include "SBAssetManager.h"
-#include "SBSkeleton.h"
-#include "SBRetarget.h"
-#include "SBRetargetManager.h"
-#include "components/sb/controllers/me_ct_motion_timewarp.hpp"
-#include "components/sb/controllers/me_ct_param_animation_utilities.h"
-#include "components/sb/controllers/me_ct_jacobian_IK.hpp"
-#include "components/sb/sr/sr_random.h"
+#include <sb/SBMotionGraph.h>
+#include <sb/SBScene.h>
+#include <sb/SBAssetManager.h>
+#include <sb/SBSkeleton.h>
+#include <sb/SBRetarget.h>
+#include <sb/SBRetargetManager.h>
+#include <controllers/me_ct_motion_timewarp.hpp>
+#include <controllers/me_ct_param_animation_utilities.h>
+#include <controllers/me_ct_jacobian_IK.hpp>
+#include <sr/sr_random.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/strong_components.hpp>
 #include <boost/lexical_cast.hpp>
 #ifdef EMBER_SB_SOIL
-	#include "components/sb/external/SOIL/SOIL.h"
+	#include "external/SOIL/SOIL.h"
 #endif
 
 namespace SmartBody {

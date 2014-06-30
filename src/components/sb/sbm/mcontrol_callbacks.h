@@ -20,9 +20,9 @@
 #ifndef MCONTROL_CALLBACKS_H
 #define MCONTROL_CALLBACKS_H
 
-#include "components/sb/sb/SBTypes.h"
-#include "sr_arg_buff.h"
-#include "components/sb/sb/SBCommandManager.h"
+#include <sb/SBTypes.h>
+#include <sbm/sr_arg_buff.h>
+#include <sb/SBCommandManager.h>
 
 
 int mcu_sequence_func( srArgBuffer& args, SmartBody::SBCommandManager* cmdMgr );

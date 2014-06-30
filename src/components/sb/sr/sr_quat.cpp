@@ -19,8 +19,8 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include "sr_quat.h"
-#include "components/sb/sbm/gwiz_math.h"
+# include <sr/sr_quat.h>
+#include <sbm/gwiz_math.h>
 #include <boost/lexical_cast.hpp>
 #include <string>
 
@@ -91,9 +91,9 @@ void SrQuat::set ( const SrVec& axisangle )
 void SrQuat::set ( const SrMat& m )
  {
 
-   #define E(i)   m.get(i)
-   #define M(i,j) m.get(i,j)
-   #define Q(i)   *((&x)+i)
+   # define E(i)   m.get(i)
+   # define M(i,j) m.get(i,j)
+   # define Q(i)   *((&x)+i)
    float s;
    float tr = E(0) + E(5) + E(10);
     

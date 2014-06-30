@@ -1,5 +1,5 @@
-#include "me_ct_data_receiver.h"
-#include "components/sb/sr/sr_euler.h"
+#include "controllers/me_ct_data_receiver.h"
+#include <sr/sr_euler.h>
 
 
 std::string MeCtDataReceiver::CONTROLLER_TYPE = "DataReceiver";

@@ -27,12 +27,12 @@
 */
 
 
-#ifndef ME_CT_BREATHING_INTERFACE_H
-#define ME_CT_BREATHING_INTERFACE_H
+# ifndef ME_CT_BREATHING_INTERFACE_H
+# define ME_CT_BREATHING_INTERFACE_H
 
-#include "components/sb/sk/sk_motion.h"
-#include "components/sb/sbm/gwiz_math.h"
-#include "me_spline_1d.hpp"
+# include <sk/sk_motion.h>
+# include <sbm/gwiz_math.h>
+#include <controllers/me_spline_1d.hpp>
 
 #include <vector>
 using std::vector;

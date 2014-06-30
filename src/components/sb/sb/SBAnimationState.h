@@ -1,16 +1,16 @@
 #ifndef _SBSTATE_H
 #define _SBSTATE_H
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #ifdef EMBER_SB_SURFACES
-	#include "components/sb/sr/sr_sn_colorsurf.h"
+	#include <sr/sr_sn_colorsurf.h>
 #endif
-#include "PABlend.h"
-#include "components/sb/sr/sr_lines.h"
-#include "components/sb/sr/sr_sn_shape.h"
+#include <sb/PABlend.h>
+#include <sr/sr_lines.h>
+#include <sr/sr_sn_shape.h>
 
 
-#define VFLOW_LINE_WIDTH 2.0f
+# define VFLOW_LINE_WIDTH 2.0f
 
 typedef std::map<std::string, std::vector<double> > KeyTag;
 typedef std::map<int,KeyTag> KeyTagMap;

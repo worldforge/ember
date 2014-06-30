@@ -1,7 +1,7 @@
 #ifndef _SBBMLPROCESSOR_H
 #define _SBBMLPROCESSOR_H
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <string>
 #include <ostream>
 

@@ -20,15 +20,15 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#ifndef SR_CYLINDER_H
-#define SR_CYLINDER_H
+# ifndef SR_CYLINDER_H
+# define SR_CYLINDER_H
 
 /** \file sr_cylinder.h 
  * a cylinder
  */
 
-#include "components/sb/sb/SBTypes.h"
-#include "sr_vec.h"
+#include <sb/SBTypes.h>
+# include <sr/sr_vec.h>
 
 class SrBox;
 

@@ -1,10 +1,10 @@
 
-#ifndef SR_CFG_MANAGER_H
-#define SR_CFG_MANAGER_H
+# ifndef SR_CFG_MANAGER_H
+# define SR_CFG_MANAGER_H
 
-#include "components/sb/sr/sr_input.h"
-#include "components/sb/sr/sr_output.h"
-#include "components/sb/sr/sr_class_manager.h"
+# include <sr/sr_input.h>
+# include <sr/sr_output.h>
+# include <sr/sr_class_manager.h>
 
 typedef void srcfg;
 

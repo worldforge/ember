@@ -27,15 +27,15 @@
 */
 
 
-#ifndef ME_CT_BREATHING_H
-#define ME_CT_BREATHING_H
+# ifndef ME_CT_BREATHING_H
+# define ME_CT_BREATHING_H
 
-#include "components/sb/sr/sr_buffer.h"
-#include "components/sb/sk/sk_motion.h"
-#include "me_controller.h"
-#include "me_ct_breathing_interface.h"
-#include "components/sb/sb/SBSubject.h"
-#include "components/sb/sb/SBController.h"
+# include <sr/sr_buffer.h>
+# include <sk/sk_motion.h>
+# include <controllers/me_controller.h>
+# include <controllers/me_ct_breathing_interface.h>
+#include <sb/SBSubject.h>
+#include <sb/SBController.h>
 #include <list>
 using std::list;
 

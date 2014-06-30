@@ -22,16 +22,16 @@
 *      Marcus Thiebaux, USC
 */
 
-#include "components/sb/vhcl/vhcl.h"
-#include "components/sb/sr/sr_model.h"
+#include <vhcl/vhcl.h>
+#include <sr/sr_model.h>
 
-#include "sk_skeleton.h"
-#include "sk_posture.h"
+#include <sk/sk_skeleton.h>
+#include <sk/sk_posture.h>
 #include <queue>
-#include "components/sb/sb/SBJoint.h"
-#include "components/sb/sb/SBScene.h"
-#include "components/sb/sb/SBJointMapManager.h"
-#include "components/sb/sb/SBJointMap.h"
+#include <sb/SBJoint.h>
+#include <sb/SBScene.h>
+#include <sb/SBJointMapManager.h>
+#include <sb/SBJointMap.h>
 
 //============================ SkSkeleton ============================
 

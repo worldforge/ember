@@ -4,10 +4,10 @@
 #include "me_ct_ccd_IK.hpp"
 #include "me_ct_constraint.hpp"
 
-#include "components/sb/sr/planner/sk_pos_cfg.h" // ?
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBJoint.h"
-#include "components/sb/sb/SBMotion.h"
+#include <sr/planner/sk_pos_cfg.h> // ?
+#include <sb/SBSkeleton.h>
+#include <sb/SBJoint.h>
+#include <sb/SBMotion.h>
 
 using namespace std;
 

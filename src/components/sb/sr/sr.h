@@ -20,10 +20,10 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
  
-#ifndef SR_H
-#define SR_H
+# ifndef SR_H
+# define SR_H
 
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 
 /** \file sr.h 
  * Main header file of the SR toolkit
@@ -86,9 +86,9 @@
 // ==================================== Types =================================
 
 # ifdef _WIN32
-#define SR_TARGET_WINDOWS  //!< Defined if compiled for windows
+# define SR_TARGET_WINDOWS  //!< Defined if compiled for windows
 # else
-#define SR_TARGET_LINUX  //!< Defined if not compiled in windows
+# define SR_TARGET_LINUX  //!< Defined if not compiled in windows
 # endif
 
 # ifdef SR_DEF_BOOL
@@ -111,7 +111,7 @@ typedef int (*srcompare) ( const void*, const void* );
 
 /*! Defines a generic comparison function for the type X, to be used as argument
     for template based classes. Same as: int (*sr_compare) (const X*,const X*) */
-#define SR_COMPARE_FUNC int (*sr_compare_func) (const X*,const X*)
+# define SR_COMPARE_FUNC int (*sr_compare_func) (const X*,const X*)
 
 // ================================ Some Constants ======================
 
@@ -133,128 +133,128 @@ const float srRADDEG = 360.f/srpi;
 const sruint sruintmax = ((sruint)0)-1; //!< the unsigned int maximum value
 
 /* floats and doubles have precision of 7 and 15 decimal digits */
-#define SR_E      2.7182818284590452 //!< 2.71828...
-#define SR_PI     3.1415926535897932 //!< 3.141592...
-#define SR_PIDIV2 1.5707963267948966 //!< 1.570796...
-#define SR_2PI    6.2831853071795864 //!< 2*pi
-#define SR_SQRT2  1.4142135623730950 //!< sqrt(2) = 1.4142...
-#define SR_SQRT3  1.7320508075688772 //!< sqrt(3) = 1.7320...
-#define SR_SQRT6  2.4494897427831780 //!< sqrt(6) = 2.4494...
+# define SR_E      2.7182818284590452 //!< 2.71828...
+# define SR_PI     3.1415926535897932 //!< 3.141592...
+# define SR_PIDIV2 1.5707963267948966 //!< 1.570796...
+# define SR_2PI    6.2831853071795864 //!< 2*pi
+# define SR_SQRT2  1.4142135623730950 //!< sqrt(2) = 1.4142...
+# define SR_SQRT3  1.7320508075688772 //!< sqrt(3) = 1.7320...
+# define SR_SQRT6  2.4494897427831780 //!< sqrt(6) = 2.4494...
 
 // ================================= Macros ==================================
 
 /*! \def SR_ASSERT
     The macro SR_ASSERT(exp) is expanded to a code that sends an error message
     to sr_out and exist the application, using sr_out.fatal_error()). */
-#define SR_ASSERT(exp) if ( !(exp) ) sr_out.fatal_error("SR_ASSERT failure in %s::%d !\n",__FILE__,__LINE__);
+# define SR_ASSERT(exp) if ( !(exp) ) sr_out.fatal_error("SR_ASSERT failure in %s::%d !\n",__FILE__,__LINE__);
 
 /*! Macro that puts c in lower case if c is a valid upper case letter. */
-#define SR_LOWER(c) ( (c)>='A'&&(c)<='Z'? (c)-'A'+'a':(c) )
+# define SR_LOWER(c) ( (c)>='A'&&(c)<='Z'? (c)-'A'+'a':(c) )
 
 /*! Macro that puts c in upper case if c is a valid lower case letter. */
-#define SR_UPPER(c) ( (c)>='a'&&(c)<='z'? (c)-'a'+'A':(c) )
+# define SR_UPPER(c) ( (c)>='a'&&(c)<='z'? (c)-'a'+'A':(c) )
 
 /*! Macro that returns 0 if a is equal to b, 1 if a>b, and -1 otherwise. */
-#define SR_COMPARE(a,b) (a==b)? 0: (a>b)? 1: -1
+# define SR_COMPARE(a,b) (a==b)? 0: (a>b)? 1: -1
 
 /*! Macro that swaps the value of a boolean type. */
-#define SR_SWAPB(b) b = !b // B from bool
+# define SR_SWAPB(b) b = !b // B from bool
 
 /*! Macro that swaps the values of a and b using three xor logical operations. */
-#define SR_SWAPX(a,b) { a^=b; b^=a; a^=b; } // x from xor
+# define SR_SWAPX(a,b) { a^=b; b^=a; a^=b; } // x from xor
 
 /*! Macro that swaps the values of a and b, using tmp as temporary variable. */
-#define SR_SWAPT(a,b,tmp) { tmp=a; a=b; b=tmp; }
+# define SR_SWAPT(a,b,tmp) { tmp=a; a=b; b=tmp; }
 
 /*! Macro that swaps the values of a and b, given that a temporary 
     variable named tmp, of the same type as a and b exists. */
-#define SR_SWAP(a,b) { tmp=a; a=b; b=tmp; }
+# define SR_SWAP(a,b) { tmp=a; a=b; b=tmp; }
 
 /*! Macro that returns a number multiple of gap, but that is greater or equal to size. */
-#define SR_SIZE_WITH_GAP(size,gap) ( (gap) * ( ((size)/(gap)) + ((size)%(gap)==0?0:1) ) )
+# define SR_SIZE_WITH_GAP(size,gap) ( (gap) * ( ((size)/(gap)) + ((size)%(gap)==0?0:1) ) )
 
 /*! Macro that makes m to be x, if x is greater than m. */
-#define SR_UPDMAX(m,x) if((x)>(m)) m=x
+# define SR_UPDMAX(m,x) if((x)>(m)) m=x
 
 /*! Macro that makes m to be x, if x is smaller than m. */
-#define SR_UPDMIN(m,x) if((x)<(m)) m=x
+# define SR_UPDMIN(m,x) if((x)<(m)) m=x
 
 /*! Macro that tests if x is inside the interval [i,s]. */
-#define SR_BOUNDED(x,i,s) ((i)<=(x) && (x)<=(s))
+# define SR_BOUNDED(x,i,s) ((i)<=(x) && (x)<=(s))
 
 /*! Macro that returns x clipped by the interval [i,s]. */
-#define SR_BOUND(x,i,s) (x)<(i)? (i): (x)>(s)? (s): (x)
+# define SR_BOUND(x,i,s) (x)<(i)? (i): (x)>(s)? (s): (x)
 
 /*! Macro that clips x to be inside the interval [i,s]. */
-#define SR_CLIP(x,i,s) if(x<i)x=i; else if(x>s)x=s
+# define SR_CLIP(x,i,s) if(x<i)x=i; else if(x>s)x=s
 
 /*! Macro that forces a to be positive by negating it if it is negative. */
-#define SR_POS(a) if((a)<0) a=-(a)
+# define SR_POS(a) if((a)<0) a=-(a)
 
 /*! Macro that forces a to be negative by negating it if it is positive. */
-#define SR_NEG(a) if((a)>0) a=-(a)
+# define SR_NEG(a) if((a)>0) a=-(a)
 
 /*! Macro that returns x, so that x = a(1-t) + bt. */
-#define SR_LERP(a,b,t) ((a)*(1-(t))+(b)*(t)) // return x = a(1-t) + bt
+# define SR_LERP(a,b,t) ((a)*(1-(t))+(b)*(t)) // return x = a(1-t) + bt
 
 /*! Macro that returns t, so that x = a(1-t) + bt. */
-#define SR_PARAM(a,b,x) ((x)-(a))/((b)-(a)) // return t : x = a(1-t) + bt
+# define SR_PARAM(a,b,x) ((x)-(a))/((b)-(a)) // return t : x = a(1-t) + bt
 
 /*! Macro that truncates x, with an int typecast. */
-#define SR_TRUNC(x) ( (int) (x) )
+# define SR_TRUNC(x) ( (int) (x) )
 
 /*! Macro that returns x rounded to the nearest integer. */
-#define SR_ROUND(x) ( (int) ((x>0)? (x+0.5f):(x-0.5f)) )
+# define SR_ROUND(x) ( (int) ((x>0)? (x+0.5f):(x-0.5f)) )
 
 /*! Macro that rounds x to the nearest integer, but to be 
     applied only when x is positive. This macro adds 0.5 
     and does an int typecast. */
-#define SR_ROUNDPOS(x) ( (int) (x+0.5) )
+# define SR_ROUNDPOS(x) ( (int) (x+0.5) )
 
 /*! Macro that returns the lowest integer of x. */
-#define SR_FLOOR(x) ( int( ((x)>0)? (x):((x)-1) ) )
+# define SR_FLOOR(x) ( int( ((x)>0)? (x):((x)-1) ) )
 
 /*! Macro that returns the highest integer of x. */
-#define SR_CEIL(x) ( int( ((x)>0)? ((x)+1):(x) ) )
+# define SR_CEIL(x) ( int( ((x)>0)? ((x)+1):(x) ) )
 
 /*! Macro that returns the maximum value of the two arguments. */
-#define SR_MAX(a,b) ((a)>(b)? (a):(b))
+# define SR_MAX(a,b) ((a)>(b)? (a):(b))
 
 /*! Macro that returns the maximum value of the three arguments. */
-#define SR_MAX3(a,b,c) ((a)>(b)? (a>c?(a):(c)):((b)>(c)?(b):(c)))
+# define SR_MAX3(a,b,c) ((a)>(b)? (a>c?(a):(c)):((b)>(c)?(b):(c)))
 
 /*! Macro that returns the minimum value of the two arguments. */
-#define SR_MIN(a,b) ((a)<(b)? (a):(b))
+# define SR_MIN(a,b) ((a)<(b)? (a):(b))
 
 /*! Macro that returns the minimum value of the three arguments. */
-#define SR_MIN3(a,b,c) ((a)<(b)? ((a)<(c)?(a):(c)):((b)<(c)?(b):(c)))
+# define SR_MIN3(a,b,c) ((a)<(b)? ((a)<(c)?(a):(c)):((b)<(c)?(b):(c)))
 
 /*! Macro that returns the absolute value of x. */
-#define SR_ABS(x) ((x)>0? (x):-(x))
+# define SR_ABS(x) ((x)>0? (x):-(x))
 
 /*! Macro that returns |a-b|, that is the distance of two points in the line. */
-#define SR_DIST(a,b) ( (a)>(b)? ((a)-(b)):((b)-(a)) )
+# define SR_DIST(a,b) ( (a)>(b)? ((a)-(b)):((b)-(a)) )
 
 /*! Macro that tests if the distance between a and b is closer or equal to ds. */
-#define SR_NEXT(a,b,ds) ( ( (a)>(b)? ((a)-(b)):((b)-(a)) )<=(ds) )
+# define SR_NEXT(a,b,ds) ( ( (a)>(b)? ((a)-(b)):((b)-(a)) )<=(ds) )
 
 /*! Macro that tests if the distance between a and 0 is closer or equal to ds. */ 
-#define SR_NEXTZ(a,eps) ( (a)>-(eps) && (a)<(eps) ) // z from zero
+# define SR_NEXTZ(a,eps) ( (a)>-(eps) && (a)<(eps) ) // z from zero
 
 /*! Macro that returns -1 if x is negative, 1 if x is positive and 0 if x is zero. */
-#define SR_SIGN(x) ((x)<0)? -1: ((x)>0)? 1: 0
+# define SR_SIGN(x) ((x)<0)? -1: ((x)>0)? 1: 0
 
 /*! Returns the converted angle, from radians to degrees (float version). */
-#define SR_TODEG(r) (180.0f*float(r)/srpi)
+# define SR_TODEG(r) (180.0f*float(r)/srpi)
 
 /*! Returns the converted angle, from degrees to radians (float version). */
-#define SR_TORAD(d) (srpi*float(d)/180.0f)
+# define SR_TORAD(d) (srpi*float(d)/180.0f)
 
 /*! Returns the converted angle, from radians to degrees (double version). */
-#define SR_TODEGd(r) (180.0*double(r)/SR_PI)
+# define SR_TODEGd(r) (180.0*double(r)/SR_PI)
 
 /*! Returns the converted angle, from degrees to radians (double version). */
-#define SR_TORADd(d) (SR_PI*double(d)/180.0)
+# define SR_TORADd(d) (SR_PI*double(d)/180.0)
 
 // ============================== Math Utilities ===========================
 
@@ -364,31 +364,31 @@ SBAPI void sr_stdout_to_file ();
 // ============================== Bit Operation ============================
 
 /*! Tests if flg has the given bit set. */
-#define SR_FLAG_TEST(flg,bit) ((flg)&(bit))
+# define SR_FLAG_TEST(flg,bit) ((flg)&(bit))
 
 /*! Sets on the given bit of the flag. */
-#define SR_FLAG_ON(flg,bit) flg|=bit
+# define SR_FLAG_ON(flg,bit) flg|=bit
 
 /*! Swaps the given bit of the flag. */
-#define SR_FLAG_SWAP(flg,bit) flg^=bit
+# define SR_FLAG_SWAP(flg,bit) flg^=bit
 
 /*! Sets off the given bit of the flag. This requires two instructions, so 
     that SR_FLAG_SWAP is faster. */ 
-#define SR_FLAG_OFF(flg,bit) if((flg)&(bit)) flg^=bit
+# define SR_FLAG_OFF(flg,bit) if((flg)&(bit)) flg^=bit
 
 /*! Sets the given bit of the flag to be on or off, according to the boolean value of val. */
-#define SR_FLAG_SET(flg,bit,val) flg = (val)? (flg)|(bit) : ((flg)&(bit)? (flg)^(bit):flg)
+# define SR_FLAG_SET(flg,bit,val) flg = (val)? (flg)|(bit) : ((flg)&(bit)? (flg)^(bit):flg)
 
-#define SR_BIT0        1 //!< Same as 1
-#define SR_BIT1        2 //!< Same as 2
-#define SR_BIT2        4 //!< Same as 4
-#define SR_BIT3        8 //!< Same as 8
-#define SR_BIT4       16 //!< Same as 16
-#define SR_BIT5       32 //!< Same as 32
-#define SR_BIT6       64 //!< Same as 64
-#define SR_BIT7      128 //!< Same as 128
-#define SR_ALLBITS   255 //!< Same as 255
-#define SR_NOBITS      0 //!< Same as 0
+# define SR_BIT0        1 //!< Same as 1
+# define SR_BIT1        2 //!< Same as 2
+# define SR_BIT2        4 //!< Same as 4
+# define SR_BIT3        8 //!< Same as 8
+# define SR_BIT4       16 //!< Same as 16
+# define SR_BIT5       32 //!< Same as 32
+# define SR_BIT6       64 //!< Same as 64
+# define SR_BIT7      128 //!< Same as 128
+# define SR_ALLBITS   255 //!< Same as 255
+# define SR_NOBITS      0 //!< Same as 0
 
 //============================== end of file ===============================
 

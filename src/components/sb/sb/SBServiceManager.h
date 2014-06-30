@@ -1,9 +1,9 @@
 #ifndef _SBSERVICEMANAGER_H_
 #define _SBSERVICEMANAGER_H_
 
-#include "SBTypes.h"
-#include "components/sb/vhcl/vhcl.h"
-#include "SBObject.h"
+#include <sb/SBTypes.h>
+#include <vhcl/vhcl.h>
+#include <sb/SBObject.h>
 #include <string>
 #include <map>
 

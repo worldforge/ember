@@ -21,15 +21,15 @@
 */
 
 #pragma once
-#include "components/sb/sb/SBTypes.h"
+#include <sb/SBTypes.h>
 #include <map>
-#include "components/sb/sb/SBSkeleton.h"
-#include "components/sb/sb/SBController.h"
+#include <sb/SBSkeleton.h>
+#include <sb/SBController.h>
 #include "me_ct_constraint.hpp"
 #include "me_ct_limb.hpp"
 #include "me_ct_jacobian_IK.hpp"
 #include "me_ct_ccd_IK.hpp"
-#include "components/sb/sbm/gwiz_math.h"
+#include "sbm/gwiz_math.h"
 
 
 class MeCtPosePostProcessing : public MeCtConstraint

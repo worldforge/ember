@@ -26,7 +26,7 @@
 //  (which acts like a shared_ptr)
 
 
-#include "sr_shared_ptr.hpp"
+#include <sr/sr_shared_ptr.hpp>
 
 
 #if 0

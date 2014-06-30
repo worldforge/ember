@@ -20,10 +20,10 @@
  *      Marcus Thiebaux, USC
  */
 
-#include "lin_win.h"
+#include "sbm/lin_win.h"
 
 #include <math.h>
-//#include "sr_linear_curve.h"
+//#include <sbm/sr_linear_curve.h>
 #include "sr_linear_curve.h"
 #include "sr_curve_builder.h"
 

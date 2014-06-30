@@ -20,10 +20,10 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include "sr_sn_matrix.h"
+# include <sr/sr_sn_matrix.h>
 
-//#define SR_USE_TRACE1  // Const/Dest
-//#include "sr_trace.h"
+//# define SR_USE_TRACE1  // Const/Dest
+//# include <sr/sr_trace.h>
 
 //======================================= SrSnMatrix ====================================
 

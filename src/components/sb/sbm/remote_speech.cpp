@@ -22,7 +22,7 @@
  *      Ed Fast, USC
  */
 
-#include "components/sb/vhcl/vhcl.h"
+#include <vhcl/vhcl.h>
 
 #include "remote_speech.h"
 
@@ -35,17 +35,17 @@
 #include <sstream>
 #include <float.h>
 #include "time.h"
-#include "components/sb/sb/SBSpeechManager.h"
-#include "components/sb/sb/SBSimulationManager.h"
+#include <sb/SBSpeechManager.h>
+#include <sb/SBSimulationManager.h>
 #ifdef EMBER_SB_VHMSG
-	#include "components/sb/sb/SBVHMsgManager.h"
+	#include <sb/SBVHMsgManager.h>
 #endif
-#include "components/sb/sb/SBCommandManager.h"
-#include "components/sb/sb/SBScene.h"
-#include "local_speech.h"
+#include <sb/SBCommandManager.h>
+#include <sb/SBScene.h>
+#include <sbm/local_speech.h>
 
-#include "xercesc_utils.hpp"
-#include "BMLDefs.h"
+#include "sbm/xercesc_utils.hpp"
+#include "sbm/BMLDefs.h"
 
 
 using namespace std;

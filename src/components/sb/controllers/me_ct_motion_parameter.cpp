@@ -1,5 +1,5 @@
-#include "components/sb/sr/sr_euler.h"
-#include "me_ct_motion_parameter.h"
+#include <sr/sr_euler.h>
+#include "controllers/me_ct_motion_parameter.h"
 
 MotionParameter::MotionParameter(SmartBody::SBSkeleton* skel, std::vector<SmartBody::SBJoint*>& joints)
 {

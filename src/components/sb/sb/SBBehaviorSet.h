@@ -1,7 +1,7 @@
 #ifndef _SBBEHAVIORSET_
 #define _SBBEHAVIORSET_
 
-#include "SBTypes.h"
+#include <sb/SBTypes.h>
 #include <string>
 
 namespace SmartBody {

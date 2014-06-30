@@ -23,13 +23,13 @@
  *      Corne Versloot, Univ of Twente (while at USC)
  */
 
-#ifndef SBM_AUDIO_HPP
-#define SBM_AUDIO_HPP
+# ifndef SBM_AUDIO_HPP
+# define SBM_AUDIO_HPP
 
-#include <vector>
-#include <iostream>
+# include <vector>
+# include <iostream>
 
-#include "xercesc_utils.hpp"
+# include "xercesc_utils.hpp"
 
 
 // Forward declarations

@@ -20,10 +20,10 @@
  *      Marcelo Kallmann, USC (currently UC Merced)
  */
 
-#include <stdio.h>
-#include <string.h>
+# include <stdio.h>
+# include <string.h>
 
-#include "sr.h"
+# include <sr/sr.h>
 
 //================================ sr.cpp ============================================
 
