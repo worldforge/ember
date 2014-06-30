@@ -46,7 +46,6 @@ void SmartBodyManager::initialize(void)
 
 	//Set the media path : where to find the assets.
 	mScene->setMediaPath(EMBER_SMARTBODY_MEDIAPATH);
-
 	//Add the different asset paths.
 	addAssetPaths();
 
@@ -80,7 +79,6 @@ void SmartBodyManager::retargetAllBehaviors(SmartBody::SBCharacter& character)
 bool SmartBodyManager::setCorrespondingSkeletonName(std::string& sbName, const std::string& ogreName)
 {
 	size_t lastSlash = ogreName.rfind('/');
-
 	if (lastSlash + 1 >= ogreName.size())
 		return false;
 
@@ -89,7 +87,7 @@ bool SmartBodyManager::setCorrespondingSkeletonName(std::string& sbName, const s
 }
 
 //public.
-bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load)
+bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load /*= false */)
 {
 	assert(mIsInit);
 
@@ -101,7 +99,7 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load)
 	else if (load)
 	{
 		//Try to load the skeleton.
-		mAssetManager.loadAsset(skName);
+		mAssetManager.loadAsset(EMBER_SMARTBODY_ASSETS_SKELETONS + skName);
 		if (!mAssetManager.getSkeleton(skName))
 		{
 			return false;
@@ -136,7 +134,8 @@ SmartBody::SBCharacter* SmartBodyManager::createCharacter(const Ogre::Entity& en
 	character->setSkeleton(skeleton);
 
 	//Set manually controlled mode on the Ogre skeleton.
-	// TODO : verify that the manual control doesn't prevent the character from using classical animations.
+	// TODO : verify that the manual control doesn't prevent the character from using classical animations 
+	// edit : it seems that it makes the character convulse :X
 	setManualControl(entity);
 
 	//Add behaviors and controllers.

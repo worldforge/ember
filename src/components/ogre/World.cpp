@@ -78,12 +78,12 @@ namespace OgreView
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals,
 		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()),
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mSbManager(EmberOgre::getSingleton().getSmartBodyManager())
 		mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0),
 		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getAvatar()->getConnection()->getEventService())),
 		mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *mTerrainManager->getTerrainAdapter())),
 		mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)),
-		mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr),
+		mMotionManager(new MotionManager(mSbManager)), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr),
 		mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)),
 		mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)),
 		mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),

@@ -4,7 +4,7 @@
 #include "components/sb/SmartBodyManager.h"
 
 #include <OgreSkeletonInstance.h>
-
+#include <string>
 
 namespace Ember
 {
@@ -50,11 +50,11 @@ void ModelRepresentationHumanoid::createSmartBodyCharacter(void)
 	Ogre::SkeletonInstance *skeleton = mModel.getSkeleton();
 
 	//Get the name that the SmartBody skeleton should have.
-	std::string sbSkName(0);
+	std::string sbSkName("");
 	mSbManager.setCorrespondingSkeletonName(sbSkName, skeleton->getName());
 
 	//If the skeleton exists for SmartBody, then create the corresponding character.
-	if (mSbManager.hasSkeleton(sbSkName))
+	if (mSbManager.hasSkeleton(sbSkName, true))
 	{
 		//Create the model representation set for SmartBody humanoid character.
 		mCharacter = mSbManager.createCharacter(*mModel.getSkeletonOwnerEntity(), mModel.getDefinition()->getName(), sbSkName);

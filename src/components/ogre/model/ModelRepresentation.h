@@ -139,7 +139,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ModelRepresentation();
+	~ModelRepresentation();
 
 	/**
 	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.

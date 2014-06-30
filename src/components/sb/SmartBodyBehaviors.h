@@ -44,7 +44,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodyBehaviors(void);
+	virtual ~SmartBodyBehaviors(void);
 
 
 	/**

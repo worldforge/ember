@@ -132,6 +132,11 @@ private:
 	 */
 	AnimatedStore mAnimatedEntities;
 
+	/**
+	 * @brief A reference to the SmartBody manager.
+	 */
+	SmartBodyManager& mSbManager;
+
 
 	/**
 	 * @brief Will iterate over all registered movables and ask them to update their positions.
@@ -142,6 +147,11 @@ private:
 	 * @brief Will iterate over all registered animatables and update those that are enabled.
 	 */
 	void doAnimationUpdate(Ogre::Real timeSlice);
+
+	/**
+	 * @brief Will update SmartBody::SBSimulation object, and all the character animations that are enabled.
+	 */
+	void doHumanoidAnimationUpdate(Ogre::Real timeSlice);
 };
 
 inline const MotionManager::MotionManagerInfo& MotionManager::getInfo() const

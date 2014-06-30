@@ -287,6 +287,11 @@ protected:
 	Scene* mScene;
 
 	/**
+	 * @brief A reference on the SmartBodyManager.
+	 */
+	SmartBodyManager& mSbManager;
+
+	/**
 	 * @brief The main viewport, attached to the main RenderWindow.
 	 */
 	Ogre::Viewport* mViewport;

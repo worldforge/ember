@@ -1,13 +1,16 @@
 #ifndef SMARTBODYPATHCONSTS_H
 #define SMARTBODYPATHCONSTS_H
 
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 #define EMBER_SMARTBODY_NAMEPREFIX "SB"
-#define EMBER_SMARTBODY_MEDIAPATH "../share/ember/media/shared/motions/"
+#define EMBER_SMARTBODY_MEDIAPATH (EmberServices::getSingleton().getConfigService().getSharedMediaDirectory() + "/motions")
 #define EMBER_SMARTBODY_ASSETS_SKELETONS "skeletons/"
 #define EMBER_SMARTBODY_ASSETS_LOCOMOTION "locomotion/"
-#define EMBER_SMARTBODY_ASSETS_MAPS (std::string(EMBER_SMARTBODY_MEDIAPATH) + std::string("maps/"))
+#define EMBER_SMARTBODY_ASSETS_MAPS (EMBER_SMARTBODY_MEDIAPATH + "maps/")
 #define EMBER_SMARTBODY_MAP_EXTENSION ".map"
 #define EMBER_SMARTBODY_SKELETON_EXTENSION ".xml"
 #define EMBER_SMARTBODY_SKELETON_LOCOMOTION "Utak.sk"
 
-#endif
+#endif //SMARTBODYPATHCONSTS_H

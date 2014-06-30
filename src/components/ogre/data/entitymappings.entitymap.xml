@@ -835,7 +835,7 @@
 				<caseparam type="equals">merchant</caseparam>
 				<caseparam type="equals">mercenary</caseparam>
 				<caseparam type="equals">marshall</caseparam>
-				<action type="display-humanoid">male</action>
+				<action type="display-model">male</action>
 			</case>
 		</entitymatch>
 	</entitymapping>
@@ -845,7 +845,7 @@
             <case>
                 <caseparam type="equals">human</caseparam>
                 <action type="display-label" />
-                <action type="display-humanoid">male</action>
+                <action type="display-model">male</action>
                 <action type="display-part">bare_torso</action>
                 <action type="display-part">bare_legs</action>
                 <action type="display-part">bare_feet</action>

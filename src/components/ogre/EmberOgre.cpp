@@ -471,9 +471,9 @@ Screen& EmberOgre::getScreen() const
 	return *mScreen;
 }
 
-SmartBodyManager* EmberOgre::getSmartBodyManager() const
+SmartBodyManager& EmberOgre::getSmartBodyManager() const
 {
-	return mSmartBodyManager;
+	return *mSmartBodyManager;
 }
 
 void EmberOgre::checkForConfigFiles()

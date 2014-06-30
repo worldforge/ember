@@ -31,7 +31,8 @@ namespace Ember {
 namespace OgreView {
 
 
-MotionManager::MotionManager()
+MotionManager::MotionManager(SmartBodyManager& sbManager)
+	: mSbManager(sbManager)
 {
 	mInfo.MovingEntities = mMotionSet.size();
 	mInfo.AnimatedEntities = mAnimatedEntities.size();
@@ -56,10 +57,16 @@ void MotionManager::doAnimationUpdate(Ogre::Real timeSlice)
 	}
 }
 
+void MotionManager::doHumanoidAnimationUpdate(Ogre::Real timeSlice)
+{
+	mSbManager.updateAnimation(timeSlice);
+}
+
 bool MotionManager::frameStarted(const Ogre::FrameEvent& event)
 {
 	doMotionUpdate(event.timeSinceLastFrame);
 	doAnimationUpdate(event.timeSinceLastFrame);
+	doHumanoidAnimationUpdate(event.timeSinceLastFrame);
 	return true;
 }
 

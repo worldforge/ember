@@ -202,7 +202,7 @@ public:
 	 *
 	 * @returns The SmartBodyManager instance, or null if no such exists.
 	 */
-	SmartBodyManager* getSmartBodyManager() const;
+	SmartBodyManager& getSmartBodyManager() const;
 
 	/**
 	 * @brief Renders one frame.

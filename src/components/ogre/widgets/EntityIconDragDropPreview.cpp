@@ -324,7 +324,7 @@ void ModelPreviewWorkerActionCreator::createActions(EntityMapping::EntityMapping
 		if (J->getType() == "display-part") {
 			ModelPreviewWorkerPartAction* action = new ModelPreviewWorkerPartAction(mModelPreviewWorker, J->getValue());
 			aCase->addAction(action);
-		} else if (J->getType() == "display-model") {
+		} else if (J->getType() == "display-model" || J->getType() == "display-humanoid") {
 			ModelPreviewWorkerModelAction* action = new ModelPreviewWorkerModelAction(mModelPreviewWorker, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "hide-model") {
