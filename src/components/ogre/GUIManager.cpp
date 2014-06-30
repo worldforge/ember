@@ -95,7 +95,7 @@ namespace OgreView
 unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController) :
-		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Cegui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0), mNativeClipboardProvider(nullptr)
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mEnabled(true), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Cegui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0), mNativeClipboardProvider(nullptr)
 {
 
 //Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
@@ -297,7 +297,9 @@ void GUIManager::initialize()
 
 void GUIManager::render()
 {
-	CEGUI::System::getSingleton().renderAllGUIContexts();
+	if (mEnabled) {
+		CEGUI::System::getSingleton().renderAllGUIContexts();
+	}
 }
 
 void GUIManager::input_SizeChanged(int width, int height)
@@ -492,15 +494,15 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 
 		S_LOG_VERBOSE("Toggle Gui Initiated -- " << getInput().getInputMode());
 
-		if (mGuiRenderer->isRenderingEnabled()) {
+		if (mEnabled) {
 			S_LOG_INFO("Disabling GUI");
-			mGuiRenderer->setRenderingEnabled(false);
+			mEnabled = false;
 
 			getInput().removeAdapter(mCEGUIAdapter);
 
 		} else {
 			S_LOG_INFO("Enabling GUI");
-			mGuiRenderer->setRenderingEnabled(true);
+			mEnabled = true;
 
 			getInput().addAdapter(mCEGUIAdapter);
 		}

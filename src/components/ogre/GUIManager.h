@@ -339,6 +339,12 @@ protected:
 	Gui::CursorWorldListener* mCursorWorldListener;
 
 	/**
+	 * @brief Sets whether the GUI is enabled; i.e. will be rendered each frame.
+	 * Defaults to true.
+	 */
+	bool mEnabled;
+
+	/**
 	 * @brief Listens to window resize events and alerts CEGUI.
 	 * @param width The new width.
 	 * @param height The new height.
