@@ -6,6 +6,14 @@
 #include <vector>
 
 
+namespace SmartBody
+{
+
+class SBAssetManager;
+class SBJointMapManager;
+
+}
+
 namespace Ember
 {
 
@@ -36,18 +44,18 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodySkeletonMap();
+	~SmartBodySkeletonMap(void);
 
 
 	/**
 	 * @brief Create the joint map and assign it to the skeleton.
 	 */
-	void setMap(const SmartBodyManager& sbManager) const;
+	void setMap(SmartBody::SBAssetManager& assetMng, SmartBody::SBJointMapManager& mapMng) const;
 
 	/**
 	 * @brief Check that the map exists (namely that the map file exists, and that it is correctly written).
 	 */
-	bool exists() const;
+	bool exists(void) const;
 
 private:
 

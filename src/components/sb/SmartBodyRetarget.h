@@ -12,8 +12,6 @@ class SBRetargetManager;
 namespace Ember
 {
 
-class SmartBodyManager;
-
 /**
  @brief Create a retarget instance.
 

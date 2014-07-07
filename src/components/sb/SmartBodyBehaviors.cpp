@@ -1,6 +1,5 @@
 #include "SmartBodyBehaviors.h"
 #include "SmartBodyRetarget.h"
-#include "SmartBodyManager.h"
 
 #include <sb/SBAssetManager.h>
 #include <sb/SBCharacter.h>
@@ -13,9 +12,9 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodyBehaviors::SmartBodyBehaviors(const std::string& motionPath, const std::string& skeletonRef, SmartBodyManager& manager)
-	: mSkelRefName(skeletonRef), mSetup(false), mAssetManager(manager.getAssetManager()), mBlendManager(*manager.getScene().getBlendManager()),
-	  mRetargetManager(*manager.getScene().getRetargetManager())
+SmartBodyBehaviors::SmartBodyBehaviors(const std::string& motionPath, const std::string& skeletonRef, SmartBody::SBAssetManager& assetMng,
+		SmartBody::SBAnimationBlendManager& blendMng, SmartBody::SBRetargetManager& retargetMng)
+: 	mSkelRefName(skeletonRef), mSetup(false), mAssetManager(assetMng), mBlendManager(blendMng),	mRetargetManager(retargetMng)
 {
 	//Loads the assets.
 	mAssetManager.loadAssetsFromPath(motionPath);

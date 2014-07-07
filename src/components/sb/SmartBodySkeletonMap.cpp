@@ -1,6 +1,5 @@
 #include "SmartBodySkeletonMap.h"
 #include "SmartBodyPathConsts.h"
-#include "SmartBodyManager.h"
 
 #include <sb/SBSkeleton.h>
 #include <sb/SBAssetManager.h>
@@ -26,21 +25,21 @@ SmartBodySkeletonMap::SmartBodySkeletonMap(const std::string& skeleton)
 	}
 }
 
-SmartBodySkeletonMap::~SmartBodySkeletonMap()
+SmartBodySkeletonMap::~SmartBodySkeletonMap(void)
 {
 }
 
 
-bool SmartBodySkeletonMap::exists() const
+bool SmartBodySkeletonMap::exists(void) const
 {
 	return mHasMap;
 }
 
 
-void SmartBodySkeletonMap::setMap(const SmartBodyManager& sbManager) const
+void SmartBodySkeletonMap::setMap(SmartBody::SBAssetManager& assetMng, SmartBody::SBJointMapManager& mapMng) const
 {
-	SmartBody::SBSkeleton *skeleton = sbManager.getAssetManager().getSkeleton(mName);
-	SmartBody::SBJointMap *jointMap = sbManager.getScene().getJointMapManager()->createJointMap(mName);
+	SmartBody::SBSkeleton *skeleton = assetMng.getSkeleton(mName);
+	SmartBody::SBJointMap *jointMap = mapMng.createJointMap(mName);
 
 	//Creation of the joint map.
 	for (int i = 0; i < mBones.size(); i += 2)

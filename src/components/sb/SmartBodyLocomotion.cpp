@@ -1,5 +1,4 @@
 #include "SmartBodyLocomotion.h"
-#include "SmartBodyManager.h"
 
 #include <sb/SBCharacter.h>
 #include <sb/SBSkeleton.h>
@@ -15,8 +14,9 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodyLocomotion::SmartBodyLocomotion(const std::string& motionPath, const std::string& skeletonRef, SmartBodyManager& manager)
-	: SmartBodyBehaviors::SmartBodyBehaviors(motionPath, skeletonRef, manager)
+SmartBodyLocomotion::SmartBodyLocomotion(const std::string& motionPath, const std::string& skeletonRef, SmartBody::SBAssetManager& assetMng,
+		SmartBody::SBAnimationBlendManager& blendMng, SmartBody::SBRetargetManager& retargetMng)
+	: SmartBodyBehaviors::SmartBodyBehaviors(motionPath, skeletonRef, assetMng, blendMng, retargetMng)
 {
 }
 
@@ -28,7 +28,7 @@ SmartBodyLocomotion::~SmartBodyLocomotion(void)
 
 bool SmartBodyLocomotion::setup(bool check /*= true */)
 {
-	if(SmartBodyBehaviors::setup(check))
+	if (SmartBodyBehaviors::setup(check))
 	{
 		locomotionSetup();
 		startingSetup();

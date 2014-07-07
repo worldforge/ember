@@ -8,8 +8,6 @@
 namespace Ember
 {
 
-class SmartBodyManager;
-
 class SmartBodyLocomotion : public SmartBodyBehaviors
 {
 
@@ -18,7 +16,8 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyLocomotion(std::string const &motionPath, std::string const &skeletonRef, SmartBodyManager& manager);
+	SmartBodyLocomotion(std::string const &motionPath, std::string const &skeletonRef, SmartBody::SBAssetManager& assetMng,
+		SmartBody::SBAnimationBlendManager& blendMng, SmartBody::SBRetargetManager& retargetMng);
 
 	/**
 	 * @brief Dtor.

@@ -19,8 +19,6 @@ class SBMotion;
 namespace Ember
 {
 
-class SmartBodyManager;
-
 /**
  @brief A behavior set is a group of motions.
 
@@ -39,7 +37,8 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyBehaviors(std::string const &motionPath, std::string const &skeletonRef, SmartBodyManager& manager);
+	SmartBodyBehaviors(const std::string& motionPath, const std::string& skeletonRef, SmartBody::SBAssetManager& assetMng,
+		SmartBody::SBAnimationBlendManager& blendMng, SmartBody::SBRetargetManager& retargetMng);
 
 	/**
 	 * @brief Dtor.
