@@ -234,6 +234,12 @@ public:
 	 */
 	void setLocalVelocity(const WFMath::Vector<3>& velocity);
 
+	/**
+	 * @brief Always returns true for simple ModelRepresentation objects.
+	 */
+	virtual bool isOgreAnimated(void) const;
+
+
 protected:
 
 	/**

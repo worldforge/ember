@@ -214,8 +214,6 @@ void ModelRepresentation::initFromModel()
 	if (idleaction) {
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
 	}
-
-
 }
 
 Ogre::Vector3 ModelRepresentation::getScale() const
@@ -491,6 +489,11 @@ void ModelRepresentation::reactivatePartActions()
 {
 	ModelPartReactivatorVisitor visitor;
 	mMapping.getRootEntityMatch().accept(visitor);
+}
+
+bool ModelRepresentation::isOgreAnimated(void) const
+{
+	return true;
 }
 
 }
