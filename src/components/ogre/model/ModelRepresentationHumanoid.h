@@ -4,14 +4,10 @@
 #include "components/ogre/model/ModelRepresentation.h"
 
 
-namespace SmartBody
-{
-class SBCharacter;
-}
-
 namespace Ember
 {
 class SmartBodyManager;
+class SmartBodyRepresentation;
 
 namespace OgreView
 {
@@ -64,7 +60,7 @@ protected:
 	/**
 	 * @brief The corresponding SmartBody character.
 	 */
-	SmartBody::SBCharacter *mCharacter;
+	SmartBodyRepresentation *mCharacter;
 
 	/**
 	 * @brief A reference to the SmartBodyManager.

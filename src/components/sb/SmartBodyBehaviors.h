@@ -50,12 +50,17 @@ public:
 	/**
 	 * @brief Setup the behaviors and (if wanted) check before that all the needed assets have been loaded.
 	 */
-	virtual bool setup(bool check);
+	virtual bool setup(bool check = false);
 
 	/**
 	 * @brief Retarget the behavior set from the skeleton reference to another character (setup must have been called first).
 	 */
-	virtual void retarget(SmartBody::SBCharacter& character);
+	void retarget(const std::string& skName);
+
+	/**
+	 * @brief Add the necessary contraints on the character.
+	 */
+	virtual void addConstraints(SmartBody::SBCharacter& character) = 0;
 
 
 protected:

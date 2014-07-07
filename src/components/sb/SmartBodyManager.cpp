@@ -1,18 +1,15 @@
 #include "SmartBodyManager.h"
 #include "SmartBodyPathConsts.h"
+#include "SmartBodyBehaviors.h"
 #include "SmartBodyLocomotion.h"
 #include "SmartBodySkeletonMap.h"
+#include "SmartBodyRepresentation.h"
 
-#include <sb/SBScene.h>
-#include <sb/SBCharacter.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBSimulationManager.h>
-#include <sb/SBBmlProcessor.h>
-
-#include <OgreSkeletonInstance.h>
-#include <OgreEntity.h>
-#include <OgreBone.h>
+#include "sb/SBScene.h"
+#include "sb/SBSkeleton.h"
+#include "sb/SBAssetManager.h"
+#include "sb/SBSimulationManager.h"
+#include "sb/SBBmlProcessor.h"
 
 //#define NDEBUG
 #include <cassert>
@@ -26,13 +23,24 @@ namespace Ember
 // mScene stays as a pointer and not a reference, because the call the SBScene::getScene() allocates it. Consequently, is has to be deleted at the end.
 SmartBodyManager::SmartBodyManager(void) 
 	: mScene(SmartBody::SBScene::getScene()), mAssetManager(*mScene->getAssetManager()), mSimulation(*mScene->getSimulationManager()),
-	  mProcessor(*mScene->getBmlProcessor()), mIsInit(false), mLocomotion(nullptr)
+	  mProcessor(*mScene->getBmlProcessor()), mIsInit(false)
 {
 }
 
 SmartBodyManager::~SmartBodyManager(void)
 {
-	delete mLocomotion;
+	//Delete all characters.
+	for (int i = 0, n = mCharacters.size(); i < n; i ++)
+	{
+		delete mCharacters[i];
+	}
+
+	//Delete all behaviors.
+	for (int i = 0, n = mBehaviors.size(); i < n; i ++)
+	{
+		delete mBehaviors[i];
+	}
+
 	delete mScene;
 }
 
@@ -46,6 +54,7 @@ void SmartBodyManager::initialize(void)
 
 	//Set the media path : where to find the assets.
 	mScene->setMediaPath(EMBER_SMARTBODY_MEDIAPATH);
+
 	//Add the different asset paths.
 	addAssetPaths();
 
@@ -65,14 +74,13 @@ void SmartBodyManager::addAssetPaths(void)
 void SmartBodyManager::loadAllBehaviors(void)
 {
 	//Locomotion behavior.
-	mLocomotion = new SmartBodyLocomotion(EMBER_SMARTBODY_ASSETS_LOCOMOTION, EMBER_SMARTBODY_SKELETON_LOCOMOTION, *this);
-	mLocomotion->setup();
-}
-
-void SmartBodyManager::retargetAllBehaviors(SmartBody::SBCharacter& character)
-{
-	//Retarget locomotion behavior set.
-	mLocomotion->retarget(character);
+	mBehaviors.push_back(new SmartBodyLocomotion(EMBER_SMARTBODY_ASSETS_LOCOMOTION, EMBER_SMARTBODY_SKELETON_LOCOMOTION, *this));
+	
+	//Setup all behaviors.
+	for (int i = 0, n = mBehaviors.size(); i < n; i ++)
+	{
+		mBehaviors[i]->setup(true);
+	}
 }
 
 //public.
@@ -113,6 +121,12 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load /*= fals
 			map.setMap(*this);
 		}
 
+		//When the skeleton has been loaded, retarget the behaviors on it.
+		for (int i = 0, n = mBehaviors.size(); i < n; i ++)
+		{
+			mBehaviors[i]->retarget(skName);
+		}
+
 		return true;
 	}
 
@@ -120,58 +134,67 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load /*= fals
 }
 
 //public.
-SmartBody::SBCharacter* SmartBodyManager::createCharacter(const Ogre::Entity& entity, const std::string& group, const std::string& sbSkName)
+SmartBodyRepresentation* SmartBodyManager::createCharacter(const Ogre::Entity& entity, const std::string& group, const std::string& sbSkName)
 {
 	assert(mIsInit);
 
-	//Create SB character.
-	SmartBody::SBCharacter *character = mScene->createCharacter(entity.getName(), group);
+	//Create the representation.
+	SmartBodyRepresentation *representation = new SmartBodyRepresentation(*mScene, entity, group, sbSkName, mBehaviors);
 
-	//Create SB skeleton.
-	SmartBody::SBSkeleton *skeleton = mScene->createSkeleton(sbSkName);
+	//Add it to the character vector.
+	mCharacters.push_back(representation);
 
-	//Associate the skeleton to the character.
-	character->setSkeleton(skeleton);
-
-	//Set manually controlled mode on the Ogre skeleton.
-	// TODO : verify that the manual control doesn't prevent the character from using classical animations 
-	// edit : it seems that it makes the character convulse :X
-	setManualControl(entity);
-
-	//Add behaviors and controllers.
-	character->createStandardControllers();
-	retargetAllBehaviors(*character);
-
-	return character;
+	return representation;
 }
 
 //public.
-void SmartBodyManager::removeCharacter(SmartBody::SBCharacter *character)
+void SmartBodyManager::removeCharacter(SmartBodyRepresentation *representation)
 {
-	mScene->removeCharacter(character->getName());
-}
+	assert(mIsInit);
 
-void SmartBodyManager::setManualControl(const Ogre::Entity& entity, bool mode)
-{
-	Ogre::SkeletonInstance *skeleton = entity.getSkeleton();
-	Ogre::Skeleton::BoneIterator it = skeleton->getBoneIterator(); 
-
-	while (it.hasMoreElements()) 
-	{ 
-		it.getNext()->setManuallyControlled(mode);
+	//Find the representation in mCharacters and remove it.
+	for (int i = 0, n = mCharacters.size(); i < n; i ++)
+	{
+		if (mCharacters[i] == representation)
+		{
+			mCharacters.erase(mCharacters.begin() + i);
+		}
 	}
+
+	delete representation;
 }
 
 //public.
 SmartBody::SBScene& SmartBodyManager::getScene(void) const
 {
+	assert(mIsInit);
+
 	return *mScene;
 }
 
 //public.
 SmartBody::SBAssetManager& SmartBodyManager::getAssetManager(void) const
 {
+	assert(mIsInit);
+
 	return mAssetManager;
+}
+
+//public.
+void SmartBodyManager::updateAnimations(double timeSlice)
+{
+	assert(mIsInit);
+
+	//Update the time of the simulation.
+	mSimulation.setTime(mSimulation.getTime() + timeSlice);
+	mScene->update();
+
+	//For each character, set the new bone positions.
+	for (int i = 0, n = mCharacters.size(); i < n; i ++)
+	{
+		mCharacters[i]->updateBonePositions();
+	}
+
 }
 	
 }

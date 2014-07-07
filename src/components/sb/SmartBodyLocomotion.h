@@ -32,9 +32,9 @@ public:
 	bool setup(bool check = true);
 
 	/**
-	 * @brief Retarget the locomotion set to another character.
+	 * @brief Add the given contraints to retarget locomotion on another character.
 	 */
-	void retarget(SmartBody::SBCharacter& character);
+	void addConstraints(SmartBody::SBCharacter& character);
 
 
 private:

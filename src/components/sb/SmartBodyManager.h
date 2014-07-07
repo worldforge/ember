@@ -2,6 +2,7 @@
 #define SMARTBODYMANAGER_H
 
 	#include <string>
+	#include <vector>
 
 
 namespace SmartBody
@@ -23,7 +24,8 @@ class Entity;
 namespace Ember
 {
 
-class SmartBodyLocomotion;
+class SmartBodyBehaviors;
+class SmartBodyRepresentation;
 
 /**
  @brief This class is here to set up the SmartBody library.
@@ -69,12 +71,12 @@ public:
 	/**
 	 * @brief Creates a new SmartBody character and initialize him (skeleton, behaviors, etc.).
 	 */
-	SmartBody::SBCharacter* createCharacter(const Ogre::Entity& entity, const std::string& group, const std::string& sbSkName);
+	SmartBodyRepresentation* createCharacter(const Ogre::Entity& entity, const std::string& group, const std::string& sbSkName);
 
 	/**
 	 * @brief Removes a character from the scene.
 	 */
-	void removeCharacter(SmartBody::SBCharacter *character);
+	void removeCharacter(SmartBodyRepresentation *character);
 
 	/**
 	 * @brief Returns the scene.
@@ -85,6 +87,11 @@ public:
 	 * @brief Returns the asset manager.
 	 */
 	SmartBody::SBAssetManager& getAssetManager(void) const;
+
+	/**
+	 * @brief Update the scene.
+	 */
+	void updateAnimations(double timeSlice);
 
 private:
 
@@ -109,9 +116,22 @@ private:
 	SmartBody::SBBmlProcessor& mProcessor;
 
 	/**
-	 * @brief Locomotion behavior.
+	 * @brief A vector containing all the characters created by this manager.
 	 */
-	SmartBodyLocomotion *mLocomotion;
+	std::vector<SmartBodyRepresentation*> mCharacters;
+
+	/**
+	 * @brief The collection of all the supported behaviors.
+	 */
+	std::vector<SmartBodyBehaviors*> mBehaviors;
+
+	/**
+	 * @brief An enum to locate each behavior in mBehaviors.
+	 */
+	enum BehaviorType
+	{
+		BHV_LOCOMOTION, BHV_SIZE
+	};
 
 	/**
 	 * @brief Boolean stating that the manager has been initialized correctly.
@@ -128,16 +148,6 @@ private:
 	 * @brief Loads and set up all the behaviors.
 	 */
 	void loadAllBehaviors(void);
-
-	/**
-	 * @brief Retarget all the behaviors on the given character.
-	 */
-	void retargetAllBehaviors(SmartBody::SBCharacter& character);
-
-	/**
-	 * @brief Sets or unsets manual control over the (Ogre) skeleton of the entity given as parameter.
-	 */
-	void setManualControl(const Ogre::Entity& entity, bool mode = true);
 
 };
 

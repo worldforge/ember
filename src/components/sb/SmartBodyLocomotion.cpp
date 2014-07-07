@@ -40,10 +40,8 @@ bool SmartBodyLocomotion::setup(bool check /*= true */)
 	return mSetup;
 }
 
-void SmartBodyLocomotion::retarget(SmartBody::SBCharacter& character)
+void SmartBodyLocomotion::addConstraints(SmartBody::SBCharacter& character)
 {
-	SmartBodyBehaviors::retarget(character);
-
 	character.addJointTrajectoryConstraint("l_forefoot", "base");
 	character.addJointTrajectoryConstraint("r_forefoot", "base");
 	character.addJointTrajectoryConstraint("l_ankle", "base");

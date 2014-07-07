@@ -27,7 +27,7 @@ SmartBodyBehaviors::~SmartBodyBehaviors()
 }
 
 
-bool SmartBodyBehaviors::setup(bool check)
+bool SmartBodyBehaviors::setup(bool check /*= false */)
 {
 	//If setup has alredy been called, do nothing.
 	if (!mSetup)
@@ -82,15 +82,13 @@ void SmartBodyBehaviors::setupBehaviors(void)
 }
 
 
-void SmartBodyBehaviors::retarget(SmartBody::SBCharacter& character)
+void SmartBodyBehaviors::retarget(const std::string& skName)
 {
 	//Cannot retarget if setup has not been called previously.
 	assert(mSetup);
 
-	std::string skelName = character.getSkeleton()->getName();
-
 	//Creation of the retargeting object.
-	SmartBodyRetarget retarget(mSkelRefName, skelName, mRetargetManager);
+	SmartBodyRetarget retarget(mSkelRefName, skName, mRetargetManager);
 }
 
 }
