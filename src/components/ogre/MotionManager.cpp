@@ -25,6 +25,8 @@
 #include "IMovable.h"
 #include "IAnimated.h"
 
+#include "components/sb/SmartBodyManager.h"
+
 
 template<> Ember::OgreView::MotionManager* Ember::Singleton<Ember::OgreView::MotionManager>::ms_Singleton = 0;
 namespace Ember {
@@ -59,7 +61,7 @@ void MotionManager::doAnimationUpdate(Ogre::Real timeSlice)
 
 void MotionManager::doHumanoidAnimationUpdate(Ogre::Real timeSlice)
 {
-	mSbManager.updateAnimation(timeSlice);
+	mSbManager.updateAnimations(timeSlice);
 }
 
 bool MotionManager::frameStarted(const Ogre::FrameEvent& event)

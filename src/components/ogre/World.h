@@ -53,9 +53,13 @@ namespace Ember
 class Input;
 class ConfigListenerContainer;
 class EmberEntity;
+
+class SmartBodyManager;
+
 namespace OgreView
 {
 
+class EmberOgre;
 class RenderDistanceManager;
 
 namespace Terrain
@@ -123,7 +127,8 @@ public:
 	 * @param input The main input instance.
 	 * @param shaderManager The main shader manager.
 	 */
-	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter);
+	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager, 
+		GraphicalChangeAdapter& graphicalChangeAdapter, SmartBodyManager& sbManager);
 
 	/**
 	 * @brief Dtor.

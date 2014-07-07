@@ -26,7 +26,10 @@
 #include <unordered_map>
 
 namespace Ember {
+
 class EmberEntity;
+class SmartBodyManager;
+
 namespace OgreView {
 
 class IAnimated;
@@ -52,7 +55,7 @@ public:
 	/**
 	 * @brief Ctor
 	 */
-	MotionManager();
+	MotionManager(SmartBodyManager& sbManager);
 
 	/**
 	 * @brief Dtor

@@ -25,8 +25,8 @@ EmberEntityHumanoidModelAction::~EmberEntityHumanoidModelAction(void)
 
 Model::ModelRepresentation* EmberEntityHumanoidModelAction::createModelRepresentation(Model::Model& model)
 {
-	SmartBodyManager *sbManager = OgreView::EmberOgre::getSingleton().getSmartBodyManager();
-	Model::ModelRepresentationHumanoid *representation = new Model::ModelRepresentationHumanoid(mEntity, model, mScene, mMapping, *sbManager);
+	SmartBodyManager& sbManager = OgreView::EmberOgre::getSingleton().getSmartBodyManager();
+	Model::ModelRepresentationHumanoid *representation = new Model::ModelRepresentationHumanoid(mEntity, model, mScene, mMapping, sbManager);
 	
 	return representation;
 }

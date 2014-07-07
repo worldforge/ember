@@ -523,7 +523,7 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
-	mWorld = new World(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter());
+	mWorld = new World(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), *mSmartBodyManager);
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
 	mShaderManager->registerSceneManager(&mWorld->getSceneManager());
 	EventWorldCreated.emit(*mWorld);

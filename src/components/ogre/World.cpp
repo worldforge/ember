@@ -21,6 +21,7 @@
 #include "Avatar.h"
 #include "MovementController.h"
 #include "EmberEntityFactory.h"
+#include "EmberOgre.h"
 #include "MotionManager.h"
 #include "authoring/EntityMoveManager.h"
 #include "Scene.h"
@@ -77,8 +78,8 @@ namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals,
-		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mSbManager(EmberOgre::getSingleton().getSmartBodyManager())
+		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter, SmartBodyManager& sbManager) :
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mSbManager(sbManager),
 		mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0),
 		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getAvatar()->getConnection()->getEventService())),
 		mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *mTerrainManager->getTerrainAdapter())),
