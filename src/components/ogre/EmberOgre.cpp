@@ -456,7 +456,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 	//Create the SmartBody manager.
 	mSmartBodyManager = new SmartBodyManager();
-	mSmartBodyManager->initialize();
+	mSmartBodyManager->initialize(0.0);
 
 	return true;
 }

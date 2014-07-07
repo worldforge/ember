@@ -55,10 +55,7 @@ void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 void MotionManager::doAnimationUpdate(Ogre::Real timeSlice)
 {
 	for (AnimatedStore::const_iterator I = mAnimatedEntities.begin(); I != mAnimatedEntities.end(); ++I) {
-		if (I->isOgreAnimated())
-		{
-			I->second->updateAnimation(timeSlice);
-		}
+		I->second->updateAnimation(timeSlice);
 	}
 }
 

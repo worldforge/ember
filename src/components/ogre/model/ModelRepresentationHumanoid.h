@@ -1,7 +1,7 @@
 #ifndef MODELREPRESENTATIONHUMANOID_H_
 #define MODELREPRESENTATIONHUMANOID_H_
 
-#include "components/ogre/model/ModelRepresentation.h"
+#include "ModelRepresentation.h"
 
 
 namespace Ember
@@ -53,7 +53,7 @@ public:
 	 */
 	const std::string& getType(void) const;
 	static const std::string& getTypeNameForClass(void);
-
+	
 
 protected:
 
@@ -73,9 +73,14 @@ protected:
 	static std::string sTypeName;
 
 	/**
-	* @brief Create the character representation in SmartBody.
-	*/
+	 * @brief Creates the character representation in SmartBody.
+	 */
 	void createSmartBodyCharacter(void);
+
+	/**
+	 * @brief Sets the animation corresponding to the given action.
+	 */
+	void setAnimation(Action *newAction);
 };
 
 }

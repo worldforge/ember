@@ -4,6 +4,7 @@
 #include "SmartBodyLocomotion.h"
 #include "SmartBodySkeletonMap.h"
 #include "SmartBodyRepresentation.h"
+#include "SmartBodyAnimation.h"
 
 #include "sb/SBScene.h"
 #include "sb/SBSkeleton.h"
@@ -25,6 +26,11 @@ SmartBodyManager::SmartBodyManager(void)
 	: mScene(SmartBody::SBScene::getScene()), mAssetManager(*mScene->getAssetManager()), mSimulation(*mScene->getSimulationManager()),
 	  mProcessor(*mScene->getBmlProcessor()), mIsInit(false)
 {
+	//Initialisation of the animation map.
+	for (int i = 0; i < SmartBodyAnimation::ANIMATIONS_COUNT; i ++)
+	{
+		mAnimations.push_back(SmartBodyAnimation( ((SmartBodyAnimation::Name)i) ));
+	}
 }
 
 SmartBodyManager::~SmartBodyManager(void)
@@ -46,10 +52,9 @@ SmartBodyManager::~SmartBodyManager(void)
 
 
 //public.
-void SmartBodyManager::initialize(void)
+void SmartBodyManager::initialize(double startTime)
 {
 	//Initialization of SmartBody library.
-	//TODO : suppress ? I think this line do nothing X.X
 	mScene->start();
 
 	//Set the media path : where to find the assets.
@@ -60,6 +65,10 @@ void SmartBodyManager::initialize(void)
 
 	//Load the different behaviors.
 	loadAllBehaviors();
+
+	//Start the simulation.
+	mSimulation.setTime(startTime);
+	mSimulation.start();
 
 	//Set init boolean to true.
 	mIsInit = true;
@@ -74,7 +83,8 @@ void SmartBodyManager::addAssetPaths(void)
 void SmartBodyManager::loadAllBehaviors(void)
 {
 	//Locomotion behavior.
-	mBehaviors.push_back(new SmartBodyLocomotion(EMBER_SMARTBODY_ASSETS_LOCOMOTION, EMBER_SMARTBODY_SKELETON_LOCOMOTION, *this));
+	mBehaviors.push_back(new SmartBodyLocomotion(EMBER_SMARTBODY_ASSETS_LOCOMOTION, EMBER_SMARTBODY_SKELETON_LOCOMOTION, 
+		mAssetManager, *mScene->getBlendManager(), *mScene->getRetargetManager()));
 	
 	//Setup all behaviors.
 	for (int i = 0, n = mBehaviors.size(); i < n; i ++)
@@ -118,7 +128,7 @@ bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load /*= fals
 		if (map.exists())
 		{
 			//Finally, map the skeleton.
-			map.setMap(*this);
+			map.setMap(mAssetManager, *mScene->getJointMapManager());
 		}
 
 		//When the skeleton has been loaded, retarget the behaviors on it.
@@ -165,22 +175,6 @@ void SmartBodyManager::removeCharacter(SmartBodyRepresentation *representation)
 }
 
 //public.
-SmartBody::SBScene& SmartBodyManager::getScene(void) const
-{
-	assert(mIsInit);
-
-	return *mScene;
-}
-
-//public.
-SmartBody::SBAssetManager& SmartBodyManager::getAssetManager(void) const
-{
-	assert(mIsInit);
-
-	return mAssetManager;
-}
-
-//public.
 void SmartBodyManager::updateAnimations(double timeSlice)
 {
 	assert(mIsInit);
@@ -189,12 +183,29 @@ void SmartBodyManager::updateAnimations(double timeSlice)
 	mSimulation.setTime(mSimulation.getTime() + timeSlice);
 	mScene->update();
 
-	//For each character, set the new bone positions.
+	//For each character that is animated through SmartBody, set the new bone positions.
 	for (int i = 0, n = mCharacters.size(); i < n; i ++)
 	{
-		mCharacters[i]->updateBonePositions();
+		if (mCharacters[i]->isAnimated())
+			mCharacters[i]->updateBonePositions();
 	}
+}
 
+//public.
+void SmartBodyManager::animate(SmartBodyRepresentation& character, SmartBodyAnimation::Name animation)
+{
+	assert(mIsInit);
+
+	character.setAnimatedState(true);
+	mProcessor.execBML(character.getName(), mAnimations[animation].getBmlRequest());
+}
+
+//public.
+void SmartBodyManager::freeze(SmartBodyRepresentation& character) const
+{
+	assert(mIsInit);
+
+	character.setAnimatedState(false);
 }
 	
 }

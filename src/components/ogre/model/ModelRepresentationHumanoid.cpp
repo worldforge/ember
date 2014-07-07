@@ -1,7 +1,12 @@
 #include "ModelRepresentationHumanoid.h"
 #include "Model.h"
+#include "ModelAction.h"
+
+#include "components/ogre/MotionManager.h"
 
 #include "components/sb/SmartBodyManager.h"
+#include "components/sb/SmartBodyRepresentation.h"
+#include "components/sb/SmartBodyAnimation.h"
 
 #include <OgreSkeletonInstance.h>
 #include <string>
@@ -63,6 +68,34 @@ void ModelRepresentationHumanoid::createSmartBodyCharacter(void)
 	else
 	{
 		//TODO: Do something to say that there is an error, and if possible change the ModelRepresentationHumanoid to a normal ModelRepresentation.
+	}
+}
+
+void ModelRepresentationHumanoid::setAnimation(Action *newAction)
+{
+	if (mCharacter)
+	{
+		//If the action is supported by SmartBody,
+		if (newAction && newAction->getName() == ACTION_STAND)
+		{
+			//start the idling animation on this character.
+			mSbManager.animate(*mCharacter, SmartBodyAnimation::IDLE);
+
+			//Do not forget to remove this from the Ogre Animated entities.
+			MotionManager::getSingleton().removeAnimated(mEntity.getId());
+		}
+
+		//Else, stop the SmartBody animations for this character and use the original method.
+		else
+		{
+			mSbManager.freeze(*mCharacter);
+			ModelRepresentation::setAnimation(newAction);
+		}
+	}
+
+	else
+	{
+		ModelRepresentation::setAnimation(newAction);
 	}
 }
 

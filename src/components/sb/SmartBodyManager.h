@@ -1,9 +1,10 @@
 #ifndef SMARTBODYMANAGER_H
 #define SMARTBODYMANAGER_H
 
+	#include "SmartBodyAnimation.h"
+
 	#include <string>
 	#include <vector>
-
 
 namespace SmartBody
 {
@@ -26,6 +27,7 @@ namespace Ember
 
 class SmartBodyBehaviors;
 class SmartBodyRepresentation;
+class SmartBodyAnimation;
 
 /**
  @brief This class is here to set up the SmartBody library.
@@ -51,9 +53,9 @@ public:
 	~SmartBodyManager(void);
 
 	/**
-	 * @brief Initializes the object, and by the way, the SmartBody library.
+	 * @brief Initializes the object, and consequently, the SmartBody library.
 	 */
-	void initialize(void);
+	void initialize(double startTime);
 
 	/**
 	 * @brief Sets sbName to the name of the SmartBody skeleton corresponding to ogreName (returns false if not possible).
@@ -79,19 +81,20 @@ public:
 	void removeCharacter(SmartBodyRepresentation *character);
 
 	/**
-	 * @brief Returns the scene.
-	 */
-	SmartBody::SBScene& getScene(void) const;
-
-	/**
-	 * @brief Returns the asset manager.
-	 */
-	SmartBody::SBAssetManager& getAssetManager(void) const;
-
-	/**
-	 * @brief Update the scene.
+	 * @brief Updates the scene.
 	 */
 	void updateAnimations(double timeSlice);
+
+	/**
+	 * @brief Launches an animation on a character.
+	 */
+	void animate(SmartBodyRepresentation& character, SmartBodyAnimation::Name animation);
+
+	/**
+	 * @brief Freezes all animations on this character and toggles to Ogre animated mode. 
+	 */
+	void freeze(SmartBodyRepresentation& character) const;
+
 
 private:
 
@@ -124,6 +127,11 @@ private:
 	 * @brief The collection of all the supported behaviors.
 	 */
 	std::vector<SmartBodyBehaviors*> mBehaviors;
+
+	/**
+	 * @brief The different possible animations.
+	 */
+	std::vector<SmartBodyAnimation> mAnimations;
 
 	/**
 	 * @brief An enum to locate each behavior in mBehaviors.

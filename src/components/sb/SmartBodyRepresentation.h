@@ -23,10 +23,10 @@ namespace Ember
 class SmartBodyBehaviors;
 
 /**
- @brief This class gives an interface between SmartBody and Ogre respective representation for characters.
-
- @author Céline NOEL <celine.noel.7294@gmail.com>
-
+ * @brief This class gives an interface between SmartBody and Ogre respective representation for characters.
+ *
+ * @author Céline NOEL <celine.noel.7294@gmail.com>
+ *
  */
 class SmartBodyRepresentation
 {
@@ -49,14 +49,19 @@ public:
 	void updateBonePositions(void);
 
 	/**
-	 * @brief Sets or unsets manual control over the skeleton of the Ogre entity.
+	 * @brief Animates / freezes the character.
 	 */
-	void setManualControl(bool mode = true);
+	void setAnimatedState(bool isAnimated);
 
 	/**
-	 * @brief Returns the value of mManualMode.
+	 * @brief Returns the value of mIsAnimated.
 	 */
-	bool isManuallyControlled(void);
+	bool isAnimated(void) const;
+
+	/**
+	 * @brief Returns the name of mCharacter.
+	 */
+	const std::string& getName(void) const;
 
 
 private:
@@ -90,6 +95,21 @@ private:
 	 * @brief Indicates if the manual control is set or not.
 	 */
 	bool mManualMode;
+
+	/**
+	 * @brief Indicates if the character is currently animated through SmartBody.
+	 */
+	bool mIsAnimated;
+
+	/**
+	 * @brief Sets or unsets manual control over the skeleton of the Ogre entity.
+	 */
+	void setManualControl(bool mode = true);
+
+	/**
+	 * @brief Returns the value of mManualMode.
+	 */
+	bool isManuallyControlled(void) const;
 
 };
 

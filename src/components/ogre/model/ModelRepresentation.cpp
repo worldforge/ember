@@ -307,15 +307,25 @@ void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
 
 		Action* newAction = mModel.getAction(ActivationDefinition::MOVEMENT, actionName);
 		mCurrentMovementAction = newAction;
-		if (newAction) {
-			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
-		} else {
-			MotionManager::getSingleton().removeAnimated(mEntity.getId());
-		}
+
+		setAnimation(newAction);
 	}
 
 	EventMovementModeChanged.emit(newMode);
 	mMovementMode = newMode;
+}
+
+void ModelRepresentation::setAnimation(Action *newAction)
+{
+	if (newAction) 
+	{
+		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
+	}
+
+	else 
+	{
+		MotionManager::getSingleton().removeAnimated(mEntity.getId());
+	}
 }
 
 ModelRepresentation::MovementMode ModelRepresentation::getMovementMode() const
@@ -489,11 +499,6 @@ void ModelRepresentation::reactivatePartActions()
 {
 	ModelPartReactivatorVisitor visitor;
 	mMapping.getRootEntityMatch().accept(visitor);
-}
-
-bool ModelRepresentation::isOgreAnimated(void) const
-{
-	return true;
 }
 
 }

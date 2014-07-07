@@ -234,11 +234,6 @@ public:
 	 */
 	void setLocalVelocity(const WFMath::Vector<3>& velocity);
 
-	/**
-	 * @brief Always returns true for simple ModelRepresentation objects.
-	 */
-	virtual bool isOgreAnimated(void) const;
-
 
 protected:
 
@@ -363,6 +358,11 @@ protected:
 	 * @param newMode The new movement mode.
 	 */
 	virtual void onMovementModeChanged(MovementMode newMode);
+
+	/**
+	 * @brief Sets the animation corresponding to the given action.
+	 */
+	virtual void setAnimation(Action *newAction);
 
 	/**
 	 * @brief Parses and sets the movement mode.
