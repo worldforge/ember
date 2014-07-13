@@ -10,7 +10,6 @@
 #include <sb/SBObject.h>
 #include <boost/bimap/bimap.hpp>
 
-
 typedef boost::bimaps::bimap<std::string, std::string> StringBimap;
 
 namespace SmartBody {
@@ -18,6 +17,8 @@ namespace SmartBody {
 class SBMotion;
 class SBSkeleton;
 class SKJoint;
+
+#define USE_TWO_MAPS 1
 
 class SBJointMap : public SBObject
 {
@@ -56,7 +57,13 @@ class SBJointMap : public SBObject
 	private:
 		//std::map<std::string, std::string> _jointMap;
 		StringBimap  _jointMap;
+#ifdef USE_TWO_MAPS
+		std::map<std::string, std::string> _sourceMap;
+		std::map<std::string, std::string> _targetMap;
+#else
 		std::vector<std::pair<std::string, std::string> > _map;		
+#endif
+
 		std::vector<std::string> _mappedMotions;
 		std::vector<std::string> _mappedSkeletons;
 		std::string emptyString;

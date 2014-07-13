@@ -17,7 +17,7 @@
  *      http://www.gnu.org/licenses/lgpl-3.0.txt
  */
 
-#include <vhcl/vhcl.h>
+#include "vhcl/vhcl.h"
 #include <stdlib.h>
 #include <exception>
 #include <iostream>
@@ -66,6 +66,9 @@
 #include <sb/SBAnimationStateManager.h>
 #include <sb/nvbg.h>
 #include <sb/SBSimulationManager.h>
+#ifdef EMBER_SB_VHMSG
+#include <sb/SBVHMsgManager.h>
+#endif
 #include <sb/SBScene.h>
 #include <sb/SBMotion.h>
 #include <sb/SBAssetManager.h>
@@ -103,6 +106,7 @@ namespace BML {
 		const char* error_msg,
 		 SmartBody::SBScene* scene )
 	{
+		#ifdef EMBER_SB_VHMSG
 		//  Let's not error on our error messages.  Be thorough.
 		if( agent_id==NULL || agent_id[0]=='\0' )
 			agent_id = "?";
@@ -116,9 +120,7 @@ namespace BML {
 		// Old vrSpeakFailed form (sans recipient)
 		std::ostringstream buff;
 		buff << agent_id << " RECIPIENT " << message_id << " " << error_msg;
-	#ifdef EMBER_SB_VHMSG
 		scene->getVHMsgManager()->send2( "vrSpeakFailed", buff.str().c_str() );
-	#endif
 
 		// New vrAgentBML form...
 		std::ostringstream buff2;
@@ -128,9 +130,8 @@ namespace BML {
 		buff2 << agent_id << " " << message_id << " end error " << error_msg;
 #endif
 		
-	#ifdef EMBER_SB_VHMSG
 		scene->getVHMsgManager()->send2( "vrAgentBML", buff2.str().c_str() );
-	#endif
+		#endif
 	}
 };
 
@@ -620,6 +621,7 @@ BehaviorRequestPtr BML::Processor::parse_bml_body( DOMElement* elem, std::string
 		LOG("WARNING: BML::Processor::parse_bml_body(): <body> missing posture = attribute; ignoring <body>.");
 		return BehaviorRequestPtr();  // a.k.a., NULL
 	}
+	return BehaviorRequestPtr();  // a.k.a., NULL
 }
 
 BehaviorRequestPtr BML::Processor::parse_bml_head( DOMElement* elem, std::string& unique_id, BehaviorSyncPoints& behav_syncs, bool required, BmlRequestPtr request, SmartBody::SBScene* scene ) {
@@ -877,6 +879,7 @@ BehaviorRequestPtr BML::Processor::parse_bml_head( DOMElement* elem, std::string
 		LOG(convertWStringToString(wstrstr.str()).c_str());
 		return BehaviorRequestPtr();  // a.k.a., NULL
     }
+	return BehaviorRequestPtr();  // a.k.a., NULL
 }
 
 void BML::Processor::speechReply( SbmCharacter* actor, SmartBody::RequestId requestId, srArgBuffer& response_args, SmartBody::SBScene* scene ) {

@@ -146,6 +146,9 @@ class SrModel : public SrSharedClass
     /*! Removes redundant normals, which are closer than the given angular distance. */
     SBAPI void remove_redundant_normals ( float dang=SR_TORAD(0.5f) );
 
+	/*! Removes redundant normals, which are closer than the given angular distance. */
+	SBAPI void remove_redundant_texcoord ();
+
     /*! Check and remove redundant vertices */
     SBAPI void merge_redundant_vertices ( float prec );
 

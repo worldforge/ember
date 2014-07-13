@@ -35,6 +35,17 @@
  
 //=================================== SrModel =================================================
 
+class Pt2Comp { // simple comparison function
+public:
+	bool operator ()(const SrPnt2& x,const SrPnt2 y) const
+	{  
+		if (x[0] == y[0])
+			return x[1] < y[1];
+		else
+			return x[0] < y[0];
+	} // returns x>y
+};
+
 const char* SrModel::class_name = "Model";
 
 SrModel::SrModel ()
@@ -205,6 +216,104 @@ void SrModel::remove_redundant_materials ()
        }
     }
  }
+
+
+void SrModel::remove_redundant_texcoord()
+{
+	int i, j, k;
+	float ang;
+	float texDiff;
+	SrArray<int> iarray;
+
+	int fsize = F.size();
+
+	if ( T.size()==0 || Ft.size()!=fsize )
+	{ T.size(0); 
+	Ft.size(0);
+	}
+	else 
+	{ // remove references to duplicated normals
+		int nsize = T.size();
+		std::map<SrPnt2, int, Pt2Comp> tMap;
+		std::map<int,int> tNewIdxMap;
+		std::vector<SrPnt2>  newTexCoordList;
+		for (int i=0;i<T.size();i++)
+		{
+			if (tMap.find(T[i]) == tMap.end())					
+			{
+				int newIdx = newTexCoordList.size();
+				tMap[T[i]] = newIdx;
+				tNewIdxMap[i] = newIdx;
+				newTexCoordList.push_back(T[i]);
+			}
+			else
+			{
+				tNewIdxMap[i] = tMap[T[i]];
+			}
+		}
+
+		for ( k=0; k<fsize; k++ ) // replace references to j by i
+		{ 
+			for (int i=0;i<3;i++)
+			{
+				int oldIdx = Ft[k][i];
+				Ft[k][i] = tNewIdxMap[oldIdx];
+			}
+		}
+		T.size(newTexCoordList.size());
+		for (unsigned int i=0;i<newTexCoordList.size();i++)
+			T[i] = newTexCoordList[i];
+#if 0
+		for ( i=0; i<nsize; i++ ) 
+		{ for ( j=i+1; j<nsize; j++ ) 
+		{ texDiff = (T[i]-T[j]).norm();
+		if ( texDiff < 1e-9 )
+		{ //SR_TRACE2 ( "Detected normal "<<i<<" close to "<<j );
+			for ( k=0; k<fsize; k++ ) // replace references to j by i
+			{ if ( Ft[k].a==j ) Ft[k].a=i;
+			  if ( Ft[k].b==j ) Ft[k].b=i;
+			  if ( Ft[k].c==j ) Ft[k].c=i;
+			}
+		}
+		}
+		}
+
+		// check for nonused materials
+		iarray.size ( nsize );
+		iarray.setall ( -1 );
+
+		for ( i=0; i<fsize; i++ )  // mark used materials
+		{ iarray[Ft[i].a] = 1;
+		iarray[Ft[i].b] = 1;
+		iarray[Ft[i].c] = 1;
+		}
+
+		int toadd = 0;
+		for ( i=0; i<iarray.size(); i++ ) 
+		{ if ( iarray[i]<0 )
+		{ //SR_TRACE2 ( "Detected unused normal "<<i );
+			toadd++;
+		}
+		else
+			iarray[i] = toadd;
+		}
+
+		for ( i=0; i<fsize; i++ ) // update indices
+		{ Ft[i].a -= iarray[Ft[i].a];
+		Ft[i].b -= iarray[Ft[i].b];
+		Ft[i].c -= iarray[Ft[i].c];
+		}
+
+		for ( i=0,j=0; i<iarray.size(); i++ ) // compress T
+		{ if ( iarray[i]<0 )
+		{ T.remove(j); }
+		else
+		{ j++; }
+		}
+#endif
+	}
+
+}
 
 void SrModel::remove_redundant_normals ( float dang )
  {

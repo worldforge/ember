@@ -224,7 +224,7 @@ void ODEPhysicsSim::linkJointObj( SmartBody::SbmJointObj* obj )
 	}
 
 	ODEObj* pode = getODEObj(parent);
-	std::string jname = obj->getSBJoint()->getName();
+	std::string jname = obj->getSBJoint()->getMappedJointName();
 	
 	SmartBody::SBJoint* joint = obj->getSBJoint();
 	SmartBody::SBPhysicsJoint* phyJoint = obj->getPhyJoint();

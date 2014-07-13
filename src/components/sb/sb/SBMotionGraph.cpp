@@ -12,7 +12,7 @@
 #include <boost/graph/strong_components.hpp>
 #include <boost/lexical_cast.hpp>
 #ifdef EMBER_SB_SOIL
-	#include "external/SOIL/SOIL.h"
+#include "external/SOIL/SOIL.h"
 #endif
 
 namespace SmartBody {
@@ -323,13 +323,13 @@ void SBMotionNode::initTimeWarp()
 	if (!animBlend) return;
 	std::vector<double> refKey;
 	float step = 1.f/(animBlend->getNumKeys()-1.f);
-	for (unsigned int i=0;i<animBlend->getNumKeys();i++)
+	for (int i=0;i<animBlend->getNumKeys();i++)
 		refKey.push_back(step*i); // normalize the reference time to [0,1]
-	for (unsigned int i=0;i<animBlend->getNumMotions();i++)
+	for (int i=0;i<animBlend->getNumMotions();i++)
 	{
 		std::string motionName = animBlend->getMotionName(i);
 		std::vector<double> motionKeys;
-		for (unsigned int k=0;k<animBlend->getNumKeys(); k++)
+		for (int k=0;k<animBlend->getNumKeys(); k++)
 		{
 			motionKeys.push_back(animBlend->getMotionKey(motionName,k));
 		}
@@ -357,10 +357,10 @@ void SBMotionNode::getDeltaAlignTransform( float u, float du , const std::vector
 		int idx = moIndex[i];
 		MotionTimeWarpFunc* timeWarp = timeWarpFuncs[idx];
 		SBMotion* motion = animBlend->motions[idx];
-		float t = timeWarp->timeWarp(u);
-		float tdt = timeWarp->timeWarp(u+du);
-		t = SimpleTimeWarp::floatMod(t,motion->getDuration());
-		tdt = SimpleTimeWarp::floatMod(tdt,motion->getDuration());
+		float t = (float)timeWarp->timeWarp(u);
+		float tdt = (float)timeWarp->timeWarp(u+du);
+		t = (float)SimpleTimeWarp::floatMod(t,motion->getDuration());
+		tdt = (float)SimpleTimeWarp::floatMod(tdt,motion->getDuration());
 		if (tdt < t) tdt = t;
 		SrMat mat1 = motion->getChannelMat(baseJointName,t);
 		SrMat mat2 = motion->getChannelMat(baseJointName,tdt);
@@ -442,8 +442,8 @@ void SBMotionNode::getBlendedMotionFrame( float u, const std::vector<float>& wei
 		int idx = moIndex[i];
 		MotionTimeWarpFunc* timeWarp = timeWarpFuncs[idx];
 		SBMotion* motion = animBlend->motions[idx];
-		float t = timeWarp->timeWarp(u);
-		t = SimpleTimeWarp::floatMod(t,motion->getDuration());	
+		float t = (float)timeWarp->timeWarp(u);
+		t = (float)SimpleTimeWarp::floatMod(t,motion->getDuration());	
 
 		if (i==0)
 		{
@@ -513,7 +513,7 @@ float SBMotionNode::getRefDuration()
 	float refDuration = 0.f;
 	if (timeWarpFuncs.size() > 0)
 	{
-		refDuration = timeWarpFuncs[0]->refTimeLength();
+		refDuration = (float)timeWarpFuncs[0]->refTimeLength();
 	}
 	return refDuration;
 }
@@ -543,7 +543,7 @@ float SBMotionNode::getRefDeltaTime( float u, float dt, const std::vector<float>
 	{
 		int idx = moIndex[i];
 		MotionTimeWarpFunc* timeWarp = timeWarpFuncs[idx];
-		du += dt/timeWarp->timeSlope(u)*weights[idx];
+		du += dt/(float)timeWarp->timeSlope(u)*weights[idx];
 	}
 	return du;
 }
@@ -563,7 +563,7 @@ float SBMotionNode::getActualTime( float u, const std::vector<float>& weights  )
 	{
 		int idx = moIndex[i];
 		MotionTimeWarpFunc* timeWarp = timeWarpFuncs[idx];
-		t += (timeWarp->timeWarp(u)-timeWarp->timeWarp(0.f))*weights[idx];
+		t += ((float)timeWarp->timeWarp(u)-(float)timeWarp->timeWarp(0.f))*weights[idx];
 	}
 	return t;
 }
@@ -583,7 +583,7 @@ float SBMotionNode::getActualDuration( const std::vector<float>& weights )
 	{
 		int idx = moIndex[i];
 		MotionTimeWarpFunc* timeWarp = timeWarpFuncs[idx];
-		t += timeWarp->actualTimeLength()*weights[idx];
+		t += (float)timeWarp->actualTimeLength()*weights[idx];
 	}
 	return t;
 }
@@ -689,7 +689,7 @@ SBMotionNode* SBMotionGraph::addMotionNodeFromMotionTransition( const std::strin
 	std::vector<SrQuat> quatList1, quatList2;
 	std::vector<SrVec>  posList1, posList2;
 	SrMat yMat1, yMat2; 
-	float frameStep = motion1->getFrameRate();
+	float frameStep = (float)motion1->getFrameRate();
 	//LOG("motion1 = %s, motion2 = %s, frame1 = %d, frame2 = %d", motionName1.c_str(), motionName2.c_str(), mo1EndFrme, mo2StartFrame);
 	for (int i=0;i<transitionLength;i++)
 	{
@@ -762,7 +762,7 @@ SBAPI SBMotionNode* SBMotionGraph::getMotionNode( const std::string& nodeName )
 
 SBAPI SBMotionTransitionEdge* SBMotionGraph::addMotionEdgeByIndex( int fromNodeIdx, int toNodeIdx )
 {
-	if (fromNodeIdx < 0 || fromNodeIdx >= motionNodes.size() || toNodeIdx < 0 || toNodeIdx >= motionNodes.size())
+	if (fromNodeIdx < 0 || fromNodeIdx >= (int)motionNodes.size() || toNodeIdx < 0 || toNodeIdx >= (int)motionNodes.size())
 		return NULL; // not valid edge
 	SBMotionNode* fromNode = motionNodes[fromNodeIdx];
 	SBMotionNode* toNode = motionNodes[toNodeIdx];
@@ -809,7 +809,7 @@ SBAPI SBMotionTransitionEdge* SBMotionGraph::getMotionEdge( const std::string& s
 	return NULL;
 }
 
-/*
+#ifdef EMBER_SB_STEER
 SBAPI void SBMotionGraph::synthesizePath( SteerPath& desiredPath, const std::string& skeletonName, std::vector<std::pair<std::string,std::string> >& graphTraverseEdges )
 {
 	SBRetargetManager* retargetManager = SmartBody::SBScene::getScene()->getRetargetManager();
@@ -829,7 +829,7 @@ SBAPI void SBMotionGraph::synthesizePath( SteerPath& desiredPath, const std::str
 		node->getRandomBlendWeights(weights);		
 		node->getDeltaAlignTransform(0.f, 0.999f, weights, deltaMat, baseXZMat);
 		
-		int numFrames = node->getActualDuration(weights)/0.033f;
+		int numFrames = (int)(node->getActualDuration(weights)/0.033f);
 		if (numFrames < 1) numFrames = 1; // minimum one frames
 		
 		float duStep = 1.f/numFrames;
@@ -863,7 +863,7 @@ SBAPI void SBMotionGraph::synthesizePath( SteerPath& desiredPath, const std::str
 	curTransform.set_translation(desiredPath.pathPoint(0.f));
 	SBMotionNode* curNode = motionNodes[0]; // start with the first node
 	MotionGraphTraverse curGraphTraverse, bestGraphTraverse, finalGraphTraverse;
-	float bestTraverseError = 1e30;
+	float bestTraverseError = 1e30f;
 	curGraphTraverse.curNodeIdx = curNode->getIndex();
 	curGraphTraverse.curTransform.set_translation(desiredPath.pathPoint(0.f)); // start from the beginning of the path
 
@@ -924,7 +924,7 @@ SBAPI void SBMotionGraph::synthesizePath( SteerPath& desiredPath, const std::str
 		// reset the best path, since we will restart the traverse from previous result.
 		curGraphTraverse.graphEdges.clear(); 
 		curGraphTraverse.traverseTime = 0.f;
-		bestTraverseError = 1e30; 
+		bestTraverseError = 1e30f; 
 
 		//finalGraphTraverse.distToTarget = (finalGraphTraverse.curTransform.get_translation() - desiredPath.pathPoint(desiredPath.pathLength()*0.99f)).norm();
 		//reachTarget = finalGraphTraverse.traversePathDist >= desiredPath.pathLength() && finalGraphTraverse.distToTarget < 0.5f;
@@ -941,8 +941,7 @@ SBAPI void SBMotionGraph::synthesizePath( SteerPath& desiredPath, const std::str
 	}
 
 }
-
-*/
+#endif
 
 
 SBMotionGraph::MotionGraphTraverse& SBMotionGraph::MotionGraphTraverse::operator=( const MotionGraphTraverse& rtIn )
@@ -957,7 +956,7 @@ SBMotionGraph::MotionGraphTraverse& SBMotionGraph::MotionGraphTraverse::operator
 	return *this;
 }
 
-/*
+#ifdef EMBER_SB_STEER
 float SBMotionGraph::traverseGraph(SteerPath& curPath, MotionGraphTraverse& curGraphTraverse, MotionGraphTraverse& bestGraphTraverse, std::map<std::string, MotionNodeCache>& deltaTransformMap, float timeThreshold, float& bestTraverseError )
 {
 	// either the path is final now, or the path error is already larger than the previous best path
@@ -987,7 +986,7 @@ float SBMotionGraph::traverseGraph(SteerPath& curPath, MotionGraphTraverse& curG
 	}	
 
 	// doing the depth-first search in the graph, start from the node with lowest error	
-	float bestEdgeError = 1e30;
+	float bestEdgeError = 1e30f;
 	std::map<float,int>::iterator mi;	
 	for ( mi  = nodeErrorMap.begin();
 		  mi != nodeErrorMap.end();
@@ -1015,9 +1014,7 @@ float SBMotionGraph::traverseGraph(SteerPath& curPath, MotionGraphTraverse& curG
 
 	return bestEdgeError;
 }
-*/
 
-/*
 float SBMotionGraph::pathError( SteerPath& curPath, const SBMotionNode* curNode, const SrMat& curTransform,  MotionNodeCache& nodeCache, float pathLength )
 {
 #if 0
@@ -1042,8 +1039,7 @@ float SBMotionGraph::pathError( SteerPath& curPath, const SBMotionNode* curNode,
 #endif
 	return error;
 }
-*/
-
+#endif
 
 struct MotionGraphNode
 {
@@ -1339,7 +1335,7 @@ void SBMotionGraph::computeMotionTransitionFast( const std::string& moName1, con
 	pointCloudList1.resize(mo1Frames);
 	pointCloudList2.resize(mo2Frames);
 	float invNumPoints = 1.f/affectedJointNames.size();
-	for (unsigned int i=0;i<mo1Frames;i++)
+	for (int i=0;i<mo1Frames;i++)
 	{
 		motion1->apply_frame(i); 
 		skelCopy1->update_global_matrices();
@@ -1356,7 +1352,7 @@ void SBMotionGraph::computeMotionTransitionFast( const std::string& moName1, con
 		m.avgF1[i] = f1*invNumPoints;			
 		pointCloudList1[i] = pointCloud1;
 	}
-	for (unsigned int i=0;i<mo2Frames;i++)
+	for (int i=0;i<mo2Frames;i++)
 	{
 		motion2->apply_frame(i); 
 		skelCopy2->update_global_matrices();
@@ -1376,10 +1372,10 @@ void SBMotionGraph::computeMotionTransitionFast( const std::string& moName1, con
 	m.xxzzMat.resize(mo1Frames,mo2Frames);
 	m.xzzxMat.resize(mo1Frames,mo2Frames);
 	m.yyMat.resize(mo1Frames,mo2Frames);
-	for (unsigned int i=0;i<mo1Frames;i++)
+	for (int i=0;i<mo1Frames;i++)
 	{
 		std::vector<SrVec>& pcloud1 = pointCloudList1[i];
-		for (unsigned int j=0;j<mo2Frames;j++)
+		for (int j=0;j<mo2Frames;j++)
 		{
 			std::vector<SrVec>& pcloud2 = pointCloudList2[j];
 			float xxzz = 0.f, xzzx = 0.f, yy = 0.f;
@@ -1612,9 +1608,9 @@ float SBMotionGraph::computeTransitionError( const std::vector<SrVec>& pos1, con
 bool SBMotionGraph::findLocalMinimum( dMatrix& mat, int i, int j )
 {
 	int windowSize = 1;
-	if (i < 0 || i >= mat.size1() || j < 0 || j >= mat.size1())
+	if (i < 0 || i >= (int)mat.size1() || j < 0 || j >= (int)mat.size1())
 		return false;
-	float centerVal = mat(i,j);
+	float centerVal = (float)mat(i,j);
 	for (int m=-windowSize;m<=windowSize;m++)
 	{
 		for (int n=-windowSize;n<=windowSize;n++)
@@ -1624,7 +1620,7 @@ bool SBMotionGraph::findLocalMinimum( dMatrix& mat, int i, int j )
 			int idx1,idx2;
 			idx1 = m+i;
 			idx2 = n+j;
-			if (idx1 < 0 || idx1 >= mat.size1() || idx2 < 0 || idx2 >= mat.size2())
+			if (idx1 < 0 || idx1 >= (int)mat.size1() || idx2 < 0 || idx2 >= (int)mat.size2())
 				continue;
 			if (centerVal > mat(idx1,idx2))
 				return false;
@@ -1660,8 +1656,8 @@ void SBMotionGraph::writeOutTransitionMap( const std::string& outfilename, const
 	{
 		for (unsigned int j=0;j<mat.size2();j++)
 		{
-			float imgVal = mat(i,j)/maxVal;
-			unsigned char imgByte = imgVal*255;
+			float imgVal = (float)(mat(i,j)/maxVal);
+			unsigned char imgByte = (int)(imgVal*255);
 			imgBuf[i*mat.size2()*3 + j*3 ] = imgByte;
 			imgBuf[i*mat.size2()*3 + j*3 + 1] = imgByte;
 			imgBuf[i*mat.size2()*3 + j*3 + 2] = imgByte;
@@ -1679,19 +1675,19 @@ void SBMotionGraph::writeOutTransitionMap( const std::string& outfilename, const
 		imgBuf[x*mat.size2()*3 + y*3 + 2] = 0;
 	}
 
-#ifdef EMBER_SB_SOIL
+	#ifdef EMBER_SB_SOIL
 	SOIL_save_image(
 		outfilename.c_str(),
 		SOIL_SAVE_TYPE_BMP,
 		mat.size1(),mat.size2(), 3,
 		imgBuf
 		);
-#endif
+	#endif
 }
 
 int SBMotionGraph::findClosestElement( const std::vector<int>& intList, int val )
 {
-	int minDist = 1e30;
+	int minDist = 2147483647;
 	int minDistElem = -1;
 	for (unsigned int i=0;i<intList.size();i++)
 	{

@@ -1,9 +1,7 @@
 
-#include <vhcl/vhcl.h>
+#include "vhcl/vhcl.h"
 
 #include "sbm_deformable_mesh.h"
-
-#include <fstream>
 
 #include <sb/SBSkeleton.h>
 #include <sb/SBScene.h>
@@ -11,11 +9,11 @@
 #include <sr/sr_random.h>
 #include <sbm/gwiz_math.h>
 #ifdef EMBER_SB_TEXTURE
-	#include <sbm/GPU/SbmTexture.h>
+#include <sbm/GPU/SbmTexture.h>
 #endif
 #include <boost/algorithm/string.hpp>
 #ifdef EMBER_SB_BINARYMESH
-	#include <protocols/sbmesh.pb.h>
+#include <protocols/sbmesh.pb.h>
 #endif
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -74,7 +72,8 @@ DeformableMesh::DeformableMesh() : SBAsset()
 	binding = false;
 	initSkinnedVertexBuffer = false;
 	initStaticVertexBuffer = false;
-	hasVertexColor = false;
+	hasVertexColor = false;	
+	hasTexCoord = false;
 	skeleton = new SmartBody::SBSkeleton();
 	skeleton->ref();
 }
@@ -538,7 +537,12 @@ bool DeformableMesh::buildSkinnedVertexBuffer()
 			{
 				meshColor = dMeshStatic->shape().Vc[i];
 				hasVertexColor = true;
+			}			
+			if (dMeshStatic->shape().T.size() > 0)
+			{
+				hasTexCoord = true;
 			}
+
 			meshColorBuf[iVtx] = meshColor;
 
 			SrVec& lt =	dMeshStatic->shape().Tangent[i];		
@@ -714,7 +718,9 @@ bool DeformableMesh::buildSkinnedVertexBuffer()
 			mesh->triBuf[k][1] = triBuf[faceIdxList[k]][1];
 			mesh->triBuf[k][2] = triBuf[faceIdxList[k]][2];
 		}
-#ifdef EMBER_SB_TEXTURE //TEST_HAIR_RENDER
+
+#ifdef EMBER_SB_BINARYMESH
+#if TEST_HAIR_RENDER
 		mesh->matName = allMatNameList[iMaterial];
 		SbmTexture* tex = SbmTextureManager::singleton().findTexture(SbmTextureManager::TEXTURE_DIFFUSE,mesh->texName.c_str());
 		std::string lowMatName = mesh->matName;
@@ -738,7 +744,10 @@ bool DeformableMesh::buildSkinnedVertexBuffer()
 		}
 #else
 		subMeshList.push_back(mesh);
-#endif			
+#endif	
+#else
+		subMeshList.push_back(mesh);
+#endif		
 	}	
 	subMeshList.insert(subMeshList.end(),hairMeshList.begin(),hairMeshList.end());
 	initStaticVertexBuffer = true;
@@ -751,7 +760,6 @@ bool DeformableMesh::isSkinnedMesh()
 {
 	return skinWeights.size() > 0;
 }
-
 
 #ifdef EMBER_SB_BINARYMESH
 void DeformableMesh::saveToStaticMeshBinary(SmartBodyBinary::StaticMesh* outputStaticMesh)
@@ -1178,12 +1186,10 @@ bool DeformableMesh::readFromSmb(std::string inputFileName)
 
 	readFromStaticMeshBinary(&staticMesh);
 
-	#ifdef EMBER_SB_TEXTURE
 	// explicitly load all the textures
 	boost::filesystem::path p(inputFileName);
 	std::string filePath = p.parent_path().string();
 	loadAllFoundTextures(filePath);
-	#endif
 
 	return true;
 }
@@ -1276,17 +1282,15 @@ bool DeformableMesh::readFromDmb(std::string inputFileName)
 		morphTargets.insert(std::make_pair(morphMap.from(), morphs));
 		blendShapeMap.insert(std::make_pair(morphMap.from(), morphModels));
 	}
-
-#ifdef EMBER_SB_TEXTURE
+	
 	// explicitly load all the textures
 	boost::filesystem::path p(inputFileName);
 	std::string filePath = p.parent_path().string();
 	loadAllFoundTextures(filePath);
-#endif
+
 	return true;
 }
 #endif
-
 #ifdef EMBER_SB_TEXTURE
 void DeformableMesh::loadAllFoundTextures(std::string textureDirectory)
 {
@@ -1670,7 +1674,7 @@ void DeformableMeshInstance::updateTransformBuffer()
 		SrMat bindPoseMat = _mesh->bindPoseMatList[idx];
 		bindPoseMat.set_translation(bindPoseMat.get_translation()*_meshScale);
 		transformBuffer[idx] = bindPoseMat*joint->gmat();	
-		SrQuat q = SrQuat(transformBuffer[idx]);
+		//SrQuat q = SrQuat(transformBuffer[idx]);
 		//LOG("transform buffer %d , quat = %f %f %f %f",idx,q.w,q.x,q.y,q.z);
 		//sr_out << " transform buffer = " << transformBuffer[idx];
 	}
@@ -1752,6 +1756,9 @@ void DeformableMeshInstance::update()
 				SrVec finalVec;
 				//printf("Vtx bind pose = \n");
 
+
+
+
 				for (int j = 0; j < numOfInfJoints; j++)
 				{
 					//std::string jointName = skinWeight->infJointName[skinWeight->jointNameIndex[globalCounter]];	
@@ -1767,6 +1774,7 @@ void DeformableMeshInstance::update()
 					finalVec = finalVec + (float(jointWeight) * (transformVec  * gMat));		
 					//finalVec = finalVec + (float(jointWeight) * (skinLocalVec * skinWeight->bindShapeMat * invBMat  * gMat));	
 				}
+
 				_deformPosBuf[iVtx] = finalVec;
 				if (vtxNewVtxIdxMap.find(iVtx) != vtxNewVtxIdxMap.end())
 				{

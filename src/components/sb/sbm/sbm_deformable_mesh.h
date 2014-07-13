@@ -97,19 +97,20 @@ public:
 	std::map<std::string, std::vector<SrSnModel*> >	visemeShapeMap;
 	std::map<std::string, float>	visemeWeightMap;
 	std::vector<SrSnModel*>		dMeshBlend_p;
-	bool hasVertexColor;
+	bool hasVertexColor;	
+	bool hasTexCoord;
 public:
-	DeformableMesh();
+	SBAPI DeformableMesh();
 	SBAPI virtual ~DeformableMesh();	
 	SBAPI void setSkeleton(SkSkeleton* skel);
-	virtual void update();
+	SBAPI virtual void update();
 	SkinWeight* getSkinWeight(const std::string& skinSourceName);
 	int	getMesh(const std::string& meshName);				// get the position given the mesh name
 	int getValidSkinMesh(const std::string& meshName);
     /*! Set the visibility state of the deformable geometry,
         The integers mean 1:show, 0:hide, and -1:don't change the visibility state. */
 	void set_visibility(int deformableMesh);
-	virtual bool buildSkinnedVertexBuffer(); // unrolled all models inside this deformable mesh into a GPU-friendly format
+	SBAPI virtual bool buildSkinnedVertexBuffer(); // unrolled all models inside this deformable mesh into a GPU-friendly format
 	SBAPI bool isSkinnedMesh();
 #ifdef EMBER_SB_BINARYMESH
 	SBAPI bool saveToSmb(std::string inputFileName);

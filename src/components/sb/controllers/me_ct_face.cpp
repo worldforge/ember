@@ -436,6 +436,9 @@ bool MeCtFace::controller_evaluate( double t, MeFrameData& frame ) {
 	if (_base_pose_p->frames() > 0)
 		base_pose_buff_p = _base_pose_p->posture( 0 );
 
+	if (!base_pose_buff_p)
+		return false;
+
 	int pose_var_index = 0;
 	for( int i=0; i<nchan; i++ )	{
 		

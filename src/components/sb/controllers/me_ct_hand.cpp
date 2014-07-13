@@ -165,7 +165,7 @@ void MeCtHand::setGrabState( GrabState state )
 {
 	if (currentGrabState != state)
 	{
-		for (int i=0;i<fingerChains.size();i++)
+		for (size_t i=0;i<fingerChains.size();i++)
 		{
 			FingerChain& fig = fingerChains[i];
 			fig.isLock = false;		
@@ -266,7 +266,7 @@ void MeCtHand::getPinchFrame( BodyMotionFrame& pinchFrame, SrVec& wristOffset )
 	ikScenario.updateNodeGlobalMat(ikScenario.ikTreeRoot,QUAT_INIT);	
 	SrVec wristPos = ikScenario.ikTreeRoot->gmat.get_translation();
 	SrVec ikTarget = wristPos + wristOffset*ikScenario.ikTreeRoot->gmat.get_rotation();
-	for (int i=0;i<fingerChains.size();i++)
+	for (size_t i=0;i<fingerChains.size();i++)
 	{		
 		FingerChain& fig = fingerChains[i];
 		MeCtIKTreeNode* node = fig.fingerTip;
@@ -373,7 +373,7 @@ bool MeCtHand::controller_evaluate( double t, MeFrameData& frame )
 	if (grabTarget && grabTarget->getGeomObject())
 	{
 		SBGeomObject* geomObj = grabTarget->getGeomObject();
-		for (int i=0;i<fingerChains.size();i++)
+		for (size_t i=0;i<fingerChains.size();i++)
 		{
 			FingerChain& fig = fingerChains[i];
 			MeCtIKTreeNode* node = fig.fingerTip;				

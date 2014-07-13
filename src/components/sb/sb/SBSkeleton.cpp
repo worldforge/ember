@@ -9,6 +9,8 @@
 #include <sb/SBSceneListener.h>
 #include <sr/sr_string.h>
 
+#include <string.h>
+
 namespace SmartBody {
 
 SBSkeleton::SBSkeleton() : SkSkeleton()
@@ -16,19 +18,22 @@ SBSkeleton::SBSkeleton() : SkSkeleton()
 	_scale = 1.0f;
 	_origRootChanged = false;
 	createVec3Attribute("orientation", 0, 0, 0, true, "Basic", 100, false, false, false, "Change in orientation from initial loading of skeleton. Parameters are rotation in degrees of the X, then Y, then Z axes.");
+	linkedPawnName = "";
 }
 
-SBSkeleton::SBSkeleton(std::string skelFile) : SkSkeleton()
+SBSkeleton::SBSkeleton(const std::string& skelFile) : SkSkeleton()
 {
 	_scale = 1.0f;
 	_origRootChanged = false;
 	createVec3Attribute("orientation", 0, 0, 0, true, "Basic", 100, false, false, false, "Change in orientation from initial loading of skeleton. Parameters are rotation in degrees of the X, then Y, then Z axes.");
 	load(skelFile);
+	linkedPawnName = "";
 }
 
 SBSkeleton::SBSkeleton(SBSkeleton* copySkel) : SkSkeleton(copySkel)
 {
 	_scale = copySkel->getScale();	
+	linkedPawnName = "";
 	//jointMap = copySkel->getJointMapName();
 }
 
@@ -43,6 +48,7 @@ SBAPI SBJoint* SBSkeleton::createJoint(const std::string& name, SBJoint* parent)
 	joint->setName(name);
 	joint->name(name);
 	joint->extName(name);
+	joint->skeleton(this);
 	if (!parent) // enable translation only for the root joint
 	{
 		joint->rot_type ( SkJoint::TypeQuat );
@@ -53,21 +59,17 @@ SBAPI SBJoint* SBSkeleton::createJoint(const std::string& name, SBJoint* parent)
 		joint->pos()->value(0, 0);
 		joint->pos()->value(1, 0);
 		joint->pos()->value(2, 0);
-		joint->euler()->activate();
-		joint->euler()->limits(0, false);
-		joint->euler()->limits(1, false);
-		joint->euler()->limits(2, false);
-		joint->euler()->value(0, 0);
-		joint->euler()->value(1, 0);
-		joint->euler()->value(2, 0);
 	}
 	else
 	{
 		joint->rot_type ( SkJoint::TypeQuat );
 		joint->quat()->activate();
-		//joint->pos()->limits(0, false);
-		//joint->pos()->limits(1, false);
-		//joint->pos()->limits(2, false);
+		joint->pos()->limits(0, false);
+		joint->pos()->limits(1, false);
+		joint->pos()->limits(2, false);
+		joint->pos()->value(0, 0);
+		joint->pos()->value(1, 0);
+		joint->pos()->value(2, 0);
 	}
 
 	int parentId = -1;
@@ -97,7 +99,7 @@ const std::string& SBSkeleton::getFileName()
 	return skfilename();
 }
 
-bool SBSkeleton::load(std::string skeletonFile)
+bool SBSkeleton::load(const std::string& skeletonFile)
 {
 	SBSkeleton* skeleton = SmartBody::SBScene::getScene()->getAssetManager()->getSkeleton(skeletonFile.c_str());
 	if (skeleton)
@@ -138,7 +140,7 @@ bool SBSkeleton::load(std::string skeletonFile)
 	}
 }
 
-bool SBSkeleton::save(std::string skeletonFile)
+bool SBSkeleton::save(const std::string& skeletonFile)
 {
 	FILE *fp = NULL;
 	fp = fopen(skeletonFile.c_str(), "w");
@@ -312,7 +314,9 @@ SBPawn* SBSkeleton::getPawn()
 {
 	// determine which character uses this skeleton
 	// NOTE: there should be back pointer between the skeleton and the pawn/character
-	
+	SmartBody::SBPawn* skelPawn = SmartBody::SBScene::getScene()->getPawn(linkedPawnName);
+	if (skelPawn)
+		return skelPawn;
 
 	const std::vector<std::string>& pawns = SmartBody::SBScene::getScene()->getPawnNames();
 	for (std::vector<std::string>::const_iterator pawnIter = pawns.begin();
@@ -321,7 +325,10 @@ SBPawn* SBSkeleton::getPawn()
 	{
 		SBPawn* pawn = SmartBody::SBScene::getScene()->getPawn((*pawnIter));
 		if (pawn->getSkeleton() == this)
+		{
+			setPawnName(pawn->getName());
 			return pawn;
+		}
 }
 
 	return NULL;
@@ -501,5 +508,10 @@ SBAPI void SBSkeleton::getJointPositions( const std::vector<std::string>& jointN
 			continue;
 		jointPositions[i+startIdx] = joint->gmat().get_translation();
 	}
+}
+
+void SBSkeleton::setPawnName( const std::string& pawnName )
+{
+	linkedPawnName = pawnName;
 }
 }; //namespace

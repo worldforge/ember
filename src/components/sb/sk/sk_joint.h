@@ -141,7 +141,7 @@ public:
 	void name ( const std::string& jn ) { _name=jn; }
 	SBAPI const std::string& jointName () const;
 
-	std::string getMappedJointName();
+	SBAPI std::string getMappedJointName();
 	void updateMappedJointName();
 
 	/*! Set the name of this joint */
@@ -233,7 +233,7 @@ public:
 
 	/*! Updates the local matrix and set the global matrix of this joint
 	to be the local matrix multiplied by the parent global matrix */
-	void update_gmat_local ();
+	SBAPI void update_gmat_local ();
 
 	/*! Finds and updates the local and global matrices of all joints
 	in the branch leading to the root joint, until stop_joint or

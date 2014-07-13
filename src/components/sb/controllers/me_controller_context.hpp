@@ -123,16 +123,6 @@ public:
      */
     //virtual MeController* child( int n ) = 0;
 
-	/**
-	 *  Returns a pointer to the current evaluation logger (may be NULL).
-	 */
-	virtual MeEvaluationLogger* get_evaluation_logger() const = 0;
-
-	/**
-	 *  Returns a reference to the set of currently logged channel indices.
-	 */
-	virtual const std::set<int>& get_logged_channel_indices() const = 0;
-
 protected:
 	/**
 	 *  Sets controller's _context to this.

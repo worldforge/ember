@@ -23,7 +23,7 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "vhcl/vhcl.h"
 
 #include "bml.hpp"
 
@@ -53,9 +53,19 @@
 #include <sb/SBBehavior.h>
 #include <sb/SBMotion.h>
 #include <sb/SBGestureMapManager.h>
+#ifdef EMBER_SB_VHMSG
+#include <sb/SBVHMsgManager.h>
+#endif
 #include <sb/SBGestureMap.h>
 #include <sb/SBSimulationManager.h>
+#ifdef EMBER_SB_STEER
+#include <sb/SBSteerManager.h>
+#include <sb/SBSteerAgent.h>
+#endif
 #include <sb/SBCommandManager.h>
+#ifdef EMBER_SB_STEER
+#include <sbm/PPRAISteeringAgent.h>
+#endif
 #include <sbm/ParserOpenCOLLADA.h>
 
 using namespace std;
@@ -423,7 +433,9 @@ void BmlRequest::gestureRequestProcess()
 			MeCtMotion* prev_motion_ct = dynamic_cast<MeCtMotion*> (gestures[j]->anim_ct);
 			SkMotion* prevMotion = prev_motion_ct->motion();
 			SBMotion* prevSBMotion = dynamic_cast<SBMotion*> (prevMotion);
-			prevSBMotion->connect(actor->getSkeleton());
+
+			SmartBody::SBSkeleton* tempSkel = SmartBody::SBScene::getScene()->createSkeleton(actor->getSkeleton()->getName());
+			prevSBMotion->connect(tempSkel);
 			SrVec prevLWristPos = prevSBMotion->getJointPosition(lWrist, (float)prevMotion->time_stroke_end());
 			SrVec prevRWristPos = prevSBMotion->getJointPosition(rWrist, (float)prevMotion->time_stroke_end());
 
@@ -450,8 +462,8 @@ void BmlRequest::gestureRequestProcess()
 					continue;
 				if (actor->getBoolAttribute("gestureRequest.gestureLog"))
 					LOG("Motion in list: %s", currGestureList[l].c_str());
-				motionInList->connect(actor->getSkeleton());
-				if (actor->getBoolAttribute("gestureRequest.matchingHandness"))
+				motionInList->connect(tempSkel);
+						if (actor->getBoolAttribute("gestureRequest.matchingHandness"))
 				{
 					float lMotionSpeed = motionInList->getJointSpeed(lWrist, (float)motionInList->time_start(), (float)motionInList->time_stop());
 					float rMotionSpeed = motionInList->getJointSpeed(rWrist, (float)motionInList->time_start(), (float)motionInList->time_stop());
@@ -603,6 +615,7 @@ void BmlRequest::gestureRequestProcess()
 					}
 				}
 			}
+			delete tempSkel;
 		}
 		else
 		{
@@ -1252,6 +1265,7 @@ void BmlRequest::unschedule( Processor* bp, SmartBody::SBScene* scene, time_sec 
 	// Cancel the normal "vrAgentBML ... end complete"
 	SmartBody::SBScene::getScene()->getCommandManager()->abortSequence( cleanup_seq_name.c_str() ); // don't clean-up self
 
+	#ifdef EMBER_SB_VHMSG
 	// Replace it with  "vrAgentBML ... end interrupted"
 	ostringstream buff;
 #if USE_RECIPIENT
@@ -1259,9 +1273,8 @@ void BmlRequest::unschedule( Processor* bp, SmartBody::SBScene* scene, time_sec 
 #else
 	buff << request->actorId << " " << request->msgId << " end interrupted";
 #endif
-#ifdef EMBER_SB_VHMSG
 	SmartBody::SBScene::getScene()->getVHMsgManager()->send2( "vrAgentBML", buff.str().c_str() );
-#endif
+	#endif
 
 
 	if( bp->get_auto_print_controllers() ) {
@@ -1788,7 +1801,6 @@ void GestureRequest::realize_impl( BmlRequestPtr request, SmartBody::SBScene* sc
 			sbHoldM->setMotionSkeletonName(sbMotion->getMotionSkeletonName());
 		SBCharacter* sbCharacter = dynamic_cast<SBCharacter*>(request->actor);
 		bool isInLocomotion = false;
-		
 	#ifdef EMBER_SB_STEER
 		SmartBody::SBSteerManager* steerManager = SmartBody::SBScene::getScene()->getSteerManager();
 		SmartBody::SBSteerAgent* steerAgent = steerManager->getSteerAgent(sbCharacter->getName());
@@ -1805,15 +1817,6 @@ void GestureRequest::realize_impl( BmlRequestPtr request, SmartBody::SBScene* sc
 			PPRAISteeringAgent* ppraiAgent = dynamic_cast<PPRAISteeringAgent*>(steerAgent);
 			if (ppraiAgent->isInLocomotion())
 				isInLocomotion = true;
-		}
-	#else
-		for (size_t i = 0; i < request->behaviors.size(); ++i)
-		{
-			if ((request->behaviors)[i]->local_id == "locomotion")
-			{
-				isInLocomotion = true;
-				break;
-			}
 		}
 	#endif
 		if (isInLocomotion)
@@ -2094,7 +2097,7 @@ NodRequest::NodRequest( const std::string& unique_id, const std::string& local, 
 NodRequest::NodRequest( const std::string& unique_id, const std::string& local, NodType type, int axis, float period, float extent, float smooth, float warp, float accel, const SbmCharacter* actor,
 					   const BehaviorSyncPoints& syncs_in )
 : MeControllerRequest( unique_id, local, new MeCtSimpleNod(), actor->head_sched_p, syncs_in, MeControllerRequest::MANUAL ),
-    type(type), repeats(repeats), frequency(frequency), extent(extent), smooth(smooth), axis(axis), period(period), warp(warp), accel(accel), pitch(-1), decay(-1)
+    type(type), repeats(1.0f), frequency(1.0f), extent(extent), smooth(smooth), axis(axis), period(period), warp(warp), accel(accel), pitch(-1), decay(-1)
 {
 	MeCtSimpleNod* nod = (MeCtSimpleNod*)anim_ct;
 	BehaviorSchedulerConstantSpeedPtr scheduler = buildSchedulerForController( nod );
@@ -2131,7 +2134,7 @@ NodRequest::NodRequest( const std::string& unique_id, const std::string& local, 
 NodRequest::NodRequest( const std::string& unique_id, const std::string& local, NodType type, int axis, float period, float extent, float smooth, float warp, float accel, float pitch, float decay, const SbmCharacter* actor,
 					   const BehaviorSyncPoints& syncs_in )
 : MeControllerRequest( unique_id, local, new MeCtSimpleNod(), actor->head_sched_p, syncs_in, MeControllerRequest::MANUAL ),
-    type(type), repeats(repeats), frequency(frequency), extent(extent), smooth(smooth), axis(axis), period(period), warp(warp), accel(accel), pitch(pitch), decay(decay)
+    type(type), repeats(1.0f), frequency(1.0f), extent(extent), smooth(smooth), axis(axis), period(period), warp(warp), accel(accel), pitch(pitch), decay(decay)
 {
 	MeCtSimpleNod* nod = (MeCtSimpleNod*)anim_ct;
 	BehaviorSchedulerConstantSpeedPtr scheduler = buildSchedulerForController( nod );

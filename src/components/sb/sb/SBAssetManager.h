@@ -5,7 +5,6 @@
 #include <sb/SBTypes.h>
 #include <sb/SBObject.h>
 #include <map>
-#include <boost/filesystem/path.hpp>
 #include <sbm/sbm_deformable_mesh.h>
 #include <sb/SBAssetHandler.h>
 
@@ -15,9 +14,7 @@ namespace SmartBody {
 
 class SBSkeleton;
 class SBMotion;
-#ifdef EMBER_SB_STEER
 class SBNavigationMesh;
-#endif
 
 class SBAssetManager : public SBObject
 {
@@ -95,12 +92,12 @@ protected:
 		int load_motions( const char* pathname, bool recursive );
 
 		int load_me_motions( const char* pathname, bool recurse_dirs, double scale );
-		int load_me_motions_impl( const boost::filesystem::path& pathname, bool recurse_dirs, double scale, const char* error_prefix);
+		int load_me_motions_impl( const std::string& pathname, bool recurse_dirs, double scale, const char* error_prefix);
 		int load_me_motion_individual( SrInput & input, const std::string & motionName, std::map<std::string, SBMotion*>& map, double scale );
 
 		int load_me_skeleton_individual( SrInput & input, const std::string & skeletonName, std::map<std::string, SmartBody::SBSkeleton*>& map, double scale = 1.0 );
 		int load_me_skeletons( const char* pathname, std::map<std::string, SmartBody::SBSkeleton*>& map, bool recursive, double scale = 1.0 );
-		int load_me_skeletons_impl( const boost::filesystem::path& pathname, std::map<std::string, SmartBody::SBSkeleton*>& map, bool recurse_dirs, double scale, const char* error_prefix );
+		int load_me_skeletons_impl( const std::string& pathname, std::map<std::string, SmartBody::SBSkeleton*>& map, bool recurse_dirs, double scale, const char* error_prefix );
 
 		void addAssetHistory(const std::string& str);
 

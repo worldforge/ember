@@ -22,7 +22,7 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "vhcl/vhcl.h"
 
 #define USE_FESTIVAL_RELAY 0
 #define USE_CEREPROC_RELAY 0
@@ -68,6 +68,9 @@
 #include "sbm/BMLDefs.h"
 #include <sb/SBScene.h>
 #include <sb/SBCommandManager.h>
+#ifdef EMBER_SB_VHMSG
+#include <sb/SBVHMsgManager.h>
+#endif
 
 
 using namespace std;
@@ -770,6 +773,8 @@ void CereprocSpeechRelayLocal::processSpeechMessage( const char * message )
 
 	std::string message_c = message;
 
+	//LOG("Cereproc process speech message = '%s'",message);
+
    // parse the string
    std::vector< std::string > tokens;
    const std::string delimiters = " ";
@@ -819,6 +824,7 @@ void CereprocSpeechRelayLocal::processSpeechMessage( const char * message )
 	  
 	  string replyCmd = "RemoteSpeechReply ";
 	  replyCmd = replyCmd + reply; //cmdConst;
+	  //LOG("replyCmd = %s", replyCmd.c_str());
 	  SmartBody::SBScene::getScene()->command(replyCmd);
 	  //mcu.execute_later(replyCmd.c_str());
       //vhmsg::ttu_notify2( "RemoteSpeechReply", reply.c_str() );
@@ -1457,8 +1463,11 @@ local_speech::~local_speech()
 
 void local_speech::sendSpeechCommand(const char* cmd)
 {
+	#ifdef EMBER_SB_VHMSG
 	//LOG("speech cmd = %s",cmd);
 	char* cmdConst = const_cast<char*>(cmd);
-	SmartBody::SBScene::getScene()->getCommandManager()->execute("RemoteSpeechCmd", cmdConst ); //sends the remote speech command using singleton* MCU_p
+	//SmartBody::SBScene::getScene()->getCommandManager()->execute_later( cmdConst ); //sends the remote speech command using singleton* MCU_p
+	SBScene::getScene()->getVHMsgManager()->send2( "RemoteSpeechCmd", cmdConst );
+	#endif
 }
 

@@ -53,7 +53,7 @@ public:
 	SrMat           gmatZero;
 public:
 	EffectorConstraint() { constraintWeight = 1.f; }
-	~EffectorConstraint() {}	
+	virtual ~EffectorConstraint() {}	
 	virtual SrVec getPosConstraint() = 0;
 	virtual SrQuat getRotConstraint() = 0;
 };
@@ -65,7 +65,7 @@ public:
 	SrVec           targetPos;	
 public:
 	EffectorConstantConstraint() {}
-	~EffectorConstantConstraint() {}
+	virtual ~EffectorConstantConstraint() {}
 	EffectorConstantConstraint& operator=(const EffectorConstantConstraint& rhs);
 	virtual SrVec getPosConstraint() { return targetPos; }
 	virtual SrQuat getRotConstraint()  { return targetRot; }

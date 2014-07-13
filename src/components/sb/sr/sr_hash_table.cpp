@@ -220,7 +220,7 @@ bool SrHashTableBase::_insert ( const char *st, void* data, char dynamic )
 
 void* SrHashTableBase::remove ( const char *st )
  {
-   if ( !st ) { _last_id=-1; return false; }
+   if ( !st ) { _last_id=-1; return 0; }
    
    int id = ::hash ( st, _hash_size );
 

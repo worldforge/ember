@@ -25,10 +25,10 @@
 # define SK_CHANNEL_ARRAY_H
 
 #include <sb/SBTypes.h>
-#include <sr/sr_buffer.h>
-#include <sr/sr_shared_class.h>
+# include <sr/sr_buffer.h>
+# include <sr/sr_shared_class.h>
 
-#include <sk/sk_channel.h>
+# include <sk/sk_channel.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -94,7 +94,7 @@ public :
 	void setJointMapName(const std::string& jmapName);
 	std::string getJointMapName() const ;
 
-	const std::string getMappedChannelName(const Channel& chan) const;
+	const std::string& getMappedChannelName(const Channel& chan) const;
 	/*! Set the array as empty */
 	void init ();
 
@@ -224,7 +224,7 @@ public :
 
 	/*! Adds to the channel array all channels that are in ca,
 		but are not in the channel array. The "floats counter" is updated. */
-	void merge ( SkChannelArray& ca );
+	bool merge ( SkChannelArray& ca );
 
 	/*! Copy operator copies all fields. */
 	void operator = ( const SkChannelArray& a );

@@ -21,22 +21,22 @@
  *      Andrew n marshall, USC
  */
  
-#include <sr/sr_lines.h>
-#include <sr/sr_model.h>
-#include <sr/sr_sphere.h>
-#include <sr/sr_cylinder.h>
-#include <sr/sr_sn_matrix.h>
-#include <sr/sr_sn_shape.h>
+# include <sr/sr_lines.h>
+# include <sr/sr_model.h>
+# include <sr/sr_sphere.h>
+# include <sr/sr_cylinder.h>
+# include <sr/sr_sn_matrix.h>
+# include <sr/sr_sn_shape.h>
 
-#include <sk/sk_scene.h>
-#include <sk/sk_skeleton.h>
-#include <sk/sk_joint.h>
-#include <vhcl/vhcl.h>
+# include <sk/sk_scene.h>
+# include <sk/sk_skeleton.h>
+# include <sk/sk_joint.h>
+#include <vhcl.h>
 
 
-#define DEF_CYL_RADIUS 0.5f
-#define DEF_SPH_FACTOR 1.6f;
-#define DEF_AXIS_LEN   1.8f
+# define DEF_CYL_RADIUS 0.5f
+# define DEF_SPH_FACTOR 1.6f;
+# define DEF_AXIS_LEN   1.8f
 
 
 //============================= SkScene ============================
@@ -179,7 +179,8 @@ void SkScene::initInternal()
     
       for (size_t j=0; j < (size_t) joints[i]->num_children(); j++ )
        { SrSnCylinder* c = new SrSnCylinder;
-		 c->color(SrColor::white);
+	     c->color(SrColor::gray);
+		 //c->color(SrColor::white);
          c->shape().a = SrPnt::null;
          c->shape().b = joints[i]->child(j)->offset();
          c->shape().radius = scaleFactor * _cradius;
@@ -191,7 +192,8 @@ void SkScene::initInternal()
 	  if (joints[i]->num_children() == 0)
 	  {
 		 SrSnSphere* sphere = new SrSnSphere;
-		 sphere->color(SrColor::white);
+		 sphere->color(SrColor::gray);
+		 //sphere->color(SrColor::white);
 		 sphere->shape().radius = scaleFactor * _cradius * _sfactor ;
 		 sphere->visible ( true );
 //		 sphere->ref();

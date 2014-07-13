@@ -375,7 +375,7 @@ void SkChannelArray::rebuild_hash_table()
 		iter++)
 	{
 		Channel& channel = (*iter);
-		std::string mappedChannelName = getMappedChannelName(channel);
+		const std::string& mappedChannelName = getMappedChannelName(channel);
 		std::string& channelName = channel.name;
 		std::map<std::string, std::map<SkChannel::Type, int> >::iterator origMapIter = _channelMap.find(channelName);
 		std::map<std::string, std::map<SkChannel::Type, int> >::iterator mapIter = _channelMapedNameMap.find(mappedChannelName);
@@ -499,21 +499,42 @@ m[i++] = cmap<0? cmap:cmap+v;
 }
 }*/
 
-void SkChannelArray::merge ( SkChannelArray& ca )
+bool SkChannelArray::merge ( SkChannelArray& ca )
 {
+	std::vector<std::string> namesToAdd;
+	std::vector<SkChannel::Type> typesToAdd;
 	for (int c=0; c<ca.size(); c++ ) // for each channel c in ca
 	{ 
-		int pos = search(ca.name(c), ca.type(c));		
+		std::string name = ca.name(c);
+		SkChannel::Type t = ca.type(c);
+		int pos = search(name, t);
 		if (pos < 0) // missing channel found
 		{ 
-			add(ca.name(c), ca.type(c)); // add it	
+			namesToAdd.push_back(name);
+			typesToAdd.push_back(t);
 		}
 	}
+
+	for (unsigned int x = 0; x < namesToAdd.size(); x++)
+	{
+		add(namesToAdd[x], typesToAdd[x]); // add it	
+	}
+
+
 	if (jointMapName != ca.getJointMapName())
 	{
 		jointMapName = ca.getJointMapName();		
 	}
-	rebuild_hash_table();
+
+	if (namesToAdd.size() > 0)
+	{
+		rebuild_hash_table();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void SkChannelArray::operator = ( const SkChannelArray& a )
@@ -656,18 +677,16 @@ void SkChannelArray::startChannelNameChange()
 		_channelUpdateTable[c] = false;
 }
 
-const std::string SkChannelArray::getMappedChannelName( const Channel& chan ) const
+const std::string& SkChannelArray::getMappedChannelName( const Channel& chan ) const
 {
-	std::string outName = chan.name;	
 	SmartBody::SBJointMap* jointMap = SmartBody::SBScene::getScene()->getJointMapManager()->getJointMap(jointMapName);
 	if (jointMap)
 	{
-		const std::string target = jointMap->getMapTarget(chan.name);
+		const std::string& target = jointMap->getMapTarget(chan.name);
 		if (target != "")
 			return target;
 	}
 	return chan.name;
-	//return chan.name;
 }
 
 const std::string SkChannelArray::name( int i ) const

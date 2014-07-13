@@ -36,7 +36,7 @@
 // Use Boost Smart Point Impl until TR1 is finalized
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
-#include <bml/bml_sync_point.hpp> // ?
+#include <bml/bml_sync_point.hpp>
 
 /*! The scheduler maps each controller to its internal channel array, so that
     after evaluation, the values are copied and blended into the scheduler buffer */
@@ -195,16 +195,6 @@ protected:
 	 */
     SkChannelArray _channels;
 
-	/** Channels logged (as mapped from parent) */
-	std::set<int> _channels_logged;
-
-	/**
-	 *  Option to remove tracks after they are completed.
-	 *  If true, does not removed tracks after they deactivate.
-	 *  Mimics old scheduler Static vs. Once track type, but for all tracks.
-	 */
-	bool _automatically_remove_tracks;
-
 	/**
 	 *  Option to keep this schedule controller active, even when empty.
 	 *  False by default (parent may delete it automatically).
@@ -228,15 +218,6 @@ public:
 
     /*! Destructor is public but pay attention to the use of ref()/unref() */
     virtual ~MeCtScheduler2();
-
-
-	/** Accessor for _automatically_remove_tracks. */
-	bool automatically_remove_tracks()
-	{ return _automatically_remove_tracks; }
-
-	/** Mutator for _automatically_remove_tracks. */
-	void automatically_remove_tracks( bool new_value )
-	{ _automatically_remove_tracks = new_value; }
 
 	/** Accessor for _active_when_empty. */
 	bool active_when_empty()

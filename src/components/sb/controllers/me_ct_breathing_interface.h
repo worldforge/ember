@@ -182,6 +182,8 @@ protected:
 	BreathCycle();
 
 public:
+	virtual ~BreathCycle() {}
+
 	/**
 	* \brief Gets the type
 	*/
@@ -443,7 +445,7 @@ public:
 	/**
 	* \brief Destructor
 	*/
-	~KeyframeBreathCycle();
+	virtual ~KeyframeBreathCycle();
 
 	/**
 	* \brief Commits the keyframe sequence
@@ -491,7 +493,7 @@ public:
 	/**
 	* \brief Destructor
 	*/
-	~SplineBreathCycle();
+	virtual ~SplineBreathCycle();
 
 	/**
 	* \brief Gets the spline

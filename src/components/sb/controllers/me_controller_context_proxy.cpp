@@ -66,20 +66,6 @@ int MeControllerContextProxy::toBufferIndex( int chanIndex ) {
 	return _context? _context->toBufferIndex( chanIndex ): -1;
 }
 
-MeEvaluationLogger*
-MeControllerContextProxy::get_evaluation_logger() const {
-	return _context? _context->get_evaluation_logger(): NULL;
-}
-
-const std::set<int>&
-MeControllerContextProxy::get_logged_channel_indices() const {
-	if( _context )
-		return _context->get_logged_channel_indices();
-	// else
-	NO_CHANNEL_INDICES_FOR_PROXY.clear(); // empty, just in case
-	return NO_CHANNEL_INDICES_FOR_PROXY;
-}
-
 ///////////////////////////////////////////////////////////////////////////
 //  MeFrameDataProxy Class
 

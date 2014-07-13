@@ -17,7 +17,7 @@
  *      http://www.gnu.org/licenses/lgpl-3.0.txt
  */
 
-#include <vhcl/vhcl.h>
+#include "vhcl/vhcl.h"
 
 #include <string>
 #include <iostream>
@@ -41,7 +41,6 @@ using namespace std;
 
 
 #define DEBUG_INSPECT_CHANNELS       (0)  // Enable the runtime debugger inspection of channel name/types
-#define DEBUG_LOGGED_CHANNEL_MAPPING (0)
 
 
 const float MeCtScheduler2::MAX_TRACK_DURATION = 4194303.0; // Calculated to give 1 second precision with floats
@@ -88,15 +87,26 @@ void MeCtScheduler2::Context::child_channels_updated( MeController* child ) {
 	SkChannelArray& child_channels = child->controller_channels();
 	SkChannelArray& sched_channels = schedule->_channels;
 	int floats_before = sched_channels.floats();
-	sched_channels.merge( child_channels );
+	bool channelsAdded = sched_channels.merge( child_channels );
 
-	if( sched_channels.floats() == floats_before ) {
+	if (channelsAdded)
+	{
 		child->remap();
-	} else {
 		sched_channels.rebuild_hash_table();
 		if( parent_context )
 			parent_context->child_channels_updated( schedule );
 	}
+	else
+	{
+	
+	}
+//	if( sched_channels.floats() == floats_before ) {
+//		child->remap();
+//	} else {
+//		sched_channels.rebuild_hash_table();
+//		if( parent_context )
+//			parent_context->child_channels_updated( schedule );
+//	}
 }
 
 void MeCtScheduler2::Context::remove_controller( MeController* child ) {
@@ -287,7 +297,6 @@ MeCtScheduler2::MeCtScheduler2 ()
 	_sub_sched_context( static_cast<MeCtScheduler2::Context*>( _sub_context) )
 {
    _sub_sched_context->ref();
-   _automatically_remove_tracks = false;
 }
 
 MeCtScheduler2::~MeCtScheduler2 () {
@@ -853,27 +862,9 @@ void MeCtScheduler2::controller_init ()
 void MeCtScheduler2::controller_map_updated() {
 	// Clear previous data
 	_local_ch_to_buffer.assign( _channels.size(), -1 );
-	_channels_logged.clear();
 
 	// Map logged channels
 	if( _context ) {
-		// Get context's logged channels
-		const std::set<int>& context_logged_channels = _context->get_logged_channel_indices();
-		set<int>::const_iterator context_logged_channels_end = context_logged_channels.end();
-		if( DEBUG_LOGGED_CHANNEL_MAPPING ) {
-			ostringstream oss;
-			set<int>::const_iterator i = context_logged_channels.begin();
-			for(; i!=context_logged_channels_end; ++i ) {
-				int index = *i;
-				const std::string& name = _context->channels().name(index);
-				SkChannel::Type type = _context->channels().type(index);
-				oss <<'['<<index<<']'<<name.c_str()
-					<<'('<<SkChannel::type_name(type)<<"), ";
-			}
-
-			LOG("DEBUG: MeCtBlend::controller_map_updated(): Context's logged channels:");
-			LOG("\t%s", oss.str().c_str());
-		}
 
 		SkChannelArray& local_channels = controller_channels();
 		const int num_channels = local_channels.size();
@@ -881,26 +872,9 @@ void MeCtScheduler2::controller_map_updated() {
 			int parent_index = _toContextCh[i];
 
 			if( parent_index >= 0 ) {
-// Get a reference to the channel to inspect via debugger
-#if DEBUG_INSPECT_CHANNELS
-				if( parent_index >= 0 ) {
-					SkChannel::Type local_ch_type = local_channels.type( i );
-					const char*     local_ch_name = (const char*)(local_channels.name( i ));
-					SkChannel::Type parent_ch_type = _context->channels().type( parent_index );
-					const char*     parent_ch_name = (const char*)(_context->channels().name( parent_index ));
-					int break_here = 1;
-				}
-#endif
 				
 				_local_ch_to_buffer[i] = _context->toBufferIndex( parent_index );
 
-				if( context_logged_channels.find(parent_index) != context_logged_channels_end ) {
-					// Log this channel
-					_channels_logged.insert( i );
-					if( DEBUG_LOGGED_CHANNEL_MAPPING ) {
-						LOG("DEBUG: MeCtBlend::controller_map_updated(): Logged parent channel %d maps to %d", parent_index, i);
-					}
-				}
 			}
 		}
 	}
@@ -946,22 +920,10 @@ bool MeCtScheduler2::controller_evaluate( double time, MeFrameData& frame ) {
 
 	VecOfTrack::iterator end = _tracks.end();
 
-	for( VecOfTrack::iterator i = _tracks.begin(); i != end; ++i ) {
+	for( VecOfTrack::iterator i = _tracks.begin(); i != end; ++i )
+	{
 		TrackPtr track = *i;
 		bool result = track->evaluate( time, frame );
-		
-		if( _automatically_remove_tracks && !result ) {
-			// TODO: unify prune policy of grouping controllers like blend/timing with DefaultContainerPrunePolicy
-			MeController* anim_ct = track->animation_ct();
-			MePrunePolicy* prune_policy = NULL;
-			if( anim_ct != NULL )
-				prune_policy = anim_ct->prune_policy();
-			if(    prune_policy == NULL
-			    || prune_policy->shouldPrune( anim_ct, track->animation_parent_ct() ) )
-			{
-				to_remove.push_back( track );
-			}
-		}
 	}
 
 	if( !to_remove.empty() )

@@ -2377,7 +2377,7 @@ int mcu_check_func( srArgBuffer& args, SmartBody::SBCommandManager* cmdMgr )
 	char* motionName = args.read_token();
 	char* frameNumString = args.read_token();
 	int frameNum = -1;
-	if (frameNumString != "")	frameNum = atoi(frameNumString);
+	if (strcmp(frameNumString, "") != 0)	frameNum = atoi(frameNumString);
 	int mode = -1;
 	int chanSize;
 	SkChannel chan;
@@ -2532,7 +2532,7 @@ int mcu_check_func( srArgBuffer& args, SmartBody::SBCommandManager* cmdMgr )
 		}
 		else
 		{
-			if (frameNumString != "")
+			if ((strcmp(frameNumString, "") != 0))
 			{
 				LOG("mcu_check_func ERR: Frame Number not Exist!");
 				motion->disconnect();
@@ -3478,10 +3478,10 @@ void mcu_vhmsg_callback( const char *op, const char *args, void * user_data )
 
 	switch(SmartBody::SBScene::getScene()->getCommandManager()->execute( op, (char *)args ) ) {
         case CMD_NOT_FOUND:
-            LOG("SBM ERR: command NOT FOUND: '%s' + '%s'", op, args );
+            LOG("SmartBody error: command NOT FOUND: '%s' + '%s'", op, args );
             break;
         case CMD_FAILURE:
-            LOG("SBM ERR: command FAILED: '%s' + '%s'", op, args );
+            LOG("SmartBody error: command FAILED: '%s' + '%s'", op, args );
             break;
     }
 }
@@ -3621,10 +3621,10 @@ int sbm_main_func( srArgBuffer & args, SmartBody::SBCommandManager* cmdMgr )
    switch( result )
    {
       case CMD_NOT_FOUND:
-         LOG( "SBM ERR: command NOT FOUND: '%s %s'> ", token, args_raw );
+         LOG( "SmartBody error: command NOT FOUND: '%s %s'> ", token, args_raw );
          break;
       case CMD_FAILURE:
-         LOG( "SBM ERR: command FAILED: '%s %s'> ", token, args_raw );
+         LOG( "SmartBody error: command FAILED: '%s %s'> ", token, args_raw );
          break;
       case CMD_SUCCESS:
          break;

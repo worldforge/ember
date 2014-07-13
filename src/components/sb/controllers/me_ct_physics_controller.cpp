@@ -158,7 +158,7 @@ bool MeCtPhysicsController::controller_evaluate(double t, MeFrameData& frame)
 			if (!joint)	continue;
 			
 			SrMat tran = obj->getRelativeOrientation();				
-			std::string jname = joint->getName();
+			std::string jname = joint->getMappedJointName();
 			SrQuat inQuat;
 			SrVec inPos;
 			getJointChannelValues(jname,frame,inQuat,inPos);
@@ -179,7 +179,7 @@ bool MeCtPhysicsController::controller_evaluate(double t, MeFrameData& frame)
 				}
 			}
 
-			bool kinematicRoot = (joint->getName() == "base" || joint->getName() == "JtPelvis") && phyChar->getBoolAttribute("kinematicRoot");
+			bool kinematicRoot = (joint->getMappedJointName() == "base" || joint->getMappedJointName() == "JtPelvis") && phyChar->getBoolAttribute("kinematicRoot");
 			if (kinematicRoot)
 				continue;
 
@@ -225,8 +225,7 @@ bool MeCtPhysicsController::controller_evaluate(double t, MeFrameData& frame)
  			//phyJoint->setRefAngularVel(angDiff);			
 			phyJoint->setRefQuat(inQuat);
 			if (hasPhy)
-			{
-
+			{				
 				int channelId = _context->channels().search(jname, SkChannel::Quat);
 				if (channelId < 0)	continue;
 				int bufferId = frame.toBufferIndex(channelId);
@@ -272,7 +271,7 @@ bool MeCtPhysicsController::controller_evaluate(double t, MeFrameData& frame)
 			SmartBody::SBJoint* sbJoint = phyJoint->getSBJoint();
 			SmartBody::SBJoint* joint = NULL; 
 			if (sbJoint)
-				joint = _skeletonCopy->getJointByName(sbJoint->getName());
+				joint = _skeletonCopy->getJointByName(sbJoint->getMappedJointName());
 			if (joint)
 			{
 				obj->setRefTransform(joint->gmat());

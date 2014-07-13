@@ -125,11 +125,13 @@ void SBPawn::setSkeleton(SBSkeleton* skel)
 
 	SbmPawn::setSkeleton(skel);	
 	setup();
+	std::string pawnName = this->getName();		
+	skel->setPawnName(pawnName);
 
 	if (sk)
 	{		
 		this->setPosition(position);
-		this->setHPR(hpr);
+		this->setHPR(hpr);			
 	}
 }
 
@@ -150,14 +152,14 @@ SrQuat SBPawn::getOrientation()
 	return quat;
 }
 
-void SBPawn::setPosition(SrVec pos)
+void SBPawn::setPosition(const SrVec& pos)
 {
 	float x, y, z, h, p, r;
 	get_world_offset(x, y, z, h, p, r);
 	set_world_offset(pos.x, pos.y, pos.z, h, p, r);	
 }
 
-void SBPawn::setOrientation(SrQuat quat)
+void SBPawn::setOrientation(const SrQuat& quat)
 {
 	float x, y, z, h, p, r;
 	get_world_offset(x, y, z, h, p, r);
@@ -165,7 +167,7 @@ void SBPawn::setOrientation(SrQuat quat)
 	set_world_offset(x, y, z, float(euler.h()), float(euler.p()), float(euler.r()));
 }
 
-void SBPawn::setHPR(SrVec hpr)
+void SBPawn::setHPR(const SrVec& hpr)
 {
 	float x, y, z, h, p, r;
 	get_world_offset(x, y, z, h, p, r);
@@ -181,7 +183,7 @@ SrVec SBPawn::getHPR()
 	return hpr;
 }
 
-void SBPawn::setPositionSmooth( SrVec pos, float smoothTime )
+void SBPawn::setPositionSmooth( const SrVec& pos, float smoothTime )
 {
 	initialPos = getPosition(); // start position
 	targetPos  = pos;
@@ -190,7 +192,7 @@ void SBPawn::setPositionSmooth( SrVec pos, float smoothTime )
 	smoothTargetPos = true;
 }
 
-void SBPawn::setHPRSmooth( SrVec hpr, float smoothTime )
+void SBPawn::setHPRSmooth( const SrVec& hpr, float smoothTime )
 {
 	initialHPR = getHPR(); // start position
 	targetHPR  = hpr;

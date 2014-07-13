@@ -100,7 +100,7 @@ edgesFromTree(InputTree* tree)
       Edge* edg = add_edge(lhs, subItems);
       if(!edg)
 	{
-	  return false;
+	  return NULL;
 	}
       edg->num() = b0;
       assignRProb(edg);
@@ -112,6 +112,7 @@ edgesFromTree(InputTree* tree)
       return lhs;
       rPendFactor();
     }
+  return NULL;
 }
 
 Item*

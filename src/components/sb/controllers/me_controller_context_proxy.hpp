@@ -29,7 +29,7 @@
 
 /**
  *  Convience class for controllers that wish to reimplement or intercept 
- *  calls between their child controlelrs and the current MeControllerContext.
+ *  calls between their child controllers and the current MeControllerContext.
  */
 class MeControllerContextProxy
 	: public MeControllerContext
@@ -69,15 +69,6 @@ public:
      */
     virtual int toBufferIndex( int chanIndex );
 
-	/**
-	 *  Returns a pointer to the current evaluation logger (may be NULL).
-	 */
-	virtual MeEvaluationLogger* get_evaluation_logger() const;
-
-	/**
-	 *  Returns a reference to the currently logged channel indices.
-	 */
-	virtual const std::set<int>& get_logged_channel_indices() const;
 };
 
 

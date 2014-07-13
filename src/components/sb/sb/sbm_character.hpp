@@ -35,7 +35,7 @@
 #include "sbm_pawn.hpp"
 
 #include <sb/nvbg.h>
-#include <sb/MiniBrain.h>  // ?
+#include <sb/MiniBrain.h>
 
 //#include <controllers/me_spline_1d.hpp>
 class MeCtMotionPlayer;
@@ -202,12 +202,12 @@ public:
 	/**
 	 *  Sets the character's voice code string.
 	 */
-	int set_voice_code(std::string& voice_code); //set Voice returns CMD_SUCCESS  
+	int set_voice_code(const std::string& voice_code); //set Voice returns CMD_SUCCESS  
 
 	/**
 	 *  Sets the character's backup voice code string which will be activated if the primary voice fails.
 	 */
-	int set_voice_code_backup(std::string& voice_code); //set Voice returns CMD_SUCCESS  
+	int set_voice_code_backup(const std::string& voice_code); //set Voice returns CMD_SUCCESS  
 
 
 	/**

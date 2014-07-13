@@ -21,6 +21,10 @@ SBPhysicsSim::SBPhysicsSim(void)
 	SBObject::createDoubleAttribute("gravity",980, true, "Basic", 20, false, false, false, "?");
 	SBObject::createDoubleAttribute("Ks",230000, true, "Basic", 20, false, false, false, "?");
 	SBObject::createDoubleAttribute("Kd",2000, true, "Basic", 20, false, false, false, "?");
+	//SBObject::createDoubleAttribute("gravity",9.8, true, "Basic", 20, false, false, false, "?");
+	//SBObject::createDoubleAttribute("Ks",15000, true, "Basic", 20, false, false, false, "?");
+	//SBObject::createDoubleAttribute("Kd",0.0, true, "Basic", 20, false, false, false, "?");
+
 	SBObject::createDoubleAttribute("MaxSimTime",0.01,true,"Basic", 20, false, false, false, "?");
 	//SBObject::createDoubleAttribute("gravity",9.8, true, "Basic", 20, false, false, false, "?");
 	//SBObject::createDoubleAttribute("Ks",30.0, true, "Basic", 20, false, false, false, "?");
@@ -463,7 +467,7 @@ void SbmJointObj::initJoint( SBPhysicsJoint* phyj )
 	
 	SrVec defaultHigh = SrVec(1.9f,1.9f,1.9f);
 	SrVec defaultLow  = SrVec(-1.9f,-1.9f,-1.9f);
-	std::string jname = joint->getName();
+	std::string jname = joint->getMappedJointName();
 	if (jname.find("sternoclavicular") != std::string::npos || jname.find("acromioclavicular") != std::string::npos || jname.find("forefoot") != std::string::npos)
 	{
 		defaultHigh = SrVec(0.f,0.f,0.f); defaultLow = SrVec(-0.f,-0.f,-0.f);
@@ -665,14 +669,14 @@ void SBPhysicsCharacter::initPhysicsCharacter( std::string& charName, std::vecto
 		SbmJointObj* obj = mi->second;
 		// set the child rigid body for the joint
 		SBPhysicsJoint* oj = obj->getPhyJoint();
-		if (oj && jointObjMap.find(oj->getSBJoint()->getName()) != jointObjMap.end())
+		if (oj && jointObjMap.find(oj->getSBJoint()->getMappedJointName()) != jointObjMap.end())
 		{
 			oj->setChildObj(obj);	 
 		}
 		SBJoint* pj = oj->getSBJoint()->getParent();
 		if (pj)
 		{
-			SbmJointObj* pobj = getJointObj(pj->getName());
+			SbmJointObj* pobj = getJointObj(pj->getMappedJointName());
 			if (pobj)
 				oj->setParentObj(pobj);
 		}		
@@ -713,18 +717,18 @@ SBGeomObject* SBPhysicsCharacter::createJointGeometry( SBJoint* joint, float rad
 	if (radius < 0.0)
 		radius = curCharacter->getHeight()*0.03f;
 		//radius = curCharacter->getHeight()*0.01f;
-	if (joint->getName() == "spine1" || joint->getName() == "spine2" || joint->getName() == "spine3")
+	if (joint->getMappedJointName() == "spine1" || joint->getMappedJointName() == "spine2" || joint->getMappedJointName() == "spine3")
 		radius = curCharacter->getHeight()*0.06f;
 		//radius = curCharacter->getHeight()*0.02f;
-	if (joint->getName() == "l_sternoclavicular" || joint->getName() == "r_sternoclavicular" || joint->getName() == "l_acromioclavicular" || joint->getName() == "r_acromioclavicular")
+	if (joint->getMappedJointName() == "l_sternoclavicular" || joint->getMappedJointName() == "r_sternoclavicular" || joint->getMappedJointName() == "l_acromioclavicular" || joint->getMappedJointName() == "r_acromioclavicular")
 		radius = curCharacter->getHeight()*0.01f;
-	if (joint->getName() == "l_hip" || joint->getName() == "r_hip")
+	if (joint->getMappedJointName() == "l_hip" || joint->getMappedJointName() == "r_hip")
 		radius = curCharacter->getHeight()*0.04f;
 	float extend = curCharacter->getHeight()*0.015f;
 
 	
 
-	if (joint->getName() == "l_wrist" || joint->getName() == "r_wrist")
+	if (joint->getMappedJointName() == "l_wrist" || joint->getMappedJointName() == "r_wrist")
 		extend = curCharacter->getHeight()*0.03f;
 
 // 	if (joint->getName() == "l_ankle" || joint->getName() == "r_ankle")
@@ -825,7 +829,7 @@ void SBPhysicsCharacter::updatePDTorque()
 		SBPhysicsJoint* phyJoint = obj->getPhyJoint();
 		SBJoint* joint = obj->getPhyJoint()->getSBJoint();
 		if (!joint)	continue;		
-		bool kinematicRoot = (joint->getName() == "base" || joint->getName() == "JtPelvis") && this->getBoolAttribute("kinematicRoot");		
+		bool kinematicRoot = (joint->getMappedJointName() == "base" || joint->getMappedJointName() == "JtPelvis") && this->getBoolAttribute("kinematicRoot");		
 		if (kinematicRoot || obj->getBoolAttribute("constraint"))// || joint->getName() == "JtPelvis")
 		{			
 			continue;

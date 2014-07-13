@@ -10,7 +10,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <controllers/me_controller_tree_root.hpp>
-#include <boost/algorithm/string/replace.hpp>
+#include<boost/algorithm/string/replace.hpp>
 
 #define USE_STL_MAP 0
 
@@ -306,6 +306,26 @@ bool SBJointMap::isAppliedToSkeleton(const std::string& name)
 
 void SBJointMap::setMapping(const std::string& from, const std::string& to)
 {
+#ifdef USE_TWO_MAPS
+
+	std::map<std::string, std::string>::iterator iter = _sourceMap.find(from);
+	if (iter != _sourceMap.end())
+	{
+		(*iter).second = to;
+		std::map<std::string, std::string>::iterator iter2 = _targetMap.find(to);
+		if (iter2 != _targetMap.end())
+		{
+			(*iter2).second = from;
+		}
+	}
+	else
+	{
+		_sourceMap.insert(std::pair<std::string,std::string>(from, to));
+		_targetMap.insert(std::pair<std::string,std::string>(to, from));
+	}
+
+#else
+
 #if !USE_STL_MAP
 	for (std::vector<std::pair<std::string, std::string> >::iterator iter = _map.begin();
 		iter != _map.end();
@@ -326,17 +346,38 @@ void SBJointMap::setMapping(const std::string& from, const std::string& to)
  	//_jointMap[from] = to;
 	_jointMap.insert(StringBimap::value_type(from,to));	
 #endif	
+#endif
 }
 
 void SBJointMap::clearMapping()
 {
+#ifdef USE_TWO_MAPS
+	_sourceMap.clear();
+	_targetMap.clear();
+#else
 	_map.clear();
+#endif
 	_jointMap.clear();
 }
 
 
 void SBJointMap::removeMapping(const std::string& from)
 {
+#ifdef USE_TWO_MAPS
+	std::map<std::string, std::string>::iterator iter = _sourceMap.find(from);
+	if (iter != _sourceMap.end())
+	{
+		std::string to = (*iter).second;
+		_sourceMap.erase(iter);
+
+		std::map<std::string, std::string>::iterator iter2 = _targetMap.find(to);
+		if (iter2 != _targetMap.end())
+		{
+			_targetMap.erase(iter2);
+		}
+	}
+
+#else
 #if !USE_STL_MAP
 	std::vector<std::pair<std::string, std::string> > tempMap;
 	for (std::vector<std::pair<std::string, std::string> >::iterator iter = _map.begin();
@@ -356,10 +397,27 @@ void SBJointMap::removeMapping(const std::string& from)
 		_jointMap.left.erase(from);
 	}
 #endif
+#endif
+
 }
 
 void SBJointMap::removeMappingTo( const std::string& to )
 {
+#ifdef USE_TWO_MAPS
+	std::map<std::string, std::string>::iterator iter = _targetMap.find(to);
+	if (iter != _targetMap.end())
+	{
+		std::string from = (*iter).second;
+		_targetMap.erase(iter);
+
+		std::map<std::string, std::string>::iterator iter2 = _sourceMap.find(from);
+		if (iter2 != _sourceMap.end())
+		{
+			_sourceMap.erase(iter2);
+		}
+	}
+	
+#else
 #if !USE_STL_MAP
 	std::vector<std::pair<std::string, std::string> > tempMap;
 	for (std::vector<std::pair<std::string, std::string> >::iterator iter = _map.begin();
@@ -379,10 +437,18 @@ void SBJointMap::removeMappingTo( const std::string& to )
 		_jointMap.right.erase(to);
 	}
 #endif
+#endif
 }
 
 const std::string& SBJointMap::getMapSource(const std::string& to)
 {
+#ifdef USE_TWO_MAPS
+	std::map<std::string, std::string>::iterator iter = _targetMap.find(to);
+	if (iter != _targetMap.end())
+	{
+		return (*iter).second;
+	}
+#else
 #if !USE_STL_MAP
 	for (std::vector<std::pair<std::string, std::string> >::iterator iter = _map.begin();
 		iter != _map.end();
@@ -401,11 +467,19 @@ const std::string& SBJointMap::getMapSource(const std::string& to)
 		return _jointMap.right.find(to)->second;
 	}	
 #endif
+#endif
 	return emptyString;
 }
 
 const std::string& SBJointMap::getMapTarget(const std::string& from)
 {
+#ifdef USE_TWO_MAPS
+	std::map<std::string, std::string>::iterator iter = _sourceMap.find(from);
+	if (iter != _sourceMap.end())
+	{
+		return (*iter).second;
+	}
+#else
 #if !USE_STL_MAP
 	for (std::vector<std::pair<std::string, std::string> >::iterator iter = _map.begin();
 		iter != _map.end();
@@ -424,20 +498,36 @@ const std::string& SBJointMap::getMapTarget(const std::string& from)
 		return _jointMap.left.find(from)->second;
 	}	
 #endif
+#endif
 	return emptyString;
 }
 
 int SBJointMap::getNumMappings()
 {
+#ifdef USE_TWO_MAPS
+	return _sourceMap.size();
+#else
 #if !USE_STL_MAP
 	return _map.size();
 #else
 	return _jointMap.size();
 #endif
+#endif
 }
 
 const std::string& SBJointMap::getTarget(int num)
-{	
+{
+#ifdef USE_TWO_MAPS
+	int count = 0;
+	for (std::map<std::string, std::string>::iterator iter = _targetMap.begin();
+		 iter != _targetMap.end();
+		 iter++)
+	{
+		if (count == num)
+			return (*iter).first;
+		count++;
+	}
+#else
 #if USE_STL_MAP
 	_map = getMappingList();
 #endif
@@ -445,11 +535,24 @@ const std::string& SBJointMap::getTarget(int num)
 	{
 		return _map[num].second;
 	}
+#endif
 	return emptyString;
 }
 
 const std::string& SBJointMap::getSource(int num)
 {
+#ifdef USE_TWO_MAPS
+	int count = 0;
+	for (std::map<std::string, std::string>::iterator iter = _sourceMap.begin();
+		 iter != _sourceMap.end();
+		 iter++)
+	{
+		if (count == num)
+			return (*iter).first;
+		count++;
+	}
+	
+#else
 #if USE_STL_MAP
 	_map = getMappingList();
 #endif
@@ -457,6 +560,7 @@ const std::string& SBJointMap::getSource(int num)
 	{
 		return _map[num].first;
 	}
+#endif
 	return emptyString;
 }
 

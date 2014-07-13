@@ -8,7 +8,7 @@ class ProfileCurve
 public:
 	float startTime, endTime;	
 	ProfileCurve() {}
-	~ProfileCurve() {}
+	virtual ~ProfileCurve() {}
 public:
 	virtual void init() = 0;
 	virtual void addPt(float t, float val) = 0;
@@ -23,7 +23,7 @@ protected:
 	srLinearCurve curve;	
 public:
 	LinearProfileCurve() {}
-	~LinearProfileCurve() {}
+	virtual ~LinearProfileCurve() {}
 public:
 	virtual void init();
 	virtual void addPt(float t, float val);

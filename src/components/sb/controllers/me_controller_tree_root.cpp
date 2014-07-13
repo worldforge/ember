@@ -22,7 +22,7 @@
  *      Ed Fast, USC
  */
 
-#include <vhcl/vhcl.h>
+#include "vhcl/vhcl.h"
 
 #include <list>
 #include <vector>
@@ -535,19 +535,6 @@ public:
 			}
 		}
 	}
-	void set_evaluation_logger( MeEvaluationLogger* logger ) {
-		if( _logger ) {
-			_logger->unref();
-			_logger = NULL;
-		}
-		_logger = logger;
-		if( _logger )
-			_logger->ref();
-	}
-
-	MeEvaluationLogger* get_evaluation_logger() const {
-		return _logger;
-	}
 
 	void set_logged_joints( set<string>& joint_names ) {
 		_logged_joints = joint_names;
@@ -566,14 +553,6 @@ public:
 				_logged_channel_indices.insert(i);
 		}
 		_state=INVALID;
-	}
-
-	const set<string>& get_logged_joints() const {
-		return _logged_joints;
-	}
-
-	const set<int>& get_logged_channel_indices() const {
-		return _logged_channel_indices;
 	}
 
 private:

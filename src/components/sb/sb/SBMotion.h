@@ -67,6 +67,10 @@ class SBMotion : public SkMotion
 		SBAPI std::vector<float> getFrameData(int i);
 		SBAPI int getFrameSize();
 		void setMotionType(MotionType type);
+
+		SBAPI void addSimilarPose(const std::string& motionName);
+		SBAPI void removeSimilarPose(const std::string& motionName);
+		SBAPI std::vector<std::string> getSimilarPoses();
 		
 		SBAPI void getAllChannelQuat(const std::vector<std::string>& channeNames, float t, std::vector<SrQuat>& outQuatList);
 		SBAPI void getAllChannelPos(const std::vector<std::string>& channeNames, float t, std::vector<SrVec>& outPosList);
@@ -202,6 +206,7 @@ class SBMotion : public SkMotion
 		float _scale;
 
 		SBMotion* _offsetMotion;
+		std::vector<std::string> _similarPoses;
 };
 
 bool motionComp(const SBMotion *a, const SBMotion *b);

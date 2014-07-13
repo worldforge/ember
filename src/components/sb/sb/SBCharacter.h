@@ -4,15 +4,15 @@
 #include <sb/SBTypes.h>
 #include <sb/sbm_character.hpp>
 #include <sb/SBMotion.h>
+#include <sb/SBCharacterFrameData.h>
 
 namespace SmartBody {
 
 class SBSkeleton;
 class SBBehavior;
-#ifdef EMBER_SB_STEER
-	class SBSteerAgent;
-#endif
+class SBSteerAgent;
 class SBController;
+class SBDiphone;
 class SBReach;
 class SBMotionGraph;
 
@@ -20,10 +20,11 @@ class SBCharacter : public SbmCharacter
 {
 	public:
 		SBAPI SBCharacter();
-		SBAPI SBCharacter(std::string name, std::string type = "");
+		SBAPI SBCharacter(const std::string& name, const std::string& type = "");
+		SBAPI virtual ~SBCharacter();
 
 		SBAPI const std::string& getName();
-		SBAPI void setName(std::string& name);
+		SBAPI void setName(const std::string& name);
 
 		SBAPI void setType(const std::string& type);
 		SBAPI std::string getType();
@@ -42,18 +43,18 @@ class SBCharacter : public SbmCharacter
 		SBAPI float getVisemeTimeOffset();
 		SBAPI void setVisemeTimeOffset(float val);
 
-		SBAPI void setVoice(std::string type);
-		SBAPI void setVoiceCode(std::string param);
+		SBAPI void setVoice(const std::string& type);
+		SBAPI void setVoiceCode(const std::string& param);
 		SBAPI const std::string getVoice();
 		SBAPI const std::string& getVoiceCode();
 
-		SBAPI void setVoiceBackup(std::string type);
-		SBAPI void setVoiceBackupCode(std::string param);
+		SBAPI void setVoiceBackup(const std::string& type);
+		SBAPI void setVoiceBackupCode(const std::string& param);
 		SBAPI const std::string& getVoiceBackup();
 		SBAPI const std::string& getVoiceBackupCode();
 
 		SBAPI SBController* getControllerByIndex(int i);
-		SBAPI SBController* getControllerByName(std::string name);
+		SBAPI SBController* getControllerByName(const std::string& name);
 		SBAPI std::vector<std::string> getControllerNames();
 		SBAPI void startMotionRecord(double frameRate);
 		SBAPI void stopMotionRecord(const std::string& motionName, const std::string& type);
@@ -81,13 +82,15 @@ class SBCharacter : public SbmCharacter
 
 		SBAPI void setMotionGraph(const std::string& moGraphName);
 		SBAPI void startMotionGraph(const std::string& moNodeName);
-/*		SBAPI void startMotionGraphWithPath(const std::vector<SrVec>& pathList);*/
+		#ifdef EMBER_SB_STEER
+		SBAPI void startMotionGraphWithPath(const std::vector<SrVec>& pathList);
+		#endif
 		SBAPI void startMotionGraphRandomWalk();
 
 		SBAPI void setUseJointConstraint(bool bUseConstraint);
 		SBAPI bool getUseJointConstraint();
-		SBAPI void addJointTrajectoryConstraint(std::string jointName, std::string refJointName);
-		SBAPI TrajectoryRecord* getJointTrajectoryConstraint(std::string jointName);	
+		SBAPI void addJointTrajectoryConstraint(const std::string& jointName, const std::string& refJointName);
+		SBAPI TrajectoryRecord* getJointTrajectoryConstraint(const std::string& jointName);
 		SBAPI std::vector<std::string> getJointConstraintNames();
 		float getJointTrajBlendWeight() const { return jointTrajBlendWeight; }
 		void setJointTrajBlendWeight(float val) { jointTrajBlendWeight = val; }
@@ -95,7 +98,14 @@ class SBCharacter : public SbmCharacter
 		SBAPI void createBlendShapeChannel(const std::string& channelName);
 
 		SBAPI void setDeformableMeshName(const std::string& meshName);
-		
+
+		SBAPI const SBM_CharacterFrameDataMarshalFriendly & GetFrameDataMarshalFriendly();
+
+	protected:
+		void InitFrameDataMarshalFriendly();
+		void FreeFrameDataJointsMarshalFriendly();
+		void FreeFrameDataMarshalFriendly();
+
 	protected:
 		std::vector<SBBehavior*> _curBehaviors;	
 		SmartBody::SBReach* _reach;
@@ -103,7 +113,8 @@ class SBCharacter : public SbmCharacter
 		std::map<std::string, TrajectoryRecord*> jointTrajMap;
 		float jointTrajBlendWeight;
 		bool useJointConstraint;
-		
+		SBM_CharacterFrameDataMarshalFriendly * frameDataMarshalFriendly;
+
 };
 
 };

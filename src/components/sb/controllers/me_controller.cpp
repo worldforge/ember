@@ -324,10 +324,6 @@ void MeController::dumpChannelMap()
 
 void MeController::evaluate ( double time, MeFrameData& frame ) {
 
-	MeEvaluationLogger* logger = _context->get_evaluation_logger();
-	if( logger )
-		logger->controller_pre_evaluate( time, *_context, *this, frame );
-
 	// Reevaluate controller. Even for the same evaluation time as _lastEval, results may be influenced by differing buffer values
 	if (isEnabled())
 		_active = controller_evaluate ( time, frame );
@@ -339,8 +335,6 @@ void MeController::evaluate ( double time, MeFrameData& frame ) {
 		cont_record( time, frame );
 #endif
 
-	if( logger )
-		logger->controller_post_evaluate( time, *_context, *this, frame );
 }
 
 /*

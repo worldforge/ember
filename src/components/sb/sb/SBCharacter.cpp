@@ -1,22 +1,22 @@
 #include "SBCharacter.h"
 #include <sb/SBSkeleton.h>
 
-#include <sbm/mcontrol_callbacks.h> 
+#include <sbm/mcontrol_callbacks.h>
 #include "sb/SBController.h"
 #include "bml/bml_types.hpp"
 #include "bml/bml_speech.hpp"
 #include "sb/SBBehavior.h"
 #ifdef EMBER_SB_STEER
-	#include <sbm/PPRAISteeringAgent.h> 
-	#include <sb/SBSteerAgent.h>
+#include <sbm/PPRAISteeringAgent.h>
+#include <sb/SBSteerAgent.h>
 #endif
 #include <sb/SBPhysicsManager.h>
 #ifdef EMBER_SB_STEER
-	#include <sb/SBSteerManager.h>
-	#include <sb/SBSteerAgent.h>
+#include <sb/SBSteerManager.h>
+#include <sb/SBSteerAgent.h>
 #endif
-#include <sb/SBPhoneme.h> 
-#include <sb/SBPhonemeManager.h> 
+#include <sb/SBPhoneme.h>
+#include <sb/SBPhonemeManager.h>
 #include <sb/SBAssetManager.h>
 #include <sb/SBScene.h>
 #include <sb/SBSpeechManager.h>
@@ -24,14 +24,14 @@
 #include <sb/SBBmlProcessor.h>
 #include <sb/SBReach.h>
 #include <sb/SBSceneListener.h>
-#include <sb/SBMotionGraph.h> 
+#include <sb/SBMotionGraph.h>
 #include <controllers/me_ct_motion_recorder.h>
-#include <controllers/me_ct_scheduler2.h> 
-#include <controllers/me_ct_scheduler2.h> 
+#include <controllers/me_ct_scheduler2.h>
+#include <controllers/me_ct_scheduler2.h>
 #include <controllers/me_ct_gaze.h>
-#include <controllers/me_controller_tree_root.hpp> 
-#include <controllers/me_ct_curve_writer.hpp> 
-#include <controllers/me_ct_channel_writer.hpp> 
+#include <controllers/me_controller_tree_root.hpp>
+#include <controllers/me_ct_curve_writer.hpp>
+#include <controllers/me_ct_channel_writer.hpp>
 #include <controllers/me_ct_saccade.h>
 #include <controllers/me_ct_motion_graph.hpp>
 #include <sbm/remote_speech.h>
@@ -49,7 +49,7 @@ SBCharacter::SBCharacter() : SbmCharacter()
 	
 }
 
-SBCharacter::SBCharacter(std::string name, std::string type) : SbmCharacter(name.c_str(), type)
+SBCharacter::SBCharacter(const std::string& name, const std::string& type) : SbmCharacter(name.c_str(), type)
 {
 	setAttributeGroupPriority("Display", 110);
 	setAttributeGroupPriority("Voice", 170);
@@ -116,15 +116,11 @@ SBCharacter::SBCharacter(std::string name, std::string type) : SbmCharacter(name
 	createStringAttribute("lipSyncSetName", "", true, "Lip Sync", 157, false, false, false, "Name of the lip sync set to be used when using phone bigram method.");
 	createBoolAttribute("lipSyncSplineCurve", true, true, "Lip Sync", 158, false, false, false, "Use spline/linear curve.");
 	createDoubleAttribute("lipSyncSmoothWindow", .18, true, "Lip Sync", 159, false, false, false, "Smooth window size. If it's less than 0, don't do smooth.");
-#ifdef EMBER_SB_DIPHONE	
 	setDiphoneSmoothWindow(0.18f);
-#endif
 	createDoubleAttribute("lipSyncSmoothWindow-PBM", .1, true, "Lip Sync", 160, false, false, false, "Smooth window size for PBM. If it's less than 0, don't do smooth.");
 	createDoubleAttribute("lipSyncSmoothWindow-FV", .1, true, "Lip Sync", 161, false, false, false, "Smooth window size for PBM. If it's less than 0, don't do smooth.");
 	createDoubleAttribute("lipSyncSpeedLimit", 6.0f, true, "Lip Sync", 162, false, false, false, "Speed Limit of facial shape movement");
-#ifdef EMBER_SB_DIPHONE
 	setDiphoneSpeedLimit(6.0f);
-#endif
 	
 	// Dominance curve attributes (other attributes will be created if the "dominancecurve" attribute is selected
 	createBoolAttribute("dominancecurve", false, true, "Baldi Lip Sync", 500, false, false, false, "Use dominance curve instead of predefined curves for lip syncing.");
@@ -190,6 +186,18 @@ SBCharacter::SBCharacter(std::string name, std::string type) : SbmCharacter(name
 
 	// since this is a character, show the deformable mesh by default
 	setBoolAttribute("showStaticMesh",false);
+
+	frameDataMarshalFriendly = NULL;
+	frameDataMarshalFriendly = new SBM_CharacterFrameDataMarshalFriendly();
+	InitFrameDataMarshalFriendly();
+}
+
+
+SBAPI SBCharacter::~SBCharacter()
+{
+	//FreeFrameDataMarshalFriendly();
+	delete frameDataMarshalFriendly;
+	frameDataMarshalFriendly = NULL;
 }
 
 
@@ -228,7 +236,7 @@ const std::string& SBCharacter::getName()
 	return SbmCharacter::getName();
 }
 
-void SBCharacter::setName(std::string& name)
+void SBCharacter::setName(const std::string& name)
 {
 	SBPawn::setName(name);
 
@@ -307,7 +315,7 @@ SBController* SBCharacter::getControllerByIndex(int index)
 	return controller;
 }
 
-SBController* SBCharacter::getControllerByName(std::string name)
+SBController* SBCharacter::getControllerByName(const std::string& name)
 {
 	if (!ct_tree_p)
 		return NULL;
@@ -335,8 +343,7 @@ std::vector<std::string> SBCharacter::getControllerNames()
 	return ret;
 }
 
-/*
-void SBCharacter::setVoice(std::string type)
+void SBCharacter::setVoice(const std::string& type)
 {
 	if (type == "")
 	{
@@ -368,7 +375,6 @@ void SBCharacter::setVoice(std::string type)
 		attr->setValueFast(type);
 
 }
-*/
 
 const std::string SBCharacter::getVoice()
 {
@@ -392,7 +398,7 @@ const std::string SBCharacter::getVoice()
 	return type;
 }
 
-void SBCharacter::setVoiceCode(std::string param)
+void SBCharacter::setVoiceCode(const std::string& param)
 {
 	set_voice_code(param);
 	StringAttribute* attr = dynamic_cast<StringAttribute*>(getAttribute("voiceCode"));
@@ -405,7 +411,7 @@ const std::string& SBCharacter::getVoiceCode()
 	return get_voice_code();
 }
 
-void SBCharacter::setVoiceBackup(std::string type)
+void SBCharacter::setVoiceBackup(const std::string& type)
 {
 	
 
@@ -444,7 +450,7 @@ const std::string& SBCharacter::getVoiceBackup()
 	return get_voice_code_backup();
 }
 
-void SBCharacter::setVoiceBackupCode(std::string param)
+void SBCharacter::setVoiceBackupCode(const std::string& param)
 {
 	set_voice_code_backup(param);
 	StringAttribute* attr = dynamic_cast<StringAttribute*>(getAttribute("voiceCodeBackup"));
@@ -566,7 +572,7 @@ std::vector<SBBehavior*>& SBCharacter::getBehaviors()
 	}
 
 	// locomotion
-#ifdef EMBER_SB_STEER
+	#ifdef EMBER_SB_STEER
 	SmartBody::SBSteerManager* manager = SmartBody::SBScene::getScene()->getSteerManager();
 	SmartBody::SBSteerAgent* steerAgent = manager->getSteerAgent(this->getName());
 	if (steerAgent)
@@ -585,7 +591,7 @@ std::vector<SBBehavior*>& SBCharacter::getBehaviors()
 		}
 		_curBehaviors.push_back(locoBehavior);
 	}
-#endif
+	#endif
 
 	// gaze
 	if (this->gaze_sched_p)
@@ -695,7 +701,6 @@ void SBCharacter::notify(SBSubject* subject)
 			SmartBody::DoubleAttribute* timeDelayAttribute = dynamic_cast<SmartBody::DoubleAttribute*>(attribute);
 			set_viseme_time_delay((float) timeDelayAttribute->getValue());
 		}
-	#ifdef EMBER_SB_DIPHONE
 		else if (attrName == "usePhoneBigram")
 		{
 			SmartBody::BoolAttribute* diphoneAttribute = dynamic_cast<SmartBody::BoolAttribute*>(attribute);
@@ -721,12 +726,10 @@ void SBCharacter::notify(SBSubject* subject)
 			SmartBody::DoubleAttribute* speedLimitAttribute = dynamic_cast<SmartBody::DoubleAttribute*>(attribute);
 			setDiphoneSpeedLimit((float)speedLimitAttribute->getValue());
 		}
-	#endif
 		else if (attrName == "deformableMesh")
 		{
 	
 		}
-		/*
 		else if (attrName == "voice")
 		{
 			SmartBody::StringAttribute* strAttribute = dynamic_cast<SmartBody::StringAttribute*>(attribute);
@@ -747,7 +750,6 @@ void SBCharacter::notify(SBSubject* subject)
 			SmartBody::StringAttribute* strAttribute = dynamic_cast<SmartBody::StringAttribute*>(attribute);
 			this->setVoiceBackupCode(strAttribute->getValue());
 		}
-		*/
 		else if (attrName == "dominancecurve")
 		{
 			SmartBody::BoolAttribute* boolAttribute = dynamic_cast<SmartBody::BoolAttribute*>(attribute);
@@ -801,7 +803,7 @@ void SBCharacter::notify(SBSubject* subject)
 			}
 
 		}
-		/*
+		#ifdef EMBER_SB_STEER
 		if (attrName.find("steering.") == 0)
 		{
 			// update the steering params on the next evaluation cycle
@@ -813,9 +815,9 @@ void SBCharacter::notify(SBSubject* subject)
 				ppraiAgent->setSteerParamsDirty(true);
 			}
 		}
-		*/
-#ifdef EMBER_SB_PYTHON
+		#endif
 #if 1 // rocket box test		
+		#ifdef EMBER_SB_PYTHON
 		if (attrName == "_1testHead")
 		{
 			scene->run("testHead('"+getName()+"',0.0)");		
@@ -836,7 +838,8 @@ void SBCharacter::notify(SBSubject* subject)
 		{
 			scene->run("testLocomotion('"+getName()+"',0.0)");		
 		}
-#endif	
+		#endif
+		
 #endif
 
 		if (attrName.find("saccade.listening.") == 0)
@@ -965,7 +968,7 @@ std::string SBCharacter::getPostureName()
 	return "";
 }
 
-SBAPI void SBCharacter::addJointTrajectoryConstraint( std::string jointName, std::string refJointName )
+SBAPI void SBCharacter::addJointTrajectoryConstraint( const std::string& jointName, const std::string& refJointName )
 {
 	if (jointTrajMap.find(jointName) == jointTrajMap.end())
 	{
@@ -977,7 +980,7 @@ SBAPI void SBCharacter::addJointTrajectoryConstraint( std::string jointName, std
 	trajRecord->isEnable = true;
 }
 
-SBAPI TrajectoryRecord* SBCharacter::getJointTrajectoryConstraint( std::string jointName )
+SBAPI TrajectoryRecord* SBCharacter::getJointTrajectoryConstraint( const std::string& jointName )
 {
 	if (jointTrajMap.find(jointName) == jointTrajMap.end())
 	{
@@ -1083,7 +1086,7 @@ SBAPI void SBCharacter::startMotionGraph( const std::string& moNodeName )
 	motiongraph_ct->controller_start();
 }
 
-/*
+#ifdef EMBER_SB_STEER
 SBAPI void SBCharacter::startMotionGraphWithPath( const std::vector<SrVec>& pathList )
 {
 	if (!_curMotionGraph)
@@ -1141,6 +1144,162 @@ SBAPI void SBCharacter::startMotionGraphWithPath( const std::vector<SrVec>& path
 
 		
 }
-*/
+#endif
+
+
+void SBCharacter::InitFrameDataMarshalFriendly()
+{
+   frameDataMarshalFriendly->m_name = new char[ strlen(getName().c_str()) + 1 ];
+   strcpy( frameDataMarshalFriendly->m_name, getName().c_str() );
+
+   frameDataMarshalFriendly->x  = 0;
+   frameDataMarshalFriendly->y  = 0;
+   frameDataMarshalFriendly->z  = 0;
+   frameDataMarshalFriendly->rw = 0;
+   frameDataMarshalFriendly->rx = 0;
+   frameDataMarshalFriendly->ry = 0;
+   frameDataMarshalFriendly->rz = 0;
+   frameDataMarshalFriendly->m_numJoints = 0;
+
+   frameDataMarshalFriendly->jname = NULL;
+   frameDataMarshalFriendly->jx  = NULL;
+   frameDataMarshalFriendly->jy  = NULL;
+   frameDataMarshalFriendly->jz  = NULL;
+   frameDataMarshalFriendly->jrw = NULL;
+   frameDataMarshalFriendly->jrx = NULL;
+   frameDataMarshalFriendly->jry = NULL;
+   frameDataMarshalFriendly->jrz = NULL;
+}
+
+
+void SBCharacter::FreeFrameDataJointsMarshalFriendly()
+{
+   for ( size_t i = 0; i < frameDataMarshalFriendly->m_numJoints; i++ )
+   {
+      delete [] frameDataMarshalFriendly->jname[ i ];
+   }
+
+   frameDataMarshalFriendly->x  = 0;
+   frameDataMarshalFriendly->y  = 0;
+   frameDataMarshalFriendly->z  = 0;
+   frameDataMarshalFriendly->rw = 0;
+   frameDataMarshalFriendly->rx = 0;
+   frameDataMarshalFriendly->ry = 0;
+   frameDataMarshalFriendly->rz = 0;
+   frameDataMarshalFriendly->m_numJoints = 0;
+
+   delete [] frameDataMarshalFriendly->jname;
+   delete [] frameDataMarshalFriendly->jx;
+   delete [] frameDataMarshalFriendly->jy;
+   delete [] frameDataMarshalFriendly->jz;
+   delete [] frameDataMarshalFriendly->jrw;
+   delete [] frameDataMarshalFriendly->jrx;
+   delete [] frameDataMarshalFriendly->jry;
+   delete [] frameDataMarshalFriendly->jrz;
+
+   frameDataMarshalFriendly->jname = NULL;
+   frameDataMarshalFriendly->jx  = NULL;
+   frameDataMarshalFriendly->jy  = NULL;
+   frameDataMarshalFriendly->jz  = NULL;
+   frameDataMarshalFriendly->jrw = NULL;
+   frameDataMarshalFriendly->jrx = NULL;
+   frameDataMarshalFriendly->jry = NULL;
+   frameDataMarshalFriendly->jrz = NULL;
+}
+
+
+void SBCharacter::FreeFrameDataMarshalFriendly()
+{
+   FreeFrameDataJointsMarshalFriendly();
+
+   delete [] frameDataMarshalFriendly->m_name;
+   frameDataMarshalFriendly->m_name = NULL;
+}
+
+
+SBAPI const SBM_CharacterFrameDataMarshalFriendly & SBCharacter::GetFrameDataMarshalFriendly()
+{
+   const SkJoint * joint = get_world_offset_joint();
+
+   const SkJointPos * pos = joint->const_pos();
+   float x = pos->value( SkJointPos::X );
+   float y = pos->value( SkJointPos::Y );
+   float z = pos->value( SkJointPos::Z );
+
+   SkJoint::RotType rot_type = joint->rot_type();
+   if ( rot_type != SkJoint::TypeQuat )
+   {
+      //cerr << "ERROR: Unsupported world_offset rotation type: " << rot_type << " (Expected TypeQuat, "<<SkJoint::TypeQuat<<")"<<endl;
+   }
+
+   // const_cast because the SrQuat does validation (no const version of value())
+   const SrQuat & q = ((SkJoint *)joint)->quat()->value();
+
+   frameDataMarshalFriendly->x = x;
+   frameDataMarshalFriendly->y = y;
+   frameDataMarshalFriendly->z = z;
+   frameDataMarshalFriendly->rw = q.w;
+   frameDataMarshalFriendly->rx = q.x;
+   frameDataMarshalFriendly->ry = q.y;
+   frameDataMarshalFriendly->rz = q.z;
+
+   const std::vector<SkJoint *> & joints  = getSkeleton()->joints();
+
+   if (frameDataMarshalFriendly->m_numJoints == 0 || frameDataMarshalFriendly->m_numJoints != joints.size())
+   {
+      FreeFrameDataJointsMarshalFriendly();
+
+      frameDataMarshalFriendly->m_numJoints = joints.size();
+      frameDataMarshalFriendly->jname = new char * [ frameDataMarshalFriendly->m_numJoints ];
+      frameDataMarshalFriendly->jx = new float [ frameDataMarshalFriendly->m_numJoints ];
+      frameDataMarshalFriendly->jy = new float [ frameDataMarshalFriendly->m_numJoints ];
+      frameDataMarshalFriendly->jz = new float [ frameDataMarshalFriendly->m_numJoints ];
+      frameDataMarshalFriendly->jrw = new float [ frameDataMarshalFriendly->m_numJoints ];
+      frameDataMarshalFriendly->jrx = new float [ frameDataMarshalFriendly->m_numJoints ];
+      frameDataMarshalFriendly->jry = new float [ frameDataMarshalFriendly->m_numJoints ];
+      frameDataMarshalFriendly->jrz = new float [ frameDataMarshalFriendly->m_numJoints ];
+
+      for ( size_t i = 0; i < frameDataMarshalFriendly->m_numJoints; i++ )
+      {
+         frameDataMarshalFriendly->jname[ i ] = new char[ joints[ i ]->getName().length() + 1 ];
+         strcpy( frameDataMarshalFriendly->jname[ i ], joints[ i ]->getName().c_str() );
+      }
+   }
+
+
+   for ( size_t i = 0; i < joints.size(); i++ )
+   {
+      SkJoint * j = joints[i];
+      SrQuat q = j->quat()->value();
+
+      //printf( "%s %f %f %f %f\n", (const char *)j->name(), q.w, q.x, q.y, q.z );
+
+      float posx = j->pos()->value( 0 );
+      float posy = j->pos()->value( 1 );
+      float posz = j->pos()->value( 2 );
+      if ( false )
+      {
+         posx += j->offset().x;
+         posy += j->offset().y;
+         posz += j->offset().z;
+      }
+
+      std::string jointName;
+      if (j->extName() != "")
+         jointName = j->extName();
+      else
+         jointName = j->jointName();
+
+      frameDataMarshalFriendly->jx[i] = posx;
+      frameDataMarshalFriendly->jy[i] = posy;
+      frameDataMarshalFriendly->jz[i] = posz;
+      frameDataMarshalFriendly->jrw[i] = q.w;
+      frameDataMarshalFriendly->jrx[i] = q.x;
+      frameDataMarshalFriendly->jry[i] = q.y;
+      frameDataMarshalFriendly->jrz[i] = q.z;
+   }
+
+   return *frameDataMarshalFriendly;
+}
 
 };

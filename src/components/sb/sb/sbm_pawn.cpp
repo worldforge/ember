@@ -167,9 +167,9 @@ void SbmPawn::initData()
 	//phyObj_p = NULL;
 #ifdef EMBER_SB_STEER
 	steeringSpaceObj_p = NULL;
-	steeringSpaceObjSize.x = 20.0f;
-	steeringSpaceObjSize.y = 20.0f;
-	steeringSpaceObjSize.z = 20.0f;
+	steeringSpaceObjSize.x = 1.0f;
+	steeringSpaceObjSize.y = 1.0f;
+	steeringSpaceObjSize.z = 1.0f;
 #endif
 	// world_offset_writer_p, applies external inputs to the skeleton,
 	//   and therefore needs to evaluate before other controllers
@@ -351,7 +351,7 @@ void SbmPawn::reset_all_channels()
 	if (!_skeleton)
 		return;
 
-	SkChannelArray& channels = _skeleton->channels();
+	SkChannelArray& channels = ct_tree_p->channels();
 	MeFrameData& frameData = ct_tree_p->getLastFrame();
 	SrBuffer<float>& sr_fbuff = frameData.buffer();
 	int n = channels.size();

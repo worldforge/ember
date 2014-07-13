@@ -153,41 +153,6 @@ public:
 
 	virtual void applySkeletonToBuffer() = 0;
 
-	///**
-	// *  Returns a map of channel index to the index of 
-	// *  the channel's first float in the buffer.
-	// */
-	//virtual SrBuffer<int>& getLastFrameMap() = 0;
-	//
-	///**
-	// *  Returns the results of the last frame.
-	// */
-	//virtual SrBuffer<float>& getLastFrameBuffer() =0;
-
-	/**
-	 *  Sets the tree's evaluation logger.
-	 */
-	virtual void set_evaluation_logger( MeEvaluationLogger* logger ) = 0;
-
-	/**
-	 *  Returns a pointer to the current evaluation logger (may be NULL).
-	 */
-	virtual MeEvaluationLogger* get_evaluation_logger() const = 0;
-
-	/**
-	 *  Sets the currently logged joints (and related channels) by name.
-	 */
-	virtual void set_logged_joints( std::set<std::string>& joint_names ) = 0;
-
-	/**
-	 *  Returns a reference to the currently logged channel indices.
-	 */
-	virtual const std::set<std::string>& get_logged_joints() const = 0;
-
-	/**
-	 *  Returns a reference to the currently logged channel indices.
-	 */
-	virtual const std::set<int>& get_logged_channel_indices() const = 0;
 
 	virtual SbmPawn* getPawn() = 0;
 	virtual void setPawn(SbmPawn* pawn) = 0;

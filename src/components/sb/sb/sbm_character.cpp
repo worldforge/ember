@@ -17,7 +17,7 @@
 *      http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#include <vhcl/vhcl.h>
+#include "vhcl/vhcl.h"
 
 #include <sb/SBTypes.h>
 #include "sb/sbm_character.hpp"
@@ -25,31 +25,31 @@
 #include <stdio.h>
 
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <cstring>
 #include <map>
+#include <fstream>
 
 #include <sk/sk_skeleton.h>
 #include <sk/sk_motion.h>
 #include "sbm/sr_path_list.h"
 #include "sbm/sbm_constants.h"
-#include <sbm/general_param_setting.h> 
+#include <sbm/general_param_setting.h>
 #include <sbm/action_unit.hpp>
-#include <controllers/me_prune_policy.hpp> 
-#include <controllers/me_ct_blend.hpp> 
-#include <controllers/me_ct_time_shift_warp.hpp> 
+#include <controllers/me_prune_policy.hpp>
+#include <controllers/me_ct_blend.hpp>
+#include <controllers/me_ct_time_shift_warp.hpp>
 
 #include "sbm/mcontrol_callbacks.h"
 #include "sb/SBScene.h"
-#include <controllers/me_spline_1d.hpp> 
-#include <controllers/me_ct_interpolator.h> 
-#include "sbm/sr_curve_builder.h" 
+#include <controllers/me_spline_1d.hpp>
+#include <controllers/me_ct_interpolator.h>
+#include "sbm/sr_curve_builder.h"
 #include "sbm/lin_win.h"
-#include "sbm/sbm_speech.hpp" // ?
-#include "sbm/general_param_setting.h" 
+#include "sbm/sbm_speech.hpp"
+#include "sbm/general_param_setting.h"
 #ifdef EMBER_SB_STEER
-	#include <sbm/PPRAISteeringAgent.h> 
+#include <sbm/PPRAISteeringAgent.h>
 #endif
 #include <boost/filesystem/operations.hpp>
 #include <sb/SBSkeleton.h>
@@ -57,35 +57,35 @@
 #include <sb/SBScene.h>
 #include <sb/SBJoint.h>
 #ifdef EMBER_SB_BONEBUS
-	#include <sb/SBBoneBusManager.h>
+#include <sb/SBBoneBusManager.h>
 #endif
 #include <sb/SBAssetManager.h>
 #ifdef EMBER_SB_STEER
-	#include <sb/SBSteerManager.h>
+#include <sb/SBSteerManager.h>
 #endif
 #include <sb/SBSimulationManager.h>
 #ifdef EMBER_SB_STEER
-	#include <sb/SBSteerAgent.h>
+#include <sb/SBSteerAgent.h>
 #endif
 #include <sb/SBAnimationStateManager.h>
 #include <sb/SBAnimationState.h>
 #include <sb/SBSceneListener.h>
 #include <sb/SBFaceDefinition.h>
-#include <controllers/me_ct_examples.h> 
-#include <controllers/me_ct_motion_player.h> 
-#include <controllers/me_ct_pose.h> 
+#include <controllers/me_ct_examples.h>
+#include <controllers/me_ct_motion_player.h>
+#include <controllers/me_ct_pose.h>
 #include <controllers/me_ct_quick_draw.h>
-#include <controllers/me_ct_noise_controller.h> // ?
+#include <controllers/me_ct_noise_controller.h>
 #include <controllers/me_ct_motion_recorder.h>
 #include <controllers/me_ct_scheduler2.h>
 #include <controllers/me_ct_eyelid.h>
-#include <controllers/me_ct_param_animation.h> 
-#include <controllers/me_ct_saccade.h> 
+#include <controllers/me_ct_param_animation.h>
+#include <controllers/me_ct_saccade.h>
 #include <controllers/me_ct_basic_locomotion.h>
 #include <controllers/me_ct_gaze.h>
 #include <controllers/me_ct_example_body_reach.hpp>
 #include <controllers/me_ct_breathing.h>
-#include <controllers/me_ct_hand.hpp> 
+#include <controllers/me_ct_hand.hpp>
 #include <controllers/me_ct_face.h>
 #include <controllers/me_ct_curve_writer.hpp>
 #include <controllers/me_controller_tree_root.hpp>
@@ -98,10 +98,8 @@
 #include <controllers/me_ct_physics_controller.h>
 
 // android does not use GPU shader for now
-#ifdef EMBER_SB_GPU
-#if !defined(__ANDROID__) && !defined(__FLASHPLAYER__) && !defined(SB_IPHONE)
-#include <sbm/GPU/SbmDeformableMeshGPU.h> // ?
-#endif
+#if defined(EMBER_SB_GPU) && !defined(__ANDROID__) && !defined(__FLASHPLAYER__) && !defined(SB_IPHONE)
+#include <sbm/GPU/SbmDeformableMeshGPU.h>
 #endif
 
 #define USE_REACH 1
@@ -659,9 +657,7 @@ void SbmCharacter::initData()
 	_diphoneSplineCurve = true;
 	_diphoneSmoothWindow = 0.2f;
 	_diphoneSpeedLimit = 20.0f;
-#ifdef EMBER_SB_NVBG
 	_nvbg = NULL;
-#endif
 	_miniBrain = NULL;
 
 	locomotion_type = Basic;
@@ -1632,14 +1628,14 @@ SmartBody::SpeechInterface* SbmCharacter::get_speech_impl_backup() const {
 }
 
 
-int SbmCharacter::set_voice_code( std::string& voice_code ) //allows you to set the voice-- made different from the init because of non Rhetoric might not have voice codes
+int SbmCharacter::set_voice_code( const std::string& voice_code ) //allows you to set the voice-- made different from the init because of non Rhetoric might not have voice codes
 {
 	//TODO: LOOK AND SEE IF THIS VOICE EXISTS AND IF IT DOESN'T PRINT ERROR MESSAGE AND RETURN FAILURE
 	this->voice_code = voice_code; //sets voice 
 	return (CMD_SUCCESS);
 }
 
-int SbmCharacter::set_voice_code_backup( std::string& voice_code ) //allows you to set the voice-- made different from the init because of non Rhetoric might not have voice codes
+int SbmCharacter::set_voice_code_backup( const std::string& voice_code ) //allows you to set the voice-- made different from the init because of non Rhetoric might not have voice codes
 {
 	//TODO: LOOK AND SEE IF THIS VOICE EXISTS AND IF IT DOESN'T PRINT ERROR MESSAGE AND RETURN FAILURE
 	this->voice_code_backup = voice_code; //sets voice 
@@ -1936,7 +1932,6 @@ void SbmCharacter::forward_visemes( double curTime )
 		sendVisemes = true;
 #endif
 #endif
-
 	if( sendVisemes || listeners.size() )
 	{
 		SkChannelArray& channels = _skeleton->channels();
@@ -2582,7 +2577,7 @@ SmartBody::MiniBrain* SbmCharacter::getMiniBrain()
 
 bool SbmCharacter::checkExamples()
 {
-#ifdef EMBER_SB_STEER
+	#ifdef EMBER_SB_STEER
 	SmartBody::SBSteerManager* steerManager = SmartBody::SBScene::getScene()->getSteerManager();
 	SmartBody::SBSteerAgent* steerAgent = steerManager->getSteerAgent(getName());
 	if (steerAgent)
@@ -2590,7 +2585,8 @@ bool SbmCharacter::checkExamples()
 		PPRAISteeringAgent* steersuiteAgent = dynamic_cast<PPRAISteeringAgent*>(steerAgent);
 		steersuiteAgent->updateSteerStateName();
 	}
-#endif
+	#endif
+
 	
 	std::string prefix = this->getName();
 	if (this->statePrefix != "")
@@ -2621,16 +2617,15 @@ bool SbmCharacter::checkExamples()
 	}
 	if (numMissing == 0)
 	{
-		LOG("%s: Steering works under standard config.", this->getName().c_str());
-	#ifdef EMBER_SB_STEER
+		#ifdef EMBER_SB_STEER
+		//LOG("%s: Steering works under standard config.", this->getName().c_str());
 		if (steerAgent)
 		{
 			PPRAISteeringAgent* steersuiteAgent = dynamic_cast<PPRAISteeringAgent*>(steerAgent);
 			steersuiteAgent->steeringConfig = PPRAISteeringAgent::STANDARD;
 			return true;
 		}
-	#endif
-		
+		#endif
 	}
 
 	std::vector<std::string> minimalRequiredStates;
@@ -2649,16 +2644,15 @@ bool SbmCharacter::checkExamples()
 //			LOG("SteeringAgent::checkExamples() minimal config: Could not find state '%s' needed for example-based locomotion.", minimalRequiredStates[x].c_str());
 		}
 	}
-
-#ifdef EMBER_SB_STEER
 	if (numMissing1 == 0)
 	{
+		#ifdef EMBER_SB_STEER
 		LOG("%s: Steering works under minimal config.", this->getName().c_str());
 		PPRAISteeringAgent* steersuiteAgent = dynamic_cast<PPRAISteeringAgent*>(steerAgent);
 		steersuiteAgent->steeringConfig = PPRAISteeringAgent::MINIMAL;
 		return true;
+		#endif
 	}
-#endif
 	LOG("%s: Steering cannot work under example mode, reverting back to basic mode", this->getName().c_str());
 	return false;
 }

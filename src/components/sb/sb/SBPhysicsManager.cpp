@@ -5,10 +5,10 @@
 #endif
 #endif
 
-#include <sb/SBSimulationManager.h>
-#include <sb/SBScene.h>
 #include <sb/SBCharacter.h>
 #include <sb/SBSkeleton.h>
+#include <sb/SBSimulationManager.h>
+#include <sb/SBScene.h>
 #include <sb/SBPhysicsSim.h>
 #include <sbm/ODEPhysicsSim.h>
 
@@ -269,7 +269,7 @@ SmartBody::SBObject* SBPhysicsManager::createPhysicsCharacter( std::string charN
 	while (!tempJointList.empty())
 	{
 		SkJoint* joint = tempJointList.front(); tempJointList.pop();
-		std::string jName = joint->jointName();
+		std::string jName = joint->getMappedJointName();
 		if (joint->num_children() == 0) // don't process leaves
 			continue;
 		jointNameList.push_back(jName);
@@ -334,7 +334,7 @@ void SBPhysicsManager::updatePhysicsCharacter( std::string charName )
 	{
 		SbmJointObj* phyObj = mi->second;
 		SBJoint* joint = phyObj->getSBJoint();
-		const std::string& jointName = joint->jointName();		
+		const std::string& jointName = joint->getMappedJointName();		
 		bool kinematicRoot = (jointName == "base" || jointName == "JtPelvis") && phyChar->getBoolAttribute("kinematicRoot");	
 #if USE_PHYSICS_CHARACTER		
 		bool constraintObj = false;

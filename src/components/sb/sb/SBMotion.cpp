@@ -1,4 +1,4 @@
-#include <vhcl/vhcl.h>
+#include "vhcl/vhcl.h"
 #include "SBMotion.h"
 #include <sb/SBScene.h>
 #include <sr/sr_euler.h>
@@ -26,7 +26,7 @@
 #endif
 #include <fstream>
 #ifdef EMBER_SB_MOTIONBINARY
-	#include <protocols/sbmotion.pb.h>
+#include <protocols/sbmotion.pb.h>
 #endif
 
 namespace SmartBody {
@@ -555,6 +555,49 @@ void SBMotion::alignToSide(int numFrames, int direction)
 		alignIndex -= numFrames;	
 	else if (direction == 1)
 		alignIndex += numFrames;
+}
+
+void SBMotion::addSimilarPose(const std::string& motionName)
+{
+	for (std::vector<std::string>::iterator iter = _similarPoses.begin();
+		 iter != _similarPoses.end();
+		 iter++)
+	{
+		if ((*iter) == motionName)
+		{
+			LOG("Pose named '%s' already similar to motion %s.", motionName.c_str(), this->getName().c_str());
+			return;
+		}
+	}
+
+	_similarPoses.push_back(motionName);
+}
+
+void SBMotion::removeSimilarPose(const std::string& motionName)
+{
+	for (std::vector<std::string>::iterator iter = _similarPoses.begin();
+		 iter != _similarPoses.end();
+		 iter++)
+	{
+		if ((*iter) == motionName)
+		{
+			_similarPoses.erase(iter);
+			return;
+		}
+	}
+	LOG("Could not find similar pose '%s' for motion '%s'.", motionName.c_str(), this->getName().c_str());
+}
+
+std::vector<std::string> SBMotion::getSimilarPoses()
+{
+	std::vector<std::string> poses;
+	for (std::vector<std::string>::iterator iter = _similarPoses.begin();
+		 iter != _similarPoses.end();
+		 iter++)
+	{
+		poses.push_back(*iter);
+	}
+	return poses;
 }
 
 
@@ -1772,13 +1815,12 @@ bool SBMotion::trim(int numFramesFromFront, int numFramesFromBack)
 	for (int i=frames()-1; i>= newFrames; i--)
 	{
 		Frame& delFrame = _frames[i];
-		delete [] delFrame.posture;
+		free(delFrame.posture);
 		_frames.pop_back();
 	}
 
 	return true;
 }
-
 
 void SBMotion::saveToSkm(const std::string& fileName)
 {

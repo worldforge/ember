@@ -89,7 +89,7 @@ void SBFaceDefinition::setFaceNeutral(const std::string& motionName)
 
 	_faceNeutral = motion;
 
-	LOG("Face neutral motion is now '%s'.", motionName.c_str());
+	//LOG("Face neutral motion is now '%s'.", motionName.c_str());
 }
 
 SkMotion* SBFaceDefinition::getFaceNeutral()

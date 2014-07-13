@@ -5,44 +5,40 @@
 #include <sb/SBSceneListener.h>
 #include <sb/SBSkeleton.h>
 #ifdef EMBER_SB_STEER
-	#include <sb/SBNavigationMesh.h>
+#include <sb/SBNavigationMesh.h>
 #endif
+#include <sb/SBAssetHandlerSkm.h>
+#include <sb/SBAssetHandlerSk.h>
+#include <sb/SBAssetHandlerOgre.h>
 #ifdef EMBER_SB_OTHFMT
-	#include <sb/SBAssetHandlerSk.h> // ?
-	#include <sb/SBAssetHandlerCOLLADA.h> // ?
-	#include <sb/SBAssetHandlerAsf.h> // ?
-	#include <sb/SBAssetHandlerObj.h> // ?
-#endif
-#include <sb/SBAssetHandlerOgre.h> // ?
-#include <sb/SBAssetHandlerSkm.h> // ?
-#ifdef EMBER_SB_MOTIONBINARY
-	#include <sb/SBAssetHandlerSkmb.h> // ?
-#endif
-#ifdef EMBER_SB_OTHFMT
-	#include <sb/SBAssetHandlerBvh.h> // ?
-	#include <sb/SBAssetHandlerAmc.h> // ?
-	#include <sb/SBAssetHandlerPly.h> // ?
-#endif
-#ifdef EMBER_SB_MESHBINARY
-	#include <sb/SBAssetHandlerSBMeshBinary.h> // ?
+#include <sb/SBAssetHandlerCOLLADA.h>
+#include <sb/SBAssetHandlerAsf.h>
+#include <sb/SBAssetHandlerObj.h>
+#include <sb/SBAssetHandlerSkmb.h>
+#include <sb/SBAssetHandlerBvh.h>
+#include <sb/SBAssetHandlerAmc.h>
+#include <sb/SBAssetHandlerPly.h>
+#include <sb/SBAssetHandlerSBMeshBinary.h>
 #endif
 #include <boost/version.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/algorithm/string.hpp>
+#include <sbm/ParserOgre.h>
 #ifdef EMBER_SB_OTHFMT
-	#include <sbm/ParserBVH.h> // ?
-	#include <sbm/ParserOpenCOLLADA.h> // ?
-	#include <sbm/ParserCOLLADAFast.h> // ?
-	#include <sbm/ParserASFAMC.h> // ?
-	#include <sbm/ParserBVH.h> // ?
-	#include <sbm/ParserFBX.h> // ?
+#include <sbm/ParserBVH.h>
+#include <sbm/ParserOpenCOLLADA.h>
+#include <sbm/ParserCOLLADAFast.h>
+#include <sbm/ParserASFAMC.h>
+#include <sbm/ParserBVH.h>
+#include <sbm/ParserFBX.h>
 #endif
-#include <sbm/ParserOgre.h> // ?
 #include <sbm/lin_win.h>
 #include <sbm/sr_path_list.h>
 #include <sbm/sbm_constants.h>
+
+#include <boost/filesystem/path.hpp>
 
 #ifdef WIN32
 #include <direct.h>
@@ -67,23 +63,19 @@ SBAssetManager::SBAssetManager()
 	createDoubleAttribute("globalSkeletonScale", 1,true,"",30,false,false,false,"Multiplier when loading all skeletons. ");
 	createDoubleAttribute("globalMotionScale", 1,true,"",30,false,false,false,"Multiplier when loading all motions.");
 
-	addAssetHandler(new SBAssetHandlerOgre());	
 	addAssetHandler(new SBAssetHandlerSkm());
-#ifdef EMBER_SB_OTHFMT
-	addAssetHandler(new SBAssetHandlerSk());	
+	addAssetHandler(new SBAssetHandlerSk());
+	addAssetHandler(new SBAssetHandlerOgre());		
+	#ifdef EMBER_SB_OTHFMT
 	addAssetHandler(new SBAssetHandlerCOLLADA());	
 	addAssetHandler(new SBAssetHandlerAsf());	
 	addAssetHandler(new SBAssetHandlerAmc());	
 	addAssetHandler(new SBAssetHandlerObj());	
-	addAssetHandler(new SBAssetHandlerPly());
+	addAssetHandler(new SBAssetHandlerPly());	
+	addAssetHandler(new SBAssetHandlerSkmb());	
 	addAssetHandler(new SBAssetHandlerBvh());	
-#endif
-#ifdef EMBER_SB_MOTIONBINARY	
-	addAssetHandler(new SBAssetHandlerSkmb());
-#endif	
-#ifdef EMBER_SB_MESHBINARY
 	addAssetHandler(new SBAssetHandlerSBMeshBinary());
-#endif
+	#endif
 	uniqueSkeletonId = 0;
 
 	_motionCounter = 0;
@@ -486,7 +478,9 @@ void SBAssetManager::loadAsset(const std::string& assetPath)
 
 #endif
 
-		std::string finalPath = p.string();
+	std::string finalPath = p.string();
+
+	//LOG("Asset loading from final path = %s", finalPath.c_str());
 
 	// make sure the file exists and is readable
 	std::ifstream file(finalPath.c_str());
@@ -882,7 +876,7 @@ SBMotion* SBAssetManager::addMotionDefinition(const std::string& name, double du
 	if (iter != _motions.end())
 	{
 		LOG("Motion named %s already exists, new motion will not be added.", name.c_str());
-		return false;
+		return NULL;
 	}
 
 	SBMotion* sbMotion = new SBMotion();
@@ -1068,7 +1062,12 @@ int SBAssetManager::load_me_motions( const char* pathname, bool recurse_dirs, do
 	}
 
 	if (1) {
-		return load_me_motions_impl( finalPath, recurse_dirs, scale, "ERROR: " );
+#if (BOOST_VERSION > 104400)
+		std::string finalPathStr = finalPath.string();
+#else
+		std::string finalPathStr = finalPath.native_file_string();  
+#endif
+		return load_me_motions_impl( finalPathStr, recurse_dirs, scale, "ERROR: " );
 	} else {
 		LOG("ERROR: Invalid motion path \"%s\".", finalPath.string().c_str());
 		return CMD_FAILURE;
@@ -1076,8 +1075,9 @@ int SBAssetManager::load_me_motions( const char* pathname, bool recurse_dirs, do
 }
 
 
-int SBAssetManager::load_me_motions_impl( const boost::filesystem::path& pathname, bool recurse_dirs, double scale, const char* error_prefix )
+int SBAssetManager::load_me_motions_impl( const std::string& pathStr, bool recurse_dirs, double scale, const char* error_prefix )
 {
+	boost::filesystem::path pathname(pathStr);
 
 	if( !boost::filesystem::exists( pathname ) )
 	{
@@ -1111,31 +1111,42 @@ int SBAssetManager::load_me_motions_impl( const boost::filesystem::path& pathnam
 
 			if( boost::filesystem::is_directory( cur ) ) {
 				if( recurse_dirs )
-					load_me_motions_impl( cur, recurse_dirs, scale, "WARNING: " );
+				{
+#if (BOOST_VERSION > 104400)
+					std::string curStr = cur.string();
+#else
+					std::string curStr = cur.native_file_string();  
+#endif
+					load_me_motions_impl( curStr, recurse_dirs, scale, "WARNING: " );
+				}
 			} else {
 				std::string ext = boost::filesystem::extension( cur );
+#ifdef EMBER_SB_OTHFMT
 #if ENABLE_FBX_PARSER
 				if( _stricmp( ext.c_str(), ".skm" ) == 0 || 
-					_stricmp( ext.c_str(), ".xml" ) == 0 
-				#ifdef EMBER_SB_OTHFMT
-				|| 	_stricmp( ext.c_str(), ".bvh" ) == 0 ||
+					_stricmp( ext.c_str(), ".bvh" ) == 0 ||
 					_stricmp( ext.c_str(), ".dae" ) == 0 ||
 					_stricmp( ext.c_str(), ".amc" ) == 0 ||
-					_stricmp( ext.c_str(), ".fbx" ) == 0
-				#endif
-					)
+					_stricmp( ext.c_str(), ".xml" ) == 0 ||
+					_stricmp( ext.c_str(), ".fbx" ) == 0)
 #else
 				if( _stricmp( ext.c_str(), ".skm" ) == 0 || 
-					_stricmp( ext.c_str(), ".xml" ) == 0 
-				#ifdef EMBER_SB_OTHFMT
-				||	_stricmp( ext.c_str(), ".bvh" ) == 0 ||
+					_stricmp( ext.c_str(), ".bvh" ) == 0 ||
 					_stricmp( ext.c_str(), ".dae" ) == 0 ||
-					_stricmp( ext.c_str(), ".amc" ) == 0 ||
-				#endif
-					)
+					_stricmp( ext.c_str(), ".xml" ) == 0 ||
+					_stricmp( ext.c_str(), ".amc" ) == 0)
+#endif
+#else
+				if( _stricmp( ext.c_str(), ".skm" ) == 0 ||
+					_stricmp( ext.c_str(), ".xml" ) == 0)
 #endif
 				{
-					load_me_motions_impl( cur, false, scale, "WARNING: " );
+#if (BOOST_VERSION > 104400)
+					std::string curStr = cur.string();
+#else
+					std::string curStr = cur.native_file_string();  
+#endif
+					load_me_motions_impl( curStr, false, scale, "WARNING: " );
 				} 
 				else if( DEBUG_LOAD_PATHS2 ) {
 					LOG("DEBUG: load_me_motion_impl(): Skipping \"%s\".  Extension \"%s\" does not match MOTION_EXT.", cur.string().c_str(), ext.c_str() );
@@ -1173,7 +1184,8 @@ int SBAssetManager::load_me_motions_impl( const boost::filesystem::path& pathnam
 			SBSkeleton skeleton;
 			parseSuccessful = ParserOgre::parse(skeleton, motions, convertedPath, float(scale), true, true);			
 		}
-	#ifdef EMBER_SB_OTHFMT
+
+		#ifdef EMBER_SB_OTHFMT
 		else if (ext == ".bvh" || ext == ".BVH")
 		{
 			std::ifstream filestream( convertedPath.c_str() );
@@ -1243,8 +1255,7 @@ int SBAssetManager::load_me_motions_impl( const boost::filesystem::path& pathnam
 				motions.push_back(motion);
 		}
 #endif
-	#endif
-
+		#endif
 		if (parseSuccessful)
 		{
 			// register the motion
@@ -1410,7 +1421,7 @@ SmartBody::SBSkeleton* SBAssetManager::load_skeleton( const char *skel_file, srP
 		//filename = path_list.next_filename( buffer, skel_file, & path );
 		filename = path_list.next_filename( buffer, skel_file);
 		if( filename.size() > 0 )	{
-			if( fp = fopen( filename.c_str(), "rt" ) )	{
+			if( (fp = fopen( filename.c_str(), "rt" )) )	{
 				done = TRUE;
 			}
 		}
@@ -1433,19 +1444,8 @@ SmartBody::SBSkeleton* SBAssetManager::load_skeleton( const char *skel_file, srP
 #if 0
 	if( !skeleton_p->load( input, path ) )	{ 
 #else
-	if (filename.find(".skeleton.xml") == (filename.size() - 13) || 
-			 filename.find(".SKELETON.XML") == (filename.size() - 13))
-	{
-		fclose(fp);
-		SmartBody::SBMotion motion;
-		std::vector<SmartBody::SBMotion*> motions;
-		motions.push_back(&motion);
-		ParserOgre::parse(*skeleton_p, motions, filename, float(scale), true, false);
-		skeleton_p->skfilename(filename.c_str());
-		skeleton_p->setName(skel_file);
-	}
-#ifdef EMBER_SB_OTHFMT
-	else if (filename.find(".bvh") == (filename.size() - 4) || 
+	#ifdef EMBER_SB_OTHFMT
+	if (filename.find(".bvh") == (filename.size() - 4) || 
 		filename.find(".BVH") == (filename.size() - 4))
 	{
 		fclose(fp);
@@ -1476,6 +1476,17 @@ SmartBody::SBSkeleton* SBAssetManager::load_skeleton( const char *skel_file, srP
 		skeleton_p->skfilename(filename.c_str());
 		skeleton_p->setName(skel_file);
 	}
+	else if (filename.find(".skeleton.xml") == (filename.size() - 13) || 
+			 filename.find(".SKELETON.XML") == (filename.size() - 13))
+	{
+		fclose(fp);
+		SmartBody::SBMotion motion;
+		std::vector<SmartBody::SBMotion*> motions;
+		motions.push_back(&motion);
+		ParserOgre::parse(*skeleton_p, motions, filename, float(scale), true, false);
+		skeleton_p->skfilename(filename.c_str());
+		skeleton_p->setName(skel_file);
+	}
 #if ENABLE_FBX_PARSER
 	else if (filename.find(".fbx") == (filename.size() - 4) || 
 			 filename.find(".FBX") == (filename.size() - 4))
@@ -1488,7 +1499,19 @@ SmartBody::SBSkeleton* SBAssetManager::load_skeleton( const char *skel_file, srP
 		skeleton_p->name(skel_file);
 	}
 #endif
-#endif
+	#else
+	if (filename.find(".skeleton.xml") == (filename.size() - 13) || 
+			 filename.find(".SKELETON.XML") == (filename.size() - 13))
+	{
+		fclose(fp);
+		SmartBody::SBMotion motion;
+		std::vector<SmartBody::SBMotion*> motions;
+		motions.push_back(&motion);
+		ParserOgre::parse(*skeleton_p, motions, filename, float(scale), true, false);
+		skeleton_p->skfilename(filename.c_str());
+		skeleton_p->setName(skel_file);
+	}
+	#endif
 	else
 	{
 		//now the "geopath" can be still sent in the load() method as before,
@@ -1496,13 +1519,12 @@ SmartBody::SBSkeleton* SBAssetManager::load_skeleton( const char *skel_file, srP
 		//associated with the input, as done here:
 		input.filename(filename.c_str());
 		if( !skeleton_p->loadSk( input, scale ) )	{ 
-
+#endif
 			LOG("ERROR: load_skeleton(..): Unable to load skeleton file \"%s\".", skel_file);
 			return NULL;
 		}
 		skeleton_p->skfilename(filename.c_str());
 	}
-#endif
 //	char CurrentPath[_MAX_PATH];
 //	_getcwd(CurrentPath, _MAX_PATH);
 //	char *full_filename = new char[_MAX_PATH];
@@ -1531,9 +1553,9 @@ SmartBody::SBSkeleton* SBAssetManager::load_skeleton( const char *skel_file, srP
 
 
 
-int SBAssetManager::load_me_skeletons_impl( const boost::filesystem::path& pathname, std::map<std::string, SmartBody::SBSkeleton*>& map, bool recurse_dirs, double scale, const char* error_prefix )
+int SBAssetManager::load_me_skeletons_impl( const std::string& pathStr, std::map<std::string, SmartBody::SBSkeleton*>& map, bool recurse_dirs, double scale, const char* error_prefix )
 {
-		
+	boost::filesystem::path pathname(pathStr);	
 	if( !exists( pathname ) ) {
 #if (BOOST_VERSION > 104400)
 		LOG("%s Skeleton path \"%s\" not found.", error_prefix,  pathname.string().c_str());
@@ -1551,13 +1573,19 @@ int SBAssetManager::load_me_skeletons_impl( const boost::filesystem::path& pathn
 
 			if( boost::filesystem::is_directory( cur ) ) {
 				if( recurse_dirs )
-					load_me_skeletons_impl( cur, map, recurse_dirs, scale, "WARNING: " );
+				{
+#if (BOOST_VERSION > 104400)
+					std::string curStr = cur.string();
+#else
+					std::string curStr = cur.native_file_string();  
+#endif
+					load_me_skeletons_impl( curStr, map, recurse_dirs, scale, "WARNING: " );
+				}
 			} else {
 				std::string ext = boost::filesystem::extension( cur );
+				#ifdef EMBER_SB_OTHFMT
 #if ENABLE_FBX_PARSER
-				if( _stricmp( ext.c_str(), ".xml" ) == 0 
-			#ifdef EMBER_SB_OTHFMT
-				||	_stricmp( ext.c_str(), ".sk" ) == 0 ||
+				if( _stricmp( ext.c_str(), ".sk" ) == 0 ||
 					_stricmp( ext.c_str(), ".bvh" ) == 0 ||
 					_stricmp( ext.c_str(), ".BVH" ) == 0 ||
 					_stricmp( ext.c_str(), ".dae" ) == 0 ||
@@ -1565,24 +1593,29 @@ int SBAssetManager::load_me_skeletons_impl( const boost::filesystem::path& pathn
 					_stricmp( ext.c_str(), ".asf" ) == 0 ||
 					_stricmp( ext.c_str(), ".ASF" ) == 0 ||
 					_stricmp( ext.c_str(), ".fbx" ) == 0 ||
-					_stricmp( ext.c_str(), ".FBX" ) == 0
-			#endif
-					)
+					_stricmp( ext.c_str(), ".xml" ) == 0 ||
+					_stricmp( ext.c_str(), ".FBX" ) == 0)
 #else
-				if( _stricmp( ext.c_str(), ".xml" ) == 0
-			#ifdef EMBER_SB_OTHFMT
-				||	_stricmp( ext.c_str(), ".sk" ) == 0 ||
+				if( _stricmp( ext.c_str(), ".sk" ) == 0 ||
 					_stricmp( ext.c_str(), ".bvh" ) == 0 ||
 					_stricmp( ext.c_str(), ".BVH" ) == 0 ||
 					_stricmp( ext.c_str(), ".dae" ) == 0 ||
 					_stricmp( ext.c_str(), ".DAE" ) == 0 ||
 					_stricmp( ext.c_str(), ".asf" ) == 0 ||
-					_stricmp( ext.c_str(), ".ASF" ) == 0
-			#endif
-					)
+					_stricmp( ext.c_str(), ".ASF" ) == 0 ||
+					_stricmp( ext.c_str(), ".xml" ) == 0)
 #endif
+				#else
+				if( _stricmp( ext.c_str(), ".sk" ) == 0 ||
+					_stricmp( ext.c_str(), ".xml" ) == 0)
+				#endif
 				{
-					load_me_skeletons_impl( cur, map, recurse_dirs, scale, "WARNING: " );
+#if (BOOST_VERSION > 104400)
+					std::string curStr = cur.string();
+#else
+					std::string curStr = cur.native_file_string();  
+#endif
+					load_me_skeletons_impl( curStr, map, recurse_dirs, scale, "WARNING: " );
 				} 
 				else if( DEBUG_LOAD_PATHS2 ) {
 					LOG("DEBUG: load_me_skeleton_impl(): Skipping \"%s\".  Extension \"%s\" does not match .sk.", cur.string().c_str(), ext.c_str() );
@@ -1595,35 +1628,7 @@ int SBAssetManager::load_me_skeletons_impl( const boost::filesystem::path& pathn
 		std::string filebase = boost::filesystem::basename(pathname);
 		std::string fullName = filebase + ext;
 		SmartBody::SBSkeleton* skeleton = NULL;
-		if (ext == ".xml" || ext == ".XML")
-		{			
-			skeleton =  new SmartBody::SBSkeleton();
-			skeleton->skfilename(fullName.c_str());			
-			skeleton->setName(fullName);
-			std::vector<SmartBody::SBMotion*> motions;
-			bool ok = ParserOgre::parse(*skeleton, motions, pathname.string(), float(scale), true, false);
-			if (ok)
-			{
-				std::map<std::string, SmartBody::SBSkeleton*>::iterator motionIter = map.find(filebase);
-				if (motionIter != map.end()) {
-#if (BOOST_VERSION > 104400)
-					LOG("ERROR: Skeleton by name of \"%s\" already exists. Ignoring file '%s'.", filebase.c_str(), pathname.string().c_str());
-#else
-					LOG("ERROR: Skeleton by name of \"%s\" already exists. Ignoring file '%s'.", filebase.c_str(), pathname.native_file_string().c_str());
-#endif
-					delete skeleton;
-					return CMD_FAILURE;
-				}
-				map.insert(std::pair<std::string, SmartBody::SBSkeleton*>(filebase + ext, skeleton));
-			}
-			else
-			{
-				LOG("Problem loading skeleton from file '%s'.", pathname.string().c_str());
-				return CMD_FAILURE;
-			}
-		}
-	#ifdef EMBER_SB_OTHFMT
-		else if (ext == ".sk")
+		if (ext == ".sk")
 		{			
 			skeleton = new SmartBody::SBSkeleton();
 			skeleton->ref();
@@ -1650,6 +1655,7 @@ int SBAssetManager::load_me_skeletons_impl( const boost::filesystem::path& pathn
 				}
 			}
 		}
+		#ifdef EMBER_SB_OTHFMT
 		else if (ext == ".bvh" || ext == ".BVH")
 		{		
 			std::ifstream filestream(pathname.string().c_str());
@@ -1766,7 +1772,34 @@ int SBAssetManager::load_me_skeletons_impl( const boost::filesystem::path& pathn
 			}
 		}
 #endif
-	#endif
+		#endif
+		else if (ext == ".xml" || ext == ".XML")
+		{			
+			skeleton =  new SmartBody::SBSkeleton();
+			skeleton->skfilename(fullName.c_str());			
+			skeleton->setName(fullName);
+			std::vector<SmartBody::SBMotion*> motions;
+			bool ok = ParserOgre::parse(*skeleton, motions, pathname.string(), float(scale), true, false);
+			if (ok)
+			{
+				std::map<std::string, SmartBody::SBSkeleton*>::iterator motionIter = map.find(filebase);
+				if (motionIter != map.end()) {
+#if (BOOST_VERSION > 104400)
+					LOG("ERROR: Skeleton by name of \"%s\" already exists. Ignoring file '%s'.", filebase.c_str(), pathname.string().c_str());
+#else
+					LOG("ERROR: Skeleton by name of \"%s\" already exists. Ignoring file '%s'.", filebase.c_str(), pathname.native_file_string().c_str());
+#endif
+					delete skeleton;
+					return CMD_FAILURE;
+				}
+				map.insert(std::pair<std::string, SmartBody::SBSkeleton*>(filebase + ext, skeleton));
+			}
+			else
+			{
+				LOG("Problem loading skeleton from file '%s'.", pathname.string().c_str());
+				return CMD_FAILURE;
+			}
+		}
 
 		skeleton->ref();		
 		//skeleton->setName(skeleton->skfilename());
@@ -1831,7 +1864,12 @@ int SBAssetManager::load_me_skeletons( const char* pathname, std::map<std::strin
 	}
 
 	if (1) {
-		return load_me_skeletons_impl( finalPath, map, recurse_dirs, scale, "ERROR: " );
+#if (BOOST_VERSION > 104400)
+		std::string finalPathStr = finalPath.string();
+#else
+		std::string finalPathStr = finalPath.native_file_string();  
+#endif
+		return load_me_skeletons_impl( finalPathStr, map, recurse_dirs, scale, "ERROR: " );
 	} else {
 		LOG("ERROR: Invalid skeleton path \"%s\".", finalPath.string().c_str() );
 		return CMD_FAILURE;

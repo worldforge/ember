@@ -165,6 +165,7 @@ public:
 class ReachStateInterface
 {	
 public:
+	virtual ~ReachStateInterface() {}
 	virtual void update(ReachStateData* rd) = 0;
 	virtual void updateEffectorTargetState(ReachStateData* rd) = 0;	
 	virtual float curStatePercentTime(ReachStateData* rd, float refTime)  { return 0.f; };

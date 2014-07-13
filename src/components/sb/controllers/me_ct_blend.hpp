@@ -127,7 +127,6 @@ public:
 
 		void child_channels_updated( MeController* child );
 
-		const std::set<int>& get_logged_channel_indices() const;
 	};
 	friend class MeCtBlend::Context;
 

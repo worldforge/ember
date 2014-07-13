@@ -24,11 +24,11 @@ class SBPawn : public SbmPawn
 
 		SBAPI SrVec getPosition();
 		SBAPI SrQuat getOrientation();
-		SBAPI void setPosition(SrVec pos);
-		SBAPI void setPositionSmooth(SrVec pos, float smoothTime);
-		SBAPI void setOrientation(SrQuat quat);
-		SBAPI void setHPR(SrVec hpr);
-		SBAPI void setHPRSmooth(SrVec hpr, float smoothTime);
+		SBAPI void setPosition(const SrVec& pos);
+		SBAPI void setPositionSmooth(const SrVec& pos, float smoothTime);
+		SBAPI void setOrientation(const SrQuat& quat);
+		SBAPI void setHPR(const SrVec& hpr);
+		SBAPI void setHPRSmooth(const SrVec& hpr, float smoothTime);
 		SBAPI SrVec getHPR();
 
 		SBAPI SBPhysicsObj* getPhysicsObject();

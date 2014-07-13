@@ -49,14 +49,6 @@ class SbmPawn;
 class MeControllerContext;
 class MePrunePolicy;
 
-
-
-#define VALIDATE_BLEND_CHANNEL_REMAP (0)  // See MeCtBlend::controller_evaluate(..)
-#if VALIDATE_BLEND_CHANNEL_REMAP
-	// Temporary hack: Predeclare MeCtBlend for friend privledges -Anm
-	class MeCtBlend;
-#endif 
-
 //=================================== MeController =====================================
 
 /*! The Base class of all controllers. It contains few parameters which are
@@ -67,10 +59,6 @@ class MePrunePolicy;
 class MeController
     : public SrSharedClass, public SmartBody::SBObject, public DefaultAttributeTable
 {
-#if VALIDATE_BLEND_CHANNEL_REMAP
-	friend MeCtBlend;   // Temporary hack
-#endif
-
 private :
 	static int instance_count;
 

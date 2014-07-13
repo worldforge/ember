@@ -34,7 +34,7 @@ void MeCtPosePostProcessing::updatePoseConstraint()
 			cons->rootName = trajRecord->refJointName;
 			if (consNames[i][0] == 'l')
 				cons->rootName = "l_hip";
-			else if (consNames[i][0] = 'r')
+			else if (consNames[i][0] == 'r')
 				cons->rootName = "r_hip";
 		}	
 		else
@@ -141,6 +141,7 @@ bool MeCtPosePostProcessing::controller_evaluate( double t, MeFrameData& frame )
 			{
 				MeCtIKTreeNode* node = ik_scenario.ikTreeNodes[i];
 				SrQuat qEval = node->getQuat(QUAT_CUR);//ik_scenario.ikQuatList[i];
+				//SrQuat qEval = node->getQuat(QUAT_REF);
 				SrQuat qInit = node->getQuat(QUAT_REF);
 				qEval.normalize();
 				qInit.normalize();
