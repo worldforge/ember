@@ -63,12 +63,9 @@ public:
 	bool setCorrespondingSkeletonName(std::string& sbName, const std::string& ogreName);
 
 	/**
-	 * @brief Returns true if this Ogre skeleton possesses its equivalent in SmartBody : 
-	 				* check through the assets if it has been loaded,
-	 				* if not, and if load is set to tru, try to load it,
-	 				* if it still can't do it, then, returns false.
+	 * @brief Returns true if this Ogre skeleton possesses its equivalent in SmartBody by checking through the assets if it has been loaded.
 	 */
-	bool hasSkeleton(const std::string& ogreName, bool load = false);
+	bool hasSkeleton(const std::string& ogreName);
 
 	/**
 	 * @brief Creates a new SmartBody character and initialize him (skeleton, behaviors, etc.).
@@ -101,7 +98,7 @@ private:
 	/**
 	 * @brief The SmartBody scene.
 	 */
-	SmartBody::SBScene *mScene;
+	SmartBody::SBScene& mScene;
 
 	/**
 	 * @brief SmartBody asset manager.
@@ -148,9 +145,9 @@ private:
 
 
 	/**
-	 * @brief Adds the asset paths for SmartBody (the paths are set in SmartBodyConsts.h).
+	 * @brief Load all the skeletons situated in motions/skeletons.
 	 */
-	void addAssetPaths(void);
+	void loadSkeletonAssets(void);
 
 	/**
 	 * @brief Loads and set up all the behaviors.

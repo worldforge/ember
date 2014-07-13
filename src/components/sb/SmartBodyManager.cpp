@@ -2,6 +2,7 @@
 #include "SmartBodyPathConsts.h"
 #include "SmartBodyBehaviors.h"
 #include "SmartBodyLocomotion.h"
+#include "SmartBodyGestures.h"
 #include "SmartBodySkeletonMap.h"
 #include "SmartBodyRepresentation.h"
 #include "SmartBodyAnimation.h"
@@ -15,16 +16,13 @@
 //#define NDEBUG
 #include <cassert>
 
-
 using namespace Ember;
 namespace Ember
 {
 
-
-// mScene stays as a pointer and not a reference, because the call the SBScene::getScene() allocates it. Consequently, is has to be deleted at the end.
 SmartBodyManager::SmartBodyManager(void) 
-	: mScene(SmartBody::SBScene::getScene()), mAssetManager(*mScene->getAssetManager()), mSimulation(*mScene->getSimulationManager()),
-	  mProcessor(*mScene->getBmlProcessor()), mIsInit(false)
+	: mScene(*SmartBody::SBScene::getScene()), mAssetManager(*mScene.getAssetManager()), mSimulation(*mScene.getSimulationManager()),
+	  mProcessor(*mScene.getBmlProcessor()), mIsInit(false)
 {
 	//Initialisation of the animation map.
 	for (int i = 0; i < SmartBodyAnimation::ANIMATIONS_COUNT; i ++)
@@ -35,6 +33,8 @@ SmartBodyManager::SmartBodyManager(void)
 
 SmartBodyManager::~SmartBodyManager(void)
 {
+	mSimulation.stop();
+
 	//Delete all characters.
 	for (int i = 0, n = mCharacters.size(); i < n; i ++)
 	{
@@ -47,7 +47,8 @@ SmartBodyManager::~SmartBodyManager(void)
 		delete mBehaviors[i];
 	}
 
-	delete mScene;
+	//Deleting the scene carries problems.
+	//delete &mScene;
 }
 
 
@@ -55,16 +56,16 @@ SmartBodyManager::~SmartBodyManager(void)
 void SmartBodyManager::initialize(double startTime)
 {
 	//Initialization of SmartBody library.
-	mScene->start();
+	mScene.start();
 
 	//Set the media path : where to find the assets.
-	mScene->setMediaPath(EMBER_SMARTBODY_MEDIAPATH);
-
-	//Add the different asset paths.
-	addAssetPaths();
+	mScene.setMediaPath(EMBER_SMARTBODY_MEDIAPATH);
 
 	//Load the different behaviors.
 	loadAllBehaviors();
+
+	//Load the skeleton assets at the beginning because it takes too much time to be done during the simulation.
+	loadSkeletonAssets();
 
 	//Start the simulation.
 	mSimulation.setTime(startTime);
@@ -74,22 +75,49 @@ void SmartBodyManager::initialize(double startTime)
 	mIsInit = true;
 }
 
-void SmartBodyManager::addAssetPaths(void) 
-{
-	//Character skeletons.
-	mAssetManager.addAssetPath("motion", EMBER_SMARTBODY_ASSETS_SKELETONS);
-}
-
 void SmartBodyManager::loadAllBehaviors(void)
 {
 	//Locomotion behavior.
 	mBehaviors.push_back(new SmartBodyLocomotion(EMBER_SMARTBODY_ASSETS_LOCOMOTION, EMBER_SMARTBODY_SKELETON_LOCOMOTION, 
-		mAssetManager, *mScene->getBlendManager(), *mScene->getRetargetManager()));
+		mAssetManager, *mScene.getBlendManager(), *mScene.getRetargetManager()));
+
+	//Gesture behavior.
+	mBehaviors.push_back(new SmartBodyGestures(EMBER_SMARTBODY_ASSETS_GESTURES, EMBER_SMARTBODY_SKELETON_GESTURES, 
+		mAssetManager, *mScene.getBlendManager(), *mScene.getRetargetManager(), *mScene.getGestureMapManager()));
 	
 	//Setup all behaviors.
 	for (int i = 0, n = mBehaviors.size(); i < n; i ++)
 	{
-		mBehaviors[i]->setup(true);
+		mBehaviors[i]->setup(*mScene.getJointMapManager());
+	}
+}
+
+void SmartBodyManager::loadSkeletonAssets(void) 
+{
+	//Load the Character skeletons.
+	mAssetManager.loadAssetsFromPath(EMBER_SMARTBODY_ASSETS_SKELETONS);
+
+	//For all the loaded assets, try to get the bone mapping.
+	std::vector<std::string> skeletonNames = mAssetManager.getSkeletonNames();
+	for (size_t sk = 0, nbSk = skeletonNames.size(); sk < nbSk; sk ++)
+	{
+		//It must concern an Ogre skeleton.
+		if (skeletonNames[sk].substr(skeletonNames[sk].rfind('.'), 4) == ".xml")
+		{
+			//If it exists, then try to get the bone mapping.
+			SmartBodySkeletonMap map(skeletonNames[sk]);
+			if (map.exists())
+			{
+				//Finally, map the skeleton.
+				map.setMap(mAssetManager, *mScene.getJointMapManager());
+			}
+
+			//When the skeleton has been loaded, retarget the behaviors on it.
+			for (size_t bh = 0, nbBh = mBehaviors.size(); bh < nbBh; bh ++)
+			{
+				mBehaviors[bh]->retarget(skeletonNames[sk]);
+			}
+		}
 	}
 }
 
@@ -105,38 +133,12 @@ bool SmartBodyManager::setCorrespondingSkeletonName(std::string& sbName, const s
 }
 
 //public.
-bool SmartBodyManager::hasSkeleton(const std::string& skName, bool load /*= false */)
+bool SmartBodyManager::hasSkeleton(const std::string& skName)
 {
 	assert(mIsInit);
 
 	if (mAssetManager.getSkeleton(skName))
 	{
-		return true;
-	}
-
-	else if (load)
-	{
-		//Try to load the skeleton.
-		mAssetManager.loadAsset(EMBER_SMARTBODY_ASSETS_SKELETONS + skName);
-		if (!mAssetManager.getSkeleton(skName))
-		{
-			return false;
-		}
-
-		//If it exists, then try to get the bone mapping.
-		SmartBodySkeletonMap map(skName);
-		if (map.exists())
-		{
-			//Finally, map the skeleton.
-			map.setMap(mAssetManager, *mScene->getJointMapManager());
-		}
-
-		//When the skeleton has been loaded, retarget the behaviors on it.
-		for (int i = 0, n = mBehaviors.size(); i < n; i ++)
-		{
-			mBehaviors[i]->retarget(skName);
-		}
-
 		return true;
 	}
 
@@ -149,7 +151,7 @@ SmartBodyRepresentation* SmartBodyManager::createCharacter(const Ogre::Entity& e
 	assert(mIsInit);
 
 	//Create the representation.
-	SmartBodyRepresentation *representation = new SmartBodyRepresentation(*mScene, entity, group, sbSkName, mBehaviors);
+	SmartBodyRepresentation *representation = new SmartBodyRepresentation(mScene, entity, group, sbSkName, mBehaviors);
 
 	//Add it to the character vector.
 	mCharacters.push_back(representation);
@@ -181,7 +183,7 @@ void SmartBodyManager::updateAnimations(double timeSlice)
 
 	//Update the time of the simulation.
 	mSimulation.setTime(mSimulation.getTime() + timeSlice);
-	mScene->update();
+	mScene.update();
 
 	//For each character that is animated through SmartBody, set the new bone positions.
 	for (int i = 0, n = mCharacters.size(); i < n; i ++)
@@ -196,8 +198,12 @@ void SmartBodyManager::animate(SmartBodyRepresentation& character, SmartBodyAnim
 {
 	assert(mIsInit);
 
+	mSimulation.pause();
+
 	character.setAnimatedState(true);
 	mProcessor.execBML(character.getName(), mAnimations[animation].getBmlRequest());
+
+	mSimulation.resume();
 }
 
 //public.

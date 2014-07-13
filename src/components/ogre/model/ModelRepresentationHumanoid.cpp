@@ -63,7 +63,7 @@ void ModelRepresentationHumanoid::createSmartBodyCharacter(void)
 	mSbManager.setCorrespondingSkeletonName(sbSkName, skeleton->getName());
 
 	//If the skeleton exists for SmartBody, then create the corresponding character.
-	if (mSbManager.hasSkeleton(sbSkName, true))
+	if (mSbManager.hasSkeleton(sbSkName))
 	{
 		//Create the model representation set for SmartBody humanoid character.
 		mCharacter = mSbManager.createCharacter(*mModel.getSkeletonOwnerEntity(), mModel.getDefinition()->getName(), sbSkName);
