@@ -47,7 +47,6 @@ public:
 	 */
 	virtual ~ModelRepresentationHumanoid(void);
 
-
 	/**
 	 * @brief The two following return the name of this class.
 	 */
@@ -73,6 +72,11 @@ protected:
 	static std::string sTypeName;
 
 	/**
+	 * @brief Overrides model_Reloaded_der in ModelRepresentation.
+	 */
+	void model_Reloaded_der(void);
+
+	/**
 	 * @brief Creates the character representation in SmartBody.
 	 */
 	void createSmartBodyCharacter(void);
@@ -80,7 +84,7 @@ protected:
 	/**
 	 * @brief Sets the animation corresponding to the given action.
 	 */
-	void setAnimation(Action *newAction);
+	void setAnimation(const std::string& actionName, Action *newAction);
 };
 
 }

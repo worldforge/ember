@@ -348,6 +348,11 @@ protected:
 	void model_Reloaded();
 
 	/**
+	 * @brief Used into model_Reloaded() to update the new values of derived classes.
+	 */
+	virtual void model_Reloaded_der(void);
+
+	/**
 	 * @brief When the Model is reset we need to clean up and remove all attachments from it.
 	 */
 	void model_Resetting();
@@ -362,7 +367,7 @@ protected:
 	/**
 	 * @brief Sets the animation corresponding to the given action.
 	 */
-	virtual void setAnimation(Action *newAction);
+	virtual void setAnimation(const std::string& actionName, Action *newAction);
 
 	/**
 	 * @brief Parses and sets the movement mode.

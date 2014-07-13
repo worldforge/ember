@@ -238,13 +238,22 @@ void ModelRepresentation::model_Reloaded()
 {
 	initFromModel();
 	reactivatePartActions();
+
 	//Check if there's any ongoing tasks which we should create an action for.
 	if (!mEntity.getTasks().empty()) {
 		//select the first available task
 		createActionForTask(**mEntity.getTasks().begin());
 	}
+
+	//Call the derived methods.
+	model_Reloaded_der();
+
 	//Retrigger a movement change so that animations can be stopped and started now that the model has changed.
 	onMovementModeChanged(getMovementMode());
+}
+
+void ModelRepresentation::model_Reloaded_der(void)
+{
 }
 
 void ModelRepresentation::model_Resetting()
@@ -308,14 +317,14 @@ void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
 		Action* newAction = mModel.getAction(ActivationDefinition::MOVEMENT, actionName);
 		mCurrentMovementAction = newAction;
 
-		setAnimation(newAction);
+		setAnimation(actionName, newAction);
 	}
 
 	EventMovementModeChanged.emit(newMode);
 	mMovementMode = newMode;
 }
 
-void ModelRepresentation::setAnimation(Action *newAction)
+void ModelRepresentation::setAnimation(const std::string& actionName, Action *newAction)
 {
 	if (newAction) 
 	{

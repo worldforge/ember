@@ -26,8 +26,6 @@ std::string ModelRepresentationHumanoid::sTypeName("ModelRepresentationHumanoid"
 ModelRepresentationHumanoid::ModelRepresentationHumanoid(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping, SmartBodyManager& sbManager)
 	: ModelRepresentation::ModelRepresentation(entity, model, scene, mapping), mCharacter(nullptr), mSbManager(sbManager)
 {
-	//When the model has finally been completely created, we need to create the SmartBody character.
-	model.Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentationHumanoid::createSmartBodyCharacter));
 }
 
 ModelRepresentationHumanoid::~ModelRepresentationHumanoid(void)
@@ -37,6 +35,12 @@ ModelRepresentationHumanoid::~ModelRepresentationHumanoid(void)
 		//Destroy the SBCharacter.
 		mSbManager.removeCharacter(mCharacter);
 	}
+}
+
+void ModelRepresentationHumanoid::model_Reloaded_der(void)
+{
+	//When the model has finally been completely created, we need to create the SmartBody character.
+	createSmartBodyCharacter();
 }
 
 const std::string& ModelRepresentationHumanoid::getType(void) const
@@ -51,7 +55,7 @@ const std::string& ModelRepresentationHumanoid::getTypeNameForClass(void)
 
 void ModelRepresentationHumanoid::createSmartBodyCharacter(void)
 {
-	//Get the Ogre skeleton.
+	//Get the Ogre skeleton.	
 	Ogre::SkeletonInstance *skeleton = mModel.getSkeleton();
 
 	//Get the name that the SmartBody skeleton should have.
@@ -71,31 +75,47 @@ void ModelRepresentationHumanoid::createSmartBodyCharacter(void)
 	}
 }
 
-void ModelRepresentationHumanoid::setAnimation(Action *newAction)
+
+void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Action *newAction)
 {
 	if (mCharacter)
 	{
-		//If the action is supported by SmartBody,
-		if (newAction && newAction->getName() == ACTION_STAND)
+		if (newAction)
 		{
-			//start the idling animation on this character.
-			mSbManager.animate(*mCharacter, SmartBodyAnimation::IDLE);
-
-			//Do not forget to remove this from the Ogre Animated entities.
+			//Remove this from the Ogre Animated entities.
 			MotionManager::getSingleton().removeAnimated(mEntity.getId());
+
+			//If the action is supported by SmartBody,
+			if (actionName == ACTION_STAND)
+			{
+				//start the idling animation on this character.
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::IDLE);
+			}
+
+			else if (actionName == ACTION_WALK)
+			{
+				//start the walking animation on this character.
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::WALK);
+			}
+
+			//Else, stop the SmartBody animations for this character and use the original method.
+			else
+			{
+				mSbManager.freeze(*mCharacter);
+				ModelRepresentation::setAnimation(actionName, newAction);
+			}
 		}
 
-		//Else, stop the SmartBody animations for this character and use the original method.
 		else
 		{
 			mSbManager.freeze(*mCharacter);
-			ModelRepresentation::setAnimation(newAction);
+			ModelRepresentation::setAnimation(actionName, newAction);
 		}
 	}
 
 	else
 	{
-		ModelRepresentation::setAnimation(newAction);
+		ModelRepresentation::setAnimation(actionName, newAction);
 	}
 }
 
