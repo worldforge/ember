@@ -6,7 +6,7 @@ noinst_LIBRARIES = libEmberSmartBody.a
 
 libEmberSmartBody_a_SOURCES = \
 \
-	SmartBodyManager.cpp SmartBodySkeletonMap.cpp SmartBodyBehaviors.cpp SmartBodyLocomotion.cpp SmartBodyRetarget.cpp SmartBodyRepresentation.cpp SmartBodyAnimation.cpp \
+	SmartBodyManager.cpp SmartBodySkeletonMap.cpp SmartBodyBehaviors.cpp SmartBodyLocomotion.cpp SmartBodyGestures.cpp SmartBodyRetarget.cpp SmartBodyRepresentation.cpp SmartBodyAnimation.cpp \
 \
 	bml/behavior_scheduler_constant_speed.cpp bml/behavior_scheduler.cpp bml/behavior_scheduler_fixed.cpp bml/behavior_scheduler_gesture.cpp bml/behavior_span.cpp bml/bml_animation.cpp bml/bml_bodyreach.cpp bml/bml_constraint.cpp bml/bml.cpp bml/bml_event.cpp bml/bml_face.cpp bml/bml_gaze.cpp bml/bml_general_param.cpp bml/bml_gesture.cpp bml/bml_grab.cpp bml/bml_interrupt.cpp bml/bml_locomotion.cpp bml/bml_noise.cpp bml/bml_processor.cpp bml/bml_quickdraw.cpp bml/bml_reach.cpp bml/bml_saccade.cpp bml/bml_speech.cpp bml/bml_states.cpp bml/bml_sync_point.cpp bml/bml_target.cpp \
 \
@@ -30,7 +30,7 @@ libEmberSmartBody_a_SOURCES = \
 
 noinst_HEADERS = \
 \
-	SmartBodyManager.h SmartBodyPathConsts.h SmartBodySkeletonMap.h SmartBodyBehaviors.h SmartBodyLocomotion.h SmartBodyRetarget.h SmartBodyRepresentation.h SmartBodyAnimation.h \
+	SmartBodyManager.h SmartBodyPathConsts.h SmartBodySkeletonMap.h SmartBodyBehaviors.h SmartBodyLocomotion.h SmartBodyGestures.h SmartBodyRetarget.h SmartBodyRepresentation.h SmartBodyAnimation.h \
 \
 	bml/behavior_scheduler_constant_speed.hpp bml/behavior_scheduler_fixed.hpp bml/behavior_scheduler_gesture.hpp bml/behavior_scheduler.hpp bml/behavior_span.hpp bml/bml_animation.hpp bml/bml_bodyreach.hpp bml/bml_constraint.hpp bml/bml_event.hpp bml/bml_exception.hpp bml/bml_face.hpp bml/bml_gaze.hpp bml/bml_general_param.hpp bml/bml_gesture.hpp bml/bml_grab.hpp bml/bml.hpp bml/bml_interrupt.hpp bml/bml_locomotion.hpp bml/bml_noise.hpp bml/bml_processor.hpp bml/bml_quickdraw.hpp bml/bml_reach.hpp bml/bml_saccade.hpp bml/bml_schedule.hpp bml/bml_speech.hpp bml/bml_states.hpp bml/bml_sync_point.hpp bml/bml_target.hpp bml/bml_types.hpp bml/bml_xml_consts.hpp \
 \
@@ -41,7 +41,7 @@ noinst_HEADERS = \
 	external/perlin/perlin.h \
 	external/rply/rply.h \
 \
-	sb/DefaultAttributeTable.h sb/MiniBrain.h sb/nvbg.h sb/PABlend.h sb/SBAnimationState.h sb/SBAnimationStateManager.h sb/SBAnimationTransition.h sb/SBAnimationTransitionRule.h sb/SBAsset.h sb/SBAssetHandler.h sb/SBAssetHandlerOgre.h sb/SBAssetHandlerSk.h sb/SBAssetHandlerSkm.h sb/SBAssetManager.h sb/SBAttribute.h sb/SBAttributeManager.h sb/SBBehavior.h sb/SBBehaviorSet.h sb/SBBehaviorSetManager.h sb/SBBmlProcessor.h sb/SBCharacter.h sb/SBCollisionManager.h sb/SBColObject.h sb/SBCommandManager.h sb/SBController.h sb/SBEvent.h sb/SBFaceDefinition.h sb/SBGestureMap.h sb/SBGestureMapManager.h sb/SBJoint.h sb/SBJointMap.h sb/SBJointMapManager.h sb/sbm_character.hpp sb/SBMotionBlendBase.h sb/SBMotionGraph.h sb/SBMotion.h sb/sbm_pawn.hpp sb/SBObject.h sb/SBObserver.h sb/SBParseNode.h sb/SBParser.h sb/SBPawn.h sb/SBPhoneme.h sb/SBPhonemeManager.h sb/SBPhysicsManager.h sb/SBPhysicsSim.h sb/SBReach.h sb/SBReachManager.h sb/SBRetarget.h sb/SBRetargetManager.h sb/SBScene.h sb/SBSceneListener.h sb/SBScript.h sb/SBService.h sb/SBServiceManager.h sb/SBSimulationManager.h sb/SBSkeleton.h sb/SBSpeechManager.h sb/SBSubject.h sb/SBTypes.h \
+	sb/DefaultAttributeTable.h sb/MiniBrain.h sb/nvbg.h sb/PABlend.h sb/SBAnimationState.h sb/SBAnimationStateManager.h sb/SBAnimationTransition.h sb/SBAnimationTransitionRule.h sb/SBAsset.h sb/SBAssetHandler.h sb/SBAssetHandlerOgre.h sb/SBAssetHandlerSk.h sb/SBAssetHandlerSkm.h sb/SBAssetManager.h sb/SBAttribute.h sb/SBAttributeManager.h sb/SBBehavior.h sb/SBBehaviorSet.h sb/SBBehaviorSetManager.h sb/SBBmlProcessor.h sb/SBCharacter.h sb/SBCharacterFrameData.h sb/SBCollisionManager.h sb/SBColObject.h sb/SBCommandManager.h sb/SBController.h sb/SBEvent.h sb/SBFaceDefinition.h sb/SBGestureMap.h sb/SBGestureMapManager.h sb/SBJoint.h sb/SBJointMap.h sb/SBJointMapManager.h sb/sbm_character.hpp sb/SBMotionBlendBase.h sb/SBMotionGraph.h sb/SBMotion.h sb/sbm_pawn.hpp sb/SBObject.h sb/SBObserver.h sb/SBParseNode.h sb/SBParser.h sb/SBPawn.h sb/SBPhoneme.h sb/SBPhonemeManager.h sb/SBPhysicsManager.h sb/SBPhysicsSim.h sb/SBReach.h sb/SBReachManager.h sb/SBRetarget.h sb/SBRetargetManager.h sb/SBScene.h sb/SBSceneListener.h sb/SBScript.h sb/SBService.h sb/SBServiceManager.h sb/SBSimulationManager.h sb/SBSkeleton.h sb/SBSpeechManager.h sb/SBSubject.h sb/SBTypes.h \
 \
 	sbm/action_unit.hpp sbm/BMLDefs.h sbm/general_param_setting.h sbm/gwiz_math.h sbm/lin_win.h sbm/local_speech.h sbm/mcontrol_callbacks.h sbm/MiscCommands.h sbm/ODEPhysicsSim.h sbm/ParserOgre.h sbm/ParserOpenCOLLADA.h sbm/rapidxml.hpp sbm/rapidxml_utils.hpp sbm/remote_speech.h sbm/sbm_constants.h sbm/sbm_deformable_mesh.h sbm/sbm_speech_audiofile.hpp sbm/sbm_speech.hpp sbm/sbm_test_cmds.hpp sbm/sr_arg_buff.h sbm/sr_cmd_map.h sbm/sr_cmd_seq.h sbm/sr_curve_builder.h sbm/sr_hash_map.h sbm/sr_linear_curve.h sbm/sr_path_list.h sbm/sr_spline_curve.h sbm/sr_synch_points.h sbm/text_speech.h sbm/time_profiler.h sbm/time_regulator.h sbm/xercesc_utils.hpp \
 \
