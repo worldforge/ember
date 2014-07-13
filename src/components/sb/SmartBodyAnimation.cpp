@@ -19,6 +19,10 @@ SmartBodyAnimation::SmartBodyAnimation(SmartBodyAnimation::Name name)
 		case RUN:
 			mBmlRequest = std::string("<body posture=\"ChrUtah_Run001\"/>");
 			break;
+
+		case NOD:
+			mBmlRequest = std::string("<head type=\"NOD\" repeats=\"2\"/>");
+			break;
 	}
 }
 

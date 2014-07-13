@@ -20,7 +20,7 @@ public:
 
 	enum Name 
 	{
-		IDLE, WALK, RUN, ANIMATIONS_COUNT
+		IDLE, WALK, RUN, NOD, ANIMATIONS_COUNT
 	};
 
 	SmartBodyAnimation(SmartBodyAnimation::Name name);
