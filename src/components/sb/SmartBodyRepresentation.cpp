@@ -19,7 +19,7 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 :	mScene(scene),
 	mEntity(entity), mOgreSkeleton(*entity.getSkeleton()), 
 	mCharacter(*scene.createCharacter(entity.getName(), group)), mSkeleton(*scene.createSkeleton(skName)),
-	mManualMode(false)
+	mManualMode(false), mIsAnimated(false)
 {
 	//Associate the skeleton to the character.
 	mCharacter.setSkeleton(&mSkeleton);
@@ -27,11 +27,14 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 	//Add controllers.
 	mCharacter.createStandardControllers();
 
-	//Add retarget constraints.
+	//Set retargeting parameters.
 	for (int i = 0, n = behaviors.size(); i < n; i ++)
 	{
-		behaviors[i]->addConstraints(mCharacter);
+		behaviors[i]->applyRetargeting(mCharacter);
 	} 
+
+	//Initially, the character is set in Ogre animated state.
+	setManualControl(false);
 }
 
 SmartBodyRepresentation::~SmartBodyRepresentation(void)
@@ -59,10 +62,10 @@ void SmartBodyRepresentation::updateBonePositions(void)
 		setManualControl(true);
 	
 	//Each bone must be set at the same position than its reference in SmartBody.
-	for (int j = 0, n = mSkeleton.getNumJoints(); j < n; j++)
+	for (int i = 0, n = mSkeleton.getNumJoints(); i < n; i++)
 	{
 		//We get the joint by its index. 
-		SmartBody::SBJoint *joint = mSkeleton.getJoint(j);
+		SmartBody::SBJoint *joint = mSkeleton.getJoint(i);
 
 		//If it exists, we get the corresponding bone by the name of the joint (which is the one in Ogre, due to the jointMap).
 		if (mOgreSkeleton.hasBone(joint->getName()))

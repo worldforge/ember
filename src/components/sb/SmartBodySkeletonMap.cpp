@@ -15,7 +15,7 @@ namespace Ember
 SmartBodySkeletonMap::SmartBodySkeletonMap(const std::string& skeleton)
 	: mName(skeleton)
 {
-	std::ifstream mapFile(EMBER_SMARTBODY_ASSETS_MAPS + skeleton + EMBER_SMARTBODY_MAP_EXTENSION, std::ios::in);
+	std::ifstream mapFile(std::string(EMBER_SMARTBODY_ASSETS_MAPS + skeleton + EMBER_SMARTBODY_MAP_EXTENSION).c_str(), std::ios::in);
 	mHasMap = mapFile.is_open();
 
 	if (mHasMap)
@@ -44,7 +44,7 @@ void SmartBodySkeletonMap::setMap(SmartBody::SBAssetManager& assetMng, SmartBody
 	//Creation of the joint map.
 	for (int i = 0; i < mBones.size(); i += 2)
 	{
-		jointMap->setMapping(mBones[i], mBones[i ++]);
+		jointMap->setMapping(mBones[i], mBones[i + 1]);
 	}
 
 	//Application of the map to the skeleton.
@@ -66,8 +66,8 @@ bool SmartBodySkeletonMap::parseMapFile(std::ifstream& mapFile)
 		}
 
 		std::string bones[2];
-		bones[0] = line.substr(0, delim - 1);
-		bones[1] = line.substr(delim + 2, line.size() - 1);
+		bones[0] = line.substr(0, delim);
+		bones[1] = line.substr(delim + 2, line.size() + 1);
 
 		mBones.push_back(bones[0]);
 		mBones.push_back(bones[1]);
