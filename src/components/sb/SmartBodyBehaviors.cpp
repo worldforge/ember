@@ -1,11 +1,14 @@
 #include "SmartBodyBehaviors.h"
 #include "SmartBodyRetarget.h"
+#include "SmartBodySkeletonMap.h"
 
 #include <sb/SBAssetManager.h>
 #include <sb/SBCharacter.h>
 #include <sb/SBSkeleton.h>
 #include <sb/SBScene.h>
 
+//#define NDEBUG
+#include <cassert>
 
 
 using namespace Ember;
@@ -14,10 +17,10 @@ namespace Ember
 
 SmartBodyBehaviors::SmartBodyBehaviors(const std::string& motionPath, const std::string& skeletonRef, SmartBody::SBAssetManager& assetMng,
 		SmartBody::SBAnimationBlendManager& blendMng, SmartBody::SBRetargetManager& retargetMng)
-: 	mSkelRefName(skeletonRef), mSetup(false), mAssetManager(assetMng), mBlendManager(blendMng),	mRetargetManager(retargetMng)
+: 	mSkelRefName(skeletonRef), mAssetManager(assetMng), mBlendManager(blendMng), mRetargetManager(retargetMng), mSetup(false)
 {
 	//Loads the assets.
-	mAssetManager.loadAssetsFromPath(motionPath);
+	mAssetManager.loadAssetsFromPath(motionPath);	
 }
 
 SmartBodyBehaviors::~SmartBodyBehaviors()
@@ -26,20 +29,38 @@ SmartBodyBehaviors::~SmartBodyBehaviors()
 }
 
 
-bool SmartBodyBehaviors::setup(bool check /*= false */)
+bool SmartBodyBehaviors::setupAssets(SmartBody::SBJointMapManager& jointMapMng)
 {
-	//If setup has alredy been called, do nothing.
-	if (!mSetup)
+	if (assetsExist())
 	{
-		//Before setting up the behaviors, checks their existence. 
-		if (!check || assetsExist())
-		{		
-			setupBehaviors();
-			mSetup = true;
+		//Try to get the skeleton map.
+		SmartBodySkeletonMap map(mSkelRefName);
+		if (map.exists())
+		{
+			//Finally, map the skeleton.
+			map.setMap(mAssetManager, jointMapMng);
 		}
+
+		return true;
 	}
 
-	return mSetup;
+	return false;
+}
+
+
+void SmartBodyBehaviors::setupBehaviors(void)
+{
+	//We get the motion paths for this behavior set. 
+	std::vector<std::string> motions = getMotions();
+
+	//For each motion, we need to set the skeleton and to configurate some of the motion parameters. 
+	int size = motions.size();
+	for (int i = 0; i < size; i ++)
+	{
+		SmartBody::SBMotion *motion = mAssetManager.getMotion(motions[i]);
+		motion->setMotionSkeletonName(mSkelRefName);
+		setupMotion(*motion);
+	}	
 }
 
 bool SmartBodyBehaviors::assetsExist(void)
@@ -64,22 +85,6 @@ bool SmartBodyBehaviors::assetsExist(void)
 
 	return true;		
 }
-
-void SmartBodyBehaviors::setupBehaviors(void)
-{
-	//We get the motion paths for this behavior set. 
-	std::vector<std::string> motions = getMotions();
-
-	//For each motion, we need to set the skeleton and to configurate some of the motion parameters. 
-	int size = motions.size();
-	for (int i = 0; i < size; i ++)
-	{
-		SmartBody::SBMotion *motion = mAssetManager.getMotion(motions[i]);
-		motion->setMotionSkeletonName(mSkelRefName);
-		setupMotion(*motion);
-	}		
-}
-
 
 void SmartBodyBehaviors::retarget(const std::string& skName)
 {

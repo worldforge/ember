@@ -1,13 +1,13 @@
 #include "SmartBodyLocomotion.h"
 
-#include <sb/SBCharacter.h>
-#include <sb/SBSkeleton.h>
-#include <sb/SBMotion.h>
-#include <sb/SBJoint.h>
-#include <sb/SBAssetManager.h>
-#include <sb/SBAnimationStateManager.h>
-#include <sb/SBAnimationState.h>
-#include <sb/SBAnimationTransition.h>
+#include "sb/SBCharacter.h"
+#include "sb/SBSkeleton.h"
+#include "sb/SBMotion.h"
+#include "sb/SBJoint.h"
+#include "sb/SBAssetManager.h"
+#include "sb/SBAnimationStateManager.h"
+#include "sb/SBAnimationState.h"
+#include "sb/SBAnimationTransition.h"
 
 
 using namespace Ember;
@@ -26,21 +26,28 @@ SmartBodyLocomotion::~SmartBodyLocomotion(void)
 }
 
 
-bool SmartBodyLocomotion::setup(bool check /*= true */)
+bool SmartBodyLocomotion::setup(SmartBody::SBJointMapManager& jointMapManager)
 {
-	if (SmartBodyBehaviors::setup(check))
+	if (mSetup)
+		return true;
+	
+	if (SmartBodyBehaviors::setupAssets(jointMapManager))
 	{
+		SmartBodyBehaviors::setupBehaviors();
+
 		locomotionSetup();
 		startingSetup();
 		idleTurnSetup();
 		stepSetup();
 		transitionSetup();
+
+		mSetup = true;
 	}
 
 	return mSetup;
 }
 
-void SmartBodyLocomotion::addConstraints(SmartBody::SBCharacter& character)
+void SmartBodyLocomotion::applyRetargeting(SmartBody::SBCharacter& character)
 {
 	character.addJointTrajectoryConstraint("l_forefoot", "base");
 	character.addJointTrajectoryConstraint("r_forefoot", "base");

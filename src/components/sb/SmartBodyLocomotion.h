@@ -28,12 +28,12 @@ public:
 	/**
 	 * @brief Setup the locomotion behavior set.
 	 */
-	bool setup(bool check = true);
+	bool setup(SmartBody::SBJointMapManager& jointMapManager);
 
 	/**
 	 * @brief Add the given contraints to retarget locomotion on another character.
 	 */
-	void addConstraints(SmartBody::SBCharacter& character);
+	void applyRetargeting(SmartBody::SBCharacter& character);
 
 
 private:
@@ -53,6 +53,9 @@ private:
 	 */
 	std::vector<std::string> getMotionsForLocomotionSetup(void);
 
+	/**
+	 * @brief Setup the locomotion behavior one step at a time.
+	 */
 	void locomotionSetup();
 	void startingSetup();
 	void idleTurnSetup();

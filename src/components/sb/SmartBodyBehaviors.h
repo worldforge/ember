@@ -13,6 +13,7 @@ class SBAssetManager;
 class SBAnimationBlendManager;
 class SBRetargetManager;
 class SBMotion;
+class SBJointMapManager;
 
 }
 
@@ -45,11 +46,10 @@ public:
 	 */
 	virtual ~SmartBodyBehaviors(void);
 
-
 	/**
-	 * @brief Setup the behaviors and (if wanted) check before that all the needed assets have been loaded.
+	 * @brief Check that all assets have been correctly loaded and setup the behavior set.
 	 */
-	virtual bool setup(bool check = false);
+	virtual bool setup(SmartBody::SBJointMapManager& jointMapManager) = 0;
 
 	/**
 	 * @brief Retarget the behavior set from the skeleton reference to another character (setup must have been called first).
@@ -59,7 +59,7 @@ public:
 	/**
 	 * @brief Add the necessary contraints on the character.
 	 */
-	virtual void addConstraints(SmartBody::SBCharacter& character) = 0;
+	virtual void applyRetargeting(SmartBody::SBCharacter& character) = 0;
 
 
 protected:
@@ -91,9 +91,15 @@ protected:
 
 
 	/**
-	 * @brief Set up the different motions corresponding to the behavior set.
+	 * @brief Check that the assets have been correctly loaded and map the skeleton reference.
+	 */
+	bool setupAssets(SmartBody::SBJointMapManager& jointMapMng);
+
+	/**
+	 * @brief Setup the behaviors.
 	 */
 	void setupBehaviors(void);
+
 
 	virtual void setupMotion(SmartBody::SBMotion& motion) = 0;
 
