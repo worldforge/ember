@@ -31,7 +31,7 @@
 # include <sk/sk_scene.h>
 # include <sk/sk_skeleton.h>
 # include <sk/sk_joint.h>
-#include <vhcl.h>
+#include <vhcl/vhcl.h>
 
 
 # define DEF_CYL_RADIUS 0.5f

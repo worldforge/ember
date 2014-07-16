@@ -42,7 +42,7 @@ void SmartBodySkeletonMap::setMap(SmartBody::SBAssetManager& assetMng, SmartBody
 	SmartBody::SBJointMap *jointMap = mapMng.createJointMap(mName);
 
 	//Creation of the joint map.
-	for (int i = 0; i < mBones.size(); i += 2)
+	for (size_t i = 0; i < mBones.size(); i += 2)
 	{
 		jointMap->setMapping(mBones[i], mBones[i + 1]);
 	}

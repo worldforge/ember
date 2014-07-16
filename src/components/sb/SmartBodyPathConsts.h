@@ -5,7 +5,7 @@
 #include "services/config/ConfigService.h"
 
 #define EMBER_SMARTBODY_NAMEPREFIX "SB"
-#define EMBER_SMARTBODY_MEDIAPATH (EmberServices::getSingleton().getConfigService().getSharedMediaDirectory() + "/motions")
+#define EMBER_SMARTBODY_MEDIAPATH (EmberServices::getSingleton().getConfigService().getSharedMediaDirectory() + "/motions/")
 #define EMBER_SMARTBODY_ASSETS_SKELETONS "skeletons/"
 #define EMBER_SMARTBODY_ASSETS_LOCOMOTION "locomotion/"
 #define EMBER_SMARTBODY_ASSETS_GESTURES "gestures/"

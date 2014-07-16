@@ -52,6 +52,8 @@ public:
 	 */
 	const std::string& getType(void) const;
 	static const std::string& getTypeNameForClass(void);
+
+	void updateAnimation(float timeSlice);
 	
 
 protected:
@@ -70,6 +72,11 @@ protected:
 	 * @brief The type name for the class.
 	 */
 	static std::string sTypeName;
+
+	/**
+	 * @brief Overriden from ModelRepresentation.
+	 */
+	void setIdleAnimationTime(void);
 
 	/**
 	 * @brief Overrides model_Reloaded_der in ModelRepresentation.

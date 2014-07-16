@@ -75,6 +75,10 @@ void ModelRepresentationHumanoid::createSmartBodyCharacter(void)
 	}
 }
 
+void ModelRepresentationHumanoid::setIdleAnimationTime(void)
+{
+}
+
 
 void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Action *newAction)
 {
@@ -88,12 +92,16 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 			//If the action is supported by SmartBody,
 			if (actionName == ACTION_STAND)
 			{
+				resetAnimations();
+
 				//start the idling animation on this character.
 				mSbManager.animate(*mCharacter, SmartBodyAnimation::IDLE);
 			}
 
 			else if (actionName == ACTION_WALK)
 			{
+				resetAnimations();
+
 				//start the walking animation on this character.
 				mSbManager.animate(*mCharacter, SmartBodyAnimation::WALK);
 			}
@@ -119,6 +127,9 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 	}
 }
 
+void ModelRepresentationHumanoid::updateAnimation(float timeSlice)
+{
+}
 
 }
 }

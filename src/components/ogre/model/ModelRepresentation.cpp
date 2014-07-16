@@ -197,7 +197,7 @@ void ModelRepresentation::setClientVisible(bool visible)
 	}
 }
 
-void ModelRepresentation::initFromModel()
+void ModelRepresentation::initFromModel(void)
 {
 	connectEntities();
 
@@ -210,6 +210,11 @@ void ModelRepresentation::initFromModel()
 	}
 
 	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similar entities with synchronized animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */
+	setIdleAnimationTime();
+}
+
+void ModelRepresentation::setIdleAnimationTime(void)
+{
 	Action* idleaction = mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	if (idleaction) {
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
@@ -377,7 +382,6 @@ void ModelRepresentation::updateAnimation(float timeSlice)
 	//If not, we should prefer to show a current action animation if available
 	//If not, we should show any available task animation.
 	//And if none of these applies, we should play the current movement action (which should be idle).
-
 	if (getMovementMode() != MM_DEFAULT && mCurrentMovementAction) {
 		bool continuePlay = false;
 		//Check if we're walking backward. This is a bit of a hack (we should preferably have a separate animation for backwards walking.

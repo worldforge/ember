@@ -144,7 +144,7 @@ public:
 	/**
 	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
 	 */
-	void initFromModel();
+	void initFromModel(void);
 
 	/**
 	 * @copydoc OgreView::IGraphicalRepresentation::getType()
@@ -175,7 +175,7 @@ public:
 	 * @brief Updates the animation. This is normally called by MotionManager.
 	 * @param timeSlice time to update with.
 	 */
-	void updateAnimation(float timeSlice);
+	virtual void updateAnimation(float timeSlice);
 
 	/**
 	 * @brief Accesses the world bounding box of the model.
@@ -312,6 +312,11 @@ protected:
 	 * @return
 	 */
 	void connectEntities();
+	
+	/**
+	 * @brief Randomize the entry value for that so we don't end up with too many similar entities with synchronized animations.
+	 */
+	virtual void setIdleAnimationTime(void);
 
 	/**
 	 * @brief Processes the outfit map and updates the appearance.
