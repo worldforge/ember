@@ -53,10 +53,9 @@ void SmartBodyBehaviors::setupBehaviors()
 	std::vector<std::string> motions = getMotions();
 
 	//For each motion, we need to set the skeleton and to configurate some of the motion parameters. 
-	int size = motions.size();
-	for (int i = 0; i < size; i ++)
+	for (auto& motionName : motions)
 	{
-		SmartBody::SBMotion *motion = mAssetManager.getMotion(motions[i]);
+		SmartBody::SBMotion *motion = mAssetManager.getMotion(motionName);
 		motion->setMotionSkeletonName(mSkelRefName);
 		setupMotion(*motion);
 	}	
@@ -71,9 +70,9 @@ bool SmartBodyBehaviors::assetsExist()
 	}
 
 	std::vector<std::string> motions = getMotions();
-	for (int i = 0; i < motions.size(); i ++)
+	for (auto& motionName : motions)
 	{
-		SmartBody::SBMotion *motion = mAssetManager.getMotion(motions[i]);
+		SmartBody::SBMotion *motion = mAssetManager.getMotion(motionName);
 
 		if (!motion)
 		{

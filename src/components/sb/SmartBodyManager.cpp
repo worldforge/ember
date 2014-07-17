@@ -85,9 +85,9 @@ void SmartBodyManager::loadAllBehaviors()
 		mAssetManager, *mScene.getBlendManager(), *mScene.getRetargetManager(), *mScene.getGestureMapManager()));
 	
 	//Setup all behaviors.
-	for (int i = 0, n = mBehaviors.size(); i < n; i ++)
+	for (auto& behavior : mBehaviors)
 	{
-		mBehaviors[i]->setup(*mScene.getJointMapManager());
+		behavior->setup(*mScene.getJointMapManager());
 	}
 }
 
@@ -98,13 +98,13 @@ void SmartBodyManager::loadSkeletonAssets()
 
 	//For all the loaded assets, try to get the bone mapping.
 	std::vector<std::string> skeletonNames = mAssetManager.getSkeletonNames();
-	for (size_t sk = 0, nbSk = skeletonNames.size(); sk < nbSk; sk ++)
+	for (auto& skeletonName : skeletonNames)
 	{
 		//It must concern an Ogre skeleton.
-		if (skeletonNames[sk].substr(skeletonNames[sk].rfind('.'), 4) == ".xml")
+		if (skeletonName.substr(skeletonName.rfind('.'), 4) == ".xml")
 		{
 			//If it exists, then try to get the bone mapping.
-			SmartBodySkeletonMap map(skeletonNames[sk]);
+			SmartBodySkeletonMap map(skeletonName);
 			if (map.exists())
 			{
 				//Finally, map the skeleton.
@@ -112,9 +112,9 @@ void SmartBodyManager::loadSkeletonAssets()
 			}
 
 			//When the skeleton has been loaded, retarget the behaviors on it.
-			for (size_t bh = 0, nbBh = mBehaviors.size(); bh < nbBh; bh ++)
+			for (auto& behavior : mBehaviors)
 			{
-				mBehaviors[bh]->retarget(skeletonNames[sk]);
+				behavior->retarget(skeletonName);
 			}
 		}
 	}

@@ -152,12 +152,12 @@ void SmartBodyLocomotion::locomotionSetup()
 
 	//We get the original set of motions.
 	std::vector<std::string> motions = getMotionsForLocomotionSetup();
-	int size = motions.size();
+	size_t size = motions.size();
 
 	//We add these motions to our blend.
-	for (int i = 0; i < size; i ++)
+	for (auto& motionName : motions)
 	{
-		blend->addMotion(motions[i], 0, 0, 0);
+		blend->addMotion(motionName, 0, 0, 0);
 	}
 
 	//We set the correspondence points.
@@ -185,11 +185,11 @@ void SmartBodyLocomotion::locomotionSetup()
 		};
 
 	//We add the correspondence points to the blend.
-	for (int i = 0; i < 4; i ++)
+	for (size_t i = 0; i < 4; i ++)
 	{
 		std::vector<double> points;
 
-		for (int j = 0; j < size; j ++)
+		for (size_t j = 0; j < size; j ++)
 		{
 			points.push_back(correspondencePoints[j * 4 + i]);
 		}
@@ -206,7 +206,7 @@ void SmartBodyLocomotion::locomotionSetup()
 	std::vector<double> points;
 	float speed, omega, direction;
 
-	for (int i = 0; i < size; i ++)
+	for (size_t i = 0; i < size; i ++)
 	{
 		motion = mAssetManager.getMotion(motions[i]);
 		motion->connect(skeleton);
@@ -311,7 +311,7 @@ void SmartBodyLocomotion::startingSetup()
 		points[2].push_back(1.6);
 
 	//Sets the blend manager for each side.
-	for (int i = 0; i < 2; i ++)
+	for (size_t i = 0; i < 2; i ++)
 	{
 		if (mBlendManager.getBlend(blendNames[i]) != 0)
 		{
@@ -321,12 +321,12 @@ void SmartBodyLocomotion::startingSetup()
 		SmartBody::SBAnimationBlend1D *blend = mBlendManager.createBlend1D(blendNames[i]);
 		blend->setBlendSkeleton(mSkelRefName);
 
-		for (int j = 0; j < 3; j ++)
+		for (size_t j = 0; j < 3; j ++)
 		{
 			blend->addMotion(motions[i][j], params[i][j]);
 		}
 
-		for (int j = 0; j < 3; j ++)
+		for (size_t j = 0; j < 3; j ++)
 		{
 			blend->addCorrespondencePoints(motions[i], points[j]);
 		}
@@ -398,9 +398,9 @@ void SmartBodyLocomotion::stepSetup()
 	motions.push_back("ChrUtah_Idle01_StepForwardLf01");
 	motions.push_back("ChrUtah_Idle01_StepSidewaysLf01");
 	
-	for (int i = 0; i < 7; i ++)
+	for (auto& motionName : motions)
 	{
-		blend->addMotion(motions[i], 0, 0);
+		blend->addMotion(motionName, 0, 0);
 	}
 
 	std::vector<double> points[3];
