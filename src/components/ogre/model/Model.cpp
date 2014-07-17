@@ -758,7 +758,6 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 	MovableObject::_notifyCurrentCamera(cam);
 	if (isVisible()) {
 		if (mVisible) {
-
 			for (auto& movable : mMovableObjects) {
 				movable->_notifyCurrentCamera(cam);
 			}
@@ -837,8 +836,18 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
 	//check with both the model visibility setting and with the general model setting to see whether the model should be shown
 	if (isVisible()) {
+		//There's a bug in Ogre which breaks manual bone control together with shared skeleton.
+		//The short version is that if a skeleton is shared by multiple entities, as soon as the first entity has had
+		//it's _updateRenderQueue method called it will mark all manual bones as not dirty any more. The
+		//result of this is that if there's any other entity also sharing the same skeleton, this entity
+		//won't have its vertices updated since it now reads the skeleton as having no dirty manual bones.
+		//The below code fixes this.
+		bool dirtyManualBones = mSkeletonOwnerEntity == nullptr ? false : mSkeletonOwnerEntity->getSkeleton()->getManualBonesDirty();
 		for (auto& submodel : mSubmodels) {
 			if (submodel->getEntity()->isVisible()) {
+				if (dirtyManualBones) {
+					mSkeletonOwnerEntity->getSkeleton()->_notifyManualBonesDirty();
+				}
 				submodel->getEntity()->_updateRenderQueue(queue);
 			}
 		}
