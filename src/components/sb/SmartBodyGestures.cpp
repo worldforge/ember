@@ -52,12 +52,6 @@ void SmartBodyGestures::applyRetargeting(SmartBody::SBCharacter& character)
 }
 
 
-
-void SmartBodyGestures::setupMotion(SmartBody::SBMotion& motion)
-{
-}
-
-
 std::vector<std::string> SmartBodyGestures::getMotions()
 {
 	std::vector<std::string> motions;

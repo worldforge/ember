@@ -57,7 +57,7 @@ public:
 	void retarget(const std::string& skName);
 
 	/**
-	 * @brief Add the necessary contraints on the character.
+	 * @brief If necessary, add some contraints on the character to enable the retargeting.
 	 */
 	virtual void applyRetargeting(SmartBody::SBCharacter& character) = 0;
 
@@ -91,18 +91,18 @@ protected:
 
 
 	/**
-	 * @brief Check that the assets have been correctly loaded and map the skeleton reference.
+	 * @brief Checks that the assets have been correctly loaded and map the skeleton reference.
 	 */
 	bool setupAssets(SmartBody::SBJointMapManager& jointMapMng);
 
 	/**
-	 * @brief Setup the behaviors.
+	 * @brief Sets up the behaviors.
 	 */
 	void setupBehaviors();
 
-
-	virtual void setupMotion(SmartBody::SBMotion& motion) = 0;
-
+	/**
+	 * @brief Gets all the motions constituing this behavior set.
+	 */
 	virtual std::vector<std::string> getMotions() = 0;
 
 	/**

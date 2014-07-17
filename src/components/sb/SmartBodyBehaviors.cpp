@@ -57,7 +57,6 @@ void SmartBodyBehaviors::setupBehaviors()
 	{
 		SmartBody::SBMotion *motion = mAssetManager.getMotion(motionName);
 		motion->setMotionSkeletonName(mSkelRefName);
-		setupMotion(*motion);
 	}	
 }
 

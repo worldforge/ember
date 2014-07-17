@@ -39,7 +39,8 @@ public:
 	bool setup(SmartBody::SBJointMapManager& jointMapManager);
 
 	/**
-	 * @brief Add the given contraints to retarget locomotion on another character.
+	 * @brief Overrides SmartBodyBehaviors::applyRetargeting().
+	 * This method does nothing as the retargeting of the locomotion doesn't imply modifying the SBCharacter instance.
 	 */
 	void applyRetargeting(SmartBody::SBCharacter& character);
 
@@ -47,12 +48,8 @@ public:
 private:
 
 	/**
-	 * @brief Create the build joint trajectories for this motion.
-	 */
-	void setupMotion(SmartBody::SBMotion& motion);
-
-	/**
-	 * @brief Gets the name of all the motions contained in the locomotion set.
+	 * @brief Overrides SmartBodyBehaviors::getMotions().
+	 * Gets the name of all the motions contained in the locomotion set.
 	 */
 	std::vector<std::string> getMotions();
 

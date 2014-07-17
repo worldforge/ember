@@ -22,7 +22,6 @@ SmartBodyLocomotion::SmartBodyLocomotion(const std::string& motionPath, const st
 
 SmartBodyLocomotion::~SmartBodyLocomotion()
 {
-
 }
 
 
@@ -51,20 +50,7 @@ bool SmartBodyLocomotion::setup(SmartBody::SBJointMapManager& jointMapManager)
 
 void SmartBodyLocomotion::applyRetargeting(SmartBody::SBCharacter& character)
 {
-	character.addJointTrajectoryConstraint("l_forefoot", "base");
-	character.addJointTrajectoryConstraint("r_forefoot", "base");
-	character.addJointTrajectoryConstraint("l_ankle", "base");
-	character.addJointTrajectoryConstraint("r_ankle", "base");
-}
-
-
-
-void SmartBodyLocomotion::setupMotion(SmartBody::SBMotion& motion)
-{
-	motion.buildJointTrajectory("l_forefoot", "base");
-	motion.buildJointTrajectory("r_forefoot", "base");
-	motion.buildJointTrajectory("l_ankle", "base");
-	motion.buildJointTrajectory("r_ankle", "base");
+	
 }
 
 
