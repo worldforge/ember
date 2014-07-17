@@ -7,7 +7,6 @@
 #include <sb/SBSkeleton.h>
 #include <sb/SBScene.h>
 
-//#define NDEBUG
 #include <cassert>
 
 

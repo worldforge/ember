@@ -13,7 +13,6 @@
 #include "sb/SBSimulationManager.h"
 #include "sb/SBBmlProcessor.h"
 
-//#define NDEBUG
 #include <cassert>
 
 using namespace Ember;
