@@ -21,15 +21,15 @@ namespace Ember
 {
 
 /**
- @brief A behavior set is a group of motions.
-
- To load a behavior set, you have to create a SmartBodyBehaviors object, then use setup(). In order to use these animations on another character.
- use retarget().
- 
- This class is abstract. Right now, only SmartBodyLocomotion derived from it. 
-
- @author Céline NOEL <celine.noel.7294@gmail.com>
-
+ * @brief A behavior set is a group of motions.
+ *
+ * To load a behavior set, you have to create a SmartBodyBehaviors object, then use setup(). In order to use these animations on another character.
+ * use retarget() on its skeleton.
+ *
+ * This class is abstract. Right now, only SmartBodyLocomotion and SmartBodyGestures derived from it. 
+ *
+ * @author Céline NOEL <celine.noel.7294@gmail.com>
+ *
  */
 class SmartBodyBehaviors
 {

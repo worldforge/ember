@@ -12,6 +12,16 @@ class SBGestureMapManager;
 namespace Ember
 {
 
+/**
+ * @brief The gesture behavior set. 
+ * These are animations using the upper part of the body. Variations can be created depending on the character mood (neutral, 
+ * sad, or angry). 
+ *
+ * This class derived from SmartBodyBehaviors.
+ *
+ * @author Céline NOEL <celine.noel.7294@gmail.com>
+ *
+ */
 class SmartBodyGestures: public SmartBodyBehaviors
 {
 

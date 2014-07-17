@@ -8,6 +8,14 @@
 namespace Ember
 {
 
+/**
+ * @brief The locomotion behavior. It handles different animations such as idlying, walking, running, but also turning, etc.
+ *
+ * This class derived from SmartBodyBehaviors.
+ *
+ * @author Céline NOEL <celine.noel.7294@gmail.com>
+ *
+ */
 class SmartBodyLocomotion : public SmartBodyBehaviors
 {
 
