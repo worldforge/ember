@@ -42,9 +42,9 @@ void SmartBodySkeletonMap::setMap(SmartBody::SBAssetManager& assetMng, SmartBody
 	SmartBody::SBJointMap *jointMap = mapMng.createJointMap(mName);
 
 	//Creation of the joint map.
-	for (size_t i = 0; i < mBones.size(); i += 2)
+	for (auto& bone : mBones)
 	{
-		jointMap->setMapping(mBones[i], mBones[i + 1]);
+		jointMap->setMapping(bone.first, bone.second);
 	}
 
 	//Application of the map to the skeleton.
@@ -65,12 +65,10 @@ bool SmartBodySkeletonMap::parseMapFile(std::ifstream& mapFile)
 			return false;
 		}
 
-		std::string bones[2];
-		bones[0] = line.substr(0, delim);
-		bones[1] = line.substr(delim + 2, line.size() + 1);
+		std::string ogreBone = line.substr(0, delim);
+		std::string sbBone = line.substr(delim + 2, line.size() + 1);
 
-		mBones.push_back(bones[0]);
-		mBones.push_back(bones[1]);
+		mBones[ogreBone] = sbBone;
 	}
 
 	return true;

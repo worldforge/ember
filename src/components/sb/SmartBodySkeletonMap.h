@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <string>
-#include <vector>
+#include <map>
 
 
 namespace SmartBody
@@ -67,7 +67,7 @@ private:
 	/**
 	 * @brief Contains the names of the bones : {OgreBoneName, SBJointName}.
 	 */
-	std::vector<std::string>mBones;
+	std::map<std::string, std::string> mBones;
 
 	/**
 	 * @brief States that the map exists.
