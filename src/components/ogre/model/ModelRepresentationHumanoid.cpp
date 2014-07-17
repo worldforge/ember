@@ -95,7 +95,7 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 				resetAnimations();
 
 				//start the idling animation on this character.
-				mSbManager.animate(*mCharacter, SmartBodyAnimation::IDLE);
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::IDLE);
 			}
 
 			else if (actionName == ACTION_WALK)
@@ -103,7 +103,7 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 				resetAnimations();
 
 				//start the walking animation on this character.
-				mSbManager.animate(*mCharacter, SmartBodyAnimation::WALK);
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::WALK);
 			}
 
 			//Else, stop the SmartBody animations for this character and use the original method.

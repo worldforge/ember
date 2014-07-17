@@ -15,7 +15,6 @@ namespace Ember
 class SmartBodyAnimation
 {
 
-
 public:
 
 	enum Name 

@@ -8,19 +8,19 @@ SmartBodyAnimation::SmartBodyAnimation(SmartBodyAnimation::Name name)
 {
 	switch (name)
 	{
-		case IDLE:
+		case Name::IDLE:
 			mBmlRequest = std::string("<body posture=\"ChrUtah_Idle001\"/>");
 			break;
 
-		case WALK:
+		case Name::WALK:
 			mBmlRequest = std::string("<body posture=\"ChrUtah_Walk001\"/>");
 			break;
 
-		case RUN:
+		case Name::RUN:
 			mBmlRequest = std::string("<body posture=\"ChrUtah_Run001\"/>");
 			break;
 
-		case NOD:
+		case Name::NOD:
 			mBmlRequest = std::string("<head type=\"NOD\" repeats=\"2\"/>");
 			break;
 	}

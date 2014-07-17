@@ -25,7 +25,7 @@ SmartBodyManager::SmartBodyManager()
 	  mProcessor(*mScene.getBmlProcessor()), mIsInit(false)
 {
 	//Initialisation of the animation map.
-	for (int i = 0; i < SmartBodyAnimation::ANIMATIONS_COUNT; i ++)
+	for (int i = 0; i < (int)SmartBodyAnimation::Name::ANIMATIONS_COUNT; i ++)
 	{
 		mAnimations.push_back(SmartBodyAnimation( ((SmartBodyAnimation::Name)i) ));
 	}
@@ -201,7 +201,7 @@ void SmartBodyManager::animate(SmartBodyRepresentation& character, SmartBodyAnim
 	mSimulation.pause();
 
 	character.setAnimatedState(true);
-	mProcessor.execBML(character.getName(), mAnimations[animation].getBmlRequest());
+	mProcessor.execBML(character.getName(), mAnimations[(int)animation].getBmlRequest());
 
 	mSimulation.resume();
 }
