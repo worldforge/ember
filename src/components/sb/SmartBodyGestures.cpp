@@ -26,7 +26,9 @@ SmartBodyGestures::~SmartBodyGestures()
 bool SmartBodyGestures::setup(SmartBody::SBJointMapManager& jointMapManager)
 {
 	if (mSetup)
+	{
 		return true;
+	}
 	
 	if (SmartBodyBehaviors::setupAssets(jointMapManager))
 	{

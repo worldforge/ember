@@ -29,7 +29,9 @@ SmartBodyLocomotion::~SmartBodyLocomotion()
 bool SmartBodyLocomotion::setup(SmartBody::SBJointMapManager& jointMapManager)
 {
 	if (mSetup)
+	{
 		return true;
+	}
 	
 	if (SmartBodyBehaviors::setupAssets(jointMapManager))
 	{
@@ -140,7 +142,9 @@ void SmartBodyLocomotion::locomotionSetup()
 {	
 	//If the blend is already existing, we don't need to do anything. 
 	if (mBlendManager.getBlend("allLocomotion") != NULL)
+	{
 		return;
+	}
 
 	//Creates a new stateManager refering to the original skeleton.
 	SmartBody::SBAnimationBlend3D *blend = mBlendManager.createBlend3D("allLocomotion");
@@ -310,7 +314,9 @@ void SmartBodyLocomotion::startingSetup()
 	for (int i = 0; i < 2; i ++)
 	{
 		if (mBlendManager.getBlend(blendNames[i]) != 0)
+		{
 			continue;
+		}
 
 		SmartBody::SBAnimationBlend1D *blend = mBlendManager.createBlend1D(blendNames[i]);
 		blend->setBlendSkeleton(mSkelRefName);
@@ -330,7 +336,9 @@ void SmartBodyLocomotion::startingSetup()
 void SmartBodyLocomotion::idleTurnSetup()
 {	
 	if (mBlendManager.getBlend("allIdleTurn") != 0)
+	{
 		return;
+	}
 
 	SmartBody::SBAnimationBlend1D *blend = mBlendManager.createBlend1D("allIdleTurn");
 
@@ -374,7 +382,9 @@ void SmartBodyLocomotion::idleTurnSetup()
 void SmartBodyLocomotion::stepSetup()
 {
 	if (mBlendManager.getBlend("allStep") != 0)
+	{
 		return;
+	}
 
 	SmartBody::SBAnimationBlend2D *blend = mBlendManager.createBlend2D("allStep");
 	blend->setBlendSkeleton(mSkelRefName);
