@@ -44,7 +44,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodySkeletonMap(void);
+	~SmartBodySkeletonMap();
 
 
 	/**
@@ -55,7 +55,7 @@ public:
 	/**
 	 * @brief Check that the map exists (namely that the map file exists, and that it is correctly written).
 	 */
-	bool exists(void) const;
+	bool exists() const;
 
 private:
 

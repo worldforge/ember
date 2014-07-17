@@ -45,15 +45,13 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ModelRepresentationHumanoid(void);
+	virtual ~ModelRepresentationHumanoid();
 
 	/**
 	 * @brief The two following return the name of this class.
 	 */
-	const std::string& getType(void) const;
-	static const std::string& getTypeNameForClass(void);
-
-	void updateAnimation(float timeSlice);
+	const std::string& getType() const;
+	static const std::string& getTypeNameForClass();
 	
 
 protected:
@@ -76,17 +74,17 @@ protected:
 	/**
 	 * @brief Overriden from ModelRepresentation.
 	 */
-	void setIdleAnimationTime(void);
+	void setIdleAnimationTime();
 
 	/**
 	 * @brief Overrides model_Reloaded_der in ModelRepresentation.
 	 */
-	void model_Reloaded_der(void);
+	void model_Reloaded_der();
 
 	/**
 	 * @brief Creates the character representation in SmartBody.
 	 */
-	void createSmartBodyCharacter(void);
+	void createSmartBodyCharacter();
 
 	/**
 	 * @brief Sets the animation corresponding to the given action.

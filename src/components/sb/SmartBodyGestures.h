@@ -27,7 +27,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodyGestures(void);
+	~SmartBodyGestures();
 
 
 	/**
@@ -56,7 +56,7 @@ private:
 	/**
 	 * @brief Gets the name of all the motions contained in the gestures set.
 	 */
-	std::vector<std::string> getMotions(void);
+	std::vector<std::string> getMotions();
 
 	/**
 	 * @brief Create the maps for the different gesture sets.

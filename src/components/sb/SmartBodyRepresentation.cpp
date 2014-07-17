@@ -37,7 +37,7 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 	setManualControl(false);
 }
 
-SmartBodyRepresentation::~SmartBodyRepresentation(void)
+SmartBodyRepresentation::~SmartBodyRepresentation()
 {
 	//Free the memory.
 	mScene.removeCharacter(getName());
@@ -55,7 +55,7 @@ void SmartBodyRepresentation::setManualControl(bool mode /*= true */)
 	mManualMode = mode;
 }
 
-void SmartBodyRepresentation::updateBonePositions(void)
+void SmartBodyRepresentation::updateBonePositions()
 {
 	//Check that mManuallyControl is set to true.
 	if (!mManualMode)
@@ -86,7 +86,7 @@ void SmartBodyRepresentation::updateBonePositions(void)
 	}
 }
 
-bool SmartBodyRepresentation::isManuallyControlled(void) const
+bool SmartBodyRepresentation::isManuallyControlled() const
 {
 	return mManualMode;
 }
@@ -99,12 +99,12 @@ void SmartBodyRepresentation::setAnimatedState(bool isAnimated)
 		setManualControl(false);
 }
 
-bool SmartBodyRepresentation::isAnimated(void) const
+bool SmartBodyRepresentation::isAnimated() const
 {
 	return mIsAnimated;
 }
 
-const std::string& SmartBodyRepresentation::getName(void) const
+const std::string& SmartBodyRepresentation::getName() const
 {
 	return mCharacter.getName();
 }

@@ -20,7 +20,7 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodyManager::SmartBodyManager(void) 
+SmartBodyManager::SmartBodyManager() 
 	: mScene(*SmartBody::SBScene::getScene()), mAssetManager(*mScene.getAssetManager()), mSimulation(*mScene.getSimulationManager()),
 	  mProcessor(*mScene.getBmlProcessor()), mIsInit(false)
 {
@@ -31,7 +31,7 @@ SmartBodyManager::SmartBodyManager(void)
 	}
 }
 
-SmartBodyManager::~SmartBodyManager(void)
+SmartBodyManager::~SmartBodyManager()
 {
 	mSimulation.stop();
 
@@ -75,7 +75,7 @@ void SmartBodyManager::initialize(double startTime)
 	mIsInit = true;
 }
 
-void SmartBodyManager::loadAllBehaviors(void)
+void SmartBodyManager::loadAllBehaviors()
 {
 	//Locomotion behavior.
 	mBehaviors.push_back(new SmartBodyLocomotion(EMBER_SMARTBODY_ASSETS_LOCOMOTION, EMBER_SMARTBODY_SKELETON_LOCOMOTION, 
@@ -92,7 +92,7 @@ void SmartBodyManager::loadAllBehaviors(void)
 	}
 }
 
-void SmartBodyManager::loadSkeletonAssets(void) 
+void SmartBodyManager::loadSkeletonAssets() 
 {
 	//Load the Character skeletons.
 	mAssetManager.loadAssetsFromPath(EMBER_SMARTBODY_ASSETS_SKELETONS);

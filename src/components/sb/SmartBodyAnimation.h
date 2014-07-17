@@ -24,9 +24,9 @@ public:
 	};
 
 	SmartBodyAnimation(SmartBodyAnimation::Name name);
-	~SmartBodyAnimation(void);
+	~SmartBodyAnimation();
 
-	const std::string& getBmlRequest(void) const;
+	const std::string& getBmlRequest() const;
 
 
 private:

@@ -19,7 +19,7 @@ EmberEntityHumanoidModelAction::EmberEntityHumanoidModelAction(EmberEntity& enti
 {
 }
 
-EmberEntityHumanoidModelAction::~EmberEntityHumanoidModelAction(void)
+EmberEntityHumanoidModelAction::~EmberEntityHumanoidModelAction()
 {
 }
 

@@ -26,12 +26,12 @@ SmartBodyAnimation::SmartBodyAnimation(SmartBodyAnimation::Name name)
 	}
 }
 
-SmartBodyAnimation::~SmartBodyAnimation(void)
+SmartBodyAnimation::~SmartBodyAnimation()
 {
 }
 
 
-const std::string& SmartBodyAnimation::getBmlRequest(void) const
+const std::string& SmartBodyAnimation::getBmlRequest() const
 {
 	return mBmlRequest;
 }

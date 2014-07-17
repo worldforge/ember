@@ -25,12 +25,12 @@ SmartBodySkeletonMap::SmartBodySkeletonMap(const std::string& skeleton)
 	}
 }
 
-SmartBodySkeletonMap::~SmartBodySkeletonMap(void)
+SmartBodySkeletonMap::~SmartBodySkeletonMap()
 {
 }
 
 
-bool SmartBodySkeletonMap::exists(void) const
+bool SmartBodySkeletonMap::exists() const
 {
 	return mHasMap;
 }

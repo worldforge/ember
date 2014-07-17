@@ -45,12 +45,12 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyManager(void);
+	SmartBodyManager();
 
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodyManager(void);
+	~SmartBodyManager();
 
 	/**
 	 * @brief Initializes the object, and consequently, the SmartBody library.
@@ -147,12 +147,12 @@ private:
 	/**
 	 * @brief Load all the skeletons situated in motions/skeletons.
 	 */
-	void loadSkeletonAssets(void);
+	void loadSkeletonAssets();
 
 	/**
 	 * @brief Loads and set up all the behaviors.
 	 */
-	void loadAllBehaviors(void);
+	void loadAllBehaviors();
 
 };
 

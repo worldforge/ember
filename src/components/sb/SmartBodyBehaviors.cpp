@@ -48,7 +48,7 @@ bool SmartBodyBehaviors::setupAssets(SmartBody::SBJointMapManager& jointMapMng)
 }
 
 
-void SmartBodyBehaviors::setupBehaviors(void)
+void SmartBodyBehaviors::setupBehaviors()
 {
 	//We get the motion paths for this behavior set. 
 	std::vector<std::string> motions = getMotions();
@@ -63,7 +63,7 @@ void SmartBodyBehaviors::setupBehaviors(void)
 	}	
 }
 
-bool SmartBodyBehaviors::assetsExist(void)
+bool SmartBodyBehaviors::assetsExist()
 {
 	if (!mAssetManager.getSkeleton(mSkelRefName))
 	{

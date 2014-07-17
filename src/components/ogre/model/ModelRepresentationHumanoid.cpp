@@ -28,7 +28,7 @@ ModelRepresentationHumanoid::ModelRepresentationHumanoid(EmberEntity& entity, Mo
 {
 }
 
-ModelRepresentationHumanoid::~ModelRepresentationHumanoid(void)
+ModelRepresentationHumanoid::~ModelRepresentationHumanoid()
 {
 	if (mCharacter)
 	{
@@ -37,23 +37,23 @@ ModelRepresentationHumanoid::~ModelRepresentationHumanoid(void)
 	}
 }
 
-void ModelRepresentationHumanoid::model_Reloaded_der(void)
+void ModelRepresentationHumanoid::model_Reloaded_der()
 {
 	//When the model has finally been completely created, we need to create the SmartBody character.
 	createSmartBodyCharacter();
 }
 
-const std::string& ModelRepresentationHumanoid::getType(void) const
+const std::string& ModelRepresentationHumanoid::getType() const
 {
 	return sTypeName;
 }
 
-const std::string& ModelRepresentationHumanoid::getTypeNameForClass(void)
+const std::string& ModelRepresentationHumanoid::getTypeNameForClass()
 {
 	return sTypeName;
 }
 
-void ModelRepresentationHumanoid::createSmartBodyCharacter(void)
+void ModelRepresentationHumanoid::createSmartBodyCharacter()
 {
 	//Get the Ogre skeleton.	
 	Ogre::SkeletonInstance *skeleton = mModel.getSkeleton();
@@ -75,7 +75,7 @@ void ModelRepresentationHumanoid::createSmartBodyCharacter(void)
 	}
 }
 
-void ModelRepresentationHumanoid::setIdleAnimationTime(void)
+void ModelRepresentationHumanoid::setIdleAnimationTime()
 {
 }
 
@@ -125,10 +125,6 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 	{
 		ModelRepresentation::setAnimation(actionName, newAction);
 	}
-}
-
-void ModelRepresentationHumanoid::updateAnimation(float timeSlice)
-{
 }
 
 }

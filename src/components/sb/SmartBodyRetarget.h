@@ -32,7 +32,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodyRetarget(void);
+	~SmartBodyRetarget();
 
 private:
 

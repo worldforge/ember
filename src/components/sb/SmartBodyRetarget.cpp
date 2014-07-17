@@ -22,7 +22,7 @@ SmartBodyRetarget::SmartBodyRetarget(const std::string& srcSkName, const std::st
 	}
 }
 
-SmartBodyRetarget::~SmartBodyRetarget(void)
+SmartBodyRetarget::~SmartBodyRetarget()
 {
 
 }

@@ -144,7 +144,7 @@ public:
 	/**
 	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
 	 */
-	void initFromModel(void);
+	void initFromModel();
 
 	/**
 	 * @copydoc OgreView::IGraphicalRepresentation::getType()
@@ -316,7 +316,7 @@ protected:
 	/**
 	 * @brief Randomize the entry value for that so we don't end up with too many similar entities with synchronized animations.
 	 */
-	virtual void setIdleAnimationTime(void);
+	virtual void setIdleAnimationTime();
 
 	/**
 	 * @brief Processes the outfit map and updates the appearance.
@@ -355,7 +355,7 @@ protected:
 	/**
 	 * @brief Used into model_Reloaded() to update the new values of derived classes.
 	 */
-	virtual void model_Reloaded_der(void);
+	virtual void model_Reloaded_der();
 
 	/**
 	 * @brief When the Model is reset we need to clean up and remove all attachments from it.

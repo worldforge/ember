@@ -197,7 +197,7 @@ void ModelRepresentation::setClientVisible(bool visible)
 	}
 }
 
-void ModelRepresentation::initFromModel(void)
+void ModelRepresentation::initFromModel()
 {
 	connectEntities();
 
@@ -213,7 +213,7 @@ void ModelRepresentation::initFromModel(void)
 	setIdleAnimationTime();
 }
 
-void ModelRepresentation::setIdleAnimationTime(void)
+void ModelRepresentation::setIdleAnimationTime()
 {
 	Action* idleaction = mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	if (idleaction) {
@@ -257,7 +257,7 @@ void ModelRepresentation::model_Reloaded()
 	onMovementModeChanged(getMovementMode());
 }
 
-void ModelRepresentation::model_Reloaded_der(void)
+void ModelRepresentation::model_Reloaded_der()
 {
 }
 

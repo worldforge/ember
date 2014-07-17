@@ -20,7 +20,7 @@ SmartBodyLocomotion::SmartBodyLocomotion(const std::string& motionPath, const st
 {
 }
 
-SmartBodyLocomotion::~SmartBodyLocomotion(void)
+SmartBodyLocomotion::~SmartBodyLocomotion()
 {
 
 }
@@ -66,7 +66,7 @@ void SmartBodyLocomotion::setupMotion(SmartBody::SBMotion& motion)
 }
 
 
-std::vector<std::string> SmartBodyLocomotion::getMotions(void)
+std::vector<std::string> SmartBodyLocomotion::getMotions()
 {
 	std::vector<std::string> motions;
 
@@ -107,7 +107,7 @@ std::vector<std::string> SmartBodyLocomotion::getMotions(void)
 	return motions;
 }
 
-std::vector<std::string> SmartBodyLocomotion::getMotionsForLocomotionSetup(void)
+std::vector<std::string> SmartBodyLocomotion::getMotionsForLocomotionSetup()
 {	
 	std::vector<std::string> motions;
 

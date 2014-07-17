@@ -38,7 +38,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EmberEntityHumanoidModelAction(void);
+	virtual ~EmberEntityHumanoidModelAction();
 
 
 protected:

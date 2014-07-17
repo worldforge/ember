@@ -44,7 +44,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~SmartBodyBehaviors(void);
+	virtual ~SmartBodyBehaviors();
 
 	/**
 	 * @brief Check that all assets have been correctly loaded and setup the behavior set.
@@ -98,17 +98,17 @@ protected:
 	/**
 	 * @brief Setup the behaviors.
 	 */
-	void setupBehaviors(void);
+	void setupBehaviors();
 
 
 	virtual void setupMotion(SmartBody::SBMotion& motion) = 0;
 
-	virtual std::vector<std::string> getMotions(void) = 0;
+	virtual std::vector<std::string> getMotions() = 0;
 
 	/**
 	 * @brief Checks that each asset has been correctly loaded (skeleton + motions).
 	 */
-	bool assetsExist(void);
+	bool assetsExist();
 };
 
 }

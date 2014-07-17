@@ -22,7 +22,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodyLocomotion(void);
+	~SmartBodyLocomotion();
 
 
 	/**
@@ -46,12 +46,12 @@ private:
 	/**
 	 * @brief Gets the name of all the motions contained in the locomotion set.
 	 */
-	std::vector<std::string> getMotions(void);
+	std::vector<std::string> getMotions();
 
 	/**
 	 * @brief Gets the name of all the motions involved in locomotionSetup.
 	 */
-	std::vector<std::string> getMotionsForLocomotionSetup(void);
+	std::vector<std::string> getMotionsForLocomotionSetup();
 
 	/**
 	 * @brief Setup the locomotion behavior one step at a time.

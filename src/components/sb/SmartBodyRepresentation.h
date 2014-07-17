@@ -41,12 +41,12 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~SmartBodyRepresentation(void);
+	~SmartBodyRepresentation();
 
 	/**
 	 * @brief Tranfers the position of the bones from SmartBody to Ogre.
 	 */
-	void updateBonePositions(void);
+	void updateBonePositions();
 
 	/**
 	 * @brief Animates / freezes the character.
@@ -56,12 +56,12 @@ public:
 	/**
 	 * @brief Returns the value of mIsAnimated.
 	 */
-	bool isAnimated(void) const;
+	bool isAnimated() const;
 
 	/**
 	 * @brief Returns the name of mCharacter.
 	 */
-	const std::string& getName(void) const;
+	const std::string& getName() const;
 
 
 private:
@@ -109,7 +109,7 @@ private:
 	/**
 	 * @brief Returns the value of mManualMode.
 	 */
-	bool isManuallyControlled(void) const;
+	bool isManuallyControlled() const;
 
 };
 

@@ -17,7 +17,7 @@ SmartBodyGestures::SmartBodyGestures(const std::string& motionPath, const std::s
 {
 }
 
-SmartBodyGestures::~SmartBodyGestures(void)
+SmartBodyGestures::~SmartBodyGestures()
 {
 
 }
@@ -56,7 +56,7 @@ void SmartBodyGestures::setupMotion(SmartBody::SBMotion& motion)
 }
 
 
-std::vector<std::string> SmartBodyGestures::getMotions(void)
+std::vector<std::string> SmartBodyGestures::getMotions()
 {
 	std::vector<std::string> motions;
 
