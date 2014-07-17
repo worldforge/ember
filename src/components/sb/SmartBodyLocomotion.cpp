@@ -141,7 +141,7 @@ std::vector<std::string> SmartBodyLocomotion::getMotionsForLocomotionSetup()
 void SmartBodyLocomotion::locomotionSetup()
 {	
 	//If the blend is already existing, we don't need to do anything. 
-	if (mBlendManager.getBlend("allLocomotion") != NULL)
+	if (mBlendManager.getBlend("allLocomotion") != nullptr)
 	{
 		return;
 	}
