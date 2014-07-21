@@ -52,6 +52,11 @@ public:
 	 */
 	const std::string& getType() const;
 	static const std::string& getTypeNameForClass();
+
+	/**
+	 * @return false if the model is animated manually with SmartBody, true otherwise.
+	 */
+	bool isOgreAnimated() const;
 	
 
 protected:

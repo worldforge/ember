@@ -53,6 +53,11 @@ const std::string& ModelRepresentationHumanoid::getTypeNameForClass()
 	return sTypeName;
 }
 
+bool ModelRepresentationHumanoid::isOgreAnimated() const
+{
+	return !mCharacter->isAnimated();
+}
+
 void ModelRepresentationHumanoid::createSmartBodyCharacter()
 {
 	//Get the Ogre skeleton.	
@@ -104,6 +109,14 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 
 				//start the walking animation on this character.
 				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::WALK);
+			}
+
+			else if (actionName == ACTION_RUN)
+			{
+				resetAnimations();
+
+				//start the walking animation on this character.
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::RUN);
 			}
 
 			//Else, stop the SmartBody animations for this character and use the original method.
