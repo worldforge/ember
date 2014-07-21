@@ -28,8 +28,10 @@
 #include "components/ogre/DelegatingNodeController.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
+#include "components/ogre/model/ModelRepresentationHumanoid.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
+#include "components/ogre/model/ModelHumanoidAttachment.h"
 #include "components/ogre/model/Model.h"
 
 #include <OgreSceneNode.h>
@@ -89,7 +91,19 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//If there's a model representation available, use a "ModelAttachment" instance to attach to it, otherwise just use a regular NodeAttachment.
 	NodeAttachment* nodeAttachment(0);
 	if (modelRepresentation) {
-		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+
+		if (modelRepresentation->getType() == Model::ModelRepresentationHumanoid::getTypeNameForClass())
+		{
+			//If this representation is used for humanoid model, then we create a ModelHumanoidAttachment.
+			nodeAttachment = new Model::ModelHumanoidAttachment(getAttachedEntity(), *modelRepresentation, 
+										mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+		}
+
+		else
+		{
+			nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+		}
+
 	} else {
 		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider());
 	}

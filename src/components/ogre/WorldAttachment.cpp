@@ -25,8 +25,10 @@
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/ModelRepresentation.h"
+#include "components/ogre/model/ModelRepresentationHumanoid.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
+#include "components/ogre/model/ModelHumanoidAttachment.h"
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
@@ -70,8 +72,18 @@ EmberEntity* WorldAttachment::getParentEntity() const
 IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 {
 	NodeAttachment* nodeAttachment(0);
-	if (Model::ModelRepresentation * modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
-		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(*mWorldNode));
+	if (Model::ModelRepresentation * modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) 
+	{
+		if (modelRepresentation->getType() == Model::ModelRepresentationHumanoid::getTypeNameForClass())
+		{
+			//If this representation is used for humanoid model, then we create a ModelHumanoidAttachment.
+			nodeAttachment = new Model::ModelHumanoidAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(*mWorldNode));
+		}
+
+		else
+		{
+			nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(*mWorldNode));
+		}
 	}
 	else {
 		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(*mWorldNode));
