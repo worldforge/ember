@@ -110,6 +110,13 @@ private:
 	Ogre::SkeletonInstance& mOgreSkeleton;
 
 	/**
+	 * @brief Contains the distance travelled forward by the base bone since the last frame.
+	 * 		(as long as we are considering linear motions, a double is sufficient, but when we will see for transformations in a plane,
+	 *		 we will need to use one vector for the translation (x, z), and one double the orientation (θ)).
+	 */
+	double mTranslation;
+
+	/**
 	 * @brief Indicates if the manual control is set or not.
 	 */
 	bool mManualMode;

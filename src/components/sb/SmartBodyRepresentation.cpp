@@ -37,6 +37,7 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 :	mScene(scene),
 	mEntity(entity), mOgreSkeleton(*entity.getSkeleton()), 
 	mCharacter(*scene.createCharacter(entity.getName(), group)), mSkeleton(*scene.createSkeleton(skName)),
+	mTranslation(0.0f),
 	mManualMode(false), mIsAnimated(false)
 {
 	//Associate the skeleton to the character.
@@ -97,11 +98,24 @@ void SmartBodyRepresentation::updateBonePositions()
 			Ogre::Vector3 position(joint->getPosition().x, joint->getPosition().y, joint->getPosition().z);
 			Ogre::Quaternion quaternion(orientation.w, orientation.x, orientation.y, orientation.z);
 
+			//If we are looking at the base joint, we shall not change the z-coordinate of the position vector (it reflects the global
+			//movement of the body, and this must be handled through Ember::Model::ModelHumanoidAttachment, not here).
+			if (joint->getMappedJointName() == "base")
+			{
+				mTranslation += position.z;
+				position.z = 0;
+			}
+
 			//We update the bone positions in Ogre.
 			bone->setPosition(bone->getInitialPosition() + position);
 			bone->setOrientation(quaternion);
 		}
 	}
+}
+
+double SmartBodyRepresentation::getTranslation() const
+{
+	return mTranslation;
 }
 
 bool SmartBodyRepresentation::isManuallyControlled() const
