@@ -21,6 +21,8 @@
 
 	#include <string>
 	#include <vector>
+	#include <OgreVector3.h>
+	#include <OgreQuaternion.h>
 
 namespace Ogre
 {
@@ -62,19 +64,53 @@ public:
 	~SmartBodyRepresentation();
 
 	/**
-	 * @brief Tranfers the position of the bones from SmartBody to Ogre.
+	 * @brief Starts a new animation on this character.
 	 */
-	void updateBonePositions();
+	void setAnimation();
 
 	/**
-	 * @brief Animates / freezes the character.
+	 * @brief Stops the animation.
 	 */
-	void setAnimatedState(bool isAnimated);
+	void freezeAnimation();
 
 	/**
 	 * @brief Returns the value of mIsAnimated.
 	 */
 	bool isAnimated() const;
+
+	/**
+	 * @brief Tranfers the position of the bones from SmartBody to Ogre.
+	 */
+	void updateBonePositions();
+
+	/**
+	 * @brief Gets the translation of the base joint since the since the last time the node this representation is attached to has 
+	 * been updated.
+	 * @return mTranslation.
+	 */
+	const Ogre::Vector3& getTranslation() const;
+
+	/**
+	 * @brief Same but with the rotation.
+	 * @return mRotation.
+	 */	
+	const Ogre::Quaternion& getRotation() const;
+
+	/**
+	 * @brief Reinitialize mTranslation and mRotation to identity, and sets mIsTransformationInit to true.
+	 */	
+	void reinitializeTransformation();
+
+	/**
+	 * @brief Returns true if the ModelHumanoidAttachment can use the values of translation and rotation.
+	 */
+	bool isTransformationInitialized() const;
+
+	/**
+	 * @brief Allows to know if the character is moving (globally, like walking, running, not idling nor noding for example), to eventually
+	 * update or not the position of the scene node.
+	 */
+	bool isMoving() const;
 
 	/**
 	 * @brief Returns the name of mCharacter.
@@ -110,11 +146,27 @@ private:
 	Ogre::SkeletonInstance& mOgreSkeleton;
 
 	/**
-	 * @brief Contains the distance travelled forward by the base bone since the last frame.
-	 * 		(as long as we are considering linear motions, a double is sufficient, but when we will see for transformations in a plane,
-	 *		 we will need to use one vector for the translation (x, z), and one double the orientation (θ)).
+	 * @brief Contains the transformations (translation, and rotation) applied on the base bone since the last time the scene node
+	 * this representation is attached to has been updated.
 	 */
-	double mTranslation;
+	Ogre::Vector3 mTranslation;
+	Ogre::Quaternion mRotation;
+	Ogre::Vector3 mLastTranslation; //To calculate mTranslation when the loop of the motion has been executed one time.
+
+	/**
+	 * @brief The last position taken by the base joint to calculate mTranslation.
+	 */
+	Ogre::Vector3 mPrvPosition;
+
+	/**
+	 * @brief States that the previous has been initialized.
+	 */
+	bool mIsTransformationInit;
+
+	/**
+	 * @brief States that the character is moving (rather being shifted).
+	 */
+	bool mIsMoving;
 
 	/**
 	 * @brief Indicates if the manual control is set or not.
@@ -125,6 +177,11 @@ private:
 	 * @brief Indicates if the character is currently animated through SmartBody.
 	 */
 	bool mIsAnimated;
+
+	/**
+	 * @brief Calculates the transformations applied on the representation since the last frame to know where to put the scene node.
+	 */
+	void calculateTranformations(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
 
 	/**
 	 * @brief Sets or unsets manual control over the skeleton of the Ogre entity.

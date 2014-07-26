@@ -36,7 +36,8 @@ namespace Model
  * Use this attachment when you have a ModelHumanoidRepresentation you need to attach to an entity.
  * This class derives from ModelAttachment. It overrides setPosition(): when an model is moved through SmartBody, the movement has to
  * be smoothed in order to seem natural. Consequently, the position retrieved from the server must be adjusted every frame to fit the 
- * animation. 
+ * animation. To do this, we query how much the model has moved in SmartBody since the last frame, and we use this value and the current
+ * position of the scene node to calculate the new one. 
  *
  * @author Céline NOËL <celine.noel.7294@gmail.com>
  */
@@ -50,10 +51,9 @@ public:
 	ModelHumanoidAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose = "");
 	
 	/**
-	 * @bried Dtor.
+	 * @brief Dtor.
 	 */
 	virtual ~ModelHumanoidAttachment();
-
 
 	/**
 	 * @brief Sets the position and the orientation of the node.
@@ -62,6 +62,31 @@ public:
 	 * Overrides ModelAttachment:setPosition().
 	 */
 	virtual void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity);
+
+	/**
+	 * @brief Inherited from NodeAttachment : returns true is the representation of the entity is moving (this way, if the character stops,
+	 * the walking animation does not interrupt abruptly).
+	 */
+	bool isEntityMoving() const;
+
+private:
+
+	/**
+	 * @brief When the node is positionned for the first time after the model has been reloaded, there is a big gap between the 
+	 * z-coordinates (the current one and the one requested by the server) of the scene node, that won't be compensate if we don't use the
+	 * setPosition parent method. To distinguish this cas, we use the forward boolean.
+	 */
+	bool mIsSecTimeSinceReload;
+
+	/**
+	 * @brief A boolean stating that the model has been reloaded.
+	 */
+	bool mIsModelReloaded;
+
+	/**
+	 * @brief Called when the model has been reloaded.
+	 */
+	void model_Reloaded();
 
 };
 

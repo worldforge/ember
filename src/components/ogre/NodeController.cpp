@@ -54,7 +54,7 @@ void NodeController::movementUpdate()
 {
 	updatePosition();
 	MotionManager& motionManager = MotionManager::getSingleton();
-	if (mAttachment.getAttachedEntity().isMoving()) {
+	if (mAttachment.isEntityMoving()) {
 		motionManager.addMovable(this);
 	} else {
 		motionManager.removeMovable(this);

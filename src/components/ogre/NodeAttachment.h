@@ -105,6 +105,11 @@ public:
 	 */
 	Ogre::Node* getNode() const;
 
+	/**
+	 * @brief Returns true if the attached entity is moving.
+	 */
+	virtual bool isEntityMoving() const;
+
 
 protected:
 

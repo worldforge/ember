@@ -112,6 +112,11 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//	}
 }
 
+bool NodeAttachment::isEntityMoving() const
+{
+	return getAttachedEntity().isMoving();
+}
+
 void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate)
 {
 	delete mAttachmentController;

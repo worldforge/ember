@@ -75,6 +75,34 @@ public:
 	 * @return false if the model is animated manually with SmartBody, true otherwise.
 	 */
 	bool isOgreAnimated() const;
+
+	/**
+	 * @brief Gets the global translation value of the model since the last frame.
+	 */
+	const Ogre::Vector3& getTranslation() const;
+
+	/**
+	 * @brief Same for rotation.
+	 */
+	const Ogre::Quaternion& getRotation() const;
+
+	/**
+	 * @brief Reinitialize the transformation values of mCharacter (this must be done after the scene node has been positionned, not to 
+	 * count the same translation, or rotation twice).
+	 */	
+	void reinitializeTransformation();
+
+	/**
+	 * @brief Returns true if the ModelHumanoidAttachment can use the values of translation and rotation.
+	 */
+	bool isTransformationInitialized() const;
+
+	/**
+	 * @brief Allows to know if the character is moving, to know if we need to update the position of the scene node (for example, if the
+	 * character is in the idling posture, the position should not be updated, but in the case of a humanoid character, the translation 
+	 * from walking to idling posture is not instantaneous, so we have to update it as long as the model is not entirely still).
+	 */
+	bool isMoving() const;
 	
 
 protected:

@@ -37,7 +37,7 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 :	mScene(scene),
 	mEntity(entity), mOgreSkeleton(*entity.getSkeleton()), 
 	mCharacter(*scene.createCharacter(entity.getName(), group)), mSkeleton(*scene.createSkeleton(skName)),
-	mTranslation(0.0f),
+	mTranslation(0, 0, 0), mRotation(1, 0, 0, 0), mIsTransformationInit(false), mIsMoving(true),
 	mManualMode(false), mIsAnimated(false)
 {
 	//Associate the skeleton to the character.
@@ -97,25 +97,82 @@ void SmartBodyRepresentation::updateBonePositions()
 			//The position vector are relative to the original position.
 			Ogre::Vector3 position(joint->getPosition().x, joint->getPosition().y, joint->getPosition().z);
 			Ogre::Quaternion quaternion(orientation.w, orientation.x, orientation.y, orientation.z);
+				quaternion.normalise();
 
-			//If we are looking at the base joint, we shall not change the z-coordinate of the position vector (it reflects the global
+			//If we are looking at the base joint, we shall not change the coordinates of the position vector (it reflects the global
 			//movement of the body, and this must be handled through Ember::Model::ModelHumanoidAttachment, not here).
 			if (joint->getMappedJointName() == "base")
 			{
-				mTranslation += position.z;
-				position.z = 0;
+				calculateTranformations(position, quaternion);	
+				bone->setOrientation(quaternion);		
 			}
 
-			//We update the bone positions in Ogre.
-			bone->setPosition(bone->getInitialPosition() + position);
-			bone->setOrientation(quaternion);
+			else
+			{
+				//We update the bone positions in Ogre.
+				bone->setPosition(bone->getInitialPosition() + position);
+				bone->setOrientation(quaternion);
+			}
 		}
 	}
 }
 
-double SmartBodyRepresentation::getTranslation() const
+void SmartBodyRepresentation::calculateTranformations(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
+{
+	//If mPrvPosition/Orientation have already been initialized, we then will be able to calculate the tranformations applied
+	//since the last frame.
+	if (mIsTransformationInit)
+	{
+		Ogre::Quaternion rotation;
+		Ogre::Vector3 translation;
+
+		if (mPrvPosition.z > position.z) 
+		{
+			//We suppose that the movement is uniform.
+			translation = mLastTranslation;
+		}
+
+		else
+		{	
+			//We multiply by 2.3 to not have a too slow motion.
+			translation = (position - mPrvPosition) * 2.3;
+			mLastTranslation = translation;
+		}
+
+		//For the rotation, we just need to consider the orientation of the joint, relatively to his previous orientation.
+		//Right now, the rotation does not render well, it has to be improved before being used.
+		rotation = orientation;
+
+		mTranslation += translation;
+		mRotation = orientation;
+
+		//If the translation is nul, then we can consider that the representation is static.
+		mIsMoving = translation == Ogre::Vector3(0, 0, 0) ? false : true;
+	}
+
+	else
+	{
+		reinitializeTransformation();
+	}
+
+	mPrvPosition = position;
+}
+
+const Ogre::Vector3& SmartBodyRepresentation::getTranslation() const
 {
 	return mTranslation;
+}
+
+const Ogre::Quaternion& SmartBodyRepresentation::getRotation() const
+{
+	return mRotation;
+}
+
+void SmartBodyRepresentation::reinitializeTransformation()
+{
+	mIsTransformationInit = true;
+	mTranslation = Ogre::Vector3(0, 0, 0);
+	mRotation = Ogre::Quaternion(1, 0, 0, 0);
 }
 
 bool SmartBodyRepresentation::isManuallyControlled() const
@@ -123,17 +180,38 @@ bool SmartBodyRepresentation::isManuallyControlled() const
 	return mManualMode;
 }
 
-void SmartBodyRepresentation::setAnimatedState(bool isAnimated)
+void SmartBodyRepresentation::setAnimation()
 {
-	mIsAnimated = isAnimated;
+	mIsAnimated = true;
+}
 
-	if (!isAnimated && mManualMode)
+void SmartBodyRepresentation::freezeAnimation()
+{
+	mIsAnimated = false;
+
+	if (mManualMode)
+	{
 		setManualControl(false);
+	}
+
+	//From now on, the character is controlled with Ogre skeletal animations. It may be moving without SmartBody being informed, 
+	//we will then have to reinitialized prvPosition the next time a SmartBody animation is launched.
+	mIsTransformationInit = false;
 }
 
 bool SmartBodyRepresentation::isAnimated() const
 {
 	return mIsAnimated;
+}
+
+bool SmartBodyRepresentation::isTransformationInitialized() const
+{
+	return mIsTransformationInit;
+}
+
+bool SmartBodyRepresentation::isMoving() const
+{
+	return mIsMoving;
 }
 
 const std::string& SmartBodyRepresentation::getName() const

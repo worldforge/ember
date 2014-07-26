@@ -195,7 +195,7 @@ void SmartBodyManager::removeCharacter(SmartBodyRepresentation *representation)
 
 //public.
 void SmartBodyManager::updateAnimations(double timeSlice)
-{
+{	
 	assert(mIsInit);
 
 	//Update the time of the simulation.
@@ -206,7 +206,9 @@ void SmartBodyManager::updateAnimations(double timeSlice)
 	for (int i = 0, n = mCharacters.size(); i < n; i ++)
 	{
 		if (mCharacters[i]->isAnimated())
+		{
 			mCharacters[i]->updateBonePositions();
+		}
 	}
 }
 
@@ -217,8 +219,8 @@ void SmartBodyManager::animate(SmartBodyRepresentation& character, SmartBodyAnim
 
 	mSimulation.pause();
 
-	character.setAnimatedState(true);
 	mProcessor.execBML(character.getName(), mAnimations[(int)animation].getBmlRequest());
+	character.setAnimation();
 
 	mSimulation.resume();
 }
@@ -228,7 +230,7 @@ void SmartBodyManager::freeze(SmartBodyRepresentation& character) const
 {
 	assert(mIsInit);
 
-	character.setAnimatedState(false);
+	character.freezeAnimation();
 }
 	
 }
