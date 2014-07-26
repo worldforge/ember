@@ -64,6 +64,12 @@ public:
 	 */
 	const std::string& getBmlRequest() const;
 
+	/**
+	 * @brief If this animation uses a motion file (posture, gestures), it gets the name of the motion.
+	 * @return mMotionName.
+	 */
+	const std::string& getMotionName() const;
+
 
 private:
 
@@ -71,6 +77,11 @@ private:
 	 * @brief The corresponding request to send to the BMLProcessor to execute an animation on a character.
 	 */
 	std::string mBmlRequest;
+
+	/**
+	 * @brief The name of the corresponding SBMotion (if it exists).
+	 */
+	std::string mMotionName;
 	
 };
 
