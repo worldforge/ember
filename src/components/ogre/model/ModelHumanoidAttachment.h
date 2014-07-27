@@ -20,6 +20,8 @@
 #define MODELHUMANOIDATTACHMENT_H
 
 #include "components/ogre/model/ModelAttachment.h"
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
 
 
 namespace Ember
@@ -72,21 +74,17 @@ public:
 private:
 
 	/**
-	 * @brief When the node is positionned for the first time after the model has been reloaded, there is a big gap between the 
-	 * z-coordinates (the current one and the one requested by the server) of the scene node, that won't be compensate if we don't use the
-	 * setPosition parent method. To distinguish this cas, we use the forward boolean.
+	 * @brief The translation will be multiplied by this value to assure that the position don't diverge too much from the one on the server.
+	 * Originally it is set to 2.0, because otherwise, the movement is too slow (maybe there is a scale difference between the skeleton 
+	 * referential and the one used to place the node).
 	 */
-	bool mIsSecTimeSinceReload;
+	float mAdjRatio;
 
-	/**
-	 * @brief A boolean stating that the model has been reloaded.
+	/** 
+	 * @brief The last position and orientation entered.
 	 */
-	bool mIsModelReloaded;
-
-	/**
-	 * @brief Called when the model has been reloaded.
-	 */
-	void model_Reloaded();
+	Ogre::Vector3 mPrvPosition;
+	Ogre::Quaternion mPrvOrientation;
 
 };
 

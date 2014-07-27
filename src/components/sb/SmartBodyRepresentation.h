@@ -91,7 +91,7 @@ public:
 	const Ogre::Vector3& getTranslation() const;
 
 	/**
-	 * @brief Same but with the rotation.
+	 * @brief Returns the rotation that must be applied on the character.
 	 * @return mRotation.
 	 */	
 	const Ogre::Quaternion& getRotation() const;

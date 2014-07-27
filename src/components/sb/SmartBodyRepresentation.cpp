@@ -134,8 +134,7 @@ void SmartBodyRepresentation::calculateTranformations(const Ogre::Vector3& posit
 
 		else
 		{	
-			//We multiply by 2.3 to not have a too slow motion.
-			translation = (position - mPrvPosition) * 2.3;
+			translation = position - mPrvPosition;
 			mLastTranslation = translation;
 		}
 

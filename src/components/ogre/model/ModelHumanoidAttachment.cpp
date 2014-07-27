@@ -20,9 +20,10 @@
 #include "components/ogre/model/ModelRepresentationHumanoid.h"
 #include "components/ogre/model/Model.h"
 
-#include <OgreVector3.h>
-#include <OgreQuaternion.h>
-#include <OgreNode.h>
+#include <algorithm>
+
+#define ADJRATIO_AVG 2.0f
+
 
 namespace Ember
 {
@@ -34,9 +35,8 @@ namespace Model
 {
 
 ModelHumanoidAttachment::ModelHumanoidAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose /*= ""*/)
-:	ModelAttachment(parentEntity, modelRepresentation, nodeProvider, pose), mIsSecTimeSinceReload(false), mIsModelReloaded(false)
+:	ModelAttachment(parentEntity, modelRepresentation, nodeProvider, pose), mAdjRatio(ADJRATIO_AVG)
 {
-	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelHumanoidAttachment::model_Reloaded));
 }
 
 ModelHumanoidAttachment::~ModelHumanoidAttachment()
@@ -49,15 +49,12 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 {
 	ModelRepresentationHumanoid& representation = dynamic_cast<ModelRepresentationHumanoid&>(mModelRepresentation);
 
-	//As long as the model hasn't been reloaded, or if it is animated through Ogre skeletal animations, we have to use the parent method.
-	if (mIgnoreEntityData || representation.isOgreAnimated() || !representation.isTransformationInitialized() || !mIsSecTimeSinceReload)
+	//If the model is animated through Ogre skeletal animations, we have to use the parent method.
+	if (mIgnoreEntityData || representation.isOgreAnimated() || !representation.isTransformationInitialized())
 	{	
 		ModelAttachment::setPosition(position, orientation, velocity);
-
-		if (mIsModelReloaded)
-		{
-			mIsSecTimeSinceReload = true;
-		}
+		mPrvPosition = Ogre::Vector3(position.x(), position.y(), position.z());
+		mPrvOrientation = Ogre::Quaternion(orientation.scalar(), orientation.vector().x(), orientation.vector().y(), orientation.vector().z());
 	}
 
 	else
@@ -65,7 +62,6 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 		WFMath::Point<3> newPosition;
 		WFMath::Quaternion newOrientation;
 		WFMath::Vector<3> newVelocity;
-			
 
 		//We store the transformations applied to the model by SmartBody since the last time the scene node was moved.
 		Ogre::Vector3 translation = representation.getTranslation();
@@ -75,22 +71,47 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 		translation = Ogre::Vector3(translation.z, translation.y, -translation.x);
 		rotation = Ogre::Quaternion(rotation.w, rotation.z, rotation.y, -rotation.x);
 
-		//We get back the current position of the node. The axes are not the same between Ember and what is get back from the scene node, 
-		//this is why we use -z for y and y for z coordinates.
-		Ogre::Vector3 prvPosition(getNode()->getPosition().x, -getNode()->getPosition().z, getNode()->getPosition().y);
-		Ogre::Quaternion prvOrientation(getNode()->getOrientation().w, getNode()->getOrientation().x, -getNode()->getOrientation().z, getNode()->getOrientation().y);
+		//We'll compare the displacements queried by the server and SmartBody.
+		Ogre::Vector3 srvPosition(position.x(), position.y(), position.z());
 		Ogre::Quaternion srvOrientation(orientation.scalar(), orientation.vector().x(), orientation.vector().y(), orientation.vector().z());
-	
-		Ogre::Vector3 newNodePosition = prvPosition + srvOrientation * translation;
+		Ogre::Vector3 srvTranslation(srvPosition - mPrvPosition);
+
+		//Here, we calculate how much the translation should be increased / reduced.
+		float normSb = translation.length();
+		float normSrv = srvTranslation.length();
+
+		//If translation is close to 0 or not oriented the same way, we reinitialized mAdjRatio.
+		if (normSb > 0.0001 && translation.dotProduct(srvTranslation) > 0)
+		{
+			//We divise the ratio by 5, not to alter the original value too much, and then, we assure that it do not exceed +/- 0.1.
+			float adjust = (normSrv / normSb) / 5.0f - mAdjRatio;
+			adjust = std::max(std::min(adjust, 0.1f), -0.1f);
+			mAdjRatio += adjust;
+		}
+
+		else
+		{
+			mAdjRatio = ADJRATIO_AVG;
+		}
+
+		translation *= mAdjRatio;
+
+		//We then set the new values.
+		Ogre::Vector3 newNodePosition = mPrvPosition + srvOrientation * translation;
 		Ogre::Quaternion newNodeOrientation = rotation * srvOrientation;
 
 		newPosition = WFMath::Point<3>(newNodePosition.x, newNodePosition.y, newNodePosition.z);
 		newOrientation = orientation; //For the moment, we simply use the orientation predicted by the server.
 		//newOrientation = WFMath::Quaternion(newNodeOrientation.w, newNodeOrientation.x, newNodeOrientation.y, newNodeOrientation.z);
-		newVelocity = velocity;
-
-		ModelAttachment::setPosition(newPosition, newOrientation, newVelocity);
 		
+		mPrvPosition = newNodePosition;
+		mPrvOrientation = Ogre::Quaternion(orientation.scalar(), orientation.vector().x(), orientation.vector().y(), orientation.vector().z());	
+		//mPrvOrientation = newNodeOrientation;
+
+		//We do not alter the velocity.
+		newVelocity = velocity;
+		ModelAttachment::setPosition(newPosition, newOrientation, newVelocity);	
+
 		//We reinitialize the values of the tranformations, to not reapply them the next time we set the position of the node.
 		representation.reinitializeTransformation();
 	}
@@ -100,11 +121,6 @@ bool ModelHumanoidAttachment::isEntityMoving() const
 {
 	ModelRepresentationHumanoid& representation = dynamic_cast<ModelRepresentationHumanoid&>(mModelRepresentation);
 	return getAttachedEntity().isMoving() || representation.isMoving();
-}
-
-void ModelHumanoidAttachment::model_Reloaded()
-{
-	mIsModelReloaded = true;
 }
 
 }

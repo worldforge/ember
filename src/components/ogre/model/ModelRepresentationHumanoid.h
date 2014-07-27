@@ -82,7 +82,7 @@ public:
 	const Ogre::Vector3& getTranslation() const;
 
 	/**
-	 * @brief Same for rotation.
+	 * @brief Gets the rotation applied on the model relatively to (1, 0, 0, 0) quaternion.
 	 */
 	const Ogre::Quaternion& getRotation() const;
 
