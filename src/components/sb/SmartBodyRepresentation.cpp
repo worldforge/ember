@@ -36,7 +36,7 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 	const std::string& skName, const std::vector<SmartBodyBehaviors*>& behaviors)
 :	mScene(scene),
 	mEntity(entity), mOgreSkeleton(*entity.getSkeleton()), 
-	mCharacter(*scene.createCharacter(entity.getName(), group)), mSkeleton(*scene.createSkeleton(skName)),
+	mCharacter(createCharacter(entity.getName(), group)), mSkeleton(*scene.createSkeleton(skName)),
 	mTranslation(0, 0, 0), mRotation(1, 0, 0, 0), mIsTransformationInit(false), mIsMoving(true),
 	mManualMode(false), mIsAnimated(false)
 {
@@ -59,7 +59,27 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 SmartBodyRepresentation::~SmartBodyRepresentation()
 {
 	//Free the memory.
-	mScene.removeCharacter(getName());
+//	mScene.removeCharacter(getName());
+	//When relogging, the motion manager call SmartBodyManager::updateAnimations, into which SBScene::update will fail, because
+	//the bml requests send for this character have not been removed. As long as we cannot properly free them, we should not remove
+	//characters from the scene.
+}
+
+SmartBody::SBCharacter& SmartBodyRepresentation::createCharacter(const std::string& name, const std::string& group)
+{
+	SmartBody::SBCharacter* character = mScene.getCharacter(name);
+	std::string newName(name);
+	int num = 0;
+
+	//If the name of the character has already been used, mScene.createCharacter() will return NULL.
+	while (character)
+	{
+		newName = name + std::to_string(num);
+		character = mScene.getCharacter(newName);
+		num ++;
+	}
+
+	return *mScene.createCharacter(newName, group);
 }
 
 void SmartBodyRepresentation::setManualControl(bool mode /*= true */)

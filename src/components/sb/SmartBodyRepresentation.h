@@ -179,6 +179,12 @@ private:
 	bool mIsAnimated;
 
 	/**
+	 * @brief Creates a SmartBody character to fit this representation.
+	 * This insures that the character is well created.
+	 */
+	SmartBody::SBCharacter& createCharacter(const std::string& name, const std::string& group);
+
+	/**
 	 * @brief Calculates the transformations applied on the representation since the last frame to know where to put the scene node.
 	 */
 	void calculateTranformations(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
@@ -192,7 +198,6 @@ private:
 	 * @brief Returns the value of mManualMode.
 	 */
 	bool isManuallyControlled() const;
-
 };
 
 }
