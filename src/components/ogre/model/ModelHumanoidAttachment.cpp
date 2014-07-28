@@ -19,6 +19,7 @@
 #include "components/ogre/model/ModelHumanoidAttachment.h"
 #include "components/ogre/model/ModelRepresentationHumanoid.h"
 #include "components/ogre/model/Model.h"
+#include "components/ogre/Convert.h"
 
 #include <algorithm>
 
@@ -44,7 +45,6 @@ ModelHumanoidAttachment::~ModelHumanoidAttachment()
 
 }
 
-
 void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity)
 {
 	ModelRepresentationHumanoid& representation = dynamic_cast<ModelRepresentationHumanoid&>(mModelRepresentation);
@@ -53,8 +53,8 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 	if (mIgnoreEntityData || representation.isOgreAnimated() || !representation.isTransformationInitialized())
 	{	
 		ModelAttachment::setPosition(position, orientation, velocity);
-		mPrvPosition = Ogre::Vector3(position.x(), position.y(), position.z());
-		mPrvOrientation = Ogre::Quaternion(orientation.scalar(), orientation.vector().x(), orientation.vector().y(), orientation.vector().z());
+		mPrvPosition = Convert::toOgre(position);
+		mPrvOrientation = Convert::toOgre(orientation); 
 	}
 
 	else
@@ -63,50 +63,60 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 		WFMath::Quaternion newOrientation;
 		WFMath::Vector<3> newVelocity;
 
-		//We store the transformations applied to the model by SmartBody since the last time the scene node was moved.
-		Ogre::Vector3 translation = representation.getTranslation();
-		Ogre::Quaternion rotation = representation.getRotation();
-		
-		//Sets the same axes than the ones used in Ember.
-		translation = Ogre::Vector3(translation.z, translation.y, -translation.x);
-		rotation = Ogre::Quaternion(rotation.w, rotation.z, rotation.y, -rotation.x);
-
-		//We'll compare the displacements queried by the server and SmartBody.
-		Ogre::Vector3 srvPosition(position.x(), position.y(), position.z());
-		Ogre::Quaternion srvOrientation(orientation.scalar(), orientation.vector().x(), orientation.vector().y(), orientation.vector().z());
+		//First we have too see if the motion is natural or not (if the character is moving, or if he is being moved).
+		Ogre::Vector3 srvPosition(Convert::toOgre(position));
+		Ogre::Quaternion srvOrientation(Convert::toOgre(orientation));
 		Ogre::Vector3 srvTranslation(srvPosition - mPrvPosition);
-
-		//Here, we calculate how much the translation should be increased / reduced.
-		float normSb = translation.length();
 		float normSrv = srvTranslation.length();
 
-		//If translation is close to 0 or not oriented the same way, we reinitialized mAdjRatio.
-		if (normSb > 0.0001 && translation.dotProduct(srvTranslation) > 0)
+		if (normSrv > 0.1)
 		{
-			//We divise the ratio by 5, not to alter the original value too much, and then, we assure that it do not exceed +/- 0.1.
-			float adjust = (normSrv / normSb) / 5.0f - mAdjRatio;
-			adjust = std::max(std::min(adjust, 0.1f), -0.1f);
-			mAdjRatio += adjust;
+			newPosition = position;
+			newOrientation = orientation;
+			mPrvPosition = Convert::toOgre(position);
+			mPrvOrientation = Convert::toOgre(orientation); 
 		}
 
 		else
 		{
-			mAdjRatio = ADJRATIO_AVG;
-		}
+			//We store the transformations applied to the model by SmartBody since the last time the scene node was moved.
+			Ogre::Vector3 translation = representation.getTranslation();
+			Ogre::Quaternion rotation = representation.getRotation();
+			
+			//Sets the same axes than the ones used in Ember.
+			translation = Ogre::Vector3(translation.z, translation.x, -translation.y);
+			rotation = Ogre::Quaternion(rotation.w, rotation.z, rotation.x, -rotation.y);
+			float normSb = translation.length();
 
-		translation *= mAdjRatio;
+			//If translation is close to 0 or not oriented the same way, we reinitialized mAdjRatio.
+			if (normSb > 0.0001 && translation.dotProduct(srvTranslation) > 0)
+			{
+				//We divise the ratio by 5, not to alter the original value too much, and then, we assure that it do not exceed +/- 0.1.
+				float adjust = (normSrv / normSb) / 5.0f - mAdjRatio;
+				adjust = std::max(std::min(adjust, 0.1f), -0.1f);
+				mAdjRatio += adjust;
+				mAdjRatio = std::max(std::min(mAdjRatio, ADJRATIO_AVG - 0.5f), ADJRATIO_AVG + 0.5f);
+			}
 
-		//We then set the new values.
-		Ogre::Vector3 newNodePosition = mPrvPosition + srvOrientation * translation;
-		Ogre::Quaternion newNodeOrientation = rotation * srvOrientation;
+			else
+			{
+				mAdjRatio = ADJRATIO_AVG;
+			}
 
-		newPosition = WFMath::Point<3>(newNodePosition.x, newNodePosition.y, newNodePosition.z);
-		newOrientation = orientation; //For the moment, we simply use the orientation predicted by the server.
-		//newOrientation = WFMath::Quaternion(newNodeOrientation.w, newNodeOrientation.x, newNodeOrientation.y, newNodeOrientation.z);
+			translation *= mAdjRatio;
+
+
+			//We then set the new values.
+			Ogre::Vector3 newNodePosition = mPrvPosition + srvOrientation * translation;
+			Ogre::Quaternion newNodeOrientation = rotation * srvOrientation;
+			newPosition = Convert::toWF<WFMath::Point<3>>(newNodePosition);
+			newOrientation = orientation; //For the moment, we simply use the orientation predicted by the server.
+			//newOrientation = WFMath::Quaternion(newNodeOrientation.w, newNodeOrientation.x, newNodeOrientation.y, newNodeOrientation.z);
 		
-		mPrvPosition = newNodePosition;
-		mPrvOrientation = Ogre::Quaternion(orientation.scalar(), orientation.vector().x(), orientation.vector().y(), orientation.vector().z());	
-		//mPrvOrientation = newNodeOrientation;
+			mPrvPosition = newNodePosition;
+			mPrvOrientation = Convert::toOgre(orientation);	
+			//mPrvOrientation = newNodeOrientation;
+		}		
 
 		//We do not alter the velocity.
 		newVelocity = velocity;
