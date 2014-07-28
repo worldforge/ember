@@ -31,11 +31,23 @@
 #include "sb/SBSimulationManager.h"
 #include "sb/SBBmlProcessor.h"
 
+#include "vhcl/vhcl_log.h"
+
+#include "framework/LoggingInstance.h"
+
 #include <cassert>
 
 using namespace Ember;
 namespace Ember
 {
+
+class SmartBodyLogListener : public vhcl::Log::Listener
+{
+public:
+	virtual void OnMessage( const std::string & message ) {
+		S_LOG_VERBOSE("SB: " << message);
+	}
+};
 
 SmartBodyManager::SmartBodyManager() 
 	: mScene(*SmartBody::SBScene::getScene()), mAssetManager(*mScene.getAssetManager()), mSimulation(*mScene.getSimulationManager()),
@@ -72,6 +84,8 @@ SmartBodyManager::~SmartBodyManager()
 //public.
 void SmartBodyManager::initialize(double startTime)
 {
+
+	vhcl::Log::g_log.AddListener(new SmartBodyLogListener());
 	//Initialization of SmartBody library.
 	mScene.start();
 
