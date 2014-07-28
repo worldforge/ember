@@ -146,6 +146,11 @@ private:
 	Ogre::SkeletonInstance& mOgreSkeleton;
 
 	/**
+	 * @brief The index of the base joint in the skeleton.
+	 */
+	int mBaseJoint;
+
+	/**
 	 * @brief Contains the transformations (translation, and rotation) applied on the base bone since the last time the scene node
 	 * this representation is attached to has been updated.
 	 */
@@ -183,6 +188,14 @@ private:
 	 * This insures that the character is well created.
 	 */
 	SmartBody::SBCharacter& createCharacter(const std::string& name, const std::string& group);
+
+	/**
+	 * @brief Initializes mBaseJoint.
+	 *
+	 * When updating the skeleton, we must not change the position of the hips (= base joint) as their motion should not be echoed in
+	 * the skeleton, but in the scene. Consequently, we have to identify the base joint, and to store its index once for all.
+	 */
+	void setBaseJointIndex();
 
 	/**
 	 * @brief Calculates the transformations applied on the representation since the last frame to know where to put the scene node.

@@ -37,6 +37,7 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 :	mScene(scene),
 	mEntity(entity), mOgreSkeleton(*entity.getSkeleton()), 
 	mCharacter(createCharacter(entity.getName(), group)), mSkeleton(*scene.createSkeleton(skName)),
+	mBaseJoint(-1),
 	mTranslation(0, 0, 0), mRotation(1, 0, 0, 0), mIsTransformationInit(false), mIsMoving(true),
 	mManualMode(false), mIsAnimated(false)
 {
@@ -51,6 +52,9 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 	{
 		behaviors[i]->applyRetargeting(mCharacter);
 	} 
+
+	//Find the index into the skeleton for the base joint.
+	setBaseJointIndex();
 
 	//Initially, the character is set in Ogre animated state.
 	setManualControl(false);
@@ -80,6 +84,21 @@ SmartBody::SBCharacter& SmartBodyRepresentation::createCharacter(const std::stri
 	}
 
 	return *mScene.createCharacter(newName, group);
+}
+
+void SmartBodyRepresentation::setBaseJointIndex() 
+{
+	for (int i = 0, n = mSkeleton.getNumJoints(); i < n; i++)
+	{
+		//We get the joint by its index. 
+		SmartBody::SBJoint *joint = mSkeleton.getJoint(i);
+
+		if (joint->getMappedJointName() == "base")
+		{
+			mBaseJoint = i;	
+			return;
+		}
+	}
 }
 
 void SmartBodyRepresentation::setManualControl(bool mode /*= true */)
@@ -121,7 +140,7 @@ void SmartBodyRepresentation::updateBonePositions()
 
 			//If we are looking at the base joint, we shall not change the coordinates of the position vector (it reflects the global
 			//movement of the body, and this must be handled through Ember::Model::ModelHumanoidAttachment, not here).
-			if (joint->getMappedJointName() == "base")
+			if (i == mBaseJoint)
 			{
 				calculateTranformations(position, quaternion);	
 				bone->setOrientation(quaternion);		
