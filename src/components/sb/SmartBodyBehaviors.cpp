@@ -50,11 +50,13 @@ bool SmartBodyBehaviors::setupAssets(SmartBody::SBJointMapManager& jointMapMng)
 {
 	if (assetsExist())
 	{
+		std::vector<std::string> motions = getMotions();
+
 		//Try to get the skeleton map.
-		SmartBodySkeletonMap map(mSkelRefName);
+		SmartBodySkeletonMap map(mSkelRefName, &motions);
 		if (map.exists())
 		{
-			//Finally, map the skeleton.
+			//Finally, map the skeleton and the motions.
 			map.setMap(mAssetManager, jointMapMng);
 		}
 

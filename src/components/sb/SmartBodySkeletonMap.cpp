@@ -20,6 +20,7 @@
 #include "SmartBodyPathConsts.h"
 
 #include <sb/SBSkeleton.h>
+#include <sb/SBMotion.h>
 #include <sb/SBAssetManager.h>
 #include <sb/SBJointMapManager.h>
 #include <sb/SBJointMap.h>
@@ -30,8 +31,8 @@ using namespace Ember;
 namespace Ember
 {
 
-SmartBodySkeletonMap::SmartBodySkeletonMap(const std::string& skeleton)
-	: mName(skeleton)
+SmartBodySkeletonMap::SmartBodySkeletonMap(const std::string& skeleton, std::vector<std::string> const *motions /*= nullptr*/)
+	: mName(skeleton), mMotions(motions)
 {
 	std::ifstream mapFile(std::string(EMBER_SMARTBODY_ASSETS_MAPS + skeleton + EMBER_SMARTBODY_MAP_EXTENSION).c_str(), std::ios::in);
 	mHasMap = mapFile.is_open();
@@ -46,7 +47,6 @@ SmartBodySkeletonMap::SmartBodySkeletonMap(const std::string& skeleton)
 SmartBodySkeletonMap::~SmartBodySkeletonMap()
 {
 }
-
 
 bool SmartBodySkeletonMap::exists() const
 {
@@ -67,6 +67,16 @@ void SmartBodySkeletonMap::setMap(SmartBody::SBAssetManager& assetMng, SmartBody
 
 	//Application of the map to the skeleton.
 	jointMap->applySkeleton(skeleton);
+
+	//And now to the motions.
+	if (mMotions)
+	{
+		for (auto& motionName : *mMotions)
+		{
+			SmartBody::SBMotion *motion = assetMng.getMotion(motionName);
+			jointMap->applyMotion(motion);
+		}
+	}
 }
 
 bool SmartBodySkeletonMap::parseMapFile(std::ifstream& mapFile)

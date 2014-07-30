@@ -21,6 +21,7 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
 #include <map>
 
 
@@ -38,7 +39,7 @@ namespace Ember
 class SmartBodyManager;
 
 /**
- @brief Represents a joint map for a skeleton.
+ @brief Represents a joint map for a skeleton and its associated motions.
 
  It loads and parse a map file, which must be formatted like this :
 
@@ -56,8 +57,10 @@ public:
 
 	/**
 	 * @brief Ctor.
+	 * @param skeleton: The name of the skeleton.
+	 * @param motions: The name of the motions associated with the skeleton that have to be mapped too.
 	 */
-	SmartBodySkeletonMap(const std::string& skeleton);
+	SmartBodySkeletonMap(const std::string& skeleton, std::vector<std::string> const *motions = nullptr);
 
 	/**
 	 * @brief Dtor.
@@ -81,6 +84,11 @@ private:
 	 * @brief Name of the skeleton (and by the way, the corresponding joint map).
 	 */
 	std::string mName;
+
+	/**
+	 * @brief Names of the motions (if there is any).
+	 */
+	std::vector<std::string> const *mMotions;
 
 	/**
 	 * @brief Contains the names of the bones : {OgreBoneName, SBJointName}.
