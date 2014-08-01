@@ -86,11 +86,6 @@ void ModelRepresentationHumanoid::reinitializeTransformation()
 	mCharacter->reinitializeTransformation();
 }
 
-bool ModelRepresentationHumanoid::isTransformationInitialized() const
-{
-	return mCharacter->isTransformationInitialized();
-}
-
 bool ModelRepresentationHumanoid::isOgreAnimated() const
 {
 	if (mCharacter)
@@ -148,7 +143,7 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 				resetAnimations();
 
 				//start the idling animation on this character.
-				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::IDLE);
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::STANDING);
 			}
 
 			else if (actionName == ACTION_WALK)
@@ -156,7 +151,7 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 				resetAnimations();
 
 				//start the walking animation on this character.
-				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::WALK);
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::WALKING);
 			}
 
 			else if (actionName == ACTION_RUN)
@@ -164,7 +159,7 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 				resetAnimations();
 
 				//start the walking animation on this character.
-				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::RUN);
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::RUNNING);
 			}
 
 			//Else, stop the SmartBody animations for this character and use the original method.

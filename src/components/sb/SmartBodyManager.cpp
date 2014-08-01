@@ -24,6 +24,7 @@
 #include "SmartBodySkeletonMap.h"
 #include "SmartBodyRepresentation.h"
 #include "SmartBodyAnimation.h"
+#include "SmartBodyAnimationManager.h"
 
 #include "sb/SBScene.h"
 #include "sb/SBSkeleton.h"
@@ -50,14 +51,9 @@ public:
 };
 
 SmartBodyManager::SmartBodyManager() 
-	: mScene(*SmartBody::SBScene::getScene()), mAssetManager(*mScene.getAssetManager()), mSimulation(*mScene.getSimulationManager()),
-	  mProcessor(*mScene.getBmlProcessor()), mIsInit(false)
+: 	mScene(*SmartBody::SBScene::getScene()), mAssetManager(*mScene.getAssetManager()), mSimulation(*mScene.getSimulationManager()),
+	mAnimationManager(*(new SmartBodyAnimationManager(*mScene.getBmlProcessor()))), mIsInit(false)
 {
-	//Initialisation of the animation map.
-	for (int i = 0; i < (int)SmartBodyAnimation::Name::ANIMATIONS_COUNT; i ++)
-	{
-		mAnimations.push_back(SmartBodyAnimation( ((SmartBodyAnimation::Name)i) ));
-	}
 }
 
 SmartBodyManager::~SmartBodyManager()
@@ -69,6 +65,9 @@ SmartBodyManager::~SmartBodyManager()
 	{
 		delete mCharacters[i];
 	}
+
+	//Free all animations by destroying the animation manager.
+	delete &mAnimationManager;
 
 	//Delete all behaviors.
 	for (int i = 0, n = mBehaviors.size(); i < n; i ++)
@@ -97,6 +96,9 @@ void SmartBodyManager::initialize(double startTime)
 
 	//Load the skeleton assets at the beginning because it takes too much time to be done during the simulation.
 	loadSkeletonAssets();
+
+	//Initializes the animation manager.
+	mAnimationManager.initialize(mAssetManager);
 
 	//Start the simulation.
 	mSimulation.setTime(startTime);
@@ -221,6 +223,7 @@ void SmartBodyManager::updateAnimations(double timeSlice)
 	{
 		if (mCharacters[i]->isAnimated())
 		{
+			mAnimationManager.updateAnimations(*mCharacters[i], (float)timeSlice);
 			mCharacters[i]->updateBonePositions();
 		}
 	}
@@ -232,10 +235,7 @@ void SmartBodyManager::animate(SmartBodyRepresentation& character, SmartBodyAnim
 	assert(mIsInit);
 
 	mSimulation.pause();
-
-	mProcessor.execBML(character.getName(), mAnimations[(int)animation].getBmlRequest());
-	character.setAnimation();
-
+	mAnimationManager.addAnimation(animation, character);
 	mSimulation.resume();
 }
 
@@ -244,7 +244,7 @@ void SmartBodyManager::freeze(SmartBodyRepresentation& character) const
 {
 	assert(mIsInit);
 
-	character.freezeAnimation();
+	mAnimationManager.removeAllAnimations(character);
 }
 	
 }

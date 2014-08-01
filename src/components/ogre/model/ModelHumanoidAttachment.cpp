@@ -50,7 +50,7 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 	ModelRepresentationHumanoid& representation = dynamic_cast<ModelRepresentationHumanoid&>(mModelRepresentation);
 
 	//If the model is animated through Ogre skeletal animations, we have to use the parent method.
-	if (mIgnoreEntityData || representation.isOgreAnimated() || !representation.isTransformationInitialized())
+	if (mIgnoreEntityData || representation.isOgreAnimated())
 	{	
 		ModelAttachment::setPosition(position, orientation, velocity);
 		mPrvPosition = Convert::toOgre(position);

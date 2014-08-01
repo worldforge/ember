@@ -19,6 +19,8 @@
 #ifndef SMARTBODYREPRESENTATION_H
 #define SMARTBODYREPRESENTATION_H
 
+ 	#include "SmartBodyMovingAnimation.h"
+ 
 	#include <string>
 	#include <vector>
 	#include <OgreVector3.h>
@@ -41,6 +43,8 @@ namespace Ember
 {
 
 class SmartBodyBehaviors;
+class SmartBodyAnimationInstance;
+class SmartBodyGestureAnimationInstance;
 
 /**
  * @brief This class gives an interface between SmartBody and Ogre respective representation for characters.
@@ -64,24 +68,30 @@ public:
 	~SmartBodyRepresentation();
 
 	/**
-	 * @brief Starts a new animation on this character.
+	 * @brief Returns the name of mCharacter.
 	 */
-	void setAnimation();
+	const std::string& getName() const;
 
 	/**
-	 * @brief Stops the animation.
-	 */
-	void freezeAnimation();
-
-	/**
-	 * @brief Returns the value of mIsAnimated.
+	 * @brief States that the character is animated using SmartBody engine.
+	 * @return mIsAnimated.
+	 *
+	 * We use it to know if we have to update the skeleton manually.
+	 * This is also used to know if the ModelRepresentation linked to this SmartBodyRepresentation should be placed in the world directly,
+	 * or if the position determined by the server should be adjusted to fit humanoid movements. 
 	 */
 	bool isAnimated() const;
 
 	/**
 	 * @brief Tranfers the position of the bones from SmartBody to Ogre.
+	 * Called by the SmartBodyManager once a frame.
 	 */
 	void updateBonePositions();
+
+	/**
+	 * @brief Returns true if the ModelHumanoidAttachment can use the values of translation and rotation.
+	 */
+	bool isTransformationInitialized() const;
 
 	/**
 	 * @brief Gets the translation of the base joint since the since the last time the node this representation is attached to has 
@@ -102,20 +112,51 @@ public:
 	void reinitializeTransformation();
 
 	/**
-	 * @brief Returns true if the ModelHumanoidAttachment can use the values of translation and rotation.
-	 */
-	bool isTransformationInitialized() const;
-
-	/**
 	 * @brief Allows to know if the character is moving (globally, like walking, running, not idling nor noding for example), to eventually
 	 * update or not the position of the scene node.
 	 */
 	bool isMoving() const;
 
 	/**
-	 * @brief Returns the name of mCharacter.
+	 * @brief Sets a new posture for this character.
+	 * @param staticPosture: true if posture refers to a SmartBodyStaticAnimation, false if it is to a SmartBodyMovingAnimation.
+	 * @return A pointer to the previous posture (needs to be destroyed).
+	 * Called by the SmartBodyAnimationManager.
+	 *
+	 * In static mode: the posture is updated randomly by the SmartBodyAnimationManager. The character then changes his position to
+	 * give a more natural effect.
+	 *
+	 * In moving mode: the character can use four (actually, only three as we don't have backward moving motions yet) different motions
+	 * depending on the orientation of the character when moving (~direction). To change from one to another, use setDirection() on this
+	 * representation.
 	 */
-	const std::string& getName() const;
+	void setPosture(SmartBodyAnimationInstance *posture, bool staticPosture);
+
+	/**
+	 * @brief Gets the posture of the character, in order for the SmartBodyAnimationManager to treat the requests, or destroy the object.
+	 * @return mPosture.
+	 * Called by the SmartBodyAnimationManager.
+	 */
+	SmartBodyAnimationInstance* getPosture();
+
+	/**
+	 * @brief Adds a new gesture for this character.
+	 * Called by the SmartBodyAnimationManager.
+	 */
+	void addGesture(SmartBodyGestureAnimationInstance *gesture);
+
+	/**
+	 * @brief Passes the character in Ogre animated mode. 
+	 * @reutrn A pointer to the previous posture, that will be destroyed by the SmartBodyAnimationManager.
+	 * Called by the SmartBodyAnimationManager.
+	 */
+	void leaveAnimatedState();
+
+	/**
+	 * @brief If the character is in a moving animation, you can set alterate his orientation with this method.
+	 * @see SmartBodyMovingAnimation.h: SmartBodyMovingAnimation::Direction.
+	 */
+	void setDirection(SmartBodyMovingAnimation::Direction direction);
 
 
 private:
@@ -129,6 +170,12 @@ private:
 	 * @brief The SmartBody character.
 	 */
 	SmartBody::SBCharacter& mCharacter;
+
+	/**
+	 * @brief Creates a SmartBody character to fit this representation.
+	 * This insures that the character is well created.
+	 */
+	SmartBody::SBCharacter& createCharacter(const std::string& name, const std::string& group);
 
 	/**
 	 * @brief The SmartBody skeleton.
@@ -151,45 +198,6 @@ private:
 	int mBaseJoint;
 
 	/**
-	 * @brief Contains the transformations (translation, and rotation) applied on the base bone since the last time the scene node
-	 * this representation is attached to has been updated.
-	 */
-	Ogre::Vector3 mTranslation;
-	Ogre::Quaternion mRotation;
-	Ogre::Vector3 mLastTranslation; //To calculate mTranslation when the loop of the motion has been executed one time.
-
-	/**
-	 * @brief The last position taken by the base joint to calculate mTranslation.
-	 */
-	Ogre::Vector3 mPrvPosition;
-
-	/**
-	 * @brief States that the previous has been initialized.
-	 */
-	bool mIsTransformationInit;
-
-	/**
-	 * @brief States that the character is moving (rather being shifted).
-	 */
-	bool mIsMoving;
-
-	/**
-	 * @brief Indicates if the manual control is set or not.
-	 */
-	bool mManualMode;
-
-	/**
-	 * @brief Indicates if the character is currently animated through SmartBody.
-	 */
-	bool mIsAnimated;
-
-	/**
-	 * @brief Creates a SmartBody character to fit this representation.
-	 * This insures that the character is well created.
-	 */
-	SmartBody::SBCharacter& createCharacter(const std::string& name, const std::string& group);
-
-	/**
 	 * @brief Initializes mBaseJoint.
 	 *
 	 * When updating the skeleton, we must not change the position of the hips (= base joint) as their motion should not be echoed in
@@ -198,9 +206,9 @@ private:
 	void setBaseJointIndex();
 
 	/**
-	 * @brief Calculates the transformations applied on the representation since the last frame to know where to put the scene node.
+	 * @brief Indicates if the character is currently animated through SmartBody.
 	 */
-	void calculateTranformations(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
+	bool mIsAnimated;
 
 	/**
 	 * @brief Sets or unsets manual control over the skeleton of the Ogre entity.
@@ -208,9 +216,46 @@ private:
 	void setManualControl(bool mode = true);
 
 	/**
-	 * @brief Returns the value of mManualMode.
+	 * @brief This boolean is set to true if a movement of the base joint has been detected during the last calculateTransformations().
 	 */
-	bool isManuallyControlled() const;
+	bool mIsInMovement;
+
+	/**
+	 * @brief Contains the transformations (translation, and rotation) applied on the base bone since the last time the scene node
+	 * this representation is attached to has been updated.
+	 */
+	Ogre::Vector3 mTranslation;
+	Ogre::Quaternion mRotation;
+	Ogre::Vector3 mLastTranslation; //To calculate mTranslation when the motion duration has elapsed and it is reexecuted from the beginnig.
+
+	/**
+	 * @brief The last position taken by the base joint to calculate mTranslation.
+	 */
+	Ogre::Vector3 mPrvPosition;
+
+	/**
+	 * @brief Calculates the transformations applied on the representation since the last frame to know where to put the scene node.
+	 */
+	void calculateTranformations(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
+
+	/**
+	 * @brief Initializes mPrvPosition to the position of the base joint. 
+	 * This must be done everytime we toggle from Ogre skeletal animated mode to SmartBody one.
+	 */
+	void initializePrvPosition();
+
+	/**
+	 * @brief If the character is moving, then, mPosture points on a SmartBodyMovingAnimationInstance. Otherwise, it points on a
+	 * SmartBodyStaticAnimationInstance. To finish of, if mIsAnimated is false, it is just null.
+	 */
+	SmartBodyAnimationInstance *mPosture;
+
+	/**
+	 * @brief mIsStatic is true only if mPosture is a SmartBodyStaticAnimationInstance.
+	 * Careful, to know if the character has really stopped moving (when going back to an idling posture, there is a blend between the 
+	 * previous movement and the idling animation), we must test that (mIsStatic && !mIsInMovement)) is true.
+	 */
+	bool mIsStatic;
 };
 
 }

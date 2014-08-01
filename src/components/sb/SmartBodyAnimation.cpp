@@ -16,51 +16,84 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
- #include "SmartBodyAnimation.h"
-
+#include "SmartBodyAnimation.h"
+#include "sb/SBAssetManager.h"
+#include "sb/SBMotion.h"
 
 namespace Ember
 {
 
-SmartBodyAnimation::SmartBodyAnimation(SmartBodyAnimation::Name name)
+SmartBodyAnimation::Type SmartBodyAnimation::getType(Name animationName)
 {
-	switch (name)
+	switch (animationName)
 	{
-		case Name::IDLE:
-			mBmlRequest = "<body posture=\"ChrUtah_Idle001\"/>";
-			mMotionName = "ChrUtah_Idle001";
-			break;
+		case Name::WALKING:
+		case Name::RUNNING:
+			return Type::MOVING;
 
-		case Name::WALK:
-			mBmlRequest = "<body posture=\"ChrUtah_Walk001\"/>";
-			mMotionName = "ChrUtah_Walk001";
-			break;
+		case Name::STANDING:
+			return Type::STATIC;
 
-		case Name::RUN:
-			mBmlRequest = "<body posture=\"ChrUtah_Run001\"/>";
-			mMotionName = "ChrUtah_Run001";
-			break;
+		case Name::WAITING:
+			return Type::GESTURE;
 
-		case Name::NOD:
-			mBmlRequest = "<head type=\"NOD\" repeats=\"2\"/>";
-			mMotionName = "";
-			break;
+		default:
+			return Type::UNDEFINED;
 	}
+}
+
+
+SmartBodyAnimation::SmartBodyAnimation(SmartBodyAnimation::Name name, SmartBody::SBAssetManager& assetManager, const std::vector<std::string>& motions)
+: mName(name), mAssetManager(assetManager), mMotionNames(motions)
+{
 }
 
 SmartBodyAnimation::~SmartBodyAnimation()
 {
 }
 
-
-const std::string& SmartBodyAnimation::getBmlRequest() const
+SmartBodyAnimation::Name SmartBodyAnimation::getName() const
 {
-	return mBmlRequest;
+	return mName;
 }
 
-const std::string& SmartBodyAnimation::getMotionName() const
+float SmartBodyAnimation::getMotionDuration(int motionIndex) const
 {
-	return mMotionName;
+	if (motionIndex < 0 || !(motionIndex < getMotionNumber()))
+	{
+		return -1;
+	}
+
+	SmartBody::SBMotion *motion = mAssetManager.getMotion(mMotionNames[motionIndex]);
+
+	if (!motion)
+	{
+		return -1;
+	}
+
+	return motion->getDuration();
 }
+
+int SmartBodyAnimation::getMotionNumber() const
+{
+	return mMotionNames.size();
+}
+
+
+
+SmartBodyAnimationInstance::SmartBodyAnimationInstance(const SmartBodyAnimation& animation)
+:	mReference(animation)
+{
+}
+
+SmartBodyAnimationInstance::~SmartBodyAnimationInstance()
+{
+}
+
+int SmartBodyAnimationInstance::getMotionNumber() const
+{
+	return mReference.getMotionNumber();
+}
+
 
 }

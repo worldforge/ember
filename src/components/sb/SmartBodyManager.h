@@ -19,8 +19,7 @@
 #ifndef SMARTBODYMANAGER_H
 #define SMARTBODYMANAGER_H
 
-	#include "SmartBodyAnimation.h"
-
+ 	#include "SmartBodyAnimation.h"
 	#include <string>
 	#include <vector>
 
@@ -45,7 +44,7 @@ namespace Ember
 
 class SmartBodyBehaviors;
 class SmartBodyRepresentation;
-class SmartBodyAnimation;
+class SmartBodyAnimationManager;
 
 /**
  @brief This class is here to set up the SmartBody library.
@@ -129,9 +128,10 @@ private:
 	SmartBody::SBSimulationManager& mSimulation;
 
 	/**
-	 * @brief SmartBody BML Processor.
+	 * @brief The SmartBodyAnimationManager generates animations and send the bml requests to SmartBody to execute motions on
+	 * characters.
 	 */
-	SmartBody::SBBmlProcessor& mProcessor;
+	SmartBodyAnimationManager& mAnimationManager;
 
 	/**
 	 * @brief A vector containing all the characters created by this manager.
@@ -142,11 +142,6 @@ private:
 	 * @brief The collection of all the supported behaviors.
 	 */
 	std::vector<SmartBodyBehaviors*> mBehaviors;
-
-	/**
-	 * @brief The different possible animations.
-	 */
-	std::vector<SmartBodyAnimation> mAnimations;
 
 	/**
 	 * @brief An enum to locate each behavior in mBehaviors.
