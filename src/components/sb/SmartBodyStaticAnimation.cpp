@@ -38,14 +38,14 @@ SmartBodyStaticAnimation::~SmartBodyStaticAnimation()
 {
 }
 
-bool SmartBodyStaticAnimation::getBmlRequest(std::string& request, int postureIndex) const
+bool SmartBodyStaticAnimation::getBmlRequest(std::string& request, int postureIndex, const std::string& readyTime /*= ""*/) const
 {
 	if (postureIndex < 0 || !(postureIndex < getMotionNumber()))
 	{
 		return false;
 	}
 
-	request = "<body posture=\"" + mPostures[postureIndex] + "\"/>";
+	request = "<body posture=\"" + mPostures[postureIndex] + "\"" + readyTime + "/>";
 	return true;
 }
 
@@ -88,7 +88,7 @@ SmartBodyStaticAnimationInstance::~SmartBodyStaticAnimationInstance()
 
 bool SmartBodyStaticAnimationInstance::getBmlRequest(std::string& request) const
 {
-	return mReference.getBmlRequest(request, mPosture);
+	return mReference.getBmlRequest(request, mPosture, mReadyTime);
 }
 
 float SmartBodyStaticAnimationInstance::getTimeSincePostureChange()

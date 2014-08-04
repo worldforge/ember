@@ -75,13 +75,13 @@ public:
 	/**
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. The default direction is forward.
 	 */
-	void getBmlRequest(std::string& request, Direction direction = Direction::FORWARD) const;
+	void getBmlRequest(std::string& request, Direction direction = Direction::FORWARD, const std::string& readyTime = "") const;
 
 	/**
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. The default direction is forward.
 	 * @return false if direction does not correspond to a direction.
 	 */
-	bool getBmlRequest(std::string& request, int direction = (int)Direction::FORWARD) const;
+	bool getBmlRequest(std::string& request, int direction = (int)Direction::FORWARD, const std::string& readyTime = "") const;
 
 
 private:
@@ -138,7 +138,7 @@ public:
 	bool hasDirectionChanged();
 
 	/**
-	 * @brief Notify that a bml request has been send to follow the change of direction.
+	 * @brief Notify that a bml request has been sent to follow the change of direction.
 	 * This set mHasDirectionChange to false.
 	 */
 	void notifyUpdate();

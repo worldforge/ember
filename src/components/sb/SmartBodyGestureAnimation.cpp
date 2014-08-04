@@ -87,7 +87,7 @@ SmartBodyGestureAnimation::~SmartBodyGestureAnimation()
 {
 }
 
-bool SmartBodyGestureAnimation::getBmlRequest(std::string& request, int gestureIndex) const
+bool SmartBodyGestureAnimation::getBmlRequest(std::string& request, int gestureIndex, const std::string& readyTime /*= ""*/) const
 {
 	if (gestureIndex < 0 || getMotionNumber() <= gestureIndex)
 	{
@@ -96,7 +96,7 @@ bool SmartBodyGestureAnimation::getBmlRequest(std::string& request, int gestureI
 
 	if (gestureIndex < mMotions.size())
 	{
-		request = "<gesture name=\"" + mMotions[gestureIndex] + "\"/>";
+		request = "<gesture name=\"" + mMotions[gestureIndex] + "\"" + readyTime + "/>";
 	}
 
 	else
@@ -143,7 +143,7 @@ SmartBodyGestureAnimationInstance::~SmartBodyGestureAnimationInstance()
 
 bool SmartBodyGestureAnimationInstance::getBmlRequest(std::string& request) const
 {
-	return mReference.getBmlRequest(request, mGesture);
+	return mReference.getBmlRequest(request, mGesture, mReadyTime);
 }
 
 float SmartBodyGestureAnimationInstance::getTimeSinceGestureEnd()

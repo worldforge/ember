@@ -94,7 +94,7 @@ public:
 	 * @brief Gets the request that is to be sent to the bml processor.
 	 * @return false if the given index is invalid.
 	 */
-	virtual bool getBmlRequest(std::string& request, int motionIndex) const = 0;
+	virtual bool getBmlRequest(std::string& request, int motionIndex, const std::string& readyTime = "") const = 0;
 
 	/**
 	 * @brief Returns the duration in seconds of the given motion.
@@ -167,7 +167,19 @@ public:
 	 * @brief Returns the number of motions constituing mReference.
 	 */ 
 	int getMotionNumber() const;
-	
+
+	/**
+	 * @brief Notify that a bml request has been sent.
+	 * It reinitializes mReadyTime.
+	 */
+	virtual void notifyUpdate();
+
+	/** 
+	 * @brief Specify the time necessary to move from the previous animation to the new one.
+	 * @param specify: set to false if the duration of the blend should be handled by SmartBody, to true if you want to specify it yourself.
+	 */
+	void specifyReadyTime(bool specify, float time = 0.0f);
+
 
 protected:
 
@@ -175,6 +187,13 @@ protected:
 	 * @brief A reference on the corresponding SmartBodyMovingAnimation.
 	 */
 	const SmartBodyAnimation& mReference;
+
+	/**
+	 * @brief The time taken by the next animation to be fully blended.
+	 * If nothing has been precised, then mReadyTime = "", otherwise, mReadyTime = " start=\"0\" ready=\"1\" " if one second is necessary to blend
+	 * the animation.
+	 */
+	std::string mReadyTime;
 
 };
 

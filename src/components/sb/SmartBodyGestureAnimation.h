@@ -115,7 +115,7 @@ public:
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. 
 	 * @param gestureIndex: An index into motions + gesturing.
 	 */
-	bool getBmlRequest(std::string& request, int gestureIndex) const;
+	bool getBmlRequest(std::string& request, int gestureIndex, const std::string& readyTime = "") const;
 
 	/**
 	 * @brief Returns the duration of the gesture.

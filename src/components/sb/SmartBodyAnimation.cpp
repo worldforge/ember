@@ -82,7 +82,7 @@ int SmartBodyAnimation::getMotionNumber() const
 
 
 SmartBodyAnimationInstance::SmartBodyAnimationInstance(const SmartBodyAnimation& animation)
-:	mReference(animation)
+:	mReference(animation), mReadyTime("")
 {
 }
 
@@ -95,5 +95,22 @@ int SmartBodyAnimationInstance::getMotionNumber() const
 	return mReference.getMotionNumber();
 }
 
+void SmartBodyAnimationInstance::notifyUpdate()
+{
+	specifyReadyTime(false);
+}
+
+void SmartBodyAnimationInstance::specifyReadyTime(bool specify, float readyTime /*= 0.0f*/)
+{
+	if (specify)
+	{
+		mReadyTime = " start=\"0\" ready=\"" + std::to_string(readyTime) + "\" ";
+	}
+
+	else
+	{
+		mReadyTime = "";
+	}
+}
 
 }

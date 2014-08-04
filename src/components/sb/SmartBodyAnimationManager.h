@@ -91,6 +91,11 @@ private:
 	std::map<SmartBodyAnimation::Name, SmartBodyAnimation*> mAnimations;
 
 	/**
+	 * @brief Sends the bml request retrieved from animation to SmartBody.
+	 */
+	void execute(SmartBodyAnimationInstance& animation, const std::string& characterName) const;
+
+	/**
 	 * @brief Called in addAnimation() depending on the type of animation.
 	 */
 	void addStaticAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character);

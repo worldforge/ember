@@ -39,7 +39,7 @@ namespace Ember
 SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, const Ogre::Entity& entity, const std::string& group,
 	const std::string& skName, const std::vector<SmartBodyBehaviors*>& behaviors)
 :	mScene(scene), mCharacter(createCharacter(entity.getName(), group)), mSkeleton(*scene.createSkeleton(skName)),
-	mEntity(entity), mOgreSkeleton(*entity.getSkeleton()), mIsAnimated(false), mIsInMovement(false), mPosture(nullptr)
+	mEntity(entity), mOgreSkeleton(*entity.getSkeleton()), mIsAnimated(false), mIsInMovement(false), mPosture(nullptr), mIsAnimatedForFirstTime(true)
 {
 	//Associate the skeleton to the character.
 	mCharacter.setSkeleton(&mSkeleton);
@@ -216,6 +216,12 @@ bool SmartBodyRepresentation::isMoving() const
 
 void SmartBodyRepresentation::setPosture(SmartBodyAnimationInstance *posture, bool staticPosture)
 {
+	if (mIsAnimatedForFirstTime)
+	{
+		posture->specifyReadyTime(true, 0.0f);
+		mIsAnimatedForFirstTime = false;
+	}
+
 	mIsStatic = staticPosture;
 	mPosture = posture;
 

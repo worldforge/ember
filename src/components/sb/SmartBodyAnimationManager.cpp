@@ -91,6 +91,16 @@ void SmartBodyAnimationManager::initialize(SmartBody::SBAssetManager& assetManag
 		"ChrUtah_StrafeFastLf01", "ChrUtah_StrafeFastRt01");
 }
 
+void SmartBodyAnimationManager::execute(SmartBodyAnimationInstance& animation, const std::string& characterName) const
+{
+	std::string request;
+	animation.getBmlRequest(request);
+ 	mBmlProcessor.execBML(characterName, request);
+
+ 	//Notify the animation instance that the request has been sent.
+ 	animation.notifyUpdate();
+}
+
 void SmartBodyAnimationManager::addAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
 {
 	//We must find what kind of animation we are looking at.
@@ -119,6 +129,8 @@ void SmartBodyAnimationManager::addStaticAnimation(SmartBodyAnimation::Name name
 
 	SmartBodyStaticAnimationInstance *animation = new SmartBodyStaticAnimationInstance(dynamic_cast<SmartBodyStaticAnimation&>(*mAnimations[name]));
 	character.setPosture(animation, true);
+
+	execute(*animation, character.getName());
 }
 
 void SmartBodyAnimationManager::addMovingAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
@@ -127,6 +139,8 @@ void SmartBodyAnimationManager::addMovingAnimation(SmartBodyAnimation::Name name
 
 	SmartBodyMovingAnimationInstance *animation = new SmartBodyMovingAnimationInstance(dynamic_cast<SmartBodyMovingAnimation&>(*mAnimations[name]));
 	character.setPosture(animation, false);
+
+	execute(*animation, character.getName());
 }
 
 void SmartBodyAnimationManager::addGestureAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
@@ -162,12 +176,7 @@ void SmartBodyAnimationManager::updateMovingAnimation(SmartBodyRepresentation& c
 	if (animation.hasDirectionChanged())
 	{
 		//Send the update to SmartBody.
-		std::string request;
-		animation.getBmlRequest(request);
-	 	mBmlProcessor.execBML(character.getName(), request);
-
-	 	//Notify the animation instance that the request has been sent.
-	 	animation.notifyUpdate();
+		execute(animation, character.getName());
 	}
 }
 
@@ -187,9 +196,7 @@ void SmartBodyAnimationManager::updateStaticAnimation(SmartBodyRepresentation& c
 	 		animation.changePosture(postureRange(mRandGen));
 
 	 		//Send the update to SmartBody.
-			std::string request;
-			animation.getBmlRequest(request);
-	 		mBmlProcessor.execBML(character.getName(), request);
+			execute(animation, character.getName());
 	 	}
 	}
 

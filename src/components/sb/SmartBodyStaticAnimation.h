@@ -60,7 +60,7 @@ public:
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. 
 	 * @return false if postureIndex is not a valid index into mPostures.
 	 */
-	bool getBmlRequest(std::string& request, int postureIndex) const;
+	bool getBmlRequest(std::string& request, int postureIndex, const std::string& readyTime = "") const;
 
 	/**
 	 * @brief Gets the bml request corresponding to the given gesture.that is to be sent via the BMLProcessor. 

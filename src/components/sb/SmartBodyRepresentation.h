@@ -256,6 +256,13 @@ private:
 	 * previous movement and the idling animation), we must test that (mIsStatic && !mIsInMovement)) is true.
 	 */
 	bool mIsStatic;
+
+	/**
+	 * @brief If the character is animated for the first time, the default behavior would be to blend from the original posture (= T_POSE) to the
+	 * new one. To avoid that, we set this variable to true during the construction. Then, when we add an animation for the first time, we specify
+	 * that it will not be blended with the previous posture by setting the ready time to 0.
+	 */
+	bool mIsAnimatedForFirstTime;
 };
 
 }
