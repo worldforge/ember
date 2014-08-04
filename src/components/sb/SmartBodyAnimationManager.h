@@ -88,25 +88,7 @@ private:
 	/**
 	 * @brief Maps a Animation::Name to the adress of the corresponding animation.
 	 */
-	std::map<SmartBodyAnimation::Name, SmartBodyAnimation*> mLexic;
-
-	/**
-	 * @brief All StaticAnimation.
-	 * Can't be empty.
-	 */
-	std::vector<SmartBodyStaticAnimation> mStatics;
-
-	/**
-	 * @brief All MovingAnimation.
-	 * Can't be empty.
-	 */
-	std::vector<SmartBodyMovingAnimation> mMovings;
-
-	/**
-	 * @brief All GestureAnimation.
-	 * Can't be empty.
-	 */
-	std::vector<SmartBodyGestureAnimation> mGestures;
+	std::map<SmartBodyAnimation::Name, SmartBodyAnimation*> mAnimations;
 
 	/**
 	 * @brief Called in addAnimation() depending on the type of animation.

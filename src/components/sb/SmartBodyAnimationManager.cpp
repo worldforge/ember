@@ -41,6 +41,10 @@ SmartBodyAnimationManager::SmartBodyAnimationManager(SmartBody::SBBmlProcessor& 
 
 SmartBodyAnimationManager::~SmartBodyAnimationManager()
 {
+	for (auto& animation : mAnimations)
+	{
+		delete animation.second;
+	}
 }
 
 void SmartBodyAnimationManager::initialize(SmartBody::SBAssetManager& assetManager)
@@ -58,8 +62,7 @@ void SmartBodyAnimationManager::initialize(SmartBody::SBAssetManager& assetManag
 
 	gesturings.push_back(SmartBodyGestureAnimation::Gesturing(SmartBodyGestureAnimation::Gesturing::Name::TOSS, 1, 2.0f));
 
-	mGestures.push_back(SmartBodyGestureAnimation(SmartBodyAnimation::Name::WAITING, assetManager, motions, gesturings));
-	mLexic[SmartBodyAnimation::Name::WAITING] = &mGestures[0];
+	mAnimations[SmartBodyAnimation::Name::WAITING] = new SmartBodyGestureAnimation(SmartBodyAnimation::Name::WAITING, assetManager, motions, gesturings);
 
 	motions.clear();
 	gesturings.clear();
@@ -71,9 +74,8 @@ void SmartBodyAnimationManager::initialize(SmartBody::SBAssetManager& assetManag
 	motions.push_back("ChrUtah_Idle001");
 	motions.push_back("ChrBrad@Idle01");
 
-	mStatics.push_back(SmartBodyStaticAnimation(SmartBodyAnimation::Name::STANDING, assetManager, motions,
-		dynamic_cast<SmartBodyGestureAnimation*>(mLexic[SmartBodyAnimation::Name::WAITING])));
-	mLexic[SmartBodyAnimation::Name::STANDING] = &mStatics[0];
+	mAnimations[SmartBodyAnimation::Name::STANDING] = new SmartBodyStaticAnimation(SmartBodyAnimation::Name::STANDING, assetManager, motions,
+		dynamic_cast<SmartBodyGestureAnimation*>(mAnimations[SmartBodyAnimation::Name::WAITING]));
 
 	motions.clear();
 
@@ -81,14 +83,12 @@ void SmartBodyAnimationManager::initialize(SmartBody::SBAssetManager& assetManag
 	/*			*** Movings. ***			*/
 
 	//WALKING.
-	mMovings.push_back(SmartBodyMovingAnimation(SmartBodyAnimation::Name::WALKING, assetManager, "ChrUtah_Walk001", "ChrUtah_Walk001",
-		"ChrUtah_StrafeSlowLf01", "ChrUtah_StrafeSlowRt01"));
-	mLexic[SmartBodyAnimation::Name::WALKING] = &mMovings[0];
+	mAnimations[SmartBodyAnimation::Name::WALKING] = new SmartBodyMovingAnimation(SmartBodyAnimation::Name::WALKING, assetManager, "ChrUtah_Walk001", "ChrUtah_Walk001",
+		"ChrUtah_StrafeSlowLf01", "ChrUtah_StrafeSlowRt01");
 
 	//RUNNING.
-	mMovings.push_back(SmartBodyMovingAnimation(SmartBodyAnimation::Name::RUNNING, assetManager, "ChrUtah_Run001", "ChrUtah_Run001",
-		"ChrUtah_StrafeFastLf01", "ChrUtah_StrafeFastRt01"));
-	mLexic[SmartBodyAnimation::Name::RUNNING] = &mMovings[1];
+	mAnimations[SmartBodyAnimation::Name::RUNNING] = new SmartBodyMovingAnimation(SmartBodyAnimation::Name::RUNNING, assetManager, "ChrUtah_Run001", "ChrUtah_Run001",
+		"ChrUtah_StrafeFastLf01", "ChrUtah_StrafeFastRt01");
 }
 
 void SmartBodyAnimationManager::addAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
@@ -117,7 +117,7 @@ void SmartBodyAnimationManager::addStaticAnimation(SmartBodyAnimation::Name name
 {
 	freePosture(character);
 
-	SmartBodyStaticAnimationInstance *animation = new SmartBodyStaticAnimationInstance(dynamic_cast<SmartBodyStaticAnimation&>(*mLexic[name]));
+	SmartBodyStaticAnimationInstance *animation = new SmartBodyStaticAnimationInstance(dynamic_cast<SmartBodyStaticAnimation&>(*mAnimations[name]));
 	character.setPosture(animation, true);
 }
 
@@ -125,14 +125,14 @@ void SmartBodyAnimationManager::addMovingAnimation(SmartBodyAnimation::Name name
 {
 	freePosture(character);
 
-	SmartBodyMovingAnimationInstance *animation = new SmartBodyMovingAnimationInstance(dynamic_cast<SmartBodyMovingAnimation&>(*mLexic[name]));
+	SmartBodyMovingAnimationInstance *animation = new SmartBodyMovingAnimationInstance(dynamic_cast<SmartBodyMovingAnimation&>(*mAnimations[name]));
 	character.setPosture(animation, false);
 }
 
 void SmartBodyAnimationManager::addGestureAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
 {
 	//TODO.
-	//SmartBodyGestureAnimationInstance *animation = new SmartBodyGestureAnimationInstance(dynamic_cast<SmartBodyGestureAnimation&>(*mLexic[name]));
+	//SmartBodyGestureAnimationInstance *animation = new SmartBodyGestureAnimationInstance(dynamic_cast<SmartBodyGestureAnimation&>(*mAnimations[name]));
 	//character.addGesture(animation);
 }
 
