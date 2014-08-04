@@ -27,8 +27,9 @@
 #include <string>
 
 #define MIN_TIME_BEFORE_STATIC_POSE_CHANGE 10.0f 	//Expressed in seconds.
-#define RANDOM_STATIC_POSE_CHANGE 300 				//Every frame, we have 1/300 chance that the posture change.
-#define RANDOM_STATIC_GESTURE_PLAY 200 				//Every frame, we have 1/200 chance that a gesture is triggered.
+#define MIN_TIME_BEFORE_NEW_GESTURE_PLAYED 2.0f 	//Expressed in seconds.
+#define RANDOM_STATIC_POSE_CHANGE 900 				//Every frame, we have 1/900 chance that the posture changes.
+#define RANDOM_STATIC_GESTURE_PLAY 700 				//Every frame, we have 1/700 chance that a gesture is triggered.
 
 
 namespace Ember
@@ -200,7 +201,7 @@ void SmartBodyAnimationManager::updateStaticAnimation(SmartBodyRepresentation& c
 	 	}
 	}
 
-	if (animation.getTimeSinceGestureEnd() > 0)
+	if (animation.getTimeSinceGestureEnd() > MIN_TIME_BEFORE_NEW_GESTURE_PLAYED)
 	{
 		std::uniform_int_distribution<int> range(0, RANDOM_STATIC_GESTURE_PLAY - 1);
 
