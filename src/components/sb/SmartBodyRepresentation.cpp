@@ -214,10 +214,16 @@ bool SmartBodyRepresentation::isMoving() const
 	return (mIsInMovement || !mIsStatic);
 }
 
+bool SmartBodyRepresentation::isStatic() const
+{
+	return mIsStatic;
+}
+
 void SmartBodyRepresentation::setPosture(SmartBodyAnimationInstance *posture, bool staticPosture)
 {
 	if (mIsAnimatedForFirstTime)
 	{
+		posture->specifyStartTime(true, 0.0f);
 		posture->specifyReadyTime(true, 0.0f);
 		mIsAnimatedForFirstTime = false;
 	}

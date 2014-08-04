@@ -129,6 +129,9 @@ void SmartBodyAnimationManager::addStaticAnimation(SmartBodyAnimation::Name name
 	freePosture(character);
 
 	SmartBodyStaticAnimationInstance *animation = new SmartBodyStaticAnimationInstance(dynamic_cast<SmartBodyStaticAnimation&>(*mAnimations[name]));
+	animation->specifyStartTime(true, 0.0f);
+	animation->specifyReadyTime(true, 0.35f);
+
 	character.setPosture(animation, true);
 
 	execute(*animation, character.getName());
@@ -139,6 +142,9 @@ void SmartBodyAnimationManager::addMovingAnimation(SmartBodyAnimation::Name name
 	freePosture(character);
 
 	SmartBodyMovingAnimationInstance *animation = new SmartBodyMovingAnimationInstance(dynamic_cast<SmartBodyMovingAnimation&>(*mAnimations[name]));
+	animation->specifyStartTime(true, 0.0f);
+	animation->specifyReadyTime(true, 0.35f);
+
 	character.setPosture(animation, false);
 
 	execute(*animation, character.getName());

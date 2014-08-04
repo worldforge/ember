@@ -118,6 +118,11 @@ public:
 	bool isMoving() const;
 
 	/**
+	 * @brief If the character is in a static posture, this returns true.
+	 */
+	bool isStatic() const;
+
+	/**
 	 * @brief Sets a new posture for this character.
 	 * @param staticPosture: true if posture refers to a SmartBodyStaticAnimation, false if it is to a SmartBodyMovingAnimation.
 	 * @return A pointer to the previous posture (needs to be destroyed).

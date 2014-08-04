@@ -101,6 +101,11 @@ bool ModelRepresentationHumanoid::isMoving() const
 	return mCharacter ? mCharacter->isMoving() : false;
 }
 
+bool ModelRepresentationHumanoid::isStatic() const
+{
+	return mCharacter ? mCharacter->isStatic() : false;
+}
+
 void ModelRepresentationHumanoid::createSmartBodyCharacter()
 {
 	//Get the Ogre skeleton.	

@@ -74,11 +74,11 @@ public:
 private:
 
 	/**
-	 * @brief The translation will be multiplied by this value to assure that the position don't diverge too much from the one on the server.
-	 * Originally it is set to 2.0, because otherwise, the movement is too slow (maybe there is a scale difference between the skeleton 
-	 * referential and the one used to place the node).
+	 * @brief Adjusts the position that the character should have to match SmartBody motions, in order to stay close to the server coordinates.
+	 * @return The new translation.
 	 */
-	float mAdjRatio;
+	void calculateAdjustments(Ogre::Vector3& newPosition, const Ogre::Vector3& sbTranslation, const Ogre::Vector3& srvPosition, bool isStatic) const;
+
 
 	/** 
 	 * @brief The last position and orientation entered.
@@ -86,6 +86,12 @@ private:
 	Ogre::Vector3 mPrvPosition;
 	Ogre::Quaternion mPrvOrientation;
 
+	/**
+	 * @brief The last position and orientation requested by the server. This helps to know if we should use the data of the server without taking account
+	 * of the ones in SmartBody.
+	 */
+	Ogre::Vector3 mSrvPosition;
+	Ogre::Quaternion mSrvOrientation;
 };
 
 }

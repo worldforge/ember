@@ -94,7 +94,7 @@ public:
 	 * @brief Gets the request that is to be sent to the bml processor.
 	 * @return false if the given index is invalid.
 	 */
-	virtual bool getBmlRequest(std::string& request, int motionIndex, const std::string& readyTime = "") const = 0;
+	virtual bool getBmlRequest(std::string& request, int motionIndex, const std::string& start = "", const std::string& ready = "") const = 0;
 
 	/**
 	 * @brief Returns the duration in seconds of the given motion.
@@ -176,9 +176,20 @@ public:
 
 	/** 
 	 * @brief Specify the time necessary to move from the previous animation to the new one.
+	 * @param specify: set to false if the animation should start as soon as the previous one is finished, to true if you want to specify it yourself.
+	 */
+	void specifyStartTime(bool specify, float time = 0.0f);
+
+	/** 
+	 * @brief Specify the time necessary to move from the previous animation to the new one (you need to also specify the start time).
 	 * @param specify: set to false if the duration of the blend should be handled by SmartBody, to true if you want to specify it yourself.
 	 */
 	void specifyReadyTime(bool specify, float time = 0.0f);
+
+	/**
+	 * @brief Gets the bml request parts corresponding to start and ready attributes.
+	 */
+	void convertTimesToBmlStrings(std::string& start, std::string& ready) const;
 
 
 protected:
@@ -189,11 +200,24 @@ protected:
 	const SmartBodyAnimation& mReference;
 
 	/**
-	 * @brief The time taken by the next animation to be fully blended.
-	 * If nothing has been precised, then mReadyTime = "", otherwise, mReadyTime = " start=\"0\" ready=\"1\" " if one second is necessary to blend
-	 * the animation.
+	 * @brief The time when the animation starts.
 	 */
-	std::string mReadyTime;
+	float mStartTime;
+
+	/**
+	 * @brief States that mStartTime has been specified.
+	 */
+	bool mHasStartTime;
+
+	/**
+	 * @brief The time when the animation is fully blended.
+	 */
+	float mReadyTime;
+
+	/**
+	 * @brief States that mReadyTime has been specified.
+	 */
+	float mHasReadyTime;
 
 };
 

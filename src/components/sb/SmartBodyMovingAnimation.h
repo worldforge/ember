@@ -35,7 +35,7 @@ namespace Ember
 /**
  * @brief This class is used to handle all animations describing a locomotion type (Walk, Run, Jog, Swim if it had existed).
  *
- * Like any SmartBodyAnimation, into the SmartBodyAnimationManager.
+ * Like any SmartBodyAnimation, it is created into the SmartBodyAnimationManager.
  * Contrarily to the other animations, it is composed by four motion files (one for each direction).
  *
  * @author Céline NOEL <celine.noel.7294@gmail.com>
@@ -75,13 +75,13 @@ public:
 	/**
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. The default direction is forward.
 	 */
-	void getBmlRequest(std::string& request, Direction direction = Direction::FORWARD, const std::string& readyTime = "") const;
+	void getBmlRequest(std::string& request, Direction direction = Direction::FORWARD, const std::string& start = "", const std::string& ready = "") const;
 
 	/**
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. The default direction is forward.
 	 * @return false if direction does not correspond to a direction.
 	 */
-	bool getBmlRequest(std::string& request, int direction = (int)Direction::FORWARD, const std::string& readyTime = "") const;
+	bool getBmlRequest(std::string& request, int direction = (int)Direction::FORWARD, const std::string& start = "", const std::string& ready = "") const;
 
 
 private:

@@ -22,9 +22,10 @@
 #include "components/ogre/Convert.h"
 
 #include <algorithm>
+#include <cmath>
 
-#define ADJRATIO_AVG 2.0f
-
+#define SB_RATIO 1.7f 				//The translation retrieved from SmartBody is multiplied by this value to take account of the scale difference between SmartBody referential
+ 									//and Ember one.
 
 namespace Ember
 {
@@ -36,7 +37,7 @@ namespace Model
 {
 
 ModelHumanoidAttachment::ModelHumanoidAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose /*= ""*/)
-:	ModelAttachment(parentEntity, modelRepresentation, nodeProvider, pose), mAdjRatio(ADJRATIO_AVG)
+:	ModelAttachment(parentEntity, modelRepresentation, nodeProvider, pose)
 {
 }
 
@@ -55,6 +56,8 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 		ModelAttachment::setPosition(position, orientation, velocity);
 		mPrvPosition = Convert::toOgre(position);
 		mPrvOrientation = Convert::toOgre(orientation); 
+		mSrvPosition = mPrvPosition;
+		mSrvOrientation = mPrvOrientation; 
 	}
 
 	else
@@ -63,67 +66,72 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 		WFMath::Quaternion newOrientation;
 		WFMath::Vector<3> newVelocity;
 
-		//First we have too see if the motion is natural or not (if the character is moving, or if he is being moved).
 		Ogre::Vector3 srvPosition(Convert::toOgre(position));
 		Ogre::Quaternion srvOrientation(Convert::toOgre(orientation));
-		Ogre::Vector3 srvTranslation(srvPosition - mPrvPosition);
-		float normSrv = srvTranslation.length();
 
-		if (normSrv > 0.1)
+		//If the character is in a static posture, we have to use the previous orientation value (because it seems that the new one is set a bit randomly).
+		if (representation.isStatic())
 		{
-			newPosition = position;
-			newOrientation = orientation;
-			mPrvPosition = Convert::toOgre(position);
-			mPrvOrientation = Convert::toOgre(orientation); 
+			srvOrientation = mSrvOrientation;
 		}
 
-		else
-		{
-			//We store the transformations applied to the model by SmartBody since the last time the scene node was moved.
-			Ogre::Vector3 translation = representation.getTranslation();
-			Ogre::Quaternion rotation = representation.getRotation();
-			
-			//Sets the same axes than the ones used in Ember.
-			translation = Ogre::Vector3(translation.z, translation.x, -translation.y);
-			rotation = Ogre::Quaternion(rotation.w, rotation.z, rotation.x, -rotation.y);
-			float normSb = translation.length();
-
-			//If translation is close to 0 or not oriented the same way, we reinitialized mAdjRatio.
-			if (normSb > 0.0001 && translation.dotProduct(srvTranslation) > 0)
-			{
-				//We divise the ratio by 5, not to alter the original value too much, and then, we assure that it do not exceed +/- 0.1.
-				float adjust = (normSrv / normSb) / 5.0f - mAdjRatio;
-				adjust = std::max(std::min(adjust, 0.1f), -0.1f);
-				mAdjRatio += adjust;
-				mAdjRatio = std::max(std::min(mAdjRatio, ADJRATIO_AVG - 0.5f), ADJRATIO_AVG + 0.5f);
-			}
-
-			else
-			{
-				mAdjRatio = ADJRATIO_AVG;
-			}
-
-			translation *= mAdjRatio;
-
-
-			//We then set the new values.
-			Ogre::Vector3 newNodePosition = mPrvPosition + srvOrientation * translation;
-			Ogre::Quaternion newNodeOrientation = rotation * srvOrientation;
-			newPosition = Convert::toWF<WFMath::Point<3>>(newNodePosition);
-			newOrientation = orientation; //For the moment, we simply use the orientation predicted by the server.
-			//newOrientation = WFMath::Quaternion(newNodeOrientation.w, newNodeOrientation.x, newNodeOrientation.y, newNodeOrientation.z);
+		//First we have too see if the motion is natural or not (if the character is moving, or if he is being moved).
+		Ogre::Vector3 srvTranslation(srvPosition - mSrvPosition);
+		float normSrv = srvTranslation.length();
 		
-			mPrvPosition = newNodePosition;
-			mPrvOrientation = Convert::toOgre(orientation);	
-			//mPrvOrientation = newNodeOrientation;
-		}		
+		//We store the transformations applied to the model by SmartBody since the last time the scene node was moved.
+		Ogre::Vector3 translation = representation.getTranslation();
+		Ogre::Quaternion rotation = representation.getRotation();
+		
+		//We must convert SmartBody coordinates into Ogre ones.
+		translation = srvOrientation * Ogre::Vector3(translation.z, translation.y, -translation.x) * SB_RATIO;
+		rotation = Ogre::Quaternion(rotation.w, rotation.z, rotation.y, -rotation.x) * srvOrientation;
 
+		//We adjust the values from SmartBody to match the server's ones. 
+		Ogre::Vector3 newNodePosition = mPrvPosition + translation;
+		Ogre::Quaternion newNodeOrientation = rotation * srvOrientation;
+		
+		//If the character has a static posture, adjustments will make him move though he should not.
+		calculateAdjustments(newNodePosition, translation, srvPosition, representation.isStatic());
+
+		newPosition = Convert::toWF<WFMath::Point<3>>(newNodePosition);
+		newOrientation = orientation; //For the moment, we simply use the orientation predicted by the server.
+		//newOrientation = WFMath::Quaternion(newNodeOrientation.w, newNodeOrientation.x, newNodeOrientation.y, newNodeOrientation.z);
+	
+		mPrvPosition = newNodePosition;
+		mPrvOrientation = Convert::toOgre(orientation);	
+		//mPrvOrientation = newNodeOrientation;
+		
+		mSrvPosition = srvPosition;
+		mSrvOrientation = srvOrientation; 	
+		
 		//We do not alter the velocity.
 		newVelocity = velocity;
 		ModelAttachment::setPosition(newPosition, newOrientation, newVelocity);	
 
 		//We reinitialize the values of the tranformations, to not reapply them the next time we set the position of the node.
 		representation.reinitializeTransformation();
+	}
+}
+
+void ModelHumanoidAttachment::calculateAdjustments(Ogre::Vector3& newPosition, const Ogre::Vector3& sbTranslation, const Ogre::Vector3& srvPosition, bool isStatic) const
+{ 
+ 	Ogre::Vector3 distance = newPosition - srvPosition;
+	double length = distance.length();
+
+	if (isStatic && length > 0.0001)
+	{
+		newPosition = newPosition - distance * (0.0001 / length);
+	}
+
+	else if ((srvPosition - mPrvPosition).dotProduct(sbTranslation) <= 0)
+	{
+		newPosition = mPrvPosition + sbTranslation * 0.5;
+	}
+	
+	else
+	{
+		newPosition = srvPosition + distance * (0.999 - 0.3 * exp(-length * 2));
 	}
 }
 

@@ -82,7 +82,7 @@ int SmartBodyAnimation::getMotionNumber() const
 
 
 SmartBodyAnimationInstance::SmartBodyAnimationInstance(const SmartBodyAnimation& animation)
-:	mReference(animation), mReadyTime("")
+:	mReference(animation), mHasStartTime(false), mHasReadyTime(false)
 {
 }
 
@@ -98,18 +98,50 @@ int SmartBodyAnimationInstance::getMotionNumber() const
 void SmartBodyAnimationInstance::notifyUpdate()
 {
 	specifyReadyTime(false);
+	specifyStartTime(false);
+}
+
+void SmartBodyAnimationInstance::specifyStartTime(bool specify, float startTime /*= 0.0f*/)
+{
+	if (specify)
+	{
+		mStartTime = startTime;
+	}
+
+	mHasStartTime = specify;
 }
 
 void SmartBodyAnimationInstance::specifyReadyTime(bool specify, float readyTime /*= 0.0f*/)
 {
 	if (specify)
 	{
-		mReadyTime = " start=\"0\" ready=\"" + std::to_string(readyTime) + "\" ";
+		mReadyTime = readyTime;
+	}
+
+	mHasReadyTime = specify;
+}
+
+void SmartBodyAnimationInstance::convertTimesToBmlStrings(std::string& start, std::string& ready) const
+{
+	if (mHasStartTime)
+	{
+		start = " start=\"" + std::to_string(mStartTime) + "\" ";
+
+		if (mHasReadyTime)
+		{
+			ready = " ready=\"" + std::to_string(mStartTime + mReadyTime) + "\" ";
+		}
+
+		else
+		{
+			ready = "";
+		}
 	}
 
 	else
 	{
-		mReadyTime = "";
+		start = "";
+		ready = "";
 	}
 }
 

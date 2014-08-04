@@ -45,20 +45,20 @@ SmartBodyMovingAnimation::~SmartBodyMovingAnimation()
 {
 }
 
-void SmartBodyMovingAnimation::getBmlRequest(std::string& request, Direction direction /*= Direction::FORWARD*/, const std::string& readyTime /*= ""*/) const
+void SmartBodyMovingAnimation::getBmlRequest(std::string& request, Direction direction /*= Direction::FORWARD*/, const std::string& start /*= ""*/, const std::string& ready /*= ""*/) const
 {
 	//Moving animations always alter the posture attribute in the body element.
-	request = "<body posture=\"" + mMotions[(int)direction] + "\"" + readyTime + "/>";
+	request = "<body posture=\"" + mMotions[(int)direction] + "\"" + start + ready + "/>";
 }
 
-bool SmartBodyMovingAnimation::getBmlRequest(std::string& request, int direction /*= (int)Direction::FORWARD*/, const std::string& readyTime /*= ""*/) const
+bool SmartBodyMovingAnimation::getBmlRequest(std::string& request, int direction /*= (int)Direction::FORWARD*/, const std::string& start /*= ""*/, const std::string& ready /*= ""*/) const
 {
 	if (direction < 0 || !(direction < getMotionNumber()))
 	{
 		return false;
 	}
 
-	getBmlRequest(request, (Direction)direction, readyTime);
+	getBmlRequest(request, (Direction)direction, start, ready);
 	return true;
 }
 
@@ -74,8 +74,11 @@ SmartBodyMovingAnimationInstance::~SmartBodyMovingAnimationInstance()
 }
 
 bool SmartBodyMovingAnimationInstance::getBmlRequest(std::string& request) const
-{
-	return mReference.getBmlRequest(request, (int)mDirection, mReadyTime);
+{	
+	std::string start, ready;
+	convertTimesToBmlStrings(start, ready);
+
+	return mReference.getBmlRequest(request, (int)mDirection, start, ready);
 }
 
 void SmartBodyMovingAnimationInstance::setDirection(SmartBodyMovingAnimation::Direction direction)

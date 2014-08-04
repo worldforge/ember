@@ -93,11 +93,16 @@ public:
 	void reinitializeTransformation();
 
 	/**
-	 * @brief Allows to know if the character is moving, to know if we need to update the position of the scene node (for example, if the
+	 * @brief States that the character is moving, to know if we need to update the position of the scene node (for example, if the
 	 * character is in the idling posture, the position should not be updated, but in the case of a humanoid character, the translation 
 	 * from walking to idling posture is not instantaneous, so we have to update it as long as the model is not entirely still).
 	 */
 	bool isMoving() const;
+
+	/**
+	 * @brief Returns true if the character's posture is static.
+	 */
+	bool isStatic() const;
 	
 
 protected:
