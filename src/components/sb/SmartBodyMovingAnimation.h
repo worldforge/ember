@@ -62,6 +62,11 @@ public:
 	SmartBodyMovingAnimation(SmartBodyAnimation::Name name, SmartBody::SBAssetManager& assetMng, 
 		const std::string& forwardMotion, const std::string& backwardMotion, const std::string& leftMotion, const std::string& rightMotion);
 
+	/**
+	 * @brief Copy ctor.
+	 */
+	SmartBodyMovingAnimation(const SmartBodyMovingAnimation& animation);
+
 	/** 
 	 * @brief Dtor.
 	 */

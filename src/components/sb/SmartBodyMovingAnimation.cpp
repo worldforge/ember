@@ -34,6 +34,12 @@ SmartBodyMovingAnimation::SmartBodyMovingAnimation(SmartBodyAnimation::Name name
 	mMotions[(int)Direction::LEFT] = leftMotion;
 	mMotions[(int)Direction::RIGHT] = rightMotion;
 } 
+
+SmartBodyMovingAnimation::SmartBodyMovingAnimation(const SmartBodyMovingAnimation& animation)
+:	SmartBodyAnimation::SmartBodyAnimation(animation.mName, animation.mAssetManager, mMotions), mMotions(animation.mMotions)
+{
+}
+
 	
 SmartBodyMovingAnimation::~SmartBodyMovingAnimation()
 {

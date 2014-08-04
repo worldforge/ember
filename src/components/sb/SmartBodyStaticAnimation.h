@@ -46,6 +46,11 @@ public:
 	SmartBodyStaticAnimation(SmartBodyAnimation::Name name, SmartBody::SBAssetManager& assetMng, const std::vector<std::string>& postures, 
 		SmartBodyGestureAnimation const *gestures = nullptr);
 	
+	/**
+	 * @brief Copy ctor.
+	 */
+	SmartBodyStaticAnimation(const SmartBodyStaticAnimation& animation);
+
 	/** 
 	 * @brief Dtor.
 	 */

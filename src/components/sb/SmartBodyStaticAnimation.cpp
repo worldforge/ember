@@ -27,6 +27,12 @@ SmartBodyStaticAnimation::SmartBodyStaticAnimation(SmartBodyAnimation::Name name
 :	SmartBodyAnimation::SmartBodyAnimation(name, assetMng, mPostures), mPostures(postures), mGestures(gestures)
 {
 }
+
+
+SmartBodyStaticAnimation::SmartBodyStaticAnimation(const SmartBodyStaticAnimation& animation)
+:	SmartBodyAnimation::SmartBodyAnimation(animation.mName, animation.mAssetManager, mPostures), mPostures(animation.mPostures), mGestures(animation.mGestures)
+{
+}
 	
 SmartBodyStaticAnimation::~SmartBodyStaticAnimation()
 {

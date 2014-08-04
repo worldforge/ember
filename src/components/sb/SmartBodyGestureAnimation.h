@@ -100,6 +100,11 @@ public:
 	 */
 	SmartBodyGestureAnimation(SmartBodyAnimation::Name name, SmartBody::SBAssetManager& assetMng, const std::vector<std::string>& motions, 
 		const std::vector<Gesturing>& gesturings);
+
+	/**
+	 * @brief Copy ctor.
+	 */
+	SmartBodyGestureAnimation(const SmartBodyGestureAnimation& animation);
 	
 	/** 
 	 * @brief Dtor.

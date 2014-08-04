@@ -77,6 +77,11 @@ SmartBodyGestureAnimation::SmartBodyGestureAnimation(SmartBodyAnimation::Name na
 :	SmartBodyAnimation::SmartBodyAnimation(name, assetMng, mMotions), mMotions(motions), mGesturings(gesturings)
 {
 }
+
+SmartBodyGestureAnimation::SmartBodyGestureAnimation(const SmartBodyGestureAnimation& animation)
+:	SmartBodyAnimation::SmartBodyAnimation(animation.mName, animation.mAssetManager, mMotions), mMotions(animation.mMotions), mGesturings(animation.mGesturings)
+{
+}
 	
 SmartBodyGestureAnimation::~SmartBodyGestureAnimation()
 {
