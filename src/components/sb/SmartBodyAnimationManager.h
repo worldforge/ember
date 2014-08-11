@@ -91,16 +91,12 @@ private:
 	std::map<SmartBodyAnimation::Name, SmartBodyAnimation*> mAnimations;
 
 	/**
-	 * @brief Sends the bml request retrieved from animation to SmartBody.
-	 */
-	void execute(SmartBodyAnimationInstance& animation, const std::string& characterName) const;
-
-	/**
 	 * @brief Called in addAnimation() depending on the type of animation.
 	 */
 	void addStaticAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character);
 	void addMovingAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character);
 	void addGestureAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character);
+	void addIntuitiveAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character);
 
 	/**
 	 * @brief Called in updateAnimations() depending on the type of animation.
@@ -108,6 +104,7 @@ private:
 	void updateMovingAnimation(SmartBodyRepresentation& character) const;
 	void updateStaticAnimation(SmartBodyRepresentation& character, float timeSlice);
 	void updateGestureAnimations(SmartBodyRepresentation& character, float timeSlice) const;
+	void updateIntuitiveAnimation(SmartBodyRepresentation& character, float timeSlice) const;
 
 	/**
 	 * @brief Removes the character's posture animation and free the memory.

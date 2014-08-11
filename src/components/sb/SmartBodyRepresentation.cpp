@@ -21,6 +21,7 @@
 #include "SmartBodyStaticAnimation.h"
 #include "SmartBodyMovingAnimation.h"
 #include "SmartBodyGestureAnimation.h"
+#include "SmartBodyIntuitiveAnimation.h"
 
 
 #include "sb/SBScene.h"
@@ -60,10 +61,8 @@ SmartBodyRepresentation::SmartBodyRepresentation(SmartBody::SBScene& scene, cons
 SmartBodyRepresentation::~SmartBodyRepresentation()
 {
 	//Free the memory.
-//	mScene.removeCharacter(getName());
-	//When relogging, the motion manager call SmartBodyManager::updateAnimations, into which SBScene::update will fail, because
-	//the bml requests send for this character have not been removed. As long as we cannot properly free them, we should not remove
-	//characters from the scene.
+	delete mPosture;
+	mScene.removeCharacter(getName());
 }
 
 SmartBody::SBCharacter& SmartBodyRepresentation::createCharacter(const std::string& name, const std::string& group)
@@ -242,6 +241,12 @@ void SmartBodyRepresentation::setPosture(SmartBodyAnimationInstance *posture, bo
 	}
 }
 
+void SmartBodyRepresentation::setIntuitivePosture(SmartBodyIntuitiveAnimationInstance *posture)
+{
+	setPosture(posture, false);
+	posture->initializePositionAndOrientation(mWorldPosition, mWorldOrientation);
+}
+
 SmartBodyAnimationInstance* SmartBodyRepresentation::getPosture()
 {
 	return mPosture;
@@ -267,11 +272,26 @@ void SmartBodyRepresentation::setDirection(SmartBodyMovingAnimation::Direction d
 {
 	if (mIsAnimated && !mIsStatic)
 	{
-		SmartBodyMovingAnimationInstance* animation = dynamic_cast<SmartBodyMovingAnimationInstance*>(mPosture);
+		SmartBodyMovingAnimationInstance *animation = dynamic_cast<SmartBodyMovingAnimationInstance*>(mPosture);
 		animation->setDirection(direction);
 	}
 }
 
+void SmartBodyRepresentation::setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
+{
+	mWorldPosition = position;
+	mWorldOrientation = orientation;
+}
+
+const Ogre::Vector3& SmartBodyRepresentation::getWorldPosition() const
+{
+	return mWorldPosition;
+}
+
+const Ogre::Quaternion& SmartBodyRepresentation::getWorldOrientation() const
+{
+	return mWorldOrientation;
+}
 
 
 }

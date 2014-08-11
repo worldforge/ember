@@ -27,6 +27,7 @@ namespace SmartBody
 {
 class SBMotion;
 class SBAssetManager;
+class SBBmlProcessor;
 }
 
 namespace Ember
@@ -53,6 +54,7 @@ public:
 	enum class Name 
 	{
 		WALKING, RUNNING,			//MovingAnimations.
+		LOCOMOTION,					//IntuitiveAnimations.
 		STANDING,					//StaticAnimations.
 		WAITING,					//Gestures.
 
@@ -65,8 +67,8 @@ public:
 	 */
 	enum class Type
 	{
-		STATIC, MOVING, GESTURE, 
-		UNDEFINED					//Undefined is used when invalid animation name (ANIMATIONS_COUNT for example) is send to getType().
+		STATIC, MOVING, INTUITIVE, GESTURE, 
+		UNDEFINED								//Undefined is used when invalid animation name (ANIMATIONS_COUNT for example) is send to getType().
 	};
 
 	/**
@@ -92,9 +94,10 @@ public:
 
 	/**
 	 * @brief Gets the request that is to be sent to the bml processor.
+	 * @param attributes: the different attributes that will be appended to the request ("start", "ready", "x", "y", "z", etc.).
 	 * @return false if the given index is invalid.
 	 */
-	virtual bool getBmlRequest(std::string& request, int motionIndex, const std::string& start = "", const std::string& ready = "") const = 0;
+	virtual bool getBmlRequest(std::string& request, int motionIndex, const std::vector<std::string>& attributes) const = 0;
 
 	/**
 	 * @brief Returns the duration in seconds of the given motion.
@@ -151,7 +154,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyAnimationInstance(const SmartBodyAnimation& animation);
+	SmartBodyAnimationInstance(const SmartBodyAnimation& animation, SmartBody::SBBmlProcessor& bmlProcessor, const std::string& character);
 
 	/**
 	 * @brief Dtor.
@@ -168,12 +171,6 @@ public:
 	 */ 
 	int getMotionNumber() const;
 
-	/**
-	 * @brief Notify that a bml request has been sent.
-	 * It reinitializes mReadyTime.
-	 */
-	virtual void notifyUpdate();
-
 	/** 
 	 * @brief Specify the time necessary to move from the previous animation to the new one.
 	 * @param specify: set to false if the animation should start as soon as the previous one is finished, to true if you want to specify it yourself.
@@ -186,10 +183,15 @@ public:
 	 */
 	void specifyReadyTime(bool specify, float time = 0.0f);
 
-	/**
-	 * @brief Gets the bml request parts corresponding to start and ready attributes.
+	/** 
+	 * @brief Returns a const reference over the corresponding SmartBodyAnimation.
 	 */
-	void convertTimesToBmlStrings(std::string& start, std::string& ready) const;
+	const SmartBodyAnimation& getReference() const;
+
+	/**
+	 * @brief Sends the bml request to SmartBody.
+	 */
+	void execute(const std::string& characterName);
 
 
 protected:
@@ -198,6 +200,21 @@ protected:
 	 * @brief A reference on the corresponding SmartBodyMovingAnimation.
 	 */
 	const SmartBodyAnimation& mReference;
+
+	/** 
+	 * @brief The bml processor, used to send or interrupt requests that animate characters.
+	 */
+	SmartBody::SBBmlProcessor& mBmlProcessor;
+
+	/**
+	 * @brief The name of the character this animation is bound to.
+	 */
+	std::string mCharacter;
+
+	/** 
+	 * @brief The identifier of the last request sent (can be useful if you need to interrupt it).
+	 */
+	std::string mLastRequestId;
 
 	/**
 	 * @brief The time when the animation starts.
@@ -218,6 +235,17 @@ protected:
 	 * @brief States that mReadyTime has been specified.
 	 */
 	float mHasReadyTime;
+
+
+	/**
+	 * @brief Gets the bml request parts corresponding to start and ready attributes.
+	 */
+	void convertTimesToBmlStrings(std::vector<std::string>& times) const;
+
+	/**
+	 * @brief Called just after a bml request has been sent, in order to reinitialize some values (mHasStartTime, mHasReadyTime).
+	 */
+	virtual void notifyUpdate();
 
 };
 

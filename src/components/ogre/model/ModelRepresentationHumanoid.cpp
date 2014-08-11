@@ -156,7 +156,8 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 				resetAnimations();
 
 				//start the walking animation on this character.
-				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::WALKING);
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::LOCOMOTION);
+			//	mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::WALKING);
 			}
 
 			else if (actionName == ACTION_RUN)
@@ -164,7 +165,8 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 				resetAnimations();
 
 				//start the walking animation on this character.
-				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::RUNNING);
+				mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::LOCOMOTION);
+			//	mSbManager.animate(*mCharacter, SmartBodyAnimation::Name::RUNNING);
 			}
 
 			//Else, stop the SmartBody animations for this character and use the original method.
@@ -185,6 +187,14 @@ void ModelRepresentationHumanoid::setAnimation(const std::string& actionName, Ac
 	else
 	{
 		ModelRepresentation::setAnimation(actionName, newAction);
+	}
+}
+
+void ModelRepresentationHumanoid::updateServerPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
+{
+	if (mCharacter)
+	{
+		mCharacter->setPositionAndOrientation(position, orientation);
 	}
 }
 

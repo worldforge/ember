@@ -18,6 +18,7 @@
 
 #include "SmartBodyStaticAnimation.h"
 #include "SmartBodyGestureAnimation.h"
+#include "sb/SBBmlProcessor.h"
 
 namespace Ember
 {
@@ -38,14 +39,22 @@ SmartBodyStaticAnimation::~SmartBodyStaticAnimation()
 {
 }
 
-bool SmartBodyStaticAnimation::getBmlRequest(std::string& request, int postureIndex, const std::string& start /*= ""*/, const std::string& ready /*= ""*/) const
+bool SmartBodyStaticAnimation::getBmlRequest(std::string& request, int postureIndex, const std::vector<std::string>& attributes) const
 {
 	if (postureIndex < 0 || !(postureIndex < getMotionNumber()))
 	{
 		return false;
 	}
 
-	request = "<body posture=\"" + mPostures[postureIndex] + "\"" + start + ready + "/>";
+	request = "<body posture=\"" + mPostures[postureIndex] + "\"";
+
+	for (auto& attribute : attributes)
+	{
+		request += attribute;
+	}
+
+	request += "/>";
+
 	return true;
 }
 
@@ -56,7 +65,7 @@ bool SmartBodyStaticAnimation::getGestureBmlRequest(std::string& request, int ge
 		return false;
 	}
 
-	return mGestures->getBmlRequest(request, gestureIndex);
+	return mGestures->getBmlRequest(request, gestureIndex, std::vector<std::string>(0));
 }
 
 SmartBodyGestureAnimation const* SmartBodyStaticAnimation::getGestures() const
@@ -76,8 +85,8 @@ int SmartBodyStaticAnimation::getGestureMotionNumber() const
 
 
 
-SmartBodyStaticAnimationInstance::SmartBodyStaticAnimationInstance(const SmartBodyStaticAnimation& reference, int postureIndex /*= 0*/)
-:	SmartBodyAnimationInstance::SmartBodyAnimationInstance(reference), mPosture(postureIndex), mGesture(-1),
+SmartBodyStaticAnimationInstance::SmartBodyStaticAnimationInstance(const SmartBodyStaticAnimation& reference, SmartBody::SBBmlProcessor& bmlProcessor, const std::string& character, int postureIndex /*= 0*/)
+:	SmartBodyAnimationInstance::SmartBodyAnimationInstance(reference, bmlProcessor, character), mPosture(postureIndex), mGesture(-1),
 	mTimeSincePostureChange(0.0f), mTimeSinceGestureEnd(0.0f)
 {
 }
@@ -88,10 +97,10 @@ SmartBodyStaticAnimationInstance::~SmartBodyStaticAnimationInstance()
 
 bool SmartBodyStaticAnimationInstance::getBmlRequest(std::string& request) const
 {
-	std::string start, ready;
-	convertTimesToBmlStrings(start, ready);
+	std::vector<std::string> times;
+	convertTimesToBmlStrings(times);
 
-	return mReference.getBmlRequest(request, mPosture, start, ready);
+	return mReference.getBmlRequest(request, mPosture, times);
 }
 
 float SmartBodyStaticAnimationInstance::getTimeSincePostureChange()
@@ -153,6 +162,13 @@ void SmartBodyStaticAnimationInstance::updateTimers(float timeSlice)
 {
 	mTimeSincePostureChange += timeSlice;
 	mTimeSinceGestureEnd += timeSlice;
+}
+
+void SmartBodyStaticAnimationInstance::executeGesture(const std::string& characterName) 
+{
+	std::string request;
+	getGestureBmlRequest(request);
+	mBmlProcessor.execBML(characterName, request);
 }
 
 }

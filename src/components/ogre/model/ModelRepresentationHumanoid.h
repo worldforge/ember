@@ -103,6 +103,11 @@ public:
 	 * @brief Returns true if the character's posture is static.
 	 */
 	bool isStatic() const;
+
+	/**
+	 * @brief Sets the position and orientation of the character in the world (updates mCharacter). 
+	 */
+	void updateServerPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
 	
 
 protected:

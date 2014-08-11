@@ -17,7 +17,7 @@
  */
 
 #include "SmartBodyGestureAnimation.h"
-
+#include "sb/SBBmlProcessor.h"
 
 namespace Ember
 {
@@ -87,7 +87,7 @@ SmartBodyGestureAnimation::~SmartBodyGestureAnimation()
 {
 }
 
-bool SmartBodyGestureAnimation::getBmlRequest(std::string& request, int gestureIndex, const std::string& start /*= ""*/, const std::string& ready /*= ""*/) const
+bool SmartBodyGestureAnimation::getBmlRequest(std::string& request, int gestureIndex, const std::vector<std::string>& attributes) const
 {
 	if (gestureIndex < 0 || getMotionNumber() <= gestureIndex)
 	{
@@ -96,7 +96,14 @@ bool SmartBodyGestureAnimation::getBmlRequest(std::string& request, int gestureI
 
 	if (gestureIndex < mMotions.size())
 	{
-		request = "<gesture name=\"" + mMotions[gestureIndex] + "\"" + start + ready + "/>";
+		request = "<gesture name=\"" + mMotions[gestureIndex] + "\"";
+
+		for (auto& attribute : attributes)
+		{
+			request += attribute;
+		}
+
+		request += "/>";
 	}
 
 	else
@@ -132,8 +139,8 @@ int SmartBodyGestureAnimation::getMotionNumber() const
 
 
 
-SmartBodyGestureAnimationInstance::SmartBodyGestureAnimationInstance(const SmartBodyGestureAnimation& reference)
-:	SmartBodyAnimationInstance::SmartBodyAnimationInstance(reference)
+SmartBodyGestureAnimationInstance::SmartBodyGestureAnimationInstance(const SmartBodyGestureAnimation& reference, SmartBody::SBBmlProcessor& bmlProcessor, const std::string& character)
+:	SmartBodyAnimationInstance::SmartBodyAnimationInstance(reference, bmlProcessor, character)
 {
 }
 	
@@ -143,10 +150,10 @@ SmartBodyGestureAnimationInstance::~SmartBodyGestureAnimationInstance()
 
 bool SmartBodyGestureAnimationInstance::getBmlRequest(std::string& request) const
 {
-	std::string start, ready;
-	convertTimesToBmlStrings(start, ready);
+	std::vector<std::string> times;
+	convertTimesToBmlStrings(times);
 
-	return mReference.getBmlRequest(request, mGesture, start, ready);
+	return mReference.getBmlRequest(request, mGesture, times);
 }
 
 float SmartBodyGestureAnimationInstance::getTimeSinceGestureEnd()

@@ -19,6 +19,7 @@
 #include "SmartBodyAnimation.h"
 #include "sb/SBAssetManager.h"
 #include "sb/SBMotion.h"
+#include "sb/SBBmlProcessor.h"
 
 namespace Ember
 {
@@ -30,6 +31,9 @@ SmartBodyAnimation::Type SmartBodyAnimation::getType(Name animationName)
 		case Name::WALKING:
 		case Name::RUNNING:
 			return Type::MOVING;
+
+		case Name::LOCOMOTION:
+			return Type::INTUITIVE;
 
 		case Name::STANDING:
 			return Type::STATIC;
@@ -81,13 +85,17 @@ int SmartBodyAnimation::getMotionNumber() const
 
 
 
-SmartBodyAnimationInstance::SmartBodyAnimationInstance(const SmartBodyAnimation& animation)
-:	mReference(animation), mHasStartTime(false), mHasReadyTime(false)
+SmartBodyAnimationInstance::SmartBodyAnimationInstance(const SmartBodyAnimation& animation, SmartBody::SBBmlProcessor& bmlProcessor, const std::string& character)
+:	mReference(animation), mBmlProcessor(bmlProcessor), mCharacter(character), mHasStartTime(false), mHasReadyTime(false), mLastRequestId("")
 {
 }
 
 SmartBodyAnimationInstance::~SmartBodyAnimationInstance()
 {
+	if (mLastRequestId != "")
+	{
+		mBmlProcessor.interruptBML(mCharacter, mLastRequestId, 0);
+	}
 }
 
 int SmartBodyAnimationInstance::getMotionNumber() const
@@ -121,28 +129,34 @@ void SmartBodyAnimationInstance::specifyReadyTime(bool specify, float readyTime 
 	mHasReadyTime = specify;
 }
 
-void SmartBodyAnimationInstance::convertTimesToBmlStrings(std::string& start, std::string& ready) const
+void SmartBodyAnimationInstance::convertTimesToBmlStrings(std::vector<std::string>& times) const
 {
+	times.clear();
+
 	if (mHasStartTime)
 	{
-		start = " start=\"" + std::to_string(mStartTime) + "\" ";
+		times.push_back(" start=\"" + std::to_string(mStartTime) + "\" ");
 
 		if (mHasReadyTime)
 		{
-			ready = " ready=\"" + std::to_string(mStartTime + mReadyTime) + "\" ";
-		}
-
-		else
-		{
-			ready = "";
+			times.push_back(" ready=\"" + std::to_string(mStartTime + mReadyTime) + "\" ");
 		}
 	}
+}
 
-	else
-	{
-		start = "";
-		ready = "";
-	}
+const SmartBodyAnimation& SmartBodyAnimationInstance::getReference() const
+{
+	return mReference;
+}
+
+void SmartBodyAnimationInstance::execute(const std::string& characterName)
+{
+	std::string request;
+	getBmlRequest(request);
+	mLastRequestId = mBmlProcessor.execBML(characterName, request);
+
+ 	//Notify the animation instance that the request has been sent.
+ 	notifyUpdate();
 }
 
 }

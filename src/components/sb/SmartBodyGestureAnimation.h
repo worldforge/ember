@@ -115,7 +115,7 @@ public:
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. 
 	 * @param gestureIndex: An index into motions + gesturing.
 	 */
-	bool getBmlRequest(std::string& request, int gestureIndex, const std::string& start = "", const std::string& ready = "") const;
+	bool getBmlRequest(std::string& request, int gestureIndex, const std::vector<std::string>& attributes) const;
 
 	/**
 	 * @brief Returns the duration of the gesture.
@@ -171,7 +171,7 @@ public:
 	 * @param postureIndex: the index of the idling motion wanted into SmartBodyGestureAnimation.mPostures. If it is not valid, then, the
 	 * character will be animate with the first motion contained into mPostures.
 	 */
-	SmartBodyGestureAnimationInstance(const SmartBodyGestureAnimation& reference);
+	SmartBodyGestureAnimationInstance(const SmartBodyGestureAnimation& reference, SmartBody::SBBmlProcessor& bmlProcessor, const std::string& character);
 	
 	/** 
 	 * @brief Dtor.

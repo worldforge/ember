@@ -45,6 +45,7 @@ namespace Ember
 class SmartBodyBehaviors;
 class SmartBodyAnimationInstance;
 class SmartBodyGestureAnimationInstance;
+class SmartBodyIntuitiveAnimationInstance;
 
 /**
  * @brief This class gives an interface between SmartBody and Ogre respective representation for characters.
@@ -137,6 +138,8 @@ public:
 	 */
 	void setPosture(SmartBodyAnimationInstance *posture, bool staticPosture);
 
+	void setIntuitivePosture(SmartBodyIntuitiveAnimationInstance *posture);
+
 	/**
 	 * @brief Gets the posture of the character, in order for the SmartBodyAnimationManager to treat the requests, or destroy the object.
 	 * @return mPosture.
@@ -162,6 +165,17 @@ public:
 	 * @see SmartBodyMovingAnimation.h: SmartBodyMovingAnimation::Direction.
 	 */
 	void setDirection(SmartBodyMovingAnimation::Direction direction);
+
+	/**
+	 * @brief This sets the position and the orientation of the character in the world.
+	 */
+	void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
+
+	/**
+	 * @brief Gets the character's position or orientation.
+	 */
+	const Ogre::Vector3& getWorldPosition() const;
+	const Ogre::Quaternion& getWorldOrientation() const;
 
 
 private:
@@ -268,6 +282,12 @@ private:
 	 * that it will not be blended with the previous posture by setting the ready time to 0.
 	 */
 	bool mIsAnimatedForFirstTime;
+
+	/**
+	 * @brief The current position and orientation of the scene node the character is attached to.
+	 */
+	Ogre::Vector3 mWorldPosition;
+	Ogre::Quaternion mWorldOrientation;
 };
 
 }

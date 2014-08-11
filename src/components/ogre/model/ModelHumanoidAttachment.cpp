@@ -58,6 +58,8 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 		mPrvOrientation = Convert::toOgre(orientation); 
 		mSrvPosition = mPrvPosition;
 		mSrvOrientation = mPrvOrientation; 
+
+		representation.updateServerPositionAndOrientation(mPrvPosition, mPrvOrientation);
 	}
 
 	else
@@ -92,7 +94,7 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 		Ogre::Quaternion newNodeOrientation = rotation * srvOrientation;
 		
 		//If the character has a static posture, adjustments will make him move though he should not.
-		calculateAdjustments(newNodePosition, translation, srvPosition, representation.isStatic());
+		calculateAdjustments(newNodePosition, translation, srvPosition, srvOrientation, representation.isStatic());
 
 		newPosition = Convert::toWF<WFMath::Point<3>>(newNodePosition);
 		newOrientation = orientation; //For the moment, we simply use the orientation predicted by the server.
@@ -114,9 +116,16 @@ void ModelHumanoidAttachment::setPosition(const WFMath::Point<3>& position, cons
 	}
 }
 
-void ModelHumanoidAttachment::calculateAdjustments(Ogre::Vector3& newPosition, const Ogre::Vector3& sbTranslation, const Ogre::Vector3& srvPosition, bool isStatic) const
+void ModelHumanoidAttachment::calculateAdjustments(Ogre::Vector3& newPosition, const Ogre::Vector3& sbTranslation, const Ogre::Vector3& srvPosition, const Ogre::Quaternion& srvOrientation, bool isStatic) const
 { 
- 	Ogre::Vector3 distance = newPosition - srvPosition;
+	Ogre::Radian tmpAngle;
+	Ogre::Vector3 tmpAxis;
+	srvOrientation.ToAngleAxis(tmpAngle, tmpAxis);
+
+	//The target position is a point slightly behind the server position. This is the position the character should ideally have.
+	Ogre::Vector3 tgtPosition = srvPosition - tmpAxis * (4.0f / tmpAxis.length());
+
+ 	Ogre::Vector3 distance = newPosition - tgtPosition;
 	double length = distance.length();
 
 	if (isStatic && length > 0.0001)
@@ -124,14 +133,14 @@ void ModelHumanoidAttachment::calculateAdjustments(Ogre::Vector3& newPosition, c
 		newPosition = newPosition - distance * (0.0001 / length);
 	}
 
-	else if ((srvPosition - mPrvPosition).dotProduct(sbTranslation) <= 0)
+	else if ((tgtPosition - mPrvPosition).dotProduct(sbTranslation) <= 0)
 	{
-		newPosition = mPrvPosition + sbTranslation * 0.5;
+		newPosition = mPrvPosition + sbTranslation * 0.2;
 	}
 	
 	else
 	{
-		newPosition = srvPosition + distance * (0.999 - 0.3 * exp(-length * 2));
+		newPosition = tgtPosition + distance * (0.999 - 0.3 * exp(-length * 2));
 	}
 }
 

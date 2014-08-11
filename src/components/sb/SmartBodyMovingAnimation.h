@@ -53,8 +53,18 @@ public:
 		FORWARD, BACKWARD, 	//SmartBody only provides stepping back animation. We thus need to make our own going back motion.
 		LEFT, RIGHT, 		//For these two ones, we use strafing motions.
 
-		DIRECTION_COUNT, 	//The total number of directions (used to set the size of mBmlRequests).
+		DIRECTIONS_COUNT, 	//The total number of directions (used to set the size of mMotions).
 	};
+
+	/**
+	 * @brief Returns true if the motion has just ended one loop turn.
+	 *
+	 * This must be used into SmartBodyRepresentation::calculateTransformations: actually, in order for the character not to be returning
+	 * to his starting position everytime the motion ends, we need to identify when it happens. For the moment, there is no other way to 
+	 * know it but to compare the difference of his position at the end of two consecutive frames. Though the method is not extremely 
+	 * accurate, it should work in all the cases we'll have to handle here, and it is quick enough.
+	 */
+	static bool isMotionLoopOver(Direction direction, const Ogre::Vector3& translation);
 
 	/**
 	 * @brief Ctor.
@@ -75,13 +85,13 @@ public:
 	/**
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. The default direction is forward.
 	 */
-	void getBmlRequest(std::string& request, Direction direction = Direction::FORWARD, const std::string& start = "", const std::string& ready = "") const;
+	void getBmlRequest(std::string& request, Direction direction = Direction::FORWARD, const std::vector<std::string>& attributes = std::vector<std::string>(0)) const;
 
 	/**
 	 * @brief Gets the bml request that is to be sent via the BMLProcessor. The default direction is forward.
 	 * @return false if direction does not correspond to a direction.
 	 */
-	bool getBmlRequest(std::string& request, int direction = (int)Direction::FORWARD, const std::string& start = "", const std::string& ready = "") const;
+	bool getBmlRequest(std::string& request, int direction = (int)Direction::FORWARD, const std::vector<std::string>& attributes = std::vector<std::string>(0)) const;
 
 
 private:
@@ -110,7 +120,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SmartBodyMovingAnimationInstance(const SmartBodyMovingAnimation& animation, SmartBodyMovingAnimation::Direction direction = SmartBodyMovingAnimation::Direction::FORWARD);
+	SmartBodyMovingAnimationInstance(const SmartBodyMovingAnimation& animation, SmartBody::SBBmlProcessor& bmlProcessor, const std::string& character, SmartBodyMovingAnimation::Direction direction = SmartBodyMovingAnimation::Direction::FORWARD);
 
 	/**
 	 * @brief Dtor.
@@ -142,16 +152,6 @@ public:
 	 * This set mHasDirectionChange to false.
 	 */
 	void notifyUpdate();
-
-	/**
-	 * @brief Returns true if the motion has just ended one loop turn.
-	 *
-	 * This must be used into SmartBodyRepresentation::calculateTransformations: actually, in order for the character not to be returning
-	 * to his starting position everytime the motion ends, we need to identify when it happens. For the moment, there is no other way to 
-	 * know it but to compare the difference of his position at the end of two consecutive frames. Though the method is not extremely 
-	 * accurate, it should work in all the cases we'll have to handle here, and it is quick enough.
-	 */
-	bool isMotionLoopOver(const Ogre::Vector3& translation);
 	
 
 private:

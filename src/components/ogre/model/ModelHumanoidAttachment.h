@@ -77,8 +77,7 @@ private:
 	 * @brief Adjusts the position that the character should have to match SmartBody motions, in order to stay close to the server coordinates.
 	 * @return The new translation.
 	 */
-	void calculateAdjustments(Ogre::Vector3& newPosition, const Ogre::Vector3& sbTranslation, const Ogre::Vector3& srvPosition, bool isStatic) const;
-
+	void calculateAdjustments(Ogre::Vector3& newPosition, const Ogre::Vector3& sbTranslation, const Ogre::Vector3& srvPosition, const Ogre::Quaternion& srvOrientation, bool isStatic) const;
 
 	/** 
 	 * @brief The last position and orientation entered.

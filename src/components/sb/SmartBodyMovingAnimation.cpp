@@ -17,6 +17,7 @@
  */
 
 #include "SmartBodyMovingAnimation.h"
+#include "sb/SBBmlProcessor.h"
 
 #include <OgreVector3.h>
 
@@ -24,10 +25,28 @@
 namespace Ember
 {
 
+bool SmartBodyMovingAnimation::isMotionLoopOver(Direction direction, const Ogre::Vector3& translation)
+{
+	//The z-axis concern the forward/backward displacements, whereas the x-axis is for the left/right movements.
+	switch (direction)
+	{
+		case SmartBodyMovingAnimation::Direction::FORWARD:
+			return (translation.z < 0) ? true : false;
+
+		case SmartBodyMovingAnimation::Direction::BACKWARD:
+			return (0 < translation.z) ? true : false;
+
+		case SmartBodyMovingAnimation::Direction::LEFT:
+			return (translation.x < 0) ? true : false;
+
+		case SmartBodyMovingAnimation::Direction::RIGHT:
+			return (0 < translation.x) ? true : false;
+	}
+}
 
 SmartBodyMovingAnimation::SmartBodyMovingAnimation(SmartBodyAnimation::Name name, SmartBody::SBAssetManager& assetMng, 
 	const std::string& forwardMotion, const std::string& backwardMotion, const std::string& leftMotion, const std::string& rightMotion)
-:	SmartBodyAnimation::SmartBodyAnimation(name, assetMng, mMotions), mMotions((int)Direction::DIRECTION_COUNT)
+:	SmartBodyAnimation::SmartBodyAnimation(name, assetMng, mMotions), mMotions((int)Direction::DIRECTIONS_COUNT)
 {
 	mMotions[(int)Direction::FORWARD] = forwardMotion; 
 	mMotions[(int)Direction::BACKWARD] = backwardMotion;
@@ -45,27 +64,34 @@ SmartBodyMovingAnimation::~SmartBodyMovingAnimation()
 {
 }
 
-void SmartBodyMovingAnimation::getBmlRequest(std::string& request, Direction direction /*= Direction::FORWARD*/, const std::string& start /*= ""*/, const std::string& ready /*= ""*/) const
+void SmartBodyMovingAnimation::getBmlRequest(std::string& request, Direction direction /*= Direction::FORWARD*/, const std::vector<std::string>& attributes /*= std::vector<std::string>(0)*/) const
 {
 	//Moving animations always alter the posture attribute in the body element.
-	request = "<body posture=\"" + mMotions[(int)direction] + "\"" + start + ready + "/>";
+	request = "<body posture=\"" + mMotions[(int)direction] + "\"";
+
+	for (auto& attribute : attributes)
+	{
+		request += attribute;
+	}
+
+	request += "/>";
 }
 
-bool SmartBodyMovingAnimation::getBmlRequest(std::string& request, int direction /*= (int)Direction::FORWARD*/, const std::string& start /*= ""*/, const std::string& ready /*= ""*/) const
+bool SmartBodyMovingAnimation::getBmlRequest(std::string& request, int direction /*= (int)Direction::FORWARD*/, const std::vector<std::string>& attributes /*= std::vector<std::string>(0)*/) const
 {
 	if (direction < 0 || !(direction < getMotionNumber()))
 	{
 		return false;
 	}
 
-	getBmlRequest(request, (Direction)direction, start, ready);
+	getBmlRequest(request, (Direction)direction, attributes);
 	return true;
 }
 
 
 
-SmartBodyMovingAnimationInstance::SmartBodyMovingAnimationInstance(const SmartBodyMovingAnimation& animation, SmartBodyMovingAnimation::Direction direction /*= SmartBodyMovingAnimation::Direction::FORWARD*/)
-:	SmartBodyAnimationInstance::SmartBodyAnimationInstance(animation), mDirection(direction), mHasDirectionChanged(true)
+SmartBodyMovingAnimationInstance::SmartBodyMovingAnimationInstance(const SmartBodyMovingAnimation& animation, SmartBody::SBBmlProcessor& bmlProcessor, const std::string& character, SmartBodyMovingAnimation::Direction direction /*= SmartBodyMovingAnimation::Direction::FORWARD*/)
+:	SmartBodyAnimationInstance::SmartBodyAnimationInstance(animation, bmlProcessor, character), mDirection(direction), mHasDirectionChanged(true)
 {
 }
 
@@ -75,10 +101,11 @@ SmartBodyMovingAnimationInstance::~SmartBodyMovingAnimationInstance()
 
 bool SmartBodyMovingAnimationInstance::getBmlRequest(std::string& request) const
 {	
-	std::string start, ready;
-	convertTimesToBmlStrings(start, ready);
+	//Convert mReady and mStart to bml attributes.
+	std::vector<std::string> times;
+	convertTimesToBmlStrings(times);
 
-	return mReference.getBmlRequest(request, (int)mDirection, start, ready);
+	return mReference.getBmlRequest(request, (int)mDirection, times);
 }
 
 void SmartBodyMovingAnimationInstance::setDirection(SmartBodyMovingAnimation::Direction direction)
@@ -102,25 +129,5 @@ void SmartBodyMovingAnimationInstance::notifyUpdate()
 	SmartBodyAnimationInstance::notifyUpdate();
 	mHasDirectionChanged = false;
 }
-
-bool SmartBodyMovingAnimationInstance::isMotionLoopOver(const Ogre::Vector3& translation)
-{
-	//The z-axis concern the forward/backward displacements, whereas the x-axis is for the left/right movements.
-	switch (mDirection)
-	{
-		case SmartBodyMovingAnimation::Direction::FORWARD:
-			return (translation.z < 0) ? true : false;
-
-		case SmartBodyMovingAnimation::Direction::BACKWARD:
-			return (0 < translation.z) ? true : false;
-
-		case SmartBodyMovingAnimation::Direction::LEFT:
-			return (translation.x < 0) ? true : false;
-
-		case SmartBodyMovingAnimation::Direction::RIGHT:
-			return (0 < translation.x) ? true : false;
-	}
-}
-
 
 }

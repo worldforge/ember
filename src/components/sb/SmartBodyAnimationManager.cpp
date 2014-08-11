@@ -20,9 +20,8 @@
 #include "SmartBodyStaticAnimation.h"
 #include "SmartBodyMovingAnimation.h"
 #include "SmartBodyGestureAnimation.h"
+#include "SmartBodyIntuitiveAnimation.h"
 #include "SmartBodyRepresentation.h"
-
-#include "sb/SBBmlProcessor.h" 
 
 #include <string>
 
@@ -75,8 +74,7 @@ void SmartBodyAnimationManager::initialize(SmartBody::SBAssetManager& assetManag
 	motions.push_back("ChrUtah_Idle001");
 	motions.push_back("ChrBrad@Idle01");
 
-	mAnimations[SmartBodyAnimation::Name::STANDING] = new SmartBodyStaticAnimation(SmartBodyAnimation::Name::STANDING, assetManager, motions,
-		dynamic_cast<SmartBodyGestureAnimation*>(mAnimations[SmartBodyAnimation::Name::WAITING]));
+	mAnimations[SmartBodyAnimation::Name::STANDING] = new SmartBodyStaticAnimation(SmartBodyAnimation::Name::STANDING, assetManager, motions, dynamic_cast<SmartBodyGestureAnimation*>(mAnimations[SmartBodyAnimation::Name::WAITING]));
 
 	motions.clear();
 
@@ -84,22 +82,16 @@ void SmartBodyAnimationManager::initialize(SmartBody::SBAssetManager& assetManag
 	/*			*** Movings. ***			*/
 
 	//WALKING.
-	mAnimations[SmartBodyAnimation::Name::WALKING] = new SmartBodyMovingAnimation(SmartBodyAnimation::Name::WALKING, assetManager, "ChrUtah_Walk001", "ChrUtah_Walk001",
-		"ChrUtah_StrafeSlowLf01", "ChrUtah_StrafeSlowRt01");
+	mAnimations[SmartBodyAnimation::Name::WALKING] = new SmartBodyMovingAnimation(SmartBodyAnimation::Name::WALKING, assetManager, "ChrUtah_Walk001", "ChrUtah_Walk001", "ChrUtah_StrafeSlowLf01", "ChrUtah_StrafeSlowRt01");
 
 	//RUNNING.
-	mAnimations[SmartBodyAnimation::Name::RUNNING] = new SmartBodyMovingAnimation(SmartBodyAnimation::Name::RUNNING, assetManager, "ChrUtah_Run001", "ChrUtah_Run001",
-		"ChrUtah_StrafeFastLf01", "ChrUtah_StrafeFastRt01");
-}
+	mAnimations[SmartBodyAnimation::Name::RUNNING] = new SmartBodyMovingAnimation(SmartBodyAnimation::Name::RUNNING, assetManager, "ChrUtah_Run001", "ChrUtah_Run001", "ChrUtah_StrafeFastLf01", "ChrUtah_StrafeFastRt01");
 
-void SmartBodyAnimationManager::execute(SmartBodyAnimationInstance& animation, const std::string& characterName) const
-{
-	std::string request;
-	animation.getBmlRequest(request);
- 	mBmlProcessor.execBML(characterName, request);
 
- 	//Notify the animation instance that the request has been sent.
- 	animation.notifyUpdate();
+	/*			*** Intuitives. ***			*/
+
+	//LOCOMOTION.
+	mAnimations[SmartBodyAnimation::Name::LOCOMOTION] = new SmartBodyIntuitiveAnimation(SmartBodyAnimation::Name::LOCOMOTION, assetManager, "allLocomotion", "allStartingLeft", "allStartingRight", "allIdleTurn", "allStep");
 }
 
 void SmartBodyAnimationManager::addAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
@@ -115,6 +107,10 @@ void SmartBodyAnimationManager::addAnimation(SmartBodyAnimation::Name name, Smar
 			addMovingAnimation(name, character);
 			break;
 
+		case SmartBodyAnimation::Type::INTUITIVE:
+			addIntuitiveAnimation(name, character);
+			break;
+
 		case SmartBodyAnimation::Type::GESTURE:
 			addGestureAnimation(name, character);
 			break;
@@ -128,26 +124,40 @@ void SmartBodyAnimationManager::addStaticAnimation(SmartBodyAnimation::Name name
 {
 	freePosture(character);
 
-	SmartBodyStaticAnimationInstance *animation = new SmartBodyStaticAnimationInstance(dynamic_cast<SmartBodyStaticAnimation&>(*mAnimations[name]));
+	SmartBodyStaticAnimationInstance *animation = new SmartBodyStaticAnimationInstance(dynamic_cast<SmartBodyStaticAnimation&>(*mAnimations[name]), mBmlProcessor, character.getName());
 	animation->specifyStartTime(true, 0.0f);
-	animation->specifyReadyTime(true, 0.35f);
+	animation->specifyReadyTime(true, 0.2f);
 
 	character.setPosture(animation, true);
 
-	execute(*animation, character.getName());
+	animation->execute(character.getName());
 }
 
 void SmartBodyAnimationManager::addMovingAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
 {
 	freePosture(character);
 
-	SmartBodyMovingAnimationInstance *animation = new SmartBodyMovingAnimationInstance(dynamic_cast<SmartBodyMovingAnimation&>(*mAnimations[name]));
+	SmartBodyMovingAnimationInstance *animation = new SmartBodyMovingAnimationInstance(dynamic_cast<SmartBodyMovingAnimation&>(*mAnimations[name]), mBmlProcessor, character.getName());
 	animation->specifyStartTime(true, 0.0f);
-	animation->specifyReadyTime(true, 0.35f);
+	animation->specifyReadyTime(true, 0.2f);
 
 	character.setPosture(animation, false);
 
-	execute(*animation, character.getName());
+	animation->execute(character.getName());
+}
+
+void SmartBodyAnimationManager::addIntuitiveAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
+{
+	SmartBodyAnimationInstance *animation = character.getPosture();
+
+	if (!animation || animation->getReference().getName() != name)
+	{
+		freePosture(character);
+
+		SmartBodyIntuitiveAnimationInstance *animation = new SmartBodyIntuitiveAnimationInstance(dynamic_cast<SmartBodyIntuitiveAnimation&>(*mAnimations[name]), mBmlProcessor, character.getName(), SmartBodyIntuitiveAnimation::Blend::STARTING_RIGHT);
+
+		character.setIntuitivePosture(animation);
+	}
 }
 
 void SmartBodyAnimationManager::addGestureAnimation(SmartBodyAnimation::Name name, SmartBodyRepresentation& character)
@@ -159,17 +169,22 @@ void SmartBodyAnimationManager::addGestureAnimation(SmartBodyAnimation::Name nam
 
 void SmartBodyAnimationManager::updateAnimations(SmartBodyRepresentation& character, float timeSlice)
 {
-	//This method is only used for SmartBody animated representations, so character necessarily has a posture. 
-	SmartBodyMovingAnimationInstance *movingAnimation = dynamic_cast<SmartBodyMovingAnimationInstance*>(character.getPosture());
-
-	if (movingAnimation)
+	switch (SmartBodyAnimation::getType(character.getPosture()->getReference().getName()))
 	{
-		updateMovingAnimation(character);
-	}
+		case SmartBodyAnimation::Type::MOVING:
+			updateMovingAnimation(character);
+			break;
 
-	else
-	{
-		updateStaticAnimation(character, timeSlice);
+		case SmartBodyAnimation::Type::STATIC:
+			updateStaticAnimation(character, timeSlice);
+			break;
+
+		case SmartBodyAnimation::Type::INTUITIVE:
+			updateIntuitiveAnimation(character, timeSlice);
+			break;
+
+		default:
+			break;
 	}
 
 	//Also update the gestures.
@@ -183,8 +198,19 @@ void SmartBodyAnimationManager::updateMovingAnimation(SmartBodyRepresentation& c
 	if (animation.hasDirectionChanged())
 	{
 		//Send the update to SmartBody.
-		execute(animation, character.getName());
+		animation.execute(character.getName());
 	}
+}
+
+void SmartBodyAnimationManager::updateIntuitiveAnimation(SmartBodyRepresentation& character, float timeSlice) const
+{
+	SmartBodyIntuitiveAnimationInstance& animation = dynamic_cast<SmartBodyIntuitiveAnimationInstance&>(*character.getPosture());
+
+	animation.setBlend(SmartBodyIntuitiveAnimation::Blend::LOCOMOTION);
+	animation.setServerPositionAndOrientation(character.getWorldPosition(), character.getWorldOrientation());
+	animation.calculateBlendParameters(timeSlice);
+	
+	animation.execute(character.getName());
 }
 
 void SmartBodyAnimationManager::updateStaticAnimation(SmartBodyRepresentation& character, float timeSlice)
@@ -203,7 +229,7 @@ void SmartBodyAnimationManager::updateStaticAnimation(SmartBodyRepresentation& c
 	 		animation.changePosture(postureRange(mRandGen));
 
 	 		//Send the update to SmartBody.
-			execute(animation, character.getName());
+			animation.execute(character.getName());
 	 	}
 	}
 
@@ -218,9 +244,7 @@ void SmartBodyAnimationManager::updateStaticAnimation(SmartBodyRepresentation& c
 			animation.playGesture(gestRange(mRandGen));
 
 			//Send the update to SmartBody.
-			std::string request;
-			animation.getGestureBmlRequest(request);
-			mBmlProcessor.execBML(character.getName(), request);
+			animation.executeGesture(character.getName());
 		}
 	}
 }
