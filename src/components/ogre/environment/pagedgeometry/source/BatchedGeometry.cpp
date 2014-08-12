@@ -471,7 +471,7 @@ void BatchedGeometry::SubBatch::addSubEntity(SubEntity *ent, const Vector3 &posi
 				case VET_COLOUR_ABGR:
 					break;
 				default:
-					OGRE_EXCEPT(0, "Unknown RenderSystem color format", "BatchedGeometry::SubBatch::addSubMesh()");
+					OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Unknown RenderSystem color format", "BatchedGeometry::SubBatch::addSubMesh()");
 					break;
 		}
 	}
