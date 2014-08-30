@@ -46,113 +46,60 @@ namespace OgreView
 TerrainEntityManager::TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager) :
 		mView(view), mTerrainHandler(terrainHandler), mSceneManager(sceneManager)
 {
-	view.EntitySeen.connect(sigc::mem_fun(*this, &TerrainEntityManager::entitySeen));
-	view.EntityCreated.connect(sigc::mem_fun(*this, &TerrainEntityManager::entitySeen));
 	view.TopLevelEntityChanged.connect(sigc::mem_fun(*this, &TerrainEntityManager::topLevelEntityChanged));
+
+	mTerrainListener = std::bind(&TerrainEntityManager::entityTerrainAttrChanged, *this, std::placeholders::_1, std::placeholders::_2);
+	mTerrainModListener = std::bind(&TerrainEntityManager::entityTerrainModAttrChanged, *this, std::placeholders::_1, std::placeholders::_2);
+	mTerrainAreaListener = std::bind(&TerrainEntityManager::entityAreaAttrChanged, *this, std::placeholders::_1, std::placeholders::_2);
+
+	EmberEntity::registerGlobalAttributeListener("terrain", mTerrainListener);
+	EmberEntity::registerGlobalAttributeListener("terrainmod", mTerrainModListener);
+	EmberEntity::registerGlobalAttributeListener("area", mTerrainAreaListener);
 }
 
 TerrainEntityManager::~TerrainEntityManager()
 {
+	EmberEntity::deregisterGlobalAttributeListener("terrain", mTerrainListener);
+	EmberEntity::deregisterGlobalAttributeListener("terrainmod", mTerrainModListener);
+	EmberEntity::deregisterGlobalAttributeListener("area", mTerrainAreaListener);
 }
 
 void TerrainEntityManager::topLevelEntityChanged()
 {
 	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
 	entity->setAttachment(new WorldAttachment(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId()), mTerrainHandler));
-
-	initializeTerrain(entity);
 }
 
-void TerrainEntityManager::initializeTerrain(EmberEntity* entity)
+void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
 {
-
-//	mTerrainAfterUpdateConnection = mTerrainManager->getHandler().EventWorldSizeChanged.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrain_WorldSizeChanged));
-	bool hasValidShaders = false;
 	Terrain::TerrainShaderParser terrainShaderParser(mTerrainHandler);
-	if (entity->hasAttr("terrain")) {
-		Terrain::TerrainParser terrainParser;
-		const Atlas::Message::Element& terrainElement = entity->valueOfAttr("terrain");
-		if (terrainElement.isMap()) {
-			const Atlas::Message::MapType& terrainMap(terrainElement.asMap());
-			if (terrainMap.count("surfaces")) {
-				const Atlas::Message::Element& surfaceElement(terrainMap.find("surfaces")->second);
-				terrainShaderParser.createShaders(surfaceElement);
-				hasValidShaders = true;
-			}
-		}
-		mTerrainHandler.updateTerrain(terrainParser.parseTerrain(terrainElement, entity->getPosition().isValid() ? entity->getPosition() : WFMath::Point<3>::ZERO()));
-
-		entity->setHeightProvider(&mTerrainHandler);
-	}
-
-	if (!hasValidShaders) {
-		terrainShaderParser.createDefaultShaders();
-	}
-
-	//TODO: Parse world location data when it's available
-//	mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
-
-	mTopLevelTerrainConnection.disconnect();
-	mTopLevelTerrainConnection = entity->observe("terrain", sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::terrainChanged), entity));
-}
-
-void TerrainEntityManager::terrainChanged(const Atlas::Message::Element& value, EmberEntity* entity)
-{
+	terrainShaderParser.createShaders(value);
 	Terrain::TerrainParser terrainParser;
-	updateTerrain(terrainParser.parseTerrain(value, entity->getPredictedPos()));
-}
-
-void TerrainEntityManager::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints)
-{
-	mTerrainHandler.updateTerrain(terrainDefinitionPoints);
-}
-
-void TerrainEntityManager::entitySeen(Eris::Entity* entity)
-{
-	registerEntity(static_cast<EmberEntity*>(entity));
-}
-
-void TerrainEntityManager::registerEntity(EmberEntity* entity)
-{
-	if (entity->hasAttr("area")) {
-		entityAreaAttrChanged(entity->valueOfAttr("area"), entity);
-	} else {
-		entity->observe("area", sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityAreaAttrChanged), entity));
-	}
-
-	if (entity->hasAttr("terrainmod")) {
-		entityTerrainModAttrChanged(entity->valueOfAttr("terrainmod"), entity);
-	} else {
-		entity->observe("terrainmod", sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityTerrainModAttrChanged), entity));
-	}
-}
-
-void TerrainEntityManager::entityTerrainAttrChanged(const Atlas::Message::Element& value, EmberEntity* entity)
-{
+	WFMath::Point<3> pos = entity.getPosition().isValid() ? entity.getPredictedPos() : WFMath::Point<3>::ZERO();
+	mTerrainHandler.updateTerrain(terrainParser.parseTerrain(value, pos));
+	entity.setHeightProvider(&mTerrainHandler);
 
 }
 
-void TerrainEntityManager::entityTerrainModAttrChanged(const Atlas::Message::Element& value, EmberEntity* entity)
+void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
 {
-	if (mTerrainMods.find(entity) == mTerrainMods.end()) {
-		Terrain::TerrainMod* mod = new Terrain::TerrainMod(*entity);
+	if (mTerrainMods.find(&entity) == mTerrainMods.end()) {
+		Terrain::TerrainMod* mod = new Terrain::TerrainMod(entity);
 		mod->init();
-		mTerrainMods.insert(std::make_pair(entity, mod));
+		mTerrainMods.insert(std::make_pair(&entity, mod));
 		mTerrainHandler.addTerrainMod(mod);
-		entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityBeingDeletedTerrainMod), entity));
-
+		entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityBeingDeletedTerrainMod), &entity));
 	}
-
 }
 
-void TerrainEntityManager::entityAreaAttrChanged(const Atlas::Message::Element& value, EmberEntity* entity)
+void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
 {
-	if (mAreas.find(entity) == mAreas.end()) {
-		Terrain::TerrainArea* area = new Terrain::TerrainArea(*entity);
+	if (mAreas.find(&entity) == mAreas.end()) {
+		Terrain::TerrainArea* area = new Terrain::TerrainArea(entity);
 		if (area->init()) {
-			mAreas.insert(std::make_pair(entity, area));
+			mAreas.insert(std::make_pair(&entity, area));
 			mTerrainHandler.addArea(*area);
-			entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityBeingDeletedArea), entity));
+			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityBeingDeletedArea), &entity));
 		}
 	}
 }

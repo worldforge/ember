@@ -18,11 +18,13 @@
 
 #ifndef TERRAINENTITYMANAGER_H_
 #define TERRAINENTITYMANAGER_H_
-#include <map>
 #include <Atlas/Message/Element.h>
 
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
+
+#include <map>
+#include <functional>
 
 namespace Ogre
 {
@@ -61,6 +63,10 @@ private:
 	typedef std::map<EmberEntity*, Terrain::TerrainMod*> ModStore;
 	typedef std::map<EmberEntity*, Terrain::TerrainArea*> AreaStore;
 
+	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainListener;
+	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainAreaListener;
+	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainModListener;
+
 	Eris::View& mView;
 	Terrain::TerrainHandler& mTerrainHandler;
 	Ogre::SceneManager& mSceneManager;
@@ -70,18 +76,14 @@ private:
 
 	sigc::connection mTopLevelTerrainConnection;
 
-	void entitySeen(Eris::Entity* entity);
-	void entityTerrainAttrChanged(const Atlas::Message::Element& value, EmberEntity* entity);
-	void entityTerrainModAttrChanged(const Atlas::Message::Element& value, EmberEntity* entity);
-	void entityAreaAttrChanged(const Atlas::Message::Element& value, EmberEntity* entity);
+	void entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
+	void entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
+	void entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 
 	void entityBeingDeletedTerrainMod(EmberEntity* entity);
 	void entityBeingDeletedArea(EmberEntity* entity);
 
 	void topLevelEntityChanged();
-	void initializeTerrain(EmberEntity* entity);
-	void terrainChanged(const Atlas::Message::Element& value, EmberEntity* entity);
-	void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
 
 };
 

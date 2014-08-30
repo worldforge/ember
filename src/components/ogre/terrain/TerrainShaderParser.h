@@ -59,9 +59,9 @@ public:
 
 	/**
 	 * @brief Parses surface data and creates appropriate Mercator::Shader instances.
-	 * @param surfaces The element containing the surface data.
+	 * @param surfaces The element containing the terrain data.
 	 */
-	void createShaders(const Atlas::Message::Element& surfaces);
+	void createShaders(const Atlas::Message::Element& terrain);
 
 	/**
 	 * @brief A fall back method which will create default shaders. This is used only if no valid surface information could be found (for example if a very old version of the server is used).
