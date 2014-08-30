@@ -35,8 +35,6 @@
 
 #include <Atlas/Message/Element.h>
 #include <Eris/TypeInfo.h>
-#include <Eris/Connection.h>
-#include <Eris/Avatar.h>
 #include <Eris/View.h>
 
 #include <wfmath/axisbox.h>
@@ -51,7 +49,7 @@ namespace Gui
 {
 
 EntityCreator::EntityCreator(World& world) :
-		mWorld(world), mTypeService(*mWorld.getView().getAvatar()->getConnection()->getTypeService()), mRecipe(0), mCreationInstance(0), mRandomizeOrientation(false), mAdapterValueChangedSlot(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged))
+		mWorld(world), mTypeService(mWorld.getView().getTypeService()), mRecipe(0), mCreationInstance(0), mRandomizeOrientation(false), mAdapterValueChangedSlot(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged))
 {
 	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 	mLastOrientation.identity();

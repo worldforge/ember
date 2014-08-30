@@ -47,9 +47,7 @@
 #include "framework/LoggingInstance.h"
 #include "framework/MainLoopController.h"
 
-#include <Eris/Avatar.h>
 #include <Eris/View.h>
-#include <Eris/Connection.h>
 #include <Eris/EventService.h>
 
 #include <OgreRoot.h>
@@ -106,7 +104,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 
 		auto marker = mActiveMarker;
 		mAwareness->EventTileDirty.connect([this, marker] {
-			mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker]() {if (*marker) {this->tileRebuild();}});
+			mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this, marker]() {if (*marker) {this->tileRebuild();}});
 		});
 
 		mAwareness->EventTileUpdated.connect([&](int,int) {
@@ -177,7 +175,7 @@ void MovementController::tileRebuild()
 		int dirtyTiles = mAwareness->rebuildDirtyTile();
 		if (dirtyTiles) {
 			auto marker = mActiveMarker;
-			mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this, marker] {if (*marker) {this->tileRebuild();}});
+			mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this, marker] {if (*marker) {this->tileRebuild();}});
 		}
 	}
 }
@@ -342,7 +340,7 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 
 void MovementController::schedulePruning()
 {
-	mAvatar.getEmberEntity().getView()->getAvatar()->getConnection()->getEventService().runOnMainThread([this]() {
+	mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this]() {
 			this->mAwareness->pruneTiles();
 			if (mAwareness->needsPruning()) {
 				schedulePruning();

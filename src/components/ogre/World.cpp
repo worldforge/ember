@@ -80,7 +80,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter, EntityMapping::EntityMappingManager& entityMappingManager) :
 		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()),
 		mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0),
-		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getAvatar()->getConnection()->getEventService())),
+		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getEventService())),
 		mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *mTerrainManager->getTerrainAdapter())),
 		mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene, entityMappingManager)),
 		mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr),
@@ -174,7 +174,7 @@ Eris::View& World::getView() const
 
 Eris::EventService& World::getEventService() const
 {
-	return mView.getAvatar()->getConnection()->getEventService();
+	return mView.getEventService();
 }
 
 
@@ -357,7 +357,7 @@ void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter)
 }
 
 DelayedFoliageInitializer::DelayedFoliageInitializer(sigc::slot<void> callback, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
-		mCallback(callback), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::TimedEvent(view.getAvatar()->getConnection()->getEventService(), boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();})), mTotalElapsedTime(0)
+		mCallback(callback), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::TimedEvent(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();})), mTotalElapsedTime(0)
 {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload
@@ -377,7 +377,7 @@ void DelayedFoliageInitializer::timout_Expired()
 		mCallback();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
-		mTimeout = new Eris::TimedEvent(mView.getAvatar()->getConnection()->getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&](){this->timout_Expired();});
+		mTimeout = new Eris::TimedEvent(mView.getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&](){this->timout_Expired();});
 	}
 }
 

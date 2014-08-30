@@ -32,11 +32,8 @@
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
 
-#include <Eris/Entity.h>
+#include <Eris/EntityRef.h>
 #include <Eris/View.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/Avatar.h>
-#include <Eris/Connection.h>
 #include <Eris/EventService.h>
 
 #include <sigc++/bind.h>
@@ -53,7 +50,7 @@ namespace OgreView
 {
 
 EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene, EntityMappingManager& mappingManager) :
-		mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene), mMappingManager(mappingManager)
+		mView(view), mTypeService(view.getTypeService()), mScene(scene), mMappingManager(mappingManager)
 {
 }
 
@@ -68,7 +65,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 
 	EmberEntity* entity = new EmberEntity(ge->getId(), type, w);
 	Eris::EntityRef entityRef(entity);
-	mView.getAvatar()->getConnection()->getEventService().runOnMainThread([this, entityRef, entity] {
+	mView.getEventService().runOnMainThread([this, entityRef, entity] {
 		if (entityRef) {
 			//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 			EmberEntityActionCreator creator(*entity, mScene);

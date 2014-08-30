@@ -41,8 +41,6 @@
 #include "domain/EmberEntity.h"
 
 #include <Eris/TypeInfo.h>
-#include <Eris/Avatar.h>
-#include <Eris/Connection.h>
 #include <OgreSceneManager.h>
 
 using namespace Ember;
@@ -120,7 +118,7 @@ ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
 	mEntityMessage = entity->getInstanceAttributes();
 
 	// Temporary entity
-	mEntity = new Authoring::DetachedEntity("-1", erisType, entity->getView()->getAvatar()->getConnection()->getTypeService());
+	mEntity = new Authoring::DetachedEntity("-1", erisType, &entity->getView()->getTypeService());
 	mEntity->setFromMessage(mEntityMessage);
 
 	// Creating scene node
