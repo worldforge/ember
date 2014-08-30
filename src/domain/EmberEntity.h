@@ -320,6 +320,23 @@ public:
 	 */
 	sigc::signal<void> EventChangedGraphicalRepresentation;
 
+	/**
+	 * Registers a global attribute change listener.
+	 *
+	 * This is an attribute listener which will be called for _all_ entities.
+	 * @param attributeName The attribute to listen for changes to.
+	 * @param listener
+	 */
+	static void registerGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener);
+
+	/**
+	 * De-registers a global attribute change listener.
+	 *
+	 * @param attributeName The attribute to listen for changes to.
+	 * @param listener
+	 */
+	static void deregisterGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener);
+
 protected:
 
 	/**

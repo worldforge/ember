@@ -38,9 +38,48 @@
 #include <Atlas/Message/QueuedDecoder.h>
 
 #include <sstream>
+#include <unordered_map>
 
 namespace Ember
 {
+
+
+/**
+ * @brief Handles dispatching of attribute changes to global listeners.
+ *
+ * This is useful for any listeners that want to observe changes to specific attribute, independent of on which entity it's placed.
+ */
+class GlobalAttributeDispatcher {
+private:
+	std::unordered_multimap<std::string, std::function<void(EmberEntity&, const Atlas::Message::Element&)>*> mCallbacks;
+public:
+
+	~GlobalAttributeDispatcher() {
+		//Make sure that all callbacks are de-registered.
+		assert(mCallbacks.empty());
+	}
+
+	void registerListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener) {
+		mCallbacks.insert(std::make_pair(attributeName, &listener));
+	}
+
+	void deregisterListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener) {
+		for (auto range = mCallbacks.equal_range(attributeName); range.first != range.second; ++range.first) {
+			if (range.first->second == &listener) {
+				mCallbacks.erase(range.first);
+				break;
+			}
+		}
+	}
+
+	void dispatchAttributeChange(EmberEntity& entity, const std::string& attributeName, const Atlas::Message::Element& value) {
+		for (auto range = mCallbacks.equal_range(attributeName); range.first != range.second; ++range.first) {
+			(*range.first->second)(entity, value);
+		}
+	}
+};
+
+GlobalAttributeDispatcher sGlobalDispatcher;
 
 const std::string EmberEntity::MODE_FLOATING("floating");
 const std::string EmberEntity::MODE_FIXED("fixed");
@@ -57,6 +96,17 @@ EmberEntity::~EmberEntity()
 	delete mAttachment;
 	delete mGraphicalRepresentation;
 }
+
+void EmberEntity::registerGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener)
+{
+	sGlobalDispatcher.registerListener(attributeName, listener);
+}
+
+void EmberEntity::deregisterGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener)
+{
+	sGlobalDispatcher.deregisterListener(attributeName, listener);
+}
+
 
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
@@ -175,6 +225,7 @@ IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const
 {
 	return mAttachmentControlDelegate;
 }
+
 void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
 	updateAttachment();
@@ -248,6 +299,9 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		onBboxChanged();
 		return;
 	}
+
+	//Dispatch attribute changes to any global listeners.
+	sGlobalDispatcher.dispatchAttributeChange(*this, str, v);
 
 	Entity::onAttrChanged(str, v);
 
