@@ -23,21 +23,14 @@
 #include "EmberEntityFactory.h"
 
 #include "domain/EmberEntity.h"
-#include "components/ogre/Avatar.h"
 #include "components/ogre/EmberEntityActionCreator.h"
 
-#include "components/ogre/model/Model.h"
-#include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
-#include "components/ogre/mapping/EmberEntityMappingManager.h"
+#include "components/entitymapping/EntityMappingManager.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
-
-#include "framework/ConsoleBackend.h"
-#include "framework/osdir.h"
-#include "framework/Tokeniser.h"
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
@@ -59,8 +52,8 @@ namespace Ember
 namespace OgreView
 {
 
-EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene) :
-		ShowModels("showmodels", this, "Show or hide models."), mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene)
+EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene, EntityMappingManager& mappingManager) :
+		mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene), mMappingManager(mappingManager)
 {
 }
 
@@ -79,7 +72,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 		if (entityRef) {
 			//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 			EmberEntityActionCreator creator(*entity, mScene);
-			EntityMapping::EntityMapping* mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, creator, &mView);
+			EntityMapping::EntityMapping* mapping = mMappingManager.createMapping(*entity, creator, &mView);
 			if (mapping) {
 				entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityFactory::deleteMapping), mapping));
 				mapping->initialize();
@@ -103,22 +96,6 @@ bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Er
 int EmberEntityFactory::priority()
 {
 	return 10;
-}
-
-void EmberEntityFactory::runCommand(const std::string &command, const std::string &args)
-{
-	if (command == ShowModels.getCommand()) {
-		Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string value = tokeniser.nextToken();
-		if (value == "true") {
-			S_LOG_INFO("Showing models.");
-			Model::ModelDefinitionManager::getSingleton().setShowModels(true);
-		} else if (value == "false") {
-			S_LOG_INFO("Hiding models.");
-			Model::ModelDefinitionManager::getSingleton().setShowModels(false);
-		}
-	}
 }
 
 }

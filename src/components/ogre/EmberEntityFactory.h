@@ -20,7 +20,6 @@
 #define DIMEENTITYFACTORY_H
 
 #include "EmberOgrePrerequisites.h"
-#include "framework/ConsoleObject.h"
 
 #include <Eris/Factory.h>
 
@@ -45,6 +44,7 @@ class EmberEntity;
 namespace EntityMapping
 {
 class EntityMapping;
+class EntityMappingManager;
 }
 namespace OgreView
 {
@@ -59,7 +59,7 @@ class Scene;
  * Basically this attaches to Eris and creates Entites on demand.
  * @see Eris::Factory
  */
-class EmberEntityFactory: public Eris::Factory, public virtual sigc::trackable, public ConsoleObject
+class EmberEntityFactory: public Eris::Factory, public virtual sigc::trackable
 {
 public:
 
@@ -68,7 +68,7 @@ public:
 	 *
 	 * This should be instantiated by EmberOgre or similar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	 */
-	EmberEntityFactory(Eris::View& view, Scene& scene);
+	EmberEntityFactory(Eris::View& view, Scene& scene, EntityMapping::EntityMappingManager& mappingManager);
 	virtual ~EmberEntityFactory();
 
 	/**
@@ -87,18 +87,6 @@ public:
 	virtual int priority();
 
 	/**
-	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command
-	 * @param args
-	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
-
-	/**
-	 Command for setting whether models should be shown or not.
-	 */
-	const ConsoleCommandWrapper ShowModels;
-
-	/**
 	 * @brief Emitted when the factory is being deleted.
 	 */
 	sigc::signal<void> EventBeingDeleted;
@@ -113,6 +101,8 @@ protected:
 	 * @brief The scene which will handle the entities.
 	 */
 	Scene& mScene;
+
+	EntityMapping::EntityMappingManager& mMappingManager;
 
 	/**
 	 * @brief Deletes the entity mapping.

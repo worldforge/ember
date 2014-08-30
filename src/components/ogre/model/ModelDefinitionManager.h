@@ -26,8 +26,9 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
-#include "framework/Singleton.h"
 #include "ModelDefinition.h"
+#include "framework/Singleton.h"
+#include "framework/ConsoleObject.h"
 
 #include <OgreResourceManager.h>
 
@@ -52,7 +53,7 @@ class ModelBackgroundLoader;
  *
  * @author Erik Hjortsberg
  */
-class ModelDefinitionManager: public Ogre::ResourceManager, public Singleton<ModelDefinitionManager>
+class ModelDefinitionManager: public Ogre::ResourceManager, public Singleton<ModelDefinitionManager>, public ConsoleObject
 {
 public:
 	/**
@@ -136,6 +137,20 @@ public:
 	 */
 	void setShowModels(bool show);
 	
+	/**
+	 *    Reimplements the ConsoleObject::runCommand method
+	 * @param command
+	 * @param args
+	 */
+	virtual void runCommand(const std::string &command, const std::string &args);
+
+
+	/**
+	 Command for setting whether models should be shown or not.
+	 */
+	const ConsoleCommandWrapper ShowModels;
+
+
 protected:
 
 	/**
@@ -165,6 +180,8 @@ protected:
 	 * @brief The path to the export directory.
 	 */
 	const std::string mExportDirectory;
+
+
 };
 
 }

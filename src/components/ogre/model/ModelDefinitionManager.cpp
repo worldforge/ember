@@ -36,6 +36,7 @@
 #include "framework/TimeFrame.h"
 #include "framework/TimedLog.h"
 #include "framework/Time.h"
+#include "framework/Tokeniser.h"
 
 #include <OgreRoot.h>
 #include <OgreSceneManagerEnumerator.h>
@@ -48,7 +49,8 @@ namespace OgreView
 {
 namespace Model {
 
-ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirectory, Eris::EventService& eventService) : mShowModels(true), mModelFactory(0), mExportDirectory(exportDirectory)
+ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirectory, Eris::EventService& eventService)
+: ShowModels("showmodels", this, "Show or hide models."), mShowModels(true), mModelFactory(0), mExportDirectory(exportDirectory)
 {
 	mLoadOrder = 300.0f;
 	mResourceType = "ModelDefinition";
@@ -168,6 +170,24 @@ void ModelDefinitionManager::setShowModels(bool show)
 {
 	mShowModels = show;
 }
+
+
+void ModelDefinitionManager::runCommand(const std::string &command, const std::string &args)
+{
+	if (command == ShowModels.getCommand()) {
+		Tokeniser tokeniser;
+		tokeniser.initTokens(args);
+		std::string value = tokeniser.nextToken();
+		if (value == "true") {
+			S_LOG_INFO("Showing models.");
+			setShowModels(true);
+		} else if (value == "false") {
+			S_LOG_INFO("Hiding models.");
+			setShowModels(false);
+		}
+	}
+}
+
 
 }
 }

@@ -53,6 +53,10 @@ namespace Ember
 class Input;
 class ConfigListenerContainer;
 class EmberEntity;
+
+namespace EntityMapping {
+class EntityMappingManager;
+}
 namespace OgreView
 {
 
@@ -122,8 +126,10 @@ public:
 	 * @param signals An EmberOgre signals instance, used for emitting signals for external components to listen to.
 	 * @param input The main input instance.
 	 * @param shaderManager The main shader manager.
+	 * @param graphicalChangeAdapeter
+	 * @param entityMappingManager Manager responsible for creating entity mappings.
 	 */
-	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter);
+	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter, EntityMapping::EntityMappingManager& entityMappingManager);
 
 	/**
 	 * @brief Dtor.
