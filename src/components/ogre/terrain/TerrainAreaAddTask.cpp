@@ -31,8 +31,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, AreaMap& areas, const std::string& entityId) :
-	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mTerrainHandler(terrainHandler), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), mAreas(areas), mEntityId(entityId)
+TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders) :
+	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mTerrainHandler(terrainHandler), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders)
 {
 }
 
@@ -42,18 +42,15 @@ TerrainAreaAddTask::~TerrainAreaAddTask()
 
 void TerrainAreaAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
-	//   _fpreset();
-	//_controlfp(_PC_64, _MCW_PC);
-	//_controlfp(_RC_NEAR, _MCW_RC);
-	if (mArea->getLayer() != 0) {
-		mTerrain.addArea(mArea);
-	}
+	//We know by now that this area is valid, so we don't need to check the layer or the shape for validity.
+	mTerrain.addArea(mArea);
+	//We can only access the bbox in the background thread, so lets pass on a copy of the bbox to the main thread.
+	mNewBbox = mArea->bbox();
 }
 
 void TerrainAreaAddTask::executeTaskInMainThread()
 {
-	mAreas.insert(AreaMap::value_type(mEntityId, mArea));
-
+	//Note that "layer" never gets updated, so it's ok to access that from the main thread.
 	if (mArea->getLayer() != 0) {
 		if (!mAreaShaders.count(mArea->getLayer())) {
 			S_LOG_VERBOSE("Shader does not exists, creating new.");
@@ -67,7 +64,7 @@ void TerrainAreaAddTask::executeTaskInMainThread()
 		if (mAreaShaders.count(mArea->getLayer())) {
 			//mark the shader for update
 			//we'll not update immediately, we try to batch many area updates and then only update once per frame
-			mShaderUpdateSlot(mAreaShaders[mArea->getLayer()], mArea->bbox());
+			mShaderUpdateSlot(mAreaShaders[mArea->getLayer()], mNewBbox);
 		}
 	}
 }

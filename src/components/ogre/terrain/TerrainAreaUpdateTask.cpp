@@ -27,8 +27,8 @@ namespace OgreView
 
 namespace Terrain
 {
-TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, const WFMath::AxisBox<2>& oldShape) :
-	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mShader(shader), mOldShape(oldShape)
+TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, const Mercator::Area& newArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader) :
+	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mNewArea(newArea), mShader(shader)
 {
 
 }
@@ -39,6 +39,10 @@ TerrainAreaUpdateTask::~TerrainAreaUpdateTask()
 
 void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
+	mOldShape = mArea->bbox();
+	mArea->setShape(mNewArea.shape());
+	mNewShape = mArea->bbox();
+
 	mTerrain.updateArea(mArea);
 }
 
@@ -47,7 +51,7 @@ void TerrainAreaUpdateTask::executeTaskInMainThread()
 	if (mShader) {
 		//mark the shader for update
 		//we'll not update immediately, we try to batch many area updates and then only update once per frame
-		mShaderUpdateSlot(mShader, mArea->bbox());
+		mShaderUpdateSlot(mShader, mNewShape);
 
 		//Also mark the old shape, in case it resided on a different page.
 		mShaderUpdateSlot(mShader, mOldShape);

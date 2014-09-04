@@ -23,7 +23,7 @@
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 
-#include <map>
+#include <unordered_map>
 #include <functional>
 
 namespace Ogre
@@ -60,8 +60,8 @@ public:
 
 private:
 
-	typedef std::map<EmberEntity*, Terrain::TerrainMod*> ModStore;
-	typedef std::map<EmberEntity*, Terrain::TerrainArea*> AreaStore;
+	typedef std::unordered_map<EmberEntity*, Terrain::TerrainMod*> ModStore;
+	typedef std::unordered_map<EmberEntity*, Terrain::TerrainArea*> AreaStore;
 
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainListener;
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainAreaListener;
@@ -82,6 +82,7 @@ private:
 
 	void entityBeingDeletedTerrainMod(EmberEntity* entity);
 	void entityBeingDeletedArea(EmberEntity* entity);
+	void entityMovedArea(EmberEntity* entity);
 
 	void topLevelEntityChanged();
 

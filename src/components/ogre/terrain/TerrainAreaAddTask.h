@@ -22,6 +22,9 @@
 #include "TerrainAreaTaskBase.h"
 #include "Types.h"
 
+#include <wfmath/point.h>
+#include <wfmath/axisbox.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -39,7 +42,7 @@ class TerrainLayerDefinitionManager;
 class TerrainAreaAddTask: public TerrainAreaTaskBase
 {
 public:
-	TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, AreaMap& areas, const std::string& entityId);
+	TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders);
 	virtual ~TerrainAreaAddTask();
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
@@ -50,8 +53,7 @@ private:
 	TerrainHandler& mTerrainHandler;
 	TerrainLayerDefinitionManager& mTerrainLayerDefinitionManager;
 	AreaShaderstore& mAreaShaders;
-	AreaMap& mAreas;
-	const std::string mEntityId;
+	WFMath::AxisBox<2> mNewBbox;
 };
 
 }

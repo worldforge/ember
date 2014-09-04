@@ -43,102 +43,78 @@ namespace Terrain
 {
 
 TerrainArea::TerrainArea(EmberEntity& entity) :
-	mArea(0), mOldArea(0), mEntity(entity)
+	mEntity(entity), mParsedLayer(0)
 {
+	mEntity.Moved.connect([this](){EventEntityMoved.emit();});
+	mEntity.BeingDeleted.connect([this](){EventEntityBeingDeleted.emit();});
 }
 
 TerrainArea::~TerrainArea()
 {
-	mAttrChangedSlot.disconnect();
-	EventAreaRemoved.emit();
-	delete mArea;
 }
 
-bool TerrainArea::init()
+void TerrainArea::parse(const Atlas::Message::Element& value, Mercator::Area** area)
 {
-
-	//   _fpreset();
-	//_controlfp(_PC_64, _MCW_PC);
-	//_controlfp(_RC_NEAR , _MCW_RC);
-	bool successfulParsing = parseArea();
-	if (successfulParsing) {
-		observeEntity();
-	}
-	return successfulParsing;
-
-}
-
-bool TerrainArea::parseArea()
-{
-	if (!mEntity.hasAttr("area")) {
-		S_LOG_FAILURE("TerrainArea created for entity with no area attribute");
-		return false;
-	}
-
-	const Atlas::Message::Element areaElem(mEntity.valueOfAttr("area"));
-
-	if (!areaElem.isMap()) {
+	if (!value.isMap()) {
 		S_LOG_FAILURE("TerrainArea element ('area') must be of map type.");
+		return;
+	}
+
+	const Atlas::Message::MapType& areaData = value.Map();
+	TerrainAreaParser parser;
+	if (!parser.parseArea(areaData, mParsedPoly, mParsedLayer)) {
+		return;
+	} else {
+
+		WFMath::Polygon<2> poly = mParsedPoly;
+		if (!placeArea(poly)) {
+			return;
+		}
+		//TODO: handle holes
+		*area = new Mercator::Area(mParsedLayer, false);
+		(*area)->setShape(poly);
+	}
+}
+
+void TerrainArea::updatePosition(Mercator::Area** area)
+{
+	if (mParsedLayer == 0) {
+		return;
+	}
+
+	if (!mParsedPoly.isValid() || mParsedPoly.numCorners() == 0) {
+		return;
+	}
+
+	WFMath::Polygon<2> poly = mParsedPoly;
+	if (!placeArea(poly)) {
+		return;
+	}
+	//TODO: handle holes
+	*area = new Mercator::Area(mParsedLayer, false);
+	(*area)->setShape(poly);
+}
+
+bool TerrainArea::placeArea(WFMath::Polygon<2>& poly)
+{
+	//If the position if invalid we can't do anything with the area yet.
+	if (!mEntity.getPosition().isValid()) {
 		return false;
 	}
 
-	const Atlas::Message::MapType& areaData(areaElem.asMap());
+	// transform polygon into terrain coords
 
-	int layer = 0;
-	WFMath::Polygon<2> poly;
-	TerrainAreaParser parser;
-	if (parser.parseArea(areaData, poly, layer)) {
-		if (!mArea) {
-			mArea = new Mercator::Area(layer, false);
-		} else {
-			//A bit of an ugly hack here since the Mercator system doesn't support changing the layer. We need to swap the old area for a new one if the layer has changed.
-			if (mArea->getLayer() != layer) {
-				mOldArea = mArea;
-				mArea = new Mercator::Area(layer, false);
-			}
-		}
-		// transform polygon into terrain coords
+	if (mEntity.getOrientation().isValid()) {
 		WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(mEntity.getOrientation());
 		double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
 
 		WFMath::RotMatrix<2> rm;
 		poly.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
-		poly.shift(WFMath::Vector<2>(mEntity.getPosition().x(), mEntity.getPosition().y()));
-
-		mArea->setShape(poly);
-
-		return true;
-	} else {
-		return false;
 	}
-}
+	poly.shift(WFMath::Vector<2>(mEntity.getPosition().x(), mEntity.getPosition().y()));
 
-void TerrainArea::attributeChanged(const Atlas::Message::Element& attributeValue)
-{
-	if (parseArea()) {
-		if (mOldArea) {
-			EventAreaSwapped(*mOldArea);
-			delete mOldArea;
-			mOldArea = 0;
-		} else {
-			EventAreaChanged();
-		}
-	}
-}
 
-void TerrainArea::entity_Moved()
-{
-	if (parseArea()) {
-		EventAreaChanged();
-	}
-}
-
-void TerrainArea::observeEntity()
-{
-	mAttrChangedSlot.disconnect();
-	mAttrChangedSlot = sigc::mem_fun(*this, &TerrainArea::attributeChanged);
-	mEntity.observe("area", mAttrChangedSlot);
-	mEntity.Moved.connect(sigc::mem_fun(*this, &TerrainArea::entity_Moved));
+	return true;
 }
 
 const std::string& TerrainArea::getEntityId() const

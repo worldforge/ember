@@ -167,13 +167,16 @@ public:
 	 */
 	int getPageMetersSize() const;
 
-
 	/**
-	 * @brief Adds a new Mercator::Area to the terrain.
+	 * @brief Updates a terrain area.
 	 *
-	 * @param area Area to be added
+	 * If no area exists, one will be added. If an area exists and a new one is supplied, the existing one will be updated.
+	 * If an area exists, and null is supplied, the existing area will be removed.
+	 *
+	 * @param id The id of the entity to which the area belong.
+	 * @param terrainArea An updated area, or null if any existing area should be removed.
 	 */
-	void addArea(TerrainArea& terrainArea);
+	void updateArea(const std::string& id, Mercator::Area* terrainArea);
 
 	/**
 	 * @brief Adds a new Mercator::TerrainMod to the terrain.
@@ -237,7 +240,6 @@ public:
 	 */
 	const std::list<TerrainShader*>& getBaseShaders() const;
 
-
 	/**
 	 * @brief Regenerates all terrain shadow maps.
 	 */
@@ -255,7 +257,6 @@ public:
 	 * @param page A terrain page instance.
 	 */
 	void addPage(TerrainPage* page);
-
 
 	/**
 	 * @brief Destroys a page, removing it from the handler and deleting the instance.
@@ -521,25 +522,6 @@ protected:
 	 * @param affectedArea The area affected.
 	 */
 	void markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea);
-
-	/**
-	 * @brief Listen to changes in areas.
-	 */
-	void TerrainArea_Changed(TerrainArea* terrainArea);
-
-	/**
-	 * @brief Listen to removal of terrain areas and trigger an update of the terrain.
-	 *
-	 * @param terrainArea The area being removed.
-	 */
-	void TerrainArea_Removed(TerrainArea* terrainArea);
-
-	/**
-	 * @brief Listen to swapping of terrain areas and trigger an update of the terrain.
-	 * @param oldArea The area being removed.
-	 * @param terrainArea The terrain area.
-	 */
-	void TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea);
 
 	/**
 	 * @brief Listen to changes in terrain mods.

@@ -578,61 +578,50 @@ void TerrainHandler::TerrainMod_Deleted(TerrainMod* terrainMod)
 	}
 }
 
-void TerrainHandler::addArea(TerrainArea& terrainArea)
+void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainArea)
 {
-	terrainArea.EventAreaChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainArea_Changed), &terrainArea));
-	terrainArea.EventAreaRemoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainArea_Removed), &terrainArea));
-	terrainArea.EventAreaSwapped.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainArea_Swapped), &terrainArea));
+	auto I = mAreas.find(id);
+	if (I == mAreas.end()) {
+		if (terrainArea && terrainArea->getLayer() != 0 && terrainArea->shape().isValid()) {
+			//There's no existing area, we need to add a new one.
+			Mercator::Area* newArea = new Mercator::Area(*terrainArea);
+			mAreas.insert(AreaMap::value_type(id, newArea));
 
-	Mercator::Area* area = new Mercator::Area(*terrainArea.getArea());
-
-	mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, area, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders, mAreas, terrainArea.getEntityId()));
-}
-
-void TerrainHandler::TerrainArea_Changed(TerrainArea* terrainArea)
-{
-	AreaMap::const_iterator I = mAreas.find(terrainArea->getEntityId());
-	if (I != mAreas.end()) {
-		Mercator::Area* area = I->second;
-		WFMath::AxisBox<2> oldShape = area->bbox();
-		area->setShape(terrainArea->getArea()->shape());
-		const TerrainShader* shader = 0;
-		if (mAreaShaders.count(area->getLayer())) {
-			shader = mAreaShaders[area->getLayer()];
+			mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
 		}
-		mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, area, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader, oldShape));
+		//If there's no existing area, and no valid supplied one, just don't do anything.
+	} else {
+		Mercator::Area* existingArea = I->second;
+		if (!terrainArea || terrainArea->getLayer() == 0 || !terrainArea->shape().isValid()) {
+			//We should remove the area.
+			const TerrainShader* shader = 0;
+			if (mAreaShaders.count(existingArea->getLayer())) {
+				shader = mAreaShaders[existingArea->getLayer()];
+			}
+			mAreas.erase(I);
+			mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
+		} else {
+			//Check if we need to swap the area (if the layer has changed) or if we just can update the shape.
+			if (terrainArea->getLayer() != existingArea->getLayer()) {
+				const TerrainShader* shader = 0;
+				if (mAreaShaders.count(existingArea->getLayer())) {
+					shader = mAreaShaders[existingArea->getLayer()];
+				}
 
-	}
-}
+				mAreas.erase(I);
+				mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
 
-void TerrainHandler::TerrainArea_Removed(TerrainArea* terrainArea)
-{
-	AreaMap::const_iterator I = mAreas.find(terrainArea->getEntityId());
-	if (I != mAreas.end()) {
-		Mercator::Area* area = I->second;
-		const TerrainShader* shader = 0;
-		if (mAreaShaders.count(area->getLayer())) {
-			shader = mAreaShaders[area->getLayer()];
+				Mercator::Area* newArea = new Mercator::Area(*terrainArea);
+				mAreas.insert(AreaMap::value_type(id, newArea));
+				mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
+			} else {
+				const TerrainShader* shader = 0;
+				if (mAreaShaders.count(terrainArea->getLayer())) {
+					shader = mAreaShaders[terrainArea->getLayer()];
+				}
+				mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, existingArea, *terrainArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
+			}
 		}
-		mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, area, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader, mAreas, terrainArea->getEntityId()));
-	}
-}
-
-void TerrainHandler::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea)
-{
-
-	AreaMap::const_iterator I = mAreas.find(terrainArea->getEntityId());
-	if (I != mAreas.end()) {
-		Mercator::Area* area = I->second;
-		const TerrainShader* shader = 0;
-		if (mAreaShaders.count(oldArea.getLayer())) {
-			shader = mAreaShaders[oldArea.getLayer()];
-		}
-
-		mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, area, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader, mAreas, terrainArea->getEntityId()));
-
-		Mercator::Area* newArea = new Mercator::Area(*terrainArea->getArea());
-		mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders, mAreas, terrainArea->getEntityId()));
 	}
 }
 

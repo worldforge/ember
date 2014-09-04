@@ -20,6 +20,8 @@
 #define EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_
 #include "TerrainAreaTaskBase.h"
 
+#include <Mercator/Area.h>
+
 #include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
@@ -48,7 +50,7 @@ public:
 	 * @param markForUpdateSlot A slot which will be called in the main thread when the update is complete.
 	 * @param oldShape The old shape, before the update.
 	 */
-	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, const WFMath::AxisBox<2>& oldShape);
+	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, const Mercator::Area& newArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
 	virtual ~TerrainAreaUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
@@ -57,12 +59,14 @@ public:
 
 private:
 
+	const Mercator::Area mNewArea;
+
 	/**
 	 * @brief The terrain shader affected.
 	 */
 	const TerrainShader* mShader;
 
-	const WFMath::AxisBox<2> mOldShape;
+	WFMath::AxisBox<2> mOldShape, mNewShape;
 
 };
 

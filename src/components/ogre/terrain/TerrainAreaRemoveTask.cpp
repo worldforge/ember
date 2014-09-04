@@ -28,8 +28,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, AreaMap& areas, const std::string& entityId) :
-	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mShader(shader), mAreas(areas), mEntityId(entityId)
+TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader) :
+	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mShader(shader)
 {
 
 }
@@ -48,9 +48,10 @@ void TerrainAreaRemoveTask::executeTaskInMainThread()
 	if (mShader) {
 		//mark the shader for update
 		//we'll not update immediately, we try to batch many area updates and then only update once per frame
+
+		//Note that since we've removed the area we can access the bbox in the main thread, since we're guaranteed that no other thread accesses it.
 		mShaderUpdateSlot(mShader, mArea->bbox());
 	}
-	mAreas.erase(mEntityId);
 	delete mArea;
 }
 

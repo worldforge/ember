@@ -39,7 +39,7 @@ class TerrainShader;
 class TerrainAreaRemoveTask : public TerrainAreaTaskBase
 {
 public:
-	TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, AreaMap& areas, const std::string& entityId);
+	TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
 	virtual ~TerrainAreaRemoveTask();
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
@@ -52,8 +52,7 @@ private:
 	 * @brief The terrain shader affected.
 	 */
 	const TerrainShader* mShader;
-	AreaMap& mAreas;
-	const std::string mEntityId;
+
 
 };
 

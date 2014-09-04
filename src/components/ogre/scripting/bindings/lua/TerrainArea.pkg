@@ -9,10 +9,6 @@ namespace OgreView {
 namespace Terrain {
 class TerrainArea{
     TerrainArea(Ember::EmberEntity& entity);
-	bool init();
-	
-	inline Mercator::Area* getArea() const { return mArea; }
-	inline void setArea(Mercator::Area* area) { mArea = area; }
 
 };
 }

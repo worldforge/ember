@@ -94,15 +94,24 @@ void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, cons
 
 void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
 {
-	if (mAreas.find(&entity) == mAreas.end()) {
-		Terrain::TerrainArea* area = new Terrain::TerrainArea(entity);
-		if (area->init()) {
-			mAreas.insert(std::make_pair(&entity, area));
-			mTerrainHandler.addArea(*area);
-			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityBeingDeletedArea), &entity));
-		}
+	Terrain::TerrainArea* terrainArea;
+	auto I = mAreas.find(&entity);
+	if (I == mAreas.end()) {
+		terrainArea = new Terrain::TerrainArea(entity);
+		mAreas.insert(std::make_pair(&entity, terrainArea));
+		terrainArea->EventEntityBeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityBeingDeletedArea), &entity));
+		terrainArea->EventEntityMoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityMovedArea), &entity));
+	} else {
+		terrainArea = I->second;
 	}
+
+	Mercator::Area* area = nullptr;
+	terrainArea->parse(value, &area);
+
+	mTerrainHandler.updateArea(entity.getId(), area);
+	delete area;
 }
+
 void TerrainEntityManager::entityBeingDeletedTerrainMod(EmberEntity* entity)
 {
 	ModStore::iterator I = mTerrainMods.find(entity);
@@ -115,9 +124,22 @@ void TerrainEntityManager::entityBeingDeletedArea(EmberEntity* entity)
 {
 	AreaStore::iterator I = mAreas.find(entity);
 	if (I != mAreas.end()) {
+		mTerrainHandler.updateArea(entity->getId(), nullptr);
 		delete I->second;
 		mAreas.erase(I);
 	}
 }
+
+void TerrainEntityManager::entityMovedArea(EmberEntity* entity)
+{
+	AreaStore::iterator I = mAreas.find(entity);
+	if (I != mAreas.end()) {
+		Mercator::Area* area = nullptr;
+		I->second->updatePosition(&area);
+		mTerrainHandler.updateArea(entity->getId(), area);
+		delete area;
+	}
+}
+
 }
 }
