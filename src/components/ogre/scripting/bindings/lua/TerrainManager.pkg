@@ -23,7 +23,6 @@ namespace Terrain {
 
 class TerrainShader;
 class TerrainPage;
-class TerrainArea;
 class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;

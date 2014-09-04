@@ -68,7 +68,6 @@ namespace Terrain {
 class TerrainShader;
 class TerrainInfo;
 class TerrainPage;
-class TerrainArea;
 class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;

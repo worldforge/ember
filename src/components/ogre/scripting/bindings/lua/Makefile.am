@@ -21,7 +21,7 @@ TOLUA_PKGS = ActionBar.pkg ActionBarIcon.pkg ActionBarIconDragDropTarget.pkg Act
   IWorldPickListener.pkg ListHolder.pkg MainCamera.pkg Map.pkg MaterialPicker.pkg Model.pkg ModelDefinition.pkg ModelDefinitionAtlasComposer.pkg \
   ModelDefinitionManager.pkg ModelRenderer.pkg ModelRepresentation.pkg ModelRepresentationManager.pkg MotionManager.pkg MousePicker.pkg MovableObjectRenderer.pkg \
   MovementController.pkg OgreEntityRenderer.pkg OgreInfo.pkg QuaternionAdapter.pkg QuickHelpCursor.pkg ResourceListAdapter.pkg sigc.pkg SimpleRenderContext.pkg \
-  StackableContainer.pkg stdlib.pkg SubModel.pkg TerrainArea.pkg TerrainEditor.pkg TerrainLayerDefinition.pkg TerrainLayerDefinitionManager.pkg TerrainManager.pkg \
+  StackableContainer.pkg stdlib.pkg SubModel.pkg TerrainEditor.pkg TerrainLayerDefinition.pkg TerrainLayerDefinitionManager.pkg TerrainManager.pkg \
   RuleTreeAdapter.pkg Vector3Adapter.pkg Widget.pkg World.pkg Scene.pkg EntityTooltip.pkg TerrainHandler.pkg EntityCreatorTypeHelper.pkg Screen.pkg ModelEditHelper.pkg \
   EntityTextureManipulator.pkg RuleEditor.pkg LodDefinitionManager.pkg LodDefinition.pkg LodManager.pkg MeshInfoProvider.pkg PMInjectorSignaler.pkg
 EXTRA_DIST = $(TOLUA_PKGS)

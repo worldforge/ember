@@ -60,7 +60,6 @@ class Foliage : public Singleton<Foliage>, public Ogre::FrameListener, public Co
 
 public:
 
-	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
 	typedef std::vector<FoliageBase*> FoliageStore;
 
 	Foliage(Terrain::TerrainManager& terrainManager);
@@ -98,8 +97,6 @@ public:
 protected:
 
 	Terrain::TerrainManager& mTerrainManager;
-
-	EntityStore mEntities;
 
 	FoliageStore mFoliages;
 
