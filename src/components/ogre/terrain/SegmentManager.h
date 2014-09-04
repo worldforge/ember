@@ -60,8 +60,8 @@ class SegmentManager
 {
 public:
 
-	typedef std::map<int, std::pair<int, int>> IndexColumn;
-	typedef std::map<int, IndexColumn> IndexMap;
+	typedef std::unordered_map<int, std::pair<int, int>> IndexColumn;
+	typedef std::unordered_map<int, IndexColumn> IndexMap;
 
 	/**
 	 * @brief Ctor.
