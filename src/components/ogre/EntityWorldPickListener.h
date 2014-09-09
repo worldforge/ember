@@ -142,6 +142,15 @@ protected:
 
 	Scene& mScene;
 
+	/**
+	 * Finds the entity to which the terrain belongs.
+	 *
+	 * This is done by walking upwards from the avatar entity until we find an entity with the "terrain" property.
+	 *
+	 * @return An entity which contains the "terrain" property.
+	 */
+	EmberEntity* findTerrainEntity();
+
 };
 
 }

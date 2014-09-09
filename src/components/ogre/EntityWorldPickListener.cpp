@@ -39,6 +39,7 @@
 #include <OgreEntity.h>
 
 #include <Eris/View.h>
+#include <Eris/Avatar.h>
 
 namespace Ember
 {
@@ -138,7 +139,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 
 			if (mFurthestPickingDistance == 0 || mResult.empty()) {
 				EntityPickResult result;
-				result.entity = static_cast<EmberEntity*>(mView.getTopLevel());
+				result.entity = findTerrainEntity();
 				result.position = wf->singleIntersection;
 				result.distance = entry.distance;
 				result.isTransparent = false;
@@ -151,7 +152,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 						mResult.pop_back();
 					}
 					EntityPickResult result;
-					result.entity = static_cast<EmberEntity*>(mView.getTopLevel());
+					result.entity = findTerrainEntity();
 					result.position = wf->singleIntersection;
 					result.distance = entry.distance;
 					result.isTransparent = false;
@@ -261,6 +262,20 @@ void EntityWorldPickListener::runCommand(const std::string &command, const std::
 		}
 	}
 }
+
+EmberEntity* EntityWorldPickListener::findTerrainEntity()
+{
+	auto entity = mView.getAvatar()->getEntity();
+
+	while (entity != nullptr) {
+		if (entity->hasAttr("terrain")) {
+			return static_cast<EmberEntity*>(entity);
+		}
+		entity = entity->getLocation();
+	}
+	return nullptr;
+}
+
 
 }
 }
