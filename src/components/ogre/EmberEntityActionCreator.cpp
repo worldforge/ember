@@ -29,7 +29,6 @@
 #include "EmberEntityPartAction.h"
 #include "CompositionAction.h"
 #include "components/ogre/environment/OceanAction.h"
-#include "components/ogre/environment/WorldAction.h"
 #include "components/ogre/widgets/LabelAction.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 #include "domain/EmberEntity.h"
@@ -71,8 +70,6 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 		} else if (J->getType() == "enable-composition") {
 			CompositionAction* action = new CompositionAction(mEntity, J->getValue());
 			aCase->addAction(action);
-		} else if (J->getType() == "display-world") {
-			aCase->addAction(new Environment::WorldAction(mEntity));
 		}
 	}
 

@@ -28,9 +28,11 @@
 #include "framework/ConsoleObject.h"
 #include <wfmath/vector.h>
 #include <sigc++/signal.h>
+#include <sigc++/trackable.h>
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 namespace Terrain
@@ -57,7 +59,7 @@ class Forest;
  *
  * Note that the actual instances used are provided by an instance of IEnvironmentProvider.
  */
-class Environment: public ConsoleObject, public ILightning
+class Environment: public ConsoleObject, public ILightning, public virtual sigc::trackable
 {
 public:
 
@@ -168,6 +170,22 @@ private:
 
 	IEnvironmentProvider* mProvider, *mFallbackProvider, *mEnabledFirmamentProvider;
 	Forest* mForest;
+
+	/**
+	 * Called when the terrain handler signals that the terrain is enabled.
+	 *
+	 * This signals that we should show the firmament.
+	 *
+	 * @param entity The entity to which the terrain belongs.
+	 */
+	void terrainEnabled(EmberEntity& entity);
+
+	/**
+	 * Called when the terrain handler signals that the terrain is disabled.
+	 *
+	 * This signals that we should hdie the firmament.
+	 */
+	void terrainDisabled();
 };
 
 inline ISun* Environment::getSun()

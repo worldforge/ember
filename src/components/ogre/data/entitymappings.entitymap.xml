@@ -136,15 +136,6 @@
 			</case>
 		</entitymatch>
 	</entitymapping>
-    <entitymapping name="world">
-        <entitymatch>
-            <case>
-                <caseparam type="equals">world</caseparam>
-                <action type="display-world" />
-            </case>
-        </entitymatch>
-    </entitymapping>
-
 	<autoentitymapping name="lumber" />
 	<entitymapping name="board">
 		<entitymatch>
@@ -1119,6 +1110,8 @@
 	<nomodel name="ploughed_field" />
 	<nomodel name="weather" />
     <nomodel name="land" />
+    <nomodel name="world" />
+    
 	<nomodel name="wall" /> <!-- This is the invisble wall for the houses -->
 
 </entitymappings>

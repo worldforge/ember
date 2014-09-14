@@ -47,6 +47,7 @@ class EventService;
 namespace Ember
 {
 class TimeFrame;
+class EmberEntity;
 namespace Tasks {
 	class TaskQueue;
 }
@@ -354,6 +355,18 @@ public:
 	 * The shader paremeter is the newly created shader.
 	 */
 	sigc::signal<void, const TerrainShader&> EventShaderCreated;
+
+	/**
+	 * @brief Emitted when the terrain becomes enabled.
+	 *
+	 * The entity to which the terrain belongs is send as the first argument.
+	 */
+	sigc::signal<void, EmberEntity&> EventTerrainEnabled;
+
+	/**
+	 * @brief Emitted when the terrain becomes disabled.
+	 */
+	sigc::signal<void> EventTerrainDisabled;
 
 	/**
 	 * @brief Emitted before the terrain geometry is changed.

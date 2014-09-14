@@ -26,6 +26,9 @@
 
 #include "Environment.h"
 #include "Forest.h"
+#include "domain/EmberEntity.h"
+#include "components/ogre/terrain/TerrainManager.h"
+#include "components/ogre/terrain/TerrainHandler.h"
 #include "framework/Tokeniser.h"
 #include <OgreStringConverter.h>
 #include <OgreColourValue.h>
@@ -44,6 +47,9 @@ Environment::Environment(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& 
 {
 	//Set some default ambient light
 	sceneMgr.setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+	terrainManager.getHandler().EventTerrainEnabled.connect(sigc::mem_fun(*this, &Environment::terrainEnabled));
+	terrainManager.getHandler().EventTerrainDisabled.connect(sigc::mem_fun(*this, &Environment::terrainDisabled));
+
 }
 
 Environment::~Environment()
@@ -51,6 +57,22 @@ Environment::~Environment()
 	delete mProvider;
 	delete mFallbackProvider;
 	delete mForest;
+}
+
+void Environment::terrainEnabled(EmberEntity& entity)
+{
+	setFirmamentEnabled(true);
+	if (entity.getPredictedPos().isValid()) {
+		setWorldPosition(entity.getPredictedPos().x(), entity.getPredictedPos().y());
+	} else {
+		setWorldPosition(0, 0);
+	}
+
+}
+
+void Environment::terrainDisabled()
+{
+	setFirmamentEnabled(false);
 }
 
 void Environment::runCommand(const std::string &command, const std::string &args)

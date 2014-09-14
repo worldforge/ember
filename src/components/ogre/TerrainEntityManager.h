@@ -75,6 +75,7 @@ private:
 	AreaStore mAreas;
 
 	sigc::connection mTopLevelTerrainConnection;
+	sigc::connection mTerrainEntityDeleteConnection;
 
 	void entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 	void entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);

@@ -72,13 +72,20 @@ void TerrainEntityManager::topLevelEntityChanged()
 
 void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
 {
+	if (!mTerrainEntityDeleteConnection) {
+		mTerrainEntityDeleteConnection = entity.BeingDeleted.connect([this](){
+			mTerrainHandler.EventTerrainDisabled();
+			mTerrainEntityDeleteConnection.disconnect();
+		});
+	}
+
 	Terrain::TerrainShaderParser terrainShaderParser(mTerrainHandler);
 	terrainShaderParser.createShaders(value);
 	Terrain::TerrainParser terrainParser;
 	WFMath::Point<3> pos = entity.getPosition().isValid() ? entity.getPredictedPos() : WFMath::Point<3>::ZERO();
 	mTerrainHandler.updateTerrain(terrainParser.parseTerrain(value, pos));
 	entity.setHeightProvider(&mTerrainHandler);
-
+	mTerrainHandler.EventTerrainEnabled(entity);
 }
 
 void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
