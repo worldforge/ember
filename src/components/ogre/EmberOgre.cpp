@@ -332,8 +332,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 	mEntityRecipeManager = new Authoring::EntityRecipeManager();
 
-	// Create the scene manager used for the main menu and load screen
-	mSceneManagerOutOfWorld = mRoot->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
+	// Create the scene manager used for the main menu and load screen. Get the most simple one.
+	mSceneManagerOutOfWorld = mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "DefaultSceneManager");
 
 	//create the camera for the main menu and load screen
 	mCameraOutOfWorld = mSceneManagerOutOfWorld->createCamera("MainMenuCamera");

@@ -275,7 +275,8 @@ void OverlayCompassImpl::refresh()
 RenderedCompassImpl::RenderedCompassImpl(std::string compassMaterialName, std::string pointerMaterialName) :
 		mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mX(0), mY(0), mMapRectangle(0), mPointer(pointerMaterialName), mMaterialName(compassMaterialName)
 {
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassImpl_sceneManager");
+    //Make sure we create the most simple scene manager.
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "RenderedCompassImpl_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0, 0, 0, 0), 0.0f, 0.0f, 0.0f);
 }
 
@@ -395,7 +396,8 @@ Ogre::TexturePtr RenderedCompassImpl::getPointerTexture() const
 RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 		mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mPointerTUS(0), mPointerRectangle(0)
 {
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassPointer_sceneManager");
+    //Make sure we create the most simple scene manager.
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "RenderedCompassPointer_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0, 0, 0, 0), 0.0f, 0.0f, 0.0f);
 
 	Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
