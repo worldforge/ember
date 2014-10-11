@@ -36,13 +36,23 @@ namespace OgreView {
 class MeshSerializerListener : public Ogre::MeshSerializerListener
 {
 public:
-    MeshSerializerListener();
+	/**
+	 * @brief Ctor.
+	 * @param requireTangents True if tangents should be created if missing.
+	 */
+    MeshSerializerListener(bool requireTangents);
 
     ~MeshSerializerListener();
     
 	virtual void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name);
 	virtual void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name);
 	virtual void processMeshCompleted(Ogre::Mesh*);
+private:
+
+	/**
+	 * If true, meshes should have tangents. If a mesh if found without tangents an attempt to generate ones from the existing mesh data will be performed.
+	 */
+	bool mRequireTangents;
 };
 
 }

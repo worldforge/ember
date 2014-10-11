@@ -347,7 +347,8 @@ void OgreSetup::setStandardValues()
 	//all new movable objects shall by default be unpickable; it's up to the objects themselves to make themselves pickable
 	Ogre::MovableObject::setDefaultQueryFlags(0);
 
-	mMeshSerializerListener = new MeshSerializerListener();
+	//Default to require tangents for all meshes. This could perhaps be turned off on platforms which has no use, like Android?
+	mMeshSerializerListener = new MeshSerializerListener(true);
 
 	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
 
