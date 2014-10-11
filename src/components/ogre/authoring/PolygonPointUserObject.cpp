@@ -55,13 +55,13 @@ PolygonPoint& PolygonPointUserObject::getPoint()
 void PolygonPointUserObject::markAsMoved()
 {
 	Ogre::Entity* entity = static_cast<Ogre::Entity*> (mPoint.getNode()->getAttachedObject(0));
-	entity->setMaterialName("/global/authoring/polygon/point/moved");
+	entity->setMaterialName("/common/base/authoring/polygon/point/moved");
 }
 
 void PolygonPointUserObject::resetMarking()
 {
 	Ogre::Entity* entity = static_cast<Ogre::Entity*> (mPoint.getNode()->getAttachedObject(0));
-	entity->setMaterialName("/global/authoring/polygon/point");
+	entity->setMaterialName("/common/base/authoring/polygon/point");
 }
 
 }

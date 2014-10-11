@@ -97,7 +97,7 @@ inline void ShapeVisual::update(const T& shape)
 	mManualObject->clear();
 
 	if (shape.isValid() && shape.numCorners() > 1) {
-		mManualObject->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
+		mManualObject->begin("/common/base/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
 
 		for (size_t i = 0; i < shape.numCorners(); ++i) {
 			mManualObject->position(Convert::toOgre(shape.getCorner(i)));

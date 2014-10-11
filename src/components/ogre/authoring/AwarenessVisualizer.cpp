@@ -239,7 +239,7 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 			pRecastMOWalk->setVisibilityFlags(pRecastMOWalk->getVisibilityFlags() & ~Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 			mTileSceneNode->attachObject(pRecastMOWalk);
 		}
-		pRecastMOWalk->begin("/global/authoring/awareness", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+		pRecastMOWalk->begin("/common/base/authoring/awareness", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 		for (int i = 0; i < npolys; ++i) {    // go through all polygons
 			if (areas[i] == Navigation::POLYAREA_GROUND || areas[i] == DT_TILECACHE_WALKABLE_AREA) {
 				const unsigned short* p = &polys[i * nvp * 2];
@@ -290,7 +290,7 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 			mTileSceneNode->attachObject(pRecastMONeighbour);
 		}
 
-		pRecastMONeighbour->begin("/global/authoring/awareness", Ogre::RenderOperation::OT_LINE_LIST);
+		pRecastMONeighbour->begin("/common/base/authoring/awareness", Ogre::RenderOperation::OT_LINE_LIST);
 
 		for (int i = 0; i < npolys; ++i) {
 			const unsigned short* p = &polys[i * nvp * 2];
@@ -333,7 +333,7 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 			mTileSceneNode->attachObject(pRecastMOBoundary);
 		}
 
-		pRecastMOBoundary->begin("/global/authoring/awareness", Ogre::RenderOperation::OT_LINE_LIST);
+		pRecastMOBoundary->begin("/common/base/authoring/awareness", Ogre::RenderOperation::OT_LINE_LIST);
 
 		for (int i = 0; i < npolys; ++i) {
 			const unsigned short* p = &polys[i * nvp * 2];
@@ -415,7 +415,7 @@ void AwarenessVisualizer::visualizePath(const std::list<WFMath::Point<3>>& path)
 {
 	mPath->clear();
 	if (!path.empty()) {
-		mPath->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
+		mPath->begin("/common/base/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
 		for (auto& point : path) {
 			mPath->position(Convert::toOgre(point));
 		}

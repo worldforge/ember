@@ -66,7 +66,7 @@ void PolygonRenderer::update()
 	mManualObject->clear();
 
 	if (mPolygon.getPoints().size() > 1) {
-		mManualObject->begin("/global/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
+		mManualObject->begin("/common/base/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
 
 		for (Polygon::PointStore::const_iterator I = mPolygon.getPoints().begin(); I != mPolygon.getPoints().end(); ++I) {
 			const PolygonPoint* point(*I);

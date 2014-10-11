@@ -110,12 +110,12 @@ void BasePointUserObject::updateMarking()
 	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
 	try {
 		if (mIsMoving) {
-			entity->setMaterialName("/global/authoring/point/moving");
+			entity->setMaterialName("/common/base/authoring/point/moving");
 		} else {
 			if (!WFMath::Equal(mCanonicalHeight, getBasePointMarkerNode()->_getDerivedPosition().y)) {
-				entity->setMaterialName("/global/authoring/point/moved");
+				entity->setMaterialName("/common/base/authoring/point/moved");
 			} else {
-				entity->setMaterialName("/global/authoring/point");
+				entity->setMaterialName("/common/base/authoring/point");
 			}
 		}
 	} catch (const std::exception& ex) {
@@ -234,7 +234,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			try {
 				entity = mSceneManager.createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
 				//start out with a normal material
-				entity->setMaterialName("/global/authoring/point");
+				entity->setMaterialName("/common/base/authoring/point");
 				//The material is made to ignore depth checks, so if we put it in a later queue we're
 				//making sure that the marker is drawn on top of everything else, making it easier to interact with.
 				entity->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);

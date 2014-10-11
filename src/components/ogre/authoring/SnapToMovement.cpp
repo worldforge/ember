@@ -54,7 +54,7 @@ SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::Node& node, float sna
 			Ogre::SceneNode* node = mSceneManager.getRootSceneNode()->createChildSceneNode();
 			Ogre::Entity* sphereEntity = mSceneManager.createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
 			//start out with a normal material
-			sphereEntity->setMaterialName("/global/authoring/point");
+			sphereEntity->setMaterialName("/common/base/authoring/point");
 			sphereEntity->setRenderingDistance(300);
 			// 		entity.setQueryFlags(MousePicker::CM_UNDEFINED);
 			node->setScale(0.25, 0.25, 0.25);
@@ -82,7 +82,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 			Ogre::SceneNode* node = *I;
 			node->setVisible(false);
 			Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (node->getAttachedObject(0));
-			sphereEntity->setMaterialName("/global/authoring/point");
+			sphereEntity->setMaterialName("/common/base/authoring/point");
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting up debug nodes for snapping." << ex);
@@ -156,7 +156,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 									Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (currentNode->getAttachedObject(0));
 									if (sphereEntity) {
 										try {
-											sphereEntity->setMaterialName("/global/authoring/point/moved");
+											sphereEntity->setMaterialName("/common/base/authoring/point/moved");
 										} catch (const std::exception& ex) {
 											S_LOG_WARNING("Error when setting material for point." << ex);
 										}

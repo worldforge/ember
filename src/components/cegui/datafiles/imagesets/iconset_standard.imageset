@@ -1,4 +1,4 @@
-<Imageset autoScaled="false" imagefile="themes/ember/gui/icons/iconset_standard.png" name="iconset_standard" nativeHorzRes="1024" nativeVertRes="768" version="2">
+<Imageset autoScaled="false" imagefile="common/ui/texture/iconset_standard.png" name="iconset_standard" nativeHorzRes="1024" nativeVertRes="768" version="2">
 	<Image height="48" name="background_A" width="48" xPos="0" yPos="0" />
 	<Image height="48" name="background_B" width="48" xPos="48" yPos="0" />
 	<Image height="48" name="ring" width="48" xPos="96" yPos="0" />

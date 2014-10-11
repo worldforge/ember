@@ -397,7 +397,7 @@ void MovementController::createDecal(Ogre::Vector3 position)
 		// Create object MeshDecal
 		Ogre::SceneManager& sceneManager = mAvatar.getScene().getSceneManager();
 		Ogre::NameValuePairList params;
-		params["materialName"] = "/global/ember/terraindecal";
+		params["materialName"] = "/common/base/terraindecal";
 		params["width"] = StringConverter::toString(2);
 		params["height"] = StringConverter::toString(2);
 		params["sceneMgrInstance"] = sceneManager.getName();

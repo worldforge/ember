@@ -30,7 +30,7 @@ namespace OgreView
 {
 namespace Terrain
 {
-const std::string EmberTerrainProfile::ERROR_MATERIAL = "/global/primitives/error";
+const std::string EmberTerrainProfile::ERROR_MATERIAL = "/common/primitives/texture/error";
 
 OgreTerrainMaterialGeneratorEmber::OgreTerrainMaterialGeneratorEmber()
 {

@@ -54,7 +54,7 @@ namespace Authoring
 /**
  * @brief The material used for showing the eris bbox.
  */
-static const std::string BboxMaterialName("/global/authoring/bbox");
+static const std::string BboxMaterialName("/common/base/authoring/bbox");
 
 SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode) :
 	mEntity(entity), mSceneNode(sceneNode), mErisEntityBoundingBox(OGRE_NEW Ogre::OOBBWireBoundingBox()), mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged)))

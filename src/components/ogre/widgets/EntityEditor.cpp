@@ -161,7 +161,7 @@ public:
 		try {
 			mMarkerEntity = sceneManager.createEntity("3d_objects/primitives/models/sphere.mesh");
 			//start out with a normal material
-			mMarkerEntity->setMaterialName("/global/authoring/point");
+			mMarkerEntity->setMaterialName("/common/base/authoring/point");
 			//The material is made to ignore depth checks, so if we put it in a later queue we're
 			//making sure that the marker is drawn on top of everything else, making it easier to interact with.
 			mMarkerEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);

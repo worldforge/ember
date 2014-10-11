@@ -1,4 +1,4 @@
-<Imageset autoScaled="false" imagefile="themes/ember/gui/cegui/EmberLook.png" name="EmberLook" nativeHorzRes="1024" nativeVertRes="768" version="2">
+<Imageset autoScaled="false" imagefile="common/ui/texture/EmberLook.png" name="EmberLook" nativeHorzRes="1024" nativeVertRes="768" version="2">
 	<Image height="6" name="Background" width="6" xPos="7" yPos="7" />
 	<Image height="2" name="WindowFrameLeft" width="4" xPos="2" yPos="9" />
 	<Image height="2" name="WindowFrameRight" width="4" xPos="14" yPos="9" />
