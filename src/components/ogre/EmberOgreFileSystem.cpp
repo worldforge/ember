@@ -341,8 +341,12 @@ namespace OgreView {
             res = 0;
             while (lHandle != -1 && res != -1)
             {
+        		//if the name of the directory is "source" we should ignore it, since these are directories
+        		//containing raw source materials (.psd files, .blend files etc) which we don't want to bring
+        		//into the client (they tend to be rather large)
                 if ((tagData.attrib & _A_SUBDIR) &&
-                    !is_reserved_dir (tagData.name) && !(tagData.attrib & _A_HIDDEN))
+                    !is_reserved_dir (tagData.name) && !(tagData.attrib & _A_HIDDEN) &&
+                    std::strcmp(tagData.name, "source") != 0)
                 {
                     // recurse
                     base_dir = directory;
