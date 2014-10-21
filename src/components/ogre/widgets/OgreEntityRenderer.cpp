@@ -43,7 +43,7 @@ namespace Gui
 {
 
 OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
-	MovableObjectRenderer(image, image->getName().c_str()), mEntity(0)
+	MovableObjectRenderer(image, image->getName().c_str()), mEntity(nullptr)
 {
 }
 
@@ -119,12 +119,16 @@ void OgreEntityRenderer::setWireframeMode(bool enabled)
 
 void OgreEntityRenderer::setForcedLodLevel(int lodLevel)
 {
-	mEntity->setMeshLodBias(1, lodLevel, lodLevel);
+	if (mEntity) {
+		mEntity->setMeshLodBias(1, lodLevel, lodLevel);
+	}
 }
 
 void OgreEntityRenderer::clearForcedLodLevel()
 {
-	mEntity->setMeshLodBias(1.0, 0, std::numeric_limits<unsigned short>::max());
+	if (mEntity) {
+		mEntity->setMeshLodBias(1.0, 0, std::numeric_limits<unsigned short>::max());
+	}
 }
 
 }
