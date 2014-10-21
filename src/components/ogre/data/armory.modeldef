@@ -3,12 +3,12 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-0.000000" y="-1.000000" z="0.000000" degrees="90.000000" />
         <submodels>
-            <submodel mesh="3d_objects/structures/models/castlegrad/cg_armoury.mesh">
+            <submodel mesh="dural/structures/cg_armoury/model/cg_armoury_in.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/structures/wall_outer" />
-                            <subentity index="1" material="/global/structures/bailey_roof_shale" />
+                            <subentity index="0" material="/dural/structures/wall_outer/texture" />
+                            <subentity index="1" material="/dural/structures/roof_shale/texture" />
                         </subentities>
                     </part>
                 </parts>
