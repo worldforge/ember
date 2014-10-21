@@ -180,6 +180,12 @@ function AssetsManager:MeshInfoSaveMeshButton_Clicked(args)
 	return true
 end
 
+function AssetsManager:MeshInfoLoadMeshButton_Clicked(args)
+  local mesh = self.meshes.current.meshPtr.get()
+  mesh:reload()
+  return true
+end
+
 function AssetsManager:showMesh(meshName)
 	self.meshes.renderer:showEntity(meshName)
 	
@@ -933,7 +939,9 @@ function AssetsManager:buildWidget()
 		self.widget:getWindow("UserMeshList"):subscribeEvent("SelectionChanged", self.UserMeshList_SelectionChanged, self)
 		self.widget:getWindow("SubMeshesList"):subscribeEvent("SelectionChanged", self.SubMeshesList_SelectionChanged, self)
 		self.widget:getWindow("SubMeshMaterialsList"):subscribeEvent("SelectionChanged", self.SubMeshMaterialsList_SelectionChanged, self)
-		self.widget:getWindow("MeshInfoSaveMeshButton"):subscribeEvent("Clicked", self.MeshInfoSaveMeshButton_Clicked, self)
+    self.widget:getWindow("MeshInfoSaveMeshButton"):subscribeEvent("Clicked", self.MeshInfoSaveMeshButton_Clicked, self)
+    self.widget:getWindow("MeshInfoLoadMeshButton"):subscribeEvent("Clicked", self.MeshInfoLoadMeshButton_Clicked, self)
+		
 	
 		--the shaders part
 		self.shaders.controls.listbox = CEGUI.toListbox(self.widget:getWindow("ShadersList"))

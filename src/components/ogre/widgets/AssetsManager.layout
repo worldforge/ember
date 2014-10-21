@@ -363,8 +363,8 @@
 							<Property name="VertScrollDocumentSize" value="10.8585" />
 						</Window>
 						<Window name="MeshInfoLoadMeshButton" type="EmberLook/Button">
-							<Property name="Text" value="Load mesh" />
-							<Property name="TooltipText" value="Load the mesh from disk" />
+							<Property name="Text" value="Reload mesh" />
+							<Property name="TooltipText" value="Reload the mesh from disk" />
 							<Property name="Area" value="{{0,82},{0,4},{0,156},{0,38}}" />
 						</Window>
 						<Window name="MeshInfoSaveLoddefButton" type="EmberLook/Button">
