@@ -121,6 +121,9 @@ int MeshInfoProvider::getVertexSize(const Ogre::VertexData* data)
 }
 std::string MeshInfoProvider::getInfo(int submeshIndex)
 {
+	if (!mEntityRenderer->getEntity()) {
+		return "";
+	}
 	const Ogre::MeshPtr& mesh = mEntityRenderer->getEntity()->getMesh();
 	size_t count = calcUniqueVertexCount(mesh.get());
 	std::stringstream str;
