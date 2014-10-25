@@ -85,13 +85,18 @@ void MeshSerializerListener::processMeshCompleted(Ogre::Mesh* mesh)
 		//Ḿake sure that the mesh has tangents. This takes time, but is ok during development.
 		unsigned short outSourceCoordSet;
 		unsigned short outIndex;
-		if (!mesh->suggestTangentVectorBuildParams(Ogre::VES_TANGENT, outSourceCoordSet, outIndex)) {
-	#if DEBUG
-			S_LOG_VERBOSE("No tangents available for " << mesh->getName() << " mesh; generating new ones now.");
-	#else
-			S_LOG_WARNING("No tangents available for " << mesh->getName() << " mesh; generating new ones now. You should instead make sure that all meshes have tangents pregenerated.");
-	#endif
-			mesh->buildTangentVectors(Ogre::VES_TANGENT, outSourceCoordSet, outIndex);
+		try {
+			if (!mesh->suggestTangentVectorBuildParams(Ogre::VES_TANGENT, outSourceCoordSet, outIndex)) {
+		#if DEBUG
+				S_LOG_VERBOSE("No tangents available for " << mesh->getName() << " mesh; generating new ones now.");
+		#else
+				S_LOG_WARNING("No tangents available for " << mesh->getName() << " mesh; generating new ones now. You should instead make sure that all meshes have tangents pregenerated.");
+		#endif
+				mesh->buildTangentVectors(Ogre::VES_TANGENT, outSourceCoordSet, outIndex);
+			}
+
+		} catch (const Ogre::Exception& e) {
+			//Just swallow exceptions, since this just means that we couldn't generate any tangents.
 		}
 	}
 }
