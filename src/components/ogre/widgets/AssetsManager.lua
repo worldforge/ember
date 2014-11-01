@@ -186,6 +186,14 @@ function AssetsManager:MeshInfoLoadMeshButton_Clicked(args)
   return true
 end
 
+function AssetsManager:CreateModel_Clicked(args)
+  local mesh = self.meshes.current.meshPtr.get()
+  local manager = Ogre.MeshManager:getSingleton()
+  local meshPtr = manager:getByName(mesh:getName())
+  self.helper:createModel(meshPtr)
+  return true
+end
+
 function AssetsManager:showMesh(meshName)
 	self.meshes.renderer:showEntity(meshName)
 	
@@ -941,6 +949,7 @@ function AssetsManager:buildWidget()
 		self.widget:getWindow("SubMeshMaterialsList"):subscribeEvent("SelectionChanged", self.SubMeshMaterialsList_SelectionChanged, self)
     self.widget:getWindow("MeshInfoSaveMeshButton"):subscribeEvent("Clicked", self.MeshInfoSaveMeshButton_Clicked, self)
     self.widget:getWindow("MeshInfoLoadMeshButton"):subscribeEvent("Clicked", self.MeshInfoLoadMeshButton_Clicked, self)
+    self.widget:getWindow("CreateModel"):subscribeEvent("Clicked", self.CreateModel_Clicked, self)
 		
 	
 		--the shaders part

@@ -109,6 +109,12 @@ public:
 	 */
 	bool exportMesh(Ogre::MeshPtr mesh, const std::string& filePath);
 
+	/**
+	 * Creates and exports a model from the mesh.
+	 * @param mesh
+	 */
+	void createModel(Ogre::MeshPtr mesh);
+
 private:
 
 

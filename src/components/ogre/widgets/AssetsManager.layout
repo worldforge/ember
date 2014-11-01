@@ -129,26 +129,6 @@
 							<Property name="Area" value="{{0,159},{1,-259},{0,325},{1,-234}}" />
 							<Property name="TextParsingEnabled" value="False" />
 						</Window>
-						<Window name="MeshSkeletonPathText" type="EmberLook/StaticText">
-							<Property name="Font" value="DejaVuSans-7" />
-							<Property name="Text">Skeleton</Property>
-							<Property name="VertFormatting" value="TopAligned" />
-							<Property name="FrameEnabled" value="False" />
-							<Property name="HorzFormatting" value="CentreAligned" />
-							<Property name="Area" value="{{0,161},{0.0133135,0},{0,322},{0,20}}" />
-							<Property name="BackgroundEnabled" value="False" />
-							<Property name="HorzScrollPageSize" value="161" />
-							<Property name="HorzScrollPosition" value="0" />
-							<Property name="VertScrollPageSize" value="13" />
-							<Property name="VertScrollPosition" value="0" />
-							<Property name="HorzScrollDocumentSize" value="40" />
-							<Property name="VertScrollDocumentSize" value="10.8585" />
-						</Window>
-						<Window name="MeshSkeletonPath" type="EmberLook/Editbox">
-							<Property name="MaxTextLength" value="1073741823" />
-							<Property name="Area" value="{{0,159},{0,20},{0,324},{0,46}}" />
-							<Property name="TextParsingEnabled" value="False" />
-						</Window>
 						<Window name="EnableAutomaticLOD" type="EmberLook/Checkbox">
 							<Property name="Text" value="Enable automatic mesh Lod management" />
 							<Property name="Area" value="{{0,4},{1,-235},{0,300},{1,-210}}" />
@@ -367,6 +347,28 @@
 							<Property name="TooltipText" value="Reload the mesh from disk" />
 							<Property name="Area" value="{{0,82},{0,4},{0,156},{0,38}}" />
 						</Window>
+                        <Window name="CreateModel" type="EmberLook/Button">
+                            <Property name="Text" value="Create model" />
+                            <Property name="TooltipText" value="Create a model definition from the mesh." />
+                            <Property name="Area" value="{{0,161},{0,4},{0,235},{0,38}}" />
+                        </Window>
+
+
+
+                        <Window name="MeshSkeletonPathText" type="EmberLook/StaticText">
+                            <Property name="Font" value="DejaVuSans-7" />
+                            <Property name="Text">Skeleton</Property>
+                            <Property name="VertFormatting" value="TopAligned" />
+                            <Property name="HorzFormatting" value="CentreAligned" />
+                            <Property name="Area" value="{{0,4},{1,-339},{0,156},{1,-319}}" />
+                        </Window>
+                        <Window name="MeshSkeletonPath" type="EmberLook/Editbox">
+                            <Property name="Area" value="{{0,4},{1,-319},{0,156},{1,-294}}" />
+                        </Window>
+
+
+
+
 						<Window name="MeshInfoSaveLoddefButton" type="EmberLook/Button">
 							<Property name="Text" value="Save loddef" />
 							<Property name="TooltipText" value="Save the loddef to disk" />

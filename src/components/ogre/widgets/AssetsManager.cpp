@@ -25,22 +25,23 @@
 #endif
 
 #include "AssetsManager.h"
-#include <CEGUI/RendererModules/Ogre/Renderer.h>
-#include <CEGUI/RendererModules/Ogre/Texture.h>
-#include <OgreMaterialSerializer.h>
 #include "../EmberOgrePrerequisites.h"
-
 #include "../EmberOgre.h"
 #include "../GUIManager.h"
 
+#include "components/ogre/model/ModelDefinitionManager.h"
+
 #include "framework/Exception.h"
+#include "framework/Tokeniser.h"
 #include "framework/osdir.h"
 
+#include <CEGUI/RendererModules/Ogre/Renderer.h>
+#include <CEGUI/RendererModules/Ogre/Texture.h>
+#include <OgreMaterialSerializer.h>
 #include <OgreTextureManager.h>
 #include <OgreTexture.h>
 #include <OgreString.h>
 #include <OgreMeshSerializer.h>
-// #include <OgreBitwise.h>
 
 #include <CEGUI/Image.h>
 #include <CEGUI/BasicImage.h>
@@ -200,6 +201,25 @@ bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)
 	}
 	return false;
 }
+
+void AssetsManager::createModel(Ogre::MeshPtr mesh)
+{
+	auto& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
+	std::string name = mesh->getName();
+	if (name.empty()) {
+		return;
+	}
+	//Extract the file name for the model. I.e. if the mesh has the full name "foo/bar.mesh" the model will be named "bar".
+	auto tokens = Tokeniser::split(name, "/");
+	std::string modelName = Tokeniser::split(tokens.back(), ".").front();
+	auto modelDefinition = modelDefinitionManager.create(modelName, "ModelDefinitions");
+	if (!modelDefinition.isNull()) {
+		modelDefinition->createSubModelDefinition(mesh->getName());
+		modelDefinitionManager.exportScript(modelDefinition);
+	}
+
+}
+
 
 // bool AssetsManager::exportTexture(Ogre::TexturePtr texturePtr)
 // {
