@@ -6,10 +6,12 @@
             <submodel mesh="dural/structures/cg_armoury/model/cg_armoury_in.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/dural/structures/wall_outer/texture" />
-                            <subentity index="1" material="/dural/structures/roof_shale/texture" />
-                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+            <submodel mesh="dural/structures/cg_armoury/model/cg_armoury_out.mesh">
+                <parts>
+                    <part name="main" show="true">
                     </part>
                 </parts>
             </submodel>

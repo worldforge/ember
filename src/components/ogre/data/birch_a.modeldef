@@ -1,0 +1,13 @@
+<models>
+    <model name="birch_a" usescaleof="height" scale="1.500000" showcontained="true" icon="">
+        <rendering scheme="forest" />
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="dural/plants/trees/birch/model/birch_a.mesh" />
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

@@ -5,9 +5,9 @@
         <submodels>
             <submodel mesh="dural/plants/mushrooms/model/amanita.mesh">
                 <parts>
-                    <part name="blue_moon" group="main" show="true">
+                    <part name="bluemoon" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/dural/plants/mushrooms/texture/blue_moon" />
+                            <subentity index="0" material="/dural/plants/mushrooms/texture/bluemoon" />
                         </subentities>
                     </part>
                     <part name="galerina" group="main" show="false">
@@ -15,14 +15,14 @@
                             <subentity index="0" material="/dural/plants/mushrooms/texture/galerina" />
                         </subentities>
                     </part>
-                    <part name="amanita" group="main" show="false">
+                    <part name="amanita" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/gdural/plants/mushrooms/texture/amanita" />
+                            <subentity index="0" material="/dural/plants/mushrooms/texture/amanita" />
                         </subentities>
                     </part>
                     <part name="silkfoot" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/gdural/plants/mushrooms/texture/silkfoot" />
+                            <subentity index="0" material="/dural/plants/mushrooms/texture/silkfoot" />
                         </subentities>
                     </part>
                 </parts>
