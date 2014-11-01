@@ -75,7 +75,7 @@ void SubModelPart::show()
 {
 	for (SubModelPartEntityStore::const_iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
 		const std::string* materialName;
-		if (I->Definition && I->Definition->getMaterialName() != "") {
+		if (I->Definition && I->Definition && I->Definition->getMaterialName() != "") {
 			materialName = &I->Definition->getMaterialName();
 		} else {
 			//if no material name is set in the ModelDefinition, use the default one from the mesh

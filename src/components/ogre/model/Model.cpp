@@ -195,57 +195,69 @@ bool Model::createActualModel()
 			SubModel* submodel = new SubModel(*entity);
 			//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 
-			for (auto& partDef : submodelDef->getPartDefinitions()) {
-				SubModelPart& part = submodel->createSubModelPart(partDef->getName());
-				//std::string groupName("");
+			if (!submodelDef->getPartDefinitions().empty()) {
+				for (auto& partDef : submodelDef->getPartDefinitions()) {
+					SubModelPart& part = submodel->createSubModelPart(partDef->getName());
+					//std::string groupName("");
 
-				if (partDef->getSubEntityDefinitions().size() > 0) {
-					for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
-						try {
-							Ogre::SubEntity* subEntity(0);
-							//try with a submodelname first
-							if (subEntityDef->getSubEntityName() != "") {
-								subEntity = entity->getSubEntity(subEntityDef->getSubEntityName());
-							} else {
-								//no name specified, use the index instead
-								if (entity->getNumSubEntities() > subEntityDef->getSubEntityIndex()) {
-									subEntity = entity->getSubEntity(subEntityDef->getSubEntityIndex());
+					if (partDef->getSubEntityDefinitions().size() > 0) {
+						for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
+							try {
+								Ogre::SubEntity* subEntity(0);
+								//try with a submodelname first
+								if (subEntityDef->getSubEntityName() != "") {
+									subEntity = entity->getSubEntity(subEntityDef->getSubEntityName());
 								} else {
-									S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
+									//no name specified, use the index instead
+									if (entity->getNumSubEntities() > subEntityDef->getSubEntityIndex()) {
+										subEntity = entity->getSubEntity(subEntityDef->getSubEntityIndex());
+									} else {
+										S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
+									}
 								}
-							}
-							if (subEntity) {
-								part.addSubEntity(subEntity, subEntityDef);
+								if (subEntity) {
+									part.addSubEntity(subEntity, subEntityDef);
 
-								if (subEntityDef->getMaterialName() != "") {
-									subEntity->setMaterialName(subEntityDef->getMaterialName());
+									if (subEntityDef->getMaterialName() != "") {
+										subEntity->setMaterialName(subEntityDef->getMaterialName());
+									}
+								} else {
+									S_LOG_WARNING("Could not add subentity.");
 								}
-							} else {
-								S_LOG_WARNING("Could not add subentity.");
+							} catch (const std::exception& ex) {
+								S_LOG_WARNING("Error when getting sub entities for model '" << mDefinition->getName() << "'." << ex);
 							}
-						} catch (const std::exception& ex) {
-							S_LOG_WARNING("Error when getting sub entities for model '" << mDefinition->getName() << "'." << ex);
+						}
+					} else {
+						//if no subentities are defined, add all subentities
+						unsigned int numSubEntities = entity->getNumSubEntities();
+						for (unsigned int i = 0; i < numSubEntities; ++i) {
+							part.addSubEntity(entity->getSubEntity(i), 0);
 						}
 					}
-				} else {
-					//if no subentities are defined, add all subentities
-					unsigned int numSubEntities = entity->getNumSubEntities();
-					for (unsigned int i = 0; i < numSubEntities; ++i) {
-						part.addSubEntity(entity->getSubEntity(i), 0);
+					if (partDef->getGroup() != "") {
+						mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
+						//mPartToGroupMap[partDef->getName()] = partDef->getGroup();
 					}
-				}
-				if (partDef->getGroup() != "") {
-					mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
-					//mPartToGroupMap[partDef->getName()] = partDef->getGroup();
-				}
 
-				if (partDef->getShow()) {
-					showPartVector.push_back(partDef->getName());
-				}
+					if (partDef->getShow()) {
+						showPartVector.push_back(partDef->getName());
+					}
 
-				ModelPart& modelPart = mModelParts[partDef->getName()];
+					ModelPart& modelPart = mModelParts[partDef->getName()];
+					modelPart.addSubModelPart(&part);
+					modelPart.setGroupName(partDef->getGroup());
+				}
+			} else {
+				//if no parts are defined, add a default "main" part and add all subentities to it. This ought to be a good default behaviour
+				SubModelPart& part = submodel->createSubModelPart("main");
+				for (size_t i = 0; i < entity->getNumSubEntities(); ++i) {
+					Ogre::SubEntity* subentity = entity->getSubEntity(i);
+					part.addSubEntity(subentity, nullptr);
+				}
+				showPartVector.push_back(part.getName());
+				ModelPart& modelPart = mModelParts[part.getName()];
 				modelPart.addSubModelPart(&part);
-				modelPart.setGroupName(partDef->getGroup());
 			}
 			addSubmodel(submodel);
 			timedLog.report("Created submodel.");
