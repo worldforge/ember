@@ -90,7 +90,7 @@ void AuthoringVisualization::updatePositionAndOrientation()
 void AuthoringVisualization::createGraphicalRepresentation()
 {
 	try {
-		mGraphicalRepresentation = mSceneNode->getCreator()->createEntity(OgreInfo::createUniqueResourceName("authoring_visualization_" + mEntity.getId()), "axes.mesh");
+		mGraphicalRepresentation = mSceneNode->getCreator()->createEntity(OgreInfo::createUniqueResourceName("authoring_visualization_" + mEntity.getId()), "common/primitives/model/axes.mesh");
 		if (mGraphicalRepresentation) {
 			try {
 				mSceneNode->attachObject(mGraphicalRepresentation);

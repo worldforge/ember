@@ -109,7 +109,7 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 			S_LOG_FAILURE( "Could not find " << mModelName << ", using placeholder.");
 			//add a placeholder model
 			Model::ModelDefinitionPtr modelDef = model->getDefinition();
-			modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
+			modelDef->createSubModelDefinition("common/primitives/model/box.mesh")->createPartDefinition("main")->setShow(true);
 			modelDef->setValid(true);
 			modelDef->reloadAllInstances();
 		}

@@ -232,16 +232,16 @@ void MovableObjectRenderer::showAxis()
 	if (!mAxisEntity) {
 		std::string name(mImage->getName().c_str());
 		try {
-			mAxisEntity = mTexture->getRenderContext()->getSceneManager()->createEntity(name + "_axes", "axes.mesh");
+			mAxisEntity = mTexture->getRenderContext()->getSceneManager()->createEntity(name + "_axes", "common/primitives/model/axes.mesh");
 			if (mAxisEntity) {
 				try {
 					mAxesNode->attachObject(mAxisEntity);
 				} catch (const std::exception& ex) {
-					S_LOG_WARNING("Error when attaching axes mesh."<< ex);
+					S_LOG_WARNING("Error when attaching axes mesh." << ex);
 				}
 			}
 		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when loading axes mesh."<< ex);
+			S_LOG_WARNING("Error when loading axes mesh." << ex);
 		}
 	}
 	mAxesNode->setVisible(true);

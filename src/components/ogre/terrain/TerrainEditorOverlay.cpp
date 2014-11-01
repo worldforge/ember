@@ -232,7 +232,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			ss << "basepointmarker" << x << "_" << y;
 			Ogre::Entity* entity(0);
 			try {
-				entity = mSceneManager.createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
+				entity = mSceneManager.createEntity(ss.str(), "common/primitives/model/sphere.mesh");
 				//start out with a normal material
 				entity->setMaterialName("/common/base/authoring/point");
 				//The material is made to ignore depth checks, so if we put it in a later queue we're

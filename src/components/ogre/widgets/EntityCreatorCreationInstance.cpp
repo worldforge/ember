@@ -140,7 +140,7 @@ void EntityCreatorCreationInstance::createEntity()
 
 	if (!mAxisMarker) {
 		try {
-			mAxisMarker = mEntityNode->getCreator()->createEntity(OgreInfo::createUniqueResourceName("EntityCreator_axisMarker"), "axes.mesh");
+			mAxisMarker = mEntityNode->getCreator()->createEntity(OgreInfo::createUniqueResourceName("EntityCreator_axisMarker"), "common/primitives/model/axes.mesh");
 			mEntityNode->attachObject(mAxisMarker);
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when loading axes mesh." << ex);
@@ -206,7 +206,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 		S_LOG_FAILURE("Could not find " << modelName << ", using placeholder.");
 		//add a placeholder model
 		Model::ModelDefinitionPtr modelDef = mModel->getDefinition();
-		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
+		modelDef->createSubModelDefinition("common/primitives/model/box.mesh")->createPartDefinition("main")->setShow(true);
 		modelDef->setValid(true);
 		modelDef->reloadAllInstances();
 	}

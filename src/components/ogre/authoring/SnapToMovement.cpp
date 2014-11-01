@@ -52,7 +52,7 @@ SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::Node& node, float sna
 	if (showDebugOverlay) {
 		for (int i = 0; i < 30; ++i) {
 			Ogre::SceneNode* node = mSceneManager.getRootSceneNode()->createChildSceneNode();
-			Ogre::Entity* sphereEntity = mSceneManager.createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
+			Ogre::Entity* sphereEntity = mSceneManager.createEntity(node->getName() + "_entity", "common/primitives/model/sphere.mesh");
 			//start out with a normal material
 			sphereEntity->setMaterialName("/common/base/authoring/point");
 			sphereEntity->setRenderingDistance(300);

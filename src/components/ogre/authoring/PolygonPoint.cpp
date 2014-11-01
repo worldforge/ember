@@ -65,7 +65,7 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 	ss << "PolygonPoint" << sPointCounter++;
 
 	try {
-		mEntity = mNode->getCreator()->createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
+		mEntity = mNode->getCreator()->createEntity(ss.str(), "common/primitives/model/sphere.mesh");
 		//start out with a normal material
 		mEntity->setMaterialName("/common/base/authoring/point");
 		//The material is made to ignore depth checks, so if we put it in a later queue we're

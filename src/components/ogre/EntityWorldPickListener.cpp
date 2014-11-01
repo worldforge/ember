@@ -51,7 +51,7 @@ EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorld
 {
 	mDebugNode = sceneManager.getRootSceneNode()->createChildSceneNode();
 	try {
-		mEntity = sceneManager.createEntity("pickerDebugObject", "3d_objects/primitives/models/sphere.mesh");
+		mEntity = sceneManager.createEntity("pickerDebugObject", "common/primitives/model/sphere.mesh");
 		//start out with a normal material
 		mEntity->setMaterialName("BasePointMarkerMaterial");
 		mEntity->setRenderingDistance(300);

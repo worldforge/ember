@@ -159,7 +159,7 @@ public:
 	{
 		mMarkerNode = sceneManager.getRootSceneNode()->createChildSceneNode();
 		try {
-			mMarkerEntity = sceneManager.createEntity("3d_objects/primitives/models/sphere.mesh");
+			mMarkerEntity = sceneManager.createEntity("common/primitives/model/sphere.mesh");
 			//start out with a normal material
 			mMarkerEntity->setMaterialName("/common/base/authoring/point");
 			//The material is made to ignore depth checks, so if we put it in a later queue we're

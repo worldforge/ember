@@ -176,7 +176,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
 		//add a placeholder model
 		Model::ModelDefinitionPtr modelDef = mModel->getDefinition();
-		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
+		modelDef->createSubModelDefinition("common/primitives/model/box.mesh")->createPartDefinition("main")->setShow(true);
 		modelDef->setValid(true);
 		modelDef->reloadAllInstances();
 	}
