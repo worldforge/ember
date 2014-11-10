@@ -114,9 +114,9 @@ void ShaderManager::init()
 {
 	// We normally want to check base materials
 	std::list<std::string> materialsToCheck;
-	materialsToCheck.push_back("/base/simple");
-	materialsToCheck.push_back("/base/normalmap");
-	materialsToCheck.push_back("/base/normalmap/specular");
+	materialsToCheck.push_back("/common/base/simple");
+	materialsToCheck.push_back("/common/base/normalmap");
+	materialsToCheck.push_back("/common/base/normalmap/specular");
 
 	bool supported;
 

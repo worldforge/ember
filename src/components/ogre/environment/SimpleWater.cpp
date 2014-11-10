@@ -173,7 +173,7 @@ bool SimpleWater::initialize()
 		mWaterBobbingNode = mWaterNode->createChildSceneNode();
 
 		mWaterEntity = mSceneMgr.createEntity("water", "SimpleWaterPlane");
-		mWaterEntity->setMaterialName("/global/environment/water/ocean");
+		mWaterEntity->setMaterialName("/dural/environment/water/ocean");
 		//Render the water very late on, so that any transparent entity which is half submerged is already rendered.
 		mWaterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_8);
 		mWaterEntity->setCastShadows(false);
