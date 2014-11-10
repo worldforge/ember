@@ -1,9 +1,9 @@
 <models>
-    <model name="pickerel" usescaleof="height" showcontained="true" icon="3d_skeletons/creatures/tubular/textures/pickerel/I.png">
+    <model name="pickerel" usescaleof="height" showcontained="true" icon="dural/creatures/tubular/texture/pickerel/I.png">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="0.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/creatures/pickerel/pickerel.mesh">
+            <submodel mesh="dural/creatures/tubular/model/pickerel.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

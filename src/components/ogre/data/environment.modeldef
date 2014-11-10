@@ -3,7 +3,7 @@
 
 	<model name="fire">
 		<particlesystems>
-			<particlesystem script="/global/particles/smoke" >
+			<particlesystem script="/dural/environment/smoke/particles" >
 				<direction x="0" y="1" z="0" />
 				<bindings>
 					<binding emittervar="emission_rate" atlasattribute="status" />
@@ -23,7 +23,7 @@
 
 	<model name="sun">
 		<submodels>
-			<submodel mesh="3d_objects/primitives/models/sphere.mesh" >
+			<submodel mesh="common/primitives/model/sphere.mesh" >
 				<parts>
 					<part name="main" show="true" />
 				</parts>

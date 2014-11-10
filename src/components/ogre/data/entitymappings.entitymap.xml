@@ -53,23 +53,23 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">boulder</caseparam>
-				<action type="display-model">graniteA</action>
+				<action type="display-model">granite_a</action>
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">a</caseparam>
-						<action type="display-model">graniteA</action>
+						<action type="display-model">granite_a</action>
 					</case>
 					<case>
 						<caseparam type="equals">b</caseparam>
-						<action type="display-model">graniteB</action>
+						<action type="display-model">granite_b</action>
 					</case>
 					<case>
 						<caseparam type="equals">c</caseparam>
-						<action type="display-model">graniteC</action>
+						<action type="display-model">granite_c</action>
 					</case>
 					<case>
 						<caseparam type="equals">d</caseparam>
-						<action type="display-model">graniteD</action>
+						<action type="display-model">granite_d</action>
 					</case>
 				</attributematch>
 			</case>
@@ -245,15 +245,15 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">signpost</caseparam>
-				<action type="display-model">signpost</action>
+				<action type="display-model">sign_post</action>
 				<attributematch attribute="direction">
 					<case>
 						<caseparam type="equals">left</caseparam>
-						<action type="display-model">signpost_left</action>
+						<action type="display-model">sign_post_l</action>
 					</case>
 					<case>
 						<caseparam type="equals">right</caseparam>
-						<action type="display-model">signpost_right</action>
+						<action type="display-model">sign_post_r</action>
 					</case>
 				</attributematch>
 			</case>
@@ -394,15 +394,15 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">stall</caseparam>
-				<action type="display-model">marketstall_canvasA</action>
+				<action type="display-model">marketstall_canvas_a</action>
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">B</caseparam>
-						<action type="display-model">marketstall_canvasB</action>
+						<action type="display-model">marketstall_canvas_b</action>
 					</case>
 					<case>
 						<caseparam type="equals">C</caseparam>
-						<action type="display-model">marketstall_canvasC</action>
+						<action type="display-model">marketstall_canvas_c</action>
 					</case>
 				</attributematch>
 				<attributematch attribute="fabric" >
@@ -424,7 +424,7 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">campfire</caseparam>
-				<action type="display-model">campfireB</action>
+				<action type="display-model">campfire</action>
 			</case>
 		</entitymatch>
 	</entitymapping>	
@@ -433,28 +433,27 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">gravestone</caseparam>
-				<action type="display-model">tombstone</action>
-				<action type="display-part">a</action>
+				<action type="display-model">tombstone_a</action>
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">simple</caseparam>
-						<action type="display-part">a</action>
+        				<action type="display-model">tombstone_a</action>
 					</case>
 					<case>
 						<caseparam type="equals">rounded</caseparam>
-						<action type="display-part">b</action>
+                        <action type="display-model">tombstone_b</action>
 					</case>
 					<case>
 						<caseparam type="equals">stylish</caseparam>
-						<action type="display-part">c</action>
+                        <action type="display-model">tombstone_c</action>
 					</case>
 					<case>
 						<caseparam type="equals">cross</caseparam>
-						<action type="display-part">cross_a</action>
+                        <action type="display-model">tombstone_cross_a</action>
 					</case>
 					<case>
 						<caseparam type="equals">cross broken</caseparam>
-						<action type="display-part">cross_b</action>
+                        <action type="display-model">tombstone_cross_b</action>
 					</case>
 				</attributematch>
 			</case>
@@ -488,10 +487,10 @@
 	
 	<autoentitymapping name="concrete_stairs" />
 	<autoentitymapping name="castle_house_ruin" modelname="cg_house_ruin" />
-	<autoentitymapping name="castle_house_a" modelname="cg_house_A" />
-	<autoentitymapping name="castle_house_b" modelname="cg_house_B" />
-	<autoentitymapping name="castle_house_c" modelname="cg_houseC" />
-	<autoentitymapping name="castle_house_d" modelname="cg_house_D" />
+	<autoentitymapping name="castle_house_a" modelname="cg_house_a" />
+	<autoentitymapping name="castle_house_b" modelname="cg_house_b" />
+	<autoentitymapping name="castle_house_c" modelname="cg_house_c" />
+	<autoentitymapping name="castle_house_d" modelname="cg_house_d" />
 	<autoentitymapping name="castle_don_jon" modelname="cg_don_jon" />
 	<autoentitymapping name="castle_inn" modelname="cg_inn" />
 	<autoentitymapping name="castle_smithy" modelname="cg_smithy" />
@@ -499,7 +498,7 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">castle_house</caseparam>
-				<action type="display-model">cg_house</action>
+				<action type="display-model">cg_house_a</action>
 				<attributematch attribute="roof" >
 					<case>
 						<caseparam type="equals">shingle</caseparam>
@@ -684,15 +683,15 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">shrub</caseparam>
-				<action type="display-model">shrubB</action>
+				<action type="display-model">shrub_b</action>
 				<attributematch attribute="species" >
 					<case>
 						<caseparam type="equals">magnolia</caseparam>
-						<action type="display-model">shrubB</action>
+						<action type="display-model">shrub_b</action>
 					</case>
 					<case>
 						<caseparam type="equals">oakleaf</caseparam>
-						<action type="display-model">shrubA</action>
+						<action type="display-model">shrub_a</action>
 					</case>
 					<case>
 						<caseparam type="equals">wormwood</caseparam>
@@ -711,12 +710,11 @@
 
 	
 	
-	<!-- We'll use jayrs new oak for now -->
 	<entitymapping name="oak">
 		<entitymatch>
 			<case>
 				<caseparam type="equals">oak</caseparam>
-				<action type="display-model">oak_mk1</action>
+				<action type="display-model">oak_straight</action>
 			</case>
 		</entitymatch>
 	</entitymapping> 	
@@ -725,23 +723,23 @@
 		<entitymatch>
 			<case>
 				<caseparam type="equals">birch</caseparam>
-				<action type="display-model">birchA</action>
+				<action type="display-model">birch_a</action>
 				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">gnarly</caseparam>
-						<action type="display-model">birchA</action>
+						<action type="display-model">birch_a</action>
 					</case>
 					<case>
 						<caseparam type="equals">weathered</caseparam>
-						<action type="display-model">birchB</action>
+						<action type="display-model">birch_b</action>
 					</case>
 					<case>
 						<caseparam type="equals">straight</caseparam>
-						<action type="display-model">birchC</action>
+						<action type="display-model">birch_c</action>
 					</case>
 					<case>
 						<caseparam type="equals">bent</caseparam>
-						<action type="display-model">birchD</action>
+						<action type="display-model">birch_d</action>
 					</case>
 				</attributematch>
 				<attributematch attribute="leavesize" >

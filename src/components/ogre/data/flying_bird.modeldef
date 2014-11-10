@@ -3,14 +3,7 @@
         <translate x="0.000000" y="10.000000" z="0.000000" />
         <rotation degrees="0.000000" x="0.000000" y="0.000000" z="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/creatures/flying_bird/flying_bird.mesh">
-                <parts>
-                    <part name="falcon" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/creatures/flying_bird/falcon" />
-                        </subentities>
-                    </part>
-                </parts>
+            <submodel mesh="dural/creatures/flying_bird/model/flying_bird.mesh">
             </submodel>
         </submodels>
         <actions>

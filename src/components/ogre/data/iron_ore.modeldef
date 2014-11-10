@@ -3,7 +3,7 @@
         <translate x="0" y="0" z="0" />
         <rotation x="-1" y="-0" z="-0" degrees="180" />
         <submodels>
-            <submodel mesh="3d_objects/environment/models/iron_ore/iron_ore.mesh">
+            <submodel mesh="dural/environment/iron_ore/model/iron_ore.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>

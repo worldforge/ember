@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation degrees="0.000000" x="-0.000000" y="-0.000000" z="-0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/creatures/cow/cow.mesh">
+            <submodel mesh="dural/creatures/quadruped_v2/model/cow.mesh">
                 <parts>
                     <part name="brown" show="true">
                         <subentities>
@@ -13,14 +13,14 @@
                     </part>
                     <part name="spotted_a" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/creatures/cow/spotted_a" />
-                            <subentity index="1" material="/global/creatures/cow/spotted_a" />
+                            <subentity index="0" material="/dural/creatures/quadruped_v2/texture/spotted_a" />
+                            <subentity index="1" material="/dural/creatures/quadruped_v2/texture/spotted_a" />
                         </subentities>
                     </part>
                     <part name="spotted_b" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/creatures/cow/spotted_b" />
-                            <subentity index="1" material="/global/creatures/cow/spotted_b" />
+                            <subentity index="0" material="/dural/creatures/quadruped_v2/texture/spotted_b" />
+                            <subentity index="1" material="/dural/creatures/quadruped_v2/texture/spotted_b" />
                         </subentities>
                     </part>
                 </parts>

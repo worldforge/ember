@@ -1,0 +1,51 @@
+<models>
+    <model name="wooden_fence_gate" usescaleof="height" showcontained="true" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
+        <submodels>
+            <submodel mesh="dural/structures/wooden_fence/model/wooden_fence_gate.mesh">
+                <parts />
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="close" speed="1.000000">
+                <activations>
+                    <activation type="action">close</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Close" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="closed" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="CloseHold" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="open" speed="1.000000">
+                <activations>
+                    <activation type="action">open</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Open" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="opened" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="OpenHold" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
+        <attachpoints />
+        <views />
+        <lights />
+        <bonegroups />
+    </model>
+</models>

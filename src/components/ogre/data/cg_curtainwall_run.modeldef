@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/structures/models/cg_curtainwall_run/cg_curtainwall_run.mesh">
+            <submodel mesh="dural/structures/cg_curtainwall_run/model/cg_curtainwall_run.mesh">
                 <parts>
                     <part name="main" show="true">
                     </part>

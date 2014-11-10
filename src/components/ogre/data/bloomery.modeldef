@@ -3,7 +3,7 @@
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/structures/models/bloomery/bloomery.mesh">
+            <submodel mesh="dural/structures/bloomery/model/bloomery.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
@@ -18,5 +18,6 @@
         <attachpoints />
         <views />
         <lights />
+        <bonegroups />
     </model>
 </models>

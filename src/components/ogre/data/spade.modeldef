@@ -1,9 +1,9 @@
 <models>
-    <model name="spade" usescaleof="width" scale="10" showcontained="true" icon="3d_objects/items/tools/textures/spade/I.png">
+    <model name="spade" usescaleof="width" scale="10" showcontained="true" icon="dural/items/tools/spade/texture/I.png">
         <translate x="0" y="1.3" z="0" />
         <rotation x="1" y="-0" z="-0" degrees="90" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/spade/spade.mesh">
+            <submodel mesh="dural/items/tools/spade/model/spade.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>

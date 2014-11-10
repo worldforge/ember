@@ -3,66 +3,66 @@
         <translate x="0.000000" y="0.050000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_skeletons/clothes/dress/models/folded/folded_shirt.mesh">
+            <submodel mesh="dural/creatures/biped/malebuilder/model/folded_shirt.mesh">
                 <parts>
                     <part name="clothes/burlap" group="clothes" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_burlap" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_burlap" />
                         </subentities>
                     </part>
                     <part name="clothes/burlap/grey_blue_trims" group="clothes" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_burlap_gray_blue_trims" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_burlap_gray_blue_trims" />
                         </subentities>
                     </part>
                     <part name="clothes/burlap/grey_red_trims" group="clothes" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_burlap_gray_red_trims" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_burlap_gray_red_trims" />
                         </subentities>
                     </part>
                     <part name="clothes/burlap/grey_green_trims" group="clothes" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_burlap_gray_green_trims" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_burlap_gray_green_trims" />
                         </subentities>
                     </part>
                     <part name="clothes/burlap/grey_yellow_trims" group="clothes" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_burlap_gray_yellow_trims" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_burlap_gray_yellow_trims" />
                         </subentities>
                     </part>
                     <part name="clothes/burlap/red" group="clothes" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_burlap_red" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_burlap_red" />
                         </subentities>
                     </part>
                     <part name="clothes/burlap/yellow" group="clothes" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_burlap_yellow" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_burlap_yellow" />
                         </subentities>
                     </part>
                     <part name="clothes/burlap/green" group="clothes" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_burlap_green" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_burlap_green" />
                         </subentities>
                     </part>
                     <part name="clothes/ragged" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_ragged" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_ragged" />
                         </subentities>
                     </part>
                     <part name="clothes/dark_rags" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_dark_rags" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_dark_rags" />
                         </subentities>
                     </part>
                     <part name="clothes/sun" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_sun" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_sun" />
                         </subentities>
                     </part>
                     <part name="clothes/fine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/characters/malebuilder/male/dress_fine" />
+                            <subentity index="0" material="/dural/creatures/biped/malebuilder/texture/dress_fine" />
                         </subentities>
                     </part>
                 </parts>

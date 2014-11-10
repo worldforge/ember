@@ -3,19 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/shrubs/models/fern/fern.mesh">
-                <parts>
-                    <part name="brown" show="true" group="main">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/shrubs/fern_brown" />
-                        </subentities>
-                    </part>
-                    <part name="green" show="true" group="main">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/shrubs/fern_green" />
-                        </subentities>
-                    </part>
-                </parts>
+            <submodel mesh="dural/plants/shrubs/fern/model/fern.mesh">
             </submodel>
         </submodels>
         <actions />

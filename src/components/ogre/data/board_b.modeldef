@@ -1,5 +1,5 @@
 <models>
-    <model name="board" usescaleof="width" scale="0.1265" showcontained="true" icon="">
+    <model name="board_b" usescaleof="width" scale="0.1265" showcontained="true" icon="">
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>

@@ -131,7 +131,7 @@
 		</layer>
 		<layer name="Leaf covered" areaindex="6" diffusetexture="dural/environment/ground_leaf_covered/texture/D.png" normalmaptexture="dural/environment/ground_leaf_covered/texture/N.png" tilesize="4">
 		</layer>
-		<layer name="Dirt" areaindex="7" diffusetexture="dural/environment/ground_dirt_dry/texture/D.png" normalmaptexture="dural/environment/ground_dirt_dry/texture	/N.png" tilesize="4">
+		<layer name="Dirt" areaindex="7" diffusetexture="dural/environment/ground_dirt_dry/texture/D.png" normalmaptexture="dural/environment/ground_dirt_dry/texture/N.png" tilesize="4">
 		</layer>
 		<layer name="Plowed" areaindex="8" diffusetexture="dural/environment/ground_dirt_plowed/texture/D.png" normalmaptexture="dural/environment/ground_dirt_plowed/texture/N.png" tilesize="8">
 		</layer>

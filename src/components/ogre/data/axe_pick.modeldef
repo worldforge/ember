@@ -1,0 +1,29 @@
+<models>
+    <model name="axe_pick" usescaleof="none" scale="1" showcontained="true" icon="dural/items/tools/axe_pick/texture/I.png">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
+        <submodels>
+            <submodel mesh="dural/items/tools/axe_pick/model/axe_pick.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="0" y="0" z="-1" degrees="180" />
+            </view>
+        </views>
+        <lights />
+        <bonegroups />
+        <poses>
+            <pose name="gripped" ignoreEntityData="true">
+                <translate x="0" y="0" z="0" />
+                <rotate x="-0.57735" y="0.57735" z="0.57735" degrees="120" />
+            </pose>
+        </poses>
+    </model>
+</models>

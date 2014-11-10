@@ -3,7 +3,7 @@
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/items/valuables/models/moraf_coin/moraf_coin.mesh">
+            <submodel mesh="dural/items/valuables/moraf_coin/model/moraf_coin.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>

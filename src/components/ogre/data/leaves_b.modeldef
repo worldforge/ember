@@ -1,0 +1,25 @@
+<models>
+    <model name="leaves_b" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="dural/plants/shrubs/leaf/model/leaves_b.mesh">
+                <parts>
+                    <part name="green" show="true">
+                        <subentities>
+                            <subentity index="0" material="/dural/plants/shrubs/leaf/texture/green" />
+                        </subentities>
+                    </part>
+                    <part name="brown" show="false">
+                        <subentities>
+                            <subentity index="0" material="/dural/plants/shrubs/leaf/texture/brown" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+    </model>
+</models>

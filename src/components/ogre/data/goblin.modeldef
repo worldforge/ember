@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation degrees="90.000000" x="-1.000000" y="-0.000000" z="-0.000000" />
         <submodels>
-            <submodel mesh="3d_skeletons/bipeds/races/goblin/male/goblin.mesh">
+            <submodel mesh="dural/creatures/biped/goblin/model/goblin.mesh">
                 <parts>
                     <part group="main" name="body" show="true">
                         <subentities>

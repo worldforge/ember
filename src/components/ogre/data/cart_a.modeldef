@@ -1,0 +1,15 @@
+<models>
+    <model name="cart" usescaleof="width" showcontained="true" icon="">
+        <translate x="0" y="0.4" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
+        <submodels>
+            <submodel mesh="dural/items/vehicle/cart/model/cart_a.mesh">
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+        <lights />
+        <bonegroups />
+    </model>
+</models>

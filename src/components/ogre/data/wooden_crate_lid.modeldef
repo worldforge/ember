@@ -1,0 +1,16 @@
+<models>
+    <model name="wooden_crate_lid" usescaleof="all" showcontained="true" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
+        <submodels>
+            <submodel mesh="dural/items/containers/crate/model/wooden_crate_lid.mesh">
+                <parts />
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+        <lights />
+        <bonegroups />
+    </model>
+</models>

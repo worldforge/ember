@@ -3,7 +3,7 @@
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/items/containers/models/bottlejug/bottlejug.mesh">
+            <submodel mesh="dural/items/containers/jug/model/jug.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>

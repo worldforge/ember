@@ -1,0 +1,26 @@
+<models>
+    <model name="painting_a" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="dural/items/furniture/painting/model/painting_a.mesh">
+                <parts>
+                    <part name="pirate" show="true">
+                        <subentities>
+                            <subentity index="0" material="/dural/items/furniture/painting/texture/pirate" />
+                        </subentities>
+                    </part>
+                    <part name="wizard" show="false">
+                        <subentities>
+                            <subentity index="0" material="/dural/items/furniture/painting/texture/wizard" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+        <lights />
+    </model>
+</models>

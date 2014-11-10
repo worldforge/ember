@@ -1,9 +1,9 @@
 <models>
-    <model name="knife" usescaleof="height" showcontained="true" icon="3d_objects/items/tools/textures/knife/I.png">
+    <model name="knife" usescaleof="height" showcontained="true" icon="dural/items/tools/knife/texture/I.png">
         <translate x="0" y="0" z="0" />
         <rotation x="-0" y="-1" z="-0" degrees="90" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/knife/knife.mesh">
+            <submodel mesh="dural/items/tools/knife/model/knife.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>

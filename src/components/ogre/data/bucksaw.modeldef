@@ -3,9 +3,14 @@
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/bucksaw/bucksaw.mesh">
+            <submodel mesh="dural/items/tools/bucksaw/model/bucksaw.mesh">
                 <parts>
-                    <part name="main" show="true" />
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" />
+                            <subentity index="1" />
+                        </subentities>
+                    </part>
                 </parts>
             </submodel>
         </submodels>

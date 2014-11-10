@@ -3,14 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation degrees="0.000000" x="0.000000" y="0.000000" z="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/creatures/duck/duck.mesh">
-                <parts>
-                    <part name="black_bellied_whistling" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/creatures/duck/black_bellied_whistling" />
-                        </subentities>
-                    </part>
-                </parts>
+            <submodel mesh="dural/creatures/duck/model/duck.mesh">
             </submodel>
         </submodels>
         <actions>

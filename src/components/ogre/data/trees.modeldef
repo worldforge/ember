@@ -1,26 +1,26 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
 
-	<model name="pineA" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+	<model name="pine_a" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineA.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_a.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -30,26 +30,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineB" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_b" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
      	<rendering scheme="forest" />
        <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineB.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_b.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -59,26 +59,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineC" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_c" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineC.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_c.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -88,26 +88,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineD" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_d" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineD.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_d.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -117,26 +117,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineE" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_e" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineE.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_e.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -146,26 +146,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineF" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_f" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineF.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_f.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -175,26 +175,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineG" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_g" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineG.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_g.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -204,26 +204,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineH" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_h" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineH.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_h.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -233,26 +233,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineI" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_i" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineI.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_i.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -262,26 +262,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineJ" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_j" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineJ.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_j.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -291,26 +291,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineK" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_k" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineK.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_k.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>
@@ -320,26 +320,26 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pineL" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
+    <model name="pine_l" usescaleof="height" showcontained="true" scale="2.000000" icon="dural/plants/trees/pine/texture/default/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/plants/trees/models/pine/pineL.mesh">
+            <submodel mesh="dural/plants/trees/pine/model/pine_l.mesh">
                 <parts>
                     <part name="pine" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/default" />
                         </subentities>
                     </part>
                     <part name="pine_snow" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_pine_snow" />
+                            <subentity index="0" material="/dural/plants/trees/pine/texture/snow" />
                         </subentities>
                     </part>
                     <part name="fir" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/tree_fir" />
+                            <subentity index="0" material="/dural/plants/trees/fir/texture/fir" />
                         </subentities>
                     </part>
                 </parts>

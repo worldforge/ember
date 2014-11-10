@@ -1,10 +1,10 @@
 <models>
-    <model name="torch" usescaleof="none" showcontained="true" icon="3d_objects/items/tools/textures/torch/I.png">
+    <model name="torch" usescaleof="none" showcontained="true" icon="dural/items/tools/torch/texture/I.png">
         <contentoffset x="0" y="0.8" z="0" />
         <translate x="0" y="0" z="0" />
         <rotation x="-1" y="0" z="0" degrees="90" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/torch/torch.mesh">
+            <submodel mesh="dural/items/tools/torch/model/torch.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>

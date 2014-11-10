@@ -3,7 +3,7 @@
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/items/resources/models/ingot_iron/ingot_iron.mesh">
+            <submodel mesh="dural/items/resources/iron_ingot/model/ingot_iron.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>

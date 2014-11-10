@@ -3,7 +3,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="-0.000000" y="-0.000000" z="-0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/fishing_hook/fishing_hook.mesh">
+            <submodel mesh="dural/items/tools/fishing_hook/model/fishing_hook.mesh">
                 <parts>
                     <part name="main" show="true">
                     </part>

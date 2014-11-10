@@ -1,0 +1,16 @@
+<models>
+    <model name="sharpened_log_fir" usescaleof="all" showcontained="true" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
+        <submodels>
+            <submodel mesh="dural/structures/sharpened_log/model/sharpened_log_fir.mesh">
+                <parts />
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+        <lights />
+        <bonegroups />
+    </model>
+</models>

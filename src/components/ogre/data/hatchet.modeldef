@@ -1,9 +1,9 @@
 <models>
-    <model name="hatchet" usescaleof="none" scale="0.1" showcontained="false" icon="3d_objects/items/tools/textures/hatchet/I.png">
+    <model name="hatchet" usescaleof="none" scale="0.1" showcontained="false" icon="dural/items/tools/hatchet/texture/I.png">
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/hatchet/hatchet.mesh">
+            <submodel mesh="dural/items/tools/hatchet/model/hatchet.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>
