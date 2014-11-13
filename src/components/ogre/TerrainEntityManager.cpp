@@ -36,6 +36,8 @@
 
 #include <Eris/View.h>
 
+#include <Mercator/Area.h>
+
 #include <sigc++/bind.h>
 
 namespace Ember
