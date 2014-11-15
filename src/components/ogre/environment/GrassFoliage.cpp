@@ -89,7 +89,7 @@ void GrassFoliage::initialize()
 			ogreBounds.right += difference;
 		}
 	}
-	mPagedGeometry->setBounds(ogreBounds);
+	mPagedGeometry->setInfinite();
 
 	mPagedGeometry->addDetailLevel<Forests::GrassPage>(96);
 	//We'll provide our own shaders for the grass materials.

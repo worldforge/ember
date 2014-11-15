@@ -61,19 +61,8 @@ ShrubberyFoliage::~ShrubberyFoliage()
 void ShrubberyFoliage::initialize()
 {
 	mPagedGeometry = new ::Forests::PagedGeometry(&mTerrainManager.getScene().getMainCamera(), mTerrainManager.getFoliageBatchSize());
-	const WFMath::AxisBox<2>& worldSize = mTerrainManager.getTerrainInfo().getWorldSizeInIndices();
 
-	::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
-	if (!WFMath::Equal(ogreBounds.width(), ogreBounds.height())) {
-		if (ogreBounds.width() > ogreBounds.height()) {
-			float difference = ogreBounds.width() - ogreBounds.height();
-			ogreBounds.bottom += difference;
-		} else {
-			float difference = ogreBounds.height() - ogreBounds.width();
-			ogreBounds.right += difference;
-		}
-	}
-	mPagedGeometry->setBounds(ogreBounds);
+	mPagedGeometry->setInfinite();
 
 
 	mPagedGeometry->addDetailLevel<Forests::BatchPage>(64, 32);
