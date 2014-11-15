@@ -127,7 +127,9 @@ uint32 CountUsedVertices(IndexData *id, std::map<uint32, uint32> &ibmap)
 
 				for (i = 0; i < id->indexCount; i++) {
 					uint16 index = data[i];
-					if (ibmap.find(index) == ibmap.end()) ibmap[index] = (uint32)(ibmap.size());
+					if (ibmap.find(index) == ibmap.end()) {
+						ibmap.emplace(index, (uint32)(ibmap.size()));
+					}
 				}
 				count = (uint32)ibmap.size();
 				id->indexBuffer->unlock();
@@ -141,7 +143,9 @@ uint32 CountUsedVertices(IndexData *id, std::map<uint32, uint32> &ibmap)
 
 				for (i = 0; i < id->indexCount; i++) {
 					uint32 index = data[i];
-					if (ibmap.find(index) == ibmap.end()) ibmap[index] = (uint32)(ibmap.size());
+					if (ibmap.find(index) == ibmap.end()) {
+						ibmap.emplace(index, (uint32)(ibmap.size()));
+					}
 				}
 				count = (uint32)ibmap.size();
 				id->indexBuffer->unlock();
@@ -175,7 +179,7 @@ void BatchedGeometry::extractVertexDataFromShared(MeshPtr mesh)
 
 		// Create new nonshared vertex data
 		std::map<uint32, uint32> indicesMap;
-		VertexData *newVertexData = new VertexData();
+		VertexData *newVertexData = OGRE_NEW VertexData();
 		newVertexData->vertexCount = CountUsedVertices(indexData, indicesMap);
 		//delete newVertexData->vertexDeclaration;
 		newVertexData->vertexDeclaration = oldVertexData->vertexDeclaration->clone();
@@ -247,7 +251,7 @@ void BatchedGeometry::extractVertexDataFromShared(MeshPtr mesh)
 	}
 
 	// Release shared vertex data
-	delete mesh->sharedVertexData;
+	OGRE_DELETE mesh->sharedVertexData;
 	mesh->sharedVertexData = NULL;
 }
 
