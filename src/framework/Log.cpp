@@ -27,6 +27,9 @@
 #include "Log.h"
 #include "LogObserver.h"
 #include "LoggingInstance.h"
+
+#include <boost/date_time.hpp>
+
 #include <algorithm>
 #include <cstdio>
 //#include <stdio.h>
@@ -61,7 +64,7 @@ int Log::sNumberOfExternalObservers = 0;
 StdOutLogObserver Log::sStdOutLogObserver;
 
 long long Log::sCurrentFrame = 0;
-boost::posix_time::ptime Log::sCurrentFrameStartMilliseconds;
+boost::posix_time::ptime Log::sCurrentFrameStartMilliseconds = boost::posix_time::microsec_clock::local_time();
 
 
 

@@ -133,6 +133,9 @@ std::atomic<int> ThreadIdentifier::sCounter;
 
     void StreamLogObserver::setDetailed(bool enabled)
     {
+    	if (enabled && !mDetailed) {
+    		Log::log("Enabling detailed logging. The values are as follows: microseconds since start: current thread id : current frame : milliseconds since start of current frame");
+    	}
     	mDetailed = enabled;
     }
 
