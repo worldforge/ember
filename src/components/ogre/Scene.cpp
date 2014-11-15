@@ -101,6 +101,11 @@ Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
 	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
 
+	if (pageSize <= 0) {
+		S_LOG_WARNING("Page size (\"terrain:pageSize\") config option set to invalid value of " << pageSize << " ; setting it to 256");
+		pageSize = 256;
+	}
+
 	assert(mSceneManager);
 	assert(mMainCamera);
 	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera, pageSize);
