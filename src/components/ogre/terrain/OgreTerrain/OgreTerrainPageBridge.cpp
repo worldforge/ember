@@ -46,10 +46,10 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 	S_LOG_VERBOSE("Updating terrain page height data: [" << mIndex.first << "," << mIndex.second << "]");
 
 	//Make a copy of the shared ptr, making sure it can't be deleted by the terrainPageReady() method
-	std::shared_ptr<float> heightData = mHeightData;
+	auto heightData = mHeightData;
 
 	if (!heightData) {
-		heightData.reset(new float[mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize()]);
+		heightData.reset(new float[mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize()], std::default_delete<float[]>());
 		geometry.updateOgreHeightData(heightData.get());
 	}
 	//If the mHeightData field has been reset by the terrainPageReady() method we'll now
@@ -59,7 +59,7 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 
 void OgreTerrainPageBridge::terrainPageReady()
 {
-	std::shared_ptr<float> heightDataPtr = mHeightData;
+	auto heightDataPtr = mHeightData;
 	// No need to keep height data around since it is copied on call.
 	//Note that the data won't be deleted until heightDataPtr runs out of scope, unless updateTerrain(...) is active at the same time.
 	mHeightData.reset();
