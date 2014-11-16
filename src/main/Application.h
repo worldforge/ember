@@ -227,16 +227,6 @@ private:
 	Eris::View* mWorldView;
 
 	/**
-	 * @brief Keeps track of the last time input processing started.
-	 */
-	boost::posix_time::ptime mLastTimeInputProcessingStart;
-
-	/**
-	 * @brief Keeps track of the last time input processing ended.
-	 */
-	boost::posix_time::ptime mLastTimeInputProcessingEnd;
-
-	/**
 	 * @brief Keeps track of the last time the main loop step completed.
 	 */
 	boost::posix_time::ptime mLastTimeMainLoopStepEnded;

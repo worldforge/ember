@@ -35,6 +35,7 @@
 #include <sigc++/signal.h>
 
 #include <SDL_scancode.h>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <set>
 #include <list>
@@ -628,6 +629,17 @@ private:
 	 * @brief The id of the main window, if available.
 	 */
 	uint32_t mMainWindowId;
+
+
+	/**
+	 * @brief Keeps track of the last time input processing started.
+	 */
+	boost::posix_time::ptime mLastTimeInputProcessingStart;
+
+	/**
+	 * @brief Keeps track of the last time input processing ended.
+	 */
+	boost::posix_time::ptime mLastTimeInputProcessingEnd;
 
 };
 

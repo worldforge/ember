@@ -59,6 +59,8 @@
 #include <algorithm>
 
 template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
+using boost::posix_time::microsec_clock;
+using boost::posix_time::ptime;
 
 namespace Ember
 {
@@ -67,7 +69,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(nullptr), mScreenWidth(0), mScreenHeight(0), mMainVideoSurface(0), mInvertMouse(1), mHandleOpenGL(false), mMainWindowId(0)
+		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(nullptr), mScreenWidth(0), mScreenHeight(0), mMainVideoSurface(0), mInvertMouse(1), mHandleOpenGL(false), mMainWindowId(0), mLastTimeInputProcessingStart(microsec_clock::local_time()), mLastTimeInputProcessingEnd(microsec_clock::local_time())
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -396,6 +398,10 @@ void Input::startInteraction()
 void Input::processInput()
 {
 
+	ptime currentTime = microsec_clock::local_time();
+	mMainLoopController->EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).total_microseconds() / 1000000.0f);
+	mLastTimeInputProcessingStart = currentTime;
+
 	auto newTick = std::chrono::system_clock::now();
 	float secondsSinceLast = std::chrono::duration_cast<std::chrono::duration<float>>(newTick - mLastTick).count();
 
@@ -405,6 +411,9 @@ void Input::processInput()
 	if (mWindowProvider) {
 		mWindowProvider->processInput();
 	}
+	currentTime = microsec_clock::local_time();
+	mMainLoopController->EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).total_microseconds() / 1000000.0f);
+	mLastTimeInputProcessingEnd = currentTime;
 }
 
 void Input::pollMouse(float secondsSinceLast)

@@ -153,7 +153,7 @@ public:
 	}
 
 	/**
-	 * @brief Accessor for the minimum length (in milliseconds) that each frame should take in order for the desired fps to be kept.
+	 * @brief Accessor for the minimum length (in microseconds) that each frame should take in order for the desired fps to be kept.
 	 * If 0 no capping will occur.
 	 */
 	long getMicrosecondsPerFrame() const
@@ -220,35 +220,27 @@ void Application::mainLoop()
 {
 	DesiredFpsListener desiredFpsListener;
 	Eris::EventService& eventService = mSession->getEventService();
-
 	Input& input(Input::getSingleton());
-	ptime currentTime;
-	mLastTimeInputProcessingStart = currentTime;
-	mLastTimeInputProcessingEnd = currentTime;
+
 	do {
 		try {
 			Log::sCurrentFrameStartMilliseconds = microsec_clock::local_time();
 
 			unsigned int frameActionMask = 0;
 			TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(desiredFpsListener.getMicrosecondsPerFrame()));
+			bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
+			if (updatedRendering) {
+				frameActionMask |= MainLoopController::FA_GRAPHICS;
+				frameActionMask |= MainLoopController::FA_INPUT;
+			} else {
+				input.processInput();
+				frameActionMask |= MainLoopController::FA_INPUT;
+			}
+
 			if (mWorldView) {
 				mWorldView->update();
 			}
 
-			currentTime = microsec_clock::local_time();
-			mMainLoopController.EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).total_microseconds() / 1000000.0f);
-			mLastTimeInputProcessingStart = currentTime;
-			input.processInput();
-			frameActionMask |= MainLoopController::FA_INPUT;
-
-			currentTime = microsec_clock::local_time();
-			mMainLoopController.EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).total_microseconds() / 1000000.0f);
-			mLastTimeInputProcessingEnd = currentTime;
-
-			bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
-			if (updatedRendering) {
-				frameActionMask |= MainLoopController::FA_GRAPHICS;
-			}
 			mServices->getSoundService().cycle();
 			frameActionMask |= MainLoopController::FA_SOUND;
 
