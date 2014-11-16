@@ -66,6 +66,8 @@ private:
 	 */
 	const boost::posix_time::ptime mStartTime;
 
+	const boost::posix_time::ptime mEndTime;
+
 	/**
 	 * @brief The slice of time for this time frame.
 	 */
