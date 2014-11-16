@@ -248,7 +248,7 @@ public:
 	 * Everything will be setup in the constructor. That includes creating a scene manager, camera, render texture and getting the correct material.
 	 * @param materialName The name of the material to use for the pointer. The material must have a texture unit state named "Pointer", which must reside in the first pass.
 	 */
-	RenderedCompassPointer(std::string materialName = "/ui/compass/pointer");
+	RenderedCompassPointer(std::string materialName = "/common/ui/compass/pointer");
 
 	/**
 	 * @brief Dtor.
@@ -329,10 +329,10 @@ public:
 
 	/**
 	 * @brief Ctor.
-	 * @param compassMaterialName The name of the compass ogre material, defaults to "/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
-	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
+	 * @param compassMaterialName The name of the compass ogre material, defaults to "/common/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
+	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/common/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
 	 */
-	RenderedCompassImpl(std::string compassMaterialName = "/ui/compass", std::string pointerMaterialName = "/ui/compass/pointer");
+	RenderedCompassImpl(std::string compassMaterialName = "/common/ui/compass", std::string pointerMaterialName = "/common/ui/compass/pointer");
 
 	/**
 	 * @brief Dtor.
