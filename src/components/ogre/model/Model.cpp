@@ -934,7 +934,9 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 		}
 	}
 
-	for (auto I = mParticleSystems.begin(); I != mParticleSystems.end(); ++I) {
+	auto I = mParticleSystems.begin();
+	while (I != mParticleSystems.end()) {
+
 		(*I)->getOgreParticleSystem()->_notifyAttached(parent, isTagPoint);
 		try {
 			//Try to trigger a load of any image resources used by affectors.
@@ -955,10 +957,11 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 				}
 			}
 
-
+			++I;
 		} catch (const Ogre::Exception& ex) {
 			//An exception occurred when forcing an update of the particle system. Remove it.
 			S_LOG_FAILURE("Error when loading particle system " << (*I)->getOgreParticleSystem()->getName() << ". Removing it.");
+			mMovableObjects.erase(std::find(std::begin(mMovableObjects), std::end(mMovableObjects), (*I)->getOgreParticleSystem()));
 			delete *I;
 			I = mParticleSystems.erase(I);
 		}
