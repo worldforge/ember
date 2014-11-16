@@ -635,7 +635,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/environment/pagedgeometry/Makefile
 		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/Makefile
-		 src/components/ogre/data/Makefile
 		 src/components/ogre/sounddefinitions/Makefile
 		 src/components/ogre/authoring/Makefile
 		 src/components/ogre/authoring/entityrecipes/Makefile
@@ -654,6 +653,7 @@ AC_CONFIG_FILES([Makefile
 		 src/domain/Makefile
 		 src/domain/bindings/Makefile
 		 src/domain/bindings/lua/Makefile
+		 data/Makefile
 ])
 
 AC_OUTPUT
