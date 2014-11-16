@@ -5,13 +5,7 @@
         <submodels>
             <submodel mesh="dural/creatures/chicken/model/chicken.mesh">
                 <parts>
-                    <part name="redchicken" show="true">
-                        <subentities>
-                            <subentity index="0" material="/dural/creatures/chicken/texture/redchicken" />
-                            <subentity index="1" material="/dural/creatures/chicken/texture/redchicken" />
-                        </subentities>
-                    </part>
-                    <part name="red" show="false">
+                    <part name="red" show="true">
                         <subentities>
                             <subentity index="0" material="/dural/creatures/chicken/texture/red" />
                             <subentity index="1" material="/dural/creatures/chicken/texture/red" />
