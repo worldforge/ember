@@ -30,19 +30,20 @@
             </submodel>
         </submodels>
         <actions>
+        <!-- The animation is currently broken, so we'll disable it.
             <action name="__movement_idle">
                 <activations>
                     <activation type="movement">idle</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" />
+                        <animationpart name="@TailFlick" />
                     </animation>
                 </animations>
                 <sounds>
                     <sound group="pig_snort" playOrder="random" />
                 </sounds>
-            </action>
+            </action> -->
         </actions>
     </model>
     <model name="wolf" showcontained="false" usescaleof="height">

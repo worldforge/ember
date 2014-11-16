@@ -1,7 +1,7 @@
 <models>
-    <model name="cg_house_b" usescaleof="height" showcontained="true" icon="">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+    <model name="cg_house_b" usescaleof="width" showcontained="true" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
             <submodel mesh="dural/structures/cg_house_b/model/cg_house_b.mesh">
                 <parts>
@@ -13,5 +13,6 @@
         <attachpoints />
         <views />
         <lights />
+        <bonegroups />
     </model>
 </models>

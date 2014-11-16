@@ -1,14 +1,16 @@
 <models>
-    <model name="stone_palisade" usescaleof="height" showcontained="true" icon="">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+    <model name="stone_palisade" usescaleof="width" showcontained="true" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
             <submodel mesh="dural/structures/stone_palisade/model/stone_palisade.mesh">
+                <parts />
             </submodel>
         </submodels>
         <actions />
         <attachpoints />
         <views />
         <lights />
+        <bonegroups />
     </model>
 </models>

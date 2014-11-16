@@ -1078,7 +1078,7 @@
 	
 	<autoentitymapping name="fence_pole" />
 	<autoentitymapping name="fence_section" modelname="wooden_fence" />
-	<autoentitymapping name="fence_gate" modelname="wooden_gate" />
+	<autoentitymapping name="fence_gate" modelname="wooden_fence_gate" />
 
 	<entitymapping name="theodolite">
 		<entitymatch>
