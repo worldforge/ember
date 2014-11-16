@@ -98,10 +98,10 @@
 				<param key="density">1</param>
 				<param key="falloff">0.7</param>
 			</foliage>
-			<foliage planttype="camelia" populationtechnique="cluster" rendertechnique="shrubbery">
+			<foliage planttype="camellia" populationtechnique="cluster" rendertechnique="shrubbery">
 				<param key="mesh">dural/plants/flowers/camellia/model/camellia.mesh</param>
-				<param key="minScale">2</param>
-				<param key="maxScale">5</param>
+				<param key="minScale">0.5</param>
+				<param key="maxScale">2</param>
 				<param key="threshold">150</param>
 				
 				<param key="minClusterRadius">2</param>
@@ -113,7 +113,7 @@
 			<foliage planttype="leaves" populationtechnique="cluster" rendertechnique="shrubbery">
 				<param key="mesh">dural/plants/shrubs/leaf/model/leaves_a.mesh</param>
 				<param key="minScale">0.5</param>
-				<param key="maxScale">1.2</param>
+				<param key="maxScale">2</param>
 				<param key="threshold">150</param>
 				
 				<param key="minClusterRadius">2</param>
