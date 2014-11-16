@@ -49,6 +49,7 @@ EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alig
 EmberTerrainGroup::~EmberTerrainGroup()
 {
 	while (sLoadingTaskNum > 0) {
+		S_LOG_VERBOSE("Sleeping 2 milliseconds while waiting for tasks to complete in EmberTerrainGroup destructor.");
 		OGRE_THREAD_SLEEP(2);
 		Root::getSingleton().getWorkQueue()->processResponses();
 	}
