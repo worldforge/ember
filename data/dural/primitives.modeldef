@@ -19,7 +19,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="common/primitives/models/arrow.mesh">
+            <submodel mesh="common/primitives/model/arrow.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>
@@ -33,7 +33,7 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="common/primitives/models/sphere.mesh">
+            <submodel mesh="common/primitives/model/sphere.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>
