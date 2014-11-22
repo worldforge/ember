@@ -130,9 +130,8 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	renderWindow->windowMovedOrResized();
 
 	mLoader->initialize();
-	mLoader->loadSection("Bootstrap", false);
-	mLoader->loadSection("Gui", false);
-	mLoader->loadSection("General", false);
+	mLoader->loadBootstrap();
+	mLoader->loadGui();
 
 	Cegui::CEGUILogger* logger = new Cegui::CEGUILogger();
 

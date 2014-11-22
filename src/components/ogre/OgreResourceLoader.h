@@ -65,22 +65,7 @@ public:
 	void loadGui();
 	void loadGeneral();
 
-	/**
-	 * @brief Loads a section from the resource configuration.
-	 * @param sectionName The name of the section to load.
-	 * @param initializeAlso True if the section also should be initialized (i.e. all scripts parsed).
-	 */
-	void loadSection(const std::string& sectionName, bool initializeAlso = true);
-
 	void preloadMedia();
-
-	unsigned int numberOfSections();
-
-	/**
-	 * @brief Gets all resource locations.
-	 * @returns All resource locations defined. The keys are the resource groups and the values the locations.
-	 */
-	const ResourceLocationsMap& getResourceLocations() const;
 
 	/**
 	 * @brief Tells Ogre to unload all unused resources, thus freeing up memory.
@@ -100,7 +85,6 @@ public:
 
 protected:
 	bool mLoadRecursive;
-	Ogre::ConfigFile mConfigFile;
 
 	/**
 	 * @brief A store of extra locations, as specified in config or command line.
@@ -111,19 +95,11 @@ protected:
 
 	FileSystemArchiveFactory* mFileSystemArchiveFactory;
 
-	/**
-	 * @brief A map of all resource locations.
-	 * The keys are the resource groups, and the values the locations.
-	 */
-	ResourceLocationsMap mResourceLocations;
-
 
 	bool addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
 	bool addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
 
 	bool isExistingDir(const std::string& path) const;
-
-	void loadAllResources();
 
 	/**
 	 * @brief Adds a resource directory to the Ogre resource system.

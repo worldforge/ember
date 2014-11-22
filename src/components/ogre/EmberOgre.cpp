@@ -353,8 +353,9 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool)configSrv.getValue("media", "preloadmedia");
 	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool)configSrv.getValue("wfut", "enabled");
 
-	//start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	mResourceLoader->loadBootstrap();
+	mResourceLoader->loadGui();
+	mResourceLoader->loadGeneral();
 
 	mScreen = new Screen(*mWindow);
 
@@ -378,7 +379,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 		Gui::LoadingBarSection resourceGroupSection(loadingBar, useWfut ? 0.8 : 1.0, "Resource loading");
 		loadingBar.addSection(&resourceGroupSection);
-		unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; //remove bootstrap since that's already loaded
+
+		size_t numberOfSections = Ogre::ResourceGroupManager::getSingleton().getResourceGroups().size() - 1; //remove bootstrap since that's already loaded
 		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7 : 1.0));
 
 		loadingBar.start();
@@ -399,8 +401,17 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
 		//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
 
-		mResourceLoader->loadGui();
-		mResourceLoader->loadGeneral();
+		Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+		//out of pure interest we'll print out how many modeldefinitions we've loaded
+		Ogre::ResourceManager::ResourceMapIterator I = Model::ModelDefinitionManager::getSingleton().getResourceIterator();
+		int count = 0;
+		while (I.hasMoreElements()) {
+			++count;
+			I.moveNext();
+		}
+
+		S_LOG_INFO("Finished loading " << count << " modeldefinitions.");
 
 		// Create shader manager
 		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(mainLoopController);
@@ -565,11 +576,6 @@ void EmberOgre::Application_ServicesInitialized()
 Eris::View* EmberOgre::getMainView() const
 {
 	return Application::getSingleton().getMainView();
-}
-
-const std::multimap<std::string, std::string>& EmberOgre::getResourceLocations() const
-{
-	return mResourceLoader->getResourceLocations();
 }
 
 }

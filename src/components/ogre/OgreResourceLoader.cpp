@@ -82,28 +82,6 @@ void OgreResourceLoader::initialize()
 			}
 		}
 	}
-
-	//load the resource file
-	const std::string configPath(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "/resources.cfg");
-	struct stat tagStat;
-	int ret = stat(configPath.c_str(), &tagStat);
-	if (ret != 0) {
-		throw Ember::Exception("Could not find the required file '" + configPath + "'. Make sure that all files got correctly installed.");
-	}
-
-	S_LOG_VERBOSE("Loading resources definitions from " << configPath);
-	mConfigFile.load(configPath);
-}
-
-unsigned int OgreResourceLoader::numberOfSections()
-{
-	unsigned int numberOfSections = 0;
-	Ogre::ConfigFile::SectionIterator I = mConfigFile.getSectionIterator();
-	while (I.hasMoreElements()) {
-		numberOfSections++;
-		I.moveNext();
-	}
-	return numberOfSections - 1;
 }
 
 void OgreResourceLoader::runCommand(const std::string &command, const std::string &args)
@@ -150,7 +128,6 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 		S_LOG_VERBOSE("Adding dir " << path);
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, type, section, recursive);
-			mResourceLocations.insert(std::make_pair(section, path));
 			return true;
 		} catch (const std::exception&) {
 			if (throwOnFailure) {
@@ -173,28 +150,44 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 
 void OgreResourceLoader::loadBootstrap()
 {
-	loadSection("Bootstrap");
+	//Add the "assets" directory, which contains most of the assets
+	addUserMedia("assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	addSharedMedia("assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
 
 void OgreResourceLoader::loadGui()
 {
-	loadSection("Gui");
+	addUserMedia("gui", "EmberFileSystem", "Gui", true);
+	addSharedMedia("gui", "EmberFileSystem", "Gui", true);
 }
 
 void OgreResourceLoader::loadGeneral()
 {
-	//After loading Bootstrap and Gui, this will load all remaining resources.
-	loadAllResources();
-
-	//out of pure interest we'll print out how many modeldefinitions we've loaded
-	Ogre::ResourceManager::ResourceMapIterator I = Model::ModelDefinitionManager::getSingleton().getResourceIterator();
-	int count = 0;
-	while (I.hasMoreElements()) {
-		++count;
-		I.moveNext();
+	//Start with adding any extra defined locations.
+	for (auto& location : mExtraResourceLocations) {
+		addResourceDirectory(location.second, "EmberFileSystem", location.first, mLoadRecursive, false);
 	}
 
-	S_LOG_INFO("Finished loading " << count << " modeldefinitions.");
+	//Lua scripts
+	addUserMedia("scripting", "EmberFileSystem", "Scripting", true);
+	addSharedMedia("scripting", "EmberFileSystem", "Scripting", true);
+
+	//Model definitions, terrain definitions and entity mappings
+	addUserMedia("data", "EmberFileSystem", "ModelDefinitions", true);
+	addSharedMedia("data", "EmberFileSystem", "ModelDefinitions", true);
+
+	//Sound definitions
+	addUserMedia("sounddefinitions", "EmberFileSystem", "SoundDefinitions", true);
+	addSharedMedia("sounddefinitions", "EmberFileSystem", "SoundDefinitions", true);
+
+	//The Caelum component
+	addUserMedia("assets_external/caelum", "EmberFileSystem", "Caelum", true);
+	addSharedMedia("assets_external/caelum", "EmberFileSystem", "Caelum", true);
+
+	//Entity recipes
+	addUserMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);
+	addSharedMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);
+
 }
 
 void OgreResourceLoader::preloadMedia()
@@ -211,86 +204,6 @@ void OgreResourceLoader::preloadMedia()
 	}
 }
 
-void OgreResourceLoader::loadSection(const std::string& sectionName, bool initializeAlso)
-{
-	if (sectionName != "" && std::find(mLoadedSections.begin(), mLoadedSections.end(), sectionName) == mLoadedSections.end()) {
-		bool mediaAdded = false;
-
-		S_LOG_VERBOSE("Adding resource section " << sectionName);
-		// 	Ogre::ResourceGroupManager::getSingleton().createResourceGroup(sectionName);
-
-		//Start with adding any extra defined locations.
-		ResourceLocationsMap::const_iterator extraI = mExtraResourceLocations.lower_bound(sectionName);
-		ResourceLocationsMap::const_iterator extraIend = mExtraResourceLocations.upper_bound(sectionName);
-		while (extraI != extraIend) {
-			addResourceDirectory(extraI->second, "EmberFileSystem", sectionName, mLoadRecursive, false);
-			extraI++;
-		}
-
-		//We want to make sure that "user" media always is loaded before "shared" media. Unfortunately the Ogre settings iterator doesn't return the settings in the order they are defined in resource.cfg so we can't rely on the order that the settings are defined, and instead need to first add the settings to two different vectors, and then iterate through the user vector first.
-		std::vector<std::pair<std::string, std::string>> userPlaces;
-		std::vector<std::pair<std::string, std::string>> sharedPlaces;
-
-		Ogre::ConfigFile::SettingsIterator I = mConfigFile.getSettingsIterator(sectionName);
-		std::string finalTypename;
-		while (I.hasMoreElements()) {
-			//Ogre::ConfigFile::SettingsMultiMap J = I.getNext();
-			const std::string& typeName = I.peekNextKey();
-			const std::string& archName = I.peekNextValue();
-
-			finalTypename = typeName.substr(0, typeName.find("["));
-
-			if (Ogre::StringUtil::endsWith(typeName, "[shared]")) {
-				sharedPlaces.push_back(std::pair<std::string, std::string>(finalTypename, archName));
-			} else {
-				userPlaces.push_back(std::pair<std::string, std::string>(finalTypename, archName));
-			}
-			I.moveNext();
-		}
-
-		//We've now filled the vectors, start by adding all the user media.
-		//Note that the Ogre resource system isn't totally consistent. For scripts, newer definitions will override older ones.
-		//However, for mesh and texture resources the opposite it true.
-		//Since we're more often are dealing with scripts when altering model definitions etc. we'll opt for allowing scripts to be overridden.
-		for (std::vector<std::pair<std::string, std::string>>::iterator I = userPlaces.begin(); I != userPlaces.end(); ++I) {
-			mediaAdded |= addUserMedia(I->second, I->first, sectionName, mLoadRecursive);
-		}
-		for (std::vector<std::pair<std::string, std::string>>::iterator I = sharedPlaces.begin(); I != sharedPlaces.end(); ++I) {
-			mediaAdded |= addSharedMedia(I->second, I->first, sectionName, mLoadRecursive);
-		}
-
-		mLoadedSections.push_back(sectionName);
-
-		//only initialize the resource group if it has media
-		if (initializeAlso && mediaAdded) {
-			try {
-				Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(sectionName);
-				/*			} catch (const Ogre::ItemIdentityException& ex) {
-				 if (ex.getNumber() == Ogre::ERR_DUPLICATE_ITEM) {
-				 const std::string& message(ex.getDescription());
-				 size_t pos = std::string("Resource with the name ").length();
-				 std::string resourceName = message.substr(pos, message.find_first_of(' ', pos) - pos);
-
-				 }
-				 */
-			} catch (const std::exception& ex) {
-				S_LOG_FAILURE("An error occurred when loading media from section '" << sectionName << "'." << ex);
-			}
-		}
-	}
-}
-
-void OgreResourceLoader::loadAllResources()
-{
-	S_LOG_VERBOSE("Now loading all unloaded sections.");
-	Ogre::ConfigFile::SectionIterator I = mConfigFile.getSectionIterator();
-	while (I.hasMoreElements()) {
-		const std::string& sectionName = I.peekNextKey();
-		loadSection(sectionName);
-		I.moveNext();
-	}
-
-}
 
 bool OgreResourceLoader::isExistingDir(const std::string& path) const
 {
@@ -303,11 +216,6 @@ bool OgreResourceLoader::isExistingDir(const std::string& path) const
 		exists = !fin.fail();
 	}
 	return exists;
-}
-
-const OgreResourceLoader::ResourceLocationsMap& OgreResourceLoader::getResourceLocations() const
-{
-	return mResourceLocations;
 }
 
 }

@@ -144,37 +144,42 @@ std::string AssetsManager::materialAsText(Ogre::MaterialPtr material)
 
 std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& filePath)
 {
-	const std::multimap<std::string, std::string>& locations = EmberOgre::getSingleton().getResourceLocations();
+	Ogre::ResourceGroupManager& manager = Ogre::ResourceGroupManager::getSingleton();
 
-	for (std::multimap<std::string, std::string>::const_iterator I = locations.begin(); I != locations.end(); ++I) {
-		const std::string resourceLocation = I->second;
-		if (Ogre::StringUtil::startsWith(filePath, resourceLocation, true)) {
-			//Replace backwards slashes on windows with forwards slashes as that's what's used in the Ogre resource system.
-			std::string localMeshPath = filePath.substr(resourceLocation.length(), std::string::npos);
-			std::replace(localMeshPath.begin(), localMeshPath.end(), '\\', '/');
-			return localMeshPath;
+	auto groups = manager.getResourceGroups();
+	for (auto& group : groups) {
+		auto locations = manager.getResourceLocationList(group);
+		for (auto& location : locations) {
+			if (location->archive) {
+				const std::string resourceLocation = location->archive->getName();
+				if (Ogre::StringUtil::startsWith(filePath, resourceLocation, true)) {
+					//Replace backwards slashes on windows with forwards slashes as that's what's used in the Ogre resource system.
+					std::string localMeshPath = filePath.substr(resourceLocation.length(), std::string::npos);
+					std::replace(localMeshPath.begin(), localMeshPath.end(), '\\', '/');
+					return localMeshPath;
+				}
+			}
 		}
 	}
-	return filePath;
+
+	return "";
 }
 
 std::string AssetsManager::resolveFilePathForMesh(Ogre::MeshPtr meshPtr)
 {
 	Ogre::ResourceGroupManager& manager = Ogre::ResourceGroupManager::getSingleton();
-	const std::multimap<std::string, std::string>& locations = EmberOgre::getSingleton().getResourceLocations();
 
-	for (std::multimap<std::string, std::string>::const_iterator I = locations.begin(); I != locations.end(); ++I) {
-		std::string group = I->first;
-		std::string fileName = meshPtr->getName();
-		Ogre::FileInfoListPtr files = manager.findResourceFileInfo(group, fileName, false);
-		for (Ogre::FileInfoList::const_iterator J = files->begin(); J != files->end(); ++J) {
-			if (J->filename == fileName) {
-				return I->second + J->filename;
+	auto group = manager.findGroupContainingResource(meshPtr->getName());
+	Ogre::FileInfoListPtr files = manager.findResourceFileInfo(group, meshPtr->getName(), false);
+	if (files.get()) {
+		for (auto fileInfo : *files) {
+			if (fileInfo.archive && fileInfo.filename == meshPtr->getName()) {
+				return fileInfo.archive->getName() + "/" + fileInfo.filename;
 			}
 		}
 	}
-	return "";
 
+	return "";
 }
 
 bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)

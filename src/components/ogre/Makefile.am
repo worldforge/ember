@@ -105,7 +105,7 @@ libEmberOgre_a_SOURCES = \
 	Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp CompositionAction.cpp GraphicalChangeAdapter.cpp
 	
 confdir = $(sysconfdir)/ember
-dist_conf_DATA = ogre.cfg resources.cfg
+dist_conf_DATA = ogre.cfg
 
 
 noinst_HEADERS = \

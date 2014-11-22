@@ -36,6 +36,8 @@ the basic resources required for the progress bar and will be loaded automatical
 #include <OgreOverlayElement.h>
 #include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
+#include <OgreMaterialManager.h>
+#include <OgreFontManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreWindowEventUtilities.h>
 
@@ -84,6 +86,7 @@ namespace Gui {
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when destroying loading bar overlay." << ex);
 		}
+
 	}
 
 	void LoadingBar::deleteOverlayContainerContents(Ogre::OverlayContainer& container) const
@@ -102,13 +105,16 @@ namespace Gui {
 
 	void LoadingBar::start()
 	{
-		try {
-			// We need to pre-initialise the 'Bootstrap' group so we can use
-			// the basic contents in the loading screen
-			ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
-		} catch (...) {
-			throw Ember::Exception("Error when initializing Ember. This seems to be caused by not all media being present. Something is probably wrong with your installation. Make sure that all media has been correctly downloaded and installed.");
-		}
+		//Parse the materials used for the loading bar
+		auto materialPtr = Ogre::ResourceGroupManager::getSingleton().openResource("common/ui/splash/EmberCore.material");
+		Ogre::MaterialManager::getSingleton().parseScript(materialPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+		auto fontdefPtr = Ogre::ResourceGroupManager::getSingleton().openResource("common/ui/splash/Ember.fontdef");
+		Ogre::FontManager::getSingleton().parseScript(fontdefPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+		auto overlayPtr = Ogre::ResourceGroupManager::getSingleton().openResource("common/ui/splash/EmberLoadingPanel.overlay");
+		Ogre::OverlayManager::getSingleton().parseScript(overlayPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
 
 		try {
 			OverlayManager& omgr = OverlayManager::getSingleton();
@@ -147,10 +153,6 @@ namespace Gui {
 			// hide loading screen
 			mLoadOverlay->hide();
 		}
-
-		//we won't be needing the bootstrap resources for some while, so unload them
-// 		ResourceGroupManager::getSingleton().unloadResourceGroup("Bootstrap");
-
 	}
 
 
