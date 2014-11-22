@@ -203,8 +203,8 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			CEGUI::System::getSingleton().getDefaultGUIContext().injectTimePulse(timeElapsed);
 			lastTime = Time::currentTimeMillis();
 			Ogre::Root::getSingleton().renderOneFrame();
-			// Don't waste power. 20-25 FPS is enough for config window
-			std::this_thread::sleep_for(std::chrono::milliseconds(40));
+			// We'll use a smooth 60 fps to provide a good impression
+			std::this_thread::sleep_for(std::chrono::milliseconds(16));
 		}
 		input.removeAdapter(adapter);
 		delete adapter;
