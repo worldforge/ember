@@ -74,7 +74,7 @@
             </submodel>
             <submodel mesh="dural/creatures/biped/male/model/basic_chain_shirt.mesh">
                 <parts>
-                    <part name="basic_chain_shirt" torso="torso" show="false">
+                    <part name="basic_chain_shirt" group="torso" show="false">
                     </part>
                 </parts>
             </submodel>
