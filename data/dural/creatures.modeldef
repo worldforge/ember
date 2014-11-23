@@ -46,37 +46,6 @@
             </action> -->
         </actions>
     </model>
-    <model name="wolf" showcontained="false" usescaleof="height">
-        <submodels>
-            <submodel mesh="dural/creatures/quadruped_v2/model/normal_wolf.mesh">
-                <parts>
-                    <part name="main" show="true" />
-                </parts>
-            </submodel>
-        </submodels>
-        <actions>
-            <action name="__movement_walk">
-                <activations>
-                    <activation type="movement">walk</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="walk" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="__movement_idle">
-                <activations>
-                    <activation type="movement">idle</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="idle" />
-                    </animation>
-                </animations>
-            </action>
-        </actions>
-    </model>
     <model icon="" name="skeleton" showcontained="false" usescaleof="height">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation degrees="90.000000" x="-1.000000" y="-0.000000" z="-0.000000" />
