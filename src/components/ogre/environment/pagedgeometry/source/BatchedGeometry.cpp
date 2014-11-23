@@ -128,7 +128,8 @@ uint32 CountUsedVertices(IndexData *id, std::map<uint32, uint32> &ibmap)
 				for (i = 0; i < id->indexCount; i++) {
 					uint16 index = data[i];
 					if (ibmap.find(index) == ibmap.end()) {
-						ibmap.emplace(index, (uint32)(ibmap.size()));
+						//We'd like to use std::map::emplace(), but this isn't supported on gcc 4.7 which we still support
+						ibmap.insert(std::make_pair(index, (uint32)(ibmap.size())));
 					}
 				}
 				count = (uint32)ibmap.size();
