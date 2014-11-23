@@ -45,8 +45,6 @@ If a directory contains a file named "norecurse" (it can be empty) Ember won't r
 */
 class OgreResourceLoader : public ConsoleObject {
 public:
-	typedef std::multimap<std::string, std::string> ResourceLocationsMap;
-
 	OgreResourceLoader();
 
 	~OgreResourceLoader();
@@ -81,7 +79,7 @@ protected:
 	/**
 	 * @brief A store of extra locations, as specified in config or command line.
 	 */
-	ResourceLocationsMap mExtraResourceLocations;
+	std::vector<std::string> mExtraResourceLocations;
 
 	std::vector<std::string> mLoadedSections;
 

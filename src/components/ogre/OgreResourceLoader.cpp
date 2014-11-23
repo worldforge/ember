@@ -71,16 +71,7 @@ void OgreResourceLoader::initialize()
 	if (EmberServices::getSingleton().getConfigService().itemExists("media", "extraresourcelocations")) {
 		varconf::Variable resourceConfigFilesVar = EmberServices::getSingleton().getConfigService().getValue("media", "extraresourcelocations");
 		std::string resourceConfigFiles = resourceConfigFilesVar.as_string();
-		Tokeniser configFilesTokeniser(resourceConfigFiles, ";");
-		while (configFilesTokeniser.hasRemainingTokens()) {
-			std::string rawPath = configFilesTokeniser.nextToken();
-			Tokeniser pathTokeniser(rawPath, "|");
-			std::string group = pathTokeniser.nextToken();
-			std::string path = pathTokeniser.nextToken();
-			if (group != "" && path != "") {
-				mExtraResourceLocations.insert(ResourceLocationsMap::value_type(group, path));
-			}
-		}
+		mExtraResourceLocations = Tokeniser::split(resourceConfigFiles, ";");
 	}
 }
 
@@ -165,7 +156,7 @@ void OgreResourceLoader::loadGeneral()
 {
 	//Start with adding any extra defined locations.
 	for (auto& location : mExtraResourceLocations) {
-		addResourceDirectory(location.second, "EmberFileSystem", location.first, mLoadRecursive, false);
+		addResourceDirectory(location, "EmberFileSystem", "Extra", mLoadRecursive, false);
 	}
 
 	//Lua scripts
