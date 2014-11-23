@@ -20,8 +20,9 @@ def collect_licenses(src_assets_path, licenses, assets):
 		if os.path.isfile(asset_path):
 			asset_path_tokens = os.path.dirname(asset).split(os.sep)
 			while len(asset_path_tokens) > 0:
-				for file in find_matches(os.listdir(os.path.join(src_assets_path, (os.sep).join(asset_path_tokens))), ["*license*", "*LICENSE*", "*authors*", "*AUTHORS*"]):
-					licenses.add(file)
+				dir = (os.sep).join(asset_path_tokens)
+				for file in find_matches(os.listdir(os.path.join(src_assets_path, dir)), ["*license*", "*LICENSE*", "*authors*", "*AUTHORS*"]):
+					licenses.add(os.path.join(dir, file))
 				del asset_path_tokens[-1]
 				
 
@@ -227,6 +228,8 @@ OPTIONS
 
 	licenses = set()
 	collect_licenses(src_assets_dir, licenses, assets)
+	
+	assets.update(licenses)
 		
 	copied, converted, skipped, errors = copy_assets(src_assets_dir, dest_assets_dir, assets, 512)
 	print("Media conversion completed.\n{0} files copied, {1} images converted, {2} files skipped, {3} with errors".format(copied, converted, skipped, errors))
