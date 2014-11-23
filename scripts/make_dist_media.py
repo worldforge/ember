@@ -124,11 +124,12 @@ OPTIONS
 	startdir = os.getcwd()
 	src_media_dir = sys.argv[1]
 	src_assets_dir = os.path.join(src_media_dir, "assets")
-	dest_media_dir = sys.argv[2]
+	#Place the resulting media in a subdirectory called "media"
+	dest_media_dir = os.path.join(sys.argv[2], "media")
 	dest_assets_dir = os.path.join(dest_media_dir, "assets")
 	
 	if not os.path.exists(dest_media_dir):
-		os.mkdir(dest_media_dir)
+		os.makedirs(dest_media_dir)
 	
 	#First copy all directories that we should just provide unchanged
 	copytree(os.path.join(src_media_dir, "assets_external/caelum"), os.path.join(dest_media_dir, "assets_external/caelum"))
