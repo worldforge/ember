@@ -376,7 +376,7 @@ void Application::initializeServices()
 	mServices->getScriptingService().registerScriptingProvider(luaProvider);
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 
-	mScriptingResourceProvider = new FileResourceProvider(mServices->getConfigService().getSharedMediaDirectory() + "/scripting/");
+	mScriptingResourceProvider = new FileResourceProvider(mServices->getConfigService().getSharedDataDirectory() + "/scripting/");
 	mServices->getScriptingService().setResourceProvider(mScriptingResourceProvider);
 
 	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);

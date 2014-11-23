@@ -104,7 +104,7 @@ void OgreResourceLoader::unloadUnusedResources()
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
-	static const std::string& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedMediaDirectory();
+	static const std::string& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
 
 	return addResourceDirectory(sharedMediaPath + path, type, section, recursive, true, true);
 }
@@ -151,8 +151,8 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 void OgreResourceLoader::loadBootstrap()
 {
 	//Add the "assets" directory, which contains most of the assets
-	addUserMedia("assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-	addSharedMedia("assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
 
 void OgreResourceLoader::loadGui()
@@ -181,8 +181,8 @@ void OgreResourceLoader::loadGeneral()
 	addSharedMedia("sounddefinitions", "EmberFileSystem", "SoundDefinitions", true);
 
 	//The Caelum component
-	addUserMedia("assets_external/caelum", "EmberFileSystem", "Caelum", true);
-	addSharedMedia("assets_external/caelum", "EmberFileSystem", "Caelum", true);
+	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
+	addSharedMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
 
 	//Entity recipes
 	addUserMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);

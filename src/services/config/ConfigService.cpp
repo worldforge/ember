@@ -527,7 +527,7 @@ namespace Ember
 
 	const std::string& ConfigService::getSharedMediaDirectory() const
 	{
-		static std::string path ( getSharedDataDirectory() + "/media/shared/" );
+		static std::string path ( getSharedDataDirectory() + "/media/" );
 		return path;
 	}
 

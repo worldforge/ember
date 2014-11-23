@@ -39,16 +39,8 @@ class FileSystemArchiveFactory;
 
 @brief Loads resources into the Ogre resource system.
 
-The main role of this class is to load the resource locations as defined in resources.cfg into the Ogre resource system.
+The main role of this class is to define and load the resources into the Ogre resource system.
 
-The format for the resource.cfg file is:
-Sections/resource groups are defined in brackets, such as [General] or [Gui].
-Each entry in a resource group first specifies the type of resource container, which for now should in pretty much all cases be "EmberFileSystem".
-The value in brackets following the type of location (for example "EmberFileSystem[user]") tells Ember in which places it should look.
- "user" means that Ember will look in these locations:
-   * <ember home directory>/user-media. On a standard linux install this is ~/.ember/user-media . This directory allows the user to add his/her own media, thus overriding the default media. Everytime media is saved from within Ember (for example when editing a model through the Model Editor) the media is saved here.
-   * <ember home directory>/<ember media dir>. The name of the media directory is set in ember.conf. In most cases this is "ember-media-<version>". So for version 0.5.2 it's "~/.ember/ember-media-0.5.2". The contents of this directory is copied from PREFIX/share/ember/media/user at installation time, and then updated through wfut every time. The idea with this directory is to let it be updated through wfut. The user should never edit this media since it will be overwritten by wfut. Use the "user-media" directory instead.
- "shared" means that Ember will look for the media in PREFIX/shared/ember/media/shared only. This is media that is static and shared by all users on the system, and which won't be updated through wfut.
 If a directory contains a file named "norecurse" (it can be empty) Ember won't recurse further into it
 */
 class OgreResourceLoader : public ConsoleObject {

@@ -35,7 +35,7 @@ releasemedia:
 #unpack to our temporary directory
 	tar -jxf $(ourtempdir)/ember-media-$(VERSION).tar.bz2 -C $(ourtempdir)
 #move to the correct location
-	cp -r $(ourtempdir)/ember-media-$(VERSION)/media/shared/* $(datadir)/ember/media/shared/
+	cp -r $(ourtempdir)/ember-media-$(VERSION)/* $(datadir)/ember/media/
 #clean up
 	rm -rf $(ourtempdir)
 
