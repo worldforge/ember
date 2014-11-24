@@ -697,7 +697,7 @@ Ogre::TagPoint* Model::attachObjectToBone(const Ogre::String &boneName, Ogre::Mo
 
 Ogre::TagPoint* Model::attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition, const Ogre::Vector3 &scale)
 {
-	if (!mSubmodels.empty()) {
+	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		Ogre::Entity* entity = mSkeletonOwnerEntity;
 
 		Ogre::TagPoint* tagPoint = entity->attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition);
