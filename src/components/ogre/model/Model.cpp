@@ -779,14 +779,6 @@ void Model::_notifyMoved()
 	}
 }
 
-void Model::setUserAny(const Ogre::Any &anything)
-{
-	Ogre::MovableObject::setUserAny(anything);
-	for (auto& movable : mMovableObjects) {
-		movable->setUserAny(anything);
-	}
-}
-
 // Overridden - see MovableObject.
 void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 {

@@ -217,10 +217,6 @@ public:
 
 	virtual void _notifyMoved();
 
-	/** Overridden - see MovableObject.
-	 */
-	virtual void setUserAny(const Ogre::Any &anything);
-
 	/// Overridden - see MovableObject.
 	virtual void setRenderQueueGroup(Ogre::RenderQueueGroupID queueID);
 
