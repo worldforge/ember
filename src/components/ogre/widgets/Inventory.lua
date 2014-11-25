@@ -29,8 +29,11 @@ function Inventory:RemovedEntityFromInventory(entity)
 		for k,v in pairs(entityIconBucket) do 
 			local entityIconWrapper = v
 			entityIconWrapper.entityIcon:setSlot(nil)
+      --Reset the entityIcon to let the wrapper know that the icon is being deleted. This fixes an issue where the callback for MouseLeaving would try to access the icon while it was being destroyed.
+      local entityIcon = entityIconWrapper.entityIcon
+			entityIconWrapper.entityIcon = nil
 			--guiManager:getIconManager():destroyIcon(entityIconWrapper.entityIcon:getIcon())
-			self.entityIconManager:destroyIcon(entityIconWrapper.entityIcon)
+			self.entityIconManager:destroyIcon(entityIcon)
 		end
 	end
 	self.icons[entity:getId()] = nil
@@ -114,11 +117,15 @@ function Inventory:createIcon(entity)
 		entityIconWrapper.entityIcon:getImage():setTooltipText(entity:getId())
 		entityIconWrapper.entity = entity
 		entityIconWrapper.mouseEnters = function(args)
-			entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "true")
+		  if entityIconWrapper.entityIcon then
+		    entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "true")
+			end
 			return true
 		end
 		entityIconWrapper.mouseLeaves = function(args)
-			entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "false")
+      if entityIconWrapper.entityIcon then
+  			entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "false")
+  		end
 			return true
 		end
 		entityIconWrapper.mouseClick = function(args)
