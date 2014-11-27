@@ -207,6 +207,19 @@ function AssetsManager:showMesh(meshName)
 		return manager:getByName(meshName):get()
 	end
 	
+	local animationNames = self.meshes.renderer:getEntityAnimationNames()
+	self.meshes.controls.animationCombobox:resetList()
+	self.meshes.controls.animationCombobox:clearAllSelections()
+  if animationNames:size() > 0 then 
+    for i = 0, animationNames:size() - 1 do
+      local animationName = animationNames[i]
+      local animationItem = Ember.OgreView.Gui.ColouredListItem:new(animationName)
+      self.meshes.controls.animationCombobox:addItem(animationItem)
+    end
+  end 
+  self.meshes.controls.showSkeletonCheckbox:setSelected(false)
+  
+	
 	self:fillSubMeshList(meshPtr)
 	local mesh = meshPtr:get()
 	self.meshes.controls.skeletonPath:setText(mesh:getSkeletonName())
@@ -942,6 +955,9 @@ function AssetsManager:buildWidget()
 				self.meshes.userlistholder:addItem(item)
 			end	
 		end
+		self.meshes.controls.animationCombobox = CEGUI.toCombobox(self.widget:getWindow("MeshAnimation"))
+		self.meshes.controls.showSkeletonCheckbox = CEGUI.toToggleButton(self.widget:getWindow("MeshShowSkeleton"))
+		
 		self.widget:getWindow("MeshesRefresh"):subscribeEvent("Clicked", self.MeshesRefresh_Clicked, self)
 		self.widget:getWindow("MeshesList"):subscribeEvent("SelectionChanged", self.MeshesList_SelectionChanged, self)
 		self.widget:getWindow("UserMeshList"):subscribeEvent("SelectionChanged", self.UserMeshList_SelectionChanged, self)
@@ -1108,6 +1124,27 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 		
+		self.widget:getWindow("MeshAnimation"):subscribeEvent("ListSelectionAccepted", function(args)
+		  local combobox = self.widget:getWindow("MeshAnimation")
+      local item = combobox:getSelectedItem()
+      if item then
+        local animation = item:getText()
+        self.meshes.renderer:enableAnimation(animation)
+      end
+      return true
+    end)
+
+    self.widget:getWindow("MeshShowSkeleton"):subscribeEvent("SelectStateChanged", function(args)
+      local checkbox = self.widget:getWindow("MeshShowSkeleton")
+      checkbox = CEGUI.toToggleButton(checkbox)
+      local isSelected = checkbox:isSelected()
+      local entity = self.meshes.renderer:getEntity()
+      if entity then
+        entity:setDisplaySkeleton(isSelected)
+      end
+      return true
+    end)
+    		
 		self.widget:getWindow("ForceLodLevelCheckbox"):subscribeEvent("SelectStateChanged", function(args)
 			self:LODUpdateForcedLevel()
 			return true

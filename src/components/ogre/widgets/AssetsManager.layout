@@ -311,6 +311,20 @@
 								<Property name="NormalTextColour" value="FFFFFFFF" />
 								<Property name="PushedTextColour" value="FFFFFFFF" />
 							</Window>
+                            <Window name="MeshAnimation" type="EmberLook/Combobox">
+                                <Property name="Text" value="Play animation" />
+                                <Property name="ReadOnly" value="True" />
+                                <Property name="Size" value="{{0,150},{0,200}}" />
+                                <Property name="Position" value="{{1,-160},{0,5}}" />
+                            </Window>
+                            <Window name="MeshShowSkeleton" type="EmberLook/Checkbox">
+                                <Property name="Text" value="Show skeleton" />
+                                <Property name="Size" value="{{0,150},{0,25}}" />
+                                <Property name="Position" value="{{1,-160},{0,30}}" />
+                                <Property name="HoverTextColour" value="FFFFFFFF" />
+                                <Property name="NormalTextColour" value="FFFFFFFF" />
+                                <Property name="PushedTextColour" value="FFFFFFFF" />
+                            </Window>
 						</Window>
 						<Window name="SubmeshesText" type="EmberLook/StaticText">
 							<Property name="Font" value="DejaVuSans-7" />
