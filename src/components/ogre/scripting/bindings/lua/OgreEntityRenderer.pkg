@@ -58,6 +58,10 @@ public:
 
     void setForcedLodLevel(int lodLevel);
     void clearForcedLodLevel();
+    
+    void enableAnimation(const std::string& animationName);
+	std::vector<std::string> getEntityAnimationNames() const;
+    
 
 };
 }

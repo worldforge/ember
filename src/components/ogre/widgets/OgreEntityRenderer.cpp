@@ -43,10 +43,9 @@ namespace Gui
 {
 
 OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
-	MovableObjectRenderer(image, image->getName().c_str()), mEntity(nullptr)
+		MovableObjectRenderer(image, image->getName().c_str()), mEntity(nullptr), mActiveAnimation(nullptr)
 {
 }
-
 
 OgreEntityRenderer::~OgreEntityRenderer()
 {
@@ -71,7 +70,6 @@ void OgreEntityRenderer::showEntity(const std::string& mesh)
 	}
 }
 
-
 Ogre::MovableObject* OgreEntityRenderer::getMovableObject()
 {
 	return mEntity;
@@ -79,6 +77,7 @@ Ogre::MovableObject* OgreEntityRenderer::getMovableObject()
 
 void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 {
+	mActiveAnimation = nullptr;
 	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 
 	node->detachAllObjects();
@@ -96,7 +95,7 @@ Ogre::SceneManager* OgreEntityRenderer::getSceneManager()
 
 void OgreEntityRenderer::unloadEntity()
 {
-
+	mActiveAnimation = nullptr;
 	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 	node->detachAllObjects();
 	if (mEntity) {
@@ -130,6 +129,45 @@ void OgreEntityRenderer::clearForcedLodLevel()
 		mEntity->setMeshLodBias(1.0, 0, std::numeric_limits<unsigned short>::max());
 	}
 }
+
+void OgreEntityRenderer::enableAnimation(const std::string& animationName)
+{
+	if (mEntity && mEntity->getAllAnimationStates()) {
+		auto I = mEntity->getAllAnimationStates()->getAnimationStateIterator();
+		while (I.hasMoreElements()) {
+			auto state = I.getNext();
+			if (state->getAnimationName() == animationName) {
+				mActiveAnimation = state;
+				state->setEnabled(true);
+			} else {
+				state->setEnabled(false);
+			}
+		}
+	}
+}
+
+std::vector<std::string> OgreEntityRenderer::getEntityAnimationNames() const
+{
+	std::vector<std::string> names;
+
+	if (mEntity && mEntity->getAllAnimationStates()) {
+		auto I = mEntity->getAllAnimationStates()->getAnimationStateIterator();
+		while (I.hasMoreElements()) {
+			auto state = I.getNext();
+			names.push_back(state->getAnimationName());
+		}
+	}
+	return names;
+}
+
+bool OgreEntityRenderer::frameStarted(const Ogre::FrameEvent& event)
+{
+	if (mActiveAnimation) {
+		mActiveAnimation->addTime(event.timeSinceLastFrame);
+	}
+	return MovableObjectRenderer::frameStarted(event);
+}
+
 
 }
 }

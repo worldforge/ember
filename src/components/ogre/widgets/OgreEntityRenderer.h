@@ -75,9 +75,29 @@ public:
 	void setForcedLodLevel(int lodLevel);
 	void clearForcedLodLevel();
 
+	/**
+	 * @brief Enables the supplied animation, stopping any currently enabled animation.
+	 * @param animationName The name of the animation.
+	 */
+	void enableAnimation(const std::string& animationName);
+
+	/**
+	 * @brief Gets the names of all the animations in the current entity.
+	 * @return A vector containing animation names for the current entity.
+	 */
+	std::vector<std::string> getEntityAnimationNames() const;
+
+	virtual bool frameStarted(const Ogre::FrameEvent& event);
+
+
 protected:
 
 	Ogre::Entity* mEntity;
+
+	/**
+	 * The current active animation, if not null.
+	 */
+	Ogre::AnimationState* mActiveAnimation;
 
 	virtual Ogre::MovableObject* getMovableObject();
 	void setEntity(Ogre::Entity* entity);
