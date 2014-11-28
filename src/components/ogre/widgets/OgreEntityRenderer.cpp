@@ -42,13 +42,39 @@ namespace OgreView
 namespace Gui
 {
 
+/**
+ * @brief Stops the animation when the observed resource is unloaded.
+ *
+ * This prevents crashes, since the animation state will be incorrect when the skeleton has been unloaded (which happens when it's reloaded).
+ */
+class OgreEntityRendererResourceListener : public Ogre::Resource::Listener
+{
+private:
+	OgreEntityRenderer& mRenderer;
+	Ogre::AnimationState** mActiveAnimation;
+
+public:
+	OgreEntityRendererResourceListener(OgreEntityRenderer& renderer, Ogre::AnimationState** activeAnimation) : mRenderer(renderer), mActiveAnimation(activeAnimation)
+	{
+
+	}
+
+	virtual void unloadingComplete(Ogre::Resource*) {
+		*mActiveAnimation = nullptr;
+	}
+
+};
+
 OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
-		MovableObjectRenderer(image, image->getName().c_str()), mEntity(nullptr), mActiveAnimation(nullptr)
+		MovableObjectRenderer(image, image->getName().c_str()), mEntity(nullptr), mActiveAnimation(nullptr), mMeshListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation)), mSkeletonListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation))
 {
 }
 
 OgreEntityRenderer::~OgreEntityRenderer()
 {
+	setEntity(nullptr);
+	delete mMeshListener;
+	delete mSkeletonListener;
 }
 
 Ogre::Entity* OgreEntityRenderer::getEntity()
@@ -81,10 +107,27 @@ void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 
 	node->detachAllObjects();
-	node->attachObject(entity);
-	mTexture->getRenderContext()->repositionCamera();
-	if (mAutoShowFull) {
-		showFull();
+	if (mEntity) {
+		if (mMeshListener) {
+			mEntity->getMesh()->removeListener(mMeshListener);
+		}
+		if (mEntity->hasSkeleton()) {
+			mEntity->getSkeleton()->removeListener(mSkeletonListener);
+		}
+	}
+
+
+	if (entity) {
+		node->attachObject(entity);
+		mTexture->getRenderContext()->repositionCamera();
+		if (mAutoShowFull) {
+			showFull();
+		}
+
+		entity->getMesh()->addListener(mMeshListener);
+		if (entity->hasSkeleton()) {
+			entity->getSkeleton()->addListener(mSkeletonListener);
+		}
 	}
 }
 
@@ -95,9 +138,7 @@ Ogre::SceneManager* OgreEntityRenderer::getSceneManager()
 
 void OgreEntityRenderer::unloadEntity()
 {
-	mActiveAnimation = nullptr;
-	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
-	node->detachAllObjects();
+	setEntity(nullptr);
 	if (mEntity) {
 		Ogre::SceneManager* scenemgr = mTexture->getRenderContext()->getSceneManager();
 		scenemgr->destroyEntity(mEntity);

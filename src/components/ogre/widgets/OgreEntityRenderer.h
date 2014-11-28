@@ -82,6 +82,11 @@ public:
 	void enableAnimation(const std::string& animationName);
 
 	/**
+	 * Stops the currently playing animation.
+	 */
+	void stopAnimation();
+
+	/**
 	 * @brief Gets the names of all the animations in the current entity.
 	 * @return A vector containing animation names for the current entity.
 	 */
@@ -98,6 +103,16 @@ protected:
 	 * The current active animation, if not null.
 	 */
 	Ogre::AnimationState* mActiveAnimation;
+
+	/**
+	 * Listens to the mesh being unloaded and stops the animation.
+	 */
+	Ogre::Resource::Listener* mMeshListener;
+
+	/**
+	 * Listens to the skeleton being unloaded and stops the animation.
+	 */
+	Ogre::Resource::Listener* mSkeletonListener;
 
 	virtual Ogre::MovableObject* getMovableObject();
 	void setEntity(Ogre::Entity* entity);
