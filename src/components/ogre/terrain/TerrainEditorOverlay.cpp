@@ -434,7 +434,12 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 		Atlas::Objects::Operation::Set s;
 
 		Atlas::Message::MapType sarg;
-		sarg["id"] = "0";
+		EmberEntity* terrainEntity = mManager.getHandler().getTerrainHoldingEntity();
+		if (terrainEntity) {
+			sarg["id"] = terrainEntity->getId();
+		} else {
+			sarg["id"] = "0";
+		}
 
 		Atlas::Message::MapType & terrain = (sarg["terrain"] = Atlas::Message::MapType()).asMap();
 

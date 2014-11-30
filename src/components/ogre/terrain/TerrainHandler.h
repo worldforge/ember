@@ -343,6 +343,12 @@ public:
 	void updateAllPages();
 
 	/**
+	 * Gets the entity which currently defines the terrain, is any such exists.
+	 * @return An entity, or null if no entity which defines any terrain exists.
+	 */
+	EmberEntity* getTerrainHoldingEntity();
+
+	/**
 	 * @brief Emitted when a layer is updated.
 	 *
 	 * The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
@@ -528,6 +534,13 @@ protected:
 	WFMath::Vector<3> mLastLightingUpdateAngle;
 
 	/**
+	 * @brief Keeps track of the current terrain entity.
+	 *
+	 * TODO: perhaps allow for multiple terrain entities?
+	 */
+	EmberEntity* mTerrainEntity;
+
+	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
 	 *
 	 * For performance reasons we want to batch together multiple request for shader updates, so we can do them all at once, normally on frameEnded(). By calling this method the supplied shader will be marked for updating.
@@ -570,6 +583,10 @@ protected:
 	 *
 	 */
 	void updateShaders();
+
+	void terrainEnabled(EmberEntity& entity);
+
+	void terrainDisabled();
 
 };
 

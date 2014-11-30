@@ -161,7 +161,7 @@ public:
 };
 
 TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider, Eris::EventService& eventService) :
-		mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mEventService(eventService), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1, eventService)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
+		mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mEventService(eventService), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1, eventService)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0), mTerrainEntity(nullptr)
 {
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
@@ -175,6 +175,9 @@ TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniquePro
 	mHeightMap = new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution());
 
 	MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &TerrainHandler::frameProcessed));
+
+	EventTerrainEnabled.connect(sigc::mem_fun(*this, &TerrainHandler::terrainEnabled));
+	EventTerrainDisabled.connect(sigc::mem_fun(*this, &TerrainHandler::terrainDisabled));
 
 }
 
@@ -381,6 +384,20 @@ void TerrainHandler::updateAllPages()
 	for (ShaderStore::const_iterator I = mShaderMap.begin(); I != mShaderMap.end(); ++I) {
 		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, areas, EventLayerUpdated, EventTerrainMaterialRecompiled, mLightning->getMainLightDirection()), 0);
 	}
+}
+
+void TerrainHandler::terrainEnabled(EmberEntity& entity)
+{
+	mTerrainEntity = &entity;
+}
+
+void TerrainHandler::terrainDisabled()
+{
+	mTerrainEntity = nullptr;
+}
+
+EmberEntity* TerrainHandler::getTerrainHoldingEntity() {
+	return mTerrainEntity;
 }
 
 const TerrainInfo& TerrainHandler::getTerrainInfo() const
