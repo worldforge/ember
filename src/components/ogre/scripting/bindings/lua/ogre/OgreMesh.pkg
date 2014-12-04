@@ -176,7 +176,7 @@ namespace Ogre {
         /** Gets a pointer to any linked Skeleton. 
         @returns Weak reference to the skeleton - copy this if you want to hold a strong pointer.
         */
-//         const SkeletonPtr& getSkeleton(void) const;
+         Ogre::ResourcePtr getSkeleton(void) const;
 
         /** Gets the name of any linked Skeleton */
         const std::string& getSkeletonName(void) const;

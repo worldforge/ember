@@ -182,6 +182,10 @@ end
 
 function AssetsManager:MeshInfoLoadMeshButton_Clicked(args)
   local mesh = self.meshes.current.meshPtr.get()
+  --first reload the skeleton, then the mesh
+  if mesh:hasSkeleton() then
+    mesh:getSkeleton():get():reload()
+  end
   mesh:reload()
   return true
 end
