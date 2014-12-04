@@ -75,7 +75,7 @@ typedef std::vector<LightInfo> LightSet;
  * A model is typically instantiated from a modeldef.xml file through the use
  * of createFromXML(...)
  */
-class Model: public Ogre::MovableObject
+class Model: public Ogre::MovableObject, public Ogre::Resource::Listener
 {
 
 	friend class ModelDefinition;
@@ -198,7 +198,7 @@ public:
 
 	Ogre::AnimationState* getAnimationState(const Ogre::String& name);
 	Ogre::AnimationStateSet* getAllAnimationStates();
-	Ogre::SkeletonInstance * getSkeleton();
+	Ogre::SkeletonInstance * getSkeleton() const;
 	Ogre::TagPoint* attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO);
 	Ogre::MovableObject * detachObjectFromBone(const Ogre::String &movableName);
 	void detachAllObjectsFromBone(void);
@@ -304,6 +304,18 @@ public:
 	 * @return True if all assets that make up the model, i.e. meshes and materials, have been loaded.
 	 */
 	bool isLoaded() const;
+
+
+	/**
+	 * Overrides Ogre::Resource::Listener::loadingComplete
+	 *
+	 * This is called when the mesh is reloaded, which allows us to reload the animation state for any animated entities.
+	 *
+	 * The callback is only registered for models with skeletons.
+	 *
+	 * @param
+	 */
+	virtual void loadingComplete(Ogre::Resource*);
 
 protected:
 

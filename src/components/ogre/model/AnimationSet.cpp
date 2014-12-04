@@ -88,6 +88,16 @@ void AnimationSet::reset()
 	mAccumulatedTime = 0;
 }
 
+const AnimationStore& AnimationSet::getAnimations() const
+{
+	return mAnimations;
+}
+
+AnimationStore& AnimationSet::getAnimations()
+{
+	return mAnimations;
+}
+
 void AnimationSet::addAnimation(const Animation& animation)
 {
 	mAnimations.push_back(animation);
@@ -96,6 +106,11 @@ void AnimationSet::addAnimation(const Animation& animation)
 Animation::Animation(int iterations, size_t boneNumber) :
 		mIterationLength(0), mIterations(iterations), mBoneNumber(boneNumber)
 {
+}
+
+AnimationPartSet& Animation::getAnimationParts()
+{
+	return mAnimationParts;
 }
 
 void Animation::addAnimationPart(const AnimationPart& part)

@@ -69,6 +69,9 @@ Model::~Model()
 	if (mBackgroundLoader) {
 		mBackgroundLoader->detachFromModel();
 	}
+	if (mSkeletonOwnerEntity) {
+		mSkeletonOwnerEntity->getMesh()->removeListener(this);
+	}
 	resetSubmodels();
 	resetParticles();
 	resetLights();
@@ -82,6 +85,9 @@ void Model::reset()
 {
 	S_LOG_VERBOSE("Resetting "<< getName());
 	Resetting.emit();
+	if (mSkeletonOwnerEntity) {
+		mSkeletonOwnerEntity->getMesh()->removeListener(this);
+	}
 	//	resetAnimations();
 	resetSubmodels();
 	resetParticles();
@@ -102,7 +108,7 @@ void Model::reload()
 	 resetParticles();	*/
 	reset();
 	createFromDefn();
-	//if we are attached, we have to nofify the new entities, else they won't appear in the scene
+	//if we are attached, we have to notify the new entities, else they won't appear in the scene
 	_notifyAttached(mParentNode, mParentIsTagPoint);
 
 	Reloaded.emit();
@@ -150,6 +156,54 @@ void Model::_notifyManager(Ogre::SceneManager* man)
 		reset();
 	}
 }
+
+void Model::loadingComplete(Ogre::Resource*)
+{
+	//This is called when the mesh is reloaded and it has a skeleton; we need to reset the actions since they now refer to invalid animation states
+
+	for (auto& subModel : mSubmodels) {
+		//We need to call _initialise in order for the animation states to get recreated;
+		//else this will happen lazily the next time the entity is rendered.
+		subModel->getEntity()->_initialise(true);
+	}
+
+	for (auto& actionDef : mDefinition->getActionDefinitions()) {
+		auto actionI = mActions.find(actionDef->getName());
+		if (actionI != mActions.end()) {
+			Action& action = actionI->second;
+			//Important these calls happen in this order, else we'll risk segfaults
+			action.getAnimations().getAnimations().clear();
+			action.getAnimations().reset();
+
+			for (auto& animationDef : actionDef->getAnimationDefinitions()) {
+				Animation animation(animationDef->getIterations(), getSkeleton()->getNumBones());
+				for (auto& animationPartDef : animationDef->getAnimationPartDefinitions()) {
+					if (getAllAnimationStates()->hasAnimationState(animationPartDef->Name)) {
+						AnimationPart animPart;
+						try {
+							Ogre::AnimationState* state = getAnimationState(animationPartDef->Name);
+							animPart.state = state;
+							for (auto& boneGroupDef : animationPartDef->BoneGroupRefs) {
+								auto I_boneGroup = mDefinition->getBoneGroupDefinitions().find(boneGroupDef.Name);
+								if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {
+									BoneGroupRef boneGroupRef;
+									boneGroupRef.boneGroupDefinition = I_boneGroup->second;
+									boneGroupRef.weight = boneGroupDef.Weight;
+									animPart.boneGroupRefs.push_back(boneGroupRef);
+								}
+							}
+							animation.addAnimationPart(animPart);
+						} catch (const std::exception& ex) {
+							S_LOG_FAILURE("Error when loading animation: " << animationPartDef->Name << "." << ex);
+						}
+					}
+				}
+				action.getAnimations().addAnimation(animation);
+			}
+		}
+	}
+}
+
 
 bool Model::createFromDefn()
 {
@@ -287,12 +341,19 @@ bool Model::createActualModel()
 void Model::createActions()
 {
 
+	//If the mesh has a skeleton we'll add a listener to the mesh, so that we can reload the animation states when
+	//the mesh or skeleton gets reloaded.
+	if (getSkeleton()) {
+		mSkeletonOwnerEntity->getMesh()->addListener(this);
+	}
+
 	for (auto& actionDef : mDefinition->getActionDefinitions()) {
 		Action action;
 		action.setName(actionDef->getName());
 		action.getAnimations().setSpeed(actionDef->getAnimationSpeed());
 
 		if (getSkeleton() && getAllAnimationStates()) {
+
 			if (!mDefinition->getBoneGroupDefinitions().empty()) {
 				//If there are bone groups, we need to use a cumulative blend mode. Note that this will affect all animations in the model.
 				getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
@@ -681,7 +742,7 @@ Ogre::AnimationStateSet* Model::getAllAnimationStates()
 	}
 }
 
-Ogre::SkeletonInstance * Model::getSkeleton()
+Ogre::SkeletonInstance * Model::getSkeleton() const
 {
 	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getSkeleton();

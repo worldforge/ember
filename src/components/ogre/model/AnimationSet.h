@@ -64,6 +64,8 @@ public:
 
 	int getIterations() const;
 	Ogre::Real getLengthOfOneIteration() const;
+
+	AnimationPartSet& getAnimationParts();
 protected:
 	AnimationPartSet mAnimationParts;
 	Ogre::Real mIterationLength;
@@ -109,6 +111,10 @@ public:
 
 	void setSpeed(Ogre::Real speed);
 	Ogre::Real getSpeed() const;
+
+	const AnimationStore& getAnimations() const;
+	AnimationStore& getAnimations();
+
 
 protected:
 	Ogre::Real mAccumulatedTime;
