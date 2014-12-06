@@ -5,168 +5,173 @@
         <submodels>
             <submodel mesh="dural/creatures/biped/male/model/male.mesh">
                 <parts>
-                    <part name="bare_torso" group="torso" show="true">
+                    <part group="torso" name="bare_torso" show="true">
                         <subentities>
-                            <subentity index="4" />
+                            <subentity index="0" material="/dural/creatures/biped/male/texture/male_body" />
+                            <subentity index="12" material="/dural/creatures/biped/male/texture/male_body" />
+                            <subentity index="13" material="/dural/creatures/biped/male/texture/male_body" />
                         </subentities>
                     </part>
-                    <part name="bare_feet" group="feet" show="true">
+                    <part group="legs" name="bare_legs" show="true">
                         <subentities>
-                            <subentity index="1"/>
+                            <subentity index="1" material="/dural/creatures/biped/male/texture/male_body" />
+                            <subentity index="3" material="/dural/creatures/biped/male/texture/male_body" />
+                            <subentity index="10" material="/dural/creatures/biped/male/texture/male_body" />
                         </subentities>
                     </part>
-                    <part name="bare_head" group="head" show="true">
+                    <part group="feet" name="bare_feet" show="true">
                         <subentities>
-                            <subentity index="0" />
+                            <subentity index="5" material="/dural/creatures/biped/male/texture/male_body" />
                         </subentities>
                     </part>
-<!--                     <part name="bare_arms" group="arms" show="false"> -->
-<!--                         <subentities> -->
-<!--                             <subentity index="8" material="/global/bipeds/races/human/male/body/base" /> -->
-<!--                             <subentity index="10" material="/global/bipeds/races/human/male/body/base" /> -->
-<!--                             <subentity index="4" material="/global/bipeds/races/human/male/body/base" /> -->
-<!--                         </subentities> -->
-<!--                     </part> -->
+                    <part group="head" name="bare_head" show="true">
+                        <subentities>
+                            <subentity index="2" material="/dural/creatures/biped/male/texture/male_head_old" />
+                            <subentity index="8" material="/dural/creatures/biped/male/texture/male_head_old" />
+                        </subentities>
+                    </part>
+                    <part group="arms" name="bare_arms" show="true">
+                        <subentities>
+                            <subentity index="6" material="/dural/creatures/biped/male/texture/male_body" />
+                            <subentity index="4" material="/dural/creatures/biped/male/texture/male_body" />
+                            <subentity index="11" material="/dural/creatures/biped/male/texture/male_body" />
+                        </subentities>
+                    </part>
                     <part name="bare_hands" show="true">
                         <subentities>
-                            <subentity index="2" />
+                            <subentity index="9" material="/dural/creatures/biped/male/texture/male_body" />
                         </subentities>
                     </part>
-                    <part name="eyes/blue" group="eyes" show="true">
+                    <part group="eyes" name="eyes/blue" show="true">
                         <subentities>
-                            <subentity index="3" material="/dural/creatures/biped/universal/texture/eyes_blue" />
+                            <subentity index="7" material="/dural/creatures/biped/universal/texture/eyes_blue" />
                         </subentities>
                     </part>
-                    <part name="eyes/green" group="eyes" show="false">
+                    <part group="eyes" name="eyes/green" show="false">
                         <subentities>
-                            <subentity index="3" material="/dural/creatures/biped/universal/texture/eyes_green" />
+                            <subentity index="7" material="/dural/creatures/biped/universal/texture/eyes_green" />
                         </subentities>
                     </part>
-                    <part name="eyes/brown" group="eyes" show="false">
+                    <part group="eyes" name="eyes/brown" show="false">
                         <subentities>
-                            <subentity index="3" material="/dural/creatures/biped/universal/texture/eyes_brown" />
+                            <subentity index="7" material="/dural/creatures/biped/universal/texture/eyes_brown" />
                         </subentities>
                     </part>
-                    <part name="eyes/hazel" group="eyes" show="false">
+                    <part group="eyes" name="eyes/hazel" show="false">
                         <subentities>
-                            <subentity index="3" material="/dural/creatures/biped/universal/texture/eyes_hazel" />
+                            <subentity index="7" material="/dural/creatures/biped/universal/texture/eyes_hazel" />
                         </subentities>
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/basic_pants.mesh">
-                <parts>
-                    <part name="basic_pants" group="legs" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/basic_chain_pants.mesh">
-                <parts>
-                    <part name="basic_chain_pants" group="legs" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/basic_shirt.mesh">
-                <parts>
-                    <part name="basic_shirt" group="torso" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/basic_chain_shirt.mesh">
-                <parts>
-                    <part name="basic_chain_shirt" group="torso" show="false">
                     </part>
                 </parts>
             </submodel>
         </submodels>
         <actions>
-            <action name="__movement_idle" speed="1">
+            <action name="idle" speed="1.000000">
                 <activations>
                     <activation type="movement">idle</activation>
                 </activations>
                 <animations>
                     <animation iterations="6">
-                        <animationpart name="idle" />
+                        <animationpart name="gstr_idle_inert_01" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="gstr_fidgeting" />
+                        <animationpart name="gstr_2H_on_hips_01" />
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_walk" speed="1">
+            <action name="walk" speed="1.600000">
                 <activations>
                     <activation type="movement">walk</activation>
-                    <activation type="movement">swim</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="trns_walk" />
+                        <animationpart name="trns_walk_forward_01" />
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_run" speed="2">
+            <action name="walk_backwards" speed="-1.600000">
+                <activations>
+                    <activation type="movement">walk_backwards</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="trns_walk_forward_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="walk_right" speed="3.200000">
+                <activations>
+                    <activation type="movement">walk_right</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="trns_walk_step_R_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="walk_left" speed="-3.200000">
+                <!-- There's no right stepping animation, so we'll reverse the left side stepping one -->
+                <activations>
+                    <activation type="movement">walk_left</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="trns_walk_step_R_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="run" speed="2.000000">
                 <activations>
                     <activation type="movement">run</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="trns_walk" />
+                        <animationpart name="trns_run_forward_01" />
                     </animation>
                 </animations>
             </action>
-            <action name="eat" speed="1">
+            <action name="run_backwards" speed="2.000000">
                 <activations>
-                    <activation type="action">eat</activation>
+                    <activation type="movement">run_backwards</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="gstr_eat" />
+                        <animationpart name="trns_run_backward_01" />
                     </animation>
                 </animations>
             </action>
-            <action name="pickup" speed="1">
+            <action name="run_right" speed="1.000000">
                 <activations>
-                    <activation type="action">pickup</activation>
+                    <activation type="movement">run_right</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="gstr_pickup" />
+                        <animationpart name="trns_run_step_R_01" />
                     </animation>
                 </animations>
             </action>
-            <action name="dig" speed="1">
+            <action name="run_left" speed="-1.000000">
+                <!-- There's no running right stepping animation, so we'll reverse the left running side stepping one -->
                 <activations>
-                    <activation type="action">dig</activation>
-                    <activation type="task">cultivate</activation>
-                    <activation type="task">delve</activation>
-                    <activation type="task">dig</activation>
-                    <activation type="task">heaping</activation>
-                    <activation type="task">trailblaze</activation>
-                    <activation type="task">trenching</activation>
+                    <activation type="movement">run_left</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="work_dig" />
+                        <animationpart name="trns_run_step_R_01" />
                     </animation>
                 </animations>
             </action>
-            <action name="chop" speed="1">
+            <action name="swim" speed="1.800000">
                 <activations>
-                    <activation type="action">chop</activation>
-                    <activation type="action">cut</activation>
-                    <activation type="task">logging</activation>
-                    <activation type="task">bisect</activation>
-                    <activation type="task">destroying</activation>
-                    <activation type="task">sharpen</activation>
-                    <activation type="task">slaughter</activation>
+                    <activation type="movement">swim</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="work_chop" />
+                        <animationpart name="trns_swim_forward_01" />
                     </animation>
                 </animations>
             </action>
-            <action name="attack" speed="1">
+            <action name="attack" speed="1.000000">
                 <activations>
                     <activation type="action">attack</activation>
                     <activation type="action">punch</activation>
@@ -174,27 +179,316 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="ofns_punch" />
+                        <animationpart name="actn_chop_low_01" />
                     </animation>
                 </animations>
             </action>
-            <action name="fidgeting" speed="1">
+            <action name="chop" speed="1.000000">
+                <activations>
+                    <activation type="action">chop</activation>
+                    <activation type="task">logging</activation>
+                    <activation type="task">sharpen</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_chop_low_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="cultivate" speed="1.000000">
+                <activations>
+                    <activation type="task">cultivate</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_cultivate_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="cut" speed="1.000000">
+                <activations>
+                    <activation type="task">destroying</activation>
+                    <activation type="task">trenching</activation>
+                    <activation type="task">earthwall</activation>
+                    <activation type="task">delve</activation>
+                    <activation type="task">baking</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_chop_down_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="dig1" speed="1.000000">
+                <activations>
+                    <activation type="action">dig</activation>
+                    <activation type="task">dig</activation>
+                    <activation type="task">build_bloomery</activation>
+                    <activation type="task">earthbarrier</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_dig_shovel_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="dig2" speed="1.000000">
+                <activations>
+                    <activation type="task">heaping</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_dig_shovel_01">
+                            <bonegrouprefs>
+                                <!-- BUG: This blend is here to visually show an issue that is occurring with blending. -->
+                                <!-- This causes both dig actions to look incorrect in the worldview but OK in Editor view. - Demarii -->
+                                <bonegroupref name="all" />
+                                <bonegroupref name="arms" weight="0" />
+                            </bonegrouprefs>
+                        </animationpart>
+                        <animationpart name="gstr_RH_2belly_01">
+                            <bonegrouprefs>
+                                <bonegroupref name="arms" />
+                            </bonegrouprefs>
+                        </animationpart>
+                    </animation>
+                </animations>
+            </action>
+            <action name="drag" speed="1.000000">
+                <activations>
+                    <activation type="action">dragging</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_pull_sledge_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="drink" speed="1.000000">
+                <activations>
+                    <activation type="action">drink</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_drink_standing_RH_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="eat" speed="1.000000">
+                <activations>
+                    <activation type="action">eat</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_eat_RA_HD_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="fidgeting" speed="1.000000">
+                <activations>
+                    <activation type="action">fidgeting</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="gstr_idle_listless_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="fishing" speed="1.000000">
+                <activations>
+                    <activation type="action">fishing</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_fishing_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="lever" speed="1.000000">
+                <activations>
+                    <activation type="action">lever</activation>
+                    <activation type="task">raise</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_lever_pole_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="pickup" speed="2.000000">
+                <activations>
+                    <activation type="action">pickup</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_pickup_ground_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="pull" speed="2.000000">
+                <activations>
+                    <activation type="action">pulling</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_pull_rope_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="reap" speed="1.000000">
+                <activations>
+                    <activation type="task">reap</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_reap_scythe_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="repair" speed="1.000000">
+                <activations>
+                    <activation type="task">pioneering</activation>
+                    <activation type="task">repairing</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_hammer_ground_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="sifting" speed="2.000000">
                 <activations>
                     <activation type="task">sift</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="gstr_fidgeting" />
+                        <animationpart name="actn_sift_seive_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="slaughter" speed="1.000000">
+                <activations>
+                    <activation type="task">slaughter</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_cutting_table_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="slice" speed="1.000000">
+                <activations>
+                    <activation type="task">slice</activation>
+                    <activation type="task">bisect</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_saw_ground_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="strike" speed="1.000000">
+                <activations>
+                    <activation type="task">ram</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_hammer_pole_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="trailblaze" speed="1.000000">
+                <activations>
+                    <activation type="task">trailblaze</activation>
+                    <activation type="task">drying</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_hammer_pole_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="twirl" speed="1.000000">
+                <activations>
+                    <activation type="task">twirling</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="actn_spin_spindle_01" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="not_used" speed="1.000000">
+                <activations>
+                    <activation type="action">unused</activation>
+                </activations>
+                <animations>
+                    <animation iterations="3">
+                        <animationpart name="trns_walk_step_R_01" />
+                    </animation>
+                    <animation iterations="3">
+                        <animationpart name="trns_run_backward_01" />
+                    </animation>
+                    <animation iterations="3">
+                        <animationpart name="trns_run_step_R_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="gstr_wave_RH_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="gstr_wave_attention_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="gstr_yawn_RH_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_dig_trowel_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_hammer_table_RH_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_hammer_wall_RH_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_hammering_ground_RH_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_saw_standing_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_sit_down_ground_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_sitting_on_ground_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_sweeping_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="actn_sweeping_02" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="gstr_look_behind_L_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="gstr_look_behind_R_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="gstr_scratch_arm_RH_01" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="gstr_swim_treadwater_01" />
                     </animation>
                 </animations>
             </action>
         </actions>
         <attachpoints>
-            <attachpoint name="outfit.right_hand" bone="RMiddleRoot" pose="gripped">
+            <attachpoint name="outfit.right_hand" bone="RightHand" pose="gripped">
                 <rotation x="-0.611592" y="0.0177145" z="-0.790975" degrees="178.84" />
                 <translation x="0.00683594" y="0.0338541" z="-0.0146484" />
             </attachpoint>
-            <attachpoint name="right_hand_wield" bone="RMiddleRoot" pose="gripped">
+            <attachpoint name="right_hand_wield" bone="RightHand" pose="gripped">
                 <rotation x="-0.187958" y="-0.584878" z="-0.789043" degrees="191.173" />
                 <translation x="0.00683594" y="0.0338541" z="-0.0146484" />
             </attachpoint>
