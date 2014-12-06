@@ -15,7 +15,9 @@
                 <activations>
                     <activation type="movement">idle</activation>
                     <activation type="movement">run</activation>
+                    <activation type="movement">run_backwards</activation>
                     <activation type="movement">walk</activation>
+                    <activation type="movement">walk_backwards</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">

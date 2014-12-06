@@ -64,23 +64,43 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_walk" speed="1">
+            <action name="walk" speed="1">
                 <activations>
                     <activation type="movement">walk</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" />
+                        <animationpart name="_Walk" />
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_run" speed="1">
+            <action name="walk_backwards" speed="-1">
+                <activations>
+                    <activation type="movement">walk_backwards</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="_Walk" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="run" speed="1">
                 <activations>
                     <activation type="movement">run</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Run" />
+                        <animationpart name="_Run" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="run_backwards" speed="-1">
+                <activations>
+                    <activation type="movement">run_backwards</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="_Run" />
                     </animation>
                 </animations>
             </action>
