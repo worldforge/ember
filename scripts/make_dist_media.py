@@ -42,7 +42,7 @@ def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size):
 				os.makedirs(dest_asset_dir_path)
 			#Check if the destination file exists, and if so if it's older than the source
 			if os.path.exists(dest_asset_path):
-				if os.path.getmtime(dest_asset_path) >= os.path.getmtime(src_assets_path):
+				if os.path.getmtime(dest_asset_path) >= os.path.getmtime(asset_path):
 					#destination file is newer or of the same date as the soruce file
 					skipped = skipped + 1
 					continue
@@ -107,15 +107,15 @@ OPTIONS
 	if len(sys.argv) == 1:
 		print("ERROR: MEDIA_DIRECTORY_TRUNK must be specified!")
 		print(usage)
-		sys.exit(64)
+		sys.exit(1)
 	elif len(sys.argv) == 2:
 		print("ERROR: OUTPUT_DIRECTORY must be specified!")
 		print(usage)
-		sys.exit(64)
+		sys.exit(1)
 	elif len(sys.argv) == 3:
 		print("ERROR: IMAGE_MAX_SIZE must be specified!")
 		print(usage)
-		sys.exit(64)
+		sys.exit(1)
 
 	if sys.argv[1] == "-h":
 		print(usage)
