@@ -19,6 +19,7 @@
 #ifndef MODELREPRESENTATION_H_
 #define MODELREPRESENTATION_H_
 
+#include "ModelDefinition.h"
 #include "components/ogre/OgreIncludes.h"
 #include "components/ogre/IAnimated.h"
 #include "domain/IGraphicalRepresentation.h"
@@ -75,49 +76,50 @@ class ModelRepresentation: public IGraphicalRepresentation, public virtual sigc:
 public:
 
 	/**
-	 * @brief The movement modes the entity can be in.
-	 */
-	enum MovementMode
-	{
-		/**
-		 * @brief The default movement mode, when the entity is idle and not moving.
-		 */
-		MM_DEFAULT = 0,
-
-		/**
-		 * @brief Swimming through water.
-		 */
-		MM_SWIMMING = 1,
-
-		/**
-		 * @brief Walking at a normal pace.
-		 */
-		MM_WALKING = 2,
-
-		/**
-		 * @brief Running.
-		 */
-		MM_RUNNING = 3,
-
-		/**
-		 * @brief Walking backwards. Note that there is no "running backwards" mode.
-		 */
-		MM_WALKING_BACKWARDS = 4
-	};
-
-	/**
 	 * @brief The name of the normal standing action.
 	 */
 	static const char * const ACTION_STAND;
 
 	/**
-	 * @brief The name of the running action.
+	 * @brief The name of the forward running action.
 	 */
 	static const char * const ACTION_RUN;
+
+	/**
+	 * @brief The name of the right side stepping running action.
+	 */
+	static const char * const ACTION_RUN_RIGHT;
+
+	/**
+	 * @brief The name of the left side stepping running action.
+	 */
+	static const char * const ACTION_RUN_LEFT;
+
+	/**
+	 * @brief The name of the backwards running action.
+	 */
+	static const char * const ACTION_RUN_BACKWARDS;
+
 	/**
 	 * @brief The name of the walking action.
 	 */
 	static const char * const ACTION_WALK;
+
+	/**
+	 * @brief The name of the right side stepping action.
+	 */
+	static const char * const ACTION_WALK_RIGHT;
+
+	/**
+	 * @brief The name of the left side stepping action.
+	 */
+	static const char * const ACTION_WALK_LEFT;
+
+	/**
+	 * @brief The name of the backwards walking action.
+	 */
+	static const char * const ACTION_WALK_BACKWARDS;
+
 	/**
 	 * @brief The name of the swimming action.
 	 */
@@ -216,20 +218,6 @@ public:
 	Ogre::Vector3 getScale() const;
 
 	/**
-	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
-	 * @return The current movement mode of the entity.
-	 */
-	MovementMode getMovementMode() const;
-
-	/**
-	 * @brief Emitted when the movement mode has changed.
-	 * As the entity moves the "movement mode" changes. An entity which isn't moving should in most cases be in the "default" movement mode, whereas a moving one could be in the "walking", "running" or any other mode.
-	 * The parameter sent is the new movement mode.
-	 * This event will be emitted before the actual mode is changed, so you can call getMovementMode() to get the current movement mode, before the new one is in effect.
-	 */
-	sigc::signal<void, MovementMode> EventMovementModeChanged;
-
-	/**
 	 * @brief Sets the velocity, in local units. This means relative to the way the representation is facing, so that x>1 means a forward looking direction.
 	 */
 	void setLocalVelocity(const WFMath::Vector<3>& velocity);
@@ -282,19 +270,9 @@ protected:
 	SoundEntity* mSoundEntity;
 
 	/**
-	 * @brief Keep track of the light nodes.
-	 */
-	SceneNodeStore mLightNodes;
-
-	/**
 	 * @brief The type name for the class.
 	 */
 	static std::string sTypeName;
-
-	/**
-	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
-	 */
-	MovementMode mMovementMode;
 
 	/**
 	 * Tells the entity to retrieve it sound actions from
@@ -352,13 +330,6 @@ protected:
 	void model_Resetting();
 
 	/**
-	 * @brief Called when the movement mode of the entity changes.
-	 * For example when the entity changes from standing to walking.
-	 * @param newMode The new movement mode.
-	 */
-	virtual void onMovementModeChanged(MovementMode newMode);
-
-	/**
 	 * @brief Parses and sets the movement mode.
 	 * The movement mode is determined mainly from whether the entity is moving or not. The speed of the movement also affects the mode.
 	 * @param velocity The velocity of the entity.
@@ -375,6 +346,24 @@ protected:
 	 * @brief Resets all current movement, action and task animations.
 	 */
 	void resetAnimations();
+
+	/**
+	 * Gets the suitable action for the supplied movement.
+	 *
+	 * This system will employ some fallbacks, so that if no perfect action can be found an alternative is chosen.
+	 * For example, if there's no action for walking sideways an action for moving forward will be used instead.
+	 * @param velocity The velocity of the entity.
+	 * @return An action, or null if no suitable could be found.
+	 */
+	Action* getActionForMovement(const WFMath::Vector<3>& velocity) const;
+
+	/**
+	 * Searches for actions using their activations, and returns the first one found.
+	 * @param type The type of activation for the action.
+	 * @param actions A list of activation names, searched for in order.
+	 * @return An action, or null if none could be found.
+	 */
+	Action* getFirstAvailableAction(const ActivationDefinition::Type type, std::initializer_list<const char * const > actions) const;
 };
 
 }

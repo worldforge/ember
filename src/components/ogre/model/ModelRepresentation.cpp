@@ -64,13 +64,22 @@ namespace Model
 std::string ModelRepresentation::sTypeName("ModelRepresentation");
 
 const char * const ModelRepresentation::ACTION_STAND("idle");
+
 const char * const ModelRepresentation::ACTION_RUN("run");
+const char * const ModelRepresentation::ACTION_RUN_RIGHT("run_right");
+const char * const ModelRepresentation::ACTION_RUN_LEFT("run_left");
+const char * const ModelRepresentation::ACTION_RUN_BACKWARDS("run_backwards");
+
 const char * const ModelRepresentation::ACTION_WALK("walk");
+const char * const ModelRepresentation::ACTION_WALK_RIGHT("walk_right");
+const char * const ModelRepresentation::ACTION_WALK_LEFT("walk_left");
+const char * const ModelRepresentation::ACTION_WALK_BACKWARDS("walk_backwards");
+
 const char * const ModelRepresentation::ACTION_SWIM("swim");
 const char * const ModelRepresentation::ACTION_FLOAT("float");
 
 ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping) :
-		mEntity(entity), mModel(model), mScene(scene), mMapping(mapping), mCurrentMovementAction(0), mActiveAction(0), mTaskAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
+		mEntity(entity), mModel(model), mScene(scene), mMapping(mapping), mCurrentMovementAction(0), mActiveAction(0), mTaskAction(0), mSoundEntity(0)
 {
 	//Only connect if we have actions to act on
 	if (!model.getDefinition()->getActionDefinitions().empty()) {
@@ -89,8 +98,10 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scen
 
 	mModel.setQueryFlags(MousePicker::CM_ENTITY);
 
+	parseMovementMode(mEntity.getPredictedVelocity());
+
 	//start out with the default movement mode
-	onMovementModeChanged(ModelRepresentation::MM_DEFAULT);
+	//onMovementModeChanged(ModelRepresentation::MM_DEFAULT);
 
 }
 
@@ -215,7 +226,6 @@ void ModelRepresentation::initFromModel()
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
 	}
 
-
 }
 
 Ogre::Vector3 ModelRepresentation::getScale() const
@@ -246,7 +256,7 @@ void ModelRepresentation::model_Reloaded()
 		createActionForTask(**mEntity.getTasks().begin());
 	}
 	//Retrigger a movement change so that animations can be stopped and started now that the model has changed.
-	onMovementModeChanged(getMovementMode());
+	parseMovementMode(mEntity.getPredictedVelocity());
 }
 
 void ModelRepresentation::model_Resetting()
@@ -281,33 +291,94 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 
 }
 
-void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
+Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& velocity) const
 {
-	/*	if (newMode != mMovementMode)
-	 {*/
-	const char * actionName;
-	if (newMode == ModelRepresentation::MM_WALKING || newMode == ModelRepresentation::MM_WALKING_BACKWARDS) {
-		actionName = ACTION_WALK;
-	} else if (newMode == ModelRepresentation::MM_RUNNING) {
-		actionName = ACTION_RUN;
-	} else if (newMode == ModelRepresentation::MM_SWIMMING) {
-		actionName = ACTION_SWIM;
+	if (!velocity.isValid() || velocity == WFMath::Vector<3>::ZERO()) {
+		return mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	} else {
-		actionName = ACTION_STAND;
+
+		//The model is moving in some direction; we need to figure out both the direction, and the speed.
+		//We'll split up the movement into four arcs: forwards, backwards, left and right
+		//We'll use a little bit of padding, so that the side movement arcs are
+		bool isRunning = velocity.mag() > 2.6;
+		//flip the direction of y() to fit the normal way atan is setup; just to make it easier to figure out
+		WFMath::CoordType atan = std::atan2(velocity.x(), -velocity.y());
+
+
+		//First check if we're moving backwards of forwards
+		if (atan >= 0) {
+			//moving forwards
+			if (atan <= 0.785400) {
+				//moving to the right
+				if (isRunning) {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_RIGHT, ACTION_WALK_RIGHT, ACTION_RUN, ACTION_WALK });
+				} else {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_RIGHT, ACTION_RUN_RIGHT, ACTION_WALK, ACTION_RUN });
+				}
+			} else if (atan >= 2.35600) {
+				//moving to the left
+				if (isRunning) {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_LEFT, ACTION_WALK_LEFT, ACTION_RUN, ACTION_WALK });
+				} else {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_LEFT, ACTION_RUN_LEFT, ACTION_WALK, ACTION_RUN });
+				}
+			}
+			if (isRunning) {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN, ACTION_WALK });
+			} else {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK, ACTION_RUN });
+			}
+		} else {
+			//moving backwards
+			if (atan >= -0.785400) {
+				//moving to the right
+				if (isRunning) {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_RIGHT, ACTION_WALK_RIGHT, ACTION_RUN, ACTION_WALK });
+				} else {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_RIGHT, ACTION_RUN_RIGHT, ACTION_WALK, ACTION_RUN });
+				}
+			} else if (atan <= -2.35550) {
+				//moving to the left
+				if (isRunning) {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_LEFT, ACTION_WALK_LEFT, ACTION_RUN, ACTION_WALK });
+				} else {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_LEFT, ACTION_RUN_LEFT, ACTION_WALK, ACTION_RUN });
+				}
+			}
+			if (isRunning) {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_BACKWARDS, ACTION_WALK_BACKWARDS });
+			} else {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_BACKWARDS, ACTION_RUN_BACKWARDS });
+			}
+
+		}
+
 	}
 
-	// Lets inform the sound entity of our movement change.
-	//TODO: should this really be here, and not in the sound entity? this places a binding from this class to the sound entity which perhaps could be avoided
-	if (mSoundEntity) {
-		mSoundEntity->playMovementSound(actionName);
+}
+
+Action* ModelRepresentation::getFirstAvailableAction(const ActivationDefinition::Type type, std::initializer_list<const char * const > actions) const
+{
+	for (auto& actionName : actions) {
+		Action* action = mModel.getAction(type, actionName);
+		if (action) {
+			return action;
+		}
 	}
+	return nullptr;
+}
 
-	if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
+void ModelRepresentation::parseMovementMode(const WFMath::Vector<3>& velocity)
+{
 
+	Action* newAction = getActionForMovement(velocity);
+
+	if (newAction != mCurrentMovementAction) {
 		//first disable any current action
-		resetAnimations();
+		if (mCurrentMovementAction) {
+			resetAnimations();
+		}
 
-		Action* newAction = mModel.getAction(ActivationDefinition::MOVEMENT, actionName);
 		mCurrentMovementAction = newAction;
 		if (newAction) {
 			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
@@ -316,36 +387,15 @@ void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
 		}
 	}
 
-	EventMovementModeChanged.emit(newMode);
-	mMovementMode = newMode;
-}
+	// Lets inform the sound entity of our movement change.
+	//TODO: should this really be here, and not in the sound entity? this places a binding from this class to the sound entity which perhaps could be avoided
+//	if (mSoundEntity) {
+//		mSoundEntity->playMovementSound(actionName);
+//	}
 
-ModelRepresentation::MovementMode ModelRepresentation::getMovementMode() const
-{
-	return mMovementMode;
-}
 
-void ModelRepresentation::parseMovementMode(const WFMath::Vector<3>& velocity)
-{
-	MovementMode newMode = MM_DEFAULT;
-
-	if (velocity != WFMath::Vector<3>::ZERO()) {
-		if (velocity.isValid()) {
-			//Use WFMATH_EPSILON to remove any rounding errors
-			if (velocity.x() + WFMath::numeric_constants<WFMath::CoordType>::epsilon() < 0.0f) {
-				newMode = MM_WALKING_BACKWARDS;
-			} else {
-				if (velocity.mag() > 2.6) {
-					newMode = MM_RUNNING;
-				} else {
-					newMode = MM_WALKING;
-				}
-			}
-		}
-	}
-	if (newMode != mMovementMode) {
-		onMovementModeChanged(newMode);
-	}
+//	EventMovementModeChanged.emit(newMode);
+//	mMovementMode = newMode;
 }
 
 void ModelRepresentation::setLocalVelocity(const WFMath::Vector<3>& velocity)
@@ -356,19 +406,14 @@ void ModelRepresentation::setLocalVelocity(const WFMath::Vector<3>& velocity)
 void ModelRepresentation::updateAnimation(float timeSlice)
 {
 	//This is a bit convoluted, but the logic is as follows:
-	//If we're moving, i.e. not in MM_DEFAULT, we should always prefer to show the movement animation
+	//If we're moving, i.e. with a non-zero velocity, we should always prefer to show the movement animation
 	//If not, we should prefer to show a current action animation if available
 	//If not, we should show any available task animation.
 	//And if none of these applies, we should play the current movement action (which should be idle).
 
-	if (getMovementMode() != MM_DEFAULT && mCurrentMovementAction) {
+	if (mCurrentMovementAction && mEntity.getPredictedVelocity() != WFMath::Vector<3>::ZERO()) {
 		bool continuePlay = false;
-		//Check if we're walking backward. This is a bit of a hack (we should preferably have a separate animation for backwards walking.
-		if (getMovementMode() == MM_WALKING_BACKWARDS) {
-			mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
-		} else {
-			mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
-		}
+		mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
 	} else if (mActiveAction) {
 		bool continuePlay = false;
 		mActiveAction->getAnimations().addTime(timeSlice, continuePlay);
@@ -376,12 +421,10 @@ void ModelRepresentation::updateAnimation(float timeSlice)
 			mActiveAction->getAnimations().reset();
 			mActiveAction = 0;
 		}
-		return;
 	} else if (mTaskAction) {
 		//Ignore the "continuePlay" for tasks.
 		bool continuePlay = false;
 		mTaskAction->getAnimations().addTime(timeSlice, continuePlay);
-		return;
 	} else if (mCurrentMovementAction) {
 		bool continuePlay = false;
 		mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
