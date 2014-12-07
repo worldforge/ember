@@ -1,139 +1,15 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-    <model name="male" usescaleof="height" showcontained="false" icon="">
-        <translate x="0" y="0" z="0" />
-        <rotation x="1" y="0" z="0" degrees="0" />
+    <model icon="" name="skeleton" showcontained="false" usescaleof="height">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="dural/creatures/biped/male/model/male.mesh">
+            <submodel mesh="dural/creatures/biped/skeleton/model/skeleton.mesh">
                 <parts>
-                    <part group="hips" name="bare_hips" show="true">
+                    <part name="main" show="true">
                         <subentities>
-                            <subentity index="12" material="/dural/creatures/biped/male/texture/male_body" />
+                            <subentity index="0" />
                         </subentities>
-                    </part>
-                    <part group="torso" name="bare_torso" show="true">
-                        <subentities>
-                            <subentity index="0" material="/dural/creatures/biped/male/texture/male_body" />
-                            <subentity index="13" material="/dural/creatures/biped/male/texture/male_body" />
-                        </subentities>
-                    </part>
-                    <part group="legs" name="bare_legs" show="true">
-                        <subentities>
-                            <subentity index="1" material="/dural/creatures/biped/male/texture/male_body" />
-                            <subentity index="3" material="/dural/creatures/biped/male/texture/male_body" />
-                            <subentity index="10" material="/dural/creatures/biped/male/texture/male_body" />
-                        </subentities>
-                    </part>
-                    <part group="feet" name="bare_feet" show="true">
-                        <subentities>
-                            <subentity index="5" material="/dural/creatures/biped/male/texture/male_body" />
-                        </subentities>
-                    </part>
-                    <part group="head" name="bare_head" show="true">
-                        <subentities>
-                            <subentity index="2" material="/dural/creatures/biped/male/texture/male_head_old" />
-                            <subentity index="8" material="/dural/creatures/biped/male/texture/male_head_old" />
-                        </subentities>
-                    </part>
-                    <part group="arms" name="bare_arms" show="true">
-                        <subentities>
-                            <subentity index="6" material="/dural/creatures/biped/male/texture/male_body" />
-                            <subentity index="4" material="/dural/creatures/biped/male/texture/male_body" />
-                            <subentity index="11" material="/dural/creatures/biped/male/texture/male_body" />
-                        </subentities>
-                    </part>
-                    <part name="bare_hands" show="true">
-                        <subentities>
-                            <subentity index="9" material="/dural/creatures/biped/male/texture/male_body" />
-                        </subentities>
-                    </part>
-                    <part group="eyes" name="eyes/blue" show="true">
-                        <subentities>
-                            <subentity index="7" material="/dural/creatures/biped/universal/texture/eyes_blue" />
-                        </subentities>
-                    </part>
-                    <part group="eyes" name="eyes/green" show="false">
-                        <subentities>
-                            <subentity index="7" material="/dural/creatures/biped/universal/texture/eyes_green" />
-                        </subentities>
-                    </part>
-                    <part group="eyes" name="eyes/brown" show="false">
-                        <subentities>
-                            <subentity index="7" material="/dural/creatures/biped/universal/texture/eyes_brown" />
-                        </subentities>
-                    </part>
-                    <part group="eyes" name="eyes/hazel" show="false">
-                        <subentities>
-                            <subentity index="7" material="/dural/creatures/biped/universal/texture/eyes_hazel" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-
-            <submodel mesh="dural/creatures/biped/male/model/basic_shirt.mesh">
-                <parts>
-                    <part group="torso" name="basic_shirt" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/basic_pants.mesh">
-                <parts>
-                    <part group="legs" name="basic_pants" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/basic_chain_shirt.mesh">
-                <parts>
-                    <part group="torso" name="basic_chain_shirt" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/basic_chain_pants.mesh">
-                <parts>
-                    <part group="legs" name="basic_chain_pants" show="false">
-                    </part>
-                </parts>
-            </submodel>
-
-
-            <submodel mesh="dural/creatures/biped/male/model/ossyja_shirt.mesh">
-                <parts>
-                    <part group="torso" name="ossyja_shirt" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/ossyja_pants.mesh">
-                <parts>
-                    <part group="legs" name="ossyja_pants" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/infantry_base_shirt.mesh">
-                <parts>
-                    <part group="torso" name="infantry_base_shirt" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/infantry_base_pants.mesh">
-                <parts>
-                    <part group="legs" name="infantry_base_pants" show="false">
-                    </part>
-                </parts>
-            </submodel>            
-            <submodel mesh="dural/creatures/biped/male/model/ossyja_armour.mesh">
-                <parts>
-                    <part name="ossyja_armour" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/drystan_archer.mesh">
-                <parts>
-                    <part name="drystan_archer" show="false">
-                    </part>
-                </parts>
-            </submodel>
-            <submodel mesh="dural/creatures/biped/male/model/hauberk_infantry.mesh">
-                <parts>
-                    <part name="hauberk_infantry" show="false">
                     </part>
                 </parts>
             </submodel>
@@ -567,7 +443,5 @@
             </attachpoint>
         </attachpoints>
         <views />
-        <lights />
-        <bonegroups />
     </model>
 </models>

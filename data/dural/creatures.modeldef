@@ -9,9 +9,19 @@
             </submodel>
         </submodels>
         <actions>
-            <action name="__movement_walk">
+            <action name="walk">
                 <activations>
                     <activation type="movement">walk</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Walk" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="walk_backwards" speed="-1">
+                <activations>
+                    <activation type="movement">walk_backwards</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
@@ -45,117 +55,5 @@
                 </sounds>
             </action> -->
         </actions>
-    </model>
-    <model icon="" name="skeleton" showcontained="false" usescaleof="height">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation degrees="90.000000" x="-1.000000" y="-0.000000" z="-0.000000" />
-        <submodels>
-            <submodel mesh="dural/creatures/biped/skeleton/model/skeleton.mesh">
-                <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" />
-                        </subentities>
-                    </part>
-                </parts>
-            </submodel>
-        </submodels>
-        <actions>
-            <action name="__movement_idle" speed="1.000000">
-                <activations>
-                    <activation type="movement">idle</activation>
-                </activations>
-                <animations>
-                    <animation iterations="10">
-                        <animationpart name="idle" />
-                    </animation>
-                    <animation iterations="1">
-                        <animationpart name="shrug" />
-                    </animation>
-                    <animation iterations="8">
-                        <animationpart name="idle" />
-                    </animation>
-                    <animation iterations="1">
-                        <animationpart name="look_around" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="__movement_walk" speed="1.000000">
-                <activations>
-                    <activation type="movement">walk</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="walk" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="__movement_run" speed="1.000000">
-                <activations>
-                    <activation type="movement">run</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="run" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="__movement_swim" speed="1.000000">
-                <activations>
-                    <activation type="movement">swim</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="swim" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="attack" speed="1.000000">
-                <activations>
-                    <activation type="action">attack</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="attack_punch" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="punch" speed="1.000000">
-                <activations>
-                    <activation type="action">punch</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="attack_punch" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="chop" speed="1.000000">
-                <activations>
-                    <activation type="action">chop</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="chop" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="jump" speed="1.000000">
-                <activations>
-                    <activation type="action">jump</activation>
-                </activations>
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="jump" />
-                    </animation>
-                </animations>
-            </action>
-        </actions>
-        <attachpoints>
-            <attachpoint bone="lower_hand.R" name="right_hand_wield">
-                <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
-            </attachpoint>
-        </attachpoints>
-        <views />
     </model>
 </models>

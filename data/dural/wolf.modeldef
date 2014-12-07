@@ -9,7 +9,7 @@
             </submodel>
         </submodels>
         <actions>
-            <action name="__movement_walk">
+            <action name="walk">
                 <activations>
                     <activation type="movement">walk</activation>
                 </activations>
@@ -19,7 +19,17 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_run">
+            <action name="walk_backwards" speed="-1">
+                <activations>
+                    <activation type="movement">walk_backwards</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="walk" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="run">
                 <activations>
                     <activation type="movement">run</activation>
                 </activations>
@@ -29,7 +39,17 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_idle">
+            <action name="run_backwards" speed="-1">
+                <activations>
+                    <activation type="movement">run_backwards</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="run" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="idle">
                 <activations>
                     <activation type="movement">idle</activation>
                 </activations>

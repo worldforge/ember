@@ -8,7 +8,7 @@
             </submodel>
         </submodels>
         <actions>
-            <action name="__movement_walk">
+            <action name="walk">
                 <activations>
                     <activation type="movement">walk</activation>
                 </activations>
@@ -21,7 +21,20 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_idle" speed="1.000000">
+            <action name="walk_backwards" speed="-1">
+                <activations>
+                    <activation type="movement">walk_backwards</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Run" />
+                    </animation>
+                    <animation iterations="2">
+                        <animationpart name="Run2" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="idle" speed="1.000000">
                 <activations>
                     <activation type="movement">idle</activation>
                 </activations>

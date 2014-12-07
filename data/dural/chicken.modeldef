@@ -27,7 +27,7 @@
             </submodel>
         </submodels>
         <actions>
-            <action name="__movement_idle" speed="1">
+            <action name="idle" speed="1">
                 <activations>
                     <activation type="movement">idle</activation>
                 </activations>
