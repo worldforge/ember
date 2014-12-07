@@ -93,8 +93,6 @@
                     </part>
                 </parts>
             </submodel>
-
-
             <submodel mesh="dural/creatures/biped/male/model/ossyja_shirt.mesh">
                 <parts>
                     <part group="torso" name="ossyja_shirt" show="false">

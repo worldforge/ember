@@ -862,7 +862,21 @@
                 <outfitmatch attachment="body">
                     <case>
                         <caseparam type="equals">shirt</caseparam>
-                        <action type="display-part">shirt</action>
+                        <action type="display-part">basic_shirt</action>
+                        <attributematch attribute="style">
+                            <case>
+                                <caseparam type="equals">burlap</caseparam>
+                                <action type="display-part">basic_shirt</action>
+                            </case>
+                            <case>
+                                <caseparam type="equals">chain</caseparam>
+                                <action type="display-part">basic_chain_shirt</action>
+                            </case>
+                            <case>
+                                <caseparam type="equals">ossyja</caseparam>
+                                <action type="display-part">ossyja_shirt</action>
+                            </case>
+                        </attributematch>
                     </case>
                 </outfitmatch>                
                 <outfitmatch attachment="feet">
@@ -874,7 +888,21 @@
                 <outfitmatch attachment="legs">
                     <case>
                         <caseparam type="equals">trousers</caseparam>
-                        <action type="display-part">pants</action>
+                        <action type="display-part">basic_pants</action>
+                        <attributematch attribute="style">
+                            <case>
+                                <caseparam type="equals">burlap</caseparam>
+                                <action type="display-part">basic_pants</action>
+                            </case>
+                            <case>
+                                <caseparam type="equals">chain</caseparam>
+                                <action type="display-part">basic_chain_pants</action>
+                            </case>
+                            <case>
+                                <caseparam type="equals">ossyja</caseparam>
+                                <action type="display-part">ossyja_pants</action>
+                            </case>
+                        </attributematch>
                     </case>
                 </outfitmatch>                
             </case>
