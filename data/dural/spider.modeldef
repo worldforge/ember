@@ -24,7 +24,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_walk" speed="1.000000">
+            <action name="walk" speed="1.000000">
                 <activations>
                     <activation type="movement">walk</activation>
                 </activations>
@@ -34,20 +34,43 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_swim" speed="1.000000">
+            <action name="walk_backwards" speed="-1.000000">
+                <activations>
+                    <activation type="movement">walk_backwards</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="_Walk" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="run" speed="2.000000">
+                <activations>
+                    <activation type="movement">run</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="_Walk" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="run_backwards" speed="-2.000000">
+                <activations>
+                    <activation type="movement">run_backwards</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="_Walk" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="swim" speed="1.000000">
                 <activations>
                     <activation type="movement">swim</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="_Walk_s" />
-                    </animation>
-                </animations>
-            </action>
-            <action name="__movement_run" speed="1.000000">
-                <animations>
-                    <animation iterations="1">
-                        <animationpart name="_Run" />
                     </animation>
                 </animations>
             </action>
