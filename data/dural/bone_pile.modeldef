@@ -1,0 +1,147 @@
+<models>
+    <model name="bone_pile" usescaleof="all" showcontained="false" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
+        <submodels>
+            <submodel mesh="dural/creatures/biped/skeleton/model/bone_pile.mesh">
+                <parts>
+                    <part name="RFoot" show="false">
+                        <subentities>
+                            <subentity index="0" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LFoot" show="false">
+                        <subentities>
+                            <subentity index="1" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="RShin" show="false">
+                        <subentities>
+                            <subentity index="2" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LShin" show="false">
+                        <subentities>
+                            <subentity index="3" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LKnee" show="false">
+                        <subentities>
+                            <subentity index="4" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="RKnee" show="false">
+                        <subentities>
+                            <subentity index="5" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="RThigh" show="false">
+                        <subentities>
+                            <subentity index="6" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LThigh" show="false">
+                        <subentities>
+                            <subentity index="7" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="Hips" show="false">
+                        <subentities>
+                            <subentity index="8" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LowerSpine" show="false">
+                        <subentities>
+                            <subentity index="9" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="MiddleSpine" show="false">
+                        <subentities>
+                            <subentity index="10" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="UpperSpine" show="false">
+                        <subentities>
+                            <subentity index="11" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="Ribcage" show="false">
+                        <subentities>
+                            <subentity index="12" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="RScapula" show="false">
+                        <subentities>
+                            <subentity index="13" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LScapula" show="false">
+                        <subentities>
+                            <subentity index="14" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="RClavicle" show="false">
+                        <subentities>
+                            <subentity index="15" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LClavicle" show="false">
+                        <subentities>
+                            <subentity index="16" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="RUpperArm" show="false">
+                        <subentities>
+                            <subentity index="17" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LUpperArm" show="false">
+                        <subentities>
+                            <subentity index="18" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="RForeArm" show="false">
+                        <subentities>
+                            <subentity index="19" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LForeArm" show="false">
+                        <subentities>
+                            <subentity index="20" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="RHand" show="false">
+                        <subentities>
+                            <subentity index="21" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="LHand" show="false">
+                        <subentities>
+                            <subentity index="22" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="Jaw" show="false">
+                        <subentities>
+                            <subentity index="23" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="Neck" show="false">
+                        <subentities>
+                            <subentity index="24" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                    <part name="Skull" show="false">
+                        <subentities>
+                            <subentity index="25" material="/dural/creatures/biped/skeleton/textures" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+        <lights />
+        <bonegroups />
+    </model>
+</models>
