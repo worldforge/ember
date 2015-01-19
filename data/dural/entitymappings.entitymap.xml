@@ -1060,13 +1060,18 @@
 				</entitymatch>-->
 			</case>
 		</entitymatch>
-	</entitymapping>	
-	<autoentitymapping name="arm" />
-	<autoentitymapping name="skull" />
-	<autoentitymapping name="shin" />
+	</entitymapping>
+
+	<autoentitymapping name="bone_pile" /> 
+	<autoentitymapping name="humerus" /> 
+	<autoentitymapping name="skull" /> 
+	<autoentitymapping name="tibia" />
 	<autoentitymapping name="pelvis" />
-	<autoentitymapping name="ribcage" />
-	<autoentitymapping name="thigh" />
+	<autoentitymapping name="ribcage" /> 
+	<autoentitymapping name="femur" />
+
+
+
 <!--	<entitymapping name="goblin">
 		<entitymatch>
 			<case>
