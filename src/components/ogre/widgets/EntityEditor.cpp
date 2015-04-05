@@ -41,8 +41,8 @@
 #include "services/server/ServerService.h"
 #include "framework/LoggingInstance.h"
 #include "framework/MultiLineListFormatter.h"
-#include "framework/AtlasPresentationBridge.h"
 
+#include <Atlas/PresentationBridge.h>
 #include <Atlas/Message/Element.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -564,7 +564,7 @@ std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map)
 {
 	std::stringstream ss;
 
-	AtlasPresentationBridge bridge(ss);
+	Atlas::PresentationBridge bridge(ss);
 	Atlas::Message::Encoder encoder(bridge);
 	encoder.streamMessageElement(map);
 

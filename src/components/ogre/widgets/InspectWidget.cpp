@@ -36,7 +36,6 @@
 #include "../EmberOgre.h"
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
-#include "framework/AtlasPresentationBridge.h"
 
 #include <CEGUI/Window.h>
 #include <CEGUI/WindowManager.h>
@@ -46,6 +45,7 @@
 
 #include <Eris/TypeInfo.h>
 
+#include <Atlas/PresentationBridge.h>
 #include <Atlas/Message/Element.h>
 
 #include <sstream>
@@ -107,7 +107,7 @@ void InspectWidget::updateAttributeString()
 {
 	std::stringstream ss;
 
-	AtlasPresentationBridge bridge(ss);
+	Atlas::PresentationBridge bridge(ss);
 	Atlas::Message::Encoder encoder(bridge);
 	encoder.streamMessageElement(mCurrentEntity->getAttributes());
 
