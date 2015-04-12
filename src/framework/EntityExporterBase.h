@@ -32,6 +32,7 @@
 #include <fstream>
 #include <map>
 #include <unordered_map>
+#include <unordered_set>
 #include <memory>
 
 namespace Atlas
@@ -223,6 +224,19 @@ public:
 	 */
 	bool getExportRules() const;
 
+    /**
+     * @brief Sets whether we should export minds.
+     *
+     * @param exportRules Whether we should export minds.
+     */
+    void setExportMinds(bool exportMinds);
+
+    /**
+     * @brief Gets whether we should export minds.
+     * @return Whether we should export minds.
+     */
+    bool getExportMinds() const;
+
 	/**
 	 * @brief Gets stats about the export process.
 	 * @return Stats about the process.
@@ -342,6 +356,18 @@ protected:
 	bool mExportRules;
 
 	/**
+	 * @brief True if minds should be exported.
+	 */
+	bool mExportMinds;
+
+	/**
+	 * @brief Keeps track of all types that have the "transient" property set by default.
+	 *
+	 * This is required when we're not exporting any transient entities (which is the default).
+	 */
+	std::unordered_set<std::string> mTransientTypes;
+
+	/**
 	 * @brief Starts the process of requesting entities and walking the entity hierarchy.
 	 */
 	void startRequestingEntities();
@@ -353,7 +379,7 @@ protected:
 	void thoughtOpArrived(const Operation& op);
 	void operationGetResult(const Operation& op);
 	void operationGetThoughtResult(const Operation& op);
-	void operationGetRuleResult(const Operation& op);
+    void operationGetRuleResult(const Operation& op);
 	void requestThoughts(const std::string& entityId, const std::string& persistedId);
 	void requestRule(const std::string& rule);
 
@@ -379,13 +405,14 @@ protected:
 	 */
 	void adjustReferencedEntities();
 
-	/**
-	 * @brief Resolves any entity references in the element.
-	 *
-	 * This is done recursively.
-	 * @param element The element to resolve entity references in.
-	 */
-	void resolveEntityReferences(Atlas::Message::Element& element);
+    /**
+     * @brief Resolves any entity references in the element.
+     *
+     * This is done recursively.
+     * @param element The element to resolve entity references in.
+     */
+    void resolveEntityReferences(Atlas::Message::Element& element);
+
 
 	typedef sigc::slot<void, const Atlas::Objects::Operation::RootOperation&> CallbackFunction;
 
