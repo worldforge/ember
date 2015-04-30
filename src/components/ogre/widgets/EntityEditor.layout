@@ -41,7 +41,7 @@
                     
                     <Window name="KnowledgeList" type="EmberLook/ItemListbox">
                         <Property name="Position" value="{{0,0},{0,0}}" />
-                        <Property name="Size" value="{{0,400},{1,-110}}" />
+                        <Property name="Size" value="{{1,0},{1,-110}}" />
                         <Property name="InheritsAlpha" value="True" />
                     </Window>
                     <Window name="RefreshKnowledge" type="EmberLook/Button">
