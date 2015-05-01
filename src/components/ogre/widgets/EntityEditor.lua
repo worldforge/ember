@@ -835,7 +835,7 @@ EntityEditor.defaultPrototypes =
 EntityEditor.goalPrototypes = {
 	deeds = {
 		welcome = {
-			proto="welcome(message='', type='')",
+			proto="welcome(message='', what='')",
 			args = {message="The greeting message.",type="The type of entity to react to."},
 			help = "Welcome entities of a given type that are created nearby."
 		},
