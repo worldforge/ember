@@ -367,7 +367,14 @@ protected:
 	 */
 	std::unordered_set<std::string> mTransientTypes;
 
-	/**
+    /**
+     * @brief Keeps track of all types that have the "mind" property set by default.
+     *
+     * This is required when we're exporting minds in order for us to know which entity to send Commune requests to.
+     */
+    std::unordered_set<std::string> mMindTypes;
+
+    /**
 	 * @brief Starts the process of requesting entities and walking the entity hierarchy.
 	 */
 	void startRequestingEntities();
