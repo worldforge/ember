@@ -26,6 +26,7 @@
 #include <Atlas/Codecs/Bach.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
+#include <Atlas/PresentationBridge.h>
 #include <sstream>
 #include <memory>
 
@@ -41,12 +42,14 @@ std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::s
 {
 	std::stringstream ss;
 	Atlas::Message::QueuedDecoder decoder;
-	std::unique_ptr<Atlas::Codec> codec;
+	std::unique_ptr<Atlas::Bridge> codec;
 
 	if (codecType == "bach") {
 		codec.reset(new Atlas::Codecs::Bach(ss, decoder));
 	} else if (codecType == "xml") {
 		codec.reset(new Atlas::Codecs::XML(ss, decoder));
+	} else if (codecType == "presentation") {
+		codec.reset(new Atlas::PresentationBridge(ss));
 	} else {
 		S_LOG_WARNING("Could not recognize codec type '" << codecType << "'. Supported types are: xml, bach");
 		return "";

@@ -30,19 +30,19 @@ function ServerLogger.buildWidget()
 end
 
 function ServerLogger.server_SendingObject(obj)
-	local newLogMessage = "Sending: " .. Ember.OgreView.Gui.AtlasHelper:serialize(obj, "bach") .. "\n"
+	local newLogMessage = "Sending: \n" .. Ember.OgreView.Gui.AtlasHelper:serialize(obj, "presentation")
 	
 	log.info(newLogMessage)
 
-	ServerLogger.logTextWidget:appendText(newLogMessage)
+	ServerLogger.logTextWidget:appendText(newLogMessage .. "\n")
 end
 
 function ServerLogger.server_ReceivedObject(obj)
-	local newLogMessage = "Received: " .. Ember.OgreView.Gui.AtlasHelper:serialize(obj, "bach") .. "\n"
+	local newLogMessage = "Received: \n" .. Ember.OgreView.Gui.AtlasHelper:serialize(obj, "presentation")
 
 	log.info(newLogMessage)
 
-	ServerLogger.logTextWidget:appendText(newLogMessage)
+	ServerLogger.logTextWidget:appendText(newLogMessage .. "\n")
 
 end
 
