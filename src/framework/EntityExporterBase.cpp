@@ -86,12 +86,12 @@ bool EntityExporterBase::getExportTransient() const
 
 void EntityExporterBase::setExportMinds(bool exportMinds)
 {
-    mExportMinds = exportMinds;
+	mExportMinds = exportMinds;
 }
 
 bool EntityExporterBase::getExportMinds() const
 {
-    return mExportMinds;
+	return mExportMinds;
 }
 
 void EntityExporterBase::setPreserveIds(bool preserveIds)
@@ -183,7 +183,23 @@ void EntityExporterBase::thoughtOpArrived(const Operation & op)
 		return;
 	}
 
-	dumpMind(entityId, op);
+	if (op->getArgs().empty()) {
+		S_LOG_WARNING("Got think operation with no inner args operations for entity " << entityId << ".");
+		mStats.mindsError++;
+		EventProgress.emit();
+		return;
+	}
+
+	auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(op->getArgs().front());
+
+	if (!setOp.isValid()) {
+		S_LOG_WARNING("Got think operation with no inner Set operation for entity " << entityId << ".");
+		mStats.mindsError++;
+		EventProgress.emit();
+		return;
+	}
+
+	dumpMind(entityId, setOp);
 	mStats.mindsReceived++;
 	S_LOG_VERBOSE("Got commune result for entity " << entityId << ". " << mThoughtsOutstanding.size() << " thoughts requests waiting for response.");
 	EventProgress.emit();
@@ -245,17 +261,17 @@ void EntityExporterBase::infoArrived(const Operation & op)
 	//If the entity is transient and we've been told not to export transient ones, we should skip this one (and all of its children).
 	bool shouldSkip = false;
 	if (!mExportTransient) {
-	    //First check if there's a "transient" attribute set, and it's positive
-	    if (ent->hasAttr("transient")) {
-	        if (ent->getAttr("transient").isNum() && ent->getAttr("transient").asNum() != 0) {
-	            shouldSkip = true;
-	        }
-	    } else {
-	        //If there's no "transient" attribute set, check if the type has it set.
-	        if (mTransientTypes.find(ent->getParents().front()) != mTransientTypes.end()) {
-	            shouldSkip = true;
-	        }
-	    }
+		//First check if there's a "transient" attribute set, and it's positive
+		if (ent->hasAttr("transient")) {
+			if (ent->getAttr("transient").isNum() && ent->getAttr("transient").asNum() != 0) {
+				shouldSkip = true;
+			}
+		} else {
+			//If there's no "transient" attribute set, check if the type has it set.
+			if (mTransientTypes.find(ent->getParents().front()) != mTransientTypes.end()) {
+				shouldSkip = true;
+			}
+		}
 	}
 
 	if (!shouldSkip) {
@@ -289,17 +305,17 @@ void EntityExporterBase::infoArrived(const Operation & op)
 		}
 
 		if (mExportMinds) {
-            //Don't request thoughts for ourselves
-            if (ent->getId() != mAvatarId) {
-                if (ent->hasAttr("mind")) {
-                    requestThoughts(ent->getId(), persistedId);
-                } else {
-                    //Check if the mind type perhaps is set on the type instead only.
-                    if (mMindTypes.find(ent->getParents().front()) != mMindTypes.end()) {
-                        requestThoughts(ent->getId(), persistedId);
-                    }
-                }
-            }
+			//Don't request thoughts for ourselves
+			if (ent->getId() != mAvatarId) {
+				if (ent->hasAttr("mind")) {
+					requestThoughts(ent->getId(), persistedId);
+				} else {
+					//Check if the mind type perhaps is set on the type instead only.
+					if (mMindTypes.find(ent->getParents().front()) != mMindTypes.end()) {
+						requestThoughts(ent->getId(), persistedId);
+					}
+				}
+			}
 		}
 	}
 	pollQueue();
@@ -307,22 +323,24 @@ void EntityExporterBase::infoArrived(const Operation & op)
 
 void EntityExporterBase::requestThoughts(const std::string& entityId, const std::string& persistedId)
 {
-	Atlas::Objects::Operation::Generic commune;
+	Atlas::Objects::Operation::Generic think;
 	std::list<std::string> parents;
-	parents.emplace_back("commune");
-	commune->setParents(parents);
-	commune->setTo(entityId);
+	parents.emplace_back("think");
+	think->setParents(parents);
+	think->setTo(entityId);
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	commune->setFrom(mAvatarId);
+	think->setFrom(mAvatarId);
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
-	commune->setSerialno(newSerialNumber());
+	think->setSerialno(newSerialNumber());
+
+	think->setArgs1(Atlas::Objects::Operation::Get());
 
 	sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetThoughtResult);
-	sendAndAwaitResponse(commune, slot);
-	mThoughtsOutstanding.insert(std::make_pair(commune->getSerialno(), persistedId));
+	sendAndAwaitResponse(think, slot);
+	mThoughtsOutstanding.insert(std::make_pair(think->getSerialno(), persistedId));
 	S_LOG_VERBOSE("Sending request for thoughts for entity with id " << entityId << " (local id " << persistedId << ").");
 	mStats.mindsQueried++;
 }
@@ -354,7 +372,7 @@ void EntityExporterBase::adjustReferencedEntities()
 			for (auto& thought : thoughts) {
 				//If the thought is a list of things the entity owns, we should adjust it with the new entity ids.
 				if (thought.isMap()) {
-				    auto& thoughtMap = thought.Map();
+					auto& thoughtMap = thought.Map();
 					if (thoughtMap.count("things") > 0) {
 						auto& thingsElement = thoughtMap.find("things")->second;
 						if (thingsElement.isMap()) {
@@ -403,23 +421,23 @@ void EntityExporterBase::adjustReferencedEntities()
 					}
 
 					if (thoughtMap.count("object") > 0) {
-                        auto& objectElement = thoughtMap.find("object")->second;
-                        if (objectElement.isString()) {
-                            std::string& objectString = objectElement.String();
-                            //Other entities are referred to using the syntax "'$eid:...'".
-                            //For example, the entity with id 2 would be "'$eid:2'".
-                            auto pos = objectString.find("$eid:");
-                            if (pos != std::string::npos) {
-                                auto quotePos = objectString.find('\'', pos);
-                                if (quotePos != std::string::npos) {
-                                    auto id = objectString.substr(pos + 5, quotePos - pos - 5);
-                                    auto I = mIdMapping.find(id);
-                                    if (I != mIdMapping.end()) {
-                                        objectString.replace(pos + 5, quotePos - 7, I->second);
-                                    }
-                                }
-                            }
-                        }
+						auto& objectElement = thoughtMap.find("object")->second;
+						if (objectElement.isString()) {
+							std::string& objectString = objectElement.String();
+							//Other entities are referred to using the syntax "'$eid:...'".
+							//For example, the entity with id 2 would be "'$eid:2'".
+							auto pos = objectString.find("$eid:");
+							if (pos != std::string::npos) {
+								auto quotePos = objectString.find('\'', pos);
+								if (quotePos != std::string::npos) {
+									auto id = objectString.substr(pos + 5, quotePos - pos - 5);
+									auto I = mIdMapping.find(id);
+									if (I != mIdMapping.end()) {
+										objectString.replace(pos + 5, quotePos - 7, I->second);
+									}
+								}
+							}
+						}
 					}
 
 				}
@@ -429,9 +447,9 @@ void EntityExporterBase::adjustReferencedEntities()
 	for (auto& entity : mEntities) {
 		auto& entityMap = entity.asMap();
 		//We know that mEntities only contain maps
-        auto containsIElem = entityMap.find("contains");
+		auto containsIElem = entityMap.find("contains");
 		if (containsIElem != entityMap.end()) {
-		    auto& containsElem = containsIElem->second;
+			auto& containsElem = containsIElem->second;
 			if (containsElem.isList()) {
 				auto& contains = containsElem.asList();
 				Atlas::Message::ListType newContains;
@@ -452,24 +470,24 @@ void EntityExporterBase::adjustReferencedEntities()
 
 void EntityExporterBase::resolveEntityReferences(Atlas::Message::Element& element)
 {
-    if (element.isMap()) {
-        auto entityRefI = element.asMap().find("$eid");
-        if (entityRefI != element.asMap().end() && entityRefI->second.isString()) {
-            auto I = mIdMapping.find(entityRefI->second.asString());
-            if (I != mIdMapping.end()) {
-                entityRefI->second = I->second;
-            }
-        }
-        //If it's a map we need to process all child elements too
-        for (auto& I : element.asMap()) {
-            resolveEntityReferences(I.second);
-        }
-    } else if (element.isList()) {
-        //If it's a list we need to process all child elements too
-        for (auto& I : element.asList()) {
-            resolveEntityReferences(I);
-        }
-    }
+	if (element.isMap()) {
+		auto entityRefI = element.asMap().find("$eid");
+		if (entityRefI != element.asMap().end() && entityRefI->second.isString()) {
+			auto I = mIdMapping.find(entityRefI->second.asString());
+			if (I != mIdMapping.end()) {
+				entityRefI->second = I->second;
+			}
+		}
+		//If it's a map we need to process all child elements too
+		for (auto& I : element.asMap()) {
+			resolveEntityReferences(I.second);
+		}
+	} else if (element.isList()) {
+		//If it's a list we need to process all child elements too
+		for (auto& I : element.asList()) {
+			resolveEntityReferences(I);
+		}
+	}
 }
 
 void EntityExporterBase::complete()
@@ -649,51 +667,51 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		//Check if we're actually exporting rules; we might also be getting rules if we're set to ignore
 		//transients, since we then need to get the types in order to know what entities are transient.
 		if (mExportRules) {
-		    mRules.push_back(ruleMap);
+			mRules.push_back(ruleMap);
 		}
 
 		Element attributesElem;
-        bool foundTransientProperty = false;
-        bool foundMindProperty = false;
+		bool foundTransientProperty = false;
+		bool foundMindProperty = false;
 		if (ent->copyAttr("attributes", attributesElem) == 0 && attributesElem.isMap()) {
-		    auto transientI = attributesElem.Map().find("transient");
-		    if (transientI != attributesElem.Map().end() && transientI->second.isMap()) {
-		        auto defaultI = transientI->second.Map().find("default");
-		        if (defaultI != transientI->second.Map().end()) {
-		            foundTransientProperty = true;
-		            if (defaultI->second.isNum() && defaultI->second.asNum() != 0) {
-		                mTransientTypes.insert(ruleMap.find("id")->second.asString());
-		            }
-		        }
-		    }
+			auto transientI = attributesElem.Map().find("transient");
+			if (transientI != attributesElem.Map().end() && transientI->second.isMap()) {
+				auto defaultI = transientI->second.Map().find("default");
+				if (defaultI != transientI->second.Map().end()) {
+					foundTransientProperty = true;
+					if (defaultI->second.isNum() && defaultI->second.asNum() != 0) {
+						mTransientTypes.insert(ruleMap.find("id")->second.asString());
+					}
+				}
+			}
 
-            auto mindI = attributesElem.Map().find("mind");
-            //We don't care what the default value is; we'll just check that it's a mind
-            if (mindI != attributesElem.Map().end()) {
-                mMindTypes.insert(ruleMap.find("id")->second.asString());
-                foundMindProperty = true;
-            }
+			auto mindI = attributesElem.Map().find("mind");
+			//We don't care what the default value is; we'll just check that it's a mind
+			if (mindI != attributesElem.Map().end()) {
+				mMindTypes.insert(ruleMap.find("id")->second.asString());
+				foundMindProperty = true;
+			}
 		}
 
 		if (!foundTransientProperty) {
-		    auto parentsI = ruleMap.find("parents");
-		    if (parentsI != ruleMap.end() && parentsI->second.isList()) {
-		        const std::string& parent = parentsI->second.List().front().asString();
-		        if (mTransientTypes.find(parent) != mTransientTypes.end()) {
-		            mTransientTypes.insert(ruleMap.find("id")->second.asString());
-		        }
-		    }
+			auto parentsI = ruleMap.find("parents");
+			if (parentsI != ruleMap.end() && parentsI->second.isList()) {
+				const std::string& parent = parentsI->second.List().front().asString();
+				if (mTransientTypes.find(parent) != mTransientTypes.end()) {
+					mTransientTypes.insert(ruleMap.find("id")->second.asString());
+				}
+			}
 		}
 
-        if (!foundMindProperty) {
-            auto parentsI = ruleMap.find("parents");
-            if (parentsI != ruleMap.end() && parentsI->second.isList()) {
-                const std::string& parent = parentsI->second.List().front().asString();
-                if (mMindTypes.find(parent) != mMindTypes.end()) {
-                    mMindTypes.insert(ruleMap.find("id")->second.asString());
-                }
-            }
-        }
+		if (!foundMindProperty) {
+			auto parentsI = ruleMap.find("parents");
+			if (parentsI != ruleMap.end() && parentsI->second.isList()) {
+				const std::string& parent = parentsI->second.List().front().asString();
+				if (mMindTypes.find(parent) != mMindTypes.end()) {
+					mMindTypes.insert(ruleMap.find("id")->second.asString());
+				}
+			}
+		}
 
 		for (auto& child : children) {
 			requestRule(child);

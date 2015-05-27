@@ -1149,6 +1149,9 @@ function EntityEditor:editEntity(entity)
 								item:setID(#self.instance.knowledge.model)
 								table.insert(self.instance.knowledge.model, modelItem)
 								self.knowledgelistbox:addItem(item)
+                --for some reason we need to do this call in order for the list box to actually draw the newly added item
+                self.knowledgelistbox:notifyScreenAreaChanged(true)
+								
 							end
 						else
 							--Handle goals specially
@@ -1158,6 +1161,11 @@ function EntityEditor:editEntity(entity)
 			end
 		end
 	end)
+	
+  createConnector(self.instance.helper.EventGotEmptyGoals):connect(function()
+    self.goallistbox:resetList()
+    self.instance.clearGoals = false
+  end)	
 
 	createConnector(self.instance.helper.EventGotGoal):connect(function(element)
 		if element:isMap() then
@@ -1167,60 +1175,69 @@ function EntityEditor:editEntity(entity)
 				self.instance.clearGoals = false
 			end
 			local thoughtMap = element:asMap()
-
-			local modelItem = {}
-			if thoughtMap:get("definition") and thoughtMap:get("definition"):isString() then
-				modelItem.definition = thoughtMap:get("definition"):asString()
-				if thoughtMap:get("id") and thoughtMap:get("id"):isString() then
-					modelItem.id = thoughtMap:get("id"):asString()
-
-					if thoughtMap:get("key") and thoughtMap:get("key"):isString() then
-						modelItem.key = thoughtMap:get("key"):asString()
-					else
-						modelItem.key = ""
-					end
-
-					local verb = modelItem.key
-					--The subject of a goal is expressed as "('a_goal', '#a_goal_verb1')". We therefore need to do some regexp searching to find the first value in the tuple.
-					local _, _, singleVerb = string.find(modelItem.key, "%('([%w_-]*)'")
-					if singleVerb then
-						verb = singleVerb
-					end
-
-					local addGoal = function(definition)
-
-						local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-						
-						goalItem.modelItem = modelItem
-						--6000px should be enough to make sure the text isn't cropped
-						goalItem:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
-						
-						goalItem:setText(escapeForCEGUI(verb .. " : " .. definition))
-						self.goallistbox:addItem(goalItem)
-
-						goalItem:subscribeEvent("SelectionChanged", function(args)
-							self.goalInfo:setText("")
-							if goalItem:isSelected() then
-								local goalVerb = self.widget:getWindow("GoalVerb")
-								local goalDef = self.widget:getWindow("GoalDefinition")
-
-								goalVerb:setText(verb)
-								goalVerb.verb = verb
-
-								goalDef:setText(definition)
-
-								self.instance.helper:getGoalInfo(modelItem.id)
-							end
-
-							return true
-						end)
-						return goalItem
-					end
-
-					addGoal(modelItem.definition)
-
-				end
+			
+			if thoughtMap:get("goal") == nil then
+			 log.info("No 'goal' in thoughtmap.")
+			 --No goal contained
+			 return
 			end
+			
+			if not thoughtMap:get("goal"):isString() then
+       log.info("'goal' is not a string.")
+			 --"goal" not a string
+			 return
+			end
+
+      if thoughtMap:get("id") == nil then
+       log.info("No 'id' in thoughtmap.")
+       --No id
+       return
+      end
+      
+      if not thoughtMap:get("id"):isString() then
+       log.info("'id' is not a string.")
+       --"id" not a string
+       return
+      end
+			
+			
+			
+			local modelItem = {}
+			modelItem.definition = thoughtMap:get("goal"):asString()
+			modelItem.id = thoughtMap:get("id"):asString()
+
+			--The definition of a goal is "foo(a_param, another_param)", i.e. as a call to a function (it's actually an instantiation of a Python class).
+			--Thus, we just need to parse out the first part before the first parenthesis.
+			_, _, modelItem.verb = string.find(modelItem.definition, "([%w_-]*)%(")
+
+
+			local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+			
+			goalItem.modelItem = modelItem
+			--6000px should be enough to make sure the text isn't cropped
+			goalItem:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+			
+			goalItem:setText(escapeForCEGUI(modelItem.definition))
+			self.goallistbox:addItem(goalItem)
+			--for some reason we need to do this call in order for the list box to actually draw the newly added item
+			self.goallistbox:notifyScreenAreaChanged(true)
+
+			goalItem:subscribeEvent("SelectionChanged", function(args)
+				self.goalInfo:setText("")
+				if goalItem:isSelected() then
+					local goalVerb = self.widget:getWindow("GoalVerb")
+					local goalDef = self.widget:getWindow("GoalDefinition")
+
+					goalVerb:setText(modelItem.verb)
+					goalVerb.verb = modelItem.verb
+
+					goalDef:setText(modelItem.definition)
+
+					self.instance.helper:getGoalInfo(modelItem.definition)
+				end
+
+				return true
+			end)
 		end
 	end)
 
@@ -1234,7 +1251,11 @@ function EntityEditor:editEntity(entity)
 			if reportElem and reportElem:isMap() then
 				local goalString = Ember.OgreView.Gui.EntityEditor:parseElementMap(reportElem:asMap())
 				self.goalInfo:setText(escapeForCEGUI(goalString))
+			else
+       log.info("'report' isn't a map.")
 			end
+		else
+	   log.info("Goal info element isn't a map.")
 		end
 	end)
 
@@ -1533,7 +1554,7 @@ function EntityEditor:GoalAdd_Clicked(args)
 	local goalVerb = self.widget:getWindow("GoalVerb")
 	local goalDef = self.widget:getWindow("GoalDefinition")
 
-	self.instance.helper:addGoal(goalVerb:getText(), goalDef:getText())
+	self.instance.helper:addGoal(goalDef:getText())
 	self:knowledgeRefresh()
 	return true
 end

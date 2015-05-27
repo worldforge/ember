@@ -108,23 +108,22 @@ public:
 
 	/**
 	 * @brief Adds a new goal.
-	 * @param verb The verb for the goal.
 	 * @param definition The goal definition.
 	 */
-	void addGoal(const std::string& verb, const std::string& definition);
+	void addGoal(const std::string& definition);
 
 	/**
 	 * @brief Updates an existing goal.
-	 * @param verb The id of the goal (note: not the verb).
+	 * @param replaceDefinition The existing definition.
 	 * @param definition The goal definition.
 	 */
-	void updateGoal(const std::string& id, const std::string& definition);
+	void updateGoal(const std::string& replaceDefinition, const std::string& definition);
 
 	/**
 	 * @brief Removes an existing goal.
-	 * @param verb The id of the goal (note: not the verb).
+	 * @param verb The definition of the goal.
 	 */
-	void removeGoal(const std::string& id);
+	void removeGoal(const std::string& definition);
 
 	/**
 	 * @brief Adds new knowledge
@@ -197,6 +196,11 @@ public:
 	 * @brief Emitted when a new thought about a goal has arrived.
 	 */
 	sigc::signal<void, const Atlas::Message::Element&> EventGotGoal;
+
+	/**
+	 * @brief Emitted when information about there being no goals have arrived.
+	 */
+	sigc::signal<void> EventGotEmptyGoals;
 
 	/**
 	 * @brief Emitted when information about a goal has arrived.

@@ -263,19 +263,21 @@ Atlas::Message::Element EntityEditor::createPosition2dElement()
 	return Element(list);
 }
 
-void EntityEditor::addGoal(const std::string& verb, const std::string& definition)
+void EntityEditor::addGoal(const std::string& definition)
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Entity::Anonymous thought;
-	thought->setAttr("predicate", "goal");
-	thought->setAttr("subject", "('" + verb + "', '#" + verb + "_verb1')");
-	thought->setAttr("object", definition);
+	thought->setAttr("goal", definition);
+	thought->setId(definition);
+
+	Atlas::Objects::Operation::Set setOp;
+	setOp->setArgs1(thought);
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	thinkOp->setArgs1(thought);
 	std::list<std::string> parents;
 	parents.emplace_back("think");
+	thinkOp->setArgs1(setOp);
 	thinkOp->setParents(parents);
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
@@ -287,22 +289,22 @@ void EntityEditor::addGoal(const std::string& verb, const std::string& definitio
 	connection->send(thinkOp);
 
 }
-void EntityEditor::updateGoal(const std::string& id, const std::string& definition)
+void EntityEditor::updateGoal(const std::string& replaceDefinition, const std::string& definition)
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	Atlas::Message::MapType goalElement;
-	goalElement["id"] = id;
-	goalElement["definition"] = definition;
-
 	Atlas::Objects::Entity::Anonymous thought;
-	thought->setAttr("goal", goalElement);
+	thought->setAttr("goal", definition);
+	thought->setId(replaceDefinition);
+
+	Atlas::Objects::Operation::Set setOp;
+	setOp->setArgs1(thought);
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	thinkOp->setArgs1(thought);
 	std::list<std::string> parents;
 	parents.emplace_back("think");
 	thinkOp->setParents(parents);
+	thinkOp->setArgs1(setOp);
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -313,19 +315,18 @@ void EntityEditor::updateGoal(const std::string& id, const std::string& definiti
 	connection->send(thinkOp);
 }
 
-void EntityEditor::removeGoal(const std::string& id)
+void EntityEditor::removeGoal(const std::string& definition)
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	Atlas::Message::MapType goalElement;
-	goalElement["id"] = id;
-	//By not defining anything else than the id we're telling the server to remove it.
-
 	Atlas::Objects::Entity::Anonymous thought;
-	thought->setAttr("goal", goalElement);
+	thought->setAttr("id", definition);
+
+	Atlas::Objects::Operation::Delete deleteOp;
+	deleteOp->setArgs1(thought);
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	thinkOp->setArgs1(thought);
+	thinkOp->setArgs1(deleteOp);
 	std::list<std::string> parents;
 	parents.emplace_back("think");
 	thinkOp->setParents(parents);
@@ -348,11 +349,15 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 	thought->setAttr("subject", subject);
 	thought->setAttr("object", knowledge);
 
+	Atlas::Objects::Operation::Set setOp;
+	setOp->setArgs1(thought);
+
+
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	thinkOp->setArgs1(thought);
 	std::list<std::string> parents;
 	parents.emplace_back("think");
 	thinkOp->setParents(parents);
+	thinkOp->setArgs1(setOp);
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -384,28 +389,31 @@ void EntityEditor::getGoals()
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	Atlas::Objects::Operation::Generic get;
+	Atlas::Objects::Operation::RootOperation thinkOp;
 	std::list<std::string> parents;
-	parents.emplace_back("commune");
-	get->setParents(parents);
-	get->setTo(mEntity.getId());
+	parents.emplace_back("think");
+	thinkOp->setParents(parents);
+	thinkOp->setTo(mEntity.getId());
 
+
+	Atlas::Objects::Operation::Get getOp;
 	Atlas::Objects::Entity::Anonymous get_args;
 	get_args->setAttr("goal", Atlas::Message::MapType());
+	getOp->setArgs1(get_args);
 
-	get->setArgs1(get_args);
+	thinkOp->setArgs1(getOp);
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	get->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
-	get->setSerialno(Eris::getNewSerialno());
+	thinkOp->setSerialno(Eris::getNewSerialno());
 
 	Eris::Connection* connection = account->getConnection();
 
-	connection->getResponder()->await(get->getSerialno(), this, &EntityEditor::operationGetGoalsResult);
-	connection->send(get);
+	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetGoalsResult);
+	connection->send(thinkOp);
 
 }
 
@@ -414,23 +422,27 @@ void EntityEditor::getThoughts()
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	Atlas::Objects::Operation::Generic get;
+	Atlas::Objects::Operation::RootOperation thinkOp;
 	std::list<std::string> parents;
-	parents.emplace_back("commune");
-	get->setParents(parents);
-	get->setTo(mEntity.getId());
+	parents.emplace_back("think");
+	thinkOp->setParents(parents);
+	thinkOp->setTo(mEntity.getId());
+
+	Atlas::Objects::Operation::Get getOp;
+	thinkOp->setArgs1(getOp);
+
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	get->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
-	get->setSerialno(Eris::getNewSerialno());
+	thinkOp->setSerialno(Eris::getNewSerialno());
 
 	Eris::Connection* connection = account->getConnection();
 
-	connection->getResponder()->await(get->getSerialno(), this, &EntityEditor::operationGetThoughtResult);
-	connection->send(get);
+	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetThoughtResult);
+	connection->send(thinkOp);
 
 }
 
@@ -446,8 +458,7 @@ void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::Root
 		return;
 	}
 
-	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
-	//"think" operation.
+	//We'll be getting back a Think op, which wraps a Set op, where the arguments are the thoughts.
 	if (op->getParents().empty()) {
 		S_LOG_WARNING("Got think operation without any parent set.");
 		return;
@@ -457,13 +468,25 @@ void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::Root
 		return;
 	}
 
-	if (!op->getArgs().empty()) {
-		auto thoughts = op->getArgsAsList();
+	if (op->getArgs().empty()) {
+		S_LOG_WARNING("Got Thought op without any arguments.");
+		return;
+	}
+
+	auto innerOp = op->getArgs().front();
+	if (innerOp->getClassNo() != Atlas::Objects::Operation::SET_NO) {
+		S_LOG_WARNING("Get Thought op with inner op that wasn't Set.");
+	}
+
+	auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(innerOp);
+
+	if (!setOp->getArgs().empty()) {
+		auto thoughts = setOp->getArgsAsList();
 		for (auto thought : thoughts) {
 			EventGotGoal(thought);
 		}
 	} else {
-		S_LOG_VERBOSE("Got thought op without any thoughts.");
+		EventGotEmptyGoals();
 	}
 }
 
@@ -480,8 +503,7 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 		return;
 	}
 
-	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
-	//"think" operation.
+	//We'll be getting back a Think op, which wraps a Set op, where the arguments are the thoughts.
 	if (op->getParents().empty()) {
 		S_LOG_WARNING("Got think operation without any parent set.");
 		return;
@@ -491,8 +513,20 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 		return;
 	}
 
-	if (!op->getArgs().empty()) {
-		auto thoughts = op->getArgsAsList();
+	if (op->getArgs().empty()) {
+		S_LOG_WARNING("Got Thought op without any arguments.");
+		return;
+	}
+
+	auto innerOp = op->getArgs().front();
+	if (innerOp->getClassNo() != Atlas::Objects::Operation::SET_NO) {
+		S_LOG_WARNING("Get Thought op with inner op that wasn't Set.");
+	}
+
+	auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(innerOp);
+
+	if (!setOp->getArgs().empty()) {
+		auto thoughts = setOp->getArgsAsList();
 		for (auto thought : thoughts) {
 			EventGotThought(thought);
 		}
@@ -501,34 +535,38 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 	}
 }
 
-void EntityEditor::getGoalInfo(const std::string& id)
+void EntityEditor::getGoalInfo(const std::string& definition)
 {
 
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	Atlas::Objects::Operation::Generic get;
+	Atlas::Objects::Operation::RootOperation thinkOp;
 	std::list<std::string> parents;
-	parents.emplace_back("commune");
-	get->setParents(parents);
-	get->setTo(mEntity.getId());
+	parents.emplace_back("think");
+	thinkOp->setParents(parents);
+	thinkOp->setTo(mEntity.getId());
+
+
+	Atlas::Objects::Operation::Look lookOp;
+	Atlas::Objects::Entity::Anonymous look_args;
+	look_args->setAttr("id", definition);
+	lookOp->setArgs1(look_args);
+
+	thinkOp->setArgs1(lookOp);
+
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	get->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
-	get->setSerialno(Eris::getNewSerialno());
+	thinkOp->setSerialno(Eris::getNewSerialno());
 
-	Atlas::Message::MapType goalMap;
-	goalMap["id"] = id;
-	Atlas::Objects::Entity::Anonymous getArg;
-	getArg->setAttr("goal_info", goalMap);
-	get->setArgs1(getArg);
 
 	Eris::Connection* connection = account->getConnection();
 
-	connection->getResponder()->await(get->getSerialno(), this, &EntityEditor::operationGetGoalInfoResult);
-	connection->send(get);
+	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetGoalInfoResult);
+	connection->send(thinkOp);
 }
 
 void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op)
@@ -545,13 +583,25 @@ void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::R
 
 	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
 	//"info" operation.
-	if (op->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
+	if (op->getParents().empty() || op->getParents().front() != "think") {
 		S_LOG_WARNING("Got goal info operation with wrong type.");
 		return;
 	}
 
-	if (!op->getArgs().empty()) {
-		auto goalInfos = op->getArgsAsList();
+	if (op->getArgs().empty()) {
+		S_LOG_WARNING("Got Thought op without any arguments.");
+		return;
+	}
+
+	auto innerOp = op->getArgs().front();
+	if (innerOp->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
+		S_LOG_WARNING("Get Thought op with inner op that wasn't Info.");
+	}
+
+	auto infoOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Info>(innerOp);
+
+	if (!infoOp->getArgs().empty()) {
+		auto goalInfos = infoOp->getArgsAsList();
 		for (auto goalInfo : goalInfos) {
 			EventGotGoalInfo(goalInfo);
 		}
