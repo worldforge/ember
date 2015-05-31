@@ -42,6 +42,11 @@
 // #include <iostream>
 #include <fstream>
 
+#if !defined(__APPLE__) && !defined(__WIN32__)
+#include <basedir.h>
+#include <basedir_fs.h>
+#endif
+
 // From sear
 #ifdef __APPLE__
 
@@ -109,7 +114,7 @@ std::string getAppSupportDirPath()
 
 namespace Ember
 {
-	
+
 	const std::string ConfigService::SETVALUE ( "set_value" );
 	const std::string ConfigService::GETVALUE ( "get_value" );
 
@@ -134,7 +139,7 @@ namespace Ember
 		baseDir = std::string ( cwd ) + "\\";
 		mSharedDataDir = baseDir + "\\..\\share\\ember\\";
 		mEtcDir = baseDir + "\\..\\etc\\ember\\";
-		
+
 #endif
 
 #if !defined(__APPLE__) && !defined(__WIN32__)
@@ -230,7 +235,7 @@ namespace Ember
 	void ConfigService::setValue ( const std::string& section, const std::string& key, const varconf::Variable& value, int iscope)
 	{
 		varconf::Scope scope = static_cast<varconf::Scope>(iscope);
-		
+
 		varconf::Config* config = mInstanceConfig;
 		if (scope == varconf::GLOBAL) {
 			config = mGlobalConfig;
@@ -447,8 +452,18 @@ namespace Ember
 			static std::string path ( getAppSupportDirPath() + "/Ember/" );
 			return path;
 #else
-			static std::string path ( std::string ( getenv ( "HOME" ) ) + "/.ember/" );
-			return path;
+			xdgHandle baseDirHandle;
+			if (!xdgInitHandle(&baseDirHandle))
+			{
+				static std::string path ( std::string ( getenv ( "HOME" ) ) + "/.ember/" );
+				return path;
+			}
+			else
+			{
+				static std::string path = std::string( xdgDataHome(&baseDirHandle) ) + "/ember/";
+				xdgWipeHandle(&baseDirHandle);
+				return path;
+			}
 #endif
 		}
 	}
