@@ -6,16 +6,10 @@ orig_args=$@
 : ${bindir:="$( cd -P "$( dirname "$0" )" && pwd )"}
 : ${prefix:="$( cd -P "$( dirname "$0" )/.." && pwd )"}
 
-homedata="$HOME/.ember"
-
 debugging=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
-  --home)
-    shift
-    homedata="$1"
-    ;;
   --debug)
     debugging=1
     ;;
@@ -44,9 +38,9 @@ if [ $debugging = 1 ] ; then
   # Execute real ember binary
   echo "Starting Ember in debugger...."
   gdb --batch -ex "run" -ex "backtrace" -ex "quit" \
-  --args $bindir/ember.bin $prefix_arg --config general:logginglevel verbose --home $homedata $orig_args
+  --args $bindir/ember.bin $prefix_arg --config general:logginglevel verbose $orig_args
 else
   # Execute real ember binary
   echo "Starting Ember...."
-  exec $bindir/ember.bin $prefix_arg --home $homedata $orig_args
+  exec $bindir/ember.bin $prefix_arg $orig_args
 fi
