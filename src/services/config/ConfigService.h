@@ -81,7 +81,7 @@ namespace Ember
 			void updatedConfig ( const std::string& section, const std::string& key );
 
 			void configError ( const char* error );
-			
+
 			/**
 			 * @brief The global configuration store.
 			 *
@@ -92,7 +92,7 @@ namespace Ember
 			/**
 			 * @brief The user configuration store.
 			 *
-			 * This contains values read in from the user config file (for example ~/.ember/ember.conf).
+			 * This contains values read in from the user config file (for example ~/.config/ember/ember.conf).
 			 */
 			varconf::Config* mUserConfig;
 
@@ -258,13 +258,13 @@ namespace Ember
 			const std::string& getEmberDataDirectory() const;
 
 			/**
-			 *    returns the path to the media directory specific to a user, but synced with the main server, which would normally be ~/.ember/ember-media
+			 *    returns the path to the media directory specific to a user, but synced with the main server, which would normally be ~/.local/share/ember/ember-media
 			 * @return
 			 */
 			const std::string& getEmberMediaDirectory() const;
 
 			/**
-			 *    returns the path to the media directory specific to a user, containing media created by the user, which would normally be ~/.ember/user-media
+			 *    returns the path to the media directory specific to a user, containing media created by the user, which would normally be ~/.local/share/ember/user-media
 			 * @return
 			 */
 			const std::string& getUserMediaDirectory() const;
@@ -301,7 +301,7 @@ namespace Ember
 			const std::string& getPrefix() const;
 
 			/**
-			 *    Sets the home directory, i.e. where all configuration and media is stored. If this is not set, a default directory will be user (~/.ember on *NIX systems)
+			 *    Sets the home directory, i.e. where all configuration and media is stored. If this is not set, a default directory will be user (XDG standard on *NIX systems)
 			 * @param path
 			 */
 			void setHomeDirectory ( const std::string& path );
