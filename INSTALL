@@ -36,6 +36,10 @@ Ember currently depends on the following libraries:
   Version: 0.0.7 (?)
   http://www.openal.org/
 
+* libxdg-basedir
+  Version: 1.2.0+
+  http://nevill.ch/libxdg-basedir/
+
 Optional libraries:
 
 * CPPUnit C++ unit testing Library 
