@@ -251,6 +251,19 @@ PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
 		AC_MSG_ERROR([Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
 	])
 
+# Check for libxdg-basedir
+if test "x$WIN32" = "xfalse" -a "x$OSX" = "xfalse"; then
+XDGBASEDIR_VERSION=1.2.0
+PKG_CHECK_MODULES(XDGBASEDIR, libxdg-basedir >= $XDGBASEDIR_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $XDGBASEDIR_CFLAGS"
+		LIBS="$LIBS $XDGBASEDIR_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find libXDG-basedir or tests failed. Error: $XDGBASEDIR_PKG_ERRORS. Please go to http://nevill.ch/libxdg-basedir/ to get the latest, or check config.log to see why the tests failed, and fix it.])
+	])
+fi
+
 # check for sigc++ separately from the WF checks
 PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
   [
