@@ -45,6 +45,7 @@
 #if !defined(__APPLE__) && !defined(__WIN32__)
 #include <basedir.h>
 #include <basedir_fs.h>
+#include "framework/osdir.h"
 #endif
 
 // From sear
@@ -460,6 +461,7 @@ namespace Ember
 			}
 			else
 			{
+				//Determine the directory type requested and ensure that it exists
 				switch (baseDirType)
 				{
 					case BaseDirType_DATA:
@@ -474,6 +476,11 @@ namespace Ember
 					case BaseDirType_RUNTIME:
 						path = std::string( xdgRuntimeDirectory(&baseDirHandle) ) + "/ember/";
 						break;
+				}
+				oslink::directory pathXDG(path);
+				if (!pathXDG)
+				{
+					oslink::directory::mkdir(path.c_str());
 				}
 				xdgWipeHandle(&baseDirHandle);
 			}
