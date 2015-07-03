@@ -1,4 +1,4 @@
-#This is the main, static ember config file. All of these values can be overridden by a "ember.conf" file placed in the ember home directory (i.e. ~/.ember/ember.conf on linux)
+#This is the main, static ember config file. All of these values can be overridden by a "ember.conf" file placed in the ember home directory (i.e. ~/.config/ember/ember.conf on linux)
 
 [paths]
 #The path where all shared data is installed. Only alter this if you know what you're doing.
@@ -70,7 +70,7 @@ useaggressivefocusregion=true
 fardistance=200
 #Whether we should render back faces when generating the shadow texture. This should normally be on.
 renderbackfaces=true
-#the lod bias percentage of all shadow cameras, this affects the level of detail of the shadow by affecting the mesh used to render the shadows. 
+#the lod bias percentage of all shadow cameras, this affects the level of detail of the shadow by affecting the mesh used to render the shadows.
 #This will only work for the shadow of the meshes that already have lower level of detail meshes added for it.
 shadowlodbias = "100.0"
 
@@ -144,7 +144,7 @@ maxspeed = 5
 adjusttoterrain = true
 #when moving something on the terrain and the camera is moved, Ember only performs a new intersection check after a certain interval, as expressed here in milliseconds
 terraincheckinterval=100
-#If true, Ember will catch the mouse. This means that the mouse cursor won't be able to move beyond the Ember window. 
+#If true, Ember will catch the mouse. This means that the mouse cursor won't be able to move beyond the Ember window.
 catchmouse=true
 #The max time, in milliseconds, to wait between a mouse press and release to consider a "click". This only applies when clicking on the world; i.e. it has no effect on the GUI.
 clickthreshold=200
@@ -196,7 +196,7 @@ logchatmessages=true
 #setting this to 0 will disable the fps capping.
 #the main advantage of this is to prevent Ember from completely starving the system, when most fps over 60 aren't recognizable by users
 desiredfps=60
-#allows you to specify a local cyphesis socket to connect to. If nothing is specified Ember will look for the socket at PREFIX/var/tmp/cyphesis_cyphesis.sock 
+#allows you to specify a local cyphesis socket to connect to. If nothing is specified Ember will look for the socket at PREFIX/var/tmp/cyphesis_cyphesis.sock
 #socket=/path/to/cyphesis_cyphesis.sock
 
 
