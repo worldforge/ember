@@ -40,7 +40,7 @@ Here's a list of the most common keys and some useful commands:
   shift : run
  General keys:
   F12 : toggle console
-  PrintScreen : take screenshot and save to ~./ember/screenshots or c:\Document and Settings\$user\Application Data\ember\screenshots
+  PrintScreen : take screenshot and save to ~/.local/share/ember/screenshots or c:\Document and Settings\$user\Application Data\ember\screenshots
   F7 : toggle wireframe mode
   F6 : toggle free flying mode
  Commands:
@@ -48,7 +48,7 @@ Here's a list of the most common keys and some useful commands:
   /connect &lt;server&gt; : connects to a server
   /login &lt;name&gt; &lt;password&gt; : tries to log in
   /add &lt;name&gt; &lt;gender&gt; &lt;type&gt; : adds a new character, for example: /add Erik male settler
-  /list_commands : lists all available commands 
+  /list_commands : lists all available commands
 For more questions or info, see www.worldforge.org
 			</Property>
 			<Property name="InheritsAlpha" value="false" />
