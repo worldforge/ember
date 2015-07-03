@@ -302,11 +302,11 @@ namespace Ember
 	{
 		S_LOG_INFO ( "Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << "." );
 		bool success = mGlobalConfig->readFromFile ( getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL );
-		std::string userConfigPath ( getHomeDirectory(BaseDirType_CONFIG) + "/" + filename );
+		std::string userConfigPath ( getHomeDirectory(BaseDirType_CONFIG) + filename );
 		std::ifstream file ( userConfigPath.c_str() );
 		if ( !file.fail() )
 		{
-			S_LOG_INFO ( "Loading user config file from "<< getHomeDirectory(BaseDirType_CONFIG) + "/" + filename <<"." );
+			S_LOG_INFO ( "Loading user config file from "<< getHomeDirectory(BaseDirType_CONFIG) + filename <<"." );
 			try
 			{
 				mUserConfig->parseStream ( file, varconf::USER );
@@ -557,7 +557,7 @@ namespace Ember
 
 	const std::string& ConfigService::getUserMediaDirectory() const
 	{
-		static std::string path ( getHomeDirectory(BaseDirType_DATA) + "/user-media/" );
+		static std::string path ( getHomeDirectory(BaseDirType_DATA) + "user-media/" );
 		return path;
 	}
 

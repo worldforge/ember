@@ -316,7 +316,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	//We'll control the rendering ourself and need to turn off the autoupdating.
 	mWindow->setAutoUpdated(false);
 
-	std::string exportDir(configSrv.getHomeDirectory(BaseDirType_DATA) + "/user-media/data/");
+	std::string exportDir(configSrv.getHomeDirectory(BaseDirType_DATA) + "user-media/data/");
 	//Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
 

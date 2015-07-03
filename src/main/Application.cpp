@@ -175,7 +175,7 @@ Application::~Application()
 {
 	// before shutting down, we write out the user config to user's ember home directory
 	ConfigService& configService = mServices->getConfigService();
-	configService.saveConfig(configService.getHomeDirectory(BaseDirType_CONFIG) + "/ember.conf", varconf::USER);
+	configService.saveConfig(configService.getHomeDirectory(BaseDirType_CONFIG) + "ember.conf", varconf::USER);
 
 	mServices->getServerService().stop();
 	mServices->getMetaserverService().stop();
@@ -283,7 +283,7 @@ void Application::initializeServices()
 	}
 
 	//output all logging to ember.log
-	std::string filename(configService.getHomeDirectory(BaseDirType_DATA) + "/ember.log");
+	std::string filename(configService.getHomeDirectory(BaseDirType_DATA) + "ember.log");
 	mLogOutStream = std::unique_ptr < std::ofstream > (new std::ofstream(filename.c_str()));
 
 	//write to the log the version number
@@ -312,7 +312,7 @@ void Application::initializeServices()
 	configService.loadSavedConfig("ember.conf", mConfigSettings);
 
 	//Check if there's a user specific ember.conf file. If not, create an empty template one.
-	std::string userConfigFilePath = configService.getHomeDirectory(BaseDirType_CONFIG) + "/ember.conf";
+	std::string userConfigFilePath = configService.getHomeDirectory(BaseDirType_CONFIG) + "ember.conf";
 	struct stat tagStat;
 	int ret = stat(userConfigFilePath.c_str(), &tagStat);
 	if (ret == -1) {
@@ -416,7 +416,7 @@ void Application::startScripting()
 	}
 
 	//load any user defined scripts
-	const std::string userScriptDirectoryPath = mServices->getConfigService().getHomeDirectory(BaseDirType_CONFIG) + "/scripts";
+	const std::string userScriptDirectoryPath = mServices->getConfigService().getHomeDirectory(BaseDirType_CONFIG) + "scripts/";
 	oslink::directory scriptDir(userScriptDirectoryPath);
 	if (scriptDir.isExisting()) {
 		static const std::string luaSuffix = ".lua";
