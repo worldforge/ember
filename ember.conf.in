@@ -190,7 +190,7 @@ loggingdetailed=false
 version=@VERSION@
 # default chat logging to on
 logchatmessages=true
-#file name where server settings are stored. The path is relative to the Ember home directory.
+#file name where server settings are stored. The path is relative to the Ember home config directory.
 #serversettings="serversettings.conf"
 #desired frames per second. If the hardware is fast enough to be able to provide higher fps Ember will sleep enough to make sure that the fps is kept around the desired number.
 #setting this to 0 will disable the fps capping.

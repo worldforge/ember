@@ -46,7 +46,7 @@ class ServerSettingsCredentials;
  *
  * In order to query about the settings for a specific server an instance of ServerSettingsCredentials. This allows the service to manage server verification and lookup.
  *
- * All server settings are stored in one file, by default "serversettings.conf", to be found in the Ember home directory. Each server is represented by one section in this config file.
+ * All server settings are stored in one file, by default "serversettings.conf", to be found in the Ember home config directory. Each server is represented by one section in this config file.
  * The mapping between servers and sections is handled by the getSectionForServerCredentials(...) method. This method currently only uses the host name to map servers to config file section, but it might be extended with more complex authentication methods for making sure that the right server is matched to the correct section.
  */
 class ServerSettings : public Service
@@ -134,7 +134,7 @@ private:
 	/**
 	 * @brief Gets the full path to the config file on the file system.
 	 *
-	 * If the user setting "general:serversettings" is set, the value found there will be used. If not, a file named "serversettings.conf" found in the Ember home directory will be used.
+	 * If the user setting "general:serversettings" is set, the value found there will be used. If not, a file named "serversettings.conf" found in the Ember home config directory will be used.
 	 *
 	 * @returns The full path to the config file on the file system.
 	 */
