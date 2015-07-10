@@ -22,12 +22,12 @@
 
 	
 <!-- environment -->	
-<!-- A simple case. We want the model "turnip" to be shown for the entity of type "turnip" -->
+<!-- A simple case. We want the model "beet" to be shown for the entity of type "turnip" -->
 	<entitymapping name="turnip">
 		<entitymatch>
 			<case>
 				<caseparam type="equals">turnip</caseparam>
-				<action type="display-model">turnip</action>
+				<action type="display-model">beet</action>
 			</case>
 		</entitymatch>
 	</entitymapping>
