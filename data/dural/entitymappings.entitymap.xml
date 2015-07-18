@@ -1061,103 +1061,14 @@
 			</case>
 		</entitymatch>
 	</entitymapping>
-    <entitymapping name="bone_pile">
-        <entitymatch>
-            <case>
-                <caseparam type="equals">bone_pile</caseparam>
-                <action type="display-model">bone_pile</action>
-                <action type="display-part">RFoot</action>
-                <action type="display-part">LFoot</action>
-                <action type="display-part">RShin</action>
-                <action type="display-part">LShin</action>
-                <action type="display-part">RKnee</action>
-                <action type="display-part">LKnee</action>
-                <action type="display-part">RThigh</action>
-                <action type="display-part">LThigh</action>
-                <action type="display-part">Hips</action>
-                <action type="display-part">LowerSpine</action>
-                <action type="display-part">MiddleSpine</action>
-                <action type="display-part">UpperSpine</action>
-                <action type="display-part">Ribcage</action>
-                <action type="display-part">RScapula</action>
-                <action type="display-part">LScapula</action>
-                <action type="display-part">RClavicle</action>
-                <action type="display-part">LClavicle</action>
-                <action type="display-part">RUpperArm</action>
-                <action type="display-part">LUpperArm</action>
-                <action type="display-part">RForeArm</action>
-                <action type="display-part">LForeArm</action>
-                <action type="display-part">RHand</action>
-                <action type="display-part">LHand</action>
-                <action type="display-part">Neck</action>
-                <action type="display-part">Jaw</action>
-                <action type="display-part">Skull</action>                             
-            </case>
-        </entitymatch>
-    </entitymapping>
-<!-- Old bone mappings replaced with bone_pile part mapping.
-	<autoentitymapping name="arm" /> 
+
+	<autoentitymapping name="bone_pile" /> 
+	<autoentitymapping name="humerus" /> 
 	<autoentitymapping name="skull" /> 
-	<autoentitymapping name="shin" />
+	<autoentitymapping name="tibia" />
 	<autoentitymapping name="pelvis" />
 	<autoentitymapping name="ribcage" /> 
-	<autoentitymapping name="thigh" /> -->
-    <entitymapping name="arm">
-        <entitymatch>
-            <case>
-                <caseparam type="equals">arm</caseparam>
-                <action type="display-model">bone_pile</action>
-                <action type="display-part">LUpperArm</action>
-                <action type="display-part">LforeArm</action>
-                <action type="display-part">LHand</action>                           
-            </case>
-        </entitymatch>
-    </entitymapping>
-    <entitymapping name="skull">
-        <entitymatch>
-            <case>
-                <caseparam type="equals">skull</caseparam>
-                <action type="display-model">bone_pile</action>
-                <action type="display-part">Skull</action>                           
-            </case>
-        </entitymatch>
-    </entitymapping>
-    <entitymapping name="shin">
-        <entitymatch>
-            <case>
-                <caseparam type="equals">shin</caseparam>
-                <action type="display-model">bone_pile</action>
-                <action type="display-part">LShin</action>                           
-            </case>
-        </entitymatch>
-    </entitymapping>
-    <entitymapping name="pelvis">
-        <entitymatch>
-            <case>
-                <caseparam type="equals">pelvis</caseparam>
-                <action type="display-model">bone_pile</action>
-                <action type="display-part">Hips</action>                           
-            </case>
-        </entitymatch>
-    </entitymapping>
-    <entitymapping name="ribcage">
-        <entitymatch>
-            <case>
-                <caseparam type="equals">ribcage</caseparam>
-                <action type="display-model">bone_pile</action>
-                <action type="display-part">Ribcage</action>                           
-            </case>
-        </entitymatch>
-    </entitymapping>
-    <entitymapping name="thigh">
-        <entitymatch>
-            <case>
-                <caseparam type="equals">thigh</caseparam>
-                <action type="display-model">bone_pile</action>
-                <action type="display-part">RThigh</action>                           
-            </case>
-        </entitymatch>
-    </entitymapping>
+	<autoentitymapping name="femur" />
 
 
 <!--	<entitymapping name="goblin">
