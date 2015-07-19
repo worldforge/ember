@@ -22,8 +22,6 @@
 #endif
 
 #include <Eris/View.h>
-#include <Eris/EventService.h>
-#include <Eris/Session.h>
 
 #include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
@@ -41,7 +39,7 @@
 #include "framework/TimeFrame.h"
 #include "framework/FileResourceProvider.h"
 #include "framework/osdir.h"
-#include "framework/FileSystemObserver.h"
+#include "framework/StackChecker.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 #include "components/lua/Connectors.h"
@@ -83,7 +81,6 @@ TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
 TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 
 #include <boost/thread.hpp>
-#include <framework/TimedLog.h>
 
 #ifndef HAVE_SIGHANDLER_T
 
@@ -121,6 +118,8 @@ protected:
 	 */
 	long mMicrosecondsPerFrame;
 
+	bool mEnableStackCheck;
+
 	void Config_DesiredFps(const std::string& section, const std::string& key, varconf::Variable& variable) {
 		//Check for double, but cast to int. That way we'll catch all numbers.
 		if (variable.is_double()) {
@@ -129,6 +128,25 @@ protected:
 				mMicrosecondsPerFrame = 1000000L / mDesiredFps;
 			} else {
 				mMicrosecondsPerFrame = 0;
+			}
+
+			if (mEnableStackCheck && mDesiredFps > 0) {
+				//Pad the frame duration by 1.5 to only catch those frames that are noticeable off
+				StackChecker::start(std::chrono::milliseconds(1000L / mDesiredFps) * 1.5);
+			} else {
+				StackChecker::stop();
+			}
+		}
+	}
+
+	void Config_FrameStackCheck(const std::string& section, const std::string& key, varconf::Variable& variable) {
+		if (variable.is_bool()) {
+			mEnableStackCheck = static_cast<bool>(variable);
+			if (mEnableStackCheck && mDesiredFps > 0) {
+				//Pad the frame duration by 1.5 to only catch those frames that are noticeable off
+				StackChecker::start(std::chrono::milliseconds(1000L / mDesiredFps) * 1.5);
+			} else {
+				StackChecker::stop();
 			}
 		}
 	}
@@ -140,8 +158,12 @@ public:
 	 * A listener will be set up listening for the general:desiredfps config setting.
 	 */
 	DesiredFpsListener() :
-			mDesiredFps(0), mMicrosecondsPerFrame(0) {
+			mDesiredFps(0),
+			mMicrosecondsPerFrame(0),
+			mEnableStackCheck(false) {
 		registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &DesiredFpsListener::Config_DesiredFps));
+		registerConfigListener("general", "slowframecheck", sigc::mem_fun(*this, &DesiredFpsListener::Config_FrameStackCheck));
+
 	}
 
 	/**
@@ -241,6 +263,8 @@ void Application::mainLoop() {
 		try {
 			Log::sCurrentFrameStartMilliseconds = microsec_clock::local_time();
 
+			StackChecker::resetCounter();
+
 			unsigned int frameActionMask = 0;
 			boost::posix_time::microseconds desiredMicrosecondsPerFrame(desiredFpsListener.getMicrosecondsPerFrame());
 			TimeFrame timeFrame = TimeFrame(desiredMicrosecondsPerFrame);
@@ -301,6 +325,8 @@ void Application::mainLoop() {
 				S_LOG_VERBOSE("Frame took too long.");
 			}
 
+			StackChecker::printBacktraces();
+
 		} catch (const boost::exception& ex) {
 			S_LOG_CRITICAL("Got exception, shutting down." << boost::diagnostic_information(ex));
 			throw;
@@ -326,11 +352,11 @@ void Application::initializeServices() {
 	// Initialize the Configuration Service
 	ConfigService& configService = mServices->getConfigService();
 	configService.start();
-	if (mPrefix != "") {
+	if (!mPrefix.empty()) {
 		configService.setPrefix(mPrefix);
 	}
 
-	if (mHomeDir != "") {
+	if (!mHomeDir.empty()) {
 		configService.setHomeDirectory(mHomeDir);
 		std::cout << "Setting home directory to " << mHomeDir << std::endl;
 	}
@@ -366,7 +392,7 @@ void Application::initializeServices() {
 
 	//Check if there's a user specific ember.conf file. If not, create an empty template one.
 	std::string userConfigFilePath = configService.getHomeDirectory(BaseDirType_CONFIG) + "ember.conf";
-	struct stat tagStat;
+	struct stat tagStat{};
 	int ret = stat(userConfigFilePath.c_str(), &tagStat);
 	if (ret == -1) {
 		//Create empty template file.
@@ -450,7 +476,7 @@ void Application::Server_GotView(Eris::View* view) {
 }
 
 void Application::Server_DestroyedView() {
-	mWorldView = 0;
+	mWorldView = nullptr;
 }
 
 Eris::View* Application::getMainView() {

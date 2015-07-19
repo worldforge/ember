@@ -197,6 +197,9 @@ logchatmessages=true
 desiredfps=60
 #allows you to specify a local cyphesis socket to connect to. If nothing is specified Ember will look for the socket at PREFIX/var/tmp/cyphesis_cyphesis.sock
 #socket=/path/to/cyphesis_cyphesis.sock
+#When enabled, if a frame takes too long it the stack will be printed to the console. This can help with understanding why there's frame drops.
+#Beware through that this doesn't play well with debuggers (since it uses SIGUSR1), and there's a performance penalty.
+slowframecheck=false
 
 
 

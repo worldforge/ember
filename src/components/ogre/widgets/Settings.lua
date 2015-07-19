@@ -614,6 +614,15 @@ function SettingsWidget:buildSettingsUi()
 
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
+				{
+					label = "Print stack for slow frames",
+					helpString = "Will print the stack for when a frame takes too long",
+
+					section = "general",
+					key = "slowframecheck",
+
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
+				}
 			},
 		},
 	}

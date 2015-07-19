@@ -231,11 +231,6 @@ private:
 	Eris::View* mWorldView;
 
 	/**
-	 * @brief Keeps track of the last time the main loop step completed.
-	 */
-	boost::posix_time::ptime mLastTimeMainLoopStepEnded;
-
-	/**
 	 * @brief We hold a pointer to the stream to which all logging messages are written.
 	 */
 	std::unique_ptr<std::ofstream> mLogOutStream;
