@@ -128,10 +128,10 @@ std::string ServerSettings::getFullConfigFilePath() const
 	ConfigService& cfgService = EmberServices::getSingleton().getConfigService();
 	// fetch the configuration file
 	if (cfgService.hasItem("general", "serversettings")) {
-		return cfgService.getHomeDirectory() + "/" + static_cast<std::string>(cfgService.getValue("general", "serversettings"));
+		return cfgService.getHomeDirectory(BaseDirType_CONFIG) + "/" + static_cast<std::string>(cfgService.getValue("general", "serversettings"));
 	} else {
 		// default fallback value
-		return cfgService.getHomeDirectory() + "/serversettings.conf";
+		return cfgService.getHomeDirectory(BaseDirType_CONFIG) + "/serversettings.conf";
 	}
 }
 }

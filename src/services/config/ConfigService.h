@@ -33,6 +33,13 @@ namespace Ember
 {
 
 	/**
+	 * @brief An enum of XDG base directory types.
+	 *
+	 * This lists the types of possible XDG base directories. Ember currently does not use RUNTIME.
+	 */
+	enum BaseDirType {BaseDirType_DATA, BaseDirType_CONFIG, BaseDirType_CACHE, BaseDirType_RUNTIME};
+
+	/**
 	* @brief Ember Configuration Service.
 	* Provides methods for accessing configuration information. This wraps around the Varconf system.
 	*
@@ -61,7 +68,7 @@ namespace Ember
 			std::string mEtcDir;
 
 			/**
-			The home directory. If this is not set, the default one will be used. See getHomeDirectory()
+			The home directory. If this is not set, the default one will be used. See getHomeDirectory(const BaseDirType baseDirType)
 			*/
 			std::string mHomeDir;
 
@@ -245,7 +252,7 @@ namespace Ember
 			/**
 			* returns the path to the home directory, where all configuration is stored
 			*/
-			const std::string& getHomeDirectory() const;
+			const std::string& getHomeDirectory(const BaseDirType baseDirType) const;
 
 			/**
 			* returns the path to the shared data directory, where common media is

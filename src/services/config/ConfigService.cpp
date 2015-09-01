@@ -143,8 +143,8 @@ namespace Ember
 #endif
 
 #if !defined(__APPLE__) && !defined(__WIN32__)
-		mSharedDataDir = EMBER_DATADIR "/ember/";
-		mEtcDir = EMBER_SYSCONFDIR "/ember/";
+		mSharedDataDir = std::string ( EMBER_DATADIR ) + "/ember/";
+		mEtcDir = std::string ( EMBER_SYSCONFDIR ) + "/ember/";
 #endif
 
 	}
@@ -301,11 +301,11 @@ namespace Ember
 	{
 		S_LOG_INFO ( "Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << "." );
 		bool success = mGlobalConfig->readFromFile ( getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL );
-		std::string userConfigPath ( getHomeDirectory() + "/" + filename );
+		std::string userConfigPath ( getHomeDirectory(BaseDirType_CONFIG) + "/" + filename );
 		std::ifstream file ( userConfigPath.c_str() );
 		if ( !file.fail() )
 		{
-			S_LOG_INFO ( "Loading user config file from "<< getHomeDirectory() + "/" + filename <<"." );
+			S_LOG_INFO ( "Loading user config file from "<< getHomeDirectory(BaseDirType_CONFIG) + "/" + filename <<"." );
 			try
 			{
 				mUserConfig->parseStream ( file, varconf::USER );
@@ -351,7 +351,7 @@ namespace Ember
 			}
 		}
 
-		//Then also add all user settings, i.e. those that already had been set in the user config file (often ~/.ember/ember.conf).
+		//Then also add all user settings, i.e. those that already had been set in the user config file.
 		const varconf::conf_map& userSections = mUserConfig->getSections();
 		for (varconf::conf_map::const_iterator I = userSections.begin(); I != userSections.end(); ++I) {
 			const varconf::sec_map& section = I->second;
@@ -421,7 +421,7 @@ namespace Ember
 		S_LOG_FAILURE ( std::string ( error ) );
 	}
 
-	const std::string& ConfigService::getHomeDirectory() const
+	const std::string& ConfigService::getHomeDirectory(const BaseDirType baseDirType) const
 	{
 		//check if the home directory is set, and if so use the setting. If else, fall back to the default path.
 		if ( mHomeDir != "" )
@@ -453,17 +453,31 @@ namespace Ember
 			return path;
 #else
 			xdgHandle baseDirHandle;
+			static std::string path;
 			if (!xdgInitHandle(&baseDirHandle))
 			{
-				static std::string path ( std::string ( getenv ( "HOME" ) ) + "/.ember/" );
-				return path;
+				path = ( std::string ( getenv ( "HOME" ) ) + "/.ember/" );
 			}
 			else
 			{
-				static std::string path = std::string( xdgDataHome(&baseDirHandle) ) + "/ember/";
+				switch (baseDirType)
+				{
+					case BaseDirType_DATA:
+						path = std::string( xdgDataHome(&baseDirHandle) ) + "/ember/";
+						break;
+					case BaseDirType_CONFIG:
+						path = std::string( xdgConfigHome(&baseDirHandle) ) + "/ember/";
+						break;
+					case BaseDirType_CACHE:
+						path = std::string( xdgCacheHome(&baseDirHandle) ) + "/ember/";
+						break;
+					case BaseDirType_RUNTIME:
+						path = std::string( xdgRuntimeDirectory(&baseDirHandle) ) + "/ember/";
+						break;
+				}
 				xdgWipeHandle(&baseDirHandle);
-				return path;
 			}
+			return path;
 #endif
 		}
 	}
@@ -513,7 +527,7 @@ namespace Ember
 //#else
 //			return BR_EMBER_DATADIR("/games/ember/");
 //#endif
-			return getHomeDirectory();
+			return getHomeDirectory(BaseDirType_DATA);
 		}
 
 	}
@@ -536,7 +550,7 @@ namespace Ember
 
 	const std::string& ConfigService::getUserMediaDirectory() const
 	{
-		static std::string path ( getHomeDirectory() + "/user-media/" );
+		static std::string path ( getHomeDirectory(BaseDirType_DATA) + "/user-media/" );
 		return path;
 	}
 

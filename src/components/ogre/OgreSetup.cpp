@@ -141,7 +141,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	mRoot = new Ogre::Root("", "ogre.cfg", "");
 
 	mOverlaySystem = new Ogre::OverlaySystem();
-	
+
 	if (configSrv.itemExists("ogre", "plugindir")) {
 		std::string pluginDir(configSrv.getValue("ogre", "plugindir"));
 		mPluginLoader.addPluginDir(pluginDir);
@@ -221,7 +221,7 @@ Ogre::Root* OgreSetup::configure(void)
 
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
-		unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
+		unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CONFIG) + "/ogre.cfg").c_str());
 		try {
 			success = mRoot->showConfigDialog();
 		} catch (const std::exception& ex) {

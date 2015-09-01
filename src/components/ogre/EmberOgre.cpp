@@ -316,7 +316,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	//We'll control the rendering ourself and need to turn off the autoupdating.
 	mWindow->setAutoUpdated(false);
 
-	std::string exportDir(configSrv.getHomeDirectory() + "/user-media/data/");
+	std::string exportDir(configSrv.getHomeDirectory(BaseDirType_DATA) + "/user-media/data/");
 	//Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
 
@@ -417,7 +417,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(mainLoopController);
 		mShaderManager = new ShaderManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter());
 		mShaderDetailManager = new ShaderDetailManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter(), *mShaderManager);
-		
+
 		//should media be preloaded?
 		if (preloadMedia) {
 			S_LOG_INFO( "Begin preload.");
@@ -433,8 +433,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 			throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
 		}
 
-		if (chdir(configSrv.getHomeDirectory().c_str())) {
-			S_LOG_WARNING("Failed to change directory to '"<< configSrv.getHomeDirectory() << "'");
+		if (chdir(configSrv.getHomeDirectory(BaseDirType_DATA).c_str())) {
+			S_LOG_WARNING("Failed to change directory to '"<< configSrv.getHomeDirectory(BaseDirType_DATA) << "'");
 		}
 
 		try {
@@ -474,8 +474,8 @@ Screen& EmberOgre::getScreen() const
 
 void EmberOgre::checkForConfigFiles()
 {
-	if (chdir(EmberServices::getSingleton().getConfigService().getHomeDirectory().c_str())) {
-		S_LOG_WARNING("Failed to change directory to '"<< EmberServices::getSingleton().getConfigService().getHomeDirectory() << "', will not copy config files.");
+	if (chdir(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CONFIG).c_str())) {
+		S_LOG_WARNING("Failed to change directory to '"<< EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CONFIG) << "', will not copy config files.");
 		return;
 	}
 

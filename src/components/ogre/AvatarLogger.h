@@ -42,7 +42,7 @@ class Avatar;
 	@brief Handles logging of ingame events such as chat to a file.
 
 	The file will be created when an instance of this is created and the connection will be severed at its destruction.
-	The log file will be located in the directory returned by a call to ConfigService::getHomeDirectory()
+	The log file will be located in the directory returned by a call to ConfigService::getHomeDirectory(BaseDirType_DATA)
 
 	@author Sean Ryan <sryan@evercrack.com>
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>

@@ -1910,7 +1910,7 @@ function EntityEditor:buildWidget()
 						worldDumper:delete()
 					end
 					exportsOverlay:setVisible(true)
-					worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/entityexport/" .. filename, self.instance.entity:getId())
+					worldDumper:start(emberServices:getConfigService():getHomeDirectory(BaseDirType::DATA) .. "/entityexport/" .. filename, self.instance.entity:getId())
 				end
 				return true
 			end)

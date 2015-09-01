@@ -44,6 +44,10 @@
 
 #include "framework/binreloc.h" //this is needed for binreloc functionality
 
+#if !defined(__APPLE__) && !defined(__WIN32__)
+#include "framework/osdir.h" //For handling legacy ~/.ember directory
+#endif
+
 extern "C"
 int main(int argc, char **argv)
 {
@@ -71,9 +75,9 @@ int main(int argc, char **argv)
 			{
 				std::cout << "-h, --help    - display this message" << std::endl;
 				std::cout << "-v, --version - display version info" << std::endl;
-				std::cout << "--home <path> - sets the home directory to something different than the default (~/.ember on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
+				std::cout << "--home <path> - sets the home directory to something different than the default (XDG Base Directory Specification on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
 				std::cout << "-p <path>, --prefix <path> - sets the prefix to something else than the one set at compilation (only valid on *NIX systems)" << std::endl;
-				std::cout << "--config <section>:<key> <value> - allows you to override config file settings. See the ember.conf file for examples. (~/.ember/ember.conf on *NIX systems)" << std::endl;
+				std::cout << "--config <section>:<key> <value> - allows you to override config file settings. See the ember.conf file for examples. (~/.config/ember/ember.conf on *NIX systems)" << std::endl;
 				exit_program = true;
 				break;
 			}
@@ -180,6 +184,14 @@ int main(int argc, char **argv)
 	{
 	//put the application object in its own scope so it gets destroyed before we signal all clear
 		{
+			#if !defined(__APPLE__) && !defined(__WIN32__)
+				//Use legacy ~/.ember directory on *NIX if it exists and if a different directory was not specified on launch.
+				const std::string dirNameLegacy = ( std::string ( getenv ( "HOME" ) ) + "/.ember/" );
+				oslink::directory osdirLegacy(dirNameLegacy);
+				if ((homeDir == "") && (osdirLegacy)) {
+					homeDir = dirNameLegacy;
+				}
+			#endif
 			// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
 			//Ember::OgreView::EmberOgre app;

@@ -175,7 +175,7 @@ Application::~Application()
 {
 	// before shutting down, we write out the user config to user's ember home directory
 	ConfigService& configService = mServices->getConfigService();
-	configService.saveConfig(configService.getHomeDirectory() + "/ember.conf", varconf::USER);
+	configService.saveConfig(configService.getHomeDirectory(BaseDirType_CONFIG) + "/ember.conf", varconf::USER);
 
 	mServices->getServerService().stop();
 	mServices->getMetaserverService().stop();
@@ -276,13 +276,14 @@ void Application::initializeServices()
 	if (mPrefix != "") {
 		configService.setPrefix(mPrefix);
 	}
+
 	if (mHomeDir != "") {
 		configService.setHomeDirectory(mHomeDir);
 		std::cout << "Setting home directory to " << mHomeDir << std::endl;
 	}
 
 	//output all logging to ember.log
-	std::string filename(configService.getHomeDirectory() + "/ember.log");
+	std::string filename(configService.getHomeDirectory(BaseDirType_DATA) + "/ember.log");
 	mLogOutStream = std::unique_ptr < std::ofstream > (new std::ofstream(filename.c_str()));
 
 	//write to the log the version number
@@ -295,23 +296,23 @@ void Application::initializeServices()
 	mLogObserver->setFilter(Log::INFO);
 
 	// Change working directory
-	const std::string& dirName = configService.getHomeDirectory();
+	const std::string& dirName = configService.getHomeDirectory(BaseDirType_CONFIG);
 	oslink::directory osdir(dirName);
 
 	if (!osdir) {
 		oslink::directory::mkdir(dirName.c_str());
 	}
 
-	int result = chdir(configService.getHomeDirectory().c_str());
+	int result = chdir(configService.getHomeDirectory(BaseDirType_CONFIG).c_str());
 	if (result) {
-		S_LOG_WARNING("Could not change directory to '"<< configService.getHomeDirectory().c_str() <<"'.");
+		S_LOG_WARNING("Could not change directory to '"<< configService.getHomeDirectory(BaseDirType_CONFIG).c_str() <<"'.");
 	}
 
-	//load the config file. Note that this will load the shared config file, and then the user config file if available (~/.ember/ember.conf)
+	//load the config file. Note that this will load the shared config file, and then the user config file if available.
 	configService.loadSavedConfig("ember.conf", mConfigSettings);
 
 	//Check if there's a user specific ember.conf file. If not, create an empty template one.
-	std::string userConfigFilePath = configService.getHomeDirectory() + "/ember.conf";
+	std::string userConfigFilePath = configService.getHomeDirectory(BaseDirType_CONFIG) + "/ember.conf";
 	struct stat tagStat;
 	int ret = stat(userConfigFilePath.c_str(), &tagStat);
 	if (ret == -1) {
@@ -415,7 +416,7 @@ void Application::startScripting()
 	}
 
 	//load any user defined scripts
-	const std::string userScriptDirectoryPath = mServices->getConfigService().getHomeDirectory() + "/scripts";
+	const std::string userScriptDirectoryPath = mServices->getConfigService().getHomeDirectory(BaseDirType_CONFIG) + "/scripts";
 	oslink::directory scriptDir(userScriptDirectoryPath);
 	if (scriptDir.isExisting()) {
 		static const std::string luaSuffix = ".lua";

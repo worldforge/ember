@@ -407,7 +407,7 @@ protected:
 	void preloadMedia();
 
 	/**
-	 * @brief Makes sure that there are files in ~/.ember.
+	 * @brief Makes sure that there are files in the Ember configuration directory.
 	 *
 	 * Call this early on at application startup. If the required files cannot be found they are copied there from their default versions as installed in the shared location.
 	 */

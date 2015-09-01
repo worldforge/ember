@@ -250,7 +250,7 @@ function EntityCreator.buildWidget(world)
 		end)
 		
 		local populateExportsList = function(listWidget)
-			local exports = Ember.EntityImporter:getInfoFromDirectory(emberServices:getConfigService():getHomeDirectory() .. "/entityexport")
+			local exports = Ember.EntityImporter:getInfoFromDirectory(emberServices:getConfigService():getHomeDirectory(BaseDirType::DATA) .. "/entityexport")
 
 			if exports:size() > 0 then 
 				for i = 0, exports:size() - 1 do

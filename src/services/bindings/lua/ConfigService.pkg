@@ -2,6 +2,12 @@
 
 namespace Ember {
 
+	/**
+	 * @brief An enum of XDG base directory types.
+	 *
+	 * This lists the types of possible XDG base directories. Ember currently does not use RUNTIME.
+	 */
+	enum BaseDirType {BaseDirType_DATA, BaseDirType_CONFIG, BaseDirType_CACHE, BaseDirType_RUNTIME};
 
 class ConfigService
 {
@@ -73,7 +79,7 @@ class ConfigService
 	/**
 	* returns the path to the home directory, where all configuration is stored
 	*/
-	const std::string& getHomeDirectory() const;
+	const std::string& getHomeDirectory(const BaseDirType baseDirType) const;
 	
 	/**
 	* returns the path to the shared data directory, where common media is

@@ -118,7 +118,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param prefix The prefix, i.e. the path in the filesystem where the main application is installed.
-	 * @param homeDir The path to the Ember home directory. On an UNIX system this would normally be "~/.ember".
+	 * @param homeDir The path to the Ember home directory. On a UNIX system this was historically "~/.ember". By default, this is now set according to the XDG Base Directory Specification.
 	 * @param configSettings Command line configuration settings.
 	 */
 	Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
@@ -205,8 +205,8 @@ private:
 	const std::string mPrefix;
 
 	/**
-	 * @brief The path to the Ember home directory, where all settings will be stored.
-	 * On Linux this is ~/.ember by default. On an English Windows it's c:\Document and Settings\USERNAME\Application Data\Ember.
+	 * @brief The path to the Ember home directory, where all settings and data will be stored.
+	 * On Linux this defaults to following the XDG Base Directory Specification. On an English Windows it's C:\Document and Settings\USERNAME\Application Data\Ember.
 	 */
 	const std::string mHomeDir;
 
