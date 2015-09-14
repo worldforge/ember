@@ -7,6 +7,7 @@ orig_args=$@
 : ${prefix:="$( cd -P "$( dirname "$0" )/.." && pwd )"}
 
 debugging=0
+legacyhome=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -15,11 +16,67 @@ while [ $# -gt 0 ]; do
     ;;
   --help)
     echo "--debug       - start in debugger (requires that 'gdb' is installed)"
+    echo "--legacyhome  - do not migrate ~/.ember to XDG Base Directories"
     exec $bindir/ember.bin --help >&2
     exit 1
+    ;;
+  --legacyhome)
+    legacyhome=1
+    ;;
   esac
   shift
 done
+
+# Migrate from legacy home directories to those specified by the XDG Base Directory Specification
+# Only migrate if legacy directory exists and user does not request it kept
+if [ $legacyhome = 0 ] && [ -d "$HOME/.ember" ] ; then
+  echo "Migrating '~/.ember' to XDG Base Directories. For more information, please see:"
+  echo "http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html"
+  echo "The original '~/.ember' directory will be archived as '~/.emberlegacy'."
+  echo "If you are satisfied with the automatic migration, the '~/.emberlegacy'"
+  echo "directory can be safely removed."
+  cp -a "$HOME/.ember/" "$HOME/.emberlegacy/"
+  if [ "${XDG_DATA_HOME:-}" ] ; then
+    data_move="$XDG_DATA_HOME"
+  else
+    data_move="$HOME/.local/share"
+  fi
+  if [ "${XDG_CONFIG_HOME:-}" ] ; then
+    config_move="$XDG_CONFIG_HOME"
+  else
+    config_move="$HOME/.config"
+  fi
+  if [ "${XDG_CACHE_HOME:-}" ] ; then
+    cache_move="$XDG_CACHE_HOME"
+  else
+    cache_move="$HOME/.cache"
+  fi
+  if [ -d "$cache_move/ember/" ] ; then
+    echo "Found existing XDG Cache directory, not replacing with files from ~/.ember"
+    rm -rf "$HOME/.ember/teleports" || true
+  else
+    mkdir -p "$cache_move/ember/"
+    mv "$HOME/.ember/teleports" "$cache_move/ember/teleports" || true
+  fi
+  if [ -d "$config_move/ember/" ] ; then
+    echo "Found existing XDG Config directory, not replacing with files from ~/.ember"
+    rm "$HOME/.ember"/*.conf || true
+    rm "$HOME/.ember"/*.cfg || true
+    rm -rf "$HOME/.ember/scripts/" || true
+  else
+    mkdir -p "$config_move/ember/"
+    mv "$HOME/.ember"/*.conf "$config_move/ember/" || true
+    mv "$HOME/.ember"/*.cfg "$config_move/ember/" || true
+    cp -a "$HOME/.ember/scripts/" "$config_move/ember/scripts/" || true
+    rm -rf "$HOME/.ember/scripts/" || true
+  fi
+  if [ -d "$data_move/ember/" ] ; then
+    echo "Found existing XDG Data directory, not replacing with files from ~/.ember"
+  else
+    cp -a "$HOME/.ember/" "$data_move/ember/" || true
+  fi
+  rm -rf "$HOME/.ember/" || true
+fi
 
 # Rely on built-in paths for installed binaries.
 # Note that because of an issue with how CEGUI 0.8.2 detects dynamic libraries we need to include the CEGUI_MODULEDIR path
