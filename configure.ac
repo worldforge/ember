@@ -196,84 +196,6 @@ AC_MSG_RESULT([
 	])
 
 
-# Check for OpenAL
-OPENAL_VERSION=0.0.8
-PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
-	[
-		CXXFLAGS="$CXXFLAGS $OPENAL_CFLAGS"
-		LIBS="$LIBS $OPENAL_LIBS"
-	],
-	[
-		AC_MSG_ERROR([Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
-	])
-
-#check for libogg 
-#OGG_VERSION=1.1.3
-#PKG_CHECK_MODULES(OGG, ogg >= $OGG_VERSION, 
-#		[
-#			CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
-#			LIBS="$LIBS $OGG_LIBS"
-#		],
-#		[
-#			AC_MSG_ERROR([Couldn't find libogg or tests failed. Error: $OGG_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-#		])
-
-#check for vorbis 
-#VORBIS_VERSION=1.2.0
-#PKG_CHECK_MODULES(VORBIS, vorbis >= $VORBIS_VERSION, 
-#		[
-#			CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
-#			LIBS="$LIBS $VORBIS_LIBS"
-#		],
-#		[
-#			AC_MSG_ERROR([Couldn't find libvorbis or tests failed. Error: $VORBIS_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-#		])
-
-#check for vorbisfile 
-#VORBISF_VERSION=1.2.0
-#PKG_CHECK_MODULES(VORBISF, vorbisfile >= $VORBISF_VERSION, 
-#		[
-#			CXXFLAGS="$CXXFLAGS $VORBISF_CFLAGS"
-#			LIBS="$LIBS $VORBISF_LIBS"
-#		],
-#		[
-#			AC_MSG_ERROR([Couldn't find vorbisfile tests failed. Error: $VORBISF_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-#		])
-
-# Check for FreeALUT
-FREEALUT_VERSION=1.0.0
-PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
-	[
-		CXXFLAGS="$CXXFLAGS $FREEALUT_CFLAGS"
-		LIBS="$LIBS $FREEALUT_LIBS"
-	],
-	[
-		AC_MSG_ERROR([Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
-	])
-
-# Check for libxdg-basedir
-if test "x$WIN32" = "xfalse" -a "x$OSX" = "xfalse"; then
-XDGBASEDIR_VERSION=1.2.0
-PKG_CHECK_MODULES(XDGBASEDIR, libxdg-basedir >= $XDGBASEDIR_VERSION,
-	[
-		CXXFLAGS="$CXXFLAGS $XDGBASEDIR_CFLAGS"
-		LIBS="$LIBS $XDGBASEDIR_LIBS"
-	],
-	[
-		AC_MSG_ERROR([Couldn't find libXDG-basedir or tests failed. Error: $XDGBASEDIR_PKG_ERRORS. Please go to http://nevill.ch/libxdg-basedir/ to get the latest, or check config.log to see why the tests failed, and fix it.])
-	])
-fi
-
-# check for sigc++ separately from the WF checks
-PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
-  [
-      CXXFLAGS="$CXXFLAGS $SIG_CFLAGS"
-      LIBS="$LIBS $SIG_LIBS"
-  ],
-  [
-      AC_MSG_ERROR([Couldn't find SIGC++2.0])
-  ])
-
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.4 >= 1.4.0 \
  varconf-1.0 >= 0.6.7 mercator-0.3 >= 0.3.3 atlascpp-0.7 >= 0.7.0 wfmath-1.0 >= 1.0.3 libwfut-0.2 >= 0.2.2],
@@ -510,6 +432,86 @@ PKG_CHECK_MODULES(CEGUILUA, [CEGUI-0-LUA >= $CEGUI_VERSION],
 		AC_MSG_ERROR([Couldn't find Lua CEGUI module. Make sure that CEGUI compiled with Lua scripting support.
 $CEGUILUA_PKG_ERRORS])
 	])
+
+
+# Check for OpenAL
+OPENAL_VERSION=0.0.8
+PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $OPENAL_CFLAGS"
+		LIBS="$LIBS $OPENAL_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
+	])
+
+#check for libogg 
+#OGG_VERSION=1.1.3
+#PKG_CHECK_MODULES(OGG, ogg >= $OGG_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
+#			LIBS="$LIBS $OGG_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find libogg or tests failed. Error: $OGG_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
+
+#check for vorbis 
+#VORBIS_VERSION=1.2.0
+#PKG_CHECK_MODULES(VORBIS, vorbis >= $VORBIS_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
+#			LIBS="$LIBS $VORBIS_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find libvorbis or tests failed. Error: $VORBIS_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
+
+#check for vorbisfile 
+#VORBISF_VERSION=1.2.0
+#PKG_CHECK_MODULES(VORBISF, vorbisfile >= $VORBISF_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $VORBISF_CFLAGS"
+#			LIBS="$LIBS $VORBISF_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find vorbisfile tests failed. Error: $VORBISF_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
+
+# Check for FreeALUT
+FREEALUT_VERSION=1.0.0
+PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $FREEALUT_CFLAGS"
+		LIBS="$LIBS $FREEALUT_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
+	])
+
+# Check for libxdg-basedir
+if test "x$WIN32" = "xfalse" -a "x$OSX" = "xfalse"; then
+XDGBASEDIR_VERSION=1.2.0
+PKG_CHECK_MODULES(XDGBASEDIR, libxdg-basedir >= $XDGBASEDIR_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $XDGBASEDIR_CFLAGS"
+		LIBS="$LIBS $XDGBASEDIR_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find libXDG-basedir or tests failed. Error: $XDGBASEDIR_PKG_ERRORS. Please go to http://nevill.ch/libxdg-basedir/ to get the latest, or check config.log to see why the tests failed, and fix it.])
+	])
+fi
+
+# check for sigc++ separately from the WF checks
+PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
+  [
+      CXXFLAGS="$CXXFLAGS $SIG_CFLAGS"
+      LIBS="$LIBS $SIG_LIBS"
+  ],
+  [
+      AC_MSG_ERROR([Couldn't find SIGC++2.0])
+  ])
+
 
 # Cppunit check
  
