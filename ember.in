@@ -36,6 +36,7 @@ if [ $legacyhome = 0 ] && [ -d "$HOME/.ember" ] ; then
   echo "If you are satisfied with the automatic migration, the '~/.emberlegacy'"
   echo "directory can be safely removed."
   cp -a "$HOME/.ember/" "$HOME/.emberlegacy/"
+  echo "This is copy of the ~/.ember directory made by the Ember application. Configuration files now instead resides in ~/.config/ember (or XDG_CONFIG_HOME) and data in ~/.local/share/ember (or XDG_DATA_HOME). This directory can be removed if everything in Ember is working as it should." > $HOME/.emberlegacy/README
   if [ "${XDG_DATA_HOME:-}" ] ; then
     data_move="$XDG_DATA_HOME"
   else
