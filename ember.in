@@ -51,13 +51,6 @@ if [ $legacyhome = 0 ] && [ -d "$HOME/.ember" ] ; then
   else
     cache_move="$HOME/.cache"
   fi
-  if [ -d "$cache_move/ember/" ] ; then
-    echo "Found existing XDG Cache directory, not replacing with files from ~/.ember"
-    rm -rf "$HOME/.ember/teleports" || true
-  else
-    mkdir -p "$cache_move/ember/"
-    mv "$HOME/.ember/teleports" "$cache_move/ember/teleports" || true
-  fi
   if [ -d "$config_move/ember/" ] ; then
     echo "Found existing XDG Config directory, not replacing with files from ~/.ember"
     rm "$HOME/.ember"/*.conf || true
