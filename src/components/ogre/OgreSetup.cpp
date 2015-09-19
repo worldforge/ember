@@ -138,7 +138,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	}
 
 	std::string pluginExtension = ".so";
-	mRoot = new Ogre::Root("", "ogre.cfg", "");
+	mRoot = new Ogre::Root("", configSrv.getHomeDirectory(BaseDirType_CONFIG) + "/ogre.cfg", "");
 
 	mOverlaySystem = new Ogre::OverlaySystem();
 
