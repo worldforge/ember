@@ -37,6 +37,10 @@
 #include <OgreFrameListener.h>
 #include <sigc++/trackable.h>
 
+namespace varconf {
+class Variable;
+}
+
 namespace Ogre
 {
 class SceneManagerFactory;
@@ -44,6 +48,7 @@ class SceneManagerFactory;
 
 namespace Ember
 {
+class ConfigListenerContainer;
 namespace OgreView
 {
 
@@ -142,6 +147,8 @@ private:
 	OgreWindowProvider* mOgreWindowProvider;
 #endif
 
+	ConfigListenerContainer* mConfigListenerContainer;
+
 	/**
 	 * @brief Sets standard values in the Ogre environment.
 	 */
@@ -170,6 +177,9 @@ private:
 	 * time the window is resized, minimized or restored we seem to avoid the bug.
 	 */
 	void registerOpenGLContextFix();
+
+	void Config_ogreLogChanged(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 
 };
 

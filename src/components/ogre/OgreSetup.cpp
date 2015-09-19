@@ -34,6 +34,7 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/config/ConfigListenerContainer.h"
 #include "services/input/Input.h"
 
 #include "framework/Tokeniser.h"
@@ -77,6 +78,7 @@ OgreSetup::OgreSetup() :
 #ifdef BUILD_WEBEMBER
 ,mOgreWindowProvider(0)
 #endif
+, mConfigListenerContainer(nullptr)
 {
 }
 
@@ -85,6 +87,7 @@ OgreSetup::~OgreSetup()
 #ifdef BUILD_WEBEMBER
 	delete mOgreWindowProvider;
 #endif
+	delete mConfigListenerContainer;
 }
 
 void OgreSetup::runCommand(const std::string& command, const std::string& args)
@@ -201,9 +204,25 @@ bool OgreSetup::showConfigurationDialog()
 	return true;
 }
 
+void OgreSetup::Config_ogreLogChanged(const std::string& section, const std::string& key, varconf::Variable& variable) {
+	if (variable.is_string()) {
+		auto string = variable.as_string();
+		if (string == "low") {
+			Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_LOW);
+		} else if (string == "normal") {
+			Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_NORMAL);
+		} else if (string == "boreme") {
+			Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_BOREME);
+		}
+	}
+}
+
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 Ogre::Root* OgreSetup::configure(void)
 {
+	delete mConfigListenerContainer;
+	mConfigListenerContainer = new ConfigListenerContainer();
+	mConfigListenerContainer->registerConfigListener("ogre", "loglevel", sigc::mem_fun(*this, &OgreSetup::Config_ogreLogChanged), true);
 
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
 	createOgreSystem();
