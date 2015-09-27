@@ -201,7 +201,7 @@ public:
 };
 
 EntityEditor::EntityEditor(World& world, Eris::Entity& entity, Adapters::Atlas::MapAdapter* rootAdapter) :
-		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarker(nullptr), mPathPolygon(nullptr)
+		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarker(nullptr), mPathPolygon(nullptr), mHasPath(false)
 {
 	mEntity.Moved.connect(sigc::mem_fun(*this, &EntityEditor::entityMoved));
 }
@@ -568,6 +568,7 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 	WFMath::Polygon<2> poly;
 	Element pathElem;
 	if (pathEntity->copyAttr("path", pathElem) == 0) {
+		mHasPath = true;
 		if (pathElem.isList()) {
 			const auto& path = pathElem.List();
 			if (!path.empty()) {
@@ -601,6 +602,10 @@ void EntityEditor::entityMoved()
 	if (mPathPolygon && !mPathPolygon->getPoints().empty()) {
 		mPathPolygon->getPoints().front()->setLocalPosition(mEntity.getPredictedPos());
 		mPathPolygon->updateRender();
+	}
+	//If the entity has the ability to send back a path we should update it when the entity moves.
+	if (mHasPath) {
+		getPath();
 	}
 
 }

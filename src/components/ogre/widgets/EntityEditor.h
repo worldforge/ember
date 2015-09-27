@@ -245,7 +245,15 @@ protected:
 	 */
 	EntityPointMarker* mMarker;
 
+	/**
+	 * @brief Draws the path of the entity, if such exists.
+	 */
 	Authoring::Polygon* mPathPolygon;
+
+	/**
+	 * @brief True if the entity has a path, and this should be automatically queried for when the entity moves.
+	 */
+	bool mHasPath;
 
 	void operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op);
 	void operationGetGoalsResult(const Atlas::Objects::Operation::RootOperation& op);
@@ -253,6 +261,9 @@ protected:
 	void operationGetPathResult(const Atlas::Objects::Operation::RootOperation& op);
 	void operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op);
 
+	/**
+	 * @brief Called when the entity moves.
+	 */
 	void entityMoved();
 
 };
