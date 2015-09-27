@@ -93,6 +93,13 @@ public:
 	void getGoals();
 
 	/**
+	 * @brief Queries the entity about its current path.
+	 *
+	 * When thoughts arrive they are emitted through EventGotGoal.
+	 */
+	void getPath();
+
+	/**
 	 * @brief Gets goal info from the server.
 	 *
 	 * When goal information has arrived the EventGotGoalInfo event is emitted.

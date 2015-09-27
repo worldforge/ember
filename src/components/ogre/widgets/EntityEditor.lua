@@ -1528,7 +1528,8 @@ function EntityEditor:knowledgeRefresh()
 	self.instance.clearThoughts = true
 	self.instance.clearGoals = true
 	self.instance.helper:getThoughts()
-	self.instance.helper:getGoals()
+  self.instance.helper:getGoals()
+  self.instance.helper:getPath()
 end
 
 function EntityEditor:RefreshKnowledge_Clicked(args)
@@ -1699,7 +1700,8 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("RefreshAtlas"):subscribeEvent("Clicked", self.RefreshAtlas_Clicked, self)
 		self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
-		self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
+    self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
+		
 		
 		local knowledgePredicate = CEGUI.toCombobox(self.widget:getWindow("NewKnowledgePredicate"))
 		local knowledgeHelp = self.widget:getWindow("KnowledgeHelp")

@@ -32,6 +32,9 @@
 #include "domain/EmberEntity.h"
 #include "components/ogre/ShapeVisual.h"
 #include "components/ogre/Avatar.h"
+#include "components/ogre/authoring/Polygon.h"
+#include "components/ogre/authoring/PolygonPoint.h"
+#include "components/ogre/authoring/IPolygonPositionProvider.h"
 #include "components/ogre/terrain/TerrainManager.h"
 
 #include "adapters/atlas/AdapterBase.h"
@@ -50,6 +53,7 @@
 #include <Atlas/Formatter.h>
 
 #include <wfmath/segment.h>
+#include <wfmath/atlasconv.h>
 
 #include <Eris/Entity.h>
 #include <Eris/Account.h>
@@ -197,8 +201,9 @@ public:
 };
 
 EntityEditor::EntityEditor(World& world, Eris::Entity& entity, Adapters::Atlas::MapAdapter* rootAdapter) :
-		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarker(0)
+		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarker(nullptr), mPathPolygon(nullptr)
 {
+	mEntity.Moved.connect(sigc::mem_fun(*this, &EntityEditor::entityMoved));
 }
 
 EntityEditor::~EntityEditor()
@@ -206,6 +211,8 @@ EntityEditor::~EntityEditor()
 	delete mRootAdapter;
 
 	delete mMarker;
+
+	delete mPathPolygon;
 }
 
 void EntityEditor::submitChanges()
@@ -352,7 +359,6 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 	Atlas::Objects::Operation::Set setOp;
 	setOp->setArgs1(thought);
 
-
 	Atlas::Objects::Operation::RootOperation thinkOp;
 	std::list<std::string> parents;
 	parents.emplace_back("think");
@@ -395,7 +401,6 @@ void EntityEditor::getGoals()
 	thinkOp->setParents(parents);
 	thinkOp->setTo(mEntity.getId());
 
-
 	Atlas::Objects::Operation::Get getOp;
 	Atlas::Objects::Entity::Anonymous get_args;
 	get_args->setAttr("goal", Atlas::Message::MapType());
@@ -417,6 +422,36 @@ void EntityEditor::getGoals()
 
 }
 
+void EntityEditor::getPath()
+{
+	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+
+	Atlas::Objects::Operation::RootOperation thinkOp;
+	std::list<std::string> parents;
+	parents.emplace_back("think");
+	thinkOp->setParents(parents);
+	thinkOp->setTo(mEntity.getId());
+
+	Atlas::Objects::Operation::Get getOp;
+	Atlas::Objects::Entity::Anonymous get_args;
+	get_args->setAttr("path", Atlas::Message::MapType());
+	getOp->setArgs1(get_args);
+
+	thinkOp->setArgs1(getOp);
+
+	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	//By setting a serial number we tell the server to "relay" the operation. This means that any
+	//response operation from the target entity will be sent back to us.
+	thinkOp->setSerialno(Eris::getNewSerialno());
+
+	Eris::Connection* connection = account->getConnection();
+
+	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetPathResult);
+	connection->send(thinkOp);
+
+}
 
 void EntityEditor::getThoughts()
 {
@@ -430,7 +465,6 @@ void EntityEditor::getThoughts()
 
 	Atlas::Objects::Operation::Get getOp;
 	thinkOp->setArgs1(getOp);
-
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -490,6 +524,87 @@ void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::Root
 	}
 }
 
+void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootOperation& op)
+{
+	//What we receive here has been relayed from the mind of the entity. That means that this op
+	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
+	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
+	//very carefully.
+
+	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
+		//An empty root operation signals a timeout; we never got any answer from the entity.
+		return;
+	}
+
+	//We'll be getting back a Think op, which wraps an anonymous op, where the arguments is the path.
+	if (op->getParents().empty()) {
+		S_LOG_WARNING("Got think operation without any parent set.");
+		return;
+	}
+	if (op->getParents().front() != "think") {
+		S_LOG_WARNING("Got think operation with wrong type set.");
+		return;
+	}
+
+	if (op->getArgs().empty()) {
+		S_LOG_WARNING("Got Thought op without any arguments.");
+		return;
+	}
+
+	auto innerOp = op->getArgs().front();
+	if (innerOp->getClassNo() != Atlas::Objects::Entity::ANONYMOUS_NO) {
+		S_LOG_WARNING("Get Thought op with inner entity that wasn't anonymous.");
+	}
+
+	Atlas::Objects::Entity::Anonymous pathEntity = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::Anonymous>(innerOp);
+
+	if (!mPathPolygon) {
+		mPathPolygon = new Authoring::Polygon(mWorld.getSceneManager().getRootSceneNode(), nullptr, false);
+	}
+
+	mPathPolygon->clear();
+
+	std::vector<WFMath::Point<3>> points;
+	WFMath::Polygon<2> poly;
+	Element pathElem;
+	if (pathEntity->copyAttr("path", pathElem) == 0) {
+		if (pathElem.isList()) {
+			const auto& path = pathElem.List();
+			if (!path.empty()) {
+				//Put one point at the entity itself.
+				auto polygonPoint = mPathPolygon->appendPoint();
+				polygonPoint->setLocalPosition(mEntity.getPredictedPos());
+				//Don't show the ball since it will be over the entity itself.
+				polygonPoint->setVisible(false);
+
+				for (auto pathPoint : path) {
+					if (pathPoint.isList()) {
+						auto& list = pathPoint.List();
+						if (list.size() == 3) {
+							if (list[0].isFloat() && list[1].isFloat() && list[2].isFloat()) {
+								WFMath::Point<3> point(list[0].Float(), list[1].Float(), list[2].Float());
+								mPathPolygon->appendPoint()->setLocalPosition(point);
+							}
+						}
+					}
+				}
+
+			}
+		}
+	}
+	mPathPolygon->updateRender();
+}
+
+
+void EntityEditor::entityMoved()
+{
+	if (mPathPolygon && !mPathPolygon->getPoints().empty()) {
+		mPathPolygon->getPoints().front()->setLocalPosition(mEntity.getPredictedPos());
+		mPathPolygon->updateRender();
+	}
+
+}
+
 
 void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op)
 {
@@ -546,7 +661,6 @@ void EntityEditor::getGoalInfo(const std::string& definition)
 	thinkOp->setParents(parents);
 	thinkOp->setTo(mEntity.getId());
 
-
 	Atlas::Objects::Operation::Look lookOp;
 	Atlas::Objects::Entity::Anonymous look_args;
 	look_args->setAttr("id", definition);
@@ -554,14 +668,12 @@ void EntityEditor::getGoalInfo(const std::string& definition)
 
 	thinkOp->setArgs1(lookOp);
 
-
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
 	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
 	thinkOp->setSerialno(Eris::getNewSerialno());
-
 
 	Eris::Connection* connection = account->getConnection();
 

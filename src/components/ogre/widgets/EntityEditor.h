@@ -53,6 +53,9 @@ namespace Ember
 namespace OgreView
 {
 class World;
+namespace Authoring {
+class Polygon;
+}
 
 namespace Gui
 {
@@ -68,6 +71,8 @@ class MapAdapter;
 }
 
 }
+
+
 
 /**
  @brief Helper class for the entity editor widget.
@@ -157,6 +162,13 @@ public:
 	void getGoals();
 
 	/**
+	 * @brief Queries the entity about its current path.
+	 *
+	 * When thoughts arrive they are emitted through EventGotGoal.
+	 */
+	void getPath();
+
+	/**
 	 * @brief Gets goal info from the server.
 	 *
 	 * When goal information has arrived the EventGotGoalInfo event is emitted.
@@ -233,10 +245,15 @@ protected:
 	 */
 	EntityPointMarker* mMarker;
 
+	Authoring::Polygon* mPathPolygon;
+
 	void operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op);
 	void operationGetGoalsResult(const Atlas::Objects::Operation::RootOperation& op);
 
+	void operationGetPathResult(const Atlas::Objects::Operation::RootOperation& op);
 	void operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op);
+
+	void entityMoved();
 
 };
 
