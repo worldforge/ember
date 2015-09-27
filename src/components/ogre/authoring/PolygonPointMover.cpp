@@ -41,8 +41,8 @@ namespace OgreView
 namespace Authoring
 {
 
-PolygonPointMover::PolygonPointMover(PolygonPoint& point, IMovementListener* listener) :
-	mPoint(point), mNewPoint(0), mDeleted(false), mPointAfterDeleted(0), mInitialPosition(point.getLocalPosition()), mListener(listener)
+PolygonPointMover::PolygonPointMover(Polygon& polygon, PolygonPoint& point, IMovementListener* listener) :
+	mPolygon(polygon), mPoint(point), mNewPoint(0), mDeleted(false), mPointAfterDeleted(0), mInitialPosition(point.getLocalPosition()), mListener(listener)
 {
 	Input::getSingleton().EventKeyPressed.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyPressed));
 	Input::getSingleton().EventKeyReleased.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyReleased));
@@ -80,12 +80,14 @@ void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
 		WFMath::Vector<3> translation = Convert::toWF<WFMath::Vector<3>>(newPos - getActivePoint()->getNode()->getPosition());
 		//adjust it so that it moves according to the ground for example
 		getActivePoint()->translate(WFMath::Vector<2>(translation.x(), translation.y()));
+		mPolygon.updateRender();
 	}
 }
 void PolygonPointMover::move(const WFMath::Vector<3>& directionVector)
 {
 	if (directionVector.isValid()) {
 		getActivePoint()->translate(WFMath::Vector<2>(directionVector.x(), directionVector.y()));
+		mPolygon.updateRender();
 	}
 }
 void PolygonPointMover::setRotation(int /*axis*/, WFMath::CoordType /*angle*/)
@@ -114,7 +116,7 @@ void PolygonPointMover::cancelMovement()
 		switchToExistingPointMode();
 	}
 	mListener->cancelMovement();
-	// 	mPoint.getPolygon().endMovement();
+	// 	mPolygon.endMovement();
 }
 
 PolygonPoint* PolygonPointMover::getActivePoint() const
@@ -152,8 +154,8 @@ void PolygonPointMover::switchToNewPointMode()
 	if (!mDeleted) {
 		if (!mNewPoint) {
 			//Get the two nearest points and position the new point to the one's that's closest
-			PolygonPoint* point1 = mPoint.getPolygon().getPointAfter(mPoint);
-			PolygonPoint* point2 = mPoint.getPolygon().getPointBefore(mPoint);
+			PolygonPoint* point1 = mPolygon.getPointAfter(mPoint);
+			PolygonPoint* point2 = mPolygon.getPointBefore(mPoint);
 			if (point1 && point2) {
 				float initialDistance1 = WFMath::Distance(mInitialPosition, point1->getLocalPosition());
 				float initialDistance2 = WFMath::Distance(mInitialPosition, point2->getLocalPosition());
@@ -163,14 +165,14 @@ void PolygonPointMover::switchToNewPointMode()
 				float distanceDiff1 = initialDistance1 - currentDistance1;
 				float distanceDiff2 = initialDistance2 - currentDistance2;
 				if (distanceDiff1 < distanceDiff2) {
-					mNewPoint = mPoint.getPolygon().insertPointBefore(mPoint);
+					mNewPoint = mPolygon.insertPointBefore(mPoint);
 				} else {
-					mNewPoint = mPoint.getPolygon().insertPointBefore(*point1);
+					mNewPoint = mPolygon.insertPointBefore(*point1);
 				}
 
 				mNewPoint->setLocalPosition(mPoint.getLocalPosition());
 				mPoint.setLocalPosition(mInitialPosition);
-				mPoint.getPolygon().updateRender();
+				mPolygon.updateRender();
 			}
 		}
 	}
@@ -180,32 +182,32 @@ void PolygonPointMover::switchToExistingPointMode()
 {
 	if (mDeleted) {
 		if (mPointAfterDeleted) {
-			mPoint.getPolygon().reInsertPointBefore(*mPointAfterDeleted, mPoint);
+			mPolygon.reInsertPointBefore(*mPointAfterDeleted, mPoint);
 		} else {
-			mPoint.getPolygon().reInsertPoint(0, mPoint);
+			mPolygon.reInsertPoint(0, mPoint);
 		}
 		mPoint.setVisible(true);
 		mDeleted = false;
 		mPointAfterDeleted = 0;
-		mPoint.getPolygon().updateRender();
+		mPolygon.updateRender();
 	}
 	if (mNewPoint) {
-		if (mPoint.getPolygon().removePoint(*mNewPoint)) {
+		if (mPolygon.removePoint(*mNewPoint)) {
 			mPoint.setLocalPosition(mNewPoint->getLocalPosition());
 			delete mNewPoint;
 			mNewPoint = 0;
-			mPoint.getPolygon().updateRender();
+			mPolygon.updateRender();
 		}
 	}
 }
 
 void PolygonPointMover::switchToDeleteMode()
 {
-	mPointAfterDeleted = mPoint.getPolygon().getPointAfter(mPoint);
-	mPoint.getPolygon().removePoint(mPoint);
+	mPointAfterDeleted = mPolygon.getPointAfter(mPoint);
+	mPolygon.removePoint(mPoint);
 	mPoint.setVisible(false);
 	mDeleted = true;
-	mPoint.getPolygon().updateRender();
+	mPolygon.updateRender();
 }
 
 }

@@ -51,15 +51,15 @@ namespace Authoring
 
 unsigned int PolygonPoint::sPointCounter = 0;
 
-PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition) :
-	mPolygon(polygon), mUserObject(*this), mNode(0), mEntity(0)
+PolygonPoint::PolygonPoint(Ogre::SceneNode& baseNode, IPolygonPositionProvider* positionProvider, float scale, const WFMath::Point<2>& localPosition) :
+		mBaseNode(baseNode), mPositionProvider(positionProvider), mUserObject(*this), mNode(nullptr), mEntity(nullptr)
 {
 	Ogre::Vector3 nodePosition = Convert::toOgre<Ogre::Vector3>(localPosition);
-	if (polygon.getPositionProvider()) {
-		nodePosition.y = polygon.getPositionProvider()->getHeightForPosition(localPosition);
+	if (mPositionProvider) {
+		nodePosition.y = mPositionProvider->getHeightForPosition(localPosition);
 	}
-	mNode = mPolygon.getBaseNode()->createChildSceneNode(nodePosition);
-	mNode->setScale(0.25f, 0.25f, 0.25f);
+	mNode = mBaseNode.createChildSceneNode(nodePosition);
+	mNode->setScale(scale, scale, scale);
 
 	std::stringstream ss;
 	ss << "PolygonPoint" << sPointCounter++;
@@ -92,19 +92,14 @@ PolygonPoint::~PolygonPoint()
 {
 	try {
 		if (mNode) {
-			mPolygon.getBaseNode()->removeAndDestroyChild(mNode->getName());
+			mBaseNode.removeAndDestroyChild(mNode->getName());
 		}
 		if (mEntity) {
-			mPolygon.getBaseNode()->getCreator()->destroyEntity(mEntity);
+			mBaseNode.getCreator()->destroyEntity(mEntity);
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when deleting polygon point." << ex);
 	}
-}
-
-Polygon& PolygonPoint::getPolygon()
-{
-	return mPolygon;
 }
 
 Ogre::SceneNode* PolygonPoint::getNode()
@@ -125,11 +120,16 @@ WFMath::Point<2> PolygonPoint::getLocalPosition() const
 void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position)
 {
 	mNode->setPosition(position.x(), mNode->getPosition().y, -position.y());
-	if (mPolygon.getPositionProvider()) {
+	if (mPositionProvider) {
 		Ogre::Vector3 pos = getNode()->getPosition();
-		pos.y = mPolygon.getPositionProvider()->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
+		pos.y = mPositionProvider->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
 		getNode()->setPosition(pos);
 	}
+}
+
+void PolygonPoint::setLocalPosition(const WFMath::Point<3>& position)
+{
+	mNode->setPosition(Convert::toOgre(position));
 }
 
 // void PolygonPoint::startMovement()
@@ -154,12 +154,11 @@ void PolygonPoint::translate(const WFMath::Vector<2>& translation)
 {
 	Ogre::Vector2 ogrePos = Convert::toOgre(translation);
 	getNode()->translate(Ogre::Vector3(ogrePos.x, 0, ogrePos.y));
-	if (mPolygon.getPositionProvider()) {
+	if (mPositionProvider) {
 		Ogre::Vector3 pos = getNode()->getPosition();
-		pos.y = mPolygon.getPositionProvider()->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
+		pos.y = mPositionProvider->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
 		getNode()->setPosition(pos);
 	}
-	mPolygon.updateRender();
 }
 
 void PolygonPoint::setVisible(bool visibility)

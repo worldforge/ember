@@ -41,23 +41,23 @@ namespace Authoring
 
 unsigned int PolygonRenderer::sCounter = 0;
 
-PolygonRenderer::PolygonRenderer(Polygon& polygon) :
-	mPolygon(polygon), mManualObject(0)
+PolygonRenderer::PolygonRenderer(Ogre::SceneNode& sceneNode, const std::list<PolygonPoint*>& points, bool closed) :
+	mNode(sceneNode), mPoints(points), mManualObject(nullptr), mClosed(closed)
 {
 	std::stringstream ss;
 	ss << "PolygonRenderer" << sCounter++;
-	mManualObject = polygon.getBaseNode()->getCreator()->createManualObject(ss.str());
+	mManualObject = mNode.getCreator()->createManualObject(ss.str());
 	mManualObject->setDynamic(true); //We'll be updating this a lot if the use alters the polygon
 	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE - 1); //We want to render the lines on top of everything, so that they aren't hidden by anything
-	mPolygon.getBaseNode()->attachObject(mManualObject);
+	mNode.attachObject(mManualObject);
 
 }
 
 PolygonRenderer::~PolygonRenderer()
 {
 	if (mManualObject) {
-		mPolygon.getBaseNode()->detachObject(mManualObject);
-		mPolygon.getBaseNode()->getCreator()->destroyManualObject(mManualObject);
+		mNode.detachObject(mManualObject);
+		mNode.getCreator()->destroyManualObject(mManualObject);
 	}
 }
 
@@ -65,16 +65,15 @@ void PolygonRenderer::update()
 {
 	mManualObject->clear();
 
-	if (mPolygon.getPoints().size() > 1) {
+	if (mPoints.size() > 1) {
 		mManualObject->begin("/common/base/authoring/polygon/line", Ogre::RenderOperation::OT_LINE_STRIP);
 
-		for (Polygon::PointStore::const_iterator I = mPolygon.getPoints().begin(); I != mPolygon.getPoints().end(); ++I) {
-			const PolygonPoint* point(*I);
+		for (auto point : mPoints) {
 			mManualObject->position(point->getNode()->getPosition());
 		}
-		//if there are more than two points we should close the polygon
-		if (mPolygon.getPoints().size() > 2) {
-			const PolygonPoint* point(*mPolygon.getPoints().begin());
+		//if there are more than two points we should close the polygon (if mClosed is true)
+		if (mPoints.size() > 2 && mClosed) {
+			const PolygonPoint* point(*mPoints.begin());
 			mManualObject->position(point->getNode()->getPosition());
 		}
 		mManualObject->end();

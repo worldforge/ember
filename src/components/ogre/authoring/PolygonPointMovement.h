@@ -39,6 +39,7 @@ namespace Authoring
 {
 
 class PolygonPoint;
+class Polygon;
 
 /**
  @brief Represents one movement action of a specific point. When the movement of the point is complete, either by it being cancelled or completed, the instance should be deleted.
@@ -49,11 +50,12 @@ class PolygonPointMovement
 public:
 	/**
 	 * @brief Ctor.
+	 * @param polygon The polygon.
 	 * @param point The point that should be moved.
 	 * @param movementListener An optional listener which will receive movement updates.
 	 * @param camera The main camera used in the world.
 	 */
-	PolygonPointMovement(PolygonPoint& point, IMovementListener* movementListener, const Camera::MainCamera& camera);
+	PolygonPointMovement(Polygon& polygon, PolygonPoint& point, IMovementListener* movementListener, const Camera::MainCamera& camera);
 
 	/**
 	 * @brief Dtor.

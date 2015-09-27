@@ -63,8 +63,9 @@ public:
 	 * @brief Ctor.
 	 * @param baseNode The base node to which the polygon will be attached. This node will get new child nodes, which will be removed when the Polygon instance is destroyed.
 	 * @param positionProvider An optional position provider instance which will provide a height. Polygons are 2d, but if they are placed on something like a terrain they will need to get correct height data from somewhere.
+	 * @param isClosed True if the polygon should be closed, i.e. if the last point should be connected to the first.
 	 */
-	Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider);
+	Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider, bool isClosed);
 
 	/**
 	 * @brief Dtor.

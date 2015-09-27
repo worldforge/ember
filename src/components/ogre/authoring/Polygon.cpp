@@ -42,8 +42,8 @@ namespace OgreView
 namespace Authoring
 {
 
-Polygon::Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider) :
-	mBaseNode(baseNode), mPositionProvider(positionProvider), mRenderer(*this)
+Polygon::Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider, bool isClosed) :
+		mBaseNode(baseNode), mPositionProvider(positionProvider), mRenderer(*baseNode, mPoints, isClosed)
 {
 }
 
@@ -72,7 +72,7 @@ void Polygon::loadFromShape(const WFMath::Polygon<2>& shape)
 	clear();
 	for (size_t i = 0; i < shape.numCorners(); ++i) {
 		const WFMath::Point<2>& position = shape[i];
-		PolygonPoint* point = new PolygonPoint(*this, position);
+		PolygonPoint* point = new PolygonPoint(*getBaseNode(), getPositionProvider(), 0.25, position);
 		mPoints.push_back(point);
 	}
 	mRenderer.update();
@@ -102,12 +102,19 @@ void Polygon::updateRender()
 	mRenderer.update();
 }
 
+PolygonPoint* Polygon::appendPoint()
+{
+	PolygonPoint* newPoint = new PolygonPoint(*getBaseNode(), getPositionProvider(), 0.25);
+	mPoints.push_back(newPoint);
+	return newPoint;
+}
+
 PolygonPoint* Polygon::insertPointBefore(PolygonPoint& point)
 {
 	if (mPoints.size()) {
 		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
 		if (I != mPoints.end()) {
-			PolygonPoint* newPoint = new PolygonPoint(*this);
+			PolygonPoint* newPoint = new PolygonPoint(*getBaseNode(), getPositionProvider(), 0.25);
 			mPoints.insert(I, newPoint);
 			return newPoint;
 		}
@@ -117,13 +124,11 @@ PolygonPoint* Polygon::insertPointBefore(PolygonPoint& point)
 
 bool Polygon::reInsertPointBefore(PolygonPoint& point, PolygonPoint& existingPoint)
 {
-	if (&existingPoint.getPolygon() == this) {
-		if (mPoints.size()) {
-			PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
-			if (I != mPoints.end()) {
-				mPoints.insert(I, &existingPoint);
-				return true;
-			}
+	if (mPoints.size()) {
+		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+		if (I != mPoints.end()) {
+			mPoints.insert(I, &existingPoint);
+			return true;
 		}
 	}
 	return false;
@@ -131,9 +136,6 @@ bool Polygon::reInsertPointBefore(PolygonPoint& point, PolygonPoint& existingPoi
 
 bool Polygon::reInsertPoint(size_t index, PolygonPoint& point)
 {
-	if (&point.getPolygon() != this) {
-		return false;
-	}
 
 	size_t i = 0;
 	PointStore::iterator I = mPoints.begin();

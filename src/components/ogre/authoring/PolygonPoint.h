@@ -43,6 +43,7 @@ namespace Authoring
 
 class Polygon;
 class PolygonPointMover;
+class IPolygonPositionProvider;
 /**
  @brief A graphical representation of one point in a polygon.
  The point is represented by a sphere, which can be manipulated through dragging.
@@ -56,20 +57,16 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param polygon The polygon to which this point is a part of.
+	 * @param positionProvider An optional position provider. Can be null.
+	 * @param scale The scale applied to the ball entity.
 	 * @param localPosition The local position of this point, within the polygon space.
 	 */
-	PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition = WFMath::Point<2>::ZERO());
+	PolygonPoint(Ogre::SceneNode& baseNode, IPolygonPositionProvider* positionProvider, float scale, const WFMath::Point<2>& localPosition = WFMath::Point<2>::ZERO());
 
 	/**
 	 * @brief Dtor.
 	 */
 	~PolygonPoint();
-
-	/**
-	 * @brief Gets the polygon instance to which this point belongs to.
-	 * @return The polygon instance to which this point belongs to.
-	 */
-	Polygon& getPolygon();
 
 	/**
 	 * @brief Gets the scene node which represents this point.
@@ -99,9 +96,17 @@ public:
 
 	/**
 	 * @brief Sets the local position.
+	 *
+	 * Vertical position will be calculated using the IPolygonPositionProvider, if such is set.
 	 * @param position The new local position, within the polygon space.
 	 */
 	void setLocalPosition(const WFMath::Point<2>& position);
+
+	/**
+	 * @brief Sets the local position.
+	 * @param position The new local position, within the polygon space.
+	 */
+	void setLocalPosition(const WFMath::Point<3>& position);
 
 	/**
 	 * @brief Sets the visibility of the point.
@@ -122,9 +127,14 @@ protected:
 	static unsigned int sPointCounter;
 
 	/**
-	 * @brief The polygon to which this point belongs.
+	 * @brief The base node, onto which a new node will be created.
 	 */
-	Polygon& mPolygon;
+	Ogre::SceneNode& mBaseNode;
+
+	/**
+	 * @brief An optional position provider. Can be null.
+	 */
+	IPolygonPositionProvider* mPositionProvider;
 
 	/**
 	 * @brief The Ogre user object which is used for hooking into the picking system.
@@ -142,6 +152,7 @@ protected:
 	 * @brief The entity which shows the marker, i.e. the draggable ball.
 	 */
 	Ogre::Entity* mEntity;
+
 };
 
 }

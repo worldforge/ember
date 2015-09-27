@@ -23,9 +23,13 @@
 #ifndef EMBEROGRE_MANIPULATIONPOLYGONRENDERER_H
 #define EMBEROGRE_MANIPULATIONPOLYGONRENDERER_H
 
+#include <wfmath/point.h>
+#include <list>
+
 namespace Ogre
 {
 class ManualObject;
+class SceneNode;
 }
 
 namespace Ember
@@ -36,7 +40,7 @@ namespace OgreView
 namespace Authoring
 {
 
-class Polygon;
+class PolygonPoint;
 
 /**
  @brief Renders a polygon which is being edited.
@@ -51,7 +55,7 @@ public:
 	 * @brief Ctor.
 	 * @param polygon The polygon which should be rendered.
 	 */
-	PolygonRenderer(Polygon& polygon);
+	PolygonRenderer(Ogre::SceneNode& sceneNode, const std::list<PolygonPoint*>& points, bool closed);
 
 	/**
 	 * @brief Dtor.
@@ -69,12 +73,22 @@ protected:
 	/**
 	 * @brief The polygon to which this renderer belongs.
 	 */
-	Polygon& mPolygon;
+	Ogre::SceneNode& mNode;
+
+	/**
+	 * @brief A list of the points that makes up the polygon.
+	 */
+	const std::list<PolygonPoint*>& mPoints;
 
 	/**
 	 * @brief The Ogre ManualObject instance used for generating the mesh.
 	 */
 	Ogre::ManualObject* mManualObject;
+
+	/**
+	 * @brief True if the polygon is closed; i.e. the last point is connected to the first.
+	 */
+	bool mClosed;
 
 	/**
 	 * @brief A counter used for auto generating Ogre Resource names.

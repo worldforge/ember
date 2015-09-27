@@ -37,6 +37,7 @@ namespace Authoring
 {
 
 class PolygonPoint;
+class Polygon;
 
 /**
  @brief A listener interface which will receive updates when the movement of the point changes.
@@ -76,9 +77,10 @@ public:
 
 	/**
 	 * @brief Ctor.
+	 * @param polygon The polygon to which the poing belongs.
 	 * @param point The point for which movement should occur.
 	 */
-	PolygonPointMover(PolygonPoint& point, IMovementListener* listener = 0);
+	PolygonPointMover(Polygon& polygon, PolygonPoint& point, IMovementListener* listener = 0);
 
 	/**
 	 * @brief Dtor.
@@ -97,6 +99,11 @@ public:
 	virtual void cancelMovement();
 
 private:
+
+	/**
+	 * @brief The polygon to which the point belongs.
+	 */
+	Polygon& mPolygon;
 
 	/**
 	 * @brief The polygon point to which this movement belongs.

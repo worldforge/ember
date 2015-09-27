@@ -174,7 +174,7 @@ void PolygonAdapter::createNewPolygon(WFMath::Polygon<2>* existingPoly)
 	mPolygon = 0;
 	Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 	if (entitySceneNode) {
-		mPolygon = new Authoring::Polygon(entitySceneNode, mPositionProvider);
+		mPolygon = new Authoring::Polygon(entitySceneNode, mPositionProvider, true);
 		WFMath::Polygon<2> poly;
 		if (existingPoly) {
 			poly = *existingPoly;
@@ -210,7 +210,7 @@ bool PolygonAdapter::_hasChanges()
 void PolygonAdapter::pickListener_PickedPoint(Authoring::PolygonPoint& point)
 {
 	delete mPointMovement;
-	mPointMovement = new Authoring::PolygonPointMovement(point, this, EmberOgre::getSingleton().getWorld()->getMainCamera());
+	mPointMovement = new Authoring::PolygonPointMovement(*mPolygon, point, this, EmberOgre::getSingleton().getWorld()->getMainCamera());
 }
 
 void PolygonAdapter::endMovement()
