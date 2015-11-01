@@ -612,6 +612,11 @@ private:
 	SDL_Window* mMainVideoSurface;
 
 	/**
+	 * @brief Surface used for the icon.
+	 */
+	SDL_Surface* mIconSurface;
+
+	/**
 	 * @brief Whether to invert relative movement.
 	 * 
 	 * It can be 1(normal) or -1(inverted).
@@ -629,7 +634,6 @@ private:
 	 * @brief The id of the main window, if available.
 	 */
 	uint32_t mMainWindowId;
-
 
 	/**
 	 * @brief Keeps track of the last time input processing started.

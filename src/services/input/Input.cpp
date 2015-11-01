@@ -69,7 +69,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(nullptr), mScreenWidth(0), mScreenHeight(0), mMainVideoSurface(0), mInvertMouse(1), mHandleOpenGL(false), mMainWindowId(0), mLastTimeInputProcessingStart(microsec_clock::local_time()), mLastTimeInputProcessingEnd(microsec_clock::local_time())
+		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(nullptr), mScreenWidth(0), mScreenHeight(0), mMainVideoSurface(0), mIconSurface(nullptr), mInvertMouse(1), mHandleOpenGL(false), mMainWindowId(0), mLastTimeInputProcessingStart(microsec_clock::local_time()), mLastTimeInputProcessingEnd(microsec_clock::local_time())
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -91,6 +91,9 @@ Input::~Input()
 {
 	delete mConfigListenerContainer;
 	shutdownInteraction();
+	if (mIconSurface) {
+		SDL_FreeSurface(mIconSurface);
+	}
 }
 
 std::string Input::createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable, bool centered, bool handleOpenGL)
@@ -218,11 +221,11 @@ void Input::createIcon()
 #endif
 
 	//We'll use the emberIcon struct. This isn't needed on WIN32 or OSX as the icon is provided through different means.
-	SDL_Surface* iconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64 * 3, rmask, gmask, bmask, 0);
-	if (iconSurface) {
-		SDL_SetWindowIcon(mMainVideoSurface, iconSurface);
-		//The icon surface isn't needed anymore
-		SDL_FreeSurface(iconSurface);
+	if (!mIconSurface) {
+		mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64 * 3, rmask, gmask, bmask, 0);
+	}
+	if (mIconSurface) {
+		SDL_SetWindowIcon(mMainVideoSurface, mIconSurface);
 	}
 
 #endif // !BUILD_WEBEMBER
