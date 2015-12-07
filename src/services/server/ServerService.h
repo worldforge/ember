@@ -29,7 +29,6 @@
 
 #include <Atlas/Message/Element.h>
 
-#include <sigc++/object_slot.h>
 #include <memory>
 
 

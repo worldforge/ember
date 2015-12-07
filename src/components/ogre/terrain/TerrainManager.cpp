@@ -45,9 +45,6 @@
 #include "../Scene.h"
 #include "../Convert.h"
 
-#include <sigc++/object_slot.h>
-
-
 #include <OgreRoot.h>
 #include <OgreGpuProgramManager.h>
 

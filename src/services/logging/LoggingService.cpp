@@ -31,8 +31,6 @@
 #include <cstdio>
 #include <sstream>
 
-#include <sigc++/object_slot.h>
-
 namespace Ember {
 
 
