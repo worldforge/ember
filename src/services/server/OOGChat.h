@@ -26,7 +26,6 @@
 #include <Eris/Lobby.h>
 #include <Eris/Room.h>
 #include <Eris/Account.h>
-#include <sigc++/object.h>
 #include <sigc++/bind.h>
 
 // Included system headers

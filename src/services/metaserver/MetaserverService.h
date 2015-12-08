@@ -24,7 +24,6 @@
 #include <framework/Service.h>
 #include <framework/ConsoleObject.h>
 
-#include <sigc++/object.h>
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 

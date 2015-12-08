@@ -24,7 +24,6 @@
 #define EMBEROGREWFUTSESSION_H
 
 #include <libwfut/WFUT.h>
-#include <sigc++/object.h>
 
 namespace Ember {
 

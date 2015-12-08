@@ -25,7 +25,6 @@
 #define EMBERWFUTSERVICE_H
 
 #include "framework/Service.h"
-#include <sigc++/object.h>
 #include <sigc++/signal.h>
 
 #include <memory>
