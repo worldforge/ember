@@ -545,11 +545,11 @@ namespace Ember
 		//look for a media channel key in the config, and if found use that, else use the version of ember as a standard path
 		if ( hasItem ( "wfut", "channel" ) )
 		{
-			path = getEmberDataDirectory() + "/" + static_cast<std::string> ( getValue ( "wfut", "channel" ) ) + "/";
+			path = getEmberDataDirectory() + static_cast<std::string> ( getValue ( "wfut", "channel" ) ) + "/";
 		}
 		else
 		{
-			path = getEmberDataDirectory() + "/ember-media-" + std::string ( VERSION ) + "/";
+			path = getEmberDataDirectory() + "ember-media-" + std::string ( VERSION ) + "/";
 		}
 		return path;
 	}
