@@ -412,7 +412,15 @@ AC_CHECK_LIB([CEGUItoluapp], [main],
 		                LIBS="-ltolua++5.1 $LIBS"
 		            ],
 		            [
-		                AC_MSG_ERROR([Couldn't find tolua++. Make sure that tolua++ (http://www.codenix.com/~tolua/) is installed and CEGUI is compiled with Lua scripting support.])
+		            	#Yet another version is to name the library "toluapp".
+		                AC_CHECK_LIB([toluapp], [main],
+				            [
+				                LIBS="-ltoluapp $LIBS"
+				            ],
+				            [
+				                AC_MSG_ERROR([Couldn't find tolua++. Make sure that tolua++ (http://www.codenix.com/~tolua/) is installed and CEGUI is compiled with Lua scripting support.])
+				            ]
+				        )
 		            ]
 		        )
             ]
