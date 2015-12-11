@@ -257,12 +257,20 @@ AC_DEFUN([AM_CHECK_TOLUAXX],
 	AC_CHECK_TOOL(TOLUAXX, $toluaxx_command)
 
 	if test "x$TOLUAXX" = "x"; then
+		first_toluaxx_command=$toluaxx_command
 		dnl Ubuntu uses "tolua++5.1" by default, let's check for that too.
 		toluaxx_command="tolua++5.1"
 		AC_CHECK_TOOL(TOLUAXX, $toluaxx_command)
 
 		if test "x$TOLUAXX" = "x"; then
-			AC_MSG_ERROR([Could not find a working tolua++ command (tried '$toluaxx_command'). Use the --with-toluaxx switch to set the proper command to use.])
+			second_toluaxx_command=$toluaxx_command
+			dnl Arch uses "toluapp" by default, let's check for that too.
+			toluaxx_command="toluapp"
+			AC_CHECK_TOOL(TOLUAXX, $toluaxx_command)
+	
+			if test "x$TOLUAXX" = "x"; then
+				AC_MSG_ERROR([Could not find a working tolua++ command (tried '$first_toluaxx_command', '$second_toluaxx_command', and '$toluaxx_command'). Use the --with-toluaxx switch to set the proper command to use.])
+			fi
 		fi
 	fi
 ])
