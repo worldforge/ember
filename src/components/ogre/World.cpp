@@ -30,6 +30,7 @@
 #include "ForestRenderingTechnique.h"
 #include "RenderDistanceManager.h"
 #include "AvatarCameraWarper.h"
+#include "GraphicalChangeAdapter.h"
 #include "components/ogre/AvatarCameraMotionHandler.h"
 #include "components/ogre/authoring/AuthoringManager.h"
 #include "components/ogre/authoring/AuthoringMoverConnector.h"
