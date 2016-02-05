@@ -401,30 +401,37 @@ AC_CHECK_LIB([CEGUItoluapp], [main],
 	    fi
     ],
     [
-        AC_CHECK_LIB([tolua++], [main],
-            [
-                LIBS="-ltolua++ $LIBS"
-            ],
-            [
-            	#Debian based systems adds a "5.1" suffix to the library name
-		        AC_CHECK_LIB([tolua++5.1], [main],
-		            [
-		                LIBS="-ltolua++5.1 $LIBS"
-		            ],
-		            [
-		            	#Yet another version is to name the library "toluapp".
-		                AC_CHECK_LIB([toluapp], [main],
-				            [
-				                LIBS="-ltoluapp $LIBS"
-				            ],
-				            [
-				                AC_MSG_ERROR([Couldn't find tolua++. Make sure that tolua++ (http://www.codenix.com/~tolua/) is installed and CEGUI is compiled with Lua scripting support.])
-				            ]
-				        )
-		            ]
-		        )
-            ]
-        )
+    	PKG_CHECK_MODULES(TOLUAPP, tolua++,
+		[
+			CXXFLAGS="$CXXFLAGS $TOLUAPP_CFLAGS"
+			LIBS="$LIBS $TOLUAPP_LIBS"
+		],
+		[
+	        AC_CHECK_LIB([tolua++], [main],
+		        [
+		            LIBS="-ltolua++ $LIBS"
+		        ],
+		        [
+		        	#Debian based systems adds a "5.1" suffix to the library name
+			        AC_CHECK_LIB([tolua++5.1], [main],
+			            [
+			                LIBS="-ltolua++5.1 $LIBS"
+			            ],
+			            [
+			            	#Yet another version is to name the library "toluapp".
+			                AC_CHECK_LIB([toluapp], [main],
+					            [
+					                LIBS="-ltoluapp $LIBS"
+					            ],
+					            [
+					                AC_MSG_ERROR([Couldn't find tolua++. Make sure that tolua++ (http://www.codenix.com/~tolua/) is installed and CEGUI is compiled with Lua scripting support.])
+					            ]
+					        )
+			            ]
+			        )
+		        ]
+		    )		
+		])
     ]
 )
 
