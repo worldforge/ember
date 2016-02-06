@@ -100,7 +100,9 @@ void IconRenderer::performRendering(Model::Model* model, Icon*)
 
 		Ogre::SceneNode* node = mRenderContext->getSceneNode();
 
-		node->detachAllObjects();
+		if (model->isAttached()) {
+			model->detachFromParent();
+		}
 		node->attachObject(model);
 
 		//check for a defined "icon" view and use that if available, else just reposition the camera
@@ -284,8 +286,13 @@ void DelayedIconRendererWorker::render(Model::Model* model, Icon* icon, IconImag
 
 bool DelayedIconRendererWorker::frameStarted(const Ogre::FrameEvent&)
 {
-	if (entries.size()) {
-		entries.front().frameStarted();
+	try {
+		if (entries.size()) {
+			entries.front().frameStarted();
+		}
+	} catch (const std::exception& e) {
+		S_LOG_FAILURE("Error when rendering icon." << e);
+		entries.pop();
 	}
 	return true;
 }
