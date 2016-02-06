@@ -111,7 +111,6 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 			Model::ModelDefinitionPtr modelDef = model->getDefinition();
 			modelDef->createSubModelDefinition("common/primitives/model/box.mesh")->createPartDefinition("main")->setShow(true);
 			modelDef->setValid(true);
-			modelDef->reloadAllInstances();
 		}
 
 		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
@@ -124,7 +123,7 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 
 void EmberEntityModelAction::deactivate(EntityMapping::ChangeContext& context)
 {
-	mEntity.setGraphicalRepresentation(0);
+	mEntity.setGraphicalRepresentation(nullptr);
 	//As we've now deactivated our model action, removing the graphical representation, we should after the change context is complete also check if there are any other model actions which should be reactivated
 	context.EventContextComplete.connect(sigc::mem_fun(*this, &EmberEntityModelAction::ChangeContext_ContextComplete));
 }
