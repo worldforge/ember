@@ -326,6 +326,9 @@ function EntityPicker:checkUse(entity)
 	--then fill up with operations that can be performed with the currently wielded entity
 	local wieldedEntity = self.world:getAvatar():getEmberEntity():getAttachedEntity("right_hand_wield")
 	if wieldedEntity then
+	  currentButtonIndex = currentButtonIndex + 1
+	  --First install a default use action
+    self:addUse(self.useButtons[currentButtonIndex], entity:getId(), wieldedEntity, "")
 		local operatorList = wieldedEntity:getDefaultUseOperators();
 		if operatorList:size() > 0 then 
 			for i = 0, operatorList:size() - 1 do
