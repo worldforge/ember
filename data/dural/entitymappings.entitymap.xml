@@ -602,14 +602,7 @@
 	<autoentitymapping name="hook" modelname="fishing_hook" />
 	<autoentitymapping name="lure" modelname="fishing_lure" />
 	<autoentitymapping name="sieve" />
-	<entitymapping name="tinderbox">
-		<entitymatch>
-			<case>
-				<caseparam type="equals">tinderbox</caseparam>
-				<action type="display-model">tinderboxA</action>
-			</case>
-		</entitymatch>
-	</entitymapping>
+	<autoentitymapping name="tinderbox" />
 	<autoentitymapping name="pickaxe" />
 	<entitymapping name="pole">
 		<entitymatch>
