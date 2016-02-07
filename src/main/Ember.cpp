@@ -44,10 +44,6 @@
 
 #include "framework/binreloc.h" //this is needed for binreloc functionality
 
-#if !defined(__APPLE__) && !defined(__WIN32__)
-#include "framework/osdir.h" //For handling legacy ~/.ember directory
-#endif
-
 extern "C"
 int main(int argc, char **argv)
 {
@@ -184,17 +180,8 @@ int main(int argc, char **argv)
 	{
 	//put the application object in its own scope so it gets destroyed before we signal all clear
 		{
-			#if !defined(__APPLE__) && !defined(__WIN32__)
-				//Use legacy ~/.ember directory on *NIX if it exists and if a different directory was not specified on launch.
-				const std::string dirNameLegacy = ( std::string ( getenv ( "HOME" ) ) + "/.ember/" );
-				oslink::directory osdirLegacy(dirNameLegacy);
-				if ((homeDir == "") && (osdirLegacy)) {
-					homeDir = dirNameLegacy;
-				}
-			#endif
 			// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
-			//Ember::OgreView::EmberOgre app;
 
 			std::cout << "Starting Ember version " << VERSION << std::endl;
 
