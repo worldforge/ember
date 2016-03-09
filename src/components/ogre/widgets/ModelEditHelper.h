@@ -263,7 +263,7 @@ public:
 	 * @param attachPointName The attach point name to show a helper for.
 	 * @param meshName The name of the mesh to attach. Optional; if left out a general arrow mesh will be used.
 	 */
-	void showAttachPointHelperEntity(const std::string& attachPointName, const std::string& meshName = "3d_objects/primitives/models/arrow.mesh");
+	void showAttachPointHelperEntity(const std::string& attachPointName, const std::string& meshName = "common/primitives/model/arrow.mesh");
 
 	/**
 	 * @brief Shows a helper model attached to the specified attach point, to help when authoring.
