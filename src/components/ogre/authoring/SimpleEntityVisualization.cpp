@@ -26,6 +26,7 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreWireBoundingBox.h>
+#include <OgreEntity.h>
 
 namespace Ogre
 {
@@ -57,8 +58,14 @@ namespace Authoring
 static const std::string BboxMaterialName("/common/base/authoring/bbox");
 
 SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode) :
-	mEntity(entity), mSceneNode(sceneNode), mErisEntityBoundingBox(OGRE_NEW Ogre::OOBBWireBoundingBox()), mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged)))
+		mEntity(entity), mSceneNode(sceneNode), mErisEntityBoundingBox(OGRE_NEW Ogre::OOBBWireBoundingBox()), mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged)))
 {
+
+	mVelocityArrowEntity = sceneNode->getCreator()->createEntity("common/primitives/model/arrow.mesh");
+	mVelocitySceneNode = sceneNode->getParentSceneNode()->createChildSceneNode();
+	mVelocitySceneNode->attachObject(mVelocityArrowEntity);
+	mVelocitySceneNode->setScale(0.5, 0.5, 0.5);
+
 	try {
 		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
 	} catch (const std::exception& ex) {
@@ -79,7 +86,9 @@ SimpleEntityVisualization::~SimpleEntityVisualization()
 	mBboxConnection.disconnect();
 	mSceneNode->detachAllObjects();
 	OGRE_DELETE mErisEntityBoundingBox;
+	mSceneNode->getCreator()->destroyEntity(mVelocityArrowEntity);
 	mSceneNode->getCreator()->destroySceneNode(mSceneNode);
+	mVelocitySceneNode->getCreator()->destroySceneNode(mVelocitySceneNode);
 }
 
 void SimpleEntityVisualization::entity_Moved()
@@ -106,9 +115,25 @@ void SimpleEntityVisualization::updatePositionAndOrientation()
 {
 	if (mEntity.getPredictedPos().isValid()) {
 		mSceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
+		mVelocitySceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
 	}
 	if (mEntity.getOrientation().isValid()) {
 		mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
+	}
+	if (mEntity.getVelocity().isValid() && mEntity.getVelocity() != WFMath::Vector<3>::ZERO()) {
+		mVelocitySceneNode->setVisible(true);
+
+		WFMath::Quaternion q;
+		q.identity();
+		q.rotation(WFMath::Vector<3>(-1, 0, 0), mEntity.getVelocity(), WFMath::Vector<3>(0, 0, 1));
+
+		if (q.isValid()) {
+			mVelocitySceneNode->setOrientation(Convert::toOgre(q));
+		} else {
+			mVelocitySceneNode->setVisible(false);
+		}
+	} else {
+		mVelocitySceneNode->setVisible(false);
 	}
 }
 

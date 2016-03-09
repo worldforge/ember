@@ -26,6 +26,7 @@ namespace Ogre
 {
 class OOBBWireBoundingBox;
 class SceneNode;
+class Entity;
 }
 
 namespace Atlas
@@ -89,6 +90,11 @@ protected:
 	Ogre::SceneNode* mSceneNode;
 
 	/**
+	 * @brief Shows an arrow indicating current velocity.
+	 */
+	Ogre::SceneNode* mVelocitySceneNode;
+
+	/**
 	 * @brief For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
 	 * This is often different from the Ogre bounding box.
 	 */
@@ -98,6 +104,11 @@ protected:
 	 * @brief The connection for the "bbox" attribute observer.
 	 */
 	sigc::connection mBboxConnection;
+
+	/**
+	 * @brief Shows the velocity using a scaled arrow.
+	 */
+	Ogre::Entity* mVelocityArrowEntity;
 
 
 	/**
