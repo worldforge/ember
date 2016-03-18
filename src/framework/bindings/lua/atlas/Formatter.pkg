@@ -20,7 +20,7 @@ class Formatter : public Atlas::Bridge
 {
   public:
     
-    Formatter(std::iostream& s, Atlas::Bridge& b);
+    Formatter(std::ostream& s, Atlas::Bridge& b);
     
     virtual void streamBegin();
     virtual void streamEnd();
