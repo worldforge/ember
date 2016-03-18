@@ -34,7 +34,7 @@ class XML : public Atlas::Codec
 {
     public:
 
-    XML(std::iostream& s, Atlas::Bridge& b);
+    XML(std::istream& in, std::ostream& out, Atlas::Bridge& b);
 
 };
 

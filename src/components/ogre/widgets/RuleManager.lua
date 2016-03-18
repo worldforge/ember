@@ -110,7 +110,7 @@ function RuleManager:sendRuleToServer()
 	local outstream = std.stringstream:new_local(self.ruleInfoText:getText())
 	local decoder = Ember.AtlasObjectDecoder:new_local()
 
-	local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
+	local codec = self.codecClass:new_local(outstream, outstream, tolua.cast(decoder, "Atlas::Bridge"))
 	codec:poll(true)
 	
 	local parsedObject = decoder:getLastObject()

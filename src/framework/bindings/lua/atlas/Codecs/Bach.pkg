@@ -14,7 +14,7 @@ class Bach : public Atlas::Codec
 {
   public:
 
-    Bach(std::iostream& s, Atlas::Bridge& b);
+    Bach(std::istream& in, std::ostream& out, Atlas::Bridge& b);
 
 };
 

@@ -56,7 +56,7 @@ bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObject
 	}
 
 	Atlas::Message::QueuedDecoder decoder;
-	Atlas::Codecs::Bach codec(ostream, decoder);
+	Atlas::Codecs::Bach codec(ostream, ostream, decoder);
 
 	Atlas::Message::Encoder encoder(codec);
 
@@ -76,7 +76,7 @@ bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, s
 		Atlas::Message::QueuedDecoder decoder;
 
 		istream.seekg(0);
-		Atlas::Codecs::Bach codec(istream, decoder);
+		Atlas::Codecs::Bach codec(istream, istream, decoder);
 		// Read whole stream into decoder queue
 		while (!istream.eof()) {
 			codec.poll();

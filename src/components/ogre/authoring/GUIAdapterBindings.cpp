@@ -136,7 +136,7 @@ TiXmlNode* GUIAdapterBindings::convertAtlasToXml(Atlas::Message::Element& val)
 	std::stringstream data;
 
 	Atlas::Message::QueuedDecoder decoder;
-	Atlas::Codecs::XML codec(data, decoder);
+	Atlas::Codecs::XML codec(data, data, decoder);
 	Atlas::Formatter formatter(data, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();

@@ -227,7 +227,7 @@ void EntityEditor::submitChanges()
 
 				Atlas::Message::QueuedDecoder decoder;
 
-				Atlas::Codecs::XML codec(ss, decoder);
+				Atlas::Codecs::XML codec(ss, ss, decoder);
 				Atlas::Formatter formatter(ss, codec);
 				Atlas::Message::Encoder encoder(formatter);
 				formatter.streamBegin();

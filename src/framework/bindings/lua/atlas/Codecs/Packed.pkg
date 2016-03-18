@@ -32,7 +32,7 @@ class Packed : public Atlas::Codec
 {
 public:
     
-    Packed(std::iostream& s, Atlas::Bridge& b);
+    Packed(std::istream& in, std::ostream& out, Atlas::Bridge& b);
     
 };
 

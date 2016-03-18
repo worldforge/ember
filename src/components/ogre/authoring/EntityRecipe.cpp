@@ -273,7 +273,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 
 		// Create objects
 		Atlas::Message::QueuedDecoder decoder;
-		Atlas::Codecs::XML codec(strStream, decoder);
+		Atlas::Codecs::XML codec(strStream, strStream, decoder);
 
 		// Read whole stream into decoder queue
 		while (!strStream.eof()) {

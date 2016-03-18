@@ -529,7 +529,7 @@ void EntityExporterBase::complete()
 
 	std::fstream filestream(mFilename, std::ios::out);
 	Atlas::Message::QueuedDecoder decoder;
-	Atlas::Codecs::XML codec(filestream, decoder);
+	Atlas::Codecs::XML codec(filestream, filestream, decoder);
 	std::unique_ptr<Atlas::Formatter> formatter(createMultiLineFormatter(filestream, codec));
 
 	Atlas::Objects::ObjectsEncoder encoder(*formatter);

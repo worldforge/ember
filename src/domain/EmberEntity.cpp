@@ -411,7 +411,7 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 
 	Atlas::Message::QueuedDecoder decoder;
 
-	Atlas::Codecs::XML codec(outstream, decoder);
+	Atlas::Codecs::XML codec(outstream, outstream, decoder);
 	MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();

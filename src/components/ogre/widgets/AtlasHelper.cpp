@@ -45,9 +45,9 @@ std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::s
 	std::unique_ptr<Atlas::Bridge> codec;
 
 	if (codecType == "bach") {
-		codec.reset(new Atlas::Codecs::Bach(ss, decoder));
+		codec.reset(new Atlas::Codecs::Bach(ss, ss, decoder));
 	} else if (codecType == "xml") {
-		codec.reset(new Atlas::Codecs::XML(ss, decoder));
+		codec.reset(new Atlas::Codecs::XML(ss, ss, decoder));
 	} else if (codecType == "presentation") {
 		codec.reset(new Atlas::PresentationBridge(ss));
 	} else {

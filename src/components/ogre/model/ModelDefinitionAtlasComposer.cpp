@@ -97,7 +97,7 @@ void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Mod
 	Atlas::Message::QueuedDecoder decoder;
 	//std::fstream file;
 
-	Atlas::Codecs::XML codec(outstream, decoder);
+	Atlas::Codecs::XML codec(outstream, outstream, decoder);
 	MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
