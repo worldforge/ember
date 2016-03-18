@@ -31,8 +31,8 @@
 #include "services/config/ConfigService.h"
 
 #include "framework/osdir.h"
-#include "framework/MultiLineListFormatter.h"
 
+#include <Atlas/MultiLineListFormatter.h>
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -98,7 +98,7 @@ void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Mod
 	//std::fstream file;
 
 	Atlas::Codecs::XML codec(outstream, outstream, decoder);
-	MultiLineListFormatter formatter(outstream, codec);
+	Atlas::MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
 	encoder.streamMessageElement(compose(model, typeName, parentTypeName, scale));

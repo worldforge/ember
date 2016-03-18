@@ -27,7 +27,6 @@
 #include "EntityTalk.h"
 #include "IHeightProvider.h"
 #include "framework/ConsoleBackend.h"
-#include "framework/MultiLineListFormatter.h"
 #include "framework/LoggingInstance.h"
 
 #include <Eris/TypeInfo.h>
@@ -36,6 +35,7 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/MultiLineListFormatter.h>
 
 #include <sstream>
 #include <unordered_map>
@@ -412,7 +412,7 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 	Atlas::Message::QueuedDecoder decoder;
 
 	Atlas::Codecs::XML codec(outstream, outstream, decoder);
-	MultiLineListFormatter formatter(outstream, codec);
+	Atlas::MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
 	encoder.streamMessageElement(getAttributes());

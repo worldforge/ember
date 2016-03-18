@@ -18,7 +18,6 @@
 
 #include "EntityImporter.h"
 
-#include "MultiLineListFormatter.h"
 #include "AtlasObjectDecoder.h"
 #include "LoggingInstance.h"
 #include "osdir.h"

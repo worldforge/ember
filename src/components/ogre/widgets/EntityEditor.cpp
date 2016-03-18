@@ -43,7 +43,6 @@
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "framework/LoggingInstance.h"
-#include "framework/MultiLineListFormatter.h"
 
 #include <Atlas/PresentationBridge.h>
 #include <Atlas/Message/Element.h>

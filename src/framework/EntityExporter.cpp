@@ -20,7 +20,8 @@
 
 #include "LoggingInstance.h"
 #include "Time.h"
-#include "MultiLineListFormatter.h"
+
+#include <Atlas/MultiLineListFormatter.h>
 
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
@@ -72,7 +73,7 @@ void EntityExporter::sendAndAwaitResponse(const Atlas::Objects::Operation::RootO
 
 Atlas::Formatter* EntityExporter::createMultiLineFormatter(std::iostream& s, Atlas::Bridge& b)
 {
-	return new MultiLineListFormatter(s, b);
+	return new Atlas::MultiLineListFormatter(s, b);
 }
 
 std::string EntityExporter::getCurrentTime()
