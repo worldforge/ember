@@ -576,7 +576,7 @@ void Awareness::Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entit
 		EntityConnections& connections = I->second;
 
 		if (entity->getLocation() == mCurrentLocation) {
-			assert(connections.moved == false);
+			assert(connections.moved.empty());
 			connections.isIgnored = false;
 			//Entity was ignored but shouldn't be anymore. We should check if the entity is moving or stationary.
 			if (entity->hasAttr("velocity")) {
@@ -589,10 +589,10 @@ void Awareness::Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entit
 			//Only sever connections if the entity wasn't already ignored.
 			if (!connections.isIgnored) {
 				if (connections.isMoving) {
-					assert(connections.moved == false);
+					assert(connections.moved.empty());
 					mMovingEntities.remove(entity);
 				} else {
-					assert(connections.moved == true);
+					assert(connections.moved.connected());
 					connections.moved.disconnect();
 
 					auto areasI = mEntityAreas.find(entity);
