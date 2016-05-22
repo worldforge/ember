@@ -136,9 +136,12 @@ function RuleManager:printRule()
 	
 		local outstream = std.stringstream:new_local()
 		local decoder = Atlas.Message.QueuedDecoder:new_local()
+    local ostream = tolua.cast(outstream, "std::ostream")
+    local istream = tolua.cast(Atlas.Message.QueuedDecoder:new_local(), "std::istream")
 	
-		local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
-		local formatter = Atlas.Formatter:new_local(outstream, tolua.cast(codec, "Atlas::Bridge"))
+	
+		local codec = self.codecClass:new_local(istream, ostream, tolua.cast(decoder, "Atlas::Bridge"))
+		local formatter = Atlas.Formatter:new_local(ostream, tolua.cast(codec, "Atlas::Bridge"))
 		local encoder = Atlas.Message.Encoder:new_local(tolua.cast(formatter, "Atlas::Bridge"))
 		local message = Atlas.Message.MapType:new_local()
 		rawRuleData:get():addToMessage(message)
