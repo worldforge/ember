@@ -19,6 +19,8 @@
 #ifndef EMBEROGRE_WORLD_H_
 #define EMBEROGRE_WORLD_H_
 
+#include "GraphicalChangeAdapter.h"
+
 #include "OgreIncludes.h"
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
@@ -104,7 +106,6 @@ class EntityWorldPickListener;
 class TerrainEntityManager;
 class DelayedFoliageInitializer;
 class ShaderManager;
-class GraphicalChangeAdapter;
 class AvatarCameraWarper;
 
 /**
