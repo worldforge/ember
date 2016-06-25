@@ -449,7 +449,7 @@ void EntityEditor::getPath()
 
 	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetPathResult);
 	connection->send(thinkOp);
-
+	S_LOG_VERBOSE("Asking for entity path.");
 }
 
 void EntityEditor::getThoughts()
@@ -531,6 +531,7 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 	//very carefully.
 
 	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
+		S_LOG_WARNING("Got timeout when asking for path.");
 		//An empty root operation signals a timeout; we never got any answer from the entity.
 		return;
 	}
@@ -570,6 +571,7 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 		mHasPath = true;
 		if (pathElem.isList()) {
 			const auto& path = pathElem.List();
+			S_LOG_VERBOSE("Got path info from entity with length of " << path.size());
 			if (!path.empty()) {
 				//Put one point at the entity itself.
 				auto polygonPoint = mPathPolygon->appendPoint();
@@ -590,7 +592,11 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 				}
 
 			}
+		} else {
+			S_LOG_WARNING("Response to path request had 'path' property which wasn't a list.");
 		}
+	} else {
+		S_LOG_WARNING("Response to path request contained no 'path' property.");
 	}
 	mPathPolygon->updateRender();
 }
