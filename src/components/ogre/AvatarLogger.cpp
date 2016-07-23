@@ -46,8 +46,6 @@ namespace OgreView {
 AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 : mChatLogger(nullptr)
 {
-	assert(&avatarEntity);
-
 	//Put log files in a "logs" subdirectory of the home directory.
 	const std::string dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "logs/";
 	try {
