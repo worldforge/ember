@@ -68,10 +68,10 @@ void NodeController::updateMotion(float timeSlice)
 
 void NodeController::updatePosition()
 {
-	WFMath::Point<3> pos = mAttachment.getAttachedEntity().getPredictedPos();
-	WFMath::Quaternion orientation = mAttachment.getAttachedEntity().getOrientation();
-	WFMath::Vector<3> velocity = mAttachment.getAttachedEntity().getPredictedVelocity();
-	mAttachment.setPosition(pos.isValid() ? pos : WFMath::Point<3>::ZERO(), orientation.isValid() ? orientation : orientation.identity(), velocity.isValid() ? velocity : WFMath::Vector<3>::ZERO());
+	const WFMath::Point<3>& pos = mAttachment.getAttachedEntity().getPredictedPos();
+	const WFMath::Quaternion& orientation = mAttachment.getAttachedEntity().getPredictedOrientation();
+	const WFMath::Vector<3>& velocity = mAttachment.getAttachedEntity().getPredictedVelocity();
+	mAttachment.setPosition(pos.isValid() ? pos : WFMath::Point<3>::ZERO(), orientation.isValid() ? orientation : WFMath::Quaternion::IDENTITY(), velocity.isValid() ? velocity : WFMath::Vector<3>::ZERO());
 }
 
 IEntityControlDelegate* NodeController::getControlDelegate() const
