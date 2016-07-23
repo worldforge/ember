@@ -18,8 +18,6 @@
 
 #include "WorldAttachment.h"
 
-#include "domain/IHeightProvider.h"
-
 #include "domain/EmberEntity.h"
 #include "domain/IEntityAttachment.h"
 #include "components/ogre/NodeAttachment.h"
@@ -40,8 +38,8 @@ namespace Ember
 namespace OgreView
 {
 
-WorldAttachment::WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, IHeightProvider& heightProvider) :
-	mWorldEntity(worldEntity), mWorldNode(worldNode), mHeightProvider(heightProvider)
+WorldAttachment::WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode) :
+	mWorldEntity(worldEntity), mWorldNode(worldNode)
 {
 	//set the position to always 0, 0, 0
 	mWorldNode->setPosition(Ogre::Vector3(0, 0, 0));
@@ -90,12 +88,7 @@ void WorldAttachment::updatePosition()
 
 void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
 {
-	assert(localPosition.isValid());
-	assert(offset.isValid());
-	float height = 0;
-	if (mHeightProvider.getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
-		offset.z() = height - localPosition.z();
-	}
+	//No offset
 }
 
 void WorldAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate)
