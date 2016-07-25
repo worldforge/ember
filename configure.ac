@@ -684,6 +684,8 @@ AC_CONFIG_FILES([Makefile
 		 src/domain/bindings/Makefile
 		 src/domain/bindings/lua/Makefile
 		 data/Makefile
+		 man/Makefile
+		 man/man1/Makefile
 ])
 
 AC_OUTPUT

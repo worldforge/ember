@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src
-SUBDIRS = src data test
+SUBDIRS = src data test man
 
 ACLOCAL_AMFLAGS = -I m4
 bin_SCRIPTS = ember
