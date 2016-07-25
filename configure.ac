@@ -9,7 +9,7 @@ AC_CONFIG_SRCDIR(src)
 AC_CANONICAL_TARGET
 
 # We have to use "foreign" since we supply README.md instead of the GNU canonical README file.
-AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests foreign])
+AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests foreign subdir-objects])
 AM_SILENT_RULES([yes])
 
 
