@@ -94,7 +94,7 @@ public:
 	 */
     IconImageStore(const std::string& imagesetName);
     /**
-     * Ctor. Creates a new imageset from an alreay existing texture. The whole texture will be used for a single icon.
+     * Ctor. Creates a new imageset from an already existing texture. The whole texture will be used for a single icon.
      * Use this when you already have an icon.
      * @param imagesetName The name of the imageset to create.
      * @param texPtr The texture to use.
