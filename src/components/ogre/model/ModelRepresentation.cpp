@@ -293,14 +293,19 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 
 Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& velocity) const
 {
-	if (!velocity.isValid() || velocity == WFMath::Vector<3>::ZERO()) {
+	float mag = 0;
+	if (velocity.isValid()) {
+		mag = velocity.mag();
+	}
+
+	if (mag < 0.01f) {
 		return mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	} else {
 
 		//The model is moving in some direction; we need to figure out both the direction, and the speed.
 		//We'll split up the movement into four arcs: forwards, backwards, left and right
 		//We'll use a little bit of padding, so that the side movement arcs are
-		bool isRunning = velocity.mag() > 2.6;
+		bool isRunning = mag > 2.6;
 		//flip the direction of y() to fit the normal way atan is setup; just to make it easier to figure out
 		WFMath::CoordType atan = std::atan2(velocity.x(), -velocity.y());
 
@@ -411,7 +416,8 @@ void ModelRepresentation::updateAnimation(float timeSlice)
 	//If not, we should show any available task animation.
 	//And if none of these applies, we should play the current movement action (which should be idle).
 
-	if (mCurrentMovementAction && mEntity.getPredictedVelocity() != WFMath::Vector<3>::ZERO()) {
+	const WFMath::Vector<3>& velocity = mEntity.getPredictedVelocity();
+	if (mCurrentMovementAction && velocity.isValid() && velocity.mag() > 0.01f) {
 		bool continuePlay = false;
 		mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
 	} else if (mActiveAction) {
