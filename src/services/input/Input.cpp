@@ -361,7 +361,7 @@ void Input::pasteFromClipboard(char*& text, size_t& length)
 {
 	char* sdl_text = SDL_GetClipboardText();
 
-	length = strlen(sdl_text);
+	length = strlen(sdl_text) + 1;
 
 	text = (char*)malloc(length);
 	strcpy(text, sdl_text);

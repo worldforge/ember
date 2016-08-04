@@ -28,8 +28,15 @@ namespace Ember
 namespace Cegui
 {
 
+SDLNativeClipboardProvider::SDLNativeClipboardProvider()
+:m_buffer(nullptr)
+{
+
+}
+
 SDLNativeClipboardProvider::~SDLNativeClipboardProvider()
 {
+	free(m_buffer);
 }
 
 void SDLNativeClipboardProvider::sendToClipboard(const CEGUI::String &mimeType, void *buffer, size_t size)
@@ -43,8 +50,10 @@ void SDLNativeClipboardProvider::sendToClipboard(const CEGUI::String &mimeType, 
 void SDLNativeClipboardProvider::retrieveFromClipboard(CEGUI::String &mimeType, void *&buffer, size_t &size)
 {
 	mimeType = "text/plain";
-
-	Input::getSingleton().pasteFromClipboard((char*&)buffer, size);
+	free(m_buffer);
+	m_buffer = nullptr;
+	Input::getSingleton().pasteFromClipboard(m_buffer, size);
+	buffer = m_buffer;
 
 }
 

@@ -35,10 +35,14 @@ namespace Cegui
 class SDLNativeClipboardProvider: public CEGUI::NativeClipboardProvider
 {
 public:
+	SDLNativeClipboardProvider();
 	virtual ~SDLNativeClipboardProvider();
 
 	void sendToClipboard(const CEGUI::String &mimeType, void *buffer, size_t size);
 	void retrieveFromClipboard(CEGUI::String &mimeType, void *&buffer, size_t &size);
+
+private:
+	char* m_buffer;
 };
 
 }
