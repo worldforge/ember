@@ -12,7 +12,7 @@ dist_conf_DATA = ember.conf
 appdir = $(datadir)/applications
 dist_app_DATA = ember.desktop
 
-icondir = $(datadir)/icons/worldforge
+icondir = $(datadir)/icons/hicolor/64x64/apps
 dist_icon_DATA = media/ember.png
 
 docdir = $(datadir)/doc/ember-$(VERSION)
