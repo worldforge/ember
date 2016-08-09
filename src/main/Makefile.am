@@ -2,10 +2,10 @@ AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
 #WARNING: use only absolute path in this file, because its included from webember, which has different working directory!
 
-embersources = $(top_srcdir)/src/main/Application.cpp $(top_srcdir)/src/main/ConfigBoundLogObserver.cpp
+embersources = Application.cpp ConfigBoundLogObserver.cpp
 
 if WIN32
-embersources += $(top_srcdir)/src/main/win32/OgreWin32Resources.rc $(top_srcdir)/src/main/win32/ember.ico
+embersources += win32/OgreWin32Resources.rc win32/ember.ico
 .rc.o:
 	$(WINDRES) -o $@ -i $<
 endif
@@ -56,15 +56,15 @@ if !BUILD_WEBEMBER
 bin_PROGRAMS = ember.bin
 
 ember_bin_LDADD = $(emberlibs)
-ember_bin_SOURCES = $(embersources) $(top_srcdir)/src/main/Ember.cpp
+ember_bin_SOURCES = $(embersources) Ember.cpp
 
 if OSX
-ember_bin_SOURCES += $(top_srcdir)/src/main/macosx/SDLMain.m
+ember_bin_SOURCES += macosx/SDLMain.m
 endif
 
 endif
 
-noinst_HEADERS = $(top_srcdir)/src/main/Application.h $(top_srcdir)/src/main/ConfigBoundLogObserver.h $(top_srcdir)/src/main/MainWrapper.h
+noinst_HEADERS = Application.h ConfigBoundLogObserver.h MainWrapper.h
 
 
-EXTRA_DIST=$(top_srcdir)/src/main/macosx/COPYING.SDL $(top_srcdir)/src/main/macosx/ReadMeDevLite.txt $(top_srcdir)/src/main/macosx/SDLMain.h
+EXTRA_DIST=macosx/COPYING.SDL macosx/ReadMeDevLite.txt macosx/SDLMain.h

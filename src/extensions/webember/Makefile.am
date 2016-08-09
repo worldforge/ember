@@ -1,5 +1,14 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
-include $(top_srcdir)/src/main/Makefile.am
+if BUILD_WEBEMBER
+
+embersources = ../../main/Application.cpp ../../main/ConfigBoundLogObserver.cpp
+
+if WIN32
+embersources += ../../main/win32/OgreWin32Resources.rc ../../main/win32/ember.ico
+.rc.o:
+	$(WINDRES) -o $@ -i $<
+endif
 
 lib_LTLIBRARIES = libWebEmber.la
 
@@ -12,3 +21,7 @@ libWebEmberdir = $(includedir)
 if WIN32
 libWebEmber_la_LDFLAGS += -lole32 -loleaut32 -no-undefined
 endif
+
+endif
+
+
