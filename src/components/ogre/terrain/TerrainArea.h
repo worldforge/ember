@@ -109,7 +109,7 @@ protected:
 
 	/**
 	 * @brief Places the area.
-	 * If no Mercator::Area instance has been created, one will be created here. If however there's alreay an existing area it will be updated.
+	 * If no Mercator::Area instance has been created, one will be created here. If however there's already an existing area it will be updated.
 	 * @return
 	 */
 	bool placeArea(WFMath::Polygon<2>& poly);

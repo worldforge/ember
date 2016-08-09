@@ -15,7 +15,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreMath.h>
 
 #include <time.h> // for time
-#include "MersenneTwister.h"
+#include <wfmath/MersenneTwister.h>
 
 // random table class that speeds up PG a bit
 class RandomTable
@@ -86,9 +86,9 @@ inline void RandomTable::generateRandomNumbers()
 #else
 	// using our Mersenne Twister (preferred way)
 #ifdef WIN32
-	MTRand mtrand(GetTickCount());
+	WFMath::MTRand mtrand(GetTickCount());
 #else
-	MTRand mtrand(time(NULL));
+	WFMath::MTRand mtrand(time(NULL));
 #endif
 	for(unsigned long i = 0; i < tableSize; i++)
 		table[i] = mtrand.rand();

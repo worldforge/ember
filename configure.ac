@@ -9,7 +9,7 @@ AC_CONFIG_SRCDIR(src)
 AC_CANONICAL_TARGET
 
 # We have to use "foreign" since we supply README.md instead of the GNU canonical README file.
-AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests foreign])
+AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests foreign subdir-objects])
 AM_SILENT_RULES([yes])
 
 
@@ -262,7 +262,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #if OGRE_NO_FREEIMAGE == 0
 // OGRE is built with FreeImage
 #else
-# OGRE is not built with FreeImage
+# error OGRE is not built with FreeImage
 #endif
 ]])],
 [], [AC_MSG_ERROR([[You must build Ogre with FreeImage support. You cannot use DevIL, as that's not thread safe.]])])
@@ -276,7 +276,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #if OGRE_DOUBLE_PRECISION == 0
 // OGRE is built with single precision
 #else
-# OGRE is built with double precision
+# error OGRE is built with double precision
 #endif
 ]])],
 [],[REAL_TYPE="double"])
@@ -684,6 +684,8 @@ AC_CONFIG_FILES([Makefile
 		 src/domain/bindings/Makefile
 		 src/domain/bindings/lua/Makefile
 		 data/Makefile
+		 man/Makefile
+		 man/man1/Makefile
 ])
 
 AC_OUTPUT

@@ -115,7 +115,7 @@ std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& ke
 				} else {
 					//Use a predictive way of generating a random height.
 				rand.seed(xIndex + x + ((yIndex + y) * 10000.0f));
-				segment->setCornerPoint(x,y, Mercator::BasePoint(mFakeSegmentHeight - (rand.randf(mFakeSegmentHeightVariation))));
+				segment->setCornerPoint(x,y, Mercator::BasePoint(mFakeSegmentHeight - (rand.rand<float>() * mFakeSegmentHeightVariation)));
 			}
 		};
 

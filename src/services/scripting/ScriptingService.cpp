@@ -139,7 +139,7 @@ sigc::signal<void, const std::string&>& ScriptingService::getEventScriptError()
 void ScriptingService::registerScriptingProvider(IScriptingProvider* provider)
 {
 	if (mProviders.find(provider->getName()) != mProviders.end()) {
-		S_LOG_FAILURE("Could not add alreay existing scripting provider with name " + provider->getName());
+		S_LOG_FAILURE("Could not add already existing scripting provider with name " + provider->getName());
 	} else {
 		mProviders[provider->getName()] = provider;
 		provider->_registerWithService(this);

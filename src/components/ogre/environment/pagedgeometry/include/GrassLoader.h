@@ -876,12 +876,12 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *
 	unsigned int maxUInt16 = std::numeric_limits<uint16>::max();
 	if(grassCount > maxUInt16)
 	{
-		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (that's the maximum) grass meshes for one page");
 		return 0;
 	}
 	if(quadCount > maxUInt16)
 	{
-		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (that's the maximum) grass meshes for one page");
 		return 0;
 	}
 
@@ -1070,12 +1070,12 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 	unsigned int maxUInt16 = std::numeric_limits<uint16>::max();
 	if(grassCount > maxUInt16)
 	{
-		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (that's the maximum) grass meshes for one page");
 		return 0;
 	}
 	if(quadCount > maxUInt16)
 	{
-		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (that's the maximum) grass meshes for one page");
 		return 0;
 	}
 
@@ -1327,12 +1327,12 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer
 	unsigned int maxUInt16 = std::numeric_limits<uint16>::max();
 	if(grassCount > maxUInt16)
 	{
-		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (that's the maximum) grass meshes for one page");
 		return 0;
 	}
 	if(quadCount > maxUInt16)
 	{
-		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (that's the maximum) grass meshes for one page");
 		return 0;
 	}
 

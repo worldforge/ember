@@ -1,18 +1,16 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src
-SUBDIRS = src data test
+SUBDIRS = src data test man
 
 ACLOCAL_AMFLAGS = -I m4
 bin_SCRIPTS = ember
-dist_bin_SCRIPTS = ember
 
 confdir = $(sysconfdir)/ember
 dist_conf_DATA = ember.conf
 
-
 appdir = $(datadir)/applications
 dist_app_DATA = ember.desktop
 
-icondir = $(datadir)/icons/worldforge
+icondir = $(datadir)/icons/hicolor/64x64/apps
 dist_icon_DATA = media/ember.png
 
 docdir = $(datadir)/doc/ember-$(VERSION)
