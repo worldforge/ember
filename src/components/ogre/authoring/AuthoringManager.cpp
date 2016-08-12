@@ -19,6 +19,7 @@
 #include "AuthoringManager.h"
 #include "AuthoringHandler.h"
 #include "SimpleEntityVisualization.h"
+#include "EntityConsoleEditor.h"
 #include "components/ogre/World.h"
 #include "components/ogre/Scene.h"
 #include "domain/EmberEntity.h"
@@ -43,7 +44,7 @@ namespace OgreView
 namespace Authoring
 {
 AuthoringManager::AuthoringManager(World& world) :
-	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mWorld(world), mHandler(0)
+	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mWorld(world), mHandler(nullptr), mEntityConsoleEditor(nullptr)
 {
 	//Delay checking the visualization config value until we've entered the world and can see if we're an admin or not.
 	world.EventGotAvatar.connect(sigc::mem_fun(*this, &AuthoringManager::worldGotAvatar));
@@ -58,11 +59,15 @@ AuthoringManager::~AuthoringManager()
 		conn.disconnect();
 	}
 	delete mHandler;
+	delete mEntityConsoleEditor;
 }
 
 void AuthoringManager::worldGotAvatar() {
+	delete mEntityConsoleEditor;
+	mEntityConsoleEditor = nullptr;
 	if (mWorld.getAvatar()->isAdmin()) {
 		registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
+		mEntityConsoleEditor = new EntityConsoleEditor();
 	}
 }
 

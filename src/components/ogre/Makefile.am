@@ -14,6 +14,7 @@ libEmberOgre_a_SOURCES = \
 	authoring/AuthoringHandler.cpp authoring/AuthoringManager.cpp authoring/AuthoringVisualization.cpp authoring/AuthoringVisualizationCollisionDetector.cpp \
 	authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RulesFetcher.cpp authoring/RuleEditor.cpp \
 	authoring/SimpleEntityVisualization.cpp authoring/EntityMaker.cpp authoring/AwarenessVisualizer.cpp \
+	authoring/EntityConsoleEditor.cpp authoring/EntityConsoleEditor.cpp \
 \
 	lod/LodLevelManager.cpp \
 \

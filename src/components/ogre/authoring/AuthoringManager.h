@@ -55,6 +55,7 @@ namespace Authoring
 class AuthoringHandler;
 class EntityMover;
 class SimpleEntityVisualization;
+class EntityConsoleEditor;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -147,6 +148,8 @@ protected:
 	 * @brief Keeps track of all simple visualizations of entities.
 	 */
 	SimpleEntityVisualizationStore mSimpleVisualizations;
+
+	EntityConsoleEditor* mEntityConsoleEditor;
 
 	/**
 	 * Determines whether visualizations should be shown or not.

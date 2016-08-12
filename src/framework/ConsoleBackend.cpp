@@ -126,6 +126,18 @@ void ConsoleBackend::deregisterCommand(const std::string &command, bool suppress
 	} else {
 		// Delete from the map
 		mRegisteredCommands.erase(I);
+
+		for(std::string::size_type i = 1; i <= command.length(); ++i)
+		{
+			std::string prefix = command.substr(0, i);
+			auto entryI = mPrefixes.find(prefix);
+			if (entryI != mPrefixes.end()) {
+				entryI->second.erase(command);
+				if (entryI->second.empty()) {
+					mPrefixes.erase(entryI);
+				}
+			}
+		}
 	}
 }
 
