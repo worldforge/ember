@@ -198,7 +198,7 @@ AC_MSG_RESULT([
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.4 >= 1.4.0 \
- varconf-1.0 >= 0.6.7 mercator-0.3 >= 0.3.3 atlascpp-0.7 >= 0.7.0 wfmath-1.0 >= 1.0.3 libwfut-0.2 >= 0.2.2],
+ varconf-1.0 >= 0.6.7 mercator-0.4 >= 0.4.0 atlascpp-0.7 >= 0.7.0 wfmath-1.0 >= 1.0.3 libwfut-0.2 >= 0.2.2],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LIBS="$LIBS $WF_LIBS"
@@ -669,6 +669,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/authoring/Makefile
 		 src/components/ogre/authoring/entityrecipes/Makefile
 		 src/components/entitymapping/Makefile
+		 src/components/terrain/Makefile
 		 src/components/cegui/Makefile
 		 src/components/cegui/bindings/Makefile
 		 src/components/cegui/bindings/lua/Makefile

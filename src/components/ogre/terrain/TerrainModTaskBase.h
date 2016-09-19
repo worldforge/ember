@@ -77,6 +77,7 @@ protected:
 	 */
 	std::vector<WFMath::AxisBox<2>> mUpdatedAreas;
 
+	long mId;
 };
 
 }

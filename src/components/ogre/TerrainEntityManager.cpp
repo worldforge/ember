@@ -92,8 +92,8 @@ void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const A
 
 void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
 {
-	if (mTerrainMods.find(&entity) == mTerrainMods.end()) {
-		Terrain::TerrainMod* mod = new Terrain::TerrainMod(entity);
+	if (value.isMap() && mTerrainMods.find(&entity) == mTerrainMods.end()) {
+		Terrain::TerrainMod* mod = new Terrain::TerrainMod(entity, value.Map());
 		mod->init();
 		mTerrainMods.insert(std::make_pair(&entity, mod));
 		mTerrainHandler.addTerrainMod(mod);

@@ -46,6 +46,9 @@ namespace Mercator
 namespace Ember
 {
 class EmberEntity;
+namespace Terrain {
+class TerrainModTranslator;
+}
 namespace OgreView
 {
 namespace Terrain {
@@ -65,7 +68,7 @@ public:
 	 * @brief Ctor.
 	 * @param entity The entity to which this mod belongs.
 	 */
-	TerrainMod(Eris::Entity& entity);
+	TerrainMod(Eris::Entity& entity, const Atlas::Message::MapType& data);
 
 	/**
 	 * @brief Dtor.
@@ -95,6 +98,11 @@ public:
      */
     const Atlas::Message::Element& getAtlasData() const;
 
+    /**
+     * @brief Gets the atlas data which defines the terrain mod.
+     */
+    const Ember::Terrain::TerrainModTranslator* getTranslator() const;
+
 	/**
 	 * Emitted whenever the modifier is changed or moved.
 	 */
@@ -117,6 +125,8 @@ protected:
     * @brief Slot used to listen for changes to attributes in the Entity to which this mod belongs to.
     */
     Eris::Entity::AttrChangedSlot mAttrChangedSlot;
+
+    Ember::Terrain::TerrainModTranslator* mTranslator;
 
 
     /**

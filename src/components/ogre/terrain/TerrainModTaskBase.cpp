@@ -29,9 +29,8 @@ namespace Terrain
 {
 
 TerrainModTaskBase::TerrainModTaskBase(Mercator::Terrain& terrain, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods) :
-	mTerrain(terrain), mEntityId(entityId), mHandler(handler), mTerrainMods(terrainMods)
+	mTerrain(terrain), mEntityId(entityId), mHandler(handler), mTerrainMods(terrainMods), mId(std::atol(mEntityId.c_str()))
 {
-
 }
 
 TerrainModTaskBase::~TerrainModTaskBase()

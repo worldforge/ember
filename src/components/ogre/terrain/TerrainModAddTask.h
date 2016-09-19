@@ -19,6 +19,7 @@
 #ifndef TERRAINMODADDTASK_H_
 #define TERRAINMODADDTASK_H_
 #include "TerrainModTaskBase.h"
+#include "components/terrain/TerrainModTranslator.h"
 #include <Mercator/TerrainMod.h>
 #include <Atlas/Message/Element.h>
 
@@ -45,9 +46,9 @@ public:
 
 private:
 
-	const Atlas::Message::Element mModData;
 	const WFMath::Point<3> mPosition;
 	const WFMath::Quaternion& mOrientation;
+	Ember::Terrain::TerrainModTranslator mTranslator;
 
 };
 

@@ -19,12 +19,12 @@
 #include "TerrainModRemoveTask.h"
 #include "TerrainHandler.h"
 #include "TerrainMod.h"
+#include "components/terrain/TerrainModTranslator.h"
 
 #include "framework/LoggingInstance.h"
 
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
-#include <Eris/TerrainModTranslator.h>
 #include <Eris/Entity.h>
 #include <wfmath/axisbox.h>
 
@@ -43,20 +43,20 @@ TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, const std
 
 void TerrainModRemoveTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
-	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
-	if (I != mTerrainMods.end()) {
-		Eris::TerrainModTranslator* terrainMod = I->second;
-		mTerrainMods.erase(I);
-
-		if (terrainMod->getModifier()) {
-			mTerrain.removeMod(terrainMod->getModifier());
-			mUpdatedAreas.push_back(terrainMod->getModifier()->bbox());
-		}
-		delete terrainMod;
-
-	} else {
-		S_LOG_WARNING("Got a delete signal for a terrain mod which isn't registered with the terrain handler. This shouldn't happen.");
-	}
+//	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
+//	if (I != mTerrainMods.end()) {
+//		Ember::Terrain::TerrainModTranslator* terrainMod = I->second;
+//		mTerrainMods.erase(I);
+//
+//		if (terrainMod->getModifier()) {
+//			mTerrain.updateMod(mId, terrainMod->getModifier());
+//			mUpdatedAreas.push_back(terrainMod->getModifier()->bbox());
+//		}
+//		delete terrainMod;
+//
+//	} else {
+//		S_LOG_WARNING("Got a delete signal for a terrain mod which isn't registered with the terrain handler. This shouldn't happen.");
+//	}
 }
 
 void TerrainModRemoveTask::executeTaskInMainThread()

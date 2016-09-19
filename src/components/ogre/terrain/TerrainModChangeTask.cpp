@@ -19,12 +19,12 @@
 #include "TerrainModChangeTask.h"
 #include "TerrainHandler.h"
 #include "TerrainMod.h"
+#include "components/terrain/TerrainModTranslator.h"
 
 #include "framework/LoggingInstance.h"
 
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
-#include <Eris/TerrainModTranslator.h>
 #include <Eris/Entity.h>
 #include <wfmath/axisbox.h>
 
@@ -44,34 +44,34 @@ TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, const Ter
 
 void TerrainModChangeTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
-	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
-	if (I != mTerrainMods.end()) {
-		Eris::TerrainModTranslator* terrainMod = I->second;
-		Mercator::TerrainMod* oldMercTerrainMod = terrainMod->getModifier();
-		if (mModData.isMap()) {
-			Atlas::Message::MapType mapData = mModData.asMap();
-			bool success = terrainMod->parseData(mPosition, mOrientation, mapData);
-			if (success && terrainMod->getModifier()) {
-				Mercator::Terrain::Rect oldRect = mTerrain.updateMod(terrainMod->getModifier());
-				if (oldRect.isValid()) {
-					mUpdatedAreas.push_back(oldRect);
-				}
-				if (terrainMod->getModifier()->bbox() != oldRect) {
-					mUpdatedAreas.push_back(terrainMod->getModifier()->bbox());
-				}
-			} else {
-				if (oldMercTerrainMod) {
-					mTerrain.removeMod(oldMercTerrainMod);
-				}
-			}
-		} else {
-			if (oldMercTerrainMod) {
-				mTerrain.removeMod(oldMercTerrainMod);
-			}
-		}
-	} else {
-		S_LOG_WARNING("Got a change signal for a terrain mod which isn't registered with the terrain handler. This shouldn't happen.");
-	}
+//	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
+//	if (I != mTerrainMods.end()) {
+//		Eris::TerrainModTranslator* terrainMod = I->second;
+//		Mercator::TerrainMod* oldMercTerrainMod = terrainMod->getModifier();
+//		if (mModData.isMap()) {
+//			Atlas::Message::MapType mapData = mModData.Map();
+//			bool success = terrainMod->parseData(mPosition, mOrientation, mapData);
+//			if (success && terrainMod->getModifier()) {
+//				Mercator::Terrain::Rect oldRect = mTerrain.updateMod(mId, terrainMod->getModifier());
+//				if (oldRect.isValid()) {
+//					mUpdatedAreas.push_back(oldRect);
+//				}
+//				if (terrainMod->getModifier()->bbox() != oldRect) {
+//					mUpdatedAreas.push_back(terrainMod->getModifier()->bbox());
+//				}
+//			} else {
+//				if (oldMercTerrainMod) {
+//					mTerrain.updateMod(mId, nullptr);
+//				}
+//			}
+//		} else {
+//			if (oldMercTerrainMod) {
+//				mTerrain.updateMod(mId, nullptr);
+//			}
+//		}
+//	} else {
+//		S_LOG_WARNING("Got a change signal for a terrain mod which isn't registered with the terrain handler. This shouldn't happen.");
+//	}
 }
 
 void TerrainModChangeTask::executeTaskInMainThread()

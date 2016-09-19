@@ -19,9 +19,10 @@
 #include "TerrainModAddTask.h"
 #include "TerrainHandler.h"
 #include "TerrainMod.h"
+#include "components/terrain/TerrainModTranslator.h"
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
-#include <Eris/TerrainModTranslator.h>
+#include <Mercator/Segment.h>
 #include <wfmath/axisbox.h>
 
 namespace Ember
@@ -33,23 +34,52 @@ namespace Terrain
 {
 
 TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler, TerrainModMap& terrainMods) :
-	TerrainModTaskBase(terrain, terrainMod.getEntityId(), handler, terrainMods), mModData(terrainMod.getAtlasData()), mPosition(terrainMod.getEntity().getPredictedPos()), mOrientation(terrainMod.getEntity().getOrientation())
+		TerrainModTaskBase(terrain, terrainMod.getEntityId(), handler, terrainMods), mPosition(terrainMod.getEntity().getPosition()), mOrientation(terrainMod.getEntity().getOrientation()), mTranslator(*terrainMod.getTranslator())
 {
 
 }
 
 void TerrainModAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
-	Eris::TerrainModTranslator* terrainMod = new Eris::TerrainModTranslator();
-	if (mModData.isMap()) {
-		Atlas::Message::MapType mapData = mModData.asMap();
-		bool success = terrainMod->parseData(mPosition, mOrientation, mapData);
-		if (success) {
-			mTerrain.addMod(terrainMod->getModifier());
-			mUpdatedAreas.push_back(terrainMod->getModifier()->bbox());
+	const Mercator::TerrainMod* existingMod = mTerrain.getMod(mId);
+	const Mercator::TerrainMod* terrainMod = nullptr;
+	if (mTranslator.isValid()) {
+
+		Mercator::Segment* segment = mTerrain.getSegment(mPosition.x(), mPosition.y());
+		if (segment) {
+
+			WFMath::Point<3> modPos = mPosition;
+
+			//If there's no mods we can just use position right away
+			if (segment->getMods().empty()) {
+				if (!segment->isValid()) {
+					segment->populate();
+				}
+				segment->getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
+			} else {
+				Mercator::HeightMap heightMap(segment->getResolution(), segment->getMin(), segment->getMax());
+				segment->populateHeightMap(heightMap);
+
+				heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
+			}
+
+			terrainMod = mTranslator.parseData(modPos, mOrientation);
 		}
+
 	}
-	mTerrainMods.insert(TerrainModMap::value_type(mEntityId, terrainMod));
+
+	mTerrain.updateMod(mId, terrainMod);
+	if (terrainMod && terrainMod->bbox().isValid()) {
+		mUpdatedAreas.push_back(terrainMod->bbox());
+	}
+
+	if (existingMod) {
+		if (existingMod->bbox().isValid()) {
+			mUpdatedAreas.push_back(existingMod->bbox());
+		}
+		delete existingMod;
+	}
+
 }
 
 void TerrainModAddTask::executeTaskInMainThread()

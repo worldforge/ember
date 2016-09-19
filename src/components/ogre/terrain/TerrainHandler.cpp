@@ -584,14 +584,14 @@ void TerrainHandler::addTerrainMod(TerrainMod* terrainMod)
 void TerrainHandler::TerrainMod_Changed(TerrainMod* terrainMod)
 {
 	if (mTaskQueue->isActive()) {
-		mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod, *this, mTerrainMods));
+		mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));
 	}
 }
 
 void TerrainHandler::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
 	if (mTaskQueue->isActive()) {
-		mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, terrainMod->getEntityId(), *this, mTerrainMods));
+		mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));
 	}
 }
 

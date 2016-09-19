@@ -26,7 +26,9 @@
 #endif
 
 #include "TerrainMod.h"
-#include <Eris/TerrainModTranslator.h>
+
+#include "components/terrain/TerrainModTranslator.h"
+
 #include <Eris/Entity.h>
 #include <Atlas/Message/Element.h>
 
@@ -37,14 +39,16 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainMod::TerrainMod(Eris::Entity& entity) :
-		mEntity(entity)
+TerrainMod::TerrainMod(Eris::Entity& entity, const Atlas::Message::MapType& data) :
+		mEntity(entity), mTranslator(new Ember::Terrain::TerrainModTranslator(data))
 {
 }
 
 TerrainMod::~TerrainMod()
 {
+	mTranslator->reset();
 	onModDeleted();
+	delete mTranslator;
 }
 
 void TerrainMod::init()
@@ -59,6 +63,9 @@ const std::string& TerrainMod::getEntityId() const
 
 void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
 {
+	if (attributeValue.isMap()) {
+		mTranslator = new Ember::Terrain::TerrainModTranslator(attributeValue.Map());
+	}
 	onModChanged();
 }
 
@@ -78,6 +85,11 @@ void TerrainMod::observeEntity()
 Eris::Entity& TerrainMod::getEntity() const
 {
 	return mEntity;
+}
+
+const Ember::Terrain::TerrainModTranslator* TerrainMod::getTranslator() const
+{
+	return mTranslator;
 }
 
 void TerrainMod::onModDeleted()
