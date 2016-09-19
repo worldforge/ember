@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ protected:
 /**
 @brief Helper class for the compass widget.
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class Compass
 {
@@ -237,7 +237,7 @@ protected:
 Since CEGUI doesn't (as of v0.6.1) support rotation of textures we have to do that ourselves. An instance of this will create a scene manager, camera and rendertexture for rendering a pointer image. By calling rotate() the texture will be rotated.
 Use getTexture() to get a reference to the final rendered texture.
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class RenderedCompassPointer
 {
@@ -321,7 +321,7 @@ protected:
 The main problem with CEGUI is that there's no easy way to apply transparence to a dynamic render texture. By using Ogre to render into full screen quadswe can however render the /ui/compass material, which will use an alpha mask to remove the border from the map texture, providing a rounded shape.
 This implementation will only provide the rounded map texture. It's up to other components to then provide further functionality. This can perhaps be done through CEGUI.
 Note that we use a separate scene manager, owned by this class, for this.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class RenderedCompassImpl : ICompassImpl
 {
@@ -441,7 +441,7 @@ protected:
 
 When the anchor moves the compass should move too. Any instance of this class is self contained and will make sure to listen for updates and frame events and then tell the compass to update itself accordingly.
 An instance of this class can't be created directly, instead use on of the friend classes such as CompassCameraAnchor or CompassSceneNodeAnchor.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class CompassAnchor
 : public Ogre::FrameListener
@@ -502,7 +502,7 @@ protected:
 @brief An anchor implementation which will attach the anchor to a certain Ogre::Camera instance.
 @see CompassAnchor
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class CompassCameraAnchor
 {
@@ -538,7 +538,7 @@ protected:
 @brief An anchor implementation which will attach the anchor to a certain Ogre::SceneNode instance.
 @see CompassAnchor
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class CompassSceneNodeAnchor
 {
@@ -574,7 +574,7 @@ protected:
 The camera will be used for determining the direction of the compass and the scene node will be used to determine the position. This anchor is mainly useful for third person cameras.
 @see CompassAnchor
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class CompassThirdPersonCameraAnchor
 {

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2004  Erik Hjortsberg
+    Copyright (C) 2004  Erik Ogenvik
     
     Taken from the file OgreSingleton.h from the Ogre project, release 0.14
     (www.ogre3d.org)

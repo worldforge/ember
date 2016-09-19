@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ class TerrainArea;
 class TerrainShader;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Common base class for terrain area related tasks.
  */
 class TerrainAreaTaskBase: public Tasks::TemplateNamedTask<TerrainAreaTaskBase>

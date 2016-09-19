@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ namespace Ember {
 namespace Lua {
 
 /**
- * @author Erik Hjortsberg
+ * @author Erik Ogenvik
  *
  * @brief A console object which can easily be created in Lua, and will perform call back into Lua when activated.
  *

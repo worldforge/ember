@@ -1,5 +1,5 @@
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2010
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2010
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ namespace Services {
 class ServerSettingsCredentials;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Stores server settings.
  *
  * This service stores settings for each server. It provides a simple interface for querying for existing settings as well as adding new ones.

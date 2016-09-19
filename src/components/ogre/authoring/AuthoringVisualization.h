@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ namespace Authoring
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief An authoring visualization for an entity.
  * The main use of this is for entities which doesn't have a graphical visualization (like an area) or entities for which the graphical representation is hard to graphically select.
  * The entity is represented by three axes, which are clickable.

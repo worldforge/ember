@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ struct MousePickerArgs
 };
 
 /**
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
 
  @brief Interface used by components which wants to listen for mouse picking in the world.
 

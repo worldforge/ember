@@ -4,7 +4,7 @@
 // Description:
 //
 //	Author Tiberiu Paunescu <tpa12@sfu.ca>, (C) 2010
-//	Based on the EntityIcon class by Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+//	Based on the EntityIcon class by Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

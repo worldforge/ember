@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ namespace OgreView
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Represents the result of a collision query.
  */
@@ -58,7 +58,7 @@ struct CollisionResult
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Interface for collision detectors, responsible for determining collision information for the entity that they are attached to.
  */

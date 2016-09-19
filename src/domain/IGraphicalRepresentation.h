@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ namespace Ember
 class EmberEntity;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A graphical representation of an entity.
  *
  * The entities can be represented through many means inside the world. The most common case would probably be to use an instance of Model, through the ModelRepresentation class, but there are many other cases where another representation would be suitable.

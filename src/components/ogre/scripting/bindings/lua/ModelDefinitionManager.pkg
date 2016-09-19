@@ -3,7 +3,7 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class ModelDefinitionManager : public Ogre::ResourceManager
 {

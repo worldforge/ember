@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ namespace Ember
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Listens for objects sent and received through a Connection.
  */
 class IConnectionListener

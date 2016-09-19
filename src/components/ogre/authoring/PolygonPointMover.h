@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2009
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ class Polygon;
 
 /**
  @brief A listener interface which will receive updates when the movement of the point changes.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class IMovementListener
 {
@@ -69,7 +69,7 @@ public:
  If a point is moved and ctrl is pressed a new point will be created.
  If a point is moved and alt is pressed the point will be removed from the polygon.
 
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class PolygonPointMover: public IMovementBridge, public virtual sigc::trackable
 {

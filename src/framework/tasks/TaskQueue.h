@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ class TaskExecutor;
 class TaskUnit;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A task queue, which allows for queuing of tasks, which will be handled by a number of task executors.
  *
  * This is the main entry into the task framework. Each instance of this represents a queue onto which tasks can be added.

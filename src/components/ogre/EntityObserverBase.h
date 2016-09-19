@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ namespace OgreView
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Utility class providing entity deletion observation functionality.
  *
  * Often features in the client needs to attach to entities. However, all entities can at any time be deleted, and this requires that these features provide functionality for listening to deletion signals and acting accordingly, often cleaning up.

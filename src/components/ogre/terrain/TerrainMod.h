@@ -8,7 +8,7 @@
 //
 //
 // Author: Tamas Bates <rhymer@gmail.com>, (C) 2008
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ namespace Terrain {
 
 /**
 @author Tamas Bates
-@author Erik Hjortsberg
+@author Erik Ogenvik
 @brief Connects an Eris::Entity to a Mercator terrain mod.
 
 Note that however the parsing and application of the terrain mod doesn't occur here. Instead it's handled by the TerrainMod*Task classes, which allows it to occur in a background thread.

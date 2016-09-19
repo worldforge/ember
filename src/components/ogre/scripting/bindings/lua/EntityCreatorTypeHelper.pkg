@@ -10,7 +10,7 @@ namespace Gui
 
 
 /**
- * @author Erik Hjortsberg
+ * @author Erik Ogenvik
  *
  * A helper class for creating simple entities directly from entity types.
  * The helper binds to a tree widget, which will be filled with entity types.

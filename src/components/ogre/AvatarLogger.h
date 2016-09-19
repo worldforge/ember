@@ -5,7 +5,7 @@
 //
 //
 // Author: Sean Ryan <sryan@evercrack.com>, (C) 2008
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class Avatar;
 	The log file will be located in the directory returned by a call to ConfigService::getHomeDirectory(BaseDirType_DATA)
 
 	@author Sean Ryan <sryan@evercrack.com>
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 */
 class AvatarLogger
 : public  sigc::trackable

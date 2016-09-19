@@ -4,7 +4,7 @@
 // Description: 
 //
 // Author: Martin Preisler <preisler.m@gmail.com>, (C) 2011
-// based on Atlas adapters by Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+// based on Atlas adapters by Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

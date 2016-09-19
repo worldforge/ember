@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ class Widget;
 typedef Widget* (*FactoryFunc)();
 
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 
 Utility class for registering Widgets.
 If you create a new widget, make sure you add it to this class, else it won't be linked and you cannot create it dynamically.

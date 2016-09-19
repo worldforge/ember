@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ namespace Gui {
 class Widget;
 
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class Help : public Widget
 {

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ class IEntityControlDelegate;
 class EmberEntity;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Represents an attachment between two entities, and a graphical representation belonging to one entity.
  *
  * The entities themselves are ordered in a hierarchy. However, the graphical representation of them are separate and bound together by instances of this.

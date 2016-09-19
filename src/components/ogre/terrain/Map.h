@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ We don't want to use the regular scene lightning since then we won't see anythin
 
 You don't use this directly when you want to render however, instead you use an instance of MapCameraLightningInstance.
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class MapCameraLightning
 {
@@ -93,7 +93,7 @@ protected:
 
 Use an instance of this during your rendering to make sure that the lightning is correctly set up, and then reset afterwards.
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class MapCameraLightningInstance {
 public:
@@ -129,7 +129,7 @@ protected:
 
 /**
 	@brief Responsible for handling the camera used to render the terrain overhead map.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 
 */
 class MapCamera
@@ -166,7 +166,7 @@ protected:
 
 /**
 	@brief Represents a sub view of the map.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 
 */
 class MapView
@@ -248,7 +248,7 @@ protected:
 
 /**
  * @brief An overhead map of the terrain, rendered into a texture.
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  */
 class Map{
 public:
@@ -318,7 +318,7 @@ protected:
 
 /**
 	By using an instance of this every time you want to alter the scene manager for a certain render operation, you can make sure that the scene manager is returned to its initial state after the render operation is complete, even if something goes wrong.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 */
 class RenderingInstance
 {

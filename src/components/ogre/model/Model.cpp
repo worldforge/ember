@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2004  Erik Hjortsberg
+ Copyright (C) 2004  Erik Ogenvik
  Copyright (c) 2005 The Cataclysmos Team
 
  This program is free software; you can redistribute it and/or modify

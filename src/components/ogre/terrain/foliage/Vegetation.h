@@ -2,7 +2,7 @@
  * Vegetation.h
  *
  *  Created on: 11 mar 2010
- *      Author: Erik Hjortsberg
+ *      Author: Erik Ogenvik
  */
 
 #ifndef VEGETATION_H_

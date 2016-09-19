@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ namespace Ember
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Provides basic time services.
  */
 class Time

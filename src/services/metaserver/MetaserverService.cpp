@@ -1,6 +1,6 @@
 /*
  Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
- Copyright (C) 2005	Erik Hjortsberg
+ Copyright (C) 2005	Erik Ogenvik
  Based on YUP::Metacmd code by Adam Wendt
 
  This program is free software; you can redistribute it and/or modify

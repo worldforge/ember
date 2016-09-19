@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ static void cleanVector(T& theVector)
 
 	Instances of this class are normally not created directly by the application, instead EntityMappingManager::createMapping(...) is used.
 
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 */
 class EntityMapping
 {

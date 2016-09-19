@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ class SubModelPart;
 
 Each model is separated into one or many "parts" which consists of one or many sub entities using specific materials. By showing or hiding certain parts you can simulate concepts such as different clothes or attached objects. A part can belong to a "group", which is just an arbitrary name. Parts belonging to the same group are mutually exlusive and only one part can be shown at once. When a part which belongs to a certain group is shown, all other parts in the same group are automatically hidden.
 A typical example of usage of this would be a human model where there's ten different parts for different shirt combinations. Each shirt part points towards the same mesh, but with different materials. They all belong to the same group, "shirt". Whenever one shirt is shown, all of the others are automatically hidden.
-@author Erik Hjortsberg <erik@worldforge.org>
+@author Erik Ogenvik <erik@worldforge.org>
 */
 class ModelPart
 {

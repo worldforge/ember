@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2004
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ namespace Environment {
 class FoliageBase;
 
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class Foliage : public Singleton<Foliage>, public Ogre::FrameListener, public ConsoleObject
 {

@@ -64,7 +64,7 @@ public:
 
 /**
  @brief Interface for all water techniques. Call isSupported() first to see if the water can be created, and then initialize() to set it all up.
- @author Erik Hjortsberg <erik@worldforge.org>
+ @author Erik Ogenvik <erik@worldforge.org>
  */
 class IWater
 {

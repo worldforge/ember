@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ class EmberEntityFactory;
 class World;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief The signals which are emitted by the EmberOgre class.
  *
  * These signals are emitted by the EmberOgre class. Since an instance of EmberOgre forms the base of the Ogre component of Ember, many of these signals are of use by subcomponents, both in their lifecycle as well as on frame render basis.

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 Erik Hjortsberg
+ Copyright (C) 2011 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ namespace OgreView {
 namespace Authoring {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * Enables the creation of entities through the "/make <entitytype>" and "/createentity <entitytype>" console commands.
  * The entity will be created in front of the avatar.

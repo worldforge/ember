@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ class Segment;
 class SegmentManager;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Holds a Segment instance.
  * Holds a Segment instance and manages the references to it. Whenever a component needs to access a Segment instance it needs to request a reference to it.
  * These references are counted, so that the holder instance knows how many currently are in use. This is of main use to allow for the SegmentManager to release data from Segments which aren't in use.

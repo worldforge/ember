@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace Environment
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief An exclusive imposter page, which means that it will automatically hide any entities when the imposter variant of them is used.
  *

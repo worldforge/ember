@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ namespace OgreView {
 typedef std::map<SDL_Scancode, CEGUI::Key::Scan> SDLKeyMap;
 
 /**
- * @author Erik Hjortsberg
+ * @author Erik Ogenvik
  *
  * @brief Provides an adapter between the input system and CEGUI.
  */

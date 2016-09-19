@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ namespace Gui {
 /**
 @brief A standard ListboxTextItem, with the exeption that the selection will be coloured.
 This class also has the feature that items that are disabled won't be rendered. This is useful when filtering out items from lists.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class ColouredListItem : public CEGUI::ListboxTextItem
 {
@@ -67,7 +67,7 @@ private:
 
 /**
 @brief A standard CEGUI::TreeItem, with the exeption that the selection will be coloured.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class ColouredTreeItem : public CEGUI::TreeItem
 {

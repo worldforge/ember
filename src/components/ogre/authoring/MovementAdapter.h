@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ class MovementAdapter;
  @brief Base class for all movement adapter worker classes.
 
  Implementations of this are responsible for the actual checking of input data to determine whether the bridge should be told to update or not.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class MovementAdapterWorkerBase
 {
@@ -85,7 +85,7 @@ protected:
 
 /**
  @brief An adapter worker implementation which will move the entity a fixed distance for each mouse movement.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class MovementAdapterWorkerDiscrete: public MovementAdapterWorkerBase
 {
@@ -102,7 +102,7 @@ protected:
 
 /**
  @brief An adapter worker implementation which will always position the entity where the mouse cursor intersects with the terrain.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class MovementAdapterWorkerTerrainCursor: public MovementAdapterWorkerBase, public Ogre::FrameListener
 {
@@ -132,7 +132,7 @@ protected:
 };
 
 /**
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  @author Lennart Sauerbeck
 
  @brief Provides an adapter for moving objects in the world.

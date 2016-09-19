@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ class EntityWorldPickListener;
 class EmberEntityFactory;
 class Scene;
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Struct used for returning the result of a mouse pick.
  */
 struct EntityPickResult
@@ -73,7 +73,7 @@ struct PersistentEntityPickResult
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Visualizes the picking operation by placing a large ball at the picked position.
  */
 class EntityWorldPickListenerVisualizer: public virtual sigc::trackable
@@ -89,7 +89,7 @@ private:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Listens for mouse picking of entities in the world.
  *
  * An instance of this is used to allow for picking of entities and terrain in the world.

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace Tasks
 class TaskQueue;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A task executor, responsible for processing tasks.
  * Each instance of this holds a thread. It's only purpose is to ask the queue for new tasks to process. If no tasks are available it will sleep (inside of TaskQueue::fetchNextTask).
  */

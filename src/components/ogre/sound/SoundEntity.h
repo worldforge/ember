@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
-    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+    Copyright (C) 2008 Erik Ogenvik <erik@ogenvik.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ class SoundAction;
 * The only thing that needs extra input is whenever the movement mode is changed, at which point playMovementSound() should be called.
 * There can only be one single movement sound playing at any time, but there can be multiple actions being played simultanously
 * All sound definition data used to set this class up is contained in the ModelDefinition of the Model attached to the EmberEntity.
-* @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+* @author Erik Ogenvik <erik@ogenvik.org>
 * @author Romulo Fernandes Machado
 */
 class SoundEntity

@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ class ScriptingService;
 Sometimes when you make a call into a scripting environment, from the C++ code, you want to be able to inspect and act upon the return values. However, different scripting languages handles these things differently, so instead of a common class we provide this very bare bone interface. It's then up to to each implementation of IScriptingProvider to make sure that it also provides a concrete implementation of this class and knows how to handle it.
 
 Whenever you then want to act on values returned from a call into a specific scripting environment you have to first create the suitable instance of a subclass of this, and then pass that onto a call to the ScriptingService::executeScript method.
-@author Erik Hjortsberg <erik.hjortsber@gmail.com>
+@author Erik Ogenvik <erik.hjortsber@gmail.com>
 */
 class IScriptingCallContext
 {
@@ -66,7 +66,7 @@ We want to support many different scripting environments, so the ScriptingServic
 
 Any implementation of this interface is expected to handle setup and teardown of the underlying scripting environment/virtual machine.
 Often you want to do it in two separate steps, where a call to stop() forces the scripting environment to unload all allocated objects and structs, and the desctructor then handles destroying the scripting environment completely.
-@author Erik Hjortsberg <erik.hjortsber@iteam.se>
+@author Erik Ogenvik <erik.hjortsber@iteam.se>
 */
 class IScriptingProvider
 {

@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class IResourceProvider;
 class IScriptingProvider;
 class IScriptingCallContext;
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 
 This service provides scripting support.
 In order to use it, an instance implementing IScriptingProvider must be created and registered with the service.

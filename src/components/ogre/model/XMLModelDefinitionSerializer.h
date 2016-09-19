@@ -4,7 +4,7 @@
 	For the latest info, see http://www.cataclysmos.org/
 
 	Copyright (c) 2005 The Cataclysmos Team
-    Copyright (C) 2005  Erik Hjortsberg
+    Copyright (C) 2005  Erik Ogenvik
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License

@@ -2,7 +2,7 @@
  * ClusterPopulator.h
  *
  *  Created on: 8 mar 2010
- *      Author: Erik Hjortsberg
+ *      Author: Erik Ogenvik
  */
 
 #ifndef CLUSTERPOPULATOR_H_

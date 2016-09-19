@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ class TerrainPage;
 class SegmentManager;
 
 /**
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 @brief Handles the geometry of a terrain page.
 
 Each instance of TerrainPage is light weight, and doesn't hold any terrain data. This data is also volatile, as we don't want to keep it in memory all the time. The main reason for this is that with a large terrain the amount of needed memory just for the terrain would grow very large.

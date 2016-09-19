@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ namespace Camera
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A third person camera mount, where the camera is circling a node. This node is then in most cases attached to an entity.
  */
 class ThirdPersonCameraMount: public CameraMountBase, public ConsoleObject, public Ogre::FrameListener, public virtual sigc::trackable

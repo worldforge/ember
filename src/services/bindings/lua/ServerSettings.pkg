@@ -5,7 +5,7 @@ namespace Ember {
 namespace Services {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Stores server settings.
  *
  * This service stores settings for each server. It provides a simple interface for querying for existing settings as well as adding new ones.

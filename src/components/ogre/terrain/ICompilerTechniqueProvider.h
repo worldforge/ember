@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2010
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2010
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ class TerrainPageShadow;
 
 /**
  *
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Implementation of this interface are tasked with creating new compilation techniques for terrain page surfaces.
  *

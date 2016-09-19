@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010  Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010  Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ class IconManager;
 }
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A Tooltip subclass which allows for an alternative way to calculate the size of the tooltip.
  *
  * This is used to show entity bound tooltip information.
@@ -57,7 +57,7 @@ public:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Allows advanced entity specific tooltips to be used.
  *
  * This class provides mechanism through which a CEGUI::Tooltip can be setup to show information for a certain entity. This is done by setting the tooltip text of the window for which you want this functionality to the entity id, and then tell the window to use the specific EmberEntityTooltipWidget instance wrapped by this class.

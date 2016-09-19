@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2009
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ namespace Atlas
 /**
  @brief Provides height positions for a polygon attached to an EmberEntity instance.
  The height will be adjusted for the terrain.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class EntityPolygonPositionProvider: public Authoring::IPolygonPositionProvider
 {
@@ -94,7 +94,7 @@ protected:
 /**
  @brief An adapter for polygons.
  This allows the editing of polygons through graphical drag and drop operations.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class PolygonAdapter: public AdapterBase, public Authoring::IMovementListener
 {

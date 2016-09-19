@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ namespace Authoring
  Note that this deals with world space only, which means that all orientations and positions are relative to the world, not the parent entity.
 
  All movement that happens through this class will be on the client only, until either finalizeMovement() or cancelMovement() are called.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class IMovementBridge
 {

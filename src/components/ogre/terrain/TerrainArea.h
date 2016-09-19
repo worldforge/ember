@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ A terrain area is a section of the terrain, as defined by a 2d polygon. It's con
 
 The areas are always attached to an entity, and when the entity moves the area moves with it. The position of the area is defined in space coordinates relative to the entity's position.
 This class acts like a wrapper and controller, binding an instance of EmberEntity and Mercator::Area together. The actual application of the area to the terrain is handled by TerrainHandler, but the logic for parsing the terrain area data from Atlas is contained in this class.
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class TerrainArea : public virtual sigc::trackable
 {

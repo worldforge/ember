@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2009
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ class ModelBackgroundLoader;
  *
  * An instance of this is self contained and will destroy itself when the operation is complete.
  * It's main purpose is to pass the call to operationCompleted() on to the background loader.
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  */
 class ModelBackgroundLoaderListener: public Ogre::ResourceBackgroundQueue::Listener
 {
@@ -93,7 +93,7 @@ private:
  @brief Responsible for loading the resources needed by a Model.
  If thread support is enabled it will be used. You must then call poll() each frame to see if the background thread has finished loading.
 
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class ModelBackgroundLoader : public std::enable_shared_from_this<ModelBackgroundLoader>
 {

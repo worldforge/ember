@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ namespace Gui {
 A facade class for providing filtering to a listbox control.
 This is done by calling the facade methods of this class instead of directly calling the methods of the Listbox.
 
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class ListHolder{
 public:

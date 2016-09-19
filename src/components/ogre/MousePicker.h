@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2004
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace OgreView {
 Class used for picking stuff in the world.
 Since we sometimes want different picking behaviour (sometimes we want to pick building blocks, sometimes we want to pick entities) it's possible to create derived classes and register them with the GUIManager.
 
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class MousePicker 
 {

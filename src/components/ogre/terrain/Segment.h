@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace Terrain
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Represents a Mercator::Segment instance.
  * An instance of this wraps around a Mercator::Segment instance. It's main purpose is to provide an abstraction over the underlying Mercator::Segment instance, so that it easier can be handled by the SegmentManager.
  */

@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2004
 // Copyright (c) 2005 The Cataclysmos Team
 //
 // This program is free software; you can redistribute it and/or modify
@@ -445,7 +445,7 @@ private:
 };
 
 /**
- * @author Erik Hjortsberg
+ * @author Erik Ogenvik
  * @brief Definition of a Model.
  *
  * A "Model" is a very broad concept which allows any entity in the world to have a visible and audible representation.

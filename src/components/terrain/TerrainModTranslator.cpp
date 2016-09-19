@@ -5,7 +5,7 @@
 //
 //
 // Author: Tamas Bates <rhymer@gmail.com>, (C) 2008
-// Author: Erik Hjortsberg <erik@worldforge.org>, (C) 2008
+// Author: Erik Ogenvik <erik@worldforge.org>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

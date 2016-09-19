@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2004  Erik Hjortsberg
+ Copyright (C) 2004  Erik Ogenvik
  some parts Copyright (C) 2004 bad_camel at Ogre3d forums
 
  This program is free software; you can redistribute it and/or modify

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
 
 /**
  * @brief A helper for the Shader technique. Combines several blend map textures into batches and sets the appropriate pass parameters.
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  */
 class ShaderPassBlendMapBatch
 {

@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2004
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2004
 // Copyright (c) 2005 The Cataclysmos Team
 //
 // This program is free software; you can redistribute it and/or modify
@@ -51,7 +51,7 @@ class ModelBackgroundLoader;
  *
  * Responsible for creating, managing, and destroying ModelDefinition instances.
  *
- * @author Erik Hjortsberg
+ * @author Erik Ogenvik
  */
 class ModelDefinitionManager: public Ogre::ResourceManager, public Singleton<ModelDefinitionManager>, public ConsoleObject
 {

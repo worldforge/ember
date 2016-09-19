@@ -5,7 +5,7 @@ $#include "components/ogre/widgets/Compass.h"
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ class ICompassImpl;
 /**
 Helper class for the compass widget.
 
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 */
 class Compass
 {
@@ -74,7 +74,7 @@ public:
 @brief A compass implementation which uses a compositor to create the rounded map image.
 The main problem with CEGUI is that there's no easy way to apply transparence to a dynamic render texture. By using a compositor we can however render the /ui/compass material, which will use an alpha mask to remove the border from the map texture, providing a rounded shape.
 This implementation will only provide the rounded map texture. It's up to other components to then provide further functionality. This can perhaps be done through CEGUI.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class RenderedCompassImpl : ICompassImpl
 {
@@ -144,7 +144,7 @@ public:
 The camera will be used for determining the direction of the compass and the scene node will be used to determine the position. This anchor is mainly useful for thir person cameras.
 @see CompassAnchor
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class CompassThirdPersonCameraAnchor
 {

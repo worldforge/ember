@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006,
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006,
 // Rômulo Fernandes <abra185@gmail.com>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
@@ -34,7 +34,7 @@ namespace OgreView {
 class FileSystemArchiveFactory;
 
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 @author Rômulo Fernandes
 
 @brief Loads resources into the Ogre resource system.

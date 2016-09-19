@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ namespace OgreView {
 @brief A simple helper class for loading tinyxml documents through the ogre resource system.
 Also contains a couple of static method for converting common Ogre structures to and from xml.
 
-@author Erik Hjortsberg <erik@worldforge.org>
+@author Erik Ogenvik <erik@worldforge.org>
 */
 class XMLHelper
 {

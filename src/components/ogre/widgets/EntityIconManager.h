@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ class EntityIconSlot;
 class EntityIcon;
 
 /**
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 @brief Handles and manages entity icons.
 
 An entity icon is an icon which is connected to an entity. The icons can be dragged and dropped onto slots (for example when creating a system for outfits, or an action bar.

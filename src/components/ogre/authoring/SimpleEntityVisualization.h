@@ -1,5 +1,5 @@
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2010
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2010
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ namespace Authoring
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Provides a simple visualization of an Entity using a wire bounding box.
  *
  * This is useful when you want to visualize the position, size and orientation of a raw entity. Normally a more complex system using Models and attachments is used for visualization. This however doesn't always represent the actual Eris data, for which this class is very much suited.

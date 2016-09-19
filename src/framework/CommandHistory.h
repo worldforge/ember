@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 Erik Hjortsberg
+ Copyright (C) 2011 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ namespace Ember
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A simple command history, basically acts as a cursor into a list of previously registered commands.
  */
 class CommandHistory

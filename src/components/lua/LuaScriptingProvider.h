@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ class LuaScriptingCallContext;
 This acts as a bridge between Ember and the Lua scripting environment. Opon creation and destruction it will take care of setting up and tearing down the lua virtual machine. Remember to call stop() before deleting an instance of this to make sure that everything is properly cleaned up.
 
 If you want to inspect the return values from calls to lua scripts, pass a pointer to LuaScriptingCallContext to the executeScript methods.
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class LuaScriptingProvider : public IScriptingProvider
 {

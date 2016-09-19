@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ namespace Gui {
  * Also allows switching the chat modes between attached to the entity (the text is projected according to the entity's 3D position
  * and detached mode where the chat window is detached and you can move it around (in this mode chat history and further options are shown)
  * 
- * @author Erik Hjortsberg
+ * @author Erik Ogenvik
  */
 class IngameChatWidget : public Widget, public ConfigListenerContainer
 {

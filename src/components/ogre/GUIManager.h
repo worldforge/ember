@@ -1,6 +1,6 @@
 /*
  Copyright (C) 2004  Miguel Guzman (Aglanor)
- Copyright (C) 2006  Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2006  Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

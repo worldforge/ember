@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ namespace OgreView
 class NodeAttachment;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Handles the position and orientation updates of a NodeAttachment.
  *
  * This functionality is separated from the NodeAttachment so that it will be possible to intercept and alter it, as is the case when a player controls one of the entities.

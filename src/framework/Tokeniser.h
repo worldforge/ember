@@ -31,7 +31,7 @@ namespace Ember {
 
 /**
  * @author Martin Pollard (Xmp) aka Xmp
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Accepts an input string and splits the string up into separate "tokens" which can be handled individually.
  * The main use for this is in a console environment where you need to act on the arguments submitted along with a command.

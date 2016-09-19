@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ class HeightMapBufferProvider;
 template <typename> class Buffer;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Wraps a buffer instance and presents it to the height map system.
  * An instance of this will be created by the HeightMapBufferProvider, and at destruction it will automatically return the underlying Buffer instance to the provider.
  */

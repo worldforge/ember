@@ -80,7 +80,7 @@ NOTE: Perhaps we should provide another base class for widgets that have a singl
 
 When creating a new Widget class, make sure you also add it to WidgetDefinitions.
 @see WidgetDefinitions
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class Widget : 
 public virtual sigc::trackable,
@@ -346,7 +346,7 @@ TYPEDEF_STL_MAP(std::string, FactoryFunc, WidgetFactoryMap);
 See WidgetLoaderHolder on how to register Widgets.
 
 Use createWidget("someName") to create widgets.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 class WidgetLoader
 {

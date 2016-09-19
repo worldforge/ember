@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
  Copyright (C) 2003 Alistair Riddoch, Damien McGinnes (portions taken from Mercator::Segment)
 
  This program is free software; you can redistribute it and/or modify

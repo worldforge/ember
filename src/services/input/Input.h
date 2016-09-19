@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ typedef std::list<IInputAdapter*> IInputAdapterStore;
 
 /**
  * @brief Struct for a mouse movement.
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  */
 struct MouseMotion
 {
@@ -124,7 +124,7 @@ struct MouseMotion
  * @brief Expresses the position of the mouse, both in terms of pixels and relative.
  * 
  * Positions are from the upper left corner.
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  */
 struct MousePosition
 {
@@ -151,7 +151,7 @@ struct MousePosition
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * 
  * @brief This class handles input and the main window.
  * It takes care of all input and routes it to the correct place in Ember.

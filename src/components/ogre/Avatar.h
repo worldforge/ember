@@ -1,7 +1,7 @@
 /*
  Avatar.h by Miguel Guzman (Aglanor)
  Copyright (C) 2002 Miguel Guzman & The Viewforge Project
- Copyright (C) 2004 Erik Hjortsberg
+ Copyright (C) 2004 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

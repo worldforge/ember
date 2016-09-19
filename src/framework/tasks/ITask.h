@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace Tasks
 class TaskExecutionContext;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Base interface for a "task".
  * A "task" is a piece of work which needs to be carried out in a separate thread. Instances of this are processed by an instance of TaskQueue, which uses a collection of concurrant TaskExecutors to execute the tasks.
  * When each task has been executed in the background threads (through the executors) it can optionally also be executed in the main thread through a call to executeTaskInMainThread().

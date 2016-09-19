@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ class EntityMoveManager;
 class EntityMover;
 
 /**
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  @see EntityMoveAdjuster
  An instance of a adjustment operation. After time out, the entity encapsuled by this instance will be synchronized with the server.
  */
@@ -76,7 +76,7 @@ private:
 };
 
 /**
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  @brief This class is responsible for adjusting moved entities to their correct place.
  Basically, when an entity is moved the client sends the updates to the server, but it's not clear at that time whether the movement is allowed. This can only be seen by waiting to see whether the movement went through, i.e. if the entity was updated.
  So what this class does, together with EntityMoveAdjustmentInstance, waiting a couple of milleseconds and then telling the entity that  was moved to synchronize with the server. If the movement didn't go through, this will lead to the entity "snapping" back to the original position. If it did go through nothing will happen.

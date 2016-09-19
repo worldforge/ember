@@ -5,7 +5,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ class TerrainEditorOverlay;
 	If no radius is set, any action will only affect the base point being directly manipulated. If a radius however is set, other base points within the radius will also be affected.
 
 	@note Inherits from sigc::trackable because we use an async callback when fetching base points.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 */
 class TerrainEditor : public virtual sigc::trackable
 {

@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ namespace Ember {
 namespace OgreView {
 
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 A log observer which writes to the Ogre log system.
 This is a combined Ogre::LogListener and a StreamLogObserver.
 The StreamLogObserver part does the main work, while the Ogre::LogListener implementation allow us to receive ogre log events.

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -50,13 +50,13 @@ template <typename T>
 const char* resolveLuaTypename();
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Marker class for empty values.
  */
 struct Empty{};
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A value adapter for reference types.
  */
 template <typename T>
@@ -77,7 +77,7 @@ public:
 
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A value adapter for pointer types.
  */
 template <typename T>
@@ -96,7 +96,7 @@ public:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A value adapter for number types.
  */
 template <typename T>
@@ -115,7 +115,7 @@ public:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A value adapter for strings.
  */
 class StringValueAdapter
@@ -134,7 +134,7 @@ public:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A value adapter for booleans.
  */
 class BooleanValueAdapter
@@ -153,7 +153,7 @@ public:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A value adapter for empty values.
  */
 class EmptyValueAdapter
@@ -166,7 +166,7 @@ public:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Base class for connectors which mainly tie sigc signals to lua method calls.
  */
 class ConnectorBase
@@ -289,7 +289,7 @@ protected:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Templated connector base class.
  * In this current version this only supports two adapters. This is because so far we haven't in Ember had any need for more, as no signal emitted uses more than two arguments.
  */
@@ -329,7 +329,7 @@ protected:
 
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A connector for a signal without any arguments.
  */
 template <typename TReturn = void>
@@ -357,7 +357,7 @@ private:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A connector for a signal with one argument.
  */
 template <typename TReturn, typename TAdapter0, typename T0 = typename TAdapter0::value_type >
@@ -387,7 +387,7 @@ private:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A connector for a signal with two arguments.
  */
 template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0 = typename TAdapter0::value_type, typename T1 = typename TAdapter1::value_type >

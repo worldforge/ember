@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ class TerrainPageGeometry;
 class ICompilerTechniqueProvider;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A technique for rendering the terrain.
  *
  * Since there are many different ways to perform terrain rendering (depending on hardware, features etc.) we provide multiple implementations of this interface, and let the terrain surface compiler choose which one to use.
@@ -104,7 +104,7 @@ public:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Represents one unit of work for generating a terrain surface.
  *
@@ -172,7 +172,7 @@ private:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Compiles Ogre::Materials for terrain geometries, to be used in the Ogre terrain manager.
  *

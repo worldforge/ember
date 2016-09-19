@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ class EntityMover;
 class AuthoringHandler;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief An instance of a move operation. An instance of this is created when a AuthoringVisualizationMover is used for displaying the movement of an entity.
  * Note that this inherits from EntityObserverBase which makes it react to the entity being deleted. However, this functionality is already taken care of in AuthoringHandler::view_EntityDeleted making it a bit superfluous.
  */
@@ -64,7 +64,7 @@ private:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Handles authoring visualizations.
  * These are visualizations of all entities, for authoring sake. The main use of this is for entities which doesn't have a graphical visualization (like an area) or entities for which the graphical representation is hard to graphically select.
  *

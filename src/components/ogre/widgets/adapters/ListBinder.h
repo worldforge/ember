@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2009
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ To update the GUI with a new selection, call the select() method.
 
 Note that you must call sync() after you've set up the binder to get it to create the gui elements.
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 */
 template <class T, class WidgetT>
 class ListBinder

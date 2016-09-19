@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg
+ Copyright (C) 2009 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ class TerrainDefPoint;
 
  @brief Responsible for parsing terrain information from the Atlas data.
 
- @author Erik Hjortsberg <erik@worldforge.org>
+ @author Erik Ogenvik <erik@worldforge.org>
 
  */
 class TerrainParser

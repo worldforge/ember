@@ -4,7 +4,7 @@
 // Description:
 //
 //	Author Tiberiu Paunescu <tpa12@sfu.ca>, (C) 2010
-//	Based on the EntityIconDragDropTarget class by Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+//	Based on the EntityIconDragDropTarget class by Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class ActionBarIcon;
 class EntityIcon;
 
 /**
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+@author Erik Ogenvik <erik@ogenvik.org>
 
 @brief Attaches to a CEGUI::Window and allows that window to have EntityIcons and ActionBarIcons dragged and dropped on it.
 

@@ -3,7 +3,7 @@
 namespace Ember {
 
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 
 This service provides scripting support.
 In order to use it, an instance implementing IScriptingProvider must be created and registered with the service.

@@ -12,7 +12,7 @@
  */
 /*
     Copyright (C) 2002  Nikal, Xmp
-    Copyright (C) 2008  Erik Hjortsberg
+    Copyright (C) 2008  Erik Ogenvik
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ const int EXCEPTION_TEXT_SIZE = 1024;
  *
  * @author Nikal
  * @author Xmp (Martin Pollard)
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  *
  */
 class Exception : public std::exception

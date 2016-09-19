@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
-    Copyright (C) 2008 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+    Copyright (C) 2008 Erik Ogenvik <erik@ogenvik.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class BaseSoundSample;
  * In normal operations, the only way to play a sound is to first request a new instance of SoundInstance throug createInstance(), binding that instance to one or many sound samples and then asking the SoundInstance to start playing. Once the SoundInstance is done playing it should be returned through destroyInstance(). Since it's expected that not too many sounds should be playing at one time it's not expected to be too many live instances of SoundInstance at any time.
  * Before you can start requesting sound instances and binding them to samples you must however set up the service. The first thing that needs to be set up is a resource provider through the IResourceProvider interface. The resource provider is responsible for providing any resource when so asked, and is the main interface into the actual sound data.
  * @author Romulo Fernandes Machado (nightz)
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  */
 class SoundService: public Service, public ConsoleObject
 {

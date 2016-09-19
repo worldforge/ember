@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2008
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ class Model;
  @brief Acts as a mount for a model, connecting it to two scene nodes.
  A model can contain internal orientation and offset data. This requires us to use two different scene nodes for each model instance. The inner most scene node, called the "scale node", is the one which the Model is attached to. This is then offset and oriented in relation to the outer scene node. Whenever we move the Model, we move only the outer scene node, leaving the inner scene node completely in the hands of the Model.
  The scale node will be owned by this class.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class ModelMount
 {

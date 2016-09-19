@@ -1,7 +1,7 @@
 /*
 -----------------------------------------------------------------------------
 Convert.h by Miguel Guzman Miranda (Aglanor)
-Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2005
 
 Copyright � 2003 The Worldforge Project (http://www.worldforge.org)
 This file is part of Ember client (http://www.worldforge.org/dev/eng/clients/Ember)
@@ -99,7 +99,7 @@ namespace Ember {
 namespace OgreView {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Useful conversion method, for converting between Ogre and Worldforge space.
  */
 class Convert {

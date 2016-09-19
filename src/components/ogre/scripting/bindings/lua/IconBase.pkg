@@ -6,7 +6,7 @@ namespace Gui {
 /**
 Use this class as base for more advanced buttons where you want a "roll over" effect.
 
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class IconBase{
 

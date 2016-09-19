@@ -2,7 +2,7 @@
  * ClusterPopulator.cpp
  *
  *  Created on: 8 mar 2010
- *      Author: Erik Hjortsberg
+ *      Author: Erik Ogenvik
  */
 
 #include "ClusterPopulator.h"

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ class ShaderManager;
 class AvatarCameraWarper;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Binds together an Eris::View instance with a Scene (and hence Ogre::SceneManager) instance.
  *
  * This is the base unit for representing an Eris::View instance graphically in the Ogre component of EmberOgre.
@@ -467,7 +467,7 @@ protected:
  As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.
  By delaying the loading of the foliage we can avoid this.
 
- @author Erik Hjortsberg <erik@worldforge.org>
+ @author Erik Ogenvik <erik@worldforge.org>
 
  */
 class DelayedFoliageInitializer

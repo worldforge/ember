@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ namespace OgreView
 namespace Model
 {
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Represents a "model fitting", i.e. an attachment of a child entity to a bone on a model.
  * An instance of this is used to keep track of which entities are attached to which attach points on a model.
  * Note that it's not until attachChild() has been called that there's an entity attached.

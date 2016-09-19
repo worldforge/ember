@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2011
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2011
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace Terrain
 
 /**
  * Listener interface for an terrain observer, which is observes a particular terrain area.
- * @author Erik Hjortsberg
+ * @author Erik Ogenvik
  */
 class ITerrainObserver
 {

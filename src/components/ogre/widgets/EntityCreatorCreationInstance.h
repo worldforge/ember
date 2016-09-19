@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2011 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ class EntityCreatorInputAdapter;
 class EntityCreatorMovement;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Represents one instance of a creation of an entity from a recipe.
  *
  * Once startCreation() has been called, a preview of the entity will be displayed in the world, and the user can position this preview.

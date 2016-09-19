@@ -80,7 +80,7 @@ class PlantPopulator;
 }
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Handles the underlying Mercator terrain.
  *
  * This class is responsible for handling the underlying Mercator terrain, performing updates and alterations.

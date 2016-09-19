@@ -27,7 +27,7 @@ namespace Gui
  * @brief A very lightweight class which can be used as a "user data" instance in CEGUI.
  * CEGUI allows for "user data" to be attached to windows. The user data can be anything, and this class is used as a means to bind a generic icon to a CEGUI::Window.
  * Whenever it's used it must be wrapped in boost::any to allow for safe casting.
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @author Tiberiu Paunescu <tpa12@sfu.ca>
  */
 template <class IconType>

@@ -99,7 +99,7 @@ namespace Ember
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A simple listener class for the general:desiredfps config setting, which configures the capped fps.
  */
 class DesiredFpsListener: public ConfigListenerContainer

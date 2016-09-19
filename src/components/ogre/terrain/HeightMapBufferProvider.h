@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ template <typename> class Buffer;
 class HeightMapBuffer;
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A height map buffer provider, which for performance reasons keeps a pool of buffers which are recycled as new HeightMapBuffer instances are created.
  * To help with performance and to avoid memory fragmentation this class is used to keep a collection of Buffer instances, which are used by HeightMapBuffer instances.
  * The HeightMapBuffer class will at destruction automatically return the Buffer instance to the provider.

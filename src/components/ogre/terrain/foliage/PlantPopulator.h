@@ -2,7 +2,7 @@
  * PlantPopulator.h
  *
  *  Created on: 8 mar 2010
- *      Author: Erik Hjortsberg
+ *      Author: Erik Ogenvik
  */
 
 #ifndef PLANTPOPULATOR_H_

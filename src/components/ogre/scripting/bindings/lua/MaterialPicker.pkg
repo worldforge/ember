@@ -3,7 +3,7 @@ namespace Ember {
 namespace OgreView {
 
 /**
-@author Erik Hjortsberg
+@author Erik Ogenvik
 */
 class MaterialPicker{
 public:

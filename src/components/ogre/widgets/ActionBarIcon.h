@@ -4,7 +4,7 @@
 // Description:
 //
 //	Author Tiberiu Paunescu <tpa12@sfu.ca>, (C) 2010
-//	Based on the EntityIcon class by Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+//	Based on the EntityIcon class by Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ class ActionBarIcon;
 /**
 	@brief A very lightweight class which can be used as a "user data" instance in CEGUI.
 	CEGUI allows for "user data" to be attached to windows. The user data can be anything, and this class is used as a means to bind an EntityIcon to a CEGUI::Window. Whenever it's used it must be correctly casted (since the user data stored by CEGUI::Window is just a void pointer.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 */
 class ActionBarIconUserData
 {
@@ -81,7 +81,7 @@ private:
 	The most common slot on which it can be dragged and dropped would be an instance of ActionIconSlot. An action bar icon doesn't necessarily have to be connected to a slot, but in most cases they are.
 
 	Additionally, another action bar icon can be dragged and dropped onto an instance of this class. When this happens the EventIcon* events are emitted. This allows you to implement functionality for combining different entities.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	@author Erik Ogenvik <erik@ogenvik.org>
 */
 class ActionBarIcon : public ActionBarIconDragDropTarget, public virtual sigc::trackable
 {

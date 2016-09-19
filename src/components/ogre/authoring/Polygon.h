@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2009
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ class PolygonPointPickListener;
  A Polygon is a 2d shape, made up of multiple connected points.
  This class can be used for represent it graphically in the world, and allow for easy editing through dragging and dropping.
  To alter a point, just drag and drop it. To create a new point, drag an existing one and press and hold ctrl.
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Ogenvik <erik@ogenvik.org>
  */
 class Polygon
 {

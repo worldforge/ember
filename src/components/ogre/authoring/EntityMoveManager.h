@@ -4,7 +4,7 @@
 // Description:
 //
 //
-// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+// Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2006
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ namespace Authoring
 {
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief An instance of this is used to keep track off the currently moved entity.
  * It's main purpose is to make sure that all structures are correctly cleaned up if the entity is deleted while being moved.
  *
@@ -59,7 +59,7 @@ private:
 };
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Responsible for allowing movement of entities in the world by the user.
  * While entities normally get moved as a result of data sent from the server, we also want to allow the user to move entities independently.
  * The two main situations for this is either when the user is rearranging entities in the world, or when the user is a world author and needs to change the world.

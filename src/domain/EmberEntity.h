@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2004  Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2004  Erik Ogenvik <erik@ogenvik.org>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ class EntityTalk;
 
 
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A representation of an Eris::Entity, ie. a world entity.
  *
  * This is the base class for any entities in the world. It's therefore safe to case any instance of Eris::Entity into this class.

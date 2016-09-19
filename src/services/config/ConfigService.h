@@ -1,7 +1,7 @@
 /*
     Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
                         Joel Schander         [nullstar]
-                        Erik Hjortsberg
+                        Erik Ogenvik
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ namespace Ember
 	*
 	* The service keeps three different config instances: global, user and instance. Instance settings takes precedence over user settings, which take precedence over global settings.
 	*
-	* @author Erik Hjortsberg (erik.hjortsberg@gmail.com)
+	* @author Erik Ogenvik (erik@ogenvik.org)
 	* @author Miguel Guzman Miranda [Aglanor]
 	* @author Joel Schander         [nullstar]
 	*

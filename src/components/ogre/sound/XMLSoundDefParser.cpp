@@ -2,7 +2,7 @@
     Copyright (C) 2008 Romulo Fernandes Machado (nightz)
 
 	 Based on the XMLModelDefinitionSerializer by
-	 The Cataclysmos Team and Erik Hjortsberg
+	 The Cataclysmos Team and Erik Ogenvik
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

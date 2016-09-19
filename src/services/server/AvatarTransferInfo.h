@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 Erik Hjortsberg
+ Copyright (C) 2011 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 namespace Ember
 {
 /**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Envelopes an Eris::TransferInfo object with time stamp and avatar name.
  *
  * So that we can present a little more informative message to the user.
