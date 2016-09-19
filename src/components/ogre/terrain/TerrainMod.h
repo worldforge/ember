@@ -96,11 +96,6 @@ public:
     /**
      * @brief Gets the atlas data which defines the terrain mod.
      */
-    const Atlas::Message::Element& getAtlasData() const;
-
-    /**
-     * @brief Gets the atlas data which defines the terrain mod.
-     */
     const Ember::Terrain::TerrainModTranslator* getTranslator() const;
 
 	/**

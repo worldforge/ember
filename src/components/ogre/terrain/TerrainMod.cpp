@@ -102,15 +102,6 @@ void TerrainMod::onModChanged()
 	EventModChanged.emit();
 }
 
-const Atlas::Message::Element& TerrainMod::getAtlasData() const
-{
-	if (mEntity.hasAttr("terrainmod")) {
-		return mEntity.valueOfAttr("terrainmod");
-	}
-	static Atlas::Message::Element none;
-	return none;
-}
-
 }
 }
 }

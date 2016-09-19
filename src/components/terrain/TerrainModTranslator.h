@@ -47,14 +47,45 @@ namespace Terrain
 {
 
 /**
- @author Erik Ogenvik <erik.hjortsberg@iteam.se>
- @brief Base class for all terrain mod specific classes.This is not meant to be used directly by anything else than the TerrainMod class.
- The TerrainMod class in itself doesn't hold the actual reference to the terrain mod, and doesn't handle the final parsing of Atlas data. This is instead handled by the different subclasses of this class. Since the different kinds of terrain mods found in Mercator behave differently depending on their type and the kind of shape used, we need to separate the code for handling them into different classes.
+ * @author Erik Ogenvik <erik@ogenvik.org>
+ * @brief Handles translation of terrain mod data into Mercator::TerrainMod instances.
+ *
  */
 class TerrainModTranslator
 {
+public:
+
+	explicit TerrainModTranslator(const Atlas::Message::MapType& data);
+	~TerrainModTranslator() = default;
+
+	/**
+	 * Creates a TerrainMod instance, if possible.
+	 * @param pos
+	 * @param orientation
+	 * @return A terrain mod instance, or null if none could be created.
+	 */
+	Mercator::TerrainMod* parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation);
+
+	/**
+	 * @brief True if there's a valid inner translator.
+	 * @return
+	 */
+	bool isValid() const;
+
+	/**
+	 * Removes any internal translator.
+	 */
+	void reset();
+
+	static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
+
 protected:
 
+	/**
+	 * Interface for inner translator.
+	 *
+	 * Concrete templated subclasses are used for both shapes and mod types.
+	 */
 	class InnerTranslator
 	{
 	public:
@@ -62,26 +93,10 @@ protected:
 		virtual Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) = 0;
 	protected:
 		const Atlas::Message::MapType mData;
-		static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 	};
 
 	template<template<int> class Shape>
-	Mercator::TerrainMod* parseStuff(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, const std::string & typeName, Shape<2> & shape, const Atlas::Message::Element & shapeElement);
-
-	template<template<int> class Shape>
 	InnerTranslator* buildTranslator(const Atlas::Message::MapType& modElement, const std::string & typeName, Shape<2> & shape, const Atlas::Message::Element & shapeElement);
-
-public:
-
-	explicit TerrainModTranslator(const Atlas::Message::MapType& data);
-
-	Mercator::TerrainMod* parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion &);
-
-	bool isValid() const;
-
-	void reset();
-
-protected:
 
 	std::shared_ptr<TerrainModTranslator::InnerTranslator> mInnerTranslator;
 };

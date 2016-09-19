@@ -43,7 +43,9 @@ namespace Ember
 {
 namespace Terrain
 {
-
+/**
+ * @brief Templated translator which creates concrete mod instances.
+ */
 template<template<template<int> class ShapeT> class ModT, template<int> class ShapeT>
 class InnerTranslatorImpl: public TerrainModTranslator::InnerTranslator
 {
@@ -56,6 +58,9 @@ public:
 	const ShapeT<2> mShape;
 };
 
+/**
+ * @brief Translator for Mercator::SlopeTerrainMod, since it has a different constructor than other mods.
+ */
 template<template<int> class ShapeT>
 class InnerTranslatorSlope: public TerrainModTranslator::InnerTranslator
 {
@@ -87,7 +92,7 @@ Mercator::TerrainMod* InnerTranslatorImpl<ModT, ShapeT>::createInstance(const WF
 {
 	ShapeT<2> shape = this->mShape;
 
-	if (!shape.isValid()) {
+	if (!shape.isValid() || !pos.isValid()) {
 		return nullptr;
 	}
 
@@ -100,7 +105,7 @@ Mercator::TerrainMod* InnerTranslatorImpl<ModT, ShapeT>::createInstance(const WF
 	}
 
 	shape.shift(WFMath::Vector<2>(pos.x(), pos.y()));
-	float level = parsePosition(pos, this->mData);
+	float level = TerrainModTranslator::parsePosition(pos, this->mData);
 	return new ModT<ShapeT>(level, shape);
 }
 
@@ -108,6 +113,10 @@ template<template<int> class ShapeT>
 Mercator::TerrainMod* InnerTranslatorSlope<ShapeT>::createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
 {
 	ShapeT<2> shape = this->mShape;
+
+	if (!shape.isValid() || !pos.isValid() || !orientation.isValid()) {
+		return nullptr;
+	}
 
 	if (orientation.isValid()) {
 		/// rotation about Z axis
@@ -118,7 +127,7 @@ Mercator::TerrainMod* InnerTranslatorSlope<ShapeT>::createInstance(const WFMath:
 	}
 
 	shape.shift(WFMath::Vector<2>(pos.x(), pos.y()));
-	float level = parsePosition(pos, this->mData);
+	float level = TerrainModTranslator::parsePosition(pos, this->mData);
 	return new Mercator::SlopeTerrainMod<ShapeT>(level, mDx, mDy, shape);
 }
 
@@ -137,7 +146,7 @@ TerrainModTranslator::InnerTranslator::InnerTranslator(const Atlas::Message::Map
  * @param modElement Atlas data describing the mod
  * @return The adjusted height of the mod
  */
-float TerrainModTranslator::InnerTranslator::parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
+float TerrainModTranslator::parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
 {
 	///If the height is specified use that, else check for a height offset. If none is found, use the default height of the entity position
 	MapType::const_iterator I = modElement.find("height");
@@ -268,8 +277,5 @@ bool TerrainModTranslator::isValid() const
 	return (bool)mInnerTranslator;
 }
 
-
-
 }
 }
-
