@@ -117,8 +117,6 @@ namespace OgreView {
 
 		typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 
-		typedef std::multimap<const std::string, Eris::TerrainModTranslator*> TerrainModMap;
-
 		typedef std::unordered_map<std::string, Mercator::Area*> AreaMap;
 
 		typedef std::map<const Mercator::Shader*, const TerrainShader*> ShaderStore;

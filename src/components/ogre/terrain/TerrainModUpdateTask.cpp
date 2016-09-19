@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "TerrainModAddTask.h"
+#include "TerrainModUpdateTask.h"
 #include "TerrainHandler.h"
 #include "TerrainMod.h"
 #include "components/terrain/TerrainModTranslator.h"
@@ -33,13 +33,13 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler, TerrainModMap& terrainMods) :
-		TerrainModTaskBase(terrain, terrainMod.getEntityId(), handler, terrainMods), mPosition(terrainMod.getEntity().getPosition()), mOrientation(terrainMod.getEntity().getOrientation()), mTranslator(*terrainMod.getTranslator())
+TerrainModUpdateTask::TerrainModUpdateTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler) :
+		mTerrain(terrain), mHandler(handler), mId(std::atol(terrainMod.getEntityId().c_str())), mPosition(terrainMod.getEntity().getPosition()), mOrientation(terrainMod.getEntity().getOrientation()), mTranslator(*terrainMod.getTranslator())
 {
 
 }
 
-void TerrainModAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
+void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	const Mercator::TerrainMod* existingMod = mTerrain.getMod(mId);
 	const Mercator::TerrainMod* terrainMod = nullptr;
@@ -82,7 +82,7 @@ void TerrainModAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContex
 
 }
 
-void TerrainModAddTask::executeTaskInMainThread()
+void TerrainModUpdateTask::executeTaskInMainThread()
 {
 	mHandler.reloadTerrain(mUpdatedAreas);
 }

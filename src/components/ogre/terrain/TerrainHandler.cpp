@@ -38,9 +38,8 @@
 #include "TerrainAreaUpdateTask.h"
 #include "TerrainAreaAddTask.h"
 #include "TerrainAreaRemoveTask.h"
-#include "TerrainModAddTask.h"
-#include "TerrainModChangeTask.h"
-#include "TerrainModRemoveTask.h"
+#include <components/ogre/terrain/TerrainModUpdateTask.h>
+#include "TerrainModUpdateTask.h"
 #include "TerrainUpdateTask.h"
 
 #include "TerrainLayerDefinitionManager.h"
@@ -578,20 +577,20 @@ void TerrainHandler::addTerrainMod(TerrainMod* terrainMod)
 	// Listen for deletion of the modifier
 	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainMod_Deleted), terrainMod));
 
-	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));
+	mTaskQueue->enqueueTask(new TerrainModUpdateTask(*mTerrain, *terrainMod, *this));
 }
 
 void TerrainHandler::TerrainMod_Changed(TerrainMod* terrainMod)
 {
 	if (mTaskQueue->isActive()) {
-		mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));
+		mTaskQueue->enqueueTask(new TerrainModUpdateTask(*mTerrain, *terrainMod, *this));
 	}
 }
 
 void TerrainHandler::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
 	if (mTaskQueue->isActive()) {
-		mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));
+		mTaskQueue->enqueueTask(new TerrainModUpdateTask(*mTerrain, *terrainMod, *this));
 	}
 }
 

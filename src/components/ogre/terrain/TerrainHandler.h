@@ -460,11 +460,6 @@ protected:
 	AreaMap mAreas;
 
 	/**
-	 * @brief A map of all the terrain mods used by the handler.
-	 */
-	TerrainModMap mTerrainMods;
-
-	/**
 	 * @brief A map of all the pages used by the handler.
 	 * This mirrors the data held in mPages, but is mainly useful for quick lookup.
 	 *

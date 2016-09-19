@@ -16,20 +16,18 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef TERRAINMODTASKBASE_H_
-#define TERRAINMODTASKBASE_H_
-
-
+#ifndef TERRAINMODADDTASK_H_
+#define TERRAINMODADDTASK_H_
+#include "components/terrain/TerrainModTranslator.h"
 #include "framework/tasks/TemplateNamedTask.h"
-#include "Types.h"
-#include <string>
+#include <Mercator/TerrainMod.h>
+#include <Atlas/Message/Element.h>
 
 namespace Mercator
 {
 class Terrain;
 class TerrainMod;
 }
-
 
 namespace Ember
 {
@@ -43,24 +41,24 @@ class TerrainMod;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Common base class for terrain mod related tasks.
+ * @brief Task for adding a new terrain mod.
  */
-class TerrainModTaskBase: public Tasks::TemplateNamedTask<TerrainModTaskBase>
+class TerrainModUpdateTask: public Tasks::TemplateNamedTask<TerrainModUpdateTask>
 {
 public:
-	TerrainModTaskBase(Mercator::Terrain& terrain, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
-	virtual ~TerrainModTaskBase();
+	TerrainModUpdateTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler);
+	virtual ~TerrainModUpdateTask() = default;
 
-protected:
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+
+	virtual void executeTaskInMainThread();
+
+private:
+
 	/**
 	 * @brief The terrain.
 	 */
 	Mercator::Terrain& mTerrain;
-
-	/**
-	 * @brief The entity to which the mod belongs to.
-	 */
-	std::string mEntityId;
 
 	/**
 	 * @brief The terrain manager.
@@ -68,16 +66,16 @@ protected:
 	TerrainHandler& mHandler;
 
 	/**
-	 * @brief A shared store of terrain mods.
-	 */
-	TerrainModMap& mTerrainMods;
-
-	/**
 	 * @brief A list of updates areas. Any geometry in these areas will need to be recalculated.
 	 */
 	std::vector<WFMath::AxisBox<2>> mUpdatedAreas;
 
 	long mId;
+
+	const WFMath::Point<3> mPosition;
+	const WFMath::Quaternion& mOrientation;
+	Ember::Terrain::TerrainModTranslator mTranslator;
+
 };
 
 }
@@ -86,4 +84,4 @@ protected:
 
 }
 
-#endif /* TERRAINMODTASKBASE_H_ */
+#endif /* TERRAINMODADDTASK_H_ */
