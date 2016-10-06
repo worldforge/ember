@@ -6,7 +6,11 @@ function TerrainEditor:pickedBasePoint(userObject)
 	self.currentObject = userObject
 	local terrainPosition = userObject:getPosition()
 	
-	self.widget:getWindow("SelectedBasePointInfo"):setText("Selected basepoint: x=" .. terrainPosition:x() .. " y=" .. terrainPosition:y())
+  self.widget:getWindow("SelectedBasePointInfo"):setText("Selected basepoint: x=" .. terrainPosition:x() .. " y=" .. terrainPosition:y())
+
+  CEGUI.toSlider(self.widget:getWindow("Roughness")):setCurrentValue(userObject:getRoughness() / 5)
+  CEGUI.toSlider(self.widget:getWindow("Falloff")):setCurrentValue(userObject:getFalloff() / 5)
+	
 	
 	self.heightSpinner:setText(userObject:getHeight())
 end
@@ -116,7 +120,23 @@ function TerrainEditor:buildWidget(world)
 			self.widget:getWindow("UndoButton"):subscribeEvent("Clicked", self.UndoButton_Click, self)
 			self.widget:getWindow("RedoButton"):subscribeEvent("Clicked", self.RedoButton_Click, self)
 			
-			self.widget:getWindow("Radius"):subscribeEvent("ValueChanged", self.Radius_ValueChanged, self)
+      self.widget:getWindow("Radius"):subscribeEvent("ValueChanged", self.Radius_ValueChanged, self)
+      self.widget:getWindow("Roughness"):subscribeEvent("ValueChanged", function(args)
+        self.widget:getWindow("RoughnessText"):setText("Roughness: " .. CEGUI.toSlider(self.widget:getWindow("Roughness")):getCurrentValue() * 5)
+      end)
+      self.widget:getWindow("Roughness"):subscribeEvent("ThumbTrackEnded", function(args)
+        if self.overlay then
+          self.overlay:setRoughness(CEGUI.toSlider(self.widget:getWindow("Roughness")):getCurrentValue() * 5)
+        end
+      end)
+      self.widget:getWindow("Falloff"):subscribeEvent("ValueChanged", function(args)
+        self.widget:getWindow("FalloffText"):setText("Falloff: " .. CEGUI.toSlider(self.widget:getWindow("Falloff")):getCurrentValue() * 5)
+      end)
+      self.widget:getWindow("Falloff"):subscribeEvent("ThumbTrackEnded", function(args)
+        if self.overlay then
+          self.overlay:setFalloff(CEGUI.toSlider(self.widget:getWindow("Falloff")):getCurrentValue() * 5)
+        end
+      end)
 			
 			self.widget:getMainWindow():subscribeEvent("Hidden", self.MainWindow_Hidden, self)
 			

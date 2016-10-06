@@ -1,58 +1,72 @@
 <GUILayout version="4">
-	<Window name="BasePointEditor" type="EmberLook/FrameWindow">
-		<Property name="TitlebarEnabled" value="True" />
-		<Property name="Position" value="{{1,-200},{0,0}}" />
-		<Property name="Size" value="{{0,200},{0,200}}" />
-		<Property name="Visible" value="false" />
-		<Window name="MainInnerWindow" type="DefaultWindow">
-			<Property name="Position" value="{{0.0,2},{0,0}}" />
-			<Property name="Size" value="{{1,-4},{1,0}}" />
-			<Property name="InheritsAlpha" value="True" />
-			<Window name="SelectedBasePointInfo" type="EmberLook/StaticText">
-				<Property name="Text" value="Selected basepoint:" />
-				<Property name="Position" value="{{0,5},{0,5}}" />
-				<Property name="Size" value="{{0,200},{0,25}}" />
-				<Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
-				<Property name="BackgroundEnabled" value="False" />
-				<Property name="FrameEnabled" value="False" />
-			</Window>
-			<Window name="HeightText" type="EmberLook/StaticText">
-				<Property name="Text" value="Height:" />
-				<Property name="Position" value="{{0,5},{0,35}}" />
-				<Property name="Size" value="{{0,50},{0,25}}" />
-				<Property name="BackgroundEnabled" value="False" />
-				<Property name="FrameEnabled" value="False" />
-			</Window>
-			<Window name="Height" type="EmberLook/Editbox">
-				<Property name="Position" value="{{0,55},{0,35}}" />
-				<Property name="Size" value="{{0,50},{0,25}}" />
-				<Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
-			</Window>
-			<Window name="RedoButton" type="EmberLook/Button">
-				<Property name="Text" value="Redo" />
-				<Property name="Position" value="{{0,5},{0,65}}" />
-				<Property name="Size" value="{{0,50},{0,25}}" />
-			</Window>
-			<Window name="UndoButton" type="EmberLook/Button">
-				<Property name="Text" value="Undo" />
-				<Property name="Position" value="{{0,60},{0,65}}" />
-				<Property name="Size" value="{{0,50},{0,25}}" />
-			</Window>
-			<Window name="SendToServerButton" type="EmberLook/Button">
-				<Property name="Text" value="Send to server" />
-				<Property name="Position" value="{{0,5},{0,95}}" />
-				<Property name="Size" value="{{0,100},{0,25}}" />
-			</Window>
-			<Window name="ShowOverlayButton" type="EmberLook/Button">
-				<Property name="Text" value="Show overlay" />
-				<Property name="Position" value="{{0,5},{0,125}}" />
-				<Property name="Size" value="{{0,100},{0,25}}" />
-			</Window>
-			<Window name="Radius" type="EmberLook/Slider">
-				<Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}" />
-				<Property name="Position" value="{{0.0,10.0},{0.0,160.0}}" />
-				<Property name="TooltipText" value="Sets the radius of the selection." />
-			</Window>
-		</Window>
-	</Window>
+    <Window name="BasePointEditor" type="EmberLook/FrameWindow">
+        <Property name="TitlebarEnabled" value="True" />
+        <Property name="Position" value="{{1,-200},{0,0}}" />
+        <Property name="Size" value="{{0,200},{0,200}}" />
+        <Property name="Visible" value="false" />
+        <Window name="MainInnerWindow" type="DefaultWindow">
+            <Property name="Position" value="{{0.0,2},{0,0}}" />
+            <Property name="Size" value="{{1,-4},{1,0}}" />
+            <Property name="InheritsAlpha" value="True" />
+            <Window type="VerticalLayoutContainer">
+                <Window name="SelectedBasePointInfo" type="EmberLook/StaticText">
+                    <Property name="Text" value="Selected basepoint:" />
+                    <Property name="Size" value="{{0,200},{0,25}}" />
+                    <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
+                    <Property name="BackgroundEnabled" value="False" />
+                    <Property name="FrameEnabled" value="False" />
+                </Window>
+                <Window type="HorizontalLayoutContainer">
+                    <Window type="EmberLook/StaticText">
+                        <Property name="Text" value="Height:" />
+                        <Property name="Size" value="{{0,50},{0,25}}" />
+                        <Property name="BackgroundEnabled" value="False" />
+                        <Property name="FrameEnabled" value="False" />
+                    </Window>
+                    <Window name="Height" type="EmberLook/Editbox">
+                        <Property name="Size" value="{{0,50},{0,25}}" />
+                        <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
+                    </Window>
+                </Window>
+                <Window name="RoughnessText" type="EmberLook/StaticText">
+                    <Property name="Text" value="Roughness:" />
+                    <Property name="Size" value="{{1,0},{0,25}}" />
+                </Window>
+                <Window name="Roughness" type="EmberLook/Slider">
+                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}" />
+                    <Property name="TooltipText" value="Sets the roughness of the basepoint." />
+                </Window>
+                <Window name="FalloffText" type="EmberLook/StaticText">
+                    <Property name="Text" value="Falloff" />
+                    <Property name="Size" value="{{1,0},{0,25}}" />
+                </Window>
+                <Window name="Falloff" type="EmberLook/Slider">
+                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}" />
+                    <Property name="TooltipText" value="Sets the falloff of the basepoint." />
+                </Window>
+                <Window type="HorizontalLayoutContainer">
+                    <Window name="RedoButton" type="EmberLook/Button">
+                        <Property name="Text" value="Redo" />
+                        <Property name="Size" value="{{0,50},{0,25}}" />
+                    </Window>
+                    <Window name="UndoButton" type="EmberLook/Button">
+                        <Property name="Text" value="Undo" />
+                        <Property name="Size" value="{{0,50},{0,25}}" />
+                    </Window>
+                </Window>
+                <Window name="SendToServerButton" type="EmberLook/Button">
+                    <Property name="Text" value="Send to server" />
+                    <Property name="Size" value="{{0,100},{0,25}}" />
+                </Window>
+                <Window name="ShowOverlayButton" type="EmberLook/Button">
+                    <Property name="Text" value="Show overlay" />
+                    <Property name="Size" value="{{0,100},{0,25}}" />
+                </Window>
+                <Window name="Radius" type="EmberLook/Slider">
+                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}" />
+                    <Property name="TooltipText" value="Sets the radius of the selection." />
+                </Window>
+            </Window>
+        </Window>
+    </Window>
 </GUILayout>

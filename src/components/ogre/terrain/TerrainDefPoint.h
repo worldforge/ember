@@ -34,40 +34,23 @@ namespace Terrain
 @brief Defines the height of a special "base point" in the terrain.
 These base points are then user by Mercator::Terrain for generating the actual terrain.
 */
-class TerrainDefPoint
+struct TerrainDefPoint
 {
 	public:
-	/**
-	*       Ctor.
-	* @param x The position of the point, on the x axis, in world units.
-	* @param y The position of the point, on the y axis, in world units.
-	* @param terrainHeight The height of the point, in world units.
-	*/
-	TerrainDefPoint(float x, float y, float terrainHeight) : mPosition(x,y), mHeight(terrainHeight) {}
-
-	/**
-	 * @brief Gets the position of the definition point, in world units.
-	 * @return The position of the point.
-	 */
-	const TerrainPosition& getPosition() const;
-
-	/**
-	 * @brief Gets the height of the definition point, in world units.
-	 * @return The height of the point.
-	 */
-	float getHeight() const;
-
-	private:
 
 	/**
 	The position of the point, in world units.
 	*/
-	TerrainPosition mPosition;
+	TerrainPosition position;
 
 	/**
 	The height of the point, in world units.
 	*/
-	float mHeight;
+	float height;
+
+	float roughness;
+
+	float falloff;
 };
 
 }

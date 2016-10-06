@@ -59,26 +59,18 @@ public:
 	*/
 	sigc::signal<void> EventUpdatedPosition;
 	
+	float getRoughness() const;
+	float getFalloff() const;
+	
 
 };
 
-
-class TerrainEditAction
-{
-public:
-
-typedef std::vector<Ember::OgreView::Terrain::TerrainEditBasePointMovement> MovementStore;
-const MovementStore& getMovements() const;
-MovementStore& getMovements();
-
-
-};
 
 class TerrainEditBasePointMovement
 {
 
-float getVerticalMovement() const;
-const Ember::TerrainPosition& getPosition() const;
+float mVerticalMovement;
+Ember::TerrainIndex mPosition;
 
 };
 
@@ -167,6 +159,11 @@ class TerrainEditorOverlay
 	 */
 	bool redoAction();
 
+
+	void setRoughness(float roughness);
+
+	void setFalloff(float falloff);
+	
     /**
     * Emitted when a base point has been picked by the mouse.
     * @param The UserObject of the picked base point.

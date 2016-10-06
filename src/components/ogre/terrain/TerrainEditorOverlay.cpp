@@ -50,6 +50,7 @@
 #include <sigc++/bind.h>
 
 #include <memory>
+#include <set>
 
 namespace Ember
 {
@@ -60,7 +61,7 @@ namespace Terrain
 {
 
 BasePointUserObject::BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) :
-		mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition), mCanonicalHeight(mBasePoint.height()), mIsMoving(false)
+		mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition), mCanonicalHeight(mBasePoint.height()), mIsMoving(false), mRoughness(basePoint.roughness()), mFalloff(basePoint.falloff())
 {
 }
 
@@ -103,6 +104,26 @@ void BasePointUserObject::setHeight(Ogre::Real height)
 	getBasePointMarkerNode()->setPosition(position.x, height, position.z);
 	updateMarking();
 	EventUpdatedPosition();
+}
+
+void BasePointUserObject::setRoughness(float roughness)
+{
+	mRoughness = roughness;
+}
+
+float BasePointUserObject::getRoughness() const
+{
+	return mRoughness;
+}
+
+void BasePointUserObject::setFalloff(float falloff)
+{
+	mFalloff = falloff;
+}
+
+float BasePointUserObject::getFalloff() const
+{
+	return mFalloff;
 }
 
 void BasePointUserObject::updateMarking()
@@ -159,7 +180,6 @@ void BasePointPickListener::processDelayedPick(const MousePickerArgs& mousePicke
 	//Don't process any delayed picks.
 }
 
-
 void BasePointPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
 {
 	//We will only react on press events, but we want do silence click and pressed events if they happen with our markers too.
@@ -177,21 +197,6 @@ void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePicker
 	}
 }
 
-TerrainEditBasePointMovement::TerrainEditBasePointMovement(Ogre::Real verticalMovement, TerrainPosition position) :
-		mVerticalMovement(verticalMovement), mPosition(position)
-{
-}
-
-Ogre::Real TerrainEditBasePointMovement::getVerticalMovement() const
-{
-	return mVerticalMovement;
-}
-
-const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
-{
-	return mPosition;
-
-}
 TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint>>& basePoints) :
 		mEditor(editor), mSceneManager(sceneManager), mWorldSceneNode(worldSceneNode), mManager(manager), mCamera(camera), mOverlayNode(0), mPickListener(*this), mCurrentUserObject(0)
 {
@@ -252,7 +257,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 
 			mEntities.push_back(entity);
 
-			const Mercator::BasePoint& basepoint(J->second);
+			const Mercator::BasePoint& basepoint = J->second;
 			Ogre::SceneNode* basepointNode = mOverlayNode->createChildSceneNode();
 			TerrainPosition tPos(x * 64, y * 64);
 			Ogre::Vector3 ogrePos = Convert::toOgre<Ogre::Vector3>(tPos);
@@ -299,6 +304,22 @@ void TerrainEditorOverlay::pickedBasePoint(BasePointUserObject* userObject)
 	catchInput();
 	mCurrentUserObject->markAsMoving(true);
 	EventPickedBasePoint.emit(userObject);
+}
+
+void TerrainEditorOverlay::setRoughness(float roughness)
+{
+	if (mCurrentUserObject) {
+		mCurrentUserObject->setRoughness(roughness);
+		createAction(true);
+	}
+}
+
+void TerrainEditorOverlay::setFalloff(float falloff)
+{
+	if (mCurrentUserObject) {
+		mCurrentUserObject->setFalloff(falloff);
+		createAction(true);
+	}
 }
 
 bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
@@ -384,19 +405,33 @@ void TerrainEditorOverlay::createAction(bool alsoCommit)
 		//lets get how much it moved
 		float distance = mCurrentUserObject->getBasePointMarkerNode()->getPosition().y - mCurrentUserObject->getBasePoint().height();
 		//only register an action if it has been moved
+		TerrainEditAction action;
+		bool hadChanges = false;
 		if (!WFMath::Equal(distance, .0f)) {
-			TerrainEditBasePointMovement movement(distance, mCurrentUserObject->getPosition());
-			TerrainEditAction action;
-			action.getMovements().push_back(movement);
+			TerrainEditBasePointMovement movement = { distance, std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()) };
+			action.mMovements.push_back(movement);
 
 			for (BasePointUserObjectSet::iterator I = mSecondaryUserObjects.begin(); I != mSecondaryUserObjects.end(); ++I) {
 				distance = (*I)->getBasePointMarkerNode()->getPosition().y - (*I)->getBasePoint().height();
 				if (!WFMath::Equal(distance, .0f)) {
-					TerrainEditBasePointMovement movement(distance, (*I)->getPosition());
-					action.getMovements().push_back(movement);
+					TerrainEditBasePointMovement movement = { distance, std::make_pair((int)(*I)->getPosition().x(), (int)(*I)->getPosition().y()) };
+					action.mMovements.push_back(movement);
 				}
 			}
+			hadChanges = true;
+		}
 
+		if (mCurrentUserObject->getRoughness() != mCurrentUserObject->getBasePoint().roughness()) {
+			action.mRoughnesses.push_back(std::make_pair(std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()), mCurrentUserObject->getRoughness()));
+			hadChanges = true;
+		}
+
+		if (mCurrentUserObject->getFalloff() != mCurrentUserObject->getBasePoint().falloff()) {
+			action.mFalloffs.push_back(std::make_pair(std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()), mCurrentUserObject->getFalloff()));
+			hadChanges = true;
+		}
+
+		if (hadChanges) {
 			mActions.push_back(action);
 
 			//when a new action is created the undo list must be emptied
@@ -422,12 +457,22 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 {
 
 	try {
-		std::map<std::string, TerrainPosition> positions;
-		for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-			for (TerrainEditAction::MovementStore::const_iterator J = I->getMovements().begin(); J != I->getMovements().end(); ++J) {
-				std::stringstream key;
-				key << J->getPosition().x() << "x" << J->getPosition().y();
-				positions[key.str()] = J->getPosition();
+		std::set<TerrainIndex> updatedPositions;
+		std::set<TerrainIndex> updatedRoughnesses;
+		std::set<TerrainIndex> updatedFalloffs;
+
+		std::map<std::pair<int, int>, TerrainPosition> positions;
+		std::map<std::pair<int, int>, float> roughnesses;
+		std::map<std::pair<int, int>, float> falloffs;
+		for (const auto& action : mActions) {
+			for (const auto& movement : action.mMovements) {
+				updatedPositions.insert(movement.mPosition);
+			}
+			for (const auto& roughness : action.mRoughnesses) {
+				updatedRoughnesses.insert(roughness.first);
+			}
+			for (const auto& falloff : action.mFalloffs) {
+				updatedFalloffs.insert(falloff.first);
 			}
 		}
 
@@ -445,18 +490,51 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 
 		Atlas::Message::MapType & pointMap = (terrain["points"] = Atlas::Message::MapType()).asMap();
 
-		for (std::map<std::string, TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
+		auto createPointElementFn = [&](const Mercator::BasePoint& bp, int x, int y, const std::string& key) {
+			Atlas::Message::ListType & point = (pointMap[key] = Atlas::Message::ListType(5)).asList();
+			point[0] = (Atlas::Message::FloatType)(x);
+			point[1] = (Atlas::Message::FloatType)(y);
+			point[2] = (Atlas::Message::FloatType)(bp.height());
+			point[3] = (Atlas::Message::FloatType)(bp.roughness());
+			point[4] = (Atlas::Message::FloatType)(bp.falloff());
+		};
+
+		for (const auto& entry : updatedPositions) {
 
 			Mercator::BasePoint bp;
-			WFMath::CoordType basepointX = I->second.x();
-			WFMath::CoordType basepointY = I->second.y();
-			getBasePoint(basePoints, static_cast<int>(basepointX), static_cast<int>(basepointY), bp);
+			getBasePoint(basePoints, entry.first, entry.second, bp);
+			std::stringstream key;
+			key << entry.first << "x" << entry.second;
 
-			Atlas::Message::ListType & point = (pointMap[I->first] = Atlas::Message::ListType(3)).asList();
-			point[0] = (Atlas::Message::FloatType)(I->second.x());
-			point[1] = (Atlas::Message::FloatType)(I->second.y());
-			point[2] = (Atlas::Message::FloatType)(bp.height());
+			createPointElementFn(bp, entry.first, entry.second, key.str());
+		}
 
+		for (const auto& entry : updatedRoughnesses) {
+			Mercator::BasePoint bp;
+			getBasePoint(basePoints, entry.first, entry.second, bp);
+
+			std::stringstream key;
+			key << entry.first << "x" << entry.second;
+			auto I = pointMap.find(key.str());
+			if (I != pointMap.end()) {
+				I->second.List()[3] = entry.second;
+			} else {
+				createPointElementFn(bp, entry.first, entry.second, key.str());
+			}
+		}
+
+		for (const auto& entry : updatedFalloffs) {
+			Mercator::BasePoint bp;
+			getBasePoint(basePoints, entry.first, entry.second, bp);
+
+			std::stringstream key;
+			key << entry.first << "x" << entry.second;
+			auto I = pointMap.find(key.str());
+			if (I != pointMap.end()) {
+				I->second.List()[4] = entry.second;
+			} else {
+				createPointElementFn(bp, entry.first, entry.second, key.str());
+			}
 		}
 
 		Atlas::Message::ListType sargsList(1, sarg);
@@ -467,11 +545,8 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
 
 		//also reset the marking for the base points
-		for (std::map<std::string, TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
-			BasePointUserObject* userObject = getUserObject(I->second);
-			if (userObject) {
-				userObject->resetMarking();
-			}
+		for (const auto& entry : mBasePointUserObjects) {
+			entry.second->resetMarking();
 		}
 		//clear all actions
 		mActions.clear();
@@ -540,32 +615,67 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 	TerrainDefPointStore pointStore;
 
 	std::set<TerrainPage*> pagesToUpdate;
-	for (TerrainEditAction::MovementStore::const_iterator I = action.getMovements().begin(); I != action.getMovements().end(); ++I) {
+	std::map<std::pair<int, int>, TerrainDefPoint> newPoints;
+
+	for (const auto& movement : action.mMovements) {
 		Mercator::BasePoint bp;
-		int basepointX = static_cast<int>(I->getPosition().x());
-		int basepointY = static_cast<int>(I->getPosition().y());
+		int basepointX = movement.mPosition.first;
+		int basepointY = movement.mPosition.second;
 		getBasePoint(basePoints, basepointX, basepointY, bp);
 		//check if we should do a reverse action (which is done when an action is undone)
-		bp.height() = bp.height() + (reverse ? -I->getVerticalMovement() : I->getVerticalMovement());
-		//EmberOgre::getSingleton().getTerrainManager()->getTerrain().setBasePoint(basepointX, basepointY, bp);
+		bp.height() = bp.height() + (reverse ? -movement.mVerticalMovement : movement.mVerticalMovement);
 
-		TerrainDefPoint defPoint(basepointX, basepointY, bp.height());
-		pointStore.push_back(defPoint);
+		TerrainDefPoint defPoint;
+		defPoint.position = WFMath::Point<2>(basepointX, basepointY);
+		defPoint.height = bp.height();
+		defPoint.roughness = bp.roughness();
+		defPoint.falloff = bp.falloff();
 
-		// 		Ogre::Vector3 markerPos = Convert::toOgre(I->getPosition());
-		//
-		// 		markerPos *= 64;
-		// 		Ogre::PagingLandScapeTile* tile;
-		// 		for (int i = -1; i < 2; i += 2) {
-		// 			for (int j = -1; j < 2; j += 2) {
-		// 				tile = sceneMgr->getPageManager()->getTile(markerPos.x + i, markerPos.z + j, false);
-		// 				if (tile) {
-		// 					tilesToUpdate.insert(tile);
-		// 				}
-		// 			}
-		// 		}
+		newPoints[std::make_pair(basepointX, basepointY)] = defPoint;
+	}
 
-		TerrainPosition worldPosition(I->getPosition().x() * 64, I->getPosition().y() * 64);
+	for (const auto& roughness : action.mRoughnesses) {
+		Mercator::BasePoint bp;
+		int basepointX = std::get<0>(roughness).first;
+		int basepointY = std::get<0>(roughness).second;
+		getBasePoint(basePoints, basepointX, basepointY, bp);
+
+		auto I = newPoints.find(std::make_pair(basepointX, basepointY));
+		if (I != newPoints.end()) {
+			I->second.roughness = std::get<1>(roughness);
+		} else {
+			TerrainDefPoint defPoint;
+			defPoint.position = WFMath::Point<2>(basepointX, basepointY);
+			defPoint.height = bp.height();
+			defPoint.roughness = std::get<1>(roughness);
+			defPoint.falloff = bp.falloff();
+			newPoints[std::make_pair(basepointX, basepointY)] = defPoint;
+		}
+	}
+
+	for (const auto& falloff : action.mFalloffs) {
+		Mercator::BasePoint bp;
+		int basepointX = std::get<0>(falloff).first;
+		int basepointY = std::get<0>(falloff).second;
+		getBasePoint(basePoints, basepointX, basepointY, bp);
+
+		auto I = newPoints.find(std::make_pair(basepointX, basepointY));
+		if (I != newPoints.end()) {
+			I->second.falloff = std::get<1>(falloff);
+		} else {
+			TerrainDefPoint defPoint;
+			defPoint.position = WFMath::Point<2>(basepointX, basepointY);
+			defPoint.height = bp.height();
+			defPoint.roughness = bp.roughness();
+			defPoint.falloff = std::get<1>(falloff);
+			newPoints[std::make_pair(basepointX, basepointY)] = defPoint;
+		}
+	}
+
+	for (const auto& entry : newPoints) {
+		pointStore.push_back(entry.second);
+
+		TerrainPosition worldPosition(entry.first.first * 64, entry.first.second * 64);
 		TerrainPage* page;
 		//make sure we sample pages from all four points around the base point, in case the base point is on a page border
 		for (int i = -65; i < 66; i += 64) {
@@ -579,11 +689,15 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 		}
 
 		//make sure the marker node is updated
-		BasePointUserObject* userObject = getUserObject(I->getPosition());
+		BasePointUserObject* userObject = getUserObject(WFMath::Point<2>(entry.first.first, entry.first.second));
 		if (userObject) {
+			Mercator::BasePoint bp;
+			bp.height() = entry.second.height;
+			bp.roughness() = entry.second.roughness;
+			bp.falloff() = entry.second.falloff;
+
 			userObject->setBasePoint(bp);
 		}
-
 	}
 
 	mManager.getHandler().updateTerrain(pointStore);

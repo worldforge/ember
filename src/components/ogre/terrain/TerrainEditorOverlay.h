@@ -105,6 +105,14 @@ public:
 	 */
 	void setHeight(Ogre::Real height);
 
+	void setRoughness(float roughness);
+
+	float getRoughness() const;
+
+	void setFalloff(float falloff);
+
+	float getFalloff() const;
+
 	/**
 	 * @brief Gets the scene node for the marker.
 	 * @return The scene node for the marker.
@@ -170,6 +178,11 @@ private:
 	 * @brief True if this marker is currently being moved.
 	 */
 	bool mIsMoving;
+
+	float mRoughness;
+
+	float mFalloff;
+
 };
 
 // class TerrainEditorInputAdapter : public IInputAdapter
@@ -193,70 +206,30 @@ private:
 /**
  A single editing action. This can affect one or many base points, and can be reversed (uncommitted).
  */
-class TerrainEditAction
+struct TerrainEditAction
 {
 public:
 
 	typedef std::vector<TerrainEditBasePointMovement> MovementStore;
 
 	/**
-	 * Gets all movements contained by this action.
-	 * @return
-	 */
-	const MovementStore& getMovements() const;
-
-	/**
-	 * Gets all movements contained by this action.
-	 * @return
-	 */
-	MovementStore& getMovements();
-
-private:
-
-	/**
 	 *Internal store of all movements contained by this action.
 	 */
-	MovementStore mMovements;
+	std::vector<TerrainEditBasePointMovement> mMovements;
+
+	std::vector<std::pair<TerrainIndex, float>> mRoughnesses;
+	std::vector<std::pair<TerrainIndex, float>> mFalloffs;
 
 };
-
-inline const TerrainEditAction::MovementStore& TerrainEditAction::getMovements() const
-{
-	return mMovements;
-}
-
-inline TerrainEditAction::MovementStore& TerrainEditAction::getMovements()
-{
-	return mMovements;
-}
 
 /**
  *A single height movement of a base point.
  */
-class TerrainEditBasePointMovement
+struct TerrainEditBasePointMovement
 {
 public:
-
-	/**
-	 *Default ctor.
-	 @param the vertical movement in meters
-	 @param the affected position
-	 */
-	TerrainEditBasePointMovement(Ogre::Real verticalMovement, TerrainPosition position);
-
-	/**
-	 * Gets the vertical movement in meters.
-	 */
-	Ogre::Real getVerticalMovement() const;
-
-	/**
-	 * Gets the affected position.
-	 */
-	const TerrainPosition& getPosition() const;
-
-private:
 	Ogre::Real mVerticalMovement;
-	TerrainPosition mPosition;
+	TerrainIndex mPosition;
 };
 
 class TerrainEditorOverlay: public IInputAdapter, public virtual sigc::trackable
@@ -322,6 +295,10 @@ public:
 	 * @brief Gets whether the overlay is visible.
 	 */
 	bool getVisible() const;
+
+	void setRoughness(float roughness);
+
+	void setFalloff(float falloff);
 
 	/**
 	 * Emitted when a base point has been picked by the mouse.

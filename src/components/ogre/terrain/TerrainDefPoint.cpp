@@ -18,25 +18,3 @@
 
 #include "TerrainDefPoint.h"
 
-
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
-
-
-const TerrainPosition& TerrainDefPoint::getPosition() const
-{
-	return mPosition;
-}
-
-float TerrainDefPoint::getHeight() const
-{
-	return mHeight;
-}
-
-}
-}
-}

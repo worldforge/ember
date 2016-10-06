@@ -26,6 +26,8 @@
 #include "components/ogre/Convert.h"
 #include "framework/LoggingInstance.h"
 
+#include <Mercator/BasePoint.h>
+
 #include <Atlas/Message/Element.h>
 
 namespace Ember
@@ -35,7 +37,6 @@ namespace OgreView
 
 namespace Terrain
 {
-
 
 TerrainParser::TerrainParser()
 {
@@ -53,6 +54,30 @@ TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::Element& 
 	}
 
 	Terrain::TerrainDefPointStore pointStore;
+	auto parsePointFn = [&](const Atlas::Message::ListType & point) {
+		if (point.size() < 3) {
+			S_LOG_INFO("Point with less than 3 nums.");
+			return;
+		}
+
+		Terrain::TerrainDefPoint defPoint;
+
+		defPoint.position = WFMath::Point<2>(static_cast<int>(point[0].asNum() + offset.x()), static_cast<int>(point[1].asNum() + offset.y()));
+		defPoint.height = static_cast<float>(point[2].asNum() + offset.z());
+		if (point.size() > 3) {
+			defPoint.roughness = point[3].asFloat();
+		} else {
+			defPoint.roughness = Mercator::BasePoint::ROUGHNESS;
+		}
+		if (point.size() > 4) {
+			defPoint.falloff = point[4].asFloat();
+		} else {
+			defPoint.falloff = Mercator::BasePoint::FALLOFF;
+		}
+		pointStore.push_back(defPoint);
+
+	};
+
 	if (I->second.isList()) {
 		// Legacy support for old list format.
 		const Atlas::Message::ListType& plist = I->second.asList();
@@ -63,13 +88,7 @@ TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::Element& 
 				continue;
 			}
 			const Atlas::Message::ListType & point = J->asList();
-			if (point.size() != 3) {
-				S_LOG_INFO("Point without 3 nums.");
-				continue;
-			}
-
-			Terrain::TerrainDefPoint defPoint(static_cast<int> (point[0].asNum() + offset.x()), static_cast<int> (point[1].asNum() + offset.y()), static_cast<float> (point[3].asNum() + offset.z()));
-			pointStore.push_back(defPoint);
+			parsePointFn(point);
 		}
 	} else if (I->second.isMap()) {
 		const Atlas::Message::MapType& plist = I->second.asMap();
@@ -80,15 +99,7 @@ TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::Element& 
 				continue;
 			}
 			const Atlas::Message::ListType & point = J->second.asList();
-			if (point.size() != 3) {
-				S_LOG_INFO("Point without 3 nums.");
-				continue;
-			}
-			int x = static_cast<int> (point[0].asNum());
-			int y = static_cast<int> (point[1].asNum());
-			float z = point[2].asNum();
-			Terrain::TerrainDefPoint defPoint(x  + offset.x(), y + offset.y(), z + offset.z());
-			pointStore.push_back(defPoint);
+			parsePointFn(point);
 		}
 	} else {
 		S_LOG_FAILURE("Terrain is the wrong type");

@@ -52,18 +52,22 @@ void TerrainUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContex
 	int terrainRes = mTerrain.getResolution();
 	for (TerrainDefPointStore::const_iterator I = mTerrainPoints.begin(); I != mTerrainPoints.end(); ++I) {
 		Mercator::BasePoint bp;
-		if (mTerrain.getBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp) && (WFMath::Equal(I->getHeight(), bp.height()))) {
-			S_LOG_VERBOSE("Point [" << I->getPosition().x() << "," << I->getPosition().y() << "] unchanged");
+		const TerrainPosition& pos = I->position;
+		if (mTerrain.getBasePoint(static_cast<int> (pos.x()), static_cast<int> (pos.y()), bp) && (WFMath::Equal(I->height, bp.height()))
+				&& (WFMath::Equal(I->roughness, bp.roughness()) && (WFMath::Equal(I->falloff, bp.falloff())))) {
+			S_LOG_VERBOSE("Point [" << pos.x() << "," << pos.y() << "] unchanged");
 			continue;
 		} else {
-			S_LOG_VERBOSE("Setting base point [" << I->getPosition().x() << "," << I->getPosition().y() << "] to height " << I->getHeight());
+			S_LOG_VERBOSE("Setting base point [" << pos.x() << "," << pos.y() << "] to height " << I->height);
 		}
-		bp.height() = I->getHeight();
+		bp.height() = I->height;
+		bp.roughness() = I->roughness;
+		bp.falloff() = I->falloff;
 
 		// FIXME Sort out roughness and falloff, and generally verify this code is the same as that in Terrain layer
-		mTerrain.setBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp);
-		mUpdatedBasePoints.push_back(UpdateBasePointStore::value_type(I->getPosition(), bp));
-		mUpdatedPositions.push_back(TerrainPosition(I->getPosition().x() * terrainRes, I->getPosition().y() * terrainRes));
+		mTerrain.setBasePoint(static_cast<int> (pos.x()), static_cast<int> (pos.y()), bp);
+		mUpdatedBasePoints.push_back(UpdateBasePointStore::value_type(pos, bp));
+		mUpdatedPositions.push_back(TerrainPosition(pos.x() * terrainRes, pos.y() * terrainRes));
 	}
 	mSegmentManager.syncWithTerrain();
 }
