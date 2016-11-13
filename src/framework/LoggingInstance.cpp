@@ -32,34 +32,39 @@
 namespace Ember {
 
 LoggingInstance::LoggingInstance(const std::string & file, const int line, const Log::MessageImportance importance)
-: mFile(file), mLine(line), mImportance(importance), mMessage("")
+: mFile(file), mLine(line), mImportance(importance)
 {
+	mMessage.reserve(256);
 }
 
 LoggingInstance::LoggingInstance(const Log::MessageImportance importance)
-: mFile(""), mLine(-1), mImportance(importance), mMessage("")
+: mFile(""), mLine(-1), mImportance(importance)
 {
+	mMessage.reserve(256);
 }
 
 LoggingInstance::LoggingInstance(const std::string & file, const Log::MessageImportance importance)
-: mFile(file), mLine(-1), mImportance(importance), mMessage("")
+: mFile(file), mLine(-1), mImportance(importance)
 {
+	mMessage.reserve(256);
 }
 
 LoggingInstance::LoggingInstance(const std::string & file, const int line)
-: mFile(file), mLine(line), mImportance(Log::INFO), mMessage("")
+: mFile(file), mLine(line), mImportance(Log::INFO)
 {
+	mMessage.reserve(256);
 }
 
 LoggingInstance::LoggingInstance(const std::string & file)
-: mFile(file), mLine(-1), mImportance(Log::INFO), mMessage("")
+: mFile(file), mLine(-1), mImportance(Log::INFO)
 {
+	mMessage.reserve(256);
 }
 
 LoggingInstance::~LoggingInstance()
 {
 	//If we haven't sent to the service yet, do it now.
-	if (mMessage != "") {
+	if (!mMessage.empty()) {
 		Log::sendMessage (mMessage, mFile, mLine, mImportance);
 	}
 }
@@ -78,18 +83,14 @@ LoggingInstance& LoggingInstance::operator<< (const char* stringToAdd)
 
 LoggingInstance & LoggingInstance::operator<< (const unsigned int uintToAdd)
 {
-	std::stringstream ss;
-	ss << uintToAdd;
-	mMessage += ss.str();
+	mMessage += std::to_string(uintToAdd);
 
 	return *this;
 }
 
 LoggingInstance & LoggingInstance::operator<< (const int intToAdd)
 {
-	std::stringstream ss;
-	ss << intToAdd;
-	mMessage += ss.str();
+	mMessage += std::to_string(intToAdd);
 
 	return *this;
 }
@@ -104,42 +105,32 @@ LoggingInstance & LoggingInstance::operator<< (const Log::HexNumber & intHexToAd
 
 LoggingInstance & LoggingInstance::operator<< (const double doubleToAdd)
 {
-	std::stringstream ss;
-	ss << doubleToAdd;
-	mMessage += ss.str();
+	mMessage += std::to_string(doubleToAdd);
 	return *this;
 }
 
 LoggingInstance & LoggingInstance::operator<< (const long longToAdd)
 {
-	std::stringstream ss;
-	ss << longToAdd;
-	mMessage += ss.str();
+	mMessage += std::to_string(longToAdd);
 
 	return *this;
 }
 
 LoggingInstance & LoggingInstance::operator<< (const unsigned long ulongToAdd)
 {
-	std::stringstream ss;
-	ss << ulongToAdd;
-	mMessage += ss.str();
+	mMessage += std::to_string(ulongToAdd);
 	return *this;
 }
 
 LoggingInstance& LoggingInstance::operator<< (const long long longLongToAdd)
 {
-	std::stringstream ss;
-	ss << longLongToAdd;
-	mMessage += ss.str();
+	mMessage += std::to_string(longLongToAdd);
 	return *this;
 }
 
 LoggingInstance& LoggingInstance::operator<< (const unsigned long long ulongLongToAdd)
 {
-	std::stringstream ss;
-	ss << ulongLongToAdd;
-	mMessage += ss.str();
+	mMessage += std::to_string(ulongLongToAdd);
 	return *this;
 }
 
