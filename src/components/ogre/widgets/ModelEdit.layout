@@ -155,11 +155,6 @@ Press shift to switch between rotation and translation.</Property>
                             <Property name="Area" value="{{0.022899,0.0},{0.906906,0.0},{0.114779,0.0},{0.986423,0.0}}" />
                             <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
                         </Window>
-                        <Window name="ExportAsAtlasTypeButton" type="EmberLook/Button">
-                            <Property name="Text" value="Export Atlas" />
-                            <Property name="Size" value="{{0.0,75.0},{0.0,25.0}}" />
-                            <Property name="Position" value="{{0.0,100.0},{1.0,-30.0}}" />
-                        </Window>
                         <Window name="ModelInfoRightPane" type="DefaultWindow">
                             <Property name="Size" value="{{0.0,250.0},{1.0,-35}}" />
                             <Property name="Position" value="{{1.0,-250.0},{0,5}}" />
@@ -518,6 +513,43 @@ Press shift to switch between rotation and translation.'</Property>
                                 </Window>
                             </Window>
 						</Window>
+                    </Window>
+                    <Window type="DefaultWindow">
+                        <Property name="Size" value="{{1,0},{1,0}}" />
+                        <Property name="Text" value="Export type" />
+                        <Window type="DefaultWindow">
+                            <Property name="Size" value="{{1.0,-10},{1.0,-10}}" />
+                            <Property name="Position" value="{{0,5},{0,5}}" />
+                            <Window type="VerticalLayoutContainer">
+                                <Property name="Size" value="{{1,0},{1,-30}}" />
+                                <Window type="HorizontalLayoutContainer">
+                                    <Property name="Size" value="{{1,0},{0,30}}" />
+                                    <Window type="EmberLook/StaticText">
+                                        <Property name="Size" value="{{0,150.0},{0,30.0}}" />
+                                        <Property name="Text" value="Type name" />
+                                    </Window>
+                                    <Window name="ExportTypeName" type="EmberLook/Editbox">
+                                        <Property name="Size" value="{{0,100.0},{0,25.0}}" />
+                                    </Window>                            
+                                </Window>
+                                <Window type="HorizontalLayoutContainer">
+                                    <Property name="Size" value="{{1,0},{0,30}}" />
+                                    <Window type="EmberLook/StaticText">
+                                        <Property name="Size" value="{{0,150.0},{0,30.0}}" />
+                                        <Property name="Text" value="Collision shape" />
+                                    </Window>
+                                    <Window name="CollisionType" type="EmberLook/Combobox">
+                                        <Property name="Size" value="{{0,100.0},{0,200.0}}" />
+                                        <Property name="ReadOnly" value="true" />
+                                    </Window>                            
+                                </Window>
+                            </Window>
+                            <Window name="ExportAsAtlasTypeButton" type="EmberLook/Button">
+                                <Property name="Text" value="Export Atlas" />
+                                <Property name="Size" value="{{0.0,75.0},{0.0,25.0}}" />
+                                <Property name="Position" value="{{0.0,0.0},{1.0,-25.0}}" />
+                            </Window>
+                        </Window>
                     </Window>
                 </Window>
                 <Window name="PartInfo" type="DefaultWindow">

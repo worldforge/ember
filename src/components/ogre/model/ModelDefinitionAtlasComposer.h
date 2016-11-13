@@ -25,6 +25,9 @@
 
 #include <Atlas/Message/Element.h>
 
+#include "../OgreIncludes.h"
+#include <wfmath/axisbox.h>
+
 namespace Ember {
 namespace OgreView {
 
@@ -50,9 +53,10 @@ public:
 	 * @param typeName The name of the type which should be generated.
 	 * @param parentTypeName The name of the parent of the new type (for example "thing" or "mobile").
 	 * @param scale Any scale to apply to the bounding box which is generated.
+	 * @param collisionType The type of collision shape to use.
 	 * @return Atlas data describing a type.
 	 */
-    Atlas::Message::MapType compose(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
+    Atlas::Message::MapType compose(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
 
     /**
      * @brief Composes Atlas data from a supplied model and exports it to a stream.
@@ -62,8 +66,9 @@ public:
 	 * @param typeName The name of the type which should be generated.
 	 * @param parentTypeName The name of the parent of the new type (for example "thing" or "mobile").
 	 * @param scale Any scale to apply to the bounding box which is generated.
+	 * @param collisionType The type of collision shape to use.
      */
-    void composeToStream(std::iostream& outstream, Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
+    void composeToStream(std::iostream& outstream, Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
 
     /**
      * @brief Composes Atlas data from a supplied model and exports it to a file.
@@ -72,9 +77,16 @@ public:
 	 * @param typeName The name of the type which should be generated.
 	 * @param parentTypeName The name of the parent of the new type (for example "thing" or "mobile").
 	 * @param scale Any scale to apply to the bounding box which is generated.
+	 * @param collisionType The type of collision shape to use.
      * @return The path of the file to which the Atlas data was exported. An empty string if the exporting failed.
      */
-    std::string composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
+    std::string composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
+
+private:
+
+    Atlas::Message::Element composeGeometry(Model* model, const std::string& collisionType, const WFMath::AxisBox<3>& bbox) const;
+    void copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData, const WFMath::AxisBox<3>& bbox) const;
+
 
 };
 

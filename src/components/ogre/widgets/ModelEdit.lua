@@ -189,6 +189,8 @@ function ModelEdit:updateModelInfo()
 	end	
 	
 	self:updatePosesList()
+	
+	self.exportTypeName:setText(self.definition:getName())
 end
 
 function ModelEdit:updatePosesList()
@@ -1219,10 +1221,15 @@ function ModelEdit:buildWidget()
 		self.widget:getWindow("ExportAsAtlasTypeButton"):subscribeEvent("Clicked", function(args)
 			local model = self.renderer:getModel()
 			if model then
-				local composer = Ember.OgreView.Model.ModelDefinitionAtlasComposer:new_local()
-				local exportPath = composer:composeToFile(model, self.definition:getName(), "thing", self.definition:getScale())
-				if exportPath ~= "" then
-					console:pushMessage("Atlas exported to " .. exportPath, "info")
+        local collItem = self.collisionTypeSelector:getSelectedItem()
+        if collItem then
+			    local collType = collItem:getText()
+			  
+  				local composer = Ember.OgreView.Model.ModelDefinitionAtlasComposer:new_local()
+  				local exportPath = composer:composeToFile(model, self.exportTypeName:getText(), "thing", self.definition:getScale(), collType)
+  				if exportPath ~= "" then
+  					console:pushMessage("Atlas exported to " .. exportPath, "info")
+          end
 				end	
 			end	
 			return true
@@ -1298,12 +1305,14 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
+		self.exportTypeName = CEGUI.toEditbox(self.widget:getWindow("ExportTypeName"))
 
 		
 		self:fillMaterialList()
 		self:fillModellist()
 		self:fillMeshList()
 		self:fillScaleTypesList()
+		self:fillCollisionTypesList()
 		--def:setValid(true)	
 		--model = self.renderer:getModel()
 		--def = model:getDefinition():get()
@@ -1316,6 +1325,16 @@ function ModelEdit:buildWidget()
 	self.widget:loadMainSheet("ModelEdit.layout", "ModelEdit")
 	self.widget:registerConsoleVisibilityToggleCommand("modelEdit")
 
+end
+
+function ModelEdit:fillCollisionTypesList()
+    self.collisionTypeSelector = CEGUI.toCombobox(self.widget:getWindow("CollisionType"))
+
+    local types = {'mesh', 'box', 'sphere', 'capsule-z', 'capsule-x', 'capsule-y', 'cylinder-z', 'cylinder-x', 'cylinder-y'}
+    for i, name in ipairs(types) do
+      local item = Ember.OgreView.Gui.ColouredListItem:new(name, i)
+      self.collisionTypeSelector:addItem(item)
+    end
 end
 
 function ModelEdit:fillScaleTypesList()

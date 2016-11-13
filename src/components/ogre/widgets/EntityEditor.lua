@@ -811,7 +811,14 @@ EntityEditor.prototypes =
 			end
 			return false
 		end
-	}
+	},
+	--Ignore geometry for now, as it's often too large.
+	--TODO: implement geometry display
+	geometry = {
+    nodelete = true,
+    --    adapter = EntityEditor.adapters.static
+    adapter = nil
+  },
 }
 EntityEditor.defaultPrototypes =
 {
