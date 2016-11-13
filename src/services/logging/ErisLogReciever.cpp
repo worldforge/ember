@@ -33,6 +33,7 @@ ErisLogReciever::ErisLogReciever()
 	//Hook up to Eris's logging Service
 	Eris::Logged.connect(sigc::mem_fun(*this, &ErisLogReciever::Eris_Logged));
 
+	Eris::setLogLevel(Eris::LOG_DEBUG);
 }
 
 
