@@ -1,0 +1,3 @@
+echo "I will now use rsync to install the development media from amber.worldforge.org into @CMAKE_INSTALL_DATADIR@/ember/media."
+mkdir -p @CMAKE_INSTALL_DATADIR@/ember/media/
+rsync -rtvzu amber.worldforge.org::media-dev @CMAKE_INSTALL_DATADIR@/ember/media/

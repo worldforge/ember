@@ -1,4 +1,4 @@
-$#include "components/lua/Connector.h"
+$#include "Connector.h"
 
 namespace Ember {
 namespace Lua {

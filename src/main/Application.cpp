@@ -52,7 +52,7 @@
 
 #include "ConfigBoundLogObserver.h"
 
-#include "components/lua/tolua++.h"
+#include "components/lua/embertolua++.h"
 
 TOLUA_API int tolua_Ogre_open(lua_State* tolua_S);
 TOLUA_API int tolua_Eris_open(lua_State* tolua_S);

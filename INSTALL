@@ -46,10 +46,9 @@ Optional libraries:
   Version: >= 1.8.0 
   http://sf.net/projects/cppunit
 
-To install on Linux/Unix system, execute the following (usual) commands:
+CMake is used for building.
 
-./autogen.sh
 mkdir -p `arch` && cd `arch`
-../configure 
+../cmake
 make
 make install
