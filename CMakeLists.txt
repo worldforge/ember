@@ -208,14 +208,14 @@ install(DIRECTORY data DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember)
 # man files
 install(FILES man/man1/ember.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
-install(DIRECTORY ${PROJECT_BINARY_DIR}/media-dev/ DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/media)
-
 set(MEDIA_DEV_DIR ${PROJECT_BINARY_DIR}/media-dev)
 add_custom_command(
         OUTPUT ${MEDIA_DEV_DIR}
         COMMAND ${CMAKE_COMMAND} -E echo_append "I will now use rsync to install the development media from amber.worldforge.org into ${MEDIA_DEV_DIR}."
         COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_DEV_DIR}
         COMMAND rsync -rtvzu amber.worldforge.org::media-dev ${MEDIA_DEV_DIR}
+        COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_DEV_DIR} to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_DEV_DIR} ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
         COMMAND ${CMAKE_COMMAND} -E echo "Done."
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
 )
@@ -228,6 +228,8 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E echo_append "I will now use rsync to install the release media from amber.worldforge.org into ${MEDIA_RELEASE_DIR}."
         COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_RELEASE_DIR}
         COMMAND rsync -rtvzu amber.worldforge.org::media-${VERSION} ${MEDIA_RELEASE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_RELEASE_DIR} to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_RELEASE_DIR} ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
         COMMAND ${CMAKE_COMMAND} -E echo "Done."
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
 )
