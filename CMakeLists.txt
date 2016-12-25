@@ -38,7 +38,7 @@ macro(wf_generate_lua_bindings PKG_PATH)
     add_custom_command(
             OUTPUT ${PACKAGE_NAME}.cxx
             COMMAND ${CMAKE_COMMAND} -E echo_append "Building Lua bindings for ${PACKAGE_NAME}.cxx"
-            COMMAND ${PROJECT_SOURCE_DIR}/scripts/update_lua_bindings.sh ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx
+            COMMAND TOLUAXX=${TOLUA++_APP} ${PROJECT_SOURCE_DIR}/scripts/update_lua_bindings.sh ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx
             COMMAND ${CMAKE_COMMAND} -E echo "Done."
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR}
             DEPENDS ${LUA_FILES}
