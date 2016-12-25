@@ -141,8 +141,8 @@ namespace Ember
 #endif
 
 #if !defined(__APPLE__) && !defined(__WIN32__)
-		mSharedDataDir = std::string ( EMBER_DATADIR ) + "/ember/";
-		mEtcDir = std::string ( EMBER_SYSCONFDIR ) + "/ember/";
+		mSharedDataDir = EMBER_DATADIR "/ember/";
+		mEtcDir = EMBER_SYSCONFDIR "/ember/";
 #endif
 
 	}
@@ -297,8 +297,9 @@ namespace Ember
 
 	bool ConfigService::loadSavedConfig ( const std::string& filename, const StringConfigMap& commandLineSettings )
 	{
-		S_LOG_INFO ( "Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << "." );
-		bool success = mGlobalConfig->readFromFile ( getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL );
+		std::string path = getSharedConfigDirectory() + filename;
+		S_LOG_INFO ( "Loading shared config file from " << path << "." );
+		bool success = mGlobalConfig->readFromFile (path, varconf::GLOBAL );
 		std::string userConfigPath ( getHomeDirectory(BaseDirType_CONFIG) + filename );
 		std::ifstream file ( userConfigPath.c_str() );
 		if ( !file.fail() )
