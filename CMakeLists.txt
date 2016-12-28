@@ -79,6 +79,13 @@ find_package(OGRE 1.8 REQUIRED)
 link_directories(${OGRE_LIBRARY_DIRS})
 link_libraries(${OGRE_LIBRARIES})
 include_directories(${OGRE_INCLUDE_DIRS})
+if (APPLE)
+	if (NOT OGRE_RenderSystem_GL_FOUND)
+		MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL plugin. Make sure you've built Ogre with RenderSystem GL support.")
+	endif(NOT OGRE_RenderSystem_GL_FOUND)
+	# Required to find glew.h header. Backtrace: OgreSetup.cpp ==> OgreGLContext.h ==> OgreGLPrerequisites.h ==> <GL/glew.h>
+	include_directories("${OGRE_RenderSystem_GL_INCLUDE_DIRS}")
+endif (APPLE)
 
 if (NOT OGRE_Terrain_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
