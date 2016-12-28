@@ -30,7 +30,8 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
-#include "framework/Time.h"
+#include "framework/LoggingInstance.h"
+#include "framework/TimeHelper.h"
 #include "framework/MainLoopController.h"
 
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
@@ -177,16 +178,16 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 		input.setInputMode(Input::IM_GUI);
 
-		long long lastTime = Time::currentTimeMillis();
+		long long lastTime = TimeHelper::currentTimeMillis();
 		while (mContinueInLoop) {
 			input.processInput();
 			if (input.getMainLoopController()->shouldQuit()) {
 				break;
 			}
-			float timeElapsed = (Time::currentTimeMillis() - lastTime) / 1000.0f;
+			float timeElapsed = (TimeHelper::currentTimeMillis() - lastTime) / 1000.0f;
 			CEGUI::System::getSingleton().injectTimePulse(timeElapsed);
 			CEGUI::System::getSingleton().getDefaultGUIContext().injectTimePulse(timeElapsed);
-			lastTime = Time::currentTimeMillis();
+			lastTime = TimeHelper::currentTimeMillis();
 			Ogre::Root::getSingleton().renderOneFrame();
 			// We'll use a smooth 60 fps to provide a good impression
 			std::this_thread::sleep_for(std::chrono::milliseconds(16));

@@ -27,6 +27,7 @@
 #include "ModelBackgroundLoader.h"
 #include "Model.h"
 #include "framework/TimeFrame.h"
+#include "framework/LoggingInstance.h"
 
 #include <OgreSubMesh.h>
 #include <OgreMaterialManager.h>

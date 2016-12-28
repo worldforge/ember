@@ -20,7 +20,7 @@
 #include "config.h"
 #endif
 
-#include "Time.h"
+#include "TimeHelper.h"
 
 #include <boost/date_time/c_time.hpp>
 
@@ -32,7 +32,7 @@
 namespace Ember
 {
 
-void Time::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
+void TimeHelper::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
 	// latest version of boost::posix_time seems to be broken on win32. Fallback to boost::date_time::c_time
 	tm storage;
@@ -47,7 +47,7 @@ void Time::getLocalTime(int& year, int& month, int& day, int& hour, int& minute,
 	year = now->tm_year + 1900;
 }
 
-std::string Time::getLocalTimeStr()
+std::string TimeHelper::getLocalTimeStr()
 {
 	int year, month, day, hour, minute, second;
 	std::stringstream s;
@@ -72,7 +72,7 @@ std::string Time::getLocalTimeStr()
 
 }
 
-long long Time::currentTimeMillis()
+long long TimeHelper::currentTimeMillis()
 {
 	// Determine miliseconds since epoch (1970.01.01) with C++11 chrono.
 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();

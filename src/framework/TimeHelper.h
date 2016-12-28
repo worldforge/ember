@@ -28,7 +28,7 @@ namespace Ember
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Provides basic time services.
  */
-class Time
+class TimeHelper
 {
 public:
 	/**

@@ -50,6 +50,8 @@
 #include "services/scripting/ScriptingService.h"
 #include "services/server/ServerServiceSignals.h"
 
+#include "framework/IScriptingProvider.h"
+
 #include <Eris/View.h>
 
 #include <OgreRenderWindow.h>
