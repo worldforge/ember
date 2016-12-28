@@ -107,6 +107,32 @@ include_directories(${OGRE_Overlay_INCLUDE_DIRS})
 
 add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
 
+# Lua should be before CEGUI_LuaScriptModule
+find_package(Lua 5.1 EXACT)
+if (APPLE AND NOT LUA_FOUND) # Try macports version if frameworks are not available
+	pkg_check_modules(LUA lua-5.1)
+endif (APPLE AND NOT LUA_FOUND)
+if (NOT LUA_FOUND)
+	MESSAGE(FATAL_ERROR "Could not find Lua 5.1.")
+endif (NOT LUA_FOUND)
+link_directories(${LUA_LIBRARY_DIRS})
+link_libraries(${LUA_LIBRARIES})
+include_directories(${LUA_INCLUDE_DIR})
+
+pkg_check_modules(TOLUAPP tolua++)
+if (APPLE AND NOT TOLUAPP_FOUND)
+    #On OSX we'll just use the tolua++ which Hammer provides
+	set(TOLUAPP_LIBRARIES "-ltolua++")
+else (APPLE AND NOT TOLUAPP_FOUND)
+    #On other archs we'll try to find Tolua++ through the CMake macro
+    if (NOT TOLUAPP_FOUND)
+        find_package(Tolua++ REQUIRED)
+    endif (NOT TOLUAPP_FOUND)
+endif (APPLE AND NOT TOLUAPP_FOUND)
+link_directories(${TOLUAPP_LIBRARY_DIRS})
+link_libraries(${TOLUAPP_LIBRARIES})
+include_directories(${TOLUAPP_INCLUDE_DIR})
+
 find_package(CEGUI 0.8.4 REQUIRED)
 link_directories(${CEGUI_LIBRARY_DIRS})
 link_libraries(${CEGUI_LIBRARIES})
@@ -156,16 +182,6 @@ find_package(OpenGL)
 link_directories(${OPENGL_LIBRARY_DIRS})
 link_libraries(${OPENGL_LIBRARIES})
 include_directories(${OPENGL_INCLUDE_DIR})
-
-find_package(Tolua++ REQUIRED)
-link_directories(${TOLUA++_LIBRARY_DIRS})
-link_libraries(${TOLUA++_LIBRARY})
-include_directories(${TOLUA++_INCLUDE_DIR})
-
-find_package(Lua 5.1 EXACT REQUIRED)
-link_directories(${LUA_LIBRARY_DIRS})
-link_libraries(${LUA_LIBRARIES})
-include_directories(${LUA_INCLUDE_DIR})
 
 pkg_check_modules(CPPUNIT cppunit>=1.8.0)
 
