@@ -140,7 +140,7 @@ link_libraries(${OPENAL_LIBRARY})
 link_libraries(${OPENAL_LIBRARIES})
 include_directories(${OPENAL_INCLUDE_DIR})
 
-pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.2.0)
+pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.0.0)
 link_directories(${XDG_LIBRARY_DIRS})
 link_libraries(${XDG_LIBRARIES})
 include_directories(${XDG_INCLUDE_DIRS})
