@@ -142,7 +142,7 @@ link_libraries(${ALUT_LIBRARIES})
 include_directories(${ALUT_INCLUDE_DIRS})
 
 
-pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.2.0)
+pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.0.0)
 link_directories(${XDG_LIBRARY_DIRS})
 link_libraries(${XDG_LIBRARIES})
 include_directories(${XDG_INCLUDE_DIRS})
