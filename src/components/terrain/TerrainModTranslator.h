@@ -79,8 +79,6 @@ public:
 
 	static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 
-protected:
-
 	/**
 	 * Interface for inner translator.
 	 *
@@ -94,7 +92,8 @@ protected:
 	protected:
 		const Atlas::Message::MapType mData;
 	};
-
+    
+protected:
 	template<template<int> class Shape>
 	InnerTranslator* buildTranslator(const Atlas::Message::MapType& modElement, const std::string & typeName, Shape<2> & shape, const Atlas::Message::Element & shapeElement);
 
