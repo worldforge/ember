@@ -29,7 +29,7 @@
 #include "domain/EmberEntity.h"
 #include "GUIManager.h"
 #include "services/config/ConfigService.h"
-#include "framework/Time.h"
+#include "framework/TimeHelper.h"
 #include "domain/EntityTalk.h"
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -63,7 +63,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
 
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
-		*mChatLogger << "Chat Logging Initialized at " <<  Time::getLocalTimeStr() << std::endl;
+		*mChatLogger << "Chat Logging Initialized at " <<  TimeHelper::getLocalTimeStr() << std::endl;
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
 
 		//wait with connecting until everything has been properly set up
@@ -78,13 +78,13 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 AvatarLogger::~AvatarLogger()
 {
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
-	*mChatLogger << "Chat Logging Ended at " <<  Time::getLocalTimeStr() << std::endl;
+	*mChatLogger << "Chat Logging Ended at " <<  TimeHelper::getLocalTimeStr() << std::endl;
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
 }
 
 void AvatarLogger::GUIManager_AppendIGChatLine(const EntityTalk& entityTalk, EmberEntity* entity)
 {
-	*mChatLogger << "[" << Time::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << entityTalk.getMessage() << std::endl;
+	*mChatLogger << "[" << TimeHelper::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << entityTalk.getMessage() << std::endl;
 }
 
 AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)

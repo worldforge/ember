@@ -53,7 +53,6 @@
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/LoggingInstance.h"
 #include "framework/IScriptingProvider.h"
-#include "framework/Time.h"
 #include "framework/TimeFrame.h"
 
 #include "terrain/TerrainLayerDefinitionManager.h"

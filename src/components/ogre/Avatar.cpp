@@ -45,7 +45,7 @@
 #include "services/input/Input.h"
 
 #include "framework/Tokeniser.h"
-#include "framework/Time.h"
+#include "framework/TimeHelper.h"
 #include "framework/MainLoopController.h"
 
 #include "terrain/ITerrainAdapter.h"
@@ -233,7 +233,7 @@ void Avatar::attemptMove()
 		S_LOG_VERBOSE(ss.str());
 
 		//Save the ten latest orientations sent to the server, so we can later when we receive an update from the server we can recognize that it's our own updates and ignore them.
-		long long currentTime = Time::currentTimeMillis();
+		long long currentTime = TimeHelper::currentTimeMillis();
 		mLastTransmittedMovements.push_back(TimedMovementStateList::value_type(currentTime, newMovementState));
 		if (mLastTransmittedMovements.size() > 10) {
 			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
@@ -260,7 +260,7 @@ bool Avatar::isOkayToSendRotationMovementChangeToServer()
 	if (!mLastTransmittedMovements.size()) {
 		return true;
 	}
-	long long currentTime = Time::currentTimeMillis();
+	long long currentTime = TimeHelper::currentTimeMillis();
 	if ((currentTime - mLastTransmittedMovements.rbegin()->first) > mMinIntervalOfRotationChanges) {
 		return true;
 	}

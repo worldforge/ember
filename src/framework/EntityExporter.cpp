@@ -19,7 +19,7 @@
 #include "EntityExporter.h"
 
 #include "LoggingInstance.h"
-#include "Time.h"
+#include "TimeHelper.h"
 
 #include <Atlas/MultiLineListFormatter.h>
 
@@ -79,7 +79,7 @@ Atlas::Formatter* EntityExporter::createMultiLineFormatter(std::iostream& s, Atl
 std::string EntityExporter::getCurrentTime()
 {
 	std::stringstream ss;
-	ss << Time::currentTimeMillis();
+	ss << TimeHelper::currentTimeMillis();
 	return ss.str();
 
 }

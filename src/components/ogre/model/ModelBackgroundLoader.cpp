@@ -28,7 +28,6 @@
 #include "Model.h"
 #include "framework/TimeFrame.h"
 #include "framework/LoggingInstance.h"
-#include "framework/Time.h"
 
 #include <OgreResourceBackgroundQueue.h>
 #include <OgreSubMesh.h>
