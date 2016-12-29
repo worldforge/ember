@@ -84,7 +84,7 @@ const Ogre::Vector3& Vector3Adapter::getOriginalValue() const
 void Vector3Adapter::updateGui(const Ogre::Vector3& vector)
 {
 	mSelfUpdate = true;
-	if (&vector) {
+	if (!vector.isNaN()) {
 		if (mXWindow) {
 			mXWindow->setText(Ogre::StringConverter::toString(vector.x));
 		}

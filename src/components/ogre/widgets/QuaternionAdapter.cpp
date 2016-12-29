@@ -77,7 +77,7 @@ void QuaternionAdapter::updateGui(const Ogre::Quaternion& quaternion)
 {
 	mSelfUpdate = true;
 
-	if (&quaternion) {
+	if (!quaternion.isNaN()) {
 		Ogre::Vector3 axis;
 		Ogre::Degree angle;
 		quaternion.ToAngleAxis( angle, axis);
