@@ -108,11 +108,12 @@ void InspectWidget::updateAttributeString()
 	std::stringstream ss;
 
 	Atlas::PresentationBridge bridge(ss);
+	bridge.setMaxItemsPerLevel(15);
 	Atlas::Message::Encoder encoder(bridge);
 	encoder.streamMessageElement(mCurrentEntity->getAttributes());
 
 	mAttributesString = ss.str();
-	}
+}
 
 void InspectWidget::runCommand(const std::string &command, const std::string &args)
 {
