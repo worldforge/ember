@@ -157,11 +157,10 @@ link_directories(${LUA_LIBRARY_DIRS})
 link_libraries(${LUA_LIBRARIES})
 include_directories(${LUA_INCLUDE_DIR})
 
-#find_package(Tolua++ REQUIRED)
-pkg_check_modules(TOLUAPP REQUIRED tolua++)
-link_directories(${TOLUAPP_LIBRARY_DIRS})
-link_libraries(${TOLUAPP_LIBRARIES})
-include_directories(${TOLUAPP_INCLUDE_DIR})
+find_package(Tolua++ REQUIRED)
+link_directories(${TOLUA++_LIBRARY_DIRS})
+link_libraries(${TOLUA++_LIBRARY})
+include_directories(${TOLUA++_INCLUDE_DIR})
 
 pkg_check_modules(CPPUNIT cppunit>=1.8.0)
 
