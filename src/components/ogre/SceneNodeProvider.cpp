@@ -17,6 +17,7 @@
  */
 
 #include "SceneNodeProvider.h"
+#include "OgreInfo.h"
 
 #include <OgreSceneNode.h>
 #include <OgreMovableObject.h>
@@ -27,10 +28,14 @@ namespace Ember
 namespace OgreView
 {
 
-SceneNodeProvider::SceneNodeProvider(Ogre::SceneNode& parentNode, Ogre::MovableObject* object) :
+SceneNodeProvider::SceneNodeProvider(Ogre::SceneNode& parentNode, const std::string& name, Ogre::MovableObject* object) :
 	mParentNode(parentNode), mNode(0), mAttachedObject(object)
 {
-	mNode = parentNode.createChildSceneNode();
+    if (name != "") {
+        mNode = parentNode.createChildSceneNode(name);
+    } else {
+        mNode = parentNode.createChildSceneNode();
+    }
 	if (mAttachedObject) {
 		mAttachedObject->detachFromParent();
 		mNode->attachObject(mAttachedObject);
@@ -59,9 +64,9 @@ Ogre::Node* SceneNodeProvider::getParentNode() const
 	return &mParentNode;
 }
 
-INodeProvider* SceneNodeProvider::createChildProvider(Ogre::MovableObject* attachedObject)
+INodeProvider* SceneNodeProvider::createChildProvider(const std::string& name, Ogre::MovableObject* attachedObject)
 {
-	return new SceneNodeProvider(*mNode, attachedObject);
+	return new SceneNodeProvider(*mNode, name, attachedObject);
 }
 
 void SceneNodeProvider::setVisible(bool visible)

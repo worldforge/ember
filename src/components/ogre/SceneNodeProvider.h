@@ -35,11 +35,11 @@ namespace OgreView
 class SceneNodeProvider: public INodeProvider
 {
 public:
-	SceneNodeProvider(Ogre::SceneNode& parentNode, Ogre::MovableObject* object = 0);
+	SceneNodeProvider(Ogre::SceneNode& parentNode, const std::string& name, Ogre::MovableObject* object = 0);
 	virtual ~SceneNodeProvider();
 	virtual Ogre::Node& getNode() const;
 	virtual Ogre::Node* getParentNode() const;
-	virtual INodeProvider* createChildProvider(Ogre::MovableObject* attachedObject = 0);
+	virtual INodeProvider* createChildProvider(const std::string& name, Ogre::MovableObject* attachedObject = 0);
 	virtual void setVisible(bool visible);
 
 	/**

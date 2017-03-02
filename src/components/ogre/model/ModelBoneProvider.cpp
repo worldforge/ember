@@ -103,7 +103,7 @@ Ogre::Node* ModelBoneProvider::getParentNode() const
 	return 0;
 }
 
-INodeProvider* ModelBoneProvider::createChildProvider(Ogre::MovableObject* attachedObject)
+INodeProvider* ModelBoneProvider::createChildProvider(const std::string& name, Ogre::MovableObject* attachedObject)
 {
 	ModelBoneProvider* childProvider = new ModelBoneProvider(mParentModel, mAttachPointName, attachedObject, this);
 	mChildren.push_back(childProvider);

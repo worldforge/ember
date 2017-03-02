@@ -86,7 +86,7 @@ void ModelAttachment::init()
 {
 	NodeAttachment::init();
 
-	mModelMount = new ModelMount(mModelRepresentation.getModel(), mNodeProvider->createChildProvider(&mModelRepresentation.getModel()), mPose);
+	mModelMount = new ModelMount(mModelRepresentation.getModel(), mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(mModelRepresentation.getEntity().getId()), &mModelRepresentation.getModel()), mPose);
 	mModelMount->reset();
 	setupFittings();
 	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
@@ -161,7 +161,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 				return 0;
 			}
 		} else {
-			nodeProvider = mNodeProvider->createChildProvider(modelRepresentation ? &modelRepresentation->getModel() : 0);
+			nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()), modelRepresentation ? &modelRepresentation->getModel() : nullptr);
 		}
 		NodeAttachment* nodeAttachment(0);
 		if (modelRepresentation) {

@@ -69,7 +69,7 @@ public:
 	 * @param attachedObject An optional movable object which will be attached to the node created by new provider.
 	 * @return A new provider, which is a child of this instance.
 	 */
-	virtual INodeProvider* createChildProvider(Ogre::MovableObject* attachedObject = 0) = 0;
+	virtual INodeProvider* createChildProvider(const std::string& name, Ogre::MovableObject* attachedObject = 0) = 0;
 
 	/**
 	 * @brief Sets the visiblity of the node.

@@ -64,7 +64,7 @@ public:
 	virtual ~ModelBoneProvider();
 	virtual Ogre::Node& getNode() const;
 	virtual Ogre::Node* getParentNode() const;
-	virtual INodeProvider* createChildProvider(Ogre::MovableObject* attachedObject = 0);
+	virtual INodeProvider* createChildProvider(const std::string& name, Ogre::MovableObject* attachedObject = 0);
 	virtual void setVisible(bool visible);
 
 	/**

@@ -31,6 +31,7 @@
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
 #include "components/ogre/model/Model.h"
+#include "OgreInfo.h"
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
@@ -89,9 +90,9 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//If there's a model representation available, use a "ModelAttachment" instance to attach to it, otherwise just use a regular NodeAttachment.
 	NodeAttachment* nodeAttachment(0);
 	if (modelRepresentation) {
-		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()), &modelRepresentation->getModel()));
 	} else {
-		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider());
+		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId())));
 	}
 	nodeAttachment->init();
 	return nodeAttachment;

@@ -181,7 +181,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 		modelDef->reloadAllInstances();
 	}
 
-	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, mModel));
+	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, "", mModel));
 	mModelMount->reset();
 
 	initFromModel();

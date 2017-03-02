@@ -211,7 +211,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 		modelDef->reloadAllInstances();
 	}
 
-	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, mModel));
+	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, OgreInfo::createUniqueResourceName(mRecipe.getName()), mModel));
 	mModelMount->reset();
 
 	initFromModel();

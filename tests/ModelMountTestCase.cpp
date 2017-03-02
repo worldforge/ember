@@ -81,14 +81,14 @@ void ModelMountTestCase::testModelMountScaling()
 	//First test with a straight forward case.
 	Ogre::SceneNode* node = sceneManager->getRootSceneNode()->createChildSceneNode();
 	//We get an error when it's destroyed. So we don't destroy it.
-	SceneNodeProvider* nodeProvider = new SceneNodeProvider(*node, &model);
+	SceneNodeProvider* nodeProvider = new SceneNodeProvider(*node, "", &model);
 	Model::ModelMount mount(model, nodeProvider);
 	scaleAndTestMount(model, mount, nodeProvider->getNode());
 
 	//Test with the parent node being scaled
 	node->setScale(Ogre::Vector3(3.0f, 0.2f, 200.0f));
 	Ogre::SceneNode* subNode = node->createChildSceneNode();
-	nodeProvider = new SceneNodeProvider(*subNode, &model);
+	nodeProvider = new SceneNodeProvider(*subNode, "", &model);
 	Model::ModelMount mount2(model, nodeProvider);
 	scaleAndTestMount(model, mount2, nodeProvider->getNode());
 
@@ -98,7 +98,7 @@ void ModelMountTestCase::testModelMountScaling()
 	node->pitch(Ogre::Degree(76));
 	node->roll(Ogre::Degree(98));
 	subNode = node->createChildSceneNode();
-	nodeProvider = new SceneNodeProvider(*subNode, &model);
+	nodeProvider = new SceneNodeProvider(*subNode, "", &model);
 	Model::ModelMount mount3(model, nodeProvider);
 	scaleAndTestMount(model, mount3, nodeProvider->getNode());
 }
