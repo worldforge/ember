@@ -33,13 +33,10 @@
 
 #include "../Convert.h"
 #include "../MousePicker.h"
-#include "framework/LoggingInstance.h"
 
-#include <OgreVector3.h>
 #include <OgreEntity.h>
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
-#include <OgreAny.h>
 
 namespace Ember
 {

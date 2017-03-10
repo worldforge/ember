@@ -21,9 +21,6 @@
 #include "domain/IEntityControlDelegate.h"
 #include "components/ogre/NodeAttachment.h"
 
-#include <wfmath/point.h>
-#include <wfmath/quaternion.h>
-
 namespace Ember {
 namespace OgreView {
 

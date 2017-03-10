@@ -32,9 +32,6 @@
 
 #include <OgreRoot.h>
 #include <OgreGpuProgramManager.h>
-#include <OgreRenderSystem.h>
-#include <OgreRenderSystemCapabilities.h>
-#include <OgreTextureManager.h>
 
 namespace Ember
 {

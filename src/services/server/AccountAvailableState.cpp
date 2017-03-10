@@ -21,7 +21,6 @@
 #endif
 
 #include "AccountAvailableState.h"
-#include "LoggedInState.h"
 #include "ServerServiceSignals.h"
 
 #include "framework/Tokeniser.h"
@@ -29,9 +28,6 @@
 #include "framework/LoggingInstance.h"
 
 #include "services/config/ConfigService.h"
-
-#include <iostream>
-#include <sstream>
 
 
 namespace Ember

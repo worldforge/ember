@@ -33,11 +33,8 @@
 #include <Eris/Entity.h>
 
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Message/Element.h>
 
 #include <wfmath/atlasconv.h>
-
-#include <sstream>
 
 namespace Ember
 {

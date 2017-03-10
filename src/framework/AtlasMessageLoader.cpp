@@ -21,7 +21,6 @@
 
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
-#include <Atlas/Codecs/XML.h>
 
 using Atlas::Objects::Root;
 namespace Ember

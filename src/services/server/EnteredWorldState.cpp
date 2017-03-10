@@ -27,23 +27,12 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
 
-#include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Anonymous.h>
-
 #include <Eris/Entity.h>
 #include <Eris/Avatar.h>
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
-#include <Eris/TypeService.h>
-
-#include <wfmath/atlasconv.h>
-#include <wfmath/quaternion.h>
-
-#include <sstream>
 
 namespace Ember
 {

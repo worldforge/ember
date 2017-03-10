@@ -22,9 +22,7 @@
 #include "TerrainPageSurface.h"
 #include "TerrainMaterialCompilationTask.h"
 #include "framework/tasks/TaskExecutionContext.h"
-#include "framework/LoggingInstance.h"
 
-#include <wfmath/axisbox.h>
 #include <wfmath/intersect.h>
 
 namespace Ember

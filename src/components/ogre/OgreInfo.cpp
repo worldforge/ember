@@ -26,14 +26,8 @@
 
 #include "OgreInfo.h"
 #include <OgreSceneManagerEnumerator.h>
-#include <OgreSceneManager.h>
-#include <OgreCamera.h>
-#include <OgreLight.h>
 #include <OgreRoot.h>
 #include <OgreEntity.h>
-#include <OgreResourceGroupManager.h>
-#include <OgreResourceManager.h>
-#include <sstream>
 
 #ifdef HAVE_OPENGL
 #if defined(__WIN32__)

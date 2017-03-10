@@ -30,9 +30,7 @@
 
 #include "Cases/OutfitCase.h"
 #include "Cases/AttributeCase.h"
-#include "Cases/EntityTypeCase.h"
 
-#include "Cases/AttributeComparers/AttributeComparerWrapper.h"
 #include "Cases/AttributeComparers/HeightComparerWrapper.h"
 #include "Cases/AttributeComparers/NumericComparer.h"
 #include "Cases/AttributeComparers/NumericComparerWrapper.h"
@@ -42,15 +40,10 @@
 #include "Cases/AttributeComparers/NumericGreaterComparer.h"
 #include "Cases/AttributeComparers/NumericLesserComparer.h"
 #include "Cases/AttributeComparers/NumericRangeComparer.h"
-#include "Cases/AttributeComparers/NumericValueHolder.h"
 #include "Cases/AttributeComparers/StringComparer.h"
 #include "Cases/AttributeComparers/StringComparerWrapper.h"
 
 
-#include "Matches/OutfitMatch.h"
-#include "Matches/AttributeMatch.h"
-#include "Matches/EntityTypeMatch.h"
-#include "Matches/Observers/MatchAttributeObserver.h"
 #include "Matches/Observers/EntityCreationObserver.h"
 
 #include "IActionCreator.h"

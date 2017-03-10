@@ -23,9 +23,7 @@
 #include "TransferInfoStringSerializer.h"
 #include "AvatarTransferInfo.h"
 
-#include "framework/Tokeniser.h"
 #include "framework/LoggingInstance.h"
-#include <Eris/TransferInfo.h>
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Message/MEncoder.h>
@@ -34,9 +32,6 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
 
-#include <sstream>
-#include <string>
-#include <stdlib.h>
 namespace Ember
 {
 

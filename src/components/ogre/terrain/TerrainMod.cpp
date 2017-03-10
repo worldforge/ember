@@ -29,9 +29,6 @@
 
 #include "components/terrain/TerrainModTranslator.h"
 
-#include <Eris/Entity.h>
-#include <Atlas/Message/Element.h>
-
 namespace Ember
 {
 namespace OgreView

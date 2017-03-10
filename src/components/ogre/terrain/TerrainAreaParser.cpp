@@ -27,7 +27,6 @@
 #include "TerrainAreaParser.h"
 #include "TerrainArea.h"
 #include "framework/LoggingInstance.h"
-#include <Mercator/Area.h>
 #include <wfmath/atlasconv.h>
 
 namespace Ember

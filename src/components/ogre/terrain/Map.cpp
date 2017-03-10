@@ -25,10 +25,6 @@
 #endif
 
 #include "Map.h"
-#include <OgreCamera.h>
-#include <OgreTextureManager.h>
-#include <OgreRenderTexture.h>
-#include <OgreViewport.h>
 #include <OgreHardwarePixelBuffer.h>
 
 namespace Ember {

@@ -26,10 +26,6 @@
 
 #include "Connector.h"
 
-#include "Connectors.h"
-#include "Connectors_impl.h"
-
-
 
 namespace Ember
 {

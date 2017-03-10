@@ -26,19 +26,13 @@
 
 #include "EmberEntityLoader.h"
 
-#include <OgreSceneNode.h>
-#include <OgreColourValue.h>
-
 #include "../model/Model.h"
-#include "../model/ModelDefinition.h"
 #include "../model/SubModel.h"
 #include "components/ogre/Convert.h"
 #include "domain/EmberEntity.h"
 #include "components/ogre/model/ModelRepresentation.h"
 
 #include <sigc++/bind.h>
-
-#include <limits>
 
 namespace Ember
 {

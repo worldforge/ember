@@ -27,12 +27,8 @@
 #include "Polygon.h"
 #include "PolygonPoint.h"
 
-#include <wfmath/vector.h>
-#include <wfmath/polygon.h>
-
 #include "../Convert.h"
 #include "../EmberOgre.h"
-#include "framework/LoggingInstance.h"
 
 namespace Ember
 {

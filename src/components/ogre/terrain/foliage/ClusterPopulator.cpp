@@ -15,7 +15,6 @@
 #include <wfmath/ball.h>
 #include <wfmath/intersect.h>
 #include <wfmath/randgen.h>
-#include <cmath>
 
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>

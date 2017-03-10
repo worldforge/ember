@@ -29,8 +29,6 @@
 #include "TerrainPageSurfaceLayer.h"
 #include "ICompilerTechniqueProvider.h"
 #include "TerrainPageGeometry.h"
-#include "../ShaderManager.h"
-#include "../EmberOgre.h"
 
 #include <OgreTextureManager.h>
 

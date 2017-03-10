@@ -26,7 +26,6 @@
 
 #include "DummyAction.h"
 #include "../ChangeContext.h"
-#include <iostream>
 
 namespace Ember {
 

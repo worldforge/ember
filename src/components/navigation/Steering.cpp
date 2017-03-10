@@ -27,8 +27,6 @@
 #include <Eris/Avatar.h>
 #include <Eris/Entity.h>
 
-#include <wfmath/point.h>
-#include <wfmath/vector.h>
 #include <wfmath/rotbox.h>
 #include <wfmath/segment.h>
 

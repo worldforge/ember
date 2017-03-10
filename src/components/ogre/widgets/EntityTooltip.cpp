@@ -28,16 +28,9 @@
 
 #include <Eris/TypeInfo.h>
 
-#include <CEGUI/SubscriberSlot.h>
-#include <CEGUI/PropertyHelper.h>
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/WindowFactoryManager.h>
-#include <CEGUI/TplWindowFactory.h>
-#include <CEGUI/Exceptions.h>
 
-#include <Atlas/Message/Element.h>
-
-#include <vector>
 namespace Ember
 {
 namespace OgreView

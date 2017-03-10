@@ -26,8 +26,6 @@
 #include "framework/LoggingInstance.h"
 // #include "framework/binreloc.h"
 
-#include <iostream>
-#include <cstdlib>
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
@@ -44,7 +42,6 @@
 
 #if !defined(__APPLE__) && !defined(__WIN32__)
 #include <basedir.h>
-#include <basedir_fs.h>
 #include "framework/osdir.h"
 #endif
 

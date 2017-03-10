@@ -26,9 +26,6 @@
 #endif
 
 #include "MeshCollisionDetector.h"
-#include "ICollisionDetector.h"
-
-#include "EmberOgrePrerequisites.h"
 
 #include "model/Model.h"
 #include "model/SubModel.h"

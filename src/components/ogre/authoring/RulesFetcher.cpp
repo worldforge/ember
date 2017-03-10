@@ -27,8 +27,6 @@
 #include <Eris/Response.h>
 #include <Atlas/Objects/Entity.h>
 
-#include <algorithm>
-
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::Anonymous;

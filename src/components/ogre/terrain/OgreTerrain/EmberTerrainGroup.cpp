@@ -23,12 +23,9 @@
 
 #include "EmberTerrainGroup.h"
 #include "EmberTerrain.h"
-#include "components/ogre/TerrainPageDataProvider.h"
 #include "framework/LoggingInstance.h"
 
 #include <OgreRoot.h>
-
-#include <functional>
 
 using namespace Ogre;
 

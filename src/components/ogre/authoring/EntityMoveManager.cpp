@@ -27,7 +27,6 @@
 
 #include "EntityMoveManager.h"
 #include "components/ogre/World.h"
-#include "MovementAdapter.h"
 #include "EntityMover.h"
 #include "../GUIManager.h"
 #include "framework/Tokeniser.h"

@@ -35,14 +35,11 @@
 #include "../terrain/ITerrainAdapter.h"
 #include "../terrain/ITerrainObserver.h"
 
-#include "framework/LoggingInstance.h"
-
 #include <Ogre.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 
 #include <CEGUI/Image.h>
-#include <CEGUI/Rect.h>
 
 using namespace Ember::OgreView::Terrain;
 

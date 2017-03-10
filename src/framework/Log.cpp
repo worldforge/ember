@@ -30,10 +30,7 @@
 
 #include <boost/date_time.hpp>
 
-#include <algorithm>
-#include <cstdio>
 //#include <stdio.h>
-#include <iostream>
 
 
 

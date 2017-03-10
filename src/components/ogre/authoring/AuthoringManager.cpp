@@ -26,13 +26,9 @@
 #include "components/ogre/Avatar.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
-#include "services/EmberServices.h"
 #include <OgreSceneManager.h>
 #include <Eris/Avatar.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/TypeService.h>
 #include <Eris/View.h>
-#include <Eris/Entity.h>
 #include <Eris/Connection.h>
 #include <sigc++/bind.h>
 

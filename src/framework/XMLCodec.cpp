@@ -26,9 +26,6 @@
 
 #include "XMLCodec.h"
 
-#include <iostream>
-#include <cstdlib>
-
 namespace Ember {
 
 XMLCodec::XMLCodec(std::iostream& s, Atlas::Bridge & b)

@@ -30,17 +30,13 @@
 #include "SoundSample.h"
 #include "SoundInstance.h"
 
-#include <map>
 #include <cstring>
-#include <algorithm>
 
 #ifdef _MSC_VER
 //#include <ALUT/alut.h>
 #else
 #include <AL/alut.h>
 #endif
-
-#include <cassert>
 
 namespace Ember
 {

@@ -38,7 +38,6 @@
 
 #include "../terrain/ITerrainAdapter.h"
 
-#include "pagedgeometry/include/PagedGeometry.h"
 #include "pagedgeometry/include/BatchPage.h"
 #include "pagedgeometry/include/TreeLoader3D.h"
 

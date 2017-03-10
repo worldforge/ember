@@ -27,9 +27,6 @@
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
 
-#include <sstream>
-#include <algorithm>
-
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::Anonymous;

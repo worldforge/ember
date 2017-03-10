@@ -27,7 +27,6 @@
 #include "PolygonPointMover.h"
 #include "PolygonPoint.h"
 #include "Polygon.h"
-#include "services/input/Input.h"
 
 #include "../Convert.h"
 #include <OgreSceneNode.h>

@@ -26,19 +26,12 @@
 
 #include "SimpleRenderContext.h"
 
-#include "EmberOgre.h"
 #include "GUIManager.h"
 #include "model/Model.h"
 
-#include "framework/Exception.h"
 #include <OgreBitwise.h>
 #include <OgreRoot.h>
-#include <OgreSceneManager.h>
 #include <OgreHardwarePixelBuffer.h>
-#include <OgreRenderTexture.h>
-#include <OgreViewport.h>
-#include <OgreTextureManager.h>
-#include <OgreTexture.h>
 
 namespace Ember
 {

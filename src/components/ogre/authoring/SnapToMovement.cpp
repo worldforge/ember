@@ -28,15 +28,12 @@
 #include "domain/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/Convert.h"
-#include "framework/LoggingInstance.h"
 
 #include <wfmath/rotbox.h>
 #include <wfmath/ball.h>
-#include <Eris/Entity.h>
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
-#include <memory>
 
 namespace Ember
 {

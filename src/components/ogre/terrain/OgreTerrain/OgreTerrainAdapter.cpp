@@ -20,19 +20,14 @@
 
 #include "OgreTerrainObserver.h"
 #include "OgreTerrainDefiner.h"
-#include "../ITerrainObserver.h"
 #include "components/ogre/TerrainPageDataProvider.h"
 #include "OgreTerrainMaterialGeneratorEmber.h"
 #include "EmberTerrainGroup.h"
 #include "EmberTerrain.h"
 #include "CameraFocusedGrid2DPageStrategy.h"
 
-#include <OgreSceneManager.h>
-#include <OgreTerrain.h>
-#include <OgreTerrainGroup.h>
 #include <OgreTerrainPaging.h>
 #include <OgrePagedWorld.h>
-#include <OgrePageManager.h>
 
 #define EMBER_OGRE_TERRAIN_HALF_RANGE 0x7FFF
 

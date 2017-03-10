@@ -29,7 +29,6 @@
 #include "EntityIconManager.h"
 #include "EntityIcon.h"
 #include <CEGUI/CEGUI.h>
-#include <CEGUI/WindowManager.h>
 
 using namespace CEGUI;
 namespace Ember {

@@ -21,7 +21,6 @@
  */
 
 #include "PMInjectorSignaler.h"
-#include <OgreFrameListener.h>
 
 template<>
 Ember::OgreView::Lod::PMInjectorSignaler * Ember::Singleton<Ember::OgreView::Lod::PMInjectorSignaler>::ms_Singleton = 0;

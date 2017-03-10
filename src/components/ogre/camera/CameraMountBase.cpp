@@ -21,7 +21,6 @@
 #include "framework/Exception.h"
 
 #include "components/ogre/ICameraMotionHandler.h"
-#include <OgreMath.h>
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 

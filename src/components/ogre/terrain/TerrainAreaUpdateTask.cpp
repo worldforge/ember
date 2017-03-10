@@ -19,7 +19,7 @@
 #include "TerrainAreaUpdateTask.h"
 #include "TerrainArea.h"
 #include <Mercator/Terrain.h>
-#include <Mercator/Area.h>
+
 namespace Ember
 {
 namespace OgreView

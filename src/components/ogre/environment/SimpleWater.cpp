@@ -27,7 +27,6 @@
 #include "SimpleWater.h"
 #include "SimpleWaterCollisionDetector.h"
 
-#include "components/ogre/EmberOgre.h"
 #include "components/ogre/MousePicker.h"
 
 #include <OgreSceneManager.h>
@@ -36,8 +35,6 @@
 #include <OgreRenderTargetListener.h>
 #include <OgreRenderWindow.h>
 #include <OgreControllerManager.h>
-
-#include <cmath>
 
 namespace Ember
 {

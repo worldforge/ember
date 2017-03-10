@@ -26,25 +26,15 @@
 
 // Current project
 #include "services/config/ConfigService.h"
-#include "services/EmberServices.h"
 #include "framework/LoggingInstance.h"
-#include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
 
-#include <Eris/Metaserver.h>
-#include <Eris/ServerInfo.h>
 #include <Eris/Session.h>
 
 // System headers
-#include <iostream>
-#include <list>
-#include <algorithm>
-#include <sstream>
 
 // Libraries we are using
-
-#include <sigc++/signal.h>
 
 
 using namespace std;

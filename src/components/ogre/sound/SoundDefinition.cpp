@@ -19,7 +19,6 @@
 
 #include "framework/LoggingInstance.h"
 #include "SoundDefinition.h"
-#include <string>
 
 namespace Ember
 {

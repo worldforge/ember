@@ -34,23 +34,14 @@
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
-#include "services/input/Input.h"
-
-#include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/Operation.h>
 
 #include <Eris/Connection.h>
 #include <Mercator/Terrain.h>
 
-#include <sstream>
 #include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
 #include <OgreEntity.h>
 
 #include <sigc++/bind.h>
-
-#include <memory>
-#include <set>
 
 namespace Ember
 {

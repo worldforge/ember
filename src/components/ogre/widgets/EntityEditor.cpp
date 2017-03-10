@@ -37,15 +37,12 @@
 #include "components/ogre/authoring/IPolygonPositionProvider.h"
 #include "components/ogre/terrain/TerrainManager.h"
 
-#include "adapters/atlas/AdapterBase.h"
 #include "adapters/atlas/MapAdapter.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
-#include "framework/LoggingInstance.h"
 
 #include <Atlas/PresentationBridge.h>
-#include <Atlas/Message/Element.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Codecs/Bach.h>
@@ -54,17 +51,13 @@
 #include <wfmath/segment.h>
 #include <wfmath/atlasconv.h>
 
-#include <Eris/Entity.h>
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
 #include <Eris/Response.h>
 #include <Eris/View.h>
 
 #include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
 #include <OgreEntity.h>
-
-#include <sigc++/trackable.h>
 
 using namespace Atlas::Message;
 

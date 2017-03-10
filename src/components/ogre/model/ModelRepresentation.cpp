@@ -19,10 +19,8 @@
 #include "ModelRepresentation.h"
 
 #include "Model.h"
-#include "ModelDefinition.h"
 #include "SubModel.h"
 #include "ParticleSystemBinding.h"
-#include "ModelAction.h"
 #include "ModelMount.h"
 #include "ModelPartReactivatorVisitor.h"
 
@@ -30,29 +28,19 @@
 
 #include "components/ogre/sound/SoundEntity.h"
 
-#include "components/ogre/Convert.h"
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/MeshCollisionDetector.h"
-#include "domain/EmberEntity.h"
 #include "components/ogre/EmberEntityFactory.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/MotionManager.h"
 #include "components/ogre/Scene.h"
 
-#include "components/entitymapping/EntityMapping.h"
-#include "components/entitymapping/EntityMappingManager.h"
-
-#include <OgreException.h>
-
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreParticleSystem.h>
 
-#include <Eris/Types.h>
 #include <Eris/Task.h>
-
-#include <memory>
 
 namespace Ember
 {

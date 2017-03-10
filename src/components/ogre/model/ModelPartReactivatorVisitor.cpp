@@ -19,7 +19,6 @@
 #include "ModelPartReactivatorVisitor.h"
 
 #include "components/entitymapping/EntityMapping.h"
-#include "components/entitymapping/Cases/CaseBase.h"
 #include "components/ogre/EmberEntityPartAction.h"
 
 namespace Ember

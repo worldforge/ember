@@ -21,7 +21,6 @@
 #include "HeightMapBuffer.h"
 #include "Buffer.h"
 #include <wfmath/vector.h>
-#include <cmath>
 #include <cassert>
 
 namespace Ember

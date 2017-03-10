@@ -41,11 +41,6 @@
 #include "components/ogre/authoring/DetachedEntity.h"
 
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
-#include "components/entitymapping/EntityMappingManager.h"
-#include "components/entitymapping/EntityMapping.h"
-#include "components/entitymapping/IActionCreator.h"
-
-#include "framework/LoggingInstance.h"
 
 #include <wfmath/atlasconv.h>
 #include <wfmath/MersenneTwister.h>
@@ -53,10 +48,7 @@
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 
-#include <Atlas/Objects/RootEntity.h>
-
 #include <OgreSceneManager.h>
-#include <sigc++/slot.h>
 
 namespace Ember
 {

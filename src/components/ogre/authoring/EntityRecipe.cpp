@@ -31,20 +31,12 @@
 #include "services/scripting/ScriptingService.h"
 #include "services/EmberServices.h"
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <Eris/TypeInfo.h>
 
-extern "C"
-{
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
-//#include <lua.hpp>
 #include <tolua++.h>
 
 namespace Ember

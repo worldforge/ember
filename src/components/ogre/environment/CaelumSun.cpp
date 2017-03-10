@@ -27,11 +27,9 @@
 #include "CaelumSun.h"
 #include "caelum/include/CaelumSystem.h"
 #include "components/ogre/Convert.h"
-#include "caelum/include/SphereSun.h"
 
 #include "framework/Tokeniser.h"
 
-#include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
 namespace Ember

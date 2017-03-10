@@ -33,14 +33,10 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/entitymapping/EntityMappingManager.h"
-#include "components/entitymapping/EntityMapping.h"
-#include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/IActionCreator.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
-#include <Eris/Entity.h>
-#include <Eris/TypeInfo.h>
 #include <Eris/Connection.h>
 
 #include <OgreTextureManager.h>

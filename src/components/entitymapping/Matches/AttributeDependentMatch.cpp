@@ -25,7 +25,6 @@
 #endif
 
 #include "AttributeDependentMatch.h"
-#include "Observers/MatchAttributeObserver.h"
 
 namespace Ember {
 

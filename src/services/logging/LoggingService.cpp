@@ -26,10 +26,6 @@
 
 
 // Include system headers here
-#include <string>
-#include <list>
-#include <cstdio>
-#include <sstream>
 
 namespace Ember {
 

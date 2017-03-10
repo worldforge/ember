@@ -42,7 +42,6 @@
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
-#include "services/input/Input.h"
 
 #include "framework/Tokeniser.h"
 #include "framework/Time.h"
@@ -58,8 +57,6 @@
 #include <OgreRoot.h>
 
 #include <OgreTagPoint.h>
-
-#include <typeinfo>
 
 #include <wfmath/stream.h>
 

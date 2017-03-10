@@ -32,15 +32,6 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
-
-// include Lua libs and tolua++
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
-//#include <lua.hpp>
-#include <tolua++.h>
 #include "LuaHelper.h"
 #include "LuaScriptingCallContext.h"
 

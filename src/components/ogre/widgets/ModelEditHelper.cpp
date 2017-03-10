@@ -23,11 +23,9 @@
 #include "ModelEditHelper.h"
 #include "components/ogre/model/ModelBoneProvider.h"
 #include "components/ogre/model/ModelMount.h"
-#include "framework/LoggingInstance.h"
-#include "services/input/Input.h"
 #include <OgreSceneManager.h>
 #include <OgreTagPoint.h>
-#include <OgreMath.h>
+
 namespace Ember
 {
 namespace OgreView

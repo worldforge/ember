@@ -33,18 +33,14 @@
 #include "components/ogre/camera/FirstPersonCameraMount.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
 #include "components/ogre/terrain/TerrainManager.h"
-#include "components/ogre/terrain/ITerrainAdapter.h"
 #include "components/ogre/authoring/AwarenessVisualizer.h"
 
 #include "components/navigation/Awareness.h"
 #include "components/navigation/Steering.h"
 
-#include "services/input/Input.h"
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 
-#include "framework/Tokeniser.h"
-#include "framework/LoggingInstance.h"
 #include "framework/MainLoopController.h"
 
 #include <Eris/View.h>

@@ -21,9 +21,7 @@
 #include "ServerSettingsCredentials.h"
 #include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
-#include <varconf/varconf.h>
 #include <fstream>
-#include <sstream>
 
 namespace Ember
 {

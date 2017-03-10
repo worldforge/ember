@@ -30,7 +30,6 @@
 #include "EntityCreatorPartAction.h"
 #include "EntityCreatorModelAction.h"
 #include "EntityCreatorHideModelAction.h"
-#include "components/entitymapping/Definitions/CaseDefinition.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 
 using namespace Ember::EntityMapping;

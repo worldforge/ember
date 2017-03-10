@@ -19,11 +19,8 @@
 #include "TerrainModUpdateTask.h"
 #include "TerrainHandler.h"
 #include "TerrainMod.h"
-#include "components/terrain/TerrainModTranslator.h"
-#include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
-#include <wfmath/axisbox.h>
 
 namespace Ember
 {

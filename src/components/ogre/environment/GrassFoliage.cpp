@@ -37,9 +37,7 @@
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/ITerrainAdapter.h"
 
-#include "pagedgeometry/include/PagedGeometry.h"
 #include "pagedgeometry/include/BatchPage.h"
-#include "pagedgeometry/include/GrassLoader.h"
 
 namespace Ember {
 namespace OgreView {

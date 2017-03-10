@@ -24,7 +24,6 @@
 #include <OgreShadowCameraSetupPSSM.h>
 #include <OgrePass.h>
 #include <OgreTechnique.h>
-#include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
 #include <OgreSceneManager.h>
 

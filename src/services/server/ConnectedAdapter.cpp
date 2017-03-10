@@ -41,8 +41,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/stream.h>
 
-#include <sstream>
-
 namespace Ember
 {
 

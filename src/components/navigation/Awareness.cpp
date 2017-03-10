@@ -60,12 +60,7 @@
 #include "Awareness.h"
 #include "AwarenessUtils.h"
 
-#include "DetourNavMesh.h"
 #include "DetourNavMeshQuery.h"
-#include "DetourNavMeshBuilder.h"
-#include "DetourTileCache.h"
-#include "DetourTileCacheBuilder.h"
-#include "DetourCommon.h"
 #include "DetourObstacleAvoidance.h"
 
 #include "domain/IHeightProvider.h"
@@ -76,21 +71,14 @@
 
 #include <Eris/View.h>
 #include <Eris/Avatar.h>
-#include <Eris/Entity.h>
 #include <wfmath/wfmath.h>
-
-#include <Atlas/Message/Element.h>
 
 #include <sigc++/bind.h>
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
 
-#include <cmath>
-#include <vector>
-#include <cstring>
 #include <queue>
 
 #define MAX_PATHPOLY      256 // max number of polygons in a path

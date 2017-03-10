@@ -38,7 +38,6 @@
 #include <boost/math/special_functions/round.hpp>
 #define I_ROUND(_x) (boost::math::lround(_x))
 #else
-#include <cmath>
 #define I_ROUND(_x) (std::lround(_x))
 #endif
 

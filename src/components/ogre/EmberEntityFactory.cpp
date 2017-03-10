@@ -26,7 +26,6 @@
 #include "components/ogre/EmberEntityActionCreator.h"
 
 #include "components/ogre/model/ModelDefinitionManager.h"
-#include "components/entitymapping/EntityMappingManager.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -41,7 +40,6 @@
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #else
-#include <dirent.h>
 #endif
 using namespace Ember::EntityMapping;
 namespace Ember

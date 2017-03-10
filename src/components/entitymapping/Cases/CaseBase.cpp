@@ -28,7 +28,6 @@
 
 #include "../EntityMapping.h"
 #include "../Actions/Action.h"
-#include "../IVisitor.h"
 
 namespace Ember {
 

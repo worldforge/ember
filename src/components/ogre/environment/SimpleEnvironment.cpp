@@ -29,7 +29,6 @@
 #include "SimpleWater.h"
 #include "components/ogre/Convert.h"
 #include <OgreSceneManager.h>
-#include <OgreLight.h>
 #include <OgreRenderWindow.h>
 namespace Ember
 {

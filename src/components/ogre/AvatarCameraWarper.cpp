@@ -26,12 +26,9 @@
 #include "camera/MainCamera.h"
 #include "framework/MainLoopController.h"
 #include "framework/Tokeniser.h"
-#include "framework/LoggingInstance.h"
 
 #include <Eris/View.h>
 #include <OgreSceneNode.h>
-
-#include <sstream>
 
 namespace Ember
 {

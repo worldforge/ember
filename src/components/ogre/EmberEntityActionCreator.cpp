@@ -30,8 +30,6 @@
 #include "CompositionAction.h"
 #include "components/ogre/environment/OceanAction.h"
 #include "components/ogre/widgets/LabelAction.h"
-#include "components/entitymapping/Cases/CaseBase.h"
-#include "domain/EmberEntity.h"
 
 using namespace Ember::EntityMapping;
 

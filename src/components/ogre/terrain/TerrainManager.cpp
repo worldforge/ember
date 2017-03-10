@@ -36,7 +36,6 @@
 
 #include "foliage/Vegetation.h"
 
-#include "framework/LoggingInstance.h"
 #include "framework/TimeFrame.h"
 
 #include "services/config/ConfigService.h"
@@ -54,8 +53,6 @@
 #include <io.h> // for _access, Win32 version of stat()
 #include <direct.h> // for _mkdir
 #endif
-
-#include <limits>
 
 #include <sigc++/bind.h>
 

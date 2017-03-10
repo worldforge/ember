@@ -40,15 +40,11 @@
 #include <CEGUI/Window.h>
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/widgets/Listbox.h>
-#include <CEGUI/widgets/ListboxTextItem.h>
 #include <CEGUI/widgets/PushButton.h>
 
 #include <Eris/TypeInfo.h>
 
 #include <Atlas/PresentationBridge.h>
-#include <Atlas/Message/Element.h>
-
-#include <sstream>
 
 
 namespace Ember {

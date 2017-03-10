@@ -34,20 +34,16 @@
 #include "framework/osdir.h"
 
 #include <Atlas/MultiLineListFormatter.h>
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Ogre.h>
-#include <wfmath/axisbox.h>
 #include <wfmath/atlasconv.h>
 #include <wfmath/stream.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
-#else
-#include <dirent.h>
 #endif
 
 using namespace Atlas::Message;

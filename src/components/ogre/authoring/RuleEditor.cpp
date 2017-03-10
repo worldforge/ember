@@ -29,7 +29,6 @@
 #include <Eris/Account.h>
 #include <Eris/Response.h>
 
-#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 
 using Atlas::Objects::Root;

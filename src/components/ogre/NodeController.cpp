@@ -22,8 +22,6 @@
 #include "components/ogre/MotionManager.h"
 #include "components/ogre/NodeAttachment.h"
 
-#include <sigc++/signal.h>
-
 namespace Ember
 {
 namespace OgreView

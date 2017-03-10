@@ -20,7 +20,6 @@
 
 #include "services/config/ConfigService.h"
 
-#include <OgreBuildSettings.h>
 #include <OgreRoot.h>
 
 #ifdef OGRE_STATIC_LIB

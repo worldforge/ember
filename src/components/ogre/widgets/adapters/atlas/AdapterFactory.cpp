@@ -25,7 +25,6 @@
 #endif
 
 #include "AdapterFactory.h"
-#include "StringAdapter.h"
 #include "NumberAdapter.h"
 #include "SizeAdapter.h"
 #include "MapAdapter.h"
@@ -37,10 +36,7 @@
 #include "AreaAdapter.h"
 #include "PolygonAdapter.h"
 #include "TerrainModAdapter.h"
-#include <CEGUI/CEGUI.h>
 #include "components/ogre/GUIManager.h"
-#include "framework/LoggingInstance.h"
-#include <Eris/Entity.h>
 
 using namespace CEGUI;
 

@@ -29,39 +29,24 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include "services/input/Input.h"
 
-#include "framework/LoggingInstance.h"
 #include "framework/Time.h"
 #include "framework/MainLoopController.h"
 
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
 #include <CEGUI/RendererModules/Ogre/ResourceProvider.h>
 #include <CEGUI/CEGUI.h>
-#include <CEGUI/widgets/Combobox.h>
-#include <CEGUI/widgets/ListboxTextItem.h>
-#include <CEGUI/widgets/ToggleButton.h>
 
 
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 #include <OgreWindowEventUtilities.h>
-#include <OgreStringConverter.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 //Needed for preventing resize of window
 #include <X11/Xutil.h>
 #endif
 
-#include <SDL_syswm.h>
-#include <SDL_keyboard.h>
-
-#include <stdexcept>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <memory>
-#include <chrono>
 #include <thread>
 
 namespace Ember

@@ -22,8 +22,6 @@
 #include "TaskUnit.h"
 #include "framework/LoggingInstance.h"
 
-#include <thread>
-
 namespace Ember
 {
 

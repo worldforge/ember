@@ -24,9 +24,6 @@
 #include "config.h"
 #endif
 
-#include "MatchBase.h"
-#include "../ChangeContext.h"
-
 namespace Ember {
 
 

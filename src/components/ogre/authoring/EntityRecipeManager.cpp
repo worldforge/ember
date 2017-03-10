@@ -26,9 +26,6 @@
 #endif
 
 #include "EntityRecipeManager.h"
-#include "EntityRecipe.h"
-#include "framework/tinyxml/tinyxml.h"
-#include "components/ogre/XMLHelper.h"
 
 template<> Ember::OgreView::Authoring::EntityRecipeManager* Ember::Singleton<Ember::OgreView::Authoring::EntityRecipeManager>::ms_Singleton = 0;
 

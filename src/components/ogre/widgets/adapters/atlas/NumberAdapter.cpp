@@ -28,7 +28,6 @@
 #include "../../ColouredListItem.h"
 
 #include <wfmath/const.h>
-#include <cstdlib>
 
 namespace Ember {
 namespace OgreView {

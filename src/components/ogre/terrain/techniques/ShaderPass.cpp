@@ -21,18 +21,9 @@
 #include "Shader.h"
 
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
-#include "framework/LoggingInstance.h"
 
-#include <OgreTexture.h>
 #include <OgreRoot.h>
-#include <OgreTextureManager.h>
-#include <OgreTextureUnitState.h>
-#include <OgrePass.h>
-#include <OgreRenderSystem.h>
 #include <OgreShadowCameraSetupPSSM.h>
-
-#include <algorithm>
-#include <cmath>
 
 namespace Ember
 {

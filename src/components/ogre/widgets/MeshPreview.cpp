@@ -33,18 +33,11 @@
 
 
 #include <CEGUI/widgets/Listbox.h>
-#include <CEGUI/widgets/ListboxItem.h>
-#include <CEGUI/widgets/ListboxTextItem.h>
 #include <CEGUI/widgets/Editbox.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/Slider.h>
 
-#include "framework/Exception.h"
-
 #include <OgreSceneManager.h>
-#include <OgreAnimationState.h>
-#include <OgreVector3.h>
-#include <OgreCamera.h>
 #include <OgreEntity.h>
 
 namespace Ember {

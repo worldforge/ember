@@ -21,10 +21,8 @@
  */
 
 #include "XMLLodDefinitionSerializer.h"
-#include "LodDefinition.h"
 
 #include "components/ogre/XMLHelper.h"
-#include "framework/tinyxml/tinyxml.h"
 #include "framework/osdir.h"
 
 #include <OgreStringConverter.h>

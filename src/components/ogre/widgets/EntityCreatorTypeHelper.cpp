@@ -31,15 +31,12 @@
 #include "adapters/eris/RuleTreeAdapter.h"
 
 #include "../EmberOgre.h"
-#include "../Convert.h"
 #include "../Avatar.h"
 #include "domain/EmberEntity.h"
 #include "../World.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
-#include "framework/LoggingInstance.h"
-#include "framework/ConsoleBackend.h"
 
 #include <Eris/TypeService.h>
 #include <Eris/Connection.h>
@@ -47,15 +44,8 @@
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Message/Element.h>
-
-#include <wfmath/atlasconv.h>
-
 #include <CEGUI/Window.h>
 #include <CEGUI/widgets/Listbox.h>
-#include <CEGUI/widgets/ListboxItem.h>
-#include <CEGUI/widgets/ListboxTextItem.h>
 #include <CEGUI/widgets/Editbox.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/Tree.h>

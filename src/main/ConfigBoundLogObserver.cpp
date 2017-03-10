@@ -26,7 +26,6 @@
 
 #include "ConfigBoundLogObserver.h"
 
-#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
 namespace Ember {

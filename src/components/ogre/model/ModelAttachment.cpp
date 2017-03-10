@@ -20,32 +20,22 @@
 #include "domain/IGraphicalRepresentation.h"
 #include "domain/EmberEntity.h"
 #include "components/ogre/HiddenAttachment.h"
-#include "domain/IEntityAttachment.h"
-#include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/OgreInfo.h"
 #include "framework/AttributeObserver.h"
 #include "components/ogre/model/Model.h"
-#include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/ModelMount.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelBoneProvider.h"
 #include "components/ogre/model/ModelFitting.h"
 
-#include <Atlas/Message/Element.h>
-
 #include <Eris/TypeInfo.h>
-#include <Eris/Entity.h>
 
-#include <OgreVector3.h>
 #include <OgreManualObject.h>
 
 #include <sigc++/bind.h>
-#include <sigc++/slot.h>
-#include <sigc++/signal.h>
-#include <sigc++/connection.h>
 
 namespace Ember
 {

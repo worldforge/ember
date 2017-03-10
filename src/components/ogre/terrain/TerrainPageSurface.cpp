@@ -33,7 +33,6 @@
 #include "../Convert.h"
 #include <OgreMaterialManager.h>
 #include <OgreRoot.h>
-#include <OgreSceneManager.h>
 
 namespace Ember
 {

@@ -27,7 +27,6 @@
 #include "LayoutHelper.h"
 #include "components/ogre/GUIManager.h"
 #include <CEGUI/WindowManager.h>
-#include <sstream>
 
 namespace Ember {
 namespace OgreView {

@@ -33,13 +33,10 @@
 #include "../terrain/TerrainShader.h"
 #include "../terrain/TerrainPageSurfaceLayer.h"
 #include "../terrain/TerrainPageSurface.h"
-#include "../terrain/TerrainPage.h"
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainLayerDefinitionManager.h"
 
 #include "pagedgeometry/include/PagedGeometry.h"
-#include "framework/LoggingInstance.h"
-#include <wfmath/point.h>
 
 using namespace Ember::OgreView::Terrain;
 

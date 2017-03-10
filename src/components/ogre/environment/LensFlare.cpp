@@ -27,12 +27,10 @@
 #include "LensFlare.h"
 #include "domain/EmberEntity.h"
 
-#include <OgreColourValue.h>
 #include <OgreVector3.h>
 #include <OgreSceneManager.h>
 #include <OgreBillboard.h>
 #include <OgreBillboardSet.h>
-#include <OgreSceneNode.h>
 
 using namespace Ogre;
 

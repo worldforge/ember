@@ -22,15 +22,10 @@
 
 #include "framework/LoggingInstance.h"
 
-#include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
 #include <Mercator/Terrain.h>
 
 #include <wfmath/MersenneTwister.h>
-
-#include <sstream>
-#include <algorithm>
-#include <cassert>
 
 namespace Ember
 {

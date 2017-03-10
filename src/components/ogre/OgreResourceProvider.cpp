@@ -25,7 +25,6 @@
 #endif
 
 #include "OgreResourceProvider.h"
-#include "framework/Exception.h"
 #include <OgreResourceGroupManager.h>
 
 namespace Ember {

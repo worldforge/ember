@@ -36,7 +36,6 @@
 #include "../model/Model.h"
 #include "../SimpleRenderContext.h"
 
-#include "framework/Exception.h"
 #include <OgreBitwise.h>
 
 

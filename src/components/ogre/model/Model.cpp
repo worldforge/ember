@@ -24,15 +24,10 @@
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
-#include "AnimationSet.h"
-#include "ModelAction.h"
-#include "ParticleSystem.h"
 #include "ParticleSystemBinding.h"
-#include "ModelPart.h"
 
 #include "components/ogre/EmberOgre.h"
 #include "ModelDefinitionManager.h"
-#include "ModelDefinition.h"
 #include "ModelBackgroundLoader.h"
 
 
@@ -41,13 +36,10 @@
 
 #include <OgreTagPoint.h>
 #include <OgreMeshManager.h>
-#include <OgreResourceBackgroundQueue.h>
 #include <OgreSceneManager.h>
-#include <OgreAnimationState.h>
 #include <OgreSubEntity.h>
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
-#include <OgreMaterialManager.h>
 
 namespace Ember
 {

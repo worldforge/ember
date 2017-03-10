@@ -46,17 +46,11 @@
 
 #include <SDL.h>
 #include <SDL_syswm.h>
-#include <SDL_keyboard.h>
-#include <SDL_video.h>
 
 #ifndef __APPLE__
 #ifndef _WIN32
-#include <X11/Xlib.h>
 #endif
 #endif
-
-#include <sstream>
-#include <algorithm>
 
 template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
 using boost::posix_time::microsec_clock;

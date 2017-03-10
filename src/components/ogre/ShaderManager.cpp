@@ -32,13 +32,7 @@
 #include "framework/Tokeniser.h"
 #include "services/config/ConfigService.h"
 
-#include <list>
-#include <exception>
-#include <algorithm>
-#include <cctype>
-
 #include <OgreMaterialManager.h>
-#include <OgreMaterial.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 

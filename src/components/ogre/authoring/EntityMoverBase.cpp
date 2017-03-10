@@ -28,7 +28,6 @@
 #include "domain/EmberEntity.h"
 #include "components/ogre/Convert.h"
 
-#include <Eris/Entity.h>
 #include <OgreSceneNode.h>
 
 namespace Ember

@@ -28,7 +28,6 @@
 #include <sstream>
 #include <chrono>
 #include <iomanip>
-#include <ctime>
 
 namespace Ember
 {

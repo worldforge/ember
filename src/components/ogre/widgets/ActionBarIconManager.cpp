@@ -27,19 +27,14 @@
 #include "ActionBarIconManager.h"
 #include "../GUIManager.h"
 #include "ActionBarIcon.h"
-#include "ActionBarIconSlot.h"
-#include "icons/Icon.h"
 
 #include "services/config/ConfigService.h"
 #include "services/serversettings/ServerSettings.h"
 #include "services/serversettings/ServerSettingsCredentials.h"
-#include "services/EmberServices.h"
 
 #include <Eris/ServerInfo.h>
 
 #include <CEGUI/CEGUI.h>
-#include <CEGUI/PropertyHelper.h>
-#include <CEGUI/Image.h>
 
 namespace Ember {
 namespace OgreView {

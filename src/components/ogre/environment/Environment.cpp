@@ -31,7 +31,6 @@
 #include "components/ogre/terrain/TerrainHandler.h"
 #include "framework/Tokeniser.h"
 #include <OgreStringConverter.h>
-#include <OgreColourValue.h>
 #include <OgreSceneManager.h>
 
 namespace Ember

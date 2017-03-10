@@ -21,17 +21,13 @@
 #endif
 
 #include "ConnectingState.h"
-#include "ConnectedState.h"
 #include "ServerServiceSignals.h"
 #include "ServerServiceConnectionListener.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
 
-#include <Eris/Connection.h>
 #include <Eris/Exceptions.h>
-
-#include <sstream>
 
 namespace Ember
 {

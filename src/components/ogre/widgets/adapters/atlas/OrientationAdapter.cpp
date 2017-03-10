@@ -25,11 +25,8 @@
 #endif
 
 #include "OrientationAdapter.h"
-#include "../ValueTypeHelper.h"
 #include <wfmath/quaternion.h>
 #include <wfmath/atlasconv.h>
-
-#include <cstdlib>
 
 namespace Ember {
 namespace OgreView {

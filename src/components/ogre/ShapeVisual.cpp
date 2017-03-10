@@ -28,7 +28,6 @@
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
-#include <wfmath/segment.h>
 
 namespace Ember
 {

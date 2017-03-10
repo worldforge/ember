@@ -18,8 +18,6 @@
 
 #include "Image.h"
 
-#include "Buffer.h"
-
 namespace Ember
 {
 namespace OgreView

@@ -24,8 +24,6 @@
 #include "config.h"
 #endif
 
-#include "NumericComparer.h"
-
 namespace Ember {
 
 

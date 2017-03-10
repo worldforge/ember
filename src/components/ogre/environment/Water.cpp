@@ -25,19 +25,13 @@
 #endif
 
 #include "Water.h"
-#include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include "components/ogre/EmberOgre.h"
 #include <OgreSceneManager.h>
-#include <OgreColourValue.h>
 #include <OgreRenderTargetListener.h>
-#include <OgrePlane.h>
 #include <OgreEntity.h>
 #include <OgreRoot.h>
-#include <OgreRenderSystem.h>
 #include <OgreMeshManager.h>
 #include <OgreGpuProgramManager.h>
-#include <OgreMaterialManager.h>
 #include <OgreHardwarePixelBuffer.h>
 
 using namespace Ogre;

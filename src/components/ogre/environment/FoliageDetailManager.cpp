@@ -24,8 +24,6 @@
 
 #include "services/config/ConfigListenerContainer.h"
 
-#include <cmath>
-
 namespace Ember
 {
 namespace OgreView

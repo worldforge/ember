@@ -25,11 +25,8 @@
 #endif
 
 #include "TypeResolving.h"
-#include "components/lua/Connectors.h"
 
 #include "components/ogre/MousePicker.h"
-#include "components/ogre/EntityWorldPickListener.h"
-
 
 
 namespace Ember

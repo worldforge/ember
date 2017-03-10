@@ -34,8 +34,6 @@
 #include <OgreCamera.h>
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
-#include <OgreRenderSystem.h>
-#include <OgreRenderTarget.h>
 
 namespace Ember
 {

@@ -27,13 +27,11 @@
 #include "NonConnectedState.h"
 
 #include <Eris/Session.h>
-#include <boost/asio.hpp>
 
 //Needed for the "access" function.
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #else
-#include <unistd.h>
 #endif
 
 namespace Ember

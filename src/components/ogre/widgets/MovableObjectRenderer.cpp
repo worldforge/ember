@@ -27,18 +27,11 @@
 #include "MovableObjectRenderer.h"
 
 #include "EntityCEGUITexture.h"
-#include "../SimpleRenderContext.h"
-
-#include "framework/Exception.h"
 
 #include <CEGUI/Window.h>
-#include <CEGUI/PropertyHelper.h>
 
 #include <OgreRoot.h>
-#include <OgreSceneNode.h>
 #include <OgreEntity.h>
-#include <OgreRenderTexture.h>
-#include <OgreTexture.h>
 #include <OgreRenderTargetListener.h>
 
 using namespace Ember;

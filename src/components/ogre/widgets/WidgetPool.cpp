@@ -24,8 +24,6 @@
 #include "config.h"
 #endif
 
-#include "WidgetPool.h"
-
 namespace Ember {
 namespace OgreView {
 

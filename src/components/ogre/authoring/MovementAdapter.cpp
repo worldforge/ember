@@ -26,7 +26,6 @@
 
 #include "MovementAdapter.h"
 #include "IMovementBridge.h"
-#include "EntityMoveManager.h"
 #include "components/ogre/camera/MainCamera.h"
 #include "../AvatarTerrainCursor.h"
 #include "../Convert.h"

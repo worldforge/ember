@@ -33,9 +33,7 @@
 #include "MousePicker.h"
 
 #include <OgreSceneQuery.h>
-#include <OgreRay.h>
 #include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
 #include <OgreEntity.h>
 
 #include <Eris/View.h>

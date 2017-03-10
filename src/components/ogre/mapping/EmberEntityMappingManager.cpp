@@ -25,7 +25,6 @@
 #endif
 
 #include "EmberEntityMappingManager.h"
-#include "framework/tinyxml/tinyxml.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"

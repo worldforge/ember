@@ -33,16 +33,7 @@
 #include <fstream>
 #include <ostream>
 #else
-#include <dirent.h>
-#include <unistd.h>
 #endif
-
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <iostream>
-
-#include "framework/binreloc.h" //this is needed for binreloc functionality
 
 extern "C"
 int main(int argc, char **argv)

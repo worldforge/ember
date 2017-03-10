@@ -22,8 +22,6 @@
 
 #include "EmberTerrain.h"
 
-#include "components/ogre/TerrainPageDataProvider.h"
-
 namespace Ember
 {
 namespace OgreView

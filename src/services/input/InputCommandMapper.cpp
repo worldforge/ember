@@ -32,8 +32,6 @@
 
 #include <SDL_keyboard.h>
 
-#include <algorithm>
-
 namespace Ember {
 
 

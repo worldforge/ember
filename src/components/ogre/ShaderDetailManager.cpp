@@ -23,9 +23,6 @@
 
 #include "framework/LoggingInstance.h"
 
-#include <sigc++/signal.h>
-#include <cmath>
-
 namespace Ember
 {
 namespace OgreView

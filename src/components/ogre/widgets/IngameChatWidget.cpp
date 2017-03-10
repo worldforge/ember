@@ -27,7 +27,6 @@
 
 #include "IngameChatWidget.h"
 #include "QuickHelp.h"
-#include "HelpMessage.h"
 
 #include "../GUIManager.h"
 #include "domain/EmberEntity.h"
@@ -51,17 +50,13 @@
 #include <CEGUI/Font.h>
 #include <CEGUI/Window.h>
 #include <CEGUI/widgets/Listbox.h>
-#include <CEGUI/widgets/ListboxTextItem.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/FrameWindow.h>
 #include <CEGUI/widgets/LayoutContainer.h>
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
-#include <Eris/TypeService.h>
 #include <Eris/Connection.h>
 #include <Eris/Avatar.h>
-
-#include <sigc++/slot.h>
 
 #include <OgreCamera.h>
 #include <OgreNode.h>

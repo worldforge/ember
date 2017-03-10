@@ -23,7 +23,6 @@
 #include "components/ogre/OgreInfo.h"
 
 #include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
 
 #include <wfmath/const.h>
 

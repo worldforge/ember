@@ -17,10 +17,8 @@
  */
 
 #include "AuthoringVisualizationCollisionDetector.h"
-#include <OgreMath.h>
 #include <OgreEntity.h>
 #include <OgreRay.h>
-#include <OgreVector3.h>
 
 namespace Ember
 {

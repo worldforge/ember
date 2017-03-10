@@ -23,7 +23,6 @@
 #include "TerrainPageGeometry.h"
 
 #include <OgreTextureManager.h>
-#include <OgreImage.h>
 #include <OgreRoot.h>
 #include <OgreHardwarePixelBuffer.h>
 

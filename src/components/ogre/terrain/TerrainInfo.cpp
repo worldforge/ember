@@ -26,8 +26,6 @@
 
 #include "TerrainInfo.h"
 #include <Mercator/BasePoint.h>
-#include <cmath>
-#include <algorithm>
 
 namespace Ember {
 namespace OgreView {

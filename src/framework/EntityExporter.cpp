@@ -26,10 +26,7 @@
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
 #include <Eris/Response.h>
-#include <Eris/ServerInfo.h>
 #include <Eris/Avatar.h>
-
-#include <sstream>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;

@@ -19,14 +19,12 @@
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #else
-#include <dirent.h>
 #endif
 
 #include <Eris/View.h>
 #include <Eris/EventService.h>
 #include <Eris/Session.h>
 
-#include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
@@ -39,7 +37,6 @@
 #include "services/input/Input.h"
 #include "services/serversettings/ServerSettings.h"
 
-#include "framework/ConsoleBackend.h"
 #include "framework/ShutdownException.h"
 #include "framework/TimeFrame.h"
 #include "framework/FileResourceProvider.h"
@@ -70,16 +67,7 @@ TOLUA_API int tolua_ConnectorDefinitions_open(lua_State* tolua_S);
 TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
 TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 
-#include <iostream>
-#include <sstream>
-#include <stdio.h>
-#include <list>
-
-#include "framework/osdir.h"
-#include <sys/stat.h>
-
 #include <boost/thread.hpp>
-#include <boost/asio.hpp>
 
 #ifndef HAVE_SIGHANDLER_T
 typedef void (*sighandler_t)(int);
@@ -87,7 +75,6 @@ typedef void (*sighandler_t)(int);
 
 extern "C"
 {
-#include <signal.h>    /* signal name macros, and the signal() prototype */
 
 sighandler_t oldSignals[NSIG];
 }

@@ -66,11 +66,7 @@
 #include "components/navigation/external/RecastDetour/DetourTileCache/Include/DetourTileCacheBuilder.h"
 
 #include <OgreManualObject.h>
-#include <OgreColourValue.h>
-#include <OgreMath.h>
 #include <OgreSceneManager.h>
-
-#include <sstream>
 
 namespace Ember
 {

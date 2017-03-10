@@ -28,13 +28,9 @@
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
 #include "components/ogre/terrain/TerrainPageGeometry.h"
 #include "components/ogre/terrain/TerrainPageShadow.h"
-#include "components/ogre/terrain/OgreImage.h"
 
 #include <OgreTechnique.h>
-#include <OgrePass.h>
-#include <OgreTextureUnitState.h>
 #include <OgreRoot.h>
-#include <OgreTextureManager.h>
 #include <OgreHardwarePixelBuffer.h>
 
 namespace Ember

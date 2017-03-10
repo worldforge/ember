@@ -26,9 +26,6 @@
 
 #include "EntityTypeMatch.h"
 
-#include "AbstractMatch.h"
-#include "../Cases/EntityTypeCase.h"
-
 namespace Ember {
 
 

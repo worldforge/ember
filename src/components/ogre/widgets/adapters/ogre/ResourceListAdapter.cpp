@@ -26,7 +26,6 @@
 #include "components/ogre/widgets/ColouredListItem.h"
 
 #include <OgreResourceManager.h>
-#include <OgreResource.h>
 
 namespace Ember
 {

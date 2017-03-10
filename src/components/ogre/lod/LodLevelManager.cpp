@@ -23,8 +23,6 @@
 
 #include <OgreCamera.h>
 
-#include <sigc++/signal.h>
-
 namespace Ember
 {
 namespace OgreView

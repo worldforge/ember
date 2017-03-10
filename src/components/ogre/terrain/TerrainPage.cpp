@@ -35,19 +35,10 @@
 #include "../EmberOgre.h"
 #include "../Convert.h"
 
-#include "TerrainInfo.h"
-#include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
-#include "ITerrainAdapter.h"
 
-#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
-
-#include "framework/osdir.h"
-
-#include <wfmath/axisbox.h>
-#include <wfmath/vector.h>
 
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>

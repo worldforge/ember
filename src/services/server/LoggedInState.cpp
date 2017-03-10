@@ -22,7 +22,6 @@
 
 #include "LoggedInState.h"
 #include "ServerServiceSignals.h"
-#include "EnteredWorldState.h"
 #include "TransferInfoStringSerializer.h"
 #include "AvatarTransferInfo.h"
 
@@ -38,11 +37,6 @@
 #include <Eris/Entity.h>
 #include <Eris/EventService.h>
 
-#include <Atlas/Objects/RootEntity.h>
-
-#include <wfmath/timestamp.h>
-
-#include <iostream>
 #include <fstream>
 
 #include <sigc++/bind.h>

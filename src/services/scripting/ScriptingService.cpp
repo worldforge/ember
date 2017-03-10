@@ -31,7 +31,6 @@
 #include "framework/IScriptingProvider.h"
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
-#include "framework/Exception.h"
 
 namespace Ember {
 

@@ -24,8 +24,6 @@
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/World.h"
 
-#include "framework/LoggingInstance.h"
-
 namespace Ember
 {
 namespace OgreView

@@ -18,10 +18,8 @@
 
 #include "SimpleWaterCollisionDetector.h"
 #include "SimpleWater.h"
-#include <OgreMath.h>
 #include <OgrePlane.h>
 #include <OgreRay.h>
-#include <OgreVector3.h>
 
 namespace Ember
 {

@@ -28,7 +28,6 @@
 #include "EntityCreatorCreationInstance.h"
 #include "components/ogre/authoring/DetachedEntity.h"
 #include <OgreSceneNode.h>
-#include "../Convert.h"
 
 namespace Ember
 {

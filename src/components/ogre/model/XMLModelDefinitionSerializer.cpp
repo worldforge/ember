@@ -27,14 +27,12 @@
 #endif
 
 #include "XMLModelDefinitionSerializer.h"
-#include "ModelDefinition.h"
 #include "Model.h"
 #include "components/ogre/XMLHelper.h"
 
 #include "ModelDefinitionManager.h"
 
 #include <OgreStringConverter.h>
-#include <limits>
 
 #ifdef WIN32
 	#include <tchar.h>

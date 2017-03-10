@@ -32,28 +32,14 @@
 
 #include "components/ogre/terrain/ITerrainAdapter.h"
 
-#include "services/config/ConfigListenerContainer.h"
-#include "services/input/Input.h"
-
 #include "framework/Tokeniser.h"
 
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 #include <OgreCompositorManager.h>
 #include <OgreCompositorInstance.h>
-#include <OgreCompositionTechnique.h>
 #include <OgreCompositionTargetPass.h>
 #include <OgreCompositionPass.h>
-#include <OgreRenderSystem.h>
-#include <OgreRenderSystemCapabilities.h>
-#include <OgreSceneQuery.h>
-
-#include <OgreMath.h>
-#include <OgreRay.h>
-#include <OgreVector3.h>
-
-#include <memory>
-#include <algorithm>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"

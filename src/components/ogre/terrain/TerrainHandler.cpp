@@ -39,7 +39,6 @@
 #include "TerrainAreaAddTask.h"
 #include "TerrainAreaRemoveTask.h"
 #include <components/ogre/terrain/TerrainModUpdateTask.h>
-#include "TerrainModUpdateTask.h"
 #include "TerrainUpdateTask.h"
 
 #include "TerrainLayerDefinitionManager.h"
@@ -58,20 +57,13 @@
 
 #include "framework/tasks/TaskQueue.h"
 #include "framework/tasks/SerialTask.h"
-#include "framework/tasks/TemplateNamedTask.h"
 #include "framework/tasks/TaskExecutionContext.h"
-#include "framework/TimeFrame.h"
 #include "framework/MainLoopController.h"
 
 #include <Eris/EventService.h>
 
-#include <Mercator/Area.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
-#include <Mercator/TerrainMod.h>
-
-#include <wfmath/intersect.h>
-#include <wfmath/point.h>
 
 #include <sigc++/bind.h>
 

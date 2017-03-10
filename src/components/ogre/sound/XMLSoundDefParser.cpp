@@ -22,7 +22,6 @@
 #include "XMLSoundDefParser.h"
 
 #include "SoundGroupDefinition.h"
-#include "SoundDefinition.h"
 #include "SoundDefinitionManager.h"
 #include "components/ogre/XMLHelper.h"
 #ifdef _WIN32

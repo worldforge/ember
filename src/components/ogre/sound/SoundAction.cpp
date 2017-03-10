@@ -28,15 +28,9 @@
 #include "SoundDefinitionManager.h"
 
 #include "services/EmberServices.h"
-#include "framework/LoggingInstance.h"
 
 #include "services/sound/SoundService.h"
-#include "services/sound/SoundInstance.h"
 #include "services/sound/SoundSource.h"
-
-#include <map>
-#include <cstring>
-#include <sstream>
 
 using namespace Ember;
 

@@ -22,8 +22,6 @@
 
 #include "SoundSample.h"
 
-#include "framework/LoggingInstance.h"
-
 #include "SoundSource.h"
 
 

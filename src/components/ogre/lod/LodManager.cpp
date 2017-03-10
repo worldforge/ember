@@ -21,7 +21,6 @@
  */
 
 #include "LodManager.h"
-#include "LodDefinition.h"
 #include "LodDefinitionManager.h"
 #include "ScaledPixelCountLodStrategy.h"
 

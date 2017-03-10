@@ -26,7 +26,6 @@
 #endif
 
 #include "AvatarTerrainCursor.h"
-#include "EmberOgrePrerequisites.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "EmberOgre.h"
@@ -36,7 +35,6 @@
 
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
-#include <OgreSceneQuery.h>
 
 namespace Ember {
 namespace OgreView {

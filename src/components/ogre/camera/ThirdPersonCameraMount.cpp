@@ -21,8 +21,6 @@
 #include "components/ogre/OgreInfo.h"
 #include "components/ogre/terrain/ITerrainAdapter.h"
 #include "framework/Tokeniser.h"
-#include "services/EmberServices.h"
-#include "services/config/ConfigListenerContainer.h"
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>

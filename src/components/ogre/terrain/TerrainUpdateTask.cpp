@@ -20,14 +20,9 @@
 #include "TerrainHandler.h"
 #include "TerrainDefPoint.h"
 #include "TerrainInfo.h"
-#include "ITerrainAdapter.h"
 #include "SegmentManager.h"
-#include "framework/LoggingInstance.h"
 #include <Mercator/Terrain.h>
-#include <Mercator/BasePoint.h>
-#include <wfmath/axisbox.h>
 #include <OgreAxisAlignedBox.h>
-#include <sstream>
 
 namespace Ember
 {

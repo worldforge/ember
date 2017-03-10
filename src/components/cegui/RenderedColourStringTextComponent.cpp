@@ -47,7 +47,6 @@
 
 #include "RenderedColourStringTextComponent.h"
 
-#include <CEGUI/RenderedStringTextComponent.h>
 #include <CEGUI/System.h>
 #include <CEGUI/GUIContext.h>
 #include <CEGUI/Exceptions.h>

@@ -20,14 +20,12 @@
 #include "IHeightMapSegment.h"
 #include "framework/LoggingInstance.h"
 #include <wfmath/vector.h>
-#include <cmath>
 
 //MSVC 11.0 doesn't support std::lround so we'll use boost. When MSVC gains support for std::lround this could be removed.
 #ifdef _MSC_VER
 #include <boost/math/special_functions/round.hpp>
 #define I_ROUND(_x) (boost::math::lround(_x))
 #else
-#include <cmath>
 #define I_ROUND(_x) (std::lround(_x))
 #endif
 

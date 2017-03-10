@@ -26,8 +26,6 @@
 
 #include <Eris/EventService.h>
 
-#include <cassert>
-
 namespace Ember
 {
 

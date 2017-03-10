@@ -31,8 +31,6 @@
 #include "Tokeniser.h"
 #include "CommandHistory.h"
 
-#include <sstream>
-
 template<> Ember::ConsoleBackend* Ember::Singleton<Ember::ConsoleBackend>::ms_Singleton = 0;
 
 namespace Ember {

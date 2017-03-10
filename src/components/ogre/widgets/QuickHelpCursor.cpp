@@ -22,7 +22,6 @@
 //
 #include "QuickHelpCursor.h"
 #include "QuickHelp.h"
-#include "HelpMessage.h"
 
 namespace Ember
 {

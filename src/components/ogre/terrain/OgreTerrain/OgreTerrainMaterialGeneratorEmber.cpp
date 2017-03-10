@@ -19,8 +19,6 @@
 #include "OgreTerrainMaterialGeneratorEmber.h"
 #include "EmberTerrain.h"
 #include "../techniques/Shader.h"
-#include "../../TerrainPageDataProvider.h"
-#include "framework/LoggingInstance.h"
 
 using namespace Ogre;
 

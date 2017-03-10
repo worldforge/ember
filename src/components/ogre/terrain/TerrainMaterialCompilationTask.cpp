@@ -17,20 +17,15 @@
  */
 
 #include "TerrainMaterialCompilationTask.h"
-#include "Types.h"
 #include "TerrainPage.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainPageSurface.h"
 #include "TerrainPageShadow.h"
 #include "TerrainPageGeometry.h"
 
-#include "framework/LoggingInstance.h"
 #include "framework/TimedLog.h"
 
 #include <OgreRoot.h>
-#include <OgreSceneManager.h>
-
-#include <sstream>
 
 namespace Ember
 {

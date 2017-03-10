@@ -27,12 +27,7 @@
 #include "ListHolder.h"
 
 #include <CEGUI/widgets/Listbox.h>
-#include <CEGUI/widgets/ListboxItem.h>
 #include <CEGUI/widgets/Editbox.h>
-
-#include "framework/Exception.h"
-
-#include <algorithm>
 
 namespace Ember {
 namespace OgreView {

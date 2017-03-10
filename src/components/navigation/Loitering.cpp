@@ -26,7 +26,6 @@
 #include <Eris/Avatar.h>
 #include <Eris/Entity.h>
 
-#include <wfmath/vector.h>
 #include <wfmath/rotbox.h>
 #include <wfmath/intersect.h>
 

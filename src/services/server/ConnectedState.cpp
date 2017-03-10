@@ -21,7 +21,6 @@
 #endif
 
 #include "ConnectedState.h"
-#include "AccountAvailableState.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"

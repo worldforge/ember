@@ -26,7 +26,6 @@
 #include "SubModelPart.h"
 #include "ModelDefinitionManager.h"
 #include <OgreSceneManager.h>
-#include <OgreEntity.h>
 #include <OgreSubEntity.h>
 
 namespace Ember {

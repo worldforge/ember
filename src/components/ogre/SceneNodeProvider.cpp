@@ -17,7 +17,6 @@
  */
 
 #include "SceneNodeProvider.h"
-#include "OgreInfo.h"
 
 #include <OgreSceneNode.h>
 #include <OgreMovableObject.h>

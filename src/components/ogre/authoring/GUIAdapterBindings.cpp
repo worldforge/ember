@@ -25,9 +25,6 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
-#include <Atlas/Message/Element.h>
-#include <sstream>
-#include <stdexcept>
 
 namespace Ember
 {

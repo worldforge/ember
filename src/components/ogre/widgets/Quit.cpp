@@ -28,9 +28,7 @@
 
 #include "../GUIManager.h"
 
-#include "framework/ConsoleBackend.h"
 #include "framework/MainLoopController.h"
-#include "services/input/Input.h"
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 

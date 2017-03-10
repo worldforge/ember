@@ -26,7 +26,6 @@
 #include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
-#include "framework/LoggingInstance.h"
 
 namespace Ember
 {

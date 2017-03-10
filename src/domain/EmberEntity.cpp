@@ -33,12 +33,8 @@
 #include <Eris/View.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
-#include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/MultiLineListFormatter.h>
-
-#include <sstream>
-#include <unordered_map>
 
 namespace Ember
 {

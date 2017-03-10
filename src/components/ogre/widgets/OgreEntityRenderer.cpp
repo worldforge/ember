@@ -26,7 +26,6 @@
 
 #include "OgreEntityRenderer.h"
 #include "EntityCEGUITexture.h"
-#include "../SimpleRenderContext.h"
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>

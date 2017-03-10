@@ -26,7 +26,6 @@
 
 #include "IconBase.h"
 
-#include <CEGUI/widgets/FrameWindow.h>
 #include "../GUIManager.h"
 
 using namespace CEGUI;

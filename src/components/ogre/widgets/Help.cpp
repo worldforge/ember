@@ -27,8 +27,6 @@
 #include "Help.h"
 #include "QuickHelp.h"
 #include "../GUIManager.h"
-#include "framework/ConsoleBackend.h"
-#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
 #include "../EmberOgre.h"

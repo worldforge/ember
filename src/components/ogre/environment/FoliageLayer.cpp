@@ -25,8 +25,6 @@
 #endif
 
 #include "FoliageLayer.h"
-#include "pagedgeometry/include/PagedGeometry.h"
-#include "pagedgeometry/include/PropertyMaps.h"
 #include "../Convert.h"
 #include "../terrain/PlantAreaQuery.h"
 #include "../terrain/PlantAreaQueryResult.h"
@@ -34,7 +32,6 @@
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/PlantInstance.h"
 #include "framework/LoggingInstance.h"
-#include <wfmath/intersect.h>
 
 using namespace Forests;
 using namespace Ogre;

@@ -17,10 +17,7 @@
  */
 
 #include "ModelBoneProvider.h"
-#include "components/ogre/model/Model.h"
 #include "components/ogre/OgreInfo.h"
-#include "framework/Exception.h"
-#include <OgreMovableObject.h>
 #include <OgreNode.h>
 #include <OgreTagPoint.h>
 

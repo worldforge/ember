@@ -22,8 +22,6 @@
 
 #include "CursorWorldListener.h"
 
-#include "framework/Time.h"
-#include "framework/LoggingInstance.h"
 #include "framework/MainLoopController.h"
 #include "framework/TimeFrame.h"
 #include "components/ogre/camera/MainCamera.h"

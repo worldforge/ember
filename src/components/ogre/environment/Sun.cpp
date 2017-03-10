@@ -29,8 +29,6 @@
 #include "framework/Tokeniser.h"
 
 #include "framework/ConsoleBackend.h"
-#include "../EmberOgre.h"
-#include <OgreColourValue.h>
 #include <OgreVector3.h>
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>

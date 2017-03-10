@@ -30,18 +30,11 @@
 #include "lod/PMInjectorSignaler.h"
 
 // Headers to stop compile problems from headers
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <sys/types.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #else
-#include <dirent.h>
 #endif
-
-#include "EmberOgrePrerequisites.h"
 
 #include "World.h"
 
@@ -50,10 +43,7 @@
 #include "services/config/ConfigService.h"
 #include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
-#include "framework/ConsoleObject.h" //TODO: this will be included in a different class
-#include "framework/LoggingInstance.h"
 #include "framework/IScriptingProvider.h"
-#include "framework/Time.h"
 #include "framework/TimeFrame.h"
 
 #include "terrain/TerrainLayerDefinitionManager.h"
@@ -69,7 +59,6 @@
 //#include "carpenter/BluePrint.h"
 
 #include "model/ModelDefinitionManager.h"
-#include "model/ModelDefinition.h"
 #include "model/ModelRepresentationManager.h"
 #include "mapping/EmberEntityMappingManager.h"
 
@@ -83,9 +72,6 @@
 #include "ShaderDetailManager.h"
 #include "AutoGraphicsLevelManager.h"
 
-#include "framework/osdir.h"
-
-#include "framework/Exception.h"
 #include "OgreLogObserver.h"
 #include "OgreResourceLoader.h"
 #include "authoring/ConsoleDevTools.h"
@@ -103,19 +89,13 @@
 #include "MediaUpdater.h"
 
 #include "main/Application.h"
-#include "services/input/InputCommandMapper.h"
-#include "services/input/Input.h"
 
 #include "OgreResourceProvider.h"
-
-#include "framework/Log.h"
 
 #include <Eris/Connection.h>
 #include <Eris/View.h>
 
-#include <OgreSceneManager.h>
 #include <OgreOverlaySystem.h>
-#include <OgreQueuedProgressiveMeshGenerator.h>
 
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
 

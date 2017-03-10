@@ -28,7 +28,6 @@
 #include "OgreSetup.h"
 #include "OgreInfo.h"
 #include "OgreConfigurator.h"
-#include "OgrePluginLoader.h"
 #include "MeshSerializerListener.h"
 #include "lod/ScaledPixelCountLodStrategy.h"
 
@@ -48,16 +47,10 @@
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
-#else
-#include "framework/binreloc.h"
-#ifndef __APPLE__
-#include <GL/glx.h>
-#endif
 #endif
 
 #include <OgreRenderWindow.h>
 #include <OgreMeshManager.h>
-#include <OgreAnimation.h>
 #include <OgreStringConverter.h>
 #include <OgreSceneManager.h>
 #include <OgreOverlaySystem.h>
@@ -65,8 +58,6 @@
 
 
 #include <SDL.h>
-#include <SDL_syswm.h>
-#include <SDL_keyboard.h>
 
 namespace Ember
 {

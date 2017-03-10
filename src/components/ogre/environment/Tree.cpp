@@ -27,7 +27,6 @@
 
 #include "meshtree/TParameters.h"
 #include "meshtree/MeshTree.h"
-#include "../OgreIncludes.h"
 #include "Tree.h"
 
 namespace Ember {

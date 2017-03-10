@@ -45,37 +45,25 @@
 
 #include "components/lua/LuaScriptingProvider.h"
 
-#include "services/input/Input.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/server/ServerServiceSignals.h"
 
-#include "framework/IScriptingProvider.h"
-#include "framework/Time.h"
-
 #include <Eris/View.h>
 
 #include <OgreRenderWindow.h>
-#include <OgreViewport.h>
-#include <OgreTextureManager.h>
 #include <OgreRoot.h>
 
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/SchemeManager.h>
-#include <CEGUI/Exceptions.h>
 #include <CEGUI/FactoryModule.h>
-#include <CEGUI/Clipboard.h>
 #include <CEGUI/ScriptModules/Lua/ScriptModule.h>
 #include <CEGUI/RendererModules/Ogre/ResourceProvider.h>
 #include <CEGUI/RendererModules/Ogre/ImageCodec.h>
-#include <CEGUI/RendererModules/Ogre/Renderer.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/MultiLineEditbox.h>
 #include <CEGUI/widgets/Editbox.h>
-#include <CEGUI/widgets/Tooltip.h>
-
-#include <sigc++/bind.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"

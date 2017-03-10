@@ -26,8 +26,6 @@
 
 #include "XMLHelper.h"
 #include <OgreVector3.h>
-#include <OgreQuaternion.h>
-#include <OgreMath.h>
 
 namespace Ember {
 namespace OgreView {

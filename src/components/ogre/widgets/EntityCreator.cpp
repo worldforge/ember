@@ -33,11 +33,8 @@
 
 #include "components/ogre/authoring/EntityRecipe.h"
 
-#include <Atlas/Message/Element.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
-
-#include <wfmath/axisbox.h>
 
 using namespace Ember;
 namespace Ember

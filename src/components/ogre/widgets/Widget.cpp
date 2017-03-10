@@ -30,12 +30,9 @@
 #include "../GUIManager.h"
 #include "../EmberOgre.h"
 
-#include "services/input/Input.h"
-#include "framework/Exception.h"
 #include "framework/ConsoleBackend.h"
 
 #include <CEGUI/Window.h>
-#include <CEGUI/Exceptions.h>
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/widgets/FrameWindow.h>
 #include <CEGUI/widgets/PushButton.h>

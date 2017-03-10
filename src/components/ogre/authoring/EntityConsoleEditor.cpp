@@ -26,7 +26,6 @@
 #include "services/EmberServices.h"
 #include "framework/Tokeniser.h"
 #include <Eris/Avatar.h>
-#include <Atlas/Message/Element.h>
 #include <boost/algorithm/string.hpp>
 namespace Ember
 {

@@ -26,9 +26,6 @@
 
 #include "MatchAttributeObserver.h"
 
-#include "../../EntityMapping.h"
-#include <Atlas/Message/Element.h>
-#include <sigc++/slot.h>
 #include "../AttributeDependentMatch.h"
 #include "../AttributeMatch.h"
 

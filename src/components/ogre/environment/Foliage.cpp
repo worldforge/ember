@@ -32,11 +32,7 @@
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainLayerDefinitionManager.h"
 
-#include "framework/LoggingInstance.h"
 #include "framework/Tokeniser.h"
-#include "services/config/ConfigService.h"
-
-#include <OgreRoot.h>
 
 #include <wfmath/point.h>
 

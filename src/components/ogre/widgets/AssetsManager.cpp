@@ -31,7 +31,6 @@
 
 #include "components/ogre/model/ModelDefinitionManager.h"
 
-#include "framework/Exception.h"
 #include "framework/Tokeniser.h"
 #include "framework/osdir.h"
 
@@ -39,15 +38,12 @@
 #include <CEGUI/RendererModules/Ogre/Texture.h>
 #include <OgreMaterialSerializer.h>
 #include <OgreTextureManager.h>
-#include <OgreTexture.h>
-#include <OgreString.h>
 #include <OgreMeshSerializer.h>
 
 #include <CEGUI/Image.h>
 #include <CEGUI/BasicImage.h>
 #include <CEGUI/ImageManager.h>
 #include <CEGUI/System.h>
-#include <CEGUI/Renderer.h>
 
 namespace Ember
 {

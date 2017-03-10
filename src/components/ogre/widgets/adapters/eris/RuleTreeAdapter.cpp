@@ -23,7 +23,6 @@
 #include "framework/LoggingInstance.h"
 
 #include <CEGUI/widgets/Tree.h>
-#include <CEGUI/widgets/TreeItem.h>
 
 using ::Atlas::Objects::Root;
 

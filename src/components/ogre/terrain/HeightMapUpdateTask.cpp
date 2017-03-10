@@ -29,8 +29,6 @@
 
 #include <Mercator/Segment.h>
 
-#include <string.h>
-
 namespace Ember
 {
 namespace OgreView

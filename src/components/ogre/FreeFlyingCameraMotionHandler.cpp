@@ -18,8 +18,6 @@
 
 #include "FreeFlyingCameraMotionHandler.h"
 #include "components/ogre/Convert.h"
-#include <wfmath/vector.h>
-#include <wfmath/quaternion.h>
 #include <OgreSceneNode.h>
 namespace Ember {
 namespace OgreView {

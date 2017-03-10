@@ -29,7 +29,6 @@
 #include "framework/Tokeniser.h"
 #include "framework/LoggingInstance.h"
 #include <OgreRoot.h>
-#include <OgreRenderSystem.h>
 #include <OgreShadowCameraSetupPSSM.h>
 
 namespace Ember

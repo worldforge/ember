@@ -27,7 +27,6 @@
 #include "IconBar.h"
 #include <CEGUI/CEGUI.h>
 #include "IconBase.h"
-#include <algorithm>
 
 using namespace CEGUI;
 

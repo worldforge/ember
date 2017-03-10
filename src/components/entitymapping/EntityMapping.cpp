@@ -26,7 +26,6 @@
 
 #include "EntityMapping.h"
 #include <Eris/View.h>
-#include "Cases/CaseBase.h"
 
 namespace Ember {
 

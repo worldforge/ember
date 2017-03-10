@@ -29,8 +29,6 @@
 #include "EntityRecipeManager.h"
 #include "components/ogre/XMLHelper.h"
 
-#include <sstream>
-
 namespace Ember
 {
 namespace OgreView

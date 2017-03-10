@@ -28,7 +28,6 @@
 #include "caelum/include/Caelum.h"
 #include "CaelumSky.h"
 #include "CaelumSun.h"
-#include "Water.h"
 #include "SimpleWater.h"
 //#include "HydraxWater.h"
 #include "framework/Tokeniser.h"

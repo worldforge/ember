@@ -20,8 +20,6 @@
 #include "ITask.h"
 #include "ITaskExecutionListener.h"
 
-#include "framework/Exception.h"
-
 //#define LOG_TASKS
 
 

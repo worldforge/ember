@@ -27,19 +27,13 @@
 #include "ModelBackgroundLoader.h"
 #include "Model.h"
 #include "framework/TimeFrame.h"
-#include "framework/LoggingInstance.h"
-#include "framework/Time.h"
 
-#include <OgreResourceBackgroundQueue.h>
 #include <OgreSubMesh.h>
 #include <OgreMaterialManager.h>
 #include <OgreMeshManager.h>
-#include <OgreResourceGroupManager.h>
 #include <OgreTextureManager.h>
 
 #include <OgreTechnique.h>
-#include <OgrePass.h>
-#include <OgreTextureUnitState.h>
 
 #include <Eris/EventService.h>
 

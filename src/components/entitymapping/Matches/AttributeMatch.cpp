@@ -25,7 +25,6 @@
 #endif
 
 #include "AttributeMatch.h"
-#include "../Cases/AttributeCase.h"
 
 namespace Ember {
 

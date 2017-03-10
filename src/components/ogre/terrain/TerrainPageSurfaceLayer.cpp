@@ -31,11 +31,7 @@
 #include "TerrainPageGeometry.h"
 #include "WFImage.h"
 #include <Mercator/Surface.h>
-#include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
-#include <OgreHardwarePixelBuffer.h>
-#include <OgreRoot.h>
-#include <OgreTextureManager.h>
 
 namespace Ember
 {

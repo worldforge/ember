@@ -22,7 +22,6 @@
 
 #include "LodDefinition.h"
 #include "LodDefinitionManager.h"
-#include "XMLLodDefinitionSerializer.h"
 
 namespace Ember
 {

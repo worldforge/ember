@@ -32,8 +32,6 @@ THE SOFTWARE.
 
 #include <OgreViewport.h>
 
-#include <limits>
-
 using namespace Ogre;
 
 template<>

@@ -29,12 +29,8 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
-#include "domain/EmberEntity.h"
-#include "framework/LoggingInstance.h"
 #include "components/entitymapping/ChangeContext.h"
 #include "components/entitymapping/EntityMapping.h"
-#include "components/entitymapping/IVisitor.h"
-#include "components/entitymapping/Cases/CaseBase.h"
 
 namespace Ember
 {

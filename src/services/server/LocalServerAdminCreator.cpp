@@ -30,11 +30,9 @@
 #include <Eris/CustomEntities.h>
 #include <Eris/SpawnPoint.h>
 
-#include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
 #include <wfmath/MersenneTwister.h>
-#include <sstream>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

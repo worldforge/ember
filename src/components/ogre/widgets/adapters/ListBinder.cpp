@@ -24,8 +24,6 @@
 #include "config.h"
 #endif
 
-#include "ListBinder.h"
-
 namespace Ember {
 namespace OgreView {
 

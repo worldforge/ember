@@ -26,10 +26,7 @@
 
 #include "EntityIconDragDropTarget.h"
 #include "EntityIcon.h"
-#include "GenericIconUserData.h"
 #include <CEGUI/widgets/DragContainer.h>
-#include <CEGUI/Window.h>
-#include <boost/any.hpp>
 
 using namespace CEGUI;
 

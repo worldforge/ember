@@ -38,8 +38,6 @@
 
 #include "framework/osdir.h"
 
-#include <sigc++/signal.h>
-
 namespace Ember {
 namespace OgreView {
 

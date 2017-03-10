@@ -28,12 +28,8 @@
 #include "../GUIManager.h"
 #include "EntityIcon.h"
 #include "EntityIconSlot.h"
-#include "icons/Icon.h"
 
-#include <string>
 #include <CEGUI/CEGUI.h>
-#include <CEGUI/PropertyHelper.h>
-#include <CEGUI/Image.h>
 
 namespace Ember {
 namespace OgreView {

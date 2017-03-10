@@ -22,7 +22,6 @@
 #include "domain/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include <OgreAny.h>
-#include <memory>
 
 namespace Ember
 {

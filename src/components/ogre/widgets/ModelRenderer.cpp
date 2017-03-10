@@ -27,9 +27,7 @@
 #include "ModelRenderer.h"
 
 #include "EntityCEGUITexture.h"
-#include "components/ogre/SimpleRenderContext.h"
 #include "components/ogre/model/Model.h"
-#include "framework/Exception.h"
 
 #include <OgreSceneManager.h>
 #include <CEGUI/Window.h>

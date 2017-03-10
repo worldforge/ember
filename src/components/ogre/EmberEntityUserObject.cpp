@@ -26,7 +26,6 @@
 #include "EmberEntityUserObject.h"
 #include "domain/EmberEntity.h"
 #include "ICollisionDetector.h"
-#include "model/Model.h"
 
 namespace Ember
 {

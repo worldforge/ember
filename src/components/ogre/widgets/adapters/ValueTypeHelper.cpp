@@ -17,7 +17,6 @@
  */
 
 #include "ValueTypeHelper.h"
-#include <iomanip>
 
 namespace Ember
 {

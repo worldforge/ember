@@ -35,7 +35,6 @@
 #include "MeshPreview.h"
 
 
-#include "Widget.h"
 namespace Ember
 {
 namespace OgreView

@@ -19,7 +19,6 @@
 #include "ShaderPassBlendMapBatch.h"
 #include "ShaderPass.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
-#include "components/ogre/terrain/Image.h"
 
 #include "framework/TimedLog.h"
 

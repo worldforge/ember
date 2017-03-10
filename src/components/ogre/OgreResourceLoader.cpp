@@ -26,7 +26,6 @@
 
 #include "OgreResourceLoader.h"
 #include "services/EmberServices.h"
-#include "framework/LoggingInstance.h"
 #include "framework/Tokeniser.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
@@ -38,8 +37,6 @@
 #include "framework/osdir.h"
 #include "framework/TimedLog.h"
 #include <OgreArchiveManager.h>
-#include <OgreResourceGroupManager.h>
-#include <fstream>
 
 namespace Ember
 {

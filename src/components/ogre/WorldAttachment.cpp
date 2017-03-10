@@ -19,7 +19,6 @@
 #include "WorldAttachment.h"
 
 #include "domain/EmberEntity.h"
-#include "domain/IEntityAttachment.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/ModelRepresentation.h"
@@ -28,11 +27,6 @@
 #include "OgreInfo.h"
 
 #include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
-#include <OgreVector3.h>
-
-#include <wfmath/vector.h>
-#include <wfmath/point.h>
 
 namespace Ember
 {

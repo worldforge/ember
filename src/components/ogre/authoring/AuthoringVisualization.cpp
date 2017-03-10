@@ -25,12 +25,9 @@
 #include "components/ogre/MousePicker.h"
 #include "domain/IEntityControlDelegate.h"
 
-#include "framework/LoggingInstance.h"
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
-
-#include <memory>
 
 namespace Ember
 {

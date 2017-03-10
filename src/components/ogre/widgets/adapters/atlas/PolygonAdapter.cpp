@@ -33,7 +33,6 @@
 #include "components/ogre/authoring/PolygonPointPickListener.h"
 #include "components/ogre/camera/MainCamera.h"
 
-#include <wfmath/polygon.h>
 #include <wfmath/atlasconv.h>
 
 #include <OgreSceneNode.h>

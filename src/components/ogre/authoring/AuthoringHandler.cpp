@@ -24,7 +24,6 @@
 #include "domain/EmberEntity.h"
 #include "framework/LoggingInstance.h"
 #include <Eris/View.h>
-#include <Eris/Entity.h>
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <sigc++/bind.h>

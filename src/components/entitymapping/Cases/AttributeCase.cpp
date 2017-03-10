@@ -25,11 +25,7 @@
 #endif
 
 #include "AttributeCase.h"
-#include "AttributeComparers/AttributeComparerWrapper.h"
 #include "AttributeComparers/StringComparerWrapper.h"
-#include "AttributeComparers/StringComparer.h"
-
-#include <memory>
 
 namespace Ember {
 

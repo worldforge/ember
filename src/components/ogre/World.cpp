@@ -24,7 +24,6 @@
 #include "MotionManager.h"
 #include "authoring/EntityMoveManager.h"
 #include "Scene.h"
-#include "EntityWorldPickListener.h"
 #include "domain/EmberEntity.h"
 #include "EmberOgreSignals.h"
 #include "ForestRenderingTechnique.h"
@@ -51,7 +50,6 @@
 #include "environment/CaelumEnvironment.h"
 #include "environment/SimpleEnvironment.h"
 
-#include "services/config/ConfigListenerContainer.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
@@ -60,13 +58,10 @@
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 #include <Eris/Calendar.h>
-#include <Eris/EventService.h>
 #include <Eris/Connection.h>
 
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
-#include <OgreCamera.h>
-#include <OgreViewport.h>
 #include <OgreRoot.h>
 
 #include <sigc++/bind.h>

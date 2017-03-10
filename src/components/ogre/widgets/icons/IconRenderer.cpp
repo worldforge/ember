@@ -29,16 +29,12 @@
 #include "IconImageStore.h"
 
 #include "../../model/Model.h"
-#include "../../model/ModelDefinition.h"
 #include "../../SimpleRenderContext.h"
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreRenderTexture.h>
 #include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
 #include <OgreRoot.h>
-#include <OgreTextureManager.h>
 #include <sigc++/bind.h>
-#include <sigc++/signal.h>
 
 namespace Ember
 {

@@ -27,19 +27,15 @@
 #endif
 
 #include "ModelDefinitionManager.h"
-#include "ModelDefinition.h"
 #include "Model.h"
 #include "ModelBackgroundLoader.h"
 
 #include "XMLModelDefinitionSerializer.h"
 
 #include "framework/TimeFrame.h"
-#include "framework/TimedLog.h"
-#include "framework/Time.h"
 #include "framework/Tokeniser.h"
 
 #include <OgreRoot.h>
-#include <OgreSceneManagerEnumerator.h>
 
 
 template<> Ember::OgreView::Model::ModelDefinitionManager* Ember::Singleton<Ember::OgreView::Model::ModelDefinitionManager>::ms_Singleton = 0;

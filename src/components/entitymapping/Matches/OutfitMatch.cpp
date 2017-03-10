@@ -27,8 +27,6 @@
 #include "OutfitMatch.h"
 #include "Observers/EntityCreationObserver.h"
 
-#include <Eris/Entity.h>
-
 namespace Ember {
 
 

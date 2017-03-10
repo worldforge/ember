@@ -27,8 +27,6 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
 #include <Atlas/PresentationBridge.h>
-#include <sstream>
-#include <memory>
 
 namespace Ember
 {

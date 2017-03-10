@@ -31,11 +31,6 @@
 #include "EntityTextureManipulator.h"
 
 #include "components/entitymapping/EntityMappingManager.h"
-#include "components/entitymapping/EntityMapping.h"
-#include "components/entitymapping/Definitions/EntityMappingDefinition.h"
-#include "components/entitymapping/Definitions/MatchDefinition.h"
-#include "components/entitymapping/Definitions/CaseDefinition.h"
-#include "components/entitymapping/Definitions/ActionDefinition.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/ogre/GUIManager.h"
 
@@ -44,31 +39,19 @@
 #include "services/config/ConfigService.h"
 #include "services/serversettings/ServerSettings.h"
 #include "services/serversettings/ServerSettingsCredentials.h"
-#include "services/EmberServices.h"
 
-#include <Eris/ServerInfo.h>
-#include <Eris/Connection.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/TypeService.h>
 #include <Eris/SpawnPoint.h>
 #include <Eris/CharacterType.h>
 #include <Eris/View.h>
-#include <varconf/varconf.h>
-#include <fstream>
 
 #include <CEGUI/widgets/Listbox.h>
-#include <CEGUI/widgets/ListboxItem.h>
-#include <CEGUI/widgets/ListboxTextItem.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/Editbox.h>
 #include <CEGUI/widgets/MultiLineEditbox.h>
 #include <CEGUI/widgets/RadioButton.h>
-#include <CEGUI/widgets/ToggleButton.h>
 #include <CEGUI/widgets/ComboDropList.h>
 #include <CEGUI/widgets/Combobox.h>
 #include <CEGUI/widgets/TabControl.h>
-#include <CEGUI/Window.h>
-#include <CEGUI/Exceptions.h>
 
 #include <sigc++/bind.h>
 

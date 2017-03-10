@@ -27,9 +27,6 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
 
-#include <Eris/TransferInfo.h>
-
-#include <algorithm>
 #include <iostream>
 
 namespace Ember

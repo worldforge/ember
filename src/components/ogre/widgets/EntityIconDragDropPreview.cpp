@@ -35,12 +35,8 @@
 #include "components/ogre/model/ModelMount.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 
-#include "components/entitymapping/Definitions/CaseDefinition.h"
-#include "components/entitymapping/Cases/CaseBase.h"
-
 #include "domain/EmberEntity.h"
 
-#include <Eris/TypeInfo.h>
 #include <OgreSceneManager.h>
 
 using namespace Ember;
