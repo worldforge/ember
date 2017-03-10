@@ -25,6 +25,7 @@ add_definitions(-DEMBER_SYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}")
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
 enable_testing()
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 
 # Meta data
 
@@ -177,7 +178,8 @@ add_subdirectory(src/components/lua)
 add_subdirectory(src/components/navigation)
 add_subdirectory(src/components/ogre)
 add_subdirectory(src/components/terrain)
-add_subdirectory(tests)
+#Only build tests if the "check" target is used.
+add_subdirectory(tests EXCLUDE_FROM_ALL)
 add_subdirectory(src/main)
 
 #add_subdirectory(src/extensions/webember)
