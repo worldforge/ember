@@ -28,7 +28,6 @@
 #include "Model.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/INodeProvider.h"
-#include <wfmath/axisbox.h>
 #include <Ogre.h>
 
 namespace Ember
@@ -135,13 +134,13 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 			switch (getModel().getUseScaleOf()) {
 			case ModelDefinition::MODEL_HEIGHT:
-				scaleX = scaleY = scaleZ = fabs(ogreSize.y / defaultSize.y);
+				scaleX = scaleY = scaleZ = std::abs(ogreSize.y / defaultSize.y);
 				break;
 			case ModelDefinition::MODEL_WIDTH:
-				scaleX = scaleY = scaleZ = fabs(ogreSize.x / defaultSize.x);
+				scaleX = scaleY = scaleZ = std::abs(ogreSize.x / defaultSize.x);
 				break;
 			case ModelDefinition::MODEL_DEPTH:
-				scaleX = scaleY = scaleZ = fabs(ogreSize.z / defaultSize.z);
+				scaleX = scaleY = scaleZ = std::abs(ogreSize.z / defaultSize.z);
 				break;
 			case ModelDefinition::MODEL_NONE:
 				scaleX = scaleY = scaleZ = 1;
@@ -149,9 +148,9 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 			case ModelDefinition::MODEL_ALL:
 			default:
-				scaleX = fabs(ogreSize.x / defaultSize.x);
-				scaleY = fabs(ogreSize.y / defaultSize.y);
-				scaleZ = fabs(ogreSize.z / defaultSize.z);
+				scaleX = std::abs(ogreSize.x / defaultSize.x);
+				scaleY = std::abs(ogreSize.y / defaultSize.y);
+				scaleZ = std::abs(ogreSize.z / defaultSize.z);
 				break;
 			}
 
@@ -163,9 +162,9 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 			S_LOG_WARNING("Could not find any scale set in the model '" << getModel().getName() << "' of type '" << getModel().getDefinition()->getName() << "'. We'll thus default to scaling the mesh so it's 0.25 meters in each dimension.");
 
-			Ogre::Real scaleX = (0.25 / defaultSize.x);
-			Ogre::Real scaleY = (0.25 / defaultSize.y);
-			Ogre::Real scaleZ = (0.25 / defaultSize.z);
+			Ogre::Real scaleX = (0.25f / defaultSize.x);
+			Ogre::Real scaleY = (0.25f / defaultSize.y);
+			Ogre::Real scaleZ = (0.25f / defaultSize.z);
 			getNode().setScale(scaleX, scaleY, scaleZ);
 		}
 
