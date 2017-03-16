@@ -240,8 +240,8 @@ i = "/show_inventory"
 #right = "+camera_rotate_right"
 #up = "+camera_zoom_in"
 
-left_shift = "+run"
-right_shift = "+run"
+left_shift = "+walk"
+right_shift = "+walk"
 
 
 [key_bindings_gui]

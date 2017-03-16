@@ -120,7 +120,7 @@ public:
 	 */
 //	const MovementControllerMovement& getCurrentMovement() const;
 
-	const ConsoleCommandWrapper RunToggle;
+	const ConsoleCommandWrapper WalkToggle;
 	const ConsoleCommandWrapper ToggleCameraAttached;
 
 	const ConsoleCommandWrapper MovementMoveForward;

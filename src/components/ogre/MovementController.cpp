@@ -83,11 +83,11 @@ void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButt
 }
 
 MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camera, IHeightProvider& heightProvider) :
-		RunToggle("+run", this, "Toggle running mode."), ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."), MovementMoveForward("+movement_move_forward", this, "Move forward."), MovementMoveBackward("+movement_move_backward", this, "Move backward."), MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."), MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."), MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."), MovementStrafeRight("+movement_strafe_right", this, "Strafe right."), CameraOnAvatar("camera_on_avatar", this, "Positions the free flying camera on the avatar.")
+		WalkToggle("+walk", this, "Toggle walking mode."), ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."), MovementMoveForward("+movement_move_forward", this, "Move forward."), MovementMoveBackward("+movement_move_backward", this, "Move backward."), MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."), MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."), MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."), MovementStrafeRight("+movement_strafe_right", this, "Strafe right."), CameraOnAvatar("camera_on_avatar", this, "Positions the free flying camera on the avatar.")
 		/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
 		 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
 		//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
-				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(nullptr), mAwarenessVisualizer(nullptr), mSteering(nullptr), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false), mActiveMarker(new bool)
+				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(true), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(nullptr), mAwarenessVisualizer(nullptr), mSteering(nullptr), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false), mActiveMarker(new bool)
 {
 
 	*mActiveMarker = true;
@@ -168,7 +168,7 @@ MovementController::~MovementController()
 void MovementController::tileRebuild()
 {
 	if (mAwareness) {
-		int dirtyTiles = mAwareness->rebuildDirtyTile();
+		size_t dirtyTiles = mAwareness->rebuildDirtyTile();
 		if (dirtyTiles) {
 			auto marker = mActiveMarker;
 			mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this, marker] {if (*marker) {this->tileRebuild();}});
@@ -194,18 +194,14 @@ bool MovementController::isCameraFreeFlying() const
 
 void MovementController::runCommand(const std::string &command, const std::string &args)
 {
-	if (RunToggle == command) {
-		mIsRunning = true;
-		EventMovementModeChanged(getMode());
-	} else if (RunToggle.getInverseCommand() == command) {
+	if (WalkToggle == command) {
 		mIsRunning = false;
 		EventMovementModeChanged(getMode());
+	} else if (WalkToggle.getInverseCommand() == command) {
+		mIsRunning = true;
+		EventMovementModeChanged(getMode());
 	} else if (ToggleCameraAttached == command) {
-		if (mIsFreeFlying) {
-			setCameraFreeFlying(false);
-		} else {
-			setCameraFreeFlying(true);
-		}
+		setCameraFreeFlying(!mIsFreeFlying);
 	} else if (MovementMoveForward == command) {
 		mMovementDirection.y() = 1;
 	} else if (MovementMoveForward.getInverseCommand() == command) {
