@@ -167,7 +167,7 @@ server=metaserver.worldforge.org
 #If set to something, the server browser will filter out all servers with versions lower than this. This is to prevent new users from connecting to old stale servers.
 minimumversion=0.5.20
 #If set to something, the server browser will filter out all servers with the number of entities lower than this. This is to prevent new users from connecting to uninitialized servers.
-minumumentitycount=20
+minimumentitycount=20
 
 [wfut]
 #if true, Ember will use wfut to download updated media at startup
