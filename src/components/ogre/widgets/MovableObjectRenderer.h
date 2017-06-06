@@ -208,7 +208,7 @@ protected:
 	 */
 	void rescaleAxisMarker();
 
-	virtual Ogre::MovableObject* getMovableObject() = 0;
+	virtual float getMovableBoundingRadius() = 0;
 
 	/**
 	 * @brief Change the aspect ratio of the render texture when the image is resized.

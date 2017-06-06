@@ -28,11 +28,15 @@
 
 #include "EntityCEGUITexture.h"
 #include "components/ogre/model/Model.h"
+#include "components/ogre/model/ModelMount.h"
+#include "components/ogre/model/SubModel.h"
+#include "components/ogre/model/ModelDefinitionManager.h"
 
 #include <OgreSceneManager.h>
 #include <CEGUI/Window.h>
 
 #include <sigc++/bind.h>
+#include <components/ogre/SceneNodeProvider.h>
 
 namespace Ember
 {
@@ -42,12 +46,14 @@ namespace Gui
 {
 
 ModelRenderer::ModelRenderer(CEGUI::Window* image, const std::string& name) :
-		MovableObjectRenderer(image, name), mModel(0), mDefaultTranslation(Ogre::Vector3::ZERO), mDefaultRotation(Ogre::Quaternion::IDENTITY)
+		MovableObjectRenderer(image, name), mModel(nullptr), mModelMount(nullptr), mDefaultTranslation(Ogre::Vector3::ZERO), mDefaultRotation(Ogre::Quaternion::IDENTITY)
 {
 }
 
 ModelRenderer::~ModelRenderer()
 {
+	delete mModelMount;
+	delete mModel;
 	mModelReloadedConnection.disconnect();
 	mModelDelayedUpdateConnection.disconnect();
 }
@@ -58,7 +64,10 @@ void ModelRenderer::setModel(Model::Model* model)
 
 	node->detachAllObjects();
 	if (model) {
-		node->attachObject(model);
+		if (mModelMount) {
+			delete mModelMount;
+		}
+		mModelMount = new Model::ModelMount(*model, new SceneNodeProvider(node, nullptr, false));
 		repositionSceneNode();
 		rescaleAxisMarker();
 		mTexture->getRenderContext()->repositionCamera();
@@ -120,14 +129,15 @@ void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3&
 	mDefaultRotation = orientation;
 	mDefaultTranslation = translation;
 	if (mModel) {
-		mModel->_getManager()->destroyMovableObject(mModel);
-		mModel = 0;
+		delete mModel;
+		mModel = nullptr;
 		mModelReloadedConnection.disconnect();
 		mModelDelayedUpdateConnection.disconnect();
 		//delete mModel;
 	}
 	if (modelName != "") {
-		mModel = Model::Model::createModel(*mTexture->getRenderContext()->getSceneManager(), modelName);
+		auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+		mModel = new Model::Model(*mTexture->getRenderContext()->getSceneManager(), modelDef, modelName);
 		if (mModel) {
 			//override the rendering distance from the model; we want to always show it in the preview
 			mModel->setRenderingDistance(0);
@@ -136,7 +146,7 @@ void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3&
 			mTexture->getRenderContext()->setActive(true);
 		}
 	} else {
-		setModel(0);
+		setModel(nullptr);
 		mTexture->getRenderContext()->setActive(false);
 	}
 }
@@ -147,9 +157,12 @@ void ModelRenderer::model_Reloaded()
 	showFull();
 }
 
-Ogre::MovableObject* ModelRenderer::getMovableObject()
+float ModelRenderer::getMovableBoundingRadius()
 {
-	return mModel;
+	if (mModel) {
+		return mModel->getCombinedBoundingRadius();
+	}
+	return 0;
 }
 }
 }

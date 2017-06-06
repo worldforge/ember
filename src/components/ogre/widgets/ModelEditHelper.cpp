@@ -25,6 +25,7 @@
 #include "components/ogre/model/ModelMount.h"
 #include <OgreSceneManager.h>
 #include <OgreTagPoint.h>
+#include <components/ogre/model/ModelDefinitionManager.h>
 
 namespace Ember
 {
@@ -118,7 +119,7 @@ bool TranslateMouseMover::injectMouseButtonUp(const Input::MouseButton& button)
 }
 
 AttachPointHelper::AttachPointHelper(Model::Model& model, const std::string& attachPointName) :
-		mModel(model), mAttachPointName(attachPointName)
+		mModel(model), mAttachPointName(attachPointName), mTagPoint(nullptr)
 {
 }
 
@@ -133,19 +134,19 @@ const std::string& AttachPointHelper::getAttachPointName() const
 
 Ogre::TagPoint* AttachPointHelper::getTagPoint() const
 {
-	return mAttachPointWrapper.TagPoint;
+	return mTagPoint;
 }
 
 EntityAttachPointHelper::EntityAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& meshName) :
 		AttachPointHelper(model, attachPointName)
 {
-	mEntity = mModel._getManager()->createEntity(meshName);
-	mAttachPointWrapper = mModel.attachObjectToAttachPoint(attachPointName, mEntity);
+	mEntity = mModel.getManager().createEntity(meshName);
+	mTagPoint = mModel.attachObject(attachPointName, mEntity);
 }
 
 EntityAttachPointHelper::~EntityAttachPointHelper()
 {
-	mModel.detachObjectFromBone(mEntity->getName());
+	mModel.detachObject(mEntity);
 	mEntity->_getManager()->destroyMovableObject(mEntity);
 }
 
@@ -157,7 +158,8 @@ Ogre::Quaternion EntityAttachPointHelper::getOrientation() const
 ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& modelName) :
 		AttachPointHelper(model, attachPointName), mMount(0)
 {
-	mAttachedModel = Model::Model::createModel(*mModel._getManager(), modelName);
+	auto definition = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	mAttachedModel = new Model::Model(mModel.getManager(), definition, modelName);
 	Model::ModelBoneProvider* boneProvider = new Model::ModelBoneProvider(mModel, attachPointName, mAttachedModel);
 
 	std::string pose = "";
@@ -171,13 +173,13 @@ ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::s
 
 	mMount = new Model::ModelMount(*mAttachedModel, boneProvider, pose);
 	mMount->reset();
-	mAttachPointWrapper = *boneProvider->getAttachPointWrapper();
+	mTagPoint = boneProvider->getAttachPointWrapper()->TagPoint;
 }
 
 ModelAttachPointHelper::~ModelAttachPointHelper()
 {
 	delete mMount;
-	mAttachedModel->_getManager()->destroyMovableObject(mAttachedModel);
+	delete mAttachedModel;
 }
 
 Ogre::Quaternion ModelAttachPointHelper::getOrientation() const

@@ -33,11 +33,13 @@
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelMount.h"
+#include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 
 #include "domain/EmberEntity.h"
 
 #include <OgreSceneManager.h>
+#include <framework/Singleton.h>
 
 using namespace Ember;
 namespace Ember
@@ -144,7 +146,7 @@ ModelPreviewWorker::~ModelPreviewWorker()
 	//	delete mEntityNode;
 
 	if (mModel) {
-		mWorld.getSceneManager().destroyMovableObject(mModel);
+		delete mModel;
 	}
 
 	// Deleting temporary entity
@@ -161,10 +163,11 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 			//Reset the model mount to start with.
 			delete mModelMount;
 			mModelMount = 0;
-			mWorld.getSceneManager().destroyMovableObject(mModel);
+			delete mModel;
 		}
 	}
-	mModel = Model::Model::createModel(mWorld.getSceneManager(), modelName);
+	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	mModel = new Model::Model(mWorld.getSceneManager(), modelDef, modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
 
 	//if the model definition isn't valid, use a placeholder
@@ -177,7 +180,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 		modelDef->reloadAllInstances();
 	}
 
-	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, "", mModel));
+	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(mEntityNode, nullptr, false));
 	mModelMount->reset();
 
 	initFromModel();

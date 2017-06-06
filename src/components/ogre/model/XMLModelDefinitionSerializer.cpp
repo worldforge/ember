@@ -120,13 +120,13 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 	{
 		std::string useScaleOf(tmp);
 		if (useScaleOf == "height")
-			modelDef->mUseScaleOf = ModelDefinition::MODEL_HEIGHT;
+			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_HEIGHT;
 		else if (useScaleOf == "width")
-			modelDef->mUseScaleOf = ModelDefinition::MODEL_WIDTH;
+			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_WIDTH;
 		else if (useScaleOf == "depth")
-			modelDef->mUseScaleOf = ModelDefinition::MODEL_DEPTH;
+			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_DEPTH;
 		else if (useScaleOf == "none")
-			modelDef->mUseScaleOf = ModelDefinition::MODEL_NONE;
+			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_NONE;
 	}
 
 	tmp =  modelNode->Attribute("renderingdistance");
@@ -906,19 +906,19 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 		std::string useScaleOf;
 		switch (modelDef->getUseScaleOf()) {
-			case ModelDefinition::MODEL_ALL:
+			case ModelDefinition::UseScaleOf::MODEL_ALL:
 				useScaleOf = "all";
 				break;
-			case ModelDefinition::MODEL_DEPTH:
+			case ModelDefinition::UseScaleOf::MODEL_DEPTH:
 				useScaleOf = "depth";
 				break;
-			case ModelDefinition::MODEL_HEIGHT:
+			case ModelDefinition::UseScaleOf::MODEL_HEIGHT:
 				useScaleOf = "height";
 				break;
-			case ModelDefinition::MODEL_NONE:
+			case ModelDefinition::UseScaleOf::MODEL_NONE:
 				useScaleOf = "none";
 				break;
-			case ModelDefinition::MODEL_WIDTH:
+			case ModelDefinition::UseScaleOf::MODEL_WIDTH:
 				useScaleOf = "width";
 				break;
 		}
@@ -1044,10 +1044,10 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 
 
 		TiXmlElement activationsElem("activations");
-		for (ActivationDefinitionStore::const_iterator J = (*I)->getActivationDefinitions().begin(); J != (*I)->getActivationDefinitions().end(); ++J) {
+		for (auto& activationDef : (*I)->getActivationDefinitions()) {
 			TiXmlElement activationElem("activation");
 			std::string type;
-			switch ((*J)->type) {
+			switch (activationDef.type) {
 			case ActivationDefinition::MOVEMENT:
 				type = "movement";
 				break;
@@ -1059,7 +1059,7 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 				break;
 			}
 			activationElem.SetAttribute("type", type);
-			activationElem.InsertEndChild(TiXmlText((*J)->trigger));
+			activationElem.InsertEndChild(TiXmlText(activationDef.trigger));
 			activationsElem.InsertEndChild(activationElem);
 		}
 		actionElem.InsertEndChild(activationsElem);

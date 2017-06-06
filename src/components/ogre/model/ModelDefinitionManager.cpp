@@ -46,7 +46,7 @@ namespace OgreView
 namespace Model {
 
 ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirectory, Eris::EventService& eventService)
-: ShowModels("showmodels", this, "Show or hide models."), mShowModels(true), mModelFactory(0), mExportDirectory(exportDirectory)
+: ShowModels("showmodels", this, "Show or hide models."), mShowModels(true), mExportDirectory(exportDirectory)
 {
 	mLoadOrder = 300.0f;
 	mResourceType = "ModelDefinition";
@@ -56,11 +56,6 @@ ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirector
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
-
-
-	//register factories
-	mModelFactory = new ModelFactory(eventService);
-	Ogre::Root::getSingleton().addMovableObjectFactory(mModelFactory);
 
 }
 
@@ -73,15 +68,6 @@ ModelDefinitionManager::~ModelDefinitionManager()
 	//we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
 	//this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
 	Ogre::SceneManagerEnumerator::SceneManagerIterator sceneManagerIterator =  Ogre::SceneManagerEnumerator::getSingleton().getSceneManagerIterator();
-	while (sceneManagerIterator.hasMoreElements()) {
-		sceneManagerIterator.getNext()->destroyAllMovableObjectsByType(Model::sMovableType);
-	}
-
-	if (mModelFactory) {
-		Ogre::Root::getSingleton().removeMovableObjectFactory(mModelFactory);
-		delete mModelFactory;
-	}
-
 }
 
 ModelDefinitionPtr ModelDefinitionManager::create (const Ogre::String& name, const Ogre::String& group,
@@ -183,6 +169,13 @@ void ModelDefinitionManager::runCommand(const std::string &command, const std::s
 		}
 	}
 }
+
+void ModelDefinitionManager::populateModel(Model* model, const Ogre::SharedPtr<ModelDefinition>& definition)
+{
+	//TODO: do background loading
+	//model->
+}
+
 
 
 }

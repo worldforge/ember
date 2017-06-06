@@ -1,0 +1,61 @@
+<entityrecipes>
+  <entityrecipe name="boulder_loose">
+    <author></author>
+    <description>
+      A loose boulder.
+    </description>
+    <entity type="boulder">
+      <atlas>
+        <map>
+          <list name="bbox">$bbox</list>
+          <float name="mass">$mass</float>
+          <string name="style">$style</string>
+          <string name="mode">none</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="mass" type="number" title="Mass" default="100000"/>
+      <adapter name="massdev" type="number" title="Mass std. dev." default="10000"/>
+      <adapter name="style" type="string" title="Style" allowrandom="yes" default="Random">
+        <item value="a">Boulder A</item>
+        <item value="b">Boulder B</item>
+        <item value="c">Boulder C</item>
+        <item value="d">Boulder D</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="bbox" func="boulder.calcSize">
+        <adapter name="mass" />
+        <adapter name="massdev" />
+      </bind>
+      <bind name="mass">
+        <adapter name="mass" />
+      </bind>
+      <bind name="style">
+        <adapter name="style" />
+      </bind>
+    </bindings>
+    <script><![CDATA[
+      boulder = {}
+      function boulder.calcSize(a, b)
+        local density = 2500  * 0.52 -- our boulder is not cubic, 0.52 is rough volume of its size 1
+
+        local massmean = a:asNum()
+        local massdev = b:asNum()
+        local mass = math.abs(math.randn(massmean, massdev))
+        local volume = mass / density
+        local len = volume^(1/3)
+
+        local bbox = Atlas.Message.ListType()
+        bbox:push_back_float(-len/2)
+        bbox:push_back_float(-len/2)
+        bbox:push_back_float(0)
+        bbox:push_back_float(len/2)
+        bbox:push_back_float(len/2)
+        bbox:push_back_float(len)
+        return Atlas.Message.Element(bbox)
+      end
+    ]]></script>
+  </entityrecipe>
+</entityrecipes>

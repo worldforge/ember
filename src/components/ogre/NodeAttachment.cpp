@@ -89,10 +89,11 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 
 	//If there's a model representation available, use a "ModelAttachment" instance to attach to it, otherwise just use a regular NodeAttachment.
 	NodeAttachment* nodeAttachment(0);
+	INodeProvider* nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
 	if (modelRepresentation) {
-		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()), &modelRepresentation->getModel()));
+		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
 	} else {
-		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId())));
+		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
 	}
 	nodeAttachment->init();
 	return nodeAttachment;

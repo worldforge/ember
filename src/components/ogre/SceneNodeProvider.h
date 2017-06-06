@@ -21,53 +21,59 @@
 
 #include "INodeProvider.h"
 
-namespace Ogre
-{
+namespace Ogre {
 class SceneNode;
+
 class MovableObject;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-class SceneNodeProvider: public INodeProvider
-{
+class SceneNodeProvider : public INodeProvider {
 public:
-	SceneNodeProvider(Ogre::SceneNode& parentNode, const std::string& name, Ogre::MovableObject* object = 0);
+	SceneNodeProvider(Ogre::SceneNode* node, Ogre::SceneNode* parentNode, bool transferNodeOwnership = true);
+
 	virtual ~SceneNodeProvider();
-	virtual Ogre::Node& getNode() const;
-	virtual Ogre::Node* getParentNode() const;
-	virtual INodeProvider* createChildProvider(const std::string& name, Ogre::MovableObject* attachedObject = 0);
-	virtual void setVisible(bool visible);
+
+	Ogre::Node& getNode() const override;
+
+	Ogre::Node* getParentNode() const override;
+
+	INodeProvider* createChildProvider(const std::string& name) override;
+
+	void setVisible(bool visible) override;
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize) override;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	virtual bool getVisualize(const std::string& visualization) const;
+	bool getVisualize(const std::string& visualization) const override;
 
 	/**
 	 * @brief Sets the position and orientation of the node.
 	 * @param position The position.
 	 * @param orientation The orientation.
 	 */
-	virtual void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
+	void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation) override;
+
+	void detachObject(Ogre::MovableObject* movable) override;
+
+	void attachObject(Ogre::MovableObject* movable) override;
 
 protected:
 
-	Ogre::SceneNode& mParentNode;
 	Ogre::SceneNode* mNode;
-	Ogre::MovableObject* mAttachedObject;
+	Ogre::SceneNode* mParentNode;
+	bool mOwnsNode;
 };
 
 }

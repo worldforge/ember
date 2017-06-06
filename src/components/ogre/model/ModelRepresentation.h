@@ -30,6 +30,7 @@
 #include <sigc++/trackable.h>
 #include <vector>
 #include <list>
+#include <components/ogre/EmberEntityUserObject.h>
 
 
 namespace Eris
@@ -136,7 +137,7 @@ public:
 	 * @param scene The scene to which the entity belongs.
 	 * @param mapping The model mapping tied to the model.
 	 */
-	ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping);
+	ModelRepresentation(EmberEntity& entity, Model* model, Scene& scene, EntityMapping::EntityMapping& mapping);
 
 	/**
 	 * @brief Dtor.
@@ -180,20 +181,6 @@ public:
 	void updateAnimation(float timeSlice);
 
 	/**
-	 * @brief Accesses the world bounding box of the model.
-	 * @param derive Whether to derive from attached objects too.
-	 * @return The world bounding box for this model, in world units.
-	 */
-	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
-
-	/**
-	 * @brief Accesses the world bounding sphere for this model.
-	 * @param derive
-	 * @return The world bounding sphere, in world units, for this model.
-	 */
-	virtual const Ogre::Sphere & getWorldBoundingSphere(bool derive = true) const;
-
-	/**
 	 * @brief General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
@@ -234,7 +221,7 @@ protected:
 	 * This is the main graphical representation of this entity.
 	 * Note that the Model won't be directly connected to the main scene node, instead the mModelMount instance will take care of setting everything up to use an intermediary "scale node".
 	 */
-	Model& mModel;
+	Model* mModel;
 
 	/**
 	 * @brief The scene to which the entity belongs.
@@ -268,6 +255,9 @@ protected:
 	 * @brief The sound entity this entity is connected to.
 	 */
 	SoundEntity* mSoundEntity;
+
+
+	std::shared_ptr<EmberEntityUserObject> mUserObject;
 
 	/**
 	 * @brief The type name for the class.

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<Animations>
+	<AnimationDefinition duration="0.4" name="ShowTransition" replayMode="once">
+		<Affector interpolator="float" property="Alpha">
+			<KeyFrame position="0.0" value="0.0" />
+			<KeyFrame position="0.2" progression="quadratic accelerating" value="0.8" />
+		</Affector>
+		
+	</AnimationDefinition>
+	<AnimationDefinition duration="0.4" name="HideTransition" replayMode="once">
+		<Affector interpolator="float" property="Alpha">
+			<KeyFrame position="0.0" sourceProperty="Alpha" />
+			<KeyFrame position="0.4" progression="linear" value="0.0" />
+		</Affector>
+
+		<Affector interpolator="bool" property="Visible">
+			<KeyFrame position="0.0" sourceProperty="Visible" />
+			<KeyFrame position="0.4" progression="discrete" value="false" />
+		</Affector>
+	</AnimationDefinition>
+</Animations>
+

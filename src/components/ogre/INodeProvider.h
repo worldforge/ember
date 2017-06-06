@@ -33,6 +33,9 @@ namespace Ember
 {
 namespace OgreView
 {
+namespace Model {
+    class Model;
+}
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -69,7 +72,7 @@ public:
 	 * @param attachedObject An optional movable object which will be attached to the node created by new provider.
 	 * @return A new provider, which is a child of this instance.
 	 */
-	virtual INodeProvider* createChildProvider(const std::string& name, Ogre::MovableObject* attachedObject = 0) = 0;
+	virtual INodeProvider* createChildProvider(const std::string& name) = 0;
 
 	/**
 	 * @brief Sets the visiblity of the node.
@@ -83,6 +86,10 @@ public:
 	 * @param orientation The orientation.
 	 */
 	virtual void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation) = 0;
+
+	virtual void detachObject(Ogre::MovableObject* movable) = 0;
+
+	virtual void attachObject(Ogre::MovableObject* movable) = 0;
 };
 }
 

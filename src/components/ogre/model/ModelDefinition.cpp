@@ -40,7 +40,7 @@ namespace Model
 {
 
 ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) :
-		Resource(creator, name, handle, group, isManual, loader), mRenderingDistance(0.0f), mUseScaleOf(MODEL_ALL), mScale(0), mRotation(Ogre::Quaternion::IDENTITY), mContentOffset(Ogre::Vector3::ZERO), mShowContained(true), mTranslate(0, 0, 0), mIsValid(false), mRenderingDef(0)
+		Resource(creator, name, handle, group, isManual, loader), mRenderingDistance(0.0f), mUseScaleOf(UseScaleOf::MODEL_ALL), mScale(0), mRotation(Ogre::Quaternion::IDENTITY), mContentOffset(Ogre::Vector3::ZERO), mShowContained(true), mTranslate(0, 0, 0), mIsValid(false), mRenderingDef(0)
 {
 	if (createParamDictionary("ModelDefinition")) {
 		// no custom params
@@ -73,12 +73,12 @@ void ModelDefinition::loadImpl(void)
 
 void ModelDefinition::addModelInstance(Model* model)
 {
-	mModelInstances[model->getName()] = model;
+	mModelInstances.insert(model);
 }
 
 void ModelDefinition::removeModelInstance(Model* model)
 {
-	mModelInstances.erase(model->getName());
+	mModelInstances.erase(model);
 }
 
 void ModelDefinition::unloadImpl(void)
@@ -190,8 +190,8 @@ const RenderingDefinition* ModelDefinition::getRenderingDefinition() const
 
 void ModelDefinition::reloadAllInstances()
 {
-	for (ModelInstanceStore::iterator I = mModelInstances.begin(); I != mModelInstances.end(); ++I) {
-		I->second->reload();
+	for (auto& model : mModelInstances) {
+		model->reload();
 	}
 }
 
@@ -450,9 +450,6 @@ ActionDefinition::~ActionDefinition()
 	for (SoundDefinitionsStore::iterator I = mSounds.begin(); I != mSounds.end(); ++I) {
 		delete *I;
 	}
-	for (ActivationDefinitionStore::iterator I = mActivations.begin(); I != mActivations.end(); ++I) {
-		delete *I;
-	}
 }
 
 AnimationDefinition* ActionDefinition::createAnimationDefinition(int iterations)
@@ -502,15 +499,13 @@ void ActionDefinition::removeSoundDefinition(SoundDefinition* def)
 	ModelDefinition::removeDefinition(def, mSounds);
 }
 
-ActivationDefinition* ActionDefinition::createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger)
+void ActionDefinition::createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger)
 {
-	ActivationDefinition* def = new ActivationDefinition();
-	def->type = type;
-	def->trigger = trigger;
+	ActivationDefinition def;
+	def.type = type;
+	def.trigger = trigger;
 
-	mActivations.push_back(def);
-	return def;
-
+	mActivations.push_back(std::move(def));
 }
 const ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() const
 {
@@ -520,11 +515,6 @@ const ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() co
 ActivationDefinitionStore& ActionDefinition::getActivationDefinitions()
 {
 	return mActivations;
-}
-
-void ActionDefinition::removeActivationDefinition(ActivationDefinition* def)
-{
-	ModelDefinition::removeDefinition(def, mActivations);
 }
 
 const std::string& ActionDefinition::getName() const

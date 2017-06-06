@@ -50,8 +50,6 @@ class Model
 //	typedef std::map<std::string, SubModelPart*> SubModelPartMap;
 
 
-	static Model* createModel(Ogre::SceneManager& sceneManager, const std::string& modelType, const std::string& name = "");
-	
 	/**
 	 *    Reloads the model from the modeldefinition.
 	 */

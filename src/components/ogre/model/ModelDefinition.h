@@ -34,6 +34,7 @@
 #include <map>
 #include <unordered_map>
 #include <vector>
+#include <unordered_set>
 
 namespace Ember
 {
@@ -58,7 +59,7 @@ struct ViewDefinition;
 struct BoneGroupDefinition;
 struct PoseDefinition;
 
-typedef std::unordered_map<std::string, Model*> ModelInstanceStore;
+typedef std::unordered_set<Model*> ModelInstanceStore;
 
 typedef std::vector<SubModelDefinition*> SubModelDefinitionsStore;
 typedef std::vector<PartDefinition*> PartDefinitionsStore;
@@ -68,7 +69,7 @@ typedef std::vector<AnimationPartDefinition*> AnimationPartDefinitionsStore;
 typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
 typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
 typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
-typedef std::vector<ActivationDefinition*> ActivationDefinitionStore;
+typedef std::vector<ActivationDefinition> ActivationDefinitionStore;
 typedef std::map<std::string, ViewDefinition*> ViewDefinitionStore;
 typedef std::map<std::string, PoseDefinition> PoseDefinitionStore;
 typedef std::map<std::string, std::string> StringParamStore;
@@ -425,10 +426,9 @@ public:
 	SoundDefinitionsStore& getSoundDefinitions();
 	void removeSoundDefinition(SoundDefinition* def);
 
-	ActivationDefinition* createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger);
+	void createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger);
 	const ActivationDefinitionStore& getActivationDefinitions() const;
 	ActivationDefinitionStore& getActivationDefinitions();
-	void removeActivationDefinition(ActivationDefinition* def);
 
 	const std::string& getName() const;
 	Ogre::Real getAnimationSpeed() const;
@@ -466,7 +466,7 @@ public:
 	 * For example, if you use a model of a human you probably want to scale according to the height.
 	 * This might mean that width and depths aren't correct though.
 	 */
-	enum UseScaleOf
+	enum class UseScaleOf
 	{
 		/**
 		 * @brief Scale in all sizes, so that the bounding box of the model exactly matches the entity bounding box.

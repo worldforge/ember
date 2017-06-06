@@ -30,6 +30,7 @@
 #include <OgreMovableObject.h>
 #include <unordered_map>
 #include <functional>
+#include <OgreCamera.h>
 
 namespace Ember {
 
@@ -44,6 +45,7 @@ class MainCamera;
 }
 
 namespace Model {
+class Model;
 class ModelRepresentation;
 }
 class GUIManager;
@@ -66,25 +68,10 @@ namespace Gui {
  * 
  * @author Erik Ogenvik
  */
-class IngameChatWidget : public Widget, public ConfigListenerContainer
+class IngameChatWidget : public Widget, public ConfigListenerContainer, public Ogre::Camera::Listener
 {
 	class EntityObserver;
 	class Label;
-
-	class MovableObjectListener : public Ogre::MovableObject::Listener
-	{
-		public:
-			MovableObjectListener(Label& label, Ogre::MovableObject& movableObject);
-			virtual ~MovableObjectListener();
-
-			virtual bool objectRendering (const Ogre::MovableObject * movableObject, const Ogre::Camera * camera);
-			void setObserving(bool isObserving);
-
-		private:
-			Label& mLabel;
-			Ogre::MovableObject& mMovableObject;
-			bool mIsObserving;
-	};
 
 	class EntityObserver : public virtual sigc::trackable
 	{
@@ -155,7 +142,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			 */
 			EmberEntity* getEntity();
 
-			void attachToEntity(EmberEntity* entity, Ogre::MovableObject* movableObject);
+			void attachToEntity(EmberEntity* entity, Model::Model* model);
 
 			void setVisible(bool visible);
 			void setActive(bool active);
@@ -207,8 +194,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 
 		protected:
 			CEGUI::Window* mWindow;
-			Ogre::MovableObject* mMovableObject;
-			MovableObjectListener* mMovableObjectListener;
+			Model::Model* mModel;
 			EmberEntity* mEntity;
 			CEGUI::WindowManager* mWindowManager;
 			IngameChatWidget& mContainerWidget;
@@ -386,6 +372,8 @@ public:
 
 	CEGUI::Window* getLabelSheet();
 
+	void cameraPreRenderScene(Ogre::Camera* cam) override;
+
 protected:
 
 	/**
@@ -446,6 +434,7 @@ inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() {
 inline float IngameChatWidget::getTimeShown() {
 	return mTimeShown;
 }
+
 
 
 }

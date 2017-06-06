@@ -1,0 +1,11 @@
+<GUILayout version="4">
+	<Window type="EmberLook/StaticText">
+        <Property name="HorzFormatting" value="CentreAligned" />
+        <Property name="BackgroundEnabled" value="True" />
+        <Property name="Font" value="DejaVuSans-14" />
+        <Property name="Text">Loading world, please wait ...</Property>
+        <Property name="AlwaysOnTop" value="True" />
+        <Property name="TextColours" value="FFFFFFFF" />
+        <Property name="BackgroundColours" value="FFFFFF" />
+	</Window>
+</GUILayout>

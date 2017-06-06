@@ -28,6 +28,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <queue>
 #include <OgreFrameListener.h>
+#include <components/ogre/SceneNodeProvider.h>
 
 namespace Ember {
 namespace OgreView {
@@ -242,6 +243,7 @@ protected:
 	int mPixelWidth;
 	std::unique_ptr<SimpleRenderContext> mRenderContext;
 	IconRenderWorker* mWorker;
+	SceneNodeProvider mSceneNodeProvider;
 
 	/**
 	 * @brief Call this when the model is being rendered in a backround thread, and we want to render it to the icon once it's done.

@@ -1,0 +1,14 @@
+<entityrecipes>
+  <entityrecipe name="cg_house_A">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A small house.
+    </description>
+    <entity type="cg_house_A">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+  </entityrecipe>
+</entityrecipes>

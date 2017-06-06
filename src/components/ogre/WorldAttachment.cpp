@@ -62,12 +62,13 @@ EmberEntity* WorldAttachment::getParentEntity() const
 
 IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 {
-	NodeAttachment* nodeAttachment(0);
+	NodeAttachment* nodeAttachment;
+	Ogre::SceneNode* node = mWorldNode->createChildSceneNode( OgreInfo::createUniqueResourceName(entity.getId()));
 	if (Model::ModelRepresentation * modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
-		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(*mWorldNode, OgreInfo::createUniqueResourceName(entity.getId())));
+		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(node, mWorldNode));
 	}
 	else {
-		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(*mWorldNode, OgreInfo::createUniqueResourceName(entity.getId())));
+		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(node, mWorldNode));
 	}
 	nodeAttachment->init();
 	return nodeAttachment;

@@ -95,9 +95,9 @@ void OgreEntityRenderer::showEntity(const std::string& mesh)
 	}
 }
 
-Ogre::MovableObject* OgreEntityRenderer::getMovableObject()
+float OgreEntityRenderer::getMovableBoundingRadius()
 {
-	return mEntity;
+	return mEntity->getBoundingRadius();
 }
 
 void OgreEntityRenderer::setEntity(Ogre::Entity* entity)

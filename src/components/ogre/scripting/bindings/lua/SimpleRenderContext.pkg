@@ -90,11 +90,7 @@ public:
      */
     void setActive(bool active);
     
-    /**
-     * Adjusts the camera distance so that the full scene is shown
-     */
-    void showFull(const Ogre::MovableObject* object);
-    
+
     
 	/**
 	 *    After you've changed the target of the camera, i.e. the object attached to the base SceneNode,

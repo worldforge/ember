@@ -52,20 +52,6 @@ public:
      */
     Model& getModel() const;
 
-	/**
-	 * @brief Accesses the world bounding box of the model.
-	 * @param derive Whether to derive from attached objects too.
-	 * @return The world bounding box for this model, in world units.
-	 */
-	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive = true) const;
-
-
-	/**
-	 * @brief Accesses the world bounding sphere for this model.
-	 * @param derive
-	 * @return The world bounding sphere, in world units, for this model.
-	 */
-	virtual const Ogre::Sphere & getWorldBoundingSphere (bool derive=true) const;
 
 };
 

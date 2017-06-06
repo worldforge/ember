@@ -65,9 +65,15 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 
 	MapType bboxMap;
 
-	model->getParentNode()->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+	Ogre::AxisAlignedBox aabb;
+	for (SubModel* submodel: model->getSubmodels()) {
+		const Ogre::Entity* entity = submodel->getEntity();
+		aabb.merge(entity->getBoundingBox());
+	}
 
-	Ogre::AxisAlignedBox aabb(model->getWorldBoundingBox(true));
+	Ogre::Quaternion rotation(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+	aabb.transform(Ogre::Matrix4(rotation));
+
 	if (scale != .0f && scale != 1.0f) {
 		aabb.scale(Ogre::Vector3(scale, scale, scale));
 	}
@@ -88,8 +94,6 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	mainMap["id"] = StringType(typeName);
 
 	mainMap["parent"] = parentTypeName;
-
-	model->getParentNode()->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
 
 	return mainMap;
 }

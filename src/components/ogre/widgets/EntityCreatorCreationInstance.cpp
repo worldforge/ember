@@ -80,7 +80,7 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 	mEntityNode->detachAllObjects();
 
 	if (mModel) {
-		mWorld.getSceneManager().destroyMovableObject(mModel);
+		delete mModel;
 	}
 	mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
 
@@ -187,11 +187,13 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 			//Reset the model mount to start with.
 			delete mModelMount;
 			mModelMount = 0;
-			mModel->_getManager()->destroyMovableObject(mModel);
+			delete mModel;
 		}
 	}
-	mModel = Model::Model::createModel(mWorld.getSceneManager(), modelName);
+	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	mModel = new Model::Model(mWorld.getSceneManager(), modelDef, modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &EntityCreatorCreationInstance::model_Reloaded));
+	mModel->reload();
 
 	//if the model definition isn't valid, use a placeholder
 	if (!mModel->getDefinition()->isValid()) {
@@ -203,7 +205,8 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 		modelDef->reloadAllInstances();
 	}
 
-	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, OgreInfo::createUniqueResourceName(mRecipe.getName()), mModel));
+	Ogre::SceneNode* node = mEntityNode->createChildSceneNode(OgreInfo::createUniqueResourceName(mRecipe.getName()));
+	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(node, mEntityNode));
 	mModelMount->reset();
 
 	initFromModel();

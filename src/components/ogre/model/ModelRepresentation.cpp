@@ -66,27 +66,37 @@ const char * const ModelRepresentation::ACTION_WALK_BACKWARDS("walk_backwards");
 const char * const ModelRepresentation::ACTION_SWIM("swim");
 const char * const ModelRepresentation::ACTION_FLOAT("float");
 
-ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping) :
-		mEntity(entity), mModel(model), mScene(scene), mMapping(mapping), mCurrentMovementAction(0), mActiveAction(0), mTaskAction(0), mSoundEntity(0)
+ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scene& scene, EntityMapping::EntityMapping& mapping) :
+		mEntity(entity),
+		mModel(model),
+		mScene(scene),
+		mMapping(mapping),
+		mCurrentMovementAction(0),
+		mActiveAction(0),
+		mTaskAction(0),
+		mSoundEntity(0),
+		mUserObject(std::make_shared<EmberEntityUserObject>(entity, new MeshCollisionDetector(model)))
 {
 	//Only connect if we have actions to act on
-	if (!model.getDefinition()->getActionDefinitions().empty()) {
+	if (!model->getDefinition()->getActionDefinitions().empty()) {
 		mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 		mEntity.TaskAdded.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskAdded));
 		mEntity.TaskRemoved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskRemoved));
 	}
 	//Only connect if we have particles
-	if (mModel.hasParticles()) {
+	if (mModel->hasParticles()) {
 		mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
 	}
 
 //listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
-	mModel.Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
-	mModel.Resetting.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Resetting));
+	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
+	mModel->Resetting.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Resetting));
 
-	mModel.setQueryFlags(MousePicker::CM_ENTITY);
+	mModel->setQueryFlags(MousePicker::CM_ENTITY);
 
 	parseMovementMode(mEntity.getPredictedVelocity());
+
+	mModel->setUserObject(mUserObject);
 
 	//start out with the default movement mode
 	//onMovementModeChanged(ModelRepresentation::MM_DEFAULT);
@@ -96,14 +106,14 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scen
 ModelRepresentation::~ModelRepresentation()
 {
 
-	const RenderingDefinition* renderingDef = mModel.getDefinition()->getRenderingDefinition();
+	const RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
 	if (renderingDef && renderingDef->getScheme() != "") {
 		mScene.deregisterEntityWithTechnique(mEntity, renderingDef->getScheme());
 	}
 
 	delete mSoundEntity;
-
-	mModel._getManager()->destroyMovableObject(&mModel);
+	delete mModel;
+	//mModel->_getManager()->destroyMovableObject(&mModel);
 
 	//make sure it's not in the MotionManager
 	//TODO: keep a marker in the entity so we don't need to call this for all entities
@@ -127,26 +137,20 @@ EmberEntity & ModelRepresentation::getEntity() const
 
 Model & ModelRepresentation::getModel() const
 {
-	return mModel;
+	return *mModel;
 }
 
 void ModelRepresentation::setModelPartShown(const std::string& partName, bool visible)
 {
-	if (mModel.isLoaded()) {
+	if (mModel->isLoaded()) {
 
 		if (visible) {
-			mModel.showPart(partName);
+			mModel->showPart(partName);
 		} else {
-			mModel.hidePart(partName);
+			mModel->hidePart(partName);
 		}
 
-		//if we already have set up a collision object we must reload it
-		if (!mModel.getUserObjectBindings().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(mModel.getUserObjectBindings().getUserAny()).get();
-			if (userObject && userObject->getCollisionDetector()) {
-				userObject->getCollisionDetector()->reload();
-			}
-		}
+		mUserObject->getCollisionDetector()->reload();
 	}
 }
 
@@ -156,7 +160,7 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
  */
 bool ModelRepresentation::needSoundEntity()
 {
-	const ActionDefinitionsStore& store = mModel.getDefinition()->getActionDefinitions();
+	const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
 	ActionDefinitionsStore::const_iterator I_b = store.begin();
 	ActionDefinitionsStore::const_iterator I_e = store.end();
 	for (; I_b != I_e; ++I_b) {
@@ -191,7 +195,7 @@ void ModelRepresentation::setSounds()
 void ModelRepresentation::setClientVisible(bool visible)
 {
 	//It appears that lights aren't disabled even when they're detached from the node tree (which will happen if the visibity is disabled as the lights are attached to the scale node), so we need to disable them ourselves.
-	for (LightSet::iterator I = mModel.getLights().begin(); I != mModel.getLights().end(); ++I) {
+	for (LightSet::iterator I = mModel->getLights().begin(); I != mModel->getLights().end(); ++I) {
 		I->light->setVisible(visible);
 	}
 }
@@ -201,15 +205,15 @@ void ModelRepresentation::initFromModel()
 	connectEntities();
 
 	//see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
-	const RenderingDefinition* renderingDef = mModel.getDefinition()->getRenderingDefinition();
-	if (renderingDef && renderingDef->getScheme() != "" && mModel.isLoaded()) {
+	const RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
+	if (renderingDef && renderingDef->getScheme() != "" && mModel->isLoaded()) {
 		mScene.registerEntityWithTechnique(mEntity, renderingDef->getScheme());
 //		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
 //		forest->addEmberEntity(this);
 	}
 
 	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similar entities with synchronized animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */
-	Action* idleaction = mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
+	Action* idleaction = mModel->getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	if (idleaction) {
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
 	}
@@ -218,10 +222,7 @@ void ModelRepresentation::initFromModel()
 
 Ogre::Vector3 ModelRepresentation::getScale() const
 {
-	if (mModel.getParentNode()) {
-		return mModel.getParentNode()->_getDerivedScale();
-	}
-	return Ogre::Vector3::UNIT_SCALE;
+	return Ogre::Vector3(mModel->getScale());
 }
 
 void ModelRepresentation::connectEntities()
@@ -229,9 +230,7 @@ void ModelRepresentation::connectEntities()
 	//we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
 	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
-	EmberEntityUserObject* userObject = new EmberEntityUserObject(getEntity(), collisionDetector);
-	getModel().getUserObjectBindings().setUserAny(Ogre::Any(EmberEntityUserObject::SharedPtr(userObject)));
-
+	mModel->setUserObject(std::make_shared<EmberEntityUserObject>(mEntity, collisionDetector));
 }
 
 void ModelRepresentation::model_Reloaded()
@@ -249,7 +248,7 @@ void ModelRepresentation::model_Reloaded()
 
 void ModelRepresentation::model_Resetting()
 {
-	mModel.getUserObjectBindings().setUserAny(Ogre::Any());
+	mModel->setUserObject(std::shared_ptr<EmberEntityUserObject>());
 }
 
 void ModelRepresentation::processOutfit(const Atlas::Message::MapType&)
@@ -268,8 +267,8 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 
 	//check if the changed attribute should affect any particle systems
 	//TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
-	if (mModel.hasParticles()) {
-		const ParticleSystemBindingsPtrSet& bindings = mModel.getAllParticleSystemBindings();
+	if (mModel->hasParticles()) {
+		const ParticleSystemBindingsPtrSet& bindings = mModel->getAllParticleSystemBindings();
 		for (ParticleSystemBindingsPtrSet::const_iterator I = bindings.begin(); I != bindings.end(); ++I) {
 			if ((*I)->getVariableName() == str && v.isNum()) {
 				(*I)->scaleValue(v.asNum());
@@ -287,7 +286,7 @@ Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& veloc
 	}
 
 	if (mag < 0.01f) {
-		return mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
+		return mModel->getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	} else {
 
 		//The model is moving in some direction; we need to figure out both the direction, and the speed.
@@ -353,7 +352,7 @@ Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& veloc
 Action* ModelRepresentation::getFirstAvailableAction(const ActivationDefinition::Type type, std::initializer_list<const char * const > actions) const
 {
 	for (auto& actionName : actions) {
-		Action* action = mModel.getAction(type, actionName);
+		Action* action = mModel->getAction(type, actionName);
 		if (action) {
 			return action;
 		}
@@ -438,16 +437,6 @@ void ModelRepresentation::resetAnimations()
 	}
 }
 
-const Ogre::AxisAlignedBox& ModelRepresentation::getWorldBoundingBox(bool derive) const
-{
-	return getModel().getWorldBoundingBox(derive);
-}
-
-const Ogre::Sphere & ModelRepresentation::getWorldBoundingSphere(bool derive) const
-{
-	return getModel().getWorldBoundingSphere(derive);
-}
-
 void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOperation& act)
 {
 	const std::string& name = act->getParent();
@@ -457,11 +446,11 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 		mSoundEntity->playAction(name);
 	}
 
-	Action* newAction = mModel.getAction(ActivationDefinition::ACTION, name);
+	Action* newAction = mModel->getAction(ActivationDefinition::ACTION, name);
 
 	//If there's no action found, try to see if we have a "default action" defined to play instead.
 	if (!newAction) {
-		newAction = mModel.getAction(ActivationDefinition::ACTION, "default_action");
+		newAction = mModel->getAction(ActivationDefinition::ACTION, "default_action");
 	}
 
 	if (newAction) {
@@ -478,7 +467,7 @@ void ModelRepresentation::entity_TaskAdded(Eris::Task* task)
 
 void ModelRepresentation::createActionForTask(const Eris::Task& task)
 {
-	Action* newAction = mModel.getAction(ActivationDefinition::TASK, task.name());
+	Action* newAction = mModel->getAction(ActivationDefinition::TASK, task.name());
 	if (newAction) {
 		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
 		mTaskAction = newAction;
@@ -497,24 +486,14 @@ void ModelRepresentation::entity_TaskRemoved(Eris::Task*)
 void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize)
 {
 	if (visualization == "CollisionObject") {
-		if (!getModel().getUserObjectBindings().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(getModel().getUserObjectBindings().getUserAny()).get();
-			if (userObject && userObject->getCollisionDetector()) {
-				userObject->getCollisionDetector()->setVisualize(visualize);
-			}
-		}
+		mUserObject->getCollisionDetector()->setVisualize(visualize);
 	}
 }
 
 bool ModelRepresentation::getVisualize(const std::string& visualization) const
 {
 	if (visualization == "CollisionObject") {
-		if (!getModel().getUserObjectBindings().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(getModel().getUserObjectBindings().getUserAny()).get();
-			if (userObject && userObject->getCollisionDetector()) {
-				return userObject->getCollisionDetector()->getVisualize();
-			}
-		}
+		return mUserObject->getCollisionDetector()->getVisualize();
 	}
 	return false;
 }

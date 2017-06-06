@@ -89,7 +89,7 @@ protected:
 	/**
 	 * @brief Contains data about the attachment.
 	 */
-	Model::Model::AttachPointWrapper mAttachPointWrapper;
+	Ogre::TagPoint* mTagPoint;
 
 };
 
@@ -119,6 +119,7 @@ private:
 	 * @brief The entity used as preview.
 	 */
 	Ogre::Entity* mEntity;
+
 };
 
 /**

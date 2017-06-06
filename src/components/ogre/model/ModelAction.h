@@ -36,7 +36,9 @@ public:
 	AnimationSet& getAnimations();
 	void setName(const std::string& name);
 	const std::string& getName();
-	
+
+	std::vector<ActivationDefinition> mActivations;
+
 
 protected:
 	std::string mName;

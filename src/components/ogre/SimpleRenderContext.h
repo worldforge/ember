@@ -124,7 +124,7 @@ public:
     /**
      * Adjusts the camera distance so that the full scene is shown
      */
-    void showFull(const Ogre::MovableObject* object);
+    void showFull(float renderableBoundingRadius);
 
 
 	/**

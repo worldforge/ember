@@ -24,6 +24,7 @@
 #define EMBEROGRE_MODELMODELBACKGROUNDLOADER_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "ModelDefinition.h"
 
 #include <OgreResourceBackgroundQueue.h>
 
@@ -156,7 +157,7 @@ public:
 	 * @brief Ctor.
 	 * @param model The model which will be loaded.
 	 */
-	ModelBackgroundLoader(Model* model, Eris::EventService& eventService);
+	ModelBackgroundLoader(const Ogre::SharedPtr<ModelDefinition>& modelDefinition, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
@@ -200,7 +201,7 @@ protected:
 	/**
 	 * @brief The model which will be loaded.
 	 */
-	Model* mModel;
+	Ogre::SharedPtr<ModelDefinition> mModelDefinition;
 
 	/**
 	 * @brief Handles event interleaving.

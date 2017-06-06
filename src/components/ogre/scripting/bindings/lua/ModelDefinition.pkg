@@ -188,9 +188,8 @@ public:
 	std::vector<Ember::OgreView::Model::SoundDefinition*>& getSoundDefinitions() const;
 	void removeSoundDefinition(Ember::OgreView::Model::SoundDefinition* def);
 
-	Ember::OgreView::Model::ActivationDefinition* createActivationDefinition(const Ember::OgreView::Model::ActivationDefinition::Type& type, const std::string& trigger);
+	void createActivationDefinition(const Ember::OgreView::Model::ActivationDefinition::Type& type, const std::string& trigger);
 	std::vector<Ember::OgreView::Model::ActivationDefinition*>& getActivationDefinitions();
-	void removeActivationDefinition(Ember::OgreView::Model::ActivationDefinition* def);
 
 	const std::string& getName() const;
 	float getAnimationSpeed() const;
@@ -207,14 +206,14 @@ class ModelDefinition : public Ogre::Resource {
 	for example, if you use a model of a human you probably want to scale according to the height
 	this might mean that width and depths aren't correct though
 	*/
-	enum UseScaleOf {
-		MODEL_ALL = 0,
-		MODEL_NONE = 1,
-		MODEL_WIDTH = 2,
-		MODEL_DEPTH = 3,
-		MODEL_HEIGHT = 4
-		
-	};
+//	enum UseScaleOf {
+//		MODEL_ALL = 0,
+//		MODEL_NONE = 1,
+//		MODEL_WIDTH = 2,
+//		MODEL_DEPTH = 3,
+//		MODEL_HEIGHT = 4
+//
+//	};
 
 	/**
 	A struct for simple bindings between areas and materials/textures.

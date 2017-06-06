@@ -43,6 +43,7 @@ namespace OgreView
 namespace Model
 {
 class Model;
+class ModelMount;
 }
 
 namespace Gui
@@ -93,7 +94,7 @@ public:
 	/**
 	 * @brief Updates the texture by rendering one frame manually.
 	 */
-	virtual void updateRender();
+	void updateRender() override;
 
 protected:
 
@@ -104,13 +105,15 @@ protected:
 	 */
 	void setModel(Model::Model* model);
 
-	virtual Ogre::MovableObject* getMovableObject();
+	float getMovableBoundingRadius() override;
 
 	void model_Reloaded();
 
 	void delayedUpdateRender();
 
 	Model::Model* mModel;
+
+	Model::ModelMount* mModelMount;
 
 	sigc::connection mModelReloadedConnection;
 	sigc::connection mModelDelayedUpdateConnection;

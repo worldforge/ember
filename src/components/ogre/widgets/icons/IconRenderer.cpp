@@ -29,6 +29,7 @@
 #include "IconImageStore.h"
 
 #include "../../model/Model.h"
+#include "../../model/ModelDefinitionManager.h"
 #include "../../SimpleRenderContext.h"
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreRenderTexture.h>
@@ -48,7 +49,7 @@ namespace Icons
 {
 
 IconRenderer::IconRenderer(const std::string& prefix, int pixelWidth) :
-	mPixelWidth(pixelWidth), mRenderContext(new SimpleRenderContext(prefix, pixelWidth, pixelWidth)), mWorker(0)
+	mPixelWidth(pixelWidth), mRenderContext(new SimpleRenderContext(prefix, pixelWidth, pixelWidth)), mWorker(nullptr), mSceneNodeProvider(mRenderContext->getSceneNode(), nullptr, false)
 {
 	mRenderContext->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
 	mRenderContext->setBackgroundColour(Ogre::ColourValue::ZERO);
@@ -67,14 +68,14 @@ void IconRenderer::setWorker(IconRenderWorker* worker)
 
 void IconRenderer::render(const std::string& modelName, Icon* icon)
 {
-	Model::Model* model = Model::Model::createModel(*getRenderContext()->getSceneManager(), modelName);
-	if (model) {
-		if (model->isLoaded()) {
-			render(model, icon);
-		} else {
-			//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
-			model->Reloaded.connect(sigc::bind(sigc::mem_fun(*this, &IconRenderer::renderDelayed), model, icon));
-		}
+	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	Model::Model* model = new Model::Model(*getRenderContext()->getSceneManager(), modelDef, modelName);
+	if (model->isLoaded()) {
+		render(model, icon);
+		delete model;
+	} else {
+		//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
+		model->Reloaded.connect(sigc::bind(sigc::mem_fun(*this, &IconRenderer::renderDelayed), model, icon));
 	}
 }
 
@@ -86,6 +87,7 @@ void IconRenderer::render(Model::Model* model, Icon* icon)
 void IconRenderer::renderDelayed(Model::Model* model, Icon* icon)
 {
 	render(model, icon);
+	delete model;
 }
 
 void IconRenderer::performRendering(Model::Model* model, Icon*)
@@ -94,19 +96,14 @@ void IconRenderer::performRendering(Model::Model* model, Icon*)
 	if (model) {
 		// 		icon->getImageStoreEntry()->getTexture()->get
 
-		Ogre::SceneNode* node = mRenderContext->getSceneNode();
-
-		if (model->isAttached()) {
-			model->detachFromParent();
-		}
-		node->attachObject(model);
+		model->attachToNode(&mSceneNodeProvider);
 
 		//check for a defined "icon" view and use that if available, else just reposition the camera
 		const Model::ViewDefinitionStore::const_iterator I = model->getDefinition()->getViewDefinitions().find("icon");
 		if (I != model->getDefinition()->getViewDefinitions().end()) {
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
-			mRenderContext->showFull(model);
+			mRenderContext->showFull(model->getCombinedBoundingRadius());
 			if (I->second->Distance) {
 				mRenderContext->setCameraDistance(I->second->Distance);
 			}
@@ -115,7 +112,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon*)
 		} else {
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
-			mRenderContext->showFull(model);
+			mRenderContext->showFull(model->getCombinedBoundingRadius());
 			mRenderContext->setCameraDistance(mRenderContext->getDefaultCameraDistance() * 0.75);
 		}
 
@@ -134,8 +131,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon*)
 		// 		SDL_Delay(1000);
 		// 		blitRenderToIcon(icon);
 
-		node->detachAllObjects();
-
+		model->attachToNode(nullptr);
 	}
 }
 
@@ -225,7 +221,6 @@ void DirectRendererWorker::render(Model::Model* model, Icon* icon, IconImageStor
 
 	mRenderer.performRendering(model, icon);
 	// 	mRenderer.blitRenderToIcon(icon);
-	mRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 }
 
 DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, Model::Model* model, Icon* icon) :
@@ -235,7 +230,7 @@ DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& re
 
 DelayedIconRendererEntry::~DelayedIconRendererEntry()
 {
-	//mRenderer.getRenderer().getRenderContext()->getSceneManager()->destroyMovableObject(mModel);
+	delete mModel;
 }
 
 Model::Model* DelayedIconRendererEntry::getModel()
@@ -306,7 +301,6 @@ void DelayedIconRendererWorker::performRendering(DelayedIconRendererEntry& entry
 void DelayedIconRendererWorker::finalizeRendering(DelayedIconRendererEntry& entry)
 {
 	mRenderer.blitRenderToIcon(entry.getIcon());
-	mRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(entry.getModel());
 	entries.pop();
 }
 

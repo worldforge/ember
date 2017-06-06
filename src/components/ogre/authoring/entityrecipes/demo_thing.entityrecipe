@@ -1,0 +1,24 @@
+<entityrecipes>
+  <entityrecipe name="demo_thing">
+    <author>Erik Ogenvik</author>
+    <description>
+      A thing meant for demonstrations.
+    </description>
+    <entity type="thing">
+      <atlas>
+        <map>
+          <string name="message">$message</string>
+          <float name="visibility">1000.0</float>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="message" type="string" title="Message"/>
+    </adapters>
+    <bindings>
+      <bind name="message">
+        <adapter name="message" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

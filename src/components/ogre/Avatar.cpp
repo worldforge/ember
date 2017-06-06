@@ -132,11 +132,11 @@ void Avatar::runCommand(const std::string &command, const std::string &args)
 				Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mErisAvatarEntity);
 				if (modelRepresentation) {
 					Model::Model& model = modelRepresentation->getModel();
-					const Model::Model::AttachPointWrapperStore* attachPoints = model.getAttachedPoints();
+					const auto& attachPoints = model.getAttachedPoints();
 					if (attachPoints) {
-						for (Model::Model::AttachPointWrapperStore::const_iterator I = attachPoints->begin(); I != attachPoints->end(); ++I) {
-							if (I->Definition.Name == attachPointName) {
-								I->TagPoint->setOrientation(rotation);
+						for (const auto& attachPoint : *attachPoints) {
+							if (attachPoint.Definition.Name == attachPointName) {
+								attachPoint.TagPoint->setOrientation(rotation);
 							}
 						}
 					}

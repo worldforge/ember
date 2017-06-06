@@ -58,6 +58,7 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 
 ModelAttachment::~ModelAttachment()
 {
+	mNodeProvider = nullptr;
 	//When the modelmount is deleted the scale node will also be destroyed.
 	//Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
 	delete mModelMount;
@@ -76,7 +77,7 @@ void ModelAttachment::init()
 {
 	NodeAttachment::init();
 
-	mModelMount = new ModelMount(mModelRepresentation.getModel(), mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(mModelRepresentation.getEntity().getId()), &mModelRepresentation.getModel()), mPose);
+	mModelMount = new ModelMount(mModelRepresentation.getModel(), mNodeProvider, mPose);
 	mModelMount->reset();
 	setupFittings();
 	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
@@ -120,7 +121,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		//		else {
 		INodeProvider* nodeProvider(0);
 		std::string pose;
-		if (attachPoint != "") {
+		if (modelRepresentation && attachPoint != "") {
 			if (mModelRepresentation.getModel().isLoaded()) {
 				try {
 					const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
@@ -131,17 +132,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 						}
 					}
 
-					//We must have a movable in order to create attach points. Thus we need to fake it though an ManualObject intance. This is not optimal, but will do for now.
-					Ogre::MovableObject* movable;
-					bool deleteMovableWhenDone = false;
-					if (modelRepresentation) {
-						movable = &modelRepresentation->getModel();
-					} else {
-						movable = OGRE_NEW Ogre::ManualObject(OgreInfo::createUniqueResourceName("ModelAttachedObject_" + entity.getType()->getName()));
-						deleteMovableWhenDone = true;
-					}
-
-					nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, movable, deleteMovableWhenDone);
+					nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, &modelRepresentation->getModel());
 				} catch (const std::exception& ex) {
 					S_LOG_WARNING("Failed to attach to attach point '"<< attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getName() << "'.");
 					return new HiddenAttachment(entity, getAttachedEntity());
@@ -151,7 +142,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 				return 0;
 			}
 		} else {
-			nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()), modelRepresentation ? &modelRepresentation->getModel() : nullptr);
+			nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
 		}
 		NodeAttachment* nodeAttachment(0);
 		if (modelRepresentation) {

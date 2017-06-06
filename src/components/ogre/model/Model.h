@@ -29,6 +29,8 @@
 #include <sigc++/signal.h>
 #include <memory>
 #include <unordered_map>
+#include <components/ogre/INodeProvider.h>
+#include <components/ogre/EmberEntityUserObject.h>
 
 namespace Eris
 {
@@ -75,7 +77,7 @@ typedef std::vector<LightInfo> LightSet;
  * A model is typically instantiated from a modeldef.xml file through the use
  * of createFromXML(...)
  */
-class Model: public Ogre::MovableObject, public Ogre::Resource::Listener
+class Model: public Ogre::Resource::Listener
 {
 
 	friend class ModelDefinition;
@@ -85,7 +87,6 @@ public:
 
 	typedef std::unordered_map<std::string, Action> ActionStore;
 
-	typedef std::set<SubModel*> SubModelSet;
 	typedef std::set<std::string> StringSet;
 	typedef std::unordered_map<std::string, StringSet> SubModelPartMapping;
 	typedef std::unordered_map<std::string, ModelPart> ModelPartStore;
@@ -98,21 +99,19 @@ public:
 		AttachPointDefinition Definition;
 		Ogre::MovableObject *Movable;
 	};
-	typedef std::vector<AttachPointWrapper> AttachPointWrapperStore;
 
-	static const Ogre::String sMovableType;
+	/**
+	 *    Creates a new Model instance with the specified name.
+	 *    Remember to call create(...) to create the actual meshes.
+	 * @param name
+	 * @return
+	 */
+	Model(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> definition, const std::string& name);
 
 	/**
 	 * @brief Ctor.
 	 */
 	virtual ~Model();
-
-	/**
-	 * @brief Notify the object of it's manager (internal use only)
-	 */
-	virtual void _notifyManager(Ogre::SceneManager* man);
-
-	static Model* createModel(Ogre::SceneManager& sceneManager, const std::string& modelType, const std::string& name = "");
 
 	/**
 	 * @brief Reloads the model from the modeldefinition.
@@ -191,7 +190,7 @@ public:
 
 	// 	inline const SubModelPartStoreMap& getSubmodelParts() const;
 
-	const SubModelSet& getSubmodels() const;
+	const std::set<SubModel*>& getSubmodels() const;
 
 	//SubModel* getSubModel(const std::string& name);
 	SubModel* getSubModel(size_t index);
@@ -199,36 +198,14 @@ public:
 	Ogre::AnimationState* getAnimationState(const Ogre::String& name);
 	Ogre::AnimationStateSet* getAllAnimationStates();
 	Ogre::SkeletonInstance * getSkeleton() const;
-	Ogre::TagPoint* attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO);
-	Ogre::MovableObject * detachObjectFromBone(const Ogre::String &movableName);
-	void detachAllObjectsFromBone(void);
 
 	/** @see Ogre::MovableObject::setRenderingDistance(Ogre::Real dist)
 	 */
 	virtual void setRenderingDistance(Ogre::Real dist);
 
-	/** Overridden - see MovableObject.
-	 */
-	// 		inline virtual Ogre::Real getRenderingDistance   (   void    )    const;
-
-	/** Overridden - see MovableObject.
-	 */
-	virtual void _notifyCurrentCamera(Ogre::Camera* cam);
-
-	virtual void _notifyMoved();
 
 	/// Overridden - see MovableObject.
 	virtual void setRenderQueueGroup(Ogre::RenderQueueGroupID queueID);
-
-	/** Overridden - see MovableObject.
-	 */
-	virtual const Ogre::AxisAlignedBox& getBoundingBox(void) const;
-
-	/** Overridden - see MovableObject.
-	 */
-	virtual const Ogre::AxisAlignedBox& getWorldBoundingBox(bool derive) const;
-
-	virtual Ogre::Real getBoundingRadius() const;
 
 	/** Overridden - see MovableObject.
 	 */
@@ -238,37 +215,15 @@ public:
 	//	virtual const Ogre::String& getName(void) const;
 
 	/** Overridden from MovableObject */
-	virtual const Ogre::String& getMovableType(void) const;
-
-	/** Overridden from MovableObject */
 	virtual void setQueryFlags(unsigned long flags);
 
-	/** Overridden from MovableObject */
-	virtual void addQueryFlags(unsigned long flags);
-
-	/** Overridden from MovableObject */
-	virtual void removeQueryFlags(unsigned long flags);
 
 	/** Overridden from MovableObject */
 	virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);
 
-	/** Overridden from MovableObject */
-	virtual bool isVisible(void) const;
+	Ogre::TagPoint* attachObject(const std::string &attachPoint, Ogre::MovableObject* movable, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
 
-	/**
-	 * @copydoc Ogre::MovableObject::visitRenderables()
-	 */
-	virtual void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables);
-
-	/**
-	 *    returns a pointer to the defintion of the Model
-	 * @return
-	 */
-	ModelDefinitionPtr getDefinition() const;
-
-	Ogre::TagPoint* attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
-	AttachPointWrapper attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO);
-	//void attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
+	void detachObject(Ogre::MovableObject* movable);
 
 	bool hasAttachPoint(const std::string& attachPoint) const;
 
@@ -284,7 +239,7 @@ public:
 	 Returns a store of AttachPointWrapper objects, which represents all attached objects.
 	 @returns a pointer to an AttachPointWrapperStore instance, or null
 	 */
-	const AttachPointWrapperStore* getAttachedPoints() const;
+	const std::unique_ptr<std::vector<AttachPointWrapper>>& getAttachedPoints() const;
 
 	/**
 	 *    If set to true, Ogre will display each bone in the skeleton with an axis overlay. Defaults to false.
@@ -317,15 +272,25 @@ public:
 	 */
 	virtual void loadingComplete(Ogre::Resource*);
 
+	const Ogre::SharedPtr<ModelDefinition>& getDefinition() const;
+
+	const std::string& getName() const;
+
+	void attachToNode(INodeProvider* nodeProvider);
+
+	void setUserObject(std::shared_ptr<EmberEntityUserObject> mUserObject);
+
+	Ogre::SceneManager& getManager();
+
+	float getCombinedBoundingRadius() const;
+
+	Ogre::AxisAlignedBox getCombinedBoundingBox() const;
+
+	const INodeProvider* getNodeProvider() const;
+
 protected:
 
-	/**
-	 *    Creates a new Model instance with the specified name.
-	 *    Remember to call create(...) to create the actual meshes.
-	 * @param name
-	 * @return
-	 */
-	Model(const std::string& name);
+
 
 	/**
 	 * Try to create the needed meshes from the specified modeldef.
@@ -333,7 +298,7 @@ protected:
 	 * @param modelType
 	 * @return
 	 */
-	bool create(const std::string& modelType, Eris::EventService& eventService); // create model of specific type
+	bool create(const ModelDefinition& modelDefinition, Eris::EventService& eventService); // create model of specific type
 
 	bool createActualModel();
 
@@ -371,12 +336,21 @@ protected:
 	 *
 	 * This must be called whenever a SubModel, ParticleSystem or Light is added or removed.
 	 */
-	void refreshMovableList();
+	//void refreshMovableList();
+
+	void addMovable(Ogre::MovableObject* movable);
+	void removeMovable(Ogre::MovableObject* movable);
+
+	Ogre::SceneManager& mManager;
+
+	Ogre::SharedPtr<ModelDefinition> mDefinition;
+
+	INodeProvider* mParentNodeProvider;
+
+
+	const std::string& mName;
 
 	Ogre::Entity::ChildObjectList mChildObjectList;
-
-	mutable Ogre::AxisAlignedBox mFull_aa_box;
-	mutable Ogre::AxisAlignedBox mWorldFull_aa_box;
 
 	/**
 	 if the model has a skeleton, it can be shared between many different entities
@@ -390,14 +364,9 @@ protected:
 	ActionStore mActions;
 
 	/**
-	 modeldef this was copied from
-	 */
-	ModelDefinitionPtr mDefinition;
-
-	/**
 	 a set of all submodels belonging to the model
 	 */
-	SubModelSet mSubmodels;
+	std::set<SubModel*> mSubmodels;
 	/**
 	 a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
 	 */
@@ -423,11 +392,7 @@ protected:
 	 */
 	Ogre::AnimationStateSet* mAnimationStateSet;
 
-	bool createFromDefn();
-
-	std::unique_ptr<AttachPointWrapperStore> mAttachPoints;
-
-	std::shared_ptr<ModelBackgroundLoader> mBackgroundLoader;
+	std::unique_ptr<std::vector<AttachPointWrapper>> mAttachPoints;
 
 	/**
 	 * @brief A store of the movable objects which make up this model.
@@ -439,36 +404,20 @@ protected:
 	 */
 	std::vector<Ogre::MovableObject*> mMovableObjects;
 
+	bool mVisible;
+
+	std::shared_ptr<EmberEntityUserObject> mUserObject;
 };
 
-inline ModelDefinitionPtr Model::getDefinition() const
-{
-	return mDefinition;
-}
-
-inline const Model::SubModelSet& Model::getSubmodels() const
+inline const std::set<SubModel*>& Model::getSubmodels() const
 {
 	return mSubmodels;
 }
 
-/** Factory object for creating Model instances */
-class ModelFactory: public Ogre::MovableObjectFactory
+inline const std::string& Model::getName() const
 {
-protected:
-	Eris::EventService& mEventService;
-	Ogre::MovableObject* createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList* params);
-public:
-	ModelFactory(Eris::EventService& eventService);
-	virtual ~ModelFactory()
-	{
-	}
-
-	static Ogre::String FACTORY_TYPE_NAME;
-
-	const Ogre::String& getType(void) const;
-	void destroyInstance(Ogre::MovableObject* obj);
-
-};
+	return mName;
+}
 
 }
 }

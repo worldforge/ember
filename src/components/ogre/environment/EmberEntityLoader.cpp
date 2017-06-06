@@ -140,7 +140,8 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 		instance.movedConnection.disconnect();
 		instance.visibilityChangedConnection.disconnect();
 		//Reset the rendering distance to the one set by the model def.
-		modelRepresentation->getModel().setRenderingDistance(modelRepresentation->getModel().getDefinition()->getRenderingDistance());
+		//FIXME: this should be handled differently
+		//modelRepresentation->getModel().setRenderingDistance(modelRepresentation->getModel().getDefinition()->getRenderingDistance());
 		mEntities.erase(I);
 	}
 
@@ -195,19 +196,15 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 			if (viewPos.isValid()) {
 				Ogre::Vector3 pos(Convert::toOgre(viewPos));
 				Model::Model& model(modelRepresentation->getModel());
-				Ogre::Node* node = model.getParentNode();
-				if (node) {
-					const Ogre::Vector3& pos = node->_getDerivedPosition();
-					if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
-						for (Model::Model::SubModelSet::const_iterator J = model.getSubmodels().begin(); J != model.getSubmodels().end(); ++J) {
-							// 				if (!(*J)->getEntity()->getParentSceneNode()) {
-							// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
-							// 				}
-							//  				if ((*J)->getEntity()->isVisible()) {
-							addEntity((*J)->getEntity(), pos, node->_getDerivedOrientation(), modelRepresentation->getScale(), colour);
-							// 					(*J)->getEntity()->setVisible(false);
-							//  				}
-						}
+				if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
+					for (auto& submodel : model.getSubmodels()) {
+						// 				if (!(*J)->getEntity()->getParentSceneNode()) {
+						// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
+						// 				}
+						//  				if ((*J)->getEntity()->isVisible()) {
+						addEntity(submodel->getEntity(), pos, Convert::toOgre(emberEntity.getViewOrientation()), modelRepresentation->getScale(), colour);
+						// 					(*J)->getEntity()->setVisible(false);
+						//  				}
 					}
 				}
 			}

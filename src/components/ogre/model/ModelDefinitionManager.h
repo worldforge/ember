@@ -142,7 +142,10 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
+
+
+	void populateModel(Model* model, const Ogre::SharedPtr<ModelDefinition>& definition);
 
 
 	/**
@@ -165,12 +168,7 @@ protected:
 	 * @brief Determines whether models should be shown.
 	 */
 	bool mShowModels;
-	
-	/**
-	 * @brief An instance of our own model factory which we register with the ogre root object.
-	 */
-	ModelFactory* mModelFactory;
-	
+
 	/**
 	 * @brief The collection of background loaders which will be polled each time pollBackgroundLoaders() are called.
 	 */

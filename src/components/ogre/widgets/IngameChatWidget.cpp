@@ -189,41 +189,19 @@ WidgetPool<IngameChatWidget::ChatText>& IngameChatWidget::getChatTextPool()
 
 void IngameChatWidget::frameStarted(const Ogre::FrameEvent & event)
 {
-	for (WidgetPool<Label>::WidgetStore::iterator I = mLabelPool.getUsedWidgets().begin(); I != mLabelPool.getUsedWidgets().end(); ++I) {
-		(*I)->frameStarted(event);
+	for (auto& label : mLabelPool.getUsedWidgets()) {
+		label->frameStarted(event);
 	}
-
 }
 
 void IngameChatWidget::removeWidget(const std::string& windowName)
 {
 }
 
-IngameChatWidget::MovableObjectListener::MovableObjectListener(Label& label, Ogre::MovableObject& movableObject) :
-		mLabel(label), mMovableObject(movableObject), mIsObserving(false)
-{
-	setObserving(true);
-}
-
-IngameChatWidget::MovableObjectListener::~MovableObjectListener()
-{
-	setObserving(false);
-}
-
-void IngameChatWidget::MovableObjectListener::setObserving(bool isObserving)
-{
-	if (isObserving) {
-		//TODO: make sure that this doesn't interfere with other listeners
-		mMovableObject.setListener(this);
-	} else {
-		mMovableObject.setListener(0);
+void IngameChatWidget::cameraPreRenderScene(Ogre::Camera* cam) {
+	for (auto& label : mLabelPool.getUsedWidgets()) {
+		label->objectRendering(cam);
 	}
-}
-
-bool IngameChatWidget::MovableObjectListener::objectRendering(const Ogre::MovableObject * movableObject, const Ogre::Camera * camera)
-{
-	mLabel.objectRendering(camera);
-	return true;
 }
 
 IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, EmberEntity& entity) :
@@ -338,13 +316,12 @@ void IngameChatWidget::EntityObserver::showDetachedChat()
 }
 
 IngameChatWidget::Label::Label(Window * window, WindowManager * windowManager, IngameChatWidget& containerWidget, const std::string& prefix) :
-		mWindow(window), mMovableObject(nullptr), mMovableObjectListener(nullptr), mEntity(nullptr), mWindowManager(windowManager), mContainerWidget(containerWidget), mActive(false), mVisible(false), mRenderNextFrame(false), mChatText(nullptr)
+		mWindow(window), mModel(nullptr), mEntity(nullptr), mWindowManager(windowManager), mContainerWidget(containerWidget), mActive(false), mVisible(false), mRenderNextFrame(false), mChatText(nullptr)
 {
 }
 
 IngameChatWidget::Label::~Label()
 {
-	delete mMovableObjectListener;
 	mWindowManager->destroyWindow(mWindow);
 }
 
@@ -363,16 +340,21 @@ void IngameChatWidget::Label::objectRendering(const Ogre::Camera * camera)
 		//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
 		// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
 		//getWorldPosition is faster than getting the center of the boundingbox...
-		Ogre::Vector3 diff = mMovableObject->getParentNode()->_getDerivedPosition() - camera->getDerivedPosition();
 
-		//remove the window if it's either too far away
-		if (diff.length() > mContainerWidget.mDistanceShown) {
-			// 		mLabel->setActive(false);
-		} else {
-			markForRender();
-			placeWindowOnEntity();
-			/*		mLabel->setActive(true);
-			 mLabel->placeWindowOnEntity();*/
+		const INodeProvider* nodeProvider = mModel->getNodeProvider();
+		if (nodeProvider) {
+			Ogre::Node& node = nodeProvider->getNode();
+			Ogre::Vector3 diff = node._getDerivedPosition() - camera->getDerivedPosition();
+
+			//remove the window if it's either too far away
+			if (diff.length() > mContainerWidget.mDistanceShown) {
+				// 		mLabel->setActive(false);
+			} else {
+				markForRender();
+				placeWindowOnEntity();
+				/*		mLabel->setActive(true);
+				 mLabel->placeWindowOnEntity();*/
+			}
 		}
 	}
 }
@@ -380,20 +362,25 @@ void IngameChatWidget::Label::objectRendering(const Ogre::Camera * camera)
 
 void IngameChatWidget::Label::placeWindowOnEntity()
 {
-	//make sure that the window stays on the entity
-	Ogre::Vector2 screenCoords;
+	const INodeProvider* nodeProvider = mModel->getNodeProvider();
+	if (nodeProvider) {
+		//make sure that the window stays on the entity
+		Ogre::Vector2 screenCoords;
 
-	bool result = false;
-	Ogre::Vector3 entityWorldCoords = mMovableObject->getWorldBoundingSphere().getCenter();
-	entityWorldCoords.y = mMovableObject->getWorldBoundingBox().getMaximum().y;
-	//check what the new position is in screen coords
-	result = mContainerWidget.mCamera->worldToScreen(entityWorldCoords, screenCoords);
+		bool result = false;
+//		Ogre::Vector3 entityWorldCoords = mMovableObject->getWorldBoundingSphere().getCenter();
+//		entityWorldCoords.y = mMovableObject->getWorldBoundingBox().getMaximum().y;
+		Ogre::Vector3 entityWorldCoords = nodeProvider->getNode().convertLocalToWorldPosition(Ogre::Vector3::ZERO);
+		entityWorldCoords.y = mModel->getCombinedBoundingBox().getMaximum().y;
+		//check what the new position is in screen coords
+		result = mContainerWidget.mCamera->worldToScreen(entityWorldCoords, screenCoords);
 
-	if (result) {
-		mWindow->setVisible(true);
-		mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getPixelSize().d_width * 0.5)), UDim(screenCoords.y, -(mWindow->getPixelSize().d_height * 0.5))));
-	} else {
-		mWindow->setVisible(false);
+		if (result) {
+			mWindow->setVisible(true);
+			mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getPixelSize().d_width * 0.5)), UDim(screenCoords.y, -(mWindow->getPixelSize().d_height * 0.5))));
+		} else {
+			mWindow->setVisible(false);
+		}
 	}
 }
 
@@ -424,10 +411,10 @@ void IngameChatWidget::Label::removeChatText()
 	}
 }
 
-void IngameChatWidget::Label::attachToEntity(EmberEntity* entity, Ogre::MovableObject* movableObject)
+void IngameChatWidget::Label::attachToEntity(EmberEntity* entity, Model::Model* model)
 {
 	mEntity = entity;
-	mMovableObject = movableObject;
+	mModel = model;
 	reset();
 	try {
 		updateEntityName();
@@ -482,14 +469,6 @@ void IngameChatWidget::Label::setActive(bool active)
 {
 	if (mActive == active) {
 		return;
-	}
-
-	if (active) {
-		delete mMovableObjectListener;
-		mMovableObjectListener = new MovableObjectListener(*this, *mMovableObject);
-	} else {
-		delete mMovableObjectListener;
-		mMovableObjectListener = nullptr;
 	}
 
 	mActive = active;

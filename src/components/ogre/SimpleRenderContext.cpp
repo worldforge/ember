@@ -90,8 +90,6 @@ SimpleRenderContext::~SimpleRenderContext()
 		//the root scene node cannot be removed (evar!!)
 // 		mSceneManager->destroySceneNode(mSceneManager->getRootSceneNode()->getName());
 	}
-	//we must make sure that all models are destroyed before the entities are destroyed, else we'll get segfaults in the Model destructor as it tries to access already deleted entities
-	mSceneManager->destroyAllMovableObjectsByType(Model::Model::sMovableType);
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
 
@@ -327,24 +325,20 @@ void SimpleRenderContext::setBackgroundColour(float red, float green, float blue
 	}
 }
 
-void SimpleRenderContext::showFull(const Ogre::MovableObject* object)
+void SimpleRenderContext::showFull(float boundingRadius)
 {
-	//only do this if there's an active object
-	if (object) {
-		mEntityNode->_update(true, true);
-		Ogre::Real distance = object->getBoundingRadius() / Ogre::Math::Tan(mCamera->getFOVy() / 2);
-		//we can't have a distance of 0
-		if (distance == 0) {
-			distance = 1;
-		}
-		Ogre::Real distanceNudge = distance / 100;
-		distance += distanceNudge;
-
-		mDefaultCameraDistance = distance;
-
-		setCameraDistance(distance);
+	mEntityNode->_update(true, true);
+	Ogre::Real distance = boundingRadius / Ogre::Math::Tan(mCamera->getFOVy() / 2);
+	//we can't have a distance of 0
+	if (distance == 0) {
+		distance = 1;
 	}
+	Ogre::Real distanceNudge = distance / 100;
+	distance += distanceNudge;
 
+	mDefaultCameraDistance = distance;
+
+	setCameraDistance(distance);
 }
 
 Ogre::RenderTexture* SimpleRenderContext::getRenderTexture()

@@ -114,7 +114,8 @@ protected:
 	 */
 	Ogre::Resource::Listener* mSkeletonListener;
 
-	virtual Ogre::MovableObject* getMovableObject();
+	float getMovableBoundingRadius() override;
+
 	void setEntity(Ogre::Entity* entity);
 
 

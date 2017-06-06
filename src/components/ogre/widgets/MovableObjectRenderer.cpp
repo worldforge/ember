@@ -156,13 +156,13 @@ void MovableObjectRenderer::setAutoShowFull(bool showFull)
 
 void MovableObjectRenderer::showFull()
 {
-	mTexture->getRenderContext()->showFull(getMovableObject());
+	mTexture->getRenderContext()->showFull(getMovableBoundingRadius());
 }
 
 void MovableObjectRenderer::rescaleAxisMarker()
 {
-	if (mAxesNode && getMovableObject()) {
-		Ogre::Real axesScale = (getMovableObject()->getBoundingRadius() / 5.0f);
+	if (mAxesNode) {
+		Ogre::Real axesScale = (getMovableBoundingRadius() / 5.0f);
 		mAxesNode->setScale(axesScale, axesScale, axesScale);
 	}
 }
