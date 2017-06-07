@@ -42,29 +42,26 @@
 
 #include <Eris/Task.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Model
-{
+namespace Ember {
+namespace OgreView {
+namespace Model {
 
 std::string ModelRepresentation::sTypeName("ModelRepresentation");
 
-const char * const ModelRepresentation::ACTION_STAND("idle");
+const char* const ModelRepresentation::ACTION_STAND("idle");
 
-const char * const ModelRepresentation::ACTION_RUN("run");
-const char * const ModelRepresentation::ACTION_RUN_RIGHT("run_right");
-const char * const ModelRepresentation::ACTION_RUN_LEFT("run_left");
-const char * const ModelRepresentation::ACTION_RUN_BACKWARDS("run_backwards");
+const char* const ModelRepresentation::ACTION_RUN("run");
+const char* const ModelRepresentation::ACTION_RUN_RIGHT("run_right");
+const char* const ModelRepresentation::ACTION_RUN_LEFT("run_left");
+const char* const ModelRepresentation::ACTION_RUN_BACKWARDS("run_backwards");
 
-const char * const ModelRepresentation::ACTION_WALK("walk");
-const char * const ModelRepresentation::ACTION_WALK_RIGHT("walk_right");
-const char * const ModelRepresentation::ACTION_WALK_LEFT("walk_left");
-const char * const ModelRepresentation::ACTION_WALK_BACKWARDS("walk_backwards");
+const char* const ModelRepresentation::ACTION_WALK("walk");
+const char* const ModelRepresentation::ACTION_WALK_RIGHT("walk_right");
+const char* const ModelRepresentation::ACTION_WALK_LEFT("walk_left");
+const char* const ModelRepresentation::ACTION_WALK_BACKWARDS("walk_backwards");
 
-const char * const ModelRepresentation::ACTION_SWIM("swim");
-const char * const ModelRepresentation::ACTION_FLOAT("float");
+const char* const ModelRepresentation::ACTION_SWIM("swim");
+const char* const ModelRepresentation::ACTION_FLOAT("float");
 
 ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scene& scene, EntityMapping::EntityMapping& mapping) :
 		mEntity(entity),
@@ -75,8 +72,7 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 		mActiveAction(0),
 		mTaskAction(0),
 		mSoundEntity(0),
-		mUserObject(std::make_shared<EmberEntityUserObject>(entity, new MeshCollisionDetector(model)))
-{
+		mUserObject(std::make_shared<EmberEntityUserObject>(entity, new MeshCollisionDetector(model))) {
 	//Only connect if we have actions to act on
 	if (!model->getDefinition()->getActionDefinitions().empty()) {
 		mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
@@ -103,8 +99,7 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 
 }
 
-ModelRepresentation::~ModelRepresentation()
-{
+ModelRepresentation::~ModelRepresentation() {
 
 	const RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
 	if (renderingDef && renderingDef->getScheme() != "") {
@@ -121,27 +116,23 @@ ModelRepresentation::~ModelRepresentation()
 
 }
 
-const std::string& ModelRepresentation::getType() const
-{
+const std::string& ModelRepresentation::getType() const {
 	return sTypeName;
 }
 
-const std::string& ModelRepresentation::getTypeNameForClass()
-{
+const std::string& ModelRepresentation::getTypeNameForClass() {
 	return sTypeName;
 }
-EmberEntity & ModelRepresentation::getEntity() const
-{
+
+EmberEntity& ModelRepresentation::getEntity() const {
 	return mEntity;
 }
 
-Model & ModelRepresentation::getModel() const
-{
+Model& ModelRepresentation::getModel() const {
 	return *mModel;
 }
 
-void ModelRepresentation::setModelPartShown(const std::string& partName, bool visible)
-{
+void ModelRepresentation::setModelPartShown(const std::string& partName, bool visible) {
 	if (mModel->isLoaded()) {
 
 		if (visible) {
@@ -158,8 +149,7 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
  * Check if any sound action is defined within
  * the model
  */
-bool ModelRepresentation::needSoundEntity()
-{
+bool ModelRepresentation::needSoundEntity() {
 	const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
 	ActionDefinitionsStore::const_iterator I_b = store.begin();
 	ActionDefinitionsStore::const_iterator I_e = store.end();
@@ -181,8 +171,7 @@ bool ModelRepresentation::needSoundEntity()
 	return false;
 }
 
-void ModelRepresentation::setSounds()
-{
+void ModelRepresentation::setSounds() {
 	//	if (!mSoundEntity)
 	//	{
 	//		if (needSoundEntity())
@@ -192,16 +181,14 @@ void ModelRepresentation::setSounds()
 	//	}
 }
 
-void ModelRepresentation::setClientVisible(bool visible)
-{
+void ModelRepresentation::setClientVisible(bool visible) {
 	//It appears that lights aren't disabled even when they're detached from the node tree (which will happen if the visibity is disabled as the lights are attached to the scale node), so we need to disable them ourselves.
 	for (LightSet::iterator I = mModel->getLights().begin(); I != mModel->getLights().end(); ++I) {
 		I->light->setVisible(visible);
 	}
 }
 
-void ModelRepresentation::initFromModel()
-{
+void ModelRepresentation::initFromModel() {
 	connectEntities();
 
 	//see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
@@ -220,21 +207,18 @@ void ModelRepresentation::initFromModel()
 
 }
 
-Ogre::Vector3 ModelRepresentation::getScale() const
-{
+Ogre::Vector3 ModelRepresentation::getScale() const {
 	return Ogre::Vector3(mModel->getScale());
 }
 
-void ModelRepresentation::connectEntities()
-{
+void ModelRepresentation::connectEntities() {
 	//we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
 	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
 	mModel->setUserObject(std::make_shared<EmberEntityUserObject>(mEntity, collisionDetector));
 }
 
-void ModelRepresentation::model_Reloaded()
-{
+void ModelRepresentation::model_Reloaded() {
 	initFromModel();
 	reactivatePartActions();
 	//Check if there's any ongoing tasks which we should create an action for.
@@ -246,24 +230,20 @@ void ModelRepresentation::model_Reloaded()
 	parseMovementMode(mEntity.getPredictedVelocity());
 }
 
-void ModelRepresentation::model_Resetting()
-{
+void ModelRepresentation::model_Resetting() {
 	mModel->setUserObject(std::shared_ptr<EmberEntityUserObject>());
 }
 
-void ModelRepresentation::processOutfit(const Atlas::Message::MapType&)
-{
+void ModelRepresentation::processOutfit(const Atlas::Message::MapType&) {
 }
 
-void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds)
-{
+void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds) {
 	for (Eris::StringSet::const_iterator I = attributeIds.begin(); I != attributeIds.end(); ++I) {
 		attrChanged(*I, mEntity.valueOfAttr(*I));
 	}
 }
 
-void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Message::Element& v)
-{
+void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Message::Element& v) {
 
 	//check if the changed attribute should affect any particle systems
 	//TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
@@ -271,15 +251,14 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 		const ParticleSystemBindingsPtrSet& bindings = mModel->getAllParticleSystemBindings();
 		for (ParticleSystemBindingsPtrSet::const_iterator I = bindings.begin(); I != bindings.end(); ++I) {
 			if ((*I)->getVariableName() == str && v.isNum()) {
-				(*I)->scaleValue(v.asNum());
+				(*I)->scaleValue(static_cast<Ogre::Real>(v.asNum()));
 			}
 		}
 	}
 
 }
 
-Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& velocity) const
-{
+Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& velocity) const {
 	float mag = 0;
 	if (velocity.isValid()) {
 		mag = velocity.mag();
@@ -291,66 +270,44 @@ Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& veloc
 
 		//The model is moving in some direction; we need to figure out both the direction, and the speed.
 		//We'll split up the movement into four arcs: forwards, backwards, left and right
-		//We'll use a little bit of padding, so that the side movement arcs are
+		//We'll use a little bit of padding, so that the side movement arcs are larger.
 		bool isRunning = mag > 2.6;
-		//flip the direction of y() to fit the normal way atan is setup; just to make it easier to figure out
-		WFMath::CoordType atan = std::atan2(velocity.x(), -velocity.y());
+		WFMath::CoordType atan = std::atan2(velocity.x(), velocity.y());
 
-
-		//First check if we're moving backwards of forwards
-		if (atan >= 0) {
+		if (atan >= 2.4 || atan <= -2.4) {
 			//moving forwards
-			if (atan <= 0.785400) {
-				//moving to the right
-				if (isRunning) {
-					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_RIGHT, ACTION_WALK_RIGHT, ACTION_RUN, ACTION_WALK });
-				} else {
-					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_RIGHT, ACTION_RUN_RIGHT, ACTION_WALK, ACTION_RUN });
-				}
-			} else if (atan >= 2.35600) {
-				//moving to the left
-				if (isRunning) {
-					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_LEFT, ACTION_WALK_LEFT, ACTION_RUN, ACTION_WALK });
-				} else {
-					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_LEFT, ACTION_RUN_LEFT, ACTION_WALK, ACTION_RUN });
-				}
-			}
 			if (isRunning) {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN, ACTION_WALK });
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN, ACTION_WALK});
 			} else {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK, ACTION_RUN });
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK, ACTION_RUN});
+			}
+		} else if (atan > 0.7) {
+			//moving to the left
+			if (isRunning) {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_LEFT, ACTION_WALK_LEFT, ACTION_RUN, ACTION_WALK});
+			} else {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_LEFT, ACTION_RUN_LEFT, ACTION_WALK, ACTION_RUN});
+			}
+		} else if (atan < -0.7) {
+			//moving to the right
+			if (isRunning) {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_RIGHT, ACTION_WALK_RIGHT, ACTION_RUN, ACTION_WALK});
+			} else {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_RIGHT, ACTION_RUN_RIGHT, ACTION_WALK, ACTION_RUN});
 			}
 		} else {
 			//moving backwards
-			if (atan >= -0.785400) {
-				//moving to the right
-				if (isRunning) {
-					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_RIGHT, ACTION_WALK_RIGHT, ACTION_RUN, ACTION_WALK });
-				} else {
-					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_RIGHT, ACTION_RUN_RIGHT, ACTION_WALK, ACTION_RUN });
-				}
-			} else if (atan <= -2.35550) {
-				//moving to the left
-				if (isRunning) {
-					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_LEFT, ACTION_WALK_LEFT, ACTION_RUN, ACTION_WALK });
-				} else {
-					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_LEFT, ACTION_RUN_LEFT, ACTION_WALK, ACTION_RUN });
-				}
-			}
 			if (isRunning) {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_RUN_BACKWARDS, ACTION_WALK_BACKWARDS });
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_BACKWARDS, ACTION_WALK_BACKWARDS});
 			} else {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, { ACTION_WALK_BACKWARDS, ACTION_RUN_BACKWARDS });
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_BACKWARDS, ACTION_RUN_BACKWARDS});
 			}
-
 		}
-
 	}
 
 }
 
-Action* ModelRepresentation::getFirstAvailableAction(const ActivationDefinition::Type type, std::initializer_list<const char * const > actions) const
-{
+Action* ModelRepresentation::getFirstAvailableAction(const ActivationDefinition::Type type, std::initializer_list<const char* const> actions) const {
 	for (auto& actionName : actions) {
 		Action* action = mModel->getAction(type, actionName);
 		if (action) {
@@ -360,8 +317,7 @@ Action* ModelRepresentation::getFirstAvailableAction(const ActivationDefinition:
 	return nullptr;
 }
 
-void ModelRepresentation::parseMovementMode(const WFMath::Vector<3>& velocity)
-{
+void ModelRepresentation::parseMovementMode(const WFMath::Vector<3>& velocity) {
 
 	Action* newAction = getActionForMovement(velocity);
 
@@ -390,13 +346,11 @@ void ModelRepresentation::parseMovementMode(const WFMath::Vector<3>& velocity)
 //	mMovementMode = newMode;
 }
 
-void ModelRepresentation::setLocalVelocity(const WFMath::Vector<3>& velocity)
-{
+void ModelRepresentation::setLocalVelocity(const WFMath::Vector<3>& velocity) {
 	parseMovementMode(velocity);
 }
 
-void ModelRepresentation::updateAnimation(float timeSlice)
-{
+void ModelRepresentation::updateAnimation(float timeSlice) {
 	//This is a bit convoluted, but the logic is as follows:
 	//If we're moving, i.e. with a non-zero velocity, we should always prefer to show the movement animation
 	//If not, we should prefer to show a current action animation if available
@@ -424,8 +378,7 @@ void ModelRepresentation::updateAnimation(float timeSlice)
 	}
 }
 
-void ModelRepresentation::resetAnimations()
-{
+void ModelRepresentation::resetAnimations() {
 	if (mCurrentMovementAction) {
 		mCurrentMovementAction->getAnimations().reset();
 	}
@@ -460,13 +413,11 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 	}
 }
 
-void ModelRepresentation::entity_TaskAdded(Eris::Task* task)
-{
+void ModelRepresentation::entity_TaskAdded(Eris::Task* task) {
 	createActionForTask(*task);
 }
 
-void ModelRepresentation::createActionForTask(const Eris::Task& task)
-{
+void ModelRepresentation::createActionForTask(const Eris::Task& task) {
 	Action* newAction = mModel->getAction(ActivationDefinition::TASK, task.name());
 	if (newAction) {
 		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
@@ -475,31 +426,27 @@ void ModelRepresentation::createActionForTask(const Eris::Task& task)
 	}
 }
 
-void ModelRepresentation::entity_TaskRemoved(Eris::Task*)
-{
+void ModelRepresentation::entity_TaskRemoved(Eris::Task*) {
 	if (mTaskAction) {
 		mTaskAction->getAnimations().reset();
 		mTaskAction = 0;
 	}
 }
 
-void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize)
-{
+void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize) {
 	if (visualization == "CollisionObject") {
 		mUserObject->getCollisionDetector()->setVisualize(visualize);
 	}
 }
 
-bool ModelRepresentation::getVisualize(const std::string& visualization) const
-{
+bool ModelRepresentation::getVisualize(const std::string& visualization) const {
 	if (visualization == "CollisionObject") {
 		return mUserObject->getCollisionDetector()->getVisualize();
 	}
 	return false;
 }
 
-void ModelRepresentation::reactivatePartActions()
-{
+void ModelRepresentation::reactivatePartActions() {
 	ModelPartReactivatorVisitor visitor;
 	mMapping.getRootEntityMatch().accept(visitor);
 }

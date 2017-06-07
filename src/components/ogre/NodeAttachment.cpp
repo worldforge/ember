@@ -41,7 +41,7 @@ namespace OgreView
 {
 
 NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
-	AttachmentBase(parentEntity, childEntity), mNode(0), mNodeProvider(nodeProvider), mAttachmentController(0)
+	AttachmentBase(parentEntity, childEntity), mNode(nullptr), mNodeProvider(nodeProvider), mAttachmentController(nullptr)
 {
 	mNode = &mNodeProvider->getNode();
 	setupListeners();

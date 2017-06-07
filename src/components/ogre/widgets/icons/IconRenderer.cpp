@@ -69,25 +69,23 @@ void IconRenderer::setWorker(IconRenderWorker* worker)
 void IconRenderer::render(const std::string& modelName, Icon* icon)
 {
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	Model::Model* model = new Model::Model(*getRenderContext()->getSceneManager(), modelDef, modelName);
+	auto model = std::shared_ptr<Model::Model>(new Model::Model(*getRenderContext()->getSceneManager(), modelDef, modelName));
 	if (model->isLoaded()) {
 		render(model, icon);
-		delete model;
 	} else {
 		//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
-		model->Reloaded.connect(sigc::bind(sigc::mem_fun(*this, &IconRenderer::renderDelayed), model, icon));
+		model->Reloaded.connect([=]{renderDelayed(model, icon);});
 	}
 }
 
-void IconRenderer::render(Model::Model* model, Icon* icon)
+void IconRenderer::render(const std::shared_ptr<Model::Model>& model, Icon* icon)
 {
 	mWorker->render(model, icon, icon->getImageStoreEntry());
 }
 
-void IconRenderer::renderDelayed(Model::Model* model, Icon* icon)
+void IconRenderer::renderDelayed(const std::shared_ptr<Model::Model>& model, Icon* icon)
 {
 	render(model, icon);
-	delete model;
 }
 
 void IconRenderer::performRendering(Model::Model* model, Icon*)
@@ -212,30 +210,29 @@ DirectRendererWorker::~DirectRendererWorker()
 {
 }
 
-void DirectRendererWorker::render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry)
+void DirectRendererWorker::render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry* imageStoreEntry)
 {
 	//set the viewport to render into the icon texture
 	mRenderer.getRenderContext()->setTexture(imageStoreEntry->getTexture());
 	Ogre::TRect<float> iconBox(imageStoreEntry->getRelativeBox());
 	mRenderer.getRenderContext()->getViewport()->setDimensions(iconBox.left, iconBox.top, iconBox.right - iconBox.left, iconBox.bottom - iconBox.top);
 
-	mRenderer.performRendering(model, icon);
+	mRenderer.performRendering(model.get(), icon);
 	// 	mRenderer.blitRenderToIcon(icon);
 }
 
-DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, Model::Model* model, Icon* icon) :
+DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, const std::shared_ptr<Model::Model>& model, Icon* icon) :
 	mRenderer(renderer), mModel(model), mIcon(icon), mFrames(0)
 {
 }
 
 DelayedIconRendererEntry::~DelayedIconRendererEntry()
 {
-	delete mModel;
 }
 
 Model::Model* DelayedIconRendererEntry::getModel()
 {
-	return mModel;
+	return mModel.get();
 }
 
 Icon* DelayedIconRendererEntry::getIcon()
@@ -269,7 +266,7 @@ DelayedIconRendererWorker::~DelayedIconRendererWorker()
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-void DelayedIconRendererWorker::render(Model::Model* model, Icon* icon, IconImageStoreEntry*)
+void DelayedIconRendererWorker::render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry*)
 {
 	DelayedIconRendererEntry entry(*this, model, icon);
 	entries.push(entry);

@@ -55,7 +55,7 @@ An entry belonging to the DelayedIconRendererWorker.
 class DelayedIconRendererEntry
 {
 public:
-	DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, Model::Model* model, Icon* icon);
+	DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, const std::shared_ptr<Model::Model>& model, Icon* icon);
 	virtual ~DelayedIconRendererEntry();
 	/**
 	 *    Accessor for the model which will be rendered.
@@ -78,7 +78,7 @@ protected:
 	A reference to the owner instance.
 	*/
 	DelayedIconRendererWorker& mRenderer;
-	Model::Model* mModel;
+	std::shared_ptr<Model::Model> mModel;
 	Icon* mIcon;
 	/**
 	We'll keep track of the number of frames for this instance. On the first frame we'll perform the rendering, and on later frames we'll blit the texture.
@@ -102,7 +102,7 @@ public:
      * @param model The model to render. Note that it's the responsibility of this class to make sure that's it's properly destroyed after use.
      * @param icon
      */
-    virtual void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry) = 0;
+    virtual void render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry* imageStoreEntry) = 0;
 protected:
 	IconRenderer& mRenderer;
 	IconImageStoreEntry* mImageStoreEntry;
@@ -129,7 +129,7 @@ public:
      * @param model
      * @param icon
      */
-    void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry);
+    void render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry* imageStoreEntry) override;
 
 
 protected:
@@ -172,7 +172,7 @@ public:
      * @param model
      * @param icon
      */
-     void render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry);
+     void render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry* imageStoreEntry) override;
 };
 
 /**
@@ -208,7 +208,7 @@ public:
 	* @param model The Model to render. Note that after calling this ownership of the Model is transferred to this instance, which takes care of the proper destruction of it.
 	* @param icon The icon to render to.
 	*/
-	void render(Model::Model* model, Icon* icon);
+	void render(const std::shared_ptr<Model::Model>& model, Icon* icon);
 
     /**
      * Gets the SimpleRenderContext used for the rendering.
@@ -250,7 +250,7 @@ protected:
 	 * @param model The model.
 	 * @param icon The icon.
 	 */
-	void renderDelayed(Model::Model* model, Icon* icon);
+	void renderDelayed(const std::shared_ptr<Model::Model>& model, Icon* icon);
 };
 
 }

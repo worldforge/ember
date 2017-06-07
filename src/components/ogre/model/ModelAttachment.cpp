@@ -37,16 +37,12 @@
 
 #include <sigc++/bind.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Model
-{
+namespace Ember {
+namespace OgreView {
+namespace Model {
 
 ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose) :
-		NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0), mIgnoreEntityData(false), mPose(pose)
-{
+		NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0), mIgnoreEntityData(false), mPose(pose) {
 	if (pose != "") {
 		const PoseDefinitionStore& poses = mModelRepresentation.getModel().getDefinition()->getPoseDefinitions();
 		PoseDefinitionStore::const_iterator I = poses.find(pose);
@@ -56,8 +52,7 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 	}
 }
 
-ModelAttachment::~ModelAttachment()
-{
+ModelAttachment::~ModelAttachment() {
 	mNodeProvider = nullptr;
 	//When the modelmount is deleted the scale node will also be destroyed.
 	//Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
@@ -73,8 +68,7 @@ ModelAttachment::~ModelAttachment()
 
 }
 
-void ModelAttachment::init()
-{
+void ModelAttachment::init() {
 	NodeAttachment::init();
 
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), mNodeProvider, mPose);
@@ -84,13 +78,11 @@ void ModelAttachment::init()
 	mModelMount->getModel().setVisible(mChildEntity.isVisible());
 }
 
-IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
-{
+IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const {
 	return &mModelRepresentation;
 }
 
-IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
-{
+IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 	std::string attachPoint;
 	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
 		if (I->second->getChildEntityId() == entity.getId()) {
@@ -134,7 +126,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 
 					nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, &modelRepresentation->getModel());
 				} catch (const std::exception& ex) {
-					S_LOG_WARNING("Failed to attach to attach point '"<< attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getName() << "'.");
+					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getName() << "'.");
 					return new HiddenAttachment(entity, getAttachedEntity());
 				}
 			} else {
@@ -155,8 +147,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 	}
 }
 
-void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
-{
+void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
 	//if the model has an offset specified, use that, else just send to the base class
 	const Ogre::Vector3& modelOffset(mModelRepresentation.getModel().getDefinition()->getContentOffset());
 	if (modelOffset != Ogre::Vector3::ZERO) {
@@ -172,8 +163,7 @@ void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 	}
 }
 
-void ModelAttachment::setVisible(bool visible)
-{
+void ModelAttachment::setVisible(bool visible) {
 	NodeAttachment::setVisible(visible);
 	//We set the visibility of the Model here too, even though one might think that it would suffice with the call to NodeAttachment (since that will tell the node provider to set the visibility).
 	//However, the issue is that even though the Model has been detached from the scene graph, the light will still be taken into account unless they have their visibility turned off. Therefore the call to Model::setVisible.
@@ -182,8 +172,7 @@ void ModelAttachment::setVisible(bool visible)
 	}
 }
 
-void ModelAttachment::updateScale()
-{
+void ModelAttachment::updateScale() {
 	if (mModelMount) {
 		if (getAttachedEntity().hasBBox()) {
 			mModelMount->rescale(&getAttachedEntity().getBBox());
@@ -193,8 +182,7 @@ void ModelAttachment::updateScale()
 	}
 }
 
-void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName)
-{
+void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName) {
 	std::string newFittingEntityId;
 	if (Eris::Entity::extractEntityId(attributeValue, newFittingEntityId)) {
 		ModelFittingStore::iterator I = mFittings.find(fittingName);
@@ -212,8 +200,7 @@ void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attribut
 	}
 }
 
-void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity)
-{
+void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity) {
 	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
 		if (I->second->getChildEntityId() == entity->getId()) {
 			mFittings.erase(I);
@@ -222,8 +209,7 @@ void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity)
 	}
 }
 
-void ModelAttachment::setupFittings()
-{
+void ModelAttachment::setupFittings() {
 	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
 	for (AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
 		AttributeObserver* observer = new AttributeObserver(mChildEntity, I->Name, ".");
@@ -233,8 +219,7 @@ void ModelAttachment::setupFittings()
 	}
 }
 
-void ModelAttachment::detachFitting(EmberEntity& entity)
-{
+void ModelAttachment::detachFitting(EmberEntity& entity) {
 	//If the detached entity still is a child of this entity, re-evaluate the attachment.
 	if (entity.getLocation() == &mChildEntity) {
 		IEntityAttachment* attachment = attachEntity(entity);
@@ -245,8 +230,7 @@ void ModelAttachment::detachFitting(EmberEntity& entity)
 	}
 }
 
-void ModelAttachment::createFitting(const std::string& fittingName, const std::string& entityId)
-{
+void ModelAttachment::createFitting(const std::string& fittingName, const std::string& entityId) {
 	ModelFitting* fitting = new ModelFitting(mChildEntity, fittingName, entityId);
 	mFittings.insert(ModelFittingStore::value_type(fittingName, fitting));
 	for (unsigned int i = 0; i < mChildEntity.numContained(); ++i) {
@@ -263,8 +247,7 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 	}
 }
 
-void ModelAttachment::model_Reloaded()
-{
+void ModelAttachment::model_Reloaded() {
 	if (mModelMount) {
 		mModelMount->reset();
 	}
@@ -272,8 +255,7 @@ void ModelAttachment::model_Reloaded()
 	reattachEntities();
 }
 
-void ModelAttachment::reattachEntities()
-{
+void ModelAttachment::reattachEntities() {
 	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
 		if (I->second->getChild() && mChildEntity.hasChild(I->second->getChildEntityId())) {
 			EmberEntity* entity = I->second->getChild();
@@ -286,8 +268,7 @@ void ModelAttachment::reattachEntities()
 	}
 }
 
-void ModelAttachment::setVisualize(const std::string& visualization, bool visualize)
-{
+void ModelAttachment::setVisualize(const std::string& visualization, bool visualize) {
 	if (visualization == "OgreBBox") {
 		if (mModelMount && mModelMount->getNodeProvider()) {
 			mModelMount->getNodeProvider()->setVisualize(visualization, visualize);
@@ -297,8 +278,7 @@ void ModelAttachment::setVisualize(const std::string& visualization, bool visual
 	}
 }
 
-bool ModelAttachment::getVisualize(const std::string& visualization) const
-{
+bool ModelAttachment::getVisualize(const std::string& visualization) const {
 	if (visualization == "OgreBBox") {
 		if (mModelMount && mModelMount->getNodeProvider()) {
 			return mModelMount->getNodeProvider()->getVisualize(visualization);
@@ -310,8 +290,7 @@ bool ModelAttachment::getVisualize(const std::string& visualization) const
 	}
 }
 
-void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity)
-{
+void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity) {
 	if (!mIgnoreEntityData) {
 		NodeAttachment::setPosition(position, orientation, velocity);
 

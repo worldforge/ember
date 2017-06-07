@@ -20,27 +20,25 @@
 
 #include "domain/IEntityControlDelegate.h"
 #include "components/ogre/NodeAttachment.h"
+#include <wfmath/quaternion.h>
+#include <wfmath/const.h>
 
 namespace Ember {
 namespace OgreView {
 
 DelegatingNodeController::DelegatingNodeController(NodeAttachment& attachment, IEntityControlDelegate& attachmentControlDelegate)
-: NodeController(attachment), mAttachmentControlDelegate(attachmentControlDelegate)
-{
+		: NodeController(attachment), mAttachmentControlDelegate(attachmentControlDelegate) {
 
 }
 
-DelegatingNodeController::~DelegatingNodeController()
-{
+DelegatingNodeController::~DelegatingNodeController() {
 }
 
-void DelegatingNodeController::updatePosition()
-{
-	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation(), mAttachmentControlDelegate.getVelocity());
+void DelegatingNodeController::updatePosition() {
+	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation() * WFMath::Quaternion(2, WFMath::numeric_constants<float>::pi() / 2), mAttachmentControlDelegate.getVelocity());
 }
 
-IEntityControlDelegate* DelegatingNodeController::getControlDelegate() const
-{
+IEntityControlDelegate* DelegatingNodeController::getControlDelegate() const {
 	return &mAttachmentControlDelegate;
 }
 

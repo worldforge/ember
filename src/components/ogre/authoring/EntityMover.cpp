@@ -61,8 +61,8 @@ const IEntityControlDelegate& EntityMover::getControlDelegate() const
 void EntityMover::finalizeMovement()
 {
 	if (mEntity.getLocation()) {
-		//send to server
-		EmberServices::getSingleton().getServerService().place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
+		//send to server. The server uses a different coord system, so we need to rotate 90 degrees around up axis.
+		EmberServices::getSingleton().getServerService().place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation() * WFMath::Quaternion(2, -WFMath::numeric_constants<float>::pi() / 2));
 	}
 	mNodeAttachment.updatePosition();
 	cleanup();
