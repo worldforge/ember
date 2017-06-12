@@ -41,9 +41,8 @@ namespace OgreView
 {
 
 NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
-	AttachmentBase(parentEntity, childEntity), mNode(nullptr), mNodeProvider(nodeProvider), mAttachmentController(nullptr)
+	AttachmentBase(parentEntity, childEntity), mNodeProvider(nodeProvider), mAttachmentController(nullptr)
 {
-	mNode = &mNodeProvider->getNode();
 	setupListeners();
 }
 
@@ -146,7 +145,7 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 }
 Ogre::Node* NodeAttachment::getNode() const
 {
-	return mNode;
+	return mNodeProvider->getNode();
 }
 
 void NodeAttachment::updatePosition()

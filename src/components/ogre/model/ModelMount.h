@@ -120,7 +120,7 @@ protected:
 	 * @brief Gets the node to which the model is attached, as provided by the mNodeProvider instance.
 	 * @return The node to which the model is attached.
 	 */
-	Ogre::Node& getNode() const;
+	Ogre::Node* getNode() const;
 
 };
 

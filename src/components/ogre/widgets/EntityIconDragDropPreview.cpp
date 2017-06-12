@@ -167,18 +167,22 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 		}
 	}
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	if (modelDef.isNull()) {
+		modelDef = Model::ModelDefinitionManager::getSingleton().getByName("placeholder");
+	}
 	mModel = new Model::Model(mWorld.getSceneManager(), modelDef, modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
+	mModel->load();
 
-	//if the model definition isn't valid, use a placeholder
-	if (!mModel->getDefinition()->isValid()) {
-		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
-		//add a placeholder model
-		Model::ModelDefinitionPtr modelDef = mModel->getDefinition();
-		modelDef->createSubModelDefinition("common/primitives/model/box.mesh")->createPartDefinition("main")->setShow(true);
-		modelDef->setValid(true);
-		modelDef->reloadAllInstances();
-	}
+//	//if the model definition isn't valid, use a placeholder
+//	if (!mModel->getDefinition()->isValid()) {
+//		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
+//		//add a placeholder model
+//		Model::ModelDefinitionPtr modelDef = mModel->getDefinition();
+//		modelDef->createSubModelDefinition("common/primitives/model/box.mesh")->createPartDefinition("main")->setShow(true);
+//		modelDef->setValid(true);
+//		modelDef->reloadAllInstances();
+//	}
 
 	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(mEntityNode, nullptr, false));
 	mModelMount->reset();

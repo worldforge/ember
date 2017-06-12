@@ -25,6 +25,7 @@
 #define EMBEROGREMODELDEFINITION_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "ModelBackgroundLoader.h"
 #include <OgreQuaternion.h>
 #include <OgreVector3.h>
 #include <OgreLight.h>
@@ -44,6 +45,7 @@ namespace Model
 {
 
 class Model;
+class ModelBackgroundLoader;
 class PartDefinition;
 class SubModelDefinition;
 class ModelDefinition;
@@ -458,6 +460,7 @@ class ModelDefinition: public Ogre::Resource
 
 	friend class XMLModelDefinitionSerializer;
 	friend class Model;
+	friend class ModelBackgroundLoader;
 
 public:
 
@@ -693,6 +696,10 @@ public:
 
 	void removePoseDefinition(const std::string& name);
 
+	bool requestLoad(Model* model);
+
+	void removeFromLoadingQueue(Model* model);
+
 private:
 
 	struct BindingDefinition
@@ -756,6 +763,8 @@ private:
 	 */
 	void removeModelInstance(Model*);
 
+	void notifyAssetsLoaded();
+
 	/**
 	 * @brief A store of all model instances of this definition.
 	 * This can be used to update all instances at once.
@@ -808,6 +817,13 @@ private:
 
 	RenderingDefinition* mRenderingDef;
 
+	std::set<Model*> mLoadingListeners;
+
+	ModelBackgroundLoader* mBackgroundLoader;
+
+	bool mAssetsLoaded;
+
+	std::shared_ptr<bool> mActive;
 };
 
 typedef Ogre::SharedPtr<ModelDefinition> ModelDefinitionPtr;

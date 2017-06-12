@@ -26,18 +26,19 @@ namespace Ember {
 namespace OgreView {
 
 SceneNodeProvider::SceneNodeProvider(Ogre::SceneNode* node, Ogre::SceneNode* parentNode, bool transferNodeOwnership) :
-		mNode(node), mParentNode(parentNode), mOwnsNode(transferNodeOwnership) {
+		mNode(node), mParentNode(parentNode), mOwnsNode(transferNodeOwnership), mOffsetNode(nullptr) {
 }
 
 SceneNodeProvider::~SceneNodeProvider() {
-	mNode->removeAllChildren();
+	Ogre::SceneNode* node = mOffsetNode ? mOffsetNode : mNode;
+	node->removeAllChildren();
 	if (mOwnsNode) {
 		mNode->getCreator()->destroySceneNode(mNode);
 	}
 }
 
-Ogre::Node& SceneNodeProvider::getNode() const {
-	return *mNode;
+Ogre::Node* SceneNodeProvider::getNode() const {
+	return mNode;
 }
 
 Ogre::Node* SceneNodeProvider::getParentNode() const {
@@ -51,6 +52,7 @@ INodeProvider* SceneNodeProvider::createChildProvider(const std::string& name) {
 	} else {
 		node = mNode->createChildSceneNode();
 	}
+	mNode->setInheritScale(false);
 	return new SceneNodeProvider(node, mNode, mOwnsNode);
 }
 
@@ -88,12 +90,43 @@ void SceneNodeProvider::setPositionAndOrientation(const Ogre::Vector3& position,
 	mNode->setOrientation(orientation);
 }
 
+void SceneNodeProvider::setOffsets(const Ogre::Vector3& translate, const Ogre::Quaternion& rotate) {
+	if (translate.isNaN() || rotate.isNaN() || (translate == Ogre::Vector3::UNIT_SCALE && rotate == Ogre::Quaternion::IDENTITY)) {
+		if (mOffsetNode) {
+			while (mOffsetNode->numAttachedObjects()) {
+				auto movable = mOffsetNode->detachObject((unsigned short)0);
+				mNode->attachObject(movable);
+			}
+		}
+	} else {
+		if (mOffsetNode) {
+			mOffsetNode->setPosition(translate);
+			mOffsetNode->setOrientation(rotate);
+		} else {
+			mOffsetNode = mNode->createChildSceneNode(translate, rotate);
+			mOffsetNode->setInheritScale(true);
+			while (mNode->numAttachedObjects()) {
+				auto movable = mNode->detachObject((unsigned short)0);
+				mOffsetNode->attachObject(movable);
+			}
+		}
+	}
+}
+
+
+void SceneNodeProvider::setScale(const Ogre::Vector3& scale) {
+	mNode->setScale(scale);
+}
+
+
 void SceneNodeProvider::detachObject(Ogre::MovableObject* movable) {
-	mNode->detachObject(movable);
+	Ogre::SceneNode* node = mOffsetNode ? mOffsetNode : mNode;
+	node->detachObject(movable);
 }
 
 void SceneNodeProvider::attachObject(Ogre::MovableObject* movable) {
-	mNode->attachObject(movable);
+	Ogre::SceneNode* node = mOffsetNode ? mOffsetNode : mNode;
+	node->attachObject(movable);
 }
 
 }

@@ -69,12 +69,15 @@ void IconRenderer::setWorker(IconRenderWorker* worker)
 void IconRenderer::render(const std::string& modelName, Icon* icon)
 {
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	auto model = std::shared_ptr<Model::Model>(new Model::Model(*getRenderContext()->getSceneManager(), modelDef, modelName));
-	if (model->isLoaded()) {
-		render(model, icon);
-	} else {
-		//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
-		model->Reloaded.connect([=]{renderDelayed(model, icon);});
+	if (!modelDef.isNull()) {
+		auto model = std::make_shared<Model::Model>(*getRenderContext()->getSceneManager(), modelDef);
+		model->load();
+		if (model->isLoaded()) {
+			render(model, icon);
+		} else {
+			//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
+			model->Reloaded.connect([=] { renderDelayed(model, icon); });
+		}
 	}
 }
 

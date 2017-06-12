@@ -109,11 +109,6 @@ public:
 protected:
 
 	/**
-	 * @brief The node to which the graphical representation of the child entity is attached.
-	 */
-	Ogre::Node* mNode;
-
-	/**
 	 * @brief A node provider instance, from which the mNode instance is created.
 	 * Also used when child attachment are created.
 	 */

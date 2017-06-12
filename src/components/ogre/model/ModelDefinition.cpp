@@ -26,29 +26,39 @@
 #include "config.h"
 #endif
 
+#include <framework/MainLoopController.h>
 #include "ModelDefinition.h"
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Model
-{
+namespace Model {
 
 ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) :
-		Resource(creator, name, handle, group, isManual, loader), mRenderingDistance(0.0f), mUseScaleOf(UseScaleOf::MODEL_ALL), mScale(0), mRotation(Ogre::Quaternion::IDENTITY), mContentOffset(Ogre::Vector3::ZERO), mShowContained(true), mTranslate(0, 0, 0), mIsValid(false), mRenderingDef(0)
-{
+		Resource(creator, name, handle, group, isManual, loader),
+		mRenderingDistance(0.0f),
+		mUseScaleOf(UseScaleOf::MODEL_ALL),
+		mScale(1),
+		mRotation(Ogre::Quaternion::IDENTITY),
+		mContentOffset(Ogre::Vector3::ZERO),
+		mShowContained(true),
+		mTranslate(0, 0, 0),
+		mIsValid(false),
+		mRenderingDef(nullptr),
+		mBackgroundLoader(nullptr),
+		mAssetsLoaded(false),
+		mActive(new bool) {
+	*mActive.get() = true;
 	if (createParamDictionary("ModelDefinition")) {
 		// no custom params
 	}
 }
 
-ModelDefinition::~ModelDefinition()
-{
+ModelDefinition::~ModelDefinition() {
+	*mActive.get() = false;
 	for (SubModelDefinitionsStore::iterator I = mSubModels.begin(); I != mSubModels.end(); ++I) {
 		delete *I;
 	}
@@ -67,31 +77,59 @@ ModelDefinition::~ModelDefinition()
 	unload();
 }
 
-void ModelDefinition::loadImpl(void)
-{
+void ModelDefinition::loadImpl(void) {
 }
 
-void ModelDefinition::addModelInstance(Model* model)
-{
+void ModelDefinition::addModelInstance(Model* model) {
 	mModelInstances.insert(model);
 }
 
-void ModelDefinition::removeModelInstance(Model* model)
-{
+void ModelDefinition::removeModelInstance(Model* model) {
 	mModelInstances.erase(model);
 }
 
-void ModelDefinition::unloadImpl(void)
-{
+void ModelDefinition::unloadImpl(void) {
 }
 
-bool ModelDefinition::isValid(void) const
-{
+bool ModelDefinition::isValid(void) const {
 	return mIsValid;
 }
 
-ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewname)
-{
+bool ModelDefinition::requestLoad(Model* model) {
+	if (mAssetsLoaded) {
+		model->createActualModel();
+		return true;
+	} else {
+		mLoadingListeners.insert(model);
+		if (!mBackgroundLoader) {
+			mBackgroundLoader = new ModelBackgroundLoader(*this);
+			return mBackgroundLoader->poll();
+		}
+		return false;
+	}
+}
+
+void ModelDefinition::notifyAssetsLoaded() {
+	mAssetsLoaded = true;
+	MainLoopController::getSingleton().getEventService().runOnMainThread([this]() {
+		if (!mLoadingListeners.empty()) {
+			auto I = mLoadingListeners.begin();
+			Model* model = *I;
+			model->reload();
+			mLoadingListeners.erase(I);
+			if (!mLoadingListeners.empty()) {
+				notifyAssetsLoaded();
+			}
+		}
+	}, mActive);
+}
+
+void ModelDefinition::removeFromLoadingQueue(Model* model) {
+	mLoadingListeners.erase(model);
+}
+
+
+ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewname) {
 	ViewDefinitionStore::iterator view = mViews.find(viewname);
 	if (view != mViews.end()) {
 		return view->second;
@@ -105,18 +143,15 @@ ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewnam
 	}
 }
 
-const ViewDefinitionStore& ModelDefinition::getViewDefinitions() const
-{
+const ViewDefinitionStore& ModelDefinition::getViewDefinitions() const {
 	return mViews;
 }
 
-void ModelDefinition::removeViewDefinition(const std::string& name)
-{
+void ModelDefinition::removeViewDefinition(const std::string& name) {
 	mViews.erase(name);
 }
 
-BoneGroupDefinition* ModelDefinition::createBoneGroupDefinition(const std::string& name)
-{
+BoneGroupDefinition* ModelDefinition::createBoneGroupDefinition(const std::string& name) {
 	BoneGroupDefinitionStore::iterator group = mBoneGroups.find(name);
 	if (group != mBoneGroups.end()) {
 		return group->second;
@@ -128,115 +163,94 @@ BoneGroupDefinition* ModelDefinition::createBoneGroupDefinition(const std::strin
 	}
 }
 
-void ModelDefinition::removeBoneGroupDefinition(const std::string& name)
-{
+void ModelDefinition::removeBoneGroupDefinition(const std::string& name) {
 	mBoneGroups.erase(name);
 }
 
-const BoneGroupDefinitionStore& ModelDefinition::getBoneGroupDefinitions() const
-{
+const BoneGroupDefinitionStore& ModelDefinition::getBoneGroupDefinitions() const {
 	return mBoneGroups;
 }
 
-const PoseDefinitionStore& ModelDefinition::getPoseDefinitions() const
-{
+const PoseDefinitionStore& ModelDefinition::getPoseDefinitions() const {
 	return mPoseDefinitions;
 }
 
-void ModelDefinition::addPoseDefinition(const std::string& name, const PoseDefinition& definition)
-{
+void ModelDefinition::addPoseDefinition(const std::string& name, const PoseDefinition& definition) {
 	mPoseDefinitions[name] = definition;
 }
 
-void ModelDefinition::removePoseDefinition(const std::string& name)
-{
+void ModelDefinition::removePoseDefinition(const std::string& name) {
 	mPoseDefinitions.erase(name);
 }
 
-const Ogre::Vector3& ModelDefinition::getTranslate() const
-{
+const Ogre::Vector3& ModelDefinition::getTranslate() const {
 	return mTranslate;
 }
 
-void ModelDefinition::setTranslate(const Ogre::Vector3 translate)
-{
+void ModelDefinition::setTranslate(const Ogre::Vector3 translate) {
 	mTranslate = translate;
 }
 
-bool ModelDefinition::getShowContained() const
-{
+bool ModelDefinition::getShowContained() const {
 	return mShowContained;
 }
 
-void ModelDefinition::setShowContained(bool show)
-{
+void ModelDefinition::setShowContained(bool show) {
 	mShowContained = show;
 }
 
-const Ogre::Quaternion& ModelDefinition::getRotation() const
-{
+const Ogre::Quaternion& ModelDefinition::getRotation() const {
 	return mRotation;
 }
 
-void ModelDefinition::setRotation(const Ogre::Quaternion rotation)
-{
+void ModelDefinition::setRotation(const Ogre::Quaternion rotation) {
 	mRotation = rotation;
 }
 
-const RenderingDefinition* ModelDefinition::getRenderingDefinition() const
-{
+const RenderingDefinition* ModelDefinition::getRenderingDefinition() const {
 	return mRenderingDef;
 }
 
-void ModelDefinition::reloadAllInstances()
-{
+void ModelDefinition::reloadAllInstances() {
 	for (auto& model : mModelInstances) {
 		model->reload();
 	}
 }
 
-SubModelDefinition* ModelDefinition::createSubModelDefinition(const std::string& meshname)
-{
+SubModelDefinition* ModelDefinition::createSubModelDefinition(const std::string& meshname) {
 	SubModelDefinition* def = new SubModelDefinition(meshname, *this);
 	mSubModels.push_back(def);
 	return def;
 }
 
-const std::vector<SubModelDefinition*>& ModelDefinition::getSubModelDefinitions() const
-{
+const std::vector<SubModelDefinition*>& ModelDefinition::getSubModelDefinitions() const {
 	return mSubModels;
 }
 
-void ModelDefinition::removeSubModelDefinition(SubModelDefinition* def)
-{
+void ModelDefinition::removeSubModelDefinition(SubModelDefinition* def) {
 	ModelDefinition::removeDefinition(def, mSubModels);
 }
 
-ActionDefinition* ModelDefinition::createActionDefinition(const std::string& actionname)
-{
+ActionDefinition* ModelDefinition::createActionDefinition(const std::string& actionname) {
 	ActionDefinition* def = new ActionDefinition(actionname);
 	mActions.push_back(def);
 	return def;
 }
 
-const ActionDefinitionsStore& ModelDefinition::getActionDefinitions() const
-{
+const ActionDefinitionsStore& ModelDefinition::getActionDefinitions() const {
 	return mActions;
 }
 
-ActionDefinitionsStore& ModelDefinition::getActionDefinitions()
-{
+ActionDefinitionsStore& ModelDefinition::getActionDefinitions() {
 	return mActions;
 }
 
 
-const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions() const
-{
+const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions() const {
 	return mAttachPoints;
 }
 
-void ModelDefinition::addAttachPointDefinition(const AttachPointDefinition& definition)
-{
+void ModelDefinition::addAttachPointDefinition(const AttachPointDefinition& definition) {
 	for (AttachPointDefinitionStore::iterator I = mAttachPoints.begin(); I != mAttachPoints.end(); ++I) {
 		if (I->Name == definition.Name) {
 			(*I) = definition;
@@ -246,14 +260,12 @@ void ModelDefinition::addAttachPointDefinition(const AttachPointDefinition& defi
 	mAttachPoints.push_back(definition);
 }
 
-void ModelDefinition::removeActionDefinition(ActionDefinition* def)
-{
+void ModelDefinition::removeActionDefinition(ActionDefinition* def) {
 	ModelDefinition::removeDefinition(def, mActions);
 }
 
 template<typename T, typename T1>
-void ModelDefinition::removeDefinition(T* def, T1& store)
-{
+void ModelDefinition::removeDefinition(T* def, T1& store) {
 	typename T1::iterator I = std::find(store.begin(), store.end(), def);
 	if (I != store.end()) {
 		store.erase(I);
@@ -261,175 +273,146 @@ void ModelDefinition::removeDefinition(T* def, T1& store)
 }
 
 SubModelDefinition::SubModelDefinition(const std::string& meshname, ModelDefinition& modelDef) :
-		mMeshName(meshname), mModelDef(modelDef)
-{
+		mMeshName(meshname), mModelDef(modelDef) {
 }
 
-SubModelDefinition::~SubModelDefinition()
-{
+SubModelDefinition::~SubModelDefinition() {
 	for (std::vector<PartDefinition*>::iterator I = mParts.begin(); I != mParts.end(); ++I) {
 		delete *I;
 	}
 }
 
-const ModelDefinition& SubModelDefinition::getModelDefinition() const
-{
+const ModelDefinition& SubModelDefinition::getModelDefinition() const {
 	return mModelDef;
 }
 
-const std::string& SubModelDefinition::getMeshName() const
-{
+const std::string& SubModelDefinition::getMeshName() const {
 	return mMeshName;
 }
 
-PartDefinition* SubModelDefinition::createPartDefinition(const std::string& partname)
-{
+PartDefinition* SubModelDefinition::createPartDefinition(const std::string& partname) {
 	PartDefinition* def = new PartDefinition(partname, *this);
 	mParts.push_back(def);
 	return def;
 }
 
-const std::vector<PartDefinition*>& SubModelDefinition::getPartDefinitions() const
-{
+const std::vector<PartDefinition*>& SubModelDefinition::getPartDefinitions() const {
 	return mParts;
 }
 
-void SubModelDefinition::removePartDefinition(PartDefinition* def)
-{
+void SubModelDefinition::removePartDefinition(PartDefinition* def) {
 	ModelDefinition::removeDefinition(def, mParts);
 }
 
 PartDefinition::PartDefinition(const std::string& name, SubModelDefinition& subModelDef) :
-		mName(name), mShow(true), mSubModelDef(subModelDef)
-{
+		mName(name), mShow(true), mSubModelDef(subModelDef) {
 }
 
-PartDefinition::~PartDefinition()
-{
+PartDefinition::~PartDefinition() {
 	for (std::vector<SubEntityDefinition*>::iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
 		delete *I;
 	}
 }
 
-const SubModelDefinition& PartDefinition::getSubModelDefinition() const
-{
+const SubModelDefinition& PartDefinition::getSubModelDefinition() const {
 	return mSubModelDef;
 }
 
-void PartDefinition::setName(const std::string& name)
-{
+void PartDefinition::setName(const std::string& name) {
 	mName = name;
 }
 
-const std::string& PartDefinition::getName() const
-{
+const std::string& PartDefinition::getName() const {
 	return mName;
 }
 
-void PartDefinition::setGroup(const std::string& group)
-{
+void PartDefinition::setGroup(const std::string& group) {
 	mGroup = group;
 }
 
-const std::string& PartDefinition::getGroup() const
-{
+const std::string& PartDefinition::getGroup() const {
 	return mGroup;
 }
 
-void PartDefinition::setShow(bool show)
-{
+void PartDefinition::setShow(bool show) {
 	mShow = show;
 }
-bool PartDefinition::getShow() const
-{
+
+bool PartDefinition::getShow() const {
 	return mShow;
 }
 
-SubEntityDefinition* PartDefinition::createSubEntityDefinition(const std::string& subEntityName)
-{
+SubEntityDefinition* PartDefinition::createSubEntityDefinition(const std::string& subEntityName) {
 	SubEntityDefinition* def = new SubEntityDefinition(subEntityName, *this);
 	mSubEntities.push_back(def);
 	return def;
 
 }
 
-SubEntityDefinition* PartDefinition::createSubEntityDefinition(unsigned int subEntityIndex)
-{
+SubEntityDefinition* PartDefinition::createSubEntityDefinition(unsigned int subEntityIndex) {
 	SubEntityDefinition* def = new SubEntityDefinition(subEntityIndex, *this);
 	mSubEntities.push_back(def);
 	return def;
 }
 
-const std::vector<SubEntityDefinition*>& PartDefinition::getSubEntityDefinitions() const
-{
+const std::vector<SubEntityDefinition*>& PartDefinition::getSubEntityDefinitions() const {
 	return mSubEntities;
 }
-void PartDefinition::removeSubEntityDefinition(SubEntityDefinition* def)
-{
+
+void PartDefinition::removeSubEntityDefinition(SubEntityDefinition* def) {
 	ModelDefinition::removeDefinition(def, mSubEntities);
 }
 
 SubEntityDefinition::SubEntityDefinition(unsigned int subEntityIndex, PartDefinition& partdef) :
-		mSubEntityIndex(subEntityIndex), mPartDef(partdef)
-{
+		mSubEntityIndex(subEntityIndex), mPartDef(partdef) {
 }
 
 SubEntityDefinition::SubEntityDefinition(const std::string& subEntityName, PartDefinition& partdef) :
-		mSubEntityName(subEntityName), mSubEntityIndex(0), mPartDef(partdef)
-{
+		mSubEntityName(subEntityName), mSubEntityIndex(0), mPartDef(partdef) {
 }
 
-const PartDefinition& SubEntityDefinition::getPartDefinition() const
-{
+const PartDefinition& SubEntityDefinition::getPartDefinition() const {
 	return mPartDef;
 }
-const std::string& SubEntityDefinition::getSubEntityName() const
-{
+
+const std::string& SubEntityDefinition::getSubEntityName() const {
 	return mSubEntityName;
 }
 
-unsigned int SubEntityDefinition::getSubEntityIndex() const
-{
+unsigned int SubEntityDefinition::getSubEntityIndex() const {
 	return mSubEntityIndex;
 }
 
-const std::string& SubEntityDefinition::getMaterialName() const
-{
+const std::string& SubEntityDefinition::getMaterialName() const {
 	return mMaterialName;
 }
 
-void SubEntityDefinition::setMaterialName(const std::string& materialName)
-{
+void SubEntityDefinition::setMaterialName(const std::string& materialName) {
 	mMaterialName = materialName;
 }
 
 AnimationDefinition::AnimationDefinition(int iterations) :
-		mIterations(iterations)
-{
+		mIterations(iterations) {
 }
 
-AnimationDefinition::~AnimationDefinition()
-{
+AnimationDefinition::~AnimationDefinition() {
 	for (AnimationPartDefinitionsStore::iterator I = mAnimationParts.begin(); I != mAnimationParts.end(); ++I) {
 		delete *I;
 	}
 }
 
-AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(const std::string& ogreAnimationName)
-{
+AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(const std::string& ogreAnimationName) {
 	AnimationPartDefinition* def = new AnimationPartDefinition();
 	def->Name = ogreAnimationName;
 	mAnimationParts.push_back(def);
 	return def;
 }
 
-const AnimationPartDefinitionsStore& AnimationDefinition::getAnimationPartDefinitions() const
-{
+const AnimationPartDefinitionsStore& AnimationDefinition::getAnimationPartDefinitions() const {
 	return mAnimationParts;
 }
 
-void AnimationDefinition::removeAnimationPartDefinition(AnimationPartDefinition* def)
-{
+void AnimationDefinition::removeAnimationPartDefinition(AnimationPartDefinition* def) {
 	ModelDefinition::removeDefinition(def, mAnimationParts);
 }
 
@@ -438,12 +421,10 @@ void AnimationDefinition::setIterations(int iterations) {
 }
 
 ActionDefinition::ActionDefinition(const std::string& name) :
-		mName(name), mAnimationSpeed(1.0)
-{
+		mName(name), mAnimationSpeed(1.0) {
 }
 
-ActionDefinition::~ActionDefinition()
-{
+ActionDefinition::~ActionDefinition() {
 	for (AnimationDefinitionsStore::iterator I = mAnimations.begin(); I != mAnimations.end(); ++I) {
 		delete *I;
 	}
@@ -452,30 +433,25 @@ ActionDefinition::~ActionDefinition()
 	}
 }
 
-AnimationDefinition* ActionDefinition::createAnimationDefinition(int iterations)
-{
+AnimationDefinition* ActionDefinition::createAnimationDefinition(int iterations) {
 	AnimationDefinition* def = new AnimationDefinition(iterations);
 	mAnimations.push_back(def);
 	return def;
 }
 
-const AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions() const
-{
+const AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions() const {
 	return mAnimations;
 }
 
-AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions()
-{
+AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions() {
 	return mAnimations;
 }
 
-void ActionDefinition::removeAnimationDefinition(AnimationDefinition* def)
-{
+void ActionDefinition::removeAnimationDefinition(AnimationDefinition* def) {
 	ModelDefinition::removeDefinition(def, mAnimations);
 }
 
-SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& groupName, unsigned int play)
-{
+SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& groupName, unsigned int play) {
 	SoundDefinition* def = new SoundDefinition();
 	def->groupName = groupName;
 	def->playOrder = play;
@@ -484,54 +460,47 @@ SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& grou
 	return def;
 }
 
-const SoundDefinitionsStore& ActionDefinition::getSoundDefinitions() const
-{
+const SoundDefinitionsStore& ActionDefinition::getSoundDefinitions() const {
 	return mSounds;
 }
 
-SoundDefinitionsStore& ActionDefinition::getSoundDefinitions()
-{
+SoundDefinitionsStore& ActionDefinition::getSoundDefinitions() {
 	return mSounds;
 }
 
-void ActionDefinition::removeSoundDefinition(SoundDefinition* def)
-{
+void ActionDefinition::removeSoundDefinition(SoundDefinition* def) {
 	ModelDefinition::removeDefinition(def, mSounds);
 }
 
-void ActionDefinition::createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger)
-{
+void ActionDefinition::createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger) {
 	ActivationDefinition def;
 	def.type = type;
 	def.trigger = trigger;
 
 	mActivations.push_back(std::move(def));
 }
-const ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() const
-{
+
+const ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() const {
 	return mActivations;
 }
 
-ActivationDefinitionStore& ActionDefinition::getActivationDefinitions()
-{
+ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() {
 	return mActivations;
 }
 
-const std::string& ActionDefinition::getName() const
-{
+const std::string& ActionDefinition::getName() const {
 	return mName;
 }
 
-const std::string& RenderingDefinition::getScheme() const
-{
+const std::string& RenderingDefinition::getScheme() const {
 	return mScheme;
 }
-void RenderingDefinition::setScheme(const std::string& scheme)
-{
+
+void RenderingDefinition::setScheme(const std::string& scheme) {
 	mScheme = scheme;
 }
-const StringParamStore& RenderingDefinition::getParameters() const
-{
+
+const StringParamStore& RenderingDefinition::getParameters() const {
 	return mParams;
 }
 

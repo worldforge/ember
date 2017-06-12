@@ -26,9 +26,7 @@
 #include "SubModelPart.h"
 #include "ParticleSystemBinding.h"
 
-#include "components/ogre/EmberOgre.h"
 #include "ModelDefinitionManager.h"
-#include "ModelBackgroundLoader.h"
 
 
 #include "framework/TimeFrame.h"
@@ -58,7 +56,10 @@ Model::Model(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> defin
 		mRotation(Ogre::Quaternion::IDENTITY),
 		mAnimationStateSet(nullptr),
 		mAttachPoints(nullptr),
-		mVisible(true) {
+		mVisible(true),
+		mRenderingDistance(0),
+		mQueryFlags(0),
+		mLoaded(false) {
 }
 
 Model::~Model() {
@@ -69,6 +70,7 @@ Model::~Model() {
 	for (auto& movable : mMovableObjects) {
 		mManager.destroyMovableObject(movable);
 	}
+	mDefinition->removeFromLoadingQueue(this);
 
 //	S_LOG_VERBOSE("Deleted "<< getName());
 }
@@ -85,9 +87,9 @@ void Model::reset() {
 	resetLights();
 	mScale = 0;
 	mRotation = Ogre::Quaternion::IDENTITY;
-	mSkeletonInstance = 0;
+	mSkeletonInstance = nullptr;
 	// , mAnimationStateSet(0)
-	mSkeletonOwnerEntity = 0;
+	mSkeletonOwnerEntity = nullptr;
 	mAttachPoints = std::unique_ptr<std::vector<AttachPointWrapper>>(nullptr);
 
 }
@@ -96,36 +98,17 @@ const Ogre::SharedPtr<ModelDefinition>& Model::getDefinition() const {
 	return mDefinition;
 }
 
+bool Model::load() {
+	return mDefinition->requestLoad(this);
+}
+
 void Model::reload() {
-	//	resetAnimations();
-	/*	resetSubmodels();
-	 resetParticles();	*/
 	reset();
 	createActualModel();
 	//if we are attached, we have to notify the new entities, else they won't appear in the scene
 	//_notifyAttached(mParentNode, mParentIsTagPoint);
 
 	Reloaded.emit();
-}
-
-bool Model::create(const ModelDefinition& modelDefinition, Eris::EventService& eventService) {
-	if (!modelDefinition.isValid()) {
-		S_LOG_FAILURE("Model definition " << modelDefinition.getName() << " is not valid.");
-		return false;
-	} else {
-#if OGRE_THREAD_SUPPORT
-//		if (!mBackgroundLoader) {
-//			mBackgroundLoader = std::make_shared<ModelBackgroundLoader>(this, eventService);
-//		}
-#endif
-		//mDefinition->addModelInstance(this);
-		return true;
-		/*		bool success =  createFromDefn();
-		 if (!success) {
-		 reset();
-		 }
-		 return success;*/
-	}
 }
 
 void Model::loadingComplete(Ogre::Resource*) {
@@ -182,11 +165,15 @@ bool Model::createActualModel() {
 	std::vector<std::string> showPartVector;
 
 	for (auto& submodelDef : mDefinition->getSubModelDefinitions()) {
-		std::string entityName = mName + "/" + submodelDef->getMeshName();
 		try {
-
-			Ogre::Entity* entity = mManager.createEntity(entityName, submodelDef->getMeshName());
-			timedLog.report("Created entity.");
+			Ogre::Entity* entity;
+			if (!mName.empty()) {
+				std::string entityName = mName + "/" + submodelDef->getMeshName();
+				entity = mManager.createEntity(entityName, submodelDef->getMeshName());
+			} else {
+				entity = mManager.createEntity(submodelDef->getMeshName());
+			}
+			timedLog.report("Created entity " + submodelDef->getMeshName());
 			if (entity->getMesh().isNull()) {
 				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
 			}
@@ -265,7 +252,7 @@ bool Model::createActualModel() {
 			addSubmodel(submodel);
 			timedLog.report("Created submodel.");
 		} catch (const std::exception& e) {
-			S_LOG_FAILURE("Submodel load error for " << entityName << "." << e);
+			S_LOG_FAILURE("Submodel load error for mesh '" << submodelDef->getMeshName() << "'." << e);
 			return false;
 		}
 	}
@@ -284,6 +271,7 @@ bool Model::createActualModel() {
 	for (auto& part : showPartVector) {
 		showPart(part);
 	}
+	mLoaded = true;
 	return true;
 }
 
@@ -345,12 +333,17 @@ void Model::createActions() {
 void Model::createParticles() {
 	for (auto& particleSystemDef : mDefinition->mParticleSystems) {
 		//first try to create the ogre particle system
-		std::string name(mName + "/particle" + particleSystemDef.Script);
 		Ogre::ParticleSystem* ogreParticleSystem;
+
 		try {
-			ogreParticleSystem = mManager.createParticleSystem(name, particleSystemDef.Script);
+			if (!mName.empty()) {
+				std::string name(mName + "/particle" + particleSystemDef.Script);
+				ogreParticleSystem = mManager.createParticleSystem(name, particleSystemDef.Script);
+			} else {
+				ogreParticleSystem = mManager.createParticleSystem(particleSystemDef.Script);
+			}
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Could not create particle system: " << name << "." << ex);
+			S_LOG_FAILURE("Could not create particle system: " << particleSystemDef.Script << "." << ex);
 			continue;
 		}
 		if (ogreParticleSystem) {
@@ -371,15 +364,18 @@ void Model::createLights() {
 	int j = 0;
 	for (auto& lightDef : mDefinition->mLights) {
 		//first try to create the ogre lights
-		//std::string name(mName + "/light");
-		std::stringstream name;
-		name << mName << "/light" << (j++);
 		LightInfo lightInfo;
 		Ogre::Light* ogreLight;
 		try {
-			ogreLight = mManager.createLight(name.str());
+			if (!mName.empty()) {
+				std::stringstream name;
+				name << mName << "/light" << (j++);
+				ogreLight = mManager.createLight(name.str());
+			} else {
+				ogreLight = mManager.createLight();
+			}
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Could not create light: " << name.str() << "." << ex);
+			S_LOG_FAILURE("Could not create light." << ex);
 			continue;
 		}
 		if (ogreLight) {
@@ -569,6 +565,9 @@ void Model::addMovable(Ogre::MovableObject* movable) {
 		movable->getUserObjectBindings().setUserAny(Ogre::Any(mUserObject));
 	}
 
+	movable->setQueryFlags(mQueryFlags);
+	movable->setRenderingDistance(mRenderingDistance);
+
 	mMovableObjects.push_back(movable);
 
 }
@@ -633,14 +632,13 @@ void Model::attachToNode(INodeProvider* nodeProvider) {
 
 }
 
-Ogre::TagPoint* Model::attachObject(const std::string& attachPoint, Ogre::MovableObject* movable, const Ogre::Quaternion& offsetOrientation, const Ogre::Vector3& offsetPosition, const Ogre::Vector3& scale) {
+Ogre::TagPoint* Model::attachObject(const std::string& attachPoint, Ogre::MovableObject* movable) {
 	if (mSkeletonOwnerEntity) {
 		for (auto& attachPointDef : mDefinition->getAttachPointsDefinitions()) {
 			if (attachPointDef.Name == attachPoint) {
 				const std::string& boneName = attachPointDef.BoneName;
 				//use the rotation in the attach point def
-				Ogre::TagPoint* tagPoint = mSkeletonOwnerEntity->attachObjectToBone(boneName, movable, offsetOrientation * attachPointDef.Rotation, offsetPosition);
-				tagPoint->setScale(scale);
+				Ogre::TagPoint* tagPoint = mSkeletonOwnerEntity->attachObjectToBone(boneName, movable);
 				if (!mAttachPoints.get()) {
 					mAttachPoints = std::make_unique<std::vector<AttachPointWrapper>>();
 				}
@@ -700,16 +698,16 @@ Ogre::SkeletonInstance* Model::getSkeleton() const {
 	}
 }
 
-void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID) {
-	for (auto& movable : mMovableObjects) {
-		movable->setRenderQueueGroup(queueID);
-	}
-}
+//void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID) {
+//	for (auto& movable : mMovableObjects) {
+//		movable->setRenderQueueGroup(queueID);
+//	}
+//}
 
 /** Overridden - see MovableObject.
  */
-void Model::_updateRenderQueue(Ogre::RenderQueue* queue) {
-	//check with both the model visibility setting and with the general model setting to see whether the model should be shown
+//void Model::_updateRenderQueue(Ogre::RenderQueue* queue) {
+//check with both the model visibility setting and with the general model setting to see whether the model should be shown
 //	if (isVisible()) {
 //		for (auto& particleSystemInfo : mParticleSystems) {
 //			Ogre::ParticleSystem* particleSystem = particleSystemInfo->getOgreParticleSystem();
@@ -728,15 +726,17 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue) {
 //
 //	}
 
-}
+//}
 
 void Model::setRenderingDistance(Ogre::Real dist) {
+	mRenderingDistance = dist;
 	for (auto& movable : mMovableObjects) {
 		movable->setRenderingDistance(dist);
 	}
 }
 
 void Model::setQueryFlags(unsigned long flags) {
+	mQueryFlags = flags;
 	for (auto& movable : mMovableObjects) {
 		movable->setQueryFlags(flags);
 	}
@@ -801,7 +801,9 @@ Ogre::SceneManager& Model::getManager() {
 float Model::getCombinedBoundingRadius() const {
 	float radius = 0;
 	for (auto& movable : mMovableObjects) {
-		radius = std::max(movable->getBoundingRadius(), radius);
+		if (movable->isVisible()) {
+			radius = std::max(movable->getBoundingRadius(), radius);
+		}
 	}
 	return radius;
 }
@@ -809,7 +811,9 @@ float Model::getCombinedBoundingRadius() const {
 Ogre::AxisAlignedBox Model::getCombinedBoundingBox() const {
 	Ogre::AxisAlignedBox aabb;
 	for (auto& movable : mMovableObjects) {
-		aabb.merge(movable->getBoundingBox());
+		if (movable->isVisible()) {
+			aabb.merge(movable->getBoundingBox());
+		}
 	}
 	return aabb;
 }
@@ -819,8 +823,7 @@ const INodeProvider* Model::getNodeProvider() const {
 }
 
 bool Model::isLoaded() const {
-	//TODO: implement this
-	return true;
+	return mLoaded;
 }
 
 

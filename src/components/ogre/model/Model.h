@@ -106,12 +106,14 @@ public:
 	 * @param name
 	 * @return
 	 */
-	Model(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> definition, const std::string& name);
+	Model(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> definition, const std::string& name = "");
 
 	/**
 	 * @brief Ctor.
 	 */
 	virtual ~Model();
+
+	bool load();
 
 	/**
 	 * @brief Reloads the model from the modeldefinition.
@@ -205,11 +207,7 @@ public:
 
 
 	/// Overridden - see MovableObject.
-	virtual void setRenderQueueGroup(Ogre::RenderQueueGroupID queueID);
-
-	/** Overridden - see MovableObject.
-	 */
-	virtual void _updateRenderQueue(Ogre::RenderQueue* queue);
+	//void setRenderQueueGroup(Ogre::RenderQueueGroupID queueID);
 
 	/** Overridden from MovableObject */
 	//	virtual const Ogre::String& getName(void) const;
@@ -221,7 +219,7 @@ public:
 	/** Overridden from MovableObject */
 	virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);
 
-	Ogre::TagPoint* attachObject(const std::string &attachPoint, Ogre::MovableObject* movable, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
+	Ogre::TagPoint* attachObject(const std::string& attachPoint, Ogre::MovableObject* movable);
 
 	void detachObject(Ogre::MovableObject* movable);
 
@@ -348,7 +346,7 @@ protected:
 	INodeProvider* mParentNodeProvider;
 
 
-	const std::string& mName;
+	const std::string mName;
 
 	Ogre::Entity::ChildObjectList mChildObjectList;
 
@@ -407,6 +405,9 @@ protected:
 	bool mVisible;
 
 	std::shared_ptr<EmberEntityUserObject> mUserObject;
+	Ogre::Real mRenderingDistance;
+	uint32_t mQueryFlags;
+	bool mLoaded;
 };
 
 inline const std::set<SubModel*>& Model::getSubmodels() const

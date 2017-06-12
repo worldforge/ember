@@ -111,7 +111,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 		//			return new NodeAttachment(*currentNodeAttachment, *this);
 		//		}
 		//		else {
-		INodeProvider* nodeProvider(0);
+		INodeProvider* nodeProvider = nullptr;
 		std::string pose;
 		if (modelRepresentation && attachPoint != "") {
 			if (mModelRepresentation.getModel().isLoaded()) {
@@ -124,19 +124,19 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 						}
 					}
 
-					nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, &modelRepresentation->getModel());
+					nodeProvider = new ModelBoneProvider(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
 				} catch (const std::exception& ex) {
 					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getName() << "'.");
 					return new HiddenAttachment(entity, getAttachedEntity());
 				}
 			} else {
 				//If the model isn't loaded yet we can't attach yet. Instead we'll return a null attachment and wait until the model is reloaded, at which point reattachEntities() is called.
-				return 0;
+				return nullptr;
 			}
 		} else {
 			nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
 		}
-		NodeAttachment* nodeAttachment(0);
+		NodeAttachment* nodeAttachment;
 		if (modelRepresentation) {
 			nodeAttachment = new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, pose);
 		} else {

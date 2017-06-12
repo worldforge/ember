@@ -152,8 +152,20 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mSession(new Eris::Session()), mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."), mScriptingResourceProvider(0)
-
+		mSession(new Eris::Session()),
+		mOgreView(nullptr),
+		mShouldQuit(false),
+		mPollEris(true),
+		mMainLoopController(mShouldQuit, mPollEris, mSession->getEventService()),
+		mPrefix(prefix),
+		mHomeDir(homeDir),
+		mLogObserver(nullptr),
+		mServices(nullptr),
+		mWorldView(nullptr),
+		mConfigSettings(configSettings),
+		mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."),
+		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."),
+		mScriptingResourceProvider(nullptr)
 {
 
 }

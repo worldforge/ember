@@ -85,7 +85,8 @@ EntityMoverBase::~EntityMoverBase()
 
 const WFMath::Quaternion& EntityMoverBase::getOrientation() const
 {
-	mOrientation = Convert::toWF(mNode->_getDerivedOrientation());
+//	mOrientation = Convert::toWF(mNode->_getDerivedOrientation());
+	mOrientation = Convert::toWF(mNode->getOrientation());
 	return mOrientation;
 }
 

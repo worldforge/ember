@@ -183,7 +183,7 @@ startuphelp=false
 #determines how many milliseconds to wait between updates of the avatar's rotation is sent to the server
 #this is not done instantly to prevent swamping of data to the server
 #set this lower if you experience too jerky game play
-avatarrotationupdatefrequency=250
+avatarrotationupdatefrequency=0
 #the level of logging, either verbose|info|warning|failure|critical
 logginglevel=info
 #whether detailed logging should be enabled or not

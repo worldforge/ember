@@ -46,11 +46,11 @@ namespace Model
 
 class Model;
 class ModelBackgroundLoader;
+class ModelDefinition;
 
 /**
- * @brief A background loading listener attached to an instance ModelBackgroundLoader.
+ * @brief A background loading listener attached to an instance of ModelBackgroundLoader.
  *
- * An instance of this is self contained and will destroy itself when the operation is complete.
  * It's main purpose is to pass the call to operationCompleted() on to the background loader.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
@@ -96,7 +96,7 @@ private:
 
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class ModelBackgroundLoader : public std::enable_shared_from_this<ModelBackgroundLoader>
+class ModelBackgroundLoader
 {
 	friend class ModelBackgroundLoaderListener;
 public:
@@ -157,7 +157,7 @@ public:
 	 * @brief Ctor.
 	 * @param model The model which will be loaded.
 	 */
-	ModelBackgroundLoader(const Ogre::SharedPtr<ModelDefinition>& modelDefinition, Eris::EventService& eventService);
+	ModelBackgroundLoader(ModelDefinition& modelDefinition);
 
 	/**
 	 * @brief Dtor.
@@ -199,14 +199,10 @@ public:
 protected:
 
 	/**
-	 * @brief The model which will be loaded.
+	 * @brief The model definition which will be loaded.
 	 */
-	Ogre::SharedPtr<ModelDefinition> mModelDefinition;
+	ModelDefinition& mModelDefinition;
 
-	/**
-	 * @brief Handles event interleaving.
-	 */
-	Eris::EventService& mEventService;
 
 	/**
 	 * @brief The background loading tickets held by this instance.
@@ -239,6 +235,8 @@ protected:
 	 */
 	std::set<Ogre::MaterialPtr> mMaterialsToLoad;
 
+	std::shared_ptr<bool> mIsActive;
+
 	/**
 	 * @brief Adds a loading ticket.
 	 * @param ticket The ticket.
@@ -261,7 +259,7 @@ protected:
 	 * @brief Called when a background operation has completed.
 	 * Note that this call will happen in the main thread.
 	 */
-	virtual void operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result, ModelBackgroundLoaderListener* listener);
+	virtual void operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result);
 
 	/**
 	 * @brief Checks if there's time left for performing actions in the main thread.

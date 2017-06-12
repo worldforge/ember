@@ -105,7 +105,7 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context) {
             model = new Model::Model(mScene.getSceneManager(), definition, mEntity.getId());
             model->setVisible(mEntity.isVisible());
             //modelDefinitionManager.populateModel(model, definition);
-			model->reload();
+			model->load();
 
             Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, model, mScene, mMapping);
             mEntity.setGraphicalRepresentation(representation);

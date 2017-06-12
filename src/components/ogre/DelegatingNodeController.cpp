@@ -35,7 +35,7 @@ DelegatingNodeController::~DelegatingNodeController() {
 }
 
 void DelegatingNodeController::updatePosition() {
-	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation() * WFMath::Quaternion(2, WFMath::numeric_constants<float>::pi() / 2), mAttachmentControlDelegate.getVelocity());
+	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation(), mAttachmentControlDelegate.getVelocity());
 }
 
 IEntityControlDelegate* DelegatingNodeController::getControlDelegate() const {

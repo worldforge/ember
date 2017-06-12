@@ -36,7 +36,7 @@ public:
 
 	virtual ~SceneNodeProvider();
 
-	Ogre::Node& getNode() const override;
+	Ogre::Node* getNode() const override;
 
 	Ogre::Node* getParentNode() const override;
 
@@ -65,6 +65,10 @@ public:
 	 */
 	void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation) override;
 
+	void setOffsets(const Ogre::Vector3& translate, const Ogre::Quaternion& rotate) override;
+
+	void setScale(const Ogre::Vector3& scale) override;
+
 	void detachObject(Ogre::MovableObject* movable) override;
 
 	void attachObject(Ogre::MovableObject* movable) override;
@@ -74,7 +78,9 @@ protected:
 	Ogre::SceneNode* mNode;
 	Ogre::SceneNode* mParentNode;
 	bool mOwnsNode;
+	Ogre::SceneNode* mOffsetNode;
 };
+
 
 }
 

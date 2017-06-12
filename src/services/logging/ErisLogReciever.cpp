@@ -65,7 +65,7 @@ void ErisLogReciever::Eris_Logged (Eris::LogLevel level, const std::string & msg
 		break;
 	}
 	
-	Log::sendMessage(msg, "ERIS", 0, importance);
+	Log::sendMessage("(Eris) " + msg, "", 0, importance);
 }
 
 }

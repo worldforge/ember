@@ -212,10 +212,6 @@ Ogre::Vector3 ModelRepresentation::getScale() const {
 }
 
 void ModelRepresentation::connectEntities() {
-	//we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
-	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
-	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
-	mModel->setUserObject(std::make_shared<EmberEntityUserObject>(mEntity, collisionDetector));
 }
 
 void ModelRepresentation::model_Reloaded() {
@@ -231,7 +227,6 @@ void ModelRepresentation::model_Reloaded() {
 }
 
 void ModelRepresentation::model_Resetting() {
-	mModel->setUserObject(std::shared_ptr<EmberEntityUserObject>());
 }
 
 void ModelRepresentation::processOutfit(const Atlas::Message::MapType&) {

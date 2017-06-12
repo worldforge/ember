@@ -20,6 +20,8 @@
 #define TIMEDLOG_H_
 
 #include <string>
+#define ENABLE_TIMED_LOG 1
+
 #ifdef ENABLE_TIMED_LOG
 #include <chrono>
 #endif

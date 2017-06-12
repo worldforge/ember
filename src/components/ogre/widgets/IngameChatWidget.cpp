@@ -343,8 +343,8 @@ void IngameChatWidget::Label::objectRendering(const Ogre::Camera * camera)
 
 		const INodeProvider* nodeProvider = mModel->getNodeProvider();
 		if (nodeProvider) {
-			Ogre::Node& node = nodeProvider->getNode();
-			Ogre::Vector3 diff = node._getDerivedPosition() - camera->getDerivedPosition();
+			Ogre::Node* node = nodeProvider->getNode();
+			Ogre::Vector3 diff = node->_getDerivedPosition() - camera->getDerivedPosition();
 
 			//remove the window if it's either too far away
 			if (diff.length() > mContainerWidget.mDistanceShown) {
@@ -370,7 +370,7 @@ void IngameChatWidget::Label::placeWindowOnEntity()
 		bool result = false;
 //		Ogre::Vector3 entityWorldCoords = mMovableObject->getWorldBoundingSphere().getCenter();
 //		entityWorldCoords.y = mMovableObject->getWorldBoundingBox().getMaximum().y;
-		Ogre::Vector3 entityWorldCoords = nodeProvider->getNode().convertLocalToWorldPosition(Ogre::Vector3::ZERO);
+		Ogre::Vector3 entityWorldCoords = nodeProvider->getNode()->convertLocalToWorldPosition(Ogre::Vector3::ZERO);
 		entityWorldCoords.y = mModel->getCombinedBoundingBox().getMaximum().y;
 		//check what the new position is in screen coords
 		result = mContainerWidget.mCamera->worldToScreen(entityWorldCoords, screenCoords);

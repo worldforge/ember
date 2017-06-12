@@ -156,24 +156,28 @@ Ogre::Quaternion EntityAttachPointHelper::getOrientation() const
 }
 
 ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& modelName) :
-		AttachPointHelper(model, attachPointName), mMount(0)
+		AttachPointHelper(model, attachPointName), mMount(nullptr)
 {
 	auto definition = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	mAttachedModel = new Model::Model(mModel.getManager(), definition, modelName);
-	Model::ModelBoneProvider* boneProvider = new Model::ModelBoneProvider(mModel, attachPointName, mAttachedModel);
+	if (!definition.isNull()) {
+		mAttachedModel = new Model::Model(mModel.getManager(), definition, modelName);
+		mAttachedModel->load();
+		Model::ModelBoneProvider* boneProvider = new Model::ModelBoneProvider(nullptr, mModel, attachPointName);
 
-	std::string pose = "";
-	const Model::AttachPointDefinitionStore& attachpoints = model.getDefinition()->getAttachPointsDefinitions();
-	for (Model::AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
-		if (I->Name == attachPointName) {
-			pose = I->Pose;
-			break;
+		std::string pose = "";
+		const Model::AttachPointDefinitionStore& attachpoints = model.getDefinition()->getAttachPointsDefinitions();
+		for (Model::AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
+			if (I->Name == attachPointName) {
+				pose = I->Pose;
+				break;
+			}
 		}
-	}
 
-	mMount = new Model::ModelMount(*mAttachedModel, boneProvider, pose);
-	mMount->reset();
-	mTagPoint = boneProvider->getAttachPointWrapper()->TagPoint;
+		mMount = new Model::ModelMount(*mAttachedModel, boneProvider, pose);
+		mMount->reset();
+		//TODO: fix this somehow
+		//mTagPoint = boneProvider->getAttachPointWrapper()->TagPoint;
+	}
 }
 
 ModelAttachPointHelper::~ModelAttachPointHelper()

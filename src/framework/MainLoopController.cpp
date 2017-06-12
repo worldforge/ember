@@ -22,22 +22,18 @@
 
 #include "MainLoopController.h"
 
-namespace Ember
-{
-template<> MainLoopController *Singleton<MainLoopController>::ms_Singleton = 0;
+namespace Ember {
+template<> MainLoopController* Singleton<MainLoopController>::ms_Singleton = 0;
 
-MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris) :
-		mShouldQuit(shouldQuit), mPollEris(pollEris)
-{
+MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris, Eris::EventService& eventService) :
+		mShouldQuit(shouldQuit), mPollEris(pollEris), mEventService(eventService) {
 }
 
-bool MainLoopController::shouldQuit()
-{
+bool MainLoopController::shouldQuit() {
 	return mShouldQuit;
 }
 
-void MainLoopController::requestQuit()
-{
+void MainLoopController::requestQuit() {
 	bool handled = false;
 	EventRequestQuit.emit(handled);
 	//check it was handled (for example if the gui wants to show a confirmation window)
@@ -47,19 +43,21 @@ void MainLoopController::requestQuit()
 	}
 
 }
-void MainLoopController::quit()
-{
+
+void MainLoopController::quit() {
 	mShouldQuit = true;
 }
 
-void MainLoopController::setErisPolling(bool doPoll)
-{
+void MainLoopController::setErisPolling(bool doPoll) {
 	mPollEris = doPoll;
 }
 
-bool MainLoopController::getErisPolling() const
-{
+bool MainLoopController::getErisPolling() const {
 	return mPollEris;
+}
+
+Eris::EventService& MainLoopController::getEventService() {
+	return mEventService;
 }
 
 }

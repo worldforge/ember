@@ -20,10 +20,10 @@
 #define MAINLOOPCONTROLLER_H_
 
 #include <sigc++/signal.h>
+#include <Eris/EventService.h>
 #include "Singleton.h"
 
-namespace Ember
-{
+namespace Ember {
 
 class TimeFrame;
 
@@ -34,34 +34,32 @@ class TimeFrame;
  *
  * This is mainly used to request that the application quits.
  */
-class MainLoopController: public Singleton<MainLoopController>
-{
+class MainLoopController : public Singleton<MainLoopController> {
 public:
 
 	/**
 	 * @brief Specifies what kind of actions have been carried out in one frame cycle.
 	 */
-	enum FrameAction
-	{
+	enum FrameAction {
 		/**
 		 * Graphics was updated.
 		 */
-		FA_GRAPHICS = 1 << 0,
+				FA_GRAPHICS = 1 << 0,
 
 		/**
 		 * Eris was polled.
 		 */
-		FA_ERIS = 1 << 1,
+				FA_ERIS = 1 << 1,
 
 		/**
 		 * Sound was updated.
 		 */
-		FA_SOUND = 1 << 2,
+				FA_SOUND = 1 << 2,
 
 		/**
 		 * Input was handled.
 		 */
-		FA_INPUT = 1 << 3
+				FA_INPUT = 1 << 3
 	};
 
 	/**
@@ -69,7 +67,7 @@ public:
 	 * @param shouldQuit A reference to a boolean which represents whether the application should quit.
 	 * @param pollEris Whether Eris should be polled each frame.
 	 */
-	MainLoopController(bool& shouldQuit, bool& pollEris);
+	MainLoopController(bool& shouldQuit, bool& pollEris, Eris::EventService& eventService);
 
 	/**
 	 * @brief Return true if application has received an "exit" command else false.
@@ -102,6 +100,8 @@ public:
 	 * @return True if polling occurs each frame.
 	 */
 	bool getErisPolling() const;
+
+	Eris::EventService& getEventService();
 
 	/**
 	 * @brief Emitted before processing input. This event is emitted continuously.
@@ -137,6 +137,8 @@ private:
 	 * @brief Whether Eris should be polled each frame or not.
 	 */
 	bool& mPollEris;
+
+	Eris::EventService& mEventService;
 
 };
 

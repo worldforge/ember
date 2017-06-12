@@ -98,12 +98,7 @@ public:
 
 protected:
 
-	/**
-	 * Sets the Model which should be rendered.
-	 * @param model
-	 * @return
-	 */
-	void setModel(Model::Model* model);
+	void showModel();
 
 	float getMovableBoundingRadius() override;
 

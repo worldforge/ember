@@ -59,7 +59,7 @@ public:
 	 * @brief Gets the main node instance, as created and managed by this instance.
 	 * @return A node instance.
 	 */
-	virtual Ogre::Node& getNode() const = 0;
+	virtual Ogre::Node* getNode() const = 0;
 
 	/**
 	 * @brief Gets the parent node, if there is any.
@@ -86,6 +86,10 @@ public:
 	 * @param orientation The orientation.
 	 */
 	virtual void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation) = 0;
+
+	virtual void setOffsets(const Ogre::Vector3& translate, const Ogre::Quaternion& rotate) = 0;
+
+	virtual void setScale(const Ogre::Vector3& scale) = 0;
 
 	virtual void detachObject(Ogre::MovableObject* movable) = 0;
 

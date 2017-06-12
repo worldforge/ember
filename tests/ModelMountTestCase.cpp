@@ -36,8 +36,8 @@ public:
 
 	Ogre::AxisAlignedBox bbox;
 
-	TestModel() :
-		Model::Model("testmodel")
+	TestModel(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> definition) :
+		Model::Model(manager, definition, "testmodel")
 	{
 		mDefinition = ::Ember::OgreView::Model::ModelDefinitionPtr(new ::Ember::OgreView::Model::ModelDefinition(0, "modeldef", 1, ""));
 		mDefinition->setTranslate(Ogre::Vector3::ZERO);

@@ -58,16 +58,9 @@ ModelRenderer::~ModelRenderer()
 	mModelDelayedUpdateConnection.disconnect();
 }
 
-void ModelRenderer::setModel(Model::Model* model)
+void ModelRenderer::showModel()
 {
-	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
-
-	node->detachAllObjects();
-	if (model) {
-		if (mModelMount) {
-			delete mModelMount;
-		}
-		mModelMount = new Model::ModelMount(*model, new SceneNodeProvider(node, nullptr, false));
+	if (mModel) {
 		repositionSceneNode();
 		rescaleAxisMarker();
 		mTexture->getRenderContext()->repositionCamera();
@@ -129,24 +122,27 @@ void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3&
 	mDefaultRotation = orientation;
 	mDefaultTranslation = translation;
 	if (mModel) {
+		delete mModelMount;
+		mModelMount = nullptr;
 		delete mModel;
 		mModel = nullptr;
 		mModelReloadedConnection.disconnect();
 		mModelDelayedUpdateConnection.disconnect();
 		//delete mModel;
 	}
-	if (modelName != "") {
-		auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	if (!modelDef.isNull()) {
 		mModel = new Model::Model(*mTexture->getRenderContext()->getSceneManager(), modelDef, modelName);
-		if (mModel) {
-			//override the rendering distance from the model; we want to always show it in the preview
-			mModel->setRenderingDistance(0);
-			setModel(mModel);
+		//override the rendering distance from the model; we want to always show it in the preview
+		mModel->setRenderingDistance(0);
 
-			mTexture->getRenderContext()->setActive(true);
-		}
+		mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(mTexture->getRenderContext()->getSceneNode(), nullptr, false));
+
+		mModel->load();
+		showModel();
+
+		mTexture->getRenderContext()->setActive(true);
 	} else {
-		setModel(nullptr);
 		mTexture->getRenderContext()->setActive(false);
 	}
 }
