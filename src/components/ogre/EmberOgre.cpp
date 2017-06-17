@@ -96,6 +96,7 @@
 #include <Eris/View.h>
 
 #include <OgreOverlaySystem.h>
+#include <framework/TimedLog.h>
 
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
 
@@ -202,7 +203,6 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 			mRoot->clearEventTimes();
 		}
 		try {
-
 			//We're not using the mRoot->renderOneFrame functionality because we want to do
 			//input processing and UI updates while waiting for queued render calls, before we call swapBuffers().
 			mRoot->_fireFrameStarted();
@@ -213,6 +213,8 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 			mGUIManager->render();
 
 			mWindow->swapBuffers();
+			unsigned long remainingTime = std::max(1L, timeFrame.getRemainingTime().total_milliseconds());
+			mRoot->getWorkQueue()->setResponseProcessingTimeLimit(remainingTime);
 			mRoot->_fireFrameEnded();
 
 		} catch (const std::exception& ex) {
