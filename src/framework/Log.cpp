@@ -60,7 +60,7 @@ int Log::sNumberOfExternalObservers = 0;
 
 StdOutLogObserver Log::sStdOutLogObserver;
 
-long long Log::sCurrentFrame = 0;
+unsigned long Log::sCurrentFrame = 0;
 boost::posix_time::ptime Log::sCurrentFrameStartMilliseconds = boost::posix_time::microsec_clock::local_time();
 
 

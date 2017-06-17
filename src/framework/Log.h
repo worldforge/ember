@@ -142,7 +142,7 @@ public:
 	 *
 	 * Used when providing detailed log output. This needs to be set from outside.
 	 */
-    static long long sCurrentFrame;
+    static unsigned long sCurrentFrame;
 
     /**
      * @brief Start time of the current frame.
