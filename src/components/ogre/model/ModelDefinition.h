@@ -765,6 +765,8 @@ private:
 
 	void notifyAssetsLoaded();
 
+	void reloadModels();
+
 	/**
 	 * @brief A store of all model instances of this definition.
 	 * This can be used to update all instances at once.

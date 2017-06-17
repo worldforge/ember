@@ -31,34 +31,37 @@
 #include <unordered_map>
 #include <components/ogre/INodeProvider.h>
 #include <components/ogre/EmberEntityUserObject.h>
+#include <stack>
 
-namespace Eris
-{
+namespace Eris {
 class EventService;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 /**
  * @brief Namespace for Models, which is the main aggregate object used for representing entities in the world.
  */
-namespace Model
-{
+namespace Model {
 
 class SubModel;
+
 class SubModelPart;
+
 class ModelDefinition;
+
 class ParticleSystemBinding;
+
 class ParticleSystem;
+
 class Action;
+
 class ModelPart;
+
 class ModelBackgroundLoader;
 
-struct LightInfo
-{
+struct LightInfo {
 	Ogre::Light* light;
 	Ogre::Vector3 position;
 };
@@ -77,10 +80,10 @@ typedef std::vector<LightInfo> LightSet;
  * A model is typically instantiated from a modeldef.xml file through the use
  * of createFromXML(...)
  */
-class Model: public Ogre::Resource::Listener
-{
+class Model : public Ogre::Resource::Listener {
 
 	friend class ModelDefinition;
+
 	friend class ModelFactory;
 
 public:
@@ -93,11 +96,10 @@ public:
 
 	typedef std::unordered_map<std::string, std::vector<std::string>> PartGroupStore;
 
-	struct AttachPointWrapper
-	{
+	struct AttachPointWrapper {
 		Ogre::TagPoint* TagPoint;
 		AttachPointDefinition Definition;
-		Ogre::MovableObject *Movable;
+		Ogre::MovableObject* Movable;
 	};
 
 	/**
@@ -118,7 +120,7 @@ public:
 	/**
 	 * @brief Reloads the model from the modeldefinition.
 	 */
-	void reload();
+	bool reload();
 
 	/**
 	 * @brief Emitted when the model is reloaded
@@ -131,6 +133,7 @@ public:
 	sigc::signal<void> Resetting;
 
 	bool addSubmodel(SubModel* submodel);
+
 	bool removeSubmodel(SubModel* submodel);
 
 	/**
@@ -198,8 +201,10 @@ public:
 	SubModel* getSubModel(size_t index);
 
 	Ogre::AnimationState* getAnimationState(const Ogre::String& name);
+
 	Ogre::AnimationStateSet* getAllAnimationStates();
-	Ogre::SkeletonInstance * getSkeleton() const;
+
+	Ogre::SkeletonInstance* getSkeleton() const;
 
 	/** @see Ogre::MovableObject::setRenderingDistance(Ogre::Real dist)
 	 */
@@ -258,18 +263,6 @@ public:
 	 */
 	bool isLoaded() const;
 
-
-	/**
-	 * Overrides Ogre::Resource::Listener::loadingComplete
-	 *
-	 * This is called when the mesh is reloaded, which allows us to reload the animation state for any animated entities.
-	 *
-	 * The callback is only registered for models with skeletons.
-	 *
-	 * @param
-	 */
-	virtual void loadingComplete(Ogre::Resource*);
-
 	const Ogre::SharedPtr<ModelDefinition>& getDefinition() const;
 
 	const std::string& getName() const;
@@ -288,19 +281,20 @@ public:
 
 protected:
 
-
+	struct AssetCreationContext {
+		size_t mCurrentlyLoadingSubModelIndex = 0;
+		std::set<SubModel*> mSubmodels;
+		std::vector<std::string> showPartVector;
+		ModelPartStore mModelParts;
+		PartGroupStore mGroupsToPartMap;
+	};
 
 	/**
-	 * Try to create the needed meshes from the specified modeldef.
-	 * Returns true if successful, else false.
-	 * @param modelType
-	 * @return
+	 * Creates the assets that make up the model. In most cases, multiple calls needs to be made to this method to fully create all assets.
+	 * @return If all assets have been created.
 	 */
-	bool create(const ModelDefinition& modelDefinition, Eris::EventService& eventService); // create model of specific type
+	bool createModelAssets();
 
-	bool createActualModel();
-
-	static unsigned long msAutoGenId;
 	ParticleSystemBindingsPtrSet mAllParticleSystemBindings;
 	ParticleSystemSet mParticleSystems;
 	LightSet mLights;
@@ -311,7 +305,9 @@ protected:
 	void resetSubmodels();
 
 	void createActions();
+
 	void createParticles();
+
 	void createLights();
 
 	/**
@@ -337,6 +333,7 @@ protected:
 	//void refreshMovableList();
 
 	void addMovable(Ogre::MovableObject* movable);
+
 	void removeMovable(Ogre::MovableObject* movable);
 
 	Ogre::SceneManager& mManager;
@@ -408,15 +405,15 @@ protected:
 	Ogre::Real mRenderingDistance;
 	uint32_t mQueryFlags;
 	bool mLoaded;
+	AssetCreationContext mAssetCreationContext;
+	//size_t mCurrentlyLoadingPartIndex;
 };
 
-inline const std::set<SubModel*>& Model::getSubmodels() const
-{
+inline const std::set<SubModel*>& Model::getSubmodels() const {
 	return mSubmodels;
 }
 
-inline const std::string& Model::getName() const
-{
+inline const std::string& Model::getName() const {
 	return mName;
 }
 

@@ -97,8 +97,14 @@ bool ModelDefinition::isValid(void) const {
 
 bool ModelDefinition::requestLoad(Model* model) {
 	if (mAssetsLoaded) {
-		model->createActualModel();
-		return true;
+		bool result = model->createModelAssets();
+		if (!result) {
+			mLoadingListeners.insert(model);
+			MainLoopController::getSingleton().getEventService().runOnMainThread([this]() {
+				reloadModels();
+			}, mActive);
+		}
+		return result;
 	} else {
 		mLoadingListeners.insert(model);
 		if (!mBackgroundLoader) {
@@ -112,17 +118,26 @@ bool ModelDefinition::requestLoad(Model* model) {
 void ModelDefinition::notifyAssetsLoaded() {
 	mAssetsLoaded = true;
 	MainLoopController::getSingleton().getEventService().runOnMainThread([this]() {
-		if (!mLoadingListeners.empty()) {
-			auto I = mLoadingListeners.begin();
-			Model* model = *I;
-			model->reload();
-			mLoadingListeners.erase(I);
-			if (!mLoadingListeners.empty()) {
-				notifyAssetsLoaded();
-			}
-		}
+		reloadModels();
 	}, mActive);
 }
+
+void ModelDefinition::reloadModels() {
+	if (!mLoadingListeners.empty()) {
+		auto I = mLoadingListeners.begin();
+		Model* model = *I;
+		if (model->reload()) {
+			mLoadingListeners.erase(I);
+		}
+		if (!mLoadingListeners.empty()) {
+			MainLoopController::getSingleton().getEventService().runOnMainThread([this]() {
+				reloadModels();
+			}, mActive);
+		}
+	}
+
+}
+
 
 void ModelDefinition::removeFromLoadingQueue(Model* model) {
 	mLoadingListeners.erase(model);

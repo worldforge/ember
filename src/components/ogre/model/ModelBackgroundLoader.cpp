@@ -241,7 +241,7 @@ bool ModelBackgroundLoader::performLoading() {
 			auto texture = Ogre::TextureManager::getSingleton().getByName(textureName);
 			if (!texture.isNull() && !texture->isLoaded()) {
 				try {
-					S_LOG_VERBOSE("Loading texture in background loader: " << texture->getName());
+					S_LOG_VERBOSE("Loading texture in main thread: " << texture->getName());
 					texture->load();
 				} catch (const std::exception& e) {
 					S_LOG_WARNING("Error when loading texture " << texture->getName() << e);
@@ -259,7 +259,7 @@ bool ModelBackgroundLoader::performLoading() {
 				mMaterialsToLoad.erase(I);
 				if (!material->isLoaded()) {
 					try {
-						S_LOG_VERBOSE("Loading material in background loader: " << material->getName());
+						S_LOG_VERBOSE("Loading material in main thread: " << material->getName());
 						material->load();
 					} catch (const std::exception& e) {
 						S_LOG_WARNING("Error when loading material " << material->getName() << e);

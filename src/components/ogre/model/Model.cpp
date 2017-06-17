@@ -43,8 +43,6 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
-unsigned long Model::msAutoGenId = 0;
-
 Model::Model(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> definition, const std::string& name) :
 		mManager(manager),
 		mDefinition(definition),
@@ -102,16 +100,21 @@ bool Model::load() {
 	return mDefinition->requestLoad(this);
 }
 
-void Model::reload() {
-	reset();
-	createActualModel();
+bool Model::reload() {
+	if (mAssetCreationContext.mCurrentlyLoadingSubModelIndex == 0) {
+		reset();
+	}
+	bool result = createModelAssets();
 	//if we are attached, we have to notify the new entities, else they won't appear in the scene
 	//_notifyAttached(mParentNode, mParentIsTagPoint);
 
-	Reloaded.emit();
+	if (result) {
+		Reloaded.emit();
+	}
+	return result;
 }
 
-void Model::loadingComplete(Ogre::Resource*) {
+//void Model::loadingComplete(Ogre::Resource*) {
 //	//This is called when the mesh is reloaded and it has a skeleton; we need to reset the actions since they now refer to invalid animation states
 //
 //	for (auto& subModel : mSubmodels) {
@@ -155,16 +158,13 @@ void Model::loadingComplete(Ogre::Resource*) {
 //			}
 //		}
 //	}
-}
+//}
 
-bool Model::createActualModel() {
-	mScale = mDefinition->mScale;
-	mRotation = mDefinition->mRotation;
+bool Model::createModelAssets() {
+	TimedLog timedLog("Model::createActualModel " + mDefinition->getName());
 
-	TimedLog timedLog(std::string("Model::createActualModel ") + mDefinition->getName());
-	std::vector<std::string> showPartVector;
-
-	for (auto& submodelDef : mDefinition->getSubModelDefinitions()) {
+	if (mAssetCreationContext.mCurrentlyLoadingSubModelIndex < mDefinition->getSubModelDefinitions().size()) {
+		auto& submodelDef = mDefinition->getSubModelDefinitions()[mAssetCreationContext.mCurrentlyLoadingSubModelIndex];
 		try {
 			Ogre::Entity* entity;
 			if (!mName.empty()) {
@@ -176,10 +176,6 @@ bool Model::createActualModel() {
 			timedLog.report("Created entity " + submodelDef->getMeshName());
 			if (entity->getMesh().isNull()) {
 				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
-			}
-
-			if (mDefinition->getRenderingDistance() > .0f) {
-				entity->setRenderingDistance(mDefinition->getRenderingDistance());
 			}
 
 			SubModel* submodel = new SubModel(*entity);
@@ -226,15 +222,15 @@ bool Model::createActualModel() {
 						}
 					}
 					if (partDef->getGroup() != "") {
-						mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
+						mAssetCreationContext.mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
 						//mPartToGroupMap[partDef->getName()] = partDef->getGroup();
 					}
 
 					if (partDef->getShow()) {
-						showPartVector.push_back(partDef->getName());
+						mAssetCreationContext.showPartVector.push_back(partDef->getName());
 					}
 
-					ModelPart& modelPart = mModelParts[partDef->getName()];
+					ModelPart& modelPart = mAssetCreationContext.mModelParts[partDef->getName()];
 					modelPart.addSubModelPart(&part);
 					modelPart.setGroupName(partDef->getGroup());
 				}
@@ -245,19 +241,27 @@ bool Model::createActualModel() {
 					Ogre::SubEntity* subentity = entity->getSubEntity(i);
 					part.addSubEntity(subentity, nullptr);
 				}
-				showPartVector.push_back(part.getName());
-				ModelPart& modelPart = mModelParts[part.getName()];
+				mAssetCreationContext.showPartVector.push_back(part.getName());
+				ModelPart& modelPart = mAssetCreationContext.mModelParts[part.getName()];
 				modelPart.addSubModelPart(&part);
 			}
-			addSubmodel(submodel);
+			mAssetCreationContext.mSubmodels.insert(submodel);
 			timedLog.report("Created submodel.");
 		} catch (const std::exception& e) {
 			S_LOG_FAILURE("Submodel load error for mesh '" << submodelDef->getMeshName() << "'." << e);
-			return false;
 		}
+		mAssetCreationContext.mCurrentlyLoadingSubModelIndex++;
+		return false;
 	}
 
+
 	setRenderingDistance(mDefinition->getRenderingDistance());
+
+	for (auto submodel : mAssetCreationContext.mSubmodels) {
+		addSubmodel(submodel);
+	}
+	mModelParts = mAssetCreationContext.mModelParts;
+	mGroupsToPartMap = mAssetCreationContext.mGroupsToPartMap;
 
 	createActions();
 	timedLog.report("Created actions.");
@@ -268,10 +272,13 @@ bool Model::createActualModel() {
 	createLights();
 	timedLog.report("Created lights.");
 
-	for (auto& part : showPartVector) {
+	mScale = mDefinition->mScale;
+	mRotation = mDefinition->mRotation;
+	for (auto& part : mAssetCreationContext.showPartVector) {
 		showPart(part);
 	}
 	mLoaded = true;
+	mAssetCreationContext = AssetCreationContext();
 	return true;
 }
 
@@ -418,7 +425,7 @@ LightSet& Model::getLights() {
 bool Model::addSubmodel(SubModel* submodel) {
 	//if the submodel has a skeleton, check if it should be shared with existing models
 	if (submodel->getEntity()->getSkeleton()) {
-		if (mSkeletonOwnerEntity != 0) {
+		if (mSkeletonOwnerEntity != nullptr) {
 			submodel->getEntity()->shareSkeletonInstanceWith(mSkeletonOwnerEntity);
 		} else {
 			mSkeletonOwnerEntity = submodel->getEntity();
@@ -566,7 +573,9 @@ void Model::addMovable(Ogre::MovableObject* movable) {
 	}
 
 	movable->setQueryFlags(mQueryFlags);
-	movable->setRenderingDistance(mRenderingDistance);
+	if (mRenderingDistance > 0) {
+		movable->setRenderingDistance(mRenderingDistance);
+	}
 
 	mMovableObjects.push_back(movable);
 
@@ -730,8 +739,10 @@ Ogre::SkeletonInstance* Model::getSkeleton() const {
 
 void Model::setRenderingDistance(Ogre::Real dist) {
 	mRenderingDistance = dist;
-	for (auto& movable : mMovableObjects) {
-		movable->setRenderingDistance(dist);
+	if (dist > 0) {
+		for (auto& movable : mMovableObjects) {
+			movable->setRenderingDistance(dist);
+		}
 	}
 }
 
