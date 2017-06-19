@@ -44,9 +44,10 @@ void TerrainPageDeletionTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 {
 }
 
-void TerrainPageDeletionTask::executeTaskInMainThread()
+bool TerrainPageDeletionTask::executeTaskInMainThread()
 {
 	delete mPage;
+	return true;
 }
 }
 }

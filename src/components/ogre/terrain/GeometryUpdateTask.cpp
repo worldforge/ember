@@ -85,12 +85,16 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 	mGeometry.clear();
 }
 
-void GeometryUpdateTask::executeTaskInMainThread()
+bool GeometryUpdateTask::executeTaskInMainThread()
 {
-	for (auto bridgePtr : mBridgesToNotify) {
-		bridgePtr->terrainPageReady();
+	if (!mBridgesToNotify.empty()) {
+		auto I = mBridgesToNotify.begin();
+		(*I)->terrainPageReady();
+		mBridgesToNotify.erase(I);
+		return false;
 	}
 	mHandler.EventAfterTerrainUpdate(mAreas, mPages);
+	return true;
 }
 }
 

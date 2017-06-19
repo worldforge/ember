@@ -52,9 +52,10 @@ void HeightMapUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCont
 	createHeightMapSegments();
 }
 
-void HeightMapUpdateTask::executeTaskInMainThread()
+bool HeightMapUpdateTask::executeTaskInMainThread()
 {
 	injectHeightMapSegmentsIntoHeightMap();
+	return true;
 }
 
 void HeightMapUpdateTask::createHeightMapSegments()

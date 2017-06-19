@@ -48,7 +48,7 @@ void TerrainAreaAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 	mNewBbox = mArea->bbox();
 }
 
-void TerrainAreaAddTask::executeTaskInMainThread()
+bool TerrainAreaAddTask::executeTaskInMainThread()
 {
 	//Note that "layer" never gets updated, so it's ok to access that from the main thread.
 	if (mArea->getLayer() != 0) {
@@ -67,6 +67,7 @@ void TerrainAreaAddTask::executeTaskInMainThread()
 			mShaderUpdateSlot(mAreaShaders[mArea->getLayer()], mNewBbox);
 		}
 	}
+	return true;
 }
 
 }

@@ -80,9 +80,10 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 
 }
 
-void TerrainModUpdateTask::executeTaskInMainThread()
+bool TerrainModUpdateTask::executeTaskInMainThread()
 {
 	mHandler.reloadTerrain(mUpdatedAreas);
+	return true;
 }
 }
 

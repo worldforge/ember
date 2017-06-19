@@ -20,7 +20,7 @@
 #include "ITask.h"
 #include "ITaskExecutionListener.h"
 
-//#define LOG_TASKS
+#define LOG_TASKS
 
 
 #ifdef LOG_TASKS
@@ -86,17 +86,22 @@ void TaskUnit::executeInBackgroundThread(TaskExecutionContext& context)
 
 }
 
-void TaskUnit::executeInMainThread()
+bool TaskUnit::executeInMainThread()
 {
 #ifdef LOG_TASKS
 	TimedLog timedLog(mTask->getName() + ": foreground");
 #endif
-
+timedLog.report();
 	//First execute all subtasks
-	for (SubtasksStore::const_iterator I = mSubtasks.begin(); I != mSubtasks.end(); ++I) {
-		(*I)->executeInMainThread();
+	if (!mSubtasks.empty()) {
+		TaskUnit* subTask = mSubtasks.front();
+		bool result = subTask->executeInMainThread();
+		if (result) {
+			mSubtasks.erase(mSubtasks.begin());
+			return false;
+		}
 	}
-	mTask->executeTaskInMainThread();
+	return mTask->executeTaskInMainThread();
 }
 
 }

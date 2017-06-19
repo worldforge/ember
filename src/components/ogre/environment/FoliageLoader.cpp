@@ -51,8 +51,8 @@ FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManag
 {
 	mEntity = sceneMgr.createEntity(std::string("shrubbery_") + mFoliageDefinition.getPlantType(), mFoliageDefinition.getParameter("mesh"));
 
-	mMinScale = atof(mFoliageDefinition.getParameter("minScale").c_str());
-	mMaxScale = atof(mFoliageDefinition.getParameter("maxScale").c_str());
+	mMinScale = std::stof(mFoliageDefinition.getParameter("minScale"));
+	mMaxScale = std::stof(mFoliageDefinition.getParameter("maxScale"));
 
 }
 
@@ -82,7 +82,7 @@ void FoliageLoader::loadPage(::Forests::PageInfo&)
 	int plantNo = 0;
 
 	const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
-	const int maxCount = store.size() * mDensityFactor;
+	const int maxCount = (int)(store.size() * mDensityFactor);
 
 	for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
 		if (plantNo == maxCount) {

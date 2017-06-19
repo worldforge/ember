@@ -27,31 +27,24 @@
 
 #include <OgreRoot.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection) :
-	mGeometry(geometry), mSignal(signal), mLightDirection(lightDirection)
-{
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage*>& signal, const WFMath::Vector<3>& lightDirection) :
+		mGeometry(geometry), mSignal(signal), mLightDirection(lightDirection) {
 }
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection) :
-	mSignal(signal), mLightDirection(lightDirection)
-{
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry, sigc::signal<void, TerrainPage*>& signal, const WFMath::Vector<3>& lightDirection) :
+		mSignal(signal), mLightDirection(lightDirection) {
 	mGeometry.push_back(geometry);
 }
 
-TerrainMaterialCompilationTask::~TerrainMaterialCompilationTask()
-{
+TerrainMaterialCompilationTask::~TerrainMaterialCompilationTask() {
 }
 
-void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
 		(*J)->repopulate();
 		TerrainPage& page = (*J)->getPage();
@@ -69,10 +62,10 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskEx
 	mGeometry.clear();
 }
 
-void TerrainMaterialCompilationTask::executeTaskInMainThread()
-{
+bool TerrainMaterialCompilationTask::executeTaskInMainThread() {
 	TimedLog timedLog("TerrainMaterialCompilationTask::executeTaskInMainThread");
-	for (CompilationInstanceStore::const_iterator J = mMaterialRecompilations.begin(); J != mMaterialRecompilations.end(); ++J) {
+	if (!mMaterialRecompilations.empty()) {
+		auto J = mMaterialRecompilations.begin();
 		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
 		TerrainPage* page = J->second;
 		compilationInstance->compile(page->getMaterial());
@@ -85,12 +78,14 @@ void TerrainMaterialCompilationTask::executeTaskInMainThread()
 		std::stringstream ss;
 		ss << "Compiled for page [" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]";
 		timedLog.report(ss.str());
+		updateSceneManagersAfterMaterialsChange();
+		mMaterialRecompilations.erase(J);
+		return mMaterialRecompilations.empty();
 	}
-	updateSceneManagersAfterMaterialsChange();
+	return true;
 }
 
-void TerrainMaterialCompilationTask::updateSceneManagersAfterMaterialsChange()
-{
+void TerrainMaterialCompilationTask::updateSceneManagersAfterMaterialsChange() {
 	//We need to do this to prevent stale hashes in Ogre, which will lead to crashes during rendering.
 	if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
 		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();

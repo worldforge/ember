@@ -37,6 +37,7 @@
 
 #include <Eris/EventService.h>
 #include <framework/MainLoopController.h>
+#include <Ogre.h>
 
 namespace Ember {
 namespace OgreView {
@@ -91,7 +92,7 @@ bool ModelBackgroundLoader::performLoading() {
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			if (meshPtr.isNull() || (!meshPtr->isPrepared() && !meshPtr->isLoading() && !meshPtr->isLoaded())) {
 				try {
-					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
+					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, nullptr, nullptr, &mListener);
 					if (ticket) {
 						addTicket(ticket);
 					}
@@ -109,7 +110,7 @@ bool ModelBackgroundLoader::performLoading() {
 			return performLoading();
 		}
 	} else if (mState == LS_MESH_PREPARED) {
-		auto submodelDefinitions = mModelDefinition.getSubModelDefinitions();
+		auto& submodelDefinitions = mModelDefinition.getSubModelDefinitions();
 		while (mSubModelLoadingIndex < submodelDefinitions.size()) {
 			auto submodelDef = submodelDefinitions.at(mSubModelLoadingIndex);
 			mSubModelLoadingIndex++;
@@ -124,7 +125,7 @@ bool ModelBackgroundLoader::performLoading() {
 					}
 #else
 					try {
-						S_LOG_VERBOSE("Loading mesh in background loader: " << meshPtr->getName());
+						S_LOG_VERBOSE("Loading mesh in main thread: " << meshPtr->getName());
 						meshPtr->load();
 					} catch (const std::exception& ex) {
 						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModelDefinition.getName() << "." << ex);

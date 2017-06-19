@@ -87,7 +87,7 @@ public:
 	 * @brief Executes the main task, and any subtasks before that, in the main thread.
 	 * Only call this from the main thread.
 	 */
-	void executeInMainThread();
+	bool executeInMainThread();
 
 private:
 

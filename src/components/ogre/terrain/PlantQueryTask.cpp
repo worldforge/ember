@@ -46,9 +46,10 @@ void PlantQueryTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& 
 	mSegmentRef.reset();
 }
 
-void PlantQueryTask::executeTaskInMainThread()
+bool PlantQueryTask::executeTaskInMainThread()
 {
 	mAsyncCallback(mQueryResult);
+	return true;
 }
 }
 

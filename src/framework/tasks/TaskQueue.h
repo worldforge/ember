@@ -119,7 +119,7 @@ protected:
 	 * @brief A collection of processed task units. These will need to be executed in the main thread before they can be deleted.
 	 * @see pollProcessedTasks()
 	 */
-	std::shared_ptr<TaskUnitQueue> mProcessedTaskUnits;
+	TaskUnitQueue mProcessedTaskUnits;
 
 	/**
 	 * @brief The executors used by the queue.
@@ -130,6 +130,8 @@ protected:
 	 * @brief A mutex used whenever the unprocessed queue is accessed.
 	 */
 	std::mutex mUnprocessedQueueMutex;
+
+	std::mutex mProcessedQueueMutex;
 
 	/**
 	 * @brief A condition variable used for letting threads sleep while waiting for new tasks.
@@ -145,6 +147,8 @@ protected:
 	 */
 	bool mActive;
 
+	bool mIsQueuedOnMainThread;
+
 	/**
 	 * @brief Gets the next task to process.
 	 * @note This is normally only called by a TaskExecutor.
@@ -158,6 +162,8 @@ protected:
 	 * @param taskUnit The processed task unit.
 	 */
 	void addProcessedTask(TaskUnit* taskUnit);
+
+	void processCompletedTasks();
 
 };
 

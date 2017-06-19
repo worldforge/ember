@@ -98,9 +98,10 @@ public:
 		mPoints = mTerrain.getPoints();
 	}
 
-	void executeTaskInMainThread()
+	bool executeTaskInMainThread()
 	{
 		mAsyncCallback(mPoints);
+		return true;
 	}
 
 };
@@ -142,11 +143,12 @@ public:
 		}
 	}
 
-	void executeTaskInMainThread()
+	bool executeTaskInMainThread()
 	{
 		if (mBridge.get()) {
 			mBridge->terrainPageReady();
 		}
+		return true;
 	}
 
 };

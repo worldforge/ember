@@ -46,7 +46,7 @@ void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCo
 	mTerrain.updateArea(mArea);
 }
 
-void TerrainAreaUpdateTask::executeTaskInMainThread()
+bool TerrainAreaUpdateTask::executeTaskInMainThread()
 {
 	if (mShader) {
 		//mark the shader for update
@@ -56,6 +56,7 @@ void TerrainAreaUpdateTask::executeTaskInMainThread()
 		//Also mark the old shape, in case it resided on a different page.
 		mShaderUpdateSlot(mShader, mOldShape);
 	}
+	return true;
 }
 
 }

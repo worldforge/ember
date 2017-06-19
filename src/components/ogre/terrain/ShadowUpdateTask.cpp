@@ -60,9 +60,11 @@ void ShadowUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext
 	}
 }
 
-void ShadowUpdateTask::executeTaskInMainThread()
+bool ShadowUpdateTask::executeTaskInMainThread()
 {
-	for (auto& pageGeometry : mPageGeometries) {
+	if (!mPageGeometries.empty()) {
+		auto& pageGeometry = mPageGeometries.back();
+		mPageGeometries.pop_back();
 		auto& page = pageGeometry->getPage();
 		auto shadow = page.getSurface()->getShadow();
 		if (shadow) {
@@ -85,8 +87,9 @@ void ShadowUpdateTask::executeTaskInMainThread()
 				}
 			}
 		}
+		return false;
 	}
-
+	return true;
 }
 
 }

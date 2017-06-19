@@ -51,7 +51,7 @@ public:
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
-	virtual void executeTaskInMainThread();
+	virtual bool executeTaskInMainThread();
 
 private:
 

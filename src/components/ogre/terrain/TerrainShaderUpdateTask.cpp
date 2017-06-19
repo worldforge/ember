@@ -75,11 +75,12 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 	mGeometry.clear();
 }
 
-void TerrainShaderUpdateTask::executeTaskInMainThread()
+bool TerrainShaderUpdateTask::executeTaskInMainThread()
 {
 	for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
 		mSignal(*I, mAreas);
 	}
+	return true;
 }
 
 }

@@ -43,7 +43,7 @@ void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCo
 	mTerrain.removeArea(mArea);
 }
 
-void TerrainAreaRemoveTask::executeTaskInMainThread()
+bool TerrainAreaRemoveTask::executeTaskInMainThread()
 {
 	if (mShader) {
 		//mark the shader for update
@@ -53,6 +53,7 @@ void TerrainAreaRemoveTask::executeTaskInMainThread()
 		mShaderUpdateSlot(mShader, mArea->bbox());
 	}
 	delete mArea;
+	return true;
 }
 
 }

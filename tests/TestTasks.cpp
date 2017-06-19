@@ -50,9 +50,10 @@ public:
 	 * @brief Executes the task in the main thread, after executeTaskInBackgroundThread() has been called.
 	 * Since this will happen in the main thread you shouldn't do any time consuming things here, since it will lock up the rendering.
 	 */
-	virtual void executeTaskInMainThread()
+	virtual bool executeTaskInMainThread()
 	{
 		mCounter--;
+		return true;
 	}
 
 	virtual std::string getName() const {

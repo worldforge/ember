@@ -21,11 +21,9 @@
 
 #include <string>
 
-namespace Ember
-{
+namespace Ember {
 
-namespace Tasks
-{
+namespace Tasks {
 
 class TaskExecutionContext;
 
@@ -37,13 +35,12 @@ class TaskExecutionContext;
  *
  * @note Avoid doing any setup in the constructor of an implementation of this interface. The reason is that in contrast to the two execute* methods there's no guarantee in which thread the constructor will be called. It might be called in the main thread, or in any background thread.
  */
-class ITask
-{
+class ITask {
 public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ITask(){};
+	virtual ~ITask() {};
 
 	/**
 	 * @brief Executes the task in a background thread. This is where the bulk of the work should happen.
@@ -54,8 +51,9 @@ public:
 	/**
 	 * @brief Executes the task in the main thread, after executeTaskInBackgroundThread() has been called.
 	 * Since this will happen in the main thread you shouldn't do any time consuming things here, since it will lock up the rendering.
+	 * @return True of the task has completed executing. If "false" is returned, the task system will keep on calling this method until it returns true.
 	 */
-	virtual void executeTaskInMainThread(){};
+	virtual bool executeTaskInMainThread() { return true; };
 
 	/**
 	 * @brief Gets the name of the task.

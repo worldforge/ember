@@ -53,9 +53,9 @@ public:
 	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, const Mercator::Area& newArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
 	virtual ~TerrainAreaUpdateTask();
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 
-	virtual void executeTaskInMainThread();
+	bool executeTaskInMainThread() override;
 
 private:
 

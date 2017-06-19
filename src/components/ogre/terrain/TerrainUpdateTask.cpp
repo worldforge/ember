@@ -67,8 +67,7 @@ void TerrainUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContex
 	mSegmentManager.syncWithTerrain();
 }
 
-void TerrainUpdateTask::executeTaskInMainThread()
-{
+bool TerrainUpdateTask::executeTaskInMainThread() {
 	for (UpdateBasePointStore::const_iterator I = mUpdatedBasePoints.begin(); I != mUpdatedBasePoints.end(); ++I) {
 		mTerrainInfo.setBasePoint(I->first, I->second);
 	}
@@ -82,6 +81,7 @@ void TerrainUpdateTask::executeTaskInMainThread()
 			mTerrainHandler.reloadTerrain(mUpdatedPositions);
 		}
 	}
+	return true;
 }
 
 
