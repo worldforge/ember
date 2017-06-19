@@ -26,6 +26,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreVector3.h>
 #include <vector>
+#include <OgreMovableObject.h>
 
 namespace Ember {
 namespace OgreView {
@@ -38,7 +39,7 @@ typedef std::vector<ParticleSystemBinding*> ParticleSystemBindingsPtrSet;
 /**
 @author Erik Ogenvik
 */
-class ParticleSystem
+class ParticleSystem : public Ogre::MovableObject::Listener
 {
 public:
 	ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem, const Ogre::Vector3& direction);
@@ -66,6 +67,9 @@ public:
 	 * If the vector is invalid no direction is specified, and the particle system should use the local coords of its parent scene node.
 	 */
 	const Ogre::Vector3& getDirection() const;
+
+	bool objectRendering(const Ogre::MovableObject*, const Ogre::Camera*) override;
+
 
 protected:
 	Ogre::ParticleSystem* mOgreParticleSystem;

@@ -339,7 +339,6 @@ inline const std::string& Widget::getPrefix() const { return mPrefix;}
 
 
 typedef Widget* (*FactoryFunc)();
-TYPEDEF_STL_MAP(std::string, FactoryFunc, WidgetFactoryMap);	
 
 /**
 @brief Utility class for associating Widgets to strings.
@@ -361,7 +360,7 @@ public:
 	/**
 	map of all factories, we have to use a static function to avoid static initialization order fiasco
 	*/
-	static WidgetFactoryMap& getFactories();
+	static std::map<std::string, FactoryFunc>& getFactories();
 	
 	/**creates and returns a widget associated to the submitted string
 	if no widget can be found, a null pointer is returned

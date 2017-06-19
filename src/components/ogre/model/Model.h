@@ -80,7 +80,7 @@ typedef std::vector<LightInfo> LightSet;
  * A model is typically instantiated from a modeldef.xml file through the use
  * of createFromXML(...)
  */
-class Model : public Ogre::Resource::Listener {
+class Model {
 
 	friend class ModelDefinition;
 
@@ -208,21 +208,10 @@ public:
 
 	/** @see Ogre::MovableObject::setRenderingDistance(Ogre::Real dist)
 	 */
-	virtual void setRenderingDistance(Ogre::Real dist);
+	void setRenderingDistance(Ogre::Real dist);
 
 
-	/// Overridden - see MovableObject.
-	//void setRenderQueueGroup(Ogre::RenderQueueGroupID queueID);
-
-	/** Overridden from MovableObject */
-	//	virtual const Ogre::String& getName(void) const;
-
-	/** Overridden from MovableObject */
-	virtual void setQueryFlags(unsigned long flags);
-
-
-	/** Overridden from MovableObject */
-	virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);
+	void setQueryFlags(unsigned int flags);
 
 	Ogre::TagPoint* attachObject(const std::string& attachPoint, Ogre::MovableObject* movable);
 

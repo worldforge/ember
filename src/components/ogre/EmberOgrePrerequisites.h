@@ -26,7 +26,6 @@
 
 #include "OgreIncludes.h"
 
-
 ///include the Logging service, since we want logging available from most classes
 ///in most cases, use the S_LOG* defines
 ///such as:
@@ -35,34 +34,5 @@
 
 #include "framework/Exception.h"
 
-
-
-
-///utility defines for stl containers
-///for example:
-///TYPEDEF_STL_VECTOR(std::string, StringVector)
-///defines a new type called StringVector
-///you can then use StringVector::iterator etc..
-
-#define TYPEDEF_STL_MKITERATORS(name) \
-	   typedef name::iterator               name##Iter; \
-   typedef name::const_iterator         name##CIter; \
-   typedef name::reverse_iterator         name##RIter; \
-   typedef name::const_reverse_iterator   name##CRIter
-
-#define TYPEDEF_STL_CONTAINER1(container, tp, name) \
-	   typedef std::container<tp>            name; \
-   TYPEDEF_STL_MKITERATORS(name)
-
-#define TYPEDEF_STL_CONTAINER2(container, tp1, tp2, name) \
-	   typedef std::container<tp1, tp2>      name; \
-   TYPEDEF_STL_MKITERATORS(name)
-
-#define TYPEDEF_STL_VECTOR(tp, name)      TYPEDEF_STL_CONTAINER1(vector, tp, name)
-#define TYPEDEF_STL_LIST(tp, name)         TYPEDEF_STL_CONTAINER1(list, tp, name)
-#define TYPEDEF_STL_SET(tp, name)         TYPEDEF_STL_CONTAINER1(set, tp, name)
-#define TYPEDEF_STL_MAP(tpkey, tpval, name) TYPEDEF_STL_CONTAINER2(map, tpkey, tpval, name) 
-
-typedef unsigned int uint;
 
 #endif

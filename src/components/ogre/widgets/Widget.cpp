@@ -165,24 +165,24 @@ namespace Gui {
 
 	WidgetLoader::WidgetLoader(const std::string& name, FactoryFunc functor)
 	{
-		getFactories().insert(WidgetFactoryMap::value_type(name, functor));
+		getFactories().insert(std::make_pair(name, functor));
 
 	}
 
-	WidgetFactoryMap& WidgetLoader::getFactories()
+	std::map<std::string, FactoryFunc>& WidgetLoader::getFactories()
 	{
-		static WidgetFactoryMap* factoryMap = new WidgetFactoryMap();
+		static std::map<std::string, FactoryFunc>* factoryMap = new std::map<std::string, FactoryFunc>();
 		return *factoryMap;
 	}
 
 	void WidgetLoader::registerWidgetFactory(const std::string& name, FactoryFunc functor)
 	{
-		getFactories().insert(WidgetFactoryMap::value_type(name, functor));
+		getFactories().insert(std::map<std::string, FactoryFunc>::value_type(name, functor));
 	}
 
 	void WidgetLoader::removeAllWidgetFactories()
 	{
-		WidgetFactoryMap& factoryMap(getFactories());
+		std::map<std::string, FactoryFunc>& factoryMap(getFactories());
 /*		for (WidgetFactoryMap::iterator I = factoryMap.begin(); I != factoryMap.end(); ++I) {
 			delete I->second;
 		}*/
@@ -230,7 +230,7 @@ namespace Gui {
 			mMainWindow->setVisible(false);
 		}
 	}
-	
+
 	void  Widget::toggleVisibility()
 	{
 		if (!isVisible())

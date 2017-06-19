@@ -61,9 +61,6 @@ Model::Model(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> defin
 }
 
 Model::~Model() {
-	if (mSkeletonOwnerEntity) {
-		mSkeletonOwnerEntity->getMesh()->removeListener(this);
-	}
 
 	for (auto& movable : mMovableObjects) {
 		mManager.destroyMovableObject(movable);
@@ -76,9 +73,6 @@ Model::~Model() {
 void Model::reset() {
 //	S_LOG_VERBOSE("Resetting "<< getName());
 	Resetting.emit();
-	if (mSkeletonOwnerEntity) {
-		mSkeletonOwnerEntity->getMesh()->removeListener(this);
-	}
 	//	resetAnimations();
 	resetSubmodels();
 	resetParticles();
@@ -284,11 +278,11 @@ bool Model::createModelAssets() {
 
 void Model::createActions() {
 
-	//If the mesh has a skeleton we'll add a listener to the mesh, so that we can reload the animation states when
-	//the mesh or skeleton gets reloaded.
-	if (getSkeleton()) {
-		mSkeletonOwnerEntity->getMesh()->addListener(this);
-	}
+//	//If the mesh has a skeleton we'll add a listener to the mesh, so that we can reload the animation states when
+//	//the mesh or skeleton gets reloaded.
+//	if (getSkeleton()) {
+//		mSkeletonOwnerEntity->getMesh()->addListener(this);
+//	}
 
 	for (auto& actionDef : mDefinition->getActionDefinitions()) {
 		Action action;
@@ -737,6 +731,8 @@ Ogre::SkeletonInstance* Model::getSkeleton() const {
 
 //}
 
+
+
 void Model::setRenderingDistance(Ogre::Real dist) {
 	mRenderingDistance = dist;
 	if (dist > 0) {
@@ -746,7 +742,7 @@ void Model::setRenderingDistance(Ogre::Real dist) {
 	}
 }
 
-void Model::setQueryFlags(unsigned long flags) {
+void Model::setQueryFlags(unsigned int flags) {
 	mQueryFlags = flags;
 	for (auto& movable : mMovableObjects) {
 		movable->setQueryFlags(flags);
@@ -754,7 +750,7 @@ void Model::setQueryFlags(unsigned long flags) {
 }
 
 /** Overridden from MovableObject */
-void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint) {
+//void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint) {
 
 
 //	auto I = mParticleSystems.begin();
@@ -791,7 +787,7 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint) {
 //	}
 
 
-}
+//}
 
 const std::unique_ptr<std::vector<Model::AttachPointWrapper>>& Model::getAttachedPoints() const {
 	return mAttachPoints;
