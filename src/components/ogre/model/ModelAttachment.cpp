@@ -149,7 +149,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 
 void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
 	//if the model has an offset specified, use that, else just send to the base class
-	const Ogre::Vector3& modelOffset(mModelRepresentation.getModel().getDefinition()->getContentOffset());
+	const Ogre::Vector3& modelOffset = mModelRepresentation.getModel().getDefinition()->getContentOffset();
 	if (modelOffset != Ogre::Vector3::ZERO) {
 		offset = Convert::toWF<WFMath::Vector<3>>(modelOffset);
 	} else {

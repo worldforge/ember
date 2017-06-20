@@ -50,15 +50,9 @@ void ModelMount::rescale(const WFMath::AxisBox<3>* wfBbox) {
 }
 
 void ModelMount::reset() {
-	Ogre::Vector3 translation = Ogre::Vector3::ZERO;
-	Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
-	//rotate node to fit with WF space
-	//perhaps this is something to put in the model spec instead?
-	orientation.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
-
 	mNodeProvider->setScale(Ogre::Vector3::UNIT_SCALE);
 
-	PoseDefinition const* pose(0);
+	PoseDefinition const* pose = nullptr;
 	if (mPose != "") {
 		const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
 		PoseDefinitionStore::const_iterator I = poses.find(mPose);
@@ -69,14 +63,9 @@ void ModelMount::reset() {
 
 	if (pose) {
 		mNodeProvider->setOffsets(pose->Translate, pose->Rotate);
-		translation = pose->Translate;
-		orientation = orientation * pose->Rotate;
 	} else {
 		mNodeProvider->setOffsets(getModel().getDefinition()->getTranslate(), getModel().getDefinition()->getRotation());
-		translation = getModel().getDefinition()->getTranslate();
-		orientation = orientation * getModel().getRotation();
 	}
-//	getNodeProvider()->setPositionAndOrientation(translation, orientation);
 
 }
 

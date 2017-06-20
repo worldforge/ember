@@ -59,22 +59,10 @@ ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentM
 		mVisible(true),
 		mOffsetTranslation(Ogre::Vector3::ZERO),
 		mOffsetRotation(Ogre::Quaternion::IDENTITY) {
-//    //Check if the attached object is the same for this new instance as for its parent. If so, it's a "scale node".
-//    //If so, we should just transfer the ownership to the new instance.
-//    if (parent->mAttachedModel == mAttachedModel) {
-//        parent->mAttachedModel = 0;
-//        mDeleteMovableWhenDone = parent->mDeleteMovableWhenDone;
-//        parent->mDeleteMovableWhenDone = false;
-//        mAttachPointWrapper = parent->mAttachPointWrapper;
-//        mAttachPointDefinition = new AttachPointDefinition(*parent->mAttachPointDefinition);
-//        parent->mAttachPointWrapper = 0;
-//        mNode = parent->mNode;
-//    } else {
-//        init();
-//    }
 }
 
 ModelBoneProvider::~ModelBoneProvider() {
+	assert(mTagPoints.empty());
 	if (mParent) {
 		ModelBoneProviderStore::iterator I = std::find(mParent->mChildren.begin(), mParent->mChildren.end(), this);
 		if (I != mParent->mChildren.end()) {
@@ -125,9 +113,9 @@ void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position,
 }
 
 void ModelBoneProvider::setOffsets(const Ogre::Vector3& translate, const Ogre::Quaternion& rotate) {
-//	mOffsetTranslation = translate;
-//	mOffsetRotation = rotate;
-//	updatePositionAndOrientation();
+	mOffsetTranslation = translate;
+	mOffsetRotation = rotate;
+	updatePositionAndOrientation();
 }
 
 
@@ -141,8 +129,8 @@ void ModelBoneProvider::setScale(const Ogre::Vector3& scale) {
 
 void ModelBoneProvider::updatePositionAndOrientation() {
 	for (auto tagpoint : mTagPoints) {
-		tagpoint->setPosition(mPosition);
-		tagpoint->setOrientation(mOrientation);
+		tagpoint->setPosition(getDerivedPosition());
+		tagpoint->setOrientation(getDerivedOrientation());
 	}
 	for (ModelBoneProviderStore::const_iterator I = mChildren.begin(); I != mChildren.end(); ++I) {
 		(*I)->updatePositionAndOrientation();
@@ -181,8 +169,9 @@ void ModelBoneProvider::attachObject(Ogre::MovableObject* movable) {
 		tagPoint->setInheritScale(false);
 		tagPoint->setInheritParentEntityScale(false);
 		tagPoint->setScale(mScale);
-		tagPoint->setPosition(mPosition);
-		tagPoint->setOrientation(mOrientation);
+		tagPoint->setPosition(getDerivedPosition());
+		tagPoint->setOrientation(getDerivedOrientation());
+
 		movable->setVisible(mVisible);
 		mTagPoints.insert(tagPoint);
 	}
