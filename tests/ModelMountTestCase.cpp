@@ -34,41 +34,38 @@ class TestModel: public Model::Model
 {
 public:
 
-	Ogre::AxisAlignedBox bbox;
+	Ogre::ManualObject* manualObject = new Ogre::ManualObject("");
 
-	TestModel(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> definition) :
-		Model::Model(manager, definition, "testmodel")
+	TestModel(Ogre::SceneManager& manager) :
+		Model::Model(manager, ::Ember::OgreView::Model::ModelDefinitionPtr(new ::Ember::OgreView::Model::ModelDefinition(0, "modeldef", 1, "")), "testmodel")
 	{
-		mDefinition = ::Ember::OgreView::Model::ModelDefinitionPtr(new ::Ember::OgreView::Model::ModelDefinition(0, "modeldef", 1, ""));
 		mDefinition->setTranslate(Ogre::Vector3::ZERO);
+		mLoaded = true;
+		mMovableObjects.push_back(manualObject);
 	}
 
-	const Ogre::AxisAlignedBox& getBoundingBox(void) const
-	{
-		return bbox;
-	}
 
 };
 
-void scaleAndTestMount(TestModel& model, Model::ModelMount& mount, const Ogre::Node& node)
+void scaleAndTestMount(TestModel& model, Model::ModelMount& mount, const Ogre::Node* node)
 {
 	WFMath::AxisBox<3> axisBox(WFMath::Point<3>(0, 0, 0), WFMath::Point<3>(10.0f, 10.0f, 10.0f));
 
-	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(5.0f, 5.0f, 5.0f));
+	model.manualObject->setBoundingBox(Ogre::AxisAlignedBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(5.0f, 5.0f, 5.0f)));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(equals(node.getScale(), Ogre::Vector3(2.0f, 2.0f, 2.0f)));
+	CPPUNIT_ASSERT(equals(node->getScale(), Ogre::Vector3(2.0f, 2.0f, 2.0f)));
 
-	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(20.0f, 20.0f, 20.0f));
+	model.manualObject->setBoundingBox(Ogre::AxisAlignedBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(20.0f, 20.0f, 20.0f)));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(equals(node.getScale(), Ogre::Vector3(0.5f, 0.5f, 0.5f)));
+	CPPUNIT_ASSERT(equals(node->getScale(), Ogre::Vector3(0.5f, 0.5f, 0.5f)));
 
-	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(10.0f, 10.0f, 10.0f), Ogre::Vector3(20.0f, 20.0f, 20.0f));
+	model.manualObject->setBoundingBox(Ogre::AxisAlignedBox(Ogre::Vector3(10.0f, 10.0f, 10.0f), Ogre::Vector3(20.0f, 20.0f, 20.0f)));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(equals(node.getScale(), Ogre::Vector3(1.0f, 1.0f, 1.0f)));
+	CPPUNIT_ASSERT(equals(node->getScale(), Ogre::Vector3(1.0f, 1.0f, 1.0f)));
 
-	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 10.0f, 15.0f), Ogre::Vector3(20.0f, 20.0f, 20.0f));
+	model.manualObject->setBoundingBox(Ogre::AxisAlignedBox(Ogre::Vector3(0, 10.0f, 15.0f), Ogre::Vector3(20.0f, 20.0f, 20.0f)));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(equals(node.getScale(), Ogre::Vector3(2.0f, 1.0f, 0.5f)));
+	CPPUNIT_ASSERT(equals(node->getScale(), Ogre::Vector3(2.0f, 1.0f, 0.5f)));
 
 }
 void ModelMountTestCase::testModelMountScaling()
@@ -76,19 +73,19 @@ void ModelMountTestCase::testModelMountScaling()
 	Ogre::Root root;
 	Ogre::SceneManager* sceneManager = root.createSceneManager(Ogre::ST_GENERIC);
 
-	TestModel model;
+	TestModel model(*sceneManager);
 
 	//First test with a straight forward case.
 	Ogre::SceneNode* node = sceneManager->getRootSceneNode()->createChildSceneNode();
 	//We get an error when it's destroyed. So we don't destroy it.
-	SceneNodeProvider* nodeProvider = new SceneNodeProvider(*node, "", &model);
+	SceneNodeProvider* nodeProvider = new SceneNodeProvider(node, nullptr);
 	Model::ModelMount mount(model, nodeProvider);
 	scaleAndTestMount(model, mount, nodeProvider->getNode());
 
 	//Test with the parent node being scaled
 	node->setScale(Ogre::Vector3(3.0f, 0.2f, 200.0f));
 	Ogre::SceneNode* subNode = node->createChildSceneNode();
-	nodeProvider = new SceneNodeProvider(*subNode, "", &model);
+	nodeProvider = new SceneNodeProvider(subNode, nullptr);
 	Model::ModelMount mount2(model, nodeProvider);
 	scaleAndTestMount(model, mount2, nodeProvider->getNode());
 
@@ -98,7 +95,7 @@ void ModelMountTestCase::testModelMountScaling()
 	node->pitch(Ogre::Degree(76));
 	node->roll(Ogre::Degree(98));
 	subNode = node->createChildSceneNode();
-	nodeProvider = new SceneNodeProvider(*subNode, "", &model);
+	nodeProvider = new SceneNodeProvider(subNode, nullptr);
 	Model::ModelMount mount3(model, nodeProvider);
 	scaleAndTestMount(model, mount3, nodeProvider->getNode());
 }

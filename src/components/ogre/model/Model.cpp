@@ -43,7 +43,7 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
-Model::Model(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> definition, const std::string& name) :
+Model::Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>& definition, const std::string& name) :
 		mManager(manager),
 		mDefinition(definition),
 		mParentNodeProvider(nullptr),

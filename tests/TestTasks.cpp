@@ -38,7 +38,7 @@ public:
 		mCounter += 2;
 	}
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override
 	{
 		if (mSleep) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(mSleep));
@@ -50,13 +50,13 @@ public:
 	 * @brief Executes the task in the main thread, after executeTaskInBackgroundThread() has been called.
 	 * Since this will happen in the main thread you shouldn't do any time consuming things here, since it will lock up the rendering.
 	 */
-	virtual bool executeTaskInMainThread()
+	bool executeTaskInMainThread() override
 	{
 		mCounter--;
 		return true;
 	}
 
-	virtual std::string getName() const {
+	std::string getName() const override {
 		return "CounterTask";
 	}
 };
@@ -80,7 +80,7 @@ public:
 	{
 	}
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override
 	{
 		if (subtask) {
 			//sleep a little so that we get different times on the tasks
@@ -91,14 +91,15 @@ public:
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
 
-	virtual void executeTaskInMainThread()
+	bool executeTaskInMainThread() override
 	{
 		//sleep a little so that we get different times on the tasks
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		timeHolder.time = WFMath::TimeStamp::now();
+		return true;
 	}
 
-	virtual std::string getName() const {
+	std::string getName() const override {
 		return "TimeTask";
 	}
 };

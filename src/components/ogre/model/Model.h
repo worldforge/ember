@@ -108,7 +108,7 @@ public:
 	 * @param name
 	 * @return
 	 */
-	Model(Ogre::SceneManager& manager, Ogre::SharedPtr<ModelDefinition> definition, const std::string& name = "");
+	Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>& definition, const std::string& name = "");
 
 	/**
 	 * @brief Ctor.

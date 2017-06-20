@@ -82,12 +82,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox) {
 
 	//make a copy of the original bbox
 
-	auto& submodels = mModel.getSubmodels();
-	Ogre::AxisAlignedBox defaultOgreBoundingBox;
-	for (SubModel* submodel: submodels) {
-		const Ogre::Entity* entity = submodel->getEntity();
-		defaultOgreBoundingBox.merge(entity->getBoundingBox());
-	}
+	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getCombinedBoundingBox();
 
 	//Since we've rotated the model by 90 degrees in ModelMount::reset we must now rotate the bounding box
 	//the inverse amount before we can use it.
