@@ -236,7 +236,15 @@ void InspectWidget::fillChildrenList()
 
 void InspectWidget::addChildToList(Eris::Entity* child)
 {
-	CEGUI::String name(child->getType()->getName() + " ("+ child->getId() +" : "+child->getName()+")");
+	CEGUI::String name(child->getType()->getName());
+	if (child->getName() == "") {
+		name += " ("+ child->getId() + ")";
+	} else {
+		name += " ("+ child->getId() +" : "+child->getName()+")";
+	}
+	if (!child->isVisible()) {
+		name += " (not visible)";
+	}
 	CEGUI::ListboxItem* item = Gui::ColouredListItem::createColouredListItem(name);
 	item->setUserData(child);
 	mChildList->addItem(item);
