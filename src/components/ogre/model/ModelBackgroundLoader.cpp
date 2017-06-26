@@ -84,6 +84,23 @@ bool ModelBackgroundLoader::poll() {
 	}
 }
 
+void ModelBackgroundLoader::prepareMaterialInBackground(const std::string& materialName) {
+	if (materialName != "") {
+		Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().getByName(materialName);
+		if (!materialPtr.isNull()) {
+			mMaterialsToLoad.insert(materialPtr);
+			if (!materialPtr->isPrepared() && !materialPtr->isLoading() && !materialPtr->isLoaded()) {
+				Ogre::ResourceBackgroundQueue& queue = Ogre::ResourceBackgroundQueue::getSingleton();
+				Ogre::BackgroundProcessTicket ticket = queue.prepare(Ogre::MaterialManager::getSingleton().getResourceType(), materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
+				if (ticket) {
+					addTicket(ticket);
+				}
+			}
+		}
+	}
+}
+
+
 bool ModelBackgroundLoader::performLoading() {
 #if OGRE_THREAD_SUPPORT
 	if (mState == LS_UNINITIALIZED) {
@@ -144,53 +161,41 @@ bool ModelBackgroundLoader::performLoading() {
 		}
 	} else if (mState == LS_MESH_LOADED) {
 
-		for (SubModelDefinitionsStore::const_iterator I_subModels = mModelDefinition.getSubModelDefinitions().begin(); I_subModels != mModelDefinition.getSubModelDefinitions().end(); ++I_subModels) {
-			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
+		for (auto& submodelDef : mModelDefinition.getSubModelDefinitions()) {
+
+			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName()));
 			if (!meshPtr.isNull()) {
 				if (meshPtr->isLoaded()) {
 					for (auto submesh : meshPtr->getSubMeshIterator()) {
-						if (submesh->getMaterialName() != "") {
-							Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
-							if (!materialPtr.isNull()) {
-								mMaterialsToLoad.insert(materialPtr);
-								if (!materialPtr->isPrepared() && !materialPtr->isLoading() && !materialPtr->isLoaded()) {
-									Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(), submesh->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
-									if (ticket) {
-										addTicket(ticket);
-									}
-								}
-							}
-						}
+						prepareMaterialInBackground(submesh->getMaterialName());
 					}
 				}
 			}
-			for (PartDefinitionsStore::const_iterator I_parts = (*I_subModels)->getPartDefinitions().begin(); I_parts != (*I_subModels)->getPartDefinitions().end(); ++I_parts) {
-				if ((*I_parts)->getSubEntityDefinitions().size() > 0) {
-					for (SubEntityDefinitionsStore::const_iterator I_subEntities = (*I_parts)->getSubEntityDefinitions().begin(); I_subEntities != (*I_parts)->getSubEntityDefinitions().end(); ++I_subEntities) {
-						const std::string& materialName = (*I_subEntities)->getMaterialName();
-						if (materialName != "") {
-							Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
-							if (!materialPtr.isNull()) {
-								mMaterialsToLoad.insert(materialPtr);
-								if (!materialPtr->isPrepared() && !materialPtr->isLoading() && !materialPtr->isLoaded()) {
-									Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(), materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
-									if (ticket) {
-										addTicket(ticket);
-									}
-								}
-							}
-						}
+			for (auto& partDef : submodelDef->getPartDefinitions()) {
+				if (partDef->getSubEntityDefinitions().size() > 0) {
+					for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
+						prepareMaterialInBackground(subEntityDef->getMaterialName());
 					}
 				}
 			}
 		}
-
+		mState = LS_PARTICLE_SYSTEM_PREPARING;
+		return false;
+	} else if (mState == LS_PARTICLE_SYSTEM_PREPARING) {
+		for (auto& particleSystemDef : mModelDefinition.mParticleSystems) {
+			auto particleSystemTemplate = Ogre::ParticleSystemManager::getSingleton().getTemplate(particleSystemDef.Script);
+			if (particleSystemTemplate) {
+				prepareMaterialInBackground(particleSystemTemplate->getMaterialName());
+			}
+		}
 		mState = LS_MATERIAL_PREPARING;
 		return performLoading();
 	} else if (mState == LS_MATERIAL_PREPARING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MATERIAL_PREPARED;
 			return performLoading();
+		} else {
+			return false;
 		}
 	} else if (mState == LS_MATERIAL_PREPARED) {
 		for (auto& materialPtr : mMaterialsToLoad) {
@@ -237,7 +242,7 @@ bool ModelBackgroundLoader::performLoading() {
 	} else if (mState == LS_TEXTURE_PREPARED) {
 		if (!mTexturesToLoad.empty()) {
 			auto I = mTexturesToLoad.begin();
-			auto textureName = *I;
+			std::string textureName = *I;
 			mTexturesToLoad.erase(I);
 			auto texture = Ogre::TextureManager::getSingleton().getByName(textureName);
 			if (!texture.isNull() && !texture->isLoaded()) {
@@ -256,7 +261,7 @@ bool ModelBackgroundLoader::performLoading() {
 		if (areAllTicketsProcessed()) {
 			if (!mMaterialsToLoad.empty()) {
 				auto I = mMaterialsToLoad.begin();
-				auto material = *I;
+				Ogre::MaterialPtr material = *I;
 				mMaterialsToLoad.erase(I);
 				if (!material->isLoaded()) {
 					try {

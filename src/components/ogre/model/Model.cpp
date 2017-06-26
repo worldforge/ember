@@ -343,21 +343,38 @@ void Model::createParticles() {
 			} else {
 				ogreParticleSystem = mManager.createParticleSystem(particleSystemDef.Script);
 			}
+			if (ogreParticleSystem) {
+				//Try to trigger a load of any image resources used by affectors.
+				//The reason we want to do this now is that otherwise it will happen during rendering. An exception will then be thrown
+				//which will bubble all the way up to the main loop, thus aborting all frames.
+				ogreParticleSystem->_update(0);
+
+				//ogreParticleSystem->setDefaultDimensions(1, 1);
+				ParticleSystem* particleSystem = new ParticleSystem(ogreParticleSystem, particleSystemDef.Direction);
+				for (auto& bindingDef : particleSystemDef.Bindings) {
+					ParticleSystemBinding* binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
+					mAllParticleSystemBindings.push_back(binding);
+				}
+				mParticleSystems.push_back(particleSystem);
+
+
+				//Check if the material used is transparent. If so, assign it a later render queue.
+				//This is done to make transparent particle systems play better with the foliage and the water.
+				//The foliage would be rendered at an earlier render queue (RENDER_QUEUE_6 normally) and the water at RENDER_QUEUE_8.
+				//This of course means that there's still an issue when the camera is below the water
+				//(as the water, being rendered first, will prevent the particles from being rendered). That will need to be solved.
+				Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().getByName(ogreParticleSystem->getMaterialName());
+				if (!materialPtr.isNull()) {
+					if (materialPtr->isTransparent()) {
+						ogreParticleSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+					}
+				}
+
+				addMovable(ogreParticleSystem);
+			}
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Could not create particle system: " << particleSystemDef.Script << "." << ex);
-			continue;
 		}
-		if (ogreParticleSystem) {
-			//ogreParticleSystem->setDefaultDimensions(1, 1);
-			ParticleSystem* particleSystem = new ParticleSystem(ogreParticleSystem, particleSystemDef.Direction);
-			for (auto& bindingDef : particleSystemDef.Bindings) {
-				ParticleSystemBinding* binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
-				mAllParticleSystemBindings.push_back(binding);
-			}
-			mParticleSystems.push_back(particleSystem);
-			addMovable(ogreParticleSystem);
-		}
-
 	}
 }
 

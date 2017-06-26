@@ -75,11 +75,6 @@ public:
 	 */
 	virtual void operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result);
 
-	/**
-	 * @brief Detaches the listener from the loader.
-	 * Be sure to call this method on any existing listeners if the loader to which they belong to is deleted.
-	 */
-	void detachFromLoader();
 
 private:
 
@@ -126,6 +121,10 @@ public:
 		 * @brief The Meshes have been loaded.
 		 */
 		LS_MESH_LOADED,
+		/**
+		 * @brief Particle systems are being prepared.
+		 */
+		LS_PARTICLE_SYSTEM_PREPARING,
 		/**
 		 * @brief The Materials are being prepared.
 		 */
@@ -184,17 +183,6 @@ public:
 	 */
 	LoadingState getState() const;
 
-	/**
-	 * @brief Reloads the model.
-	 */
-	void reloadModel();
-
-	/**
-	 * @brief Detach the loader from the model.
-	 *
-	 * This should be called from the Model's destructor.
-	 */
-	void detachFromModel();
 
 protected:
 
@@ -250,24 +238,11 @@ protected:
 	bool areAllTicketsProcessed();
 
 	/**
-	 * @brief Creates a new listener and registers it with this class.
-	 * @return A new listener instance. This instance isn't owned by anything and will delete itself when the task it listens for is complete.
-	 */
-	ModelBackgroundLoaderListener* createListener();
-
-	/**
 	 * @brief Called when a background operation has completed.
 	 * Note that this call will happen in the main thread.
 	 */
 	virtual void operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result);
 
-	/**
-	 * @brief Checks if there's time left for performing actions in the main thread.
-	 *
-	 * @param maxTimeMilliseconds The max time allowed, presented as a future date, in unix time milliseconds.
-	 * @return True if there's time left.
-	 */
-	bool isThereTimeLeft(long long maxTimeMilliseconds);
 
 	/**
 	 * @brief Polls the loading state (which might occur in a background thread).
@@ -275,6 +250,8 @@ protected:
 	 * @return True if the loading is complete.
 	 */
 	bool performLoading();
+
+	void prepareMaterialInBackground(const std::string& materialName);
 
 };
 
