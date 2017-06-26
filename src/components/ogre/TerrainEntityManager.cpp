@@ -69,6 +69,7 @@ TerrainEntityManager::~TerrainEntityManager()
 void TerrainEntityManager::topLevelEntityChanged()
 {
 	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
+	entity->setAttachment(nullptr);
 	entity->setAttachment(new WorldAttachment(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId())));
 }
 

@@ -43,8 +43,6 @@ ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentM
 		mPosition = mAttachPointDefinition.Translation;
 		mOrientation = mAttachPointDefinition.Rotation;
 	}
-
-//    init();
 }
 
 ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, const std::string& attachPointName, ModelBoneProvider* parent) :

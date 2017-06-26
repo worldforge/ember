@@ -229,9 +229,11 @@ void EmberEntity::updateAttachment()
 
 	if (newLocationEntity && newLocationEntity->getAttachment()) {
 		try {
+			delete mAttachment;
+			mAttachment = nullptr;
 			IEntityAttachment* newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
-			setAttachment(newAttachment);
 			if (newAttachment) {
+				setAttachment(newAttachment);
 				newAttachment->updateScale();
 			}
 		} catch (const std::exception& ex) {

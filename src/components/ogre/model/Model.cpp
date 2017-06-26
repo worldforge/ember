@@ -701,37 +701,6 @@ Ogre::SkeletonInstance* Model::getSkeleton() const {
 	}
 }
 
-//void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID) {
-//	for (auto& movable : mMovableObjects) {
-//		movable->setRenderQueueGroup(queueID);
-//	}
-//}
-
-/** Overridden - see MovableObject.
- */
-//void Model::_updateRenderQueue(Ogre::RenderQueue* queue) {
-//check with both the model visibility setting and with the general model setting to see whether the model should be shown
-//	if (isVisible()) {
-//		for (auto& particleSystemInfo : mParticleSystems) {
-//			Ogre::ParticleSystem* particleSystem = particleSystemInfo->getOgreParticleSystem();
-//			//Alter the direction of the emitter so that it's always emits upwards in the world
-//			if (!particleSystemInfo->getDirection().isNaN()) {
-//				Ogre::Vector3 direction = particleSystem->getParentNode()->convertWorldToLocalPosition(particleSystemInfo->getDirection());
-//				direction.normalise();
-//				//const Ogre::Quaternion& rotation = particleSystem->getParentNode()->_getDerivedOrientation();
-//				Ogre::Quaternion rotation = particleSystem->getParentNode()->convertWorldToLocalOrientation(Ogre::Quaternion(Ogre::Degree(0), particleSystemInfo->getDirection()));
-//				for (int i = 0; i < particleSystem->getNumEmitters(); ++i) {
-//					particleSystem->getEmitter(i)->setDirection(rotation * particleSystemInfo->getDirection());
-//				}
-//			}
-//			particleSystem->_updateRenderQueue(queue);
-//		}
-//
-//	}
-
-//}
-
-
 
 void Model::setRenderingDistance(Ogre::Real dist) {
 	mRenderingDistance = dist;

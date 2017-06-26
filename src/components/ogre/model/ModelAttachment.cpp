@@ -97,20 +97,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 		return new HiddenAttachment(getAttachedEntity(), entity);
 	} else {
 		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-		//		NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
-		//		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*> (entity.getAttachment());
-		//		if (attachPoint != "") {
-		//			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, );
-		//		}
-		//		else {
 
-		//		if (attachPoint == "" && currentModelAttachment) {
-		//			return new ModelAttachment(*currentModelAttachment, *this);
-		//		}
-		//		else if (attachPoint == "" && currentNodeAttachment) {
-		//			return new NodeAttachment(*currentNodeAttachment, *this);
-		//		}
-		//		else {
 		INodeProvider* nodeProvider = nullptr;
 		std::string pose;
 		if (modelRepresentation && attachPoint != "") {
@@ -222,6 +209,7 @@ void ModelAttachment::setupFittings() {
 void ModelAttachment::detachFitting(EmberEntity& entity) {
 	//If the detached entity still is a child of this entity, re-evaluate the attachment.
 	if (entity.getLocation() == &mChildEntity) {
+		entity.setAttachment(nullptr);
 		IEntityAttachment* attachment = attachEntity(entity);
 		entity.setAttachment(attachment);
 		if (attachment) {
@@ -237,6 +225,7 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 		Eris::Entity* entity = mChildEntity.getContained(i);
 		if (entity && entity->getId() == entityId) {
 			EmberEntity* emberEntity = static_cast<EmberEntity*>(entity);
+			emberEntity->setAttachment(nullptr);
 			IEntityAttachment* attachment = attachEntity(*emberEntity);
 			emberEntity->setAttachment(attachment);
 			if (attachment) {
@@ -259,6 +248,7 @@ void ModelAttachment::reattachEntities() {
 	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
 		if (I->second->getChild() && mChildEntity.hasChild(I->second->getChildEntityId())) {
 			EmberEntity* entity = I->second->getChild();
+			entity->setAttachment(nullptr);
 			IEntityAttachment* attachment = attachEntity(*entity);
 			entity->setAttachment(attachment);
 			if (attachment) {
