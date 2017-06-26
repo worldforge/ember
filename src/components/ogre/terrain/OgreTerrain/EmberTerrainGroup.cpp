@@ -38,8 +38,14 @@ namespace Terrain
 
 unsigned int EmberTerrainGroup::sLoadingTaskNum;
 
-EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize, Ogre::Real terrainWorldSize, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal) :
-		Ogre::TerrainGroup(sm, align, terrainSize, terrainWorldSize), mPageDataProvider(nullptr), mTerrainShownSignal(terrainShownSignal)
+EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm,
+									 Ogre::uint16 terrainSize,
+									 sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal,
+									 Ogre::TerrainMaterialGeneratorPtr materialGenerator) :
+		Ogre::TerrainGroup(sm, Ogre::Terrain::ALIGN_X_Z, terrainSize, Ogre::Real(terrainSize - 1)),
+		mPageDataProvider(nullptr),
+		mTerrainShownSignal(terrainShownSignal),
+		mMaterialGenerator(materialGenerator)
 {
 }
 
@@ -89,7 +95,7 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 		std::function < void() > unloader = [=] {mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y));};
 
 		// Allocate in main thread so no race conditions
-		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager, EventTerrainAreaUpdated, mTerrainShownSignal);
+		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager, EventTerrainAreaUpdated, mTerrainShownSignal, mMaterialGenerator);
 		terrain->setIndex(IPageDataProvider::OgreIndex(x, y));
 
 		slot->instance = terrain;

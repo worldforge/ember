@@ -48,7 +48,11 @@ public:
 	 * @param unloader An unloader function, called upon destruction.
 	 * @param sm
 	 */
-	EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* sm, sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal);
+	EmberTerrain(std::function<void()>& unloader,
+				 Ogre::SceneManager* sm,
+				 sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal,
+				 sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal,
+				 Ogre::TerrainMaterialGeneratorPtr materialGenerator);
 	virtual ~EmberTerrain();
 
 	/**
@@ -63,7 +67,7 @@ public:
 	 */
 	const IPageDataProvider::OgreIndex& getIndex() const;
 
-	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ);
+	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ) override;
 
 	/**
 	 * @brief Regenerates the material used by the page.

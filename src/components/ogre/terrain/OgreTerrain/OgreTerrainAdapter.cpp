@@ -39,7 +39,19 @@ namespace Terrain
 {
 
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
-		mLoadRadius(300), mHoldRadius(mLoadRadius * 2), mSceneManager(sceneManager), mPageManager(OGRE_NEW Ogre::PageManager()), mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)), mPagedWorld(nullptr), mTerrainPagedWorldSection(nullptr), mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()), mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1), mTerrainShownSignal)), mPageDataProvider(nullptr), mMaterialGenerator(OGRE_NEW OgreTerrainMaterialGeneratorEmber()), mMaterialProfile(nullptr), mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager))
+		mLoadRadius(300),
+		mHoldRadius(mLoadRadius * 2),
+		mSceneManager(sceneManager),
+		mMaterialGenerator(OGRE_NEW OgreTerrainMaterialGeneratorEmber()),
+		mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
+		mPageManager(OGRE_NEW Ogre::PageManager()),
+		mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)),
+		mPagedWorld(nullptr),
+		mTerrainPagedWorldSection(nullptr),
+		mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, terrainPageSize, mTerrainShownSignal, mMaterialGenerator)),
+		mPageDataProvider(nullptr),
+		mMaterialProfile(nullptr),
+		mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager))
 {
 
 	// Other params

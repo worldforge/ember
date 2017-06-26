@@ -29,8 +29,15 @@ namespace OgreView
 namespace Terrain
 {
 
-EmberTerrain::EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* sm, sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal) :
-		Ogre::Terrain(sm), mUnloader(unloader), mTerrainAreaUpdatedSignal(terrainAreaUpdatedSignal), mTerrainShownSignal(terrainShownSignal)
+EmberTerrain::EmberTerrain(std::function<void()>& unloader,
+						   Ogre::SceneManager* sm,
+						   sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal,
+						   sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal,
+						   Ogre::TerrainMaterialGeneratorPtr materialGenerator) :
+		Ogre::Terrain(sm),
+		mUnloader(unloader),
+		mTerrainAreaUpdatedSignal(terrainAreaUpdatedSignal),
+		mTerrainShownSignal(terrainShownSignal)
 {
 	//This is a hack to prevent the Terrain class from creating blend map textures.
 	//Since we provide our own material with its own blend maps we don't want the
@@ -41,6 +48,8 @@ EmberTerrain::EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* 
 	//This of course means that we can't touch _any_ method which in some way interacts
 	//with the layers and blend maps.
 	mBlendTextureList.push_back(Ogre::TexturePtr());
+
+	mMaterialGenerator = materialGenerator;
 
 }
 

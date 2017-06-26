@@ -104,17 +104,17 @@ private:
 	 */
 	sigc::signal<void, const Ogre::TRect<Ogre::Real>> mTerrainShownSignal;
 
+	Ogre::TerrainMaterialGeneratorPtr mMaterialGenerator;
+	Ogre::TerrainGlobalOptions* mTerrainGlobalOptions;
 	Ogre::PageManager* mPageManager;
 	Ogre::TerrainPaging* mTerrainPaging;
 	Ogre::PagedWorld* mPagedWorld;
 	Ogre::TerrainPagedWorldSection* mTerrainPagedWorldSection;
 	OgreTerrainPageProvider mTerrainPageProvider;
 
-	Ogre::TerrainGlobalOptions* mTerrainGlobalOptions;
 	EmberTerrainGroup* mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
-	Ogre::TerrainMaterialGeneratorPtr mMaterialGenerator;
 	Ogre::TerrainMaterialGenerator::Profile* mMaterialProfile;
 	CameraFocusedGrid2DPageStrategy* mPageStrategy;
 };

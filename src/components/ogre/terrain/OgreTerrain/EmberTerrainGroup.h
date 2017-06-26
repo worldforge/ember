@@ -39,7 +39,7 @@ namespace Terrain
 class EmberTerrainGroup: public Ogre::TerrainGroup
 {
 public:
-	EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize, Ogre::Real terrainWorldSize, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal);
+	EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::uint16 terrainSize, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal, Ogre::TerrainMaterialGeneratorPtr materialGenerator);
 	virtual ~EmberTerrainGroup();
 
 	void loadAllTerrains(bool synchronous = false);
@@ -75,6 +75,8 @@ protected:
 	 * The argument is the area (in world coordinates) that was shown.
 	 */
 	sigc::signal<void, const Ogre::TRect<Ogre::Real>>& mTerrainShownSignal;
+
+	Ogre::TerrainMaterialGeneratorPtr mMaterialGenerator;
 
 	/**
 	 * @brief Keeps track of the number of currently loading tasks.
