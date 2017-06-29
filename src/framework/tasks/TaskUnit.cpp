@@ -24,43 +24,38 @@
 
 
 #ifdef LOG_TASKS
+
 #include "framework/TimedLog.h"
+
 #endif
 
-namespace Ember
-{
+namespace Ember {
 
-namespace Tasks
-{
+namespace Tasks {
 
 TaskUnit::TaskUnit(ITask* task, ITaskExecutionListener* listener) :
-	mTask(task), mListener(listener)
-{
+		mTask(task), mListener(listener) {
 
 }
 
-TaskUnit::~TaskUnit()
-{
+TaskUnit::~TaskUnit() {
 	for (SubtasksStore::iterator I = mSubtasks.begin(); I != mSubtasks.end(); ++I) {
 		delete *I;
 	}
 	delete mTask;
 }
 
-TaskUnit* TaskUnit::addSubtask(ITask* task, ITaskExecutionListener* listener)
-{
+TaskUnit* TaskUnit::addSubtask(ITask* task, ITaskExecutionListener* listener) {
 	TaskUnit* taskUnit = new TaskUnit(task, listener);
 	mSubtasks.push_back(taskUnit);
 	return taskUnit;
 }
 
-const TaskUnit::SubtasksStore& TaskUnit::getSubtasks() const
-{
+const TaskUnit::SubtasksStore& TaskUnit::getSubtasks() const {
 	return mSubtasks;
 }
 
-void TaskUnit::executeInBackgroundThread(TaskExecutionContext& context)
-{
+void TaskUnit::executeInBackgroundThread(TaskExecutionContext& context) {
 #ifdef LOG_TASKS
 	TimedLog timedLog(mTask->getName() + ": background");
 #endif
@@ -86,20 +81,19 @@ void TaskUnit::executeInBackgroundThread(TaskExecutionContext& context)
 
 }
 
-bool TaskUnit::executeInMainThread()
-{
+bool TaskUnit::executeInMainThread() {
 #ifdef LOG_TASKS
 	TimedLog timedLog(mTask->getName() + ": foreground");
+	timedLog.report();
 #endif
-timedLog.report();
 	//First execute all subtasks
 	if (!mSubtasks.empty()) {
 		TaskUnit* subTask = mSubtasks.front();
 		bool result = subTask->executeInMainThread();
 		if (result) {
 			mSubtasks.erase(mSubtasks.begin());
-			return false;
 		}
+		return false;
 	}
 	return mTask->executeTaskInMainThread();
 }
