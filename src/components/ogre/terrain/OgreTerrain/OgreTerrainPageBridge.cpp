@@ -20,6 +20,7 @@
 
 #include "../TerrainPageGeometry.h"
 #include "framework/LoggingInstance.h"
+#include "EmberTerrain.h"
 
 #include <Terrain/OgreTerrainGroup.h>
 
@@ -59,24 +60,19 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 
 void OgreTerrainPageBridge::terrainPageReady()
 {
-	auto heightDataPtr = mHeightData;
-	// No need to keep height data around since it is copied on call.
-	//Note that the data won't be deleted until heightDataPtr runs out of scope, unless updateTerrain(...) is active at the same time.
-	mHeightData.reset();
 	S_LOG_INFO("Finished loading or updating terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
-	if (heightDataPtr) {
-		auto terrain = mTerrainGroup.getTerrain(mIndex.first, mIndex.second);
-		if (terrain && terrain->getHeightData()) {
-			float* heightData = terrain->getHeightData();
-			memcpy(heightData, heightDataPtr.get(), sizeof(float) * terrain->getSize() * terrain->getSize());
-			terrain->dirty();
-			terrain->update();
+	if (mHeightData) {
+		auto terrain = static_cast<EmberTerrain*>(mTerrainGroup.getTerrain(mIndex.first, mIndex.second));
+		if (terrain) {
+			terrain->scheduleGeometryUpdate(mHeightData);
 		} else {
-			mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, heightDataPtr.get());
+			mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData.get());
 		}
 
 	}
-	heightDataPtr.reset();
+	// No need to keep height data around since it is copied on call.
+	// Note that the data won't be deleted until heightDataPtr runs out of scope, unless updateTerrain(...) is active at the same time.
+	mHeightData.reset();
 	// Notify waiting threads such as OgreTerrainDefiner
 	mConditionVariable.notify_all();
 }

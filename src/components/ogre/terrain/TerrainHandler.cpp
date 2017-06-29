@@ -154,18 +154,25 @@ public:
 };
 
 TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider, Eris::EventService& eventService) :
-		mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mEventService(eventService), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1, eventService)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0), mTerrainEntity(nullptr)
+		mPageIndexSize(pageIndexSize),
+		mCompilerTechniqueProvider(compilerTechniqueProvider),
+		mTerrainInfo(new TerrainInfo(pageIndexSize)),
+		mEventService(eventService),
+		mTerrain(new Mercator::Terrain(Mercator::Terrain::SHADED)),
+		mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()),
+		mHasTerrainInfo(false),
+		mTaskQueue(new Tasks::TaskQueue(1, eventService)),
+		mLightning(0),
+		mHeightMap(new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution())),
+		//The mercator buffers are one size larger than the resolution
+		mHeightMapBufferProvider(new HeightMapBufferProvider(mTerrain->getResolution() + 1)),
+		mSegmentManager(new SegmentManager(*mTerrain, 64)),
+		mTerrainEntity(nullptr)
 {
-	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
-
-	mSegmentManager = new SegmentManager(*mTerrain, 64);
 	mSegmentManager->setEndlessWorldEnabled(true);
 	mSegmentManager->setDefaultHeight(getDefaultHeight());
 	//TODO: get these values from the server if possible
 	mSegmentManager->setDefaultHeightVariation(10);
-	//The mercator buffers are one size larger than the resolution
-	mHeightMapBufferProvider = new HeightMapBufferProvider(mTerrain->getResolution() + 1);
-	mHeightMap = new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution());
 
 	MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &TerrainHandler::frameProcessed));
 

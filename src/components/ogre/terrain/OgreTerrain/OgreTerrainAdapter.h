@@ -27,70 +27,73 @@
 #include <sigc++/signal.h>
 #include <memory>
 
-namespace Ogre
-{
+namespace Ogre {
 class TerrainGlobalOptions;
+
 class TerrainGroup;
+
 class TerrainPaging;
+
 class PageManager;
+
 class PagedWorld;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 class EmberTerrainGroup;
+
 class FlatTerrainDefiner;
+
 class OgreTerrainMaterialGeneratorEmber;
+
 class CameraFocusedGrid2DPageStrategy;
+
 /**
  * @brief A ITerrainAdapter implementation which connects to and sets up the Ogre Terrain component.
  */
-class OgreTerrainAdapter: public ITerrainAdapter
-{
+class OgreTerrainAdapter : public ITerrainAdapter {
 public:
 	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize = 257);
 
 	virtual ~OgreTerrainAdapter();
 
-	virtual int getPageSize();
+	int getPageSize() override;
 
-	virtual void setPageSize(unsigned int pageSize);
+	void setPageSize(unsigned int pageSize) override;
 
-	virtual void setLoadRadius(Ogre::Real loadRadius);
+	void setLoadRadius(Ogre::Real loadRadius) override;
 
-	virtual Ogre::Real getHeightAt(Ogre::Real x, Ogre::Real z);
+	Ogre::Real getHeightAt(Ogre::Real x, Ogre::Real z) override;
 
-	virtual void setCamera(Ogre::Camera* camera);
+	void setCamera(Ogre::Camera* camera) override;
 
-	virtual void loadScene();
+	void loadScene() override;
 
-	virtual void reset();
+	void reset() override;
 
-	virtual void reloadAllPages();
+	void reloadAllPages() override;
 
-	virtual void reloadPage(const TerrainIndex& index);
+	void reloadPage(const TerrainIndex& index) override;
 
-	virtual void reloadPageMaterial(const TerrainIndex& index);
+	void reloadPageMaterial(const TerrainIndex& index) override;
 
-	virtual std::string getDebugInfo();
+	std::string getDebugInfo() override;
 
 	/**
 	 * @brief Currently setPageDataProvider MUST be called before this. Otherwise a nullptr will be returned.
 	 */
-	virtual ITerrainObserver* createObserver();
+	ITerrainObserver* createObserver() override;
 
-	virtual void destroyObserver(ITerrainObserver* observer);
+	void destroyObserver(ITerrainObserver* observer) override;
 
-	virtual std::pair<bool, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const;
+	std::pair<bool, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const override;
 
-	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider);
+	void setPageDataProvider(IPageDataProvider* pageDataProvider) override;
 
-	virtual sigc::connection bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal);
+	sigc::connection bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal) override;
 
 private:
 	Ogre::Real mLoadRadius;

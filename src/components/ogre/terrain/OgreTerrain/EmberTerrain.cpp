@@ -20,14 +20,15 @@
 #include "config.h"
 #endif
 
+#include <Ogre.h>
 #include "EmberTerrain.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
+
+const Ogre::uint16 EmberTerrain::WORKQUEUE_GEOMETRY_UPDATE_REQUEST = 100;
+
 
 EmberTerrain::EmberTerrain(std::function<void()>& unloader,
 						   Ogre::SceneManager* sm,
@@ -37,8 +38,7 @@ EmberTerrain::EmberTerrain(std::function<void()>& unloader,
 		Ogre::Terrain(sm),
 		mUnloader(unloader),
 		mTerrainAreaUpdatedSignal(terrainAreaUpdatedSignal),
-		mTerrainShownSignal(terrainShownSignal)
-{
+		mTerrainShownSignal(terrainShownSignal) {
 	//This is a hack to prevent the Terrain class from creating blend map textures.
 	//Since we provide our own material with its own blend maps we don't want the
 	//Ogre::Terrain instance creating new ones.
@@ -53,49 +53,101 @@ EmberTerrain::EmberTerrain(std::function<void()>& unloader,
 
 }
 
-EmberTerrain::~EmberTerrain()
-{
+EmberTerrain::~EmberTerrain() {
 	//Remove the fake blend map texture, else the base class will try to delete it.
 	mBlendTextureList.clear();
 	mUnloader();
 }
 
-void EmberTerrain::setIndex(const IPageDataProvider::OgreIndex& index)
-{
+void EmberTerrain::setIndex(const IPageDataProvider::OgreIndex& index) {
 	mIndex = index;
 }
 
-const IPageDataProvider::OgreIndex& EmberTerrain::getIndex() const
-{
+const IPageDataProvider::OgreIndex& EmberTerrain::getIndex() const {
 	return mIndex;
 }
 
-void EmberTerrain::handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ)
-{
+bool EmberTerrain::canHandleRequest(const Ogre::WorkQueue::Request* req, const Ogre::WorkQueue* srcQ) {
 
-	bool wasUpdatingDerivedData = mDerivedDataUpdateInProgress;
-	auto dirtyRect = mDirtyDerivedDataRect;
-	bool wasLoaded = mIsLoaded;
-	Ogre::Terrain::handleResponse(res, srcQ);
-	if (mIsLoaded && !wasLoaded) {
-		//The page is now loaded, while it wasn't before
-		const Ogre::AxisAlignedBox& bbox = getWorldAABB();
-		Ogre::TRect<Ogre::Real> rect(bbox.getMinimum().x, bbox.getMinimum().z, bbox.getMaximum().x, bbox.getMaximum().z);
-		mTerrainShownSignal(rect);
+	if (req->getType() == WORKQUEUE_GEOMETRY_UPDATE_REQUEST) {
+		GeometryUpdateRequest innerRequest = Ogre::any_cast<GeometryUpdateRequest>(req->getData());
+		// only deal with own requests
+		// we do this because if we delete a terrain we want any pending tasks to be discarded
+		if (innerRequest.terrain != this) {
+			return false;
+		}
 	}
-	if (!mDerivedDataUpdateInProgress && wasUpdatingDerivedData) {
-		//We've finished updating derived data and should signal that we've altered.
-		Ogre::TRect<Ogre::Real> rect(dirtyRect.left, dirtyRect.top, dirtyRect.right, dirtyRect.bottom);
+	return Ogre::Terrain::canHandleRequest(req, srcQ);
+}
 
-		mTerrainAreaUpdatedSignal(rect);
+Ogre::WorkQueue::Response* EmberTerrain::handleRequest(const Ogre::WorkQueue::Request* req, const Ogre::WorkQueue* srcQ) {
+	if (req->getType() == WORKQUEUE_GEOMETRY_UPDATE_REQUEST) {
+		GeometryUpdateRequest innerRequest = Ogre::any_cast<GeometryUpdateRequest>(req->getData());
+		float* heightData = getHeightData();
+		//Copy height data
+		memcpy(heightData, innerRequest.heightData.get(), sizeof(float) * getSize() * getSize());
+		innerRequest.heightData.reset(); //Free up memory as soon as possible
+		return new Ogre::WorkQueue::Response(req, true, Ogre::Any());
+	} else {
+		return Ogre::Terrain::handleRequest(req, srcQ);
 	}
 }
 
-void EmberTerrain::regenerateMaterial()
-{
+bool EmberTerrain::canHandleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ) {
+	if (res->getRequest()->getType() == WORKQUEUE_GEOMETRY_UPDATE_REQUEST) {
+		GeometryUpdateRequest innerRequest = Ogre::any_cast<GeometryUpdateRequest>(res->getData());
+		// only deal with own requests
+		// we do this because if we delete a terrain we want any pending tasks to be discarded
+		if (innerRequest.terrain != this) {
+			return false;
+		}
+	}
+	return Ogre::Terrain::canHandleResponse(res, srcQ);
+}
+
+void EmberTerrain::handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ) {
+
+	if (res->getRequest()->getType() == WORKQUEUE_DERIVED_DATA_REQUEST) {
+
+		bool wasUpdatingDerivedData = mDerivedDataUpdateInProgress;
+		auto dirtyRect = mDirtyDerivedDataRect;
+		bool wasLoaded = mIsLoaded;
+		Ogre::Terrain::handleResponse(res, srcQ);
+		if (mIsLoaded && !wasLoaded) {
+			//The page is now loaded, while it wasn't before
+			const Ogre::AxisAlignedBox& bbox = getWorldAABB();
+			Ogre::TRect<Ogre::Real> rect(bbox.getMinimum().x, bbox.getMinimum().z, bbox.getMaximum().x, bbox.getMaximum().z);
+			mTerrainShownSignal(rect);
+		}
+		if (!mDerivedDataUpdateInProgress && wasUpdatingDerivedData) {
+			//We've finished updating derived data and should signal that we've altered.
+			Ogre::TRect<Ogre::Real> rect(dirtyRect.left, dirtyRect.top, dirtyRect.right, dirtyRect.bottom);
+
+			mTerrainAreaUpdatedSignal(rect);
+		}
+	} else if (res->getRequest()->getType() == WORKQUEUE_GEOMETRY_UPDATE_REQUEST) {
+		dirty();
+		update();
+	} else {
+		Ogre::Terrain::handleResponse(res, srcQ);
+	}
+}
+
+void EmberTerrain::regenerateMaterial() {
 	mMaterialDirty = true;
 	mMaterialGenerator->requestOptions(this);
 	getMaterial();
+}
+
+void EmberTerrain::scheduleGeometryUpdate(std::shared_ptr<float> heightData) {
+
+	GeometryUpdateRequest req;
+	req.terrain = this;
+	req.heightData = heightData;
+
+	Ogre::Root::getSingleton().getWorkQueue()->addRequest(
+			mWorkQueueChannel, WORKQUEUE_GEOMETRY_UPDATE_REQUEST,
+			Ogre::Any(req), 0, false);
 }
 
 

@@ -29,12 +29,9 @@
 
 using namespace Ogre;
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 unsigned int EmberTerrainGroup::sLoadingTaskNum;
 
@@ -45,12 +42,10 @@ EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm,
 		Ogre::TerrainGroup(sm, Ogre::Terrain::ALIGN_X_Z, terrainSize, Ogre::Real(terrainSize - 1)),
 		mPageDataProvider(nullptr),
 		mTerrainShownSignal(terrainShownSignal),
-		mMaterialGenerator(materialGenerator)
-{
+		mMaterialGenerator(materialGenerator) {
 }
 
-EmberTerrainGroup::~EmberTerrainGroup()
-{
+EmberTerrainGroup::~EmberTerrainGroup() {
 	while (sLoadingTaskNum > 0) {
 		S_LOG_VERBOSE("Sleeping 2 milliseconds while waiting for tasks to complete in EmberTerrainGroup destructor.");
 		OGRE_THREAD_SLEEP(2);
@@ -59,8 +54,7 @@ EmberTerrainGroup::~EmberTerrainGroup()
 
 }
 
-void EmberTerrainGroup::loadAllTerrains(bool synchronous /*= false*/)
-{
+void EmberTerrainGroup::loadAllTerrains(bool synchronous /*= false*/) {
 	// Just a straight iteration - for the numbers involved not worth
 	// keeping a loaded / unloaded list
 	for (auto entry : mTerrainSlots) {
@@ -70,8 +64,7 @@ void EmberTerrainGroup::loadAllTerrains(bool synchronous /*= false*/)
 
 }
 
-void EmberTerrainGroup::loadTerrain(long x, long y, bool synchronous /*= false*/)
-{
+void EmberTerrainGroup::loadTerrain(long x, long y, bool synchronous /*= false*/) {
 	TerrainSlot* slot = getTerrainSlot(x, y, false);
 	if (slot) {
 		loadEmberTerrainImpl(slot, synchronous);
@@ -79,8 +72,7 @@ void EmberTerrainGroup::loadTerrain(long x, long y, bool synchronous /*= false*/
 
 }
 
-void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous)
-{
+void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous) {
 	assert(mPageDataProvider);
 	if (!slot->instance) {
 
@@ -88,23 +80,35 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 			return;
 		}
 
+		//Don't assign an instance to the supplied slot until it has been fully prepared in the background (i.e. on "handleResponse).
+		//The main reason is that other parts of the system will try to access the non-prepared instance through getTerrain(...), and cause segfaults
+
+
+		//This slot is temporary and will be deleted in "handleResponse", after transferring the instance to the "main" slot.
+		TerrainSlot* newSlot = OGRE_NEW TerrainSlot(slot->x, slot->y);
+		newSlot->def = slot->def;
+
+		//Import data is transferred to "newSlot"
+		slot->def.importData = nullptr;
+
 		long x = slot->x;
 		long y = slot->y;
 
 		//The unloader function tells the page data provider that it should remove any terrain page bridge it has registered.
-		std::function < void() > unloader = [=] {mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y));};
+		std::function<void()> unloader = [=] { mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y)); };
 
 		// Allocate in main thread so no race conditions
 		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager, EventTerrainAreaUpdated, mTerrainShownSignal, mMaterialGenerator);
 		terrain->setIndex(IPageDataProvider::OgreIndex(x, y));
 
-		slot->instance = terrain;
-		slot->instance->setResourceGroup(mResourceGroup);
+		terrain->setResourceGroup(mResourceGroup);
 		// Use shared pool of buffers
-		slot->instance->setGpuBufferAllocator(&mBufferAllocator);
+		terrain->setGpuBufferAllocator(&mBufferAllocator);
+
+		newSlot->instance = terrain;
 
 		LoadRequest req;
-		req.slot = slot;
+		req.slot = newSlot;
 		req.origin = this;
 		++sLoadingTaskNum;
 		Ogre::Root::getSingleton().getWorkQueue()->addRequest(mWorkQueueChannel, WORKQUEUE_LOAD_REQUEST, Ogre::Any(req), 0, synchronous);
@@ -112,14 +116,19 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 	}
 }
 
-void EmberTerrainGroup::handleResponse(const WorkQueue::Response* res, const WorkQueue* srcQ)
-{
+void EmberTerrainGroup::handleResponse(const WorkQueue::Response* res, const WorkQueue* srcQ) {
 	--sLoadingTaskNum;
 
 	LoadRequest lreq = any_cast<LoadRequest>(res->getRequest()->getData());
 
 	if (res->succeeded()) {
-		TerrainSlot* slot = lreq.slot;
+		//Transfer the instance from the temporary slot in the request, and delete it afterwards.
+		TerrainSlot* newSlot = lreq.slot;
+		TerrainSlot* slot = getTerrainSlot(newSlot->x, newSlot->y);
+		slot->instance = newSlot->instance;
+		newSlot->instance = nullptr; //need to set to null, else it gets deleted by the slot's destructor
+		OGRE_DELETE newSlot;
+
 		Ogre::Terrain* terrain = slot->instance;
 		if (terrain) {
 			terrain->setPosition(getTerrainSlotPosition(slot->x, slot->y));
@@ -136,7 +145,6 @@ void EmberTerrainGroup::handleResponse(const WorkQueue::Response* res, const Wor
 						connectNeighbour(slot, i, j);
 					}
 				}
-
 			}
 		}
 	} else {
@@ -145,8 +153,7 @@ void EmberTerrainGroup::handleResponse(const WorkQueue::Response* res, const Wor
 	}
 }
 
-void EmberTerrainGroup::setPageDataProvider(IPageDataProvider* pageDataProvider)
-{
+void EmberTerrainGroup::setPageDataProvider(IPageDataProvider* pageDataProvider) {
 	mPageDataProvider = pageDataProvider;
 }
 

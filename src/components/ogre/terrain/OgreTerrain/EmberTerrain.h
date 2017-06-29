@@ -67,6 +67,9 @@ public:
 	 */
 	const IPageDataProvider::OgreIndex& getIndex() const;
 
+	bool canHandleRequest(const Ogre::WorkQueue::Request* req, const Ogre::WorkQueue* srcQ) override;
+	Ogre::WorkQueue::Response* handleRequest(const Ogre::WorkQueue::Request* req, const Ogre::WorkQueue* srcQ) override;
+	bool canHandleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ) override;
 	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ) override;
 
 	/**
@@ -74,8 +77,24 @@ public:
 	 */
 	void regenerateMaterial();
 
+	/**
+	 * Schedule a geometry update, using background workers.
+	 * @param heightData
+	 */
+	void scheduleGeometryUpdate(std::shared_ptr<float> heightData);
 
 protected:
+
+	static const Ogre::uint16 WORKQUEUE_GEOMETRY_UPDATE_REQUEST;
+
+	struct GeometryUpdateRequest
+	{
+		EmberTerrain* terrain;
+		std::shared_ptr<float> heightData;
+		//Rect dirtyRect;
+		friend std::ostream& operator<<(std::ostream& o, const GeometryUpdateRequest& r)
+		{ return o; }
+	};
 
 	/**
 	 * @brief An unloader function, called upon destruction.

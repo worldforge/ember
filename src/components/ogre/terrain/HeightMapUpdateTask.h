@@ -63,9 +63,9 @@ public:
 	HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, const SegmentStore& segments);
 	virtual ~HeightMapUpdateTask();
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 
-	virtual bool executeTaskInMainThread();
+	bool executeTaskInMainThread() override;
 
 private:
 

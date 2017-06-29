@@ -29,37 +29,29 @@
 
 #include <Mercator/Segment.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 HeightMapUpdateTask::HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, const SegmentStore& segments) :
-	mProvider(provider), mHeightMap(heightMap), mSegments(segments)
-{
+		mProvider(provider), mHeightMap(heightMap), mSegments(segments) {
 
 }
 
-HeightMapUpdateTask::~HeightMapUpdateTask()
-{
+HeightMapUpdateTask::~HeightMapUpdateTask() {
 }
 
-void HeightMapUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void HeightMapUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	createHeightMapSegments();
 }
 
-bool HeightMapUpdateTask::executeTaskInMainThread()
-{
+bool HeightMapUpdateTask::executeTaskInMainThread() {
 	injectHeightMapSegmentsIntoHeightMap();
 	return true;
 }
 
-void HeightMapUpdateTask::createHeightMapSegments()
-{
+void HeightMapUpdateTask::createHeightMapSegments() {
 	for (SegmentStore::const_iterator I = mSegments.begin(); I != mSegments.end(); ++I) {
 		Mercator::Segment* segment = *I;
 		if (segment) {
@@ -76,17 +68,17 @@ void HeightMapUpdateTask::createHeightMapSegments()
 				}
 			}
 			if (heightMapSegment) {
-				mHeightMapSegments.push_back(std::pair<WFMath::Point<2>, IHeightMapSegment*>(WFMath::Point<2>(segment->getXRef() / segment->getResolution(), segment->getYRef() / segment->getResolution()), heightMapSegment));
+				mHeightMapSegments.push_back(std::make_pair(WFMath::Point<2>(segment->getXRef() / segment->getResolution(), segment->getYRef() / segment->getResolution()), heightMapSegment));
 			}
 		}
 	}
 
 }
-void HeightMapUpdateTask::injectHeightMapSegmentsIntoHeightMap()
-{
-	for (HeightMapSegmentStore::const_iterator I = mHeightMapSegments.begin(); I != mHeightMapSegments.end(); ++I) {
-		WFMath::Point<2> position = I->first;
-		IHeightMapSegment* heightMapSegment = I->second;
+
+void HeightMapUpdateTask::injectHeightMapSegmentsIntoHeightMap() {
+	for (auto entry : mHeightMapSegments) {
+		const WFMath::Point<2>& position = entry.first;
+		IHeightMapSegment* heightMapSegment = entry.second;
 		mHeightMap.insert(position.x(), position.y(), heightMapSegment);
 	}
 

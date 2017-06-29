@@ -33,8 +33,20 @@ namespace OgreView
 namespace Terrain
 {
 
-GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages, const std::vector<WFMath::AxisBox<2>>& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3> lightDirection) :
-	mGeometry(pages), mAreas(areas), mHandler(handler), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap), mLightDirection(lightDirection)
+GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages,
+									   const std::vector<WFMath::AxisBox<2>>& areas,
+									   TerrainHandler& handler,
+									   const ShaderStore& shaders,
+									   HeightMapBufferProvider& heightMapBufferProvider,
+									   HeightMap& heightMap,
+									   const WFMath::Vector<3> lightDirection) :
+	mGeometry(pages),
+	mAreas(areas),
+	mHandler(handler),
+	mShaders(shaders),
+	mHeightMapBufferProvider(heightMapBufferProvider),
+	mHeightMap(heightMap),
+	mLightDirection(lightDirection)
 {
 
 }
