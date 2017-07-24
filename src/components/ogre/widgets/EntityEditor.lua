@@ -1259,10 +1259,10 @@ function EntityEditor:editEntity(entity)
 				local goalString = Ember.OgreView.Gui.EntityEditor:parseElementMap(reportElem:asMap())
 				self.goalInfo:setText(escapeForCEGUI(goalString))
 			else
-       log.info("'report' isn't a map.")
+       			log.info("'report' isn't a map.")
 			end
 		else
-	   log.info("Goal info element isn't a map.")
+	   		log.info("Goal info element isn't a map.")
 		end
 	end)
 

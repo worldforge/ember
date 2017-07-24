@@ -513,18 +513,19 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 
 	//We'll be getting back a Think op, which wraps an anonymous op, where the arguments is the path.
 	if (op->getParent() != "think") {
-		S_LOG_WARNING("Got think operation with wrong type set.");
+		S_LOG_WARNING("Got think operation with wrong type set: " << op);
 		return;
 	}
 
 	if (op->getArgs().empty()) {
-		S_LOG_WARNING("Got Thought op without any arguments.");
+		S_LOG_WARNING("Got Thought op without any arguments: " << op);
 		return;
 	}
 
 	auto innerOp = op->getArgs().front();
 	if (innerOp->getClassNo() != Atlas::Objects::Entity::ANONYMOUS_NO) {
-		S_LOG_WARNING("Get Thought op with inner entity that wasn't anonymous.");
+		S_LOG_WARNING("Get Thought op with inner entity that wasn't anonymous: " << op);
+		return;
 	}
 
 	Atlas::Objects::Entity::Anonymous pathEntity = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::Anonymous>(innerOp);
@@ -564,10 +565,10 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 
 			}
 		} else {
-			S_LOG_WARNING("Response to path request had 'path' property which wasn't a list.");
+			S_LOG_WARNING("Response to path request had 'path' property which wasn't a list: " << op);
 		}
 	} else {
-		S_LOG_WARNING("Response to path request contained no 'path' property.");
+		S_LOG_WARNING("Response to path request contained no 'path' property: " << op);
 	}
 	mPathPolygon->updateRender();
 }
