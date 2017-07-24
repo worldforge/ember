@@ -24,29 +24,32 @@
 #include "config.h"
 #endif
 
+#include <Atlas/Codecs/Bach.h>
+#include <Atlas/Objects/Encoder.h>
+#include <Atlas/Objects/SmartPtr.h>
 #include "LoggingInstance.h"
 
 namespace Ember {
 
-LoggingInstance::LoggingInstance(const std::string & file, const int line, const Log::MessageImportance importance)
+LoggingInstance::LoggingInstance(const std::string & file, int line, Log::MessageImportance importance)
 : mFile(file), mLine(line), mImportance(importance)
 {
 	mMessage.reserve(256);
 }
 
-LoggingInstance::LoggingInstance(const Log::MessageImportance importance)
+LoggingInstance::LoggingInstance(Log::MessageImportance importance)
 : mFile(""), mLine(-1), mImportance(importance)
 {
 	mMessage.reserve(256);
 }
 
-LoggingInstance::LoggingInstance(const std::string & file, const Log::MessageImportance importance)
+LoggingInstance::LoggingInstance(const std::string & file, Log::MessageImportance importance)
 : mFile(file), mLine(-1), mImportance(importance)
 {
 	mMessage.reserve(256);
 }
 
-LoggingInstance::LoggingInstance(const std::string & file, const int line)
+LoggingInstance::LoggingInstance(const std::string & file, int line)
 : mFile(file), mLine(line), mImportance(Log::INFO)
 {
 	mMessage.reserve(256);
@@ -78,21 +81,21 @@ LoggingInstance& LoggingInstance::operator<< (const char* stringToAdd)
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::operator<< (const unsigned int uintToAdd)
+LoggingInstance & LoggingInstance::operator<< (unsigned int uintToAdd)
 {
 	mMessage += std::to_string(uintToAdd);
 
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::operator<< (const int intToAdd)
+LoggingInstance & LoggingInstance::operator<< (int intToAdd)
 {
 	mMessage += std::to_string(intToAdd);
 
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::operator<< (const Log::HexNumber & intHexToAdd)
+LoggingInstance & LoggingInstance::operator<< (Log::HexNumber intHexToAdd)
 {
 	char buffer[Log::NUMBER_BUFFER_SIZE];
 	sprintf (buffer, "%x", intHexToAdd.myNumber);
@@ -100,32 +103,32 @@ LoggingInstance & LoggingInstance::operator<< (const Log::HexNumber & intHexToAd
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::operator<< (const double doubleToAdd)
+LoggingInstance & LoggingInstance::operator<< (double doubleToAdd)
 {
 	mMessage += std::to_string(doubleToAdd);
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::operator<< (const long longToAdd)
+LoggingInstance & LoggingInstance::operator<< (long longToAdd)
 {
 	mMessage += std::to_string(longToAdd);
 
 	return *this;
 }
 
-LoggingInstance & LoggingInstance::operator<< (const unsigned long ulongToAdd)
+LoggingInstance & LoggingInstance::operator<< (unsigned long ulongToAdd)
 {
 	mMessage += std::to_string(ulongToAdd);
 	return *this;
 }
 
-LoggingInstance& LoggingInstance::operator<< (const long long longLongToAdd)
+LoggingInstance& LoggingInstance::operator<< (long long longLongToAdd)
 {
 	mMessage += std::to_string(longLongToAdd);
 	return *this;
 }
 
-LoggingInstance& LoggingInstance::operator<< (const unsigned long long ulongLongToAdd)
+LoggingInstance& LoggingInstance::operator<< (unsigned long long ulongLongToAdd)
 {
 	mMessage += std::to_string(ulongLongToAdd);
 	return *this;
@@ -133,7 +136,7 @@ LoggingInstance& LoggingInstance::operator<< (const unsigned long long ulongLong
 
 
 
-void LoggingInstance::operator<< (const Log::EndMessageEnum endMessage)
+void LoggingInstance::operator<< (Log::EndMessageEnum endMessage)
 {
 	Log::sendMessage(mMessage, mFile, mLine, mImportance);
 	mMessage = "";
@@ -145,6 +148,25 @@ LoggingInstance& LoggingInstance::operator<< (const std::exception& exception)
 	return *this;
 }
 
+LoggingInstance& LoggingInstance::operator<<(const Atlas::Objects::SmartPtr<Atlas::Objects::RootData>& obj)
+{
+	std::stringstream s;
+	Atlas::Codecs::Bach debugCodec(s, s, *(Atlas::Bridge*)nullptr);
+	Atlas::Objects::ObjectsEncoder debugEncoder(debugCodec);
+	debugEncoder.streamObjectsMessage(obj);
+	mMessage += s.str();
+	return *this;
+}
+
+LoggingInstance& LoggingInstance::operator<<(const Atlas::Message::Element& msg)
+{
+	std::stringstream s;
+	Atlas::Codecs::Bach debugCodec(s, s, *(Atlas::Bridge*)0);
+	Atlas::Message::Encoder debugEncoder(debugCodec);
+	debugEncoder.streamMessageElement(msg.asMap());
+	mMessage += s.str();
+	return *this;
+}
 
 
 }

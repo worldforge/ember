@@ -31,47 +31,63 @@
 #define S_LOG_FAILURE(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::FAILURE) << message << ENDM)
 #define S_LOG_CRITICAL(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::CRITICAL) << message << ENDM)
 
+namespace Atlas {
+namespace Message {
+class Element;
+}
+namespace Objects {
+template<class T>
+class SmartPtr;
+
+class RootData;
+}
+}
+
 namespace Ember {
 
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class LoggingInstance{
+class LoggingInstance {
 public:
 	friend class Log;
 
-	LoggingInstance(const std::string & file, const int line, const Log::MessageImportance importance);
+	LoggingInstance(const std::string& file, int line, Log::MessageImportance importance);
 
-	LoggingInstance(const Log::MessageImportance importance);
+	LoggingInstance(Log::MessageImportance importance);
 
-	LoggingInstance(const std::string & file, const Log::MessageImportance importance);
+	LoggingInstance(const std::string& file, Log::MessageImportance importance);
 
-	LoggingInstance(const std::string & file, const int line);
+	LoggingInstance(const std::string& file, int line);
 
-	LoggingInstance(const std::string & file);
+	LoggingInstance(const std::string& file);
 
 
-	LoggingInstance& operator<< (const std::string & stringToAdd);
+	LoggingInstance& operator<<(const std::string& stringToAdd);
 
-	LoggingInstance& operator<< (const char* stringToAdd);
+	LoggingInstance& operator<<(const char* stringToAdd);
 
-	LoggingInstance& operator<< (const int intToAdd);
+	LoggingInstance& operator<<(int intToAdd);
 
-	LoggingInstance& operator<< (const unsigned int uintToAdd);
+	LoggingInstance& operator<<(unsigned int uintToAdd);
 
-	LoggingInstance& operator<< (const long longToAdd);
+	LoggingInstance& operator<<(long longToAdd);
 
-	LoggingInstance& operator<< (const unsigned long ulongToAdd);
+	LoggingInstance& operator<<(unsigned long ulongToAdd);
 
-	LoggingInstance& operator<< (const long long longLongToAdd);
+	LoggingInstance& operator<<(long long longLongToAdd);
 
-	LoggingInstance& operator<< (const unsigned long long ulongLongToAdd);
+	LoggingInstance& operator<<(unsigned long long ulongLongToAdd);
 
-	LoggingInstance& operator<< (const Log::HexNumber & intHexToAdd);
+	LoggingInstance& operator<<(Log::HexNumber intHexToAdd);
 
-	LoggingInstance& operator<< (const double doubleToAdd);
+	LoggingInstance& operator<<(double doubleToAdd);
 
-	LoggingInstance& operator<< (const std::exception& exception);
+	LoggingInstance& operator<<(const std::exception& exception);
+
+	LoggingInstance& operator<<(const Atlas::Objects::SmartPtr<Atlas::Objects::RootData>& obj);
+
+	LoggingInstance& operator<<(const Atlas::Message::Element& msg);
 
 	/**
 	 * @brief At destruction the message will be written, if not already done.
@@ -82,7 +98,7 @@ public:
 	* By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
 	* sending it.
 	*/
-	void operator<< (const Log::EndMessageEnum endMessage);
+	void operator<<(Log::EndMessageEnum endMessage);
 
 private:
 

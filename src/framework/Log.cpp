@@ -45,10 +45,10 @@ public:
 		Log::sObserverList.push_back(this);
 	}
 
-	virtual void onNewMessage (const std::string & message,
+	void onNewMessage (const std::string & message,
 							const std::string & file,
 							const int &line,
-							const Log::MessageImportance & importance)
+							const Log::MessageImportance & importance) override
 	{
 		std::cout << message << std::endl;
 	}
