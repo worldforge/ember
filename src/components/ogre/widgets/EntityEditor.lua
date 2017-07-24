@@ -521,7 +521,7 @@ EntityEditor.prototypes =
 		adapter = EntityEditor.adapters.static,
 		help = "Marks the entity as externally controlled."
 	},
-	parents = {
+	parent = {
 		nodelete = true,
 		-- 		adapter = EntityEditor.adapters.static
 		adapter = nil

@@ -36,7 +36,7 @@ class TypeInfo
     
     const Eris::TypeInfoSet & getChildren() const;
 
-    const Eris::TypeInfoSet & getParents() const;
+    const Eris::TypeInfo* getParent() const;
 
 };
 

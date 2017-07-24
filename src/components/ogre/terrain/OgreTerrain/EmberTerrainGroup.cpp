@@ -121,7 +121,7 @@ void EmberTerrainGroup::handleResponse(const WorkQueue::Response* res, const Wor
 			if (mAutoUpdateLod) {
 				terrain->load(-1, false);
 			} else {
-				terrain->load(0, true);
+				terrain->load(0, false);
 			}
 
 			for (int i = -1; i <= 1; ++i) {

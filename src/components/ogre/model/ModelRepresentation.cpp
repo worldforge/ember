@@ -450,29 +450,24 @@ const Ogre::Sphere & ModelRepresentation::getWorldBoundingSphere(bool derive) co
 
 void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOperation& act)
 {
-	const std::list<std::string> &p = act->getParents();
-	std::list<std::string>::const_iterator I = p.begin();
+	const std::string& name = act->getParent();
 
-	if (I != p.end()) {
-		const std::string& name = *I;
+	// If there is a sound entity, ask it to play this action
+	if (mSoundEntity) {
+		mSoundEntity->playAction(name);
+	}
 
-		// If there is a sound entity, ask it to play this action
-		if (mSoundEntity) {
-			mSoundEntity->playAction(name);
-		}
+	Action* newAction = mModel.getAction(ActivationDefinition::ACTION, name);
 
-		Action* newAction = mModel.getAction(ActivationDefinition::ACTION, name);
+	//If there's no action found, try to see if we have a "default action" defined to play instead.
+	if (!newAction) {
+		newAction = mModel.getAction(ActivationDefinition::ACTION, "default_action");
+	}
 
-		//If there's no action found, try to see if we have a "default action" defined to play instead.
-		if (!newAction) {
-			newAction = mModel.getAction(ActivationDefinition::ACTION, "default_action");
-		}
-
-		if (newAction) {
-			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
-			mActiveAction = newAction;
-			resetAnimations();
-		}
+	if (newAction) {
+		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
+		mActiveAction = newAction;
+		resetAnimations();
 	}
 }
 

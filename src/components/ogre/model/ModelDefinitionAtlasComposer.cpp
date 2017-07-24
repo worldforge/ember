@@ -87,9 +87,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	mainMap["objtype"] = StringType("class");
 	mainMap["id"] = StringType(typeName);
 
-	ListType parents;
-	parents.push_back(StringType(parentTypeName));
-	mainMap["parents"] = parents;
+	mainMap["parent"] = parentTypeName;
 
 	model->getParentNode()->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
 

@@ -4,9 +4,7 @@
             <string>867685</string>
         </list>
         <string name="id">0</string>
-        <list name="parents">
-            <string>world</string>
-        </list>
+        <string name="parent">world</string>
         <float name="stamp">67</float>
         <string name="objtype">obj</string>
         <string name="name">moraf</string>
@@ -1054,9 +1052,7 @@
         </list>
         <list name="contains" />
         <string name="id">867685</string>
-        <list name="parents">
-            <string>boundary</string>
-        </list>
+        <string name="parent">boundary</string>
         <float name="stamp">0</float>
         <string name="objtype">obj</string>
         <list name="bbox">

@@ -119,7 +119,7 @@ void EntityCreatorCreationInstance::createEntity()
 	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 
 	mEntityMessage["loc"] = avatar.getLocation()->getId();
-	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
+	mEntityMessage["parent"] = erisType->getName();
 
 	// Temporary entity
 	mEntity = new Authoring::DetachedEntity("-1", erisType, &mTypeService);

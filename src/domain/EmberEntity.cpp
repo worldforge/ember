@@ -193,18 +193,10 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation & op)
 {
 	//We'll just catch the call and write something to both the log and the console, and then pass it on.
-	const std::list<std::string> &p = op->getParents();
-	std::list<std::string>::const_iterator I = p.begin();
 
-	if (I != p.end()) {
-
-		const std::string& name = *I;
-		std::string message = getName() + " emits a " + name + ".";
-
-		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
-
-		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << name);
-	}
+	std::string message = getName() + " emits a " + op->getParent() + ".";
+	ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
+	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << op->getParent());
 
 	Eris::Entity::onSoundAction(op);
 }
@@ -261,18 +253,10 @@ void EmberEntity::updateAttachment()
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 {
-	const std::list<std::string> &p = act->getParents();
-	std::list<std::string>::const_iterator I = p.begin();
+	std::string message = getName() + " performs a " + act->getParent() + ".";
+	ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
+	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << act->getParent());
 
-	if (I != p.end()) {
-
-		const std::string& name = *I;
-		std::string message = getName() + " performs a " + name + ".";
-
-		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
-
-		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
-	}
 	Entity::onAction(act);
 }
 

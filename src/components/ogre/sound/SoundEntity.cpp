@@ -75,13 +75,7 @@ namespace OgreView
 
 	void SoundEntity::Entity_Action(const Atlas::Objects::Operation::RootOperation& act)
 	{
-		const std::list<std::string> &p = act->getParents();
-		std::list<std::string>::const_iterator I = p.begin();
-
-		if (I != p.end()) {
-			const std::string& name = *I;
-			playAction(name);
-		}
+		playAction(act->getParent());
 	}
 
 	const SoundAction* SoundEntity::playMovementSound(const std::string& actionName)

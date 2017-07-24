@@ -79,14 +79,14 @@ EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeIn
 		if (I != mEntityTypeMappings.end()) {
 			return I->second;
 		} else {
-			if (typeInfo->getParents().size() == 0) {
+			if (!typeInfo->getParent()) {
 				noneThere = true;
 			} else {
-				typeInfo = *(typeInfo->getParents().begin());
+				typeInfo = typeInfo->getParent();
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view)
@@ -100,7 +100,7 @@ EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IAction
 			return mapping;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 }

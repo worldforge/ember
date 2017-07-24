@@ -274,10 +274,8 @@ void EntityEditor::addGoal(const std::string& definition)
 	setOp->setArgs1(thought);
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	std::list<std::string> parents;
-	parents.emplace_back("think");
 	thinkOp->setArgs1(setOp);
-	thinkOp->setParents(parents);
+	thinkOp->setParent("think");
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -300,9 +298,7 @@ void EntityEditor::updateGoal(const std::string& replaceDefinition, const std::s
 	setOp->setArgs1(thought);
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	std::list<std::string> parents;
-	parents.emplace_back("think");
-	thinkOp->setParents(parents);
+	thinkOp->setParent("think");
 	thinkOp->setArgs1(setOp);
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
@@ -326,9 +322,7 @@ void EntityEditor::removeGoal(const std::string& definition)
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
 	thinkOp->setArgs1(deleteOp);
-	std::list<std::string> parents;
-	parents.emplace_back("think");
-	thinkOp->setParents(parents);
+	thinkOp->setParent("think");
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -352,9 +346,7 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 	setOp->setArgs1(thought);
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	std::list<std::string> parents;
-	parents.emplace_back("think");
-	thinkOp->setParents(parents);
+	thinkOp->setParent("think");
 	thinkOp->setArgs1(setOp);
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
@@ -388,9 +380,7 @@ void EntityEditor::getGoals()
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	std::list<std::string> parents;
-	parents.emplace_back("think");
-	thinkOp->setParents(parents);
+	thinkOp->setParent("think");
 	thinkOp->setTo(mEntity.getId());
 
 	Atlas::Objects::Operation::Get getOp;
@@ -419,9 +409,7 @@ void EntityEditor::getPath()
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	std::list<std::string> parents;
-	parents.emplace_back("think");
-	thinkOp->setParents(parents);
+	thinkOp->setParent("think");
 	thinkOp->setTo(mEntity.getId());
 
 	Atlas::Objects::Operation::Get getOp;
@@ -450,9 +438,7 @@ void EntityEditor::getThoughts()
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	std::list<std::string> parents;
-	parents.emplace_back("think");
-	thinkOp->setParents(parents);
+	thinkOp->setParent("think");
 	thinkOp->setTo(mEntity.getId());
 
 	Atlas::Objects::Operation::Get getOp;
@@ -485,11 +471,7 @@ void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::Root
 	}
 
 	//We'll be getting back a Think op, which wraps a Set op, where the arguments are the thoughts.
-	if (op->getParents().empty()) {
-		S_LOG_WARNING("Got think operation without any parent set.");
-		return;
-	}
-	if (op->getParents().front() != "think") {
+	if (op->getParent() != "think") {
 		S_LOG_WARNING("Got think operation with wrong type set.");
 		return;
 	}
@@ -508,7 +490,7 @@ void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::Root
 
 	if (!setOp->getArgs().empty()) {
 		auto thoughts = setOp->getArgsAsList();
-		for (auto thought : thoughts) {
+		for (const auto& thought : thoughts) {
 			EventGotGoal(thought);
 		}
 	} else {
@@ -530,11 +512,7 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 	}
 
 	//We'll be getting back a Think op, which wraps an anonymous op, where the arguments is the path.
-	if (op->getParents().empty()) {
-		S_LOG_WARNING("Got think operation without any parent set.");
-		return;
-	}
-	if (op->getParents().front() != "think") {
+	if (op->getParent() != "think") {
 		S_LOG_WARNING("Got think operation with wrong type set.");
 		return;
 	}
@@ -622,11 +600,7 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 	}
 
 	//We'll be getting back a Think op, which wraps a Set op, where the arguments are the thoughts.
-	if (op->getParents().empty()) {
-		S_LOG_WARNING("Got think operation without any parent set.");
-		return;
-	}
-	if (op->getParents().front() != "think") {
+	if (op->getParent() != "think") {
 		S_LOG_WARNING("Got think operation with wrong type set.");
 		return;
 	}
@@ -645,7 +619,7 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 
 	if (!setOp->getArgs().empty()) {
 		auto thoughts = setOp->getArgsAsList();
-		for (auto thought : thoughts) {
+		for (const auto& thought : thoughts) {
 			EventGotThought(thought);
 		}
 	} else {
@@ -659,9 +633,7 @@ void EntityEditor::getGoalInfo(const std::string& definition)
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
-	std::list<std::string> parents;
-	parents.emplace_back("think");
-	thinkOp->setParents(parents);
+	thinkOp->setParent("think");
 	thinkOp->setTo(mEntity.getId());
 
 	Atlas::Objects::Operation::Look lookOp;
@@ -698,7 +670,7 @@ void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::R
 
 	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
 	//"info" operation.
-	if (op->getParents().empty() || op->getParents().front() != "think") {
+	if (op->getParent() != "think") {
 		S_LOG_WARNING("Got goal info operation with wrong type.");
 		return;
 	}
@@ -717,7 +689,7 @@ void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::R
 
 	if (!infoOp->getArgs().empty()) {
 		auto goalInfos = infoOp->getArgsAsList();
-		for (auto goalInfo : goalInfos) {
+		for (const auto& goalInfo : goalInfos) {
 			EventGotGoalInfo(goalInfo);
 		}
 	} else {
@@ -739,7 +711,7 @@ std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map)
 void EntityEditor::removeMarker()
 {
 	delete mMarker;
-	mMarker = 0;
+	mMarker = nullptr;
 }
 
 WFMath::Point<3> EntityEditor::createPoint(float x, float y, float z)

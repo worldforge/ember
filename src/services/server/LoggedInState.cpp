@@ -110,7 +110,7 @@ bool LoggedInState::createCharacter(const std::string& name, const std::string& 
 		character->setAttr(property.first, property.second);
 	}
 
-	character->setParentsAsList(Atlas::Message::ListType(1, type));
+	character->setParent(type);
 	character->setName(name);
 	character->setAttr("sex", sex);
 	character->setAttr("description", description);

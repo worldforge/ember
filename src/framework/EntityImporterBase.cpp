@@ -299,9 +299,7 @@ void EntityImporterBase::sendMinds()
 			}
 
 			Atlas::Objects::Operation::RootOperation thinkOp;
-			std::list<std::string> parents;
-			parents.emplace_back("think");
-			thinkOp->setParents(parents);
+			thinkOp->setParent("think");
 			thinkOp->setTo(mind.first);
 			//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 			//if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -573,9 +571,7 @@ void EntityImporterBase::errorArrived(const Operation & op, OpVector & res)
 			auto J = mPersistedEntities.find(I->second);
 			if (J != mPersistedEntities.end()) {
 				auto& entity = J->second;
-				if (!entity->getParents().empty()) {
-					entityType = entity->getParents().front();
-				}
+				entityType = entity->getParent();
 			}
 		}
 		S_LOG_FAILURE("Could not create entity of type '" << entityType << "', continuing with next. Server message: " << errorMessage);
@@ -627,7 +623,7 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
 		mNewIds.insert(arg->getId());
 		StackEntry & current = mTreeStack.back();
 		current.restored_id = arg->getId();
-		S_LOG_VERBOSE("Created: " << arg->getParents().front() << "(" << arg->getId() << ")");
+		S_LOG_VERBOSE("Created: " << arg->getParent() << "(" << arg->getId() << ")");
 
 		auto I = mCreateEntityMapping.find(op->getRefno());
 		if (I != mCreateEntityMapping.end()) {
@@ -659,7 +655,7 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
 
 		assert(id == obj->getId());
 
-		if (mNewIds.find(id) != mNewIds.end() || (mTreeStack.size() != 1 && ent->isDefaultLoc()) || ent->getParents().front() != obj->getParents().front()) {
+		if (mNewIds.find(id) != mNewIds.end() || (mTreeStack.size() != 1 && ent->isDefaultLoc()) || ent->getParent() != obj->getParent()) {
 			createEntity(obj, res);
 		} else {
 
@@ -667,7 +663,7 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
 
 			current.restored_id = id;
 
-			S_LOG_VERBOSE("Updating: " << obj->getId() << " ," << obj->getParents().front());
+			S_LOG_VERBOSE("Updating: " << obj->getId() << " ," << obj->getParent());
 
 			update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
 			update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
@@ -846,7 +842,7 @@ void EntityImporterBase::registerEntityReferences(const std::string& id, const A
 {
 	for (auto I : element) {
 		const auto& name = I.first;
-		if (name == "id" || name == "parents" || name == "contains") {
+		if (name == "id" || name == "parent" || name == "contains") {
 			continue;
 		}
 		if (hasEntityReference(I.second)) {

@@ -367,8 +367,7 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 	const std::vector<std::string>& characters = account->getCharacterTypes();
 
 	//If the account inherits from "admin" we're an admin and can create a creator entity. This also applies if we're a "sys" account.
-	if (std::find(account->getParents().begin(), account->getParents().end(), "admin") != account->getParents().end() ||
-			std::find(account->getParents().begin(), account->getParents().end(), "sys") != account->getParents().end()) {
+	if (account->getParent() == "admin" || account->getParent() == "sys") {
 		mUseCreator->setVisible(true);
 		mUseCreator->setEnabled(true);
 	} else {
@@ -428,8 +427,8 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 				itemText = entity->getName();
 			} else {
 				//If there's no name try to print the type of entity instead.
-				if (!entity->getParents().empty()) {
-					itemText = entity->getParents().front();
+				if (entity->getParent() != "") {
+					itemText = entity->getParent();
 				} else {
 					itemText = "<unknown>";
 				}

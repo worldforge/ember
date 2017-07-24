@@ -43,10 +43,8 @@ class RootData
 
     /// Retrieve the "id" attribute.
     inline const std::string& getId() const;
-    /// Retrieve the "parents" attribute.
-    inline const std::list<std::string>& getParents() const;
-    /// Retrieve the "parents" attribute AsList.
-    inline const Atlas::Message::ListType getParentsAsList() const;
+    /// Retrieve the "parent" attribute.
+    inline const std::string& getParent() const;
     /// Retrieve the "stamp" attribute.
     inline double getStamp() const;
     /// Retrieve the "objtype" attribute.

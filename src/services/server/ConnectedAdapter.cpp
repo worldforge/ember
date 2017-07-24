@@ -194,16 +194,12 @@ void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 		Atlas::Objects::Operation::RootOperation actionOp;
 		actionOp->setObjtype("op");
 		actionOp->setArgs1(what);
-		std::list<std::string> actionParents;
-		actionParents.push_back(action);
-		actionOp->setParents(actionParents);
+		actionOp->setParent(action);
 
 		Atlas::Objects::Operation::RootOperation actuateOp;
 		actuateOp->setObjtype("op");
 		actuateOp->setArgs1(actionOp);
-		std::list<std::string> actuateParents;
-		actuateParents.push_back("actuate");
-		actuateOp->setParents(actuateParents);
+		actuateOp->setParent("actuate");
 		actuateOp->setFrom(mAvatar.getEntity()->getId());
 
 		S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");

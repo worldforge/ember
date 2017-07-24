@@ -167,13 +167,7 @@ void EntityExporterBase::thoughtOpArrived(const Operation & op)
 
 	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
 	//"think" operation.
-	if (op->getParents().empty()) {
-		S_LOG_WARNING("Got think operation without any parent set for entity " << entityId << ".");
-		mStats.mindsError++;
-		EventProgress.emit();
-		return;
-	}
-	if (op->getParents().front() != "think") {
+	if (op->getParent() != "think") {
 		S_LOG_WARNING("Got think operation with wrong type set for entity " << entityId << ".");
 		mStats.mindsError++;
 		EventProgress.emit();
@@ -265,7 +259,7 @@ void EntityExporterBase::infoArrived(const Operation & op)
 			}
 		} else {
 			//If there's no "transient" attribute set, check if the type has it set.
-			if (mTransientTypes.find(ent->getParents().front()) != mTransientTypes.end()) {
+			if (mTransientTypes.find(ent->getParent()) != mTransientTypes.end()) {
 				shouldSkip = true;
 			}
 		}
@@ -308,7 +302,7 @@ void EntityExporterBase::infoArrived(const Operation & op)
 					requestThoughts(ent->getId(), persistedId);
 				} else {
 					//Check if the mind type perhaps is set on the type instead only.
-					if (mMindTypes.find(ent->getParents().front()) != mMindTypes.end()) {
+					if (mMindTypes.find(ent->getParent()) != mMindTypes.end()) {
 						requestThoughts(ent->getId(), persistedId);
 					}
 				}
@@ -321,9 +315,7 @@ void EntityExporterBase::infoArrived(const Operation & op)
 void EntityExporterBase::requestThoughts(const std::string& entityId, const std::string& persistedId)
 {
 	Atlas::Objects::Operation::Generic think;
-	std::list<std::string> parents;
-	parents.emplace_back("think");
-	think->setParents(parents);
+	think->setParent("think");
 	think->setTo(entityId);
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
@@ -607,7 +599,7 @@ void EntityExporterBase::operationGetResult(const Operation & op)
 					}
 				}
 			}
-			S_LOG_WARNING("Got unexpected response on a GET request with operation of type " << op->getParents().front());
+			S_LOG_WARNING("Got unexpected response on a GET request with operation of type " << op->getParent());
 			S_LOG_WARNING("Error message: " << errorMessage);
 			mStats.entitiesError++;
 			EventProgress.emit();
@@ -691,9 +683,9 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		}
 
 		if (!foundTransientProperty) {
-			auto parentsI = ruleMap.find("parents");
-			if (parentsI != ruleMap.end() && parentsI->second.isList()) {
-				const std::string& parent = parentsI->second.List().front().asString();
+			auto parentI = ruleMap.find("parent");
+			if (parentI != ruleMap.end() && parentI->second.isString()) {
+				const std::string& parent = parentI->second.String();
 				if (mTransientTypes.find(parent) != mTransientTypes.end()) {
 					mTransientTypes.insert(ruleMap.find("id")->second.asString());
 				}
@@ -701,9 +693,9 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		}
 
 		if (!foundMindProperty) {
-			auto parentsI = ruleMap.find("parents");
-			if (parentsI != ruleMap.end() && parentsI->second.isList()) {
-				const std::string& parent = parentsI->second.List().front().asString();
+			auto parentI = ruleMap.find("parent");
+			if (parentI != ruleMap.end() && parentI->second.isString()) {
+				const std::string& parent = parentI->second.String();
 				if (mMindTypes.find(parent) != mMindTypes.end()) {
 					mMindTypes.insert(ruleMap.find("id")->second.asString());
 				}

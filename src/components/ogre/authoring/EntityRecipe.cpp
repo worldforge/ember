@@ -288,7 +288,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 		}
 	} else {
 		Atlas::Message::MapType msg;
-		msg["parents"] = Atlas::Message::ListType(1, mEntityType);
+		msg["parent"] = mEntityType;
 		if (!getName().empty()) {
 			msg["name"] = getName();
 		}
