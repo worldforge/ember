@@ -75,7 +75,7 @@ void EntityImporter::operationResult(const Atlas::Objects::Operation::RootOperat
 	auto I = mCallbacks.find(op->getRefno());
 	if (I != mCallbacks.end()) {
 		auto callback = I->second;
-		mCallbacks.erase(I);
+		//Don't erase callbacks since there can be multiple responses to the same serial no.
 		callback(op);
 	}
 }
