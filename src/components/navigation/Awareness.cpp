@@ -154,207 +154,224 @@ protected:
 
 };
 
-Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, int tileSize) :
-		mView(view), mHeightProvider(heightProvider), mAvatarEntity(view.getAvatar()->getEntity()), mCurrentLocation(mAvatarEntity->getLocation()), mTalloc(nullptr), mTcomp(nullptr), mTmproc(nullptr), mAvatarRadius(0.4f), mDesiredTilesAmount(128), mCtx(new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mActiveTileList(nullptr)
+Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned int tileSize) :
+		mView(view),
+		mHeightProvider(heightProvider),
+		mAvatarEntity(view.getAvatar()->getEntity()),
+		mCurrentLocation(mAvatarEntity->getLocation()),
+		mTalloc(nullptr),
+		mTcomp(nullptr),
+		mTmproc(nullptr),
+		mAvatarRadius(0.4f),
+		mDesiredTilesAmount(128),
+		mCtx(new AwarenessContext()),
+		mTileCache(nullptr),
+		mNavMesh(nullptr),
+		mNavQuery(dtAllocNavMeshQuery()),
+		mFilter(nullptr),
+		mActiveTileList(nullptr)
 {
-	try {
-		mActiveTileList = new MRUList<std::pair<int, int>>();
+	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
+	auto extent = entity->getBBox();
+	//Don't set anything up unless the bounding box is valid
+	if (extent.isValid()) {
+		try {
+			mActiveTileList = new MRUList<std::pair<int, int>>();
 
-		mTalloc = new LinearAllocator(128000);
-		mTcomp = new FastLZCompressor;
-		mTmproc = new MeshProcess;
+			mTalloc = new LinearAllocator(128000);
+			mTcomp = new FastLZCompressor;
+			mTmproc = new MeshProcess;
 
-		// Setup the default query filter
-		mFilter = new dtQueryFilter();
-		mFilter->setIncludeFlags(0xFFFF);    // Include all
-		mFilter->setExcludeFlags(0);         // Exclude none
-		// Area flags for polys to consider in search, and their cost
-		mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
+			// Setup the default query filter
+			mFilter = new dtQueryFilter();
+			mFilter->setIncludeFlags(0xFFFF);    // Include all
+			mFilter->setExcludeFlags(0);         // Exclude none
+			// Area flags for polys to consider in search, and their cost
+			mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
 
-		//height of our agent, default to 2 meters unless there's a bbox
-		float h = 2.0f;
+			//height of our agent, default to 2 meters unless there's a bbox
+			float h = 2.0f;
 
-		if (mAvatarEntity->hasBBox() && mAvatarEntity->getBBox().isValid()) {
-			auto avatarBbox = mAvatarEntity->getBBox();
-			//get the radius from the avatar entity
-			WFMath::AxisBox<2> avatar2dBbox(WFMath::Point<2>(avatarBbox.lowCorner().x(), avatarBbox.lowCorner().y()), WFMath::Point<2>(avatarBbox.highCorner().x(), avatarBbox.highCorner().y()));
-			mAvatarRadius = std::max(0.2f, avatar2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
+			if (mAvatarEntity->hasBBox() && mAvatarEntity->getBBox().isValid()) {
+				auto avatarBbox = mAvatarEntity->getBBox();
+				//get the radius from the avatar entity
+				WFMath::AxisBox<2> avatar2dBbox(WFMath::Point<2>(avatarBbox.lowCorner().x(), avatarBbox.lowCorner().y()), WFMath::Point<2>(avatarBbox.highCorner().x(), avatarBbox.highCorner().y()));
+				mAvatarRadius = std::max(0.2f, avatar2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
 
-			//height of our agent
-			h = avatarBbox.highCorner().z() - avatarBbox.lowCorner().z();
-		}
+				//height of our agent
+				h = avatarBbox.highCorner().z() - avatarBbox.lowCorner().z();
+			}
 
-		auto extent = view.getTopLevel()->getBBox();
-		const WFMath::Point<3>& lower = extent.lowCorner();
-		const WFMath::Point<3>& upper = extent.highCorner();
+			const WFMath::Point<3>& lower = extent.lowCorner();
+			const WFMath::Point<3>& upper = extent.highCorner();
 
-		//Recast uses y for the vertical axis
-		mCfg.bmin[0] = lower.x();
-		mCfg.bmin[2] = lower.y();
-		mCfg.bmin[1] = std::min(-500.f, lower.z());
-		mCfg.bmax[0] = upper.x();
-		mCfg.bmax[2] = upper.y();
-		mCfg.bmax[1] = std::max(500.f, upper.z());
+			//Recast uses y for the vertical axis
+			mCfg.bmin[0] = lower.x();
+			mCfg.bmin[2] = lower.y();
+			mCfg.bmin[1] = std::min(-500.f, lower.z());
+			mCfg.bmax[0] = upper.x();
+			mCfg.bmax[2] = upper.y();
+			mCfg.bmax[1] = std::max(500.f, upper.z());
 
-		int gw = 0, gh = 0;
-		float cellsize = mAvatarRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
-		rcCalcGridSize(mCfg.bmin, mCfg.bmax, cellsize, &gw, &gh);
-		const int tilewidth = (gw + tileSize - 1) / tileSize;
-		const int tileheight = (gh + tileSize - 1) / tileSize;
+			int gw = 0, gh = 0;
+			float cellsize = mAvatarRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
+			rcCalcGridSize(mCfg.bmin, mCfg.bmax, cellsize, &gw, &gh);
+			const unsigned int tilewidth = (gw + tileSize - 1) / tileSize;
+			const unsigned int tileheight = (gh + tileSize - 1) / tileSize;
 
-		// Max tiles and max polys affect how the tile IDs are caculated.
-		// There are 22 bits available for identifying a tile and a polygon.
-		int tileBits = rcMin((int)dtIlog2(dtNextPow2(tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE)), 14);
-		if (tileBits > 14)
-			tileBits = 14;
-		int polyBits = 22 - tileBits;
-		unsigned int maxTiles = 1 << tileBits;
-		unsigned int maxPolysPerTile = 1 << polyBits;
+			// Max tiles and max polys affect how the tile IDs are caculated.
+			// There are 22 bits available for identifying a tile and a polygon.
+			int tileBits = rcMin((int)dtIlog2(dtNextPow2(tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE)), 14);
+			if (tileBits > 14)
+				tileBits = 14;
+			int polyBits = 22 - tileBits;
+			unsigned int maxTiles = 1 << tileBits;
+			unsigned int maxPolysPerTile = 1 << polyBits;
 
-		//For an explanation of these values see http://digestingduck.blogspot.se/2009/08/recast-settings-uncovered.html
+			//For an explanation of these values see http://digestingduck.blogspot.se/2009/08/recast-settings-uncovered.html
 
-		mCfg.cs = cellsize;
-		mCfg.ch = mCfg.cs / 2.0f; //Height of one voxel; should really only come into play when doing 3d traversal
-	//	m_cfg.ch = std::max(upper.z() - lower.z(), 100.0f); //For 2d traversal make the voxel size as large as possible
-		mCfg.walkableHeight = std::ceil(h / mCfg.ch); //This is in voxels
-		mCfg.walkableClimb = 100; //TODO: implement proper system for limiting climbing; for now just use a large voxel number
-		mCfg.walkableRadius = std::ceil(mAvatarRadius / mCfg.cs);
-		mCfg.walkableSlopeAngle = 70; //TODO: implement proper system for limiting climbing; for now just use 70 degrees
+			mCfg.cs = cellsize;
+			mCfg.ch = mCfg.cs / 2.0f; //Height of one voxel; should really only come into play when doing 3d traversal
+			//	m_cfg.ch = std::max(upper.z() - lower.z(), 100.0f); //For 2d traversal make the voxel size as large as possible
+			mCfg.walkableHeight = (int)std::ceil(h / mCfg.ch); //This is in voxels
+			mCfg.walkableClimb = 100; //TODO: implement proper system for limiting climbing; for now just use a large voxel number
+			mCfg.walkableRadius = (int)std::ceil(mAvatarRadius / mCfg.cs);
+			mCfg.walkableSlopeAngle = 70; //TODO: implement proper system for limiting climbing; for now just use 70 degrees
 
-		mCfg.maxEdgeLen = mCfg.walkableRadius * 8.0f;
-		mCfg.maxSimplificationError = 1.3f;
-		mCfg.minRegionArea = (int)rcSqr(8);
-		mCfg.mergeRegionArea = (int)rcSqr(20);
+			mCfg.maxEdgeLen = mCfg.walkableRadius * 8;
+			mCfg.maxSimplificationError = 1.3f;
+			mCfg.minRegionArea = (int)rcSqr(8);
+			mCfg.mergeRegionArea = (int)rcSqr(20);
 
-		mCfg.tileSize = tileSize;
-		mCfg.borderSize = mCfg.walkableRadius + 3; // Reserve enough padding.
-		mCfg.width = mCfg.tileSize + mCfg.borderSize * 2;
-		mCfg.height = mCfg.tileSize + mCfg.borderSize * 2;
-	//	m_cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cfg.cs * m_detailSampleDist;
-	//	m_cfg.detailSampleMaxError = m_cfg.m_cellHeight * m_detailSampleMaxError;
+			mCfg.tileSize = tileSize;
+			mCfg.borderSize = mCfg.walkableRadius + 3; // Reserve enough padding.
+			mCfg.width = mCfg.tileSize + mCfg.borderSize * 2;
+			mCfg.height = mCfg.tileSize + mCfg.borderSize * 2;
+			//	m_cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cfg.cs * m_detailSampleDist;
+			//	m_cfg.detailSampleMaxError = m_cfg.m_cellHeight * m_detailSampleMaxError;
 
-		// Tile cache params.
-		dtTileCacheParams tcparams;
-		memset(&tcparams, 0, sizeof(tcparams));
-		rcVcopy(tcparams.orig, mCfg.bmin);
-		tcparams.cs = mCfg.cs;
-		tcparams.ch = mCfg.ch;
-		tcparams.width = (int)mCfg.tileSize;
-		tcparams.height = (int)mCfg.tileSize;
-		tcparams.walkableHeight = h;
-		tcparams.walkableRadius = mAvatarRadius;
-		tcparams.walkableClimb = mCfg.walkableClimb;
-	//	tcparams.maxSimplificationError = m_edgeMaxError;
-		tcparams.maxTiles = tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE;
-		tcparams.maxObstacles = 128;
+			// Tile cache params.
+			dtTileCacheParams tcparams{};
+			memset(&tcparams, 0, sizeof(tcparams));
+			rcVcopy(tcparams.orig, mCfg.bmin);
+			tcparams.cs = mCfg.cs;
+			tcparams.ch = mCfg.ch;
+			tcparams.width = (int)mCfg.tileSize;
+			tcparams.height = (int)mCfg.tileSize;
+			tcparams.walkableHeight = h;
+			tcparams.walkableRadius = mAvatarRadius;
+			tcparams.walkableClimb = mCfg.walkableClimb;
+			//	tcparams.maxSimplificationError = m_edgeMaxError;
+			tcparams.maxTiles = tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE;
+			tcparams.maxObstacles = 128;
 
-		dtFreeTileCache(mTileCache);
+			dtFreeTileCache(mTileCache);
 
-		dtStatus status;
+			dtStatus status;
 
-		mTileCache = dtAllocTileCache();
-		if (!mTileCache) {
-			throw Exception("buildTiledNavigation: Could not allocate tile cache.");
-		}
-		status = mTileCache->init(&tcparams, mTalloc, mTcomp, mTmproc);
-		if (dtStatusFailed(status)) {
-			throw Exception("buildTiledNavigation: Could not init tile cache.");
-		}
+			mTileCache = dtAllocTileCache();
+			if (!mTileCache) {
+				throw Exception("buildTiledNavigation: Could not allocate tile cache.");
+			}
+			status = mTileCache->init(&tcparams, mTalloc, mTcomp, mTmproc);
+			if (dtStatusFailed(status)) {
+				throw Exception("buildTiledNavigation: Could not init tile cache.");
+			}
 
-		dtFreeNavMesh(mNavMesh);
+			dtFreeNavMesh(mNavMesh);
 
-		mNavMesh = dtAllocNavMesh();
-		if (!mNavMesh) {
-			throw Exception("buildTiledNavigation: Could not allocate navmesh.");
-		}
+			mNavMesh = dtAllocNavMesh();
+			if (!mNavMesh) {
+				throw Exception("buildTiledNavigation: Could not allocate navmesh.");
+			}
 
-		dtNavMeshParams params;
-		memset(&params, 0, sizeof(params));
-		rcVcopy(params.orig, mCfg.bmin);
-		params.tileWidth = tileSize * cellsize;
-		params.tileHeight = tileSize * cellsize;
-		params.maxTiles = maxTiles;
-		params.maxPolys = maxPolysPerTile;
+			dtNavMeshParams params{};
+			memset(&params, 0, sizeof(params));
+			rcVcopy(params.orig, mCfg.bmin);
+			params.tileWidth = tileSize * cellsize;
+			params.tileHeight = tileSize * cellsize;
+			params.maxTiles = maxTiles;
+			params.maxPolys = maxPolysPerTile;
 
-		status = mNavMesh->init(&params);
-		if (dtStatusFailed(status)) {
-			throw Exception("buildTiledNavigation: Could not init navmesh.");
-		}
+			status = mNavMesh->init(&params);
+			if (dtStatusFailed(status)) {
+				throw Exception("buildTiledNavigation: Could not init navmesh.");
+			}
 
-		status = mNavQuery->init(mNavMesh, 2048);
-		if (dtStatusFailed(status)) {
-			throw Exception("buildTiledNavigation: Could not init Detour navmesh query");
-		}
+			status = mNavQuery->init(mNavMesh, 2048);
+			if (dtStatusFailed(status)) {
+				throw Exception("buildTiledNavigation: Could not init Detour navmesh query");
+			}
 
-		mObstacleAvoidanceQuery = dtAllocObstacleAvoidanceQuery();
-		mObstacleAvoidanceQuery->init(MAX_OBSTACLES_CIRCLES, 0);
+			mObstacleAvoidanceQuery = dtAllocObstacleAvoidanceQuery();
+			mObstacleAvoidanceQuery->init(MAX_OBSTACLES_CIRCLES, 0);
 
-		mObstacleAvoidanceParams = new dtObstacleAvoidanceParams;
-		mObstacleAvoidanceParams->velBias = 0.4f;
-		mObstacleAvoidanceParams->weightDesVel = 2.0f;
-		mObstacleAvoidanceParams->weightCurVel = 0.75f;
-		mObstacleAvoidanceParams->weightSide = 0.75f;
-		mObstacleAvoidanceParams->weightToi = 2.5f;
-		mObstacleAvoidanceParams->horizTime = 2.5f;
-		mObstacleAvoidanceParams->gridSize = 33;
-		mObstacleAvoidanceParams->adaptiveDivs = 7;
-		mObstacleAvoidanceParams->adaptiveRings = 2;
-		mObstacleAvoidanceParams->adaptiveDepth = 5;
+			mObstacleAvoidanceParams = new dtObstacleAvoidanceParams;
+			mObstacleAvoidanceParams->velBias = 0.4f;
+			mObstacleAvoidanceParams->weightDesVel = 2.0f;
+			mObstacleAvoidanceParams->weightCurVel = 0.75f;
+			mObstacleAvoidanceParams->weightSide = 0.75f;
+			mObstacleAvoidanceParams->weightToi = 2.5f;
+			mObstacleAvoidanceParams->horizTime = 2.5f;
+			mObstacleAvoidanceParams->gridSize = 33;
+			mObstacleAvoidanceParams->adaptiveDivs = 7;
+			mObstacleAvoidanceParams->adaptiveRings = 2;
+			mObstacleAvoidanceParams->adaptiveDepth = 5;
 
-		mSignalConnections.push_back(mAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Awareness::AvatarEntity_LocationChanged)));
+			mSignalConnections.emplace_back(mAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Awareness::AvatarEntity_LocationChanged)));
 
-		mSignalConnections.push_back(view.EntitySeen.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen)));
-		mSignalConnections.push_back(view.EntityCreated.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen)));
+			mSignalConnections.emplace_back(view.EntitySeen.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen)));
+			mSignalConnections.emplace_back(view.EntityCreated.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen)));
 
-		std::function<bool(EmberEntity&)> attachListenersFunction = [&](EmberEntity& entity) {
-			if (&entity != mAvatarEntity) {
-				//Only observe entities that have a bounding box.
-				if (entity.hasBBox() && entity.getBBox().isValid()) {
-					auto result = mObservedEntities.insert(std::make_pair(&entity, EntityConnections()));
-					EntityConnections& connections = result.first->second;
-					connections.locationChanged = entity.LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), &entity));
-					connections.beingDeleted = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
+			std::function<bool(EmberEntity&)> attachListenersFunction = [&](EmberEntity& entity) {
+				if (&entity != mAvatarEntity) {
+					//Only observe entities that have a bounding box.
+					if (entity.hasBBox() && entity.getBBox().isValid()) {
+						auto result = mObservedEntities.insert(std::make_pair(&entity, EntityConnections()));
+						EntityConnections& connections = result.first->second;
+						connections.locationChanged = entity.LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), &entity));
+						connections.beingDeleted = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
 
-					//Only actively observe the entity if it has the same location as the avatar.
-					if (entity.getLocation() == mCurrentLocation) {
-						connections.isIgnored = false;
-						if (entity.hasAttr("velocity")) {
-							mMovingEntities.push_back(&entity);
-							connections.isMoving = true;
+						//Only actively observe the entity if it has the same location as the avatar.
+						if (entity.getLocation() == mCurrentLocation) {
+							connections.isIgnored = false;
+							if (entity.hasAttr("velocity")) {
+								mMovingEntities.push_back(&entity);
+								connections.isMoving = true;
+							} else {
+								connections.moved = entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), &entity));
+								connections.isMoving = false;
+							}
 						} else {
-							connections.moved = entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), &entity));
-							connections.isMoving = false;
+							connections.isIgnored = true;
 						}
-					} else {
-						connections.isIgnored = true;
 					}
 				}
+				return true;
+			};
+
+			entity->accept(attachListenersFunction);
+			for (size_t i = 0; i < entity->numContained(); ++i) {
+				buildEntityAreas(*entity->getContained(i), mEntityAreas);
 			}
-			return true;
-		};
+		} catch (const std::exception& e) {
+			delete mObstacleAvoidanceParams;
+			dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
 
-		EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
-		entity->accept(attachListenersFunction);
-		for (size_t i = 0; i < entity->numContained(); ++i) {
-			buildEntityAreas(*entity->getContained(i), mEntityAreas);
+			dtFreeNavMesh(mNavMesh);
+			dtFreeNavMeshQuery(mNavQuery);
+			delete mFilter;
+
+			dtFreeTileCache(mTileCache);
+
+			delete mTmproc;
+			delete mTcomp;
+			delete mTalloc;
+
+			delete mCtx;
+			delete mActiveTileList;
+			throw;
 		}
-	} catch (const std::exception& e) {
-		delete mObstacleAvoidanceParams;
-		dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
-
-		dtFreeNavMesh(mNavMesh);
-		dtFreeNavMeshQuery(mNavQuery);
-		delete mFilter;
-
-		dtFreeTileCache(mTileCache);
-
-		delete mTmproc;
-		delete mTcomp;
-		delete mTalloc;
-
-		delete mCtx;
-		delete mActiveTileList;
-		throw;
 	}
 }
 

@@ -92,28 +92,31 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 
 	*mActiveMarker = true;
 
-	try {
-		mAwareness = new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider);
-		mAwarenessVisualizer = new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager());
-		mSteering = new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar());
-		mSteering->EventPathUpdated.connect(sigc::mem_fun(*this, &MovementController::Steering_PathUpdated));
+	//We can only do navigation if there's a valid bbox for the top level entity
+	if (avatar.getEmberEntity().getView()->getTopLevel()->getBBox().isValid()) {
+		try {
+			mAwareness = new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider);
+			mAwarenessVisualizer = new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager());
+			mSteering = new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar());
+			mSteering->EventPathUpdated.connect(sigc::mem_fun(*this, &MovementController::Steering_PathUpdated));
 
-		auto marker = mActiveMarker;
-		mAwareness->EventTileDirty.connect([this, marker] {
-			mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this, marker]() {if (*marker) {this->tileRebuild();}});
-		});
+			auto marker = mActiveMarker;
+			mAwareness->EventTileDirty.connect([this, marker] {
+				mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this, marker]() { if (*marker) { this->tileRebuild(); }});
+			});
 
-		mAwareness->EventTileUpdated.connect([&](int,int) {
-			if (mSteering->isEnabled()) {
-				mSteering->requestUpdate();
-			}
-		});
+			mAwareness->EventTileUpdated.connect([&](int, int) {
+				if (mSteering->isEnabled()) {
+					mSteering->requestUpdate();
+				}
+			});
 
-		MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &MovementController::frameProcessed));
+			MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &MovementController::frameProcessed));
 
 
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Could not setup awareness; steering and path finding will be disabled." << ex);
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Could not setup awareness; steering and path finding will be disabled." << ex);
+		}
 	}
 
 	mConfigListenerContainer->registerConfigListenerWithDefaults("authoring", "visualizerecasttiles", sigc::mem_fun(*this, &MovementController::Config_VisualizeRecastTiles), false);

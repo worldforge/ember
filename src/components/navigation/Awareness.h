@@ -123,7 +123,7 @@ public:
 	 * @param heightProvider A height provider, used for getting terrain height data.
 	 * @param tileSize The size, in voxels, of one side of a tile. The larger this is the longer each tile takes to generate, but the overhead of managing tiles is decreased.
 	 */
-	Awareness(Eris::View& view, IHeightProvider& heightProvider, int tileSize = 64);
+	Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned int tileSize = 64);
 	virtual ~Awareness();
 
 	/**
