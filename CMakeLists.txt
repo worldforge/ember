@@ -182,16 +182,11 @@ add_subdirectory(src/components/terrain)
 add_subdirectory(tests EXCLUDE_FROM_ALL)
 add_subdirectory(src/main)
 
-#add_subdirectory(src/extensions/webember)
-
-#TODO: Implement schema validation for tests only
-#file(GLOB MODELDEFINITIONS_FILES data/dural/*.modeldef)
-#foreach (FILE ${MODELDEFINITIONS_FILES})
-#    execute_process(COMMAND "${XMLLINT}" --schema "${PROJECT_SOURCE_DIR}/data/modeldefinition.xsd" --nonet --noout "${FILE}" RESULT_VARIABLE CMDRESULT)
-#    if (CMDRESULT)
-#        message(FATAL_ERROR "xmllint failure: ${CMDRESULT}")
-#    endif (CMDRESULT)
-#endforeach (FILE MODELDEFINITIONS_FILES)
+file(GLOB MODELDEFINITIONS_FILES data/dural/*.modeldef)
+foreach (FILE ${MODELDEFINITIONS_FILES})
+    add_custom_command(TARGET check
+            COMMAND "${XMLLINT}" --schema "${PROJECT_SOURCE_DIR}/data/modeldefinition.xsd" --nonet --noout "${FILE}")
+endforeach (FILE MODELDEFINITIONS_FILES)
 
 
 configure_file(ember.conf.in ember.conf @ONLY)
