@@ -19,22 +19,19 @@
 #ifndef RESOURCELISTADAPTER_H_
 #define RESOURCELISTADAPTER_H_
 
+#include <OgreResource.h>
 #include "components/ogre/OgreIncludes.h"
-namespace Ember
-{
-namespace OgreView
-{
 
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+
+namespace Gui {
 
 class ListHolder;
 
-namespace Adapters
-{
+namespace Adapters {
 
-namespace Ogre
-{
+namespace Ogre {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -42,8 +39,7 @@ namespace Ogre
  *
  * Make sure to call update() to activate the adapter.
  */
-class ResourceListAdapter
-{
+class ResourceListAdapter {
 public:
 
 	/**
@@ -76,6 +72,14 @@ private:
 	 * @brief The resource manager from which resources will be listed.
 	 */
 	::Ogre::ResourceManager* mResourceManager;
+
+	std::shared_ptr<bool> mActiveMarker;
+
+	std::list<::Ogre::ResourceHandle> mHandles;
+	unsigned int mIndex;
+
+	void populate();
+
 };
 
 }

@@ -26,44 +26,60 @@
 #include "components/ogre/widgets/ColouredListItem.h"
 
 #include <OgreResourceManager.h>
+#include <Eris/EventService.h>
+#include <framework/MainLoopController.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
-namespace Adapters
-{
+namespace Adapters {
 
-namespace Ogre
-{
+namespace Ogre {
 
 
 ResourceListAdapter::ResourceListAdapter(ListHolder* listHolder, ::Ogre::ResourceManager* resourceManager)
-: mListHolder(listHolder), mResourceManager(resourceManager)
-{
-
+		: mListHolder(listHolder), mResourceManager(resourceManager), mActiveMarker(new bool) {
+	*mActiveMarker = true;
 }
 
-ResourceListAdapter::~ResourceListAdapter()
-{
+ResourceListAdapter::~ResourceListAdapter() {
 //	delete mListHolder;
+	*mActiveMarker = false;
 }
 
-void ResourceListAdapter::update()
-{
-	int i = 0;
+void ResourceListAdapter::update() {
 	mListHolder->resetList();
+	mHandles.clear();
+	mIndex = 0;
+
 	::Ogre::ResourceManager::ResourceMapIterator I = mResourceManager->getResourceIterator();
 	while (I.hasMoreElements()) {
-		::Ogre::ResourcePtr resource = I.getNext();
-		if (!resource.isNull()) {
-			mListHolder->addItem(new ColouredListItem(resource->getName(), i));
-			++i;
-		}
+		mHandles.push_back(I.peekNextKey());
+		I.moveNext();
+	}
+
+	if (!mHandles.empty()) {
+		MainLoopController::getSingleton().getEventService().runOnMainThread([&]() {
+			populate();
+		}, mActiveMarker);
+	}
+}
+
+void ResourceListAdapter::populate() {
+	auto handle = mHandles.front();
+	::Ogre::ResourcePtr resource = mResourceManager->getByHandle(handle);
+	if (!resource.isNull()) {
+		mListHolder->addItem(new ColouredListItem(resource->getName(), mIndex));
+	}
+	mIndex += 1;
+
+	mHandles.pop_front();
+	if (!mHandles.empty()) {
+		MainLoopController::getSingleton().getEventService().runOnMainThread([&]() {
+			populate();
+		}, mActiveMarker);
 	}
 }
 
