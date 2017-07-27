@@ -1,3 +1,5 @@
+$#include "ModelDefinition_helper.h"
+
 namespace Ember {
 namespace OgreView {
 namespace Model {
@@ -201,19 +203,6 @@ public:
 
 class ModelDefinition : public Ogre::Resource {
 
-	/**
-	whether to use a certain axis for scaling
-	for example, if you use a model of a human you probably want to scale according to the height
-	this might mean that width and depths aren't correct though
-	*/
-//	enum UseScaleOf {
-//		MODEL_ALL = 0,
-//		MODEL_NONE = 1,
-//		MODEL_WIDTH = 2,
-//		MODEL_DEPTH = 3,
-//		MODEL_HEIGHT = 4
-//
-//	};
 
 	/**
 	A struct for simple bindings between areas and materials/textures.
@@ -242,9 +231,9 @@ class ModelDefinition : public Ogre::Resource {
 	 Defaults to "ALL"
 	 * @return 
 	 */
-	inline  Ember::OgreView::Model::ModelDefinition::UseScaleOf getUseScaleOf();
-	inline void setUseScaleOf( Ember::OgreView::Model::ModelDefinition::UseScaleOf useScale);
-	
+    tolua_outside int _ModelDefinition_getUseScaleOf @ getUseScaleOf();
+    tolua_outside void _ModelDefinition_setUseScaleOf @ setUseScaleOf(int useScale);
+
 	/**
 	 *    Gets an optional translation vector which should be applied to derived Models.
 	 * @return 
