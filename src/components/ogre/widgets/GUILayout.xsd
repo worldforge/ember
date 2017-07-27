@@ -16,7 +16,6 @@
 			<xsd:element name="Property" type="PropertyType"  minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="Event" type="EventType"  minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="Window" type="WindowType"  minOccurs="0" maxOccurs="unbounded" />
-			<xsd:element name="Property" type="PropertyType"  minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="Type" type="xsd:string" use="required"/>
 		<xsd:attribute name="Name" type="xsd:string" use="required"/>
