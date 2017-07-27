@@ -325,6 +325,8 @@ protected:
 
 	void removeMovable(Ogre::MovableObject* movable);
 
+	bool loadAssets();
+
 	Ogre::SceneManager& mManager;
 
 	Ogre::SharedPtr<ModelDefinition> mDefinition;

@@ -95,6 +95,11 @@ bool Model::load() {
 }
 
 bool Model::reload() {
+	return load();
+}
+
+bool Model::loadAssets()
+{
 	if (mAssetCreationContext.mCurrentlyLoadingSubModelIndex == 0) {
 		reset();
 	}
@@ -107,6 +112,7 @@ bool Model::reload() {
 	}
 	return result;
 }
+
 
 //void Model::loadingComplete(Ogre::Resource*) {
 //	//This is called when the mesh is reloaded and it has a skeleton; we need to reset the actions since they now refer to invalid animation states

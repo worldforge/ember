@@ -126,7 +126,7 @@ void ModelDefinition::reloadModels() {
 	if (!mLoadingListeners.empty()) {
 		auto I = mLoadingListeners.begin();
 		Model* model = *I;
-		if (model->reload()) {
+		if (model->loadAssets()) {
 			mLoadingListeners.erase(I);
 		}
 		if (!mLoadingListeners.empty()) {
