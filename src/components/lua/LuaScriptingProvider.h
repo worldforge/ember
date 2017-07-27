@@ -57,7 +57,7 @@ public:
 	 * @brief Loads the script from the wrapper.
 	 * @param resourceWrapper A resource wrapper pointing to a valid resource which can be loaded. This should contain a text file with the script contents.
 	 */
-	virtual void loadScript(ResourceWrapper& resWrapper);
+	void loadScript(ResourceWrapper& resWrapper, IScriptingCallContext* callContext) override;
 
 	/**
 	 * @brief Executes the supplied string directly into the scripting environment.
@@ -65,33 +65,33 @@ public:
 	 * @param scriptCode The code to excute.
 	 * @param callContext An optional pointer to a scripting call context. This will be populated with return values and other info. If you don't have any need for such info, leave this empty.
 	 */
-	virtual void executeScript(const std::string& scriptCode, IScriptingCallContext* callContext);
+	void executeScript(const std::string& scriptCode, IScriptingCallContext* callContext) override;
 
-	virtual void callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext);
+	void callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext) override;
 
 	/**
 	 * @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
 	 * @param scriptName The name of the script.
 	 * @return True if the script can be loaded, else false.
 	 */
-	virtual bool willLoadScript(const std::string& scriptName);
+	bool willLoadScript(const std::string& scriptName) override;
 
 	/**
 	 * @brief Gets the unique name of the scripting provider.
 	 * @return The name of the scripting provider.
 	 */
-	virtual const std::string& getName() const;
+	const std::string& getName() const override;
 
 	/**
 	 * @brief Register with  a service to allow for callbacks etc.
 	 * @param service The service to register with.
 	 */
-	virtual void _registerWithService(ScriptingService* service);
+	void _registerWithService(ScriptingService* service) override;
 
 	/**
 	 * @brief Forces a full garbage collection.
 	 */
-	virtual void forceGC();
+	void forceGC() override;
 
 // 	virtual void start();
 
@@ -100,7 +100,7 @@ public:
 	 * @brief Stops the lua environment, which mainly means that all objects are destroyed.
 	 * Call this before this object is destroyed to make sure that all held objects and references are properly released. If not, there's a risk of dangling pointers.
 	 */
-	virtual void stop();
+	void stop() override;
 
 
 	/**

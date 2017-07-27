@@ -142,9 +142,9 @@ lua_State* LuaScriptingProvider::getLuaState()
 
 
 
-void LuaScriptingProvider::loadScript(ResourceWrapper& resWrapper)
+void LuaScriptingProvider::loadScript(ResourceWrapper& resWrapper, IScriptingCallContext* callContext)
 {
-	executeScriptImpl(std::string(resWrapper.getDataPtr(), resWrapper.getSize()), 0, resWrapper.getName());
+	executeScriptImpl(std::string(resWrapper.getDataPtr(), resWrapper.getSize()), static_cast<LuaScriptingCallContext*>(callContext), resWrapper.getName());
 }
 
 void LuaScriptingProvider::executeScript(const std::string& scriptCode, IScriptingCallContext* callContext)

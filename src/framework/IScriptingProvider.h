@@ -54,7 +54,7 @@ Whenever you then want to act on values returned from a call into a specific scr
 class IScriptingCallContext
 {
 public:
-	virtual ~IScriptingCallContext() {}
+	virtual ~IScriptingCallContext() = default;
 // 	IScriptingCallReturnValue* getReturnValue() = 0;
 
 protected:
@@ -72,13 +72,13 @@ class IScriptingProvider
 {
 public:
 	
-	virtual ~IScriptingProvider(){}
+	virtual ~IScriptingProvider() = default;
 	
 	/**
 	 * @brief Loads the script from the wrapper.
 	 * @param resourceWrapper A resource wrapper pointing to a valid resource which can be loaded. This should contain a text file with the script contents.
 	 */
-	virtual void loadScript(ResourceWrapper& resourceWrapper) = 0;
+	virtual void loadScript(ResourceWrapper& resourceWrapper, IScriptingCallContext* callContext) = 0;
 	
 	/**
 	 * @brief Executes the supplied string directly into the scripting environment.

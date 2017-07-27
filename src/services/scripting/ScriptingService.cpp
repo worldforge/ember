@@ -79,7 +79,7 @@ void ScriptingService::loadScript(const std::string& script)
 			if (I->second->willLoadScript(script)) {
 				S_LOG_INFO("Loading script: " << script << " with scripting provider " << I->second->getName() );
 				try {
-					I->second->loadScript(resWrapper);
+					I->second->loadScript(resWrapper, nullptr);
 				} catch (const std::exception& ex) {
 					S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << "." << ex);
 					scriptError(ex.what());
