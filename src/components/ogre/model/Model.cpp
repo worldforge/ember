@@ -58,10 +58,12 @@ Model::Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>
 		mRenderingDistance(0),
 		mQueryFlags(0),
 		mLoaded(false) {
+	definition->addModelInstance(this);
 }
 
 Model::~Model() {
 
+	mDefinition->removeModelInstance(this);
 	for (auto& movable : mMovableObjects) {
 		mManager.destroyMovableObject(movable);
 	}
