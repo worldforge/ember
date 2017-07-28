@@ -97,7 +97,7 @@ bool ModelDefinition::isValid(void) const {
 
 bool ModelDefinition::requestLoad(Model* model) {
 	if (mAssetsLoaded) {
-		bool result = model->createModelAssets();
+		bool result = model->loadAssets();
 		if (!result) {
 			mLoadingListeners.insert(model);
 			MainLoopController::getSingleton().getEventService().runOnMainThread([this]() {
