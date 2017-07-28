@@ -1,4 +1,8 @@
-<GUILayout version="4">
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout xmlns="http://www.cegui.org"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="GUILayout.xsd"
+           version="4">
     <Window name="MainWindow" type="EmberLook/FrameWindow">
         <Property name="Visible" value="false" />
         <Property name="Alpha" value="0.900000" />
@@ -553,6 +557,7 @@ Press shift to switch between rotation and translation.'</Property>
                     </Window>
                 </Window>
                 <Window name="PartInfo" type="DefaultWindow">
+                    <Property name="Visible" value="False" />
                     <Property name="Area" value="{{0.026053,0.0},{0.474328,0.0},{0.964681,0.0},{0.969851,0.0}}" />
                     <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
                     <Window name="PartName" type="EmberLook/Editbox">
