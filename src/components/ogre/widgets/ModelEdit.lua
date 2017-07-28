@@ -602,7 +602,9 @@ function ModelEdit:buildWidget()
 		self.models = CEGUI.toListbox(self.models)
 		self.models:subscribeEvent("SelectionChanged", function(args)
 			local item = self.models:getFirstSelectedItem()
-			self:loadModelDefinition(item:getText())
+			if item then
+				self:loadModelDefinition(item:getText())
+			end
 			return true
 		end)
 		self.modelsfilter = self.widget:getWindow("FilterModels")
@@ -1221,15 +1223,15 @@ function ModelEdit:buildWidget()
 		self.widget:getWindow("ExportAsAtlasTypeButton"):subscribeEvent("Clicked", function(args)
 			local model = self.renderer:getModel()
 			if model then
-        local collItem = self.collisionTypeSelector:getSelectedItem()
-        if collItem then
-			    local collType = collItem:getText()
-			  
-  				local composer = Ember.OgreView.Model.ModelDefinitionAtlasComposer:new_local()
-  				local exportPath = composer:composeToFile(model, self.exportTypeName:getText(), "thing", self.definition:getScale(), collType)
-  				if exportPath ~= "" then
-  					console:pushMessage("Atlas exported to " .. exportPath, "info")
-          end
+				local collItem = self.collisionTypeSelector:getSelectedItem()
+				if collItem then
+					local collType = collItem:getText()
+
+					local composer = Ember.OgreView.Model.ModelDefinitionAtlasComposer:new_local()
+					local exportPath = composer:composeToFile(model, self.exportTypeName:getText(), "thing", self.definition:getScale(), collType)
+					if exportPath ~= "" then
+						console:pushMessage("Atlas exported to " .. exportPath, "info")
+					end
 				end	
 			end	
 			return true
