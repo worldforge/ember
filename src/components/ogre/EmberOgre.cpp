@@ -108,7 +108,7 @@ namespace OgreView
 
 void assureConfigFile(const std::string& filename, const std::string& originalConfigFileDir)
 {
-	struct stat tagStat;
+	struct stat tagStat{};
 	int ret = stat(filename.c_str(), &tagStat);
 	if (ret == -1) {
 		ret = stat((originalConfigFileDir + filename).c_str(), &tagStat);
@@ -122,9 +122,35 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-		mInput(0), mOgreSetup(nullptr), mRoot(0), mSceneManagerOutOfWorld(0), mWindow(0), mScreen(0), mShaderManager(0), mShaderDetailManager(nullptr), mAutomaticGraphicsLevelManager(nullptr), mGeneralCommandMapper(new InputCommandMapper("general")), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
-		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr),
-		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mCameraOutOfWorld(0), mWorld(0), mPMInjectorSignaler(0), mConsoleDevTools(nullptr)
+		mInput(nullptr),
+		mOgreSetup(nullptr),
+		mRoot(nullptr),
+		mSceneManagerOutOfWorld(nullptr),
+		mWindow(nullptr),
+		mScreen(nullptr),
+		mShaderManager(nullptr),
+		mShaderDetailManager(nullptr),
+		mAutomaticGraphicsLevelManager(nullptr),
+		mGeneralCommandMapper(new InputCommandMapper("general")),
+		mSoundManager(nullptr),
+		mGUIManager(nullptr),
+		mModelDefinitionManager(nullptr),
+		mEntityMappingManager(nullptr),
+		mTerrainLayerManager(nullptr),
+		mEntityRecipeManager(nullptr),
+		mLogObserver(nullptr),
+		mMaterialEditor(nullptr),
+		mModelRepresentationManager(nullptr),
+		mSoundResourceProvider(nullptr),
+		mLodDefinitionManager(nullptr),
+		mLodManager(nullptr),
+		mResourceLoader(nullptr),
+		mOgreLogManager(nullptr),
+		mIsInPausedMode(false),
+		mCameraOutOfWorld(nullptr),
+		mWorld(nullptr),
+		mPMInjectorSignaler(nullptr),
+		mConsoleDevTools(nullptr)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -137,7 +163,7 @@ EmberOgre::~EmberOgre()
 
 	delete mConsoleDevTools;
 
-	EmberServices::getSingleton().getSoundService().setResourceProvider(0);
+	EmberServices::getSingleton().getSoundService().setResourceProvider(nullptr);
 	delete mSoundManager;
 
 	EventGUIManagerBeingDestroyed();
@@ -171,7 +197,7 @@ EmberOgre::~EmberOgre()
 	delete mShaderManager;
 	delete mScreen;
 
-	if (mOgreSetup.get()) {
+	if (mOgreSetup) {
 		// Deregister the overlay system before deleting it in OgreSetup::shutdown
 		if(mSceneManagerOutOfWorld) {
 			mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
@@ -213,7 +239,8 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 			mGUIManager->render();
 
 			mWindow->swapBuffers();
-			unsigned long remainingTime = std::max(1L, timeFrame.getRemainingTime().total_milliseconds());
+			long remainingTime = timeFrame.getRemainingTime().total_milliseconds();
+			remainingTime = std::max(1L, remainingTime);
 			mRoot->getWorkQueue()->setResponseProcessingTimeLimit(remainingTime);
 			mRoot->_fireFrameEnded();
 
@@ -230,7 +257,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 
 void EmberOgre::clearDirtyPassLists()
 {
-	if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
+	if (!Ogre::Pass::getDirtyHashList().empty() || !Ogre::Pass::getPassGraveyard().empty()) {
 		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
 
 		while (scenesIter.hasMoreElements()) {
@@ -359,11 +386,11 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		}
 		Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
 
-		Gui::LoadingBarSection resourceGroupSection(loadingBar, useWfut ? 0.8 : 1.0, "Resource loading");
+		Gui::LoadingBarSection resourceGroupSection(loadingBar, useWfut ? 0.8f : 1.0f, "Resource loading");
 		loadingBar.addSection(&resourceGroupSection);
 
 		size_t numberOfSections = Ogre::ResourceGroupManager::getSingleton().getResourceGroups().size() - 1; //remove bootstrap since that's already loaded
-		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7 : 1.0));
+		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7f : 1.0f));
 
 		loadingBar.start();
 		loadingBar.setVersionText(std::string("Version ") + VERSION);
