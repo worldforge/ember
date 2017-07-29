@@ -61,6 +61,7 @@ namespace Ogre {
             unsigned long worstFrameTime;
             //size_t triangleCount;
             unsigned long triangleCount;
+            unsigned long batchCount;
         };
 
         virtual const FrameStats& getStatistics(void) const;

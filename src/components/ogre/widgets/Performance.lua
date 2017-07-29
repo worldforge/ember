@@ -59,6 +59,7 @@ function Performance.framestarted(timeSinceLastFrame)
 		--statString = "Current FPS: " .. string.format("%i", stats.lastFPS)
 		statString = "FPS: " .. string.format("%i", stats.avgFPS)
 		statString = statString .. "\nTriangle count: " .. string.format("%i", stats.triangleCount)
+		statString = statString .. "\nBatch count: " .. string.format("%i", stats.batchCount)
 		if Performance.view then
 			statString = statString .. "\nSightqueue: " .. Performance.view:lookQueueSize()
 		end

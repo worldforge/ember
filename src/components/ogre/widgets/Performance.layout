@@ -1,7 +1,7 @@
 <GUILayout version="4">
 	<Window name="MainWindow" type="EmberLook/FrameWindow">
-		<Property name="Size" value="{{0.2,0.0},{0,100.0}}" />
-		<Property name="Position" value="{{0.300000,0.0},{0.0,0.0}}" />
+		<Property name="Size" value="{{0.2,0.0},{0,110.0}}" />
+		<Property name="Position" value="{{0.3,0.0},{0.0,0.0}}" />
 		<Property name="Alpha" value="0.6" />
 		<Property name="Text" value="Performance" />
 		<Window name="MainInnerWindow" type="DefaultWindow">
