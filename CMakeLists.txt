@@ -130,18 +130,15 @@ link_libraries(${SDL2_LIBRARY})
 link_libraries(${SDL2_LIBRARIES})
 include_directories(${SDL2_INCLUDE_DIR})
 
-
-find_package(OpenAL REQUIRED)
-link_libraries(${OPENAL_LIBRARY})
-link_libraries(${OPENAL_LIBRARIES})
-include_directories(${OPENAL_INCLUDE_DIR})
-
-
 find_package(ALUT REQUIRED)
 link_directories(${ALUT_LIBRARY_DIRS})
 link_libraries(${ALUT_LIBRARIES})
 include_directories(${ALUT_INCLUDE_DIRS})
 
+find_package(OpenAL REQUIRED)
+link_libraries(${OPENAL_LIBRARY})
+link_libraries(${OPENAL_LIBRARIES})
+include_directories(${OPENAL_INCLUDE_DIR})
 
 pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.2.0)
 link_directories(${XDG_LIBRARY_DIRS})
@@ -153,15 +150,15 @@ link_directories(${OPENGL_LIBRARY_DIRS})
 link_libraries(${OPENGL_LIBRARIES})
 include_directories(${OPENGL_INCLUDE_DIR})
 
-find_package(Lua REQUIRED 5.1)
-link_directories(${LUA_LIBRARY_DIRS})
-link_libraries(${LUA_LIBRARIES})
-include_directories(${LUA_INCLUDE_DIR})
-
 find_package(Tolua++ REQUIRED)
 link_directories(${TOLUA++_LIBRARY_DIRS})
 link_libraries(${TOLUA++_LIBRARY})
 include_directories(${TOLUA++_INCLUDE_DIR})
+
+find_package(Lua 5.1 EXACT REQUIRED)
+link_directories(${LUA_LIBRARY_DIRS})
+link_libraries(${LUA_LIBRARIES})
+include_directories(${LUA_INCLUDE_DIR})
 
 pkg_check_modules(CPPUNIT cppunit>=1.8.0)
 
