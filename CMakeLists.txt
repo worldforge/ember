@@ -107,13 +107,17 @@ include_directories(${OGRE_Overlay_INCLUDE_DIRS})
 
 add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
 
+#Allow Lua version to be set from outside, since some system might have CEGUI and tolua++ compiled to 5.2 or 5.3
+if (NOT LUA_VERSION)
+    set(LUA_VERSION 5.1)
+endif (NOT LUA_VERSION)
 # Lua should be before CEGUI_LuaScriptModule
-find_package(Lua 5.1 EXACT)
+find_package(Lua ${LUA_VERSION} EXACT)
 if (APPLE AND NOT LUA_FOUND) # Try macports version if frameworks are not available
-	pkg_check_modules(LUA lua-5.1)
+	pkg_check_modules(LUA lua-${LUA_VERSION})
 endif (APPLE AND NOT LUA_FOUND)
 if (NOT LUA_FOUND)
-	MESSAGE(FATAL_ERROR "Could not find Lua 5.1.")
+	MESSAGE(FATAL_ERROR "Could not find Lua ${LUA_VERSION}.")
 endif (NOT LUA_FOUND)
 link_directories(${LUA_LIBRARY_DIRS})
 link_libraries(${LUA_LIBRARIES})

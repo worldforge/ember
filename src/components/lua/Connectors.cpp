@@ -109,12 +109,7 @@ void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 
 	//push our error handling method before calling the code
 	int error_index = lua_gettop(state) - numberOfArguments;
-#if LUA51
 	lua_pushcfunction(state, LuaHelper::luaErrorHandler);
-#else
-	lua_pushliteral(state, "_TRACEBACK");
-	lua_rawget(state, LUA_GLOBALSINDEX); /* get traceback function */
-#endif
 	lua_insert(state, error_index);/* put it under chunk and args */
 
 	luaPop pop(state, 1); // pops error handler on exit
