@@ -668,7 +668,7 @@ Ogre::TagPoint* Model::attachObject(const std::string& attachPoint, Ogre::Movabl
 				//use the rotation in the attach point def
 				Ogre::TagPoint* tagPoint = mSkeletonOwnerEntity->attachObjectToBone(boneName, movable);
 				if (!mAttachPoints.get()) {
-					mAttachPoints = std::make_unique<std::vector<AttachPointWrapper>>();
+					mAttachPoints = std::unique_ptr<std::vector<AttachPointWrapper>>();
 				}
 
 				AttachPointWrapper wrapper;
