@@ -52,7 +52,7 @@ def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size):
 				colourdirective = ""
 				imagemetadata = subprocess.check_output(["identify", asset_path])
 				if "256c" in imagemetadata.decode("utf-8"):
-					 colourdirective = "-colors 256"
+					colourdirective = "-colors 256"
 					 
 				print("converting image asset {0} to {1}".format(asset, dest_asset_path))
 				convert_cmd = ["convert", asset_path, "-quality 95 -depth 8", colourdirective, '-resize "{0}x{0}>"'.format(image_max_size), dest_asset_path]
@@ -75,16 +75,16 @@ def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size):
 	return copied, converted, skipped, errors
 		
 def copytree(src, dst):
-    if not os.path.exists(dst):
-        os.makedirs(dst)
-    for item in os.listdir(src):
-        s = os.path.join(src, item)
-        d = os.path.join(dst, item)
-        if os.path.isdir(s):
-            copytree(s, d)
-        else:
-            if not os.path.exists(d) or os.stat(src).st_mtime - os.stat(dst).st_mtime > 1:
-                shutil.copy2(s, d)	
+	if not os.path.exists(dst):
+		os.makedirs(dst)
+	for item in os.listdir(src):
+		s = os.path.join(src, item)
+		d = os.path.join(dst, item)
+		if os.path.isdir(s):
+			copytree(s, d)
+		else:
+			if not os.path.exists(d) or os.stat(src).st_mtime - os.stat(dst).st_mtime > 1:
+				shutil.copy2(s, d)
 
 def main():
 	"""The main entry point."""
