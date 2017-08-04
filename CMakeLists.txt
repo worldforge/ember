@@ -221,6 +221,8 @@ endforeach (FILE MODELDEFINITIONS_FILES)
 configure_file(ember.conf.in ember.conf @ONLY)
 configure_file(ember.in ember @ONLY)
 configure_file(ember.dox.in ember.dox @ONLY)
+configure_file(scripts/sync_devmedia.sh.in scripts/sync_devmedia.sh @ONLY)
+configure_file(scripts/refresh-amber-media-dev.sh.in scripts/refresh-amber-media-dev.sh @ONLY)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ember.conf DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ember)
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ember DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
