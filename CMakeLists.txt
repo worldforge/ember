@@ -83,9 +83,9 @@ if (APPLE)
 	if (NOT OGRE_RenderSystem_GL_FOUND)
 		MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL plugin. Make sure you've built Ogre with RenderSystem GL support.")
 	endif(NOT OGRE_RenderSystem_GL_FOUND)
-	# Required to find glew.h header. Backtrace: OgreSetup.cpp ==> OgreGLContext.h ==> OgreGLPrerequisites.h ==> <GL/glew.h>
-	include_directories("${OGRE_RenderSystem_GL_INCLUDE_DIRS}")
 endif (APPLE)
+# Required to find glew.h header. Backtrace: OgreSetup.cpp ==> OgreGLContext.h ==> OgreGLPrerequisites.h ==> <GL/glew.h>
+include_directories("${OGRE_RenderSystem_GL_INCLUDE_DIR}")
 
 if (NOT OGRE_Terrain_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
