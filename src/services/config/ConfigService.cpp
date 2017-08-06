@@ -143,6 +143,7 @@ namespace Ember
 #if !defined(__APPLE__) && !defined(__WIN32__)
 		mSharedDataDir = EMBER_DATADIR "/ember/";
 		mEtcDir = EMBER_SYSCONFDIR "/ember/";
+		S_LOG_INFO("Setting config directory to " << mEtcDir);
 #endif
 
 	}
@@ -158,6 +159,7 @@ namespace Ember
 
 	void ConfigService::setPrefix ( const std::string& prefix )
 	{
+		S_LOG_INFO("Setting prefix to '" << prefix << "'.");
 		mPrefix = prefix;
 		mSharedDataDir = prefix + "/share/ember/";
 		mEtcDir = prefix + "/etc/ember/";
@@ -265,7 +267,6 @@ namespace Ember
 	{
 		Service::stop();
 		deregisterConsoleCommands();
-		return;
 	}
 
 	void ConfigService::deregisterConsoleCommands()
@@ -373,7 +374,7 @@ namespace Ember
 			std::string key ( tokeniser.nextToken() );
 			std::string value ( tokeniser.remainingTokens() );
 
-			if ( section == "" || key == "" || value == "" )
+			if (section.empty() || key.empty() || value.empty() )
 			{
 				ConsoleBackend::getSingleton().pushMessage ( "Usage: set_value <section> <key> <value>", "help" );
 			}
@@ -391,7 +392,7 @@ namespace Ember
 			std::string section ( tokeniser.nextToken() );
 			std::string key ( tokeniser.nextToken() );
 
-			if ( section == "" || key == "" )
+			if (section.empty() || key.empty())
 			{
 				ConsoleBackend::getSingleton().pushMessage ( "Usage: get_value <section> <key>", "help" );
 			}
@@ -404,7 +405,7 @@ namespace Ember
 				else
 				{
 					varconf::Variable value = getValue ( section, key );
-					ConsoleBackend::getSingleton().pushMessage ( std::string ( "Value: " ) + static_cast<std::string> ( value ), "info" );
+					ConsoleBackend::getSingleton().pushMessage ( std::string ( "Value: " ) + value.as_string() , "info" );
 				}
 			}
 		}
@@ -423,7 +424,7 @@ namespace Ember
 	const std::string& ConfigService::getHomeDirectory(const BaseDirType baseDirType) const
 	{
 		//check if the home directory is set, and if so use the setting. If else, fall back to the default path.
-		if ( mHomeDir != "" )
+		if ( !mHomeDir.empty() )
 		{
 			return mHomeDir;
 		}
@@ -451,7 +452,7 @@ namespace Ember
 			static std::string path ( getAppSupportDirPath() + "/Ember/" );
 			return path;
 #else
-			xdgHandle baseDirHandle;
+			xdgHandle baseDirHandle{};
 			static std::string path;
 			if (!xdgInitHandle(&baseDirHandle))
 			{
@@ -494,15 +495,12 @@ namespace Ember
 			static std::string path ( static_cast<std::string> ( getValue ( "paths", "sharedir" ) ) + "/" );
 			return path;
 		}
-		else
-		{
 #ifdef __APPLE__
-			static std::string path ( getBundleResourceDirPath() );
-			return path;
+		static std::string path ( getBundleResourceDirPath() );
+		return path;
 #else
-			return mSharedDataDir;
+		return mSharedDataDir;
 #endif
-		}
 
 	}
 
@@ -523,8 +521,6 @@ namespace Ember
 			static std::string path ( static_cast<std::string> ( getValue ( "paths", "datadir" ) ) + "/" );
 			return path;
 		}
-		else
-		{
 //#ifdef __APPLE__
 //			return getBundleResourceDirPath();
 //#elif __WIN32__
@@ -532,9 +528,7 @@ namespace Ember
 //#else
 //			return BR_EMBER_DATADIR("/games/ember/");
 //#endif
-			return getHomeDirectory(BaseDirType_DATA);
-		}
-
+		return getHomeDirectory(BaseDirType_DATA);
 	}
 
 	const std::string& ConfigService::getEmberMediaDirectory() const

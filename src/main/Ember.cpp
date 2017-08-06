@@ -40,8 +40,8 @@ int main(int argc, char **argv)
 {
 	int exitStatus(0);
 	bool exit_program = false;
-	std::string prefix("");
-	std::string homeDir("");
+	std::string prefix;
+	std::string homeDir;
 	Ember::Application::ConfigMap configMap;
 #ifndef __WIN32__
 	if (argc > 1)
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 		argc--;
 		while (argc > 0)
 		{
-			std::string arg = std::string((char *) argv[0]);
+			std::string arg = std::string(argv[0]);
 			argv++;
 			argc--;
 			if (arg == "-v" || arg == "--version")
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 				}
 				else
 				{
-					prefix = std::string((char *) argv[0]);
+					prefix = std::string(argv[0]);
 					argv++;
 					argc--;
 				}
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 				}
 				else
 				{
-					homeDir = std::string((char *) argv[0]);
+					homeDir = std::string(argv[0]);
 					argv++;
 					argc--;
 				}
@@ -148,22 +148,6 @@ int main(int argc, char **argv)
 	}
 
 #endif
-	// 	if (prefix == "") {
-	// 		prefix = PREFIX;
-	// 	}
-
-#else
-	//  char tmp[64];
-
-	//  unsigned int floatSetting = _controlfp( 0, 0 );
-	//sprintf(tmp, "Original: 0x%.4x\n", floatSetting );
-	//   MessageBox( 0, tmp, "floating point control", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-	//_fpreset();
-	//_controlfp(_PC_64, _MCW_PC);
-	//_controlfp(_RC_NEAR , _MCW_RC);
-	//floatSetting = _controlfp( 0, 0 );
-	//sprintf(tmp, "New: 0x%.4x\n", floatSetting );
-	//   MessageBox( 0, tmp, "floating point control", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 
 #endif
 
@@ -171,10 +155,14 @@ int main(int argc, char **argv)
 	{
 	//put the application object in its own scope so it gets destroyed before we signal all clear
 		{
+			if (prefix.empty()) {
+				std::cout << "Starting Ember version " << VERSION << "." << std::endl;
+			} else {
+				std::cout << "Starting Ember version " << VERSION << " with prefix '" << prefix << "'." << std::endl;
+			}
+
 			// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
-
-			std::cout << "Starting Ember version " << VERSION << std::endl;
 
 			app.registerComponents();
 
