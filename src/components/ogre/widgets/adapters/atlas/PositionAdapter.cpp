@@ -101,13 +101,13 @@ void PositionAdapter::fillElementFromGui()
 {
 	WFMath::Vector<3> vector;
 	if (mXWindow) {
-		vector.x() = atof(mXWindow->getText().c_str()); 
+		vector.x() = std::strtof(mXWindow->getText().c_str(), nullptr);
 	}
 	if (mYWindow) {
-		vector.y() = atof(mYWindow->getText().c_str()); 
+		vector.y() = std::strtof(mYWindow->getText().c_str(), nullptr);
 	}
 	if (mZWindow) {
-		vector.z() = atof(mZWindow->getText().c_str()); 
+		vector.z() = std::strtof(mZWindow->getText().c_str(), nullptr);
 	}
 	mEditedValue = vector.toAtlas();
 }
