@@ -54,12 +54,9 @@
 
 #endif //ifdef OGRE_STATIC_LIB
 
-namespace Ember
-{
-namespace OgreView
-{
-OgrePluginLoader::OgrePluginLoader()
-{
+namespace Ember {
+namespace OgreView {
+OgrePluginLoader::OgrePluginLoader() {
 #ifdef OGRE_STATIC_LIB
 #ifdef OGRE_BUILD_RENDERSYSTEM_GL
 	mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_GL", OGRE_NEW Ogre::GLPlugin()));
@@ -95,9 +92,8 @@ OgrePluginLoader::OgrePluginLoader()
 	mPluginDirs.push_back(".");
 	mPluginExtension = ".dll";
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-	std::string pluginDir(configSrv.getPrefix());
-	pluginDir += "/lib/OGRE";
-	mPluginDirs.push_back(pluginDir);
+	mPluginDirs.push_back(configSrv.getPrefix() + "/lib64/OGRE");
+	mPluginDirs.push_back(configSrv.getPrefix() + "/lib/OGRE");
 	mPluginExtension = ".so";
 #ifdef ENABLE_BINRELOC
 	//binreloc might be used
@@ -107,8 +103,10 @@ OgrePluginLoader::OgrePluginLoader()
 	mPluginDirs.push_back(libDir + "/OGRE");
 #endif
 	//enter the usual locations if Ogre is installed system wide, with local installations taking precedence
-	mPluginDirs.push_back("/usr/local/lib/OGRE");
-	mPluginDirs.push_back("/usr/lib/OGRE");
+	mPluginDirs.emplace_back("/usr/local/lib64/OGRE");
+	mPluginDirs.emplace_back("/usr/local/lib/OGRE");
+	mPluginDirs.emplace_back("/usr/lib64/OGRE");
+	mPluginDirs.emplace_back("/usr/lib/OGRE");
 #elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 	// On Mac, plugins are found in Resources in the Main (Application) bundle, then in the Ogre framework bundle
 	std::string pluginDir = configSrv.getSharedDataDirectory();
@@ -119,99 +117,62 @@ OgrePluginLoader::OgrePluginLoader()
 #endif
 #ifdef OGRE_PLUGINDIR
 	//also try with the plugindir defined for Ogre
-	mPluginDirs.push_back(OGRE_PLUGINDIR);
+	mPluginDirs.emplace_back(OGRE_PLUGINDIR);
 #endif
 
 #endif // ifndef OGRE_STATIC_LIB
 }
 
-OgrePluginLoader::~OgrePluginLoader()
-{
-}
-
-void OgrePluginLoader::addPluginDir(const std::string& dir)
-{
+void OgrePluginLoader::addPluginDir(const std::string& dir) {
 	mPluginDirs.insert(mPluginDirs.begin(), dir);
 }
 
-Ogre::Plugin* OgrePluginLoader::loadPlugin(const std::string& pluginName)
-{
-	auto it = mPlugins.find(pluginName);
-	if (it != mPlugins.end()) {
-		Ogre::Root::getSingleton().installPlugin(it->second);
-		return it->second;
-	}
+bool OgrePluginLoader::loadPlugin(const std::string& pluginName) {
 #ifndef OGRE_STATIC_LIB
 	// If the dynamic lib is not yet loaded, try to find and load it.
 	// Load the shared library.
-	Ogre::Plugin* plugin = loadDynPlugin(pluginName);
-	if (plugin) {
-		mPlugins.insert(PluginInstanceMap::value_type(pluginName, plugin));
-		return plugin;
-	}
-#endif
-	return nullptr;
-}
-
-Ogre::Plugin* OgrePluginLoader::getPlugin(const std::string& pluginName)
-{
-	auto it = mPlugins.find(pluginName);
-	return (it != mPlugins.end()) ? it->second : nullptr;
-}
-
-bool OgrePluginLoader::unloadPlugin(const std::string& pluginName)
-{
+	return loadDynPlugin(pluginName);
+#else
 	auto it = mPlugins.find(pluginName);
 	if (it != mPlugins.end()) {
-		Ogre::Root::getSingleton().uninstallPlugin(it->second);
+		Ogre::Root::getSingleton().installPlugin(it->second);
 		return true;
 	}
 	return false;
+#endif
 }
 
-void OgrePluginLoader::unloadPlugins()
-{
+void OgrePluginLoader::unloadPlugins() {
 	auto plugins = Ogre::Root::getSingleton().getInstalledPlugins();
 	for (Ogre::Plugin* plugin : plugins) {
 		plugin->uninstall();
 	}
 }
 
-Ogre::Plugin* OgrePluginLoader::loadDynPlugin(const std::string& pluginName)
-{
+bool OgrePluginLoader::loadDynPlugin(const std::string& pluginName) {
 #ifndef OGRE_STATIC_LIB
 	std::string pluginPath;
-	bool pluginLoaded = false;
 	for (const std::string& dir : mPluginDirs) {
+#ifdef OGRE_DEBUG_MODE
+		pluginPath = dir + "/" + pluginName + "_d" + mPluginExtension;
+#else
 		pluginPath = dir + "/" + pluginName + mPluginExtension;
-		S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
-		try {
-			Ogre::Root::getSingleton().loadPlugin(pluginPath);
-			pluginLoaded = true;
-			break;
-		} catch (...) {
-			// Try debug version
-			pluginPath = dir + "/" + pluginName + "_d" + mPluginExtension;
+#endif
+		if (std::ifstream(pluginPath).good()) {
 			S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
 			try {
 				Ogre::Root::getSingleton().loadPlugin(pluginPath);
-				pluginLoaded = true;
-				break;
+				return true;
 			} catch (...) {
-				// Failed to load plugin!
 			}
 		}
 	}
-	if (pluginLoaded) {
-		S_LOG_INFO("Successfully loaded the plugin '" << pluginName << "' from '" << pluginPath << "'.");
-	} else {
-		S_LOG_FAILURE("Failed to load the plugin '" << pluginName << "'!");
-	}
+	S_LOG_FAILURE("Failed to load the plugin '" << pluginName << "'!");
 #else
 	// Would work, but you should use static libs on static build to prevent strange bugs.
 	assert(0);
 #endif
-	return nullptr;
+	return false;
 }
 
 }
