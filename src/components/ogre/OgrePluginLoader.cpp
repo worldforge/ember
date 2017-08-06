@@ -92,6 +92,10 @@ OgrePluginLoader::OgrePluginLoader() {
 	mPluginDirs.push_back(".");
 	mPluginExtension = ".dll";
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+
+	//First try with the plugin dir defined for Ogre
+	mPluginDirs.emplace_back(OGRE_PLUGINDIR);
+
 	mPluginDirs.push_back(configSrv.getPrefix() + "/lib64/OGRE");
 	mPluginDirs.push_back(configSrv.getPrefix() + "/lib/OGRE");
 	mPluginExtension = ".so";
@@ -114,10 +118,6 @@ OgrePluginLoader::OgrePluginLoader() {
 	pluginDir += "/../Plugins";
 	mPluginDirs.push_back(pluginDir);
 	mPluginExtension = ".dylib";
-#endif
-#ifdef OGRE_PLUGINDIR
-	//also try with the plugindir defined for Ogre
-	mPluginDirs.emplace_back(OGRE_PLUGINDIR);
 #endif
 
 #endif // ifndef OGRE_STATIC_LIB
@@ -151,9 +151,10 @@ void OgrePluginLoader::unloadPlugins() {
 
 bool OgrePluginLoader::loadDynPlugin(const std::string& pluginName) {
 #ifndef OGRE_STATIC_LIB
-	std::string pluginPath;
+
 	for (const std::string& dir : mPluginDirs) {
-#ifdef OGRE_DEBUG_MODE
+		std::string pluginPath;
+#ifdef OGRE_DEBUG_BUILD
 		pluginPath = dir + "/" + pluginName + "_d" + mPluginExtension;
 #else
 		pluginPath = dir + "/" + pluginName + mPluginExtension;

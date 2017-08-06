@@ -105,7 +105,15 @@ endif (NOT OGRE_Overlay_FOUND)
 link_libraries(${OGRE_Overlay_LIBRARIES})
 include_directories(${OGRE_Overlay_INCLUDE_DIRS})
 
-add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
+if (OGRE_LIBRARY_DBG)
+    MESSAGE(STATUS "Ogre was built in debug mode.")
+    add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
+    add_definitions(-DOGRE_DEBUG_BUILD)
+else (OGRE_LIBRARY_DBG)
+    MESSAGE(STATUS "Ogre was built in release mode.")
+    add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_REL}")
+endif (OGRE_LIBRARY_DBG)
+
 
 
 if (APPLE)
