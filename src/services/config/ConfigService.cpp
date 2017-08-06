@@ -162,7 +162,13 @@ namespace Ember
 		S_LOG_INFO("Setting prefix to '" << prefix << "'.");
 		mPrefix = prefix;
 		mSharedDataDir = prefix + "/share/ember/";
-		mEtcDir = prefix + "/etc/ember/";
+		//CMake handles the install prefix of "/usr" differently, in that it puts config files in "/etc" instead of "/usr/etc".
+		//We need to detect this.
+		if (std::string(PREFIX) == "/usr") {
+			mEtcDir = prefix.substr(0, prefix.length() - 3) + "/etc/ember/";
+		} else {
+			mEtcDir = prefix + "/etc/ember/";
+		}
 	}
 
 	const std::string& ConfigService::getPrefix() const
@@ -219,13 +225,16 @@ namespace Ember
 		if (mInstanceConfig->findItem(section, key)) {
 			value = mInstanceConfig->getItem(section, key);
 			return true;
-		} else if (mCommandLineConfig->findItem(section, key)) {
+		}
+		if (mCommandLineConfig->findItem(section, key)) {
 			value = mCommandLineConfig->getItem(section, key);
 			return true;
-		} else if (mUserConfig->findItem(section, key)) {
+		}
+		if (mUserConfig->findItem(section, key)) {
 			value = mUserConfig->getItem(section, key);
 			return true;
-		} else if (mGlobalConfig->findItem(section, key)) {
+		}
+		if (mGlobalConfig->findItem(section, key)) {
 			value = mGlobalConfig->getItem(section, key);
 			return true;
 		}
@@ -322,8 +331,8 @@ namespace Ember
 		}
 
 		//after loading the config from file, override with command time settings
-		for (StringConfigMap::const_iterator I = commandLineSettings.begin(); I != commandLineSettings.end(); ++I) {
-			for (std::map<std::string, std::string>::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
+		for (auto I = commandLineSettings.begin(); I != commandLineSettings.end(); ++I) {
+			for (auto J = I->second.begin(); J != I->second.end(); ++J) {
 				S_LOG_INFO("Setting command line config option " << I->first << ":" << J->first << " to " << J->second);
 				mCommandLineConfig->setItem(I->first, J->first, J->second);
 				EventChangedConfigItem(I->first, J->first);
@@ -341,23 +350,23 @@ namespace Ember
 		//First get the instance values (i.e. those values which have been changed at runtime).
 		//But only get those that differs from the global config.
 		const varconf::conf_map& instanceSections = mInstanceConfig->getSections();
-		for (varconf::conf_map::const_iterator I = instanceSections.begin(); I != instanceSections.end(); ++I) {
-			const varconf::sec_map& section = I->second;
-			for (varconf::sec_map::const_iterator J = section.begin(); J != section.end(); ++J) {
+		for (const auto& instanceSection : instanceSections) {
+			const varconf::sec_map& section = instanceSection.second;
+			for (const auto& J : section) {
 				//only set the value if it differs from the global one
-				if (mGlobalConfig->getItem(I->first, J->first) != J->second) {
-					exportConfig.setItem(I->first, J->first, J->second, varconf::INSTANCE);
+				if (mGlobalConfig->getItem(instanceSection.first, J.first) != J.second) {
+					exportConfig.setItem(instanceSection.first, J.first, J.second, varconf::INSTANCE);
 				}
 			}
 		}
 
 		//Then also add all user settings, i.e. those that already had been set in the user config file.
 		const varconf::conf_map& userSections = mUserConfig->getSections();
-		for (varconf::conf_map::const_iterator I = userSections.begin(); I != userSections.end(); ++I) {
-			const varconf::sec_map& section = I->second;
-			for (varconf::sec_map::const_iterator J = section.begin(); J != section.end(); ++J) {
+		for (const auto& userSection : userSections) {
+			const varconf::sec_map& section = userSection.second;
+			for (const auto& J : section) {
 				//We can't directly use the value, as it might have been updated in the instance config. We therefore needs to go through getValue
-				exportConfig.setItem(I->first, J->first, getValue(I->first, J->first), varconf::INSTANCE);
+				exportConfig.setItem(userSection.first, J.first, getValue(userSection.first, J.first), varconf::INSTANCE);
 			}
 		}
 
