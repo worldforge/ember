@@ -106,13 +106,22 @@ link_libraries(${OGRE_Overlay_LIBRARIES})
 include_directories(${OGRE_Overlay_INCLUDE_DIRS})
 
 if (OGRE_LIBRARY_DBG)
+    set(OGRE_LIBRARY ${OGRE_LIBRARY_DBG})
+else (OGRE_LIBRARY_DBG)
+    set(OGRE_LIBRARY ${OGRE_LIBRARY_REL})
+endif (OGRE_LIBRARY_DBG)
+
+#It's not enough to check for the _DBG and _REL keys since they can both be set. We also need to check if the library ends with "_d.so" to
+#determine if it's built for debug or release.
+string(FIND ${OGRE_LIBRARY} "_d.so" OGRE_DEBUG_BUILD)
+if (OGRE_DEBUG_BUILD MATCHES -1)
+    MESSAGE(STATUS "Ogre was built in release mode.")
+    add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_REL}")
+else (OGRE_DEBUG_BUILD MATCHES -1)
     MESSAGE(STATUS "Ogre was built in debug mode.")
     add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
     add_definitions(-DOGRE_DEBUG_BUILD)
-else (OGRE_LIBRARY_DBG)
-    MESSAGE(STATUS "Ogre was built in release mode.")
-    add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_REL}")
-endif (OGRE_LIBRARY_DBG)
+endif (OGRE_DEBUG_BUILD MATCHES -1)
 
 
 
