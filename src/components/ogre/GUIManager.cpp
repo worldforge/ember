@@ -90,7 +90,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 
 //Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
 #ifndef CEGUI_HAS_FREETYPE
-# CEGUI is not built with Freetype
+CEGUI is not built with Freetype
 #endif
 
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
@@ -106,16 +106,32 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mDefaultScheme = "EmberLook";
 		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
 
-		if (configService.getPrefix() != "") {
+		if (!configService.getPrefix().empty()) {
+
+#ifndef __WIN32__
+			//The environment variable CEGUI_MODULE_DIR points to where CEGUI can find its modules. Lets check if they are under the prefix,
+			//for relocatable packages. We need to check both "lib64" and "lib".
+			std::string modulePath = configService.getPrefix() + "/lib64/cegui-0.8";
+			if (std::ifstream(modulePath).good()) {
+				setenv("CEGUI_MODULE_DIR", modulePath.c_str(), 1);
+				S_LOG_INFO("Setting CEGUI_MODULE_DIR to " << modulePath);
+			} else {
+				modulePath = configService.getPrefix() + "/lib/cegui-0.8";
+				if (std::ifstream(modulePath).good()) {
+					setenv("CEGUI_MODULE_DIR", modulePath.c_str(), 1);
+					S_LOG_INFO("Setting CEGUI_MODULE_DIR to " << modulePath);
+				}
+			}
+#endif
 			//We need to set the current directory to the prefix before trying to load CEGUI.
-			//The reason for this is that CEGUI loads a lot of dynamic modules, and in some build configuration
-			//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
 			if (chdir(configService.getPrefix().c_str())) {
 				S_LOG_WARNING("Failed to change to the prefix directory '" << configService.getPrefix() << "'. Gui loading might fail.");
 			}
 		}
 
-		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
+		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI.
+		// Note that the third argument tells the renderer to render the gui after all of the
+		// regular render queues have been processed, thus making sure that the gui always is on top.
 		mGuiRenderer = &CEGUI::OgreRenderer::create(*window);
 
 		//We'll do our own rendering, interleaved with Ogre's, so we'll turn off the automatic rendering.
@@ -128,18 +144,18 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mOgreImageCodec = &CEGUI::OgreRenderer::createOgreImageCodec();
 
 		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
-		if (provider != 0) {
+		if (provider != nullptr) {
 			Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
 			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
-			if (luaScriptProvider->getErrorHandlingFunctionName().size() != 0) {
+			if (!luaScriptProvider->getErrorHandlingFunctionName().empty()) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
 				mLuaScriptModule->executeString(""); //We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
 			}
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, 0, mOgreImageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
 			EmberServices::getSingleton().getScriptingService().EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, 0, mOgreImageCodec, 0, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, 0, "cegui/datafiles/configs/cegui.config");
 		}
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
@@ -203,9 +219,9 @@ GUIManager::~GUIManager()
 	S_LOG_INFO("Shutting down GUI manager.");
 
 	WidgetStore widgetStoreCopy(mWidgets);
-	for (WidgetStore::iterator I = widgetStoreCopy.begin(); I != widgetStoreCopy.end(); ++I) {
-		S_LOG_INFO("Deleting widget " << (*I)->getPrefix() << ".");
-		delete *I;
+	for (auto& widget : widgetStoreCopy) {
+		S_LOG_INFO("Deleting widget " << widget->getPrefix() << ".");
+		delete widget;
 	}
 
 	delete mWorldLoadingScreen;
@@ -270,16 +286,16 @@ void GUIManager::initialize()
 	}
 
 	std::vector<std::string> widgetsToLoad;
-	widgetsToLoad.push_back("IngameChatWidget");
-	widgetsToLoad.push_back("Help");
-	widgetsToLoad.push_back("MeshPreview");
+	widgetsToLoad.emplace_back("IngameChatWidget");
+	widgetsToLoad.emplace_back("Help");
+	widgetsToLoad.emplace_back("MeshPreview");
 
-	for (std::vector<std::string>::iterator I = widgetsToLoad.begin(); I != widgetsToLoad.end(); ++I) {
+	for (auto& widget : widgetsToLoad) {
 		try {
-			S_LOG_VERBOSE("Loading widget " << *I);
-			createWidget(*I);
+			S_LOG_VERBOSE("Loading widget " << widget);
+			createWidget(widget);
 		} catch (const std::exception& e) {
-			S_LOG_FAILURE("Error when initializing widget " << *I << "." << e);
+			S_LOG_FAILURE("Error when initializing widget " << widget << "." << e);
 		}
 	}
 
@@ -325,11 +341,11 @@ void GUIManager::entity_Emote(const std::string& description, EmberEntity* entit
 
 void GUIManager::scriptingServiceStopping()
 {
-	mGuiSystem->setScriptingModule(0);
+	mGuiSystem->setScriptingModule(nullptr);
 	if (mLuaScriptModule) {
 		LuaScriptModule::destroy(*mLuaScriptModule);
 	}
-	mLuaScriptModule = 0;
+	mLuaScriptModule = nullptr;
 }
 
 void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity)
@@ -351,10 +367,10 @@ CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std
 		return window;
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << ".\n" << ex.getMessage().c_str());
-		return 0;
+		return nullptr;
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << "." << ex);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -365,23 +381,22 @@ Widget* GUIManager::createWidget()
 
 Widget* GUIManager::createWidget(const std::string& name)
 {
-	Widget* widget(0);
 	try {
 
-		widget = WidgetLoader::createWidget(name);
-		if (widget == 0) {
+		Widget* widget = WidgetLoader::createWidget(name);
+		if (widget == nullptr) {
 			S_LOG_FAILURE("Could not find widget with name " << name);
-			return 0;
+			return nullptr;
 		}
 		widget->init(this);
 		widget->buildWidget();
 		addWidget(widget);
 		S_LOG_INFO("Successfully loaded widget " << name);
+		return widget;
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("Error when loading widget " << name << "." << e);
-		return 0;
+		return nullptr;
 	}
-	return widget;
 }
 
 void GUIManager::destroyWidget(Widget* widget)
@@ -414,7 +429,7 @@ CEGUI::Window* GUIManager::getMainSheet() const
 
 void GUIManager::removeWidget(Widget* widget)
 {
-	WidgetStore::iterator I = std::find(mWidgets.begin(), mWidgets.end(), widget);
+	auto I = std::find(mWidgets.begin(), mWidgets.end(), widget);
 	if (I != mWidgets.end()) {
 		mWidgets.erase(I);
 	}
@@ -435,8 +450,8 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	}
 
 	//iterate over all widgets and send them a frameStarted event
-	WidgetStore::iterator I = mWidgets.begin();
-	WidgetStore::iterator I_end = mWidgets.end();
+	auto I = mWidgets.begin();
+	auto I_end = mWidgets.end();
 
 	for (; I != I_end; ++I) {
 		Widget* aWidget = *I;
@@ -510,7 +525,7 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 	//switch to movement mode, since it appears most people don't know how to change from gui mode
 	varconf::Variable var;
 	if (!EmberServices::getSingleton().getConfigService().getValue("input", "automovementmode", var)
-			|| (var.is_bool() && (bool)var == true)) {
+			|| (var.is_bool() && (bool)var)) {
 		getInput().setInputMode(Input::IM_MOVEMENT);
 	}
 }
@@ -524,9 +539,9 @@ void GUIManager::EmberOgre_WorldCreated(World& world)
 void GUIManager::EmberOgre_WorldDestroyed()
 {
 	delete mEntityTooltip;
-	mEntityTooltip = 0;
+	mEntityTooltip = nullptr;
 	delete mCursorWorldListener;
-	mCursorWorldListener = 0;
+	mCursorWorldListener = nullptr;
 }
 
 Gui::EntityTooltip* GUIManager::getEntityTooltip() const
