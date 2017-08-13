@@ -208,7 +208,7 @@ void ModelRepresentation::initFromModel() {
 }
 
 Ogre::Vector3 ModelRepresentation::getScale() const {
-	return Ogre::Vector3(mModel->getScale());
+	return mModel->getScale();
 }
 
 void ModelRepresentation::connectEntities() {

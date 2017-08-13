@@ -129,5 +129,9 @@ void SceneNodeProvider::attachObject(Ogre::MovableObject* movable) {
 	node->attachObject(movable);
 }
 
+Ogre::Vector3 SceneNodeProvider::getScale() const {
+	return mNode->getScale();
+}
+
 }
 }

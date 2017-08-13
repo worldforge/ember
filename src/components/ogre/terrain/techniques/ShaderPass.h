@@ -49,7 +49,7 @@ class ShaderPass
 {
 public:
 friend class ShaderPassBlendMapBatch;
-	ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping = false);
+	ShaderPass(Ogre::SceneManager& sceneManager, unsigned int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping = false);
 	virtual ~ShaderPass();
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -65,14 +65,13 @@ friend class ShaderPassBlendMapBatch;
 	 * @param shaderSuffix A suffix to add to the shader name. This allows you to make it use a somewhat different shader depending on graphics level etc.
 	 * @return True if the creation of the pass was successful.
 	 */
-	virtual bool finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows = true, const std::string shaderSuffix = "") const;
+	bool finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows = true, const std::string& shaderSuffix = "") const;
 
 	LayerStore& getLayers();
 
 protected:
 	typedef std::vector<ShaderPassBlendMapBatch*> BlendMapBatchStore;
 
-	void assignCombinedBlendMapTexture();
 	ShaderPassBlendMapBatch* getCurrentBatch();
 	virtual ShaderPassBlendMapBatch* createNewBatch();
 
@@ -84,7 +83,7 @@ protected:
 	LayerStore mLayers;
 	const TerrainPageSurfaceLayer* mBaseLayer;
 	Ogre::SceneManager& mSceneManager;
-	int mBlendMapPixelWidth;
+	unsigned int mBlendMapPixelWidth;
 	WFMath::Point<2> mPosition;
 
 	unsigned int mShadowLayers;

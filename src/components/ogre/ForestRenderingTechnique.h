@@ -44,16 +44,16 @@ public:
 	 * @brief Ctor.
 	 * @param forest The forest instance which will handle the actual rendering.
 	 */
-	ForestRenderingTechnique(Environment::Forest& forest);
+	explicit ForestRenderingTechnique(Environment::Forest& forest);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ForestRenderingTechnique();
+	~ForestRenderingTechnique() override = default;
 
-	virtual void registerEntity(EmberEntity& entity);
+	void registerEntity(EmberEntity& entity) override;
 
-	virtual void deregisterEntity(EmberEntity& entity);
+	void deregisterEntity(EmberEntity& entity) override;
 
 protected:
 

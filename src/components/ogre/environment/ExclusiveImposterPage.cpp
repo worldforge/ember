@@ -27,10 +27,6 @@ namespace OgreView
 namespace Environment
 {
 
-ExclusiveImposterPage::~ExclusiveImposterPage()
-{
-}
-
 void ExclusiveImposterPage::addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color)
 {
 	ImpostorPage::addEntity(ent, position, rotation, scale, color);
@@ -40,14 +36,8 @@ void ExclusiveImposterPage::addEntity(Ogre::Entity *ent, const Ogre::Vector3 &po
 void ExclusiveImposterPage::setVisible(bool visible)
 {
 	ImpostorPage::setVisible(visible);
-	if (visible) {
-		for (EntityStore::const_iterator I(mEntities.begin()); I != mEntities.end(); ++I) {
-			(*I)->setVisible(false);
-		}
-	} else {
-		for (EntityStore::const_iterator I(mEntities.begin()); I != mEntities.end(); ++I) {
-			(*I)->setVisible(true);
-		}
+	for (EntityStore::const_iterator I(mEntities.begin()); I != mEntities.end(); ++I) {
+		(*I)->setVisible(!visible);
 	}
 }
 

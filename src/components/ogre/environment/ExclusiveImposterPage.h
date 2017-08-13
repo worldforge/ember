@@ -49,12 +49,12 @@ public:
 	 */
 	typedef std::vector<Ogre::Entity*> EntityStore;
 
-	virtual ~ExclusiveImposterPage();
+	~ExclusiveImposterPage() override = default;
 
-	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color);
+	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color) override;
 
-	void setVisible(bool visible);
-	void removeEntities();
+	void setVisible(bool visible) override;
+	void removeEntities() override;
 
 protected:
 

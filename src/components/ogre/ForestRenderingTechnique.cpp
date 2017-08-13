@@ -36,10 +36,6 @@ ForestRenderingTechnique::ForestRenderingTechnique(Environment::Forest& forest) 
 
 }
 
-ForestRenderingTechnique::~ForestRenderingTechnique()
-{
-}
-
 void ForestRenderingTechnique::registerEntity(EmberEntity& entity)
 {
 	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);

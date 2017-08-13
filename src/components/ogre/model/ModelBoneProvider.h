@@ -92,6 +92,8 @@ public:
 
 	void setScale(const Ogre::Vector3& scale) override;
 
+	Ogre::Vector3 getScale() const override;
+
 	void detachObject(Ogre::MovableObject* movable) override;
 
 	void attachObject(Ogre::MovableObject* movable) override;

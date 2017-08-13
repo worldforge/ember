@@ -66,18 +66,18 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 	return combinedBlendMapTexture;
 }
 
-ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping) :
-		mBaseLayer(0), mSceneManager(sceneManager), mBlendMapPixelWidth(blendMapPixelWidth), mPosition(position), mShadowLayers(0), mUseNormalMapping(useNormalMapping)
+ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, unsigned int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping) :
+		mBaseLayer(nullptr), mSceneManager(sceneManager), mBlendMapPixelWidth(blendMapPixelWidth), mPosition(position), mShadowLayers(0), mUseNormalMapping(useNormalMapping)
 {
-	for (int i = 0; i < 16; i++) {
-		mScales[i] = 0.0;
+	for (float& mScale : mScales) {
+		mScale = 0.0;
 	}
 }
 
 ShaderPass::~ShaderPass()
 {
-	for (BlendMapBatchStore::iterator I = mBlendMapBatches.begin(); I != mBlendMapBatches.end(); ++I) {
-		delete *I;
+	for (auto& mBlendMapBatche : mBlendMapBatches) {
+		delete mBlendMapBatche;
 	}
 }
 
@@ -90,20 +90,18 @@ void ShaderPass::setBaseLayer(const TerrainPageSurfaceLayer* layer)
 
 ShaderPassBlendMapBatch* ShaderPass::getCurrentBatch()
 {
-	BlendMapBatchStore::reverse_iterator I = mBlendMapBatches.rbegin();
-	if (!mBlendMapBatches.size() || (*I)->getLayers().size() >= 4) {
+	auto I = mBlendMapBatches.rbegin();
+	if (mBlendMapBatches.empty() || (*I)->getLayers().size() >= 4) {
 		ShaderPassBlendMapBatch* batch = createNewBatch();
 		mBlendMapBatches.push_back(batch);
 		return batch;
-	} else {
-		return *I;
 	}
+	return *I;
 }
 
 ShaderPassBlendMapBatch* ShaderPass::createNewBatch()
 {
-	ShaderPassBlendMapBatch* batch = new ShaderPassBlendMapBatch(*this, getBlendMapPixelWidth());
-	return batch;
+	return new ShaderPassBlendMapBatch(*this, getBlendMapPixelWidth());
 }
 
 void ShaderPass::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer)
@@ -119,7 +117,7 @@ LayerStore& ShaderPass::getLayers()
 	return mLayers;
 }
 
-bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows, const std::string shaderSuffix) const
+bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows, const std::string& shaderSuffix) const
 {
 	S_LOG_VERBOSE("Creating terrain material pass with: NormalMapping=" << mUseNormalMapping << " Shadows=" << useShadows << " Suffix=" << shaderSuffix);
 	if (shaderSuffix != "/NoLighting") {
@@ -164,10 +162,9 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 		}
 	}
 
-	int i = 0;
+	size_t i = 0;
 	// add our blendMap textures first
-	for (BlendMapBatchStore::const_iterator I = mBlendMapBatches.begin(); I != mBlendMapBatches.end(); ++I) {
-		ShaderPassBlendMapBatch* batch = *I;
+	for (auto batch : mBlendMapBatches) {
 		batch->finalize(pass, getCombinedBlendMapTexture(pass.getIndex(), i++, managedTextures), mUseNormalMapping);
 	}
 
@@ -213,8 +210,8 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 			if (pssmSetup) {
 				Ogre::Vector4 splitPoints;
 				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
-				for (int i = 0; i < 3; i++) {
-					splitPoints[i] = splitPointList[i];
+				for (int splitPointIndex = 0; splitPointIndex < 3; splitPointIndex++) {
+					splitPoints[splitPointIndex] = splitPointList[splitPointIndex];
 				}
 
 				fpParams->setNamedConstant("pssmSplitPoints", splitPoints);

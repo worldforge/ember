@@ -32,9 +32,9 @@ namespace OgreView {
 
 class SceneNodeProvider : public INodeProvider {
 public:
-	SceneNodeProvider(Ogre::SceneNode* node, Ogre::SceneNode* parentNode, bool transferNodeOwnership = true);
+	explicit SceneNodeProvider(Ogre::SceneNode* node, Ogre::SceneNode* parentNode, bool transferNodeOwnership = true);
 
-	virtual ~SceneNodeProvider();
+	~SceneNodeProvider() override;
 
 	Ogre::Node* getNode() const override;
 
@@ -68,6 +68,8 @@ public:
 	void setOffsets(const Ogre::Vector3& translate, const Ogre::Quaternion& rotate) override;
 
 	void setScale(const Ogre::Vector3& scale) override;
+
+	Ogre::Vector3 getScale() const override;
 
 	void detachObject(Ogre::MovableObject* movable) override;
 

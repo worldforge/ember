@@ -175,10 +175,9 @@ public:
 	void setVisible(bool visible);
 
 	/**
-	 * if defined in the modeldef, returns a scaler by which the node containing
-	 * the model can be scaled
+	 * @brief Gets how much the model is scaled from its initial size.
 	 */
-	Ogre::Real getScale() const;
+	Ogre::Vector3 getScale() const;
 
 	/**
 	 * Defines how much the model should be rotated.
@@ -364,10 +363,6 @@ protected:
 
 	Ogre::SkeletonInstance* mSkeletonInstance;
 
-	/**
-	 how much to scale the model from it's initial size
-	 */
-	Ogre::Real mScale;
 	/**
 	 how much the model should be rotated around the Y-axis from it's initial position
 	 */

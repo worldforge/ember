@@ -71,12 +71,6 @@ class Model
 	void setVisible(bool visible);
 	
 	/**
-	 * if defined in the modeldef, returns a scaler by which the node containing 
-	 * the model can be scaled
-	 */
-	Ogre::Real getScale() const;
-
-	/**
 	 * if defined in the modeldef, returns an amount of degrees by which the node containing 
 	 * the model can be rotated
 	 */

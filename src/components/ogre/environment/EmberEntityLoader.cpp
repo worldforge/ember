@@ -136,7 +136,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 	EntityMap::iterator I = mEntities.find(entity->getId());
 	if (I != mEntities.end()) {
 		ModelRepresentationInstance& instance(I->second);
-		Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
+		//Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
 		instance.movedConnection.disconnect();
 		instance.visibilityChangedConnection.disconnect();
 		//Reset the rendering distance to the one set by the model def.
@@ -187,8 +187,8 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 	EntityMap& entities(mEntities);
 #endif
 
-	for (EntityMap::iterator I = entities.begin(); I != entities.end(); ++I) {
-		ModelRepresentationInstance& instance(I->second);
+	for (auto& entity : entities) {
+		ModelRepresentationInstance& instance(entity.second);
 		Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
 		EmberEntity& emberEntity = modelRepresentation->getEntity();
 		if (emberEntity.isVisible()) {

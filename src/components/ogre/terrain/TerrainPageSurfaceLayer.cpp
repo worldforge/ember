@@ -71,9 +71,9 @@ void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Ima
 		if (mShader.checkIntersect(*segment)) {
 			Mercator::Surface* surface = getSurfaceForSegment(segment);
 			if (surface && surface->isValid()) {
-				Image::ImageBuffer* textureBitmap = new Image::ImageBuffer(segment->getResolution(), 1);
+				WFImage sourceImage(new Image::ImageBuffer(segment->getResolution(), 1));
 				auto srcPtr = surface->getData();
-				auto dataPtr = textureBitmap->getData();
+				auto dataPtr = sourceImage.getData();
 				auto segmentSize = segment->getSize();
 				for (int i = 0; i < segment->getResolution(); ++i) {
 					for (int j = 0; j < segment->getResolution(); ++j) {
@@ -83,7 +83,6 @@ void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Ima
 					}
 				}
 
-				WFImage sourceImage(textureBitmap);
 				image.blit(sourceImage, channel, ((int)I->index.x() * segment->getResolution()), ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * segment->getResolution()));
 			}
 		}

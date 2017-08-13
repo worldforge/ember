@@ -50,7 +50,6 @@ Model::Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>
 		mName(name),
 		mSkeletonOwnerEntity(nullptr),
 		mSkeletonInstance(nullptr),
-		mScale(0.0f),
 		mRotation(Ogre::Quaternion::IDENTITY),
 		mAnimationStateSet(nullptr),
 		mAttachPoints(nullptr),
@@ -79,7 +78,6 @@ void Model::reset() {
 	resetSubmodels();
 	resetParticles();
 	resetLights();
-	mScale = 0;
 	mRotation = Ogre::Quaternion::IDENTITY;
 	mSkeletonInstance = nullptr;
 	// , mAnimationStateSet(0)
@@ -274,7 +272,6 @@ bool Model::createModelAssets() {
 	createLights();
 	timedLog.report("Created lights.");
 
-	mScale = mDefinition->mScale;
 	mRotation = mDefinition->mRotation;
 	for (auto& part : mAssetCreationContext.showPartVector) {
 		showPart(part);
@@ -316,7 +313,7 @@ void Model::createActions() {
 								for (auto& boneGroupDef : animationPartDef->BoneGroupRefs) {
 									auto I_boneGroup = mDefinition->getBoneGroupDefinitions().find(boneGroupDef.Name);
 									if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {
-										BoneGroupRef boneGroupRef;
+										BoneGroupRef boneGroupRef{};
 										boneGroupRef.boneGroupDefinition = I_boneGroup->second;
 										boneGroupRef.weight = boneGroupDef.Weight;
 										animPart.boneGroupRefs.push_back(boneGroupRef);
@@ -486,7 +483,7 @@ void Model::showPart(const std::string& partName, bool hideOtherParts) {
 		if (hideOtherParts) {
 			const std::string& groupName = modelPart.getGroupName();
 			//make sure that all other parts in the same group are hidden
-			PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupName);
+			auto partBucketI = mGroupsToPartMap.find(groupName);
 			if (partBucketI != mGroupsToPartMap.end()) {
 				for (auto& part : partBucketI->second) {
 					if (part != partName) {
@@ -501,7 +498,7 @@ void Model::showPart(const std::string& partName, bool hideOtherParts) {
 }
 
 void Model::hidePart(const std::string& partName, bool dontChangeVisibility) {
-	ModelPartStore::iterator I = mModelParts.find(partName);
+	auto I = mModelParts.find(partName);
 	if (I != mModelParts.end()) {
 		ModelPart& modelPart = I->second;
 		modelPart.hide();
@@ -509,11 +506,11 @@ void Model::hidePart(const std::string& partName, bool dontChangeVisibility) {
 			modelPart.setVisible(false);
 			const std::string& groupName = modelPart.getGroupName();
 			//if some part that was hidden before now should be visible
-			PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupName);
+			auto partBucketI = mGroupsToPartMap.find(groupName);
 			if (partBucketI != mGroupsToPartMap.end()) {
 				for (auto& part : partBucketI->second) {
 					if (part != partName) {
-						ModelPartStore::iterator I_modelPart = mModelParts.find(partName);
+						auto I_modelPart = mModelParts.find(partName);
 						if (I_modelPart != mModelParts.end()) {
 							if (I_modelPart->second.getVisible()) {
 								I_modelPart->second.show();
@@ -550,8 +547,11 @@ bool Model::getDisplaySkeleton(void) const {
 	return false;
 }
 
-Ogre::Real Model::getScale() const {
-	return mScale;
+Ogre::Vector3 Model::getScale() const {
+	if (mParentNodeProvider) {
+		return mParentNodeProvider->getScale();
+	}
+	return Ogre::Vector3::UNIT_SCALE;
 }
 
 const Ogre::Quaternion& Model::getRotation() const {
@@ -705,25 +705,28 @@ void Model::detachObject(Ogre::MovableObject* movable) {
 Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name) {
 	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getAnimationState(name);
-	} else {
-		return nullptr;
 	}
+
+	return nullptr;
+
 }
 
 Ogre::AnimationStateSet* Model::getAllAnimationStates() {
 	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getAllAnimationStates();
-	} else {
-		return nullptr;
 	}
+
+	return nullptr;
+
 }
 
 Ogre::SkeletonInstance* Model::getSkeleton() const {
 	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getSkeleton();
-	} else {
-		return nullptr;
 	}
+
+	return nullptr;
+
 }
 
 

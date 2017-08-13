@@ -75,7 +75,7 @@ public:
 	virtual INodeProvider* createChildProvider(const std::string& name) = 0;
 
 	/**
-	 * @brief Sets the visiblity of the node.
+	 * @brief Sets the visibility of the node.
 	 * @param visible Whether the node should be visible or not.
 	 */
 	virtual void setVisible(bool visible) = 0;
@@ -90,6 +90,8 @@ public:
 	virtual void setOffsets(const Ogre::Vector3& translate, const Ogre::Quaternion& rotate) = 0;
 
 	virtual void setScale(const Ogre::Vector3& scale) = 0;
+
+	virtual Ogre::Vector3 getScale() const = 0;
 
 	virtual void detachObject(Ogre::MovableObject* movable) = 0;
 

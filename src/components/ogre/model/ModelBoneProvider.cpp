@@ -124,6 +124,9 @@ void ModelBoneProvider::setScale(const Ogre::Vector3& scale) {
 	}
 }
 
+Ogre::Vector3 ModelBoneProvider::getScale() const {
+	return mScale;
+}
 
 void ModelBoneProvider::updatePositionAndOrientation() {
 	for (auto tagpoint : mTagPoints) {
@@ -174,6 +177,7 @@ void ModelBoneProvider::attachObject(Ogre::MovableObject* movable) {
 		mTagPoints.insert(tagPoint);
 	}
 }
+
 
 }
 }
