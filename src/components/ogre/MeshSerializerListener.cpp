@@ -24,6 +24,7 @@
 #include "config.h"
 #endif
 
+#include <framework/TimedLog.h>
 #include "MeshSerializerListener.h"
 #include "components/ogre/lod/LodManager.h"
 
@@ -31,7 +32,7 @@ namespace Ember {
 namespace OgreView {
 
 MeshSerializerListener::MeshSerializerListener(bool requireTangents)
-: mRequireTangents(true)
+: mRequireTangents(requireTangents)
 {
 }
 
@@ -92,6 +93,7 @@ void MeshSerializerListener::processMeshCompleted(Ogre::Mesh* mesh)
 		#else
 				S_LOG_WARNING("No tangents available for " << mesh->getName() << " mesh; generating new ones now. You should instead make sure that all meshes have tangents pregenerated.");
 		#endif
+				Ember::TimedLog timedLog("Building tangents for " + mesh->getName());
 				mesh->buildTangentVectors(Ogre::VES_TANGENT, outSourceCoordSet, outIndex);
 			}
 
