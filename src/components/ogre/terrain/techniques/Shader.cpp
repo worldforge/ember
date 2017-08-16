@@ -129,10 +129,9 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 
 	// Preserve any texture name aliases that may have been set
 	Ogre::AliasTextureNamePairList aliases;
-	for (Ogre::Material::TechniqueIterator I = material->getTechniqueIterator(); I.hasMoreElements();) {
-		for (Ogre::Technique::PassIterator J = (I.getNext())->getPassIterator(); J.hasMoreElements();) {
-			for (Ogre::Pass::TextureUnitStateIterator K = (J.getNext())->getTextureUnitStateIterator(); K.hasMoreElements();) {
-				Ogre::TextureUnitState* tus = K.getNext();
+	for (auto* tech : material->getTechniques()) {
+		for (auto* pass : tech->getPasses()) {
+			for (auto* tus : pass->getTextureUnitStates()) {
 				if (!tus->getTextureNameAlias().empty() && !tus->getTextureName().empty()) {
 					aliases[tus->getTextureNameAlias()] = tus->getTextureName();
 				}
@@ -141,7 +140,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	}
 
 	//The normal, shadowed, shaders have clones with the suffix "/NoShadows" which will skip the shadows.
-	std::string materialSuffix = "";
+	std::string materialSuffix;
 	if (!mIncludeShadows) {
 		materialSuffix = "/NoShadows";
 	}
@@ -265,7 +264,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	material->setLodLevels(lodList);
 	//we need to load it before we can see how many techniques are supported
 	material->load();
-	if (material->getNumSupportedTechniques() == 0) {
+	if (material->getSupportedTechniques().empty()) {
 		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;
 	}

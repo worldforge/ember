@@ -96,7 +96,7 @@ namespace Ogre {
         */
         static HighLevelGpuProgramManager* getSingletonPtr(void);
         
-        Ogre::HighLevelGpuProgramPtr getByName(const std::string& name);
+        Ogre::HighLevelGpuProgramPtr getByName(const std::string& name, const std::string& group);
 
 
 	};

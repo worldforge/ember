@@ -31,6 +31,8 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 #include <OgrePixelCountLodStrategy.h>
+#include <OgreSkeletonInstance.h>
+#include <OgreCamera.h>
 #include <CEGUI/Image.h>
 #include <CEGUI/Window.h>
 

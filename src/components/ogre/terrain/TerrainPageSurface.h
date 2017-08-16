@@ -118,6 +118,8 @@ protected:
 	TerrainPageSurfaceLayerStore mLayers;
 	std::unique_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
 	TerrainPageShadow* mShadow;
+	Ogre::MaterialPtr mMaterial;
+	Ogre::MaterialPtr mMaterialComposite;
 
 };
 

@@ -32,6 +32,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHardwareBuffer.h>
 #include <OgreMaterialManager.h>
 #include <OgreMaterial.h>
+#include <OgreTechnique.h>
 #include <string>
 using namespace Ogre;
 
@@ -167,14 +168,10 @@ void BatchedGeometry::extractVertexDataFromShared(MeshPtr mesh)
 	if (mesh->sharedVertexData == NULL)
 		return;
 
-	Mesh::SubMeshIterator subMeshIterator = mesh->getSubMeshIterator();
-
 	// Get shared vertex data
 	VertexData *oldVertexData = mesh->sharedVertexData;
 
-	while (subMeshIterator.hasMoreElements()) {
-		SubMesh *subMesh = subMeshIterator.getNext();
-
+	for (SubMesh* subMesh : mesh->getSubMeshes()) {
 		// Get index data
 		IndexData *indexData = subMesh->indexData;
 		HardwareIndexBufferSharedPtr ib = indexData->indexBuffer;
@@ -265,7 +262,7 @@ BatchedGeometry::SubBatchIterator BatchedGeometry::getSubBatchIterator() const
 
 String BatchedGeometry::getFormatString(SubEntity *ent)
 {
-	StringUtil::StrStreamType str;
+	Ogre::StringStream str;
 
 	str << ent->getMaterialName() << "|";
 	str << ent->getSubMesh()->indexData->indexBuffer->getType() << "|";
@@ -390,19 +387,15 @@ BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)
     requireVertexColors = false;
 
     // Material must always exist
-    Material *origMat = ((MaterialPtr)MaterialManager::getSingleton().getByName(ent->getMaterialName())).getPointer();
+    Material *origMat = ((MaterialPtr)MaterialManager::getSingleton().getByName(ent->getMaterialName())).get();
     if (origMat) {
         material = MaterialManager::getSingleton().getByName(getMaterialClone(*origMat)->getName());
     } else {
-        MaterialManager::ResourceCreateOrRetrieveResult result = MaterialManager::getSingleton().createOrRetrieve("PagedGeometry_Batched_Material", "General");
-        if (result.first.isNull()) {
+        auto result = MaterialManager::getSingleton().createOrRetrieve("PagedGeometry_Batched_Material", "General");
+        if (!result.first) {
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "BatchedGeometry failed to create a material for entity with invalid material.", "BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)");
         }
-#if (OGRE_VERSION < ((1 << 16) | (9 << 8) | 0))
-        material = result.first;
-#else
-        material = result.first.staticCast<Ogre::Material>();
-#endif
+        material = Ogre::static_pointer_cast<Ogre::Material>(result.first);
     }
 
 	//Setup vertex/index data structure
@@ -448,10 +441,10 @@ Material *BatchedGeometry::SubBatch::getMaterialClone(Material &mat)
 {
 	String clonedName = mat.getName() + "_Batched";
 	MaterialPtr clonedMat = MaterialManager::getSingleton().getByName(clonedName);
-	if (clonedMat.isNull())
+	if (!clonedMat)
 		clonedMat = mat.clone(clonedName);
 	
-	return clonedMat.getPointer();
+	return clonedMat.get();
 }
 
 void BatchedGeometry::SubBatch::addSubEntity(SubEntity *ent, const Vector3 &position, const Quaternion &orientation, const Vector3 &scale, const Ogre::ColourValue &color, void* userData)
@@ -757,7 +750,7 @@ void BatchedGeometry::SubBatch::clear()
 	//If built, delete the batch
 	if (built){
 		//Delete buffers
-		indexData->indexBuffer.setNull();
+		indexData->indexBuffer.reset();
 		vertexData->vertexBufferBinding->unsetAllBindings();
 
 		//Reset vertex/index count
@@ -777,7 +770,7 @@ void BatchedGeometry::SubBatch::addSelfToRenderQueue(RenderQueue *queue, uint8 g
 {
 	if (built){
 		//Update material technique based on camera distance
-		assert(!material.isNull());
+		assert(material);
 		bestTechnique = material->getBestTechnique(material->getLodIndex(parent->minDistanceSquared * parent->minDistanceSquared));
 			
 		//Add to render queue

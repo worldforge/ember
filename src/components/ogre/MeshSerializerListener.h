@@ -23,6 +23,8 @@
 #ifndef EMBEROGREMESHSERIALIZERLISTENER_H
 #define EMBEROGREMESHSERIALIZERLISTENER_H
 
+#include <OgreDataStream.h> //Need to include this because of header errors on Ogre 1.10.7
+#include <OgreIteratorWrapper.h> //Need to include this because of header errors on Ogre 1.10.7
 #include <OgreMeshSerializer.h>
 
 namespace Ember {

@@ -26,6 +26,8 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHighLevelGpuProgram.h>
 #include <OgreHighLevelGpuProgramManager.h>
 #include <OgreLogManager.h>
+#include <OgreTechnique.h>
+
 using namespace Ogre;
 
 namespace Forests {
@@ -197,7 +199,7 @@ void BatchPage::_updateShaders()
 		}
 
 		//Compile the CG shader script based on various material / fade options
-		StringUtil::StrStreamType tmpName;
+		Ogre::StringStream tmpName;
 		tmpName << "BatchPage_";
 		if (fadeEnabled)
 			tmpName << "fade_";
@@ -216,6 +218,9 @@ void BatchPage::_updateShaders()
 						case VET_FLOAT2: uvType = "2"; break;
 						case VET_FLOAT3: uvType = "3"; break;
 						case VET_FLOAT4: uvType = "4"; break;
+					default:
+						//Do nothing
+						break;
 				}
 				tmpName << uvType << '_';
 			}
@@ -228,9 +233,8 @@ void BatchPage::_updateShaders()
 		String shaderLanguage = ShaderHelper::getShaderLanguage();
 
 		//If the shader hasn't been created yet, create it
-		if (HighLevelGpuProgramManager::getSingleton().getByName(vertexProgName).isNull())
+		if (!HighLevelGpuProgramManager::getSingleton().getByName(vertexProgName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME))
 		{
-			Pass *pass = mat->getTechnique(0)->getPass(0);
 			String vertexProgSource;
 
 			if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
@@ -255,6 +259,9 @@ void BatchPage::_updateShaders()
 							case VET_FLOAT2: uvType = "float2"; break;
 							case VET_FLOAT3: uvType = "float3"; break;
 							case VET_FLOAT4: uvType = "float4"; break;
+							default:
+								//Do nothing
+								break;
 						}
 
 						vertexProgSource +=
@@ -433,8 +440,8 @@ void BatchPage::_updateShaders()
 		std::string fragmentProgramName("BatchFragStandard");
 		String fragmentProgSource;
 		//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
-		HighLevelGpuProgramPtr fragShader = static_cast<HighLevelGpuProgramPtr>(HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName));
-		if (fragShader.isNull()){
+		HighLevelGpuProgramPtr fragShader = static_cast<HighLevelGpuProgramPtr>(HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+		if (!fragShader){
 			Pass *pass = mat->getTechnique(0)->getPass(0);
 
 			if (shaderLanguage == "glsl") {
@@ -480,7 +487,7 @@ void BatchPage::_updateShaders()
 			}
 		}
 		//Now that the shader is ready to be applied, apply it
-		StringUtil::StrStreamType materialSignature;
+		Ogre::StringStream materialSignature;
 		materialSignature << "BatchMat|";
 		materialSignature << mat->getName() << "|";
 		if (fadeEnabled){
@@ -490,14 +497,12 @@ void BatchPage::_updateShaders()
 
 		//Search for the desired material
 		MaterialPtr generatedMaterial = MaterialManager::getSingleton().getByName(materialSignature.str());
-		if (generatedMaterial.isNull()){
+		if (!generatedMaterial){
 			//Clone the material
 			generatedMaterial = mat->clone(materialSignature.str());
 
 			//And apply the fade shader
-			Ogre::Material::TechniqueIterator I = generatedMaterial->getSupportedTechniqueIterator();
-			while (I.hasMoreElements()) {
-				Technique *tech = I.getNext();
+			for (Technique* tech : generatedMaterial->getSupportedTechniques()) {
 				for (unsigned short p = 0; p < tech->getNumPasses(); ++p){
 					Pass *pass = tech->getPass(p);
 

@@ -27,6 +27,7 @@
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 #include <Eris/Connection.h>

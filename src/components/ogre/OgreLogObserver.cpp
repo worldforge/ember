@@ -28,6 +28,8 @@
 
 #include "framework/LoggingInstance.h"
 
+#include <OgreString.h>
+
 using namespace Ogre;
 namespace Ember
 {

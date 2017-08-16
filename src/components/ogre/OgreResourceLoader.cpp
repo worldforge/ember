@@ -43,6 +43,23 @@ namespace Ember
 namespace OgreView
 {
 
+struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
+	/** This event is called when a resource beings loading. */
+	Ogre::DataStreamPtr resourceLoading(const Ogre::String &name, const Ogre::String &group, Ogre::Resource *resource) override {
+		return Ogre::DataStreamPtr();
+	}
+
+	void resourceStreamOpened(const Ogre::String &name, const Ogre::String &group, Ogre::Resource *resource, Ogre::DataStreamPtr& dataStream) override {
+
+	}
+
+	bool resourceCollision(Ogre::Resource *resource, Ogre::ResourceManager *resourceManager) override {
+		//By default we'll just ignore resource collisions.
+		S_LOG_VERBOSE("Resource '" << resource->getName() << "' already exists in group '" << resource->getGroup() << "' for type '" << resourceManager->getResourceType() << "'.");
+		return false;
+	}
+};
+
 OgreResourceLoader::OgreResourceLoader() :
 		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."), mLoadRecursive(false)
 {
@@ -57,6 +74,10 @@ OgreResourceLoader::~OgreResourceLoader()
 
 void OgreResourceLoader::initialize()
 {
+
+	mLoadingListener = new EmberResourceLoadingListener();
+	Ogre::ResourceGroupManager::getSingleton().setLoadingListener(mLoadingListener);
+
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
 	//check from the config if we should load media recursively
@@ -141,12 +162,18 @@ void OgreResourceLoader::loadBootstrap()
 	//Add the "assets" directory, which contains most of the assets
 	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 	addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+
+
+//	Ogre::ResourceGroupManager::getSingleton().createResourceGroup("LoadingBar");
+//	addUserMedia("media/assets", "EmberFileSystem", "LoadingBar", true);
+//	addSharedMedia("media/assets", "EmberFileSystem", "LoadingBar", true);
+
 }
 
 void OgreResourceLoader::loadGui()
 {
-	addUserMedia("gui", "EmberFileSystem", "Gui", true);
-	addSharedMedia("gui", "EmberFileSystem", "Gui", true);
+	addUserMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	addSharedMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
 
 void OgreResourceLoader::loadGeneral()
@@ -181,11 +208,11 @@ void OgreResourceLoader::loadGeneral()
 void OgreResourceLoader::preloadMedia()
 {
 	// resource groups to be loaded
-	const char* resourceGroup[] = { "General", "Gui", "ModelDefinitions" };
+	const char* resourceGroup[] = { "General", "ModelDefinitions" };
 
-	for (size_t i = 0; i < (sizeof(resourceGroup) / sizeof(const char*)); ++i) {
+	for (auto& group : resourceGroup) {
 		try {
-			Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(resourceGroup[i]);
+			Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(group);
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("An error occurred when preloading media." << ex);
 		}

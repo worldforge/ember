@@ -35,6 +35,8 @@
 #include <OgreRenderTexture.h>
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>
+#include <OgreSceneNode.h>
+#include <OgreViewport.h>
 #include <sigc++/bind.h>
 
 namespace Ember
@@ -69,7 +71,7 @@ void IconRenderer::setWorker(IconRenderWorker* worker)
 void IconRenderer::render(const std::string& modelName, Icon* icon)
 {
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	if (!modelDef.isNull()) {
+	if (modelDef) {
 		auto model = std::make_shared<Model::Model>(*getRenderContext()->getSceneManager(), modelDef);
 		model->load();
 		if (model->isLoaded()) {
@@ -138,7 +140,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon*)
 
 void IconRenderer::blitRenderToIcon(Icon* icon)
 {
-	if (!mRenderContext->getTexture().isNull()) {
+	if (mRenderContext->getTexture()) {
 		Ogre::HardwarePixelBufferSharedPtr srcBuffer = mRenderContext->getTexture()->getBuffer();
 		Ogre::HardwarePixelBufferSharedPtr dstBuffer = icon->getImageStoreEntry()->getTexture()->getBuffer();
 

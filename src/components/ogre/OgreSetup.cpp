@@ -53,9 +53,12 @@
 #include <OgreMeshManager.h>
 #include <OgreStringConverter.h>
 #include <OgreSceneManager.h>
-#include <OgreOverlaySystem.h>
+#include <Overlay/OgreOverlaySystem.h>
+#include <OgreLogManager.h>
 #include <OgreRoot.h>
-
+#include <OgreConfigDialog.h>
+#include <OgreTextureManager.h>
+#include <OgreLodStrategyManager.h>
 
 #include <SDL.h>
 
@@ -181,14 +184,18 @@ bool OgreSetup::showConfigurationDialog()
 	}
 	createOgreSystem();
 	if (result == OgreConfigurator::OC_ADVANCED_OPTIONS) {
-		if (!mRoot->showConfigDialog()) {
+		Ogre::ConfigDialog* dlg = OGRE_NEW Ogre::ConfigDialog();
+		bool isOk = mRoot->showConfigDialog(dlg);
+		OGRE_DELETE dlg;
+
+		if (!isOk) {
 			return false;
 		}
 	} else {
 		mRoot->setRenderSystem(mRoot->getRenderSystemByName(configurator.getChosenRenderSystemName()));
 		const Ogre::ConfigOptionMap& configOptions = configurator.getConfigOptions();
-		for (Ogre::ConfigOptionMap::const_iterator I = configOptions.begin(); I != configOptions.end(); ++I) {
-			mRoot->getRenderSystem()->setConfigOption(I->first, I->second.currentValue);
+		for (const auto& configOption : configOptions) {
+			mRoot->getRenderSystem()->setConfigOption(configOption.first, configOption.second.currentValue);
 		}
 		mRoot->saveConfig();
 	}
@@ -209,7 +216,7 @@ void OgreSetup::Config_ogreLogChanged(const std::string& section, const std::str
 }
 
 /** Configures the application - returns false if the user chooses to abandon configuration. */
-Ogre::Root* OgreSetup::configure(void)
+Ogre::Root* OgreSetup::configure()
 {
 	delete mConfigListenerContainer;
 	mConfigListenerContainer = new ConfigListenerContainer();
@@ -233,7 +240,9 @@ Ogre::Root* OgreSetup::configure(void)
 		S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
 		unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CONFIG) + "ogre.cfg").c_str());
 		try {
-			success = mRoot->showConfigDialog();
+			Ogre::ConfigDialog* dlg = OGRE_NEW Ogre::ConfigDialog();
+			success = mRoot->showConfigDialog(dlg);
+			OGRE_DELETE dlg;
 		} catch (const std::exception& ex) {
 			S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
 		}

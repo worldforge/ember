@@ -40,6 +40,10 @@
 #include <OgreCompositorInstance.h>
 #include <OgreCompositionTargetPass.h>
 #include <OgreCompositionPass.h>
+#include <OgreCompositor.h>
+#include <OgreCamera.h>
+#include <OgreTechnique.h>
+#include <OgreSceneNode.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -353,11 +357,10 @@ bool MainCamera::validateCompositionTargetPass(Ogre::CompositionTargetPass& comp
 	while (compPassIter.hasMoreElements()) {
 		Ogre::CompositionPass* compositorPass = compPassIter.getNext();
 		compositorPass->getMaterial()->load();
-		Ogre::Material::TechniqueIterator techIter = compositorPass->getMaterial()->getSupportedTechniqueIterator();
-		while (techIter.hasMoreElements()) {
-			Ogre::Technique::PassIterator _passIter = techIter.getNext()->getPassIterator();
-			while (_passIter.hasMoreElements()) {
-				Ogre::Pass* pass = _passIter.getNext();
+
+
+		for (auto* technique : compositorPass->getMaterial()->getSupportedTechniques()) {
+			for (auto* pass : technique->getPasses()) {
 				//Also disallow camera polygon mode overide. This is because if it's turned on,
 				//and the camera is switched to polygon mode, the end result will be one single
 				//large polygon being shown. This is not what we want.

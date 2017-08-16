@@ -32,6 +32,11 @@
 #include <OgreBitwise.h>
 #include <OgreRoot.h>
 #include <OgreHardwarePixelBuffer.h>
+#include <OgreRenderTexture.h>
+#include <OgreCamera.h>
+#include <OgreSceneNode.h>
+#include <OgreTextureManager.h>
+#include <OgreViewport.h>
 
 namespace Ember
 {
@@ -55,7 +60,7 @@ void SimpleRenderContextResourceLoader::loadResource(Ogre::Resource *resource)
 }
 
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, int height) :
-		mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER), mTextureOwned(true)
+		mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mCameraDistanceNode(nullptr), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER), mTextureOwned(true)
 {
 
 	setupScene(prefix);
@@ -63,7 +68,7 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, i
 }
 
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, Ogre::TexturePtr texture) :
-		mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER), mTextureOwned(false)
+		mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mCameraDistanceNode(nullptr), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER), mTextureOwned(false)
 {
 
 	setupScene(prefix);
@@ -87,8 +92,6 @@ SimpleRenderContext::~SimpleRenderContext()
 	//we need to do this before the scene manager is destroyed since the destructor for Model relies on the scenemanager existing (and thus can be called in the scene manager's destructor)
 	if (mRootNode) {
 		mRootNode->removeAndDestroyAllChildren();
-		//the root scene node cannot be removed (evar!!)
-// 		mSceneManager->destroySceneNode(mSceneManager->getRootSceneNode()->getName());
 	}
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
@@ -110,6 +113,7 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 	mCameraNode = mRootNode->createChildSceneNode();
 
 	mCameraPitchNode = mCameraNode->createChildSceneNode();
+	mCameraDistanceNode = mCameraPitchNode->createChildSceneNode();
 
 	createCamera(prefix);
 	//setVisible(false);
@@ -165,7 +169,7 @@ void SimpleRenderContext::createCamera(const std::string& prefix)
 {
 	mCamera = mSceneManager->createCamera(prefix + "_SimpleRenderContextCamera");
 
-	mCameraPitchNode->attachObject(mCamera);
+	mCameraDistanceNode->attachObject(mCamera);
 }
 
 void SimpleRenderContext::pitchCamera(Ogre::Degree degrees)
@@ -184,9 +188,9 @@ void SimpleRenderContext::rollCamera(Ogre::Degree degrees)
 float SimpleRenderContext::getCameraDistance() const
 {
 	if (mDefaultCameraDistance) {
-		return mCamera->getPosition().z / mDefaultCameraDistance;
+		return mCameraDistanceNode->getPosition().z / mDefaultCameraDistance;
 	}
-	return mCamera->getPosition().z;
+	return mCameraDistanceNode->getPosition().z;
 }
 
 void SimpleRenderContext::setCameraDistance(Ogre::Real distance)
@@ -201,7 +205,7 @@ void SimpleRenderContext::setCameraDistance(Ogre::Real distance)
 		mCamera->setFarClipDistance((Ogre::Math::Abs(distance) + mDefaultCameraDistance));
 	}
 	Ogre::Vector3 pos(0, 0, distance);
-	mCamera->setPosition(pos);
+	mCameraDistanceNode->setPosition(pos);
 }
 
 // void SimpleRenderContext::setCameraAbsoluteDistance(Ogre::Real distance)
@@ -212,7 +216,7 @@ void SimpleRenderContext::setCameraDistance(Ogre::Real distance)
 
 float SimpleRenderContext::getAbsoluteCameraDistance() const
 {
-	return mCamera->getPosition().z;
+	return mCameraNode->_getDerivedPosition().z;
 }
 
 Ogre::Quaternion SimpleRenderContext::getCameraOrientation() const
@@ -225,7 +229,6 @@ void SimpleRenderContext::resetCameraOrientation()
 {
 	mCameraPitchNode->setOrientation(Ogre::Quaternion::IDENTITY);
 	mCameraNode->setOrientation(Ogre::Quaternion::IDENTITY);
-
 }
 
 Ogre::SceneNode* SimpleRenderContext::getCameraRootNode() const
@@ -261,8 +264,8 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 
 	//first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (prefix + "_SimpleRenderContextRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
-	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET, &mResourceLoader);
-	if (texture.isNull()) {
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET, &mResourceLoader);
+	if (!texture) {
 		S_LOG_WARNING("Could not create a texture.");
 		return;
 	}

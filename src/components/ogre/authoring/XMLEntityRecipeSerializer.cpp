@@ -63,7 +63,7 @@ void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const O
 
 		try {
 			EntityRecipePtr entRecipe = EntityRecipeManager::getSingleton().create(name, groupName);
-			if (!entRecipe.isNull()) {
+			if (entRecipe) {
 				readRecipe(entRecipe, smElem);
 				//removed this in the trunk /ehj
 				// 				entRecipe->doTest();

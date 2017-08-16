@@ -70,7 +70,7 @@ void ResourceListAdapter::update() {
 void ResourceListAdapter::populate() {
 	auto handle = mHandles.front();
 	::Ogre::ResourcePtr resource = mResourceManager->getByHandle(handle);
-	if (!resource.isNull()) {
+	if (resource) {
 		mListHolder->addItem(new ColouredListItem(resource->getName(), mIndex));
 	}
 	mIndex += 1;

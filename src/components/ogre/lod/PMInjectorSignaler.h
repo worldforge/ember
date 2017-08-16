@@ -27,7 +27,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/Singleton.h"
 
-#include <OgreQueuedProgressiveMeshGenerator.h>
+#include <MeshLodGenerator/OgreLodConfig.h>
+#include <MeshLodGenerator/OgreLodWorkQueueInjectorListener.h>
 
 #include <sigc++/signal.h>
 
@@ -43,14 +44,13 @@ namespace Lod
  */
 class PMInjectorSignaler :
 	public Ember::Singleton<PMInjectorSignaler>,
-	public Ogre::PMInjectorListener
+	public Ogre::LodWorkQueueInjectorListener
 {
 public:
 	sigc::signal<void, Ogre::LodConfig*> LodInjected;
 
-private:
-	bool shouldInject(Ogre::PMGenRequest* request);
-	void injectionCompleted(Ogre::PMGenRequest* request);
+	bool shouldInject(Ogre::LodWorkQueueRequest* request) override;
+	void injectionCompleted(Ogre::LodWorkQueueRequest* request) override;
 };
 
 }

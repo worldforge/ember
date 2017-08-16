@@ -28,6 +28,9 @@
 #include <OgreSceneManagerEnumerator.h>
 #include <OgreRoot.h>
 #include <OgreEntity.h>
+#include <OgreSceneNode.h>
+#include <OgreCamera.h>
+#include <OgreResourceManager.h>
 
 #ifdef HAVE_OPENGL
 #if defined(__WIN32__)
@@ -120,9 +123,8 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 
 		outputStream << " Cameras:" << std::endl;
 		{
-			Ogre::SceneManager::CameraIterator I = sceneManager->getCameraIterator();
-			while (I.hasMoreElements()) {
-				Ogre::Camera* camera = I.getNext();
+			for (auto entry : sceneManager->getCameras()) {
+				Ogre::Camera* camera = entry.second;
 				outputStream << "  Camera " << camera->getName() << "(" << (camera->isInScene() ? "in scene" : "not in scene") << ")" << std::endl;
 				outputStream << "  Pos: " << camera->getDerivedPosition() << std::endl;
 				outputStream << "  Direction: " << camera->getDerivedDirection() << std::endl;

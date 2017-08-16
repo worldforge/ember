@@ -51,15 +51,18 @@ TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompiler
 	materialNameSS << "_" << terrainPage.getWFPosition().x() << "_" << terrainPage.getWFPosition().y();
 	mMaterialName = materialNameSS.str();
 
+	mMaterial = Ogre::MaterialManager::getSingleton().create(mMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	mMaterialComposite = Ogre::MaterialManager::getSingleton().create(mMaterialName+ "/CompositeMap", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
 }
 
 TerrainPageSurface::~TerrainPageSurface()
 {
-	for (TerrainPageSurfaceLayerStore::iterator I(mLayers.begin()); I != mLayers.end(); ++I) {
-		delete I->second;
+	for (auto& entry : mLayers) {
+		delete entry.second;
 	}
-	Ogre::MaterialManager::getSingleton().remove(mMaterialName);
-	Ogre::MaterialManager::getSingleton().remove(mMaterialName + "/CompositeMap");
+	Ogre::MaterialManager::getSingleton().remove(mMaterial);
+	Ogre::MaterialManager::getSingleton().remove(mMaterialComposite);
 	delete mShadow;
 }
 
@@ -70,7 +73,7 @@ const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getL
 
 TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate)
 {
-	TerrainPageSurfaceLayerStore::iterator I = mLayers.find(layerIndex);
+	auto I = mLayers.find(layerIndex);
 	if (I != mLayers.end()) {
 		if (repopulate) {
 			I->second->populate(geometry);
@@ -98,22 +101,20 @@ unsigned int TerrainPageSurface::getPixelWidth() const
 
 const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 {
-	std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve(mMaterialName, "General");
-	return result.first.staticCast<Ogre::Material>();
+	return mMaterial;
 }
 
 const Ogre::MaterialPtr TerrainPageSurface::getCompositeMapMaterial() const
 {
-	std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve(mMaterialName + "/CompositeMap", "General");
-	return result.first.staticCast<Ogre::Material>();
+	return mMaterialComposite;
 }
 
 TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const
 {
 	//The compiler only works with const surfaces, so we need to create such a copy of our surface map.
 	SurfaceLayerStore constLayers;
-	for (TerrainPageSurfaceLayerStore::const_iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
-		constLayers.insert(SurfaceLayerStore::value_type(I->first, I->second));
+	for (auto entry : mLayers) {
+		constLayers.insert(SurfaceLayerStore::value_type(entry.first, entry.second));
 	}
 	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow);
 }

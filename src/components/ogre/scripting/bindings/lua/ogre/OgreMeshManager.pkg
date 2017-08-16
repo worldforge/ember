@@ -49,7 +49,7 @@ namespace Ogre {
 
 		Ogre::MeshPtr load(const std::string& name, 
              const std::string& group);
-		Ogre::MeshPtr getByName(const std::string& name);
+		Ogre::MeshPtr getByName(const std::string& name, const std::string& group);
 		Ogre::MeshPtr create(const std::string& name, const std::string& group);
     };
 

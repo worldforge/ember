@@ -95,7 +95,7 @@ namespace Ogre {
             destruction of resources, try making sure you release all your
             shared pointers before you shutdown OGRE.
 		*/
-		void remove(const std::string& name);
+		remove(const std::string& name, const std::string& group);
 		
 		/** Remove a single resource by handle.
 		@remarks
@@ -133,14 +133,14 @@ namespace Ogre {
 
         /** Retrieves a pointer to a resource by name, or null if the resource does not exist.
         */
-        Ogre::ResourcePtr getResourceByName(const std::string& name);
+        Ogre::ResourcePtr getResourceByName(const std::string& name, const std::string& group);
 
         /** Retrieves a pointer to a resource by handle, or null if the resource does not exist.
         */
         Ogre::ResourcePtr getByHandle(Ogre::ResourceHandle handle);
 		
 		/// Returns whether the named resource exists in this manager
-		bool resourceExists(const std::string& name);
+		bool resourceExists(const std::string& name, const std::string& group);
 		
 		/// Returns whether a resource with the given handle exists in this manager
 		bool resourceExists(Ogre::ResourceHandle handle);

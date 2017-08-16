@@ -15,6 +15,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "RandomTable.h"
 #include "ShaderHelper.h"
 
+#include <OgreSceneNode.h>
 #include <OgreRoot.h>
 #include <OgreTimer.h>
 #include <OgreCamera.h>
@@ -97,9 +98,9 @@ unsigned int GrassLayer::_populateGrassList(PageInfo page, float *posBuff, unsig
 
 void GrassLayerBase::setMaterialName(const String &matName)
 {
-	if (material.isNull() || matName != material->getName()){
+	if (!material || matName != material->getName()){
 		material = MaterialManager::getSingleton().getByName(matName);
-		if (material.isNull())
+		if (!material)
 			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "The specified grass material does not exist", "GrassLayer::setMaterialName()");
 		shaderNeedsUpdate = true;
 	}
@@ -188,7 +189,7 @@ void GrassLayer::setDensityMap(TexturePtr map, MapChannel channel)
 		densityMap->unload();
 		densityMap = NULL;
 	}
-	if (map.isNull() == false){
+	if (map){
 		densityMap = DensityMap::load(map, channel);
 		densityMap->setFilter(densityMapFilter);
 	}
@@ -424,7 +425,7 @@ void GrassLayer::setColorMap(TexturePtr map, MapChannel channel)
 		colorMap->unload();
 		colorMap = NULL;
 	}
-	if (map.isNull() == false){
+	if (map){
 		colorMap = ColorMap::load(map, channel);
 		colorMap->setFilter(colorMapFilter);
 	}
@@ -454,7 +455,7 @@ void GrassLayerBase::_updateShaders()
 			//before the page center is out of range.
 
 			//Generate a string ID that identifies the current set of vertex shader options
-			StringUtil::StrStreamType tmpName;
+			Ogre::StringStream tmpName;
 			tmpName << "GrassVS_";
 			if (animate)
 				tmpName << "anim_";
@@ -475,7 +476,7 @@ void GrassLayerBase::_updateShaders()
 
 			//Check if the desired material already exists (if not, create it)
 			MaterialPtr tmpMat = MaterialManager::getSingleton().getByName(matName);
-			if (tmpMat.isNull())
+			if (!tmpMat)
 			{
 				//Clone the original material
 				tmpMat = material->clone(matName);
@@ -486,8 +487,8 @@ void GrassLayerBase::_updateShaders()
 
 				//Check if the desired shader already exists (if not, compile it)
 				String shaderLanguage = ShaderHelper::getShaderLanguage();
-				HighLevelGpuProgramPtr vertexShader = HighLevelGpuProgramManager::getSingleton().getByName(vsName);
-				if (vertexShader.isNull())
+				HighLevelGpuProgramPtr vertexShader = HighLevelGpuProgramManager::getSingleton().getByName(vsName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+				if (!vertexShader)
 				{
 
 					//Generate the grass shader
@@ -732,9 +733,7 @@ void GrassLayerBase::_updateShaders()
 				//(depending on whether or not it was already generated).
 
 				tmpMat->load();
-				Ogre::Material::TechniqueIterator techIterator = tmpMat->getSupportedTechniqueIterator();
-				while (techIterator.hasMoreElements()) {
-					Ogre::Technique* tech = techIterator.getNext();
+				for (Ogre::Technique* tech : tmpMat->getSupportedTechniques()) {
 					//Apply the shader to the material
 					Pass *pass = tech->getPass(0);
 					pass->setVertexProgram(vsName);
@@ -778,7 +777,7 @@ void GrassLayerBase::_updateShaders()
 			Ogre::Pass* pass = tech->getPass(0);
 			if (pass->hasVertexProgram()) {
 				Ogre::GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
-				if (!params.isNull()) {
+				if (params) {
 					params->setIgnoreMissingParams(true);
 				}
 			}
@@ -825,7 +824,7 @@ void GrassPage::removeEntities()
 			Entity *ent = static_cast<Entity*>(node->getAttachedObject(j));
 			if(!ent) continue;
 			// remove the mesh
-			MeshManager::getSingleton().remove(ent->getMesh()->getName());
+			MeshManager::getSingleton().remove(ent->getMesh()->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			// then the entity
 			sceneMgr->destroyEntity(ent);
 			// and finally the scene node

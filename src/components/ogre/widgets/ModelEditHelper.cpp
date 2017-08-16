@@ -159,7 +159,7 @@ ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::s
 		AttachPointHelper(model, attachPointName), mMount(nullptr)
 {
 	auto definition = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	if (!definition.isNull()) {
+	if (definition) {
 		mAttachedModel = new Model::Model(mModel.getManager(), definition, modelName);
 		mAttachedModel->load();
 		Model::ModelBoneProvider* boneProvider = new Model::ModelBoneProvider(nullptr, mModel, attachPointName);

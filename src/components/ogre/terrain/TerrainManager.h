@@ -31,6 +31,7 @@
 #include <sigc++/slot.h>
 
 #include <OgreFrameListener.h>
+#include <OgrePrerequisites.h>
 #include <OgreCommon.h>
 
 #include <memory>

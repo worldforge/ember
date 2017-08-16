@@ -1,6 +1,7 @@
 $#include "../../../../OgreIncludes.h"
 $#include <OgreResourceManager.h>
 $#include <Ogre.h>
+$#include "OgreLuaFunctions.h"
 
 $#define ushort unsigned short
 $#define uint unsigned int
@@ -36,3 +37,4 @@ $pfile "OgreHighLevelGpuProgramManager.pkg"
 $pfile "OgreHighLevelGpuProgram.pkg"
 $pfile "OgreRoot.pkg"
 $pfile "OgreLodStrategy.pkg"
+$pfile "OgreResourceGroupManager.pkg"

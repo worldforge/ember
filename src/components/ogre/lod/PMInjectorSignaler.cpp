@@ -22,6 +22,8 @@
 
 #include "PMInjectorSignaler.h"
 
+#include <MeshLodGenerator/OgreLodWorkQueueRequest.h>
+
 template<>
 Ember::OgreView::Lod::PMInjectorSignaler * Ember::Singleton<Ember::OgreView::Lod::PMInjectorSignaler>::ms_Singleton = 0;
 
@@ -32,12 +34,12 @@ namespace OgreView
 namespace Lod
 {
 
-bool PMInjectorSignaler::shouldInject(Ogre::PMGenRequest* request)
+bool PMInjectorSignaler::shouldInject(Ogre::LodWorkQueueRequest* request)
 {
 	return true;
 }
 
-void PMInjectorSignaler::injectionCompleted(Ogre::PMGenRequest* request)
+void PMInjectorSignaler::injectionCompleted(Ogre::LodWorkQueueRequest* request)
 {
 	LodInjected.emit(&request->config);
 }

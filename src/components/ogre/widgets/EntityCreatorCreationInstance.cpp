@@ -49,6 +49,7 @@
 #include <Eris/Connection.h>
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 
 namespace Ember
 {
@@ -191,7 +192,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 		}
 	}
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	if (modelDef.isNull()) {
+	if (!modelDef) {
 		modelDef = Model::ModelDefinitionManager::getSingleton().getByName("placeholder");
 	}
 	mModel = new Model::Model(mWorld.getSceneManager(), modelDef, modelName);

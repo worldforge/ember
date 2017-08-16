@@ -48,7 +48,7 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 {
 	//Clean up any textures that were created for the specific page.
 	for (auto& textureName : mManagedTextures) {
-		Ogre::TextureManager::getSingleton().remove(textureName);
+		Ogre::TextureManager::getSingleton().remove(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	}
 }
 

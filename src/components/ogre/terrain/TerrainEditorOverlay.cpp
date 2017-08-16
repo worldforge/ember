@@ -39,6 +39,7 @@
 #include <Mercator/Terrain.h>
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 #include <OgreEntity.h>
 
 #include <sigc++/bind.h>
@@ -157,7 +158,7 @@ void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySc
 {
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().getType() == typeid(BasePointUserObject::SharedPtr)) {
+		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().type() == typeid(BasePointUserObject::SharedPtr)) {
 			continuePicking = false;
 			if (mousePickerArgs.pickType == MPT_PRESS) {
 				mPickedUserObject = Ogre::any_cast<BasePointUserObject::SharedPtr>(pickedMovable->getUserObjectBindings().getUserAny()).get();
@@ -585,7 +586,7 @@ bool TerrainEditorOverlay::undoLastAction()
 
 bool TerrainEditorOverlay::redoAction()
 {
-	if (mUndoneActions.size()) {
+	if (!mUndoneActions.empty()) {
 		TerrainEditAction action = mUndoneActions.front();
 		mUndoneActions.pop_front();
 		mActions.push_back(action);
@@ -734,11 +735,11 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 
 bool TerrainEditorOverlay::getBasePoint(const std::map<int, std::map<int, Mercator::BasePoint>>& basePoints, int x, int y, Mercator::BasePoint& z) const
 {
-	Mercator::Terrain::Pointstore::const_iterator I = basePoints.find(x);
+	auto I = basePoints.find(x);
 	if (I == basePoints.end()) {
 		return false;
 	}
-	Mercator::Terrain::Pointcolumn::const_iterator J = I->second.find(y);
+	auto J = I->second.find(y);
 	if (J == I->second.end()) {
 		return false;
 	}

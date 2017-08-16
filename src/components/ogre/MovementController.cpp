@@ -47,6 +47,8 @@
 #include <Eris/EventService.h>
 
 #include <OgreRoot.h>
+#include <OgreCamera.h>
+#include <OgreSceneNode.h>
 
 using namespace Ogre;
 using namespace Ember;

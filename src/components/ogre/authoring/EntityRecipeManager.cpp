@@ -59,13 +59,13 @@ EntityRecipePtr EntityRecipeManager::create (const Ogre::String& name, const Ogr
         bool isManual, Ogre::ManualResourceLoader* loader,
         const Ogre::NameValuePairList* createParams)
 {
-    return createResource(name, group, isManual, loader, createParams).staticCast<EntityRecipe>();
+    return Ogre::static_pointer_cast<EntityRecipe>(createResource(name, group, isManual, loader, createParams));
 }
 
 Ogre::ResourcePtr EntityRecipeManager::createResource(const Ogre::String& name, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
 {
-	Ogre::ResourcePtr ret = getResourceByName(name);
-	if (ret.isNull()) {
+	Ogre::ResourcePtr ret = getResourceByName(name, group);
+	if (!ret) {
 		return Ogre::ResourceManager::createResource(name, group, isManual, loader, createParams);
 	}
 	S_LOG_WARNING("EntityRecipe with name " << name << " already exists.");

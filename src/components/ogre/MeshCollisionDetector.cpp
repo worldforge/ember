@@ -31,6 +31,7 @@
 #include "model/SubModel.h"
 #include <OgreSceneNode.h>
 #include <OgreRay.h>
+#include <OgreMesh.h>
 #include <OgreSubMesh.h>
 
 namespace Ember {

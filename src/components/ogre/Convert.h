@@ -91,6 +91,7 @@ Description:	Point, Vector and Quaternion converter
 #include <OgreVector2.h>
 #include <OgreQuaternion.h>
 #include <OgreAxisAlignedBox.h>
+#include <OgrePrerequisites.h>
 #include <OgreCommon.h>
 
 #include <cassert>

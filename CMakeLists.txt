@@ -75,7 +75,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 #TODO: check for binreloc?
 
-find_package(OGRE 1.8 REQUIRED)
+find_package(OGRE 1.10 REQUIRED)
 link_directories(${OGRE_LIBRARY_DIRS})
 link_libraries(${OGRE_LIBRARIES})
 include_directories(${OGRE_INCLUDE_DIRS})
@@ -104,6 +104,15 @@ if (NOT OGRE_Overlay_FOUND)
 endif (NOT OGRE_Overlay_FOUND)
 link_libraries(${OGRE_Overlay_LIBRARIES})
 include_directories(${OGRE_Overlay_INCLUDE_DIRS})
+
+if (NOT OGRE_MeshLodGenerator_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre MeshLodGenerator component. Make sure you've built Ogre with MeshLodGenerator support.")
+endif (NOT OGRE_MeshLodGenerator_FOUND)
+link_libraries(${OGRE_MeshLodGenerator_LIBRARIES})
+include_directories(${OGRE_MeshLodGenerator_INCLUDE_DIRS})
+
+
+
 
 if (OGRE_LIBRARY_DBG)
     set(OGRE_LIBRARY ${OGRE_LIBRARY_DBG})

@@ -24,6 +24,7 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>
+#include <OgreCamera.h>
 
 #include <wfmath/const.h>
 

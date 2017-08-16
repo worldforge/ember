@@ -39,6 +39,8 @@
 
 #include "pagedgeometry/include/BatchPage.h"
 
+#include <OgreTechnique.h>
+
 namespace Ember {
 namespace OgreView {
 

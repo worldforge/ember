@@ -23,6 +23,7 @@
 
 #include "framework/ConsoleObject.h"
 
+#include <OgrePrerequisites.h>
 #include <OgreCommon.h>
 #include <OgreRenderTarget.h>
 

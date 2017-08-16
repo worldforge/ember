@@ -50,8 +50,8 @@ void ShadowUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext
 		auto& page = pageGeometry->getPage();
 		auto shadow = page.getSurface()->getShadow();
 		if (shadow) {
-			auto shadowTextureName = shadow->getShadowTextureName();
-			if (shadowTextureName != "") {
+			auto& shadowTextureName = shadow->getShadowTextureName();
+			if (!shadowTextureName.empty()) {
 				pageGeometry->repopulate(true);
 				shadow->setLightDirection(mLightDirection);
 				shadow->updateShadow(*pageGeometry.get());
@@ -68,10 +68,10 @@ bool ShadowUpdateTask::executeTaskInMainThread()
 		auto& page = pageGeometry->getPage();
 		auto shadow = page.getSurface()->getShadow();
 		if (shadow) {
-			auto shadowTextureName = shadow->getShadowTextureName();
-			if (shadowTextureName != "") {
-				Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName));
-				if (!texture.isNull()) {
+			auto& shadowTextureName = shadow->getShadowTextureName();
+			if (!shadowTextureName.empty()) {
+				Ogre::TexturePtr texture = Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+				if (texture) {
 					Ogre::Image ogreImage;
 					shadow->loadIntoImage(ogreImage);
 

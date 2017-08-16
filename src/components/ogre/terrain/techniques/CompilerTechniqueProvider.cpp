@@ -32,6 +32,7 @@
 
 #include <OgreRoot.h>
 #include <OgreGpuProgramManager.h>
+#include <OgreTextureManager.h>
 
 namespace Ember
 {
@@ -48,22 +49,22 @@ CompilerTechniqueProvider::CompilerTechniqueProvider(ShaderManager& shaderManage
 {
 	//Our shaders use the one pixel normal texture whenever there's no existing normal map, so we need to create it.
 	const std::string onePixelMaterialName("dynamic/onepixel");
-	if (Ogre::TextureManager::getSingleton().resourceExists(onePixelMaterialName)) {
+	if (Ogre::TextureManager::getSingleton().resourceExists(onePixelMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 		S_LOG_WARNING("Texture '" << onePixelMaterialName << "' already existed when CompilerTechniqueProvider was created; this should not be the case.");
 	} else {
-		Ogre::TextureManager::getSingleton().createManual(onePixelMaterialName, "General", Ogre::TEX_TYPE_2D, 1, 1, 0, Ogre::PF_R8G8B8, Ogre::TU_DEFAULT, mOnePixelMaterialGenerator);
+		Ogre::TextureManager::getSingleton().createManual(onePixelMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 1, 1, 0, Ogre::PF_R8G8B8, Ogre::TU_DEFAULT, mOnePixelMaterialGenerator);
 	}
 }
 
 CompilerTechniqueProvider::~CompilerTechniqueProvider()
 {
-	Ogre::TextureManager::getSingleton().remove("dynamic/onepixel");
+	Ogre::TextureManager::getSingleton().remove("dynamic/onepixel", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	delete mOnePixelMaterialGenerator;
 }
 
 TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
 {
-	std::string preferredTech("");
+	std::string preferredTech;
 	if (EmberServices::getSingleton().getConfigService().itemExists("terrain", "preferredtechnique")) {
 		preferredTech = static_cast<std::string>(EmberServices::getSingleton().getConfigService().getValue("terrain", "preferredtechnique"));
 	}
@@ -82,7 +83,8 @@ TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(
 	if ((useNormalMapping || preferredTech == "Shader") && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		//Use shader tech with shadows
 		return new Techniques::Shader(true, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, useNormalMapping);
-	} else if ((preferredTech == "Shader" || useNormalMapping) && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
+	}
+	if ((preferredTech == "Shader" || useNormalMapping) && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 		//Use shader tech without shadows
 		return new Techniques::Shader(false, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, false);
 	} else {

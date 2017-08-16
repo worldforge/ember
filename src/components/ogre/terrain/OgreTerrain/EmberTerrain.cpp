@@ -56,6 +56,10 @@ EmberTerrain::EmberTerrain(std::function<void()>& unloader,
 EmberTerrain::~EmberTerrain() {
 	//Remove the fake blend map texture, else the base class will try to delete it.
 	mBlendTextureList.clear();
+
+	//The materials are owned by the TerrainPageSurface class, so we shouldn't let Ogre::Terrain delete them.
+	mMaterial.reset();
+	mCompositeMapMaterial.reset();
 	mUnloader();
 }
 

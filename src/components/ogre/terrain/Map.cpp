@@ -26,6 +26,12 @@
 
 #include "Map.h"
 #include <OgreHardwarePixelBuffer.h>
+#include <OgreTextureManager.h>
+#include <OgreRenderTexture.h>
+#include <OgreCamera.h>
+#include <OgreRenderTarget.h>
+#include <OgreViewport.h>
+#include <OgreSceneNode.h>
 
 namespace Ember {
 namespace OgreView {
@@ -45,8 +51,8 @@ mRenderTexture(0)
 
 Map::~Map()
 {
-	if (!mTexture.isNull()) {
-		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
+	if (mTexture) {
+		Ogre::TextureManager::getSingleton().remove(mTexture->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	}
 }
 
@@ -65,7 +71,7 @@ void Map::setupCamera()
 void Map::createTexture()
 {
 	//don't use alpha for our map texture
-	mTexture = Ogre::TextureManager::getSingleton().createManual("TerrainMap", "Gui", Ogre::TEX_TYPE_2D, mTexturePixelSize, mTexturePixelSize, 0, Ogre::PF_R8G8B8,Ogre::TU_RENDERTARGET);
+	mTexture = Ogre::TextureManager::getSingleton().createManual("TerrainMap", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mTexturePixelSize, mTexturePixelSize, 0, Ogre::PF_R8G8B8,Ogre::TU_RENDERTARGET);
 	mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 	mRenderTexture->removeAllViewports();
 
@@ -212,12 +218,15 @@ void MapView::recalculateBounds()
 
 
 MapCamera::MapCamera(Map& map, Ogre::SceneManager& manager)
-: mMap(map), mViewport(0), mDistance(400), mLightning(manager)
+: mMap(map), mCameraNode(nullptr), mViewport(nullptr), mDistance(400), mLightning(manager)
 {
+	mCameraNode = manager.createSceneNode();
+
 	mCamera = manager.createCamera("TerrainMapCamera");
-	mCamera->setPosition(Ogre::Vector3(0, 0, 0));
+	mCameraNode->attachObject(mCamera);
+	mCameraNode->setPosition(Ogre::Vector3(0, 0, 0));
 	//look down
-	mCamera->pitch(Ogre::Degree(-90));
+	mCameraNode->pitch(Ogre::Degree(-90));
 	//we want really low LOD on this camera
 	mCamera->setLodBias(0.0001f);
 
@@ -232,9 +241,8 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager& manager)
 
 MapCamera::~MapCamera()
 {
-	if (mCamera) {
-		mCamera->getSceneManager()->destroyCamera(mCamera);
-	}
+	mCameraNode->getCreator()->destroySceneNode(mCameraNode);
+	mCamera->getSceneManager()->destroyCamera(mCamera);
 }
 
 
@@ -255,8 +263,8 @@ void MapCamera::setRenderTarget(Ogre::RenderTarget* renderTarget)
 void MapCamera::setDistance(float distance)
 {
 	mDistance = distance;
-	const Ogre::Vector3& position(mCamera->getPosition());
-	mCamera->setPosition(position.x, distance, position.z);
+	const Ogre::Vector3& position(mCameraNode->getPosition());
+	mCameraNode->setPosition(position.x, distance, position.z);
 }
 
 float MapCamera::getDistance() const
@@ -266,12 +274,12 @@ float MapCamera::getDistance() const
 
 void MapCamera::reposition(const Ogre::Vector2& pos)
 {
-	mCamera->setPosition(pos.x, mDistance, pos.y);
+	mCameraNode->setPosition(pos.x, mDistance, pos.y);
 }
 
 const Ogre::Vector2 MapCamera::getPosition() const
 {
-	return Ogre::Vector2(mCamera->getPosition().x, mCamera->getPosition().z);
+	return Ogre::Vector2(mCameraNode->getPosition().x, mCameraNode->getPosition().z);
 }
 
 

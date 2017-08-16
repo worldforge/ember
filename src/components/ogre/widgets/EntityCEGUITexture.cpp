@@ -82,7 +82,7 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 
 //	int width = 1;
 //	int height = 1;
-//	if (!texturePtr.isNull()) {
+//	if (texturePtr) {
 //		width = texturePtr->getWidth();
 //		height = texturePtr->getHeight();
 //	}

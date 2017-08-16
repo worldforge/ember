@@ -72,15 +72,15 @@ ModelDefinitionPtr ModelDefinitionManager::create (const Ogre::String& name, con
         bool isManual, Ogre::ManualResourceLoader* loader,
         const Ogre::NameValuePairList* createParams)
 {
-    return createResource(name, group, isManual, loader, createParams).staticCast<ModelDefinition>();
+    return Ogre::static_pointer_cast<ModelDefinition>(createResource(name, group, isManual, loader, createParams));
 }
 
 Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
 		const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
 		const Ogre::NameValuePairList* params)
 {
-	Ogre::ResourcePtr ret = getResourceByName(name);
-	if (ret.isNull())
+	Ogre::ResourcePtr ret = getResourceByName(name, group);
+	if (!ret)
 	{
 		return OGRE_NEW ModelDefinition(this, name, handle, group, isManual, loader);
 	}
@@ -95,7 +95,7 @@ Ogre::ResourcePtr ModelDefinitionManager::createResource(const Ogre::String& nam
 	Ogre::ResourcePtr ret = Ogre::ResourcePtr(
 			createImpl(name, getNextHandle(), group, isManual, loader, params));
 
-	if (ret.isNull())
+	if (!ret)
 		return ret;
 
 	if (params)
@@ -128,17 +128,17 @@ const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
 {
 	std::vector<std::string> meshes;
 	Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
-	for (Ogre::StringVector::iterator I = meshesVector->begin(); I != meshesVector->end(); ++I) {
-		meshes.push_back(std::string(*I));
+	for (auto& meshName : *meshesVector) {
+		meshes.push_back(std::string(meshName));
 	}
-	meshesVector.setNull();
+	meshesVector.reset();
 	return meshes;
 }
 
 
 ModelDefinitionPtr ModelDefinitionManager::getByName(const Ogre::String& name, const Ogre::String& groupName)
 {
-    return getResourceByName(name, groupName).staticCast<ModelDefinition>();
+    return Ogre::static_pointer_cast<ModelDefinition>(getResourceByName(name, groupName));
 }
 
 bool ModelDefinitionManager::getShowModels() const

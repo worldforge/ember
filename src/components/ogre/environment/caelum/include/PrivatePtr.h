@@ -226,18 +226,18 @@ namespace Caelum
         }
 
         static PointedT* getPointer (const InnerPointerType& inner) {
-            return inner.getPointer ();
+            return inner.get ();
         }
 
         static void destroy (InnerPointerType& inner) {
-            if (!inner.isNull ()) {
+            if (inner) {
                 //Ogre::LogManager::getSingletonPtr ()->logMessage (
                 //        "PrivateResourcePtrTraits: Destroying owned resource"
                 //        " name=" + inner->getName () +
                 //        " handle=" + Ogre::StringConverter::toString (inner->getHandle ()) );
                 ManagerT::getSingletonPtr ()->remove (inner->getHandle ());
                 assert (inner.unique () && "Resource pointer not unique after destruction");
-                inner.setNull();
+                inner.reset();
             }
         }
     };

@@ -258,7 +258,7 @@ namespace OgreView {
         bool dirs, StringVector* simpleList, FileInfoList* detailList) const
     {
         long lHandle, res;
-        struct _finddata_t tagData;
+        struct _finddata_t tagData{};
         // pattern can contain a directory name, separate it from mask
         size_t pos1 = pattern.rfind ('/');
         size_t pos2 = pattern.rfind ('\\');
@@ -398,31 +398,31 @@ namespace OgreView {
         return DataStreamPtr(stream);
     }
     //-----------------------------------------------------------------------
-    StringVectorPtr FileSystemArchive::list(bool recursive, bool dirs)
+    StringVectorPtr FileSystemArchive::list(bool recursive, bool dirs) const
     {
 		// directory change requires locking due to saved returns
 		StringVectorPtr ret(OGRE_NEW_T(StringVector, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
 
-        findFiles("*", recursive, dirs, ret.getPointer(), 0);
+        findFiles("*", recursive, dirs, ret.get(), 0);
 
         return ret;
     }
     //-----------------------------------------------------------------------
-    FileInfoListPtr FileSystemArchive::listFileInfo(bool recursive, bool dirs)
+    FileInfoListPtr FileSystemArchive::listFileInfo(bool recursive, bool dirs) const
     {
         FileInfoListPtr ret(OGRE_NEW_T(FileInfoList, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
 
-        findFiles("*", recursive, dirs, 0, ret.getPointer());
+        findFiles("*", recursive, dirs, 0, ret.get());
 
         return ret;
     }
     //-----------------------------------------------------------------------
     StringVectorPtr FileSystemArchive::find(const String& pattern,
-                                            bool recursive, bool dirs)
+                                            bool recursive, bool dirs) const
     {
 		StringVectorPtr ret(OGRE_NEW_T(StringVector, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
 
-        findFiles(pattern, recursive, dirs, ret.getPointer(), 0);
+        findFiles(pattern, recursive, dirs, ret.get(), 0);
 
         return ret;
 
@@ -433,12 +433,12 @@ namespace OgreView {
     {
 		FileInfoListPtr ret(OGRE_NEW_T(FileInfoList, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
 
-        findFiles(pattern, recursive, dirs, 0, ret.getPointer());
+        findFiles(pattern, recursive, dirs, 0, ret.get());
 
         return ret;
     }
     //-----------------------------------------------------------------------
-	bool FileSystemArchive::exists(const String& filename)
+	bool FileSystemArchive::exists(const String& filename) const
 	{
         String full_path = concatenate_path(mName, filename);
 
@@ -456,7 +456,7 @@ namespace OgreView {
 		return ret;
 	}
 	
-	time_t FileSystemArchive::getModifiedTime(const String& filename)
+	time_t FileSystemArchive::getModifiedTime(const String& filename) const
 	{
 		String full_path = concatenate_path(mName, filename);
 
@@ -472,7 +472,7 @@ namespace OgreView {
 			return 0;
 		}
 
-	}	
+	}
     //-----------------------------------------------------------------------
     const String& FileSystemArchiveFactory::getType(void) const
     {

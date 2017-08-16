@@ -1,3 +1,5 @@
+$#include <OgreLodStrategy.h>
+
 /*
 -----------------------------------------------------------------------------
 This source file is part of OGRE

@@ -33,6 +33,7 @@
 #include "domain/EmberEntity.h"
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 
 #include <Eris/View.h>
 

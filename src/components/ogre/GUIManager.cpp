@@ -56,6 +56,7 @@
 
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
+#include <OgreTextureManager.h>
 
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/SchemeManager.h>
@@ -139,7 +140,7 @@ CEGUI is not built with Freetype
 		mGuiRenderer->setFrameControlExecutionEnabled(false);
 
 		mOgreResourceProvider = &CEGUI::OgreRenderer::createOgreResourceProvider();
-		mOgreResourceProvider->setDefaultResourceGroup("Gui");
+		mOgreResourceProvider->setDefaultResourceGroup(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 		mOgreImageCodec = &CEGUI::OgreRenderer::createOgreImageCodec();
 
@@ -513,8 +514,8 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 		}
 	} else if (command == ReloadGui.getCommand()) {
 		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();
-		Ogre::ResourcePtr resource = texMgr->getByName("cegui/" + getDefaultScheme() + ".png");
-		if (!resource.isNull()) {
+		Ogre::ResourcePtr resource = texMgr->getByName("cegui/" + getDefaultScheme() + ".png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		if (resource) {
 			resource->reload();
 		}
 	}

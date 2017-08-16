@@ -71,7 +71,7 @@ function ModelEdit:fillSubMeshList(part)
 	--we need to get hold of a mesh instance
 	local manager = Ogre.MeshManager:getSingleton()
 	local name = part:getSubModelDefinition():getMeshName()
-	local meshPtr = manager:getByName(name)
+	local meshPtr = manager:getByName(name, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 	--meshPtr = tolua.cast(meshPtr, "Ogre::MeshPtr")
 	local mesh = meshPtr:get()
 	
@@ -97,7 +97,7 @@ end
 
 function ModelEdit:loadModelDefinition(definitionName)
 	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
-	self.definitionPtr = modelDefMgr:getByName(definitionName)
+	self.definitionPtr = modelDefMgr:getByName(definitionName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 	self.definition = self.definitionPtr:get()
 	self:showPreview(definitionName)
 	
@@ -355,7 +355,7 @@ function ModelEdit:updateModelContentList()
 		
 		--we need to get hold of a mesh instance
 		local manager = Ogre.MeshManager:getSingleton()
-		local meshPtr = manager:getByName(name)
+		local meshPtr = manager:getByName(name, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 		local mesh = meshPtr:get()
 		
 		modelcontentItem.submodel = submodel

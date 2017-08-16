@@ -1,3 +1,4 @@
+$#include <OgreLodConfig.h>
 /*
  * -----------------------------------------------------------------------------
  * This source file is part of OGRE

@@ -33,6 +33,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHardwareBuffer.h>
 #include <OgreMaterialManager.h>
 #include <OgreMaterial.h>
+#include <OgreTechnique.h>
 using namespace Ogre;
 
 namespace Forests {

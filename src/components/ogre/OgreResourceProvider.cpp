@@ -74,7 +74,7 @@ ResourceWrapper OgreResourceProvider::getResource(const std::string& name)
 	Ogre::DataStreamPtr input =
 		Ogre::ResourceGroupManager::getSingleton().openResource(name, mGroupName);
 
-	if (input.isNull())
+	if (!input)
 	{
 		throw Exception("Unable to open resource file '" + name + "' in resource group '" + name + "'.");
 	}

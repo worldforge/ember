@@ -52,7 +52,7 @@ void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::Ra
 {
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().getType() == typeid(PolygonPointUserObject*)) {
+		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().type() == typeid(PolygonPointUserObject*)) {
 			continuePicking = false;
 			if (mousePickerArgs.pickType == MPT_PRESS) {
 				//TODO: make sure that it's a point which belongs to our polygon

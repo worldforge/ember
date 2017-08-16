@@ -31,6 +31,8 @@
 #include <OgreSceneManager.h>
 #include <OgreBillboard.h>
 #include <OgreBillboardSet.h>
+#include <OgreSceneNode.h>
+#include <OgreCamera.h>
 
 using namespace Ogre;
 

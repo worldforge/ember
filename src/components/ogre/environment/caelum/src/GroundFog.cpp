@@ -81,14 +81,10 @@ namespace Caelum
 #if (OGRE_VERSION < ((1 << 16) | (9 << 8) | 0))
             Ogre::MaterialPtr mat = matIt.getNext();
 #else
-            Ogre::MaterialPtr mat = matIt.getNext().staticCast<Ogre::Material>();
+            Ogre::MaterialPtr mat = Ogre::static_pointer_cast<Ogre::Material>(matIt.getNext());
 #endif
-			Ogre::Material::TechniqueIterator techIt = mat->getTechniqueIterator();
-			while (techIt.hasMoreElements()) {
-				Ogre::Technique *tech = techIt.getNext();
-				Ogre::Technique::PassIterator passIt = tech->getPassIterator();
-				while (passIt.hasMoreElements()) {
-					Ogre::Pass *pass = passIt.getNext();
+			for (Ogre::Technique* tech : mat->getTechniques()) {
+				for (auto* pass : tech->getPasses()) {
 					if (pass->getName() == passName) {
 						mPasses.insert(pass);
 					}

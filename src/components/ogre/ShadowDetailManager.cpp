@@ -23,6 +23,9 @@
 
 #include "OgreSceneManager.h"
 #include <OgreHardwarePixelBuffer.h>
+#include <OgreRenderTexture.h>
+#include <OgreViewport.h>
+#include <OgreCamera.h>
 
 namespace Ember
 {
@@ -52,11 +55,11 @@ bool ShadowDetailManager::setShadowCameraLodBias(float factor)
 	}
 	mShadowCameraLodBias = factor;
 
-	int textureCount = mSceneManager.getShadowTextureCount();
-	for (int i = 0; i < textureCount; i++) {
+	size_t textureCount = mSceneManager.getShadowTextureCount();
+	for (size_t i = 0; i < textureCount; i++) {
 		Ogre::TexturePtr texture = mSceneManager.getShadowTexture(i);
-		int viewportCount = texture->getBuffer()->getRenderTarget()->getNumViewports();
-		for (int j = 0; j < viewportCount; ++j) {
+		unsigned short viewportCount = texture->getBuffer()->getRenderTarget()->getNumViewports();
+		for (unsigned short j = 0; j < viewportCount; ++j) {
 			texture->getBuffer()->getRenderTarget()->getViewport(j)->getCamera()->setLodBias(factor);
 		}
 	}

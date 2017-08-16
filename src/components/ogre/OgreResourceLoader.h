@@ -32,6 +32,7 @@ namespace Ember {
 namespace OgreView {
 
 class FileSystemArchiveFactory;
+struct EmberResourceLoadingListener;
 
 /**
 @author Erik Ogenvik
@@ -84,6 +85,8 @@ protected:
 	std::vector<std::string> mLoadedSections;
 
 	FileSystemArchiveFactory* mFileSystemArchiveFactory;
+
+	EmberResourceLoadingListener* mLoadingListener;
 
 
 	bool addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);

@@ -38,6 +38,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHardwareBuffer.h>
 #include <OgreLogManager.h>
 #include <OgreEntity.h>
+#include <OgreTechnique.h>
 using namespace Ogre;
 
 namespace Forests {
@@ -80,7 +81,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 			const std::string fragmentProgramName("ImposterFragStandard");
 			//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
-			if (HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName).isNull()){
+			if (!HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)){
 				String fragmentProgSource;
 
 				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
@@ -132,8 +133,8 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 			//First shader, simple camera-alignment
 			HighLevelGpuProgramPtr vertexShader;
-			vertexShader = HighLevelGpuProgramManager::getSingleton().getByName("Sprite_vp");
-			if (vertexShader.isNull()){
+			vertexShader = HighLevelGpuProgramManager::getSingleton().getByName("Sprite_vp", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			if (!vertexShader){
 				String vertexProg;
 				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
 				{
@@ -235,8 +236,8 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 			//Second shader, camera alignment and distance based fading
 			HighLevelGpuProgramPtr vertexShader2;
-			vertexShader2 = HighLevelGpuProgramManager::getSingleton().getByName("SpriteFade_vp");
-			if (vertexShader2.isNull()){
+			vertexShader2 = HighLevelGpuProgramManager::getSingleton().getByName("SpriteFade_vp", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			if (!vertexShader2){
 				String vertexProg2;
 				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
 				{
@@ -370,8 +371,8 @@ StaticBillboardSet::~StaticBillboardSet()
 		sceneMgr->destroySceneNode(node->getName());
 
 		//Update material reference list
-		if (!materialPtr.isNull()) SBMaterialRef::removeMaterialRef(materialPtr);
-		if (!fadeMaterialPtr.isNull()) SBMaterialRef::removeMaterialRef(fadeMaterialPtr);
+		if (materialPtr) SBMaterialRef::removeMaterialRef(materialPtr);
+		if (fadeMaterialPtr) SBMaterialRef::removeMaterialRef(fadeMaterialPtr);
 
 		//Delete vertex shaders and materials if no longer in use
 		if (--selfInstances == 0){
@@ -398,11 +399,11 @@ void StaticBillboardSet::clear()
 			entity = 0;
 			
 			//Delete mesh
-			assert(!mesh.isNull());
+			assert(mesh);
 			String meshName(mesh->getName());
-			mesh.setNull();
+			mesh.reset();
 			if (MeshManager::getSingletonPtr())
-				MeshManager::getSingleton().remove(meshName);
+				MeshManager::getSingleton().remove(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		}
 
 		//Remove any billboard data which might be left over if the user forgot to call build()
@@ -431,11 +432,11 @@ void StaticBillboardSet::build()
 			entity = 0;
 			
 			//Delete mesh
-			assert(!mesh.isNull());
+			assert(mesh);
 			String meshName(mesh->getName());
-			mesh.setNull();
+			mesh.reset();
 			if (MeshManager::getSingletonPtr())
-				MeshManager::getSingleton().remove(meshName);
+				MeshManager::getSingleton().remove(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		}
 
 		//If there are no billboards to create, exit
@@ -591,10 +592,10 @@ void StaticBillboardSet::build()
 
 		//Apply texture
 		if (fadeEnabled) {
-			assert(!fadeMaterialPtr.isNull());
+			assert(fadeMaterialPtr);
 			entity->setMaterialName(fadeMaterialPtr->getName());
 		} else {
-			assert(!materialPtr.isNull());
+			assert(materialPtr);
 			entity->setMaterialName(materialPtr->getName());
 		}
 
@@ -607,13 +608,13 @@ void StaticBillboardSet::build()
 void StaticBillboardSet::setMaterial(const String &materialName)
 {
 	if (renderMethod == BB_METHOD_ACCELERATED){
-		if (materialPtr.isNull() || materialPtr->getName() != materialName){
+		if (!materialPtr || materialPtr->getName() != materialName){
 			//Update material reference list
 			if (fadeEnabled) {
-				assert(!fadeMaterialPtr.isNull());
+				assert(fadeMaterialPtr);
 				SBMaterialRef::removeMaterialRef(fadeMaterialPtr);
 			} else {
-				if (!materialPtr.isNull())
+				if (materialPtr)
 					SBMaterialRef::removeMaterialRef(materialPtr);
 			}
 
@@ -635,7 +636,7 @@ void StaticBillboardSet::setMaterial(const String &materialName)
 			}
 		}
 	} else {
-		if (materialPtr.isNull() || materialPtr->getName() != materialName){
+		if (!materialPtr || materialPtr->getName() != materialName){
 			materialPtr = MaterialManager::getSingleton().getByName(materialName);
 			fallbackSet->setMaterialName(materialPtr->getName());
 		}
@@ -646,15 +647,15 @@ void StaticBillboardSet::setFade(bool enabled, Real visibleDist, Real invisibleD
 {
 	if (renderMethod == BB_METHOD_ACCELERATED){
 		if (enabled){
-			if (materialPtr.isNull())
+			if (!materialPtr)
 				OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "Billboard fading cannot be enabled without a material applied first", "StaticBillboardSet::setFade()");
 
 			//Update material reference list
 			if (fadeEnabled) {
-				assert(!fadeMaterialPtr.isNull());
+				assert(fadeMaterialPtr);
 				SBMaterialRef::removeMaterialRef(fadeMaterialPtr);
 			} else {
-				assert(!materialPtr.isNull());
+				assert(materialPtr);
 				SBMaterialRef::removeMaterialRef(materialPtr);
 			}
 
@@ -671,8 +672,8 @@ void StaticBillboardSet::setFade(bool enabled, Real visibleDist, Real invisibleD
 		} else {
 			if (fadeEnabled){
 				//Update material reference list
-				assert(!fadeMaterialPtr.isNull());
-				assert(!materialPtr.isNull());
+				assert(fadeMaterialPtr);
+				assert(materialPtr);
 				SBMaterialRef::removeMaterialRef(fadeMaterialPtr);
 				SBMaterialRef::addMaterialRef(materialPtr, bbOrigin);
 				
@@ -696,7 +697,7 @@ void StaticBillboardSet::setTextureStacksAndSlices(Ogre::uint16 stacks, Ogre::ui
 
 MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisibleDist)
 {
-	StringUtil::StrStreamType materialSignature;
+	Ogre::StringStream materialSignature;
 	materialSignature << entityName << "|";
 	materialSignature << visibleDist << "|";
 	materialSignature << invisibleDist << "|";
@@ -862,7 +863,7 @@ SBMaterialRefList SBMaterialRef::selfList;
 
 void SBMaterialRef::addMaterialRef(const MaterialPtr &matP, Ogre::BillboardOrigin o)
 {
-	Material *mat = matP.getPointer();
+	Material *mat = matP.get();
 
 	SBMaterialRef *matRef;
 	SBMaterialRefList::iterator it;
@@ -883,7 +884,7 @@ void SBMaterialRef::addMaterialRef(const MaterialPtr &matP, Ogre::BillboardOrigi
 
 void SBMaterialRef::removeMaterialRef(const MaterialPtr &matP)
 {
-	Material *mat = matP.getPointer();
+	Material *mat = matP.get();
 
 	SBMaterialRef *matRef;
 	SBMaterialRefList::iterator it;

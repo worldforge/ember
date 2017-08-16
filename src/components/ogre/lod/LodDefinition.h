@@ -23,7 +23,8 @@
 #ifndef LODDEFINITION_H
 #define LODDEFINITION_H
 
-#include <OgreProgressiveMeshGenerator.h>
+#include <MeshLodGenerator/OgreLodConfig.h>
+#include <MeshLodGenerator/OgreMeshLodGenerator.h>
 
 #include <OgreResource.h>
 

@@ -105,8 +105,8 @@ public:
 
 	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase*, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 	{
-		EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-		for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+		auto endJ = caseDefinition.getActions().end();
+		for (auto J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 			if (J->getType() == "display-model") {
 				mModelName = J->getValue();
 			}
@@ -155,26 +155,26 @@ Icon* IconManager::getIcon(int, EmberEntity* entity)
 			modelName = "placeholder";
 		}
 		Ogre::ResourcePtr modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-		if (!modelDefPtr.isNull()) {
+		if (modelDefPtr) {
 			Model::ModelDefinition* modelDef = static_cast<Model::ModelDefinition*> (modelDefPtr.get());
 			const std::string& iconPath(modelDef->getIconPath());
 			if (iconPath != "") {
 
 				Ogre::TexturePtr texPtr;
 				try {
-					if (Ogre::TextureManager::getSingleton().resourceExists(iconPath)) {
-						texPtr = static_cast<Ogre::TexturePtr> (Ogre::TextureManager::getSingleton().getByName(iconPath));
+					if (Ogre::TextureManager::getSingleton().resourceExists(iconPath, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+						texPtr = static_cast<Ogre::TexturePtr> (Ogre::TextureManager::getSingleton().getByName(iconPath, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 						//try to load it to make sure that's it a working image
 						texPtr->load();
 					}
-					if (texPtr.isNull()) {
-						texPtr = Ogre::TextureManager::getSingleton().load(iconPath, "Gui");
+					if (!texPtr) {
+						texPtr = Ogre::TextureManager::getSingleton().load(iconPath, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 					}
 				} catch (...) {
 					S_LOG_WARNING("Error when trying to load the icon " << iconPath <<". The icon will be rendered dynamically.");
-					texPtr.setNull();
+					texPtr.reset();
 				}
-				if (!texPtr.isNull()) {
+				if (texPtr) {
 					Icon* icon = mIconStore.createIcon(key, texPtr);
 					return icon;
 				}

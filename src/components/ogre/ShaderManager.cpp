@@ -35,6 +35,8 @@
 #include <OgreMaterialManager.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
+#include <OgreTechnique.h>
+#include <OgreViewport.h>
 
 namespace Ember
 {
@@ -115,13 +117,13 @@ void ShaderManager::init()
 	bool supported;
 
 	// Iterate schemes from best to worst
-	for (std::map<GraphicsLevel, std::string>::reverse_iterator I = mGraphicSchemes.rbegin(); I != mGraphicSchemes.rend(); ++I) {
+	for (auto I = mGraphicSchemes.rbegin(); I != mGraphicSchemes.rend(); ++I) {
 
 		Ogre::MaterialManager::getSingleton().setActiveScheme(I->second);
 
 		supported = true;
-		for (std::list<std::string>::iterator J = materialsToCheck.begin(); J != materialsToCheck.end(); ++J) {
-			supported &= checkMaterial(*J, I->second);
+		for (auto& material : materialsToCheck) {
+			supported &= checkMaterial(material, I->second);
 			// Break when found first unsupported material, no need to check others
 			if (!supported) {
 				break;
@@ -156,13 +158,13 @@ void ShaderManager::init()
 bool ShaderManager::checkMaterial(const std::string& materialName, const std::string& schemeName)
 {
 	// OGRE scheme is switched in caller
-	Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().load(materialName, "General").staticCast<Ogre::Material>();
-	if (material->getNumSupportedTechniques() == 0) {
+	Ogre::MaterialPtr material = Ogre::static_pointer_cast<Ogre::Material>(Ogre::MaterialManager::getSingleton().load(materialName, "General"));
+	if (material->getSupportedTechniques().empty()) {
 		S_LOG_INFO("The material '" << material->getName() << "' has no supported techniques with scheme " << schemeName << ". The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;
 	}
 
-	S_LOG_INFO("The material '" << material->getName() << "' has " << material->getNumSupportedTechniques() << " supported techniques out of " << material->getNumTechniques());
+	S_LOG_INFO("The material '" << material->getName() << "' has " << material->getSupportedTechniques().size() << " supported techniques out of " << material->getNumTechniques());
 
 	// Check that we use desired scheme, but not fallbacked to default
 	if (material->getBestTechnique()->getSchemeName() != schemeName) {
@@ -212,11 +214,11 @@ ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string &le
 	std::string levelString = level;
 	std::transform(levelString.begin(), levelString.end(), levelString.begin(), (int (*)(int)) std::tolower);
 
-	for(std::map<GraphicsLevel, std::string>::const_iterator I = mGraphicSchemes.begin(); I != mGraphicSchemes.end(); ++I) {
-		std::string scheme = I->second;
+	for (const auto& entry : mGraphicSchemes) {
+		std::string scheme = entry.second;
 		std::transform(scheme.begin(), scheme.end(), scheme.begin(), (int(*)(int)) std::tolower);
 		if (levelString == scheme) {
-			return I->first;
+			return entry.first;
 		}
 	}
 
@@ -237,7 +239,7 @@ void ShaderManager::registerSceneManager(Ogre::SceneManager* sceneManager)
 
 void ShaderManager::deregisterSceneManager(Ogre::SceneManager* sceneManager)
 {
-	ShaderSetupStore::iterator I = mShaderSetups.find(sceneManager);
+	auto I = mShaderSetups.find(sceneManager);
 	if (I != mShaderSetups.end()) {
 		delete I->second;
 		mShaderSetups.erase(I);

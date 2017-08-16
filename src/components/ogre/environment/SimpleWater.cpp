@@ -35,6 +35,10 @@
 #include <OgreRenderTargetListener.h>
 #include <OgreRenderWindow.h>
 #include <OgreControllerManager.h>
+#include <OgreSceneNode.h>
+#include <OgreCamera.h>
+#include <OgreViewport.h>
+#include <OgrePredefinedControllers.h>
 
 namespace Ember
 {

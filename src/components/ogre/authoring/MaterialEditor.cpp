@@ -63,7 +63,7 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 			std::string materialName = tokens[0];
 
 			Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(materialName));
-			if (!materialPtr.isNull()) {
+			if (materialPtr) {
 				std::string techniqueIndexString = tokens[1];
 				if (techniqueIndexString != "") {
 					int techniqueIndex = Ogre::StringConverter::parseInt(techniqueIndexString);

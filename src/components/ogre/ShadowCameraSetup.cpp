@@ -30,6 +30,7 @@
 #include "framework/LoggingInstance.h"
 #include <OgreRoot.h>
 #include <OgreShadowCameraSetupPSSM.h>
+#include <OgreShadowCameraSetup.h>
 
 namespace Ember
 {

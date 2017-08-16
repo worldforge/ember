@@ -35,7 +35,7 @@ namespace Caelum
             const Ogre::String& name,
             bool throwIfNotFound/* = false*/)
     {
-        assert(!params.isNull());
+        assert(params);
         #if CAELUM_DEBUG_PARAM_REF
             mParams = params;
         #endif
@@ -51,7 +51,7 @@ namespace Caelum
 
     void FastGpuParamRef::unbind() {
         #if CAELUM_DEBUG_PARAM_REF
-            mParams.setNull();
+            mParams.reset();
         #endif
         mPhysicalIndex = InvalidPhysicalIndex;
         assert(!this->isBound());

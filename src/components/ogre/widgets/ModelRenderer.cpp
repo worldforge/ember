@@ -33,6 +33,7 @@
 #include "components/ogre/model/ModelDefinitionManager.h"
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 #include <CEGUI/Window.h>
 
 #include <sigc++/bind.h>
@@ -131,7 +132,7 @@ void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3&
 		//delete mModel;
 	}
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	if (!modelDef.isNull()) {
+	if (modelDef) {
 		mModel = new Model::Model(*mTexture->getRenderContext()->getSceneManager(), modelDef, modelName);
 		//override the rendering distance from the model; we want to always show it in the preview
 		mModel->setRenderingDistance(0);

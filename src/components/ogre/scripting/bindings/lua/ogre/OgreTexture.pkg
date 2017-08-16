@@ -314,7 +314,7 @@ namespace Ogre {
     public:
 		virtual ~TexturePtr();
 		Ogre::Texture* get();
-		bool isNull();
+		tolua_outside bool Lua_OgreSharedPtrIsNull @ isNull();
 
     };
 

@@ -128,7 +128,7 @@ namespace Ogre {
         @param preferHighLevelPrograms If set to true (the default), high level programs will be
             returned in preference to low-level programs.
         */
-        Ogre::ResourcePtr getByName(const std::string& name, bool preferHighLevelPrograms = true);
+        Ogre::ResourcePtr getByName(const std::string& name, const std::string& group, bool preferHighLevelPrograms = true);
         /** Override standard Singleton retrieval.
         @remarks
         Why do we do this? Well, it's because the Singleton

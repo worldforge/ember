@@ -92,7 +92,7 @@ namespace Ogre {
     public:
     	virtual ~HighLevelGpuProgramPtr();
 		Ogre::HighLevelGpuProgram* get();
-		bool isNull();
+		tolua_outside bool Lua_OgreSharedPtrIsNull @ isNull();
 
     };
 

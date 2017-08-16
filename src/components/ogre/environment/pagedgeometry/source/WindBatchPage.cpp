@@ -25,6 +25,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreRenderSystemCapabilities.h>
 #include <OgreHighLevelGpuProgram.h>
 #include <OgreHighLevelGpuProgramManager.h>
+#include <OgreTechnique.h>
 
 // to dump the shader source in a file
 #include <fstream>
@@ -86,7 +87,7 @@ void WindBatchPage::_updateShaders()
 		}
 
 		//Compile the shader script based on various material / fade options
-		StringUtil::StrStreamType tmpName;
+		Ogre::StringStream tmpName;
 		tmpName << "BatchPage_";
 		if (fadeEnabled)
 			tmpName << "fade_";
@@ -104,6 +105,9 @@ void WindBatchPage::_updateShaders()
 						case VET_FLOAT2: uvType = "2"; break;
 						case VET_FLOAT3: uvType = "3"; break;
 						case VET_FLOAT4: uvType = "4"; break;
+					default:
+						//ignore
+						break;
 				}
 				tmpName << uvType << '_';
 			}
@@ -116,7 +120,7 @@ void WindBatchPage::_updateShaders()
 		String shaderLanguage = ShaderHelper::getShaderLanguage();
 
 		//If the shader hasn't been created yet, create it
-		if (HighLevelGpuProgramManager::getSingleton().getByName(vertexProgName).isNull())
+		if (!HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME))
 		{
 			Pass *pass = mat->getTechnique(0)->getPass(0);
 			String vertexProgSource;
@@ -174,6 +178,9 @@ void WindBatchPage::_updateShaders()
 									case VET_FLOAT2: uvType = "float2"; break;
 									case VET_FLOAT3: uvType = "float3"; break;
 									case VET_FLOAT4: uvType = "float4"; break;
+									default:
+										//ignore
+										break;
 								}
 
 								vertexProgSource += 
@@ -442,7 +449,7 @@ void WindBatchPage::_updateShaders()
 		}
 
 		//Now that the shader is ready to be applied, apply it
-		StringUtil::StrStreamType materialSignature;
+		Ogre::StringStream materialSignature;
 		materialSignature << "BatchMat|";
 		materialSignature << mat->getName() << "|";
 		if (fadeEnabled){
@@ -452,7 +459,7 @@ void WindBatchPage::_updateShaders()
 
 		//Search for the desired material
 		MaterialPtr generatedMaterial = MaterialManager::getSingleton().getByName(materialSignature.str());
-		if (generatedMaterial.isNull()){
+		if (!generatedMaterial){
 			//Clone the material
 			generatedMaterial = mat->clone(materialSignature.str());
 

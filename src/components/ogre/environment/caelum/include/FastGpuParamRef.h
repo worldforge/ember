@@ -98,9 +98,9 @@ namespace Caelum
         template<typename ArgumentT>
         inline void doSet(const Ogre::GpuProgramParametersSharedPtr& params, ArgumentT arg) const {
             #if CAELUM_DEBUG_PARAM_REF
-                assert(params.getPointer() == mParams.getPointer());
+                assert(params.get() == mParams.get());
             #endif
-            assert(!params.isNull());
+            assert(params);
             if (mPhysicalIndex != InvalidPhysicalIndex) {
                 params->_writeRawConstant(mPhysicalIndex, arg);
             }
@@ -109,9 +109,9 @@ namespace Caelum
         template<typename ArgumentT>
         inline void doSet(const Ogre::GpuProgramParametersSharedPtr& params, ArgumentT arg, size_t count) const {
             #if CAELUM_DEBUG_PARAM_REF
-                assert(params.getPointer() == mParams.getPointer());
+                assert(params.get() == mParams.get());
             #endif
-            assert(!params.isNull());
+            assert(params);
             if (mPhysicalIndex != InvalidPhysicalIndex) {
                 params->_writeRawConstant(mPhysicalIndex, arg, count);
             }

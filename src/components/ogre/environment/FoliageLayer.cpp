@@ -33,6 +33,8 @@
 #include "../terrain/PlantInstance.h"
 #include "framework/LoggingInstance.h"
 
+#include <OgreTechnique.h>
+
 using namespace Forests;
 using namespace Ogre;
 using namespace Ember::OgreView::Terrain;

@@ -3,7 +3,7 @@
 This source file is part of Hydrax.
 Visit ---
 
-Copyright (C) 2008 Xavier Verguín González <xavierverguin@hotmail.com>
+Copyright (C) 2008 Xavier Verguï¿½n Gonzï¿½lez <xavierverguin@hotmail.com>
                                            <xavyiy@gmail.com>
 
 This program is free software; you can redistribute it and/or modify it under
@@ -59,13 +59,13 @@ namespace Hydrax
             Ogre::MeshManager::getSingleton().remove("HydraxMesh");
             mHydrax->getSceneManager()->destroyEntity(mEntity);
 
-			mMesh.setNull();
+			mMesh.reset();
 			mSubMesh = 0;
 			mEntity = 0;
 			mNumFaces = 0;
 			mNumVertices = 0;
-			mVertexBuffer.setNull();
-			mIndexBuffer.setNull();
+			mVertexBuffer.reset();
+			mIndexBuffer.reset();
 			mMaterialName = "_NULL_";
 		}
 

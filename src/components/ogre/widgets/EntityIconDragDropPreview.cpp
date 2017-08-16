@@ -39,6 +39,7 @@
 #include "domain/EmberEntity.h"
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 #include <framework/Singleton.h>
 
 using namespace Ember;
@@ -167,7 +168,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 		}
 	}
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	if (modelDef.isNull()) {
+	if (!modelDef) {
 		modelDef = Model::ModelDefinitionManager::getSingleton().getByName("placeholder");
 	}
 	mModel = new Model::Model(mWorld.getSceneManager(), modelDef, modelName);

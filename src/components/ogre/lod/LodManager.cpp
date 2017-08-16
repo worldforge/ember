@@ -24,7 +24,7 @@
 #include "LodDefinitionManager.h"
 #include "ScaledPixelCountLodStrategy.h"
 
-#include <OgreQueuedProgressiveMeshGenerator.h>
+#include <MeshLodGenerator/OgreMeshLodGenerator.h>
 #include <OgrePixelCountLodStrategy.h>
 #include <OgreDistanceLodStrategy.h>
 
@@ -59,16 +59,14 @@ void LodManager::loadLod(Ogre::MeshPtr mesh)
 	} catch (const Ogre::FileNotFoundException& ex) {
 		// Exception is thrown if a mesh hasn't got a loddef.
 		// By default, use the automatic mesh lod management system.
-		Ogre::QueuedProgressiveMeshGenerator pm;
-		pm.generateAutoconfiguredLodLevels(mesh);
+		Ogre::MeshLodGenerator::getSingleton().generateAutoconfiguredLodLevels(mesh);
 	}
 }
 
 void LodManager::loadLod(Ogre::MeshPtr mesh, const LodDefinition& def)
 {
 	if (def.getUseAutomaticLod()) {
-		Ogre::QueuedProgressiveMeshGenerator pm;
-		pm.generateAutoconfiguredLodLevels(mesh);
+		Ogre::MeshLodGenerator::getSingleton().generateAutoconfiguredLodLevels(mesh);
 	} else if (def.getLodDistanceCount() == 0) {
 		mesh->removeLodLevels();
 		return;
@@ -93,12 +91,7 @@ void LodManager::loadLod(Ogre::MeshPtr mesh, const LodDefinition& def)
 			} else {
 				loadAutomaticLodImpl(data.rbegin(), data.rend(), lodConfig);
 			}
-			// Uncomment the ProgressiveMesh of your choice.
-			// NOTE: OgreProgressiveMeshExt doesn't support collapse cost based reduction.
-			// OgreProgressiveMeshExt pm;
-			// ProgressiveMeshGenerator pm;
-			Ogre::QueuedProgressiveMeshGenerator pm;
-			pm.generateLodLevels(lodConfig);
+			Ogre::MeshLodGenerator::getSingleton().generateLodLevels(lodConfig);
 		} else {
 			// User created Lod
 
@@ -151,7 +144,7 @@ void LodManager::loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh)
 		const Ogre::String& meshName = it->second.getMeshName();
 		if (meshName != "") {
 			assert(Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(meshName));
-			mesh->createManualLodLevel(it->first, meshName);
+			mesh->updateManualLodLevel(it->first, meshName);
 		}
 	}
 }

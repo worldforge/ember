@@ -32,6 +32,7 @@
 #include <OgreTechnique.h>
 #include <OgreRoot.h>
 #include <OgreHardwarePixelBuffer.h>
+#include <OgreTextureManager.h>
 
 namespace Ember
 {
@@ -99,7 +100,7 @@ bool Simple::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 //	addLightingPass(technique, managedTextures);
 
 	material->load();
-	if (material->getNumSupportedTechniques() == 0) {
+	if (material->getSupportedTechniques().empty()) {
 		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;
 	}
@@ -120,9 +121,9 @@ void Simple::addLightingPass(Ogre::Technique* technique, std::set<std::string>& 
 	lightingTextureNameSS << technique->getParent()->getName() << "_lighting";
 	const Ogre::String lightingTextureName(lightingTextureNameSS.str());
 
-	Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(lightingTextureName));
-	if (texture.isNull()) {
-		texture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(lightingTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getBlendMapSize(), mPage.getBlendMapSize(), 1, Ogre::PF_L8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().getByName(lightingTextureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	if (!texture) {
+		texture = Ogre::TextureManager::getSingleton().createManual(lightingTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getBlendMapSize(), mPage.getBlendMapSize(), 1, Ogre::PF_L8, Ogre::TU_DYNAMIC_WRITE_ONLY);
 		managedTextures.insert(texture->getName());
 	}
 
@@ -168,9 +169,9 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 {
 	auto shadowTextureName = getShadowTextureName(material);
 
-	Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName));
-	if (texture.isNull()) {
-		texture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getBlendMapSize(), mPage.getBlendMapSize(), 1, Ogre::PF_L8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().getByName(shadowTextureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	if (!texture) {
+		texture = Ogre::TextureManager::getSingleton().createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getBlendMapSize(), mPage.getBlendMapSize(), 1, Ogre::PF_L8, Ogre::TU_DYNAMIC_WRITE_ONLY);
 		managedTextures.insert(texture->getName());
 	}
 
@@ -276,8 +277,8 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 	splatTextureNameSS << "terrain_" << mPage.getWFPosition().x() << "_" << mPage.getWFPosition().y() << "_" << technique->getNumPasses();
 	const Ogre::String splatTextureName(splatTextureNameSS.str());
 	Ogre::TexturePtr blendMapTexture;
-	if (Ogre::Root::getSingletonPtr()->getTextureManager()->resourceExists(splatTextureName)) {
-		blendMapTexture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(splatTextureName));
+	if (Ogre::TextureManager::getSingleton().resourceExists(splatTextureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+		blendMapTexture = Ogre::TextureManager::getSingleton().getByName(splatTextureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		blendMapTexture->loadImage(image);
 
 		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(blendMapTexture->getBuffer());
@@ -285,7 +286,7 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 		Ogre::PixelBox sourceBox(image.getPixelBox());
 		hardwareBuffer->blitFromMemory(sourceBox);
 	} else {
-		blendMapTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadImage(splatTextureName, "General", image, Ogre::TEX_TYPE_2D, 0);
+		blendMapTexture = Ogre::TextureManager::getSingleton().loadImage(splatTextureName, "General", image, Ogre::TEX_TYPE_2D, 0);
 		managedTextures.insert(blendMapTexture->getName());
 	}
 

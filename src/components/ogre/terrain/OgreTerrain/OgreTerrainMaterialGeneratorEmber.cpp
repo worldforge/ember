@@ -19,6 +19,7 @@
 #include "OgreTerrainMaterialGeneratorEmber.h"
 #include "EmberTerrain.h"
 #include "../techniques/Shader.h"
+#include <OgreMaterialManager.h>
 
 using namespace Ogre;
 
@@ -40,7 +41,7 @@ EmberTerrainProfile::EmberTerrainProfile(IPageDataProvider& dataProvider, Terrai
 {
 	//Check that our error material exists
 	mErrorMaterialTemplate = Ogre::MaterialManager::getSingleton().getByName(ERROR_MATERIAL);
-	assert(!mErrorMaterialTemplate.isNull());
+	assert(mErrorMaterialTemplate);
 }
 
 EmberTerrainProfile::~EmberTerrainProfile()
@@ -81,7 +82,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain)
 
 	Ogre::MaterialPtr mat = pageData->getMaterial();
 
-	if (mat.isNull()) {
+	if (!mat) {
 		S_LOG_WARNING("Terrain material was not found.");
 		return getOrCreateMaterialClone(mErrorMaterialTemplate, terrain->getMaterialName());
 	}
@@ -89,7 +90,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain)
 	Ogre::AliasTextureNamePairList aliases;
 	aliases[Techniques::Shader::NORMAL_TEXTURE_ALIAS] = terrain->getTerrainNormalMap()->getName();
 	auto compositeMap = terrain->getCompositeMap();
-	if (!compositeMap.isNull()) {
+	if (compositeMap) {
 		aliases[Techniques::Shader::COMPOSITE_MAP_ALIAS] = compositeMap->getName();
 	}
 
@@ -117,7 +118,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terra
 
 	Ogre::MaterialPtr mat = pageData->getCompositeMapMaterial();
 
-	if (!mat.isNull()) {
+	if (mat) {
 		return mat;
 	} else {
 		S_LOG_WARNING("Composite map material was not found. This might happen if the page is currently being unloaded.");
@@ -130,7 +131,7 @@ Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(Ogre::MaterialPt
 	std::string name = templateMaterial->getName() + suffix;
 
 	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(name);
-	if (!mat.isNull()) {
+	if (mat) {
 		return mat;
 	}
 

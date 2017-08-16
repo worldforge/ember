@@ -71,7 +71,7 @@ DensityMap::~DensityMap()
 
 DensityMap::DensityMap(TexturePtr map, MapChannel channel)
 {
-	assert(map.isNull() == false);
+	assert(map);
 	filter = MAPFILTER_BILINEAR;
 
 	//Add self to selfList
@@ -251,7 +251,7 @@ ColorMap::~ColorMap()
 
 ColorMap::ColorMap(TexturePtr map, MapChannel channel)
 {
-	assert(map.isNull() == false);
+	assert(map);
 	filter = MAPFILTER_BILINEAR;
 
 	//Add self to selfList

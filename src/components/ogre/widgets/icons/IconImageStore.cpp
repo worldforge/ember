@@ -163,8 +163,8 @@ void IconImageStore::createImageset()
 	mImage.loadDynamicImage(mImageDataStream->getPtr(), mImageSize, mImageSize, 1, Ogre::PF_A8R8G8B8);
 
 	//no mipmaps to avoid problems when updating dynamically, also we don't really need it since this is a gui element which will be shown in the same resolution almost all of the time
-	mTexPtr = Ogre::TextureManager::getSingleton().loadImage(mImagesetName, "Gui", mImage, Ogre::TEX_TYPE_2D, 0);
-	if (mTexPtr.isNull()) {
+	mTexPtr = Ogre::TextureManager::getSingleton().loadImage(mImagesetName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, mImage, Ogre::TEX_TYPE_2D, 0);
+	if (!mTexPtr) {
 		S_LOG_WARNING("Could not create a texture.");
 		return;
 	}

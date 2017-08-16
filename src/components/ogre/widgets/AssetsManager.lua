@@ -60,7 +60,7 @@ function AssetsManager:MaterialsList_SelectionChanged(args)
 	if item ~= nil then
 		local manager = Ogre.MaterialManager:getSingleton()
 		local materialName = item:getText()
-		local res = manager:getByName(materialName)
+		local res = manager:getByName(materialName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 		res = tolua.cast(res, "Ogre::MaterialPtr")
 		local text = self.helper:materialAsText(res)
 		self.materials.controls.textWidget:setProperty("Text", text)
@@ -82,7 +82,7 @@ function AssetsManager:ShadersList_SelectionChanged(args)
 	if item ~= nil then
 		local manager = Ogre.HighLevelGpuProgramManager:getSingleton()
 		local materialName = item:getText()
-		local res = manager:getByName(materialName)
+		local res = manager:getByName(materialName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 		if res ~= nil then
 			res = tolua.cast(res, "Ogre::GpuProgramPtr")
 			resPtr = res:get()
@@ -172,7 +172,7 @@ function AssetsManager:MeshInfoSaveMeshButton_Clicked(args)
 	local mesh = self.meshes.current.meshPtr.get()
 	mesh:setSkeletonName(self.meshes.controls.skeletonPath:getText())
 	local manager = Ogre.MeshManager:getSingleton()
-	local meshPtr = manager:getByName(mesh:getName())
+	local meshPtr = manager:getByName(mesh:getName(), Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 	self.meshes.renderer:unloadEntity()
 	mesh:removeLodLevels()
 	self.helper:exportMesh(meshPtr, self.helper:resolveFilePathForMesh(meshPtr))
@@ -193,7 +193,7 @@ end
 function AssetsManager:CreateModel_Clicked(args)
   local mesh = self.meshes.current.meshPtr.get()
   local manager = Ogre.MeshManager:getSingleton()
-  local meshPtr = manager:getByName(mesh:getName())
+  local meshPtr = manager:getByName(mesh:getName(), Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
   self.helper:createModel(meshPtr)
   return true
 end
@@ -203,12 +203,12 @@ function AssetsManager:showMesh(meshName)
 	
 	--we need to get hold of a mesh instance
 	local manager = Ogre.MeshManager:getSingleton()
-	local meshPtr = manager:getByName(meshName)
+	local meshPtr = manager:getByName(meshName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 	self.meshes.current = {}
 	self.meshes.current.userlistboxSelected = ""
 	self.meshes.current.meshPtr = {}
 	self.meshes.current.meshPtr.get = function()
-		return manager:getByName(meshName):get()
+		return manager:getByName(meshName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME):get()
 	end
 	
 	local animationNames = self.meshes.renderer:getEntityAnimationNames()
@@ -232,7 +232,7 @@ function AssetsManager:showMesh(meshName)
 	local lodDefManager = Ember.OgreView.Lod.LodDefinitionManager:getSingleton()
 	self.meshes.current.lodDefPtr = {}
 	self.meshes.current.lodDefPtr.get = function()
-		return lodDefManager:getByName(self:getLodDefName(meshName)):get()
+		return lodDefManager:getByName(self:getLodDefName(meshName), Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME):get()
 	end
 	local lodlevelsList = self.widget:getWindow("LODDistances")
 	lodlevelsList = CEGUI.toListbox(lodlevelsList)
@@ -480,11 +480,11 @@ function AssetsManager:LODRegenerateLods()
 		local meshName = mesh:getName()
 		local lodManager = Ember.OgreView.Lod.LodManager:getSingleton()
 		local lodDefManager = Ember.OgreView.Lod.LodDefinitionManager:getSingleton()
-		local lodDefPtr = lodDefManager:getByName(self:getLodDefName(meshName))
+		local lodDefPtr = lodDefManager:getByName(self:getLodDefName(meshName), Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 		local lodDef = lodDefPtr:get()
 		
 		local manager = Ogre.MeshManager:getSingleton()
-		local meshPtr = manager:getByName(meshName)
+		local meshPtr = manager:getByName(meshName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 		
 		local combobox = self.widget:getWindow("LODTypeCombobox")
 		combobox = CEGUI.toCombobox(combobox)
@@ -991,7 +991,7 @@ function AssetsManager:buildWidget()
 			local mesh = self.meshes.current.meshPtr.get()
 			local meshName = mesh:getName()
 			local lodDefManager = Ember.OgreView.Lod.LodDefinitionManager:getSingleton()
-			local lodDefPtr = lodDefManager:getByName(self:getLodDefName(meshName))
+			local lodDefPtr = lodDefManager:getByName(self:getLodDefName(meshName), Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 			lodDefManager:exportScript(meshName, lodDefPtr)			
 			return true
 		end)

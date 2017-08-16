@@ -86,7 +86,7 @@ void XMLModelDefinitionSerializer::parseScript(ModelDefinitionManager& modelDefM
 
 			try {
 				ModelDefinitionPtr modelDef = modelDefManager.create(name, groupName);
-				if (!modelDef.isNull()) {
+				if (modelDef) {
 					readModel(modelDef, smElem);
 					modelDef->setValid(true);
 				}

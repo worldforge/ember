@@ -36,8 +36,11 @@
 #include "../terrain/ITerrainObserver.h"
 
 #include <Ogre.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayManager.h>
+#include <OgreRectangle2D.h>
+#include <OgreMaterialManager.h>
+#include <OgreTextureManager.h>
+#include <Overlay/OgreOverlay.h>
+#include <Overlay/OgreOverlayManager.h>
 
 #include <CEGUI/Image.h>
 
@@ -213,7 +216,7 @@ OverlayCompassImpl::OverlayCompassImpl() :
 		mCompassOverlay(0)
 {
 	Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
-	mCompassOverlay = (Ogre::Overlay*)omgr.getByName("CompassOverlay");
+	mCompassOverlay = omgr.getByName("CompassOverlay");
 }
 
 OverlayCompassImpl::~OverlayCompassImpl()
@@ -239,7 +242,7 @@ void OverlayCompassImpl::reposition(float x, float y)
 {
 	mMap->getView().reposition(Ogre::Vector2(x, y));
 
-	if (!mCompassMaterial.isNull()) {
+	if (mCompassMaterial) {
 		Ogre::TextureUnitState* tus(mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0));
 		const Ogre::Vector2& relPosition(mMap->getView().getRelativeViewPosition());
 		tus->setTextureScroll(-0.5f + relPosition.x, -0.5f + relPosition.y);
@@ -256,7 +259,7 @@ void OverlayCompassImpl::rotate(const Ogre::Degree& degree)
 	//
 	// 	RotBox<2> rotbox(center, dimensions, qRot);
 
-	if (!mCompassMaterial.isNull()) {
+	if (mCompassMaterial) {
 		Ogre::TextureUnitState* tus(mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0));
 		tus->setTextureRotate(degree);
 
@@ -280,7 +283,7 @@ RenderedCompassImpl::RenderedCompassImpl(std::string compassMaterialName, std::s
 RenderedCompassImpl::~RenderedCompassImpl()
 {
 	//We should probably not do this ourselves, since it will corrupt the material.
-	if (!mTexture.isNull()) {
+	if (mTexture) {
 		Ogre::TextureManager::getSingleton().remove(mTexture->getHandle());
 	}
 
@@ -289,7 +292,7 @@ RenderedCompassImpl::~RenderedCompassImpl()
 	}
 
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
-	if (!mCompassMaterial.isNull()) {
+	if (mCompassMaterial) {
 		Ogre::MaterialManager::getSingleton().remove(mCompassMaterial->getHandle());
 	}
 
@@ -330,17 +333,18 @@ void RenderedCompassImpl::refresh()
 void RenderedCompassImpl::_setCompass(Compass* compass)
 {
 	Ogre::MaterialPtr originalMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(mMaterialName));
-	if (!originalMaterial.isNull()) {
+	if (originalMaterial) {
 		originalMaterial->load();
 		mCompassMaterial = originalMaterial->clone(OgreInfo::createUniqueResourceName(originalMaterial->getName()));
 		if (Ogre::Technique* tech = mCompassMaterial->getBestTechnique()) {
 			Ogre::Pass* pass(0);
 			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
-				if ((mCompassMaterialMapTUS = pass->getTextureUnitState("Background"))) {
+				mCompassMaterialMapTUS = pass->getTextureUnitState("Background");
+				if (mCompassMaterialMapTUS) {
 					//Make sure that the compass material is using the map texture for the base rendering
 					mCompassMaterialMapTUS->setTexture(mMap->getTexture());
 
-					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompass", "Gui", Ogre::TEX_TYPE_2D, 128, 128, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
+					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompass", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 128, 128, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
 					mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 					mRenderTexture->removeAllViewports();
 					mRenderTexture->setAutoUpdated(false);
@@ -398,7 +402,7 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0, 0, 0, 0), 0.0f, 0.0f, 0.0f);
 
 	Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
-	if (!material.isNull()) {
+	if (material) {
 		material->load();
 		mPointerMaterial = material->clone(OgreInfo::createUniqueResourceName(material->getName()));
 		if (Ogre::Technique* tech = mPointerMaterial->getBestTechnique()) {
@@ -408,7 +412,7 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 
 					//Since we need to rotate the arrow we'll make the image twice as big (32px) as the width of the arrow (16px), else it will be truncated when it's turned 45 degrees.
 					//The material used must thus use a 0.5 scale so that the compass arrow is half the size.
-					mTexture = Ogre::TextureManager::getSingleton().createManual(OgreInfo::createUniqueResourceName("RenderedCompassPointer"), "Gui", Ogre::TEX_TYPE_2D, 32, 32, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
+					mTexture = Ogre::TextureManager::getSingleton().createManual(OgreInfo::createUniqueResourceName("RenderedCompassPointer"), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 32, 32, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
 					mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 					mRenderTexture->removeAllViewports();
 					mRenderTexture->setAutoUpdated(false);
@@ -450,11 +454,11 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 
 RenderedCompassPointer::~RenderedCompassPointer()
 {
-	if (!mPointerMaterial.isNull()) {
-		Ogre::MaterialManager::getSingleton().remove(mPointerMaterial->getName());
+	if (mPointerMaterial) {
+		Ogre::MaterialManager::getSingleton().remove(mPointerMaterial->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	}
-	if (!mTexture.isNull()) {
-		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
+	if (mTexture) {
+		Ogre::TextureManager::getSingleton().remove(mTexture->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	}
 
 	if (mCamera) {

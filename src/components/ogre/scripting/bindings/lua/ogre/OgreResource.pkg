@@ -138,8 +138,7 @@ namespace Ogre {
     public:
 		virtual ~ResourcePtr();
 		Ogre::Resource* get();
-		bool isNull();
-
+        tolua_outside bool Lua_OgreSharedPtrIsNull @ isNull();
     };
 }
 

@@ -23,6 +23,7 @@
 #include "OnePixelMaterialGenerator.h"
 
 #include <OgreTexture.h>
+#include <OgreDataStream.h>
 
 namespace Ember
 {

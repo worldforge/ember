@@ -24,6 +24,7 @@
 
 #include <OgreRoot.h>
 #include <OgreShadowCameraSetupPSSM.h>
+#include <OgreTextureManager.h>
 
 namespace Ember
 {
@@ -45,9 +46,9 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 	const Ogre::String combinedBlendMapName(combinedBlendMapTextureNameSS.str());
 	Ogre::TexturePtr combinedBlendMapTexture;
 	Ogre::TextureManager* textureMgr = Ogre::Root::getSingletonPtr()->getTextureManager();
-	if (textureMgr->resourceExists(combinedBlendMapName)) {
+	if (textureMgr->resourceExists(combinedBlendMapName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 		S_LOG_VERBOSE("Using already created blendMap texture " << combinedBlendMapName);
-		combinedBlendMapTexture = static_cast<Ogre::TexturePtr>(textureMgr->getByName(combinedBlendMapName));
+		combinedBlendMapTexture = static_cast<Ogre::TexturePtr>(textureMgr->getByName(combinedBlendMapName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 		if(!combinedBlendMapTexture->isLoaded()) {
 			combinedBlendMapTexture->createInternalResources();
 		}

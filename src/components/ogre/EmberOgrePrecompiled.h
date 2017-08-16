@@ -15,6 +15,7 @@
 #include <wfmath/quaternion.h>
 #include <wfmath/vector.h>
 
+#include <OgrePrerequisites.h>
 #include <OgreCamera.h>
 #include <OgreColourValue.h>
 #include <OgreCommon.h>
@@ -25,7 +26,6 @@
 #include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
 #include <OgreMath.h>
-#include <OgrePrerequisites.h>
 #include <OgreQuaternion.h>
 #include <OgreRenderSystem.h>
 #include <OgreRenderWindow.h>

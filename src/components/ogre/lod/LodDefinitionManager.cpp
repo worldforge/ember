@@ -52,12 +52,12 @@ LodDefinitionPtr LodDefinitionManager::create (const Ogre::String& name, const O
         bool isManual, Ogre::ManualResourceLoader* loader,
         const Ogre::NameValuePairList* createParams)
 {
-    return createResource(name, group, isManual, loader, createParams).staticCast<LodDefinition>();
+    return Ogre::static_pointer_cast<LodDefinition>(createResource(name, group, isManual, loader, createParams));
 }
 
 LodDefinitionPtr LodDefinitionManager::getByName(const Ogre::String& name, const Ogre::String& groupName)
 {
-    return getResourceByName(name, groupName).staticCast<LodDefinition>();
+    return Ogre::static_pointer_cast<LodDefinition>(getResourceByName(name, groupName));
 }
 
 Ogre::Resource* LodDefinitionManager::createImpl(const Ogre::String& name,
@@ -79,15 +79,13 @@ void LodDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::
 	if (start != std::string::npos) {
 		lodName = lodName.substr(start + 1);
 	}
-
 	// Create resource
-	Ogre::ResourcePtr resource = create(lodName, groupName);
+	LodDefinitionPtr resource = Ogre::static_pointer_cast<LodDefinition>(create(lodName, groupName));
 
 	// Set origin of resource.
 	resource->_notifyOrigin(stream->getName());
 
-	LodDefinition& loddef = *static_cast<LodDefinition*>(resource.get());
-	mLodDefinitionSerializer.importLodDefinition(stream, loddef);
+	mLodDefinitionSerializer.importLodDefinition(stream, *resource.get());
 }
 
 void LodDefinitionManager::exportScript(std::string meshName, LodDefinitionPtr definition)

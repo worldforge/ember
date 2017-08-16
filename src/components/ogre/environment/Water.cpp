@@ -33,6 +33,13 @@
 #include <OgreMeshManager.h>
 #include <OgreGpuProgramManager.h>
 #include <OgreHardwarePixelBuffer.h>
+#include <OgreCamera.h>
+#include <OgreSceneNode.h>
+#include <OgreRenderTexture.h>
+#include <OgreMaterialManager.h>
+#include <OgreTechnique.h>
+#include <OgreViewport.h>
+#include <OgreTextureManager.h>
 
 using namespace Ogre;
 
@@ -197,7 +204,7 @@ bool Water::initialize()
 		{
 			Viewport *v = rttTex->addViewport( &mCamera );
 			Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
-			if (!mat.isNull()) {
+			if (mat) {
 				mat->getTechnique(0)->getPass(0)->getTextureUnitState(2)->setTextureName("Refraction");
 				v->setOverlaysEnabled(false);
 				rttTex->addListener(mRefractionListener);
@@ -210,7 +217,7 @@ bool Water::initialize()
 		{
 			Viewport *v = rttTex->addViewport( &mCamera );
 			Ogre::MaterialPtr mat = MaterialManager::getSingleton().getByName("Examples/FresnelReflectionRefraction");
-			if (!mat.isNull()) {
+			if (mat) {
 				mat->getTechnique(0)->getPass(0)->getTextureUnitState(1)->setTextureName("Reflection");
 				v->setOverlaysEnabled(false);
 				rttTex->addListener(mReflectionListener);

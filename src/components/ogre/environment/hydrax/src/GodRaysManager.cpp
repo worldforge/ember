@@ -3,7 +3,7 @@
 This source file is part of Hydrax.
 Visit ---
 
-Copyright (C) 2008 Xavier Verguín González <xavierverguin@hotmail.com>
+Copyright (C) 2008 Xavier Verguï¿½n Gonzï¿½lez <xavierverguin@hotmail.com>
                                            <xavyiy@gmail.com>
 
 This program is free software; you can redistribute it and/or modify it under
@@ -65,7 +65,7 @@ namespace Hydrax
 	{
 		for (int k = 0; k < 2; k++)
 		{
-			mMaterials[k].setNull();
+			mMaterials[k].reset();
 		}
 	}
 
@@ -184,17 +184,17 @@ namespace Hydrax
 
 		for (int k = 0; k < 2; k++)
 		{
-			mMaterials[k].setNull();
+			mMaterials[k].reset();
 		}
 
-		if (!mProjectorRTT.isNull())
+		if (mProjectorRTT)
 		{
 			Ogre::RenderTarget* RT = mProjectorRTT->getBuffer()->getRenderTarget();
             RT->removeAllListeners();
             RT->removeAllViewports();
 
 			Ogre::TextureManager::getSingleton().remove(mProjectorRTT->getName());
-			mProjectorRTT.setNull();
+			mProjectorRTT.reset();
 		}
 
 		mHydrax->getSceneManager()->destroyCamera(mProjectorCamera);

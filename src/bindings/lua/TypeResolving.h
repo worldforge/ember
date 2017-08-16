@@ -32,7 +32,7 @@
 
 #include <Eris/BaseConnection.h>
 
-#include <OgreLodConfig.h>
+#include <MeshLodGenerator/OgreLodConfig.h>
 
 namespace Atlas
 {

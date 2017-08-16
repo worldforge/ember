@@ -38,6 +38,9 @@
 #include <OgreSubEntity.h>
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
+#include <OgreSkeletonInstance.h>
+#include <OgreMaterialManager.h>
+
 
 namespace Ember {
 namespace OgreView {
@@ -174,7 +177,7 @@ bool Model::createModelAssets() {
 				entity = mManager.createEntity(submodelDef->getMeshName());
 			}
 			timedLog.report("Created entity " + submodelDef->getMeshName());
-			if (entity->getMesh().isNull()) {
+			if (!entity->getMesh()) {
 				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
 			}
 
@@ -369,7 +372,7 @@ void Model::createParticles() {
 				//This of course means that there's still an issue when the camera is below the water
 				//(as the water, being rendered first, will prevent the particles from being rendered). That will need to be solved.
 				Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().getByName(ogreParticleSystem->getMaterialName());
-				if (!materialPtr.isNull()) {
+				if (materialPtr) {
 					if (materialPtr->isTransparent()) {
 						ogreParticleSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
 					}
@@ -520,10 +523,8 @@ void Model::hidePart(const std::string& partName, bool dontChangeVisibility) {
 					}
 				}
 			}
-
 		}
 	}
-
 }
 
 void Model::setVisible(bool visible) {
@@ -613,7 +614,9 @@ void Model::removeMovable(Ogre::MovableObject* movable) {
 
 void Model::resetSubmodels() {
 	if (!mSubmodels.empty()) {
-		for (auto& submodel : mSubmodels) {
+		//Copy since we'll be invalidating it.
+		auto submodels = mSubmodels;
+		for (auto& submodel : submodels) {
 			removeSubmodel(submodel);
 			delete submodel;
 		}
@@ -624,7 +627,8 @@ void Model::resetSubmodels() {
 
 void Model::resetParticles() {
 	if (!mParticleSystems.empty()) {
-		for (auto& system : mParticleSystems) {
+		auto particleSystems = mParticleSystems;
+		for (auto& system : particleSystems) {
 			removeMovable(system->getOgreParticleSystem());
 			delete system;
 		}
@@ -635,7 +639,8 @@ void Model::resetParticles() {
 
 void Model::resetLights() {
 	if (!mLights.empty()) {
-		for (auto& lightInfo : mLights) {
+		auto lights = mLights;
+		for (auto& lightInfo : lights) {
 			Ogre::Light* light = lightInfo.light;
 			if (light) {
 				removeMovable(light);
@@ -767,7 +772,7 @@ void Model::setQueryFlags(unsigned int flags) {
 //			//(as the water, being rendered first, will prevent the particles from being rendered). That will need to be solved.
 //			std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve((*I)->getOgreParticleSystem()->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 //			Ogre::MaterialPtr materialPtr = result.first.staticCast<Ogre::Material>();
-//			if (!materialPtr.isNull()) {
+//			if (materialPtr) {
 //				if (materialPtr->isTransparent()) {
 //					(*I)->getOgreParticleSystem()->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
 //				}

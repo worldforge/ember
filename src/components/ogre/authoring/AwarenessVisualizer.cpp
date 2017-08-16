@@ -67,6 +67,7 @@
 
 #include <OgreManualObject.h>
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 
 namespace Ember
 {

@@ -39,6 +39,7 @@
 #include <OgreMaterialSerializer.h>
 #include <OgreTextureManager.h>
 #include <OgreMeshSerializer.h>
+#include <OgreMesh.h>
 
 #include <CEGUI/Image.h>
 #include <CEGUI/BasicImage.h>
@@ -68,9 +69,9 @@ TexturePair AssetsManager::showTexture(const std::string textureName)
 	// 		S_LOG_WARNING("You must first create a valid OgreCEGUITexture instance.");
 	// 		return;
 	// 	}
-	if (Ogre::TextureManager::getSingleton().resourceExists(textureName)) {
-		Ogre::TexturePtr texturePtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(textureName));
-		if (!texturePtr.isNull()) {
+	if (Ogre::TextureManager::getSingleton().resourceExists(textureName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME)) {
+		Ogre::TexturePtr texturePtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(textureName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME));
+		if (texturePtr) {
 			if (!texturePtr->isLoaded()) {
 				try {
 					texturePtr->load();
@@ -79,8 +80,7 @@ TexturePair AssetsManager::showTexture(const std::string textureName)
 					return TexturePair();
 				}
 			}
-			std::string textureName(texturePtr->getName());
-			std::string imageSetName(textureName + "_AssetsManager");
+			std::string imageSetName(texturePtr->getName() + "_AssetsManager");
 
 			return createTextureImage(texturePtr, imageSetName);
 			// 			mOgreCEGUITexture->setOgreTexture(texturePtr);
@@ -130,7 +130,7 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 
 std::string AssetsManager::materialAsText(Ogre::MaterialPtr material)
 {
-	if (material.isNull()) {
+	if (!material) {
 		return "";
 	}
 	Ogre::MaterialSerializer serializer;
@@ -214,7 +214,7 @@ void AssetsManager::createModel(Ogre::MeshPtr mesh)
 	auto tokens = Tokeniser::split(name, "/");
 	std::string modelName = Tokeniser::split(tokens.back(), ".").front();
 	auto modelDefinition = modelDefinitionManager.create(modelName, "ModelDefinitions");
-	if (!modelDefinition.isNull()) {
+	if (modelDefinition) {
 		modelDefinition->createSubModelDefinition(mesh->getName());
 		modelDefinitionManager.exportScript(modelDefinition);
 	}

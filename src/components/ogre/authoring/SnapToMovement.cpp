@@ -34,6 +34,7 @@
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <OgreSceneNode.h>
 
 namespace Ember
 {
@@ -119,7 +120,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	Ogre::SceneQueryResult& result = query->execute();
 	for (Ogre::SceneQueryResultMovableList::const_iterator I = result.movables.begin(); I != result.movables.end(); ++I) {
 		Ogre::MovableObject* movable = *I;
-		if (movable->getUserObjectBindings().getUserAny().getType() == typeid(EmberEntityUserObject::SharedPtr)) {
+		if (movable->getUserObjectBindings().getUserAny().type() == typeid(EmberEntityUserObject::SharedPtr)) {
 			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(movable->getUserObjectBindings().getUserAny()).get();
 			EmberEntity& entity = anUserObject->getEmberEntity();
 			if (&entity != &mEntity && entity.hasBBox()) {

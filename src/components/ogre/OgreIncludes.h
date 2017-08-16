@@ -94,7 +94,6 @@ class HardwareIndexBuffer;
 class HardwareOcclusionQuery;
 class HardwareVertexBuffer;
 class HardwarePixelBuffer;
-class HardwarePixelBufferSharedPtr;
 class HighLevelGpuProgram;
 class HighLevelGpuProgramManager;
 class HighLevelGpuProgramFactory;
@@ -253,6 +252,7 @@ typedef SharedPtr<PatchMesh> PatchMeshPtr;
 typedef SharedPtr<Resource> ResourcePtr;
 typedef SharedPtr<Skeleton> SkeletonPtr;
 typedef SharedPtr<Texture> TexturePtr;
+typedef SharedPtr<HardwarePixelBuffer> HardwarePixelBufferSharedPtr;
 
 /////// MODIFIED
 // Overlay system typedefs

@@ -35,6 +35,7 @@
 #include <OgreSceneQuery.h>
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <OgreSceneNode.h>
 
 #include <Eris/View.h>
 #include <Eris/Avatar.h>
@@ -146,7 +147,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 			} else {
 				if (entry.distance < mResult[mResult.size() - 1].distance) {
 					//If the last result is transparent, add another result, but if it's not replace it.
-					if (mResult.size() && !mResult[mResult.size() - 1].isTransparent) {
+					if (!mResult.empty() && !mResult[mResult.size() - 1].isTransparent) {
 						mResult.pop_back();
 					}
 					EntityPickResult result;
@@ -165,7 +166,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 
 	} else if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().getType() == typeid(EmberEntityUserObject::SharedPtr)) {
+		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().type() == typeid(EmberEntityUserObject::SharedPtr)) {
 			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(pickedMovable->getUserObjectBindings().getUserAny()).get();
 			//refit the opcode mesh to adjust for changes in the mesh (for example animations)
 			anUserObject->refit();

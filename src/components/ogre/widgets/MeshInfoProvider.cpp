@@ -149,7 +149,7 @@ std::string MeshInfoProvider::getPreviewInfo()
 	const Ogre::MeshPtr& mesh = entity->getMesh();
 	mLodIndex = std::min(mesh->getNumLodLevels() - 1, mLodIndex);
 	const Ogre::MeshLodUsage& lod = mesh->getLodLevel(mLodIndex);
-	if (mesh->isLodManual()) {
+	if (mesh->hasManualLodLevel()) {
 		str << lod.manualName << std::endl;
 	} else {
 		size_t indexCount = 0;

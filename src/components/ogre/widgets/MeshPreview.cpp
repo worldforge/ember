@@ -39,6 +39,10 @@
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <OgreSkeletonInstance.h>
+#include <OgreFrameListener.h>
+#include <OgreMesh.h>
+#include <OgreSceneNode.h>
 
 namespace Ember {
 namespace OgreView {

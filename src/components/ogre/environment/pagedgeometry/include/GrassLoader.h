@@ -44,6 +44,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreRenderSystemCapabilities.h>
 #include <OgreHighLevelGpuProgram.h>
 #include <OgreHighLevelGpuProgramManager.h>
+#include <OgreTechnique.h>
 
 #include <memory>
 
@@ -763,7 +764,7 @@ void GrassLoader<TGrassLayer>::frameUpdate()
 			Ogre::Pass* pass = tech->getPass(0);
 			if (pass->hasVertexProgram()) {
 				Ogre::GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
-				if (!params.isNull() && layer->animate){
+				if (params && layer->animate){
 					//Increment animation frame
 					layer->waveCount += ellapsed * (layer->animSpeed * Ogre::Math::PI);
 					if (layer->waveCount > Ogre::Math::PI*2) layer->waveCount -= Ogre::Math::PI*2;
@@ -1056,7 +1057,7 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *
 	}
 
 	//Return the mesh
-	return mesh.getPointer();
+	return mesh.get();
 }
 
 template <class TGrassLayer>
@@ -1313,7 +1314,7 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 	}
 
 	//Return the mesh
-	return mesh.getPointer();
+	return mesh.get();
 }
 
 template <class TGrassLayer>
@@ -1486,7 +1487,7 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer
 	subMesh->setMaterialName(layer->material->getName());
 
 	//Return the mesh
-	return mesh.getPointer();
+	return mesh.get();
 }
 
 template <class TGrassLayer>

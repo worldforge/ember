@@ -62,40 +62,41 @@ namespace OgreView {
 
     public:
         FileSystemArchive(const Ogre::String& name, const Ogre::String& archType );
-        virtual ~FileSystemArchive();
+
+        ~FileSystemArchive() override;
 
         /// @copydoc Archive::isCaseSensitive
-        bool isCaseSensitive(void) const;
+        bool isCaseSensitive() const override;
 
         /// @copydoc Archive::load
-        void load();
+        void load() override;
         /// @copydoc Archive::unload
-        void unload();
+        void unload() override;
 
         /// @copydoc Archive::open
-        Ogre::DataStreamPtr open(const Ogre::String& filename, bool readOnly = true) const;
+        Ogre::DataStreamPtr open(const Ogre::String& filename, bool readOnly) const override;
 
         /// @copydoc Archive::list
-        Ogre::StringVectorPtr list(bool recursive = true, bool dirs = false);
+        Ogre::StringVectorPtr list(bool recursive, bool dirs) const override;
 
         /// @copydoc Archive::listFileInfo
-        Ogre::FileInfoListPtr listFileInfo(bool recursive = true, bool dirs = false);
+        Ogre::FileInfoListPtr listFileInfo(bool recursive, bool dirs) const override;
 
         /// @copydoc Archive::find
-        Ogre::StringVectorPtr find(const Ogre::String& pattern, bool recursive = true,
-            bool dirs = false);
+        Ogre::StringVectorPtr find(const Ogre::String& pattern, bool recursive,
+            bool dirs) const override;
 
         /// @copydoc Archive::findFileInfo
-        Ogre::FileInfoListPtr findFileInfo(const Ogre::String& pattern, bool recursive = true,
-            bool dirs = false) const;
+        Ogre::FileInfoListPtr findFileInfo(const Ogre::String& pattern, bool recursive,
+            bool dirs) const override;
 
         /// @copydoc Archive::exists
-        bool exists(const Ogre::String& filename);
+        bool exists(const Ogre::String& filename) const override;
         
 		/**
 		 * @copydoc Ogre::Archive::getModifiedTime
 		 */
-		virtual time_t getModifiedTime(const Ogre::String& filename); 
+		time_t getModifiedTime(const Ogre::String& filename) const override;
 
     };
 
@@ -105,17 +106,16 @@ namespace OgreView {
     public:
         virtual ~FileSystemArchiveFactory() {}
         /// @copydoc FactoryObj::getType
-        const Ogre::String& getType(void) const;
+        const Ogre::String& getType() const override;
 
         /// @copydoc FactoryObj::createInstance
-        Ogre::Archive* createInstance(const Ogre::String& name, bool readOnly)
-        {
+        Ogre::Archive* createInstance(const Ogre::String& name, bool readOnly) override {
             //FIXME: use the readOnly parameter
             return new OgreView::FileSystemArchive(name, "EmberFileSystem");
         }
 
         /// @copydoc FactoryObj::destroyInstance
-        void destroyInstance( Ogre::Archive* arch) { delete arch; }
+        void destroyInstance( Ogre::Archive* arch) override { delete arch; }
     };
 
 

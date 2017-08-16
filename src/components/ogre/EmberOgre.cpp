@@ -95,7 +95,8 @@
 #include <Eris/Connection.h>
 #include <Eris/View.h>
 
-#include <OgreOverlaySystem.h>
+#include <Overlay/OgreOverlaySystem.h>
+#include <MeshLodGenerator/OgreLodWorkQueueInjector.h>
 #include <framework/TimedLog.h>
 
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
@@ -378,7 +379,12 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 		// Needed for QueuedProgressiveMeshGenerator.
 		mPMInjectorSignaler = new Lod::PMInjectorSignaler();
-		Ogre::PMInjector::getSingleton().setInjectorListener(mPMInjectorSignaler);
+
+		if(!Ogre::MeshLodGenerator::getSingletonPtr()) {
+			new Ogre::MeshLodGenerator();
+		}
+		Ogre::MeshLodGenerator::getSingleton()._initWorkQueue();
+		Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(mPMInjectorSignaler);
 
 		Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
 		if (useWfut) {

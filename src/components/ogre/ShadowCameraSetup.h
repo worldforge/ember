@@ -25,6 +25,7 @@
 
 #include "services/config/ConfigListenerContainer.h"
 #include "OgreIncludes.h"
+#include <OgreSharedPtr.h>
 #include <OgreShadowCameraSetup.h>
 
 namespace Ember {

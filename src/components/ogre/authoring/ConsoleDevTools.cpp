@@ -74,8 +74,8 @@ void ConsoleDevTools::showTexture(const std::string& textureName)
 	const float widthScale = 0.25f;
 	const float heightScale = 0.25f;
 
-	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().getByName(textureName);
-	if (texture.isNull()) {
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().getByName(textureName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+	if (!texture) {
 		ConsoleBackend::getSingleton().pushMessage("'" + textureName + "' texture not found.", "error");
 		return;
 	}
@@ -138,16 +138,12 @@ void ConsoleDevTools::reloadMaterial(const std::string& materialName)
 	// so to prevent reloading the texture multiple times, I will put them in a set.
 	std::set<std::string> mReloadableTextures;
 	Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(materialName);
-	if (material.isNull()) {
+	if (!material) {
 		ConsoleBackend::getSingleton().pushMessage("'" + materialName + "' material not found.", "error");
 		return;
 	}
-	Ogre::Material::TechniqueIterator techniqueIterator = material->getTechniqueIterator();
-	while (techniqueIterator.hasMoreElements()) {
-		Ogre::Technique* technique = techniqueIterator.getNext();
-		Ogre::Technique::PassIterator passIterator = technique->getPassIterator();
-		while (passIterator.hasMoreElements()) {
-			Ogre::Pass* pass = passIterator.getNext();
+	for (const auto* technique : material->getTechniques()) {
+		for (const auto* pass : technique->getPasses()) {
 			Ogre::String name;
 			Ogre::GpuProgramPtr vertexProgram;
 			Ogre::GpuProgramPtr fragmentProgram;
@@ -164,19 +160,17 @@ void ConsoleDevTools::reloadMaterial(const std::string& materialName)
 			// NOTE: Microcode name may depend on render system. This works for OpenGL!
 			Ogre::GpuProgramManager::getSingleton().removeMicrocodeFromCache(name);
 
-			if (!vertexProgram.isNull()) {
+			if (vertexProgram) {
 				vertexProgram->reload();
 				vertexProgram->createParameters();
 				ConsoleBackend::getSingleton().pushMessage("Reloaded vertex program '" + vertexProgram->getName() + "'.", "info");
 			}
-			if (!fragmentProgram.isNull()) {
+			if (fragmentProgram) {
 				fragmentProgram->reload();
 				fragmentProgram->createParameters();
 				ConsoleBackend::getSingleton().pushMessage("Reloaded fragment program '" + fragmentProgram->getName() + "'.", "info");
 			}
-			Ogre::Pass::TextureUnitStateIterator it = pass->getTextureUnitStateIterator();
-			for (; it.hasMoreElements(); it.moveNext()) {
-				Ogre::TextureUnitState* tex = *it.current();
+			for (const auto* tex : pass->getTextureUnitStates()) {
 				std::string textureName(tex->getTextureName());
 				if (!textureName.empty()) {
 					mReloadableTextures.insert(textureName);
@@ -192,8 +186,8 @@ void ConsoleDevTools::reloadMaterial(const std::string& materialName)
 
 void ConsoleDevTools::reloadTexture(const std::string& textureName)
 {
-	Ogre::ResourcePtr texture = Ogre::TextureManager::getSingleton().getByName(textureName);
-	if (texture.isNull()) {
+	Ogre::ResourcePtr texture = Ogre::TextureManager::getSingleton().getByName(textureName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+	if (!texture) {
 		ConsoleBackend::getSingleton().pushMessage("'" + textureName + "' texture not found.", "error");
 		return;
 	}

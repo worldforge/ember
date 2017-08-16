@@ -58,8 +58,8 @@ namespace Caelum
 
     SkyDome::~SkyDome () {
         String uniqueSuffix = "/" + InternalUtilities::pointerToString(this);
-        if (Ogre::MeshManager::getSingleton().resourceExists(SPHERIC_DOME_NAME + uniqueSuffix)) {
-        	Ogre::MeshManager::getSingleton().remove(SPHERIC_DOME_NAME + uniqueSuffix);
+        if (Ogre::MeshManager::getSingleton().resourceExists(SPHERIC_DOME_NAME + uniqueSuffix, RESOURCE_GROUP_NAME)) {
+        	Ogre::MeshManager::getSingleton().remove(SPHERIC_DOME_NAME + uniqueSuffix, RESOURCE_GROUP_NAME);
         }
     }
 

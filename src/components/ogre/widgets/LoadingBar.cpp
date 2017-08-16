@@ -40,6 +40,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include <OgreFontManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreWindowEventUtilities.h>
+#include <Ogre.h>
 
 using namespace Ogre;
 namespace Ember {
@@ -63,21 +64,21 @@ namespace Gui {
 	LoadingBar::LoadingBar(Ogre::RenderWindow& window, MainLoopController& mainLoopController) :
 	mProgress(0) ,
 	mWindow(window),
-	mLoadOverlay(0),
+	mLoadOverlay(nullptr),
 	mProgressBarScriptSize(0),
-	mLoadingBarElement(0),
-	mLoadingDescriptionElement(0),
-	mLoadingCommentElement(0),
-	mVersionElement(0),
+	mLoadingBarElement(nullptr),
+	mLoadingDescriptionElement(nullptr),
+	mLoadingCommentElement(nullptr),
+	mVersionElement(nullptr),
 	mMainLoopController(mainLoopController)
 	{}
 
 	LoadingBar::~LoadingBar(){
 		try {
 			if (mLoadOverlay) {
-				Overlay::Overlay2DElementsIterator topIterator = mLoadOverlay->get2DElementsIterator();
-				while (topIterator.hasMoreElements()) {
-					OverlayContainer* container = topIterator.getNext();
+				//Make a copy since it will be invalidated by the calls to "destroy".
+				auto elements = mLoadOverlay->get2DElements();
+				for (auto* container : elements) {
 					deleteOverlayContainerContents(*container);
 					OverlayManager::getSingleton().destroyOverlayElement(container);
 				}
@@ -105,6 +106,7 @@ namespace Gui {
 
 	void LoadingBar::start()
 	{
+
 		//Parse the materials used for the loading bar
 		auto materialPtr = Ogre::ResourceGroupManager::getSingleton().openResource("common/ui/splash/EmberCore.material");
 		Ogre::MaterialManager::getSingleton().parseScript(materialPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -118,11 +120,10 @@ namespace Gui {
 
 		try {
 			OverlayManager& omgr = OverlayManager::getSingleton();
-			mLoadOverlay = (Overlay*)omgr.getByName("EmberCore/LoadOverlay");
+			mLoadOverlay = omgr.getByName("EmberCore/LoadOverlay");
 			if (!mLoadOverlay)
 			{
-			OGRE_EXCEPT(::Ogre::Exception::ERR_ITEM_NOT_FOUND,
-				"Cannot find loading overlay", "LoadingBar::start");
+				OGRE_EXCEPT(::Ogre::Exception::ERR_ITEM_NOT_FOUND, "Cannot find loading overlay", "LoadingBar::start");
 			}
 			mLoadOverlay->show();
 

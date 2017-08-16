@@ -25,6 +25,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <vector>
+#include <OgrePrerequisites.h>
 #include <OgreColourValue.h>
 #include <OgreVector2.h>
 #include <OgreCommon.h>
@@ -156,6 +157,7 @@ public:
 protected:
 	Map& mMap;
 
+	Ogre::SceneNode* mCameraNode;
 	Ogre::Camera* mCamera;
 	Ogre::Viewport* mViewport;
 	float mDistance;

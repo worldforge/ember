@@ -3,7 +3,7 @@
 This source file is part of Hydrax.
 Visit ---
 
-Copyright (C) 2008 Xavier Verguín González <xavierverguin@hotmail.com>
+Copyright (C) 2008 Xavier Verguï¿½n Gonzï¿½lez <xavierverguin@hotmail.com>
                                            <xavyiy@gmail.com>
 
 This program is free software; you can redistribute it and/or modify it under
@@ -34,7 +34,7 @@ namespace Hydrax
 	{
 		for (int k = 0; k < 1; k++)
 		{
-			mTextures[k].setNull();
+			mTextures[k].reset();
 		}
 		
 		mTextureNames[0] = "HydraxNormalMap";
@@ -69,7 +69,7 @@ namespace Hydrax
 		for (int k = 0; k < 1; k++)
 		{
 		     Ogre::TextureManager::getSingleton().remove(mTextureNames[k]);
-			 mTextures[k].setNull();
+			 mTextures[k].reset();
 		}
 
 		mCreated = false;

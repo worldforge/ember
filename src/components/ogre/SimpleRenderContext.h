@@ -282,7 +282,7 @@ private:
 	/**
 	The node to which the camera is attached.
 	*/
-	Ogre::SceneNode *mCameraNode, *mCameraPitchNode;
+	Ogre::SceneNode *mCameraNode, *mCameraPitchNode, *mCameraDistanceNode;
 
 	/**
 	The node to which the rendered entities are attched.

@@ -63,6 +63,8 @@
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
+#include <OgreCamera.h>
+#include <OgreViewport.h>
 
 #include <sigc++/bind.h>
 

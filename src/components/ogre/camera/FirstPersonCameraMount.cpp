@@ -23,6 +23,8 @@
 #include "components/ogre/OgreInfo.h"
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
+#include <OgreCamera.h>
 
 #include <wfmath/const.h>
 
