@@ -39,6 +39,8 @@
 #include <Eris/EventService.h>
 #include <framework/MainLoopController.h>
 #include <Ogre.h>
+#include <MeshLodGenerator/OgreMeshLodGenerator.h>
+#include <MeshLodGenerator/OgreLodConfig.h>
 
 namespace Ember {
 namespace OgreView {
@@ -75,14 +77,15 @@ bool ModelBackgroundLoader::poll() {
 	if (result) {
 		mModelDefinition.notifyAssetsLoaded();
 		return true;
-	} else {
-		if (areAllTicketsProcessed()) {
-			MainLoopController::getSingleton().getEventService().runOnMainThread([this]() {
-				this->poll();
-			}, mIsActive);
-		}
-		return false;
 	}
+
+	if (areAllTicketsProcessed()) {
+		MainLoopController::getSingleton().getEventService().runOnMainThread([this]() {
+			this->poll();
+		}, mIsActive);
+	}
+	return false;
+
 }
 
 void ModelBackgroundLoader::prepareMaterialInBackground(const std::string& materialName) {
@@ -132,7 +135,7 @@ bool ModelBackgroundLoader::performLoading() {
 		while (mSubModelLoadingIndex < submodelDefinitions.size()) {
 			auto submodelDef = submodelDefinitions.at(mSubModelLoadingIndex);
 			mSubModelLoadingIndex++;
-			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+			Ogre::MeshPtr meshPtr = Ogre::static_pointer_cast<Ogre::Mesh>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 			if (meshPtr) {
 				if (!meshPtr->isLoaded()) {
 #if OGRE_THREAD_SUPPORT == 1
@@ -145,6 +148,11 @@ bool ModelBackgroundLoader::performLoading() {
 					try {
 						S_LOG_VERBOSE("Loading mesh in main thread: " << meshPtr->getName());
 						meshPtr->load();
+						Ogre::LodConfig lodConfig;
+						Ogre::MeshLodGenerator::getSingleton().getAutoconfig(meshPtr, lodConfig);
+						lodConfig.advanced.useBackgroundQueue = true;
+						Ogre::MeshLodGenerator::getSingleton().generateLodLevels(lodConfig);
+						S_LOG_VERBOSE("Loaded mesh in main thread: " << meshPtr->getName());
 					} catch (const std::exception& ex) {
 						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModelDefinition.getName() << "." << ex);
 					}
@@ -164,7 +172,7 @@ bool ModelBackgroundLoader::performLoading() {
 
 		for (auto& submodelDef : mModelDefinition.getSubModelDefinitions()) {
 
-			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+			Ogre::MeshPtr meshPtr = Ogre::static_pointer_cast<Ogre::Mesh>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 			if (meshPtr) {
 				if (meshPtr->isLoaded()) {
 					for (auto submesh : meshPtr->getSubMeshes()) {
@@ -195,9 +203,8 @@ bool ModelBackgroundLoader::performLoading() {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MATERIAL_PREPARED;
 			return performLoading();
-		} else {
-			return false;
 		}
+		return false;
 	} else if (mState == LS_MATERIAL_PREPARED) {
 		for (auto& materialPtr : mMaterialsToLoad) {
 			if (materialPtr) {
