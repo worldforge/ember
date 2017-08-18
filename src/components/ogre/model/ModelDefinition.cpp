@@ -105,14 +105,15 @@ bool ModelDefinition::requestLoad(Model* model) {
 			}, mActive);
 		}
 		return result;
-	} else {
-		mLoadingListeners.insert(model);
-		if (!mBackgroundLoader) {
-			mBackgroundLoader = new ModelBackgroundLoader(*this);
-			return mBackgroundLoader->poll();
-		}
-		return false;
 	}
+
+	mLoadingListeners.insert(model);
+	//If there's already a background loader, it's already in a "poll" loop, so we don't need to do anything.
+	if (!mBackgroundLoader) {
+		mBackgroundLoader = new ModelBackgroundLoader(*this);
+		return mBackgroundLoader->poll();
+	}
+	return false;
 }
 
 void ModelDefinition::notifyAssetsLoaded() {
@@ -123,6 +124,7 @@ void ModelDefinition::notifyAssetsLoaded() {
 }
 
 void ModelDefinition::reloadModels() {
+	S_LOG_VERBOSE("Reload models");
 	if (!mLoadingListeners.empty()) {
 		auto I = mLoadingListeners.begin();
 		Model* model = *I;

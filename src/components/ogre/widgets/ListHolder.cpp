@@ -61,6 +61,7 @@ void ListHolder::addItem(CEGUI::ListboxItem* item)
 	mItems.push_back(item);
 	if (mListbox) {
 		if (isItemAllowed(item)) {
+			//TODO: the ListBox has horrible performance as the number of items increase. Look into how to fix it.
 			mListbox->addItem(item);
 		}
 	}
