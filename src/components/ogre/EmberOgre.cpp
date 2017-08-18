@@ -230,20 +230,28 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 			mRoot->clearEventTimes();
 		}
 		try {
+//			TimedLog log("renderOneFrame");
 			//We're not using the mRoot->renderOneFrame functionality because we want to do
 			//input processing and UI updates while waiting for queued render calls, before we call swapBuffers().
 			mRoot->_fireFrameStarted();
+//			log.report("_fireFrameStarted");
 			mRoot->_updateAllRenderTargets();
+//			log.report("_updateAllRenderTargets");
 			mWindow->update(false);
+//			log.report("update");
 			//Do input and render the UI at the last moment, to make sure that the UI is responsive.
 			mInput->processInput();
+//			log.report("processInput");
 			mGUIManager->render();
+//			log.report("render");
 
 			mWindow->swapBuffers();
+//			log.report("swapBuffers");
 			long remainingTime = timeFrame.getRemainingTime().total_milliseconds();
 			remainingTime = std::max(1L, remainingTime);
 			mRoot->getWorkQueue()->setResponseProcessingTimeLimit(remainingTime);
 			mRoot->_fireFrameEnded();
+//			log.report("_fireFrameEnded");
 
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);

@@ -68,6 +68,7 @@ TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
 TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 
 #include <boost/thread.hpp>
+#include <framework/TimedLog.h>
 
 #ifndef HAVE_SIGHANDLER_T
 typedef void (*sighandler_t)(int);
@@ -225,9 +226,19 @@ void Application::mainLoop()
 		try {
 			Log::sCurrentFrameStartMilliseconds = microsec_clock::local_time();
 
+//			TimedLog log("mainLoop");
+
 			unsigned int frameActionMask = 0;
-			TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(desiredFpsListener.getMicrosecondsPerFrame()));
+			boost::posix_time::microseconds desiredMicrosecondsPerFrame(desiredFpsListener.getMicrosecondsPerFrame());
+			TimeFrame timeFrame = TimeFrame(desiredMicrosecondsPerFrame);
+
+			if (mWorldView) {
+				mWorldView->update();
+//				log.report("mWorldView->update()");
+			}
+
 			bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
+//			log.report("updatedRendering");
 			if (updatedRendering) {
 				frameActionMask |= MainLoopController::FA_GRAPHICS;
 				frameActionMask |= MainLoopController::FA_INPUT;
@@ -236,17 +247,19 @@ void Application::mainLoop()
 				frameActionMask |= MainLoopController::FA_INPUT;
 			}
 
-			if (mWorldView) {
-				mWorldView->update();
-			}
-
 			mServices->getSoundService().cycle();
 			frameActionMask |= MainLoopController::FA_SOUND;
+//			log.report("getSoundService().cycle()");
 
 			//Keep on running IO and handlers until we need to render again
 			eventService.processEvents(timeFrame.getRemainingTime(), mShouldQuit);
+//			log.report("processEvents");
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
+
+			if (timeFrame.getElapsedTime().total_microseconds() > (desiredMicrosecondsPerFrame.total_microseconds() * 1.4f)) {
+				S_LOG_VERBOSE("Frame took too long.");
+			}
 
 		} catch (const std::exception& ex) {
 			S_LOG_CRITICAL("Got exception, shutting down." << ex);
