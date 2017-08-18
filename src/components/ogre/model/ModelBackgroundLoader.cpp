@@ -41,6 +41,7 @@
 #include <Ogre.h>
 #include <MeshLodGenerator/OgreMeshLodGenerator.h>
 #include <MeshLodGenerator/OgreLodConfig.h>
+#include <framework/TimedLog.h>
 
 namespace Ember {
 namespace OgreView {
@@ -107,6 +108,7 @@ void ModelBackgroundLoader::prepareMaterialInBackground(const std::string& mater
 
 bool ModelBackgroundLoader::performLoading() {
 #if OGRE_THREAD_SUPPORT
+//	TimedLog log("performLoading " + mModelDefinition.getName() + " state: " + std::to_string(mState));
 	if (mState == LS_UNINITIALIZED) {
 		//Start to load the meshes
 		for (auto subModel : mModelDefinition.getSubModelDefinitions()) {
@@ -124,7 +126,7 @@ bool ModelBackgroundLoader::performLoading() {
 			}
 		}
 		mState = LS_MESH_PREPARING;
-		return performLoading();
+		return false;
 	} else if (mState == LS_MESH_PREPARING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MESH_PREPARED;
@@ -146,13 +148,14 @@ bool ModelBackgroundLoader::performLoading() {
 					}
 #else
 					try {
-						S_LOG_VERBOSE("Loading mesh in main thread: " << meshPtr->getName());
 						meshPtr->load();
+						/*
 						Ogre::LodConfig lodConfig;
 						Ogre::MeshLodGenerator::getSingleton().getAutoconfig(meshPtr, lodConfig);
 						lodConfig.advanced.useBackgroundQueue = true;
 						Ogre::MeshLodGenerator::getSingleton().generateLodLevels(lodConfig);
-						S_LOG_VERBOSE("Loaded mesh in main thread: " << meshPtr->getName());
+						 */
+						S_LOG_VERBOSE("Loaded mesh in main thread: " << meshPtr->getName() << " Memory used: " << (meshPtr->getSize() / 1000000.f) << " Mb");
 					} catch (const std::exception& ex) {
 						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModelDefinition.getName() << "." << ex);
 					}
@@ -162,7 +165,7 @@ bool ModelBackgroundLoader::performLoading() {
 			}
 		}
 		mState = LS_MESH_LOADING;
-		return performLoading();
+		return false;
 	} else if (mState == LS_MESH_LOADING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MESH_LOADED;
@@ -198,7 +201,7 @@ bool ModelBackgroundLoader::performLoading() {
 			}
 		}
 		mState = LS_MATERIAL_PREPARING;
-		return performLoading();
+		return false;
 	} else if (mState == LS_MATERIAL_PREPARING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MATERIAL_PREPARED;
@@ -249,8 +252,11 @@ bool ModelBackgroundLoader::performLoading() {
 			auto texture = Ogre::TextureManager::getSingleton().getByName(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			if (texture && !texture->isLoaded()) {
 				try {
-					S_LOG_VERBOSE("Loading texture in main thread: " << texture->getName());
+					if (!texture->isPrepared()) {
+						S_LOG_WARNING("Texture was not prepared: "  << texture->getName());
+					}
 					texture->load();
+					S_LOG_VERBOSE("Loaded texture in main thread: " << texture->getName() << " Memory used: " << (texture->getSize() / 1000000.f) << " Mb");
 				} catch (const std::exception& e) {
 					S_LOG_WARNING("Error when loading texture " << texture->getName() << e);
 				}
@@ -258,7 +264,7 @@ bool ModelBackgroundLoader::performLoading() {
 			}
 		}
 		mState = LS_MATERIAL_LOADING;
-		return performLoading();
+		return false;
 	} else if (mState == LS_MATERIAL_LOADING) {
 		if (areAllTicketsProcessed()) {
 			if (!mMaterialsToLoad.empty()) {
@@ -267,8 +273,8 @@ bool ModelBackgroundLoader::performLoading() {
 				mMaterialsToLoad.erase(I);
 				if (!material->isLoaded()) {
 					try {
-						S_LOG_VERBOSE("Loading material in main thread: " << material->getName());
 						material->load();
+						S_LOG_VERBOSE("Loaded material in main thread: " << material->getName());
 					} catch (const std::exception& e) {
 						S_LOG_WARNING("Error when loading material " << material->getName() << e);
 					}
