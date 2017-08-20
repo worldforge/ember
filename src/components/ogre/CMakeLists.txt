@@ -96,7 +96,8 @@ add_library(emberogre
         DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp
         AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp
         EntityObserverBase.cpp TerrainPageDataProvider.cpp Scene.cpp ForestRenderingTechnique.cpp World.cpp
-        Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp CompositionAction.cpp GraphicalChangeAdapter.cpp)
+        Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp CompositionAction.cpp GraphicalChangeAdapter.cpp
+        EmberWorkQueue.cpp)
 
 
 install(FILES ogre.cfg environment/hydrax.cfg DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ember)

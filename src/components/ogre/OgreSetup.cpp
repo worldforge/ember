@@ -38,6 +38,9 @@
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/Singleton.h"
+#include "framework/MainLoopController.h"
+#include "EmberWorkQueue.h"
 
 #ifdef BUILD_WEBEMBER
 #include "extensions/webember/WebEmberManager.h"
@@ -136,6 +139,8 @@ Ogre::Root* OgreSetup::createOgreSystem()
 
 	std::string pluginExtension = ".so";
 	mRoot = new Ogre::Root("", configSrv.getHomeDirectory(BaseDirType_CONFIG) + "/ogre.cfg", "");
+	//Ownership of the queue instance is passed to Root.
+	mRoot->setWorkQueue(OGRE_NEW EmberWorkQueue(MainLoopController::getSingleton().getEventService()));
 
 	mOverlaySystem = new Ogre::OverlaySystem();
 
