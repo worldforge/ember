@@ -26,6 +26,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "ModelDefinition.h"
 
+#include <Eris/ActiveMarker.h>
+
 #include <OgreResourceBackgroundQueue.h>
 
 #include <memory>
@@ -223,7 +225,7 @@ protected:
 	 */
 	std::set<Ogre::MaterialPtr> mMaterialsToLoad;
 
-	std::shared_ptr<bool> mIsActive;
+	Eris::ActiveMarker mIsActive;
 
 	/**
 	 * @brief Adds a loading ticket.

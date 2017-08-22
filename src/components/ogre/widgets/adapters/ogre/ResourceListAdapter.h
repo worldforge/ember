@@ -20,6 +20,7 @@
 #define RESOURCELISTADAPTER_H_
 
 #include <OgreResource.h>
+#include <Eris/ActiveMarker.h>
 #include "components/ogre/OgreIncludes.h"
 
 namespace Ember {
@@ -54,7 +55,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ResourceListAdapter();
+	~ResourceListAdapter() = default;
 
 	/**
 	 * @brief Updates the list.
@@ -73,7 +74,7 @@ private:
 	 */
 	::Ogre::ResourceManager* mResourceManager;
 
-	std::shared_ptr<bool> mActiveMarker;
+	::Eris::ActiveMarker mActiveMarker;
 
 	std::list<::Ogre::ResourceHandle> mHandles;
 	unsigned int mIndex;

@@ -32,6 +32,9 @@
 #include <OgreColourValue.h>
 #include <OgreResource.h>
 #include <OgreSharedPtr.h>
+
+#include <Eris/ActiveMarker.h>
+
 #include <map>
 #include <unordered_map>
 #include <vector>
@@ -825,7 +828,7 @@ private:
 
 	bool mAssetsLoaded;
 
-	std::shared_ptr<bool> mActive;
+	Eris::ActiveMarker mActive;
 };
 
 typedef Ogre::SharedPtr<ModelDefinition> ModelDefinitionPtr;

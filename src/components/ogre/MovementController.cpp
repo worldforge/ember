@@ -89,10 +89,8 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 		/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
 		 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
 		//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
-				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(true), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(nullptr), mAwarenessVisualizer(nullptr), mSteering(nullptr), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false), mActiveMarker(new bool)
+				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(true), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(nullptr), mAwarenessVisualizer(nullptr), mSteering(nullptr), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false)
 {
-
-	*mActiveMarker = true;
 
 	//We can only do navigation if there's a valid bbox for the top level entity
 	if (avatar.getEmberEntity().getView()->getTopLevel()->getBBox().isValid()) {
@@ -102,9 +100,8 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 			mSteering = new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar());
 			mSteering->EventPathUpdated.connect(sigc::mem_fun(*this, &MovementController::Steering_PathUpdated));
 
-			auto marker = mActiveMarker;
-			mAwareness->EventTileDirty.connect([this, marker] {
-				mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this, marker]() { if (*marker) { this->tileRebuild(); }});
+			mAwareness->EventTileDirty.connect([this] {
+				mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this]() {this->tileRebuild(); }, mActiveMarker);
 			});
 
 			mAwareness->EventTileUpdated.connect([&](int, int) {
@@ -153,7 +150,6 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 }
 MovementController::~MovementController()
 {
-	*mActiveMarker = false;
 	delete mConfigListenerContainer;
 	delete mSteering;
 	delete mAwarenessVisualizer;
@@ -175,8 +171,7 @@ void MovementController::tileRebuild()
 	if (mAwareness) {
 		size_t dirtyTiles = mAwareness->rebuildDirtyTile();
 		if (dirtyTiles) {
-			auto marker = mActiveMarker;
-			mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this, marker] {if (*marker) {this->tileRebuild();}});
+			mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this] {this->tileRebuild();}, mActiveMarker);
 		}
 	}
 }

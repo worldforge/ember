@@ -49,16 +49,13 @@ ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::Str
 		mIsValid(false),
 		mRenderingDef(nullptr),
 		mBackgroundLoader(nullptr),
-		mAssetsLoaded(false),
-		mActive(new bool) {
-	*mActive.get() = true;
+		mAssetsLoaded(false) {
 	if (createParamDictionary("ModelDefinition")) {
 		// no custom params
 	}
 }
 
 ModelDefinition::~ModelDefinition() {
-	*mActive.get() = false;
 	for (SubModelDefinitionsStore::iterator I = mSubModels.begin(); I != mSubModels.end(); ++I) {
 		delete *I;
 	}

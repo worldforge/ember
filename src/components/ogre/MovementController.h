@@ -29,6 +29,8 @@
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 
+#include <Eris/ActiveMarker.h>
+
 #include <wfmath/vector.h>
 #include <sigc++/trackable.h>
 
@@ -264,7 +266,7 @@ protected:
 	/**
 	 * @brief An active marker used for cancelling EventService handlers.
 	 */
-	std::shared_ptr<bool> mActiveMarker;
+	Eris::ActiveMarker mActiveMarker;
 };
 
 

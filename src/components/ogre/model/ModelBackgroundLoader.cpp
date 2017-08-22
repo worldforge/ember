@@ -39,8 +39,6 @@
 #include <Eris/EventService.h>
 #include <framework/MainLoopController.h>
 #include <Ogre.h>
-#include <MeshLodGenerator/OgreMeshLodGenerator.h>
-#include <MeshLodGenerator/OgreLodConfig.h>
 #include <framework/TimedLog.h>
 
 namespace Ember {
@@ -61,13 +59,10 @@ ModelBackgroundLoader::ModelBackgroundLoader(ModelDefinition& modelDefinition) :
 		mModelDefinition(modelDefinition),
 		mState(LS_UNINITIALIZED),
 		mListener(*this),
-		mSubModelLoadingIndex(0),
-		mIsActive(new bool) {
-	*mIsActive.get() = true;
+		mSubModelLoadingIndex(0) {
 }
 
 ModelBackgroundLoader::~ModelBackgroundLoader() {
-	*mIsActive.get() = false;
 	for (auto& ticket : mTickets) {
 		Ogre::ResourceBackgroundQueue::getSingleton().abortRequest(ticket);
 	}
@@ -149,12 +144,6 @@ bool ModelBackgroundLoader::performLoading() {
 #else
 					try {
 						meshPtr->load();
-						/*
-						Ogre::LodConfig lodConfig;
-						Ogre::MeshLodGenerator::getSingleton().getAutoconfig(meshPtr, lodConfig);
-						lodConfig.advanced.useBackgroundQueue = true;
-						Ogre::MeshLodGenerator::getSingleton().generateLodLevels(lodConfig);
-						 */
 						S_LOG_VERBOSE("Loaded mesh in main thread: " << meshPtr->getName() << " Memory used: " << (meshPtr->getSize() / 1000000.f) << " Mb");
 					} catch (const std::exception& ex) {
 						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModelDefinition.getName() << "." << ex);

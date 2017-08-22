@@ -40,13 +40,7 @@ namespace Ogre {
 
 
 ResourceListAdapter::ResourceListAdapter(ListHolder* listHolder, ::Ogre::ResourceManager* resourceManager)
-		: mListHolder(listHolder), mResourceManager(resourceManager), mActiveMarker(new bool) {
-	*mActiveMarker = true;
-}
-
-ResourceListAdapter::~ResourceListAdapter() {
-//	delete mListHolder;
-	*mActiveMarker = false;
+		: mListHolder(listHolder), mResourceManager(resourceManager) {
 }
 
 void ResourceListAdapter::update() {
