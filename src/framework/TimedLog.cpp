@@ -25,7 +25,7 @@
 
 namespace Ember
 {
-#ifdef ENABLE_TIMED_LOG
+#if ENABLE_TIMED_LOG==1
 TimedLog::TimedLog(const std::string& logName, bool reportStart) :
 	mLogName(logName), mStart(std::chrono::steady_clock::now())
 {

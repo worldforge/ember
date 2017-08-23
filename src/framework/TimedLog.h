@@ -20,9 +20,11 @@
 #define TIMEDLOG_H_
 
 #include <string>
-#define ENABLE_TIMED_LOG 1
+#ifndef ENABLE_TIMED_LOG
+#define ENABLE_TIMED_LOG 0
+#endif
 
-#ifdef ENABLE_TIMED_LOG
+#if ENABLE_TIMED_LOG==1
 #include <chrono>
 #endif
 
@@ -64,7 +66,7 @@ public:
 
 private:
 
-#ifdef ENABLE_TIMED_LOG
+#if ENABLE_TIMED_LOG==1
 	/**
 	 * @brief The name of the log.
 	 */
