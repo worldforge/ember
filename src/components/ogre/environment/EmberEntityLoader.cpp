@@ -32,23 +32,20 @@
 #include "domain/EmberEntity.h"
 #include "components/ogre/model/ModelRepresentation.h"
 
+#include <OgreNode.h>
+
 #include <sigc++/bind.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
-EmberEntityLoader::EmberEntityLoader(::Forests::PagedGeometry &geom, unsigned int batchSize) :
-		mGeom(geom), mBatchSize(batchSize)
-{
+EmberEntityLoader::EmberEntityLoader(::Forests::PagedGeometry& geom, unsigned int batchSize) :
+		mGeom(geom), mBatchSize(batchSize) {
 }
 
-EmberEntityLoader::~EmberEntityLoader()
-{
+EmberEntityLoader::~EmberEntityLoader() {
 	//When shutting down, make sure to delete all connections.
 #if EMBERENTITYLOADER_USEBATCH
 	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
@@ -61,15 +58,14 @@ EmberEntityLoader::~EmberEntityLoader()
 		}
 	}
 #else
-	for (EntityMap::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
-		I->second.movedConnection.disconnect();
-		I->second.visibilityChangedConnection.disconnect();
+	for (auto& entity : mEntities) {
+		entity.second.movedConnection.disconnect();
+		entity.second.visibilityChangedConnection.disconnect();
 	}
 #endif
 }
 
-void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresentation)
-{
+void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresentation) {
 	if (!modelRepresentation) {
 		S_LOG_WARNING("Tried to add a null ref entity to the paged geometry.");
 		return;
@@ -107,8 +103,7 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresen
 
 }
 
-void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
-{
+void EmberEntityLoader::removeEmberEntity(EmberEntity* entity) {
 	if (!entity) {
 		S_LOG_WARNING("Tried to remove a null ref entity from the paged geometry.");
 		return;
@@ -133,7 +128,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 		}
 	}
 #else
-	EntityMap::iterator I = mEntities.find(entity->getId());
+	auto I = mEntities.find(entity->getId());
 	if (I != mEntities.end()) {
 		ModelRepresentationInstance& instance(I->second);
 		//Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
@@ -154,8 +149,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 	}
 }
 
-EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberEntity* entity)
-{
+EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberEntity* entity) {
 #if EMBERENTITYLOADER_USEBATCH
 	EntityLookup::iterator I = mEntityLookup.find(entity);
 	if (I != mEntityLookup.end()) {
@@ -175,8 +169,7 @@ EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberEntity* 
 #endif
 }
 
-void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
-{
+void EmberEntityLoader::loadPage(::Forests::PageInfo& page) {
 	static Ogre::ColourValue colour(1, 1, 1, 1);
 
 #if EMBERENTITYLOADER_USEBATCH
@@ -188,23 +181,21 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 #endif
 
 	for (auto& entity : entities) {
-		ModelRepresentationInstance& instance(entity.second);
-		Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
+		ModelRepresentationInstance& instance = entity.second;
+		Model::ModelRepresentation* modelRepresentation = instance.modelRepresentation;
+		auto* nodeProvider = modelRepresentation->getModel().getNodeProvider();
 		EmberEntity& emberEntity = modelRepresentation->getEntity();
-		if (emberEntity.isVisible()) {
-			WFMath::Point<3> viewPos = emberEntity.getViewPosition();
-			if (viewPos.isValid()) {
-				Ogre::Vector3 pos(Convert::toOgre(viewPos));
-				Model::Model& model(modelRepresentation->getModel());
-				if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
-					for (auto& submodel : model.getSubmodels()) {
-						// 				if (!(*J)->getEntity()->getParentSceneNode()) {
-						// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
-						// 				}
-						//  				if ((*J)->getEntity()->isVisible()) {
-						addEntity(submodel->getEntity(), pos, Convert::toOgre(emberEntity.getViewOrientation()), modelRepresentation->getScale(), colour);
-						// 					(*J)->getEntity()->setVisible(false);
-						//  				}
+		if (nodeProvider) {
+			if (emberEntity.isVisible()) {
+				Ogre::Node* node = nodeProvider->getNode();
+				const Ogre::Vector3& pos = node->_getDerivedPosition();
+				const Ogre::Quaternion& orient = node->_getDerivedOrientation();
+				if (!pos.isNaN() && !orient.isNaN()) {
+					Model::Model& model = modelRepresentation->getModel();
+					if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
+						for (auto& submodel : model.getSubmodels()) {
+							addEntity(submodel->getEntity(), pos, orient, modelRepresentation->getScale(), colour);
+						}
 					}
 				}
 			}
@@ -212,11 +203,10 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 	}
 }
 
-void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity)
-{
+void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity) {
 	EntityMap* entityMap(getStoreForEntity(entity));
 	if (entityMap) {
-		EntityMap::iterator I = entityMap->find(entity->getId());
+		auto I = entityMap->find(entity->getId());
 		if (I != entityMap->end()) {
 			ModelRepresentationInstance& instance(I->second);
 			if (!instance.lastPosition.isNaN()) {
@@ -231,8 +221,7 @@ void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity)
 	}
 }
 
-void EmberEntityLoader::EmberEntity_VisibilityChanged(bool, EmberEntity* entity)
-{
+void EmberEntityLoader::EmberEntity_VisibilityChanged(bool, EmberEntity* entity) {
 	WFMath::Point<3> viewPos = entity->getViewPosition();
 	if (viewPos.isValid()) {
 		//When the visibility changes, we only need to reload the page the entity is on.
