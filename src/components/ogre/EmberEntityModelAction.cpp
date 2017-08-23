@@ -91,11 +91,11 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context) {
 
         Model::ModelDefinitionManager& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
         try {
-            auto definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.load(mModelName, "ModelDefinitions"));
+            auto definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.load(mModelName, "Data"));
             if (!definition) {
                 S_LOG_FAILURE("Could not find model " << mModelName << ", using placeholder.");
                 //add a placeholder model
-                definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.load("placeholder.modeldef", "ModelDefinitions"));
+                definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.load("placeholder.modeldef", "Data"));
 
 
 //                Model::ModelDefinitionPtr modelDef = model->getDefinition();

@@ -187,13 +187,9 @@ void OgreResourceLoader::loadGeneral()
 	addUserMedia("scripting", "EmberFileSystem", "Scripting", true);
 	addSharedMedia("scripting", "EmberFileSystem", "Scripting", true);
 
-	//Model definitions, terrain definitions and entity mappings
-	addUserMedia("data", "EmberFileSystem", "ModelDefinitions", true);
-	addSharedMedia("data", "EmberFileSystem", "ModelDefinitions", true);
-
-	//Sound definitions
-	addUserMedia("sounddefinitions", "EmberFileSystem", "SoundDefinitions", true);
-	addSharedMedia("sounddefinitions", "EmberFileSystem", "SoundDefinitions", true);
+	//Model definitions, terrain definitions, sound definitions and entity mappings
+	addUserMedia("data", "EmberFileSystem", "Data", true);
+	addSharedMedia("data", "EmberFileSystem", "Data", true);
 
 	//The Caelum component
 	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
@@ -208,7 +204,7 @@ void OgreResourceLoader::loadGeneral()
 void OgreResourceLoader::preloadMedia()
 {
 	// resource groups to be loaded
-	const char* resourceGroup[] = { "General", "ModelDefinitions" };
+	const char* resourceGroup[] = { "General", "Data" };
 
 	for (auto& group : resourceGroup) {
 		try {

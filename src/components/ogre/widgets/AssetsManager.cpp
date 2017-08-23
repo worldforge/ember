@@ -213,7 +213,7 @@ void AssetsManager::createModel(Ogre::MeshPtr mesh)
 	//Extract the file name for the model. I.e. if the mesh has the full name "foo/bar.mesh" the model will be named "bar".
 	auto tokens = Tokeniser::split(name, "/");
 	std::string modelName = Tokeniser::split(tokens.back(), ".").front();
-	auto modelDefinition = modelDefinitionManager.create(modelName, "ModelDefinitions");
+	auto modelDefinition = modelDefinitionManager.create(modelName, "Data");
 	if (modelDefinition) {
 		modelDefinition->createSubModelDefinition(mesh->getName());
 		modelDefinitionManager.exportScript(modelDefinition);

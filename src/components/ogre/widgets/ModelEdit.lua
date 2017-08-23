@@ -283,7 +283,7 @@ end
 function ModelEdit:NewModelOk_Clicked(args)
 	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 	local name = self.widget:getWindow("NewModelName"):getText()
-	local def = modelDefMgr:create(name, "ModelDefinitions"):get()
+	local def = modelDefMgr:create(name, "Data"):get()
 	if def then
 		def:setValid(true)
 		
