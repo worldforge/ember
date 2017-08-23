@@ -56,17 +56,17 @@ ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::Str
 }
 
 ModelDefinition::~ModelDefinition() {
-	for (SubModelDefinitionsStore::iterator I = mSubModels.begin(); I != mSubModels.end(); ++I) {
-		delete *I;
+	for (auto& subModel : mSubModels) {
+		delete subModel;
 	}
-	for (ActionDefinitionsStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-		delete *I;
+	for (auto& action : mActions) {
+		delete action;
 	}
-	for (ViewDefinitionStore::iterator I = mViews.begin(); I != mViews.end(); ++I) {
-		delete I->second;
+	for (auto& view : mViews) {
+		delete view.second;
 	}
-	for (BoneGroupDefinitionStore::iterator I = mBoneGroups.begin(); I != mBoneGroups.end(); ++I) {
-		delete I->second;
+	for (auto& boneGroup : mBoneGroups) {
+		delete boneGroup.second;
 	}
 	delete mRenderingDef;
 	// have to call this here rather than in Resource destructor
@@ -74,7 +74,7 @@ ModelDefinition::~ModelDefinition() {
 	unload();
 }
 
-void ModelDefinition::loadImpl(void) {
+void ModelDefinition::loadImpl() {
 }
 
 void ModelDefinition::addModelInstance(Model* model) {
@@ -85,10 +85,10 @@ void ModelDefinition::removeModelInstance(Model* model) {
 	mModelInstances.erase(model);
 }
 
-void ModelDefinition::unloadImpl(void) {
+void ModelDefinition::unloadImpl() {
 }
 
-bool ModelDefinition::isValid(void) const {
+bool ModelDefinition::isValid() const {
 	return mIsValid;
 }
 
@@ -121,7 +121,6 @@ void ModelDefinition::notifyAssetsLoaded() {
 }
 
 void ModelDefinition::reloadModels() {
-	S_LOG_VERBOSE("Reload models");
 	if (!mLoadingListeners.empty()) {
 		auto I = mLoadingListeners.begin();
 		Model* model = *I;
@@ -134,7 +133,6 @@ void ModelDefinition::reloadModels() {
 			}, mActive);
 		}
 	}
-
 }
 
 
@@ -144,17 +142,18 @@ void ModelDefinition::removeFromLoadingQueue(Model* model) {
 
 
 ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewname) {
-	ViewDefinitionStore::iterator view = mViews.find(viewname);
+	auto view = mViews.find(viewname);
 	if (view != mViews.end()) {
 		return view->second;
-	} else {
-		ViewDefinition* def = new ViewDefinition();
-		def->Name = viewname;
-		def->Distance = 0;
-		def->Rotation = Ogre::Quaternion::IDENTITY;
-		mViews.insert(ViewDefinitionStore::value_type(viewname, def));
-		return def;
 	}
+
+	ViewDefinition* def = new ViewDefinition();
+	def->Name = viewname;
+	def->Distance = 0;
+	def->Rotation = Ogre::Quaternion::IDENTITY;
+	mViews.insert(ViewDefinitionStore::value_type(viewname, def));
+	return def;
+
 }
 
 const ViewDefinitionStore& ModelDefinition::getViewDefinitions() const {
@@ -166,15 +165,16 @@ void ModelDefinition::removeViewDefinition(const std::string& name) {
 }
 
 BoneGroupDefinition* ModelDefinition::createBoneGroupDefinition(const std::string& name) {
-	BoneGroupDefinitionStore::iterator group = mBoneGroups.find(name);
+	auto group = mBoneGroups.find(name);
 	if (group != mBoneGroups.end()) {
 		return group->second;
-	} else {
-		BoneGroupDefinition* def = new BoneGroupDefinition();
-		def->Name = name;
-		mBoneGroups.insert(std::make_pair(name, def));
-		return def;
 	}
+
+	BoneGroupDefinition* def = new BoneGroupDefinition();
+	def->Name = name;
+	mBoneGroups.insert(std::make_pair(name, def));
+	return def;
+
 }
 
 void ModelDefinition::removeBoneGroupDefinition(const std::string& name) {
@@ -265,9 +265,9 @@ const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions() 
 }
 
 void ModelDefinition::addAttachPointDefinition(const AttachPointDefinition& definition) {
-	for (AttachPointDefinitionStore::iterator I = mAttachPoints.begin(); I != mAttachPoints.end(); ++I) {
-		if (I->Name == definition.Name) {
-			(*I) = definition;
+	for (auto& mAttachPoint : mAttachPoints) {
+		if (mAttachPoint.Name == definition.Name) {
+			mAttachPoint = definition;
 			return;
 		}
 	}
@@ -280,7 +280,7 @@ void ModelDefinition::removeActionDefinition(ActionDefinition* def) {
 
 template<typename T, typename T1>
 void ModelDefinition::removeDefinition(T* def, T1& store) {
-	typename T1::iterator I = std::find(store.begin(), store.end(), def);
+	auto I = std::find(store.begin(), store.end(), def);
 	if (I != store.end()) {
 		store.erase(I);
 	}
@@ -291,8 +291,8 @@ SubModelDefinition::SubModelDefinition(const std::string& meshname, ModelDefinit
 }
 
 SubModelDefinition::~SubModelDefinition() {
-	for (std::vector<PartDefinition*>::iterator I = mParts.begin(); I != mParts.end(); ++I) {
-		delete *I;
+	for (auto& part : mParts) {
+		delete part;
 	}
 }
 
@@ -323,8 +323,8 @@ PartDefinition::PartDefinition(const std::string& name, SubModelDefinition& subM
 }
 
 PartDefinition::~PartDefinition() {
-	for (std::vector<SubEntityDefinition*>::iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
-		delete *I;
+	for (auto& subEntity : mSubEntities) {
+		delete subEntity;
 	}
 }
 
@@ -410,8 +410,8 @@ AnimationDefinition::AnimationDefinition(int iterations) :
 }
 
 AnimationDefinition::~AnimationDefinition() {
-	for (AnimationPartDefinitionsStore::iterator I = mAnimationParts.begin(); I != mAnimationParts.end(); ++I) {
-		delete *I;
+	for (auto& animationPart : mAnimationParts) {
+		delete animationPart;
 	}
 }
 
@@ -439,11 +439,11 @@ ActionDefinition::ActionDefinition(const std::string& name) :
 }
 
 ActionDefinition::~ActionDefinition() {
-	for (AnimationDefinitionsStore::iterator I = mAnimations.begin(); I != mAnimations.end(); ++I) {
-		delete *I;
+	for (auto& animation : mAnimations) {
+		delete animation;
 	}
-	for (SoundDefinitionsStore::iterator I = mSounds.begin(); I != mSounds.end(); ++I) {
-		delete *I;
+	for (auto& sound : mSounds) {
+		delete sound;
 	}
 }
 
