@@ -1,5 +1,5 @@
 <models>
-    <model name="axe_pick" usescaleof="none" scale="1" showcontained="true" icon="dural/items/tools/axe_pick/texture/I.png">
+    <model name="axe_pick" usescaleof="none" scale="1" showcontained="true" icon="dural/items/tools/axe_pick/texture/I.dds">
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>

@@ -1,5 +1,5 @@
 <models>
-    <model name="beet" usescaleof="height" renderingdistance="30" showcontained="true" icon="dural/plants/fruit/beet/texture/I.png">
+    <model name="beet" usescaleof="height" renderingdistance="30" showcontained="true" icon="dural/plants/fruit/beet/texture/I.dds">
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>

@@ -1,5 +1,5 @@
 <models>
-    <model name="tuna" usescaleof="height" showcontained="true" icon="dural/creatures/tubular/texture/blue_fin_tuna/I.png">
+    <model name="tuna" usescaleof="height" showcontained="true" icon="dural/creatures/tubular/texture/blue_fin_tuna/I.dds">
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>

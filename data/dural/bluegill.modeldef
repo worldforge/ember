@@ -1,5 +1,5 @@
 <models>
-    <model name="bluegill" usescaleof="height" showcontained="true" icon="dural/creatures/tubular/texture/bluegill/I.png">
+    <model name="bluegill" usescaleof="height" showcontained="true" icon="dural/creatures/tubular/texture/bluegill/I.dds">
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>

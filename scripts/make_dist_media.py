@@ -3,7 +3,7 @@
 #
 # Requires Python 3 or higher
 
-import os, shutil, subprocess, tempfile, fnmatch, traceback, re, sys
+import os, shutil, subprocess, tempfile, fnmatch, traceback, re, sys, fileinput, signal
 
 
 def find_matches(files, patterns):
@@ -27,7 +27,9 @@ def collect_licenses(src_assets_path, licenses, assets):
 				
 
 
-def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size):
+def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size = None):
+	originalSize = 0
+	destinationSize = 0
 	copied = 0
 	skipped = 0
 	converted = 0
@@ -35,44 +37,69 @@ def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size):
 	for asset in assets:
 		asset_path = os.path.join(src_assets_path, asset)
 		if os.path.isfile(asset_path):
+
+			png_to_dds_conversion_needed = False
+
 			dest_asset_path = os.path.join(dest_assets_path, asset)
 			
 			dest_asset_dir_path = os.path.dirname(dest_asset_path)
 			if not os.path.exists(dest_asset_dir_path):
 				os.makedirs(dest_asset_dir_path)
-			#Check if the destination file exists, and if so if it's older than the source
-			if os.path.exists(dest_asset_path):
-				if os.path.getmtime(dest_asset_path) >= os.path.getmtime(asset_path):
-					#destination file is newer or of the same date as the soruce file
-					skipped = skipped + 1
-					continue
-				
-			if asset.endswith(".png") and not asset.startswith("common"):
-				#if it's an image we should scale it, unless it's an image in the "common" directory
-				colourdirective = ""
-				imagemetadata = subprocess.check_output(["identify", asset_path])
-				if "256c" in imagemetadata.decode("utf-8"):
-					colourdirective = "-colors 256"
-					 
-				print("converting image asset {0} to {1}".format(asset, dest_asset_path))
-				convert_cmd = ["convert", asset_path, "-quality 95 -depth 8", colourdirective, '-resize "{0}x{0}>"'.format(image_max_size), dest_asset_path]
-				#print(" ".join(convert_cmd))
-				if os.system(" ".join(convert_cmd)) == 0:
-					converted = converted + 1
-				else:
-					errors = errors + 1
-				#subprocess.call(convert_cmd, stderr=subprocess.STDOUT)
-			else:
-				print("copying asset {0} to {1}".format(asset, dest_asset_path))
-				shutil.copy(asset_path, dest_asset_path)
-				copied = copied + 1
 
-			
+
+			if dest_asset_path.endswith(".png") and not asset.startswith("common/ui"):
+				(dest_asset_path, _) = re.subn('\.png$', '.dds', dest_asset_path)
+				png_to_dds_conversion_needed = True
+
+			#Check if the destination file exists, and if so if it's older than the source
+			if os.path.exists(dest_asset_path) and os.path.getmtime(dest_asset_path) >= os.path.getmtime(asset_path):
+				#destination file is newer or of the same date as the source file
+				skipped = skipped + 1
+			else:
+				if asset_path.endswith((".png", ".dds", ".jpg")) and not asset.startswith("common/ui"):
+					compression_format = ""
+
+					convert_cmd = ["convert"]
+
+					if image_max_size:
+						convert_cmd.append('-resize "{0}x{0}>"'.format(image_max_size))
+
+					if png_to_dds_conversion_needed:
+						imagemetadata = subprocess.check_output(["file", asset_path])
+						#TODO: use bc3n or bc1n for normal maps, with support in shaders
+						if "RGBA" in imagemetadata.decode("utf-8"):
+							compression_format = "dxt5"
+						else:
+							compression_format = "dxt1"
+
+						convert_cmd.append('-define dds:compression={0}'.format(compression_format))
+
+
+					convert_cmd.append(asset_path)
+					convert_cmd.append(dest_asset_path)
+
+					print("converting image asset {0} to {1} ({2})".format(asset, dest_asset_path, compression_format))
+					if os.system(" ".join(convert_cmd)) == 0:
+						converted = converted + 1
+					else:
+						errors = errors + 1
+				else:
+					print("copying asset {0} to {1}".format(asset, dest_asset_path))
+					shutil.copy(asset_path, dest_asset_path)
+					copied = copied + 1
+					if asset.endswith(".material") and not asset.startswith("common/ui"):
+						print("processing material to replace 'png' with 'dds'")
+						for line in fileinput.input(dest_asset_path, inplace=True):
+							print(line.replace(".png", ".dds"), end='')
+
+			originalSize = originalSize + os.path.getsize(asset_path)
+			destinationSize = destinationSize + os.path.getsize(dest_asset_path)
+
 		else:
 			errors = errors + 1
 			print("referenced file {0} does not exist".format(asset_path))
 		
-	return copied, converted, skipped, errors
+	return copied, converted, skipped, errors, originalSize, destinationSize
 		
 def copytree(src, dst):
 	if not os.path.exists(dst):
@@ -98,7 +125,7 @@ MEDIA_DIRECTORY_TRUNK is the path to the root of the media directory, often name
 
 OUTPUT_DIRECTORY is where the processed assets will be copied
 
-IMAGE_MAX_SIZE the max size in pixels of any image. Any larger image will be scaled
+IMAGE_MAX_SIZE (optional) the max size in pixels of any image. Any larger image will be scaled
 
 OPTIONS
 	-h Show this help text
@@ -112,22 +139,21 @@ OPTIONS
 		print("ERROR: OUTPUT_DIRECTORY must be specified!")
 		print(usage)
 		sys.exit(1)
-	elif len(sys.argv) == 3:
-		print("ERROR: IMAGE_MAX_SIZE must be specified!")
-		print(usage)
-		sys.exit(1)
 
 	if sys.argv[1] == "-h":
 		print(usage)
 		sys.exit(0)
 
-	mode = sys.argv[1]
 	startdir = os.getcwd()
 	src_media_dir = sys.argv[1]
 	src_assets_dir = os.path.join(src_media_dir, "assets")
 	#Place the resulting media in a subdirectory called "media"
 	dest_media_dir = os.path.join(sys.argv[2], "media")
 	dest_assets_dir = os.path.join(dest_media_dir, "assets")
+
+	maxSize = None
+	if len(sys.argv) > 3:
+		maxSize = int(sys.argv[3])
 	
 	if not os.path.exists(dest_media_dir):
 		os.makedirs(dest_media_dir)
@@ -150,7 +176,7 @@ OPTIONS
 	
 	
 	#Put all assets here, as paths relative to the "assets" directory in the media repo.
-	assets = set();
+	assets = set()
 	
 	#Parse .material and .particle files, looking for references to textures. Skip "source" directories.
 	for dirpath, dirnames, files in os.walk(src_assets_dir):
@@ -186,7 +212,7 @@ OPTIONS
 		if "source" in dirnames:
 			dirnames.remove("source")
 		for filename in files:
-			if filename.endswith(('.jpg', '.png', '.skeleton', '.mesh', '.ttf', '.material', '.program', '.cg', '.glsl', '.hlsl', '.overlay', '.compositor', '.fontdef')):
+			if filename.endswith(('.jpg', '.png', '.dds', '.skeleton', '.mesh', '.ttf', '.material', '.program', '.cg', '.glsl', '.hlsl', '.overlay', '.compositor', '.fontdef')):
 				assets.add(os.path.relpath(os.path.join(dirpath, filename), src_assets_dir))
 			
 	#Parse .modeldef and .terrain files from the Ember source and look for references
@@ -231,8 +257,10 @@ OPTIONS
 	
 	assets.update(licenses)
 		
-	copied, converted, skipped, errors = copy_assets(src_assets_dir, dest_assets_dir, assets, 512)
+	copied, converted, skipped, errors, originalSize, destinationSize = copy_assets(src_assets_dir, dest_assets_dir, assets, maxSize)
 	print("Media conversion completed.\n{0} files copied, {1} images converted, {2} files skipped, {3} with errors".format(copied, converted, skipped, errors))
+	print("Original size:    {0} MB".format(originalSize / 1000000))
+	print("Destination size: {0} MB".format(destinationSize / 1000000))
 
 	pass
 

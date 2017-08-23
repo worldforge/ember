@@ -1,5 +1,5 @@
 <models>
-    <model name="pickerel" usescaleof="height" showcontained="true" icon="dural/creatures/tubular/texture/pickerel/I.png">
+    <model name="pickerel" usescaleof="height" showcontained="true" icon="dural/creatures/tubular/texture/pickerel/I.dds">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="0.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>

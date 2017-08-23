@@ -1,5 +1,5 @@
 <models>
-    <model name="bass_lm" usescaleof="none" showcontained="true" icon="dural/creatures/tubular/texture/bass_lm/I.png">
+    <model name="bass_lm" usescaleof="none" showcontained="true" icon="dural/creatures/tubular/texture/bass_lm/I.dds">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="0.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
