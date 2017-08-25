@@ -26,6 +26,7 @@
 #include <map>
 #include <unordered_map>
 #include <memory>
+#include <framework/FileSystemObserver.h>
 
 /**
  * @mainpage
@@ -92,6 +93,7 @@ namespace OgreView
 class EmberOgre;
 }
 
+class FileSystemObserver;
 class EmberServices;
 class LogObserver;
 class IResourceProvider;
@@ -177,6 +179,8 @@ public:
 private:
 
 	Eris::Session* mSession;
+
+	FileSystemObserver* mFileSystemObserver;
 
 	/**
 	 * @brief The main Ogre graphical view.

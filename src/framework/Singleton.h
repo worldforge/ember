@@ -23,81 +23,77 @@
 #define _EMBER_SINGLETON_H__
 
 #include <cassert>
+#include <boost/noncopyable.hpp>
 
 namespace Ember {
 
-    /** 
-    @brief Template class for creating single-instance global classes.
-    
-    Whenever you need a singleton in the system you should inherit from this, such as
-    @code
-    class Foo : public Ember::Singleton<Foo>
-    @endcode
-    
-    In your implementation you're then required to intialize ms_Singleton to 0, such as this
-    @code
-    template<> Ember::Foo* Ember::Singleton<Ember::Foo>::ms_Singleton = 0;
-    @endcode
-    
-    Whenever you need the singleton instance in your project you can then get it by calling @see getSingleton() or @see getSingletonPtr()
-    Note that you still have to provide lifetime service and ownership and need to both create and destroy the instance where appropriate.
-    */
-    template <typename T> class Singleton
-    {
-    protected:
+/**
+@brief Template class for creating single-instance global classes.
 
-		/**
-		@brief The static variable holding the singleton instance.
-		Remember to instanciate this to 0 in your implementation.
-		*/
-		static T* ms_Singleton;
+Whenever you need a singleton in the system you should inherit from this, such as
+@code
+class Foo : public Ember::Singleton<Foo>
+@endcode
 
-    public:
-		
-		/**
-		 * @brief Standard constructor.
-		 */
-		Singleton( void )
-		{
-			assert( !ms_Singleton );
-			ms_Singleton = static_cast< T* >( this );
-		}
-		
-		~Singleton( void )
-		{  
-			assert( ms_Singleton );
-			ms_Singleton = 0;
-		}
-		
-		/**
-		 *       @brief Gets the singleton instance.
-		 * @return The singleton instance.
-		 */
-		static T& getSingleton( void )
-		{	
-			assert( ms_Singleton );  
-			return ( *ms_Singleton ); 
-		}
-		
-		/**
-		 *       @brief Gets a pointer to the singleton instance.
-		 * @return A pointer to the singleton instance.
-		 */
-		static T* getSingletonPtr( void )
-		{ 
-			assert( ms_Singleton ); 
-			return ms_Singleton; 
-		}
-		
-		/**
-		 *       @brief Returns true if there's a singleton registered with the system.
-		 * @return True if there's a singleton available.
-		 */
-		static bool hasInstance()
-		{
-			return ms_Singleton != 0;
-		}
-	};
+In your implementation you're then required to intialize ms_Singleton to nullptr, such as this
+@code
+template<> Ember::Foo* Ember::Singleton<Ember::Foo>::ms_Singleton = nullptr;
+@endcode
+
+Whenever you need the singleton instance in your project you can then get it by calling @see getSingleton() or @see getSingletonPtr()
+Note that you still have to provide lifetime service and ownership and need to both create and destroy the instance where appropriate.
+*/
+template<typename T>
+class Singleton : private boost::noncopyable {
+protected:
+
+	/**
+	 * @brief Standard constructor.
+	 */
+	explicit Singleton() {
+		assert(!ms_Singleton);
+		ms_Singleton = static_cast<T*>( this );
+	}
+
+	virtual ~Singleton() {
+		assert(ms_Singleton);
+		ms_Singleton = nullptr;
+	}
+
+	/**
+	@brief The static variable holding the singleton instance.
+	Remember to instantiate this to nullptr in your implementation.
+	*/
+	static T* ms_Singleton;
+
+public:
+
+	/**
+	 *       @brief Gets the singleton instance.
+	 * @return The singleton instance.
+	 */
+	static T& getSingleton() {
+		assert(ms_Singleton);
+		return (*ms_Singleton);
+	}
+
+	/**
+	 *       @brief Gets a pointer to the singleton instance.
+	 * @return A pointer to the singleton instance.
+	 */
+	static T* getSingletonPtr() {
+		assert(ms_Singleton);
+		return ms_Singleton;
+	}
+
+	/**
+	 *       @brief Returns true if there's a singleton registered with the system.
+	 * @return True if there's a singleton available.
+	 */
+	static bool hasInstance() {
+		return ms_Singleton != nullptr;
+	}
+};
 }
 #endif
 

@@ -25,8 +25,11 @@
 
 #include "NonConnectedAdapter.h"
 #include "NonConnectedState.h"
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 
 #include <Eris/Session.h>
+#include <framework/LoggingInstance.h>
 
 //Needed for the "access" function.
 #ifdef _WIN32
@@ -34,20 +37,26 @@
 #else
 #endif
 
+#include "framework/FileSystemObserver.h"
+
 namespace Ember
 {
 
 ServerService::ServerService(Eris::Session& session) :
-		Service("Server"), mSession(session), mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this, session))
+		Service("Server"),
+		mSession(session),
+		mConnection(nullptr),
+		mAccount(nullptr),
+		mAvatar(nullptr),
+		mOOGChat(nullptr),
+		mNonConnectedState(new NonConnectedState(*this, session))
 {
-
 	GotAccount.connect(sigc::mem_fun(*this, &ServerService::gotAccount));
 	GotAvatar.connect(sigc::mem_fun(*this, &ServerService::gotAvatar));
 	GotConnection.connect(sigc::mem_fun(*this, &ServerService::gotConnection));
 
 	DestroyedAccount.connect(sigc::mem_fun(*this, &ServerService::destroyedAccount));
 	DestroyedAvatar.connect(sigc::mem_fun(*this, &ServerService::destroyedAvatar));
-
 }
 
 ServerService::~ServerService()
@@ -67,6 +76,8 @@ bool ServerService::start()
 void ServerService::stop()
 {
 	Service::stop();
+
+	Ember::FileSystemObserver::getSingleton().remove_directory(mLocalSocketPath.string());
 
 	disconnect();
 }
@@ -117,12 +128,12 @@ bool ServerService::connect(const std::string& host, short port)
 	return mNonConnectedState->connect(host, port);
 }
 
-bool ServerService::connectLocal(const std::string& socket)
+bool ServerService::connectLocal()
 {
-	return mNonConnectedState->connectLocal(socket);
+	return mNonConnectedState->connectLocal(mLocalSocketPath.string());
 }
 
-bool ServerService::hasLocalSocket(const std::string& socketPath)
+bool ServerService::hasLocalSocket()
 {
 	//No socket support on win32
 #ifdef _WIN32
@@ -130,13 +141,13 @@ bool ServerService::hasLocalSocket(const std::string& socketPath)
 #else
 
 	//check that the socket file is available and that we can connect to it
-	if (access(socketPath.c_str(), 0) != 0) {
+	if (!boost::filesystem::exists(mLocalSocketPath)) {
 		return false;
 	}
 
 	try {
 		boost::asio::local::stream_protocol::socket socket(mSession.getIoService());
-		socket.connect(boost::asio::local::stream_protocol::endpoint(socketPath));
+		socket.connect(boost::asio::local::stream_protocol::endpoint(mLocalSocketPath.string()));
 		return socket.is_open();
 	} catch (...) {
 		return false;
@@ -288,5 +299,27 @@ IServerAdapter& ServerService::getAdapter()
 {
 	return mNonConnectedState->getTopState().getServerAdapter();
 }
+
+void ServerService::setupLocalServerObservation(ConfigService& configService) {
+
+	mLocalSocketPath = boost::filesystem::path(configService.getPrefix() + "/var/tmp/cyphesis_cyphesis.sock");
+	if (configService.itemExists("general", "socket")) {
+		auto setting = configService.getValue("general", "socket");
+		if (setting.is_string()) {
+			mLocalSocketPath = boost::filesystem::path(setting.as_string());
+		}
+	}
+
+	auto directory = boost::filesystem::path(mLocalSocketPath).remove_filename().string();
+	S_LOG_VERBOSE("Observing directory " << directory << " for local server socket.");
+
+	Ember::FileSystemObserver::getSingleton().add_directory(directory, [this](const Ember::FileSystemObserver::FileSystemEvent& event) {
+		if (event.ev.path == mLocalSocketPath) {
+			S_LOG_VERBOSE("Local server socket directory changed.");
+			EventLocalSocketChanged.emit();
+		}
+	});
+}
+
 
 } // namespace Ember

@@ -81,67 +81,59 @@ function ServerBrowser:buildWidget()
 		end
 	end
 
+	local showLocalServerSelector = function()
+		self.widget:hide()
+		local socketDetectedWindow = guiManager:createWidget()
+		socketDetectedWindow:loadMainSheet("ServerSocketDetected.layout", "ServerSocketDetected")
+		socketDetectedWindow:show();
+		socketDetectedWindow:getMainWindow():activate()
 
-	--The socket path is currently hard coded to cyphesis. The default is that Ember
-	--is installed in the same location as cyphesis (i.e. using the same prefix
-	local socketPath = emberServices:getConfigService():getPrefix() .. "/var/tmp/cyphesis_cyphesis.sock"
-	if emberServices:getConfigService():itemExists("general", "socket") then
-		local configSocketPath = emberServices:getConfigService():getValue("general", "socket")
-		if configSocketPath then
-			if configSocketPath:is_string() then
-				socketPath = configSocketPath:as_string()
-			end
-		end
-	end
-
-	if serverService:hasLocalSocket(socketPath) then
-	
-		local showLocalServerSelector = function()
-			self.widget:hide()
-			local socketDetectedWindow = guiManager:createWidget()
-			socketDetectedWindow:loadMainSheet("ServerSocketDetected.layout", "ServerSocketDetected")
-			socketDetectedWindow:show();
-			socketDetectedWindow:getMainWindow():activate()
-	
-			socketDetectedWindow:getWindow("DontConnect"):subscribeEvent("Clicked", function(args)
-				guiManager:destroyWidget(socketDetectedWindow)
-				socketDetectedWindow = nil
-				showWindow()
-				return true
-			end)
-	
-			socketDetectedWindow:getWindow("ConnectNormally"):subscribeEvent("Clicked", function(args)
-				guiManager:destroyWidget(socketDetectedWindow)
-				socketDetectedWindow = nil
-				serverService:connectLocal(socketPath)
-				return true
-			end)
-	
-			socketDetectedWindow:getWindow("ConnectAsAdmin"):subscribeEvent("Clicked", function(args)
-				guiManager:destroyWidget(socketDetectedWindow)
-				socketDetectedWindow = nil
-	
-				local localServerAdminCreator = Ember.LocalServerAdminCreator:new(serverService)
-	
-				local connector = createConnector(serverService.GotAvatar)
-				connector:connect(function()
-					deleteSafe(localServerAdminCreator)
-					connector:disconnect()
-				end)
-	
-				serverService:connectLocal(socketPath)
-	
-				return true
-			end)
-		
-		end
-	
-		self.widget:getWindow("ConnectLocal"):setVisible(true)
-		self.widget:getWindow("ConnectLocal"):subscribeEvent("Clicked", function(args)
-			showLocalServerSelector()
+		socketDetectedWindow:getWindow("DontConnect"):subscribeEvent("Clicked", function(args)
+			guiManager:destroyWidget(socketDetectedWindow)
+			socketDetectedWindow = nil
+			showWindow()
 			return true
 		end)
-		
+
+		socketDetectedWindow:getWindow("ConnectNormally"):subscribeEvent("Clicked", function(args)
+			guiManager:destroyWidget(socketDetectedWindow)
+			socketDetectedWindow = nil
+			serverService:connectLocal()
+			return true
+		end)
+
+		socketDetectedWindow:getWindow("ConnectAsAdmin"):subscribeEvent("Clicked", function(args)
+			guiManager:destroyWidget(socketDetectedWindow)
+			socketDetectedWindow = nil
+
+			local localServerAdminCreator = Ember.LocalServerAdminCreator:new(serverService)
+
+			local connector = createConnector(serverService.GotAvatar)
+			connector:connect(function()
+				deleteSafe(localServerAdminCreator)
+				connector:disconnect()
+			end)
+
+			serverService:connectLocal()
+
+			return true
+		end)
+
+	end
+
+	self.widget:getWindow("ConnectLocal"):subscribeEvent("Clicked", function(args)
+		showLocalServerSelector()
+		return true
+	end)
+
+	connect(self.connectors, serverService.EventLocalSocketChanged, function()
+		local hasSocket = serverService:hasLocalSocket()
+		self.widget:getWindow("ConnectLocal"):setVisible(hasSocket)
+	end, self)
+
+	if serverService:hasLocalSocket() then
+		self.widget:getWindow("ConnectLocal"):setVisible(true)
+
 		showLocalServerSelector()
 
 	else

@@ -37,23 +37,24 @@
 #include "framework/osdir.h"
 #include "framework/TimedLog.h"
 #include <OgreArchiveManager.h>
+#include <Ogre.h>
+#include <boost/algorithm/string.hpp>
+#include <framework/FileSystemObserver.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
 	/** This event is called when a resource beings loading. */
-	Ogre::DataStreamPtr resourceLoading(const Ogre::String &name, const Ogre::String &group, Ogre::Resource *resource) override {
+	Ogre::DataStreamPtr resourceLoading(const Ogre::String& name, const Ogre::String& group, Ogre::Resource* resource) override {
 		return Ogre::DataStreamPtr();
 	}
 
-	void resourceStreamOpened(const Ogre::String &name, const Ogre::String &group, Ogre::Resource *resource, Ogre::DataStreamPtr& dataStream) override {
+	void resourceStreamOpened(const Ogre::String& name, const Ogre::String& group, Ogre::Resource* resource, Ogre::DataStreamPtr& dataStream) override {
 
 	}
 
-	bool resourceCollision(Ogre::Resource *resource, Ogre::ResourceManager *resourceManager) override {
+	bool resourceCollision(Ogre::Resource* resource, Ogre::ResourceManager* resourceManager) override {
 		//By default we'll just ignore resource collisions.
 		S_LOG_VERBOSE("Resource '" << resource->getName() << "' already exists in group '" << resource->getGroup() << "' for type '" << resourceManager->getResourceType() << "'.");
 		return false;
@@ -61,19 +62,20 @@ struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
 };
 
 OgreResourceLoader::OgreResourceLoader() :
-		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."), mLoadRecursive(false)
-{
+		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."),
+		mLoadRecursive(false) {
 	mFileSystemArchiveFactory = new FileSystemArchiveFactory();
 	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory);
 }
 
-OgreResourceLoader::~OgreResourceLoader()
-{
+OgreResourceLoader::~OgreResourceLoader() {
 	delete mFileSystemArchiveFactory;
+	for (auto& path : mResourceRootPaths) {
+		Ember::FileSystemObserver::getSingleton().remove_directory(path);
+	}
 }
 
-void OgreResourceLoader::initialize()
-{
+void OgreResourceLoader::initialize() {
 
 	mLoadingListener = new EmberResourceLoadingListener();
 	Ogre::ResourceGroupManager::getSingleton().setLoadingListener(mLoadingListener);
@@ -83,7 +85,7 @@ void OgreResourceLoader::initialize()
 	//check from the config if we should load media recursively
 	//this is needed for most authoring, since it allows us to find all meshes before they are loaded
 	if (configSrv.itemExists("media", "loadmediarecursive")) {
-		mLoadRecursive = (bool)configSrv.getValue("media", "loadmediarecursive");
+		mLoadRecursive = (bool) configSrv.getValue("media", "loadmediarecursive");
 	}
 
 	if (EmberServices::getSingleton().getConfigService().itemExists("media", "extraresourcelocations")) {
@@ -93,15 +95,13 @@ void OgreResourceLoader::initialize()
 	}
 }
 
-void OgreResourceLoader::runCommand(const std::string &command, const std::string &args)
-{
+void OgreResourceLoader::runCommand(const std::string& command, const std::string& args) {
 	if (UnloadUnusedResources == command) {
 		unloadUnusedResources();
 	}
 }
 
-void OgreResourceLoader::unloadUnusedResources()
-{
+void OgreResourceLoader::unloadUnusedResources() {
 	TimedLog l("Unload unused resources.");
 	Ogre::ResourceGroupManager& resourceGroupManager(Ogre::ResourceGroupManager::getSingleton());
 
@@ -111,32 +111,29 @@ void OgreResourceLoader::unloadUnusedResources()
 	}
 }
 
-bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
-{
+bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
 	static const std::string& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
 
 	return addResourceDirectory(sharedMediaPath + path, type, section, recursive, true, true);
 }
 
-bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
-{
+bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
 	static const std::string& userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
 	static const std::string& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
-	bool foundDir = false;
-
 	//try with ember-media
-	foundDir = addResourceDirectory(userMediaPath + path, type, section, recursive, true);
+	bool foundDir = addResourceDirectory(userMediaPath + path, type, section, recursive, true);
 
 	return addResourceDirectory(emberMediaPath + path, type, section, recursive, false) || foundDir;
 }
 
-bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure)
-{
+bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure) {
 	if (isExistingDir(path)) {
 		S_LOG_VERBOSE("Adding dir " << path);
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, type, section, recursive);
+			mResourceRootPaths.emplace_back(path);
+			observeDirectory(path);
 			return true;
 		} catch (const std::exception&) {
 			if (throwOnFailure) {
@@ -157,8 +154,7 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 	return false;
 }
 
-void OgreResourceLoader::loadBootstrap()
-{
+void OgreResourceLoader::loadBootstrap() {
 	//Add the "assets" directory, which contains most of the assets
 	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 	addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
@@ -170,14 +166,12 @@ void OgreResourceLoader::loadBootstrap()
 
 }
 
-void OgreResourceLoader::loadGui()
-{
+void OgreResourceLoader::loadGui() {
 	addUserMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 	addSharedMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
 
-void OgreResourceLoader::loadGeneral()
-{
+void OgreResourceLoader::loadGeneral() {
 	//Start with adding any extra defined locations.
 	for (auto& location : mExtraResourceLocations) {
 		addResourceDirectory(location, "EmberFileSystem", "Extra", mLoadRecursive, false);
@@ -201,10 +195,9 @@ void OgreResourceLoader::loadGeneral()
 
 }
 
-void OgreResourceLoader::preloadMedia()
-{
+void OgreResourceLoader::preloadMedia() {
 	// resource groups to be loaded
-	const char* resourceGroup[] = { "General", "Data" };
+	const char* resourceGroup[] = {"General", "Data"};
 
 	for (auto& group : resourceGroup) {
 		try {
@@ -216,17 +209,59 @@ void OgreResourceLoader::preloadMedia()
 }
 
 
-bool OgreResourceLoader::isExistingDir(const std::string& path) const
-{
-	bool exists = false;
+bool OgreResourceLoader::isExistingDir(const std::string& path) const {
 	oslink::directory osdir(path);
-	exists = osdir.isExisting();
+	bool exists = osdir.isExisting();
 	if (!exists) {
 		//perhaps it's a file?
 		std::ifstream fin(path.c_str(), std::ios::in);
 		exists = !fin.fail();
 	}
 	return exists;
+}
+
+void OgreResourceLoader::observeDirectory(const std::string& path) {
+	FileSystemObserver::getSingleton().add_directory(path, [this](const FileSystemObserver::FileSystemEvent& event) {
+		auto& ev = event.ev;
+		S_LOG_VERBOSE("Resource changed " << ev.path.string() << " " << ev.type_cstr());
+
+		if (ev.type == boost::asio::dir_monitor_event::modified) {
+			if (boost::filesystem::file_size(ev.path) == 0) {
+				return;
+			}
+		}
+
+		auto resourceGroups = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
+		for (auto& group : resourceGroups) {
+			auto locations = Ogre::ResourceGroupManager::getSingleton().listResourceLocations(group);
+			for (auto& location : *locations) {
+				if (boost::starts_with(ev.path.string(), location)) {
+					std::string relative = ev.path.string().substr(location.length() + 1);
+					auto extension = ev.path.extension();
+
+					if (extension == ".material") {
+						std::ifstream stream(ev.path.string());
+						Ogre::SharedPtr<Ogre::DataStream> fileStream(OGRE_NEW Ogre::FileStreamDataStream(&stream, false));
+						Ogre::MaterialManager::getSingleton().parseScript(fileStream, group);
+					} else if (extension == ".dds") {
+						auto& textureMgr = Ogre::TextureManager::getSingleton();
+						if (textureMgr.resourceExists(relative, group)) {
+							auto resource = textureMgr.getResourceByName(relative, group);
+							if (resource->isLoaded() || resource->isPrepared()) {
+								try {
+									resource->reload();
+								} catch (const std::exception& e) {
+									S_LOG_FAILURE("Could not reload texture '" << relative << "'." << e);
+								}
+							}
+						} else {
+							//Add resource
+						}
+					}
+				}
+			}
+		}
+	});
 }
 
 }

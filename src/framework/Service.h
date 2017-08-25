@@ -50,7 +50,7 @@ private:
 public:
 
 	/** Creates a new Service using default values. */
-	Service(const std::string& name);
+	explicit Service(const std::string& name);
 
 	/**
 	 * @brief Dtor.

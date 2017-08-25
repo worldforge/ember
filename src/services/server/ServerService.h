@@ -29,8 +29,9 @@
 
 #include <Atlas/Message/Element.h>
 
-#include <memory>
 
+#include <boost/filesystem/path.hpp>
+#include <memory>
 
 namespace Eris
 {
@@ -47,6 +48,7 @@ class Session;
 namespace Ember
 {
 
+class ConfigService;
 class OOGChat;
 class NonConnectedState;
 class IServerAdapter;
@@ -69,14 +71,14 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	ServerService(Eris::Session& session);
+	explicit ServerService(Eris::Session& session);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ServerService();
+	~ServerService() override;
 
-	bool isConnected() const;
+	void setupLocalServerObservation(ConfigService& configService);
 
 	bool start();
 
@@ -92,17 +94,15 @@ public:
 
 	/**
 	 * @brief Connects to a local socket.
-	 * @param socketPath The path to the local socket.
 	 * @return True if connection was successful.
 	 */
-	bool connectLocal(const std::string& socketPath);
+	bool connectLocal();
 
 	/**
 	 * @brief Checks if there's a local socket available.
-	 * @param socketPath The path to the local socket.
 	 * @return True if a local socket exists.
 	 */
-	bool hasLocalSocket(const std::string& socketPath);
+	bool hasLocalSocket();
 
 	void disconnect();
 
@@ -248,6 +248,8 @@ public:
 	 */
 	void setTypeInfo(const Atlas::Objects::Root& typeInfo);
 
+	sigc::signal<void> EventLocalSocketChanged;
+
 private:
 
 	void gotConnection(Eris::Connection* connection);
@@ -280,6 +282,8 @@ private:
 	IServerAdapter* mServerAdapter;
 
 	std::unique_ptr<NonConnectedState> mNonConnectedState;
+
+	boost::filesystem::path mLocalSocketPath;
 
 };
 

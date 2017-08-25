@@ -41,6 +41,7 @@
 #include "framework/TimeFrame.h"
 #include "framework/FileResourceProvider.h"
 #include "framework/osdir.h"
+#include "framework/FileSystemObserver.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 #include "components/lua/Connectors.h"
@@ -164,6 +165,7 @@ template<> Application* Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
 		mSession(new Eris::Session()),
+		mFileSystemObserver(new FileSystemObserver(mSession->getIoService())),
 		mOgreView(nullptr),
 		mShouldQuit(false),
 		mPollEris(true),
@@ -195,6 +197,7 @@ Application::~Application() {
 	delete mSession;
 	delete mServices;
 	delete mScriptingResourceProvider;
+	delete mFileSystemObserver;
 	S_LOG_INFO("Ember shut down normally.");
 	Log::removeObserver(mLogObserver);
 	delete mLogObserver;
@@ -399,6 +402,8 @@ void Application::initializeServices() {
 
 	mServices->getServerService().GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
 	mServices->getServerService().DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
+
+	mServices->getServerService().setupLocalServerObservation(configService);
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	Lua::LuaScriptingProvider* luaProvider = new Lua::LuaScriptingProvider();

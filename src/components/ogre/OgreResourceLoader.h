@@ -28,6 +28,8 @@
 #include "framework/ConsoleObject.h"
 #include <OgreConfigFile.h>
 #include <map>
+#include <Eris/Session.h>
+
 namespace Ember {
 namespace OgreView {
 
@@ -46,9 +48,9 @@ If a directory contains a file named "norecurse" (it can be empty) Ember won't r
 */
 class OgreResourceLoader : public ConsoleObject {
 public:
-	OgreResourceLoader();
+	explicit OgreResourceLoader();
 
-	~OgreResourceLoader();
+	~OgreResourceLoader() override;
 
 	void initialize();
 
@@ -67,7 +69,7 @@ public:
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
@@ -88,6 +90,8 @@ protected:
 
 	EmberResourceLoadingListener* mLoadingListener;
 
+	std::vector<std::string> mResourceRootPaths;
+
 
 	bool addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
 	bool addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
@@ -106,7 +110,7 @@ protected:
 	 */
 	bool addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure = false);
 
-
+	void observeDirectory(const std::string& path);
 };
 
 }
