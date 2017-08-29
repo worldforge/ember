@@ -39,6 +39,10 @@ public:
     {
     }
 
+    ~dir_monitor_impl() {
+        close(fd_);
+    }
+
     void add_directory(const std::string &dirname)
     {
         int wd = inotify_add_watch(fd_, dirname.c_str(), IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
@@ -87,6 +91,16 @@ public:
 
     void destroy()
     {
+        {
+            std::unique_lock<std::mutex> lock(watch_descriptors_mutex_);
+            for (auto entry : watch_descriptors_.left) {
+                inotify_rm_watch(fd_, entry.first);
+            }
+            watch_descriptors_.clear();
+            lock.unlock();
+        }
+
+
         inotify_work_.reset();
         inotify_io_service_.stop();
         inotify_work_thread_.join();
@@ -194,7 +208,7 @@ private:
     boost::asio::io_service inotify_io_service_;
     std::unique_ptr<boost::asio::io_service::work> inotify_work_;
     std::thread inotify_work_thread_;
-    
+
     std::unique_ptr<boost::asio::posix::stream_descriptor> stream_descriptor_;
     std::array<char, 4096> read_buffer_;
     std::string pending_read_buffer_;
