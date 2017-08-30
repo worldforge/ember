@@ -40,12 +40,12 @@
 #include <Ogre.h>
 #include <boost/algorithm/string.hpp>
 #include <framework/FileSystemObserver.h>
+#include <framework/MainLoopController.h>
 
 namespace Ember {
 namespace OgreView {
 
 struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
-	/** This event is called when a resource beings loading. */
 	Ogre::DataStreamPtr resourceLoading(const Ogre::String& name, const Ogre::String& group, Ogre::Resource* resource) override {
 		return Ogre::DataStreamPtr();
 	}
@@ -55,9 +55,22 @@ struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
 	}
 
 	bool resourceCollision(Ogre::Resource* resource, Ogre::ResourceManager* resourceManager) override {
-		//By default we'll just ignore resource collisions.
 		S_LOG_VERBOSE("Resource '" << resource->getName() << "' already exists in group '" << resource->getGroup() << "' for type '" << resourceManager->getResourceType() << "'.");
-		return false;
+		if (resourceManager->getResourceType() == "Material") {
+
+			//If a material, update the old version once the new one has been compiled (hence the need for "runOnMainThread".
+			//Note that this only works the first time a material is updated.
+			Ogre::MaterialPtr existingMaterial = Ogre::MaterialManager::getSingleton().getByName(resource->getName(), resource->getGroup());
+
+			MainLoopController::getSingleton().getEventService().runOnMainThread([=]() {
+				Ogre::MaterialPtr oldMat = existingMaterial;
+				Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(resource->getName(), resource->getGroup());
+				mat->copyDetailsTo(oldMat);
+			});
+		}
+
+		resourceManager->remove(resource->getName(), resource->getGroup());
+		return true;
 	}
 };
 
@@ -158,12 +171,6 @@ void OgreResourceLoader::loadBootstrap() {
 	//Add the "assets" directory, which contains most of the assets
 	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 	addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-
-
-//	Ogre::ResourceGroupManager::getSingleton().createResourceGroup("LoadingBar");
-//	addUserMedia("media/assets", "EmberFileSystem", "LoadingBar", true);
-//	addSharedMedia("media/assets", "EmberFileSystem", "LoadingBar", true);
-
 }
 
 void OgreResourceLoader::loadGui() {
@@ -231,8 +238,28 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 			}
 		}
 
+
 		auto resourceGroups = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
 		for (auto& group : resourceGroups) {
+
+			auto reloadResource = [&](Ogre::ResourceManager& resourceManager, const std::string& resourceName) {
+				if (resourceManager.resourceExists(resourceName, group)) {
+					auto resource = resourceManager.getResourceByName(resourceName, group);
+					if (resource->isLoaded() || resource->isPrepared()) {
+						try {
+							resource->reload();
+						} catch (const std::exception& e) {
+							S_LOG_FAILURE("Could not reload resource '" << resourceName << "' of type '" << resourceManager.getResourceType() << "'." << e);
+						}
+					}
+				} else {
+					//Add resource
+					Ogre::ResourceGroupManager::getSingleton().declareResource(resourceName, resourceManager.getResourceType(), group);
+					resourceManager.createResource(resourceName, group);
+				}
+
+			};
+
 			auto locations = Ogre::ResourceGroupManager::getSingleton().listResourceLocations(group);
 			for (auto& location : *locations) {
 				if (boost::starts_with(ev.path.string(), location)) {
@@ -243,20 +270,10 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 						std::ifstream stream(ev.path.string());
 						Ogre::SharedPtr<Ogre::DataStream> fileStream(OGRE_NEW Ogre::FileStreamDataStream(&stream, false));
 						Ogre::MaterialManager::getSingleton().parseScript(fileStream, group);
-					} else if (extension == ".dds") {
-						auto& textureMgr = Ogre::TextureManager::getSingleton();
-						if (textureMgr.resourceExists(relative, group)) {
-							auto resource = textureMgr.getResourceByName(relative, group);
-							if (resource->isLoaded() || resource->isPrepared()) {
-								try {
-									resource->reload();
-								} catch (const std::exception& e) {
-									S_LOG_FAILURE("Could not reload texture '" << relative << "'." << e);
-								}
-							}
-						} else {
-							//Add resource
-						}
+					} else if (extension == ".dds" || extension == ".png" || extension == ".jpg") {
+						reloadResource(Ogre::TextureManager::getSingleton(), relative);
+					} else if (extension == ".mesh") {
+						reloadResource(Ogre::MeshManager::getSingleton(), relative);
 					}
 				}
 			}
