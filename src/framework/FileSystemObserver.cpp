@@ -17,47 +17,58 @@
  */
 
 #include <boost/algorithm/string.hpp>
+#include <boost/exception/exception.hpp>
 #include "FileSystemObserver.h"
+#include "LoggingInstance.h"
 
 namespace Ember {
 
 template<> Ember::FileSystemObserver* Ember::Singleton<Ember::FileSystemObserver>::ms_Singleton = nullptr;
 
 
-FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService)
-		: mDirectoryMonitor(ioService) {
-	observe();
+FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService) {
+	try {
+		mDirectoryMonitor.reset(new boost::asio::dir_monitor(ioService));
+		observe();
+	} catch (const boost::exception& e) {
+		S_LOG_WARNING("Could not intialize file system observer; probably due to running out of file descriptors.");
+	}
 
 }
 
 void FileSystemObserver::observe() {
-	mDirectoryMonitor.async_monitor([this](const boost::system::error_code& ec, const boost::asio::dir_monitor_event& ev) {
-		if (!ec && ev.type != boost::asio::dir_monitor_event::null) {
-			for (const auto& I : mCallBacks) {
-				if (boost::starts_with(ev.path.string(), I.first)) {
-					std::string relative = ev.path.string().substr(I.first.length() + 1);
-					FileSystemEvent event{
-							ev,
-							relative
-					};
-					I.second(event);
+	if (mDirectoryMonitor) {
+		mDirectoryMonitor->async_monitor([this](const boost::system::error_code& ec, const boost::asio::dir_monitor_event& ev) {
+			if (!ec && ev.type != boost::asio::dir_monitor_event::null) {
+				for (const auto& I : mCallBacks) {
+					if (boost::starts_with(ev.path.string(), I.first)) {
+						std::string relative = ev.path.string().substr(I.first.length() + 1);
+						FileSystemEvent event{
+								ev,
+								relative
+						};
+						I.second(event);
 
-					break;
+						break;
+					}
 				}
+				this->observe();
 			}
-			this->observe();
-		}
-	});
-
+		});
+	}
 }
 
 void FileSystemObserver::add_directory(const std::string& dirname, std::function<void(const FileSystemObserver::FileSystemEvent&)> callback) {
-	mCallBacks.insert(std::make_pair(dirname, callback));
-	mDirectoryMonitor.add_directory(dirname);
+	if (mDirectoryMonitor) {
+		mCallBacks.insert(std::make_pair(dirname, callback));
+		mDirectoryMonitor->add_directory(dirname);
+	}
 }
 
 void FileSystemObserver::remove_directory(const std::string& dirname) {
-	mCallBacks.erase(dirname);
-	mDirectoryMonitor.remove_directory(dirname);
+	if (mDirectoryMonitor) {
+		mCallBacks.erase(dirname);
+		mDirectoryMonitor->remove_directory(dirname);
+	}
 }
 }

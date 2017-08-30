@@ -23,6 +23,7 @@
 #include "Singleton.h"
 
 #include <boost/asio/impl/io_service.hpp>
+#include <memory>
 
 namespace Ember {
 
@@ -65,7 +66,7 @@ public:
 	void remove_directory(const std::string& dirname);
 
 private:
-	boost::asio::dir_monitor mDirectoryMonitor;
+	std::unique_ptr<boost::asio::dir_monitor> mDirectoryMonitor;
 
 	std::map<std::string, std::function<void(const FileSystemEvent&)>> mCallBacks;
 
