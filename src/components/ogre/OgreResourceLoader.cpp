@@ -134,10 +134,9 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	static const std::string& userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
 	static const std::string& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
-	//try with ember-media
-	bool foundDir = addResourceDirectory(userMediaPath + path, type, section, recursive, true);
+	bool foundDir = addResourceDirectory(emberMediaPath + path, type, section, recursive, true);
 
-	return addResourceDirectory(emberMediaPath + path, type, section, recursive, false) || foundDir;
+	return addResourceDirectory(userMediaPath + path, type, section, recursive, false) || foundDir;
 }
 
 bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure) {
@@ -169,37 +168,37 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 
 void OgreResourceLoader::loadBootstrap() {
 	//Add the "assets" directory, which contains most of the assets
-	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 	addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
 
 void OgreResourceLoader::loadGui() {
-	addUserMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 	addSharedMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	addUserMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
 
 void OgreResourceLoader::loadGeneral() {
-	//Start with adding any extra defined locations.
+
+	//Lua scripts
+	addSharedMedia("scripting", "EmberFileSystem", "Scripting", true);
+	addUserMedia("scripting", "EmberFileSystem", "Scripting", true);
+
+	//Model definitions, terrain definitions, sound definitions and entity mappings
+	addSharedMedia("data", "EmberFileSystem", "Data", true);
+	addUserMedia("data", "EmberFileSystem", "Data", true);
+
+	//The Caelum component
+	addSharedMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
+	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
+
+	//Entity recipes
+	addSharedMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);
+	addUserMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);
+
+	//End with adding any extra defined locations.
 	for (auto& location : mExtraResourceLocations) {
 		addResourceDirectory(location, "EmberFileSystem", "Extra", mLoadRecursive, false);
 	}
-
-	//Lua scripts
-	addUserMedia("scripting", "EmberFileSystem", "Scripting", true);
-	addSharedMedia("scripting", "EmberFileSystem", "Scripting", true);
-
-	//Model definitions, terrain definitions, sound definitions and entity mappings
-	addUserMedia("data", "EmberFileSystem", "Data", true);
-	addSharedMedia("data", "EmberFileSystem", "Data", true);
-
-	//The Caelum component
-	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
-	addSharedMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
-
-	//Entity recipes
-	addUserMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);
-	addSharedMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);
-
 }
 
 void OgreResourceLoader::preloadMedia() {

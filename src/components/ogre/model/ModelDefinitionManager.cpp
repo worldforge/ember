@@ -28,12 +28,10 @@
 
 #include "ModelDefinitionManager.h"
 #include "Model.h"
-#include "ModelBackgroundLoader.h"
 
 #include "XMLModelDefinitionSerializer.h"
 
 #include "framework/TimeFrame.h"
-#include "framework/TimedLog.h"
 #include "framework/Tokeniser.h"
 
 #include <OgreRoot.h>
@@ -52,15 +50,13 @@ ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirector
 	mLoadOrder = 300.0f;
 	mResourceType = "ModelDefinition";
 
-	mScriptPatterns.push_back("*.modeldef");
-	mScriptPatterns.push_back("*.modeldef.xml");
+	mScriptPatterns.emplace_back("*.modeldef");
+	mScriptPatterns.emplace_back("*.modeldef.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 
 }
-
-
 
 ModelDefinitionManager::~ModelDefinitionManager()
 {
@@ -68,7 +64,7 @@ ModelDefinitionManager::~ModelDefinitionManager()
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
-ModelDefinitionPtr ModelDefinitionManager::create (const Ogre::String& name, const Ogre::String& group,
+ModelDefinitionPtr ModelDefinitionManager::create(const Ogre::String& name, const Ogre::String& group,
         bool isManual, Ogre::ManualResourceLoader* loader,
         const Ogre::NameValuePairList* createParams)
 {
@@ -79,32 +75,7 @@ Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogr
 		const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
 		const Ogre::NameValuePairList* params)
 {
-	Ogre::ResourcePtr ret = getResourceByName(name, group);
-	if (!ret)
-	{
-		return OGRE_NEW ModelDefinition(this, name, handle, group, isManual, loader);
-	}
-	//Report this. We count on this happening a lot (user media overriding shared media for example), so we will not consider it a failure.
-	S_LOG_INFO("ModelDefinition with name " << name << " already exists.");
-	return nullptr;
-}
-
-Ogre::ResourcePtr ModelDefinitionManager::createResource(const Ogre::String& name, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* params)
-{
-	// Call creation implementation
-	Ogre::ResourcePtr ret = Ogre::ResourcePtr(
-			createImpl(name, getNextHandle(), group, isManual, loader, params));
-
-	if (!ret)
-		return ret;
-
-	if (params)
-		ret->setParameterList(*params);
-
-	addImpl(ret);
-	// Tell resource group manager
-	Ogre::ResourceGroupManager::getSingleton()._notifyResourceCreated(ret);
-	return ret;
+	return OGRE_NEW ModelDefinition(this, name, handle, group, isManual, loader);
 }
 
 void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
@@ -119,9 +90,10 @@ std::string ModelDefinitionManager::exportScript(ModelDefinitionPtr definition)
 	bool success = serializer.exportScript(definition, mExportDirectory, definition->getName() + ".modeldef");
 	if (success) {
 		return mExportDirectory + definition->getName() + ".modeldef";
-	} else {
-		return "";
 	}
+
+	return "";
+
 }
 
 const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
@@ -129,7 +101,7 @@ const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
 	std::vector<std::string> meshes;
 	Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
 	for (auto& meshName : *meshesVector) {
-		meshes.push_back(std::string(meshName));
+		meshes.emplace_back(meshName);
 	}
 	meshesVector.reset();
 	return meshes;
@@ -167,14 +139,6 @@ void ModelDefinitionManager::runCommand(const std::string &command, const std::s
 		}
 	}
 }
-
-void ModelDefinitionManager::populateModel(Model* model, const Ogre::SharedPtr<ModelDefinition>& definition)
-{
-	//TODO: do background loading
-	//model->
-}
-
-
 
 }
 }
