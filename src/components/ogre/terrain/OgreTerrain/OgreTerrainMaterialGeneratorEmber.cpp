@@ -58,7 +58,7 @@ void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain)
 
 	// Allocate in main thread so no race conditions
 	std::unique_ptr<IPageData> pageData(mDataProvider.getPageData(emberTerrain->getIndex()));
-	if (!pageData || pageData->getCompositeMapMaterial().isNull() || pageData->getCompositeMapMaterial()->getNumTechniques() == 0) {
+	if (!pageData || !pageData->getCompositeMapMaterial() || pageData->getCompositeMapMaterial()->getTechniques().empty()) {
 		terrain->_setCompositeMapRequired(false);
 	} else {
 		terrain->_setCompositeMapRequired(true);
