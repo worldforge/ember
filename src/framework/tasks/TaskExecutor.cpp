@@ -40,6 +40,9 @@ TaskExecutor::~TaskExecutor()
 
 void TaskExecutor::run()
 {
+#ifndef _WIN32
+	pthread_setname_np(pthread_self(), "Task Executor");
+#endif
 	while (mActive) {
 		TaskUnit* taskUnit = mTaskQueue.fetchNextTask();
 		//If the queue returns a null pointer, it means that the queue is being shut down, and this executor is expected to exit its main processing loop.
