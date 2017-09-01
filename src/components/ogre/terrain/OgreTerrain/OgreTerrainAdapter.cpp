@@ -162,7 +162,7 @@ void OgreTerrainAdapter::reloadPage(const TerrainIndex& index)
 {
 	if (mTerrainPagedWorldSection) {
 		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
-		if (page) {
+		if (page && !page->isDerivedDataUpdateInProgress()) {
 			page->dirty();
 			page->update();
 		}
