@@ -79,21 +79,23 @@ void HeightMap::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<
 		for (int segmentY = segmentYMin; segmentY <= segmentYMax; ++segmentY) {
 
 			auto segmentPtr = getSegment(segmentX, segmentY);
-			auto segment = segmentPtr.get();
+			if (segmentPtr) {
+				auto segment = segmentPtr.get();
 
-			int segmentXStart = segmentX * mSegmentResolution;
-			int segmentYStart = segmentY * mSegmentResolution;
-			int dataXOffset = segmentXStart - xMin;
-			int dataYOffset = segmentYStart - yMin;
+				int segmentXStart = segmentX * mSegmentResolution;
+				int segmentYStart = segmentY * mSegmentResolution;
+				int dataXOffset = segmentXStart - xMin;
+				int dataYOffset = segmentYStart - yMin;
 
-			int xStart = std::max(xMin - segmentXStart, 0);
-			int yStart = std::max(yMin - segmentYStart, 0);
-			int xEnd = std::min<int>(xMax - segmentXStart, mSegmentResolution);
-			int yEnd = std::min<int>(yMax - segmentYStart, mSegmentResolution);
+				int xStart = std::max(xMin - segmentXStart, 0);
+				int yStart = std::max(yMin - segmentYStart, 0);
+				int xEnd = std::min<int>(xMax - segmentXStart, mSegmentResolution);
+				int yEnd = std::min<int>(yMax - segmentYStart, mSegmentResolution);
 
-			for (int x = xStart; x < xEnd; ++x) {
-				for (int y = yStart; y < yEnd; ++y) {
-					heights[((dataYOffset + y) * xSize) + (dataXOffset + x)] = segment->getHeight(x, y);
+				for (int x = xStart; x < xEnd; ++x) {
+					for (int y = yStart; y < yEnd; ++y) {
+						heights[((dataYOffset + y) * xSize) + (dataXOffset + x)] = segment->getHeight(x, y);
+					}
 				}
 			}
 		}
