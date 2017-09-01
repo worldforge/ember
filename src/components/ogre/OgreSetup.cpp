@@ -38,7 +38,6 @@
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
-#include "framework/Singleton.h"
 #include "framework/MainLoopController.h"
 #include "EmberWorkQueue.h"
 
@@ -64,6 +63,7 @@
 #include <OgreLodStrategyManager.h>
 
 #include <SDL.h>
+#include <Ogre.h>
 
 namespace Ember
 {
@@ -71,9 +71,14 @@ namespace OgreView
 {
 
 OgreSetup::OgreSetup() :
-		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."), mRoot(0), mRenderWindow(0), mSceneManagerFactory(0), mMeshSerializerListener(0), mOverlaySystem(nullptr)
+		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."),
+		mRoot(nullptr),
+		mRenderWindow(nullptr),
+		mSceneManagerFactory(nullptr),
+		mMeshSerializerListener(nullptr),
+		mOverlaySystem(nullptr)
 #ifdef BUILD_WEBEMBER
-,mOgreWindowProvider(0)
+,mOgreWindowProvider(nullptr)
 #endif
 , mConfigListenerContainer(nullptr)
 {
@@ -101,23 +106,33 @@ void OgreSetup::shutdown()
 {
 	S_LOG_INFO("Shutting down Ogre.");
 	if (mRoot) {
+
+		try {
+			auto cacheStream = mRoot->createFileStream(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) + "/gpu.cache");
+			if (cacheStream) {
+				Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
+			}
+		} catch (...) {
+			S_LOG_WARNING("Error when trying to save GPU cache file.");
+		}
+
 		if (mSceneManagerFactory) {
 			mRoot->removeSceneManagerFactory(mSceneManagerFactory);
 			delete mSceneManagerFactory;
-			mSceneManagerFactory = 0;
+			mSceneManagerFactory = nullptr;
 		}
 
 		//This should normally not be needed, but there seems to be a bug in Ogre for Windows where it will hang if the render window isn't first detached.
 		//The bug appears in Ogre 1.7.2.
 		if (mRenderWindow) {
 			mRoot->detachRenderTarget(mRenderWindow);
-			mRenderWindow = 0;
+			mRenderWindow = nullptr;
 		}
 	}
 	delete mOverlaySystem;
 	mOverlaySystem = nullptr;
 	delete mRoot;
-	mRoot = 0;
+	mRoot = nullptr;
 	S_LOG_INFO("Ogre shut down.");
 
 	delete mMeshSerializerListener;
@@ -128,7 +143,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 {
 	ConfigService& configSrv(EmberServices::getSingleton().getConfigService());
 
-	if (configSrv.getPrefix() != "") {
+	if (!configSrv.getPrefix().empty()) {
 		//We need to set the current directory to the prefix before trying to load Ogre.
 		//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
 		//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
@@ -153,7 +168,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		std::string plugins(configSrv.getValue("ogre", "plugins"));
 		Tokeniser tokeniser(plugins, ",");
 		std::string token = tokeniser.nextToken();
-		while (token != "") {
+		while (!token.empty()) {
 			mPluginLoader.loadPlugin(token);
 			token = tokeniser.nextToken();
 		}
@@ -174,16 +189,16 @@ bool OgreSetup::showConfigurationDialog()
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when showing configuration window." << ex);
 		delete mOverlaySystem;
-		mOverlaySystem = 0;
+		mOverlaySystem = nullptr;
 		delete mRoot;
-		mRoot = 0;
+		mRoot = nullptr;
 		createOgreSystem();
 		throw ex;
 	}
 	delete mOverlaySystem;
-	mOverlaySystem = 0;
+	mOverlaySystem = nullptr;
 	delete mRoot;
-	mRoot = 0;
+	mRoot = nullptr;
 	if (result == OgreConfigurator::OC_CANCEL) {
 		return false;
 	}
@@ -253,7 +268,7 @@ Ogre::Root* OgreSetup::configure()
 		}
 	}
 	if (!success) {
-		return 0;
+		return nullptr;
 	}
 
 	// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not
@@ -288,6 +303,20 @@ Ogre::Root* OgreSetup::configure()
 	Input::getSingleton().EventSizeChanged.connect(sigc::mem_fun(*this, &OgreSetup::input_SizeChanged));
 
 	registerOpenGLContextFix();
+
+	Ogre::GpuProgramManager::getSingleton().setSaveMicrocodesToCache(true);
+
+	std::string cacheFilePath = configService.getHomeDirectory(BaseDirType_CACHE) + "/gpu.cache";
+	if (std::ifstream(cacheFilePath).good()) {
+		try {
+			auto cacheStream = mRoot->openFileStream(cacheFilePath);
+			if (cacheStream) {
+				Ogre::GpuProgramManager::getSingleton().loadMicrocodeCache(cacheStream);
+			}
+		} catch (...) {
+			S_LOG_WARNING("Error when trying to open GPU cache file.");
+		}
+	}
 
 
 #else //BUILD_WEBEMBER == true
@@ -384,7 +413,7 @@ void OgreSetup::setStandardValues()
 
 void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen)
 {
-	Ogre::ConfigOptionMap::iterator opt = config.find("Video Mode");
+	auto opt = config.find("Video Mode");
 	if (opt != config.end()) {
 		Ogre::String val = opt->second.currentValue;
 		Ogre::String::size_type pos = val.find('x');
