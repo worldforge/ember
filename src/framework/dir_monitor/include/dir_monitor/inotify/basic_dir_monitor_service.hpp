@@ -33,7 +33,12 @@ public:
     explicit basic_dir_monitor_service(boost::asio::io_service &io_service)
         : boost::asio::io_service::service(io_service),
         async_monitor_work_(new boost::asio::io_service::work(async_monitor_io_service_)),
-        async_monitor_thread_(boost::bind(&boost::asio::io_service::run, &async_monitor_io_service_))
+          async_monitor_thread_([&]() {
+#ifndef _WIN32
+              pthread_setname_np(pthread_self(), "dir_mon_svc");
+#endif
+              async_monitor_io_service_.run();
+          })
     {
     }
 

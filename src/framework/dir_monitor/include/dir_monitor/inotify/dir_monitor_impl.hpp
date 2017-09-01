@@ -34,7 +34,12 @@ public:
         : fd_(init_fd()),
         run_(true),
         inotify_work_(new boost::asio::io_service::work(inotify_io_service_)),
-        inotify_work_thread_(boost::bind(&boost::asio::io_service::run, &inotify_io_service_)),
+        inotify_work_thread_([&](){
+#ifndef _WIN32
+            pthread_setname_np(pthread_self(), "dir_mon");
+#endif
+			inotify_io_service_.run();
+        }),
         stream_descriptor_(new boost::asio::posix::stream_descriptor(inotify_io_service_, fd_))
     {
     }
