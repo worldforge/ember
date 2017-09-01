@@ -191,6 +191,8 @@ Application::~Application() {
 	mServices->getMetaserverService().stop();
 
 	mSession->getEventService().processAllHandlers();
+	mSession->getIoService().stop();
+	mSession->getIoService().reset();
 
 	delete mOgreView;
 
