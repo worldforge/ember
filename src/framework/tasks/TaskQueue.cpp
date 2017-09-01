@@ -137,8 +137,14 @@ void TaskQueue::processCompletedTasks() {
 
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when executing task in main thread." << ex);
+			//Task is broken; remove it
+			std::unique_lock<std::mutex> lock(mProcessedQueueMutex);
+			mProcessedTaskUnits.pop();
 		} catch (...) {
 			S_LOG_FAILURE("Unknown error when executing task in main thread.");
+			//Task is broken; remove it
+			std::unique_lock<std::mutex> lock(mProcessedQueueMutex);
+			mProcessedTaskUnits.pop();
 		}
 
 		{
