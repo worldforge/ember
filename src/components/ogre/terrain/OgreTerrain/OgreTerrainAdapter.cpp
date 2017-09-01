@@ -147,6 +147,7 @@ void OgreTerrainAdapter::reset()
 	if (mTerrainPagedWorldSection) {
 		mTerrainPagedWorldSection->removeAllPages();
 	}
+	mTerrainGroup->removeAllTerrains();
 }
 
 

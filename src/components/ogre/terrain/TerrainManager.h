@@ -30,7 +30,6 @@
 #include <sigc++/signal.h>
 #include <sigc++/slot.h>
 
-#include <OgreFrameListener.h>
 #include <OgrePrerequisites.h>
 #include <OgreCommon.h>
 
@@ -99,7 +98,7 @@ class Vegetation;
  *
  * It works closely with EmberTerrainPageSource.
  */
-class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackable, public ConsoleObject, public ConfigListenerContainer, public Ember::IHeightProvider
+class TerrainManager : public virtual sigc::trackable, public ConsoleObject, public ConfigListenerContainer, public Ember::IHeightProvider
 {
 public:
 
@@ -116,14 +115,6 @@ public:
 	 * @brief Dtor.
 	 */
 	virtual ~TerrainManager();
-
-	/**
-	 * @brief At each frame, we check for updates shaders and updates the terrain. This is because we want to batch together changes.
-	 *
-	 * @param evt
-	 * @return
-	 */
-	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
 	/**
 	 * @copydoc ConsoleObject::runCommand

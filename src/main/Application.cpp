@@ -194,10 +194,10 @@ Application::~Application() {
 
 	delete mOgreView;
 
-	delete mSession;
 	delete mServices;
 	delete mScriptingResourceProvider;
 	delete mFileSystemObserver;
+	delete mSession;
 	S_LOG_INFO("Ember shut down normally.");
 	Log::removeObserver(mLogObserver);
 	delete mLogObserver;

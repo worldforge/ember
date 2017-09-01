@@ -68,8 +68,6 @@ namespace Terrain
 TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)), mIsFoliageShown(false), mTerrainAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
 {
-	Ogre::Root::getSingleton().addFrameListener(this);
-
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
 	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique));
 	registerConfigListener("terrain", "pagesize", sigc::mem_fun(*this, &TerrainManager::config_TerrainPageSize));
@@ -88,11 +86,10 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 
 TerrainManager::~TerrainManager()
 {
-	Ogre::Root::getSingleton().removeFrameListener(this);
+	mTerrainAdapter->reset();
 
 	//We must make sure that any tasks are purged in the handler before we destroy the terrain adapter.
     mHandler->shutdown();
-    getTerrainAdapter()->reset();
 
 	delete mTerrainAdapter;
 	delete mHandler;
@@ -103,7 +100,7 @@ TerrainManager::~TerrainManager()
 void TerrainManager::startPaging()
 {
 	//Setting the camera will start the paging system
-	getTerrainAdapter()->setCamera(&getScene().getMainCamera());
+	mTerrainAdapter->setCamera(&getScene().getMainCamera());
 }
 
 bool TerrainManager::getHeight(const TerrainPosition& atPosition, float& height) const
@@ -133,11 +130,6 @@ void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, 
 	mHandler->getBasePoints(asyncCallback);
 }
 
-
-bool TerrainManager::frameEnded(const Ogre::FrameEvent & evt)
-{
-	return true;
-}
 
 void TerrainManager::updateFoliageVisibility()
 {
@@ -197,7 +189,7 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 		const TerrainIndex& index = page->getWFIndex();
 
 		S_LOG_VERBOSE("Updating terrain page [" << index.first << "|" << index.second << "]");
-		getTerrainAdapter()->reloadPage(index);
+		mTerrainAdapter->reloadPage(index);
 		EventTerrainPageGeometryUpdated.emit(*page);
 	}
 }
@@ -231,7 +223,7 @@ void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* p
 
 void TerrainManager::initializeTerrain()
 {
-	ITerrainAdapter* adapter = getTerrainAdapter();
+	ITerrainAdapter* adapter = mTerrainAdapter;
 	assert(adapter);
 	adapter->loadScene();
 }
