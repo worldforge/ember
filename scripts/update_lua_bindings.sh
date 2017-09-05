@@ -3,6 +3,7 @@
 #some versions will also for some unexplainable reason not correctly remove the tolua specific directive tolua_outside, so we need to clean that out also
 #We'll also replace the inclusion of "tolua++.h" with our own version which has better support for building on win32.
 echo "Updating lua bindings."
+set -e
 
 #If the TOLUAXX environment variable isn't set default to using the command "tolua++".
 if [ x${TOLUAXX} = x ]; then
