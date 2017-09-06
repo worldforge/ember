@@ -89,6 +89,7 @@ class ImpostorPage: public GeometryPage
 
 public:
 	void init(PagedGeometry *geom, const Ogre::Any &data);
+	ImpostorPage();
 	virtual ~ImpostorPage();
 	
 	void setRegion(Ogre::Real left, Ogre::Real top, Ogre::Real right, Ogre::Real bottom);
@@ -206,6 +207,9 @@ protected:
 	int aveCount;
 	
 	std::map<Ogre::String, ImpostorBatch *> impostorBatches;
+
+	Ogre::SceneNode* mRenderNode;
+	Ogre::SceneNode* mCameraNode;
 };
 
 

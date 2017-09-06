@@ -50,10 +50,16 @@ void ImpostorPage::init(PagedGeometry *geom, const Ogre::Any &data)
 		
 	if (++selfInstances == 1){
 		//Set up a single instance of a scene node which will be used when rendering impostor textures
-		geom->getSceneNode()->createChildSceneNode("ImpostorPage::renderNode");
-		geom->getSceneNode()->createChildSceneNode("ImpostorPage::cameraNode");
+		mRenderNode = geom->getSceneNode()->createChildSceneNode("ImpostorPage::renderNode");
+		mCameraNode = geom->getSceneNode()->createChildSceneNode("ImpostorPage::cameraNode");
         ResourceGroupManager::getSingleton().createResourceGroup("Impostors");
 	}
+}
+
+ImpostorPage::ImpostorPage()
+: mRenderNode(nullptr), mCameraNode(nullptr)
+{
+
 }
 
 ImpostorPage::~ImpostorPage()
@@ -66,8 +72,12 @@ ImpostorPage::~ImpostorPage()
 	}
 
 	if (--selfInstances == 0){
-		sceneMgr->destroySceneNode("ImpostorPage::renderNode");
-		sceneMgr->destroySceneNode("ImpostorPage::cameraNode");
+		if (mRenderNode) {
+			sceneMgr->destroySceneNode(mRenderNode);
+		}
+		if (mCameraNode) {
+			sceneMgr->destroySceneNode(mCameraNode);
+		}
         ResourceGroupManager::getSingleton().destroyResourceGroup("Impostors");
 	}
 }

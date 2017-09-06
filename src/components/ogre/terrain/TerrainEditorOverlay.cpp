@@ -208,7 +208,7 @@ TerrainEditorOverlay::~TerrainEditorOverlay()
 		if (parent) {
 			parent->removeAndDestroyChild(mOverlayNode->getName());
 		} else {
-			mOverlayNode->getCreator()->destroySceneNode(mOverlayNode->getName());
+			mOverlayNode->getCreator()->destroySceneNode(mOverlayNode);
 		}
 	}
 	//It's safe to do this even if the pick listener hasn't been added yet.

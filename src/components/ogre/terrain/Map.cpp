@@ -317,13 +317,17 @@ void MapCamera::render()
 MapCameraLightning::MapCameraLightning(Ogre::SceneManager& sceneManager)
 : mSceneManager(sceneManager)
 {
+	mLightNode = sceneManager.createSceneNode();
+
 	mLight = sceneManager.createLight("MapFixedSunLight");
 	mLight->setType(Ogre::Light::LT_DIRECTIONAL);
 
-	mLight->setPosition(Ogre::Vector3(-500,300,-350));
-	Ogre::Vector3 dir = -mLight->getPosition();
+	mLightNode->attachObject(mLight);
+
+	mLightNode->setPosition(Ogre::Vector3(-500,300,-350));
+	Ogre::Vector3 dir = -mLightNode->getPosition();
 	dir.normalise();
-	mLight->setDirection(dir);
+	mLightNode->setDirection(dir);
 
 	mLight->setDiffuseColour(Ogre::ColourValue(0.8, 0.8, 0.6)); //yellow
 	//mSun->setSpecularColour(1, 1, 0.7); //yellow
@@ -337,6 +341,7 @@ MapCameraLightning::MapCameraLightning(Ogre::SceneManager& sceneManager)
 MapCameraLightning::~MapCameraLightning()
 {
 	mSceneManager.destroyLight(mLight);
+	mSceneManager.destroySceneNode(mLightNode);
 }
 
 Ogre::Light* MapCameraLightning::getLight()

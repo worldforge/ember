@@ -368,7 +368,7 @@ StaticBillboardSet::~StaticBillboardSet()
 		clear();
 
 		//Delete scene node
-		sceneMgr->destroySceneNode(node->getName());
+		sceneMgr->destroySceneNode(node);
 
 		//Update material reference list
 		if (materialPtr) SBMaterialRef::removeMaterialRef(materialPtr);
@@ -381,7 +381,7 @@ StaticBillboardSet::~StaticBillboardSet()
 		}
 	} else {
 		//Delete scene node
-		sceneMgr->destroySceneNode(node->getName());
+		sceneMgr->destroySceneNode(node);
 
 		//Remove billboard set
 		sceneMgr->destroyBillboardSet(fallbackSet);

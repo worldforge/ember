@@ -73,7 +73,7 @@ PagedGeometry::~PagedGeometry()
 	#ifdef PAGEDGEOMETRY_ALTERNATE_COORDSYSTEM
 	//Remove PagedGeometry's coordinate system node
 	if (rootNode)
-		sceneMgr->destroySceneNode(rootNode->getName());
+		sceneMgr->destroySceneNode(rootNode);
 	#endif
 
 	//Remove all page managers and the geometry associated with them

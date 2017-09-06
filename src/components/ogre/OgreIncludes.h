@@ -25,6 +25,7 @@
 
 //base include files needed for Ogre
 
+#include <OgrePrerequisites.h>
 //#include <Ogre.h>
 #include <OgreConfig.h>
 

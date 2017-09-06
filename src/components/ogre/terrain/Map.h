@@ -87,6 +87,8 @@ protected:
 	 * @brief The scene manager to which everything belongs.
 	 */
 	Ogre::SceneManager& mSceneManager;
+
+	Ogre::SceneNode* mLightNode;
 };
 
 /**

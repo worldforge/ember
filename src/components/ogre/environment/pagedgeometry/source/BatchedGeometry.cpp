@@ -317,7 +317,7 @@ void BatchedGeometry::clear()
 	//Remove the batch from the scene
 	if (sceneNode){
 		sceneNode->removeAllChildren();
-		sceneMgr->destroySceneNode(sceneNode->getName());
+		sceneMgr->destroySceneNode(sceneNode);
 		sceneNode = NULL;
 	}
 

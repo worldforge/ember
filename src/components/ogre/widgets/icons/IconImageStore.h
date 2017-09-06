@@ -61,7 +61,7 @@ public:
 	const std::string& getImageName();
 	const std::string& getImageName() const;
 	
-	Ogre::Image::Box getBox();
+	Ogre::Box getBox();
 	Ogre::TRect<float> getRelativeBox();
 
     Ogre::TexturePtr getTexture();

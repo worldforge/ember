@@ -75,7 +75,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 #TODO: check for binreloc?
 
-find_package(OGRE 1.10 REQUIRED)
+find_package(OGRE 1.10.8 REQUIRED)
 link_directories(${OGRE_LIBRARY_DIRS})
 link_libraries(${OGRE_LIBRARIES})
 include_directories(${OGRE_INCLUDE_DIRS})

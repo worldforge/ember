@@ -70,7 +70,7 @@ LensFlare::~LensFlare()
 		if (parent) {
 			parent->removeAndDestroyChild(mNode->getName());
 		} else {
-			mNode->getCreator()->destroySceneNode(mNode->getName());
+			mNode->getCreator()->destroySceneNode(mNode);
 		}*/
 	}
 }

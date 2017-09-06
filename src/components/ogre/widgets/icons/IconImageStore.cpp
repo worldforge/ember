@@ -96,17 +96,16 @@ Ogre::PixelBox IconImageStoreEntry::getImagePixelBox()
 }
 
 
-Ogre::Image::Box IconImageStoreEntry::getBox()
+Ogre::Box IconImageStoreEntry::getBox()
 {
-	Ogre::Image::Box box(mPixelPosInImageset.first, mPixelPosInImageset.second, mPixelPosInImageset.first + mIconImageStore.mIconSize, mPixelPosInImageset.second + mIconImageStore.mIconSize);
-	return box;
+	return Ogre::Box(mPixelPosInImageset.first, mPixelPosInImageset.second, mPixelPosInImageset.first + mIconImageStore.mIconSize, mPixelPosInImageset.second + mIconImageStore.mIconSize);
 }
 
 Ogre::TRect<float> IconImageStoreEntry::getRelativeBox()
 {
 /*	float width(mIconImageStore.getImage()->getWidth());
 	float height(mIconImageStore.getImage()->getHeight());*/
-	
+
 	float imageSize = static_cast<float>(mIconImageStore.mImageSize);
 	
 	Ogre::TRect<float> box(static_cast<float>(mPixelPosInImageset.first) / imageSize, static_cast<float>(mPixelPosInImageset.second) / imageSize, static_cast<float>(mPixelPosInImageset.first + mIconImageStore.mIconSize) / imageSize, static_cast<float>(mPixelPosInImageset.second + mIconImageStore.mIconSize) / imageSize);

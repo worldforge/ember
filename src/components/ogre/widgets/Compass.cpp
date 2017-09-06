@@ -359,7 +359,10 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 					mViewport->setBackgroundColour(Ogre::ColourValue::ZERO);
 
 					mMapRectangle = OGRE_NEW Ogre::Rectangle2D(true);
-					mMapRectangle->setMaterial(mCompassMaterial->getName());
+					auto mapMaterialPtr = Ogre::MaterialManager::getSingleton().getByName(mCompassMaterial->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					if (mapMaterialPtr) {
+						mMapRectangle->setMaterial(mapMaterialPtr);
+					}
 
 					//We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
@@ -427,7 +430,10 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 					mViewport->setBackgroundColour(Ogre::ColourValue::ZERO);
 
 					mPointerRectangle = OGRE_NEW Ogre::Rectangle2D(true);
-					mPointerRectangle->setMaterial(mPointerMaterial->getName());
+					auto pointerMaterialPtr = Ogre::MaterialManager::getSingleton().getByName(mPointerMaterial->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					if (pointerMaterialPtr) {
+						mPointerRectangle->setMaterial(pointerMaterialPtr);
+					}
 
 					//We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();

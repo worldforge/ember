@@ -97,7 +97,7 @@ void MeshPreviewHandler::removeInstance(size_t index)
 //	Ogre::Entity* entity = instance.getEntity();
 //	Ogre::SceneNode* node = entity->getParentSceneNode();
 //	node->detachObject(entity->getName());
-//	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(node->getName());
+//	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(node);
 //	EmberOgre::getSingleton().getSceneManager()->destroyEntity(entity);
 //	InstanceStore::iterator I = mInstances.begin();
 //	for (size_t i = 0; i < index; ++i) {

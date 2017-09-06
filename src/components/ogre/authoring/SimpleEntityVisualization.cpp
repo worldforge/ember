@@ -27,6 +27,7 @@
 #include <OgreSceneManager.h>
 #include <OgreWireBoundingBox.h>
 #include <OgreEntity.h>
+#include <Ogre.h>
 
 namespace Ogre
 {
@@ -67,7 +68,10 @@ SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::
 	mVelocitySceneNode->setScale(0.5, 0.5, 0.5);
 
 	try {
-		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
+		auto materialPtr = Ogre::MaterialManager::getSingleton().getByName(BboxMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		if (materialPtr) {
+			mErisEntityBoundingBox->setMaterial(materialPtr);
+		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting Ogre material for bounding box.");
 		OGRE_DELETE mErisEntityBoundingBox;
