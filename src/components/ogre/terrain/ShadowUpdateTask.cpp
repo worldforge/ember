@@ -48,13 +48,15 @@ void ShadowUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext
 {
 	for (auto& pageGeometry : mPageGeometries) {
 		auto& page = pageGeometry->getPage();
-		auto shadow = page.getSurface()->getShadow();
-		if (shadow) {
-			auto& shadowTextureName = shadow->getShadowTextureName();
-			if (!shadowTextureName.empty()) {
-				pageGeometry->repopulate(true);
-				shadow->setLightDirection(mLightDirection);
-				shadow->updateShadow(*pageGeometry.get());
+		if (page.getSurface()) {
+			auto shadow = page.getSurface()->getShadow();
+			if (shadow) {
+				auto& shadowTextureName = shadow->getShadowTextureName();
+				if (!shadowTextureName.empty()) {
+					pageGeometry->repopulate(true);
+					shadow->setLightDirection(mLightDirection);
+					shadow->updateShadow(*pageGeometry.get());
+				}
 			}
 		}
 	}
@@ -63,33 +65,34 @@ void ShadowUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext
 bool ShadowUpdateTask::executeTaskInMainThread()
 {
 	if (!mPageGeometries.empty()) {
-		auto& pageGeometry = mPageGeometries.back();
+		auto pageGeometry = mPageGeometries.back();
 		mPageGeometries.pop_back();
 		auto& page = pageGeometry->getPage();
-		auto shadow = page.getSurface()->getShadow();
-		if (shadow) {
-			auto& shadowTextureName = shadow->getShadowTextureName();
-			if (!shadowTextureName.empty()) {
-				Ogre::TexturePtr texture = Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-				if (texture) {
-					Ogre::Image ogreImage;
-					shadow->loadIntoImage(ogreImage);
+		if (page.getSurface()) {
+			auto shadow = page.getSurface()->getShadow();
+			if (shadow) {
+				auto& shadowTextureName = shadow->getShadowTextureName();
+				if (!shadowTextureName.empty()) {
+					Ogre::TexturePtr texture = Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					if (texture) {
+						Ogre::Image ogreImage;
+						shadow->loadIntoImage(ogreImage);
 
-					texture->loadImage(ogreImage);
+						texture->loadImage(ogreImage);
 
-					//blit the whole image to the hardware buffer
-					Ogre::PixelBox sourceBox(ogreImage.getPixelBox());
-					//blit for each mipmap
-					for (unsigned int i = 0; i <= texture->getNumMipmaps(); ++i) {
-						Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
-						hardwareBuffer->blitFromMemory(sourceBox);
+						//blit the whole image to the hardware buffer
+						Ogre::PixelBox sourceBox(ogreImage.getPixelBox());
+						//blit for each mipmap
+						for (unsigned int i = 0; i <= texture->getNumMipmaps(); ++i) {
+							Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
+							hardwareBuffer->blitFromMemory(sourceBox);
+						}
 					}
 				}
 			}
 		}
-		return false;
 	}
-	return true;
+	return mPageGeometries.empty();
 }
 
 }
