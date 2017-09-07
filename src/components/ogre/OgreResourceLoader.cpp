@@ -145,7 +145,9 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, type, section, recursive);
 			mResourceRootPaths.emplace_back(path);
-			observeDirectory(path);
+			if (oslink::directory(path).isExisting()) {
+				observeDirectory(path);
+			}
 			return true;
 		} catch (const std::exception&) {
 			if (throwOnFailure) {
