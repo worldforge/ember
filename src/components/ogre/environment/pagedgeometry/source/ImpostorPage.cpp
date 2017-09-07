@@ -486,7 +486,8 @@ void ImpostorTexture::renderTextures(bool force)
 	//Set up render target
 	renderTarget = renderTexture->getBuffer()->getRenderTarget(); 
 	renderTarget->setAutoUpdated(false);
-	
+	renderTarget->setActive(false);
+
 	//Set up camera
 	camNode = sceneMgr->getSceneNode("ImpostorPage::cameraNode");
 	renderCamera = sceneMgr->createCamera(getUniqueID("ImpostorCam"));
