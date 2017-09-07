@@ -588,10 +588,19 @@ function SettingsWidget:buildSettingsUi()
 				{
 					label = "Show navigation path",
 					helpString = "Shows the path used by navigation.",
-					
+
 					section = "authoring",
 					key = "visualizerecastpath",
-					
+
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
+				},
+				{
+					label = "Show OGRE profiler",
+					helpString = "Shows the OGRE profiler overlay, if OGRE has support for it.",
+
+					section = "ogre",
+					key = "profiler",
+
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 			},

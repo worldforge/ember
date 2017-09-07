@@ -508,7 +508,7 @@ void EmberOgre::checkForConfigFiles()
 	assureConfigFile("ogre.cfg", sharePath);
 }
 
-void EmberOgre::preloadMedia(void)
+void EmberOgre::preloadMedia()
 {
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
@@ -516,15 +516,15 @@ void EmberOgre::preloadMedia(void)
 
 	std::vector<std::string> shaderTextures;
 
-	shaderTextures.push_back(std::string(configSrv.getValue("shadertextures", "rock")));
-	shaderTextures.push_back(std::string(configSrv.getValue("shadertextures", "sand")));
-	shaderTextures.push_back(std::string(configSrv.getValue("shadertextures", "grass")));
+	shaderTextures.emplace_back(configSrv.getValue("shadertextures", "rock"));
+	shaderTextures.emplace_back(configSrv.getValue("shadertextures", "sand"));
+	shaderTextures.emplace_back(configSrv.getValue("shadertextures", "grass"));
 
-	for (std::vector<std::string>::iterator I = shaderTextures.begin(); I != shaderTextures.end(); ++I) {
+	for (auto& shaderTexture : shaderTextures) {
 		try {
-			Ogre::TextureManager::getSingleton().load(*I, "General");
+			Ogre::TextureManager::getSingleton().load(shaderTexture, "General");
 		} catch (const std::exception& e) {
-			S_LOG_FAILURE( "Error when loading texture " << *I << "." << e);
+			S_LOG_FAILURE( "Error when loading texture " << shaderTexture << "." << e);
 		}
 	}
 
@@ -543,6 +543,8 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
 	mWorld = new World(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), mEntityMappingManager->getManager());
+	//We want the overlay system available for the main camera, in case we need to do profiling.
+	mWorld->getSceneManager().addRenderQueueListener(mOgreSetup->getOverlaySystem());
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
 	mShaderManager->registerSceneManager(&mWorld->getSceneManager());
 	EventWorldCreated.emit(*mWorld);
@@ -553,7 +555,7 @@ void EmberOgre::EntityFactory_BeingDeleted()
 	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
 	EventWorldBeingDestroyed.emit();
 	delete mWorld;
-	mWorld = 0;
+	mWorld = nullptr;
 	EventWorldDestroyed.emit();
 	mWindow->removeAllViewports();
 	mWindow->addViewport(mCameraOutOfWorld);
@@ -561,8 +563,8 @@ void EmberOgre::EntityFactory_BeingDeleted()
 	//This is an excellent place to force garbage collection of all scripting environments.
 	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();
 	const std::vector<std::string> providerNames = scriptingService.getProviderNames();
-	for (std::vector<std::string>::const_iterator I = providerNames.begin(); I != providerNames.end(); ++I) {
-		scriptingService.getProviderFor(*I)->forceGC();
+	for (const auto& providerName : providerNames) {
+		scriptingService.getProviderFor(providerName)->forceGC();
 	}
 
 	//After we've exited the world we try to unload any unused resources.

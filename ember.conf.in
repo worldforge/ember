@@ -53,7 +53,9 @@ suppressconfigdialog = false
 #if set to true, the application will be double buffered, which means that everything is rendered into a separate backbuffer, which is then copied to the main screen buffer when appropriate. This will in some cases reduce tearing.
 doublebuffered = false
 #controls the Ogre log level. Possible values are "low", "normal" and "boreme". Note that the standard log level is still applied, so if you want to see all logs through setting "boreme" you should also alter "general:logginglevel".
-loglevel="normal" 
+loglevel="normal"
+#if enabled, the Ogre Profiler will be shown using an overlay, allowing you to see what Ogre spends its time on
+profiler=false
 
 [shadows]
 #The texture size of each of the shadow textures (we normally use 5 shadow textures).

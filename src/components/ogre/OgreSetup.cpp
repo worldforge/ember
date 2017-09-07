@@ -65,10 +65,8 @@
 #include <SDL.h>
 #include <Ogre.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 OgreSetup::OgreSetup() :
 		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."),
@@ -78,22 +76,19 @@ OgreSetup::OgreSetup() :
 		mMeshSerializerListener(nullptr),
 		mOverlaySystem(nullptr)
 #ifdef BUILD_WEBEMBER
-,mOgreWindowProvider(nullptr)
+		,mOgreWindowProvider(nullptr)
 #endif
-, mConfigListenerContainer(nullptr)
-{
+		, mConfigListenerContainer(nullptr) {
 }
 
-OgreSetup::~OgreSetup()
-{
+OgreSetup::~OgreSetup() {
 #ifdef BUILD_WEBEMBER
 	delete mOgreWindowProvider;
 #endif
 	delete mConfigListenerContainer;
 }
 
-void OgreSetup::runCommand(const std::string& command, const std::string& args)
-{
+void OgreSetup::runCommand(const std::string& command, const std::string& args) {
 	if (DiagnoseOgre == command) {
 		std::stringstream ss;
 		OgreInfo::diagnose(ss);
@@ -102,8 +97,7 @@ void OgreSetup::runCommand(const std::string& command, const std::string& args)
 	}
 }
 
-void OgreSetup::shutdown()
-{
+void OgreSetup::shutdown() {
 	S_LOG_INFO("Shutting down Ogre.");
 	if (mRoot) {
 
@@ -139,8 +133,7 @@ void OgreSetup::shutdown()
 
 }
 
-Ogre::Root* OgreSetup::createOgreSystem()
-{
+Ogre::Root* OgreSetup::createOgreSystem() {
 	ConfigService& configSrv(EmberServices::getSingleton().getConfigService());
 
 	if (!configSrv.getPrefix().empty()) {
@@ -180,8 +173,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	return mRoot;
 }
 
-bool OgreSetup::showConfigurationDialog()
-{
+bool OgreSetup::showConfigurationDialog() {
 	OgreConfigurator configurator;
 	OgreConfigurator::Result result;
 	try {
@@ -236,8 +228,7 @@ void OgreSetup::Config_ogreLogChanged(const std::string& section, const std::str
 }
 
 /** Configures the application - returns false if the user chooses to abandon configuration. */
-Ogre::Root* OgreSetup::configure()
-{
+Ogre::Root* OgreSetup::configure() {
 	delete mConfigListenerContainer;
 	mConfigListenerContainer = new ConfigListenerContainer();
 	mConfigListenerContainer->registerConfigListener("ogre", "loglevel", sigc::mem_fun(*this, &OgreSetup::Config_ogreLogChanged), true);
@@ -367,6 +358,27 @@ Ogre::Root* OgreSetup::configure()
 
 	setStandardValues();
 
+
+	mConfigListenerContainer->registerConfigListener("ogre", "profiler", [&](const std::string& section, const std::string& key, varconf::Variable& variable) {
+		if (variable.is_bool()) {
+			auto& profiler = Ogre::Profiler::getSingleton();
+			if ((bool) variable) {
+				auto& resourceGroupMgr = Ogre::ResourceGroupManager::getSingleton();
+				if (!resourceGroupMgr.resourceGroupExists("Profiler")) {
+					resourceGroupMgr.addResourceLocation(OGRE_MEDIA_DIR"/packs/profiler.zip", "Zip", "Profiler", true);
+					resourceGroupMgr.addResourceLocation(OGRE_MEDIA_DIR"/packs/SdkTrays.zip", "Zip", "Profiler", true);
+					resourceGroupMgr.initialiseResourceGroup("Profiler");
+				}
+			}
+
+			if (profiler.getEnabled() != (bool) variable) {
+				profiler.reset();
+				profiler.setEnabled((bool) variable);
+			}
+
+		}
+	});
+
 	// Create new scene manager factory
 	//mSceneManagerFactory = new EmberPagingSceneManagerFactory();
 
@@ -376,8 +388,7 @@ Ogre::Root* OgreSetup::configure()
 	return mRoot;
 }
 
-void OgreSetup::input_SizeChanged(unsigned int width, unsigned int height)
-{
+void OgreSetup::input_SizeChanged(unsigned int width, unsigned int height) {
 
 //On Windows we can't tell the window to resize, since that will lead to an infinite loop of resize events (probably stemming from how Windows lacks a proper window manager).
 #ifndef _WIN32
@@ -386,8 +397,7 @@ void OgreSetup::input_SizeChanged(unsigned int width, unsigned int height)
 	mRenderWindow->windowMovedOrResized();
 }
 
-void OgreSetup::setStandardValues()
-{
+void OgreSetup::setStandardValues() {
 	// Set default mipmap level (NB some APIs ignore this)
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
@@ -411,8 +421,7 @@ void OgreSetup::setStandardValues()
 
 }
 
-void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen)
-{
+void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen) {
 	auto opt = config.find("Video Mode");
 	if (opt != config.end()) {
 		Ogre::String val = opt->second.currentValue;
@@ -432,8 +441,7 @@ void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int&
 
 }
 
-void OgreSetup::registerOpenGLContextFix()
-{
+void OgreSetup::registerOpenGLContextFix() {
 	/**
 	 * This is needed to combat a bug found at least on KDE 4.14.4 when using OpenGL in the window manager.
 	 * For some reason the OpenGL context of the application somtimes is altered when the window is minimized and restored.
@@ -456,10 +464,10 @@ void OgreSetup::registerOpenGLContextFix()
 					case SDL_WINDOWEVENT_MINIMIZED:
 					case SDL_WINDOWEVENT_MAXIMIZED:
 					case SDL_WINDOWEVENT_RESTORED:
-					ogreGLcontext->setCurrent();
-					break;
+						ogreGLcontext->setCurrent();
+						break;
 					default:
-					break;
+						break;
 				}
 			}
 		});

@@ -131,6 +131,8 @@ else (OGRE_DEBUG_BUILD MATCHES -1)
     add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
     add_definitions(-DOGRE_DEBUG_BUILD)
 endif (OGRE_DEBUG_BUILD MATCHES -1)
+add_definitions(-DOGRE_MEDIA_DIR="${OGRE_MEDIA_DIR}")
+
 
 
 
