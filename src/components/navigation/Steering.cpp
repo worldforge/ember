@@ -154,7 +154,7 @@ void Steering::update()
 			//First check if we've arrived at our actual destination.
 			if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < 0.1f) {
 				//We've arrived at our destination. If we're moving we should stop.
-				if (mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
+				if (mLastSentVelocity.isValid() && mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
 					moveInDirection(WFMath::Vector<2>::ZERO());
 				}
 				stopSteering();
@@ -220,7 +220,7 @@ void Steering::update()
 		} else {
 			//We are steering, but the path is empty, which means we can't find any path. If we're moving we should stop movement.
 			//But we won't stop steering; perhaps we'll find a path later.
-			if (mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
+			if (mLastSentVelocity.isValid() && mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
 				moveInDirection(WFMath::Vector<2>::ZERO());
 			}
 		}
