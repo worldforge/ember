@@ -73,6 +73,11 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 
 OgreTerrainAdapter::~OgreTerrainAdapter()
 {
+	//Need to remove all cameras, since this isn't done by the PageManager itself.
+	for (auto currentCamera : mPageManager->getCameraList()) {
+		mPageManager->removeCamera(currentCamera);
+	}
+
 	OGRE_DELETE mTerrainPaging;
 	mPageManager->destroyWorld(mPagedWorld);
 	OGRE_DELETE mPageManager;
