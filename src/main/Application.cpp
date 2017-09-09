@@ -282,17 +282,12 @@ void Application::mainLoop() {
 				boost::asio::deadline_timer deadlineTimer(mSession->getIoService());
 				deadlineTimer.expires_at(boost::asio::time_traits<boost::posix_time::ptime>::now() + timeFrame.getRemainingTime());
 
-				bool exitLoop = false;
 				deadlineTimer.async_wait([&](boost::system::error_code ec) {
-					if (!ec) {
-						exitLoop = true;
-					}
 				});
 
-				while (timeFrame.isTimeLeft() && !exitLoop) {
+				while (timeFrame.isTimeLeft()) {
 					mSession->getIoService().run_one();
 				}
-				deadlineTimer.cancel();
 			}
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
