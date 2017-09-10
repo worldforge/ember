@@ -292,7 +292,7 @@ void Application::mainLoop() {
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 
-			if (timeFrame.getElapsedTime().total_microseconds() > (desiredMicrosecondsPerFrame.total_microseconds() * 1.4f)) {
+			if (updatedRendering && timeFrame.getElapsedTime().total_microseconds() > (desiredMicrosecondsPerFrame.total_microseconds() * 1.4f)) {
 				S_LOG_VERBOSE("Frame took too long.");
 			}
 

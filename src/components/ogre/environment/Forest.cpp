@@ -78,7 +78,7 @@ void Forest::initialize()
 	// 	mTrees->addDetailLevel<Forests::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
 	//  mTrees->addDetailLevel<Forests::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units
 	mTrees->addDetailLevel<Forests::PassiveEntityPage> (256, 0); //Use standard entities up to 256 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
-	mTrees->addDetailLevel<ExclusiveImposterPage> (mMaxRange, 50); //Use impostors up to 400 units, and for for 50 more units
+	mTrees->addDetailLevel<ExclusiveImposterPage> (mMaxRange, 50); //Use impostors up to 500 units, and for for 50 more units
 
 	//Create a new TreeLoader2D object
 	mEntityLoader = new EmberEntityLoader(*mTrees, 64);

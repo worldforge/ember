@@ -69,7 +69,7 @@ TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(
 		preferredTech = static_cast<std::string>(EmberServices::getSingleton().getConfigService().getValue("terrain", "preferredtechnique"));
 	}
 
-	bool shaderSupport = false;
+	bool shaderSupport = true;
 	const Ogre::RenderSystemCapabilities* caps = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities();
 	if (caps->hasCapability(Ogre::RSC_VERTEX_PROGRAM) && (caps->hasCapability(Ogre::RSC_FRAGMENT_PROGRAM))) {
 		if ((Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0") && Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0")) || (Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") && Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1"))) {
@@ -84,12 +84,12 @@ TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(
 		//Use shader tech with shadows
 		return new Techniques::Shader(true, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, useNormalMapping);
 	}
-	if ((preferredTech == "Shader" || useNormalMapping) && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
+//	if ((preferredTech == "Shader" || useNormalMapping) && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 		//Use shader tech without shadows
 		return new Techniques::Shader(false, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, false);
-	} else {
-		return new Techniques::Simple(geometry, terrainPageSurfaces, terrainPageShadow);
-	}
+//	} else {
+//		return new Techniques::Simple(geometry, terrainPageSurfaces, terrainPageShadow);
+//	}
 }
 
 }

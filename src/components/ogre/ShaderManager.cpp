@@ -248,17 +248,19 @@ void ShaderManager::deregisterSceneManager(Ogre::SceneManager* sceneManager)
 
 ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel)
 {
+	std::string scheme = mGraphicSchemes[newLevel];
+
 	if (newLevel > mBestGraphicsLevel) {
-		S_LOG_FAILURE("Cannot set graphics level " << mGraphicSchemes[newLevel]);
+		S_LOG_FAILURE("Cannot set graphics level " << scheme);
 		return mGraphicsLevel;
 	}
 
-	S_LOG_INFO("Using graphics level " << mGraphicSchemes[newLevel]);
-	Ogre::MaterialManager::getSingleton().setActiveScheme(mGraphicSchemes[newLevel]);
+	S_LOG_INFO("Using graphics level " << scheme);
+	Ogre::MaterialManager::getSingleton().setActiveScheme(scheme);
 
 	Ogre::RenderWindow* window = EmberOgre::getSingleton().getRenderWindow();
 	for (int i = 0; i < window->getNumViewports(); ++i) {
-		window->getViewport(i)->setMaterialScheme(mGraphicSchemes[newLevel]);
+		window->getViewport(i)->setMaterialScheme(scheme);
 	}
 
 	switch (newLevel) {

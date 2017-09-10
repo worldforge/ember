@@ -11,18 +11,21 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "ShaderHelper.h"
 
 #include <OgreRoot.h>
-#include <OgreRenderSystem.h>
+#include <OgreHighLevelGpuProgramManager.h>
 
 namespace Forests {
 
 std::string ShaderHelper::getShaderLanguage()
 {
-	if (Ogre::Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-		return "hlsl";
-	else if(Ogre::Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
+	auto& shaderMgr = Ogre::HighLevelGpuProgramManager::getSingleton();
+	if (shaderMgr.isLanguageSupported("glsl")) {
 		return "glsl";
-	else
-		return "cg";
+	}
+
+	if (shaderMgr.isLanguageSupported("hlsl")) {
+		return "hlsl";
+	}
+	return "no_shader_support";
 }
 
 }

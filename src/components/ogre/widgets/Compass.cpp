@@ -232,7 +232,7 @@ OverlayCompassImpl::~OverlayCompassImpl()
 void OverlayCompassImpl::_setCompass(Compass* compass)
 {
 	if (mCompassOverlay) {
-		mCompassMaterial = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().getByName("/common/ui/compass");
+		mCompassMaterial = Ogre::MaterialManager::getSingleton().getByName("/common/ui/compass");
 		mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0)->setTextureName(mMap->getTexture()->getName());
 		mCompassOverlay->show();
 	}

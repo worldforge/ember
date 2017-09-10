@@ -64,6 +64,8 @@
 
 #include <SDL.h>
 #include <Ogre.h>
+#include <RTShaderSystem/OgreShaderGenerator.h>
+#include <RTShaderSystem/OgreRTShaderSystem.h>
 
 namespace Ember {
 namespace OgreView {
@@ -155,7 +157,7 @@ Ogre::Root* OgreSetup::createOgreSystem() {
 	mOverlaySystem = new Ogre::OverlaySystem();
 
 	mPluginLoader.loadPlugin("Plugin_ParticleFX");
-	mPluginLoader.loadPlugin("RenderSystem_GL"); //We'll use OpenGL on Windows too, to make it easier to develop
+	mPluginLoader.loadPlugin("RenderSystem_GL3Plus"); //We'll use OpenGL on Windows too, to make it easier to develop
 
 	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory() << "'.");
@@ -411,6 +413,98 @@ void OgreSetup::setStandardValues() {
 	//We provide our own pixel size scaled LOD strategy. Note that ownership is transferred to the LodStrategyManager, hence we won't hold on to this instance.
 	Ogre::LodStrategy* lodStrategy = OGRE_NEW Lod::ScaledPixelCountLodStrategy();
 	Ogre::LodStrategyManager::getSingleton().addStrategy(lodStrategy);
+
+	if (Ogre::RTShader::ShaderGenerator::initialize()) {
+		// Grab the shader generator pointer.
+		auto shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+		// Add the shader libs resource location. a sample shader lib can be found in Samples\Media\RTShaderLib
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(OGRE_MEDIA_DIR"/RTShaderLib/materials", "FileSystem");
+		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(OGRE_MEDIA_DIR"/RTShaderLib/GLSL", "FileSystem");
+		// Set shader cache path.
+		//shaderGenerator->setShaderCachePath(shaderCachePath);
+		// Add a specialized sub-render (per-pixel lighting) state to the default scheme render state
+		//auto* pMainRenderState = shaderGenerator->createOrRetrieveRenderState(Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME).first;
+		//pMainRenderState->reset();
+		//shaderGenerator->addSubRenderStateFactory(new Ogre::RTShader::PerPixelLightingFactory);
+		//pMainRenderState->addTemplateSubRenderState(shaderGenerator->createSubRenderState(Ogre::RTShader::PerPixelLighting::Type));
+	}
+
+
+	struct MyListener : public Ogre::MaterialManager::Listener {
+		Ogre::Technique* handleSchemeNotFound(unsigned short schemeIndex,
+											  const Ogre::String& schemeName,
+											  Ogre::Material* originalMaterial,
+											  unsigned short lodIndex,
+											  const Ogre::Renderable* rend) override {
+
+			auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+
+
+			if (schemeName != Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME)
+			{
+				return nullptr;
+			}
+			// Case this is the default shader generator scheme.
+
+			// Create shader generated technique for this material.
+			bool techniqueCreated = shaderGenerator->createShaderBasedTechnique(
+					*originalMaterial,
+					Ogre::MaterialManager::DEFAULT_SCHEME_NAME,
+					schemeName);
+
+			if (!techniqueCreated)
+			{
+				return nullptr;
+			}
+			// Case technique registration succeeded.
+
+			// Force creating the shaders for the generated technique.
+			shaderGenerator->validateMaterial(schemeName, originalMaterial->getName(), originalMaterial->getGroup());
+
+			// Grab the generated technique.
+			Ogre::Material::Techniques::const_iterator it;
+			for(it = originalMaterial->getTechniques().begin(); it != originalMaterial->getTechniques().end(); ++it)
+			{
+				Ogre::Technique* curTech = *it;
+
+				if (curTech->getSchemeName() == schemeName)
+				{
+					return curTech;
+				}
+			}
+
+			return nullptr;
+		}
+
+		bool afterIlluminationPassesCreated(Ogre::Technique *tech)
+		{
+			if(tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME)
+			{
+				auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+				Ogre::Material* mat = tech->getParent();
+				shaderGenerator->validateMaterialIlluminationPasses(tech->getSchemeName(),
+																	 mat->getName(), mat->getGroup());
+				return true;
+			}
+			return false;
+		}
+
+		bool beforeIlluminationPassesCleared(Ogre::Technique *tech)
+		{
+			if(tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME)
+			{
+				auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+				Ogre::Material* mat = tech->getParent();
+				shaderGenerator->invalidateMaterialIlluminationPasses(tech->getSchemeName(),
+																	   mat->getName(), mat->getGroup());
+				return true;
+			}
+			return false;
+		}
+	};
+
+
+	Ogre::MaterialManager::getSingleton().addListener(new MyListener());
 
 }
 

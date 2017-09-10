@@ -119,6 +119,13 @@ endif (NOT OGRE_MeshLodGenerator_FOUND)
 link_libraries(${OGRE_MeshLodGenerator_LIBRARIES})
 include_directories(${OGRE_MeshLodGenerator_INCLUDE_DIRS})
 
+if (NOT OGRE_RTShaderSystem_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre RTShaderSystem component. Make sure you've built Ogre with RTShaderSystem support.")
+endif (NOT OGRE_RTShaderSystem_FOUND)
+link_libraries(${OGRE_RTShaderSystem_LIBRARIES})
+include_directories(${OGRE_RTShaderSystem_INCLUDE_DIRS})
+
+
 #On UNIX with PKG_CONFIG we can be more assertive of the paths than the FindOGRE.cmake macro is, so lets
 #get the correct paths from pkg-config.
 if (UNIX)

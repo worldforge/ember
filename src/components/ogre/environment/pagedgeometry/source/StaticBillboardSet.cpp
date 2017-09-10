@@ -101,11 +101,19 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"}";
 				} else {
 					fragmentProgSource =
-					"uniform sampler2D diffuseMap;\n"
-					"varying vec4 oUv0;\n"
-					"void main()	{"
-					"	gl_FragColor = texture2D(diffuseMap, oUv0.st);"
-					"	gl_FragColor.rgb = mix(gl_Fog.color, (gl_LightModel.ambient * gl_FragColor), gl_FogFragCoord).rgb;"
+							"#version 330\n"
+							"uniform sampler2D diffuseMap;\n"
+							"uniform vec3 iFogColour;\n"
+							"uniform vec4 iLightAmbient;\n"
+							"in vec4 oUv0;\n"
+							"in float fog;\n"
+							"in float fade;\n"
+							"out vec4 fragColour;\n"
+					"void main()	{\n"
+					"	fragColour = texture(diffuseMap, oUv0.st);\n"
+					"	if (fragColour.a < 0.5) { discard; }\n"
+					"	fragColour.rgb = mix(iFogColour, iLightAmbient.rgb * fragColour.rgb, fog).rgb;\n"
+					"	fragColour.a = fade;\n"
 					"}";
 				}
 
@@ -127,8 +135,8 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				//No need with glsl
 
 				fragShader->load();
-				if (fragShader->hasCompileError()) {
-					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard fragment shader.");
+				if (fragShader->hasCompileError() || !fragShader->isSupported()) {
+					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard fragment shader.", Ogre::LML_CRITICAL);
 				}
 			}
 
@@ -183,22 +191,28 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				{
 					// Must be GLSL
 					vertexProg =
+					"#version 330\n"
+					"uniform mat4  worldViewProj;\n"
 					"uniform float uScroll; \n"
 					"uniform float vScroll; \n"
 					"uniform vec4  preRotatedQuad[4]; \n"
-					"attribute vec3 normal;\n"
-					"attribute vec4 vertex;\n"
-					"attribute vec4 uv0;\n"
-					"varying vec4 oUv0;\n"
+					"uniform vec4  iFogParams; \n" // density, linear start, linear end, 1/(end-start)
+					"in vec3 normal;\n"
+					"in vec4 vertex;\n"
+					"in vec4 uv0;\n"
+					"out vec4 oUv0;\n"
+					"out float fog;\n"
+					"out float fade;\n"
 
 					"void main() { \n"
+					"	fade = 1; \n"
 					//Face the camera
 					"	vec4 vCenter = vec4( vertex.x, vertex.y, vertex.z, 1.0 ); \n"
 					"	vec4 vScale = vec4( normal.x, normal.y, normal.x , 1.0 ); \n"
-					"	gl_Position = gl_ModelViewProjectionMatrix * (vCenter + (preRotatedQuad[int(normal.z)] * vScale) ); \n"
+					"	gl_Position = worldViewProj * (vCenter + (preRotatedQuad[int(normal.z)] * vScale) ); \n"
 
 					//Color
-					"	gl_FrontColor = gl_Color; \n"
+//					"	gl_FrontColor = gl_Color; \n"
 
 					//UV Scroll
 					"	oUv0 = uv0; \n"
@@ -208,10 +222,10 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					//Fog
 					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
 						vertexProg +=
-							"	gl_FogFragCoord = clamp(exp(- gl_Fog.density * gl_Fog.density * gl_Position.z * gl_Position.z), 0.0, 1.0);";
+							"	fog = clamp(exp(- iFogParams.x * iFogParams.x * gl_Position.z * gl_Position.z), 0.0, 1.0);\n";
 					} else {
 						vertexProg +=
-							"	gl_FogFragCoord = gl_Position.z; \n";
+							"	fog = gl_Position.z; \n";
 					}
 					vertexProg += "}";
 				}
@@ -235,8 +249,8 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				// GLSL can only have one entry point "main".
 
 				vertexShader->load();
-				if (vertexShader->hasCompileError()) {
-					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard vertex shader.");
+				if (vertexShader->hasCompileError() || !vertexShader->isSupported()) {
+					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard vertex shader.", Ogre::LML_CRITICAL);
 				}
 			}
 
@@ -298,29 +312,34 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				{
 					// Must be GLSL
 					vertexProg2 =
+					"#version 330\n"
+					"uniform mat4  worldViewProj;\n"
 					"uniform vec3  camPos; \n"
 					"uniform float fadeGap; \n"
 					"uniform float invisibleDist; \n"
 					"uniform float uScroll; \n"
 					"uniform float vScroll; \n"
 					"uniform vec4  preRotatedQuad[4]; \n"
-					"attribute vec3 normal;\n"
-					"attribute vec4 vertex;\n"
-					"attribute vec4 uv0;\n"
-					"varying vec4 oUv0;\n"
+					"uniform vec4  iFogParams; \n" // density, linear start, linear end, 1/(end-start)
+					"in vec3 normal;\n"
+					"in vec4 vertex;\n"
+					"in vec4 uv0;\n"
+					"out vec4 oUv0;\n"
+					"out float fog;\n"
+					"out float fade;\n"
 
 					"void main() { \n"
 					//Face the camera
 					"	vec4 vCenter = vec4( vertex.x, vertex.y, vertex.z, 1.0 ); \n"
 					"	vec4 vScale = vec4( normal.x, normal.y, normal.x , 1.0 ); \n"
-					"	gl_Position = gl_ModelViewProjectionMatrix * (vCenter + (preRotatedQuad[int(normal.z)] * vScale) ); \n"
+					"	gl_Position = worldViewProj * (vCenter + (preRotatedQuad[int(normal.z)] * vScale) ); \n"
 
-					"	gl_FrontColor.xyz = gl_Color.xyz; \n"
+//					"	gl_FrontColor.xyz = gl_Color.xyz; \n"
 
 					//Fade out in the distance
 					"	vec4 position = vertex; \n"
 					"	float dist = distance(camPos.xz, position.xz); \n"
-					"	gl_FrontColor.w = (invisibleDist - dist) / fadeGap; \n"
+					"	fade = (invisibleDist - dist) / fadeGap; \n"
 
 					//UV scroll
 					"	oUv0 = uv0; \n"
@@ -330,10 +349,10 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					//Fog
 					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
 						vertexProg2 +=
-							"	gl_FogFragCoord = clamp(exp(- gl_Fog.density * gl_Fog.density * gl_Position.z * gl_Position.z), 0.0, 1.0);";
+								"	fog = clamp(exp(- iFogParams.x * iFogParams.x * gl_Position.z * gl_Position.z), 0.0, 1.0);";
 					} else {
 						vertexProg2 +=
-							"	gl_FogFragCoord = gl_Position.z; \n";
+								"	fog = gl_Position.z; \n";
 					}
 					vertexProg2 += "}";
 				}
@@ -356,8 +375,8 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				// GLSL can only have one entry point "main".
 
 				vertexShader2->load();
-				if (vertexShader2->hasCompileError()) {
-					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard vertex shader.");
+				if (vertexShader2->hasCompileError() || !vertexShader2->isSupported()) {
+					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard vertex shader.", Ogre::LML_CRITICAL);
 				}
 			}
 
@@ -724,8 +743,8 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 	} else {
 		//Otherwise clone the material
 		fadeMaterial = materialPtr->clone(getUniqueID("ImpostorFade"));
-
-		bool isglsl = (ShaderHelper::getShaderLanguage() == "glsl");
+		fadeMaterial->getTechnique(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+		fadeMaterial->getTechnique(0)->setDepthWriteEnabled(false);
 
 		//And apply the fade shader
 		for (unsigned short t = 0; t < fadeMaterial->getNumTechniques(); ++t){
@@ -738,8 +757,7 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 				pass->setFragmentProgram("ImposterFragStandard");
 				GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
 				params->setIgnoreMissingParams(true);
-				//glsl can use the built in gl_ModelViewProjectionMatrix
-				if(!isglsl) params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+				params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 				params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
 				params->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
 				params->setNamedAutoConstant("vScroll", GpuProgramParameters::ACT_CUSTOM);
@@ -786,8 +804,6 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 		vRight.normalise();
 		vUp.normalise();
 
-		bool isglsl = (ShaderHelper::getShaderLanguage() == "glsl");
-
 		//Even if camera is upside down, the billboards should remain upright
 		if (vUp.y < 0) vUp *= -1;
 
@@ -827,8 +843,7 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 				p->setVertexProgram("Sprite_vp");
 				p->getVertexProgramParameters()->setIgnoreMissingParams(true);
 				p->getVertexProgramParameters()->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
-				//glsl can use the built in gl_ModelViewProjectionMatrix
-				if(!isglsl) p->getVertexProgramParameters()->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+				p->getVertexProgramParameters()->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 				p->getVertexProgramParameters()->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("vScroll", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[0]", GpuProgramParameters::ACT_CUSTOM);

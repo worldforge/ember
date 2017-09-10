@@ -98,6 +98,7 @@
 #include <Overlay/OgreOverlaySystem.h>
 #include <MeshLodGenerator/OgreLodWorkQueueInjector.h>
 #include <framework/TimedLog.h>
+#include <RTShaderSystem/OgreShaderGenerator.h>
 
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
 
@@ -317,7 +318,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	checkForConfigFiles();
 
 	//Create a setup object through which we will start up Ogre.
-	mOgreSetup = std::unique_ptr<OgreSetup>(new OgreSetup);
+	mOgreSetup.reset(new OgreSetup());
 
 	mLogObserver = new OgreLogObserver();
 
@@ -352,7 +353,9 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	mEntityRecipeManager = new Authoring::EntityRecipeManager();
 
 	// Create the scene manager used for the main menu and load screen. Get the most simple one.
-	mSceneManagerOutOfWorld = mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "DefaultSceneManager");
+	mSceneManagerOutOfWorld = mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "OutOfWorldSceneManager");
+
+	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(mSceneManagerOutOfWorld);
 
 	//create the camera for the main menu and load screen
 	mCameraOutOfWorld = mSceneManagerOutOfWorld->createCamera("MainMenuCamera");
@@ -479,6 +482,11 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 		mConsoleDevTools = new ConsoleDevTools;
 
+		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setVertexProgram("Lighting/SimpleVp");
+		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setFragmentProgram("Lighting/SimpleFp");
+		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setVertexProgram("Lighting/SimpleVp");
+		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setFragmentProgram("Lighting/SimpleFp");
+
 		loadingBar.finish();
 	}
 
@@ -547,6 +555,10 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	//We want the overlay system available for the main camera, in case we need to do profiling.
 	mWorld->getSceneManager().addRenderQueueListener(mOgreSetup->getOverlaySystem());
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
+
+	//mWorld->getSceneManager().setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float");
+	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(&mWorld->getSceneManager());
+
 	mShaderManager->registerSceneManager(&mWorld->getSceneManager());
 	EventWorldCreated.emit(*mWorld);
 }

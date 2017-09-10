@@ -107,14 +107,19 @@ namespace Gui {
 	void LoadingBar::start()
 	{
 
+		auto& resourceGrpMgr = Ogre::ResourceGroupManager::getSingleton();
+
 		//Parse the materials used for the loading bar
-		auto materialPtr = Ogre::ResourceGroupManager::getSingleton().openResource("common/ui/splash/EmberCore.material");
+		auto programPtr = resourceGrpMgr.openResource("common/ui/Overlay.program");
+		Ogre::MaterialManager::getSingleton().parseScript(programPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+		auto materialPtr = resourceGrpMgr.openResource("common/ui/splash/EmberCore.material");
 		Ogre::MaterialManager::getSingleton().parseScript(materialPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-		auto fontdefPtr = Ogre::ResourceGroupManager::getSingleton().openResource("common/ui/splash/Ember.fontdef");
+		auto fontdefPtr = resourceGrpMgr.openResource("common/ui/splash/Ember.fontdef");
 		Ogre::FontManager::getSingleton().parseScript(fontdefPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-		auto overlayPtr = Ogre::ResourceGroupManager::getSingleton().openResource("common/ui/splash/EmberLoadingPanel.overlay");
+		auto overlayPtr = resourceGrpMgr.openResource("common/ui/splash/EmberLoadingPanel.overlay");
 		Ogre::OverlayManager::getSingleton().parseScript(overlayPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 

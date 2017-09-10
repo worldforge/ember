@@ -31,6 +31,7 @@
 #include <OgreRoot.h>
 #include <OgreShadowCameraSetupPSSM.h>
 #include <OgreShadowCameraSetup.h>
+#include <RTShaderSystem/OgreRTShaderSystem.h>
 
 namespace Ember
 {
@@ -90,6 +91,7 @@ bool ShadowCameraSetup::setup()
 	mSharedCameraPtr = Ogre::ShadowCameraSetupPtr(mPssmSetup);
 	mSceneMgr.setShadowCameraSetup(mSharedCameraPtr);
 
+
 	return true;
 }
 
@@ -116,6 +118,27 @@ void ShadowCameraSetup::Config_ShadowSplitPoints(const std::string& section, con
 			splitPointList[3] = atof(tokeniser.nextToken().c_str());
 			S_LOG_VERBOSE("Setting shadow split points: " << splitPointList[0] << " " << splitPointList[1] << " " << splitPointList[2] << " " << splitPointList[3]);
 			mPssmSetup->setSplitPoints(splitPointList);
+
+
+
+
+//			Ogre::RTShader::ShaderGenerator* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+//
+//			Ogre::RTShader::SubRenderState* subRenderState = shaderGenerator->createSubRenderState(Ogre::RTShader::IntegratedPSSM3::Type);
+//			Ogre::RTShader::IntegratedPSSM3* pssm3SubRenderState = static_cast<Ogre::RTShader::IntegratedPSSM3*>(subRenderState);
+//			Ogre::RTShader::IntegratedPSSM3::SplitPointList dstSplitPoints;
+//
+//			for (float srcSplitPoint : splitPointList) {
+//				dstSplitPoints.push_back(srcSplitPoint);
+//			}
+//
+//			pssm3SubRenderState->setSplitPoints(dstSplitPoints);
+//
+//			Ogre::RTShader::RenderState* schemRenderState = shaderGenerator->getRenderState(Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME);
+//
+//			schemRenderState->addTemplateSubRenderState(subRenderState);
+
+
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting shadow split points." << ex);
