@@ -363,3 +363,5 @@ set(CPACK_SOURCE_IGNORE_FILES
         )
 
 include(CPack)
+
+message("*********\nEmber is configured. Use the 'media-download' target to fetch the needed media. I.e. 'make media-download'.\n*********")

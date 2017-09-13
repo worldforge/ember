@@ -13,6 +13,17 @@ To learn more about Worldforge visit our [website](http://worldforge.org/ "The m
 Since Ember uses a lot of internal Worldforge libraries which might not be supplied by your system we strongly suggest that you use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool to compile Ember.
 This is script provided by the Worldforge project which will download and install all of the required libraries and components used by Worldforge.
 
+If you want to compile yourself, make sure that both OGRE and CEGUI is available on your system and do
+```
+mkdir build_`arch` && cd build_`arch`
+cmake ..
+make
+make media-download
+make install
+```
+
+The ```make media-download``` will fetch all of the needed media files from the net. Rsync is required.
+
 ## Running Ember
 
 As Ember is a 3d client it requires a 3d capable graphics card. If you have a fairly recent machine you should be good though.
