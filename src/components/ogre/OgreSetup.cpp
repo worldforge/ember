@@ -361,21 +361,22 @@ Ogre::Root* OgreSetup::configure() {
 
 	mConfigListenerContainer->registerConfigListener("ogre", "profiler", [&](const std::string& section, const std::string& key, varconf::Variable& variable) {
 		if (variable.is_bool()) {
-			auto& profiler = Ogre::Profiler::getSingleton();
-			if ((bool) variable) {
-				auto& resourceGroupMgr = Ogre::ResourceGroupManager::getSingleton();
-				if (!resourceGroupMgr.resourceGroupExists("Profiler")) {
-					resourceGroupMgr.addResourceLocation(OGRE_MEDIA_DIR"/packs/profiler.zip", "Zip", "Profiler", true);
-					resourceGroupMgr.addResourceLocation(OGRE_MEDIA_DIR"/packs/SdkTrays.zip", "Zip", "Profiler", true);
-					resourceGroupMgr.initialiseResourceGroup("Profiler");
+			auto* profiler = Ogre::Profiler::getSingletonPtr();
+			if (profiler) {
+				if ((bool) variable) {
+					auto& resourceGroupMgr = Ogre::ResourceGroupManager::getSingleton();
+					if (!resourceGroupMgr.resourceGroupExists("Profiler")) {
+						resourceGroupMgr.addResourceLocation(OGRE_MEDIA_DIR"/packs/profiler.zip", "Zip", "Profiler", true);
+						resourceGroupMgr.addResourceLocation(OGRE_MEDIA_DIR"/packs/SdkTrays.zip", "Zip", "Profiler", true);
+						resourceGroupMgr.initialiseResourceGroup("Profiler");
+					}
+				}
+
+				if (profiler->getEnabled() != (bool) variable) {
+					profiler->reset();
+					profiler->setEnabled((bool) variable);
 				}
 			}
-
-			if (profiler.getEnabled() != (bool) variable) {
-				profiler.reset();
-				profiler.setEnabled((bool) variable);
-			}
-
 		}
 	});
 
