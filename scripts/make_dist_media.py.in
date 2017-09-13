@@ -144,7 +144,6 @@ OPTIONS
 		print(usage)
 		sys.exit(0)
 
-	startdir = os.getcwd()
 	src_media_dir = sys.argv[1]
 	src_assets_dir = os.path.join(src_media_dir, "assets")
 	#Place the resulting media in a subdirectory called "media"
@@ -216,7 +215,9 @@ OPTIONS
 				assets.add(os.path.relpath(os.path.join(dirpath, filename), src_assets_dir))
 			
 	#Parse .modeldef and .terrain files from the Ember source and look for references
-	for dirpath, dirnames, files in os.walk(os.path.join(startdir, "data")):
+	datadir = os.path.join("@PROJECT_SOURCE_DIR@", "data")
+	print("Looking for data files in " + datadir)
+	for dirpath, dirnames, files in os.walk(datadir):
 		if "source" in dirnames:
 			dirnames.remove("source")
 		for filename in fnmatch.filter(files, "*.modeldef*"):

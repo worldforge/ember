@@ -280,8 +280,8 @@ endforeach (FILE MODELDEFINITIONS_FILES)
 configure_file(ember.conf.in ember.conf @ONLY)
 configure_file(ember.in ember @ONLY)
 configure_file(ember.dox.in ember.dox @ONLY)
-configure_file(scripts/sync_devmedia.sh.in scripts/sync_devmedia.sh @ONLY)
 configure_file(scripts/refresh-amber-media-dev.sh.in scripts/refresh-amber-media-dev.sh @ONLY)
+configure_file(scripts/make_dist_media.py.in scripts/make_dist_media.py @ONLY)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ember.conf DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ember)
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ember DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
@@ -297,33 +297,19 @@ install(FILES ${SOUND_DEFINITION_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR
 # man files
 install(FILES man/man1/ember.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
-set(MEDIA_DEV_DIR ${PROJECT_BINARY_DIR}/media-dev)
+set(MEDIA_DIR media-${VERSION})
+add_custom_target(media-download)
 add_custom_command(
-        OUTPUT ${MEDIA_DEV_DIR}
-        COMMAND ${CMAKE_COMMAND} -E echo_append "I will now use rsync to install the development media from amber.worldforge.org into ${MEDIA_DEV_DIR}."
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_DEV_DIR}
-        COMMAND rsync -rtvzu amber.worldforge.org::media-dev ${MEDIA_DEV_DIR}
-        COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_DEV_DIR} to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_DEV_DIR} ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
+        TARGET media-download
+        COMMAND ${CMAKE_COMMAND} -E echo_append "I will now use rsync to install the media from amber.worldforge.org into ${MEDIA_DIR}."
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_DIR}
+        COMMAND rsync -rtvzu amber.worldforge.org::ember-media/ember-media-${VERSION}/ ${MEDIA_DIR}
+        COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_DIR}/media to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_DIR}/media ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
         COMMAND ${CMAKE_COMMAND} -E echo "Done."
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
 )
 
-add_custom_target(media-dev DEPENDS ${MEDIA_DEV_DIR})
-
-set(MEDIA_RELEASE_DIR media-${VERSION})
-add_custom_command(
-        OUTPUT ${MEDIA_RELEASE_DIR}
-        COMMAND ${CMAKE_COMMAND} -E echo_append "I will now use rsync to install the release media from amber.worldforge.org into ${MEDIA_RELEASE_DIR}."
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_RELEASE_DIR}
-        COMMAND rsync -rtvzu amber.worldforge.org::media-${VERSION} ${MEDIA_RELEASE_DIR}
-        COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_RELEASE_DIR} to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_RELEASE_DIR} ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
-        COMMAND ${CMAKE_COMMAND} -E echo "Done."
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-)
-
-add_custom_target(media-release DEPENDS ${MEDIA_RELEASE_DIR})
 
 
 # Doxygen support, exports a "docs" target.
