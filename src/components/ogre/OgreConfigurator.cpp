@@ -166,9 +166,13 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		auto fullscreenCheckbox = static_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("Fullscreen"));
 		auto dontShowAgainCheckbox = static_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("DontShowAgain"));
 
-		IInputAdapter* adapter = new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer);
 		Input& input = Input::getSingleton();
-		input.addAdapter(adapter);
+		auto adapterDeleter = [&](IInputAdapter* ptr){
+			input.removeAdapter(ptr);
+			delete ptr;
+		};
+		std::unique_ptr<IInputAdapter, decltype(adapterDeleter)> adapter(new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer), adapterDeleter);
+		input.addAdapter(adapter.get());
 
 		Ogre::ConfigOptionMap configOptions = renderSystem->getConfigOptions();
 		Ogre::ConfigOptionMap::const_iterator optionsIter = configOptions.find("Full Screen");
@@ -192,8 +196,6 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			// We'll use a smooth 60 fps to provide a good impression
 			std::this_thread::sleep_for(std::chrono::milliseconds(16));
 		}
-		input.removeAdapter(adapter);
-		delete adapter;
 
 		//Check if the user has selected a render system (in the case of there being multiple)
 		if (renderers.size() > 1) {

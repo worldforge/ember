@@ -101,15 +101,16 @@ void OgreSetup::shutdown() {
 	S_LOG_INFO("Shutting down Ogre.");
 	if (mRoot) {
 
-		try {
-			auto cacheStream = mRoot->createFileStream(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) + "/gpu.cache");
-			if (cacheStream) {
-				Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
+		if (Ogre::GpuProgramManager::getSingletonPtr()) {
+			try {
+				auto cacheStream = mRoot->createFileStream(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) + "/gpu.cache");
+				if (cacheStream) {
+					Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
+				}
+			} catch (...) {
+				S_LOG_WARNING("Error when trying to save GPU cache file.");
 			}
-		} catch (...) {
-			S_LOG_WARNING("Error when trying to save GPU cache file.");
 		}
-
 		if (mSceneManagerFactory) {
 			mRoot->removeSceneManagerFactory(mSceneManagerFactory);
 			delete mSceneManagerFactory;
