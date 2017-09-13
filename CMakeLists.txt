@@ -81,14 +81,16 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 #TODO: check for binreloc?
 
-find_package(OGRE 1.10.8 REQUIRED)
+
+set(OGREVER 1.10.8)
+find_package(OGRE ${OGREVER} REQUIRED)
 link_directories(${OGRE_LIBRARY_DIRS})
 link_libraries(${OGRE_LIBRARIES})
 include_directories(${OGRE_INCLUDE_DIRS})
 if (APPLE)
-	if (NOT OGRE_RenderSystem_GL_FOUND)
-		MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL plugin. Make sure you've built Ogre with RenderSystem GL support.")
-	endif(NOT OGRE_RenderSystem_GL_FOUND)
+    if (NOT OGRE_RenderSystem_GL_FOUND)
+        MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL plugin. Make sure you've built Ogre with RenderSystem GL support.")
+    endif (NOT OGRE_RenderSystem_GL_FOUND)
 endif (APPLE)
 # Required to find glew.h header. Backtrace: OgreSetup.cpp ==> OgreGLContext.h ==> OgreGLPrerequisites.h ==> <GL/glew.h>
 include_directories("${OGRE_RenderSystem_GL_INCLUDE_DIR}")
@@ -117,29 +119,52 @@ endif (NOT OGRE_MeshLodGenerator_FOUND)
 link_libraries(${OGRE_MeshLodGenerator_LIBRARIES})
 include_directories(${OGRE_MeshLodGenerator_INCLUDE_DIRS})
 
+#On UNIX with PKG_CONFIG we can be more assertive of the paths than the FindOGRE.cmake macro is, so lets
+#get the correct paths from pkg-config.
+if (UNIX)
+    pkg_check_modules(OGREPKGCFG REQUIRED OGRE=>${OGREVER})
+
+    set(OGRE_DEBUGBUILD FALSE)
+    add_definitions(-DOGRE_PLUGINDIR="${OGREPKGCFG_LIBDIR}/OGRE")
+    #Check if any library ends with "_d", which indicates that OGRE is a debug build.
+    foreach (LIBRARY ${OGREPKGCFG_LIBRARIES})
+        string(FIND ${LIBRARY} "_d" IS_DEBUG)
+        if (NOT IS_DEBUG MATCHES -1)
+            set(OGRE_DEBUGBUILD TRUE)
+        endif (NOT IS_DEBUG MATCHES -1)
+    endforeach ()
+
+    if (OGRE_DEBUGBUILD)
+        MESSAGE(STATUS "Ogre was built in debug mode.")
+        add_definitions(-DOGRE_DEBUG_BUILD)
+    else (OGRE_DEBUGBUILD)
+        MESSAGE(STATUS "Ogre was built in release mode.")
+    endif (OGRE_DEBUGBUILD)
+
+else (UNIX)
+    #On other systems we need to rely on the FindOGRE.cmake macros finding things in correct places.
+    if (OGRE_LIBRARY_DBG)
+        set(OGRE_LIBRARY ${OGRE_LIBRARY_DBG})
+    else (OGRE_LIBRARY_DBG)
+        set(OGRE_LIBRARY ${OGRE_LIBRARY_REL})
+    endif (OGRE_LIBRARY_DBG)
+
+    #It's not enough to check for the _DBG and _REL keys since they can both be set. We also need to check if the library ends with "_d.so" to
+    #determine if it's built for debug or release.
+    string(FIND ${OGRE_LIBRARY} "_d.so" OGRE_DEBUG_BUILD)
+    if (OGRE_DEBUG_BUILD MATCHES -1)
+        MESSAGE(STATUS "Ogre was built in release mode.")
+        add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_REL}")
+    else (OGRE_DEBUG_BUILD MATCHES -1)
+        MESSAGE(STATUS "Ogre was built in debug mode.")
+        add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
+        add_definitions(-DOGRE_DEBUG_BUILD)
+    endif (OGRE_DEBUG_BUILD MATCHES -1)
 
 
+endif (UNIX)
 
-if (OGRE_LIBRARY_DBG)
-    set(OGRE_LIBRARY ${OGRE_LIBRARY_DBG})
-else (OGRE_LIBRARY_DBG)
-    set(OGRE_LIBRARY ${OGRE_LIBRARY_REL})
-endif (OGRE_LIBRARY_DBG)
-
-#It's not enough to check for the _DBG and _REL keys since they can both be set. We also need to check if the library ends with "_d.so" to
-#determine if it's built for debug or release.
-string(FIND ${OGRE_LIBRARY} "_d.so" OGRE_DEBUG_BUILD)
-if (OGRE_DEBUG_BUILD MATCHES -1)
-    MESSAGE(STATUS "Ogre was built in release mode.")
-    add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_REL}")
-else (OGRE_DEBUG_BUILD MATCHES -1)
-    MESSAGE(STATUS "Ogre was built in debug mode.")
-    add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
-    add_definitions(-DOGRE_DEBUG_BUILD)
-endif (OGRE_DEBUG_BUILD MATCHES -1)
 add_definitions(-DOGRE_MEDIA_DIR="${OGRE_MEDIA_DIR}")
-
-
 
 
 if (APPLE)
@@ -166,10 +191,10 @@ endif (NOT LUA_VERSION)
 # Lua should be before CEGUI_LuaScriptModule
 find_package(Lua ${LUA_VERSION} EXACT)
 if (APPLE AND NOT LUA_FOUND) # Try macports version if frameworks are not available
-	pkg_check_modules(LUA lua-${LUA_VERSION})
+    pkg_check_modules(LUA lua-${LUA_VERSION})
 endif (APPLE AND NOT LUA_FOUND)
 if (NOT LUA_FOUND)
-	MESSAGE(FATAL_ERROR "Could not find Lua ${LUA_VERSION}.")
+    MESSAGE(FATAL_ERROR "Could not find Lua ${LUA_VERSION}.")
 endif (NOT LUA_FOUND)
 link_directories(${LUA_LIBRARY_DIRS})
 link_libraries(${LUA_LIBRARIES})
