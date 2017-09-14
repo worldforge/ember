@@ -122,6 +122,8 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	Cegui::CEGUILogger* logger = new Cegui::CEGUILogger();
 
 	CEGUI::OgreRenderer& renderer = CEGUI::OgreRenderer::create(*renderWindow);
+	renderer.setRenderingEnabled(false);
+	renderer.setFrameControlExecutionEnabled(false);
 	CEGUI::OgreResourceProvider& rp = CEGUI::OgreRenderer::createOgreResourceProvider();
 
 	CEGUI::System::create(renderer, &rp, nullptr, nullptr, nullptr, "cegui/datafiles/configs/ceguiMinimal.config");
@@ -192,7 +194,11 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			CEGUI::System::getSingleton().injectTimePulse(timeElapsed);
 			CEGUI::System::getSingleton().getDefaultGUIContext().injectTimePulse(timeElapsed);
 			lastTime = TimeHelper::currentTimeMillis();
-			Ogre::Root::getSingleton().renderOneFrame();
+
+			CEGUI::System::getSingleton().renderAllGUIContexts();
+			renderWindow->swapBuffers();
+
+
 			// We'll use a smooth 60 fps to provide a good impression
 			std::this_thread::sleep_for(std::chrono::milliseconds(16));
 		}
