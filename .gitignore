@@ -62,3 +62,4 @@ src/stamp-h1
 *.orig
 *.log
 *.kdevelop
+.idea
