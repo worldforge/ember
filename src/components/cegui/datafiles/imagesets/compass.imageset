@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Imageset autoScaled="false" imagefile="common/ui/texture/outer_ring.png" name="compass" nativeHorzRes="256" nativeVertRes="256" version="2">
 	<Image height="256" name="full" width="256" xPos="0" yPos="0" />
 </Imageset>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Imageset autoScaled="false" imagefile="common/ui/texture/ember_splash.png" name="splash" nativeHorzRes="1024" nativeVertRes="512" version="2">
 	<Image height="382" name="main" width="1007" xPos="7" yPos="65" />
 </Imageset>

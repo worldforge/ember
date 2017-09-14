@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
 	<Window name="MainWindow" type="EmberLook/FrameWindow">
 		<Property name="Size" value="{{0.0,400.0},{0.0,400.0}}" />

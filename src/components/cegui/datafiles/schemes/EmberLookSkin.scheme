@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <GUIScheme name="EmberLookSkin" version="5">
 	<Font filename="cegui/datafiles/fonts/DejaVuSans-14.xml" name="DejaVuSans-14" />
 	<Font filename="cegui/datafiles/fonts/DejaVuSans-10.xml" name="DejaVuSans-10" />

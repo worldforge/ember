@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
 	<Window name="EntityName" type="EmberLook/StaticText">
 		<Property name="Size" value="{{000000,200.0},{0.0,25.0}}" />

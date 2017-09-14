@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
 	<Window name="Detached" type="EmberLook/IngameChatDetachedWindow">
 		<Property name="Size" value="{{0,250},{0,400}}" />

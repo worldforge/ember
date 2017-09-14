@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
 	<Window name="Attached" type="DefaultWindow">
 		<Property name="Size" value="{{0.00,300.0},{0.0,115.0}}" />
