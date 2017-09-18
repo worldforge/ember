@@ -53,14 +53,14 @@ namespace Caelum
         setMoonTexture(moonTextureName);
 
 	    mMoonBB.reset(sceneMgr->createBillboardSet("Caelum/Moon/MoonBB" + uniqueSuffix, 1));
-	    mMoonBB->setMaterialName (mMoonMaterial->getName());
+	    mMoonBB->setMaterialName (mMoonMaterial->getName(), mMoonMaterial->getGroup());
 	    mMoonBB->setCastShadows (false);
 	    mMoonBB->setRenderQueueGroup (CAELUM_RENDER_QUEUE_MOON);
 	    mMoonBB->setDefaultDimensions (1.0f, 1.0f);
 	    mMoonBB->createBillboard (Ogre::Vector3::ZERO);
 
 	    mBackBB.reset(sceneMgr->createBillboardSet("Caelum/Moon/BackBB" + uniqueSuffix, 1));
-	    mBackBB->setMaterialName (mBackMaterial->getName());
+	    mBackBB->setMaterialName (mBackMaterial->getName(), mBackMaterial->getGroup());
 	    mBackBB->setCastShadows (false);
 	    mBackBB->setRenderQueueGroup (CAELUM_RENDER_QUEUE_MOON_BACKGROUND);
 	    mBackBB->setDefaultDimensions (1.0f, 1.0f);

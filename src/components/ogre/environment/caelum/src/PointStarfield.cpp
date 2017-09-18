@@ -173,7 +173,7 @@ namespace Caelum
 
         mManualObj->clear();
         mManualObj->estimateVertexCount(6 * starCount);
-        mManualObj->begin(mMaterial->getName (), Ogre::RenderOperation::OT_TRIANGLE_LIST);
+        mManualObj->begin(mMaterial->getName (), Ogre::RenderOperation::OT_TRIANGLE_LIST, mMaterial->getGroup());
         for (uint i = 0; i < starCount; ++i)
         {
             const Star& star = mStars[i];

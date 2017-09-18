@@ -48,7 +48,10 @@ namespace Caelum
         // Generate dome entity.
         InternalUtilities::generateSphericDome (SPHERIC_DOME_NAME + uniqueSuffix, 32, InternalUtilities::DT_SKY_DOME);
         mEntity.reset(sceneMgr->createEntity ("Caelum/SkyDome/Entity" + uniqueSuffix, SPHERIC_DOME_NAME + uniqueSuffix));
-        mEntity->setMaterialName (mMaterial->getName());
+
+		//auto material = Ogre::MaterialManager::getSingleton().getByName("BaseWhite");
+		//mEntity->setMaterial(material);
+        mEntity->setMaterialName (mMaterial->getName(), mMaterial->getGroup());
         mEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SKYDOME);
         mEntity->setCastShadows (false);
 
@@ -77,7 +80,7 @@ namespace Caelum
         elevation = elevation * 0.5 + 0.5;
         Ogre::Pass* pass = mMaterial->getBestTechnique()->getPass(0);
         if (mShadersEnabled) {
-            mParams.sunDirection.set(mParams.vpParams, sunDir);
+            mParams.sunDirection.set(mParams.vpParams, sunDir.normalisedCopy());
             mParams.offset.set(mParams.fpParams, elevation);
         } else {
             Ogre::TextureUnitState* gradientsTus = pass->getTextureUnitState(0);

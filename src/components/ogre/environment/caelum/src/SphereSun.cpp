@@ -38,7 +38,7 @@ namespace Caelum
         mSunMaterial.reset (InternalUtilities::checkLoadMaterialClone (SUN_MATERIAL_NAME, SUN_MATERIAL_NAME + uniqueSuffix));
 
         mSunEntity.reset (sceneMgr->createEntity ("Caelum/SphereSun" + uniqueSuffix, meshName));
-        mSunEntity->setMaterialName (mSunMaterial->getName ());
+        mSunEntity->setMaterialName (mSunMaterial->getName (), mSunMaterial->getGroup());
         mSunEntity->setCastShadows (false);
         mSunEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
 
@@ -85,7 +85,7 @@ namespace Caelum
         setSunTexture (sunTextureName);
 
         mSunBillboardSet.reset (sceneMgr->createBillboardSet ("Caelum/SpriteSun" + uniqueSuffix, 2));
-        mSunBillboardSet->setMaterialName (mSunMaterial->getName());
+        mSunBillboardSet->setMaterialName (mSunMaterial->getName(), mSunMaterial->getGroup());
         mSunBillboardSet->setCastShadows (false);
         mSunBillboardSet->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SUN);
         mSunBillboardSet->setDefaultDimensions (1.0f, 1.0f);

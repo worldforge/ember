@@ -43,7 +43,7 @@ namespace Caelum
         // The prefab sphere has a radius of 50 units.
         // If this changes in future version of ogre this might break.
         mDomeEntity.reset (mScene->createEntity (domeEntityName, Ogre::SceneManager::PT_SPHERE));
-        mDomeEntity->setMaterialName (mDomeMaterial->getName ());
+        mDomeEntity->setMaterialName (mDomeMaterial->getName (), mDomeMaterial->getGroup ());
         mDomeEntity->setCastShadows (false);
         mDomeEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_GROUND_FOG);
 		sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_GROUND_FOG)->setShadowsEnabled(false);

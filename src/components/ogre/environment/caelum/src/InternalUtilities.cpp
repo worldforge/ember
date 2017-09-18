@@ -84,7 +84,7 @@ namespace Caelum
             const Ogre::String& originalName,
             const Ogre::String& cloneName)
     {
-        Ogre::MaterialPtr scriptMaterial = Ogre::MaterialManager::getSingletonPtr()->getByName(originalName);
+        Ogre::MaterialPtr scriptMaterial = Ogre::MaterialManager::getSingletonPtr()->getByName(originalName, RESOURCE_GROUP_NAME);
         if (!scriptMaterial) {
             CAELUM_THROW_UNSUPPORTED_EXCEPTION (
                     "Can't find material \"" + originalName + "\"",
@@ -107,7 +107,7 @@ namespace Caelum
 
     Ogre::CompositorPtr InternalUtilities::checkCompositorSupported (const Ogre::String& name)
     {
-        Ogre::CompositorPtr comp = Ogre::CompositorManager::getSingletonPtr()->getByName(name);
+        Ogre::CompositorPtr comp = Ogre::CompositorManager::getSingletonPtr()->getByName(name, RESOURCE_GROUP_NAME);
         if (!comp) {
             CAELUM_THROW_UNSUPPORTED_EXCEPTION (
                     "Can't find compositor \"" + name + "\"",

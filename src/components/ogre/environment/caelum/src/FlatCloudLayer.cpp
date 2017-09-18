@@ -117,7 +117,7 @@ namespace Caelum
 
         // Recreate entity.
 		mEntity.reset(mSceneMgr->createEntity(entityName, mMesh->getName()));
-		mEntity->setMaterialName(mMaterial->getName());
+		mEntity->setMaterialName(mMaterial->getName(), mMaterial->getGroup());
 
         // Reattach entity.
 		mNode->attachObject(mEntity.get());

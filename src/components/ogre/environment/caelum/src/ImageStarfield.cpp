@@ -47,7 +47,7 @@ namespace Caelum
         InternalUtilities::generateSphericDome (STARFIELD_DOME_NAME, 32, InternalUtilities::DT_IMAGE_STARFIELD);
 
         mEntity.reset(sceneMgr->createEntity ("Caelum/StarfieldDome" + uniqueSuffix, STARFIELD_DOME_NAME));
-        mEntity->setMaterialName (mStarfieldMaterial->getName());
+        mEntity->setMaterialName (mStarfieldMaterial->getName(), mStarfieldMaterial->getGroup());
         mEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_STARFIELD);
         mEntity->setCastShadows (false);
 
