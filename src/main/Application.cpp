@@ -296,6 +296,9 @@ void Application::mainLoop() {
 				S_LOG_VERBOSE("Frame took too long.");
 			}
 
+		} catch (const boost::exception& ex) {
+			S_LOG_CRITICAL("Got exception, shutting down." << boost::diagnostic_information(ex));
+			throw;
 		} catch (const std::exception& ex) {
 			S_LOG_CRITICAL("Got exception, shutting down." << ex);
 			throw;
