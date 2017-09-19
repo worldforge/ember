@@ -33,10 +33,10 @@ namespace OgreView
 RenderDistanceManager::RenderDistanceManager(GraphicalChangeAdapter& graphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera) :
 		mDefaultFarRenderDistance(1000), mFarRenderDistance(1000), mFarRenderDistanceFactor(1.0f), mMaxFarRenderDistanceFactor(1.5f), mMinFarRenderDistanceFactor(0.7f), mRenderDistanceThreshold(5.0f), mDefaultRenderDistanceStep(0.3f), mFog(fog), mGraphicalChangeAdapter(graphicalChangeAdapter), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer())
 {
-	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
-	}
-	mConfigListenerContainer->registerConfigListener("graphics", "renderdistance", sigc::mem_fun(*this, &RenderDistanceManager::Config_FarRenderDistance));
+//	if (!mChangeRequiredConnection) {
+//		mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
+//	}
+//	mConfigListenerContainer->registerConfigListener("graphics", "renderdistance", sigc::mem_fun(*this, &RenderDistanceManager::Config_FarRenderDistance));
 }
 
 RenderDistanceManager::~RenderDistanceManager()
