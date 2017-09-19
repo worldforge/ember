@@ -87,8 +87,8 @@ def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size = None
 					print("copying asset {0} to {1}".format(asset, dest_asset_path))
 					shutil.copy(asset_path, dest_asset_path)
 					copied = copied + 1
-					if asset.endswith(".material") and not asset.startswith("common/ui"):
-						print("processing material to replace 'png' with 'dds'")
+					if (asset.endswith(".material") or asset.endswith(".particle")) and not asset.startswith("common/ui"):
+						print("processing material/particle script to replace 'png' with 'dds'")
 						for line in fileinput.input(dest_asset_path, inplace=True):
 							print(line.replace(".png", ".dds"), end='')
 
@@ -111,6 +111,7 @@ def copytree(src, dst):
 			copytree(s, d)
 		else:
 			if not os.path.exists(d) or os.stat(src).st_mtime - os.stat(dst).st_mtime > 1:
+				print("Copying " + s)
 				shutil.copy2(s, d)
 
 def main():
@@ -164,16 +165,15 @@ OPTIONS
 	shutil.copy(os.path.join(src_media_dir, "COPYING.txt"), dest_media_dir)
 	
 	#Now walk through all files in assets looking for references to textures etc.
-	reTextureAlias = re.compile(r"^[^/].*set_texture_alias [\w]* (.*)") 
-	reTexture = re.compile(r"^[^/].*texture [\w]* (.*)") 
+	reTextureAlias = re.compile(r"^[^/].*set_texture_alias [\w]* (.*)")
+	reTexture = re.compile(r"^[^\w]*texture (.*)")
 	reParticleImage = re.compile(r".*image\s*(.*)") 
 	reIcon = re.compile(r'.*icon=\"([^\"]*)\"')
 	reMesh = re.compile(r'.*mesh=\"([^\"]*)\"')
 	reDiffuse = re.compile(r'.*diffusetexture=\"([^\"]*)\"')
 	reNormal = re.compile(r'.*normalmaptexture=\"([^\"]*)\"')
 	reFilename = re.compile(r'.*filename=\"([^\"]*)\"')
-	
-	
+
 	#Put all assets here, as paths relative to the "assets" directory in the media repo.
 	assets = set()
 	
@@ -184,7 +184,7 @@ OPTIONS
 		for filename in fnmatch.filter(files, "*.material"):
 			filepath = os.path.join(dirpath, filename)
 			assets.add(os.path.relpath(filepath, src_assets_dir))
-			file = open(filepath) 
+			file = open(filepath)
 			for line in file:
 				aMatch = reTextureAlias.match(line)
 				if aMatch:
