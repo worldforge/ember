@@ -85,7 +85,7 @@ void Model::reset() {
 	mSkeletonInstance = nullptr;
 	// , mAnimationStateSet(0)
 	mSkeletonOwnerEntity = nullptr;
-	mAttachPoints = std::unique_ptr<std::vector<AttachPointWrapper>>(nullptr);
+	mAttachPoints.reset();
 
 }
 
@@ -672,15 +672,15 @@ Ogre::TagPoint* Model::attachObject(const std::string& attachPoint, Ogre::Movabl
 				const std::string& boneName = attachPointDef.BoneName;
 				//use the rotation in the attach point def
 				Ogre::TagPoint* tagPoint = mSkeletonOwnerEntity->attachObjectToBone(boneName, movable);
-				if (!mAttachPoints.get()) {
-					mAttachPoints = std::unique_ptr<std::vector<AttachPointWrapper>>();
+				if (!mAttachPoints) {
+					mAttachPoints.reset(new std::vector<AttachPointWrapper>());
 				}
 
 				AttachPointWrapper wrapper;
 				wrapper.TagPoint = tagPoint;
 				wrapper.Movable = movable;
 				wrapper.Definition = attachPointDef;
-				mAttachPoints.get()->push_back(wrapper);
+				mAttachPoints->push_back(wrapper);
 				return tagPoint;
 			}
 		}
