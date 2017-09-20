@@ -282,6 +282,44 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 					} else if (extension == ".mesh") {
 						reloadResource(Ogre::MeshManager::getSingleton(), relative);
 					}
+					else if (extension == ".glsl" || extension == ".frag" || extension == ".vert") {
+						//Reloading GLSL shaders in Render System GL doesn't seem to work. Perhaps we'll have more luck with GL3+?
+
+//						auto iterator = Ogre::HighLevelGpuProgramManager::getSingleton().getResourceIterator();
+//						while (iterator.hasMoreElements()) {
+//							auto resource = Ogre::static_pointer_cast<Ogre::HighLevelGpuProgram>(iterator.getNext());
+//							if (resource->getSourceFile() == relative) {
+//								S_LOG_VERBOSE("Reloading GLSL script " << resource->getName());
+//								Ogre::SharedPtr<Ogre::DataStream> stream(OGRE_NEW Ogre::MemoryDataStream(0));
+//								Ogre::GpuProgramManager::getSingleton().loadMicrocodeCache(stream);
+//								//Ogre::GpuProgramManager::getSingleton().cac
+//								resource->reload();
+//
+//								auto matIterator = Ogre::MaterialManager::getSingleton().getResourceIterator();
+//								while (matIterator.hasMoreElements()) {
+//									bool needReload = false;
+//									auto material = Ogre::static_pointer_cast<Ogre::Material>(matIterator.getNext());
+//									for (auto* tech : material->getTechniques()) {
+//										for (auto* pass : tech->getPasses()) {
+//											if (pass->getFragmentProgramName() == resource->getName()) {
+//												pass->setFragmentProgram("");
+//												pass->setFragmentProgram(resource->getName());
+//												needReload = true;
+//											}
+//											if (pass->getVertexProgramName() == resource->getName()) {
+//												pass->setVertexProgram("");
+//												pass->setVertexProgram(resource->getName());
+//												needReload = true;
+//											}
+//										}
+//									}
+//									if (needReload) {
+//										material->reload();
+//									}
+//								}
+//							}
+//						}
+					}
 				}
 			}
 		}
