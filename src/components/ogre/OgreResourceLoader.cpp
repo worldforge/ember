@@ -238,7 +238,7 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 				if (boost::filesystem::file_size(ev.path) == 0) {
 					return;
 				}
-			} catch (const boost::exception& ex) {
+			} catch (...) {
 				//Could not find file, just return
 				return;
 			}
