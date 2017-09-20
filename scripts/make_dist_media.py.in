@@ -27,7 +27,7 @@ def collect_licenses(src_assets_path, licenses, assets):
 				
 
 
-def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size = None):
+def copy_assets(src_assets_path, dest_assets_path, assets, assets_no_conversion, image_max_size = None):
 	originalSize = 0
 	destinationSize = 0
 	copied = 0
@@ -47,7 +47,7 @@ def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size = None
 				os.makedirs(dest_asset_dir_path)
 
 
-			if dest_asset_path.endswith(".png") and not asset.startswith("common/ui"):
+			if dest_asset_path.endswith(".png") and not asset.startswith("common/ui") and asset not in assets_no_conversion:
 				(dest_asset_path, _) = re.subn('\.png$', '.dds', dest_asset_path)
 				png_to_dds_conversion_needed = True
 
@@ -87,8 +87,8 @@ def copy_assets(src_assets_path, dest_assets_path, assets, image_max_size = None
 					print("copying asset {0} to {1}".format(asset, dest_asset_path))
 					shutil.copy(asset_path, dest_asset_path)
 					copied = copied + 1
-					if (asset.endswith(".material") or asset.endswith(".particle")) and not asset.startswith("common/ui"):
-						print("processing material/particle script to replace 'png' with 'dds'")
+					if asset.endswith(".material") and not asset.startswith("common/ui"):
+						print("processing material to replace 'png' with 'dds'")
 						for line in fileinput.input(dest_asset_path, inplace=True):
 							print(line.replace(".png", ".dds"), end='')
 
@@ -176,7 +176,8 @@ OPTIONS
 
 	#Put all assets here, as paths relative to the "assets" directory in the media repo.
 	assets = set()
-	
+	assets_no_conversion = set()
+
 	#Parse .material and .particle files, looking for references to textures. Skip "source" directories.
 	for dirpath, dirnames, files in os.walk(src_assets_dir):
 		if "source" in dirnames:
@@ -202,6 +203,7 @@ OPTIONS
 				aMatch = reParticleImage.match(line)
 				if aMatch:
 					assets.add(aMatch.group(1))
+					assets_no_conversion.add(aMatch.group(1)) #Particle scripts can't handle DDS textures
 					continue
 		for filename in fnmatch.filter(files, "*.skeleton"):
 			assets.add(os.path.relpath(os.path.join(dirpath, filename), src_assets_dir)) 
@@ -258,7 +260,7 @@ OPTIONS
 	
 	assets.update(licenses)
 		
-	copied, converted, skipped, errors, originalSize, destinationSize = copy_assets(src_assets_dir, dest_assets_dir, assets, maxSize)
+	copied, converted, skipped, errors, originalSize, destinationSize = copy_assets(src_assets_dir, dest_assets_dir, assets, assets_no_conversion, maxSize)
 	print("Media conversion completed.\n{0} files copied, {1} images converted, {2} files skipped, {3} with errors".format(copied, converted, skipped, errors))
 	print("Original size:    {0} MB".format(originalSize / 1000000))
 	print("Destination size: {0} MB".format(destinationSize / 1000000))
