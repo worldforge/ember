@@ -234,7 +234,12 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 		S_LOG_VERBOSE("Resource changed " << ev.path.string() << " " << ev.type_cstr());
 
 		if (ev.type == boost::asio::dir_monitor_event::modified) {
-			if (boost::filesystem::file_size(ev.path) == 0) {
+			try {
+				if (boost::filesystem::file_size(ev.path) == 0) {
+					return;
+				}
+			} catch (const boost::exception& ex) {
+				//Could not find file, just return
 				return;
 			}
 		}
@@ -263,8 +268,9 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 
 			auto locations = Ogre::ResourceGroupManager::getSingleton().listResourceLocations(group);
 			for (auto& location : *locations) {
-				if (boost::starts_with(ev.path.string(), location)) {
-					std::string relative = ev.path.string().substr(location.length() + 1);
+				std::string locationDirectory = location + "/";
+				if (boost::starts_with(ev.path.string(), locationDirectory)) {
+					std::string relative = ev.path.string().substr(locationDirectory.length());
 					auto extension = ev.path.extension();
 
 					if (extension == ".material") {
