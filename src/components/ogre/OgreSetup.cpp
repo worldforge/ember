@@ -74,11 +74,12 @@ OgreSetup::OgreSetup() :
 		mRenderWindow(nullptr),
 		mSceneManagerFactory(nullptr),
 		mMeshSerializerListener(nullptr),
-		mOverlaySystem(nullptr)
+		mOverlaySystem(nullptr),
 #ifdef BUILD_WEBEMBER
-		,mOgreWindowProvider(nullptr)
+		mOgreWindowProvider(nullptr),
 #endif
-		, mConfigListenerContainer(nullptr) {
+		mConfigListenerContainer(nullptr),
+		mSaveShadersToCache(false){
 }
 
 OgreSetup::~OgreSetup() {
@@ -103,7 +104,7 @@ void OgreSetup::shutdown() {
 
 		if (Ogre::GpuProgramManager::getSingletonPtr()) {
 			try {
-				auto cacheStream = mRoot->createFileStream(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) + "/gpu.cache");
+				auto cacheStream = mRoot->createFileStream(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) + "/gpu-" VERSION ".cache");
 				if (cacheStream) {
 					Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
 				}
@@ -285,20 +286,21 @@ Ogre::Root* OgreSetup::configure() {
 
 	registerOpenGLContextFix();
 
-	Ogre::GpuProgramManager::getSingleton().setSaveMicrocodesToCache(true);
+	if (mSaveShadersToCache) {
+		Ogre::GpuProgramManager::getSingleton().setSaveMicrocodesToCache(true);
 
-	std::string cacheFilePath = configService.getHomeDirectory(BaseDirType_CACHE) + "/gpu.cache";
-	if (std::ifstream(cacheFilePath).good()) {
-		try {
-			auto cacheStream = mRoot->openFileStream(cacheFilePath);
-			if (cacheStream) {
-				Ogre::GpuProgramManager::getSingleton().loadMicrocodeCache(cacheStream);
+		std::string cacheFilePath = configService.getHomeDirectory(BaseDirType_CACHE) + "/gpu-" VERSION ".cache";
+		if (std::ifstream(cacheFilePath).good()) {
+			try {
+				auto cacheStream = mRoot->openFileStream(cacheFilePath);
+				if (cacheStream) {
+					Ogre::GpuProgramManager::getSingleton().loadMicrocodeCache(cacheStream);
+				}
+			} catch (...) {
+				S_LOG_WARNING("Error when trying to open GPU cache file.");
 			}
-		} catch (...) {
-			S_LOG_WARNING("Error when trying to open GPU cache file.");
 		}
 	}
-
 
 #else //BUILD_WEBEMBER == true
 	//In webember we will disable the config dialog.

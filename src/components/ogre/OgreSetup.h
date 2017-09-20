@@ -149,6 +149,8 @@ private:
 
 	ConfigListenerContainer* mConfigListenerContainer;
 
+	bool mSaveShadersToCache;
+
 	/**
 	 * @brief Sets standard values in the Ogre environment.
 	 */
