@@ -5,6 +5,8 @@ add_library(services
         input/Input.cpp
         input/InputCommandMapper.cpp
         input/InputService.cpp
+        input/EmberIcon.h
+        input/IInputAdapter.h
         logging/ErisLogReciever.cpp
         logging/LoggingService.cpp
         metaserver/MetaserverService.cpp
@@ -24,6 +26,11 @@ add_library(services
         server/ServerService.cpp
         server/ServerServiceConnectionListener.cpp
         server/TransferInfoStringSerializer.cpp
+        server/IConnectionListener.h
+        server/IServerAdapter.h
+        server/IState.h
+        server/ServerServiceSignals.h
+        server/StateBase.h
         serversettings/ServerSettings.cpp
         serversettings/ServerSettingsCredentials.cpp
         sound/SoundBinding.cpp

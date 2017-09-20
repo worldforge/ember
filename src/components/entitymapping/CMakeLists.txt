@@ -13,6 +13,7 @@ add_library(entitymapping
         Matches/AbstractMatch.cpp Matches/AttributeDependentMatch.cpp
         Matches/AttributeMatch.cpp Matches/EntityTypeMatch.cpp Matches/MatchBase.cpp
         Matches/Observers/MatchAttributeObserver.cpp Matches/Observers/EntityCreationObserver.cpp Matches/OutfitMatch.cpp
-        EntityMapping.cpp EntityMappingCreator.cpp EntityMappingManager.cpp)
+        EntityMapping.cpp EntityMappingCreator.cpp EntityMappingManager.cpp
+        IActionCreator.h IVisitor.h)
 
 

@@ -8,11 +8,12 @@ add_library(emberogre
         authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RulesFetcher.cpp authoring/RuleEditor.cpp
         authoring/SimpleEntityVisualization.cpp authoring/EntityMaker.cpp authoring/AwarenessVisualizer.cpp
         authoring/EntityConsoleEditor.cpp authoring/EntityConsoleEditor.cpp
+        authoring/IMovementBridge.h authoring/IPolygonPositionProvider.h
 
         lod/LodLevelManager.cpp
 
         camera/MainCamera.cpp camera/CameraMountBase.cpp camera/FirstPersonCameraMount.cpp camera/Recorder.cpp camera/ThirdPersonCameraMount.cpp
-        camera/CameraSettings.cpp
+        camera/CameraSettings.cpp camera/ICameraMount.h
         environment/CaelumEnvironment.cpp environment/CaelumSky.cpp environment/CaelumSun.cpp
         environment/EmberEntityLoader.cpp environment/Environment.cpp environment/Foliage.cpp environment/FoliageBase.cpp environment/FoliageLayer.cpp
         environment/FoliageLoader.cpp environment/Forest.cpp environment/GrassFoliage.cpp environment/LensFlare.cpp
@@ -20,6 +21,7 @@ add_library(emberogre
         environment/OceanRepresentation.cpp environment/OceanAction.cpp environment/SimpleWaterCollisionDetector.cpp
         environment/ExclusiveImposterPage.cpp
         environment/FoliageDetailManager.cpp
+        environment/IEnvironmentProvider.h
         gui/ActiveWidgetHandler.cpp gui/CursorWorldListener.cpp
 
         lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/XMLLodDefinitionSerializer.cpp lod/PMInjectorSignaler.cpp
@@ -62,6 +64,7 @@ add_library(emberogre
         terrain/foliage/PlantPopulator.cpp terrain/foliage/ClusterPopulator.cpp terrain/foliage/Vegetation.cpp terrain/TerrainHandler.cpp
         terrain/techniques/CompilerTechniqueProvider.cpp terrain/ITerrainObserver.h terrain/TerrainPageDeletionTask.cpp
         terrain/techniques/OnePixelMaterialGenerator.cpp
+        terrain/IHeightMapSegment.h terrain/ICompilerTechniqueProvider.h terrain/ITerrainAdapter.h terrain/ITerrainPageBridge.h terrain/PlantInstance.h terrain/Types.h
 
         widgets/ActionBarInput.cpp widgets/ActionBarIcon.cpp widgets/ActionBarIconSlot.cpp widgets/ActionBarIconDragDropTarget.cpp widgets/ActionBarIconManager.cpp widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp
         widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp
@@ -79,8 +82,16 @@ add_library(emberogre
         widgets/adapters/atlas/CustomAdapter.cpp widgets/adapters/atlas/ListAdapter.cpp widgets/adapters/atlas/MapAdapter.cpp widgets/adapters/atlas/NumberAdapter.cpp widgets/adapters/atlas/OrientationAdapter.cpp
         widgets/adapters/atlas/PolygonAdapter.cpp widgets/adapters/atlas/Position2DAdapter.cpp widgets/adapters/atlas/PositionAdapter.cpp widgets/adapters/atlas/SizeAdapter.cpp
         widgets/adapters/atlas/StaticAdapter.cpp widgets/adapters/atlas/TerrainModAdapter.cpp
+        widgets/adapters/atlas/AdapterBase.h
         widgets/adapters/eris/RuleTreeAdapter.cpp widgets/adapters/ogre/ResourceListAdapter.cpp widgets/representations/LayoutHelper.cpp widgets/TexturePair.cpp widgets/EntityTooltip.cpp
+        widgets/adapters/AdapterBase.h widgets/adapters/ComboboxAdapter.h widgets/adapters/GenericPropertyAdapter.h
         widgets/EntityCreatorCreationInstance.cpp widgets/adapters/ValueTypeHelper.cpp
+        widgets/representations/CheckboxRepresentation.h
+        widgets/representations/ComboboxRepresentation.h
+        widgets/representations/EditboxRepresentation.h
+        widgets/representations/RepresentationBase.h
+        widgets/representations/SingleAdapterRepresentationBase.h
+        widgets/representations/SliderRepresentation.h
 
         Avatar.cpp AvatarCameraWarper.cpp
         MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp
@@ -97,7 +108,10 @@ add_library(emberogre
         AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp
         EntityObserverBase.cpp TerrainPageDataProvider.cpp Scene.cpp ForestRenderingTechnique.cpp World.cpp
         Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp CompositionAction.cpp GraphicalChangeAdapter.cpp
-        EmberWorkQueue.cpp)
+        EmberWorkQueue.cpp
+        EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ICollisionDetector.h ILightning.h
+        IMovable.h IMovementProvider.h INodeProvider.h ISceneRenderingTechnique.h IWorldPickListener.h
+        MousePicker.h OgreIncludes.h)
 
 
 install(FILES ogre.cfg environment/hydrax.cfg DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ember)
