@@ -43,11 +43,6 @@ lodbias = "100.0"
 renderdistance = "100.0"
 
 [ogre]
-#the path to the ogre plugin directory. Ember will try to find the plugins by itself, but if it fails you can set the path here yourself.
-#plugindir="/usr/lib/OGRE/"
-#the plugins to load. This will differ some on windows and unix
-#plugins="RenderSystem_GL,RenderSystem_Direct3D9,Plugin_ParticleFX,Plugin_CgProgramManager"
-plugins="RenderSystem_GL,Plugin_ParticleFX,Plugin_CgProgramManager"
 #if set to true, the config dialog won't be shown and the settings in ogre.cfg will be used instead
 suppressconfigdialog = false
 #if set to true, the application will be double buffered, which means that everything is rendered into a separate backbuffer, which is then copied to the main screen buffer when appropriate. This will in some cases reduce tearing.

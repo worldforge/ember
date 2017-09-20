@@ -153,20 +153,9 @@ Ogre::Root* OgreSetup::createOgreSystem() {
 
 	mOverlaySystem = new Ogre::OverlaySystem();
 
-	if (configSrv.itemExists("ogre", "plugindir")) {
-		std::string pluginDir(configSrv.getValue("ogre", "plugindir"));
-		mPluginLoader.addPluginDir(pluginDir);
-	}
-//Load plugins from config file
-	if (configSrv.itemExists("ogre", "plugins")) {
-		std::string plugins(configSrv.getValue("ogre", "plugins"));
-		Tokeniser tokeniser(plugins, ",");
-		std::string token = tokeniser.nextToken();
-		while (!token.empty()) {
-			mPluginLoader.loadPlugin(token);
-			token = tokeniser.nextToken();
-		}
-	}
+	mPluginLoader.loadPlugin("Plugin_ParticleFX");
+	mPluginLoader.loadPlugin("RenderSystem_GL"); //We'll use OpenGL on Windows too, to make it easier to develop
+
 	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory() << "'.");
 	}
