@@ -189,12 +189,12 @@ bool Model::createModelAssets() {
 					SubModelPart& part = submodel->createSubModelPart(partDef->getName());
 					//std::string groupName("");
 
-					if (partDef->getSubEntityDefinitions().size() > 0) {
+					if (!partDef->getSubEntityDefinitions().empty()) {
 						for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
 							try {
-								Ogre::SubEntity* subEntity(0);
+								Ogre::SubEntity* subEntity(nullptr);
 								//try with a submodelname first
-								if (subEntityDef->getSubEntityName() != "") {
+								if (!subEntityDef->getSubEntityName().empty()) {
 									subEntity = entity->getSubEntity(subEntityDef->getSubEntityName());
 								} else {
 									//no name specified, use the index instead
@@ -207,7 +207,7 @@ bool Model::createModelAssets() {
 								if (subEntity) {
 									part.addSubEntity(subEntity, subEntityDef);
 
-									if (subEntityDef->getMaterialName() != "") {
+									if (!subEntityDef->getMaterialName().empty()) {
 										subEntity->setMaterialName(subEntityDef->getMaterialName());
 									}
 								} else {
@@ -219,12 +219,12 @@ bool Model::createModelAssets() {
 						}
 					} else {
 						//if no subentities are defined, add all subentities
-						unsigned int numSubEntities = entity->getNumSubEntities();
+						size_t numSubEntities = entity->getNumSubEntities();
 						for (unsigned int i = 0; i < numSubEntities; ++i) {
-							part.addSubEntity(entity->getSubEntity(i), 0);
+							part.addSubEntity(entity->getSubEntity(i), nullptr);
 						}
 					}
-					if (partDef->getGroup() != "") {
+					if (!partDef->getGroup().empty()) {
 						mAssetCreationContext.mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
 						//mPartToGroupMap[partDef->getName()] = partDef->getGroup();
 					}
@@ -475,7 +475,7 @@ SubModel* Model::getSubModel(size_t index) {
 		return *result;
 	}
 	S_LOG_FAILURE("Could not find submodel with index " << index << " in model " << mName);
-	return 0;
+	return nullptr;
 
 }
 
@@ -540,7 +540,7 @@ void Model::setDisplaySkeleton(bool display) {
 	}
 }
 
-bool Model::getDisplaySkeleton(void) const {
+bool Model::getDisplaySkeleton() const {
 	const auto I = mSubmodels.begin();
 	if (I != mSubmodels.end()) {
 		return (*I)->getEntity()->getDisplaySkeleton();
@@ -697,7 +697,7 @@ void Model::detachObject(Ogre::MovableObject* movable) {
 		mSkeletonOwnerEntity->detachObjectFromBone(movable);
 	}
 	if (mAttachPoints) {
-		std::vector<AttachPointWrapper>& attachPoints = *mAttachPoints.get();
+		std::vector<AttachPointWrapper>& attachPoints = *mAttachPoints;
 		for (auto I = attachPoints.begin(); I != attachPoints.end(); ++I) {
 			if (I->Movable == movable) {
 				attachPoints.erase(I);
