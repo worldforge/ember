@@ -110,7 +110,7 @@ def copytree(src, dst):
 		if os.path.isdir(s):
 			copytree(s, d)
 		else:
-			if not os.path.exists(d) or os.stat(src).st_mtime - os.stat(dst).st_mtime > 1:
+			if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
 				print("Copying " + s)
 				shutil.copy2(s, d)
 
