@@ -237,7 +237,7 @@ void BatchPage::_updateShaders()
 		{
 			String vertexProgSource;
 
-			if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
+			if(shaderLanguage == "hlsl" || shaderLanguage == "cg")
 			{
 
 				vertexProgSource =
@@ -333,7 +333,7 @@ void BatchPage::_updateShaders()
 				vertexProgSource += "}";
 			}
 
-			if(!shaderLanguage.compare("glsl"))
+			if(shaderLanguage == "glsl")
 			{
 				vertexProgSource =
 					"uniform float fadeGap;        \n"
@@ -346,6 +346,10 @@ void BatchPage::_updateShaders()
 
 				if (fadeEnabled) vertexProgSource +=
 					"uniform vec3 camPos;          \n";
+
+				vertexProgSource +=
+						"attribute vec4 uv0;\n"
+						"varying vec4 oUv0;";
 
 				vertexProgSource +=
 					"void main() \n"
@@ -386,19 +390,10 @@ void BatchPage::_updateShaders()
 					"   gl_FrontColor.a *= (invisibleDist - dist) / fadeGap;   \n";
 				}
 
-				unsigned texNum = 0;
-				for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i)
-				{
-					const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
-					if (el->getSemantic() == VES_TEXTURE_COORDINATES)
-					{
-						vertexProgSource +=
-						"   gl_TexCoord[" + StringConverter::toString(texNum) + "] = gl_MultiTexCoord" + StringConverter::toString(texNum) + ";	\n";
-						++texNum;
-					}
-				}
+
 
 				vertexProgSource +=
+					"	oUv0 = uv0;\n"
 					"   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;  \n";
 				if (sceneMgr->getFogMode() == Ogre::FOG_EXP2) {
 					vertexProgSource +=
@@ -442,13 +437,14 @@ void BatchPage::_updateShaders()
 		//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
 		HighLevelGpuProgramPtr fragShader = static_cast<HighLevelGpuProgramPtr>(HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 		if (!fragShader){
-			Pass *pass = mat->getTechnique(0)->getPass(0);
 
 			if (shaderLanguage == "glsl") {
-				fragmentProgSource = "uniform sampler2D diffuseMap;\n"
-					"void main()	{"
-					"	gl_FragColor = texture2D(diffuseMap, gl_TexCoord[0].st);"
-					"	gl_FragColor.rgb = mix(gl_Fog.color, (gl_LightModel.ambient * gl_FragColor + gl_FragColor), gl_FogFragCoord).rgb;"
+				fragmentProgSource =
+					"uniform sampler2D diffuseMap;\n"
+					"varying vec4 oUv0;\n"
+					"void main()	{\n"
+					"	gl_FragColor = texture2D(diffuseMap, oUv0.st);\n"
+					"	gl_FragColor.rgb = mix(gl_Fog.color, (gl_LightModel.ambient * gl_FragColor + gl_FragColor), gl_FogFragCoord).rgb;\n"
 					"}";
 
 			} else {
