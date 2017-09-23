@@ -84,7 +84,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 			if (!HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)){
 				String fragmentProgSource;
 
-				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
+				if(shaderLanguage == "hlsl" || shaderLanguage == "cg")
 				{
 					fragmentProgSource = "void main \n"
 					"( \n"
@@ -100,9 +100,11 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"   oColour.xyz = lerp((iLightAmbient * oColour).xyz, iFogColour, iFog);\n"
 					"}";
 				} else {
-					fragmentProgSource = "uniform sampler2D diffuseMap;\n"
+					fragmentProgSource =
+					"uniform sampler2D diffuseMap;\n"
+					"varying vec4 oUv0;\n"
 					"void main()	{"
-					"	gl_FragColor = texture2D(diffuseMap, gl_TexCoord[0].st);"
+					"	gl_FragColor = texture2D(diffuseMap, oUv0.st);"
 					"	gl_FragColor.rgb = mix(gl_Fog.color, (gl_LightModel.ambient * gl_FragColor), gl_FogFragCoord).rgb;"
 					"}";
 				}
@@ -118,7 +120,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				if (shaderLanguage == "hlsl") {
 					fragShader->setParameter("target", "ps_2_0");
 					fragShader->setParameter("entry_point", "main");
-				} else {
+				} else if(shaderLanguage == "cg") {
 					fragShader->setParameter("profiles", "ps_2_0 arbfp1");
 					fragShader->setParameter("entry_point", "main");
 				}
@@ -136,7 +138,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 			vertexShader = HighLevelGpuProgramManager::getSingleton().getByName("Sprite_vp", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			if (!vertexShader){
 				String vertexProg;
-				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
+				if(shaderLanguage == "hlsl" || shaderLanguage == "cg")
 				{
 					vertexProg =
 					"void Sprite_vp(	\n"
@@ -184,20 +186,24 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"uniform float uScroll; \n"
 					"uniform float vScroll; \n"
 					"uniform vec4  preRotatedQuad[4]; \n"
+					"attribute vec3 normal;\n"
+					"attribute vec4 vertex;\n"
+					"attribute vec4 uv0;\n"
+					"varying vec4 oUv0;\n"
 
 					"void main() { \n"
 					//Face the camera
-					"	vec4 vCenter = vec4( gl_Vertex.x, gl_Vertex.y, gl_Vertex.z, 1.0 ); \n"
-					"	vec4 vScale = vec4( gl_Normal.x, gl_Normal.y, gl_Normal.x , 1.0 ); \n"
-					"	gl_Position = gl_ModelViewProjectionMatrix * (vCenter + (preRotatedQuad[int(gl_Normal.z)] * vScale) ); \n"
+					"	vec4 vCenter = vec4( vertex.x, vertex.y, vertex.z, 1.0 ); \n"
+					"	vec4 vScale = vec4( normal.x, normal.y, normal.x , 1.0 ); \n"
+					"	gl_Position = gl_ModelViewProjectionMatrix * (vCenter + (preRotatedQuad[int(normal.z)] * vScale) ); \n"
 
 					//Color
 					"	gl_FrontColor = gl_Color; \n"
 
 					//UV Scroll
-					"	gl_TexCoord[0] = gl_MultiTexCoord0; \n"
-					"	gl_TexCoord[0].x += uScroll; \n"
-					"	gl_TexCoord[0].y += vScroll; \n";
+					"	oUv0 = uv0; \n"
+					"	oUv0.x += uScroll; \n"
+					"	oUv0.y += vScroll; \n";
 
 					//Fog
 					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
@@ -239,7 +245,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 			vertexShader2 = HighLevelGpuProgramManager::getSingleton().getByName("SpriteFade_vp", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			if (!vertexShader2){
 				String vertexProg2;
-				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
+				if(shaderLanguage == "hlsl" || shaderLanguage == "cg")
 				{
 					vertexProg2 =
 					"void SpriteFade_vp(	\n"
@@ -298,24 +304,28 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"uniform float uScroll; \n"
 					"uniform float vScroll; \n"
 					"uniform vec4  preRotatedQuad[4]; \n"
+					"attribute vec3 normal;\n"
+					"attribute vec4 vertex;\n"
+					"attribute vec4 uv0;\n"
+					"varying vec4 oUv0;\n"
 
 					"void main() { \n"
 					//Face the camera
-					"	vec4 vCenter = vec4( gl_Vertex.x, gl_Vertex.y, gl_Vertex.z, 1.0 ); \n"
-					"	vec4 vScale = vec4( gl_Normal.x, gl_Normal.y, gl_Normal.x , 1.0 ); \n"
-					"	gl_Position = gl_ModelViewProjectionMatrix * (vCenter + (preRotatedQuad[int(gl_Normal.z)] * vScale) ); \n"
+					"	vec4 vCenter = vec4( vertex.x, vertex.y, vertex.z, 1.0 ); \n"
+					"	vec4 vScale = vec4( normal.x, normal.y, normal.x , 1.0 ); \n"
+					"	gl_Position = gl_ModelViewProjectionMatrix * (vCenter + (preRotatedQuad[int(normal.z)] * vScale) ); \n"
 
 					"	gl_FrontColor.xyz = gl_Color.xyz; \n"
 
 					//Fade out in the distance
-					"	vec4 position = gl_Vertex; \n"
+					"	vec4 position = vertex; \n"
 					"	float dist = distance(camPos.xz, position.xz); \n"
 					"	gl_FrontColor.w = (invisibleDist - dist) / fadeGap; \n"
 
 					//UV scroll
-					"	gl_TexCoord[0] = gl_MultiTexCoord0; \n"
-					"	gl_TexCoord[0].x += uScroll; \n"
-					"	gl_TexCoord[0].y += vScroll; \n";
+					"	oUv0 = uv0; \n"
+					"	oUv0.x += uScroll; \n"
+					"	oUv0.y += vScroll; \n";
 
 					//Fog
 					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
