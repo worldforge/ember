@@ -29,7 +29,7 @@
 
 //If set to 1 batches will be used.
 //This will speed up the process of getting trees, but will add overhead to adding or removing.
-#define EMBERENTITYLOADER_USEBATCH 0
+#define EMBERENTITYLOADER_USEBATCH 1
 
 namespace Ember {
 class EmberEntity;
@@ -91,7 +91,6 @@ public:
 	typedef std::unordered_map<std::string, ModelRepresentationInstance> EntityMap;
 	typedef std::map<int, EntityMap> EntityColumn;
 	typedef std::map<int, EntityColumn> EntityStore;
-	typedef std::unordered_map<Model::ModelRepresentation*, std::pair<int, int>> EntityLookup;
 
     /**
      * @brief Ctor.
@@ -103,7 +102,7 @@ public:
     /**
      * Dtor.
      */
-    virtual ~EmberEntityLoader();
+	~EmberEntityLoader() override;
 
 	/**
 	 * @brief Adds an entity to the loader.
@@ -122,7 +121,7 @@ public:
 	/**
 	 * @copydoc Forests::PageLoader::loadPage()
 	 */
-	virtual void loadPage(::Forests::PageInfo &page);
+	void loadPage(::Forests::PageInfo &page) override;
 
 protected:
 #if EMBERENTITYLOADER_USEBATCH
@@ -134,7 +133,7 @@ protected:
 	/**
 	@brief A lookup map, used for looking up which column and segment any EntityInstance is stored. Use this in combination with mEntities to access the EntityMap where a specific entity can be found.
 	*/
-	EntityLookup mEntityLookup;
+	std::unordered_map<EmberEntity*, std::pair<int, int>> mEntityLookup;
 #else
 	/**
 	@brief The main store where we keep our EntityInstance instances.

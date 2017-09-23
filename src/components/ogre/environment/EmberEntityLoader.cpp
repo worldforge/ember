@@ -48,12 +48,11 @@ EmberEntityLoader::EmberEntityLoader(::Forests::PagedGeometry& geom, unsigned in
 EmberEntityLoader::~EmberEntityLoader() {
 	//When shutting down, make sure to delete all connections.
 #if EMBERENTITYLOADER_USEBATCH
-	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
-		for (EntityColumn::iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			for (EntityMap::iterator K = J->second.begin(); K != J->second.end(); ++K)
-			{
-				K->second.movedConnection.disconnect();
-				K->second.visibilityChangedConnection.disconnect();
+	for (auto& column : mEntities) {
+		for (auto& row : column.second) {
+			for (auto& entry : row.second) {
+				entry.second.movedConnection.disconnect();
+				entry.second.visibilityChangedConnection.disconnect();
 			}
 		}
 	}
@@ -86,11 +85,11 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresen
 	}
 	instance.lastPosition = position;
 #if EMBERENTITYLOADER_USEBATCH
-	const int batchX = Ogre::Math::Floor(position.x / mBatchSize);
-	const int batchY = Ogre::Math::Floor(position.y / mBatchSize);
-	mEntityLookup[entity] = std::pair<int, int>(batchX, batchY);
+	const int batchX = static_cast<const int>(std::floor(position.x / mBatchSize));
+	const int batchZ = static_cast<const int>(std::floor(position.z / mBatchSize));
+	mEntityLookup.insert(std::make_pair(&entity, std::pair<int, int>(batchX, batchZ)));
 
-	EntityMap& entities(mEntities[batchX][batchY]);
+	EntityMap& entities(mEntities[batchX][batchZ]);
 #else
 	EntityMap& entities(mEntities);
 #endif
@@ -109,18 +108,18 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity) {
 		return;
 	}
 #if EMBERENTITYLOADER_USEBATCH
-	EntityLookup::iterator I = mEntityLookup.find(entity);
+	auto I = mEntityLookup.find(entity);
 	if (I != mEntityLookup.end()) {
-		EntityStore::iterator J = mEntities.find(I->second.first);
+		auto J = mEntities.find(I->second.first);
 		if (J != mEntities.end()) {
-			EntityColumn& column(J->second);
-			EntityColumn::iterator K = column.find(I->second.second);
+			EntityColumn& column = J->second;
+			auto K = column.find(I->second.second);
 			if (K != column.end()) {
 				EntityMap& entityMap(K->second);
-				EntityMap::iterator L = entityMap.find(entity->getId());
+				auto L = entityMap.find(entity->getId());
 				if (L != entityMap.end()) {
 					L->second.movedConnection.disconnect();
-					L->second.beingDeletedConnection.disconnect();
+					L->second.visibilityChangedConnection.disconnect();
 					entityMap.erase(L);
 					mEntityLookup.erase(I);
 				}
@@ -151,19 +150,19 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity) {
 
 EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberEntity* entity) {
 #if EMBERENTITYLOADER_USEBATCH
-	EntityLookup::iterator I = mEntityLookup.find(entity);
+	auto I = mEntityLookup.find(entity);
 	if (I != mEntityLookup.end()) {
-		EntityStore::iterator J = mEntities.find(I->second.first);
+		auto J = mEntities.find(I->second.first);
 		if (J != mEntities.end()) {
-			EntityColumn& column(J->second);
-			EntityColumn::iterator K = column.find(I->second.second);
+			EntityColumn& column = J->second;
+			auto K = column.find(I->second.second);
 			if (K != column.end()) {
 				EntityMap& entityMap(K->second);
 				return &entityMap;
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 #else
 	return &mEntities;
 #endif
@@ -173,9 +172,9 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo& page) {
 	static Ogre::ColourValue colour(1, 1, 1, 1);
 
 #if EMBERENTITYLOADER_USEBATCH
-	const int batchX = static_cast<int>(Ogre::Math::Floor(page.bounds.left/ mBatchSize));
-	const int batchY = static_cast<int>(Ogre::Math::Floor(page.bounds.top / mBatchSize));
-	EntityMap& entities(mEntities[batchX][batchY]);
+	int batchX = static_cast<int>(std::floor(page.bounds.left/ mBatchSize));
+	int batchZ = static_cast<int>(std::floor(page.bounds.top / mBatchSize));
+	EntityMap& entities(mEntities[batchX][batchZ]);
 #else
 	EntityMap& entities(mEntities);
 #endif
