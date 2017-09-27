@@ -32,7 +32,7 @@ function EntityBrowser:SceneNodesList_SelectionChanged(args)
 	if item ~= nil then
 		--we've stored the sceneNode in the user data (we should perhaps store the key instead, and then do a look up, in case the scene node has been removed in the interim)
 		local sceneNode = item:getUserData()
-		sceneNode = tolua.cast(sceneNode, "Ogre::Node")
+		sceneNode = tolua.cast(sceneNode, "Ogre::SceneNode")
 		self.sceneNodes.selectedSceneNode = sceneNode
 		self:updateSceneNodeInfo(sceneNode)
 --		local positionInfo = "x: " .. sceneNode:getPosition().x .. " y: " .. sceneNode:getPosition().y .. " z: " .. sceneNode:getPosition().z
@@ -44,6 +44,7 @@ function EntityBrowser:updateSceneNodeInfo(sceneNode)
 	self.sceneNodes.positionAdapter:updateGui(sceneNode:getPosition())
 	self.sceneNodes.rotationAdapter:updateGui(sceneNode:getOrientation())
 	self.sceneNodes.scaleAdapter:updateGui(sceneNode:getScale())
+	self.sceneNodes.showBoundingBox:setSelected(sceneNode:getShowBoundingBox())
 end
 
 function EntityBrowser:sceneNodes_positionAdapter_changed()
@@ -137,6 +138,11 @@ function EntityBrowser:buildWidget()
 	self.sceneNodes.nodeInfo = self.widget:getWindow("SceneNodeInfo")
 	self.sceneNodes.filter = CEGUI.toEditbox(self.widget:getWindow("FilterSceneNodes"))
 	self.sceneNodes.listholder = Ember.OgreView.Gui.ListHolder:new(self.sceneNodes.listbox, self.sceneNodes.filter)
+	self.sceneNodes.showBoundingBox = CEGUI.toToggleButton(self.widget:getWindow("ShowBoundingBox"))
+	self.sceneNodes.showBoundingBox:subscribeEvent("SelectStateChanged",function(args)
+		self.sceneNodes.selectedSceneNode:showBoundingBox(self.sceneNodes.showBoundingBox:isSelected())
+		return true
+	end)
 	self.widget:getWindow("RefreshSceneNodes"):subscribeEvent("Clicked", self.RefreshSceneNodes_Clicked, self)
 
 

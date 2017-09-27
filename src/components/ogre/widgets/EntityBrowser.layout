@@ -57,16 +57,12 @@
 						<Property name="Size" value="{{0,200},{1,-70}}" />
 						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window name="SceneNodeInfo" type="EmberLook/StaticText">
+					<Window name="SceneNodeInfo" type="VerticalLayoutContainer">
 						<Property name="Position" value="{{0,205},{0,4}}" />
 						<Property name="Size" value="{{1,-210},{1,-70}}" />
-						<Property name="Text" value="" />
 						<Property name="InheritsAlpha" value="True" />
-						<Property name="VertFormatting" value="TopAligned" />
-						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
 						<Window name="Position" type="DefaultWindow">
-							<Property name="Position" value="{{0,0},{0,0}}" />
-							<Property name="Size" value="{{0,200},{0,25}}" />
+							<Property name="Size" value="{{1.0,0},{0,25}}" />
 							<Window name="Text" type="EmberLook/StaticText">
 								<Property name="Position" value="{{0,0},{0,0}}" />
 								<Property name="Size" value="{{0,45},{0,25}}" />
@@ -90,8 +86,7 @@
 							</Window>
 						</Window>
 						<Window name="Orientation" type="DefaultWindow">
-							<Property name="Position" value="{{0,0},{0,30}}" />
-							<Property name="Size" value="{{0,250},{0,30}}" />
+							<Property name="Size" value="{{1.0,0},{0,30}}" />
 							<Window name="Text" type="EmberLook/StaticText">
 								<Property name="Position" value="{{0,0},{0,0}}" />
 								<Property name="Size" value="{{0,45},{0,25}}" />
@@ -119,8 +114,7 @@
 							</Window>
 						</Window>
 						<Window name="Scale" type="DefaultWindow">
-							<Property name="Position" value="{{0,0},{0,60}}" />
-							<Property name="Size" value="{{0,200},{0,55}}" />
+							<Property name="Size" value="{{1.0,0},{0,55}}" />
 							<Window name="Text" type="EmberLook/StaticText">
 								<Property name="Position" value="{{0,0},{0,0}}" />
 								<Property name="Size" value="{{0,45},{0,25}}" />
@@ -150,6 +144,13 @@
 								<Property name="VertFormatting" value="TopAligned" />
 								<Property name="HorzFormatting" value="WordWrapLeftAligned" />
 								<Property name="FrameEnabled" value="false" />
+							</Window>
+						</Window>
+						<Window name="BoundingBox" type="DefaultWindow">
+							<Property name="Size" value="{{1.0,0},{0,55}}" />
+							<Window name="ShowBoundingBox" type="EmberLook/Checkbox">
+								<Property name="Size" value="{{1,0},{0,20}}" />
+								<Property name="Text" value="Show bounding box" />
 							</Window>
 						</Window>
 					</Window>
