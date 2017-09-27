@@ -119,37 +119,43 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 void EmberTerrainGroup::handleResponse(const WorkQueue::Response* res, const WorkQueue* srcQ) {
 	--sLoadingTaskNum;
 
-	LoadRequest lreq = any_cast<LoadRequest>(res->getRequest()->getData());
+	if (res->getRequest()->getType() == WORKQUEUE_LOAD_REQUEST) {
+		LoadRequest lreq = any_cast<LoadRequest>(res->getRequest()->getData());
 
-	if (res->succeeded()) {
-		//Transfer the instance from the temporary slot in the request, and delete it afterwards.
-		TerrainSlot* newSlot = lreq.slot;
-		TerrainSlot* slot = getTerrainSlot(newSlot->x, newSlot->y);
-		slot->instance = newSlot->instance;
-		newSlot->instance = nullptr; //need to set to null, else it gets deleted by the slot's destructor
-		OGRE_DELETE newSlot;
+		if (res->succeeded()) {
+			//Transfer the instance from the temporary slot in the request, and delete it afterwards.
+			TerrainSlot* newSlot = lreq.slot;
+			TerrainSlot* slot = getTerrainSlot(newSlot->x, newSlot->y);
+			if (slot) {
+				slot->instance = newSlot->instance;
+				newSlot->instance = nullptr; //need to set to null, else it gets deleted by the slot's destructor
+				OGRE_DELETE newSlot;
 
-		Ogre::Terrain* terrain = slot->instance;
-		if (terrain) {
-			terrain->setPosition(getTerrainSlotPosition(slot->x, slot->y));
+				Ogre::Terrain* terrain = slot->instance;
+				if (terrain) {
+					terrain->setPosition(getTerrainSlotPosition(slot->x, slot->y));
 
-			if (mAutoUpdateLod) {
-				terrain->load(-1, false);
-			} else {
-				terrain->load(0, false);
-			}
+					if (mAutoUpdateLod) {
+						terrain->load(-1, false);
+					} else {
+						terrain->load(0, false);
+					}
 
-			for (int i = -1; i <= 1; ++i) {
-				for (int j = -1; j <= 1; ++j) {
-					if (i != 0 || j != 0) {
-						connectNeighbour(slot, i, j);
+					for (int i = -1; i <= 1; ++i) {
+						for (int j = -1; j <= 1; ++j) {
+							if (i != 0 || j != 0) {
+								connectNeighbour(slot, i, j);
+							}
+						}
 					}
 				}
+			} else {
+				lreq.slot->freeInstance();
 			}
+		} else {
+			S_LOG_FAILURE("Failed to prepare terrain at " << lreq.slot->x << ", " << lreq.slot->y << ". Error: " << res->getMessages());
+			lreq.slot->freeInstance();
 		}
-	} else {
-		S_LOG_FAILURE("Failed to prepare terrain at " << lreq.slot->x << ", " << lreq.slot->y << ". Error: " << res->getMessages());
-		lreq.slot->freeInstance();
 	}
 }
 
