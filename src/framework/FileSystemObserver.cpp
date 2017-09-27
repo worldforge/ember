@@ -31,10 +31,15 @@ FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService) {
 		mDirectoryMonitor.reset(new boost::asio::dir_monitor(ioService));
 		observe();
 	} catch (const boost::exception& e) {
-		S_LOG_WARNING("Could not intialize file system observer; probably due to running out of file descriptors.");
+		S_LOG_WARNING("Could not initialize file system observer; probably due to running out of file descriptors.");
 	}
 
 }
+
+FileSystemObserver::~FileSystemObserver() {
+	assert(mCallBacks.empty());
+}
+
 
 void FileSystemObserver::observe() {
 	if (mDirectoryMonitor) {
@@ -71,4 +76,5 @@ void FileSystemObserver::remove_directory(const std::string& dirname) {
 		mDirectoryMonitor->remove_directory(dirname);
 	}
 }
+
 }

@@ -75,11 +75,13 @@ bool ServerService::start()
 /* Interface method for stopping this service 	*/
 void ServerService::stop()
 {
+	if (isRunning()) {
+		auto directory = boost::filesystem::path(mLocalSocketPath).remove_filename().string();
+		Ember::FileSystemObserver::getSingleton().remove_directory(directory);
+
+		disconnect();
+	}
 	Service::stop();
-
-	Ember::FileSystemObserver::getSingleton().remove_directory(mLocalSocketPath.string());
-
-	disconnect();
 }
 
 void ServerService::gotConnection(Eris::Connection* connection)

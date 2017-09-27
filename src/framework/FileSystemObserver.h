@@ -50,7 +50,7 @@ public:
 
 	explicit FileSystemObserver(boost::asio::io_service& ioService);
 
-	~FileSystemObserver() override = default;
+	~FileSystemObserver() override;
 
 	/**
 	 * Adds a directory recursively.
