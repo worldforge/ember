@@ -43,10 +43,6 @@ MeshCollisionDetector::MeshCollisionDetector(Model::Model* model)
 }
 
 
-MeshCollisionDetector::~MeshCollisionDetector()
-{
-}
-
 void MeshCollisionDetector::reload()
 {
 }
@@ -73,53 +69,51 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 	// we need to test every triangle of every object.
 	Ogre::Real closest_distance = -1.0f;
 	Ogre::Vector3 closest_result = Ogre::Vector3::ZERO;
-	const auto& submodels = mModel->getSubmodels();
-	for (auto& submodel : submodels)
-	{
-		Ogre::Entity* pentity = submodel->getEntity();
-		if (pentity->isVisible() && pentity->getParentNode()) {
-			// mesh data to retrieve
-			size_t vertex_count;
-			size_t index_count;
-			Ogre::Vector3 *vertices;
-			unsigned long *indices;
+	if (mModel->getNodeProvider() && mModel->getNodeProvider()->getNode()) {
+		auto* node = mModel->getNodeProvider()->getNode();
+		const auto& submodels = mModel->getSubmodels();
+		for (auto& submodel : submodels) {
+			Ogre::Entity* pentity = submodel->getEntity();
+			if (pentity->isVisible()) {
+				// mesh data to retrieve
+				size_t vertex_count;
+				size_t index_count;
 
-			// get the mesh information
-			getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,
-								pentity->getParentNode()->_getDerivedPosition(),
-								pentity->getParentNode()->_getDerivedOrientation(),
-								pentity->getParentNode()->getScale());
+				// get the mesh information
+				getMeshInformation(pentity->getMesh(), vertex_count, mVertices, index_count, mIndices,
+								   node->_getDerivedPosition(),
+								   node->_getDerivedOrientation(),
+								   node->getScale());
 
-			// test for hitting individual triangles on the mesh
-			bool new_closest_found = false;
-			for (int i = 0; i < static_cast<int>(index_count); i += 3)
-			{
-				// check for a hit against this triangle
-				std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indices[i]],
-					vertices[indices[i+1]], vertices[indices[i+2]], true, false);
+				// test for hitting individual triangles on the mesh
+				bool new_closest_found = false;
+				for (int i = 0; i < static_cast<int>(index_count); i += 3) {
+					// check for a hit against this triangle
+					std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, mVertices[mIndices[i]],
+																			 mVertices[mIndices[i + 1]], mVertices[mIndices[i + 2]], true, false);
 
-				// if it was a hit check if its the closest
-				if (hit.first)
-				{
-					if ((closest_distance < 0.0f) ||
-						(hit.second < closest_distance))
-					{
-						// this is the closest so far, save it off
-						closest_distance = hit.second;
-						new_closest_found = true;
+					// if it was a hit check if its the closest
+					if (hit.first) {
+						if ((closest_distance < 0.0f) ||
+							(hit.second < closest_distance)) {
+							// this is the closest so far, save it off
+							closest_distance = hit.second;
+							new_closest_found = true;
+						}
 					}
 				}
-			}
 
-			// free the verticies and indicies memory
-			delete[] vertices;
-			delete[] indices;
+				//16000 seems like a good number for most meshes
+				mVertices.resize(16000);
+				mVertices.shrink_to_fit();
+				mIndices.resize(16000);
+				mIndices.shrink_to_fit();
 
-			// if we found a new closest raycast for this object, update the
-			// closest_result before moving on to the next object.
-			if (new_closest_found)
-			{
-				closest_result = ray.getPoint(closest_distance);
+				// if we found a new closest raycast for this object, update the
+				// closest_result before moving on to the next object.
+				if (new_closest_found) {
+					closest_result = ray.getPoint(closest_distance);
+				}
 			}
 		}
 	}
@@ -143,11 +137,11 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 
 // Get the mesh information for the given mesh.
 // Code found on this forum link: http://www.ogre3d.org/wiki/index.php/RetrieveVertexData
-void MeshCollisionDetector::getMeshInformation(const Ogre::MeshPtr mesh,
+void MeshCollisionDetector::getMeshInformation(const Ogre::MeshPtr& mesh,
                                 size_t &vertex_count,
-                                Ogre::Vector3* &vertices,
+                                std::vector<Ogre::Vector3> &vertices,
                                 size_t &index_count,
-                                unsigned long* &indices,
+                                std::vector<unsigned long> &indices,
                                 const Ogre::Vector3 &position,
                                 const Ogre::Quaternion &orient,
                                 const Ogre::Vector3 &scale)
@@ -185,8 +179,8 @@ void MeshCollisionDetector::getMeshInformation(const Ogre::MeshPtr mesh,
 
 
 	// Allocate space for the vertices and indices
-	vertices = new Ogre::Vector3[vertex_count];
-	indices = new unsigned long[index_count];
+	vertices.reserve(vertex_count);
+	indices.reserve(index_count);
 
 	added_shared = false;
 

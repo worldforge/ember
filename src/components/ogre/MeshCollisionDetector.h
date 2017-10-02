@@ -23,6 +23,7 @@
 #ifndef EMBEROGREMESHCOLLISIONDETECTOR_H
 #define EMBEROGREMESHCOLLISIONDETECTOR_H
 
+#include <OgreSharedPtr.h>
 #include "EmberEntityUserObject.h"
 #include "ICollisionDetector.h"
 
@@ -36,30 +37,40 @@ namespace OgreView {
 class MeshCollisionDetector : public ICollisionDetector
 {
 public:
-    MeshCollisionDetector(Model::Model* model);
+	explicit MeshCollisionDetector(Model::Model* model);
 
-    virtual ~MeshCollisionDetector();
+	~MeshCollisionDetector() override = default;
 
-	virtual void testCollision(Ogre::Ray& ray, CollisionResult& result);
-	virtual void refit();
+	void testCollision(Ogre::Ray& ray, CollisionResult& result) override;
+	void refit() override;
 	/**
 	 *    Called when the entity changes, such as a subentity being hidden or shown. Implementations must reload the collision data.
 	 */
-	virtual void reload();
+	void reload() override;
 
-	virtual void setVisualize(bool visualize);
-	virtual bool getVisualize() const;
+	void setVisualize(bool visualize) override;
+
+	bool getVisualize() const override;
 
 protected:
 	Model::Model* mModel;
-	void getMeshInformation(const Ogre::MeshPtr mesh,
+	void getMeshInformation(const Ogre::MeshPtr& mesh,
                                 size_t &vertex_count,
-                                Ogre::Vector3* &vertices,
+                                std::vector<Ogre::Vector3> &vertices,
                                 size_t &index_count,
-                                unsigned long* &indices,
+                                std::vector<unsigned long> &indices,
                                 const Ogre::Vector3 &position,
                                 const Ogre::Quaternion &orient,
                                 const Ogre::Vector3 &scale);
+
+	/**
+	 * We keep preallocated vectors of vertices and indices to avoid allocating new memory each time.
+	 */
+	std::vector<Ogre::Vector3> mVertices;
+	/**
+	 * We keep preallocated vectors of vertices and indices to avoid allocating new memory each time.
+	 */
+	std::vector<unsigned long> mIndices;
 };
 
 }
