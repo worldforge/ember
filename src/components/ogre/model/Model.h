@@ -32,6 +32,7 @@
 #include <components/ogre/INodeProvider.h>
 #include <components/ogre/EmberEntityUserObject.h>
 #include <stack>
+#include <map>
 
 namespace Eris {
 class EventService;
@@ -267,6 +268,11 @@ public:
 
 	const INodeProvider* getNodeProvider() const;
 
+	/**
+	 * A static map of instanced entities, mainly used for doing collision detection.
+	 */
+	static std::map<Ogre::SceneManager*, std::map<Ogre::InstancedEntity*, Model*>> sInstancedEntities;
+
 protected:
 
 	struct AssetCreationContext {
@@ -393,6 +399,7 @@ protected:
 	bool mLoaded;
 	AssetCreationContext mAssetCreationContext;
 	//size_t mCurrentlyLoadingPartIndex;
+
 };
 
 inline const std::set<SubModel*>& Model::getSubmodels() const {

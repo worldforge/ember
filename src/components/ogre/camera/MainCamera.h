@@ -97,7 +97,7 @@ public:
 	/**
 	 * Dtor.
 	 */
-	virtual ~MainCamera();
+	~MainCamera() override;
 
 	/**
 	 * @brief Accessor for the main Ogre::Camera instance.
@@ -147,7 +147,7 @@ public:
 	/**
 	 * Methods from Ogre::FrameListener
 	 */
-	bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 
 	/**
 	 *    Enables and disables a compositor by name.

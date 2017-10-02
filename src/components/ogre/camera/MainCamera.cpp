@@ -44,6 +44,10 @@
 #include <OgreCamera.h>
 #include <OgreTechnique.h>
 #include <OgreSceneNode.h>
+#include <OgreInstancedEntity.h>
+
+#include <components/ogre/model/ModelDefinitionManager.h>
+#include <components/ogre/model/Model.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -59,7 +63,18 @@ namespace Camera
 {
 
 MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera, Terrain::ITerrainAdapter& terrainAdapter) :
-		mSceneManager(sceneManager), mCamera(camera), mCameraMount(0), mWindow(window), mClosestPickingDistance(10000), mCameraRaySceneQuery(0), mAvatarTerrainCursor(new AvatarTerrainCursor(camera, terrainAdapter)), mCameraOrientationChangedThisFrame(false), mMovementProvider(0), mCameraSettings(new CameraSettings), mConfigListenerContainer(new ConfigListenerContainer()), mTerrainAdapter(terrainAdapter)
+		mSceneManager(sceneManager),
+		mCamera(camera),
+		mCameraMount(nullptr),
+		mWindow(window),
+		mClosestPickingDistance(10000),
+		mCameraRaySceneQuery(nullptr),
+		mAvatarTerrainCursor(new AvatarTerrainCursor(camera, terrainAdapter)),
+		mCameraOrientationChangedThisFrame(false),
+		mMovementProvider(nullptr),
+		mCameraSettings(new CameraSettings),
+		mConfigListenerContainer(new ConfigListenerContainer()),
+		mTerrainAdapter(terrainAdapter)
 {
 	mTerrainResultWorldFragment.fragmentType = Ogre::SceneQuery::WFT_SINGLE_INTERSECTION;
 
@@ -100,7 +115,7 @@ Ogre::Camera& MainCamera::getCamera() const
 
 AvatarTerrainCursor& MainCamera::getTerrainCursor() const
 {
-	return *mAvatarTerrainCursor.get();
+	return *mAvatarTerrainCursor;
 }
 
 const CameraSettings& MainCamera::getCameraSettings() const
@@ -112,8 +127,8 @@ void MainCamera::Config_ClipDistances(const std::string& /*section*/, const std:
 {
 	if (variable.is_string()) {
 		Tokeniser tokeniser(variable);
-		float nearDistance = atof(tokeniser.nextToken().c_str());
-		float farDistance = atof(tokeniser.nextToken().c_str());
+		float nearDistance = std::stof(tokeniser.nextToken());
+		float farDistance = std::stof(tokeniser.nextToken());
 
 		S_LOG_INFO("Setting main camera clip distances to near: " << nearDistance << " far: " << farDistance);
 
@@ -134,8 +149,8 @@ void MainCamera::Config_Compositors(const std::string& /*section*/, const std::s
 	if (variable.is_string()) {
 		const std::vector<std::string> tokens = Tokeniser::split(variable.as_string(), ",");
 
-		for (std::vector<std::string>::const_iterator I = tokens.begin(); I != tokens.end(); ++I) {
-			enableCompositor(*I, true);
+		for (const auto& token : tokens) {
+			enableCompositor(token, true);
 		}
 		std::vector<std::string> compositorsToDisable;
 		for (CompositorNameStore::const_iterator I = mLoadedCompositors.begin(); I != mLoadedCompositors.end(); ++I) {
@@ -203,7 +218,7 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 		}
 
 		//Only perform picking if there are any participating pick listeners.
-		if (participatingListeners.size() != 0) {
+		if (!participatingListeners.empty()) {
 			mCameraRaySceneQuery->setQueryMask(queryMask);
 			// Start a new ray query
 			mCameraRaySceneQuery->setRay(cameraRay);
@@ -211,11 +226,31 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 			//now check the entity picking
 			Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
 
+			//Instanced entities doesn't work well with the standard collision detection, so
+			//we need to iterate over them ourselves.
+			auto I = Model::Model::sInstancedEntities.find(&mSceneManager);
+			if (I != Model::Model::sInstancedEntities.end()) {
+				for (auto& entry : I->second) {
+					Ogre::InstancedEntity* instancedEntity = entry.first;
+					if (!(instancedEntity->getQueryFlags() & queryMask) || !instancedEntity->isVisible()) {
+						continue;
+					}
+
+					auto result = cameraRay.intersects(instancedEntity->getWorldBoundingBox());
+
+					if (result.first)
+					{
+						mCameraRaySceneQuery->queryResult(instancedEntity, result.second);
+					}
+				}
+			}
+
+
 			// Manually add results for terrain since they have to be queried in a different way
 			std::pair<bool, Ogre::Vector3> terrainIntersectionResult = mTerrainAdapter.rayIntersects(cameraRay);
 
 			if (terrainIntersectionResult.first) {
-				Ogre::RaySceneQueryResultEntry terrainResultEntry;
+				Ogre::RaySceneQueryResultEntry terrainResultEntry{};
 
 				mTerrainResultWorldFragment.singleIntersection = terrainIntersectionResult.second;
 
@@ -228,8 +263,8 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 				queryResult.insert(insertion_iterator, terrainResultEntry);
 			}
 
-			Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin();
-			Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end();
+			auto rayIterator = queryResult.begin();
+			auto rayIterator_end = queryResult.end();
 			if (rayIterator != rayIterator_end) {
 				for (; rayIterator != rayIterator_end && continuePicking; rayIterator++) {
 					for (auto listener : participatingListeners) {
@@ -273,8 +308,8 @@ bool MainCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& scr
 	if ((hcsPosition.x < -1.0f) || (hcsPosition.x > 1.0f) || (hcsPosition.y < -1.0f) || (hcsPosition.y > 1.0f))
 		return false;
 
-	screenPos.x = (hcsPosition.x + 1) * 0.5;
-	screenPos.y = (-hcsPosition.y + 1) * 0.5;
+	screenPos.x = (hcsPosition.x + 1) * 0.5f;
+	screenPos.y = (-hcsPosition.y + 1) * 0.5f;
 
 	return true;
 }
@@ -302,7 +337,7 @@ void MainCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mo
 
 			bool moved = false;
 			if (motion.xRelativeMovement) {
-				moved = mCameraMount->yaw(motion.xRelativeMovement).valueDegrees();
+				moved = mCameraMount->yaw(motion.xRelativeMovement).valueDegrees() != 0;
 			}
 			if (motion.yRelativeMovement) {
 				moved = mCameraMount->pitch(motion.yRelativeMovement).valueDegrees() || moved;
@@ -327,11 +362,10 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 	if (std::find(mLoadedCompositors.begin(), mLoadedCompositors.end(), compositorName) == mLoadedCompositors.end()) {
 		Ogre::CompositorInstance* compositor = Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), compositorName);
 		if (compositor) {
-			bool hasErrors = false;
 			//There's a bug in Ogre which will causes a segfault during rendering if a compositor has an invalid shader.
 			//We therefore need to check for this here, and disable the shader if so is the case.
 			compositor->getCompositor()->load();
-			hasErrors = !validateCompositionTargetPass(*compositor->getTechnique()->getOutputTargetPass());
+			bool hasErrors = !validateCompositionTargetPass(*compositor->getTechnique()->getOutputTargetPass());
 			if (!hasErrors) {
 				Ogre::CompositionTechnique::TargetPassIterator targetPassIter = compositor->getTechnique()->getTargetPassIterator();
 				while (targetPassIter.hasMoreElements() && !hasErrors) {
@@ -385,7 +419,7 @@ void MainCamera::pushWorldPickListener(IWorldPickListener* worldPickListener)
 void MainCamera::removeWorldPickListener(IWorldPickListener* worldPickListener)
 {
 	if (worldPickListener) {
-		WorldPickListenersStore::iterator I = std::find(mPickListeners.begin(), mPickListeners.end(), worldPickListener);
+		auto I = std::find(mPickListeners.begin(), mPickListeners.end(), worldPickListener);
 		if (I != mPickListeners.end()) {
 			mPickListeners.erase(I);
 		}

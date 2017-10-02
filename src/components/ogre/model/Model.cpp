@@ -34,17 +34,26 @@
 
 #include <OgreTagPoint.h>
 #include <OgreMeshManager.h>
+#include <OgreMesh.h>
 #include <OgreSceneManager.h>
 #include <OgreSubEntity.h>
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 #include <OgreSkeletonInstance.h>
 #include <OgreMaterialManager.h>
+#include <OgreInstancedEntity.h>
+#include <OgreMaterial.h>
+#include <OgreTechnique.h>
+#include <OgrePass.h>
+#include <OgreInstanceBatch.h>
 
 
 namespace Ember {
 namespace OgreView {
 namespace Model {
+
+std::map<Ogre::SceneManager*, std::map<Ogre::InstancedEntity*, Model*>> Model::sInstancedEntities;
+
 
 Model::Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>& definition, const std::string& name) :
 		mManager(manager),
@@ -67,7 +76,17 @@ Model::~Model() {
 
 	mDefinition->removeModelInstance(this);
 	for (auto& movable : mMovableObjects) {
-		mManager.destroyMovableObject(movable);
+		//There's no factory to destroy InstancedEntity, so we need to handle those separately.
+		if (movable->getMovableType() == "InstancedEntity") {
+			auto I = sInstancedEntities.find(&mManager);
+			if (I != sInstancedEntities.end()) {
+				I->second.erase(static_cast<Ogre::InstancedEntity*>(movable));
+			}
+
+			mManager.destroyInstancedEntity(dynamic_cast<Ogre::InstancedEntity*>(movable));
+		} else {
+			mManager.destroyMovableObject(movable);
+		}
 	}
 	mDefinition->removeFromLoadingQueue(this);
 
@@ -101,8 +120,7 @@ bool Model::reload() {
 	return load();
 }
 
-bool Model::loadAssets()
-{
+bool Model::loadAssets() {
 	if (mAssetCreationContext.mCurrentlyLoadingSubModelIndex == 0) {
 		reset();
 	}
@@ -169,87 +187,97 @@ bool Model::createModelAssets() {
 	if (mAssetCreationContext.mCurrentlyLoadingSubModelIndex < mDefinition->getSubModelDefinitions().size()) {
 		auto& submodelDef = mDefinition->getSubModelDefinitions()[mAssetCreationContext.mCurrentlyLoadingSubModelIndex];
 		try {
-			Ogre::Entity* entity;
-			if (!mName.empty()) {
-				std::string entityName = mName + "/" + submodelDef->getMeshName();
-				entity = mManager.createEntity(entityName, submodelDef->getMeshName());
+
+			auto mesh = Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			if (mesh) {
+				mesh->load();
+
+				Ogre::Entity* entity;
+				if (!mName.empty()) {
+					entity = mManager.createEntity(mName + "/" + submodelDef->getMeshName(), mesh);
+				} else {
+					entity = mManager.createEntity(mesh);
+				}
+				timedLog.report("Created entity '" + entity->getName() + "' of mesh '" + mesh->getName() + "'.");
+
+
+				SubModel* submodel = new SubModel(*entity);
+				//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
+
+
+				if (!submodelDef->getPartDefinitions().empty()) {
+					for (auto& partDef : submodelDef->getPartDefinitions()) {
+						SubModelPart& part = submodel->createSubModelPart(partDef->getName());
+						//std::string groupName("");
+
+						if (!partDef->getSubEntityDefinitions().empty()) {
+							for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
+								try {
+									Ogre::SubEntity* subEntity(nullptr);
+									//try with a submodelname first
+									if (!subEntityDef->getSubEntityName().empty()) {
+										subEntity = entity->getSubEntity(subEntityDef->getSubEntityName());
+									} else {
+										//no name specified, use the index instead
+										if (entity->getNumSubEntities() > subEntityDef->getSubEntityIndex()) {
+											subEntity = entity->getSubEntity(subEntityDef->getSubEntityIndex());
+										} else {
+											S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
+										}
+									}
+									if (subEntity) {
+										part.addSubEntity(subEntity, subEntityDef);
+
+										if (!subEntityDef->getMaterialName().empty()) {
+											subEntity->setMaterialName(subEntityDef->getMaterialName());
+										}
+									} else {
+										S_LOG_WARNING("Could not add subentity.");
+									}
+								} catch (const std::exception& ex) {
+									S_LOG_WARNING("Error when getting sub entities for model '" << mDefinition->getName() << "'." << ex);
+								}
+							}
+						} else {
+							//if no subentities are defined, add all subentities
+							size_t numSubEntities = entity->getNumSubEntities();
+							for (unsigned int i = 0; i < numSubEntities; ++i) {
+								part.addSubEntity(entity->getSubEntity(i), nullptr);
+							}
+						}
+						if (!partDef->getGroup().empty()) {
+							mAssetCreationContext.mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
+							//mPartToGroupMap[partDef->getName()] = partDef->getGroup();
+						}
+
+						if (partDef->getShow()) {
+							mAssetCreationContext.showPartVector.push_back(partDef->getName());
+						}
+
+						ModelPart& modelPart = mAssetCreationContext.mModelParts[partDef->getName()];
+						modelPart.addSubModelPart(&part);
+						modelPart.setGroupName(partDef->getGroup());
+					}
+				} else {
+					//if no parts are defined, add a default "main" part and add all subentities to it. This ought to be a good default behaviour
+					SubModelPart& part = submodel->createSubModelPart("main");
+					for (size_t i = 0; i < entity->getNumSubEntities(); ++i) {
+
+						Ogre::SubEntity* subentity = entity->getSubEntity(i);
+						part.addSubEntity(subentity, nullptr);
+					}
+					mAssetCreationContext.showPartVector.push_back(part.getName());
+					ModelPart& modelPart = mAssetCreationContext.mModelParts[part.getName()];
+					modelPart.addSubModelPart(&part);
+				}
+				mAssetCreationContext.mSubmodels.insert(submodel);
+				timedLog.report("Created submodel.");
+
 			} else {
-				entity = mManager.createEntity(submodelDef->getMeshName());
-			}
-			timedLog.report("Created entity " + submodelDef->getMeshName());
-			if (!entity->getMesh()) {
 				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
 			}
 
-			SubModel* submodel = new SubModel(*entity);
-			//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 
-			if (!submodelDef->getPartDefinitions().empty()) {
-				for (auto& partDef : submodelDef->getPartDefinitions()) {
-					SubModelPart& part = submodel->createSubModelPart(partDef->getName());
-					//std::string groupName("");
-
-					if (!partDef->getSubEntityDefinitions().empty()) {
-						for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
-							try {
-								Ogre::SubEntity* subEntity(nullptr);
-								//try with a submodelname first
-								if (!subEntityDef->getSubEntityName().empty()) {
-									subEntity = entity->getSubEntity(subEntityDef->getSubEntityName());
-								} else {
-									//no name specified, use the index instead
-									if (entity->getNumSubEntities() > subEntityDef->getSubEntityIndex()) {
-										subEntity = entity->getSubEntity(subEntityDef->getSubEntityIndex());
-									} else {
-										S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
-									}
-								}
-								if (subEntity) {
-									part.addSubEntity(subEntity, subEntityDef);
-
-									if (!subEntityDef->getMaterialName().empty()) {
-										subEntity->setMaterialName(subEntityDef->getMaterialName());
-									}
-								} else {
-									S_LOG_WARNING("Could not add subentity.");
-								}
-							} catch (const std::exception& ex) {
-								S_LOG_WARNING("Error when getting sub entities for model '" << mDefinition->getName() << "'." << ex);
-							}
-						}
-					} else {
-						//if no subentities are defined, add all subentities
-						size_t numSubEntities = entity->getNumSubEntities();
-						for (unsigned int i = 0; i < numSubEntities; ++i) {
-							part.addSubEntity(entity->getSubEntity(i), nullptr);
-						}
-					}
-					if (!partDef->getGroup().empty()) {
-						mAssetCreationContext.mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
-						//mPartToGroupMap[partDef->getName()] = partDef->getGroup();
-					}
-
-					if (partDef->getShow()) {
-						mAssetCreationContext.showPartVector.push_back(partDef->getName());
-					}
-
-					ModelPart& modelPart = mAssetCreationContext.mModelParts[partDef->getName()];
-					modelPart.addSubModelPart(&part);
-					modelPart.setGroupName(partDef->getGroup());
-				}
-			} else {
-				//if no parts are defined, add a default "main" part and add all subentities to it. This ought to be a good default behaviour
-				SubModelPart& part = submodel->createSubModelPart("main");
-				for (unsigned int i = 0; i < entity->getNumSubEntities(); ++i) {
-					Ogre::SubEntity* subentity = entity->getSubEntity(i);
-					part.addSubEntity(subentity, nullptr);
-				}
-				mAssetCreationContext.showPartVector.push_back(part.getName());
-				ModelPart& modelPart = mAssetCreationContext.mModelParts[part.getName()];
-				modelPart.addSubModelPart(&part);
-			}
-			mAssetCreationContext.mSubmodels.insert(submodel);
-			timedLog.report("Created submodel.");
 		} catch (const std::exception& e) {
 			S_LOG_FAILURE("Submodel load error for mesh '" << submodelDef->getMeshName() << "'." << e);
 		}
@@ -442,19 +470,78 @@ LightSet& Model::getLights() {
 }
 
 bool Model::addSubmodel(SubModel* submodel) {
+	auto entity = submodel->getEntity();
+
+	entity->getUserObjectBindings().setUserAny("model", Ogre::Any(this));
 	//if the submodel has a skeleton, check if it should be shared with existing models
-	if (submodel->getEntity()->getSkeleton()) {
+	if (entity->getSkeleton()) {
 		if (mSkeletonOwnerEntity != nullptr) {
-			submodel->getEntity()->shareSkeletonInstanceWith(mSkeletonOwnerEntity);
+			entity->shareSkeletonInstanceWith(mSkeletonOwnerEntity);
 		} else {
-			mSkeletonOwnerEntity = submodel->getEntity();
+			mSkeletonOwnerEntity = entity;
 			// 			mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 		}
 	}
 	auto result = mSubmodels.insert(submodel);
 	if (result.second) {
-		addMovable(submodel->getEntity());
+		if (entity->hasSkeleton()) {
+			addMovable(entity);
+		} else {
+
+			std::vector<std::pair<Ogre::InstanceManager*, std::string>> managersAndMaterials;
+
+			unsigned short int i = 0;
+			for (auto& subEntity : entity->getSubEntities()) {
+				std::string instanceName = entity->getMesh()->getName() + "/" + std::to_string(i);
+				Ogre::InstanceManager* instanceManager;
+				std::string materialName = subEntity->getMaterial()->getName() + "/Instanced";
+				if (mManager.hasInstanceManager(instanceName)) {
+					managersAndMaterials.emplace_back(std::make_pair(mManager.getInstanceManager(instanceName), materialName));
+				} else {
+					auto bestTech = subEntity->getMaterial()->getBestTechnique();
+					if (!bestTech->getPasses().empty() && bestTech->getPass(0)->hasVertexProgram()) {
+						std::string meshName = entity->getMesh()->getName();
+
+						//The InstanceManager is meant to unwrap any shared vertices, but the current version seems to have some
+						//bugs since in some cases the mesh gets messed up. We'll in these cases use a clone instead.
+						if (entity->getMesh()->sharedVertexData) {
+							meshName += "/Instanced";
+							entity->getMesh()->clone(meshName);
+						}
+
+
+						instanceManager = mManager.createInstanceManager(instanceName,
+																		 meshName,
+																		 Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+																		 Ogre::InstanceManager::ShaderBased,
+																		 80, Ogre::IM_USEALL, i);
+						auto material = subEntity->getMaterial()->clone(materialName);
+						auto tech = material->getBestTechnique();
+						auto pass = tech->getPass(0);
+						pass->setVertexProgram(pass->getVertexProgram()->getName() + "/Instanced");
+
+						managersAndMaterials.emplace_back(std::make_pair(instanceManager, materialName));
+
+					} else {
+						//Could not make into instanced; use Entity
+						addMovable(entity);
+						return true;
+					}
+				}
+				i++;
+			}
+
+			for (auto& entry : managersAndMaterials) {
+				auto instancedEntity = entry.first->createInstancedEntity(entry.second);
+				if (instancedEntity) {
+					addMovable(instancedEntity);
+					sInstancedEntities[&mManager][instancedEntity] = this;
+				}
+			}
+
+		}
 	}
+
 	return true;
 }
 
