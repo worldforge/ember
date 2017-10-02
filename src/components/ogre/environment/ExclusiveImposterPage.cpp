@@ -17,6 +17,7 @@
  */
 
 
+#include <components/ogre/model/Model.h>
 #include "ExclusiveImposterPage.h"
 
 namespace Ember
@@ -29,22 +30,23 @@ namespace Environment
 
 void ExclusiveImposterPage::addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color)
 {
-	ImpostorPage::addEntity(ent, position, rotation, scale, color);
-	mEntities.push_back(ent);
+	Forests::ImpostorPage::addEntity(ent, position, rotation, scale, color);
+	auto* model = Ogre::any_cast<Ember::OgreView::Model::Model*>(ent->getUserObjectBindings().getUserAny("model"));
+	mModels.push_back(model);
 }
 
 void ExclusiveImposterPage::setVisible(bool visible)
 {
-	ImpostorPage::setVisible(visible);
-	for (EntityStore::const_iterator I(mEntities.begin()); I != mEntities.end(); ++I) {
-		(*I)->setVisible(!visible);
+	Forests::ImpostorPage::setVisible(visible);
+	for (auto model : mModels) {
+		model->setVisible(!visible);
 	}
 }
 
 void ExclusiveImposterPage::removeEntities()
 {
-	ImpostorPage::removeEntities();
-	mEntities.clear();
+	Forests::ImpostorPage::removeEntities();
+	mModels.clear();
 }
 
 }

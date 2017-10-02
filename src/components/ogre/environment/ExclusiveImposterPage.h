@@ -26,6 +26,11 @@ namespace Ember
 namespace OgreView
 {
 
+
+namespace Model {
+class Model;
+}
+
 namespace Environment
 {
 
@@ -59,9 +64,9 @@ public:
 protected:
 
 	/**
-	 * @brief The entities used on this page.
+	 * @brief The models used on this page.
 	 */
-	EntityStore mEntities;
+	std::vector<Model::Model*> mModels;
 };
 
 }
