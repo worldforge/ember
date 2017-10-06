@@ -44,14 +44,13 @@ namespace AttributeComparers {
 class NumericLesserComparer : public NumericComparer, private NumericValueHolder
 {
 public:
-	NumericLesserComparer(float value);
-	virtual ~NumericLesserComparer() {}
+	explicit NumericLesserComparer(float value);
+
 	/**
 	Returns true if the supplied value is lesser than the held value.
 	*/
-	virtual bool test(float value);
+	bool test(float value) override;
 
-protected:
 };
 }
 

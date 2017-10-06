@@ -42,8 +42,8 @@ namespace AttributeComparers {
 class StringComparer
 {
 public:
-	StringComparer(std::string value);
-	virtual ~StringComparer() {}
+	explicit StringComparer(std::string value);
+
 	/**
 	Returns true if the supplied value equals the stored value. The comparison is case sensitive.
 	@param value

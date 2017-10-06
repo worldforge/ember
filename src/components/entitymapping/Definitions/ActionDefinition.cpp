@@ -26,6 +26,8 @@
 
 #include "ActionDefinition.h"
 
+#include <utility>
+
 namespace Ember {
 
 
@@ -41,7 +43,7 @@ const std::string& ActionDefinition::getValue() const
 
 void ActionDefinition::setValue(std::string value)
 {
-	mValue = value;
+	mValue = std::move(value);
 }
 
 }

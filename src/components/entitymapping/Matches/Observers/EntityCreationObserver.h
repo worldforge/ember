@@ -46,7 +46,7 @@ class EntityCreationObserver : public virtual sigc::trackable
 {
 public:
 
-	EntityCreationObserver(OutfitMatch& outfitMatch);
+	explicit EntityCreationObserver(OutfitMatch& outfitMatch);
 	~EntityCreationObserver();
 
 	void observeCreation(Eris::View* view, const std::string& entityId);

@@ -48,7 +48,8 @@ class MatchBase
 public:
 
 	MatchBase() : mParentCase(0) {}
-	virtual ~MatchBase() {}
+	virtual ~MatchBase() = default;
+
 	void setParentCase(Cases::CaseBase* aCase);
 	virtual void setEntity(Eris::Entity* entity) = 0;
 	virtual void evaluateChanges(ChangeContext& changeContext) = 0;

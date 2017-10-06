@@ -60,14 +60,14 @@ public:
 	/**
 	Creates a new instance that watches for changes to the supplied attribute.
 	*/
-	AttributeMatch(const std::string& attributeName);
+	explicit AttributeMatch(const std::string& attributeName);
 
 	/**
 	Creates a new instance that watches for changes to the supplied attribute. The attribute that is watched differs from the name of the attribute. (Such as when using a function comparer for "height", where the internal attribute watched is "bbox".)
 	*/
 	AttributeMatch(const std::string& attributeName, const std::string& internalAttributeName);
 
-	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false);
+	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) override;
 
 	/**
 	Gets the name of the attribute that is watched.
@@ -77,7 +77,7 @@ public:
 	/**
 	Sets the Entity to watch.
 	*/
-	virtual void setEntity(Eris::Entity* entity);
+	void setEntity(Eris::Entity* entity) override;
 
 protected:
 

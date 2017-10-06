@@ -37,9 +37,9 @@ namespace Actions {
 class DummyAction : public Action
 {
 public:
-	virtual void activate(ChangeContext& context);
+	void activate(ChangeContext& context) override;
 
-	virtual void deactivate(ChangeContext& context);
+	void deactivate(ChangeContext& context) override;
 
 protected:
 };

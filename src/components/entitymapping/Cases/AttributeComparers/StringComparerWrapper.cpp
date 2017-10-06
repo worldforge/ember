@@ -44,7 +44,7 @@ StringComparerWrapper::StringComparerWrapper(StringComparer* comparer)
 
 bool StringComparerWrapper::testAttribute(const Atlas::Message::Element& attribute)
 {
-	return attribute.isString() && mStringComparer->test(attribute.asString());
+	return attribute.isString() && mStringComparer->test(attribute.String());
 }
 
 

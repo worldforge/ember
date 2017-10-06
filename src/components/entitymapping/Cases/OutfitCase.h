@@ -41,10 +41,10 @@ namespace Cases {
 class OutfitCase : public Case<Matches::OutfitMatch>, public EntityBaseCase
 {
 public:
-	OutfitCase() {};
-	~OutfitCase() {};
+	OutfitCase() = default;;
+	~OutfitCase() override = default;;
 protected:
-	virtual void _setState(bool state);
+	void _setState(bool state) override;
 };
 
 }

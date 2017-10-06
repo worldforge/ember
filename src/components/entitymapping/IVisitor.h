@@ -49,7 +49,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IVisitor()	{}
+	virtual ~IVisitor() = default;
 
 	virtual void visit(Actions::Action& action) = 0;
 	virtual void visit(Matches::MatchBase& match) = 0;

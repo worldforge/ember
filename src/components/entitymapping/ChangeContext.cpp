@@ -33,10 +33,6 @@ namespace Ember
 namespace EntityMapping
 {
 
-ChangeContext::ChangeContext()
-{
-}
-
 ChangeContext::~ChangeContext()
 {
 	EventContextComplete();

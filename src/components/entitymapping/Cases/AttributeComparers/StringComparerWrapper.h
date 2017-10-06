@@ -46,9 +46,9 @@ namespace AttributeComparers {
 class StringComparerWrapper : public AttributeComparerWrapper
 {
 public:
-	StringComparerWrapper(StringComparer* comparer);
-	virtual ~StringComparerWrapper() {}
-	virtual bool testAttribute(const Atlas::Message::Element& attribute);
+	explicit StringComparerWrapper(StringComparer* comparer);
+
+	bool testAttribute(const Atlas::Message::Element& attribute) override;
 private:
 	std::unique_ptr<StringComparer> mStringComparer;
 };

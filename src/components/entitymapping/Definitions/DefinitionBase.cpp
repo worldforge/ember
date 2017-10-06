@@ -26,6 +26,8 @@
 
 #include "DefinitionBase.h"
 
+#include <utility>
+
 namespace Ember {
 
 
@@ -51,7 +53,7 @@ const std::string& DefinitionBase::getType() const
 }
 void DefinitionBase::setType(std::string type)
 {
-	mType = type;
+	mType = std::move(type);
 }
 
 }

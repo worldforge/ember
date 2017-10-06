@@ -42,7 +42,8 @@ namespace AttributeComparers {
 class AttributeComparerWrapper
 {
 public:
-	virtual ~AttributeComparerWrapper() {}
+	virtual ~AttributeComparerWrapper() = default;
+
 	/**
 	Test the attribute.
 	*/

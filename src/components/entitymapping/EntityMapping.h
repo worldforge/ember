@@ -117,7 +117,7 @@ public:
 	typedef std::vector<Matches::Observers::MatchAttributeObserver*> MatchAttributeObserverStore;
     EntityMapping(Eris::Entity& entity);
 
-    ~EntityMapping();
+    ~EntityMapping() = default;
 
     /**
     Gets the root entity match instance.

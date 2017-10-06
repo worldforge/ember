@@ -38,10 +38,6 @@ EntityMapping::EntityMapping(Eris::Entity& entity): mEntity(entity)
 {
 }
 
-EntityMapping::~EntityMapping()
-{
-}
-
 Matches::EntityTypeMatch& EntityMapping::getRootEntityMatch()
 {
 	return mRootEntityMatch;

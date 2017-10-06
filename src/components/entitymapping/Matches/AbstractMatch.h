@@ -63,7 +63,7 @@ class AbstractMatch : public MatchBase
 {
 public:
 
-	AbstractMatch();
+	AbstractMatch() = default;
 
 	virtual ~AbstractMatch();
 
@@ -102,11 +102,6 @@ public:
 protected:
 	 std::vector<TCase*> mCases;
 };
-
-template <class TCase>
-AbstractMatch<TCase>::AbstractMatch()
-{
-}
 
 template <class TCase>
 AbstractMatch<TCase>::~AbstractMatch()
@@ -149,7 +144,7 @@ void AbstractMatch<TCase>::evaluateChanges() {
 
 	///we want to make sure that we start with deactivating actions, and then after that activate those that should be activated
 
-	ChangeContext changeContext;
+	ChangeContext changeContext{};
 
 	evaluateChanges(changeContext);
 

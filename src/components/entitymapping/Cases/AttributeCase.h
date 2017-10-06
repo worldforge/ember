@@ -59,8 +59,7 @@ namespace Cases {
 class AttributeCase : public Case<Matches::AttributeMatch>
 {
 public:
-	AttributeCase(AttributeComparers::AttributeComparerWrapper* comparerWrapper);
-	virtual ~AttributeCase() {};
+	explicit AttributeCase(AttributeComparers::AttributeComparerWrapper* comparerWrapper);
 	bool testMatch(const Atlas::Message::Element& attribute);
 
 protected:

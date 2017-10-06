@@ -56,7 +56,7 @@ class EntityTypeCase : public Case<Matches::EntityTypeMatch>, public EntityBaseC
 public:
 
 protected:
-	virtual void _setState(bool state);
+	void _setState(bool state) override;
 };
 
 

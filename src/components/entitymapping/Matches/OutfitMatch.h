@@ -52,10 +52,11 @@ public:
 
 	OutfitMatch(const std::string& outfitName, Eris::View* view);
 
-	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false);
+	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false) override;
 
 	const std::string& getOutfitName();
-	virtual void setEntity(Eris::Entity* entity);
+
+	void setEntity(Eris::Entity* entity) override;
 
 	void setEntityCreationObserver(Observers::EntityCreationObserver* observer);
 

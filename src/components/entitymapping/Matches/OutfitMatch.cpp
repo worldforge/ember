@@ -79,9 +79,6 @@ void OutfitMatch::setEntityCreationObserver(Observers::EntityCreationObserver* o
 
 void OutfitMatch::testEntity(Eris::Entity* entity)
 {
-// 	if (entity) {
-// 		mEntityObserver.release();
-// 	}
 
 	AbstractMatch<Cases::OutfitCase>::setEntity(entity);
 

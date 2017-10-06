@@ -68,7 +68,7 @@ public:
 	void setParentCase(CaseBase* aCase);
 
 	/**
-	 * Returns whether this invidivual case is true.
+	 * Returns whether this individual case is true.
 	 * @return
 	 */
 	bool getIsTrue();

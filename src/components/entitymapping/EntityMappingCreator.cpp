@@ -67,7 +67,7 @@ static const CaseDefinition::ParameterEntry* findCaseParameter(const CaseDefinit
 			return &(entry);
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 EntityMappingCreator::EntityMappingCreator(EntityMappingDefinition& definition, Eris::Entity& entity, IActionCreator& actionCreator, Eris::TypeService& typeService, Eris::View* view)
@@ -75,10 +75,6 @@ EntityMappingCreator::EntityMappingCreator(EntityMappingDefinition& definition, 
 {
 }
 
-
-EntityMappingCreator::~EntityMappingCreator()
-{
-}
 
 EntityMapping* EntityMappingCreator::create()
 {
@@ -150,7 +146,7 @@ Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAt
 {
 	const std::string& matchType = matchDefinition.getProperties()["type"];
 
-	if ((matchType == "") || (matchType == "string")) {
+	if ((matchType.empty()) || (matchType == "string")) {
 		//default is string comparison
 		if (const CaseDefinition::ParameterEntry* param = findCaseParameter(caseDefinition.getCaseParameters(), "equals")) {
 			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(param->second));
@@ -180,21 +176,21 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 // 	value = caseDefinition.getProperties().find("equals");
 
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "equals"))) {
-		return new AttributeComparers::NumericEqualsComparer(atof(param->second.c_str()));
+		return new AttributeComparers::NumericEqualsComparer(std::stof(param->second));
 	}
 
 	//If both a min and max value is set, it's a range comparer
 	AttributeComparers::NumericComparer *mMin(0), *mMax(0);
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesser"))) {
-		mMin = new AttributeComparers::NumericLesserComparer(atof(param->second.c_str()));
+		mMin = new AttributeComparers::NumericLesserComparer(std::stof(param->second));
 	} else if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesserequals"))) {
-		mMin = new AttributeComparers::NumericEqualsOrLesserComparer(atof(param->second.c_str()));
+		mMin = new AttributeComparers::NumericEqualsOrLesserComparer(std::stof(param->second));
 	}
 
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "greater"))) {
-		mMax = new AttributeComparers::NumericGreaterComparer(atof(param->second.c_str()));
+		mMax = new AttributeComparers::NumericGreaterComparer(std::stof(param->second));
 	} else if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "greaterequals"))) {
-		mMax = new AttributeComparers::NumericEqualsOrGreaterComparer(atof(param->second.c_str()));
+		mMax = new AttributeComparers::NumericEqualsOrGreaterComparer(std::stof(param->second));
 	}
 
 	//check if we have both min and max set, and if so we should use a range comparer
@@ -202,11 +198,11 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 		return new AttributeComparers::NumericRangeComparer(mMin, mMax);
 	} else if (!mMax && mMin) {
 		return mMin;
-	} else if (mMax && !mMin) {
+	} else if (mMax) {
 		return mMax;
 	}
 	//invalid, could not find anything to compare against
-	return 0;
+	return nullptr;
 }
 
 
@@ -242,7 +238,7 @@ void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefin
 void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	const std::string& attributeName = matchDefinition.getProperties()["attribute"];
 
-	std::string internalAttributeName("");
+	std::string internalAttributeName;
 	const std::string& matchType = matchDefinition.getProperties()["type"];
 	//TODO: make this check better
 	if (matchType == "function") {
@@ -250,7 +246,7 @@ void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& m
 			internalAttributeName = "bbox";
 		}
 	}
-	if (internalAttributeName == "") {
+	if (internalAttributeName.empty()) {
 		internalAttributeName = attributeName;
 	}
 

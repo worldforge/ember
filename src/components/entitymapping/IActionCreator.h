@@ -45,7 +45,7 @@ Clients that use the Mapping framework are required to implement this interface.
 class IActionCreator
 {
 public:
-	virtual ~IActionCreator() {}
+	virtual ~IActionCreator() = default;
 
 	/**
 	Creates actions for the supplied case.

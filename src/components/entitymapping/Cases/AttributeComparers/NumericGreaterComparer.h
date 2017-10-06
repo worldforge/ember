@@ -44,12 +44,12 @@ namespace AttributeComparers {
 class NumericGreaterComparer : public NumericComparer, private NumericValueHolder
 {
 public:
-	NumericGreaterComparer(float value);
-	virtual ~NumericGreaterComparer() {}
+	explicit NumericGreaterComparer(float value);
+
 	/**
 	Returns true if the supplied value is greater than the held value.
 	*/
-	virtual bool test(float value);
+	bool test(float value) override;
 
 protected:
 };

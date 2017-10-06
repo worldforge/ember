@@ -41,10 +41,12 @@ class EmberEntityPartAction: public EntityMapping::Actions::Action
 {
 public:
 	EmberEntityPartAction(EmberEntity& entity, const std::string& partName);
-	virtual ~EmberEntityPartAction();
 
-	virtual void activate(EntityMapping::ChangeContext& context);
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	~EmberEntityPartAction() override;
+
+	void activate(EntityMapping::ChangeContext& context) override;
+
+	void deactivate(EntityMapping::ChangeContext& context) override;
 
 protected:
 

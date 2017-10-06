@@ -52,9 +52,10 @@ namespace Actions
 class Action
 {
 public:
-	virtual ~Action()
-	{
-	}
+	Action(): mOwnerCase(nullptr)
+	{}
+
+	virtual ~Action() = default;
 
 	/**
 	 * Activate the action.

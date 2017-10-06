@@ -43,7 +43,7 @@ AttributeCase::AttributeCase(AttributeComparers::AttributeComparerWrapper* compa
 
 bool AttributeCase::testMatch(const Atlas::Message::Element& attribute)
 {
-	if (mComparerWrapper.get()) {
+	if (mComparerWrapper) {
 		if (mComparerWrapper->testAttribute(attribute)) {
 			setState(true);
 			return true;

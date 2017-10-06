@@ -45,9 +45,9 @@ class NumericComparer;
 class NumericComparerWrapper : public AttributeComparerWrapper
 {
 public:
-	NumericComparerWrapper(NumericComparer* comparer);
-	virtual ~NumericComparerWrapper() {}
-	virtual bool testAttribute(const Atlas::Message::Element& attribute);
+	explicit NumericComparerWrapper(NumericComparer* comparer);
+
+	bool testAttribute(const Atlas::Message::Element& attribute) override;
 private:
 	std::unique_ptr<NumericComparer> mNumericComparer;
 };

@@ -47,7 +47,7 @@ AttributeDependentMatch::~AttributeDependentMatch()
 
 void AttributeDependentMatch::setMatchAttributeObserver(Observers::MatchAttributeObserver* observer)
 {
-	mMatchAttributeObserver = std::unique_ptr<Observers::MatchAttributeObserver>(observer);
+	mMatchAttributeObserver.reset(observer);
 }
 
 

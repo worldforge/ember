@@ -45,9 +45,6 @@ public:
 	: mParentMatch(0)
 	{}
 
-	virtual ~Case()
-	{}
-
 	/**
 	Sets the parent Match instance.
 	*/

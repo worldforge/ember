@@ -40,7 +40,7 @@ namespace AttributeComparers {
 class NumericValueHolder
 {
 public:
-	NumericValueHolder(float value);
+	explicit NumericValueHolder(float value);
 
 protected:
 	float mValue;

@@ -59,7 +59,8 @@ class EntityTypeMatch : public AbstractMatch<Cases::EntityTypeCase>
 public:
 
 	void testEntity(Eris::Entity* entity);
-	virtual void setEntity(Eris::Entity* entity);
+
+	void setEntity(Eris::Entity* entity) override;
 
 protected:
 

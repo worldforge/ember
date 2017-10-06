@@ -50,7 +50,7 @@ class MatchAttributeObserver : public virtual sigc::trackable
 {
 public:
 
-	MatchAttributeObserver(AttributeMatch* match) ;
+	explicit MatchAttributeObserver(AttributeMatch* match) ;
 	MatchAttributeObserver(AttributeDependentMatch* match, const std::string& attributeName);
 
 	/**

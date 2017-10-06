@@ -38,7 +38,7 @@ namespace EntityMapping {
 namespace Cases {
 
 CaseBase::CaseBase()
-: mParentCase(0), mIsTrue(false), mIsActive(false)
+: mParentCase(nullptr), mIsTrue(false), mIsActive(false)
 {
 }
 
@@ -65,9 +65,8 @@ void CaseBase::evaluateChanges(ChangeContext& changeContext)
 		}
 	}
 	//recursively iterate over the child matches
-	MatchBaseStore::iterator I = mMatches.begin();
-	for ( ; I != mMatches.end(); ++I) {
-		(*I)->evaluateChanges(changeContext);
+	for (auto& match : mMatches) {
+		match->evaluateChanges(changeContext);
 	}
 
 }
@@ -75,25 +74,25 @@ void CaseBase::evaluateChanges(ChangeContext& changeContext)
 void CaseBase::accept(IVisitor& visitor)
 {
 	visitor.visit(*this);
-	for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-		(*I)->accept(visitor);
+	for (auto& action : mActions) {
+		action->accept(visitor);
 	}
-	for (MatchBaseStore::iterator I = mMatches.begin(); I != mMatches.end(); ++I) {
-		(*I)->accept(visitor);
+	for (auto& match : mMatches) {
+		match->accept(visitor);
 	}
 }
 
 void CaseBase::activateActions(ChangeContext& context)
 {
-	for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-		(*I)->activate(context);
+	for (auto& action : mActions) {
+		action->activate(context);
 	}
 	mIsActive = true;
 }
 void CaseBase::deactivateActions(ChangeContext& context)
 {
-	for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-		(*I)->deactivate(context);
+	for (auto& action : mActions) {
+		action->deactivate(context);
 	}
 	mIsActive = false;
 }
@@ -104,9 +103,8 @@ void CaseBase::addMatch(Matches::MatchBase* match) {
 
 void CaseBase::setEntity(Eris::Entity* entity)
 {
-	MatchBaseStore::iterator I = mMatches.begin();
-	for ( ; I != mMatches.end(); ++I) {
-		(*I)->setEntity(entity);
+	for (auto& match : mMatches) {
+		match->setEntity(entity);
 	}
 }
 

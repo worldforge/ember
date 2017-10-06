@@ -46,7 +46,7 @@ public:
 
 	typedef std::vector<Cases::CaseBase*> CaseStore;
 
-	ChangeContext();
+	ChangeContext() = default;
 
 	~ChangeContext();
 

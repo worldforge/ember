@@ -78,7 +78,7 @@ public:
 	 */
 	EntityMappingCreator(Definitions::EntityMappingDefinition& definition, Eris::Entity& entity, IActionCreator& actionCreator, Eris::TypeService& typeService, Eris::View* view);
 
-	~EntityMappingCreator();
+	~EntityMappingCreator() = default;
 
 
 	/**

@@ -48,7 +48,7 @@ class EntityBaseCase
 {
 public:
 
-	virtual ~EntityBaseCase() {}
+	virtual ~EntityBaseCase() = default;
 
 	bool testMatch(Eris::Entity* entity);
 

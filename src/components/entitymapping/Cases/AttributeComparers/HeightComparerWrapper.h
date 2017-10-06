@@ -57,12 +57,11 @@ public:
 	* @param entity
 	*/
 	HeightComparerWrapper(NumericComparer* comparer, Eris::Entity& entity);
-	virtual ~HeightComparerWrapper() {}
 
 	/**
 	Test the height. The attribute passed will be ignored.
 	*/
-	virtual bool testAttribute(const Atlas::Message::Element& attribute);
+	bool testAttribute(const Atlas::Message::Element& attribute) override;
 
 protected:
 	std::unique_ptr<NumericComparer> mNumericComparer;

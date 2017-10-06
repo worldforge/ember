@@ -48,7 +48,7 @@ public:
 	/**
 	Test changes to the attribute.
 	*/
-	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false) = 0;
+	virtual void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) = 0;
 
     /**
     Use the supplied observer to observe changes to the attribute. The supplied observer will be managed by this class.
