@@ -193,8 +193,8 @@ void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo)
 	//Find the transfer info amongst the persisted ones and remove it.
 	for (AvatarTransferInfoStore::iterator I = transferObjects.begin(); I != transferObjects.end(); ++I) {
 		AvatarTransferInfo& info = *I;
-		const Eris::TransferInfo& transferInfo = info.getTransferInfo();
-		if (transferInfo.getHost() == mAccount.getConnection()->getHost() && transferInfo.getPort() == mAccount.getConnection()->getPort()) {
+		const Eris::TransferInfo& erisTransferInfo = info.getTransferInfo();
+		if (erisTransferInfo.getHost() == mAccount.getConnection()->getHost() && erisTransferInfo.getPort() == mAccount.getConnection()->getPort()) {
 			transferObjects.erase(I);
 		}
 	}

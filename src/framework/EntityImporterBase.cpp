@@ -958,8 +958,8 @@ void EntityImporterBase::operation(const Operation & op)
 		sightArrived(op, res);
 	}
 
-	for (auto& op : res) {
-		sendOperation(op);
+	for (auto& resOp : res) {
+		sendOperation(resOp);
 	}
 
 }
