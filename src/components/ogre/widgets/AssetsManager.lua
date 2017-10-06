@@ -4,7 +4,7 @@ AssetsManager = {}
 
 --Reloads a resource
 function AssetsManager:reloadResource(manager, resourceName)
-	local resourcePtr = manager:getResourceByName(resourceName)
+	local resourcePtr = manager:getResourceByName(resourceName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 	if resourcePtr:isNull() == false then
 		local resource = resourcePtr:get()
 		resource:reload()

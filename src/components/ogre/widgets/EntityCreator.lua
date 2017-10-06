@@ -27,7 +27,7 @@ function EntityCreator:RecipesList_SelectionChanged(args)
 	if item ~= nil then
 		local name = item:getText()
 		local recipeMgr = Ember.OgreView.Authoring.EntityRecipeManager:getSingleton()
-		local recipePtr = recipeMgr:getResourceByName(name)
+		local recipePtr = recipeMgr:getResourceByName(name, "EntityRecipes")
 		recipePtr = tolua.cast(recipePtr, "Ember::OgreView::Authoring::EntityRecipePtr")
 		self.recipe = recipePtr:get()
 		--We just set the recipe here and wait for the EventTypeInfoLoaded event, which will call the showRecipe function when the recipe is ready
