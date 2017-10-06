@@ -49,20 +49,18 @@ public:
 	/**
 	 * Destructor
 	 */
-	virtual ~EntityRecipeManager();
+	~EntityRecipeManager() override;
 
 	/// Create a new EntityRecipe
 	/// @see ResourceManager::createResource
 	EntityRecipePtr create (const Ogre::String& name, const Ogre::String& group,
-			bool isManual = false, Ogre::ManualResourceLoader* loader = 0,
-			const Ogre::NameValuePairList* createParams = 0);
-
-	virtual Ogre::ResourcePtr createResource(const Ogre::String& name, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0, const Ogre::NameValuePairList* createParams = 0);
+			bool isManual = false, Ogre::ManualResourceLoader* loader = nullptr,
+			const Ogre::NameValuePairList* createParams = nullptr);
 
 	/**
 	 * Parse a script file.
 	 */
-	virtual void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+	void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName) override;
 
 protected:
 	/**
@@ -73,7 +71,7 @@ protected:
 	/**
 	 * Create a new resource instance compatible with this manager.
 	 */
-	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams);
+	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams) override;
 };
 
 }

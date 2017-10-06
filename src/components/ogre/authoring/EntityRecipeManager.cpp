@@ -42,8 +42,8 @@ EntityRecipeManager::EntityRecipeManager() :
 	mLoadOrder = 300.0f;
 	mResourceType = "EntityRecipe";
 
-	mScriptPatterns.push_back("*.entityrecipe");
-	mScriptPatterns.push_back("*.entityrecipe.xml");
+	mScriptPatterns.emplace_back("*.entityrecipe");
+	mScriptPatterns.emplace_back("*.entityrecipe.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
@@ -62,16 +62,6 @@ EntityRecipePtr EntityRecipeManager::create (const Ogre::String& name, const Ogr
     return Ogre::static_pointer_cast<EntityRecipe>(createResource(name, group, isManual, loader, createParams));
 }
 
-Ogre::ResourcePtr EntityRecipeManager::createResource(const Ogre::String& name, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
-{
-	Ogre::ResourcePtr ret = getResourceByName(name, group);
-	if (!ret) {
-		return Ogre::ResourceManager::createResource(name, group, isManual, loader, createParams);
-	}
-	S_LOG_WARNING("EntityRecipe with name " << name << " already exists.");
-	return Ogre::ResourcePtr();
-}
-
 void EntityRecipeManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
 	mXmlSerializer.parseScript(stream, groupName);
@@ -79,7 +69,7 @@ void EntityRecipeManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::S
 
 Ogre::Resource* EntityRecipeManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* /*createParams*/)
 {
-	return new EntityRecipe(this, name, handle, group, isManual, loader);
+	return OGRE_NEW EntityRecipe(this, name, handle, group, isManual, loader);
 }
 
 }
