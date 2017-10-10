@@ -51,7 +51,7 @@ void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute, bool t
 			entity = mView->getEntity(entityId);
 			//the entity might not be available yet, so we need to create an observer for it
 			if (!entity) {
-				if (mEntityObserver.get()) {
+				if (mEntityObserver) {
 					mEntityObserver->observeCreation(mView, entityId);
 				}
 			} else {
@@ -74,7 +74,7 @@ void OutfitMatch::setEntity(Eris::Entity* entity)
 
 void OutfitMatch::setEntityCreationObserver(Observers::EntityCreationObserver* observer)
 {
-	mEntityObserver = std::unique_ptr<Observers::EntityCreationObserver>(observer);
+	mEntityObserver.reset(observer);
 }
 
 void OutfitMatch::testEntity(Eris::Entity* entity)

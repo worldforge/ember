@@ -52,7 +52,7 @@ public:
 
 	OutfitMatch(const std::string& outfitName, Eris::View* view);
 
-	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation = false) override;
+	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) override;
 
 	const std::string& getOutfitName();
 
