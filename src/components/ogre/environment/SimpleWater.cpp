@@ -39,6 +39,7 @@
 #include <OgreCamera.h>
 #include <OgreViewport.h>
 #include <OgrePredefinedControllers.h>
+#include <OgreMaterialManager.h>
 
 namespace Ember
 {
@@ -111,11 +112,9 @@ public:
 
 	}
 
-	void preViewportUpdate(const Ogre::RenderTargetViewportEvent & evt)
-	{
+	void preViewportUpdate(const Ogre::RenderTargetViewportEvent & evt) override {
 		const Ogre::Vector3& cameraPos = evt.source->getCamera()->getDerivedPosition();
 		mWaterNode->setPosition(cameraPos.x - std::fmod(cameraPos.x, mXTextureSize), mWaterNode->getPosition().y, cameraPos.z - std::fmod(cameraPos.z, mZTextureSize));
-
 	}
 
 };
@@ -174,28 +173,30 @@ bool SimpleWater::initialize()
 		mWaterBobbingNode = mWaterNode->createChildSceneNode();
 
 		mWaterEntity = mSceneMgr.createEntity("water", "SimpleWaterPlane");
-		mWaterEntity->setMaterialName("/dural/environment/water/ocean");
-		//Render the water very late on, so that any transparent entity which is half submerged is already rendered.
-		mWaterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_8);
-		mWaterEntity->setCastShadows(false);
-		mWaterEntity->setQueryFlags(MousePicker::CM_NATURE);
+		auto material = Ogre::MaterialManager::getSingleton().getByName("/dural/environment/water/ocean", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		if (material) {
+			mWaterEntity->setMaterial(material);
+			//Render the water very late on, so that any transparent entity which is half submerged is already rendered.
+			mWaterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_8);
+			mWaterEntity->setCastShadows(false);
+			mWaterEntity->setQueryFlags(MousePicker::CM_NATURE);
 
-		mWaterBobbingNode->attachObject(mWaterEntity);
+			mWaterBobbingNode->attachObject(mWaterEntity);
 
-		mRenderTargetListener = new WaterAdjustRenderTargetListener(mWaterNode, textureSize, textureSize);
-		mMainRenderTarget.addListener(mRenderTargetListener);
+			mRenderTargetListener = new WaterAdjustRenderTargetListener(mWaterNode, textureSize, textureSize);
+			mMainRenderTarget.addListener(mRenderTargetListener);
 
-		Ogre::ControllerFunctionRealPtr func(OGRE_NEW Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0, 0.1));
-		Ogre::ControllerValueRealPtr dest(OGRE_NEW NodeAnimator(*mWaterBobbingNode, Ogre::Vector3(0, 1, 0)));
-		Ogre::ControllerManager& cm = Ogre::ControllerManager::getSingleton();
-		mWaterBobbingController = cm.createController(cm.getFrameTimeSource(), dest, func);
+			Ogre::ControllerFunctionRealPtr func(OGRE_NEW Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0, 0.1));
+			Ogre::ControllerValueRealPtr dest(OGRE_NEW NodeAnimator(*mWaterBobbingNode, Ogre::Vector3(0, 1, 0)));
+			Ogre::ControllerManager& cm = Ogre::ControllerManager::getSingleton();
+			mWaterBobbingController = cm.createController(cm.getFrameTimeSource(), dest, func);
 
-		return true;
+			return true;
+		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating simple water." << ex);
-		return false;
 	}
-
+	return false;
 }
 
 ICollisionDetector* SimpleWater::createCollisionDetector()
