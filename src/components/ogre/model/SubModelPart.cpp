@@ -78,7 +78,7 @@ const std::string& SubModelPart::getName() const {
 
 void SubModelPart::show() {
 	showSubEntities();
-	if (!mSubModel.mEntity.hasSkeleton()) {
+	if (!mSubModel.mEntity.getMesh()->hasSkeleton()) {
 		createInstancedEntities();
 	}
 

@@ -484,7 +484,7 @@ bool Model::addSubmodel(SubModel* submodel) {
 	}
 	auto result = mSubmodels.insert(submodel);
 	if (result.second) {
-		if (entity->hasSkeleton()) {
+		if (entity->getMesh()->hasSkeleton()) {
 			addMovable(entity);
 		}
 	}
