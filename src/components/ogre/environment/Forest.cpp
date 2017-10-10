@@ -72,12 +72,12 @@ void Forest::initialize()
 
 	mTrees = new Forests::PagedGeometry();
 	mTrees->setCamera(&mTerrainManager.getScene().getMainCamera()); //Set the camera so PagedGeometry knows how to calculate LODs
-	mTrees->setPageSize(64); //Set the size of each page of geometry
+	mTrees->setPageSize(128); //Set the size of each page of geometry
 
 	mTrees->setInfinite();
 	// 	mTrees->addDetailLevel<Forests::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
 	//  mTrees->addDetailLevel<Forests::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units
-	mTrees->addDetailLevel<Forests::PassiveEntityPage> (150, 0); //Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
+	mTrees->addDetailLevel<Forests::PassiveEntityPage> (256, 0); //Use standard entities up to 256 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
 	mTrees->addDetailLevel<ExclusiveImposterPage> (mMaxRange, 50); //Use impostors up to 400 units, and for for 50 more units
 
 	//Create a new TreeLoader2D object
