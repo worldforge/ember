@@ -32,11 +32,11 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
-SubModel::SubModel(Ogre::Entity& entity) :
-mEntity(entity)
+SubModel::SubModel(Ogre::Entity& entity, Model& model) :
+mEntity(entity), mModel(model)
 {
 	//begin by hiding all subentities
-	unsigned int numSubEntities = mEntity.getNumSubEntities();
+	size_t numSubEntities = mEntity.getNumSubEntities();
 	for (unsigned int i = 0;i < numSubEntities; ++i) {
 		mEntity.getSubEntity(i)->setVisible(false);
 	}
@@ -44,51 +44,26 @@ mEntity(entity)
 }
 SubModel::~SubModel()
 {
+	for (auto& entry : mSubModelParts) {
+		entry.second.destroy();
+	}
+
 	Ogre::SceneManager* sceneManager = mEntity._getManager();
 	sceneManager->destroyEntity(&mEntity);
 
 }
 
-SubModel::SubModelPartMap& SubModel::getSubModelPartMap()
+std::map<std::string, SubModelPart>& SubModel::getSubModelPartMap()
 {
 	return mSubModelParts;
 }
 
 SubModelPart& SubModel::createSubModelPart(const std::string& name)
 {
-	SubModelPart part(name);
-	std::pair<SubModelPartMap::iterator, bool> result(mSubModelParts.insert(SubModelPartMap::value_type(name, part)));
+	auto result = mSubModelParts.insert(std::make_pair(name, SubModelPart(name, *this)));
 	return result.first->second;
 
 }
-
-// void SubModel::createSubModelParts(SubModelPartMapping* submodelPartMapping)
-// {
-// 	SubModelPartMapping::const_iterator I = submodelPartMapping->begin();
-// 	SubModelPartMapping::const_iterator I_end = submodelPartMapping->end();
-//
-// 	for (;I != I_end; ++I) {
-// 		std::string partname = I->first;
-// 		SubModelPart* part = new SubModelPart(partname);
-// 		std::set<std::string>::const_iterator J = I->second.begin();
-// 		std::set<std::string>::const_iterator J_end = I->second.end();
-// 		if (J == J_end) {
-// 			//if the set is empty add all subentities
-// 			unsigned int numSubEntities = mEntity->getNumSubEntities();
-// 			for (unsigned int i = 0;i < numSubEntities; ++i) {
-// 				part->addSubEntity(mEntity->getSubEntity(i));
-// 			}
-// 		} else {
-// 			for (;J != J_end; ++J) {
-// 				part->addSubEntity(mEntity->getSubEntity(*J));
-// 			}
-// 		}
-// 		mSubModelParts.insert(SubModelPartMap::value_type(partname, part));
-//
-// 	}
-//
-//
-// }
 
 Ogre::Entity* SubModel::getEntity() const
 {
@@ -97,19 +72,6 @@ Ogre::Entity* SubModel::getEntity() const
 
 
 
-/*
-bool SubModel::addEntity(Ogre::Entity* entity)
-{
-	mEntities.insert(entity);
-	return true;
-}
-
-bool SubModel::removeEntity(Ogre::Entity* entity)
-{
-	mEntities.erase(entity);
-	return true;
-}
-*/
 
 }
 }

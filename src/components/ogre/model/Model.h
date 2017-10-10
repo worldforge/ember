@@ -86,6 +86,7 @@ class Model {
 	friend class ModelDefinition;
 
 	friend class ModelFactory;
+	friend class SubModelPart;
 
 public:
 
@@ -150,7 +151,7 @@ public:
 	 * @param trigger The actual trigger.
 	 * @return A pointer to an action, or null.
 	 */
-	Action* getAction(const ActivationDefinition::Type type, const std::string& trigger);
+	Action* getAction(ActivationDefinition::Type type, const std::string& trigger);
 
 	// 	ModelPart& getPart(const std::string& partName);
 
@@ -244,7 +245,7 @@ public:
 	 * @param
 	 * @return
 	 */
-	bool getDisplaySkeleton(void) const;
+	bool getDisplaySkeleton() const;
 
 	/**
 	 * @brief Whether the model has been fully loaded.
@@ -398,8 +399,6 @@ protected:
 	uint32_t mQueryFlags;
 	bool mLoaded;
 	AssetCreationContext mAssetCreationContext;
-	//size_t mCurrentlyLoadingPartIndex;
-
 };
 
 inline const std::set<SubModel*>& Model::getSubmodels() const {

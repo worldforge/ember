@@ -41,15 +41,15 @@ ModelPart::ModelPart() : mVisible(false)
 void ModelPart::show()
 {
 	mVisible = true;
-	for (SubModelPartStore::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
-		(*I)->show();
+	for (auto& subModelPart : mSubModelParts) {
+		subModelPart->show();
 	}
 }
 
 void ModelPart::hide()
 {
-	for (SubModelPartStore::iterator I = mSubModelParts.begin(); I != mSubModelParts.end(); ++I) {
-		(*I)->hide();
+	for (auto& subModelPart : mSubModelParts) {
+		subModelPart->hide();
 	}
 }
 

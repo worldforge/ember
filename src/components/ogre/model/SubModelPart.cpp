@@ -28,36 +28,42 @@
 #include "SubModelPart.h"
 
 #include "ModelDefinition.h"
+#include "Model.h"
+#include "SubModel.h"
 
 #include <OgreSubEntity.h>
 #include <OgreSubMesh.h>
+#include <OgreMeshManager.h>
+#include <OgreMaterialManager.h>
+#include <OgreEntity.h>
+#include <OgreMesh.h>
+#include <OgreSceneManager.h>
+#include <OgreInstanceManager.h>
+#include <OgreInstancedEntity.h>
+#include <OgreTechnique.h>
+#include <OgrePass.h>
+#include <OgreHighLevelGpuProgramManager.h>
+#include <OgreInstanceBatch.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Model
-{
+namespace Ember {
+namespace OgreView {
+namespace Model {
 
-SubModelPart::SubModelPart(const std::string& name) :
-	mName(name)
-{
+SubModelPart::SubModelPart(const std::string& name, SubModel& subModel) :
+		mName(name), mSubModel(subModel) {
 }
 
-SubModelPart::~SubModelPart()
-{
+SubModelPart::~SubModelPart() {
 	//no need to try to delete the Ogre::Subentities in the mSubEntities store, since Ogre will take care of this
 }
 
-bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition)
-{
-	mSubEntities.push_back(SubModelPartEntity(subentity, definition));
+bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition, unsigned short subEntityIndex) {
+	mSubEntities.emplace_back(SubModelPartEntity{subentity, definition, subEntityIndex});
 	return true;
 }
 
-bool SubModelPart::removeSubEntity(const Ogre::SubEntity* subentity)
-{
-	for (SubModelPartEntityStore::iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
+bool SubModelPart::removeSubEntity(const Ogre::SubEntity* subentity) {
+	for (auto I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
 		if (I->SubEntity == subentity) {
 			mSubEntities.erase(I);
 			return true;
@@ -66,40 +72,160 @@ bool SubModelPart::removeSubEntity(const Ogre::SubEntity* subentity)
 	return false;
 }
 
-const std::string& SubModelPart::getName() const
-{
+const std::string& SubModelPart::getName() const {
 	return mName;
 }
 
-void SubModelPart::show()
-{
-	for (SubModelPartEntityStore::const_iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
+void SubModelPart::show() {
+	showSubEntities();
+	if (!mSubModel.mEntity.hasSkeleton()) {
+		createInstancedEntities();
+	}
+
+}
+
+void SubModelPart::showSubEntities() {
+	for (auto& subModelPartEntity : mSubEntities) {
 		const std::string* materialName;
-		if (I->Definition && I->Definition && I->Definition->getMaterialName() != "") {
-			materialName = &I->Definition->getMaterialName();
+		if (subModelPartEntity.Definition != nullptr && !subModelPartEntity.Definition->getMaterialName().empty()) {
+			materialName = &subModelPartEntity.Definition->getMaterialName();
 		} else {
 			//if no material name is set in the ModelDefinition, use the default one from the mesh
-			materialName = &I->SubEntity->getSubMesh()->getMaterialName();
+			materialName = &subModelPartEntity.SubEntity->getSubMesh()->getMaterialName();
 		}
 
-		if (*materialName != I->SubEntity->getMaterialName()) {
+		if (*materialName != subModelPartEntity.SubEntity->getMaterialName()) {
 			//TODO: store the material ptr in the definition so we'll avoid a lookup in setMaterialName
-			I->SubEntity->setMaterialName(*materialName);
+			subModelPartEntity.SubEntity->setMaterialName(*materialName);
 		}
-		I->SubEntity->setVisible(true);
+		subModelPartEntity.SubEntity->setVisible(true);
 	}
 }
 
-void SubModelPart::hide()
-{
-	for (SubModelPartEntityStore::const_iterator I = mSubEntities.begin(); I != mSubEntities.end(); ++I) {
-		I->SubEntity->setVisible(false);
+bool SubModelPart::createInstancedEntities() {
+	std::vector<std::pair<Ogre::InstanceManager*, std::string>> managersAndMaterials;
+
+	for (auto& entry : mSubEntities) {
+		Ogre::SubEntity* subEntity = entry.SubEntity;
+		Ogre::Entity* entity = subEntity->getParent();
+		Ogre::SceneManager* sceneManager = entity->_getManager();
+		std::string instanceName = entity->getMesh()->getName() + "/" + std::to_string(entry.subEntityIndex);
+		Ogre::InstanceManager* instanceManager;
+
+		std::string materialName;
+		if (entry.Definition != nullptr && !entry.Definition->getMaterialName().empty()) {
+			materialName = entry.Definition->getMaterialName();
+		} else {
+			//if no material name is set in the ModelDefinition, use the default one from the mesh
+			materialName = entry.SubEntity->getSubMesh()->getMaterialName();
+		}
+
+		std::string instancedMaterialName = materialName + "/Instanced";
+
+
+		if (!Ogre::MaterialManager::getSingleton().resourceExists(instancedMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+			auto originalMaterial = Ogre::MaterialManager::getSingleton().getByName(materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			if (originalMaterial) {
+				originalMaterial->load();
+				auto material = originalMaterial->clone(instancedMaterialName);
+				material->load();
+				for (auto* tech : material->getTechniques()) {
+					auto pass = tech->getPass(0);
+					if (pass->hasVertexProgram()) {
+						std::string vertextProgramName = pass->getVertexProgram()->getName() + "/Instanced";
+						if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertextProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+							pass->setVertexProgram(vertextProgramName);
+						}
+					}
+				}
+
+			}
+		}
+
+
+		if (sceneManager->hasInstanceManager(instanceName)) {
+			managersAndMaterials.emplace_back(std::make_pair(sceneManager->getInstanceManager(instanceName), instancedMaterialName));
+		} else {
+			auto bestTech = subEntity->getMaterial()->getBestTechnique();
+			if (!bestTech->getPasses().empty() && bestTech->getPass(0)->hasVertexProgram()) {
+				std::string meshName = entity->getMesh()->getName();
+
+				//The InstanceManager is meant to unwrap any shared vertices, but the current version seems to have some
+				//bugs since in some cases the mesh gets messed up. We'll in these cases use a clone instead.
+				if (entity->getMesh()->sharedVertexData) {
+					auto& meshMgr = Ogre::MeshManager::getSingleton();
+					meshName += "/Instanced";
+					if (!meshMgr.resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+						entity->getMesh()->clone(meshName);
+					} else {
+						auto mesh = meshMgr.getByName(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+						//If the mesh exists, but is unloaded, we need to create a new clone. This is because for some reason clones meshes can't be reloaded.
+						if (!mesh->isLoaded()) {
+							meshMgr.remove(mesh);
+							entity->getMesh()->clone(meshName);
+						}
+					}
+				}
+
+
+				try {
+					instanceManager = sceneManager->createInstanceManager(instanceName,
+																		  meshName,
+																		  Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+																		  Ogre::InstanceManager::ShaderBased,
+																		  80, Ogre::IM_USEALL, entry.subEntityIndex);
+
+					managersAndMaterials.emplace_back(std::make_pair(instanceManager, instancedMaterialName));
+				} catch (const std::exception& e) {
+					S_LOG_FAILURE("Could not create instanced versions of mesh " << meshName);
+				}
+
+			} else {
+				//Could not make into instanced.
+				S_LOG_WARNING("Could not create instanced version of subentity with index " << entry.subEntityIndex << " of entity " << entity->getName());
+			}
+		}
 	}
+
+	for (auto& entry : managersAndMaterials) {
+		auto instancedEntity = entry.first->createInstancedEntity(entry.second);
+		if (instancedEntity) {
+			mInstancedEntities.push_back(instancedEntity);
+			mSubModel.mModel.addMovable(instancedEntity);
+			::Ember::OgreView::Model::Model::sInstancedEntities[entry.first->getSceneManager()][instancedEntity] = &mSubModel.mModel;
+		} else {
+			S_LOG_FAILURE("Could not create instanced entity " << entry.first->getName());
+		}
+	}
+	return true;
 }
 
-const SubModelPart::SubModelPartEntityStore& SubModelPart::getSubentities() const
-{
+
+void SubModelPart::hide() {
+	if (!mInstancedEntities.empty()) {
+		for (auto& item : mInstancedEntities) {
+			item->setVisible(false);
+		}
+	} else {
+		for (auto& item : mSubEntities) {
+			item.SubEntity->setVisible(false);
+		}
+	}
+
+}
+
+const std::vector<SubModelPartEntity>& SubModelPart::getSubentities() const {
 	return mSubEntities;
+}
+
+void SubModelPart::destroy() {
+	for (auto& item : mInstancedEntities) {
+		//There's a bug where the InstancedEntity doesn't contain a pointer to it's scene manager; we need to go through the InstanceBatch instead
+		::Ember::OgreView::Model::Model::sInstancedEntities[item->_getOwner()->_getManager()].erase(item);
+		mSubModel.mModel.removeMovable(item);
+		mSubModel.mEntity._getManager()->destroyInstancedEntity(item);
+	}
 }
 
 }

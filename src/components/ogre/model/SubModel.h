@@ -18,6 +18,7 @@
 
 #ifndef SUBMODEL_H
 #define SUBMODEL_H
+
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 #include <map>
@@ -27,28 +28,33 @@ namespace OgreView {
 namespace Model {
 
 class Model;
+
 class SubModelPart;
+
 class ModelDefinition;
 
-class SubModel{
-friend class ModelDefinition;
+class SubModel {
+	friend class ModelDefinition;
+
+	friend class SubModelPart;
+
 public:
-	//typedef std::map<std::string, std::set<std::string>> SubModelPartMapping;
-	typedef std::map<std::string, SubModelPart> SubModelPartMap;
-	
-	SubModel(Ogre::Entity& entity);
+
+	explicit SubModel(Ogre::Entity& entity, Model& model);
+
 	virtual ~SubModel();
-	
+
 	SubModelPart& createSubModelPart(const std::string& name);
-	
-	SubModelPartMap& getSubModelPartMap();
+
+	std::map<std::string, SubModelPart>& getSubModelPartMap();
 
 	Ogre::Entity* getEntity() const;
 
 protected:
 	Ogre::Entity& mEntity;
-	SubModelPartMap mSubModelParts;
-	
+	Model& mModel;
+	std::map<std::string, SubModelPart> mSubModelParts;
+
 };
 
 }

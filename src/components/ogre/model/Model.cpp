@@ -46,6 +46,7 @@
 #include <OgreTechnique.h>
 #include <OgrePass.h>
 #include <OgreInstanceBatch.h>
+#include <OgreHighLevelGpuProgramManager.h>
 
 
 namespace Ember {
@@ -75,18 +76,13 @@ Model::Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>
 Model::~Model() {
 
 	mDefinition->removeModelInstance(this);
-	for (auto& movable : mMovableObjects) {
-		//There's no factory to destroy InstancedEntity, so we need to handle those separately.
-		if (movable->getMovableType() == "InstancedEntity") {
-			auto I = sInstancedEntities.find(&mManager);
-			if (I != sInstancedEntities.end()) {
-				I->second.erase(static_cast<Ogre::InstancedEntity*>(movable));
-			}
+	for (auto& submodel : mSubmodels) {
+		removeMovable(submodel->getEntity());
+		delete submodel;
+	}
 
-			mManager.destroyInstancedEntity(dynamic_cast<Ogre::InstancedEntity*>(movable));
-		} else {
-			mManager.destroyMovableObject(movable);
-		}
+	for (auto& movable : mMovableObjects) {
+		mManager.destroyMovableObject(movable);
 	}
 	mDefinition->removeFromLoadingQueue(this);
 
@@ -201,7 +197,7 @@ bool Model::createModelAssets() {
 				timedLog.report("Created entity '" + entity->getName() + "' of mesh '" + mesh->getName() + "'.");
 
 
-				SubModel* submodel = new SubModel(*entity);
+				SubModel* submodel = new SubModel(*entity, *this);
 				//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 
 
@@ -214,19 +210,23 @@ bool Model::createModelAssets() {
 							for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
 								try {
 									Ogre::SubEntity* subEntity(nullptr);
+									size_t subEntityIndex;
 									//try with a submodelname first
 									if (!subEntityDef->getSubEntityName().empty()) {
-										subEntity = entity->getSubEntity(subEntityDef->getSubEntityName());
+										subEntityIndex = entity->getMesh()->_getSubMeshIndex(subEntityDef->getSubEntityName());
+
+										subEntity = entity->getSubEntity(subEntityIndex);
 									} else {
 										//no name specified, use the index instead
 										if (entity->getNumSubEntities() > subEntityDef->getSubEntityIndex()) {
-											subEntity = entity->getSubEntity(subEntityDef->getSubEntityIndex());
+											subEntityIndex = subEntityDef->getSubEntityIndex();
+											subEntity = entity->getSubEntity(subEntityIndex);
 										} else {
 											S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
 										}
 									}
 									if (subEntity) {
-										part.addSubEntity(subEntity, subEntityDef);
+										part.addSubEntity(subEntity, subEntityDef, subEntityIndex);
 
 										if (!subEntityDef->getMaterialName().empty()) {
 											subEntity->setMaterialName(subEntityDef->getMaterialName());
@@ -241,8 +241,8 @@ bool Model::createModelAssets() {
 						} else {
 							//if no subentities are defined, add all subentities
 							size_t numSubEntities = entity->getNumSubEntities();
-							for (unsigned int i = 0; i < numSubEntities; ++i) {
-								part.addSubEntity(entity->getSubEntity(i), nullptr);
+							for (size_t i = 0; i < numSubEntities; ++i) {
+								part.addSubEntity(entity->getSubEntity(i), nullptr, i);
 							}
 						}
 						if (!partDef->getGroup().empty()) {
@@ -264,7 +264,7 @@ bool Model::createModelAssets() {
 					for (size_t i = 0; i < entity->getNumSubEntities(); ++i) {
 
 						Ogre::SubEntity* subentity = entity->getSubEntity(i);
-						part.addSubEntity(subentity, nullptr);
+						part.addSubEntity(subentity, nullptr, i);
 					}
 					mAssetCreationContext.showPartVector.push_back(part.getName());
 					ModelPart& modelPart = mAssetCreationContext.mModelParts[part.getName()];
@@ -486,64 +486,12 @@ bool Model::addSubmodel(SubModel* submodel) {
 	if (result.second) {
 		if (entity->hasSkeleton()) {
 			addMovable(entity);
-		} else {
-
-			std::vector<std::pair<Ogre::InstanceManager*, std::string>> managersAndMaterials;
-
-			unsigned short int i = 0;
-			for (auto& subEntity : entity->getSubEntities()) {
-				std::string instanceName = entity->getMesh()->getName() + "/" + std::to_string(i);
-				Ogre::InstanceManager* instanceManager;
-				std::string materialName = subEntity->getMaterial()->getName() + "/Instanced";
-				if (mManager.hasInstanceManager(instanceName)) {
-					managersAndMaterials.emplace_back(std::make_pair(mManager.getInstanceManager(instanceName), materialName));
-				} else {
-					auto bestTech = subEntity->getMaterial()->getBestTechnique();
-					if (!bestTech->getPasses().empty() && bestTech->getPass(0)->hasVertexProgram()) {
-						std::string meshName = entity->getMesh()->getName();
-
-						//The InstanceManager is meant to unwrap any shared vertices, but the current version seems to have some
-						//bugs since in some cases the mesh gets messed up. We'll in these cases use a clone instead.
-						if (entity->getMesh()->sharedVertexData) {
-							meshName += "/Instanced";
-							entity->getMesh()->clone(meshName);
-						}
-
-
-						instanceManager = mManager.createInstanceManager(instanceName,
-																		 meshName,
-																		 Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-																		 Ogre::InstanceManager::ShaderBased,
-																		 80, Ogre::IM_USEALL, i);
-						auto material = subEntity->getMaterial()->clone(materialName);
-						auto tech = material->getBestTechnique();
-						auto pass = tech->getPass(0);
-						pass->setVertexProgram(pass->getVertexProgram()->getName() + "/Instanced");
-
-						managersAndMaterials.emplace_back(std::make_pair(instanceManager, materialName));
-
-					} else {
-						//Could not make into instanced; use Entity
-						addMovable(entity);
-						return true;
-					}
-				}
-				i++;
-			}
-
-			for (auto& entry : managersAndMaterials) {
-				auto instancedEntity = entry.first->createInstancedEntity(entry.second);
-				if (instancedEntity) {
-					addMovable(instancedEntity);
-					sInstancedEntities[&mManager][instancedEntity] = this;
-				}
-			}
-
 		}
 	}
 
 	return true;
 }
+
 
 bool Model::removeSubmodel(SubModel* submodel) {
 	auto numberRemoved = mSubmodels.erase(submodel);
@@ -658,7 +606,7 @@ Action* Model::getAction(const std::string& name) {
 	return &(I->second);
 }
 
-Action* Model::getAction(const ActivationDefinition::Type type, const std::string& trigger) {
+Action* Model::getAction(ActivationDefinition::Type type, const std::string& trigger) {
 	for (auto& entry : mActions) {
 		Action& action = entry.second;
 		for (auto& activationDefinition : action.mActivations) {
@@ -696,19 +644,18 @@ void Model::removeMovable(Ogre::MovableObject* movable) {
 		movable->getUserObjectBindings().clear();
 	}
 
-	mMovableObjects.erase(std::find(std::begin(mMovableObjects), std::end(mMovableObjects), movable));
+	auto I = std::find(std::begin(mMovableObjects), std::end(mMovableObjects), movable);
+	if (I != mMovableObjects.end()) {
+		mMovableObjects.erase(I);
+	}
 }
 
 void Model::resetSubmodels() {
-	if (!mSubmodels.empty()) {
-		//Copy since we'll be invalidating it.
-		auto submodels = mSubmodels;
-		for (auto& submodel : submodels) {
-			removeSubmodel(submodel);
-			delete submodel;
-		}
-		mSubmodels.clear();
+	for (auto& submodel : mSubmodels) {
+		removeMovable(submodel->getEntity());
+		delete submodel;
 	}
+	mSubmodels.clear();
 	mModelParts.clear();
 }
 

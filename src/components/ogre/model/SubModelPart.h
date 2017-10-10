@@ -43,27 +43,23 @@ class Model;
 class ModelDefinition;
 class SubEntityDefinition;
 
-class SubModelPartEntity
+struct SubModelPartEntity
 {
-public:
-	SubModelPartEntity(Ogre::SubEntity* s, SubEntityDefinition* d) : SubEntity(s), Definition(d) {}
-
 	Ogre::SubEntity* SubEntity;
 	SubEntityDefinition* Definition;
+	unsigned short subEntityIndex;
 };
 
 
 class SubModelPart{
 friend class ModelDefinition;
 public:
-	typedef std::set<Ogre::SubEntity*> SubEntitySet;
-	typedef std::vector<SubModelPartEntity> SubModelPartEntityStore;
 
-	SubModelPart(const std::string& name);
+	SubModelPart(const std::string& name, SubModel& subModel);
 	virtual ~SubModelPart();
 
 
-	bool addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition);
+	bool addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition, unsigned short subEntityIndex);
  	bool removeSubEntity(const Ogre::SubEntity* subentity);
 
  	void show();
@@ -71,11 +67,20 @@ public:
 
  	const std::string& getName() const;
 
-	const SubModelPartEntityStore& getSubentities() const;
+	const std::vector<SubModelPartEntity>& getSubentities() const;
+
+	void destroy();
 
 protected:
 	std::string mName;
-	SubModelPartEntityStore mSubEntities;
+	std::vector<SubModelPartEntity> mSubEntities;
+	SubModel& mSubModel;
+
+	std::vector<Ogre::InstancedEntity*> mInstancedEntities;
+
+	bool createInstancedEntities();
+
+	void showSubEntities();
 };
 
 }
