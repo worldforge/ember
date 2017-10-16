@@ -122,7 +122,7 @@ include_directories(${OGRE_MeshLodGenerator_INCLUDE_DIRS})
 #On UNIX with PKG_CONFIG we can be more assertive of the paths than the FindOGRE.cmake macro is, so lets
 #get the correct paths from pkg-config.
 if (UNIX)
-    pkg_check_modules(OGREPKGCFG REQUIRED OGRE=>${OGREVER})
+    pkg_check_modules(OGREPKGCFG REQUIRED OGRE>=${OGREVER})
 
     set(OGRE_DEBUGBUILD FALSE)
     add_definitions(-DOGRE_PLUGINDIR="${OGREPKGCFG_LIBDIR}/OGRE")
