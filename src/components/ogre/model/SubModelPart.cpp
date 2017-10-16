@@ -44,6 +44,7 @@
 #include <OgrePass.h>
 #include <OgreHighLevelGpuProgramManager.h>
 #include <OgreInstanceBatch.h>
+#include <boost/algorithm/string.hpp>
 
 namespace Ember {
 namespace OgreView {
@@ -120,28 +121,51 @@ bool SubModelPart::createInstancedEntities() {
 			materialName = entry.SubEntity->getSubMesh()->getMaterialName();
 		}
 
-		std::string instancedMaterialName = materialName + "/Instanced";
+		std::string instancedMaterialName = materialName;
 
+		if (!boost::algorithm::ends_with(materialName, "/Instanced")) {
 
-		if (!Ogre::MaterialManager::getSingleton().resourceExists(instancedMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-			auto originalMaterial = Ogre::MaterialManager::getSingleton().getByName(materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-			if (originalMaterial) {
-				originalMaterial->load();
-				auto material = originalMaterial->clone(instancedMaterialName);
-				material->load();
-				for (auto* tech : material->getTechniques()) {
-					auto pass = tech->getPass(0);
-					if (pass->hasVertexProgram()) {
-						std::string vertextProgramName = pass->getVertexProgram()->getName() + "/Instanced";
-						if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertextProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-							pass->setVertexProgram(vertextProgramName);
+			instancedMaterialName += "/Instanced";
+			auto& materialMgr = Ogre::MaterialManager::getSingleton();
+
+			if (!materialMgr.resourceExists(instancedMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+				auto originalMaterial = materialMgr.getByName(materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+				if (originalMaterial) {
+					originalMaterial->load();
+					auto material = originalMaterial->clone(instancedMaterialName);
+					material->load();
+					for (auto* tech : material->getTechniques()) {
+						auto pass = tech->getPass(0);
+						if (pass->hasVertexProgram()) {
+							std::string vertexProgramName = pass->getVertexProgram()->getName() + "/Instanced";
+							if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+								pass->setVertexProgram(vertexProgramName);
+							}
+						}
+
+						auto shadowCasterMat = tech->getShadowCasterMaterial();
+						if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), "/Instanced")) {
+							std::string instancedShadowCasterMatName = shadowCasterMat->getName() + "/Instanced";
+							auto shadowCasterMatInstanced = materialMgr.getByName(instancedShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+							if (!shadowCasterMatInstanced) {
+								shadowCasterMatInstanced = shadowCasterMat->clone(instancedShadowCasterMatName);
+								for (auto* shadowCasterTech : shadowCasterMatInstanced->getTechniques()) {
+									auto shadowCasterPass = shadowCasterTech->getPass(0);
+									if (shadowCasterPass->hasVertexProgram()) {
+										std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + "/Instanced";
+										if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+											shadowCasterPass->setVertexProgram(vertexProgramName);
+										}
+									}
+								}
+							}
+							tech->setShadowCasterMaterial(shadowCasterMatInstanced);
 						}
 					}
-				}
 
+				}
 			}
 		}
-
 
 		if (sceneManager->hasInstanceManager(instanceName)) {
 			managersAndMaterials.emplace_back(std::make_pair(sceneManager->getInstanceManager(instanceName), instancedMaterialName));
