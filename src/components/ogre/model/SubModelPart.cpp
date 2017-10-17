@@ -213,13 +213,17 @@ bool SubModelPart::createInstancedEntities() {
 	}
 
 	for (auto& entry : managersAndMaterials) {
-		auto instancedEntity = entry.first->createInstancedEntity(entry.second);
-		if (instancedEntity) {
-			mInstancedEntities.push_back(instancedEntity);
-			mSubModel.mModel.addMovable(instancedEntity);
-			::Ember::OgreView::Model::Model::sInstancedEntities[entry.first->getSceneManager()][instancedEntity] = &mSubModel.mModel;
-		} else {
-			S_LOG_FAILURE("Could not create instanced entity " << entry.first->getName());
+		try {
+			auto instancedEntity = entry.first->createInstancedEntity(entry.second);
+			if (instancedEntity) {
+				mInstancedEntities.push_back(instancedEntity);
+				mSubModel.mModel.addMovable(instancedEntity);
+				::Ember::OgreView::Model::Model::sInstancedEntities[entry.first->getSceneManager()][instancedEntity] = &mSubModel.mModel;
+			} else {
+				S_LOG_FAILURE("Could not create instanced entity " << entry.first->getName());
+			}
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Could not create instanced entity " << entry.first->getName() << ex);
 		}
 	}
 	return true;
