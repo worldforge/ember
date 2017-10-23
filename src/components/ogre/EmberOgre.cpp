@@ -255,6 +255,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);
+			throw ex;
 		}
 
 		return true;
