@@ -35,6 +35,10 @@ class Rectangle2D;
 class Overlay;
 }
 
+namespace CEGUI {
+class Window;
+}
+
 namespace Ember {
 namespace OgreView {
 
@@ -63,17 +67,17 @@ public:
 	 * @brief Ctor.
 	 * @param compass The compass instance which will be updated.
 	 */
-	DelayedCompassRenderer(Compass& compass);
+	explicit DelayedCompassRenderer(Compass& compass);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~DelayedCompassRenderer();
+	~DelayedCompassRenderer() override;
 
 	/**
 	 * Methods from Ogre::FrameListener
 	 */
-	bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 
 	/**
 	 * @brief Queues a new rendering.
@@ -170,7 +174,7 @@ class ICompassImpl
 friend class Compass;
 public:
 	ICompassImpl();
-	virtual ~ICompassImpl() {};
+	virtual ~ICompassImpl() = default;;
     virtual void reposition(float x, float y) = 0;
     virtual void rotate(const Ogre::Degree& degree) = 0;
 
@@ -190,131 +194,6 @@ protected:
 	Compass* mCompass;
 };
 
-class CEGUICompassImpl : ICompassImpl
-{
-public:
-	CEGUICompassImpl();
-	virtual ~CEGUICompassImpl();
-    const CEGUI::Image* getViewImage();
-
-    virtual void reposition(float x, float y) ;
-    virtual void rotate(const Ogre::Degree& degree);
-    /**
-     * @brief Refreshes the compass rendering.
-     */
-    virtual void refresh();
-
-protected:
-	const CEGUI::Image* mViewImage;
-	TexturePair mTexturePair;
-	virtual void _setCompass(Compass* compass);
-};
-
-class OverlayCompassImpl : ICompassImpl
-{
-public:
-	OverlayCompassImpl();
-	virtual ~OverlayCompassImpl();
-
-    virtual void reposition(float x, float y);
-    virtual void rotate(const Ogre::Degree& degree);
-    /**
-     * @brief Refreshes the compass rendering.
-     */
-    virtual void refresh();
-
-protected:
-
-	Ogre::Overlay* mCompassOverlay;
-	Ogre::MaterialPtr mCompassMaterial;
-	virtual void _setCompass(Compass* compass);
-
-};
-
-/**
-@brief Renders a pointer which can be rotated along with the camera.
-
-Since CEGUI doesn't (as of v0.6.1) support rotation of textures we have to do that ourselves. An instance of this will create a scene manager, camera and rendertexture for rendering a pointer image. By calling rotate() the texture will be rotated.
-Use getTexture() to get a reference to the final rendered texture.
-
-@author Erik Ogenvik <erik@ogenvik.org>
-*/
-class RenderedCompassPointer
-{
-public:
-
-	/**
-	 * @brief Ctor.
-	 * Everything will be setup in the constructor. That includes creating a scene manager, camera, render texture and getting the correct material.
-	 * @param materialName The name of the material to use for the pointer. The material must have a texture unit state named "Pointer", which must reside in the first pass.
-	 */
-	RenderedCompassPointer(std::string materialName = "/common/ui/compass/pointer");
-
-	/**
-	 * @brief Dtor.
-	 * The scene manager and camera will be destroyed along with this instance.
-	 */
-	virtual ~RenderedCompassPointer();
-
-	/**
-	 * @brief Sets the rotation of the arrow.
-	 * @param degree The new rotation of the arrow.
-	 */
-	void rotate(const Ogre::Degree& degree);
-
-	/**
-	* @brief Gets the texture onto which the compass is rendered.
-	* @return The texture pointer.
-	*/
-	Ogre::TexturePtr getTexture() const;
-
-protected:
-	/**
-	@brief The texture into which the final compass texture will be rendered.
-	*/
-	Ogre::TexturePtr mTexture;
-
-	/**
-	@brief The render texture representation of mTexture.
-	*/
-	Ogre::RenderTexture* mRenderTexture;
-
-	/**
-	@brief The pointer material used in the rendering. By changing the rotation of the first texture we can simulate the pointer being rotated.
-	*/
-	Ogre::MaterialPtr mPointerMaterial;
-
-	/**
-	 * @brief The camera used for rendering.
-	 */
-	Ogre::Camera* mCamera;
-
-	/**
-	 * @brief The scene manager used for rendering. We use a completely separate scene manager to avoid interference with other scenes.
-	 */
-	Ogre::SceneManager* mSceneManager;
-
-	/**
-	 * @brief The main viewport used by our camera.
-	 */
-	Ogre::Viewport* mViewport;
-
-	/**
-	 * @brief The texture unit state onto which the pointer is projected. This will be rotated.
-	 */
-	Ogre::TextureUnitState* mPointerTUS;
-
-	/**
-	 * @brief The rectangle used for rendering the pointer.
-	 */
-	Ogre::Rectangle2D* mPointerRectangle;
-
-	/**
-	 * @brief The previous rotation of the pointer. This is used for preventing unnecessary rendering.
-	 */
-	Ogre::Degree mPreviousRotation;
-
-};
 
 /**
 @brief A compass implementation which uses a compositor to create the rounded map image.
@@ -332,40 +211,34 @@ public:
 	 * @param compassMaterialName The name of the compass ogre material, defaults to "/common/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
 	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/common/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
 	 */
-	RenderedCompassImpl(std::string compassMaterialName = "/common/ui/compass", std::string pointerMaterialName = "/common/ui/compass/pointer");
+	explicit RenderedCompassImpl(CEGUI::Window* pointerElement, std::string compassMaterialName = "/common/ui/compass");
 
 	/**
 	 * @brief Dtor.
 	 * The render texture which this instance owns will be destroyed along with this instance.
 	 */
-	virtual ~RenderedCompassImpl();
+	~RenderedCompassImpl() override;
 
     /**
      * @copydoc ICompassImpl::reposition
      */
-    virtual void reposition(float x, float y);
+	void reposition(float x, float y) override;
 
     /**
      * @copydoc ICompassImpl::rotate
      */
-    virtual void rotate(const Ogre::Degree& degree);
+	void rotate(const Ogre::Degree& degree) override;
 
     /**
      * @brief Refreshes the compass rendering.
      */
-    virtual void refresh();
+	void refresh() override;
 
 	/**
 	* @brief Gets the texture onto which the compass is rendered.
 	* @return The texture pointer.
 	*/
 	Ogre::TexturePtr getTexture() const;
-
-	/**
-	* @brief Gets the texture onto which the compass pointer is rendered.
-	* @return The texture pointer.
-	*/
-	Ogre::TexturePtr getPointerTexture() const;
 
 protected:
 	/**
@@ -387,7 +260,7 @@ protected:
 	 * @brief When the owner compass instance is set, the render texture will be created and the compositior registered.
 	 * @param compass
 	 */
-	virtual void _setCompass(Compass* compass);
+	void _setCompass(Compass* compass) override;
 
 	/**
 	 * @brief The camera used for rendering.
@@ -424,10 +297,7 @@ protected:
 	 */
 	Ogre::Rectangle2D* mMapRectangle;
 
-	/**
-	 * @brief The pointer renderer instance, responsible for rotating the pointer arrow.
-	 */
-	RenderedCompassPointer mPointer;
+	CEGUI::Window* mPointerElement;
 
 	/**
 	 * @brief The name of the compass ogre material.
@@ -455,12 +325,12 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~CompassAnchor();
+	~CompassAnchor() override;
 
 	/**
 	 * Methods from Ogre::FrameListener
 	 */
-	bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 
 protected:
 	/**
@@ -518,7 +388,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~CompassCameraAnchor();
+	virtual ~CompassCameraAnchor() = default;
 
 protected:
 
@@ -554,7 +424,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~CompassSceneNodeAnchor();
+	virtual ~CompassSceneNodeAnchor() = default;
 
 protected:
 
@@ -590,7 +460,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~CompassThirdPersonCameraAnchor();
+	virtual ~CompassThirdPersonCameraAnchor() = default;
 
 protected:
 

@@ -77,13 +77,37 @@ end
 
 function Compass:buildWidget(terrainManager)
 
-	self.helperImpl = Ember.OgreView.Gui.RenderedCompassImpl:new()
+
+	self.widget = guiManager:createWidget()
+	self.widget:loadMainSheet("Compass.layout", "Compass")
+	self.widget:setIsActiveWindowOpaque(false)
+	self.renderImage = self.widget:getWindow("RenderImage")
+	self.pointerImage = self.widget:getWindow("Pointer")
+
+
+	self.helperImpl = Ember.OgreView.Gui.RenderedCompassImpl:new(self.pointerImage)
 
 	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager(), terrainManager:getTerrainAdapter())
 	self.map = self.helper:getMap()
-	
-	self:buildCEGUIWidget()
-	
+
+
+
+	local assetManager = Ember.OgreView.Gui.AssetsManager:new_local()
+
+	--set up the main background image
+	if self.helperImpl:getTexture():isNull() == false then
+		local texturePair = assetManager:createTextureImage(self.helperImpl:getTexture(), "CompassMap")
+		if texturePair:hasData() then
+			self.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+		end
+	end
+
+
+	self.widget:getWindow("ZoomOut"):subscribeEvent("Clicked", self.ZoomOut_Clicked, self)
+	self.widget:getWindow("ZoomIn"):subscribeEvent("Clicked", self.ZoomIn_Clicked, self)
+
+	self.widget:hide()
+
 	--don't show the compass here, instead wait until we've gotten some terrain (by listening 
 	connect(self.connectors, emberOgre.EventCreatedAvatarEntity, self.CreatedAvatarEntity, self)
 	connect(self.connectors, terrainManager.EventTerrainPageGeometryUpdated, self.TerrainPageGeometryUpdated, self)
@@ -91,37 +115,6 @@ function Compass:buildWidget(terrainManager)
 
 end
 
--- Call this method to build the cegui widget.
-function Compass:buildCEGUIWidget()
-	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("Compass.layout", "Compass")
-	self.widget:setIsActiveWindowOpaque(false)
-	self.renderImage = self.widget:getWindow("RenderImage")
-	self.pointerImage = self.widget:getWindow("Pointer")
-	
-	local assetManager = Ember.OgreView.Gui.AssetsManager:new_local()
-	
-	--set up the main background image
-	if self.helperImpl:getTexture():isNull() == false then
-		local texturePair = assetManager:createTextureImage(self.helperImpl:getTexture(), "CompassMap")
-		if texturePair:hasData() then 
-			self.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
-		end
-	end
-		
-	if self.helperImpl:getPointerTexture():isNull() == false then
-		--also set up the pointer image
-		local texturePair = assetManager:createTextureImage(self.helperImpl:getPointerTexture(), "CompassPointer")
-		if texturePair:hasData() then 
-			self.pointerImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
-		end
-	end
-	
-	self.widget:getWindow("ZoomOut"):subscribeEvent("Clicked", self.ZoomOut_Clicked, self) 
-	self.widget:getWindow("ZoomIn"):subscribeEvent("Clicked", self.ZoomIn_Clicked, self)
-	
-	self.widget:hide()
-end
 
 connect(connectors, emberOgre.EventTerrainManagerCreated, function(terrainManager)
 	compass = {

@@ -54,22 +54,6 @@ public:
 
 };
 
-class CEGUICompassImpl : ICompassImpl
-{
-public:
-	CEGUICompassImpl();
-	virtual ~CEGUICompassImpl();
-    const CEGUI::Image* getViewImage();
-};
-
-class OverlayCompassImpl : ICompassImpl
-{
-public:
-	OverlayCompassImpl();
-	virtual ~OverlayCompassImpl();
-	
-};
-
 /**
 @brief A compass implementation which uses a compositor to create the rounded map image.
 The main problem with CEGUI is that there's no easy way to apply transparence to a dynamic render texture. By using a compositor we can however render the /ui/compass material, which will use an alpha mask to remove the border from the map texture, providing a rounded shape.
@@ -83,22 +67,8 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	RenderedCompassImpl();
-	
-	/**
-	 * @brief Ctor.
-	 * @param compassMaterialName The name of the compass ogre material, defaults to "/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
-	 */
-	RenderedCompassImpl(std::string compassMaterialName);
-	
-	/**
-	 * @brief Ctor.
-	 * @param compassMaterialName The name of the compass ogre material, defaults to "/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
-	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
-	 */
-	RenderedCompassImpl(std::string compassMaterialName, std::string pointerMaterialName);
-	
-	
+	RenderedCompassImpl(CEGUI::Window* pointerElement);
+
 	/**
 	 * @brief Dtor.
 	 * The render texture which this instance owns will be destroyed along with this instance.
@@ -111,11 +81,6 @@ public:
 	*/
 	Ogre::TexturePtr getTexture() const;
 
-	/**
-	* @brief Gets the texture onto which the compass pointer is rendered.
-	* @return The texture pointer.
-	*/
-	Ogre::TexturePtr getPointerTexture() const;
 };
 
 class CompassCameraAnchor

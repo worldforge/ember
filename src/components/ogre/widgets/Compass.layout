@@ -35,13 +35,13 @@
 			<Property name="Image" value="compass/full" />
 			<Property name="RiseOnClickEnabled" value="false" />
 			<Window name="Pointer" type="EmberLook/StaticImage">
-				<Property name="Size" value="{{0,32},{0,32}}" />
-				<Property name="Position" value="{{0.5,-16},{0.5,-16}}" />
+				<Property name="Size" value="{{0,24},{0,24}}" />
+				<Property name="Position" value="{{0.5,-12},{0.5,-12}}" />
 				<Property name="InheritsAlpha" value="true" />
 				<Property name="BackgroundEnabled" value="false" />
 				<Property name="FrameEnabled" value="false" />
 				<Property name="MousePassThroughEnabled" value="true" />
-				<Property name="Image" value="compass/full" />
+				<Property name="Image" value="compass_pointer/full" />
 				<Property name="RiseOnClickEnabled" value="false" />
 			</Window>
 		</Window>
