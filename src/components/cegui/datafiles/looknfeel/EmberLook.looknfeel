@@ -727,7 +727,7 @@
         <Property name="NWSESizingCursorImage" value="EmberLook/MouseNwSeCursor" />
         <Property name="NESWSizingCursorImage" value="EmberLook/MouseNeSwCursor" />
         <Property name="MinSize" value="{{0.1,0},{0.1,0}}" />
-        <Property name="AutoRenderingSurface" value="True" />
+        <!-- Property name="AutoRenderingSurface" value="True" / -->
         <NamedArea name="ClientWithTitleWithFrame">
             <Area>
                 <Dim type="LeftEdge">

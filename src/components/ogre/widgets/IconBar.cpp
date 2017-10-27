@@ -42,6 +42,7 @@ IconBar::IconBar(const std::string& name) :
 		mIconPadding(0)
 {
 	mWindow = WindowManager::getSingleton().createWindow("DefaultWindow", "iconbars/" + name);
+	mWindow->setUsingAutoRenderingSurface(true);
 	/*	mWindow->setProperty("BackgroundEnabled", "false");
 	 mWindow->setProperty("FrameEnabled", "false");*/
 }

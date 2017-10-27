@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
 	<Window name="MainWindow" type="DefaultWindow">
+		<Property name="AutoRenderingSurface" value="True" />
 		<Property name="Size" value="{{0.00,0.0},{0.00,0.0}}" />
 		<Property name="Position" value="{{1.00,-700.0},{1.00,-300.0}}" />
 		<Property name="Alpha" value="1.0" />
