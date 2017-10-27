@@ -36,14 +36,13 @@ namespace Terrain
 {
 
 TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler,
-												 const TerrainIndex& index,
+												 TerrainPage* page,
 												 const std::shared_ptr<ITerrainPageBridge>& bridge,
 												 HeightMapBufferProvider& heightMapBufferProvider,
 												 HeightMap& heightMap,
 												 const WFMath::Vector<3>& mainLightDirection) :
 	mTerrainHandler(handler),
-	mPage(nullptr),
-	mIndex(index),
+	mPage(page),
 	mBridge(bridge),
 	mMainLightDirection(mainLightDirection),
 	mHeightMapBufferProvider(heightMapBufferProvider),
@@ -52,24 +51,19 @@ TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler,
 
 }
 
-TerrainPageCreationTask::~TerrainPageCreationTask()
-{
-}
 
 void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
-	mPage = new TerrainPage(mIndex, mTerrainHandler.getPageIndexSize(), mTerrainHandler.getCompilerTechniqueProvider());
-	mBridge->bindToTerrainPage(mPage);
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
 	const std::list<TerrainShader*>& baseShaders = mTerrainHandler.getBaseShaders();
-	for (std::list<TerrainShader*>::const_iterator I = baseShaders.begin(); I != baseShaders.end(); ++I) {
-		mPage->addShader(*I);
+	for (auto baseShader : baseShaders) {
+		mPage->addShader(baseShader);
 	}
 
 	TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*mPage, mTerrainHandler.getSegmentManager(), mTerrainHandler.getDefaultHeight()));
 	BridgeBoundGeometryPtrVector geometry;
-	geometry.push_back(BridgeBoundGeometryPtrVector::value_type(geometryInstance, mBridge));
+	geometry.emplace_back(geometryInstance, mBridge);
 	std::vector<WFMath::AxisBox<2>> areas;
 	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
@@ -79,10 +73,6 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 
 bool TerrainPageCreationTask::executeTaskInMainThread()
 {
-	if (mPage) {
-		S_LOG_VERBOSE("Adding loaded terrain page to TerrainHandler: " << "[" << mPage->getWFIndex().first << "|" << mPage->getWFIndex().second <<"]");
-		mTerrainHandler.addPage(mPage);
-	}
 	return true;
 }
 

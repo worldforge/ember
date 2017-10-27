@@ -64,8 +64,10 @@ class ICompilerTechniqueProvider;
 
  @brief Represents one terrain page.
 
- This is a bridge class between one Ogre terrain page instance and one or many Mercator::Segment. Since each Segment is 64x64 meters, but one Ogre page often is much larger, we need to combine many Segments for every single Ogre page.
- An instance of this is very light weight as it doesn't keep any geometry data around. Each time an action involving page geometry is to occur an instance of TerrainPageGeometry must therefore be created.
+ This is a bridge class between one Ogre terrain page instance and one or many Mercator::Segment.
+ Since each Segment is 64x64 meters, but one Ogre page often is much larger, we need to combine many Segments for every single Ogre page.
+ An instance of this is very light weight as it doesn't keep any geometry data around.
+ Each time an action involving page geometry is to occur an instance of TerrainPageGeometry must therefore be created.
 
  Instances of this is created by TerrainManager.
 
@@ -164,14 +166,6 @@ public:
 	 * @returns The page surface instance belonging to this page.
 	 */
 	const TerrainPageSurface* getSurface() const;
-
-	/**
-	 * @brief Gets the normal at the specified local position.
-	 * @param localPosition The position, local to the page.
-	 * @param normal The normal will be placed here.
-	 * @return True if a valid normal could be found at the specified position.
-	 */
-	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
 private:
 

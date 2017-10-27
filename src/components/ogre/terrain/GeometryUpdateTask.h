@@ -41,11 +41,12 @@ class GeometryUpdateTask : public Tasks::TemplateNamedTask<GeometryUpdateTask>
 {
 public:
 	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2>>& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3> lightDirection);
-	virtual ~GeometryUpdateTask();
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	~GeometryUpdateTask() override = default;
 
-	virtual bool executeTaskInMainThread();
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
+
+	bool executeTaskInMainThread() override;
 
 private:
 

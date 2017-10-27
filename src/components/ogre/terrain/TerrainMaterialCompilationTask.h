@@ -62,11 +62,11 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~TerrainMaterialCompilationTask();
+	~TerrainMaterialCompilationTask() override = default;
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 
-	virtual bool executeTaskInMainThread();
+	bool executeTaskInMainThread() override;
 private:
 
 	/**

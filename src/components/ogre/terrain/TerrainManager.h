@@ -114,12 +114,12 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~TerrainManager();
+	~TerrainManager() override;
 
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	virtual	void runCommand(const std::string& command, const std::string& args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 
 	/**
@@ -164,7 +164,7 @@ public:
 	 * @param height The height, in world space, at the specified position.
 	 * @returns True if there was a valid, populated segment at the position (and therefore also a valid height).
 	 */
-	virtual bool getHeight(const TerrainPosition& atPosition, float& height) const;
+	bool getHeight(const TerrainPosition& atPosition, float& height) const override;
 
     /**
      * @brief Performs a fast copy of the raw height data for the supplied area.
@@ -174,7 +174,7 @@ public:
      * @param yMax Maximum y coord of the area.
      * @param heights A vector into which heigh data will be placed. This should preferably already have a capacity reserved.
      */
-	virtual void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
+	void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const override;
 
 	/**
 	 * @brief Accessor for the main terrain info instance.

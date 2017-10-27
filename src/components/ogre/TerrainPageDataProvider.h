@@ -23,6 +23,8 @@
 #include <OgrePrerequisites.h>
 #include <OgreMaterial.h>
 
+#include <memory>
+
 namespace Ember
 {
 namespace OgreView
@@ -41,7 +43,8 @@ class ITerrainPageBridge;
 class IPageData
 {
 public:
-	virtual ~IPageData() {}
+	virtual ~IPageData() = default;
+
 	virtual Ogre::MaterialPtr getMaterial() = 0;
 	virtual Ogre::MaterialPtr getCompositeMapMaterial() = 0;
 };
@@ -53,10 +56,10 @@ public:
 class IPageDataProvider
 {
 public:
-	virtual ~IPageDataProvider() {}
+	virtual ~IPageDataProvider() = default;
 	//TODO SK: fix ogre index to be consistent
 	typedef std::pair<long, long> OgreIndex;
-	virtual IPageData* getPageData(const OgreIndex& index) = 0;
+	virtual std::unique_ptr<IPageData> getPageData(const OgreIndex& index) = 0;
 	virtual int getPageIndexSize() const = 0;
 	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, ::Ember::OgreView::Terrain::ITerrainPageBridge* bridge) = 0;
 	virtual void removeBridge(const OgreIndex& ogreIndexPosition) = 0;
@@ -70,10 +73,11 @@ public:
 class TerrainPageData : public IPageData
 {
 public:
-	TerrainPageData(Terrain::TerrainPage* page);
-	virtual ~TerrainPageData();
-	virtual Ogre::MaterialPtr getMaterial();
-	virtual Ogre::MaterialPtr getCompositeMapMaterial();
+	explicit TerrainPageData(Terrain::TerrainPage* page);
+
+	~TerrainPageData() override = default;
+	Ogre::MaterialPtr getMaterial() override;
+	Ogre::MaterialPtr getCompositeMapMaterial() override;
 private:
 	Terrain::TerrainPage* mPage;
 
@@ -85,13 +89,13 @@ private:
 class TerrainPageDataProvider : public IPageDataProvider
 {
 public:
-	TerrainPageDataProvider(Terrain::TerrainHandler& hander);
-	virtual ~TerrainPageDataProvider();
+	explicit TerrainPageDataProvider(Terrain::TerrainHandler& hander);
+	~TerrainPageDataProvider() override = default;
 
-	virtual IPageData* getPageData(const OgreIndex& ogreIndexPosition);
-	virtual int getPageIndexSize() const;
-	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge);
-	virtual void removeBridge(const OgreIndex& ogreIndexPosition);
+	std::unique_ptr<IPageData> getPageData(const OgreIndex& ogreIndexPosition) override;
+	int getPageIndexSize() const override;
+	void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge) override;
+	void removeBridge(const OgreIndex& ogreIndexPosition) override;
 
 protected:
 	Terrain::TerrainHandler& mHandler;

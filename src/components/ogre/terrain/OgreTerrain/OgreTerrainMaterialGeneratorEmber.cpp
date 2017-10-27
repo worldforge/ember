@@ -31,9 +31,6 @@ namespace Terrain
 {
 const std::string EmberTerrainProfile::ERROR_MATERIAL = "/common/primitives/texture/error";
 
-OgreTerrainMaterialGeneratorEmber::OgreTerrainMaterialGeneratorEmber()
-{
-}
 
 
 EmberTerrainProfile::EmberTerrainProfile(IPageDataProvider& dataProvider, TerrainMaterialGenerator* parent) :
@@ -44,20 +41,16 @@ EmberTerrainProfile::EmberTerrainProfile(IPageDataProvider& dataProvider, Terrai
 	assert(mErrorMaterialTemplate);
 }
 
-EmberTerrainProfile::~EmberTerrainProfile()
-{
-}
-
 void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain)
 {
 	terrain->_setMorphRequired(false);
 	terrain->_setNormalMapRequired(true);
 	terrain->_setLightMapRequired(false, false);
 
-	EmberTerrain* emberTerrain = static_cast<EmberTerrain*>(terrain);
+	EmberTerrain* emberTerrain = dynamic_cast<EmberTerrain*>(terrain);
 
 	// Allocate in main thread so no race conditions
-	std::unique_ptr<IPageData> pageData(mDataProvider.getPageData(emberTerrain->getIndex()));
+	std::unique_ptr<IPageData> pageData = mDataProvider.getPageData(emberTerrain->getIndex());
 	if (!pageData || !pageData->getCompositeMapMaterial() || pageData->getCompositeMapMaterial()->getTechniques().empty()) {
 		terrain->_setCompositeMapRequired(false);
 	} else {
@@ -67,11 +60,11 @@ void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain)
 
 Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain)
 {
-	const EmberTerrain* emberTerrain = static_cast<const EmberTerrain*>(terrain);
+	const EmberTerrain* emberTerrain = dynamic_cast<const EmberTerrain*>(terrain);
 
 	const auto& index = emberTerrain->getIndex();
 
-	IPageData* pageData = mDataProvider.getPageData(index);
+	std::unique_ptr<IPageData> pageData = mDataProvider.getPageData(index);
 
 	if (!pageData) {
 		S_LOG_WARNING("Could not find corresponding page data for OgreTerrain at " << "[" << index.first << "|" << index.second << "]");

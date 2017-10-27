@@ -38,9 +38,6 @@ OgreTerrainDefiner::OgreTerrainDefiner(IPageDataProvider& provider)
 {
 }
 
-OgreTerrainDefiner::~OgreTerrainDefiner()
-{
-}
 
 void OgreTerrainDefiner::define(Ogre::TerrainGroup* terrainGroup, long x, long y)
 {

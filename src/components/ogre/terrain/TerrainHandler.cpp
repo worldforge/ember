@@ -89,17 +89,14 @@ public:
 			mTerrain(terrain), mAsyncCallback(asyncCallback)
 	{
 	}
-	virtual ~BasePointRetrieveTask()
-	{
-	}
 
-	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-	{
+	~BasePointRetrieveTask() override = default;
+
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override {
 		mPoints = mTerrain.getPoints();
 	}
 
-	bool executeTaskInMainThread()
-	{
+	bool executeTaskInMainThread() override {
 		mAsyncCallback(mPoints);
 		return true;
 	}
@@ -117,35 +114,37 @@ private:
 	const WFMath::Vector<3> mMainLightDirection;
 
 public:
-	TerrainPageReloadTask(TerrainHandler& handler, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry, const ShaderStore& shaders, const WFMath::AxisBox<2>& area, const WFMath::Vector<3>& mainLightDirection) :
-			mHandler(handler), mBridge(bridge), mGeometry(geometry), mShaders(shaders), mArea(area), mMainLightDirection(mainLightDirection)
+	TerrainPageReloadTask(TerrainHandler& handler, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry,
+						  const ShaderStore& shaders, const WFMath::AxisBox<2>& area, const WFMath::Vector<3>& mainLightDirection) :
+			mHandler(handler),
+			mBridge(bridge),
+			mGeometry(geometry),
+			mShaders(shaders),
+			mArea(area),
+			mMainLightDirection(mainLightDirection)
 	{
 	}
 
-	virtual ~TerrainPageReloadTask()
-	{
-	}
+	~TerrainPageReloadTask() override = default;
 
-	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-	{
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override {
 		mGeometry->repopulate();
 		std::vector<const TerrainShader*> shaders;
-		for (ShaderStore::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
-			shaders.push_back(I->second);
+		for (auto shaderEntry : mShaders) {
+			shaders.push_back(shaderEntry.second);
 		}
 		AreaStore areas;
 		areas.push_back(mArea);
 		GeometryPtrVector geometries;
 		geometries.push_back(mGeometry);
 		context.executeTask(new TerrainShaderUpdateTask(geometries, shaders, areas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mMainLightDirection));
-		if (mBridge.get()) {
+		if (mBridge) {
 			mBridge->updateTerrain(*mGeometry);
 		}
 	}
 
-	bool executeTaskInMainThread()
-	{
-		if (mBridge.get()) {
+	bool executeTaskInMainThread() override {
+		if (mBridge) {
 			mBridge->terrainPageReady();
 		}
 		return true;
@@ -186,12 +185,12 @@ TerrainHandler::~TerrainHandler()
 	//Deleting the task queue will purge it, making sure that all jobs are processed first.
 	delete mTaskQueue;
 
-	for (PageVector::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-		delete (*J);
+	for (auto& page : mPages) {
+		delete page;
 	}
 
-	for (ShaderStore::iterator J = mShaderMap.begin(); J != mShaderMap.end(); ++J) {
-		delete J->second;
+	for (auto& shaderEntry : mShaderMap) {
+		delete shaderEntry.second;
 	}
 	delete mHeightMap;
 	delete mHeightMapBufferProvider;
@@ -326,7 +325,7 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 	int xIndex = static_cast<int>(std::floor(wfPos.x() / mTerrain->getResolution()));
 	int yIndex = static_cast<int>(std::floor(wfPos.y() / mTerrain->getResolution()));
 	SegmentRefPtr segmentRef = mSegmentManager->getSegmentReference(xIndex, yIndex);
-	if (segmentRef.get()) {
+	if (segmentRef) {
 		Ogre::ColourValue defaultShadowColour;
 		if (mLightning) {
 			defaultShadowColour = mLightning->getAmbientLightColour();
@@ -343,7 +342,7 @@ ICompilerTechniqueProvider& TerrainHandler::getCompilerTechniqueProvider()
 
 void TerrainHandler::removeBridge(const TerrainIndex& index)
 {
-	PageBridgeStore::iterator I = mPageBridges.find(index);
+	auto I = mPageBridges.find(index);
 	if (I != mPageBridges.end()) {
 		auto page = I->second->getTerrainPage();
 		if (page) {
@@ -356,13 +355,13 @@ void TerrainHandler::removeBridge(const TerrainIndex& index)
 void TerrainHandler::updateShaders()
 {
 	//update shaders that needs updating
-	if (mShadersToUpdate.size()) {
+	if (!mShadersToUpdate.empty()) {
 		GeometryPtrVector geometry;
 		for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-			geometry.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight())));
+			geometry.emplace_back(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight()));
 		}
 		//use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
-		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
+		for (auto I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
 			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, EventLayerUpdated, EventTerrainMaterialRecompiled, mLightning->getMainLightDirection()), 0);
 		}
 		mShadersToUpdate.clear();
@@ -373,7 +372,7 @@ void TerrainHandler::updateAllPages()
 {
 	GeometryPtrVector geometry;
 	for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		geometry.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight())));
+		geometry.emplace_back(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight()));
 	}
 
 	//Update all pages
@@ -429,12 +428,19 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 	mPageBridges.insert(PageBridgeStore::value_type(index, bridgePtr));
 
 	S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
-	if (mTerrainPages[x][y] == 0) {
+	if (mTerrainPages[x][y] == nullptr) {
+		TerrainPage* page = new TerrainPage(index, getPageIndexSize(), getCompilerTechniqueProvider());
+		bridgePtr->bindToTerrainPage(page);
+
+		mTerrainPages[x][y] = page;
+		mPages.push_back(page);
+		S_LOG_VERBOSE("Adding terrain page to TerrainHandler: " << "[" << index.first << "|" << index.second <<"]");
+
 		WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, 0, -1);
 		if (mLightning) {
 			sunDirection = mLightning->getMainLightDirection();
 		}
-		if (!mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, index, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
+		if (!mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, page, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
 			//We need to alert the bridge since it's holding up a thread waiting for this call.
 			bridge->terrainPageReady();
 		}
@@ -452,14 +458,14 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) const
 {
 
-	TerrainPagestore::const_iterator I = mTerrainPages.find(index.first);
+	auto I = mTerrainPages.find(index.first);
 	if (I != mTerrainPages.end()) {
-		TerrainPagecolumn::const_iterator J = I->second.find(index.second);
+		auto J = I->second.find(index.second);
 		if (J != I->second.end()) {
 			return J->second;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 bool TerrainHandler::getHeight(const TerrainPosition& point, float& height) const
@@ -486,13 +492,13 @@ void TerrainHandler::updateShadows()
 		//Only update if there's a shadow texture set.
 		if (!mPages.empty()) {
 			auto page = mPages.front();
-			if (page->getSurface() && page->getSurface()->getShadow() && page->getSurface()->getShadow()->getShadowTextureName() != "") {
+			if (page->getSurface() && page->getSurface()->getShadow() && !page->getSurface()->getShadow()->getShadowTextureName().empty()) {
 				S_LOG_VERBOSE("Updating precomputed shadows.");
 				WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
 
 				GeometryPtrVector geometry;
-				for (auto& page : mPages) {
-					geometry.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())));
+				for (auto& aPage : mPages) {
+					geometry.emplace_back(new TerrainPageGeometry(*aPage, *mSegmentManager, getDefaultHeight()));
 				}
 
 				mTaskQueue->enqueueTask(new ShadowUpdateTask(geometry, sunDirection));
@@ -517,11 +523,10 @@ bool TerrainHandler::updateTerrain(const TerrainDefPointStore& terrainPoints)
 void TerrainHandler::reloadTerrain(const std::vector<TerrainPosition>& positions)
 {
 	std::vector<WFMath::AxisBox<2>> areas;
-	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
-		const TerrainPosition& worldPosition(*I);
+	for (const auto& worldPosition : positions) {
 		//Make an area which will cover the area affected by the basepoint
 		int res = mTerrain->getResolution();
-		areas.push_back(WFMath::AxisBox<2>(worldPosition - WFMath::Vector<2>(res, res), worldPosition + WFMath::Vector<2>(res, res)));
+		areas.emplace_back(worldPosition - WFMath::Vector<2>(res, res), worldPosition + WFMath::Vector<2>(res, res));
 	}
 	reloadTerrain(areas);
 }
@@ -530,8 +535,7 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 {
 	if (mTaskQueue->isActive()) {
 		std::set<TerrainPage*> pagesToUpdate;
-		for (std::vector<WFMath::AxisBox<2>>::const_iterator I(areas.begin()); I != areas.end(); ++I) {
-			const WFMath::AxisBox<2>& area = *I;
+		for (const auto& area : areas) {
 			for (PageVector::const_iterator pageI = mPages.begin(); pageI != mPages.end(); ++pageI) {
 				TerrainPage* page = *pageI;
 				if (WFMath::Contains(page->getWorldExtent(), area, false) || WFMath::Intersect(page->getWorldExtent(), area, false) || WFMath::Contains(area, page->getWorldExtent(), false)) {
@@ -542,15 +546,14 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 
 		EventBeforeTerrainUpdate(areas, pagesToUpdate);
 		//Spawn a separate task for each page to not bog down processing with all pages at once
-		for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+		for (auto page : pagesToUpdate) {
 			BridgeBoundGeometryPtrVector geometryToUpdate;
-			TerrainPage* page = *I;
 			ITerrainPageBridgePtr bridgePtr;
 			PageBridgeStore::const_iterator J = mPageBridges.find(page->getWFIndex());
 			if (J != mPageBridges.end()) {
 				bridgePtr = J->second;
 			}
-			geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
+			geometryToUpdate.emplace_back(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr);
 			mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap, mLightning->getMainLightDirection()));
 		}
 	}

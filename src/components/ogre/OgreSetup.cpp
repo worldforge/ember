@@ -440,11 +440,10 @@ void OgreSetup::setStandardValues() {
 			auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
 
 
-			if (schemeName != Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME)
-			{
+			//If first pass already has fragment and vertex shaders, don't generate anything.
+			if (originalMaterial->getTechnique(0)->getPass(0)->hasVertexProgram() || originalMaterial->getTechnique(0)->getPass(0)->hasFragmentProgram()) {
 				return nullptr;
 			}
-			// Case this is the default shader generator scheme.
 
 			// Create shader generated technique for this material.
 			bool techniqueCreated = shaderGenerator->createShaderBasedTechnique(
@@ -457,6 +456,8 @@ void OgreSetup::setStandardValues() {
 				return nullptr;
 			}
 			// Case technique registration succeeded.
+
+			S_LOG_VERBOSE("Created auto generated shaders for material " << originalMaterial->getName());
 
 			// Force creating the shaders for the generated technique.
 			shaderGenerator->validateMaterial(schemeName, originalMaterial->getName(), originalMaterial->getGroup());

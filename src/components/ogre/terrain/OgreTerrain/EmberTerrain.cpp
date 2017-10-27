@@ -91,7 +91,7 @@ Ogre::WorkQueue::Response* EmberTerrain::handleRequest(const Ogre::WorkQueue::Re
 		//Copy height data
 		memcpy(heightData, innerRequest.heightData.get(), sizeof(float) * getSize() * getSize());
 		innerRequest.heightData.reset(); //Free up memory as soon as possible
-		return new Ogre::WorkQueue::Response(req, true, Ogre::Any());
+		return new Ogre::WorkQueue::Response(req, true, Ogre::Any(innerRequest));
 	} else {
 		return Ogre::Terrain::handleRequest(req, srcQ);
 	}

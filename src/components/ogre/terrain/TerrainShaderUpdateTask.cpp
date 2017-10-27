@@ -44,9 +44,7 @@ TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geomet
 {
 }
 
-TerrainShaderUpdateTask::~TerrainShaderUpdateTask()
-{
-}
+TerrainShaderUpdateTask::~TerrainShaderUpdateTask() = default;
 
 void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
@@ -55,8 +53,8 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 		TerrainPageGeometryPtr geometry = *J;
 		TerrainPage& page = geometry->getPage();
 		bool shouldUpdate = false;
-		for (AreaStore::const_iterator K = mAreas.begin(); K != mAreas.end(); ++K) {
-			if (WFMath::Intersect(page.getWorldExtent(), *K, true) || WFMath::Contains(page.getWorldExtent(), *K, true)) {
+		for (const auto& mArea : mAreas) {
+			if (WFMath::Intersect(page.getWorldExtent(), mArea, true) || WFMath::Contains(page.getWorldExtent(), mArea, true)) {
 				shouldUpdate = true;
 				break;
 			}

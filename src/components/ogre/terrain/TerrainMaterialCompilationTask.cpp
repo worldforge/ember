@@ -41,9 +41,6 @@ TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeomet
 	mGeometry.push_back(geometry);
 }
 
-TerrainMaterialCompilationTask::~TerrainMaterialCompilationTask() {
-}
-
 void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
 		(*J)->repopulate();

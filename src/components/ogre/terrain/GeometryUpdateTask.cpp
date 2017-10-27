@@ -51,10 +51,6 @@ GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages
 
 }
 
-GeometryUpdateTask::~GeometryUpdateTask()
-{
-}
-
 void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	std::vector<Mercator::Segment*> segments;
@@ -70,8 +66,8 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 		TerrainPageGeometryPtr geometry = I->first;
 		geometry->repopulate();
 		const SegmentVector& segmentVector = geometry->getValidSegments();
-		for (SegmentVector::const_iterator I = segmentVector.begin(); I != segmentVector.end(); ++I) {
-			segments.push_back(I->segment);
+		for (const auto& entry : segmentVector) {
+			segments.push_back(entry.segment);
 		}
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
@@ -83,7 +79,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 	for (BridgeBoundGeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
 		const TerrainPageGeometryPtr& geometry = I->first;
 		const ITerrainPageBridgePtr& bridge = I->second;
-		if (bridge.get()) {
+		if (bridge) {
 			bridge->updateTerrain(*geometry);
 			mBridgesToNotify.insert(bridge);
 		}

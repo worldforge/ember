@@ -42,18 +42,17 @@ class HeightMap;
 class TerrainPageCreationTask : public Tasks::TemplateNamedTask<TerrainPageCreationTask>
 {
 public:
-	TerrainPageCreationTask(TerrainHandler& handler, const TerrainIndex& index, const std::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
-	virtual ~TerrainPageCreationTask();
+	TerrainPageCreationTask(TerrainHandler& handler, TerrainPage* page, const std::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
+	~TerrainPageCreationTask() override = default;
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 
-	virtual bool executeTaskInMainThread();
+	bool executeTaskInMainThread() override;
 
 private:
 	TerrainHandler& mTerrainHandler;
 
 	TerrainPage* mPage;
-	TerrainIndex mIndex;
 	std::shared_ptr<ITerrainPageBridge> mBridge;
 	WFMath::Vector<3> mMainLightDirection;
 

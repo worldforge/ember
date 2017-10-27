@@ -41,7 +41,7 @@ TerrainLayerDefinitionManager::TerrainLayerDefinitionManager()
     mLoadOrder = 310.0f;
     mResourceType = "TerrainLayerDefinition";
         
-	mScriptPatterns.push_back("*.terrain");
+	mScriptPatterns.emplace_back("*.terrain");
 // 	mScriptPatterns.push_back("*.modelmap.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
@@ -51,8 +51,8 @@ TerrainLayerDefinitionManager::TerrainLayerDefinitionManager()
 
 TerrainLayerDefinitionManager::~TerrainLayerDefinitionManager()
 {
-	for (DefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
-		delete *I;
+	for (auto& mDefinition : mDefinitions) {
+		delete mDefinition;
 	}	
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
@@ -78,27 +78,27 @@ Ogre::Resource* TerrainLayerDefinitionManager::createImpl(const Ogre::String& na
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
     const Ogre::NameValuePairList* createParams)
 {
-	return 0;
+	return nullptr;
 }
 
 TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(unsigned int areaIndex)
 {
-	for (DefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
-		if ((*I)->getAreaId() == areaIndex) {
-			return *I;
+	for (auto& definition : mDefinitions) {
+		if (definition->getAreaId() == areaIndex) {
+			return definition;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForShader(const std::string& shaderType)
 {
-	for (DefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
-		if ((*I)->getShaderName() == shaderType) {
-			return *I;
+	for (auto& definition : mDefinitions) {
+		if (definition->getShaderName() == shaderType) {
+			return definition;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 

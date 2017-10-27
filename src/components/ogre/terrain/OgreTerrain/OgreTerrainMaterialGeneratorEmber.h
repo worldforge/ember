@@ -39,7 +39,7 @@ namespace Terrain
 class OgreTerrainMaterialGeneratorEmber : public Ogre::TerrainMaterialGenerator
 {
 public:
-	OgreTerrainMaterialGeneratorEmber();
+	OgreTerrainMaterialGeneratorEmber() = default;
 
 };
 
@@ -54,38 +54,36 @@ public:
     const static std::string ERROR_MATERIAL;
 
     EmberTerrainProfile(IPageDataProvider& dataProvider, Ogre::TerrainMaterialGenerator* parent);
-	virtual ~EmberTerrainProfile();
+
+	~EmberTerrainProfile() override = default;
 
 	/** Return whether this profile supports using a compressed
 	        vertex format. This is only possible when using shaders.
 	 */
-	virtual bool isVertexCompressionSupported() const
-	{
+	bool isVertexCompressionSupported() const override {
 		// TODO SK: not supported for now
 		return false;
 	}
 	/** Triggers the generator to request the options that it needs.
 	 */
-	virtual void requestOptions(Ogre::Terrain* terrain);
+	void requestOptions(Ogre::Terrain* terrain) override;
 
 	/** Generate a material for the given terrain using the active profile.
 	 */
-	virtual Ogre::MaterialPtr generate(const Ogre::Terrain* terrain);
+	Ogre::MaterialPtr generate(const Ogre::Terrain* terrain) override;
 	/** Generate a material for the given composite map of the terrain using the active profile.
 	 */
-	virtual Ogre::MaterialPtr generateForCompositeMap(const Ogre::Terrain* terrain);
+	Ogre::MaterialPtr generateForCompositeMap(const Ogre::Terrain* terrain) override;
 	/** Whether to support a light map over the terrain in the shader,
 	   if it's present (default true).
 	 */
-	virtual void setLightmapEnabled(bool enabled)
-	{
+	void setLightmapEnabled(bool enabled) override {
 		// We don't use this.
 	}
 	/** Get the maximum number of layers supported with the given terrain.
 	   @note When you change the options on the terrain, this value can change.
 	 */
-	virtual Ogre::uint8 getMaxLayers(const Ogre::Terrain* terrain) const
-	{
+	Ogre::uint8 getMaxLayers(const Ogre::Terrain* terrain) const override {
 		// We don't use this.
 		return 0;
 	}
@@ -93,13 +91,11 @@ public:
 
 	/** Update parameters for the given terrain.
 	 */
-	virtual void updateParams(const Ogre::MaterialPtr& mat, const Ogre::Terrain* terrain)
-	{
+	void updateParams(const Ogre::MaterialPtr& mat, const Ogre::Terrain* terrain) override {
 	}
 	/** Update parameters for the given terrain composite map using the active profile.
 	 */
-	virtual void updateParamsForCompositeMap(const Ogre::MaterialPtr& mat, const Ogre::Terrain* terrain)
-	{
+	void updateParamsForCompositeMap(const Ogre::MaterialPtr& mat, const Ogre::Terrain* terrain) override {
 		// We don't use this.
 	}
 

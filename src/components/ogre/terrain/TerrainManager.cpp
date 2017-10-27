@@ -56,6 +56,8 @@
 
 #include <sigc++/bind.h>
 
+#include <utility>
+
 using namespace Ogre;
 namespace Ember
 {
@@ -66,7 +68,15 @@ namespace Terrain
 
 
 TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)), mIsFoliageShown(false), mTerrainAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
+	mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())),
+	mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
+	mIsFoliageShown(false),
+	mTerrainAdapter(adapter),
+	mFoliageBatchSize(32),
+	mVegetation(new Foliage::Vegetation()),
+	mScene(scene),
+	mIsInitialized(false)
 {
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
 	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique));
@@ -184,8 +194,7 @@ void TerrainManager::config_TerrainLoadRadius(const std::string& section, const 
 void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages)
 {
 
-	for (std::set<TerrainPage*>::const_iterator I = pages.begin(); I != pages.end(); ++I) {
-		TerrainPage* page = *I;
+	for (auto page : pages) {
 		const TerrainIndex& index = page->getWFIndex();
 
 		S_LOG_VERBOSE("Updating terrain page [" << index.first << "|" << index.second << "]");
@@ -200,8 +209,8 @@ void TerrainManager::terrainHandler_ShaderCreated(const TerrainShader& shader)
 	size_t index = mHandler->getAllShaders().size() - 1;
 
 	const TerrainLayerDefinition& layerDef = shader.getLayerDefinition();
-	for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef.getFoliages().begin(); I != layerDef.getFoliages().end(); ++I) {
-		mVegetation->createPopulator(*I, index);
+	for (const auto& foliage : layerDef.getFoliages()) {
+		mVegetation->createPopulator(foliage, index);
 	}
 }
 
@@ -236,7 +245,7 @@ void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, co
 {
 	Foliage::PlantPopulator* populator = mVegetation->getPopulator(query.getPlantType());
 	if (populator) {
-		mHandler->getPlantsForArea(*populator, query, asyncCallback);
+		mHandler->getPlantsForArea(*populator, query, std::move(asyncCallback));
 	}
 }
 

@@ -36,10 +36,11 @@ namespace Terrain
 class OgreTerrainDefiner : public Ogre::TerrainPagedWorldSection::TerrainDefiner
 {
 public:
-	OgreTerrainDefiner(IPageDataProvider& provider);
-	virtual ~OgreTerrainDefiner();
+	explicit OgreTerrainDefiner(IPageDataProvider& provider);
 
-	virtual void define(Ogre::TerrainGroup *terrainGroup, long x, long y);
+	~OgreTerrainDefiner() override = default;
+
+	void define(Ogre::TerrainGroup *terrainGroup, long x, long y) override;
 
 private:
 	IPageDataProvider& mProvider;

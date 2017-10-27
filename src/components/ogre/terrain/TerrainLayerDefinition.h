@@ -45,7 +45,7 @@ public:
     
     TerrainLayerDefinition();
 
-    ~TerrainLayerDefinition();
+    ~TerrainLayerDefinition() = default;
     
     /**
      * @brief Sets a descriptive name for the layer.

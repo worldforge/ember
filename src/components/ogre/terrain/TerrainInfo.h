@@ -49,7 +49,7 @@ public:
 	 * @brief Ctor.
 	 * @param pageIndicesSize The size of one page in indices.
 	 */
-	TerrainInfo(int pageIndicesSize);
+	explicit TerrainInfo(int pageIndicesSize);
 	double getWorldSizeX() const;
 	double getWorldSizeY() const;
 	int getTotalNumberOfPagesX()  const;

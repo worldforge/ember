@@ -43,9 +43,9 @@ public:
 	typedef std::vector<TerrainLayerDefinition*> DefinitionStore;
     TerrainLayerDefinitionManager();
 
-    virtual ~TerrainLayerDefinitionManager();
+	~TerrainLayerDefinitionManager() override;
 
-	virtual void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+	void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName) override;
 
     /**
     Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
@@ -62,8 +62,8 @@ protected:
 	DefinitionStore mDefinitions;
 	
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
-    const Ogre::NameValuePairList* createParams);
+    	const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
+    	const Ogre::NameValuePairList* createParams) override;
 };
 
 }

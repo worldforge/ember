@@ -120,7 +120,7 @@ float BasePointUserObject::getFalloff() const
 
 void BasePointUserObject::updateMarking()
 {
-	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
+	Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
 	try {
 		if (mIsMoving) {
 			entity->setMaterialName("/common/base/authoring/point/moving");
@@ -197,16 +197,15 @@ TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneMan
 
 TerrainEditorOverlay::~TerrainEditorOverlay()
 {
-	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
-		Ogre::Entity* entity = *I;
+	for (auto entity : mEntities) {
 		entity->detachFromParent();
 		mSceneManager.destroyEntity(entity);
 	}
 	//TODO: also delete user objects
 	if (mOverlayNode) {
-		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*>(mOverlayNode->getParent());
+		Ogre::SceneNode* parent = dynamic_cast<Ogre::SceneNode*>(mOverlayNode->getParent());
 		if (parent) {
-			parent->removeAndDestroyChild(mOverlayNode->getName());
+			parent->removeAndDestroyChild(mOverlayNode);
 		} else {
 			mOverlayNode->getCreator()->destroySceneNode(mOverlayNode);
 		}
@@ -223,11 +222,11 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 	int x, y;
 	for (Mercator::Terrain::Pointstore::const_iterator I = basePoints.begin(); I != basePoints.end(); ++I) {
 		x = I->first;
-		for (Mercator::Terrain::Pointcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			y = J->first;
+		for (auto entry : I->second) {
+			y = entry.first;
 			std::stringstream ss;
 			ss << "basepointmarker" << x << "_" << y;
-			Ogre::Entity* entity(0);
+			Ogre::Entity* entity(nullptr);
 			try {
 				entity = mSceneManager.createEntity(ss.str(), "common/primitives/model/sphere.mesh");
 				//start out with a normal material
@@ -249,7 +248,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 
 			mEntities.push_back(entity);
 
-			const Mercator::BasePoint& basepoint = J->second;
+			const Mercator::BasePoint& basepoint = entry.second;
 			Ogre::SceneNode* basepointNode = mOverlayNode->createChildSceneNode();
 			TerrainPosition tPos(x * 64, y * 64);
 			Ogre::Vector3 ogrePos = Convert::toOgre<Ogre::Vector3>(tPos);
@@ -276,11 +275,11 @@ BasePointUserObject* TerrainEditorOverlay::getUserObject(const TerrainPosition& 
 {
 	std::stringstream ss;
 	ss << terrainIndex.x() << "_" << terrainIndex.y();
-	BasePointUserObjectStore::iterator I = mBasePointUserObjects.find(ss.str());
+	auto I = mBasePointUserObjects.find(ss.str());
 	if (I != mBasePointUserObjects.end()) {
 		return I->second;
 	}
-	return 0;
+	return nullptr;
 
 }
 
@@ -329,13 +328,13 @@ bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& free
 	//should we also translate secondary objects?
 	if (mEditor.getRadius() > 1.0f) {
 		// 		float squaredMovementRadius = mMovementRadiusInMeters * mMovementRadiusInMeters;
-		for (BasePointUserObjectStore::iterator I = mBasePointUserObjects.begin(); I != mBasePointUserObjects.end(); ++I) {
-			if (I->second != mCurrentUserObject) {
-				float distance = WFMath::SquaredDistance<2>((I->second)->getPosition(), mCurrentUserObject->getPosition()) * 64;
+		for (auto& basePointUserObject : mBasePointUserObjects) {
+			if (basePointUserObject.second != mCurrentUserObject) {
+				float distance = WFMath::SquaredDistance<2>((basePointUserObject.second)->getPosition(), mCurrentUserObject->getPosition()) * 64;
 				if (distance <= mEditor.getRadius()) {
 					float movement = 1.0f - (distance / mEditor.getRadius());
-					I->second->translate(translation * movement);
-					mSecondaryUserObjects.insert(I->second);
+					basePointUserObject.second->translate(translation * movement);
+					mSecondaryUserObjects.insert(basePointUserObject.second);
 				}
 			}
 		}
@@ -397,29 +396,29 @@ void TerrainEditorOverlay::createAction(bool alsoCommit)
 		//lets get how much it moved
 		float distance = mCurrentUserObject->getBasePointMarkerNode()->getPosition().y - mCurrentUserObject->getBasePoint().height();
 		//only register an action if it has been moved
-		TerrainEditAction action;
+		TerrainEditAction action{};
 		bool hadChanges = false;
 		if (!WFMath::Equal(distance, .0f)) {
 			TerrainEditBasePointMovement movement = { distance, std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()) };
 			action.mMovements.push_back(movement);
 
-			for (BasePointUserObjectSet::iterator I = mSecondaryUserObjects.begin(); I != mSecondaryUserObjects.end(); ++I) {
-				distance = (*I)->getBasePointMarkerNode()->getPosition().y - (*I)->getBasePoint().height();
+			for (auto secondaryUserObject : mSecondaryUserObjects) {
+				distance = secondaryUserObject->getBasePointMarkerNode()->getPosition().y - secondaryUserObject->getBasePoint().height();
 				if (!WFMath::Equal(distance, .0f)) {
-					TerrainEditBasePointMovement movement = { distance, std::make_pair((int)(*I)->getPosition().x(), (int)(*I)->getPosition().y()) };
-					action.mMovements.push_back(movement);
+					TerrainEditBasePointMovement newMovement = { distance, std::make_pair((int) secondaryUserObject->getPosition().x(), (int) secondaryUserObject->getPosition().y()) };
+					action.mMovements.push_back(newMovement);
 				}
 			}
 			hadChanges = true;
 		}
 
 		if (mCurrentUserObject->getRoughness() != mCurrentUserObject->getBasePoint().roughness()) {
-			action.mRoughnesses.push_back(std::make_pair(std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()), mCurrentUserObject->getRoughness()));
+			action.mRoughnesses.emplace_back(std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()), mCurrentUserObject->getRoughness());
 			hadChanges = true;
 		}
 
 		if (mCurrentUserObject->getFalloff() != mCurrentUserObject->getBasePoint().falloff()) {
-			action.mFalloffs.push_back(std::make_pair(std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()), mCurrentUserObject->getFalloff()));
+			action.mFalloffs.emplace_back(std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()), mCurrentUserObject->getFalloff());
 			hadChanges = true;
 		}
 
@@ -570,7 +569,7 @@ bool TerrainEditorOverlay::getVisible() const
 
 bool TerrainEditorOverlay::undoLastAction()
 {
-	if (mActions.size() > 0) {
+	if (!mActions.empty()) {
 		TerrainEditAction action = mActions.back();
 		//remove the last action from the list of active actions
 		mActions.pop_back();

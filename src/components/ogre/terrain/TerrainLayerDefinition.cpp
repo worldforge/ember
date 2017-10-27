@@ -36,11 +36,6 @@ TerrainLayerDefinition::TerrainLayerDefinition()
 {
 }
 
-
-TerrainLayerDefinition::~TerrainLayerDefinition()
-{
-}
-
 void TerrainLayerDefinition::setName(const std::string& name)
 {
 	mName = name;
@@ -109,8 +104,8 @@ TerrainLayerDefinition::StringParamStore& TerrainFoliageDefinition::getParameter
 
 const std::string& TerrainFoliageDefinition::getParameter(const std::string & key) const
 {
-	static std::string empty("");
-	TerrainLayerDefinition::StringParamStore::const_iterator I = mParameters.find(key);
+	static std::string empty;
+	auto I = mParameters.find(key);
 	if (I != mParameters.end()) {
 		return I->second;
 	}

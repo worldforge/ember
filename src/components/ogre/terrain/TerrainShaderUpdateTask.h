@@ -76,11 +76,11 @@ public:
 	 */
 	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection);
 
-	virtual ~TerrainShaderUpdateTask();
+	~TerrainShaderUpdateTask() override;
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 
-	virtual bool executeTaskInMainThread();
+	bool executeTaskInMainThread() override;
 
 private:
 

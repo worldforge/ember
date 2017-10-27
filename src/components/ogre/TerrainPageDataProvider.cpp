@@ -31,10 +31,6 @@ TerrainPageData::TerrainPageData(Terrain::TerrainPage* page) :
 {
 }
 
-TerrainPageData::~TerrainPageData()
-{
-}
-
 Ogre::MaterialPtr TerrainPageData::getMaterial()
 {
 	if (mPage) {
@@ -54,16 +50,12 @@ Ogre::MaterialPtr TerrainPageData::getCompositeMapMaterial()
 TerrainPageDataProvider::TerrainPageDataProvider(Terrain::TerrainHandler& handler) :
 		mHandler(handler)
 {
-
 }
 
-TerrainPageDataProvider::~TerrainPageDataProvider()
-{
-}
 
-IPageData* TerrainPageDataProvider::getPageData(const OgreIndex& ogreIndexPosition)
+std::unique_ptr<IPageData> TerrainPageDataProvider::getPageData(const OgreIndex& ogreIndexPosition)
 {
-	return new TerrainPageData(mHandler.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition)));
+	return std::unique_ptr<IPageData>(new TerrainPageData(mHandler.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition))));
 }
 
 int TerrainPageDataProvider::getPageIndexSize() const

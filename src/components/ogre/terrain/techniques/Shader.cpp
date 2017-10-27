@@ -47,8 +47,8 @@ Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, con
 
 Shader::~Shader()
 {
-	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
-		delete *I;
+	for (auto& pass : mPasses) {
+		delete pass;
 	}
 	for (auto& pass : mPassesNormalMapped) {
 		delete pass;
@@ -57,8 +57,8 @@ Shader::~Shader()
 
 void Shader::reset()
 {
-	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
-		delete *I;
+	for (auto& pass : mPasses) {
+		delete pass;
 	}
 	mPasses.clear();
 	for (auto& pass : mPassesNormalMapped) {
@@ -92,7 +92,7 @@ void Shader::buildPasses(bool normalMapped)
 
 	int activeLayersCount = 0;
 	if (shaderPass) {
-		for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
+		for (auto I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
 			const TerrainPageSurfaceLayer* surfaceLayer = I->second;
 
 			if (I == mTerrainPageSurfaces.begin()) {
@@ -147,10 +147,10 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 
 	material->removeAllTechniques();
 	Ogre::Material::LodValueList lodList;
-	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("Ogre/DepthShadowmap/Caster/Float/NoAlpha");
+	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("ShadowCaster/NoAlpha");
 
 	Ogre::Technique* technique = nullptr;
-	int currentLodIndex = 0;
+	unsigned short currentLodIndex = 0;
 
 	if (mUseNormalMapping) {
 		// Create separate normal mapped technique
@@ -231,7 +231,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 			float scales[1] = { 1.0f };
 			fpParams->setNamedConstant("scales", scales, 1); // The composite map spreads over the entire terrain, no uv scaling needed
 			if (mIncludeShadows) {
-				Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
+				Ogre::PSSMShadowCameraSetup* pssmSetup = dynamic_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
 				if (pssmSetup) {
 					Ogre::Vector4 splitPoints;
 					Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
