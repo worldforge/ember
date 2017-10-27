@@ -440,8 +440,9 @@ void OgreSetup::setStandardValues() {
 			auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
 
 
+			Ogre::Technique* firstTech = originalMaterial->getTechnique(0);
 			//If first pass already has fragment and vertex shaders, don't generate anything.
-			if (originalMaterial->getTechnique(0)->getPass(0)->hasVertexProgram() || originalMaterial->getTechnique(0)->getPass(0)->hasFragmentProgram()) {
+			if (firstTech->getPass(0)->hasVertexProgram() || firstTech->getPass(0)->hasFragmentProgram()) {
 				return nullptr;
 			}
 
