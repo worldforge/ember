@@ -106,6 +106,8 @@ void SubModelPart::showSubEntities() {
 bool SubModelPart::createInstancedEntities() {
 	std::vector<std::pair<Ogre::InstanceManager*, std::string>> managersAndMaterials;
 
+	static std::string instancedSuffix = "/Instanced/HW";
+
 	for (auto& entry : mSubEntities) {
 		Ogre::SubEntity* subEntity = entry.SubEntity;
 		Ogre::Entity* entity = subEntity->getParent();
@@ -123,9 +125,9 @@ bool SubModelPart::createInstancedEntities() {
 
 		std::string instancedMaterialName = materialName;
 
-		if (!boost::algorithm::ends_with(materialName, "/Instanced")) {
+		if (!boost::algorithm::ends_with(materialName, instancedSuffix)) {
 
-			instancedMaterialName += "/Instanced";
+			instancedMaterialName += instancedSuffix;
 			auto& materialMgr = Ogre::MaterialManager::getSingleton();
 
 			if (!materialMgr.resourceExists(instancedMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
@@ -137,22 +139,22 @@ bool SubModelPart::createInstancedEntities() {
 					for (auto* tech : material->getTechniques()) {
 						auto pass = tech->getPass(0);
 						if (pass->hasVertexProgram()) {
-							std::string vertexProgramName = pass->getVertexProgram()->getName() + "/Instanced";
+							std::string vertexProgramName = pass->getVertexProgram()->getName() + instancedSuffix;
 							if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 								pass->setVertexProgram(vertexProgramName);
 							}
 						}
 
 						auto shadowCasterMat = tech->getShadowCasterMaterial();
-						if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), "/Instanced")) {
-							std::string instancedShadowCasterMatName = shadowCasterMat->getName() + "/Instanced";
+						if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), instancedSuffix)) {
+							std::string instancedShadowCasterMatName = shadowCasterMat->getName() + instancedSuffix;
 							auto shadowCasterMatInstanced = materialMgr.getByName(instancedShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 							if (!shadowCasterMatInstanced) {
 								shadowCasterMatInstanced = shadowCasterMat->clone(instancedShadowCasterMatName);
 								for (auto* shadowCasterTech : shadowCasterMatInstanced->getTechniques()) {
 									auto shadowCasterPass = shadowCasterTech->getPass(0);
 									if (shadowCasterPass->hasVertexProgram()) {
-										std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + "/Instanced";
+										std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + instancedSuffix;
 										if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 											shadowCasterPass->setVertexProgram(vertexProgramName);
 										}
@@ -178,7 +180,7 @@ bool SubModelPart::createInstancedEntities() {
 				//bugs since in some cases the mesh gets messed up. We'll in these cases use a clone instead.
 				if (entity->getMesh()->sharedVertexData) {
 					auto& meshMgr = Ogre::MeshManager::getSingleton();
-					meshName += "/Instanced";
+					meshName += instancedSuffix;
 					if (!meshMgr.resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 						entity->getMesh()->clone(meshName);
 					} else {
@@ -197,8 +199,9 @@ bool SubModelPart::createInstancedEntities() {
 					instanceManager = sceneManager->createInstanceManager(instanceName,
 																		  meshName,
 																		  Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-																		  Ogre::InstanceManager::ShaderBased,
-																		  80, Ogre::IM_USEALL, entry.subEntityIndex);
+																		  Ogre::InstanceManager::HWInstancingBasic,
+																		  200, Ogre::IM_USEALL, entry.subEntityIndex);
+					instanceManager->setBatchesAsStaticAndUpdate(true);
 
 					managersAndMaterials.emplace_back(std::make_pair(instanceManager, instancedMaterialName));
 				} catch (const std::exception& e) {
