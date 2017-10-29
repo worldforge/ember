@@ -103,7 +103,7 @@ Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 
 	if (pageSize <= 0) {
 		S_LOG_WARNING("Page size (\"terrain:pageSize\") config option set to invalid value of " << pageSize << " ; setting it to 256");
-		pageSize = 256;
+		pageSize = 512;
 	}
 
 	assert(mSceneManager);

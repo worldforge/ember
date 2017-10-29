@@ -47,7 +47,7 @@ EmberTerrain::EmberTerrain(std::function<void()>& unloader,
 	//that all textures already have been created.
 	//This of course means that we can't touch _any_ method which in some way interacts
 	//with the layers and blend maps.
-	mBlendTextureList.push_back(Ogre::TexturePtr());
+	mBlendTextureList.emplace_back();
 
 	mMaterialGenerator = materialGenerator;
 

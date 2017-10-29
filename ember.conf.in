@@ -94,7 +94,7 @@ usedebuglodcolors = false
 preferredtechnique = Shader
 
 #The size of single terrain pages. Should be one of 64, 128, 256, 512.
-pagesize = "256"
+pagesize = "512"
 
 #The distance from the camera at which terrain pages are loaded. Affects how fast the initial loading is as well as the memory usage and performance in-game.
 loadradius = "300"

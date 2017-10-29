@@ -44,7 +44,7 @@ CameraFocusedGrid2DPageStrategy::~CameraFocusedGrid2DPageStrategy()
 
 void CameraFocusedGrid2DPageStrategy::notifyCamera(Camera* cam, PagedWorldSection* section)
 {
-	Grid2DPageStrategyData* stratData = static_cast<Grid2DPageStrategyData*>(section->getStrategyData());
+	Grid2DPageStrategyData* stratData = dynamic_cast<Grid2DPageStrategyData*>(section->getStrategyData());
 
 	const Vector3& pos = cam->getDerivedPosition();
 
@@ -112,7 +112,7 @@ void CameraFocusedGrid2DPageStrategy::loadNearestPages(const Vector2& gridpos, P
 	//Get all pages that are within 100 meters and load them instantly.
 	std::set<Ogre::PageID> pagesToLoad;
 
-	Grid2DPageStrategyData* stratData = static_cast<Grid2DPageStrategyData*>(section->getStrategyData());
+	Grid2DPageStrategyData* stratData = dynamic_cast<Grid2DPageStrategyData*>(section->getStrategyData());
 
 	auto calculatePageId = [&](const Ogre::Vector2& pos) {
 		Ogre::int32 x, y;

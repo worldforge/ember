@@ -52,18 +52,18 @@ class ITerrainAdapter
 {
 public:
 
-	virtual ~ITerrainAdapter() {}
+	virtual ~ITerrainAdapter() = default;
 
 	/**
 	 * @brief Gets the size of the width of one page, in indices (so it's often a power of two + 1). This is the number of vertices along the edge of a page.
 	 *
 	 * @return The page size in indices.
 	 */
-	virtual int getPageSize() = 0;
+	virtual unsigned int getPageSize() = 0;
 
 	/**
-	 * @brief Sets the size of the width of one page, in indices. This must be a power of two + 1 and at least 65. Depending on the implementation, this might require a full reload.
-	 * @param size The number of vertices along one side of a page. Must be a power of two + 1 and at least 65.
+	 * @brief Sets the size of the width of one page. This must be a power of two and at least 64. Depending on the implementation, this might require a full reload.
+	 * @param size The number of vertices along one side of a page. Must be a power of two and at least 64.
 	 */
 	virtual void setPageSize(unsigned int size) = 0;
 

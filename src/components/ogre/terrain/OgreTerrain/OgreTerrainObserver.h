@@ -46,12 +46,13 @@ public:
 	 * @brief Usually you should call OgreTerrainAdapter::createObserver to create an instance of this observer.
 	 * @param terrainAreaUpdatedSignal A valid signal that can be listened to for terrain updates.
 	 */
-	OgreTerrainObserver(sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal);
-	virtual ~OgreTerrainObserver();
+	explicit OgreTerrainObserver(sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal);
 
-	virtual void observeArea(const WFMath::AxisBox<2>& area);
+	~OgreTerrainObserver() override;
 
-	virtual void observeArea(const Ogre::TRect<int>& area);
+	void observeArea(const WFMath::AxisBox<2>& area) override;
+
+	void observeArea(const Ogre::TRect<int>& area) override;
 
 
 	/**

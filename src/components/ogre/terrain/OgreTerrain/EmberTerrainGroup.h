@@ -40,11 +40,12 @@ class EmberTerrainGroup: public Ogre::TerrainGroup
 {
 public:
 	EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::uint16 terrainSize, sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal, Ogre::TerrainMaterialGeneratorPtr materialGenerator);
-	virtual ~EmberTerrainGroup();
 
-	void loadAllTerrains(bool synchronous = false);
+	~EmberTerrainGroup() override;
 
-	void loadTerrain(long x, long y, bool synchronous = false);
+	void loadAllTerrains(bool synchronous) override;
+
+	void loadTerrain(long x, long y, bool synchronous) override;
 
 	/**
 	 * @brief Sets the page data provider.
@@ -54,7 +55,7 @@ public:
 	 */
 	void setPageDataProvider(IPageDataProvider* pageDataProvider);
 
-	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ);
+	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ) override;
 
 	/**
 	 * @brief Signal emitted when an area of the terrain has been updated.

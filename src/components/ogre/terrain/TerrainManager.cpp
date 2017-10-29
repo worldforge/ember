@@ -79,8 +79,8 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 	mIsInitialized(false)
 {
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
-	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique));
-	registerConfigListener("terrain", "pagesize", sigc::mem_fun(*this, &TerrainManager::config_TerrainPageSize));
+	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique), false);
+	registerConfigListener("terrain", "pagesize", sigc::mem_fun(*this, &TerrainManager::config_TerrainPageSize), false);
 	registerConfigListener("terrain", "loadradius", sigc::mem_fun(*this, &TerrainManager::config_TerrainLoadRadius));
 
 	shaderManager.EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), &shaderManager));
@@ -92,6 +92,9 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 
 	sigc::slot<void, const Ogre::TRect<Ogre::Real>> slot = sigc::mem_fun(*this, &TerrainManager::adapter_terrainShown);
 	adapter->bindTerrainShown(slot);
+
+	mHandler->setPageSize(mTerrainAdapter->getPageSize());
+	mHandler->updateAllPages();
 }
 
 TerrainManager::~TerrainManager()
@@ -159,7 +162,7 @@ void TerrainManager::updateFoliageVisibility()
 
 void TerrainManager::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	if (GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") && variable.is_bool()) {
+	if (variable.is_bool()) {
 		mIsFoliageShown = static_cast<bool> (variable);
 	} else {
 		mIsFoliageShown = false;
@@ -176,7 +179,7 @@ void TerrainManager::config_TerrainTechnique(const std::string& section, const s
 void TerrainManager::config_TerrainPageSize(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	if (variable.is_int()) {
-		unsigned int size = static_cast<unsigned int>(static_cast<int>(variable)) + 1;
+		unsigned int size = static_cast<unsigned int>(static_cast<int>(variable));
 		mTerrainAdapter->setPageSize(size);
 		mHandler->setPageSize(size);
 		mHandler->updateAllPages();

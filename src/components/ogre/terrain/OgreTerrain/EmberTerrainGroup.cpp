@@ -39,10 +39,13 @@ EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm,
 									 Ogre::uint16 terrainSize,
 									 sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal,
 									 Ogre::TerrainMaterialGeneratorPtr materialGenerator) :
-		Ogre::TerrainGroup(sm, Ogre::Terrain::ALIGN_X_Z, terrainSize, Ogre::Real(terrainSize - 1)),
+		Ogre::TerrainGroup(sm, Ogre::Terrain::ALIGN_X_Z, terrainSize + 1, terrainSize),
 		mPageDataProvider(nullptr),
 		mTerrainShownSignal(terrainShownSignal),
 		mMaterialGenerator(materialGenerator) {
+
+	//Setting this to 65 makes the terrain system use much less batches, which is good for modern GPUs.
+	getDefaultImportSettings().minBatchSize = 65;
 }
 
 EmberTerrainGroup::~EmberTerrainGroup() {
@@ -54,7 +57,7 @@ EmberTerrainGroup::~EmberTerrainGroup() {
 
 }
 
-void EmberTerrainGroup::loadAllTerrains(bool synchronous /*= false*/) {
+void EmberTerrainGroup::loadAllTerrains(bool synchronous) {
 	// Just a straight iteration - for the numbers involved not worth
 	// keeping a loaded / unloaded list
 	for (auto entry : mTerrainSlots) {
@@ -64,7 +67,7 @@ void EmberTerrainGroup::loadAllTerrains(bool synchronous /*= false*/) {
 
 }
 
-void EmberTerrainGroup::loadTerrain(long x, long y, bool synchronous /*= false*/) {
+void EmberTerrainGroup::loadTerrain(long x, long y, bool synchronous) {
 	TerrainSlot* slot = getTerrainSlot(x, y, false);
 	if (slot) {
 		loadEmberTerrainImpl(slot, synchronous);
@@ -107,7 +110,7 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 
 		newSlot->instance = terrain;
 
-		LoadRequest req;
+		LoadRequest req{};
 		req.slot = newSlot;
 		req.origin = this;
 		++sLoadingTaskNum;

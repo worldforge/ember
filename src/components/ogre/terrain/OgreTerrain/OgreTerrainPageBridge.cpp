@@ -24,6 +24,8 @@
 
 #include <Terrain/OgreTerrainGroup.h>
 
+#include <utility>
+
 namespace Ember
 {
 namespace OgreView
@@ -32,7 +34,7 @@ namespace Terrain
 {
 
 OgreTerrainPageBridge::OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, IndexType index) :
-		mTerrainGroup(terrainGroup), mIndex(index)
+		mTerrainGroup(terrainGroup), mIndex(std::move(index))
 {
 
 }
@@ -62,7 +64,7 @@ void OgreTerrainPageBridge::terrainPageReady()
 {
 	S_LOG_INFO("Finished loading or updating terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
 	if (mHeightData) {
-		auto terrain = static_cast<EmberTerrain*>(mTerrainGroup.getTerrain(mIndex.first, mIndex.second));
+		auto terrain = dynamic_cast<EmberTerrain*>(mTerrainGroup.getTerrain(mIndex.first, mIndex.second));
 		if (terrain) {
 			terrain->scheduleGeometryUpdate(mHeightData);
 		} else {

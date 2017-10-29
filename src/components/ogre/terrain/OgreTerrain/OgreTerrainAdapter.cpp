@@ -86,9 +86,9 @@ OgreTerrainAdapter::~OgreTerrainAdapter()
 	OGRE_DELETE mMaterialProfile;
 }
 
-int OgreTerrainAdapter::getPageSize()
+unsigned int OgreTerrainAdapter::getPageSize()
 {
-	return static_cast<int>(mTerrainGroup->getTerrainSize());
+	return static_cast<unsigned int>(mTerrainGroup->getTerrainSize());
 }
 
 void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
@@ -97,8 +97,8 @@ void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
 		mTerrainPagedWorldSection->removeAllPages();
 	}
 	mTerrainGroup->removeAllTerrains();
-	mTerrainGroup->setTerrainSize(static_cast<Ogre::uint16>(pageSize));
-	mTerrainGroup->setTerrainWorldSize(Ogre::Real(pageSize - 1));
+	mTerrainGroup->setTerrainSize(static_cast<Ogre::uint16>(pageSize + 1));
+	mTerrainGroup->setTerrainWorldSize(pageSize);
 	Ogre::Vector3 origin;
 	origin.x = mTerrainGroup->getTerrainWorldSize() / 2;
 	origin.z = mTerrainGroup->getTerrainWorldSize() / 2;
@@ -177,7 +177,7 @@ void OgreTerrainAdapter::reloadPage(const TerrainIndex& index)
 void OgreTerrainAdapter::reloadPageMaterial(const TerrainIndex& index)
 {
 	if (mTerrainGroup) {
-		EmberTerrain* page = static_cast<EmberTerrain*>(mTerrainGroup->getTerrain(index.first, index.second));
+		EmberTerrain* page = dynamic_cast<EmberTerrain*>(mTerrainGroup->getTerrain(index.first, index.second));
 		if (page) {
 			//We must tell the page what area needs updating. For now we'll update the whole page.
 			//But we should really look into only updating the area that has changed.
@@ -208,7 +208,7 @@ void OgreTerrainAdapter::destroyObserver(ITerrainObserver* observer)
 std::pair<bool, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const
 {
 	Ogre::TerrainGroup::RayResult result = mTerrainGroup->rayIntersects(ray, mHoldRadius + mTerrainGroup->getTerrainWorldSize());
-	return std::pair<bool, Ogre::Vector3>(result.hit, result.position);
+	return std::make_pair(result.hit, result.position);
 }
 
 void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider)

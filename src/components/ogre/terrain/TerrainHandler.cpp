@@ -217,7 +217,7 @@ void TerrainHandler::setPageSize(unsigned int pageSize)
 	mPages.clear();
 	mTerrainPages.clear();
 
-	mTerrainInfo.reset(new TerrainInfo(pageSize));
+	mTerrainInfo.reset(new TerrainInfo(pageSize + 1)); //The number of vertices is always one more than the number of "units".
 	mPageIndexSize = pageSize;
 }
 
@@ -330,7 +330,7 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 		if (mLightning) {
 			defaultShadowColour = mLightning->getAmbientLightColour();
 		}
-		mTaskQueue->enqueueTask(new PlantQueryTask(segmentRef, populator, query, defaultShadowColour, asyncCallback));
+		mTaskQueue->enqueueTask(new PlantQueryTask(segmentRef, populator, query, defaultShadowColour, std::move(asyncCallback)));
 
 	}
 }

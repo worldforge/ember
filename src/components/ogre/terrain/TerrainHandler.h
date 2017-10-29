@@ -113,8 +113,8 @@ public:
 	void shutdown();
 
 	/**
-	 * @brief Sets the size of the width of one page, in indices. This must be a power of two + 1 and at least 65.
-	 * @param pageSize The number of vertices along one side of a page. Must be a power of two + 1 and at least 65.
+	 * @brief Sets the size of the width of one page. This must be a power of two and at least 64.
+	 * @param pageSize The number of "units" along one side of a page. Must be a power of two and at least 64.
 	 */
 	void setPageSize(unsigned int pageSize);
 

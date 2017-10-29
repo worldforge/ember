@@ -60,7 +60,7 @@ public:
 
 	virtual ~OgreTerrainAdapter();
 
-	int getPageSize() override;
+	unsigned int getPageSize() override;
 
 	void setPageSize(unsigned int pageSize) override;
 

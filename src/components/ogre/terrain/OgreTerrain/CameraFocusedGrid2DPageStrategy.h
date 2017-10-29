@@ -38,10 +38,11 @@ namespace Terrain
 class CameraFocusedGrid2DPageStrategy : public Ogre::Grid2DPageStrategy
 {
 public:
-	CameraFocusedGrid2DPageStrategy(Ogre::PageManager* manager);
-	virtual ~CameraFocusedGrid2DPageStrategy();
+	explicit CameraFocusedGrid2DPageStrategy(Ogre::PageManager* manager);
 
-    void notifyCamera(Ogre::Camera* cam, Ogre::PagedWorldSection* section);
+	~CameraFocusedGrid2DPageStrategy() override;
+
+    void notifyCamera(Ogre::Camera* cam, Ogre::PagedWorldSection* section) override;
 
 protected:
 

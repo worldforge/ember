@@ -53,7 +53,8 @@ public:
 				 sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal,
 				 sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal,
 				 Ogre::TerrainMaterialGeneratorPtr materialGenerator);
-	virtual ~EmberTerrain();
+
+	~EmberTerrain() override;
 
 	/**
 	 * Specifies the index of this page in the paging component.

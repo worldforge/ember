@@ -47,13 +47,13 @@ public:
 
 	OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, IndexType index);
 
-	virtual ~OgreTerrainPageBridge();
+	~OgreTerrainPageBridge() override;
 
-	virtual void updateTerrain(TerrainPageGeometry& geometry);
+	void updateTerrain(TerrainPageGeometry& geometry) override;
 
-	virtual void terrainPageReady();
+	void terrainPageReady() override;
 
-	virtual bool isPageShown() const;
+	bool isPageShown() const override;
 
 	/** 
 	 * The mutex used by OgreTerrainDefiner to wait for the loading of a terrain page to be finished.
