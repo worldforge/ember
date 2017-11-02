@@ -150,6 +150,7 @@ bool SubModelPart::createInstancedEntities() {
 							std::string instancedShadowCasterMatName = shadowCasterMat->getName() + instancedSuffix;
 							auto shadowCasterMatInstanced = materialMgr.getByName(instancedShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 							if (!shadowCasterMatInstanced) {
+								shadowCasterMat->load();
 								shadowCasterMatInstanced = shadowCasterMat->clone(instancedShadowCasterMatName);
 								for (auto* shadowCasterTech : shadowCasterMatInstanced->getTechniques()) {
 									auto shadowCasterPass = shadowCasterTech->getPass(0);
@@ -161,6 +162,7 @@ bool SubModelPart::createInstancedEntities() {
 									}
 								}
 							}
+							shadowCasterMatInstanced->load();
 							tech->setShadowCasterMaterial(shadowCasterMatInstanced);
 						}
 					}
