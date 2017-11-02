@@ -84,9 +84,8 @@ unsigned int countNodes(Ogre::Node* node)
 
 void OgreInfo::diagnose(std::ostream& outputStream)
 {
-	Ogre::SceneManagerEnumerator::SceneManagerIterator sceneManagerI = Ogre::Root::getSingleton().getSceneManagerIterator();
-	while (sceneManagerI.hasMoreElements()) {
-		Ogre::SceneManager* sceneManager = sceneManagerI.getNext();
+	for (auto entry : Ogre::Root::getSingleton().getSceneManagers()) {
+		Ogre::SceneManager* sceneManager = entry.second;
 		outputStream << "Scenemanager(" << sceneManager->getTypeName() << ") " << sceneManager->getName() << std::endl;
 		outputStream << " Number of scene nodes: " << countNodes(sceneManager->getRootSceneNode()) << std::endl;
 		outputStream << " Movable objects:" << std::endl;

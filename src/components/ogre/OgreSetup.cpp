@@ -415,18 +415,8 @@ void OgreSetup::setStandardValues() {
 	Ogre::LodStrategyManager::getSingleton().addStrategy(lodStrategy);
 
 	if (Ogre::RTShader::ShaderGenerator::initialize()) {
-		// Grab the shader generator pointer.
-		auto shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
-		// Add the shader libs resource location. a sample shader lib can be found in Samples\Media\RTShaderLib
 		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(OGRE_MEDIA_DIR"/RTShaderLib/materials", "FileSystem");
 		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(OGRE_MEDIA_DIR"/RTShaderLib/GLSL", "FileSystem");
-		// Set shader cache path.
-		//shaderGenerator->setShaderCachePath(shaderCachePath);
-		// Add a specialized sub-render (per-pixel lighting) state to the default scheme render state
-		//auto* pMainRenderState = shaderGenerator->createOrRetrieveRenderState(Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME).first;
-		//pMainRenderState->reset();
-		//shaderGenerator->addSubRenderStateFactory(new Ogre::RTShader::PerPixelLightingFactory);
-		//pMainRenderState->addTemplateSubRenderState(shaderGenerator->createSubRenderState(Ogre::RTShader::PerPixelLighting::Type));
 	}
 
 

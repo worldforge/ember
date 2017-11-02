@@ -84,11 +84,9 @@ bool TerrainMaterialCompilationTask::executeTaskInMainThread() {
 
 void TerrainMaterialCompilationTask::updateSceneManagersAfterMaterialsChange() {
 	//We need to do this to prevent stale hashes in Ogre, which will lead to crashes during rendering.
-	if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
-		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
-
-		while (scenesIter.hasMoreElements()) {
-			Ogre::SceneManager* pScene = scenesIter.getNext();
+	if (!Ogre::Pass::getDirtyHashList().empty() || !Ogre::Pass::getPassGraveyard().empty()) {
+		for (auto entry : Ogre::Root::getSingleton().getSceneManagers()) {
+			Ogre::SceneManager* pScene = entry.second;
 			if (pScene) {
 				Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
 				if (pQueue) {

@@ -37,9 +37,10 @@ namespace OgreView
 {
 
 Scene::Scene() :
-		mSceneManager(0), mMainCamera(0)
+		mSceneManager(nullptr),
+		mMainCamera(nullptr)
 {
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR);
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "World");
 
 	S_LOG_INFO("Using SceneManager: " << mSceneManager->getTypeName());
 
@@ -49,7 +50,7 @@ Scene::Scene() :
 
 Scene::~Scene()
 {
-	if (mTechniques.size() > 0) {
+	if (!mTechniques.empty()) {
 		S_LOG_WARNING("Scene was deleted while there still was registered techniques.");
 	}
 	//No need to delete the camera, as that will taken care of when destroying the scene manager.
@@ -87,7 +88,7 @@ void Scene::addRenderingTechnique(const std::string& name, ISceneRenderingTechni
 
 ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& name)
 {
-	RenderingTechniqueStore::iterator I = mTechniques.find(name);
+	auto I = mTechniques.find(name);
 	if (I != mTechniques.end()) {
 		ISceneRenderingTechnique* technique = I->second;
 		mTechniques.erase(I);

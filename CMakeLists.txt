@@ -82,7 +82,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 #TODO: check for binreloc?
 
 
-set(OGREVER 1.10.8)
+set(OGREVER 1.10.9)
 find_package(OGRE ${OGREVER} REQUIRED)
 link_directories(${OGRE_LIBRARY_DIRS})
 link_libraries(${OGRE_LIBRARIES})

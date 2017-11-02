@@ -269,10 +269,8 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 void EmberOgre::clearDirtyPassLists()
 {
 	if (!Ogre::Pass::getDirtyHashList().empty() || !Ogre::Pass::getPassGraveyard().empty()) {
-		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
-
-		while (scenesIter.hasMoreElements()) {
-			Ogre::SceneManager* pScene = scenesIter.getNext();
+		for (auto entry : Ogre::Root::getSingleton().getSceneManagers()) {
+			Ogre::SceneManager* pScene = entry.second;
 			pScene->getRenderQueue()->clear();
 		}
 
