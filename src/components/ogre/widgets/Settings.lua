@@ -131,6 +131,17 @@ function SettingsWidget:shutdown()
 		self.settingsUnappliedChangesDialogInstance = nil
 	end
 
+	for _, category in ipairs(self.settings) do
+		for _, data in ipairs(category.contents) do
+			if data.representation then
+				local window = data.representation:getGuiRoot()
+				if window:getParent() then
+					window:getParent():removeChild(window)
+				end
+			end
+		end
+	end
+
 	self.settings = nil
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
