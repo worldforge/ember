@@ -269,6 +269,8 @@ public:
 
 	const INodeProvider* getNodeProvider() const;
 
+	bool useInstancing() const;
+
 	/**
 	 * A static map of instanced entities, mainly used for doing collision detection.
 	 */
@@ -399,6 +401,7 @@ protected:
 	uint32_t mQueryFlags;
 	bool mLoaded;
 	AssetCreationContext mAssetCreationContext;
+	bool mUseInstancing;
 };
 
 inline const std::set<SubModel*>& Model::getSubmodels() const {

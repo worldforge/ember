@@ -79,10 +79,9 @@ const std::string& SubModelPart::getName() const {
 
 void SubModelPart::show() {
 	showSubEntities();
-	if (!mSubModel.mEntity.getMesh()->hasSkeleton()) {
+	if (mSubModel.mModel.mUseInstancing) {
 		createInstancedEntities();
 	}
-
 }
 
 void SubModelPart::showSubEntities() {
@@ -113,7 +112,7 @@ bool SubModelPart::createInstancedEntities() {
 		Ogre::Entity* entity = subEntity->getParent();
 		Ogre::SceneManager* sceneManager = entity->_getManager();
 		std::string instanceName = entity->getMesh()->getName() + "/" + std::to_string(entry.subEntityIndex);
-		Ogre::InstanceManager* instanceManager;
+
 
 		std::string materialName;
 		if (entry.Definition != nullptr && !entry.Definition->getMaterialName().empty()) {
@@ -198,12 +197,12 @@ bool SubModelPart::createInstancedEntities() {
 
 
 				try {
-					instanceManager = sceneManager->createInstanceManager(instanceName,
+					Ogre::InstanceManager* instanceManager = sceneManager->createInstanceManager(instanceName,
 																		  meshName,
-																		  Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+																		  entity->getMesh()->getGroup(),
 																		  Ogre::InstanceManager::HWInstancingBasic,
-																		  200, Ogre::IM_USEALL, entry.subEntityIndex);
-					instanceManager->setBatchesAsStaticAndUpdate(true);
+																		  50, Ogre::IM_USEALL, entry.subEntityIndex);
+					instanceManager->setBatchesAsStaticAndUpdate(false);
 
 					managersAndMaterials.emplace_back(std::make_pair(instanceManager, instancedMaterialName));
 				} catch (const std::exception& e) {

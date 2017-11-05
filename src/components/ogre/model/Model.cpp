@@ -69,7 +69,8 @@ Model::Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>
 		mVisible(true),
 		mRenderingDistance(0),
 		mQueryFlags(0),
-		mLoaded(false) {
+		mLoaded(false),
+		mUseInstancing(true) {
 	definition->addModelInstance(this);
 }
 
@@ -187,6 +188,11 @@ bool Model::createModelAssets() {
 			auto mesh = Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			if (mesh) {
 				mesh->load();
+
+				//Instancing (currently) doesn't support HW skeletons, so we'll have to disable for any meshes with skeletons.
+				if (mesh->hasSkeleton()) {
+					mUseInstancing = false;
+				}
 
 				Ogre::Entity* entity;
 				if (!mName.empty()) {
@@ -484,7 +490,7 @@ bool Model::addSubmodel(SubModel* submodel) {
 	}
 	auto result = mSubmodels.insert(submodel);
 	if (result.second) {
-		if (entity->getMesh()->hasSkeleton()) {
+		if (!mUseInstancing) {
 			addMovable(entity);
 		}
 	}
@@ -867,6 +873,10 @@ const INodeProvider* Model::getNodeProvider() const {
 
 bool Model::isLoaded() const {
 	return mLoaded;
+}
+
+bool Model::useInstancing() const {
+	return mUseInstancing;
 }
 
 
