@@ -43,6 +43,7 @@
 #include <OgreTechnique.h>
 #include <OgrePass.h>
 #include <OgreHighLevelGpuProgramManager.h>
+#include <OgreHighLevelGpuProgram.h>
 #include <OgreInstanceBatch.h>
 #include <boost/algorithm/string.hpp>
 
@@ -86,17 +87,54 @@ void SubModelPart::show() {
 
 void SubModelPart::showSubEntities() {
 	for (auto& subModelPartEntity : mSubEntities) {
-		const std::string* materialName;
+		std::string materialName;
 		if (subModelPartEntity.Definition != nullptr && !subModelPartEntity.Definition->getMaterialName().empty()) {
-			materialName = &subModelPartEntity.Definition->getMaterialName();
+			materialName = subModelPartEntity.Definition->getMaterialName();
 		} else {
 			//if no material name is set in the ModelDefinition, use the default one from the mesh
-			materialName = &subModelPartEntity.SubEntity->getSubMesh()->getMaterialName();
+			materialName = subModelPartEntity.SubEntity->getSubMesh()->getMaterialName();
 		}
 
-		if (*materialName != subModelPartEntity.SubEntity->getMaterialName()) {
+		if (mSubModel.mEntity.hasSkeleton()) {
+			static std::string skinningSuffix = "/Skinning";
+			//Check if we can use Hardware Skinning material.
+			//This is done by checking if a material by the same name, but with the "/Skinning" suffix is available.
+			//If not, we try to create such a material by cloning the original and replacing the vertex shader with
+			//one with the same suffix (if available and supported).
+			if (!boost::algorithm::ends_with(materialName, skinningSuffix)) {
+
+				std::string newMaterialName = materialName + skinningSuffix;
+				auto& materialMgr = Ogre::MaterialManager::getSingleton();
+				if (!materialMgr.resourceExists(newMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+					//Material does not exist; lets create it
+					auto material = materialMgr.getByName(materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					material->load();
+					auto newMaterial = material->clone(newMaterialName);
+					for (auto tech : newMaterial->getTechniques()) {
+						if (!tech->getPasses().empty()) {
+							auto pass = tech->getPass(0);
+							if (pass->hasVertexProgram()) {
+								std::string newVertexProgramName = pass->getVertexProgramName() + skinningSuffix;
+								auto program = Ogre::HighLevelGpuProgramManager::getSingleton().getByName(newVertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+								if (program) {
+									program->load();
+									if (program->isSupported()) {
+										pass->setVertexProgram(newVertexProgramName);
+									}
+								}
+							}
+						}
+					}
+				}
+				materialName = newMaterialName;
+			}
+		}
+
+
+
+		if (materialName != subModelPartEntity.SubEntity->getMaterialName()) {
 			//TODO: store the material ptr in the definition so we'll avoid a lookup in setMaterialName
-			subModelPartEntity.SubEntity->setMaterialName(*materialName);
+			subModelPartEntity.SubEntity->setMaterialName(materialName);
 		}
 		subModelPartEntity.SubEntity->setVisible(true);
 	}
@@ -124,6 +162,9 @@ bool SubModelPart::createInstancedEntities() {
 
 		std::string instancedMaterialName = materialName;
 
+		//Check if the material is "instanced", i.e. has the suffix as specified in "instancedSuffix".
+		//If not, we'll create a new material by cloning the original and replacing the vertex shader with
+		//one with the correct suffix, if such one is available and supported.
 		if (!boost::algorithm::ends_with(materialName, instancedSuffix)) {
 
 			instancedMaterialName += instancedSuffix;

@@ -480,7 +480,7 @@ bool Model::addSubmodel(SubModel* submodel) {
 
 	entity->getUserObjectBindings().setUserAny("model", Ogre::Any(this));
 	//if the submodel has a skeleton, check if it should be shared with existing models
-	if (entity->getSkeleton()) {
+	if (entity->hasSkeleton()) {
 		if (mSkeletonOwnerEntity != nullptr) {
 			entity->shareSkeletonInstanceWith(mSkeletonOwnerEntity);
 		} else {
