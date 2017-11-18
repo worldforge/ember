@@ -169,7 +169,7 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 		mOgreView(nullptr),
 		mShouldQuit(false),
 		mPollEris(true),
-		mMainLoopController(mShouldQuit, mPollEris, mSession->getEventService()),
+		mMainLoopController(mShouldQuit, mPollEris, *mSession),
 		mPrefix(prefix),
 		mHomeDir(homeDir),
 		mLogObserver(nullptr),

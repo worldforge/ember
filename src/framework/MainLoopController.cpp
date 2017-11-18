@@ -20,13 +20,14 @@
 #include "config.h"
 #endif
 
+#include <Eris/Session.h>
 #include "MainLoopController.h"
 
 namespace Ember {
-template<> MainLoopController* Singleton<MainLoopController>::ms_Singleton = 0;
+template<> MainLoopController* Singleton<MainLoopController>::ms_Singleton = nullptr;
 
-MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris, Eris::EventService& eventService) :
-		mShouldQuit(shouldQuit), mPollEris(pollEris), mEventService(eventService) {
+MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris, Eris::Session& session) :
+		mShouldQuit(shouldQuit), mPollEris(pollEris), mSession(session) {
 }
 
 bool MainLoopController::shouldQuit() {
@@ -57,7 +58,12 @@ bool MainLoopController::getErisPolling() const {
 }
 
 Eris::EventService& MainLoopController::getEventService() {
-	return mEventService;
+	return mSession.getEventService();
 }
+
+boost::asio::io_service& MainLoopController::getIoService() {
+	return mSession.getIoService();
+}
+
 
 }

@@ -19,9 +19,12 @@
 #ifndef MAINLOOPCONTROLLER_H_
 #define MAINLOOPCONTROLLER_H_
 
-#include <sigc++/signal.h>
-#include <Eris/EventService.h>
 #include "Singleton.h"
+#include <Eris/Session.h>
+#include <Eris/EventService.h>
+#include <sigc++/signal.h>
+
+
 
 namespace Ember {
 
@@ -67,7 +70,7 @@ public:
 	 * @param shouldQuit A reference to a boolean which represents whether the application should quit.
 	 * @param pollEris Whether Eris should be polled each frame.
 	 */
-	MainLoopController(bool& shouldQuit, bool& pollEris, Eris::EventService& eventService);
+	MainLoopController(bool& shouldQuit, bool& pollEris, Eris::Session& session);
 
 	/**
 	 * @brief Return true if application has received an "exit" command else false.
@@ -102,6 +105,8 @@ public:
 	bool getErisPolling() const;
 
 	Eris::EventService& getEventService();
+
+	boost::asio::io_service& getIoService();
 
 	/**
 	 * @brief Emitted before processing input. This event is emitted continuously.
@@ -138,7 +143,7 @@ private:
 	 */
 	bool& mPollEris;
 
-	Eris::EventService& mEventService;
+	Eris::Session& mSession;
 
 };
 
