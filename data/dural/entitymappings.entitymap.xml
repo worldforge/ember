@@ -738,7 +738,7 @@
 			<case>
 				<caseparam type="equals">birch</caseparam>
 				<action type="display-model">birch_a</action>
-				<attributematch attribute="style" >
+<!--				<attributematch attribute="style" >
 					<case>
 						<caseparam type="equals">gnarly</caseparam>
 						<action type="display-model">birch_a</action>
@@ -765,7 +765,7 @@
 						<caseparam type="equals">small</caseparam>
 						<action type="display-part">small_leaves</action>
 					</case>
-				</attributematch>
+				</attributematch>-->
 			</case>
 		</entitymatch>
 	</entitymapping> 	
