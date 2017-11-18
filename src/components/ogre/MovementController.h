@@ -172,6 +172,8 @@ public:
 
 	bool isCameraFreeFlying() const;
 
+	Ogre::SceneNode* getFreeFlyingCameraNode();
+
 protected:
 
 	/**

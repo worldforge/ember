@@ -26,11 +26,12 @@
 #include "config.h"
 #endif
 
-#include <framework/MainLoopController.h>
+#include "framework/MainLoopController.h"
 #include "ModelDefinition.h"
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
+
 
 namespace Ember {
 namespace OgreView {

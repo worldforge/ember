@@ -75,13 +75,13 @@ public:
 	 * @brief Returns the current degrees of pitch from the camera's initial position.
 	 * @return The current degrees of pitch from the camera's initial position.
 	 */
-	virtual const Ogre::Degree& getPitch() const = 0;
+	virtual Ogre::Degree getPitch() const = 0;
 
 	/**
 	 * @brief Returns the current degrees of yaw from the camera's initial position.
 	 * @return The current degree of yaw from the camera's intial position.
 	 */
-	virtual const Ogre::Degree& getYaw() const = 0;
+	virtual Ogre::Degree getYaw() const = 0;
 
 	/**
 	 * @brief Asks the mount to move itself.

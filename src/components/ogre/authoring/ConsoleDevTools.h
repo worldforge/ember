@@ -46,6 +46,7 @@ public:
 	void showTexture(const std::string& textureName);
 	void reloadMaterial(const std::string& materialName);
 	void reloadTexture(const std::string& textureName);
+	void performBenchmark();
 
 protected:
 	/**
@@ -57,6 +58,8 @@ protected:
 	 * Shows a window of the RTT texture with runtime updating.
 	 */
 	const ConsoleCommandWrapper mShowTexture;
+
+	const ConsoleCommandWrapper mBenchmark;
 
 	/**
 	 * Reimplements the ConsoleObject::runCommand method

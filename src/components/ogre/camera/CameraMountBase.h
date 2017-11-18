@@ -50,13 +50,13 @@ public:
 	 * @brief Returns the current degrees of pitch from the cameras initial position.
 	 * @return
 	 */
-	virtual const Ogre::Degree& getPitch() const;
+	virtual Ogre::Degree getPitch() const;
 
 	/**
 	 * @brief Returns the current degrees of yaw from the cameras initial position.
 	 * @return
 	 */
-	virtual const Ogre::Degree& getYaw() const;
+	virtual Ogre::Degree getYaw() const;
 
 	virtual void setMotionHandler(ICameraMotionHandler* handler);
 

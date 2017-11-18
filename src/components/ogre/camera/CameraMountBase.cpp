@@ -42,13 +42,13 @@ CameraMountBase::~CameraMountBase()
 
 }
 
-const Ogre::Degree& CameraMountBase::getPitch() const
+Ogre::Degree CameraMountBase::getPitch() const
 {
 	throw Exception("Not implemented yet.");
 // 	return degreePitch;
 }
 
-const Ogre::Degree& CameraMountBase::getYaw() const
+Ogre::Degree CameraMountBase::getYaw() const
 {
 	throw Exception("Not implemented yet.");
 // 	return degreeYaw;

@@ -410,6 +410,10 @@ void MovementController::createDecal(Ogre::Vector3 position)
 	}
 }
 
+Ogre::SceneNode* MovementController::getFreeFlyingCameraNode() {
+	return mFreeFlyingNode;
+}
+
 }
 }
 

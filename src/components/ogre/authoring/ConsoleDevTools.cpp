@@ -17,9 +17,17 @@
  */
 
 #include "ConsoleDevTools.h"
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/MainLoopController.h"
 #include "components/ogre/GUIManager.h"
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/World.h"
+#include "components/ogre/MovementController.h"
+#include "components/ogre/camera/ICameraMount.h"
+#include "components/ogre/camera/MainCamera.h"
 #include <CEGUI/BasicImage.h>
 #include <CEGUI/ImageManager.h>
 #include <CEGUI/WindowManager.h>
@@ -30,20 +38,21 @@
 #include <OgreTextureManager.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
-namespace Ember
-{
-namespace OgreView
-{
+#include <boost/asio/deadline_timer.hpp>
+#include <Ogre.h>
+#include <components/ogre/OgreInfo.h>
+
+namespace Ember {
+namespace OgreView {
 
 ConsoleDevTools::ConsoleDevTools() :
-	mReloadMaterial("reload_material", this, "Reloads the material. Parameters: <material name>. For example \"/reload_material /base/normalmap/specular\""),
-	mShowTexture("show_texture", this, "Show given texture in a separated window. Parameters: <texture name>. For example \"/show_texture DepthBuffer\"")
-{
+		mReloadMaterial("reload_material", this, "Reloads the material. Parameters: <material name>. For example \"/reload_material /base/normalmap/specular\""),
+		mShowTexture("show_texture", this, "Show given texture in a separated window. Parameters: <texture name>. For example \"/show_texture DepthBuffer\""),
+		mBenchmark("benchmark", this, "Performs a benchmark test") {
 
 }
 
-void ConsoleDevTools::runCommand(const std::string& command, const std::string& args)
-{
+void ConsoleDevTools::runCommand(const std::string& command, const std::string& args) {
 	if (mReloadMaterial == command) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -55,11 +64,12 @@ void ConsoleDevTools::runCommand(const std::string& command, const std::string& 
 		tokeniser.initTokens(args);
 		std::string textureName(tokeniser.nextToken());
 		showTexture(textureName);
+	} else if (mBenchmark == command) {
+		performBenchmark();
 	}
 }
 
-std::string ConsoleDevTools::genUniqueName()
-{
+std::string ConsoleDevTools::genUniqueName() {
 	static int counter = 0;
 	counter++;
 	std::stringstream ret;
@@ -67,8 +77,7 @@ std::string ConsoleDevTools::genUniqueName()
 	return ret.str();
 }
 
-void ConsoleDevTools::showTexture(const std::string& textureName)
-{
+void ConsoleDevTools::showTexture(const std::string& textureName) {
 	const float left = 0.0f;
 	const float top = 0.0f;
 	const float widthScale = 0.25f;
@@ -117,8 +126,7 @@ void ConsoleDevTools::showTexture(const std::string& textureName)
 	mWindow->setEnabled(true);
 	mWindow->setVisible(true);
 
-	auto onCloseClicked = [&] (const CEGUI::EventArgs & e)->bool
-	{
+	auto onCloseClicked = [&](const CEGUI::EventArgs& e) -> bool {
 		const CEGUI::MouseEventArgs& me = static_cast<const CEGUI::MouseEventArgs&>(e);
 		me.window->destroy();
 		return true;
@@ -132,8 +140,7 @@ void ConsoleDevTools::showTexture(const std::string& textureName)
 	root->addChild((CEGUI::Window*) mWindow);
 }
 
-void ConsoleDevTools::reloadMaterial(const std::string& materialName)
-{
+void ConsoleDevTools::reloadMaterial(const std::string& materialName) {
 	// Normally multiple techniques are using the same texture,
 	// so to prevent reloading the texture multiple times, I will put them in a set.
 	std::set<std::string> mReloadableTextures;
@@ -184,8 +191,7 @@ void ConsoleDevTools::reloadMaterial(const std::string& materialName)
 	material->reload();
 }
 
-void ConsoleDevTools::reloadTexture(const std::string& textureName)
-{
+void ConsoleDevTools::reloadTexture(const std::string& textureName) {
 	Ogre::ResourcePtr texture = Ogre::TextureManager::getSingleton().getByName(textureName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 	if (!texture) {
 		ConsoleBackend::getSingleton().pushMessage("'" + textureName + "' texture not found.", "error");
@@ -197,6 +203,125 @@ void ConsoleDevTools::reloadTexture(const std::string& textureName)
 	}
 	texture->reload();
 	ConsoleBackend::getSingleton().pushMessage("'" + textureName + "' texture reloaded.", "info");
+}
+
+void ConsoleDevTools::performBenchmark() {
+
+
+	auto& emberOgre = EmberOgre::getSingleton();
+	if (emberOgre.getWorld()) {
+
+		Ogre::SceneNode* cameraNode = emberOgre.getWorld()->getSceneManager().createSceneNode(OgreInfo::createUniqueResourceName("StaticCameraNode"));
+
+		class StaticCameraMount : public Camera::ICameraMount {
+		public:
+			Ogre::SceneNode* mCameraNode = nullptr;
+
+			Ogre::Degree pitch(float relativeMovement) override {
+				return Ogre::Degree(0);
+			}
+
+			Ogre::Degree yaw(float relativeMovement) override {
+				return Ogre::Degree(0);
+			}
+
+			Ogre::Degree getPitch() const override {
+				return Ogre::Degree(0);
+			}
+
+			Ogre::Degree getYaw() const override {
+				return Ogre::Degree(0);
+			}
+
+			void move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice) override {}
+
+			void attachToCamera(Camera::MainCamera& camera) override {
+				mCameraNode->attachObject(&camera.getCamera());
+			}
+
+			void detachFromCamera() override {
+				mCameraNode->detachAllObjects();
+			}
+
+			void setMotionHandler(ICameraMotionHandler* handler) override {}
+		};
+
+		std::shared_ptr<StaticCameraMount> cameraMount(new StaticCameraMount());
+		cameraMount->mCameraNode = cameraNode;
+		emberOgre.getWorld()->getMainCamera().attachToMount(cameraMount.get());
+
+
+		//Listen for 60 frames at each location, keeping track of time.
+		struct BenchmarkFrameListener : public Ogre::FrameListener {
+			std::list<std::pair<Ogre::Vector3, Ogre::Vector3>> positionsAndDirections;
+			std::vector<std::chrono::steady_clock::duration> results;
+			int frames = -1;
+			std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+			double originalFps;
+			Ogre::SceneNode* cameraNode;
+			std::shared_ptr<StaticCameraMount> cameraMount;
+
+			BenchmarkFrameListener() {
+				originalFps = (double) EmberServices::getSingleton().getConfigService().getValue("general", "desiredfps");
+				EmberServices::getSingleton().getConfigService().setValue("general", "desiredfps", 0);
+
+			}
+
+			bool frameEnded(const Ogre::FrameEvent& evt) override {
+				frames++;
+				if (frames == 60 || frames == 0) {
+
+					if (frames == 60) {
+						results.emplace_back(std::chrono::steady_clock::now() - start);
+					}
+
+					if (positionsAndDirections.empty()) {
+						Ogre::Root::getSingleton().removeFrameListener(this);
+						EmberServices::getSingleton().getConfigService().setValue("general", "desiredfps", originalFps);
+						EmberOgre::getSingleton().getWorld()->getMovementController()->setCameraFreeFlying(EmberOgre::getSingleton().getWorld()->getMovementController()->isCameraFreeFlying());
+
+						//Report results
+						std::chrono::steady_clock::duration totalDuration{};
+						for (auto entry : results) {
+							totalDuration += entry;
+							auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(entry).count();
+							std::string message = "FPS: " + std::to_string(60 / (microseconds / 1000000.0));
+							S_LOG_INFO(message);
+							ConsoleBackend::getSingleton().pushMessage(message);
+						}
+
+						auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(totalDuration).count();
+						std::string message = "Total FPS: " + std::to_string((60 * results.size()) / (microseconds / 1000000.0));
+						S_LOG_INFO(message);
+						ConsoleBackend::getSingleton().pushMessage(message);
+
+					} else {
+						cameraNode->setPosition(positionsAndDirections.front().first);
+						cameraNode->setDirection(positionsAndDirections.front().second);
+						positionsAndDirections.pop_front();
+						frames = 0;
+						start = std::chrono::steady_clock::now();
+					}
+				}
+
+				return true;
+			}
+		};
+
+		auto benchmarkFrameListener = new BenchmarkFrameListener();
+		benchmarkFrameListener->cameraNode = cameraNode;
+		benchmarkFrameListener->cameraMount = cameraMount;
+
+		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 20, 990), Ogre::Vector3(0, 0, -1));
+		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 50, 590), Ogre::Vector3(0, 0, -1));
+		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-870, 5, 800), Ogre::Vector3(0, 0, -1));
+		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-707, 5, 750), Ogre::Vector3(0, 0, -1));
+		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 20, 990), Ogre::Vector3(0, 0, -1));
+
+
+		Ogre::Root::getSingleton().addFrameListener(benchmarkFrameListener);
+
+	}
 }
 
 }
