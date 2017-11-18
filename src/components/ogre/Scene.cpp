@@ -40,6 +40,7 @@ Scene::Scene() :
 		mSceneManager(nullptr),
 		mMainCamera(nullptr)
 {
+	//The default scene manager actually provides better performance in our benchmarks than the Octree SceneManager
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "World");
 
 	S_LOG_INFO("Using SceneManager: " << mSceneManager->getTypeName());
