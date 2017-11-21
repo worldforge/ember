@@ -36,21 +36,18 @@ namespace Gui {
 
 namespace Icons {
 
-IconStore::IconStore()
-{
-}
 
 
 IconStore::~IconStore()
 {
-	for (IconMap::iterator I = mIcons.begin(); I != mIcons.end(); ++I) {
-		delete I->second;
+	for (auto& iconEntry : mIcons) {
+		delete iconEntry.second;
 	}
-	for (IconImageStoreStore::iterator I = mIconImageStores.begin(); I != mIconImageStores.end(); ++I) {
-		delete *I;
+	for (auto& iconImageStore : mIconImageStores) {
+		delete iconImageStore;
 	}
-	for (IconImageStoreMap::iterator I = mPremadeIconImageStores.begin(); I != mPremadeIconImageStores.end(); ++I) {
-		delete I->second;
+	for (auto& premadeIconImageStore : mPremadeIconImageStores) {
+		delete premadeIconImageStore.second;
 	}
 }
 
@@ -78,11 +75,11 @@ Icon* IconStore::createIcon(const std::string& key, Ogre::TexturePtr texPtr)
 
 Icon* IconStore::getIcon(const std::string& key)
 {
-	IconMap::iterator I = mIcons.find(key);
+	auto I = mIcons.find(key);
 	if (I != mIcons.end()) {
 		return I->second;
 	}
-	return 0;
+	return nullptr;
 }
 
 bool IconStore::hasIcon(const std::string& key)
@@ -98,9 +95,9 @@ void IconStore::destroyIcon(Icon* icon)
 
 IconImageStoreEntry* IconStore::getImageStoreEntry()
 {
-	for (IconImageStoreStore::iterator I = mIconImageStores.begin(); I != mIconImageStores.end(); ++I) {
-		if ((*I)->getNumberOfUnclaimedIcons()) {
-			return (*I)->claimImageEntry();
+	for (auto& iconImageStore : mIconImageStores) {
+		if (iconImageStore->getNumberOfUnclaimedIcons()) {
+			return iconImageStore->claimImageEntry();
 		}
 	}
 	std::stringstream ss;

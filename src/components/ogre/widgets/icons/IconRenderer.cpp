@@ -131,8 +131,6 @@ void IconRenderer::performRendering(Model::Model* model, Icon*)
 			}
 		}
 
-		// 		SDL_Delay(1000);
-		// 		blitRenderToIcon(icon);
 
 		model->attachToNode(nullptr);
 	}
@@ -145,53 +143,30 @@ void IconRenderer::blitRenderToIcon(Icon* icon)
 		Ogre::HardwarePixelBufferSharedPtr dstBuffer = icon->getImageStoreEntry()->getTexture()->getBuffer();
 
 		Ogre::Box sourceBox(0, 0, mRenderContext->getRenderTexture()->getWidth(), mRenderContext->getRenderTexture()->getHeight());
-		// 	Ogre::PixelBox sourceLockedBox = srcBuffer->lock(sourceBox, Ogre::HardwareBuffer::HBL_READ_ONLY);
 
 		Ogre::Box dstBox = icon->getImageStoreEntry()->getBox();
-		// 	Ogre::PixelBox dstLockedBox = dstBuffer->lock(dstBox, Ogre::HardwareBuffer::HBL_NORMAL);
 
-		/*	Ogre::MemoryDataStream* dataStream = new Ogre::MemoryDataStream(sourceBox.getWidth() * sourceBox.getHeight() * 4, true);
-		 Ogre::DataStreamPtr imageDataStreamPtr(dataStream);*/
+		try {
+			if (srcBuffer->isLocked()) {
+				srcBuffer->unlock();
+			}
 
-		/*	Ogre::Image image;
-		 image.loadRawData(imageDataStreamPtr, sourceBox.getWidth(), sourceBox.getHeight(), Ogre::PF_A8R8G8B8);*/
+			if (dstBuffer->isLocked()) {
+				dstBuffer->unlock();
+			}
 
-		srcBuffer->blitToMemory(icon->getImageStoreEntry()->getImagePixelBox());
-		dstBuffer->blitFromMemory(icon->getImageStoreEntry()->getImagePixelBox(), dstBox);
+			dstBuffer->blit(srcBuffer, sourceBox, dstBox);
+
+		} catch (...) {
+			//Catch possible exceptions and ignore them
+			S_LOG_WARNING("Got exception when trying to lock buffers. This will lead to some corrupt icons.");
+		}
+
 		//Now that the icon is updated, emit a signal to this effect.
 		icon->EventUpdated.emit();
 	}
-	//  	static int counter(0);
-	//  	std::stringstream ss;
-	//  	ss << "/home/erik/skit/temp_" << counter++ << ".jpg";
-	// 	image.save(ss.str());
-
-	//	dstBuffer->blit(srcBuffer, sourceBox, dstBox);
-
-	// 	srcBuffer->unlock();
-	// 	dstBuffer->unlock();
 }
 
-// void IconRenderer::showModel(const std::string& modelName)
-// {
-// 	if (mModel) {
-// 		mModel->_getManager()->destroyMovableObject(mModel);
-// 		//delete mModel;
-// 	}
-// 	if (modelName != "") {
-// 		mModel = Model::Model::createModel(mTexture->getRenderContext()->getSceneManager(), modelName);
-// // 		mModel->create(modelName);
-// 		//override the rendering distance from the model; we want to always show it in the preview
-// 		mModel->setRenderingDistance(0);
-// 		setModel(mModel);
-// 		mTexture->getRenderContext()->setActive(true);
-// 	} else {
-// 		setModel(0);
-// 		mTexture->getRenderContext()->setActive(false);
-// 	}
-// }
-
-// }
 SimpleRenderContext* IconRenderer::getRenderContext()
 {
 	return mRenderContext.get();

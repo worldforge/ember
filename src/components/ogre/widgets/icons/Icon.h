@@ -83,7 +83,7 @@ private:
     /**
      * @brief Dtor.
      */
-    virtual ~Icon();
+    virtual ~Icon() = default;
     
     /**
      * @brief Gets the icon image store entry.

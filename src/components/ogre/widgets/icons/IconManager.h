@@ -46,7 +46,7 @@ namespace Icons {
 class IconManager{
 public:
 
-    IconManager();
+    explicit IconManager();
 
     ~IconManager();
     

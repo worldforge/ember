@@ -95,7 +95,7 @@ Note that it's the responsibility of this class to make sure that the Model supp
 class IconRenderWorker
 {
 public:
-	IconRenderWorker(IconRenderer& renderer);
+	explicit IconRenderWorker(IconRenderer& renderer);
 	virtual ~IconRenderWorker();
     /**
      * Starts the process of rendering the model onto the icon. Depending on the implementation the actual blitting and rendering might be delayed some frames.
@@ -115,14 +115,14 @@ class DelayedIconRendererWorker : public Ogre::FrameListener, public IconRenderW
 {
 friend class DelayedIconRendererEntry;
 public:
-	DelayedIconRendererWorker(IconRenderer& renderer);
+	explicit DelayedIconRendererWorker(IconRenderer& renderer);
 
-	virtual ~DelayedIconRendererWorker();
+	~DelayedIconRendererWorker() override;
 
 	/**
 	* Calles by Ogre. At each frame we'll see if there's any entries in our queue. If so, we'll call frameStarted on the first entry in the list.
 	*/
-	bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 
     /**
      * Starts the process of rendering a model onto an icon. The blitting will be delayed a couple of frames though.
@@ -164,8 +164,9 @@ An instance of this class will render the icon and blit it to texture all in the
 class DirectRendererWorker : public IconRenderWorker
 {
 public:
-	DirectRendererWorker(IconRenderer& renderer);
-	virtual ~DirectRendererWorker();
+	explicit DirectRendererWorker(IconRenderer& renderer);
+
+	~DirectRendererWorker() override;
 
     /**
      * Starts the process of rendering a model onto an icon. The blitting will occur in the same frame as the rendering.

@@ -38,7 +38,9 @@ namespace Gui {
 namespace Icons {
 
 IconImageStoreEntry::IconImageStoreEntry(IconImageStore& iconImageStore, const PixelPos& pixelPosInImageset)
-: mImage(0), mIconImageStore(iconImageStore), mPixelPosInImageset(pixelPosInImageset)
+: mImage(nullptr),
+  mIconImageStore(iconImageStore),
+  mPixelPosInImageset(pixelPosInImageset)
 {
 	createImage();
 }
@@ -118,7 +120,7 @@ IconImageStore::IconImageStore(const std::string& imagesetName)
 , mIconSize(64)
 , mImageSize(256)
 , mImageDataStream(OGRE_NEW Ogre::MemoryDataStream(mImageSize * mImageSize * 4, true))
-, mCeguiTexture(0)
+, mCeguiTexture(nullptr)
 {
 	createImageset();
 	createEntries();
@@ -130,8 +132,8 @@ Constructor for when we already have a texture of the whole icon.
 IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr texPtr)
 : mImagesetName(imagesetName)
 , mTexPtr(texPtr)
-, mImageDataStream(0)
-, mCeguiTexture(0)
+, mImageDataStream(nullptr)
+, mCeguiTexture(nullptr)
 {
 	mCeguiTexture = &GUIManager::getSingleton().createTexture(mTexPtr, imagesetName);
 	
@@ -147,8 +149,8 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 
 IconImageStore::~IconImageStore()
 {
-	for (IconImageStoreEntryStore::iterator I(mIconImages.begin()); I != mIconImages.end(); ++I) {
-		delete *I;
+	for (auto& iconImage : mIconImages) {
+		delete iconImage;
 	}
 	CEGUI::System::getSingleton().getRenderer()->destroyTexture(*mCeguiTexture);
 	OGRE_DELETE mImageDataStream;
@@ -176,11 +178,11 @@ void IconImageStore::createImageset()
 
 void IconImageStore::createEntries()
 {
-	int entriesPerAxis(mImageSize / mIconSize);
-	for (int x = 0; x < entriesPerAxis; ++x) {
-		for (int y = 0; y < entriesPerAxis; ++y) {
-			int pixelPosStartX = x * mIconSize;
-			int pixelPosStartY = y * mIconSize;
+	unsigned int entriesPerAxis = mImageSize / mIconSize;
+	for (unsigned int x = 0; x < entriesPerAxis; ++x) {
+		for (unsigned int y = 0; y < entriesPerAxis; ++y) {
+			size_t pixelPosStartX = x * mIconSize;
+			size_t pixelPosStartY = y * mIconSize;
 			IconImageStoreEntry* entry = new IconImageStoreEntry(*this, IconImageStoreEntry::PixelPos(pixelPosStartX, pixelPosStartY));
 			mIconImages.push_back(entry);
 			mUnclaimedIconImages.push(entry);
@@ -197,7 +199,7 @@ IconImageStoreEntry* IconImageStore::claimImageEntry()
 {
 	if (!getNumberOfUnclaimedIcons()) {
 		S_LOG_WARNING("Trying to claim image entry from store with no unclaimed entries.");
-		return 0;
+		return nullptr;
 	}
 	IconImageStoreEntry* entry = mUnclaimedIconImages.top();
 	mUnclaimedIconImages.pop();
@@ -221,11 +223,6 @@ Ogre::Image& IconImageStore::getImage()
 {
 	return mImage;
 }
-
-// Ogre::TexturePtr IconImageStore::getTexture()
-// {
-// 	return mTexPtr;
-// }
 
 
 }

@@ -92,7 +92,7 @@ public:
 	 *    Ctor. Creates a new empty imageset into which dynamic icons can be rendered.
 	 * @param imagesetName The name of the imageset to create.
 	 */
-    IconImageStore(const std::string& imagesetName);
+	explicit IconImageStore(const std::string& imagesetName);
     /**
      * Ctor. Creates a new imageset from an already existing texture. The whole texture will be used for a single icon.
      * Use this when you already have an icon.
@@ -132,7 +132,7 @@ private:
 
 	std::string mImagesetName;
 	int mIconSize;
-	int mImageSize;
+	uint32_t mImageSize;
 	Ogre::TexturePtr mTexPtr;
 	Ogre::MemoryDataStream* mImageDataStream;
 	Ogre::Image mImage;

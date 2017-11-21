@@ -63,28 +63,20 @@ public:
 	{
 	}
 
-	Eris::TypeService* getTypeService() const
-	{
+	Eris::TypeService* getTypeService() const override {
 		return mTypeService;
 	}
 
-	void removeFromMovementPrediction()
-	{
+	void removeFromMovementPrediction() override {
 	}
 
-	void addToMovementPredition()
-	{
+	void addToMovementPredition() override {
 	}
 
-	Eris::Entity* getEntity(const std::string&)
-	{
-		return 0;
+	Eris::Entity* getEntity(const std::string&) override {
+		return nullptr;
 	}
 
-	virtual Eris::View* getView() const
-	{
-		return 0;
-	}
 };
 
 /**
@@ -99,12 +91,9 @@ public:
 	{
 	}
 
-	virtual ~IconActionCreator()
-	{
-	}
+	~IconActionCreator() override = default;
 
-	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase*, EntityMapping::Definitions::CaseDefinition& caseDefinition)
-	{
+	void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase*, EntityMapping::Definitions::CaseDefinition& caseDefinition) override {
 		auto endJ = caseDefinition.getActions().end();
 		for (auto J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 			if (J->getType() == "display-model") {
@@ -146,19 +135,19 @@ Icon* IconManager::getIcon(int, EmberEntity* entity)
 		IconActionCreator actionCreator(*entity);
 		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 		std::string modelName;
-		if (modelMapping.get()) {
+		if (modelMapping) {
 			modelMapping->initialize();
 			modelName = actionCreator.getModelName();
 		}
 		//if there's no model defined for this use the placeholder model
-		if (modelName == "") {
+		if (modelName.empty()) {
 			modelName = "placeholder";
 		}
 		Ogre::ResourcePtr modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 		if (modelDefPtr) {
 			Model::ModelDefinition* modelDef = static_cast<Model::ModelDefinition*> (modelDefPtr.get());
 			const std::string& iconPath(modelDef->getIconPath());
-			if (iconPath != "") {
+			if (!iconPath.empty()) {
 
 				Ogre::TexturePtr texPtr;
 				try {
@@ -190,7 +179,6 @@ Icon* IconManager::getIcon(int, EmberEntity* entity)
 		return icon;
 	}
 
-	return 0;
 }
 
 Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType)
@@ -210,12 +198,12 @@ void IconManager::render(Icon& icon, EmberEntity& entity)
 	IconActionCreator actionCreator(entity);
 	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 	std::string modelName;
-	if (modelMapping.get()) {
+	if (modelMapping) {
 		modelMapping->initialize();
 		modelName = actionCreator.getModelName();
 	}
 	//if there's no model defined for this use the placeholder model
-	if (modelName == "") {
+	if (modelName.empty()) {
 		modelName = "placeholder";
 	}
 
@@ -234,12 +222,12 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
 			IconActionCreator actionCreator(dummyEntity);
 			std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 			std::string modelName;
-			if (modelMapping.get()) {
+			if (modelMapping) {
 				modelMapping->initialize();
 				modelName = actionCreator.getModelName();
 			}
 			//if there's no model defined for this use the placeholder model
-			if (modelName == "") {
+			if (modelName.empty()) {
 				modelName = "placeholder";
 			}
 			//update the model preview window

@@ -46,7 +46,8 @@ public:
 	typedef std::unordered_map<std::string, Icon*> IconMap;
 	typedef std::vector<IconImageStore*> IconImageStoreStore;
 	typedef std::unordered_map<std::string, IconImageStore*> IconImageStoreMap;
-    IconStore();
+
+	explicit IconStore() = default;
 
     ~IconStore();
     

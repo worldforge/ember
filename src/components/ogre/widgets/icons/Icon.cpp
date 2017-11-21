@@ -40,11 +40,6 @@ Icon::Icon(const std::string& key, IconImageStoreEntry* imageStoreEntry)
 {
 }
 
-
-Icon::~Icon()
-{
-}
-
 IconImageStoreEntry* Icon::getImageStoreEntry()
 {
 	return mImageStoreEntry;
