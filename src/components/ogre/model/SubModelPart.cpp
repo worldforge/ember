@@ -156,7 +156,6 @@ void SubModelPart::showSubEntities() {
 		}
 
 
-
 		if (materialName != subModelPartEntity.SubEntity->getMaterialName()) {
 			//TODO: store the material ptr in the definition so we'll avoid a lookup in setMaterialName
 			subModelPartEntity.SubEntity->setMaterialName(materialName);
@@ -168,7 +167,11 @@ void SubModelPart::showSubEntities() {
 bool SubModelPart::createInstancedEntities() {
 	std::vector<std::pair<Ogre::InstanceManager*, std::string>> managersAndMaterials;
 
-	static std::string instancedSuffix = "/Instanced/HW";
+	//We would like to use the HW based technique, but as of 1.10.9 that causes corruption with the PSSM shadows.
+	//Until that's fixed we instead use the Shader based technique, which performs worse.
+	//The HW based technique uses the suffix "/Instanced/HW".
+	static std::string instancedSuffix = "/Instanced/Shader";
+	static Ogre::InstanceManager::InstancingTechnique instancedTechnique = Ogre::InstanceManager::ShaderBased;
 
 	for (auto& entry : mSubEntities) {
 		Ogre::SubEntity* subEntity = entry.SubEntity;
@@ -264,11 +267,11 @@ bool SubModelPart::createInstancedEntities() {
 
 				try {
 					Ogre::InstanceManager* instanceManager = sceneManager->createInstanceManager(instanceName,
-																		  meshName,
-																		  entity->getMesh()->getGroup(),
-																		  Ogre::InstanceManager::HWInstancingBasic,
-																		  50, Ogre::IM_USEALL, entry.subEntityIndex);
-					instanceManager->setBatchesAsStaticAndUpdate(false);
+																								 meshName,
+																								 entity->getMesh()->getGroup(),
+																								 instancedTechnique,
+																								 50, Ogre::IM_USEALL, entry.subEntityIndex);
+					instanceManager->setBatchesAsStaticAndUpdate(true);
 
 					managersAndMaterials.emplace_back(std::make_pair(instanceManager, instancedMaterialName));
 				} catch (const std::exception& e) {
