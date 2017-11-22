@@ -123,6 +123,31 @@ void SubModelPart::showSubEntities() {
 									}
 								}
 							}
+
+							auto shadowCasterMat = tech->getShadowCasterMaterial();
+							if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), skinningSuffix)) {
+								std::string skinningShadowCasterMatName = shadowCasterMat->getName() + skinningSuffix;
+								auto shadowCasterMatSkinning = materialMgr.getByName(skinningShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+								if (!shadowCasterMatSkinning) {
+									shadowCasterMat->load();
+									shadowCasterMatSkinning = shadowCasterMat->clone(skinningShadowCasterMatName);
+									for (auto* shadowCasterTech : shadowCasterMatSkinning->getTechniques()) {
+										auto shadowCasterPass = shadowCasterTech->getPass(0);
+										if (shadowCasterPass->hasVertexProgram()) {
+											std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + skinningSuffix;
+											auto program = Ogre::HighLevelGpuProgramManager::getSingleton().getByName(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+											if (program) {
+												program->load();
+												if (program->isSupported()) {
+													shadowCasterPass->setVertexProgram(vertexProgramName);
+												}
+											}
+										}
+									}
+								}
+								shadowCasterMatSkinning->load();
+								tech->setShadowCasterMaterial(shadowCasterMatSkinning);
+							}
 						}
 					}
 				}
