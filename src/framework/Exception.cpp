@@ -25,58 +25,20 @@
 #include "config.h"
 #endif
 
-#include <stdarg.h>
-#include <stdio.h>
-
 #include "Exception.h"
 
 namespace Ember
 {
 
 Exception::Exception()
-	: mErrorDescription("Unknown Exception")
+	: std::runtime_error("Unknown Exception")
 {
-	mLine = -1;
-	mFile = "";
 }
 
 
 Exception::Exception(const std::string& error)
-	: mErrorDescription(error)
+	: std::runtime_error(error)
 {
-	mLine = -1;
-	mFile = "";
-}
-
-
-Exception::Exception(const std::string& error, const std::string & file, int line, ...)
-	: mFile(file), mLine(line)
-{
-	char buffer[EXCEPTION_TEXT_SIZE];
-	va_list va;
-	va_start (va, line);
-	vsnprintf(buffer, EXCEPTION_TEXT_SIZE, error.c_str(), va);
-	mErrorDescription = buffer;
-	va_end (va);
-}
-
-Exception::~Exception() throw()
-{
-}
-
-const std::string& Exception::getError() const
-{
-	return mErrorDescription;
-}
-	
-void Exception::setError(const std::string& error)
-{
-	mErrorDescription = error;
-}
-
-const char* Exception::what() const throw()
-{
-	return mErrorDescription.c_str();
 }
 
 }
