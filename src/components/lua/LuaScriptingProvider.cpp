@@ -42,7 +42,7 @@ namespace Ember {
 namespace Lua {
 
 LuaScriptingProvider::LuaScriptingProvider()
-: mService(0), mErrorHandlingFunctionName("")
+: mService(nullptr)
 {
 	initialize();
 }
@@ -58,9 +58,9 @@ void LuaScriptingProvider::stop()
 {
 	try {
 		//we want to clear up the lua environment without destroying it (lua_close destroys it)
-		std::string shutdownScript("for key,value in pairs(_G) do if key ~= \"_G\" and key ~= \"pairs\" then _G[key] = nil end end");
+		std::string shutdownScript(R"""(for key,value in pairs(_G) do if key ~= "_G" and key ~= "pairs" then _G[key] = nil end end)""");
 		{
-			executeScript(shutdownScript, 0);
+			executeScript(shutdownScript, nullptr);
 		}
 		forceGC();
 	} catch (...) {
@@ -80,11 +80,6 @@ void LuaScriptingProvider::createState()
 	if (EmberServices::getSingleton().getConfigService().itemExists("lua", "debug")) {
 		loadDebugLib = static_cast<bool>(EmberServices::getSingleton().getConfigService().getValue("lua", "debug"));
 	}
-	if (loadDebugLib) {
-		mErrorHandlingFunctionName = "debug.traceback";
-		S_LOG_VERBOSE("Loading lua debug library.");
-	}
-
 
 	static const luaL_Reg lualibs[] = {
 		{"", luaopen_base},
@@ -117,6 +112,20 @@ void LuaScriptingProvider::createState()
 		lua_pushstring(mLuaState, lib->name);
 		lua_call(mLuaState, 1, 0);
 	}
+
+	if (loadDebugLib) {
+		//Check that the "debug" module really got loaded.
+		int top = lua_gettop(mLuaState);
+		lua_getglobal(mLuaState, "debug");
+		if (!lua_istable(mLuaState, -1)) {
+			S_LOG_WARNING("Could not find the 'debug' Lua module; Lua debugging features will be disabled.");
+		} else {
+			mErrorHandlingFunctionName = "debug.traceback";
+			S_LOG_VERBOSE("Loading lua debug library.");
+		}
+		lua_settop(mLuaState, top);
+	}
+
 
 
 // 	lua_pushcfunction(mLuaState, ::OgreView::Scripting::LuaHelper::luaErrorHandler);

@@ -51,7 +51,7 @@ class LuaScriptingProvider : public IScriptingProvider
 public:
     LuaScriptingProvider();
 
-    virtual ~LuaScriptingProvider();
+	~LuaScriptingProvider() override;
 
 	/**
 	 * @brief Loads the script from the wrapper.
