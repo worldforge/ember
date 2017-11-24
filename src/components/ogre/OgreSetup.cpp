@@ -414,11 +414,7 @@ void OgreSetup::setStandardValues() {
 	Ogre::LodStrategy* lodStrategy = OGRE_NEW Lod::ScaledPixelCountLodStrategy();
 	Ogre::LodStrategyManager::getSingleton().addStrategy(lodStrategy);
 
-	if (Ogre::RTShader::ShaderGenerator::initialize()) {
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(OGRE_MEDIA_DIR"/RTShaderLib/materials", "FileSystem");
-		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(OGRE_MEDIA_DIR"/RTShaderLib/GLSL", "FileSystem");
-	}
-
+	Ogre::RTShader::ShaderGenerator::initialize();
 
 	struct MyListener : public Ogre::MaterialManager::Listener {
 		Ogre::Technique* handleSchemeNotFound(unsigned short schemeIndex,

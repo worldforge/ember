@@ -210,6 +210,14 @@ void OgreResourceLoader::loadBootstrap() {
 		addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 	}
 
+	if (!addSourceRepoMedia("assets_external/RTShaderLib/materials", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true)) {
+		addSharedMedia("media/assets_external/RTShaderLib/materials", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	}
+	if (!addSourceRepoMedia("assets_external/RTShaderLib/GLSL", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true)) {
+		addSharedMedia("media/assets_external/RTShaderLib/GLSL", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	}
+
+
 	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
 

@@ -180,9 +180,6 @@ else (UNIX)
 
 endif (UNIX)
 
-add_definitions(-DOGRE_MEDIA_DIR="${OGRE_MEDIA_DIR}")
-
-
 if (APPLE)
     pkg_check_modules(TOLUAPP tolua++)
     if (NOT TOLUAPP_FOUND)
