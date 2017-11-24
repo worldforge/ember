@@ -262,61 +262,62 @@ bool OgreResourceLoader::isExistingDir(const std::string& path) const {
 }
 
 void OgreResourceLoader::observeDirectory(const std::string& path) {
-	FileSystemObserver::getSingleton().add_directory(path, [this](const FileSystemObserver::FileSystemEvent& event) {
-		auto& ev = event.ev;
-		S_LOG_VERBOSE("Resource changed " << ev.path.string() << " " << ev.type_cstr());
+    try {
+        FileSystemObserver::getSingleton().add_directory(path, [this](const FileSystemObserver::FileSystemEvent& event) {
+            auto& ev = event.ev;
+            S_LOG_VERBOSE("Resource changed " << ev.path.string() << " " << ev.type_cstr());
 
-		if (ev.type == boost::asio::dir_monitor_event::modified) {
-			try {
-				if (boost::filesystem::file_size(ev.path) == 0) {
-					return;
-				}
-			} catch (...) {
-				//Could not find file, just return
-				return;
-			}
-		}
+            if (ev.type == boost::asio::dir_monitor_event::modified) {
+                try {
+                    if (boost::filesystem::file_size(ev.path) == 0) {
+                        return;
+                    }
+                } catch (...) {
+                    //Could not find file, just return
+                    return;
+                }
+            }
 
 
-		auto resourceGroups = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
-		for (auto& group : resourceGroups) {
+            auto resourceGroups = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
+            for (auto& group : resourceGroups) {
 
-			auto reloadResource = [&](Ogre::ResourceManager& resourceManager, const std::string& resourceName) {
-				if (resourceManager.resourceExists(resourceName, group)) {
-					auto resource = resourceManager.getResourceByName(resourceName, group);
-					if (resource->isLoaded() || resource->isPrepared()) {
-						try {
-							resource->reload();
-						} catch (const std::exception& e) {
-							S_LOG_FAILURE("Could not reload resource '" << resourceName << "' of type '" << resourceManager.getResourceType() << "'." << e);
-						}
-					}
-				} else {
-					//Add resource
-					Ogre::ResourceGroupManager::getSingleton().declareResource(resourceName, resourceManager.getResourceType(), group);
-					resourceManager.createResource(resourceName, group);
-				}
+                auto reloadResource = [&](Ogre::ResourceManager& resourceManager, const std::string& resourceName) {
+                    if (resourceManager.resourceExists(resourceName, group)) {
+                        auto resource = resourceManager.getResourceByName(resourceName, group);
+                        if (resource->isLoaded() || resource->isPrepared()) {
+                            try {
+                                resource->reload();
+                            } catch (const std::exception& e) {
+                                S_LOG_FAILURE("Could not reload resource '" << resourceName << "' of type '" << resourceManager.getResourceType() << "'." << e);
+                            }
+                        }
+                    } else {
+                        //Add resource
+                        Ogre::ResourceGroupManager::getSingleton().declareResource(resourceName, resourceManager.getResourceType(), group);
+                        resourceManager.createResource(resourceName, group);
+                    }
 
-			};
+                };
 
-			auto locations = Ogre::ResourceGroupManager::getSingleton().listResourceLocations(group);
-			for (auto& location : *locations) {
-				std::string locationDirectory = location + "/";
-				if (boost::starts_with(ev.path.string(), locationDirectory)) {
-					std::string relative = ev.path.string().substr(locationDirectory.length());
-					auto extension = ev.path.extension();
+                auto locations = Ogre::ResourceGroupManager::getSingleton().listResourceLocations(group);
+                for (auto& location : *locations) {
+                    std::string locationDirectory = location + "/";
+                    if (boost::starts_with(ev.path.string(), locationDirectory)) {
+                        std::string relative = ev.path.string().substr(locationDirectory.length());
+                        auto extension = ev.path.extension();
 
-					if (extension == ".material") {
-						std::ifstream stream(ev.path.string());
-						Ogre::SharedPtr<Ogre::DataStream> fileStream(OGRE_NEW Ogre::FileStreamDataStream(&stream, false));
-						Ogre::MaterialManager::getSingleton().parseScript(fileStream, group);
-					} else if (extension == ".dds" || extension == ".png" || extension == ".jpg") {
-						reloadResource(Ogre::TextureManager::getSingleton(), relative);
-					} else if (extension == ".mesh") {
-						reloadResource(Ogre::MeshManager::getSingleton(), relative);
-					}
-					else if (extension == ".glsl" || extension == ".frag" || extension == ".vert") {
-						//Reloading GLSL shaders in Render System GL doesn't seem to work. Perhaps we'll have more luck with GL3+?
+                        if (extension == ".material") {
+                            std::ifstream stream(ev.path.string());
+                            Ogre::SharedPtr<Ogre::DataStream> fileStream(OGRE_NEW Ogre::FileStreamDataStream(&stream, false));
+                            Ogre::MaterialManager::getSingleton().parseScript(fileStream, group);
+                        } else if (extension == ".dds" || extension == ".png" || extension == ".jpg") {
+                            reloadResource(Ogre::TextureManager::getSingleton(), relative);
+                        } else if (extension == ".mesh") {
+                            reloadResource(Ogre::MeshManager::getSingleton(), relative);
+                        }
+                        else if (extension == ".glsl" || extension == ".frag" || extension == ".vert") {
+                            //Reloading GLSL shaders in Render System GL doesn't seem to work. Perhaps we'll have more luck with GL3+?
 
 
 //						{
@@ -364,11 +365,15 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 ////								}
 //							}
 //						}
-					}
-				}
-			}
-		}
-	});
+                        }
+                    }
+                }
+            }
+        });
+    } catch (...) {
+        //Ignore errors
+    }
+
 }
 
 bool OgreResourceLoader::addMedia(const std::string& path, const std::string& resourceGroup) {
