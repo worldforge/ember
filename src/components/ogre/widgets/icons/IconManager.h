@@ -61,7 +61,7 @@ protected:
 
 	IconStore mIconStore;
 	IconRenderer mIconRenderer;
-	
+
 
 };
 

@@ -103,7 +103,7 @@ unsigned int TerrainPage::getBlendMapScale() const
 	if (configSrv.itemExists("terrain", "scalealphamap")) {
 		int value = (int)configSrv.getValue("terrain", "scalealphamap");
 		//make sure it can't go below 1
-		return std::max<int>(1, value);
+		return std::max<unsigned int>(1, value);
 	} else {
 		return 1;
 	}
@@ -122,10 +122,12 @@ const TerrainPageSurface* TerrainPage::getSurface() const
 TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 {
 	TerrainPageSurfaceLayer* layer = mTerrainSurface->createSurfaceLayer(shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());
-	layer->setDiffuseTextureName(shader->getLayerDefinition().getDiffuseTextureName());
-	layer->setNormalTextureName(shader->getLayerDefinition().getNormalMapTextureName());
+	auto& definition = shader->getLayerDefinition();
+
+	layer->setDiffuseTextureName(definition.getDiffuseTextureName());
+	layer->setNormalTextureName(definition.getNormalMapTextureName());
 	//get the scale by dividing the total size of the page with the size of each tile
-	float scale = getBlendMapSize() / shader->getLayerDefinition().getTileSize();
+	float scale = getBlendMapSize() / definition.getTileSize();
 	layer->setScale(scale);
 	return layer;
 }

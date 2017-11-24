@@ -57,8 +57,8 @@ Foliage::~Foliage()
 {
 	S_LOG_INFO("Shutting down foliage system.");
 	
-	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
-		delete *I;
+	for (auto& foliage : mFoliages) {
+		delete foliage;
 	}
 
 	Ogre::Root::getSingleton().removeFrameListener(this);
@@ -67,10 +67,9 @@ Foliage::~Foliage()
 void Foliage::initialize()
 {
 	S_LOG_INFO("Initializing foliage system.");
-	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
-		const TerrainLayerDefinition* layerDef = *I;
+	for (auto layerDef : TerrainLayerDefinitionManager::getSingleton().getDefinitions()) {
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator J = layerDef->getFoliages().begin(); J != layerDef->getFoliages().end(); ++J) {
-			FoliageBase* foliageBase(0);
+			FoliageBase* foliageBase = nullptr;
 			try {
 				if (J->getRenderTechnique() == "grass") {
 					foliageBase = new GrassFoliage(mTerrainManager, *layerDef, *J);
@@ -100,21 +99,21 @@ void Foliage::runCommand(const std::string &command, const std::string &args)
 		std::string xString = tokeniser.nextToken();
 		std::string yString = tokeniser.nextToken();
 
-		reloadAtPosition(WFMath::Point<2>(atof(xString.c_str()), atof(yString.c_str())));
+		reloadAtPosition(WFMath::Point<2>(std::stof(xString), std::stof(yString)));
 	}
 }
 
 void Foliage::reloadAtPosition(const WFMath::Point<2>& worldPosition)
 {
-	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
-		(*I)->reloadAtPosition(worldPosition);
+	for (auto& foliage : mFoliages) {
+		foliage->reloadAtPosition(worldPosition);
 	}
 }
 
 bool Foliage::frameStarted(const Ogre::FrameEvent&)
 {
-	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
-		(*I)->frameStarted();
+	for (auto& foliage : mFoliages) {
+		foliage->frameStarted();
 	}
 
 	return true;
@@ -122,15 +121,15 @@ bool Foliage::frameStarted(const Ogre::FrameEvent&)
 
 void Foliage::setDensity(float newDensity)
 {
-	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
-		(*I)->setDensity(newDensity);
+	for (auto& foliage : mFoliages) {
+		foliage->setDensity(newDensity);
 	}
 }
 
 void Foliage::setFarDistance(float newFarDistance)
 {
-	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
-		(*I)->setFarDistance(newFarDistance);
+	for (auto& foliage : mFoliages) {
+		foliage->setFarDistance(newFarDistance);
 	}
 }
 

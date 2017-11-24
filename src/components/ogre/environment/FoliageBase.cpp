@@ -67,7 +67,7 @@ FoliageBase::~FoliageBase()
 void FoliageBase::initializeDependentLayers()
 {
 	bool foundLayer(false);
-	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
+	for (auto I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
 
 		if (foundLayer) {
 			mDependentDefinitions.push_back((*I));

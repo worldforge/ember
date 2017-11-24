@@ -125,14 +125,49 @@ void OgreResourceLoader::unloadUnusedResources() {
 }
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
-	static const std::string& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
-
+	const std::string& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
 	return addResourceDirectory(sharedMediaPath + path, type, section, recursive, true, true);
 }
 
+bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::string& section, bool recursive)
+{
+
+	//If there's processed media available, use that.
+	//Otherwise, if the raw media repository is available, use that instead.
+
+#ifdef EMBER_PROCESSEDMEDIAREPODIR
+	boost::filesystem::path processedMediaRepoDir(EMBER_PROCESSEDMEDIAREPODIR);
+	if (!processedMediaRepoDir.empty()) {
+		boost::filesystem::path relativePath(path);
+		processedMediaRepoDir /= relativePath;
+		if (boost::filesystem::is_directory(processedMediaRepoDir)) {
+			S_LOG_INFO("Found processed media repo at '" << processedMediaRepoDir.string() << "'.");
+			return addResourceDirectory(processedMediaRepoDir.string(), "EmberFileSystem", section, recursive, true, true);
+		}
+	}
+#endif
+
+
+
+
+#ifdef EMBER_SOURCEMEDIAREPODIR
+	boost::filesystem::path sourceMediaRepoDir(EMBER_SOURCEMEDIAREPODIR);
+	if (!sourceMediaRepoDir.empty()) {
+		boost::filesystem::path relativePath(path);
+		sourceMediaRepoDir /= relativePath;
+		if (boost::filesystem::is_directory(sourceMediaRepoDir)) {
+			S_LOG_INFO("Found source media repo at '" << sourceMediaRepoDir.string() << "'.");
+			return addResourceDirectory(sourceMediaRepoDir.string(), "EmberFileSystem", section, recursive, true, true);
+		}
+	}
+#endif
+	return false;
+}
+
+
 bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
-	static const std::string& userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
-	static const std::string& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
+	const std::string& userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
+	const std::string& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
 	bool foundDir = addResourceDirectory(emberMediaPath + path, type, section, recursive, true);
 
@@ -170,7 +205,11 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 
 void OgreResourceLoader::loadBootstrap() {
 	//Add the "assets" directory, which contains most of the assets
-	addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+
+	if (!addSourceRepoMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true)) {
+		addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	}
+
 	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
 
@@ -190,7 +229,9 @@ void OgreResourceLoader::loadGeneral() {
 	addUserMedia("data", "EmberFileSystem", "Data", true);
 
 	//The Caelum component
-	addSharedMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
+	if (!addSourceRepoMedia("assets_external/caelum", "Caelum", true)) {
+		addSharedMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
+	}
 	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
 
 	//Entity recipes
@@ -218,14 +259,7 @@ void OgreResourceLoader::preloadMedia() {
 
 
 bool OgreResourceLoader::isExistingDir(const std::string& path) const {
-	oslink::directory osdir(path);
-	bool exists = osdir.isExisting();
-	if (!exists) {
-		//perhaps it's a file?
-		std::ifstream fin(path.c_str(), std::ios::in);
-		exists = !fin.fail();
-	}
-	return exists;
+	return boost::filesystem::is_directory(path);
 }
 
 void OgreResourceLoader::observeDirectory(const std::string& path) {

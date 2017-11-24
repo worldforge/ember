@@ -21,6 +21,15 @@ add_definitions(-DVERSION="${VERSION}")
 add_definitions(-DPREFIX="${CMAKE_INSTALL_PREFIX}")
 add_definitions(-DEMBER_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
 add_definitions(-DEMBER_SYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}")
+if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    # EMBER_SOURCEMEDIAREPODIR points to an optional media repo path, i.e. a Subversion checkout of the media repo
+    # found at https://svn.worldforge.org:886/svn/media/trunk/.
+    add_definitions(-DEMBER_SOURCEMEDIAREPODIR="${PROJECT_SOURCE_DIR}/mediarepo/trunk")
+    # EMBER_PROCESSEDMEDIAREPODIR points to an optional "processed" media path, i.e. a directory where the source media
+    # found at EMBER_SOURCEMEDIAREPODIR has been processed using the "scripts/make_dist_media.py" script.
+    add_definitions(-DEMBER_PROCESSEDMEDIAREPODIR="${CMAKE_BINARY_DIR}/ember-media-${VERSION}/media")
+endif (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+
 
 # We've been getting issues with memory corruption in boost when building with GCC -O2 flags, and it
 # seems to be related to the asio small memory block recycling code. We'll thus disable it to avoid the
@@ -305,19 +314,63 @@ install(FILES ${SOUND_DEFINITION_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR
 install(FILES man/man1/ember.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 set(MEDIA_DIR media-${VERSION})
+set(MEDIAREPO_DIR ${PROJECT_SOURCE_DIR}/mediarepo)
+set(MEDIAREPO_PROCESSED_DIR ${CMAKE_BINARY_DIR}/ember-media-${VERSION})
+
+find_program(SUBVERSION_CMD NAMES svn)
+find_program(PYTHON_CMD NAMES python)
+find_program(RSYNC_CMD NAMES rsync)
+
 add_custom_target(media-download)
-add_custom_command(
-        TARGET media-download
-        COMMAND ${CMAKE_COMMAND} -E echo_append "I will now use rsync to install the media from amber.worldforge.org into ${MEDIA_DIR}."
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_DIR}
-        COMMAND rsync -rtvzu amber.worldforge.org::ember-media/ember-media-${VERSION}/ ${MEDIA_DIR}
-        COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_DIR}/media to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_DIR}/media ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
-        COMMAND ${CMAKE_COMMAND} -E echo "Done."
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-)
+if (RSYNC_CMD)
+    add_custom_command(
+            TARGET media-download
+            COMMAND ${CMAKE_COMMAND} -E echo "I will now use rsync to install the media from amber.worldforge.org into ${MEDIA_DIR}."
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_DIR}
+            COMMAND rsync -rtvzu amber.worldforge.org::ember-media/ember-media-${VERSION}/ ${MEDIA_DIR}
+            COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_DIR}/media to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_DIR}/media ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
+            COMMAND ${CMAKE_COMMAND} -E echo "Done."
+            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    )
+else(RSYNC_CMD)
+    add_custom_command(
+            TARGET media-download
+            COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Rsync command. The target 'media-download' is disabled."
+    )
+endif(RSYNC_CMD)
 
 
+
+
+add_custom_target(mediarepo-checkout)
+if (SUBVERSION_CMD)
+    add_custom_command(
+            TARGET mediarepo-checkout
+            COMMAND ${CMAKE_COMMAND} -E echo "Using Subversion to checkout https://svn.worldforge.org:886/svn/media/trunk to ${MEDIAREPO_DIR}/trunk."
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIAREPO_DIR}
+            COMMAND ${SUBVERSION_CMD} co https://svn.worldforge.org:886/svn/media/trunk ${MEDIAREPO_DIR}/trunk
+    )
+else(SUBVERSION_CMD)
+    add_custom_command(
+            TARGET mediarepo-checkout
+            COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Subversion command 'svn'. The target 'mediarepo-checkout' is disabled."
+    )
+endif(SUBVERSION_CMD)
+
+add_custom_target(mediarepo-process)
+if (PYTHON_CMD)
+    add_custom_command(
+            TARGET mediarepo-process
+            COMMAND ${CMAKE_COMMAND} -E echo "Processing media in ${MEDIAREPO_DIR}/trunk and placing it in ${MEDIAREPO_PROCESSED_DIR}."
+            COMMAND ${CMAKE_BINARY_DIR}/scripts/make_dist_media.py ${MEDIAREPO_DIR}/trunk ${MEDIAREPO_PROCESSED_DIR}
+    )
+else(PYTHON_CMD)
+    add_custom_command(
+            TARGET mediarepo-process
+            COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Python command 'python'. The target 'mediarepo-process' is disabled."
+    )
+endif(PYTHON_CMD)
 
 # Doxygen support, exports a "docs" target.
 
@@ -371,4 +424,11 @@ set(CPACK_SOURCE_IGNORE_FILES
 
 include(CPack)
 
-message("*********\nEmber is configured. Use the 'media-download' target to fetch the needed media. I.e. 'make media-download'.\n*********")
+message("*********\nEmber is configured and ready to be built.")
+message("To run it you also need media. There are two ways of getting the media:")
+message("1. Simplest is to use the 'media-download' target. This will use 'rsync' to download only the required preprocessed media.")
+message("2. If you want to also make changes to the raw media you can use the target 'mediarepo-checkout' to use Subversion to check out the raw media repo.")
+message("   Note that this might take a while, will download ~10GB of data and will consume ~20GB on disk.")
+message("In addition, if you've downloaded the raw media repo, but want Ember to use processed media instead of the raw media repo,")
+message("you can use the target 'mediarepo-process' to create 'processed' media. This requires Python and ImageMagick.")
+message("*********")

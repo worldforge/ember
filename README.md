@@ -24,6 +24,16 @@ make install
 
 The ```make media-download``` will fetch all of the needed media files from the net. Rsync is required.
 
+### Working with media
+
+An alternative to the ```media-download``` target is to instead use the raw media repo source, as found at https://svn.worldforge.org:886/svn/media/trunk/. If you intend to edit or add new media you probably want this instead.
+
+The target ```mediarepo-checkout``` will use Subversion to checkout the repository to the ```mediarepo``` directory. When running a non-release build Ember will automatically load media from this directory.
+Note that this might lead to longer start times, as more files needs to be processed.
+
+In addition, there's a ```mediarepo-process``` target which processes the media from the media repository, as fetched by ```mediarepo-checkout```, and places the results in the build directory, under a subdirectory named ```ember-media-<version>```.
+When running a non-release build Ember will automatically load media from this directory, taking precedence over the ```mediarepo``` directory.  
+
 ## Running Ember
 
 As Ember is a 3d client it requires a 3d capable graphics card. If you have a fairly recent machine you should be good though.

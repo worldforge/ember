@@ -485,6 +485,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setVertexProgram("Lighting/SimpleVp");
 		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setFragmentProgram("Lighting/SimpleFp");
 
+		mTerrainLayerManager->resolveTextureReferences();
+
 		loadingBar.finish();
 	}
 
