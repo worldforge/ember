@@ -192,9 +192,7 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo& page) {
 				if (!pos.isNaN() && !orient.isNaN()) {
 					Model::Model& model = modelRepresentation->getModel();
 					if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
-						for (auto& submodel : model.getSubmodels()) {
-							addEntity(submodel->getEntity(), pos, orient, modelRepresentation->getScale(), colour);
-						}
+						addModel(&model, pos, orient, modelRepresentation->getScale(), colour);
 					}
 				}
 			}

@@ -265,11 +265,23 @@ public:
 
 	float getCombinedBoundingRadius() const;
 
+	float getBoundingRadius() const;
+
 	Ogre::AxisAlignedBox getCombinedBoundingBox() const;
+
+	Ogre::AxisAlignedBox getBoundingBox() const;
 
 	const INodeProvider* getNodeProvider() const;
 
+	INodeProvider* getNodeProvider();
+
 	bool useInstancing() const;
+
+	/**
+	 * Applies the supplied
+	 * @param callback
+	 */
+	void doWithMovables(std::function<void(Ogre::MovableObject*, int)> callback);
 
 	/**
 	 * A static map of instanced entities, mainly used for doing collision detection.

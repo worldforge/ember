@@ -115,6 +115,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreVector3.h>
 #include <OgreTimer.h>
 #include <OgreMesh.h>
+#include <components/ogre/model/Model.h>
 
 namespace Forests {
 
@@ -945,6 +946,8 @@ public:
 	*/
 	virtual void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color) = 0;
 
+	virtual void addModel(Ember::OgreView::Model::Model* model, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color) {}
+
 	/**
 	\brief Perform any final steps to make added entities appear in the scene.
 
@@ -1053,7 +1056,7 @@ public:
 
 	\see getBoundingBox() for important details.
 	*/
-	virtual void addEntityToBoundingBox(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale);
+	virtual void addEntityToBoundingBox(Ogre::MovableObject *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale);
 
 	/**
 	\brief Advanced: Reset the bounding box used by addEntityToBoundingBox()
@@ -1325,6 +1328,14 @@ protected:
 	{
 		geomPage->addEntity(ent, position, rotation, scale, color);
 		geomPage->addEntityToBoundingBox(ent, position, rotation, scale);
+	}
+
+	void addModel(Ember::OgreView::Model::Model *model, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, const Ogre::ColourValue &color = Ogre::ColourValue::White)
+	{
+		geomPage->addModel(model, position, rotation, scale, color);
+		model->doWithMovables([&](Ogre::MovableObject* movable, int index){
+			geomPage->addEntityToBoundingBox(movable, position, rotation, scale);
+		});
 	}
 
 private:

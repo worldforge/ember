@@ -57,6 +57,7 @@ public:
 	~ExclusiveImposterPage() override = default;
 
 	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color) override;
+	void addModel(Ember::OgreView::Model::Model *model, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color) override;
 
 	void setVisible(bool visible) override;
 	void removeEntities() override;

@@ -1070,7 +1070,7 @@ GeometryPage::GeometryPage()
 	mQueryFlag = 0;
 }
 
-void GeometryPage::addEntityToBoundingBox(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale)
+void GeometryPage::addEntityToBoundingBox(Ogre::MovableObject *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale)
 {
 	//Update bounding box
 	Ogre::Matrix4 mat(rotation);

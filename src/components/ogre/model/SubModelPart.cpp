@@ -244,26 +244,7 @@ bool SubModelPart::createInstancedEntities() {
 		} else {
 			auto bestTech = subEntity->getMaterial()->getBestTechnique();
 			if (!bestTech->getPasses().empty() && bestTech->getPass(0)->hasVertexProgram()) {
-				std::string meshName = entity->getMesh()->getName();
-
-				//The InstanceManager is meant to unwrap any shared vertices, but the current version seems to have some
-				//bugs since in some cases the mesh gets messed up. We'll in these cases use a clone instead.
-				if (entity->getMesh()->sharedVertexData) {
-					auto& meshMgr = Ogre::MeshManager::getSingleton();
-					meshName += instancedSuffix;
-					if (!meshMgr.resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-						entity->getMesh()->clone(meshName);
-					} else {
-						auto mesh = meshMgr.getByName(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-						//If the mesh exists, but is unloaded, we need to create a new clone. This is because for some reason clones meshes can't be reloaded.
-						if (!mesh->isLoaded()) {
-							meshMgr.remove(mesh);
-							entity->getMesh()->clone(meshName);
-						}
-					}
-				}
-
+				auto& meshName = entity->getMesh()->getName();
 
 				try {
 					Ogre::InstanceManager* instanceManager = sceneManager->createInstanceManager(instanceName,

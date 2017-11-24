@@ -15,6 +15,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 #include "ImpostorPage.h"
 #include "StaticBillboardSet.h"
+#include "components/ogre/SceneNodeProvider.h"
 
 #include <OgreRoot.h>
 #include <OgreTimer.h>
@@ -26,6 +27,9 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreTechnique.h>
 #include <OgreViewport.h>
+#include <OgreInstancedEntity.h>
+#include <OgreInstanceBatch.h>
+
 using namespace Ogre;
 
 namespace Forests {
@@ -95,14 +99,30 @@ void ImpostorPage::setRegion(Ogre::Real left, Ogre::Real top, Ogre::Real right, 
 
 void ImpostorPage::addEntity(Entity *ent, const Vector3 &position, const Quaternion &rotation, const Vector3 &scale, const Ogre::ColourValue &color)
 {
+//	//Get the impostor batch that this impostor will be added to
+//	ImpostorBatch *ibatch = ImpostorBatch::getBatch(this, ent);
+//
+//	//Then add the impostor to the batch
+//	ibatch->addBillboard(position, rotation, scale, color);
+//
+//	//Add the Y position to the center.y value (to be averaged later)
+//	center.y += position.y + ent->getBoundingBox().getCenter().y * scale.y;
+//	++aveCount;
+}
+
+void ImpostorPage::addModel(Ember::OgreView::Model::Model *model, const Vector3 &position, const Quaternion &rotation, const Vector3 &scale, const Ogre::ColourValue &color)
+{
 	//Get the impostor batch that this impostor will be added to
-	ImpostorBatch *ibatch = ImpostorBatch::getBatch(this, ent);
+	ImpostorBatch *ibatch = ImpostorBatch::getBatch(this, model);
 
 	//Then add the impostor to the batch
 	ibatch->addBillboard(position, rotation, scale, color);
 
 	//Add the Y position to the center.y value (to be averaged later)
-	center.y += position.y + ent->getBoundingBox().getCenter().y * scale.y;
+	auto bbox = model->getBoundingBox();
+	if (bbox.isFinite()) {
+		center.y += position.y + bbox.getCenter().y * scale.y;
+	}
 	++aveCount;
 }
 
@@ -183,12 +203,12 @@ void ImpostorPage::update()
 	}
 }
 
-void ImpostorPage::regenerate(Entity *ent)
-{
-	ImpostorTexture *tex = ImpostorTexture::getTexture(nullptr, ent);
-	if (tex)
-		tex->regenerate();
-}
+//void ImpostorPage::regenerate(Entity *ent)
+//{
+//	ImpostorTexture *tex = ImpostorTexture::getTexture(nullptr, ent);
+//	if (tex)
+//		tex->regenerate();
+//}
 
 void ImpostorPage::regenerateAll()
 {
@@ -206,10 +226,10 @@ void ImpostorPage::setImpostorPivot(BillboardOrigin origin)
 
 unsigned long ImpostorBatch::GUID = 0;
 
-ImpostorBatch::ImpostorBatch(ImpostorPage *group, Entity *entity)
+ImpostorBatch::ImpostorBatch(ImpostorPage *group, Ember::OgreView::Model::Model* model)
 {
 	//Render impostor texture for this entity
-	tex = ImpostorTexture::getTexture(group, entity);
+	tex = ImpostorTexture::getTexture(group, model);
 	
 	//Create billboard set
 	bbset = new StaticBillboardSet(group->sceneMgr, group->geom->getSceneNode());
@@ -236,10 +256,10 @@ ImpostorBatch::~ImpostorBatch()
 
 //Returns a pointer to an ImpostorBatch for the specified entity in the specified
 //ImpostorPage. If one does not already exist, one will automatically be created.
-ImpostorBatch *ImpostorBatch::getBatch(ImpostorPage *group, Entity *entity)
+ImpostorBatch *ImpostorBatch::getBatch(ImpostorPage *group, Ember::OgreView::Model::Model *model)
 {
 	//Search for an existing impostor batch for this entity
-	String entityKey = ImpostorBatch::generateEntityKey(entity);
+	String entityKey = ImpostorBatch::generateEntityKey(model);
 	std::map<String, ImpostorBatch *>::iterator iter;
 	iter = group->impostorBatches.find(entityKey);
 
@@ -249,7 +269,7 @@ ImpostorBatch *ImpostorBatch::getBatch(ImpostorPage *group, Entity *entity)
 		return iter->second;
 	} else {
 		//Otherwise, create a new batch
-		ImpostorBatch *batch = new ImpostorBatch(group, entity);
+		ImpostorBatch *batch = new ImpostorBatch(group, model);
 
 		//Add it to the impostorBatches list
 		typedef std::pair<String, ImpostorBatch *> ListItem;
@@ -308,13 +328,15 @@ void ImpostorBatch::setBillboardOrigin(BillboardOrigin origin)
 		entityBBCenter = Vector3(tex->entityCenter.x, tex->entityCenter.y - tex->entityRadius, tex->entityCenter.z);
 }
 
-String ImpostorBatch::generateEntityKey(Entity *entity)
+String ImpostorBatch::generateEntityKey(Ember::OgreView::Model::Model* model)
 {
 	Ogre::StringStream entityKey;
-	entityKey << entity->getMesh()->getName();
-	for (uint32 i = 0; i < entity->getNumSubEntities(); ++i){
-		entityKey << "-" << entity->getSubEntity(i)->getMaterialName();
-	}
+
+
+	entityKey << model->getDefinition()->getName();
+//	for (uint32 i = 0; i < entity->getNumSubEntities(); ++i){
+//		entityKey << "-" << entity->getSubEntity(i)->getMaterialName();
+//	}
 	entityKey << "-" << IMPOSTOR_YAW_ANGLES << "_" << IMPOSTOR_PITCH_ANGLES;
 #ifdef IMPOSTOR_RENDER_ABOVE_ONLY
 	entityKey << "_RAO";
@@ -345,21 +367,21 @@ unsigned long ImpostorTexture::GUID = 0;
 
 //Do not use this constructor yourself - instead, call getTexture()
 //to get/create an ImpostorTexture for an Entity.
-ImpostorTexture::ImpostorTexture(ImpostorPage *group, Entity *entity)
+ImpostorTexture::ImpostorTexture(ImpostorPage *group, Ember::OgreView::Model::Model* model)
 : loader(nullptr)
 {
 	//Store scene manager and entity
 	ImpostorTexture::sceneMgr = group->sceneMgr;
-	ImpostorTexture::entity = entity;
+	ImpostorTexture::model = model;
 	ImpostorTexture::group = group;
 
 	//Add self to list of ImpostorTexture's
-	entityKey = ImpostorBatch::generateEntityKey(entity);
+	entityKey = ImpostorBatch::generateEntityKey(model);
 	typedef std::pair<String, ImpostorTexture *> ListItem;
 	selfList.insert(ListItem(entityKey, this));
 	
 	//Calculate the entity's bounding box and it's diameter
-	boundingBox = entity->getBoundingBox();
+	boundingBox = model->getBoundingBox();
 
 	//Note - this radius calculation assumes the object is somewhat rounded (like trees/rocks/etc.)
 	Real tmp;
@@ -501,12 +523,12 @@ void ImpostorTexture::renderTextures(bool force)
 	
 	//Set up scene node
 	SceneNode* node = sceneMgr->getSceneNode("ImpostorPage::renderNode");
-	
-	Ogre::SceneNode* oldSceneNode = entity->getParentSceneNode();
-	if (oldSceneNode) {
-		oldSceneNode->detachObject(entity);
-	}
-	node->attachObject(entity);
+
+	Ember::OgreView::SceneNodeProvider sceneNodeProvider(node, nullptr, false);
+	auto* oldNodeProvider = model->getNodeProvider();
+
+	model->attachToNode(&sceneNodeProvider);
+
 	node->setPosition(-entityCenter);
 	
 	//Set up camera FOV
@@ -556,12 +578,26 @@ void ImpostorTexture::renderTextures(bool force)
 	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE); 
 	sceneMgr->addSpecialCaseRenderQueue(group->geom->getRenderQueue() + 1);
 
-	uint8 oldRenderQueueGroup = entity->getRenderQueueGroup();
-	entity->setRenderQueueGroup(group->geom->getRenderQueue() + 1);
-	bool oldVisible = entity->getVisible();
-	entity->setVisible(true);
-	float oldMaxDistance = entity->getRenderingDistance();
-	entity->setRenderingDistance(0);
+	std::vector<uint8> oldRenderQueues;
+	std::vector<bool> oldVisibles;
+	std::vector<float> oldRenderDistance;
+	model->doWithMovables([&](Ogre::MovableObject* movable, int index) {
+		if (movable->getMovableType() == "InstancedEntity") {
+			auto instancedEntity = dynamic_cast<Ogre::InstancedEntity*>(movable);
+			instancedEntity->_getOwner()->setRenderQueueGroup(group->geom->getRenderQueue() + 1);
+			oldRenderQueues.push_back(instancedEntity->_getOwner()->getRenderQueueGroup());
+			//Need to update the bounds here, as it's otherwise only done once each frame, and we've moved the entity
+			instancedEntity->_getOwner()->_updateBounds();
+		} else {
+			movable->setRenderQueueGroup(group->geom->getRenderQueue() + 1);
+			oldRenderQueues.push_back(movable->getRenderQueueGroup());
+		}
+
+		oldVisibles.push_back(movable->getVisible());
+		oldRenderDistance.push_back(movable->getRenderingDistance());
+		movable->setVisible(true);
+		movable->setRenderingDistance(0);
+	});
 
 	bool needsRegen = true;
 #ifdef IMPOSTOR_FILE_SAVE
@@ -642,11 +678,22 @@ void ImpostorTexture::renderTextures(bool force)
 		texture = renderTexture;
 #endif
 	}
-	
 
-	entity->setVisible(oldVisible);
-	entity->setRenderQueueGroup(oldRenderQueueGroup);
-	entity->setRenderingDistance(oldMaxDistance);
+
+	model->doWithMovables([&](Ogre::MovableObject* movable, int index) {
+		if (movable->getMovableType() == "InstancedEntity") {
+			auto instancedEntity = dynamic_cast<Ogre::InstancedEntity*>(movable);
+			instancedEntity->_getOwner()->setRenderQueueGroup(oldRenderQueues[index]);
+			//Need to update the bounds here, as it's otherwise only done once each frame, and we've moved the entity
+			instancedEntity->_getOwner()->_updateBounds();
+		} else {
+			movable->setRenderQueueGroup(oldRenderQueues[index]);
+		}
+
+		movable->setVisible(oldVisibles[index]);
+		movable->setRenderingDistance(oldRenderDistance[index]);
+	});
+
 	sceneMgr->removeSpecialCaseRenderQueue(group->geom->getRenderQueue() + 1);
 	// Restore original state
 	sceneMgr->setSpecialCaseRenderQueueMode(OldSpecialCaseRenderQueueMode); 
@@ -668,10 +715,7 @@ void ImpostorTexture::renderTextures(bool force)
 	renderCamera->getSceneManager()->destroyCamera(renderCamera);
 	
 	//Delete scene node
-	node->detachAllObjects();
-	if (oldSceneNode) {
-		oldSceneNode->attachObject(entity);
-	}
+	model->attachToNode(oldNodeProvider);
 #ifdef IMPOSTOR_FILE_SAVE
 	//Delete RTT texture
 	assert(renderTexture);
@@ -714,10 +758,10 @@ void ImpostorTexture::removeTexture(ImpostorTexture* Texture)
 	// no need to anything if it was not found, chances are that it was already deleted
 }
 
-ImpostorTexture *ImpostorTexture::getTexture(ImpostorPage *group, Entity *entity)
+ImpostorTexture *ImpostorTexture::getTexture(ImpostorPage *group, Ember::OgreView::Model::Model* model)
 {
 	//Search for an existing impostor texture for the given entity
-	String entityKey = ImpostorBatch::generateEntityKey(entity);
+	String entityKey = ImpostorBatch::generateEntityKey(model);
 	std::map<String, ImpostorTexture *>::iterator iter;
 	iter = selfList.find(entityKey);
 	
@@ -728,7 +772,7 @@ ImpostorTexture *ImpostorTexture::getTexture(ImpostorPage *group, Entity *entity
 	} else {
 		if (group){
 			//Otherwise, return a new texture
-			return (new ImpostorTexture(group, entity));
+			return (new ImpostorTexture(group, model));
 		} else {
 			//But if group is null, return null
 			return NULL;

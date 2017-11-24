@@ -857,6 +857,10 @@ float Model::getCombinedBoundingRadius() const {
 	return radius;
 }
 
+float Model::getBoundingRadius() const {
+	return getCombinedBoundingRadius();
+}
+
 Ogre::AxisAlignedBox Model::getCombinedBoundingBox() const {
 	Ogre::AxisAlignedBox aabb;
 	for (auto& movable : mMovableObjects) {
@@ -867,7 +871,15 @@ Ogre::AxisAlignedBox Model::getCombinedBoundingBox() const {
 	return aabb;
 }
 
+Ogre::AxisAlignedBox Model::getBoundingBox() const {
+	return getCombinedBoundingBox();
+}
+
 const INodeProvider* Model::getNodeProvider() const {
+	return mParentNodeProvider;
+}
+
+INodeProvider* Model::getNodeProvider() {
 	return mParentNodeProvider;
 }
 
@@ -877,6 +889,13 @@ bool Model::isLoaded() const {
 
 bool Model::useInstancing() const {
 	return mUseInstancing;
+}
+
+void Model::doWithMovables(std::function<void(Ogre::MovableObject*, int)> callback) {
+	int i = 0;
+	for (auto movable : mMovableObjects) {
+		callback(movable, i++);
+	}
 }
 
 

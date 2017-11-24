@@ -35,6 +35,11 @@ void ExclusiveImposterPage::addEntity(Ogre::Entity *ent, const Ogre::Vector3 &po
 	mModels.push_back(model);
 }
 
+void ExclusiveImposterPage::addModel(Ember::OgreView::Model::Model* model, const Ogre::Vector3& position, const Ogre::Quaternion& rotation, const Ogre::Vector3& scale, const Ogre::ColourValue& color) {
+	Forests::ImpostorPage::addModel(model, position, rotation, scale, color);
+	mModels.push_back(model);
+}
+
 void ExclusiveImposterPage::setVisible(bool visible)
 {
 	Forests::ImpostorPage::setVisible(visible);
@@ -48,6 +53,8 @@ void ExclusiveImposterPage::removeEntities()
 	Forests::ImpostorPage::removeEntities();
 	mModels.clear();
 }
+
+
 
 }
 

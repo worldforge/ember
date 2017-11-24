@@ -94,6 +94,7 @@ public:
 	
 	void setRegion(Ogre::Real left, Ogre::Real top, Ogre::Real right, Ogre::Real bottom);
 	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color);
+	void addModel(Ember::OgreView::Model::Model *model, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color) override;
 	void build();
 	void removeEntities();
 	
@@ -170,7 +171,7 @@ public:
 
 	\warning This is NOT a real-time operation - it may take a few seconds to complete.
 	*/
-	static void regenerate(Ogre::Entity *ent);
+	//static void regenerate(Ogre::Entity *ent);
 
 	/**
 	\brief Regenerates all impostor textures currently being used in the scene
@@ -220,7 +221,7 @@ protected:
 class ImpostorBatch
 {
 public:
-	static ImpostorBatch *getBatch(ImpostorPage *group, Ogre::Entity *entity);
+	static ImpostorBatch *getBatch(ImpostorPage *group, Ember::OgreView::Model::Model *model);
 	~ImpostorBatch();
 
 	inline void build()
@@ -247,10 +248,10 @@ public:
 	inline void addBillboard(const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color = Ogre::ColourValue::White);
 	void setAngle(float pitchDeg, float yawDeg);
 
-	static Ogre::String generateEntityKey(Ogre::Entity *entity);
+	static Ogre::String generateEntityKey(Ember::OgreView::Model::Model* model);
 
 protected:
-	ImpostorBatch(ImpostorPage *group, Ogre::Entity *entity);
+	ImpostorBatch(ImpostorPage *group, Ember::OgreView::Model::Model* model);
 
 	ImpostorTexture *tex;
 	StaticBillboardSet *bbset;
@@ -304,7 +305,7 @@ public:
 	/** Returns a pointer to an ImpostorTexture for the specified entity. If one does not
 	already exist, one will automatically be created.
 	*/
-	static ImpostorTexture *getTexture(ImpostorPage *group, Ogre::Entity *entity);
+	static ImpostorTexture *getTexture(ImpostorPage *group, Ember::OgreView::Model::Model* model);
 	
 	/** remove created texture, note that all of the ImposterTextures
 	must be deleted at once, because there is no track if a texture is still
@@ -318,7 +319,7 @@ public:
 	~ImpostorTexture();
 	
 protected:
-	ImpostorTexture(ImpostorPage *group, Ogre::Entity *entity);
+	ImpostorTexture(ImpostorPage *group, Ember::OgreView::Model::Model* model);
 
 	void renderTextures(bool force);	// Renders the impostor texture grid
 	void updateMaterials();				// Updates the materials to use the latest rendered impostor texture grid
@@ -327,7 +328,7 @@ protected:
 
 	static std::map<Ogre::String, ImpostorTexture *> selfList;
 	Ogre::SceneManager *sceneMgr;
-	Ogre::Entity *entity;
+	Ember::OgreView::Model::Model* model;
 	Ogre::String entityKey;
 	ImpostorPage *group;
 
