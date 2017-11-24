@@ -152,7 +152,8 @@ EmberOgre::EmberOgre() :
 		mCameraOutOfWorld(nullptr),
 		mWorld(nullptr),
 		mPMInjectorSignaler(nullptr),
-		mConsoleDevTools(nullptr)
+		mConsoleDevTools(nullptr),
+		mConfigListenerContainer(new ConfigListenerContainer())
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -487,6 +488,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 		mTerrainLayerManager->resolveTextureReferences();
 
+		setupProfiler();
+
 		loadingBar.finish();
 	}
 
@@ -614,6 +617,30 @@ void EmberOgre::Application_ServicesInitialized()
 Eris::View* EmberOgre::getMainView() const
 {
 	return Application::getSingleton().getMainView();
+}
+
+void EmberOgre::setupProfiler() {
+	mConfigListenerContainer->registerConfigListener("ogre", "profiler", [&](const std::string& section, const std::string& key, varconf::Variable& variable) {
+		if (variable.is_bool()) {
+			auto* profiler = Ogre::Profiler::getSingletonPtr();
+			if (profiler) {
+				if ((bool) variable) {
+					auto& resourceGroupMgr = Ogre::ResourceGroupManager::getSingleton();
+					if (!resourceGroupMgr.resourceGroupExists("Profiler")) {
+						mResourceLoader->addMedia("assets_external/OGRE/profiler", "Profiler");
+						mResourceLoader->addMedia("assets_external/OGRE/SdkTrays", "Profiler");
+
+						resourceGroupMgr.initialiseResourceGroup("Profiler");
+					}
+				}
+
+				if (profiler->getEnabled() != (bool) variable) {
+					profiler->reset();
+					profiler->setEnabled((bool) variable);
+				}
+			}
+		}
+	});
 }
 
 }

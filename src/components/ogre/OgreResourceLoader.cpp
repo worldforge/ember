@@ -206,17 +206,10 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 void OgreResourceLoader::loadBootstrap() {
 	//Add the "assets" directory, which contains most of the assets
 
-	if (!addSourceRepoMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true)) {
-		addSharedMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-	}
+	addMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-	if (!addSourceRepoMedia("assets_external/RTShaderLib/materials", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true)) {
-		addSharedMedia("media/assets_external/RTShaderLib/materials", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-	}
-	if (!addSourceRepoMedia("assets_external/RTShaderLib/GLSL", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true)) {
-		addSharedMedia("media/assets_external/RTShaderLib/GLSL", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-	}
-
+	addMedia("assets_external/OGRE/RTShaderLib/materials", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	addMedia("assets_external/OGRE/RTShaderLib/GLSL", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }
@@ -237,9 +230,7 @@ void OgreResourceLoader::loadGeneral() {
 	addUserMedia("data", "EmberFileSystem", "Data", true);
 
 	//The Caelum component
-	if (!addSourceRepoMedia("assets_external/caelum", "Caelum", true)) {
-		addSharedMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
-	}
+	addMedia("assets_external/caelum", "Caelum");
 	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
 
 	//Entity recipes
@@ -378,6 +369,13 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 			}
 		}
 	});
+}
+
+bool OgreResourceLoader::addMedia(const std::string& path, const std::string& resourceGroup) {
+	if (!addSourceRepoMedia(path, resourceGroup, true)) {
+		return addSharedMedia("media/"+ path, "EmberFileSystem", resourceGroup, true);
+	}
+	return true;
 }
 
 }

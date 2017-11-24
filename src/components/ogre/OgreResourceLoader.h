@@ -72,6 +72,18 @@ public:
 	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
+	 * Adds a media location in the filesystem.
+	 *
+	 * This will first look if there's any processed media under the build directory.
+	 * Otherwise it will look if there's any raw media from the "mediarepo" directory under source.
+	 * And lastly, if nothing is found, media from the install location will be added.
+	 * @param path
+	 * @param resourceGroup
+	 * @return True if media was found.
+	 */
+	bool addMedia(const std::string& path, const std::string& resourceGroup);
+
+	/**
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
 	 */
 	const ConsoleCommandWrapper UnloadUnusedResources;

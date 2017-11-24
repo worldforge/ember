@@ -64,6 +64,7 @@ class Input;
 class MainLoopController;
 class TimeFrame;
 class EmberEntity;
+class ConfigListenerContainer;
 namespace OgreView
 {
 
@@ -379,6 +380,8 @@ protected:
 
 	ConsoleDevTools* mConsoleDevTools;
 
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
+
 	/**
 	 * @brief Gets the main Eris View instance, which is the main inteface to the world.
 	 *
@@ -425,6 +428,8 @@ protected:
 	 * @note You need to call this each frame due to problematic behaviour in how Ogre handles multiple scene managers. See http://www.ogre3d.org/mantis/view.php?id=130
 	 */
 	void clearDirtyPassLists();
+
+	void setupProfiler();
 
 };
 
