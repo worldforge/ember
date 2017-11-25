@@ -502,7 +502,7 @@ void ImpostorTexture::renderTextures(bool force)
 	uint32 textureSize = ImpostorPage::impostorResolution;
 	if (!renderTexture) {
 	renderTexture = TextureManager::getSingleton().createManual(getUniqueID("ImpostorTexture"), "Impostors",
-				TEX_TYPE_2D, textureSize * IMPOSTOR_YAW_ANGLES, textureSize * IMPOSTOR_PITCH_ANGLES, 0, MIP_UNLIMITED, PF_A8R8G8B8, TU_RENDERTARGET, loader.get());
+				TEX_TYPE_2D, textureSize * IMPOSTOR_YAW_ANGLES, textureSize * IMPOSTOR_PITCH_ANGLES, 1, MIP_UNLIMITED, PF_A8R8G8B8, TU_RENDERTARGET, loader.get());
 	}
 
 	//Set up render target

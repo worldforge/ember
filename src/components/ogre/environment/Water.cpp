@@ -197,7 +197,7 @@ bool Water::initialize()
 		mRefractionListener = new RefractionTextureListener();
 		mReflectionListener = new ReflectionTextureListener();
 
-		Ogre::TexturePtr texture = TextureManager::getSingleton().createManual("Refraction", "General", TEX_TYPE_2D, 512, 512, 0, PF_A8R8G8B8, TU_RENDERTARGET);
+		Ogre::TexturePtr texture = TextureManager::getSingleton().createManual("Refraction", "General", TEX_TYPE_2D, 512, 512, 1, PF_A8R8G8B8, TU_RENDERTARGET);
 		RenderTexture* rttTex = texture->getBuffer()->getRenderTarget();
 /*		RenderTexture* rttTex = EmberOgre::getSingleton().getOgreRoot()->getRenderSystem()->createRenderTexture( "Refraction", 512, 512 );*/
 

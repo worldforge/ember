@@ -264,7 +264,7 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 
 	//first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (prefix + "_SimpleRenderContextRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
-	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET, &mResourceLoader);
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mWidth, mHeight, 1, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET, &mResourceLoader);
 	if (!texture) {
 		S_LOG_WARNING("Could not create a texture.");
 		return;

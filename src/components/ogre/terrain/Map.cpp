@@ -71,7 +71,7 @@ void Map::setupCamera()
 void Map::createTexture()
 {
 	//don't use alpha for our map texture
-	mTexture = Ogre::TextureManager::getSingleton().createManual("TerrainMap", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mTexturePixelSize, mTexturePixelSize, 0, Ogre::PF_R8G8B8,Ogre::TU_RENDERTARGET);
+	mTexture = Ogre::TextureManager::getSingleton().createManual("TerrainMap", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mTexturePixelSize, mTexturePixelSize, 1, Ogre::PF_R8G8B8,Ogre::TU_RENDERTARGET);
 	mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 	mRenderTexture->removeAllViewports();
 

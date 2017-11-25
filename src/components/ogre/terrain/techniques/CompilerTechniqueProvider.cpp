@@ -52,7 +52,7 @@ CompilerTechniqueProvider::CompilerTechniqueProvider(ShaderManager& shaderManage
 	if (Ogre::TextureManager::getSingleton().resourceExists(onePixelMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 		S_LOG_WARNING("Texture '" << onePixelMaterialName << "' already existed when CompilerTechniqueProvider was created; this should not be the case.");
 	} else {
-		Ogre::TextureManager::getSingleton().createManual(onePixelMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 1, 1, 0, Ogre::PF_R8G8B8, Ogre::TU_DEFAULT, mOnePixelMaterialGenerator);
+		Ogre::TextureManager::getSingleton().createManual(onePixelMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 1, 1, 1, Ogre::PF_R8G8B8, Ogre::TU_DEFAULT, mOnePixelMaterialGenerator);
 	}
 }
 
