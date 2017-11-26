@@ -22,7 +22,7 @@
 #include <OgreSubMesh.h>
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
-
+#include <OgreSkeleton.h>
 
 namespace Ember
 {
@@ -40,7 +40,7 @@ void MeshInfoProvider::calcUniqueVertexCount(UniqueVertexSet& uniqueVertexSet, c
 	// Lock the buffer for reading.
 	unsigned char* pVertex = static_cast<unsigned char*>(
 	    vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-	int vSize = vbuf->getVertexSize();
+	size_t vSize = vbuf->getVertexSize();
 	unsigned char* pEnd = pVertex + data.vertexCount * vSize;
 
 	// Loop through all vertices and insert them to the HashMap.
@@ -65,7 +65,7 @@ size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::Mesh* mesh)
 
 	bool addedShared = false;
 	size_t vertexCount = 0;
-	unsigned short submeshCount = mesh->getNumSubMeshes();
+	size_t submeshCount = mesh->getNumSubMeshes();
 	// Loop to determine vertex count for tuning hash table size.
 	for (unsigned short i = 0; i < submeshCount; i++) {
 		const Ogre::SubMesh* submesh = mesh->getSubMesh(i);
@@ -154,7 +154,7 @@ std::string MeshInfoProvider::getPreviewInfo()
 	} else {
 		size_t indexCount = 0;
 
-		int count = mesh->getNumSubMeshes();
+		size_t count = mesh->getNumSubMeshes();
 		for (unsigned short i = 0; i < count; ++i) {
 			const Ogre::SubMesh& submesh = *mesh->getSubMesh(i);
 
@@ -168,6 +168,11 @@ std::string MeshInfoProvider::getPreviewInfo()
 
 		str << indexCount << " indices" << std::endl;
 		str << (indexCount / 3) << " triangles" << std::endl;
+	}
+
+	auto skeleton = mesh->getSkeleton();
+	if (skeleton) {
+		str << skeleton->getNumBones() << " bones" << std::endl;
 	}
 
 	return str.str();
