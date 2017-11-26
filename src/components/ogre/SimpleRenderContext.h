@@ -43,14 +43,14 @@ public:
 	 *    Ctor.
 	 * @param renderContext The SimpleRenderContext to which this instance belongs.
 	 */
-	SimpleRenderContextResourceLoader(SimpleRenderContext& renderContext);
+	explicit SimpleRenderContextResourceLoader(SimpleRenderContext& renderContext);
 
 
 	/**
 	 *    At load time the texture will be rerendered.
 	 * @param resource
 	 */
-	virtual void loadResource (Ogre::Resource *resource);
+	void loadResource(Ogre::Resource *resource) override;
 protected:
 	SimpleRenderContext& mRenderContext;
 };
@@ -264,7 +264,7 @@ private:
 	/**
 	Width and height of the image.
 	*/
-	int mWidth, mHeight;
+	uint32_t mWidth, mHeight;
 
 	/**
 	The rendertexture used.
