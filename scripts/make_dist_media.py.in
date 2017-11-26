@@ -160,7 +160,7 @@ OPTIONS
 	
 	#First copy all directories that we should just provide unchanged
 	copytree(os.path.join(src_media_dir, "assets_external/caelum"), os.path.join(dest_media_dir, "assets_external/caelum"))
-	copytree(os.path.join(src_media_dir, "assets_external/RTShaderLib"), os.path.join(dest_media_dir, "assets_external/RTShaderLib"))
+	copytree(os.path.join(src_media_dir, "assets_external/OGRE"), os.path.join(dest_media_dir, "assets_external/OGRE"))
 	#Copy license files
 	shutil.copy(os.path.join(src_media_dir, "LICENSING.txt"), dest_media_dir)
 	shutil.copy(os.path.join(src_media_dir, "COPYING.txt"), dest_media_dir)
