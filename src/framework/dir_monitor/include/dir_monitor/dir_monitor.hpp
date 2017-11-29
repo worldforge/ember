@@ -7,6 +7,10 @@
 #pragma once
 
 #include "basic_dir_monitor.hpp"
+#include <boost/version.hpp>
+
+//On versions where os.h is available (i.e. 1.55.0+), check with that. Otherwise just assume Linux.
+#if BOOST_VERSION > 105500
 #include <boost/predef/os.h>
 
 #if BOOST_OS_WINDOWS
@@ -19,6 +23,10 @@
 #  include "kqueue/basic_dir_monitor_service.hpp"
 #else
 #  error "Platform not supported."
+#endif
+
+#else
+#include "inotify/basic_dir_monitor_service.hpp"
 #endif
 
 namespace boost {
