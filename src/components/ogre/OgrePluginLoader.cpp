@@ -93,11 +93,14 @@ OgrePluginLoader::OgrePluginLoader() {
 	mPluginExtension = ".dll";
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 
-	//First try with the plugin dir defined for Ogre
+	//If any prefix is set (for example for AppImage builds), check for the plugins in directories relative to the prefix first.
+	if (!configSrv.getPrefix().empty()) {
+		mPluginDirs.push_back(configSrv.getPrefix() + "/lib64/OGRE");
+		mPluginDirs.push_back(configSrv.getPrefix() + "/lib/OGRE");
+	}
+
 	mPluginDirs.emplace_back(OGRE_PLUGINDIR);
 
-	mPluginDirs.push_back(configSrv.getPrefix() + "/lib64/OGRE");
-	mPluginDirs.push_back(configSrv.getPrefix() + "/lib/OGRE");
 	mPluginExtension = ".so";
 #ifdef ENABLE_BINRELOC
 	//binreloc might be used
