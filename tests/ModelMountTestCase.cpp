@@ -71,7 +71,7 @@ void scaleAndTestMount(TestModel& model, Model::ModelMount& mount, const Ogre::N
 void ModelMountTestCase::testModelMountScaling()
 {
 	Ogre::Root root;
-	Ogre::SceneManager* sceneManager = root.createSceneManager(Ogre::ST_GENERIC);
+	Ogre::SceneManager* sceneManager = root.createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME);
 
 	TestModel model(*sceneManager);
 

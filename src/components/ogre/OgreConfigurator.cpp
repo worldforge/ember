@@ -49,6 +49,7 @@
 #endif
 
 #include <thread>
+#include <components/cegui/CEGUISetup.h>
 
 namespace Ember
 {
@@ -118,7 +119,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 	Cegui::CEGUILogger* logger = new Cegui::CEGUILogger();
 
-	CEGUI::OgreRenderer& renderer = CEGUI::OgreRenderer::create(*renderWindow);
+	CEGUI::OgreRenderer& renderer = Ember::Cegui::CEGUISetup::createRenderer(renderWindow);
 	renderer.setRenderingEnabled(false);
 	renderer.setFrameControlExecutionEnabled(false);
 	CEGUI::OgreResourceProvider& rp = CEGUI::OgreRenderer::createOgreResourceProvider();

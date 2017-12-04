@@ -67,6 +67,7 @@
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/MultiLineEditbox.h>
 #include <CEGUI/widgets/Editbox.h>
+#include <components/cegui/CEGUISetup.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -107,33 +108,8 @@ CEGUI is not built with Freetype
 		mDefaultScheme = "EmberLook";
 		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
 
-		if (!configService.getPrefix().empty()) {
-
-#ifndef __WIN32__
-			//The environment variable CEGUI_MODULE_DIR points to where CEGUI can find its modules. Lets check if they are under the prefix,
-			//for relocatable packages. We need to check both "lib64" and "lib".
-			std::string modulePath = configService.getPrefix() + "/lib64/cegui-0.8";
-			if (std::ifstream(modulePath).good()) {
-				setenv("CEGUI_MODULE_DIR", modulePath.c_str(), 1);
-				S_LOG_INFO("Setting CEGUI_MODULE_DIR to " << modulePath);
-			} else {
-				modulePath = configService.getPrefix() + "/lib/cegui-0.8";
-				if (std::ifstream(modulePath).good()) {
-					setenv("CEGUI_MODULE_DIR", modulePath.c_str(), 1);
-					S_LOG_INFO("Setting CEGUI_MODULE_DIR to " << modulePath);
-				}
-			}
-#endif
-			//We need to set the current directory to the prefix before trying to load CEGUI.
-			if (chdir(configService.getPrefix().c_str())) {
-				S_LOG_WARNING("Failed to change to the prefix directory '" << configService.getPrefix() << "'. Gui loading might fail.");
-			}
-		}
-
 		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI.
-		// Note that the third argument tells the renderer to render the gui after all of the
-		// regular render queues have been processed, thus making sure that the gui always is on top.
-		mGuiRenderer = &CEGUI::OgreRenderer::create(*window);
+		mGuiRenderer = &Ember::Cegui::CEGUISetup::createRenderer(window);
 
 		//We'll do our own rendering, interleaved with Ogre's, so we'll turn off the automatic rendering.
 		mGuiRenderer->setRenderingEnabled(false);
