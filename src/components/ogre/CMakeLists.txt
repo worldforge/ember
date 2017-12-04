@@ -114,9 +114,6 @@ add_library(emberogre
         MousePicker.h OgreIncludes.h)
 
 
-install(FILES ogre.cfg environment/hydrax.cfg DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ember)
-install(FILES ogre.cfg DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ember)
-
 file(GLOB ENTITY_RECIPES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.entityrecipe" "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.xsd")
 install(FILES ${ENTITY_RECIPES_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/entityrecipes)
 

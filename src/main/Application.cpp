@@ -183,6 +183,11 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 }
 
 Application::~Application() {
+
+	if (mOgreView) {
+		mOgreView->saveConfig();
+	}
+
 	// before shutting down, we write out the user config to user's ember home directory
 	ConfigService& configService = mServices->getConfigService();
 	configService.saveConfig(configService.getHomeDirectory(BaseDirType_CONFIG) + "ember.conf", varconf::USER);

@@ -92,6 +92,8 @@ public:
 	 */
 	Ogre::OverlaySystem* getOverlaySystem() const;
 
+	void saveConfig();
+
 	/**
 	 * @brief Shuts down the Ogre system.
 	 */

@@ -67,17 +67,14 @@ OgreConfigurator::~OgreConfigurator()
 
 OgreConfigurator::Result OgreConfigurator::configure()
 {
-	int width = 250;
-	int height = 300;
-	const Ogre::RenderSystemList& renderers = Ogre::Root::getSingleton().getAvailableRenderers();
-	if (renderers.size() == 0) {
-		return OC_CANCEL;
-	}
+	unsigned int width = 250;
+	unsigned int height = 300;
+	auto& root = Ogre::Root::getSingleton();
 
-	//Restore last used render system.
-	Ogre::Root::getSingleton().restoreConfig();
-	Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
-	Ogre::Root::getSingleton().initialise(false);
+	auto renderSystem = root.getRenderSystem();
+
+
+	root.initialise(false);
 
 	bool handleOpenGL = false;
 #ifdef __APPLE__
@@ -137,36 +134,20 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		mConfigWindow->update(0);
 		sheet->addChild(mConfigWindow);
 
-		CEGUI::Window* renderSystemWrapper = mConfigWindow->getChildRecursive("RenderSystem_wrapper");
-		assert(renderSystemWrapper);
-		CEGUI::Combobox* renderSystemsBox = static_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("RenderSystem"));
-		assert(renderSystemsBox);
-		//If we only have one render system available we should hide the render system combobox.
-		if (renderers.size() == 1) {
-			renderSystemWrapper->getParent()->removeChild(renderSystemWrapper);
-		} else {
-			int i = 0;
-			for (Ogre::RenderSystemList::const_iterator I = renderers.begin(); I != renderers.end(); ++I) {
-				const Ogre::String& rendererName = (*I)->getName();
-				Gui::ColouredListItem* item = new Gui::ColouredListItem(rendererName, i++);
-				renderSystemsBox->addItem(item);
-				if (rendererName == renderSystem->getName()) {
-					renderSystemsBox->setItemSelectState(item, true);
-				}
-			}
-
-			renderSystemsBox->subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted, CEGUI::Event::Subscriber(&OgreConfigurator::renderSystemChanged, this));
-		}
 		updateResolutionList(renderSystem);
 		CEGUI::Window* okButton = mConfigWindow->getChildRecursive("Button_ok");
-		okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonOkClicked, this));
+		okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber([&](){
+			mResult = OC_OK;
+			mContinueInLoop = false;
+		}));
+		//okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonOkClicked, this));
 		CEGUI::Window* cancelButton = mConfigWindow->getChildRecursive("Button_cancel");
 		cancelButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonCancelClicked, this));
 		CEGUI::Window* advancedButton = mConfigWindow->getChildRecursive("Advanced");
 		advancedButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonAdvancedClicked, this));
 
-		auto fullscreenCheckbox = static_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("Fullscreen"));
-		auto dontShowAgainCheckbox = static_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("DontShowAgain"));
+		auto fullscreenCheckbox = dynamic_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("Fullscreen"));
+		auto dontShowAgainCheckbox = dynamic_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("DontShowAgain"));
 
 		Input& input = Input::getSingleton();
 		auto adapterDeleter = [&](IInputAdapter* ptr){
@@ -203,15 +184,9 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			std::this_thread::sleep_for(std::chrono::milliseconds(16));
 		}
 
-		//Check if the user has selected a render system (in the case of there being multiple)
-		if (renderers.size() > 1) {
-			renderSystem = renderers[renderSystemsBox->getSelectedItem()->getID()];
-		}
-		mChosenRenderSystemName = renderSystem->getName();
-
 		mConfigOptions = renderSystem->getConfigOptions();
 
-		CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("Resolution"));
+		CEGUI::Combobox* resolutionsCombobox = dynamic_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("Resolution"));
 		mConfigOptions["Video Mode"].currentValue = resolutionsCombobox->getText().c_str();
 		mConfigOptions["Full Screen"].currentValue = fullscreenCheckbox->isSelected() ? "Yes" : "No";
 
@@ -228,8 +203,6 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
 
-
-
 	} catch (const std::exception& ex) {
 		CEGUI::System::getSingleton().destroy();
 		CEGUI::OgreRenderer::destroy(renderer);
@@ -240,45 +213,30 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	return mResult;
 }
 
-std::string OgreConfigurator::getChosenRenderSystemName() const
-{
-	return mChosenRenderSystemName;
-}
-
 Ogre::ConfigOptionMap OgreConfigurator::getConfigOptions() const
 {
 	return mConfigOptions;
 }
-bool OgreConfigurator::renderSystemChanged(const CEGUI::EventArgs& args)
-{
-	CEGUI::Window* wnd = mConfigWindow->getChildRecursive("RenderSystem");
-	assert(wnd);
-	CEGUI::Combobox* cmbRenderers = static_cast<CEGUI::Combobox*>(wnd);
-	CEGUI::ListboxItem* item = cmbRenderers->getSelectedItem();
-	assert(item);
-	Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystemByName(item->getText().c_str());
-	updateResolutionList(renderSystem);
-	return true;
-}
+
 void OgreConfigurator::updateResolutionList(Ogre::RenderSystem* renderSystem)
 {
 	assert(renderSystem);
 
 	Ogre::ConfigOptionMap configOptions = renderSystem->getConfigOptions();
 	bool resolutionFoundInOptions = false;
-	CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("Resolution"));
+	CEGUI::Combobox* resolutionsCombobox = dynamic_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("Resolution"));
 	resolutionsCombobox->resetList();
-	Ogre::ConfigOptionMap::const_iterator optionsIter = configOptions.find("Video Mode");
+	auto optionsIter = configOptions.find("Video Mode");
 	if (optionsIter != configOptions.end()) {
 		const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
-		for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
-			std::string resolution = *I;
+		for (const auto& possibleResolution : possibleResolutions) {
+			std::string resolution = possibleResolution;
 			//Trim away extra spaces which Ogre seem to generate
 			resolution = Ogre::StringUtil::replaceAll(resolution, "  ", " ");
 			Ogre::StringUtil::trim(resolution, true, true);
 			Gui::ColouredListItem* item = new Gui::ColouredListItem(resolution);
 			resolutionsCombobox->addItem(item);
-			if (*I == optionsIter->second.currentValue) {
+			if (possibleResolution == optionsIter->second.currentValue) {
 				resolutionsCombobox->setItemSelectState(item, true);
 				resolutionFoundInOptions = true;
 			}

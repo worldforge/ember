@@ -66,6 +66,7 @@
 #include <Ogre.h>
 #include <RTShaderSystem/OgreShaderGenerator.h>
 #include <RTShaderSystem/OgreRTShaderSystem.h>
+#include <boost/filesystem.hpp>
 
 namespace Ember {
 namespace OgreView {
@@ -100,6 +101,20 @@ void OgreSetup::runCommand(const std::string& command, const std::string& args) 
 	}
 }
 
+void OgreSetup::saveConfig() {
+	if (mRoot) {
+
+		//Save renderer settings
+		if (mRoot->getRenderSystem()) {
+			auto configOptions = mRoot->getRenderSystem()->getConfigOptions();
+			for (const auto& configOption : configOptions) {
+				//Keys in varconf are mangled, so we store the entry with a ":" delimiter.
+				EmberServices::getSingleton().getConfigService().setValue("renderer", configOption.second.name, configOption.second.name + ":" + configOption.second.currentValue);
+			}
+		}
+	}
+}
+
 void OgreSetup::shutdown() {
 	S_LOG_INFO("Shutting down Ogre.");
 	if (mRoot) {
@@ -127,9 +142,9 @@ void OgreSetup::shutdown() {
 			mRenderWindow = nullptr;
 		}
 	}
-	delete mOverlaySystem;
+	OGRE_DELETE(mOverlaySystem);
 	mOverlaySystem = nullptr;
-	delete mRoot;
+	OGRE_DELETE(mRoot);
 	mRoot = nullptr;
 	S_LOG_INFO("Ogre shut down.");
 
@@ -150,14 +165,23 @@ Ogre::Root* OgreSetup::createOgreSystem() {
 	}
 
 	std::string pluginExtension = ".so";
-	mRoot = new Ogre::Root("", configSrv.getHomeDirectory(BaseDirType_CONFIG) + "/ogre.cfg", "");
+	mRoot = OGRE_NEW Ogre::Root("", "", "");
 	//Ownership of the queue instance is passed to Root.
 	mRoot->setWorkQueue(OGRE_NEW EmberWorkQueue(MainLoopController::getSingleton().getEventService()));
 
-	mOverlaySystem = new Ogre::OverlaySystem();
+	mOverlaySystem = OGRE_NEW Ogre::OverlaySystem();
 
 	mPluginLoader.loadPlugin("Plugin_ParticleFX");
 	mPluginLoader.loadPlugin("RenderSystem_GL3Plus"); //We'll use OpenGL on Windows too, to make it easier to develop
+
+	auto renderSystem = mRoot->getAvailableRenderers().front();
+	try {
+		//Set the default resolution to 1280 x 720 unless overridden by the user.
+		renderSystem->setConfigOption("Video Mode", "1280 x  720"); //OGRE stores the value with two spaces after "x".
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Could not set default resolution." << ex);
+	}
+	mRoot->setRenderSystem(renderSystem);
 
 	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory() << "'.");
@@ -189,20 +213,19 @@ bool OgreSetup::showConfigurationDialog() {
 	}
 	createOgreSystem();
 	if (result == OgreConfigurator::OC_ADVANCED_OPTIONS) {
-		Ogre::ConfigDialog* dlg = OGRE_NEW Ogre::ConfigDialog();
-		bool isOk = mRoot->showConfigDialog(dlg);
-		OGRE_DELETE dlg;
-
+		Ogre::ConfigDialog* dialog = OGRE_NEW Ogre::ConfigDialog();
+		bool isOk = mRoot->showConfigDialog(dialog);
+		OGRE_DELETE dialog;
 		if (!isOk) {
 			return false;
 		}
 	} else {
-		mRoot->setRenderSystem(mRoot->getRenderSystemByName(configurator.getChosenRenderSystemName()));
 		const Ogre::ConfigOptionMap& configOptions = configurator.getConfigOptions();
 		for (const auto& configOption : configOptions) {
 			mRoot->getRenderSystem()->setConfigOption(configOption.first, configOption.second.currentValue);
+			//Keys in varconf are mangled, so we store the entry with a ":" delimiter.
+			EmberServices::getSingleton().getConfigService().setValue("renderer", configOption.second.name, configOption.second.name + ":" + configOption.second.currentValue);
 		}
-		mRoot->saveConfig();
 	}
 	return true;
 }
@@ -229,37 +252,51 @@ Ogre::Root* OgreSetup::configure() {
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
 	createOgreSystem();
 #ifndef BUILD_WEBEMBER
-	bool success = false;
 	bool suppressConfig = false;
+
+	// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not.
+	unsigned int height = 720, width = 1280; //default resolution unless user selects other
+	bool fullscreen = false;
+
 	if (configService.itemExists("ogre", "suppressconfigdialog")) {
 		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
 	}
 	try {
-		success = mRoot->restoreConfig();
-		if (!success || !suppressConfig) {
-			success = showConfigurationDialog();
+
+		auto rendererConfig = configService.getSection("renderer");
+		for (auto entry : rendererConfig) {
+			if (entry.second.is_string()) {
+				try {
+					//Keys in varconf are mangled, so we've stored the entry with a ":" delimiter.
+					auto splits = Ogre::StringUtil::split(entry.second.as_string(), ":");
+					if (splits.size() > 1) {
+						mRoot->getRenderSystem()->setConfigOption(splits[0], splits[1]);
+					}
+				} catch (const std::exception& ex) {
+					S_LOG_WARNING("Got exception when trying to set setting." << ex);
+				}
+			}
 		}
+
+		auto validation = mRoot->getRenderSystem()->validateConfigOptions();
+		if (!validation.empty()) {
+			S_LOG_WARNING("Possible issue when setting render system options: " << validation);
+		}
+
+		if (!suppressConfig) {
+			bool configResult = showConfigurationDialog();
+			if (!configResult) {
+				return nullptr;
+			}
+		}
+		parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
+
 
 	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
-		unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CONFIG) + "ogre.cfg").c_str());
-		try {
-			Ogre::ConfigDialog* dlg = OGRE_NEW Ogre::ConfigDialog();
-			success = mRoot->showConfigDialog(dlg);
-			OGRE_DELETE dlg;
-		} catch (const std::exception& ex) {
-			S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
-		}
-	}
-	if (!success) {
-		return nullptr;
+		S_LOG_FAILURE("Got exception when setting up OGRE:" << ex);
 	}
 
-	// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not
-	unsigned int height = 768, width = 1024;
-	bool fullscreen = false;
 
-	parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
 
 	bool handleOpenGL = false;
 #ifdef __APPLE__

@@ -82,12 +82,6 @@ public:
 	Result configure();
 
 	/**
-	 * @brief Gets the name of the chosen render system.
-	 * @return The name of the chosen render system.
-	 */
-	std::string getChosenRenderSystemName() const;
-
-	/**
 	 * @brief Gets the final configuration options.
 	 * @return The final configuration options.
 	 */
@@ -98,7 +92,6 @@ protected:
 	bool buttonOkClicked(const CEGUI::EventArgs& args);
 	bool buttonCancelClicked(const CEGUI::EventArgs& args);
 	bool buttonAdvancedClicked(const CEGUI::EventArgs& args);
-	bool renderSystemChanged(const CEGUI::EventArgs& args);
 	void updateResolutionList(Ogre::RenderSystem* renderSystem);
 
 	/**
@@ -117,11 +110,6 @@ protected:
 	 * @brief Whether to continue within the render loop.
 	 */
 	bool mContinueInLoop;
-
-	/**
-	 * @brief The name of the chosen render system.
-	 */
-	std::string mChosenRenderSystemName;
 
 	/**
 	 * @brief The final configuration options.

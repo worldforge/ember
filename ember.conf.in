@@ -43,7 +43,7 @@ lodbias = "100.0"
 renderdistance = "100.0"
 
 [ogre]
-#if set to true, the config dialog won't be shown and the settings in ogre.cfg will be used instead
+#if set to true, the config dialog won't be shown and default settings will be used
 suppressconfigdialog = false
 #if set to true, the application will be double buffered, which means that everything is rendered into a separate backbuffer, which is then copied to the main screen buffer when appropriate. This will in some cases reduce tearing.
 doublebuffered = false

@@ -218,6 +218,8 @@ public:
 	 */
 	void shutdownGui();
 
+	void saveConfig();
+
 protected:
 
 	/**
@@ -408,13 +410,6 @@ protected:
 	 * Note that preloading media can take quite a while.
 	 */
 	void preloadMedia();
-
-	/**
-	 * @brief Makes sure that there are files in the Ember configuration directory.
-	 *
-	 * Call this early on at application startup. If the required files cannot be found they are copied there from their default versions as installed in the shared location.
-	 */
-	void checkForConfigFiles();
 
 	/**
 	 * @brief Listen for when all of the application services has been initialized and then register needed objects with them.

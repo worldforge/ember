@@ -108,21 +108,6 @@ namespace Ember
 namespace OgreView
 {
 
-void assureConfigFile(const std::string& filename, const std::string& originalConfigFileDir)
-{
-	struct stat tagStat{};
-	int ret = stat(filename.c_str(), &tagStat);
-	if (ret == -1) {
-		ret = stat((originalConfigFileDir + filename).c_str(), &tagStat);
-		if (ret == 0) {
-			//copy conf file from shared
-			std::ifstream instream((originalConfigFileDir + filename).c_str());
-			std::ofstream outstream(filename.c_str());
-			outstream << instream.rdbuf();
-		}
-	}
-}
-
 EmberOgre::EmberOgre() :
 		mInput(nullptr),
 		mOgreSetup(nullptr),
@@ -313,8 +298,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	mInput = &input;
 
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
-
-	checkForConfigFiles();
 
 	//Create a setup object through which we will start up Ogre.
 	mOgreSetup.reset(new OgreSetup());
@@ -507,19 +490,6 @@ Screen& EmberOgre::getScreen() const
 	return *mScreen;
 }
 
-void EmberOgre::checkForConfigFiles()
-{
-	if (chdir(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CONFIG).c_str())) {
-		S_LOG_WARNING("Failed to change directory to '"<< EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CONFIG) << "', will not copy config files.");
-		return;
-	}
-
-	const std::string& sharePath(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory());
-
-	//make sure that there are files
-	assureConfigFile("ogre.cfg", sharePath);
-}
-
 void EmberOgre::preloadMedia()
 {
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -641,6 +611,13 @@ void EmberOgre::setupProfiler() {
 			}
 		}
 	});
+}
+
+void EmberOgre::saveConfig() {
+	if (mOgreSetup) {
+		mOgreSetup->saveConfig();
+	}
+
 }
 
 }
