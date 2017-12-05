@@ -57,6 +57,7 @@ ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::Str
 }
 
 ModelDefinition::~ModelDefinition() {
+	delete mBackgroundLoader;
 	for (auto& subModel : mSubModels) {
 		delete subModel;
 	}

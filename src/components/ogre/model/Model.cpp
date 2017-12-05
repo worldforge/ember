@@ -87,6 +87,12 @@ Model::~Model() {
 	}
 	mDefinition->removeFromLoadingQueue(this);
 
+	//Clean up any submodels not yet added.
+	for (auto submodel : mAssetCreationContext.mSubmodels) {
+		delete submodel;
+	}
+
+
 //	S_LOG_VERBOSE("Deleted "<< getName());
 }
 

@@ -139,6 +139,7 @@ void OgreSetup::shutdown() {
 		//The bug appears in Ogre 1.7.2.
 		if (mRenderWindow) {
 			mRoot->detachRenderTarget(mRenderWindow);
+			mRoot->destroyRenderTarget(mRenderWindow);
 			mRenderWindow = nullptr;
 		}
 	}
