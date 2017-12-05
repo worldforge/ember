@@ -84,7 +84,7 @@ OgreResourceLoader::OgreResourceLoader() :
 OgreResourceLoader::~OgreResourceLoader() {
 	//Don't deregister, since this destructor needs to be called after OGRE has been shut down.
 	delete mLoadingListener;
-	
+
 	delete mFileSystemArchiveFactory;
 	for (auto& path : mResourceRootPaths) {
 		Ember::FileSystemObserver::getSingleton().remove_directory(path);
