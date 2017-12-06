@@ -108,7 +108,8 @@ namespace Caelum
         assert(mSunMaterial->getBestTechnique ());
         assert(mSunMaterial->getBestTechnique ()->getPass (0));
         assert(mSunMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0));
-        mSunMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0)->setTextureName (textureName);
+        auto texture = Ogre::TextureManager::getSingleton().getByName(textureName, RESOURCE_GROUP_NAME);
+        mSunMaterial->getBestTechnique ()->getPass (0)->getTextureUnitState (0)->setTexture (texture);
     }
 
     void SpriteSun::setSunTextureAngularSize(const Ogre::Degree& sunTextureAngularSize){

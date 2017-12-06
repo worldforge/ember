@@ -138,7 +138,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::SceneManager *sceneMgr, ::Ogre::Rend
 		S_LOG_WARNING("Error when creating Caelum sky dome." << ex);
 	}
 	try {
-		mCaelumSystem->setSun(new Caelum::SphereSun(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
+		mCaelumSystem->setSun(new Caelum::SpriteSun(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
 		mSun = new CaelumSun(*this, mCaelumSystem->getSun());
 	} catch (const Caelum::UnsupportedException& ex) {
 		//TODO: use a simple sun object
