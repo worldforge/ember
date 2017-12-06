@@ -96,9 +96,21 @@ void SubModelPart::showSubEntities() {
 		}
 
 		if (mSubModel.mEntity.hasSkeleton()) {
-			static std::string skinningSuffix = "/Skinning";
+
+			//We first need to check the number of bones to use
+			const Ogre::VertexElement* blendWeightsData;
+			if (subModelPartEntity.SubEntity->getSubMesh()->useSharedVertices) {
+				blendWeightsData = subModelPartEntity.SubEntity->getSubMesh()->parent->sharedVertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_BLEND_WEIGHTS);
+			} else {
+				blendWeightsData = subModelPartEntity.SubEntity->getSubMesh()->vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_BLEND_WEIGHTS);
+			}
+
+			unsigned short numWeightsPerVertex = Ogre::VertexElement::getTypeCount(blendWeightsData->getType());
+
+			//The number suffix denotes the number of bones to use.
+			std::string skinningSuffix = "/Skinning/" + std::to_string(numWeightsPerVertex);
 			//Check if we can use Hardware Skinning material.
-			//This is done by checking if a material by the same name, but with the "/Skinning" suffix is available.
+			//This is done by checking if a material by the same name, but with the "/Skinning/*" suffix is available.
 			//If not, we try to create such a material by cloning the original and replacing the vertex shader with
 			//one with the same suffix (if available and supported).
 			if (!boost::algorithm::ends_with(materialName, skinningSuffix)) {
