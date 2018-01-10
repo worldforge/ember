@@ -29,6 +29,7 @@
 
 #include "../Convert.h"
 #include "../EmberOgre.h"
+#include <OgreSceneNode.h>
 
 namespace Ember
 {
@@ -39,13 +40,16 @@ namespace Authoring
 {
 
 Polygon::Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider, bool isClosed) :
-		mBaseNode(baseNode), mPositionProvider(positionProvider), mRenderer(*baseNode, mPoints, isClosed)
+		mBaseNode(baseNode->createChildSceneNode()), mPositionProvider(positionProvider), mRenderer(*baseNode, mPoints, isClosed)
 {
+	mBaseNode->setInheritScale(false);
+	mBaseNode->setScale(1.0f, 1.0f, 1.0f);
 }
 
 Polygon::~Polygon()
 {
 	clear();
+	mBaseNode->getParentSceneNode()->removeAndDestroyChild(mBaseNode);
 }
 
 Ogre::SceneNode* Polygon::getBaseNode()
@@ -57,8 +61,8 @@ WFMath::Polygon<2> Polygon::getShape() const
 {
 	WFMath::Polygon<2> poly;
 	unsigned int i = 0;
-	for (PointStore::const_iterator I = mPoints.begin(); I != mPoints.end(); ++I) {
-		poly.addCorner(i++, (*I)->getLocalPosition());
+	for (auto& point : mPoints) {
+		poly.addCorner(i++, point->getLocalPosition());
 	}
 	return poly;
 }
@@ -76,8 +80,8 @@ void Polygon::loadFromShape(const WFMath::Polygon<2>& shape)
 
 void Polygon::clear()
 {
-	for (PointStore::iterator I = mPoints.begin(); I != mPoints.end(); ++I) {
-		delete *I;
+	for (auto& point : mPoints) {
+		delete point;
 	}
 	mPoints.clear();
 	mRenderer.update();
@@ -107,21 +111,21 @@ PolygonPoint* Polygon::appendPoint()
 
 PolygonPoint* Polygon::insertPointBefore(PolygonPoint& point)
 {
-	if (mPoints.size()) {
-		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+	if (!mPoints.empty()) {
+		auto I = std::find(mPoints.begin(), mPoints.end(), &point);
 		if (I != mPoints.end()) {
 			PolygonPoint* newPoint = new PolygonPoint(*getBaseNode(), getPositionProvider(), 0.25);
 			mPoints.insert(I, newPoint);
 			return newPoint;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 bool Polygon::reInsertPointBefore(PolygonPoint& point, PolygonPoint& existingPoint)
 {
-	if (mPoints.size()) {
-		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+	if (!mPoints.empty()) {
+		auto I = std::find(mPoints.begin(), mPoints.end(), &point);
 		if (I != mPoints.end()) {
 			mPoints.insert(I, &existingPoint);
 			return true;
@@ -134,7 +138,7 @@ bool Polygon::reInsertPoint(size_t index, PolygonPoint& point)
 {
 
 	size_t i = 0;
-	PointStore::iterator I = mPoints.begin();
+	auto I = mPoints.begin();
 	while (I != mPoints.end() && i < index) {
 		++i;
 		++I;
@@ -145,8 +149,8 @@ bool Polygon::reInsertPoint(size_t index, PolygonPoint& point)
 
 PolygonPoint* Polygon::getPointBefore(PolygonPoint& point)
 {
-	if (mPoints.size()) {
-		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+	if (!mPoints.empty()) {
+		auto I = std::find(mPoints.begin(), mPoints.end(), &point);
 		if (I != mPoints.end()) {
 			if (I == mPoints.begin()) {
 				return *(mPoints.rbegin());
@@ -155,13 +159,13 @@ PolygonPoint* Polygon::getPointBefore(PolygonPoint& point)
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 PolygonPoint* Polygon::getPointAfter(PolygonPoint& point)
 {
-	if (mPoints.size()) {
-		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+	if (!mPoints.empty()) {
+		auto I = std::find(mPoints.begin(), mPoints.end(), &point);
 		if (I != mPoints.end()) {
 			if (I == (--mPoints.end())) {
 				return *(mPoints.begin());
@@ -170,13 +174,13 @@ PolygonPoint* Polygon::getPointAfter(PolygonPoint& point)
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 bool Polygon::removePoint(PolygonPoint& point)
 {
-	if (mPoints.size()) {
-		PointStore::iterator I = std::find(mPoints.begin(), mPoints.end(), &point);
+	if (!mPoints.empty()) {
+		auto I = std::find(mPoints.begin(), mPoints.end(), &point);
 		if (I != mPoints.end()) {
 			mPoints.erase(I);
 			return true;

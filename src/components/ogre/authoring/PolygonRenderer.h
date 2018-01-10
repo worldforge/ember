@@ -71,9 +71,9 @@ public:
 protected:
 
 	/**
-	 * @brief The polygon to which this renderer belongs.
+	 * @brief The scene node to which the movable object is attached. Owned by this instance.
 	 */
-	Ogre::SceneNode& mNode;
+	Ogre::SceneNode* mNode;
 
 	/**
 	 * @brief A list of the points that makes up the polygon.

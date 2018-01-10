@@ -42,23 +42,28 @@ namespace Authoring
 unsigned int PolygonRenderer::sCounter = 0;
 
 PolygonRenderer::PolygonRenderer(Ogre::SceneNode& sceneNode, const std::list<PolygonPoint*>& points, bool closed) :
-	mNode(sceneNode), mPoints(points), mManualObject(nullptr), mClosed(closed)
+	mNode(sceneNode.createChildSceneNode()), mPoints(points), mManualObject(nullptr), mClosed(closed)
 {
+
+	mNode->setInheritScale(false);
+	mNode->setScale(1.0f ,1.0f ,1.0f);
+
 	std::stringstream ss;
 	ss << "PolygonRenderer" << sCounter++;
-	mManualObject = mNode.getCreator()->createManualObject(ss.str());
+	mManualObject = mNode->getCreator()->createManualObject(ss.str());
 	mManualObject->setDynamic(true); //We'll be updating this a lot if the use alters the polygon
 	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE - 1); //We want to render the lines on top of everything, so that they aren't hidden by anything
-	mNode.attachObject(mManualObject);
+	mNode->attachObject(mManualObject);
 
 }
 
 PolygonRenderer::~PolygonRenderer()
 {
 	if (mManualObject) {
-		mNode.detachObject(mManualObject);
-		mNode.getCreator()->destroyManualObject(mManualObject);
+		mNode->detachObject(mManualObject);
+		mNode->getCreator()->destroyManualObject(mManualObject);
 	}
+	mNode->getParentSceneNode()->removeAndDestroyChild(mNode);
 }
 
 void PolygonRenderer::update()

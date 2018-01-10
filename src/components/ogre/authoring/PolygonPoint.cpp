@@ -89,7 +89,7 @@ PolygonPoint::~PolygonPoint()
 {
 	try {
 		if (mNode) {
-			mBaseNode.removeAndDestroyChild(mNode->getName());
+			mBaseNode.removeAndDestroyChild(mNode);
 		}
 		if (mEntity) {
 			mBaseNode.getCreator()->destroyEntity(mEntity);
