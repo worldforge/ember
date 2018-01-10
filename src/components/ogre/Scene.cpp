@@ -104,7 +104,7 @@ Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
 
 	if (pageSize <= 0) {
-		S_LOG_WARNING("Page size (\"terrain:pageSize\") config option set to invalid value of " << pageSize << " ; setting it to 256");
+		S_LOG_WARNING("Page size (\"terrain:pageSize\") config option set to invalid value of " << pageSize << " ; setting it to 512");
 		pageSize = 512;
 	}
 
