@@ -45,8 +45,8 @@ void HeightMapFlatSegment::getHeightAndNormal(float x, float y, float& height, W
 {
 	height = mHeight;
 	normal.x() = 0;
-	normal.y() = 0;
-	normal.z() = 1;
+	normal.y() = 1;
+	normal.z() = 0;
 }
 
 }

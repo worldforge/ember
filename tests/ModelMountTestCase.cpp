@@ -65,7 +65,7 @@ void scaleAndTestMount(TestModel& model, Model::ModelMount& mount, const Ogre::N
 
 	model.manualObject->setBoundingBox(Ogre::AxisAlignedBox(Ogre::Vector3(0, 10.0f, 15.0f), Ogre::Vector3(20.0f, 20.0f, 20.0f)));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(equals(node->getScale(), Ogre::Vector3(2.0f, 1.0f, 0.5f)));
+	CPPUNIT_ASSERT(equals(node->getScale(), Ogre::Vector3(0.5f, 1.0f, 2.0f)));
 
 }
 void ModelMountTestCase::testModelMountScaling()

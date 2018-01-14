@@ -9,6 +9,35 @@ namespace Ember
 {
 void ConvertTestCase::testWFMathToOgre()
 {
+
+	WFMath::Point<3> wfPoint(10, 5, 2);
+
+	WFMath::AxisBox<3> wfBox(WFMath::Point<3>(0, 0, 0), wfPoint);
+
+
+	WFMath::Quaternion wfQuat;
+	wfQuat.rotation(1, -WFMath::numeric_constants<float>::pi() / 2.0f);
+
+	WFMath::RotMatrix<3> wfRotMatrix(wfQuat);
+
+	WFMath::Quaternion wfQuat2;
+	wfQuat2.fromRotMatrix(wfRotMatrix);
+
+	wfPoint.rotate(wfQuat, WFMath::Point<3>::ZERO());
+
+	Ogre::AxisAlignedBox ogreBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(10, 5, 2));
+	Ogre::Vector3 ogrePoint(10, 5, 2);
+	Ogre::Quaternion ogreQuat = Convert::toOgre(wfQuat);
+
+	Ogre::Matrix3 ogreMatrix;
+	ogreQuat.ToRotationMatrix(ogreMatrix);
+
+	Ogre::Quaternion ogreQuat2(ogreMatrix);
+
+	ogreBox.transform(ogreQuat);
+
+
+
 	Point<2> wfMathPoint2(10, 20);
 	CPPUNIT_ASSERT(wfMathPoint2 == Convert::toWF(Convert::toOgre<Ogre::Vector2>(wfMathPoint2)));
 	CPPUNIT_ASSERT(wfMathPoint2 == Convert::toWF<Point<2>>(Convert::toOgre<Ogre::Vector3>(wfMathPoint2)));

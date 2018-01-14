@@ -69,12 +69,12 @@ public:
 	 * @brief Ctor.
 	 * @param entity The entity to which this instance belongs.
 	 */
-	EntityPolygonPositionProvider(EmberEntity& entity);
+	explicit EntityPolygonPositionProvider(EmberEntity& entity);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EntityPolygonPositionProvider() {}
+	~EntityPolygonPositionProvider() override {}
 
 	/**
 	 * @brief Gets the height for the local position.
@@ -82,7 +82,7 @@ public:
 	 * @param localPosition The local position.
 	 * @return A height.
 	 */
-	virtual float getHeightForPosition(const WFMath::Point<2>& localPosition);
+	float getHeightForPosition(const WFMath::Point<2>& localPosition) override;
 
 protected:
 	/**

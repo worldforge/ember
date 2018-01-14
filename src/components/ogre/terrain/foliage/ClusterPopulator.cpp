@@ -65,7 +65,7 @@ void ClusterPopulator::populate(PlantAreaQueryResult& result, SegmentRefPtr segm
 
 	indexSort.sort();
 	//Check that there actually is a valid surface on which the plants can be placed
-	if (indexSort.size() > 0 && indexSort.front() == mLayerIndex) {
+	if (!indexSort.empty() && indexSort.front() == mLayerIndex) {
 		Buffer<unsigned char> combinedCoverage(mercatorSegment.getSize(), 1);
 		unsigned char* combinedCoverageData = combinedCoverage.getData();
 		size_t size = combinedCoverage.getSize();
@@ -99,18 +99,18 @@ void ClusterPopulator::getClustersForArea(const SegmentRefPtr& segmentRef, const
 	int clustersPerSegment = (res * res) / (mClusterDistance * mClusterDistance);
 	float clusterRadiusRange = mMaxClusterRadius - mMinClusterRadius;
 	float xRef = mercatorSegment.getXRef();
-	float yRef = mercatorSegment.getYRef();
+	float zRef = mercatorSegment.getZRef();
 
 	WFMath::MTRand rng;
 
 	for (int i = -1; i < 2; ++i) {
 		for (int j = -1; j < 2; ++j) {
 			int currentSegmentX = xRef + (i * res);
-			int currentSegmentY = yRef + (j * res);
-			WFMath::MTRand::uint32 seed(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (currentSegmentX) << 4) + (static_cast<WFMath::MTRand::uint32> (currentSegmentY) << 8));
+			int currentSegmentZ = zRef + (j * res);
+			WFMath::MTRand::uint32 seed(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (currentSegmentX) << 4) + (static_cast<WFMath::MTRand::uint32> (currentSegmentZ) << 8));
 			rng.seed(seed);
 			for (int k = 0; k < clustersPerSegment; ++k) {
-				WFMath::Ball<2> cluster(WFMath::Point<2>(rng.rand(res) + currentSegmentX, rng.rand(res) + currentSegmentY), rng.rand(clusterRadiusRange) + mMinClusterRadius);
+				WFMath::Ball<2> cluster(WFMath::Point<2>(rng.rand(res) + currentSegmentX, rng.rand(res) + currentSegmentZ), rng.rand(clusterRadiusRange) + mMinClusterRadius);
 				if (WFMath::Contains(area, cluster.center(), true) || WFMath::Intersect(area, cluster, true)) {
 					store.push_back(cluster);
 				}
@@ -121,8 +121,8 @@ void ClusterPopulator::getClustersForArea(const SegmentRefPtr& segmentRef, const
 
 void ClusterPopulator::populateWithClusters(const SegmentRefPtr& segmentRef, PlantAreaQueryResult& result, const WFMath::AxisBox<2>& area, const ClusterStore& clusters, const Buffer<unsigned char>& combinedCoverage)
 {
-	for (ClusterStore::const_iterator I = clusters.begin(); I != clusters.end(); ++I) {
-		populateWithCluster(segmentRef, result, area, *I, combinedCoverage);
+	for (const auto& cluster : clusters) {
+		populateWithCluster(segmentRef, result, area, cluster, combinedCoverage);
 	}
 
 }
@@ -154,10 +154,10 @@ void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, Plan
 		mScaler->scale(rng, pos, scale);
 
 		if (WFMath::Contains(area, pos, true)) {
-			WFMath::Point<2> localPos(pos.x() - mercatorSegment.getXRef(), pos.y() - mercatorSegment.getYRef());
+			WFMath::Point<2> localPos(pos.x() - mercatorSegment.getXRef(), pos.y() - mercatorSegment.getZRef());
 			if (data[((unsigned int)localPos.y() * res) + ((unsigned int)localPos.x())] >= mThreshold) {
 				mercatorSegment.getHeightAndNormal(localPos.x(), localPos.y(), height, normal);
-				plants.push_back(PlantInstance(Ogre::Vector3(pos.x(), height, -pos.y()), rotation, scale));
+				plants.emplace_back(Ogre::Vector3(pos.x(), height, -pos.y()), rotation, scale);
 			}
 		}
 	}

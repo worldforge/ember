@@ -62,8 +62,8 @@ TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::Element& 
 
 		Terrain::TerrainDefPoint defPoint;
 
-		defPoint.position = WFMath::Point<2>(static_cast<int>(point[0].asNum() + offset.x()), static_cast<int>(point[1].asNum() + offset.y()));
-		defPoint.height = static_cast<float>(point[2].asNum() + offset.z());
+		defPoint.position = WFMath::Point<2>(static_cast<int>(point[0].asNum() + offset.x()), static_cast<int>(point[1].asNum() + offset.z()));
+		defPoint.height = static_cast<float>(point[2].asNum() + offset.y());
 		if (point.size() > 3) {
 			defPoint.roughness = point[3].asFloat();
 		} else {

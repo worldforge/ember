@@ -63,14 +63,14 @@ template<template<int> class ShapeT>
 class InnerTranslatorSlope: public TerrainModTranslator::InnerTranslator
 {
 public:
-	InnerTranslatorSlope(const ShapeT<2>& shape, const Atlas::Message::MapType& data, float dx, float dy);
+	InnerTranslatorSlope(const ShapeT<2>& shape, const Atlas::Message::MapType& data, float dx, float dz);
 	virtual ~InnerTranslatorSlope() = default;
 
 	virtual Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
 
 	const ShapeT<2> mShape;
 	float mDx;
-	float mDy;
+	float mDz;
 };
 
 template<template<template<int> class ShapeT> class ModT, template<int> class ShapeT>
@@ -80,8 +80,8 @@ InnerTranslatorImpl<ModT, ShapeT>::InnerTranslatorImpl(const ShapeT<2>& shape, c
 }
 
 template<template<int> class ShapeT>
-InnerTranslatorSlope<ShapeT>::InnerTranslatorSlope(const ShapeT<2>& shape, const Atlas::Message::MapType& data, float dx, float dy) :
-		InnerTranslator(data), mShape(shape), mDx(dx), mDy(dy)
+InnerTranslatorSlope<ShapeT>::InnerTranslatorSlope(const ShapeT<2>& shape, const Atlas::Message::MapType& data, float dx, float dz) :
+		InnerTranslator(data), mShape(shape), mDx(dx), mDz(dz)
 {
 }
 
@@ -95,14 +95,14 @@ Mercator::TerrainMod* InnerTranslatorImpl<ModT, ShapeT>::createInstance(const WF
 	}
 
 	if (orientation.isValid()) {
-		/// rotation about Z axis
+		/// rotation about Y axis
 		WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-		WFMath::CoordType theta = std::atan2(xVec.y(), xVec.x());
+		WFMath::CoordType theta = std::atan2(xVec.z(), xVec.x());
 		WFMath::RotMatrix<2> rm;
 		shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
 	}
 
-	shape.shift(WFMath::Vector<2>(pos.x(), pos.y()));
+	shape.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 	float level = TerrainModTranslator::parsePosition(pos, this->mData);
 	return new ModT<ShapeT>(level, shape);
 }
@@ -117,16 +117,16 @@ Mercator::TerrainMod* InnerTranslatorSlope<ShapeT>::createInstance(const WFMath:
 	}
 
 	if (orientation.isValid()) {
-		/// rotation about Z axis
+		/// rotation about Y axis
 		WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-		WFMath::CoordType theta = std::atan2(xVec.y(), xVec.x());
+		WFMath::CoordType theta = std::atan2(xVec.z(), xVec.x());
 		WFMath::RotMatrix<2> rm;
 		shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
 	}
 
-	shape.shift(WFMath::Vector<2>(pos.x(), pos.y()));
+	shape.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 	float level = TerrainModTranslator::parsePosition(pos, this->mData);
-	return new Mercator::SlopeTerrainMod<ShapeT>(level, mDx, mDy, shape);
+	return new Mercator::SlopeTerrainMod<ShapeT>(level, mDx, mDz, shape);
 }
 
 TerrainModTranslator::InnerTranslator::InnerTranslator(const Atlas::Message::MapType& data) :
@@ -147,7 +147,7 @@ TerrainModTranslator::InnerTranslator::InnerTranslator(const Atlas::Message::Map
 float TerrainModTranslator::parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
 {
 	///If the height is specified use that, else check for a height offset. If none is found, use the default height of the entity position
-	MapType::const_iterator I = modElement.find("height");
+	auto I = modElement.find("height");
 	if (I != modElement.end()) {
 		const Element& modHeightElem = I->second;
 		if (modHeightElem.isNum()) {
@@ -159,11 +159,11 @@ float TerrainModTranslator::parsePosition(const WFMath::Point<3> & pos, const Ma
 			const Element& modHeightElem = I->second;
 			if (modHeightElem.isNum()) {
 				float heightoffset = modHeightElem.asNum();
-				return pos.z() + heightoffset;
+				return pos.y() + heightoffset;
 			}
 		}
 	}
-	return pos.z();
+	return pos.y();
 }
 
 /**
@@ -173,7 +173,7 @@ TerrainModTranslator::TerrainModTranslator(const Atlas::Message::MapType& data) 
 		mInnerTranslator(nullptr)
 {
 
-	MapType::const_iterator I = data.find("type");
+	auto I = data.find("type");
 	if (I == data.end() || !I->second.isString()) {
 		return;
 	}
@@ -241,9 +241,9 @@ TerrainModTranslator::InnerTranslator* TerrainModTranslator::buildTranslator(con
 			return nullptr;
 		}
 		const float dx = slopes[0].asNum();
-		const float dy = slopes[1].asNum();
+		const float dz = slopes[1].asNum();
 
-		return new InnerTranslatorSlope<Shape>(shape, modElement, dx, dy);
+		return new InnerTranslatorSlope<Shape>(shape, modElement, dx, dz);
 //		return createInstance<Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);
 	} else if (typeName == "levelmod") {
 		return new InnerTranslatorImpl<Mercator::LevelTerrainMod, Shape>(shape, modElement);

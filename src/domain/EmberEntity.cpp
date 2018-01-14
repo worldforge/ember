@@ -151,21 +151,21 @@ float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 	//Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferably the terrain).
 	if (getEmberLocation()) {
 
-		WFMath::Point<2> adjustedLocalPosition(getPredictedPos().x(), getPredictedPos().y());
+		WFMath::Point<2> adjustedLocalPosition(getPredictedPos().x(), getPredictedPos().z());
 
 		WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(getOrientation());
-		double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
+		double theta = atan2(xVec.z(), xVec.x()); // rotation about Y
 		WFMath::RotMatrix<2> rm;
 		WFMath::Vector<2> adjustment(localPosition.x(), localPosition.y());
 		adjustment.rotate(rm.rotation(theta));
 		adjustedLocalPosition += adjustment;
 
-		return getEmberLocation()->getHeight(adjustedLocalPosition) - getPredictedPos().z();
+		return getEmberLocation()->getHeight(adjustedLocalPosition) - getPredictedPos().y();
 	}
 
 	WFMath::Point<3> predictedPos = getPredictedPos();
 	if (predictedPos.isValid()) {
-		return predictedPos.z();
+		return predictedPos.y();
 	} else {
 		return 0.0f;
 	}

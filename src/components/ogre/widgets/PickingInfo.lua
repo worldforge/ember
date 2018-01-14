@@ -35,11 +35,9 @@ function PickingInfo:pickedEntity(result, args)
 				--we should use a worldforge position, but we haven't yet added lua bindings for wfmath, so we'll just manually convert the ogre values
 		-- 		local wfPos = Ember.OgreView.Convert:toWF_Vector3(ogrePos)
 				local infoString = string.format([[Entity: %q (id: %q type: %q)
-WF pos:
+Pos:
   x: %.2f y: %.2f z: %.2f
-Ogre pos:
-  x: %.2f y: %.2f z: %.2f
-Distance: %.2f]], firstPickResult.entity:getName(), firstPickResult.entity:getId(), firstPickResult.entity:getType():getName(), ogrePos.x, -ogrePos.z, ogrePos.y, ogrePos.x, ogrePos.y, ogrePos.z, firstPickResult.distance)
+Distance: %.2f]], firstPickResult.entity:getName(), firstPickResult.entity:getId(), firstPickResult.entity:getType():getName(), ogrePos.x, ogrePos.y, ogrePos.z, firstPickResult.distance)
 				self.infoBox:setText(infoString)
 			end
 		end

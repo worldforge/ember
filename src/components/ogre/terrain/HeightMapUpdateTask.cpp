@@ -58,7 +58,7 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 			IHeightMapSegment* heightMapSegment = 0;
 			Mercator::Matrix<2, 2, Mercator::BasePoint>& basePoints(segment->getControlPoints());
 			//If all of the base points are on the same level, and there are no mods, we know that the segment is completely flat, and we can save some memory by using a HeightMapFlatSegment instance.
-			if (WFMath::Equal(basePoints[0].height(), basePoints[1].height()) && WFMath::Equal(basePoints[1].height(), basePoints[2].height()) && WFMath::Equal(basePoints[2].height(), basePoints[3].height()) && (segment->getMods().size() == 0)) {
+			if (WFMath::Equal(basePoints[0].height(), basePoints[1].height()) && WFMath::Equal(basePoints[1].height(), basePoints[2].height()) && WFMath::Equal(basePoints[2].height(), basePoints[3].height()) && (segment->getMods().empty())) {
 				heightMapSegment = new HeightMapFlatSegment(basePoints[0].height());
 			} else {
 				HeightMapBuffer* buffer = mProvider.checkout();
@@ -68,7 +68,7 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 				}
 			}
 			if (heightMapSegment) {
-				mHeightMapSegments.push_back(std::make_pair(WFMath::Point<2>(segment->getXRef() / segment->getResolution(), segment->getYRef() / segment->getResolution()), heightMapSegment));
+				mHeightMapSegments.emplace_back(WFMath::Point<2>(segment->getXRef() / segment->getResolution(), segment->getZRef() / segment->getResolution()), heightMapSegment);
 			}
 		}
 	}

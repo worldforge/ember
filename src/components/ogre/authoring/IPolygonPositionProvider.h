@@ -43,7 +43,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IPolygonPositionProvider() {}
+	virtual ~IPolygonPositionProvider() = default;
 
 	/**
 	 * @brief Gets the height for the local position, within the polygon's space.

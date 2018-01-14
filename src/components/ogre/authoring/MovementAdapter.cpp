@@ -73,7 +73,7 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, b
 	Vector<3> direction;
 	direction.zero();
 	direction.x() = -motion.xRelativeMovement;
-	direction.y() = motion.yRelativeMovement;
+	direction.z() = motion.yRelativeMovement;
 	direction = direction * mMovementSpeed;
 	//hard coded to allow the shift button to increase the speed
 	// 	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
@@ -82,13 +82,11 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, b
 
 	Quaternion orientation = Convert::toWF(getCamera().getOrientation());
 
-	//We need to constraint the orientation to only around the z axis.
-	WFMath::Vector<3> rotator(1.0, 0.0, 0.0);
+	//We need to constraint the orientation to only around the y axis.
+	WFMath::Vector<3> rotator(0.0, 0.0, 1.0f);
 	rotator.rotate(orientation);
-	WFMath::Quaternion adjustedOrientation;
-	adjustedOrientation.fromRotMatrix(WFMath::RotMatrix<3>().rotationZ(atan2(rotator.y(), rotator.x())));
-
-	orientation = adjustedOrientation;
+	auto atan = atan2(rotator.x(), rotator.z());
+	orientation.rotation(1, atan);
 
 	//move it relative to the camera
 	direction = direction.rotate(orientation);
@@ -148,7 +146,7 @@ void MovementAdapter::finalizeMovement()
 	removeAdapter();
 	//We need to do it this way since there's a chance that the call to IMovementBridge::finalizeMovement will delete this instance, and then we can't reference mBridge anymore
 	IMovementBridge* bridge = mBridge;
-	mBridge = 0;
+	mBridge = nullptr;
 	bridge->finalizeMovement();
 	delete bridge;
 }
@@ -158,7 +156,7 @@ void MovementAdapter::cancelMovement()
 	removeAdapter();
 	//We need to do it this way since there's a chance that the call to IMovementBridge::cancelMovement will delete this instance, and then we can't reference mBridge anymore
 	IMovementBridge* bridge = mBridge;
-	mBridge = 0;
+	mBridge = nullptr;
 	bridge->cancelMovement();
 	delete bridge;
 }

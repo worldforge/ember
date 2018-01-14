@@ -68,7 +68,7 @@ MovementControllerInputListener::MovementControllerInputListener(MovementControl
 void MovementControllerInputListener::input_MouseButtonPressed(Input::MouseButton button, Input::InputMode mode)
 {
 	if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
-		mController.mMovementDirection.y() = 1;
+		mController.mMovementDirection.z() = -1;
 		mController.stopSteering();
 	}
 }
@@ -80,7 +80,7 @@ void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButt
 		mController.mMovementDirection.y() = 0;
 		mController.mMovementDirection.z() = 0;
 	} else if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
-		mController.mMovementDirection.y() = 0;
+		mController.mMovementDirection.z() = 0;
 	}
 }
 
@@ -203,13 +203,13 @@ void MovementController::runCommand(const std::string &command, const std::strin
 	} else if (ToggleCameraAttached == command) {
 		setCameraFreeFlying(!mIsFreeFlying);
 	} else if (MovementMoveForward == command) {
-		mMovementDirection.y() = 1;
+		mMovementDirection.z() = -1;
 	} else if (MovementMoveForward.getInverseCommand() == command) {
-		mMovementDirection.y() = 0;
+		mMovementDirection.z() = 0;
 	} else if (MovementMoveBackward == command) {
-		mMovementDirection.y() = -1;
+		mMovementDirection.z() = 1;
 	} else if (MovementMoveBackward.getInverseCommand() == command) {
-		mMovementDirection.y() = 0;
+		mMovementDirection.z() = 0;
 	} else if (MovementStrafeLeft == command) {
 		mMovementDirection.x() = -1;
 	} else if (MovementStrafeLeft.getInverseCommand() == command) {
@@ -219,13 +219,13 @@ void MovementController::runCommand(const std::string &command, const std::strin
 	} else if (MovementStrafeRight.getInverseCommand() == command) {
 		mMovementDirection.x() = 0;
 	} else if (MovementMoveUpwards == command) {
-		mMovementDirection.z() = 1;
+		mMovementDirection.y() = 1;
 	} else if (MovementMoveUpwards.getInverseCommand() == command) {
-		mMovementDirection.z() = 0;
+		mMovementDirection.y() = 0;
 	} else if (MovementMoveDownwards == command) {
-		mMovementDirection.z() = -1;
+		mMovementDirection.y() = -1;
 	} else if (MovementMoveDownwards.getInverseCommand() == command) {
-		mMovementDirection.z() = 0;
+		mMovementDirection.y() = 0;
 		/*	} else if (MovementRotateLeft == command) {
 		 mAvatarCamera->yaw(Ogre::Degree(-15));
 		 } else if (MovementRotateRight == command) {

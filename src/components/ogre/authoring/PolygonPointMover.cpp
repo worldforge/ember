@@ -78,14 +78,14 @@ void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
 
 		WFMath::Vector<3> translation = Convert::toWF<WFMath::Vector<3>>(newPos - getActivePoint()->getNode()->getPosition());
 		//adjust it so that it moves according to the ground for example
-		getActivePoint()->translate(WFMath::Vector<2>(translation.x(), translation.y()));
+		getActivePoint()->translate(WFMath::Vector<2>(translation.x(), translation.z()));
 		mPolygon.updateRender();
 	}
 }
 void PolygonPointMover::move(const WFMath::Vector<3>& directionVector)
 {
 	if (directionVector.isValid()) {
-		getActivePoint()->translate(WFMath::Vector<2>(directionVector.x(), directionVector.y()));
+		getActivePoint()->translate(WFMath::Vector<2>(directionVector.x(), directionVector.z()));
 		mPolygon.updateRender();
 	}
 }

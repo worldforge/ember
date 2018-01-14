@@ -411,7 +411,7 @@ TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& wor
 	int yRemainder = static_cast<int>(getMin().y()) % (getPageMetersSize());
 
 	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
-	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
+	int yIndex = static_cast<int>(floor((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 
 	return getTerrainPageAtIndex(TerrainIndex(xIndex, yIndex));
 }
@@ -436,7 +436,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 		mPages.push_back(page);
 		S_LOG_VERBOSE("Adding terrain page to TerrainHandler: " << "[" << index.first << "|" << index.second <<"]");
 
-		WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, 0, -1);
+		WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, -1, 0);
 		if (mLightning) {
 			sunDirection = mLightning->getMainLightDirection();
 		}

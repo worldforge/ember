@@ -41,27 +41,24 @@
 #define I_ROUND(_x) (std::lround(_x))
 #endif
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page, SegmentManager& segmentManager, float defaultHeight) :
-	mPage(page), mDefaultHeight(defaultHeight)
-{
+		mPage(page), mDefaultHeight(defaultHeight) {
 
 	SegmentManager::IndexMap indices;
 	int segmentsPerAxis = mPage.getNumberOfSegmentsPerAxis();
 	int segmentOffset = segmentsPerAxis;
 
-	for (int y = 0; y < mPage.getNumberOfSegmentsPerAxis(); ++y) {
+	for (int z = 0; z < mPage.getNumberOfSegmentsPerAxis(); ++z) {
 		for (int x = 0; x < mPage.getNumberOfSegmentsPerAxis(); ++x) {
-			int segX = (int)((mPage.getWFPosition().x() * segmentsPerAxis) + x);
-			int segY = (int)((mPage.getWFPosition().y() * segmentsPerAxis) + y) - segmentOffset;
-			indices[x][y] = std::make_pair(segX, segY);
+			int segX = (int) ((mPage.getWFPosition().x() * segmentsPerAxis) + x);
+			int segZ = (int) ((mPage.getWFPosition().y() * segmentsPerAxis) + z) - (segmentOffset - 1);
+			indices[x][mPage.getNumberOfSegmentsPerAxis() - z - 1] = std::make_pair(segX, -segZ);
 
+			S_LOG_INFO("segment: x: "<< x <<" z: " << z << " segX: " <<segX << " segZ: " << -segZ);
 		}
 	}
 	size_t count = segmentManager.getSegmentReferences(indices, mLocalSegments);
@@ -72,15 +69,13 @@ TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page, SegmentManager& segm
 	}
 }
 
-TerrainPageGeometry::~TerrainPageGeometry()
-{
+TerrainPageGeometry::~TerrainPageGeometry() {
 }
 
-void TerrainPageGeometry::repopulate(bool alsoNormals)
-{
-	for (SegmentRefStore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
-		for (SegmentRefColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			Mercator::Segment& segment = J->second->getMercatorSegment();
+void TerrainPageGeometry::repopulate(bool alsoNormals) {
+	for (const auto& column : mLocalSegments) {
+		for (const auto& entry : column.second) {
+			Mercator::Segment& segment = entry.second->getMercatorSegment();
 			if (!segment.isValid()) {
 				segment.populate();
 			}
@@ -91,17 +86,15 @@ void TerrainPageGeometry::repopulate(bool alsoNormals)
 	}
 }
 
-TerrainPage& TerrainPageGeometry::getPage()
-{
+TerrainPage& TerrainPageGeometry::getPage() {
 	return mPage;
 }
 
-float TerrainPageGeometry::getMaxHeight() const
-{
+float TerrainPageGeometry::getMaxHeight() const {
 	float max = std::numeric_limits<float>::min();
-	for (SegmentRefStore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
-		for (SegmentRefColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			Mercator::Segment& segment = J->second->getMercatorSegment();
+	for (const auto& column : mLocalSegments) {
+		for (const auto& entry : column.second) {
+			Mercator::Segment& segment = entry.second->getMercatorSegment();
 			if (segment.isValid()) {
 				max = std::max<float>(max, segment.getMax());
 			}
@@ -109,29 +102,34 @@ float TerrainPageGeometry::getMaxHeight() const
 	}
 	return max;
 }
-void TerrainPageGeometry::updateOgreHeightData(float* heightData)
-{
+
+void TerrainPageGeometry::updateOgreHeightData(float* heightData) {
 	float* heightDataPtr = heightData;
+
 	unsigned int sizeOfBitmap = mPage.getVerticeCount();
 	//Set the height of any uninitialized part to the default height. This might be optimized better though.
 	for (unsigned int i = 0; i < sizeOfBitmap; ++i) {
 		*(heightDataPtr++) = mDefaultHeight;
 	}
+	heightDataPtr = heightData;
 
-	for (SegmentRefStore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
-		for (SegmentRefColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			Mercator::Segment& segment = J->second->getMercatorSegment();
+	auto extent = mPage.getWorldExtent();
+
+	auto pageSize = mPage.getPageSize();
+
+	for (const auto& column : mLocalSegments) {
+		for (const auto& entry : column.second) {
+			Mercator::Segment& segment = entry.second->getMercatorSegment();
 			if (segment.isValid()) {
-				blitSegmentToOgre(heightData, segment, I->first * segment.getResolution(), 
-						J->first * segment.getResolution());
+				blitSegmentToOgre(heightData, segment, column.first * segment.getResolution(),
+								  entry.first * segment.getResolution());
 			}
 		}
 	}
 }
 
-void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startY)
-{
-	int segmentWidth = segment.getSize();
+void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startZ) {
+	unsigned int segmentWidth = segment.getSize();
 	int pageWidth = mPage.getPageSize();
 	size_t ogreDataSize = pageWidth * pageWidth;
 
@@ -139,63 +137,64 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 	float* destPtr = ogreHeightData;
 
 	float* dataEnd = ogreHeightData + ogreDataSize;
-	
+
 	// copy points line-by line
-	float* tempPtr = destPtr + pageWidth * startY + startX;
+	destPtr = ogreHeightData + (pageWidth * ( pageWidth - startZ - 1)) + startX;
+
+
 	for (int i = 0; i < segmentWidth; ++i) {
 		for (int j = 0; j < segmentWidth; ++j) {
-			if ((tempPtr + j) >= ogreHeightData && (tempPtr + j) < dataEnd) {
-				*(tempPtr + j) = *(sourcePtr + j);
+			if ((destPtr + j) >= ogreHeightData && (destPtr + j) < dataEnd) {
+				*(destPtr + j) = *(sourcePtr + j);
+			} else {
+				int p = 0;
 			}
 		}
-		tempPtr += pageWidth;
+		destPtr -= pageWidth;
 		sourcePtr += segmentWidth;
 	}
 }
 
-Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos) const
-{
+Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos) const {
 	int ix = I_ROUND(floor(pos.x() / 64));
-	int iy = I_ROUND(floor(pos.y() / 64));
+	int iz = I_ROUND(floor(pos.y() / 64));
 
-	SegmentRefStore::const_iterator I = mLocalSegments.find(ix);
+	auto I = mLocalSegments.find(ix);
 	if (I == mLocalSegments.end()) {
-		return 0;
+		return nullptr;
 	}
-	SegmentRefColumn::const_iterator J = I->second.find(iy);
+	auto J = I->second.find(iz);
 	if (J == I->second.end()) {
-		return 0;
+		return nullptr;
 	}
 	return &J->second->getMercatorSegment();
 }
 
-Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
-{
+Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const {
 	int ix = I_ROUND(floor(pos.x() / 64));
-	int iy = I_ROUND(floor(pos.y() / 64));
+	int iz = I_ROUND(floor(pos.y() / 64));
 
 	localPositionInSegment.x() = pos.x() - (ix * 64);
-	localPositionInSegment.y() = pos.y() - (iy * 64);
+	localPositionInSegment.y() = pos.y() - (iz * 64);
 
-	SegmentRefStore::const_iterator I = mLocalSegments.find(ix);
+	auto I = mLocalSegments.find(ix);
 	if (I == mLocalSegments.end()) {
-		return 0;
+		return nullptr;
 	}
-	SegmentRefColumn::const_iterator J = I->second.find(iy);
+	auto J = I->second.find(iz);
 	if (J == I->second.end()) {
-		return 0;
+		return nullptr;
 	}
 	return &J->second->getMercatorSegment();
 }
 
-const SegmentVector TerrainPageGeometry::getValidSegments() const
-{
+const SegmentVector TerrainPageGeometry::getValidSegments() const {
 	SegmentVector validSegments;
-	for (SegmentRefStore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
-		for (SegmentRefColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			Mercator::Segment& segment = J->second->getMercatorSegment();
+	for (const auto& column : mLocalSegments) {
+		for (const auto& entry : column.second) {
+			Mercator::Segment& segment = entry.second->getMercatorSegment();
 			PageSegment pageSegment;
-			pageSegment.index = TerrainPosition(I->first, J->first);
+			pageSegment.index = TerrainPosition(column.first, entry.first);
 			pageSegment.segment = &segment;
 
 			validSegments.push_back(pageSegment);
@@ -204,15 +203,14 @@ const SegmentVector TerrainPageGeometry::getValidSegments() const
 	return validSegments;
 }
 
-bool TerrainPageGeometry::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
-{
+bool TerrainPageGeometry::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const {
 
 	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
 	if (segment && segment->getNormals()) {
 		int resolution = segment->getResolution();
 		size_t xPos = localPosition.x() - (I_ROUND(floor(localPosition.x() / resolution)) * resolution);
-		size_t yPos = localPosition.y() - (I_ROUND(floor(localPosition.y() / resolution)) * resolution);
-		size_t normalPos = (yPos * segment->getSize() * 3) + (xPos * 3);
+		size_t zPos = localPosition.y() - (I_ROUND(floor(localPosition.y() / resolution)) * resolution);
+		size_t normalPos = (zPos * segment->getSize() * 3) + (xPos * 3);
 		normal = WFMath::Vector<3>(segment->getNormals()[normalPos], segment->getNormals()[normalPos + 1], segment->getNormals()[normalPos] + 2);
 		return true;
 	} else {

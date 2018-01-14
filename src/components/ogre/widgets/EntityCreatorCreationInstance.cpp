@@ -66,7 +66,7 @@ EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris:
 	mInitialOrientation.identity();
 	if (randomizeOrientation) {
 		WFMath::MTRand rng;
-		mInitialOrientation.rotation(2, rng.rand() * 360.0f);
+		mInitialOrientation.rotation(1, rng.rand() * 360.0f);
 	}
 
 }
@@ -80,9 +80,9 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 
 	mEntityNode->detachAllObjects();
 
-	if (mModel) {
-		delete mModel;
-	}
+
+	delete mModel;
+
 	mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
 
 	// Deleting temporary entity
@@ -100,7 +100,7 @@ void EntityCreatorCreationInstance::startCreation()
 	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 
 	// Making initial position (orientation is preserved)
-	WFMath::Vector<3> offset(2, 0, 0);
+	WFMath::Vector<3> offset(0, 0, -2);
 
 	mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
 
@@ -264,7 +264,7 @@ void EntityCreatorCreationInstance::model_Reloaded()
 void EntityCreatorCreationInstance::scaleNode()
 {
 	if (mModelMount) {
-		mModelMount->rescale(hasBBox() ? &getBBox() : 0);
+		mModelMount->rescale(hasBBox() ? &getBBox() : nullptr);
 	} else {
 		S_LOG_WARNING("Tried to scale node without there being a valid model mount.");
 	}

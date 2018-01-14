@@ -94,7 +94,7 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	//Only place it if we're creating the new entity in the same location as the avatar
 	if (parentEntityId == mAvatarEntity.getLocation()->getId()) {
 		//Place the new entity two meters in front of the avatar.
-		WFMath::Vector<3> vector(2, 0, 0);
+		WFMath::Vector<3> vector(0, 0, -2);
 		pos = mAvatarEntity.getPosition() + (vector.rotate(mAvatarEntity.getOrientation()));
 		orientation = mAvatarEntity.getOrientation();
 	}
@@ -102,7 +102,7 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	msg["pos"] = pos.toAtlas();
 	msg["orientation"] = orientation.toAtlas();
 
-	if (name != "") {
+	if (!name.empty()) {
 		msg["name"] = name;
 	}
 	msg["parent"] = typeinfo->getName();

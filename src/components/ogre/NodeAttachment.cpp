@@ -126,13 +126,13 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 	//If it's fixed it shouldn't be adjusted
 	if (getAttachedEntity().getPositioningMode() != EmberEntity::PM_FIXED) {
 		if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_FLOATING) {
-			//If the entity is floating, the z position should be 0.
-			adjustedOffset.z() = -position.z();
+			//If the entity is floating, the y position should be 0.
+			adjustedOffset.y() = -position.y();
 		} else if (mParentEntity.getAttachment()) {
-			//If it's swimming, the position should be either floating (z==0) or above ground.
+			//If it's swimming, the position should be either floating (y==0) or above ground.
 			if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_SWIMMING) {
-				if (position.z() > 0) {
-					adjustedOffset.z() = -position.z();
+				if (position.y() > 0) {
+					adjustedOffset.y() = -position.y();
 				} else {
 					mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 				}

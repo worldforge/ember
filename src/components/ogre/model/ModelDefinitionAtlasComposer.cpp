@@ -47,16 +47,12 @@
 #endif
 
 using namespace Atlas::Message;
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Model
-{
+namespace Model {
 
-Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType)
-{
+Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType) {
 	MapType mainMap;
 	if (!model) {
 		return mainMap;
@@ -70,9 +66,6 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 		const Ogre::Entity* entity = submodel->getEntity();
 		aabb.merge(entity->getBoundingBox());
 	}
-
-	Ogre::Quaternion rotation(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
-	aabb.transform(Ogre::Matrix4(rotation));
 
 	if (scale != .0f && scale != 1.0f) {
 		aabb.scale(Ogre::Vector3(scale, scale, scale));
@@ -98,8 +91,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	return mainMap;
 }
 
-Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* model, const std::string& collisionType, const WFMath::AxisBox<3>& bbox) const
-{
+Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* model, const std::string& collisionType, const WFMath::AxisBox<3>& bbox) const {
 	Atlas::Message::MapType geometryMap;
 	geometryMap["shape"] = collisionType;
 	if (collisionType == "mesh") {
@@ -116,68 +108,70 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 				Ogre::SubMesh* submesh = mesh->getSubMesh(i);
 				size_t offset = 0;
 				if (!submesh->useSharedVertices) {
-					offset = vertices.size();
+					offset = vertices.size() / 3;
 					copyVertexData(vertices, *submesh->vertexData, bbox);
 				}
 
 				auto indexBuffer = submesh->indexData->indexBuffer;
-				unsigned short* pIndex = static_cast<unsigned short*>(indexBuffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-				for (size_t j = 0; j < indexBuffer->getNumIndexes(); j += 3) {
-					indices.push_back(pIndex[j] + (unsigned short)offset);
-					indices.push_back(pIndex[j + 1] + (unsigned short)offset);
-					indices.push_back(pIndex[j + 2] + (unsigned short)offset);
+				Ogre::HardwareIndexBuffer::IndexType idxType = submesh->indexData->indexBuffer->getType();
+
+
+				if (idxType == Ogre::HardwareIndexBuffer::IT_16BIT) {
+					auto pIndex = static_cast<Ogre::uint16*>(indexBuffer->lock(submesh->indexData->indexStart * sizeof(Ogre::uint16),
+																			   submesh->indexData->indexCount * sizeof(Ogre::uint16),
+																			   Ogre::HardwareBuffer::HBL_READ_ONLY));
+					for (size_t j = 0; j < submesh->indexData->indexCount; ++j) {
+						long index = pIndex[j] + offset;
+						indices.emplace_back(index);
+					}
+				} else {
+					auto pIndex = static_cast<Ogre::uint32*>(indexBuffer->lock(submesh->indexData->indexStart * sizeof(Ogre::uint32),
+																			   submesh->indexData->indexCount * sizeof(Ogre::uint32),
+																			   Ogre::HardwareBuffer::HBL_READ_ONLY));
+					for (size_t j = 0; j < submesh->indexData->indexCount; ++j) {
+						long index = pIndex[j] + offset;
+						indices.emplace_back(index);
+					}
 				}
+
 				indexBuffer->unlock();
 			}
 		}
+		S_LOG_VERBOSE("Created mesh data with " << vertices.size() << " vertex element and " << indices.size() << " index elements.");
 		geometryMap["vertices"] = std::move(vertices);
 		geometryMap["indices"] = std::move(indices);
 	}
 	return std::move(geometryMap);
 }
 
-void ModelDefinitionAtlasComposer::copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData, const WFMath::AxisBox<3>& bbox) const
-{
+
+void ModelDefinitionAtlasComposer::copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData, const WFMath::AxisBox<3>& bbox) const {
+
+
 	// Locate position element and the buffer to go with it.
 	const Ogre::VertexElement* posElem = vertexData.vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
 	Ogre::HardwareVertexBufferSharedPtr vbuf = vertexData.vertexBufferBinding->getBuffer(posElem->getSource());
+	size_t vertexSize = vbuf->getVertexSize();
 
 	// Lock the buffer for reading.
-	unsigned char* pVertex = static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-	int vSize = vbuf->getVertexSize();
-	size_t numVertices = vertexData.vertexCount;
-	vertices.reserve(numVertices * 3);
-	Ogre::Quaternion q(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+	auto pVertex = static_cast<Ogre::uint8*>(vbuf->lock(vertexData.vertexStart * vertexSize,
+																	vertexData.vertexCount * vertexSize,
+																	Ogre::HardwareBuffer::HBL_READ_ONLY));
+	size_t numEntries = vertexData.vertexCount * 3;
+	vertices.reserve(vertices.size() + numEntries);
 
-	for (size_t i = 0; i < numVertices; ++i) {
+	float* pFloat;
+	posElem->baseVertexPointerToElement(pVertex, &pFloat);
 
-		float* pFloat;
-		posElem->baseVertexPointerToElement(pVertex + (i * vSize), &pFloat);
-
-		Ogre::Vector3 v(pFloat[0], pFloat[1], pFloat[2]);
-
-		//Rotate to fit with WF coord space.
-		Ogre::Vector3 v2 = q * v;
-
-		WFMath::Point<3> wfPoint = Convert::toWF<WFMath::Point<3>>(v2);
-
-		if (!WFMath::Intersect<3>(bbox, wfPoint, false)) {
-			std::stringstream ss;
-			ss << "Point " << wfPoint << " is outside bbox " << bbox;
-			S_LOG_WARNING(ss.str());
-		}
-
-		vertices.push_back(wfPoint.x()); //x in Ogre is X in WF
-		vertices.push_back(wfPoint.y()); //z in Ogre is -y in WF
-		vertices.push_back(wfPoint.z()); //y in Ogre is z in WF
+	S_LOG_VERBOSE("Copying " << numEntries << " vertex elements.");
+	for (size_t i = 0; i < numEntries; ++i) {
+		vertices.emplace_back(pFloat[i]);
 	}
 	vbuf->unlock();
 }
 
-void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType)
-{
+void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType) {
 	Atlas::Message::QueuedDecoder decoder;
-	//std::fstream file;
 
 	Atlas::Codecs::XML codec(outstream, outstream, decoder);
 	Atlas::MultiLineListFormatter formatter(outstream, codec);
@@ -188,8 +182,7 @@ void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Mod
 	formatter.streamEnd();
 }
 
-std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType)
-{
+std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType) {
 	if (model) {
 		try {
 			//make sure the directory exists
@@ -205,7 +198,7 @@ std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std:
 
 			S_LOG_INFO("Creating atlas type " << fileName);
 			composeToStream(exportFile, model, typeName, parentTypeName, scale, collisionType);
-			// 		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Creating atlas type ") + fileName, "info");
+			exportFile.close();
 			return fileName;
 		} catch (const std::exception& e) {
 			S_LOG_WARNING("Error when exporting Model to Atlas data." << e);

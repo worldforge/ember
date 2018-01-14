@@ -53,8 +53,8 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 		TerrainPageGeometryPtr geometry = *J;
 		TerrainPage& page = geometry->getPage();
 		bool shouldUpdate = false;
-		for (const auto& mArea : mAreas) {
-			if (WFMath::Intersect(page.getWorldExtent(), mArea, true) || WFMath::Contains(page.getWorldExtent(), mArea, true)) {
+		for (const auto& area : mAreas) {
+			if (WFMath::Intersect(page.getWorldExtent(), area, true) || WFMath::Contains(page.getWorldExtent(), area, true)) {
 				shouldUpdate = true;
 				break;
 			}

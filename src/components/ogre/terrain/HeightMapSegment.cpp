@@ -83,18 +83,18 @@ void HeightMapSegment::getHeightAndNormal(float x, float y, float& h, WFMath::Ve
 	// square is broken into two triangles
 	// top triangle |/
 	if ((off_x - off_y) <= 0.f) {
-		normal = WFMath::Vector<3>(h2 - h3, h1 - h2, 1.0f);
+		normal = WFMath::Vector<3>(h2 - h3, 1.0f, h1 - h2);
 
 		//normal for intersection of both triangles
 		if (off_x == off_y) {
-			normal += WFMath::Vector<3>(h1 - h4, h4 - h3, 1.0f);
+			normal += WFMath::Vector<3>(h1 - h4, 1.0f, h4 - h3);
 		}
 		normal.normalize();
 		h = h1 + (h3 - h2) * off_x + (h2 - h1) * off_y;
 	}
 	// bottom triangle /|
 	else {
-		normal = WFMath::Vector<3>(h1 - h4, h4 - h3, 1.0f);
+		normal = WFMath::Vector<3>(h1 - h4, 1.0f, h4 - h3);
 		normal.normalize();
 		h = h1 + (h4 - h1) * off_x + (h3 - h4) * off_y;
 	}

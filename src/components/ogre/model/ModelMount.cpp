@@ -53,7 +53,7 @@ void ModelMount::reset() {
 	mNodeProvider->setScale(Ogre::Vector3::UNIT_SCALE);
 
 	PoseDefinition const* pose = nullptr;
-	if (mPose != "") {
+	if (!mPose.empty()) {
 		const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
 		PoseDefinitionStore::const_iterator I = poses.find(mPose);
 		if (I != poses.end()) {
@@ -83,10 +83,6 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox) {
 	//make a copy of the original bbox
 
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getCombinedBoundingBox();
-
-	//Since we've rotated the model by 90 degrees in ModelMount::reset we must now rotate the bounding box
-	//the inverse amount before we can use it.
-	defaultOgreBoundingBox.transform(Ogre::Matrix4(Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y)));
 
 	//We can only apply any meaningful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similar, and no entities
 	Ogre::Vector3 defaultSize = defaultOgreBoundingBox.getSize();
@@ -156,12 +152,9 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox) {
 		//If we've attached using a pose, we need to scale the translation defined in the pose according to our new scale
 		if (!mPose.empty()) {
 			const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
-			PoseDefinitionStore::const_iterator I = poses.find(mPose);
+			auto I = poses.find(mPose);
 			if (I != poses.end()) {
 				Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
-				//rotate node to fit with WF space
-				//perhaps this is something to put in the model spec instead?
-				orientation.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
 				Ogre::Vector3 translation = (orientation * (I->second.Translate * scale));
 				orientation = orientation * I->second.Rotate;
 

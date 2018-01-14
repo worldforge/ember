@@ -111,7 +111,7 @@ void SimpleEntityVisualization::updateBbox()
 	if (mEntity.hasBBox() && mEntity.getBBox().isValid()) {
 		mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(mEntity.getBBox()));
 	} else {
-		mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1, -0.1, -0.1, 0.1, 0.1, 0.1));
+		mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1f, -0.1f, -0.1f, 0.1f, 0.1f, 0.1f));
 	}
 }
 

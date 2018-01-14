@@ -31,7 +31,12 @@ namespace Terrain
 {
 
 TerrainModUpdateTask::TerrainModUpdateTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler) :
-		mTerrain(terrain), mHandler(handler), mId(std::atol(terrainMod.getEntityId().c_str())), mPosition(terrainMod.getEntity().getPosition()), mOrientation(terrainMod.getEntity().getOrientation()), mTranslator(*terrainMod.getTranslator())
+		mTerrain(terrain),
+		mHandler(handler),
+		mId(std::stol(terrainMod.getEntityId())),
+		mPosition(terrainMod.getEntity().getPosition()),
+		mOrientation(terrainMod.getEntity().getOrientation()),
+		mTranslator(*terrainMod.getTranslator())
 {
 
 }
@@ -42,7 +47,7 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 	const Mercator::TerrainMod* terrainMod = nullptr;
 	if (mTranslator.isValid()) {
 
-		Mercator::Segment* segment = mTerrain.getSegmentAtPos(mPosition.x(), mPosition.y());
+		Mercator::Segment* segment = mTerrain.getSegmentAtPos(mPosition.x(), mPosition.z());
 		if (segment) {
 
 			WFMath::Point<3> modPos = mPosition;
@@ -52,13 +57,13 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 				if (!segment->isValid()) {
 					segment->populate();
 				}
-				segment->getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
+				segment->getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), modPos.y());
 			} else {
 				Mercator::HeightMap heightMap(segment->getResolution());
 				heightMap.allocate();
 				segment->populateHeightMap(heightMap);
 
-				heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
+				heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), modPos.y());
 			}
 
 			terrainMod = mTranslator.parseData(modPos, mOrientation);

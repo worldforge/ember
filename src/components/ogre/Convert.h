@@ -197,78 +197,78 @@ static WFMath::AxisBox<2> toWF(const Ogre::TRect<Ogre::Real>& bounds);
 template<>
 inline Ogre::Vector3 Convert::toOgre<Ogre::Vector3>(const WFMath::Point<2>& p) {
 	assert(p.isValid() && "Never convert an invalid WFMath point into Ogre as there will only be pain on the other side.");
-	return Ogre::Vector3(p.x(),0,-p.y());
+	return Ogre::Vector3(p.x(),0,p.y());
 }
 
 template<>
 inline Ogre::Vector2 Convert::toOgre<Ogre::Vector2>(const WFMath::Point<2>& p) {
 	assert(p.isValid() && "Never convert an invalid WFMath point into Ogre as there will only be pain on the other side.");
-	return Ogre::Vector2(p.x(),-p.y());
+	return Ogre::Vector2(p.x(),p.y());
 }
 
 inline Ogre::Vector2 Convert::toOgre(const WFMath::Vector<2>& p) {
 	assert(p.isValid() && "Never convert an invalid WFMath vector into Ogre as there will only be pain on the other side.");
-	return Ogre::Vector2(p.x(),-p.y());
+	return Ogre::Vector2(p.x(),p.y());
 }
 
 
 inline WFMath::Point<2> Convert::toWF(const Ogre::Vector2& p) {
-	return WFMath::Point<2>(p.x,-p.y);
+	return WFMath::Point<2>(p.x,p.y);
 }
 
 template<>
 inline WFMath::Point<3> Convert::toWF<WFMath::Point<3>>(const Ogre::Vector3& p) {
-	return WFMath::Point<3>(p.x,-p.z,p.y);
+	return WFMath::Point<3>(p.x,p.y,p.z);
 }
 
 template<>
 inline WFMath::Point<2> Convert::toWF<WFMath::Point<2>>(const Ogre::Vector3& p) {
-	return WFMath::Point<2>(p.x,-p.z);
+	return WFMath::Point<2>(p.x,p.z);
 }
 
 template<>
 inline WFMath::Vector<3> Convert::toWF<WFMath::Vector<3>>(const Ogre::Vector3& p) {
-	return WFMath::Vector<3>(p.x,-p.z,p.y);
+	return WFMath::Vector<3>(p.x,p.y,p.z);
 }
 
 inline Ogre::Vector3 Convert::toOgre(const WFMath::Point<3>& p){
 	assert(p.isValid() && "Never convert an invalid WFMath point into Ogre as there will only be pain on the other side.");
-	return Ogre::Vector3(p.x(),p.z(),-p.y());
+	return Ogre::Vector3(p.x(),p.y(),p.z());
 }
 
 inline Ogre::Vector3 Convert::toOgre(const WFMath::Vector<3>& v){
 	assert(v.isValid() && "Never convert an invalid WFMath vector into Ogre as there will only be pain on the other side.");
-	return Ogre::Vector3(v.x(),v.z(),-v.y());
+	return Ogre::Vector3(v.x(),v.y(),v.z());
 }
 
 inline Ogre::Quaternion Convert::toOgre(const WFMath::Quaternion& aq){
 	assert(aq.isValid() && "Never convert an invalid WFMath quaternion into Ogre as there will only be pain on the other side.");
-	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
+	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().y(),aq.vector().z());
 }
 
 inline WFMath::Quaternion Convert::toWF(const Ogre::Quaternion& aq){
-	return WFMath::Quaternion(aq.w,aq.x,-aq.z,aq.y);
+	return WFMath::Quaternion(aq.w,aq.x,aq.y,aq.z);
 }
 
 inline Ogre::AxisAlignedBox Convert::toOgre(const WFMath::AxisBox<3>& axisBox){
 	assert(axisBox.isValid() && "Never convert an invalid WFMath axis box into Ogre as there will only be pain on the other side.");
-	return Ogre::AxisAlignedBox(axisBox.lowCorner().x(), axisBox.lowCorner().z(), -axisBox.highCorner().y(), axisBox.highCorner().x(), axisBox.highCorner().z(), -axisBox.lowCorner().y());
+	return Ogre::AxisAlignedBox(axisBox.lowCorner().x(), axisBox.lowCorner().y(), axisBox.lowCorner().z(), axisBox.highCorner().x(), axisBox.highCorner().y(), axisBox.highCorner().z());
 }
 
 inline Ogre::TRect<Ogre::Real> Convert::toOgre(const WFMath::AxisBox<2>& atlasBox) {
 	assert(atlasBox.isValid() && "Never convert an invalid WFMath axis box into Ogre as there will only be pain on the other side.");
-	return Ogre::TRect<Ogre::Real>(atlasBox.lowCorner().x(), -atlasBox.highCorner().y(), atlasBox.highCorner().x(), -atlasBox.lowCorner().y());
+	return Ogre::TRect<Ogre::Real>(atlasBox.lowCorner().x(), atlasBox.lowCorner().y(), atlasBox.highCorner().x(), atlasBox.highCorner().y());
 }
 
 inline WFMath::AxisBox<3> Convert::toWF(const Ogre::AxisAlignedBox& axisBox){
 	if (axisBox.isNull() || axisBox.isInfinite()) {
 		return WFMath::AxisBox<3>();
 	}
-	return WFMath::AxisBox<3>(WFMath::Point<3>(axisBox.getMinimum().x, -axisBox.getMaximum().z, axisBox.getMinimum().y), WFMath::Point<3>(axisBox.getMaximum().x, -axisBox.getMinimum().z, axisBox.getMaximum().y));
+	return WFMath::AxisBox<3>(WFMath::Point<3>(axisBox.getMinimum().x, axisBox.getMinimum().y, axisBox.getMinimum().z), WFMath::Point<3>(axisBox.getMaximum().x, axisBox.getMaximum().y, axisBox.getMaximum().z));
 }
 
 inline WFMath::AxisBox<2> Convert::toWF(const Ogre::TRect<Ogre::Real>& bounds){
-	return WFMath::AxisBox<2>(WFMath::Point<2>(bounds.left, -bounds.top), WFMath::Point<2>(bounds.right, -bounds.bottom));
+	return WFMath::AxisBox<2>(WFMath::Point<2>(bounds.left, bounds.bottom), WFMath::Point<2>(bounds.right, bounds.top));
 }
 
 }

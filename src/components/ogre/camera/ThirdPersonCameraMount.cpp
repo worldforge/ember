@@ -118,8 +118,6 @@ void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManag
 	mCameraRootNode->setInheritOrientation(false);
 	//we need to adjust for the height of the  mesh
 	mCameraRootNode->setPosition(Ogre::Vector3(0, 2, 0));
-	//rotate to sync with WF world
-	mCameraRootNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
 
 	mCameraPitchNode = mCameraRootNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraPitchNode"));
 	mCameraPitchNode->setPosition(Ogre::Vector3(0, 0, 0));
@@ -166,7 +164,7 @@ void ThirdPersonCameraMount::runCommand(const std::string &command, const std::s
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string distance = tokeniser.nextToken();
-		if (distance != "") {
+		if (!distance.empty()) {
 			float fDistance = Ogre::StringConverter::parseReal(distance);
 			setCameraDistance(fDistance);
 		}
@@ -188,7 +186,7 @@ bool ThirdPersonCameraMount::adjustForTerrain()
 		if (result.first) {
 			Ogre::Real distance = mCameraRootNode->_getDerivedPosition().distance(result.second);
 			if (distance < mWantedCameraDistance) {
-				setActualCameraDistance(distance - 0.1);
+				setActualCameraDistance(distance - 0.1f);
 				return true;
 			} else {
 				//we hit some terrain beyond the max distance of the camera, so set it to the "default" distance

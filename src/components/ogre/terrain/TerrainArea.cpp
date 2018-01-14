@@ -104,12 +104,12 @@ bool TerrainArea::placeArea(WFMath::Polygon<2>& poly)
 
 	if (mEntity.getOrientation().isValid()) {
 		WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(mEntity.getOrientation());
-		double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
+		double theta = atan2(xVec.z(), xVec.x()); // rotation about Y
 
 		WFMath::RotMatrix<2> rm;
 		poly.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
 	}
-	poly.shift(WFMath::Vector<2>(mEntity.getPosition().x(), mEntity.getPosition().y()));
+	poly.shift(WFMath::Vector<2>(mEntity.getPosition().x(), mEntity.getPosition().z()));
 
 
 	return true;

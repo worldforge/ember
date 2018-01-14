@@ -40,8 +40,6 @@ FirstPersonCameraMount::FirstPersonCameraMount(const CameraSettings& cameraSetti
 {
 	mCameraRootNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("FirstPersonCameraNodeRootNode"));
 	mCameraRootNode->setInheritOrientation(false);
-	//rotate to sync with WF world
-	mCameraRootNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
 
 	mCameraPitchNode = mCameraRootNode->createChildSceneNode(OgreInfo::createUniqueResourceName("FirstPersonCameraPitchNode"));
 	mCameraNode = mCameraPitchNode->createChildSceneNode(OgreInfo::createUniqueResourceName("FirstPersonCameraNode"));

@@ -35,10 +35,10 @@ class WFImage;
 class OgreImage : public Image
 {
 public:
-	OgreImage(Image::ImageBuffer* buffer);
+	explicit OgreImage(Image::ImageBuffer* buffer);
 
-	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0);
-	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0);
+	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset) override;
+	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset) override;
 
 };
 

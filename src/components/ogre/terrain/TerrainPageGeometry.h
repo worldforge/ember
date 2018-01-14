@@ -159,9 +159,9 @@ private:
 	 * @param ogreHeightData The Ogre height data. This is guaranteed to be <page size> * <page size>.
 	 * @param segment The segment to blit.
 	 * @param startX The starting x position in Ogre space.
-	 * @param startY The starting y position in Ogre space.
+	 * @param startZ The starting y position in Ogre space.
 	 */
-	void blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startY);
+	void blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startZ);
 
 };
 }

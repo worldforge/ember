@@ -42,8 +42,7 @@ const WFMath::Point<3>& AvatarAttachmentController::getPosition() const
 }
 const WFMath::Quaternion& AvatarAttachmentController::getOrientation() const
 {
-	//We need to rotate to fit with Ogre space.
-	mOrientation = mAvatar.getClientSideAvatarOrientation() * WFMath::Quaternion(2, WFMath::numeric_constants<float>::pi() / 2);
+	mOrientation = mAvatar.getClientSideAvatarOrientation();
 	return mOrientation;
 }
 

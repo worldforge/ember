@@ -235,10 +235,10 @@ protected:
 	 * appear infinite.
 	 * @param key The lookup key for the segment.
 	 * @param x The x index of the segment.
-	 * @param y The y index of the segment.
+	 * @param zIndex The y index of the segment.
 	 * @return A new segment holder instance which refers to the fake segment.
 	 */
-	SegmentRefPtr createFakeSegment(const std::string& key, int x, int y);
+	SegmentRefPtr createFakeSegment(const std::string& key, int x, int zIndex);
 
 
 };
