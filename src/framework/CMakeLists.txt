@@ -20,7 +20,7 @@ add_library(framework
         dir_monitor/include/dir_monitor/windows/basic_dir_monitor_service.hpp dir_monitor/include/dir_monitor/windows/dir_monitor_impl.hpp
 
         ConsoleObject.h IGameView.h IResourceProvider.h IScriptingProvider.h LogObserver.h osdir.h ShutdownException.h Singleton.h utf8.h
-        )
+        AtlasQuery.cpp AtlasQuery.h)
 
 
 wf_generate_lua_bindings(bindings/lua/Framework)
