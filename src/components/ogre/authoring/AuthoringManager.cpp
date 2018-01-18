@@ -26,6 +26,7 @@
 #include "components/ogre/Avatar.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
+#include "GeometryVisualization.h"
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <Eris/Avatar.h>
@@ -82,8 +83,45 @@ void AuthoringManager::displayAuthoringVisualization()
 void AuthoringManager::hideAuthoringVisualization()
 {
 	delete mHandler;
-	mHandler = 0;
+	mHandler = nullptr;
 }
+
+
+void AuthoringManager::displayGeometryVisualization(EmberEntity& entity) {
+	if (!mGeometryVisualizations.count(&entity)) {
+		Ogre::SceneNode* node = mWorld.getScene().getSceneManager().getRootSceneNode()->createChildSceneNode();
+		GeometryVisualization* vis(nullptr);
+		try {
+			vis = new GeometryVisualization(entity, node);
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when displaying geometry." << ex);
+			//just delete the node and return
+			node->getCreator()->destroySceneNode(node);
+			return;
+		}
+		sigc::connection conn = entity.BeingDeleted.connect([&]() {hideGeometryVisualization(entity); });
+		mGeometryVisualizations.insert(std::make_pair(&entity, std::make_pair(vis, conn)));
+	}
+}
+
+void AuthoringManager::hideGeometryVisualization(EmberEntity& entity)
+{
+	auto I = mGeometryVisualizations.find(&entity);
+	if (I != mGeometryVisualizations.end()) {
+		GeometryVisualization* vis = I->second.first;
+		sigc::connection& conn = I->second.second;
+		delete vis;
+		conn.disconnect();
+		mGeometryVisualizations.erase(I);
+	}
+}
+
+
+bool AuthoringManager::hasGeometryVisualization(const EmberEntity& entity) const
+{
+	return mGeometryVisualizations.count(&entity) != 0;
+}
+
 
 void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity)
 {
@@ -97,7 +135,7 @@ void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity)
 			node->getCreator()->destroySceneNode(node);
 			return;
 		}
-		sigc::connection conn = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &AuthoringManager::simpleEntityVisualizationBeingDeleted), &entity));
+		sigc::connection conn = entity.BeingDeleted.connect([&]() {hideSimpleEntityVisualization(entity); });
 		mSimpleVisualizations.insert(SimpleEntityVisualizationStore::value_type(&entity, std::make_pair(vis, conn)));
 	}
 
@@ -105,7 +143,7 @@ void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity)
 
 void AuthoringManager::hideSimpleEntityVisualization(EmberEntity& entity)
 {
-	SimpleEntityVisualizationStore::iterator I = mSimpleVisualizations.find(&entity);
+	auto I = mSimpleVisualizations.find(&entity);
 	if (I != mSimpleVisualizations.end()) {
 		SimpleEntityVisualization* vis = I->second.first;
 		sigc::connection& conn = I->second.second;
@@ -118,10 +156,6 @@ void AuthoringManager::hideSimpleEntityVisualization(EmberEntity& entity)
 bool AuthoringManager::hasSimpleEntityVisualization(const EmberEntity& entity) const
 {
 	return mSimpleVisualizations.count(&entity) != 0;
-}
-
-void AuthoringManager::simpleEntityVisualizationBeingDeleted(EmberEntity* entity) {
-	hideSimpleEntityVisualization(*entity);
 }
 
 void AuthoringManager::runCommand(const std::string &command, const std::string &)
@@ -157,6 +191,7 @@ void AuthoringManager::stopMovement()
 		mHandler ->stopMovement();
 	}
 }
+
 
 
 }

@@ -64,7 +64,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	Ogre::AxisAlignedBox aabb;
 	for (SubModel* submodel: model->getSubmodels()) {
 		const Ogre::Entity* entity = submodel->getEntity();
-		aabb.merge(entity->getBoundingBox());
+		aabb.merge(entity->getMesh()->getBounds());
 	}
 
 	if (scale != .0f && scale != 1.0f) {
@@ -77,7 +77,8 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	attributesMap["bbox"] = bboxMap;
 
 	Atlas::Message::MapType geometryMap;
-	geometryMap["default"] = composeGeometry(model, collisionType, wfmathAabb);
+	geometryMap["default"] = composeGeometry(model, collisionType);
+
 	geometryMap["visibility"] = "public";
 	attributesMap["geometry"] = geometryMap;
 
@@ -91,7 +92,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	return mainMap;
 }
 
-Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* model, const std::string& collisionType, const WFMath::AxisBox<3>& bbox) const {
+Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* model, const std::string& collisionType) const {
 	Atlas::Message::MapType geometryMap;
 	geometryMap["shape"] = collisionType;
 	if (collisionType == "mesh") {
@@ -102,14 +103,14 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 		for (SubModel* submodel : model->getSubmodels()) {
 			auto mesh = submodel->getEntity()->getMesh();
 			if (mesh->sharedVertexData) {
-				copyVertexData(vertices, *mesh->sharedVertexData, bbox);
+				copyVertexData(vertices, *mesh->sharedVertexData);
 			}
 			for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i) {
 				Ogre::SubMesh* submesh = mesh->getSubMesh(i);
 				size_t offset = 0;
 				if (!submesh->useSharedVertices) {
 					offset = vertices.size() / 3;
-					copyVertexData(vertices, *submesh->vertexData, bbox);
+					copyVertexData(vertices, *submesh->vertexData);
 				}
 
 				auto indexBuffer = submesh->indexData->indexBuffer;
@@ -145,7 +146,7 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 }
 
 
-void ModelDefinitionAtlasComposer::copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData, const WFMath::AxisBox<3>& bbox) const {
+void ModelDefinitionAtlasComposer::copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData) const {
 
 
 	// Locate position element and the buffer to go with it.
@@ -160,12 +161,14 @@ void ModelDefinitionAtlasComposer::copyVertexData(std::vector<Atlas::Message::El
 	size_t numEntries = vertexData.vertexCount * 3;
 	vertices.reserve(vertices.size() + numEntries);
 
-	float* pFloat;
-	posElem->baseVertexPointerToElement(pVertex, &pFloat);
-
 	S_LOG_VERBOSE("Copying " << numEntries << " vertex elements.");
-	for (size_t i = 0; i < numEntries; ++i) {
-		vertices.emplace_back(pFloat[i]);
+	for (size_t i = 0; i < vertexData.vertexCount; ++i) {
+		float* pFloat;
+		posElem->baseVertexPointerToElement(pVertex, &pFloat);
+		vertices.emplace_back(pFloat[0]);
+		vertices.emplace_back(pFloat[1]);
+		vertices.emplace_back(pFloat[2]);
+		pVertex += vertexSize;
 	}
 	vbuf->unlock();
 }

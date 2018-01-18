@@ -55,6 +55,7 @@ namespace Authoring
 class AuthoringHandler;
 class EntityMover;
 class SimpleEntityVisualization;
+class GeometryVisualization;
 class EntityConsoleEditor;
 
 /**
@@ -107,6 +108,12 @@ public:
 	 */
 	bool hasSimpleEntityVisualization(const EmberEntity& entity) const;
 
+	void displayGeometryVisualization(EmberEntity& entity);
+
+	void hideGeometryVisualization(EmberEntity& entity);
+
+	bool hasGeometryVisualization(const EmberEntity& entity) const;
+
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
@@ -149,6 +156,8 @@ protected:
 	 */
 	SimpleEntityVisualizationStore mSimpleVisualizations;
 
+	std::unordered_map<const EmberEntity*, std::pair<GeometryVisualization*, sigc::connection>> mGeometryVisualizations;
+
 	EntityConsoleEditor* mEntityConsoleEditor;
 
 	/**
@@ -158,12 +167,6 @@ protected:
 	 * @param variable
 	 */
 	void config_AuthoringVisualizations(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-	/**
-	 * @brief Listen to an entity for which there exists a simple visualization and remove the visualization.
-	 * @param entity The entity being deleted.
-	 */
-	void simpleEntityVisualizationBeingDeleted(EmberEntity* entity);
 
 	/**
 	 * @brief Called when the world has gotten the Avatar. Will evaluate the authoring visualization setting.

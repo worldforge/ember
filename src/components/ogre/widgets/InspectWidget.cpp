@@ -97,6 +97,16 @@ void InspectWidget::buildWidget()
 		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowCollision_Click);
 	}
 
+	getWindow("ShowGeometry")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+		if (mCurrentEntity && EmberOgre::getSingleton().getWorld()) {
+			if (EmberOgre::getSingleton().getWorld()->getAuthoringManager().hasGeometryVisualization(*mCurrentEntity)) {
+				EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideGeometryVisualization(*mCurrentEntity);
+			} else {
+				EmberOgre::getSingleton().getWorld()->getAuthoringManager().displayGeometryVisualization(*mCurrentEntity);
+			}
+		}
+	});
+
 }
 
 void InspectWidget::updateAttributeString()

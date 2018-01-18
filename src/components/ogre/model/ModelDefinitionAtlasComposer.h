@@ -84,8 +84,8 @@ public:
 
 private:
 
-    Atlas::Message::Element composeGeometry(Model* model, const std::string& collisionType, const WFMath::AxisBox<3>& bbox) const;
-    void copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData, const WFMath::AxisBox<3>& bbox) const;
+    Atlas::Message::Element composeGeometry(Model* model, const std::string& collisionType) const;
+    void copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData) const;
 
 
 };

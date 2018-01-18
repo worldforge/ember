@@ -59,7 +59,10 @@ namespace Authoring
 static const std::string BboxMaterialName("/common/base/authoring/bbox");
 
 SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode) :
-		mEntity(entity), mSceneNode(sceneNode), mErisEntityBoundingBox(OGRE_NEW Ogre::OOBBWireBoundingBox()), mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged)))
+		mEntity(entity),
+		mSceneNode(sceneNode),
+		mErisEntityBoundingBox(OGRE_NEW Ogre::OOBBWireBoundingBox()),
+		mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged)))
 {
 
 	mVelocityArrowEntity = sceneNode->getCreator()->createEntity("common/primitives/model/arrow.mesh");
