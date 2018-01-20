@@ -581,6 +581,10 @@ void Model::setVisible(bool visible) {
 	}
 }
 
+bool Model::getVisible() const {
+	return mVisible;
+}
+
 void Model::setDisplaySkeleton(bool display) {
 	for (auto& submodel : mSubmodels) {
 		submodel->getEntity()->setDisplaySkeleton(display);

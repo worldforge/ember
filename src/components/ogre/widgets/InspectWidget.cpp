@@ -31,6 +31,8 @@
 #include "domain/EmberEntity.h"
 #include "../World.h"
 #include "components/ogre/authoring/AuthoringManager.h"
+#include "components/ogre/model/ModelRepresentationManager.h"
+#include "components/ogre/model/Model.h"
 
 
 #include "../EmberOgre.h"
@@ -45,6 +47,7 @@
 #include <Eris/TypeInfo.h>
 
 #include <Atlas/PresentationBridge.h>
+#include <framework/Singleton.h>
 
 
 namespace Ember {
@@ -74,9 +77,8 @@ void InspectWidget::buildWidget()
 
 	loadMainSheet("InspectWidget.layout", "InspectWidget/");
 	mMainWindow->setVisible(false);
-//	mMainWindow->setAlwaysOnTop(true);
 
-	mChildList = static_cast<CEGUI::Listbox*>(getWindow("ChildList"));
+	mChildList = dynamic_cast<CEGUI::Listbox*>(getWindow("ChildList"));
 	BIND_CEGUI_EVENT(mChildList, CEGUI::Listbox::EventMouseDoubleClick, InspectWidget::ChildList_MouseDoubleClick);
 
 	mInfo = getWindow("EntityInfo");
@@ -85,17 +87,24 @@ void InspectWidget::buildWidget()
 	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));
 	enableCloseButton();
 
-	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowOgreBoundingBox"))) {
-		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowOgreBoundingBox_Click);
-	}
+	getWindow("ShowOgreBoundingBox")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+		if (mCurrentEntity) {
+			mCurrentEntity->setVisualize("OgreBBox", !mCurrentEntity->getVisualize("OgreBBox"));
+		}
+		return true;
+	});
 
-	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowErisBoundingBox"))) {
-		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowErisBoundingBox_Click);
-	}
+	getWindow("ShowErisBoundingBox")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+		if (mCurrentEntity && EmberOgre::getSingleton().getWorld()) {
+			if (EmberOgre::getSingleton().getWorld()->getAuthoringManager().hasSimpleEntityVisualization(*mCurrentEntity)) {
+				EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideSimpleEntityVisualization(*mCurrentEntity);
+			} else {
+				EmberOgre::getSingleton().getWorld()->getAuthoringManager().displaySimpleEntityVisualization(*mCurrentEntity);
+			}
+		}
+		return true;
+	});
 
-	if (CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("ShowCollision"))) {
-		BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked, InspectWidget::ShowCollision_Click);
-	}
 
 	getWindow("ShowGeometry")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
 		if (mCurrentEntity && EmberOgre::getSingleton().getWorld()) {
@@ -103,6 +112,15 @@ void InspectWidget::buildWidget()
 				EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideGeometryVisualization(*mCurrentEntity);
 			} else {
 				EmberOgre::getSingleton().getWorld()->getAuthoringManager().displayGeometryVisualization(*mCurrentEntity);
+			}
+		}
+	});
+
+	getWindow("ShowModel")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+		if (mCurrentEntity) {
+			auto model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(*mCurrentEntity);
+			if (model) {
+				model->setVisible(!model->getVisible());
 			}
 		}
 	});
@@ -129,9 +147,9 @@ void InspectWidget::runCommand(const std::string &command, const std::string &ar
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string entityId = tokeniser.nextToken();
-		if (entityId != "") {
+		if (!entityId.empty()) {
 			EmberEntity* entity = EmberOgre::getSingleton().getWorld()->getEmberEntity(entityId);
-			if (entity != 0) {
+			if (entity != nullptr) {
 				startInspecting(entity);
 			}
 		} else {
@@ -234,7 +252,7 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 
 void InspectWidget::fillChildrenList()
 {
-	unsigned int numberOfChildren = mCurrentEntity->numContained();
+	size_t numberOfChildren = mCurrentEntity->numContained();
 	mChildList->resetList();
 
 	for (unsigned int i = 0; i < numberOfChildren;  ++i) {
@@ -247,7 +265,7 @@ void InspectWidget::fillChildrenList()
 void InspectWidget::addChildToList(Eris::Entity* child)
 {
 	CEGUI::String name(child->getType()->getName());
-	if (child->getName() == "") {
+	if (child->getName().empty()) {
 		name += " ("+ child->getId() + ")";
 	} else {
 		name += " ("+ child->getId() +" : "+child->getName()+")";
@@ -276,42 +294,10 @@ void InspectWidget::entity_ChildRemoved(Eris::Entity* entity)
 	}
 }
 
-
-
 void InspectWidget::entity_Changed(const Eris::StringSet& attributes)
 {
 	updateAttributeString();
 	mChangedThisFrame = true;
-}
-
-
-bool InspectWidget::ShowCollision_Click(const CEGUI::EventArgs& args)
-{
-	if (mCurrentEntity) {
-		mCurrentEntity->setVisualize("CollisionObject", !mCurrentEntity->getVisualize("CollisionObject"));
-	}
-	return true;
-}
-
-
-bool InspectWidget::ShowOgreBoundingBox_Click(const CEGUI::EventArgs& args)
-{
-	if (mCurrentEntity) {
-		mCurrentEntity->setVisualize("OgreBBox", !mCurrentEntity->getVisualize("OgreBBox"));
-	}
-	return true;
-}
-
-bool InspectWidget::ShowErisBoundingBox_Click(const CEGUI::EventArgs& args)
-{
-	if (mCurrentEntity && EmberOgre::getSingleton().getWorld()) {
-		if (EmberOgre::getSingleton().getWorld()->getAuthoringManager().hasSimpleEntityVisualization(*mCurrentEntity)) {
-			EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideSimpleEntityVisualization(*mCurrentEntity);
-		} else {
-			EmberOgre::getSingleton().getWorld()->getAuthoringManager().displaySimpleEntityVisualization(*mCurrentEntity);
-		}
-	}
-	return true;
 }
 
 

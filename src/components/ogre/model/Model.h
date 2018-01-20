@@ -176,6 +176,8 @@ public:
 	 */
 	void setVisible(bool visible);
 
+	bool getVisible() const;
+
 	/**
 	 * @brief Gets how much the model is scaled from its initial size.
 	 */
