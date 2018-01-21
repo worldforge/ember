@@ -27,7 +27,7 @@
 namespace Ember {
 
 /**
- * Provides utility methods for quickly finding
+ * Provides utility methods for quickly finding Atlas elements within other Atlas Map elements.
  */
 class AtlasQuery {
 
@@ -36,10 +36,21 @@ public:
 	static void find(const Atlas::Message::Element& element, const std::string& name, const std::function<void(const T&)>& callback);
 	template <typename T>
 	static void find(const Atlas::Message::MapType& map, const std::string& name, const std::function<void(const T&)>& callback);
+	template <typename T>
+	static void find(Atlas::Message::Element& element, const std::string& name, const std::function<void(T&)>& callback);
+	template <typename T>
+	static void find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(T&)>& callback);
 };
 
 template <typename T>
 void AtlasQuery::find(const Atlas::Message::Element& element, const std::string& name, const std::function<void(const T&)>& callback) {
+	if (element.isMap()) {
+		find(element.Map(), name, callback);
+	}
+}
+
+template <typename T>
+void AtlasQuery::find(Atlas::Message::Element& element, const std::string& name, const std::function<void(T&)>& callback) {
 	if (element.isMap()) {
 		find(element.Map(), name, callback);
 	}
@@ -94,6 +105,39 @@ void AtlasQuery::find(const Atlas::Message::MapType& map, const std::string& nam
 		}
 	}
 }
+
+
+template <>
+void AtlasQuery::find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(Atlas::Message::MapType&)>& callback) {
+	auto I = map.find(name);
+	if (I != map.end()) {
+		if (I->second.isMap()) {
+			callback(I->second.Map());
+		}
+	}
+}
+
+template <>
+void AtlasQuery::find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(Atlas::Message::ListType&)>& callback) {
+	auto I = map.find(name);
+	if (I != map.end()) {
+		if (I->second.isList()) {
+			callback(I->second.List());
+		}
+	}
+}
+
+template <>
+void AtlasQuery::find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(Atlas::Message::StringType&)>& callback) {
+	auto I = map.find(name);
+	if (I != map.end()) {
+		if (I->second.isString()) {
+			callback(I->second.String());
+		}
+	}
+}
+
+
 }
 
 
