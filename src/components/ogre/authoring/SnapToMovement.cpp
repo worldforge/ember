@@ -49,24 +49,23 @@ SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::Node& node, float sna
 {
 	if (showDebugOverlay) {
 		for (int i = 0; i < 30; ++i) {
-			Ogre::SceneNode* node = mSceneManager.getRootSceneNode()->createChildSceneNode();
-			Ogre::Entity* sphereEntity = mSceneManager.createEntity(node->getName() + "_entity", "common/primitives/model/sphere.mesh");
+			Ogre::SceneNode* newNode = mSceneManager.getRootSceneNode()->createChildSceneNode();
+			Ogre::Entity* sphereEntity = mSceneManager.createEntity("common/primitives/model/sphere.mesh");
 			//start out with a normal material
 			sphereEntity->setMaterialName("/common/base/authoring/point");
 			sphereEntity->setRenderingDistance(300);
 			// 		entity.setQueryFlags(MousePicker::CM_UNDEFINED);
-			node->setScale(0.25, 0.25, 0.25);
-			node->attachObject(sphereEntity);
-			node->setVisible(false);
-			mDebugNodes.push_back(node);
+			newNode->setScale(0.25, 0.25, 0.25);
+			newNode->attachObject(sphereEntity);
+			newNode->setVisible(false);
+			mDebugNodes.push_back(newNode);
 		}
 	}
 }
 
 SnapToMovement::~SnapToMovement()
 {
-	for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
-		Ogre::SceneNode* node = *I;
+	for (auto node : mDebugNodes) {
 		node->removeAndDestroyAllChildren();
 		mSceneManager.destroySceneNode(node);
 	}
@@ -76,17 +75,16 @@ SnapToMovement::~SnapToMovement()
 bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity** snappedToEntity)
 {
 	try {
-		for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
-			Ogre::SceneNode* node = *I;
+		for (auto node : mDebugNodes) {
 			node->setVisible(false);
-			Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (node->getAttachedObject(0));
+			Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
 			sphereEntity->setMaterialName("/common/base/authoring/point");
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting up debug nodes for snapping." << ex);
 	}
 
-	std::vector<Ogre::SceneNode*>::iterator nodeIterator = mDebugNodes.begin();
+	auto nodeIterator = mDebugNodes.begin();
 
 	//Use an auto pointer to allow both for undefined values and automatic cleanup when exiting the method.
 	std::unique_ptr<SnapPointCandidate> closestSnapping(nullptr);
@@ -136,7 +134,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 
 					for (size_t i = 0; i < rotbox.numCorners(); ++i) {
 						WFMath::Point<3> point = rotbox.getCorner(i);
-						Ogre::SceneNode* currentNode(0);
+						Ogre::SceneNode* currentNode(nullptr);
 						//If there is any unclaimed debug node left we'll use it to visualize the corner
 						if (nodeIterator != mDebugNodes.end()) {
 							currentNode = *nodeIterator;
@@ -178,7 +176,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 		}
 	}
 	mSceneManager.destroyQuery(query);
-	if (closestSnapping.get()) {
+	if (closestSnapping) {
 		adjustment = closestSnapping->adjustment;
 		*snappedToEntity = closestSnapping->entity;
 		return true;
