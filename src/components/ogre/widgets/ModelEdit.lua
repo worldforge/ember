@@ -1228,7 +1228,7 @@ function ModelEdit:buildWidget()
 					local collType = collItem:getText()
 
 					local composer = Ember.OgreView.Model.ModelDefinitionAtlasComposer:new_local()
-					local exportPath = composer:composeToFile(model, self.exportTypeName:getText(), "thing", self.definition:getScale(), collType)
+					local exportPath = composer:composeToFile(model, self.exportTypeName:getText(), self.exportParentType:getText(), self.definition:getScale(), collType)
 					if exportPath ~= "" then
 						console:pushMessage("Atlas exported to " .. exportPath, "info")
 					end
@@ -1306,8 +1306,9 @@ function ModelEdit:buildWidget()
 				end
 			return true
 		end)
-		
+
 		self.exportTypeName = CEGUI.toEditbox(self.widget:getWindow("ExportTypeName"))
+		self.exportParentType = CEGUI.toEditbox(self.widget:getWindow("ExportParentType"))
 
 		
 		self:fillMaterialList()

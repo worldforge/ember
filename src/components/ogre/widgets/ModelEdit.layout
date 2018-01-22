@@ -537,12 +537,23 @@ Press shift to switch between rotation and translation.'</Property>
                                     <Property name="Size" value="{{1,0},{0,30}}" />
                                     <Window type="EmberLook/StaticText">
                                         <Property name="Size" value="{{0,150.0},{0,30.0}}" />
+                                        <Property name="Text" value="Parent type" />
+                                    </Window>
+                                    <Window name="ExportParentType" type="EmberLook/Editbox">
+                                        <Property name="Size" value="{{0,100.0},{0,25.0}}" />
+                                        <Property name="Text" value="thing" />
+                                    </Window>
+                                </Window>
+                                <Window type="HorizontalLayoutContainer">
+                                    <Property name="Size" value="{{1,0},{0,30}}" />
+                                    <Window type="EmberLook/StaticText">
+                                        <Property name="Size" value="{{0,150.0},{0,30.0}}" />
                                         <Property name="Text" value="Collision shape" />
                                     </Window>
                                     <Window name="CollisionType" type="EmberLook/Combobox">
                                         <Property name="Size" value="{{0,100.0},{0,200.0}}" />
                                         <Property name="ReadOnly" value="true" />
-                                    </Window>                            
+                                    </Window>
                                 </Window>
                             </Window>
                             <Window name="ExportAsAtlasTypeButton" type="EmberLook/Button">
