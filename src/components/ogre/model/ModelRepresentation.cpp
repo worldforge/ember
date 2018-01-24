@@ -267,14 +267,21 @@ Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& veloc
 		//We'll split up the movement into four arcs: forwards, backwards, left and right
 		//We'll use a little bit of padding, so that the side movement arcs are larger.
 		bool isRunning = mag > 2.6;
-		WFMath::CoordType atan = std::atan2(velocity.x(), velocity.y());
+		WFMath::CoordType atan = std::atan2(velocity.x(), velocity.z());
 
-		if (atan >= 2.4 || atan <= -2.4) {
+		if (atan <= 0.7 && atan >= -0.7) {
 			//moving forwards
 			if (isRunning) {
 				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN, ACTION_WALK});
 			} else {
 				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK, ACTION_RUN});
+			}
+		} else if (atan >= 2.4 || atan <= -2.4) {
+			//moving backwards
+			if (isRunning) {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_BACKWARDS, ACTION_WALK_BACKWARDS});
+			} else {
+				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_BACKWARDS, ACTION_RUN_BACKWARDS});
 			}
 		} else if (atan > 0.7) {
 			//moving to the left
@@ -283,19 +290,12 @@ Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& veloc
 			} else {
 				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_LEFT, ACTION_RUN_LEFT, ACTION_WALK, ACTION_RUN});
 			}
-		} else if (atan < -0.7) {
+		} else {
 			//moving to the right
 			if (isRunning) {
 				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_RIGHT, ACTION_WALK_RIGHT, ACTION_RUN, ACTION_WALK});
 			} else {
 				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_RIGHT, ACTION_RUN_RIGHT, ACTION_WALK, ACTION_RUN});
-			}
-		} else {
-			//moving backwards
-			if (isRunning) {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_BACKWARDS, ACTION_WALK_BACKWARDS});
-			} else {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_BACKWARDS, ACTION_RUN_BACKWARDS});
 			}
 		}
 	}

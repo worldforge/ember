@@ -163,7 +163,8 @@ void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 
 void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
 {
-	mCurrentMovement = movement * mMaxSpeed;
+	//Need to invert movement to fit with models
+	mCurrentMovement = -movement * mMaxSpeed;
 	if (movement != WFMath::Vector<3>::ZERO()) {
 
 		if (isOkayToSendRotationMovementChangeToServer()) {
@@ -172,6 +173,8 @@ void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath:
 			rotator.rotate(orientation);
 			auto atan = atan2(rotator.x(), rotator.z());
 			WFMath::Quaternion adjustedOrientation(1, atan);
+			//Need to invert movement to fit with models
+			adjustedOrientation.rotate(WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi()));
 
 			mClientSideAvatarOrientation = adjustedOrientation;
 		}
