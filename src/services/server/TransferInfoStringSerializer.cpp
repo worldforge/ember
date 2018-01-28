@@ -74,7 +74,7 @@ bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, s
 		Atlas::Codecs::Bach codec(istream, istream, decoder);
 		// Read whole stream into decoder queue
 		while (!istream.eof()) {
-			codec.poll();
+			codec.poll(true);
 		}
 
 		// Read decoder queue

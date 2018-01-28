@@ -269,7 +269,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 
 		// Read whole stream into decoder queue
 		while (!strStream.eof()) {
-			codec.poll();
+			codec.poll(true);
 		}
 
 		// Read decoder queue; only read the first item.
