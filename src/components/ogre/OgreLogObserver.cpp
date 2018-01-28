@@ -60,6 +60,9 @@ void OgreLogObserver::messageLogged(const String& message, LogMessageLevel lml, 
 		case Ogre::LML_NORMAL:
 			Log::slog("Ogre", Log::INFO) << ogre << message << Log::END_MESSAGE;
 			break;
+		case Ogre::LML_WARNING:
+			Log::slog("Ogre", Log::WARNING) << ogre << message << Log::END_MESSAGE;
+			break;
 		case Ogre::LML_CRITICAL:
 			Log::slog("Ogre", Log::FAILURE) << ogre << message << Log::END_MESSAGE;
 			break;
