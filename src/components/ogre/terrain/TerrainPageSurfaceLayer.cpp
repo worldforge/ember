@@ -75,8 +75,8 @@ void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Ima
 				auto srcPtr = surface->getData();
 				auto dataPtr = sourceImage.getData();
 				auto segmentSize = segment->getSize();
-				for (unsigned int i = 0; i < segment->getResolution(); ++i) {
-					for (unsigned int j = 0; j < segment->getResolution(); ++j) {
+				for (int i = 0; i < segment->getResolution(); ++i) {
+					for (int j = 0; j < segment->getResolution(); ++j) {
 						//interpolate four samples to get the fragment coverage
 						*dataPtr = (unsigned char)((srcPtr[(i * segmentSize) + j] + srcPtr[(i * segmentSize) + j + 1] + srcPtr[((i + 1) * segmentSize) + j] + srcPtr[((i + 1) * segmentSize) + j + 1]) / 4);
 						dataPtr++;

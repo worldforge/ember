@@ -38,7 +38,7 @@ namespace Forests {
 
 void WindBatchPage::init(PagedGeometry *geom, const Any &data)
 {
-	int datacast = data.isEmpty() ? 0 : Ogre::any_cast<int>(data);
+	int datacast = !data.has_value() ? 0 : Ogre::any_cast<int>(data);
 #ifdef _DEBUG
 	if ( datacast < 0)
 		OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,"Data of WindBatchPage must be a positive integer. It representing the LOD level this detail level stores.","WindBatchPage::WindBatchPage");

@@ -49,8 +49,8 @@ void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel
 	unsigned char* destPtr = destStart + (ogreImageWidth * (getResolution() - heightOffset - 1)) + (widthOffset * destChannels);
 	sourcePtr = sourcePtr + (wfSegmentWidth * wfSegmentWidth) - wfSegmentWidth;
 
-	for (int i = 0; i < sourceWidth; ++i) {
-		for (int j = 0; j < sourceWidth; ++j) {
+	for (unsigned int i = 0; i < sourceWidth; ++i) {
+		for (unsigned int j = 0; j < sourceWidth; ++j) {
 			*(destPtr + (j * destChannels)) = *(sourcePtr + (j * sourceChannels));
 		}
 		destPtr -= ogreImageWidth;

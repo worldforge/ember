@@ -42,7 +42,7 @@ unsigned long BatchPage::GUID = 0;
 void BatchPage::init(PagedGeometry *_geom, const Any &data)
 {
 	geom = _geom;
-	int datacast = data.isEmpty() ? 0 : Ogre::any_cast<int>(data);
+	int datacast = !data.has_value() ? 0 : Ogre::any_cast<int>(data);
 #ifdef _DEBUG
 	if ( datacast < 0)
 		OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,"Data of BatchPage must be a positive integer. It representing the LOD level this detail level stores.","BatchPage::BatchPage");

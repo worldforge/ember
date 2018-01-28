@@ -377,9 +377,12 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 			compositor->getCompositor()->load();
 			bool hasErrors = !validateCompositionTargetPass(*compositor->getTechnique()->getOutputTargetPass());
 			if (!hasErrors) {
-				Ogre::CompositionTechnique::TargetPassIterator targetPassIter = compositor->getTechnique()->getTargetPassIterator();
-				while (targetPassIter.hasMoreElements() && !hasErrors) {
-					hasErrors = !validateCompositionTargetPass(*targetPassIter.getNext());
+				auto& passes = compositor->getTechnique()->getTargetPasses();
+				for (auto& pass : passes) {
+					hasErrors = !validateCompositionTargetPass(*pass);
+					if (hasErrors) {
+						break;
+					}
 				}
 			}
 			if (hasErrors) {
@@ -397,15 +400,13 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 
 bool MainCamera::validateCompositionTargetPass(Ogre::CompositionTargetPass& compositionPass)
 {
-	Ogre::CompositionTargetPass::PassIterator compPassIter = compositionPass.getPassIterator();
-	while (compPassIter.hasMoreElements()) {
-		Ogre::CompositionPass* compositorPass = compPassIter.getNext();
+	for (auto& compositorPass : compositionPass.getPasses()) {
 		compositorPass->getMaterial()->load();
 
 
 		for (auto* technique : compositorPass->getMaterial()->getSupportedTechniques()) {
 			for (auto* pass : technique->getPasses()) {
-				//Also disallow camera polygon mode overide. This is because if it's turned on,
+				//Also disallow camera polygon mode override. This is because if it's turned on,
 				//and the camera is switched to polygon mode, the end result will be one single
 				//large polygon being shown. This is not what we want.
 				pass->setPolygonModeOverrideable(false);

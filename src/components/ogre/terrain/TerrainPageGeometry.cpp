@@ -106,16 +106,11 @@ float TerrainPageGeometry::getMaxHeight() const {
 void TerrainPageGeometry::updateOgreHeightData(float* heightData) {
 	float* heightDataPtr = heightData;
 
-	unsigned int sizeOfBitmap = mPage.getVerticeCount();
+	int sizeOfBitmap = mPage.getVerticeCount();
 	//Set the height of any uninitialized part to the default height. This might be optimized better though.
-	for (unsigned int i = 0; i < sizeOfBitmap; ++i) {
+	for (int i = 0; i < sizeOfBitmap; ++i) {
 		*(heightDataPtr++) = mDefaultHeight;
 	}
-	heightDataPtr = heightData;
-
-	auto extent = mPage.getWorldExtent();
-
-	auto pageSize = mPage.getPageSize();
 
 	for (const auto& column : mLocalSegments) {
 		for (const auto& entry : column.second) {
@@ -129,25 +124,22 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData) {
 }
 
 void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startZ) {
-	unsigned int segmentWidth = segment.getSize();
+	int segmentWidth = segment.getSize();
 	int pageWidth = mPage.getPageSize();
-	size_t ogreDataSize = pageWidth * pageWidth;
+	int ogreDataSize = pageWidth * pageWidth;
 
 	const float* sourcePtr = segment.getPoints();
-	float* destPtr = ogreHeightData;
 
 	float* dataEnd = ogreHeightData + ogreDataSize;
 
 	// copy points line-by line
-	destPtr = ogreHeightData + (pageWidth * ( pageWidth - startZ - 1)) + startX;
+	float* destPtr = ogreHeightData + (pageWidth * ( pageWidth - startZ - 1)) + startX;
 
 
 	for (int i = 0; i < segmentWidth; ++i) {
 		for (int j = 0; j < segmentWidth; ++j) {
 			if ((destPtr + j) >= ogreHeightData && (destPtr + j) < dataEnd) {
 				*(destPtr + j) = *(sourcePtr + j);
-			} else {
-				int p = 0;
 			}
 		}
 		destPtr -= pageWidth;
