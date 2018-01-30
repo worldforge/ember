@@ -57,8 +57,6 @@ TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page, SegmentManager& segm
 			int segX = (int) ((mPage.getWFPosition().x() * segmentsPerAxis) + x);
 			int segZ = (int) ((mPage.getWFPosition().y() * segmentsPerAxis) + z) - (segmentOffset - 1);
 			indices[x][mPage.getNumberOfSegmentsPerAxis() - z - 1] = std::make_pair(segX, -segZ);
-
-			S_LOG_INFO("segment: x: "<< x <<" z: " << z << " segX: " <<segX << " segZ: " << -segZ);
 		}
 	}
 	size_t count = segmentManager.getSegmentReferences(indices, mLocalSegments);
