@@ -248,7 +248,9 @@ bool SubModelPart::createInstancedEntities() {
 							tech->setShadowCasterMaterial(shadowCasterMatInstanced);
 						}
 					}
-
+				} else {
+					S_LOG_WARNING("The material '" << materialName << "' used by a submesh of the mesh '" << entity->getMesh()->getName() << "' could not be found. The submesh will be hidden.");
+					continue;
 				}
 			}
 		}
