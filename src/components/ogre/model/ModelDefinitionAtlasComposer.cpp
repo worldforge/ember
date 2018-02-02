@@ -59,22 +59,26 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	}
 	MapType attributesMap;
 
-	MapType bboxMap;
 
-	Ogre::AxisAlignedBox aabb;
-	for (SubModel* submodel: model->getSubmodels()) {
-		const Ogre::Entity* entity = submodel->getEntity();
-		aabb.merge(entity->getMesh()->getBounds());
+	//Don't supply bbox if the geometry is a mesh, since we'll get the bbox from the mesh in that case.
+	if (collisionType != "mesh" && collisionType != "asset") {
+		MapType bboxMap;
+
+		Ogre::AxisAlignedBox aabb;
+		for (SubModel* submodel: model->getSubmodels()) {
+			const Ogre::Entity* entity = submodel->getEntity();
+			aabb.merge(entity->getMesh()->getBounds());
+		}
+
+		if (scale != .0f && scale != 1.0f) {
+			aabb.scale(Ogre::Vector3(scale, scale, scale));
+		}
+		WFMath::AxisBox<3> wfmathAabb = Convert::toWF(aabb);
+
+		bboxMap["default"] = wfmathAabb.toAtlas();
+		bboxMap["visibility"] = StringType("public");
+		attributesMap["bbox"] = bboxMap;
 	}
-
-	if (scale != .0f && scale != 1.0f) {
-		aabb.scale(Ogre::Vector3(scale, scale, scale));
-	}
-	WFMath::AxisBox<3> wfmathAabb = Convert::toWF(aabb);
-
-	bboxMap["default"] = wfmathAabb.toAtlas();
-	bboxMap["visibility"] = StringType("public");
-	attributesMap["bbox"] = bboxMap;
 
 	Atlas::Message::MapType geometryMap;
 	geometryMap["default"] = composeGeometry(model, collisionType);
@@ -94,7 +98,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 
 Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* model, const std::string& collisionType) const {
 	Atlas::Message::MapType geometryMap;
-	geometryMap["shape"] = collisionType;
+	geometryMap["type"] = collisionType;
 	if (collisionType == "mesh") {
 
 		std::vector<Atlas::Message::Element> vertices;
@@ -141,6 +145,8 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 		S_LOG_VERBOSE("Created mesh data with " << vertices.size() << " vertex element and " << indices.size() << " index elements.");
 		geometryMap["vertices"] = std::move(vertices);
 		geometryMap["indices"] = std::move(indices);
+	} else if (collisionType == "asset") {
+		geometryMap["path"] = model->getSubModel(0)->getEntity()->getMesh()->getName();
 	}
 	return std::move(geometryMap);
 }
@@ -156,8 +162,8 @@ void ModelDefinitionAtlasComposer::copyVertexData(std::vector<Atlas::Message::El
 
 	// Lock the buffer for reading.
 	auto pVertex = static_cast<Ogre::uint8*>(vbuf->lock(vertexData.vertexStart * vertexSize,
-																	vertexData.vertexCount * vertexSize,
-																	Ogre::HardwareBuffer::HBL_READ_ONLY));
+														vertexData.vertexCount * vertexSize,
+														Ogre::HardwareBuffer::HBL_READ_ONLY));
 	size_t numEntries = vertexData.vertexCount * 3;
 	vertices.reserve(vertices.size() + numEntries);
 
@@ -196,7 +202,7 @@ std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std:
 				oslink::directory::mkdir(dir.c_str());
 			}
 
-			const std::string fileName(dir + typeName + ".atlas");
+			const std::string fileName(dir + typeName + ".xml");
 			std::fstream exportFile(fileName.c_str(), std::fstream::out);
 
 			S_LOG_INFO("Creating atlas type " << fileName);

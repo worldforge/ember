@@ -1333,7 +1333,7 @@ end
 function ModelEdit:fillCollisionTypesList()
     self.collisionTypeSelector = CEGUI.toCombobox(self.widget:getWindow("CollisionType"))
 
-    local types = {'mesh', 'box', 'sphere', 'capsule-z', 'capsule-x', 'capsule-y', 'cylinder-z', 'cylinder-x', 'cylinder-y'}
+    local types = {'asset', 'mesh', 'box', 'sphere', 'capsule-z', 'capsule-x', 'capsule-y', 'cylinder-z', 'cylinder-x', 'cylinder-y'}
     for i, name in ipairs(types) do
       local item = Ember.OgreView.Gui.ColouredListItem:new(name, i)
       self.collisionTypeSelector:addItem(item)
