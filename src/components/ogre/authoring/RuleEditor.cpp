@@ -54,10 +54,6 @@ RuleEditor::RuleEditor(Eris::Account& account) :
 
 }
 
-RuleEditor::~RuleEditor()
-{
-}
-
 long int RuleEditor::updateOrCreateRule(Atlas::Objects::Root& rule)
 {
 	auto serial = Eris::getNewSerialno();

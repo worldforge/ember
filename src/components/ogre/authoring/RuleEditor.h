@@ -49,8 +49,8 @@ class RuleEditor: public virtual sigc::trackable
 {
 public:
 
-	RuleEditor(Eris::Account& account);
-	virtual ~RuleEditor();
+	explicit RuleEditor(Eris::Account& account);
+	virtual ~RuleEditor() = default;
 
 	/**
 	 * @brief Updates or create a rule.
