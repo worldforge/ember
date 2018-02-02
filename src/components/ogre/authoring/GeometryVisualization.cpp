@@ -380,7 +380,7 @@ void GeometryVisualization::buildGeometry() {
 
 	if (mEntity.hasAttr("geometry")) {
 		auto& geometry = mEntity.valueOfAttr("geometry");
-		AtlasQuery::find<std::string>(geometry, "shape", [&](const auto& shape) {
+		AtlasQuery::find<std::string>(geometry, "type", [&](const auto& shape) {
 			if (shape == "mesh") {
 				AtlasQuery::find<Atlas::Message::ListType>(geometry, "indices", [&](const auto& indices) {
 					AtlasQuery::find<Atlas::Message::ListType>(geometry, "vertices", [&](const auto& vertices) {
@@ -502,7 +502,7 @@ void GeometryVisualization::buildGeometry() {
 					float radius = std::min(size.y(), size.z()) * 0.5f;
 
 					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-					placeCylinderX(radius, (size.x() / 2.0f) - radius, Convert::toOgre(offset));
+					placeCylinderX(radius, (size.x() / 2.0f), Convert::toOgre(offset));
 
 					mManualObject->end();
 				};
@@ -530,7 +530,7 @@ void GeometryVisualization::buildGeometry() {
 					float radius = std::min(size.x(), size.y()) * 0.5f;
 
 					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-					placeCylinderZ(radius, (size.z() / 2.0f) - radius, Convert::toOgre(offset));
+					placeCylinderZ(radius, (size.z() / 2.0f), Convert::toOgre(offset));
 
 					mManualObject->end();
 				};
