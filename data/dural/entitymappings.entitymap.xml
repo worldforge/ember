@@ -385,29 +385,10 @@
 	<autoentitymapping name="palisade_entry" modelname="palisade_entry" />
 	<autoentitymapping name="palisade_circle" modelname="palisade_circle" />
 	<autoentitymapping name="palisade_earth" />
-	<entitymapping name="stone_palisade">
-		<entitymatch>
-			<case>
-				<caseparam type="equals">stone_palisade</caseparam>
-				<action type="display-model">stone_palisade</action>
-				<attributematch attribute="style" >
-					<case>
-						<caseparam type="equals">whole</caseparam>
-						<action type="display-model">stone_palisade</action>
-					</case>
-					<case>
-						<caseparam type="equals">brokenA</caseparam>
-						<action type="display-model">stone_palisade_broken_a</action>
-					</case>
-					<case>
-						<caseparam type="equals">brokenB</caseparam>
-						<action type="display-model">stone_palisade_broken_b</action>
-					</case>
-				</attributematch>
-			</case>
-		</entitymatch>
-	</entitymapping>	
-	
+	<autoentitymapping name="stone_palisade" />
+	<autoentitymapping name="stone_palisade_broken_a" />
+	<autoentitymapping name="stone_palisade_broken_b" />
+
 	
 	<autoentitymapping name="stake" />
 	<autoentitymapping name="sty" />
@@ -448,38 +429,13 @@
 				<action type="display-model">campfire</action>
 			</case>
 		</entitymatch>
-	</entitymapping>	
+	</entitymapping>
 	<autoentitymapping name="choppingblock" />
-	<entitymapping name="gravestone">
-		<entitymatch>
-			<case>
-				<caseparam type="equals">gravestone</caseparam>
-				<action type="display-model">tombstone_a</action>
-				<attributematch attribute="style" >
-					<case>
-						<caseparam type="equals">simple</caseparam>
-        				<action type="display-model">tombstone_a</action>
-					</case>
-					<case>
-						<caseparam type="equals">rounded</caseparam>
-                        <action type="display-model">tombstone_b</action>
-					</case>
-					<case>
-						<caseparam type="equals">stylish</caseparam>
-                        <action type="display-model">tombstone_c</action>
-					</case>
-					<case>
-						<caseparam type="equals">cross</caseparam>
-                        <action type="display-model">tombstone_cross_a</action>
-					</case>
-					<case>
-						<caseparam type="equals">cross broken</caseparam>
-                        <action type="display-model">tombstone_cross_b</action>
-					</case>
-				</attributematch>
-			</case>
-		</entitymatch>
-	</entitymapping>	
+	<autoentitymapping name="tombstone_a" />
+	<autoentitymapping name="tombstone_b" />
+	<autoentitymapping name="tombstone_c" />
+	<autoentitymapping name="tombstone_cross_a" />
+	<autoentitymapping name="tombstone_cross_b" />
 	<autoentitymapping name="statue" modelname="cg_statue"/>
 	<autoentitymapping name="pedestal" modelname="cg_pedestal"/>
 
@@ -489,18 +445,6 @@
 	<autoentitymapping name="castlefoundation" />
 	<autoentitymapping name="castle_outer_wall" />
 	<autoentitymapping name="armory" />
-	<entitymapping name="bailey">
-		<entitymatch>
-			<case>
-				<caseparam type="equals">bailey1</caseparam>
-				<action type="display-model">bailey1</action>
-			</case>
-			<case>
-				<caseparam type="equals">bailey2</caseparam>
-				<action type="display-model">bailey2</action>
-			</case>
-		</entitymatch>
-	</entitymapping>	
 	<autoentitymapping name="curtain_wall" />
 	<autoentitymapping name="don_jon" modelname="cg_don_jon" />
 	<autoentitymapping name="gateway" modelname="cg_gateway" />
@@ -560,15 +504,15 @@
 				</attributematch>
 			</case>
 		</entitymatch>
-	</entitymapping>	
-	
-	<autoentitymapping name="cg_house_A" />
-	
-	
+	</entitymapping>
+	<autoentitymapping name="passche_house_a" />
+
+
 	
 	<autoentitymapping name="inn" modelname="cg_inn" />
 	<autoentitymapping name="well" modelname="cg_well" />
 	<autoentitymapping name="outerwall" />
+	<autoentitymapping name="temple" />
 	<entitymapping name="mausoleum">
 		<entitymatch>
 			<case>
@@ -581,7 +525,6 @@
 	<autoentitymapping name="gallows" />
 
 	<autoentitymapping name="butcher_house" />
-	<autoentitymapping name="house3" />
     <autoentitymapping name="bloomery" />
 	
 <!-- tools -->	
@@ -637,36 +580,13 @@
 		</entitymatch>
 	</entitymapping> 	
 	
-<!-- vehicles -->	
+<!-- vehicles -->
 	<autoentitymapping name="boat" />
+	<autoentitymapping name="cart_a" />
+	<autoentitymapping name="cart_b" />
+	<autoentitymapping name="cart_c" />
+	<autoentitymapping name="cart_d" />
 
-	<entitymapping name="cart">
-		<entitymatch>
-			<case>
-				<caseparam type="equals">cart</caseparam>
-				<action type="display-model">cart</action>
-				<attributematch attribute="style" >
-					<case>
-						<caseparam type="equals">1</caseparam>
-						<action type="display-model">cart</action>
-					</case>
-					<case>
-						<caseparam type="equals">2</caseparam>
-						<action type="display-model">cart2</action>
-					</case>
-					<case>
-						<caseparam type="equals">3</caseparam>
-						<action type="display-model">cart3</action>
-					</case>
-					<case>
-						<caseparam type="equals">4</caseparam>
-						<action type="display-model">cart4</action>
-					</case>
-				</attributematch>
-			</case>
-		</entitymatch>
-	</entitymapping>	
-	
 <!-- trees -->	
 	
 	<entitymapping name="fir">
