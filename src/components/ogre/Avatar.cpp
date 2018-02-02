@@ -164,7 +164,7 @@ void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
 {
 	//Need to invert movement to fit with models
-	mCurrentMovement = -movement * mMaxSpeed;
+	mCurrentMovement = WFMath::Vector<3>(-movement.x(), movement.y(), -movement.z()) * mMaxSpeed;
 	if (movement != WFMath::Vector<3>::ZERO()) {
 
 		if (isOkayToSendRotationMovementChangeToServer()) {
