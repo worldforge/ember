@@ -39,7 +39,6 @@
 namespace WFMath
 {
 template<int> class Vector;
-class Quaternion;
 }
 
 namespace Ember

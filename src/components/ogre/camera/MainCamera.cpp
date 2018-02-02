@@ -241,16 +241,13 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 					if (result.first)
 					{
 
-						Ogre::RaySceneQueryResultEntry terrainResultEntry{};
+						Ogre::RaySceneQueryResultEntry instancedEntityResultEntry{};
 
-						//For this case we'll be content with using the position of the entity, even though it's not specifically the position of the intersection.
-						mTerrainResultWorldFragment.singleIntersection = instancedEntity->getPosition();
+						instancedEntityResultEntry.distance = result.second;
+						instancedEntityResultEntry.movable = instancedEntity;
 
-						terrainResultEntry.distance = result.second;
-						terrainResultEntry.movable = instancedEntity;
-
-						auto insertion_iterator = std::lower_bound(queryResult.begin(), queryResult.end(), terrainResultEntry);
-						queryResult.insert(insertion_iterator, terrainResultEntry);
+						auto insertion_iterator = std::lower_bound(queryResult.begin(), queryResult.end(), instancedEntityResultEntry);
+						queryResult.insert(insertion_iterator, instancedEntityResultEntry);
 					}
 				}
 			}
