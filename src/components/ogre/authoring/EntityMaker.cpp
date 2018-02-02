@@ -36,47 +36,41 @@
 
 #include <wfmath/atlasconv.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 
 EntityMaker::EntityMaker(Eris::Entity& avatarEntity, Eris::Connection& connection) :
-	CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), MakeMe("makeme", this, "Create an entity as a child of the avatar (i.e. in inventory)."), mAvatarEntity(avatarEntity), mConnection(connection)
-{
+		CreateEntity("createentity", this, "Create an entity."),
+		Make("make", this, "Create an entity."),
+		MakeMe("makeme", this, "Create an entity as a child of the avatar (i.e. in inventory)."),
+		mAvatarEntity(avatarEntity),
+		mConnection(connection) {
 }
 
-EntityMaker::~EntityMaker()
-{
-}
-
-void EntityMaker::runCommand(const std::string &command, const std::string &args)
-{
+void EntityMaker::runCommand(const std::string& command, const std::string& args) {
 	if (CreateEntity == command || Make == command || MakeMe == command) {
-    	Tokeniser tokeniser(args);
-    	if (tokeniser.hasRemainingTokens()) {
-    		std::string typeName = tokeniser.nextToken();
-        	Eris::TypeService* typeService = mConnection.getTypeService();
-    		Eris::TypeInfo* typeinfo = typeService->getTypeByName(typeName);
-    		if (typeinfo) {
-    		    std::string parentEntityId = mAvatarEntity.getLocation()->getId();
-    		    if (MakeMe == command) {
-    		        parentEntityId = mAvatarEntity.getId();
-    		    } else {
-    		    	if (tokeniser.hasRemainingTokens()) {
-    		    		parentEntityId = tokeniser.nextToken();
-    		    	}
-    		    }
-    			createEntityOfType(typeinfo, parentEntityId);
-    		}
-    	}
+		Tokeniser tokeniser(args);
+		if (tokeniser.hasRemainingTokens()) {
+			std::string typeName = tokeniser.nextToken();
+			Eris::TypeService* typeService = mConnection.getTypeService();
+			Eris::TypeInfo* typeinfo = typeService->getTypeByName(typeName);
+			if (typeinfo) {
+				std::string parentEntityId = mAvatarEntity.getLocation()->getId();
+				if (MakeMe == command) {
+					parentEntityId = mAvatarEntity.getId();
+				} else {
+					if (tokeniser.hasRemainingTokens()) {
+						parentEntityId = tokeniser.nextToken();
+					}
+				}
+				createEntityOfType(typeinfo, parentEntityId);
+			}
+		}
 	}
 }
 
-void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& parentEntityId, const std::string& name)
-{
+void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& parentEntityId, const std::string& name) {
 	Atlas::Objects::Operation::Create c;
 	c->setFrom(mAvatarEntity.getId());
 	//if the avatar is a "creator", i.e. and admin, we will set the TO property
@@ -94,9 +88,15 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	//Only place it if we're creating the new entity in the same location as the avatar
 	if (parentEntityId == mAvatarEntity.getLocation()->getId()) {
 		//Place the new entity two meters in front of the avatar.
-		WFMath::Vector<3> vector(0, 0, -2);
-		pos = mAvatarEntity.getPosition() + (vector.rotate(mAvatarEntity.getOrientation()));
-		orientation = mAvatarEntity.getOrientation();
+		WFMath::Vector<3> vector(0, 0, 2);
+
+		//We need to constraint the orientation to only around the y axis.
+		WFMath::Vector<3> rotator(0.0, 0.0, 1.0f);
+		rotator.rotate(mAvatarEntity.getOrientation());
+		auto atan = std::atan2(rotator.x(), rotator.z());
+		orientation.rotation(1, atan);
+
+		pos = mAvatarEntity.getPosition() + (vector.rotate(orientation));
 	}
 
 	msg["pos"] = pos.toAtlas();

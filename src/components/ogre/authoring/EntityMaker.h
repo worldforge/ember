@@ -54,9 +54,9 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EntityMaker();
+	~EntityMaker() override = default;
 
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 * @brief Console command "/createentity <entitytype>".
