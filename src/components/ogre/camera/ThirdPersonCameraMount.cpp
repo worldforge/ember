@@ -36,7 +36,18 @@ namespace Camera
 {
 
 ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& terrainAdapter) :
-	CameraMountBase(cameraSettings), SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mSceneManager(sceneManager), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mLastPosition(Ogre::Vector3::ZERO), mWantedCameraDistance(10), mCurrentCameraDistance(0), mIsAdjustedToTerrain(true), mConfigListenerContainer(new ConfigListenerContainer()), mTerrainAdapter(terrainAdapter)
+	CameraMountBase(cameraSettings),
+	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
+	mSceneManager(sceneManager),
+	mCameraRootNode(0),
+	mCameraPitchNode(0),
+	mCameraNode(0),
+	mLastPosition(Ogre::Vector3::ZERO),
+	mWantedCameraDistance(10),
+	mCurrentCameraDistance(0),
+	mIsAdjustedToTerrain(true),
+	mConfigListenerContainer(new ConfigListenerContainer()),
+	mTerrainAdapter(terrainAdapter)
 {
 	createNodesForCamera(sceneManager);
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "adjusttoterrain", sigc::mem_fun(*this, &ThirdPersonCameraMount::Config_AdjustToTerrain), true);
@@ -118,6 +129,8 @@ void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManag
 	mCameraRootNode->setInheritOrientation(false);
 	//we need to adjust for the height of the  mesh
 	mCameraRootNode->setPosition(Ogre::Vector3(0, 2, 0));
+	//Start camera behind avatar
+	mCameraRootNode->yaw(Ogre::Degree(180));
 
 	mCameraPitchNode = mCameraRootNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraPitchNode"));
 	mCameraPitchNode->setPosition(Ogre::Vector3(0, 0, 0));
