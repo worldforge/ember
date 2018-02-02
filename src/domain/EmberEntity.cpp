@@ -154,7 +154,7 @@ float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 		WFMath::Point<2> adjustedLocalPosition(getPredictedPos().x(), getPredictedPos().z());
 
 		WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(getOrientation());
-		double theta = atan2(xVec.z(), xVec.x()); // rotation about Y
+		auto theta = std::atan2(xVec.z(), xVec.x()); // rotation about Y
 		WFMath::RotMatrix<2> rm;
 		WFMath::Vector<2> adjustment(localPosition.x(), localPosition.y());
 		adjustment.rotate(rm.rotation(theta));

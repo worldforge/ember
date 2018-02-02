@@ -943,7 +943,7 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 		if (pos.isValid() && orientation.isValid()) {
 
 			WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-			double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
+			auto theta = std::atan2(xVec.y(), xVec.x()); // rotation about Z
 
 			WFMath::RotMatrix<2> rm;
 			rm.rotation(theta);

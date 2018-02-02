@@ -66,7 +66,7 @@ void Steering::setAwareness()
 	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.y());
 
 	WFMath::Vector<2> direction(destination2d - entityPosition2d);
-	double theta = atan2(direction.y(), direction.x()); // rotation about Z
+	auto theta = std::atan2(direction.y(), direction.x()); // rotation about Z
 	WFMath::RotMatrix<2> rm;
 	rm.rotation(theta);
 
@@ -195,8 +195,8 @@ void Steering::update()
 						if (!entity->isMoving() && !mExpectingServerMovement) {
 							shouldSend = true;
 						} else {
-							double currentTheta = atan2(mLastSentVelocity.y(), mLastSentVelocity.x());
-							double newTheta = atan2(velocity.y(), velocity.x());
+							auto currentTheta = std::atan2(mLastSentVelocity.y(), mLastSentVelocity.x());
+							auto newTheta = std::atan2(velocity.y(), velocity.x());
 
 							//If we divert too much from where we need to go we must adjust.
 							if (std::abs(currentTheta - newTheta) > WFMath::numeric_constants<double>::pi() / 20) {

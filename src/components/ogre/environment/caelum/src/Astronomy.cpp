@@ -69,8 +69,8 @@ namespace Caelum
 		double z = sin(ecl) * sin(lon) * cos(lat) + cos(ecl) * sin(lat);
 
         double r = sqrt(x * x + y * y);
-        rasc = atan2(y, x);
-        decl = atan2(z, r);
+        rasc = std::atan2(y, x);
+        decl = std::atan2(z, r);
 	} 
 
     void Astronomy::convertRectangularToSpherical (

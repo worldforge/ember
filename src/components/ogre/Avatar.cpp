@@ -171,7 +171,7 @@ void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath:
 			//We need to constraint the orientation to only around the y axis.
 			WFMath::Vector<3> rotator(0.0, 0.0, 1.0f);
 			rotator.rotate(orientation);
-			auto atan = atan2(rotator.x(), rotator.z());
+			auto atan = std::atan2(rotator.x(), rotator.z());
 			WFMath::Quaternion adjustedOrientation(1, atan);
 			//Need to invert movement to fit with models
 			adjustedOrientation.rotate(WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi()));

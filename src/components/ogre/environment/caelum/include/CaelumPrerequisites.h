@@ -93,8 +93,8 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Caelum
 {
-    // Caelum needs a lot of precission for astronomical calculations.
-    // Very few calculations use it, and the precission IS required.
+    // Caelum needs a lot of precision for astronomical calculations.
+    // Very few calculations use it, and the precision IS required.
     typedef double LongReal;
 
     // Use some ogre types.

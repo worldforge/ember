@@ -85,7 +85,7 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, b
 	//We need to constraint the orientation to only around the y axis.
 	WFMath::Vector<3> rotator(0.0, 0.0, 1.0f);
 	rotator.rotate(orientation);
-	auto atan = atan2(rotator.x(), rotator.z());
+	auto atan = std::atan2(rotator.x(), rotator.z());
 	orientation.rotation(1, atan);
 
 	//move it relative to the camera
