@@ -234,8 +234,8 @@ void MeshCollisionDetector::getMeshInformation(const Ogre::MeshPtr& mesh,
 
 		bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
 
-		unsigned long*  pLong = static_cast<unsigned long*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
-		unsigned short* pShort = reinterpret_cast<unsigned short*>(pLong);
+		auto pLong = static_cast<Ogre::uint32*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+		auto pShort = reinterpret_cast<Ogre::uint16*>(pLong);
 
 
 		size_t offset = (submesh->useSharedVertices)? shared_offset : current_offset;
@@ -244,15 +244,14 @@ void MeshCollisionDetector::getMeshInformation(const Ogre::MeshPtr& mesh,
 		{
 			for ( size_t k = 0; k < numTris*3; ++k)
 			{
-				indices[index_offset++] = pLong[k] + static_cast<unsigned long>(offset);
+				indices[index_offset++] = pLong[k] + offset;
 			}
 		}
 		else
 		{
 			for ( size_t k = 0; k < numTris*3; ++k)
 			{
-				indices[index_offset++] = static_cast<unsigned long>(pShort[k]) +
-					static_cast<unsigned long>(offset);
+				indices[index_offset++] = pShort[k] + offset;
 			}
 		}
 
