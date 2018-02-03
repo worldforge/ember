@@ -31,6 +31,10 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreWireBoundingBox.h>
+#include <OgreManualObject.h>
+#include <OgreEntity.h>
+#include <OgreSubEntity.h>
+#include <OgreMeshManager.h>
 #include <random>
 
 namespace Ember {
@@ -41,8 +45,8 @@ GeometryVisualization::GeometryVisualization(EmberEntity& entity, Ogre::SceneNod
 		mEntity(entity),
 		mSceneNode(sceneNode),
 		mManualObject(nullptr),
+		mOgreEntity(nullptr),
 		mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &GeometryVisualization::entity_BboxChanged))) {
-
 	mManualObject = sceneNode->getCreator()->createManualObject();
 	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE - 1); //We want to render the geometry on top of everything
 	mSceneNode->attachObject(mManualObject);
@@ -54,8 +58,14 @@ GeometryVisualization::GeometryVisualization(EmberEntity& entity, Ogre::SceneNod
 
 GeometryVisualization::~GeometryVisualization() {
 	mBboxConnection.disconnect();
-	mSceneNode->removeAndDestroyAllChildren(); //Will delete our mManualObject
+	mSceneNode->removeAndDestroyAllChildren();
 	mSceneNode->getCreator()->destroySceneNode(mSceneNode);
+	if (mManualObject) {
+		mManualObject->_getCreator()->destroyInstance(mManualObject);
+	}
+	if (mOgreEntity) {
+		mOgreEntity->_getCreator()->destroyInstance(mOgreEntity);
+	}
 }
 
 void GeometryVisualization::entity_Moved() {
@@ -413,6 +423,18 @@ void GeometryVisualization::buildGeometry() {
 							mSceneNode->setScale(scaling);
 						};
 					});
+				});
+			} else if (shape == "asset") {
+				AtlasQuery::find<Atlas::Message::StringType>(geometry, "path", [&](const auto& path) {
+					auto meshPtr = Ogre::MeshManager::getSingleton().getByName(path, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					if (meshPtr) {
+						auto entity = mSceneNode->getCreator()->createEntity(meshPtr);
+						for (auto subentity : entity->getSubEntities()) {
+							subentity->setMaterialName("/common/base/authoring/normals", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+						}
+						mOgreEntity = entity;
+						mSceneNode->attachObject(entity);
+					}
 				});
 			} else if (shape == "box") {
 				mBboxUpdateFn = buildBoxFn;

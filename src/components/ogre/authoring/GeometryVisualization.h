@@ -21,13 +21,14 @@
 
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
-#include "../../../../../../../opt/x86_64_release/include/OGRE/Ogre.h"
+#include <functional>
 
 
 namespace Ogre {
 class SceneNode;
-
+class ManualObject;
 class Entity;
+class Vector3;
 }
 
 namespace Atlas {
@@ -83,7 +84,15 @@ protected:
 	 */
 	Ogre::SceneNode* mSceneNode;
 
+	/**
+	 * The ManualObject is used for all geometries that aren't extracted from assets.
+	 */
 	Ogre::ManualObject* mManualObject;
+
+	/**
+	 * The Entity is used by "asset" geometries, i.e. those that are read from Ogre Mesh data.
+	 */
+	Ogre::Entity* mOgreEntity;
 
 	/**
 	 * @brief The connection for the "bbox" attribute observer.
