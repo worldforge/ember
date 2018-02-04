@@ -57,11 +57,12 @@ public:
 	 * @param listener An optional listener. Ownership will be transferred to this instance.
 	 */
 	Connection(Eris::Session& session, const std::string &clientName, const std::string& socket, IConnectionListener* listener);
-	virtual ~Connection();
 
-	virtual void send(const Atlas::Objects::Root &obj);
+	~Connection() override;
+
+	void send(const Atlas::Objects::Root &obj) override;
 protected:
-	virtual void objectArrived(const Atlas::Objects::Root& obj);
+	void objectArrived(const Atlas::Objects::Root& obj) override;
 
 	/**
 	 * @brief An optional listener.

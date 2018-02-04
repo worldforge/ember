@@ -29,11 +29,13 @@ class ServerServiceSignals;
 class ServerServiceConnectionListener: public IConnectionListener
 {
 public:
-	ServerServiceConnectionListener(ServerServiceSignals& signals);
-	virtual ~ServerServiceConnectionListener();
+	explicit ServerServiceConnectionListener(ServerServiceSignals& signals);
 
-	virtual void sendingObject(const Atlas::Objects::Root& obj);
-	virtual void receivedObject(const Atlas::Objects::Root& obj);
+	~ServerServiceConnectionListener() override = default;
+
+	void sendingObject(const Atlas::Objects::Root& obj) override;
+
+	void receivedObject(const Atlas::Objects::Root& obj) override;
 
 protected:
 	ServerServiceSignals& mSignals;

@@ -59,8 +59,8 @@ ServerService::ServerService(Eris::Session& session) :
 	DestroyedAvatar.connect(sigc::mem_fun(*this, &ServerService::destroyedAvatar));
 }
 
-ServerService::~ServerService()
-{
+ServerService::~ServerService() {
+
 }
 
 /* Method for starting this service 	*/
@@ -101,12 +101,12 @@ void ServerService::gotAccount(Eris::Account* account)
 
 void ServerService::destroyedAccount()
 {
-	mAccount = 0;
+	mAccount = nullptr;
 }
 
 void ServerService::destroyedAvatar()
 {
-	mAvatar = 0;
+	mAvatar = nullptr;
 }
 
 Eris::Connection* ServerService::getConnection() const
@@ -257,7 +257,7 @@ void ServerService::say(const std::string &message)
 	getAdapter().say(message);
 }
 
-void ServerService::sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities)
+void ServerService::sayTo(const std::string &message, const std::vector<std::string>& entities)
 {
 	getAdapter().sayTo(message, entities);
 }
@@ -322,6 +322,5 @@ void ServerService::setupLocalServerObservation(ConfigService& configService) {
 		}
 	});
 }
-
 
 } // namespace Ember

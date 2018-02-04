@@ -41,7 +41,7 @@ namespace Ember {
 class IServerAdapter {
 public:
 
-	virtual ~IServerAdapter() {}
+	virtual ~IServerAdapter() = default;
 
 	virtual void moveToPoint(const WFMath::Point<3>& dest) = 0;
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) = 0;
@@ -55,9 +55,9 @@ public:
 	 * Note that the message will be heard by everyone within earshot, even those not addressed.
 	 *
 	 * @param message The message.
-	 * @param entities A list of entities to which the message will be addressed.
+	 * @param entities A list of entity ids to which the message will be addressed.
 	 */
-	virtual void sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities) = 0;
+	virtual void sayTo(const std::string &message, const std::vector<std::string>& entities) = 0;
 
 	/**
 	 * @brief Says something, addressed to an entity.
@@ -71,7 +71,7 @@ public:
 	virtual void touch(Eris::Entity* entity) = 0;
 	virtual void emote(const std::string& emote) = 0;
 	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation) = 0;
-	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>(0, 0, 0)) = 0;
+	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos) = 0;
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient) = 0;
 	virtual void wield(Eris::Entity* entity, const std::string& outfitSlot) = 0;
 	virtual void take(Eris::Entity* entity) = 0;

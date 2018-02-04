@@ -43,21 +43,22 @@ class AvatarTransferInfo;
 /**
  * @brief State for when the user is logged in to a server account, but has yet not taken a character in the world.
  */
-class LoggedInState: public virtual StateBase<EnteredWorldState> , public ConsoleObject
+class LoggedInState: public virtual StateBase<EnteredWorldState>, public ConsoleObject
 {
 public:
 	LoggedInState(IState& parentState, Eris::Account& account);
-	virtual ~LoggedInState();
 
-	void runCommand(const std::string &, const std::string &);
+	~LoggedInState() override;
 
-	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
+	void runCommand(const std::string &, const std::string &) override;
 
-	void takeCharacter(const std::string &id);
+	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo) override;
 
-	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties);
+	void takeCharacter(const std::string &id) override;
 
-	virtual bool logout();
+	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) override;
+
+	bool logout() override;
 
 	const Ember::ConsoleCommandWrapper Logout;
 	const Ember::ConsoleCommandWrapper CreateChar;

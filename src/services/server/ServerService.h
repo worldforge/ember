@@ -185,7 +185,7 @@ public:
 	 * @param message The message.
 	 * @param entities A list of entities to which the message will be addressed.
 	 */
-	void sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities);
+	void sayTo(const std::string &message, const std::vector<std::string>& entities);
 
 	/**
 	 * @brief Says something, addressed to an entity.

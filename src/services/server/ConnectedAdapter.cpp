@@ -305,7 +305,7 @@ void ConnectedAdapter::say(const std::string &message)
 	}
 }
 
-void ConnectedAdapter::sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities)
+void ConnectedAdapter::sayTo(const std::string &message, const std::vector<std::string>& entities)
 {
 	try {
 
@@ -315,7 +315,7 @@ void ConnectedAdapter::sayTo(const std::string &message, const std::vector<const
 		if (entities.size() > 1) {
 			msg = "Saying to many entities: [" + message + "]. ";
 		} else if (entities.size() == 1) {
-			msg = "Saying to entity " + entities[0]->getId() + ": [" + message + "]. ";
+			msg = "Saying to entity " + entities[0] + ": [" + message + "]. ";
 		} else {
 			msg = "Saying to no entity: [" + message + "]. ";
 		}
@@ -329,8 +329,8 @@ void ConnectedAdapter::sayTo(const std::string &message, const std::vector<const
 void ConnectedAdapter::sayTo(const std::string &message, const Eris::Entity& entity)
 {
 	try {
-		std::vector<const Eris::Entity*> entities;
-		entities.push_back(&entity);
+		std::vector<std::string> entities;
+		entities.push_back(entity.getId());
 
 		mAvatar.sayTo(message, entities);
 

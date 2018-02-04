@@ -95,7 +95,7 @@ bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, s
 							const std::string& entityId = info["entityid"].asString();
 							const std::string& avatarName = info["avatarname"].asString();
 							long timestamp = info["timestamp"].asInt();
-							infoObjects.push_back(AvatarTransferInfo(avatarName, WFMath::TimeStamp::epochStart() + WFMath::TimeDiff(timestamp), Eris::TransferInfo(host, port, key, entityId)));
+							infoObjects.emplace_back(avatarName, WFMath::TimeStamp::epochStart() + WFMath::TimeDiff(timestamp), Eris::TransferInfo(host, port, key, entityId));
 						}
 					}
 				}

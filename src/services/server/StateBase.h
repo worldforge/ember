@@ -36,31 +36,31 @@ class ServerServiceSignals;
 class StateBaseCore: public IState, public virtual sigc::trackable
 {
 public:
-	StateBaseCore(IState& parentState);
-	virtual ~StateBaseCore();
+	explicit StateBaseCore(IState& parentState);
+	~StateBaseCore() override = default;
 
-	virtual void disconnect();
+	void disconnect() override;
 
-	virtual bool logout();
+	bool logout() override;
 
-	virtual void takeCharacter(const std::string &id);
+	void takeCharacter(const std::string &id) override;
 
-	virtual void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
+	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo) override;
 
-	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties);
+	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) override;
 
-	virtual IServerAdapter& getServerAdapter();
+	IServerAdapter& getServerAdapter() override;
 
-	virtual void transfer(const Eris::TransferInfo& transferInfo);
+	void transfer(const Eris::TransferInfo& transferInfo) override;
 
-	void destroyChildState();
+	void destroyChildState() override;
 
 
 protected:
 
 	IState& getParentState() const;
 
-	ServerServiceSignals& getSignals() const;
+	ServerServiceSignals& getSignals() const override;
 
 	virtual StateBaseCore* getCoreChildState();
 
@@ -78,11 +78,11 @@ template<typename TChildState>
 class StateBase: public StateBaseCore
 {
 public:
-	StateBase(IState& parentState);
+	explicit StateBase(IState& parentState);
 
-	virtual ~StateBase();
+	~StateBase() override;
 
-	virtual IState& getTopState();
+	IState& getTopState() override;
 
 protected:
 
@@ -90,9 +90,9 @@ protected:
 
 	TChildState* getChildState() const;
 
-    virtual StateBaseCore* getCoreChildState();
+	StateBaseCore* getCoreChildState() override;
 
-    virtual void clearChildState();
+	void clearChildState() override;
 
 private:
 
@@ -101,10 +101,6 @@ private:
 
 inline StateBaseCore::StateBaseCore(IState& parentState) :
 	mParentState(parentState)
-{
-}
-
-inline StateBaseCore::~StateBaseCore()
 {
 }
 

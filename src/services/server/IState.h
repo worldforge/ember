@@ -44,7 +44,7 @@ public:
 	 * @brief Dtor.
 	 * When the state is destroyed, any child state needs to be destroyed as well.
 	 */
-	virtual ~IState() {}
+	virtual ~IState() = default;
 
 	/**
 	 * @brief Destroys any child state.

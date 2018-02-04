@@ -37,10 +37,6 @@ NonConnectedState::NonConnectedState(ServerServiceSignals& signals, Eris::Sessio
 {
 }
 
-NonConnectedState::~NonConnectedState()
-{
-}
-
 void NonConnectedState::destroyChildState()
 {
 	//Make sure to sever the connection, so that we don't end up in an infinite loop if something goes wrong when shutting down.
@@ -115,10 +111,10 @@ void NonConnectedState::runCommand(const std::string &command, const std::string
 		std::string msg;
 		msg = "Connecting to: [" + server + "]";
 		ConsoleBackend::getSingleton().pushMessage(msg, "info");
-		if (port == "")
+		if (port.empty())
 			connect(server);
 		else
-			connect(server, (short)atoi(port.c_str()));
+			connect(server, (short)std::stoi(port));
 
 		// Disonnect command
 	}
@@ -155,7 +151,7 @@ void NonConnectedState::transfer(const Eris::TransferInfo& transferInfo)
 {
 	//Start by disconnecting from current server, and reconnecting to new server.
 	destroyChildState();
-	connect(transferInfo.getHost(), transferInfo.getPort());
+	connect(transferInfo.getHost(), static_cast<short>(transferInfo.getPort()));
 }
 
 }

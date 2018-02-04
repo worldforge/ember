@@ -55,13 +55,14 @@ class EnteredWorldState: public virtual StateBase<void>, public ConsoleObject
 {
 public:
 	EnteredWorldState(IState& parentState, Eris::Avatar& avatar, Eris::Account& account);
-	virtual ~EnteredWorldState();
 
-	void runCommand(const std::string &, const std::string &);
+	~EnteredWorldState() override;
 
-	virtual IServerAdapter& getServerAdapter();
+	void runCommand(const std::string &, const std::string &) override;
 
-	virtual bool logout();
+	IServerAdapter& getServerAdapter() override;
+
+	bool logout() override;
 
 	const Ember::ConsoleCommandWrapper Say;
 	const Ember::ConsoleCommandWrapper SayTo;

@@ -43,29 +43,30 @@ class NonConnectedState: public virtual sigc::trackable, public IState, public C
 {
 public:
 	NonConnectedState(ServerServiceSignals& signals, Eris::Session& session);
-	virtual ~NonConnectedState();
 
-	virtual void destroyChildState();
+	~NonConnectedState() override = default;
 
-	virtual ServerServiceSignals& getSignals() const;
+	void destroyChildState() override;
 
-	virtual IState& getTopState();
+	ServerServiceSignals& getSignals() const override;
 
-	virtual void disconnect();
+	IState& getTopState() override;
 
-	virtual bool logout();
+	void disconnect() override;
 
-	virtual void takeCharacter(const std::string &id);
+	bool logout() override;
 
-	virtual void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
+	void takeCharacter(const std::string &id) override;
 
-	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties);
+	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo) override;
 
-	virtual void transfer(const Eris::TransferInfo& transferInfo);
+	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) override;
 
-	virtual IServerAdapter& getServerAdapter();
+	void transfer(const Eris::TransferInfo& transferInfo) override;
 
-	void runCommand(const std::string &, const std::string &);
+	IServerAdapter& getServerAdapter() override;
+
+	void runCommand(const std::string &, const std::string &) override;
 
 	/**
 	 * @brief Connects to a remote host.

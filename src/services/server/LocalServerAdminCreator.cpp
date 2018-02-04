@@ -53,10 +53,6 @@ LocalServerAdminCreator::LocalServerAdminCreator(ServerService& serverService) :
 	serverService.LoginSuccess.connect(sigc::mem_fun(*this, &LocalServerAdminCreator::server_LoginSuccess));
 }
 
-LocalServerAdminCreator::~LocalServerAdminCreator()
-{
-}
-
 void LocalServerAdminCreator::server_GotAccount(Eris::Account* account)
 {
 	//When connecting to a local socket we should use a "sys" account.

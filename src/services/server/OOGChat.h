@@ -104,7 +104,7 @@ class OOGChat : public ConsoleObject
     /**
      * Creates a new OOGChat using default values.
      */
-    OOGChat(Eris::Account* account);
+    explicit OOGChat(Eris::Account* account);
 
     /**
      * Copy constructor.
@@ -136,7 +136,7 @@ class OOGChat : public ConsoleObject
     /**
      * Deletes a OOGChat instance.
      */
-    virtual ~OOGChat ();
+    ~OOGChat () override;
 
 
     //----------------------------------------------------------------------
@@ -177,7 +177,7 @@ class OOGChat : public ConsoleObject
     /**
      * Command handler for console backend.
      */
-    void runCommand(const std::string &command, const std::string &args);
+    void runCommand(const std::string &command, const std::string &args) override;
 
     //----------------------------------------------------------------------
     // Callbacks from Eris

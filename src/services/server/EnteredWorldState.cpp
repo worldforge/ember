@@ -65,24 +65,15 @@ void EnteredWorldState::runCommand(const std::string &command, const std::string
 		Tokeniser tokeniser(args);
 		std::string entityIdsString = tokeniser.nextToken();
 		std::vector<std::string> entityIds = Tokeniser::split(entityIdsString, ",");
-		std::vector<const Eris::Entity*> entities;
-		for (std::vector<std::string>::const_iterator I = entityIds.begin(); I != entityIds.end(); ++I) {
-			Eris::Entity* entity = getView().getEntity(*I);
-			if (entity) {
-				entities.push_back(entity);
-			} else {
-				S_LOG_WARNING("Tried to send message addressed to entity with id " << *I <<" which doesn't exist.");
-			}
-		}
 		std::string message = tokeniser.remainingTokens();
 
-		mAdapter.sayTo(message, entities);
+		mAdapter.sayTo(message, entityIds);
 	} else if (Emote == command) {
 		mAdapter.emote(args);
 	} else if (Delete == command) {
 		Tokeniser tokeniser(args);
 		std::string entityId = tokeniser.nextToken();
-		if (entityId != "") {
+		if (!entityId.empty()) {
 			Eris::Entity* entity = getView().getEntity(entityId);
 			if (entity) {
 				mAdapter.deleteEntity(entity);
@@ -110,11 +101,11 @@ void EnteredWorldState::runCommand(const std::string &command, const std::string
 	} else if (AdminTell == command) {
 		Tokeniser tokeniser(args);
 		std::string entityId = tokeniser.nextToken();
-		if (entityId != "") {
+		if (!entityId.empty()) {
 			std::string key = tokeniser.nextToken();
-			if (key != "") {
+			if (!key.empty()) {
 				std::string value = tokeniser.nextToken();
-				if (value != "") {
+				if (!value.empty()) {
 					mAdapter.adminTell(entityId, key, value);
 				}
 			}

@@ -27,10 +27,6 @@ ServerServiceConnectionListener::ServerServiceConnectionListener(ServerServiceSi
 {
 }
 
-ServerServiceConnectionListener::~ServerServiceConnectionListener()
-{
-}
-
 void ServerServiceConnectionListener::sendingObject(const Atlas::Objects::Root& obj)
 {
 	mSignals.EventSendingObject.emit(obj);

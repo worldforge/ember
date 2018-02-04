@@ -42,11 +42,12 @@ class ConnectedState: public virtual StateBase<AccountAvailableState>, public Co
 {
 public:
 	ConnectedState(IState& parentState, Eris::Connection& connection);
-	virtual ~ConnectedState();
 
-	void runCommand(const std::string &, const std::string &);
+	~ConnectedState() override = default;
 
-	void disconnect();
+	void runCommand(const std::string &, const std::string &) override;
+
+	void disconnect() override;
 
 	const ConsoleCommandWrapper DisConnect;
 

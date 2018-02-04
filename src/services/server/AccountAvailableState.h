@@ -37,9 +37,10 @@ class AccountAvailableState: public virtual StateBase<LoggedInState> , public Co
 {
 public:
 	AccountAvailableState(IState& parentState, Eris::Connection& connection);
-	virtual ~AccountAvailableState();
 
-	void runCommand(const std::string &, const std::string &);
+	~AccountAvailableState() override;
+
+	void runCommand(const std::string &, const std::string &) override;
 
 	/**
 	 * @brief Creates a new account.

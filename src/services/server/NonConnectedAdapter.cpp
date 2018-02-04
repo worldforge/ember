@@ -29,14 +29,6 @@
 namespace Ember
 {
 
-NonConnectedAdapter::NonConnectedAdapter()
-{
-}
-
-NonConnectedAdapter::~NonConnectedAdapter()
-{
-}
-
 void NonConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest)
 {
 
@@ -115,7 +107,7 @@ void NonConnectedAdapter::say(const std::string &message)
 
 }
 
-void NonConnectedAdapter::sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities)
+void NonConnectedAdapter::sayTo(const std::string &message, const std::vector<std::string>& entities)
 {
 }
 

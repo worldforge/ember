@@ -56,7 +56,8 @@ public:
 	 * @param socket The path to the local socket.
 	 */
 	ConnectingState(IState& parentState, Eris::Session& session, const std::string& socket);
-	virtual ~ConnectingState();
+
+	~ConnectingState() override;
 
 	bool connect();
 

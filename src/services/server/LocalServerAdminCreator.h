@@ -48,12 +48,12 @@ public:
 	 * @brief Ctor.
 	 * @param serverService The server service.
 	 */
-	LocalServerAdminCreator(ServerService& serverService);
+	explicit LocalServerAdminCreator(ServerService& serverService);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~LocalServerAdminCreator();
+	~LocalServerAdminCreator() = default;
 private:
 
 	/**

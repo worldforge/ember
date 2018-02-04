@@ -39,7 +39,7 @@ public:
 	 * @param timestamp A timestamp for when the transfer info was created.
 	 * @param transferInfo A transfer info object.
 	 */
-	AvatarTransferInfo(const std::string& avatarName, const WFMath::TimeStamp timestamp, const Eris::TransferInfo& transferInfo);
+	AvatarTransferInfo(const std::string& avatarName, WFMath::TimeStamp timestamp, const Eris::TransferInfo& transferInfo);
 
 	/**
 	 * @brief Gets the name of the avatar which was transferred.

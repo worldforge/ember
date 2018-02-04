@@ -38,10 +38,6 @@ ConnectedState::ConnectedState(IState& parentState, Eris::Connection& connection
 	setChildState(new AccountAvailableState(*this, connection));
 }
 
-ConnectedState::~ConnectedState()
-{
-}
-
 void ConnectedState::disconnect()
 {
 	try {

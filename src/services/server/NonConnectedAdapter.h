@@ -34,34 +34,55 @@ namespace Ember
 class NonConnectedAdapter: public IServerAdapter
 {
 public:
-	NonConnectedAdapter();
+	NonConnectedAdapter() = default;
 
-	virtual ~NonConnectedAdapter();
+	~NonConnectedAdapter() override = default;
 
-	virtual void moveToPoint(const WFMath::Point<3>& dest);
-	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
-	virtual void moveInDirection(const WFMath::Vector<3>& velocity);
-// 	virtual void teleportTo(const WFMath::Point<3>& dest) {}
-	virtual void say(const std::string &message);
-	virtual void sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities);
-	virtual void sayTo(const std::string &message, const Eris::Entity& entity);
-	virtual void touch(Eris::Entity* entity);
-	virtual void emote(const std::string& emote);
-	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation);
-	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>(0, 0, 0));
-	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);
-	virtual void wield(Eris::Entity* entity, const std::string& outfitSlot);
-	virtual void take(Eris::Entity* entity);
-	virtual void use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation);
-	virtual void useStop();
-	virtual void actuate(Eris::Entity* entity, const std::string& action);
-	virtual void attack(Eris::Entity* entity);
-	virtual void eat(Eris::Entity* entity);
-	virtual void deleteEntity(Eris::Entity* entity);
-	virtual void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
-	virtual void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value);
-	virtual void createTypeInfo(const Atlas::Objects::Root& typeInfo);
-	virtual void setTypeInfo(const Atlas::Objects::Root& typeInfo);
+	void moveToPoint(const WFMath::Point<3>& dest) override;
+
+	void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) override;
+
+	void moveInDirection(const WFMath::Vector<3>& velocity) override;
+	// 	virtual void teleportTo(const WFMath::Point<3>& dest);
+	void say(const std::string &message) override;
+
+	void sayTo(const std::string &message, const std::vector<std::string>& entities) override;
+
+	void sayTo(const std::string &message, const Eris::Entity& entity) override;
+
+	void touch(Eris::Entity* entity) override;
+
+	void emote(const std::string& emote) override;
+
+	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation) override;
+
+	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos) override;
+
+	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient) override;
+
+	void wield(Eris::Entity* entity, const std::string& outfitSlot) override;
+
+	void take(Eris::Entity* entity) override;
+
+	void use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation) override;
+
+	void useStop() override;
+
+	void actuate(Eris::Entity* entity, const std::string& action) override;
+
+	void attack(Eris::Entity* entity) override;
+
+	void eat(Eris::Entity* entity) override;
+
+	void deleteEntity(Eris::Entity* entity) override;
+
+	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements) override;
+
+	void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value) override;
+
+	void createTypeInfo(const Atlas::Objects::Root& typeInfo) override;
+
+	void setTypeInfo(const Atlas::Objects::Root& typeInfo) override;
 
 };
 

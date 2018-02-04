@@ -44,7 +44,13 @@
 namespace Ember
 {
 LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
-		StateBase<EnteredWorldState>::StateBase(parentState), Logout("logout", this, "Logout from the connected server."), CreateChar("add", this, "Create a character on the server."), TakeChar("take", this, "Take control of one of your characters."), ListChars("list", this, "List you available characters on the server."), mAccount(account), mTransferEvent(0)
+		StateBase<EnteredWorldState>::StateBase(parentState),
+		Logout("logout", this, "Logout from the connected server."),
+		CreateChar("add", this, "Create a character on the server."),
+		TakeChar("take", this, "Take control of one of your characters."),
+		ListChars("list", this, "List you available characters on the server."),
+		mAccount(account),
+		mTransferEvent(nullptr)
 {
 	mAccount.AvatarSuccess.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarSuccess));
 	mAccount.GotCharacterInfo.connect(sigc::mem_fun(*this, &LoggedInState::gotCharacterInfo));

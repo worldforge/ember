@@ -32,9 +32,7 @@ class IConnectionListener
 {
 public:
 
-	virtual ~IConnectionListener()
-	{
-	}
+	virtual ~IConnectionListener() = default;
 
 	/**
 	 * @brief Called when an object is about to be sent.

@@ -23,8 +23,10 @@
 #include "AvatarTransferInfo.h"
 namespace Ember
 {
-AvatarTransferInfo::AvatarTransferInfo(const std::string& avatarName, const WFMath::TimeStamp timestamp, const Eris::TransferInfo& transferInfo) :
-	mAvatarName(avatarName), mTimestamp(timestamp), mTransferInfo(transferInfo)
+AvatarTransferInfo::AvatarTransferInfo(const std::string& avatarName, WFMath::TimeStamp timestamp, const Eris::TransferInfo& transferInfo) :
+	mAvatarName(avatarName),
+	mTimestamp(timestamp),
+	mTransferInfo(transferInfo)
 {
 }
 
