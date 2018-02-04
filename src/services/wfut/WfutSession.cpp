@@ -26,6 +26,7 @@
 
 #include "WfutSession.h"
 #include <fstream>
+#include <boost/filesystem/operations.hpp>
 #include "framework/LoggingInstance.h"
 
 using namespace WFUT;
@@ -34,16 +35,8 @@ namespace Ember {
 
 static bool fileExists(const std::string& fileName) 
 {
-	std::fstream fin; 
-	fin.open(fileName.c_str(),std::ios::in); 
-	if( fin.is_open() ) 
-	{ 
-		fin.close(); 
-		return true; 
-	} 
-	fin.close(); 
-	return false; 
-} 
+	return boost::filesystem::exists(fileName);
+}
 
 
 WfutSession::WfutSession(sigc::slot<void, const std::string&, const std::string&>& downloadCompleteSlot 
