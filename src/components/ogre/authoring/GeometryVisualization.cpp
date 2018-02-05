@@ -58,14 +58,15 @@ GeometryVisualization::GeometryVisualization(EmberEntity& entity, Ogre::SceneNod
 
 GeometryVisualization::~GeometryVisualization() {
 	mBboxConnection.disconnect();
-	mSceneNode->removeAndDestroyAllChildren();
-	mSceneNode->getCreator()->destroySceneNode(mSceneNode);
 	if (mManualObject) {
-		mManualObject->_getCreator()->destroyInstance(mManualObject);
+		mSceneNode->getCreator()->destroyManualObject(mManualObject);
 	}
 	if (mOgreEntity) {
-		mOgreEntity->_getCreator()->destroyInstance(mOgreEntity);
+		mSceneNode->getCreator()->destroyEntity(mOgreEntity);
 	}
+
+	mSceneNode->removeAndDestroyAllChildren();
+	mSceneNode->getCreator()->destroySceneNode(mSceneNode);
 }
 
 void GeometryVisualization::entity_Moved() {
