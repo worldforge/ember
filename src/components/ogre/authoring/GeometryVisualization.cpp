@@ -391,10 +391,10 @@ void GeometryVisualization::buildGeometry() {
 
 	if (mEntity.hasAttr("geometry")) {
 		auto& geometry = mEntity.valueOfAttr("geometry");
-		AtlasQuery::find<std::string>(geometry, "type", [&](const auto& shape) {
+		AtlasQuery::find<Atlas::Message::StringType>(geometry, "type", [&](const Atlas::Message::StringType& shape) {
 			if (shape == "mesh") {
-				AtlasQuery::find<Atlas::Message::ListType>(geometry, "indices", [&](const auto& indices) {
-					AtlasQuery::find<Atlas::Message::ListType>(geometry, "vertices", [&](const auto& vertices) {
+				AtlasQuery::find<Atlas::Message::ListType>(geometry, "indices", [&](const Atlas::Message::ListType& indices) {
+					AtlasQuery::find<Atlas::Message::ListType>(geometry, "vertices", [&](const Atlas::Message::ListType& vertices) {
 						mManualObject->clear();
 						mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
@@ -426,7 +426,7 @@ void GeometryVisualization::buildGeometry() {
 					});
 				});
 			} else if (shape == "asset") {
-				AtlasQuery::find<Atlas::Message::StringType>(geometry, "path", [&](const auto& path) {
+				AtlasQuery::find<Atlas::Message::StringType>(geometry, "path", [&](const Atlas::Message::StringType& path) {
 					auto meshPtr = Ogre::MeshManager::getSingleton().getByName(path, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 					if (meshPtr) {
 						auto entity = mSceneNode->getCreator()->createEntity(meshPtr);
