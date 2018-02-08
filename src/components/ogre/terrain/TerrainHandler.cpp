@@ -67,6 +67,8 @@
 
 #include <sigc++/bind.h>
 
+#include <utility>
+
 namespace Ember
 {
 
@@ -117,8 +119,8 @@ public:
 	TerrainPageReloadTask(TerrainHandler& handler, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry,
 						  const ShaderStore& shaders, const WFMath::AxisBox<2>& area, const WFMath::Vector<3>& mainLightDirection) :
 			mHandler(handler),
-			mBridge(bridge),
-			mGeometry(geometry),
+			mBridge(std::move(bridge)),
+			mGeometry(std::move(geometry)),
 			mShaders(shaders),
 			mArea(area),
 			mMainLightDirection(mainLightDirection)
@@ -161,7 +163,7 @@ TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniquePro
 		mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()),
 		mHasTerrainInfo(false),
 		mTaskQueue(new Tasks::TaskQueue(1, eventService)),
-		mLightning(0),
+		mLightning(nullptr),
 		mHeightMap(new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution())),
 		//The mercator buffers are one size larger than the resolution
 		mHeightMapBufferProvider(new HeightMapBufferProvider(mTerrain->getResolution() + 1)),
@@ -418,41 +420,44 @@ TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& wor
 
 void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge)
 {
-	//_fpreset();
-
-	int x = index.first;
-	int y = index.second;
-
 	std::shared_ptr<ITerrainPageBridge> bridgePtr(bridge);
-	//Add to our store of page bridges
-	mPageBridges.insert(PageBridgeStore::value_type(index, bridgePtr));
+	mEventService.runOnMainThread([this, index, bridgePtr]() {
+		//_fpreset();
 
-	S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
-	if (mTerrainPages[x][y] == nullptr) {
-		TerrainPage* page = new TerrainPage(index, getPageIndexSize(), getCompilerTechniqueProvider());
-		bridgePtr->bindToTerrainPage(page);
+		int x = index.first;
+		int y = index.second;
 
-		mTerrainPages[x][y] = page;
-		mPages.push_back(page);
-		S_LOG_VERBOSE("Adding terrain page to TerrainHandler: " << "[" << index.first << "|" << index.second <<"]");
+		//Add to our store of page bridges
+		mPageBridges.insert(PageBridgeStore::value_type(index, bridgePtr));
 
-		WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, -1, 0);
-		if (mLightning) {
-			sunDirection = mLightning->getMainLightDirection();
+		S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
+		if (mTerrainPages[x][y] == nullptr) {
+			TerrainPage* page = new TerrainPage(index, getPageIndexSize(), getCompilerTechniqueProvider());
+			bridgePtr->bindToTerrainPage(page);
+
+			mTerrainPages[x][y] = page;
+			mPages.push_back(page);
+			S_LOG_VERBOSE("Adding terrain page to TerrainHandler: " << "[" << index.first << "|" << index.second <<"]");
+
+			WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, -1, 0);
+			if (mLightning) {
+				sunDirection = mLightning->getMainLightDirection();
+			}
+			if (!mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, page, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
+				//We need to alert the bridge since it's holding up a thread waiting for this call.
+				bridgePtr->terrainPageReady();
+			}
+		} else {
+			TerrainPage* page = mTerrainPages[x][y];
+			TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*page, getSegmentManager(), getDefaultHeight()));
+
+			if (!mTaskQueue->enqueueTask(new TerrainPageReloadTask(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
+				//We need to alert the bridge since it's holding up a thread waiting for this call.
+				bridgePtr->terrainPageReady();
+			}
 		}
-		if (!mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, page, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
-			//We need to alert the bridge since it's holding up a thread waiting for this call.
-			bridge->terrainPageReady();
-		}
-	} else {
-		TerrainPage* page = mTerrainPages[x][y];
-		TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*page, getSegmentManager(), getDefaultHeight()));
+	});
 
-		if (!mTaskQueue->enqueueTask(new TerrainPageReloadTask(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
-			//We need to alert the bridge since it's holding up a thread waiting for this call.
-			bridge->terrainPageReady();
-		}
-	}
 }
 
 TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) const
