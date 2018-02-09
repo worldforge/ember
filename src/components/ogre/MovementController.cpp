@@ -385,29 +385,29 @@ WFMath::Vector<3> MovementController::getMovementForCurrentFrame() const
 
 void MovementController::createDecal(Ogre::Vector3 position)
 {
-	try {
-		// Create object MeshDecal
-		Ogre::SceneManager& sceneManager = mAvatar.getScene().getSceneManager();
-		Ogre::NameValuePairList params;
-		params["materialName"] = "/common/base/terraindecal";
-		params["width"] = StringConverter::toString(2);
-		params["height"] = StringConverter::toString(2);
-		params["sceneMgrInstance"] = sceneManager.getName();
-
-		mDecalObject = sceneManager.createMovableObject("MovementControllerMoveToDecal", "PagingLandScapeMeshDecal", &params);
-
-		// Add MeshDecal to Scene
-		mDecalNode = sceneManager.createSceneNode("MovementControllerMoveToDecalNode");
-		//the decal code is a little shaky and relies on us setting the position of the node before we add the moveable object
-		sceneManager.getRootSceneNode()->addChild(mDecalNode);
-		mDecalNode->setPosition(position);
-		mDecalNode->attachObject(mDecalObject);
-		// 	mDecalNode->showBoundingBox(true);
-
-		// 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when creating terrain decal." << ex);
-	}
+//	try {
+//		// Create object MeshDecal
+//		Ogre::SceneManager& sceneManager = mAvatar.getScene().getSceneManager();
+//		Ogre::NameValuePairList params;
+//		params["materialName"] = "/common/base/terraindecal";
+//		params["width"] = StringConverter::toString(2);
+//		params["height"] = StringConverter::toString(2);
+//		params["sceneMgrInstance"] = sceneManager.getName();
+//
+//		mDecalObject = sceneManager.createMovableObject("MovementControllerMoveToDecal", "PagingLandScapeMeshDecal", &params);
+//
+//		// Add MeshDecal to Scene
+//		mDecalNode = sceneManager.createSceneNode("MovementControllerMoveToDecalNode");
+//		//the decal code is a little shaky and relies on us setting the position of the node before we add the moveable object
+//		sceneManager.getRootSceneNode()->addChild(mDecalNode);
+//		mDecalNode->setPosition(position);
+//		mDecalNode->attachObject(mDecalObject);
+//		// 	mDecalNode->showBoundingBox(true);
+//
+//		// 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
+//	} catch (const std::exception& ex) {
+//		S_LOG_WARNING("Error when creating terrain decal." << ex);
+//	}
 }
 
 Ogre::SceneNode* MovementController::getFreeFlyingCameraNode() {
