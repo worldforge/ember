@@ -41,7 +41,7 @@ Loitering::Loitering(Awareness& awareness, Eris::Avatar& avatar, const WFMath::V
 
 	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
 
-	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.y());
+	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.z());
 
 	WFMath::RotBox<2> area;
 	area.size() = areaSize;
@@ -63,7 +63,7 @@ void Loitering::entity_Moving(bool isMoving)
 
 	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
 
-	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.y());
+	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.z());
 	if (!WFMath::Contains(mLoiterArea, entityPosition2d, false)) {
 		//The entity is outside of the loiter area; stop loitering
 		mAwareness.setAwarenessArea(WFMath::RotBox<2>(), WFMath::Segment<2>());

@@ -195,11 +195,11 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned
 			if (mAvatarEntity->hasBBox() && mAvatarEntity->getBBox().isValid()) {
 				auto avatarBbox = mAvatarEntity->getBBox();
 				//get the radius from the avatar entity
-				WFMath::AxisBox<2> avatar2dBbox(WFMath::Point<2>(avatarBbox.lowCorner().x(), avatarBbox.lowCorner().y()), WFMath::Point<2>(avatarBbox.highCorner().x(), avatarBbox.highCorner().y()));
+				WFMath::AxisBox<2> avatar2dBbox(WFMath::Point<2>(avatarBbox.lowCorner().x(), avatarBbox.lowCorner().z()), WFMath::Point<2>(avatarBbox.highCorner().x(), avatarBbox.highCorner().z()));
 				mAvatarRadius = std::max(0.2f, avatar2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
 
 				//height of our agent
-				h = avatarBbox.highCorner().z() - avatarBbox.lowCorner().z();
+				h = avatarBbox.highCorner().y() - avatarBbox.lowCorner().y();
 			}
 
 			const WFMath::Point<3>& lower = extent.lowCorner();
@@ -207,11 +207,11 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned
 
 			//Recast uses y for the vertical axis
 			mCfg.bmin[0] = lower.x();
-			mCfg.bmin[2] = lower.y();
-			mCfg.bmin[1] = std::min(-500.f, lower.z());
+			mCfg.bmin[1] = std::min(-500.f, lower.y());
+			mCfg.bmin[2] = lower.z();
 			mCfg.bmax[0] = upper.x();
-			mCfg.bmax[2] = upper.y();
-			mCfg.bmax[1] = std::max(500.f, upper.z());
+			mCfg.bmax[1] = std::max(500.f, upper.y());
+			mCfg.bmax[2] = upper.z();
 
 			int gw = 0, gh = 0;
 			float cellsize = mAvatarRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
@@ -232,7 +232,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned
 
 			mCfg.cs = cellsize;
 			mCfg.ch = mCfg.cs / 2.0f; //Height of one voxel; should really only come into play when doing 3d traversal
-			//	m_cfg.ch = std::max(upper.z() - lower.z(), 100.0f); //For 2d traversal make the voxel size as large as possible
+			//	m_cfg.ch = std::max(upper.y() - lower.y(), 100.0f); //For 2d traversal make the voxel size as large as possible
 			mCfg.walkableHeight = (int)std::ceil(h / mCfg.ch); //This is in voxels
 			mCfg.walkableClimb = 100; //TODO: implement proper system for limiting climbing; for now just use a large voxel number
 			mCfg.walkableRadius = (int)std::ceil(mAvatarRadius / mCfg.cs);
@@ -503,7 +503,7 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
 				continue;
 			}
 
-			WFMath::Point<2> entityView2dPos(pos.x(), pos.y());
+			WFMath::Point<2> entityView2dPos(pos.x(), pos.z());
 			WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->getBBox().boundingSphereSloppy().radius());
 
 			if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
@@ -520,7 +520,7 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
 			const EntityCollisionEntry& entry = nearestEntities.top();
 			auto entity = entry.entity;
 			float pos[] { entry.viewPosition.x(), 0, entry.viewPosition.y() };
-			float vel[] { entity->getPredictedVelocity().x(), 0, entity->getPredictedVelocity().y() };
+			float vel[] { entity->getPredictedVelocity().x(), 0, entity->getPredictedVelocity().z() };
 			mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
 			nearestEntities.pop();
 			++i;
@@ -736,8 +736,8 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
 int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path) const
 {
 
-	float pStartPos[] { start.x(), start.z(), start.y() };
-	float pEndPos[] { end.x(), end.z(), end.y() };
+	float pStartPos[] { start.x(), start.y(), start.z() };
+	float pEndPos[] { end.x(), end.y(), end.z() };
 	float extent[] { 2, 100, 2 }; //Look two meters in each direction
 
 	dtStatus status;
@@ -774,7 +774,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 
 // At this point we have our path.
 	for (int nVert = 0; nVert < nVertCount; nVert++) {
-		path.push_back(WFMath::Point<3>(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 2], StraightPath[(nVert * 3) + 1]));
+		path.push_back(WFMath::Point<3>(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 1], StraightPath[(nVert * 3) + 2]));
 	}
 
 	return nVertCount;
@@ -943,15 +943,15 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 		if (pos.isValid() && orientation.isValid()) {
 
 			WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-			auto theta = std::atan2(xVec.y(), xVec.x()); // rotation about Z
+			auto theta = std::atan2(xVec.z(), xVec.x()); // rotation about Y
 
 			WFMath::RotMatrix<2> rm;
 			rm.rotation(theta);
 
 			auto bbox = entity.getBBox();
 
-			WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().y());
-			WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().y());
+			WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().z());
+			WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().z());
 
 			//Expand the box a little so that we can navigate around it without being stuck on it.
 			//We'll the radius of the avatar.
@@ -962,7 +962,7 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 			rotbox.shift(WFMath::Vector<2>(lowCorner.x(), lowCorner.y()));
 			rotbox.rotatePoint(rm, WFMath::Point<2>::ZERO());
 
-			rotbox.shift(WFMath::Vector<2>(pos.x(), pos.y()));
+			rotbox.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 
 			entityAreas.insert(std::make_pair(&entity, rotbox));
 		}
@@ -1097,25 +1097,25 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 
 // Mark areas.
 	for (auto& rotbox : entityAreas) {
-		float verts[3 * 4];
+		float boxVerts[3 * 4];
 
-		verts[0] = rotbox.getCorner(1).x();
-		verts[1] = 0;
-		verts[2] = rotbox.getCorner(1).y();
+		boxVerts[0] = rotbox.getCorner(1).x();
+		boxVerts[1] = 0;
+		boxVerts[2] = rotbox.getCorner(1).y();
 
-		verts[3] = rotbox.getCorner(3).x();
-		verts[4] = 0;
-		verts[5] = rotbox.getCorner(3).y();
+		boxVerts[3] = rotbox.getCorner(3).x();
+		boxVerts[4] = 0;
+		boxVerts[5] = rotbox.getCorner(3).y();
 
-		verts[6] = rotbox.getCorner(2).x();
-		verts[7] = 0;
-		verts[8] = rotbox.getCorner(2).y();
+		boxVerts[6] = rotbox.getCorner(2).x();
+		boxVerts[7] = 0;
+		boxVerts[8] = rotbox.getCorner(2).y();
 
-		verts[9] = rotbox.getCorner(0).x();
-		verts[10] = 0;
-		verts[11] = rotbox.getCorner(0).y();
+		boxVerts[9] = rotbox.getCorner(0).x();
+		boxVerts[10] = 0;
+		boxVerts[11] = rotbox.getCorner(0).y();
 
-		rcMarkConvexPolyArea(mCtx, verts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
+		rcMarkConvexPolyArea(mCtx, boxVerts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
 	}
 
 	rc.lset = rcAllocHeightfieldLayerSet();

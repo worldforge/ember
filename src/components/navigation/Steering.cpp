@@ -62,11 +62,11 @@ void Steering::setAwareness()
 
 	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
 
-	WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.y());
-	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.y());
+	WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.z());
+	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.z());
 
 	WFMath::Vector<2> direction(destination2d - entityPosition2d);
-	auto theta = std::atan2(direction.y(), direction.x()); // rotation about Z
+	auto theta = std::atan2(direction.y(), direction.x()); // rotation about Y
 	WFMath::RotMatrix<2> rm;
 	rm.rotation(theta);
 
@@ -125,7 +125,7 @@ void Steering::stopSteering()
 	mLoitering = new Loitering(mAwareness, mAvatar, WFMath::Vector<2>(mPadding * 2, mPadding * 2));
 
 	//reset path
-	mPath = std::list<WFMath::Point<3>>();
+	mPath.clear();
 	EventPathUpdated();
 
 }
@@ -150,9 +150,9 @@ void Steering::update()
 		if (!mPath.empty()) {
 			const auto& finalDestination = mPath.back();
 			auto entity3dPosition = entity->getViewPosition();
-			const WFMath::Point<2> entityPosition(entity3dPosition.x(), entity3dPosition.y());
+			const WFMath::Point<2> entityPosition(entity3dPosition.x(), entity3dPosition.z());
 			//First check if we've arrived at our actual destination.
-			if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < 0.1f) {
+			if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.z()), entityPosition) < 0.1f) {
 				//We've arrived at our destination. If we're moving we should stop.
 				if (mLastSentVelocity.isValid() && mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
 					moveInDirection(WFMath::Vector<2>::ZERO());
@@ -161,10 +161,10 @@ void Steering::update()
 			} else {
 				//We should send a move op if we're either not moving, or we've reached a waypoint, or we need to divert a lot.
 
-				WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().y());
+				WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().z());
 				if (WFMath::Distance(nextWaypoint, entityPosition) < 0.1f) {
 					mPath.pop_front();
-					nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().y());
+					nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().z());
 				}
 
 				WFMath::Vector<2> velocity = nextWaypoint - entityPosition;
@@ -211,7 +211,7 @@ void Steering::update()
 				if (shouldSend) {
 					//If we're moving to a certain destination and aren't avoiding anything we should tell the server to move to the destination.
 					if (destination.isValid() && !avoiding) {
-						moveToPoint(WFMath::Point<3>(destination.x(), destination.y(), entity3dPosition.z()));
+						moveToPoint(WFMath::Point<3>(destination.x(), entity3dPosition.y(), destination.y()));
 					} else {
 						moveInDirection(velocity);
 					}
@@ -230,7 +230,7 @@ void Steering::update()
 
 void Steering::moveInDirection(const WFMath::Vector<2>& direction)
 {
-	mAvatar.moveInDirection(WFMath::Vector<3>(direction.x(), direction.y(), 0));
+	mAvatar.moveInDirection(WFMath::Vector<3>(direction.x(), 0, direction.y()));
 	mLastSentVelocity = direction;
 	mExpectingServerMovement = true;
 }
@@ -240,10 +240,9 @@ void Steering::moveToPoint(const WFMath::Point<3>& point)
 	mAvatar.moveToPoint(point);
 
 	auto entity3dPosition = mAvatar.getEntity()->getViewPosition();
-	const WFMath::Point<2> entityPosition(entity3dPosition.x(), entity3dPosition.y());
 	WFMath::Vector<3> vel = point - entity3dPosition;
 
-	mLastSentVelocity = WFMath::Vector<2>(vel.x(), vel.y());
+	mLastSentVelocity = WFMath::Vector<2>(vel.x(), vel.z());
 	mExpectingServerMovement = true;
 }
 

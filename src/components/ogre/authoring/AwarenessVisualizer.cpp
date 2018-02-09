@@ -187,14 +187,12 @@ void AwarenessVisualizer::createMesh(unsigned int tileRef, dtTileCachePolyMesh& 
 	const int npolys = mesh.npolys;
 	const int maxpolys = 256; //m_maxPolysPerTile;
 
-	unsigned short *regions = new unsigned short[npolys];
+	unsigned short regions[npolys];
 	for (int i = 0; i < npolys; i++) {
 		regions[i] = (const unsigned short)regs[i];
 	}
 
 	createRecastPolyMesh(name, verts, nverts, polys, npolys, areas, maxpolys, regions, nvp, cellsize, cellheight, origin, true);
-
-	delete[] regions;
 
 }
 
@@ -214,7 +212,7 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 	static Ogre::ColourValue m_pathCol(1, 0, 0);         // Red
 
 	// When drawing regions choose different random colors for each region
-	Ogre::ColourValue* regionColors = NULL;
+	Ogre::ColourValue* regionColors = nullptr;
 	if (colorRegions) {
 		regionColors = new Ogre::ColourValue[maxpolys];
 		for (int i = 0; i < maxpolys; ++i) {
@@ -222,7 +220,7 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 		}
 	}
 
-	int nIndex = 0;
+	Ogre::uint32 nIndex = 0;
 
 	if (npolys) {
 		// start defining the manualObject with the navmesh planes
@@ -249,12 +247,12 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 					vi[0] = p[0];
 					vi[1] = p[j - 1];
 					vi[2] = p[j];
-					for (int k = 0; k < 3; ++k) // create a 3-vert triangle for each 3 verts in the polygon.
+					for (unsigned short k : vi) // create a 3-vert triangle for each 3 verts in the polygon.
 							{
-						const unsigned short* v = &verts[vi[k] * 3];
+						const unsigned short* v = &verts[k * 3];
 						const float x = orig[0] + v[0] * cs;
 						const float y = orig[1] + (v[1]/*+1*/) * ch;
-						const float z = -orig[2] - v[2] * cs;
+						const float z = orig[2] + v[2] * cs;
 
 						pRecastMOWalk->position(x, y + m_navMeshOffsetFromGround, z);
 
@@ -268,7 +266,7 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 						}
 
 					}
-					pRecastMOWalk->triangle(nIndex, nIndex + 2, nIndex + 1);
+					pRecastMOWalk->triangle(nIndex, nIndex + 1, nIndex + 2);
 					nIndex += 3;
 				}
 			}
@@ -302,11 +300,11 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 					vi[1] = p[0];
 				else
 					vi[1] = p[j + 1];
-				for (int k = 0; k < 2; ++k) {
-					const unsigned short* v = &verts[vi[k] * 3];
+				for (int k : vi) {
+					const unsigned short* v = &verts[k * 3];
 					const float x = orig[0] + v[0] * cs;
 					const float y = orig[1] + (v[1]/*+1*/) * ch /*+ 0.1f*/;
-					const float z = -orig[2] - v[2] * cs;
+					const float z = orig[2] + v[2] * cs;
 					//dd->vertex(x, y, z, coln);
 					pRecastMONeighbour->position(x, y + m_navMeshEdgesOffsetFromGround, z);
 					pRecastMONeighbour->colour(m_navmeshNeighbourEdgeCol);
@@ -345,11 +343,11 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 					vi[1] = p[0];
 				else
 					vi[1] = p[j + 1];
-				for (int k = 0; k < 2; ++k) {
-					const unsigned short* v = &verts[vi[k] * 3];
+				for (int k : vi) {
+					const unsigned short* v = &verts[k * 3];
 					const float x = orig[0] + v[0] * cs;
 					const float y = orig[1] + (v[1]/*+1*/) * ch /*+ 0.1f*/;
-					const float z = -orig[2] - v[2] * cs;
+					const float z = orig[2] + v[2] * cs;
 					//dd->vertex(x, y, z, colb);
 
 					pRecastMOBoundary->position(x, y + m_navMeshEdgesOffsetFromGround, z);
@@ -360,47 +358,6 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 
 		pRecastMOBoundary->end();
 
-//		if (STATIC_GEOM_DEBUG) {
-//			// Render navmesh tiles more efficiently using staticGeometry
-//
-//			// Early out if empty meshes drawn
-//			if (m_pRecastMOWalk->getNumSections() == 0)
-//				return;
-//
-//			if (!m_sg) {
-//				m_sg = m_pSceneMgr->createStaticGeometry("NavmeshDebugStaticGeom");
-//				Ogre::Vector3 bmin;
-//				Ogre::Vector3 bmax;
-//				Ogre::Vector3 bsize;
-//				FloatAToOgreVect3(m_cfg.bmin, bmin);
-//				FloatAToOgreVect3(m_cfg.bmax, bmax);
-//				bsize = bmax - bmin;
-//				m_sg->setRegionDimensions(bsize);
-//				m_sg->setOrigin(bmin);
-//			}
-//
-//			m_pRecastMOWalk->convertToMesh("mesh_" + m_pRecastMOWalk->getName());
-//			Ogre::Entity *walkEnt = m_pSceneMgr->createEntity("ent_" + m_pRecastMOWalk->getName(), "mesh_" + m_pRecastMOWalk->getName());
-//			m_sg->addEntity(walkEnt, Ogre::Vector3::ZERO);
-//
-//// TODO line drawing does not work with staticGeometry
-//			if (false && m_pRecastMONeighbour->getNumSections() > 0) {
-//				m_pRecastMONeighbour->convertToMesh("mesh_" + m_pRecastMONeighbour->getName());     // Creating meshes from manualobjects without polygons is not a good idea!
-//				Ogre::Entity *neighbourEnt = m_pSceneMgr->createEntity("ent_" + m_pRecastMONeighbour->getName(), "mesh_" + m_pRecastMONeighbour->getName());
-//				m_sg->addEntity(neighbourEnt, Ogre::Vector3::ZERO);
-//			}
-//
-//			if (false && m_pRecastMOBoundary->getNumSections() > 0) {
-//				m_pRecastMOBoundary->convertToMesh("mesh_" + m_pRecastMOBoundary->getName());
-//				Ogre::Entity *boundaryEnt = m_pSceneMgr->createEntity("ent_" + m_pRecastMOBoundary->getName(), "mesh_" + m_pRecastMOBoundary->getName());
-//				m_sg->addEntity(boundaryEnt, Ogre::Vector3::ZERO);
-//			}
-//
-//			// Set dirty flag of solid geometry so it will be rebuilt next update()
-//			m_rebuildSg = true;
-//		} else {
-		// Add manualobjects directly to scene (can be slow for lots of tiles)
-//		}
 
 	}     // end areacount
 
