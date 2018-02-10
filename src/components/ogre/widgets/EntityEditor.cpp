@@ -124,9 +124,9 @@ public:
 		//Check if we should adjust to the height of the world
 		WFMath::Point<3> adjustedPoint(mPoint);
 
-		float height = adjustedPoint.z();
-		if (mHeightProvider.getHeight(TerrainPosition(mPoint.x(), mPoint.y()), height)) {
-			adjustedPoint.z() = height;
+		float height = adjustedPoint.y();
+		if (mHeightProvider.getHeight(TerrainPosition(mPoint.x(), mPoint.z()), height)) {
+			adjustedPoint.y() = height;
 		}
 
 		mMarkerNode->setPosition(Convert::toOgre(adjustedPoint));
@@ -152,7 +152,12 @@ public:
 	 * @param point The location which will be marked.
 	 */
 	EntityPointMarker(Eris::Entity& entity, Ogre::SceneManager& sceneManager, const IHeightProvider& heightProvider, const WFMath::Point<3>& point) :
-			mEntity(entity), mMarkerEntity(0), mMarkerNode(0), mMarkerDirectionIndicator(0), mHeightProvider(heightProvider), mPoint(point)
+			mEntity(entity),
+			mMarkerEntity(nullptr),
+			mMarkerNode(nullptr),
+			mMarkerDirectionIndicator(nullptr),
+			mHeightProvider(heightProvider),
+			mPoint(point)
 	{
 		mMarkerNode = sceneManager.getRootSceneNode()->createChildSceneNode();
 		try {
@@ -194,7 +199,12 @@ public:
 };
 
 EntityEditor::EntityEditor(World& world, Eris::Entity& entity, Adapters::Atlas::MapAdapter* rootAdapter) :
-		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarker(nullptr), mPathPolygon(nullptr), mHasPath(false)
+		mWorld(world),
+		mRootAdapter(rootAdapter),
+		mEntity(entity),
+		mMarker(nullptr),
+		mPathPolygon(nullptr),
+		mHasPath(false)
 {
 	mEntity.Moved.connect(sigc::mem_fun(*this, &EntityEditor::entityMoved));
 }
@@ -213,8 +223,8 @@ void EntityEditor::submitChanges()
 	if (mRootAdapter->hasChanges()) {
 		Atlas::Message::Element rootElement = mRootAdapter->getSelectedChangedElements();
 		if (rootElement.isMap()) {
-			std::map<std::string, ::Atlas::Message::Element> attributes(rootElement.asMap());
-			if (attributes.size()) {
+			auto attributes = rootElement.asMap();
+			if (!attributes.empty()) {
 
 				std::stringstream ss;
 
@@ -363,7 +373,7 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 void EntityEditor::addMarker(const std::string& entityId, const WFMath::Point<3>& point)
 {
 	delete mMarker;
-	mMarker = 0;
+	mMarker = nullptr;
 	if (point.isValid()) {
 
 		Eris::Entity* entity = mWorld.getView().getEntity(entityId);
