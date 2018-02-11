@@ -91,12 +91,6 @@ public:
 	bool isEnabled() const;
 
 	/**
-	 * @brief Sets the desired speed.
-	 * @param speed The desired speed, in world units per second.
-	 */
-	void setSpeed(float speed);
-
-	/**
 	 * @brief Gets the current path.
 	 * @return The current path.
 	 */
@@ -162,7 +156,7 @@ private:
 	/**
 	 * @brief The desired speed.
 	 */
-	float mSpeed;
+	double mSpeed;
 
 	/**
 	 * @brief True if we're expecting a movement response from the server.

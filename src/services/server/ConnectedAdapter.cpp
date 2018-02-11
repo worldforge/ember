@@ -56,7 +56,7 @@ ConnectedAdapter::~ConnectedAdapter()
 void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest)
 {
 	try {
-		mAvatar.moveToPoint(dest);
+		mAvatar.moveToPoint(dest, WFMath::Quaternion());
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on moving." << ex);
 	}
@@ -74,7 +74,7 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const 
 void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity)
 {
 	try {
-		mAvatar.moveInDirection(velocity);
+		mAvatar.moveInDirection(velocity, WFMath::Quaternion());
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on moving." << ex);
 	}

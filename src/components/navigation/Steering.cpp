@@ -29,6 +29,7 @@
 
 #include <wfmath/rotbox.h>
 #include <wfmath/segment.h>
+#include <Atlas/Message/Element.h>
 
 namespace Ember
 {
@@ -36,9 +37,23 @@ namespace Navigation
 {
 
 Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
-		mAwareness(awareness), mAvatar(avatar), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(5), mExpectingServerMovement(false), mLoitering(nullptr)
+		mAwareness(awareness),
+		mAvatar(avatar),
+		mSteeringEnabled(false),
+		mUpdateNeeded(false),
+		mPadding(16),
+		mSpeed(5),
+		mExpectingServerMovement(false),
+		mLoitering(nullptr)
 {
 	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &Steering::Awareness_TileUpdated));
+
+	if (avatar.getEntity()->hasAttr("speed-ground")) {
+		auto speedElement = avatar.getEntity()->valueOfAttr("speed-ground");
+		if (speedElement.isNum()) {
+			mSpeed = speedElement.asNum();
+		}
+	}
 }
 
 Steering::~Steering()
@@ -83,11 +98,6 @@ void Steering::setAwareness()
 
 	mAwareness.setAwarenessArea(area, WFMath::Segment<2>(entityPosition2d, destination2d));
 
-}
-
-void Steering::setSpeed(float speed)
-{
-	mSpeed = speed;
 }
 
 bool Steering::updatePath()
@@ -170,7 +180,6 @@ void Steering::update()
 				WFMath::Vector<2> velocity = nextWaypoint - entityPosition;
 				WFMath::Point<2> destination;
 				velocity.normalize();
-				velocity *= mSpeed;
 
 				if (mPath.size() == 1) {
 					//if the next waypoint is the destination we should send a "move to position" update to the server, to make sure that we stop when we've arrived.
@@ -180,11 +189,14 @@ void Steering::update()
 
 				//Check if we need to divert in order to avoid colliding.
 				WFMath::Vector<2> newVelocity;
-				bool avoiding = mAwareness.avoidObstacles(entityPosition, velocity, newVelocity);
+				bool avoiding = mAwareness.avoidObstacles(entityPosition, velocity * mSpeed, newVelocity);
 				if (avoiding) {
+					auto newMag = newVelocity.mag();
+					auto relativeMag = mSpeed / newMag;
+
 					velocity = newVelocity;
 					velocity.normalize();
-					velocity *= mSpeed;
+					velocity *= relativeMag;
 					mUpdateNeeded = true;
 				}
 
@@ -230,17 +242,29 @@ void Steering::update()
 
 void Steering::moveInDirection(const WFMath::Vector<2>& direction)
 {
-	mAvatar.moveInDirection(WFMath::Vector<3>(direction.x(), 0, direction.y()));
+	WFMath::Vector<3> fullDirection(direction.x(), 0, direction.y());
+	WFMath::Quaternion orientation;
+	if (direction != WFMath::Vector<2>::ZERO()) {
+		orientation.rotation(WFMath::Vector<3>(0, 0, 1), WFMath::Vector<3>(fullDirection).normalize(), WFMath::Vector<3>(0, 1, 0));
+	}
+
+	mAvatar.moveInDirection(fullDirection, orientation);
 	mLastSentVelocity = direction;
 	mExpectingServerMovement = true;
 }
 
 void Steering::moveToPoint(const WFMath::Point<3>& point)
 {
-	mAvatar.moveToPoint(point);
 
 	auto entity3dPosition = mAvatar.getEntity()->getViewPosition();
 	WFMath::Vector<3> vel = point - entity3dPosition;
+
+	WFMath::Quaternion orientation;
+	if (vel != WFMath::Vector<3>::ZERO()) {
+		orientation.rotation(WFMath::Vector<3>(0, 0, 1), WFMath::Vector<3>(vel).normalize(), WFMath::Vector<3>(0, 1, 0));
+	}
+
+	mAvatar.moveToPoint(point, orientation);
 
 	mLastSentVelocity = WFMath::Vector<2>(vel.x(), vel.z());
 	mExpectingServerMovement = true;

@@ -66,7 +66,17 @@ namespace OgreView
 {
 
 Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
-	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager(), terrainAdapter)), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(nullptr), mIsMovingServerOnly(false), mScene(scene), mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
+	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
+	mErisAvatarEntity(erisAvatarEntity),
+	mMaxSpeed(5),
+	mAvatarAttachmentController(new AvatarAttachmentController(*this)),
+	mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager(), terrainAdapter)),
+	mIsAdmin(false),
+	mHasChangedLocation(false),
+	mChatLoggerParent(nullptr),
+	mIsMovingServerOnly(false),
+	mScene(scene),
+	mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
@@ -121,12 +131,12 @@ void Avatar::runCommand(const std::string &command, const std::string &args)
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string attachPointName = tokeniser.nextToken();
-		if (attachPointName != "") {
+		if (!attachPointName.empty()) {
 			std::string x = tokeniser.nextToken();
 			std::string y = tokeniser.nextToken();
 			std::string z = tokeniser.nextToken();
 			std::string degrees = tokeniser.nextToken();
-			if (x != "" && y != "" && z != "" && degrees != "") {
+			if (!x.empty() && !y.empty() && !z.empty() && !degrees.empty()) {
 				Ogre::Degree ogreDegrees(Ogre::StringConverter::parseReal(degrees));
 				Ogre::Quaternion rotation(ogreDegrees, Ogre::Vector3(Ogre::StringConverter::parseReal( x), Ogre::StringConverter::parseReal( y), Ogre::StringConverter::parseReal( z)));
 				Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mErisAvatarEntity);
@@ -164,7 +174,7 @@ void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
 {
 	//Need to invert movement to fit with models
-	mCurrentMovement = WFMath::Vector<3>(-movement.x(), movement.y(), -movement.z()) * mMaxSpeed;
+	mCurrentMovement = WFMath::Vector<3>(-movement.x(), movement.y(), -movement.z());
 	if (movement != WFMath::Vector<3>::ZERO()) {
 
 		if (isOkayToSendRotationMovementChangeToServer()) {
@@ -179,7 +189,7 @@ void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath:
 			mClientSideAvatarOrientation = adjustedOrientation;
 		}
 		mCurrentMovement.rotate(mClientSideAvatarOrientation);
-		mClientSideAvatarPosition += mCurrentMovement * timeslice;
+		mClientSideAvatarPosition += mCurrentMovement * timeslice; //TODO: take speed-ground property into account
 
 		if (mErisAvatarEntity.getAttachment()) {
 			mErisAvatarEntity.getAttachment()->updatePosition();
@@ -229,7 +239,7 @@ void Avatar::attemptMove()
 
 		//Save the ten latest orientations sent to the server, so we can later when we receive an update from the server we can recognize that it's our own updates and ignore them.
 		long long currentTime = TimeHelper::currentTimeMillis();
-		mLastTransmittedMovements.push_back(TimedMovementStateList::value_type(currentTime, newMovementState));
+		mLastTransmittedMovements.emplace_back(currentTime, newMovementState);
 		if (mLastTransmittedMovements.size() > 10) {
 			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
 		}
@@ -252,7 +262,7 @@ EmberEntity& Avatar::getEmberEntity()
 bool Avatar::isOkayToSendRotationMovementChangeToServer()
 {
 	//Just check if we've recently sent something to the server
-	if (!mLastTransmittedMovements.size()) {
+	if (mLastTransmittedMovements.empty()) {
 		return true;
 	}
 	long long currentTime = TimeHelper::currentTimeMillis();
@@ -268,7 +278,7 @@ Ogre::Node* Avatar::getAvatarSceneNode() const
 	if (attachment) {
 		return attachment->getNode();
 	}
-	return 0;
+	return nullptr;
 }
 
 Scene& Avatar::getScene() const
@@ -361,6 +371,7 @@ void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, co
 
 void Avatar::Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
+	//TODO: get from "speed-ground" property instead
 	mMaxSpeed = static_cast<double> (variable);
 }
 
