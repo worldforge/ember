@@ -56,28 +56,26 @@ class FoliageLayer : public Forests::GrassLayerBase, public virtual sigc::tracka
 public:
     FoliageLayer(Forests::PagedGeometry *geom, Forests::GrassLoader<FoliageLayer> *ldr);
 
-    virtual ~FoliageLayer();
-
-	virtual unsigned int prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume, bool& isAvailable);
+	unsigned int prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume, bool& isAvailable) override;
 	
 	Ogre::uint32 getColorAt(float x, float z);
 	
 	void configure(Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition);
-	
-	virtual bool isColoursEnabled() const;
 
-	virtual bool isNormalsEnabled() const;
+	bool isColoursEnabled() const override;
 
-	virtual bool isTangentsEnabled() const;
+	bool isNormalsEnabled() const override;
 
-	virtual bool isCastShadowsEnabled() const;
+	bool isTangentsEnabled() const override;
+
+	bool isCastShadowsEnabled() const override;
 
 protected: 
 	friend class Forests::GrassLoader<FoliageLayer>;
 
 	//Used by GrassLoader::loadPage() - populates an array with grass.
 	//Returns the final number of grasses, which will always be <= grassCount
-	virtual unsigned int _populateGrassList(Forests::PageInfo page, float *posBuff, unsigned int grassCount);
+	unsigned int _populateGrassList(Forests::PageInfo page, float *posBuff, unsigned int grassCount) override;
 	Forests::GrassLoader<FoliageLayer> *parent;
 	
 	Terrain::TerrainManager* mTerrainManager;

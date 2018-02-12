@@ -38,7 +38,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IScaler() {}
+	virtual ~IScaler() = default;
 
 	virtual void scale(WFMath::MTRand& rnd, const WFMath::Point<2>& pos, Ogre::Vector2& scale) = 0;
 };
@@ -47,7 +47,8 @@ class UniformScaler : public IScaler
 {
 public:
 	UniformScaler(float min, float max);
-	virtual void scale(WFMath::MTRand& rnd, const WFMath::Point<2>& pos, Ogre::Vector2& scale);
+
+	void scale(WFMath::MTRand& rnd, const WFMath::Point<2>& pos, Ogre::Vector2& scale) override;
 private:
 	float mMin;
 	float mRange;
@@ -57,7 +58,8 @@ class Scaler : public IScaler
 {
 public:
 	Scaler(float xMin, float xMax, float yMin, float yMax);
-	virtual void scale(WFMath::MTRand& rnd, const WFMath::Point<2>& pos, Ogre::Vector2& scale);
+
+	void scale(WFMath::MTRand& rnd, const WFMath::Point<2>& pos, Ogre::Vector2& scale) override;
 private:
 	float mXMin;
 	float mXRange;
@@ -69,7 +71,7 @@ class PlantPopulator
 {
 public:
 
-	PlantPopulator(unsigned int layerIndex, IScaler* scaler, unsigned int plantIndex);
+	PlantPopulator(unsigned int layerIndex, IScaler* scaler, size_t plantIndex);
 	virtual ~PlantPopulator();
 
 	virtual void populate(PlantAreaQueryResult& result, SegmentRefPtr segmentRef) = 0;
@@ -78,7 +80,7 @@ protected:
 
 	int mLayerIndex;
 	IScaler* mScaler;
-	unsigned int mPlantIndex;
+	size_t mPlantIndex;
 
 };
 

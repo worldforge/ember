@@ -33,10 +33,11 @@ typedef std::vector<WFMath::Ball<2>> ClusterStore;
 class ClusterPopulator : public PlantPopulator
 {
 public:
-	ClusterPopulator(unsigned int layerIndex, IScaler* scaler, unsigned int plantIndex);
-	virtual ~ClusterPopulator();
+	ClusterPopulator(unsigned int layerIndex, IScaler* scaler, size_t plantIndex);
 
-	virtual void populate(PlantAreaQueryResult& result, SegmentRefPtr segmentRef);
+	~ClusterPopulator() override = default;
+
+	void populate(PlantAreaQueryResult& result, SegmentRefPtr segmentRef) override;
 
 	void setMinClusterRadius(float theValue);
 	float getMinClusterRadius() const;

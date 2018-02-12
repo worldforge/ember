@@ -324,8 +324,8 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 		return;
 	}
 
-	int xIndex = static_cast<int>(std::floor(wfPos.x() / mTerrain->getResolution()));
-	int yIndex = static_cast<int>(std::floor(wfPos.y() / mTerrain->getResolution()));
+	auto xIndex = static_cast<int>(std::floor(wfPos.x() / mTerrain->getResolution()));
+	auto yIndex = static_cast<int>(std::floor(wfPos.y() / mTerrain->getResolution()));
 	SegmentRefPtr segmentRef = mSegmentManager->getSegmentReference(xIndex, yIndex);
 	if (segmentRef) {
 		Ogre::ColourValue defaultShadowColour;

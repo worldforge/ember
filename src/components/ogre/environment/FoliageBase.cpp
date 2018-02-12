@@ -67,11 +67,11 @@ FoliageBase::~FoliageBase()
 void FoliageBase::initializeDependentLayers()
 {
 	bool foundLayer(false);
-	for (auto I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
+	for (auto& definition : TerrainLayerDefinitionManager::getSingleton().getDefinitions()) {
 
 		if (foundLayer) {
-			mDependentDefinitions.push_back((*I));
-		} else if (!foundLayer && (*I) == &mTerrainLayerDefinition) {
+			mDependentDefinitions.push_back(definition);
+		} else if (!foundLayer && definition == &mTerrainLayerDefinition) {
 			foundLayer = true;
 		}
 	}
@@ -90,8 +90,8 @@ void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shad
 			}
 		}
 		if (isRelevant) {
-			for (AreaStore::const_iterator I = areas.begin(); I != areas.end(); ++I) {
-				const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(*I));
+			for (const auto& area : areas) {
+				const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(area));
 				mPagedGeometry->reloadGeometryPages(ogreExtent);
 			}
 		}
@@ -110,8 +110,7 @@ void FoliageBase::TerrainHandler_EventShaderCreated(const Terrain::TerrainShader
 void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage* >&)
 {
 	if (mPagedGeometry) {
-		for (std::vector<WFMath::AxisBox<2>>::const_iterator I = areas.begin(); I != areas.end(); ++I) {
-			const WFMath::AxisBox<2>& area(*I);
+		for (const auto& area : areas) {
 			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(area));
 
 			mPagedGeometry->reloadGeometryPages(ogreExtent);
@@ -131,7 +130,7 @@ void FoliageBase::TerrainManager_TerrainShown(const std::vector<Ogre::TRect<Ogre
 void FoliageBase::reloadAtPosition(const WFMath::Point<2>& worldPosition)
 {
 	if (mPagedGeometry) {
-		mPagedGeometry->reloadGeometryPage(Ogre::Vector3(worldPosition.x(), 0, -worldPosition.y()), true);
+		mPagedGeometry->reloadGeometryPage(Ogre::Vector3(worldPosition.x(), 0, worldPosition.y()), true);
 	}
 }
 
@@ -143,7 +142,7 @@ float getTerrainHeight(float x, float z, void* userData)
 {
 	IHeightProvider* heightProvider = reinterpret_cast<IHeightProvider*>(userData);
 	float height = 0;
-	heightProvider->getHeight(TerrainPosition(x, -z), height);
+	heightProvider->getHeight(TerrainPosition(x, z), height);
 	return height;
 }
 
@@ -154,7 +153,7 @@ double getTerrainHeight(double x, double z, void* userData)
 {
 	IHeightProvider* heightProvider = reinterpret_cast<IHeightProvider*>(userData);
 	float height = 0;
-	heightProvider->getHeight(TerrainPosition(x, -z), height);
+	heightProvider->getHeight(TerrainPosition(x, z), height);
 	return (double)height;
 }
 }

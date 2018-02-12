@@ -31,7 +31,7 @@ class PlantPopulator;
 class Vegetation
 {
 public:
-	Vegetation();
+	Vegetation() = default;
 	virtual ~Vegetation();
 
 	void createPopulator(const TerrainFoliageDefinition& foliageDef, unsigned int surfaceLayerIndex);

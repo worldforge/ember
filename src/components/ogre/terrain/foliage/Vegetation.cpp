@@ -6,6 +6,8 @@
  */
 
 #include "Vegetation.h"
+
+#include <utility>
 #include "ClusterPopulator.h"
 #include "components/ogre/terrain/TerrainLayerDefinition.h"
 
@@ -20,9 +22,6 @@ namespace Terrain
 namespace Foliage
 {
 
-Vegetation::Vegetation()
-{
-}
 
 Vegetation::~Vegetation()
 {
@@ -37,19 +36,22 @@ void Vegetation::createPopulator(const TerrainFoliageDefinition& foliageDef, uns
 	if (foliageDef.getPopulationTechnique() == "cluster") {
 		IScaler* scaler = 0;
 		if (foliageDef.hasParameter("minScale")) {
-			scaler = new UniformScaler(atof(foliageDef.getParameter("minScale").c_str()), atof(foliageDef.getParameter("maxScale").c_str()));
+			scaler = new UniformScaler(std::stof(foliageDef.getParameter("minScale")), std::stof(foliageDef.getParameter("maxScale")));
 		} else {
-			scaler = new Scaler(atof(foliageDef.getParameter("minWidth").c_str()), atof(foliageDef.getParameter("maxWidth").c_str()), atof(foliageDef.getParameter("minHeight").c_str()), atof(foliageDef.getParameter("maxHeight").c_str()));
+			scaler = new Scaler(std::stof(foliageDef.getParameter("minWidth")),
+								std::stof(foliageDef.getParameter("maxWidth")),
+								std::stof(foliageDef.getParameter("minHeight")),
+								std::stof(foliageDef.getParameter("maxHeight")));
 		}
 		ClusterPopulator* populator = new ClusterPopulator(surfaceLayerIndex, scaler, mPopulators.size());
-		populator->setClusterDistance(atof(foliageDef.getParameter("clusterDistance").c_str()));
-		populator->setMinClusterRadius(atof(foliageDef.getParameter("minClusterRadius").c_str()));
-		populator->setMaxClusterRadius(atof(foliageDef.getParameter("maxClusterRadius").c_str()));
-		populator->setDensity(atof(foliageDef.getParameter("density").c_str()));
-		populator->setFalloff(atof(foliageDef.getParameter("falloff").c_str()));
+		populator->setClusterDistance(std::stof(foliageDef.getParameter("clusterDistance")));
+		populator->setMinClusterRadius(std::stof(foliageDef.getParameter("minClusterRadius")));
+		populator->setMaxClusterRadius(std::stof(foliageDef.getParameter("maxClusterRadius")));
+		populator->setDensity(std::stof(foliageDef.getParameter("density")));
+		populator->setFalloff(std::stof(foliageDef.getParameter("falloff")));
 		unsigned char threshold(100);
-		if (foliageDef.getParameter("threshold") != "") {
-			threshold = static_cast<unsigned char> (atoi(foliageDef.getParameter("threshold").c_str()));
+		if (!foliageDef.getParameter("threshold").empty()) {
+			threshold = static_cast<unsigned char> (std::stoi(foliageDef.getParameter("threshold")));
 		}
 		populator->setThreshold(threshold);
 
@@ -62,7 +64,7 @@ void Vegetation::populate(const std::string& plantType, PlantAreaQueryResult& re
 {
 	PopulatorStore::const_iterator I = mPopulators.find(plantType);
 	if (I != mPopulators.end()) {
-		I->second->populate(result, segmentRef);
+		I->second->populate(result, std::move(segmentRef));
 	}
 }
 

@@ -70,10 +70,6 @@ FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLa
 	shaderNeedsUpdate = true;
 }
 
-FoliageLayer::~FoliageLayer()
-{
-}
-
 void FoliageLayer::configure(Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition)
 {
 	mTerrainManager = terrainManager;
@@ -103,14 +99,14 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo /*page*/, float *posBuff,
 	unsigned int finalGrassCount = 0;
 	if (mLatestPlantsResult) {
 		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
-		for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
+		for (const auto& I : store) {
 			if (finalGrassCount == grassCount) {
 				break;
 			}
-			*posBuff++ = I->position.x;
-			*posBuff++ = I->position.z;
-			*posBuff++ = I->scale.x;
-			*posBuff++ = I->orientation;
+			*posBuff++ = I.position.x;
+			*posBuff++ = I.position.z;
+			*posBuff++ = I.scale.x;
+			*posBuff++ = I.orientation;
 			finalGrassCount++;
 		}
 	} else {
@@ -123,7 +119,7 @@ void FoliageLayer::plantQueryExecuted(const Terrain::PlantAreaQueryResult& query
 {
 	mLatestPlantsResult = &queryResult;
 	geom->reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().getCenter().x, 0, queryResult.getQuery().getCenter().y), true);
-	mLatestPlantsResult = 0;
+	mLatestPlantsResult = nullptr;
 
 }
 
