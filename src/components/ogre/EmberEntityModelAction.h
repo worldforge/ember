@@ -23,47 +23,29 @@
 #ifndef EMBEROGREEMBERENTITYMODELACTION_H
 #define EMBEROGREEMBERENTITYMODELACTION_H
 
-#include "components/entitymapping/Actions/Action.h"
-#include <string>
+#include "ModelActionBase.h"
 
 namespace Ember
 {
-class EmberEntity;
-namespace EntityMapping
-{
-class EntityMapping;
-}
 namespace OgreView
 {
-
-class Scene;
 
 /**
  * @brief Show a certain Model.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class EmberEntityModelAction: public EntityMapping::Actions::Action
+class EmberEntityModelAction: public ModelActionBase
 {
 public:
 	EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene, EntityMapping::EntityMapping& mMapping);
-	virtual ~EmberEntityModelAction();
 
-	virtual void activate(EntityMapping::ChangeContext& context);
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	~EmberEntityModelAction() override = default;
+
+	void activate(EntityMapping::ChangeContext& context) override;
 
 protected:
-	EmberEntity& mEntity;
-
 	std::string mModelName;
 
-	Scene& mScene;
-
-	/**
-	 * @brief The mapping this action is bound to.
-	 */
-	EntityMapping::EntityMapping& mMapping;
-
-	void ChangeContext_ContextComplete();
 
 };
 

@@ -45,7 +45,7 @@ class XMLEntityMappingDefinitionSerializer{
 public:
     XMLEntityMappingDefinitionSerializer(EntityMapping::EntityMappingManager& modelMappingManager);
 
-    ~XMLEntityMappingDefinitionSerializer();
+    ~XMLEntityMappingDefinitionSerializer() = default;
 
     /**
     Parse the xml document and create definitions from the data.

@@ -28,7 +28,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -36,24 +35,45 @@ namespace Cases {
 namespace AttributeComparers {
 
 /**
-	Tests for string equality. This is case sensitive.
+	Interface for string comparison.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class StringComparer
-{
+class StringComparer {
 public:
-	explicit StringComparer(std::string value);
 
 	/**
 	Returns true if the supplied value equals the stored value. The comparison is case sensitive.
 	@param value
 	*/
-	virtual bool test(const std::string& value);
+	virtual bool test(const std::string& value) = 0;
+
+};
+
+/**
+ * Tests for string equality. This is case sensitive.
+ */
+class StringValueComparer : public StringComparer {
+public:
+	explicit StringValueComparer(std::string value);
+
+	bool test(const std::string& value) override;
 
 protected:
 	std::string mValue;
+
+};
+
+/**
+ * Checks that the string isn't empty.
+ */
+class StringNotEmptyComparer : public StringComparer {
+public:
+
+	bool test(const std::string& value) override;
+
 };
 }
+
 
 }
 

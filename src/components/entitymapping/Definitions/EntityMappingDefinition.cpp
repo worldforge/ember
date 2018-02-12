@@ -26,40 +26,41 @@
 
 #include "EntityMappingDefinition.h"
 
+#include <utility>
+
 namespace Ember {
-
-
 
 namespace EntityMapping {
 
 namespace Definitions {
 
 EntityMappingDefinition::EntityMappingDefinition()
-{
-}
-
-EntityMappingDefinition::~EntityMappingDefinition()
-{
+		: mOverride(false) {
 }
 
 
-const std::string& EntityMappingDefinition::getName() const
-{
+const std::string& EntityMappingDefinition::getName() const {
 	return mName;
 }
-void EntityMappingDefinition::setName(std::string name)
-{
-	mName = name;
+
+void EntityMappingDefinition::setName(std::string name) {
+	mName = std::move(name);
 }
 
-MatchDefinition& EntityMappingDefinition::getRoot()
-{
+MatchDefinition& EntityMappingDefinition::getRoot() {
 	return mRootMatch;
 }
 
-const MatchDefinition& EntityMappingDefinition::getRoot() const
-{
+const MatchDefinition& EntityMappingDefinition::getRoot() const {
 	return mRootMatch;
+}
+
+bool EntityMappingDefinition::isOverride() const {
+	return mOverride;
+}
+
+void EntityMappingDefinition::setIsOverride(bool isOverride) {
+	mOverride = isOverride;
 }
 
 }

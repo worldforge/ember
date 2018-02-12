@@ -39,9 +39,9 @@
 #include "Matches/EntityTypeMatch.h"
 
 
-namespace Eris
-{
+namespace Eris {
 class Entity;
+
 class View;
 }
 
@@ -56,8 +56,11 @@ namespace EntityMapping {
 
 namespace Cases {
 class OutfitCase;
+
 class CaseBase;
+
 class EntityTypeCase;
+
 class AttributeCase;
 
 namespace AttributeComparers {
@@ -67,13 +70,18 @@ class AttributeComparerWrapper;
 }
 namespace Matches {
 class EntityTypeMatch;
+
 class MatchBase;
+
 class Match;
+
 class AttributeMatch;
+
 class OutfitMatch;
 
 namespace Observers {
 class MatchAttributeObserver;
+
 class EntityCreationObserver;
 
 }
@@ -84,16 +92,14 @@ class EntityCreationObserver;
 /**
 Utility method for deleting all object held in a std::vector.
 */
-template <typename T>
-static void cleanVector(T& theVector)
-{
+template<typename T>
+static void cleanVector(T& theVector) {
 	typename T::iterator I = theVector.begin();
-	for (;I != theVector.end();	++I) {
+	for (; I != theVector.end(); ++I) {
 		delete *I;
 	}
 	theVector.clear();
 }
-
 
 
 /**
@@ -110,29 +116,29 @@ static void cleanVector(T& theVector)
 
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class EntityMapping
-{
+class EntityMapping {
 public:
 	typedef std::vector<Cases::CaseBase*> CaseBaseStore;
 	typedef std::vector<Matches::Observers::MatchAttributeObserver*> MatchAttributeObserverStore;
-    EntityMapping(Eris::Entity& entity);
 
-    ~EntityMapping() = default;
+	explicit EntityMapping(Eris::Entity& entity);
 
-    /**
-    Gets the root entity match instance.
-    */
-    Matches::EntityTypeMatch& getRootEntityMatch();
+	~EntityMapping() = default;
 
-    /**
-    Initializes the mapping. Clients are required to call this on all new instances.
-    */
-    void initialize();
+	/**
+	 * Gets the base case, which is always true.
+     */
+	Cases::CaseBase& getBaseCase();
+
+	/**
+	Initializes the mapping. Clients are required to call this on all new instances.
+	*/
+	void initialize();
 
 
 protected:
 
-	Matches::EntityTypeMatch mRootEntityMatch;
+	Cases::CaseBase mBaseCase;
 
 	Eris::Entity& mEntity;
 };

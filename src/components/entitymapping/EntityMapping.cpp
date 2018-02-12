@@ -30,23 +30,24 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 
-EntityMapping::EntityMapping(Eris::Entity& entity): mEntity(entity)
-{
+EntityMapping::EntityMapping(Eris::Entity& entity) : mEntity(entity) {
+	mBaseCase.setState(true);
 }
 
-Matches::EntityTypeMatch& EntityMapping::getRootEntityMatch()
-{
-	return mRootEntityMatch;
+Cases::CaseBase& EntityMapping::getBaseCase() {
+	return mBaseCase;
 }
 
 
-void EntityMapping::initialize()
-{
-	mRootEntityMatch.evaluateChanges();
+void EntityMapping::initialize() {
+	ChangeContext changeContext{};
+
+	mBaseCase.evaluateChanges(changeContext);
+
+	changeContext.performActions();
 }
 
 

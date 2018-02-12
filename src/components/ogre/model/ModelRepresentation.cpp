@@ -443,7 +443,7 @@ bool ModelRepresentation::getVisualize(const std::string& visualization) const {
 
 void ModelRepresentation::reactivatePartActions() {
 	ModelPartReactivatorVisitor visitor;
-	mMapping.getRootEntityMatch().accept(visitor);
+	mMapping.getBaseCase().accept(visitor);
 }
 
 }

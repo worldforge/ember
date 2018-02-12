@@ -159,7 +159,7 @@ protected:
 
 	IActionCreator& mActionCreator;
 	Eris::Entity& mEntity;
-	EntityMapping* mModelMap;
+	EntityMapping* mEntityMapping;
 	Definitions::EntityMappingDefinition& mDefinition;
 	Eris::TypeService& mTypeService;
 	Eris::View* mView;

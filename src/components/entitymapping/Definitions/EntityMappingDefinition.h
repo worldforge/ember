@@ -53,16 +53,29 @@ class EntityMappingDefinition
 public:
     EntityMappingDefinition();
 
-    ~EntityMappingDefinition();
+    ~EntityMappingDefinition() = default;
 
     const std::string& getName() const;
     void setName(std::string name);
 
     MatchDefinition& getRoot();
     const MatchDefinition& getRoot() const;
+
+	/**
+	 * If true, the rules in the mapping will override any "present-mesh" or "present-model" property of the entity.
+	 * @return
+	 */
+	bool isOverride() const;
+	void setIsOverride(bool isOverride);
 protected:
 	MatchDefinition mRootMatch;
 	std::string mName;
+
+	/**
+	 * If set to true, the rules in the mapping will override any "present-mesh" or "present-model" property of the entity.
+	 * Defaults to false.
+	 */
+	bool mOverride;
 };
 
 

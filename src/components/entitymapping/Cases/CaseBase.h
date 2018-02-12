@@ -129,13 +129,13 @@ public:
 	 */
 	void accept(IVisitor& visitor);
 
+	void setState(bool state);
+
 protected:
 	ActionStore mActions;
 
 	CaseBase* mParentCase;
 	bool mIsTrue, mIsActive;
-
-	void setState(bool state);
 
 	MatchBaseStore mMatches;
 

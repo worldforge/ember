@@ -58,8 +58,10 @@ void AttributeMatch::testAttribute(const Atlas::Message::Element& attribute, boo
 void AttributeMatch::setEntity(Eris::Entity* entity)
 {
 	AbstractMatch<Cases::AttributeCase>::setEntity(entity);
-	//observe the attribute by the use of an MatchAttributeObserver
-	mMatchAttributeObserver->observeEntity(entity);
+	if (mMatchAttributeObserver) {
+		//observe the attribute by the use of an MatchAttributeObserver
+		mMatchAttributeObserver->observeEntity(entity);
+	}
 	if (entity) {
 		if (entity->hasAttr(mInternalAttributeName)) {
 			testAttribute(entity->valueOfAttr(mInternalAttributeName), false);

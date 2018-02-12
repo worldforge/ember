@@ -30,6 +30,8 @@
 #include "CompositionAction.h"
 #include "components/ogre/environment/OceanAction.h"
 #include "components/ogre/widgets/LabelAction.h"
+#include "PresentModelAction.h"
+#include "PresentMeshAction.h"
 
 using namespace Ember::EntityMapping;
 
@@ -41,15 +43,10 @@ EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity, Scene& s
 {
 }
 
-
-EmberEntityActionCreator::~EmberEntityActionCreator()
-{
-}
-
 void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition)
 {
-	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+	auto endJ = caseDefinition.getActions().end();
+	for (auto J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 		if (J->getType() == "display-part") {
 			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, J->getValue());
 			aCase->addAction(action);
@@ -68,6 +65,12 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 		} else if (J->getType() == "enable-composition") {
 			CompositionAction* action = new CompositionAction(mEntity, J->getValue());
 			aCase->addAction(action);
+		} else if (J->getType() == "present-model") {
+			aCase->addAction(new PresentModelAction(mEntity, mScene, modelMapping));
+		} else if (J->getType() == "present-mesh") {
+			aCase->addAction(new PresentMeshAction(mEntity, mScene, modelMapping));
+		} else {
+			S_LOG_WARNING("Could not recognize entity action '" << J->getType() << "'.");
 		}
 	}
 

@@ -26,8 +26,9 @@
 
 #include "StringComparer.h"
 
-namespace Ember {
+#include <utility>
 
+namespace Ember {
 
 
 namespace EntityMapping {
@@ -36,16 +37,18 @@ namespace Cases {
 
 namespace AttributeComparers {
 
-StringComparer::StringComparer(std::string value) : mValue(value)
-{
+StringValueComparer::StringValueComparer(std::string value)
+		: mValue(std::move(value)) {
 }
 
-bool StringComparer::test(const std::string& value)
-{
+bool StringValueComparer::test(const std::string& value) {
 	return mValue == value;
 }
 
 
+bool StringNotEmptyComparer::test(const std::string& value) {
+	return !value.empty();
+}
 }
 
 }

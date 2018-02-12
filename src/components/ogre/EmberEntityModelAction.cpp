@@ -37,101 +37,14 @@
 namespace Ember {
 namespace OgreView {
 
-/**
- * @brief Reactivates any model action which has previously been activated.
- * @author Erik Ogenvik <erik@ogenvik.org>
- */
-class ModelReactivatorVisitor : public EntityMapping::IVisitor {
-private:
-    EntityMapping::ChangeContext mChangeContext;
-    EmberEntityModelAction* mAction;
-public:
-
-    ModelReactivatorVisitor() :
-            mAction(0) {
-
-    }
-
-    virtual ~ModelReactivatorVisitor() {
-        if (mAction) {
-            mAction->activate(mChangeContext);
-        }
-    }
-
-    void visit(EntityMapping::Actions::Action& action) {
-        EmberEntityModelAction* modelAction = dynamic_cast<EmberEntityModelAction*> (&action);
-        if (modelAction) {
-            if (modelAction->getCase()->getIsActive()) {
-                mAction = modelAction;
-            }
-        }
-    }
-
-    void visit(EntityMapping::Matches::MatchBase& match) {
-
-    }
-
-    void visit(EntityMapping::Cases::CaseBase& caseBase) {
-
-    }
-
-};
-
 EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene, EntityMapping::EntityMapping& modelMapping) :
-        mEntity(entity), mModelName(modelName), mScene(scene), mMapping(modelMapping) {
-}
-
-EmberEntityModelAction::~EmberEntityModelAction() {
+		ModelActionBase(entity, scene, modelMapping), mModelName(modelName) {
 }
 
 void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context) {
-    Model::Model* model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
-    if (!model || model->getDefinition()->getName() != mModelName) {
-        mEntity.setGraphicalRepresentation(nullptr);
-
-        Model::ModelDefinitionManager& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
-        try {
-            auto definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.load(mModelName, "Data"));
-            if (!definition) {
-                S_LOG_FAILURE("Could not find model " << mModelName << ", using placeholder.");
-                //add a placeholder model
-                definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.load("placeholder.modeldef", "Data"));
-
-
-//                Model::ModelDefinitionPtr modelDef = model->getDefinition();
-//                modelDef->createSubModelDefinition("common/primitives/model/box.mesh")->createPartDefinition("main")->setShow(true);
-//                modelDef->setValid(true);
-            }
-            model = new Model::Model(mScene.getSceneManager(), definition, mEntity.getId());
-            model->setVisible(mEntity.isVisible());
-            //modelDefinitionManager.populateModel(model, definition);
-			model->load();
-
-            Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, model, mScene, mMapping);
-            mEntity.setGraphicalRepresentation(representation);
-            representation->initFromModel();
-
-        } catch (const std::exception& ex) {
-            S_LOG_FAILURE("Could not load model of type " << mModelName << " from group 'ModelDefinitions'." << ex);
-        }
-
-
-    }
+	showModel(mModelName);
 }
 
-void EmberEntityModelAction::deactivate(EntityMapping::ChangeContext& context) {
-    mEntity.setGraphicalRepresentation(nullptr);
-    //As we've now deactivated our model action, removing the graphical representation, we should after the change context is complete also check if there are any other model actions which should be reactivated
-    context.EventContextComplete.connect(sigc::mem_fun(*this, &EmberEntityModelAction::ChangeContext_ContextComplete));
-}
-
-void EmberEntityModelAction::ChangeContext_ContextComplete() {
-    //If the entity has no graphical representation, check if there are any existing active model actions which we should reactivate.
-    if (!mEntity.getGraphicalRepresentation()) {
-        ModelReactivatorVisitor visitor;
-        mMapping.getRootEntityMatch().accept(visitor);
-    }
-}
 
 }
 }

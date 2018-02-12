@@ -1072,9 +1072,9 @@
 	<nomodel name="boundary" />
 	<nomodel name="feature" /> <!-- This also encompasses areas, fields and paths --> 
 	<nomodel name="ploughed_field" />
-	<nomodel name="weather" />
-    <nomodel name="land" />
-    <nomodel name="world" />
+	<nomodel name="weather" override="true" />
+    <nomodel name="land" override="true" />
+    <nomodel name="world" override="true" />
     
 	<nomodel name="wall" /> <!-- This is the invisble wall for the houses -->
 

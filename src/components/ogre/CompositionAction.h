@@ -45,8 +45,9 @@ public:
 	 */
 	CompositionAction(EmberEntity& entity, const std::string& mode);
 
-	virtual void activate(EntityMapping::ChangeContext& context);
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
+
+	void deactivate(EntityMapping::ChangeContext& context) override;
 
 protected:
 

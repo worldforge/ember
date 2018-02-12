@@ -37,7 +37,7 @@ namespace EntityMapping
 using namespace Definitions;
 
 EntityMappingManager::EntityMappingManager() :
-		mTypeService(0)
+		mTypeService(nullptr)
 {
 }
 
@@ -74,6 +74,7 @@ void EntityMappingManager::addDefinition(EntityMappingDefinition* definition)
 EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeInfo* typeInfo)
 {
 	bool noneThere = false;
+
 	while (!noneThere) {
 		auto I = mEntityTypeMappings.find(typeInfo->getName());
 		if (I != mEntityTypeMappings.end()) {
