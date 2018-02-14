@@ -71,7 +71,10 @@ namespace Gui {
 	mLoadingCommentElement(nullptr),
 	mVersionElement(nullptr),
 	mMainLoopController(mainLoopController)
-	{}
+	{
+
+
+	}
 
 	LoadingBar::~LoadingBar(){
 		try {
@@ -153,7 +156,7 @@ namespace Gui {
 
 	/** Hide the loading bar and stop listening.
 	*/
-	void LoadingBar::finish(void)
+	void LoadingBar::finish()
 	{
 		if (mLoadOverlay) {
 			// hide loading screen
@@ -167,19 +170,6 @@ namespace Gui {
 		mSections.push_back(section);
 	}
 
-	void LoadingBar::activateSection(LoadingBarSection* section)
-	{
-		SectionStore::iterator I = std::find(mSections.begin(), mSections.end(), section);
-		if (I != mSections.end()) {
-			mCurrentSection = I;
-			SectionStore::iterator J = I;
-			float totalSize = 0;
-			for (;J != mSections.begin(); --J) {
-				totalSize += (*J)->getSize();
-			}
-			setProgress(totalSize);
-		}
-	}
 
 	void LoadingBar::setProgress(float progress)
 	{
@@ -187,7 +177,7 @@ namespace Gui {
 			//make the black blocking block a little bit smaller and move it to the right
 			mLoadingBarElement->setWidth(mProgressBarMaxSize * (1 - progress));
 			mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));
-			updateRender(progress == 1.0f ? true : false);
+			updateRender();
 		}
 		mProgress = progress;
 	}
@@ -201,7 +191,7 @@ namespace Gui {
 	{
 		if (mLoadingCommentElement) {
 			mLoadingCommentElement->setCaption(caption);
-			updateRender(true);
+			updateRender();
 		}
 	}
 
@@ -209,15 +199,15 @@ namespace Gui {
 	{
 		if (mVersionElement) {
 			mVersionElement->setCaption(versionText);
-			updateRender(true);
+			updateRender();
 		}
 	}
 
-	void LoadingBar::updateRender(bool forceRender)
+	void LoadingBar::updateRender()
 	{
 		static unsigned long oneFrame = 1000L / 60L;
 		unsigned long millisecondsSinceLastFrame = mTimer.getMilliseconds();
-		if (millisecondsSinceLastFrame > oneFrame || forceRender) {
+		if (millisecondsSinceLastFrame > oneFrame) {
 			try {
 				//There's a bug in Ogre 1.7.1 (at least) which makes the text of some elements not appear. By asking it to update the positions it seems to work.
 				mVersionElement->_positionsOutOfDate();
@@ -237,9 +227,6 @@ namespace Gui {
 
 	LoadingBarSection::LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name)
 	: mSize(size), mLoadingBar(loadingBar), mAccumulatedSize(0), mName(name), mActive(false)
-	{
-	}
-	LoadingBarSection::~LoadingBarSection()
 	{
 	}
 
@@ -271,7 +258,7 @@ namespace Gui {
 		if (mAccumulatedSize < 1.0 && mAccumulatedSize < progress) {
 			mLoadingBar.increase(mSize * (mAccumulatedSize - progress));
 			mAccumulatedSize = progress;
-			mLoadingBar.updateRender(true);
+			mLoadingBar.updateRender();
 		}
 	}
 
@@ -305,7 +292,7 @@ namespace Gui {
 		if (mNumGroupsLoad != 0) {
 			mProgressBarInc = mInitProportion / mNumGroupsInit;
 		} else {
-			mProgressBarInc = 1.0 / mNumGroupsInit;
+			mProgressBarInc = 1.0f / mNumGroupsInit;
 		}
 
 		if (scriptCount == 0) {
@@ -327,7 +314,7 @@ namespace Gui {
 	{
 		mSection.setCaption(scriptName);
 	}
-	void ResourceGroupLoadingBarSection::scriptParseEnded(const Ogre::String& scriptName, bool skipped)
+	void ResourceGroupLoadingBarSection::scriptParseEnded(const Ogre::String& scriptName, bool)
 	{
 		//make the black blocking block a little bit smaller and move it to the right
 		mSection.tick(mProgressBarInc);
@@ -338,10 +325,9 @@ namespace Gui {
 			return; //avoid divide-by-zero
 		}
 		if (mNumGroupsInit) {
-			mProgressBarInc = (1.0-mInitProportion) /
-				mNumGroupsLoad;
+			mProgressBarInc = (1.0f - mInitProportion) / mNumGroupsLoad;
 		} else {
-			mProgressBarInc = 1.0 / mNumGroupsLoad;
+			mProgressBarInc = 1.0f / mNumGroupsLoad;
 		}
 
 		if (resourceCount == 0) {
@@ -356,14 +342,11 @@ namespace Gui {
 	{
 		mSection.setCaption(resource->getName());
 	}
-	void ResourceGroupLoadingBarSection::resourceLoadEnded(void)
+	void ResourceGroupLoadingBarSection::resourceLoadEnded()
 	{
 		mSection.tick(mProgressBarInc);
 	}
-/*	void ResourceGroupLoadingBarSection::worldGeometryStageStarted(const String& description)
-	{
-		mSection.setCaption(description);
-	}*/
+
 	void ResourceGroupLoadingBarSection::resourceGroupLoadEnded(const String& groupName)
 	{
 		mCompletedSections++;
@@ -395,8 +378,6 @@ namespace Gui {
 		wfutSrv.DownloadingServerList.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadingServerList));
 		wfutSrv.UpdatesCalculated.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_UpdatesCalculated));
 	}
-	WfutLoadingBarSection::~WfutLoadingBarSection()
-	{}
 
 	void WfutLoadingBarSection::wfutService_DownloadComplete(const std::string& url, const std::string& filename)
 	{
@@ -405,7 +386,7 @@ namespace Gui {
 		ss << "Downloaded " << filename << " (" <<mDownloadedSoFar << " of "<< mNumberOfFilesToUpdate << ")";
 		mSection.setCaption(ss.str());
 		if (mNumberOfFilesToUpdate) {
-			mSection.tick(1.0 / mNumberOfFilesToUpdate);
+			mSection.tick(1.0f / mNumberOfFilesToUpdate);
 		}
 	}
 
@@ -416,7 +397,7 @@ namespace Gui {
 		ss << "Failed to download " << filename << " (" << mDownloadedSoFar << " of " << mNumberOfFilesToUpdate << ")";
 		mSection.setCaption(ss.str());
 		if (mNumberOfFilesToUpdate) {
-			mSection.tick(1.0 / mNumberOfFilesToUpdate);
+			mSection.tick(1.0f / mNumberOfFilesToUpdate);
 		}
 	}
 

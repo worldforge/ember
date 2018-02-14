@@ -41,9 +41,8 @@ class LoadingBarSection
 friend class LoadingBar;
 public:
 	LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name);
-	virtual ~LoadingBarSection();
+	virtual ~LoadingBarSection() = default;
 
-	void activate(int steps);
 	float getSize() const;
 	const std::string& getName() const;
 	void tick(float tickSize);
@@ -63,8 +62,8 @@ private:
 class WfutLoadingBarSection : public virtual sigc::trackable
 {
 public:
-	WfutLoadingBarSection(LoadingBarSection& section);
-	virtual ~WfutLoadingBarSection();
+	explicit WfutLoadingBarSection(LoadingBarSection& section);
+	virtual ~WfutLoadingBarSection() = default;
 private:
 
 	void wfutService_DownloadComplete(const std::string& url, const std::string& filename);
@@ -85,22 +84,23 @@ private:
 class ResourceGroupLoadingBarSection : public Ogre::ResourceGroupListener
 {
 public:
-	ResourceGroupLoadingBarSection(LoadingBarSection& section, unsigned short numGroupsInit = 1,
+	explicit ResourceGroupLoadingBarSection(LoadingBarSection& section, unsigned short numGroupsInit = 1,
 		unsigned short numGroupsLoad = 1,
 		Ogre::Real initProportion = 0.70f);
-	virtual ~ResourceGroupLoadingBarSection();
+
+	~ResourceGroupLoadingBarSection() override;
 
 	// ResourceGroupListener callbacks
-	void resourceGroupScriptingStarted(const Ogre::String & groupName, size_t scriptCount);
-	void scriptParseStarted(const Ogre::String & scriptName, bool& skipThisScript);
-	void scriptParseEnded(const Ogre::String& scriptName, bool skipped);
-	void resourceGroupScriptingEnded(const Ogre::String & groupName);
-	void resourceGroupLoadStarted(const Ogre::String & groupName, size_t resourceCount);
-	void resourceLoadStarted(const Ogre::ResourcePtr& resource);
-	void resourceLoadEnded(void);
-	void worldGeometryStageStarted(const Ogre::String & description) {}
-	void worldGeometryStageEnded(void) {}
-	void resourceGroupLoadEnded(const Ogre::String & groupName);
+	void resourceGroupScriptingStarted(const Ogre::String & groupName, size_t scriptCount) override;
+	void scriptParseStarted(const Ogre::String & scriptName, bool& skipThisScript) override;
+	void scriptParseEnded(const Ogre::String& scriptName, bool skipped) override;
+	void resourceGroupScriptingEnded(const Ogre::String & groupName) override;
+	void resourceGroupLoadStarted(const Ogre::String & groupName, size_t resourceCount) override;
+	void resourceLoadStarted(const Ogre::ResourcePtr& resource) override;
+	void resourceLoadEnded() override;
+	void worldGeometryStageStarted(const Ogre::String & description) override {}
+	void worldGeometryStageEnded() override {}
+	void resourceGroupLoadEnded(const Ogre::String & groupName) override;
 
 private:
 	Ogre::Real mInitProportion;
@@ -132,7 +132,6 @@ class LoadingBar
 protected:
 	typedef std::vector<LoadingBarSection*> SectionStore;
 	SectionStore mSections;
-	SectionStore::iterator mCurrentSection;
 	float mProgress;
 	Ogre::Real mProgressBarMaxSize, mProgressBarMaxLeft;
 
@@ -167,10 +166,8 @@ public:
 
 	void addSection(LoadingBarSection* section);
 
-	void activateSection(LoadingBarSection* section);
 	void increase(float amount);
 	void setProgress(float progress);
-	void setDescription(const std::string& description);
 	void setCaption(const std::string& caption);
 	void setVersionText(const std::string& versionText);
 
@@ -185,7 +182,7 @@ public:
 	 *
 	 * Be sure to call this after each change, else nothing will be updated to the user.
 	 */
-	void updateRender(bool forceRender = false);
+	void updateRender();
 
 };
 }
