@@ -3,7 +3,7 @@
 <!--
 	templates:
 	
-	<entitymapping name="">
+	<entitymapping name="" [override="true"]>
 		<entitymatch>
 			<case equals="">
 				<action type="display-model">" />
@@ -11,11 +11,14 @@
 		</entitymatch>
 	</entitymapping>
 	
-	<autoentitymapping name="" />
+	<autoentitymapping name="" [override="true"]/>
 	
-	<autoentitymapping name="" modelname="" />
+	<autoentitymapping name="" modelname="" [override="true"]/>
 	
-	<nomodel name="" />
+	<nomodel name="" [override="true"]/>
+
+	By default the "present-mesh" and "present-model" properties of the entities will be honoured if available.
+	However, if the "override='true'" attribute is present these properties will be ignored.
 
 -->	
 	
