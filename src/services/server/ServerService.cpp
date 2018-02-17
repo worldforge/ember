@@ -315,12 +315,20 @@ void ServerService::setupLocalServerObservation(ConfigService& configService) {
 	auto directory = boost::filesystem::path(mLocalSocketPath).remove_filename().string();
 	S_LOG_VERBOSE("Observing directory " << directory << " for local server socket.");
 
-	Ember::FileSystemObserver::getSingleton().add_directory(directory, [this](const Ember::FileSystemObserver::FileSystemEvent& event) {
-		if (event.ev.path == mLocalSocketPath) {
-			S_LOG_VERBOSE("Local server socket directory changed.");
-			EventLocalSocketChanged.emit();
+	if (boost::filesystem::is_directory(directory)) {
+		try {
+			Ember::FileSystemObserver::getSingleton().add_directory(directory, [this](const Ember::FileSystemObserver::FileSystemEvent& event) {
+				if (event.ev.path == mLocalSocketPath) {
+					S_LOG_VERBOSE("Local server socket directory changed.");
+					EventLocalSocketChanged.emit();
+				}
+			});
+		} catch (...) {
+			S_LOG_INFO("Could not observe the directory '" << mLocalSocketPath.string() << "' which means Ember won't detect if a local server is started.");
 		}
-	});
+	} else {
+		S_LOG_INFO("Could not observe the directory '" << mLocalSocketPath.string() << "' which means Ember won't detect if a local server is started.");
+	}
 }
 
 } // namespace Ember
