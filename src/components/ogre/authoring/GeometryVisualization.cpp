@@ -20,19 +20,15 @@
 #include "domain/EmberEntity.h"
 #include "components/ogre/Convert.h"
 
-#include "framework/Exception.h"
 #include "framework/LoggingInstance.h"
 #include "framework/AtlasQuery.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 
-#include <wfmath/ball.h>
-
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreWireBoundingBox.h>
 #include <OgreManualObject.h>
-#include <OgreEntity.h>
 #include <OgreSubEntity.h>
 #include <OgreMeshManager.h>
 #include <random>
@@ -373,7 +369,7 @@ void GeometryVisualization::buildGeometry() {
 		quads.emplace_back(std::make_tuple(2, 6, 5, 1));
 		quads.emplace_back(std::make_tuple(3, 7, 6, 2));
 		quads.emplace_back(std::make_tuple(0, 4, 7, 3));
-	
+
 		for (const auto& vertex : vertices) {
 			mManualObject->position(vertex);
 			auto normalized = vertex.normalisedCopy();
@@ -389,241 +385,183 @@ void GeometryVisualization::buildGeometry() {
 
 	if (mEntity.hasAttr("geometry")) {
 		auto& geometry = mEntity.valueOfAttr("geometry");
-		AtlasQuery::find<Atlas::Message::StringType>(geometry,
-													 "type", [&](
-						const Atlas::Message::StringType& shape
-				) {
-					if (shape == "mesh") {
-						AtlasQuery::find<Atlas::Message::ListType>(geometry,
-																   "indices", [&](
-										const Atlas::Message::ListType& indices
-								) {
-									AtlasQuery::find<Atlas::Message::ListType>(geometry,
-																			   "vertices", [&](
-													const Atlas::Message::ListType& vertices
-											) {
-												mManualObject->
+		AtlasQuery::find<Atlas::Message::StringType>(geometry, "type", [&](const Atlas::Message::StringType& shape) {
+			if (shape == "mesh") {
+				if (geometry.asMap().find("indices") != geometry.asMap().end()) {
+					AtlasQuery::find<Atlas::Message::ListType>(geometry, "indices", [&](const Atlas::Message::ListType& indices) {
+						AtlasQuery::find<Atlas::Message::ListType>(
+								geometry, "vertices", [&](const Atlas::Message::ListType& vertices) {
+									mManualObject->clear();
 
-														clear();
+									mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-												mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+									mManualObject->estimateIndexCount(indices.size());
+									mManualObject->estimateVertexCount(vertices.size());
 
-
-												mManualObject->
-														estimateIndexCount(indices
-																				   .
-
-																						   size()
-
-												);
-												mManualObject->
-														estimateVertexCount(vertices
-																					.
-
-																							size()
-
-												);
-
-												for (
-														size_t i = 0;
-														i < vertices.
-
-																size();
-
-														i += 3) {
-													Ogre::Vector3 vertex(vertices[i].Float(), vertices[i + 1].Float(), vertices[i + 2].Float());
-													mManualObject->
-															position(vertex);
-													auto normalized = vertex.normalisedCopy();
-													mManualObject->
-															colour((normalized
-																			.x + 1.0f) / 2.0f, (normalized.y + 1.0f) / 2.0f, (normalized.z + 1.0f) / 2.0f, 1.0f);
-												}
-												for (
-														size_t i = 0;
-														i < indices.
-
-																size();
-
-														i += 3) {
-													mManualObject->
-															triangle(indices[i]
-																			 .
-
-																					 Int(), indices[i + 1]
-
-																			 .
-
-																					 Int(), indices[i + 2]
-
-																			 .
-
-																					 Int()
-
-													);
-												}
-
-												mManualObject->
-
-														end();
-
-												mBboxUpdateFn = [this]() {
-													auto bbox = mManualObject->getBoundingBox();
-													Ogre::Vector3 entitySize = Convert::toOgre(mEntity.getBBox()).getSize();
-
-													Ogre::Vector3 manualObjectSize = mManualObject->getBoundingBox().getSize();
-
-													Ogre::Vector3 scaling = entitySize / manualObjectSize;
-													mSceneNode->setScale(scaling);
-												};
-											}
-									);
-								});
-					} else if (shape == "asset") {
-						AtlasQuery::find<Atlas::Message::StringType>(geometry,
-																	 "path", [&](
-										const Atlas::Message::StringType& path
-								) {
-									auto meshPtr = Ogre::MeshManager::getSingleton().getByName(path, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-									if (meshPtr) {
-										auto entity = mSceneNode->getCreator()->createEntity(meshPtr);
-										for (
-											auto subentity :
-												entity->
-
-														getSubEntities()
-
-												) {
-											subentity->setMaterialName("/common/base/authoring/normals", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-										}
-										mOgreEntity = entity;
-										mSceneNode->
-												attachObject(entity);
+									for (size_t i = 0; i < vertices.size(); i += 3) {
+										Ogre::Vector3 vertex(static_cast<const Ogre::Real>(vertices[i].Float()),
+															 static_cast<const Ogre::Real>(vertices[i + 1].Float()),
+															 static_cast<const Ogre::Real>(vertices[i + 2].Float()));
+										mManualObject->position(vertex);
+										auto normalized = vertex.normalisedCopy();
+										mManualObject->colour((normalized.x + 1.0f) / 2.0f, (normalized.y + 1.0f) / 2.0f, (normalized.z + 1.0f) / 2.0f, 1.0f);
 									}
-								});
-					} else if (shape == "box") {
-						mBboxUpdateFn = buildBoxFn;
-					} else if (shape == "sphere") {
-						mBboxUpdateFn = [&]() {
+									for (size_t i = 0; i < indices.size(); i += 3) {
+										mManualObject->triangle(static_cast<Ogre::uint32>(indices[i].Int()),
+																static_cast<Ogre::uint32>(indices[i + 1].Int()),
+																static_cast<Ogre::uint32>(indices[i + 2].Int()));
+									}
 
-							mManualObject->clear();
-							mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+									mManualObject->end();
 
-							auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-							float radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+									mBboxUpdateFn = [this]() {
+										auto bbox = mManualObject->getBoundingBox();
+										Ogre::Vector3 entitySize = Convert::toOgre(mEntity.getBBox()).getSize();
 
-							auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+										Ogre::Vector3 manualObjectSize = mManualObject->getBoundingBox().getSize();
 
-							placeSphere(radius, Convert::toOgre(offset));
-							mManualObject->end();
-						};
-					} else if (shape == "capsule-x") {
-						mBboxUpdateFn = [&]() {
-							mManualObject->clear();
-							mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+										Ogre::Vector3 scaling = entitySize / manualObjectSize;
+										mSceneNode->setScale(scaling);
+									};
+								}
+						);
+					});
+				} else {
+					AtlasQuery::find<Atlas::Message::StringType>(geometry, "path", [&](const Atlas::Message::StringType& path) {
+						auto meshPtr = Ogre::MeshManager::getSingleton().getByName(path, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+						if (meshPtr) {
+							auto entity = mSceneNode->getCreator()->createEntity(meshPtr);
+							for (auto subentity :                                        entity->getSubEntities()) {
+								subentity->setMaterialName("/common/base/authoring/normals", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+							}
+							mOgreEntity = entity;
+							mSceneNode->attachObject(entity);
+						}
+					});
+				}
+			} else if (shape == "box") {
+				mBboxUpdateFn = buildBoxFn;
+			} else if (shape == "sphere") {
+				mBboxUpdateFn = [&]() {
 
-							auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-							float radius = std::min(size.y(), size.z()) * 0.5f;
+					mManualObject->clear();
+					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-							auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							offset.x() = mEntity.getBBox().highCorner().x() - radius;
-							placeSphere(radius, Convert::toOgre(offset));
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
 
-							offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							offset.x() = mEntity.getBBox().lowCorner().x() + radius;
-							placeSphere(radius, Convert::toOgre(offset));
+					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
 
-							offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							placeCylinderX(radius, (size.x() / 2.0f) - radius, Convert::toOgre(offset));
+					placeSphere(radius, Convert::toOgre(offset));
+					mManualObject->end();
+				};
+			} else if (shape == "capsule-x") {
+				mBboxUpdateFn = [&]() {
+					mManualObject->clear();
+					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-							mManualObject->end();
-						};
-					} else if (shape == "capsule-y") {
-						mBboxUpdateFn = [&]() {
-							mManualObject->clear();
-							mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = std::min(size.y(), size.z()) * 0.5f;
 
-							auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-							float radius = std::min(size.x(), size.z()) * 0.5f;
+					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					offset.x() = mEntity.getBBox().highCorner().x() - radius;
+					placeSphere(radius, Convert::toOgre(offset));
 
-							auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							offset.y() = mEntity.getBBox().highCorner().y() - radius;
-							placeSphere(radius, Convert::toOgre(offset));
+					offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					offset.x() = mEntity.getBBox().lowCorner().x() + radius;
+					placeSphere(radius, Convert::toOgre(offset));
 
-							offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							offset.y() = mEntity.getBBox().lowCorner().y() + radius;
-							placeSphere(radius, Convert::toOgre(offset));
+					offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					placeCylinderX(radius, (size.x() / 2.0f) - radius, Convert::toOgre(offset));
 
-							offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							placeCylinderY(radius, (size.y() / 2.0f) - radius, Convert::toOgre(offset));
+					mManualObject->end();
+				};
+			} else if (shape == "capsule-y") {
+				mBboxUpdateFn = [&]() {
+					mManualObject->clear();
+					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-							mManualObject->end();
-						};
-					} else if (shape == "capsule-z") {
-						mBboxUpdateFn = [&]() {
-							mManualObject->clear();
-							mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = std::min(size.x(), size.z()) * 0.5f;
 
-							auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-							float radius = std::min(size.x(), size.y()) * 0.5f;
+					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					offset.y() = mEntity.getBBox().highCorner().y() - radius;
+					placeSphere(radius, Convert::toOgre(offset));
 
-							auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							offset.z() = mEntity.getBBox().highCorner().z() - radius;
-							placeSphere(radius, Convert::toOgre(offset));
+					offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					offset.y() = mEntity.getBBox().lowCorner().y() + radius;
+					placeSphere(radius, Convert::toOgre(offset));
 
-							offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							offset.z() = mEntity.getBBox().lowCorner().z() + radius;
-							placeSphere(radius, Convert::toOgre(offset));
+					offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					placeCylinderY(radius, (size.y() / 2.0f) - radius, Convert::toOgre(offset));
 
-							offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							placeCylinderZ(radius, (size.z() / 2.0f) - radius, Convert::toOgre(offset));
+					mManualObject->end();
+				};
+			} else if (shape == "capsule-z") {
+				mBboxUpdateFn = [&]() {
+					mManualObject->clear();
+					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-							mManualObject->end();
-						};
-					} else if (shape == "cylinder-x") {
-						mBboxUpdateFn = [&]() {
-							mManualObject->clear();
-							mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = std::min(size.x(), size.y()) * 0.5f;
 
-							auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-							float radius = std::min(size.y(), size.z()) * 0.5f;
+					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					offset.z() = mEntity.getBBox().highCorner().z() - radius;
+					placeSphere(radius, Convert::toOgre(offset));
 
-							auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							placeCylinderX(radius, (size.x() / 2.0f), Convert::toOgre(offset));
+					offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					offset.z() = mEntity.getBBox().lowCorner().z() + radius;
+					placeSphere(radius, Convert::toOgre(offset));
 
-							mManualObject->end();
-						};
-					} else if (shape == "cylinder-y") {
-						mBboxUpdateFn = [&]() {
-							mManualObject->clear();
-							mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+					offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					placeCylinderZ(radius, (size.z() / 2.0f) - radius, Convert::toOgre(offset));
 
-							auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-							float radius = std::min(size.x(), size.z()) * 0.5f;
+					mManualObject->end();
+				};
+			} else if (shape == "cylinder-x") {
+				mBboxUpdateFn = [&]() {
+					mManualObject->clear();
+					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-							auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = std::min(size.y(), size.z()) * 0.5f;
 
-							offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							placeCylinderY(radius, size.y() / 2.0f, Convert::toOgre(offset));
+					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					placeCylinderX(radius, (size.x() / 2.0f), Convert::toOgre(offset));
 
-							mManualObject->end();
-						};
-					} else if (shape == "cylinder-z") {
-						mBboxUpdateFn = [&]() {
-							mManualObject->clear();
-							mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+					mManualObject->end();
+				};
+			} else if (shape == "cylinder-y") {
+				mBboxUpdateFn = [&]() {
+					mManualObject->clear();
+					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-							auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-							float radius = std::min(size.x(), size.y()) * 0.5f;
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = std::min(size.x(), size.z()) * 0.5f;
 
-							auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-							placeCylinderZ(radius, (size.z() / 2.0f), Convert::toOgre(offset));
+					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
 
-							mManualObject->end();
-						};
-					}
+					offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					placeCylinderY(radius, size.y() / 2.0f, Convert::toOgre(offset));
 
-				});
+					mManualObject->end();
+				};
+			} else if (shape == "cylinder-z") {
+				mBboxUpdateFn = [&]() {
+					mManualObject->clear();
+					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = std::min(size.x(), size.y()) * 0.5f;
+
+					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+					placeCylinderZ(radius, (size.z() / 2.0f), Convert::toOgre(offset));
+
+					mManualObject->end();
+				};
+			}
+
+		});
 	} else {
 		mBboxUpdateFn = buildBoxFn;
 	}
