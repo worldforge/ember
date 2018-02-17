@@ -662,13 +662,15 @@ EntityEditor.prototypes =
 	},
 	mode = {
 		adapter = EntityEditor.adapters.string,
-		help = "Positioning mode. Available values:\n none: regular physics applies\nfixed: position is fixed in space\nfloating: floats to top of liquids\nprojectile: flies as a projectile\nswimming: free movement in liquids",
+		help = "Positioning mode. Available values:\n free: regular physics applies\nplanted: planted in ground\nfixed: position is fixed in space\nfloating: floats to top of liquids\nprojectile: flies as a projectile\nswimming: free movement in liquids",
 		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end,
 		suggestions = {
 			" ",
+			"free",
+			"planted",
 			"fixed",
 			"floating",
 			"projectile",
