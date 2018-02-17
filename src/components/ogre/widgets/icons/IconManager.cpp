@@ -34,6 +34,7 @@
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/entitymapping/EntityMappingManager.h"
 #include "components/entitymapping/IActionCreator.h"
+#include "components/entitymapping/Actions/Action.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
@@ -41,26 +42,20 @@
 
 #include <OgreTextureManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
-namespace Icons
-{
+namespace Icons {
 
-class DummyEntity: public Eris::Entity
-{
+class DummyEntity : public Eris::Entity {
 protected:
 	Eris::TypeService* mTypeService;
 
 public:
 	DummyEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService* typeService) :
-		Eris::Entity(id, ty), mTypeService(typeService)
-	{
+			Eris::Entity(id, ty), mTypeService(typeService) {
 	}
 
 	Eris::TypeService* getTypeService() const override {
@@ -82,30 +77,103 @@ public:
 /**
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class IconActionCreator: public EntityMapping::IActionCreator
-{
+class IconActionCreator : public EntityMapping::IActionCreator {
 public:
 
-	IconActionCreator(Eris::Entity& entity) :
-		mEntity(entity), mModelName("")
-	{
+	class DisplayModelAction : public EntityMapping::Actions::Action {
+	public:
+		IconActionCreator* mCreator;
+		std::string mModelName;
+
+		explicit DisplayModelAction(IconActionCreator* creator, std::string modelName)
+				: mCreator(creator),
+				  mModelName(std::move(modelName)) {
+		}
+
+		void activate(EntityMapping::ChangeContext& context) override {
+			mCreator->mModelName = mModelName;
+		}
+
+		void deactivate(EntityMapping::ChangeContext& context) override {
+
+		}
+
+	};
+
+	class PresentModelAction : public EntityMapping::Actions::Action {
+	public:
+		IconActionCreator* mCreator;
+
+		explicit PresentModelAction(IconActionCreator* creator)
+				: mCreator(creator) {
+		}
+
+		void activate(EntityMapping::ChangeContext& context) override {
+			if (mCreator->mEntity.hasAttr("present-model")) {
+				auto& element = mCreator->mEntity.valueOfAttr("present-model");
+				if (element.isString()) {
+					mCreator->mModelName = element.String();
+				}
+			}
+		}
+
+		void deactivate(EntityMapping::ChangeContext& context) override {
+
+		}
+
+	};
+
+	class PresentMeshAction : public EntityMapping::Actions::Action {
+	public:
+		IconActionCreator* mCreator;
+
+		explicit PresentMeshAction(IconActionCreator* creator)
+				: mCreator(creator) {
+		}
+
+		void activate(EntityMapping::ChangeContext& context) override {
+			if (mCreator->mEntity.hasAttr("present-mesh")) {
+				auto& element = mCreator->mEntity.valueOfAttr("present-mesh");
+				if (element.isString()) {
+					auto& meshName = element.String();
+					//We'll automatically create a model which shows just the specified mesh.
+					if (!Model::ModelDefinitionManager::getSingleton().resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+						auto modelDef = Model::ModelDefinitionManager::getSingleton().create(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+						//Create a single submodel definition using the mesh
+						modelDef->createSubModelDefinition(meshName);
+					}
+					mCreator->mModelName = meshName;
+				}
+			}
+		}
+
+		void deactivate(EntityMapping::ChangeContext& context) override {
+
+		}
+	};
+
+	explicit IconActionCreator(Eris::Entity& entity) :
+			mEntity(entity), mModelName("") {
 	}
 
 	~IconActionCreator() override = default;
 
-	void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase*, EntityMapping::Definitions::CaseDefinition& caseDefinition) override {
-		auto endJ = caseDefinition.getActions().end();
-		for (auto J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-			if (J->getType() == "display-model") {
-				mModelName = J->getValue();
+	void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition) override {
+		for (auto& actionDef : caseDefinition.getActions()) {
+			if (actionDef.getType() == "display-model") {
+				aCase->addAction(new DisplayModelAction(this, actionDef.getValue()));
+			} else if (actionDef.getType() == "present-model") {
+				aCase->addAction(new PresentModelAction(this));
+			} else if (actionDef.getType() == "present-mesh") {
+				aCase->addAction(new PresentMeshAction(this));
 			}
 		}
 	}
 
-	const std::string& getModelName() const
-	{
+	const std::string& getModelName() const {
 		return mModelName;
 	}
+
 protected:
 	Eris::Entity& mEntity;
 	std::string mModelName;
@@ -113,20 +181,14 @@ protected:
 };
 
 IconManager::IconManager() :
-	mIconRenderer("IconManager", 64)
-{
+		mIconRenderer("IconManager", 64) {
 	//if the direct renderer is activated you must also update IconImageStore so that a RenderTarget texture is used
 	// 	mIconRenderer.setWorker(new DirectRendererWorker(mIconRenderer));
 
 	mIconRenderer.setWorker(new DelayedIconRendererWorker(mIconRenderer));
 }
 
-IconManager::~IconManager()
-{
-}
-
-Icon* IconManager::getIcon(int, EmberEntity* entity)
-{
+Icon* IconManager::getIcon(int, EmberEntity* entity) {
 
 	std::string key = "entity_" + entity->getId();
 	if (mIconStore.hasIcon(key)) {
@@ -145,7 +207,7 @@ Icon* IconManager::getIcon(int, EmberEntity* entity)
 		}
 		Ogre::ResourcePtr modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 		if (modelDefPtr) {
-			Model::ModelDefinition* modelDef = static_cast<Model::ModelDefinition*> (modelDefPtr.get());
+			Model::ModelDefinition* modelDef = dynamic_cast<Model::ModelDefinition*> (modelDefPtr.get());
 			const std::string& iconPath(modelDef->getIconPath());
 			if (!iconPath.empty()) {
 
@@ -160,7 +222,7 @@ Icon* IconManager::getIcon(int, EmberEntity* entity)
 						texPtr = Ogre::TextureManager::getSingleton().load(iconPath, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 					}
 				} catch (...) {
-					S_LOG_WARNING("Error when trying to load the icon " << iconPath <<". The icon will be rendered dynamically.");
+					S_LOG_WARNING("Error when trying to load the icon " << iconPath << ". The icon will be rendered dynamically.");
 					texPtr.reset();
 				}
 				if (texPtr) {
@@ -181,8 +243,7 @@ Icon* IconManager::getIcon(int, EmberEntity* entity)
 
 }
 
-Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType)
-{
+Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType) {
 
 	std::string key = "entity_" + erisType->getName();
 	if (mIconStore.hasIcon(key)) {
@@ -193,8 +254,7 @@ Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType)
 	}
 }
 
-void IconManager::render(Icon& icon, EmberEntity& entity)
-{
+void IconManager::render(Icon& icon, EmberEntity& entity) {
 	IconActionCreator actionCreator(entity);
 	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 	std::string modelName;
@@ -210,8 +270,7 @@ void IconManager::render(Icon& icon, EmberEntity& entity)
 	render(icon, modelName);
 }
 
-void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
-{
+void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 	//we need to get the model mapping definition for this type
 	//once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
 	Eris::Connection* conn = EmberServices::getSingleton().getServerService().getConnection();
@@ -240,8 +299,7 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
 	}
 }
 
-void IconManager::render(Icon& icon, const std::string& modelName)
-{
+void IconManager::render(Icon& icon, const std::string& modelName) {
 	mIconRenderer.render(modelName, &icon);
 }
 

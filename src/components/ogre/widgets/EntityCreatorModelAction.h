@@ -41,15 +41,15 @@ class EntityCreatorModelAction : public EntityMapping::Actions::Action
 {
 public:
 	EntityCreatorModelAction(EntityCreatorCreationInstance& creationInstance, const std::string& modelName);
-	virtual ~EntityCreatorModelAction();
+	~EntityCreatorModelAction() override = default;
 	/**
 	 * Shows specific model. Called by model mapping framework.
 	 */
-	virtual void activate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
 	/**
 	 * Hides model. Called by model mapping framework.
 	 */
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void deactivate(EntityMapping::ChangeContext& context) override;
 protected:
 	EntityCreatorCreationInstance& mCreationInstance;
 	const std::string mModelName;

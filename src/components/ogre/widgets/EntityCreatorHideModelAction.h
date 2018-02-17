@@ -39,16 +39,16 @@ class EntityCreatorCreationInstance;
 class EntityCreatorHideModelAction : public EntityMapping::Actions::Action
 {
 public:
-	EntityCreatorHideModelAction(EntityCreatorCreationInstance& creationInstance);
-	virtual ~EntityCreatorHideModelAction();
+	explicit EntityCreatorHideModelAction(EntityCreatorCreationInstance& creationInstance);
+	~EntityCreatorHideModelAction() override = default;
 	/**
 	 * Hides model. Called by model mapping framework.
 	 */
-	virtual void activate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
 	/**
 	 * Does nothing. Called by model mapping framework.
 	 */
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void deactivate(EntityMapping::ChangeContext& context) override;
 protected:
 	EntityCreatorCreationInstance& mCreationInstance;
 };

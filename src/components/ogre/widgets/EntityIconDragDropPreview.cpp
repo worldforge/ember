@@ -42,6 +42,8 @@
 #include <OgreSceneNode.h>
 #include <framework/Singleton.h>
 
+#include <utility>
+
 using namespace Ember;
 namespace Ember
 {
@@ -54,7 +56,9 @@ namespace Gui
 {
 
 EntityIconDragDropPreview::EntityIconDragDropPreview(World& world) :
-		mWorld(world), mIconEntity(0), mModelPreviewWorker(0)
+		mWorld(world),
+		mIconEntity(nullptr),
+		mModelPreviewWorker(nullptr)
 {
 }
 
@@ -81,9 +85,9 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 void EntityIconDragDropPreview::cleanupCreation()
 {
 	if (mModelPreviewWorker) {
-		mIconEntity = 0;
+		mIconEntity = nullptr;
 		delete mModelPreviewWorker;
-		mModelPreviewWorker = 0;
+		mModelPreviewWorker = nullptr;
 	}
 }
 
@@ -106,7 +110,12 @@ WFMath::Quaternion EntityIconDragDropPreview::getDropOrientation() const
 }
 
 ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
-		mWorld(world), mEntity(0), mEntityNode(0), mModel(0), mModelMount(0), mMovement(0)
+		mWorld(world),
+		mEntity(nullptr),
+		mEntityNode(nullptr),
+		mModel(nullptr),
+		mModelMount(nullptr),
+		mMovement(nullptr)
 {
 	mOrientation.identity();
 
@@ -125,8 +134,8 @@ ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
 
 	// Making model from temporary entity
 	ModelPreviewWorkerActionCreator actionCreator(*this);
-	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, 0));
-	if (modelMapping.get()) {
+	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, nullptr));
+	if (modelMapping) {
 		modelMapping->initialize();
 	}
 
@@ -146,9 +155,7 @@ ModelPreviewWorker::~ModelPreviewWorker()
 	mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
 	//	delete mEntityNode;
 
-	if (mModel) {
-		delete mModel;
-	}
+	delete mModel;
 
 	// Deleting temporary entity
 	mEntity->shutdown();
@@ -163,7 +170,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 		} else {
 			//Reset the model mount to start with.
 			delete mModelMount;
-			mModelMount = 0;
+			mModelMount = nullptr;
 			delete mModel;
 		}
 	}
@@ -234,7 +241,7 @@ void ModelPreviewWorker::model_Reloaded()
 void ModelPreviewWorker::scaleNode()
 {
 	if (mModelMount) {
-		mModelMount->rescale(hasBBox() ? &getBBox() : 0);
+		mModelMount->rescale(hasBBox() ? &getBBox() : nullptr);
 	} else {
 		S_LOG_WARNING("Tried to scale node without there being a valid model mount.");
 	}
@@ -250,12 +257,13 @@ const WFMath::AxisBox<3> & ModelPreviewWorker::getBBox()
 	return mEntity->getBBox();
 }
 
-ModelPreviewWorkerPartAction::ModelPreviewWorkerPartAction(ModelPreviewWorker& modelPreviewWorker, std::string partName) :
-		mModelPreviewWorker(modelPreviewWorker), mPartName(partName)
-{
+const Authoring::DetachedEntity* ModelPreviewWorker::getEntity() const {
+	return mEntity;
 }
 
-ModelPreviewWorkerPartAction::~ModelPreviewWorkerPartAction()
+ModelPreviewWorkerPartAction::ModelPreviewWorkerPartAction(ModelPreviewWorker& modelPreviewWorker, std::string partName) :
+		mModelPreviewWorker(modelPreviewWorker),
+		mPartName(std::move(partName))
 {
 }
 
@@ -272,11 +280,8 @@ void ModelPreviewWorkerPartAction::deactivate(EntityMapping::ChangeContext& cont
 }
 
 ModelPreviewWorkerModelAction::ModelPreviewWorkerModelAction(ModelPreviewWorker& modelPreviewWorker, std::string modelName) :
-		mModelPreviewWorker(modelPreviewWorker), mModelName(modelName)
-{
-}
-
-ModelPreviewWorkerModelAction::~ModelPreviewWorkerModelAction()
+		mModelPreviewWorker(modelPreviewWorker),
+		mModelName(std::move(modelName))
 {
 }
 
@@ -297,10 +302,6 @@ ModelPreviewWorkerHideModelAction::ModelPreviewWorkerHideModelAction(ModelPrevie
 {
 }
 
-ModelPreviewWorkerHideModelAction::~ModelPreviewWorkerHideModelAction()
-{
-}
-
 void ModelPreviewWorkerHideModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	mModelPreviewWorker.setModel("");
@@ -310,38 +311,71 @@ void ModelPreviewWorkerHideModelAction::deactivate(EntityMapping::ChangeContext&
 {
 }
 
+ModelPreviewWorkerPresentModelAction::ModelPreviewWorkerPresentModelAction(ModelPreviewWorker& modelPreviewWorker)
+:mModelPreviewWorker(modelPreviewWorker)
+{
+}
+
+void ModelPreviewWorkerPresentModelAction::activate(EntityMapping::ChangeContext& context) {
+	if (mModelPreviewWorker.getEntity()->hasAttr("present-model")) {
+		auto& element = mModelPreviewWorker.getEntity()->valueOfAttr("present-model");
+		if (element.isString()) {
+			mModelPreviewWorker.setModel(element.String());
+		}
+	}
+}
+
+void ModelPreviewWorkerPresentModelAction::deactivate(EntityMapping::ChangeContext& context) {
+}
+
+ModelPreviewWorkerPresentMeshAction::ModelPreviewWorkerPresentMeshAction(ModelPreviewWorker& modelPreviewWorker)
+		:mModelPreviewWorker(modelPreviewWorker)
+{
+}
+
+void ModelPreviewWorkerPresentMeshAction::activate(EntityMapping::ChangeContext& context) {
+	if (mModelPreviewWorker.getEntity()->hasAttr("present-mesh")) {
+		auto& element = mModelPreviewWorker.getEntity()->valueOfAttr("present-mesh");
+		if (element.isString()) {
+			auto& meshName = element.String();
+			//We'll automatically create a model which shows just the specified mesh.
+			if (!Model::ModelDefinitionManager::getSingleton().resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+				auto modelDef = Model::ModelDefinitionManager::getSingleton().create(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+				//Create a single submodel definition using the mesh
+				modelDef->createSubModelDefinition(meshName);
+			}
+			mModelPreviewWorker.setModel(meshName);
+		}
+	}
+}
+
+void ModelPreviewWorkerPresentMeshAction::deactivate(EntityMapping::ChangeContext& context) {
+}
+
 ModelPreviewWorkerActionCreator::ModelPreviewWorkerActionCreator(ModelPreviewWorker& modelPreviewWorker) :
 		mModelPreviewWorker(modelPreviewWorker)
 {
 }
 
-ModelPreviewWorkerActionCreator::~ModelPreviewWorkerActionCreator()
-{
-}
-
 void ModelPreviewWorkerActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 {
-	EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-		if (J->getType() == "display-part") {
-			ModelPreviewWorkerPartAction* action = new ModelPreviewWorkerPartAction(mModelPreviewWorker, J->getValue());
-			aCase->addAction(action);
-		} else if (J->getType() == "display-model") {
-			ModelPreviewWorkerModelAction* action = new ModelPreviewWorkerModelAction(mModelPreviewWorker, J->getValue());
-			aCase->addAction(action);
-		} else if (J->getType() == "hide-model") {
-			ModelPreviewWorkerHideModelAction* action = new ModelPreviewWorkerHideModelAction(mModelPreviewWorker);
-			aCase->addAction(action);
+	for (auto& actionDef : caseDefinition.getActions()) {
+		if (actionDef.getType() == "display-part") {
+			aCase->addAction(new ModelPreviewWorkerPartAction(mModelPreviewWorker, actionDef.getValue()));
+		} else if (actionDef.getType() == "display-model") {
+			aCase->addAction(new ModelPreviewWorkerModelAction(mModelPreviewWorker, actionDef.getValue()));
+		} else if (actionDef.getType() == "hide-model") {
+			aCase->addAction(new ModelPreviewWorkerHideModelAction(mModelPreviewWorker));
+		} else if (actionDef.getType() == "present-model") {
+			aCase->addAction(new ModelPreviewWorkerPresentModelAction(mModelPreviewWorker));
+		} else if (actionDef.getType() == "present-mesh") {
+			aCase->addAction(new ModelPreviewWorkerPresentMeshAction(mModelPreviewWorker));
 		}
 	}
 }
 
 ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
 		Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker)
-{
-}
-
-ModelPreviewWorkerMovementBridge::~ModelPreviewWorkerMovementBridge()
 {
 }
 

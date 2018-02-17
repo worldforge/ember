@@ -75,7 +75,7 @@ public:
 	 * @brief Constructor
 	 * @param world The world.
 	 */
-	EntityIconDragDropPreview(World& world);
+	explicit EntityIconDragDropPreview(World& world);
 
 	/**
 	 * @brief Destructor
@@ -183,6 +183,8 @@ public:
 	 */
 	const WFMath::Quaternion getOrientation() const;
 
+	const Authoring::DetachedEntity* getEntity() const;
+
 	sigc::signal<void> EventFinalizeCreation;
 	sigc::signal<void> EventCleanupCreation;
 
@@ -279,17 +281,17 @@ public:
 	/**
 	 * @brief Desctructor
 	 */
-	virtual ~ModelPreviewWorkerPartAction();
+	~ModelPreviewWorkerPartAction() override = default;
 
 	/**
 	 * @brief Shows specific model part. Called by model mapping framework.
 	 */
-	virtual void activate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
 
 	/**
 	 * @brief Hides specific model part. Called by model mapping framework.
 	 */
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void deactivate(EntityMapping::ChangeContext& context) override;
 protected:
 
 	/**
@@ -313,22 +315,22 @@ public:
 	 * @brief Constructor
 	 * @param entityIconDragDropPreview The preview model class that holds the model
 	 */
-	ModelPreviewWorkerHideModelAction(ModelPreviewWorker& modelPreviewWorker);
+	explicit ModelPreviewWorkerHideModelAction(ModelPreviewWorker& modelPreviewWorker);
 
 	/**
 	 * @brief Destructor
 	 */
-	virtual ~ModelPreviewWorkerHideModelAction();
+	~ModelPreviewWorkerHideModelAction() override = default;
 
 	/**
 	 * @brief Hides model. Called by model mapping framework.
 	 */
-	virtual void activate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
 
 	/**
 	 * @brief Does nothing. Called by model mapping framework.
 	 */
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void deactivate(EntityMapping::ChangeContext& context) override;
 protected:
 
 	/**
@@ -353,17 +355,17 @@ public:
 	/**
 	 * @brief Destructor
 	 */
-	virtual ~ModelPreviewWorkerModelAction();
+	~ModelPreviewWorkerModelAction() override = default;
 
 	/**
 	 * @brief Shows specific model. Called by model mapping framework.
 	 */
-	virtual void activate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
 
 	/**
 	 * @brief Hides model. Called by model mapping framework.
 	 */
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void deactivate(EntityMapping::ChangeContext& context) override;
 protected:
 	/**
 	 * @brief The preview model class that holds the model
@@ -376,21 +378,60 @@ protected:
 	std::string mModelName;
 };
 
+
+class ModelPreviewWorkerPresentModelAction : public EntityMapping::Actions::Action {
+public:
+	explicit ModelPreviewWorkerPresentModelAction(ModelPreviewWorker& modelPreviewWorker);
+
+	~ModelPreviewWorkerPresentModelAction() override = default;
+
+	void activate(EntityMapping::ChangeContext& context) override;
+
+	void deactivate(EntityMapping::ChangeContext& context) override;
+
+protected:
+
 	/**
-	 * @brief Class that controls the visibility of the preview model
-	 */
+ 	* @brief The preview model class that holds the model
+ 	*/
+	ModelPreviewWorker& mModelPreviewWorker;
+};
+
+class ModelPreviewWorkerPresentMeshAction : public EntityMapping::Actions::Action {
+public:
+	explicit ModelPreviewWorkerPresentMeshAction(ModelPreviewWorker& modelPreviewWorker);
+
+	~ModelPreviewWorkerPresentMeshAction() override = default;
+
+	void activate(EntityMapping::ChangeContext& context) override;
+
+	void deactivate(EntityMapping::ChangeContext& context) override;
+
+protected:
+
+	/**
+ 	* @brief The preview model class that holds the model
+ 	*/
+	ModelPreviewWorker& mModelPreviewWorker;
+};
+
+
+
+/**
+ * @brief Class that controls the visibility of the preview model
+ */
 class ModelPreviewWorkerActionCreator  : public EntityMapping::IActionCreator {
 public:
 	/**
 	 * @brief Constructor
 	 * @param entityIconDragDrop Preview model class that holds the model
 	 */
-	ModelPreviewWorkerActionCreator(ModelPreviewWorker& modelPreviewWorker);
+	explicit ModelPreviewWorkerActionCreator(ModelPreviewWorker& modelPreviewWorker);
 
 	/**
 	 * @brief Destructor
 	 */
-	virtual ~ModelPreviewWorkerActionCreator();
+	~ModelPreviewWorkerActionCreator() override = default;
 
 	/**
 	 * @brief Creates the actions we can perform on the model
@@ -398,7 +439,8 @@ public:
 	 * @param aCase
 	 * @param caseDefinition
 	 */
-	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition);
+	void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition) override;
+
 protected:
 
 	/**
@@ -412,10 +454,12 @@ class ModelPreviewWorkerMovementBridge : public Authoring::EntityMoverBase
 public:
 
 	ModelPreviewWorkerMovementBridge(ModelPreviewWorker& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
-	virtual ~ModelPreviewWorkerMovementBridge();
 
-	virtual void finalizeMovement();
-	virtual void cancelMovement();
+	~ModelPreviewWorkerMovementBridge() override = default;
+
+	void finalizeMovement() override;
+
+	void cancelMovement() override;
 
 private:
 	ModelPreviewWorker& mModelPreviewWorker;

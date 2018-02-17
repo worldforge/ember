@@ -30,6 +30,8 @@
 #include "EntityCreatorPartAction.h"
 #include "EntityCreatorModelAction.h"
 #include "EntityCreatorHideModelAction.h"
+#include "EntityCreatorPresentModelAction.h"
+#include "EntityCreatorPresentMeshAction.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 
 using namespace Ember::EntityMapping;
@@ -43,23 +45,19 @@ EntityCreatorActionCreator::EntityCreatorActionCreator(EntityCreatorCreationInst
 {
 }
 
-EntityCreatorActionCreator::~EntityCreatorActionCreator()
-{
-}
-
 void EntityCreatorActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 {
-	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-		if (J->getType() == "display-part") {
-			EntityCreatorPartAction* action = new EntityCreatorPartAction(mCreationInstance, J->getValue());
-			aCase->addAction(action);
-		} else if (J->getType() == "display-model") {
-			EntityCreatorModelAction* action = new EntityCreatorModelAction(mCreationInstance, J->getValue());
-			aCase->addAction(action);
-		} else if (J->getType() == "hide-model") {
-			EntityCreatorHideModelAction* action = new EntityCreatorHideModelAction(mCreationInstance);
-			aCase->addAction(action);
+	for (auto& actionDef : caseDefinition.getActions()) {
+		if (actionDef.getType() == "display-part") {
+			aCase->addAction(new EntityCreatorPartAction(mCreationInstance, actionDef.getValue()));
+		} else if (actionDef.getType() == "display-model") {
+			aCase->addAction(new EntityCreatorModelAction(mCreationInstance, actionDef.getValue()));
+		} else if (actionDef.getType() == "hide-model") {
+			aCase->addAction(new EntityCreatorHideModelAction(mCreationInstance));
+		} else if (actionDef.getType() == "present-model") {
+			aCase->addAction(new EntityCreatorPresentModelAction(mCreationInstance));
+		} else if (actionDef.getType() == "present-mesh") {
+			aCase->addAction(new EntityCreatorPresentMeshAction(mCreationInstance));
 		}
 	}
 }

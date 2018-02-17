@@ -41,9 +41,11 @@ class EntityCreatorCreationInstance;
 class EntityCreatorActionCreator : public EntityMapping::IActionCreator
 {
 public:
-	EntityCreatorActionCreator(EntityCreatorCreationInstance& creationInstance);
-	virtual ~EntityCreatorActionCreator();
-	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition);
+	explicit EntityCreatorActionCreator(EntityCreatorCreationInstance& creationInstance);
+
+	~EntityCreatorActionCreator() override = default;
+
+	void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition) override;
 protected:
 	EntityCreatorCreationInstance& mCreationInstance;
 };

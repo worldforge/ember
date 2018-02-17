@@ -73,7 +73,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	EntityCreator(World& world);
+	explicit EntityCreator(World& world);
 
 	/**
 	 * Destructor.

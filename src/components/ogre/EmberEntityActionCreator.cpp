@@ -45,32 +45,31 @@ EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity, Scene& s
 
 void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition)
 {
-	auto endJ = caseDefinition.getActions().end();
-	for (auto J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-		if (J->getType() == "display-part") {
-			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, J->getValue());
+	for (auto& actionDef : caseDefinition.getActions()) {
+		if (actionDef.getType() == "display-part") {
+			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, actionDef.getValue());
 			aCase->addAction(action);
-		} else if (J->getType() == "display-model") {
-			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getValue(), mScene, modelMapping);
+		} else if (actionDef.getType() == "display-model") {
+			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, actionDef.getValue(), mScene, modelMapping);
 			aCase->addAction(action);
-		} else if (J->getType() == "hide-model") {
+		} else if (actionDef.getType() == "hide-model") {
 			EmberEntityHideModelAction* action = new EmberEntityHideModelAction(mEntity);
 			aCase->addAction(action);
-		} else if (J->getType() == "display-label") {
+		} else if (actionDef.getType() == "display-label") {
 			auto action = new Gui::LabelAction(mEntity);
 			aCase->addAction(action);
-		} else if (J->getType() == "display-ocean") {
+		} else if (actionDef.getType() == "display-ocean") {
 			Environment::OceanAction* action = new Environment::OceanAction(mEntity);
 			aCase->addAction(action);
-		} else if (J->getType() == "enable-composition") {
-			CompositionAction* action = new CompositionAction(mEntity, J->getValue());
+		} else if (actionDef.getType() == "enable-composition") {
+			CompositionAction* action = new CompositionAction(mEntity, actionDef.getValue());
 			aCase->addAction(action);
-		} else if (J->getType() == "present-model") {
+		} else if (actionDef.getType() == "present-model") {
 			aCase->addAction(new PresentModelAction(mEntity, mScene, modelMapping));
-		} else if (J->getType() == "present-mesh") {
+		} else if (actionDef.getType() == "present-mesh") {
 			aCase->addAction(new PresentMeshAction(mEntity, mScene, modelMapping));
 		} else {
-			S_LOG_WARNING("Could not recognize entity action '" << J->getType() << "'.");
+			S_LOG_WARNING("Could not recognize entity action '" << actionDef.getType() << "'.");
 		}
 	}
 

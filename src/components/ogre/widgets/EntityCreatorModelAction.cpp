@@ -39,10 +39,6 @@ EntityCreatorModelAction::EntityCreatorModelAction(EntityCreatorCreationInstance
 {
 }
 
-EntityCreatorModelAction::~EntityCreatorModelAction()
-{
-}
-
 void EntityCreatorModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator model " << mModelName);

@@ -59,14 +59,22 @@ namespace Gui
 {
 
 EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService, Authoring::EntityRecipe& recipe, bool randomizeOrientation, sigc::slot<void>& adapterValueChangedSlot) :
-		mWorld(world), mTypeService(typeService), mRecipe(recipe), mEntity(0), mEntityNode(0), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0)
+		mWorld(world),
+		mTypeService(typeService),
+		mRecipe(recipe),
+		mEntity(nullptr),
+		mEntityNode(nullptr),
+		mModelMount(nullptr),
+		mModel(nullptr),
+		mMovement(nullptr),
+		mAxisMarker(nullptr)
 {
 	mConnection = mRecipe.EventValueChanged.connect(adapterValueChangedSlot);
 
 	mInitialOrientation.identity();
 	if (randomizeOrientation) {
 		WFMath::MTRand rng;
-		mInitialOrientation.rotation(1, rng.rand() * 360.0f);
+		mInitialOrientation.rotation(1, rng.rand<float>() * 360.0f);
 	}
 
 }
@@ -142,7 +150,7 @@ void EntityCreatorCreationInstance::createEntity()
 
 	// Making model from temporary entity
 	EntityCreatorActionCreator actionCreator(*this);
-	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, 0));
+	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, nullptr));
 	if (modelMapping) {
 		modelMapping->initialize();
 	}
@@ -187,7 +195,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 		} else {
 			//Reset the model mount to start with.
 			delete mModelMount;
-			mModelMount = 0;
+			mModelMount = nullptr;
 			delete mModel;
 		}
 	}
@@ -284,6 +292,10 @@ void EntityCreatorCreationInstance::setOrientation(const WFMath::Quaternion& ori
 			mInitialOrientation = orientation;
 		}
 	}
+}
+
+const Authoring::DetachedEntity* EntityCreatorCreationInstance::getEntity() const {
+	return mEntity;
 }
 
 }

@@ -120,6 +120,8 @@ public:
 	 */
 	void setOrientation(const WFMath::Quaternion& orientation);
 
+	const Authoring::DetachedEntity* getEntity() const;
+
 	/**
 	 * @brief Emitted when a stop of the creation process has been requested.
 	 *

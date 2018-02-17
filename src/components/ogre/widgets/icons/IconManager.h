@@ -48,7 +48,7 @@ public:
 
     explicit IconManager();
 
-    ~IconManager();
+    ~IconManager() = default;
     
     Icon* getIcon(int pixelWidth, EmberEntity* entity);
     Icon* getIcon(int pixelWidth, Eris::TypeInfo* erisType);

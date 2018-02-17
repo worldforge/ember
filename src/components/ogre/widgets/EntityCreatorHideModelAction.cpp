@@ -38,10 +38,6 @@ EntityCreatorHideModelAction::EntityCreatorHideModelAction(EntityCreatorCreation
 {
 }
 
-EntityCreatorHideModelAction::~EntityCreatorHideModelAction()
-{
-}
-
 void EntityCreatorHideModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	mCreationInstance.setModel("");

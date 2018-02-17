@@ -46,7 +46,12 @@ namespace Gui
 {
 
 EntityCreator::EntityCreator(World& world) :
-		mWorld(world), mTypeService(mWorld.getView().getTypeService()), mRecipe(0), mCreationInstance(0), mRandomizeOrientation(false), mAdapterValueChangedSlot(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged))
+		mWorld(world),
+		mTypeService(mWorld.getView().getTypeService()),
+		mRecipe(nullptr),
+		mCreationInstance(nullptr),
+		mRandomizeOrientation(false),
+		mAdapterValueChangedSlot(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged))
 {
 	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 	mLastOrientation.identity();
@@ -108,7 +113,7 @@ void EntityCreator::stopCreation()
 	if (mCreationInstance) {
 		mLastOrientation = mCreationInstance->getOrientation();
 		delete mCreationInstance;
-		mCreationInstance = 0;
+		mCreationInstance = nullptr;
 	}
 
 	EventCreationEnded();
@@ -167,7 +172,7 @@ void EntityCreator::adapterValueChanged()
 void EntityCreator::createNewCreationInstance()
 {
 	delete mCreationInstance;
-	mCreationInstance = 0;
+	mCreationInstance = nullptr;
 	mCreationInstance = new EntityCreatorCreationInstance(mWorld, mTypeService, *mRecipe, mRandomizeOrientation, mAdapterValueChangedSlot);
 	mCreationInstance->EventAbortRequested.connect(sigc::mem_fun(*this, &EntityCreator::creationInstance_AbortRequested));
 	mCreationInstance->EventFinalizeRequested.connect(sigc::mem_fun(*this, &EntityCreator::creationInstance_FinalizeRequested));
