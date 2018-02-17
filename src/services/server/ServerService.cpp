@@ -313,7 +313,6 @@ void ServerService::setupLocalServerObservation(ConfigService& configService) {
 	}
 
 	auto directory = boost::filesystem::path(mLocalSocketPath).remove_filename().string();
-	S_LOG_VERBOSE("Observing directory " << directory << " for local server socket.");
 
 	if (boost::filesystem::is_directory(directory)) {
 		try {
@@ -326,6 +325,7 @@ void ServerService::setupLocalServerObservation(ConfigService& configService) {
 		} catch (...) {
 			S_LOG_INFO("Could not observe the directory '" << mLocalSocketPath.string() << "' which means Ember won't detect if a local server is started.");
 		}
+		S_LOG_VERBOSE("Observing directory " << directory << " for local server socket.");
 	} else {
 		S_LOG_INFO("Could not observe the directory '" << mLocalSocketPath.string() << "' which means Ember won't detect if a local server is started.");
 	}
