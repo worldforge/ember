@@ -318,14 +318,22 @@
                                 <Property name="Size" value="{{0,150},{0,200}}" />
                                 <Property name="Position" value="{{1,-160},{0,5}}" />
                             </Window>
-                            <Window name="MeshShowSkeleton" type="EmberLook/Checkbox">
-                                <Property name="Text" value="Show skeleton" />
-                                <Property name="Size" value="{{0,150},{0,25}}" />
-                                <Property name="Position" value="{{1,-160},{0,30}}" />
-                                <Property name="HoverTextColour" value="FFFFFFFF" />
-                                <Property name="NormalTextColour" value="FFFFFFFF" />
-                                <Property name="PushedTextColour" value="FFFFFFFF" />
-                            </Window>
+							<Window name="MeshShowSkeleton" type="EmberLook/Checkbox">
+								<Property name="Text" value="Show skeleton" />
+								<Property name="Size" value="{{0,150},{0,25}}" />
+								<Property name="Position" value="{{1,-160},{0,30}}" />
+								<Property name="HoverTextColour" value="FFFFFFFF" />
+								<Property name="NormalTextColour" value="FFFFFFFF" />
+								<Property name="PushedTextColour" value="FFFFFFFF" />
+							</Window>
+							<Window name="MeshResetView" type="EmberLook/Button">
+								<Property name="Text" value="Reset view" />
+								<Property name="Size" value="{{0,150},{0,25}}" />
+								<Property name="Position" value="{{1,-160},{0,60}}" />
+								<Property name="HoverTextColour" value="FFFFFFFF" />
+								<Property name="NormalTextColour" value="FFFFFFFF" />
+								<Property name="PushedTextColour" value="FFFFFFFF" />
+							</Window>
 						</Window>
 						<Window name="SubmeshesText" type="EmberLook/StaticText">
 							<Property name="Font" value="DejaVuSans-7" />
