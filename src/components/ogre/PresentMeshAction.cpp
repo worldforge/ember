@@ -46,8 +46,8 @@ void PresentMeshAction::activate(EntityMapping::ChangeContext& context) {
 void PresentMeshAction::showMesh(const std::string& meshName) {
 
 	//We'll automatically create a model which shows just the specified mesh.
-	if (!Model::ModelDefinitionManager::getSingleton().resourceExists(meshName, "Data")) {
-		auto modelDef = Model::ModelDefinitionManager::getSingleton().create(meshName, "Data");
+	if (!Model::ModelDefinitionManager::getSingleton().resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+		auto modelDef = Model::ModelDefinitionManager::getSingleton().create(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		//Create a single submodel definition using the mesh
 		modelDef->createSubModelDefinition(meshName);
 	}

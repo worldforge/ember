@@ -73,28 +73,41 @@ void XMLModelDefinitionSerializer::parseScript(ModelDefinitionManager& modelDefM
 	TiXmlElement* rootElem = xmlDoc.RootElement();
 	if (rootElem) {
 
-		for (TiXmlElement* smElem = rootElem->FirstChildElement();
-				smElem != 0; smElem = smElem->NextSiblingElement())
-		{
-			const char* tmp =  smElem->Attribute("name");
-			std::string name;
-			if (!tmp) {
-				continue;
-			} else {
-				name = tmp;
-			}
-
+		if (rootElem->ValueStr() == "model") {
+			auto& name = stream->getName();
 			try {
 				ModelDefinitionPtr modelDef = modelDefManager.create(name, groupName);
 				if (modelDef) {
-					readModel(modelDef, smElem);
+					readModel(modelDef, rootElem);
 					modelDef->setValid(true);
+					modelDef->_notifyOrigin(stream->getName());
 				}
 			} catch (const Ogre::Exception& ex) {
 				S_LOG_FAILURE("Error when parsing model '" << name << "'." << ex);
 			}
+		} else {
+			for (TiXmlElement* smElem = rootElem->FirstChildElement();
+				 smElem != nullptr; smElem = smElem->NextSiblingElement())
+			{
+				const char* tmp =  smElem->Attribute("name");
+				std::string name;
+				if (!tmp) {
+					continue;
+				} else {
+					name = tmp;
+				}
 
-			//modelDef->_notifyOrigin(context.filename);
+				try {
+					ModelDefinitionPtr modelDef = modelDefManager.create(name, groupName);
+					if (modelDef) {
+						readModel(modelDef, smElem);
+						modelDef->setValid(true);
+						modelDef->_notifyOrigin(stream->getName());
+					}
+				} catch (const Ogre::Exception& ex) {
+					S_LOG_FAILURE("Error when parsing model '" << name << "'." << ex);
+				}
+			}
 		}
 	}
 

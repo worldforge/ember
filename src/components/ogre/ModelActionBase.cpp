@@ -96,20 +96,21 @@ void ModelActionBase::showModel(const std::string& modelName) {
 
 		Model::ModelDefinitionManager& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
 		try {
-			auto definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.load(modelName, "Data"));
+			auto definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.getByName(modelName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 			if (!definition) {
 				S_LOG_FAILURE("Could not find model " << modelName << ", using placeholder.");
 				//add a placeholder model
-				definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.load("placeholder.modeldef", "Data"));
+				definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.getByName("placeholder", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 			}
-			model = new Model::Model(mScene.getSceneManager(), definition, mEntity.getId());
-			model->setVisible(mEntity.isVisible());
-			model->load();
+			if (definition) {
+				model = new Model::Model(mScene.getSceneManager(), definition, mEntity.getId());
+				model->setVisible(mEntity.isVisible());
+				model->load();
 
-			Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, model, mScene, mMapping);
-			mEntity.setGraphicalRepresentation(representation);
-			representation->initFromModel();
-
+				Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, model, mScene, mMapping);
+				mEntity.setGraphicalRepresentation(representation);
+				representation->initFromModel();
+			}
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Could not load model of type " << modelName << " from group 'ModelDefinitions'." << ex);
 		}
