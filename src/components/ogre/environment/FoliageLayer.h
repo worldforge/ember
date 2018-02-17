@@ -56,6 +56,8 @@ class FoliageLayer : public Forests::GrassLayerBase, public virtual sigc::tracka
 public:
     FoliageLayer(Forests::PagedGeometry *geom, Forests::GrassLoader<FoliageLayer> *ldr);
 
+	virtual ~FoliageLayer() = default;
+
 	unsigned int prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume, bool& isAvailable) override;
 	
 	Ogre::uint32 getColorAt(float x, float z);
