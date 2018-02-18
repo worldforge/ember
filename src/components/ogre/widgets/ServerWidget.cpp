@@ -33,6 +33,9 @@
 #include "components/entitymapping/EntityMappingManager.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/ogre/GUIManager.h"
+#include "components/ogre/model/Model.h"
+#include "components/ogre/mapping/ModelActionCreator.h"
+#include "components/ogre/authoring/DetachedEntity.h"
 
 #include "services/server/ServerService.h"
 #include "services/server/AvatarTransferInfo.h"
@@ -42,7 +45,6 @@
 
 #include <Eris/SpawnPoint.h>
 #include <Eris/CharacterType.h>
-#include <Eris/View.h>
 
 #include <CEGUI/widgets/Listbox.h>
 #include <CEGUI/widgets/PushButton.h>
@@ -64,7 +66,17 @@ namespace Gui
 {
 
 ServerWidget::ServerWidget() :
-	mAccount(0), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mCharacterList(0), mCreateChar(0), mUseCreator(0), mNewCharName(0), mNewCharDescription(0), mTypesList(0), mGenderRadioButton(0), mAvatarTransferInfo(0)
+	mAccount(nullptr),
+	mModelPreviewRenderer(nullptr),
+	mModelPreviewManipulator(nullptr),
+	mCharacterList(nullptr),
+	mCreateChar(nullptr),
+	mUseCreator(nullptr),
+	mNewCharName(nullptr),
+	mNewCharDescription(nullptr),
+	mTypesList(nullptr),
+	mGenderRadioButton(nullptr),
+	mAvatarTransferInfo(nullptr)
 {
 }
 
@@ -80,38 +92,38 @@ void ServerWidget::buildWidget()
 
 	if (loadMainSheet("ServerWidget.layout", "Server/")) {
 
-		CEGUI::PushButton* okButton = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("NoCharactersAlert/OkButton"));
+		CEGUI::PushButton* okButton = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("NoCharactersAlert/OkButton"));
 		if (okButton) {
 			BIND_CEGUI_EVENT(okButton, CEGUI::PushButton::EventClicked, ServerWidget::OkButton_Click);
 		}
 
-		CEGUI::PushButton* entityDestroyedOkButton = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("EntityDestroyed/OkButton"));
+		CEGUI::PushButton* entityDestroyedOkButton = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("EntityDestroyed/OkButton"));
 		if (entityDestroyedOkButton) {
 			BIND_CEGUI_EVENT(entityDestroyedOkButton, CEGUI::PushButton::EventClicked, ServerWidget::EntityDestroyedOkButton_Click);
 		}
 
-		CEGUI::PushButton* login = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/Login"));
+		CEGUI::PushButton* login = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/Login"));
 		BIND_CEGUI_EVENT(login, CEGUI::PushButton::EventClicked, ServerWidget::Login_Click);
-		CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/CreateAcc"));
+		CEGUI::PushButton* createAcc = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/CreateAcc"));
 		BIND_CEGUI_EVENT(createAcc, CEGUI::PushButton::EventClicked, ServerWidget::CreateAcc_Click);
 
-		mCharacterList = static_cast<CEGUI::Listbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/CharacterList"));
-		CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/Choose"));
-		mUseCreator = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/UseCreator"));
-		mCreateChar = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/CreateButton"));
+		mCharacterList = dynamic_cast<CEGUI::Listbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/CharacterList"));
+		CEGUI::PushButton* chooseChar = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/Choose"));
+		mUseCreator = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/UseCreator"));
+		mCreateChar = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/CreateButton"));
 
 		BIND_CEGUI_EVENT(chooseChar, CEGUI::PushButton::EventClicked, ServerWidget::Choose_Click);
 		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click);
 		BIND_CEGUI_EVENT(mCreateChar, CEGUI::PushButton::EventClicked, ServerWidget::CreateChar_Click);
 		BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
-		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/LogoutButton")), CEGUI::PushButton::EventClicked, ServerWidget::LogoutButton_Click);
+		BIND_CEGUI_EVENT(dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/LogoutButton")), CEGUI::PushButton::EventClicked, ServerWidget::LogoutButton_Click);
 
-		mNewCharName = static_cast<CEGUI::Editbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/NameEdit"));
-		mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
-		mTypesList = static_cast<CEGUI::Combobox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Type"));
+		mNewCharName = dynamic_cast<CEGUI::Editbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/NameEdit"));
+		mNewCharDescription = dynamic_cast<CEGUI::MultiLineEditbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
+		mTypesList = dynamic_cast<CEGUI::Combobox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Type"));
 
-		mGenderRadioButton = static_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
-		CEGUI::RadioButton* femaleRadioButton = static_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
+		mGenderRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
+		CEGUI::RadioButton* femaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
 
 		BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
 		BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
@@ -129,7 +141,7 @@ void ServerWidget::buildWidget()
 
 		BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
 		BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
-		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/Disconnect")), CEGUI::PushButton::EventClicked, ServerWidget::Disconnect_Click);
+		BIND_CEGUI_EVENT(dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/Disconnect")), CEGUI::PushButton::EventClicked, ServerWidget::Disconnect_Click);
 
 
 		EmberServices::getSingleton().getServerService().GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
@@ -181,7 +193,7 @@ void ServerWidget::connection_Disconnected()
 
 void ServerWidget::server_TransferInfoAvailable(const std::vector<AvatarTransferInfo>& transferInfos)
 {
-	if (transferInfos.size() > 0) {
+	if (!transferInfos.empty()) {
 		CEGUI::Window* teleportInfo = getWindow("TeleportInfo", true);
 		teleportInfo->setVisible(true);
 		mAvatarTransferInfo = new AvatarTransferInfo(transferInfos[0]);
@@ -217,8 +229,8 @@ void ServerWidget::showServerInfo(Eris::Connection* connection)
 		 */
 		CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
 		CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
-		std::string savedUser = "";
-		std::string savedPass = "";
+		std::string savedUser;
+		std::string savedPass;
 		if (fetchCredentials(connection, savedUser, savedPass)) {
 			nameBox->setText(savedUser);
 			passwordBox->setText(savedPass);
@@ -245,7 +257,7 @@ bool ServerWidget::fetchCredentials(Eris::Connection* connection, std::string& u
 	if (serverSettings.findItem(serverCredentials, "password")) {
 		pass = static_cast<std::string>(serverSettings.getItem(serverCredentials, "password"));
 	}
-	return pass != "" && user != "";
+	return !pass.empty() && !user.empty();
 }
 
 bool ServerWidget::saveCredentials()
@@ -258,13 +270,13 @@ bool ServerWidget::saveCredentials()
 	mAccount->getConnection()->getServerInfo(sInfo);
 
 	// pull widget references
-	CEGUI::Window* nameBox(0);
-	CEGUI::Window* passwordBox(0);
-	CEGUI::ToggleButton* saveBox(0);
+	CEGUI::Window* nameBox(nullptr);
+	CEGUI::Window* passwordBox(nullptr);
+	CEGUI::ToggleButton* saveBox(nullptr);
 	try {
 		nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
 		passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
-		saveBox = static_cast<CEGUI::ToggleButton*> (mMainWindow->getChild("LoginPanel/SavePassCheck"));
+		saveBox = dynamic_cast<CEGUI::ToggleButton*> (mMainWindow->getChild("LoginPanel/SavePassCheck"));
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when getting windows from CEGUI." << ex);
 		return false;
@@ -273,8 +285,8 @@ bool ServerWidget::saveCredentials()
 	if (nameBox && passwordBox && saveBox) {
 
 		// fetch info from widgets
-		CEGUI::String name = nameBox->getText();
-		CEGUI::String password = passwordBox->getText();
+		const CEGUI::String& name = nameBox->getText();
+		const CEGUI::String& password = passwordBox->getText();
 		Services::ServerSettingsCredentials serverCredentials(sInfo);
 		Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
 		serverSettings.setItem(serverCredentials, "username", name.c_str());
@@ -289,6 +301,7 @@ void ServerWidget::logoutComplete(bool clean)
 {
 	getWindow("LoginPanel")->setVisible(true);
 	getWindow("LoggedInPanel")->setVisible(false);
+	mTypeServiceConnection.disconnect();
 }
 
 void ServerWidget::loginSuccess(Eris::Account* account)
@@ -299,7 +312,7 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 	account->refreshCharacterInfo();
 	fillAllowedCharacterTypes(account);
 
-	CEGUI::ToggleButton* saveBox = static_cast<CEGUI::ToggleButton*> (mMainWindow->getChild("LoginPanel/SavePassCheck"));
+	CEGUI::ToggleButton* saveBox = dynamic_cast<CEGUI::ToggleButton*> (mMainWindow->getChild("LoginPanel/SavePassCheck"));
 	if (saveBox->isSelected()) {
 		try {
 			saveCredentials();
@@ -309,6 +322,8 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 			S_LOG_FAILURE("Unspecified error when saving password.");
 		}
 	}
+
+	mTypeServiceConnection = account->getConnection()->getTypeService()->BoundType.connect(sigc::mem_fun(*this, &ServerWidget::typeService_TypeBound));
 
 }
 
@@ -357,10 +372,10 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 	 */
 	const Eris::SpawnPointMap& spawnPoints = account->getSpawnPoints();
 
-	for (Eris::SpawnPointMap::const_iterator I = spawnPoints.begin(); I != spawnPoints.end(); ++I) {
-		const Eris::SpawnPoint& spawnPoint = I->second;
-		for (Eris::CharacterTypeStore::const_iterator J = spawnPoint.getAvailableCharacterTypes().begin(); J != spawnPoint.getAvailableCharacterTypes().end(); ++J) {
-			mCharacterAndSpawns.insert(CharacterAndSpawnsStore::value_type(J->getName(), spawnPoint.getName()));
+	for (const auto& entry : spawnPoints) {
+		const Eris::SpawnPoint& spawnPoint = entry.second;
+		for (const auto& characterMapEntry : spawnPoint.getAvailableCharacterTypes()) {
+			mCharacterAndSpawns.insert(CharacterAndSpawnsStore::value_type(characterMapEntry.getName(), spawnPoint.getName()));
 		}
 	}
 
@@ -375,25 +390,25 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 		mUseCreator->setEnabled(false);
 	}
 
-	if (mCharacterAndSpawns.size() == 0 && characters.size() == 0) {
+	if (mCharacterAndSpawns.empty() && characters.empty()) {
 		showNoCharactersAlert();
 	} else {
 		//The preferred way is by using spawn points. Using the character type list is kept for backwards compatibility.
-		if (mCharacterAndSpawns.size() > 0) {
+		if (!mCharacterAndSpawns.empty()) {
 			unsigned int i = 0;
 			for (CharacterAndSpawnsStore::const_iterator I = mCharacterAndSpawns.begin(); I != mCharacterAndSpawns.end(); ++I) {
 				std::string name = I->first;
 				if (mCharacterAndSpawns.count(I->first) > 1) {
 					name += " (" + I->second + ")";
 				}
-				mTypesList->addItem(new Gui::ColouredListItem(name, i++, 0));
+				mTypesList->addItem(new Gui::ColouredListItem(name, i++, nullptr));
 			}
 
 		} else {
 			unsigned int i = 0;
-			for (std::vector<std::string>::const_iterator I = characters.begin(); I != characters.end(); ++I) {
+			for (const auto& character : characters) {
 
-				CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, i++, 0);
+				CEGUI::ListboxItem* item = new Gui::ColouredListItem(character, i++, 0);
 				mTypesList->addItem(item);
 			}
 		}
@@ -405,13 +420,13 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 	mCharacterList->resetList();
 	mCharacterModel.clear();
 	Eris::CharacterMap cm = account->getCharacters();
-	Eris::CharacterMap::iterator I = cm.begin();
-	Eris::CharacterMap::iterator I_end = cm.end();
+	auto I = cm.begin();
+	auto I_end = cm.end();
 
 	if (I == I_end) {
 		//if the user has no previous characters, show the create character tab
 
-		CEGUI::TabControl* tabControl = static_cast<CEGUI::TabControl*> (getWindow("CharacterTabControl"));
+		CEGUI::TabControl* tabControl = dynamic_cast<CEGUI::TabControl*> (getWindow("CharacterTabControl"));
 		if (tabControl) {
 			//try {
 			tabControl->setSelectedTab("CreateCharacterPanel");
@@ -427,7 +442,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 				itemText = entity->getName();
 			} else {
 				//If there's no name try to print the type of entity instead.
-				if (entity->getParent() != "") {
+				if (!entity->getParent().empty()) {
 					itemText = entity->getParent();
 				} else {
 					itemText = "<unknown>";
@@ -499,7 +514,7 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 
 		unsigned int itemIndex = item->getID();
 		//Check if we have a list of spawn points, or if not the older single character type list.
-		if (mCharacterAndSpawns.size() > 0) {
+		if (!mCharacterAndSpawns.empty()) {
 			CharacterAndSpawnsStore::const_iterator I = mCharacterAndSpawns.begin();
 			for (unsigned int i = 0; i < itemIndex; ++i) {
 				I++;
@@ -517,22 +532,9 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 			Eris::TypeService* typeService = mAccount->getConnection()->getTypeService();
 			Eris::TypeInfo* erisType = typeService->getTypeByName(mNewChar.type);
 			if (erisType) {
-				const EntityMapping::Definitions::EntityMappingDefinition* definition = Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
-				if (definition) {
-					EntityMapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
-					if (first != definition->getRoot().getCases().end()) {
-						const EntityMapping::Definitions::CaseDefinition& firstCase = *first;
-						if (firstCase.getActions().begin() != firstCase.getActions().end()) {
-							const EntityMapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
-							if (firstAction.getType() == "display-model") {
-								//update the model preview window
-								mModelPreviewRenderer->showModel(firstAction.getValue());
-								//mModelPreviewRenderer->showFull();
-								//we want to zoom in a little
-								mModelPreviewRenderer->setCameraDistance(0.7);
-							}
-						}
-					}
+				if (erisType->isBound()) {
+					Authoring::DetachedEntity entity("0", erisType, typeService);
+					showPreview(entity);
 				}
 			}
 		}
@@ -540,6 +542,36 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 	updateNewCharacter();
 	return true;
 }
+
+
+void ServerWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entity) {
+	Mapping::ModelActionCreator actionCreator(entity, [&](std::string model){
+		//update the model preview window
+		mModelPreviewRenderer->showModel(model);
+		//mModelPreviewRenderer->showFull();
+		//we want to zoom in a little
+		mModelPreviewRenderer->setCameraDistance(0.7);
+	}, [&](std::string part){
+		if (mModelPreviewRenderer->getModel()) {
+			mModelPreviewRenderer->getModel()->showPart(part);
+		}
+	});
+
+	auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, nullptr);
+	entity.shutdown();
+	if (mapping) {
+		mapping->initialize();
+	}
+}
+
+void ServerWidget::typeService_TypeBound(Eris::TypeInfo* type) {
+	if (type->getName() == mNewChar.type) {
+		Authoring::DetachedEntity entity("0", type, mAccount->getConnection()->getTypeService());
+		showPreview(entity);
+	}
+}
+
+
 bool ServerWidget::Gender_SelectionChanged(const CEGUI::EventArgs& args)
 {
 	CEGUI::RadioButton* selected = mGenderRadioButton->getSelectedButtonInGroup();
@@ -574,8 +606,8 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 	CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
 	CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 
-	CEGUI::String name = nameBox->getText();
-	CEGUI::String password = passwordBox->getText();
+	const CEGUI::String& name = nameBox->getText();
+	const CEGUI::String& password = passwordBox->getText();
 
 	mAccount->login(std::string(name.c_str()), std::string(password.c_str()));
 
@@ -587,8 +619,8 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
 	CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
 	CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 
-	CEGUI::String name = nameBox->getText();
-	CEGUI::String password = passwordBox->getText();
+	const CEGUI::String& name = nameBox->getText();
+	const CEGUI::String& password = passwordBox->getText();
 
 	mAccount->createAccount(std::string(name.c_str()), std::string(name.c_str()), std::string(password.c_str()));
 	return true;
@@ -630,6 +662,8 @@ bool ServerWidget::TeleportNo_Click(const CEGUI::EventArgs& args)
 
 void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 {
+	mTypeServiceConnection.disconnect();
+
 	mAccount->AvatarDeactivated.connect(sigc::mem_fun(*this, &ServerWidget::avatar_Deactivated));
 	avatar->getView()->AvatarEntityDeleted.connect(sigc::mem_fun(*this, &ServerWidget::avatar_EntityDeleted));
 	hide();
@@ -678,7 +712,7 @@ void ServerWidget::showNoCharactersAlert()
 
 bool NewCharacter::isValid() const
 {
-	return name != "" && gender != "" && type != "";
+	return !name.empty() && !gender.empty() && !type.empty();
 }
 
 }

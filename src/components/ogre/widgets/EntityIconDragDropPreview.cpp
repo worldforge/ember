@@ -35,6 +35,7 @@
 #include "components/ogre/model/ModelMount.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
+#include "components/ogre/mapping/ModelActionCreator.h"
 
 #include "domain/EmberEntity.h"
 
@@ -133,7 +134,12 @@ ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
 	mEntityNode = mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode();
 
 	// Making model from temporary entity
-	ModelPreviewWorkerActionCreator actionCreator(*this);
+	Mapping::ModelActionCreator actionCreator(*entity, [&](std::string modelName){
+		setModel(modelName);
+	}, [&](std::string partName){
+		showModelPart(partName);
+	});
+
 	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, nullptr));
 	if (modelMapping) {
 		modelMapping->initialize();
@@ -259,119 +265,6 @@ const WFMath::AxisBox<3> & ModelPreviewWorker::getBBox()
 
 const Authoring::DetachedEntity* ModelPreviewWorker::getEntity() const {
 	return mEntity;
-}
-
-ModelPreviewWorkerPartAction::ModelPreviewWorkerPartAction(ModelPreviewWorker& modelPreviewWorker, std::string partName) :
-		mModelPreviewWorker(modelPreviewWorker),
-		mPartName(std::move(partName))
-{
-}
-
-void ModelPreviewWorkerPartAction::activate(EntityMapping::ChangeContext& context)
-{
-	S_LOG_VERBOSE("Showing creator part " << mPartName);
-	mModelPreviewWorker.showModelPart(mPartName);
-}
-
-void ModelPreviewWorkerPartAction::deactivate(EntityMapping::ChangeContext& context)
-{
-	S_LOG_VERBOSE("Hiding creator part " << mPartName);
-	mModelPreviewWorker.hideModelPart(mPartName);
-}
-
-ModelPreviewWorkerModelAction::ModelPreviewWorkerModelAction(ModelPreviewWorker& modelPreviewWorker, std::string modelName) :
-		mModelPreviewWorker(modelPreviewWorker),
-		mModelName(std::move(modelName))
-{
-}
-
-void ModelPreviewWorkerModelAction::activate(EntityMapping::ChangeContext& context)
-{
-	S_LOG_VERBOSE("Showing creator model " << mModelName);
-	mModelPreviewWorker.setModel(mModelName);
-}
-
-void ModelPreviewWorkerModelAction::deactivate(EntityMapping::ChangeContext& context)
-{
-	S_LOG_VERBOSE("Hiding creator model " << mModelName);
-	mModelPreviewWorker.setModel("");
-}
-
-ModelPreviewWorkerHideModelAction::ModelPreviewWorkerHideModelAction(ModelPreviewWorker& modelPreviewWorker) :
-		mModelPreviewWorker(modelPreviewWorker)
-{
-}
-
-void ModelPreviewWorkerHideModelAction::activate(EntityMapping::ChangeContext& context)
-{
-	mModelPreviewWorker.setModel("");
-}
-
-void ModelPreviewWorkerHideModelAction::deactivate(EntityMapping::ChangeContext& context)
-{
-}
-
-ModelPreviewWorkerPresentModelAction::ModelPreviewWorkerPresentModelAction(ModelPreviewWorker& modelPreviewWorker)
-:mModelPreviewWorker(modelPreviewWorker)
-{
-}
-
-void ModelPreviewWorkerPresentModelAction::activate(EntityMapping::ChangeContext& context) {
-	if (mModelPreviewWorker.getEntity()->hasAttr("present-model")) {
-		auto& element = mModelPreviewWorker.getEntity()->valueOfAttr("present-model");
-		if (element.isString()) {
-			mModelPreviewWorker.setModel(element.String());
-		}
-	}
-}
-
-void ModelPreviewWorkerPresentModelAction::deactivate(EntityMapping::ChangeContext& context) {
-}
-
-ModelPreviewWorkerPresentMeshAction::ModelPreviewWorkerPresentMeshAction(ModelPreviewWorker& modelPreviewWorker)
-		:mModelPreviewWorker(modelPreviewWorker)
-{
-}
-
-void ModelPreviewWorkerPresentMeshAction::activate(EntityMapping::ChangeContext& context) {
-	if (mModelPreviewWorker.getEntity()->hasAttr("present-mesh")) {
-		auto& element = mModelPreviewWorker.getEntity()->valueOfAttr("present-mesh");
-		if (element.isString()) {
-			auto& meshName = element.String();
-			//We'll automatically create a model which shows just the specified mesh.
-			if (!Model::ModelDefinitionManager::getSingleton().resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-				auto modelDef = Model::ModelDefinitionManager::getSingleton().create(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-				//Create a single submodel definition using the mesh
-				modelDef->createSubModelDefinition(meshName);
-			}
-			mModelPreviewWorker.setModel(meshName);
-		}
-	}
-}
-
-void ModelPreviewWorkerPresentMeshAction::deactivate(EntityMapping::ChangeContext& context) {
-}
-
-ModelPreviewWorkerActionCreator::ModelPreviewWorkerActionCreator(ModelPreviewWorker& modelPreviewWorker) :
-		mModelPreviewWorker(modelPreviewWorker)
-{
-}
-
-void ModelPreviewWorkerActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
-{
-	for (auto& actionDef : caseDefinition.getActions()) {
-		if (actionDef.getType() == "display-part") {
-			aCase->addAction(new ModelPreviewWorkerPartAction(mModelPreviewWorker, actionDef.getValue()));
-		} else if (actionDef.getType() == "display-model") {
-			aCase->addAction(new ModelPreviewWorkerModelAction(mModelPreviewWorker, actionDef.getValue()));
-		} else if (actionDef.getType() == "hide-model") {
-			aCase->addAction(new ModelPreviewWorkerHideModelAction(mModelPreviewWorker));
-		} else if (actionDef.getType() == "present-model") {
-			aCase->addAction(new ModelPreviewWorkerPresentModelAction(mModelPreviewWorker));
-		} else if (actionDef.getType() == "present-mesh") {
-			aCase->addAction(new ModelPreviewWorkerPresentMeshAction(mModelPreviewWorker));
-		}
-	}
 }
 
 ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :

@@ -23,7 +23,6 @@
 #include "EntityCreatorCreationInstance.h"
 
 #include "EntityCreatorMovement.h"
-#include "EntityCreatorActionCreator.h"
 #include "AtlasHelper.h"
 
 #include "components/ogre/Avatar.h"
@@ -41,6 +40,7 @@
 #include "components/ogre/authoring/DetachedEntity.h"
 
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
+#include "components/ogre/mapping/ModelActionCreator.h"
 
 #include <wfmath/atlasconv.h>
 #include <wfmath/MersenneTwister.h>
@@ -149,7 +149,12 @@ void EntityCreatorCreationInstance::createEntity()
 	}
 
 	// Making model from temporary entity
-	EntityCreatorActionCreator actionCreator(*this);
+	Mapping::ModelActionCreator actionCreator(*mEntity, [&](std::string modelName){
+		setModel(modelName);
+	}, [&](std::string partName){
+		showModelPart(partName);
+	});
+
 	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, nullptr));
 	if (modelMapping) {
 		modelMapping->initialize();

@@ -34,6 +34,7 @@
 #include "Widget.h"
 #include <map>
 #include <vector>
+#include <components/ogre/authoring/DetachedEntity.h>
 
 
 namespace Ember {
@@ -69,8 +70,10 @@ class ServerWidget : public Widget
 public:
 
     ServerWidget();
-    virtual ~ServerWidget();
-	virtual void buildWidget();
+
+	~ServerWidget() override;
+
+	void buildWidget() override;
 
 protected:
 
@@ -108,6 +111,8 @@ protected:
 	 */
 	std::vector<std::string> mCharacterModel;
 
+	sigc::connection mTypeServiceConnection;
+
 	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
 	void avatar_EntityDeleted();
@@ -128,7 +133,7 @@ protected:
 
 
 	bool fetchCredentials(Eris::Connection* connection, std::string& user, std::string& pass);
-	bool saveCredentials(void);
+	bool saveCredentials();
 	void loginSuccess(Eris::Account* account);
 	void logoutComplete(bool clean);
 
@@ -193,6 +198,10 @@ protected:
 	void showNoCharactersAlert();
 
 	void server_TransferInfoAvailable(const std::vector<AvatarTransferInfo>& transferInfos);
+
+	void showPreview(Ember::OgreView::Authoring::DetachedEntity& entity);
+
+	void typeService_TypeBound(Eris::TypeInfo* type);
 };
 }
 }

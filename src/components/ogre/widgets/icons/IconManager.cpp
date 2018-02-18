@@ -36,6 +36,7 @@
 #include "components/entitymapping/IActionCreator.h"
 #include "components/entitymapping/Actions/Action.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
+#include "components/ogre/mapping/ModelActionCreator.h"
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
 #include <Eris/Connection.h>
@@ -74,111 +75,6 @@ public:
 
 };
 
-/**
- @author Erik Ogenvik <erik@ogenvik.org>
- */
-class IconActionCreator : public EntityMapping::IActionCreator {
-public:
-
-	class DisplayModelAction : public EntityMapping::Actions::Action {
-	public:
-		IconActionCreator* mCreator;
-		std::string mModelName;
-
-		explicit DisplayModelAction(IconActionCreator* creator, std::string modelName)
-				: mCreator(creator),
-				  mModelName(std::move(modelName)) {
-		}
-
-		void activate(EntityMapping::ChangeContext& context) override {
-			mCreator->mModelName = mModelName;
-		}
-
-		void deactivate(EntityMapping::ChangeContext& context) override {
-
-		}
-
-	};
-
-	class PresentModelAction : public EntityMapping::Actions::Action {
-	public:
-		IconActionCreator* mCreator;
-
-		explicit PresentModelAction(IconActionCreator* creator)
-				: mCreator(creator) {
-		}
-
-		void activate(EntityMapping::ChangeContext& context) override {
-			if (mCreator->mEntity.hasAttr("present-model")) {
-				auto& element = mCreator->mEntity.valueOfAttr("present-model");
-				if (element.isString()) {
-					mCreator->mModelName = element.String();
-				}
-			}
-		}
-
-		void deactivate(EntityMapping::ChangeContext& context) override {
-
-		}
-
-	};
-
-	class PresentMeshAction : public EntityMapping::Actions::Action {
-	public:
-		IconActionCreator* mCreator;
-
-		explicit PresentMeshAction(IconActionCreator* creator)
-				: mCreator(creator) {
-		}
-
-		void activate(EntityMapping::ChangeContext& context) override {
-			if (mCreator->mEntity.hasAttr("present-mesh")) {
-				auto& element = mCreator->mEntity.valueOfAttr("present-mesh");
-				if (element.isString()) {
-					auto& meshName = element.String();
-					//We'll automatically create a model which shows just the specified mesh.
-					if (!Model::ModelDefinitionManager::getSingleton().resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-						auto modelDef = Model::ModelDefinitionManager::getSingleton().create(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-						//Create a single submodel definition using the mesh
-						modelDef->createSubModelDefinition(meshName);
-					}
-					mCreator->mModelName = meshName;
-				}
-			}
-		}
-
-		void deactivate(EntityMapping::ChangeContext& context) override {
-
-		}
-	};
-
-	explicit IconActionCreator(Eris::Entity& entity) :
-			mEntity(entity), mModelName("") {
-	}
-
-	~IconActionCreator() override = default;
-
-	void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition) override {
-		for (auto& actionDef : caseDefinition.getActions()) {
-			if (actionDef.getType() == "display-model") {
-				aCase->addAction(new DisplayModelAction(this, actionDef.getValue()));
-			} else if (actionDef.getType() == "present-model") {
-				aCase->addAction(new PresentModelAction(this));
-			} else if (actionDef.getType() == "present-mesh") {
-				aCase->addAction(new PresentMeshAction(this));
-			}
-		}
-	}
-
-	const std::string& getModelName() const {
-		return mModelName;
-	}
-
-protected:
-	Eris::Entity& mEntity;
-	std::string mModelName;
-
-};
 
 IconManager::IconManager() :
 		mIconRenderer("IconManager", 64) {
@@ -194,12 +90,19 @@ Icon* IconManager::getIcon(int, EmberEntity* entity) {
 	if (mIconStore.hasIcon(key)) {
 		return mIconStore.getIcon(key);
 	} else {
-		IconActionCreator actionCreator(*entity);
-		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 		std::string modelName;
+
+
+		Mapping::ModelActionCreator actionCreator(*entity, [&](std::string newModelName){
+			modelName = newModelName;
+		}, [&](std::string partName){
+			//Ignore parts
+		});
+		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
+
+
 		if (modelMapping) {
 			modelMapping->initialize();
-			modelName = actionCreator.getModelName();
 		}
 		//if there's no model defined for this use the placeholder model
 		if (modelName.empty()) {
@@ -255,12 +158,15 @@ Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType) {
 }
 
 void IconManager::render(Icon& icon, EmberEntity& entity) {
-	IconActionCreator actionCreator(entity);
-	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 	std::string modelName;
+	Mapping::ModelActionCreator actionCreator(entity, [&](std::string newModelName){
+		modelName = newModelName;
+	}, [&](std::string partName){
+		//Ignore parts
+	});
+	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 	if (modelMapping) {
 		modelMapping->initialize();
-		modelName = actionCreator.getModelName();
 	}
 	//if there's no model defined for this use the placeholder model
 	if (modelName.empty()) {
@@ -278,12 +184,15 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 		Eris::TypeService* typeService = conn->getTypeService();
 		if (typeService) {
 			DummyEntity dummyEntity("-1", &erisType, typeService);
-			IconActionCreator actionCreator(dummyEntity);
-			std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 			std::string modelName;
+			Mapping::ModelActionCreator actionCreator(dummyEntity, [&](std::string newModelName){
+				modelName = newModelName;
+			}, [&](std::string partName){
+				//Ignore parts
+			});
+			std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 			if (modelMapping) {
 				modelMapping->initialize();
-				modelName = actionCreator.getModelName();
 			}
 			//if there's no model defined for this use the placeholder model
 			if (modelName.empty()) {
