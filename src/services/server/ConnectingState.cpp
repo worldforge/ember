@@ -70,7 +70,7 @@ bool ConnectingState::connect()
 			return false;
 		}
 	} catch (const Eris::BaseException& except) {
-		S_LOG_WARNING("Got error on connect:" << except._msg);
+		S_LOG_WARNING("Got error on connect." << except);
 		return false;
 	} catch (...) {
 		S_LOG_WARNING("Got unknown error on connect.");
