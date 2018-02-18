@@ -85,7 +85,11 @@ EntityMapping* EntityMappingCreator::create() {
 EntityMapping* EntityMappingCreator::createMapping() {
 	mEntityMapping = new EntityMapping(mEntity);
 
-	addMatch(&mEntityMapping->getBaseCase(), mDefinition.getRoot());
+	mActionCreator.createActions(*mEntityMapping, &mEntityMapping->getBaseCase(), mDefinition.getRoot());
+
+	for (auto& aMatch : mDefinition.getRoot().getMatches()) {
+		addMatch( &mEntityMapping->getBaseCase(), aMatch);
+	}
 
 	if (!mDefinition.isOverride()) {
 		//This is a little hacky, but we'll by default add matches for both the "present-mesh" and "present-model" attribute.
@@ -155,11 +159,6 @@ void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& m
 				outfitCase->addEntityType(mTypeService.getTypeByName(paramEntry.second));
 			}
 		}
-/*			const std::string& entityName = I->getProperties()["equals"];
-		std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
-		for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
-			aCase->addEntityType(mTypeService.getTypeByName(*J));
-		}*/
 		mActionCreator.createActions(*mEntityMapping, outfitCase, aCase);
 
 		for (auto& aMatch : aCase.getMatches()) {
@@ -183,9 +182,6 @@ Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAt
 		} else {
 			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringValueComparer(""));
 		}
-/*
-		const std::string& attributeValue = caseDefinition.getProperties()["equals"];
-		return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(attributeValue));*/
 	} else if (matchType == "numeric") {
 		return new AttributeComparers::NumericComparerWrapper(createNumericComparer(caseDefinition));
 	} else if (matchType == "function") {
@@ -199,10 +195,6 @@ Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAt
 
 AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer(CaseDefinition& caseDefinition) {
 	const CaseDefinition::ParameterEntry* param(nullptr);
-
-// 	DefinitionBase::PropertiesMap::const_iterator value;
-// 	DefinitionBase::PropertiesMap::const_iterator end = caseDefinition.getProperties().end();
-// 	value = caseDefinition.getProperties().find("equals");
 
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "equals"))) {
 		return new AttributeComparers::NumericEqualsComparer(std::stof(param->second));

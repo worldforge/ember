@@ -53,7 +53,7 @@ public virtual sigc::trackable
 public:
 	EmberEntityMappingManager();
 
-	virtual ~EmberEntityMappingManager();
+	~EmberEntityMappingManager() override;
 
 	/**
 	Accessor for the main EntityMappingManager instance.
@@ -63,7 +63,7 @@ public:
 	/**
 	Method called by Ogre. Will parse the script supplied in the stream object.
 	*/
-	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+	void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName) override;
 
 protected:
 	/**
@@ -79,9 +79,9 @@ protected:
 	/**
 	Internal method called by Ogre.
 	*/
-	virtual Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
+	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
 		const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
-		const Ogre::NameValuePairList* createParams);
+		const Ogre::NameValuePairList* createParams) override;
 
 	/**
 	When we get a connection, set the TypeService on the mEntityMappingManager instance.

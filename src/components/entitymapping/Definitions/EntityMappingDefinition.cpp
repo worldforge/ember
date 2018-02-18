@@ -47,12 +47,12 @@ void EntityMappingDefinition::setName(std::string name) {
 	mName = std::move(name);
 }
 
-MatchDefinition& EntityMappingDefinition::getRoot() {
-	return mRootMatch;
+CaseDefinition& EntityMappingDefinition::getRoot() {
+	return mRootCase;
 }
 
-const MatchDefinition& EntityMappingDefinition::getRoot() const {
-	return mRootMatch;
+const CaseDefinition& EntityMappingDefinition::getRoot() const {
+	return mRootCase;
 }
 
 bool EntityMappingDefinition::isOverride() const {

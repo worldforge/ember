@@ -35,7 +35,7 @@
 using namespace Ember::EntityMapping;
 
 
-template<> Ember::OgreView::Mapping::EmberEntityMappingManager* Ember::Singleton<Ember::OgreView::Mapping::EmberEntityMappingManager>::ms_Singleton = 0;
+template<> Ember::OgreView::Mapping::EmberEntityMappingManager* Ember::Singleton<Ember::OgreView::Mapping::EmberEntityMappingManager>::ms_Singleton = nullptr;
 
 namespace Ember {
 namespace OgreView {
@@ -47,8 +47,8 @@ EmberEntityMappingManager::EmberEntityMappingManager() : mEntityMappingManager()
     mLoadOrder = 300.0f;
     mResourceType = "EntityMappingDefinition";
 
-	mScriptPatterns.push_back("*.entitymap");
-	mScriptPatterns.push_back("*.entitymap.xml");
+	mScriptPatterns.emplace_back("*.entitymap");
+	mScriptPatterns.emplace_back("*.entitymap.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
@@ -74,14 +74,14 @@ void EmberEntityMappingManager::parseScript (Ogre::DataStreamPtr &stream, const 
 		return;
 	}
 
-	mXmlSerializer.parseScript(xmlDoc);
+	mXmlSerializer.parseScript(xmlDoc, stream->getName());
 }
 
-Ogre::Resource* EmberEntityMappingManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
-    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
-    const Ogre::NameValuePairList* createParams)
+Ogre::Resource* EmberEntityMappingManager::createImpl(const Ogre::String&, Ogre::ResourceHandle,
+    const Ogre::String&, bool, Ogre::ManualResourceLoader*,
+    const Ogre::NameValuePairList*)
 {
-	return 0;
+	return nullptr;
 }
 
 

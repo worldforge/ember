@@ -58,8 +58,8 @@ public:
     const std::string& getName() const;
     void setName(std::string name);
 
-    MatchDefinition& getRoot();
-    const MatchDefinition& getRoot() const;
+    CaseDefinition& getRoot();
+    const CaseDefinition& getRoot() const;
 
 	/**
 	 * If true, the rules in the mapping will override any "present-mesh" or "present-model" property of the entity.
@@ -68,7 +68,7 @@ public:
 	bool isOverride() const;
 	void setIsOverride(bool isOverride);
 protected:
-	MatchDefinition mRootMatch;
+	CaseDefinition mRootCase;
 	std::string mName;
 
 	/**

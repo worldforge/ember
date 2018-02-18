@@ -26,6 +26,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include "framework/tinyxml/tinyxml.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/EntityMappingManager.h"
@@ -41,25 +42,31 @@ namespace Mapping {
 	Serialized model definitions from xml files.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class XMLEntityMappingDefinitionSerializer{
+class XMLEntityMappingDefinitionSerializer {
 public:
-    XMLEntityMappingDefinitionSerializer(EntityMapping::EntityMappingManager& modelMappingManager);
+	explicit XMLEntityMappingDefinitionSerializer(EntityMapping::EntityMappingManager& modelMappingManager);
 
-    ~XMLEntityMappingDefinitionSerializer() = default;
+	~XMLEntityMappingDefinitionSerializer() = default;
 
-    /**
-    Parse the xml document and create definitions from the data.
-    @param xmlDocument A valid xml document instance.
-    */
-    void parseScript(TiXmlDocument& xmlDocument);
+	/**
+	Parse the xml document and create definitions from the data.
+	@param xmlDocument A valid xml document instance.
+	*/
+	void parseScript(TiXmlDocument xmlDocument, const std::string& path);
+
 protected:
 	void parseMatchElement(EntityMapping::Definitions::EntityMappingDefinition& definition, EntityMapping::Definitions::MatchDefinition& matchDef, TiXmlElement* element);
+
 	void parseCaseElement(EntityMapping::Definitions::EntityMappingDefinition& definition, EntityMapping::Definitions::CaseDefinition& caseDef, TiXmlElement* element);
+
 	void parseActionElement(EntityMapping::Definitions::EntityMappingDefinition& definition, EntityMapping::Definitions::ActionDefinition& actionDef, TiXmlElement* element);
 
 	EntityMapping::EntityMappingManager& mEntityMappingManager;
 
 
+	void parseEntityMappings(TiXmlElement* rootElem);
+
+	void parseSingleMapping(TiXmlElement* rootElem, const std::string& path);
 };
 
 }

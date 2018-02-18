@@ -39,114 +39,17 @@ XMLEntityMappingDefinitionSerializer::XMLEntityMappingDefinitionSerializer(Entit
 		: mEntityMappingManager(entitymappingManager) {
 }
 
-void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocument) {
+void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument xmlDocument, const std::string& path) {
 
 	auto rootElem = xmlDocument.RootElement();
 
 	if (rootElem) {
-
-		auto checkOverrideFn = [](EntityMappingDefinition* definition, TiXmlElement* element) {
-			auto value = element->Attribute("override");
-			if (value) {
-				definition->setIsOverride(std::string(value) == "true");
-			} else {
-				definition->setIsOverride(false);
-			}
-		};
-
-		for (auto smElem = rootElem->FirstChildElement("entitymapping");
-			 smElem != nullptr; smElem = smElem->NextSiblingElement("entitymapping")) {
-			const char* tmp = smElem->Attribute("name");
-			if (!tmp) {
-				continue;
-			} else {
-				try {
-					std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
-					definition->setName(tmp);
-					checkOverrideFn(definition.get(), smElem);
-					definition->setIsOverride(smElem->Attribute("override") != nullptr);
-					auto matchElement = smElem->FirstChildElement();
-					parseMatchElement(*definition, definition->getRoot(), matchElement);
-					mEntityMappingManager.addDefinition(definition.release());
-				} catch (const std::exception& ex) {
-					S_LOG_FAILURE("Error when reading model mapping with name '" << tmp << "'." << ex);
-				} catch (...) {
-					S_LOG_FAILURE("Error when reading model mapping with name '" << tmp << "'.");
-				}
-			}
-
+		if (rootElem->ValueStr() == "entitymappings") {
+			parseEntityMappings(rootElem);
+		} else {
+			parseSingleMapping(rootElem, path);
 		}
 
-
-		for (auto smElem = rootElem->FirstChildElement("nomodel");
-			 smElem != nullptr; smElem = smElem->NextSiblingElement("nomodel")) {
-			const char* tmp = smElem->Attribute("name");
-			if (!tmp) {
-				continue;
-			} else {
-				try {
-					std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
-					definition->setName(tmp);
-					checkOverrideFn(definition.get(), smElem);
-					definition->getRoot().setType("entitytype");
-					CaseDefinition caseDef;
-					caseDef.setType("entitytypecase");
-					caseDef.getCaseParameters().emplace_back("equals", tmp);
-					ActionDefinition actionDef;
-					actionDef.setType("hide-model");
-
-					caseDef.getActions().push_back(actionDef);
-					definition->getRoot().getCases().push_back(caseDef);
-
-					mEntityMappingManager.addDefinition(definition.release());
-				} catch (const std::exception& ex) {
-					S_LOG_FAILURE("Error when reading nomodel mapping with name '" << tmp << "'." << ex);
-				} catch (...) {
-					S_LOG_FAILURE("Error when reading nomodel mapping with name '" << tmp << "'.");
-				}
-			}
-		}
-
-		//Check for autoentitymapping elements, which allow for a quick mapping between a entity type and a model.
-		//format: <autoentitymapping name="oak">
-		//or: <autoentitymapping name="oak" modelname="oak_1">
-		for (auto smElem = rootElem->FirstChildElement("autoentitymapping");
-			 smElem != nullptr; smElem = smElem->NextSiblingElement("autoentitymapping")) {
-			const char* tmp = smElem->Attribute("name");
-			if (!tmp) {
-				continue;
-			} else {
-				try {
-					std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
-
-					definition->setName(tmp);
-					checkOverrideFn(definition.get(), smElem);
-					definition->getRoot().setType("entitytype");
-					CaseDefinition caseDef;
-					caseDef.setType("entitytypecase");
-					caseDef.getCaseParameters().emplace_back("equals", tmp);
-					ActionDefinition actionDef;
-					actionDef.setType("display-model");
-
-					//check if a model name is set
-					const char* tmpModelName = smElem->Attribute("modelname");
-					if (tmpModelName) {
-						actionDef.setValue(std::string(tmpModelName));
-					} else {
-						actionDef.setValue(tmp);
-					}
-
-					caseDef.getActions().push_back(actionDef);
-					definition->getRoot().getCases().push_back(caseDef);
-
-					mEntityMappingManager.addDefinition(definition.release());
-				} catch (const std::exception& ex) {
-					S_LOG_FAILURE("Error when reading autoentity mapping with name '" << tmp << "'." << ex);
-				} catch (...) {
-					S_LOG_FAILURE("Error when reading autoentity mapping with name '" << tmp << "'.");
-				}
-			}
-		}
 	}
 }
 
@@ -177,7 +80,7 @@ void XMLEntityMappingDefinitionSerializer::parseMatchElement(EntityMappingDefini
 			CaseDefinition caseDef;
 			caseDef.setType(caseType);
 			parseCaseElement(definition, caseDef, childElement);
-			matchDef.getCases().push_back(caseDef);
+			matchDef.getCases().push_back(std::move(caseDef));
 		}
 	}
 }
@@ -207,7 +110,7 @@ void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinit
 				//we'll assume it's a match
 				MatchDefinition matchDef;
 				parseMatchElement(definition, matchDef, childElement);
-				caseDef.getMatches().push_back(matchDef);
+				caseDef.getMatches().push_back(std::move(matchDef));
 			}
 		}
 	}
@@ -224,7 +127,130 @@ void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefin
 	}
 
 }
+
+void XMLEntityMappingDefinitionSerializer::parseEntityMappings(TiXmlElement* rootElem) {
+	auto checkOverrideFn = [](EntityMappingDefinition* definition, TiXmlElement* element) {
+		auto value = element->Attribute("override");
+		if (value) {
+			definition->setIsOverride(std::string(value) == "true");
+		} else {
+			definition->setIsOverride(false);
+		}
+	};
+
+	for (auto smElem = rootElem->FirstChildElement("entitymapping");
+		 smElem != nullptr; smElem = smElem->NextSiblingElement("entitymapping")) {
+		const char* tmp = smElem->Attribute("name");
+		if (!tmp) {
+			continue;
+		} else {
+			try {
+				std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
+				definition->setName(tmp);
+				checkOverrideFn(definition.get(), smElem);
+				definition->setIsOverride(smElem->Attribute("override") != nullptr);
+				parseCaseElement(*definition, definition->getRoot(), smElem);
+				mEntityMappingManager.addDefinition(definition.release());
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Error when reading model mapping with name '" << tmp << "'." << ex);
+			} catch (...) {
+				S_LOG_FAILURE("Error when reading model mapping with name '" << tmp << "'.");
+			}
+		}
+
+	}
+
+
+	for (auto smElem = rootElem->FirstChildElement("nomodel");
+		 smElem != nullptr; smElem = smElem->NextSiblingElement("nomodel")) {
+		const char* tmp = smElem->Attribute("name");
+		if (!tmp) {
+			continue;
+		} else {
+			try {
+				std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
+				definition->setName(tmp);
+				checkOverrideFn(definition.get(), smElem);
+
+				CaseDefinition caseDef;
+				caseDef.setType("entitytypecase");
+				caseDef.getCaseParameters().emplace_back("equals", tmp);
+				ActionDefinition actionDef;
+				actionDef.setType("hide-model");
+
+				caseDef.getActions().push_back(actionDef);
+
+				MatchDefinition matchDefinition;
+				matchDefinition.setType("entitytype");
+				matchDefinition.getCases().emplace_back(caseDef);
+
+				definition->getRoot().getMatches().emplace_back(matchDefinition);
+
+				mEntityMappingManager.addDefinition(definition.release());
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Error when reading nomodel mapping with name '" << tmp << "'." << ex);
+			} catch (...) {
+				S_LOG_FAILURE("Error when reading nomodel mapping with name '" << tmp << "'.");
+			}
+		}
+	}
+
+	//Check for autoentitymapping elements, which allow for a quick mapping between a entity type and a model.
+	//format: <autoentitymapping name="oak">
+	//or: <autoentitymapping name="oak" modelname="oak_1">
+	for (auto smElem = rootElem->FirstChildElement("autoentitymapping");
+		 smElem != nullptr; smElem = smElem->NextSiblingElement("autoentitymapping")) {
+		const char* tmp = smElem->Attribute("name");
+		if (!tmp) {
+			continue;
+		} else {
+			try {
+				std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
+
+				definition->setName(tmp);
+				checkOverrideFn(definition.get(), smElem);
+
+				CaseDefinition caseDef;
+				caseDef.setType("entitytypecase");
+				caseDef.getCaseParameters().emplace_back("equals", tmp);
+				ActionDefinition actionDef;
+				actionDef.setType("display-model");
+
+				//check if a model name is set
+				const char* tmpModelName = smElem->Attribute("modelname");
+				if (tmpModelName) {
+					actionDef.setValue(std::string(tmpModelName));
+				} else {
+					actionDef.setValue(tmp);
+				}
+
+				caseDef.getActions().push_back(actionDef);
+
+				MatchDefinition matchDefinition;
+				matchDefinition.setType("entitytype");
+				matchDefinition.getCases().emplace_back(caseDef);
+
+				definition->getRoot().getMatches().emplace_back(matchDefinition);
+
+				mEntityMappingManager.addDefinition(definition.release());
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Error when reading autoentity mapping with name '" << tmp << "'." << ex);
+			} catch (...) {
+				S_LOG_FAILURE("Error when reading autoentity mapping with name '" << tmp << "'.");
+			}
+		}
+	}
 }
 
+void XMLEntityMappingDefinitionSerializer::parseSingleMapping(TiXmlElement* rootElem, const std::string& path) {
+	std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
+
+	definition->setName(path);
+
+	parseCaseElement(*definition, definition->getRoot(), rootElem);
+	mEntityMappingManager.addDefinition(definition.release());
+}
+
+}
 }
 }

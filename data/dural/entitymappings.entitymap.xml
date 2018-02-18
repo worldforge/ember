@@ -803,7 +803,7 @@
                 </outfitmatch>                
                 <outfitmatch attachment="legs">
                     <case>
-                        <caseparam type="equals">trousers</caseparam>
+                        <caseparam type="equals">pants</caseparam>
                         <action type="display-part">basic_pants</action>
                         <attributematch attribute="style">
                             <case>

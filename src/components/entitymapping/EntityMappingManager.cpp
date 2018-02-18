@@ -56,18 +56,25 @@ void EntityMappingManager::addDefinition(EntityMappingDefinition* definition)
 	if (!result.second) {
 		delete definition;
 	} else {
-		for (auto& aCase : definition->getRoot().getCases()) {
-			for (auto& paramEntry : aCase.getCaseParameters()) {
-				if (paramEntry.first == "equals") {
-					mEntityTypeMappings[paramEntry.second] = definition;
+		for (auto& matchEntry : definition->getRoot().getMatches()) {
+			if (matchEntry.getType() == "entitytype") {
+				for (auto& aCase : matchEntry.getCases()) {
+					for (auto& paramEntry : aCase.getCaseParameters()) {
+						if (paramEntry.first == "equals") {
+							mEntityTypeMappings[paramEntry.second] = definition;
+						}
+					}
 				}
 			}
+		}
+
+
 			/*		const std::string& entityName = I->getProperties()["equals"];
 			 std::vector<std::string> splitNames = splitString(entityName, "|", 100);
 			 for (std::vector<std::string>::const_iterator I = splitNames.begin(); I != splitNames.end(); ++I) {
 			 mEntityTypeMappings[*I] = definition;
 			 }*/
-		}
+
 	}
 }
 
@@ -93,12 +100,24 @@ EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeIn
 EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view)
 {
 	if (mTypeService) {
-		Eris::TypeInfo* type = entity.getType();
-		EntityMappingDefinition* definition = getDefinitionForType(type);
+		EntityMappingDefinition* definition = nullptr;
+		if (entity.hasAttr("present-mapping")) {
+			auto mappingElement = entity.valueOfAttr("present-mapping");
+			if (mappingElement.isString() && !mappingElement.String().empty()) {
+				auto I = mDefinitions.find(mappingElement.String());
+				if (I != mDefinitions.end()) {
+					definition = I->second;
+				}
+			}
+		}
+
+		if (!definition) {
+			definition = getDefinitionForType(entity.getType());
+		}
+
 		if (definition) {
 			EntityMappingCreator creator(*definition, entity, actionCreator, *mTypeService, view);
-			EntityMapping* mapping = creator.create();
-			return mapping;
+			return creator.create();
 		}
 	}
 	return nullptr;
