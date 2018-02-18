@@ -88,40 +88,26 @@ EntityMapping* EntityMappingCreator::createMapping() {
 	mActionCreator.createActions(*mEntityMapping, &mEntityMapping->getBaseCase(), mDefinition.getRoot());
 
 	for (auto& aMatch : mDefinition.getRoot().getMatches()) {
-		addMatch( &mEntityMapping->getBaseCase(), aMatch);
+		addMatch(&mEntityMapping->getBaseCase(), aMatch);
 	}
 
 	if (!mDefinition.isOverride()) {
-		//This is a little hacky, but we'll by default add matches for both the "present-mesh" and "present-model" attribute.
-		{
-			AttributeMatch* attributeMatch = new AttributeMatch("present-mesh");
-			AttributeCase* attributeCase = new AttributeCase(new AttributeComparers::StringComparerWrapper(new StringNotEmptyComparer()));
-			MatchAttributeObserver* observer = new MatchAttributeObserver(attributeMatch, "present-mesh");
-			attributeMatch->setMatchAttributeObserver(observer);
+		//This is a little hacky, but we'll by default add matches for the "present" property.
 
-			attributeMatch->addCase(attributeCase);
-			CaseDefinition caseDefinition;
-			ActionDefinition actionDefinition;
-			actionDefinition.setType("present-mesh");
-			caseDefinition.getActions().emplace_back(std::move(actionDefinition));
-			mActionCreator.createActions(*mEntityMapping, attributeCase, caseDefinition);
-			mEntityMapping->getBaseCase().addMatch(attributeMatch);
-		}
+		AttributeMatch* attributeMatch = new AttributeMatch("present");
+		AttributeCase* attributeCase = new AttributeCase(new AttributeComparers::StringComparerWrapper(new StringNotEmptyComparer()));
+		MatchAttributeObserver* observer = new MatchAttributeObserver(attributeMatch, "present");
+		attributeMatch->setMatchAttributeObserver(observer);
 
-		{
-			AttributeMatch* attributeMatch = new AttributeMatch("present-model");
-			AttributeCase* attributeCase = new AttributeCase(new AttributeComparers::StringComparerWrapper(new StringNotEmptyComparer()));
-			MatchAttributeObserver* observer = new MatchAttributeObserver(attributeMatch, "present-model");
-			attributeMatch->setMatchAttributeObserver(observer);
+		attributeMatch->addCase(attributeCase);
+		CaseDefinition caseDefinition;
+		ActionDefinition actionDefinition;
+		actionDefinition.setType("present");
+		caseDefinition.getActions().emplace_back(std::move(actionDefinition));
+		mActionCreator.createActions(*mEntityMapping, attributeCase, caseDefinition);
+		mEntityMapping->getBaseCase().addMatch(attributeMatch);
 
-			attributeMatch->addCase(attributeCase);
-			CaseDefinition caseDefinition;
-			ActionDefinition actionDefinition;
-			actionDefinition.setType("present-model");
-			caseDefinition.getActions().emplace_back(std::move(actionDefinition));
-			mActionCreator.createActions(*mEntityMapping, attributeCase, caseDefinition);
-			mEntityMapping->getBaseCase().addMatch(attributeMatch);
-		}
+
 	}
 
 	//since we already have the entity, we can perform a check right away

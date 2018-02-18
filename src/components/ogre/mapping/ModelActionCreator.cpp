@@ -22,6 +22,7 @@
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "ModelActionCreator.h"
 #include <Atlas/Message/Element.h>
+#include <boost/algorithm/string.hpp>
 
 namespace Ember {
 namespace OgreView {
@@ -46,40 +47,32 @@ void ModelActionCreator::DisplayPartAction::activate(EntityMapping::ChangeContex
 	mCreator->mShowPartFn(mPartName);
 }
 
-ModelActionCreator::PresentModelAction::PresentModelAction(ModelActionCreator* creator)
+ModelActionCreator::PresentAction::PresentAction(ModelActionCreator* creator)
 		: mCreator(creator) {
 }
 
-void ModelActionCreator::PresentModelAction::activate(EntityMapping::ChangeContext& context) {
-	if (mCreator->mEntity.hasAttr("present-model")) {
-		auto& element = mCreator->mEntity.valueOfAttr("present-model");
+void ModelActionCreator::PresentAction::activate(EntityMapping::ChangeContext& context) {
+
+	if (mCreator->mEntity.hasAttr("present")) {
+		auto& element = mCreator->mEntity.valueOfAttr("present");
 		if (element.isString()) {
-			mCreator->mShowModelFn(element.String());
-		}
-	}
-}
+			auto& present = element.String();
 
-
-ModelActionCreator::PresentMeshAction::PresentMeshAction(ModelActionCreator* creator)
-		: mCreator(creator) {
-}
-
-void ModelActionCreator::PresentMeshAction::activate(EntityMapping::ChangeContext& context) {
-	if (mCreator->mEntity.hasAttr("present-mesh")) {
-		auto& element = mCreator->mEntity.valueOfAttr("present-mesh");
-		if (element.isString()) {
-			auto& meshName = element.String();
-			//We'll automatically create a model which shows just the specified mesh.
-			if (!Model::ModelDefinitionManager::getSingleton().resourceExists(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-				auto modelDef = Model::ModelDefinitionManager::getSingleton().create(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-				//Create a single submodel definition using the mesh
-				modelDef->createSubModelDefinition(meshName);
+			//If it's not an entity map it's either a mesh or a model.
+			// Check if there's a model created already, if not we'll assume it's a mesh and create a model using that mesh
+			if (!boost::ends_with(present, ".entitymap")) {
+				if (!Model::ModelDefinitionManager::getSingleton().resourceExists(present, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+					//We'll automatically create a model which shows just the specified mesh.
+					auto modelDef = Model::ModelDefinitionManager::getSingleton().create(present, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					//Create a single submodel definition using the mesh
+					modelDef->createSubModelDefinition(present);
+				}
+				mCreator->mShowModelFn(present);
 			}
-			mCreator->mShowModelFn(meshName);
 		}
 	}
-}
 
+}
 
 ModelActionCreator::ModelActionCreator(Eris::Entity& entity, std::function<void(std::string)> showModelFn, std::function<void(std::string)> showPartFn)
 		: mEntity(entity),
@@ -94,10 +87,8 @@ void ModelActionCreator::createActions(EntityMapping::EntityMapping& modelMappin
 			aCase->addAction(new DisplayPartAction(this, actionDef.getValue()));
 		} else if (actionDef.getType() == "display-model") {
 			aCase->addAction(new DisplayModelAction(this, actionDef.getValue()));
-		} else if (actionDef.getType() == "present-model") {
-			aCase->addAction(new PresentModelAction(this));
-		} else if (actionDef.getType() == "present-mesh") {
-			aCase->addAction(new PresentMeshAction(this));
+		} else if (actionDef.getType() == "present") {
+			aCase->addAction(new PresentAction(this));
 		}
 	}
 }

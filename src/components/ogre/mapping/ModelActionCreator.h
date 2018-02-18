@@ -72,11 +72,11 @@ protected:
 
 	};
 
-	class PresentModelAction : public EntityMapping::Actions::Action {
+	class PresentAction : public EntityMapping::Actions::Action {
 	public:
 		ModelActionCreator* mCreator;
 
-		explicit PresentModelAction(ModelActionCreator* creator);
+		explicit PresentAction(ModelActionCreator* creator);
 
 		void activate(EntityMapping::ChangeContext& context) override;
 
@@ -85,17 +85,6 @@ protected:
 
 	};
 
-	class PresentMeshAction : public EntityMapping::Actions::Action {
-	public:
-		ModelActionCreator* mCreator;
-
-		explicit PresentMeshAction(ModelActionCreator* creator);
-
-		void activate(EntityMapping::ChangeContext& context) override;
-
-		void deactivate(EntityMapping::ChangeContext& context) override {
-		}
-	};
 
 };
 

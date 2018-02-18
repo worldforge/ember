@@ -101,8 +101,8 @@ EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IAction
 {
 	if (mTypeService) {
 		EntityMappingDefinition* definition = nullptr;
-		if (entity.hasAttr("present-mapping")) {
-			auto mappingElement = entity.valueOfAttr("present-mapping");
+		if (entity.hasAttr("present")) {
+			auto mappingElement = entity.valueOfAttr("present");
 			if (mappingElement.isString() && !mappingElement.String().empty()) {
 				auto I = mDefinitions.find(mappingElement.String());
 				if (I != mDefinitions.end()) {

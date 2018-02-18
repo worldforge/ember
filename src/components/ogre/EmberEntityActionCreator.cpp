@@ -30,8 +30,7 @@
 #include "CompositionAction.h"
 #include "components/ogre/environment/OceanAction.h"
 #include "components/ogre/widgets/LabelAction.h"
-#include "PresentModelAction.h"
-#include "PresentMeshAction.h"
+#include "PresentAction.h"
 
 using namespace Ember::EntityMapping;
 
@@ -47,27 +46,19 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 {
 	for (auto& actionDef : caseDefinition.getActions()) {
 		if (actionDef.getType() == "display-part") {
-			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, actionDef.getValue());
-			aCase->addAction(action);
+			aCase->addAction(new EmberEntityPartAction(mEntity, actionDef.getValue()));
 		} else if (actionDef.getType() == "display-model") {
-			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, actionDef.getValue(), mScene, modelMapping);
-			aCase->addAction(action);
+			aCase->addAction(new EmberEntityModelAction(mEntity, actionDef.getValue(), mScene, modelMapping));
 		} else if (actionDef.getType() == "hide-model") {
-			EmberEntityHideModelAction* action = new EmberEntityHideModelAction(mEntity);
-			aCase->addAction(action);
+			aCase->addAction(new EmberEntityHideModelAction(mEntity));
 		} else if (actionDef.getType() == "display-label") {
-			auto action = new Gui::LabelAction(mEntity);
-			aCase->addAction(action);
+			aCase->addAction(new Gui::LabelAction(mEntity));
 		} else if (actionDef.getType() == "display-ocean") {
-			Environment::OceanAction* action = new Environment::OceanAction(mEntity);
-			aCase->addAction(action);
+			aCase->addAction(new Environment::OceanAction(mEntity));
 		} else if (actionDef.getType() == "enable-composition") {
-			CompositionAction* action = new CompositionAction(mEntity, actionDef.getValue());
-			aCase->addAction(action);
-		} else if (actionDef.getType() == "present-model") {
-			aCase->addAction(new PresentModelAction(mEntity, mScene, modelMapping));
-		} else if (actionDef.getType() == "present-mesh") {
-			aCase->addAction(new PresentMeshAction(mEntity, mScene, modelMapping));
+			aCase->addAction(new CompositionAction(mEntity, actionDef.getValue()));
+		} else if (actionDef.getType() == "present") {
+			aCase->addAction(new PresentAction(mEntity, mScene, modelMapping));
 		} else {
 			S_LOG_WARNING("Could not recognize entity action '" << actionDef.getType() << "'.");
 		}

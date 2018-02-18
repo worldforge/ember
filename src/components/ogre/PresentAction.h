@@ -16,34 +16,27 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBER_PRESENTMESHACTION_H
-#define EMBER_PRESENTMESHACTION_H
+#ifndef EMBER_PRESENTMODELACTION_H
+#define EMBER_PRESENTMODELACTION_H
 
 #include "ModelActionBase.h"
-
-#include <string>
 
 namespace Ember {
 
 namespace OgreView {
 
 /**
- * A entity mapping action which will look for the value of the "present-mesh" attribute and use an automatically created Model, containing just that mesh.
+ * A entity mapping action which will look for the value of the "present" attribute and use the corresponding model.
  */
-class PresentMeshAction : public ModelActionBase {
+class PresentAction : public ModelActionBase {
 public:
-	explicit PresentMeshAction(EmberEntity& entity, Scene& scene, EntityMapping::EntityMapping& mapping);
+	explicit PresentAction(EmberEntity& entity, Scene& scene, EntityMapping::EntityMapping& mapping);
 
 	void activate(EntityMapping::ChangeContext& context) override;
 
-protected:
-
-
-	void showMesh(const std::string& meshName);
 };
 
 }
 }
 
-
-#endif //EMBER_PRESENTMESHACTION_H
+#endif //EMBER_PRESENTMODELACTION_H
