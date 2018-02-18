@@ -33,11 +33,6 @@ DetachedEntity::~DetachedEntity()
 {
 }
 
-void DetachedEntity::setAttr(const std::string &p, const Atlas::Message::Element &v)
-{
-	Eris::Entity::setAttr(p, v);
-}
-
 void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 {
 	beginUpdate();
@@ -57,7 +52,7 @@ void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 			continue;
 
 		// see if the value in the sight matches the exsiting value
-		Eris::Entity::AttrMap::iterator I = m_attrs.find(A->first);
+		auto I = m_attrs.find(A->first);
 		if ((I != m_attrs.end()) && (I->second == A->second))
 			continue;
 
@@ -88,7 +83,7 @@ void DetachedEntity::addToMovementPredition()
 
 Eris::Entity* DetachedEntity::getEntity(const std::string&)
 {
-	return 0;
+	return nullptr;
 }
 
 

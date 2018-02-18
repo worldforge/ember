@@ -43,17 +43,13 @@ class DetachedEntity: public Eris::Entity
 {
 public:
 	DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService* typeService);
-	virtual ~DetachedEntity();
+
+	~DetachedEntity() override;
 
 	/**
 	 * @brief Sets entity attributes from Atlas message.
 	 */
 	void setFromMessage(const Atlas::Message::MapType& attrs);
-
-	/**
-	 * @brief Exposes setAttr to public.
-	 */
-	void setAttr(const std::string &p, const Atlas::Message::Element &v);
 
 	/**
 	 * @brief Performs initialization of the entity.
@@ -68,27 +64,26 @@ protected:
      * @brief Gets the typeservice used throughout the Eris system.
      * @returns A type service instance.
      */
-    virtual Eris::TypeService* getTypeService() const;
+	Eris::TypeService* getTypeService() const override;
 
     /**
      * @brief Removes the entity from any movement prediction service.
      * This is called when movement has stopped.
      */
-    virtual void removeFromMovementPrediction();
+	void removeFromMovementPrediction() override;
 
     /**
      * @brief Adds the entity to any movement prediction service.
      * This is called when movement has started.
      */
-    virtual void addToMovementPredition();
+	void addToMovementPredition() override;
 
     /**
      * @brief Gets an entity with the supplied id from the system.
      * @param id The id of the entity to get.
      */
-    virtual Eris::Entity* getEntity(const std::string& id);
+	Eris::Entity* getEntity(const std::string& id) override;
 
-    virtual Eris::View* getView() const {return 0;}
 };
 
 }
