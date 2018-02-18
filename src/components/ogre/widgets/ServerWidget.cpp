@@ -35,7 +35,6 @@
 #include "components/ogre/GUIManager.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/mapping/ModelActionCreator.h"
-#include "components/ogre/authoring/DetachedEntity.h"
 
 #include "services/server/ServerService.h"
 #include "services/server/AvatarTransferInfo.h"
@@ -58,37 +57,31 @@
 #include <sigc++/bind.h>
 
 using namespace CEGUI;
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 ServerWidget::ServerWidget() :
-	mAccount(nullptr),
-	mModelPreviewRenderer(nullptr),
-	mModelPreviewManipulator(nullptr),
-	mCharacterList(nullptr),
-	mCreateChar(nullptr),
-	mUseCreator(nullptr),
-	mNewCharName(nullptr),
-	mNewCharDescription(nullptr),
-	mTypesList(nullptr),
-	mGenderRadioButton(nullptr),
-	mAvatarTransferInfo(nullptr)
-{
+		mAccount(nullptr),
+		mModelPreviewRenderer(nullptr),
+		mModelPreviewManipulator(nullptr),
+		mCharacterList(nullptr),
+		mCreateChar(nullptr),
+		mUseCreator(nullptr),
+		mNewCharName(nullptr),
+		mNewCharDescription(nullptr),
+		mTypesList(nullptr),
+		mGenderRadioButton(nullptr),
+		mAvatarTransferInfo(nullptr) {
 }
 
-ServerWidget::~ServerWidget()
-{
+ServerWidget::~ServerWidget() {
 	delete mModelPreviewManipulator;
 	delete mModelPreviewRenderer;
 	delete mAvatarTransferInfo;
 }
 
-void ServerWidget::buildWidget()
-{
+void ServerWidget::buildWidget() {
 
 	if (loadMainSheet("ServerWidget.layout", "Server/")) {
 
@@ -174,25 +167,21 @@ void ServerWidget::buildWidget()
 
 }
 
-void ServerWidget::connection_GotServerInfo(Eris::Connection* connection)
-{
+void ServerWidget::connection_GotServerInfo(Eris::Connection* connection) {
 	showServerInfo(connection);
 }
 
-void ServerWidget::setConnection(Eris::Connection* connection)
-{
+void ServerWidget::setConnection(Eris::Connection* connection) {
 	connection->GotServerInfo.connect(sigc::bind(sigc::mem_fun(*this, &ServerWidget::connection_GotServerInfo), connection));
 	connection->refreshServerInfo();
 	connection->Disconnected.connect(sigc::mem_fun(*this, &ServerWidget::connection_Disconnected));
 }
 
-void ServerWidget::connection_Disconnected()
-{
+void ServerWidget::connection_Disconnected() {
 	mGuiManager->destroyWidget(this);
 }
 
-void ServerWidget::server_TransferInfoAvailable(const std::vector<AvatarTransferInfo>& transferInfos)
-{
+void ServerWidget::server_TransferInfoAvailable(const std::vector<AvatarTransferInfo>& transferInfos) {
 	if (!transferInfos.empty()) {
 		CEGUI::Window* teleportInfo = getWindow("TeleportInfo", true);
 		teleportInfo->setVisible(true);
@@ -200,15 +189,13 @@ void ServerWidget::server_TransferInfoAvailable(const std::vector<AvatarTransfer
 	}
 }
 
-void ServerWidget::createdAccount(Eris::Account* account)
-{
+void ServerWidget::createdAccount(Eris::Account* account) {
 	mAccount = account;
 	show();
 	mMainWindow->moveToFront();
 }
 
-void ServerWidget::showServerInfo(Eris::Connection* connection)
-{
+void ServerWidget::showServerInfo(Eris::Connection* connection) {
 	try {
 		CEGUI::Window* info = getWindow("Info");
 		Eris::ServerInfo sInfo;
@@ -242,8 +229,7 @@ void ServerWidget::showServerInfo(Eris::Connection* connection)
 	}
 }
 
-bool ServerWidget::fetchCredentials(Eris::Connection* connection, std::string& user, std::string& pass)
-{
+bool ServerWidget::fetchCredentials(Eris::Connection* connection, std::string& user, std::string& pass) {
 	S_LOG_VERBOSE("Fetching saved credentials.");
 
 	Eris::ServerInfo sInfo;
@@ -260,8 +246,7 @@ bool ServerWidget::fetchCredentials(Eris::Connection* connection, std::string& u
 	return !pass.empty() && !user.empty();
 }
 
-bool ServerWidget::saveCredentials()
-{
+bool ServerWidget::saveCredentials() {
 	S_LOG_VERBOSE("Saving credentials.");
 
 	// check the main account is good, and fetch server info
@@ -297,15 +282,13 @@ bool ServerWidget::saveCredentials()
 	return false;
 }
 
-void ServerWidget::logoutComplete(bool clean)
-{
+void ServerWidget::logoutComplete(bool clean) {
 	getWindow("LoginPanel")->setVisible(true);
 	getWindow("LoggedInPanel")->setVisible(false);
 	mTypeServiceConnection.disconnect();
 }
 
-void ServerWidget::loginSuccess(Eris::Account* account)
-{
+void ServerWidget::loginSuccess(Eris::Account* account) {
 	account->LogoutComplete.connect(sigc::mem_fun(*this, &ServerWidget::logoutComplete));
 	getWindow("LoginPanel")->setVisible(false);
 	getWindow("LoggedInPanel")->setVisible(true);
@@ -317,7 +300,7 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 		try {
 			saveCredentials();
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when saving password."<< ex);
+			S_LOG_FAILURE("Error when saving password." << ex);
 		} catch (...) {
 			S_LOG_FAILURE("Unspecified error when saving password.");
 		}
@@ -327,8 +310,7 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 
 }
 
-void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg)
-{
+void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg) {
 	auto helpText = mMainWindow->getChild("LoginPanel/HelpText");
 	helpText->setYPosition(UDim(0.6, 0));
 
@@ -337,8 +319,7 @@ void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg)
 	loginFailure->setVisible(true);
 }
 
-bool ServerWidget::hideLoginFailure()
-{
+bool ServerWidget::hideLoginFailure() {
 	auto helpText = mMainWindow->getChild("LoginPanel/HelpText");
 	helpText->setYPosition(UDim(0.55, 0));
 
@@ -348,22 +329,19 @@ bool ServerWidget::hideLoginFailure()
 	return true;
 }
 
-bool ServerWidget::passwordBox_TextChanged(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::passwordBox_TextChanged(const CEGUI::EventArgs& args) {
 	hideLoginFailure();
 
 	return true;
 }
 
-bool ServerWidget::nameBox_TextChanged(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::nameBox_TextChanged(const CEGUI::EventArgs& args) {
 	hideLoginFailure();
 
 	return true;
 }
 
-void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
-{
+void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account) {
 	mTypesList->resetList();
 
 	/**
@@ -415,8 +393,7 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 	}
 }
 
-void ServerWidget::gotAllCharacters(Eris::Account* account)
-{
+void ServerWidget::gotAllCharacters(Eris::Account* account) {
 	mCharacterList->resetList();
 	mCharacterModel.clear();
 	Eris::CharacterMap cm = account->getCharacters();
@@ -457,8 +434,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 
 }
 
-bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args) {
 	CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
 	if (item) {
 
@@ -469,8 +445,7 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args) {
 	//create a new admin character
 	Atlas::Message::MapType extraProperties;
 	//The admin character should always be transient.
@@ -489,26 +464,22 @@ bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args) {
 	EmberServices::getSingleton().getServerService().createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
 	return true;
 }
 
-bool ServerWidget::LogoutButton_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::LogoutButton_Click(const CEGUI::EventArgs& args) {
 	EmberServices::getSingleton().getServerService().logout();
 	return true;
 }
 
-bool ServerWidget::Disconnect_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::Disconnect_Click(const CEGUI::EventArgs& args) {
 	EmberServices::getSingleton().getServerService().disconnect();
 	return true;
 }
 
-bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args) {
 	CEGUI::ListboxItem* item = mTypesList->getSelectedItem();
 	if (item) {
 
@@ -527,16 +498,9 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 
 		if (mModelPreviewRenderer) {
 
-			//we need to get the model mapping definition for this type
-			//once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
-			Eris::TypeService* typeService = mAccount->getConnection()->getTypeService();
-			Eris::TypeInfo* erisType = typeService->getTypeByName(mNewChar.type);
-			if (erisType) {
-				if (erisType->isBound()) {
-					Authoring::DetachedEntity entity("0", erisType, typeService);
-					showPreview(entity);
-				}
-			}
+			mPreviewTypeName = mNewChar.type;
+			preparePreviewForTypeOrArchetype(mPreviewTypeName);
+
 		}
 	}
 	updateNewCharacter();
@@ -544,14 +508,39 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 }
 
 
+void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype) {
+	Eris::TypeService* typeService = mAccount->getConnection()->getTypeService();
+	Eris::TypeInfo* erisType = typeService->getTypeByName(typeOrArchetype);
+	//If the type is an archetype, we need to instead check what kind of entity will be created and show a preview for that.
+	if (erisType && erisType->isBound()) {
+		if (erisType->getObjType() == "archetype") {
+			if (!erisType->getEntities().empty()) {
+				//Get the first entity and use that
+				const Atlas::Message::Element& firstEntityElement = erisType->getEntities().front();
+				//TODO: Make is possible to create a DetachedEntity from archetypes, and use that
+				if (firstEntityElement.isMap()) {
+					auto parentElementI = firstEntityElement.Map().find("parent");
+					if (parentElementI != firstEntityElement.Map().end() && parentElementI->second.isString()) {
+						mPreviewTypeName = parentElementI->second.String();
+						preparePreviewForTypeOrArchetype(mPreviewTypeName);
+					}
+				}
+			}
+		} else {
+			Authoring::DetachedEntity entity("0", erisType, typeService);
+			showPreview(entity);
+		}
+	}
+}
+
 void ServerWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entity) {
-	Mapping::ModelActionCreator actionCreator(entity, [&](std::string model){
+	Mapping::ModelActionCreator actionCreator(entity, [&](std::string model) {
 		//update the model preview window
 		mModelPreviewRenderer->showModel(model);
 		//mModelPreviewRenderer->showFull();
 		//we want to zoom in a little
 		mModelPreviewRenderer->setCameraDistance(0.7);
-	}, [&](std::string part){
+	}, [&](std::string part) {
 		if (mModelPreviewRenderer->getModel()) {
 			mModelPreviewRenderer->getModel()->showPart(part);
 		}
@@ -565,44 +554,43 @@ void ServerWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entit
 }
 
 void ServerWidget::typeService_TypeBound(Eris::TypeInfo* type) {
-	if (type->getName() == mNewChar.type) {
-		Authoring::DetachedEntity entity("0", type, mAccount->getConnection()->getTypeService());
-		showPreview(entity);
+	if (type->getName() == mPreviewTypeName) {
+		preparePreviewForTypeOrArchetype(type->getName());
 	}
 }
 
+void ServerWidget::resolveArchetypeForPreview(const std::string& archetypeName) {
 
-bool ServerWidget::Gender_SelectionChanged(const CEGUI::EventArgs& args)
-{
+}
+
+bool ServerWidget::Gender_SelectionChanged(const CEGUI::EventArgs& args) {
 	CEGUI::RadioButton* selected = mGenderRadioButton->getSelectedButtonInGroup();
 	mNewChar.gender = selected->getText().c_str();
 
 	updateNewCharacter();
 	return true;
 }
-bool ServerWidget::Name_TextChanged(const CEGUI::EventArgs& args)
-{
+
+bool ServerWidget::Name_TextChanged(const CEGUI::EventArgs& args) {
 	std::string name = mNewCharName->getText().c_str();
 	mNewChar.name = name;
 	updateNewCharacter();
 
 	return true;
 }
-bool ServerWidget::Description_TextChanged(const CEGUI::EventArgs& args)
-{
+
+bool ServerWidget::Description_TextChanged(const CEGUI::EventArgs& args) {
 	std::string description = mNewCharDescription->getText().c_str();
 	mNewChar.description = description;
 	updateNewCharacter();
 	return true;
 }
 
-void ServerWidget::updateNewCharacter()
-{
+void ServerWidget::updateNewCharacter() {
 	mCreateChar->setEnabled(mNewChar.isValid());
 }
 
-bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::Login_Click(const CEGUI::EventArgs& args) {
 	CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
 	CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 
@@ -614,8 +602,7 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args) {
 	CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
 	CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 
@@ -626,8 +613,7 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args) {
 	CEGUI::Window* alert = getWindow("NoCharactersAlert");
 	if (alert) {
 		alert->hide();
@@ -635,8 +621,7 @@ bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args) {
 	CEGUI::Window* alert = getWindow("EntityDestroyed");
 	if (alert) {
 		alert->hide();
@@ -645,8 +630,7 @@ bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args)
 }
 
 
-bool ServerWidget::TeleportYes_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::TeleportYes_Click(const CEGUI::EventArgs& args) {
 	getWindow("TeleportInfo", true)->setVisible(false);
 	if (mAvatarTransferInfo) {
 		EmberServices::getSingleton().getServerService().takeTransferredCharacter(mAvatarTransferInfo->getTransferInfo());
@@ -654,14 +638,12 @@ bool ServerWidget::TeleportYes_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool ServerWidget::TeleportNo_Click(const CEGUI::EventArgs& args)
-{
+bool ServerWidget::TeleportNo_Click(const CEGUI::EventArgs& args) {
 	getWindow("TeleportInfo", true)->setVisible(false);
 	return true;
 }
 
-void ServerWidget::gotAvatar(Eris::Avatar* avatar)
-{
+void ServerWidget::gotAvatar(Eris::Avatar* avatar) {
 	mTypeServiceConnection.disconnect();
 
 	mAccount->AvatarDeactivated.connect(sigc::mem_fun(*this, &ServerWidget::avatar_Deactivated));
@@ -670,8 +652,7 @@ void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 }
 
 
-void ServerWidget::avatar_EntityDeleted()
-{
+void ServerWidget::avatar_EntityDeleted() {
 	CEGUI::Window* alert = getWindow("EntityDestroyed");
 	if (alert) {
 		alert->show();
@@ -679,8 +660,7 @@ void ServerWidget::avatar_EntityDeleted()
 }
 
 
-void ServerWidget::avatar_Deactivated(Eris::Avatar* avatar)
-{
+void ServerWidget::avatar_Deactivated(Eris::Avatar* avatar) {
 	mCharacterList->resetList();
 	mCharacterModel.clear();
 	mAccount->refreshCharacterInfo();
@@ -691,8 +671,7 @@ void ServerWidget::avatar_Deactivated(Eris::Avatar* avatar)
 	gotAllCharacters(mAccount);
 }
 
-void ServerWidget::createPreviewTexture()
-{
+void ServerWidget::createPreviewTexture() {
 	auto imageWidget = mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Image");
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
@@ -703,15 +682,14 @@ void ServerWidget::createPreviewTexture()
 
 }
 
-void ServerWidget::showNoCharactersAlert()
-{
+void ServerWidget::showNoCharactersAlert() {
 	CEGUI::Window* alert = getWindow("NoCharactersAlert");
 	alert->setVisible(true);
 	alert->moveToFront();
 }
 
-bool NewCharacter::isValid() const
-{
+
+bool NewCharacter::isValid() const {
 	return !name.empty() && !gender.empty() && !type.empty();
 }
 

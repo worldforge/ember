@@ -113,6 +113,13 @@ protected:
 
 	sigc::connection mTypeServiceConnection;
 
+	/**
+	 * The name of the type we'll use for preview. This will either be a Type, or an Archetype.
+	 * If it's an Archetype we need to resolve the Archetype and then extract the Type of the
+	 * first entity, and use that for lookup.
+	 */
+	std::string mPreviewTypeName;
+
 	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
 	void avatar_EntityDeleted();
@@ -201,7 +208,13 @@ protected:
 
 	void showPreview(Ember::OgreView::Authoring::DetachedEntity& entity);
 
+	void preparePreviewForTypeOrArchetype(std::string typeOrArchetype);
+
+	void resolveArchetypeForPreview(const std::string& archetypeName);
+
 	void typeService_TypeBound(Eris::TypeInfo* type);
+
+
 };
 }
 }
