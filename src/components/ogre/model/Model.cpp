@@ -860,9 +860,7 @@ Ogre::SceneManager& Model::getManager() {
 float Model::getCombinedBoundingRadius() const {
 	float radius = 0;
 	for (auto& movable : mMovableObjects) {
-		if (movable->isVisible()) {
-			radius = std::max(movable->getBoundingRadius(), radius);
-		}
+		radius = std::max(movable->getBoundingRadius(), radius);
 	}
 	return radius;
 }
@@ -874,9 +872,7 @@ float Model::getBoundingRadius() const {
 Ogre::AxisAlignedBox Model::getCombinedBoundingBox() const {
 	Ogre::AxisAlignedBox aabb;
 	for (auto& movable : mMovableObjects) {
-		if (movable->isVisible()) {
-			aabb.merge(movable->getBoundingBox());
-		}
+		aabb.merge(movable->getBoundingBox());
 	}
 	return aabb;
 }
