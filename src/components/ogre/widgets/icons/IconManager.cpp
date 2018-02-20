@@ -106,7 +106,7 @@ Icon* IconManager::getIcon(int, EmberEntity* entity) {
 		}
 		//if there's no model defined for this use the placeholder model
 		if (modelName.empty()) {
-			modelName = "placeholder";
+			modelName = "common/primitives/placeholder.modeldef";
 		}
 		Ogre::ResourcePtr modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 		if (modelDefPtr) {
@@ -170,7 +170,7 @@ void IconManager::render(Icon& icon, EmberEntity& entity) {
 	}
 	//if there's no model defined for this use the placeholder model
 	if (modelName.empty()) {
-		modelName = "placeholder";
+		modelName = "common/primitives/placeholder.modeldef";
 	}
 
 	render(icon, modelName);
@@ -196,7 +196,7 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 			}
 			//if there's no model defined for this use the placeholder model
 			if (modelName.empty()) {
-				modelName = "placeholder";
+				modelName = "common/primitives/placeholder.modeldef";
 			}
 			//update the model preview window
 			// 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);

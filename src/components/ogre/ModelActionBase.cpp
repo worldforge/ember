@@ -96,11 +96,11 @@ void ModelActionBase::showModel(const std::string& modelName) {
 
 		Model::ModelDefinitionManager& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
 		try {
-			auto definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.getByName(modelName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+			auto definition = modelDefinitionManager.getByName(modelName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			if (!definition) {
 				S_LOG_FAILURE("Could not find model " << modelName << ", using placeholder.");
 				//add a placeholder model
-				definition = Ogre::static_pointer_cast<Model::ModelDefinition>(modelDefinitionManager.getByName("placeholder", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+				definition = modelDefinitionManager.getByName("common/primitives/placeholder.modeldef", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			}
 			if (definition) {
 				model = new Model::Model(mScene.getSceneManager(), definition, mEntity.getId());

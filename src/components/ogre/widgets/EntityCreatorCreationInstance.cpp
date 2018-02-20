@@ -206,7 +206,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 	}
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 	if (!modelDef) {
-		modelDef = Model::ModelDefinitionManager::getSingleton().getByName("placeholder");
+		modelDef = Model::ModelDefinitionManager::getSingleton().getByName("common/primitives/placeholder.modeldef");
 	}
 	mModel = new Model::Model(mWorld.getSceneManager(), modelDef, modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &EntityCreatorCreationInstance::model_Reloaded));
