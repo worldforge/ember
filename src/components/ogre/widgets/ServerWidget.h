@@ -50,7 +50,7 @@ class NewCharacter
 public:
 	std::string name;
 	std::string description;
-	std::string gender;
+	std::string sex;
 	std::string type;
 	std::string spawnPoint;
 	
@@ -99,7 +99,8 @@ protected:
 	CEGUI::Editbox* mNewCharName;
 	CEGUI::MultiLineEditbox* mNewCharDescription;
 	CEGUI::Combobox* mTypesList;
-	CEGUI::RadioButton* mGenderRadioButton;
+	CEGUI::RadioButton* mMaleRadioButton;
+	CEGUI::RadioButton* mFemaleRadioButton;
 
 
 	CharacterAndSpawnsStore mCharacterAndSpawns;
@@ -167,7 +168,7 @@ protected:
 	void gotAllCharacters(Eris::Account* account);
 	
 	bool TypesList_SelectionChanged(const CEGUI::EventArgs& args);
-	bool Gender_SelectionChanged(const CEGUI::EventArgs& args);
+	bool Sex_SelectionChanged(const CEGUI::EventArgs& args);
 	bool Name_TextChanged(const CEGUI::EventArgs& args);
 	bool Description_TextChanged(const CEGUI::EventArgs& args);
 	
@@ -209,8 +210,6 @@ protected:
 	void showPreview(Ember::OgreView::Authoring::DetachedEntity& entity);
 
 	void preparePreviewForTypeOrArchetype(std::string typeOrArchetype);
-
-	void resolveArchetypeForPreview(const std::string& archetypeName);
 
 	void typeService_TypeBound(Eris::TypeInfo* type);
 

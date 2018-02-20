@@ -71,7 +71,8 @@ ServerWidget::ServerWidget() :
 		mNewCharName(nullptr),
 		mNewCharDescription(nullptr),
 		mTypesList(nullptr),
-		mGenderRadioButton(nullptr),
+		mMaleRadioButton(nullptr),
+		mFemaleRadioButton(nullptr),
 		mAvatarTransferInfo(nullptr) {
 }
 
@@ -115,14 +116,14 @@ void ServerWidget::buildWidget() {
 		mNewCharDescription = dynamic_cast<CEGUI::MultiLineEditbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
 		mTypesList = dynamic_cast<CEGUI::Combobox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Type"));
 
-		mGenderRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
-		CEGUI::RadioButton* femaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
+		mMaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
+		mFemaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
 
 		BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
 		BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
 		BIND_CEGUI_EVENT(mTypesList, CEGUI::Combobox::EventListSelectionChanged, ServerWidget::TypesList_SelectionChanged);
-		BIND_CEGUI_EVENT(mGenderRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
-		BIND_CEGUI_EVENT(femaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
+		BIND_CEGUI_EVENT(mMaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Sex_SelectionChanged);
+		BIND_CEGUI_EVENT(mFemaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Sex_SelectionChanged);
 
 		BIND_CEGUI_EVENT(mMainWindow->getChild("LoggedInPanel/TeleportInfo/Yes"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportYes_Click);
 		BIND_CEGUI_EVENT(mMainWindow->getChild("LoggedInPanel/TeleportInfo/No"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportNo_Click);
@@ -154,7 +155,7 @@ void ServerWidget::buildWidget() {
 
 		addTabbableWindow(mNewCharName);
 		// 	addTabbableWindow(mTypesList);
-		/*	addTabbableWindow(mGenderRadioButton);
+		/*	addTabbableWindow(mSexRadioButton);
 		 addTabbableWindow(femaleRadioButton);*/
 		addTabbableWindow(mNewCharDescription);
 		addEnterButton(mCreateChar);
@@ -465,7 +466,7 @@ bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args) {
 }
 
 bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args) {
-	EmberServices::getSingleton().getServerService().createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
+	EmberServices::getSingleton().getServerService().createCharacter(mNewChar.name, mNewChar.sex, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
 	return true;
 }
 
@@ -528,6 +529,8 @@ void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype)
 			}
 		} else {
 			Authoring::DetachedEntity entity("0", erisType, typeService);
+			Atlas::Message::MapType message = {{"sex", mNewChar.sex}};
+			entity.setFromMessage(message);
 			showPreview(entity);
 		}
 	}
@@ -559,21 +562,19 @@ void ServerWidget::typeService_TypeBound(Eris::TypeInfo* type) {
 	}
 }
 
-void ServerWidget::resolveArchetypeForPreview(const std::string& archetypeName) {
+bool ServerWidget::Sex_SelectionChanged(const CEGUI::EventArgs& args) {
+	CEGUI::RadioButton* selected = mMaleRadioButton->getSelectedButtonInGroup();
+	if (selected) {
+		mNewChar.sex = boost::algorithm::to_lower_copy(std::string(selected->getText().c_str()));
 
-}
-
-bool ServerWidget::Gender_SelectionChanged(const CEGUI::EventArgs& args) {
-	CEGUI::RadioButton* selected = mGenderRadioButton->getSelectedButtonInGroup();
-	mNewChar.gender = selected->getText().c_str();
-
-	updateNewCharacter();
+		updateNewCharacter();
+	}
 	return true;
 }
 
 bool ServerWidget::Name_TextChanged(const CEGUI::EventArgs& args) {
 	std::string name = mNewCharName->getText().c_str();
-	mNewChar.name = name;
+	mNewChar.name = std::move(name);
 	updateNewCharacter();
 
 	return true;
@@ -588,6 +589,9 @@ bool ServerWidget::Description_TextChanged(const CEGUI::EventArgs& args) {
 
 void ServerWidget::updateNewCharacter() {
 	mCreateChar->setEnabled(mNewChar.isValid());
+	if (!mPreviewTypeName.empty()) {
+		preparePreviewForTypeOrArchetype(mPreviewTypeName);
+	}
 }
 
 bool ServerWidget::Login_Click(const CEGUI::EventArgs& args) {
@@ -609,7 +613,7 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args) {
 	const CEGUI::String& name = nameBox->getText();
 	const CEGUI::String& password = passwordBox->getText();
 
-	mAccount->createAccount(std::string(name.c_str()), std::string(name.c_str()), std::string(password.c_str()));
+	mAccount->createAccount(name.c_str(), name.c_str(), password.c_str());
 	return true;
 }
 
@@ -690,7 +694,7 @@ void ServerWidget::showNoCharactersAlert() {
 
 
 bool NewCharacter::isValid() const {
-	return !name.empty() && !gender.empty() && !type.empty();
+	return !name.empty() && !sex.empty() && !type.empty();
 }
 
 }

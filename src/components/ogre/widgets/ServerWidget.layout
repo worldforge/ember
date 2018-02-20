@@ -164,10 +164,10 @@
 						<Property name="ReadOnly" value="true" />
 						<Property name="TooltipText" value="The type of character to create." />
 					</Window>
-					<Window name="GenderText" type="EmberLook/StaticText">
+					<Window name="SexText" type="EmberLook/StaticText">
 						<Property name="Size" value="{{0,100},{0,20}}" />
 						<Property name="Position" value="{{0,0},{0,60}}" />
-						<Property name="Text" value="Gender:" />
+						<Property name="Text" value="Sex:" />
 						<Property name="InheritsAlpha" value="True" />
 						<Property name="FrameEnabled" value="False" />
 						<Property name="BackgroundEnabled" value="False" />

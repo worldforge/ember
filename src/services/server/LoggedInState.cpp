@@ -86,7 +86,7 @@ void LoggedInState::checkTransfer()
 		}
 	}
 
-	if (mTransferInfos.size() > 0) {
+	if (!mTransferInfos.empty()) {
 		getSignals().TransferInfoAvailable(mTransferInfos);
 	}
 
@@ -120,7 +120,7 @@ bool LoggedInState::createCharacter(const std::string& name, const std::string& 
 	character->setName(name);
 	character->setAttr("sex", sex);
 	character->setAttr("description", description);
-	if (spawnName != "") {
+	if (!spawnName.empty()) {
 		character->setAttr("spawn_name", spawnName);
 	}
 
@@ -166,9 +166,8 @@ void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar)
 {
 	//First check if there are any transfer infos for this server, and if this login operation means that one of them successfully has been used.
 	//If so, it should be removed from the persistent storage.
-	if (mTransferInfos.size() > 0) {
-		for (AvatarTransferInfoStore::iterator I = mTransferInfos.begin(); I != mTransferInfos.end(); ++I) {
-			AvatarTransferInfo& info = *I;
+	if (!mTransferInfos.empty()) {
+		for (auto& info : mTransferInfos) {
 			if (info.getTransferInfo().getPossessEntityId() == avatar->getEntity()->getId()) {
 				removeTransferInfo(info);
 
@@ -197,7 +196,7 @@ void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo)
 	teleportsFile.close();
 
 	//Find the transfer info amongst the persisted ones and remove it.
-	for (AvatarTransferInfoStore::iterator I = transferObjects.begin(); I != transferObjects.end(); ++I) {
+	for (auto I = transferObjects.begin(); I != transferObjects.end(); ++I) {
 		AvatarTransferInfo& info = *I;
 		const Eris::TransferInfo& erisTransferInfo = info.getTransferInfo();
 		if (erisTransferInfo.getHost() == mAccount.getConnection()->getHost() && erisTransferInfo.getPort() == mAccount.getConnection()->getPort()) {
@@ -241,7 +240,7 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	});
 }
 
-void LoggedInState::gotAvatarDeactivated(Eris::Avatar* avatar)
+void LoggedInState::gotAvatarDeactivated(Eris::Avatar*)
 {
 	destroyChildState();
 }

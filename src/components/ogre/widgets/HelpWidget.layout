@@ -48,7 +48,7 @@ Here's a list of the most common keys and some useful commands:
   /quit : quits
   /connect &lt;server&gt; : connects to a server
   /login &lt;name&gt; &lt;password&gt; : tries to log in
-  /add &lt;name&gt; &lt;gender&gt; &lt;type&gt; : adds a new character, for example: /add Erik male settler
+  /add &lt;name&gt; &lt;sex&gt; &lt;type&gt; : adds a new character, for example: /add Erik male settler
   /list_commands : lists all available commands
 For more questions or info, see www.worldforge.org
 			</Property>
