@@ -63,9 +63,6 @@ protected:
 
 	EntityMapping::EntityMappingManager& mEntityMappingManager;
 
-
-	void parseEntityMappings(TiXmlElement* rootElem);
-
 	void parseSingleMapping(TiXmlElement* rootElem, const std::string& path);
 };
 

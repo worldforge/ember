@@ -91,25 +91,6 @@ EntityMapping* EntityMappingCreator::createMapping() {
 		addMatch(&mEntityMapping->getBaseCase(), aMatch);
 	}
 
-	if (!mDefinition.isOverride()) {
-		//This is a little hacky, but we'll by default add matches for the "present" property.
-
-		AttributeMatch* attributeMatch = new AttributeMatch("present");
-		AttributeCase* attributeCase = new AttributeCase(new AttributeComparers::StringComparerWrapper(new StringNotEmptyComparer()));
-		MatchAttributeObserver* observer = new MatchAttributeObserver(attributeMatch, "present");
-		attributeMatch->setMatchAttributeObserver(observer);
-
-		attributeMatch->addCase(attributeCase);
-		CaseDefinition caseDefinition;
-		ActionDefinition actionDefinition;
-		actionDefinition.setType("present");
-		caseDefinition.getActions().emplace_back(std::move(actionDefinition));
-		mActionCreator.createActions(*mEntityMapping, attributeCase, caseDefinition);
-		mEntityMapping->getBaseCase().addMatch(attributeMatch);
-
-
-	}
-
 	//since we already have the entity, we can perform a check right away
 	mEntityMapping->getBaseCase().setEntity(&mEntity);
 	return mEntityMapping;

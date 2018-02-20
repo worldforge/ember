@@ -80,13 +80,6 @@ public:
     */
     void addDefinition(Definitions::EntityMappingDefinition* definition);
 
-
-    /**
-    Queries the internal list of definitions and return the defintion that's most suited for the supplied type.
-    @param typeInfo An eris type info instance.
-    */
-    Definitions::EntityMappingDefinition* getDefinitionForType(Eris::TypeInfo* typeInfo);
-
     /**
     Creates a new EntityMapping instance. This will not be handled by the manager and needs to be deleted by the application when suitable.
     Remember to call EntityMapping::initialize(...).
@@ -100,9 +93,8 @@ protected:
 
 	EntityMappingDefinitionStore mDefinitions;
 
-	EntityMappingDefinitionStore mEntityTypeMappings;
-
 	Eris::TypeService* mTypeService;
+
 
 };
 

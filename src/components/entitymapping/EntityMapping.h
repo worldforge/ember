@@ -94,9 +94,8 @@ Utility method for deleting all object held in a std::vector.
 */
 template<typename T>
 static void cleanVector(T& theVector) {
-	typename T::iterator I = theVector.begin();
-	for (; I != theVector.end(); ++I) {
-		delete *I;
+	for (auto& element : theVector) {
+		delete element;
 	}
 	theVector.clear();
 }
@@ -118,8 +117,6 @@ static void cleanVector(T& theVector) {
 */
 class EntityMapping {
 public:
-	typedef std::vector<Cases::CaseBase*> CaseBaseStore;
-	typedef std::vector<Matches::Observers::MatchAttributeObserver*> MatchAttributeObserverStore;
 
 	explicit EntityMapping(Eris::Entity& entity);
 

@@ -26,16 +26,13 @@
 
 #include "EntityMappingDefinition.h"
 
-#include <utility>
-
 namespace Ember {
 
 namespace EntityMapping {
 
 namespace Definitions {
 
-EntityMappingDefinition::EntityMappingDefinition()
-		: mOverride(false) {
+EntityMappingDefinition::EntityMappingDefinition() {
 }
 
 
@@ -53,14 +50,6 @@ CaseDefinition& EntityMappingDefinition::getRoot() {
 
 const CaseDefinition& EntityMappingDefinition::getRoot() const {
 	return mRootCase;
-}
-
-bool EntityMappingDefinition::isOverride() const {
-	return mOverride;
-}
-
-void EntityMappingDefinition::setIsOverride(bool isOverride) {
-	mOverride = isOverride;
 }
 
 }

@@ -24,81 +24,39 @@
 #include "config.h"
 #endif
 
+#include "Matches/AttributeMatch.h"
+#include "Cases/AttributeComparers/StringComparerWrapper.h"
 #include "EntityMappingManager.h"
+#include "IActionCreator.h"
 
 #include "EntityMappingCreator.h"
 
-namespace Ember
-{
+namespace Ember {
 
-namespace EntityMapping
-{
+namespace EntityMapping {
 
 using namespace Definitions;
 
 EntityMappingManager::EntityMappingManager() :
-		mTypeService(nullptr)
-{
+		mTypeService(nullptr) {
 }
 
-EntityMappingManager::~EntityMappingManager()
-{
+EntityMappingManager::~EntityMappingManager() {
 	for (auto& entry : mDefinitions) {
 		delete entry.second;
 	}
 }
 
-void EntityMappingManager::addDefinition(EntityMappingDefinition* definition)
-{
-	std::pair<EntityMappingDefinitionStore::iterator, bool> result = mDefinitions.insert(EntityMappingDefinitionStore::value_type(definition->getName(), definition));
+void EntityMappingManager::addDefinition(EntityMappingDefinition* definition) {
+	auto result = mDefinitions.insert(EntityMappingDefinitionStore::value_type(definition->getName(), definition));
 
 	//If it was already added, delete the definition now.
 	if (!result.second) {
 		delete definition;
-	} else {
-		for (auto& matchEntry : definition->getRoot().getMatches()) {
-			if (matchEntry.getType() == "entitytype") {
-				for (auto& aCase : matchEntry.getCases()) {
-					for (auto& paramEntry : aCase.getCaseParameters()) {
-						if (paramEntry.first == "equals") {
-							mEntityTypeMappings[paramEntry.second] = definition;
-						}
-					}
-				}
-			}
-		}
-
-
-			/*		const std::string& entityName = I->getProperties()["equals"];
-			 std::vector<std::string> splitNames = splitString(entityName, "|", 100);
-			 for (std::vector<std::string>::const_iterator I = splitNames.begin(); I != splitNames.end(); ++I) {
-			 mEntityTypeMappings[*I] = definition;
-			 }*/
-
 	}
 }
 
-EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeInfo* typeInfo)
-{
-	bool noneThere = false;
-
-	while (!noneThere) {
-		auto I = mEntityTypeMappings.find(typeInfo->getName());
-		if (I != mEntityTypeMappings.end()) {
-			return I->second;
-		} else {
-			if (!typeInfo->getParent()) {
-				noneThere = true;
-			} else {
-				typeInfo = typeInfo->getParent();
-			}
-		}
-	}
-	return nullptr;
-}
-
-EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view)
-{
+EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view) {
 	if (mTypeService) {
 		EntityMappingDefinition* definition = nullptr;
 		if (entity.hasAttr("present")) {
@@ -111,13 +69,28 @@ EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IAction
 			}
 		}
 
-		if (!definition) {
-			definition = getDefinitionForType(entity.getType());
-		}
-
 		if (definition) {
 			EntityMappingCreator creator(*definition, entity, actionCreator, *mTypeService, view);
 			return creator.create();
+		} else {
+			auto mapping = new EntityMapping(entity);
+
+			Matches::AttributeMatch* attributeMatch = new Matches::AttributeMatch("present");
+			Cases::AttributeCase* attributeCase = new Cases::AttributeCase(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
+			Matches::Observers::MatchAttributeObserver* observer = new Matches::Observers::MatchAttributeObserver(attributeMatch, "present");
+			attributeMatch->setMatchAttributeObserver(observer);
+
+			attributeMatch->addCase(attributeCase);
+			CaseDefinition caseDefinition;
+			ActionDefinition actionDefinition;
+			actionDefinition.setType("present");
+			caseDefinition.getActions().emplace_back(std::move(actionDefinition));
+			actionCreator.createActions(*mapping, attributeCase, caseDefinition);
+			mapping->getBaseCase().addMatch(attributeMatch);
+
+			mapping->getBaseCase().setEntity(&entity);
+
+			return mapping;
 		}
 	}
 	return nullptr;

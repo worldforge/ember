@@ -61,21 +61,9 @@ public:
     CaseDefinition& getRoot();
     const CaseDefinition& getRoot() const;
 
-	/**
-	 * If true, the rules in the mapping will override any "present-mesh" or "present-model" property of the entity.
-	 * @return
-	 */
-	bool isOverride() const;
-	void setIsOverride(bool isOverride);
 protected:
 	CaseDefinition mRootCase;
 	std::string mName;
-
-	/**
-	 * If set to true, the rules in the mapping will override any "present-mesh" or "present-model" property of the entity.
-	 * Defaults to false.
-	 */
-	bool mOverride;
 };
 
 

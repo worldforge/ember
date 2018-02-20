@@ -26,19 +26,18 @@
 #include "config.h"
 #endif
 
+#include <boost/algorithm/string.hpp>
 #include "XMLModelDefinitionSerializer.h"
 #include "Model.h"
 #include "components/ogre/XMLHelper.h"
 
 #include "ModelDefinitionManager.h"
 
-#include <OgreStringConverter.h>
-
 #ifdef WIN32
-	#include <tchar.h>
-	#define snprintf _snprintf
-    #include <io.h> // for _access, Win32 version of stat()
-    #include <direct.h> // for _mkdir
+#include <tchar.h>
+#define snprintf _snprintf
+#include <io.h> // for _access, Win32 version of stat()
+#include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
 
 
@@ -53,17 +52,7 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
-XMLModelDefinitionSerializer::XMLModelDefinitionSerializer()
-{}
-
-XMLModelDefinitionSerializer::~XMLModelDefinitionSerializer()
-{}
-void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr&, ModelDefinition*)
-{
-}
-
-void XMLModelDefinitionSerializer::parseScript(ModelDefinitionManager& modelDefManager, Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
-{
+void XMLModelDefinitionSerializer::parseScript(ModelDefinitionManager& modelDefManager, Ogre::DataStreamPtr& stream, const Ogre::String& groupName) {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (!xmlHelper.Load(xmlDoc, stream)) {
@@ -86,51 +75,29 @@ void XMLModelDefinitionSerializer::parseScript(ModelDefinitionManager& modelDefM
 				S_LOG_FAILURE("Error when parsing model '" << name << "'." << ex);
 			}
 		} else {
-			for (TiXmlElement* smElem = rootElem->FirstChildElement();
-				 smElem != nullptr; smElem = smElem->NextSiblingElement())
-			{
-				const char* tmp =  smElem->Attribute("name");
-				std::string name;
-				if (!tmp) {
-					continue;
-				} else {
-					name = tmp;
-				}
-
-				try {
-					ModelDefinitionPtr modelDef = modelDefManager.create(name, groupName);
-					if (modelDef) {
-						readModel(modelDef, smElem);
-						modelDef->setValid(true);
-						modelDef->_notifyOrigin(stream->getName());
-					}
-				} catch (const Ogre::Exception& ex) {
-					S_LOG_FAILURE("Error when parsing model '" << name << "'." << ex);
-				}
-			}
+			S_LOG_FAILURE("Invalid initial element in model definition '" << stream->getName() << "': " << rootElem->ValueStr());
 		}
 	}
 
 }
 
-void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode)
-{
+void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode) {
 	TiXmlElement* elem;
 	//root elements
 	//scale
-	const char* tmp =  modelNode->Attribute("scale");
+	const char* tmp = modelNode->Attribute("scale");
 	if (tmp)
-		modelDef->mScale=Ogre::StringConverter::parseReal(tmp);
+		modelDef->mScale = std::stof(tmp);
 
 	//showcontained
-	tmp =  modelNode->Attribute("showcontained");
-	if (tmp)
-		modelDef->mShowContained = Ogre::StringConverter::parseBool(tmp);
+	tmp = modelNode->Attribute("showcontained");
+	if (tmp) {
+		modelDef->mShowContained = boost::algorithm::to_lower_copy(std::string(tmp)) == "true";
+	}
 
 	//usescaleof
-	tmp =  modelNode->Attribute("usescaleof");
-	if (tmp)
-	{
+	tmp = modelNode->Attribute("usescaleof");
+	if (tmp) {
 		std::string useScaleOf(tmp);
 		if (useScaleOf == "height")
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_HEIGHT;
@@ -142,10 +109,9 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_NONE;
 	}
 
-	tmp =  modelNode->Attribute("renderingdistance");
-	if (tmp)
-	{
-		modelDef->setRenderingDistance(Ogre::StringConverter::parseReal(tmp));
+	tmp = modelNode->Attribute("renderingdistance");
+	if (tmp) {
+		modelDef->setRenderingDistance(std::stof(tmp));
 	}
 
 	tmp = modelNode->Attribute("icon");
@@ -180,35 +146,30 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 		readViews(modelDef, elem);
 
 	elem = modelNode->FirstChildElement("translate");
-	if (elem)
-	{
+	if (elem) {
 		modelDef->mTranslate = XMLHelper::fillVector3FromElement(elem);
 	}
 
 	elem = modelNode->FirstChildElement("rotation");
-	if (elem)
-	{
+	if (elem) {
 		modelDef->setRotation(XMLHelper::fillQuaternionFromElement(elem));
 	}
 
 	elem = modelNode->FirstChildElement("contentoffset");
-	if (elem)
-	{
+	if (elem) {
 		Ogre::Vector3 offset = XMLHelper::fillVector3FromElement(elem);
 		modelDef->setContentOffset(offset);
 	}
 
 	elem = modelNode->FirstChildElement("rendering");
-	if (elem)
-	{
+	if (elem) {
 		modelDef->mRenderingDef = new RenderingDefinition();
 		tmp = elem->Attribute("scheme");
 		if (tmp) {
 			modelDef->mRenderingDef->setScheme(tmp);
 		}
 		for (TiXmlElement* paramElem = elem->FirstChildElement("param");
-				paramElem != 0; paramElem = paramElem->NextSiblingElement())
-		{
+			 paramElem != nullptr; paramElem = paramElem->NextSiblingElement()) {
 			tmp = paramElem->Attribute("key");
 			if (tmp) {
 				modelDef->mRenderingDef->mParams.insert(StringParamStore::value_type(tmp, paramElem->GetText()));
@@ -230,27 +191,22 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 }
 
 
-
-void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode)
-{
-	S_LOG_VERBOSE( "Read Submodels" );
-	const char* tmp = 0;
+void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode) {
+	S_LOG_VERBOSE("Read Submodels");
+	const char* tmp = nullptr;
 	TiXmlElement* elem;
 	bool notfound = true;
 
 	for (TiXmlElement* smElem = mSubModelNode->FirstChildElement();
-            smElem != 0; smElem = smElem->NextSiblingElement())
-    {
+		 smElem != nullptr; smElem = smElem->NextSiblingElement()) {
 		notfound = false;
 
-		tmp =  smElem->Attribute("mesh");
-		if (tmp)
-		{
+		tmp = smElem->Attribute("mesh");
+		if (tmp) {
 			SubModelDefinition* subModelDef = modelDef->createSubModelDefinition(tmp);
 
-			S_LOG_VERBOSE( " Add submodel  : "+ subModelDef->getMeshName() );
-			try
-			{
+			S_LOG_VERBOSE(" Add submodel  : " + subModelDef->getMeshName());
+			try {
 				//preload
 				//FIX Ogre::MeshManager::getSingleton().load(subModelDef.Mesh);
 /*					Ogre::MeshManager::getSingleton().load( subModelDef.Mesh,
@@ -265,44 +221,40 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Ti
 //				modelDef->mSubModels.push_back(subModelDef);
 
 			}
-			catch (const Ogre::Exception& e)
-			{
+			catch (const Ogre::Exception& e) {
 				S_LOG_FAILURE("Load error : " << tmp);
 			}
 		}
 	}
 
-	if(notfound)
-	{
-		S_LOG_VERBOSE( "No submodel found.");
+	if (notfound) {
+		S_LOG_VERBOSE("No submodel found.");
 	}
 }
 
-void XMLModelDefinitionSerializer::readParts(TiXmlElement* mPartNode, SubModelDefinition* def)
-{
+void XMLModelDefinitionSerializer::readParts(TiXmlElement* mPartNode, SubModelDefinition* def) {
 	TiXmlElement* elem;
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 	bool notfound = true;
 
 	for (TiXmlElement* partElem = mPartNode->FirstChildElement();
-            partElem != 0; partElem = partElem->NextSiblingElement())
-	{
+		 partElem != nullptr; partElem = partElem->NextSiblingElement()) {
 
 		// name
-		tmp =  partElem->Attribute("name");
+		tmp = partElem->Attribute("name");
 		if (tmp) {
 			notfound = false;
 
 			PartDefinition* partDef = def->createPartDefinition(tmp);
 
-			S_LOG_VERBOSE( "  Add part  : "+ partDef->getName() );
+			S_LOG_VERBOSE("  Add part  : " + partDef->getName());
 
 			// show
-			tmp =  partElem->Attribute("show");
+			tmp = partElem->Attribute("show");
 			if (tmp)
-				partDef->setShow(Ogre::StringConverter::parseBool(tmp));
+				partDef->setShow(boost::algorithm::to_lower_copy(std::string(tmp)) == "true");
 
-			tmp =  partElem->Attribute("group");
+			tmp = partElem->Attribute("group");
 			if (tmp)
 				partDef->setGroup(tmp);
 
@@ -311,83 +263,76 @@ void XMLModelDefinitionSerializer::readParts(TiXmlElement* mPartNode, SubModelDe
 				readSubEntities(elem, partDef);
 
 		} else {
-			S_LOG_FAILURE( "A name must be specified for each part." );
+			S_LOG_FAILURE("A name must be specified for each part.");
 		}
 	}
 
-	if(notfound)
-	{
-		S_LOG_VERBOSE( "No part found." );
+	if (notfound) {
+		S_LOG_VERBOSE("No part found.");
 	}
 }
 
-void XMLModelDefinitionSerializer::readSubEntities(TiXmlElement* mSubEntNode, PartDefinition* def)
-{
+void XMLModelDefinitionSerializer::readSubEntities(TiXmlElement* mSubEntNode, PartDefinition* def) {
 
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 	bool notfound = true;
 
 	for (TiXmlElement* seElem = mSubEntNode->FirstChildElement();
-            seElem != 0; seElem = seElem->NextSiblingElement())
-	{
-		SubEntityDefinition* subEntityDef = 0;
+		 seElem != nullptr; seElem = seElem->NextSiblingElement()) {
+		SubEntityDefinition* subEntityDef = nullptr;
 		// name
-		tmp =  seElem->Attribute("index");
+		tmp = seElem->Attribute("index");
 		if (tmp) {
-				notfound = false;
-				subEntityDef = def->createSubEntityDefinition(Ogre::StringConverter::parseInt(tmp));
-				S_LOG_VERBOSE( "   Add sub entity with index: " << subEntityDef->getSubEntityIndex());
+			notfound = false;
+			subEntityDef = def->createSubEntityDefinition(static_cast<unsigned int>(std::strtoul(tmp, nullptr, 10)));
+			S_LOG_VERBOSE("   Add sub entity with index: " << subEntityDef->getSubEntityIndex());
 		} else {
-			tmp =  seElem->Attribute("name");
+			tmp = seElem->Attribute("name");
 			if (tmp) {
 				notfound = false;
 				subEntityDef = def->createSubEntityDefinition(tmp);
-				S_LOG_VERBOSE( "   Add sub entity: " << subEntityDef->getSubEntityName());
+				S_LOG_VERBOSE("   Add sub entity: " << subEntityDef->getSubEntityName());
 			}
 		}
 		if (!notfound) {
 			//material
-			tmp =  seElem->Attribute("material");
-			if (tmp)
-			{
+			tmp = seElem->Attribute("material");
+			if (tmp) {
 				subEntityDef->setMaterialName(tmp);
 				//preload subEntityDef.Material
 				//Ogre::MaterialManager::getSingleton().load( subEntityDef.Material,
-								//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+				//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
 
 			}
 
 		} else {
-			S_LOG_FAILURE( "A subentity name or index must be specified for each subentity." );
+			S_LOG_FAILURE("A subentity name or index must be specified for each subentity.");
 		}
 	}
 
-	if(notfound)
-	{
-		S_LOG_VERBOSE( "No sub entity found." );
+	if (notfound) {
+		S_LOG_VERBOSE("No sub entity found.");
 	}
 }
 
-void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode)
-{
+void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode) {
 	TiXmlElement* elem;
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 	bool notfound = true;
-	S_LOG_VERBOSE( "Read Actions" );
+	S_LOG_VERBOSE("Read Actions");
 
 	for (TiXmlElement* animElem = mAnimNode->FirstChildElement();
-            animElem != 0; animElem = animElem->NextSiblingElement())
-	{
-		notfound=false;
+		 animElem != nullptr; animElem = animElem->NextSiblingElement()) {
+		notfound = false;
 
-		tmp =  animElem->Attribute("name");
+		tmp = animElem->Attribute("name");
 		if (tmp) {
 			ActionDefinition* actionDef = modelDef->createActionDefinition(tmp);
-			S_LOG_VERBOSE( " Add action  : "<< tmp  );
+			S_LOG_VERBOSE(" Add action  : " << tmp);
 
-			tmp =  animElem->Attribute("speed");
+			tmp = animElem->Attribute("speed");
 			if (tmp) {
-				actionDef->setAnimationSpeed(Ogre::StringConverter::parseReal(tmp));
+				actionDef->setAnimationSpeed(std::stof(tmp));
 			}
 
 
@@ -406,56 +351,46 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXm
 
 	}
 
-	if(notfound)
-	{
-		S_LOG_VERBOSE( "No actions found." );
+	if (notfound) {
+		S_LOG_VERBOSE("No actions found.");
 	}
 
 }
 
-void XMLModelDefinitionSerializer::readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action)
-{
-	const char* tmp = 0;
+void XMLModelDefinitionSerializer::readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action) {
+	const char* tmp = nullptr;
 
 	for (TiXmlElement* soundElem = mAnimationsNode->FirstChildElement();
-            soundElem != 0; soundElem = soundElem->NextSiblingElement())
-	{
+		 soundElem != nullptr; soundElem = soundElem->NextSiblingElement()) {
 		tmp = soundElem->Attribute("group");
-		if (tmp)
-		{
+		if (tmp) {
 			std::string groupName(tmp);
 
 			unsigned int playOrder = 0;
 			tmp = soundElem->Attribute("playOrder");
-			if (tmp)
-			{
+			if (tmp) {
 				std::string playO(tmp);
 				if (playO == "linear")
 					playOrder = 0;
-				else
-				if (playO == "inverse")
+				else if (playO == "inverse")
 					playOrder = 1;
-				else
-				if (playO == "random")
+				else if (playO == "random")
 					playOrder = 2;
 			}
 
 			action->createSoundDefinition(groupName, playOrder);
-			S_LOG_VERBOSE( "  Add Sound: " << groupName);
+			S_LOG_VERBOSE("  Add Sound: " << groupName);
 		}
 	}
 }
 
-void XMLModelDefinitionSerializer::readActivations(TiXmlElement* activationsNode, ActionDefinition* action)
-{
-	const char* tmp = 0;
+void XMLModelDefinitionSerializer::readActivations(TiXmlElement* activationsNode, ActionDefinition* action) {
+	const char* tmp = nullptr;
 
 	for (TiXmlElement* activationElem = activationsNode->FirstChildElement();
-            activationElem != 0; activationElem = activationElem->NextSiblingElement())
-	{
+		 activationElem != nullptr; activationElem = activationElem->NextSiblingElement()) {
 		tmp = activationElem->Attribute("type");
-		if (tmp)
-		{
+		if (tmp) {
 			std::string typeString(tmp);
 
 			ActivationDefinition::Type type;
@@ -471,56 +406,51 @@ void XMLModelDefinitionSerializer::readActivations(TiXmlElement* activationsNode
 			}
 			std::string trigger = activationElem->GetText();
 			action->createActivationDefinition(type, trigger);
-			S_LOG_VERBOSE( "  Add activation: " << typeString << " : " << trigger);
+			S_LOG_VERBOSE("  Add activation: " << typeString << " : " << trigger);
 		}
 	}
 }
 
-void XMLModelDefinitionSerializer::readAnimations(TiXmlElement* mAnimationsNode, ActionDefinition* action)
-{
-	const char* tmp = 0;
+void XMLModelDefinitionSerializer::readAnimations(TiXmlElement* mAnimationsNode, ActionDefinition* action) {
+	const char* tmp = nullptr;
 	bool nopartfound = true;
 
 
 	for (TiXmlElement* animElem = mAnimationsNode->FirstChildElement();
-            animElem != 0; animElem = animElem->NextSiblingElement())
-	{
+		 animElem != nullptr; animElem = animElem->NextSiblingElement()) {
 		int iterations(1);
 		nopartfound = false;
 
 		// name
-		tmp =  animElem->Attribute("iterations");
+		tmp = animElem->Attribute("iterations");
 		if (tmp) {
-			iterations = Ogre::StringConverter::parseInt(tmp);
+			iterations = std::stoi(tmp);
 		}
 
 		AnimationDefinition* animDef = action->createAnimationDefinition(iterations);
 		readAnimationParts(animElem, animDef);
 	}
 
-	if(nopartfound)
-	{
-		S_LOG_VERBOSE( "  No animations found!!" );
+	if (nopartfound) {
+		S_LOG_VERBOSE("  No animations found!!");
 	}
 
 }
 
-void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNode, AnimationDefinition* animDef)
-{
-	const char* tmp = 0;
+void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNode, AnimationDefinition* animDef) {
+	const char* tmp = nullptr;
 	bool nopartfound = true;
 
 	for (TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
-            apElem != 0; apElem = apElem->NextSiblingElement())
-	{
+		 apElem != nullptr; apElem = apElem->NextSiblingElement()) {
 		std::string name;
 		nopartfound = false;
 
 		// name
-		tmp =  apElem->Attribute("name");
+		tmp = apElem->Attribute("name");
 		if (tmp) {
 			name = tmp;
-			S_LOG_VERBOSE( "  Add animation  : "+ name );
+			S_LOG_VERBOSE("  Add animation  : " + name);
 		}
 
 		AnimationPartDefinition* animPartDef = animDef->createAnimationPartDefinition(name);
@@ -528,15 +458,14 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
 		TiXmlElement* elem = apElem->FirstChildElement("bonegrouprefs");
 		if (elem) {
 			for (TiXmlElement* boneGroupRefElem = elem->FirstChildElement();
-					boneGroupRefElem != 0; boneGroupRefElem = boneGroupRefElem->NextSiblingElement())
-			{
+				 boneGroupRefElem != nullptr; boneGroupRefElem = boneGroupRefElem->NextSiblingElement()) {
 				tmp = boneGroupRefElem->Attribute("name");
 				if (tmp) {
 					BoneGroupRefDefinition boneGroupRef;
 					boneGroupRef.Name = tmp;
 					tmp = boneGroupRefElem->Attribute("weight");
 					if (tmp) {
-						boneGroupRef.Weight = Ogre::StringConverter::parseReal(tmp);
+						boneGroupRef.Weight = std::stof(tmp);
 					} else {
 						boneGroupRef.Weight = 1.0f;
 					}
@@ -548,51 +477,46 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
 
 	}
 
-	if(nopartfound)
-	{
-		S_LOG_VERBOSE( "   No anim parts found." );
+	if (nopartfound) {
+		S_LOG_VERBOSE("   No anim parts found.");
 	}
 }
 
 
-void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode)
-{
-	AttachPointDefinitionStore & attachPoints = modelDef->mAttachPoints;
+void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode) {
+	AttachPointDefinitionStore& attachPoints = modelDef->mAttachPoints;
 
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 
 	for (TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
-            apElem != 0; apElem = apElem->NextSiblingElement())
-	{
+		 apElem != nullptr; apElem = apElem->NextSiblingElement()) {
 		AttachPointDefinition attachPointDef;
 
 		// name
-		tmp =  apElem->Attribute("name");
+		tmp = apElem->Attribute("name");
 		if (tmp)
 			attachPointDef.Name = tmp;
-		S_LOG_VERBOSE( "  Add attachpoint  : "+ attachPointDef.Name );
+		S_LOG_VERBOSE("  Add attachpoint  : " + attachPointDef.Name);
 
 		// bone
-		tmp =  apElem->Attribute("bone");
+		tmp = apElem->Attribute("bone");
 		if (tmp)
 			attachPointDef.BoneName = tmp;
 
 		// pose
-		tmp =  apElem->Attribute("pose");
+		tmp = apElem->Attribute("pose");
 		if (tmp)
 			attachPointDef.Pose = tmp;
 
 		TiXmlElement* elem = apElem->FirstChildElement("rotation");
-		if (elem)
-		{
+		if (elem) {
 			attachPointDef.Rotation = XMLHelper::fillQuaternionFromElement(elem);
 		} else {
 			attachPointDef.Rotation = Ogre::Quaternion::IDENTITY;
 		}
 
 		TiXmlElement* tranelem = apElem->FirstChildElement("translation");
-		if (tranelem)
-		{
+		if (tranelem) {
 			attachPointDef.Translation = XMLHelper::fillVector3FromElement(tranelem);
 		} else {
 			attachPointDef.Translation = Ogre::Vector3::ZERO;
@@ -603,23 +527,21 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 
 }
 
-void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement* mParticleSystemsNode)
-{
+void XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement* mParticleSystemsNode) {
 	TiXmlElement* elem;
 	ModelDefinition::ParticleSystemSet& particleSystems = modelDef->mParticleSystems;
 
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 
 	for (TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
-            apElem != 0; apElem = apElem->NextSiblingElement())
-	{
+		 apElem != nullptr; apElem = apElem->NextSiblingElement()) {
 		ModelDefinition::ParticleSystemDefinition def;
 
 		// name
-		tmp =  apElem->Attribute("script");
+		tmp = apElem->Attribute("script");
 		if (tmp)
 			def.Script = tmp;
-		S_LOG_VERBOSE( "  Add particlescript  : "+ def.Script );
+		S_LOG_VERBOSE("  Add particlescript  : " + def.Script);
 
 		elem = apElem->FirstChildElement("bindings");
 		if (elem)
@@ -637,31 +559,29 @@ void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr model
 	}
 }
 
-void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode)
-{
-	const char* tmp = 0;
+void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode) {
+	const char* tmp = nullptr;
 // 	bool nopartfound = true;
 
 	for (TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
-            apElem != 0; apElem = apElem->NextSiblingElement())
-	{
+		 apElem != nullptr; apElem = apElem->NextSiblingElement()) {
 		ModelDefinition::BindingDefinition binding;
 
 		// emittervar
-		tmp =  apElem->Attribute("emittervar");
+		tmp = apElem->Attribute("emittervar");
 		if (tmp)
 			binding.EmitterVar = tmp;
 		else
 			continue;
 
 		// atlasattribute
-		tmp =  apElem->Attribute("atlasattribute");
+		tmp = apElem->Attribute("atlasattribute");
 		if (tmp)
 			binding.AtlasAttribute = tmp;
 		else
 			continue;
 
-		S_LOG_VERBOSE( "  Add binding between "<< binding.EmitterVar << " and " << binding.AtlasAttribute << "." );
+		S_LOG_VERBOSE("  Add binding between " << binding.EmitterVar << " and " << binding.AtlasAttribute << ".");
 
 
 		def.Bindings.push_back(binding);
@@ -669,24 +589,22 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 
 }
 
-void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlElement* viewsNode)
-{
+void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlElement* viewsNode) {
 	TiXmlElement* elem;
 
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 
 	for (TiXmlElement* viewElem = viewsNode->FirstChildElement();
-            viewElem != 0; viewElem = viewElem->NextSiblingElement())
-	{
+		 viewElem != nullptr; viewElem = viewElem->NextSiblingElement()) {
 
 		// name
-		tmp =  viewElem->Attribute("name");
+		tmp = viewElem->Attribute("name");
 		if (tmp) {
 			std::string name(tmp);
 
 			ViewDefinition* def = modelDef->createViewDefinition(name);
 
-			S_LOG_VERBOSE( " Add View  : "+ def->Name );
+			S_LOG_VERBOSE(" Add View  : " + def->Name);
 
 			elem = viewElem->FirstChildElement("rotation");
 			if (elem) {
@@ -697,7 +615,7 @@ void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlE
 
 			elem = viewElem->FirstChildElement("distance");
 			if (elem) {
-				def->Distance = Ogre::StringConverter::parseReal(elem->GetText());
+				def->Distance = std::stof(elem->GetText());
 			} else {
 				def->Distance = 0;
 			}
@@ -706,71 +624,59 @@ void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlE
 	}
 }
 
-void XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode)
-{
+void XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode) {
 	TiXmlElement* elem;
 	ModelDefinition::LightSet& lights = modelDef->mLights;
 
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 
 	for (TiXmlElement* lElem = mLightsNode->FirstChildElement();
-            lElem != 0; lElem = lElem->NextSiblingElement())
-	{
+		 lElem != nullptr; lElem = lElem->NextSiblingElement()) {
 		ModelDefinition::LightDefinition def;
 
 		def.type = Ogre::Light::LT_POINT;
 
 		tmp = lElem->Attribute("type");
-		if (tmp)
-		{
+		if (tmp) {
 			std::string type = tmp;
-			if (type == "point")
-			{
+			if (type == "point") {
 				def.type = Ogre::Light::LT_POINT;
-			}
-			else if (type == "directional")
-			{
+			} else if (type == "directional") {
 				def.type = Ogre::Light::LT_DIRECTIONAL;
-			}
-			else if (type == "spotlight")
-			{
+			} else if (type == "spotlight") {
 				def.type = Ogre::Light::LT_SPOTLIGHT;
 			}
 		}
 
-		Ogre::Real r=1.0f, g=1.0f, b=1.0f;
+		Ogre::Real r = 1.0f, g = 1.0f, b = 1.0f;
 
 		elem = lElem->FirstChildElement("diffusecolour");
-		if (elem)
-		{
+		if (elem) {
 			if (elem->Attribute("r")) {
-				r = atof(elem->Attribute("r"));
+				r = std::stof(elem->Attribute("r"));
 			}
 			if (elem->Attribute("g")) {
-				g = atof(elem->Attribute("g"));
+				g = std::stof(elem->Attribute("g"));
 			}
 			if (elem->Attribute("b")) {
-				b = atof(elem->Attribute("b"));
+				b = std::stof(elem->Attribute("b"));
 			}
 		}
 		def.diffuseColour = Ogre::ColourValue(r, g, b);
 
 		elem = lElem->FirstChildElement("specularcolour");
-		if (elem)
-		{
+		if (elem) {
 			if (elem->Attribute("r")) {
-				r = atof(elem->Attribute("r"));
+				r = std::stof(elem->Attribute("r"));
 			}
 			if (elem->Attribute("g")) {
-				g = atof(elem->Attribute("g"));
+				g = std::stof(elem->Attribute("g"));
 			}
 			if (elem->Attribute("b")) {
-				b = atof(elem->Attribute("b"));
+				b = std::stof(elem->Attribute("b"));
 			}
 			def.specularColour = Ogre::ColourValue(r, g, b);
-		}
-		else
-		{
+		} else {
 			def.specularColour = def.diffuseColour;
 		}
 
@@ -779,47 +685,41 @@ void XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXml
 		def.constant = 1.0;
 		def.linear = 0.0;
 		def.quadratic = 0.0;
-		if (elem)
-		{
+		if (elem) {
 			if (elem->Attribute("range")) {
-				def.range = atof(elem->Attribute("range"));
+				def.range = std::stof(elem->Attribute("range"));
 			}
 			if (elem->Attribute("constant")) {
-				def.constant = atof(elem->Attribute("constant"));
+				def.constant = std::stof(elem->Attribute("constant"));
 			}
 			if (elem->Attribute("linear")) {
-				def.linear = atof(elem->Attribute("linear"));
+				def.linear = std::stof(elem->Attribute("linear"));
 			}
 			if (elem->Attribute("quadratic")) {
-				def.quadratic = atof(elem->Attribute("quadratic"));
+				def.quadratic = std::stof(elem->Attribute("quadratic"));
 			}
 		}
 
 		elem = lElem->FirstChildElement("position");
-		if (elem)
-		{
+		if (elem) {
 			def.position = XMLHelper::fillVector3FromElement(elem);
-		}
-		else
-		{
+		} else {
 			def.position = Ogre::Vector3::ZERO;
 		}
 
-		S_LOG_VERBOSE( "  Add light");
+		S_LOG_VERBOSE("  Add light");
 
 		lights.push_back(def);
 	}
 }
 
-void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement* boneGroupsNode)
-{
+void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement* boneGroupsNode) {
 	TiXmlElement* elem;
 
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 
 	for (TiXmlElement* boneGroupElem = boneGroupsNode->FirstChildElement();
-			boneGroupElem != 0; boneGroupElem = boneGroupElem->NextSiblingElement())
-	{
+		 boneGroupElem != nullptr; boneGroupElem = boneGroupElem->NextSiblingElement()) {
 
 		// name
 		tmp = boneGroupElem->Attribute("name");
@@ -828,13 +728,12 @@ void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, T
 
 			BoneGroupDefinition* def = modelDef->createBoneGroupDefinition(name);
 
-			S_LOG_VERBOSE( " Add Bone Group  : "+ def->Name );
+			S_LOG_VERBOSE(" Add Bone Group  : " + def->Name);
 
 			elem = boneGroupElem->FirstChildElement("bones");
 			if (elem) {
 				for (TiXmlElement* boneElem = elem->FirstChildElement();
-						boneElem != 0; boneElem = boneElem->NextSiblingElement())
-				{
+					 boneElem != nullptr; boneElem = boneElem->NextSiblingElement()) {
 					const char* text = boneElem->Attribute("index");
 					if (text) {
 						std::istringstream stream(text);
@@ -848,13 +747,12 @@ void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, T
 	}
 }
 
-void XMLModelDefinitionSerializer::readPoses(ModelDefinitionPtr modelDef, TiXmlElement* mNode)
-{
+void XMLModelDefinitionSerializer::readPoses(ModelDefinitionPtr modelDef, TiXmlElement* mNode) {
 	PoseDefinitionStore& poses = modelDef->mPoseDefinitions;
 
-	const char* tmp = 0;
+	const char* tmp = nullptr;
 
-	for (TiXmlElement* apElem = mNode->FirstChildElement(); apElem != 0; apElem = apElem->NextSiblingElement()) {
+	for (TiXmlElement* apElem = mNode->FirstChildElement(); apElem != nullptr; apElem = apElem->NextSiblingElement()) {
 		PoseDefinition definition;
 
 		// name
@@ -864,7 +762,7 @@ void XMLModelDefinitionSerializer::readPoses(ModelDefinitionPtr modelDef, TiXmlE
 			continue;
 		}
 		std::string name(tmp);
-		S_LOG_VERBOSE( "  Add pose  : " + name);
+		S_LOG_VERBOSE("  Add pose  : " + name);
 
 		tmp = apElem->Attribute("ignoreEntityData");
 		definition.IgnoreEntityData = false;
@@ -895,18 +793,14 @@ void XMLModelDefinitionSerializer::readPoses(ModelDefinitionPtr modelDef, TiXmlE
 }
 
 
-
-
-bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename)
-{
-	if (filename == "") {
+bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename) {
+	if (filename.empty()) {
 		return false;
 	}
 
 	TiXmlDocument xmlDoc;
 
-	try
-	{
+	try {
 
 		if (!oslink::directory(directory).isExisting()) {
 			S_LOG_INFO("Creating directory " << directory);
@@ -957,12 +851,10 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		if (renderingDef) {
 			TiXmlElement rendering("rendering");
 			rendering.SetAttribute("scheme", renderingDef->getScheme().c_str());
-			for (StringParamStore::const_iterator I  = renderingDef->getParameters().begin();
-					I != renderingDef->getParameters().end(); ++I)
-			{
+			for (const auto& aParam : renderingDef->getParameters()) {
 				TiXmlElement param("param");
-				param.SetAttribute("key", I->first.c_str());
-				param.SetValue(I->second.c_str());
+				param.SetAttribute("key", aParam.first.c_str());
+				param.SetValue(aParam.second.c_str());
 				rendering.InsertEndChild(param);
 			}
 			modelElem.InsertEndChild(rendering);
@@ -982,10 +874,10 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		if (modelDef->getRenderingDefinition()) {
 			TiXmlElement rendering("rendering");
 			rendering.SetAttribute("scheme", modelDef->getRenderingDefinition()->getScheme().c_str());
-			for (StringParamStore::const_iterator I = modelDef->getRenderingDefinition()->getParameters().begin(); I != modelDef->getRenderingDefinition()->getParameters().end(); ++I) {
+			for (const auto& aParam : modelDef->getRenderingDefinition()->getParameters()) {
 				TiXmlElement param("param");
-				param.SetAttribute("key", I->first.c_str());
-				param.SetValue(I->second.c_str());
+				param.SetAttribute("key", aParam.first.c_str());
+				param.SetValue(aParam.second.c_str());
 			}
 		}
 
@@ -1014,31 +906,29 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		S_LOG_INFO("Saved file " << (directory + filename));
 		return true;
 	}
-	catch (...)
-	{
-		S_LOG_FAILURE("An error occurred saving the modeldefinition for "<< modelDef->getName() << "." );
+	catch (...) {
+		S_LOG_FAILURE("An error occurred saving the modeldefinition for " << modelDef->getName() << ".");
 		return false;
 	}
 
 
 }
 
-void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
-{
+void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
 	TiXmlElement viewsElem("views");
 
-	for (ViewDefinitionStore::const_iterator I = modelDef->getViewDefinitions().begin(); I != modelDef->getViewDefinitions().end(); ++I) {
+	for (const auto& viewDefinition : modelDef->getViewDefinitions()) {
 		TiXmlElement viewElem("view");
-		viewElem.SetAttribute("name", I->second->Name.c_str());
+		viewElem.SetAttribute("name", viewDefinition.second->Name.c_str());
 
 		TiXmlElement distanceElem("distance");
 		std::stringstream ss;
-		ss << I->second->Distance;
+		ss << viewDefinition.second->Distance;
 		distanceElem.InsertEndChild(TiXmlText(ss.str().c_str()));
 		viewElem.InsertEndChild(distanceElem);
 
 		TiXmlElement rotation("rotation");
-		XMLHelper::fillElementFromQuaternion(rotation, I->second->Rotation);
+		XMLHelper::fillElementFromQuaternion(rotation, viewDefinition.second->Rotation);
 		viewElem.InsertEndChild(rotation);
 
 		viewsElem.InsertEndChild(viewElem);
@@ -1046,8 +936,7 @@ void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, TiXm
 	modelElem.InsertEndChild(viewsElem);
 }
 
-void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
-{
+void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
 	TiXmlElement actionsElem("actions");
 
 	for (ActionDefinitionsStore::const_iterator I = modelDef->getActionDefinitions().begin(); I != modelDef->getActionDefinitions().end(); ++I) {
@@ -1061,15 +950,15 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 			TiXmlElement activationElem("activation");
 			std::string type;
 			switch (activationDef.type) {
-			case ActivationDefinition::MOVEMENT:
-				type = "movement";
-				break;
-			case ActivationDefinition::ACTION:
-				type = "action";
-				break;
-			case ActivationDefinition::TASK:
-				type = "task";
-				break;
+				case ActivationDefinition::MOVEMENT:
+					type = "movement";
+					break;
+				case ActivationDefinition::ACTION:
+					type = "action";
+					break;
+				case ActivationDefinition::TASK:
+					type = "task";
+					break;
 			}
 			activationElem.SetAttribute("type", type);
 			activationElem.InsertEndChild(TiXmlText(activationDef.trigger));
@@ -1077,20 +966,20 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 		}
 		actionElem.InsertEndChild(activationsElem);
 
-		if ((*I)->getAnimationDefinitions().size() > 0) {
+		if (!(*I)->getAnimationDefinitions().empty()) {
 			TiXmlElement animationsElem("animations");
 			for (AnimationDefinitionsStore::const_iterator J = (*I)->getAnimationDefinitions().begin(); J != (*I)->getAnimationDefinitions().end(); ++J) {
 				TiXmlElement animationElem("animation");
 				animationElem.SetAttribute("iterations", (*J)->getIterations());
 
-				for (AnimationPartDefinitionsStore::const_iterator K = (*J)->getAnimationPartDefinitions().begin(); K != (*J)->getAnimationPartDefinitions().end(); ++K) {
+				for (auto animationPartDefinition : (*J)->getAnimationPartDefinitions()) {
 					TiXmlElement animationPartElem("animationpart");
-					animationPartElem.SetAttribute("name", (*K)->Name.c_str());
-					for (std::vector<BoneGroupRefDefinition>::const_iterator L = (*K)->BoneGroupRefs.begin(); L != (*K)->BoneGroupRefs.end(); ++L) {
+					animationPartElem.SetAttribute("name", animationPartDefinition->Name.c_str());
+					for (std::vector<BoneGroupRefDefinition>::const_iterator L = animationPartDefinition->BoneGroupRefs.begin(); L != animationPartDefinition->BoneGroupRefs.end(); ++L) {
 						TiXmlElement boneGroupRefElem("bonegroupref");
 						boneGroupRefElem.SetAttribute("name", L->Name.c_str());
 						if (L->Weight != 1.0f) {
-							boneGroupRefElem.SetAttribute("weight", L->Weight);
+							boneGroupRefElem.SetAttribute("weight", static_cast<int>(L->Weight));
 						}
 						animationPartElem.InsertEndChild(boneGroupRefElem);
 					}
@@ -1103,8 +992,7 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 		}
 
 		//for now, only allow one sound
-		if ((*I)->getSoundDefinitions().size() > 0)
-		{
+		if (!(*I)->getSoundDefinitions().empty()) {
 			TiXmlElement soundsElem("sounds");
 
 			for (SoundDefinitionsStore::const_iterator J = (*I)->getSoundDefinitions().begin(); J != (*I)->getSoundDefinitions().end(); ++J) {
@@ -1119,34 +1007,33 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 	modelElem.InsertEndChild(actionsElem);
 }
 
-void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
-{
+void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
 	TiXmlElement submodelsElem("submodels");
 
-	for (SubModelDefinitionsStore::const_iterator I = modelDef->getSubModelDefinitions().begin(); I != modelDef->getSubModelDefinitions().end(); ++I) {
+	for (const auto& subModelDefinition : modelDef->getSubModelDefinitions()) {
 		TiXmlElement submodelElem("submodel");
-		submodelElem.SetAttribute("mesh", (*I)->getMeshName().c_str());
+		submodelElem.SetAttribute("mesh", subModelDefinition->getMeshName().c_str());
 		TiXmlElement partsElem("parts");
 
-		for (PartDefinitionsStore::const_iterator J = (*I)->getPartDefinitions().begin(); J != (*I)->getPartDefinitions().end(); ++J) {
+		for (const auto& partDefinition : subModelDefinition->getPartDefinitions()) {
 			TiXmlElement partElem("part");
-			partElem.SetAttribute("name", (*J)->getName().c_str());
-			if ((*J)->getGroup() != "") {
-				partElem.SetAttribute("group", (*J)->getGroup().c_str());
+			partElem.SetAttribute("name", partDefinition->getName().c_str());
+			if (!partDefinition->getGroup().empty()) {
+				partElem.SetAttribute("group", partDefinition->getGroup().c_str());
 			}
-			partElem.SetAttribute("show", (*J)->getShow() ? "true" : "false");
+			partElem.SetAttribute("show", partDefinition->getShow() ? "true" : "false");
 
-			if ((*J)->getSubEntityDefinitions().size() > 0) {
+			if (!partDefinition->getSubEntityDefinitions().empty()) {
 				TiXmlElement subentitiesElem("subentities");
-				for (SubEntityDefinitionsStore::const_iterator K = (*J)->getSubEntityDefinitions().begin(); K != (*J)->getSubEntityDefinitions().end(); ++K) {
+				for (const auto& subEntityDefinition : partDefinition->getSubEntityDefinitions()) {
 					TiXmlElement subentityElem("subentity");
-					if ((*K)->getSubEntityName() != "") {
-						subentityElem.SetAttribute("name", (*K)->getSubEntityName().c_str());
+					if (!subEntityDefinition->getSubEntityName().empty()) {
+						subentityElem.SetAttribute("name", subEntityDefinition->getSubEntityName().c_str());
 					} else {
-						subentityElem.SetAttribute("index", (*K)->getSubEntityIndex());
+						subentityElem.SetAttribute("index", subEntityDefinition->getSubEntityIndex());
 					}
-					if ((*K)->getMaterialName() != "") {
-						subentityElem.SetAttribute("material", (*K)->getMaterialName().c_str());
+					if (!subEntityDefinition->getMaterialName().empty()) {
+						subentityElem.SetAttribute("material", subEntityDefinition->getMaterialName().c_str());
 					}
 					subentitiesElem.InsertEndChild(subentityElem);
 				}
@@ -1161,22 +1048,21 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 
 }
 
-void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
-{
+void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
 	TiXmlElement attachpointsElem("attachpoints");
 
-	for (AttachPointDefinitionStore::const_iterator I = modelDef->getAttachPointsDefinitions().begin(); I != modelDef->getAttachPointsDefinitions().end(); ++I) {
+	for (const auto& attachPointDef : modelDef->getAttachPointsDefinitions()) {
 		TiXmlElement attachpointElem("attachpoint");
-		attachpointElem.SetAttribute("name", I->Name.c_str());
-		attachpointElem.SetAttribute("bone", I->BoneName.c_str());
-		if (I->Pose != "") {
-			attachpointElem.SetAttribute("pose", I->Pose.c_str());
+		attachpointElem.SetAttribute("name", attachPointDef.Name.c_str());
+		attachpointElem.SetAttribute("bone", attachPointDef.BoneName.c_str());
+		if (!attachPointDef.Pose.empty()) {
+			attachpointElem.SetAttribute("pose", attachPointDef.Pose.c_str());
 		}
 		TiXmlElement rotationElem("rotation");
-		XMLHelper::fillElementFromQuaternion(rotationElem, I->Rotation);
+		XMLHelper::fillElementFromQuaternion(rotationElem, attachPointDef.Rotation);
 		attachpointElem.InsertEndChild(rotationElem);
 		TiXmlElement translationElem("translation");
-		XMLHelper::fillElementFromVector3(translationElem, I->Translation);
+		XMLHelper::fillElementFromVector3(translationElem, attachPointDef.Translation);
 		attachpointElem.InsertEndChild(translationElem);
 
 		attachpointsElem.InsertEndChild(attachpointElem);
@@ -1184,8 +1070,7 @@ void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDe
 	modelElem.InsertEndChild(attachpointsElem);
 }
 
-void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
-{
+void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
 	TiXmlElement lightsElem("lights");
 
 	for (ModelDefinition::LightSet::const_iterator I = modelDef->mLights.begin(); I != modelDef->mLights.end(); ++I) {
@@ -1202,15 +1087,15 @@ void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiX
 		lightElem.SetAttribute("type", type);
 
 		TiXmlElement diffuseElem("diffusecolour");
-		diffuseElem.SetAttribute("r", def.diffuseColour.r);
-		diffuseElem.SetAttribute("g", def.diffuseColour.g);
-		diffuseElem.SetAttribute("b", def.diffuseColour.b);
+		diffuseElem.SetDoubleAttribute("r", def.diffuseColour.r);
+		diffuseElem.SetDoubleAttribute("g", def.diffuseColour.g);
+		diffuseElem.SetDoubleAttribute("b", def.diffuseColour.b);
 		lightElem.InsertEndChild(diffuseElem);
 
 		TiXmlElement specularElem("specularcolour");
-		specularElem.SetAttribute("r", def.specularColour.r);
-		specularElem.SetAttribute("g", def.specularColour.g);
-		specularElem.SetAttribute("b", def.specularColour.b);
+		specularElem.SetDoubleAttribute("r", def.specularColour.r);
+		specularElem.SetDoubleAttribute("g", def.specularColour.g);
+		specularElem.SetDoubleAttribute("b", def.specularColour.b);
 		lightElem.InsertEndChild(specularElem);
 
 		TiXmlElement attenuationElem("attenuation");
@@ -1229,9 +1114,8 @@ void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiX
 	modelElem.InsertEndChild(lightsElem);
 }
 
-void XMLModelDefinitionSerializer::exportPoses(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
-{
-	if (modelDef->mPoseDefinitions.size()) {
+void XMLModelDefinitionSerializer::exportPoses(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+	if (!modelDef->mPoseDefinitions.empty()) {
 		TiXmlElement elem("poses");
 
 		for (PoseDefinitionStore::const_iterator I = modelDef->mPoseDefinitions.begin(); I != modelDef->mPoseDefinitions.end(); ++I) {
@@ -1257,26 +1141,25 @@ void XMLModelDefinitionSerializer::exportPoses(ModelDefinitionPtr modelDef, TiXm
 	}
 }
 
-void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
-{
-	if (modelDef->mParticleSystems.size()) {
+void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+	if (!modelDef->mParticleSystems.empty()) {
 		TiXmlElement particleSystemsElem("particlesystems");
 
-		for (ModelDefinition::ParticleSystemSet::const_iterator I = modelDef->mParticleSystems.begin(); I != modelDef->mParticleSystems.end(); ++I) {
+		for (const auto& particleDef :modelDef->mParticleSystems) {
 			TiXmlElement particleSystemElem("particlesystem");
-			particleSystemElem.SetAttribute("script", I->Script.c_str());
-			if (!I->Direction.isNaN()) {
+			particleSystemElem.SetAttribute("script", particleDef.Script.c_str());
+			if (!particleDef.Direction.isNaN()) {
 				TiXmlElement directionElem("direction");
-				XMLHelper::fillElementFromVector3(directionElem, I->Direction);
+				XMLHelper::fillElementFromVector3(directionElem, particleDef.Direction);
 				particleSystemElem.InsertEndChild(directionElem);
 			}
-			if (I->Bindings.size()) {
+			if (!particleDef.Bindings.empty()) {
 				TiXmlElement bindingsElem("bindings");
 
-				for (ModelDefinition::BindingSet::const_iterator J = I->Bindings.begin(); J != I->Bindings.end(); ++J) {
+				for (const auto& binding : particleDef.Bindings) {
 					TiXmlElement bindingElem("binding");
-					bindingsElem.SetAttribute("emittervar", J->EmitterVar);
-					bindingsElem.SetAttribute("atlasattribute", J->AtlasAttribute);
+					bindingsElem.SetAttribute("emittervar", binding.EmitterVar);
+					bindingsElem.SetAttribute("atlasattribute", binding.AtlasAttribute);
 					particleSystemElem.InsertEndChild(bindingsElem);
 				}
 			}
@@ -1286,19 +1169,18 @@ void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr mode
 	}
 }
 
-void XMLModelDefinitionSerializer::exportBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
-{
+void XMLModelDefinitionSerializer::exportBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
 	TiXmlElement boneGroupsElem("bonegroups");
 
-	for (BoneGroupDefinitionStore::const_iterator I = modelDef->getBoneGroupDefinitions().begin(); I != modelDef->getBoneGroupDefinitions().end(); ++I) {
+	for (auto entry : modelDef->getBoneGroupDefinitions()) {
 		TiXmlElement boneGroupElem("bonegroup");
-		boneGroupElem.SetAttribute("name", I->second->Name.c_str());
+		boneGroupElem.SetAttribute("name", entry.second->Name.c_str());
 
 		TiXmlElement bonesElem("bones");
-		for (std::vector<size_t>::const_iterator J = I->second->Bones.begin(); J != I->second->Bones.end(); ++J) {
+		for (auto boneIndex : entry.second->Bones) {
 			TiXmlElement boneElem("bone");
 			std::stringstream ss;
-			ss << *J;
+			ss << boneIndex;
 			boneElem.SetValue(ss.str().c_str());
 			bonesElem.InsertEndChild(boneElem);
 		}

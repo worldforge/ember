@@ -191,7 +191,7 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo& page) {
 				const Ogre::Quaternion& orient = node->_getDerivedOrientation();
 				if (!pos.isNaN() && !orient.isNaN()) {
 					Model::Model& model = modelRepresentation->getModel();
-					if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
+					if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom && model.getBoundingBox().isFinite()) {
 						addModel(&model, pos, orient, modelRepresentation->getScale(), colour);
 					}
 				}
