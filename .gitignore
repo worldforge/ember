@@ -63,3 +63,4 @@ src/stamp-h1
 *.log
 *.kdevelop
 .idea
+cmake-*
