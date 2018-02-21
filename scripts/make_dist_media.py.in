@@ -206,52 +206,54 @@ OPTIONS
 					assets.add(aMatch.group(1))
 					assets_no_conversion.add(aMatch.group(1)) #Particle scripts can't handle DDS textures
 					continue
-		for filename in fnmatch.filter(files, "*.skeleton"):
-			assets.add(os.path.relpath(os.path.join(dirpath, filename), src_assets_dir)) 
+		for filename in files:
+			if filename.endswith(('.modeldef', '.entitymap', '.skeleton', '.mesh', '.program', '.cg', '.glsl', '.vert', '.frag', '.hlsl', '.overlay', '.compositor')):
+				assets.add(os.path.relpath(os.path.join(dirpath, filename), src_assets_dir))
 
 	#Copy files found in the "common" assets. Skip "source" directories.
 	for dirpath, dirnames, files in os.walk(os.path.join(src_assets_dir, "common")):
 		if "source" in dirnames:
 			dirnames.remove("source")
 		for filename in files:
-			if filename.endswith(('.jpg', '.png', '.dds', '.skeleton', '.mesh', '.ttf', '.material', '.program', '.cg', '.glsl', '.vert', '.frag', '.hlsl', '.overlay', '.compositor', '.fontdef')):
+			if filename.endswith(('.modeldef', '.entitymap', '.jpg', '.png', '.dds', '.skeleton', '.mesh', '.ttf', '.material', '.program', '.cg', '.glsl', '.vert', '.frag', '.hlsl', '.overlay', '.compositor', '.fontdef')):
 				assets.add(os.path.relpath(os.path.join(dirpath, filename), src_assets_dir))
 			
 	#Parse .modeldef and .terrain files from the Ember source and look for references
 	datadir = os.path.join("@PROJECT_SOURCE_DIR@", "data")
-	print("Looking for data files in " + datadir)
-	for dirpath, dirnames, files in os.walk(datadir):
-		if "source" in dirnames:
-			dirnames.remove("source")
-		for filename in fnmatch.filter(files, "*.modeldef*"):
-			file = open(os.path.join(dirpath, filename)) 
-			for line in file:
-				aMatch = reIcon.match(line)
-				if aMatch:
-					assets.add(aMatch.group(1))
-					continue
-				aMatch = reMesh.match(line)
-				if aMatch:
-					assets.add(aMatch.group(1))
-					continue
-		for filename in fnmatch.filter(files, "*.terrain*"):
-			file = open(os.path.join(dirpath, filename)) 
-			for line in file:
-				aMatch = reDiffuse.match(line)
-				if aMatch:
-					assets.add(aMatch.group(1))
-					continue
-				aMatch = reNormal.match(line)
-				if aMatch:
-					assets.add(aMatch.group(1))
-					continue
-		for filename in fnmatch.filter(files, "*.sounddef*"):
-			file = open(os.path.join(dirpath, filename)) 
-			for line in file:
-				aMatch = reFilename.match(line)
-				if aMatch:
-					assets.add(aMatch.group(1))
-					continue
+	for directory in [datadir, src_assets_dir]:
+		print("Looking for data files in " + directory)
+		for dirpath, dirnames, files in os.walk(directory):
+			if "source" in dirnames:
+				dirnames.remove("source")
+			for filename in fnmatch.filter(files, "*.modeldef*"):
+				file = open(os.path.join(dirpath, filename))
+				for line in file:
+					aMatch = reIcon.match(line)
+					if aMatch:
+						assets.add(aMatch.group(1))
+						continue
+					aMatch = reMesh.match(line)
+					if aMatch:
+						assets.add(aMatch.group(1))
+						continue
+			for filename in fnmatch.filter(files, "*.terrain*"):
+				file = open(os.path.join(dirpath, filename))
+				for line in file:
+					aMatch = reDiffuse.match(line)
+					if aMatch:
+						assets.add(aMatch.group(1))
+						continue
+					aMatch = reNormal.match(line)
+					if aMatch:
+						assets.add(aMatch.group(1))
+						continue
+			for filename in fnmatch.filter(files, "*.sounddef*"):
+				file = open(os.path.join(dirpath, filename))
+				for line in file:
+					aMatch = reFilename.match(line)
+					if aMatch:
+						assets.add(aMatch.group(1))
+						continue
 
 	
 
