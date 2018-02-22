@@ -73,7 +73,11 @@ void FileSystemObserver::add_directory(const std::string& dirname, std::function
 void FileSystemObserver::remove_directory(const std::string& dirname) {
 	if (mDirectoryMonitor) {
 		mCallBacks.erase(dirname);
-		mDirectoryMonitor->remove_directory(dirname);
+		try {
+			mDirectoryMonitor->remove_directory(dirname);
+		} catch (...) {
+			//Just swallow exceptions when removing watches; this is often because the directory has been removed. Doesn't change anything.
+		}
 	}
 }
 
