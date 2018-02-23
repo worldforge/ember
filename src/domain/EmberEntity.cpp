@@ -77,13 +77,15 @@ public:
 
 GlobalAttributeDispatcher sGlobalDispatcher;
 
-const std::string EmberEntity::MODE_FLOATING("floating");
-const std::string EmberEntity::MODE_FIXED("fixed");
-const std::string EmberEntity::MODE_PROJECTILE("projectile");
-const std::string EmberEntity::MODE_SWIMMING("swimming");
-
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
-		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mPositioningMode(PM_DEFAULT), mCompositionMode(CM_DISABLED), mGraphicalRepresentation(0), mAttachment(0), mAttachmentControlDelegate(0), mHeightProvider(0)
+		Eris::ViewEntity(id, ty, vw),
+		mIsInitialized(false),
+		mPositioningMode(PositioningMode::DEFAULT),
+		mCompositionMode(CM_DISABLED),
+		mGraphicalRepresentation(nullptr),
+		mAttachment(nullptr),
+		mAttachmentControlDelegate(nullptr),
+		mHeightProvider(nullptr)
 {
 }
 
@@ -294,17 +296,15 @@ void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 	const std::string& mode = v.asString();
 	PositioningMode newMode;
 	if (mode.empty()) {
-		newMode = PM_DEFAULT;
-	} else if (mode == MODE_FLOATING) {
-		newMode = PM_FLOATING;
-	} else if (mode == MODE_FIXED) {
-		newMode = PM_FIXED;
-	} else if (mode == MODE_PROJECTILE) {
-		newMode = PM_PROJECTILE;
-	} else if (mode == MODE_SWIMMING) {
-		newMode = PM_SWIMMING;
+		newMode = PositioningMode::DEFAULT;
+	} else if (mode == "floating") {
+		newMode = PositioningMode::FLOATING;
+	} else if (mode == "fixed") {
+		newMode = PositioningMode::FIXED;
+	} else if (mode == "submerged") {
+		newMode = PositioningMode::SUBMERGED;
 	} else {
-		newMode = PM_DEFAULT;
+		newMode = PositioningMode::DEFAULT;
 	}
 
 	onPositioningModeChanged(newMode);

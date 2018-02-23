@@ -259,43 +259,48 @@ Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& veloc
 		mag = velocity.mag();
 	}
 
-	if (mag < 0.01f) {
-		return mModel->getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
+	if (mEntity.getPositioningMode() == EmberEntity::PositioningMode::SUBMERGED || mEntity.getPositioningMode() == EmberEntity::PositioningMode::FLOATING) {
+		return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_SWIM, ACTION_WALK});
 	} else {
 
-		//The model is moving in some direction; we need to figure out both the direction, and the speed.
-		//We'll split up the movement into four arcs: forwards, backwards, left and right
-		//We'll use a little bit of padding, so that the side movement arcs are larger.
-		bool isRunning = mag > 2.6;
-		WFMath::CoordType atan = std::atan2(velocity.x(), velocity.z());
-
-		if (atan <= 0.7 && atan >= -0.7) {
-			//moving forwards
-			if (isRunning) {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN, ACTION_WALK});
-			} else {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK, ACTION_RUN});
-			}
-		} else if (atan >= 2.4 || atan <= -2.4) {
-			//moving backwards
-			if (isRunning) {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_BACKWARDS, ACTION_WALK_BACKWARDS});
-			} else {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_BACKWARDS, ACTION_RUN_BACKWARDS});
-			}
-		} else if (atan > 0.7) {
-			//moving to the left
-			if (isRunning) {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_LEFT, ACTION_WALK_LEFT, ACTION_RUN, ACTION_WALK});
-			} else {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_LEFT, ACTION_RUN_LEFT, ACTION_WALK, ACTION_RUN});
-			}
+		if (mag < 0.01f) {
+			return mModel->getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 		} else {
-			//moving to the right
-			if (isRunning) {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_RIGHT, ACTION_WALK_RIGHT, ACTION_RUN, ACTION_WALK});
+
+			//The model is moving in some direction; we need to figure out both the direction, and the speed.
+			//We'll split up the movement into four arcs: forwards, backwards, left and right
+			//We'll use a little bit of padding, so that the side movement arcs are larger.
+			bool isRunning = mag > 2.6;
+			WFMath::CoordType atan = std::atan2(velocity.x(), velocity.z());
+
+			if (atan <= 0.7 && atan >= -0.7) {
+				//moving forwards
+				if (isRunning) {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN, ACTION_WALK});
+				} else {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK, ACTION_RUN});
+				}
+			} else if (atan >= 2.4 || atan <= -2.4) {
+				//moving backwards
+				if (isRunning) {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_BACKWARDS, ACTION_WALK_BACKWARDS});
+				} else {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_BACKWARDS, ACTION_RUN_BACKWARDS});
+				}
+			} else if (atan > 0.7) {
+				//moving to the left
+				if (isRunning) {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_LEFT, ACTION_WALK_LEFT, ACTION_RUN, ACTION_WALK});
+				} else {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_LEFT, ACTION_RUN_LEFT, ACTION_WALK, ACTION_RUN});
+				}
 			} else {
-				return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_RIGHT, ACTION_RUN_RIGHT, ACTION_WALK, ACTION_RUN});
+				//moving to the right
+				if (isRunning) {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_RUN_RIGHT, ACTION_WALK_RIGHT, ACTION_RUN, ACTION_WALK});
+				} else {
+					return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_WALK_RIGHT, ACTION_RUN_RIGHT, ACTION_WALK, ACTION_RUN});
+				}
 			}
 		}
 	}

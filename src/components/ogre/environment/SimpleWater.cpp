@@ -167,7 +167,10 @@ bool SimpleWater::initialize()
 		float planeSize = (farClipDistance + textureSize) * 2;
 
 		// create a water plane/scene node
-		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, waterPlane, planeSize, planeSize, 5, 5, true, 1, planeSize / textureSize, planeSize / textureSize, Ogre::Vector3::UNIT_Z);
+		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+													  waterPlane, planeSize, planeSize, 5, 5, true, 1,
+													  planeSize / textureSize, planeSize / textureSize,
+													  Ogre::Vector3::UNIT_Z);
 
 		mWaterNode = mSceneMgr.getRootSceneNode()->createChildSceneNode("water");
 		mWaterBobbingNode = mWaterNode->createChildSceneNode();

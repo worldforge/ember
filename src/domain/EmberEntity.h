@@ -58,33 +58,33 @@ public:
 	 * @brief The different positioning modes the entity can be in.
 	 * The positioning mode determines how the entity can be adjusted in the world.
 	 */
-	enum PositioningMode
+	enum class PositioningMode
 	{
 		/**
 		 * @brief The default mode, where the entity is affected by gravity.
 		 * In most circumstances this means that it will snap to the ground, or any object below it.
 		 */
-		PM_DEFAULT = 0,
+		DEFAULT,
 
 		/**
 		 * @brief Floating on top of an entity. Usually a mass of water.
 		 */
-		PM_FLOATING = 1,
+		FLOATING,
 
 		/**
 		 * @brief Moving as a projectile through the world.
 		 */
-		PM_PROJECTILE = 2,
+		PROJECTILE,
 
 		/**
 		 * @brief Fixed in the world. This means that the position of the entity won't be adjusted (i.e. not affected by gravity etc.).
 		 */
-		PM_FIXED = 3,
+		FIXED,
 
 		/**
-		 * @brief Swimming. The vertical position is adjusted to be above ground, but below the surface.
+		 * @brief Submerged
 		 */
-		PM_SWIMMING = 4
+		SUBMERGED
 	};
 
 	/**
@@ -98,26 +98,6 @@ public:
 		CM_COMPOSITION, //!< CM_COMPOSITION The entity is an composite. That means that when interacting with a child entity the user should also be given the option to interact with the parent composite entity.
 		CM_COMPOSITION_EXCLUSIVE //!< CM_COMPOSITION_EXCLUSIVE The entity is an exclusive composite. That means that when interacting with a child entity the user should only be presented with the parent composite entity (and should not be able to interact with the child entity).
 	};
-
-	/**
-	 * @brief The name of the "floating" positioning mode.
-	 */
-	static const std::string MODE_FLOATING;
-
-	/**
-	 * @brief The name of the "fixed" positioning mode.
-	 */
-	static const std::string MODE_FIXED;
-
-	/**
-	 * @brief The name of the "projectile" positioning mode.
-	 */
-	static const std::string MODE_PROJECTILE;
-
-	/**
-	 * @brief The name of the "swimming" positioning mode.
-	 */
-	static const std::string MODE_SWIMMING;
 
 	/**
 	 * @brief Ctor.

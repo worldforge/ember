@@ -124,7 +124,7 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 	assert(velocity.isValid());
 	WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
 	//If it's fixed it shouldn't be adjusted
-	if (getAttachedEntity().getPositioningMode() != EmberEntity::PM_FIXED) {
+	if (getAttachedEntity().getPositioningMode() != EmberEntity::PositioningMode::FIXED) {
 		if (mParentEntity.getAttachment()) {
 			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 		}

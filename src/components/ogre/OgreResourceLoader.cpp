@@ -66,6 +66,7 @@ struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
 				Ogre::MaterialPtr oldMat = existingMaterial;
 				Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(resource->getName(), resource->getGroup());
 				mat->copyDetailsTo(oldMat);
+				oldMat->load();
 			});
 		}
 
