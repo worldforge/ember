@@ -23,19 +23,15 @@
 #include "components/ogre/EmberEntityUserObject.h"
 #include <OgreAny.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
 const std::string OceanRepresentation::sTypeName("OceanRepresentation");
 
 OceanRepresentation::OceanRepresentation(EmberEntity& entity, Environment& environment) :
-		mEntity(entity), mEnvironment(environment)
-{
+		mEntity(entity), mEnvironment(environment) {
 	mEnvironment.setWaterEnabled(true);
 	if (mEnvironment.getWater()) {
 
@@ -49,40 +45,40 @@ OceanRepresentation::OceanRepresentation(EmberEntity& entity, Environment& envir
 	}
 }
 
-OceanRepresentation::~OceanRepresentation()
-{
+OceanRepresentation::~OceanRepresentation() {
 	mEnvironment.setWaterEnabled(false);
 }
 
-const std::string& OceanRepresentation::getType() const
-{
+const std::string& OceanRepresentation::getType() const {
 	return sTypeName;
 }
 
-const std::string& OceanRepresentation::getTypeNameForClass()
-{
+const std::string& OceanRepresentation::getTypeNameForClass() {
 	return sTypeName;
 }
 
-void OceanRepresentation::setVisualize(const std::string& visualization, bool visualize)
-{
+void OceanRepresentation::setVisualize(const std::string& visualization, bool visualize) {
 
 }
-bool OceanRepresentation::getVisualize(const std::string& visualization) const
-{
+
+bool OceanRepresentation::getVisualize(const std::string& visualization) const {
 	return false;
 }
 
-void OceanRepresentation::entity_Moved()
-{
+void OceanRepresentation::entity_Moved() {
 	updateWaterPosition();
 }
 
-void OceanRepresentation::updateWaterPosition()
-{
+void OceanRepresentation::updateWaterPosition() {
 	if (mEnvironment.getWater()) {
 		if (mEntity.getPredictedPos().isValid()) {
-			mEnvironment.getWater()->setLevel(mEntity.getPredictedPos().z());
+			//If there's a bbox, use the top of the bbox for the level.
+			// Otherwise just use the position of the entity.
+			if (mEntity.getBBox().isValid()) {
+				mEnvironment.getWater()->setLevel(mEntity.getPredictedPos().y() + mEntity.getBBox().highCorner().y());
+			} else {
+				mEnvironment.getWater()->setLevel(mEntity.getPredictedPos().y());
+			}
 		}
 	}
 }

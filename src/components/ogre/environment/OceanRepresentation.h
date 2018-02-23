@@ -45,13 +45,14 @@ class OceanRepresentation: public IGraphicalRepresentation, public virtual sigc:
 {
 public:
 	OceanRepresentation(EmberEntity& entity, Environment& environment);
-	virtual ~OceanRepresentation();
+
+	~OceanRepresentation() override;
 
 	/**
 	 * @brief Gets the unique type name for a subclass of this.
 	 * The main purpose of this is to allow late binding casts, so that it's possible to more safely cast an instance into a concrete subclass.
 	 */
-	virtual const std::string& getType() const;
+	const std::string& getType() const override;
 
 	/**
 	 * @brief Gets the shared class type name, which is the same one returned through getType().
@@ -65,14 +66,14 @@ public:
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize) override;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	virtual bool getVisualize(const std::string& visualization) const;
+	bool getVisualize(const std::string& visualization) const override;
 
 private:
 	/**

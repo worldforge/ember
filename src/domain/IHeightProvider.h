@@ -37,9 +37,7 @@ namespace Ember
 class IHeightProvider
 {
 public:
-	virtual ~IHeightProvider()
-	{
-	}
+	virtual ~IHeightProvider()= default;
 
 	/**
 	 * @brief Returns the height at the specified position in the world.

@@ -22,8 +22,7 @@
 #include "IVisualizable.h"
 #include <string>
 
-namespace Ember
-{
+namespace Ember {
 
 class EmberEntity;
 
@@ -36,16 +35,13 @@ class EmberEntity;
  *
  * Most of the subclasses of this are expected to provide methods for safely casting into the concrete subclass. The getType() method is expected to be used for helping with this.
  */
-class IGraphicalRepresentation : public IVisualizable
-{
+class IGraphicalRepresentation : public IVisualizable {
 public:
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IGraphicalRepresentation()
-	{
-	}
+	virtual ~IGraphicalRepresentation() = default;
 
 	/**
 	 * @brief Gets the unique type name for a subclass of this.

@@ -51,9 +51,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IEntityAttachment()
-	{
-	}
+	virtual ~IEntityAttachment() = default;
 
 	/**
 	 * @brief Gets the graphical representation that this attachment is bound to.

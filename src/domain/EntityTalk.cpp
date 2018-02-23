@@ -45,7 +45,7 @@ EntityTalk::EntityTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 		//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 		if (!talk->copyAttr("responses", responseAttrib) && responseAttrib.isList()) {
 			const Atlas::Message::ListType & responseList = responseAttrib.asList();
-			Atlas::Message::ListType::const_iterator I = responseList.begin();
+			auto I = responseList.begin();
 			for (; I != responseList.end(); ++I) {
 				if (I->isString()) {
 					mSuggestedResponses.push_back(I->asString());
@@ -57,7 +57,7 @@ EntityTalk::EntityTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 		//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 		if (!talk->copyAttr("address", addressAttrib) && addressAttrib.isList()) {
 			const Atlas::Message::ListType & addressList = addressAttrib.asList();
-			Atlas::Message::ListType::const_iterator I = addressList.begin();
+			auto I = addressList.begin();
 			for (; I != addressList.end(); ++I) {
 				if (I->isString()) {
 					mAddressedEntityIds.push_back(I->asString());
@@ -75,7 +75,7 @@ const std::string& EntityTalk::getMessage() const
 
 bool EntityTalk::isAddressedToNone() const
 {
-	return mAddressedEntityIds.size() == 0;
+	return mAddressedEntityIds.empty();
 }
 
 bool EntityTalk::isAddressedToEntity(const std::string& entityId) const

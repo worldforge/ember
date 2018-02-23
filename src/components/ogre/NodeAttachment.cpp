@@ -87,7 +87,7 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//	else {
 
 	//If there's a model representation available, use a "ModelAttachment" instance to attach to it, otherwise just use a regular NodeAttachment.
-	NodeAttachment* nodeAttachment(0);
+	NodeAttachment* nodeAttachment = nullptr;
 	INodeProvider* nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
 	if (modelRepresentation) {
 		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
@@ -114,7 +114,7 @@ IEntityControlDelegate* NodeAttachment::getControlDelegate() const
 	if (mAttachmentController) {
 		return mAttachmentController->getControlDelegate();
 	}
-	return 0;
+	return nullptr;
 }
 
 void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity)
@@ -125,20 +125,8 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 	WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
 	//If it's fixed it shouldn't be adjusted
 	if (getAttachedEntity().getPositioningMode() != EmberEntity::PM_FIXED) {
-		if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_FLOATING) {
-			//If the entity is floating, the y position should be 0.
-			adjustedOffset.y() = -position.y();
-		} else if (mParentEntity.getAttachment()) {
-			//If it's swimming, the position should be either floating (y==0) or above ground.
-			if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_SWIMMING) {
-				if (position.y() > 0) {
-					adjustedOffset.y() = -position.y();
-				} else {
-					mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
-				}
-			} else {
-				mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
-			}
+		if (mParentEntity.getAttachment()) {
+			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 		}
 	}
 	mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));

@@ -269,7 +269,7 @@ const std::vector<std::string>& EmberEntity::getSuggestedResponses() const
 
 bool EmberEntity::hasSuggestedResponses() const
 {
-	return mSuggestedResponses.size() > 0;
+	return !mSuggestedResponses.empty();
 }
 
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
@@ -343,12 +343,12 @@ void EmberEntity::onBboxChanged()
 
 EmberEntity* EmberEntity::getEmberLocation() const
 {
-	return static_cast<EmberEntity*>(getLocation());
+	return dynamic_cast<EmberEntity*>(getLocation());
 }
 
 EmberEntity* EmberEntity::getEmberContained(unsigned int index) const
 {
-	return static_cast<EmberEntity*>(getContained(index));
+	return dynamic_cast<EmberEntity*>(getContained(index));
 }
 
 std::vector<std::string> EmberEntity::getActions()
@@ -361,7 +361,7 @@ std::vector<std::string> EmberEntity::getActions()
 		if (operations.isList()) {
 			const Atlas::Message::ListType& list = operations.asList();
 			actions.reserve(list.size());
-			Atlas::Message::ListType::const_iterator J = list.begin();
+			auto J = list.begin();
 			for (; J != list.end(); ++J) {
 				if (J->isString()) {
 					actions.push_back(J->asString());
@@ -380,8 +380,8 @@ std::vector<std::string> EmberEntity::getDefaultUseOperators()
 
 	Eris::TypeInfoArray types = getUseOperations();
 
-	for (Eris::TypeInfoArray::iterator I = types.begin(); I != types.end(); ++I) {
-		operators.push_back((*I)->getName());
+	for (auto& type : types) {
+		operators.push_back(type->getName());
 	}
 
 	return operators;
@@ -466,7 +466,7 @@ EmberEntity* EmberEntity::getAttachedEntity(const std::string& namedPoint)
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void EmberEntity::accept(IEntityVisitor& visitor)

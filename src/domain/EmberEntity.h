@@ -131,7 +131,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EmberEntity();
+	~EmberEntity() override;
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
@@ -211,14 +211,14 @@ public:
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize) override;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	bool getVisualize(const std::string& visualization) const;
+	bool getVisualize(const std::string& visualization) const override;
 
 	/**
 	 * @brief Gets the graphical representation of this entity.
@@ -390,24 +390,24 @@ protected:
 	/**
 	 *    @copydoc Eris::Entity::onTalk()
 	 */
-	virtual void onTalk(const Atlas::Objects::Operation::RootOperation& talk);
+	void onTalk(const Atlas::Objects::Operation::RootOperation& talk) override;
 	/**
 	 *    @copydoc Eris::Entity::onLocationChanged()
 	 */
-	virtual void onLocationChanged(Eris::Entity *oldLocation);
+	void onLocationChanged(Eris::Entity *oldLocation) override;
 	/**
 	 *    @copydoc Eris::Entity::onAction()
 	 */
-	virtual void onAction(const Atlas::Objects::Operation::RootOperation& act);
+	void onAction(const Atlas::Objects::Operation::RootOperation& act) override;
 	/**
 	 *    @copydoc Eris::Entity::onSoundAction()
 	 */
-	virtual void onSoundAction(const Atlas::Objects::Operation::RootOperation& op);
+	void onSoundAction(const Atlas::Objects::Operation::RootOperation& op) override;
 
 	/**
 	 *    @copydoc Eris::Entity::onAttrChanged()
 	 */
-	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
+	void onAttrChanged(const std::string& str, const Atlas::Message::Element& v) override;
 
 	/**
 	 * @brief Called when the positioning mode of the entity changes.
@@ -426,7 +426,7 @@ protected:
 	 * @param ge The root entity which contains all atlas data that define this entity.
 	 * @param fromCreateOp
 	 */
-	virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
+	void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp) override;
 
 	/**
 	 * @brief Parses the current positioning mode from the submitted element, which should be taken from the "mode" attribute.

@@ -42,7 +42,7 @@ public:
 	 * @brief Ctor.
 	 * @param talkArgs
 	 */
-	EntityTalk(const Atlas::Objects::Operation::RootOperation& talkArgs);
+	explicit EntityTalk(const Atlas::Objects::Operation::RootOperation& talkArgs);
 
 	/**
 	 * @brief Gets the message.

@@ -43,9 +43,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IEntityControlDelegate()
-	{
-	}
+	virtual ~IEntityControlDelegate() = default;
 
 	/**
 	 * @brief Gets the position.

@@ -38,9 +38,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IVisualizable()
-	{
-	}
+	virtual ~IVisualizable() = default;
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
