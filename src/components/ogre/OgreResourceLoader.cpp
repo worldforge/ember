@@ -316,10 +316,11 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
                             Ogre::MaterialManager::getSingleton().parseScript(fileStream, group);
                         } else if (extension == ".dds" || extension == ".png" || extension == ".jpg") {
                             reloadResource(Ogre::TextureManager::getSingleton(), relative);
-                        } else if (extension == ".mesh") {
-                            reloadResource(Ogre::MeshManager::getSingleton(), relative);
-                        }
-                        else if (extension == ".glsl" || extension == ".frag" || extension == ".vert") {
+						} else if (extension == ".mesh") {
+							reloadResource(Ogre::MeshManager::getSingleton(), relative);
+						} else if (extension == ".skeleton") {
+							reloadResource(Ogre::SkeletonManager::getSingleton(), relative);
+						} else if (extension == ".glsl" || extension == ".frag" || extension == ".vert") {
                             //Reloading GLSL shaders in Render System GL doesn't seem to work. Perhaps we'll have more luck with GL3+?
 
 
