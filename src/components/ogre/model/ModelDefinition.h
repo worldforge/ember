@@ -202,6 +202,8 @@ public:
 
 	const ModelDefinition& getModelDefinition() const;
 
+	bool mShadowCaster = true;
+
 private:
 	SubModelDefinition(const std::string& meshname, ModelDefinition& modelDef);
 	std::string mMeshName;
@@ -352,7 +354,7 @@ public:
 	void setIterations(int iterations);
 
 private:
-	AnimationDefinition(int iterations);
+	explicit AnimationDefinition(int iterations);
 
 	AnimationPartDefinitionsStore mAnimationParts;
 	std::string mName;
@@ -440,7 +442,7 @@ public:
 	void setAnimationSpeed(Ogre::Real speed);
 
 private:
-	ActionDefinition(const std::string& name);
+	explicit ActionDefinition(const std::string& name);
 
 	std::string mName;
 	AnimationDefinitionsStore mAnimations;
@@ -477,42 +479,51 @@ public:
 		/**
 		 * @brief Scale in all sizes, so that the bounding box of the model exactly matches the entity bounding box.
 		 */
-		MODEL_ALL = 0,
+		MODEL_ALL,
 
 		/**
 		 * @brief Perform no scaling of the model.
 		 */
-		MODEL_NONE = 1,
+		MODEL_NONE,
 
 		/**
 		 * @brief Scale the model so that it matches the width of the entity bounding box.
 		 */
-		MODEL_WIDTH = 2,
+		MODEL_WIDTH,
 
 		/**
 		 * @brief Scale the model so that it matches the depth of the entity bounding box.
 		 */
-		MODEL_DEPTH = 3,
+		MODEL_DEPTH,
 
 		/**
 		 * @brief Scale the model so that it matches the height of the entity bounding box.
 		 */
-		MODEL_HEIGHT = 4
+		MODEL_HEIGHT,
+		/**
+		 * @brief Scale the model so that it matches all axis, and also translate the model so that it perfectly fits the entity bbox.
+		 */
+		MODEL_FIT
 	};
 
-	ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+	ModelDefinition(Ogre::ResourceManager* creator,
+					const Ogre::String& name,
+					Ogre::ResourceHandle handle,
+					const Ogre::String& group,
+					bool isManual = false,
+					Ogre::ManualResourceLoader* loader = nullptr);
 
-	virtual ~ModelDefinition();
+	~ModelDefinition() override;
 
-	bool isValid(void) const;
+	bool isValid() const;
 	void setValid(bool valid);
 
 	//Ogre resource virtual functions
-	void loadImpl(void);
+	void loadImpl() override;
 
-	void unloadImpl(void);
+	void unloadImpl() override;
 
-	size_t calculateSize(void) const;
+	size_t calculateSize() const override;
 
 	/**
 	 * @brief Gets the amount of scale that needs to be applied to derived Models.
@@ -527,14 +538,14 @@ public:
 	 * @return
 	 */
 	UseScaleOf getUseScaleOf() const;
-	void setUseScaleOf(const UseScaleOf useScale);
+	void setUseScaleOf(UseScaleOf useScale);
 
 	/**
 	 * @brief Gets an optional translation vector which should be applied to derived Models.
 	 * @return
 	 */
 	const Ogre::Vector3& getTranslate() const;
-	void setTranslate(const Ogre::Vector3 translate);
+	void setTranslate(Ogre::Vector3 translate);
 
 	/**
 	 *	Whether contained entities should be shown or not.
@@ -569,7 +580,7 @@ public:
 	 * @brief Sets the rotation of the model.
 	 * @param rotation
 	 */
-	void setRotation(const Ogre::Quaternion rotation);
+	void setRotation(const Ogre::Quaternion& rotation);
 
 	/**
 	 * @brief Gets a path to an icon resource, if defined.
@@ -820,6 +831,8 @@ private:
 	 */
 	std::string mIconPath;
 
+	bool mUseInstancing = true;
+
 	RenderingDefinition* mRenderingDef;
 
 	std::set<Model*> mLoadingListeners;
@@ -849,7 +862,7 @@ inline void ModelDefinition::setValid(bool valid)
 	mIsValid = valid;
 }
 
-inline size_t ModelDefinition::calculateSize(void) const
+inline size_t ModelDefinition::calculateSize() const
 {
 	//TODO:implement this
 	return 0;
@@ -868,7 +881,7 @@ inline ModelDefinition::UseScaleOf ModelDefinition::getUseScaleOf() const
 {
 	return mUseScaleOf;
 }
-inline void ModelDefinition::setUseScaleOf(const UseScaleOf useScale)
+inline void ModelDefinition::setUseScaleOf(UseScaleOf useScale)
 {
 	mUseScaleOf = useScale;
 }

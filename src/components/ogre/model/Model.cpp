@@ -70,7 +70,7 @@ Model::Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>
 		mRenderingDistance(0),
 		mQueryFlags(0),
 		mLoaded(false),
-		mUseInstancing(true) {
+		mUseInstancing(definition->mUseInstancing) {
 	definition->addModelInstance(this);
 }
 
@@ -206,6 +206,7 @@ bool Model::createModelAssets() {
 				} else {
 					entity = mManager.createEntity(mesh);
 				}
+				entity->setCastShadows(submodelDef->mShadowCaster);
 				timedLog.report("Created entity '" + entity->getName() + "' of mesh '" + mesh->getName() + "'.");
 
 

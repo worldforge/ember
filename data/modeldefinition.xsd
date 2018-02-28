@@ -78,6 +78,7 @@
                                         </xsd:element>
                                     </xsd:sequence>
                                     <xsd:attribute name="mesh" type="xsd:string" use="required"/>
+                                    <xsd:attribute name="shadowcaster" type="xsd:boolean"/>
                                 </xsd:complexType>
                             </xsd:element>
                         </xsd:sequence>
@@ -336,6 +337,7 @@
             <xsd:enumeration value="width"/>
             <xsd:enumeration value="depth"/>
             <xsd:enumeration value="none"/>
+            <xsd:enumeration value="fit"/>
         </xsd:restriction>
     </xsd:simpleType>
 

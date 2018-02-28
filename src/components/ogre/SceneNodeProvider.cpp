@@ -47,7 +47,7 @@ Ogre::Node* SceneNodeProvider::getParentNode() const {
 
 INodeProvider* SceneNodeProvider::createChildProvider(const std::string& name) {
 	Ogre::SceneNode* node;
-	if (name != "") {
+	if (!name.empty()) {
 		node = mNode->createChildSceneNode(name);
 	} else {
 		node = mNode->createChildSceneNode();
@@ -91,10 +91,11 @@ void SceneNodeProvider::setPositionAndOrientation(const Ogre::Vector3& position,
 }
 
 void SceneNodeProvider::setOffsets(const Ogre::Vector3& translate, const Ogre::Quaternion& rotate) {
-	if (translate.isNaN() || rotate.isNaN() || (translate == Ogre::Vector3::UNIT_SCALE && rotate == Ogre::Quaternion::IDENTITY)) {
+	if (translate.isNaN() || rotate.isNaN()
+		|| (translate == Ogre::Vector3::ZERO && (rotate == Ogre::Quaternion::IDENTITY || rotate == Ogre::Quaternion::ZERO))) {
 		if (mOffsetNode) {
 			while (mOffsetNode->numAttachedObjects()) {
-				auto movable = mOffsetNode->detachObject((unsigned short)0);
+				auto movable = mOffsetNode->detachObject((unsigned short) 0);
 				mNode->attachObject(movable);
 			}
 		}
@@ -106,7 +107,7 @@ void SceneNodeProvider::setOffsets(const Ogre::Vector3& translate, const Ogre::Q
 			mOffsetNode = mNode->createChildSceneNode(translate, rotate);
 			mOffsetNode->setInheritScale(true);
 			while (mNode->numAttachedObjects()) {
-				auto movable = mNode->detachObject((unsigned short)0);
+				auto movable = mNode->detachObject((unsigned short) 0);
 				mOffsetNode->attachObject(movable);
 			}
 		}

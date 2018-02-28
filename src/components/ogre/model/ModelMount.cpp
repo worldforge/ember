@@ -123,11 +123,21 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox) {
 				case ModelDefinition::UseScaleOf::MODEL_NONE:
 					scale = 1;
 					break;
-
 				case ModelDefinition::UseScaleOf::MODEL_ALL:
 					scale.x = std::abs(ogreSize.x / defaultSize.x);
 					scale.y = std::abs(ogreSize.y / defaultSize.y);
 					scale.z = std::abs(ogreSize.z / defaultSize.z);
+					break;
+				case ModelDefinition::UseScaleOf::MODEL_FIT:
+					scale.x = std::abs(ogreSize.x / defaultSize.x);
+					scale.y = std::abs(ogreSize.y / defaultSize.y);
+					scale.z = std::abs(ogreSize.z / defaultSize.z);
+
+					Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
+					auto scaledBbox = defaultOgreBoundingBox;
+					scaledBbox.scale(scale);
+					Ogre::Vector3 translation = ogreBbox.getCenter() - scaledBbox.getCenter();
+					getNodeProvider()->setOffsets(translation / scale, orientation);
 					break;
 			}
 
@@ -161,6 +171,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox) {
 				getNodeProvider()->setPositionAndOrientation(translation, orientation);
 			}
 		}
+
 		mNodeProvider->setScale(scale);
 
 	}

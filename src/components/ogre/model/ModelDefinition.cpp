@@ -219,7 +219,7 @@ const Ogre::Quaternion& ModelDefinition::getRotation() const {
 	return mRotation;
 }
 
-void ModelDefinition::setRotation(const Ogre::Quaternion rotation) {
+void ModelDefinition::setRotation(const Ogre::Quaternion& rotation) {
 	mRotation = rotation;
 }
 

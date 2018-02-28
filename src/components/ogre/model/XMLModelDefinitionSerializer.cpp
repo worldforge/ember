@@ -99,14 +99,19 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 	tmp = modelNode->Attribute("usescaleof");
 	if (tmp) {
 		std::string useScaleOf(tmp);
-		if (useScaleOf == "height")
+		if (useScaleOf == "height") {
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_HEIGHT;
-		else if (useScaleOf == "width")
+		} else if (useScaleOf == "width") {
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_WIDTH;
-		else if (useScaleOf == "depth")
+		} else if (useScaleOf == "depth") {
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_DEPTH;
-		else if (useScaleOf == "none")
+		} else if (useScaleOf == "none") {
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_NONE;
+		} else if (useScaleOf == "fit") {
+			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_FIT;
+		} else {
+			S_LOG_WARNING("Unrecognized model scaling directive: " << useScaleOf);
+		}
 	}
 
 	tmp = modelNode->Attribute("renderingdistance");
@@ -119,6 +124,10 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 		modelDef->mIconPath = tmp;
 	}
 
+	tmp = modelNode->Attribute("useinstancing");
+	if (tmp) {
+		modelDef->mUseInstancing = modelDef->mShowContained = boost::algorithm::to_lower_copy(std::string(tmp)) == "true";
+	}
 
 	//submodels
 	elem = modelNode->FirstChildElement("submodels");
@@ -204,6 +213,11 @@ void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, Ti
 		tmp = smElem->Attribute("mesh");
 		if (tmp) {
 			SubModelDefinition* subModelDef = modelDef->createSubModelDefinition(tmp);
+
+			tmp = smElem->Attribute("shadowcaster");
+			if (tmp) {
+				subModelDef->mShadowCaster = boost::algorithm::to_lower_copy(std::string(tmp)) == "true";
+			}
 
 			S_LOG_VERBOSE(" Add submodel  : " + subModelDef->getMeshName());
 			try {
@@ -809,7 +823,7 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 		TiXmlElement elem("models");
 		TiXmlElement modelElem("model");
-		modelElem.SetAttribute("name", modelDef->getName().c_str());
+		modelElem.SetAttribute("name", modelDef->getName());
 
 		std::string useScaleOf;
 		switch (modelDef->getUseScaleOf()) {
@@ -828,8 +842,15 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 			case ModelDefinition::UseScaleOf::MODEL_WIDTH:
 				useScaleOf = "width";
 				break;
+			case ModelDefinition::UseScaleOf::MODEL_FIT:
+				useScaleOf = "fit";
+				break;
 		}
-		modelElem.SetAttribute("usescaleof", useScaleOf.c_str());
+		modelElem.SetAttribute("usescaleof", useScaleOf);
+		
+		if (!modelDef->mUseInstancing) {
+			modelElem.SetAttribute("useinstancing", "false");
+		}
 
 		if (modelDef->getRenderingDistance() != 0.0f) {
 			modelElem.SetDoubleAttribute("renderingdistance", modelDef->getRenderingDistance());
@@ -850,11 +871,11 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		const RenderingDefinition* renderingDef = modelDef->getRenderingDefinition();
 		if (renderingDef) {
 			TiXmlElement rendering("rendering");
-			rendering.SetAttribute("scheme", renderingDef->getScheme().c_str());
+			rendering.SetAttribute("scheme", renderingDef->getScheme());
 			for (const auto& aParam : renderingDef->getParameters()) {
 				TiXmlElement param("param");
-				param.SetAttribute("key", aParam.first.c_str());
-				param.SetValue(aParam.second.c_str());
+				param.SetAttribute("key", aParam.first);
+				param.SetValue(aParam.second);
 				rendering.InsertEndChild(param);
 			}
 			modelElem.InsertEndChild(rendering);
@@ -869,15 +890,15 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		XMLHelper::fillElementFromQuaternion(rotation, modelDef->getRotation());
 		modelElem.InsertEndChild(rotation);
 
-		modelElem.SetAttribute("icon", modelDef->getIconPath().c_str());
+		modelElem.SetAttribute("icon", modelDef->getIconPath());
 
 		if (modelDef->getRenderingDefinition()) {
 			TiXmlElement rendering("rendering");
-			rendering.SetAttribute("scheme", modelDef->getRenderingDefinition()->getScheme().c_str());
+			rendering.SetAttribute("scheme", modelDef->getRenderingDefinition()->getScheme());
 			for (const auto& aParam : modelDef->getRenderingDefinition()->getParameters()) {
 				TiXmlElement param("param");
-				param.SetAttribute("key", aParam.first.c_str());
-				param.SetValue(aParam.second.c_str());
+				param.SetAttribute("key", aParam.first);
+				param.SetValue(aParam.second);
 			}
 		}
 
@@ -902,7 +923,7 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		elem.InsertEndChild(modelElem);
 
 		xmlDoc.InsertEndChild(elem);
-		xmlDoc.SaveFile((directory + filename).c_str());
+		xmlDoc.SaveFile((directory + filename));
 		S_LOG_INFO("Saved file " << (directory + filename));
 		return true;
 	}
@@ -919,12 +940,12 @@ void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, TiXm
 
 	for (const auto& viewDefinition : modelDef->getViewDefinitions()) {
 		TiXmlElement viewElem("view");
-		viewElem.SetAttribute("name", viewDefinition.second->Name.c_str());
+		viewElem.SetAttribute("name", viewDefinition.second->Name);
 
 		TiXmlElement distanceElem("distance");
 		std::stringstream ss;
 		ss << viewDefinition.second->Distance;
-		distanceElem.InsertEndChild(TiXmlText(ss.str().c_str()));
+		distanceElem.InsertEndChild(TiXmlText(ss.str()));
 		viewElem.InsertEndChild(distanceElem);
 
 		TiXmlElement rotation("rotation");
@@ -941,7 +962,7 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 
 	for (ActionDefinitionsStore::const_iterator I = modelDef->getActionDefinitions().begin(); I != modelDef->getActionDefinitions().end(); ++I) {
 		TiXmlElement actionElem("action");
-		actionElem.SetAttribute("name", (*I)->getName().c_str());
+		actionElem.SetAttribute("name", (*I)->getName());
 		actionElem.SetDoubleAttribute("speed", (*I)->getAnimationSpeed());
 
 
@@ -974,10 +995,10 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 
 				for (auto animationPartDefinition : (*J)->getAnimationPartDefinitions()) {
 					TiXmlElement animationPartElem("animationpart");
-					animationPartElem.SetAttribute("name", animationPartDefinition->Name.c_str());
+					animationPartElem.SetAttribute("name", animationPartDefinition->Name);
 					for (std::vector<BoneGroupRefDefinition>::const_iterator L = animationPartDefinition->BoneGroupRefs.begin(); L != animationPartDefinition->BoneGroupRefs.end(); ++L) {
 						TiXmlElement boneGroupRefElem("bonegroupref");
-						boneGroupRefElem.SetAttribute("name", L->Name.c_str());
+						boneGroupRefElem.SetAttribute("name", L->Name);
 						if (L->Weight != 1.0f) {
 							boneGroupRefElem.SetAttribute("weight", static_cast<int>(L->Weight));
 						}
@@ -1012,14 +1033,17 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 
 	for (const auto& subModelDefinition : modelDef->getSubModelDefinitions()) {
 		TiXmlElement submodelElem("submodel");
-		submodelElem.SetAttribute("mesh", subModelDefinition->getMeshName().c_str());
+		submodelElem.SetAttribute("mesh", subModelDefinition->getMeshName());
+		if (!subModelDefinition->mShadowCaster) {
+			submodelElem.SetAttribute("shadowcaster", "false");
+		}
 		TiXmlElement partsElem("parts");
 
 		for (const auto& partDefinition : subModelDefinition->getPartDefinitions()) {
 			TiXmlElement partElem("part");
-			partElem.SetAttribute("name", partDefinition->getName().c_str());
+			partElem.SetAttribute("name", partDefinition->getName());
 			if (!partDefinition->getGroup().empty()) {
-				partElem.SetAttribute("group", partDefinition->getGroup().c_str());
+				partElem.SetAttribute("group", partDefinition->getGroup());
 			}
 			partElem.SetAttribute("show", partDefinition->getShow() ? "true" : "false");
 
@@ -1028,12 +1052,12 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 				for (const auto& subEntityDefinition : partDefinition->getSubEntityDefinitions()) {
 					TiXmlElement subentityElem("subentity");
 					if (!subEntityDefinition->getSubEntityName().empty()) {
-						subentityElem.SetAttribute("name", subEntityDefinition->getSubEntityName().c_str());
+						subentityElem.SetAttribute("name", subEntityDefinition->getSubEntityName());
 					} else {
 						subentityElem.SetAttribute("index", subEntityDefinition->getSubEntityIndex());
 					}
 					if (!subEntityDefinition->getMaterialName().empty()) {
-						subentityElem.SetAttribute("material", subEntityDefinition->getMaterialName().c_str());
+						subentityElem.SetAttribute("material", subEntityDefinition->getMaterialName());
 					}
 					subentitiesElem.InsertEndChild(subentityElem);
 				}
@@ -1053,10 +1077,10 @@ void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDe
 
 	for (const auto& attachPointDef : modelDef->getAttachPointsDefinitions()) {
 		TiXmlElement attachpointElem("attachpoint");
-		attachpointElem.SetAttribute("name", attachPointDef.Name.c_str());
-		attachpointElem.SetAttribute("bone", attachPointDef.BoneName.c_str());
+		attachpointElem.SetAttribute("name", attachPointDef.Name);
+		attachpointElem.SetAttribute("bone", attachPointDef.BoneName);
 		if (!attachPointDef.Pose.empty()) {
-			attachpointElem.SetAttribute("pose", attachPointDef.Pose.c_str());
+			attachpointElem.SetAttribute("pose", attachPointDef.Pose);
 		}
 		TiXmlElement rotationElem("rotation");
 		XMLHelper::fillElementFromQuaternion(rotationElem, attachPointDef.Rotation);
@@ -1120,7 +1144,7 @@ void XMLModelDefinitionSerializer::exportPoses(ModelDefinitionPtr modelDef, TiXm
 
 		for (PoseDefinitionStore::const_iterator I = modelDef->mPoseDefinitions.begin(); I != modelDef->mPoseDefinitions.end(); ++I) {
 			TiXmlElement poseElem("pose");
-			poseElem.SetAttribute("name", I->first.c_str());
+			poseElem.SetAttribute("name", I->first);
 			if (I->second.IgnoreEntityData) {
 				poseElem.SetAttribute("ignoreEntityData", "true");
 			}
@@ -1147,7 +1171,7 @@ void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr mode
 
 		for (const auto& particleDef :modelDef->mParticleSystems) {
 			TiXmlElement particleSystemElem("particlesystem");
-			particleSystemElem.SetAttribute("script", particleDef.Script.c_str());
+			particleSystemElem.SetAttribute("script", particleDef.Script);
 			if (!particleDef.Direction.isNaN()) {
 				TiXmlElement directionElem("direction");
 				XMLHelper::fillElementFromVector3(directionElem, particleDef.Direction);
@@ -1174,14 +1198,14 @@ void XMLModelDefinitionSerializer::exportBoneGroups(ModelDefinitionPtr modelDef,
 
 	for (auto entry : modelDef->getBoneGroupDefinitions()) {
 		TiXmlElement boneGroupElem("bonegroup");
-		boneGroupElem.SetAttribute("name", entry.second->Name.c_str());
+		boneGroupElem.SetAttribute("name", entry.second->Name);
 
 		TiXmlElement bonesElem("bones");
 		for (auto boneIndex : entry.second->Bones) {
 			TiXmlElement boneElem("bone");
 			std::stringstream ss;
 			ss << boneIndex;
-			boneElem.SetValue(ss.str().c_str());
+			boneElem.SetValue(ss.str());
 			bonesElem.InsertEndChild(boneElem);
 		}
 		boneGroupElem.InsertEndChild(bonesElem);
