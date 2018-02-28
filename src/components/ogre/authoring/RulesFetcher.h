@@ -53,7 +53,7 @@ class RulesFetcher: public virtual sigc::trackable
 {
 public:
 	RulesFetcher(Eris::Connection& connection);
-	virtual ~RulesFetcher();
+	virtual ~RulesFetcher() = default;
 
 	/**
 	 * @brief Start the process of getting rules from the server.

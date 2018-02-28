@@ -74,7 +74,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~EntityPolygonPositionProvider() override {}
+	~EntityPolygonPositionProvider() override = default;
 
 	/**
 	 * @brief Gets the height for the local position.
@@ -82,7 +82,7 @@ public:
 	 * @param localPosition The local position.
 	 * @return A height.
 	 */
-	float getHeightForPosition(const WFMath::Point<2>& localPosition) override;
+	float getHeightForPosition(const WFMath::Point<2>& localPosition) const override;
 
 protected:
 	/**
@@ -110,12 +110,12 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~PolygonAdapter();
+	~PolygonAdapter() override;
 
 	/**
 	 * @brief Updates the gui with new values.
 	 */
-	virtual void updateGui(const ::Atlas::Message::Element& element);
+	void updateGui(const ::Atlas::Message::Element& element) override;
 
 	/**
 	 * @brief Toggles the display of the graphical representation of the polygon.
@@ -131,12 +131,12 @@ public:
 	/**
 	 * @brief When movement has ended, remove the movement instance.
 	 */
-	virtual void endMovement();
+	void endMovement() override;
 
 	/**
 	 * @brief When movement has been cancelled, remove the movement instance.
 	 */
-	virtual void cancelMovement();
+	void cancelMovement() override;
 
 	/**
 	 * @brief True if there's an existing polygon instance created from which a shape can be gotten.

@@ -65,7 +65,9 @@ protected:
 	bool mTileVisualizationEnabled;
 
 	void createMesh(unsigned int tileRef, dtTileCachePolyMesh& pmesh, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer);
-	void createRecastPolyMesh(const std::string& name, const unsigned short *verts, const int nverts, const unsigned short *polys, const int npolys, const unsigned char *areas, const int maxpolys, const unsigned short *regions, const int nvp, const float cs, const float ch, const float *orig, bool colorRegions);
+	void createRecastPolyMesh(const std::string& name, const unsigned short *verts, int nverts, const unsigned short *polys,
+							  int npolys, const unsigned char *areas, int maxpolys, const unsigned short *regions,
+							  int nvp, float cs, float ch, const float *orig, bool colorRegions);
 	void Awareness_TileUpdated(int tx, int ty);
 	void Awareness_TileRemoved(int tx, int ty, int tlayer);
 

@@ -64,7 +64,7 @@ protected:
 	/**
 	 * Reimplements the ConsoleObject::runCommand method
 	 */
-	virtual void runCommand(const std::string& command, const std::string& args);
+	void runCommand(const std::string& command, const std::string& args) override;
 	std::string genUniqueName();
 };
 

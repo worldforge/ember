@@ -49,12 +49,12 @@ public:
 	 * @brief Ctor.
 	 * @param point The polygon point to which this object belongs.
 	 */
-	PolygonPointUserObject(PolygonPoint& point);
+	explicit PolygonPointUserObject(PolygonPoint& point);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~PolygonPointUserObject();
+	virtual ~PolygonPointUserObject() = default;
 
 	/**
 	 * @brief Gets the polygon point to which this instance is attached.

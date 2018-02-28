@@ -30,10 +30,6 @@ EntityObserverBase::EntityObserverBase(Eris::Entity& entity, bool deleteOurselve
 	entity.BeingDeleted.connect(sigc::mem_fun(*this, &EntityObserverBase::entity_BeingDeleted));
 }
 
-EntityObserverBase::~EntityObserverBase()
-{
-}
-
 void EntityObserverBase::entity_BeingDeleted()
 {
 	cleanup();

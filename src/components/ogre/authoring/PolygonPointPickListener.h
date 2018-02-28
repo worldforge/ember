@@ -51,20 +51,20 @@ public:
 	 * @brief Ctor.
 	 * @param polygon The polygon to which this listener belongs to.
 	 */
-	PolygonPointPickListener(Polygon& polygon);
+	explicit PolygonPointPickListener(Polygon& polygon);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~PolygonPointPickListener();
+	~PolygonPointPickListener() override = default;
 
-	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
+	void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) override;
 
-	virtual void initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs);
+	void initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs) override;
 
-	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
+	void endPickingContext(const MousePickerArgs& mousePickerArgs) override;
 
-	virtual void processDelayedPick(const MousePickerArgs& mousePickerArgs);
+	void processDelayedPick(const MousePickerArgs& mousePickerArgs) override;
 
 	sigc::signal<void, PolygonPoint&> EventPickedPoint;
 

@@ -60,7 +60,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~PolygonPointMovement();
+	~PolygonPointMovement() = default;
 
 protected:
 

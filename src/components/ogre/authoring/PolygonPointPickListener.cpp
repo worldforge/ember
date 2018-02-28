@@ -40,11 +40,7 @@ namespace Authoring
 {
 
 PolygonPointPickListener::PolygonPointPickListener(Polygon& polygon) :
-		mPolygon(polygon), mPickedUserObject(0)
-{
-}
-
-PolygonPointPickListener::~PolygonPointPickListener()
+		mPolygon(polygon), mPickedUserObject(nullptr)
 {
 }
 
@@ -73,7 +69,7 @@ void PolygonPointPickListener::initializePickingContext(bool& willParticipate, u
 	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_CLICK || pickArgs.pickType == MPT_PRESSED) {
 		willParticipate = true;
 		queryMask = MousePicker::CM_UNDEFINED;
-		mPickedUserObject = 0;
+		mPickedUserObject = nullptr;
 	}
 
 }
@@ -82,7 +78,7 @@ void PolygonPointPickListener::endPickingContext(const MousePickerArgs& /*mouseP
 {
 	if (mPickedUserObject) {
 		EventPickedPoint.emit(mPickedUserObject->getPoint());
-		mPickedUserObject = 0;
+		mPickedUserObject = nullptr;
 	}
 }
 

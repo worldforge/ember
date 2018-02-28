@@ -32,12 +32,12 @@ class EntityConsoleEditor : public ConsoleObject
 {
 public:
 	EntityConsoleEditor();
-	virtual ~EntityConsoleEditor();
+	virtual ~EntityConsoleEditor() = default;
 
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 * @brief Command for settings property on an entity.

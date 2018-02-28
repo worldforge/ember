@@ -39,8 +39,7 @@ class OOBBWireBoundingBox: public WireBoundingBox
 {
 public:
 
-	void getWorldTransforms(Matrix4* xform) const
-	{
+	void getWorldTransforms(Matrix4* xform) const override {
 		SimpleRenderable::getWorldTransforms(xform);
 	}
 };
@@ -78,7 +77,7 @@ SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting Ogre material for bounding box.");
 		OGRE_DELETE mErisEntityBoundingBox;
-		mErisEntityBoundingBox = 0;
+		mErisEntityBoundingBox = nullptr;
 		throw Exception("Error when setting Ogre material for bounding box.");
 	}
 	mSceneNode->attachObject(mErisEntityBoundingBox);

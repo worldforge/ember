@@ -39,10 +39,6 @@ EntityConsoleEditor::EntityConsoleEditor() :
 {
 }
 
-EntityConsoleEditor::~EntityConsoleEditor()
-{
-}
-
 void EntityConsoleEditor::runCommand(const std::string &command, const std::string &args)
 {
 	if (SetProperty == command) {

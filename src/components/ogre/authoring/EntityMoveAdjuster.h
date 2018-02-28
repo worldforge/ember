@@ -40,7 +40,7 @@ class EntityMover;
 /**
  @author Erik Ogenvik <erik@ogenvik.org>
  @see EntityMoveAdjuster
- An instance of a adjustment operation. After time out, the entity encapsuled by this instance will be synchronized with the server.
+ An instance of a adjustment operation. After time out, the entity encapsulated by this instance will be synchronized with the server.
  */
 class EntityMoveAdjustmentInstance
 {

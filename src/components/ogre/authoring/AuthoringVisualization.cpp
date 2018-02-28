@@ -37,7 +37,10 @@ namespace OgreView
 namespace Authoring
 {
 AuthoringVisualization::AuthoringVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode) :
-	mEntity(entity), mSceneNode(sceneNode), mGraphicalRepresentation(0), mControlDelegate(0)
+	mEntity(entity),
+	mSceneNode(sceneNode),
+	mGraphicalRepresentation(nullptr),
+	mControlDelegate(nullptr)
 {
 	createGraphicalRepresentation();
 	mEntity.Moved.connect(sigc::mem_fun(*this, &AuthoringVisualization::entity_Moved));

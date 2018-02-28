@@ -70,12 +70,12 @@ public:
 	 * @brief Ctor.
 	 * @param world The world which should be authored.
 	 */
-	AuthoringManager(World& world);
+	explicit AuthoringManager(World& world);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~AuthoringManager();
+	~AuthoringManager() override;
 
 	/**
 	 * @brief Displays authoring visualizations for entities.
@@ -117,7 +117,7 @@ public:
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	void startMovement(EmberEntity& entity, EntityMover& mover);
 

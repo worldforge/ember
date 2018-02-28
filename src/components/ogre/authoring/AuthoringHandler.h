@@ -52,11 +52,12 @@ class AuthoringMoveInstance: public EntityObserverBase
 {
 public:
 	AuthoringMoveInstance(EmberEntity& entity, AuthoringVisualization& visualization, EntityMover& mover, AuthoringHandler& moveHandler);
-	virtual ~AuthoringMoveInstance();
+
+	~AuthoringMoveInstance() override;
 
 	AuthoringVisualization& getVisualization();
 private:
-	virtual void cleanup();
+	void cleanup() override;
 
 	AuthoringVisualizationMover* mMover;
 	AuthoringHandler& mMoveHandler;
@@ -76,19 +77,19 @@ public:
 	 * @brief Ctor.
 	 * @param view The world for which this handler should create visualizations.
 	 */
-	AuthoringHandler(World& world);
+	explicit AuthoringHandler(World& world);
 
 	/**
 	 * @brief Dtor.
 	 * During destruction all visualizations are cleaned up.
 	 */
-	virtual ~AuthoringHandler();
+	~AuthoringHandler() override;
 
 	/**
 	 * @brief IEntityVisitor implementation.
 	 * Allows creating of visualizations for all existing entities.
 	 */
-	void visit(EmberEntity& entity);
+	void visit(EmberEntity& entity) override;
 
 	/**
 	 * @brief Starts movement of the entity, through the supplied mover.

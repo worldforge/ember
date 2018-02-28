@@ -52,16 +52,18 @@ class EntityMover: public Authoring::EntityMoverBase
 public:
 
 	EntityMover(NodeAttachment& NodeAttachment, EntityMoveManager& manager);
-	virtual ~EntityMover();
 
-	virtual void finalizeMovement();
-	virtual void cancelMovement();
+	~EntityMover() override;
+
+	void finalizeMovement() override;
+
+	void cancelMovement() override;
 
 	const IEntityControlDelegate& getControlDelegate() const;
 
 protected:
 
-	virtual void newEntityPosition(const Ogre::Vector3& position);
+	void newEntityPosition(const Ogre::Vector3& position) override;
 
 	void cleanup();
 
@@ -79,11 +81,13 @@ class EntityMoverControlDelegate: public IEntityControlDelegate
 {
 public:
 
-	EntityMoverControlDelegate(EntityMover& entityMover);
+	explicit EntityMoverControlDelegate(EntityMover& entityMover);
 
-	virtual const WFMath::Point<3>& getPosition() const;
-	virtual const WFMath::Quaternion& getOrientation() const;
-	virtual const WFMath::Vector<3>& getVelocity() const;
+	const WFMath::Point<3>& getPosition() const override;
+
+	const WFMath::Quaternion& getOrientation() const override;
+
+	const WFMath::Vector<3>& getVelocity() const override;
 
 protected:
 	EntityMover& mEntityMover;

@@ -42,9 +42,6 @@ Authoring::EntityMoverBase(entity, node, *node->getCreator()), mCreationInstance
 {
 }
 
-EntityCreatorMovementBridge::~EntityCreatorMovementBridge()
-{
-}
 
 void EntityCreatorMovementBridge::finalizeMovement()
 {

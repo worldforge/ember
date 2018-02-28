@@ -24,6 +24,7 @@
 #ifndef ENTITYMOVERBASE_H_
 #define ENTITYMOVERBASE_H_
 #include "IMovementBridge.h"
+#include "SnapToMovement.h"
 #include "framework/ConsoleObject.h"
 #include <wfmath/point.h>
 #include <memory>
@@ -69,14 +70,14 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~SnapListener();
+	~SnapListener() override = default;
 
 	/**
 	 * @brief Reimplements the ConsoleObject::runCommand method
 	 * @param command
 	 * @param args
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 * @brief Allows toggling of the snap to functionality through the +snaptomovement command.
@@ -130,15 +131,21 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EntityMoverBase();
+	~EntityMoverBase() override = default;
 
-	virtual const WFMath::Quaternion& getOrientation() const;
-	virtual const WFMath::Point<3>& getPosition() const;
-	virtual void setPosition(const WFMath::Point<3>& position);
-	virtual void move(const WFMath::Vector<3>& directionVector);
-	virtual void setRotation(int axis, WFMath::CoordType angle);
-	virtual void setOrientation(const WFMath::Quaternion& rotation);
-	virtual void yaw(WFMath::CoordType angle);
+	const WFMath::Quaternion& getOrientation() const override;
+
+	const WFMath::Point<3>& getPosition() const override;
+
+	void setPosition(const WFMath::Point<3>& position) override;
+
+	void move(const WFMath::Vector<3>& directionVector) override;
+
+	void setRotation(int axis, WFMath::CoordType angle) override;
+
+	void setOrientation(const WFMath::Quaternion& rotation) override;
+
+	void yaw(WFMath::CoordType angle) override;
 
 	/**
 	 * @brief Sets whether snap to functionality should be enabled.

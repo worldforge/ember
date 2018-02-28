@@ -43,10 +43,6 @@ PolygonPointUserObject::PolygonPointUserObject(PolygonPoint& point) :
 {
 }
 
-PolygonPointUserObject::~PolygonPointUserObject()
-{
-}
-
 PolygonPoint& PolygonPointUserObject::getPoint()
 {
 	return mPoint;
@@ -54,14 +50,18 @@ PolygonPoint& PolygonPointUserObject::getPoint()
 
 void PolygonPointUserObject::markAsMoved()
 {
-	Ogre::Entity* entity = static_cast<Ogre::Entity*> (mPoint.getNode()->getAttachedObject(0));
-	entity->setMaterialName("/common/base/authoring/polygon/point/moved");
+	Ogre::Entity* entity = dynamic_cast<Ogre::Entity*> (mPoint.getNode()->getAttachedObject(0));
+	if (entity) {
+		entity->setMaterialName("/common/base/authoring/polygon/point/moved");
+	}
 }
 
 void PolygonPointUserObject::resetMarking()
 {
-	Ogre::Entity* entity = static_cast<Ogre::Entity*> (mPoint.getNode()->getAttachedObject(0));
-	entity->setMaterialName("/common/base/authoring/polygon/point");
+	Ogre::Entity* entity = dynamic_cast<Ogre::Entity*> (mPoint.getNode()->getAttachedObject(0));
+	if (entity) {
+		entity->setMaterialName("/common/base/authoring/polygon/point");
+	}
 }
 
 }

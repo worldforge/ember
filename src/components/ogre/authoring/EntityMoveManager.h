@@ -51,9 +51,9 @@ class EntityMoveInstance: public EntityObserverBase
 {
 public:
 	EntityMoveInstance(EmberEntity& entity, MovementAdapter& moveAdapter, sigc::signal<void>& eventFinishedMoving, sigc::signal<void>& eventCancelledMoving);
-	virtual ~EntityMoveInstance();
+	~EntityMoveInstance() override = default;
 private:
-	virtual void cleanup();
+	void cleanup() override;
 
 	MovementAdapter& mMoveAdapter;
 };
@@ -67,7 +67,7 @@ private:
 class EntityMoveManager: public ConsoleObject, public virtual sigc::trackable
 {
 public:
-	EntityMoveManager(World& world);
+	explicit EntityMoveManager(World& world);
 
 	/**
 	 * @brief Console command for starting the movement operation.
@@ -85,7 +85,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 * @brief Accessor for the World instance that this manager operates within.

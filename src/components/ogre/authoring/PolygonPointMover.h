@@ -50,7 +50,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IMovementListener() {}
+	virtual ~IMovementListener() = default;
 
 	/**
 	 * @brief The movement has ended successfully.
@@ -80,23 +80,23 @@ public:
 	 * @param polygon The polygon to which the poing belongs.
 	 * @param point The point for which movement should occur.
 	 */
-	PolygonPointMover(Polygon& polygon, PolygonPoint& point, IMovementListener* listener = 0);
+	PolygonPointMover(Polygon& polygon, PolygonPoint& point, IMovementListener* listener = nullptr);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~PolygonPointMover();
+	~PolygonPointMover() override;
 
-	virtual const WFMath::Quaternion& getOrientation() const;
-	virtual const WFMath::Point<3>& getPosition() const;
-	virtual void setPosition(const WFMath::Point<3>& position);
-	virtual void move(const WFMath::Vector<3>& directionVector);
-	virtual void setRotation(int axis, WFMath::CoordType angle);
-	virtual void setOrientation(const WFMath::Quaternion& rotation);
-	virtual void yaw(WFMath::CoordType angle);
+	const WFMath::Quaternion& getOrientation() const override;
+	const WFMath::Point<3>& getPosition() const override;
+	void setPosition(const WFMath::Point<3>& position) override;
+	void move(const WFMath::Vector<3>& directionVector) override;
+	void setRotation(int axis, WFMath::CoordType angle) override;
+	void setOrientation(const WFMath::Quaternion& rotation) override;
+	void yaw(WFMath::CoordType angle) override;
 
-	virtual void finalizeMovement();
-	virtual void cancelMovement();
+	void finalizeMovement() override;
+	void cancelMovement() override;
 
 private:
 

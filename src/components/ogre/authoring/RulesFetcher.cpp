@@ -48,10 +48,6 @@ RulesFetcher::RulesFetcher(Eris::Connection& connection) :
 {
 }
 
-RulesFetcher::~RulesFetcher()
-{
-}
-
 const std::unordered_map<std::string, Atlas::Objects::Root>& RulesFetcher::getRules() const
 {
 	return mRules;

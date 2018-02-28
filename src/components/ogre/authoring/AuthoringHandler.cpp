@@ -37,7 +37,10 @@ namespace Authoring
 {
 
 AuthoringMoveInstance::AuthoringMoveInstance(EmberEntity& entity, AuthoringVisualization& visualization, EntityMover& mover, AuthoringHandler& moveHandler) :
-	EntityObserverBase(entity, false), mMover(new AuthoringVisualizationMover(visualization, mover)), mMoveHandler(moveHandler), mVisualization(visualization)
+	EntityObserverBase(entity, false),
+	mMover(new AuthoringVisualizationMover(visualization, mover)),
+	mMoveHandler(moveHandler),
+	mVisualization(visualization)
 {
 }
 
@@ -57,7 +60,7 @@ AuthoringVisualization& AuthoringMoveInstance::getVisualization()
 }
 
 AuthoringHandler::AuthoringHandler(World& world) :
-	mMoveInstance(0), mWorld(world)
+	mMoveInstance(nullptr), mWorld(world)
 {
 	world.getView().InitialSightEntity.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityInitialSight));
 	createVisualizationsForExistingEntities(world.getView());
@@ -66,28 +69,28 @@ AuthoringHandler::AuthoringHandler(World& world) :
 AuthoringHandler::~AuthoringHandler()
 {
 	delete mMoveInstance;
-	for (VisualizationStore::iterator I = mVisualizations.begin(); I != mVisualizations.end(); ++I) {
-		delete I->second;
+	for (auto& visualization : mVisualizations) {
+		delete visualization.second;
 	}
 }
 
 void AuthoringHandler::view_EntityInitialSight(Eris::Entity* entity)
 {
-	createVisualizationForEntity(static_cast<EmberEntity*> (entity));
+	createVisualizationForEntity(dynamic_cast<EmberEntity*> (entity));
 }
 
 void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 {
 
-	VisualizationStore::iterator I = mVisualizations.find(entity);
+	auto I = mVisualizations.find(entity);
 	if (I == mVisualizations.end()) {
 		entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &AuthoringHandler::view_EntityDeleted), entity));
 		entity->LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &AuthoringHandler::view_EntityLocationChanged), entity));
 
-		AuthoringVisualization* parentVis(0);
-		Ogre::SceneNode* parentNode(0);
+		AuthoringVisualization* parentVis(nullptr);
+		Ogre::SceneNode* parentNode(nullptr);
 		if (entity->getLocation()) {
-			VisualizationStore::iterator parentVisIterator = mVisualizations.find(entity->getEmberLocation());
+			auto parentVisIterator = mVisualizations.find(entity->getEmberLocation());
 			if (parentVisIterator != mVisualizations.end()) {
 				parentVis = parentVisIterator->second;
 				parentNode = parentVis->getSceneNode();
@@ -110,7 +113,7 @@ void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 
 void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 {
-	VisualizationStore::iterator I = mVisualizations.find(static_cast<EmberEntity*> (entity));
+	auto I = mVisualizations.find(dynamic_cast<EmberEntity*> (entity));
 	if (I != mVisualizations.end()) {
 		//see if there's an ongoing movement for the deleted entity, and if we therefore should stop that
 		if (mMoveInstance) {
@@ -127,15 +130,15 @@ void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 
 void AuthoringHandler::view_EntityLocationChanged(Eris::Entity* newLocation, EmberEntity* entity)
 {
-	VisualizationStore::iterator I = mVisualizations.find(entity);
+	auto I = mVisualizations.find(entity);
 	if (I != mVisualizations.end()) {
 		if (I->second->getSceneNode()->getParent()) {
 			I->second->getSceneNode()->getParent()->removeChild(I->second->getSceneNode());
 		}
 		if (newLocation) {
-			VisualizationStore::iterator parentI = mVisualizations.find(static_cast<EmberEntity*> (newLocation));
+			auto parentI = mVisualizations.find(dynamic_cast<EmberEntity*> (newLocation));
 
-			Ogre::SceneNode* parentNode(0);
+			Ogre::SceneNode* parentNode(nullptr);
 			if (parentI != mVisualizations.end()) {
 				parentNode = parentI->second->getSceneNode();
 			} else {
@@ -165,8 +168,8 @@ void AuthoringHandler::visit(EmberEntity& entity)
 void AuthoringHandler::startMovement(EmberEntity& entity, EntityMover& mover)
 {
 	delete mMoveInstance;
-	mMoveInstance = 0;
-	VisualizationStore::iterator I = mVisualizations.find(&entity);
+	mMoveInstance = nullptr;
+	auto I = mVisualizations.find(&entity);
 	if (I != mVisualizations.end()) {
 		mMoveInstance = new AuthoringMoveInstance(entity, *(I->second), mover, *this);
 	}
@@ -175,7 +178,7 @@ void AuthoringHandler::startMovement(EmberEntity& entity, EntityMover& mover)
 void AuthoringHandler::stopMovement()
 {
 	delete mMoveInstance;
-	mMoveInstance = 0;
+	mMoveInstance = nullptr;
 }
 
 }

@@ -78,7 +78,11 @@ namespace Authoring
 {
 
 AwarenessVisualizer::AwarenessVisualizer(Navigation::Awareness& awareness, Ogre::SceneManager& sceneManager) :
-		mAwareness(awareness), mSceneManager(sceneManager), mTileSceneNode(sceneManager.getRootSceneNode()->createChildSceneNode()), mPathSceneNode(sceneManager.getRootSceneNode()->createChildSceneNode()), mTileVisualizationEnabled(false)
+		mAwareness(awareness),
+		mSceneManager(sceneManager),
+		mTileSceneNode(sceneManager.getRootSceneNode()->createChildSceneNode()),
+		mPathSceneNode(sceneManager.getRootSceneNode()->createChildSceneNode()),
+		mTileVisualizationEnabled(false)
 {
 	mPath = mSceneManager.createManualObject("RecastMOPath");
 	mPath->setDynamic(true); //We'll be updating this a lot
@@ -196,7 +200,9 @@ void AwarenessVisualizer::createMesh(unsigned int tileRef, dtTileCachePolyMesh& 
 
 }
 
-void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const unsigned short *verts, const int nverts, const unsigned short *polys, const int npolys, const unsigned char *areas, const int maxpolys, const unsigned short *regions, const int nvp, const float cs, const float ch, const float *orig, bool colorRegions)
+void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const unsigned short *verts, int nverts, const unsigned short *polys,
+											   int npolys, const unsigned char *areas, int maxpolys, const unsigned short *regions,
+											   int nvp, float cs, float ch, const float *orig, bool colorRegions)
 {
 
 	// Demo specific parameters

@@ -64,10 +64,11 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EntityCreatorMovementBridge();
+	~EntityCreatorMovementBridge() override = default;
 
-	virtual void finalizeMovement();
-	virtual void cancelMovement();
+	void finalizeMovement() override;
+
+	void cancelMovement() override;
 
 private:
 

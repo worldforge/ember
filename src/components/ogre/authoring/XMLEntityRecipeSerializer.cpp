@@ -170,7 +170,7 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, TiXmlE
 void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlElement* adaptersNode)
 {
 	S_LOG_VERBOSE("Read adapters.");
-	for (TiXmlElement* smElem = adaptersNode->FirstChildElement("adapter"); smElem != 0; smElem = smElem->NextSiblingElement("adapter")) {
+	for (TiXmlElement* smElem = adaptersNode->FirstChildElement("adapter"); smElem != nullptr; smElem = smElem->NextSiblingElement("adapter")) {
 		const std::string *name, *type, *tooltip, *defaultValue;
 		std::string tooltipText;
 		if (!(name = smElem->Attribute(std::string("name"))))
@@ -200,7 +200,7 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 
 		// Custom adapter parameters
 		if (*type == "string") {
-			for (TiXmlElement* item = smElem->FirstChildElement("item"); item != 0; item = item->NextSiblingElement("item")) {
+			for (TiXmlElement* item = smElem->FirstChildElement("item"); item != nullptr; item = item->NextSiblingElement("item")) {
 				const char *text;
 				const std::string *value;
 				text = item->GetText();
@@ -222,7 +222,7 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, TiXmlElement* bindingsNode)
 {
 	S_LOG_VERBOSE("Read bindings.");
-	for (TiXmlElement* smElem = bindingsNode->FirstChildElement("bind"); smElem != 0; smElem = smElem->NextSiblingElement("bind")) {
+	for (TiXmlElement* smElem = bindingsNode->FirstChildElement("bind"); smElem != nullptr; smElem = smElem->NextSiblingElement("bind")) {
 		const std::string *name, *func;
 
 		if (!(name = smElem->Attribute(std::string("name"))))
@@ -244,7 +244,7 @@ void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, TiXmlEle
 void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr /*entRecipe*/, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode)
 {
 	S_LOG_VERBOSE("  Reading bind adapters.");
-	for (TiXmlElement* elem = bindAdaptersNode->FirstChildElement(); elem != 0; elem = elem->NextSiblingElement()) {
+	for (TiXmlElement* elem = bindAdaptersNode->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
 		const std::string *name;
 
 		if (!(name = elem->Attribute(std::string("name"))))

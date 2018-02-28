@@ -37,7 +37,7 @@ class AuthoringMoverConnector : public virtual sigc::trackable
 {
 public:
 	AuthoringMoverConnector(AuthoringManager& authoringManager, EntityMoveManager& moveManager);
-	virtual ~AuthoringMoverConnector();
+	virtual ~AuthoringMoverConnector() = default;
 
 private:
 

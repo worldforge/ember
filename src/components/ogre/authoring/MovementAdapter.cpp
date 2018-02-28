@@ -46,10 +46,6 @@ MovementAdapterWorkerBase::MovementAdapterWorkerBase(MovementAdapter& adapter) :
 {
 }
 
-MovementAdapterWorkerBase::~MovementAdapterWorkerBase()
-{
-}
-
 IMovementBridge* MovementAdapterWorkerBase::getBridge()
 {
 	return mAdapter.mBridge;

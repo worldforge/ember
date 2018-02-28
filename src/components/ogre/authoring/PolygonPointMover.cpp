@@ -41,7 +41,13 @@ namespace Authoring
 {
 
 PolygonPointMover::PolygonPointMover(Polygon& polygon, PolygonPoint& point, IMovementListener* listener) :
-	mPolygon(polygon), mPoint(point), mNewPoint(0), mDeleted(false), mPointAfterDeleted(0), mInitialPosition(point.getLocalPosition()), mListener(listener)
+	mPolygon(polygon),
+	mPoint(point),
+	mNewPoint(nullptr),
+	mDeleted(false),
+	mPointAfterDeleted(nullptr),
+	mInitialPosition(point.getLocalPosition()),
+	mListener(listener)
 {
 	Input::getSingleton().EventKeyPressed.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyPressed));
 	Input::getSingleton().EventKeyReleased.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyReleased));
@@ -187,14 +193,14 @@ void PolygonPointMover::switchToExistingPointMode()
 		}
 		mPoint.setVisible(true);
 		mDeleted = false;
-		mPointAfterDeleted = 0;
+		mPointAfterDeleted = nullptr;
 		mPolygon.updateRender();
 	}
 	if (mNewPoint) {
 		if (mPolygon.removePoint(*mNewPoint)) {
 			mPoint.setLocalPosition(mNewPoint->getLocalPosition());
 			delete mNewPoint;
-			mNewPoint = 0;
+			mNewPoint = nullptr;
 			mPolygon.updateRender();
 		}
 	}

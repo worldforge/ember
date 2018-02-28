@@ -50,10 +50,6 @@ EntityMoveInstance::EntityMoveInstance(EmberEntity& entity, MovementAdapter& mov
 	eventFinishedMoving.connect(sigc::mem_fun(*this, &EntityObserverBase::deleteOurselves));
 }
 
-EntityMoveInstance::~EntityMoveInstance()
-{
-}
-
 void EntityMoveInstance::cleanup()
 {
 	mMoveAdapter.detach();

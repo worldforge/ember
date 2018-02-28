@@ -50,7 +50,7 @@ public:
 	 * @param localPosition The local position within the polygon's space.
 	 * @return The height.
 	 */
-	virtual float getHeightForPosition(const WFMath::Point<2>& localPosition) = 0;
+	virtual float getHeightForPosition(const WFMath::Point<2>& localPosition) const = 0;
 
 };
 

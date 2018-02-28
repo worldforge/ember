@@ -29,10 +29,6 @@ DetachedEntity::DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::
 {
 }
 
-DetachedEntity::~DetachedEntity()
-{
-}
-
 void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 {
 	beginUpdate();

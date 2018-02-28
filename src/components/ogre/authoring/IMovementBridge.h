@@ -47,9 +47,7 @@ class IMovementBridge
 {
 public:
 
-	virtual ~IMovementBridge()
-	{
-	}
+	virtual ~IMovementBridge() = default;
 
 	/**
 	 * @brief Gets the orientation of the entity, in world space.

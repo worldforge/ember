@@ -49,8 +49,8 @@ class MovementAdapter;
 class MovementAdapterWorkerBase
 {
 public:
-	MovementAdapterWorkerBase(MovementAdapter& adapter);
-	virtual ~MovementAdapterWorkerBase();
+	explicit MovementAdapterWorkerBase(MovementAdapter& adapter);
+	virtual ~MovementAdapterWorkerBase() = default;
 
 	virtual bool injectMouseMove(const MouseMotion&, bool&)
 	{
@@ -90,9 +90,9 @@ protected:
 class MovementAdapterWorkerDiscrete: public MovementAdapterWorkerBase
 {
 public:
-	MovementAdapterWorkerDiscrete(MovementAdapter& adapter);
+	explicit MovementAdapterWorkerDiscrete(MovementAdapter& adapter);
 
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
 
 protected:
 
@@ -107,19 +107,20 @@ protected:
 class MovementAdapterWorkerTerrainCursor: public MovementAdapterWorkerBase, public Ogre::FrameListener
 {
 public:
-	MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter);
-	virtual ~MovementAdapterWorkerTerrainCursor();
+	explicit MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter);
+
+	~MovementAdapterWorkerTerrainCursor() override;
 
 	/**
 	 * Methods from Ogre::FrameListener
 	 */
-	bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 
 	/**
 	 * @brief Forces an update.
 	 * This could be called to force a position update, even if no input has been received (for example a mouse movement).
 	 */
-	virtual void update();
+	void update() override;
 
 protected:
 
@@ -148,15 +149,16 @@ public:
 	 * @brief Ctor.
 	 * @param camera The main camera used in the world.
 	 */
-	MovementAdapter(const Camera::MainCamera& camera);
-	virtual ~MovementAdapter();
+	explicit MovementAdapter(const Camera::MainCamera& camera);
 
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
-	virtual bool injectChar(int character);
-	virtual bool injectKeyDown(const SDL_Scancode& key);
-	virtual bool injectKeyUp(const SDL_Scancode& key);
+	~MovementAdapter() override;
+
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
+	bool injectMouseButtonUp(const Input::MouseButton& button) override;
+	bool injectMouseButtonDown(const Input::MouseButton& button) override;
+	bool injectChar(int character) override;
+	bool injectKeyDown(const SDL_Scancode& key) override;
+	bool injectKeyUp(const SDL_Scancode& key) override;
 
 	/**
 	 * @brief Attaches the adapter to the suppied IMovementBridge, allowing it to be moved. This will activate the adapter.

@@ -32,37 +32,38 @@ namespace Authoring
 class AuthoringVisualizationCollisionDetector: public ICollisionDetector
 {
 public:
-	AuthoringVisualizationCollisionDetector(Ogre::Entity& entity);
-	virtual ~AuthoringVisualizationCollisionDetector();
+	explicit AuthoringVisualizationCollisionDetector(Ogre::Entity& entity);
+
+	~AuthoringVisualizationCollisionDetector() override;
 
 	/**
 	 * @brief Test whether the provided ray hits the entity.
 	 * @param ray The ray to test.
 	 * @param result The result of the collision. If the ray hits, the collision detector must update this object.
 	 */
-	virtual void testCollision(Ogre::Ray& ray, CollisionResult& result);
+	void testCollision(Ogre::Ray& ray, CollisionResult& result) override;
 
 	/**
 	 * @brief Refits the collision mesh against the entity. This is called to ensure that the collision mesh fits animated entities.
 	 */
-	virtual void refit();
+	void refit() override;
 
 	/**
 	 * @brief Called when the entity changes, such as a subentity being hidden or shown. Implementations must reload the collision data.
 	 */
-	virtual void reload();
+	void reload() override;
 
 	/**
 	 * @brief Sets whether the collision data should be visualized for debugging purposes.
 	 * @param visualize
 	 */
-	virtual void setVisualize(bool visualize);
+	void setVisualize(bool visualize) override;
 
 	/**
 	 * @brief Gets whether the collision data should be visualized for debugging purposes.
 	 * @return
 	 */
-	virtual bool getVisualize() const;
+	bool getVisualize() const override;
 
 private:
 	Ogre::Entity& mEntity;

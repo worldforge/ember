@@ -27,15 +27,12 @@ namespace OgreView
 namespace Authoring
 {
 AuthoringMoverConnector::AuthoringMoverConnector(AuthoringManager& authoringManager, EntityMoveManager& moveManager) :
-	mAuthoringManager(authoringManager), mMoveManager(moveManager)
+	mAuthoringManager(authoringManager),
+	mMoveManager(moveManager)
 {
 	mMoveManager.EventStartMoving.connect(sigc::mem_fun(*this, &AuthoringMoverConnector::moveManager_StartMoving));
 	mMoveManager.EventFinishedMoving.connect(sigc::mem_fun(*this, &AuthoringMoverConnector::moveManager_FinishedMoving));
 	mMoveManager.EventCancelledMoving.connect(sigc::mem_fun(*this, &AuthoringMoverConnector::moveManager_CancelledMoving));
-}
-
-AuthoringMoverConnector::~AuthoringMoverConnector()
-{
 }
 
 void AuthoringMoverConnector::moveManager_StartMoving(EmberEntity& entity, EntityMover& mover)

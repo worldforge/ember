@@ -104,13 +104,6 @@ public:
 	PolygonPoint* appendPoint();
 
 	/**
-	 * @brief Inserts a new point at the specified index.
-	 * @param index The index where the new point will be inserted.
-	 * @return The newly inserted point.
-	 */
-	PolygonPoint* insertPoint(size_t index);
-
-	/**
 	 * @brief Re-inserts an existing point at the specified index.
 	 * @param index The index where the new point will be inserted.
 	 * @param point The point to insert.

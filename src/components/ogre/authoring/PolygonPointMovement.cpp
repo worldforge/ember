@@ -44,9 +44,6 @@ PolygonPointMovement::PolygonPointMovement(Polygon& polygon, PolygonPoint& point
 	mMoveAdapter.attachToBridge(bridge);
 }
 
-PolygonPointMovement::~PolygonPointMovement()
-{
-}
 
 }
 

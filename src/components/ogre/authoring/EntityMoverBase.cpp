@@ -40,12 +40,8 @@ namespace Authoring
 SnapListener* EntityMoverBase::msSnapListener(0);
 
 SnapListener::SnapListener()
- : SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true), mSnappingEnabled(false)
-{
-
-}
-
-SnapListener::~SnapListener()
+ : SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true),
+   mSnappingEnabled(false)
 {
 
 }
@@ -79,13 +75,8 @@ EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::S
 	snapListener.EventSnappingChanged.connect(sigc::mem_fun(*this, &EntityMoverBase::snapListener_SnappingChanged));
 }
 
-EntityMoverBase::~EntityMoverBase()
-{
-}
-
 const WFMath::Quaternion& EntityMoverBase::getOrientation() const
 {
-//	mOrientation = Convert::toWF(mNode->_getDerivedOrientation());
 	mOrientation = Convert::toWF(mNode->getOrientation());
 	return mOrientation;
 }

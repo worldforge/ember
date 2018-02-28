@@ -53,7 +53,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EntityObserverBase();
+	virtual ~EntityObserverBase() = default;
 
 	/**
 	 * @brief Deletes this instance. This is called if mDeleteOurselvesWhenDone is set to true.

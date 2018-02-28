@@ -38,7 +38,6 @@
 #include <OgreTextureManager.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
-#include <boost/asio/deadline_timer.hpp>
 #include <Ogre.h>
 #include <components/ogre/OgreInfo.h>
 
@@ -93,7 +92,7 @@ void ConsoleDevTools::showTexture(const std::string& textureName) {
 	CEGUI::Window* root = sys->getDefaultGUIContext().getRootWindow();
 	CEGUI::WindowManager* wmgr = CEGUI::WindowManager::getSingletonPtr();
 	const std::string& scheme = Ember::OgreView::GUIManager::getSingleton().getDefaultScheme();
-	CEGUI::OgreRenderer* renderer = (CEGUI::OgreRenderer*) sys->getRenderer();
+	CEGUI::OgreRenderer* renderer = static_cast<CEGUI::OgreRenderer*>(sys->getRenderer());
 
 	//Create BasicImage wrapper for the Ogre texture.
 	std::string imageName = genUniqueName();
@@ -178,14 +177,14 @@ void ConsoleDevTools::reloadMaterial(const std::string& materialName) {
 				ConsoleBackend::getSingleton().pushMessage("Reloaded fragment program '" + fragmentProgram->getName() + "'.", "info");
 			}
 			for (const auto* tex : pass->getTextureUnitStates()) {
-				std::string textureName(tex->getTextureName());
+				const std::string& textureName(tex->getTextureName());
 				if (!textureName.empty()) {
 					mReloadableTextures.insert(textureName);
 				}
 			}
 		}
 	}
-	for (std::string textureName : mReloadableTextures) {
+	for (const std::string& textureName : mReloadableTextures) {
 		reloadTexture(textureName);
 	}
 	material->reload();
