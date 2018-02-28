@@ -52,28 +52,28 @@ public:
 	 */
 	SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr, Ogre::RenderTarget& mainRenderTarget);
 
-	virtual ~SimpleWater();
+	~SimpleWater() override;
 
 	/**
 	 * @brief Performs checks to see whether this technique is supported on the current hardware.
 	 * @return True if the water technique is supported.
 	 */
-	virtual bool isSupported() const;
+	bool isSupported() const override;
 	/**
 	 * @brief Initializes the water. You must call this in order for the water to show up.
 	 * @return True if the water technique could be setup, else false.
 	 */
-	virtual bool initialize();
+	bool initialize() override;
 
 	/**
 	 * @brief Sets the level of the water.
 	 * @param height The height of the water level, in world units.
 	 */
-	virtual void setLevel(float height);
+	void setLevel(float height) override;
 
-	virtual ICollisionDetector* createCollisionDetector();
+	ICollisionDetector* createCollisionDetector() override;
 
-	virtual bool setUserAny(const Ogre::Any &anything);
+	bool setUserAny(const Ogre::Any &anything) override;
 
 	float getLevel() const;
 

@@ -41,35 +41,28 @@
 #include <OgrePredefinedControllers.h>
 #include <OgreMaterialManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
 /**
  * @brief Animates a node in the vertical axis.
  */
-class NodeAnimator: public Ogre::ControllerValue<Ogre::Real>
-{
+class NodeAnimator : public Ogre::ControllerValue<Ogre::Real> {
 private:
 	Ogre::SceneNode& mNode;
 	Ogre::Vector3 mTranslation;
 public:
 	NodeAnimator(Ogre::SceneNode& node, const Ogre::Vector3& translation) :
-			mNode(node), mTranslation(translation)
-	{
+			mNode(node), mTranslation(translation) {
 	}
 
-	Ogre::Real getValue() const
-	{
+	Ogre::Real getValue() const override {
 		return 0;
 	}
 
-	void setValue(Ogre::Real value)
-	{
+	void setValue(Ogre::Real value) override {
 		mNode.setPosition(mTranslation * (0.5 - value));
 	}
 
@@ -78,54 +71,46 @@ public:
 /**
  * @brief Adjusts the water so that it always's positioned by the camera.
  *
- * This will make it appear infinite. In addition, we perform a small adjustment to make the textures line up.
+ * This will make it appear infinite.
  */
-class WaterAdjustRenderTargetListener: public Ogre::RenderTargetListener
-{
+class WaterAdjustRenderTargetListener : public Ogre::RenderTargetListener {
 private:
 	/**
 	 * @brief The water node.
 	 */
 	Ogre::SceneNode* mWaterNode;
 
-	/**
-	 * @brief The size of one texture segment, in the x dimension.
-	 */
-	const float mXTextureSize;
-
-	/**
-	 * @brief The size of one texture segment, in the z dimension.
-	 */
-	const float mZTextureSize;
 
 public:
 
 	/**
 	 * @brief Ctor.
 	 * @param waterNode The water node.
-	 * @param xTextureSize The size of one texture segment, in the x dimension.
-	 * @param zTextureSize The size of one texture segment, in the z dimension.
 	 */
-	WaterAdjustRenderTargetListener(Ogre::SceneNode* waterNode, float xTextureSize, float zTextureSize) :
-			mWaterNode(waterNode), mXTextureSize(xTextureSize), mZTextureSize(zTextureSize)
-	{
+	explicit WaterAdjustRenderTargetListener(Ogre::SceneNode* waterNode) :
+			mWaterNode(waterNode) {
 
 	}
 
-	void preViewportUpdate(const Ogre::RenderTargetViewportEvent & evt) override {
+	void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override {
 		const Ogre::Vector3& cameraPos = evt.source->getCamera()->getDerivedPosition();
-		mWaterNode->setPosition(cameraPos.x - std::fmod(cameraPos.x, mXTextureSize), mWaterNode->getPosition().y, cameraPos.z - std::fmod(cameraPos.z, mZTextureSize));
+		mWaterNode->setPosition(cameraPos.x, mWaterNode->getPosition().y, cameraPos.z);
 	}
 
 };
 
 SimpleWater::SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr, Ogre::RenderTarget& mainRenderTarget) :
-		mCamera(camera), mSceneMgr(sceneMgr), mWaterNode(0), mWaterBobbingNode(0), mWaterEntity(0), mMainRenderTarget(mainRenderTarget), mRenderTargetListener(0), mWaterBobbingController(0)
-{
+		mCamera(camera),
+		mSceneMgr(sceneMgr),
+		mWaterNode(nullptr),
+		mWaterBobbingNode(nullptr),
+		mWaterEntity(nullptr),
+		mMainRenderTarget(mainRenderTarget),
+		mRenderTargetListener(nullptr),
+		mWaterBobbingController(nullptr) {
 }
 
-SimpleWater::~SimpleWater()
-{
+SimpleWater::~SimpleWater() {
 	if (mWaterNode) {
 		mWaterNode->detachAllObjects();
 		mSceneMgr.destroySceneNode(mWaterNode);
@@ -151,26 +136,22 @@ SimpleWater::~SimpleWater()
 	delete mRenderTargetListener;
 }
 
-bool SimpleWater::isSupported() const
-{
+bool SimpleWater::isSupported() const {
 	//This should always be supported.
 	return true;
 }
 
-bool SimpleWater::initialize()
-{
+bool SimpleWater::initialize() {
 	try {
 		Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y, 0);
 
 		Ogre::Real farClipDistance = mCamera.getFarClipDistance();
-		float textureSize = 10.0f;
-		float planeSize = (farClipDistance + textureSize) * 2;
+		float planeSize = farClipDistance * 2;
 
-		// create a water plane/scene node
+		// create a water plane/scene node, with no texture coords as we'll use a shader to align the texture coords with world units
 		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-													  waterPlane, planeSize, planeSize, 5, 5, true, 1,
-													  planeSize / textureSize, planeSize / textureSize,
-													  Ogre::Vector3::UNIT_Z);
+													  waterPlane, planeSize, planeSize, 5, 5, true, 0,
+													  0, 0, Ogre::Vector3::UNIT_Z);
 
 		mWaterNode = mSceneMgr.getRootSceneNode()->createChildSceneNode("water");
 		mWaterBobbingNode = mWaterNode->createChildSceneNode();
@@ -186,7 +167,7 @@ bool SimpleWater::initialize()
 
 			mWaterBobbingNode->attachObject(mWaterEntity);
 
-			mRenderTargetListener = new WaterAdjustRenderTargetListener(mWaterNode, textureSize, textureSize);
+			mRenderTargetListener = new WaterAdjustRenderTargetListener(mWaterNode);
 			mMainRenderTarget.addListener(mRenderTargetListener);
 
 			Ogre::ControllerFunctionRealPtr func(OGRE_NEW Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0, 0.1));
@@ -202,13 +183,11 @@ bool SimpleWater::initialize()
 	return false;
 }
 
-ICollisionDetector* SimpleWater::createCollisionDetector()
-{
+ICollisionDetector* SimpleWater::createCollisionDetector() {
 	return new SimpleWaterCollisionDetector(*this);
 }
 
-bool SimpleWater::setUserAny(const Ogre::Any &anything)
-{
+bool SimpleWater::setUserAny(const Ogre::Any& anything) {
 	if (mWaterEntity) {
 		mWaterEntity->getUserObjectBindings().setUserAny(anything);
 		return true;
@@ -216,8 +195,7 @@ bool SimpleWater::setUserAny(const Ogre::Any &anything)
 	return false;
 }
 
-void SimpleWater::setLevel(float height)
-{
+void SimpleWater::setLevel(float height) {
 	if (mWaterNode) {
 		Ogre::Vector3 position = mWaterNode->getPosition();
 		position.y = height;
@@ -225,8 +203,7 @@ void SimpleWater::setLevel(float height)
 	}
 }
 
-float SimpleWater::getLevel() const
-{
+float SimpleWater::getLevel() const {
 	if (mWaterNode) {
 		return mWaterNode->getPosition().y;
 	}
