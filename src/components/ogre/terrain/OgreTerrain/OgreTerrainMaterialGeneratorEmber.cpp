@@ -132,6 +132,12 @@ Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(Ogre::MaterialPt
 }
 
 
+void OgreTerrainMaterialGeneratorEmber::_renderCompositeMap(size_t size, const Ogre::Rect& rect, const Ogre::MaterialPtr& mat, const Ogre::TexturePtr& destCompositeMap) {
+	//Just perform a sanity check to avoid crashes from divide-by-zero
+	if (rect.width() > 0 && rect.height() > 0) {
+		TerrainMaterialGenerator::_renderCompositeMap(size, rect, mat, destCompositeMap);
+	}
+}
 } /* Terrain */
 } /* OgreView */
 } /* Ember */
