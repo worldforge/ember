@@ -132,7 +132,7 @@ protected:
 
 			if (mEnableStackCheck && mDesiredFps > 0) {
 				//Pad the frame duration by 1.5 to only catch those frames that are noticeable off
-				StackChecker::start(std::chrono::milliseconds(1000L / mDesiredFps) * 1.5);
+				StackChecker::start(std::chrono::milliseconds((int64_t)((1000L / mDesiredFps) * 1.5)));
 			} else {
 				StackChecker::stop();
 			}
@@ -144,7 +144,7 @@ protected:
 			mEnableStackCheck = static_cast<bool>(variable);
 			if (mEnableStackCheck && mDesiredFps > 0) {
 				//Pad the frame duration by 1.5 to only catch those frames that are noticeable off
-				StackChecker::start(std::chrono::milliseconds(1000L / mDesiredFps) * 1.5);
+				StackChecker::start(std::chrono::milliseconds((int64_t)((1000L / mDesiredFps) * 1.5)));
 			} else {
 				StackChecker::stop();
 			}
