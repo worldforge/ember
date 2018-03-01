@@ -222,7 +222,7 @@ void StackChecker::printBacktraces() {
 
 void StackChecker::start(std::chrono::milliseconds maxFrameDuration) {
 	stop();
-	sInstance = std::make_unique<StackCheckerInstance>(maxFrameDuration);
+	sInstance = std::unique_ptr(new StackCheckerInstance(maxFrameDuration));
 }
 
 void StackChecker::stop() {
