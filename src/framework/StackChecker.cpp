@@ -124,7 +124,6 @@ public:
 			std::printf("Last frame took %li milliseconds, reported this trace after %li milliseconds:\n",
 						lastFrameMilliseconds.count(),
 						lastReportDuration.count());
-			StackEntry& stackEntry = stackEntry;
 
 			for (size_t j = 0; j < stackEntry.stackSize; ++j) {
 				StackLine& stackLine = stackEntry.stack[j];
@@ -222,7 +221,7 @@ void StackChecker::printBacktraces() {
 
 void StackChecker::start(std::chrono::milliseconds maxFrameDuration) {
 	stop();
-	sInstance = std::unique_ptr(new StackCheckerInstance(maxFrameDuration));
+	sInstance.reset(new StackCheckerInstance(maxFrameDuration));
 }
 
 void StackChecker::stop() {
