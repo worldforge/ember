@@ -23,6 +23,7 @@
 #include "EntityCreatorCreationInstance.h"
 
 #include "EntityCreatorMovement.h"
+#include "EntityCreatorMovementBridge.h"
 #include "AtlasHelper.h"
 
 #include "components/ogre/Avatar.h"
@@ -58,7 +59,9 @@ namespace OgreView
 namespace Gui
 {
 
-EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService, Authoring::EntityRecipe& recipe, bool randomizeOrientation, sigc::slot<void>& adapterValueChangedSlot) :
+EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService,
+															 Authoring::EntityRecipe& recipe, bool randomizeOrientation,
+															 sigc::slot<void>& adapterValueChangedSlot) :
 		mWorld(world),
 		mTypeService(typeService),
 		mRecipe(recipe),
@@ -110,7 +113,14 @@ void EntityCreatorCreationInstance::startCreation()
 	// Making initial position (orientation is preserved)
 	WFMath::Vector<3> offset(0, 0, -2);
 
-	mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
+	if (avatar.getPosition().isValid()) {
+		mPos = avatar.getPosition();
+	} else {
+		mPos = WFMath::Point<3>::ZERO();
+	}
+	if (avatar.getOrientation().isValid()) {
+		mPos += offset.rotate(avatar.getOrientation());
+	}
 
 	createEntity();
 }
@@ -168,9 +178,22 @@ void EntityCreatorCreationInstance::createEntity()
 
 void EntityCreatorCreationInstance::finalizeCreation()
 {
+
 	// Final position
-	mEntityMessage["pos"] = Convert::toWF<WFMath::Point<3>>(mEntityNode->getPosition()).toAtlas();
-	mEntityMessage["orientation"] = Convert::toWF(mEntityNode->getOrientation()).toAtlas();
+
+	auto pos = mMovement->getBridge()->getPosition();;
+	mEntityMessage["orientation"] = mMovement->getBridge()->getOrientation().toAtlas();
+
+	auto offset = mMovement->getBridge()->getOffset();
+	if (offset) {
+		if (mEntity->hasAttr("mode") && mEntity->valueOfAttr("mode").isString() && mEntity->valueOfAttr("mode").String() == "planted") {
+			mEntityMessage["planted-offset"] = offset.get();
+			pos.y() -= offset.get();
+		}
+	}
+
+	mEntityMessage["pos"] = pos.toAtlas();
+
 
 	// Making create operation message
 	Atlas::Objects::Operation::Create c;

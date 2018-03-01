@@ -51,7 +51,7 @@ EntityCreator::EntityCreator(World& world) :
 		mRecipe(nullptr),
 		mCreationInstance(nullptr),
 		mRandomizeOrientation(false),
-		mAdapterValueChangedSlot(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged))
+		mAdapterValueChangedSlot([&](){createNewCreationInstance();})
 {
 	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 	mLastOrientation.identity();
@@ -154,28 +154,13 @@ void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo)
 	}
 }
 
-void EntityCreator::creationInstance_AbortRequested()
-{
-	stopCreation();
-}
-
-void EntityCreator::creationInstance_FinalizeRequested()
-{
-	finalizeCreation();
-}
-
-void EntityCreator::adapterValueChanged()
-{
-	createNewCreationInstance();
-}
-
 void EntityCreator::createNewCreationInstance()
 {
 	delete mCreationInstance;
 	mCreationInstance = nullptr;
 	mCreationInstance = new EntityCreatorCreationInstance(mWorld, mTypeService, *mRecipe, mRandomizeOrientation, mAdapterValueChangedSlot);
-	mCreationInstance->EventAbortRequested.connect(sigc::mem_fun(*this, &EntityCreator::creationInstance_AbortRequested));
-	mCreationInstance->EventFinalizeRequested.connect(sigc::mem_fun(*this, &EntityCreator::creationInstance_FinalizeRequested));
+	mCreationInstance->EventAbortRequested.connect([&](){stopCreation();});
+	mCreationInstance->EventFinalizeRequested.connect([&](){finalizeCreation();});
 	if (!mRandomizeOrientation) {
 		mCreationInstance->setOrientation(mLastOrientation);
 	}

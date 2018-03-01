@@ -23,31 +23,24 @@
 
 #include "EntityMoverBase.h"
 
-#include "SnapToMovement.h"
-
 #include "domain/EmberEntity.h"
 #include "components/ogre/Convert.h"
 
 #include <OgreSceneNode.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 
-SnapListener* EntityMoverBase::msSnapListener(0);
+SnapListener* EntityMoverBase::msSnapListener(nullptr);
 
 SnapListener::SnapListener()
- : SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true),
-   mSnappingEnabled(false)
-{
+		: SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true),
+		  mSnappingEnabled(false) {
 
 }
 
-void SnapListener::runCommand(const std::string &command, const std::string &args)
-{
+void SnapListener::runCommand(const std::string& command, const std::string& args) {
 	if (SnapTo == command) {
 		setSnapToEnabled(true);
 	} else if (SnapTo.getInverseCommand() == command) {
@@ -55,8 +48,7 @@ void SnapListener::runCommand(const std::string &command, const std::string &arg
 	}
 }
 
-void SnapListener::setSnapToEnabled(bool snapTo)
-{
+void SnapListener::setSnapToEnabled(bool snapTo) {
 	mSnappingEnabled = snapTo;
 	EventSnappingChanged.emit(snapTo);
 }
@@ -66,8 +58,10 @@ bool SnapListener::getSnappingEnabled() const {
 }
 
 EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::SceneManager& sceneManager) :
-	mEntity(entity), mNode(node), mSceneManager(sceneManager), mSnapping(nullptr)
-{
+		mEntity(entity),
+		mNode(node),
+		mSceneManager(sceneManager),
+		mSnapping(nullptr) {
 	SnapListener& snapListener = getSnapListener();
 	if (snapListener.getSnappingEnabled()) {
 		setSnapToEnabled(true);
@@ -75,26 +69,27 @@ EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::S
 	snapListener.EventSnappingChanged.connect(sigc::mem_fun(*this, &EntityMoverBase::snapListener_SnappingChanged));
 }
 
-const WFMath::Quaternion& EntityMoverBase::getOrientation() const
-{
+const WFMath::Quaternion& EntityMoverBase::getOrientation() const {
 	mOrientation = Convert::toWF(mNode->getOrientation());
 	return mOrientation;
 }
 
-const WFMath::Point<3>& EntityMoverBase::getPosition() const
-{
+const WFMath::Point<3>& EntityMoverBase::getPosition() const {
 	mPosition = Convert::toWF<WFMath::Point<3>>(mNode->_getDerivedPosition());
 	return mPosition;
 }
 
-void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
-{
+void EntityMoverBase::setPosition(const WFMath::Point<3>& position) {
 	WFMath::Point<3> finalPosition(position);
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustment;
 		EmberEntity* entity = nullptr;
 		if (mSnapping.get() && mSnapping->testSnapTo(position, getOrientation(), adjustment, &entity)) {
 			finalPosition = finalPosition.shift(adjustment);
+		}
+
+		if (mOffset) {
+			finalPosition.y() += mOffset.get();
 		}
 
 		//We need to offset into local space.
@@ -107,27 +102,25 @@ void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 		Moved.emit();
 	}
 }
-void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
-{
+
+void EntityMoverBase::move(const WFMath::Vector<3>& directionVector) {
 	if (directionVector.isValid()) {
 		mNode->translate(Convert::toOgre(directionVector));
 		newEntityPosition(mNode->getPosition());
 		Moved.emit();
 	}
 }
-void EntityMoverBase::setRotation(int /*axis*/, WFMath::CoordType /*angle*/)
-{
+
+void EntityMoverBase::setRotation(int /*axis*/, WFMath::CoordType /*angle*/) {
 	//not implemented yet
 }
 
-void EntityMoverBase::yaw(WFMath::CoordType angle)
-{
+void EntityMoverBase::yaw(WFMath::CoordType angle) {
 	mNode->yaw(Ogre::Degree(angle));
 	Moved.emit();
 }
 
-void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
-{
+void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation) {
 	if (rotation.isValid()) {
 		//We need to offset into local space.
 		Ogre::Quaternion rotOffset = Ogre::Quaternion::IDENTITY;
@@ -139,14 +132,11 @@ void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 	}
 }
 
-void EntityMoverBase::newEntityPosition(const Ogre::Vector3& /*position*/)
-{
+void EntityMoverBase::newEntityPosition(const Ogre::Vector3& /*position*/) {
 }
 
 
-
-void EntityMoverBase::setSnapToEnabled(bool snapTo)
-{
+void EntityMoverBase::setSnapToEnabled(bool snapTo) {
 	if (snapTo) {
 		if (!mSnapping.get()) {
 			mSnapping.reset(new Authoring::SnapToMovement(mEntity, *mNode, 2.0f, mSceneManager, true));
@@ -157,16 +147,29 @@ void EntityMoverBase::setSnapToEnabled(bool snapTo)
 	}
 }
 
-SnapListener& EntityMoverBase::getSnapListener() const
-{
+SnapListener& EntityMoverBase::getSnapListener() const {
 	if (!msSnapListener) {
 		msSnapListener = new SnapListener();
 	}
 	return *msSnapListener;
 }
 
-void EntityMoverBase::snapListener_SnappingChanged(bool snapTo){
+void EntityMoverBase::snapListener_SnappingChanged(bool snapTo) {
 	setSnapToEnabled(snapTo);
+}
+
+void EntityMoverBase::setOffset(boost::optional<float> offset) {
+	auto existingOffset = mOffset;
+	auto position = getPosition();
+	mOffset = offset;
+	if (existingOffset && position.isValid()) {
+		position.y() -= existingOffset.get();
+	}
+	setPosition(position);
+}
+
+boost::optional<float> EntityMoverBase::getOffset() const {
+	return mOffset;
 }
 
 

@@ -34,42 +34,35 @@
 using namespace WFMath;
 using namespace Ember;
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 
 MovementAdapterWorkerBase::MovementAdapterWorkerBase(MovementAdapter& adapter) :
-	mAdapter(adapter)
-{
+		mAdapter(adapter) {
 }
 
-IMovementBridge* MovementAdapterWorkerBase::getBridge()
-{
+IMovementBridge* MovementAdapterWorkerBase::getBridge() {
 	return mAdapter.mBridge;
 }
 
-const Camera::MainCamera& MovementAdapterWorkerBase::getCamera() const
-{
+const Camera::MainCamera& MovementAdapterWorkerBase::getCamera() const {
 	return mAdapter.mCamera;
 }
 
 
 MovementAdapterWorkerDiscrete::MovementAdapterWorkerDiscrete(MovementAdapter& adapter) :
-	MovementAdapterWorkerBase(adapter), mMovementSpeed(10)
-{
+		MovementAdapterWorkerBase(adapter),
+		mMovementSpeed(10) {
 }
 
-bool MovementAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
-{
+bool MovementAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
 	//this will move the entity instead of the mouse
 
 	Vector<3> direction;
 	direction.zero();
 	direction.x() = -motion.xRelativeMovement;
-	direction.z() = motion.yRelativeMovement;
+	direction.z() = -motion.yRelativeMovement;
 	direction = direction * mMovementSpeed;
 	//hard coded to allow the shift button to increase the speed
 	// 	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
@@ -97,48 +90,61 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, b
 }
 
 MovementAdapterWorkerTerrainCursor::MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter) :
-	MovementAdapterWorkerBase(adapter)
-{
+		MovementAdapterWorkerBase(adapter) {
 	// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-MovementAdapterWorkerTerrainCursor::~MovementAdapterWorkerTerrainCursor()
-{
+MovementAdapterWorkerTerrainCursor::~MovementAdapterWorkerTerrainCursor() {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-void MovementAdapterWorkerTerrainCursor::update()
-{
+void MovementAdapterWorkerTerrainCursor::update() {
 	updatePosition(true);
 }
 
-bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent&)
-{
+bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent&) {
 	updatePosition();
 	return true;
 }
 
-void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate)
-{
-	const Ogre::Vector3* position(0);
+void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate) {
+	const Ogre::Vector3* position(nullptr);
 	if (getCamera().getTerrainCursor().getTerrainCursorPosition(&position) || forceUpdate) {
 		getBridge()->setPosition(Convert::toWF<WFMath::Point<3>>(*position));
 	}
 }
 
-MovementAdapter::MovementAdapter(const Camera::MainCamera& camera) :
-	mCamera(camera), mBridge(0), mWorker(0)
-{
+
+MovementAdapterWorkerHeightOffset::MovementAdapterWorkerHeightOffset(MovementAdapter& adapter)
+		: MovementAdapterWorkerBase(adapter) {
+
 }
 
-MovementAdapter::~MovementAdapter()
-{
+bool MovementAdapterWorkerHeightOffset::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
+	auto existingOffset = getBridge()->getOffset();
+	boost::optional<float> offset(0);
+
+	if (existingOffset) {
+		offset = existingOffset;
+	}
+	offset.get() += motion.yRelativeMovement * 10;
+	getBridge()->setOffset(offset);
+	freezeMouse = true;
+	return false;
+}
+
+MovementAdapter::MovementAdapter(const Camera::MainCamera& camera) :
+		mCamera(camera),
+		mBridge(nullptr),
+		mWorker(nullptr) {
+}
+
+MovementAdapter::~MovementAdapter() {
 	//detach(); //A call to this will delete both the bridge and the adapter.
 }
 
-void MovementAdapter::finalizeMovement()
-{
+void MovementAdapter::finalizeMovement() {
 	removeAdapter();
 	//We need to do it this way since there's a chance that the call to IMovementBridge::finalizeMovement will delete this instance, and then we can't reference mBridge anymore
 	IMovementBridge* bridge = mBridge;
@@ -147,8 +153,7 @@ void MovementAdapter::finalizeMovement()
 	delete bridge;
 }
 
-void MovementAdapter::cancelMovement()
-{
+void MovementAdapter::cancelMovement() {
 	removeAdapter();
 	//We need to do it this way since there's a chance that the call to IMovementBridge::cancelMovement will delete this instance, and then we can't reference mBridge anymore
 	IMovementBridge* bridge = mBridge;
@@ -157,16 +162,14 @@ void MovementAdapter::cancelMovement()
 	delete bridge;
 }
 
-bool MovementAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
-{
+bool MovementAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
 	if (mWorker) {
 		return mWorker->injectMouseMove(motion, freezeMouse);
 	}
 	return true;
 }
 
-bool MovementAdapter::injectMouseButtonUp(const Input::MouseButton& button)
-{
+bool MovementAdapter::injectMouseButtonUp(const Input::MouseButton& button) {
 	if (button == Input::MouseButtonLeft) {
 		finalizeMovement();
 		//After we've finalized we've done here, so we should let other IInputAdapters handle the mouse button up (we've had an issue where cegui didn't receive the mouse up event, which made it think that icons that were dragged were still being dragged (as the end-drag event is emitted on mouse up))
@@ -179,8 +182,7 @@ bool MovementAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 	return false;
 }
 
-bool MovementAdapter::injectMouseButtonDown(const Input::MouseButton& button)
-{
+bool MovementAdapter::injectMouseButtonDown(const Input::MouseButton& button) {
 	if (button == Input::MouseButtonLeft) {
 	} else if (button == Input::MouseButtonRight) {
 
@@ -203,40 +205,38 @@ bool MovementAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 	return false;
 }
 
-bool MovementAdapter::injectChar(int character)
-{
+bool MovementAdapter::injectChar(int character) {
 	return true;
 }
 
-bool MovementAdapter::injectKeyDown(const SDL_Scancode& key)
-{
+bool MovementAdapter::injectKeyDown(const SDL_Scancode& key) {
 	if (mWorker) {
 		//by pressing and holding shift we'll allow the user to position it with more precision. We do this by switching the worker instances.
 		if (key == SDL_SCANCODE_LSHIFT || key == SDL_SCANCODE_RSHIFT) {
-			delete mWorker;
-			mWorker = new MovementAdapterWorkerDiscrete(*this);
+			mWorker.reset(new MovementAdapterWorkerDiscrete(*this));
+		}
+
+		if (key == SDL_SCANCODE_Q) {
+			mWorker.reset(new MovementAdapterWorkerHeightOffset(*this));
 		}
 	}
 	return true;
 }
 
-bool MovementAdapter::injectKeyUp(const SDL_Scancode& key)
-{
+bool MovementAdapter::injectKeyUp(const SDL_Scancode& key) {
 	if (key == SDL_SCANCODE_ESCAPE) {
 		cancelMovement();
 		return false;
-	} else if (key == SDL_SCANCODE_LSHIFT || key == SDL_SCANCODE_RSHIFT) {
+	} else if (key == SDL_SCANCODE_LSHIFT || key == SDL_SCANCODE_RSHIFT || key == SDL_SCANCODE_Q) {
 		if (mWorker) {
-			delete mWorker;
-			mWorker = new MovementAdapterWorkerTerrainCursor(*this);
+			mWorker.reset(new MovementAdapterWorkerTerrainCursor(*this));
 		}
 	}
 
 	return true;
 }
 
-void MovementAdapter::attachToBridge(IMovementBridge* bridge)
-{
+void MovementAdapter::attachToBridge(IMovementBridge* bridge) {
 	if (mBridge != bridge) {
 		delete mBridge;
 	}
@@ -244,29 +244,24 @@ void MovementAdapter::attachToBridge(IMovementBridge* bridge)
 	addAdapter();
 }
 
-void MovementAdapter::detach()
-{
+void MovementAdapter::detach() {
 	delete mBridge;
-	mBridge = 0;
+	mBridge = nullptr;
 	removeAdapter();
 }
 
-void MovementAdapter::removeAdapter()
-{
+void MovementAdapter::removeAdapter() {
 	Input::getSingleton().removeAdapter(this);
-	delete mWorker;
-	mWorker = 0;
+	mWorker.reset();
 }
 
-void MovementAdapter::addAdapter()
-{
+void MovementAdapter::addAdapter() {
 	Input::getSingleton().addAdapter(this);
 	//default to the terrain cursor positioning mode
-	mWorker = new MovementAdapterWorkerTerrainCursor(*this);
+	mWorker.reset(new MovementAdapterWorkerTerrainCursor(*this));
 }
 
-void MovementAdapter::update()
-{
+void MovementAdapter::update() {
 	if (mWorker) {
 		mWorker->update();
 	}

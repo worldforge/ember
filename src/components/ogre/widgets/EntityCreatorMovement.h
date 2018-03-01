@@ -36,9 +36,9 @@ class DetachedEntity;
 namespace Gui
 {
 class EntityCreatorCreationInstance;
-
+class EntityCreatorMovementBridge;
 /**
- @brief A movement of a DetachedEntity, beloging to the EntityCreator.
+ @brief A movement of a DetachedEntity, belonging to the EntityCreator.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
 class EntityCreatorMovement
@@ -58,8 +58,12 @@ public:
 	 */
 	~EntityCreatorMovement();
 
+	EntityCreatorMovementBridge* getBridge() const;
+
 protected:
 
+
+	EntityCreatorMovementBridge* mMovementBridge;
 	/**
 	 * @brief Main adapter which will intercept mouse and keyboard input to allow for movement of this point.
 	 */

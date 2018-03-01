@@ -64,7 +64,7 @@ public:
 	virtual void update()
 	{
 	}
-	;
+
 protected:
 
 	/**
@@ -97,6 +97,15 @@ public:
 protected:
 
 	float mMovementSpeed;
+
+};
+
+class MovementAdapterWorkerHeightOffset: public MovementAdapterWorkerBase
+{
+public:
+	explicit MovementAdapterWorkerHeightOffset(MovementAdapter& adapter);
+
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
 
 };
 
@@ -214,7 +223,7 @@ protected:
 	/**
 	 * @brief The worker instance which will listen for inputs and tell the bridge to update accordingly.
 	 */
-	MovementAdapterWorkerBase* mWorker;
+	std::unique_ptr<MovementAdapterWorkerBase> mWorker;
 
 };
 

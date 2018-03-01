@@ -32,76 +32,73 @@
 #include "components/ogre/World.h"
 #include "components/ogre/Scene.h"
 
-#include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include <OgreSceneNode.h>
+#include <Eris/View.h>
+#include <Eris/Avatar.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& manager) :
-	EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode(), manager.getWorld().getScene().getSceneManager()), mNodeAttachment(nodeAttachment), mManager(manager), mPreviousControlDelegate(nodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
-{
+		EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode(), manager.getWorld().getScene().getSceneManager()), mNodeAttachment(nodeAttachment), mManager(manager), mPreviousControlDelegate(nodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this)) {
 	nodeAttachment.setControlDelegate(mControlDelegate);
 }
 
-EntityMover::~EntityMover()
-{
+EntityMover::~EntityMover() {
 	delete mControlDelegate;
 }
 
-const IEntityControlDelegate& EntityMover::getControlDelegate() const
-{
+const IEntityControlDelegate& EntityMover::getControlDelegate() const {
 	return *mControlDelegate;
 }
 
-void EntityMover::finalizeMovement()
-{
+void EntityMover::finalizeMovement() {
 	if (mEntity.getLocation()) {
-		EmberServices::getSingleton().getServerService().place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
+		auto position = getPosition();
+		//If the entity is planted, we'll supply an offset. The position of the entity will then be the reported position minus the offset.
+		if (mOffset && mEntity.hasAttr("mode")) {
+			auto& modeElement = mEntity.valueOfAttr("mode");
+			if (modeElement.isString() && modeElement.String() == "planted") {
+				position.y() -= mOffset.get();
+			}
+		}
+		mManager.getWorld().getView().getAvatar()->place(&mEntity, mEntity.getLocation(), position, getOrientation(), mOffset);
 	}
 	mNodeAttachment.updatePosition();
 	cleanup();
 	mManager.EventFinishedMoving.emit();
 
 }
-void EntityMover::cancelMovement()
-{
+
+void EntityMover::cancelMovement() {
 	cleanup();
 	mNodeAttachment.updatePosition();
 	mManager.EventCancelledMoving.emit();
 }
 
-void EntityMover::cleanup()
-{
+void EntityMover::cleanup() {
 	mNodeAttachment.setControlDelegate(mPreviousControlDelegate);
 }
-void EntityMover::newEntityPosition(const Ogre::Vector3&)
-{
+
+void EntityMover::newEntityPosition(const Ogre::Vector3&) {
 	mNodeAttachment.updatePosition();
 }
 
 EntityMoverControlDelegate::EntityMoverControlDelegate(EntityMover& entityMover) :
-	mEntityMover(entityMover)
-{
+		mEntityMover(entityMover) {
 
 }
 
-const WFMath::Point<3>& EntityMoverControlDelegate::getPosition() const
-{
+const WFMath::Point<3>& EntityMoverControlDelegate::getPosition() const {
 	return mEntityMover.getPosition();
 }
 
-const WFMath::Quaternion& EntityMoverControlDelegate::getOrientation() const
-{
+const WFMath::Quaternion& EntityMoverControlDelegate::getOrientation() const {
 	return mEntityMover.getOrientation();
 }
 
-const WFMath::Vector<3>& EntityMoverControlDelegate::getVelocity() const
-{
+const WFMath::Vector<3>& EntityMoverControlDelegate::getVelocity() const {
 	return WFMath::Vector<3>::ZERO();
 }
 

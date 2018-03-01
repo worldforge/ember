@@ -88,6 +88,8 @@ public:
 	~PolygonPointMover() override;
 
 	const WFMath::Quaternion& getOrientation() const override;
+	void setOffset(boost::optional<float> offset) override;
+	boost::optional<float> getOffset() const override;
 	const WFMath::Point<3>& getPosition() const override;
 	void setPosition(const WFMath::Point<3>& position) override;
 	void move(const WFMath::Vector<3>& directionVector) override;

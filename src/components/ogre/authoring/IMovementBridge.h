@@ -25,6 +25,7 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include <wfmath/quaternion.h>
+#include <boost/optional.hpp>
 
 namespace Ember
 {
@@ -54,6 +55,18 @@ public:
 	 * @return The orientation of the entity, in world space.
 	 */
 	virtual const WFMath::Quaternion& getOrientation() const = 0;
+
+	/**
+	 * @brief Sets a vertical offset.
+	 * @param offset An offset.
+	 */
+	virtual void setOffset(boost::optional<float> offset) = 0;
+
+	/**
+	 * Gets the current vertical offset.
+	 * @return
+	 */
+	virtual boost::optional<float> getOffset() const = 0;
 
 	/**
 	 * @brief Gets the position of the entity, in world space.

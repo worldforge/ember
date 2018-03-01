@@ -215,6 +215,14 @@ void PolygonPointMover::switchToDeleteMode()
 	mPolygon.updateRender();
 }
 
+void PolygonPointMover::setOffset(boost::optional<float>) {
+
+}
+
+boost::optional<float> PolygonPointMover::getOffset() const {
+	return boost::none;
+}
+
 }
 
 }

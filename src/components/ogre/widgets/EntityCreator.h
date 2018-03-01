@@ -187,25 +187,6 @@ protected:
 	void typeService_BoundType(Eris::TypeInfo* typeInfo);
 
 	/**
-	 * @brief Listens for requests from the creationInstance to abort creation.
-	 */
-	void creationInstance_AbortRequested();
-
-	/**
-	 * @brief Listens for requests from the creationInstance to finalize creation.
-	 */
-	void creationInstance_FinalizeRequested();
-
-	/**
-	 * @brief Handler of EntityRecipe::adapterValueChanged signal.
-	 *
-	 * Called on EntityRecipe::adapterValueChanged signal and should update preview with new adapter values.
-	 *
-	 * TODO Unfortunately, this signal is never called. Need to find what happens with it in adapters class.
-	 */
-	void adapterValueChanged();
-
-	/**
 	 * @brief Creates a new EntityCreatorCreationInstance.
 	 *
 	 * Note that any existing such instance will first be destroyed.
