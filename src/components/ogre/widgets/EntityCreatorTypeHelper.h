@@ -27,6 +27,7 @@
 #include "framework/ConsoleObject.h"
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
+#include <components/ogre/authoring/DetachedEntity.h>
 
 namespace CEGUI
 {
@@ -117,6 +118,7 @@ protected:
 
 	void typeService_BoundType(Eris::TypeInfo* typeInfo);
 
+	void showPreview(Ember::OgreView::Authoring::DetachedEntity& entity);
 };
 }
 

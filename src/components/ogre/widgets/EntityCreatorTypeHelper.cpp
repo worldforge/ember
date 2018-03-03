@@ -32,46 +32,46 @@
 
 #include "../EmberOgre.h"
 #include "../Avatar.h"
+#include "../model/Model.h"
 #include "domain/EmberEntity.h"
 #include "../World.h"
+#include "components/ogre/mapping/EmberEntityMappingManager.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 
-#include <Eris/TypeService.h>
 #include <Eris/Connection.h>
-#include <Eris/TypeInfo.h>
 #include <Eris/Avatar.h>
-#include <Eris/View.h>
 
 #include <CEGUI/Window.h>
 #include <CEGUI/widgets/Listbox.h>
 #include <CEGUI/widgets/Editbox.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/Tree.h>
+#include <framework/Singleton.h>
+#include "components/ogre/mapping/ModelActionCreator.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
-		mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mRuleTreeAdapter(0), mCreateButton(nullptr)
-{
+		mConnection(connection),
+		mName(nameEditbox),
+		mModelPreviewRenderer(nullptr),
+		mModelPreviewManipulator(nullptr),
+		mRuleTreeAdapter(nullptr),
+		mCreateButton(nullptr) {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
 
-EntityCreatorTypeHelper::~EntityCreatorTypeHelper()
-{
+EntityCreatorTypeHelper::~EntityCreatorTypeHelper() {
 	delete mModelPreviewManipulator;
 	delete mModelPreviewRenderer;
 	delete mRuleTreeAdapter;
 }
 
-void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview)
-{
+void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) {
 
 	typeTree.setItemTooltipsEnabled(true);
 	typeTree.setSortingEnabled(true);
@@ -91,8 +91,7 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 
 }
 
-void EntityCreatorTypeHelper::updatePreview()
-{
+void EntityCreatorTypeHelper::updatePreview() {
 	if (mModelPreviewRenderer && mRuleTreeAdapter) {
 		auto typeData = mRuleTreeAdapter->getSelectedRule();
 		if (typeData.isValid()) {
@@ -100,11 +99,9 @@ void EntityCreatorTypeHelper::updatePreview()
 			mCurrentType = typeData->getId();
 			auto type = mConnection.getTypeService()->getTypeByName(typeData->getId());
 			if (type && type->isBound()) {
-				//update the model preview window
-				mModelPreviewRenderer->showModel(typeData->getId());
-				mModelPreviewRenderer->showFull();
-				//we want to zoom in a little
-				mModelPreviewRenderer->setCameraDistance(0.7);
+				Authoring::DetachedEntity entity("0", type, mConnection.getTypeService());
+				showPreview(entity);
+
 				mCreateButton->setEnabled(true);
 			} else {
 				mModelPreviewRenderer->showModel("");
@@ -117,30 +114,44 @@ void EntityCreatorTypeHelper::updatePreview()
 	}
 }
 
-void EntityCreatorTypeHelper::typeService_BoundType(Eris::TypeInfo* typeInfo)
-{
+void EntityCreatorTypeHelper::showPreview(Ember::OgreView::Authoring::DetachedEntity& entity) {
+	Mapping::ModelActionCreator actionCreator(entity, [&](std::string model) {
+		mModelPreviewRenderer->showModel(model);
+		mModelPreviewRenderer->showFull();
+		//we want to zoom in a little
+		mModelPreviewRenderer->setCameraDistance(0.7);
+
+	}, [&](std::string part) {
+		if (mModelPreviewRenderer->getModel()) {
+			mModelPreviewRenderer->getModel()->showPart(part);
+		}
+	});
+
+	auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, nullptr);
+	entity.shutdown();
+	if (mapping) {
+		mapping->initialize();
+	}
+}
+
+void EntityCreatorTypeHelper::typeService_BoundType(Eris::TypeInfo* typeInfo) {
 	//If the type that's now bound is the one that's currently handled, update the preview
 	if (mModelPreviewRenderer && mRuleTreeAdapter && typeInfo->getName() == mCurrentType) {
 		auto typeData = mRuleTreeAdapter->getSelectedRule();
 		if (typeData.isValid()) {
-			//update the model preview window
-			mModelPreviewRenderer->showModel(typeData->getId());
-			mModelPreviewRenderer->showFull();
-			//we want to zoom in a little
-			mModelPreviewRenderer->setCameraDistance(0.7);
+			Authoring::DetachedEntity entity("0", typeInfo, mConnection.getTypeService());
+			showPreview(entity);
 			mCreateButton->setEnabled(true);
 		}
 	}
 }
 
-bool EntityCreatorTypeHelper::typeTree_SelectionChanged(const CEGUI::EventArgs& args)
-{
+bool EntityCreatorTypeHelper::typeTree_SelectionChanged(const CEGUI::EventArgs& args) {
 	updatePreview();
 	return true;
 }
 
-bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args)
-{
+bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args) {
 	if (mRuleTreeAdapter) {
 
 		auto typeData = mRuleTreeAdapter->getSelectedRule();
