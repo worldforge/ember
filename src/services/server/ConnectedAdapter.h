@@ -47,7 +47,7 @@ class ConnectedAdapter: public virtual IServerAdapter, public virtual sigc::trac
 public:
     ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar);
 
-	~ConnectedAdapter() override;
+	~ConnectedAdapter() override = default;
 
 	void moveToPoint(const WFMath::Point<3>& dest) override;
 

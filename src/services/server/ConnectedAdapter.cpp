@@ -41,20 +41,13 @@
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/stream.h>
 
-namespace Ember
-{
+namespace Ember {
 
 ConnectedAdapter::ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar) :
-		mAccount(account), mAvatar(avatar), mConnection(*avatar.getConnection())
-{
+		mAccount(account), mAvatar(avatar), mConnection(*avatar.getConnection()) {
 }
 
-ConnectedAdapter::~ConnectedAdapter()
-{
-}
-
-void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest)
-{
+void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest) {
 	try {
 		mAvatar.moveToPoint(dest, WFMath::Quaternion());
 	} catch (const std::exception& ex) {
@@ -62,8 +55,7 @@ void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest)
 	}
 }
 
-void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation)
-{
+void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
 	try {
 		mAvatar.moveInDirection(velocity, orientation);
 	} catch (const std::exception& ex) {
@@ -71,8 +63,7 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const 
 	}
 }
 
-void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity)
-{
+void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
 	try {
 		mAvatar.moveInDirection(velocity, WFMath::Quaternion());
 	} catch (const std::exception& ex) {
@@ -85,8 +76,7 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity)
 //
 // }
 
-void ConnectedAdapter::touch(Eris::Entity* entity)
-{
+void ConnectedAdapter::touch(Eris::Entity* entity) {
 	try {
 		mAvatar.touch(entity);
 	} catch (const std::exception& ex) {
@@ -94,8 +84,7 @@ void ConnectedAdapter::touch(Eris::Entity* entity)
 	}
 }
 
-void ConnectedAdapter::emote(const std::string& emote)
-{
+void ConnectedAdapter::emote(const std::string& emote) {
 	try {
 		mAvatar.emote(emote);
 	} catch (const std::exception& ex) {
@@ -103,8 +92,7 @@ void ConnectedAdapter::emote(const std::string& emote)
 	}
 }
 
-void ConnectedAdapter::take(Eris::Entity* entity)
-{
+void ConnectedAdapter::take(Eris::Entity* entity) {
 	try {
 		mAvatar.take(entity);
 	} catch (const std::exception& ex) {
@@ -112,22 +100,20 @@ void ConnectedAdapter::take(Eris::Entity* entity)
 	}
 }
 
-void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation)
-{
+void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation) {
 	try {
 		mAvatar.drop(entity, offset, orientation);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on dropping." << ex);
 	}
 }
-void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
-{
+
+void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos) {
 	//use the existing orientation
 	place(entity, target, pos, entity->getOrientation());
 }
 
-void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
-{
+void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient) {
 	try {
 		mAvatar.place(entity, target, pos, orient);
 	} catch (const std::exception& ex) {
@@ -135,8 +121,7 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 	}
 }
 
-void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot)
-{
+void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot) {
 
 	try {
 
@@ -148,7 +133,7 @@ void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot
 
 		Atlas::Objects::Entity::Anonymous arguments;
 		arguments->setId(entity->getId());
-		if (outfitSlot != "") {
+		if (!outfitSlot.empty()) {
 			arguments->setAttr("outfit", outfitSlot);
 		}
 		Atlas::Objects::Operation::Wield wield;
@@ -162,20 +147,18 @@ void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot
 	}
 }
 
-void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation)
-{
+void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation) {
 	try {
 		std::stringstream ss;
 		ss << pos;
-		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "' at position "<< ss.str() << ".");
+		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "' at position " << ss.str() << ".");
 		mAvatar.useOn(entity, pos, operation);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on using." << ex);
 	}
 }
 
-void ConnectedAdapter::useStop()
-{
+void ConnectedAdapter::useStop() {
 	try {
 		mAvatar.useStop();
 	} catch (const std::exception& ex) {
@@ -183,8 +166,7 @@ void ConnectedAdapter::useStop()
 	}
 }
 
-void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
-{
+void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action) {
 	try {
 
 		Atlas::Objects::Entity::Anonymous what;
@@ -209,8 +191,7 @@ void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 	}
 }
 
-void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
-{
+void ConnectedAdapter::deleteEntity(Eris::Entity* entity) {
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
@@ -229,22 +210,56 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 	}
 }
 
-void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements)
-{
+void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements) {
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
 		//We'll use this flag to make sure that nothing gets sent in the case that the only thing changed was immutable attributes (like "pos").
 		bool areAttributesToSend = false;
-		for (Atlas::Message::MapType::iterator I = elements.begin(); I != elements.end(); ++I) {
-			//The "pos" attribute is immutable and cannot be altered by a "set" op. Instead we must use a "move" op.
-			if (I->first == "pos") {
-				place(entity, entity->getLocation(), WFMath::Point<3>(I->second));
+		Atlas::Message::MapType moveAttributes;
+		for (auto& element : elements) {
+			if (element.first == "pos" ||
+				element.first == "mode" ||
+				element.first == "orientation" ||
+				element.first == "planted-offset" ||
+				element.first == "loc" ||
+				element.first == "velocity") {
+				moveAttributes.insert(element);
 			} else {
-				what->setAttr(I->first, I->second);
+				what->setAttr(element.first, element.second);
 				areAttributesToSend = true;
 			}
 		}
+
+		//Some attributes can only be changed through a Move op.
+		if (!moveAttributes.empty()) {
+			Atlas::Objects::Entity::Anonymous moveArgs;
+			if (entity->getLocation()) {
+				moveArgs->setLoc(entity->getLocation()->getId());
+			}
+			for (auto& element : moveAttributes) {
+				moveArgs->setAttr(element.first, element.second);
+			}
+
+			moveArgs->setId(entity->getId());
+
+			Atlas::Objects::Operation::Move moveOp;
+			moveOp->setFrom(mAvatar.getEntity()->getId());
+			moveOp->setArgs1(moveArgs);
+
+			moveOp->setSerialno(Eris::getNewSerialno());
+			mConnection.getResponder()->await(moveOp->getSerialno(), this, &ConnectedAdapter::operationResultIgnored);
+
+			//if the avatar is an admin, we will set the TO property
+			//this will bypass all of the server's filtering, allowing us to place any
+			//entity, unrelated to if it's too heavy or belong to someone else
+			if (mAvatar.getIsAdmin()) {
+				moveOp->setTo(entity->getId());
+			}
+
+			mConnection.send(moveOp);
+		}
+
 
 		if (areAttributesToSend) {
 			Atlas::Objects::Operation::Set setOp;
@@ -264,8 +279,7 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 	}
 }
 
-void ConnectedAdapter::attack(Eris::Entity* entity)
-{
+void ConnectedAdapter::attack(Eris::Entity* entity) {
 	try {
 		mAvatar.attack(entity);
 	} catch (const std::exception& ex) {
@@ -273,8 +287,7 @@ void ConnectedAdapter::attack(Eris::Entity* entity)
 	}
 }
 
-void ConnectedAdapter::eat(Eris::Entity* entity)
-{
+void ConnectedAdapter::eat(Eris::Entity* entity) {
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
@@ -291,8 +304,7 @@ void ConnectedAdapter::eat(Eris::Entity* entity)
 	}
 }
 
-void ConnectedAdapter::say(const std::string &message)
-{
+void ConnectedAdapter::say(const std::string& message) {
 	try {
 		mAvatar.say(message);
 
@@ -305,8 +317,7 @@ void ConnectedAdapter::say(const std::string &message)
 	}
 }
 
-void ConnectedAdapter::sayTo(const std::string &message, const std::vector<std::string>& entities)
-{
+void ConnectedAdapter::sayTo(const std::string& message, const std::vector<std::string>& entities) {
 	try {
 
 		mAvatar.sayTo(message, entities);
@@ -326,8 +337,7 @@ void ConnectedAdapter::sayTo(const std::string &message, const std::vector<std::
 	}
 }
 
-void ConnectedAdapter::sayTo(const std::string &message, const Eris::Entity& entity)
-{
+void ConnectedAdapter::sayTo(const std::string& message, const Eris::Entity& entity) {
 	try {
 		std::vector<std::string> entities;
 		entities.push_back(entity.getId());
@@ -344,8 +354,7 @@ void ConnectedAdapter::sayTo(const std::string &message, const Eris::Entity& ent
 
 }
 
-void ConnectedAdapter::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value)
-{
+void ConnectedAdapter::adminTell(const std::string& entityId, const std::string& attribute, const std::string& value) {
 	try {
 
 		Atlas::Objects::Entity::Anonymous what;
@@ -370,8 +379,7 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 	}
 }
 
-void ConnectedAdapter::createTypeInfo(const Atlas::Objects::Root& typeInfo)
-{
+void ConnectedAdapter::createTypeInfo(const Atlas::Objects::Root& typeInfo) {
 	try {
 		Atlas::Objects::Operation::Create createOp;
 		createOp->setFrom(mAccount.getId());
@@ -384,8 +392,7 @@ void ConnectedAdapter::createTypeInfo(const Atlas::Objects::Root& typeInfo)
 	}
 }
 
-void ConnectedAdapter::setTypeInfo(const Atlas::Objects::Root& typeInfo)
-{
+void ConnectedAdapter::setTypeInfo(const Atlas::Objects::Root& typeInfo) {
 	try {
 		Atlas::Objects::Operation::Set setOp;
 		setOp->setFrom(mAccount.getId());
@@ -398,8 +405,7 @@ void ConnectedAdapter::setTypeInfo(const Atlas::Objects::Root& typeInfo)
 	}
 }
 
-void ConnectedAdapter::operationResultIgnored(const Atlas::Objects::Operation::RootOperation& op)
-{
+void ConnectedAdapter::operationResultIgnored(const Atlas::Objects::Operation::RootOperation& op) {
 	//Just ignore any response
 }
 
