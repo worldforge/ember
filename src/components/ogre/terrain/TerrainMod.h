@@ -31,26 +31,22 @@
 #include <sigc++/signal.h>
 #include <string>
 
-namespace Atlas
-{
+namespace Atlas {
 namespace Message {
-	class Element;
+class Element;
 }
 }
 
-namespace Mercator
-{
-	class TerrainMod;
+namespace Mercator {
+class TerrainMod;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
 namespace Terrain {
 class TerrainModTranslator;
 }
-namespace OgreView
-{
+namespace OgreView {
 namespace Terrain {
 
 /**
@@ -58,11 +54,10 @@ namespace Terrain {
 @author Erik Ogenvik
 @brief Connects an Eris::Entity to a Mercator terrain mod.
 
-Note that however the parsing and application of the terrain mod doesn't occur here. Instead it's handled by the TerrainMod*Task classes, which allows it to occur in a background thread.
-This class only keeps track of the entity, and emit signals when the entity data has changed so that the terrain mod needs to be recalculated or removed.
+Note that however the parsing and application of the terrain mod doesn't occur here.
+Instead it's handled by the TerrainMod*Task classes, which allows it to occur in a background thread.
 */
-class TerrainMod
-{
+class TerrainMod {
 public:
 	/**
 	 * @brief Ctor.
@@ -74,83 +69,46 @@ public:
 	 * @brief Dtor.
 	 */
 	virtual ~TerrainMod();
-	
 
-    /**
-     * @brief Sets up the observation of the entity.
-     */
-    virtual void init();
 
-    /**
+	/**
+	 * Parses a terrain mod value. This will create a translator.
+	 * @param value
+	 */
+	void parse(const Atlas::Message::Element& value);
+
+	/**
+	 * Resets the terrain mod, removing any translator.
+	 */
+	void reset();
+
+	/**
 	 * @brief Gets the id of the entity which is observed.
 	 * @returns The id of the entity to which this mod belongs.
 	 */
 	const std::string& getEntityId() const;
 
-    /**
-    * @brief Accessor for the entity which is observed.
-    * @return The entity observed by this instance.
-    */
-    Eris::Entity& getEntity() const;
-
-    /**
-     * @brief Gets the atlas data which defines the terrain mod.
-     */
-    const Ember::Terrain::TerrainModTranslator* getTranslator() const;
+	/**
+	* @brief Accessor for the entity which is observed.
+	* @return The entity observed by this instance.
+	*/
+	Eris::Entity& getEntity() const;
 
 	/**
-	 * Emitted whenever the modifier is changed or moved.
+	 * @brief Gets the atlas data which defines the terrain mod.
 	 */
-	sigc::signal<void> EventModChanged;
+	const Ember::Terrain::TerrainModTranslator* getTranslator() const;
 
-	/**
-	 *Emitted just before the entity owning this mod is deleted.
-	 *Should be caught by TerrainManager to remove this mod from the terrain.
-	 */
-	sigc::signal<void> EventModDeleted;
 
 protected:
 
-    /**
-    @brief The observed entity, containing terrain mod data.
-    */
-    Eris::Entity& mEntity;
+	/**
+	@brief The observed entity, containing terrain mod data.
+	*/
+	Eris::Entity& mEntity;
 
-    /**
-    * @brief Slot used to listen for changes to attributes in the Entity to which this mod belongs to.
-    */
-    Eris::Entity::AttrChangedSlot mAttrChangedSlot;
+	Ember::Terrain::TerrainModTranslator* mTranslator;
 
-    Ember::Terrain::TerrainModTranslator* mTranslator;
-
-
-    /**
-    * @brief Called before the ModChanged signal is emitted.
-    */
-    virtual void onModChanged();
-
-    /**
-    * @brief Called before the ModDeleted signal is emitted.
-    */
-    virtual void onModDeleted();
-
-    /**
-    * @brief Called whenever a modifier is changed and handles the update
-    * @param attributeValue The new Atlas data for the terrain mod
-    */
-    void attributeChanged(const Atlas::Message::Element& attributeValue);
-
-    /**
-    *    @brief Called whenever a modifier is moved and handles the update
-    */
-    void entity_Moved();
-
-    /**
-    * @brief Sets up the previous three handler functions to be called when a change
-    * is made to the entity holding the modifier.
-    */
-    virtual void observeEntity();
-	
 };
 
 }

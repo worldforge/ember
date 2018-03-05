@@ -61,10 +61,9 @@ public:
 	enum class PositioningMode
 	{
 		/**
-		 * @brief The default mode, where the entity is affected by gravity.
-		 * In most circumstances this means that it will snap to the ground, or any object below it.
+		 * @brief The default mode, where the entity is affected by physics.
 		 */
-		DEFAULT,
+		FREE,
 
 		/**
 		 * @brief Floating on top of an entity. Usually a mass of water.
@@ -72,9 +71,9 @@ public:
 		FLOATING,
 
 		/**
-		 * @brief Moving as a projectile through the world.
+		 * @brief Planted to the ground
 		 */
-		PROJECTILE,
+		PLANTED,
 
 		/**
 		 * @brief Fixed in the world. This means that the position of the entity won't be adjusted (i.e. not affected by gravity etc.).

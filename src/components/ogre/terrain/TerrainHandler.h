@@ -168,6 +168,9 @@ public:
 	 */
 	int getPageMetersSize() const;
 
+
+	const std::unordered_map<std::string, Mercator::Area*>& getAreas() const;
+
 	/**
 	 * @brief Updates a terrain area.
 	 *
@@ -180,11 +183,10 @@ public:
 	void updateArea(const std::string& id, Mercator::Area* terrainArea);
 
 	/**
-	 * @brief Adds a new Mercator::TerrainMod to the terrain.
+	 * @brief Updates a terrain mod.
 	 *
-	 * @param mod Mod to be added
 	 */
-	void addTerrainMod(TerrainMod* terrainMod);
+	void updateMod(TerrainMod* terrainMod);
 
 	/**
 	 * @brief Create and registers a new texture shader.
@@ -543,26 +545,6 @@ protected:
 	 * @param affectedArea The area affected.
 	 */
 	void markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea);
-
-	/**
-	 * @brief Listen to changes in terrain mods.
-	 * @param terrainMod The terrainmod which has changed.
-	 */
-	void TerrainMod_Changed(TerrainMod* terrainMod);
-
-	/**
-	 * @brief Listen to terrain mods being deleted.
-	 * @param terrainMod The terrainmod which has been deleted.
-	 */
-	void TerrainMod_Deleted(TerrainMod* terrainMod);
-
-
-	/**
-	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
-	 *
-	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
-	 */
-	void buildHeightmap();
 
 	/**
 	 * @brief Called each frame.

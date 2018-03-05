@@ -41,43 +41,76 @@
 
 #include <sigc++/bind.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
+
+/**
+ * Listens to entity signal which is of interest to terrain mods and areas.
+ */
+class TerrainEffectorListener : public sigc::trackable {
+public:
+
+	/**
+	 * @brief Emitted when the entity has moved.
+	 */
+	sigc::signal<void> EventEntityMoved;
+
+	/**
+	 * @brief Emitted when the entity is being deleted.
+	 */
+	sigc::signal<void> EventEntityBeingDeleted;
+
+	/**
+	 * @brief Emitted when the entity is being deleted.
+	 */
+	sigc::signal<void> EventEntityModeChanged;
+
+	explicit TerrainEffectorListener(Ember::EmberEntity& entity) {
+		entity.Moved.connect([this]() { EventEntityMoved.emit(); });
+		entity.BeingDeleted.connect([this]() { EventEntityBeingDeleted.emit(); });
+		entity.observe("mode", [&](const Atlas::Message::Element&) { EventEntityModeChanged.emit(); });
+	}
+};
+
+
 
 TerrainEntityManager::TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager) :
-		mView(view), mTerrainHandler(terrainHandler), mSceneManager(sceneManager)
+		mView(view),
+		mTerrainHandler(terrainHandler),
+		mSceneManager(sceneManager)
 {
 	view.TopLevelEntityChanged.connect(sigc::mem_fun(*this, &TerrainEntityManager::topLevelEntityChanged));
 
-	mTerrainListener = std::bind(&TerrainEntityManager::entityTerrainAttrChanged, *this, std::placeholders::_1, std::placeholders::_2);
-	mTerrainModListener = std::bind(&TerrainEntityManager::entityTerrainModAttrChanged, *this, std::placeholders::_1, std::placeholders::_2);
-	mTerrainAreaListener = std::bind(&TerrainEntityManager::entityAreaAttrChanged, *this, std::placeholders::_1, std::placeholders::_2);
+	mTerrainListener = [&](EmberEntity& entity, const Atlas::Message::Element& element){
+		entityTerrainAttrChanged(entity, element);
+	};
+	mTerrainModListener = [&](EmberEntity& entity, const Atlas::Message::Element& element){
+		entityTerrainModAttrChanged(entity, element);
+	};
+	mTerrainAreaListener = [&](EmberEntity& entity, const Atlas::Message::Element& element){
+		entityAreaAttrChanged(entity, element);
+	};
 
 	EmberEntity::registerGlobalAttributeListener("terrain", mTerrainListener);
 	EmberEntity::registerGlobalAttributeListener("terrainmod", mTerrainModListener);
 	EmberEntity::registerGlobalAttributeListener("area", mTerrainAreaListener);
 }
 
-TerrainEntityManager::~TerrainEntityManager()
-{
+TerrainEntityManager::~TerrainEntityManager() {
 	EmberEntity::deregisterGlobalAttributeListener("terrain", mTerrainListener);
 	EmberEntity::deregisterGlobalAttributeListener("terrainmod", mTerrainModListener);
 	EmberEntity::deregisterGlobalAttributeListener("area", mTerrainAreaListener);
 }
 
-void TerrainEntityManager::topLevelEntityChanged()
-{
+void TerrainEntityManager::topLevelEntityChanged() {
 	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
 	entity->setAttachment(nullptr);
 	entity->setAttachment(new WorldAttachment(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId())));
 }
 
-void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
-{
+void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
 	if (!mTerrainEntityDeleteConnection) {
-		mTerrainEntityDeleteConnection = entity.BeingDeleted.connect([this](){
+		mTerrainEntityDeleteConnection = entity.BeingDeleted.connect([this]() {
 			mTerrainHandler.EventTerrainDisabled();
 			mTerrainEntityDeleteConnection.disconnect();
 		});
@@ -92,65 +125,105 @@ void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const A
 	mTerrainHandler.EventTerrainEnabled(entity);
 }
 
-void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
-{
-	if (value.isMap() && mTerrainMods.find(&entity) == mTerrainMods.end()) {
-		Terrain::TerrainMod* mod = new Terrain::TerrainMod(entity, value.Map());
-		mod->init();
-		mTerrainMods.insert(std::make_pair(&entity, mod));
-		mTerrainHandler.addTerrainMod(mod);
-		entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityBeingDeletedTerrainMod), &entity));
+void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
+	Terrain::TerrainMod* mod;
+	auto I = mTerrainMods.find(&entity);
+	if (mTerrainMods.find(&entity) == mTerrainMods.end()) {
+		mod = new Terrain::TerrainMod(entity, value.Map());
+		auto listener = new TerrainEffectorListener(entity);
+
+		listener->EventEntityBeingDeleted.connect([this, &entity, mod](){
+			mod->reset();
+			mTerrainHandler.updateMod(mod);
+			mTerrainMods.erase(&entity);
+		});
+		listener->EventEntityMoved.connect([this, &entity, mod]() {
+			if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
+				mTerrainHandler.updateMod(mod);
+			}
+		});
+		listener->EventEntityModeChanged.connect([this, &entity, mod]() { entityModeChanged(entity, *mod); });
+		mTerrainMods.insert(std::make_pair(&entity, std::make_pair(mod, listener)));
+	} else {
+		mod = I->second.first.get();
+		mod->parse(value);
+	}
+
+	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
+		mTerrainHandler.updateMod(mod);
 	}
 }
 
-void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value)
-{
+void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
 	Terrain::TerrainArea* terrainArea;
 	auto I = mAreas.find(&entity);
 	if (I == mAreas.end()) {
 		terrainArea = new Terrain::TerrainArea(entity);
-		mAreas.insert(std::make_pair(&entity, terrainArea));
-		terrainArea->EventEntityBeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityBeingDeletedArea), &entity));
-		terrainArea->EventEntityMoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::entityMovedArea), &entity));
+		auto listener = new TerrainEffectorListener(entity);
+		mAreas.insert(std::make_pair(&entity, std::make_pair(terrainArea, listener)));
+		listener->EventEntityBeingDeleted.connect([this, &entity, terrainArea]() { entityBeingDeleted(entity, terrainArea); });
+		listener->EventEntityMoved.connect([this, &entity, terrainArea]() { entityMoved(entity, *terrainArea); });
+		listener->EventEntityModeChanged.connect([this, &entity, terrainArea]() { entityModeChanged(entity, *terrainArea); });
 	} else {
-		terrainArea = I->second;
+		terrainArea = I->second.first.get();
 	}
 
 	Mercator::Area* area = nullptr;
 	terrainArea->parse(value, &area);
-
-	mTerrainHandler.updateArea(entity.getId(), area);
+	//Only add area if we're planted
+	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
+		mTerrainHandler.updateArea(entity.getId(), area);
+	}
 	delete area;
 }
 
-void TerrainEntityManager::entityBeingDeletedTerrainMod(EmberEntity* entity)
-{
-	ModStore::iterator I = mTerrainMods.find(entity);
-	if (I != mTerrainMods.end()) {
-		delete I->second;
-		mTerrainMods.erase(I);
-	}
-}
-void TerrainEntityManager::entityBeingDeletedArea(EmberEntity* entity)
-{
-	AreaStore::iterator I = mAreas.find(entity);
-	if (I != mAreas.end()) {
-		mTerrainHandler.updateArea(entity->getId(), nullptr);
-		delete I->second;
-		mAreas.erase(I);
-	}
+void TerrainEntityManager::entityBeingDeleted(EmberEntity& entity, Terrain::TerrainArea* terrainArea) {
+
+	mTerrainHandler.updateArea(entity.getId(), nullptr);
+	mAreas.erase(&entity);
+
 }
 
-void TerrainEntityManager::entityMovedArea(EmberEntity* entity)
-{
-	AreaStore::iterator I = mAreas.find(entity);
-	if (I != mAreas.end()) {
+void TerrainEntityManager::entityMoved(EmberEntity& entity, Terrain::TerrainArea& terrainArea) {
+
+	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
 		Mercator::Area* area = nullptr;
-		I->second->updatePosition(&area);
-		mTerrainHandler.updateArea(entity->getId(), area);
+		terrainArea.updatePosition(&area);
+		mTerrainHandler.updateArea(entity.getId(), area);
 		delete area;
 	}
 }
 
+void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::TerrainArea& terrainArea) {
+	//If mode changes to "planted" we should add the area, if moves to any other we should remove it.
+	auto I = mTerrainHandler.getAreas().find(entity.getId());
+	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
+		if (I == mTerrainHandler.getAreas().end()) {
+			Mercator::Area* area = nullptr;
+			terrainArea.updatePosition(&area);
+			mTerrainHandler.updateArea(entity.getId(), area);
+			delete area;
+		}
+	} else {
+		if (I != mTerrainHandler.getAreas().end()) {
+			mTerrainHandler.updateArea(entity.getId(), nullptr);
+		}
+	}
+}
+
+void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::TerrainMod& terrainMod) {
+	//If mode changes to "planted" we should add the mod, if moves to any other we should remove it.
+	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
+		if (entity.hasAttr("terrainmod")) {
+			terrainMod.parse(entity.valueOfAttr("terrainmod"));
+			mTerrainHandler.updateMod(&terrainMod);
+		}
+	} else {
+		if (terrainMod.getTranslator()) {
+			terrainMod.reset();
+			mTerrainHandler.updateMod(&terrainMod);
+		}
+	}
+}
 }
 }

@@ -33,26 +33,15 @@
 
 #include <Mercator/Area.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 TerrainArea::TerrainArea(EmberEntity& entity) :
-	mEntity(entity), mParsedLayer(0)
-{
-	mEntity.Moved.connect([this](){EventEntityMoved.emit();});
-	mEntity.BeingDeleted.connect([this](){EventEntityBeingDeleted.emit();});
+		mEntity(entity), mParsedLayer(0) {
 }
 
-TerrainArea::~TerrainArea()
-{
-}
-
-void TerrainArea::parse(const Atlas::Message::Element& value, Mercator::Area** area)
-{
+void TerrainArea::parse(const Atlas::Message::Element& value, Mercator::Area** area) {
 	if (!value.isMap()) {
 		S_LOG_FAILURE("TerrainArea element ('area') must be of map type.");
 		return;
@@ -74,8 +63,7 @@ void TerrainArea::parse(const Atlas::Message::Element& value, Mercator::Area** a
 	}
 }
 
-void TerrainArea::updatePosition(Mercator::Area** area)
-{
+void TerrainArea::updatePosition(Mercator::Area** area) {
 	if (mParsedLayer == 0) {
 		return;
 	}
@@ -93,8 +81,7 @@ void TerrainArea::updatePosition(Mercator::Area** area)
 	(*area)->setShape(poly);
 }
 
-bool TerrainArea::placeArea(WFMath::Polygon<2>& poly)
-{
+bool TerrainArea::placeArea(WFMath::Polygon<2>& poly) {
 	//If the position if invalid we can't do anything with the area yet.
 	if (!mEntity.getPosition().isValid()) {
 		return false;
@@ -113,11 +100,6 @@ bool TerrainArea::placeArea(WFMath::Polygon<2>& poly)
 
 
 	return true;
-}
-
-const std::string& TerrainArea::getEntityId() const
-{
-	return mEntity.getId();
 }
 
 }

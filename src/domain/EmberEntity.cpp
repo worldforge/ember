@@ -80,7 +80,7 @@ GlobalAttributeDispatcher sGlobalDispatcher;
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
 		Eris::ViewEntity(id, ty, vw),
 		mIsInitialized(false),
-		mPositioningMode(PositioningMode::DEFAULT),
+		mPositioningMode(PositioningMode::FREE),
 		mCompositionMode(CM_DISABLED),
 		mGraphicalRepresentation(nullptr),
 		mAttachment(nullptr),
@@ -295,16 +295,16 @@ void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 {
 	const std::string& mode = v.asString();
 	PositioningMode newMode;
-	if (mode.empty()) {
-		newMode = PositioningMode::DEFAULT;
-	} else if (mode == "floating") {
+	if (mode == "floating") {
 		newMode = PositioningMode::FLOATING;
 	} else if (mode == "fixed") {
 		newMode = PositioningMode::FIXED;
 	} else if (mode == "submerged") {
 		newMode = PositioningMode::SUBMERGED;
+	} else if (mode == "planted") {
+		newMode = PositioningMode::PLANTED;
 	} else {
-		newMode = PositioningMode::DEFAULT;
+		newMode = PositioningMode::FREE;
 	}
 
 	onPositioningModeChanged(newMode);

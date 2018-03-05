@@ -579,29 +579,16 @@ SegmentManager& TerrainHandler::getSegmentManager()
 	return *mSegmentManager;
 }
 
-void TerrainHandler::addTerrainMod(TerrainMod* terrainMod)
+void TerrainHandler::updateMod(TerrainMod* terrainMod)
 {
-	// Listen for changes to the modifier
-	terrainMod->EventModChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainMod_Changed), terrainMod));
-	// Listen for deletion of the modifier
-	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainMod_Deleted), terrainMod));
-
 	mTaskQueue->enqueueTask(new TerrainModUpdateTask(*mTerrain, *terrainMod, *this));
 }
 
-void TerrainHandler::TerrainMod_Changed(TerrainMod* terrainMod)
+const std::unordered_map<std::string, Mercator::Area*>& TerrainHandler::getAreas() const
 {
-	if (mTaskQueue->isActive()) {
-		mTaskQueue->enqueueTask(new TerrainModUpdateTask(*mTerrain, *terrainMod, *this));
-	}
-}
+	return mAreas;
+};
 
-void TerrainHandler::TerrainMod_Deleted(TerrainMod* terrainMod)
-{
-	if (mTaskQueue->isActive()) {
-		mTaskQueue->enqueueTask(new TerrainModUpdateTask(*mTerrain, *terrainMod, *this));
-	}
-}
 
 void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainArea)
 {

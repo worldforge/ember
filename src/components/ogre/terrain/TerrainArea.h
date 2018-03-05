@@ -54,12 +54,12 @@ public:
 	* @brief Ctor.
 	* @param entity The entity to which this area is connected. This cannot be null, since the definition of the area is kept within the Entity. When the entity moves, the EventEntityMoved signal will be emitted, requiring a container class to call updatePosition().
 	*/
-	TerrainArea(EmberEntity& entity);
+	explicit TerrainArea(EmberEntity& entity);
 
 	/**
 	* @brief Dtor, will delete the allocated Mercator::Area.
 	*/
-	~TerrainArea();
+	virtual ~TerrainArea() = default;
 
 	/**
 	 * @brief Parses the data into an area, and tries to place it using the entity's position.
@@ -72,23 +72,6 @@ public:
 	 * @param area If the area and position are valid, this will point to a new Area instance. Ownership is transferred to the caller.
 	 */
 	void updatePosition(Mercator::Area** area);
-
-	/**
-	 * @brief Gets the id of the entity to which this area is connected.
-	 * @returns The id of the owner entity.
-	 */
-	const std::string& getEntityId() const;
-
-
-	/**
-	 * @brief Emitted when the entity has moved.
-	 */
-	sigc::signal<void> EventEntityMoved;
-
-	/**
-	 * @brief Emitted when the entity is being deleted.
-	 */
-	sigc::signal<void> EventEntityBeingDeleted;
 
 protected:
 

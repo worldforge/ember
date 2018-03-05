@@ -37,20 +37,14 @@ namespace Terrain
 {
 
 TerrainMod::TerrainMod(Eris::Entity& entity, const Atlas::Message::MapType& data) :
-		mEntity(entity), mTranslator(new Ember::Terrain::TerrainModTranslator(data))
+		mEntity(entity),
+		mTranslator(new Ember::Terrain::TerrainModTranslator(data))
 {
 }
 
 TerrainMod::~TerrainMod()
 {
-	mTranslator->reset();
-	onModDeleted();
 	delete mTranslator;
-}
-
-void TerrainMod::init()
-{
-	observeEntity();
 }
 
 const std::string& TerrainMod::getEntityId() const
@@ -58,25 +52,12 @@ const std::string& TerrainMod::getEntityId() const
 	return mEntity.getId();
 }
 
-void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
+void TerrainMod::parse(const Atlas::Message::Element& attributeValue)
 {
 	if (attributeValue.isMap()) {
+		delete mTranslator;
 		mTranslator = new Ember::Terrain::TerrainModTranslator(attributeValue.Map());
 	}
-	onModChanged();
-}
-
-void TerrainMod::entity_Moved()
-{
-	onModChanged();
-}
-
-void TerrainMod::observeEntity()
-{
-	mAttrChangedSlot.disconnect();
-	mAttrChangedSlot = sigc::mem_fun(*this, &TerrainMod::attributeChanged);
-	mEntity.observe("terrainmod", mAttrChangedSlot);
-	mEntity.Moved.connect(sigc::mem_fun(*this, &TerrainMod::entity_Moved));
 }
 
 Eris::Entity& TerrainMod::getEntity() const
@@ -89,15 +70,10 @@ const Ember::Terrain::TerrainModTranslator* TerrainMod::getTranslator() const
 	return mTranslator;
 }
 
-void TerrainMod::onModDeleted()
-{
-	EventModDeleted.emit();
+void TerrainMod::reset() {
+	mTranslator->reset();
 }
 
-void TerrainMod::onModChanged()
-{
-	EventModChanged.emit();
-}
 
 }
 }

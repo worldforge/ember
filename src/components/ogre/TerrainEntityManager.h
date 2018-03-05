@@ -25,6 +25,7 @@
 
 #include <unordered_map>
 #include <functional>
+#include <memory>
 
 namespace Ogre
 {
@@ -50,18 +51,18 @@ class TerrainArea;
 class TerrainDefPoint;
 }
 
+class TerrainEffectorListener;
+
 class TerrainEntityManager: public virtual sigc::trackable
 {
 public:
 	TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager);
 	virtual ~TerrainEntityManager();
 
-	void registerEntity(EmberEntity* entity);
-
 private:
 
-	typedef std::unordered_map<EmberEntity*, Terrain::TerrainMod*> ModStore;
-	typedef std::unordered_map<EmberEntity*, Terrain::TerrainArea*> AreaStore;
+	typedef std::unordered_map<EmberEntity*, std::pair<std::unique_ptr<Terrain::TerrainMod>, std::unique_ptr<TerrainEffectorListener>>> ModStore;
+	typedef std::unordered_map<EmberEntity*, std::pair<std::unique_ptr<Terrain::TerrainArea>, std::unique_ptr<TerrainEffectorListener>>> AreaStore;
 
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainListener;
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainAreaListener;
@@ -74,16 +75,16 @@ private:
 	ModStore mTerrainMods;
 	AreaStore mAreas;
 
-	sigc::connection mTopLevelTerrainConnection;
 	sigc::connection mTerrainEntityDeleteConnection;
 
 	void entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 	void entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 	void entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 
-	void entityBeingDeletedTerrainMod(EmberEntity* entity);
-	void entityBeingDeletedArea(EmberEntity* entity);
-	void entityMovedArea(EmberEntity* entity);
+	void entityBeingDeleted(EmberEntity& entity, Terrain::TerrainArea* terrainArea);
+	void entityMoved(EmberEntity& entity, Terrain::TerrainArea& terrainArea);
+	void entityModeChanged(EmberEntity& entity, Terrain::TerrainArea& terrainArea);
+	void entityModeChanged(EmberEntity& entity, Terrain::TerrainMod& terrainMod);
 
 	void topLevelEntityChanged();
 
