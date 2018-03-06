@@ -45,43 +45,48 @@ namespace OgreView
 {
 namespace Authoring
 {
-EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) :
-	Resource(creator, name, handle, group, isManual, loader), mEntitySpec(0)
+EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
+						   const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) :
+	Resource(creator, name, handle, group, isManual, loader),
+	mEntitySpec(nullptr)
 {
 	if (createParamDictionary("EntityRecipe")) {
 		// no custom params
 	}
 }
 
-EntityRecipe::EntityRecipe(const std::string& name, const std::string& entityType) :
-	mEntitySpec(0), mEntityType(entityType)
+EntityRecipe::EntityRecipe(const Atlas::Message::MapType& entityDefinition) :
+	mEntitySpec(nullptr), mEntityDefinition(entityDefinition)
 {
-	mName = name;
+	auto I = entityDefinition.find("parent");
+	if (I != entityDefinition.end() && I->second.isString()) {
+		mEntityType = I->second.String();
+	}
 }
 
 
 EntityRecipe::~EntityRecipe()
 {
-	for (GUIAdaptersStore::iterator I = mGUIAdapters.begin(); I != mGUIAdapters.end(); ++I) {
-		delete I->second;
+	for (auto& adapter : mGUIAdapters) {
+		delete adapter.second;
 	}
 
-	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
-		delete I->second;
+	for (auto& binding : mBindings) {
+		delete binding.second;
 	}
 
 	delete mEntitySpec;
 }
 
-void EntityRecipe::loadImpl(void)
+void EntityRecipe::loadImpl()
 {
 }
 
-void EntityRecipe::unloadImpl(void)
+void EntityRecipe::unloadImpl()
 {
 }
 
-size_t EntityRecipe::calculateSize(void) const
+size_t EntityRecipe::calculateSize() const
 {
 	//TODO:implement this
 	return 0;
@@ -154,7 +159,7 @@ bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 
 	// If text looks like placeholder, try to look up it in bindings and associate if found
 	if (!text.empty() && text.at(0) == '$') {
-		BindingsStore::iterator bindings = mRecipe->mBindings.find(text.substr(1));
+		auto bindings = mRecipe->mBindings.find(text.substr(1));
 		if (bindings != mRecipe->mBindings.end()) {
 			bindings->second->associateXmlElement(const_cast<TiXmlNode&> (*textNode.Parent()));
 			S_LOG_VERBOSE("Associated " << bindings->first << " with " << text);
@@ -175,7 +180,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	scriptingService.executeCode(mScript, "LuaScriptingProvider");
 
 	// Walking through adapter bindings
-	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
+	for (auto I = mBindings.begin(); I != mBindings.end(); ++I) {
 		const std::string& func = I->second->getFunc();
 
 		S_LOG_VERBOSE(" binding: " << I->first << " to func " << func);
@@ -197,8 +202,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 
 			// Pushing function params
 			std::vector<std::string>& adapters = I->second->getAdapters();
-			for (std::vector<std::string>::iterator J = adapters.begin(); J != adapters.end(); J++) {
-				std::string adapterName = *J;
+			for (auto& adapterName : adapters) {
 				Atlas::Message::Element* val = new Atlas::Message::Element(mGUIAdapters[adapterName]->getValue());
 				tolua_pushusertype_and_takeownership(L, val, "Atlas::Message::Element");
 			}
@@ -275,24 +279,22 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 		// Read decoder queue; only read the first item.
 		if (decoder.queueSize() > 0) {
 			Atlas::Message::MapType m = decoder.popMessage();
-			Eris::TypeInfo* erisType = typeService.getTypeByName(getEntityType());
-			if (erisType) {
-				const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
-				for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
-					if (m.find(I->first) == m.end()) {
-						m.insert(Atlas::Message::MapType::value_type(I->first, I->second));
+			auto parentI = m.find("parent");
+			if (parentI != m.end() && parentI->second.isString()) {
+				Eris::TypeInfo* erisType = typeService.getTypeByName(parentI->second.String());
+				if (erisType) {
+					const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
+					for (const auto& defaultAttribute : defaultAttributes) {
+						if (m.find(defaultAttribute.first) == m.end()) {
+							m.insert(Atlas::Message::MapType::value_type(defaultAttribute.first, defaultAttribute.second));
+						}
 					}
 				}
+				return m;
 			}
-			return m;
 		}
 	} else {
-		Atlas::Message::MapType msg;
-		msg["parent"] = mEntityType;
-		if (!getName().empty()) {
-			msg["name"] = getName();
-		}
-		return msg;
+		return mEntityDefinition;
 	}
 	S_LOG_WARNING("No entity composed");
 	return Atlas::Message::MapType();

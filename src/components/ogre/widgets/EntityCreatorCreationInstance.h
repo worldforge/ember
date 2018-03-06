@@ -92,6 +92,7 @@ public:
 	 */
 	void finalizeCreation();
 
+	EntityCreatorMovement* getMovement();
 
 	/**
 	 * @brief Sets preview model name

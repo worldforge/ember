@@ -11,7 +11,7 @@ class EntityRecipe : public Ogre::Resource {
 public:
 	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
-	EntityRecipe(const std::string& name, const std::string& entityType);
+	explicit EntityRecipe(const Atlas::Message::MapType& entityDefinition);
 	virtual ~EntityRecipe();
 	const GUIAdaptersStore& getGUIAdapters();
 	void setAuthor(const std::string& author);

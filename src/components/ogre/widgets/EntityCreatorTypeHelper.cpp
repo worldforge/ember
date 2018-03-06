@@ -43,25 +43,28 @@
 #include <Eris/Connection.h>
 #include <Eris/Avatar.h>
 
-#include <CEGUI/Window.h>
 #include <CEGUI/widgets/Listbox.h>
 #include <CEGUI/widgets/Editbox.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/Tree.h>
-#include <framework/Singleton.h>
 #include "components/ogre/mapping/ModelActionCreator.h"
 
 namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
+EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree,
+												 CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton,
+												 CEGUI::Window& modelPreview, CEGUI::Combobox& modeCombobox,
+												 CEGUI::Window& defaultModeWindow) :
 		mConnection(connection),
 		mName(nameEditbox),
 		mModelPreviewRenderer(nullptr),
 		mModelPreviewManipulator(nullptr),
 		mRuleTreeAdapter(nullptr),
-		mCreateButton(nullptr) {
+		mCreateButton(nullptr),
+		mModeCombobox(modeCombobox),
+		mDefaultModeWindow(defaultModeWindow) {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
 
@@ -89,6 +92,11 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 
 	mConnection.getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityCreatorTypeHelper::typeService_BoundType));
 
+	mModeCombobox.addItem(Gui::ColouredListItem::createColouredListItem("free"));
+	mModeCombobox.addItem(Gui::ColouredListItem::createColouredListItem("planted"));
+	mModeCombobox.addItem(Gui::ColouredListItem::createColouredListItem("fixed"));
+	mModeCombobox.addItem(Gui::ColouredListItem::createColouredListItem("floating"));
+
 }
 
 void EntityCreatorTypeHelper::updatePreview() {
@@ -103,6 +111,14 @@ void EntityCreatorTypeHelper::updatePreview() {
 				showPreview(entity);
 
 				mCreateButton->setEnabled(true);
+
+				auto modeElement = type->getAttribute("mode");
+				if (modeElement && modeElement->isString()) {
+					mDefaultModeWindow.setText("(" + modeElement->String() + ")");
+				} else {
+					mModeCombobox.setText("");
+				}
+
 			} else {
 				mModelPreviewRenderer->showModel("");
 				mCreateButton->setEnabled(false);
@@ -142,6 +158,12 @@ void EntityCreatorTypeHelper::typeService_BoundType(Eris::TypeInfo* typeInfo) {
 			Authoring::DetachedEntity entity("0", typeInfo, mConnection.getTypeService());
 			showPreview(entity);
 			mCreateButton->setEnabled(true);
+			auto modeElement = typeInfo->getAttribute("mode");
+			if (modeElement && modeElement->isString()) {
+				mDefaultModeWindow.setText("(" + modeElement->String() + ")");
+			} else {
+				mModeCombobox.setText("");
+			}
 		}
 	}
 }
@@ -165,7 +187,17 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args) {
 
 				auto typeInfo = mConnection.getTypeService()->getTypeByName(typeData->getId());
 				if (typeInfo) {
-					EventCreateFromType(name, *typeInfo);
+					Atlas::Message::MapType definition{{"parent", typeInfo->getName()}};
+
+					if (!name.empty()) {
+						definition["name"] = name;
+					}
+
+					if (!mModeCombobox.getText().empty()) {
+						definition["mode"] = mModeCombobox.getText().c_str();
+					}
+
+					EventCreateFromType(definition);
 				}
 			} catch (const std::exception& ex) {
 				S_LOG_WARNING("Error when trying to create entity from type." << ex);

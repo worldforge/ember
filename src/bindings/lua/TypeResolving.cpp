@@ -24,6 +24,7 @@
 #include "config.h"
 #endif
 
+#include <Atlas/Message/Element.h>
 #include "TypeResolving.h"
 
 #include "components/ogre/MousePicker.h"
@@ -101,6 +102,8 @@ template <>
 const char* resolveLuaTypename<const Ember::EntityTalk>(){return "Ember::EntityTalk";}
 template <>
 const char* resolveLuaTypename<const Ember::MouseMotion>(){return "Ember::MouseMotion";}
+template <>
+const char* resolveLuaTypename<const Atlas::Message::MapType>(){return "Atlas::Message::MapType";}
 
 
 }

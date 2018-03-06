@@ -326,6 +326,10 @@ const Authoring::DetachedEntity* EntityCreatorCreationInstance::getEntity() cons
 	return mEntity;
 }
 
+EntityCreatorMovement* EntityCreatorCreationInstance::getMovement() {
+	return mMovement;
+}
+
 }
 }
 }

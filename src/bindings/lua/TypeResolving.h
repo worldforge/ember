@@ -29,18 +29,11 @@
 #include <string>
 #include <vector>
 #include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Message/Element.h>
 
 #include <Eris/BaseConnection.h>
 
 #include <MeshLodGenerator/OgreLodConfig.h>
-
-namespace Atlas
-{
-namespace Message
-{
-class Element;
-}
-}
 
 namespace Eris
 {

@@ -37,8 +37,8 @@ function EntityCreator:RecipesList_SelectionChanged(args)
 	end
 end
 
-function EntityCreator:createFromType(name, type)
-	self.typesCreator.recipe = Ember.OgreView.Authoring.EntityRecipe:new_local(name, type:getName())
+function EntityCreator:createFromType(definition)
+	self.typesCreator.recipe = Ember.OgreView.Authoring.EntityRecipe:new_local(definition)
 	self.recipe = self.typesCreator.recipe
 	self.helper:setRecipe(self.typesCreator.recipe)
 	self.helper:toggleCreateMode()
@@ -193,11 +193,13 @@ function EntityCreator.buildWidget(world)
 		local typesWindow = entityCreator.widget:getWindow("TabTypes", true)
 		local typesTree = CEGUI.toTree(typesWindow:getChild("TypeList"))
 		local typesName = CEGUI.toEditbox(typesWindow:getChild("Name"))
+		local modeCombobox = CEGUI.toCombobox(typesWindow:getChild("Mode"))
 		local typesCreateButton = CEGUI.toPushButton(typesWindow:getChild("CreateButton"))
 		local typesPreviewImage = typesWindow:getChild("ModelPreviewImage")
+		local defaultModeWindow = typesWindow:getChild("DefaultMode")
 		entityCreator.typesCreator = {}
 
-		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage)
+		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage, modeCombobox, defaultModeWindow)
 		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
 	
 		--Entity exports tab

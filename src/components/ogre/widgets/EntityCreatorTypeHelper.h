@@ -28,6 +28,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
 #include <components/ogre/authoring/DetachedEntity.h>
+#include <CEGUI/widgets/Combobox.h>
 
 namespace CEGUI
 {
@@ -74,13 +75,16 @@ class EntityCreatorTypeHelper : public virtual sigc::trackable
 {
 public:
 
-	EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
+	EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree,
+							CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton,
+							CEGUI::Window& modelPreview, CEGUI::Combobox& modeCombobox,
+							CEGUI::Window& defaultModeWindow);
 	virtual ~EntityCreatorTypeHelper();
 
 	/**
 	 * @brief Emitted when an entity should be created from a type.
 	 */
-	sigc::signal<void, const std::string&, Eris::TypeInfo&> EventCreateFromType;
+	sigc::signal<void, const Atlas::Message::MapType&> EventCreateFromType;
 
 protected:
 
@@ -102,6 +106,10 @@ protected:
 	Adapters::Eris::RuleTreeAdapter* mRuleTreeAdapter;
 
 	CEGUI::PushButton* mCreateButton;
+
+	CEGUI::Combobox& mModeCombobox;
+
+	CEGUI::Window& mDefaultModeWindow;
 
 	/**
 	 * @brief Keep track of the currently selected type, mainly for fast lookups in typeService_BoundType.

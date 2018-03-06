@@ -67,29 +67,39 @@
 					<Property name="Size" value="{{0,150},{1.00,-30}}" />
 					<Property name="InheritsAlpha" value="false" />
 				</Window>
-				<Window name="ModelPreviewImage" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0,155},{0,0}}" />
-					<Property name="Size" value="{{1.00,-155.00},{1.00,-65}}" />
-				</Window>
-				<Window name="NameText" type="EmberLook/StaticText">
+				<Window type="EmberLook/StaticText">
 					<Property name="Size" value="{{0,70},{0.00,25.0}}" />
-					<Property name="Position" value="{{0,155},{1.00,-60}}" />
+					<Property name="Position" value="{{0,155},{0,0}}" />
+					<Property name="Text" value="Mode:" />
+				</Window>
+				<Window name="Mode" type="EmberLook/Combobox">
+					<Property name="Size" value="{{0,75.0},{0,125.0}}" />
+					<Property name="Position" value="{{0,230},{0,0}}" />
+				</Window>
+				<Window name="DefaultMode" type="EmberLook/StaticText">
+					<Property name="Size" value="{{0,75.0},{0,25.0}}" />
+					<Property name="Position" value="{{0,310},{0,0}}" />
+				</Window>
+				<Window type="EmberLook/StaticText">
+					<Property name="Size" value="{{0,70},{0.00,25.0}}" />
+					<Property name="Position" value="{{0,155},{0,30}}" />
 					<Property name="Text" value="Name:" />
-					<Property name="InheritsAlpha" value="False" />
-					<Property name="FrameEnabled" value="False" />
-					<Property name="BackgroundEnabled" value="False" />
 				</Window>
 				<Window name="Name" type="EmberLook/Editbox">
 					<Property name="Size" value="{{0,75.0},{0,25.0}}" />
-					<Property name="Position" value="{{0,230},{1.00,-60}}" />
+					<Property name="Position" value="{{0,230},{0,30}}" />
 					<Property name="InheritsAlpha" value="True" />
+				</Window>
+				<Window name="ModelPreviewImage" type="EmberLook/StaticImage">
+					<Property name="Position" value="{{0,155},{0,60}}" />
+					<Property name="Size" value="{{1.00,-155.00},{1.00,-60}}" />
 				</Window>
 				<Window name="CreateButton" type="EmberLook/Button">
 					<Property name="Size" value="{{0,75.0},{0,25.0}}" />
 					<Property name="Position" value="{{0,0},{1.00,-25.0}}" />
 					<Property name="Text" value="Create" />
 					<Property name="InheritsAlpha" value="True" />
-				</Window>				
+				</Window>
 			</Window>
             <Window name="TabExports" type="DefaultWindow">
                 <Property name="Position" value="{{0,0},{0,0}}" />

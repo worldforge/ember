@@ -68,27 +68,27 @@ public:
 	 */
 	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
 
-	EntityRecipe(const std::string& name, const std::string& entityType);
+	explicit EntityRecipe(const Atlas::Message::MapType& entityDefinition);
 
 	/**
 	 * Destructor.
 	 */
-	virtual ~EntityRecipe();
+	~EntityRecipe() override;
 
 	/**
 	 * Implemented from Ogre::Resource.
 	 */
-	void loadImpl(void);
+	void loadImpl() override;
 
 	/**
 	 * Implemented from Ogre::Resource.
 	 */
-	void unloadImpl(void);
+	void unloadImpl() override;
 
 	/**
 	 * Implemented from Ogre::Resource.
 	 */
-	size_t calculateSize(void) const;
+	size_t calculateSize() const override;
 
 	/**
 	 * Returns entity type.
@@ -177,9 +177,11 @@ protected:
 	TiXmlElement* mEntitySpec;
 
 	/**
-	 * Entity type.
-	 */
+ 	 * Entity type.
+ 	 */
 	std::string mEntityType;
+
+	Atlas::Message::MapType mEntityDefinition;
 
 	/**
 	 * GUI adapters.
@@ -202,8 +204,9 @@ protected:
 	class SpecIterator: public TiXmlVisitor
 	{
 	public:
-		SpecIterator(EntityRecipe* recipe);
-		virtual bool Visit(const TiXmlText& elem);
+		explicit SpecIterator(EntityRecipe* recipe);
+
+		bool Visit(const TiXmlText& elem) override;
 	private:
 		EntityRecipe* mRecipe;
 	};

@@ -26,6 +26,8 @@
 
 #include "EntityCreator.h"
 #include "EntityCreatorCreationInstance.h"
+#include "EntityCreatorMovement.h"
+#include "EntityCreatorMovementBridge.h"
 
 #include "components/ogre/World.h"
 
@@ -127,7 +129,10 @@ void EntityCreator::finalizeCreation()
 	mLastOrientation = mCreationInstance->getOrientation();
 	mCreationInstance->finalizeCreation();
 
+	//Retain offset
+	auto offset = mCreationInstance->getMovement()->getBridge()->getOffset();
 	createNewCreationInstance();
+	mCreationInstance->getMovement()->getBridge()->setOffset(offset);
 
 }
 
