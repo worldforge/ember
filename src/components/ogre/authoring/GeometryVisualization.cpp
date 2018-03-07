@@ -25,6 +25,8 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 
+#include <wfmath/atlasconv.h>
+
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreWireBoundingBox.h>
@@ -74,10 +76,8 @@ void GeometryVisualization::entity_BboxChanged(const Atlas::Message::Element& /*
 }
 
 void GeometryVisualization::updateBbox() {
-	if (mEntity.hasBBox() && mEntity.getBBox().isValid()) {
-		if (mBboxUpdateFn) {
-			mBboxUpdateFn();
-		}
+	if (mEntity.hasBBox() && mEntity.getBBox().isValid() && mBboxUpdateFn) {
+		mBboxUpdateFn();
 	}
 }
 
@@ -342,43 +342,48 @@ void GeometryVisualization::placeCylinderZ(float radius, float halfHeight, Ogre:
 
 }
 
+void GeometryVisualization::placeBox(Ogre::AxisAlignedBox bbox) {
+	std::vector<Ogre::Vector3> vertices = {
+			{bbox.getMaximum().x, bbox.getMaximum().y, bbox.getMaximum().z},
+			{bbox.getMinimum().x, bbox.getMaximum().y, bbox.getMaximum().z},
+			{bbox.getMinimum().x, bbox.getMaximum().y, bbox.getMinimum().z},
+			{bbox.getMaximum().x, bbox.getMaximum().y, bbox.getMinimum().z},
+			{bbox.getMaximum().x, bbox.getMinimum().y, bbox.getMaximum().z},
+			{bbox.getMinimum().x, bbox.getMinimum().y, bbox.getMaximum().z},
+			{bbox.getMinimum().x, bbox.getMinimum().y, bbox.getMinimum().z},
+			{bbox.getMaximum().x, bbox.getMinimum().y, bbox.getMinimum().z}
+	};
+
+	//Counter-clockwise
+	std::vector<std::tuple<Ogre::uint32, Ogre::uint32, Ogre::uint32, Ogre::uint32>> quads;
+	quads.emplace_back(std::make_tuple(0, 3, 2, 1));
+	quads.emplace_back(std::make_tuple(4, 5, 6, 7));
+	quads.emplace_back(std::make_tuple(1, 5, 4, 0));
+	quads.emplace_back(std::make_tuple(2, 6, 5, 1));
+	quads.emplace_back(std::make_tuple(3, 7, 6, 2));
+	quads.emplace_back(std::make_tuple(0, 4, 7, 3));
+
+	auto firstVertex = static_cast<Ogre::uint32>(mManualObject->getCurrentVertexCount());
+	for (const auto& vertex : vertices) {
+		mManualObject->position(vertex);
+		auto normalized = vertex.normalisedCopy();
+		mManualObject->colour(normalized.x, normalized.y, normalized.z, 1.0f);
+	}
+
+	for (const auto& quad : quads) {
+		mManualObject->quad(std::get<0>(quad) + firstVertex, std::get<1>(quad) + firstVertex, std::get<2>(quad) + firstVertex, std::get<3>(quad) + firstVertex);
+	}
+}
+
+
 void GeometryVisualization::buildGeometry() {
 
 	auto buildBoxFn = [this]() {
 		mManualObject->clear();
 		mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-		auto& bbox = mEntity.getBBox();
+		placeBox(Convert::toOgre(mEntity.getBBox()));
 
-		std::vector<Ogre::Vector3> vertices = {
-				{bbox.highCorner().x(), bbox.highCorner().y(), bbox.highCorner().z()},
-				{bbox.lowCorner().x(),  bbox.highCorner().y(), bbox.highCorner().z()},
-				{bbox.lowCorner().x(),  bbox.highCorner().y(), bbox.lowCorner().z()},
-				{bbox.highCorner().x(), bbox.highCorner().y(), bbox.lowCorner().z()},
-				{bbox.highCorner().x(), bbox.lowCorner().y(),  bbox.highCorner().z()},
-				{bbox.lowCorner().x(),  bbox.lowCorner().y(),  bbox.highCorner().z()},
-				{bbox.lowCorner().x(),  bbox.lowCorner().y(),  bbox.lowCorner().z()},
-				{bbox.highCorner().x(), bbox.lowCorner().y(),  bbox.lowCorner().z()}
-		};
-
-		//Counter-clockwise
-		std::vector<std::tuple<Ogre::uint32, Ogre::uint32, Ogre::uint32, Ogre::uint32>> quads;
-		quads.emplace_back(std::make_tuple(0, 3, 2, 1));
-		quads.emplace_back(std::make_tuple(4, 5, 6, 7));
-		quads.emplace_back(std::make_tuple(1, 5, 4, 0));
-		quads.emplace_back(std::make_tuple(2, 6, 5, 1));
-		quads.emplace_back(std::make_tuple(3, 7, 6, 2));
-		quads.emplace_back(std::make_tuple(0, 4, 7, 3));
-
-		for (const auto& vertex : vertices) {
-			mManualObject->position(vertex);
-			auto normalized = vertex.normalisedCopy();
-			mManualObject->colour(normalized.x, normalized.y, normalized.z, 1.0f);
-		}
-
-		for (const auto& quad : quads) {
-			mManualObject->quad(std::get<0>(quad), std::get<1>(quad), std::get<2>(quad), std::get<3>(quad));
-		}
 		mManualObject->end();
 
 	};
@@ -415,7 +420,6 @@ void GeometryVisualization::buildGeometry() {
 									mManualObject->end();
 
 									mBboxUpdateFn = [this]() {
-										auto bbox = mManualObject->getBoundingBox();
 										Ogre::Vector3 entitySize = Convert::toOgre(mEntity.getBBox()).getSize();
 
 										Ogre::Vector3 manualObjectSize = mManualObject->getBoundingBox().getSize();
@@ -436,6 +440,11 @@ void GeometryVisualization::buildGeometry() {
 							}
 							mOgreEntity = entity;
 							mSceneNode->attachObject(entity);
+
+							mBboxUpdateFn = [this]() {
+								Ogre::Vector3 scaling = Convert::toOgre(mEntity.getBBox()).getSize() / mOgreEntity->getBoundingBox().getSize();
+								mSceneNode->setScale(scaling);
+							};
 						}
 					});
 				}
@@ -558,6 +567,32 @@ void GeometryVisualization::buildGeometry() {
 					placeCylinderZ(radius, (size.z() / 2.0f), Convert::toOgre(offset));
 
 					mManualObject->end();
+				};
+			} else if (shape == "compound") {
+				mBboxUpdateFn = [&]() {
+					mManualObject->clear();
+					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+					AtlasQuery::find<Atlas::Message::ListType>(geometry, "shapes", [&](const Atlas::Message::ListType& shapes) {
+						for (auto& shapeElement : shapes) {
+							AtlasQuery::find<std::string>(shapeElement, "type", [&](const std::string& type) {
+								if (type == "box") {
+									AtlasQuery::find<Atlas::Message::ListType>(shapeElement, "points", [&](const Atlas::Message::ListType& points) {
+										WFMath::AxisBox<3> bbox(points);
+
+										placeBox(Convert::toOgre(bbox));
+									});
+								}
+							});
+						}
+					});
+
+					mManualObject->end();
+
+
+					auto entityAxisBox = Convert::toOgre(mEntity.getBBox());
+					auto scaling = entityAxisBox.getSize() / mManualObject->getBoundingBox().getSize();
+					mSceneNode->setScale(scaling);
 				};
 			}
 

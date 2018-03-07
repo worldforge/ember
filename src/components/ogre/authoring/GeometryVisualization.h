@@ -22,6 +22,7 @@
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 #include <functional>
+#include <OgreAxisAlignedBox.h>
 
 
 namespace Ogre {
@@ -119,6 +120,7 @@ protected:
 	void placeCylinderX(float radius, float halfHeight, Ogre::Vector3 offset);
 	void placeCylinderY(float radius, float halfHeight, Ogre::Vector3 offset);
 	void placeCylinderZ(float radius, float halfHeight, Ogre::Vector3 offset);
+	void placeBox(Ogre::AxisAlignedBox box);
 
 };
 }
