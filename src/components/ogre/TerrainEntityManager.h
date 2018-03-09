@@ -81,7 +81,7 @@ private:
 	void entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 	void entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 
-	void entityBeingDeleted(EmberEntity& entity, Terrain::TerrainArea* terrainArea);
+	void entityBeingDeleted(EmberEntity& entity);
 	void entityMoved(EmberEntity& entity, Terrain::TerrainArea& terrainArea);
 	void entityModeChanged(EmberEntity& entity, Terrain::TerrainArea& terrainArea);
 	void entityModeChanged(EmberEntity& entity, Terrain::TerrainMod& terrainMod);
