@@ -186,19 +186,6 @@ namespace Ogre {
 		*/
 		void transform( const Ogre::Matrix4& matrix );
 
-		/** Transforms the box according to the affine matrix supplied.
-		@remarks
-		By calling this method you get the axis-aligned box which
-		surrounds the transformed version of this box. Therefore each
-		corner of the box is transformed by the matrix, then the
-		extents are mapped back onto the axes to produce another
-		AABB. Useful when you have a local AABB for an object which
-		is then transformed.
-		@note
-		The matrix must be an affine matrix. @see Matrix4::isAffine.
-		*/
-		void transformAffine(const Ogre::Matrix4& m);
-
 		/** Sets the box to a 'null' value i.e. not a box.
 		*/
 		void setNull();

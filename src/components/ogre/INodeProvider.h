@@ -20,16 +20,7 @@
 #define INODEPROVIDER_H_
 
 #include "domain/IVisualizable.h"
-
-namespace Ogre {
-class Node;
-
-class MovableObject;
-
-class Vector3;
-
-class Quaternion;
-}
+#include "components/ogre/OgreIncludes.h"
 
 namespace Ember {
 namespace OgreView {

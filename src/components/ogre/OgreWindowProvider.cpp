@@ -23,26 +23,17 @@
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 
-namespace Ember
-{
+namespace Ember {
 
-namespace OgreView
-{
+namespace OgreView {
 
 OgreWindowProvider::OgreWindowProvider(Ogre::RenderWindow& window) :
-		mWindow(window)
-{
-	Ogre::WindowEventUtilities::addWindowEventListener(&mWindow, this);
-
+		mWindow(window) {
 }
 
-OgreWindowProvider::~OgreWindowProvider()
-{
-	Ogre::WindowEventUtilities::removeWindowEventListener(&mWindow, this);
-}
+OgreWindowProvider::~OgreWindowProvider() = default;
 
-std::string OgreWindowProvider::getWindowHandle()
-{
+std::string OgreWindowProvider::getWindowHandle() {
 	std::ostringstream winHandleStr;
 	size_t winHandle = 0;
 	mWindow.getCustomAttribute("WINDOW", &winHandle);
@@ -51,50 +42,19 @@ std::string OgreWindowProvider::getWindowHandle()
 	return winHandleStr.str();
 }
 
-bool OgreWindowProvider::isWindowVisible()
-{
+bool OgreWindowProvider::isWindowVisible() {
 	return mWindow.isVisible();
 }
 
-void OgreWindowProvider::processInput()
-{
-	Ogre::WindowEventUtilities::messagePump();
+void OgreWindowProvider::processInput() {
 }
 
-void OgreWindowProvider::getWindowSize(unsigned int& width, unsigned int& height)
-{
+void OgreWindowProvider::getWindowSize(unsigned int& width, unsigned int& height) {
 	unsigned int depth;
 	int left, top;
 	mWindow.getMetrics(width, height, depth, left, top);
 }
 
-void OgreWindowProvider::windowResized(Ogre::RenderWindow* rw)
-{
-	unsigned int width, height;
-	getWindowSize(width, height);
-	Input::getSingleton().setGeometry(width, height);
-}
-
-bool OgreWindowProvider::windowClosing(Ogre::RenderWindow* rw)
-{
-	MainLoopController::getSingleton().requestQuit();
-
-	//returning false means the window should not be destroyed.
-	return false;
-}
-
-void OgreWindowProvider::windowClosed(Ogre::RenderWindow* rw)
-{
-	//last chance to detach OIS from the window.
-	Input::getSingleton().shutdownInteraction();
-}
-
-void OgreWindowProvider::windowFocusChange(Ogre::RenderWindow* rw)
-{
-	Input& input = Input::getSingleton();
-	input.setInputMode(Input::IM_GUI);
-	input.setMouseGrab(false);
-}
 }
 }
 

@@ -39,7 +39,6 @@ the basic resources required for the progress bar and will be loaded automatical
 #include <OgreMaterialManager.h>
 #include <OgreFontManager.h>
 #include <OgreRenderWindow.h>
-#include <OgreWindowEventUtilities.h>
 #include <Ogre.h>
 
 #include <utility>

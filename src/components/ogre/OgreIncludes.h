@@ -48,6 +48,7 @@ typedef float Real;
 // Pre-declare classes
 // Allows use of pointers in header files without including individual .h
 // so decreases dependencies between files
+class Any;
 class Angle;
 class Animation;
 class AnimationState;
@@ -221,9 +222,11 @@ class Timer;
 template< typename T >
 struct TRect;
 class UserObjectBindings;
-class Vector2;
-class Vector3;
-class Vector4;
+typedef Vector<2, Real> Vector2;
+typedef Vector<2, int> Vector2i;
+typedef Vector<3, Real> Vector3;
+typedef Vector<3, int> Vector3i;
+typedef Vector<4, Real> Vector4;
 class Viewport;
 class VertexAnimationTrack;
 class VertexBufferBinding;

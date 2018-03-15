@@ -182,6 +182,7 @@ Ogre::Root* OgreSetup::createOgreSystem() {
 
 	mOverlaySystem = OGRE_NEW Ogre::OverlaySystem();
 
+	mPluginLoader.loadPlugin("Codec_FreeImage");
 	mPluginLoader.loadPlugin("Plugin_ParticleFX");
 	mPluginLoader.loadPlugin("RenderSystem_GL3Plus"); //We'll use OpenGL on Windows too, to make it easier to develop
 
@@ -223,20 +224,12 @@ bool OgreSetup::showConfigurationDialog() {
 		return false;
 	}
 	createOgreSystem();
-	if (result == OgreConfigurator::OC_ADVANCED_OPTIONS) {
-		auto* dialog = OGRE_NEW Ogre::ConfigDialog();
-		bool isOk = mRoot->showConfigDialog(dialog);
-		OGRE_DELETE dialog;
-		if (!isOk) {
-			return false;
-		}
-	} else {
-		const Ogre::ConfigOptionMap& configOptions = configurator.getConfigOptions();
-		for (const auto& configOption : configOptions) {
-			mRoot->getRenderSystem()->setConfigOption(configOption.first, configOption.second.currentValue);
-			//Keys in varconf are mangled, so we store the entry with a ":" delimiter.
-			EmberServices::getSingleton().getConfigService().setValue("renderer", configOption.second.name, configOption.second.name + ":" + configOption.second.currentValue);
-		}
+
+	auto configOptions = configurator.getConfigOptions();
+	for (const auto& configOption : configOptions) {
+		mRoot->getRenderSystem()->setConfigOption(configOption.first, configOption.second.currentValue);
+		//Keys in varconf are mangled, so we store the entry with a ":" delimiter.
+		EmberServices::getSingleton().getConfigService().setValue("renderer", configOption.second.name, configOption.second.name + ":" + configOption.second.currentValue);
 	}
 	return true;
 }

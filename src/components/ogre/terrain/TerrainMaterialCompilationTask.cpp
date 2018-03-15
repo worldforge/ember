@@ -97,20 +97,19 @@ void TerrainMaterialCompilationTask::updateSceneManagersAfterMaterialsChange() {
 			if (pScene) {
 				Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
 				if (pQueue) {
-					Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
-					while (groupIter.hasMoreElements()) {
-						Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
-						if (pGroup)
-							pGroup->clear(false);
-					}//end_while(groupIter.hasMoreElements())
-				}//end_if(pScene)
-			}//end_if(pScene)
-		}//end_while(scenesIter.hasMoreElements())
+					for (auto& groupEntry : pQueue->_getQueueGroups()) {
+						if (groupEntry) {
+							groupEntry->clear(false);
+						}
+					}
+				}
+			}
+		}
 
 		// Now trigger the pending pass updates
 		Ogre::Pass::processPendingPassUpdates();
 
-	}//end_if(m_Root..
+	}
 }
 
 }

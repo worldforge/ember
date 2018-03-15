@@ -21,7 +21,7 @@
 
 #include "services/input/IWindowProvider.h"
 
-#include <OgreWindowEventUtilities.h>
+#include <OgreRenderWindow.h>
 
 #include <string>
 
@@ -33,64 +33,34 @@ namespace OgreView
 /**
  * @brief Provides a Window interface for the Input class.
  */
-class OgreWindowProvider: public IWindowProvider, public Ogre::WindowEventListener
+class OgreWindowProvider: public IWindowProvider
 {
 public:
 
-	OgreWindowProvider(Ogre::RenderWindow& window);
+	explicit OgreWindowProvider(Ogre::RenderWindow& window);
 
-	~OgreWindowProvider();
+	~OgreWindowProvider() override;
 
 	/**
 	 * @brief Returns whether the window is visible.
 	 */
-	bool isWindowVisible();
+	bool isWindowVisible() override;
 
 	/**
 	 * @brief Returns the window handle as string.
 	 */
-	std::string getWindowHandle();
+	std::string getWindowHandle() override;
 
 	/**
 	 * @brief Allows to get the window size.
 	 */
-	void getWindowSize(unsigned int& width, unsigned int& height);
+	void getWindowSize(unsigned int& width, unsigned int& height) override;
 
 	/**
 	 * @brief Processes input for the window.
 	 */
-	void processInput();
+	void processInput() override;
 
-	/**
-	 * @brief Ogre will call this automatically, when the window is resized.
-	 * 
-	 * This will update the window size for mouse calculations.
-	 */
-	void windowResized(Ogre::RenderWindow* rw);
-
-	/**
-	 * @brief Ogre will call this automatically, when the close (X) button is pressed by the user.
-	 * 
-	 * Used to choose whether you want from Ogre to destroy the window automatically.
-	 * By default its true, but we don't want Ogre to destroy it, since Ember will ask for confirmation first.
-	 * 
-	 * @return Whether you want from Ogre to destroy the window.
-	 */
-	bool windowClosing(Ogre::RenderWindow* rw);
-
-	/**
-	 * @brief Ogre will call this automatically before the window is destroyed.
-	 * 
-	 * This is the last chance to detach OIS.
-	 */
-	void windowClosed(Ogre::RenderWindow* rw);
-
-	/**
-	 * @brief Ogre will call this automatically when the window changes focus.
-	 * 
-	 * This is usually requested by the user with alt+tab key combination.
-	 */
-	void windowFocusChange(Ogre::RenderWindow* rw);
 private:
 
 	/**

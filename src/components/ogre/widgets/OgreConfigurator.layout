@@ -41,14 +41,6 @@
                         <Property name="TooltipText">Don't show this settings window on next start.</Property>
                     </Window>
                 </Window>
-                <Window name="Advanced_container" type="DefaultWindow">
-                    <Property name="Size" value="{{1,0},{0,30}}" />
-                    <Window name="Advanced" type="EmberLook/Button">
-                        <Property name="Size" value="{{0,100},{0,25}}" />
-                        <Property name="Text" value="Advanced" />
-                        <Property name="TooltipText" value="Brings up the Ogre settings dialog." />
-                    </Window>
-                </Window>
             </Window>
         </Window>
         <Window name="Buttons_container" type="DefaultWindow">

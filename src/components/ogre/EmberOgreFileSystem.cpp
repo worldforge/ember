@@ -28,7 +28,6 @@ Torus Knot Software Ltd.
 -----------------------------------------------------------------------------
 */
 
-#include <OgreStableHeaders.h>
 #include "EmberOgreFileSystem.h"
 #include "framework/LoggingInstance.h"
 #include <OgreFileSystem.h>

@@ -20,8 +20,9 @@
 
 namespace Ogre {
 
-typedef std::vector<class Vector3*> TSection;
-typedef std::vector<class Vector3*> TLeaf;
+
+typedef std::vector<Vector3*> TSection;
+typedef std::vector<Vector3*> TLeaf;
 typedef uchar TLeafShape;
 
 //---------------------------------------------------------------------------

@@ -28,14 +28,8 @@
 #include <memory>
 #include <wfmath/vector.h>
 #include <OgreMath.h>
+#include "components/ogre/OgreIncludes.h"
 
-namespace Ogre {
-class ColourValue;
-
-class Image;
-
-class Vector2;
-}
 
 namespace Ember {
 namespace OgreView {

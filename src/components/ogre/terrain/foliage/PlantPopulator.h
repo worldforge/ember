@@ -9,14 +9,11 @@
 #define PLANTPOPULATOR_H_
 
 #include "components/ogre/terrain/Types.h"
+#include "components/ogre/OgreIncludes.h"
 
 namespace WFMath
 {
 class MTRand;
-}
-
-namespace Ogre {
-class Vector2;
 }
 
 namespace Ember

@@ -19,13 +19,7 @@
 #ifndef IENVIRONMENTPROVIDER_H_
 #define IENVIRONMENTPROVIDER_H_
 #include "components/ogre/ILightning.h"
-
-namespace Ogre
-{
-class Vector3;
-class Any;
-}
-;
+#include "components/ogre/OgreIncludes.h"
 
 namespace Ember
 {

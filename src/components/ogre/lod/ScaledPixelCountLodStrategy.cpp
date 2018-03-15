@@ -27,7 +27,7 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
-#include <OgreStableHeaders.h>
+#include <Ogre.h>
 #include "ScaledPixelCountLodStrategy.h"
 
 #include <OgreViewport.h>

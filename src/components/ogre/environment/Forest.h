@@ -26,17 +26,13 @@
 #include <OgreMath.h>
 #include <OgreFrameListener.h>
 #include <sigc++/trackable.h>
+#include "components/ogre/OgreIncludes.h"
 
 namespace Forests {
 class PagedGeometry;
 class TreeLoader3D;
 }
 
-namespace Ogre
-{
-	class Entity;
-	class Vector3;
-}
 namespace Ember {
 class EmberEntity;
 namespace OgreView {
