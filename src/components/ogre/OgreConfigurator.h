@@ -57,12 +57,8 @@ public:
 		/**
 		 * @brief Configuration was cancelled.
 		 */
-		OC_CANCEL,
+		OC_CANCEL
 
-		/**
-		 * @brief User requested to use the more complex Ogre configuration.
-		 */
-		OC_ADVANCED_OPTIONS
 	};
 
 	/**
@@ -91,7 +87,6 @@ protected:
 
 	bool buttonOkClicked(const CEGUI::EventArgs& args);
 	bool buttonCancelClicked(const CEGUI::EventArgs& args);
-	bool buttonAdvancedClicked(const CEGUI::EventArgs& args);
 	void updateResolutionList(Ogre::RenderSystem* renderSystem);
 
 	/**

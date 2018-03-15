@@ -144,8 +144,6 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		//okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonOkClicked, this));
 		CEGUI::Window* cancelButton = mConfigWindow->getChildRecursive("Button_cancel");
 		cancelButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonCancelClicked, this));
-		CEGUI::Window* advancedButton = mConfigWindow->getChildRecursive("Advanced");
-		advancedButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonAdvancedClicked, this));
 
 		auto fullscreenCheckbox = dynamic_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("Fullscreen"));
 		auto dontShowAgainCheckbox = dynamic_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("DontShowAgain"));
@@ -257,13 +255,6 @@ bool OgreConfigurator::buttonOkClicked(const CEGUI::EventArgs& args)
 bool OgreConfigurator::buttonCancelClicked(const CEGUI::EventArgs& args)
 {
 	mResult = OC_CANCEL;
-	mContinueInLoop = false;
-	return true;
-}
-
-bool OgreConfigurator::buttonAdvancedClicked(const CEGUI::EventArgs& args)
-{
-	mResult = OC_ADVANCED_OPTIONS;
 	mContinueInLoop = false;
 	return true;
 }

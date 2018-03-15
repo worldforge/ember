@@ -112,16 +112,16 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox) {
 
 			switch (getModel().getUseScaleOf()) {
 				case ModelDefinition::UseScaleOf::MODEL_HEIGHT:
-					scale = std::abs(ogreSize.y / defaultSize.y);
+					scale = Ogre::Vector3(std::abs(ogreSize.y / defaultSize.y));
 					break;
 				case ModelDefinition::UseScaleOf::MODEL_WIDTH:
-					scale = std::abs(ogreSize.x / defaultSize.x);
+					scale = Ogre::Vector3(std::abs(ogreSize.x / defaultSize.x));
 					break;
 				case ModelDefinition::UseScaleOf::MODEL_DEPTH:
-					scale = std::abs(ogreSize.z / defaultSize.z);
+					scale = Ogre::Vector3(std::abs(ogreSize.z / defaultSize.z));
 					break;
 				case ModelDefinition::UseScaleOf::MODEL_NONE:
-					scale = 1;
+					scale = Ogre::Vector3(1);
 					break;
 				case ModelDefinition::UseScaleOf::MODEL_ALL:
 					scale.x = std::abs(ogreSize.x / defaultSize.x);

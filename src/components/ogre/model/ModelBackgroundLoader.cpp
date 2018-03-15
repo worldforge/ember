@@ -211,13 +211,15 @@ bool ModelBackgroundLoader::performLoading() {
 				for (auto* tech : materialPtr->getSupportedTechniques()) {
 					for (auto* pass : tech->getPasses()) {
 						for (auto* tus : pass->getTextureUnitStates()) {
-							unsigned int frames = tus->getNumFrames();
-							for (unsigned int i = 0; i < frames; ++i) {
-								const auto& textureName = tus->getFrameTextureName(i);
-								mTexturesToLoad.insert(textureName);
-								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::TextureManager::getSingleton().getResourceType(), textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
-								if (ticket) {
-									addTicket(ticket);
+							if (tus->getContentType() == Ogre::TextureUnitState::ContentType::CONTENT_NAMED) {
+								unsigned int frames = tus->getNumFrames();
+								for (unsigned int i = 0; i < frames; ++i) {
+									const auto& textureName = tus->getFrameTextureName(i);
+									mTexturesToLoad.insert(textureName);
+									Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::TextureManager::getSingleton().getResourceType(), textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
+									if (ticket) {
+										addTicket(ticket);
+									}
 								}
 							}
 						}

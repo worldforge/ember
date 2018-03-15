@@ -74,10 +74,6 @@ namespace Ogre {
 		/** Clears the internal buffer */
 		void clearQueue();
 
-        /** Parses a Material script file passed as a stream.
-        */
-        void parseScript(Ogre::DataStreamPtr& stream, const std::string& groupName);
-
 
 
 

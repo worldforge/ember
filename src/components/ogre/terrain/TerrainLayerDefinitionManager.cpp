@@ -105,24 +105,24 @@ void TerrainLayerDefinitionManager::resolveTextureReferences() {
 			return texture;
 		}
 		auto locations = Ogre::ResourceGroupManager::getSingleton().getResourceLocationList(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-		for (auto location : locations) {
-			if (location->archive->exists(texture)) {
+		for (const auto& location : locations) {
+			if (location.archive->exists(texture)) {
 				return texture;
 			}
 		}
 
 		if (boost::algorithm::ends_with(texture, ".png")) {
 			std::string newTextureName = texture.substr(0, texture.length() - 4) + ".dds";
-			for (auto location : locations) {
-				if (location->archive->exists(newTextureName)) {
+			for (const auto& location : locations) {
+				if (location.archive->exists(newTextureName)) {
 					return newTextureName;
 				}
 			}
 		}
 		if (boost::algorithm::ends_with(texture, ".dds")) {
 			std::string newTextureName = texture.substr(0, texture.length() - 4) + ".png";
-			for (auto location : locations) {
-				if (location->archive->exists(newTextureName)) {
+			for (const auto& location : locations) {
+				if (location.archive->exists(newTextureName)) {
 					return newTextureName;
 				}
 			}

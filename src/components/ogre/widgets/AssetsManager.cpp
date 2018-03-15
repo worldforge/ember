@@ -146,8 +146,8 @@ std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& fi
 	for (auto& group : groups) {
 		auto locations = manager.getResourceLocationList(group);
 		for (auto& location : locations) {
-			if (location->archive) {
-				const std::string resourceLocation = location->archive->getName();
+			if (location.archive) {
+				const std::string resourceLocation = location.archive->getName();
 				if (Ogre::StringUtil::startsWith(filePath, resourceLocation, true)) {
 					//Replace backwards slashes on windows with forwards slashes as that's what's used in the Ogre resource system.
 					std::string localMeshPath = filePath.substr(resourceLocation.length(), std::string::npos);
