@@ -42,7 +42,10 @@ namespace Authoring
 unsigned int PolygonRenderer::sCounter = 0;
 
 PolygonRenderer::PolygonRenderer(Ogre::SceneNode& sceneNode, const std::list<PolygonPoint*>& points, bool closed) :
-	mNode(sceneNode.createChildSceneNode()), mPoints(points), mManualObject(nullptr), mClosed(closed)
+	mNode(sceneNode.createChildSceneNode()),
+	mPoints(points),
+	mManualObject(nullptr),
+	mClosed(closed)
 {
 
 	mNode->setInheritScale(false);

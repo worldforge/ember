@@ -78,7 +78,7 @@ public:
 	EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree,
 							CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton,
 							CEGUI::Window& modelPreview, CEGUI::Combobox& modeCombobox,
-							CEGUI::Window& defaultModeWindow);
+							CEGUI::Window& defaultModeWindow, CEGUI::Window& plantedOnWindow);
 	virtual ~EntityCreatorTypeHelper();
 
 	/**
@@ -110,6 +110,8 @@ protected:
 	CEGUI::Combobox& mModeCombobox;
 
 	CEGUI::Window& mDefaultModeWindow;
+
+	CEGUI::Window& mPlantedOnWindow;
 
 	/**
 	 * @brief Keep track of the currently selected type, mainly for fast lookups in typeService_BoundType.

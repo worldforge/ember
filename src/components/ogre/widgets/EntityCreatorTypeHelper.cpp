@@ -56,7 +56,7 @@ namespace Gui {
 EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree,
 												 CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton,
 												 CEGUI::Window& modelPreview, CEGUI::Combobox& modeCombobox,
-												 CEGUI::Window& defaultModeWindow) :
+												 CEGUI::Window& defaultModeWindow, CEGUI::Window& plantedOnWindow) :
 		mConnection(connection),
 		mName(nameEditbox),
 		mModelPreviewRenderer(nullptr),
@@ -64,7 +64,8 @@ EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, C
 		mRuleTreeAdapter(nullptr),
 		mCreateButton(nullptr),
 		mModeCombobox(modeCombobox),
-		mDefaultModeWindow(defaultModeWindow) {
+		mDefaultModeWindow(defaultModeWindow),
+		mPlantedOnWindow(plantedOnWindow) {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
 
@@ -183,7 +184,6 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args) {
 				if (!mName.getText().empty()) {
 					name = mName.getText().c_str();
 				}
-				//TODO: this has been refactored; perhaps we should also change the signal to not use a TypeInfo...
 
 				auto typeInfo = mConnection.getTypeService()->getTypeByName(typeData->getId());
 				if (typeInfo) {
@@ -195,6 +195,10 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args) {
 
 					if (!mModeCombobox.getText().empty()) {
 						definition["mode"] = mModeCombobox.getText().c_str();
+					}
+
+					if (!mPlantedOnWindow.getText().empty()) {
+						definition["planted_on"] = mPlantedOnWindow.getText().c_str();
 					}
 
 					EventCreateFromType(definition);

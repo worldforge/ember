@@ -132,7 +132,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~EntityMoverBase() override = default;
+	~EntityMoverBase() override;
 
 	const WFMath::Quaternion& getOrientation() const override;
 
@@ -218,6 +218,11 @@ protected:
 	 * @returns The shared snap listener.
 	 */
 	SnapListener& getSnapListener() const;
+
+	/**
+	 * If an offset is used, we'll show a vertical line.
+	 */
+	Ogre::ManualObject* mOffsetMarker;
 
 	/**
 	 * @brief Called when the entity's position has been changed.

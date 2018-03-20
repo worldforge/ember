@@ -27,6 +27,8 @@
 #include "components/ogre/Convert.h"
 
 #include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreManualObject.h>
 
 namespace Ember {
 namespace OgreView {
@@ -61,12 +63,25 @@ EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::S
 		mEntity(entity),
 		mNode(node),
 		mSceneManager(sceneManager),
-		mSnapping(nullptr) {
+		mSnapping(nullptr),
+		mOffsetMarker(nullptr)
+{
 	SnapListener& snapListener = getSnapListener();
 	if (snapListener.getSnappingEnabled()) {
 		setSnapToEnabled(true);
 	}
 	snapListener.EventSnappingChanged.connect(sigc::mem_fun(*this, &EntityMoverBase::snapListener_SnappingChanged));
+
+	mOffsetMarker = sceneManager.createManualObject();
+	Ogre::SceneNode* sceneNode = dynamic_cast<Ogre::SceneNode*>(node);
+	if (sceneNode) {
+		sceneNode->attachObject(mOffsetMarker);
+	}
+
+}
+
+EntityMoverBase::~EntityMoverBase() {
+	mSceneManager.destroyManualObject(mOffsetMarker);
 }
 
 const WFMath::Quaternion& EntityMoverBase::getOrientation() const {
@@ -166,6 +181,15 @@ void EntityMoverBase::setOffset(boost::optional<float> offset) {
 		position.y() -= existingOffset.get();
 	}
 	setPosition(position);
+
+	mOffsetMarker->clear();
+	if (offset && offset.get() != 0) {
+		mOffsetMarker->begin("BaseWhite", Ogre::RenderOperation::OT_LINE_LIST);
+		mOffsetMarker->position(Ogre::Vector3::ZERO);
+		mOffsetMarker->position(0, -offset.get(), 0);
+		mOffsetMarker->end();
+	}
+
 }
 
 boost::optional<float> EntityMoverBase::getOffset() const {

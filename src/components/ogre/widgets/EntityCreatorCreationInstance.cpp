@@ -187,8 +187,10 @@ void EntityCreatorCreationInstance::finalizeCreation()
 	auto offset = mMovement->getBridge()->getOffset();
 	if (offset) {
 		if (mEntity->hasAttr("mode") && mEntity->valueOfAttr("mode").isString() && mEntity->valueOfAttr("mode").String() == "planted") {
-			mEntityMessage["planted-offset"] = offset.get();
-			pos.y() -= offset.get();
+			if (!mEntity->hasAttr("planted_on")) {
+				mEntityMessage["planted-offset"] = offset.get();
+				pos.y() -= offset.get();
+			}
 		}
 	}
 
@@ -251,7 +253,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 
 	initFromModel();
 
-	// Setting inital position and orientation
+	// Setting initial position and orientation
 	if (mPos.isValid()) {
 		mEntityNode->setPosition(Convert::toOgre(mPos));
 	}

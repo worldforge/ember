@@ -197,9 +197,11 @@ function EntityCreator.buildWidget(world)
 		local typesCreateButton = CEGUI.toPushButton(typesWindow:getChild("CreateButton"))
 		local typesPreviewImage = typesWindow:getChild("ModelPreviewImage")
 		local defaultModeWindow = typesWindow:getChild("DefaultMode")
+		local plantedOnWindow = typesWindow:getChild("PlantedOn")
 		entityCreator.typesCreator = {}
 
-		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage, modeCombobox, defaultModeWindow)
+		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar():getConnection(),
+			typesTree, typesName, typesCreateButton, typesPreviewImage, modeCombobox, defaultModeWindow, plantedOnWindow)
 		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
 	
 		--Entity exports tab
