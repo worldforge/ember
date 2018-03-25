@@ -41,7 +41,11 @@ namespace Ember {
 namespace OgreView {
 namespace Authoring {
 EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& manager) :
-		EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode(), manager.getWorld().getScene().getSceneManager()), mNodeAttachment(nodeAttachment), mManager(manager), mPreviousControlDelegate(nodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this)) {
+		EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode(), manager.getWorld().getScene().getSceneManager()),
+		mNodeAttachment(nodeAttachment),
+		mManager(manager),
+		mPreviousControlDelegate(nodeAttachment.getControlDelegate()),
+		mControlDelegate(new EntityMoverControlDelegate(*this)) {
 	nodeAttachment.setControlDelegate(mControlDelegate);
 }
 
@@ -55,17 +59,12 @@ const IEntityControlDelegate& EntityMover::getControlDelegate() const {
 
 void EntityMover::finalizeMovement() {
 	if (mEntity.getLocation()) {
-		auto position = getPosition();
-		//If the entity is planted, we'll supply an offset. The position of the entity will then be the reported position minus the offset.
-		if (mOffset && mEntity.hasAttr("mode")) {
-			auto& modeElement = mEntity.valueOfAttr("mode");
-			if (modeElement.isString() && modeElement.String() == "planted") {
-				position.y() -= mOffset.get();
-			}
-		}
-		mManager.getWorld().getView().getAvatar()->place(&mEntity, mEntity.getLocation(), position, getOrientation(), mOffset);
+		mManager.getWorld().getView().getAvatar()->place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
 	}
-	mNodeAttachment.updatePosition();
+
+	//Let the manager perform a check after some seconds to adjust the position of the entity (if movement failed etc.).
+	mManager.delayedUpdatePositionForEntity(mEntity.getId());
+
 	cleanup();
 	mManager.EventFinishedMoving.emit();
 

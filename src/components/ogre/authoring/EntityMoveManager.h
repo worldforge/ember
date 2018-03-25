@@ -29,6 +29,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/EntityObserverBase.h"
 #include "framework/ConsoleObject.h"
+#include <Eris/ActiveMarker.h>
 
 namespace Ember
 {
@@ -94,6 +95,13 @@ public:
 	World& getWorld() const;
 
 	/**
+	 * Posts a one second delayed call to update the position of the attachment.
+	 * This is useful when an entity has been moved, and we want to make sure that it actually got moved.
+	 * @param entityId
+	 */
+	void delayedUpdatePositionForEntity(std::string entityId);
+
+	/**
 	 * @brief Emitted when the movement of an entity starts
 	 */
 	sigc::signal<void, EmberEntity&, EntityMover&> EventStartMoving;
@@ -128,6 +136,8 @@ protected:
 	 * @brief Responsible for making sure that entities that cannot be moved are returned to their correct place.
 	 */
 	EntityMoveAdjuster mAdjuster;
+
+	Eris::ActiveMarker mActiveMarker;
 
 };
 

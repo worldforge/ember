@@ -26,14 +26,15 @@
 #endif
 
 #include "EntityMoveManager.h"
-#include "components/ogre/World.h"
 #include "EntityMover.h"
 #include "../GUIManager.h"
+#include "../EmberOgre.h"
+#include "components/ogre/World.h"
+#include "components/ogre/NodeAttachment.h"
+#include "domain/EmberEntity.h"
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
-#include "../EmberOgre.h"
-#include "domain/EmberEntity.h"
-#include "components/ogre/NodeAttachment.h"
+#include "framework/MainLoopController.h"
 
 namespace Ember
 {
@@ -92,7 +93,7 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string entityId = tokeniser.nextToken();
-		if (entityId != "") {
+		if (!entityId.empty()) {
 			EmberEntity* entity = mWorld.getEmberEntity(entityId);
 			if (entity != 0) {
 				startMove(*entity);
@@ -107,6 +108,19 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 World& EntityMoveManager::getWorld() const
 {
 	return mWorld;
+}
+
+void EntityMoveManager::delayedUpdatePositionForEntity(std::string entityId) {
+	MainLoopController::getSingleton().getEventService().runOnMainThreadDelayed([this, entityId]{
+		auto entity = mWorld.getEmberEntity(entityId);
+		if (entity) {
+			if (entity->getAttachment()) {
+				entity->getAttachment()->updatePosition();
+			}
+		}
+	}, boost::posix_time::seconds(1));
+
+
 }
 
 

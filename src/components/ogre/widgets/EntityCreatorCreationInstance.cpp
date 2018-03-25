@@ -183,17 +183,6 @@ void EntityCreatorCreationInstance::finalizeCreation()
 
 	auto pos = mMovement->getBridge()->getPosition();;
 	mEntityMessage["orientation"] = mMovement->getBridge()->getOrientation().toAtlas();
-
-	auto offset = mMovement->getBridge()->getOffset();
-	if (offset) {
-		if (mEntity->hasAttr("mode") && mEntity->valueOfAttr("mode").isString() && mEntity->valueOfAttr("mode").String() == "planted") {
-			if (!mEntity->hasAttr("planted_on")) {
-				mEntityMessage["planted-offset"] = offset.get();
-				pos.y() -= offset.get();
-			}
-		}
-	}
-
 	mEntityMessage["pos"] = pos.toAtlas();
 
 
