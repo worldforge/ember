@@ -44,8 +44,12 @@ namespace OgreView
 namespace Authoring
 {
 
-EntityMoveInstance::EntityMoveInstance(EmberEntity& entity, MovementAdapter& moveAdapter, sigc::signal<void>& eventFinishedMoving, sigc::signal<void>& eventCancelledMoving) :
-	EntityObserverBase(entity, true), mMoveAdapter(moveAdapter)
+EntityMoveInstance::EntityMoveInstance(EmberEntity& entity,
+									   MovementAdapter& moveAdapter,
+									   sigc::signal<void>& eventFinishedMoving,
+									   sigc::signal<void>& eventCancelledMoving) :
+	EntityObserverBase(entity, true),
+	mMoveAdapter(moveAdapter)
 {
 	eventCancelledMoving.connect(sigc::mem_fun(*this, &EntityObserverBase::deleteOurselves));
 	eventFinishedMoving.connect(sigc::mem_fun(*this, &EntityObserverBase::deleteOurselves));
@@ -57,7 +61,10 @@ void EntityMoveInstance::cleanup()
 }
 
 EntityMoveManager::EntityMoveManager(World& world) :
-	Move("move", this, "Moves an entity."), mWorld(world), mMoveAdapter(world.getMainCamera()), mAdjuster(this, world.getEventService())
+	Move("move", this, "Moves an entity."),
+	mWorld(world),
+	mMoveAdapter(world.getMainCamera()),
+	mAdjuster(this, world.getEventService())
 {
 	GUIManager::getSingleton().EventEntityAction.connect(sigc::mem_fun(*this, &EntityMoveManager::GuiManager_EntityAction));
 }
@@ -119,8 +126,6 @@ void EntityMoveManager::delayedUpdatePositionForEntity(std::string entityId) {
 			}
 		}
 	}, boost::posix_time::seconds(1));
-
-
 }
 
 

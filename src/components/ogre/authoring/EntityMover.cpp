@@ -31,6 +31,7 @@
 #include "components/ogre/Convert.h"
 #include "components/ogre/World.h"
 #include "components/ogre/Scene.h"
+#include "components/ogre/terrain/TerrainManager.h"
 
 #include "services/server/ServerService.h"
 #include <OgreSceneNode.h>
@@ -47,6 +48,15 @@ EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& mana
 		mPreviousControlDelegate(nodeAttachment.getControlDelegate()),
 		mControlDelegate(new EntityMoverControlDelegate(*this)) {
 	nodeAttachment.setControlDelegate(mControlDelegate);
+
+	//Check if the entity already is offset from the terrain, and retain that offset.
+	auto viewPosition = nodeAttachment.getAttachedEntity().getViewPosition();
+	float height;
+	manager.getWorld().getTerrainManager().getHeight({viewPosition.x(), viewPosition.z()}, height);
+
+	if (std::abs(height - viewPosition.y())> 0.01) {
+		setOffset({viewPosition.y() - height});
+	}
 }
 
 EntityMover::~EntityMover() {
