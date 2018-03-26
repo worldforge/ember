@@ -19,6 +19,8 @@
 #ifndef RULETREEADAPTER_H_
 #define RULETREEADAPTER_H_
 
+#include "components/ogre/authoring/RulesFetcher.h"
+
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Root.h>
 
@@ -26,6 +28,7 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 #include <string>
+#include <memory>
 
 namespace Eris
 {
@@ -64,13 +67,19 @@ class RuleTreeAdapter: public virtual sigc::trackable
 public:
 	RuleTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget);
 
-	virtual ~RuleTreeAdapter();
+	virtual ~RuleTreeAdapter() = default;
 
 	/**
 	 * @brief Refreshes the tree with new data from the server.
 	 * @param rootRule The name of the root rule.
 	 */
 	void refresh(const std::string& rootRule);
+
+	/**
+	 * @brief Refreshes the tree with new data from the server.
+	 * @param rootRule The name of the root rule.
+	 */
+	void refreshRules(const std::vector<std::string>& rootRules);
 
 	/**
 	 * @brief Gets the currently selected rule, if any.
@@ -94,7 +103,7 @@ private:
 
 	::Eris::Connection& mConnection;
 	CEGUI::Tree& mTreeWidget;
-	Authoring::RulesFetcher* mFetcher;
+	std::map<std::string, std::unique_ptr<Authoring::RulesFetcher>> mFetchers;
 
 	std::unordered_map<std::string, ::Atlas::Objects::Root> mRules;
 
@@ -102,7 +111,7 @@ private:
 	/**
 	 * @brief Hooked up to the RuleFetcher::EventAllRulesReceived signal.
 	 */
-	void fetcherAllRulesReceived();
+	void fetcherAllRulesReceived(std::string rootRule);
 
 	/**
 	 * @brief Adds a rule to the tree.

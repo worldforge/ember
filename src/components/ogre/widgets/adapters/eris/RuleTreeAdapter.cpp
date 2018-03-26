@@ -18,7 +18,6 @@
 
 #include "RuleTreeAdapter.h"
 
-#include "components/ogre/authoring/RulesFetcher.h"
 #include "../../ColouredListItem.h"
 #include "framework/LoggingInstance.h"
 
@@ -41,38 +40,46 @@ namespace Eris
 {
 
 RuleTreeAdapter::RuleTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget) :
-		mConnection(connection),mTreeWidget(treeWidget), mFetcher(nullptr)
-{
-}
+		mConnection(connection),
+		mTreeWidget(treeWidget)
 
-RuleTreeAdapter::~RuleTreeAdapter()
 {
-	delete mFetcher;
 }
 
 void RuleTreeAdapter::refresh(const std::string& rootRule)
 {
+	refreshRules({rootRule});
+}
 
-	if (!mFetcher) {
-		mFetcher = new Authoring::RulesFetcher(mConnection);
-		mFetcher->EventAllRulesReceived.connect(sigc::mem_fun(*this, &RuleTreeAdapter::fetcherAllRulesReceived));
-		mFetcher->EventNewRuleReceived.connect(EventNewRuleReceived);
-		mFetcher->startFetching(rootRule);
+void RuleTreeAdapter::refreshRules(const std::vector<std::string>& rootRules)
+{
+	mFetchers.clear();
+
+	for (auto& rootRule : rootRules) {
+		auto entry = mFetchers.insert({rootRule, std::unique_ptr<Authoring::RulesFetcher>(new Authoring::RulesFetcher(mConnection))});
+		entry.first->second->EventAllRulesReceived.connect([this, rootRule] {fetcherAllRulesReceived(rootRule);});
+		entry.first->second->EventNewRuleReceived.connect(EventNewRuleReceived);
+		entry.first->second->startFetching(rootRule);
 	}
 }
 
-void RuleTreeAdapter::fetcherAllRulesReceived()
+void RuleTreeAdapter::fetcherAllRulesReceived(std::string rootRule)
 {
-	mRules = mFetcher->getRules();
-	std::string rootRule = mFetcher->getRootRule();
-	delete mFetcher;
-	mFetcher = nullptr;
+	auto I = mFetchers.find(rootRule);
+	if (I != mFetchers.end()) {
+		auto& fetcher = I->second;
 
-	const auto& root = getRule(rootRule);
-	if (root.isValid()) {
-		addToTree(root, nullptr, true);
+		mRules.insert(fetcher->getRules().begin(), fetcher->getRules().end());
+		const auto& root = getRule(rootRule);
+		if (root.isValid()) {
+			addToTree(root, nullptr, true);
+		}
+
+		mFetchers.erase(rootRule);
+		if (mFetchers.empty()) {
+			EventAllRulesReceived.emit();
+		}
 	}
-	EventAllRulesReceived.emit();
 }
 
 ::Atlas::Objects::Root RuleTreeAdapter::getRule(const std::string& id)

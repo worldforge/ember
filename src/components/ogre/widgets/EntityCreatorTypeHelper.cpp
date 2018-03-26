@@ -85,7 +85,7 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	mCreateButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
 
 	mRuleTreeAdapter = new Adapters::Eris::RuleTreeAdapter(mConnection, typeTree);
-	mRuleTreeAdapter->refresh("game_entity");
+	mRuleTreeAdapter->refreshRules({"game_entity", "archetype"});
 
 	mModelPreviewRenderer = new ModelRenderer(&modelPreview, "modelPreview");
 	mModelPreviewManipulator = new CameraEntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
