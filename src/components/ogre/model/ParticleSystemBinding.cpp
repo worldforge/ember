@@ -66,7 +66,7 @@ void ParticleSystemBinding::scaleValue(Ogre::Real scaler)
 	} else if (mEmitterVal == "time_to_live") {
 		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
 		if (emitter) {
-			emitter->setTimeToLive(mOriginalValue * scaler);
+			emitter->setTimeToLive(std::max(0.f, mOriginalValue * scaler));
 		}
 	}
 }

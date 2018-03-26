@@ -68,10 +68,10 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 		mModel(model),
 		mScene(scene),
 		mMapping(mapping),
-		mCurrentMovementAction(0),
-		mActiveAction(0),
-		mTaskAction(0),
-		mSoundEntity(0),
+		mCurrentMovementAction(nullptr),
+		mActiveAction(nullptr),
+		mTaskAction(nullptr),
+		mSoundEntity(nullptr),
 		mUserObject(std::make_shared<EmberEntityUserObject>(entity, new MeshCollisionDetector(model))) {
 	//Only connect if we have actions to act on
 	if (!model->getDefinition()->getActionDefinitions().empty()) {
@@ -102,7 +102,7 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 ModelRepresentation::~ModelRepresentation() {
 
 	const RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
-	if (renderingDef && renderingDef->getScheme() != "") {
+	if (renderingDef && !renderingDef->getScheme().empty()) {
 		mScene.deregisterEntityWithTechnique(mEntity, renderingDef->getScheme());
 	}
 
@@ -151,8 +151,8 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
  */
 bool ModelRepresentation::needSoundEntity() {
 	const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
-	ActionDefinitionsStore::const_iterator I_b = store.begin();
-	ActionDefinitionsStore::const_iterator I_e = store.end();
+	auto I_b = store.begin();
+	auto I_e = store.end();
 	for (; I_b != I_e; ++I_b) {
 		// Setup All Sound Actions
 		SoundDefinitionsStore::const_iterator I_sounds = (*I_b)->getSoundDefinitions().begin();
@@ -183,8 +183,8 @@ void ModelRepresentation::setSounds() {
 
 void ModelRepresentation::setClientVisible(bool visible) {
 	//It appears that lights aren't disabled even when they're detached from the node tree (which will happen if the visibity is disabled as the lights are attached to the scale node), so we need to disable them ourselves.
-	for (LightSet::iterator I = mModel->getLights().begin(); I != mModel->getLights().end(); ++I) {
-		I->light->setVisible(visible);
+	for (auto& I : mModel->getLights()) {
+		I.light->setVisible(visible);
 	}
 }
 
@@ -193,7 +193,7 @@ void ModelRepresentation::initFromModel() {
 
 	//see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
 	const RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
-	if (renderingDef && renderingDef->getScheme() != "" && mModel->isLoaded()) {
+	if (renderingDef && !renderingDef->getScheme().empty() && mModel->isLoaded()) {
 		mScene.registerEntityWithTechnique(mEntity, renderingDef->getScheme());
 //		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
 //		forest->addEmberEntity(this);
@@ -233,8 +233,8 @@ void ModelRepresentation::processOutfit(const Atlas::Message::MapType&) {
 }
 
 void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds) {
-	for (Eris::StringSet::const_iterator I = attributeIds.begin(); I != attributeIds.end(); ++I) {
-		attrChanged(*I, mEntity.valueOfAttr(*I));
+	for (const auto& attributeId : attributeIds) {
+		attrChanged(attributeId, mEntity.valueOfAttr(attributeId));
 	}
 }
 
@@ -244,9 +244,9 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 	//TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
 	if (mModel->hasParticles()) {
 		const ParticleSystemBindingsPtrSet& bindings = mModel->getAllParticleSystemBindings();
-		for (ParticleSystemBindingsPtrSet::const_iterator I = bindings.begin(); I != bindings.end(); ++I) {
-			if ((*I)->getVariableName() == str && v.isNum()) {
-				(*I)->scaleValue(static_cast<Ogre::Real>(v.asNum()));
+		for (auto binding : bindings) {
+			if (binding->getVariableName() == str && v.isNum()) {
+				binding->scaleValue(static_cast<Ogre::Real>(v.asNum()));
 			}
 		}
 	}
@@ -366,7 +366,7 @@ void ModelRepresentation::updateAnimation(float timeSlice) {
 		mActiveAction->getAnimations().addTime(timeSlice, continuePlay);
 		if (!continuePlay) {
 			mActiveAction->getAnimations().reset();
-			mActiveAction = 0;
+			mActiveAction = nullptr;
 		}
 	} else if (mTaskAction) {
 		//Ignore the "continuePlay" for tasks.
@@ -429,7 +429,7 @@ void ModelRepresentation::createActionForTask(const Eris::Task& task) {
 void ModelRepresentation::entity_TaskRemoved(Eris::Task*) {
 	if (mTaskAction) {
 		mTaskAction->getAnimations().reset();
-		mTaskAction = 0;
+		mTaskAction = nullptr;
 	}
 }
 
