@@ -1125,6 +1125,15 @@ function AssetsManager:buildWidget()
             return true
         end)
 
+        self.widget:getWindow("ShowMovingLight"):subscribeEvent("SelectStateChanged", function(args)
+            local checkbox = self.widget:getWindow("ShowMovingLight")
+            checkbox = CEGUI.toToggleButton(checkbox)
+            local showMovingLight = checkbox:isSelected()
+            self.meshes.renderer:setShowMovingLight(showMovingLight)
+            return true
+        end)
+
+
         self.widget:getWindow("MeshAnimation"):subscribeEvent("ListSelectionAccepted", function(args)
             local combobox = self.widget:getWindow("MeshAnimation")
             local item = combobox:getSelectedItem()

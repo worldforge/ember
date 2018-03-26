@@ -52,7 +52,7 @@ class MovableObjectRenderer: public Ogre::FrameListener
 public:
 	MovableObjectRenderer(CEGUI::Window* image, const std::string& name);
 
-	virtual ~MovableObjectRenderer();
+	~MovableObjectRenderer() override;
 
 	/**
 	 * Adapts the position of the camera so that the whole scene is shown.
@@ -102,7 +102,7 @@ public:
 	/**
 	 * Methods from Ogre::FrameListener
 	 */
-	virtual bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 
 	/**
 	 * @brief Gets the rotation of the entity.
@@ -199,6 +199,8 @@ public:
 	 */
 	EntityCEGUITexture& getEntityTexture();
 
+	void setShowMovingLight(bool showMovingLight);
+
 protected:
 
 	/**
@@ -207,6 +209,8 @@ protected:
 	 * Call this whenever the movable object has changed.
 	 */
 	void rescaleAxisMarker();
+
+	void rescaleLightAnimation();
 
 	virtual float getMovableBoundingRadius() = 0;
 
@@ -238,6 +242,26 @@ protected:
 	 * @note This class shouldn't be needed as there's a way with CEGUI 0.7 now to let CEGUI directly use a Ogre render texture.
 	 */
 	CEGUIWindowUpdater* mWindowUpdater;
+
+	/**
+	 * An animation for our light, encircling the center.
+	 */
+	Ogre::Animation* mLightAnimation;
+
+	/**
+	 * A node to which our light is attached.
+	 */
+	Ogre::SceneNode* mLightNode;
+
+	/**
+	 * A state for our animation.
+	 */
+	Ogre::AnimationState* mLightAnimState;
+
+	/**
+	 * A light encircling the center.
+	 */
+	Ogre::Light* mLight;
 
 };
 }

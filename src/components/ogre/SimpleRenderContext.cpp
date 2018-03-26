@@ -109,25 +109,22 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 
 	mEntityNode = mRootNode->createChildSceneNode();
 
-	//make the cameranode a child of the main entity node
+	//make the camera node a child of the main entity node
 	mCameraNode = mRootNode->createChildSceneNode();
 
 	mCameraPitchNode = mCameraNode->createChildSceneNode();
 	mCameraDistanceNode = mCameraPitchNode->createChildSceneNode();
 
 	createCamera(prefix);
-	//setVisible(false);
-	Ogre::ColourValue colour(0.5, 0.5, 0.5);
+	Ogre::ColourValue colour(0.7, 0.7, 0.7);
 	mMainLight = mSceneManager->createLight("MainLight");
 	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
 	mMainLight->setDirection(Ogre::Vector3(-1, 0, 0));
-	mMainLight->setPowerScale(10); // REALLY bright.
 	mMainLight->setDiffuseColour(colour);
 	mMainLight->setSpecularColour(colour);
 	mMainLight->setVisible(true);
 
-	mSceneManager->setAmbientLight(colour);
-	mCameraPitchNode->attachObject(mMainLight);
+	mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
 	resetCameraOrientation();
 }
@@ -298,8 +295,7 @@ void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
 
 		S_LOG_VERBOSE("Adding camera.");
 		mViewPort = mRenderTexture->addViewport(mCamera);
-		mViewPort->setOverlaysEnabled(false);
-		mViewPort->setShadowsEnabled(false);
+		mViewPort->setShadowsEnabled(true);
 		//make sure the camera renders into this new texture
 		//this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
 		mViewPort->setBackgroundColour(mBackgroundColour);
@@ -307,6 +303,9 @@ void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
 		//don't show the CEGUI
 		mViewPort->setOverlaysEnabled(false);
 		//the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
+
+		//Use Medium scheme since High requires PSSM shadows to be setup.
+		mViewPort->setMaterialScheme("Medium");
 	}
 }
 

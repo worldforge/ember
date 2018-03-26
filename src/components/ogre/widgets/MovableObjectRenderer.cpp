@@ -36,14 +36,13 @@
 #include <OgreRenderTexture.h>
 #include <OgreSceneNode.h>
 #include <OgreCamera.h>
+#include <OgreAnimation.h>
+#include <OgreKeyFrame.h>
 
 using namespace Ember;
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -51,27 +50,31 @@ namespace Gui
  *
  * This class shouldn't be needed though as with CEGUI 0.7 there's a way to make CEGUI directly use an Ogre render texture.
  */
-class CEGUIWindowUpdater: public Ogre::RenderTargetListener
-{
+class CEGUIWindowUpdater : public Ogre::RenderTargetListener {
 protected:
 	CEGUI::Window& mWindow;
 public:
-	CEGUIWindowUpdater(CEGUI::Window& window) :
-			mWindow(window)
-	{
+	explicit CEGUIWindowUpdater(CEGUI::Window& window) :
+			mWindow(window) {
 	}
 
-	virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
-	{
+	void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) override {
 		mWindow.invalidate();
 	}
 };
 
 MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image, const std::string& name) :
-		mTexture(0), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
+		mTexture(nullptr),
+		mAutoShowFull(true),
+		mImage(image),
+		mActive(true),
+		mAxisEntity(nullptr),
+		mAxesNode(nullptr),
+		mWindowUpdater(nullptr),
+		mLightAnimState(nullptr)
 {
-	int width = static_cast<int>(image->getPixelSize().d_width);
-	int height = static_cast<int>(image->getPixelSize().d_height);
+	auto width = static_cast<int>(image->getPixelSize().d_width);
+	auto height = static_cast<int>(image->getPixelSize().d_height);
 	if (width != 0 && height != 0) {
 		mTexture = new EntityCEGUITexture(name, width, height);
 
@@ -79,6 +82,7 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image, const std::st
 
 		image->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&MovableObjectRenderer::image_Sized, this));
 
+		auto sceneManager = mTexture->getRenderContext()->getSceneManager();
 		// Register this as a frame listener
 		Ogre::Root::getSingleton().addFrameListener(this);
 		mWindowUpdater = new CEGUIWindowUpdater(*mImage);
@@ -86,13 +90,28 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image, const std::st
 
 		//Render a blank scene to start with, else we'll get uninitialized buffer garbage shown.
 		mTexture->getRenderContext()->getRenderTexture()->update();
+
+
+		// Create a second light node
+		mLightNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+
+		// Create a 10 second animation with spline interpolation
+		mLightAnimation = sceneManager->createAnimation("LightPath", 8);
+		mLightAnimation->setInterpolationMode(Ogre::Animation::IM_SPLINE);
+
+		mLight = sceneManager->createLight();
+		mLight->setType(Ogre::Light::LightTypes::LT_POINT);
+		mLightNode->attachObject(mLight);
+
+		//Default to not show the light.
+		mLight->setVisible(false);
+
 	} else {
 		throw Exception("Image dimension cannot be 0.");
 	}
 }
 
-MovableObjectRenderer::~MovableObjectRenderer()
-{
+MovableObjectRenderer::~MovableObjectRenderer() {
 	if (mImage && mImage->isPropertyPresent("Image")) {
 		mImage->setProperty("Image", "");
 	}
@@ -107,71 +126,60 @@ MovableObjectRenderer::~MovableObjectRenderer()
 
 }
 
-Ogre::Quaternion MovableObjectRenderer::getEntityRotation() const
-{
+Ogre::Quaternion MovableObjectRenderer::getEntityRotation() const {
 	return mTexture->getRenderContext()->getSceneNode()->getOrientation();
 }
 
-void MovableObjectRenderer::setEntityRotation(const Ogre::Quaternion& rotation)
-{
+void MovableObjectRenderer::setEntityRotation(const Ogre::Quaternion& rotation) {
 	mTexture->getRenderContext()->getSceneNode()->setOrientation(rotation);
 }
 
-Ogre::Vector3 MovableObjectRenderer::getEntityTranslation() const
-{
+Ogre::Vector3 MovableObjectRenderer::getEntityTranslation() const {
 	return mTexture->getRenderContext()->getSceneNode()->getPosition();
 }
 
-void MovableObjectRenderer::setEntityTranslation(const Ogre::Vector3& translation)
-{
+void MovableObjectRenderer::setEntityTranslation(const Ogre::Vector3& translation) {
 	mTexture->getRenderContext()->getSceneNode()->setPosition(translation);
 }
 
-void MovableObjectRenderer::resetCameraOrientation()
-{
+void MovableObjectRenderer::resetCameraOrientation() {
 	mTexture->getRenderContext()->resetCameraOrientation();
 }
 
-void MovableObjectRenderer::pitchCamera(Ogre::Degree degrees)
-{
+void MovableObjectRenderer::pitchCamera(Ogre::Degree degrees) {
 	mTexture->getRenderContext()->pitchCamera(degrees);
 }
 
-void MovableObjectRenderer::yawCamera(Ogre::Degree degrees)
-{
+void MovableObjectRenderer::yawCamera(Ogre::Degree degrees) {
 	mTexture->getRenderContext()->yawCamera(degrees);
 }
 
-void MovableObjectRenderer::rollCamera(Ogre::Degree degrees)
-{
+void MovableObjectRenderer::rollCamera(Ogre::Degree degrees) {
 	mTexture->getRenderContext()->rollCamera(degrees);
 }
 
-bool MovableObjectRenderer::getAutoShowFull() const
-{
+bool MovableObjectRenderer::getAutoShowFull() const {
 	return mAutoShowFull;
 }
 
-void MovableObjectRenderer::setAutoShowFull(bool showFull)
-{
+void MovableObjectRenderer::setAutoShowFull(bool showFull) {
 	mAutoShowFull = showFull;
 }
 
-void MovableObjectRenderer::showFull()
-{
+void MovableObjectRenderer::showFull() {
 	mTexture->getRenderContext()->showFull(getMovableBoundingRadius());
+	rescaleLightAnimation();
 }
 
-void MovableObjectRenderer::rescaleAxisMarker()
-{
+void MovableObjectRenderer::rescaleAxisMarker() {
 	if (mAxesNode) {
 		Ogre::Real axesScale = (getMovableBoundingRadius() / 5.0f);
 		mAxesNode->setScale(axesScale, axesScale, axesScale);
 	}
+
 }
 
-void MovableObjectRenderer::setCameraDistance(float distance)
-{
+void MovableObjectRenderer::setCameraDistance(float distance) {
 
 	mTexture->getRenderContext()->setCameraDistance(mTexture->getRenderContext()->getDefaultCameraDistance() * distance);
 	/*	Ogre::Vector3 position = mTexture->getDefaultCameraPosition();
@@ -179,18 +187,18 @@ void MovableObjectRenderer::setCameraDistance(float distance)
 	 mTexture->getCamera()->setPosition(position);*/
 }
 
-float MovableObjectRenderer::getCameraDistance()
-{
+float MovableObjectRenderer::getCameraDistance() {
 	return mTexture->getRenderContext()->getCameraDistance();
 }
 
-float MovableObjectRenderer::getAbsoluteCameraDistance()
-{
+float MovableObjectRenderer::getAbsoluteCameraDistance() {
 	return mTexture->getRenderContext()->getAbsoluteCameraDistance();
 }
 
-bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
-{
+bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event) {
+	if (mLightAnimState) {
+		mLightAnimState->addTime(event.timeSinceLastFrame);
+	}
 	//if the window isn't shown, don't update the render texture
 	mTexture->getRenderContext()->setActive(mActive && mImage->isVisible());
 	if (mActive && mImage->isVisible()) {
@@ -199,8 +207,7 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 	return true;
 }
 
-void MovableObjectRenderer::updateRender()
-{
+void MovableObjectRenderer::updateRender() {
 	try {
 		if (mTexture->getRenderContext()->getRenderTexture()) {
 			mTexture->getRenderContext()->getRenderTexture()->update();
@@ -210,18 +217,15 @@ void MovableObjectRenderer::updateRender()
 	}
 }
 
-void MovableObjectRenderer::setBackgroundColour(const Ogre::ColourValue& colour)
-{
+void MovableObjectRenderer::setBackgroundColour(const Ogre::ColourValue& colour) {
 	mTexture->getRenderContext()->setBackgroundColour(colour);
 }
 
-void MovableObjectRenderer::setBackgroundColour(float red, float green, float blue, float alpha)
-{
+void MovableObjectRenderer::setBackgroundColour(float red, float green, float blue, float alpha) {
 	mTexture->getRenderContext()->setBackgroundColour(red, green, blue, alpha);
 }
 
-void MovableObjectRenderer::showAxis()
-{
+void MovableObjectRenderer::showAxis() {
 	if (!mAxesNode) {
 		mAxesNode = mTexture->getRenderContext()->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 	}
@@ -243,36 +247,55 @@ void MovableObjectRenderer::showAxis()
 	mAxesNode->setVisible(true);
 }
 
-void MovableObjectRenderer::hideAxis()
-{
+void MovableObjectRenderer::hideAxis() {
 	if (mAxesNode) {
 		mAxesNode->setVisible(false);
 	}
 }
 
-SimpleRenderContext::CameraPositioningMode MovableObjectRenderer::getCameraPositionMode() const
-{
+SimpleRenderContext::CameraPositioningMode MovableObjectRenderer::getCameraPositionMode() const {
 	return mTexture->getRenderContext()->getCameraPositionMode();
 }
 
-void MovableObjectRenderer::setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode)
-{
+void MovableObjectRenderer::setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode) {
 	mTexture->getRenderContext()->setCameraPositionMode(mode);
 }
 
-EntityCEGUITexture& MovableObjectRenderer::getEntityTexture()
-{
+EntityCEGUITexture& MovableObjectRenderer::getEntityTexture() {
 	return *mTexture;
 }
 
-bool MovableObjectRenderer::image_Sized(const CEGUI::EventArgs& e)
-{
+bool MovableObjectRenderer::image_Sized(const CEGUI::EventArgs& e) {
 	const auto size = mImage->getPixelSize();
 	//We'll get a crash in Ogre if the width or height is 0.
 	if (size.d_width > 0.0f && size.d_height > 0.0f) {
 		mTexture->getRenderContext()->getCamera()->setAspectRatio(size.d_width / size.d_height);
 	}
 	return true;
+}
+
+void MovableObjectRenderer::rescaleLightAnimation() {
+
+	mLightAnimation->destroyAllTracks();
+
+	auto track = mLightAnimation->createNodeTrack(1, mLightNode);
+
+	auto boundingRadius = getMovableBoundingRadius();
+	//Create a path encircling the center.
+	track->createNodeKeyFrame(0)->setTranslate(Ogre::Vector3(boundingRadius, 0, 0));
+	track->createNodeKeyFrame(2)->setTranslate(Ogre::Vector3(0, boundingRadius / 2, boundingRadius));
+	track->createNodeKeyFrame(4)->setTranslate(Ogre::Vector3(-boundingRadius, 0, 0));
+	track->createNodeKeyFrame(6)->setTranslate(Ogre::Vector3(0, -boundingRadius / 2, -boundingRadius));
+	track->createNodeKeyFrame(8)->setTranslate(Ogre::Vector3(boundingRadius, 0, 0));
+
+	mTexture->getRenderContext()->getSceneManager()->destroyAnimationState("LightPath");
+	mLightAnimState = mTexture->getRenderContext()->getSceneManager()->createAnimationState("LightPath");
+	mLightAnimState->setEnabled(true);
+}
+
+void MovableObjectRenderer::setShowMovingLight(bool showMovingLight) {
+	mLight->setVisible(showMovingLight);
+
 }
 
 }

@@ -169,6 +169,9 @@ class MovableObjectRenderer
 	 */
 	Ember::OgreView::Gui::EntityCEGUITexture& getEntityTexture();
 
+	void setShowMovingLight(bool showMovingLight);
+
+
 };
 }
 }

@@ -298,6 +298,13 @@
 								<Property name="HorzScrollDocumentSize" value="0" />
 								<Property name="VertScrollDocumentSize" value="0" />
 							</Window>
+							<Window name="ShowMovingLight" type="EmberLook/Checkbox">
+								<Property name="Text" value="Show moving light" />
+								<Property name="HoverTextColour" value="FFFFFFFF" />
+								<Property name="Area" value="{{0,10},{1,-80},{0,247},{1,-60}}" />
+								<Property name="NormalTextColour" value="FFFFFFFF" />
+								<Property name="PushedTextColour" value="FFFFFFFF" />
+							</Window>
 							<Window name="ShowWireFrameCheckbox" type="EmberLook/Checkbox">
 								<Property name="Text" value="Show wireframe" />
 								<Property name="HoverTextColour" value="FFFFFFFF" />
