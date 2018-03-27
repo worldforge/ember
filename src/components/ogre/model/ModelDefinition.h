@@ -510,6 +510,12 @@ public:
 
 	~ModelDefinition();
 
+	/**
+	 * Moves all assets from the supplied definition into this, with exception of mModelInstances
+	 * @param rhs A model definition to move from.
+	 */
+	void moveFrom(ModelDefinition&& rhs);
+
 	bool isValid() const;
 	void setValid(bool valid);
 	/**
@@ -706,6 +712,8 @@ public:
 	const std::string& getOrigin() const;
 
 private:
+
+	ModelDefinition& operator=(ModelDefinition&& rhs) = default;
 
 	struct BindingDefinition
 	{

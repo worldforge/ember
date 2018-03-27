@@ -51,34 +51,47 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
+
+ModelDefinitionPtr XMLModelDefinitionSerializer::parseDocument(TiXmlDocument& xmlDoc, const std::string& origin) {
+	TiXmlElement* rootElem = xmlDoc.RootElement();
+	if (rootElem) {
+
+		if (rootElem->ValueStr() == "model") {
+			auto& name = origin;
+			try {
+				auto modelDef = std::make_shared<ModelDefinition>();
+				if (modelDef) {
+					readModel(modelDef, rootElem);
+					modelDef->setValid(true);
+					modelDef->setOrigin(origin);
+					return modelDef;
+				}
+			} catch (const Ogre::Exception& ex) {
+				S_LOG_FAILURE("Error when parsing model '" << name << "'." << ex);
+			}
+		} else {
+			S_LOG_FAILURE("Invalid initial element in model definition '" << origin << "': " << rootElem->ValueStr());
+		}
+	}
+	return ModelDefinitionPtr();
+}
+
+ModelDefinitionPtr XMLModelDefinitionSerializer::parseScript(std::istream& stream, const boost::filesystem::path& path) {
+	TiXmlDocument xmlDoc;
+	XMLHelper xmlHelper;
+	if (xmlHelper.Load(xmlDoc, stream, path)) {
+		return parseDocument(xmlDoc, path.string());
+	}
+	return ModelDefinitionPtr();
+}
+
 ModelDefinitionPtr XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream) {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (xmlHelper.Load(xmlDoc, stream)) {
-
-		TiXmlElement* rootElem = xmlDoc.RootElement();
-		if (rootElem) {
-
-			if (rootElem->ValueStr() == "model") {
-				auto& name = stream->getName();
-				try {
-					auto modelDef = std::make_shared<ModelDefinition>();
-					if (modelDef) {
-						readModel(modelDef, rootElem);
-						modelDef->setValid(true);
-						modelDef->setOrigin(stream->getName());
-						return modelDef;
-					}
-				} catch (const Ogre::Exception& ex) {
-					S_LOG_FAILURE("Error when parsing model '" << name << "'." << ex);
-				}
-			} else {
-				S_LOG_FAILURE("Invalid initial element in model definition '" << stream->getName() << "': " << rootElem->ValueStr());
-			}
-		}
+		return parseDocument(xmlDoc, stream->getName());
 	}
 	return ModelDefinitionPtr();
-
 }
 
 void XMLModelDefinitionSerializer::readModel(const ModelDefinitionPtr& modelDef, TiXmlElement* modelNode) {
@@ -1213,6 +1226,7 @@ void XMLModelDefinitionSerializer::exportBoneGroups(ModelDefinitionPtr modelDef,
 	}
 	modelElem.InsertEndChild(boneGroupsElem);
 }
+
 
 
 } //end namespace

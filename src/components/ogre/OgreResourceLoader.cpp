@@ -41,6 +41,7 @@
 #include <boost/algorithm/string.hpp>
 #include <framework/FileSystemObserver.h>
 #include <framework/MainLoopController.h>
+#include <components/ogre/model/XMLModelDefinitionSerializer.h>
 
 namespace Ember {
 namespace OgreView {
@@ -304,25 +305,40 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
 
                 };
 
+				auto startsWith = [](const boost::filesystem::path& root, boost::filesystem::path aPath) {
+					while(aPath != boost::filesystem::path()) {
+						if(aPath == root) {
+							return true;
+						}
+						aPath = aPath.parent_path();
+					}
+					return false;
+				};
+
                 auto locations = Ogre::ResourceGroupManager::getSingleton().listResourceLocations(group);
                 for (auto& location : *locations) {
-                    std::string locationDirectory = location + "/";
-                    if (boost::starts_with(ev.path.string(), locationDirectory)) {
-                        std::string relative = ev.path.string().substr(locationDirectory.length());
+					boost::filesystem::path locationDirectory(location);
+                    if (startsWith(locationDirectory, ev.path)) {
+                        auto relative = boost::filesystem::relative(ev.path, locationDirectory);
                         auto extension = ev.path.extension();
 
 						if (extension == ".modeldef") {
-
+							if (event.ev.type == boost::asio::dir_monitor_event::event_type::added ||
+									event.ev.type == boost::asio::dir_monitor_event::event_type::modified ||
+									event.ev.type == boost::asio::dir_monitor_event::event_type::renamed_old_name ||
+									event.ev.type == boost::asio::dir_monitor_event::event_type::renamed_new_name) {
+								refreshModelDefinition(ev.path, relative);
+							}
 						} else if (extension == ".material") {
                             std::ifstream stream(ev.path.string());
                             Ogre::SharedPtr<Ogre::DataStream> fileStream(OGRE_NEW Ogre::FileStreamDataStream(&stream, false));
                             Ogre::MaterialManager::getSingleton().parseScript(fileStream, group);
                         } else if (extension == ".dds" || extension == ".png" || extension == ".jpg") {
-                            reloadResource(Ogre::TextureManager::getSingleton(), relative);
+                            reloadResource(Ogre::TextureManager::getSingleton(), relative.string());
 						} else if (extension == ".mesh") {
-							reloadResource(Ogre::MeshManager::getSingleton(), relative);
+							reloadResource(Ogre::MeshManager::getSingleton(), relative.string());
 						} else if (extension == ".skeleton") {
-							reloadResource(Ogre::SkeletonManager::getSingleton(), relative);
+							reloadResource(Ogre::SkeletonManager::getSingleton(), relative.string());
 						} else if (extension == ".glsl" || extension == ".frag" || extension == ".vert") {
                             //Reloading GLSL shaders in Render System GL doesn't seem to work. Perhaps we'll have more luck with GL3+?
 
@@ -388,6 +404,28 @@ bool OgreResourceLoader::addMedia(const std::string& path, const std::string& re
 		return addSharedMedia("media/"+ path, "EmberFileSystem", resourceGroup, true);
 	}
 	return true;
+}
+
+void OgreResourceLoader::refreshModelDefinition(const boost::filesystem::path& fullPath, const boost::filesystem::path& relativePath) {
+	std::ifstream stream(fullPath.string());
+	if (stream) {
+
+		Model::XMLModelDefinitionSerializer serializer;
+
+		auto modelDef = serializer.parseScript(stream, relativePath);
+		if (modelDef) {
+			auto& modelDefMgr = Model::ModelDefinitionManager::getSingleton();
+			auto existingDef = modelDefMgr.getByName(relativePath.string());
+			//Model definition doesn't exist, just add it.
+			if (!existingDef) {
+				modelDefMgr.addDefinition(relativePath.string(), modelDef);
+			} else {
+				//otherwise update existing
+				existingDef->moveFrom(std::move(*modelDef));
+				existingDef->reloadAllInstances();
+			}
+		}
+	}
 }
 
 }

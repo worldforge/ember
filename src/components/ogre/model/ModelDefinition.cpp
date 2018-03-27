@@ -285,6 +285,12 @@ const std::string& ModelDefinition::getOrigin() const {
 	return mOrigin;
 }
 
+void ModelDefinition::moveFrom(ModelDefinition&& rhs) {
+	//We need to preserve the instances.
+	rhs.mModelInstances = std::move(mModelInstances);
+	*this = std::move(rhs);
+}
+
 SubModelDefinition::SubModelDefinition(const std::string& meshname, ModelDefinition& modelDef) :
 		mMeshName(meshname), mModelDef(modelDef) {
 }

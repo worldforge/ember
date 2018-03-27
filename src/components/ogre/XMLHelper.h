@@ -26,6 +26,7 @@
 #include "EmberOgrePrerequisites.h"
 #include "framework/tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
+#include <boost/filesystem/path.hpp>
 
 namespace Ember {
 namespace OgreView {
@@ -43,12 +44,12 @@ public:
     /**
      * Ctor.
      */
-    XMLHelper();
+    XMLHelper() = default;
 
     /**
      * Dtor.
      */
-    ~XMLHelper();
+    ~XMLHelper() = default;
 
 	/**
 	 Attempts to load the supplied stream into the document. Failures will be logged.
@@ -57,6 +58,9 @@ public:
 	 @returns true if successful, else false
 	 */
     bool Load(TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream);
+
+
+	bool Load(TiXmlDocument& xmlDoc, std::istream& stream, const boost::filesystem::path& path);
 
 	/**
 	 * @brief Utility method for filling an Ogre Vector3 with data from an xml element.
@@ -70,7 +74,7 @@ public:
 	 * @param elem The element which should be filled. The data will be represented through three numerical properties, "x", "y" and "z".
 	 * @param vector The Ogre Vector3 instance from which the data will be taken.
 	 */
-	static void fillElementFromVector3(TiXmlElement& elem, Ogre::Vector3 vector);
+	static void fillElementFromVector3(TiXmlElement& elem, const Ogre::Vector3& vector);
 
 	/**
 	 * @brief Utility method for filling an Ogre Quaternion with data from an xml element.
@@ -84,7 +88,7 @@ public:
 	 * @param elem The element which should be filled. The data will be represented through four numerical properties, "w", "x", "y" and "z".
 	 * @param vector The Ogre Quaternion instance from which the data will be taken.
 	 */
-	static void fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion);
+	static void fillElementFromQuaternion(TiXmlElement& elem, const Ogre::Quaternion& quaternion);
 
 };
 

@@ -26,6 +26,7 @@
 #define __XMLModelDefinitionSerializer__
 
 
+#include <boost/filesystem/path.hpp>
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 #include "ModelDefinition.h"
@@ -44,7 +45,9 @@ public :
 	virtual ~XMLModelDefinitionSerializer() = default;
 
 	ModelDefinitionPtr parseScript(Ogre::DataStreamPtr& stream);
-	
+
+	ModelDefinitionPtr parseScript(std::istream& stream, const boost::filesystem::path& path);
+
 	/**
 	 * @brief Exports the model definition to a file.
 	 * @param modelDef The model definition to export.
@@ -55,6 +58,8 @@ public :
 	bool exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename);
 
 private:
+
+	ModelDefinitionPtr parseDocument(TiXmlDocument& xmlDoc, const std::string& origin);
 
 	void readModel(const ModelDefinitionPtr& modelDef, TiXmlElement* modelNode);
 	void readSubModels(const ModelDefinitionPtr& modelDef, TiXmlElement* mSubModelNode);

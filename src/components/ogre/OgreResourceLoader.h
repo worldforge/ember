@@ -29,6 +29,7 @@
 #include <OgreConfigFile.h>
 #include <map>
 #include <Eris/Session.h>
+#include <boost/filesystem/path.hpp>
 
 namespace Ember {
 namespace OgreView {
@@ -131,6 +132,13 @@ protected:
 	bool addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure = false);
 
 	void observeDirectory(const std::string& path);
+
+	/**
+	 * Refresh an updated model definition, either by just adding it if it doesn't already exists, or by updating it and reloading all instances.
+	 * @param fullPath The full path to the definition.
+	 * @param relativePath The relative path, used as an identifier.
+	 */
+	void refreshModelDefinition(const boost::filesystem::path& fullPath, const boost::filesystem::path& relativePath);
 };
 
 }
