@@ -110,7 +110,7 @@ public:
 	 * @param name
 	 * @return
 	 */
-	Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>& definition, const std::string& name = "");
+	Model(Ogre::SceneManager& manager, const ModelDefinitionPtr& definition, const std::string& name = "");
 
 	/**
 	 * @brief Ctor.
@@ -255,7 +255,7 @@ public:
 	 */
 	bool isLoaded() const;
 
-	const Ogre::SharedPtr<ModelDefinition>& getDefinition() const;
+	const ModelDefinitionPtr& getDefinition() const;
 
 	const std::string& getName() const;
 
@@ -351,7 +351,7 @@ protected:
 
 	Ogre::SceneManager& mManager;
 
-	Ogre::SharedPtr<ModelDefinition> mDefinition;
+	ModelDefinitionPtr mDefinition;
 
 	INodeProvider* mParentNodeProvider;
 

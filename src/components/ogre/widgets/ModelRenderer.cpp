@@ -120,6 +120,12 @@ Model::Model* ModelRenderer::getModel()
 
 void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3& translation, const Ogre::Quaternion& orientation)
 {
+	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	showModel(modelDef, translation, orientation);
+
+}
+
+void ModelRenderer::showModel(const Model::ModelDefinitionPtr& modelDef, const Ogre::Vector3& translation, const Ogre::Quaternion& orientation) {
 	mDefaultRotation = orientation;
 	mDefaultTranslation = translation;
 	if (mModel) {
@@ -131,9 +137,8 @@ void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3&
 		mModelDelayedUpdateConnection.disconnect();
 		//delete mModel;
 	}
-	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 	if (modelDef) {
-		mModel = new Model::Model(*mTexture->getRenderContext()->getSceneManager(), modelDef, modelName);
+		mModel = new Model::Model(*mTexture->getRenderContext()->getSceneManager(), modelDef, "");
 		//override the rendering distance from the model; we want to always show it in the preview
 		mModel->setRenderingDistance(0);
 
@@ -161,6 +166,8 @@ float ModelRenderer::getMovableBoundingRadius()
 	}
 	return 0;
 }
+
+
 }
 }
 }

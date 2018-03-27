@@ -26,12 +26,9 @@
 #include "config.h"
 #endif
 
-#include <boost/algorithm/string.hpp>
 #include "XMLModelDefinitionSerializer.h"
 #include "Model.h"
 #include "components/ogre/XMLHelper.h"
-
-#include "ModelDefinitionManager.h"
 
 #ifdef WIN32
 #include <tchar.h>
@@ -48,40 +45,43 @@
 
 #include "framework/osdir.h"
 
+#include <boost/algorithm/string.hpp>
+
 namespace Ember {
 namespace OgreView {
 namespace Model {
 
-void XMLModelDefinitionSerializer::parseScript(ModelDefinitionManager& modelDefManager, Ogre::DataStreamPtr& stream, const Ogre::String& groupName) {
+ModelDefinitionPtr XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream) {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
-	if (!xmlHelper.Load(xmlDoc, stream)) {
-		return;
-	}
+	if (xmlHelper.Load(xmlDoc, stream)) {
 
-	TiXmlElement* rootElem = xmlDoc.RootElement();
-	if (rootElem) {
+		TiXmlElement* rootElem = xmlDoc.RootElement();
+		if (rootElem) {
 
-		if (rootElem->ValueStr() == "model") {
-			auto& name = stream->getName();
-			try {
-				ModelDefinitionPtr modelDef = modelDefManager.create(name, groupName);
-				if (modelDef) {
-					readModel(modelDef, rootElem);
-					modelDef->setValid(true);
-					modelDef->_notifyOrigin(stream->getName());
+			if (rootElem->ValueStr() == "model") {
+				auto& name = stream->getName();
+				try {
+					auto modelDef = std::make_shared<ModelDefinition>();
+					if (modelDef) {
+						readModel(modelDef, rootElem);
+						modelDef->setValid(true);
+						modelDef->setOrigin(stream->getName());
+						return modelDef;
+					}
+				} catch (const Ogre::Exception& ex) {
+					S_LOG_FAILURE("Error when parsing model '" << name << "'." << ex);
 				}
-			} catch (const Ogre::Exception& ex) {
-				S_LOG_FAILURE("Error when parsing model '" << name << "'." << ex);
+			} else {
+				S_LOG_FAILURE("Invalid initial element in model definition '" << stream->getName() << "': " << rootElem->ValueStr());
 			}
-		} else {
-			S_LOG_FAILURE("Invalid initial element in model definition '" << stream->getName() << "': " << rootElem->ValueStr());
 		}
 	}
+	return ModelDefinitionPtr();
 
 }
 
-void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode) {
+void XMLModelDefinitionSerializer::readModel(const ModelDefinitionPtr& modelDef, TiXmlElement* modelNode) {
 	TiXmlElement* elem;
 	//root elements
 	//scale
@@ -200,7 +200,7 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 }
 
 
-void XMLModelDefinitionSerializer::readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode) {
+void XMLModelDefinitionSerializer::readSubModels(const ModelDefinitionPtr& modelDef, TiXmlElement* mSubModelNode) {
 	S_LOG_VERBOSE("Read Submodels");
 	const char* tmp = nullptr;
 	TiXmlElement* elem;
@@ -823,7 +823,6 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 		TiXmlElement elem("models");
 		TiXmlElement modelElem("model");
-		modelElem.SetAttribute("name", modelDef->getName());
 
 		std::string useScaleOf;
 		switch (modelDef->getUseScaleOf()) {
@@ -847,7 +846,7 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 				break;
 		}
 		modelElem.SetAttribute("usescaleof", useScaleOf);
-		
+
 		if (!modelDef->mUseInstancing) {
 			modelElem.SetAttribute("useinstancing", "false");
 		}
@@ -928,7 +927,7 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		return true;
 	}
 	catch (...) {
-		S_LOG_FAILURE("An error occurred saving the modeldefinition for " << modelDef->getName() << ".");
+		S_LOG_FAILURE("An error occurred saving the modeldefinition for " << filename << ".");
 		return false;
 	}
 

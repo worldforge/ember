@@ -108,9 +108,9 @@ Icon* IconManager::getIcon(int, EmberEntity* entity) {
 		if (modelName.empty()) {
 			modelName = "common/primitives/placeholder.modeldef";
 		}
-		Ogre::ResourcePtr modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+		auto modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 		if (modelDefPtr) {
-			Model::ModelDefinition* modelDef = dynamic_cast<Model::ModelDefinition*> (modelDefPtr.get());
+			Model::ModelDefinition* modelDef = modelDefPtr.get();
 			const std::string& iconPath(modelDef->getIconPath());
 			if (!iconPath.empty()) {
 

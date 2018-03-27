@@ -52,7 +52,7 @@ public:
      * @param listbox A valid Listbox control. This is the list which will be filtered.
      * @param filterEditbox An optional valid Editbox. This is where the user enters the filtering text.
      */
-    ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox = 0);
+	explicit ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox = nullptr);
 
     virtual ~ListHolder();
     
@@ -84,6 +84,7 @@ public:
 	 * @param item 
 	 */
 	void resetList();
+
 protected:
 
 	typedef std::list<CEGUI::ListboxItem*> ListItemStore;
@@ -109,8 +110,7 @@ protected:
 	bool isItemAllowed(CEGUI::ListboxItem* item);
 	
 	bool filterEditbox_TextChanged(const CEGUI::EventArgs& args);
-// 	bool listbox_ListContentsChanged(const CEGUI::EventArgs& args);
-	
+
 
 };
 }

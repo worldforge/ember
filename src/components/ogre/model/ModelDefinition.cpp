@@ -38,8 +38,7 @@ namespace OgreView {
 
 namespace Model {
 
-ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) :
-		Resource(creator, name, handle, group, isManual, loader),
+ModelDefinition::ModelDefinition() :
 		mRenderingDistance(0.0f),
 		mUseScaleOf(UseScaleOf::MODEL_ALL),
 		mScale(1),
@@ -51,9 +50,7 @@ ModelDefinition::ModelDefinition(Ogre::ResourceManager* creator, const Ogre::Str
 		mRenderingDef(nullptr),
 		mBackgroundLoader(nullptr),
 		mAssetsLoaded(false) {
-	if (createParamDictionary("ModelDefinition")) {
-		// no custom params
-	}
+
 }
 
 ModelDefinition::~ModelDefinition() {
@@ -71,13 +68,8 @@ ModelDefinition::~ModelDefinition() {
 		delete boneGroup.second;
 	}
 	delete mRenderingDef;
-	// have to call this here rather than in Resource destructor
-	// since calling virtual methods in base destructors causes crashes
-	unload();
 }
 
-void ModelDefinition::loadImpl() {
-}
 
 void ModelDefinition::addModelInstance(Model* model) {
 	mModelInstances.insert(model);
@@ -85,9 +77,6 @@ void ModelDefinition::addModelInstance(Model* model) {
 
 void ModelDefinition::removeModelInstance(Model* model) {
 	mModelInstances.erase(model);
-}
-
-void ModelDefinition::unloadImpl() {
 }
 
 bool ModelDefinition::isValid() const {
@@ -286,6 +275,14 @@ void ModelDefinition::removeDefinition(T* def, T1& store) {
 	if (I != store.end()) {
 		store.erase(I);
 	}
+}
+
+void ModelDefinition::setOrigin(std::string origin) {
+	mOrigin = std::move(origin);
+}
+
+const std::string& ModelDefinition::getOrigin() const {
+	return mOrigin;
 }
 
 SubModelDefinition::SubModelDefinition(const std::string& meshname, ModelDefinition& modelDef) :

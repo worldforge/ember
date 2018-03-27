@@ -113,7 +113,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 
 					nodeProvider = new ModelBoneProvider(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
 				} catch (const std::exception& ex) {
-					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getName() << "'.");
+					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getOrigin() << "'.");
 					return new HiddenAttachment(entity, getAttachedEntity());
 				}
 			} else {

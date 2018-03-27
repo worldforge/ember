@@ -111,7 +111,7 @@ add_library(emberogre
         EmberWorkQueue.cpp
         EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ICollisionDetector.h ILightning.h
         IMovable.h IMovementProvider.h INodeProvider.h ISceneRenderingTechnique.h IWorldPickListener.h
-        MousePicker.h OgreIncludes.h authoring/GeometryVisualization.cpp authoring/GeometryVisualization.h PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h)
+        MousePicker.h OgreIncludes.h authoring/GeometryVisualization.cpp authoring/GeometryVisualization.h PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h widgets/adapters/ModelDefinitionsAdapter.cpp widgets/adapters/ModelDefinitionsAdapter.h)
 
 
 file(GLOB ENTITY_RECIPES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.entityrecipe" "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.xsd")

@@ -61,11 +61,13 @@ void ModelActionCreator::PresentAction::activate(EntityMapping::ChangeContext& c
 			//If it's not an entity map it's either a mesh or a model.
 			// Check if there's a model created already, if not we'll assume it's a mesh and create a model using that mesh
 			if (!boost::ends_with(present, ".entitymap")) {
-				if (!Model::ModelDefinitionManager::getSingleton().resourceExists(present, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+				if (!Model::ModelDefinitionManager::getSingleton().hasDefinition(present)) {
 					//We'll automatically create a model which shows just the specified mesh.
-					auto modelDef = Model::ModelDefinitionManager::getSingleton().create(present, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					auto modelDef = std::make_shared<Model::ModelDefinition>();
+					modelDef->setOrigin(present);
 					//Create a single submodel definition using the mesh
 					modelDef->createSubModelDefinition(present);
+					Model::ModelDefinitionManager::getSingleton().addDefinition(present, std::move(modelDef));
 				}
 				mCreator->mShowModelFn(present);
 			}

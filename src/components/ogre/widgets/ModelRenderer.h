@@ -28,6 +28,7 @@
 #include <OgreQuaternion.h>
 
 #include <sigc++/connection.h>
+#include <components/ogre/model/ModelDefinition.h>
 
 namespace CEGUI
 {
@@ -72,13 +73,15 @@ public:
 	 */
 	ModelRenderer(CEGUI::Window* image, const std::string& name);
 
-	virtual ~ModelRenderer();
+	~ModelRenderer() override;
 
 	/**
 	 * @brief Renders the submitted Model.
 	 * @param modelName A valid Model
 	 */
 	void showModel(const std::string& modelName, const Ogre::Vector3& translation = Ogre::Vector3::ZERO, const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY);
+
+	void showModel(const Model::ModelDefinitionPtr& definition, const Ogre::Vector3& translation = Ogre::Vector3::ZERO, const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY);
 
 	/**
 	 * @brief Returns the current rendered Model, or null if none is set.

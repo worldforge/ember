@@ -16,6 +16,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "ImpostorPage.h"
 #include "StaticBillboardSet.h"
 #include "components/ogre/SceneNodeProvider.h"
+#include "components/ogre/model/SubModel.h"
 
 #include <OgreRoot.h>
 #include <OgreTimer.h>
@@ -332,11 +333,10 @@ String ImpostorBatch::generateEntityKey(Ember::OgreView::Model::Model* model)
 {
 	Ogre::StringStream entityKey;
 
+	for (auto& submodel : model->getSubmodels()) {
+		entityKey << submodel->getEntity()->getMesh()->getName();
+	}
 
-	entityKey << model->getDefinition()->getName();
-//	for (uint32 i = 0; i < entity->getNumSubEntities(); ++i){
-//		entityKey << "-" << entity->getSubEntity(i)->getMaterialName();
-//	}
 	entityKey << "-" << IMPOSTOR_YAW_ANGLES << "_" << IMPOSTOR_PITCH_ANGLES;
 #ifdef IMPOSTOR_RENDER_ABOVE_ONLY
 	entityKey << "_RAO";

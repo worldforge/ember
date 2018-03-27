@@ -30,7 +30,7 @@
 #include "framework/Singleton.h"
 #include "framework/ConsoleObject.h"
 
-#include <OgreResourceManager.h>
+#include <OgreScriptLoader.h>
 
 namespace Eris {
 class EventService;
@@ -53,7 +53,7 @@ class ModelBackgroundLoader;
  *
  * @author Erik Ogenvik
  */
-class ModelDefinitionManager: public Ogre::ResourceManager, public Singleton<ModelDefinitionManager>, public ConsoleObject
+class ModelDefinitionManager: public Ogre::ScriptLoader, public Singleton<ModelDefinitionManager>, public ConsoleObject
 {
 public:
 	/**
@@ -68,11 +68,13 @@ public:
 	 */
 	~ModelDefinitionManager() override;
 
-	/// Create a new ModelDefinition
-	/// @see ResourceManager::createResource
-	ModelDefinitionPtr create (const Ogre::String& name, const Ogre::String& group,
-			bool isManual = false, Ogre::ManualResourceLoader* loader = 0,
-			const Ogre::NameValuePairList* createParams = 0);
+
+	void addDefinition(std::string name, ModelDefinitionPtr definition);
+
+
+	const Ogre::StringVector& getScriptPatterns() const override;
+
+	Ogre::Real getLoadingOrder() const override;
 
 	/**
 	 * @brief Parses the submitted script and creates ModelDefinition instances.
@@ -80,40 +82,44 @@ public:
 	 * @param groupName
 	 */
 	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) override;
-	
+
 	/**
 	 * @brief Exports a modeldefinition to a file.
 	 * The definition will be serialized and saved to a file by the same name of the definition.
 	 * @param definition The definition to export.
 	 * @return The path to the exported script. If the export failed, the string will be empty.
 	 */
-	std::string exportScript(ModelDefinitionPtr definition);
+	std::string exportScript(const std::string& name, ModelDefinitionPtr definition);
 
 
 	/// Get a ModelDefinition by name
-	/// @see ResourceManager::getResourceByName
-	ModelDefinitionPtr getByName(const Ogre::String& name, const Ogre::String& groupName = Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-	
+	ModelDefinitionPtr getByName(const Ogre::String& name);
+
+	bool hasDefinition(const Ogre::String& name);
+
+	const std::unordered_map<std::string, ModelDefinitionPtr>& getEntries() const;
+
+
 	/**
 	 * @brief Gets a vector of all mesh names in the system.
 	 * This is mainly a helper method for retrieving a list of all available meshes.
 	 * @return A list of all available meshes.
 	 */
 	const std::vector<std::string> getAllMeshes() const;
-	
+
 	/**
 	 * @brief Returns whether all models should be shown using their normal visibility settings.
 	 * @return True if all models should use their normal visibility settings for determining whether they should be shown.
 	 */
 	bool getShowModels() const;
-	
+
 	/**
 	 * @brief Sets whether models should be shown, using their normal visibility settings.
 	 * This is useful for hiding all models in the system.
 	 * @param show If false, all models will be hidden. If true, each model will use its normal visibility setting.
 	 */
 	void setShowModels(bool show);
-	
+
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command
@@ -129,14 +135,9 @@ public:
 
 protected:
 
-	/**
-	 * @brief A store of background loaders.
-	 */
-	typedef std::list<ModelBackgroundLoader*> BackgroundLoaderStore;
-	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-        const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
-        const Ogre::NameValuePairList* createParams) override;
-	
+	std::unordered_map<std::string, ModelDefinitionPtr> mEntries;
+
+
 	/**
 	 * @brief Determines whether models should be shown.
 	 */

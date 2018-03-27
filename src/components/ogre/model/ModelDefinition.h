@@ -460,7 +460,7 @@ private:
  *
  * The most common use is to show a mesh though.
  */
-class ModelDefinition: public Ogre::Resource
+class ModelDefinition
 {
 
 	friend class XMLModelDefinitionSerializer;
@@ -506,25 +506,12 @@ public:
 		MODEL_FIT
 	};
 
-	ModelDefinition(Ogre::ResourceManager* creator,
-					const Ogre::String& name,
-					Ogre::ResourceHandle handle,
-					const Ogre::String& group,
-					bool isManual = false,
-					Ogre::ManualResourceLoader* loader = nullptr);
+	ModelDefinition();
 
-	~ModelDefinition() override;
+	~ModelDefinition();
 
 	bool isValid() const;
 	void setValid(bool valid);
-
-	//Ogre resource virtual functions
-	void loadImpl() override;
-
-	void unloadImpl() override;
-
-	size_t calculateSize() const override;
-
 	/**
 	 * @brief Gets the amount of scale that needs to be applied to derived Models.
 	 * @return
@@ -714,6 +701,10 @@ public:
 
 	void removeFromLoadingQueue(Model* model);
 
+	void setOrigin(std::string origin);
+
+	const std::string& getOrigin() const;
+
 private:
 
 	struct BindingDefinition
@@ -842,9 +833,11 @@ private:
 	bool mAssetsLoaded;
 
 	Eris::ActiveMarker mActive;
+
+	std::string mOrigin;
 };
 
-typedef Ogre::SharedPtr<ModelDefinition> ModelDefinitionPtr;
+typedef std::shared_ptr<ModelDefinition> ModelDefinitionPtr;
 
 ///implementations
 
@@ -860,12 +853,6 @@ inline void ModelDefinition::setContentOffset(const Ogre::Vector3& offset)
 inline void ModelDefinition::setValid(bool valid)
 {
 	mIsValid = valid;
-}
-
-inline size_t ModelDefinition::calculateSize() const
-{
-	//TODO:implement this
-	return 0;
 }
 
 inline Ogre::Real ModelDefinition::getScale() const

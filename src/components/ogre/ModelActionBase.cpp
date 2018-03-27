@@ -91,16 +91,16 @@ void ModelActionBase::deactivate(EntityMapping::ChangeContext& context) {
 void ModelActionBase::showModel(const std::string& modelName) {
 
 	Model::Model* model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
-	if (!model || model->getDefinition()->getName() != modelName) {
+	if (!model || model->getDefinition()->getOrigin() != modelName) {
 		mEntity.setGraphicalRepresentation(nullptr);
 
 		Model::ModelDefinitionManager& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
 		try {
-			auto definition = modelDefinitionManager.getByName(modelName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			auto definition = modelDefinitionManager.getByName(modelName);
 			if (!definition) {
 				S_LOG_FAILURE("Could not find model " << modelName << ", using placeholder.");
 				//add a placeholder model
-				definition = modelDefinitionManager.getByName("common/primitives/placeholder.modeldef", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+				definition = modelDefinitionManager.getByName("common/primitives/placeholder.modeldef");
 			}
 			if (definition) {
 				model = new Model::Model(mScene.getSceneManager(), definition, mEntity.getId());

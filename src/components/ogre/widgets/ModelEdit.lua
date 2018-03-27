@@ -97,8 +97,9 @@ end
 
 function ModelEdit:loadModelDefinition(definitionName)
 	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
-	self.definitionPtr = modelDefMgr:getByName(definitionName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
+	self.definitionPtr = modelDefMgr:getByName(definitionName)
 	self.definition = self.definitionPtr:get()
+	self.definitionName = definitionName
 	self:showPreview(definitionName)
 	
 	--self:updateSubmodelsList()
@@ -161,7 +162,7 @@ function ModelEdit:fillModellist()
 end
 
 function ModelEdit:updateModelInfo()
-	self.widget:getWindow("ModelName_Text"):setText("Name: " .. self.definition:getName())
+	self.widget:getWindow("ModelName_Text"):setText("Name: " .. self.definition:getOrigin())
 	self.scaleTextbox:setText(self.definition:getScale())
 	--self.widget:getWindow("ModelRotation"):setText(self.definition:getRotation())
 	self.rotationAdapter:updateGui(self.definition:getRotation());
@@ -190,7 +191,7 @@ function ModelEdit:updateModelInfo()
 	
 	self:updatePosesList()
 	
-	self.exportTypeName:setText(self.definition:getName())
+	self.exportTypeName:setText(self.definition:getOrigin())
 end
 
 function ModelEdit:updatePosesList()
@@ -273,7 +274,7 @@ function ModelEdit:AddSubmodelButton_Clicked(args)
 		
 		self:reloadModel()
 		--update the renderer so that the camera is repositioned and the complete model is shown
-		self.renderer:showModel(self.definition:getName())
+		self.renderer:showModel(self.definition:getOrigin())
 		self:updateModelContentList()
 	end
 	return true
@@ -283,22 +284,24 @@ end
 function ModelEdit:NewModelOk_Clicked(args)
 	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 	local name = self.widget:getWindow("NewModelName"):getText()
-	local def = modelDefMgr:create(name, "Data"):get()
-	if def then
-		def:setValid(true)
-		
-		--after adding the definition, update the model list
-		self:fillModellist()
-		local item = self.models:findItemWithText(name, self.models:getListboxItemFromIndex(0))
-		if item then
-			item:setSelected(true)
-			self.models:ensureItemIsVisible(item)	
-		end
-		self.widget:getWindow("NewModelWindow"):setVisible(false)
-		self:loadModelDefinition(item:getText())
-		self:reloadModel()
-		self:updateModelContentList()
-	end
+	local def = Ember.OgreView.Model.ModelDefinition:new()
+	def:setValid(true)
+	def:setOrigin(name)
+	modelDefMgr:addDefinition(name, Ember.OgreView.Model.ModelDefinitionPtr:new(def))
+
+	--after adding the definition, update the model list
+	self:fillModellist()
+--Disabled the selection, since population of the list happens async.
+--	local item = self.models:findItemWithText(name, self.models:getListboxItemFromIndex(0))
+--	if item then
+--		item:setSelected(true)
+--		self.models:ensureItemIsVisible(item)
+--	end
+	self.widget:getWindow("NewModelWindow"):setVisible(false)
+	self:loadModelDefinition(item:getText())
+	self:reloadModel()
+	self:updateModelContentList()
+
 	return true
 end
 
@@ -610,7 +613,7 @@ function ModelEdit:buildWidget()
 		self.modelsfilter = self.widget:getWindow("FilterModels")
 		self.modelsfilter = CEGUI.toEditbox(self.modelsfilter)
 		self.modelslistholder = Ember.OgreView.Gui.ListHolder:new(self.models, self.modelsfilter)
-		self.modelsAdapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new(self.modelslistholder, Ember.OgreView.Model.ModelDefinitionManager:getSingleton())
+		self.modelsAdapter = Ember.OgreView.Gui.Adapters.ModelDefinitionsAdapter:new(self.modelslistholder)
 		
 		local xW = self.widget:getWindow("ModelTranslate_x")
 		local yW = self.widget:getWindow("ModelTranslate_y")
@@ -767,7 +770,7 @@ function ModelEdit:buildWidget()
 		self.widget:getWindow("AddSubmodelButton"):subscribeEvent("Clicked", self.AddSubmodelButton_Clicked, self)
 		self.widget:getWindow("SaveModelButton"):subscribeEvent("Clicked", function(args)
 			local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
-			local exportPath = modelDefMgr:exportScript(self.definitionPtr)
+			local exportPath = modelDefMgr:exportScript(self.definitionName, self.definitionPtr)
 			if exportPath ~= "" then
 				console:pushMessage("Model exported to " .. exportPath, "info")
 			end	
@@ -950,7 +953,7 @@ function ModelEdit:buildWidget()
 				local poseDefWrapper = self.posesList.model[item:getID()]
 				local poseDef = poseDefWrapper.def
 				self.poseRenderer.poseDefWrapper = poseDefWrapper
-				self.poseRenderer:showModel(self.definition:getName(), poseDef.Translate, poseDef.Rotate)
+				self.poseRenderer:showModel(self.definition, poseDef.Translate, poseDef.Rotate)
 				removePoseButton:setEnabled(true)
 				updatePoseAdapters()
 			else

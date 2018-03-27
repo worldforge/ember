@@ -209,7 +209,7 @@ void EntityCreatorCreationInstance::finalizeCreation()
 void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 {
 	if (mModel) {
-		if (mModel->getDefinition()->getName() == modelName) {
+		if (mModel->getDefinition()->getOrigin() == modelName) {
 			return;
 		} else {
 			//Reset the model mount to start with.

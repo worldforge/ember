@@ -43,7 +43,7 @@ public :
 	XMLModelDefinitionSerializer() = default;
 	virtual ~XMLModelDefinitionSerializer() = default;
 
-	void parseScript(ModelDefinitionManager& modelDefManager, Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+	ModelDefinitionPtr parseScript(Ogre::DataStreamPtr& stream);
 	
 	/**
 	 * @brief Exports the model definition to a file.
@@ -56,8 +56,8 @@ public :
 
 private:
 
-	void readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode);
-	void readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode);
+	void readModel(const ModelDefinitionPtr& modelDef, TiXmlElement* modelNode);
+	void readSubModels(const ModelDefinitionPtr& modelDef, TiXmlElement* mSubModelNode);
 	void readParts(TiXmlElement* mPartNode, SubModelDefinition* def);
 	void readSubEntities(TiXmlElement* mSubEntNode, PartDefinition* def);
 	void readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode);

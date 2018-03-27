@@ -115,7 +115,7 @@ bool ModelBackgroundLoader::performLoading() {
 						addTicket(ticket);
 					}
 				} catch (const std::exception& ex) {
-					S_LOG_FAILURE("Could not load the mesh " << subModel->getMeshName() << " when loading model " << mModelDefinition.getName() << "." << ex);
+					S_LOG_FAILURE("Could not load the mesh " << subModel->getMeshName() << " when loading model " << mModelDefinition.getOrigin() << "." << ex);
 					continue;
 				}
 			}
@@ -146,7 +146,7 @@ bool ModelBackgroundLoader::performLoading() {
 						meshPtr->load();
 						S_LOG_VERBOSE("Loaded mesh in main thread: " << meshPtr->getName() << " Memory used: " << (meshPtr->getSize() / 1000000.f) << " Mb");
 					} catch (const std::exception& ex) {
-						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModelDefinition.getName() << "." << ex);
+						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModelDefinition.getOrigin() << "." << ex);
 					}
 					return false;
 #endif

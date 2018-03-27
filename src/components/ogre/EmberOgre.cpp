@@ -413,12 +413,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 		//out of pure interest we'll print out how many modeldefinitions we've loaded
-		Ogre::ResourceManager::ResourceMapIterator I = Model::ModelDefinitionManager::getSingleton().getResourceIterator();
-		int count = 0;
-		while (I.hasMoreElements()) {
-			++count;
-			I.moveNext();
-		}
+		auto count = Model::ModelDefinitionManager::getSingleton().getEntries().size();
 
 		S_LOG_INFO("Finished loading " << count << " modeldefinitions.");
 

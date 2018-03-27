@@ -311,7 +311,9 @@ void OgreResourceLoader::observeDirectory(const std::string& path) {
                         std::string relative = ev.path.string().substr(locationDirectory.length());
                         auto extension = ev.path.extension();
 
-                        if (extension == ".material") {
+						if (extension == ".modeldef") {
+
+						} else if (extension == ".material") {
                             std::ifstream stream(ev.path.string());
                             Ogre::SharedPtr<Ogre::DataStream> fileStream(OGRE_NEW Ogre::FileStreamDataStream(&stream, false));
                             Ogre::MaterialManager::getSingleton().parseScript(fileStream, group);

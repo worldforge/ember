@@ -30,6 +30,7 @@
 #include "../GUIManager.h"
 
 #include "components/ogre/model/ModelDefinitionManager.h"
+#include "components/ogre/model/ModelDefinition.h"
 
 #include "framework/Tokeniser.h"
 #include "framework/osdir.h"
@@ -213,11 +214,9 @@ void AssetsManager::createModel(Ogre::MeshPtr mesh)
 	//Extract the file name for the model. I.e. if the mesh has the full name "foo/bar.mesh" the model will be named "bar".
 	auto tokens = Tokeniser::split(name, "/");
 	std::string modelName = Tokeniser::split(tokens.back(), ".").front();
-	auto modelDefinition = modelDefinitionManager.create(modelName, "Data");
-	if (modelDefinition) {
-		modelDefinition->createSubModelDefinition(mesh->getName());
-		modelDefinitionManager.exportScript(modelDefinition);
-	}
+	auto modelDefinition = std::make_shared<Model::ModelDefinition>();
+	modelDefinition->createSubModelDefinition(mesh->getName());
+	modelDefinitionManager.exportScript(modelName, std::move(modelDefinition));
 
 }
 

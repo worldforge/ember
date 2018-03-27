@@ -5,19 +5,17 @@ namespace Model {
 /**
 @author Erik Ogenvik
 */
-class ModelDefinitionManager : public Ogre::ResourceManager
+class ModelDefinitionManager
 {
 public:
 	
 	static ModelDefinitionManager& getSingleton();
 	
 	
-//	const Ember::OgreView::Model::ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
+	std::string exportScript(const std::string& name, Ember::OgreView::Model::ModelDefinitionPtr definition);
 
-	std::string exportScript(Ember::OgreView::Model::ModelDefinitionPtr definition);
-
-    Ember::OgreView::Model::ModelDefinitionPtr create(const std::string& name, const std::string& group);
-	Ember::OgreView::Model::ModelDefinitionPtr getByName(const std::string& name, const std::string& group);
+    void addDefinition(std::string name, Ember::OgreView::Model::ModelDefinitionPtr definition);
+	Ember::OgreView::Model::ModelDefinitionPtr getByName(const std::string& name);
 
 	
 	/**

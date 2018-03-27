@@ -201,20 +201,13 @@ public:
 
 
 
-class ModelDefinition : public Ogre::Resource {
+class ModelDefinition {
+public:
+    ModelDefinition();
 
+    const std::string& getOrigin() const;
+ 	void setOrigin(std::string origin);
 
-	/**
-	A struct for simple bindings between areas and materials/textures.
-	*/
-//	struct AreaDefinition
-//	{
-//		int Id;
-//		std::string TextureName;
-//		std::string MaterialName;
-//	};
-	
- 
     bool isValid(void);
 	void setValid(bool valid);
 
@@ -316,11 +309,12 @@ class ModelDefinition : public Ogre::Resource {
 	 */
 	void reloadAllInstances();
 
-	
+
 };
 
 class ModelDefinitionPtr
 {
+    ModelDefinitionPtr(Ember::OgreView::Model::ModelDefinition* def);
 	virtual ~ModelDefinitionPtr();
 	Ember::OgreView::Model::ModelDefinition* get();
 };

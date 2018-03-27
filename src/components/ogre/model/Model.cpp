@@ -56,7 +56,7 @@ namespace Model {
 std::map<Ogre::SceneManager*, std::map<Ogre::InstancedEntity*, Model*>> Model::sInstancedEntities;
 
 
-Model::Model(Ogre::SceneManager& manager, const Ogre::SharedPtr<ModelDefinition>& definition, const std::string& name) :
+Model::Model(Ogre::SceneManager& manager, const ModelDefinitionPtr& definition, const std::string& name) :
 		mManager(manager),
 		mDefinition(definition),
 		mParentNodeProvider(nullptr),
@@ -111,7 +111,7 @@ void Model::reset() {
 
 }
 
-const Ogre::SharedPtr<ModelDefinition>& Model::getDefinition() const {
+const ModelDefinitionPtr& Model::getDefinition() const {
 	return mDefinition;
 }
 
@@ -185,7 +185,7 @@ bool Model::loadAssets() {
 //}
 
 bool Model::createModelAssets() {
-	TimedLog timedLog("Model::createActualModel " + mDefinition->getName());
+	TimedLog timedLog("Model::createActualModel " + mDefinition->getOrigin());
 
 	if (mAssetCreationContext.mCurrentlyLoadingSubModelIndex < mDefinition->getSubModelDefinitions().size()) {
 		auto& submodelDef = mDefinition->getSubModelDefinitions()[mAssetCreationContext.mCurrentlyLoadingSubModelIndex];
@@ -235,7 +235,7 @@ bool Model::createModelAssets() {
 											subEntityIndex = subEntityDef->getSubEntityIndex();
 											subEntity = entity->getSubEntity(subEntityIndex);
 										} else {
-											S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
+											S_LOG_WARNING("Model definition " << mDefinition->getOrigin() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
 										}
 									}
 									if (subEntity) {
@@ -248,7 +248,7 @@ bool Model::createModelAssets() {
 										S_LOG_WARNING("Could not add subentity.");
 									}
 								} catch (const std::exception& ex) {
-									S_LOG_WARNING("Error when getting sub entities for model '" << mDefinition->getName() << "'." << ex);
+									S_LOG_WARNING("Error when getting sub entities for model '" << mDefinition->getOrigin() << "'." << ex);
 								}
 							}
 						} else {
@@ -287,7 +287,7 @@ bool Model::createModelAssets() {
 				timedLog.report("Created submodel.");
 
 			} else {
-				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
+				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getOrigin() << ".");
 			}
 
 

@@ -36,6 +36,8 @@
 
 #include <OgreRoot.h>
 
+#include <utility>
+
 
 template<> Ember::OgreView::Model::ModelDefinitionManager* Ember::Singleton<Ember::OgreView::Model::ModelDefinitionManager>::ms_Singleton = 0;
 namespace Ember
@@ -47,49 +49,35 @@ namespace Model {
 ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirectory, Eris::EventService& eventService)
 : ShowModels("showmodels", this, "Show or hide models."), mShowModels(true), mExportDirectory(exportDirectory)
 {
-	mLoadOrder = 300.0f;
-	mResourceType = "ModelDefinition";
-
-	mScriptPatterns.emplace_back("*.modeldef");
-	mScriptPatterns.emplace_back("*.modeldef.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
-
-	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
-
 }
 
 ModelDefinitionManager::~ModelDefinitionManager()
 {
-	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
-ModelDefinitionPtr ModelDefinitionManager::create(const Ogre::String& name, const Ogre::String& group,
-        bool isManual, Ogre::ManualResourceLoader* loader,
-        const Ogre::NameValuePairList* createParams)
-{
-    return Ogre::static_pointer_cast<ModelDefinition>(createResource(name, group, isManual, loader, createParams));
-}
 
-Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
-		const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
-		const Ogre::NameValuePairList* params)
+void ModelDefinitionManager::addDefinition(std::string name, ModelDefinitionPtr definition)
 {
-	return OGRE_NEW ModelDefinition(this, name, handle, group, isManual, loader);
+	mEntries[std::move(name)] = std::move(definition);
 }
 
 void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
 {
     XMLModelDefinitionSerializer serializer;
-	serializer.parseScript(*this, stream, groupName);
+	auto definition = serializer.parseScript(stream);
+	if (definition) {
+		addDefinition(stream->getName(), definition);
+	}
 }
 
-std::string ModelDefinitionManager::exportScript(ModelDefinitionPtr definition)
+std::string ModelDefinitionManager::exportScript(const std::string& name, ModelDefinitionPtr definition)
 {
 	XMLModelDefinitionSerializer serializer;
-	bool success = serializer.exportScript(definition, mExportDirectory, definition->getName() + ".modeldef");
+	bool success = serializer.exportScript(std::move(definition), mExportDirectory, name + ".modeldef");
 	if (success) {
-		return mExportDirectory + definition->getName() + ".modeldef";
+		return mExportDirectory + name + ".modeldef";
 	}
 
 	return "";
@@ -108,9 +96,13 @@ const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
 }
 
 
-ModelDefinitionPtr ModelDefinitionManager::getByName(const Ogre::String& name, const Ogre::String& groupName)
+ModelDefinitionPtr ModelDefinitionManager::getByName(const Ogre::String& name)
 {
-    return Ogre::static_pointer_cast<ModelDefinition>(getResourceByName(name, groupName));
+	auto I = mEntries.find(name);
+	if (I != mEntries.end()) {
+		return I->second;
+	}
+	return ModelDefinitionPtr();
 }
 
 bool ModelDefinitionManager::getShowModels() const
@@ -138,6 +130,23 @@ void ModelDefinitionManager::runCommand(const std::string &command, const std::s
 			setShowModels(false);
 		}
 	}
+}
+
+const Ogre::StringVector& ModelDefinitionManager::getScriptPatterns() const {
+	static Ogre::StringVector patterns{"*.modeldef", "*.modeldef.xml"};
+	return patterns;
+}
+
+Ogre::Real ModelDefinitionManager::getLoadingOrder() const {
+	return 300;
+}
+
+bool ModelDefinitionManager::hasDefinition(const Ogre::String& name) {
+	return mEntries.find(name) != mEntries.end();
+}
+
+const std::unordered_map<std::string, ModelDefinitionPtr>& ModelDefinitionManager::getEntries() const {
+	return mEntries;
 }
 
 }

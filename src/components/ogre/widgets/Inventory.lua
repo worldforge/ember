@@ -423,7 +423,7 @@ function Inventory:setupDoll(avatarEntity)
 	local representationUpdate = function()
 		local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
 		if model ~= nil then
-			self.doll.renderer:showModel(model:getDefinition():get():getName())
+			self.doll.renderer:showModel(model:getDefinition():get())
 			self.doll.renderer:setCameraDistance(0.75)
 			self.doll.renderer:updateRender()
 		end
