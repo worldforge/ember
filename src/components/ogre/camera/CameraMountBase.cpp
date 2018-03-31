@@ -32,7 +32,9 @@ namespace Camera
 {
 
 CameraMountBase::CameraMountBase(const CameraSettings& cameraSettings)
-: mCamera(0), mMotionHandler(0), mCameraSettings(cameraSettings)
+: mCamera(nullptr),
+  mMotionHandler(nullptr),
+  mCameraSettings(cameraSettings)
 {
 
 }
@@ -61,7 +63,7 @@ void CameraMountBase::attachToCamera(MainCamera& camera)
 
 void CameraMountBase::detachFromCamera()
 {
-	mCamera = 0;
+	mCamera = nullptr;
 }
 
 void CameraMountBase::move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice)

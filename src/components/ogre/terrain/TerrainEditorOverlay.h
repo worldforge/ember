@@ -28,6 +28,7 @@
 #include <Mercator/BasePoint.h>
 #include <map>
 #include <sigc++/trackable.h>
+#include <components/ogre/BulletCollisionDetector.h>
 
 namespace Mercator
 {
@@ -60,14 +61,15 @@ class TerrainPage;
 class BasePointPickListener: public IWorldPickListener
 {
 public:
-	BasePointPickListener(TerrainEditorOverlay& overlay);
-	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
+	explicit BasePointPickListener(TerrainEditorOverlay& overlay);
 
-	virtual void initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs);
+	void processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) override;
 
-	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
+	void initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) override;
 
-	virtual void processDelayedPick(const MousePickerArgs& mousePickerArgs);
+	void endPickingContext(const MousePickerArgs& mousePickerArgs) override;
+
+	void processDelayedPick(const MousePickerArgs& mousePickerArgs) override;
 
 private:
 	TerrainEditorOverlay& mOverlay;
@@ -77,9 +79,10 @@ private:
 class BasePointUserObject
 {
 public:
-	typedef std::shared_ptr<BasePointUserObject> SharedPtr;
+	//typedef std::shared_ptr<BasePointUserObject> SharedPtr;
 
-	BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode);
+	BasePointUserObject(TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint,
+						Ogre::SceneNode* basePointMarkerNode, BulletWorld& bulletWorld);
 
 	/**
 	 *    Accesses the base point
@@ -183,6 +186,8 @@ private:
 
 	float mFalloff;
 
+	std::unique_ptr<BulletCollisionDetector> mCollisionDetector;
+
 };
 
 // class TerrainEditorInputAdapter : public IInputAdapter
@@ -236,8 +241,11 @@ class TerrainEditorOverlay: public IInputAdapter, public virtual sigc::trackable
 {
 public:
 	typedef std::map<int, std::map<int, Mercator::BasePoint>> BasePointStore;
-	TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, BasePointStore& basePoints);
-	virtual ~TerrainEditorOverlay();
+	TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager,
+						 Ogre::SceneNode& worldSceneNode, TerrainManager& manager,
+						 Camera::MainCamera& camera, BasePointStore& basePoints);
+
+	~TerrainEditorOverlay() override;
 
 	void pickedBasePoint(BasePointUserObject* userObject);
 
@@ -321,14 +329,18 @@ public:
 	 ---------Methods implemented from IInputAdapter
 	 @see IInputAdapter
 	 */
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
-	virtual bool injectChar(int character);
-	virtual bool injectKeyDown(const SDL_Scancode& key);
-	virtual bool injectKeyUp(const SDL_Scancode& key);
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
+
+	bool injectMouseButtonUp(const Input::MouseButton& button) override;
+
+	bool injectMouseButtonDown(const Input::MouseButton& button) override;
+
+	bool injectChar(int character) override;
+
+	bool injectKeyDown(const SDL_Scancode& key) override;
+
+	bool injectKeyUp(const SDL_Scancode& key) override;
 private:
-	typedef std::map<std::string, BasePointUserObject*> BasePointUserObjectStore;
 	typedef std::set<BasePointUserObject*> BasePointUserObjectSet;
 	typedef std::vector<Ogre::Entity*> EntityStore;
 
@@ -340,7 +352,7 @@ private:
 
 	Ogre::SceneNode* mOverlayNode;
 
-	BasePointUserObjectStore mBasePointUserObjects;
+	std::map<std::string, BasePointUserObject*> mBasePointUserObjects;
 
 	BasePointPickListener mPickListener;
 
@@ -369,16 +381,6 @@ private:
 	void releaseInput();
 
 	/**
-	 After a piece of terrain has been updated, the positions of the entities will need to be updated.
-	 */
-	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
-
-	/**
-	 Updates the position of a single entity.
-	 */
-	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
-
-	/**
 	 * @brief Callback for retrieving basepoints and sending updates to the server.
 	 * @param basePoints The current basepoints.
 	 */
@@ -400,7 +402,7 @@ private:
 	 * @param action The action to commit.
 	 * @param reverse Whether the action should be reversed.
 	 */
-	void commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse);
+	void commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction& action, bool reverse);
 
 };
 

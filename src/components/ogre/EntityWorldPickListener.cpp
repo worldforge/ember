@@ -24,13 +24,14 @@
 #include "config.h"
 #endif
 #include "EntityWorldPickListener.h"
-#include "ICollisionDetector.h"
 #include "EmberEntityUserObject.h"
 #include "Scene.h"
 
 #include "domain/EmberEntity.h"
 
 #include "MousePicker.h"
+#include "Convert.h"
+#include "EntityCollisionInfo.h"
 
 #include <OgreSceneQuery.h>
 #include <OgreSceneManager.h>
@@ -46,7 +47,8 @@ namespace OgreView
 {
 
 EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener, Ogre::SceneManager& sceneManager) :
-		mEntity(0), mDebugNode(0)
+		mEntity(nullptr),
+		mDebugNode(nullptr)
 {
 	mDebugNode = sceneManager.getRootSceneNode()->createChildSceneNode();
 	try {
@@ -79,24 +81,22 @@ void EntityWorldPickListenerVisualizer::picker_EventPickedEntity(const std::vect
 }
 
 EntityWorldPickListener::EntityWorldPickListener(Eris::View& view, Scene& scene) :
-		VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mContinuePickingThisContext(true), mVisualizer(nullptr), mView(view), mScene(scene)
+		VisualizePicking("visualize_picking", this, "Visualize mouse pickings."),
+		mClosestPickingDistance(0),
+		mFurthestPickingDistance(0),
+		mContinuePickingThisContext(true),
+		mVisualizer(nullptr),
+		mView(view),
+		mScene(scene)
 {
 }
 
-EntityWorldPickListener::~EntityWorldPickListener()
-{
-}
-
-void EntityWorldPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
+void EntityWorldPickListener::initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs)
 {
 	mResult.clear();
 	mPersistedResult.clear();
 	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_HOVER) {
 		willParticipate = true;
-
-		queryMask = MousePicker::CM_AVATAR;
-		queryMask |= MousePicker::CM_ENTITY;
-		queryMask |= MousePicker::CM_NATURE;
 
 		mClosestPickingDistance = 0;
 		mFurthestPickingDistance = 0;
@@ -123,106 +123,37 @@ void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePick
 	}
 }
 
-void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
+void EntityWorldPickListener::processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
 {
 	if (!mContinuePickingThisContext) {
 		return;
 	}
 
-	if (entry.worldFragment) {
-		//this is terrain
-		//a position of -1, -1, -1 is not valid terrain
-		Ogre::SceneQuery::WorldFragment* wf = entry.worldFragment;
-		static const Ogre::Vector3 invalidPos(-1, -1, -1);
-		if (wf->singleIntersection != invalidPos) {
+	if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
+		auto& entityCollisionInfo = boost::any_cast<EntityCollisionInfo&>(result.collisionInfo);
+		//handle composed entities
 
-			if (mFurthestPickingDistance == 0 || mResult.empty()) {
-				EntityPickResult result;
-				result.entity = findTerrainEntity();
-				result.position = wf->singleIntersection;
-				result.distance = entry.distance;
-				result.isTransparent = false;
-				mResult.push_back(result);
-				mContinuePickingThisContext = false;
-			} else {
-				if (entry.distance < mResult[mResult.size() - 1].distance) {
-					//If the last result is transparent, add another result, but if it's not replace it.
-					if (!mResult.empty() && !mResult[mResult.size() - 1].isTransparent) {
-						mResult.pop_back();
-					}
-					EntityPickResult result;
-					result.entity = findTerrainEntity();
-					result.position = wf->singleIntersection;
-					result.distance = entry.distance;
-					result.isTransparent = false;
-					mResult.push_back(result);
-					mContinuePickingThisContext = false;
-				}
+		std::list<EmberEntity*> entities;
+		entities.push_front(entityCollisionInfo.entity);
+		EmberEntity* entity = entityCollisionInfo.entity->getEmberLocation();
+		while (entity) {
+			if (entity->getCompositionMode() == EmberEntity::CM_COMPOSITION) {
+				entities.push_front(entity);
+			} else if (entity->getCompositionMode() == EmberEntity::CM_COMPOSITION_EXCLUSIVE) {
+				entities.clear();
+				entities.push_front(entity);
 			}
+			entity = entity->getEmberLocation();
 		}
-		/*		std::stringstream ss;
-		 ss << wf->singleIntersection;
-		 S_LOG_VERBOSE("Picked in terrain: " << ss.str() << " distance: " << mResult.distance);*/
 
-	} else if (entry.movable) {
-		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().type() == typeid(EmberEntityUserObject::SharedPtr)) {
-			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(pickedMovable->getUserObjectBindings().getUserAny()).get();
-			//refit the opcode mesh to adjust for changes in the mesh (for example animations)
-			anUserObject->refit();
-
-			ICollisionDetector* collisionDetector = anUserObject->getCollisionDetector();
-			if (collisionDetector) {
-				CollisionResult collisionResult;
-				collisionResult.collided = false;
-				collisionResult.isTransparent = false;
-				collisionDetector->testCollision(cameraRay, collisionResult);
-				if (collisionResult.collided) {
-					if (mFurthestPickingDistance == 0) {
-						//If the current collision is transparent, also check for entities which are further away.
-						if (!collisionResult.isTransparent) {
-							//test all objects that fall into this distance
-							mFurthestPickingDistance = (pickedMovable->getParentNode()->_getDerivedPosition() - cameraRay.getOrigin()).length() + pickedMovable->getBoundingRadius();
-						}
-					} else {
-						if (collisionResult.distance > mFurthestPickingDistance) {
-							mContinuePickingThisContext = false;
-							return;
-						} else {
-							if (!mResult.empty() && mResult[mResult.size() - 1].distance > collisionResult.distance) {
-								//If the last result is transparent, add another result, but if it's not replace it.
-								if (!mResult[mResult.size() - 1].isTransparent) {
-									mResult.pop_back();
-								}
-							} else {
-								return;
-							}
-						}
-					}
-					EmberEntity& pickedEntity = anUserObject->getEmberEntity();
-
-					std::list<EmberEntity*> entities;
-					entities.push_front(&pickedEntity);
-					EmberEntity* entity = pickedEntity.getEmberLocation();
-					while (entity) {
-						if (entity->getCompositionMode() == EmberEntity::CM_COMPOSITION) {
-							entities.push_front(entity);
-						} else if (entity->getCompositionMode() == EmberEntity::CM_COMPOSITION_EXCLUSIVE) {
-							entities.clear();
-							entities.push_front(entity);
-						}
-						entity = entity->getEmberLocation();
-					}
-
-					for (std::list<EmberEntity*>::const_iterator I = entities.begin(); I != entities.end(); ++I) {
-						EntityPickResult result;
-						result.entity = *I;
-						result.position = collisionResult.position;
-						result.distance = collisionResult.distance;
-						result.isTransparent = collisionResult.isTransparent;
-						mResult.push_back(result);
-					}
-				}
+		for (auto& pickedEntity: entities) {
+			EntityPickResult entityPickResult{};
+			entityPickResult.entity = pickedEntity;
+			entityPickResult.position = Convert::toOgre(result.point);
+			entityPickResult.isTransparent = entityCollisionInfo.isTransparent;
+			mResult.push_back(entityPickResult);
+			if (!entityCollisionInfo.isTransparent) {
+				mContinuePickingThisContext = false;
 			}
 		}
 	}
@@ -254,10 +185,10 @@ void EntityWorldPickListener::processDelayedPick(const MousePickerArgs& mousePic
 void EntityWorldPickListener::runCommand(const std::string &command, const std::string &args)
 {
 	if (VisualizePicking == command) {
-		if (mVisualizer.get()) {
+		if (mVisualizer) {
 			mVisualizer.reset();
 		} else {
-			mVisualizer = std::unique_ptr < EntityWorldPickListenerVisualizer > (new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
+			mVisualizer = std::unique_ptr<EntityWorldPickListenerVisualizer>(new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
 		}
 	}
 }

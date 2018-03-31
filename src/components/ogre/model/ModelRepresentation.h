@@ -31,6 +31,7 @@
 #include <vector>
 #include <list>
 #include <components/ogre/EmberEntityUserObject.h>
+#include <components/ogre/BulletCollisionDetector.h>
 
 
 namespace Eris
@@ -142,7 +143,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ModelRepresentation();
+	~ModelRepresentation() override;
 
 	/**
 	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
@@ -152,7 +153,7 @@ public:
 	/**
 	 * @copydoc OgreView::IGraphicalRepresentation::getType()
 	 */
-	virtual const std::string& getType() const;
+	const std::string& getType() const override;
 
 	/**
 	 * @brief Gets the shared class type name, which is the same one returned through getType().
@@ -178,21 +179,21 @@ public:
 	 * @brief Updates the animation. This is normally called by MotionManager.
 	 * @param timeSlice time to update with.
 	 */
-	void updateAnimation(float timeSlice);
+	void updateAnimation(float timeSlice) override;
 
 	/**
 	 * @brief General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize) override;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	bool getVisualize(const std::string& visualization) const;
+	bool getVisualize(const std::string& visualization) const override;
 
 	/**
 	 * @brief Shows/hides a certain part of the model.
@@ -208,6 +209,8 @@ public:
 	 * @brief Sets the velocity, in local units. This means relative to the way the representation is facing, so that x>1 means a forward looking direction.
 	 */
 	void setLocalVelocity(const WFMath::Vector<3>& velocity);
+
+	void notifyTransformsChanged();
 
 protected:
 
@@ -258,6 +261,8 @@ protected:
 
 
 	std::shared_ptr<EmberEntityUserObject> mUserObject;
+
+	std::unique_ptr<BulletCollisionDetector> mBulletCollisionDetector;
 
 	/**
 	 * @brief The type name for the class.
@@ -353,7 +358,9 @@ protected:
 	 * @param actions A list of activation names, searched for in order.
 	 * @return An action, or null if none could be found.
 	 */
-	Action* getFirstAvailableAction(const ActivationDefinition::Type type, std::initializer_list<const char * const > actions) const;
+	Action* getFirstAvailableAction(ActivationDefinition::Type type, std::initializer_list<const char * const > actions) const;
+
+	void updateCollisionDetection();
 };
 
 }

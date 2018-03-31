@@ -28,6 +28,7 @@
 
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/World.h"
+#include "components/ogre/Scene.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/authoring/PolygonPointPickListener.h"
@@ -62,7 +63,13 @@ float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>
 }
 
 PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity) :
-	AdapterBase(element), mShowButton(showButton), mPolygon(0), mPickListener(0), mPointMovement(0), mEntity(entity), mPositionProvider(0)
+	AdapterBase(element),
+	mShowButton(showButton),
+	mPolygon(nullptr),
+	mPickListener(nullptr),
+	mPointMovement(nullptr),
+	mEntity(entity),
+	mPositionProvider(nullptr)
 {
 
 	if (entity) {
@@ -103,11 +110,11 @@ bool PolygonAdapter::showButton_Clicked(const CEGUI::EventArgs& e)
 
 Ogre::SceneNode* PolygonAdapter::getEntitySceneNode() const
 {
-	NodeAttachment* nodeAttachment = dynamic_cast<NodeAttachment*> (mEntity->getAttachment());
+	auto nodeAttachment = dynamic_cast<NodeAttachment*> (mEntity->getAttachment());
 	if (nodeAttachment) {
 		return dynamic_cast<Ogre::SceneNode*> (nodeAttachment->getNode());
 	}
-	return 0;
+	return nullptr;
 }
 
 void PolygonAdapter::toggleDisplayOfPolygon()
@@ -126,10 +133,10 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 						WFMath::Polygon<2> poly(areaElem);
 						createNewPolygon(&poly);
 					} catch (const WFMath::_AtlasBadParse& ex) {
-						createNewPolygon(0);
+						createNewPolygon(nullptr);
 					}
 				} else {
-					createNewPolygon(0);
+					createNewPolygon(nullptr);
 				}
 
 			}
@@ -142,24 +149,26 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when deleting polygon point pick listener.");
 			}
-			mPickListener = 0;
+			mPickListener = nullptr;
 		}
 		try {
 			delete mPolygon;
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when deleting polygon.");
 		}
-		mPolygon = 0;
+		mPolygon = nullptr;
 	}
 }
 
 void PolygonAdapter::createNewPolygon(WFMath::Polygon<2>* existingPoly)
 {
 	delete mPolygon;
-	mPolygon = 0;
+	mPolygon = nullptr;
 	Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 	if (entitySceneNode) {
 		mPolygon = new Authoring::Polygon(entitySceneNode, mPositionProvider, true);
+		//These polygons should all be interactive.
+		mPolygon->makeInteractive(&EmberOgre::getSingleton().getWorld()->getScene().getBulletWorld());
 		WFMath::Polygon<2> poly;
 		if (existingPoly) {
 			poly = *existingPoly;
@@ -201,17 +210,17 @@ void PolygonAdapter::pickListener_PickedPoint(Authoring::PolygonPoint& point)
 void PolygonAdapter::endMovement()
 {
 	delete mPointMovement;
-	mPointMovement = 0;
+	mPointMovement = nullptr;
 }
 void PolygonAdapter::cancelMovement()
 {
 	delete mPointMovement;
-	mPointMovement = 0;
+	mPointMovement = nullptr;
 }
 
 bool PolygonAdapter::hasShape() const
 {
-	return mPolygon != 0;
+	return mPolygon != nullptr;
 }
 
 const WFMath::Polygon<2> PolygonAdapter::getShape()

@@ -20,6 +20,7 @@
 #define AUTHORINGVISUALIZATION_H_
 #include "components/ogre/OgreIncludes.h"
 #include <sigc++/trackable.h>
+#include <components/ogre/BulletCollisionDetector.h>
 
 namespace Ember
 {
@@ -85,6 +86,8 @@ protected:
 	Ogre::Entity* mGraphicalRepresentation;
 
 	const IEntityControlDelegate* mControlDelegate;
+
+	std::unique_ptr<BulletCollisionDetector> mCollisionDetector;
 
 	/**
 	 * @brief When the entity moves, update the position and orientation of the scene node.

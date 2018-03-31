@@ -33,6 +33,7 @@
 
 #include "../Convert.h"
 #include "../MousePicker.h"
+#include "../../../../../../../opt/bullet-release/include/bullet/BulletCollision/CollisionShapes/btSphereShape.h"
 
 #include <OgreEntity.h>
 #include <OgreSceneNode.h>
@@ -49,7 +50,11 @@ namespace Authoring
 unsigned int PolygonPoint::sPointCounter = 0;
 
 PolygonPoint::PolygonPoint(Ogre::SceneNode& baseNode, IPolygonPositionProvider* positionProvider, float scale, const WFMath::Point<2>& localPosition) :
-		mBaseNode(baseNode), mPositionProvider(positionProvider), mUserObject(*this), mNode(nullptr), mEntity(nullptr)
+		mBaseNode(baseNode),
+		mPositionProvider(positionProvider),
+		mUserObject(*this),
+		mNode(nullptr),
+		mEntity(nullptr)
 {
 	Ogre::Vector3 nodePosition = Convert::toOgre<Ogre::Vector3>(localPosition);
 	if (mPositionProvider) {
@@ -69,9 +74,6 @@ PolygonPoint::PolygonPoint(Ogre::SceneNode& baseNode, IPolygonPositionProvider* 
 		//making sure that the marker is drawn on top of everything else, making it easier to interact with.
 		mEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
 		mEntity->setRenderingDistance(300);
-		mEntity->setQueryFlags(MousePicker::CM_UNDEFINED);
-
-		mEntity->getUserObjectBindings().setUserAny(Ogre::Any(&mUserObject));
 
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating polygon point marker entity." << ex);
@@ -156,6 +158,9 @@ void PolygonPoint::translate(const WFMath::Vector<2>& translation)
 		pos.y = mPositionProvider->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
 		getNode()->setPosition(pos);
 	}
+	if (mCollisionDetector) {
+		mCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(getNode()->_getDerivedPosition()), WFMath::Quaternion::IDENTITY());
+	}
 }
 
 void PolygonPoint::setVisible(bool visibility)
@@ -171,6 +176,16 @@ bool PolygonPoint::getVisible() const
 		return mEntity->getVisible();
 	}
 	return false;
+}
+
+void PolygonPoint::makeInteractive(BulletWorld* bulletWorld) {
+	if (mEntity && bulletWorld) {
+		mCollisionDetector.reset(new BulletCollisionDetector(*bulletWorld));
+		mCollisionDetector->collisionInfo = &mUserObject;
+		auto shape = std::make_shared<btSphereShape>(mEntity->getWorldBoundingSphere().getRadius());
+		mCollisionDetector->addCollisionShape(std::move(shape));
+		mCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(getNode()->_getDerivedPosition()), WFMath::Quaternion::IDENTITY());
+	}
 }
 
 }

@@ -4,7 +4,7 @@ add_library(emberogre
         authoring/GUIAdapterBindings.cpp authoring/MaterialEditor.cpp authoring/MovementAdapter.cpp authoring/Polygon.cpp authoring/PolygonPoint.cpp
         authoring/PolygonPointMovement.cpp authoring/PolygonPointMover.cpp authoring/PolygonPointPickListener.cpp
         authoring/PolygonPointUserObject.cpp authoring/PolygonRenderer.cpp authoring/XMLEntityRecipeSerializer.cpp authoring/SnapToMovement.cpp
-        authoring/AuthoringHandler.cpp authoring/AuthoringManager.cpp authoring/AuthoringVisualization.cpp authoring/AuthoringVisualizationCollisionDetector.cpp
+        authoring/AuthoringHandler.cpp authoring/AuthoringManager.cpp authoring/AuthoringVisualization.cpp
         authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RulesFetcher.cpp authoring/RuleEditor.cpp
         authoring/SimpleEntityVisualization.cpp authoring/EntityMaker.cpp authoring/AwarenessVisualizer.cpp
         authoring/EntityConsoleEditor.cpp authoring/EntityConsoleEditor.cpp
@@ -18,7 +18,7 @@ add_library(emberogre
         environment/EmberEntityLoader.cpp environment/Environment.cpp environment/Foliage.cpp environment/FoliageBase.cpp environment/FoliageLayer.cpp
         environment/FoliageLoader.cpp environment/Forest.cpp environment/GrassFoliage.cpp environment/LensFlare.cpp
         environment/ShrubberyFoliage.cpp environment/SimpleEnvironment.cpp environment/SimpleWater.cpp environment/Sun.cpp environment/Tree.cpp environment/Water.cpp
-        environment/OceanRepresentation.cpp environment/OceanAction.cpp environment/SimpleWaterCollisionDetector.cpp
+        environment/OceanRepresentation.cpp environment/OceanAction.cpp
         environment/ExclusiveImposterPage.cpp
         environment/FoliageDetailManager.cpp
         environment/IEnvironmentProvider.h
@@ -99,7 +99,7 @@ add_library(emberogre
         EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp
         EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp
         EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp
-        MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp
+        MediaUpdater.cpp MeshSerializerListener.cpp
         MotionManager.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp
         OgreResourceProvider.cpp OgreWindowProvider.cpp OgreSetup.cpp OgrePluginLoader.cpp NodeAttachment.cpp
         ShaderManager.cpp ShaderDetailManager.cpp ShadowCameraSetup.cpp ShadowDetailManager.cpp SimpleRenderContext.cpp RenderDistanceManager.cpp AutoGraphicsLevelManager.cpp
@@ -109,9 +109,10 @@ add_library(emberogre
         EntityObserverBase.cpp TerrainPageDataProvider.cpp Scene.cpp ForestRenderingTechnique.cpp World.cpp
         Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp CompositionAction.cpp GraphicalChangeAdapter.cpp
         EmberWorkQueue.cpp
-        EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ICollisionDetector.h ILightning.h
+        EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ILightning.h
         IMovable.h IMovementProvider.h INodeProvider.h ISceneRenderingTechnique.h IWorldPickListener.h
-        MousePicker.h OgreIncludes.h authoring/GeometryVisualization.cpp authoring/GeometryVisualization.h PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h widgets/adapters/ModelDefinitionsAdapter.cpp widgets/adapters/ModelDefinitionsAdapter.h)
+        MousePicker.h OgreIncludes.h authoring/GeometryVisualization.cpp authoring/GeometryVisualization.h PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h widgets/adapters/ModelDefinitionsAdapter.cpp widgets/adapters/ModelDefinitionsAdapter.h
+        BulletCollisionDetector.cpp BulletCollisionDetector.h BulletWorld.cpp BulletWorld.h EntityCollisionInfo.h)
 
 
 file(GLOB ENTITY_RECIPES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.entityrecipe" "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.xsd")

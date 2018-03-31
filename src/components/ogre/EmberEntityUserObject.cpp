@@ -25,29 +25,25 @@
 #endif
 #include "EmberEntityUserObject.h"
 #include "domain/EmberEntity.h"
-#include "ICollisionDetector.h"
 
 namespace Ember
 {
 namespace OgreView
 {
 
-EmberEntityUserObject::EmberEntityUserObject(EmberEntity& emberEntity, ICollisionDetector* collisionDetector) :
-	mEmberEntity(emberEntity), mCollisionDetector(collisionDetector)
+EmberEntityUserObject::EmberEntityUserObject(EmberEntity& emberEntity) :
+	mEmberEntity(emberEntity)
 {
 }
 
 
 EmberEntityUserObject::~EmberEntityUserObject()
 {
-	delete mCollisionDetector;
 }
 
 void EmberEntityUserObject::refit()
 {
-	if (mCollisionDetector) {
-		mCollisionDetector->refit();
-	}
+
 }
 
 EmberEntity& EmberEntityUserObject::getEmberEntity() const

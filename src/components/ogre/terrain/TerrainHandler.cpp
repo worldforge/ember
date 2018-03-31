@@ -154,7 +154,9 @@ public:
 
 };
 
-TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider, Eris::EventService& eventService) :
+TerrainHandler::TerrainHandler(unsigned int pageIndexSize,
+							   ICompilerTechniqueProvider& compilerTechniqueProvider,
+							   Eris::EventService& eventService) :
 		mPageIndexSize(pageIndexSize),
 		mCompilerTechniqueProvider(compilerTechniqueProvider),
 		mTerrainInfo(new TerrainInfo(pageIndexSize)),

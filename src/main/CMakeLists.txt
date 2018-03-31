@@ -25,4 +25,6 @@ target_link_libraries(ember.bin
         domain
         framework)
 
+target_link_libraries(ember.bin ${BULLET_LIBRARIES})
+
 install(TARGETS ember.bin DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})

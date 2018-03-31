@@ -67,6 +67,7 @@
 #include <OgreViewport.h>
 
 #include <sigc++/bind.h>
+#include <utility>
 
 namespace Ember
 {
@@ -74,17 +75,32 @@ namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals,
-		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter, EntityMapping::EntityMappingManager& entityMappingManager) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()),
-		mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0),
+		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter,
+			 EntityMapping::EntityMappingManager& entityMappingManager) :
+		mView(view),
+		mRenderWindow(renderWindow),
+		mSignals(signals),
+		mScene(new Scene()),
+		mViewport(renderWindow.addViewport(&mScene->getMainCamera())),
+		mAvatar(nullptr),
+		mMovementController(nullptr),
 		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getEventService())),
-		mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *mTerrainManager->getTerrainAdapter())),
+		mMainCamera(new Camera::MainCamera(*mScene, mRenderWindow, input, *mTerrainManager->getTerrainAdapter())),
 		mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene, entityMappingManager)),
-		mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr),
-		mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)),
+		mMotionManager(new MotionManager()),
+		mAvatarCameraMotionHandler(nullptr),
+		mAvatarCameraWarper(nullptr),
+		mEntityWorldPickListener(nullptr),
+		mAuthoringManager(new Authoring::AuthoringManager(*this)),
 		mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)),
-		mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),
-		mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
+		mTerrainEntityManager(nullptr),
+		mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),
+		mFoliage(nullptr),
+		mFoliageDetailManager(nullptr),
+		mFoliageInitializer(nullptr),
+		mEnvironment(nullptr),
+		mConfigListenerContainer(new ConfigListenerContainer()),
+		mCalendar(new Eris::Calendar(view.getAvatar()))
 {
 	mAfterTerrainUpdateConnection = mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
@@ -314,15 +330,15 @@ void World::avatarEntity_BeingDeleted()
 {
 	delete mAvatarCameraWarper;
 	mAvatarCameraWarper = nullptr;
-	mMainCamera->attachToMount(0);
-	mMainCamera->setMovementProvider(0);
+	mMainCamera->attachToMount(nullptr);
+	mMainCamera->setMovementProvider(nullptr);
 	delete mMovementController;
-	mMovementController = 0;
+	mMovementController = nullptr;
 	mSignals.EventMovementControllerDestroyed.emit();
 	delete mAvatarCameraMotionHandler;
-	mAvatarCameraMotionHandler = 0;
+	mAvatarCameraMotionHandler = nullptr;
 	delete mAvatar;
-	mAvatar = 0;
+	mAvatar = nullptr;
 }
 
 void World::Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, GraphicalChangeAdapter& graphicalChangeAdapter)
@@ -336,11 +352,11 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 		}
 	} else {
 		delete mFoliageDetailManager;
-		mFoliageDetailManager = 0;
+		mFoliageDetailManager = nullptr;
 		delete mFoliageInitializer;
-		mFoliageInitializer = 0;
+		mFoliageInitializer = nullptr;
 		delete mFoliage;
-		mFoliage = 0;
+		mFoliage = nullptr;
 	}
 }
 
@@ -354,7 +370,12 @@ void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter)
 }
 
 DelayedFoliageInitializer::DelayedFoliageInitializer(sigc::slot<void> callback, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
-		mCallback(callback), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::TimedEvent(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();})), mTotalElapsedTime(0)
+		mCallback(std::move(callback)),
+		mView(view),
+		mIntervalMs(intervalMs),
+		mMaxTimeMs(maxTimeMs),
+		mTimeout(new Eris::TimedEvent(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();})),
+		mTotalElapsedTime(0)
 {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload

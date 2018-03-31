@@ -98,7 +98,10 @@ class Vegetation;
  *
  * It works closely with EmberTerrainPageSource.
  */
-class TerrainManager : public virtual sigc::trackable, public ConsoleObject, public ConfigListenerContainer, public Ember::IHeightProvider
+class TerrainManager : public virtual sigc::trackable,
+					   public ConsoleObject,
+					   public ConfigListenerContainer,
+					   public Ember::IHeightProvider
 {
 public:
 

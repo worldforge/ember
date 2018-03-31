@@ -44,16 +44,13 @@ PolygonPointPickListener::PolygonPointPickListener(Polygon& polygon) :
 {
 }
 
-void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& /*cameraRay */, const MousePickerArgs& mousePickerArgs)
+void PolygonPointPickListener::processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& /*cameraRay */, const MousePickerArgs& mousePickerArgs)
 {
-	if (entry.movable) {
-		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().type() == typeid(PolygonPointUserObject*)) {
-			continuePicking = false;
-			if (mousePickerArgs.pickType == MPT_PRESS) {
-				//TODO: make sure that it's a point which belongs to our polygon
-				mPickedUserObject = Ogre::any_cast<PolygonPointUserObject*>(pickedMovable->getUserObjectBindings().getUserAny());
-			}
+	if (result.collisionInfo.type() == typeid(PolygonPointUserObject*)) {
+		continuePicking = false;
+		if (mousePickerArgs.pickType == MPT_PRESS) {
+			//TODO: make sure that it's a point which belongs to our polygon
+			mPickedUserObject = boost::any_cast<PolygonPointUserObject*>(result.collisionInfo);
 		}
 	}
 }
@@ -63,12 +60,11 @@ void PolygonPointPickListener::processDelayedPick(const MousePickerArgs& /*mouse
 }
 
 
-void PolygonPointPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
+void PolygonPointPickListener::initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs)
 {
 	//We will only react on press events, but we want do silence click and pressed events if they happen with our markers too.
 	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_CLICK || pickArgs.pickType == MPT_PRESSED) {
 		willParticipate = true;
-		queryMask = MousePicker::CM_UNDEFINED;
 		mPickedUserObject = nullptr;
 	}
 

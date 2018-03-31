@@ -18,15 +18,24 @@
 
 #include "ThirdPersonCameraMount.h"
 #include "CameraSettings.h"
+#include "components/ogre/Scene.h"
 #include "components/ogre/OgreInfo.h"
+#include "components/ogre/EntityCollisionInfo.h"
 #include "components/ogre/terrain/ITerrainAdapter.h"
 #include "framework/Tokeniser.h"
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>
 #include <OgreCamera.h>
+#include <OgreEntity.h>
 
 #include <wfmath/const.h>
+#include <components/ogre/MousePicker.h>
+#include <components/ogre/BulletCollisionDetector.h>
+
+#include <Eris/View.h>
+#include <Eris/Avatar.h>
+#include <Eris/TypeInfo.h>
 
 namespace Ember
 {
@@ -35,13 +44,14 @@ namespace OgreView
 namespace Camera
 {
 
-ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& terrainAdapter) :
+ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSettings, Scene& scene, Terrain::ITerrainAdapter& terrainAdapter) :
 	CameraMountBase(cameraSettings),
 	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."),
-	mSceneManager(sceneManager),
-	mCameraRootNode(0),
-	mCameraPitchNode(0),
-	mCameraNode(0),
+	mScene(scene),
+	mSceneManager(scene.getSceneManager()),
+	mCameraRootNode(nullptr),
+	mCameraPitchNode(nullptr),
+	mCameraNode(nullptr),
 	mLastPosition(Ogre::Vector3::ZERO),
 	mWantedCameraDistance(10),
 	mCurrentCameraDistance(0),
@@ -49,8 +59,10 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSetti
 	mConfigListenerContainer(new ConfigListenerContainer()),
 	mTerrainAdapter(terrainAdapter)
 {
-	createNodesForCamera(sceneManager);
+	createNodesForCamera(mSceneManager);
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "adjusttoterrain", sigc::mem_fun(*this, &ThirdPersonCameraMount::Config_AdjustToTerrain), true);
+
+	mCameraRaySceneQuery = mSceneManager.createRayQuery(mAdjustTerrainRay);
 }
 
 ThirdPersonCameraMount::~ThirdPersonCameraMount()
@@ -127,6 +139,7 @@ void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManag
 {
 	mCameraRootNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraRootNode"));
 	mCameraRootNode->setInheritOrientation(false);
+	mCameraRootNode->setInheritScale(false);
 	//we need to adjust for the height of the  mesh
 	mCameraRootNode->setPosition(Ogre::Vector3(0, 2, 0));
 	//Start camera behind avatar
@@ -134,8 +147,13 @@ void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManag
 
 	mCameraPitchNode = mCameraRootNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraPitchNode"));
 	mCameraPitchNode->setPosition(Ogre::Vector3(0, 0, 0));
+	mCameraPitchNode->setInheritScale(false);
 	mCameraNode = mCameraPitchNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraNode"));
+	mCameraNode->setInheritScale(false);
+
 	setCameraDistance(10);
+	Ogre::Vector3 pos(0, 0, 10);
+	mCameraNode->setPosition(pos);
 
 }
 
@@ -184,32 +202,58 @@ void ThirdPersonCameraMount::runCommand(const std::string &command, const std::s
 	}
 }
 
-bool ThirdPersonCameraMount::adjustForTerrain()
+bool ThirdPersonCameraMount::adjustForCollision()
 {
 	// We will shoot a ray from the camera base node to the camera. If it hits anything on the way we know that there's something between the camera and the avatar and we'll position the camera closer to the avatar. Thus we'll avoid having the camera dip below the terrain
 	//For now we'll only check against the terrain
 	const Ogre::Vector3 direction(-mCamera->getDerivedDirection());
-	//If the direction if pointing straight upwards we'll end up in an infinite loop in the ray query
-	if (!WFMath::Equal(direction.z, 0)) {
-		mAdjustTerrainRay.setDirection(direction);
-		mAdjustTerrainRay.setOrigin(mCameraRootNode->_getDerivedPosition());
 
-		std::pair<bool, Ogre::Vector3> result = mTerrainAdapter.rayIntersects(mAdjustTerrainRay);
-		// If there is terrain between the camera base and the camera, decrease camera distance
-		if (result.first) {
-			Ogre::Real distance = mCameraRootNode->_getDerivedPosition().distance(result.second);
-			if (distance < mWantedCameraDistance) {
-				setActualCameraDistance(distance - 0.1f);
-				return true;
-			} else {
-				//we hit some terrain beyond the max distance of the camera, so set it to the "default" distance
-				if (!WFMath::Equal(mWantedCameraDistance, mCurrentCameraDistance)) {
-					setActualCameraDistance(mWantedCameraDistance);
+	auto fromPos = mCameraRootNode->_getDerivedPosition();
+	auto desiredPos = fromPos + (direction * mWantedCameraDistance);
+	auto toPos = desiredPos;
+
+	btVector3 from(fromPos.x, fromPos.y, fromPos.z);
+	btVector3 to(toPos.x, toPos.y, toPos.z);
+
+	btCollisionWorld::AllHitsRayResultCallback callback(from, to);
+	mScene.getBulletWorld().getCollisionWorld().rayTest(from, to, callback);
+
+
+	float distance = mWantedCameraDistance;
+
+	for (int i = 0; i < callback.m_collisionObjects.size(); i++) {
+		auto* collisionObject = callback.m_collisionObjects[i];
+		auto* collisionDetector = static_cast<BulletCollisionDetector*>(collisionObject->getUserPointer());
+		if (collisionDetector->collisionInfo.type() == typeid(EntityCollisionInfo)) {
+			auto& entityCollisionInfo = boost::any_cast<EntityCollisionInfo&>(collisionDetector->collisionInfo);
+			//Ignore the avatar entity.
+			if (entityCollisionInfo.entity != entityCollisionInfo.entity->getView()->getAvatar()->getEntity()) {
+				float hitDistance = from.distance(callback.m_hitPointWorld[i]);
+				if (hitDistance < distance) {
+					distance = hitDistance;
 				}
-				return false;
 			}
 		}
 	}
+
+
+	//If the direction if pointing straight upwards we'll end up in an infinite loop in the ray query
+	if (!WFMath::Equal(direction.z, 0)) {
+		mAdjustTerrainRay.setDirection(direction);
+		mAdjustTerrainRay.setOrigin(fromPos);
+
+		auto result = mTerrainAdapter.rayIntersects(mAdjustTerrainRay);
+		// If there is terrain between the camera base and the camera, decrease camera distance
+		if (result.first) {
+			Ogre::Real terrainDistance = fromPos.distance(result.second);
+			if (terrainDistance < distance) {
+				distance = terrainDistance * 0.9f;
+			}
+		}
+	}
+
+	setActualCameraDistance(distance);
+
 	return false;
 }
 
@@ -217,7 +261,7 @@ bool ThirdPersonCameraMount::frameStarted(const Ogre::FrameEvent&)
 {
 	if (mIsAdjustedToTerrain && mCamera) {
 		if (mCamera->getDerivedPosition() != mLastPosition) {
-			adjustForTerrain();
+			adjustForCollision();
 			mLastPosition = mCamera->getDerivedPosition();
 		}
 	}

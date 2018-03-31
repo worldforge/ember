@@ -54,7 +54,7 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 		} else if (actionDef.getType() == "display-label") {
 			aCase->addAction(new Gui::LabelAction(mEntity));
 		} else if (actionDef.getType() == "display-ocean") {
-			aCase->addAction(new Environment::OceanAction(mEntity));
+			aCase->addAction(new Environment::OceanAction(mEntity, mScene));
 		} else if (actionDef.getType() == "enable-composition") {
 			aCase->addAction(new CompositionAction(mEntity, actionDef.getValue()));
 		} else if (actionDef.getType() == "present") {

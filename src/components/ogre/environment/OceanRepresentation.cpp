@@ -19,9 +19,11 @@
 #include "OceanRepresentation.h"
 #include "IEnvironmentProvider.h"
 #include "Environment.h"
-#include "domain/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include <OgreAny.h>
+#include <components/ogre/Scene.h>
+#include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
+#include <components/ogre/EntityCollisionInfo.h>
 
 namespace Ember {
 namespace OgreView {
@@ -30,16 +32,20 @@ namespace Environment {
 
 const std::string OceanRepresentation::sTypeName("OceanRepresentation");
 
-OceanRepresentation::OceanRepresentation(EmberEntity& entity, Environment& environment) :
-		mEntity(entity), mEnvironment(environment) {
+OceanRepresentation::OceanRepresentation(EmberEntity& entity, Environment& environment, Scene& scene) :
+		mEntity(entity),
+		mEnvironment(environment),
+		mBulletCollisionDetector(new BulletCollisionDetector(scene.getBulletWorld())) {
+	mBulletCollisionDetector->collisionInfo = EntityCollisionInfo{&entity, true};
 	mEnvironment.setWaterEnabled(true);
 	if (mEnvironment.getWater()) {
+
+		createCollisionGeometry();
 
 		mEntity.Moved.connect(sigc::mem_fun(*this, &OceanRepresentation::entity_Moved));
 		updateWaterPosition();
 
-		ICollisionDetector* collisionDetector = mEnvironment.getWater()->createCollisionDetector();
-		EmberEntityUserObject* userObject = new EmberEntityUserObject(entity, collisionDetector);
+		EmberEntityUserObject* userObject = new EmberEntityUserObject(entity);
 		EmberEntityUserObject::SharedPtr sharedUserObject(userObject);
 		mEnvironment.getWater()->setUserAny(Ogre::Any(sharedUserObject));
 	}
@@ -74,13 +80,20 @@ void OceanRepresentation::updateWaterPosition() {
 		if (mEntity.getPredictedPos().isValid()) {
 			//If there's a bbox, use the top of the bbox for the level.
 			// Otherwise just use the position of the entity.
+			float waterYPos = mEntity.getPredictedPos().y();
 			if (mEntity.getBBox().isValid()) {
-				mEnvironment.getWater()->setLevel(mEntity.getPredictedPos().y() + mEntity.getBBox().highCorner().y());
-			} else {
-				mEnvironment.getWater()->setLevel(mEntity.getPredictedPos().y());
+				waterYPos += mEntity.getBBox().highCorner().y();
 			}
+			mEnvironment.getWater()->setLevel(waterYPos);
+
+			mBulletCollisionDetector->updateTransforms({0, waterYPos, 0}, WFMath::Quaternion::IDENTITY());
 		}
 	}
+}
+
+void OceanRepresentation::createCollisionGeometry() {
+	auto planeShape = std::make_shared<btStaticPlaneShape>(btVector3(0, 1, 0), 0);
+	mBulletCollisionDetector->addCollisionShape(std::move(planeShape));
 }
 
 }

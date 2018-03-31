@@ -17,17 +17,20 @@
  */
 
 #include "AuthoringVisualization.h"
-#include "AuthoringVisualizationCollisionDetector.h"
 #include "domain/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/OgreInfo.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/MousePicker.h"
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/World.h"
+#include "components/ogre/Scene.h"
 #include "domain/IEntityControlDelegate.h"
 
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
+#include <components/ogre/EntityCollisionInfo.h>
 
 namespace Ember
 {
@@ -77,12 +80,18 @@ void AuthoringVisualization::updatePositionAndOrientation()
 	if (mControlDelegate) {
 		mSceneNode->setPosition(Convert::toOgre(mControlDelegate->getPosition()));
 		mSceneNode->setOrientation(Convert::toOgre(mControlDelegate->getOrientation()));
+		if (mCollisionDetector) {
+			mCollisionDetector->updateTransforms(mControlDelegate->getPosition(), mControlDelegate->getOrientation());
+		}
 	} else {
 		if (mEntity.getPredictedPos().isValid()) {
 			mSceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
 		}
 		if (mEntity.getOrientation().isValid()) {
-			mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
+			mSceneNode->setOrientation(Convert::toOgre(mEntity.getPredictedOrientation()));
+		}
+		if (mCollisionDetector) {
+			mCollisionDetector->updateTransforms(mEntity.getPredictedPos(), mEntity.getPredictedOrientation());
 		}
 	}
 }
@@ -95,8 +104,14 @@ void AuthoringVisualization::createGraphicalRepresentation()
 			try {
 				mSceneNode->attachObject(mGraphicalRepresentation);
 				mGraphicalRepresentation->setRenderingDistance(100);
-				mGraphicalRepresentation->setQueryFlags(MousePicker::CM_ENTITY);
-				mGraphicalRepresentation->getUserObjectBindings().setUserAny(Ogre::Any(EmberEntityUserObject::SharedPtr(new EmberEntityUserObject(mEntity, new AuthoringVisualizationCollisionDetector(*mGraphicalRepresentation)))));
+
+				auto& bulletWorld = EmberOgre::getSingleton().getWorld()->getScene().getBulletWorld();
+				mCollisionDetector.reset(new BulletCollisionDetector(bulletWorld));
+				auto shape = bulletWorld.createMeshShape(mGraphicalRepresentation->getMesh());
+				if (shape) {
+					mCollisionDetector->addCollisionShape(shape);
+				}
+				mCollisionDetector->collisionInfo = EntityCollisionInfo{&mEntity, true};
 			} catch (const std::exception& ex) {
 				S_LOG_WARNING("Error when attaching axes mesh."<< ex);
 				mSceneNode->getCreator()->destroyMovableObject(mGraphicalRepresentation);
@@ -112,10 +127,11 @@ void AuthoringVisualization::removeGraphicalRepresentation()
 	mSceneNode->detachAllObjects();
 	if (mGraphicalRepresentation) {
 		mSceneNode->getCreator()->destroyEntity(mGraphicalRepresentation);
-		mGraphicalRepresentation = 0;
+		mGraphicalRepresentation = nullptr;
 	}
 	mSceneNode->getCreator()->destroySceneNode(mSceneNode);
-	mSceneNode = 0;
+	mSceneNode = nullptr;
+	mCollisionDetector.reset();
 }
 
 }

@@ -26,6 +26,7 @@ namespace Ember
 class EmberEntity;
 namespace OgreView
 {
+class Scene;
 namespace Environment
 {
 
@@ -42,17 +43,17 @@ public:
 	 * @brief Ctor.
 	 * @param entity The entity for which an OceanRepresentation should be created for.
 	 */
-	OceanAction(EmberEntity& entity);
+	OceanAction(EmberEntity& entity, Scene& scene);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~OceanAction();
+	virtual ~OceanAction() = default;
 
 	/**
 	 * @copydoc EntityMapping::Actions::Action::activate()
 	 */
-	virtual void activate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
 
 	/**
 	 * @copydoc EntityMapping::Actions::Action::deactivate()
@@ -62,6 +63,7 @@ public:
 private:
 
 	EmberEntity& mEntity;
+	Scene& mScene;
 };
 }
 }

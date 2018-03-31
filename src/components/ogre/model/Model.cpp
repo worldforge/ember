@@ -47,6 +47,7 @@
 #include <OgrePass.h>
 #include <OgreInstanceBatch.h>
 #include <OgreHighLevelGpuProgramManager.h>
+#include <components/ogre/OgreInfo.h>
 
 
 namespace Ember {
@@ -390,7 +391,8 @@ void Model::createParticles() {
 				std::string name(mName + "/particle" + particleSystemDef.Script);
 				ogreParticleSystem = mManager.createParticleSystem(name, particleSystemDef.Script);
 			} else {
-				ogreParticleSystem = mManager.createParticleSystem(particleSystemDef.Script);
+				ogreParticleSystem = mManager.createParticleSystem(OgreInfo::createUniqueResourceName("particleSystem"),
+																   particleSystemDef.Script);
 			}
 			if (ogreParticleSystem) {
 				//Try to trigger a load of any image resources used by affectors.
@@ -451,11 +453,6 @@ void Model::createLights() {
 			ogreLight->setSpecularColour(lightDef.specularColour);
 			ogreLight->setAttenuation(lightDef.range, lightDef.constant, lightDef.linear, lightDef.quadratic);
 			ogreLight->setPosition(lightDef.position);
-			//ogreLight->setDiffuseColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
-			//ogreLight->setSpecularColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
-			//ogreLight->setAttenuation(100,1,0,0);
-			//ogreLight->setSpotlightRange(Ogre::Degree(60), Ogre::Degree(70));
-			//ogreLight->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
 
 			lightInfo.light = ogreLight;
 			lightInfo.position = lightDef.position;

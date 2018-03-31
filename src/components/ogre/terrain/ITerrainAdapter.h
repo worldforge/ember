@@ -31,6 +31,7 @@
 #include <string>
 
 namespace Ember {
+class EmberEntity;
 namespace OgreView {
 
 class IPageDataProvider;
@@ -149,7 +150,7 @@ public:
 	 * @param ray The Ogre ray to be tested for intersection with the terrain.
 	 * @return A pair of an intersection bool and a intersection position.
 	 */
-	virtual std::pair<bool, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const = 0;
+	virtual std::pair<EmberEntity*, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const = 0;
 
 	/**
 	 * Sets the provider used to retrieve terrain page data.
@@ -164,6 +165,7 @@ public:
 	 */
 	virtual sigc::connection bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& slot) = 0;
 
+	virtual void setTerrainEntity(EmberEntity* entity) = 0;
 };
 }
 }

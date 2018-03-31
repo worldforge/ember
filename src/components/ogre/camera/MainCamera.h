@@ -58,6 +58,7 @@ class IMovementProvider;
 class ICameraMotionHandler;
 struct MousePickerArgs;
 class AvatarTerrainCursor;
+class Scene;
 
 namespace Terrain
 {
@@ -91,7 +92,7 @@ public:
 	 * @param camera The main camera.
 	 * @param terrainAdapter
 	 */
-	MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera, Terrain::ITerrainAdapter& terrainAdapter);
+	MainCamera(Scene& scene, Ogre::RenderWindow& window, Input& input, Terrain::ITerrainAdapter& terrainAdapter);
 
 	/**
 	 * Dtor.
@@ -185,14 +186,12 @@ public:
 	const CameraSettings& getCameraSettings() const;
 
 private:
-	typedef std::deque<IWorldPickListener*> WorldPickListenersStore;
 	typedef std::vector<std::string> CompositorNameStore;
 
-	Ogre::SceneManager& mSceneManager;
-	Ogre::Camera& mCamera;
+	Scene& mScene;
 	ICameraMount* mCameraMount;
 
-	WorldPickListenersStore mPickListeners;
+	std::deque<IWorldPickListener*> mPickListeners;
 
 	CompositorNameStore mLoadedCompositors;
 

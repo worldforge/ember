@@ -31,6 +31,7 @@
 #include "domain/EmberEntity.h"
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/World.h"
+#include "components/ogre/Scene.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -43,6 +44,7 @@
 #include <OgreEntity.h>
 
 #include <sigc++/bind.h>
+#include <BulletCollision/CollisionShapes/btSphereShape.h>
 
 namespace Ember
 {
@@ -52,9 +54,21 @@ namespace OgreView
 namespace Terrain
 {
 
-BasePointUserObject::BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) :
-		mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition), mCanonicalHeight(mBasePoint.height()), mIsMoving(false), mRoughness(basePoint.roughness()), mFalloff(basePoint.falloff())
+BasePointUserObject::BasePointUserObject(TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint,
+										 Ogre::SceneNode* basePointMarkerNode, BulletWorld& bulletWorld) :
+		mBasePoint(basePoint),
+		mBasePointMarkerNode(basePointMarkerNode),
+		mPosition(terrainPosition),
+		mCanonicalHeight(mBasePoint.height()),
+		mIsMoving(false),
+		mRoughness(basePoint.roughness()),
+		mFalloff(basePoint.falloff()),
+		mCollisionDetector(new BulletCollisionDetector(bulletWorld))
 {
+	mCollisionDetector->collisionInfo = this;
+	auto sphereShape = std::make_shared<btSphereShape>(basePointMarkerNode->getAttachedObject(0)->getBoundingRadius());
+	mCollisionDetector->addCollisionShape(std::move(sphereShape));
+	mCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(getBasePointMarkerNode()->_getDerivedPosition()), WFMath::Quaternion::IDENTITY());
 }
 
 const Mercator::BasePoint& BasePointUserObject::getBasePoint() const
@@ -86,6 +100,7 @@ float BasePointUserObject::getHeight() const
 void BasePointUserObject::translate(Ogre::Real verticalMovement)
 {
 	getBasePointMarkerNode()->translate(Ogre::Vector3(0, verticalMovement, 0));
+	mCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(getBasePointMarkerNode()->_getDerivedPosition()), WFMath::Quaternion::IDENTITY());
 	updateMarking();
 	EventUpdatedPosition();
 }
@@ -94,6 +109,7 @@ void BasePointUserObject::setHeight(Ogre::Real height)
 {
 	const Ogre::Vector3& position = getBasePointMarkerNode()->getPosition();
 	getBasePointMarkerNode()->setPosition(position.x, height, position.z);
+	mCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(getBasePointMarkerNode()->_getDerivedPosition()), WFMath::Quaternion::IDENTITY());
 	updateMarking();
 	EventUpdatedPosition();
 }
@@ -149,20 +165,19 @@ void BasePointUserObject::markAsMoving(bool isMoving)
 }
 
 BasePointPickListener::BasePointPickListener(TerrainEditorOverlay& overlay) :
-		mOverlay(overlay), mPickedUserObject(0)
+		mOverlay(overlay),
+		mPickedUserObject(nullptr)
 {
 
 }
 
-void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
+void BasePointPickListener::processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
 {
-	if (entry.movable) {
-		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserObjectBindings().getUserAny().type() == typeid(BasePointUserObject::SharedPtr)) {
-			continuePicking = false;
-			if (mousePickerArgs.pickType == MPT_PRESS) {
-				mPickedUserObject = Ogre::any_cast<BasePointUserObject::SharedPtr>(pickedMovable->getUserObjectBindings().getUserAny()).get();
-			}
+	if (result.collisionInfo.type() == typeid(BasePointUserObject*)) {
+		continuePicking = false;
+		if (mousePickerArgs.pickType == MPT_PRESS) {
+			//TODO: make sure that it's a point which belongs to our polygon
+			mPickedUserObject = boost::any_cast<BasePointUserObject*>(result.collisionInfo);
 		}
 	}
 }
@@ -172,13 +187,12 @@ void BasePointPickListener::processDelayedPick(const MousePickerArgs& mousePicke
 	//Don't process any delayed picks.
 }
 
-void BasePointPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
+void BasePointPickListener::initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs)
 {
 	//We will only react on press events, but we want do silence click and pressed events if they happen with our markers too.
 	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_CLICK || pickArgs.pickType == MPT_PRESSED) {
 		willParticipate = true;
-		queryMask = MousePicker::CM_UNDEFINED;
-		mPickedUserObject = 0;
+		mPickedUserObject = nullptr;
 	}
 }
 
@@ -189,8 +203,18 @@ void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePicker
 	}
 }
 
-TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint>>& basePoints) :
-		mEditor(editor), mSceneManager(sceneManager), mWorldSceneNode(worldSceneNode), mManager(manager), mCamera(camera), mOverlayNode(0), mPickListener(*this), mCurrentUserObject(0)
+TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager,
+										   Ogre::SceneNode& worldSceneNode, TerrainManager& manager,
+										   Camera::MainCamera& camera,
+										   std::map<int, std::map<int, Mercator::BasePoint>>& basePoints) :
+		mEditor(editor),
+		mSceneManager(sceneManager),
+		mWorldSceneNode(worldSceneNode),
+		mManager(manager),
+		mCamera(camera),
+		mOverlayNode(nullptr),
+		mPickListener(*this),
+		mCurrentUserObject(nullptr)
 {
 	createOverlay(basePoints, worldSceneNode);
 }
@@ -241,11 +265,6 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 				continue;
 			}
 
-			if (!entity) {
-				S_LOG_FAILURE("Unexpected error when creating base point marker entity.");
-				continue;
-			}
-
 			mEntities.push_back(entity);
 
 			const Mercator::BasePoint& basepoint = entry.second;
@@ -256,8 +275,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			basepointNode->setPosition(ogrePos);
 			basepointNode->attachObject(entity);
 
-			BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode);
-			entity->getUserObjectBindings().setUserAny(Ogre::Any(BasePointUserObject::SharedPtr(userObject)));
+			BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode, mManager.getScene().getBulletWorld());
 
 			//store the base point user object
 			std::stringstream ss_;
@@ -360,7 +378,7 @@ bool TerrainEditorOverlay::injectMouseButtonDown(const Input::MouseButton& butto
 	return true;
 }
 
-bool TerrainEditorOverlay::injectChar(int character)
+bool TerrainEditorOverlay::injectChar(int)
 {
 	return true;
 }
@@ -564,7 +582,7 @@ void TerrainEditorOverlay::setVisible(bool visible)
 
 bool TerrainEditorOverlay::getVisible() const
 {
-	return mOverlayNode != 0 && mOverlayNode->isInSceneGraph();
+	return mOverlayNode != nullptr && mOverlayNode->isInSceneGraph();
 }
 
 bool TerrainEditorOverlay::undoLastAction()
@@ -600,7 +618,7 @@ void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool re
 	mManager.getBasePoints(slot);
 }
 
-void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse)
+void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction& action, bool reverse)
 {
 
 	TerrainDefPointStore pointStore;

@@ -43,28 +43,29 @@ class CameraMountBase : public ICameraMount
 {
 public:
 
-	CameraMountBase(const CameraSettings& cameraSettings);
-	virtual ~CameraMountBase();
+	explicit CameraMountBase(const CameraSettings& cameraSettings);
+
+	~CameraMountBase() override;
 
 	/**
 	 * @brief Returns the current degrees of pitch from the cameras initial position.
 	 * @return
 	 */
-	virtual Ogre::Degree getPitch() const;
+	Ogre::Degree getPitch() const override;
 
 	/**
 	 * @brief Returns the current degrees of yaw from the cameras initial position.
 	 * @return
 	 */
-	virtual Ogre::Degree getYaw() const;
+	Ogre::Degree getYaw() const override;
 
-	virtual void setMotionHandler(ICameraMotionHandler* handler);
+	void setMotionHandler(ICameraMotionHandler* handler) override;
 
- 	virtual void attachToCamera(MainCamera& camera);
+	void attachToCamera(MainCamera& camera) override;
 
- 	virtual void detachFromCamera();
+	void detachFromCamera() override;
 
-	virtual void move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice);
+	void move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice) override;
 
 
 protected:

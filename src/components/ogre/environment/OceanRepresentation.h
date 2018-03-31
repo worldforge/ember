@@ -21,12 +21,14 @@
 
 #include "domain/IGraphicalRepresentation.h"
 #include <sigc++/trackable.h>
+#include <components/ogre/BulletCollisionDetector.h>
 
 namespace Ember
 {
 class EmberEntity;
 namespace OgreView
 {
+class Scene;
 namespace Environment
 {
 
@@ -44,7 +46,7 @@ class IWater;
 class OceanRepresentation: public IGraphicalRepresentation, public virtual sigc::trackable
 {
 public:
-	OceanRepresentation(EmberEntity& entity, Environment& environment);
+	OceanRepresentation(EmberEntity& entity, Environment& environment, Scene& scene);
 
 	~OceanRepresentation() override;
 
@@ -86,6 +88,9 @@ private:
 	 */
 	Environment& mEnvironment;
 
+
+	std::unique_ptr<BulletCollisionDetector> mBulletCollisionDetector;
+
 	/**
 	 * @brief The type name for the class.
 	 */
@@ -98,6 +103,7 @@ private:
 	 */
 	void updateWaterPosition();
 
+	void createCollisionGeometry();
 };
 }
 }

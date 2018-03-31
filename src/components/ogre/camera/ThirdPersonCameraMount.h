@@ -39,6 +39,7 @@ namespace Ember
 class ConfigListenerContainer;
 namespace OgreView
 {
+class Scene;
 namespace Terrain
 {
 class ITerrainAdapter;
@@ -59,12 +60,12 @@ public:
 	 * @param cameraSettings Shared camera settings.
 	 * @param sceneManager A scene manager, needed for creating new node instances.
 	 */
-	ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& terrainAdapter);
+	ThirdPersonCameraMount(const CameraSettings& cameraSettings, Scene& scene, Terrain::ITerrainAdapter& terrainAdapter);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ThirdPersonCameraMount();
+	~ThirdPersonCameraMount() override;
 
 	/**
 	 * @brief Emitted when the distance between the camera and the entity has changed.
@@ -92,32 +93,34 @@ public:
 	 * @brief Pitches the camera the supplied degrees.
 	 * @param degrees
 	 */
-	virtual Ogre::Degree pitch(float relativeMovement);
+	Ogre::Degree pitch(float relativeMovement) override;
 
 	/**
 	 * @brief Yaws the camera the supplied degrees.
 	 * @param degrees
 	 */
-	virtual Ogre::Degree yaw(float relativeMovement);
+	Ogre::Degree yaw(float relativeMovement) override;
 
 	/**
 	 * @copydoc ICameraMount::attachToCamera
 	 */
-	virtual void attachToCamera(MainCamera& camera);
+	void attachToCamera(MainCamera& camera) override;
 
 	/**
 	 * @copydoc ICameraMount::detachFromCamera
 	 */
-	virtual void detachFromCamera();
+	void detachFromCamera() override;
 
 	/**
 	 * @copydoc ConsoleObject::runCommand method
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
-	virtual bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 
 protected:
+
+	Scene& mScene;
 
 	/**
 	 * @brief The scene manager to which the camera belongs.
@@ -171,6 +174,8 @@ protected:
 	 */
 	Ogre::Ray mAdjustTerrainRay;
 
+	Ogre::RaySceneQuery* mCameraRaySceneQuery;
+
 	/**
 	 * @brief If true, the camera should be adjusted to the terrain, so that it never dips below it.
 	 */
@@ -203,7 +208,7 @@ protected:
 	 * If the camera is below the terrain it will be adjusted.
 	 * @return True if the camera had to be adjusted.
 	 */
-	bool adjustForTerrain();
+	bool adjustForCollision();
 
 	/**
 	 * @brief Listen for changes of the input:adjusttoterrain config key and switches terrain adjustment on and off.

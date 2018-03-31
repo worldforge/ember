@@ -58,9 +58,9 @@ public:
 	 */
 	~PolygonPointPickListener() override = default;
 
-	void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) override;
+	void processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) override;
 
-	void initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs) override;
+	void initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) override;
 
 	void endPickingContext(const MousePickerArgs& mousePickerArgs) override;
 

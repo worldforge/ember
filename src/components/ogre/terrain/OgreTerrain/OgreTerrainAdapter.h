@@ -40,6 +40,7 @@ class PagedWorld;
 }
 
 namespace Ember {
+class EmberEntity;
 namespace OgreView {
 namespace Terrain {
 
@@ -89,11 +90,13 @@ public:
 
 	void destroyObserver(ITerrainObserver* observer) override;
 
-	std::pair<bool, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const override;
+	std::pair<EmberEntity*, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const override;
 
 	void setPageDataProvider(IPageDataProvider* pageDataProvider) override;
 
 	sigc::connection bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal) override;
+
+	void setTerrainEntity(EmberEntity* entity) override;
 
 private:
 	Ogre::Real mLoadRadius;
@@ -120,6 +123,7 @@ private:
 	IPageDataProvider* mPageDataProvider;
 	Ogre::TerrainMaterialGenerator::Profile* mMaterialProfile;
 	CameraFocusedGrid2DPageStrategy* mPageStrategy;
+	EmberEntity* mEntity;
 };
 
 } /* namespace Terrain */

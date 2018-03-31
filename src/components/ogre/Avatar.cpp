@@ -70,7 +70,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 	mErisAvatarEntity(erisAvatarEntity),
 	mMaxSpeed(5),
 	mAvatarAttachmentController(new AvatarAttachmentController(*this)),
-	mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager(), terrainAdapter)),
+	mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene, terrainAdapter)),
 	mIsAdmin(false),
 	mHasChangedLocation(false),
 	mChatLoggerParent(nullptr),

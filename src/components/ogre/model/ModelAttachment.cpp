@@ -288,6 +288,8 @@ void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath
 	} else {
 		NodeAttachment::setPosition(WFMath::Point<3>::ZERO(), WFMath::Quaternion::Identity(), WFMath::Vector<3>::ZERO());
 	}
+
+	mModelRepresentation.notifyTransformsChanged();
 }
 
 }

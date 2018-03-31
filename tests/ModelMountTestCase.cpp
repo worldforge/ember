@@ -37,7 +37,7 @@ public:
 	Ogre::ManualObject* manualObject = new Ogre::ManualObject("");
 
 	TestModel(Ogre::SceneManager& manager) :
-		Model::Model(manager, ::Ember::OgreView::Model::ModelDefinitionPtr(new ::Ember::OgreView::Model::ModelDefinition(0, "modeldef", 1, "")), "testmodel")
+		Model::Model(manager, ::Ember::OgreView::Model::ModelDefinitionPtr(new ::Ember::OgreView::Model::ModelDefinition()), "testmodel")
 	{
 		mDefinition->setTranslate(Ogre::Vector3::ZERO);
 		mLoaded = true;

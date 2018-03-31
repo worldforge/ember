@@ -43,7 +43,6 @@ namespace Model
 {
 class Model;
 }
-class ICollisionDetector;
 
 /**
  * @author Erik Ogenvik
@@ -60,9 +59,8 @@ public:
 	/**
 	 * Ctor.
 	 * @param emberEntity A valid EmberEntity instance.
-	 * @param collisionObject A valid vector of collision objects.
 	 */
-	EmberEntityUserObject(EmberEntity& emberEntity, ICollisionDetector* collisionDetector);
+	explicit EmberEntityUserObject(EmberEntity& emberEntity);
 
 	/**
 	 * @brief Dtor.
@@ -81,11 +79,6 @@ public:
 	 */
 	void refit();
 
-	/**
-	 * @brief Gets the collision detector in use.
-	 * @return The collision detector, if any.
-	 */
-	ICollisionDetector* getCollisionDetector() const;
 
 protected:
 
@@ -94,17 +87,7 @@ protected:
 	 */
 	EmberEntity& mEmberEntity;
 
-	/**
-	 * @brief The collision detector, responsible for checking collisions.
-	 */
-	ICollisionDetector* mCollisionDetector;
-
 };
-
-inline ICollisionDetector* EmberEntityUserObject::getCollisionDetector() const
-{
-	return mCollisionDetector;
-}
 
 }
 }

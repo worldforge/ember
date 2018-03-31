@@ -25,6 +25,10 @@
 
 #include "EmberOgrePrerequisites.h"
 
+#include <wfmath/point.h>
+#include <OgreSceneQuery.h>
+#include <boost/any.hpp>
+
 namespace Ogre
 {
 struct RaySceneQueryResultEntry;
@@ -33,6 +37,7 @@ class Ray;
 
 namespace Ember
 {
+class EmberEntity;
 namespace OgreView
 {
 
@@ -84,6 +89,19 @@ struct MousePickerArgs
 	MousePickType pickType;
 };
 
+struct PickResult {
+	/// Distance along the ray
+	float distance;
+	boost::any collisionInfo;
+
+	WFMath::Point<3> point;
+
+	bool operator<(const PickResult& rhs) const {
+		return this->distance < rhs.distance;
+	}
+
+};
+
 /**
  @author Erik Ogenvik <erik@ogenvik.org>
 
@@ -104,9 +122,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IWorldPickListener()
-	{
-	}
+	virtual ~IWorldPickListener() = default;
 
 	/**
 	 * @brief Called at the start of a picking context.
@@ -118,7 +134,7 @@ public:
 	 * @param queryMask Any optional query masks that should be applied to the query.
 	 * @param pickArgs The base pick arguments.
 	 */
-	virtual void initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
+	virtual void initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs)
 	{
 		//Default is to participate.
 		willParticipate = true;
@@ -143,7 +159,7 @@ public:
 	 * @param cameraRay The ray which resulted in the pick.
 	 * @param mousePickerArgs The original mouse picker arguments.
 	 */
-	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) = 0;
+	virtual void processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) = 0;
 
 	/**
 	 * @brief Processes any delayed picks, such as clicking or pressing and holding.

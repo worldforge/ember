@@ -24,6 +24,8 @@
 #define EMBEROGRE_MANIPULATIONPOLYGONPOINT_H
 
 #include <wfmath/point.h>
+#include <components/ogre/BulletWorld.h>
+#include <components/ogre/BulletCollisionDetector.h>
 #include "PolygonPointUserObject.h"
 
 namespace Ogre
@@ -120,6 +122,8 @@ public:
 	 */
 	bool getVisible() const;
 
+	void makeInteractive(BulletWorld* bulletWorld);
+
 protected:
 	/**
 	 * @brief Used for generating unique names for the entities used to represent the points in Ogre.
@@ -152,6 +156,8 @@ protected:
 	 * @brief The entity which shows the marker, i.e. the draggable ball.
 	 */
 	Ogre::Entity* mEntity;
+
+	std::unique_ptr<BulletCollisionDetector> mCollisionDetector;
 
 };
 

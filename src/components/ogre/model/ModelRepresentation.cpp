@@ -29,8 +29,6 @@
 #include "components/ogre/sound/SoundEntity.h"
 
 #include "components/ogre/MousePicker.h"
-#include "components/ogre/EmberEntityUserObject.h"
-#include "components/ogre/MeshCollisionDetector.h"
 #include "components/ogre/EmberEntityFactory.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/MotionManager.h"
@@ -41,6 +39,8 @@
 #include <OgreParticleSystem.h>
 
 #include <Eris/Task.h>
+#include <components/ogre/Convert.h>
+#include <components/ogre/EntityCollisionInfo.h>
 
 namespace Ember {
 namespace OgreView {
@@ -72,7 +72,9 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 		mActiveAction(nullptr),
 		mTaskAction(nullptr),
 		mSoundEntity(nullptr),
-		mUserObject(std::make_shared<EmberEntityUserObject>(entity, new MeshCollisionDetector(model))) {
+		mUserObject(std::make_shared<EmberEntityUserObject>(entity)),
+		mBulletCollisionDetector(new BulletCollisionDetector(scene.getBulletWorld())) {
+	mBulletCollisionDetector->collisionInfo = EntityCollisionInfo{&entity, false};
 	//Only connect if we have actions to act on
 	if (!model->getDefinition()->getActionDefinitions().empty()) {
 		mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
@@ -93,6 +95,8 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 	parseMovementMode(mEntity.getPredictedVelocity());
 
 	mModel->setUserObject(mUserObject);
+
+	updateCollisionDetection();
 
 	//start out with the default movement mode
 	//onMovementModeChanged(ModelRepresentation::MM_DEFAULT);
@@ -140,8 +144,6 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
 		} else {
 			mModel->hidePart(partName);
 		}
-
-		mUserObject->getCollisionDetector()->reload();
 	}
 }
 
@@ -224,6 +226,7 @@ void ModelRepresentation::model_Reloaded() {
 	}
 	//Retrigger a movement change so that animations can be stopped and started now that the model has changed.
 	parseMovementMode(mEntity.getPredictedVelocity());
+	updateCollisionDetection();
 }
 
 void ModelRepresentation::model_Resetting() {
@@ -307,7 +310,7 @@ Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& veloc
 
 }
 
-Action* ModelRepresentation::getFirstAvailableAction(const ActivationDefinition::Type type, std::initializer_list<const char* const> actions) const {
+Action* ModelRepresentation::getFirstAvailableAction(ActivationDefinition::Type type, std::initializer_list<const char* const> actions) const {
 	for (auto& actionName : actions) {
 		Action* action = mModel->getAction(type, actionName);
 		if (action) {
@@ -390,8 +393,7 @@ void ModelRepresentation::resetAnimations() {
 	}
 }
 
-void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOperation& act)
-{
+void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOperation& act) {
 	const std::string& name = act->getParent();
 
 	// If there is a sound entity, ask it to play this action
@@ -434,21 +436,38 @@ void ModelRepresentation::entity_TaskRemoved(Eris::Task*) {
 }
 
 void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize) {
-	if (visualization == "CollisionObject") {
-		mUserObject->getCollisionDetector()->setVisualize(visualize);
-	}
 }
 
 bool ModelRepresentation::getVisualize(const std::string& visualization) const {
-	if (visualization == "CollisionObject") {
-		return mUserObject->getCollisionDetector()->getVisualize();
-	}
 	return false;
 }
 
 void ModelRepresentation::reactivatePartActions() {
 	ModelPartReactivatorVisitor visitor;
 	mMapping.getBaseCase().accept(visitor);
+}
+
+void ModelRepresentation::notifyTransformsChanged() {
+	auto nodeProvider = mModel->getNodeProvider();
+	if (nodeProvider) {
+		mBulletCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(nodeProvider->getNode()->_getDerivedPosition()),
+												   Convert::toWF(nodeProvider->getNode()->_getDerivedOrientation()));
+		mBulletCollisionDetector->updateScale(Convert::toWF<WFMath::Vector<3>>(nodeProvider->getScale()));
+	}
+
+}
+
+void ModelRepresentation::updateCollisionDetection() {
+	mBulletCollisionDetector->clear();
+	for (auto& subModel : mModel->getSubmodels()) {
+		auto meshPtr = subModel->getEntity()->getMesh();
+		auto collisionShape = mScene.getBulletWorld().createMeshShape(meshPtr);
+		if (collisionShape) {
+			mBulletCollisionDetector->addCollisionShape(std::move(collisionShape));
+		}
+	}
+	notifyTransformsChanged();
+
 }
 
 }

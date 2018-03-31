@@ -95,6 +95,8 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 
 	mHandler->setPageSize(mTerrainAdapter->getPageSize());
 	mHandler->updateAllPages();
+
+	mHandler->EventTerrainEnabled.connect([&](EmberEntity& entity){ mTerrainAdapter->setTerrainEntity(&entity);});
 }
 
 TerrainManager::~TerrainManager()

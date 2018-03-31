@@ -31,7 +31,6 @@ namespace Ember
 {
 namespace OgreView
 {
-class ICollisionDetector;
 
 namespace Environment
 {
@@ -89,12 +88,6 @@ public:
 	 * @param height The height of the water level, in world units.
 	 */
 	virtual void setLevel(float height) = 0;
-
-	/**
-	 * @brief Creates a collision detector for the water.
-	 * @return A collision detector for the water.
-	 */
-	virtual ICollisionDetector* createCollisionDetector() = 0;
 
 	/**
 	 * @brief Attaches a user object, if possible, to the water.

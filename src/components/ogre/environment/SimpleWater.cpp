@@ -25,7 +25,6 @@
 #endif
 
 #include "SimpleWater.h"
-#include "SimpleWaterCollisionDetector.h"
 
 #include "components/ogre/MousePicker.h"
 
@@ -181,10 +180,6 @@ bool SimpleWater::initialize() {
 		S_LOG_FAILURE("Error when creating simple water." << ex);
 	}
 	return false;
-}
-
-ICollisionDetector* SimpleWater::createCollisionDetector() {
-	return new SimpleWaterCollisionDetector(*this);
 }
 
 bool SimpleWater::setUserAny(const Ogre::Any& anything) {

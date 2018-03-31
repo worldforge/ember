@@ -30,21 +30,19 @@ namespace OgreView
 {
 namespace Environment
 {
-OceanAction::OceanAction(EmberEntity& entity) :
-		mEntity(entity)
+OceanAction::OceanAction(EmberEntity& entity, Scene& scene) :
+		mEntity(entity),
+		mScene(scene)
 {
 }
 
-OceanAction::~OceanAction()
-{
-}
 
 void OceanAction::activate(EntityMapping::ChangeContext& context)
 {
 	if (EmberOgre::getSingleton().getWorld()) {
 		World* world = EmberOgre::getSingleton().getWorld();
 		if (Environment* environment = world->getEnvironment()) {
-			OceanRepresentation* ocean = new OceanRepresentation(mEntity, *environment);
+			OceanRepresentation* ocean = new OceanRepresentation(mEntity, *environment, mScene);
 			mEntity.setGraphicalRepresentation(ocean);
 			return;
 		} else {

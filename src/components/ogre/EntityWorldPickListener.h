@@ -99,15 +99,15 @@ class EntityWorldPickListener: public IWorldPickListener, public ConsoleObject
 public:
 	EntityWorldPickListener(Eris::View& view, Scene& scene);
 
-	virtual ~EntityWorldPickListener();
+	~EntityWorldPickListener() override = default;
 
-	virtual void initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs);
+	void initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) override;
 
-	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
+	void endPickingContext(const MousePickerArgs& mousePickerArgs) override;
 
-	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
+	void processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) override;
 
-	virtual void processDelayedPick(const MousePickerArgs& mousePickerArgs);
+	void processDelayedPick(const MousePickerArgs& mousePickerArgs) override;
 
 	sigc::signal<void, const std::vector<EntityPickResult>&, const MousePickerArgs&> EventPickedEntity;
 
@@ -118,7 +118,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 protected:
 	float mClosestPickingDistance, mFurthestPickingDistance;

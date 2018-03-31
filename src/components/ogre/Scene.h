@@ -20,14 +20,17 @@
 #define EMBEROGRE_SCENE_H_
 
 #include "OgreIncludes.h"
+#include "BulletWorld.h"
 #include <map>
 #include <string>
+#include <memory>
 
 namespace Ember
 {
 class EmberEntity;
 namespace OgreView
 {
+class BulletWorld;
 namespace Terrain
 {
 class ITerrainAdapter;
@@ -104,6 +107,8 @@ public:
 	 */
 	Ogre::Camera& getMainCamera() const;
 
+	BulletWorld& getBulletWorld() const;
+
 protected:
 	typedef std::map<std::string, ISceneRenderingTechnique*> RenderingTechniqueStore;
 
@@ -122,6 +127,8 @@ protected:
 	 * @brief A store of rendering techniques.
 	 */
 	RenderingTechniqueStore mTechniques;
+
+	std::unique_ptr<BulletWorld> mBulletWorld;
 
 };
 

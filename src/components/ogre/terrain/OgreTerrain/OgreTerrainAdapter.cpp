@@ -51,7 +51,8 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, terrainPageSize, mTerrainShownSignal, mMaterialGenerator)),
 		mPageDataProvider(nullptr),
 		mMaterialProfile(nullptr),
-		mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager))
+		mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager)),
+		mEntity(nullptr)
 {
 
 	// Other params
@@ -143,7 +144,10 @@ void OgreTerrainAdapter::setCamera(Ogre::Camera* camera)
 void OgreTerrainAdapter::loadScene()
 {
 	mPagedWorld = mPageManager->createWorld();
-	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius, -EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, "", 0);
+	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
+																   -EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE,
+																   EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE,
+																   "", 0);
 	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(*mPageDataProvider));
 }
 
@@ -205,10 +209,10 @@ void OgreTerrainAdapter::destroyObserver(ITerrainObserver* observer)
 	delete ogreTerrainObserver;
 }
 
-std::pair<bool, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const
+std::pair<EmberEntity*, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const
 {
 	Ogre::TerrainGroup::RayResult result = mTerrainGroup->rayIntersects(ray, mHoldRadius + mTerrainGroup->getTerrainWorldSize());
-	return std::make_pair(result.hit, result.position);
+	return std::make_pair(result.hit ? mEntity : nullptr, result.position);
 }
 
 void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider)
@@ -223,6 +227,10 @@ void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider
 sigc::connection OgreTerrainAdapter::bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal)
 {
 	return mTerrainShownSignal.connect(signal);
+}
+
+void OgreTerrainAdapter::setTerrainEntity(EmberEntity* entity) {
+	mEntity = entity;
 }
 
 

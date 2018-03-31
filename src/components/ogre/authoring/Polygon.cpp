@@ -40,7 +40,10 @@ namespace Authoring
 {
 
 Polygon::Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider, bool isClosed) :
-		mBaseNode(baseNode->createChildSceneNode()), mPositionProvider(positionProvider), mRenderer(*baseNode, mPoints, isClosed)
+		mBaseNode(baseNode->createChildSceneNode()),
+		mPositionProvider(positionProvider),
+		mRenderer(*baseNode, mPoints, isClosed),
+		mBulletWorld(nullptr)
 {
 	mBaseNode->setInheritScale(false);
 	mBaseNode->setScale(1.0f, 1.0f, 1.0f);
@@ -73,6 +76,7 @@ void Polygon::loadFromShape(const WFMath::Polygon<2>& shape)
 	for (size_t i = 0; i < shape.numCorners(); ++i) {
 		const WFMath::Point<2>& position = shape[i];
 		PolygonPoint* point = new PolygonPoint(*getBaseNode(), getPositionProvider(), 0.25, position);
+		point->makeInteractive(mBulletWorld);
 		mPoints.push_back(point);
 	}
 	mRenderer.update();
@@ -105,6 +109,7 @@ void Polygon::updateRender()
 PolygonPoint* Polygon::appendPoint()
 {
 	PolygonPoint* newPoint = new PolygonPoint(*getBaseNode(), getPositionProvider(), 0.25);
+	newPoint->makeInteractive(mBulletWorld);
 	mPoints.push_back(newPoint);
 	return newPoint;
 }
@@ -115,6 +120,7 @@ PolygonPoint* Polygon::insertPointBefore(PolygonPoint& point)
 		auto I = std::find(mPoints.begin(), mPoints.end(), &point);
 		if (I != mPoints.end()) {
 			PolygonPoint* newPoint = new PolygonPoint(*getBaseNode(), getPositionProvider(), 0.25);
+			newPoint->makeInteractive(mBulletWorld);
 			mPoints.insert(I, newPoint);
 			return newPoint;
 		}
@@ -187,6 +193,13 @@ bool Polygon::removePoint(PolygonPoint& point)
 		}
 	}
 	return false;
+}
+
+void Polygon::makeInteractive(BulletWorld* bulletWorld) {
+	mBulletWorld = bulletWorld;
+	for (auto& point : mPoints) {
+		point->makeInteractive(bulletWorld);
+	}
 }
 
 }

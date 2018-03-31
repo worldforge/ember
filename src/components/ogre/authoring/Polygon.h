@@ -37,7 +37,7 @@ namespace Ember
 {
 namespace OgreView
 {
-
+class BulletWorld;
 namespace Authoring
 {
 
@@ -169,6 +169,12 @@ public:
 	 */
 	void updateRender();
 
+	/**
+	 * Makes the polygon interactive, i.e. clickable.
+	 * @param bulletWorld
+	 */
+	void makeInteractive(BulletWorld* bulletWorld);
+
 protected:
 
 	/**
@@ -191,6 +197,11 @@ protected:
 	 * @brief Responsible for rendering the mesh that binds the polygon points together.
 	 */
 	PolygonRenderer mRenderer;
+
+	/**
+	 * If set, the polygon is interactive, i.e. it can be clicked and interacted with.
+	 */
+	BulletWorld* mBulletWorld;
 
 };
 

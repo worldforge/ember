@@ -264,6 +264,15 @@ link_directories(${OPENGL_LIBRARY_DIRS})
 link_libraries(${OPENGL_LIBRARIES})
 include_directories(${OPENGL_INCLUDE_DIR})
 
+#The default FindBullet.cmake macro doesn't look in pkg-config first, so we'll do that ourselves.
+pkg_check_modules(BULLET bullet>=2.81)
+if (NOT BULLET_FOUND)
+    find_package(Bullet 2.81 REQUIRED)
+endif (NOT BULLET_FOUND)
+
+link_directories(${BULLET_LIBRARY_DIRS})
+include_directories(${BULLET_INCLUDE_DIRS})
+
 pkg_check_modules(CPPUNIT cppunit>=1.8.0)
 
 #Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.

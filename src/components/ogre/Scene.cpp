@@ -38,7 +38,8 @@ namespace OgreView
 
 Scene::Scene() :
 		mSceneManager(nullptr),
-		mMainCamera(nullptr)
+		mMainCamera(nullptr),
+		mBulletWorld(new BulletWorld())
 {
 	//The default scene manager actually provides better performance in our benchmarks than the Octree SceneManager
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "World");
@@ -95,7 +96,7 @@ ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& nam
 		mTechniques.erase(I);
 		return technique;
 	}
-	return 0;
+	return nullptr;
 }
 
 Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
@@ -117,6 +118,10 @@ Ogre::Camera& Scene::getMainCamera() const
 {
 	assert(mMainCamera);
 	return *mMainCamera;
+}
+
+BulletWorld& Scene::getBulletWorld() const {
+	return *mBulletWorld;
 }
 
 }

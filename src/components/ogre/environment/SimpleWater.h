@@ -71,8 +71,6 @@ public:
 	 */
 	void setLevel(float height) override;
 
-	ICollisionDetector* createCollisionDetector() override;
-
 	bool setUserAny(const Ogre::Any &anything) override;
 
 	float getLevel() const;
