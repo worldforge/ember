@@ -223,13 +223,6 @@ protected:
 	EmberEntity& mErisAvatarEntity;
 
 	/**
-	 * @brief How many meters per second the avatar can move, at maximum speed.
-	 * This should be set through some kind of rule checking with the server
-	 * depending on the character. To be done later.
-	 */
-	float mMaxSpeed;
-
-	/**
 	 * @brief An attachment controller which controls an ingame entity, representing the avatar.
 	 * This is the main way the ingame representation is tied to the avatar.
 	 */
@@ -362,14 +355,6 @@ protected:
 	 * @param variable
 	 */
 	void Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-	/**
-	 * @brief Bind the max speed to the input:runspeed key. Note that this is capped in the end by the server.
-	 * @param section
-	 * @param key
-	 * @param variable
-	 */
-	void Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * @brief Hooked up to Eris::View::AvatarEntityDeleted.

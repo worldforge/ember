@@ -68,7 +68,6 @@ namespace OgreView
 Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
 	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
 	mErisAvatarEntity(erisAvatarEntity),
-	mMaxSpeed(5),
 	mAvatarAttachmentController(new AvatarAttachmentController(*this)),
 	mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene, terrainAdapter)),
 	mIsAdmin(false),
@@ -84,7 +83,6 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 
 	registerConfigListener("general", "logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
 	registerConfigListener("general", "avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));
-	registerConfigListener("input", "maxspeed", sigc::mem_fun(*this, &Avatar::Config_MaxSpeed));
 
 	mCurrentMovementState.movement = WFMath::Vector<3>::ZERO();
 	mCurrentMovementState.orientation = WFMath::Quaternion().identity();
@@ -367,12 +365,6 @@ void Avatar::entity_ChildRemoved(Eris::Entity* childEntity)
 void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	setMinIntervalOfRotationChanges(static_cast<double> (variable));
-}
-
-void Avatar::Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
-	//TODO: get from "speed-ground" property instead
-	mMaxSpeed = static_cast<double> (variable);
 }
 
 void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable)

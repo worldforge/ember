@@ -50,7 +50,6 @@
 
 #include <components/ogre/model/ModelDefinitionManager.h>
 #include <components/ogre/model/Model.h>
-#include <btBulletDynamicsCommon.h>
 #include <components/ogre/BulletCollisionDetector.h>
 #include <components/ogre/EntityCollisionInfo.h>
 

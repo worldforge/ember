@@ -25,22 +25,26 @@
 #endif
 
 #include "ConfigListener.h"
-#include "../EmberServices.h"
 #include "ConfigService.h"
+#include <utility>
 
 namespace Ember
 {
 
-ConfigListener::ConfigListener(const std::string& section, const std::string& key, ConfigListenerContainer::SettingChangedSlot slot) :
-		mSection(section), mKey(key), mSlot(slot), mInternalSlot(sigc::mem_fun(*this, &ConfigListener::ConfigService_EventChangedConfigItem))
+ConfigListener::ConfigListener(const std::string& section, const std::string& key, ConfigListenerContainer::SettingChangedSlot slot)
+		:		mSection(section),
+				 mKey(key),
+				 mSlot(std::move(slot)),
+				 mInternalSlot(sigc::mem_fun(*this, &ConfigListener::ConfigService_EventChangedConfigItem))
 {
-	EmberServices::getSingleton().getConfigService().EventChangedConfigItem.connect(mInternalSlot);
+	mConnection = EmberServices::getSingleton().getConfigService().EventChangedConfigItem.connect(mInternalSlot);
 }
 
 ConfigListener::~ConfigListener()
 {
 	mSlot.disconnect();
 	mInternalSlot.disconnect();
+	mConnection.disconnect();
 }
 
 void ConfigListener::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)

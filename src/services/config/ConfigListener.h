@@ -23,13 +23,13 @@
 #ifndef EMBERCONFIGLISTENER_H
 #define EMBERCONFIGLISTENER_H
 
+#include "ConfigListenerContainer.h"
+#include <varconf/variable.h>
 #include <sigc++/signal.h>
-#include <sigc++/trackable.h>
+#include <sigc++/connection.h>
 #include <string>
 
-#include <varconf/variable.h>
 
-#include "ConfigListenerContainer.h"
 
 namespace Ember
 {
@@ -42,7 +42,7 @@ namespace Ember
 
  You cannot create instances of this class directly, instead your consumer class must inherit from ConfigListenerContainer and call the registerConfigListener in order to create and register instances.
  */
-class ConfigListener: public virtual sigc::trackable
+class ConfigListener
 {
 public:
 	friend class ConfigListenerContainer;
@@ -61,6 +61,7 @@ protected:
 	std::string mKey;
 	ConfigListenerContainer::SettingChangedSlot mSlot;
 	sigc::slot<void, const std::string&, const std::string&> mInternalSlot;
+	sigc::connection mConnection;
 
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
 
