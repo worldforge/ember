@@ -270,6 +270,9 @@ if (NOT BULLET_FOUND)
     find_package(Bullet 2.81 REQUIRED)
 endif (NOT BULLET_FOUND)
 
+#Remove SoftBody and Dynamics since we're not using those
+list(REMOVE_ITEM BULLET_LIBRARIES BulletSoftBody BulletDynamics)
+
 link_directories(${BULLET_LIBRARY_DIRS})
 include_directories(${BULLET_INCLUDE_DIRS})
 
