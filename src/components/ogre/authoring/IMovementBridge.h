@@ -24,6 +24,7 @@
 #define EMBEROGREIENTITYMOVEBRIDGE_H
 
 #include "../EmberOgrePrerequisites.h"
+#include "components/ogre/IWorldPickListener.h"
 #include <wfmath/quaternion.h>
 #include <boost/optional.hpp>
 
@@ -115,6 +116,7 @@ public:
 	 */
 	virtual void cancelMovement() = 0;
 
+	virtual bool isCollisionResultValid(Ember::OgreView::PickResult& result) = 0;
 };
 
 }

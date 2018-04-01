@@ -276,7 +276,7 @@ ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mMode
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
-	ModelPreviewWorkerMovementBridge* bridge = new ModelPreviewWorkerMovementBridge(mModelPreviewWorker, entity, node);
+	auto bridge = std::make_shared<ModelPreviewWorkerMovementBridge>(mModelPreviewWorker, entity, node);
 	mMoveAdapter.attachToBridge(bridge);
 	mMoveAdapter.update();
 }

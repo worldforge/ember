@@ -107,6 +107,8 @@ void AuthoringVisualization::createGraphicalRepresentation()
 
 				auto& bulletWorld = EmberOgre::getSingleton().getWorld()->getScene().getBulletWorld();
 				mCollisionDetector.reset(new BulletCollisionDetector(bulletWorld));
+				//These should only be pickable, not occluding.
+				mCollisionDetector->setMask(COLLISION_MASK_PICKABLE);
 				auto shape = bulletWorld.createMeshShape(mGraphicalRepresentation->getMesh());
 				if (shape) {
 					mCollisionDetector->addCollisionShape(shape);

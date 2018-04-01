@@ -40,7 +40,7 @@ PolygonPointMovement::PolygonPointMovement(Polygon& polygon, PolygonPoint& point
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
-	PolygonPointMover* bridge = new PolygonPointMover(polygon, point, movementListener);
+	auto bridge = std::make_shared<PolygonPointMover>(polygon, point, movementListener);
 	mMoveAdapter.attachToBridge(bridge);
 }
 

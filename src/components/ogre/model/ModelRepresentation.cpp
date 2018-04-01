@@ -470,6 +470,10 @@ void ModelRepresentation::updateCollisionDetection() {
 
 }
 
+BulletCollisionDetector& ModelRepresentation::getCollisionDetector() {
+	return *mBulletCollisionDetector.get();
+}
+
 }
 }
 }

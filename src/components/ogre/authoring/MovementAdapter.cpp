@@ -27,9 +27,11 @@
 #include "MovementAdapter.h"
 #include "IMovementBridge.h"
 #include "components/ogre/camera/MainCamera.h"
+#include "components/ogre/EntityCollisionInfo.h"
 #include "../AvatarTerrainCursor.h"
 #include "../Convert.h"
 #include <OgreRoot.h>
+#include <OgreCamera.h>
 
 using namespace WFMath;
 using namespace Ember;
@@ -42,7 +44,7 @@ MovementAdapterWorkerBase::MovementAdapterWorkerBase(MovementAdapter& adapter) :
 		mAdapter(adapter) {
 }
 
-IMovementBridge* MovementAdapterWorkerBase::getBridge() {
+std::shared_ptr<IMovementBridge> MovementAdapterWorkerBase::getBridge() {
 	return mAdapter.mBridge;
 }
 
@@ -109,9 +111,16 @@ bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent&) {
 }
 
 void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate) {
-	const Ogre::Vector3* position(nullptr);
-	if (getCamera().getTerrainCursor().getTerrainCursorPosition(&position) || forceUpdate) {
-		getBridge()->setPosition(Convert::toWF<WFMath::Point<3>>(*position));
+
+	const MousePosition& mousePosition(Input::getSingleton().getMousePosition());
+	Ogre::Ray cameraRay = getCamera().getCamera().getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition);
+	auto results = getCamera().pick(cameraRay);
+
+	for (auto& result : results) {
+		if (mAdapter.getBridge()->isCollisionResultValid(result)) {
+			getBridge()->setPosition(result.point);
+			break;
+		}
 	}
 }
 
@@ -147,19 +156,17 @@ MovementAdapter::~MovementAdapter() {
 void MovementAdapter::finalizeMovement() {
 	removeAdapter();
 	//We need to do it this way since there's a chance that the call to IMovementBridge::finalizeMovement will delete this instance, and then we can't reference mBridge anymore
-	IMovementBridge* bridge = mBridge;
-	mBridge = nullptr;
+	auto bridge = mBridge;
+	mBridge.reset();
 	bridge->finalizeMovement();
-	delete bridge;
 }
 
 void MovementAdapter::cancelMovement() {
 	removeAdapter();
 	//We need to do it this way since there's a chance that the call to IMovementBridge::cancelMovement will delete this instance, and then we can't reference mBridge anymore
-	IMovementBridge* bridge = mBridge;
-	mBridge = nullptr;
+	auto bridge = mBridge;
+	mBridge.reset();
 	bridge->cancelMovement();
-	delete bridge;
 }
 
 bool MovementAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
@@ -236,17 +243,13 @@ bool MovementAdapter::injectKeyUp(const SDL_Scancode& key) {
 	return true;
 }
 
-void MovementAdapter::attachToBridge(IMovementBridge* bridge) {
-	if (mBridge != bridge) {
-		delete mBridge;
-	}
+void MovementAdapter::attachToBridge(std::shared_ptr<IMovementBridge> bridge) {
 	mBridge = bridge;
 	addAdapter();
 }
 
 void MovementAdapter::detach() {
-	delete mBridge;
-	mBridge = nullptr;
+	mBridge.reset();
 	removeAdapter();
 }
 
@@ -265,6 +268,10 @@ void MovementAdapter::update() {
 	if (mWorker) {
 		mWorker->update();
 	}
+}
+
+const std::shared_ptr<IMovementBridge>& MovementAdapter::getBridge() const {
+	return mBridge;
 }
 
 }

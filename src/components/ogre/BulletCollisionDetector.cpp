@@ -50,7 +50,9 @@ btQuaternion toBullet(const WFMath::Quaternion& aq) {
 
 
 BulletCollisionDetector::BulletCollisionDetector(BulletWorld& bulletWorld)
-		: mBulletWorld(bulletWorld) {
+		: mBulletWorld(bulletWorld),
+		  mMask(COLLISION_MASK_OCCLUDING | COLLISION_MASK_PICKABLE)
+{
 }
 
 BulletCollisionDetector::~BulletCollisionDetector() {
@@ -92,7 +94,7 @@ void BulletCollisionDetector::addCollisionShape(std::shared_ptr<btCollisionShape
 		std::unique_ptr<btCollisionObject> collisionObject(new btCollisionObject());
 		collisionObject->setCollisionShape(shape.get());
 		collisionObject->setUserPointer(this);
-		mBulletWorld.getCollisionWorld().addCollisionObject(collisionObject.get());
+		mBulletWorld.getCollisionWorld().addCollisionObject(collisionObject.get(), mMask);
 		mCollisionObjects.push_back(std::move(collisionObject));
 		mCollisionShapes.push_back(std::move(shape));
 	}
@@ -105,6 +107,13 @@ void BulletCollisionDetector::clear() {
 	}
 	mCollisionObjects.clear();
 	mCollisionShapes.clear();
+}
+
+void BulletCollisionDetector::setMask(short mask) {
+	mMask = mask;
+	for (auto& collisionObject : mCollisionObjects) {
+		collisionObject->getBroadphaseHandle()->m_collisionFilterGroup = mask;
+	}
 }
 
 

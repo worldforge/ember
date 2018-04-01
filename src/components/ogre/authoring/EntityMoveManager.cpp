@@ -84,7 +84,7 @@ void EntityMoveManager::startMove(EmberEntity& entity)
 		//Only provide movement for entities which have a node attachment.
 		NodeAttachment* attachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
 		if (attachment) {
-			EntityMover* mover = new EntityMover(*attachment, *this);
+			auto mover = std::make_shared<EntityMover>(*attachment, *this);
 			mMoveAdapter.attachToBridge(mover);
 			//The EntityMoveInstance will delete itself when either movement is finished or the entity is deleted, so we don't need to hold a reference to it.
 			new EntityMoveInstance(entity, mMoveAdapter, EventFinishedMoving, EventCancelledMoving);

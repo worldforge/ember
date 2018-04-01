@@ -25,6 +25,7 @@
 #define AVATARCAMERA_H
 
 #include "components/ogre/OgreIncludes.h"
+#include "components/ogre/IWorldPickListener.h"
 
 #include "services/input/Input.h"
 
@@ -131,6 +132,8 @@ public:
 
 	void pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& args);
 
+	std::vector<PickResult> pick(const Ogre::Ray& cameraRay) const;
+
 	void setClosestPickingDistance(Ogre::Real distance);
 
 	Ogre::Real getClosestPickingDistance() const;
@@ -222,11 +225,6 @@ private:
 	 * @brief The terrain adapter used to check for intersections with the terrain.
 	 */
 	Terrain::ITerrainAdapter& mTerrainAdapter;
-
-	/**
-	 * @brief A WorldFragment used when injecting a custom terrain intersection result into the scene query
-	 */
-	Ogre::SceneQuery::WorldFragment mTerrainResultWorldFragment;
 
 	/**
 	 * @brief Sets the near and far clip distances of the camera.

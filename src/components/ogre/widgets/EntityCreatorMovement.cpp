@@ -40,7 +40,7 @@ EntityCreatorMovement::EntityCreatorMovement(EntityCreatorCreationInstance& crea
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't delete it ourselves.
-	mMovementBridge = new EntityCreatorMovementBridge(creationInstance, entity, node);
+	mMovementBridge = std::make_shared<EntityCreatorMovementBridge>(creationInstance, entity, node);
 	mMoveAdapter.attachToBridge(mMovementBridge);
 	mMoveAdapter.update();
 }
@@ -50,7 +50,7 @@ EntityCreatorMovement::~EntityCreatorMovement()
 	mMoveAdapter.detach();
 }
 
-EntityCreatorMovementBridge* EntityCreatorMovement::getBridge() const {
+const std::shared_ptr<EntityCreatorMovementBridge>& EntityCreatorMovement::getBridge() const {
 	return mMovementBridge;
 }
 

@@ -29,7 +29,6 @@
 #include "components/ogre/Convert.h"
 #include "components/ogre/ICameraMotionHandler.h"
 #include "components/ogre/IMovementProvider.h"
-#include "components/ogre/IWorldPickListener.h"
 #include "components/ogre/Scene.h"
 
 #include "components/ogre/terrain/ITerrainAdapter.h"
@@ -75,7 +74,6 @@ MainCamera::MainCamera(Scene& scene, Ogre::RenderWindow& window, Input& input, T
 		mCameraSettings(new CameraSettings),
 		mConfigListenerContainer(new ConfigListenerContainer()),
 		mTerrainAdapter(terrainAdapter) {
-	mTerrainResultWorldFragment.fragmentType = Ogre::SceneQuery::WFT_SINGLE_INTERSECTION;
 
 	scene.getMainCamera().setAutoAspectRatio(true);
 
@@ -203,50 +201,8 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 		//Only perform picking if there are any participating pick listeners.
 		if (!participatingListeners.empty()) {
 
-			std::vector<PickResult> results;
 
-			auto& origin = cameraRay.getOrigin();
-			btVector3 rayFrom(origin.x, origin.y, origin.z);
-			auto to = cameraRay.getPoint(300);
-			btVector3 rayTo(to.x, to.y, to.z);
-
-			btCollisionWorld::AllHitsRayResultCallback callback(rayFrom, rayTo);
-			mScene.getBulletWorld().getCollisionWorld().rayTest(rayFrom, rayTo, callback);
-
-			std::set<const btCollisionObject*> collidedObjects;
-			for (int i = callback.m_collisionObjects.size() - 1; i >= 0; --i) {
-				if (collidedObjects.find(callback.m_collisionObjects[i]) == collidedObjects.end()) {
-					PickResult result{};
-					auto collisionDetector = static_cast<BulletCollisionDetector*>(callback.m_collisionObjects[i]->getUserPointer());
-					result.collisionInfo = collisionDetector->collisionInfo;
-					result.point = WFMath::Point<3>(callback.m_hitPointWorld[i].x(), callback.m_hitPointWorld[i].y(), callback.m_hitPointWorld[i].z());
-					result.distance = rayFrom.distance(btVector3(result.point.x(), result.point.y(), result.point.z()));
-					auto insertion_iterator = std::lower_bound(results.begin(), results.end(), result);
-					results.insert(insertion_iterator, std::move(result));
-					collidedObjects.insert(callback.m_collisionObjects[i]);
-				}
-			}
-
-
-			// Manually add results for terrain since they have to be queried in a different way
-			auto terrainIntersectionResult = mTerrainAdapter.rayIntersects(cameraRay);
-
-			if (terrainIntersectionResult.first) {
-
-				PickResult terrainResult{};
-
-				mTerrainResultWorldFragment.singleIntersection = terrainIntersectionResult.second;
-
-
-				terrainResult.point = WFMath::Point<3>(terrainIntersectionResult.second.x, terrainIntersectionResult.second.y, terrainIntersectionResult.second.z);
-				terrainResult.collisionInfo = EntityCollisionInfo{terrainIntersectionResult.first, false};
-				terrainResult.distance = rayFrom.distance(btVector3(terrainResult.point.x(), terrainResult.point.y(), terrainResult.point.z()));
-
-				// Insert at correct position because the listeners expect results sorted by distance
-				auto insertion_iterator = std::lower_bound(results.begin(), results.end(), terrainResult);
-				results.insert(insertion_iterator, terrainResult);
-			}
-
+			auto results = pick(cameraRay);
 
 			for (auto& result : results) {
 				for (auto listener : participatingListeners) {
@@ -266,6 +222,54 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 			listener->processDelayedPick(mousePickerArgs);
 		}
 	}
+}
+
+
+std::vector<PickResult> MainCamera::pick(const Ogre::Ray& cameraRay) const {
+	std::vector<PickResult> results;
+
+	auto& origin = cameraRay.getOrigin();
+	btVector3 rayFrom(origin.x, origin.y, origin.z);
+	auto to = cameraRay.getPoint(300);
+	btVector3 rayTo(to.x, to.y, to.z);
+
+	btCollisionWorld::AllHitsRayResultCallback callback(rayFrom, rayTo);
+	//Only get those that are pickable
+	callback.m_collisionFilterMask = COLLISION_MASK_PICKABLE;
+	mScene.getBulletWorld().getCollisionWorld().rayTest(rayFrom, rayTo, callback);
+
+	std::set<const btCollisionObject*> collidedObjects;
+	for (int i = callback.m_collisionObjects.size() - 1; i >= 0; --i) {
+		if (collidedObjects.find(callback.m_collisionObjects[i]) == collidedObjects.end()) {
+			PickResult result{};
+			auto collisionDetector = static_cast<BulletCollisionDetector*>(callback.m_collisionObjects[i]->getUserPointer());
+			result.collisionInfo = collisionDetector->collisionInfo;
+			result.point = WFMath::Point<3>(callback.m_hitPointWorld[i].x(), callback.m_hitPointWorld[i].y(), callback.m_hitPointWorld[i].z());
+			result.distance = rayFrom.distance(btVector3(result.point.x(), result.point.y(), result.point.z()));
+			auto insertion_iterator = std::lower_bound(results.begin(), results.end(), result);
+			results.insert(insertion_iterator, std::move(result));
+			collidedObjects.insert(callback.m_collisionObjects[i]);
+		}
+	}
+
+
+	// Manually add results for terrain since they have to be queried in a different way
+	auto terrainIntersectionResult = mTerrainAdapter.rayIntersects(cameraRay);
+
+	if (terrainIntersectionResult.first) {
+
+		PickResult terrainResult{};
+
+		terrainResult.point = WFMath::Point<3>(terrainIntersectionResult.second.x, terrainIntersectionResult.second.y, terrainIntersectionResult.second.z);
+		terrainResult.collisionInfo = EntityCollisionInfo{terrainIntersectionResult.first, false};
+		terrainResult.distance = rayFrom.distance(btVector3(terrainResult.point.x(), terrainResult.point.y(), terrainResult.point.z()));
+
+		// Insert at correct position because the listeners expect results sorted by distance
+		auto insertion_iterator = std::lower_bound(results.begin(), results.end(), terrainResult);
+		results.insert(insertion_iterator, terrainResult);
+	}
+
+	return results;
 }
 
 void MainCamera::setClosestPickingDistance(Ogre::Real distance) {
@@ -415,6 +419,7 @@ ICameraMount* MainCamera::attachToMount(ICameraMount* newCameraMount) {
 	}
 	return mCameraMount;
 }
+
 
 }
 

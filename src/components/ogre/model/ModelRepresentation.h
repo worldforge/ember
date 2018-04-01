@@ -212,6 +212,8 @@ public:
 
 	void notifyTransformsChanged();
 
+	BulletCollisionDetector& getCollisionDetector();
+
 protected:
 
 	/**

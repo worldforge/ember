@@ -27,6 +27,7 @@
 #include "PolygonPointMover.h"
 #include "PolygonPoint.h"
 #include "Polygon.h"
+#include "components/ogre/EntityCollisionInfo.h"
 
 #include "../Convert.h"
 #include <OgreSceneNode.h>
@@ -221,6 +222,17 @@ void PolygonPointMover::setOffset(boost::optional<float>) {
 
 boost::optional<float> PolygonPointMover::getOffset() const {
 	return boost::none;
+}
+
+bool PolygonPointMover::isCollisionResultValid(Ember::OgreView::PickResult& result) {
+	if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
+		auto& entityCollisionInfo = boost::any_cast<EntityCollisionInfo&>(result.collisionInfo);
+		//It's a valid entry if it's the terrain
+		if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity->hasAttr("terrain")) {
+			return true;
+		}
+	}
+	return false;
 }
 
 }

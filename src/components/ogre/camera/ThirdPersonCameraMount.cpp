@@ -207,6 +207,9 @@ void ThirdPersonCameraMount::adjustForOcclusion() {
 		btVector3 to(toPos.x, toPos.y, toPos.z);
 
 		btCollisionWorld::AllHitsRayResultCallback callback(from, to);
+		//Only get those that are occluding
+		callback.m_collisionFilterMask = COLLISION_MASK_OCCLUDING;
+
 		mScene.getBulletWorld().getCollisionWorld().rayTest(from, to, callback);
 
 		for (int i = 0; i < callback.m_collisionObjects.size(); i++) {

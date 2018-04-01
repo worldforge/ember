@@ -100,6 +100,8 @@ public:
 	void finalizeMovement() override;
 	void cancelMovement() override;
 
+	bool isCollisionResultValid(Ember::OgreView::PickResult& result) override ;
+
 private:
 
 	/**

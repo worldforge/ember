@@ -71,7 +71,7 @@ protected:
 	 *    Gets the movement bridge in use.
 	 * @return
 	 */
-	IMovementBridge* getBridge();
+	std::shared_ptr<IMovementBridge> getBridge();
 
 	/**
 	 * @brief Gets the main world camera.
@@ -170,11 +170,11 @@ public:
 	bool injectKeyUp(const SDL_Scancode& key) override;
 
 	/**
-	 * @brief Attaches the adapter to the suppied IMovementBridge, allowing it to be moved. This will activate the adapter.
+	 * @brief Attaches the adapter to the supplied IMovementBridge, allowing it to be moved. This will activate the adapter.
 	 * Ownership of the bridge will be passed to this class.
 	 * @param bridge The bridge through which the entity is moved. After calling this, ownership will be transferred to this class.
 	 */
-	virtual void attachToBridge(IMovementBridge* bridge);
+	virtual void attachToBridge(std::shared_ptr<IMovementBridge> bridge);
 
 	/**
 	 * @brief Detaches the adapter from the current bridge. This will deactive the adapter.
@@ -187,6 +187,8 @@ public:
 	 * This could be called to force a position update, even if no input has been received (for example a mouse movement).
 	 */
 	virtual void update();
+
+	const std::shared_ptr<IMovementBridge>& getBridge() const;
 
 protected:
 	/**
@@ -218,7 +220,7 @@ protected:
 	 * @brief The bridge through which all movement happens.
 	 * This is initially null, but is set through attachToBridge. Once a bridge has been attached the ownership is transferred to this class, and subsequently the reponsibility to delete it.
 	 */
-	IMovementBridge* mBridge;
+	std::shared_ptr<IMovementBridge> mBridge;
 
 	/**
 	 * @brief The worker instance which will listen for inputs and tell the bridge to update accordingly.

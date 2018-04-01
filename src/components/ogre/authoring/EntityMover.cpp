@@ -68,12 +68,12 @@ const IEntityControlDelegate& EntityMover::getControlDelegate() const {
 }
 
 void EntityMover::finalizeMovement() {
-	if (mEntity.getLocation()) {
-		mManager.getWorld().getView().getAvatar()->place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
+	if (mEntity->getLocation()) {
+		mManager.getWorld().getView().getAvatar()->place(mEntity.get(), mEntity->getLocation(), getPosition(), getOrientation());
 	}
 
 	//Let the manager perform a check after some seconds to adjust the position of the entity (if movement failed etc.).
-	mManager.delayedUpdatePositionForEntity(mEntity.getId());
+	mManager.delayedUpdatePositionForEntity(mEntity->getId());
 
 	cleanup();
 	mManager.EventFinishedMoving.emit();

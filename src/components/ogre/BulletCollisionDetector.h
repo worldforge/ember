@@ -30,6 +30,8 @@ namespace Model {
 class Model;
 }
 
+static constexpr short COLLISION_MASK_PICKABLE = 1;
+static constexpr short COLLISION_MASK_OCCLUDING = 2;
 
 /**
  * A collision detection instance. This will take care of registering and de-registering collision shapes and objects
@@ -50,6 +52,8 @@ public:
 
 	void clear();
 
+	void setMask(short mask);
+
 	/**
 	 * Arbitrary collision info to be used by the pick listeners.
 	 */
@@ -61,6 +65,8 @@ private:
 
 	std::vector<std::unique_ptr<btCollisionObject>> mCollisionObjects;
 	std::vector<std::shared_ptr<btCollisionShape>> mCollisionShapes;
+
+	short mMask;
 
 
 };

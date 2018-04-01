@@ -58,12 +58,12 @@ public:
 	 */
 	~EntityCreatorMovement();
 
-	EntityCreatorMovementBridge* getBridge() const;
+	const std::shared_ptr<EntityCreatorMovementBridge>& getBridge() const;
 
 protected:
 
 
-	EntityCreatorMovementBridge* mMovementBridge;
+	std::shared_ptr<EntityCreatorMovementBridge> mMovementBridge;
 	/**
 	 * @brief Main adapter which will intercept mouse and keyboard input to allow for movement of this point.
 	 */

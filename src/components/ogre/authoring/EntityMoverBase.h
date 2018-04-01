@@ -31,6 +31,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
 #include <boost/optional.hpp>
+#include <Eris/EntityRef.h>
 
 namespace Ogre
 {
@@ -152,6 +153,8 @@ public:
 
 	void yaw(WFMath::CoordType angle) override;
 
+	bool isCollisionResultValid(Ember::OgreView::PickResult& result) override ;
+
 	/**
 	 * @brief Sets whether snap to functionality should be enabled.
 	 *
@@ -170,7 +173,7 @@ protected:
 	/**
 	 * @brief The entity which should be moved.
 	 */
-	Eris::Entity& mEntity;
+	Eris::EntityRef mEntity;
 
 	/**
 	 * @brief The node to which the entity is attached.
