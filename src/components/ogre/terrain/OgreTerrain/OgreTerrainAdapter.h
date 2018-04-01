@@ -59,7 +59,7 @@ class OgreTerrainAdapter : public ITerrainAdapter {
 public:
 	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize = 257);
 
-	virtual ~OgreTerrainAdapter();
+	~OgreTerrainAdapter() override;
 
 	unsigned int getPageSize() override;
 
@@ -67,7 +67,7 @@ public:
 
 	void setLoadRadius(Ogre::Real loadRadius) override;
 
-	Ogre::Real getHeightAt(Ogre::Real x, Ogre::Real z) override;
+	bool getHeightAt(Ogre::Real x, Ogre::Real z, float& height) override;
 
 	void setCamera(Ogre::Camera* camera) override;
 

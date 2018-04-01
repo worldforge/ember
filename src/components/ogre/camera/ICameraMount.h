@@ -54,9 +54,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ICameraMount()
-	{
-	}
+	virtual ~ICameraMount()	= default;
 
 
 	/**
@@ -110,6 +108,11 @@ public:
 	 * In most cases the mount would want to hand over the actual motion handling to an instance of ICameraMotionHandler. This method allows the setting of this instance.
 	 */
 	virtual void setMotionHandler(ICameraMotionHandler* handler) = 0;
+
+	/**
+	 * Called each frame by the MainCamera, allowing the mount to do any updates.
+	 */
+	virtual void update() {}
 
 };
 }

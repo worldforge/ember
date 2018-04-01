@@ -28,7 +28,6 @@
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 #include <OgreRay.h>
-#include <OgreFrameListener.h>
 
 namespace varconf {
 class Variable;
@@ -51,7 +50,7 @@ namespace Camera
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A third person camera mount, where the camera is circling a node. This node is then in most cases attached to an entity.
  */
-class ThirdPersonCameraMount: public CameraMountBase, public ConsoleObject, public Ogre::FrameListener, public virtual sigc::trackable
+class ThirdPersonCameraMount: public CameraMountBase, public ConsoleObject, public virtual sigc::trackable
 {
 public:
 
@@ -66,12 +65,6 @@ public:
 	 * @brief Dtor.
 	 */
 	~ThirdPersonCameraMount() override;
-
-	/**
-	 * @brief Emitted when the distance between the camera and the entity has changed.
-	 * @param Ogre::Real the new distance, in world units.
-	 */
-	sigc::signal<void, Ogre::Real> EventChangedCameraDistance;
 
 	/**
 	 * @brief Sets the distance from the camera to the entity node.
@@ -116,7 +109,7 @@ public:
 	 */
 	void runCommand(const std::string &command, const std::string &args) override;
 
-	bool frameStarted(const Ogre::FrameEvent& event) override;
+	void update() override;
 
 protected:
 
@@ -145,17 +138,9 @@ protected:
 	/**
 	 * @brief The node to which the camera is attached.
 	 *
-	 * This is attached to the mCameraPitchNode, and oriented so that the camera is looking at the direction of the mCameraPitchNode.
-	 * This node never changes its orientation, but can change it's position as the distance to the entity is altered.
+	 * This is attached to the root node and adjusted each frame to match the pitch node. This allows us to adjust it to avoid collisions.
 	 */
 	Ogre::SceneNode* mCameraNode;
-
-	/**
-	 * @brief The last world position of the camera.
-	 *
-	 * This is checked each frame to determine if the camera needs to be adjusted to the terrain.
-	 */
-	Ogre::Vector3 mLastPosition;
 
 	/**
 	 * @brief The desired distance of the camera from the root node, in world units.
@@ -168,13 +153,6 @@ protected:
 	 * @brief The actual distance of the camera from the root node, in world units.
 	 */
 	Ogre::Real mCurrentCameraDistance;
-
-	/**
-	 * @brief The ray which is used together with mAdjustTerrainRaySceneQuery to determine if the camera is below the terrain.
-	 */
-	Ogre::Ray mAdjustTerrainRay;
-
-	Ogre::RaySceneQuery* mCameraRaySceneQuery;
 
 	/**
 	 * @brief If true, the camera should be adjusted to the terrain, so that it never dips below it.
@@ -197,26 +175,9 @@ protected:
 	void createNodesForCamera(Ogre::SceneManager& sceneManager);
 
 	/**
-	 * @brief Internal method for setting the camera distance.
-	 * @param distance the new distance
+	 * @brief Checks whether the camera should be adjusted to avoid occlusion by terrain or other geometry.
 	 */
-	void setActualCameraDistance(Ogre::Real distance);
-
-	/**
-	 * @brief Checks whether the camera should be adjusted so that it never dips below the terrain.
-	 *
-	 * If the camera is below the terrain it will be adjusted.
-	 * @return True if the camera had to be adjusted.
-	 */
-	bool adjustForCollision();
-
-	/**
-	 * @brief Listen for changes of the input:adjusttoterrain config key and switches terrain adjustment on and off.
-	 * @param section
-	 * @param key
-	 * @param variable
-	 */
-	void Config_AdjustToTerrain(const std::string& section, const std::string& key, varconf::Variable& variable);
+	void adjustForOcclusion();
 
 };
 }

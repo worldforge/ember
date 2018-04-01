@@ -122,12 +122,11 @@ void OgreTerrainAdapter::setLoadRadius(Ogre::Real loadRadius)
 	}
 }
 
-Ogre::Real OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z)
+bool OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z, float& height)
 {
 	Ogre::Terrain* foundTerrain = nullptr;
-	float height = mTerrainGroup->getHeightAtWorldPosition(x, 0.0, z, &foundTerrain);
-	assert(foundTerrain);
-	return Ogre::Real(height);
+	height = mTerrainGroup->getHeightAtWorldPosition(x, 0.0, z, &foundTerrain);
+	return foundTerrain != nullptr;
 }
 
 void OgreTerrainAdapter::setCamera(Ogre::Camera* camera)

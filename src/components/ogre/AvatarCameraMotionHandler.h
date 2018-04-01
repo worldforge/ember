@@ -40,14 +40,14 @@ public:
 	 * Ctor.
 	 * @param avatar The avatar which will be moved as the camera moves.
 	 */
-	AvatarCameraMotionHandler(Avatar& avatar);
+	explicit AvatarCameraMotionHandler(Avatar& avatar);
 
 	/**
 	 * Dtor.
 	 */
-	virtual ~AvatarCameraMotionHandler();
+	~AvatarCameraMotionHandler() override = default;
 
-	virtual void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice);
+	void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice) override;
 private:
 
 	/**

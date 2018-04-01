@@ -26,6 +26,7 @@
 #endif
 
 #include "ConfigListenerContainer.h"
+#include <utility>
 #include "ConfigListener.h"
 
 
@@ -34,15 +35,14 @@ namespace Ember
 
 ConfigListenerContainer::~ConfigListenerContainer()
 {
-	for (std::vector<ConfigListener*>::iterator I = mConfigListeners.begin(); I != mConfigListeners.end(); ++I)
-	{
-		delete *I;
+	for (auto& configListener : mConfigListeners) {
+		delete configListener;
 	}
 }
 
 ConfigListener* ConfigListenerContainer::registerConfigListener(const std::string& section, const std::string& key, SettingChangedSlot slot, bool evaluateNow)
 {
-	ConfigListener* listener = new ConfigListener(section, key, slot);
+	ConfigListener* listener = new ConfigListener(section, key, std::move(slot));
 	mConfigListeners.push_back(listener);
 	if (evaluateNow)
 	{
@@ -53,7 +53,7 @@ ConfigListener* ConfigListenerContainer::registerConfigListener(const std::strin
 
 ConfigListener* ConfigListenerContainer::registerConfigListenerWithDefaults(const std::string& section, const std::string& key, SettingChangedSlot slot, varconf::Variable defaultValue)
 {
-	ConfigListener* listener = new ConfigListener(section, key, slot);
+	ConfigListener* listener = new ConfigListener(section, key, std::move(slot));
 	mConfigListeners.push_back(listener);
 	if (!listener->evaluate())
 	{

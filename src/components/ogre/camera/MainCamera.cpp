@@ -181,8 +181,6 @@ void MainCamera::markCameraNodeAsDirty() {
 }
 
 void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs) {
-	//TODO performance: use Ogre::RaySceneQueryListener so not all results have to be returned to increase performance
-
 	//Handle different pick requests differently.
 	//For mouse press and hover events, we want the listeners to perform a line check to see what's being picked.
 	//For all other pressed we however want the listeners to act on the previous results.
@@ -306,6 +304,7 @@ bool MainCamera::frameStarted(const Ogre::FrameEvent& event) {
 			mCameraMount->move(WFMath::Vector<3>::ZERO(), Convert::toWF(getOrientation()), event.timeSinceLastFrame);
 		}
 		mCameraOrientationChangedThisFrame = false;
+		mCameraMount->update();
 	}
 	return true;
 }

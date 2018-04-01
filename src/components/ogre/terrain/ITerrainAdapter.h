@@ -75,14 +75,13 @@ public:
 	virtual void setLoadRadius(Ogre::Real loadRadius) = 0;
 
 	/**
-	 * @brief Returns the height at the given position.
-	 *
+	 * @brief Gets the height.
 	 * @param x The x position, in world coords.
 	 * @param z The y position, in world coords.
-	 * @return The height at the specified position.
+	 * @param height Out parameter which will hold the height, if terrain exists.
+	 * @return True if terrain exists at the position.
 	 */
-	virtual Ogre::Real getHeightAt(Ogre::Real x, Ogre::Real z) = 0;
-	
+	virtual bool getHeightAt(Ogre::Real x, Ogre::Real z, float& height) = 0;
 	/**
 	 * @brief Sets the main camera used.
 	 *

@@ -44,9 +44,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ICameraMotionHandler()
-	{
-	}
+	virtual ~ICameraMotionHandler()	= default;
 
 	/**
 	 * @brief Move in the specified direction and using the specified orientation.
