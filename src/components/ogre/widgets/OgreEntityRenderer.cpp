@@ -26,6 +26,7 @@
 
 #include "OgreEntityRenderer.h"
 #include "EntityCEGUITexture.h"
+#include "components/ogre/SkeletonDisplay.h"
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
@@ -60,14 +61,19 @@ public:
 
 	}
 
-	virtual void unloadingComplete(Ogre::Resource*) {
+	void unloadingComplete(Ogre::Resource*) override {
 		*mActiveAnimation = nullptr;
 	}
 
 };
 
 OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
-		MovableObjectRenderer(image, image->getName().c_str()), mEntity(nullptr), mActiveAnimation(nullptr), mMeshListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation)), mSkeletonListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation))
+		MovableObjectRenderer(image, image->getName().c_str()),
+		mEntity(nullptr),
+		mActiveAnimation(nullptr),
+		mMeshListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation)),
+		mSkeletonListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation)),
+		mShowSkeleton(false)
 {
 }
 
@@ -117,6 +123,7 @@ void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 		}
 	}
 
+	mSkeletonDisplay.reset();
 
 	if (entity) {
 		node->attachObject(entity);
@@ -128,6 +135,9 @@ void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 		entity->getMesh()->addListener(mMeshListener);
 		if (entity->hasSkeleton()) {
 			entity->getSkeleton()->addListener(mSkeletonListener);
+			if (mShowSkeleton) {
+				mSkeletonDisplay.reset(new SkeletonDisplay(*entity));
+			}
 		}
 	}
 }
@@ -208,6 +218,20 @@ bool OgreEntityRenderer::frameStarted(const Ogre::FrameEvent& event)
 		mActiveAnimation->addTime(event.timeSinceLastFrame);
 	}
 	return MovableObjectRenderer::frameStarted(event);
+}
+
+void OgreEntityRenderer::setShowSkeleton(bool showSkeleton) {
+	mShowSkeleton = showSkeleton;
+
+	if (!mShowSkeleton) {
+		mSkeletonDisplay.reset();
+	} else {
+		if (mEntity) {
+			mSkeletonDisplay.reset(new SkeletonDisplay(*mEntity));
+		}
+	}
+
+
 }
 
 

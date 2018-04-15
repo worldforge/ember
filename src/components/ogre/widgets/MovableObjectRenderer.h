@@ -27,10 +27,6 @@
 #include "components/ogre/SimpleRenderContext.h"
 #include <CEGUI/Event.h>
 #include <OgreFrameListener.h>
-namespace CEGUI
-{
-class GUISheet;
-}
 
 namespace Ember
 {

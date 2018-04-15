@@ -217,8 +217,6 @@ function AssetsManager:showMesh(meshName)
             self.meshes.controls.animationCombobox:addItem(animationItem)
         end
     end
-    self.meshes.controls.showSkeletonCheckbox:setSelected(false)
-
 
     self:fillSubMeshList(meshPtr)
     local mesh = meshPtr:get()
@@ -1148,10 +1146,7 @@ function AssetsManager:buildWidget()
             local checkbox = self.widget:getWindow("MeshShowSkeleton")
             checkbox = CEGUI.toToggleButton(checkbox)
             local isSelected = checkbox:isSelected()
-            local entity = self.meshes.renderer:getEntity()
-            if entity then
-                entity:setDisplaySkeleton(isSelected)
-            end
+            self.meshes.renderer:setShowSkeleton(isSelected)
             return true
         end)
 

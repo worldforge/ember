@@ -29,6 +29,7 @@ namespace Ember
 {
 namespace OgreView
 {
+class SkeletonDisplay;
 namespace Gui
 {
 
@@ -41,9 +42,9 @@ class OgreEntityRenderer :
 	public MovableObjectRenderer
 {
 public:
-	OgreEntityRenderer(CEGUI::Window* image);
+	explicit OgreEntityRenderer(CEGUI::Window* image);
 
-	virtual ~OgreEntityRenderer();
+	~OgreEntityRenderer() override;
 
 	/**
 	 * Renders the submitted Entity.
@@ -81,10 +82,6 @@ public:
 	 */
 	void enableAnimation(const std::string& animationName);
 
-	/**
-	 * Stops the currently playing animation.
-	 */
-	void stopAnimation();
 
 	/**
 	 * @brief Gets the names of all the animations in the current entity.
@@ -92,8 +89,13 @@ public:
 	 */
 	std::vector<std::string> getEntityAnimationNames() const;
 
-	virtual bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 
+	/**
+	 * Toggles display of the skeleton.
+	 * @param showSkeleton
+	 */
+	void setShowSkeleton(bool showSkeleton);
 
 protected:
 
@@ -113,6 +115,10 @@ protected:
 	 * Listens to the skeleton being unloaded and stops the animation.
 	 */
 	Ogre::Resource::Listener* mSkeletonListener;
+
+	bool mShowSkeleton;
+
+	std::unique_ptr<SkeletonDisplay> mSkeletonDisplay;
 
 	float getMovableBoundingRadius() override;
 

@@ -61,6 +61,13 @@ public:
     
     void enableAnimation(const std::string& animationName);
 	std::vector<std::string> getEntityAnimationNames() const;
+
+
+	/**
+	 * Toggles display of the skeleton.
+	 * @param showSkeleton
+	 */
+	void setShowSkeleton(bool showSkeleton);
     
 
 };
