@@ -388,6 +388,17 @@ void GeometryVisualization::buildGeometry() {
 
 	};
 
+	auto buildSphereFn = [this](const WFMath::Vector<3>& size, float radius) {
+		mManualObject->clear();
+		mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+
+		auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
+
+		placeSphere(radius, Convert::toOgre(offset));
+		mManualObject->end();
+
+	};
+
 	if (mEntity.hasAttr("geometry")) {
 		auto& geometry = mEntity.valueOfAttr("geometry");
 		AtlasQuery::find<Atlas::Message::StringType>(geometry, "type", [&](const Atlas::Message::StringType& shape) {
@@ -451,18 +462,28 @@ void GeometryVisualization::buildGeometry() {
 			} else if (shape == "box") {
 				mBboxUpdateFn = buildBoxFn;
 			} else if (shape == "sphere") {
-				mBboxUpdateFn = [&]() {
-
-					mManualObject->clear();
-					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
-
+				mBboxUpdateFn = [=]() {
 					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
 					float radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
-
-					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
-
-					placeSphere(radius, Convert::toOgre(offset));
-					mManualObject->end();
+					buildSphereFn(size, radius);
+				};
+			} else if (shape == "sphere-x") {
+				mBboxUpdateFn = [=]() {
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = size.x() * 0.5f;
+					buildSphereFn(size, radius);
+				};
+			} else if (shape == "sphere-y") {
+				mBboxUpdateFn = [=]() {
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = size.y() * 0.5f;
+					buildSphereFn(size, radius);
+				};
+			} else if (shape == "sphere-z") {
+				mBboxUpdateFn = [=]() {
+					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
+					float radius = size.z() * 0.5f;
+					buildSphereFn(size, radius);
 				};
 			} else if (shape == "capsule-x") {
 				mBboxUpdateFn = [&]() {
