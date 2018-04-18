@@ -33,7 +33,7 @@
 
 #include "../Convert.h"
 #include "../MousePicker.h"
-#include "../../../../../../../opt/bullet-release/include/bullet/BulletCollision/CollisionShapes/btSphereShape.h"
+#include <BulletCollision/CollisionShapes/btSphereShape.h>
 
 #include <OgreEntity.h>
 #include <OgreSceneNode.h>
