@@ -401,8 +401,8 @@ void GeometryVisualization::buildGeometry() {
 
 	if (mEntity.hasAttr("geometry")) {
 		auto& geometry = mEntity.valueOfAttr("geometry");
-		AtlasQuery::find<Atlas::Message::StringType>(geometry, "type", [&](const Atlas::Message::StringType& shape) {
-			if (shape == "mesh") {
+		AtlasQuery::find<Atlas::Message::StringType>(geometry, "type", [&](const Atlas::Message::StringType& type) {
+			if (type == "mesh") {
 				if (geometry.asMap().find("indices") != geometry.asMap().end()) {
 					AtlasQuery::find<Atlas::Message::ListType>(geometry, "indices", [&](const Atlas::Message::ListType& indices) {
 						AtlasQuery::find<Atlas::Message::ListType>(
@@ -459,39 +459,54 @@ void GeometryVisualization::buildGeometry() {
 						}
 					});
 				}
-			} else if (shape == "box") {
+			} else if (type == "box") {
 				mBboxUpdateFn = buildBoxFn;
-			} else if (shape == "sphere") {
+			} else if (type == "sphere") {
 				mBboxUpdateFn = [=]() {
 					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
 					float radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+
+					auto scalerI = geometry.Map().find("scaler");
+					if (scalerI != geometry.Map().end() && scalerI->second.isString()) {
+						auto scaler = scalerI->second.String();
+						if (scaler == "min") {
+							radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+						} else if (scaler == "max") {
+							radius = std::max(size.x(), std::max(size.y(), size.z())) * 0.5f;
+						} else if (scaler == "x") {
+							radius = size.x() * 0.5f;
+						} else if (scaler == "y") {
+							radius = size.y() * 0.5f;
+						} else if (scaler == "z") {
+							radius = size.z() * 0.5f;
+						}
+ 					}
+
 					buildSphereFn(size, radius);
 				};
-			} else if (shape == "sphere-x") {
-				mBboxUpdateFn = [=]() {
-					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-					float radius = size.x() * 0.5f;
-					buildSphereFn(size, radius);
-				};
-			} else if (shape == "sphere-y") {
-				mBboxUpdateFn = [=]() {
-					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-					float radius = size.y() * 0.5f;
-					buildSphereFn(size, radius);
-				};
-			} else if (shape == "sphere-z") {
-				mBboxUpdateFn = [=]() {
-					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
-					float radius = size.z() * 0.5f;
-					buildSphereFn(size, radius);
-				};
-			} else if (shape == "capsule-x") {
+			} else if (type == "capsule-x") {
 				mBboxUpdateFn = [&]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
 					float radius = std::min(size.y(), size.z()) * 0.5f;
+
+					auto scalerI = geometry.Map().find("scaler");
+					if (scalerI != geometry.Map().end() && scalerI->second.isString()) {
+						auto scaler = scalerI->second.String();
+						if (scaler == "min") {
+							radius = std::min(size.y(), size.z()) * 0.5f;
+						} else if (scaler == "max") {
+							radius = std::max(size.y(), size.z()) * 0.5f;
+						} else if (scaler == "x") {
+							radius = size.x() * 0.5f;
+						} else if (scaler == "y") {
+							radius = size.y() * 0.5f;
+						} else if (scaler == "z") {
+							radius = size.z() * 0.5f;
+						}
+					}
 
 					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
 					offset.x() = mEntity.getBBox().highCorner().x() - radius;
@@ -506,13 +521,29 @@ void GeometryVisualization::buildGeometry() {
 
 					mManualObject->end();
 				};
-			} else if (shape == "capsule-y") {
+			} else if (type == "capsule-y") {
 				mBboxUpdateFn = [&]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
 					float radius = std::min(size.x(), size.z()) * 0.5f;
+
+					auto scalerI = geometry.Map().find("scaler");
+					if (scalerI != geometry.Map().end() && scalerI->second.isString()) {
+						auto scaler = scalerI->second.String();
+						if (scaler == "min") {
+							radius = std::min(size.x(), size.z()) * 0.5f;
+						} else if (scaler == "max") {
+							radius = std::max(size.x(), size.z()) * 0.5f;
+						} else if (scaler == "x") {
+							radius = size.x() * 0.5f;
+						} else if (scaler == "y") {
+							radius = size.y() * 0.5f;
+						} else if (scaler == "z") {
+							radius = size.z() * 0.5f;
+						}
+					}
 
 					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
 					offset.y() = mEntity.getBBox().highCorner().y() - radius;
@@ -527,13 +558,29 @@ void GeometryVisualization::buildGeometry() {
 
 					mManualObject->end();
 				};
-			} else if (shape == "capsule-z") {
+			} else if (type == "capsule-z") {
 				mBboxUpdateFn = [&]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
 					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
 					float radius = std::min(size.x(), size.y()) * 0.5f;
+
+					auto scalerI = geometry.Map().find("scaler");
+					if (scalerI != geometry.Map().end() && scalerI->second.isString()) {
+						auto scaler = scalerI->second.String();
+						if (scaler == "min") {
+							radius = std::min(size.y(), size.x()) * 0.5f;
+						} else if (scaler == "max") {
+							radius = std::max(size.y(), size.x()) * 0.5f;
+						} else if (scaler == "x") {
+							radius = size.x() * 0.5f;
+						} else if (scaler == "y") {
+							radius = size.y() * 0.5f;
+						} else if (scaler == "z") {
+							radius = size.z() * 0.5f;
+						}
+					}
 
 					auto offset = mEntity.getBBox().lowCorner() + (size / 2.0f);
 					offset.z() = mEntity.getBBox().highCorner().z() - radius;
@@ -548,7 +595,7 @@ void GeometryVisualization::buildGeometry() {
 
 					mManualObject->end();
 				};
-			} else if (shape == "cylinder-x") {
+			} else if (type == "cylinder-x") {
 				mBboxUpdateFn = [&]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
@@ -561,7 +608,7 @@ void GeometryVisualization::buildGeometry() {
 
 					mManualObject->end();
 				};
-			} else if (shape == "cylinder-y") {
+			} else if (type == "cylinder-y") {
 				mBboxUpdateFn = [&]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
@@ -576,7 +623,7 @@ void GeometryVisualization::buildGeometry() {
 
 					mManualObject->end();
 				};
-			} else if (shape == "cylinder-z") {
+			} else if (type == "cylinder-z") {
 				mBboxUpdateFn = [&]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
@@ -589,7 +636,7 @@ void GeometryVisualization::buildGeometry() {
 
 					mManualObject->end();
 				};
-			} else if (shape == "compound") {
+			} else if (type == "compound") {
 				mBboxUpdateFn = [&]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
