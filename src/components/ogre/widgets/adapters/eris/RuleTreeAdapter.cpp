@@ -56,7 +56,7 @@ void RuleTreeAdapter::refreshRules(const std::vector<std::string>& rootRules)
 	mFetchers.clear();
 
 	for (auto& rootRule : rootRules) {
-		auto entry = mFetchers.insert({rootRule, std::unique_ptr<Authoring::RulesFetcher>(new Authoring::RulesFetcher(mConnection))});
+		auto entry = mFetchers.emplace(rootRule, std::unique_ptr<Authoring::RulesFetcher>(new Authoring::RulesFetcher(mConnection)));
 		entry.first->second->EventAllRulesReceived.connect([this, rootRule] {fetcherAllRulesReceived(rootRule);});
 		entry.first->second->EventNewRuleReceived.connect(EventNewRuleReceived);
 		entry.first->second->startFetching(rootRule);

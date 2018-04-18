@@ -103,7 +103,7 @@ private:
 
 	::Eris::Connection& mConnection;
 	CEGUI::Tree& mTreeWidget;
-	std::map<std::string, std::unique_ptr<Authoring::RulesFetcher>> mFetchers;
+	std::unordered_map<std::string, std::unique_ptr<Authoring::RulesFetcher>> mFetchers;
 
 	std::unordered_map<std::string, ::Atlas::Objects::Root> mRules;
 
