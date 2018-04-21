@@ -524,7 +524,6 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	mWorld->getSceneManager().addRenderQueueListener(mOgreSetup->getOverlaySystem());
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
 
-	//mWorld->getSceneManager().setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float");
 	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(&mWorld->getSceneManager());
 
 	mShaderManager->registerSceneManager(&mWorld->getSceneManager());
