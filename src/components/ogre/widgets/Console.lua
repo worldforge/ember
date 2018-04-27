@@ -35,9 +35,9 @@ function Console:buildWidget()
 	self.systemTab.lines = 0
 
 	--When a tab has been selected and shown, the unread indicator should be reset	
-	local tabControl = CEGUI.toTabControl(self.widget:getWindow("MainTabControl"))
-	self.widget:getWindow("MainTabControl"):subscribeEvent("TabSelectionChanged", function(args)
-			local selectedTab = self.tabs[tabControl:getSelectedTabIndex() + 1] --Lua uses 1 as the first index
+	self.tabControl = CEGUI.toTabControl(self.widget:getWindow("MainTabControl"))
+	self.tabControl:subscribeEvent("SelectionChanged", function(args)
+			local selectedTab = self.tabs[self.tabControl:getSelectedTabIndex() + 1] --Lua uses 1 as the first index
 			selectedTab.tabWindow:setText(selectedTab.prefix)
 			selectedTab.unviewedCount = 0
 			return true	
@@ -224,7 +224,7 @@ function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSym
 	local messageColour = self:getChatMessageColour(line, entity, entityTalk)
 	
 	if entity then
-		entityNameColour = self:getColourForEntityName(entity:getName())
+		local entityNameColour = self:getColourForEntityName(entity:getName())
 	
 		self:appendLine("[colour='" .. entityNameColour .. "']" .. escapeForCEGUI(entityStartSymbol .. entity:getName() .. entityEndSymbol) .. " [colour='" .. messageColour .. "']" .. escapeForCEGUI(line), self.gameTab)
 	else
@@ -288,8 +288,8 @@ function Console:appendLine(line, tab)
 		--make sure that the newly added line is shown since we were at the end before
 		window:setProperty("VertScrollPosition", window:getProperty("VertExtent"))
 	end
-	
-	if not window:isVisible() then
+
+	if self.tabControl:getSelectedTabIndex() ~= tab.index then
 		tab.unviewedCount = tab.unviewedCount + 1
 		tab.tabWindow:setText(tab.prefix .. "(" .. tab.unviewedCount .. ")")
 	end
@@ -337,8 +337,8 @@ end
 local consoleInit = function()
 	local console = {connectors={}, 
 		widget = guiManager:createWidget(), 
-		gameTab = {unviewedCount = 0},
-		systemTab = {unviewedCount = 0},
+		gameTab = {unviewedCount = 0, index = 0},
+		systemTab = {unviewedCount = 0, index = 1},
 		consoleAdapter = nil,
 		consoleInputWindow = nil
 	}

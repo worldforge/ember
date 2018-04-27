@@ -223,8 +223,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				{
 					const CEGUI::String consoleText(mInputBox->getText());
 					
-					mInputBox->setText(CEGUI::String(""));	
-					mBackend->pushMessage(("> " + consoleText).c_str());
+					mInputBox->setText("");
 					// run the command
 					mBackend->runCommand(consoleText.c_str());
 					EventCommandExecuted.emit(consoleText.c_str());

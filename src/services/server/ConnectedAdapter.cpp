@@ -71,11 +71,6 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
 	}
 }
 
-// void ConnectedAdapter::teleportTo(const WFMath::Point<3>& dest)
-// {
-//
-// }
-
 void ConnectedAdapter::touch(Eris::Entity* entity) {
 	try {
 		mAvatar.touch(entity);
@@ -310,7 +305,6 @@ void ConnectedAdapter::say(const std::string& message) {
 
 		std::string msg;
 		msg = "Saying: [" + message + "]. ";
-		ConsoleBackend::getSingletonPtr()->pushMessage(msg, "info");
 		S_LOG_VERBOSE(msg);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on say." << ex);
@@ -330,7 +324,6 @@ void ConnectedAdapter::sayTo(const std::string& message, const std::vector<std::
 		} else {
 			msg = "Saying to no entity: [" + message + "]. ";
 		}
-		ConsoleBackend::getSingletonPtr()->pushMessage(msg, "info");
 		S_LOG_VERBOSE(msg);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on say." << ex);
@@ -346,7 +339,6 @@ void ConnectedAdapter::sayTo(const std::string& message, const Eris::Entity& ent
 
 		std::string msg;
 		msg = "Saying to " + entity.getName() + ": [" + message + "]. ";
-		ConsoleBackend::getSingletonPtr()->pushMessage(msg, "info");
 		S_LOG_VERBOSE(msg);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on say." << ex);

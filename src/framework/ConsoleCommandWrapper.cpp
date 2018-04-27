@@ -25,8 +25,9 @@
 #endif
 
 #include "ConsoleCommandWrapper.h"
-#include <utility> #include "ConsoleBackend.h"
+#include "ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
+#include <utility>
 
 namespace Ember {
 
