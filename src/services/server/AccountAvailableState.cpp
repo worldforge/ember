@@ -39,6 +39,9 @@ AccountAvailableState::AccountAvailableState(IState& parentState, Eris::Connecti
 	mAccount.LoginFailure.connect(sigc::mem_fun(*this, &AccountAvailableState::loginFailure));
 	mAccount.LoginSuccess.connect(sigc::mem_fun(*this, &AccountAvailableState::loginSuccess));
 	mAccount.LogoutComplete.connect(sigc::mem_fun(*this, &AccountAvailableState::logoutComplete));
+	mAccount.ErrorMessage.connect([&](const std::string& message) {
+		ConsoleBackend::getSingleton().pushMessage("Error from server: " + message, "error");
+	});
 	getSignals().GotAccount.emit(&mAccount);
 }
 

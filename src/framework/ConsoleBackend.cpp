@@ -40,8 +40,8 @@ const char * const ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
 const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
 
 
-ConsoleBackend::ConsoleBackend(void) :
-mCommandHistory(new CommandHistory())
+ConsoleBackend::ConsoleBackend()
+		: mCommandHistory(new CommandHistory())
 {
 	// Register console commands
 	registerCommand(LIST_CONSOLE_COMMANDS, this);
@@ -77,8 +77,9 @@ void ConsoleBackend::pushMessage(const std::string &message, const std::string& 
 	//only save message if onGotMessage returns true
 	if (!onGotMessage(message, tag)) {
 	// If we have reached our message limit, remove the oldest message
-		if (mConsoleMessages.size() >= MAX_MESSAGES)
-		mConsoleMessages.erase(mConsoleMessages.begin());
+		if (mConsoleMessages.size() >= MAX_MESSAGES) {
+			mConsoleMessages.erase(mConsoleMessages.begin());
+		}
 		mConsoleMessages.push_back(message);
 	}
 }
@@ -118,7 +119,7 @@ void ConsoleBackend::deregisterCommand(const std::string &command, bool suppress
 		S_LOG_INFO("Deregistering: " << command);
 	}
 
-	ConsoleObjectEntryStore::iterator I = mRegisteredCommands.find(command);
+	auto I = mRegisteredCommands.find(command);
 	if (I == mRegisteredCommands.end()) {
 		S_LOG_WARNING("Trying to deregister command '" << command << "' which isn't registered.");
 	} else {
@@ -164,19 +165,18 @@ void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 	std::string args = tokeniser.remainingTokens();
 
 	//Grab object registered to the command
-	ConsoleObjectEntryStore::iterator I = mRegisteredCommands.find(cmd);
+	auto I = mRegisteredCommands.find(cmd);
 
 	// Print all commands to the console
 	// pushMessage(command_string);
 
-		if (addToHistory) {
-			mCommandHistory->addToHistory(command);
-		}
+	if (addToHistory) {
+		mCommandHistory->addToHistory(command);
+	}
 	// If object exists, run the command
-		if (I != mRegisteredCommands.end() && I->second.Object != 0) {
-			I->second.Object->runCommand(cmd, args);
-		}
-	else { // Else print error message
+	if (I != mRegisteredCommands.end() && I->second.Object != nullptr) {
+		I->second.Object->runCommand(cmd, args);
+	} else { // Else print error message
 		S_LOG_WARNING("Unknown command:" << command);
 		pushMessage(std::string("Unknown command ") + command, "error");
 	}
@@ -203,7 +203,7 @@ void ConsoleBackend::runCommand(const std::string &command, const std::string &a
 const std::set< std::string > & ConsoleBackend::getPrefixes(const std::string & prefix) const
 {
 	static std::set< std::string > empty;
-	std::map< std::string, std::set< std::string >>::const_iterator iPrefixes(mPrefixes.find(prefix));
+	auto iPrefixes(mPrefixes.find(prefix));
 
 	if(iPrefixes != mPrefixes.end())
 	{

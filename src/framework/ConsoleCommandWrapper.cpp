@@ -25,33 +25,35 @@
 #endif
 
 #include "ConsoleCommandWrapper.h"
-#include "ConsoleBackend.h"
+#include <utility> #include "ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
 
 namespace Ember {
 
 
-ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description, bool suppressLogging)
-: mCommand(command), mInverseCommand(""), mDescription(description), mObject(object), mSuppressLogging(suppressLogging)
-{
-	if (mCommand.size() > 0 && mCommand[0] == '+') {
+ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject* object, std::string description, bool suppressLogging)
+		: mCommand(command),
+		  mInverseCommand(""),
+		  mDescription(std::move(description)),
+		  mObject(object),
+		  mSuppressLogging(suppressLogging) {
+	if (!mCommand.empty() && mCommand[0] == '+') {
 		mInverseCommand = std::string("-") + std::string(mCommand).erase(0, 1);
 	}
 	if (ConsoleBackend::getSingletonPtr()) {
 		ConsoleBackend::getSingletonPtr()->registerCommand(mCommand, object, mDescription, suppressLogging);
-		if (mInverseCommand != "") {
+		if (!mInverseCommand.empty()) {
 			ConsoleBackend::getSingletonPtr()->registerCommand(mInverseCommand, object, std::string("Releases the command ") + mCommand, suppressLogging);
 		}
 	} else {
-		S_LOG_WARNING("Could not register command "<< command << " since there was no console backend.");
+		S_LOG_WARNING("Could not register command " << command << " since there was no console backend.");
 	}
 }
 
-ConsoleCommandWrapper::~ConsoleCommandWrapper()
-{
+ConsoleCommandWrapper::~ConsoleCommandWrapper() {
 	if (ConsoleBackend::getSingletonPtr()) {
 		ConsoleBackend::getSingletonPtr()->deregisterCommand(mCommand, mSuppressLogging);
-		if (mInverseCommand != "") {
+		if (!mInverseCommand.empty()) {
 			ConsoleBackend::getSingletonPtr()->deregisterCommand(mInverseCommand, mSuppressLogging);
 		}
 	}
