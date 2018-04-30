@@ -76,7 +76,7 @@ function StatusInstance:setEntity(entity)
 		
 		local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(entity)
 		if model ~= nil then
-			self.renderer:showModel(model:getDefinition():get():getName())
+			self.renderer:showModel(model:getDefinition())
 			self.renderer:setCameraDistance(0.75)
 		else 
 			self.renderer:showModel("")
