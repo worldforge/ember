@@ -26,6 +26,8 @@
 #endif
 
 #include "OgreSetup.h"
+
+
 #include "OgreInfo.h"
 #include "OgreConfigurator.h"
 #include "MeshSerializerListener.h"
@@ -43,6 +45,11 @@
 
 #ifdef BUILD_WEBEMBER
 #include "extensions/webember/WebEmberManager.h"
+#endif
+
+#include <OgreBuildSettings.h>
+#if OGRE_THREAD_SUPPORT == 0
+#error OGRE must be built with thread support.
 #endif
 
 #include <RenderSystems/GL/OgreGLContext.h>
