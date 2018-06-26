@@ -99,6 +99,7 @@ protected:
 	 * @brief The connection for the "bbox" attribute observer.
 	 */
 	sigc::connection mBboxConnection;
+	sigc::connection mScaleConnection;
 
 	std::function<void()> mBboxUpdateFn;
 

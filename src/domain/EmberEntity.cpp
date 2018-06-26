@@ -278,7 +278,7 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 {
 	if (str == "mode") {
 		parsePositioningModeChange(v);
-	} else if (str == "bbox") {
+	} else if (str == "bbox" || str == "scale") {
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;

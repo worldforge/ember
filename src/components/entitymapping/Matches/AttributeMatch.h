@@ -28,8 +28,6 @@
 
 namespace Ember {
 
-
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -42,8 +40,6 @@ class AttributeCase;
 
 
 namespace Ember {
-
-
 
 namespace EntityMapping {
 
@@ -62,11 +58,6 @@ public:
 	*/
 	explicit AttributeMatch(const std::string& attributeName);
 
-	/**
-	Creates a new instance that watches for changes to the supplied attribute. The attribute that is watched differs from the name of the attribute. (Such as when using a function comparer for "height", where the internal attribute watched is "bbox".)
-	*/
-	AttributeMatch(const std::string& attributeName, const std::string& internalAttributeName);
-
 	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) override;
 
 	/**
@@ -74,14 +65,10 @@ public:
 	*/
 	const std::string& getAttributeName();
 
-	/**
-	Sets the Entity to watch.
-	*/
-	void setEntity(Eris::Entity* entity) override;
 
 protected:
 
-	std::string mAttributeName, mInternalAttributeName;
+	std::string mAttributeName;
 };
 
 inline const std::string& AttributeMatch::getAttributeName()

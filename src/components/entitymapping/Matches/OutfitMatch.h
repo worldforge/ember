@@ -60,12 +60,18 @@ public:
 
 	void setEntityCreationObserver(Observers::EntityCreationObserver* observer);
 
+	/**
+	Use the supplied observer to observe changes to the attribute. The supplied observer will be managed by this class.
+	*/
+	void setMatchAttributeObserver(Observers::MatchAttributeObserver* observer);
 protected:
 
 	void testEntity(Eris::Entity* entity);
 	std::string mOutfitName;
 	Eris::View* mView;
 	std::unique_ptr<Observers::EntityCreationObserver> mEntityObserver;
+	std::unique_ptr<Observers::MatchAttributeObserver> mMatchAttributeObserver;
+
 };
 
 inline const std::string& OutfitMatch::getOutfitName()

@@ -24,6 +24,7 @@
 #include "config.h"
 #endif
 
+#include <components/entitymapping/Matches/SingleAttributeMatch.h>
 #include "Matches/AttributeMatch.h"
 #include "Cases/AttributeComparers/StringComparerWrapper.h"
 #include "EntityMappingManager.h"
@@ -75,7 +76,7 @@ EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IAction
 		} else {
 			auto mapping = new EntityMapping(entity);
 
-			Matches::AttributeMatch* attributeMatch = new Matches::AttributeMatch("present");
+			auto attributeMatch = new Matches::SingleAttributeMatch("present");
 			Cases::AttributeCase* attributeCase = new Cases::AttributeCase(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
 			Matches::Observers::MatchAttributeObserver* observer = new Matches::Observers::MatchAttributeObserver(attributeMatch, "present");
 			attributeMatch->setMatchAttributeObserver(observer);

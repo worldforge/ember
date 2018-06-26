@@ -15,10 +15,10 @@ add_library(entitymapping
         Definitions/ActionDefinition.cpp Definitions/CaseDefinition.cpp
         Definitions/DefinitionBase.cpp Definitions/MatchDefinition.cpp Definitions/EntityMappingDefinition.cpp
 
-        Matches/AbstractMatch.cpp Matches/AttributeDependentMatch.cpp
+        Matches/AbstractMatch.cpp
         Matches/AttributeMatch.cpp Matches/EntityTypeMatch.cpp Matches/MatchBase.cpp
         Matches/Observers/MatchAttributeObserver.cpp Matches/Observers/EntityCreationObserver.cpp Matches/OutfitMatch.cpp
         EntityMapping.cpp EntityMappingCreator.cpp EntityMappingManager.cpp
-        IActionCreator.h IVisitor.h)
+        IActionCreator.h IVisitor.h Matches/VirtualAttributeMatch.cpp Matches/VirtualAttributeMatch.h Matches/SingleAttributeMatch.cpp Matches/SingleAttributeMatch.h)
 
 

@@ -44,6 +44,8 @@
 #include "Cases/AttributeComparers/StringComparerWrapper.h"
 
 #include "Matches/Observers/EntityCreationObserver.h"
+#include "Matches/VirtualAttributeMatch.h"
+#include "Matches/SingleAttributeMatch.h"
 
 #include "IActionCreator.h"
 
@@ -226,26 +228,28 @@ void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefin
 void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	const std::string& attributeName = matchDefinition.getProperties()["attribute"];
 
+	AttributeMatch* match = nullptr;
 	std::string internalAttributeName;
 	const std::string& matchType = matchDefinition.getProperties()["type"];
 	//TODO: make this check better
 	if (matchType == "function") {
 		if (attributeName == "height") {
-			internalAttributeName = "bbox";
+
+			auto virtualMatch = new VirtualAttributeMatch(attributeName, {"bbox", "scale"});
+			virtualMatch->addMatchAttributeObserver(std::move(std::unique_ptr<MatchAttributeObserver>(new MatchAttributeObserver(virtualMatch, "bbox"))));
+			virtualMatch->addMatchAttributeObserver(std::move(std::unique_ptr<MatchAttributeObserver>(new MatchAttributeObserver(virtualMatch, "scale"))));
+			match = virtualMatch;
 		}
+	} else {
+		auto singleMatch = new SingleAttributeMatch(attributeName);
+		singleMatch->setMatchAttributeObserver(new MatchAttributeObserver(singleMatch, attributeName));
+		match = singleMatch;
 	}
-	if (internalAttributeName.empty()) {
-		internalAttributeName = attributeName;
+	if (match) {
+		aCase->addMatch(match);
+		addAttributeCases(match, matchDefinition);
+
 	}
-
-	AttributeMatch* match = new AttributeMatch(attributeName, internalAttributeName);
-	aCase->addMatch(match);
-
-	MatchAttributeObserver* observer = new MatchAttributeObserver(match, internalAttributeName);
-	match->setMatchAttributeObserver(observer);
-
-	addAttributeCases(match, matchDefinition);
-
 }
 
 void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {

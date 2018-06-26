@@ -104,6 +104,7 @@ protected:
 	 * @brief The connection for the "bbox" attribute observer.
 	 */
 	sigc::connection mBboxConnection;
+	sigc::connection mScaleConnection;
 
 	/**
 	 * @brief Shows the velocity using a scaled arrow.

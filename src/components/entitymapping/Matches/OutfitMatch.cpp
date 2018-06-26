@@ -89,6 +89,11 @@ void OutfitMatch::testEntity(Eris::Entity* entity)
 
 }
 
+void OutfitMatch::setMatchAttributeObserver(Observers::MatchAttributeObserver* observer)
+{
+	mMatchAttributeObserver.reset(observer);
+}
+
 }
 
 }
