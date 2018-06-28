@@ -42,12 +42,12 @@ class SizeAdapter : public AdapterBase
 public:
     SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler, CEGUI::Window* infoWindow);
 
-    virtual ~SizeAdapter();
+	~SizeAdapter() override;
 	
 	/**
 	Updates the gui with new values.
 	*/
-	virtual void updateGui(const ::Atlas::Message::Element& element);
+	void updateGui(const ::Atlas::Message::Element& element) override;
 
 protected:
 	CEGUI::Window* mLowerXWindow;
@@ -67,8 +67,9 @@ protected:
 	bool window_TextChanged(const CEGUI::EventArgs& e);
 	bool slider_ValueChanged(const CEGUI::EventArgs& e);
 
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
+	void fillElementFromGui() override;
+
+	bool _hasChanges() override;
 };
 
 }

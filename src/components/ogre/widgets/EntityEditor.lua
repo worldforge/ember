@@ -277,6 +277,19 @@ EntityEditor = {
 				return self.instance.helper:createListElement()
 			end
 		},
+		scale = {
+			name = "Scale",
+			createAdapter = function(self, element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.adapter = self.factory:createScaleAdapter(wrapper.container, self.instance.entity:getId(), element)
+				return wrapper
+			end,
+			createNewElement = function(self)
+				return self.instance.helper:createListElement()
+			end
+		},
 		position = {
 			name = "Position",
 			createAdapter = function(self, element, prototype)
@@ -548,6 +561,14 @@ EntityEditor.prototypes =
 		adapter = EntityEditor.adapters.size,
 		help = "Defines the 3d bounding box of the entity. This influences the size, which also influences visibility.",
 		nodelete = true
+	},
+	scale = {
+		adapter = EntityEditor.adapters.scale,
+		help = "A scale to apply to the bounding box of the entity.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--only show on top level and for the top entity
+			return ownerElement == nil
+		end
 	},
 	pos = {
 		adapter = EntityEditor.adapters.position,
@@ -1010,7 +1031,7 @@ EntityEditor.knowledge= {
 function editEntity(id)
 	local entity = emberOgre:getWorld():getEmberEntity(id)
 	if entity then
-		self:editEntity(entity)
+		entityEditor:editEntity(entity)
 	end
 end
 
@@ -1323,7 +1344,7 @@ function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentConta
 		deleteButton:setProperty("TooltipText", "Delete list item");
 		deleteButtonWidth = 16
 
-		function removeAdapter(args)
+		local function removeAdapter(args)
 			adapter:remove()
 			outercontainer:setAlpha(0.2)
 		end
@@ -1340,7 +1361,7 @@ function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentConta
 	container:setXPosition(CEGUI.UDim(0, deleteButtonWidth))
 
 	--make sure that the outer container has the same height as the inner container (so that when we add new child adapters it's updated)
-	function syncWindowHeights(args)
+	local function syncWindowHeights(args)
 		outercontainer:setHeight(container:getHeight())
 	end
 	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
@@ -1370,21 +1391,17 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 
 	label:setText(attributeName)
 	label:setWidth(CEGUI.UDim(0, textWidth))
-	label:setProperty("FrameEnabled", "false");
-	label:setProperty("BackgroundEnabled", "false");
 	label:setProperty("VertFormatting", "TopAligned");
 	label:setProperty("TooltipText", tooltip);
 
-	local width = container:getWidth()
-	width = width + CEGUI.UDim(0, textWidth)
-	outercontainer:setWidth(width)
+	container:setWidth(CEGUI.UDim(1, -textWidth))
 	container:setXPosition(CEGUI.UDim(0, textWidth))
 	container:setProperty("TooltipText", tooltip);
 
 	outercontainer:setHeight(container:getHeight())
 
 	--make sure that the outer container has the same height as the inner container (so that when we add new child adapters it's updated)
-	function syncWindowHeights(args)
+	local function syncWindowHeights(args)
 		outercontainer:setHeight(container:getHeight())
 	end
 	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
@@ -1406,7 +1423,7 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 		-- 	outercontainer:subscribeEvent("MouseEntersSurface", showDeleteButton)
 		-- 	outercontainer:subscribeEvent("MouseLeavesSurface", hideDeleteButton)
 
-		function removeAdapter(args)
+		local function removeAdapter(args)
 			adapter:remove()
 			outercontainer:setAlpha(0.2)
 		end
@@ -1445,14 +1462,15 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 		local item = Ember.OgreView.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
 		table.insert(newAdapters, possibleProto.adapter)
 		combobox:addItem(item)
-	end
-	--Use the default adapters
+	else
+		--Use the default adapters
 
-	for index,value in pairsByKeys(self.defaultPrototypes) do
-		local itemIndex = table.maxn(newAdapters) + 1
-		local item = Ember.OgreView.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
-		table.insert(newAdapters, value.adapter)
-		combobox:addItem(item)
+		for index,value in pairsByKeys(self.defaultPrototypes) do
+			local itemIndex = table.maxn(newAdapters) + 1
+			local item = Ember.OgreView.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
+			table.insert(newAdapters, value.adapter)
+			combobox:addItem(item)
+		end
 	end
 
 	--check that our previous selection is still available
@@ -1511,22 +1529,22 @@ end
 
 function EntityEditor:handleKnowledgeSelected(modelItem)
 	if modelItem.predicate == "location" then
-		_, _, entityid, x, y, z = string.find(modelItem.object, "%('$eid:(%d*)',%s*%(([%d%-%.]*),%s*([%d%-%.]*),%s*([%d%-%.]*)%)%)")
+		local _, _, entityid, x, y, z = string.find(modelItem.object, "%('$eid:(%d*)',%s*%(([%d%-%.]*),%s*([%d%-%.]*),%s*([%d%-%.]*)%)%)")
 
 		if (entityid and x and y and z) then
 			local point = Ember.OgreView.Gui.EntityEditor:createPoint(tonumber(x), tonumber(y), tonumber(z))
 			self.instance.helper:addMarker(entityid, point)
 		else
-		  --check with the syntax without parent
-      _, _, x, y, z = string.find(modelItem.object, "%(([%d%-%.]*),%s*([%d%-%.]*),%s*([%d%-%.]*)%)")
-  
-      if (x and y and z and self.instance.entity:getLocation()) then
-        local point = Ember.OgreView.Gui.EntityEditor:createPoint(tonumber(x), tonumber(y), tonumber(z))
-        local parentEntityId = self.instance.entity:getLocation():getId()
-        self.instance.helper:addMarker(parentEntityId, point)
-      else
-  			self.instance.helper:removeMarker()
-      end
+			--check with the syntax without parent
+			local _, _, x, y, z = string.find(modelItem.object, "%(([%d%-%.]*),%s*([%d%-%.]*),%s*([%d%-%.]*)%)")
+
+			if (x and y and z and self.instance.entity:getLocation()) then
+				local point = Ember.OgreView.Gui.EntityEditor:createPoint(tonumber(x), tonumber(y), tonumber(z))
+				local parentEntityId = self.instance.entity:getLocation():getId()
+				self.instance.helper:addMarker(parentEntityId, point)
+			else
+				self.instance.helper:removeMarker()
+			end
 		end
 	else
 		self.instance.helper:removeMarker()

@@ -36,6 +36,7 @@
 #include "AreaAdapter.h"
 #include "PolygonAdapter.h"
 #include "TerrainModAdapter.h"
+#include "ScaleAdapter.h"
 #include "components/ogre/GUIManager.h"
 
 using namespace CEGUI;
@@ -70,18 +71,18 @@ TAdapter* AdapterFactory::createAdapter(CEGUI::Window* container, const std::str
 {
 	if (!container) {
 		S_LOG_FAILURE("No container sent to adapter factory.");
-		return 0;
+		return nullptr;
 	}
 	if (!verifyCorrectType<TAdapter> (element)) {
 		S_LOG_FAILURE("Type is not correct for adapter.");
-		return 0;
+		return nullptr;
 	}
 
 	try {
 		return loadWindowIntoAdapter<TAdapter> (container, adapterPrefix, element, entity);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when loading adapter." << ex);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -97,6 +98,11 @@ bool AdapterFactory::verifyCorrectType<NumberAdapter>(const ::Atlas::Message::El
 }
 template<>
 bool AdapterFactory::verifyCorrectType<SizeAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isList();
+}
+template<>
+bool AdapterFactory::verifyCorrectType<ScaleAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isList();
 }
@@ -177,6 +183,19 @@ SizeAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, con
 	Slider* scaler = static_cast<Slider*> (container->getChildRecursive("scaler"));
 	Window* info = container->getChildRecursive("info");
 	return new SizeAdapter(element, lowerX, lowerY, lowerZ, upperX, upperY, upperZ, scaler, info);
+}
+
+template<>
+ScaleAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/ScaleAdapter.layout");
+	Window* x = container->getChildRecursive("x");
+	Window* y = container->getChildRecursive("y");
+	Window* z = container->getChildRecursive("z");
+	ToggleButton* uniformToggle = dynamic_cast<ToggleButton*>(container->getChildRecursive("uniformToggle"));
+	Slider* scaler= dynamic_cast<Slider*>(container->getChildRecursive("scaler"));
+
+	return new ScaleAdapter(element, {x, y, z, uniformToggle, scaler});
 }
 
 template<>
@@ -274,6 +293,11 @@ SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const s
 	return createAdapter<SizeAdapter> (container, adapterPrefix, element);
 }
 
+ScaleAdapter* AdapterFactory::createScaleAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	return createAdapter<ScaleAdapter> (container, adapterPrefix, element);
+}
+
 OrientationAdapter* AdapterFactory::createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	return createAdapter<OrientationAdapter> (container, adapterPrefix, element);
@@ -347,6 +371,11 @@ AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window
 			newElement = ::Atlas::Message::ListType();
 		}
 		return createSizeAdapter(container, adapterPrefix, newElement);
+	} else if (type == "scale") {
+		if (newElement.isNone()) {
+			newElement = ::Atlas::Message::ListType();
+		}
+		return createScaleAdapter(container, adapterPrefix, newElement);
 	} else if (type == "position") {
 		if (newElement.isNone()) {
 			::Atlas::Message::ListType list;

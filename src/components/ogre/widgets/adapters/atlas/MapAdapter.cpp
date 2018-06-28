@@ -56,7 +56,7 @@ MapAdapter::~MapAdapter()
 const ::Atlas::Message::Element& MapAdapter::valueOfAttr(const std::string& attr) const
 {
 	static Element emptyElement;
-    ::Atlas::Message::MapType::const_iterator A = mAttributes.find(attr);
+	auto A = mAttributes.find(attr);
     if (A == mAttributes.end())
     {
         return emptyElement;
@@ -83,8 +83,10 @@ void MapAdapter::fillElementFromGui()
 bool MapAdapter::_hasChanges()
 {
 	bool hasChanges = false;
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		hasChanges = hasChanges || I->second.Adapter->hasChanges();
+	for (auto& item : mAdapters) {
+		if (item.second.Adapter) {
+			hasChanges = hasChanges || item.second.Adapter->hasChanges();
+		}
 	}
 	return hasChanges;
 }
@@ -92,8 +94,8 @@ bool MapAdapter::_hasChanges()
 std::vector<std::string> MapAdapter::getAttributeNames()
 {
 	std::vector<std::string> attributeNames;
-	for (::Atlas::Message::MapType::const_iterator I = mAttributes.begin(); I != mAttributes.end(); ++I) {
-		attributeNames.push_back(I->first);
+	for (const auto& attribute : mAttributes) {
+		attributeNames.push_back(attribute.first);
 	}
 	return attributeNames;
 }
@@ -108,10 +110,10 @@ void MapAdapter::addAttributeAdapter(const std::string& attributeName, Adapters:
     
 void MapAdapter::removeAdapters()
 {
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		delete I->second.Adapter;
+	for (auto& item : mAdapters) {
+		delete item.second.Adapter;
 // 		I->second.ContainerWindow->getParent()->removeChild(I->second.ContainerWindow);
-		CEGUI::WindowManager::getSingleton().destroyWindow(I->second.ContainerWindow);
+		CEGUI::WindowManager::getSingleton().destroyWindow(item.second.ContainerWindow);
 	}
 	mAdapters.clear();
 }
@@ -119,10 +121,10 @@ void MapAdapter::removeAdapters()
 ::Atlas::Message::Element MapAdapter::_getChangedElement()
 {
 	::Atlas::Message::MapType attributes;
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		Adapters::Atlas::AdapterBase* adapter = I->second.Adapter;
+	for (auto& item : mAdapters) {
+		Adapters::Atlas::AdapterBase* adapter = item.second.Adapter;
 		if (!adapter->isRemoved()) {
-			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(I->first, adapter->getChangedElement()));
+			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(item.first, adapter->getChangedElement()));
 		}
 	}
 	return Element(attributes);
@@ -131,10 +133,10 @@ void MapAdapter::removeAdapters()
 ::Atlas::Message::Element MapAdapter::getSelectedChangedElements()
 {
 	::Atlas::Message::MapType attributes;
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		Adapters::Atlas::AdapterBase* adapter = I->second.Adapter;
+	for (auto& item : mAdapters) {
+		Adapters::Atlas::AdapterBase* adapter = item.second.Adapter;
 		if (adapter->hasChanges() && !adapter->isRemoved()) {
-			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(I->first, adapter->getChangedElement()));
+			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(item.first, adapter->getChangedElement()));
 		}
 	}
 	return Element(attributes);

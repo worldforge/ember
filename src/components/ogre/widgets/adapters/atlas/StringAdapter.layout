@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
-	<Window name="SizeAdapter" type="DefaultWindow">
+	<Window type="DefaultWindow">
 		<Property name="Position" value="{{0,0},{0,0}}" />
-		<Property name="Size" value="{{1,-100},{0,25}}" />
-		<Window name="String" type="EmberLook/Combobox">
+		<Property name="Size" value="{{1,0},{0,25}}" />
+		<Window type="EmberLook/Combobox">
 			<Property name="Position" value="{{0,0},{0,0}}" />
 			<Property name="Size" value="{{1,0},{0,100}}" />
 			<Property name="TooltipText" value="A string value." />

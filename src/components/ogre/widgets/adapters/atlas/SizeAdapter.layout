@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
-	<Window name="SizeAdapter" type="DefaultWindow">
+	<Window type="DefaultWindow">
 		<Property name="Position" value="{{0,0},{0,0}}" />
 		<Property name="Size" value="{{0,150},{0,90}}" />
 		<Window name="lowerX" type="EmberLook/Editbox">

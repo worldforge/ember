@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout version="4">
+	<Window type="VerticalLayoutContainer">
+		<Property name="Size" value="{{0,200},{0,60}}" />
+		<Window type="HorizontalLayoutContainer">
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="Size" value="{{1,0},{0,30}}" />
+			<Window name="x" type="EmberLook/Editbox">
+				<Property name="Size" value="{{0,45},{0,25}}" />
+				<Property name="TooltipText" value="X value." />
+			</Window>
+			<Window name="y" type="EmberLook/Editbox">
+				<Property name="Size" value="{{0,0},{0,25}}" />
+				<Property name="TooltipText" value="Y value." />
+			</Window>
+			<Window name="z" type="EmberLook/Editbox">
+				<Property name="Size" value="{{0,0},{0,25}}" />
+				<Property name="TooltipText" value="Z value." />
+			</Window>
+			<Window name="uniformToggle" type="EmberLook/Checkbox">
+				<Property name="Size" value="{{0,60},{0,25}}" />
+				<Property name="Text" value="Uniform" />
+				<Property name="Selected" value="True" />
+			</Window>
+		</Window>
+		<Window name="scaler" type="EmberLook/Slider">
+			<Property name="Size" value="{{0,200},{0,15}}" />
+			<Property name="CurrentValue" value="1" />
+			<Property name="MaximumValue" value="2" />
+			<Property name="TooltipText" value="Drag to scale the scale." />
+		</Window>
+	</Window>
+</GUILayout>

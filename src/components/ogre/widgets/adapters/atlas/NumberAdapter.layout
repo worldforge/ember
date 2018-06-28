@@ -2,10 +2,10 @@
 <GUILayout version="4">
 	<Window name="NumberAdapter" type="DefaultWindow">
 		<Property name="Position" value="{{0,0},{0,0}}" />
-		<Property name="Size" value="{{0,75},{0,25}}" />
+		<Property name="Size" value="{{0,125},{0,25}}" />
 		<Window name="Number" type="EmberLook/Combobox">
 			<Property name="Position" value="{{0,0},{0,0}}" />
-			<Property name="Size" value="{{0,75},{0,100}}" />
+			<Property name="Size" value="{{1,0},{0,100}}" />
 		</Window>
 		</Window>
 </GUILayout>

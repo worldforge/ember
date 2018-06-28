@@ -56,6 +56,7 @@ class StaticAdapter;
 class AreaAdapter;
 class PolygonAdapter;
 class TerrainModAdapter;
+class ScaleAdapter;
 
 /**
 @brief A factory class through which all adapters are created. Instead of creating the adapters yourself, use this to properly instantiate them.
@@ -101,6 +102,8 @@ public:
 	* @return
 	*/
 	SizeAdapter* createSizeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
+	ScaleAdapter* createScaleAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 
 	/**
 	 *    Creates an adapter for a 3d position.

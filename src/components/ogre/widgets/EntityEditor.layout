@@ -16,7 +16,6 @@
                 <Property name="Position" value="{{0,0},{0,0}}" />
                 <Property name="Size" value="{{1,0},{0,30}}" />
                 <Property name="InheritsAlpha" value="True" />
-                <Property name="Text" value="test" />
                 <Property name="FrameEnabled" value="false" />
                 <Property name="BackgroundEnabled" value="false" />
             </Window>
@@ -30,8 +29,7 @@
                     <Property name="InheritsAlpha" value="false" />
                     <Property name="Visible" value="true" />
                     <Window name="AttributesContainer" type="EmberLook/ScrollablePane">
-                        <Property name="Size" value="{{1,0.0},{1.00,0.0}}" />
-                        <Property name="Text" value="" />
+                        <Property name="Size" value="{{1,0.0},{1,0.0}}" />
                         <Property name="InheritsAlpha" value="True" />
                     </Window>
                 </Window>

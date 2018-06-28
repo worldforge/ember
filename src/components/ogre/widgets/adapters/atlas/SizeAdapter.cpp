@@ -134,7 +134,7 @@ bool SizeAdapter::slider_ValueChanged(const CEGUI::EventArgs& e)
 	try {
 		newBox.fromAtlas(mOriginalValue);
 	} catch (...) {
-		newBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, -0.5, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5));
+		newBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5f, -0.5f, -0.5f), WFMath::Point<3>(0.5, 0.5, 0.5));
 	}
 	WFMath::Point<3> lowerPoint = newBox.lowCorner();
 	WFMath::Point<3> upperPoint = newBox.highCorner();
