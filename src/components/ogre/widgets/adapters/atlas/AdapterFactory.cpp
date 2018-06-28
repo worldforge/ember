@@ -37,6 +37,7 @@
 #include "PolygonAdapter.h"
 #include "TerrainModAdapter.h"
 #include "ScaleAdapter.h"
+#include "EntityRefAdapter.h"
 #include "components/ogre/GUIManager.h"
 
 using namespace CEGUI;
@@ -57,8 +58,8 @@ namespace Atlas
 
 unsigned long AdapterFactory::msAutoGenId = 0;
 
-AdapterFactory::AdapterFactory(const std::string prefix) :
-	mPrefix(prefix)
+AdapterFactory::AdapterFactory(std::string prefix) :
+	mPrefix(std::move(prefix))
 {
 }
 
@@ -150,6 +151,12 @@ bool AdapterFactory::verifyCorrectType<PolygonAdapter>(const ::Atlas::Message::E
 
 template<>
 bool AdapterFactory::verifyCorrectType<TerrainModAdapter>(const ::Atlas::Message::Element& element)
+{
+	return element.isMap();
+}
+
+template<>
+bool AdapterFactory::verifyCorrectType<EntityRefAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isMap();
 }
@@ -278,6 +285,14 @@ TerrainModAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* containe
 	return new TerrainModAdapter(element, button, entity, posType, modType, heightEditbox);
 }
 
+template<>
+EntityRefAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+{
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/EntityRefAdapter.layout");
+	Editbox* text = static_cast<Editbox*> (container->getChildRecursive("EntityRef"));
+	return new EntityRefAdapter(element, {text});
+}
+
 StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
 	return createAdapter<StringAdapter> (container, adapterPrefix, element);
@@ -351,6 +366,11 @@ PolygonAdapter* AdapterFactory::createPolygonAdapter(CEGUI::Window* container, c
 TerrainModAdapter* AdapterFactory::createTerrainModAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	return createAdapter<TerrainModAdapter> (container, adapterPrefix, element, entity);
+}
+
+EntityRefAdapter* AdapterFactory::createEntityRefAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
+{
+	return createAdapter<EntityRefAdapter>(container, adapterPrefix, element);
 }
 
 AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)

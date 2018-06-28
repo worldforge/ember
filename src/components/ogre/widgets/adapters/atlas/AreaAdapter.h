@@ -65,12 +65,12 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~AreaAdapter();
+	~AreaAdapter() override = default;
     
 	/**
 	 * @brief Updates the gui with new values.
 	 */
-	virtual void updateGui(const ::Atlas::Message::Element& element);
+	void updateGui(const ::Atlas::Message::Element& element) override;
     
     /**
      * @brief Toggles the display of the graphical representation of the polygon.
@@ -120,11 +120,11 @@ protected:
 
 	bool layerWindow_TextChanged(const CEGUI::EventArgs& e);
 	bool layerWindow_ListSelectionChanged(const CEGUI::EventArgs& e);
-	
-	
 
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
+
+	void fillElementFromGui() override;
+
+	bool _hasChanges() override;
 
 	/**
 	 * @brief Creates a default area polygon for when there's none specified.

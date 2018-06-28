@@ -112,7 +112,7 @@ add_library(emberogre
         EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ILightning.h
         IMovable.h IMovementProvider.h INodeProvider.h ISceneRenderingTechnique.h IWorldPickListener.h
         MousePicker.h OgreIncludes.h authoring/GeometryVisualization.cpp authoring/GeometryVisualization.h PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h widgets/adapters/ModelDefinitionsAdapter.cpp widgets/adapters/ModelDefinitionsAdapter.h
-        BulletCollisionDetector.cpp BulletCollisionDetector.h BulletWorld.cpp BulletWorld.h EntityCollisionInfo.h SkeletonDisplay.cpp SkeletonDisplay.h widgets/adapters/atlas/ScaleAdapter.cpp widgets/adapters/atlas/ScaleAdapter.h)
+        BulletCollisionDetector.cpp BulletCollisionDetector.h BulletWorld.cpp BulletWorld.h EntityCollisionInfo.h SkeletonDisplay.cpp SkeletonDisplay.h widgets/adapters/atlas/ScaleAdapter.cpp widgets/adapters/atlas/ScaleAdapter.h widgets/adapters/atlas/EntityRefAdapter.cpp widgets/adapters/atlas/EntityRefAdapter.h)
 
 
 file(GLOB ENTITY_RECIPES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.entityrecipe" "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.xsd")

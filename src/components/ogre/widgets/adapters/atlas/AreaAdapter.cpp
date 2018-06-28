@@ -74,9 +74,6 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 	updateGui(mOriginalValue);
 }
 
-AreaAdapter::~AreaAdapter()
-{
-}
 
 WFMath::Polygon<2> AreaAdapter::getDefaultPolygon() const
 {

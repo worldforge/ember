@@ -44,6 +44,7 @@ public:
     NumberAdapter* createNumberAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
     SizeAdapter* createSizeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
     ScaleAdapter* createScaleAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
+	EntityRefAdapter* createEntityRefAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
 	PositionAdapter* createPositionAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
 	Position2DAdapter* createPosition2DAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
     MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element);
@@ -81,7 +82,7 @@ public:
 	* @return A new polygon adapter.
 	*/
 	TerrainModAdapter* createTerrainModAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element, Ember::EmberEntity* entity);
-	
+
 	/**
 	 * @brief Creates a new adapter based on a specified type.
 	 * @param type The type for which an adapter should be created. Possible values are "string|number|size|position|position2d|map|list|orientation|static".

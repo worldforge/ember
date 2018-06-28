@@ -57,6 +57,7 @@ class AreaAdapter;
 class PolygonAdapter;
 class TerrainModAdapter;
 class ScaleAdapter;
+class EntityRefAdapter;
 
 /**
 @brief A factory class through which all adapters are created. Instead of creating the adapters yourself, use this to properly instantiate them.
@@ -69,7 +70,7 @@ public:
 	 * @brief Ctor.
 	 * @param prefix An unique prefix to use when generating the CEGUI windows.
 	 */
-	AdapterFactory(const std::string prefix);
+	explicit AdapterFactory(std::string prefix);
 
 	/**
 	 * @brief Dtor.
@@ -104,6 +105,8 @@ public:
 	SizeAdapter* createSizeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 
 	ScaleAdapter* createScaleAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
+	EntityRefAdapter* createEntityRefAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 
 	/**
 	 *    Creates an adapter for a 3d position.

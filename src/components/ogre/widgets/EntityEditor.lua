@@ -426,6 +426,16 @@ EntityEditor = {
 				return wrapper
 			end
 		},
+		entityRef = {
+			name = "EntityRef",
+			createAdapter = function(self, element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.adapter = self.factory:createEntityRefAdapter(wrapper.container, self.instance.entity:getId(), element)
+				return wrapper
+			end
+		},
 		float = {
 			name = "Float",
 			createAdapter = function(self, element, prototype)
@@ -838,10 +848,13 @@ EntityEditor.prototypes =
 	--Ignore geometry for now, as it's often too large.
 	--TODO: implement geometry display
 	geometry = {
-    nodelete = true,
-    --    adapter = EntityEditor.adapters.static
-    adapter = nil
-  },
+		nodelete = true,
+		--    adapter = EntityEditor.adapters.static
+		adapter = nil
+	},
+	planted_on = {
+		adapter = EntityEditor.adapters.entityRef
+	}
 }
 EntityEditor.defaultPrototypes =
 {
