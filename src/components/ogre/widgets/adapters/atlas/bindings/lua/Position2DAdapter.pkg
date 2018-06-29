@@ -38,9 +38,7 @@ namespace Atlas {
 class Position2DAdapter : public AdapterBase
 {
 public:
-    Position2DAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow);
 
-    virtual ~Position2DAdapter();
 
 };
 

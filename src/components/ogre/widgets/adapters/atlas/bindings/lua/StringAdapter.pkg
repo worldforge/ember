@@ -38,9 +38,7 @@ namespace Atlas {
 class StringAdapter : AdapterBase
 {
 public:
-	StringAdapter(const Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
-	
-	virtual ~StringAdapter();
+
 	
 };
 

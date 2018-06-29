@@ -38,9 +38,7 @@ namespace Atlas {
 class StaticAdapter : public AdapterBase
 {
 public:
-    StaticAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* textWindow);
 
-    virtual ~StaticAdapter();
     
 
 };

@@ -56,6 +56,7 @@ ScaleAdapter::ScaleAdapter(const ::Atlas::Message::Element& element, Widgets wid
 		//mYWindow->getParent()->invalidate(true);
 		return true;
 	}));
+
 	addGuiEventConnection(mWidgets.scaler->subscribeEvent(CEGUI::Slider::EventValueChanged, [this]() {
 
 		float value = mWidgets.scaler->getCurrentValue();

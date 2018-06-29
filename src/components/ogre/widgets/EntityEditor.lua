@@ -854,6 +854,9 @@ EntityEditor.prototypes =
 	},
 	planted_on = {
 		adapter = EntityEditor.adapters.entityRef
+	},
+	right_hand_wield= {
+		adapter = EntityEditor.adapters.entityRef
 	}
 }
 EntityEditor.defaultPrototypes =

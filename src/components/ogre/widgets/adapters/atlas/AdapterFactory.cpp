@@ -189,7 +189,8 @@ SizeAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, con
 	Window* upperZ = container->getChildRecursive("upperZ");
 	Slider* scaler = static_cast<Slider*> (container->getChildRecursive("scaler"));
 	Window* info = container->getChildRecursive("info");
-	return new SizeAdapter(element, lowerX, lowerY, lowerZ, upperX, upperY, upperZ, scaler, info);
+	ToggleButton* editable = static_cast<ToggleButton*>(container->getChildRecursive("editable"));
+	return new SizeAdapter(element, {lowerX, lowerY, lowerZ, upperX, upperY, upperZ, scaler, info, editable});
 }
 
 template<>

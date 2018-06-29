@@ -37,10 +37,7 @@ namespace Atlas {
 */
 class AdapterBase{
 public:
-    AdapterBase(const Atlas::Message::Element& element);
 
-    virtual ~AdapterBase();
-	
 	
 	/**
 	Sets the value, thus also updating the gui.

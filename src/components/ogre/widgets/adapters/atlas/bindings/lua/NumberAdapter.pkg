@@ -38,9 +38,7 @@ namespace Atlas {
 class NumberAdapter : AdapterBase
 {
 public:
-    NumberAdapter(const Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
 
-    virtual ~NumberAdapter();
 
 };
 

@@ -2,36 +2,42 @@
 <GUILayout version="4">
 	<Window type="DefaultWindow">
 		<Property name="Position" value="{{0,0},{0,0}}" />
-		<Property name="Size" value="{{0,150},{0,90}}" />
+		<Property name="Size" value="{{0,150},{0,130}}" />
 		<Window name="lowerX" type="EmberLook/Editbox">
 			<Property name="Position" value="{{0,0},{0,0}}" />
 			<Property name="Size" value="{{0,45},{0,25}}" />
 			<Property name="TooltipText" value="Lower x coord." />
+			<Property name="Disabled" value="True" />
 		</Window>
 		<Window name="lowerY" type="EmberLook/Editbox">
 			<Property name="Position" value="{{0,50},{0,0}}" />
 			<Property name="Size" value="{{0,45},{0,25}}" />
 			<Property name="TooltipText" value="Lower y coord." />
+			<Property name="Disabled" value="True" />
 		</Window>
 		<Window name="lowerZ" type="EmberLook/Editbox">
 			<Property name="Position" value="{{0,100},{0,0}}" />
 			<Property name="Size" value="{{0,45},{0,25}}" />
 			<Property name="TooltipText" value="Lower z coord." />
+			<Property name="Disabled" value="True" />
 		</Window>
 		<Window name="upperX" type="EmberLook/Editbox">
 			<Property name="Position" value="{{0,0},{0,25}}" />
 			<Property name="Size" value="{{0,45},{0,25}}" />
 			<Property name="TooltipText" value="Upper x coord." />
+			<Property name="Disabled" value="True" />
 		</Window>
 		<Window name="upperY" type="EmberLook/Editbox">
 			<Property name="Position" value="{{0,50},{0,25}}" />
 			<Property name="Size" value="{{0,45},{0,25}}" />
 			<Property name="TooltipText" value="Upper y coord." />
+			<Property name="Disabled" value="True" />
 		</Window>
 		<Window name="upperZ" type="EmberLook/Editbox">
 			<Property name="Position" value="{{0,100},{0,25}}" />
 			<Property name="Size" value="{{0,45},{0,25}}" />
 			<Property name="TooltipText" value="Upper z coord." />
+			<Property name="Disabled" value="True" />
 		</Window>
 		<Window name="scaler" type="EmberLook/Slider">
 			<Property name="Position" value="{{0,5},{0,50}}" />
@@ -39,12 +45,19 @@
 			<Property name="CurrentValue" value="1" />
 			<Property name="MaximumValue" value="5" />
 			<Property name="TooltipText" value="Drag to scale the size." />
+			<Property name="Disabled" value="True" />
 		</Window>
 		<Window name="info" type="EmberLook/StaticText">
 			<Property name="Position" value="{{0,0},{0,65}}" />
 			<Property name="Size" value="{{0,150},{0,25}}" />
 			<Property name="BackgroundEnabled" value="False" />
 			<Property name="FrameEnabled" value="False" />
+		</Window>
+		<Window name="editable" type="EmberLook/Checkbox">
+			<Property name="Position" value="{{0,0},{0,90}}" />
+			<Property name="Size" value="{{0,100},{0,25}}" />
+			<Property name="Text" value="Editable" />
+			<Property name="TooltipText" value="In most cases you want to alter the 'scale' property instead." />
 		</Window>
 	</Window>
 </GUILayout>

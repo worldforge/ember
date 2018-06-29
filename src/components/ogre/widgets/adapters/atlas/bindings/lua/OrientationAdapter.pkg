@@ -38,10 +38,7 @@ namespace Atlas {
 class OrientationAdapter : public AdapterBase
 {
 public:
-    OrientationAdapter(const Atlas::Message::Element& element, CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow, CEGUI::Window* scalarWindow);
 
-    virtual ~OrientationAdapter();
-	
 
 };
 

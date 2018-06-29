@@ -37,9 +37,6 @@ namespace Atlas {
 class MapAdapter : AdapterBase
 {
 public:
-    MapAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer);
-
-    virtual ~MapAdapter();
 
     std::vector<std::string> getAttributeNames();
 

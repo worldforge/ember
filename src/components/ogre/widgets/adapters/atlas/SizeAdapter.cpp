@@ -42,31 +42,42 @@ namespace Adapters
 namespace Atlas
 {
 
-SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler, CEGUI::Window* infoWindow) :
-	AdapterBase(element), mLowerXWindow(lowerXWindow), mLowerYWindow(lowerYWindow), mLowerZWindow(lowerZWindow), mUpperXWindow(upperXWindow), mUpperYWindow(upperYWindow), mUpperZWindow(upperZWindow), mScaler(scaler), mInfoWindow(infoWindow)
+SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, Widgets widgets) :
+	AdapterBase(element), mWidgets(widgets)
 {
-	if (mLowerXWindow) {
-		addGuiEventConnection(mLowerXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
+	if (mWidgets.lowerXWindow) {
+		addGuiEventConnection(mWidgets.lowerXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
-	if (mLowerYWindow) {
-		addGuiEventConnection(mLowerYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
+	if (mWidgets.lowerYWindow) {
+		addGuiEventConnection(mWidgets.lowerYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
-	if (mLowerZWindow) {
-		addGuiEventConnection(mLowerZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
+	if (mWidgets.lowerZWindow) {
+		addGuiEventConnection(mWidgets.lowerZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
-	if (mUpperXWindow) {
-		addGuiEventConnection(mUpperXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
+	if (mWidgets.upperXWindow) {
+		addGuiEventConnection(mWidgets.upperXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
-	if (mUpperYWindow) {
-		addGuiEventConnection(mUpperYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
+	if (mWidgets.upperYWindow) {
+		addGuiEventConnection(mWidgets.upperYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
-	if (mUpperZWindow) {
-		addGuiEventConnection(mUpperZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
+	if (mWidgets.upperZWindow) {
+		addGuiEventConnection(mWidgets.upperZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
-	if (mScaler) {
-		addGuiEventConnection(mScaler->subscribeEvent(CEGUI::Slider::EventValueChanged, CEGUI::Event::Subscriber(&SizeAdapter::slider_ValueChanged, this)));
+	if (mWidgets.scaler) {
+		addGuiEventConnection(mWidgets.scaler->subscribeEvent(CEGUI::Slider::EventValueChanged, CEGUI::Event::Subscriber(&SizeAdapter::slider_ValueChanged, this)));
 	}
 
+	addGuiEventConnection(mWidgets.editable->subscribeEvent(CEGUI::ToggleButton::EventSelectStateChanged, [this]() {
+		mWidgets.lowerXWindow->setEnabled(mWidgets.editable->isSelected());
+		mWidgets.lowerYWindow->setEnabled(mWidgets.editable->isSelected());
+		mWidgets.lowerZWindow->setEnabled(mWidgets.editable->isSelected());
+		mWidgets.upperXWindow->setEnabled(mWidgets.editable->isSelected());
+		mWidgets.upperYWindow->setEnabled(mWidgets.editable->isSelected());
+		mWidgets.upperZWindow->setEnabled(mWidgets.editable->isSelected());
+		mWidgets.scaler->setEnabled(mWidgets.editable->isSelected());
+
+		return true;
+	}));
 	updateGui(mOriginalValue);
 }
 
@@ -84,23 +95,23 @@ void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 	} catch (...) {
 		axisBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, -0.5, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5));
 	}
-	if (mLowerXWindow) {
-		mLowerXWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().x()));
+	if (mWidgets.lowerXWindow) {
+		mWidgets.lowerXWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().x()));
 	}
-	if (mLowerYWindow) {
-		mLowerYWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().y()));
+	if (mWidgets.lowerYWindow) {
+		mWidgets.lowerYWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().y()));
 	}
-	if (mLowerZWindow) {
-		mLowerZWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().z()));
+	if (mWidgets.lowerZWindow) {
+		mWidgets.lowerZWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().z()));
 	}
-	if (mUpperXWindow) {
-		mUpperXWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().x()));
+	if (mWidgets.upperXWindow) {
+		mWidgets.upperXWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().x()));
 	}
-	if (mUpperYWindow) {
-		mUpperYWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().y()));
+	if (mWidgets.upperYWindow) {
+		mWidgets.upperYWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().y()));
 	}
-	if (mUpperZWindow) {
-		mUpperZWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().z()));
+	if (mWidgets.upperZWindow) {
+		mWidgets.upperZWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().z()));
 	}
 
 	updateInfo();
@@ -124,12 +135,12 @@ void SizeAdapter::updateInfo()
 	std::stringstream ss;
 	ss.precision(4);
 	ss << "w: " << (newBox.highCorner().x() - newBox.lowCorner().x()) << " d: " << (newBox.highCorner().y() - newBox.lowCorner().y()) << " h: " << (newBox.highCorner().z() - newBox.lowCorner().z());
-	mInfoWindow->setText(ss.str());
+	mWidgets.infoWindow->setText(ss.str());
 }
 
 bool SizeAdapter::slider_ValueChanged(const CEGUI::EventArgs& e)
 {
-	float value = mScaler->getCurrentValue();
+	float value = mWidgets.scaler->getCurrentValue();
 	WFMath::AxisBox<3> newBox;
 	try {
 		newBox.fromAtlas(mOriginalValue);
@@ -155,23 +166,23 @@ void SizeAdapter::fillElementFromGui()
 	WFMath::AxisBox<3> axisBox;
 	WFMath::Point<3> lowerPoint = axisBox.lowCorner();
 	WFMath::Point<3> upperPoint = axisBox.highCorner();
-	if (mLowerXWindow) {
-		lowerPoint.x() = atof(mLowerXWindow->getText().c_str());
+	if (mWidgets.lowerXWindow) {
+		lowerPoint.x() = atof(mWidgets.lowerXWindow->getText().c_str());
 	}
-	if (mLowerYWindow) {
-		lowerPoint.y() = atof(mLowerYWindow->getText().c_str());
+	if (mWidgets.lowerYWindow) {
+		lowerPoint.y() = atof(mWidgets.lowerYWindow->getText().c_str());
 	}
-	if (mLowerZWindow) {
-		lowerPoint.z() = atof(mLowerZWindow->getText().c_str());
+	if (mWidgets.lowerZWindow) {
+		lowerPoint.z() = atof(mWidgets.lowerZWindow->getText().c_str());
 	}
-	if (mUpperXWindow) {
-		upperPoint.x() = atof(mUpperXWindow->getText().c_str());
+	if (mWidgets.upperXWindow) {
+		upperPoint.x() = atof(mWidgets.upperXWindow->getText().c_str());
 	}
-	if (mUpperYWindow) {
-		upperPoint.y() = atof(mUpperYWindow->getText().c_str());
+	if (mWidgets.upperYWindow) {
+		upperPoint.y() = atof(mWidgets.upperYWindow->getText().c_str());
 	}
-	if (mUpperZWindow) {
-		upperPoint.z() = atof(mUpperZWindow->getText().c_str());
+	if (mWidgets.upperZWindow) {
+		upperPoint.z() = atof(mWidgets.upperZWindow->getText().c_str());
 	}
 	axisBox.setCorners(lowerPoint, upperPoint);
 	mEditedValue = axisBox.toAtlas();

@@ -38,10 +38,7 @@ namespace Atlas {
 class TerrainModAdapter : public AdapterBase
 {
 public:
-	
-	TerrainModAdapter(const Atlas::Message::Element& element, CEGUI::PushButton* showButton, Ember::EmberEntity* entity, CEGUI::Combobox* posTypeCombobox, CEGUI::Combobox* modTypeCombobox, CEGUI::Editbox* heightTextbox);
 
-	virtual ~TerrainModAdapter();
 	
 	/**
 	 * @brief Updates the gui with new values.
