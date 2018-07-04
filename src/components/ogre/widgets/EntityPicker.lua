@@ -239,7 +239,7 @@ function EntityPicker:pickedEntity(results, args)
 		if results:size() > 0 then
 			local entity = results[0].entity
 			if entity then
-				emberServices:getServerService():touch(entity)
+				emberServices:getServerService():touch(entity,  Ember.OgreView.Convert:toWF_Point3(results[0].position))
 				guiManager:EmitEntityAction("touch", entity)
 				local name
 				--if the entity has a name, use it, else use the type name
@@ -400,7 +400,7 @@ end
 
 function EntityPicker:buttonTouch_Click(args)
 	self:doWithPickedEntity(function (entity)
-		emberServices:getServerService():touch(entity)
+		emberServices:getServerService():touch(entity, Ember.OgreView.Convert:toWF_Point3(self.position))
 		guiManager:EmitEntityAction("touch", entity)
 	end)
 	self:removeMenu()

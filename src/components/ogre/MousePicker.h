@@ -44,11 +44,11 @@ class MousePicker
 public:
 	enum ClickMasks
 	{
-		CM_AVATAR = 1<<9,
-		CM_ENTITY = 1<<10,
-		CM_NATURE = 1<<11,
-		CM_UNDEFINED = 1<<12,
-		CM_NONPICKABLE = 1<<13
+		CM_AVATAR = 1u<<9u,
+		CM_ENTITY = 1u<<10u,
+		CM_NATURE = 1u<<11u,
+		CM_UNDEFINED = 1u<<12u,
+		CM_NONPICKABLE = 1u<<13u
 	};
 };
 

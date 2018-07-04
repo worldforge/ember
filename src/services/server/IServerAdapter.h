@@ -68,7 +68,7 @@ public:
 	 * @param entities The entity to which the message is addressed.
 	 */
 	virtual void sayTo(const std::string &message, const Eris::Entity& entity) = 0;
-	virtual void touch(Eris::Entity* entity) = 0;
+	virtual void touch(Eris::Entity* entity, WFMath::Point<3> pos) = 0;
 	virtual void emote(const std::string& emote) = 0;
 	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation) = 0;
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos) = 0;

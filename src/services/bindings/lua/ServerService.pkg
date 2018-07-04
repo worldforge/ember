@@ -69,7 +69,7 @@ class ServerService
 	 */
 	void sayTo(const std::string &message, const Eris::Entity& entity);
 
-	void touch(Eris::Entity* entity);
+	void touch(Eris::Entity* entity, WFMath::Point<3> pos);
 	/**
 	 *    Emotes something.
 	 * @param entity 

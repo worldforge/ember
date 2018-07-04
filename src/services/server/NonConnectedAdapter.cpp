@@ -44,7 +44,7 @@ void NonConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity)
 
 }
 
-void NonConnectedAdapter::touch(Eris::Entity* entity)
+void NonConnectedAdapter::touch(Eris::Entity* entity, WFMath::Point<3> pos)
 {
 
 }

@@ -201,7 +201,7 @@ public:
 	 * @brief Touch another entity.
 	 * @param entity
 	 */
-	void touch(Eris::Entity* entity);
+	void touch(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>());
 
 	/**
 	 * @brief Emotes something.

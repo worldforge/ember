@@ -197,9 +197,9 @@ void ServerService::moveInDirection(const WFMath::Vector<3>& velocity)
 	getAdapter().moveInDirection(velocity);
 }
 
-void ServerService::touch(Eris::Entity* entity)
+void ServerService::touch(Eris::Entity* entity, WFMath::Point<3> pos)
 {
-	getAdapter().touch(entity);
+	getAdapter().touch(entity, pos);
 }
 
 void ServerService::take(Eris::Entity* entity)

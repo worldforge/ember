@@ -71,9 +71,9 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
 	}
 }
 
-void ConnectedAdapter::touch(Eris::Entity* entity) {
+void ConnectedAdapter::touch(Eris::Entity* entity, WFMath::Point<3> pos) {
 	try {
-		mAvatar.touch(entity);
+		mAvatar.touch(entity, pos);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on touching." << ex);
 	}

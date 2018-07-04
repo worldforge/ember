@@ -50,7 +50,7 @@ public:
 
 	void sayTo(const std::string &message, const Eris::Entity& entity) override;
 
-	void touch(Eris::Entity* entity) override;
+	void touch(Eris::Entity* entity, WFMath::Point<3> pos) override;
 
 	void emote(const std::string& emote) override;
 
