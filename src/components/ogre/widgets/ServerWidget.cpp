@@ -387,10 +387,14 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account) {
 			unsigned int i = 0;
 			for (const auto& character : characters) {
 
-				CEGUI::ListboxItem* item = new Gui::ColouredListItem(character, i++, 0);
+				CEGUI::ListboxItem* item = new Gui::ColouredListItem(character, i++, nullptr);
 				mTypesList->addItem(item);
 			}
 		}
+	}
+	//If only one selection, select the first one.
+	if (mTypesList->getItemCount() == 1) {
+		mTypesList->setItemSelectState(mTypesList->getListboxItemFromIndex(0), true);
 	}
 }
 
