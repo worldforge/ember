@@ -152,16 +152,9 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
  * the model
  */
 bool ModelRepresentation::needSoundEntity() {
-	const ActionDefinitionsStore& store = mModel->getDefinition()->getActionDefinitions();
-	auto I_b = store.begin();
-	auto I_e = store.end();
-	for (; I_b != I_e; ++I_b) {
+	for (auto& actionDef: mModel->getDefinition()->getActionDefinitions()) {
 		// Setup All Sound Actions
-		SoundDefinitionsStore::const_iterator I_sounds = (*I_b)->getSoundDefinitions().begin();
-		SoundDefinitionsStore::const_iterator I_sounds_end = (*I_b)->getSoundDefinitions().end();
-		for (; I_sounds != I_sounds_end; ++I_sounds) {
-			SoundDefinition* sound = (*I_sounds);
-
+		for (auto sound : actionDef->getSoundDefinitions()) {
 			// Once we find a single reference
 			// we have an entity to allocate
 			if (sound) {
@@ -471,7 +464,7 @@ void ModelRepresentation::updateCollisionDetection() {
 }
 
 BulletCollisionDetector& ModelRepresentation::getCollisionDetector() {
-	return *mBulletCollisionDetector.get();
+	return *mBulletCollisionDetector;
 }
 
 }

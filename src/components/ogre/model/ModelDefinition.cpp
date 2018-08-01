@@ -138,7 +138,7 @@ ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewnam
 		return view->second;
 	}
 
-	ViewDefinition* def = new ViewDefinition();
+	auto* def = new ViewDefinition();
 	def->Name = viewname;
 	def->Distance = 0;
 	def->Rotation = Ogre::Quaternion::IDENTITY;
@@ -161,7 +161,7 @@ BoneGroupDefinition* ModelDefinition::createBoneGroupDefinition(const std::strin
 		return group->second;
 	}
 
-	BoneGroupDefinition* def = new BoneGroupDefinition();
+	auto* def = new BoneGroupDefinition();
 	def->Name = name;
 	mBoneGroups.insert(std::make_pair(name, def));
 	return def;
@@ -223,7 +223,7 @@ void ModelDefinition::reloadAllInstances() {
 }
 
 SubModelDefinition* ModelDefinition::createSubModelDefinition(const std::string& meshname) {
-	SubModelDefinition* def = new SubModelDefinition(meshname, *this);
+	auto* def = new SubModelDefinition(meshname, *this);
 	mSubModels.push_back(def);
 	return def;
 }
@@ -237,7 +237,7 @@ void ModelDefinition::removeSubModelDefinition(SubModelDefinition* def) {
 }
 
 ActionDefinition* ModelDefinition::createActionDefinition(const std::string& actionname) {
-	ActionDefinition* def = new ActionDefinition(actionname);
+	auto* def = new ActionDefinition(actionname);
 	mActions.push_back(def);
 	return def;
 }
@@ -310,7 +310,7 @@ const std::string& SubModelDefinition::getMeshName() const {
 }
 
 PartDefinition* SubModelDefinition::createPartDefinition(const std::string& partname) {
-	PartDefinition* def = new PartDefinition(partname, *this);
+	auto* def = new PartDefinition(partname, *this);
 	mParts.push_back(def);
 	return def;
 }
@@ -362,14 +362,14 @@ bool PartDefinition::getShow() const {
 }
 
 SubEntityDefinition* PartDefinition::createSubEntityDefinition(const std::string& subEntityName) {
-	SubEntityDefinition* def = new SubEntityDefinition(subEntityName, *this);
+	auto* def = new SubEntityDefinition(subEntityName, *this);
 	mSubEntities.push_back(def);
 	return def;
 
 }
 
 SubEntityDefinition* PartDefinition::createSubEntityDefinition(unsigned int subEntityIndex) {
-	SubEntityDefinition* def = new SubEntityDefinition(subEntityIndex, *this);
+	auto* def = new SubEntityDefinition(subEntityIndex, *this);
 	mSubEntities.push_back(def);
 	return def;
 }
@@ -421,7 +421,7 @@ AnimationDefinition::~AnimationDefinition() {
 }
 
 AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(const std::string& ogreAnimationName) {
-	AnimationPartDefinition* def = new AnimationPartDefinition();
+	auto* def = new AnimationPartDefinition();
 	def->Name = ogreAnimationName;
 	mAnimationParts.push_back(def);
 	return def;
@@ -453,7 +453,7 @@ ActionDefinition::~ActionDefinition() {
 }
 
 AnimationDefinition* ActionDefinition::createAnimationDefinition(int iterations) {
-	AnimationDefinition* def = new AnimationDefinition(iterations);
+	auto def = new AnimationDefinition(iterations);
 	mAnimations.push_back(def);
 	return def;
 }
@@ -471,7 +471,7 @@ void ActionDefinition::removeAnimationDefinition(AnimationDefinition* def) {
 }
 
 SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& groupName, unsigned int play) {
-	SoundDefinition* def = new SoundDefinition();
+	auto def = new SoundDefinition();
 	def->groupName = groupName;
 	def->playOrder = play;
 

@@ -55,7 +55,7 @@ void ModelMount::reset() {
 	PoseDefinition const* pose = nullptr;
 	if (!mPose.empty()) {
 		const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
-		PoseDefinitionStore::const_iterator I = poses.find(mPose);
+		auto I = poses.find(mPose);
 		if (I != poses.end()) {
 			pose = &I->second;
 		}
@@ -141,7 +141,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox) {
 					break;
 			}
 
-		} else if (!getModel().getDefinition()->getScale()) {
+		} else if (getModel().getDefinition()->getScale() == 0) {
 			//If there's no bbox, and no scaling in the model (i.e. not even "1") we'll set the size of the model to a hardcoded small value (0.25 meters in each dimension).
 			//This is of course a last resort; all good models that can belong to entities without bounding boxes should have a scale set
 

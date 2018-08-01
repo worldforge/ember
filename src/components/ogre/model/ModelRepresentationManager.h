@@ -33,7 +33,8 @@ class ModelRepresentationManager : public Singleton<ModelRepresentationManager>
 {
 public:
 	ModelRepresentationManager();
-	virtual ~ModelRepresentationManager();
+
+	~ModelRepresentationManager() override;
 
 	Model* getModelForEntity(EmberEntity& entity) const;
 

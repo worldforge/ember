@@ -28,14 +28,15 @@ namespace Model
 {
 
 ModelFitting::ModelFitting(EmberEntity& parent, const std::string& mountPoint, const std::string& childEntityId) :
-	mParent(parent), mChild(0), mMountPoint(mountPoint), mChildEntityId(childEntityId)
+	mParent(parent),
+	mChild(nullptr),
+	mMountPoint(mountPoint),
+	mChildEntityId(childEntityId)
 {
 
 }
 
-ModelFitting::~ModelFitting()
-{
-}
+ModelFitting::~ModelFitting() = default;
 
 void ModelFitting::attachChild(EmberEntity& entity)
 {

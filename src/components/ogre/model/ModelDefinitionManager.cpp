@@ -39,7 +39,7 @@
 #include <utility>
 
 
-template<> Ember::OgreView::Model::ModelDefinitionManager* Ember::Singleton<Ember::OgreView::Model::ModelDefinitionManager>::ms_Singleton = 0;
+template<> Ember::OgreView::Model::ModelDefinitionManager* Ember::Singleton<Ember::OgreView::Model::ModelDefinitionManager>::ms_Singleton = nullptr;
 namespace Ember
 {
 namespace OgreView

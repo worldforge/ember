@@ -30,7 +30,7 @@ namespace Model
 
 void ModelPartReactivatorVisitor::visit(EntityMapping::Actions::Action& action)
 {
-	EmberEntityPartAction* partAction = dynamic_cast<EmberEntityPartAction*> (&action);
+	auto* partAction = dynamic_cast<EmberEntityPartAction*> (&action);
 	if (partAction) {
 		if (partAction->getCase()->getIsActive()) {
 			partAction->activate(mChangeContext);

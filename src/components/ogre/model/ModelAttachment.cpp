@@ -42,10 +42,14 @@ namespace OgreView {
 namespace Model {
 
 ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose) :
-		NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0), mIgnoreEntityData(false), mPose(pose) {
-	if (pose != "") {
+		NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider),
+		mModelRepresentation(modelRepresentation),
+		mModelMount(nullptr),
+		mIgnoreEntityData(false),
+		mPose(pose) {
+	if (!pose.empty()) {
 		const PoseDefinitionStore& poses = mModelRepresentation.getModel().getDefinition()->getPoseDefinitions();
-		PoseDefinitionStore::const_iterator I = poses.find(pose);
+		auto I = poses.find(pose);
 		if (I != poses.end()) {
 			mIgnoreEntityData = I->second.IgnoreEntityData;
 		}
@@ -58,12 +62,12 @@ ModelAttachment::~ModelAttachment() {
 	//Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
 	delete mModelMount;
 
-	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
-		delete I->second;
+	for (auto& fitting : mFittings) {
+		delete fitting.second;
 	}
 
-	for (AttributeObserverStore::iterator I = mFittingsObservers.begin(); I != mFittingsObservers.end(); ++I) {
-		delete *I;
+	for (auto& fittingsObserver : mFittingsObservers) {
+		delete fittingsObserver;
 	}
 
 }
@@ -84,29 +88,29 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const {
 
 IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 	std::string attachPoint;
-	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
-		if (I->second->getChildEntityId() == entity.getId()) {
-			attachPoint = I->second->getMountPoint();
-			I->second->attachChild(entity);
+	for (auto& fitting : mFittings) {
+		if (fitting.second->getChildEntityId() == entity.getId()) {
+			attachPoint = fitting.second->getMountPoint();
+			fitting.second->attachChild(entity);
 			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::fittedEntity_BeingDeleted), &entity));
 			break;
 		}
 	}
 	//Don't show a graphical representation if the model is set not to show any contained entities AND we're not set to attach ourselves to an attach point.
-	if (attachPoint == "" && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
+	if (attachPoint.empty() && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
 		return new HiddenAttachment(getAttachedEntity(), entity);
 	} else {
 		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
 
 		INodeProvider* nodeProvider = nullptr;
 		std::string pose;
-		if (modelRepresentation && attachPoint != "") {
+		if (modelRepresentation && !attachPoint.empty()) {
 			if (mModelRepresentation.getModel().isLoaded()) {
 				try {
 					const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
-					for (AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
-						if (I->Name == attachPoint) {
-							pose = I->Pose;
+					for (const auto& attachpoint : attachpoints) {
+						if (attachpoint.Name == attachPoint) {
+							pose = attachpoint.Pose;
 							break;
 						}
 					}
@@ -141,8 +145,8 @@ void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 		offset = Convert::toWF<WFMath::Vector<3>>(modelOffset);
 	} else {
 		//If the attachment is on a fitting, don't do any adjustment
-		for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
-			if (I->second->getChildEntityId() == attachment.getAttachedEntity().getId()) {
+		for (auto& fitting : mFittings) {
+			if (fitting.second->getChildEntityId() == attachment.getAttachedEntity().getId()) {
 				return;
 			}
 		}
@@ -164,15 +168,16 @@ void ModelAttachment::updateScale() {
 		if (getAttachedEntity().hasBBox()) {
 			mModelMount->rescale(&getAttachedEntity().getBBox());
 		} else {
-			mModelMount->rescale(0);
+			mModelMount->rescale(nullptr);
 		}
 	}
+	mModelRepresentation.notifyTransformsChanged();
 }
 
 void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName) {
 	std::string newFittingEntityId;
 	if (Eris::Entity::extractEntityId(attributeValue, newFittingEntityId)) {
-		ModelFittingStore::iterator I = mFittings.find(fittingName);
+		auto I = mFittings.find(fittingName);
 		if (I != mFittings.end()) {
 			EmberEntity* entity = I->second->getChild();
 			mFittings.erase(I);
@@ -181,14 +186,14 @@ void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attribut
 				detachFitting(*entity);
 			}
 		}
-		if (newFittingEntityId != "") {
+		if (!newFittingEntityId.empty()) {
 			createFitting(fittingName, newFittingEntityId);
 		}
 	}
 }
 
 void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity) {
-	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
+	for (auto I = mFittings.begin(); I != mFittings.end(); ++I) {
 		if (I->second->getChildEntityId() == entity->getId()) {
 			mFittings.erase(I);
 			break;
@@ -198,9 +203,9 @@ void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity) {
 
 void ModelAttachment::setupFittings() {
 	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
-	for (AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
-		AttributeObserver* observer = new AttributeObserver(mChildEntity, I->Name, ".");
-		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), I->Name));
+	for (const auto& attachpoint : attachpoints) {
+		AttributeObserver* observer = new AttributeObserver(mChildEntity, attachpoint.Name, ".");
+		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), attachpoint.Name));
 		mFittingsObservers.push_back(observer);
 		observer->forceEvaluation();
 	}
@@ -219,12 +224,12 @@ void ModelAttachment::detachFitting(EmberEntity& entity) {
 }
 
 void ModelAttachment::createFitting(const std::string& fittingName, const std::string& entityId) {
-	ModelFitting* fitting = new ModelFitting(mChildEntity, fittingName, entityId);
+	auto fitting = new ModelFitting(mChildEntity, fittingName, entityId);
 	mFittings.insert(ModelFittingStore::value_type(fittingName, fitting));
 	for (unsigned int i = 0; i < mChildEntity.numContained(); ++i) {
 		Eris::Entity* entity = mChildEntity.getContained(i);
 		if (entity && entity->getId() == entityId) {
-			EmberEntity* emberEntity = static_cast<EmberEntity*>(entity);
+			auto emberEntity = dynamic_cast<EmberEntity*>(entity);
 			emberEntity->setAttachment(nullptr);
 			IEntityAttachment* attachment = attachEntity(*emberEntity);
 			emberEntity->setAttachment(attachment);
@@ -245,9 +250,9 @@ void ModelAttachment::model_Reloaded() {
 }
 
 void ModelAttachment::reattachEntities() {
-	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
-		if (I->second->getChild() && mChildEntity.hasChild(I->second->getChildEntityId())) {
-			EmberEntity* entity = I->second->getChild();
+	for (auto& fitting : mFittings) {
+		if (fitting.second->getChild() && mChildEntity.hasChild(fitting.second->getChildEntityId())) {
+			EmberEntity* entity = fitting.second->getChild();
 			entity->setAttachment(nullptr);
 			IEntityAttachment* attachment = attachEntity(*entity);
 			entity->setAttachment(attachment);

@@ -138,7 +138,6 @@ void GeometryVisualization::placeCylinderX(float radius, float halfHeight, Ogre:
 	float x0 = halfHeight + offset.x;
 
 	Ogre::Vector3 vNormal(1, 0, 0);
-	vNormal = vNormal;
 	mManualObject->position(Ogre::Vector3(x0, offset.y, offset.z));
 	mManualObject->normal(vNormal);
 	mManualObject->colour((vNormal.x + 1.0f) / 2.0f, (vNormal.y + 1.0f) / 2.0f, (vNormal.z + 1.0f) / 2.0f, 1.0f);
@@ -211,7 +210,6 @@ void GeometryVisualization::placeCylinderY(float radius, float halfHeight, Ogre:
 	float y0 = halfHeight + offset.y;
 
 	Ogre::Vector3 vNormal(0, 1, 0);
-	vNormal = vNormal;
 	mManualObject->position(Ogre::Vector3(offset.x, y0, offset.z));
 	mManualObject->normal(vNormal);
 	mManualObject->colour((vNormal.x + 1.0f) / 2.0f, (vNormal.y + 1.0f) / 2.0f, (vNormal.z + 1.0f) / 2.0f, 1.0f);
@@ -283,7 +281,6 @@ void GeometryVisualization::placeCylinderZ(float radius, float halfHeight, Ogre:
 	float z0 = halfHeight + offset.z;
 
 	Ogre::Vector3 vNormal(0, 0, 1);
-	vNormal = vNormal;
 	mManualObject->position(Ogre::Vector3(offset.x, offset.y, z0));
 	mManualObject->normal(vNormal);
 	mManualObject->colour((vNormal.x + 1.0f) / 2.0f, (vNormal.y + 1.0f) / 2.0f, (vNormal.z + 1.0f) / 2.0f, 1.0f);

@@ -40,11 +40,11 @@ namespace Model
 class ModelPartReactivatorVisitor: public EntityMapping::IVisitor
 {
 public:
-	virtual void visit(EntityMapping::Actions::Action& action);
+	void visit(EntityMapping::Actions::Action& action) override;
 
-	virtual void visit(EntityMapping::Matches::MatchBase& match);
+	void visit(EntityMapping::Matches::MatchBase& match) override;
 
-	virtual void visit(EntityMapping::Cases::CaseBase& caseBase);
+	void visit(EntityMapping::Cases::CaseBase& caseBase) override;
 private:
 	EntityMapping::ChangeContext mChangeContext;
 

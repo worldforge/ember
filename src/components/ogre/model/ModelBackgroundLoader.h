@@ -63,11 +63,9 @@ public:
 	 * @brief Ctor.
 	 * @param loader The loader to which this listener is connected.
 	 */
-	ModelBackgroundLoaderListener(ModelBackgroundLoader& loader);
+	explicit ModelBackgroundLoaderListener(ModelBackgroundLoader& loader);
 
-	virtual ~ModelBackgroundLoaderListener()
-	{
-	}
+	~ModelBackgroundLoaderListener() override = default;
 
 	/**
 	 * @brief Called in the main thread when the background operation has completed.
@@ -75,7 +73,7 @@ public:
 	 * @param ticket The ticket which was completed.
 	 * @param result The result of the background operation.
 	 */
-	virtual void operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result);
+	void operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result) override;
 
 
 private:
@@ -158,7 +156,7 @@ public:
 	 * @brief Ctor.
 	 * @param model The model which will be loaded.
 	 */
-	ModelBackgroundLoader(ModelDefinition& modelDefinition);
+	explicit ModelBackgroundLoader(ModelDefinition& modelDefinition);
 
 	/**
 	 * @brief Dtor.
