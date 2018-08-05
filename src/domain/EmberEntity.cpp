@@ -356,16 +356,22 @@ std::vector<std::string> EmberEntity::getActions()
 	//get the actions from Eris and return them a simple vector of strings
 	std::vector<std::string> actions;
 
-	if (hasAttr("actions")) {
-		const Atlas::Message::Element& operations = valueOfAttr("actions");
-		if (operations.isList()) {
-			const Atlas::Message::ListType& list = operations.asList();
-			actions.reserve(list.size());
-			auto J = list.begin();
-			for (; J != list.end(); ++J) {
-				if (J->isString()) {
-					actions.push_back(J->asString());
-				}
+	if (hasAttr("usages")) {
+		auto& usages = valueOfAttr("usages");
+		if (usages.isMap()) {
+			auto& usagesMap = usages.Map();
+			actions.reserve(usagesMap.size());
+			for (auto& entry : usagesMap) {
+				//TODO: check with constraints, targets and consumed
+				actions.emplace_back(entry.first);
+//				if (entry.second.isMap()) {
+//					auto operationI = entry.Map().find("operation");
+//					if (operationI != entry.Map().end()) {
+//						if (operationI->second.isString()) {
+//							actions.push_back(operationI->second.String());
+//						}
+//					}
+//				}
 			}
 		}
 	}
@@ -375,16 +381,7 @@ std::vector<std::string> EmberEntity::getActions()
 
 std::vector<std::string> EmberEntity::getDefaultUseOperators()
 {
-	//get the use operations from Eris and return them a simple vector of strings
-	std::vector<std::string> operators;
-
-	Eris::TypeInfoArray types = getUseOperations();
-
-	for (auto& type : types) {
-		operators.push_back(type->getName());
-	}
-
-	return operators;
+	return getActions();
 }
 
 void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const

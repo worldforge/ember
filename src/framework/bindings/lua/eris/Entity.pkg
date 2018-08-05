@@ -1,4 +1,5 @@
 $#include <Eris/Entity.h>
+$#include "Entity_helper.h"
 
 
 namespace Eris {
@@ -142,7 +143,9 @@ class Entity {
     sigc::signal<void, Eris::Task*> TaskAdded;
     sigc::signal<void, Eris::Task*> TaskRemoved;
 
-    const std::vector<Eris::Task*>& getTasks() const;
+    tolua_outside int _Entity_getTasksSize @ getTasksSize();
+    tolua_outside Eris::Task* _Entity_getTask @ getTask(std::string id);
+    tolua_outside Eris::Task* _Entity_getTaskFirst @ getTaskFirst();
 
 };
 }

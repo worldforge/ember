@@ -30,6 +30,7 @@
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/AvatarAttachmentController.h"
 #include "components/ogre/Scene.h"
+#include "components/ogre/World.h"
 
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
@@ -53,6 +54,8 @@
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
+
+#include <wfmath/atlasconv.h>
 
 #include <OgreRoot.h>
 
@@ -428,6 +431,29 @@ void Avatar::viewEntityDeleted() {
 	EventAvatarEntityDestroyed();
 }
 
+void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity& target, const WFMath::Point<3>& pos) {
+
+	Atlas::Objects::Operation::Use use;
+	use->setFrom(mErisAvatarEntity.getId());
+
+	Atlas::Objects::Entity::RootEntity entity;
+	entity->setId(tool.getId());
+
+	Atlas::Objects::Operation::RootOperation op;
+	op->setParent(operation);
+
+	Atlas::Objects::Entity::RootEntity target1;
+	target1->setId(target.getId());
+	if (pos.isValid()) {
+		target1->setPosAsList(Atlas::Message::Element(pos.toAtlas()).List());
+	}
+	op->setArgs1(target1);
+
+	use->setArgs({entity, op});
+
+	EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->send(use);
+
+}
 
 
 }

@@ -75,14 +75,7 @@
 				<Property name="InheritsAlpha" value="True" />
 				<Property name="TooltipText" value="Edit the entity." />
 			</Window>
-			<Window name="AttackButton" type="EmberLook/Button">
-				<Property name="Size" value="{{1.0,0.0},{0,20.0}}" />
-				<Property name="Position" value="{{0.0,0.0},{0.64,0.0}}" />
-				<Property name="Text" value="Attack" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="TooltipText" value="Attack the entity." />
-			</Window>
-			
+
 			<Window name="UseButton1" type="EmberLook/Button">
 				<Property name="Size" value="{{1.0,0.0},{0,20.0}}" />
 				<Property name="Position" value="{{0.0,0.0},{0.800000,0.0}}" />

@@ -49,6 +49,8 @@ class Avatar
 	 */
 	WFMath::Quaternion getClientSideAvatarOrientation() const;
 
+	void useTool(const Ember::EmberEntity& tool, const std::string& operation, const Ember::EmberEntity& target, const WFMath::Point<3>& pos);
+
 };
 }
 }

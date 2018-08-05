@@ -103,7 +103,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~Avatar();
+	~Avatar() override;
 
 	/**
 	 * @brief Gets the scene node which the avatar is attached to, if any.
@@ -198,10 +198,12 @@ public:
 	 */
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 
+	void useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity& target, const WFMath::Point<3>& pos);
+
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
