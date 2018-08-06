@@ -53,6 +53,9 @@ LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
 		mTransferEvent(nullptr)
 {
 	mAccount.AvatarSuccess.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarSuccess));
+	mAccount.AvatarFailure.connect([&](const std::string& message) {
+		ConsoleBackend::getSingleton().pushMessage(message, "error");
+	});
 	mAccount.GotCharacterInfo.connect(sigc::mem_fun(*this, &LoggedInState::gotCharacterInfo));
 	mAccount.GotAllCharacters.connect(sigc::mem_fun(*this, &LoggedInState::gotAllCharacters));
 	checkTransfer();
