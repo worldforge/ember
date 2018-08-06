@@ -22,16 +22,16 @@
 
 #include <CEGUI/Window.h>
 #include <CEGUI/WindowManager.h>
+#include <framework/Service.h>
+#include <services/EmberServices.h>
+#include <services/server/ServerService.h>
+#include <Eris/Account.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
-WorldLoadingScreen::WorldLoadingScreen()
-{
+WorldLoadingScreen::WorldLoadingScreen() {
 
 	/*
 	 * Get Everything setup
@@ -39,7 +39,6 @@ WorldLoadingScreen::WorldLoadingScreen()
 
 	// Black background with white text
 	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticText", "WorldLoadingScreen");
-//	mLoadingWindow->setProperty("BackgroundColours","tl:00AAAAAA tr:00AAAAAA bl:00AAAAAA br:00AAAAAA");
 	mLoadingWindow->setProperty("BackgroundColours", "FFFFFF");
 	mLoadingWindow->setProperty("TextColours", "FFFFFFFF");
 	mLoadingWindow->setProperty("BackgroundEnabled", "true");
@@ -49,18 +48,7 @@ WorldLoadingScreen::WorldLoadingScreen()
 	mLoadingWindow->setEnabled(true);
 	mLoadingWindow->setFont("DejaVuSans-14");
 	mLoadingWindow->setProperty("HorzFormatting", "CentreAligned");
-//	// Defaults for CEGUI
-//	mLoadingWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0.0f, 0.0f), CEGUI::UDim(0.0f, 0.0f)));
-//	mLoadingWindow->setSize(CEGUI::USize(CEGUI::UDim(1.0f, 0), CEGUI::UDim(1.0f, 0)));
 	mLoadingWindow->setText("Entering world, please wait...");
-
-	// Same EmberLook feel as a window
-//	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/FrameWindow", "WorldLoadingScreen");
-//	mLoadingWindow->setAlwaysOnTop(true);
-//	mLoadingWindow->setEnabled(true);
-//	mLoadingWindow->setPosition( CEGUI::UVector2( CEGUI::UDim( 0.0f, 0.0f ), CEGUI::UDim( 0.0f, 0.0f ) ) );
-//	mLoadingWindow->setSize( CEGUI::USize( CEGUI::UDim( 1.0f, 0 ), CEGUI::UDim( 1.0f, 0 ) ) );
-//	mLoadingWindow->setText("Loading world, please wait ...");
 
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::hide(sigc::mem_fun(*this, &Ember::OgreView::Gui::WorldLoadingScreen::hideScreen)));
 	//A failsafe if something went wrong and the avatar never was created.
@@ -70,18 +58,26 @@ WorldLoadingScreen::WorldLoadingScreen()
 
 }
 
-WorldLoadingScreen::~WorldLoadingScreen()
-{
+WorldLoadingScreen::~WorldLoadingScreen() {
 	CEGUI::WindowManager::getSingleton().destroyWindow(mLoadingWindow);
 }
 
-CEGUI::Window& WorldLoadingScreen::getWindow()
-{
+CEGUI::Window& WorldLoadingScreen::getWindow() {
 	return *mLoadingWindow;
 }
 
-void WorldLoadingScreen::showScreen()
-{
+void WorldLoadingScreen::showScreen() {
+	//Allow ESC to remove the screen.
+	Input::getSingleton().EventKeyReleased.connect([&](const SDL_Keysym& keysym, Input::InputMode) {
+		if (keysym.sym == SDLK_ESCAPE) {
+			hideScreen();
+		}
+	});
+
+	auto account = Ember::EmberServices::getSingleton().getServerService().getAccount();
+	if (account) {
+		account->AvatarFailure.connect(sigc::hide(sigc::mem_fun(*this, &Ember::OgreView::Gui::WorldLoadingScreen::hideScreen)));
+	}
 	if (!mLoadingWindow->getParent()) {
 		/*
 		 * Add to the main sheet.  This is "turning on" the load screen
@@ -90,8 +86,7 @@ void WorldLoadingScreen::showScreen()
 	}
 }
 
-void WorldLoadingScreen::hideScreen()
-{
+void WorldLoadingScreen::hideScreen() {
 	if (mLoadingWindow->getParent()) {
 		/*
 		 * Remove from the main sheet.  This is "turning off" the load screen
