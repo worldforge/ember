@@ -132,7 +132,7 @@ void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot
 			arguments->setAttr("outfit", outfitSlot);
 		}
 		Atlas::Objects::Operation::Wield wield;
-		wield->setFrom(mAvatar.getEntity()->getId());
+		wield->setFrom(mAvatar.getId());
 		wield->setArgs1(arguments);
 
 		mConnection.send(wield);
@@ -177,7 +177,7 @@ void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action) 
 		actuateOp->setObjtype("op");
 		actuateOp->setArgs1(actionOp);
 		actuateOp->setParent("actuate");
-		actuateOp->setFrom(mAvatar.getEntity()->getId());
+		actuateOp->setFrom(mAvatar.getId());
 
 		S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");
 		mConnection.send(actuateOp);
@@ -192,7 +192,7 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity) {
 		what->setId(entity->getId());
 
 		Atlas::Objects::Operation::Delete deleteOp;
-		deleteOp->setFrom(mAvatar.getEntity()->getId());
+		deleteOp->setFrom(mAvatar.getId());
 		deleteOp->setTo(entity->getId());
 		deleteOp->setArgs1(what);
 		deleteOp->setSerialno(Eris::getNewSerialno());
@@ -239,7 +239,7 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 			moveArgs->setId(entity->getId());
 
 			Atlas::Objects::Operation::Move moveOp;
-			moveOp->setFrom(mAvatar.getEntity()->getId());
+			moveOp->setFrom(mAvatar.getId());
 			moveOp->setArgs1(moveArgs);
 
 			moveOp->setSerialno(Eris::getNewSerialno());
@@ -258,8 +258,8 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 
 		if (areAttributesToSend) {
 			Atlas::Objects::Operation::Set setOp;
-			setOp->setFrom(mAvatar.getEntity()->getId());
-			if (entity->getId() == mAvatar.getEntity()->getId()) {
+			setOp->setFrom(mAvatar.getId());
+			if (entity->getId() != mAvatar.getId()) {
 				setOp->setTo(entity->getId());
 			}
 			setOp->setArgs1(what);
@@ -289,7 +289,7 @@ void ConnectedAdapter::eat(Eris::Entity* entity) {
 
 		Atlas::Objects::Operation::Generic op;
 		op->setType("eat", -1);
-		op->setFrom(mAvatar.getEntity()->getId());
+		op->setFrom(mAvatar.getId());
 		op->setArgs1(what);
 
 		S_LOG_INFO("Eating entity with id " << entity->getId() << ", named " << entity->getName());
@@ -357,7 +357,7 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 		talk->setArgs1(what);
 
 		Atlas::Objects::Operation::Sound sound;
-		sound->setFrom(mAvatar.getEntity()->getId());
+		sound->setFrom(mAvatar.getId());
 		sound->setTo(entityId);
 		sound->setArgs1(talk);
 
