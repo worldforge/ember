@@ -266,6 +266,8 @@ protected:
 	 */
 	void entityMoved();
 
+	Atlas::Objects::Operation::RootOperation extractRelayResponse(const Atlas::Objects::Operation::RootOperation& relayResponse);
+
 };
 
 }

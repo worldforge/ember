@@ -52,6 +52,7 @@
 #include <wfmath/atlasconv.h>
 
 #include <Eris/Account.h>
+#include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 #include <Eris/Response.h>
 #include <Eris/View.h>
@@ -417,31 +418,46 @@ void EntityEditor::getGoals()
 
 void EntityEditor::getPath()
 {
-	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+	//Send to first mind for now
+	auto mindsAttr = mEntity.ptrOfAttr("_minds");
+	if (mindsAttr && mindsAttr->isList() && !mindsAttr->List().empty()) {
+		if (mindsAttr->List().front().isString()) {
 
-	Atlas::Objects::Operation::RootOperation thinkOp;
-	thinkOp->setParent("think");
-	thinkOp->setTo(mEntity.getId());
+			auto mindId = mindsAttr->List().front().String();
 
-	Atlas::Objects::Operation::Get getOp;
-	Atlas::Objects::Entity::Anonymous get_args;
-	get_args->setAttr("path", Atlas::Message::MapType());
-	getOp->setArgs1(get_args);
 
-	thinkOp->setArgs1(getOp);
+			Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
-	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
-	//By setting a serial number we tell the server to "relay" the operation. This means that any
-	//response operation from the target entity will be sent back to us.
-	thinkOp->setSerialno(Eris::getNewSerialno());
+			Atlas::Objects::Operation::RootOperation relayOp;
+			relayOp->setParent("relay");
+			relayOp->setTo(mEntity.getId());
+			relayOp->setId(mindId);
 
-	Eris::Connection* connection = account->getConnection();
+			Atlas::Objects::Operation::RootOperation thinkOp;
+			thinkOp->setParent("think");
+			thinkOp->setTo(mEntity.getId());
 
-	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetPathResult);
-	connection->send(thinkOp);
-	S_LOG_VERBOSE("Asking for entity path.");
+			Atlas::Objects::Operation::Get getOp;
+			Atlas::Objects::Entity::Anonymous get_args;
+			get_args->setAttr("path", Atlas::Message::MapType());
+			getOp->setArgs1(get_args);
+
+			thinkOp->setArgs1(getOp);
+
+			relayOp->setFrom(mWorld.getView().getAvatar()->getId());
+
+			//By setting a serial number we tell the server to "relay" the operation. This means that any
+			//response operation from the target entity will be sent back to us.
+			relayOp->setSerialno(Eris::getNewSerialno());
+			relayOp->setArgs1(thinkOp);
+
+			Eris::Connection* connection = account->getConnection();
+
+			connection->getResponder()->await(relayOp->getSerialno(), this, &EntityEditor::operationGetPathResult);
+			connection->send(relayOp);
+			S_LOG_VERBOSE("Asking for entity path.");
+		}
+	}
 }
 
 void EntityEditor::getThoughts()
@@ -471,117 +487,106 @@ void EntityEditor::getThoughts()
 
 void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::RootOperation& op)
 {
-	//What we receive here has been relayed from the mind of the entity. That means that this op
-	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
-	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
-	//very carefully.
+	auto relayedOp = extractRelayResponse(op);
+	if (relayedOp) {
 
-	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
-		//An empty root operation signals a timeout; we never got any answer from the entity.
-		return;
-	}
-
-	//We'll be getting back a Think op, which wraps a Set op, where the arguments are the thoughts.
-	if (op->getParent() != "think") {
-		S_LOG_WARNING("Got think operation with wrong type set.");
-		return;
-	}
-
-	if (op->getArgs().empty()) {
-		S_LOG_WARNING("Got Thought op without any arguments.");
-		return;
-	}
-
-	auto innerOp = op->getArgs().front();
-	if (innerOp->getClassNo() != Atlas::Objects::Operation::SET_NO) {
-		S_LOG_WARNING("Get Thought op with inner op that wasn't Set.");
-	}
-
-	auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(innerOp);
-
-	if (!setOp->getArgs().empty()) {
-		auto thoughts = setOp->getArgsAsList();
-		for (const auto& thought : thoughts) {
-			EventGotGoal(thought);
+		//We'll be getting back a Think op, which wraps a Set op, where the arguments are the thoughts.
+		if (relayedOp->getParent() != "think") {
+			S_LOG_WARNING("Got think operation with wrong type set.");
+			return;
 		}
-	} else {
-		EventGotEmptyGoals();
+
+		if (relayedOp->getArgs().empty()) {
+			S_LOG_WARNING("Got Thought op without any arguments.");
+			return;
+		}
+
+		auto innerOp = relayedOp->getArgs().front();
+		if (innerOp->getClassNo() != Atlas::Objects::Operation::SET_NO) {
+			S_LOG_WARNING("Get Thought op with inner op that wasn't Set.");
+		}
+
+		auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(innerOp);
+
+		if (!setOp->getArgs().empty()) {
+			auto thoughts = setOp->getArgsAsList();
+			for (const auto& thought : thoughts) {
+				EventGotGoal(thought);
+			}
+		} else {
+			EventGotEmptyGoals();
+		}
 	}
 }
 
 void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootOperation& op)
 {
-	//What we receive here has been relayed from the mind of the entity. That means that this op
-	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
-	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
-	//very carefully.
+	//What we receive here has been relayed from the mind of the entity.
 
-	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
-		S_LOG_WARNING("Got timeout when asking for path.");
-		//An empty root operation signals a timeout; we never got any answer from the entity.
-		return;
-	}
+	auto relayedOp = extractRelayResponse(op);
+	if (relayedOp) {
+		//We'll be getting back a Relay op, which wraps a Think op, which wraps an anonymous op, where the arguments is the path.
 
-	//We'll be getting back a Think op, which wraps an anonymous op, where the arguments is the path.
-	if (op->getParent() != "think") {
-		S_LOG_WARNING("Got think operation with wrong type set: " << op);
-		return;
-	}
+		if (relayedOp->getParent() != "think") {
+			S_LOG_WARNING("Got think operation with wrong type set: " << op);
+			return;
+		}
 
-	if (op->getArgs().empty()) {
-		S_LOG_WARNING("Got Thought op without any arguments: " << op);
-		return;
-	}
+		if (relayedOp->getArgs().empty()) {
+			S_LOG_WARNING("Got Thought op without any arguments: " << op);
+			return;
+		}
 
-	auto innerOp = op->getArgs().front();
-	if (innerOp->getClassNo() != Atlas::Objects::Entity::ANONYMOUS_NO) {
-		S_LOG_WARNING("Get Thought op with inner entity that wasn't anonymous: " << op);
-		return;
-	}
+		auto innerOp = relayedOp->getArgs().front();
+		if (innerOp->getClassNo() != Atlas::Objects::Entity::ANONYMOUS_NO) {
+			S_LOG_WARNING("Get Thought op with inner entity that wasn't anonymous: " << op);
+			return;
+		}
 
-	Atlas::Objects::Entity::Anonymous pathEntity = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::Anonymous>(innerOp);
+		Atlas::Objects::Entity::Anonymous pathEntity = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::Anonymous>(innerOp);
 
-	if (!mPathPolygon) {
-		mPathPolygon = new Authoring::Polygon(mWorld.getSceneManager().getRootSceneNode(), nullptr, false);
-	}
+		if (!mPathPolygon) {
+			mPathPolygon = new Authoring::Polygon(mWorld.getSceneManager().getRootSceneNode(), nullptr, false);
+		}
 
-	mPathPolygon->clear();
+		mPathPolygon->clear();
 
-	std::vector<WFMath::Point<3>> points;
-	WFMath::Polygon<2> poly;
-	Element pathElem;
-	if (pathEntity->copyAttr("path", pathElem) == 0) {
-		mHasPath = true;
-		if (pathElem.isList()) {
-			const auto& path = pathElem.List();
-			S_LOG_VERBOSE("Got path info from entity with length of " << path.size());
-			if (!path.empty()) {
-				//Put one point at the entity itself.
-				auto polygonPoint = mPathPolygon->appendPoint();
-				polygonPoint->setLocalPosition(mEntity.getPredictedPos());
-				//Don't show the ball since it will be over the entity itself.
-				polygonPoint->setVisible(false);
+		std::vector<WFMath::Point<3>> points;
+		WFMath::Polygon<2> poly;
+		Element pathElem;
+		if (pathEntity->copyAttr("path", pathElem) == 0) {
+			mHasPath = true;
+			if (pathElem.isList()) {
+				const auto& path = pathElem.List();
+				S_LOG_VERBOSE("Got path info from entity with length of " << path.size());
+				if (!path.empty()) {
+					//Put one point at the entity itself.
+					auto polygonPoint = mPathPolygon->appendPoint();
+					polygonPoint->setLocalPosition(mEntity.getPredictedPos());
+					//Don't show the ball since it will be over the entity itself.
+					polygonPoint->setVisible(false);
 
-				for (auto pathPoint : path) {
-					if (pathPoint.isList()) {
-						auto& list = pathPoint.List();
-						if (list.size() == 3) {
-							if (list[0].isFloat() && list[1].isFloat() && list[2].isFloat()) {
-								WFMath::Point<3> point(list[0].Float(), list[1].Float(), list[2].Float());
-								mPathPolygon->appendPoint()->setLocalPosition(point);
+					for (auto pathPoint : path) {
+						if (pathPoint.isList()) {
+							auto& list = pathPoint.List();
+							if (list.size() == 3) {
+								if (list[0].isFloat() && list[1].isFloat() && list[2].isFloat()) {
+									WFMath::Point<3> point(list[0].Float(), list[1].Float(), list[2].Float());
+									mPathPolygon->appendPoint()->setLocalPosition(point);
+								}
 							}
 						}
 					}
-				}
 
+				}
+			} else {
+				S_LOG_WARNING("Response to path request had 'path' property which wasn't a list: " << op);
 			}
 		} else {
-			S_LOG_WARNING("Response to path request had 'path' property which wasn't a list: " << op);
+			S_LOG_WARNING("Response to path request contained no 'path' property: " << op);
 		}
-	} else {
-		S_LOG_WARNING("Response to path request contained no 'path' property: " << op);
+		mPathPolygon->updateRender();
 	}
-	mPathPolygon->updateRender();
 }
 
 
@@ -601,41 +606,35 @@ void EntityEditor::entityMoved()
 
 void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op)
 {
-	//What we receive here has been relayed from the mind of the entity. That means that this op
-	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
-	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
-	//very carefully.
+	auto relayedOp = extractRelayResponse(op);
+	if (relayedOp) {
 
-	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
-		//An empty root operation signals a timeout; we never got any answer from the entity.
-		return;
-	}
-
-	//We'll be getting back a Think op, which wraps a Set op, where the arguments are the thoughts.
-	if (op->getParent() != "think") {
-		S_LOG_WARNING("Got think operation with wrong type set.");
-		return;
-	}
-
-	if (op->getArgs().empty()) {
-		S_LOG_WARNING("Got Thought op without any arguments.");
-		return;
-	}
-
-	auto innerOp = op->getArgs().front();
-	if (innerOp->getClassNo() != Atlas::Objects::Operation::SET_NO) {
-		S_LOG_WARNING("Get Thought op with inner op that wasn't Set.");
-	}
-
-	auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(innerOp);
-
-	if (!setOp->getArgs().empty()) {
-		auto thoughts = setOp->getArgsAsList();
-		for (const auto& thought : thoughts) {
-			EventGotThought(thought);
+		//We'll be getting back a Think op, which wraps a Set op, where the arguments are the thoughts.
+		if (op->getParent() != "think") {
+			S_LOG_WARNING("Got think operation with wrong type set.");
+			return;
 		}
-	} else {
-		S_LOG_VERBOSE("Got thought op without any thoughts.");
+
+		if (op->getArgs().empty()) {
+			S_LOG_WARNING("Got Thought op without any arguments.");
+			return;
+		}
+
+		auto innerOp = op->getArgs().front();
+		if (innerOp->getClassNo() != Atlas::Objects::Operation::SET_NO) {
+			S_LOG_WARNING("Get Thought op with inner op that wasn't Set.");
+		}
+
+		auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(innerOp);
+
+		if (!setOp->getArgs().empty()) {
+			auto thoughts = setOp->getArgsAsList();
+			for (const auto& thought : thoughts) {
+				EventGotThought(thought);
+			}
+		} else {
+			S_LOG_VERBOSE("Got thought op without any thoughts.");
+		}
 	}
 }
 
@@ -670,42 +669,36 @@ void EntityEditor::getGoalInfo(const std::string& definition)
 
 void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op)
 {
-	//What we receive here has been relayed from the mind of the entity. That means that this op
-	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
-	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
-	//very carefully.
+	auto relayedOp = extractRelayResponse(op);
+	if (relayedOp) {
 
-	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
-		//An empty root operation signals a timeout; we never got any answer from the entity.
-		return;
-	}
-
-	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
-	//"info" operation.
-	if (op->getParent() != "think") {
-		S_LOG_WARNING("Got goal info operation with wrong type.");
-		return;
-	}
-
-	if (op->getArgs().empty()) {
-		S_LOG_WARNING("Got Thought op without any arguments.");
-		return;
-	}
-
-	auto innerOp = op->getArgs().front();
-	if (innerOp->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
-		S_LOG_WARNING("Get Thought op with inner op that wasn't Info.");
-	}
-
-	auto infoOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Info>(innerOp);
-
-	if (!infoOp->getArgs().empty()) {
-		auto goalInfos = infoOp->getArgsAsList();
-		for (const auto& goalInfo : goalInfos) {
-			EventGotGoalInfo(goalInfo);
+		//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
+		//"info" operation.
+		if (op->getParent() != "think") {
+			S_LOG_WARNING("Got goal info operation with wrong type.");
+			return;
 		}
-	} else {
-		S_LOG_VERBOSE("Got goal info op without any goals.");
+
+		if (op->getArgs().empty()) {
+			S_LOG_WARNING("Got Thought op without any arguments.");
+			return;
+		}
+
+		auto innerOp = op->getArgs().front();
+		if (innerOp->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
+			S_LOG_WARNING("Get Thought op with inner op that wasn't Info.");
+		}
+
+		auto infoOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Info>(innerOp);
+
+		if (!infoOp->getArgs().empty()) {
+			auto goalInfos = infoOp->getArgsAsList();
+			for (const auto& goalInfo : goalInfos) {
+				EventGotGoalInfo(goalInfo);
+			}
+		} else {
+			S_LOG_VERBOSE("Got goal info op without any goals.");
+		}
 	}
 }
 
@@ -729,6 +722,22 @@ void EntityEditor::removeMarker()
 WFMath::Point<3> EntityEditor::createPoint(float x, float y, float z)
 {
 	return WFMath::Point<3>(x, y, z);
+}
+
+Atlas::Objects::Operation::RootOperation EntityEditor::extractRelayResponse(const Atlas::Objects::Operation::RootOperation& relayResponse) {
+	if (relayResponse->getParent() != "relay") {
+		S_LOG_WARNING("Got relay response which wasn't a relay: " << relayResponse);
+		return nullptr;
+	}
+
+	//If there are no arguments it means that the relay timed out.
+	if (relayResponse->getArgs().empty()) {
+		S_LOG_WARNING("Time out on relay: " << relayResponse);
+		return nullptr;
+	}
+
+	return Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(relayResponse->getArgs().front());
+
 }
 
 }
