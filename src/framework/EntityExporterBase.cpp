@@ -52,8 +52,19 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 	return integerId(lhs) < integerId(rhs);
 }
 
-EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& currentTimestamp) :
-		mAccountId(accountId), mAvatarId(avatarId), mCurrentTimestamp(currentTimestamp), mStats( { }), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false), mPreserveIds(false), mExportRules(false), mExportMinds(true)
+EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& mindId, const std::string& currentTimestamp) :
+		mAccountId(accountId),
+		mAvatarId(avatarId),
+		mMindId(mindId),
+		mCurrentTimestamp(currentTimestamp),
+		mStats( { }),
+		mComplete(false),
+		mCancelled(false),
+		mOutstandingGetRequestCounter(0),
+		mExportTransient(false),
+		mPreserveIds(false),
+		mExportRules(false),
+		mExportMinds(true)
 {
 }
 
@@ -320,7 +331,7 @@ void EntityExporterBase::requestThoughts(const std::string& entityId, const std:
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	think->setFrom(mAvatarId);
+	think->setFrom(mMindId);
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
 	think->setSerialno(newSerialNumber());

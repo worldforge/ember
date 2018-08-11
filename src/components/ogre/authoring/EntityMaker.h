@@ -27,6 +27,7 @@ namespace Eris
 class TypeInfo;
 class Connection;
 class Entity;
+class Avatar;
 }
 
 namespace Ember {
@@ -49,7 +50,7 @@ public:
 	 * @param avatarEntity The avatar entity.
 	 * @param connection The connection to the server.
 	 */
-	EntityMaker(Eris::Entity& avatarEntity, Eris::Connection& connection);
+	EntityMaker(Eris::Avatar& avatar, Eris::Connection& connection);
 
 	/**
 	 * @brief Dtor.
@@ -84,7 +85,7 @@ protected:
 	/**
 	 * @brief The avatar entity.
 	 */
-	Eris::Entity& mAvatarEntity;
+	Eris::Avatar& mAvatar;
 
 	/**
 	 * @brief The connection to the server.

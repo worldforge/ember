@@ -355,8 +355,8 @@ function EntityPicker:addAction(buttonWrapper, entityId, action)
     buttonWrapper.clickedHandler = function()
         local entity = self.world:getEmberEntity(entityId)
         if entity ~= nil then
-            emberServices:getServerService():actuate(entity, action)
-            guiManager:EmitEntityAction("actuate", entity)
+            self.world:getAvatar():useTool(entity, action)
+            guiManager:EmitEntityAction("use", entity)
         end
         self:removeMenu()
     end

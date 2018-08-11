@@ -42,7 +42,9 @@ namespace Ember
 {
 
 EntityExporter::EntityExporter(Eris::Account& account) :
-		EntityExporterBase(account.getId(), account.getActiveCharacters().begin()->second->getId(), getCurrentTime()), mAccount(account)
+		EntityExporterBase(account.getId(), account.getActiveCharacters().begin()->second->getEntityId(),
+				account.getActiveCharacters().begin()->second->getId(), getCurrentTime()),
+				mAccount(account)
 {
 }
 

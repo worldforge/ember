@@ -41,6 +41,7 @@
 namespace Eris
 {
 class Entity;
+class Avatar;
 }
 
 namespace Ember
@@ -98,12 +99,14 @@ public:
 	 * @param cameraSettings Camera settings.
 	 * @param terrainAdapter The terrain adapter needed for the third person camera.
 	 */
-	Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter);
+	Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter);
 
 	/**
 	 * @brief Dtor.
 	 */
 	~Avatar() override;
+
+	const std::string& getId() const;
 
 	/**
 	 * @brief Gets the scene node which the avatar is attached to, if any.
@@ -121,6 +124,8 @@ public:
 	 * @brief Call this when the avatar entity has moved in the world.
 	 */
 	void movedInWorld();
+
+	Eris::Avatar* getErisAvatar() const;
 
 	/**
 	 * @brief Accessor for the Eris::Entity which represents the Avatar.
@@ -198,7 +203,7 @@ public:
 	 */
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 
-	void useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity& target, const WFMath::Point<3>& pos);
+	void useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
 
 	/**
 	 * @copydoc ConsoleObject::runCommand
@@ -218,6 +223,8 @@ protected:
 	 * @brief In milliseconds, the minimum time we must wait between sending updates to the server. Set this higher to avoid spamming the server.
 	 */
 	Ogre::Real mMinIntervalOfRotationChanges;
+
+	Eris::Avatar* mErisAvatar;
 
 	/**
 	 * @brief The Eris::Entity which represents the Avatar.
@@ -379,6 +386,11 @@ protected:
 inline bool Avatar::isAdmin() const
 {
 	return mIsAdmin;
+}
+
+inline Eris::Avatar* Avatar::getErisAvatar() const
+{
+	return mErisAvatar;
 }
 
 }

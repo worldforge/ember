@@ -291,7 +291,7 @@ void EntityEditor::addGoal(const std::string& definition)
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getId());
 
 	Eris::Connection* connection = account->getConnection();
 
@@ -315,7 +315,7 @@ void EntityEditor::updateGoal(const std::string& replaceDefinition, const std::s
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getId());
 
 	Eris::Connection* connection = account->getConnection();
 
@@ -338,7 +338,7 @@ void EntityEditor::removeGoal(const std::string& definition)
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getId());
 
 	Eris::Connection* connection = account->getConnection();
 
@@ -363,7 +363,7 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getId());
 
 	Eris::Connection* connection = account->getConnection();
 
@@ -404,7 +404,7 @@ void EntityEditor::getGoals()
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getId());
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
 	thinkOp->setSerialno(Eris::getNewSerialno());
@@ -473,7 +473,7 @@ void EntityEditor::getThoughts()
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getId());
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
 	thinkOp->setSerialno(Eris::getNewSerialno());
@@ -656,7 +656,7 @@ void EntityEditor::getGoalInfo(const std::string& definition)
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getId());
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
 	thinkOp->setSerialno(Eris::getNewSerialno());

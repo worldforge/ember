@@ -188,12 +188,11 @@ void EntityCreatorCreationInstance::finalizeCreation()
 
 	// Making create operation message
 	Atlas::Objects::Operation::Create c;
-	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
-	c->setFrom(avatar.getId());
+	c->setFrom(mWorld.getAvatar()->getId());
 	//if the avatar is a "creator", i.e. and admin, we will set the TO property
 	//this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (avatar.getType()->isA(mTypeService.getTypeByName("creator"))) {
-		c->setTo(avatar.getId());
+	if (mWorld.getAvatar()->isAdmin()) {
+		c->setTo(mWorld.getAvatar()->getEmberEntity().getId());
 	}
 
 	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage));

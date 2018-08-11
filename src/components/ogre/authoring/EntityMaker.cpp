@@ -40,11 +40,11 @@ namespace Ember {
 namespace OgreView {
 namespace Authoring {
 
-EntityMaker::EntityMaker(Eris::Entity& avatarEntity, Eris::Connection& connection) :
+EntityMaker::EntityMaker(Eris::Avatar& avatar, Eris::Connection& connection) :
 		CreateEntity("createentity", this, "Create an entity."),
 		Make("make", this, "Create an entity."),
 		MakeMe("makeme", this, "Create an entity as a child of the avatar (i.e. in inventory)."),
-		mAvatarEntity(avatarEntity),
+		mAvatar(avatar),
 		mConnection(connection) {
 }
 
@@ -56,9 +56,9 @@ void EntityMaker::runCommand(const std::string& command, const std::string& args
 			Eris::TypeService* typeService = mConnection.getTypeService();
 			Eris::TypeInfo* typeinfo = typeService->getTypeByName(typeName);
 			if (typeinfo) {
-				std::string parentEntityId = mAvatarEntity.getLocation()->getId();
+				std::string parentEntityId = mAvatar.getEntity()->getLocation()->getId();
 				if (MakeMe == command) {
-					parentEntityId = mAvatarEntity.getId();
+					parentEntityId = mAvatar.getEntity()->getId();
 				} else {
 					if (tokeniser.hasRemainingTokens()) {
 						parentEntityId = tokeniser.nextToken();
@@ -72,11 +72,11 @@ void EntityMaker::runCommand(const std::string& command, const std::string& args
 
 void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& parentEntityId, const std::string& name) {
 	Atlas::Objects::Operation::Create c;
-	c->setFrom(mAvatarEntity.getId());
+	c->setFrom(mAvatar.getId());
 	//if the avatar is a "creator", i.e. and admin, we will set the TO property
 	//this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (mAvatarEntity.getType()->isA(mConnection.getTypeService()->getTypeByName("creator"))) {
-		c->setTo(mAvatarEntity.getId());
+	if (mAvatar.getIsAdmin()) {
+		c->setTo(mAvatar.getEntityId());
 	}
 
 	Atlas::Message::MapType msg;
@@ -86,17 +86,17 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	WFMath::Quaternion orientation = WFMath::Quaternion::Identity();
 
 	//Only place it if we're creating the new entity in the same location as the avatar
-	if (parentEntityId == mAvatarEntity.getLocation()->getId()) {
+	if (parentEntityId == mAvatar.getEntity()->getLocation()->getId()) {
 		//Place the new entity two meters in front of the avatar.
 		WFMath::Vector<3> vector(0, 0, 2);
 
 		//We need to constraint the orientation to only around the y axis.
 		WFMath::Vector<3> rotator(0.0, 0.0, 1.0f);
-		rotator.rotate(mAvatarEntity.getOrientation());
+		rotator.rotate(mAvatar.getEntity()->getOrientation());
 		auto atan = std::atan2(rotator.x(), rotator.z());
 		orientation.rotation(1, atan);
 
-		pos = mAvatarEntity.getPosition() + (vector.rotate(orientation));
+		pos = mAvatar.getEntity()->getPosition() + (vector.rotate(orientation));
 	}
 
 	msg["pos"] = pos.toAtlas();

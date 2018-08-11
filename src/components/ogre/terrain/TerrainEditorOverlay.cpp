@@ -37,6 +37,7 @@
 #include "services/server/ServerService.h"
 
 #include <Eris/Connection.h>
+#include <Eris/Avatar.h>
 #include <Mercator/Terrain.h>
 
 #include <OgreSceneManager.h>
@@ -548,7 +549,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 
 		Atlas::Message::ListType sargsList(1, sarg);
 		s->setArgsAsList(sargsList);
-		s->setFrom(EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity().getId());
+		s->setFrom(EmberOgre::getSingleton().getWorld()->getAvatar()->getErisAvatar()->getId());
 
 		EmberServices::getSingleton().getServerService().getConnection()->send(s);
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");

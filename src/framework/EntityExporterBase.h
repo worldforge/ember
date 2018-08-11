@@ -148,7 +148,7 @@ public:
 	 * @param avatarId The id of the avatar.
 	 * @param currentTimestamp The current time as a string representation of a unix timestamp.
 	 */
-	explicit EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& currentTimestamp);
+	explicit EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& mindId, const std::string& currentTimestamp);
 
 	/**
 	 * @brief Dtor.
@@ -266,6 +266,8 @@ protected:
 	 * @brief The id of the avatar.
 	 */
 	const std::string mAvatarId;
+
+	const std::string mMindId;
 
 	/**
 	 * @brief The current unix timestamp.

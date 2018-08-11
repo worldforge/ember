@@ -68,8 +68,9 @@ namespace Ember
 namespace OgreView
 {
 
-Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
+Avatar::Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
 	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
+	mErisAvatar(erisAvatar),
 	mErisAvatarEntity(erisAvatarEntity),
 	mAvatarAttachmentController(new AvatarAttachmentController(*this)),
 	mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene, terrainAdapter)),
@@ -78,7 +79,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 	mChatLoggerParent(nullptr),
 	mIsMovingServerOnly(false),
 	mScene(scene),
-	mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
+	mEntityMaker(new Authoring::EntityMaker(*erisAvatar, *EmberServices::getSingleton().getServerService().getConnection()))
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
@@ -282,6 +283,12 @@ Ogre::Node* Avatar::getAvatarSceneNode() const
 	return nullptr;
 }
 
+const std::string& Avatar::getId() const
+{
+	return mErisAvatar->getId();
+}
+
+
 Scene& Avatar::getScene() const
 {
 	return mScene;
@@ -431,10 +438,10 @@ void Avatar::viewEntityDeleted() {
 	EventAvatarEntityDestroyed();
 }
 
-void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity& target, const WFMath::Point<3>& pos) {
+void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity* target, const WFMath::Point<3>& pos) {
 
 	Atlas::Objects::Operation::Use use;
-	use->setFrom(mErisAvatarEntity.getId());
+	use->setFrom(mErisAvatar->getId());
 
 	Atlas::Objects::Entity::RootEntity entity;
 	entity->setId(tool.getId());
@@ -442,12 +449,14 @@ void Avatar::useTool(const EmberEntity& tool, const std::string& operation, cons
 	Atlas::Objects::Operation::RootOperation op;
 	op->setParent(operation);
 
-	Atlas::Objects::Entity::RootEntity target1;
-	target1->setId(target.getId());
-	if (pos.isValid()) {
-		target1->setPosAsList(Atlas::Message::Element(pos.toAtlas()).List());
+	if (target) {
+		Atlas::Objects::Entity::RootEntity target1;
+		target1->setId(target->getId());
+		if (pos.isValid()) {
+			target1->setPosAsList(Atlas::Message::Element(pos.toAtlas()).List());
+		}
+		op->setArgs1(target1);
 	}
-	op->setArgs1(target1);
 
 	use->setArgs({entity, op});
 
