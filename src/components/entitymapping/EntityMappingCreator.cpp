@@ -28,7 +28,7 @@
 #include "EntityMapping.h"
 #include "EntityMappingManager.h"
 
-#include "Cases/OutfitCase.h"
+#include "components/entitymapping/Cases/EntityRefCase.h"
 #include "Cases/AttributeCase.h"
 
 #include "Cases/AttributeComparers/HeightComparerWrapper.h"
@@ -101,7 +101,7 @@ EntityMapping* EntityMappingCreator::createMapping() {
 void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, MatchDefinition& matchDefinition) {
 
 	for (auto& aCase : matchDefinition.getCases()) {
-		EntityTypeCase* entityCase = new EntityTypeCase();
+		auto* entityCase = new EntityTypeCase();
 
 		for (auto& paramEntry : aCase.getCaseParameters()) {
 			if (paramEntry.first == "equals") {
@@ -119,22 +119,22 @@ void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, 
 	}
 }
 
-void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addEntityRefCases(EntityRefMatch* match, MatchDefinition& matchDefinition) {
 	for (auto& aCase : matchDefinition.getCases()) {
-		OutfitCase* outfitCase = new OutfitCase();
+		auto* entityRefCase = new EntityRefCase();
 
 		for (auto& paramEntry : aCase.getCaseParameters()) {
 			if (paramEntry.first == "equals") {
-				outfitCase->addEntityType(mTypeService.getTypeByName(paramEntry.second));
+				entityRefCase->addEntityType(mTypeService.getTypeByName(paramEntry.second));
 			}
 		}
-		mActionCreator.createActions(*mEntityMapping, outfitCase, aCase);
+		mActionCreator.createActions(*mEntityMapping, entityRefCase, aCase);
 
 		for (auto& aMatch : aCase.getMatches()) {
-			addMatch(outfitCase, aMatch);
+			addMatch(entityRefCase, aMatch);
 		}
-		match->addCase(outfitCase);
-		outfitCase->setParentMatch(match);
+		match->addCase(entityRefCase);
+		entityRefCase->setParentMatch(match);
 	}
 }
 
@@ -170,7 +170,8 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 	}
 
 	//If both a min and max value is set, it's a range comparer
-	AttributeComparers::NumericComparer* mMin(0), * mMax(0);
+	AttributeComparers::NumericComparer* mMin(nullptr);
+	AttributeComparers::NumericComparer* mMax(nullptr);
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesser"))) {
 		mMin = new AttributeComparers::NumericLesserComparer(std::stof(param->second));
 	} else if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesserequals"))) {
@@ -200,7 +201,7 @@ void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinit
 	for (auto& aCase : matchDefinition.getCases()) {
 		Cases::AttributeComparers::AttributeComparerWrapper* wrapper = getAttributeCaseComparer(match, matchDefinition, aCase);
 		if (wrapper) {
-			AttributeCase* attrCase = new AttributeCase(wrapper);
+			auto* attrCase = new AttributeCase(wrapper);
 
 			mActionCreator.createActions(*mEntityMapping, attrCase, aCase);
 
@@ -220,8 +221,8 @@ void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefin
 		addAttributeMatch(aCase, matchDefinition);
 	} else if (matchDefinition.getType() == "entitytype") {
 		addEntityTypeMatch(aCase, matchDefinition);
-	} else if (matchDefinition.getType() == "outfit") {
-		addOutfitMatch(aCase, matchDefinition);
+	} else if (matchDefinition.getType() == "entityref") {
+		addEntityRefCase(aCase, matchDefinition);
 	}
 }
 
@@ -236,8 +237,8 @@ void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& m
 		if (attributeName == "height") {
 
 			auto virtualMatch = new VirtualAttributeMatch(attributeName, {"bbox", "scale"});
-			virtualMatch->addMatchAttributeObserver(std::move(std::unique_ptr<MatchAttributeObserver>(new MatchAttributeObserver(virtualMatch, "bbox"))));
-			virtualMatch->addMatchAttributeObserver(std::move(std::unique_ptr<MatchAttributeObserver>(new MatchAttributeObserver(virtualMatch, "scale"))));
+			virtualMatch->addMatchAttributeObserver(std::unique_ptr<MatchAttributeObserver>(new MatchAttributeObserver(virtualMatch, "bbox")));
+			virtualMatch->addMatchAttributeObserver(std::unique_ptr<MatchAttributeObserver>(new MatchAttributeObserver(virtualMatch, "scale")));
 			match = virtualMatch;
 		}
 	} else {
@@ -253,7 +254,7 @@ void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& m
 }
 
 void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
-	EntityTypeMatch* match = new EntityTypeMatch();
+	auto* match = new EntityTypeMatch();
 	aCase->addMatch(match);
 	addEntityTypeCases(match, matchDefinition);
 
@@ -261,20 +262,20 @@ void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& 
 // 	match->testEntity(mEntity);
 }
 
-void EntityMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addEntityRefCase(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	if (mView) {
-		const std::string& attachmentName = matchDefinition.getProperties()["attachment"];
-		OutfitMatch* match = new OutfitMatch(attachmentName, mView);
+		const std::string& attributeName = matchDefinition.getProperties()["attribute"];
+		auto* match = new EntityRefMatch(attributeName, mView);
 		aCase->addMatch(match);
 
-		addOutfitCases(match, matchDefinition);
+		addEntityRefCases(match, matchDefinition);
 
 
 		//observe the attribute by the use of an MatchAttributeObserver
-		MatchAttributeObserver* observer = new MatchAttributeObserver(match, "outfit");
+		auto* observer = new MatchAttributeObserver(match, attributeName);
 		match->setMatchAttributeObserver(observer);
 
-		EntityCreationObserver* entityObserver = new EntityCreationObserver(*match);
+		auto* entityObserver = new EntityCreationObserver(*match);
 		match->setEntityCreationObserver(entityObserver);
 	}
 

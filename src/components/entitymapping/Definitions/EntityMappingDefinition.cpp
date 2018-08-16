@@ -32,8 +32,7 @@ namespace EntityMapping {
 
 namespace Definitions {
 
-EntityMappingDefinition::EntityMappingDefinition() {
-}
+EntityMappingDefinition::EntityMappingDefinition() = default;
 
 
 const std::string& EntityMappingDefinition::getName() const {

@@ -1,9 +1,3 @@
-//
-// C++ Implementation: OutfitMatch
-//
-// Description:
-//
-//
 // Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
@@ -24,63 +18,56 @@
 #include "config.h"
 #endif
 
-#include "OutfitMatch.h"
+#include "EntityRefMatch.h"
 #include "Observers/EntityCreationObserver.h"
 
 namespace Ember {
-
 
 
 namespace EntityMapping {
 
 namespace Matches {
 
-OutfitMatch::OutfitMatch(const std::string& outfitName, Eris::View* view)
-: mOutfitName(outfitName), mView(view), mEntityObserver(nullptr)
-{
+EntityRefMatch::EntityRefMatch(const std::string& attributeName, Eris::View* view)
+		: mAttributeName(attributeName),
+		  mView(view),
+		  mEntityObserver(nullptr) {
 }
 
-void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation)
-{
-	if (attribute.isMap()) {
-		Eris::Entity* entity(nullptr);
-		const auto& tmap = attribute.asMap();
-		auto I = tmap.find(mOutfitName);
-		std::string entityId;
-		if (I != tmap.end() && Eris::Entity::extractEntityId(I->second, entityId)) {
-			entity = mView->getEntity(entityId);
-			//the entity might not be available yet, so we need to create an observer for it
-			if (!entity) {
-				if (mEntityObserver) {
-					mEntityObserver->observeCreation(mView, entityId);
-				}
-			} else {
-				testEntity(entity);
+void EntityRefMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) {
+
+	auto entityId = Eris::Entity::extractEntityId(attribute);
+	if (entityId) {
+		auto entity = mView->getEntity(*entityId);
+		//the entity might not be available yet, so we need to create an observer for it
+		if (!entity) {
+			if (mEntityObserver) {
+				mEntityObserver->observeCreation(mView, *entityId);
 			}
 		} else {
 			testEntity(entity);
 		}
+	} else {
+		testEntity(nullptr);
 	}
+
 	if (triggerEvaluation) {
 		evaluateChanges();
 	}
 }
 
-void OutfitMatch::setEntity(Eris::Entity* entity)
-{
+void EntityRefMatch::setEntity(Eris::Entity* entity) {
 	//observe the attribute by the use of an MatchAttributeObserver
 	mMatchAttributeObserver->observeEntity(entity);
 }
 
-void OutfitMatch::setEntityCreationObserver(Observers::EntityCreationObserver* observer)
-{
+void EntityRefMatch::setEntityCreationObserver(Observers::EntityCreationObserver* observer) {
 	mEntityObserver.reset(observer);
 }
 
-void OutfitMatch::testEntity(Eris::Entity* entity)
-{
+void EntityRefMatch::testEntity(Eris::Entity* entity) {
 
-	AbstractMatch<Cases::OutfitCase>::setEntity(entity);
+	AbstractMatch<Cases::EntityRefCase>::setEntity(entity);
 
 	for (auto& aCase : mCases) {
 		aCase->testMatch(entity);
@@ -89,8 +76,7 @@ void OutfitMatch::testEntity(Eris::Entity* entity)
 
 }
 
-void OutfitMatch::setMatchAttributeObserver(Observers::MatchAttributeObserver* observer)
-{
+void EntityRefMatch::setMatchAttributeObserver(Observers::MatchAttributeObserver* observer) {
 	mMatchAttributeObserver.reset(observer);
 }
 

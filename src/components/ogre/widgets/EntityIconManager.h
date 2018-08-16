@@ -44,7 +44,7 @@ class EntityIcon;
 @author Erik Ogenvik <erik@ogenvik.org>
 @brief Handles and manages entity icons.
 
-An entity icon is an icon which is connected to an entity. The icons can be dragged and dropped onto slots (for example when creating a system for outfits, or an action bar.
+An entity icon is an icon which is connected to an entity. The icons can be dragged and dropped onto slots (for example when creating a system for attachments, or an action bar.
 This class is responsible for handling all of them in the UI, creating new and destroying old.
 You normally don't create instances of neither EntityIconSlot nor EntityIcon yourself, but use the create* and destroy* methods in this class instead.
 */

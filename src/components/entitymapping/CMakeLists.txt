@@ -7,17 +7,16 @@ add_library(entitymapping
         Cases/AttributeComparers/NumericEqualsOrGreaterComparer.cpp Cases/AttributeComparers/NumericEqualsOrLesserComparer.cpp
         Cases/AttributeComparers/NumericGreaterComparer.cpp Cases/AttributeComparers/NumericLesserComparer.cpp
         Cases/AttributeComparers/NumericRangeComparer.cpp Cases/AttributeComparers/NumericValueHolder.cpp
-        Cases/AttributeComparers/StringComparer.cpp Cases/AttributeComparers/StringComparerWrapper.cpp Cases/Case.cpp
-        Cases/CaseBase.cpp Cases/EntityBaseCase.cpp Cases/EntityTypeCase.cpp Cases/OutfitCase.cpp
+        Cases/AttributeComparers/StringComparer.cpp Cases/AttributeComparers/StringComparerWrapper.cpp
+        Cases/CaseBase.cpp Cases/EntityBaseCase.cpp Cases/EntityTypeCase.cpp Cases/EntityRefCase.cpp
 
         ChangeContext.cpp
 
         Definitions/ActionDefinition.cpp Definitions/CaseDefinition.cpp
         Definitions/DefinitionBase.cpp Definitions/MatchDefinition.cpp Definitions/EntityMappingDefinition.cpp
 
-        Matches/AbstractMatch.cpp
-        Matches/AttributeMatch.cpp Matches/EntityTypeMatch.cpp Matches/MatchBase.cpp
-        Matches/Observers/MatchAttributeObserver.cpp Matches/Observers/EntityCreationObserver.cpp Matches/OutfitMatch.cpp
+        Matches/AttributeMatch.cpp Matches/EntityTypeMatch.cpp
+        Matches/Observers/MatchAttributeObserver.cpp Matches/Observers/EntityCreationObserver.cpp Matches/EntityRefMatch.cpp
         EntityMapping.cpp EntityMappingCreator.cpp EntityMappingManager.cpp
         IActionCreator.h IVisitor.h Matches/VirtualAttributeMatch.cpp Matches/VirtualAttributeMatch.h Matches/SingleAttributeMatch.cpp Matches/SingleAttributeMatch.h)
 

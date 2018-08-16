@@ -77,7 +77,7 @@ EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IAction
 			auto mapping = new EntityMapping(entity);
 
 			auto attributeMatch = new Matches::SingleAttributeMatch("present");
-			Cases::AttributeCase* attributeCase = new Cases::AttributeCase(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
+			auto* attributeCase = new Cases::AttributeCase(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
 			Matches::Observers::MatchAttributeObserver* observer = new Matches::Observers::MatchAttributeObserver(attributeMatch, "present");
 			attributeMatch->setMatchAttributeObserver(observer);
 

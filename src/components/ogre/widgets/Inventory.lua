@@ -405,8 +405,8 @@ function Inventory:setupDoll(avatarEntity)
 	self.doll.handPrimary = self:createDollSlot("attached_hand_primary", self.doll.image:getChild("RightHand"), "Drop an entity here to attach it to the primary hand.", "")
 	self.doll.handPrimaryAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.handPrimary, "hand_primary")
 	
-	self.doll.torso = self:createDollSlot("attached_body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.", "body")
-	self.doll.torsoAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.torso, "body")
+	self.doll.torso = self:createDollSlot("attached_torso", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.", "torso")
+	self.doll.torsoAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.torso, "torso")
 	
 	self.doll.back = self:createDollSlot("attached_back", self.doll.image:getChild("Back"), "Drop an entity here to attach it to the back.", "back")
 	self.doll.backAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.back, "back")

@@ -225,9 +225,6 @@ void ModelRepresentation::model_Reloaded() {
 void ModelRepresentation::model_Resetting() {
 }
 
-void ModelRepresentation::processOutfit(const Atlas::Message::MapType&) {
-}
-
 void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds) {
 	for (const auto& attributeId : attributeIds) {
 		attrChanged(attributeId, mEntity.valueOfAttr(attributeId));

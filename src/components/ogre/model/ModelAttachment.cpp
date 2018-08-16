@@ -175,19 +175,19 @@ void ModelAttachment::updateScale() {
 }
 
 void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName) {
-	std::string newFittingEntityId;
-	if (Eris::Entity::extractEntityId(attributeValue, newFittingEntityId)) {
+	auto newFittingEntityId = Eris::Entity::extractEntityId(attributeValue);
+	if (newFittingEntityId) {
 		auto I = mFittings.find(fittingName);
 		if (I != mFittings.end()) {
 			EmberEntity* entity = I->second->getChild();
 			mFittings.erase(I);
 			//Check if we should detach the existing fitting
-			if (entity && entity->getId() != newFittingEntityId) {
+			if (entity && entity->getId() != *newFittingEntityId) {
 				detachFitting(*entity);
 			}
 		}
-		if (!newFittingEntityId.empty()) {
-			createFitting(fittingName, newFittingEntityId);
+		if (!newFittingEntityId->empty()) {
+			createFitting(fittingName, *newFittingEntityId);
 		}
 	}
 }

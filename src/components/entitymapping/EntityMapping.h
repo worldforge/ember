@@ -55,7 +55,7 @@ namespace Ember {
 namespace EntityMapping {
 
 namespace Cases {
-class OutfitCase;
+class EntityRefCase;
 
 class CaseBase;
 
@@ -77,7 +77,7 @@ class Match;
 
 class AttributeMatch;
 
-class OutfitMatch;
+class EntityRefMatch;
 
 namespace Observers {
 class MatchAttributeObserver;

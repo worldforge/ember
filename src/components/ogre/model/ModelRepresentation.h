@@ -287,12 +287,6 @@ protected:
 	 */
 	void connectEntities();
 
-	/**
-	 * @brief Processes the outfit map and updates the appearance.
-	 * @param outfitMap
-	 */
-	void processOutfit(const Atlas::Message::MapType & outfitMap);
-
 	void entity_Changed(const Eris::StringSet& attributeIds);
 
 	void entity_TaskAdded(Eris::Task* task);

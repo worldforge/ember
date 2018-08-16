@@ -1,9 +1,3 @@
-//
-// C++ Interface: OutfitMatch
-//
-// Description:
-//
-//
 // Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
@@ -20,12 +14,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.//
 //
-#ifndef EMBEROGRE_MODEL_MAPPING_MATCHESOUTFITMATCH_H
-#define EMBEROGRE_MODEL_MAPPING_MATCHESOUTFITMATCH_H
+#ifndef EMBEROGRE_MODEL_MAPPING_MATCHESENTITYREFMATCH_H
+#define EMBEROGRE_MODEL_MAPPING_MATCHESENTITYREFMATCH_H
 
 #include "AbstractMatch.h"
 #include "AttributeDependentMatch.h"
-#include "../Cases/OutfitCase.h"
+#include "components/entitymapping/Cases/EntityRefCase.h"
 #include <Eris/View.h>
 #include <Atlas/Message/Element.h>
 
@@ -42,19 +36,18 @@ class EntityCreationObserver;
 }
 
 /**
-	Watches for changes to a specific outfit point, such as "body" or "feet". Whenever an entity is outfitted or removed this will trigger.
-	@author Erik Ogenvik <erik@ogenvik.org>
-*/
-class OutfitMatch : public AbstractMatch<Cases::OutfitCase>, public AttributeDependentMatch
+ *	@brief Watches for changes to an attribute which points to another entity.
+ *  This is mainly used for attachments, such as "attached_hand_primary" or "attached_feet". Whenever an entity is outfitted or removed this will trigger.
+ *	@author Erik Ogenvik <erik@ogenvik.org>
+ */
+class EntityRefMatch : public AbstractMatch<Cases::EntityRefCase>, public AttributeDependentMatch
 {
 friend class Observers::EntityCreationObserver;
 public:
 
-	OutfitMatch(const std::string& outfitName, Eris::View* view);
+	EntityRefMatch(const std::string& attributeName, Eris::View* view);
 
 	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) override;
-
-	const std::string& getOutfitName();
 
 	void setEntity(Eris::Entity* entity) override;
 
@@ -67,17 +60,13 @@ public:
 protected:
 
 	void testEntity(Eris::Entity* entity);
-	std::string mOutfitName;
+	std::string mAttributeName;
 	Eris::View* mView;
 	std::unique_ptr<Observers::EntityCreationObserver> mEntityObserver;
 	std::unique_ptr<Observers::MatchAttributeObserver> mMatchAttributeObserver;
 
 };
 
-inline const std::string& OutfitMatch::getOutfitName()
-{
-	return mOutfitName;
-}
 
 }
 

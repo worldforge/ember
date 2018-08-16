@@ -1,9 +1,3 @@
-//
-// C++ Interface: OutfitCase
-//
-// Description:
-//
-//
 // Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
@@ -20,11 +14,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.//
 //
-#ifndef EMBEROGRE_MODEL_MAPPING_CASESOUTFITCASE_H
-#define EMBEROGRE_MODEL_MAPPING_CASESOUTFITCASE_H
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include "../Matches/OutfitMatch.h"
-#include "EntityBaseCase.h"
+#include "EntityRefCase.h"
 
 namespace Ember {
 
@@ -34,23 +28,14 @@ namespace EntityMapping {
 
 namespace Cases {
 
-/**
-	A case that is a child of an OutfitMatch.
-	@author Erik Ogenvik <erik@ogenvik.org>
-*/
-class OutfitCase : public Case<Matches::OutfitMatch>, public EntityBaseCase
+void EntityRefCase::_setState(bool state)
 {
-public:
-	OutfitCase() = default;;
-	~OutfitCase() override = default;;
-protected:
-	void _setState(bool state) override;
-};
+	setState(state);
+}
+
 
 }
 
 }
 
 }
-
-#endif

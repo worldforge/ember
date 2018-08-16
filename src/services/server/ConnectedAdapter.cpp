@@ -141,14 +141,14 @@ void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& attachPoin
 }
 
 void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation) {
-	try {
-		std::stringstream ss;
-		ss << pos;
-		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "' at position " << ss.str() << ".");
-		mAvatar.useOn(entity, pos, operation);
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Got error on using." << ex);
-	}
+//	try {
+//		std::stringstream ss;
+//		ss << pos;
+//		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "' at position " << ss.str() << ".");
+//		mAvatar.useOn(entity, pos, operation);
+//	} catch (const std::exception& ex) {
+//		S_LOG_WARNING("Got error on using." << ex);
+//	}
 }
 
 void ConnectedAdapter::useStop() {

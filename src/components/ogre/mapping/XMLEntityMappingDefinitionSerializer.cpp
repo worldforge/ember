@@ -64,9 +64,9 @@ void XMLEntityMappingDefinitionSerializer::parseMatchElement(EntityMappingDefini
 
 /*		const char* tmp =  smElem->Attribute("attribute");
 		matchDef.getProperties()["attribute"] = std::string(tmp);*/
-	} else if (element->ValueStr() == "outfitmatch") {
-		matchDef.setType("outfit");
-		caseType = "outfitcase";
+	} else if (element->ValueStr() == "entityrefmatch") {
+		matchDef.setType("entityref");
+		caseType = "entityrefcase";
 	}
 
 	for (TiXmlAttribute* attribute = element->FirstAttribute();

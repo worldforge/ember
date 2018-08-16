@@ -44,7 +44,7 @@ class EntityMappingDefinition;
 namespace Matches {
 class EntityTypeMatch;
 class AttributeMatch;
-class OutfitMatch;
+class EntityRefMatch;
 }
 namespace Cases {
 
@@ -54,7 +54,7 @@ namespace AttributeComparers {
 }
 
 class AttributeCase;
-class OutfitCase;
+class EntityRefCase;
 class CaseBase;
 }
 class EntityMapping;
@@ -108,11 +108,11 @@ protected:
 	void addAttributeCases(Matches::AttributeMatch* match, Definitions::MatchDefinition& matchDefinition);
 
 	/**
-	 * Adds OutfitCases to the supplied match.
+	 * Adds AttachmentCases to the supplied match.
 	 * @param match
 	 * @param matchDefinition
 	 */
-	void addOutfitCases(Matches::OutfitMatch* match, Definitions::MatchDefinition& matchDefinition);
+	void addEntityRefCases(Matches::EntityRefMatch* match, Definitions::MatchDefinition& matchDefinition);
 
 	/**
 	 * Adds matches to the supplied case.
@@ -136,11 +136,11 @@ protected:
 	void addEntityTypeMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
 
 	/**
-	 * Adds outfit matches to the supplied case.
+	 * Adds attachment matches to the supplied case.
 	 * @param aCase
 	 * @param matchDefinition
 	 */
-	void addOutfitMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
+	void addEntityRefCase(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
 
 	/**
 	 * Creates and returns a numeric comparer for the supplied case.

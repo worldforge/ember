@@ -1,9 +1,3 @@
-//
-// C++ Implementation: Case
-//
-// Description:
-//
-//
 // Author: Erik Ogenvik <erik@ogenvik.org>, (C) 2007
 //
 // This program is free software; you can redistribute it and/or modify
@@ -20,9 +14,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.//
 //
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#ifndef EMBEROGRE_MODEL_MAPPING_CASESENTITYREFCASE_H
+#define EMBEROGRE_MODEL_MAPPING_CASESENTITYREFCASE_H
+
+#include "components/entitymapping/Matches/EntityRefMatch.h"
+#include "EntityBaseCase.h"
 
 namespace Ember {
 
@@ -32,10 +28,23 @@ namespace EntityMapping {
 
 namespace Cases {
 
-
+/**
+	A case that is a child of an EntityRefMatch.
+	@author Erik Ogenvik <erik@ogenvik.org>
+*/
+class EntityRefCase : public Case<Matches::EntityRefMatch>, public EntityBaseCase
+{
+public:
+	EntityRefCase() = default;;
+	~EntityRefCase() override = default;;
+protected:
+	void _setState(bool state) override;
+};
 
 }
 
 }
 
 }
+
+#endif

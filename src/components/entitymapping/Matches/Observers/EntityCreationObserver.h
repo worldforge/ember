@@ -24,7 +24,7 @@
 #define EMBEROGRE_MODEL_MAPPING_MATCHES_OBSERVERSENTITYCREATIONOBSERVER_H
 
 #include <sigc++/trackable.h>
-#include "../OutfitMatch.h"
+#include "components/entitymapping/Matches/EntityRefMatch.h"
 #include "../../EntityMapping.h"
 #include <Eris/View.h>
 
@@ -46,14 +46,14 @@ class EntityCreationObserver : public virtual sigc::trackable
 {
 public:
 
-	explicit EntityCreationObserver(OutfitMatch& outfitMatch);
+	explicit EntityCreationObserver(EntityRefMatch& entityRefMatch);
 	~EntityCreationObserver();
 
 	void observeCreation(Eris::View* view, const std::string& entityId);
 
 protected:
 
-	OutfitMatch& mOutfitMatch;
+	EntityRefMatch& mEntityRefMatch;
 
 	Eris::View::EntitySightSlot mSlot;
 

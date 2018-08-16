@@ -65,7 +65,7 @@ public:
 
 	AbstractMatch() = default;
 
-	virtual ~AbstractMatch();
+	~AbstractMatch() override;
 
 	/**
 	* Adds a child case.
@@ -78,10 +78,10 @@ public:
 	*/
 	std::vector<TCase*>& getCases();
 
-	 /**
-	 Sets the Eris::Entity.
-	 */
-	virtual void setEntity(Eris::Entity* entity);
+	/**
+	Sets the Eris::Entity.
+	*/
+	void setEntity(Eris::Entity* entity) override;
 
 	/**
 	Evaluate all changes starting from this Match.
@@ -91,13 +91,13 @@ public:
 	/**
 	Evaluate all changes and add changed Cases to the supplied ChangeContext.
 	*/
-	virtual void evaluateChanges(ChangeContext& changeContext);
+	void evaluateChanges(ChangeContext& changeContext) override;
 
 	/**
 	 * @brief Accepts a visitor.
 	 * @param visitor The visitor instance.
 	 */
-	virtual void accept(IVisitor& visitor);
+	void accept(IVisitor& visitor) override;
 
 protected:
 	 std::vector<TCase*> mCases;

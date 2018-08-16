@@ -451,11 +451,11 @@ EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment)
 {
 	auto* attachmentElement = ptrOfAttr(attachment);
 	if (attachmentElement) {
-		std::string id;
-		if (Eris::Entity::extractEntityId(*attachmentElement, id)) {
+		auto id = Eris::Entity::extractEntityId(*attachmentElement);
+		if (id) {
 			for (unsigned int i = 0; i < numContained(); ++i) {
 				EmberEntity* entity = getEmberContained(i);
-				if (entity && entity->getId() == id) {
+				if (entity && entity->getId() == *id) {
 					return entity;
 				}
 			}

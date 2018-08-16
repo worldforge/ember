@@ -41,4 +41,15 @@ Eris::Task* _Entity_getTaskFirst(Eris::Entity* entity)
 	}
 	return nullptr;
 }
+
+bool _Entity_extractEntityId(const Atlas::Message::Element& element, std::string& id) {
+	auto extractedId = Eris::Entity::extractEntityId(element);
+	if (extractedId) {
+		id = *extractedId;
+		return true;
+	}
+	return false;
+}
+
+
 #endif //EMBER_ENTITY_HELPER_H

@@ -71,8 +71,8 @@ class Entity {
      * @param id The string where the id, if found, will be placed.
      * @return True if an id could be found.
      */
-    static bool extractEntityId(const Atlas::Message::Element& element, std::string& id);
-    
+    static tolua_outside bool _Entity_extractEntityId @ extractEntityId(const Atlas::Message::Element& element, std::string& id);
+
 	
 // Signals
     sigc::signal<void, Eris::Entity*> ChildAdded;
