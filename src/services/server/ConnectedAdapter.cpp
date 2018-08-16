@@ -116,7 +116,7 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 	}
 }
 
-void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot) {
+void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& attachPoint) {
 
 	try {
 
@@ -128,9 +128,7 @@ void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot
 
 		Atlas::Objects::Entity::Anonymous arguments;
 		arguments->setId(entity->getId());
-		if (!outfitSlot.empty()) {
-			arguments->setAttr("outfit", outfitSlot);
-		}
+		arguments->setAttr("attachment", attachPoint);
 		Atlas::Objects::Operation::Wield wield;
 		wield->setFrom(mAvatar.getId());
 		wield->setArgs1(arguments);

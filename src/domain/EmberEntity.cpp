@@ -447,13 +447,12 @@ IEntityAttachment* EmberEntity::getAttachment() const
 	return mAttachment;
 }
 
-EmberEntity* EmberEntity::getAttachedEntity(const std::string& namedPoint)
+EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment)
 {
-	//HACK: this is just a temporary solution
-	if (hasAttr(namedPoint)) {
-		const Atlas::Message::Element& idElement = valueOfAttr(namedPoint);
+	auto* attachmentElement = ptrOfAttr(attachment);
+	if (attachmentElement) {
 		std::string id;
-		if (Eris::Entity::extractEntityId(idElement, id)) {
+		if (Eris::Entity::extractEntityId(*attachmentElement, id)) {
 			for (unsigned int i = 0; i < numContained(); ++i) {
 				EmberEntity* entity = getEmberContained(i);
 				if (entity && entity->getId() == id) {

@@ -77,7 +77,7 @@ class ServerService
 	void emote(const std::string& emote);
 	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>(0,0,0), const WFMath::Quaternion& orientation = WFMath::Quaternion());
 	void place(Eris::Entity* entity, Eris::Entity* target);
-	void wield(Eris::Entity* entity, const std::string& outfitSlot = "");
+	void wield(Eris::Entity* entity, const std::string& attachment = "");
 	void take(Eris::Entity* entity);
 	/**
 	 *    Uses the currently wielded entity on the supplied entity.

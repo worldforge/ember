@@ -316,7 +316,7 @@ function EntityPicker:checkUse(entity)
     end
 
     --then fill up with operations that can be performed with the currently wielded entity
-    local wieldedEntity = self.world:getAvatar():getEmberEntity():getAttachedEntity("right_hand_wield")
+    local wieldedEntity = self.world:getAvatar():getEmberEntity():getAttachedEntity("attached_hand_primary")
     if wieldedEntity then
         currentButtonIndex = currentButtonIndex + 1
         local operatorList = wieldedEntity:getDefaultUseOperators();

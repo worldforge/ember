@@ -114,16 +114,10 @@ bool EntityTooltip::tooltip_TextChanged(const CEGUI::EventArgs &e)
 std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity)
 {
 	std::stringstream ss;
-	if (entity.getName() != "") {
+	if (!entity.getName().empty()) {
 		ss << entity.getName() << " (of type " << entity.getType()->getName() << ")";
 	} else {
 		ss << entity.getType()->getName();
-	}
-	if (entity.hasAttr("biomass")) {
-		ss << std::endl << "Edible";
-	}
-	if (entity.hasAttr("right_hand_wield")) {
-		ss << std::endl << "Wieldable";
 	}
 	if (entity.hasAttr("worn")) {
 		const Atlas::Message::Element& element = entity.valueOfAttr("worn");
@@ -131,14 +125,14 @@ std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity)
 			ss << std::endl << "Worn on the " << element.asString();
 		}
 	}
-	std::vector<std::string> actions = entity.getActions();
-	if (actions.size()) {
+	auto actions = entity.getActions();
+	if (!actions.empty()) {
 		for (std::vector<std::string>::const_iterator I = actions.begin(); I != actions.end(); ++I) {
 			ss << std::endl << "Can be used to " << *I;
 		}
 	}
-	std::vector<std::string> operations = entity.getDefaultUseOperators();
-	if (operations.size()) {
+	auto operations = entity.getDefaultUseOperators();
+	if (!operations.empty()) {
 		for (std::vector<std::string>::const_iterator I = operations.begin(); I != operations.end(); ++I) {
 			ss << std::endl << "Can be used to " << *I;
 		}
@@ -152,7 +146,7 @@ EmberEntity* EntityTooltip::getActiveEntity()
 	if (mTooltip.getTargetWindow()) {
 		return mWorld.getEmberEntity(mTooltip.getTargetWindow()->getTooltipText().c_str());
 	}
-	return 0;
+	return nullptr;
 }
 
 }

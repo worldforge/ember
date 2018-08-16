@@ -60,7 +60,7 @@ public:
 
 	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient) override;
 
-	void wield(Eris::Entity* entity, const std::string& outfitSlot) override;
+	void wield(Eris::Entity* entity, const std::string& attachment) override;
 
 	void take(Eris::Entity* entity) override;
 

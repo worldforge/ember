@@ -654,7 +654,7 @@ EntityEditor.prototypes =
 			return ownerElement == nil
 		end
 	},
-	outfit = {
+	attachments = {
 		adapter = EntityEditor.adapters.map,
 		help = "Determines how contained entities are attached. Often used for clothing.",
 		shouldAddSuggestion = function(ownerElement, entity)
@@ -855,7 +855,7 @@ EntityEditor.prototypes =
 	planted_on = {
 		adapter = EntityEditor.adapters.entityRef
 	},
-	right_hand_wield= {
+	attached_hand_primary= {
 		adapter = EntityEditor.adapters.entityRef
 	}
 }

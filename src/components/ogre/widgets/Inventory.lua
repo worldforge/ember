@@ -321,11 +321,11 @@ function Inventory:buildWidget(avatarEntity)
 	
 end
 
-function Inventory:createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
+function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
 -- 	self.doll.torso = self:createDollSlot("body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.")
 	dollSlot.droppedHandler = function(entityIcon)
 		if dollSlot.isValidDrop(entityIcon) then
-			emberServices:getServerService():wield(entityIcon:getEntity(), dollSlot.wearRestriction)
+			emberServices:getServerService():wield(entityIcon:getEntity(), attachment)
 			local icon = dollSlot.slot:getEntityIcon()
 			if icon ~= nil then
 				local slotWrapper = self:getFreeSlot()
@@ -402,23 +402,23 @@ function Inventory:setupDoll(avatarEntity)
 	self.doll.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.doll.image, "doll")
 	self.doll.renderer:setActive(false)
 
-	self.doll.rightHand = self:createDollSlot("right_hand_wield", self.doll.image:getChild("RightHand"), "Drop an entity here to attach it to the right hand.", "")
-	self.doll.rightHandOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.rightHand, "")
+	self.doll.handPrimary = self:createDollSlot("attached_hand_primary", self.doll.image:getChild("RightHand"), "Drop an entity here to attach it to the primary hand.", "")
+	self.doll.handPrimaryAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.handPrimary, "hand_primary")
 	
-	self.doll.torso = self:createDollSlot("outfit.body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.", "body")
-	self.doll.torsoOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.torso, "body")
+	self.doll.torso = self:createDollSlot("attached_body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.", "body")
+	self.doll.torsoAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.torso, "body")
 	
-	self.doll.back = self:createDollSlot("outfit.back", self.doll.image:getChild("Back"), "Drop an entity here to attach it to the back.", "back")
-	self.doll.backOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.back, "back")
+	self.doll.back = self:createDollSlot("attached_back", self.doll.image:getChild("Back"), "Drop an entity here to attach it to the back.", "back")
+	self.doll.backAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.back, "back")
 
-	self.doll.head = self:createDollSlot("outfit.head", self.doll.image:getChild("Head"), "Drop an entity here to attach it to the head.", "head")
-	self.doll.headOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.head, "head")
+	self.doll.head = self:createDollSlot("attached_head", self.doll.image:getChild("Head"), "Drop an entity here to attach it to the head.", "head")
+	self.doll.headAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.head, "head")
 
-	self.doll.legs = self:createDollSlot("outfit.legs", self.doll.image:getChild("Legs"), "Drop an entity here to attach it to the legs.", "legs")
-	self.doll.legsOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.legs, "legs")
+	self.doll.legs = self:createDollSlot("attached_legs", self.doll.image:getChild("Legs"), "Drop an entity here to attach it to the legs.", "legs")
+	self.doll.legsAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.legs, "legs")
 	
-	self.doll.feet = self:createDollSlot("outfit.feet", self.doll.image:getChild("Feet"), "Drop an entity here to attach it to the feet.", "feet")
-	self.doll.feetOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.feet, "feet")
+	self.doll.feet = self:createDollSlot("attached_feet", self.doll.image:getChild("Feet"), "Drop an entity here to attach it to the feet.", "feet")
+	self.doll.feetAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.feet, "feet")
 		
 	local representationUpdate = function()
 		local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
@@ -436,9 +436,6 @@ function Inventory:setupDoll(avatarEntity)
 end
 
 function Inventory:updateDoll()
-	if self.avatarEntity:hasAttr("right_hand_wield") then
-		
-	end
 end
 
 
@@ -499,7 +496,7 @@ function Inventory:shutdown()
 	deleteSafe(self.IconContainerDragDrop)
 	if self.doll ~= nil then
 		if deleteSafe(self.doll.renderer) then
-			self.doll.rightHand.shutdown()
+			self.doll.handPrimary.shutdown()
 			self.doll.torso.shutdown()
 			self.doll.back.shutdown()
 			self.doll.head.shutdown()

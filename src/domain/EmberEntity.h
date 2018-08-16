@@ -253,11 +253,10 @@ public:
 
 	/**
 	 * @brief Gets the entity attached to the named point.
-	 * @note This is just a temporary solution until we get better outfit functionality.
-	 * @param namedPoint A named point.
+	 * @param attachment A named point.
 	 * @return A child entity, or null if none found.
 	 */
-	EmberEntity* getAttachedEntity(const std::string& namedPoint);
+	EmberEntity* getAttachedEntity(const std::string& attachment);
 
 	/**
 	 * @brief Accepts a visitor.

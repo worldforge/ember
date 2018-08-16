@@ -222,9 +222,9 @@ void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMa
 	getAdapter().place(entity, target, pos, orient);
 }
 
-void ServerService::wield(Eris::Entity* entity, const std::string& outfitSlot)
+void ServerService::wield(Eris::Entity* entity, const std::string& attachment)
 {
-	getAdapter().wield(entity, outfitSlot);
+	getAdapter().wield(entity, attachment);
 }
 
 void ServerService::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation)
