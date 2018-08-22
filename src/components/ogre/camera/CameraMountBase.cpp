@@ -24,57 +24,44 @@
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Camera
-{
+namespace Ember {
+namespace OgreView {
+namespace Camera {
 
 CameraMountBase::CameraMountBase(const CameraSettings& cameraSettings)
-: mCamera(nullptr),
-  mMotionHandler(nullptr),
-  mCameraSettings(cameraSettings)
-{
+		: mCamera(nullptr),
+		  mMotionHandler(nullptr),
+		  mCameraSettings(cameraSettings) {
 
 }
 
-CameraMountBase::~CameraMountBase()
-{
+CameraMountBase::~CameraMountBase() = default;
 
-}
-
-Ogre::Degree CameraMountBase::getPitch() const
-{
+Ogre::Degree CameraMountBase::getPitch() const {
 	throw Exception("Not implemented yet.");
 // 	return degreePitch;
 }
 
-Ogre::Degree CameraMountBase::getYaw() const
-{
+Ogre::Degree CameraMountBase::getYaw() const {
 	throw Exception("Not implemented yet.");
 // 	return degreeYaw;
 }
 
-void CameraMountBase::attachToCamera(MainCamera& camera)
-{
+void CameraMountBase::attachToCamera(MainCamera& camera) {
 	mCamera = &camera.getCamera();
 }
 
-void CameraMountBase::detachFromCamera()
-{
+void CameraMountBase::detachFromCamera() {
 	mCamera = nullptr;
 }
 
-void CameraMountBase::move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice)
-{
+void CameraMountBase::move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice) {
 	if (mMotionHandler) {
 		mMotionHandler->move(orientation, movement, timeslice);
 	}
 }
 
-void CameraMountBase::setMotionHandler(ICameraMotionHandler* handler)
-{
+void CameraMountBase::setMotionHandler(ICameraMotionHandler* handler) {
 	mMotionHandler = handler;
 }
 

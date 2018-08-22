@@ -510,7 +510,7 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 void GUIManager::EmberOgre_WorldCreated(World& world)
 {
 	mEntityTooltip = new EntityTooltip(world, *static_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")), *mIconManager);
-	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world.getMainCamera());
+	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world);
 }
 
 void GUIManager::EmberOgre_WorldDestroyed()

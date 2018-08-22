@@ -54,6 +54,21 @@ class EmberEntity: public Eris::ViewEntity, public IVisualizable
 {
 public:
 
+	struct UsageParameter {
+		std::string type;
+		std::string constraint;
+		int min;
+		int max;
+	};
+
+	struct Usage {
+		std::string constraint;
+		std::string description;
+
+		std::map<std::string, UsageParameter> params;
+
+	};
+
 	/**
 	 * @brief The different positioning modes the entity can be in.
 	 * The positioning mode determines how the entity can be adjusted in the world.
@@ -164,18 +179,6 @@ public:
 	 */
 	PositioningMode getPositioningMode() const;
 
-	/**
-	 * @brief Returns a list of the default use operators that can be used with this entity.
-	 * For example, an axe would have a list of operators such as "chop" and "sharpen".
-	 * @return A list of default use operators.
-	 */
-	std::vector<std::string> getDefaultUseOperators();
-
-	/**
-	 * @brief Returns a list of actions that can be performed on this entity, if any.
-	 * @return A vector of actions, as strings.
-	 */
-	std::vector<std::string> getActions();
 
 	/**
 	 * @brief Dumps all of this entity's attributes to the supplied outstream.
@@ -288,6 +291,9 @@ public:
 
 	void setHeightProvider(IHeightProvider* heightProvider);
 
+	const std::map<std::string, Usage>& getUsages() const;
+	const std::map<std::string, Usage>& getUsagesProtected() const;
+
 	CompositionMode getCompositionMode() const;
 	void setCompositionMode(CompositionMode mode);
 
@@ -327,6 +333,9 @@ protected:
 	 @brief Sometimes when talking to an entity, the server will provide suggested responses. These are stored here.
 	 */
 	std::vector<std::string> mSuggestedResponses;
+
+	std::map<std::string, Usage> mUsages;
+	std::map<std::string, Usage> mUsagesProtected;
 
 	/**
 	 * @brief The positioning mode the entity is in, like gravity affected, fixed or floating.
@@ -426,6 +435,7 @@ protected:
 	 */
 	void updateAttachment();
 
+	void parseUsages(std::map<std::string, Usage>& map, const Atlas::Message::Element& element);
 };
 
 inline bool EmberEntity::isInitialized() const

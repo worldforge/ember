@@ -63,7 +63,26 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(nullptr), mScreenWidth(0), mScreenHeight(0), mMainVideoSurface(0), mIconSurface(nullptr), mInvertMouse(1), mHandleOpenGL(false), mMainWindowId(0), mLastTimeInputProcessingStart(microsec_clock::local_time()), mLastTimeInputProcessingEnd(microsec_clock::local_time())
+		ToggleFullscreen(nullptr),
+		mCurrentInputMode(IM_GUI),
+		mMouseState(0),
+		mTimeSinceLastRightMouseClick(0),
+		mSuppressForCurrentEvent(false),
+		mMovementModeEnabled(false),
+		mConfigListenerContainer(new ConfigListenerContainer()),
+		mMouseGrabbingRequested(false),
+		mMouseGrab(false),
+		mMainLoopController(0),
+		mWindowProvider(nullptr),
+		mScreenWidth(0),
+		mScreenHeight(0),
+		mMainVideoSurface(0),
+		mIconSurface(nullptr),
+		mInvertMouse(1),
+		mHandleOpenGL(false),
+		mMainWindowId(0),
+		mLastTimeInputProcessingStart(microsec_clock::local_time()),
+		mLastTimeInputProcessingEnd(microsec_clock::local_time())
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -179,11 +198,11 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 
 void Input::shutdownInteraction()
 {
-	mWindowProvider = 0;
+	mWindowProvider = nullptr;
 
 	if (mMainVideoSurface) {
 		SDL_DestroyWindow(mMainVideoSurface);
-		mMainVideoSurface = 0;
+		mMainVideoSurface = nullptr;
 	}
 
 	//Release the mouse for safety's sake.
@@ -300,15 +319,15 @@ void Input::runCommand(const std::string &command, const std::string &args)
 		tokeniser.initTokens(args);
 		std::string state("general");
 		std::string key = tokeniser.nextToken();
-		if (key != "") {
-			std::string command(tokeniser.nextToken());
-			if (command != "") {
-				if (tokeniser.nextToken() != "") {
+		if (!key.empty()) {
+			std::string commandToken(tokeniser.nextToken());
+			if (!commandToken.empty()) {
+				if (!tokeniser.nextToken().empty()) {
 					state = tokeniser.nextToken();
 				}
-				InputCommandMapperStore::iterator I = mInputCommandMappers.find(state);
+				auto I = mInputCommandMappers.find(state);
 				if (I != mInputCommandMappers.end()) {
-					I->second->bindCommand(key, command);
+					I->second->bindCommand(key, commandToken);
 				}
 			}
 		}
@@ -317,11 +336,11 @@ void Input::runCommand(const std::string &command, const std::string &args)
 		tokeniser.initTokens(args);
 		std::string state("general");
 		std::string key(tokeniser.nextToken());
-		if (key != "") {
-			if (tokeniser.nextToken() != "") {
+		if (!key.empty()) {
+			if (!tokeniser.nextToken().empty()) {
 				state = tokeniser.nextToken();
 			}
-			InputCommandMapperStore::iterator I = mInputCommandMappers.find(state);
+			auto I = mInputCommandMappers.find(state);
 			if (I != mInputCommandMappers.end()) {
 				I->second->unbindCommand(key);
 			}
@@ -442,7 +461,7 @@ void Input::pollMouse(float secondsSinceLast)
 			float diffX, diffY;
 			diffX = mouseRelativeX / (float)mScreenWidth;
 			diffY = mouseRelativeY / (float)mScreenHeight;
-			MouseMotion motion;
+			MouseMotion motion{};
 			motion.xPosition = mouseX;
 			motion.yPosition = mouseY;
 			motion.xRelativeMovement = diffX * mInvertMouse;
@@ -457,11 +476,12 @@ void Input::pollMouse(float secondsSinceLast)
 			//if we're in gui mode, we'll just send the mouse movement on to CEGUI
 			if (mCurrentInputMode == IM_GUI) {
 
-				for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+				for (auto I = mAdapters.begin(); I != mAdapters.end();) {
 					IInputAdapter* adapter = *I;
 					++I;
-					if (!(adapter)->injectMouseMove(motion, freezeMouse))
+					if (!(adapter)->injectMouseMove(motion, freezeMouse)) {
 						break;
+					}
 				}
 
 			} else {
@@ -469,7 +489,8 @@ void Input::pollMouse(float secondsSinceLast)
 			}
 
 			if (freezeMouse) {
-				SDL_WarpMouseInWindow(mMainVideoSurface, mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
+				//std::cout << "Warping " << mMousePosition.xPixelPosition << ":" << mMousePosition.yPixelPosition <<std::endl;
+				SDL_WarpMouseInWindow(nullptr, mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
 			} else {
 				mMousePosition.xPixelPosition = mouseX;
 				mMousePosition.yPixelPosition = mouseY;
@@ -603,6 +624,8 @@ void Input::pollEvents(float secondsSinceLast)
 					setGeometry(event.window.data1, event.window.data2);
 				}
 			}
+			break;
+		default:
 			break;
 		}
 	}
@@ -790,9 +813,20 @@ void Input::lostFocus()
 
 void Input::setMouseGrab(bool enabled)
 {
-	SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE);
+	S_LOG_INFO("mouse grab: " << enabled);
+
+	auto result = SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE);
+	if (result != 0) {
+		S_LOG_WARNING("Setting relative mouse mode doesn't work.");
+	}
+
 	//We must reset the relative mouse state reporting.
-	SDL_GetRelativeMouseState(0, 0);
+	SDL_GetRelativeMouseState(nullptr, nullptr);
+
+	if (!enabled) {
+		//When we return back to not grabbing the mouse after having grabbed it we need to warp back the mouse position.
+		SDL_WarpMouseInWindow(nullptr, mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
+	}
 }
 
 }

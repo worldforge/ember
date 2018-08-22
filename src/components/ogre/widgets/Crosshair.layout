@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout version="4">
+	<Window name="MainBackground" type="EmberLook/StaticImage">
+		<Property name="Size" value="{{0,17},{0,17}}" />
+		<Property name="Position" value="{{0.5,-8},{0.5,-8}}" />
+		<Property name="Image" value="EmberLook/CrossHair" />
+		<Property name="MousePassThroughEnabled" value="true" />
+		<Property name="RiseOnClickEnabled" value="false" />
+	</Window>
+</GUILayout>

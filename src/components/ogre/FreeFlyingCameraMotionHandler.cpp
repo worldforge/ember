@@ -19,30 +19,26 @@
 #include "FreeFlyingCameraMotionHandler.h"
 #include "components/ogre/Convert.h"
 #include <OgreSceneNode.h>
+
 namespace Ember {
 namespace OgreView {
 
 FreeFlyingCameraMotionHandler::FreeFlyingCameraMotionHandler(Ogre::SceneNode& freeFlyingNode)
-: mFreeFlyingNode(freeFlyingNode), mSpeed(50)
-{
+		: mFreeFlyingNode(freeFlyingNode),
+		  mSpeed(50) {
 }
 
-FreeFlyingCameraMotionHandler::~FreeFlyingCameraMotionHandler()
-{
-}
+FreeFlyingCameraMotionHandler::~FreeFlyingCameraMotionHandler() = default;
 
-void FreeFlyingCameraMotionHandler::move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
-{
+void FreeFlyingCameraMotionHandler::move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice) {
 	mFreeFlyingNode.translate(Convert::toOgre((movement * timeslice * mSpeed).rotate(orientation)));
 }
 
-float FreeFlyingCameraMotionHandler::getSpeed() const
-{
+float FreeFlyingCameraMotionHandler::getSpeed() const {
 	return mSpeed;
 }
 
-void FreeFlyingCameraMotionHandler::setSpeed(float speed)
-{
+void FreeFlyingCameraMotionHandler::setSpeed(float speed) {
 	mSpeed = speed;
 }
 

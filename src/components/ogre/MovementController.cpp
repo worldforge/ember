@@ -1,3 +1,5 @@
+#include <memory>
+
 /*
  Copyright (C) 2004  Erik Ogenvik
  some parts Copyright (C) 2004 bad_camel at Ogre3d forums
@@ -20,6 +22,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include "MovementController.h"
 
 #include "domain/EmberEntity.h"
@@ -42,6 +45,7 @@
 #include "services/server/ServerService.h"
 
 #include "framework/MainLoopController.h"
+#include "framework/ConsoleBackend.h"
 
 #include <Eris/View.h>
 #include <Eris/EventService.h>
@@ -52,45 +56,70 @@
 
 using namespace Ogre;
 using namespace Ember;
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 MovementControllerInputListener::MovementControllerInputListener(MovementController& controller) :
-		mController(controller)
-{
+		mController(controller) {
 	Input::getSingleton().EventMouseButtonPressed.connect(sigc::mem_fun(*this, &MovementControllerInputListener::input_MouseButtonPressed));
 	Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &MovementControllerInputListener::input_MouseButtonReleased));
 
 }
 
-void MovementControllerInputListener::input_MouseButtonPressed(Input::MouseButton button, Input::InputMode mode)
-{
+void MovementControllerInputListener::input_MouseButtonPressed(Input::MouseButton button, Input::InputMode mode) {
+
 	if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
-		mController.mMovementDirection.z() = -1;
-		mController.stopSteering();
+		if (mController.mIsFreeFlying) {
+			mController.mMovementDirection.z() = -1;
+			mController.stopSteering();
+		} else {
+			Ember::ConsoleBackend::getSingleton().runCommand("+avatar_action_default");
+		}
 	}
 }
 
-void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode)
-{
+void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode) {
 	if (mode == Input::IM_GUI) {
 		mController.mMovementDirection.x() = 0;
 		mController.mMovementDirection.y() = 0;
 		mController.mMovementDirection.z() = 0;
 	} else if (mode == Input::IM_MOVEMENT && button == Input::MouseButtonLeft) {
-		mController.mMovementDirection.z() = 0;
+		if (mController.mIsFreeFlying) {
+			mController.mMovementDirection.z() = 0;
+		} else {
+			Ember::ConsoleBackend::getSingleton().runCommand("-avatar_action_default");
+		}
 	}
 }
 
 MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camera, IHeightProvider& heightProvider) :
-		WalkToggle("+walk", this, "Toggle walking mode."), ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."), MovementMoveForward("+movement_move_forward", this, "Move forward."), MovementMoveBackward("+movement_move_backward", this, "Move backward."), MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."), MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."), MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."), MovementStrafeRight("+movement_strafe_right", this, "Strafe right."), CameraOnAvatar("camera_on_avatar", this, "Positions the free flying camera on the avatar.")
+		WalkToggle("+walk", this, "Toggle walking mode."),
+		ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."),
+		MovementMoveForward("+movement_move_forward", this, "Move forward."),
+		MovementMoveBackward("+movement_move_backward", this, "Move backward."),
+		MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."),
+		MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."),
+		MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."),
+		MovementStrafeRight("+movement_strafe_right", this, "Strafe right."),
+		CameraOnAvatar("camera_on_avatar", this, "Positions the free flying camera on the avatar.")
 		/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
 		 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
 		//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
-				, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(true), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false), mAwareness(nullptr), mAwarenessVisualizer(nullptr), mSteering(nullptr), mConfigListenerContainer(new ConfigListenerContainer()), mVisualizePath(false)
-{
+		, mCamera(camera),
+		mMovementCommandMapper("movement", "key_bindings_movement"),
+		mIsRunning(true),
+		mMovementDirection(WFMath::Vector<3>::ZERO()),
+		mDecalObject(nullptr),
+		mDecalNode(nullptr),
+		mControllerInputListener(*this),
+		mAvatar(avatar),
+		mFreeFlyingNode(nullptr),
+		mIsFreeFlying(false),
+		mAwareness(nullptr),
+		mAwarenessVisualizer(nullptr),
+		mSteering(nullptr),
+		mConfigListenerContainer(new ConfigListenerContainer()),
+		mVisualizePath(false) {
 
 	//We can only do navigation if there's a valid bbox for the top level entity
 	if (avatar.getEmberEntity().getView()->getTopLevel()->getBBox().isValid()) {
@@ -101,7 +130,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 			mSteering->EventPathUpdated.connect(sigc::mem_fun(*this, &MovementController::Steering_PathUpdated));
 
 			mAwareness->EventTileDirty.connect([this] {
-				mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this]() {this->tileRebuild(); }, mActiveMarker);
+				mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this]() { this->tileRebuild(); }, mActiveMarker);
 			});
 
 			mAwareness->EventTileUpdated.connect([&](int, int) {
@@ -135,8 +164,8 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 				mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getPredictedPos()));
 				mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
 			}
-			mFreeFlyingMotionHandler = std::unique_ptr < FreeFlyingCameraMotionHandler > (new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
-			mCameraMount = std::unique_ptr < Camera::FirstPersonCameraMount > (new Camera::FirstPersonCameraMount(mCamera.getCameraSettings(), mAvatar.getScene().getSceneManager()));
+			mFreeFlyingMotionHandler = std::make_unique<FreeFlyingCameraMotionHandler>(*mFreeFlyingNode);
+			mCameraMount = std::make_unique<Camera::FirstPersonCameraMount>(mCamera.getCameraSettings(), mAvatar.getScene().getSceneManager());
 			mCameraMount->setMotionHandler(mFreeFlyingMotionHandler.get());
 			mCameraMount->attachToNode(mFreeFlyingNode);
 		} else {
@@ -148,8 +177,8 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 	}
 
 }
-MovementController::~MovementController()
-{
+
+MovementController::~MovementController() {
 	delete mConfigListenerContainer;
 	delete mSteering;
 	delete mAwarenessVisualizer;
@@ -166,19 +195,17 @@ MovementController::~MovementController()
 	}
 }
 
-void MovementController::tileRebuild()
-{
+void MovementController::tileRebuild() {
 	if (mAwareness) {
 		size_t dirtyTiles = mAwareness->rebuildDirtyTile();
 		if (dirtyTiles) {
-			mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this] {this->tileRebuild();}, mActiveMarker);
+			mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this] { this->tileRebuild(); }, mActiveMarker);
 		}
 	}
 }
 
-void MovementController::setCameraFreeFlying(bool freeFlying)
-{
-	if (freeFlying && mCameraMount.get()) {
+void MovementController::setCameraFreeFlying(bool freeFlying) {
+	if (freeFlying && mCameraMount) {
 		mCamera.attachToMount(mCameraMount.get());
 		mIsFreeFlying = true;
 	} else {
@@ -187,13 +214,11 @@ void MovementController::setCameraFreeFlying(bool freeFlying)
 	}
 }
 
-bool MovementController::isCameraFreeFlying() const
-{
+bool MovementController::isCameraFreeFlying() const {
 	return mIsFreeFlying;
 }
 
-void MovementController::runCommand(const std::string &command, const std::string &args)
-{
+void MovementController::runCommand(const std::string& command, const std::string& args) {
 	if (WalkToggle == command) {
 		mIsRunning = false;
 		EventMovementModeChanged(getMode());
@@ -255,8 +280,7 @@ void MovementController::runCommand(const std::string &command, const std::strin
 	}
 }
 
-void MovementController::stopSteering()
-{
+void MovementController::stopSteering() {
 	if (mSteering) {
 		mSteering->stopSteering();
 		if (mAwareness->needsPruning()) {
@@ -266,8 +290,7 @@ void MovementController::stopSteering()
 }
 
 
-void MovementController::frameProcessed(const TimeFrame&, unsigned int)
-{
+void MovementController::frameProcessed(const TimeFrame&, unsigned int) {
 
 	if (mDecalObject) {
 		//hide the decal when we're close to it
@@ -281,17 +304,15 @@ void MovementController::frameProcessed(const TimeFrame&, unsigned int)
 
 }
 
-void MovementController::Config_VisualizeRecastTiles(const std::string&, const std::string&, varconf::Variable& var)
-{
+void MovementController::Config_VisualizeRecastTiles(const std::string&, const std::string&, varconf::Variable& var) {
 	if (var.is_bool() && mAwarenessVisualizer) {
-		mAwarenessVisualizer->setTileVisualizationEnabled((bool)var);
+		mAwarenessVisualizer->setTileVisualizationEnabled((bool) var);
 	}
 }
 
-void MovementController::Config_VisualizeRecastPath(const std::string&, const std::string&, varconf::Variable& var)
-{
+void MovementController::Config_VisualizeRecastPath(const std::string&, const std::string&, varconf::Variable& var) {
 	if (var.is_bool() && mAwarenessVisualizer) {
-		mVisualizePath = (bool)var;
+		mVisualizePath = (bool) var;
 		if (!mVisualizePath) {
 			//By visualizing an empty path we'll remove any lingering path.
 			mAwarenessVisualizer->visualizePath(std::list<WFMath::Point<3>>());
@@ -299,13 +320,11 @@ void MovementController::Config_VisualizeRecastPath(const std::string&, const st
 	}
 }
 
-MovementControllerMode::Mode MovementController::getMode() const
-{
+MovementControllerMode::Mode MovementController::getMode() const {
 	return mIsRunning ? MovementControllerMode::MM_RUN : MovementControllerMode::MM_WALK;
 }
 
-void MovementController::moveToPoint(const Ogre::Vector3& point)
-{
+void MovementController::moveToPoint(const Ogre::Vector3& point) {
 	if (!mDecalNode) {
 		createDecal(point);
 	}
@@ -330,42 +349,37 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 	}
 }
 
-void MovementController::schedulePruning()
-{
+void MovementController::schedulePruning() {
 	mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this]() {
-			this->mAwareness->pruneTiles();
-			if (mAwareness->needsPruning()) {
-				schedulePruning();
-			}
-		}, mActiveMarker);
+		this->mAwareness->pruneTiles();
+		if (mAwareness->needsPruning()) {
+			schedulePruning();
+		}
+	}, mActiveMarker);
 }
 
-void MovementController::Entity_Moved()
-{
+void MovementController::Entity_Moved() {
 	if (mSteering && mSteering->isEnabled()) {
 		mSteering->requestUpdate();
 		mSteering->setIsExpectingServerMovement(false);
 	}
 }
 
-void MovementController::Steering_PathUpdated()
-{
+void MovementController::Steering_PathUpdated() {
 	if (mVisualizePath) {
 		mAwarenessVisualizer->visualizePath(mSteering->getPath());
 	}
 }
 
 
-void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity)
-{
+void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity) {
 	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3>>(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
 	EmberServices::getSingleton().getServerService().place(&mAvatar.getEmberEntity(), mAvatar.getEmberEntity().getLocation(), atlasPos);
 }
 
-WFMath::Vector<3> MovementController::getMovementForCurrentFrame() const
-{
+WFMath::Vector<3> MovementController::getMovementForCurrentFrame() const {
 	if (mMovementDirection.isValid()) {
 		//If the vector is null we'll get an error if we normalize, so we'll just return a zero vector then.
 		if (mMovementDirection != WFMath::Vector<3>::ZERO()) {
@@ -383,8 +397,7 @@ WFMath::Vector<3> MovementController::getMovementForCurrentFrame() const
 	}
 }
 
-void MovementController::createDecal(Ogre::Vector3 position)
-{
+void MovementController::createDecal(Ogre::Vector3 position) {
 //	try {
 //		// Create object MeshDecal
 //		Ogre::SceneManager& sceneManager = mAvatar.getScene().getSceneManager();

@@ -20,34 +20,27 @@
 
 #include "components/ogre/Avatar.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 AvatarAttachmentController::AvatarAttachmentController(Avatar& avatar) :
-	mAvatar(avatar)
-{
+		mAvatar(avatar) {
 
 }
 
-AvatarAttachmentController::~AvatarAttachmentController()
-{
-}
+AvatarAttachmentController::~AvatarAttachmentController() = default;
 
-const WFMath::Point<3>& AvatarAttachmentController::getPosition() const
-{
+const WFMath::Point<3>& AvatarAttachmentController::getPosition() const {
 	mPosition = mAvatar.getClientSideAvatarPosition();
 	return mPosition;
 }
-const WFMath::Quaternion& AvatarAttachmentController::getOrientation() const
-{
+
+const WFMath::Quaternion& AvatarAttachmentController::getOrientation() const {
 	mOrientation = mAvatar.getClientSideAvatarOrientation();
 	return mOrientation;
 }
 
-const WFMath::Vector<3>& AvatarAttachmentController::getVelocity() const
-{
+const WFMath::Vector<3>& AvatarAttachmentController::getVelocity() const {
 	mVelocity = mAvatar.getClientSideAvatarVelocity();
 	return mVelocity;
 }

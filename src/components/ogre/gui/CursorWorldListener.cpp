@@ -1,3 +1,5 @@
+#include <memory>
+
 /*
  Copyright (C) 2011 Erik Ogenvik
 
@@ -26,6 +28,7 @@
 #include "framework/MainLoopController.h"
 #include "framework/TimeFrame.h"
 #include "components/ogre/camera/MainCamera.h"
+#include "components/ogre/World.h"
 #include <CEGUI/Window.h>
 #include <CEGUI/WindowManager.h>
 
@@ -36,11 +39,17 @@ namespace OgreView
 namespace Gui
 {
 
-CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, Camera::MainCamera& mainCamera) :
-		mMainWindow(mainWindow), mMainCamera(mainCamera), mHoverEventSent(false), mCursorLingerStart(0), mClickThresholdMilliseconds(200), mMousePressedTimeFrame(nullptr), mConfigListenerContainer(new ConfigListenerContainer())
+CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, World& world) :
+		mMainWindow(mainWindow),
+		mWorld(world),
+		mHoverEventSent(false),
+		mCursorLingerStart(0),
+		mClickThresholdMilliseconds(200),
+		mMousePressedTimeFrame(nullptr),
+		mConfigListenerContainer(new ConfigListenerContainer())
 {
 
-	mainLoopController.EventBeforeInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
+	mainLoopController.EventAfterInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
 	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorWorldListener::input_MouseButtonReleased));
 
 	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseEntersSurface, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseEnters, this)));
@@ -57,8 +66,8 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 CursorWorldListener::~CursorWorldListener()
 {
 	delete mConfigListenerContainer;
-	for (ConnectionStore::iterator I = mConnections.begin(); I != mConnections.end(); ++I) {
-		(*I)->disconnect();
+	for (auto& connection : mConnections) {
+		connection->disconnect();
 	}
 	if (mMouseMovesConnection.isValid()) {
 		mMouseMovesConnection->disconnect();
@@ -67,22 +76,25 @@ CursorWorldListener::~CursorWorldListener()
 
 void CursorWorldListener::afterEventProcessing(float timeslice)
 {
-	if (!mHoverEventSent) {
-		mCursorLingerStart += timeslice * 1000;
-
-		if (mCursorLingerStart > 500) {
-			sendHoverEvent();
-		}
-	}
-
 	if (isInGUIMode()) {
+		if (!mHoverEventSent) {
+			mCursorLingerStart += static_cast<long long>(timeslice * 1000);
+
+			if (mCursorLingerStart > 500) {
+				sendHoverEvent();
+			}
+		}
+
 		if (mMousePressedTimeFrame) {
 			if (!mMousePressedTimeFrame->isTimeLeft()) {
-				delete mMousePressedTimeFrame;
-				mMousePressedTimeFrame = 0;
+				mMousePressedTimeFrame.reset();
 				sendWorldClick(MPT_PRESSED, mMainWindow.getGUIContext().getMouseCursor().getPosition());
 			}
 		}
+	} else {
+		MousePickerArgs pickerArgs{};
+		pickerArgs.pickType = MousePickType::MPT_SELECT;
+		mWorld.getMainCamera().pickInWorld(0.5, 0.5, pickerArgs);
 	}
 }
 
@@ -119,19 +131,18 @@ void CursorWorldListener::sendHoverEvent()
 
 void CursorWorldListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode inputMode)
 {
-	delete mMousePressedTimeFrame;
-	mMousePressedTimeFrame = 0;
+	mMousePressedTimeFrame.reset();
 }
 
 void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Vector2f& pixelPosition)
 {
 
 	const auto& position = mMainWindow.getGUIContext().getMouseCursor().getDisplayIndependantPosition();
-	MousePickerArgs pickerArgs;
+	MousePickerArgs pickerArgs{};
 	pickerArgs.windowX = pixelPosition.d_x;
 	pickerArgs.windowY = pixelPosition.d_y;
 	pickerArgs.pickType = pickType;
-	mMainCamera.pickInWorld(position.d_x, position.d_y, pickerArgs);
+	mWorld.getMainCamera().pickInWorld(position.d_x, position.d_y, pickerArgs);
 
 }
 
@@ -145,8 +156,7 @@ bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
 			aWindow->deactivate();
 		}
 
-		delete mMousePressedTimeFrame;
-		mMousePressedTimeFrame = new TimeFrame(boost::posix_time::milliseconds(mClickThresholdMilliseconds));
+		mMousePressedTimeFrame = std::make_unique<TimeFrame>(boost::posix_time::milliseconds(mClickThresholdMilliseconds));
 		sendWorldClick(MPT_PRESS, mMainWindow.getGUIContext().getMouseCursor().getPosition());
 	}
 
@@ -158,8 +168,7 @@ bool CursorWorldListener::windowMouseButtonUp(const CEGUI::EventArgs& args)
 	if (isInGUIMode()) {
 		if (mMousePressedTimeFrame) {
 			if (mMousePressedTimeFrame->isTimeLeft()) {
-				delete mMousePressedTimeFrame;
-				mMousePressedTimeFrame = 0;
+				mMousePressedTimeFrame.reset();
 				sendWorldClick(MPT_CLICK, static_cast<const CEGUI::MouseEventArgs&>(args).position);
 			}
 		}
@@ -169,7 +178,7 @@ bool CursorWorldListener::windowMouseButtonUp(const CEGUI::EventArgs& args)
 
 bool CursorWorldListener::windowMouseDoubleClick(const CEGUI::EventArgs& args)
 {
-	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+	auto& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 	sendWorldClick(MPT_DOUBLECLICK, mouseArgs.position);
 
 	return true;

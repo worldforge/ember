@@ -203,7 +203,9 @@ public:
 	 */
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 
-	void useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
+	void useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
+
+	void performDefaultUsage();
 
 	/**
 	 * @copydoc ConsoleObject::runCommand
@@ -214,6 +216,9 @@ public:
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
 	 */
 	const ConsoleCommandWrapper SetAttachedOrientation;
+
+	const ConsoleCommandWrapper AvatarActionDefaultStart;
+	const ConsoleCommandWrapper AvatarActionDefaultStop;
 
 protected:
 

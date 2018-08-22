@@ -53,7 +53,7 @@ function ActionBarCreator:createActionBar(layout)
 	local name = "ActionBar"..i
 	
 	--Create the new Actionbar.
-	a1 = ActionBar.new(layout, self.defaultActionList, self.erisAvatar)
+	local a1 = ActionBar.new(layout, self.defaultActionList, self.erisAvatar)
 	a1:init(name)
 	
 	--Insert into our dictionary.

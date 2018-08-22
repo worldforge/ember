@@ -45,16 +45,18 @@ public:
 	 * @brief Ctor.
 	 * @param avatar The avatar instance which will control the Entity.
 	 */
-	AvatarAttachmentController(Avatar& avatar);
+	explicit AvatarAttachmentController(Avatar& avatar);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~AvatarAttachmentController();
+	~AvatarAttachmentController() override;
 
-	virtual const WFMath::Point<3>& getPosition() const;
-	virtual const WFMath::Quaternion& getOrientation() const;
-	virtual const WFMath::Vector<3>& getVelocity() const;
+	const WFMath::Point<3>& getPosition() const override;
+
+	const WFMath::Quaternion& getOrientation() const override;
+
+	const WFMath::Vector<3>& getVelocity() const override;
 
 private:
 

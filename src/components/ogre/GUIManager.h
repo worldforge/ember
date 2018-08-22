@@ -166,7 +166,7 @@ public:
 	 * @param evt
 	 * @return
 	 */
-	bool frameStarted(const Ogre::FrameEvent& evt);
+	bool frameStarted(const Ogre::FrameEvent& evt) override;
 
 	/**
 	 * @brief Gets the root sheet of the CEGUI windowing system.
@@ -210,7 +210,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 *    returns the path to the directory where all layouts are stored

@@ -44,6 +44,10 @@ end
 
 function MainIconBar:buildWidget()
 
+	self.crossHair = CEGUI.WindowManager:getSingleton():loadLayoutFromFile(guiManager:getLayoutDir() .. "Crosshair.layout")
+	guiManager:getMainSheet():addChild(self.crossHair)
+	self.crossHair:setVisible(false)
+
 	self.iconBar = Ember.OgreView.Gui.IconBar:new("mainIcons")
 	guiManager:getMainSheet():addChild(self.iconBar:getWindow())
 	
@@ -159,12 +163,12 @@ end
 function MainIconBar:Input_InputModeChanged(inputMode)
 	self.currentMode = inputMode
 	if inputMode == Ember.Input.IM_GUI then
-		self.movementModeIcon:setForeground(self.movementImage_gui)
-		if self.originalCursorImage ~= nil then
-			CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setImage(self.originalCursorImage)
-			self.originalCursorImage = nil;
-		end
+		self.crossHair:setVisible(false)
+		CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setVisible(true)
 	else
+		self.crossHair:setVisible(true)
+		CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setVisible(false)
+
 		--delegate to another method since movement mode can either be running or walking (perhaps swimming or flying in the future?)
 		self:checkMovementMode();
 	end
@@ -172,17 +176,11 @@ end
 
 --This method will update the cursor image as well as the image on the movement mode icon to reflect whether the avatar is walking or running
 function MainIconBar:checkMovementMode()
-	if self.originalCursorImage == nil then
-		self.originalCursorImage = CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():getImage()
-	end
-
 	if emberOgre:getWorld() then
 		if emberOgre:getWorld():getMovementController():getMode() == Ember.OgreView.MovementControllerMode.MM_RUN then
 			self.movementModeIcon:setForeground(self.movementImage_run)
-			CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setImage(self.movementImage_run)
 		else
 			self.movementModeIcon:setForeground(self.movementImage_walk)
-			CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setImage(self.movementImage_walk)
 		end
 	end
 end

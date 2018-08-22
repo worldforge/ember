@@ -120,6 +120,8 @@ public:
 	 */
 	void runCommand(const std::string &command, const std::string &args) override;
 
+	const std::vector<PersistentEntityPickResult>& getPersistentResult() const;
+
 protected:
 	float mClosestPickingDistance, mFurthestPickingDistance;
 

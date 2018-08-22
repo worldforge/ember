@@ -184,7 +184,7 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 	//The reason is that we want the user to have a great fidelity in picking, and even though there might be a short delay
 	//between pressing the mouse button and getting a selection menu, we want to present the items which were under the
 	//mouse at the time the mouse button was pressed.
-	if (mousePickerArgs.pickType == MPT_PRESS || mousePickerArgs.pickType == MPT_HOVER) {
+	if (mousePickerArgs.pickType == MPT_PRESS || mousePickerArgs.pickType == MPT_HOVER || mousePickerArgs.pickType == MPT_SELECT) {
 		// First, calculate the ray between camera and screen coordinates
 		Ogre::Ray cameraRay = getCamera().getCameraToViewportRay(mouseX, mouseY);
 		bool continuePicking = true;
@@ -230,7 +230,7 @@ std::vector<PickResult> MainCamera::pick(const Ogre::Ray& cameraRay) const {
 
 	auto& origin = cameraRay.getOrigin();
 	btVector3 rayFrom(origin.x, origin.y, origin.z);
-	auto to = cameraRay.getPoint(300);
+	auto to = cameraRay.getPoint(50);
 	btVector3 rayTo(to.x, to.y, to.z);
 
 	btCollisionWorld::AllHitsRayResultCallback callback(rayFrom, rayTo);
@@ -317,10 +317,10 @@ void MainCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mo
 		if (mode == Input::IM_MOVEMENT) {
 
 			bool moved = false;
-			if (motion.xRelativeMovement) {
+			if (motion.xRelativeMovement != 0) {
 				moved = mCameraMount->yaw(motion.xRelativeMovement).valueDegrees() != 0;
 			}
-			if (motion.yRelativeMovement) {
+			if (motion.yRelativeMovement != 0) {
 				moved = mCameraMount->pitch(motion.yRelativeMovement).valueDegrees() || moved;
 			}
 

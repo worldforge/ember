@@ -125,17 +125,8 @@ std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity)
 			ss << std::endl << "Worn on the " << element.asString();
 		}
 	}
-	auto actions = entity.getActions();
-	if (!actions.empty()) {
-		for (std::vector<std::string>::const_iterator I = actions.begin(); I != actions.end(); ++I) {
-			ss << std::endl << "Can be used to " << *I;
-		}
-	}
-	auto operations = entity.getDefaultUseOperators();
-	if (!operations.empty()) {
-		for (std::vector<std::string>::const_iterator I = operations.begin(); I != operations.end(); ++I) {
-			ss << std::endl << "Can be used to " << *I;
-		}
+	for (auto& entry : entity.getUsages()) {
+		ss << std::endl << "Can be used to " << entry.first;
 	}
 
 	return ss.str();

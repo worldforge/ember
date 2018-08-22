@@ -48,17 +48,11 @@ function EntityPicker:buildWidget(world)
     self.buttons.move:subscribeEvent("MouseButtonUp", self.buttonMove_Click, self)
     self.buttons.edit = self.widget:getWindow("EditButton")
     self.buttons.edit:subscribeEvent("MouseButtonUp", self.editButton_Click, self)
-    --we can't eat stuff that aren't in our inventory (yet)
-    --[[	self.buttons.eat = self.widget:getWindow("EatButton")
-        self.buttons.eat:subscribeEvent("MouseButtonUp", self.eatButton_Click, self)]]
 
     --Collect a list of all the entity types which the user can normally talk to.
     --Note that the user still can talk to other entities, it's just not as easy to address them.
     self.talkingEntityTypes = {}
     self.typeService = world:getView():getAvatar():getConnection():getTypeService()
-    local characterType = self.typeService:getTypeByName("character")
-    table.insert(self.talkingEntityTypes, characterType)
-
 
     --get a couple of use buttons to allow for different use actions
 
@@ -274,13 +268,6 @@ function EntityPicker:pickedOneEntity(pickedResult)
                 self.buttons.take:setVisible(true)
             end
 
-            --only show the eat button if the entity has biomass (and thus is edible)
-            -- 		if result.entity:hasAttr("biomass") then
-            -- 			self.buttons.eat:setVisible(true)
-            -- 		else
-            -- 			self.buttons.eat:setVisible(false)
-            -- 		end
-
             self:checkUse(entity)
             self:showMenu(self.pickedPoint, entity)
             local name
@@ -305,7 +292,7 @@ function EntityPicker:checkUse(entity)
     local currentButtonIndex = 0
 
     --first fill up with actions defined for the entity being picked
-    local actionList = entity:getActions();
+    local actionList = entity:getUsages();
     if actionList:size() > 0 then
         for i = 0, actionList:size() - 1 do
             currentButtonIndex = currentButtonIndex + 1
@@ -319,7 +306,7 @@ function EntityPicker:checkUse(entity)
     local wieldedEntity = self.world:getAvatar():getEmberEntity():getAttachedEntity("attached_hand_primary")
     if wieldedEntity then
         currentButtonIndex = currentButtonIndex + 1
-        local operatorList = wieldedEntity:getDefaultUseOperators();
+        local operatorList = wieldedEntity:getUsages();
         if operatorList:size() > 0 then
             for i = 0, operatorList:size() - 1 do
                 currentButtonIndex = currentButtonIndex + 1
@@ -328,7 +315,33 @@ function EntityPicker:checkUse(entity)
                 self:addUse(currentButton, entity:getId(), wieldedEntity, defaultOp)
             end
         end
+    else
+        --else, if nothing is wielded, check if there are any usages on the avatar itself
+        local operatorList = self.world:getAvatar():getEmberEntity():getUsagesProtected();
+        if operatorList:size() > 0 then
+            for i = 0, operatorList:size() - 1 do
+                currentButtonIndex = currentButtonIndex + 1
+                local defaultOp = operatorList[i]
+                local currentButton = self.useButtons[currentButtonIndex]
+                self:addUseSelf(currentButton, entity:getId(), self.world:getAvatar():getEmberEntity(), defaultOp)
+            end
+        end
     end
+end
+
+function EntityPicker:addUseSelf(buttonWrapper, entityId, wieldedEntity, operation)
+    buttonWrapper.clickedHandler = function()
+        local entity = self.world:getEmberEntity(entityId)
+        if entity then
+            self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert:toWF_Point3(self.position))
+            guiManager:EmitEntityAction("use", entity)
+        end
+        self:removeMenu()
+    end
+
+    local button = buttonWrapper.button
+    button:setVisible(true)
+    button:setText(operation)
 end
 
 function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation)
@@ -344,11 +357,7 @@ function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation)
 
     local button = buttonWrapper.button
     button:setVisible(true)
-    if operation == "" then
-        button:setText("Use with " .. wieldedEntity:getType():getName())
-    else
-        button:setText(operation .. " with " .. wieldedEntity:getType():getName())
-    end
+    button:setText(operation .. " with " .. wieldedEntity:getType():getName())
 end
 
 function EntityPicker:addAction(buttonWrapper, entityId, action)

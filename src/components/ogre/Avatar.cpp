@@ -1,3 +1,5 @@
+#include <memory>
+
 /*
  Avatar.cpp by Erik Ogenvik
  Copyright (C) 2002 Miguel Guzman, Erik Ogenvik & The Worldforge
@@ -31,6 +33,7 @@
 #include "components/ogre/AvatarAttachmentController.h"
 #include "components/ogre/Scene.h"
 #include "components/ogre/World.h"
+#include "EntityWorldPickListener.h"
 
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
@@ -40,6 +43,7 @@
 #include "components/ogre/model/ModelRepresentationManager.h"
 
 #include "components/ogre/authoring/EntityMaker.h"
+#include "components/ogre/GUIManager.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -63,24 +67,24 @@
 
 #include <wfmath/stream.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-Avatar::Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
-	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
-	mErisAvatar(erisAvatar),
-	mErisAvatarEntity(erisAvatarEntity),
-	mAvatarAttachmentController(new AvatarAttachmentController(*this)),
-	mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene, terrainAdapter)),
-	mIsAdmin(false),
-	mHasChangedLocation(false),
-	mChatLoggerParent(nullptr),
-	mIsMovingServerOnly(false),
-	mScene(scene),
-	mEntityMaker(new Authoring::EntityMaker(*erisAvatar, *EmberServices::getSingleton().getServerService().getConnection()))
-{
+Avatar::Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& scene,
+			   const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
+		SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
+		AvatarActionDefaultStart("+avatar_action_default", this, "Performs the default action for the avatar."),
+		AvatarActionDefaultStop("-avatar_action_default", this, "Stops performing the default action for the avatar."),
+		mErisAvatar(erisAvatar),
+		mErisAvatarEntity(erisAvatarEntity),
+		mAvatarAttachmentController(new AvatarAttachmentController(*this)),
+		mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene, terrainAdapter)),
+		mIsAdmin(false),
+		mHasChangedLocation(false),
+		mChatLoggerParent(nullptr),
+		mIsMovingServerOnly(false),
+		mScene(scene),
+		mEntityMaker(new Authoring::EntityMaker(*erisAvatar, *EmberServices::getSingleton().getServerService().getConnection())) {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
 	MainLoopController::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
@@ -93,10 +97,11 @@ Avatar::Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& s
 	mCurrentMovementState.position = erisAvatarEntity.getPredictedPos();
 
 	//check if the user is of type "creator" and thus an admin
+	//TODO: get from properties instead
 	Eris::TypeService* typeService = EmberServices::getSingleton().getServerService().getConnection()->getTypeService();
 	if (mErisAvatarEntity.getType()->isA(typeService->getTypeByName("creator"))) {
 		mIsAdmin = true;
-		 EmberServices::getSingleton().getServerService().getAvatar()->setIsAdmin(true);
+		EmberServices::getSingleton().getServerService().getAvatar()->setIsAdmin(true);
 	} else {
 		mIsAdmin = false;
 	}
@@ -119,16 +124,14 @@ Avatar::Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& s
 	attachCameraToEntity();
 }
 
-Avatar::~Avatar()
-{
+Avatar::~Avatar() {
 	//The Eris entity is already deleted when this is called.
 	//mErisAvatarEntity.setAttachmentControlDelegate(0);
 	delete mAvatarAttachmentController;
 	delete mEntityMaker;
 }
 
-void Avatar::runCommand(const std::string &command, const std::string &args)
-{
+void Avatar::runCommand(const std::string& command, const std::string& args) {
 	if (SetAttachedOrientation == command) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -140,7 +143,7 @@ void Avatar::runCommand(const std::string &command, const std::string &args)
 			std::string degrees = tokeniser.nextToken();
 			if (!x.empty() && !y.empty() && !z.empty() && !degrees.empty()) {
 				Ogre::Degree ogreDegrees(Ogre::StringConverter::parseReal(degrees));
-				Ogre::Quaternion rotation(ogreDegrees, Ogre::Vector3(Ogre::StringConverter::parseReal( x), Ogre::StringConverter::parseReal( y), Ogre::StringConverter::parseReal( z)));
+				Ogre::Quaternion rotation(ogreDegrees, Ogre::Vector3(Ogre::StringConverter::parseReal(x), Ogre::StringConverter::parseReal(y), Ogre::StringConverter::parseReal(z)));
 				Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mErisAvatarEntity);
 				if (modelRepresentation) {
 					Model::Model& model = modelRepresentation->getModel();
@@ -155,26 +158,24 @@ void Avatar::runCommand(const std::string &command, const std::string &args)
 				}
 			}
 		}
+	} else if (AvatarActionDefaultStart == command) {
+		performDefaultUsage();
 	}
 }
 
-Camera::ThirdPersonCameraMount& Avatar::getCameraMount() const
-{
+Camera::ThirdPersonCameraMount& Avatar::getCameraMount() const {
 	return *mCameraMount;
 }
 
-void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds)
-{
+void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds) {
 	mMinIntervalOfRotationChanges = milliseconds;
 }
 
-void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
-{
+void Avatar::application_AfterInputProcessing(float timeSinceLastEvent) {
 	attemptMove();
 }
 
-void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice)
-{
+void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice) {
 	//Need to invert movement to fit with models
 	mCurrentMovement = WFMath::Vector<3>(-movement.x(), movement.y(), -movement.z());
 	if (movement != WFMath::Vector<3>::ZERO()) {
@@ -199,8 +200,7 @@ void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath:
 	}
 }
 
-void Avatar::attemptMove()
-{
+void Avatar::attemptMove() {
 
 	//first we'll register the current state in newMovementState and compare to mCurrentMovementState
 	//that way we'll only send stuff to the server if our movement changes
@@ -256,13 +256,11 @@ void Avatar::attemptMove()
 
 }
 
-EmberEntity& Avatar::getEmberEntity()
-{
+EmberEntity& Avatar::getEmberEntity() {
 	return mErisAvatarEntity;
 }
 
-bool Avatar::isOkayToSendRotationMovementChangeToServer()
-{
+bool Avatar::isOkayToSendRotationMovementChangeToServer() {
 	//Just check if we've recently sent something to the server
 	if (mLastTransmittedMovements.empty()) {
 		return true;
@@ -274,29 +272,25 @@ bool Avatar::isOkayToSendRotationMovementChangeToServer()
 	return false;
 }
 
-Ogre::Node* Avatar::getAvatarSceneNode() const
-{
-	NodeAttachment* attachment = dynamic_cast<NodeAttachment*> (mErisAvatarEntity.getAttachment());
+Ogre::Node* Avatar::getAvatarSceneNode() const {
+	auto* attachment = dynamic_cast<NodeAttachment*> (mErisAvatarEntity.getAttachment());
 	if (attachment) {
 		return attachment->getNode();
 	}
 	return nullptr;
 }
 
-const std::string& Avatar::getId() const
-{
+const std::string& Avatar::getId() const {
 	return mErisAvatar->getId();
 }
 
 
-Scene& Avatar::getScene() const
-{
+Scene& Avatar::getScene() const {
 	return mScene;
 }
 
 
-void Avatar::movedInWorld()
-{
+void Avatar::movedInWorld() {
 	//only snap the avatar to the postition and orientation sent from the server if we're not moving or if we're not recently changed location
 	//The main reason when moving is that we don't want to have the avatar snapping back in the case of lag
 	//However, if we've just recently changed location, we need to also update the orientation to work with the new location.
@@ -321,13 +315,11 @@ void Avatar::movedInWorld()
 	//	}
 }
 
-void Avatar::avatar_LocationChanged(Eris::Entity* entity)
-{
+void Avatar::avatar_LocationChanged(Eris::Entity* entity) {
 	attachCameraToEntity();
 }
 
-void Avatar::attachCameraToEntity()
-{
+void Avatar::attachCameraToEntity() {
 	mCameraMount->attachToNode(getAvatarSceneNode());
 
 	//if we've changed location, we need to update the orientation. This is done on the next onMoved event, which is why we must honour the updated values on next onMoved event, even though we might be moving.
@@ -338,8 +330,7 @@ void Avatar::attachCameraToEntity()
 
 }
 
-void Avatar::avatar_Moved()
-{
+void Avatar::avatar_Moved() {
 	//For now this is disabled, since there are a couple of issues with it
 	//	for (TimedMovementStateList::iterator I = mLastTransmittedMovements.begin(); I != mLastTransmittedMovements.end(); ++I) {
 	//		float distance = WFMath::Distance(I->second.position, mErisAvatarEntity.getPosition());
@@ -352,42 +343,33 @@ void Avatar::avatar_Moved()
 	if (mCurrentMovementState.movement == WFMath::Vector<3>::ZERO()) {
 		mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 		mClientSideAvatarPosition = mErisAvatarEntity.getPosition();
-		if (mErisAvatarEntity.getVelocity() != WFMath::Vector<3>::ZERO()) {
-			mIsMovingServerOnly = true;
-		} else {
-			mIsMovingServerOnly = false;
-		}
+		mIsMovingServerOnly = mErisAvatarEntity.getVelocity() != WFMath::Vector<3>::ZERO();
 	} else {
 		mIsMovingServerOnly = false;
 	}
 }
 
-void Avatar::entity_ChildAdded(Eris::Entity* childEntity)
-{
-	EventAddedEntityToInventory.emit(static_cast<EmberEntity*> (childEntity));
+void Avatar::entity_ChildAdded(Eris::Entity* childEntity) {
+	EventAddedEntityToInventory.emit(dynamic_cast<EmberEntity*> (childEntity));
 }
 
-void Avatar::entity_ChildRemoved(Eris::Entity* childEntity)
-{
-	EventRemovedEntityFromInventory.emit(static_cast<EmberEntity*> (childEntity));
+void Avatar::entity_ChildRemoved(Eris::Entity* childEntity) {
+	EventRemovedEntityFromInventory.emit(dynamic_cast<EmberEntity*> (childEntity));
 }
 
-void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
-	setMinIntervalOfRotationChanges(static_cast<double> (variable));
+void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable) {
+	setMinIntervalOfRotationChanges(static_cast<double>(variable));
 }
 
-void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (static_cast<bool> (variable)) {
-		mChatLoggerParent = std::unique_ptr<AvatarLoggerParent>(new AvatarLoggerParent(*this));
+		mChatLoggerParent = std::make_unique<AvatarLoggerParent>(*this);
 	} else {
 		mChatLoggerParent.reset();
 	}
 }
 
-WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
-{
+WFMath::Point<3> Avatar::getClientSideAvatarPosition() const {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
 	WFMath::Point<3> pos = mErisAvatarEntity.getPredictedPos();
 	return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
@@ -412,8 +394,7 @@ WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 //	}
 }
 
-WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
-{
+WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
 	return mErisAvatarEntity.getOrientation().isValid() ? mErisAvatarEntity.getOrientation() : WFMath::Quaternion().identity();
 //	if (mIsMovingServerOnly) {
@@ -423,8 +404,7 @@ WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 //	}
 }
 
-WFMath::Vector<3> Avatar::getClientSideAvatarVelocity() const
-{
+WFMath::Vector<3> Avatar::getClientSideAvatarVelocity() const {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
 	return mErisAvatarEntity.getVelocity().isValid() ? mErisAvatarEntity.getVelocity() : WFMath::Vector<3>::ZERO();
 //	if (mIsMovingServerOnly) {
@@ -438,7 +418,14 @@ void Avatar::viewEntityDeleted() {
 	EventAvatarEntityDestroyed();
 }
 
-void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity* target, const WFMath::Point<3>& pos) {
+void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target, const WFMath::Point<3>& pos) {
+
+	auto I = tool.getUsages().find(operation);
+	if (I == tool.getUsages().end()) {
+		return;
+	}
+
+	auto& usage = I->second;
 
 	Atlas::Objects::Operation::Use use;
 	use->setFrom(mErisAvatar->getId());
@@ -446,21 +433,91 @@ void Avatar::useTool(const EmberEntity& tool, const std::string& operation, cons
 	Atlas::Objects::Entity::RootEntity entity;
 	entity->setId(tool.getId());
 
+
+	for (auto& param : usage.params) {
+		Atlas::Message::ListType list;
+		if (param.second.type == "entity" || param.second.type == "entitylocation") {
+			if (target) {
+				Atlas::Objects::Entity::RootEntity entityArg;
+				entityArg->setId(target->getId());
+				if (pos.isValid()) {
+					entityArg->setPosAsList(Atlas::Message::Element(pos.toAtlas()).List());
+				}
+				list.emplace_back(entityArg->asMessage());
+			}
+		} else if (param.second.type == "position") {
+			list.emplace_back(pos.toAtlas());
+		} else {
+			WFMath::Vector<3> direction(0, 1, 0);
+			direction.rotate(mErisAvatarEntity.getOrientation());
+			list.emplace_back(direction.toAtlas());
+		}
+		entity->setAttr(param.first, std::move(list));
+	}
+//
+//
+//	if (target) {
+//		Atlas::Objects::Entity::RootEntity target1;
+//		target1->setId(target->getId());
+//		if (pos.isValid()) {
+//			target1->setPosAsList(Atlas::Message::Element(pos.toAtlas()).List());
+//		}
+//		op->setArgs1(target1);
+//	}
+
 	Atlas::Objects::Operation::RootOperation op;
 	op->setParent(operation);
+	op->setArgs1(entity);
 
-	if (target) {
-		Atlas::Objects::Entity::RootEntity target1;
-		target1->setId(target->getId());
-		if (pos.isValid()) {
-			target1->setPosAsList(Atlas::Message::Element(pos.toAtlas()).List());
-		}
-		op->setArgs1(target1);
-	}
-
-	use->setArgs({entity, op});
+	use->setArgs1(op);
 
 	EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->send(use);
+
+}
+
+void Avatar::performDefaultUsage() {
+	//Check if there's a tool in our primary hand and use if, otherwise check if we have any default usages.
+
+
+	auto useWithSelectedEntity = [&](EmberEntity& attachedEntity, const EmberEntity::Usage& usage, const std::string& op) {
+		auto pickedResults = EmberOgre::getSingleton().getWorld()->getEntityPickListener().getPersistentResult();
+		Eris::Entity* entity = nullptr;
+		WFMath::Point<3> pos;
+		for (auto& pickedResult : pickedResults) {
+			if (pickedResult.entityRef) {
+				entity = pickedResult.entityRef.get();
+				if (!pickedResult.position.isNaN()) {
+					pos = Convert::toWF<WFMath::Point<3>>(pickedResult.position);
+				}
+				break;
+			}
+		}
+
+		useTool(attachedEntity, op, entity, pos);
+		if (entity) {
+			GUIManager::getSingleton().EmitEntityAction("use", dynamic_cast<EmberEntity*>(entity));
+		}
+
+	};
+
+	auto attachedHandPrimaryElement = mErisAvatarEntity.ptrOfAttr("attached_hand_primary");
+	if (attachedHandPrimaryElement) {
+		auto attachedId = Eris::Entity::extractEntityId(*attachedHandPrimaryElement);
+		if (attachedId) {
+			auto attachedEntity = EmberOgre::getSingleton().getWorld()->getEmberEntity(*attachedId);
+			auto& usages = attachedEntity->getUsages();
+			if (!usages.empty()) {
+				useWithSelectedEntity(*attachedEntity, usages.begin()->second, usages.begin()->first);
+				return;
+			}
+		}
+	}
+	//Could not find any attached tool with usages, check if there's a default on the character itself
+	auto& selfUsages = mErisAvatarEntity.getUsagesProtected();
+	if (!selfUsages.empty()) {
+		useWithSelectedEntity(mErisAvatarEntity, selfUsages.begin()->second, selfUsages.begin()->first);
+
+	}
 
 }
 

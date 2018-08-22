@@ -58,7 +58,7 @@ namespace Gui {
 
 	Widget::~Widget()
 	{
-		if (mCommandSuffix != "") {
+		if (!mCommandSuffix.empty()) {
 			ConsoleBackend::getSingletonPtr()->deregisterCommand("show_" + mCommandSuffix);
 			ConsoleBackend::getSingletonPtr()->deregisterCommand("hide_" + mCommandSuffix);
 		}
@@ -123,7 +123,7 @@ namespace Gui {
 			assert(mWindowManager && "You must call init() before you can call any other methods.");
 			if (!mMainWindow) {
 				S_LOG_WARNING("Trying to get a window ("+ windowName +") on widget that has no main sheet loaded (" << mPrefix << ").");
-				return 0;
+				return nullptr;
 			}
 			assert(mMainWindow && "You must call loadMainSheet(...) before you can call this method.");
 			CEGUI::Window* window = mMainWindow->getChildRecursive(windowName);
@@ -136,7 +136,7 @@ namespace Gui {
 			if (throwIfNotFound) {
 				throw Exception("The window '" + windowName + "' could not be found.");
 			}
-			return 0;
+			return nullptr;
 		}
 
 	}
@@ -171,7 +171,7 @@ namespace Gui {
 
 	std::map<std::string, FactoryFunc>& WidgetLoader::getFactories()
 	{
-		static std::map<std::string, FactoryFunc>* factoryMap = new std::map<std::string, FactoryFunc>();
+		static auto* factoryMap = new std::map<std::string, FactoryFunc>();
 		return *factoryMap;
 	}
 
@@ -329,14 +329,14 @@ namespace Gui {
 
 	bool Widget::TabbableWindow_KeyDown(const CEGUI::EventArgs& args)
 	{
-		const CEGUI::KeyEventArgs& keyEventArgs = static_cast<const CEGUI::KeyEventArgs&>(args);
+		auto& keyEventArgs = static_cast<const CEGUI::KeyEventArgs&>(args);
 		if (keyEventArgs.scancode == CEGUI::Key::Tab)
 		{
 			//find the window in the list of tabbable windows
 			CEGUI::Window* activeWindow = mMainWindow->getActiveChild();
 			if (activeWindow) {
 //				WindowMap::iterator I = std::find(mTabOrder.begin(), mTabOrder.end(), activeWindow);
-				WindowMap::iterator I = mTabOrder.find(activeWindow);
+				auto I = mTabOrder.find(activeWindow);
 				if (I != mTabOrder.end()) {
 					I->second->activate();
 					//we don't want to process the event any more, in case something else will try to interpret the tab event to also change the focus
@@ -347,11 +347,11 @@ namespace Gui {
 		} else if (keyEventArgs.scancode == CEGUI::Key::Return)
 		{
 			//iterate through all enter buttons, and if anyone is visible, activate it
-			for (WindowStore::iterator I = mEnterButtons.begin(); I != mEnterButtons.end(); ++I) {
-				if ((*I)->isVisible()) {
-					CEGUI::Window* window = *I;
-					WindowEventArgs args(window);
-					window->fireEvent(PushButton::EventClicked, args, PushButton::EventNamespace);
+			for (auto& enterButton : mEnterButtons) {
+				if (enterButton->isVisible()) {
+					CEGUI::Window* window = enterButton;
+					WindowEventArgs eventArgs(window);
+					window->fireEvent(PushButton::EventClicked, eventArgs, PushButton::EventNamespace);
 					break;
 				}
 			}
@@ -381,8 +381,8 @@ namespace Gui {
 		if (mLastTabWindow && mFirstTabWindow) {
 			mTabOrder.insert(WindowMap::value_type(mLastTabWindow, mFirstTabWindow));
 		}
-		mFirstTabWindow = 0;
-		mLastTabWindow = 0;
+		mFirstTabWindow = nullptr;
+		mLastTabWindow = nullptr;
 	}
 
 // 	void addTabbableWindow(CEGUI::Window* window, const std::string& tabGroup)

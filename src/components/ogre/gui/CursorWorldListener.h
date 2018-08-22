@@ -43,6 +43,7 @@ class TimeFrame;
 
 namespace OgreView
 {
+class World;
 namespace Camera
 {
 class MainCamera;
@@ -75,7 +76,7 @@ public:
 	 * @param mainWindow The main window which covers the whole world. When this is clicked events will be emitted.
 	 * @param mainCamera The main camera, through which all picking events will be emitted.
 	 */
-	CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, Camera::MainCamera& mainCamera);
+	CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, World& world);
 
 	/**
 	 * @brief Dtor.
@@ -94,10 +95,7 @@ protected:
 	 */
 	CEGUI::Window& mMainWindow;
 
-	/**
-	 * @brief The main camera, through which all picking events will be emitted.
-	 */
-	Camera::MainCamera& mMainCamera;
+	World& mWorld;
 
 	/**
 	 * @brief If a "hover" event already has been sent this will be true.
@@ -132,7 +130,7 @@ protected:
 	 *
 	 * This is used to determine whether a mouse "press" or "click" event should be emitted.
 	 */
-	TimeFrame* mMousePressedTimeFrame;
+	std::unique_ptr<TimeFrame> mMousePressedTimeFrame;
 
 	/**
 	 * @brief Listens for config changes.

@@ -65,7 +65,9 @@ enum MousePickType
 	/**
 	 * Initial mouse button press.
 	 */
-	MPT_PRESS = 5
+	MPT_PRESS = 5,
+
+	MPT_SELECT = 6
 
 };
 

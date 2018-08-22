@@ -46,7 +46,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~FirstPersonCameraMount();
+	~FirstPersonCameraMount() override;
 
 
 	/**
@@ -59,23 +59,23 @@ public:
 	 * @brief Pitches the camera the supplied degrees
 	 * @param degrees
 	 */
-	virtual Ogre::Degree pitch(float relativeMovement);
+	Ogre::Degree pitch(float relativeMovement) override;
 
 	/**
 	 * @brief Yaws the camera the supplied degrees
 	 * @param degrees
 	 */
-	virtual Ogre::Degree yaw(float relativeMovement);
+	Ogre::Degree yaw(float relativeMovement) override;
 
 	/**
 	 * @copydoc ICameraMount::attachToCamera
 	 */
-	virtual void attachToCamera(MainCamera& camera);
+	void attachToCamera(MainCamera& camera) override;
 
 	/**
 	 * @copydoc ICameraMount::detachFromCamera
 	 */
-	virtual void detachFromCamera();
+	void detachFromCamera() override;
 
 private:
 

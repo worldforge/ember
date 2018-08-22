@@ -28,6 +28,7 @@
 #include "IHeightProvider.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
+#include "framework/AtlasQuery.h"
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -189,7 +190,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	//		getPosition(),getOrientation());
 
 	// Call the method of the base class (since we've overloaded it)
-	Eris::Entity::onTalk(talkArgs);
+	Eris::ViewEntity::onTalk(talkArgs);
 }
 
 void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation & op)
@@ -200,7 +201,7 @@ void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation &
 	ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
 	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << op->getParent());
 
-	Eris::Entity::onSoundAction(op);
+	Eris::ViewEntity::onSoundAction(op);
 }
 
 void EmberEntity::setAttachmentControlDelegate(IEntityControlDelegate* delegate)
@@ -282,6 +283,10 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
+	} else if (str == "usages") {
+		parseUsages(mUsages, v);
+	} else if (str == "_usages") {
+		parseUsages(mUsagesProtected, v);
 	}
 
 	//Dispatch attribute changes to any global listeners.
@@ -349,39 +354,6 @@ EmberEntity* EmberEntity::getEmberLocation() const
 EmberEntity* EmberEntity::getEmberContained(unsigned int index) const
 {
 	return dynamic_cast<EmberEntity*>(getContained(index));
-}
-
-std::vector<std::string> EmberEntity::getActions()
-{
-	//get the actions from Eris and return them a simple vector of strings
-	std::vector<std::string> actions;
-
-	if (hasAttr("usages")) {
-		auto& usages = valueOfAttr("usages");
-		if (usages.isMap()) {
-			auto& usagesMap = usages.Map();
-			actions.reserve(usagesMap.size());
-			for (auto& entry : usagesMap) {
-				//TODO: check with constraints, targets and consumed
-				actions.emplace_back(entry.first);
-//				if (entry.second.isMap()) {
-//					auto operationI = entry.Map().find("operation");
-//					if (operationI != entry.Map().end()) {
-//						if (operationI->second.isString()) {
-//							actions.push_back(operationI->second.String());
-//						}
-//					}
-//				}
-			}
-		}
-	}
-
-	return actions;
-}
-
-std::vector<std::string> EmberEntity::getDefaultUseOperators()
-{
-	return getActions();
 }
 
 void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const
@@ -508,6 +480,50 @@ EmberEntity::CompositionMode EmberEntity::getCompositionMode() const
 void EmberEntity::setCompositionMode(EmberEntity::CompositionMode mode)
 {
 	mCompositionMode = mode;
+}
+
+void EmberEntity::parseUsages(std::map<std::string, EmberEntity::Usage>& map, const Atlas::Message::Element& element) {
+	map.clear();
+
+	if (element.isMap()) {
+		for (auto& entry : element.Map()) {
+			Usage usage;
+			AtlasQuery::find<Atlas::Message::StringType>(entry.second, "constraint", [&](const auto& constraint) {
+				usage.constraint = constraint;
+			});
+			AtlasQuery::find<Atlas::Message::StringType>(entry.second, "description", [&](const auto& description) {
+				usage.description = description;
+			});
+			AtlasQuery::find<Atlas::Message::MapType>(entry.second, "params", [&](const auto& params) {
+				for (auto& paramEntry: params) {
+					UsageParameter usageParam;
+					AtlasQuery::find<Atlas::Message::StringType>(paramEntry.second, "type", [&](const auto& type) {
+						usageParam.type = type;
+					});
+					AtlasQuery::find<Atlas::Message::IntType>(paramEntry.second, "min", [&](const auto& min) {
+						usageParam.min = min;
+					});
+					AtlasQuery::find<Atlas::Message::IntType>(paramEntry.second, "max", [&](const auto& max) {
+						usageParam.max = max;
+					});
+					AtlasQuery::find<Atlas::Message::StringType>(paramEntry.second, "constraint", [&](const auto& constraint) {
+						usageParam.constraint = constraint;
+					});
+					usage.params.emplace(paramEntry.first, std::move(usageParam));
+				}
+			});
+
+			map.emplace(entry.first, std::move(usage));
+		}
+	}
+}
+
+const std::map<std::string, EmberEntity::Usage>& EmberEntity::getUsages() const {
+	return mUsages;
+}
+
+const std::map<std::string, EmberEntity::Usage>& EmberEntity::getUsagesProtected() const {
+	return mUsagesProtected;
 }
 
 }

@@ -1,3 +1,5 @@
+#include <memory>
+
 //
 // C++ Implementation: EntityWorldPickListener
 //
@@ -95,7 +97,7 @@ void EntityWorldPickListener::initializePickingContext(bool& willParticipate, co
 {
 	mResult.clear();
 	mPersistedResult.clear();
-	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_HOVER) {
+	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_HOVER || pickArgs.pickType == MPT_SELECT) {
 		willParticipate = true;
 
 		mClosestPickingDistance = 0;
@@ -165,9 +167,9 @@ void EntityWorldPickListener::processDelayedPick(const MousePickerArgs& mousePic
 		std::vector<EntityPickResult> resolvedResult;
 
 		for (auto& persistedEntry : mPersistedResult) {
-			if (persistedEntry.entityRef.get()) {
+			if (persistedEntry.entityRef) {
 				EntityPickResult entry;
-				entry.entity = static_cast<EmberEntity*>(persistedEntry.entityRef.get());
+				entry.entity = dynamic_cast<EmberEntity*>(persistedEntry.entityRef.get());
 				entry.distance = persistedEntry.distance;
 				entry.isTransparent = persistedEntry.isTransparent;
 				entry.position = persistedEntry.position;
@@ -188,7 +190,7 @@ void EntityWorldPickListener::runCommand(const std::string &command, const std::
 		if (mVisualizer) {
 			mVisualizer.reset();
 		} else {
-			mVisualizer = std::unique_ptr<EntityWorldPickListenerVisualizer>(new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
+			mVisualizer = std::make_unique<EntityWorldPickListenerVisualizer>(*this, mScene.getSceneManager());
 		}
 	}
 }
@@ -199,11 +201,15 @@ EmberEntity* EntityWorldPickListener::findTerrainEntity()
 
 	while (entity != nullptr) {
 		if (entity->hasAttr("terrain")) {
-			return static_cast<EmberEntity*>(entity);
+			return dynamic_cast<EmberEntity*>(entity);
 		}
 		entity = entity->getLocation();
 	}
 	return nullptr;
+}
+
+const std::vector<PersistentEntityPickResult>& EntityWorldPickListener::getPersistentResult() const {
+	return mPersistedResult;
 }
 
 

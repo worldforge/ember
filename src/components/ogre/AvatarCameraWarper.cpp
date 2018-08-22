@@ -30,28 +30,27 @@
 #include <Eris/View.h>
 #include <OgreSceneNode.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 AvatarCameraWarper::AvatarCameraWarper(MovementController& movementController, const Camera::MainCamera& camera, Eris::View& view, float movementThreshold) :
-		AvatarFollowsCamera("toggle_avatar_follows_camera", this, "Toggles the avatar being moved when the first person camera is moved. An optional threshold value can also be specified."), mMovementController(movementController), mCamera(camera), mView(view), mMovementThreshold(movementThreshold), mLastPosition(camera.getPosition()), mEnabled(false)
-{
+		AvatarFollowsCamera("toggle_avatar_follows_camera", this, "Toggles the avatar being moved when the first person camera is moved. An optional threshold value can also be specified."),
+		mMovementController(movementController),
+		mCamera(camera),
+		mView(view),
+		mMovementThreshold(movementThreshold),
+		mLastPosition(camera.getPosition()),
+		mEnabled(false) {
 	MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &AvatarCameraWarper::frameProcessed));
 }
 
-AvatarCameraWarper::~AvatarCameraWarper()
-{
-}
+AvatarCameraWarper::~AvatarCameraWarper() = default;
 
-void AvatarCameraWarper::setEnabled(bool enabled)
-{
+void AvatarCameraWarper::setEnabled(bool enabled) {
 	mEnabled = true;
 }
 
-void AvatarCameraWarper::runCommand(const std::string& command, const std::string& args)
-{
+void AvatarCameraWarper::runCommand(const std::string& command, const std::string& args) {
 	if (AvatarFollowsCamera == command) {
 		mEnabled = !mEnabled;
 		S_LOG_INFO("Setting avatar camera warper to " << (mEnabled ? "enabled" : "disabled") << ".");
@@ -66,8 +65,7 @@ void AvatarCameraWarper::runCommand(const std::string& command, const std::strin
 	}
 }
 
-void AvatarCameraWarper::frameProcessed(const TimeFrame&, unsigned int)
-{
+void AvatarCameraWarper::frameProcessed(const TimeFrame&, unsigned int) {
 	if (mEnabled && mMovementController.isCameraFreeFlying()) {
 		const Ogre::Vector3& cameraPosition = mCamera.getPosition();
 		if (cameraPosition.distance(mLastPosition) > mMovementThreshold) {
@@ -77,8 +75,7 @@ void AvatarCameraWarper::frameProcessed(const TimeFrame&, unsigned int)
 	}
 }
 
-void AvatarCameraWarper::updateAvatarPosition(const Ogre::Vector3& worldPosition)
-{
+void AvatarCameraWarper::updateAvatarPosition(const Ogre::Vector3& worldPosition) {
 	if (mView.getTopLevel()) {
 		mMovementController.teleportTo(worldPosition, static_cast<EmberEntity*>(mView.getTopLevel()));
 	}

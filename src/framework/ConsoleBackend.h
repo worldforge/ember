@@ -63,7 +63,7 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
     /**
      * Creates a new ConsoleBackend using default values.
      */
-	ConsoleBackend(void);
+	ConsoleBackend();
 
     /**
      * Copy constructor.
@@ -83,7 +83,7 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
     /**
      * Deletes a ConsoleBackend instance.
      */
-    virtual ~ConsoleBackend ();
+	~ConsoleBackend () override;
 
 
     //----------------------------------------------------------------------
@@ -140,7 +140,7 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
      * @param command The command.
      * @param args The parameters for the command.
      */
-    void runCommand(const std::string &command, const std::string &args);
+    void runCommand(const std::string &command, const std::string &args) override;
 
 
     //------------------------------------

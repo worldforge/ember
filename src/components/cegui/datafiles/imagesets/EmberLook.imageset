@@ -176,5 +176,7 @@
 
 	<Image height="2" name="MultiListSelectionBrush" width="2" xPos="81" yPos="45" />
 	<Image height="1" name="GenericBrush" width="1" xPos="6" yPos="6" />
-	
+
+	<Image height="13" name="CrossHair" width="13" xPos="111" yPos="4" />
+
 </Imageset>

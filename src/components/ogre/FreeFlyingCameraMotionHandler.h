@@ -33,10 +33,11 @@ namespace OgreView {
 class FreeFlyingCameraMotionHandler : public ICameraMotionHandler
 {
 public:
-	FreeFlyingCameraMotionHandler(Ogre::SceneNode& freeFlyingNode);
-	virtual ~FreeFlyingCameraMotionHandler();
+	explicit FreeFlyingCameraMotionHandler(Ogre::SceneNode& freeFlyingNode);
 
-	virtual void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice);
+	~FreeFlyingCameraMotionHandler() override;
+
+	void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice) override;
 
 	float getSpeed() const;
 

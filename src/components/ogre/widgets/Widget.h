@@ -41,21 +41,7 @@ class GUIManager;
  */
 namespace Gui {
 
-class WidgetLoader;
 class Widget;
-
-/**se this template to register a widget in the global widget factory map
-This is done by:
-template<> WidgetLoader WidgetLoaderHolder<ASubClassOfWidget>::loader("associatedName", &createWidgetInstance);
-*/
-// template <typename T> class WidgetLoaderHolder
-// {
-// protected:
-// 
-// 	static WidgetLoader loader;
-// 	static Widget* createWidgetInstance() { return new T; }
-// };
-
 
 
 /**
@@ -64,7 +50,7 @@ Because CEGUI::Listbox can't hold const objects in its
 template<typename T> class ConstWrapper
 {
 public:
-	ConstWrapper(T value) : mValue(value) {}
+	explicit ConstWrapper(T value) : mValue(value) {}
 	T mValue;
 };
 
@@ -90,7 +76,7 @@ public:
 
 	friend class ::Ember::OgreView::GUIManager;
 	friend class WidgetLoader;
-	
+
 	static const std::string DEFAULT_TAB_GROUP;
 	
 	
@@ -122,7 +108,7 @@ public:
 	 * @param command 
 	 * @param args 
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	
 	/**
@@ -267,7 +253,7 @@ protected:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~Widget();
+	~Widget() override;
 
 	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
 
