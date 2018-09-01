@@ -289,6 +289,8 @@ public:
 	 */
 	virtual float getHeight(const WFMath::Point<2>& localPosition) const;
 
+	std::string getNameOrType() const;
+
 	void setHeightProvider(IHeightProvider* heightProvider);
 
 	const std::map<std::string, Usage>& getUsages() const;

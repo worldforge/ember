@@ -128,6 +128,14 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	}
 }
 
+std::string EmberEntity::getNameOrType() const
+{
+	if (!m_name.empty()) {
+		return m_name;
+	}
+	return m_type->getName();
+}
+
 void EmberEntity::adjustPosition()
 {
 	if (mAttachment) {
@@ -197,7 +205,7 @@ void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation &
 {
 	//We'll just catch the call and write something to both the log and the console, and then pass it on.
 
-	std::string message = getName() + " emits a " + op->getParent() + ".";
+	std::string message = getNameOrType() + " emits a " + op->getParent() + ".";
 	ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
 	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << op->getParent());
 
@@ -258,8 +266,31 @@ void EmberEntity::updateAttachment()
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 {
-	std::string message = getName() + " performs a " + act->getParent() + ".";
-	ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
+	if (act->getParent() == "hit" && !act->isDefaultTo()) {
+		//Hits are special, since we need to check the "to" instead.
+		auto hitEntity = dynamic_cast<EmberEntity*>(getView()->getEntity(act->getTo()));
+		if (hitEntity) {
+			std::string message;
+			if (!act->getArgs().empty()) {
+				auto& arg = act->getArgs().front();
+				if (arg->hasAttr("damage")) {
+					auto damageElem = arg->getAttr("damage");
+					if (damageElem.isNum()) {
+						message = hitEntity->getNameOrType() + " is hit for " + std::to_string(static_cast<long>(damageElem.asNum())) + " damage.";
+					}
+				}
+			}
+			if (message.empty()) {
+				message = hitEntity->getNameOrType() + " is hit.";
+			}
+			ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
+		}
+
+	} else {
+		std::string message = getNameOrType() + " performs a " + act->getParent() + ".";
+		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
+	}
+
 	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << act->getParent());
 
 	Entity::onAction(act);
