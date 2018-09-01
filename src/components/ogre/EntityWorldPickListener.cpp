@@ -115,7 +115,7 @@ void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePick
 			mPersistedResult.reserve(mResult.size());
 			for (auto& resultEntry : mResult) {
 				PersistentEntityPickResult persistedEntry;
-				persistedEntry.entityRef = Eris::EntityRef(resultEntry.entity);
+				persistedEntry.entityRef = EmberEntityRef(resultEntry.entity);
 				persistedEntry.distance = resultEntry.distance;
 				persistedEntry.isTransparent = resultEntry.isTransparent;
 				persistedEntry.position = resultEntry.position;
@@ -176,7 +176,7 @@ void EntityWorldPickListener::processDelayedPick(const MousePickerArgs& mousePic
 		for (auto& persistedEntry : mPersistedResult) {
 			if (persistedEntry.entityRef) {
 				EntityPickResult entry;
-				entry.entity = dynamic_cast<EmberEntity*>(persistedEntry.entityRef.get());
+				entry.entity = persistedEntry.entityRef.get();
 				entry.distance = persistedEntry.distance;
 				entry.isTransparent = persistedEntry.isTransparent;
 				entry.position = persistedEntry.position;
@@ -200,19 +200,6 @@ void EntityWorldPickListener::runCommand(const std::string &command, const std::
 			mVisualizer = std::make_unique<EntityWorldPickListenerVisualizer>(*this, mScene.getSceneManager());
 		}
 	}
-}
-
-EmberEntity* EntityWorldPickListener::findTerrainEntity()
-{
-	auto entity = mView.getAvatar()->getEntity();
-
-	while (entity != nullptr) {
-		if (entity->hasAttr("terrain")) {
-			return dynamic_cast<EmberEntity*>(entity);
-		}
-		entity = entity->getLocation();
-	}
-	return nullptr;
 }
 
 const std::vector<PersistentEntityPickResult>& EntityWorldPickListener::getPersistentResult() const {

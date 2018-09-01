@@ -330,7 +330,7 @@ void CursorWorldListener::highlightSelectedEntity() {
 
 			}
 		}
-		mOutline = Glow{selectedEntity};
+		mOutline = Outline{selectedEntity};
 
 		if (selectedEntity) {
 			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(selectedEntity->getGraphicalRepresentation());

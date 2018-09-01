@@ -26,7 +26,7 @@
 #include "EmberOgrePrerequisites.h"
 #include "IWorldPickListener.h"
 #include "framework/ConsoleObject.h"
-#include <Eris/EntityRef.h>
+#include "domain/EmberEntityRef.h"
 #include <OgreVector3.h>
 #include <sigc++/signal.h>
 #include <memory>
@@ -66,7 +66,7 @@ struct EntityPickResult
  */
 struct PersistentEntityPickResult
 {
-	Eris::EntityRef entityRef;
+	EmberEntityRef entityRef;
 	Ogre::Vector3 position;
 	Ogre::Real distance;
 	bool isTransparent;
@@ -149,14 +149,6 @@ protected:
 
 	Scene& mScene;
 
-	/**
-	 * Finds the entity to which the terrain belongs.
-	 *
-	 * This is done by walking upwards from the avatar entity until we find an entity with the "terrain" property.
-	 *
-	 * @return An entity which contains the "terrain" property.
-	 */
-	EmberEntity* findTerrainEntity();
 
 };
 

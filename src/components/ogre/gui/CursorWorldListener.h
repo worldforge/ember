@@ -27,6 +27,7 @@
 #include <sigc++/trackable.h>
 #include <vector>
 #include <Eris/EntityRef.h>
+#include <domain/EmberEntityRef.h>
 
 namespace CEGUI
 {
@@ -93,7 +94,7 @@ protected:
 		/**
 		 * The entity which was selected.
 		 */
-		Eris::EntityRef selectedEntity;
+		EmberEntityRef selectedEntity;
 
 		/**
 		 * Any generated Ogre Entities used for the outline.

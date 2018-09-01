@@ -32,6 +32,7 @@
 #include "components/ogre/World.h"
 #include "components/ogre/Scene.h"
 #include "components/ogre/terrain/TerrainManager.h"
+#include "components/ogre/model/ModelRepresentation.h"
 
 #include "services/server/ServerService.h"
 #include <OgreSceneNode.h>
@@ -49,6 +50,14 @@ EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& mana
 		mControlDelegate(new EntityMoverControlDelegate(*this)) {
 	nodeAttachment.setControlDelegate(mControlDelegate);
 
+
+	auto modelRepresentation = dynamic_cast<Model::ModelRepresentation*>(nodeAttachment.getAttachedEntity().getGraphicalRepresentation());
+	if (modelRepresentation) {
+		//Disable occlusion while moving the entity
+		modelRepresentation->getCollisionDetector().setMask(COLLISION_MASK_PICKABLE);
+	}
+
+
 	//Check if the entity already is offset from the terrain, and retain that offset.
 	auto viewPosition = nodeAttachment.getAttachedEntity().getViewPosition();
 	float height;
@@ -60,6 +69,12 @@ EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& mana
 }
 
 EntityMover::~EntityMover() {
+	auto modelRepresentation = dynamic_cast<Model::ModelRepresentation*>(mNodeAttachment.getAttachedEntity().getGraphicalRepresentation());
+	if (modelRepresentation) {
+		modelRepresentation->getCollisionDetector().setMask(COLLISION_MASK_PICKABLE | COLLISION_MASK_OCCLUDING);
+	}
+
+
 	delete mControlDelegate;
 }
 

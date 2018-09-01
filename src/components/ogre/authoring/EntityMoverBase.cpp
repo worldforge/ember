@@ -1,3 +1,5 @@
+#include <memory>
+
 //
 // C++ Class: EntityMoverBase
 //
@@ -26,7 +28,6 @@
 #include "domain/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/EntityCollisionInfo.h"
-#include "components/ogre/model/ModelRepresentation.h"
 
 #include <Eris/TypeInfo.h>
 
@@ -70,14 +71,6 @@ EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::S
 		mSnapping(nullptr),
 		mOffsetMarker(nullptr)
 {
-	auto emberEntity = dynamic_cast<EmberEntity*>(&entity);
-	if (emberEntity) {
-		auto modelRepresentation = dynamic_cast<Model::ModelRepresentation*>(emberEntity->getGraphicalRepresentation());
-		if (modelRepresentation) {
-			//Disable occlusion while moving the entity
-			modelRepresentation->getCollisionDetector().setMask(COLLISION_MASK_PICKABLE);
-		}
-	}
 
 	SnapListener& snapListener = getSnapListener();
 	if (snapListener.getSnappingEnabled()) {
@@ -94,15 +87,6 @@ EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::S
 }
 
 EntityMoverBase::~EntityMoverBase() {
-	if (mEntity) {
-		auto emberEntity = dynamic_cast<EmberEntity*>(mEntity.get());
-		if (emberEntity) {
-			auto modelRepresentation = dynamic_cast<Model::ModelRepresentation*>(emberEntity->getGraphicalRepresentation());
-			if (modelRepresentation) {
-				modelRepresentation->getCollisionDetector().setMask(COLLISION_MASK_PICKABLE | COLLISION_MASK_OCCLUDING);
-			}
-		}
-	}
 	mSceneManager.destroyManualObject(mOffsetMarker);
 }
 
@@ -175,8 +159,8 @@ void EntityMoverBase::newEntityPosition(const Ogre::Vector3& /*position*/) {
 
 void EntityMoverBase::setSnapToEnabled(bool snapTo) {
 	if (snapTo) {
-		if (!mSnapping.get() && mEntity) {
-			mSnapping.reset(new Authoring::SnapToMovement(*mEntity.get(), *mNode, 2.0f, mSceneManager, true));
+		if (!mSnapping && mEntity) {
+			mSnapping = std::make_unique<Authoring::SnapToMovement>(*mEntity.get(), *mNode, 2.0f, mSceneManager, true);
 			setPosition(Convert::toWF<WFMath::Point<3>>(mNode->getPosition()));
 		}
 	} else {

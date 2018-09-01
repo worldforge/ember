@@ -7,7 +7,7 @@ add_library(domain
         IEntityVisitor.h
         IVisualizable.h
         Types.h
-        IGraphicalRepresentation.h)
+        IGraphicalRepresentation.h EmberEntityRef.cpp EmberEntityRef.h)
 
 
 wf_generate_lua_bindings(bindings/lua/Domain)
