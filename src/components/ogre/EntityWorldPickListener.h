@@ -120,9 +120,14 @@ public:
 	 */
 	void runCommand(const std::string &command, const std::string &args) override;
 
+	const std::vector<EntityPickResult>& getResult() const;
 	const std::vector<PersistentEntityPickResult>& getPersistentResult() const;
 
+	std::function<bool(const EmberEntity&)> mFilter;
+
 protected:
+
+
 	float mClosestPickingDistance, mFurthestPickingDistance;
 
 	/**

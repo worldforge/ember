@@ -122,7 +122,7 @@ CEGUI is not built with Freetype
 
 		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
 		if (provider != nullptr) {
-			Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
+			auto* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
 			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
 			if (!luaScriptProvider->getErrorHandlingFunctionName().empty()) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
@@ -170,7 +170,7 @@ CEGUI is not built with Freetype
 		//connect to the creation of the avatar, since we want to switch to movement mode when that happens
 		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
 		EmberOgre::getSingleton().EventWorldCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldCreated));
-		EmberOgre::getSingleton().EventWorldDestroyed.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldDestroyed));
+		EmberOgre::getSingleton().EventWorldBeingDestroyed.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldBeingDestroyed));
 
 		mActiveWidgetHandler = new Gui::ActiveWidgetHandler(*this);
 
@@ -300,7 +300,7 @@ void GUIManager::server_GotView(Eris::View* view)
 void GUIManager::view_EntityCreated(Eris::Entity* entity)
 {
 	//It's safe to cast to EmberEntity, since all entities in the system are guaranteed to be of this type.
-	EmberEntity* emberEntity = static_cast<EmberEntity*>(entity);
+	auto* emberEntity = static_cast<EmberEntity*>(entity);
 	//The Entity has a shorter lifespan than ours, so we don't need to store references to the connections.
 	emberEntity->EventTalk.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Talk), emberEntity));
 	emberEntity->Emote.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Emote), emberEntity));
@@ -513,7 +513,7 @@ void GUIManager::EmberOgre_WorldCreated(World& world)
 	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world);
 }
 
-void GUIManager::EmberOgre_WorldDestroyed()
+void GUIManager::EmberOgre_WorldBeingDestroyed()
 {
 	delete mEntityTooltip;
 	mEntityTooltip = nullptr;

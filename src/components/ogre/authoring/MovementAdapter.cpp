@@ -114,7 +114,7 @@ void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate) {
 
 	const MousePosition& mousePosition(Input::getSingleton().getMousePosition());
 	Ogre::Ray cameraRay = getCamera().getCamera().getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition);
-	auto results = getCamera().pick(cameraRay);
+	auto results = getCamera().pick(cameraRay, 300);
 
 	for (auto& result : results) {
 		if (mAdapter.getBridge()->isCollisionResultValid(result)) {

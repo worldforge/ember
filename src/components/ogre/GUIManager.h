@@ -359,7 +359,7 @@ protected:
 
 	void EmberOgre_WorldCreated(World& world);
 
-	void EmberOgre_WorldDestroyed();
+	void EmberOgre_WorldBeingDestroyed();
 
 	void pressedKey(const SDL_Keysym& key, Input::InputMode inputMode);
 

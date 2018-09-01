@@ -133,6 +133,13 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, PickResul
 
 	if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
 		auto& entityCollisionInfo = boost::any_cast<EntityCollisionInfo&>(result.collisionInfo);
+
+		if (mFilter) {
+			if (!mFilter(*entityCollisionInfo.entity)) {
+				return;
+			}
+		}
+
 		//handle composed entities
 
 		std::list<EmberEntity*> entities;
@@ -210,6 +217,10 @@ EmberEntity* EntityWorldPickListener::findTerrainEntity()
 
 const std::vector<PersistentEntityPickResult>& EntityWorldPickListener::getPersistentResult() const {
 	return mPersistedResult;
+}
+
+const std::vector<EntityPickResult>& EntityWorldPickListener::getResult() const {
+	return mResult;
 }
 
 

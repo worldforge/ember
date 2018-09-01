@@ -143,13 +143,13 @@ void MainCamera::Config_Compositors(const std::string& /*section*/, const std::s
 			enableCompositor(token, true);
 		}
 		std::vector<std::string> compositorsToDisable;
-		for (CompositorNameStore::const_iterator I = mLoadedCompositors.begin(); I != mLoadedCompositors.end(); ++I) {
-			if (std::find(tokens.begin(), tokens.end(), *I) == tokens.end()) {
-				compositorsToDisable.push_back(*I);
+		for (auto& compositor : mLoadedCompositors) {
+			if (std::find(tokens.begin(), tokens.end(), compositor) == tokens.end()) {
+				compositorsToDisable.push_back(compositor);
 			}
 		}
-		for (std::vector<std::string>::const_iterator I = compositorsToDisable.begin(); I != compositorsToDisable.end(); ++I) {
-			enableCompositor(*I, false);
+		for (auto& compositor : compositorsToDisable) {
+			enableCompositor(compositor, false);
 		}
 	}
 }
@@ -202,7 +202,7 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 		if (!participatingListeners.empty()) {
 
 
-			auto results = pick(cameraRay);
+			auto results = pick(cameraRay, mousePickerArgs.distance);
 
 			for (auto& result : results) {
 				for (auto listener : participatingListeners) {
@@ -225,12 +225,12 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 }
 
 
-std::vector<PickResult> MainCamera::pick(const Ogre::Ray& cameraRay) const {
+std::vector<PickResult> MainCamera::pick(const Ogre::Ray& cameraRay, float distance) const {
 	std::vector<PickResult> results;
 
 	auto& origin = cameraRay.getOrigin();
 	btVector3 rayFrom(origin.x, origin.y, origin.z);
-	auto to = cameraRay.getPoint(50);
+	auto to = cameraRay.getPoint(distance);
 	btVector3 rayTo(to.x, to.y, to.z);
 
 	btCollisionWorld::AllHitsRayResultCallback callback(rayFrom, rayTo);
@@ -321,7 +321,7 @@ void MainCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mo
 				moved = mCameraMount->yaw(motion.xRelativeMovement).valueDegrees() != 0;
 			}
 			if (motion.yRelativeMovement != 0) {
-				moved = mCameraMount->pitch(motion.yRelativeMovement).valueDegrees() || moved;
+				moved = mCameraMount->pitch(motion.yRelativeMovement).valueDegrees() != 0 || moved;
 			}
 
 			if (moved) {

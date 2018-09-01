@@ -78,6 +78,7 @@
 namespace Ember {
 namespace OgreView {
 
+
 OgreSetup::OgreSetup() :
 		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."),
 		mRoot(nullptr),
@@ -128,7 +129,7 @@ void OgreSetup::shutdown() {
 
 		if (Ogre::GpuProgramManager::getSingletonPtr()) {
 			try {
-				auto cacheStream = mRoot->createFileStream(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) + "/gpu-" VERSION ".cache");
+				auto cacheStream = Ogre::Root::createFileStream(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) + "/gpu-" VERSION ".cache");
 				if (cacheStream) {
 					Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
 				}
@@ -221,7 +222,7 @@ bool OgreSetup::showConfigurationDialog() {
 	}
 	createOgreSystem();
 	if (result == OgreConfigurator::OC_ADVANCED_OPTIONS) {
-		Ogre::ConfigDialog* dialog = OGRE_NEW Ogre::ConfigDialog();
+		auto* dialog = OGRE_NEW Ogre::ConfigDialog();
 		bool isOk = mRoot->showConfigDialog(dialog);
 		OGRE_DELETE dialog;
 		if (!isOk) {
@@ -339,7 +340,7 @@ Ogre::Root* OgreSetup::configure() {
 		std::string cacheFilePath = configService.getHomeDirectory(BaseDirType_CACHE) + "/gpu-" VERSION ".cache";
 		if (std::ifstream(cacheFilePath).good()) {
 			try {
-				auto cacheStream = mRoot->openFileStream(cacheFilePath);
+				auto cacheStream = Ogre::Root::openFileStream(cacheFilePath);
 				if (cacheStream) {
 					Ogre::GpuProgramManager::getSingleton().loadMicrocodeCache(cacheStream);
 				}
@@ -481,8 +482,7 @@ void OgreSetup::setStandardValues() {
 			return nullptr;
 		}
 
-		bool afterIlluminationPassesCreated(Ogre::Technique *tech)
-		{
+		bool afterIlluminationPassesCreated(Ogre::Technique *tech) override {
 			if(tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME)
 			{
 				auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
@@ -494,8 +494,7 @@ void OgreSetup::setStandardValues() {
 			return false;
 		}
 
-		bool beforeIlluminationPassesCleared(Ogre::Technique *tech)
-		{
+		bool beforeIlluminationPassesCleared(Ogre::Technique *tech) override {
 			if(tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME)
 			{
 				auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();

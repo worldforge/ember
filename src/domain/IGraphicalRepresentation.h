@@ -41,7 +41,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IGraphicalRepresentation() = default;
+	~IGraphicalRepresentation() override = default;
 
 	/**
 	 * @brief Gets the unique type name for a subclass of this.

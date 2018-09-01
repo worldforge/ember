@@ -45,9 +45,7 @@ ActiveWidgetHandler::ActiveWidgetHandler(GUIManager& guiManager)
 }
 
 
-ActiveWidgetHandler::~ActiveWidgetHandler()
-{
-}
+ActiveWidgetHandler::~ActiveWidgetHandler() = default;
 
 bool ActiveWidgetHandler::lastActiveWindowDestructionStarted(const CEGUI::EventArgs&) {
 	mLastActiveWindow = nullptr;

@@ -132,7 +132,7 @@ public:
 
 	void pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& args);
 
-	std::vector<PickResult> pick(const Ogre::Ray& cameraRay) const;
+	std::vector<PickResult> pick(const Ogre::Ray& cameraRay, float distance) const;
 
 	void setClosestPickingDistance(Ogre::Real distance);
 

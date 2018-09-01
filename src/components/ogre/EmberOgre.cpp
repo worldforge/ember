@@ -100,7 +100,7 @@
 #include <framework/TimedLog.h>
 #include <RTShaderSystem/OgreShaderGenerator.h>
 
-template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
+template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = nullptr;
 
 using namespace Ember;
 namespace Ember
@@ -269,7 +269,7 @@ void EmberOgre::clearDirtyPassLists()
 void EmberOgre::shutdownGui()
 {
 	delete mGUIManager;
-	mGUIManager = 0;
+	mGUIManager = nullptr;
 }
 
 bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris::EventService& eventService)
@@ -573,7 +573,7 @@ void EmberOgre::Application_ServicesInitialized()
 {
 	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 
-	mSoundResourceProvider = std::unique_ptr<OgreResourceProvider>(new OgreResourceProvider("General"));
+	mSoundResourceProvider = std::make_unique<OgreResourceProvider>("General");
 	EmberServices::getSingleton().getSoundService().setResourceProvider(mSoundResourceProvider.get());
 
 }

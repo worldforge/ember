@@ -280,7 +280,7 @@ public:
 	bool useInstancing() const;
 
 	/**
-	 * Applies the supplied
+	 * Applies the supplied callback to all movables.
 	 * @param callback
 	 */
 	void doWithMovables(std::function<void(Ogre::MovableObject*, int)> callback);

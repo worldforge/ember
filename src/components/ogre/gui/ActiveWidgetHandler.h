@@ -38,7 +38,7 @@ namespace Gui {
 */
 class ActiveWidgetHandler{
 public:
-    ActiveWidgetHandler(GUIManager& guiManager);
+	explicit ActiveWidgetHandler(GUIManager& guiManager);
 
     ~ActiveWidgetHandler();
 

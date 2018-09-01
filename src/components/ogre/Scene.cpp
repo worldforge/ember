@@ -31,10 +31,15 @@
 
 #include <OgreRoot.h>
 
+
+
+
 namespace Ember
 {
 namespace OgreView
 {
+
+
 
 Scene::Scene() :
 		mSceneManager(nullptr),

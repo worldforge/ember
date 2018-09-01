@@ -26,6 +26,7 @@
 #include <CEGUI/Event.h>
 #include <sigc++/trackable.h>
 #include <vector>
+#include <Eris/EntityRef.h>
 
 namespace CEGUI
 {
@@ -86,6 +87,35 @@ public:
 protected:
 
 	/**
+	 * Keeps track of the entities involved in the "outline".
+	 */
+	struct Outline {
+		/**
+		 * The entity which was selected.
+		 */
+		Eris::EntityRef selectedEntity;
+
+		/**
+		 * Any generated Ogre Entities used for the outline.
+		 *
+		 * If the selected entity is represented by InstancedEntities we must generate Ogre::Entities and render these for the outline.
+		 *
+		 */
+		std::vector<Ogre::Entity*> generatedEntities;
+
+		/**
+		 * Any materials generated for the outline.
+		 */
+		std::vector<Ogre::MaterialPtr> generatedMaterials;
+
+		/**
+		 * The original render queue groups used for the selected entities.
+		 */
+		std::vector<std::uint8_t> originalRenderQueueGroups;
+
+	};
+
+	/**
 	 * @brief Stores CEGUI::Event::Connection instances.
 	 */
 	typedef std::vector<CEGUI::Event::Connection> ConnectionStore;
@@ -96,6 +126,11 @@ protected:
 	CEGUI::Window& mMainWindow;
 
 	World& mWorld;
+
+	/**
+	 * An outline shown for selected entities.
+	 */
+	Outline mOutline;
 
 	/**
 	 * @brief If a "hover" event already has been sent this will be true.
@@ -158,6 +193,8 @@ protected:
 	 */
 	void sendHoverEvent();
 
+	void highlightSelectedEntity();
+
 	/**
 	 * @brief Listens to the mouse button being released.
 	 * @param button
@@ -172,7 +209,7 @@ protected:
 	 * @param pickType The kind of picking type.
 	 * @param pixelPosition The position, in pixels, of the mouse cursor.
 	 */
-	void sendWorldClick(MousePickType pickType, const CEGUI::Vector2f& pixelPosition);
+	void sendWorldClick(MousePickType pickType, const CEGUI::Vector2f& pixelPosition, float distance);
 
 	/**
 	 * Checks if the GUI is in "click" mode.

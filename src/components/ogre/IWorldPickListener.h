@@ -89,6 +89,9 @@ struct MousePickerArgs
 	 The type of picking (either singe or double click).
 	 */
 	MousePickType pickType;
+
+	//How far we want to pick.
+	float distance;
 };
 
 struct PickResult {

@@ -66,7 +66,7 @@ class OgreSetup: public ConsoleObject, public virtual sigc::trackable
 public:
 	OgreSetup();
 
-	virtual ~OgreSetup();
+	~OgreSetup() override;
 
 	/**
 	 * Creates the Ogre base system.
@@ -99,7 +99,7 @@ public:
 	 */
 	void shutdown();
 
-	virtual void runCommand(const std::string& command, const std::string& args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	 * @brief Command for simple diagnosis of Ogre.
@@ -157,13 +157,6 @@ private:
 	 * @brief Sets standard values in the Ogre environment.
 	 */
 	void setStandardValues();
-
-	/**
-	 * @brief Checks for the named gl extension.
-	 * @param extension The name of the extension to check for.
-	 * @return True if the extension was found.
-	 */
-	int isExtensionSupported(const char *extension);
 
 	bool showConfigurationDialog();
 
