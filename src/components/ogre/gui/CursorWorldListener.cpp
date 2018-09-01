@@ -167,9 +167,11 @@ void CursorWorldListener::afterEventProcessing(float timeslice)
 		}
 	} else {
 
-		mWorld.getEntityPickListener().mFilter = [&](const EmberEntity& pickedEntity) {
-			return &pickedEntity != &mWorld.getAvatar()->getEmberEntity();
-		};
+		if (mWorld.getAvatar()) {
+			mWorld.getEntityPickListener().mFilter = [&](const EmberEntity& pickedEntity) {
+				return &pickedEntity != &mWorld.getAvatar()->getEmberEntity();
+			};
+		}
 
 		MousePickerArgs pickerArgs{};
 		pickerArgs.pickType = MousePickType::MPT_SELECT;
