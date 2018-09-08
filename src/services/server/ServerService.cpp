@@ -227,9 +227,9 @@ void ServerService::wield(Eris::Entity* entity, const std::string& attachment)
 	getAdapter().wield(entity, attachment);
 }
 
-void ServerService::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation)
+void ServerService::use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos)
 {
-	getAdapter().use(entity, pos, operation);
+	getAdapter().use(entity, operation, pos);
 }
 
 void ServerService::useStop()

@@ -120,14 +120,10 @@ void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& attachPoin
 
 	try {
 
-		if (entity->getLocation() != mAvatar.getEntity()) {
-			S_LOG_WARNING("Can't wield an Entity which is not located in the avatar.");
-
-			return;
-		}
-
 		Atlas::Objects::Entity::Anonymous arguments;
-		arguments->setId(entity->getId());
+		if (entity) {
+			arguments->setId(entity->getId());
+		}
 		arguments->setAttr("attachment", attachPoint);
 		Atlas::Objects::Operation::Wield wield;
 		wield->setFrom(mAvatar.getId());
@@ -140,7 +136,7 @@ void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& attachPoin
 	}
 }
 
-void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation) {
+void ConnectedAdapter::use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos) {
 //	try {
 //		std::stringstream ss;
 //		ss << pos;

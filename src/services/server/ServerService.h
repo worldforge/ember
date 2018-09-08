@@ -211,7 +211,7 @@ public:
 	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>::ZERO(), const WFMath::Quaternion& orientation = WFMath::Quaternion());
 	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>::ZERO());
 	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
-	void wield(Eris::Entity* entity, const std::string& attachment = "");
+	void wield(Eris::Entity* entity, const std::string& attachment);
 	void take(Eris::Entity* entity);
 
 	/**
@@ -220,7 +220,7 @@ public:
 	 * @param pos The position on the entity to perform the action. In some cases this won't matter, whereas in others (such as digging on the world entity) it will.
 	 * @param operation The operation to perform. If left blank the default will be used.
 	 */
-	void use(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>::ZERO(), const std::string& operation = "");
+	void use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos = WFMath::Point<3>());
 
 	/**
 	 * @brief Stops the current use operation.

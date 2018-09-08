@@ -234,21 +234,7 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.wieldButton:subscribeEvent("Clicked", self.menu.wieldButton_MouseClick)
 	self.menu.innercontainer:addChild(self.menu.wieldButton)
 	
-	self.menu.useButton = guiManager:createWindow("EmberLook/Button")
-	self.menu.useButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-	self.menu.useButton:setText("use")
-	self.menu.useButton_MouseClick = function(args)
-		if self.menu.activeEntityWrapper ~= nil then
-			if self.menu.activeEntityWrapper.entity ~= nil then
-				emberServices:getServerService():use(self.menu.activeEntityWrapper.entity)
-			end
-		end
-		self.menu.hide()
-		return true
-	end
-	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
-	self.menu.innercontainer:addChild(self.menu.useButton)
-	
+
 	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview:new(emberOgre:getWorld())
 	--User has dragged an entityIcon from the inventory to the world
 	self.DragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget:new(root)
@@ -380,6 +366,7 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
 	
 	dollSlot.iconDraggedOff = function(entityIcon)
 		--do unwield stuff
+		emberServices:getServerService():wield(nil, attachment)
 	end
 	dollSlot.iconDraggedOff_connector = createConnector(dollSlot.slot.EventIconDraggedOff):connect(dollSlot.iconDraggedOff)
 	

@@ -517,12 +517,14 @@ void Avatar::performDefaultUsage() {
 	auto attachedHandPrimaryElement = mErisAvatarEntity.ptrOfAttr("attached_hand_primary");
 	if (attachedHandPrimaryElement) {
 		auto attachedId = Eris::Entity::extractEntityId(*attachedHandPrimaryElement);
-		if (attachedId) {
+		if (attachedId && !attachedId->empty()) {
 			auto attachedEntity = EmberOgre::getSingleton().getWorld()->getEmberEntity(*attachedId);
-			auto& usages = attachedEntity->getUsages();
-			if (!usages.empty()) {
-				useWithSelectedEntity(*attachedEntity, usages.begin()->second, usages.begin()->first);
-				return;
+			if (attachedEntity) {
+				auto& usages = attachedEntity->getUsages();
+				if (!usages.empty()) {
+					useWithSelectedEntity(*attachedEntity, usages.begin()->second, usages.begin()->first);
+					return;
+				}
 			}
 		}
 	}

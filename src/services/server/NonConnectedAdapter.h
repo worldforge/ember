@@ -64,7 +64,7 @@ public:
 
 	void take(Eris::Entity* entity) override;
 
-	void use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation) override;
+	void use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos) override;
 
 	void useStop() override;
 
