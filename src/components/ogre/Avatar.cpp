@@ -420,12 +420,26 @@ void Avatar::viewEntityDeleted() {
 
 void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target, const WFMath::Point<3>& pos) {
 
+	const EmberEntity::Usage* usage = nullptr;
 	auto I = tool.getUsages().find(operation);
 	if (I == tool.getUsages().end()) {
+		I = tool.getUsagesProtected().find(operation);
+		if (I != tool.getUsagesProtected().end()) {
+			usage = &I->second;
+		}
+	} else {
+		usage = &I->second;
+	}
+
+	if (!usage) {
 		return;
 	}
 
-	auto& usage = I->second;
+	useTool(tool, operation, *usage, target, pos);
+
+}
+
+void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity::Usage& usage, const Eris::Entity* target, const WFMath::Point<3>& pos) {
 
 	Atlas::Objects::Operation::Use use;
 	use->setFrom(mErisAvatar->getId());
@@ -480,7 +494,7 @@ void Avatar::performDefaultUsage() {
 
 
 	auto useWithSelectedEntity = [&](EmberEntity& attachedEntity, const EmberEntity::Usage& usage, const std::string& op) {
-		auto pickedResults = EmberOgre::getSingleton().getWorld()->getEntityPickListener().getPersistentResult();
+		auto& pickedResults = EmberOgre::getSingleton().getWorld()->getEntityPickListener().getPersistentResult();
 		Eris::Entity* entity = nullptr;
 		WFMath::Point<3> pos;
 		for (auto& pickedResult : pickedResults) {
@@ -493,7 +507,7 @@ void Avatar::performDefaultUsage() {
 			}
 		}
 
-		useTool(attachedEntity, op, entity, pos);
+		useTool(attachedEntity, op, usage, entity, pos);
 		if (entity) {
 			GUIManager::getSingleton().EmitEntityAction("use", dynamic_cast<EmberEntity*>(entity));
 		}

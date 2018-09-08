@@ -37,6 +37,7 @@
 
 #include <memory>
 #include <set>
+#include <domain/EmberEntity.h>
 
 namespace Eris
 {
@@ -204,6 +205,7 @@ public:
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 
 	void useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
+	void useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity::Usage& usage, const Eris::Entity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
 
 	void performDefaultUsage();
 

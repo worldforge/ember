@@ -336,7 +336,7 @@ void CursorWorldListener::highlightSelectedEntity() {
 
 		if (selectedEntity) {
 			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(selectedEntity->getGraphicalRepresentation());
-			if (modelRep) {
+			if (modelRep && modelRep->getModel().getNodeProvider()) {
 
 				if (modelRep->getModel().useInstancing()) {
 					modelRep->getModel().doWithMovables([](Ogre::MovableObject* movable, int index) {
