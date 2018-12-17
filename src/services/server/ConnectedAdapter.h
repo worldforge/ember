@@ -100,13 +100,6 @@ private:
 	Eris::Avatar& mAvatar;
 	Eris::Connection& mConnection;
 
-	/**
-	 * @brief An op handler which will just ignore all ops.
-	 *
-	 * Use this when you want to do something as an admin and you don't want the resulting op to enter into the regular op handling.
-	 * @param op
-	 */
-	void operationResultIgnored(const Atlas::Objects::Operation::RootOperation& op);
 };
 
 }

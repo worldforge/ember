@@ -190,7 +190,10 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity) {
 		deleteOp->setTo(entity->getId());
 		deleteOp->setArgs1(what);
 		deleteOp->setSerialno(Eris::getNewSerialno());
-		mConnection.getResponder()->await(deleteOp->getSerialno(), this, &ConnectedAdapter::operationResultIgnored);
+		mConnection.getResponder()->await(deleteOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+			//For now ignore; perhaps we should do some error checking instead?
+			return Eris::Router::IGNORED;
+		});
 
 		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
 		mConnection.send(deleteOp);
@@ -237,7 +240,10 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 			moveOp->setArgs1(moveArgs);
 
 			moveOp->setSerialno(Eris::getNewSerialno());
-			mConnection.getResponder()->await(moveOp->getSerialno(), this, &ConnectedAdapter::operationResultIgnored);
+			mConnection.getResponder()->await(moveOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+				//For now ignore; perhaps we should do some error checking instead?
+				return Eris::Router::IGNORED;
+			});
 
 			//if the avatar is an admin, we will set the TO property
 			//this will bypass all of the server's filtering, allowing us to place any
@@ -259,7 +265,10 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 			setOp->setArgs1(what);
 
 			setOp->setSerialno(Eris::getNewSerialno());
-			mConnection.getResponder()->await(setOp->getSerialno(), this, &ConnectedAdapter::operationResultIgnored);
+			mConnection.getResponder()->await(setOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+				//For now ignore; perhaps we should do some error checking instead?
+				return Eris::Router::IGNORED;
+			});
 			S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
 			mConnection.send(setOp);
 		}
@@ -356,7 +365,10 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 		sound->setArgs1(talk);
 
 		sound->setSerialno(Eris::getNewSerialno());
-		mConnection.getResponder()->await(sound->getSerialno(), this, &ConnectedAdapter::operationResultIgnored);
+		mConnection.getResponder()->await(sound->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+			//Handle it here, so it does not propagate into the regular system.
+			return Eris::Router::HANDLED;
+		});
 		S_LOG_INFO("Admin telling entity" << entityId << ": " << attribute << ": " << value);
 		mConnection.send(sound);
 
@@ -391,9 +403,6 @@ void ConnectedAdapter::setTypeInfo(const Atlas::Objects::Root& typeInfo) {
 	}
 }
 
-void ConnectedAdapter::operationResultIgnored(const Atlas::Objects::Operation::RootOperation& op) {
-	//Just ignore any response
-}
 
 
 }
