@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUIENTITYEDITOR_H
 
 #include "adapters/atlas/AdapterBase.h"
+#include <Eris/Response.h>
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Operation.h>
 #include <sigc++/trackable.h>
@@ -172,9 +173,9 @@ public:
 	 * @brief Gets goal info from the server.
 	 *
 	 * When goal information has arrived the EventGotGoalInfo event is emitted.
-	 * @param id The goal id.
+	 * @param index The goal index.
 	 */
-	void getGoalInfo(const std::string& id);
+	void getGoalInfo(int index);
 
 	/**
 	 * @brief Removes a previously added marker.
@@ -267,6 +268,8 @@ protected:
 	void entityMoved();
 
 	Atlas::Objects::Operation::RootOperation extractRelayResponse(const Atlas::Objects::Operation::RootOperation& relayResponse);
+
+	void relayToMind(Atlas::Objects::Operation::RootOperation op, Eris::ResponseTracker::Callback callback);
 
 };
 

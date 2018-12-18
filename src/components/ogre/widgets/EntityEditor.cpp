@@ -54,7 +54,6 @@
 #include <Eris/Account.h>
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
-#include <Eris/Response.h>
 #include <Eris/View.h>
 
 #include <OgreSceneManager.h>
@@ -63,13 +62,10 @@
 
 using namespace Atlas::Message;
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
 /**
  * @author Erik Ogenvik
@@ -79,8 +75,7 @@ namespace Gui
  * This is useful for visualizing locations known by entities.
  *
  */
-class EntityEditor::EntityPointMarker: public virtual sigc::trackable
-{
+class EntityEditor::EntityPointMarker : public virtual sigc::trackable {
 protected:
 
 	/**
@@ -120,8 +115,7 @@ public:
 	/**
 	 * @brief Updates the marker, and any line drawn to it.
 	 */
-	void updateMarker()
-	{
+	void updateMarker() {
 		//Check if we should adjust to the height of the world
 		WFMath::Point<3> adjustedPoint(mPoint);
 
@@ -140,8 +134,7 @@ public:
 	/**
 	 * @brief Called when the entity moves.
 	 */
-	void entityMoved()
-	{
+	void entityMoved() {
 		updateMarker();
 	}
 
@@ -158,8 +151,7 @@ public:
 			mMarkerNode(nullptr),
 			mMarkerDirectionIndicator(nullptr),
 			mHeightProvider(heightProvider),
-			mPoint(point)
-	{
+			mPoint(point) {
 		mMarkerNode = sceneManager.getRootSceneNode()->createChildSceneNode();
 		try {
 			mMarkerEntity = sceneManager.createEntity("common/primitives/model/sphere.mesh");
@@ -185,8 +177,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~EntityPointMarker()
-	{
+	~EntityPointMarker() {
 		if (mMarkerEntity) {
 			mMarkerEntity->_getManager()->destroyEntity(mMarkerEntity);
 		}
@@ -205,13 +196,11 @@ EntityEditor::EntityEditor(World& world, Eris::Entity& entity, Adapters::Atlas::
 		mEntity(entity),
 		mMarker(nullptr),
 		mPathPolygon(nullptr),
-		mHasPath(false)
-{
+		mHasPath(false) {
 	mEntity.Moved.connect(sigc::mem_fun(*this, &EntityEditor::entityMoved));
 }
 
-EntityEditor::~EntityEditor()
-{
+EntityEditor::~EntityEditor() {
 	delete mRootAdapter;
 
 	delete mMarker;
@@ -219,8 +208,7 @@ EntityEditor::~EntityEditor()
 	delete mPathPolygon;
 }
 
-void EntityEditor::submitChanges()
-{
+void EntityEditor::submitChanges() {
 	if (mRootAdapter->hasChanges()) {
 		Atlas::Message::Element rootElement = mRootAdapter->getSelectedChangedElements();
 		if (rootElement.isMap()) {
@@ -245,37 +233,34 @@ void EntityEditor::submitChanges()
 	}
 }
 
-Atlas::Message::Element EntityEditor::createMapElement()
-{
+Atlas::Message::Element EntityEditor::createMapElement() {
 	return Element(MapType());
 }
 
-Atlas::Message::Element EntityEditor::createListElement()
-{
+Atlas::Message::Element EntityEditor::createListElement() {
 	return Element(ListType());
 }
-Atlas::Message::Element EntityEditor::createStringElement()
-{
+
+Atlas::Message::Element EntityEditor::createStringElement() {
 	return Element("");
 }
-Atlas::Message::Element EntityEditor::createIntElement()
-{
+
+Atlas::Message::Element EntityEditor::createIntElement() {
 	return Element(0);
 }
-Atlas::Message::Element EntityEditor::createFloatElement()
-{
+
+Atlas::Message::Element EntityEditor::createFloatElement() {
 	return Element(0.0f);
 }
-Atlas::Message::Element EntityEditor::createPosition2dElement()
-{
+
+Atlas::Message::Element EntityEditor::createPosition2dElement() {
 	ListType list;
 	list.push_back(createFloatElement());
 	list.push_back(createFloatElement());
 	return Element(list);
 }
 
-void EntityEditor::addGoal(const std::string& definition)
-{
+void EntityEditor::addGoal(const std::string& definition) {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Entity::Anonymous thought;
@@ -298,8 +283,8 @@ void EntityEditor::addGoal(const std::string& definition)
 	connection->send(thinkOp);
 
 }
-void EntityEditor::updateGoal(const std::string& replaceDefinition, const std::string& definition)
-{
+
+void EntityEditor::updateGoal(const std::string& replaceDefinition, const std::string& definition) {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Entity::Anonymous thought;
@@ -322,8 +307,7 @@ void EntityEditor::updateGoal(const std::string& replaceDefinition, const std::s
 	connection->send(thinkOp);
 }
 
-void EntityEditor::removeGoal(const std::string& definition)
-{
+void EntityEditor::removeGoal(const std::string& definition) {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Entity::Anonymous thought;
@@ -345,8 +329,7 @@ void EntityEditor::removeGoal(const std::string& definition)
 	connection->send(thinkOp);
 }
 
-void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge)
-{
+void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge) {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Entity::Anonymous thought;
@@ -371,8 +354,7 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 
 }
 
-void EntityEditor::addMarker(const std::string& entityId, const WFMath::Point<3>& point)
-{
+void EntityEditor::addMarker(const std::string& entityId, const WFMath::Point<3>& point) {
 	delete mMarker;
 	mMarker = nullptr;
 	if (point.isValid()) {
@@ -387,8 +369,7 @@ void EntityEditor::addMarker(const std::string& entityId, const WFMath::Point<3>
 	}
 }
 
-void EntityEditor::getGoals()
-{
+void EntityEditor::getGoals() {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
@@ -416,8 +397,38 @@ void EntityEditor::getGoals()
 
 }
 
-void EntityEditor::getPath()
-{
+void EntityEditor::relayToMind(Atlas::Objects::Operation::RootOperation op, Eris::ResponseTracker::Callback callback) {
+	//Send to first mind for now
+	auto mindsAttr = mEntity.ptrOfAttr("_minds");
+	if (mindsAttr && mindsAttr->isList() && !mindsAttr->List().empty()) {
+		if (mindsAttr->List().front().isString()) {
+			Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+			Eris::Connection* connection = account->getConnection();
+
+			auto mindId = mindsAttr->List().front().String();
+
+			Atlas::Objects::Operation::RootOperation relayOp;
+			relayOp->setParent("relay");
+			relayOp->setTo(mEntity.getId());
+			relayOp->setId(mindId);
+
+			relayOp->setFrom(mWorld.getView().getAvatar()->getId());
+
+			if (callback) {
+				//By setting a serial number we tell the server to "relay" the operation. This means that any
+				//response operation from the target entity will be sent back to us.
+				relayOp->setSerialno(Eris::getNewSerialno());
+				connection->getResponder()->await(relayOp->getSerialno(), callback);
+			}
+			relayOp->setArgs1(op);
+
+
+			connection->send(relayOp);
+		}
+	}
+}
+
+void EntityEditor::getPath() {
 	//Send to first mind for now
 	auto mindsAttr = mEntity.ptrOfAttr("_minds");
 	if (mindsAttr && mindsAttr->isList() && !mindsAttr->List().empty()) {
@@ -460,8 +471,7 @@ void EntityEditor::getPath()
 	}
 }
 
-void EntityEditor::getThoughts()
-{
+void EntityEditor::getThoughts() {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
@@ -485,8 +495,7 @@ void EntityEditor::getThoughts()
 
 }
 
-void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::RootOperation& op)
-{
+void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::RootOperation& op) {
 	auto relayedOp = extractRelayResponse(op);
 	if (relayedOp) {
 
@@ -519,8 +528,7 @@ void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::Root
 	}
 }
 
-void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootOperation& op)
-{
+void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootOperation& op) {
 	//What we receive here has been relayed from the mind of the entity.
 
 	auto relayedOp = extractRelayResponse(op);
@@ -590,8 +598,7 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 }
 
 
-void EntityEditor::entityMoved()
-{
+void EntityEditor::entityMoved() {
 	if (mPathPolygon && !mPathPolygon->getPoints().empty()) {
 		mPathPolygon->getPoints().front()->setLocalPosition(mEntity.getPredictedPos());
 		mPathPolygon->updateRender();
@@ -604,8 +611,7 @@ void EntityEditor::entityMoved()
 }
 
 
-void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op)
-{
+void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op) {
 	auto relayedOp = extractRelayResponse(op);
 	if (relayedOp) {
 
@@ -638,10 +644,7 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 	}
 }
 
-void EntityEditor::getGoalInfo(const std::string& definition)
-{
-
-	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+void EntityEditor::getGoalInfo(int index) {
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
 	thinkOp->setParent("think");
@@ -649,42 +652,33 @@ void EntityEditor::getGoalInfo(const std::string& definition)
 
 	Atlas::Objects::Operation::Look lookOp;
 	Atlas::Objects::Entity::Anonymous look_args;
-	look_args->setAttr("id", definition);
+	look_args->setAttr("index", index);
 	lookOp->setArgs1(look_args);
 
 	thinkOp->setArgs1(lookOp);
-
-	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
-	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thinkOp->setFrom(mWorld.getAvatar()->getId());
-	//By setting a serial number we tell the server to "relay" the operation. This means that any
-	//response operation from the target entity will be sent back to us.
-	thinkOp->setSerialno(Eris::getNewSerialno());
-
-	Eris::Connection* connection = account->getConnection();
-
-	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetGoalInfoResult);
-	connection->send(thinkOp);
+	relayToMind(thinkOp, [this](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+		operationGetGoalInfoResult(op);
+		return Eris::Router::HANDLED;
+	});
 }
 
-void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op)
-{
+void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op) {
 	auto relayedOp = extractRelayResponse(op);
 	if (relayedOp) {
 
 		//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
 		//"info" operation.
-		if (op->getParent() != "think") {
+		if (relayedOp->getParent() != "think") {
 			S_LOG_WARNING("Got goal info operation with wrong type.");
 			return;
 		}
 
-		if (op->getArgs().empty()) {
+		if (relayedOp->getArgs().empty()) {
 			S_LOG_WARNING("Got Thought op without any arguments.");
 			return;
 		}
 
-		auto innerOp = op->getArgs().front();
+		auto innerOp = relayedOp->getArgs().front();
 		if (innerOp->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
 			S_LOG_WARNING("Get Thought op with inner op that wasn't Info.");
 		}
@@ -702,8 +696,7 @@ void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::R
 	}
 }
 
-std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map)
-{
+std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map) {
 	std::stringstream ss;
 
 	Atlas::PresentationBridge bridge(ss);
@@ -713,14 +706,12 @@ std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map)
 	return ss.str();
 }
 
-void EntityEditor::removeMarker()
-{
+void EntityEditor::removeMarker() {
 	delete mMarker;
 	mMarker = nullptr;
 }
 
-WFMath::Point<3> EntityEditor::createPoint(float x, float y, float z)
-{
+WFMath::Point<3> EntityEditor::createPoint(float x, float y, float z) {
 	return WFMath::Point<3>(x, y, z);
 }
 

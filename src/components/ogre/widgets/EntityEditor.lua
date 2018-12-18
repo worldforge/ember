@@ -131,7 +131,7 @@ EntityEditor = {
 							CEGUI.toSequentialLayoutContainer(wrapper.outercontainer):swapChildren(wrapper.container, container)
 
 							--due to a bug in CEGUI (at least in 0.7.9) we need to force a re-layout
-							--and notify screen area changed. Else the last window in the layout 
+							--and notify screen area changed. Else the last window in the layout
 							--container won't be drawn
 							--FIXME remove when this has been fixed in CEGUI
 
@@ -142,13 +142,13 @@ EntityEditor = {
 								layoutContainer:layoutIfNecessary()
 								Ember.Cegui.Helper:notifyScreenAreaChanged(layoutContainer, true)
 							end
-							
+
 
 							nameEditboxCombobox:getEditbox():setText("")
 							nameEditboxEditbox:setText("")
 							helpWindow:setText("")
 							checkSuggestions()
-							
+
 						end
 					end
 					return true
@@ -221,9 +221,9 @@ EntityEditor = {
 							local container = self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 							--make sure we always keep the "new item" window at the bottom
 							CEGUI.toSequentialLayoutContainer(wrapper.outercontainer):swapChildren(wrapper.container, container)
-							
+
 							--due to a bug in CEGUI (at least in 0.7.9) we need to force a re-layout
-							--and notify screen area changed. Else the last window in the layout 
+							--and notify screen area changed. Else the last window in the layout
 							--container won't be drawn
 							--FIXME remove when this has been fixed in CEGUI
 
@@ -1152,6 +1152,47 @@ function EntityEditor:editEntity(entity)
 	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
 	self.exportFilenameWindow:setText(exportFileName)
 
+    if entity:hasAttr('_goals') then
+        local goalsAttr = entity:valueOfAttr('_goals')
+		if goalsAttr:isList() then
+			for k, v in goalsAttr:asList():pairs() do
+				if v:isMap() then
+					local goalNameAttr = v:asMap():get("class")
+					if goalNameAttr:isString() then
+
+						local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+
+						goalItem.modelItem = modelItem
+						goalItem:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+
+						goalItem:setText(escapeForCEGUI(goalNameAttr:asString()))
+						self.goallistbox:addItem(goalItem)
+						--for some reason we need to do this call in order for the list box to actually draw the newly added item
+						self.goallistbox:notifyScreenAreaChanged(true)
+
+						goalItem:subscribeEvent("SelectionChanged", function(args)
+							self.goalInfo:setText("")
+							if goalItem:isSelected() then
+								local goalVerb = self.widget:getWindow("GoalVerb")
+								local goalDef = self.widget:getWindow("GoalDefinition")
+
+								--goalVerb:setText(modelItem.verb)
+								--goalVerb.verb = modelItem.verb
+								--
+								--goalDef:setText(modelItem.definition)
+
+								self.instance.helper:getGoalInfo(k)
+							end
+
+							return true
+						end)
+					end
+				end
+			end
+		end
+
+    end
+
 	createConnector(self.instance.helper.EventGotThought):connect(function(element)
 		if element:isMap() then
 			if self.instance.clearThoughts then
@@ -1195,9 +1236,9 @@ function EntityEditor:editEntity(entity)
 								item:setID(#self.instance.knowledge.model)
 								table.insert(self.instance.knowledge.model, modelItem)
 								self.knowledgelistbox:addItem(item)
-                --for some reason we need to do this call in order for the list box to actually draw the newly added item
-                self.knowledgelistbox:notifyScreenAreaChanged(true)
-								
+                                --for some reason we need to do this call in order for the list box to actually draw the newly added item
+                                self.knowledgelistbox:notifyScreenAreaChanged(true)
+
 							end
 						else
 							--Handle goals specially
@@ -1207,85 +1248,85 @@ function EntityEditor:editEntity(entity)
 			end
 		end
 	end)
-	
-  createConnector(self.instance.helper.EventGotEmptyGoals):connect(function()
-    self.goallistbox:resetList()
-    self.instance.clearGoals = false
-  end)	
 
-	createConnector(self.instance.helper.EventGotGoal):connect(function(element)
-		if element:isMap() then
-			
-			if self.instance.clearGoals then
-				self.goallistbox:resetList()
-				self.instance.clearGoals = false
-			end
-			local thoughtMap = element:asMap()
-			
-			if thoughtMap:get("goal") == nil then
-			 log.info("No 'goal' in thoughtmap.")
-			 --No goal contained
-			 return
-			end
-			
-			if not thoughtMap:get("goal"):isString() then
-       log.info("'goal' is not a string.")
-			 --"goal" not a string
-			 return
-			end
+  --createConnector(self.instance.helper.EventGotEmptyGoals):connect(function()
+  --  self.goallistbox:resetList()
+  --  self.instance.clearGoals = false
+  --end)
 
-      if thoughtMap:get("id") == nil then
-       log.info("No 'id' in thoughtmap.")
-       --No id
-       return
-      end
-      
-      if not thoughtMap:get("id"):isString() then
-       log.info("'id' is not a string.")
-       --"id" not a string
-       return
-      end
-			
-			
-			
-			local modelItem = {}
-			modelItem.definition = thoughtMap:get("goal"):asString()
-			modelItem.id = thoughtMap:get("id"):asString()
-
-			--The definition of a goal is "foo(a_param, another_param)", i.e. as a call to a function (it's actually an instantiation of a Python class).
-			--Thus, we just need to parse out the first part before the first parenthesis.
-			_, _, modelItem.verb = string.find(modelItem.definition, "([%w_-]*)%(")
-
-
-			local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-			
-			goalItem.modelItem = modelItem
-			--6000px should be enough to make sure the text isn't cropped
-			goalItem:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
-			
-			goalItem:setText(escapeForCEGUI(modelItem.definition))
-			self.goallistbox:addItem(goalItem)
-			--for some reason we need to do this call in order for the list box to actually draw the newly added item
-			self.goallistbox:notifyScreenAreaChanged(true)
-
-			goalItem:subscribeEvent("SelectionChanged", function(args)
-				self.goalInfo:setText("")
-				if goalItem:isSelected() then
-					local goalVerb = self.widget:getWindow("GoalVerb")
-					local goalDef = self.widget:getWindow("GoalDefinition")
-
-					goalVerb:setText(modelItem.verb)
-					goalVerb.verb = modelItem.verb
-
-					goalDef:setText(modelItem.definition)
-
-					self.instance.helper:getGoalInfo(modelItem.definition)
-				end
-
-				return true
-			end)
-		end
-	end)
+	--createConnector(self.instance.helper.EventGotGoal):connect(function(element)
+	--	if element:isMap() then
+	--
+	--		if self.instance.clearGoals then
+	--			self.goallistbox:resetList()
+	--			self.instance.clearGoals = false
+	--		end
+	--		local thoughtMap = element:asMap()
+	--
+	--		if thoughtMap:get("goal") == nil then
+	--		 log.info("No 'goal' in thoughtmap.")
+	--		 --No goal contained
+	--		 return
+	--		end
+	--
+	--		if not thoughtMap:get("goal"):isString() then
+    --   log.info("'goal' is not a string.")
+	--		 --"goal" not a string
+	--		 return
+	--		end
+	--
+    --  if thoughtMap:get("id") == nil then
+    --   log.info("No 'id' in thoughtmap.")
+    --   --No id
+    --   return
+    --  end
+	--
+    --  if not thoughtMap:get("id"):isString() then
+    --   log.info("'id' is not a string.")
+    --   --"id" not a string
+    --   return
+    --  end
+	--
+	--
+	--
+	--		local modelItem = {}
+	--		modelItem.definition = thoughtMap:get("goal"):asString()
+	--		modelItem.id = thoughtMap:get("id"):asString()
+	--
+	--		--The definition of a goal is "foo(a_param, another_param)", i.e. as a call to a function (it's actually an instantiation of a Python class).
+	--		--Thus, we just need to parse out the first part before the first parenthesis.
+	--		_, _, modelItem.verb = string.find(modelItem.definition, "([%w_-]*)%(")
+	--
+	--
+	--		local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+	--
+	--		goalItem.modelItem = modelItem
+	--		--6000px should be enough to make sure the text isn't cropped
+	--		goalItem:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+	--
+	--		goalItem:setText(escapeForCEGUI(modelItem.definition))
+	--		self.goallistbox:addItem(goalItem)
+	--		--for some reason we need to do this call in order for the list box to actually draw the newly added item
+	--		self.goallistbox:notifyScreenAreaChanged(true)
+	--
+	--		goalItem:subscribeEvent("SelectionChanged", function(args)
+	--			self.goalInfo:setText("")
+	--			if goalItem:isSelected() then
+	--				local goalVerb = self.widget:getWindow("GoalVerb")
+	--				local goalDef = self.widget:getWindow("GoalDefinition")
+	--
+	--				goalVerb:setText(modelItem.verb)
+	--				goalVerb.verb = modelItem.verb
+	--
+	--				goalDef:setText(modelItem.definition)
+	--
+	--				self.instance.helper:getGoalInfo(modelItem.definition)
+	--			end
+	--
+	--			return true
+	--		end)
+	--	end
+	--end)
 
 	self:knowledgeRefresh()
 
@@ -1314,7 +1355,7 @@ function EntityEditor:createAdapter(attributeName, element)
 end
 
 function EntityEditor:createAdapterFromPrototype(element, prototype)
-	local adapterWrapper = nil
+	local adapterWrapper
 	if prototype.adapter then
 		adapterWrapper = prototype.adapter.createAdapter(self, element, prototype)
 		if adapterWrapper then
@@ -1352,8 +1393,8 @@ function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentConta
 	local outercontainer = guiManager:createWindow("DefaultWindow")
 	outercontainer:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 
-	local deleteButton = nil
-	local deleteButtonWidth = 0
+	local deleteButton
+    local deleteButtonWidth = 0
 	if prototype.nodelete == nil then
 		deleteButton = self:createDeleteButton("list")
 		deleteButton:setProperty("Position", "{{0,0},{0,2}}")
@@ -1394,7 +1435,7 @@ end
 function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container, parentContainer, prototype)
 	local textWidth = 75
 	local outercontainer = guiManager:createWindow("DefaultWindow")
-	
+
 	outercontainer:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
@@ -1743,12 +1784,12 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("RefreshAtlas"):subscribeEvent("Clicked", self.RefreshAtlas_Clicked, self)
 		self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
-    self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
-		
-		
+        self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
+
+
 		local knowledgePredicate = CEGUI.toCombobox(self.widget:getWindow("NewKnowledgePredicate"))
 		local knowledgeHelp = self.widget:getWindow("KnowledgeHelp")
-		
+
 		for k, v in pairsByKeys(EntityEditor.knowledge.predicates.deeds) do
 			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
 			knowledgePredicate:addItem(item)
@@ -1760,7 +1801,7 @@ function EntityEditor:buildWidget()
 		knowledgePredicate:subscribeEvent("MouseLeavesArea", function(args)
 			knowledgeHelp:setVisible(false)
 			return true
-		end)		
+		end)
 		knowledgePredicate:subscribeEvent("ListSelectionChanged", function(args)
 			local selectedItem = knowledgePredicate:getSelectedItem()
 			if selectedItem then
@@ -1774,9 +1815,9 @@ function EntityEditor:buildWidget()
 			end
 			return true
 		end)
-		
-		
-		
+
+
+
 --		knowledgePredicate:subscribeEvent("ListSelectionAccepted", function(args)
 --			local selectedItem = knowledgePredicate:getSelectedItem()
 --			if selectedItem then
@@ -1853,7 +1894,7 @@ function EntityEditor:buildWidget()
 			end
 			return true
 		end)
-		
+
 		self.goalDefinition:subscribeEvent("MouseEntersArea", function(args)
 			local verb = self.goalVerb:getText()
 			if verb then
@@ -1906,7 +1947,7 @@ function EntityEditor:buildWidget()
 					return true
 				end
 			end)
-			
+
 			local enableCancel = function()
 				cancelButton:setVisible(true)
 				okButton:setVisible(false)
@@ -1938,7 +1979,7 @@ function EntityEditor:buildWidget()
 						end
 					end
 					createConnector(worldDumper.EventCompleted):connect(function()
-					
+
 						self.widget:getWindow("DumpStatus"):setText("Done dumping.\n" .. authorDumpInfo())
 						cancelButton.method = nil
 						worldDumper:delete()
@@ -1950,7 +1991,7 @@ function EntityEditor:buildWidget()
 					cancelButton.method = function()
 						worldDumper:cancel()
 						self.widget:getWindow("DumpStatus"):setText("Cancelled")
-						enableOk()						
+						enableOk()
 						cancelButton.method = nil
 						worldDumper:delete()
 					end

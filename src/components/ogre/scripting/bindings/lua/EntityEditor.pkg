@@ -103,9 +103,9 @@ public:
 	 * @brief Gets goal info from the server.
 	 *
 	 * When goal information has arrived the EventGotGoalInfo event is emitted.
-	 * @param id The goal id.
+	 * @param index The goal index.
 	 */
-	void getGoalInfo(const std::string& id);
+	void getGoalInfo(int index);
 	
 	static std::string parseElementMap(const Atlas::Message::MapType& map);
 	
