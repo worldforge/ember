@@ -30,12 +30,12 @@
 Utility method for the lua bindings which looks for a entry in a const map. If no entry is found we'll return null, which will be translated to "nil" in lua.
 */
 const Atlas::Message::Element& _MapType_findInMap(const Atlas::Message::MapType* map, const std::string& key) {
-	Atlas::Message::MapType::const_iterator I = map->find(key);
+	auto I = map->find(key);
 	if (I != map->end()) {
 		return I->second;
 	} else {
 		///we'll avoid compiler warnings by doing it this way
-		static Atlas::Message::Element* element(0);
+		static Atlas::Message::Element* element(nullptr);
 		return *element;
 	}
 }

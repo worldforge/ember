@@ -1190,64 +1190,47 @@ function EntityEditor:editEntity(entity)
 				end
 			end
 		end
-
     end
 
-	createConnector(self.instance.helper.EventGotThought):connect(function(element)
-		if element:isMap() then
-			if self.instance.clearThoughts then
-				self.knowledgelistbox:resetList()
-				self.instance.clearThoughts = false
-			end
-			local thoughtMap = element:asMap()
+	if entity:hasAttr('_knowledge') then
+		local knowledgeAttr = entity:valueOfAttr('_knowledge')
+		if knowledgeAttr:isMap() then
+			for k, v in knowledgeAttr:asMap():pairs() do
+				local predicate, subject = k:match("([^:]*):(.*)")
 
-			local modelItem = {predicate = "", subject = "", object = ""}
-			if thoughtMap:get("predicate") and thoughtMap:get("predicate"):isString() then
-				modelItem.predicate = thoughtMap:get("predicate"):asString()
-				if thoughtMap:get("subject") and thoughtMap:get("subject"):isString() then
-					modelItem.subject = thoughtMap:get("subject"):asString()
-					if thoughtMap:get("object") then
-						local object = thoughtMap:get("object")
+				local modelItem = {predicate = predicate, subject = subject, object = ""}
+				local object = v
 
-						if modelItem.predicate ~= "goal" then
-							if object:isString() then
-								modelItem.object = thoughtMap:get("object"):asString()
-								local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-								--6000px should be enough to make sure the text isn't cropped
-								item:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
-								item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
+				if object:isString() then
+					modelItem.object = object:asString()
+					local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+					--6000px should be enough to make sure the text isn't cropped
+					item:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+					item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
 
-								item:subscribeEvent("SelectionChanged", function(args)
-									if item:isSelected() then
-										local predicate = self.widget:getWindow("NewKnowledgePredicate")
-										local subject = self.widget:getWindow("NewKnowledgeSubject")
-										local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
+					item:subscribeEvent("SelectionChanged", function(args)
+						if item:isSelected() then
+							self.widget:getWindow("NewKnowledgePredicate"):setText(predicate)
+							self.widget:getWindow("NewKnowledgeSubject"):setText(subject)
+							self.widget:getWindow("NewKnowledgeKnowledge"):setText(object:asString())
 
-										predicate:setText(modelItem.predicate)
-										subject:setText(modelItem.subject)
-										knowledge:setText(modelItem.object)
-
-										self:handleKnowledgeSelected(modelItem)
-									end
-
-									return true
-								end)
-
-								item:setID(#self.instance.knowledge.model)
-								table.insert(self.instance.knowledge.model, modelItem)
-								self.knowledgelistbox:addItem(item)
-                                --for some reason we need to do this call in order for the list box to actually draw the newly added item
-                                self.knowledgelistbox:notifyScreenAreaChanged(true)
-
-							end
-						else
-							--Handle goals specially
+							self:handleKnowledgeSelected(modelItem)
 						end
-					end
+
+						return true
+					end)
+
+					item:setID(#self.instance.knowledge.model)
+					table.insert(self.instance.knowledge.model, modelItem)
+					self.knowledgelistbox:addItem(item)
+					--for some reason we need to do this call in order for the list box to actually draw the newly added item
+					self.knowledgelistbox:notifyScreenAreaChanged(true)
+
 				end
 			end
 		end
-	end)
+	end
+
 
   --createConnector(self.instance.helper.EventGotEmptyGoals):connect(function()
   --  self.goallistbox:resetList()

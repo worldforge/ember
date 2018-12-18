@@ -429,46 +429,24 @@ void EntityEditor::relayToMind(Atlas::Objects::Operation::RootOperation op, Eris
 }
 
 void EntityEditor::getPath() {
-	//Send to first mind for now
-	auto mindsAttr = mEntity.ptrOfAttr("_minds");
-	if (mindsAttr && mindsAttr->isList() && !mindsAttr->List().empty()) {
-		if (mindsAttr->List().front().isString()) {
 
-			auto mindId = mindsAttr->List().front().String();
+	Atlas::Objects::Operation::RootOperation thinkOp;
+	thinkOp->setParent("think");
+	thinkOp->setTo(mEntity.getId());
 
+	Atlas::Objects::Operation::Get getOp;
+	Atlas::Objects::Entity::Anonymous get_args;
+	get_args->setAttr("path", Atlas::Message::MapType());
+	getOp->setArgs1(get_args);
 
-			Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+	thinkOp->setArgs1(getOp);
 
-			Atlas::Objects::Operation::RootOperation relayOp;
-			relayOp->setParent("relay");
-			relayOp->setTo(mEntity.getId());
-			relayOp->setId(mindId);
+	relayToMind(thinkOp, [this](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+		operationGetPathResult(op);
+		return Eris::Router::HANDLED;
+	});
+	S_LOG_VERBOSE("Asking for entity path.");
 
-			Atlas::Objects::Operation::RootOperation thinkOp;
-			thinkOp->setParent("think");
-			thinkOp->setTo(mEntity.getId());
-
-			Atlas::Objects::Operation::Get getOp;
-			Atlas::Objects::Entity::Anonymous get_args;
-			get_args->setAttr("path", Atlas::Message::MapType());
-			getOp->setArgs1(get_args);
-
-			thinkOp->setArgs1(getOp);
-
-			relayOp->setFrom(mWorld.getView().getAvatar()->getId());
-
-			//By setting a serial number we tell the server to "relay" the operation. This means that any
-			//response operation from the target entity will be sent back to us.
-			relayOp->setSerialno(Eris::getNewSerialno());
-			relayOp->setArgs1(thinkOp);
-
-			Eris::Connection* connection = account->getConnection();
-
-			connection->getResponder()->await(relayOp->getSerialno(), this, &EntityEditor::operationGetPathResult);
-			connection->send(relayOp);
-			S_LOG_VERBOSE("Asking for entity path.");
-		}
-	}
 }
 
 void EntityEditor::getThoughts() {

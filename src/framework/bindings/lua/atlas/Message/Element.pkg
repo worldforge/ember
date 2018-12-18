@@ -170,25 +170,30 @@ class Element
 
 };
 
+$#define __operator_pp operator++
+$#define __operator_ptr operator*
+
 class MapType {
 class value_type {
 	const std::string& first;
-	Atlas::Message::Element& second;
+	const Atlas::Message::Element& second;
 };
 
-class iterator {
+class const_iterator {
 public:
-	value_type& operator*();
-	bool operator==(const Atlas::Message::MapType::iterator& value);
+	const Atlas::Message::MapType::value_type& __operator_ptr @ get() const;
+	bool operator==(const Atlas::Message::MapType::const_iterator& value);
+    Atlas::Message::MapType::const_iterator& __operator_pp @ next();
 };
 public:
 	void clear();
 	int size() const;
 	
 	
-	Atlas::Message::MapType::iterator find(const std::string& index);
-	Atlas::Message::MapType::iterator end @ theEnd();
-	
+	Atlas::Message::MapType::const_iterator find(const std::string& index) const;
+	Atlas::Message::MapType::const_iterator end @ theEnd() const;
+	Atlas::Message::MapType::const_iterator begin() const;
+
 	tolua_outside const Atlas::Message::Element& _MapType_findInMap @ get(const std::string& index) const;
 	Atlas::Message::Element& __operator_index @ get(const std::string& index);
 
@@ -228,5 +233,19 @@ function Atlas.Message.ListType:pairs()
     end
   end, self, -1
 end
+
+
+function Atlas.Message.MapType:pairs()
+    local I = self:begin()
+    local Iend = self:theEnd()
+    return function()
+      if I ~= Iend then
+        local val = I:get()
+        I = I:next()
+        return val.first, val.second
+      end
+    end
+end
+
 $]
 
