@@ -50,20 +50,16 @@
 #include <Ogre.h>
 
 // render queues
-#define RENDER_QUEUE_OUTLINE_OBJECT		Ogre::RENDER_QUEUE_MAIN + 1
-#define RENDER_QUEUE_OUTLINE_BORDER		Ogre::RENDER_QUEUE_9 + 2
+#define RENDER_QUEUE_OUTLINE_OBJECT        Ogre::RENDER_QUEUE_MAIN + 1
+#define RENDER_QUEUE_OUTLINE_BORDER        Ogre::RENDER_QUEUE_9 + 2
 
 // stencil values
 #define STENCIL_VALUE_FOR_OUTLINE_GLOW 1
 #define STENCIL_FULL_MASK 0xFFFFFFFF
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
-
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 
 class StencilOpQueueListener : public Ogre::RenderQueueListener {
@@ -105,8 +101,7 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 		mCursorLingerStart(0),
 		mClickThresholdMilliseconds(200),
 		mMousePressedTimeFrame(nullptr),
-		mConfigListenerContainer(new ConfigListenerContainer())
-{
+		mConfigListenerContainer(new ConfigListenerContainer()) {
 
 	mainLoopController.EventAfterInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
 	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorWorldListener::input_MouseButtonReleased));
@@ -124,8 +119,7 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 
 }
 
-CursorWorldListener::~CursorWorldListener()
-{
+CursorWorldListener::~CursorWorldListener() {
 	for (auto& entity: mOutline.generatedEntities) {
 		if (entity->getParentSceneNode()) {
 			entity->getParentSceneNode()->detachObject(entity);
@@ -142,8 +136,7 @@ CursorWorldListener::~CursorWorldListener()
 	}
 }
 
-void CursorWorldListener::afterEventProcessing(float timeslice)
-{
+void CursorWorldListener::afterEventProcessing(float timeslice) {
 	if (isInGUIMode()) {
 
 		const auto& pixelPosition = mMainWindow.getGUIContext().getMouseCursor().getPosition();
@@ -183,15 +176,13 @@ void CursorWorldListener::afterEventProcessing(float timeslice)
 	}
 }
 
-bool CursorWorldListener::windowMouseEnters(const CEGUI::EventArgs& args)
-{
+bool CursorWorldListener::windowMouseEnters(const CEGUI::EventArgs& args) {
 	mMouseMovesConnection = mMainWindow.subscribeEvent(CEGUI::Window::EventMouseMove, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseMoves, this));
 	mHoverEventSent = false;
 	return true;
 }
 
-bool CursorWorldListener::windowMouseLeaves(const CEGUI::EventArgs& args)
-{
+bool CursorWorldListener::windowMouseLeaves(const CEGUI::EventArgs& args) {
 	if (mMouseMovesConnection.isValid()) {
 		mMouseMovesConnection->disconnect();
 		mMouseMovesConnection = CEGUI::Event::Connection();
@@ -200,27 +191,23 @@ bool CursorWorldListener::windowMouseLeaves(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool CursorWorldListener::windowMouseMoves(const CEGUI::EventArgs& args)
-{
+bool CursorWorldListener::windowMouseMoves(const CEGUI::EventArgs& args) {
 	mCursorLingerStart = 0;
 	mHoverEventSent = false;
 	return true;
 }
 
-void CursorWorldListener::sendHoverEvent()
-{
+void CursorWorldListener::sendHoverEvent() {
 	const auto& pixelPosition = mMainWindow.getGUIContext().getMouseCursor().getPosition();
 	sendWorldClick(MPT_HOVER, pixelPosition, 30);
 	mHoverEventSent = true;
 }
 
-void CursorWorldListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode inputMode)
-{
+void CursorWorldListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode inputMode) {
 	mMousePressedTimeFrame.reset();
 }
 
-void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Vector2f& pixelPosition, float distance)
-{
+void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Vector2f& pixelPosition, float distance) {
 
 	const auto& position = mMainWindow.getGUIContext().getMouseCursor().getDisplayIndependantPosition();
 	MousePickerArgs pickerArgs{};
@@ -232,8 +219,7 @@ void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Ve
 
 }
 
-bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
-{
+bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args) {
 	if (isInGUIMode()) {
 		S_LOG_VERBOSE("Main sheet is capturing input");
 		CEGUI::Window* aWindow = mMainWindow.getCaptureWindow();
@@ -249,8 +235,7 @@ bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool CursorWorldListener::windowMouseButtonUp(const CEGUI::EventArgs& args)
-{
+bool CursorWorldListener::windowMouseButtonUp(const CEGUI::EventArgs& args) {
 	if (isInGUIMode()) {
 		if (mMousePressedTimeFrame) {
 			if (mMousePressedTimeFrame->isTimeLeft()) {
@@ -262,21 +247,18 @@ bool CursorWorldListener::windowMouseButtonUp(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool CursorWorldListener::windowMouseDoubleClick(const CEGUI::EventArgs& args)
-{
+bool CursorWorldListener::windowMouseDoubleClick(const CEGUI::EventArgs& args) {
 	auto& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 	sendWorldClick(MPT_DOUBLECLICK, mouseArgs.position, 300);
 
 	return true;
 }
 
-const bool CursorWorldListener::isInGUIMode() const
-{
+const bool CursorWorldListener::isInGUIMode() const {
 	return Input::getSingleton().getInputMode() == Input::IM_GUI;
 }
 
-void CursorWorldListener::Config_ClickThreshold(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void CursorWorldListener::Config_ClickThreshold(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_int()) {
 		mClickThresholdMilliseconds = static_cast<int>(variable);
 	}
@@ -290,7 +272,6 @@ void CursorWorldListener::highlightSelectedEntity() {
 	if (!results.empty()) {
 		selectedEntity = results.front().entity;
 	}
-
 
 
 	if (mOutline.selectedEntity.get() != selectedEntity) {
@@ -320,8 +301,11 @@ void CursorWorldListener::highlightSelectedEntity() {
 
 				auto submodelI = model.getSubmodels().begin();
 				for (size_t i = 0; i < model.getSubmodels().size(); ++i) {
-					(*submodelI)->getEntity()->setRenderQueueGroup(mOutline.originalRenderQueueGroups[i]);
+					//It could be that the entity has been reloaded in the interim, so we need to check that originalRenderQueueGroups size matches.
+					if (i < mOutline.originalRenderQueueGroups.size()) {
+						(*submodelI)->getEntity()->setRenderQueueGroup(mOutline.originalRenderQueueGroups[i]);
 
+					}
 					//If instancing is used we've temporarily attached the Ogre::Entity to the nodes; need to detach it.
 					if (model.useInstancing()) {
 						model.getNodeProvider()->detachObject((*submodelI)->getEntity());
@@ -329,7 +313,6 @@ void CursorWorldListener::highlightSelectedEntity() {
 
 					submodelI++;
 				}
-
 			}
 		}
 		mOutline = Outline{selectedEntity};
