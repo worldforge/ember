@@ -82,7 +82,7 @@ link_libraries(${WF_LIBRARIES})
 find_package(Boost
         1.46.0
         REQUIRED
-        COMPONENTS thread date_time system filesystem)
+        COMPONENTS system filesystem)
 
 link_directories(${Boost_LIBRARY_DIRS})
 link_libraries(${Boost_LIBRARIES})
