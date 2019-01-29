@@ -30,6 +30,7 @@
 #include <sigc++/trackable.h>
 #include <map>
 #include <vector>
+#include <Eris/ActiveMarker.h>
 
 namespace Eris
 {
@@ -255,6 +256,8 @@ protected:
 	 * @brief True if the entity has a path, and this should be automatically queried for when the entity moves.
 	 */
 	bool mHasPath;
+
+	Eris::ActiveMarker mActiveMarker;
 
 	void operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op);
 	void operationGetGoalsResult(const Atlas::Objects::Operation::RootOperation& op);

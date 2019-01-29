@@ -441,8 +441,12 @@ void EntityEditor::getPath() {
 
 	thinkOp->setArgs1(getOp);
 
-	relayToMind(thinkOp, [this](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
-		operationGetPathResult(op);
+	auto marker = mActiveMarker.getMarker();
+
+	relayToMind(thinkOp, [this, marker](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+		if (*marker) {
+			operationGetPathResult(op);
+		}
 		return Eris::Router::HANDLED;
 	});
 	S_LOG_VERBOSE("Asking for entity path.");
@@ -543,8 +547,13 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 		if (pathEntity->copyAttr("path", pathElem) == 0) {
 			mHasPath = true;
 			if (pathElem.isList()) {
+				int currentIndex = -1;
 				const auto& path = pathElem.List();
 				S_LOG_VERBOSE("Got path info from entity with length of " << path.size());
+				Element currentPathIndexElement;
+				if (pathEntity->copyAttr("current_path_index", currentPathIndexElement) == 0 && currentPathIndexElement.isInt()) {
+					currentIndex = static_cast<int>(currentPathIndexElement.Int());
+				}
 				if (!path.empty()) {
 					//Put one point at the entity itself.
 					auto polygonPoint = mPathPolygon->appendPoint();
@@ -558,7 +567,15 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 							if (list.size() == 3) {
 								if (list[0].isFloat() && list[1].isFloat() && list[2].isFloat()) {
 									WFMath::Point<3> point(list[0].Float(), list[1].Float(), list[2].Float());
-									mPathPolygon->appendPoint()->setLocalPosition(point);
+									auto pointObject = mPathPolygon->appendPoint();
+									pointObject->setLocalPosition(point);
+									//Remember that we've already added an extra point
+									if (mPathPolygon->getPoints().size() - 2 == currentIndex) {
+										auto entity = dynamic_cast<Ogre::Entity*> (pointObject->getNode()->getAttachedObject(0));
+										if (entity) {
+											entity->setMaterialName("/common/base/authoring/point/moved");
+										}
+									}
 								}
 							}
 						}
