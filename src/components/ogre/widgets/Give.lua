@@ -16,10 +16,10 @@ function Give:buildWidget(avatar)
 	connect(self.connectors, avatar.EventAddedEntityToInventory, self.addedEntity, self)
 	connect(self.connectors, avatar.EventRemovedEntityFromInventory, self.removedEntity, self)
 	
-	giveButton = self.widget:getWindow("Give")
+	local giveButton = self.widget:getWindow("Give")
 	giveButton:subscribeEvent("Clicked", self.Give_Click, self)
 	
-	cancelButton = self.widget:getWindow("Cancel")
+	local cancelButton = self.widget:getWindow("Cancel")
 	cancelButton:subscribeEvent("Clicked", self.Cancel_Click, self)
 
 	connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
