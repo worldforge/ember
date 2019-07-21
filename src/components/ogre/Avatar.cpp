@@ -450,7 +450,7 @@ void Avatar::useTool(const EmberEntity& tool, const std::string& operation, cons
 
 	for (auto& param : usage.params) {
 		Atlas::Message::ListType list;
-		if (param.second.type == "entity" || param.second.type == "entitylocation") {
+		if (param.second.type == "entity" || param.second.type == "entity_location") {
 			if (target) {
 				Atlas::Objects::Entity::RootEntity entityArg;
 				entityArg->setId(target->getId());
