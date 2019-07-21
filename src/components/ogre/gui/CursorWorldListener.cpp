@@ -307,7 +307,7 @@ void CursorWorldListener::highlightSelectedEntity() {
 
 					}
 					//If instancing is used we've temporarily attached the Ogre::Entity to the nodes; need to detach it.
-					if (model.useInstancing()) {
+					if (model.useInstancing() && model.getNodeProvider()) {
 						model.getNodeProvider()->detachObject((*submodelI)->getEntity());
 					}
 

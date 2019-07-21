@@ -186,7 +186,7 @@ void ConsoleBackend::runCommand(const std::string &command, const std::string &a
 {
 	std::ostringstream temp;
 
-	// This commands prints all currently registers commands to the Log File
+	// This commands prints all currently registered commands to the Log File
 	if (command == LIST_CONSOLE_COMMANDS) {
 		for (ConsoleObjectEntryStore::const_iterator I = mRegisteredCommands.begin(); I != mRegisteredCommands.end(); I++) {
 		// TODO - should we check to see if I->second is valid?
