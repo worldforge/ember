@@ -277,14 +277,6 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 	}
 }
 
-void ConnectedAdapter::attack(Eris::Entity* entity) {
-	try {
-		mAvatar.attack(entity);
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Got error on attack." << ex);
-	}
-}
-
 void ConnectedAdapter::eat(Eris::Entity* entity) {
 	try {
 		Atlas::Objects::Entity::Anonymous what;

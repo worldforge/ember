@@ -93,11 +93,6 @@ void NonConnectedAdapter::actuate(Eris::Entity* entity, const std::string& actio
 {
 }
 
-void NonConnectedAdapter::attack(Eris::Entity* entity)
-{
-
-}
-
 void NonConnectedAdapter::eat(Eris::Entity* entity)
 {
 }

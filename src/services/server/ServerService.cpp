@@ -242,11 +242,6 @@ void ServerService::actuate(Eris::Entity* entity, const std::string& action)
 	getAdapter().actuate(entity, action);
 }
 
-void ServerService::attack(Eris::Entity* entity)
-{
-	getAdapter().attack(entity);
-}
-
 void ServerService::eat(Eris::Entity* entity)
 {
 	getAdapter().eat(entity);

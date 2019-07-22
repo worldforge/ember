@@ -78,8 +78,8 @@ public:
 
 GlobalAttributeDispatcher sGlobalDispatcher;
 
-EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
-		Eris::ViewEntity(id, ty, vw),
+EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View* vw) :
+		Eris::ViewEntity(std::move(id), ty, vw),
 		mIsInitialized(false),
 		mPositioningMode(PositioningMode::FREE),
 		mCompositionMode(CM_DISABLED),

@@ -70,8 +70,6 @@ public:
 
 	void actuate(Eris::Entity* entity, const std::string& action) override;
 
-	void attack(Eris::Entity* entity) override;
-
 	void eat(Eris::Entity* entity) override;
 
 	void deleteEntity(Eris::Entity* entity) override;

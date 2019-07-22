@@ -78,7 +78,6 @@ public:
 	virtual void use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos) = 0;
 	virtual void useStop() = 0;
 	virtual void actuate(Eris::Entity* entity, const std::string& action) = 0;
-	virtual void attack(Eris::Entity* entity) = 0;
 	virtual void eat(Eris::Entity* entity) = 0;
 	virtual void deleteEntity(Eris::Entity* entity) = 0;
 	virtual void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes) = 0;

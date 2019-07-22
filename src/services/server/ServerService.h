@@ -228,7 +228,6 @@ public:
 	void useStop();
 
 	void actuate(Eris::Entity* entity, const std::string& action);
-	void attack(Eris::Entity* entity);
 	void eat(Eris::Entity* entity);
 	void deleteEntity(Eris::Entity* entity);
 	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
