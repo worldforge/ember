@@ -414,9 +414,9 @@ void GeometryVisualization::buildGeometry() {
 									mManualObject->estimateVertexCount(vertices.size());
 
 									for (size_t i = 0; i < vertices.size(); i += 3) {
-										Ogre::Vector3 vertex(static_cast<const Ogre::Real>(vertices[i].Float()),
-															 static_cast<const Ogre::Real>(vertices[i + 1].Float()),
-															 static_cast<const Ogre::Real>(vertices[i + 2].Float()));
+										Ogre::Vector3 vertex(static_cast<Ogre::Real>(vertices[i].Float()),
+															 static_cast<Ogre::Real>(vertices[i + 1].Float()),
+															 static_cast<Ogre::Real>(vertices[i + 2].Float()));
 										mManualObject->position(vertex);
 										auto normalized = vertex.normalisedCopy();
 										mManualObject->colour((normalized.x + 1.0f) / 2.0f, (normalized.y + 1.0f) / 2.0f, (normalized.z + 1.0f) / 2.0f, 1.0f);
