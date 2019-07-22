@@ -48,7 +48,7 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	HelpMessage(const std::string &title, const std::string &message, const std::string& tags, const std::string& id = "");
+	HelpMessage(std::string title, std::string message, const std::string& tags, std::string id = "");
 
 	/**
 	 * @brief Desctructor

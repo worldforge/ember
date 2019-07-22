@@ -93,7 +93,7 @@ void QuickHelp::updateText(const HelpMessage& message)
 	EventHelpMessageAdded.emit(messagePosition(message));
 }
 
-const int QuickHelp::getSize() const
+int QuickHelp::getSize() const
 {
 	return mTutorialText.size();
 }

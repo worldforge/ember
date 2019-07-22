@@ -53,6 +53,7 @@
 #include "framework/IScriptingProvider.h"
 
 #include <Eris/View.h>
+#include <Eris/Avatar.h>
 
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
@@ -313,7 +314,12 @@ void GUIManager::entity_Talk(const EntityTalk& entityTalk, EmberEntity* entity)
 
 void GUIManager::entity_Emote(const std::string& description, EmberEntity* entity)
 {
-	AppendAvatarImaginary(entity->getName() + " " + description);
+	//If it's our own entity we should just print what it says.
+	if (entity == entity->getView()->getAvatar()->getEntity()) {
+		AppendAvatarImaginary(description);
+	} else {
+		AppendAvatarImaginary(entity->getName() + " " + description);
+	}
 }
 
 void GUIManager::scriptingServiceStopping()

@@ -10,7 +10,7 @@ namespace Gui {
 class HelpMessage
 {
 public:
-	HelpMessage(const std::string &title, const std::string &message, const std::string& tags, const std::string& id = "");
+	HelpMessage(std::string title, std::string message, const std::string& tags, std::string id = "");
 	
 	/**
 	 * @brief Returns the message stored.
@@ -52,8 +52,8 @@ public:
 	QuickHelpCursor();
 	void nextMessage();
 	void previousMessage();
-	const int getSize() const;
-	const int getCursorLocation() const;
+	int getSize() const;
+	int getCursorLocation() const;
 
 	sigc::signal <void,const Ember::OgreView::Gui::HelpMessage&> EventUpdateText;
 };

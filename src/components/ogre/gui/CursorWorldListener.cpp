@@ -254,7 +254,7 @@ bool CursorWorldListener::windowMouseDoubleClick(const CEGUI::EventArgs& args) {
 	return true;
 }
 
-const bool CursorWorldListener::isInGUIMode() const {
+bool CursorWorldListener::isInGUIMode() const {
 	return Input::getSingleton().getInputMode() == Input::IM_GUI;
 }
 

@@ -115,7 +115,7 @@ public:
 	 * @brief Returns the size of the message list
 	 * @return The size of the message list.
 	 */
-	const int getSize() const;
+	int getSize() const;
 
 private:
 

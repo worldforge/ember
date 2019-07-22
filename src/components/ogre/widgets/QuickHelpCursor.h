@@ -66,11 +66,11 @@ public:
 	 */
 	sigc::signal <void,const HelpMessage&> EventUpdateText;
 
-	const int getSize() const;
+	int getSize() const;
 
-	const int getCursorLocation() const;
+	int getCursorLocation() const;
 
-	void setCursorLocation(const int cursorLocation);
+	void setCursorLocation(int cursorLocation);
 private:
 
 	/**

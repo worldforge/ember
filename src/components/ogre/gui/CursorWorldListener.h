@@ -217,7 +217,7 @@ protected:
 	 *
 	 * @return True if the GUI is in "click" mode.
 	 */
-	const bool isInGUIMode() const;
+	bool isInGUIMode() const;
 
 	/**
 	 * @brief Sets the "click" time.
