@@ -543,6 +543,10 @@ void EmberEntity::parseUsages(std::map<std::string, EmberEntity::Usage>& map, co
 					usage.params.emplace(paramEntry.first, std::move(usageParam));
 				}
 			});
+			usage.name = entry.first;
+            AtlasQuery::find<Atlas::Message::StringType>(entry.second, "name", [&](const auto& name) {
+                usage.name = name;
+            });
 
 			map.emplace(entry.first, std::move(usage));
 		}

@@ -62,6 +62,7 @@ public:
 	};
 
 	struct Usage {
+	    std::string name;
 		std::string constraint;
 		std::string description;
 

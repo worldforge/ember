@@ -297,8 +297,9 @@ function EntityPicker:checkUse(entity)
         for i = 0, actionList:size() - 1 do
             currentButtonIndex = currentButtonIndex + 1
             local action = actionList[i]
+            local usage = entity:getUsage(action)
             local currentButton = self.useButtons[currentButtonIndex]
-            self:addAction(currentButton, entity:getId(), action)
+            self:addAction(currentButton, entity:getId(), action, usage)
         end
     end
 
@@ -311,8 +312,9 @@ function EntityPicker:checkUse(entity)
             for i = 0, operatorList:size() - 1 do
                 currentButtonIndex = currentButtonIndex + 1
                 local defaultOp = operatorList[i]
+                local usage = wieldedEntity:getUsage(defaultOp)
                 local currentButton = self.useButtons[currentButtonIndex]
-                self:addUse(currentButton, entity:getId(), wieldedEntity, defaultOp)
+                self:addUse(currentButton, entity:getId(), wieldedEntity, defaultOp, usage)
             end
         end
     else
@@ -322,14 +324,15 @@ function EntityPicker:checkUse(entity)
             for i = 0, operatorList:size() - 1 do
                 currentButtonIndex = currentButtonIndex + 1
                 local defaultOp = operatorList[i]
+                local usage = self.world:getAvatar():getEmberEntity():getUsageProtected(defaultOp)
                 local currentButton = self.useButtons[currentButtonIndex]
-                self:addUseSelf(currentButton, entity:getId(), self.world:getAvatar():getEmberEntity(), defaultOp)
+                self:addUseSelf(currentButton, entity:getId(), self.world:getAvatar():getEmberEntity(), defaultOp, usage)
             end
         end
     end
 end
 
-function EntityPicker:addUseSelf(buttonWrapper, entityId, wieldedEntity, operation)
+function EntityPicker:addUseSelf(buttonWrapper, entityId, wieldedEntity, operation, usage)
     buttonWrapper.clickedHandler = function()
         local entity = self.world:getEmberEntity(entityId)
         if entity then
@@ -341,10 +344,10 @@ function EntityPicker:addUseSelf(buttonWrapper, entityId, wieldedEntity, operati
 
     local button = buttonWrapper.button
     button:setVisible(true)
-    button:setText(operation)
+    button:setText(usage.name)
 end
 
-function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation)
+function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation, usage)
     buttonWrapper.clickedHandler = function()
         local entity = self.world:getEmberEntity(entityId)
         if entity then
@@ -357,10 +360,10 @@ function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation)
 
     local button = buttonWrapper.button
     button:setVisible(true)
-    button:setText(operation .. " with " .. wieldedEntity:getType():getName())
+    button:setText(usage.name .. " with " .. wieldedEntity:getType():getName())
 end
 
-function EntityPicker:addAction(buttonWrapper, entityId, action)
+function EntityPicker:addAction(buttonWrapper, entityId, action, usage)
     buttonWrapper.clickedHandler = function()
         local entity = self.world:getEmberEntity(entityId)
         if entity ~= nil then
@@ -372,7 +375,7 @@ function EntityPicker:addAction(buttonWrapper, entityId, action)
 
     local button = buttonWrapper.button
     button:setVisible(true)
-    button:setText(action)
+    button:setText(usage.name)
 end
 
 --function EntityPicker:pickedNothing(args)

@@ -22,20 +22,37 @@
 #include "EmberEntity.h"
 std::vector<std::string> _EmberEntity_getUsages(const Ember::EmberEntity* entity)
 {
-	std::vector<std::string> usagesNames;
-	for (auto& entry : entity->getUsages()) {
-		usagesNames.emplace_back(entry.first);
-	}
-	return usagesNames;
+    std::vector<std::string> usagesNames;
+    for (auto& entry : entity->getUsages()) {
+        usagesNames.emplace_back(entry.first);
+    }
+    return usagesNames;
+}
+
+const Ember::EmberEntity::Usage* _EmberEntity_getUsage(const Ember::EmberEntity* entity, const std::string& usage)
+{
+    auto I = entity->getUsages().find(usage);
+    if (I != entity->getUsages().end()) {
+        return &I->second;
+    }
+    return nullptr;
 }
 
 std::vector<std::string> _EmberEntity_getUsagesProtected(const Ember::EmberEntity* entity)
 {
-	std::vector<std::string> usagesNames;
-	for (auto& entry : entity->getUsagesProtected()) {
-		usagesNames.emplace_back(entry.first);
-	}
-	return usagesNames;
+    std::vector<std::string> usagesNames;
+    for (auto& entry : entity->getUsagesProtected()) {
+        usagesNames.emplace_back(entry.first);
+    }
+    return usagesNames;
 }
 
+const Ember::EmberEntity::Usage* _EmberEntity_getUsageProtected(const Ember::EmberEntity* entity, const std::string& usage)
+{
+    auto I = entity->getUsages().find(usage);
+    if (I != entity->getUsages().end()) {
+        return &I->second;
+    }
+    return nullptr;
+}
 #endif //EMBER_EMBERENTITY_HELPER_H
