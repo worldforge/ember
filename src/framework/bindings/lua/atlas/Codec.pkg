@@ -24,7 +24,7 @@ a user specified Bridge callback class.
 class Codec : public Atlas::Bridge
 {    
 public:
-	virtual void poll(bool can_get = true);
+	virtual void poll();
 };
 
 } // Atlas namespace

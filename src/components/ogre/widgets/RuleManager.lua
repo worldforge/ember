@@ -115,7 +115,7 @@ function RuleManager:sendRuleToServer()
 	local bridge = tolua.cast(decoder, "Atlas::Bridge")
 
 	local codec = self.codecClass:new_local(istream, ostream, bridge)
-	codec:poll(true)
+	codec:poll()
 	
 	local parsedObject = decoder:getLastObject()
 	

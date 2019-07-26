@@ -86,7 +86,7 @@ Atlas::Objects::Root EntityImporter::loadFromFile(const std::string& filename)
 	AtlasObjectDecoder atlasLoader;
 
 	Atlas::Codecs::XML codec(fileStream, fileStream, atlasLoader);
-	codec.poll(true);
+	codec.poll();
 
 	return atlasLoader.getLastObject();
 }
@@ -105,7 +105,7 @@ std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(cons
 				AtlasObjectDecoder atlasLoader;
 
 				Atlas::Codecs::XML codec(fileStream, fileStream, atlasLoader);
-				codec.poll(true);
+				codec.poll();
 
 				auto rootObj = atlasLoader.getLastObject();
 

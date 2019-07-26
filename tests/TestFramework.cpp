@@ -41,7 +41,7 @@ public:
 			AtlasMessageLoader loader(messages);
 			TinyXmlCodec codec(*xmlDoc.RootElement(), loader);
 
-			codec.poll(true);
+			codec.poll();
 		}
 		CPPUNIT_ASSERT(messages.size() == 2);
 

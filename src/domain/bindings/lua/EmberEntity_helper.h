@@ -49,8 +49,8 @@ std::vector<std::string> _EmberEntity_getUsagesProtected(const Ember::EmberEntit
 
 const Ember::EmberEntity::Usage* _EmberEntity_getUsageProtected(const Ember::EmberEntity* entity, const std::string& usage)
 {
-    auto I = entity->getUsages().find(usage);
-    if (I != entity->getUsages().end()) {
+    auto I = entity->getUsagesProtected().find(usage);
+    if (I != entity->getUsagesProtected().end()) {
         return &I->second;
     }
     return nullptr;

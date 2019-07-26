@@ -42,7 +42,7 @@ public:
 
 	~TinyXmlCodec() override;
 
-	void poll(bool can_read) override;
+	void poll() override;
 
 	void streamBegin() override;
 	void streamMessage() override;

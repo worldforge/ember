@@ -225,11 +225,9 @@ TinyXmlCodec::TinyXmlCodec(TiXmlNode& rootElement, Atlas::Bridge& bridge) :
 {
 }
 
-TinyXmlCodec::~TinyXmlCodec()
-{
-}
+TinyXmlCodec::~TinyXmlCodec() = default;
 
-void TinyXmlCodec::poll(bool can_read)
+void TinyXmlCodec::poll()
 {
 	AtlasXmlVisitor visitor(mRootNode, mBridge);
 	mRootNode.Accept(&visitor);
