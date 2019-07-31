@@ -28,11 +28,6 @@ function EntityPicker:buildWidget(world)
     self.menuWindow = CEGUI.toLayoutContainer(self.widget:getWindow("Menu"))
     self.entityName = self.widget:getWindow("EntityName")
 
-    --Collect a list of all the entity types which the user can normally talk to.
-    --Note that the user still can talk to other entities, it's just not as easy to address them.
-    self.talkingEntityTypes = {}
-    self.typeService = world:getView():getAvatar():getConnection():getTypeService()
-
     --Check whether we should show the inspect button even for non admin types.
     local configService = emberServices:getConfigService()
     local evaluateShowInspect = function()
@@ -66,7 +61,7 @@ function EntityPicker:buildWidget(world)
     connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
 
     -- Start with 20 buttons
-    for i = 1, 20 do
+    for _ = 1, 20 do
         self:createButton()
     end
 
@@ -86,7 +81,7 @@ function EntityPicker:createButton()
     table.insert(self.buttons, wrapper)
 end
 
-function EntityPicker:showMenu(position, entity)
+function EntityPicker:showMenu(position)
     self.widget:show()
 
     self.menuWindow:layout()
@@ -122,14 +117,14 @@ function EntityPicker:showMenu(position, entity)
     self.widget:getMainWindow():setPosition(uPosition)
 end
 
-function EntityPicker:previousButton_MouseEnters(args)
+function EntityPicker:previousButton_MouseEnters()
     self.currentPickedEntityIndex = self.currentPickedEntityIndex - 1
     self:updateSelector()
     self:pickedOneEntity(self.pickedEntities[self.currentPickedEntityIndex])
     return true
 end
 
-function EntityPicker:nextButton_MouseEnters(args)
+function EntityPicker:nextButton_MouseEnters()
     self.currentPickedEntityIndex = self.currentPickedEntityIndex + 1
     self:updateSelector()
     self:pickedOneEntity(self.pickedEntities[self.currentPickedEntityIndex])
@@ -234,26 +229,15 @@ function EntityPicker:pickedOneEntity(pickedResult)
             self.position = Ogre.Vector3:new_local(pickedResult.position)
 
             --first hide all buttons
-            for k, v in pairs(self.activeButtons) do
+            for _, v in pairs(self.activeButtons) do
                 v:setHeight(CEGUI.UDim(0, 0))
             end
 
+            --As they are hidden they are all now "inactive"
             self.activeButtons = {}
 
 
-            --only show "talk" button for entities which we can talk to
-            local isTalkable = false
-            for i, v in ipairs(self.talkingEntityTypes) do
-                if entity:getType():isA(v) then
-                    isTalkable = true
-                end
-            end
-            --if isTalkable then
-            --    self.buttons.talk:setVisible(true)
-            --else
-            --    self.buttons.talk:setVisible(false)
-            --end
-
+            --Entities that themselves have physical domains shouldn't be moved.
             local isPhysicalDomain = false
             if entity:hasAttr("domain") then
                 local domainElement = entity:valueOfAttr("domain")
@@ -265,6 +249,7 @@ function EntityPicker:pickedOneEntity(pickedResult)
             local selfEntity = self.world:getAvatar():getEmberEntity()
             local isInInventory = isEntityContainedByOther(entity, selfEntity)
 
+            --We only show certain buttons for entities that aren't part of the avatar's inventory.
             if not isInInventory then
                 if entity ~= selfEntity then
                     self:showButton("Move to", "Move to this point.", function()
@@ -304,7 +289,6 @@ function EntityPicker:pickedOneEntity(pickedResult)
                         end
                     end
                 end
-            else
             end
 
             if self.showInspect then
@@ -326,7 +310,7 @@ function EntityPicker:pickedOneEntity(pickedResult)
             end
 
             self:checkUse(entity)
-            self:showMenu(self.pickedPoint, entity)
+            self:showMenu(self.pickedPoint)
             self.menuWindow:invalidate(true)
             local name
             --if the entity has a name, use it, else use the type name
