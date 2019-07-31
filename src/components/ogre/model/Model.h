@@ -65,11 +65,14 @@ class ModelBackgroundLoader;
 struct LightInfo {
 	Ogre::Light* light;
 	Ogre::Vector3 position;
+	/**
+	 * If the light has a position defined we need to place it in a separate node. This entry keeps track of that node.
+	 */
+	INodeProvider* nodeProvider = nullptr;
 };
 
 typedef std::vector<ParticleSystem*> ParticleSystemSet;
 typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;
-typedef std::vector<LightInfo> LightSet;
 
 /**
  * @brief An instance of this represents a complete model, comprised of both multiple meshes, particle systems and lights.
@@ -228,7 +231,7 @@ public:
 
 	bool hasParticles() const;
 
-	LightSet& getLights();
+	std::vector<LightInfo>& getLights();
 
 	/**
 	 Returns a store of AttachPointWrapper objects, which represents all attached objects.
@@ -283,7 +286,7 @@ public:
 	 * Applies the supplied callback to all movables.
 	 * @param callback
 	 */
-	void doWithMovables(std::function<void(Ogre::MovableObject*, int)> callback);
+	void doWithMovables(const std::function<void(Ogre::MovableObject*, int)>& callback);
 
 	/**
 	 * A static map of instanced entities, mainly used for doing collision detection.
@@ -308,7 +311,7 @@ protected:
 
 	ParticleSystemBindingsPtrSet mAllParticleSystemBindings;
 	ParticleSystemSet mParticleSystems;
-	LightSet mLights;
+    std::vector<LightInfo> mLights;
 
 	/**
 	 *    Clears all the submodels
@@ -349,7 +352,9 @@ protected:
 
 	bool loadAssets();
 
-	Ogre::SceneManager& mManager;
+    void addLight(LightInfo lightInfo);
+
+    Ogre::SceneManager& mManager;
 
 	ModelDefinitionPtr mDefinition;
 
@@ -404,7 +409,7 @@ protected:
 	 * This is only use for performance reasons, to make iteration over the child movable objects faster.
 	 * Since this happens pretty frequently each frame it's important that it's as efficient as possible.
 	 *
-	 * The contents of the list mirrors the sum of mSubmodels, mParticleSystems and mLight.
+	 * The contents of the list mirrors the sum of mSubmodels and mParticleSystems.
 	 */
 	std::vector<Ogre::MovableObject*> mMovableObjects;
 
@@ -416,6 +421,7 @@ protected:
 	bool mLoaded;
 	AssetCreationContext mAssetCreationContext;
 	bool mUseInstancing;
+
 };
 
 inline const std::set<SubModel*>& Model::getSubmodels() const {

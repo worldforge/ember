@@ -52,10 +52,8 @@ ParticleSystem::ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem, const O
 
 ParticleSystem::~ParticleSystem() {
 	//make sure all bindings are removed
-	ParticleSystemBindingsPtrSet::const_iterator I = mBindings.begin();
-	ParticleSystemBindingsPtrSet::const_iterator I_end = mBindings.end();
-	for (; I != I_end; ++I) {
-		delete *I;
+	for (auto entry: mBindings) {
+		delete entry;
 	}
 
 	//and then destroy the system to save resources

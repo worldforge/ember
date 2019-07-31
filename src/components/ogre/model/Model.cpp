@@ -83,6 +83,9 @@ Model::~Model() {
 		delete submodel;
 	}
 
+	//Lights are not parts of mMovableObjects, so we need to destroy them ourselves here.
+	resetLights();
+
 	for (auto& movable : mMovableObjects) {
 		mManager.destroyMovableObject(movable);
 	}
@@ -401,7 +404,7 @@ void Model::createParticles() {
 				ogreParticleSystem->_update(0);
 
 				//ogreParticleSystem->setDefaultDimensions(1, 1);
-				ParticleSystem* particleSystem = new ParticleSystem(ogreParticleSystem, particleSystemDef.Direction);
+				auto particleSystem = new ParticleSystem(ogreParticleSystem, particleSystemDef.Direction);
 				for (auto& bindingDef : particleSystemDef.Bindings) {
 					ParticleSystemBinding* binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
 					mAllParticleSystemBindings.push_back(binding);
@@ -433,7 +436,7 @@ void Model::createLights() {
 	int j = 0;
 	for (auto& lightDef : mDefinition->mLights) {
 		//first try to create the ogre lights
-		LightInfo lightInfo;
+		LightInfo lightInfo{};
 		Ogre::Light* ogreLight;
 		try {
 			if (!mName.empty()) {
@@ -452,15 +455,29 @@ void Model::createLights() {
 			ogreLight->setDiffuseColour(lightDef.diffuseColour);
 			ogreLight->setSpecularColour(lightDef.specularColour);
 			ogreLight->setAttenuation(lightDef.range, lightDef.constant, lightDef.linear, lightDef.quadratic);
-			ogreLight->setPosition(lightDef.position);
 
 			lightInfo.light = ogreLight;
 			lightInfo.position = lightDef.position;
-			mLights.push_back(lightInfo);
-			addMovable(ogreLight);
+			addLight(std::move(lightInfo));
 		}
-
 	}
+}
+
+void Model::addLight(LightInfo lightInfo)
+{
+
+    if (mParentNodeProvider) {
+        //If the light has a position we need to create a different node to attach it to.
+        if (!lightInfo.position.isNaN() && !lightInfo.position.isZeroLength()) {
+            lightInfo.nodeProvider = mParentNodeProvider->createChildProvider("");
+            lightInfo.nodeProvider->setPositionAndOrientation(lightInfo.position, Ogre::Quaternion::IDENTITY);
+            lightInfo.nodeProvider->attachObject(lightInfo.light);
+        } else {
+            mParentNodeProvider->attachObject(lightInfo.light);
+        }
+    }
+    mLights.emplace_back(std::move(lightInfo));
+
 }
 
 bool Model::hasParticles() const {
@@ -475,7 +492,7 @@ ParticleSystemSet& Model::getParticleSystems() {
 	return mParticleSystems;
 }
 
-LightSet& Model::getLights() {
+std::vector<LightInfo>& Model::getLights() {
 	return mLights;
 }
 
@@ -576,6 +593,9 @@ void Model::setVisible(bool visible) {
 	mVisible = visible;
 	for (auto& movable : mMovableObjects) {
 		movable->setVisible(visible);
+	}
+	for (auto& lightEntry: mLights) {
+	    lightEntry.light->setVisible(visible);
 	}
 }
 
@@ -686,17 +706,15 @@ void Model::resetParticles() {
 }
 
 void Model::resetLights() {
-	if (!mLights.empty()) {
-		auto lights = mLights;
-		for (auto& lightInfo : lights) {
-			Ogre::Light* light = lightInfo.light;
-			if (light) {
-				removeMovable(light);
-				mManager.destroyLight(light);
-			}
-		}
-		mLights.clear();
-	}
+    for (auto& lightInfo : mLights) {
+        Ogre::Light* light = lightInfo.light;
+        delete lightInfo.nodeProvider;
+
+        if (light) {
+            mManager.destroyLight(light);
+        }
+    }
+    mLights.clear();
 }
 
 void Model::attachToNode(INodeProvider* nodeProvider) {
@@ -709,8 +727,24 @@ void Model::attachToNode(INodeProvider* nodeProvider) {
 			nodeProvider->attachObject(movable);
 		}
 	}
-	mParentNodeProvider = nodeProvider;
+	for (auto& lightEntry : mLights) {
+	    if (lightEntry.nodeProvider) {
+	        lightEntry.nodeProvider->detachObject(lightEntry.light);
+	        delete lightEntry.nodeProvider;
+	        lightEntry.nodeProvider = nullptr;
+	    }
 
+	    if (nodeProvider) {
+            if (!lightEntry.position.isNaN() && !lightEntry.position.isZeroLength()) {
+                lightEntry.nodeProvider = nodeProvider->createChildProvider("");
+                lightEntry.nodeProvider->setPositionAndOrientation(lightEntry.position, Ogre::Quaternion::IDENTITY);
+                lightEntry.nodeProvider->attachObject(lightEntry.light);
+            } else {
+                nodeProvider->attachObject(lightEntry.light);
+            }
+        }
+	}
+	mParentNodeProvider = nodeProvider;
 }
 
 Ogre::TagPoint* Model::attachObject(const std::string& attachPoint, Ogre::MovableObject* movable) {
@@ -789,7 +823,10 @@ void Model::setRenderingDistance(Ogre::Real dist) {
 		for (auto& movable : mMovableObjects) {
 			movable->setRenderingDistance(dist);
 		}
-	}
+        for (auto& lightEntry: mLights) {
+            lightEntry.light->setRenderingDistance(dist);
+        }
+    }
 }
 
 void Model::setQueryFlags(unsigned int flags) {
@@ -797,6 +834,9 @@ void Model::setQueryFlags(unsigned int flags) {
 	for (auto& movable : mMovableObjects) {
 		movable->setQueryFlags(flags);
 	}
+    for (auto& lightEntry: mLights) {
+        lightEntry.light->setQueryFlags(flags);
+    }
 }
 
 /** Overridden from MovableObject */
@@ -847,8 +887,12 @@ void Model::setUserObject(std::shared_ptr<EmberEntityUserObject> userObject) {
 	for (auto& movable : mMovableObjects) {
 		movable->getUserObjectBindings().setUserAny(Ogre::Any(userObject));
 	}
+    for (auto& lightEntry: mLights) {
+        lightEntry.light->getUserObjectBindings().setUserAny(Ogre::Any(userObject));
+    }
 
-	mUserObject = userObject;
+
+    mUserObject = userObject;
 }
 
 Ogre::SceneManager& Model::getManager() {
@@ -895,7 +939,7 @@ bool Model::useInstancing() const {
 	return mUseInstancing;
 }
 
-void Model::doWithMovables(std::function<void(Ogre::MovableObject*, int)> callback) {
+void Model::doWithMovables(const std::function<void(Ogre::MovableObject*, int)>& callback) {
 	int i = 0;
 	for (auto movable : mMovableObjects) {
 		callback(movable, i++);
