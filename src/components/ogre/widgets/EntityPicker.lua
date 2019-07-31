@@ -91,6 +91,15 @@ function EntityPicker:buildWidget(world)
         end
     end
     connect(self.connectors, configService.EventChangedConfigItem, valueChangedCall)
+
+    --Remove menu when mouse leaves it
+    self.widget:getMainWindow():subscribeEvent("MouseLeavesArea", function()
+        self:removeMenu()
+        return true
+    end)
+
+    connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
+
 end
 
 function EntityPicker:addButton(buttonName)
@@ -194,10 +203,36 @@ function EntityPicker:updateSelector()
     end
 end
 
+
+function EntityPicker:handleAction(action, entity)
+
+    -- Some other script has picked an entity (like the script which handles inventory).
+    if action == "pick" then
+        local mousePosition = CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():getPosition()
+
+        self.pickedPoint = mousePosition
+
+        self.pickedEntities = {}
+        self.currentPickedEntityIndex = 0
+
+        local result = {}
+        result.entityId = entity:getId()
+        -- set an arbitrary position
+        result.position = Ogre.Vector3:new_local(0,0,0)
+        self:pickedOneEntity(result)
+
+    end
+end
+
 --called when an entity has been picked
 function EntityPicker:pickedEntity(results, args)
 
     if args.pickType == Ember.OgreView.MPT_PRESSED then
+        -- initiate moving of entity
+        if results:size() > 0 then
+            guiManager:EmitEntityAction("move", results[0].entity)
+        end
+    elseif args.pickType == Ember.OgreView.MPT_CLICK then
         self.pickedPoint = CEGUI.Vector2f:new_local(args.windowX, args.windowY)
 
         self.pickedEntities = {}
@@ -224,30 +259,6 @@ function EntityPicker:pickedEntity(results, args)
         end
 
         self:pickedOneEntity(self.pickedEntities[0])
-    elseif args.pickType == Ember.OgreView.MPT_CLICK then
-        if results:size() > 0 then
-            local entity = results[0].entity
-            if entity then
-                emberServices:getServerService():touch(entity, Ember.OgreView.Convert:toWF_Point3(results[0].position))
-                guiManager:EmitEntityAction("touch", entity)
-                local name
-                --if the entity has a name, use it, else use the type name
-                --perhaps we should prefix the type name with an "a" or "an"?
-                if entity:getName() ~= "" then
-                    name = entity:getName()
-                else
-                    name = entity:getType():getName()
-                end
-                guiManager:appendAvatarImaginary("You touch " .. name .. ".")
-
-                if entity:hasAttr("message") then
-                    local messageElement = entity:valueOfAttr("message")
-                    if messageElement:isString() and messageElement:asString() ~= "" then
-                        guiManager:appendAvatarImaginary("Message: " .. messageElement:asString())
-                    end
-                end
-            end
-        end
     end
 end
 
@@ -462,7 +473,7 @@ end
 function EntityPicker:input_MouseButtonReleased(button, mode)
     --only show the menu while the left mouse button is pressed
     if button == Ember.Input.MouseButtonLeft then
-        self:removeMenu()
+        --self:removeMenu()
     end
 end
 

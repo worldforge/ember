@@ -77,25 +77,10 @@ function Inventory:addSlot()
 end
 
 function Inventory:showMenu(args, entityIconWrapper)
-	self.menu.activeEntityWrapper = entityIconWrapper
-	guiManager:getMainSheet():addChild(self.menu.container)
-	self.menu.container:moveToFront()
-	self.menu.menuShown = true
-	self.menu.innercontainer:setYPosition(CEGUI.UDim(1, -(self.iconsize + self.menu.innercontainer:getPixelSize().height)))
-	self.menu.container:setHeight(CEGUI.UDim(0, self.iconsize + self.menu.innercontainer:getPixelSize().height + 10))
-	local mousePos = CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():getPosition()
-	local menuPos = CEGUI.UVector2(CEGUI.UDim(0, mousePos.x - (self.menu.container:getPixelSize().width * 0.5)), CEGUI.UDim(0, mousePos.y - self.menu.innercontainer:getPixelSize().height))
-	self.menu.container:setPosition(menuPos)
-	
-	--only show the eat button if the entity has biomass (and thus is edible)
-	if entityIconWrapper.entity:hasAttr("biomass") then
-		self.menu.eatButton:setVisible(true)
-	else
-		self.menu.eatButton:setVisible(false)
-	end
-	
 
-	--self.menu.container:setPosition()
+    local entity = entityIconWrapper.entity
+	guiManager:EmitEntityAction("pick", entity)
+
 end
 
 -- function Inventory:input_MouseButtonReleased()
@@ -186,23 +171,7 @@ function Inventory:buildWidget(avatarEntity)
 	
 	
 	--add default buttons
-	
-	self.menu.eatButton = guiManager:createWindow("EmberLook/Button")
-	self.menu.eatButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-	self.menu.eatButton:setText("eat")
-	self.menu.eatButton_MouseClick = function(args)
-		if self.menu.activeEntityWrapper ~= nil then
-			if self.menu.activeEntityWrapper.entity ~= nil then
-				emberServices:getServerService():eat(self.menu.activeEntityWrapper.entity)
-			end
-		end
-		self.menu.hide()
-		return true
-	end
-	self.menu.eatButton:subscribeEvent("Clicked", self.menu.eatButton_MouseClick)
-	self.menu.innercontainer:addChild(self.menu.eatButton)
-	
-	
+
 	self.menu.dropButton = guiManager:createWindow("EmberLook/Button")
 	self.menu.dropButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
 	self.menu.dropButton:setText("drop")
@@ -217,22 +186,20 @@ function Inventory:buildWidget(avatarEntity)
 	end
 	self.menu.dropButton:subscribeEvent("Clicked", self.menu.dropButton_MouseClick)
 	self.menu.innercontainer:addChild(self.menu.dropButton)
-		
-		
-	self.menu.wieldButton = guiManager:createWindow("EmberLook/Button")
-	self.menu.wieldButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-	self.menu.wieldButton:setText("wield")
-	self.menu.wieldButton_MouseClick = function(args)
-		if self.menu.activeEntityWrapper ~= nil then
-			if self.menu.activeEntityWrapper.entity ~= nil then
-				emberServices:getServerService():wield(self.menu.activeEntityWrapper.entity)
-			end
-		end
-		self.menu.hide()
-		return true
-	end
-	self.menu.wieldButton:subscribeEvent("Clicked", self.menu.wieldButton_MouseClick)
-	self.menu.innercontainer:addChild(self.menu.wieldButton)
+
+    for i = 0, 10 do
+        local button = guiManager:createWindow("EmberLook/Button")
+        button:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+        local buttonWrapper = {}
+        buttonWrapper.button = button
+        buttonWrapper.clicked = function()
+            buttonWrapper.clickedHandler()
+        end
+        buttonWrapper.button:subscribeEvent("MouseButtonUp", buttonWrapper.clicked)
+        self.useButtons[table.getn(self.useButtons) + 1] = buttonWrapper
+
+        self.menu.innercontainer:addChild(button)
+    end
 	
 
 	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview:new(emberOgre:getWorld())
@@ -324,7 +291,6 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
 	dollSlot.entityIconDropped_connector = createConnector(dollSlot.slot.EventIconDropped):connect(dollSlot.droppedHandler)
 	dollSlot.observer = Ember.AttributeObserver:new_local(avatarEntity, dollSlot.attributePath, ".")
 	dollSlot.attributeChanged = function(element)
-		local entityId = ""
 		local result, entityId = Eris.Entity:extractEntityId(element, entityId)
 		if result then
 			local slotUpdateFunc = function()
@@ -495,9 +461,9 @@ function Inventory:shutdown()
 		self.entityIconManager:destroySlot(v.slot)
 	end
 	for k,v in pairs(self.icons) do
-		local bucket = v
-		for k,v in pairs(bucket) do
-			self.entityIconManager:destroyIcon(v.entityIcon)
+		local iconBucket = v
+		for _,bucket in pairs(iconBucket) do
+			self.entityIconManager:destroyIcon(bucket.entityIcon)
 		end
 	end
 	
@@ -508,6 +474,7 @@ end
 Inventory.createdAvatarEntityConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
 		if emberOgre:getWorld():getAvatar():isAdmin() == false then
 			inventory = {connectors={},
+			    useButtons={},
 				iconsize = 32,
 				columns = 4,
 				iconcounter = 0,
