@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
 	<Window name="MainWindow" type="DefaultWindow">
-		<Property name="Size" value="{{0.0,120.0},{0.0,300.0}}" />
-		<Property name="Position" value="{{0,0.0},{0,0.0}}" />
+		<Property name="Size" value="{{0,120.0},{0,25}}" />
 		<Property name="Visible" value="false" />
 		<Property name="AlwaysOnTop" value="true" />
 		<Window name="EntityName" type="EmberLook/StaticText">

@@ -25,7 +25,7 @@ function EntityPicker:buildWidget(world)
     self.selectorWidget:getWindow("PreviousButton"):subscribeEvent("MouseEntersSurface", self.previousButton_MouseEnters, self)
     self.selectorWidget:getWindow("NextButton"):subscribeEvent("MouseEntersSurface", self.nextButton_MouseEnters, self)
 
-    self.menuWindow = self.widget:getWindow("Menu")
+    self.menuWindow = CEGUI.toLayoutContainer(self.widget:getWindow("Menu"))
     self.entityName = self.widget:getWindow("EntityName")
 
     --Collect a list of all the entity types which the user can normally talk to.
@@ -86,6 +86,12 @@ end
 function EntityPicker:showMenu(position, entity)
     self.widget:show()
 
+    self.menuWindow:layout()
+    local menuSize = self.menuWindow:getPixelSize()
+
+    local newSize  = CEGUI.USize(CEGUI.UDim(0,menuSize.width),CEGUI.UDim(0.0,menuSize.height + self.entityName:getPixelSize().height))
+    self.widget:getMainWindow():setSize(newSize)
+
     local localPosition = CEGUI.Vector2f:new_local(position.x, position.y)
 
     localPosition.x = localPosition.x - self.widget:getMainWindow():getPixelSize().width * 0.5
@@ -99,7 +105,6 @@ function EntityPicker:showMenu(position, entity)
         localPosition.y = 0
     end
     local width = self.widget:getMainWindow():getPixelSize().width
-    --local height = self.stackableContainer:getAbsoluteHeight() + self.entityName:getPixelSize().height
     local height = self.widget:getMainWindow():getPixelSize().height
 
     local mainWindowSize = root:getPixelSize()
@@ -285,6 +290,15 @@ function EntityPicker:pickedOneEntity(pickedResult)
                             end)
                             self:removeMenu()
                         end)
+                        -- We'll check if the entity can be addressed. Currently we do this by checking for a "mind" property; we might look into if this is enough
+                        if entity:hasAttr("mind") then
+                            self:showButton("Talk to", "Talk with the entity.", function()
+                                self:doWithPickedEntity(function(pickedEntity)
+                                    guiManager:EmitEntityAction("talk", pickedEntity)
+                                end)
+                                self:removeMenu()
+                            end)
+                        end
                     end
                 end
             else
@@ -412,24 +426,11 @@ function EntityPicker:addAction(entityId, action, usage)
 
 end
 
---function EntityPicker:pickedNothing(args)
---	if self.widget:getMainWindow():isVisible() then
---		self:removeMenu()
---	end
---end
-
 --Tries to find the selected entity (it might have disappeared from the world in the span of clicking on it and selecting an action) and if it can be found it will call the supplied function with the entity as the first argument.
 --This allows you to easily specify functions to call when there is a selected entity. If no entity can be found nothing will happen.
 function EntityPicker:doWithPickedEntity(aFunction)
     emberOgre:doWithEntity(self.entityId, aFunction)
 end
-
---function EntityPicker:buttonTalk_Click(args)
---    self:doWithPickedEntity(function(entity)
---        guiManager:EmitEntityAction("talk", entity)
---    end)
---    self:removeMenu()
---end
 
 function EntityPicker:removeMenu()
     self.widget:hide()
