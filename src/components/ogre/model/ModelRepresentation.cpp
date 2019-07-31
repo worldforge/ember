@@ -200,6 +200,17 @@ void ModelRepresentation::initFromModel() {
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
 	}
 
+	//If there are particles, update the bindings.
+	if (mModel->hasParticles()) {
+        auto& bindings = mModel->getAllParticleSystemBindings();
+        for (auto binding : bindings) {
+            auto elemPtr = mEntity.ptrOfAttr(binding->getVariableName());
+            if (elemPtr && elemPtr->isNum()) {
+                binding->scaleValue(static_cast<Ogre::Real>(elemPtr->asNum()));
+            }
+        }
+	}
+
 }
 
 Ogre::Vector3 ModelRepresentation::getScale() const {
