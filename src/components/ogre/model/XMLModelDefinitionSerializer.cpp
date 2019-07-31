@@ -120,8 +120,11 @@ void XMLModelDefinitionSerializer::readModel(const ModelDefinitionPtr& modelDef,
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_DEPTH;
 		} else if (useScaleOf == "none") {
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_NONE;
-		} else if (useScaleOf == "fit") {
-			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_FIT;
+        } else if (useScaleOf == "fit") {
+            modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_FIT;
+        } else if (useScaleOf == "all") {
+		    //This is also the default
+            modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_ALL;
 		} else {
 			S_LOG_WARNING("Unrecognized model scaling directive: " << useScaleOf);
 		}
