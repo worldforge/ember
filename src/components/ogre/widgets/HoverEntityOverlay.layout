@@ -24,8 +24,8 @@
 			<Property name="HorzFormatting" value="WordWrapCentreAligned" />
 			<Property name="MousePassThroughEnabled" value="true" />
 			<Property name="RiseOnClickEnabled" value="false" />
-			<Property name="Text">Click to touch.
-				Press and hold to interact.</Property>
+			<Property name="Text">Click to interact.
+				Press and hold to move.</Property>
 			<Property name="Font" value="DejaVuSans-6" />
 		</Window>
         <Window name="MessageText" type="EmberLook/StaticFading">

@@ -25,60 +25,25 @@ function EntityPicker:buildWidget(world)
     self.selectorWidget:getWindow("PreviousButton"):subscribeEvent("MouseEntersSurface", self.previousButton_MouseEnters, self)
     self.selectorWidget:getWindow("NextButton"):subscribeEvent("MouseEntersSurface", self.nextButton_MouseEnters, self)
 
-
     self.menuWindow = self.widget:getWindow("Menu")
     self.entityName = self.widget:getWindow("EntityName")
-
-
-    self.buttons.moveto = self.widget:getWindow("MoveToButton")
-    self.buttons.moveto:subscribeEvent("MouseButtonUp", self.buttonMoveto_Click, self)
-    self.buttons.teleportto = self.widget:getWindow("TeleportToButton")
-    self.buttons.teleportto:subscribeEvent("MouseButtonUp", self.buttonTeleportto_Click, self)
-    self.buttons.talk = self.widget:getWindow("TalkButton")
-    self.buttons.talk:subscribeEvent("MouseButtonUp", self.buttonTalk_Click, self)
-    self.buttons.touch = self.widget:getWindow("TouchButton")
-    self.buttons.touch:subscribeEvent("MouseButtonUp", self.buttonTouch_Click, self)
-    self.buttons.take = self.widget:getWindow("TakeButton")
-    self.buttons.take:subscribeEvent("MouseButtonUp", self.buttonTake_Click, self)
-    self.buttons.give = self.widget:getWindow("GiveButton")
-    self.buttons.give:subscribeEvent("MouseButtonUp", self.buttonGive_Click, self)
-    self.buttons.inspect = self.widget:getWindow("InspectButton")
-    self.buttons.inspect:subscribeEvent("MouseButtonUp", self.buttonInspect_Click, self)
-    self.buttons.move = self.widget:getWindow("MoveButton")
-    self.buttons.move:subscribeEvent("MouseButtonUp", self.buttonMove_Click, self)
-    self.buttons.edit = self.widget:getWindow("EditButton")
-    self.buttons.edit:subscribeEvent("MouseButtonUp", self.editButton_Click, self)
 
     --Collect a list of all the entity types which the user can normally talk to.
     --Note that the user still can talk to other entities, it's just not as easy to address them.
     self.talkingEntityTypes = {}
     self.typeService = world:getView():getAvatar():getConnection():getTypeService()
 
-    --get a couple of use buttons to allow for different use actions
-
-    self:addButton("UseButton1")
-    self:addButton("UseButton2")
-    self:addButton("UseButton3")
-    self:addButton("UseButton4")
-    self:addButton("UseButton5")
-
-    self.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.menuWindow)
-    self.stackableContainer:setInnerContainerWindow(self.menuWindow)
-    connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, self.input_MouseButtonReleased, self)
-
-
     --Check whether we should show the inspect button even for non admin types.
     local configService = emberServices:getConfigService()
     local evaluateShowInspect = function()
         if world:getAvatar():isAdmin() then
-            self.buttons.inspect:setVisible(true)
+            self.showInspect = true
         else
             local variable = configService:getValue("authoring", "showinspectforall")
             if variable and variable:is_bool() then
-                local showInspectForAll = variable[".bool"](variable);
-                self.buttons.inspect:setVisible(showInspectForAll)
+                self.showInspect = variable[".bool"](variable);
             else
-                self.buttons.inspect:setVisible(false)
+                self.showInspect = false
             end
         end
     end
@@ -100,47 +65,26 @@ function EntityPicker:buildWidget(world)
 
     connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
 
+    for i = 1, 10 do
+        local button = guiManager:createWindow("EmberLook/Button")
+        button:setWidth(CEGUI.UDim(1, 0))
+        local wrapper = { button = button, clickedHandler = nil }
+        button:subscribeEvent("Clicked", function()
+            if wrapper.clickedHandler then
+                wrapper.clickedHandler()
+            end
+        end, self)
+        self.menuWindow:addChild(wrapper.button)
+
+        table.insert(self.buttons, wrapper)
+
+    end
+
 end
 
-function EntityPicker:addButton(buttonName)
-    local buttonWrapper = {}
-    buttonWrapper.button = self.widget:getWindow(buttonName)
-    buttonWrapper.clicked = function(args)
-        buttonWrapper.clickedHandler()
-    end
-    buttonWrapper.button:subscribeEvent("MouseButtonUp", buttonWrapper.clicked)
-    local i = table.getn(self.useButtons)
-    self.useButtons[i + 1] = buttonWrapper
-end
 
 function EntityPicker:showMenu(position, entity)
     self.widget:show()
-
-    --disable the edit and teleport buttons if we're not admin
-    if self.world:getAvatar():isAdmin() then
-        self.buttons.edit:setVisible(true)
-        self.buttons.teleportto:setVisible(true)
-    else
-        self.buttons.edit:setVisible(false)
-        self.buttons.teleportto:setVisible(false)
-    end
-
-    --only show "talk" button for entities which we can talk to
-    local isTalkable = false
-    for i, v in ipairs(self.talkingEntityTypes) do
-        if entity:getType():isA(v) then
-            isTalkable = true
-        end
-    end
-    if isTalkable then
-        self.buttons.talk:setVisible(true)
-    else
-        self.buttons.talk:setVisible(false)
-    end
-
-
-
-    self.stackableContainer:repositionWindows()
 
     local localPosition = CEGUI.Vector2f:new_local(position.x, position.y)
 
@@ -155,7 +99,8 @@ function EntityPicker:showMenu(position, entity)
         localPosition.y = 0
     end
     local width = self.widget:getMainWindow():getPixelSize().width
-    local height = self.stackableContainer:getAbsoluteHeight() + self.entityName:getPixelSize().height
+    --local height = self.stackableContainer:getAbsoluteHeight() + self.entityName:getPixelSize().height
+    local height = self.widget:getMainWindow():getPixelSize().height
 
     local mainWindowSize = root:getPixelSize()
     if localPosition.x + width > mainWindowSize.width then
@@ -164,7 +109,6 @@ function EntityPicker:showMenu(position, entity)
     if localPosition.y + height > mainWindowSize.height then
         localPosition.y = mainWindowSize.height - height
     end
-
 
     local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0, localPosition.x), CEGUI.UDim(0, localPosition.y))
     self.widget:getMainWindow():setPosition(uPosition)
@@ -203,7 +147,6 @@ function EntityPicker:updateSelector()
     end
 end
 
-
 function EntityPicker:handleAction(action, entity)
 
     -- Some other script has picked an entity (like the script which handles inventory).
@@ -215,10 +158,8 @@ function EntityPicker:handleAction(action, entity)
         self.pickedEntities = {}
         self.currentPickedEntityIndex = 0
 
-        local result = {}
-        result.entityId = entity:getId()
         -- set an arbitrary position
-        result.position = Ogre.Vector3:new_local(0,0,0)
+        local result = { entityId = entity:getId(), position = Ogre.Vector3:new_local(0, 0, 0) }
         self:pickedOneEntity(result)
 
     end
@@ -262,6 +203,19 @@ function EntityPicker:pickedEntity(results, args)
     end
 end
 
+function isEntityContainedByOther(entity, other)
+
+    local parent = entity:getLocation()
+    while parent do
+        if parent == other then
+            return true
+        end
+        parent = parent:getLocation()
+    end
+
+    return false
+end
+
 --called when an entity has been picked
 function EntityPicker:pickedOneEntity(pickedResult)
 
@@ -271,16 +225,92 @@ function EntityPicker:pickedOneEntity(pickedResult)
             --we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
             self.position = Ogre.Vector3:new_local(pickedResult.position)
 
-            if (entity:getId() == '0') then
-                self.buttons.move:setVisible(false)
-                self.buttons.take:setVisible(false)
+            --first hide all buttons
+            for k, v in pairs(self.activeButtons) do
+                v:setHeight(CEGUI.UDim(0, 0))
+            end
+
+            self.activeButtons = {}
+
+
+            --only show "talk" button for entities which we can talk to
+            local isTalkable = false
+            for i, v in ipairs(self.talkingEntityTypes) do
+                if entity:getType():isA(v) then
+                    isTalkable = true
+                end
+            end
+            --if isTalkable then
+            --    self.buttons.talk:setVisible(true)
+            --else
+            --    self.buttons.talk:setVisible(false)
+            --end
+
+            local isPhysicalDomain = false
+            if entity:hasAttr("domain") then
+                local domainElement = entity:valueOfAttr("domain")
+                if domainElement:isString() and domainElement:asString() == "physical" then
+                    isPhysicalDomain = true
+                end
+            end
+
+            local selfEntity = self.world:getAvatar():getEmberEntity()
+            local isInInventory = isEntityContainedByOther(entity, selfEntity)
+
+            if not isInInventory then
+                if entity ~= selfEntity then
+                    self:showButton("Move to", "Move to this point.", function()
+                        self.world:getMovementController():moveToPoint(self.position)
+                        self:removeMenu()
+                    end)
+                    if self.world:getAvatar():isAdmin() then
+                        self:showButton("Teleport to", "Teleport to this point.", function()
+                            self:doWithPickedEntity(function(pickedEntity)
+                                self.world:getMovementController():teleportTo(self.position, pickedEntity)
+                            end)
+                            self:removeMenu()
+                        end)
+                    end
+                    if (not isPhysicalDomain) then
+                        self:showButton("Pick up", "Pick up the entity.", function()
+                            self:doWithPickedEntity(function(pickedEntity)
+                                emberServices:getServerService():take(pickedEntity)
+                                guiManager:EmitEntityAction("take", pickedEntity)
+                            end)
+                            self:removeMenu()
+                        end)
+                        self:showButton("Move", "Move the entity.", function()
+                            self:doWithPickedEntity(function(pickedEntity)
+                                guiManager:EmitEntityAction("move", pickedEntity)
+                            end)
+                            self:removeMenu()
+                        end)
+                    end
+                end
             else
-                self.buttons.move:setVisible(true)
-                self.buttons.take:setVisible(true)
+            end
+
+            if self.showInspect then
+                self:showButton("Inspect", "Inspect the entity.", function()
+                    self:doWithPickedEntity(function(pickedEntity)
+                        guiManager:EmitEntityAction("inspect", pickedEntity)
+                    end)
+                    self:removeMenu()
+                end)
+            end
+
+            if self.world:getAvatar():isAdmin() then
+                self:showButton("Edit", "Edit the entity.", function()
+                    self:doWithPickedEntity(function(pickedEntity)
+                        guiManager:EmitEntityAction("edit", pickedEntity)
+                    end)
+                    self:removeMenu()
+                end)
             end
 
             self:checkUse(entity)
             self:showMenu(self.pickedPoint, entity)
+            self.menuWindow:invalidate(true)
             local name
             --if the entity has a name, use it, else use the type name
             --perhaps we should prefix the type name with an "a" or "an"?
@@ -294,38 +324,38 @@ function EntityPicker:pickedOneEntity(pickedResult)
     end
 end
 
+function EntityPicker:showButton(text, tooltip, clickFn)
+    local index = table.getn(self.activeButtons)
+    local buttonWrapper = self.buttons[index + 1]
+    buttonWrapper.clickedHandler = clickFn
+    buttonWrapper.button:setText(text)
+    buttonWrapper.button:setTooltipText(tooltip)
+    buttonWrapper.button:setHeight(CEGUI.UDim(0, 20))
+    table.insert(self.activeButtons, buttonWrapper.button)
+end
+
 function EntityPicker:checkUse(entity)
     --try to find the default operation for the wielded entity
-    for i, v in ipairs(self.useButtons) do
-        v.button:setVisible(false)
-    end
-
-    local currentButtonIndex = 0
 
     --first fill up with actions defined for the entity being picked
     local actionList = entity:getUsages();
     if actionList:size() > 0 then
         for i = 0, actionList:size() - 1 do
-            currentButtonIndex = currentButtonIndex + 1
             local action = actionList[i]
             local usage = entity:getUsage(action)
-            local currentButton = self.useButtons[currentButtonIndex]
-            self:addAction(currentButton, entity:getId(), action, usage)
+            self:addAction(entity:getId(), action, usage)
         end
     end
 
     --then fill up with operations that can be performed with the currently wielded entity
     local wieldedEntity = self.world:getAvatar():getEmberEntity():getAttachedEntity("attached_hand_primary")
     if wieldedEntity then
-        currentButtonIndex = currentButtonIndex + 1
         local operatorList = wieldedEntity:getUsages();
         if operatorList:size() > 0 then
             for i = 0, operatorList:size() - 1 do
-                currentButtonIndex = currentButtonIndex + 1
                 local defaultOp = operatorList[i]
                 local usage = wieldedEntity:getUsage(defaultOp)
-                local currentButton = self.useButtons[currentButtonIndex]
-                self:addUse(currentButton, entity:getId(), wieldedEntity, defaultOp, usage)
+                self:addUse(entity:getId(), wieldedEntity, defaultOp, usage)
             end
         end
     else
@@ -333,18 +363,16 @@ function EntityPicker:checkUse(entity)
         local operatorList = self.world:getAvatar():getEmberEntity():getUsagesProtected();
         if operatorList:size() > 0 then
             for i = 0, operatorList:size() - 1 do
-                currentButtonIndex = currentButtonIndex + 1
                 local defaultOp = operatorList[i]
                 local usage = self.world:getAvatar():getEmberEntity():getUsageProtected(defaultOp)
-                local currentButton = self.useButtons[currentButtonIndex]
-                self:addUseSelf(currentButton, entity:getId(), self.world:getAvatar():getEmberEntity(), defaultOp, usage)
+                self:addUseSelf(entity:getId(), self.world:getAvatar():getEmberEntity(), defaultOp, usage)
             end
         end
     end
 end
 
-function EntityPicker:addUseSelf(buttonWrapper, entityId, wieldedEntity, operation, usage)
-    buttonWrapper.clickedHandler = function()
+function EntityPicker:addUseSelf(entityId, wieldedEntity, operation, usage)
+    local clickedHandler = function()
         local entity = self.world:getEmberEntity(entityId)
         if entity then
             self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert:toWF_Point3(self.position))
@@ -353,13 +381,11 @@ function EntityPicker:addUseSelf(buttonWrapper, entityId, wieldedEntity, operati
         self:removeMenu()
     end
 
-    local button = buttonWrapper.button
-    button:setVisible(true)
-    button:setText(usage.name)
+    self:showButton(usage.name, usage.description, clickedHandler)
 end
 
-function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation, usage)
-    buttonWrapper.clickedHandler = function()
+function EntityPicker:addUse(entityId, wieldedEntity, operation, usage)
+    local clickedHandler = function()
         local entity = self.world:getEmberEntity(entityId)
         if entity then
             self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert:toWF_Point3(self.position))
@@ -369,13 +395,11 @@ function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation, 
         self:removeMenu()
     end
 
-    local button = buttonWrapper.button
-    button:setVisible(true)
-    button:setText(usage.name .. " with " .. wieldedEntity:getType():getName())
+    self:showButton(usage.name .. " with " .. wieldedEntity:getType():getName(), usage.description, clickedHandler)
 end
 
-function EntityPicker:addAction(buttonWrapper, entityId, action, usage)
-    buttonWrapper.clickedHandler = function()
+function EntityPicker:addAction(entityId, action, usage)
+    local clickedHandler = function()
         local entity = self.world:getEmberEntity(entityId)
         if entity ~= nil then
             self.world:getAvatar():useTool(entity, action)
@@ -384,9 +408,8 @@ function EntityPicker:addAction(buttonWrapper, entityId, action, usage)
         self:removeMenu()
     end
 
-    local button = buttonWrapper.button
-    button:setVisible(true)
-    button:setText(usage.name)
+    self:showButton(usage.name, usage.description, clickedHandler)
+
 end
 
 --function EntityPicker:pickedNothing(args)
@@ -401,80 +424,16 @@ function EntityPicker:doWithPickedEntity(aFunction)
     emberOgre:doWithEntity(self.entityId, aFunction)
 end
 
-function EntityPicker:buttonMoveto_Click(args)
-    self.world:getMovementController():moveToPoint(self.position)
-    self:removeMenu()
-end
-
-function EntityPicker:buttonTeleportto_Click(args)
-    self:doWithPickedEntity(function(entity)
-        self.world:getMovementController():teleportTo(self.position, entity)
-    end)
-    self:removeMenu()
-end
-
-function EntityPicker:buttonTouch_Click(args)
-    self:doWithPickedEntity(function(entity)
-        emberServices:getServerService():touch(entity, Ember.OgreView.Convert:toWF_Point3(self.position))
-        guiManager:EmitEntityAction("touch", entity)
-    end)
-    self:removeMenu()
-end
-
-function EntityPicker:buttonTalk_Click(args)
-    self:doWithPickedEntity(function(entity)
-        guiManager:EmitEntityAction("talk", entity)
-    end)
-    self:removeMenu()
-end
-
-function EntityPicker:buttonTake_Click(args)
-    self:doWithPickedEntity(function(entity)
-        emberServices:getServerService():take(entity)
-        guiManager:EmitEntityAction("take", entity)
-    end)
-    self:removeMenu()
-end
-
-function EntityPicker:buttonGive_Click(args)
-    self:doWithPickedEntity(function(entity)
-        guiManager:EmitEntityAction("give", entity)
-    end)
-    self:removeMenu()
-end
-
-function EntityPicker:buttonInspect_Click(args)
-    self:doWithPickedEntity(function(entity)
-        guiManager:EmitEntityAction("inspect", entity)
-    end)
-    self:removeMenu()
-end
-
-function EntityPicker:buttonMove_Click(args)
-    self:doWithPickedEntity(function(entity)
-        guiManager:EmitEntityAction("move", entity)
-    end)
-    self:removeMenu()
-end
-
-function EntityPicker:editButton_Click(args)
-    self:doWithPickedEntity(function(entity)
-        guiManager:EmitEntityAction("edit", entity)
-    end)
-    self:removeMenu()
-end
-
+--function EntityPicker:buttonTalk_Click(args)
+--    self:doWithPickedEntity(function(entity)
+--        guiManager:EmitEntityAction("talk", entity)
+--    end)
+--    self:removeMenu()
+--end
 
 function EntityPicker:removeMenu()
     self.widget:hide()
     self.selectorWidget:hide()
-end
-
-function EntityPicker:input_MouseButtonReleased(button, mode)
-    --only show the menu while the left mouse button is pressed
-    if button == Ember.Input.MouseButtonLeft then
-        --self:removeMenu()
-    end
 end
 
 function EntityPicker:shutdown()
@@ -485,7 +444,15 @@ end
 
 connect(connectors, emberOgre.EventWorldCreated, function(world)
     createConnector(world.EventGotAvatar):connect(function()
-        entityPicker = { connectors = {}, menuWindow = nil, entityName = nil, useButtons = {}, entityId = nil, position = nil, buttons = {}, currentPickedEntityIndex = 0 }
+        entityPicker = { connectors = {},
+                         buttons = {},
+                         activeButtons = {},
+                         menuWindow = nil,
+                         entityName = nil,
+                         world = world,
+                         entityId = nil,
+                         position = nil,
+                         currentPickedEntityIndex = 0 }
         setmetatable(entityPicker, { __index = EntityPicker })
 
         entityPicker:buildWidget(world)
