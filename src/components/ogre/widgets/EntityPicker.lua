@@ -65,23 +65,26 @@ function EntityPicker:buildWidget(world)
 
     connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
 
-    for i = 1, 10 do
-        local button = guiManager:createWindow("EmberLook/Button")
-        button:setWidth(CEGUI.UDim(1, 0))
-        local wrapper = { button = button, clickedHandler = nil }
-        button:subscribeEvent("Clicked", function()
-            if wrapper.clickedHandler then
-                wrapper.clickedHandler()
-            end
-        end, self)
-        self.menuWindow:addChild(wrapper.button)
-
-        table.insert(self.buttons, wrapper)
-
+    -- Start with 20 buttons
+    for i = 1, 20 do
+        self:createButton()
     end
 
 end
 
+function EntityPicker:createButton()
+    local button = guiManager:createWindow("EmberLook/Button")
+    button:setWidth(CEGUI.UDim(1, 0))
+    local wrapper = { button = button, clickedHandler = nil }
+    button:subscribeEvent("Clicked", function()
+        if wrapper.clickedHandler then
+            wrapper.clickedHandler()
+        end
+    end, self)
+    self.menuWindow:addChild(wrapper.button)
+
+    table.insert(self.buttons, wrapper)
+end
 
 function EntityPicker:showMenu(position, entity)
     self.widget:show()
@@ -89,8 +92,8 @@ function EntityPicker:showMenu(position, entity)
     self.menuWindow:layout()
     local menuSize = self.menuWindow:getPixelSize()
 
-    local newSize  = CEGUI.USize(CEGUI.UDim(0,menuSize.width),CEGUI.UDim(0.0,menuSize.height + self.entityName:getPixelSize().height))
-    self.widget:getMainWindow():setSize(newSize)
+    local newHeight = CEGUI.UDim(0.0, menuSize.height + self.entityName:getPixelSize().height)
+    self.widget:getMainWindow():setHeight(newHeight)
 
     local localPosition = CEGUI.Vector2f:new_local(position.x, position.y)
 
@@ -340,12 +343,17 @@ end
 
 function EntityPicker:showButton(text, tooltip, clickFn)
     local index = table.getn(self.activeButtons)
-    local buttonWrapper = self.buttons[index + 1]
-    buttonWrapper.clickedHandler = clickFn
-    buttonWrapper.button:setText(text)
-    buttonWrapper.button:setTooltipText(tooltip)
-    buttonWrapper.button:setHeight(CEGUI.UDim(0, 20))
-    table.insert(self.activeButtons, buttonWrapper.button)
+    if index == table.getn(self.buttons) then
+        --We can't show too many buttons, that would just look strange.
+        log.warning("Too many buttons to show for entity.")
+    else
+        local buttonWrapper = self.buttons[index + 1]
+        buttonWrapper.clickedHandler = clickFn
+        buttonWrapper.button:setText(text)
+        buttonWrapper.button:setTooltipText(tooltip)
+        buttonWrapper.button:setHeight(CEGUI.UDim(0, 20))
+        table.insert(self.activeButtons, buttonWrapper.button)
+    end
 end
 
 function EntityPicker:checkUse(entity)
