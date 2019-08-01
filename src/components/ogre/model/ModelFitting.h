@@ -45,7 +45,7 @@ public:
 	 * @param childEntityId The id of the child entity which should be attached.
 	 * Note that we don't submit the child entity in the constructor. This is done in attachChild() instead. The reason is that it's not certain that the child entity is available at the time of creation.
 	 */
-	ModelFitting(EmberEntity& parent, const std::string& mountPoint, const std::string& childEntityId);
+	ModelFitting(EmberEntity& parent, std::string mountPoint, std::string childEntityId);
 
 	/**
 	 * @brief Dtor.

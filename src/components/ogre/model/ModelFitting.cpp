@@ -18,6 +18,8 @@
 
 #include "ModelFitting.h"
 
+#include <utility>
+
 #include "domain/EmberEntity.h"
 
 namespace Ember
@@ -27,11 +29,11 @@ namespace OgreView
 namespace Model
 {
 
-ModelFitting::ModelFitting(EmberEntity& parent, const std::string& mountPoint, const std::string& childEntityId) :
+ModelFitting::ModelFitting(EmberEntity& parent, std::string mountPoint, std::string childEntityId) :
 	mParent(parent),
 	mChild(nullptr),
-	mMountPoint(mountPoint),
-	mChildEntityId(childEntityId)
+	mMountPoint(std::move(mountPoint)),
+	mChildEntityId(std::move(childEntityId))
 {
 
 }

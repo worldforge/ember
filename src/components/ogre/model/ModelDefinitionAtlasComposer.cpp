@@ -109,7 +109,7 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 			if (mesh->sharedVertexData) {
 				copyVertexData(vertices, *mesh->sharedVertexData);
 			}
-			for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i) {
+			for (size_t i = 0; i < mesh->getNumSubMeshes(); ++i) {
 				Ogre::SubMesh* submesh = mesh->getSubMesh(i);
 				size_t offset = 0;
 				if (!submesh->useSharedVertices) {

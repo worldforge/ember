@@ -51,13 +51,13 @@ public:
 	 * @param attachPoint A named attach point on the model.
 	 * @param movableObject An optional movable object to attach. Note that if no object is submitted, no TagPoint will be created.
 	 */
-	ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, const std::string& attachPointName, bool deleteMovableWhenDone = false);
+	ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, std::string attachPointName, bool deleteMovableWhenDone = false);
 
 	/**
 	 * @brief Dtor.
 	 * At destruction the movable object will be detached from the model.
 	 */
-	virtual ~ModelBoneProvider();
+	~ModelBoneProvider() override;
 
 	Ogre::Node* getNode() const override;
 
@@ -109,7 +109,7 @@ protected:
 	 * @param movableObject An optional movable object to attach. Note that if no object is submitted, no TagPoint will be created.
 	 * @param parent The parent provider.
 	 */
-	ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, const std::string& attachPointName, ModelBoneProvider* parent);
+	ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, std::string  attachPointName, ModelBoneProvider* parent);
 
 
 	/**

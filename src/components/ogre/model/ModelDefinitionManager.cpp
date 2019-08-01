@@ -46,8 +46,8 @@ namespace OgreView
 {
 namespace Model {
 
-ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirectory, Eris::EventService& eventService)
-: ShowModels("showmodels", this, "Show or hide models."), mShowModels(true), mExportDirectory(exportDirectory)
+ModelDefinitionManager::ModelDefinitionManager(std::string exportDirectory, Eris::EventService& eventService)
+: ShowModels("showmodels", this, "Show or hide models."), mShowModels(true), mExportDirectory(std::move(exportDirectory))
 {
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 }
@@ -84,7 +84,7 @@ std::string ModelDefinitionManager::exportScript(const std::string& name, ModelD
 
 }
 
-const std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
+std::vector<std::string> ModelDefinitionManager::getAllMeshes() const
 {
 	std::vector<std::string> meshes;
 	Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");

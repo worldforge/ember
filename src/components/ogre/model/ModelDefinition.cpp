@@ -28,6 +28,8 @@
 
 #include "framework/MainLoopController.h"
 #include "ModelDefinition.h"
+
+#include <utility>
 #include "Model.h"
 #include "SubModel.h"
 #include "SubModelPart.h"
@@ -291,8 +293,8 @@ void ModelDefinition::moveFrom(ModelDefinition&& rhs) {
 	*this = std::move(rhs);
 }
 
-SubModelDefinition::SubModelDefinition(const std::string& meshname, ModelDefinition& modelDef) :
-		mMeshName(meshname), mModelDef(modelDef) {
+SubModelDefinition::SubModelDefinition(std::string meshname, ModelDefinition& modelDef) :
+		mMeshName(std::move(meshname)), mModelDef(modelDef) {
 }
 
 SubModelDefinition::~SubModelDefinition() {
@@ -323,8 +325,8 @@ void SubModelDefinition::removePartDefinition(PartDefinition* def) {
 	ModelDefinition::removeDefinition(def, mParts);
 }
 
-PartDefinition::PartDefinition(const std::string& name, SubModelDefinition& subModelDef) :
-		mName(name), mShow(true), mSubModelDef(subModelDef) {
+PartDefinition::PartDefinition(std::string name, SubModelDefinition& subModelDef) :
+		mName(std::move(name)), mShow(true), mSubModelDef(subModelDef) {
 }
 
 PartDefinition::~PartDefinition() {
@@ -386,8 +388,8 @@ SubEntityDefinition::SubEntityDefinition(unsigned int subEntityIndex, PartDefini
 		mSubEntityIndex(subEntityIndex), mPartDef(partdef) {
 }
 
-SubEntityDefinition::SubEntityDefinition(const std::string& subEntityName, PartDefinition& partdef) :
-		mSubEntityName(subEntityName), mSubEntityIndex(0), mPartDef(partdef) {
+SubEntityDefinition::SubEntityDefinition(std::string subEntityName, PartDefinition& partdef) :
+		mSubEntityName(std::move(subEntityName)), mSubEntityIndex(0), mPartDef(partdef) {
 }
 
 const PartDefinition& SubEntityDefinition::getPartDefinition() const {
@@ -439,8 +441,8 @@ void AnimationDefinition::setIterations(int iterations) {
 	mIterations = iterations;
 }
 
-ActionDefinition::ActionDefinition(const std::string& name) :
-		mName(name), mAnimationSpeed(1.0) {
+ActionDefinition::ActionDefinition(std::string name) :
+		mName(std::move(name)), mAnimationSpeed(1.0) {
 }
 
 ActionDefinition::~ActionDefinition() {

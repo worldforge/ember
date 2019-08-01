@@ -30,13 +30,15 @@
 #include "components/ogre/Convert.h"
 #include <Ogre.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 
 namespace Model {
 
-ModelMount::ModelMount(Model& model, INodeProvider* nodeProvider, const std::string& pose) :
-		mModel(model), mNodeProvider(nodeProvider), mPose(pose) {
+ModelMount::ModelMount(Model& model, INodeProvider* nodeProvider, std::string pose) :
+		mModel(model), mNodeProvider(nodeProvider), mPose(std::move(pose)) {
 	model.attachToNode(nodeProvider);
 }
 

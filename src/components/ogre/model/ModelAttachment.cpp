@@ -33,8 +33,6 @@
 
 #include <Eris/TypeInfo.h>
 
-#include <OgreManualObject.h>
-
 #include <sigc++/bind.h>
 
 namespace Ember {
@@ -204,7 +202,7 @@ void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity) {
 void ModelAttachment::setupFittings() {
 	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
 	for (const auto& attachpoint : attachpoints) {
-		AttributeObserver* observer = new AttributeObserver(mChildEntity, attachpoint.Name, ".");
+		auto observer = new AttributeObserver(mChildEntity, attachpoint.Name, ".");
 		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), attachpoint.Name));
 		mFittingsObservers.push_back(observer);
 		observer->forceEvaluation();
@@ -226,7 +224,7 @@ void ModelAttachment::detachFitting(EmberEntity& entity) {
 void ModelAttachment::createFitting(const std::string& fittingName, const std::string& entityId) {
 	auto fitting = new ModelFitting(mChildEntity, fittingName, entityId);
 	mFittings.insert(ModelFittingStore::value_type(fittingName, fitting));
-	for (unsigned int i = 0; i < mChildEntity.numContained(); ++i) {
+	for (size_t i = 0; i < mChildEntity.numContained(); ++i) {
 		Eris::Entity* entity = mChildEntity.getContained(i);
 		if (entity && entity->getId() == entityId) {
 			auto emberEntity = dynamic_cast<EmberEntity*>(entity);

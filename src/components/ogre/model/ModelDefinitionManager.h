@@ -61,7 +61,7 @@ public:
 	 *
 	 * @param exportDirectory The path to the export directory, where exported models will be stored.
 	 */
-	explicit ModelDefinitionManager(const std::string& exportDirectory, Eris::EventService& eventService);
+	explicit ModelDefinitionManager(std::string exportDirectory, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
@@ -105,7 +105,7 @@ public:
 	 * This is mainly a helper method for retrieving a list of all available meshes.
 	 * @return A list of all available meshes.
 	 */
-	const std::vector<std::string> getAllMeshes() const;
+	std::vector<std::string> getAllMeshes() const;
 
 	/**
 	 * @brief Returns whether all models should be shown using their normal visibility settings.

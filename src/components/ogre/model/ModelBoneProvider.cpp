@@ -21,13 +21,15 @@
 #include <OgreTagPoint.h>
 #include <OgreSceneNode.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 namespace Model {
-ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, const std::string& attachPointName, bool deleteMovableWhenDone) :
+ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, std::string attachPointName, bool deleteMovableWhenDone) :
 		mNode(parentSceneNode),
 		mParentModel(parentModel),
-		mAttachPointName(attachPointName),
+		mAttachPointName(std::move(attachPointName)),
 		mParent(nullptr),
 		mPosition(Ogre::Vector3::ZERO),
 		mOrientation(Ogre::Quaternion::IDENTITY),
@@ -37,7 +39,7 @@ ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentM
 		mOffsetTranslation(Ogre::Vector3::ZERO),
 		mOffsetRotation(Ogre::Quaternion::IDENTITY) {
 	auto& attachPointDefinitions = parentModel.getDefinition()->getAttachPointsDefinitions();
-	auto I = std::find_if(std::begin(attachPointDefinitions), std::end(attachPointDefinitions), [&](AttachPointDefinition def) { return def.Name == attachPointName; });
+	auto I = std::find_if(std::begin(attachPointDefinitions), std::end(attachPointDefinitions), [&](const AttachPointDefinition& def) { return def.Name == mAttachPointName; });
 	if (I != attachPointDefinitions.end()) {
 		mAttachPointDefinition = *I;
 		mPosition = mAttachPointDefinition.Translation;
@@ -45,10 +47,10 @@ ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentM
 	}
 }
 
-ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, const std::string& attachPointName, ModelBoneProvider* parent) :
+ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, std::string attachPointName, ModelBoneProvider* parent) :
 		mNode(parentSceneNode),
 		mParentModel(parentModel),
-		mAttachPointName(attachPointName),
+		mAttachPointName(std::move(attachPointName)),
 		mParent(parent),
 		mPosition(Ogre::Vector3::ZERO),
 		mOrientation(Ogre::Quaternion::IDENTITY),
@@ -62,7 +64,7 @@ ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentM
 ModelBoneProvider::~ModelBoneProvider() {
 	assert(mTagPoints.empty());
 	if (mParent) {
-		ModelBoneProviderStore::iterator I = std::find(mParent->mChildren.begin(), mParent->mChildren.end(), this);
+		auto I = std::find(mParent->mChildren.begin(), mParent->mChildren.end(), this);
 		if (I != mParent->mChildren.end()) {
 			mParent->mChildren.erase(I);
 		}
@@ -78,7 +80,7 @@ Ogre::Node* ModelBoneProvider::getParentNode() const {
 }
 
 INodeProvider* ModelBoneProvider::createChildProvider(const std::string& name) {
-	ModelBoneProvider* childProvider = new ModelBoneProvider(mNode, mParentModel, mAttachPointName, this);
+	auto childProvider = new ModelBoneProvider(mNode, mParentModel, mAttachPointName, this);
 	mChildren.push_back(childProvider);
 	return childProvider;
 }
@@ -154,10 +156,13 @@ Ogre::Quaternion ModelBoneProvider::getDerivedOrientation() const {
 
 
 void ModelBoneProvider::detachObject(Ogre::MovableObject* movable) {
-	for (auto I = mTagPoints.begin(); I != mTagPoints.end(); I++) {
+	for (auto I = mTagPoints.begin(); I != mTagPoints.end();) {
 		Ogre::TagPoint* tagPoint = *I;
 		if (movable == tagPoint->getChildObject()) {
-			mTagPoints.erase(I);
+			//Erasing in a set will invalidate the iterator.
+			I = mTagPoints.erase(I);
+		} else {
+			I++;
 		}
 	}
 	movable->setVisible(true);

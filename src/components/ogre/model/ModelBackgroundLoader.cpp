@@ -91,7 +91,7 @@ void ModelBackgroundLoader::prepareMaterialInBackground(const std::string& mater
 			mMaterialsToLoad.insert(materialPtr);
 			if (!materialPtr->isPrepared() && !materialPtr->isLoading() && !materialPtr->isLoaded()) {
 				Ogre::ResourceBackgroundQueue& queue = Ogre::ResourceBackgroundQueue::getSingleton();
-				Ogre::BackgroundProcessTicket ticket = queue.prepare(Ogre::MaterialManager::getSingleton().getResourceType(), materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, &mListener);
+				Ogre::BackgroundProcessTicket ticket = queue.prepare(Ogre::MaterialManager::getSingleton().getResourceType(), materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, nullptr, nullptr, &mListener);
 				if (ticket) {
 					addTicket(ticket);
 				}
@@ -215,7 +215,7 @@ bool ModelBackgroundLoader::performLoading() {
 							for (unsigned int i = 0; i < frames; ++i) {
 								const auto& textureName = tus->getFrameTextureName(i);
 								mTexturesToLoad.insert(textureName);
-								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::TextureManager::getSingleton().getResourceType(), textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, nullptr, 0, &mListener);
+								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::TextureManager::getSingleton().getResourceType(), textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, nullptr, nullptr, &mListener);
 								if (ticket) {
 									addTicket(ticket);
 								}

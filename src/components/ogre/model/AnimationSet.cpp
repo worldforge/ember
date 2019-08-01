@@ -47,7 +47,7 @@ void AnimationSet::addTime(Ogre::Real timeSlice)
 
 void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 {
-	if (mAnimations.size() > 0) {
+	if (!mAnimations.empty()) {
 		continueAnimation = true;
 		Animation* animation = &mAnimations[mCurrentAnimationSetIndex];
 		float animationLength = animation->getLengthOfOneIteration();
@@ -56,7 +56,7 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 			//Ogre will throw an assert exception if an animation with zero length is activated
 		} else {
 			//see if we've done enough iterations to either advance to the next animation, or the mark this animation as done
-			if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * animation->getIterations()) {
+			if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * (Ogre::Real)animation->getIterations()) {
 				animation->setEnabled(false);
 				mAccumulatedTime = 0;
 				if (mAnimations.size() > (mCurrentAnimationSetIndex + 1)) {
@@ -80,9 +80,9 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 
 void AnimationSet::reset()
 {
-	for (AnimationStore::iterator I = mAnimations.begin(); I != mAnimations.end(); ++I) {
-		I->setEnabled(false);
-		I->setTime(0.0f);
+	for (auto & animation : mAnimations) {
+		animation.setEnabled(false);
+		animation.setTime(0.0f);
 	}
 	mCurrentAnimationSetIndex = 0;
 	mAccumulatedTime = 0;
@@ -121,7 +121,7 @@ void Animation::addAnimationPart(const AnimationPart& part)
 
 void Animation::addTime(Ogre::Real timeSlice)
 {
-	AnimationPartSet::iterator I = mAnimationParts.begin();
+	auto I = mAnimationParts.begin();
 	for (; I != mAnimationParts.end(); ++I) {
 		//we'll get an assert error if we try to add time to an animation with zero length
 		if (I->state->getLength() != 0) {
@@ -133,10 +133,10 @@ void Animation::addTime(Ogre::Real timeSlice)
 void Animation::setTime(Ogre::Real time)
 {
 
-	for (AnimationPartSet::iterator I = mAnimationParts.begin(); I != mAnimationParts.end(); ++I) {
+	for (auto & animationPart : mAnimationParts) {
 		//we'll get an assert error if we try to add time to an animation with zero length
-		if (I->state->getLength() != 0) {
-			I->state->setTimePosition(time);
+		if (animationPart.state->getLength() != 0) {
+			animationPart.state->setTimePosition(time);
 		}
 	}
 }
@@ -152,15 +152,14 @@ void Animation::setEnabled(bool enabled)
 				state->destroyBlendMask();
 				if (enabled) {
 					const std::vector<BoneGroupRef>& boneGroupRefs = I->boneGroupRefs;
-					for (std::vector<BoneGroupRef>::const_iterator J = boneGroupRefs.begin(); J != boneGroupRefs.end(); ++J) {
-						const BoneGroupRef& boneGroupRef = *J;
-						const BoneGroupDefinition& boneGroupDef = *boneGroupRef.boneGroupDefinition;
+					for (auto boneGroupRef : boneGroupRefs) {
+							const BoneGroupDefinition& boneGroupDef = *boneGroupRef.boneGroupDefinition;
 						if (!state->hasBlendMask()) {
 							state->createBlendMask(mBoneNumber, 0.0f);
 						}
 						const std::vector<size_t>& boneIndices = boneGroupDef.Bones;
-						for (std::vector<size_t>::const_iterator bones_I = boneIndices.begin(); bones_I != boneIndices.end(); ++bones_I) {
-							state->setBlendMaskEntry(*bones_I, boneGroupRef.weight);
+						for (unsigned long boneIndex : boneIndices) {
+							state->setBlendMaskEntry(boneIndex, boneGroupRef.weight);
 						}
 					}
 				}

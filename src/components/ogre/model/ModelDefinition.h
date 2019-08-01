@@ -132,7 +132,7 @@ public:
 	const PartDefinition& getPartDefinition() const;
 
 private:
-	SubEntityDefinition(const std::string& subEntityName, PartDefinition& partdef);
+	SubEntityDefinition(std::string subEntityName, PartDefinition& partdef);
 	SubEntityDefinition(unsigned int subEntityIndex, PartDefinition& partdef);
 	std::string mSubEntityName;
 	std::string mMaterialName;
@@ -174,7 +174,7 @@ public:
 	const SubModelDefinition& getSubModelDefinition() const;
 
 private:
-	PartDefinition(const std::string& name, SubModelDefinition& subModelDef);
+	PartDefinition(std::string  name, SubModelDefinition& subModelDef);
 	std::string mName;
 	bool mShow;
 	std::string mGroup;
@@ -205,7 +205,7 @@ public:
 	bool mShadowCaster = true;
 
 private:
-	SubModelDefinition(const std::string& meshname, ModelDefinition& modelDef);
+	SubModelDefinition(std::string  meshname, ModelDefinition& modelDef);
 	std::string mMeshName;
 	PartDefinitionsStore mParts;
 	ModelDefinition& mModelDef;
@@ -442,7 +442,7 @@ public:
 	void setAnimationSpeed(Ogre::Real speed);
 
 private:
-	explicit ActionDefinition(const std::string& name);
+	explicit ActionDefinition(std::string name);
 
 	std::string mName;
 	AnimationDefinitionsStore mAnimations;
