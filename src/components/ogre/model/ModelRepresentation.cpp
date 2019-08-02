@@ -234,6 +234,13 @@ void ModelRepresentation::model_Reloaded() {
 }
 
 void ModelRepresentation::model_Resetting() {
+	//Resetting will invalidate all actions, so set them to null here.
+	if (mCurrentMovementAction) {
+		MotionManager::getSingleton().removeAnimated(mEntity.getId());
+	}
+	mActiveAction = nullptr;
+	mCurrentMovementAction = nullptr;
+	mTaskAction = nullptr;
 }
 
 void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds) {
