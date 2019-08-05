@@ -140,12 +140,13 @@ class Entity {
     */
     sigc::signal<void> BeingDeleted;    
     
-    sigc::signal<void, Eris::Task*> TaskAdded;
-    sigc::signal<void, Eris::Task*> TaskRemoved;
+    sigc::signal<void, const std::string&, Eris::Task*> TaskAdded;
+    sigc::signal<void, const std::string&, Eris::Task*> TaskRemoved;
 
     tolua_outside int _Entity_getTasksSize @ getTasksSize();
     tolua_outside Eris::Task* _Entity_getTask @ getTask(std::string id);
     tolua_outside Eris::Task* _Entity_getTaskFirst @ getTaskFirst();
+    tolua_outside std::string _Entity_getTaskIdFirst @ getTaskIdFirst();
 
 };
 }

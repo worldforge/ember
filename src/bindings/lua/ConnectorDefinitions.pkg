@@ -25,7 +25,7 @@ static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Ember::OgreView::Terrain::TerrainEditAction>> @ createConnector(sigc::signal<void, Ember::OgreView::Terrain::TerrainEditAction*>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<Ember::OgreView::Terrain::TerrainEditorOverlay>> @ createConnector(sigc::signal<void, Ember::OgreView::Terrain::TerrainEditorOverlay&>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<Ember::OgreView::Terrain::TerrainManager>> @ createConnector(sigc::signal<void, Ember::OgreView::Terrain::TerrainManager&>&);
-static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Eris::Task>> @ createConnector(sigc::signal<void, Eris::Task*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::StringValueAdapter, Ember::Lua::PtrValueAdapter<Eris::Task>> @ createConnector(sigc::signal<void, const std::string&, Eris::Task*>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const std::set<std::string>> > @ createConnector(sigc::signal<void, const std::set<std::string>&>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Ember::OgreView::Gui::EntityIcon>> @ createConnector(sigc::signal<void, Ember::OgreView::Gui::EntityIcon*>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Ember::OgreView::Gui::ActionBarIcon>> @ createConnector(sigc::signal<void, Ember::OgreView::Gui::ActionBarIcon*>&);

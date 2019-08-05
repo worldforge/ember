@@ -86,14 +86,7 @@ class ServerService
 	 * @param operation The operation to perform. If left blank the default will be used.
 	 */
 	void use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos = WFMath::Point<3>());
-	/**
-	 *    Stops the current use operation.
-	 */
-	void useStop();
-	
-	void actuate(Eris::Entity* entity,  const std::string& action);	
 
-	void eat(Eris::Entity* entity);
 	void deleteEntity(Eris::Entity* entity);
 	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
 

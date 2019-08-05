@@ -222,16 +222,8 @@ public:
 	 */
 	void use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos = WFMath::Point<3>());
 
-	/**
-	 * @brief Stops the current use operation.
-	 */
-	void useStop();
-
-	void actuate(Eris::Entity* entity, const std::string& action);
-	void eat(Eris::Entity* entity);
 	void deleteEntity(Eris::Entity* entity);
 	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
-	void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value);
 
 	/**
 	 * @brief Creates new type data on the server.

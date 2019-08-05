@@ -9,11 +9,8 @@
 			<Property name="Position" value="{{0.0,2},{0,0}}" />
 			<Property name="Size" value="{{1,-2},{1,0}}" />
 			<Window name="NameText" type="EmberLook/StaticText">
-				<Property name="Text" value="Task name:" />
 				<Property name="Position" value="{{0.0,5},{0,5}}" />
 				<Property name="Size" value="{{0,250},{0,20}}" />
-				<Property name="BackgroundEnabled" value="False" />
-				<Property name="FrameEnabled" value="False" />
 			</Window>
 			<Window name="Progress" type="EmberLook/ProgressBar">
 				<Property name="Text" value="Progress" />

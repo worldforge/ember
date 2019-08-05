@@ -84,17 +84,9 @@ void NonConnectedAdapter::use(Eris::Entity* entity, const std::string& operation
 
 }
 
-void NonConnectedAdapter::useStop()
+void NonConnectedAdapter::taskUsage(std::string taskId, std::string usage)
 {
 
-}
-
-void NonConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
-{
-}
-
-void NonConnectedAdapter::eat(Eris::Entity* entity)
-{
 }
 
 void NonConnectedAdapter::say(const std::string &message)

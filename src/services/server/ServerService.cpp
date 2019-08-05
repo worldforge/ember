@@ -232,21 +232,6 @@ void ServerService::use(Eris::Entity* entity, const std::string& operation, WFMa
 	getAdapter().use(entity, operation, pos);
 }
 
-void ServerService::useStop()
-{
-	getAdapter().useStop();
-}
-
-void ServerService::actuate(Eris::Entity* entity, const std::string& action)
-{
-	getAdapter().actuate(entity, action);
-}
-
-void ServerService::eat(Eris::Entity* entity)
-{
-	getAdapter().eat(entity);
-}
-
 void ServerService::say(const std::string &message)
 {
 	getAdapter().say(message);
@@ -275,11 +260,6 @@ void ServerService::deleteEntity(Eris::Entity* entity)
 void ServerService::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes)
 {
 	getAdapter().setAttributes(entity, attributes);
-}
-
-void ServerService::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value)
-{
-	getAdapter().adminTell(entityId, attribute, value);
 }
 
 void ServerService::createTypeInfo(const Atlas::Objects::Root& typeInfo)

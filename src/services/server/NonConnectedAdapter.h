@@ -66,11 +66,7 @@ public:
 
 	void use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos) override;
 
-	void useStop() override;
-
-	void actuate(Eris::Entity* entity, const std::string& action) override;
-
-	void eat(Eris::Entity* entity) override;
+	void taskUsage(std::string taskId, std::string usage) override;
 
 	void deleteEntity(Eris::Entity* entity) override;
 

@@ -423,7 +423,7 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 	}
 }
 
-void ModelRepresentation::entity_TaskAdded(Eris::Task* task) {
+void ModelRepresentation::entity_TaskAdded(const std::string& id, Eris::Task* task) {
 	createActionForTask(*task);
 }
 
@@ -436,7 +436,7 @@ void ModelRepresentation::createActionForTask(const Eris::Task& task) {
 	}
 }
 
-void ModelRepresentation::entity_TaskRemoved(Eris::Task*) {
+void ModelRepresentation::entity_TaskRemoved(const std::string& id, Eris::Task*) {
 	if (mTaskAction) {
 		mTaskAction->getAnimations().reset();
 		mTaskAction = nullptr;

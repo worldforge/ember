@@ -289,8 +289,8 @@ protected:
 
 	void entity_Changed(const Eris::StringSet& attributeIds);
 
-	void entity_TaskAdded(Eris::Task* task);
-	void entity_TaskRemoved(Eris::Task* task);
+	void entity_TaskAdded(const std::string& id, Eris::Task* task);
+	void entity_TaskRemoved(const std::string& id, Eris::Task* task);
 
 	/**
 	 * @brief Creates a new action for the supplied task (if any is found).

@@ -485,9 +485,25 @@ void Avatar::useTool(const EmberEntity& tool, const std::string& operation, cons
 
 	use->setArgs1(op);
 
-	EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->send(use);
+	mErisAvatar->getConnection()->send(use);
 
 }
+
+void Avatar::taskUsage(std::string taskId, std::string usage) {
+	Atlas::Objects::Operation::Use use;
+	use->setFrom(mErisAvatar->getId());
+
+	Atlas::Objects::Root task;
+	task->setId(taskId);
+	task->setObjtype("task");
+
+	task->setAttr("args", Atlas::Message::ListType{Atlas::Message::MapType{{"id", std::move(usage)}}});
+
+	use->setArgs1(task);
+
+	mErisAvatar->getConnection()->send(use);
+}
+
 
 void Avatar::performDefaultUsage() {
 	//Check if there's a tool in our primary hand and use if, otherwise check if we have any default usages.

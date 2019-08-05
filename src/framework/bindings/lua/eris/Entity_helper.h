@@ -42,6 +42,14 @@ Eris::Task* _Entity_getTaskFirst(Eris::Entity* entity)
 	return nullptr;
 }
 
+std::string _Entity_getTaskIdFirst(Eris::Entity* entity)
+{
+	if (!entity->getTasks().empty()) {
+		return entity->getTasks().begin()->first;
+	}
+	return "";
+}
+
 bool _Entity_extractEntityId(const Atlas::Message::Element& element, std::string& id) {
 	auto extractedId = Eris::Entity::extractEntityId(element);
 	if (extractedId) {

@@ -147,36 +147,13 @@ void ConnectedAdapter::use(Eris::Entity* entity, const std::string& operation, W
 //	}
 }
 
-void ConnectedAdapter::useStop() {
+void ConnectedAdapter::taskUsage(std::string taskId, std::string usage) {
+
+
 	try {
 		mAvatar.useStop();
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on stopping using." << ex);
-	}
-}
-
-void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action) {
-	try {
-
-		Atlas::Objects::Entity::Anonymous what;
-		what->setId(entity->getId());
-		// 	what->setObjtype("obj");
-
-		Atlas::Objects::Operation::RootOperation actionOp;
-		actionOp->setObjtype("op");
-		actionOp->setArgs1(what);
-		actionOp->setParent(action);
-
-		Atlas::Objects::Operation::RootOperation actuateOp;
-		actuateOp->setObjtype("op");
-		actuateOp->setArgs1(actionOp);
-		actuateOp->setParent("actuate");
-		actuateOp->setFrom(mAvatar.getId());
-
-		S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");
-		mConnection.send(actuateOp);
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Got error on actuating." << ex);
 	}
 }
 
@@ -274,23 +251,6 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on setting attributes on entity." << ex);
-	}
-}
-
-void ConnectedAdapter::eat(Eris::Entity* entity) {
-	try {
-		Atlas::Objects::Entity::Anonymous what;
-		what->setId(entity->getId());
-
-		Atlas::Objects::Operation::Generic op;
-		op->setType("eat", -1);
-		op->setFrom(mAvatar.getId());
-		op->setArgs1(what);
-
-		S_LOG_INFO("Eating entity with id " << entity->getId() << ", named " << entity->getName());
-		mConnection.send(op);
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Got error on eating entity." << ex);
 	}
 }
 

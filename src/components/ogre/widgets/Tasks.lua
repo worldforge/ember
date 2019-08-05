@@ -12,68 +12,52 @@ function Tasks.Progressed()
 	Tasks.progressBar:setProgress(Tasks.currentTask:progress())
 end
 
-function Tasks.Cancelled()
-end
-
 function Tasks.Completed()
 end
 
 function Tasks.ResetTask()
 	Tasks.currentTask = nil
 	--tear down bindings
-	if Tasks.progressAdapter ~= nil then
+	if Tasks.progressAdapter then
 		Tasks.progressAdapter:disconnect()
 	end
-	if Tasks.cancelledAdapter ~= nil then
-		Tasks.cancelledAdapter:disconnect()
-	end
-	if Tasks.completedAdapter ~= nil then
+	if Tasks.completedAdapter then
 		Tasks.completedAdapter:disconnect()
 	end
 	Tasks.progressAdapter = nil
-	Tasks.cancelledAdapter = nil
 	Tasks.completedAdapter = nil
-	Tasks.nameWindow:setText("Task name: ")
+	Tasks.nameWindow:setText("")
 	Tasks.widget:hide()
 
 end
 
-function Tasks.SetCurrentTask(task)
+function Tasks.SetCurrentTask(id, task)
 	Tasks.currentTask = task
-	Tasks.nameWindow:setText("Task name: " .. task:name())
+	Tasks.currentTaskId = id
+	Tasks.nameWindow:setText(task:name())
 	--set up bindings
 	Tasks.progressAdapter = createConnector(task.Progressed)
 	Tasks.progressAdapter:connect("Tasks.Progressed")
-	Tasks.cancelledAdapter = createConnector(task.Cancelled)
-	Tasks.cancelledAdapter:connect("Tasks.Cancelled")
+	Tasks.Progressed()
 	Tasks.completedAdapter = createConnector(task.Completed)
 	Tasks.completedAdapter:connect("Tasks.Completed")
 	Tasks.widget:show()
 end
 
-function Tasks.TaskAdded(task)
+function Tasks.TaskAdded(id, task)
 	if Tasks.currentTask == nil then
-		Tasks.SetCurrentTask(task)
+		Tasks.SetCurrentTask(id, task)
 	end
 end
 
-function Tasks.TaskRemoved(task)
+function Tasks.TaskRemoved(id, task)
 	if task == Tasks.currentTask then
 		Tasks.ResetTask()
 	end
 end
 
-function Tasks.createdAvatarEmberEntity(avatarEntity)
-	connect(Tasks.connectors, avatarEntity.TaskAdded, "Tasks.TaskAdded")
-	connect(Tasks.connectors, avatarEntity.TaskRemoved, "Tasks.TaskRemoved")
-	--If there are already tasks, show the first one
-	if avatarEntity:getTasksSize() > 0 then
-		Tasks.SetCurrentTask(avatarEntity:getTaskFirst())
-	end
-end
-
-function Tasks.StopButtonClicked(args)
-	emberServices:getServerService():useStop()
+function Tasks.StopButtonClicked()
+	Tasks.avatar:taskUsage(Tasks.currentTaskId, "stop")
 end
 
 function Tasks.buildWidget()
@@ -82,14 +66,26 @@ function Tasks.buildWidget()
 	Tasks.widget:loadMainSheet("Tasks.layout", "Tasks")
 	
 	Tasks.progressBar = Tasks.widget:getWindow("Progress")
-	Tasks.progressBar =  CEGUI.toProgressBar(Tasks.progressBar)
+	Tasks.progressBar = CEGUI.toProgressBar(Tasks.progressBar)
 	
 	Tasks.nameWindow = Tasks.widget:getWindow("NameText")
 
 	Tasks.widget:getWindow("StopButton"):subscribeEvent("Clicked", "Tasks.StopButtonClicked")
 
 
-	connect(Tasks.connectors, emberOgre.EventCreatedAvatarEntity, "Tasks.createdAvatarEmberEntity")
+	connect(connectors, emberOgre.EventWorldCreated, function(world)
+		createConnector(world.EventGotAvatar):connect(function()
+			Tasks.avatar = world:getAvatar()
+			local avatarEntity = Tasks.avatar:getEmberEntity()
+			connect(Tasks.connectors, avatarEntity.TaskAdded, "Tasks.TaskAdded")
+			connect(Tasks.connectors, avatarEntity.TaskRemoved, "Tasks.TaskRemoved")
+			--If there are already tasks, show the first one
+			if avatarEntity:getTasksSize() > 0 then
+				Tasks.SetCurrentTask(avatarEntity:getTaskIdFirst(), avatarEntity:getTaskFirst())
+			end
+
+		end)
+	end)
 
 --	createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 
@@ -102,3 +98,5 @@ end
 
 
 Tasks.buildWidget()
+
+
