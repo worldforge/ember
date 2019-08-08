@@ -73,7 +73,7 @@ void MovementControllerInputListener::input_MouseButtonPressed(Input::MouseButto
 			mController.mMovementDirection.z() = -1;
 			mController.stopSteering();
 		} else {
-			Ember::ConsoleBackend::getSingleton().runCommand("+avatar_action_default");
+			mController.mAvatar.performDefaultUsage();
 		}
 	}
 }
@@ -87,7 +87,7 @@ void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButt
 		if (mController.mIsFreeFlying) {
 			mController.mMovementDirection.z() = 0;
 		} else {
-			Ember::ConsoleBackend::getSingleton().runCommand("-avatar_action_default");
+			mController.mAvatar.stopCurrentTask();
 		}
 	}
 }

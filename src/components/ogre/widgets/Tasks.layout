@@ -17,6 +17,9 @@
 				<Property name="Position" value="{{0.0,5},{0,25}}" />
 				<Property name="Size" value="{{0,280},{0,15}}" />
 			</Window>
+<!--			<Window name="Buttons" type="HorizontalLayoutContainer">-->
+<!--				<Property name="Size" value="{{1,0},{0,20}}" />-->
+<!--			</Window>-->
 			<Window name="StopButton" type="EmberLook/Button">
 				<Property name="Text" value="Stop" />
 				<Property name="Position" value="{{0.0,5},{0,42}}" />

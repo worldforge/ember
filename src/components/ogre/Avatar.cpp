@@ -58,6 +58,7 @@
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
+#include <Eris/Task.h>
 
 #include <wfmath/atlasconv.h>
 
@@ -70,11 +71,15 @@
 namespace Ember {
 namespace OgreView {
 
-Avatar::Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& scene,
-			   const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
+Avatar::Avatar(Eris::Avatar* erisAvatar,
+			   EmberEntity& erisAvatarEntity,
+			   Scene& scene,
+			   const Camera::CameraSettings& cameraSettings,
+			   Terrain::ITerrainAdapter& terrainAdapter) :
 		SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
 		AvatarActionDefaultStart("+avatar_action_default", this, "Performs the default action for the avatar."),
 		AvatarActionDefaultStop("-avatar_action_default", this, "Stops performing the default action for the avatar."),
+		mMinIntervalOfRotationChanges(1000),
 		mErisAvatar(erisAvatar),
 		mErisAvatarEntity(erisAvatarEntity),
 		mAvatarAttachmentController(new AvatarAttachmentController(*this)),
@@ -85,7 +90,6 @@ Avatar::Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& s
 		mIsMovingServerOnly(false),
 		mScene(scene),
 		mEntityMaker(new Authoring::EntityMaker(*erisAvatar, *EmberServices::getSingleton().getServerService().getConnection())) {
-	setMinIntervalOfRotationChanges(1000); //milliseconds
 
 	MainLoopController::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
 
@@ -494,7 +498,7 @@ void Avatar::taskUsage(std::string taskId, std::string usage) {
 	use->setFrom(mErisAvatar->getId());
 
 	Atlas::Objects::Root task;
-	task->setId(taskId);
+	task->setId(std::move(taskId));
 	task->setObjtype("task");
 
 	task->setAttr("args", Atlas::Message::ListType{Atlas::Message::MapType{{"id", std::move(usage)}}});
@@ -504,8 +508,21 @@ void Avatar::taskUsage(std::string taskId, std::string usage) {
 	mErisAvatar->getConnection()->send(use);
 }
 
+void Avatar::stopCurrentTask() {
+	//Check if there are any tasks, and get the first one with a "stop" action and invoke that action.
+	auto& tasks = mErisAvatarEntity.getTasks();
+	for (auto& entry : tasks) {
+		auto task = entry.second;
+		for (auto& usage : entry.second->getUsages()) {
+			if (usage.name == "stop") {
+				taskUsage(entry.first, usage.name);
+			}
+			break;
+		}
+	}
+}
 
-void Avatar::performDefaultUsage() {
+boost::optional<std::string> Avatar::performDefaultUsage() {
 	//Check if there's a tool in our primary hand and use if, otherwise check if we have any default usages.
 
 
@@ -538,8 +555,9 @@ void Avatar::performDefaultUsage() {
 			if (attachedEntity) {
 				auto& usages = attachedEntity->getUsages();
 				if (!usages.empty()) {
-					useWithSelectedEntity(*attachedEntity, usages.begin()->second, usages.begin()->first);
-					return;
+					auto& op = usages.begin()->first;
+					useWithSelectedEntity(*attachedEntity, usages.begin()->second, op);
+					return op;
 				}
 			}
 		}
@@ -547,9 +565,11 @@ void Avatar::performDefaultUsage() {
 	//Could not find any attached tool with usages, check if there's a default on the character itself
 	auto& selfUsages = mErisAvatarEntity.getUsagesProtected();
 	if (!selfUsages.empty()) {
+		auto& op = selfUsages.begin()->first;
 		useWithSelectedEntity(mErisAvatarEntity, selfUsages.begin()->second, selfUsages.begin()->first);
-
+		return op;
 	}
+	return boost::none;
 
 }
 

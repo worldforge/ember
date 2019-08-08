@@ -39,42 +39,40 @@
 #include <set>
 #include <domain/EmberEntity.h>
 
-namespace Eris
-{
+namespace Eris {
 class Entity;
+
 class Avatar;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
+namespace OgreView {
 
-namespace Model
-{
+namespace Model {
 class Model;
 }
-namespace Camera
-{
+namespace Camera {
 class ThirdPersonCameraMount;
+
 class CameraSettings;
 }
 namespace Authoring {
 class EntityMaker;
 }
-namespace Terrain
-{
+namespace Terrain {
 class ITerrainAdapter;
 }
 
 class AvatarLogger;
+
 class AvatarLoggerParent;
+
 class AvatarAttachmentController;
+
 class Scene;
 
-struct AvatarMovementState
-{
+struct AvatarMovementState {
 public:
 	WFMath::Vector<3> movement;
 	WFMath::Quaternion orientation;
@@ -87,8 +85,7 @@ public:
  * In general it receives instructions from mainly an instance of MovementController to attempt to move or rotate the avatar.
  * This class is also responsible for making sure that the client local representation of the avatar is kept up to date with the server side representation. This can involve some client side prediction with regards to movement.
  */
-class Avatar: public virtual sigc::trackable, public ConfigListenerContainer, public ConsoleObject
-{
+class Avatar : public virtual sigc::trackable, public ConfigListenerContainer, public ConsoleObject {
 	friend class MovementController;
 
 public:
@@ -205,15 +202,19 @@ public:
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 
 	void useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
+
 	void useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity::Usage& usage, const Eris::Entity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
+
 	void taskUsage(std::string taskId, std::string usage);
 
-	void performDefaultUsage();
+	boost::optional<std::string> performDefaultUsage();
+
+	void stopCurrentTask();
 
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	void runCommand(const std::string &command, const std::string &args) override;
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
@@ -388,16 +389,13 @@ protected:
 	void attachCameraToEntity();
 
 
-
 };
 
-inline bool Avatar::isAdmin() const
-{
+inline bool Avatar::isAdmin() const {
 	return mIsAdmin;
 }
 
-inline Eris::Avatar* Avatar::getErisAvatar() const
-{
+inline Eris::Avatar* Avatar::getErisAvatar() const {
 	return mErisAvatar;
 }
 

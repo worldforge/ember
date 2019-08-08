@@ -9,6 +9,11 @@ Tasks.currentTask = nil
 --end
 
 function Tasks.Progressed()
+	if Tasks.currentTask:progressRate() > 0 then
+		Tasks.progressBar:show()
+	else
+		Tasks.progressBar:hide()
+	end
 	Tasks.progressBar:setProgress(Tasks.currentTask:progress())
 end
 

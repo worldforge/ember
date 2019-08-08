@@ -10,7 +10,9 @@ class Task
     range [0..1]
     */
     double progress() const;
-    
+
+   	double progressRate() const;
+
     /**
     */
     bool isComplete() const;
