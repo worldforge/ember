@@ -1,3 +1,4 @@
+$#include "Task_helper.h"
 namespace Eris
 {
 
@@ -16,10 +17,16 @@ class Task
     /**
     */
     bool isComplete() const;
-    
+
     sigc::signal<void> Completed;
        
     sigc::signal<void> Progressed;
+
+	sigc::signal<void> UsagesChanged;
+
+
+    tolua_outside int _Task_usages_size @ usagesSize();
+    tolua_outside std::string _Task_usage_name @ usageName(int index);
 
 };
 
