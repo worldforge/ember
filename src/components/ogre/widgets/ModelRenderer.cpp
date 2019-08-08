@@ -91,14 +91,12 @@ void ModelRenderer::repositionSceneNode()
 
 void ModelRenderer::updateRender()
 {
-	if (mModel) {
-		if (!mModel->isLoaded()) {
-			//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
-			mModelDelayedUpdateConnection.disconnect();
-			mModelDelayedUpdateConnection = mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRenderer::delayedUpdateRender));
-		} else {
-			MovableObjectRenderer::updateRender();
-		}
+	if (mModel && !mModel->isLoaded()) {
+		//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
+		mModelDelayedUpdateConnection.disconnect();
+		mModelDelayedUpdateConnection = mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRenderer::delayedUpdateRender));
+	} else {
+		MovableObjectRenderer::updateRender();
 	}
 }
 
