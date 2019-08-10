@@ -513,7 +513,7 @@ void Avatar::stopCurrentTask() {
 	auto& tasks = mErisAvatarEntity.getTasks();
 	for (auto& entry : tasks) {
 		auto task = entry.second;
-		for (auto& usage : entry.second->getUsages()) {
+		for (auto& usage : task->getUsages()) {
 			if (usage.name == "stop") {
 				taskUsage(entry.first, usage.name);
 			}
