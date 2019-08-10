@@ -306,12 +306,12 @@ bool EmberEntity::hasSuggestedResponses() const
 	return !mSuggestedResponses.empty();
 }
 
-void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
+void EmberEntity::onPropertyChanged(const std::string& str, const Atlas::Message::Element& v)
 {
 	if (str == "mode") {
 		parsePositioningModeChange(v);
 	} else if (str == "bbox" || str == "scale") {
-		Entity::onAttrChanged(str, v);
+		Entity::onPropertyChanged(str, v);
 		onBboxChanged();
 		return;
 	} else if (str == "usages") {
@@ -323,7 +323,7 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 	//Dispatch attribute changes to any global listeners.
 	sGlobalDispatcher.dispatchAttributeChange(*this, str, v);
 
-	Entity::onAttrChanged(str, v);
+	Entity::onPropertyChanged(str, v);
 
 }
 
@@ -397,7 +397,7 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 	Atlas::MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
-	encoder.streamMessageElement(getAttributes());
+	encoder.streamMessageElement(getProperties());
 
 	formatter.streamEnd();
 }
@@ -452,11 +452,11 @@ IEntityAttachment* EmberEntity::getAttachment() const
 
 EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment)
 {
-	auto* attachmentElement = ptrOfAttr(attachment);
+	auto* attachmentElement = ptrOfProperty(attachment);
 	if (attachmentElement) {
 		auto id = Eris::Entity::extractEntityId(*attachmentElement);
 		if (id) {
-			for (unsigned int i = 0; i < numContained(); ++i) {
+			for (size_t i = 0; i < numContained(); ++i) {
 				EmberEntity* entity = getEmberContained(i);
 				if (entity && entity->getId() == *id) {
 					return entity;
@@ -471,7 +471,7 @@ EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment)
 void EmberEntity::accept(IEntityVisitor& visitor)
 {
 	visitor.visit(*this);
-	for (unsigned int i = 0; i < numContained(); ++i) {
+	for (size_t i = 0; i < numContained(); ++i) {
 		EmberEntity* entity = getEmberContained(i);
 		if (entity) {
 			entity->accept(visitor);
@@ -482,7 +482,7 @@ void EmberEntity::accept(IEntityVisitor& visitor)
 void EmberEntity::accept(std::function<bool(EmberEntity&)>& visitor)
 {
 	if (visitor(*this)) {
-		for (unsigned int i = 0; i < numContained(); ++i) {
+		for (size_t i = 0; i < numContained(); ++i) {
 			EmberEntity* entity = getEmberContained(i);
 			if (entity) {
 				entity->accept(visitor);
@@ -494,7 +494,7 @@ void EmberEntity::accept(std::function<bool(EmberEntity&)>& visitor)
 void EmberEntity::accept(std::function<bool(const EmberEntity&)>& visitor) const
 {
 	if (visitor(*this)) {
-		for (unsigned int i = 0; i < numContained(); ++i) {
+		for (size_t i = 0; i < numContained(); ++i) {
 			EmberEntity* entity = getEmberContained(i);
 			if (entity) {
 				entity->accept(visitor);

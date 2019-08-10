@@ -80,7 +80,7 @@ protected:
 	/**
 	 * @brief We keep an internal reference to the slot which be activated when the attribute in the entity change. We then pass this change on through the EventChanged signal.
 	 */
-	Eris::Entity::AttrChangedSlot mSlot;
+	Eris::Entity::PropertyChangedSlot mSlot;
 
 	/**
 	 * @brief This method is called by the watched entity whenever the attribute changes.

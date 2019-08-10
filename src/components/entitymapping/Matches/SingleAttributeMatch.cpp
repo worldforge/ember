@@ -48,8 +48,8 @@ void SingleAttributeMatch::setEntity(Eris::Entity* entity)
 		mMatchAttributeObserver->observeEntity(entity);
 	}
 	if (entity) {
-		if (entity->hasAttr(mAttributeName)) {
-			testAttribute(entity->valueOfAttr(mAttributeName), false);
+		if (entity->hasProperty(mAttributeName)) {
+			testAttribute(entity->valueOfProperty(mAttributeName), false);
 //		} else {
 //			testAttribute(Atlas::Message::Element(), false);
 		}

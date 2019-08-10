@@ -51,7 +51,7 @@ void VirtualAttributeMatch::setEntity(Eris::Entity* entity)
 	if (entity) {
 
 		for (const auto& attribute : mInternalAttributeNames) {
-			if (entity->hasAttr(attribute)) {
+			if (entity->hasProperty(attribute)) {
 				//Since the attribute is virtual we won't send any specific attribute.
 				testAttribute(Atlas::Message::Element(), false);
 				//After the first match we'll break out of the loop.

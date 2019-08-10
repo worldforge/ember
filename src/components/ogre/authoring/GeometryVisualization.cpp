@@ -398,8 +398,8 @@ void GeometryVisualization::buildGeometry() {
 
 	};
 
-	if (mEntity.hasAttr("geometry")) {
-		auto& geometry = mEntity.valueOfAttr("geometry");
+	if (mEntity.hasProperty("geometry")) {
+		auto& geometry = mEntity.valueOfProperty("geometry");
 		AtlasQuery::find<Atlas::Message::StringType>(geometry, "type", [&](const Atlas::Message::StringType& type) {
 			if (type == "mesh") {
 				if (geometry.asMap().find("indices") != geometry.asMap().end()) {

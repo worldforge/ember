@@ -39,8 +39,8 @@ DirectAttributeObserver::~DirectAttributeObserver()
 
 void DirectAttributeObserver::forceEvaluation()
 {
-	if (mEntity.hasAttr(mAttributeName)) {
-		attributeChanged(mEntity.valueOfAttr(mAttributeName));
+	if (mEntity.hasProperty(mAttributeName)) {
+		attributeChanged(mEntity.valueOfProperty(mAttributeName));
 	}
 }
 

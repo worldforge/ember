@@ -547,7 +547,7 @@ boost::optional<std::string> Avatar::performDefaultUsage() {
 
 	};
 
-	auto attachedHandPrimaryElement = mErisAvatarEntity.ptrOfAttr("attached_hand_primary");
+	auto attachedHandPrimaryElement = mErisAvatarEntity.ptrOfProperty("attached_hand_primary");
 	if (attachedHandPrimaryElement) {
 		auto attachedId = Eris::Entity::extractEntityId(*attachedHandPrimaryElement);
 		if (attachedId && !attachedId->empty()) {

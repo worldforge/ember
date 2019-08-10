@@ -38,8 +38,8 @@ PresentAction::PresentAction(EmberEntity& entity, Scene& scene, EntityMapping::E
 
 void PresentAction::activate(EntityMapping::ChangeContext& context) {
 
-	if (mEntity.hasAttr("present")) {
-		auto& element = mEntity.valueOfAttr("present");
+	if (mEntity.hasProperty("present")) {
+		auto& element = mEntity.valueOfProperty("present");
 		if (element.isString()) {
 			auto& present = element.String();
 

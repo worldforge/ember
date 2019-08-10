@@ -27,8 +27,8 @@ DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity, sigc::signal<
 {
 	const std::string& firstAttributeName = elementPath.front();
 	entity.observe(firstAttributeName, sigc::mem_fun(*this, &DeepAttributeObserver::entity_AttrChanged));
-	if (entity.hasAttr(firstAttributeName)) {
-		mLastElementValue = getCurrentAttribute(entity.valueOfAttr(firstAttributeName));
+	if (entity.hasProperty(firstAttributeName)) {
+		mLastElementValue = getCurrentAttribute(entity.valueOfProperty(firstAttributeName));
 	}
 }
 
@@ -39,8 +39,8 @@ DeepAttributeObserver::~DeepAttributeObserver()
 void DeepAttributeObserver::forceEvaluation()
 {
 	const std::string& firstAttributeName = mElementPath.front();
-	if (mEntity.hasAttr(firstAttributeName)) {
-		mEventChanged(getCurrentAttribute(mEntity.valueOfAttr(firstAttributeName)));
+	if (mEntity.hasProperty(firstAttributeName)) {
+		mEventChanged(getCurrentAttribute(mEntity.valueOfProperty(firstAttributeName)));
 	}
 }
 

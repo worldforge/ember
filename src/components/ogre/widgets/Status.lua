@@ -2,14 +2,14 @@ Status = {connectors={}}
 StatusInstance = {}
 
 function StatusInstance:updateStatus()
-	if self.entity:hasAttr("status") then
-		self:status_Changed(self.entity:valueOfAttr("status"))
+	if self.entity:hasProperty("status") then
+		self:status_Changed(self.entity:valueOfProperty("status"))
 	end
-	if self.entity:hasAttr("stamina") then
-		self:stamina_Changed(self.entity:valueOfAttr("stamina"))
+	if self.entity:hasProperty("stamina") then
+		self:stamina_Changed(self.entity:valueOfProperty("stamina"))
 	end
-	if self.entity:hasAttr("strength") then
-		self:strength_Changed(self.entity:valueOfAttr("strength"))
+	if self.entity:hasProperty("strength") then
+		self:strength_Changed(self.entity:valueOfProperty("strength"))
 	end
 end
 

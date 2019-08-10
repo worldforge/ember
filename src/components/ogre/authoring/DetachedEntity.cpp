@@ -48,11 +48,11 @@ void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 			continue;
 
 		// see if the value in the sight matches the exsiting value
-		auto I = m_attrs.find(A->first);
-		if ((I != m_attrs.end()) && (I->second == A->second))
+		auto I = m_properties.find(A->first);
+		if ((I != m_properties.end()) && (I->second == A->second))
 			continue;
 
-		setAttr(A->first, A->second);
+		setProperty(A->first, A->second);
 	}
 
 	endUpdate();

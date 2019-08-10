@@ -10,15 +10,15 @@ class Entity {
     Eris::Entity* getContained(unsigned int index) const;
 
 
-    const Atlas::Message::Element& valueOfAttr(const std::string& attr) const;
+    const Atlas::Message::Element& valueOfProperty(const std::string& attr) const;
 
-    bool hasAttr(const std::string &p) const;
+    bool hasProperty(const std::string &p) const;
 
-    typedef sigc::slot<void, const Atlas::Message::Element&> AttrChangedSlot;
+    typedef sigc::slot<void, const Atlas::Message::Element&> PropertyChangedSlot;
 
     /** setup an observer so that the specified slot is fired when the
     named attribue's value changes */
-    sigc::connection observe(const std::string& attr, const AttrChangedSlot& aslot);
+    sigc::connection observe(const std::string& attr, const PropertyChangedSlot& aslot);
 
 // accesors
     /// retrieve the unique entity ID
@@ -35,7 +35,7 @@ class Entity {
 	
     WFMath::Point<3> getPosition() const;
     
-    const Atlas::Message::MapType& getAttributes() const;
+    const Atlas::Message::MapType& getProperties() const;
     
     bool isMoving() const;
         

@@ -228,7 +228,7 @@ bool PolygonPointMover::isCollisionResultValid(Ember::OgreView::PickResult& resu
 	if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
 		auto& entityCollisionInfo = boost::any_cast<EntityCollisionInfo&>(result.collisionInfo);
 		//It's a valid entry if it's the terrain
-		if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity->hasAttr("terrain")) {
+		if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity->hasProperty("terrain")) {
 			return true;
 		}
 	}

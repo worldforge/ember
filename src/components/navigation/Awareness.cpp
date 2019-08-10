@@ -335,7 +335,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned
 						//Only actively observe the entity if it has the same location as the avatar.
 						if (entity.getLocation() == mCurrentLocation) {
 							connections.isIgnored = false;
-							if (entity.hasAttr("velocity")) {
+							if (entity.hasProperty("velocity")) {
 								mMovingEntities.push_back(&entity);
 								connections.isMoving = true;
 							} else {
@@ -418,7 +418,7 @@ void Awareness::View_EntitySeen(Eris::Entity* entity)
 		if (entity->getLocation() == mCurrentLocation) {
 			connections.isIgnored = false;
 
-			if (entity->hasAttr("velocity")) {
+			if (entity->hasProperty("velocity")) {
 				connections.isMoving = true;
 				mMovingEntities.push_back(entity);
 			} else {
@@ -444,7 +444,7 @@ void Awareness::View_EntitySeen(Eris::Entity* entity)
 void Awareness::Entity_Moved(Eris::Entity* entity)
 {
 	//If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
-	if (entity->hasAttr("velocity")) {
+	if (entity->hasProperty("velocity")) {
 		mMovingEntities.push_back(entity);
 		auto I = mObservedEntities.find(entity);
 		//No need to listen to more Moved events.
@@ -584,7 +584,7 @@ void Awareness::Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entit
 			assert(connections.moved.empty());
 			connections.isIgnored = false;
 			//Entity was ignored but shouldn't be anymore. We should check if the entity is moving or stationary.
-			if (entity->hasAttr("velocity")) {
+			if (entity->hasProperty("velocity")) {
 				connections.isMoving = true;
 				mMovingEntities.push_back(entity);
 			} else {
@@ -929,8 +929,8 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 
 	//The entity is solid (i.e. can be collided with) if it has a bbox and the "solid" property isn't set to false (or 0 as it's an int).
 	bool isSolid = entity.hasBBox();
-	if (isSolid && entity.hasAttr("solid")) {
-		auto solidElement = entity.valueOfAttr("solid");
+	if (isSolid && entity.hasProperty("solid")) {
+		auto solidElement = entity.valueOfProperty("solid");
 		if (solidElement.isInt() && solidElement.asInt() == 0) {
 			isSolid = false;
 		}

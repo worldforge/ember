@@ -204,7 +204,7 @@ void ModelRepresentation::initFromModel() {
 	if (mModel->hasParticles()) {
         auto& bindings = mModel->getAllParticleSystemBindings();
         for (auto binding : bindings) {
-            auto elemPtr = mEntity.ptrOfAttr(binding->getVariableName());
+            auto elemPtr = mEntity.ptrOfProperty(binding->getVariableName());
             if (elemPtr && elemPtr->isNum()) {
                 binding->scaleValue(static_cast<Ogre::Real>(elemPtr->asNum()));
             }
@@ -245,7 +245,7 @@ void ModelRepresentation::model_Resetting() {
 
 void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds) {
 	for (const auto& attributeId : attributeIds) {
-		attrChanged(attributeId, mEntity.valueOfAttr(attributeId));
+		attrChanged(attributeId, mEntity.valueOfProperty(attributeId));
 	}
 }
 

@@ -59,7 +59,7 @@ public:
 	void observeEntity(Eris::Entity* entity);
 
 protected:
-	Eris::Entity::AttrChangedSlot mSlot;
+	Eris::Entity::PropertyChangedSlot mSlot;
 
 	void attributeChanged(const Atlas::Message::Element& attributeValue);
 

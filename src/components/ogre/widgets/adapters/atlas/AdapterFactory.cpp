@@ -331,7 +331,7 @@ Position2DAdapter* AdapterFactory::createPosition2DAdapter(CEGUI::Window* contai
 
 MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity)
 {
-	return createMapAdapter(container, adapterPrefix, entity->getAttributes());
+	return createMapAdapter(container, adapterPrefix, entity->getProperties());
 }
 
 MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const std::map<std::string, ::Atlas::Message::Element> attributes)

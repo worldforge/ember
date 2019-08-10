@@ -48,8 +48,8 @@ Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
 {
 	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &Steering::Awareness_TileUpdated));
 
-	if (avatar.getEntity()->hasAttr("speed-ground")) {
-		auto speedElement = avatar.getEntity()->valueOfAttr("speed-ground");
+	if (avatar.getEntity()->hasProperty("speed-ground")) {
+		auto speedElement = avatar.getEntity()->valueOfProperty("speed-ground");
 		if (speedElement.isNum()) {
 			mSpeed = speedElement.asNum();
 		}

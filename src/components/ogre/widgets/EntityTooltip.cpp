@@ -119,8 +119,8 @@ std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity)
 	} else {
 		ss << entity.getType()->getName();
 	}
-	if (entity.hasAttr("worn")) {
-		const Atlas::Message::Element& element = entity.valueOfAttr("worn");
+	if (entity.hasProperty("worn")) {
+		const Atlas::Message::Element& element = entity.valueOfProperty("worn");
 		if (element.isString()) {
 			ss << std::endl << "Worn on the " << element.asString();
 		}

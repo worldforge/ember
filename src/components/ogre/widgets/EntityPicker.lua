@@ -239,8 +239,8 @@ function EntityPicker:pickedOneEntity(pickedResult)
 
             --Entities that themselves have physical domains shouldn't be moved.
             local isPhysicalDomain = false
-            if entity:hasAttr("domain") then
-                local domainElement = entity:valueOfAttr("domain")
+            if entity:hasProperty("domain") then
+                local domainElement = entity:valueOfProperty("domain")
                 if domainElement:isString() and domainElement:asString() == "physical" then
                     isPhysicalDomain = true
                 end
@@ -279,7 +279,7 @@ function EntityPicker:pickedOneEntity(pickedResult)
                             self:removeMenu()
                         end)
                         -- We'll check if the entity can be addressed. Currently we do this by checking for a "mind" property; we might look into if this is enough
-                        if entity:hasAttr("mind") then
+                        if entity:hasProperty("mind") then
                             self:showButton("Talk to", "Talk with the entity.", function()
                                 self:doWithPickedEntity(function(pickedEntity)
                                     guiManager:EmitEntityAction("talk", pickedEntity)

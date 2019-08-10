@@ -395,9 +395,9 @@ protected:
 	void onSoundAction(const Atlas::Objects::Operation::RootOperation& op) override;
 
 	/**
-	 *    @copydoc Eris::Entity::onAttrChanged()
+	 *    @copydoc Eris::Entity::onPropertyChanged()
 	 */
-	void onAttrChanged(const std::string& str, const Atlas::Message::Element& v) override;
+	void onPropertyChanged(const std::string& str, const Atlas::Message::Element& v) override;
 
 	/**
 	 * @brief Called when the positioning mode of the entity changes.

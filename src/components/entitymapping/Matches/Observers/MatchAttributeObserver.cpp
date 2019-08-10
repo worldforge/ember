@@ -61,8 +61,8 @@ void MatchAttributeObserver::observeEntity(Eris::Entity* entity)
 		mSlot = sigc::mem_fun(*this, &MatchAttributeObserver::attributeChanged);
 		entity->observe(mAttributeName, mSlot);
 		//If the attribute already exists, trigger a test now.
-		if (entity->hasAttr(mAttributeName)) {
-			mMatch->testAttribute(entity->valueOfAttr(mAttributeName), false);
+		if (entity->hasProperty(mAttributeName)) {
+			mMatch->testAttribute(entity->valueOfProperty(mAttributeName), false);
 		}
 	}
 }

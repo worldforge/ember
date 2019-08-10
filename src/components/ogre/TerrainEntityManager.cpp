@@ -214,8 +214,8 @@ void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::Terra
 void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::TerrainMod& terrainMod) {
 	//If mode changes to "planted" we should add the mod, if moves to any other we should remove it.
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-		if (entity.hasAttr("terrainmod")) {
-			terrainMod.parse(entity.valueOfAttr("terrainmod"));
+		if (entity.hasProperty("terrainmod")) {
+			terrainMod.parse(entity.valueOfProperty("terrainmod"));
 			mTerrainHandler.updateMod(&terrainMod);
 		}
 	} else {

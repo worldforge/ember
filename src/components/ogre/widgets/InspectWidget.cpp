@@ -134,7 +134,7 @@ void InspectWidget::updateAttributeString()
 	Atlas::PresentationBridge bridge(ss);
 	bridge.setMaxItemsPerLevel(15);
 	Atlas::Message::Encoder encoder(bridge);
-	encoder.streamMessageElement(mCurrentEntity->getAttributes());
+	encoder.streamMessageElement(mCurrentEntity->getProperties());
 
 	mAttributesString = ss.str();
 }

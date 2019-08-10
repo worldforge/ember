@@ -68,8 +68,8 @@ function HoverEntityOverlay:pickedEntity(results, args)
 		local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,localPosition.x), CEGUI.UDim(0,localPosition.y))
 		self.widget:getMainWindow():setPosition(uPosition)
 		
-		if entity:hasAttr("message") then
-			local messageElement = entity:valueOfAttr("message")
+		if entity:hasProperty("message") then
+			local messageElement = entity:valueOfProperty("message")
 			if messageElement:isString() and messageElement:asString() ~= "" then
 				self.messageText:setVisible(true)
 				self.messageText:setText(messageElement:asString())

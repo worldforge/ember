@@ -223,7 +223,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	// 	{
 	// 		Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(getEntityType());
 	// 		if (erisType) {
-	// 			const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
+	// 			const Atlas::Message::MapType& defaultAttributes = erisType->getProperties();
 	// 			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
 	// 				bool hasAttribute = false;
 	// 				TiXmlNode* child(0);
@@ -283,7 +283,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 			if (parentI != m.end() && parentI->second.isString()) {
 				Eris::TypeInfo* erisType = typeService.getTypeByName(parentI->second.String());
 				if (erisType) {
-					const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
+					const Atlas::Message::MapType& defaultAttributes = erisType->getProperties();
 					for (const auto& defaultAttribute : defaultAttributes) {
 						if (m.find(defaultAttribute.first) == m.end()) {
 							m.insert(Atlas::Message::MapType::value_type(defaultAttribute.first, defaultAttribute.second));

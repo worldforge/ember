@@ -399,7 +399,7 @@ void EntityEditor::getGoals() {
 
 void EntityEditor::relayToMind(Atlas::Objects::Operation::RootOperation op, Eris::ResponseTracker::Callback callback) {
 	//Send to first mind for now
-	auto mindsAttr = mEntity.ptrOfAttr("_minds");
+	auto mindsAttr = mEntity.ptrOfProperty("_minds");
 	if (mindsAttr && mindsAttr->isList() && !mindsAttr->List().empty()) {
 		if (mindsAttr->List().front().isString()) {
 			Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();

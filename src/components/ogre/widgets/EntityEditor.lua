@@ -1152,8 +1152,8 @@ function EntityEditor:editEntity(entity)
 	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
 	self.exportFilenameWindow:setText(exportFileName)
 
-    if entity:hasAttr('_goals') then
-        local goalsAttr = entity:valueOfAttr('_goals')
+    if entity:hasProperty('_goals') then
+        local goalsAttr = entity:valueOfProperty('_goals')
 		if goalsAttr:isList() then
 			for k, v in goalsAttr:asList():pairs() do
 				if v:isMap() then
@@ -1192,8 +1192,8 @@ function EntityEditor:editEntity(entity)
 		end
     end
 
-	if entity:hasAttr('_knowledge') then
-		local knowledgeAttr = entity:valueOfAttr('_knowledge')
+	if entity:hasProperty('_knowledge') then
+		local knowledgeAttr = entity:valueOfProperty('_knowledge')
 		if knowledgeAttr:isMap() then
 			for k, v in knowledgeAttr:asMap():pairs() do
 				local predicate, subject = k:match("([^:]*):(.*)")

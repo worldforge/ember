@@ -124,7 +124,7 @@ ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
 
 	mPos = WFMath::Point<3>::ZERO();
 
-	mEntityMessage = entity->getInstanceAttributes();
+	mEntityMessage = entity->getInstanceProperties();
 
 	// Temporary entity
 	mEntity = new Authoring::DetachedEntity("-1", erisType, &entity->getView()->getTypeService());

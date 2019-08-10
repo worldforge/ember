@@ -95,7 +95,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 			IngameChatWidget& mChatWidget;
 			EmberEntity& mEntity;
 			Label* mLabel;
-			Eris::Entity::AttrChangedSlot mExternalSlot; //, mNameSlot;
+			Eris::Entity::PropertyChangedSlot mExternalSlot; //, mNameSlot;
 
 			void showLabel();
 			void hideLabel();

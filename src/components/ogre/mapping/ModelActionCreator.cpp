@@ -53,8 +53,8 @@ ModelActionCreator::PresentAction::PresentAction(ModelActionCreator* creator)
 
 void ModelActionCreator::PresentAction::activate(EntityMapping::ChangeContext& context) {
 
-	if (mCreator->mEntity.hasAttr("present")) {
-		auto& element = mCreator->mEntity.valueOfAttr("present");
+	if (mCreator->mEntity.hasProperty("present")) {
+		auto& element = mCreator->mEntity.valueOfProperty("present");
 		if (element.isString()) {
 			auto& present = element.String();
 

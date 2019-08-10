@@ -339,14 +339,14 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
 	dollSlot.observer:forceEvaluation()
 	
 --	dollSlot.newEntityCreated = function(newEntity)
---		if avatarEntity:hasAttr("outfit") then
---			dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
+--		if avatarEntity:hasProperty("outfit") then
+--			dollSlot.attributeChanged(avatarEntity:valueOfProperty("outfit"))
 --		end
 --	end
 	
 --	table.insert(self.newEntityListeners, dollSlot.newEntityCreated)
 	
--- 	dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
+-- 	dollSlot.attributeChanged(avatarEntity:valueOfProperty("outfit"))
 end
 
 function Inventory:setupDoll(avatarEntity)
@@ -407,8 +407,8 @@ function Inventory:createDollSlot(attributePath, containerWindow, tooltipText, w
 		if dollSlot.wearRestriction == "" or dollSlot.allowAny then
 			return true
 		end
-		if entityIcon:getEntity():hasAttr("worn") then
-			local wornElement = entityIcon:getEntity():valueOfAttr("worn")
+		if entityIcon:getEntity():hasProperty("worn") then
+			local wornElement = entityIcon:getEntity():valueOfProperty("worn")
 			if wornElement:isString() then
 				local worn = wornElement:asString()
 				if worn == dollSlot.wearRestriction then

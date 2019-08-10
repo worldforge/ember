@@ -22,7 +22,7 @@ end
 
 --Based on the entity, we attempt to figure out what action to take
 function ActionBarDefaultAction:setEntityDefaultFunction()
-	if emberOgre:getWorld():getEmberEntity(self.mCommandObject):hasAttr("biomass") then
+	if emberOgre:getWorld():getEmberEntity(self.mCommandObject):hasProperty("biomass") then
 		self.mDefaultFunction = self.edibleCommandObject
 	else
 		self.mDefaultFunction = self.wieldableCommandObject

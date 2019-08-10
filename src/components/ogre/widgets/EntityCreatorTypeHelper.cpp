@@ -113,7 +113,7 @@ void EntityCreatorTypeHelper::updatePreview() {
 
 				mCreateButton->setEnabled(true);
 
-				auto modeElement = type->getAttribute("mode");
+				auto modeElement = type->getProperty("mode");
 				if (modeElement && modeElement->isString()) {
 					mDefaultModeWindow.setText("(" + modeElement->String() + ")");
 				} else {
@@ -159,7 +159,7 @@ void EntityCreatorTypeHelper::typeService_BoundType(Eris::TypeInfo* typeInfo) {
 			Authoring::DetachedEntity entity("0", typeInfo, mAvatar.getConnection()->getTypeService());
 			showPreview(entity);
 			mCreateButton->setEnabled(true);
-			auto modeElement = typeInfo->getAttribute("mode");
+			auto modeElement = typeInfo->getProperty("mode");
 			if (modeElement && modeElement->isString()) {
 				mDefaultModeWindow.setText("(" + modeElement->String() + ")");
 			} else {
