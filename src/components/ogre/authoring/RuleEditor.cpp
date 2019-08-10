@@ -27,6 +27,7 @@
 
 #include <Eris/Connection.h>
 #include <Eris/Account.h>
+#include <Eris/Avatar.h>
 #include <Eris/Response.h>
 
 #include <Atlas/Objects/Entity.h>
@@ -48,8 +49,8 @@ namespace OgreView
 namespace Authoring
 {
 
-RuleEditor::RuleEditor(Eris::Account& account) :
-		mAccount(account)
+RuleEditor::RuleEditor(Eris::Avatar& avatar) :
+		mAvatar(avatar)
 {
 
 }
@@ -67,9 +68,10 @@ long int RuleEditor::updateOrCreateRule(Atlas::Objects::Root& rule)
 	get->setArgs1(arg);
 	get->setObjtype("op");
 	get->setSerialno(serial);
+	get->setFrom(mAvatar.getId());
 
-	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &RuleEditor::operationGetRuleResult);
-	mAccount.getConnection()->send(get);
+	mAvatar.getConnection()->getResponder()->await(get->getSerialno(), this, &RuleEditor::operationGetRuleResult);
+	mAvatar.getConnection()->send(get);
 
 	return serial;
 }
@@ -129,23 +131,23 @@ void RuleEditor::operationUpdateRuleResult(const Atlas::Objects::Operation::Root
 void RuleEditor::updateRule(long int serial, Atlas::Objects::Root& rule)
 {
 	Atlas::Objects::Operation::Set op;
-	op->setFrom(mAccount.getId());
+	op->setFrom(mAvatar.getId());
 	op->setArgs1(rule);
 	op->setSerialno(serial);
 
-	mAccount.getConnection()->getResponder()->await(op->getSerialno(), this, &RuleEditor::operationUpdateRuleResult);
-	mAccount.getConnection()->send(op);
+	mAvatar.getConnection()->getResponder()->await(op->getSerialno(), this, &RuleEditor::operationUpdateRuleResult);
+	mAvatar.getConnection()->send(op);
 }
 
 void RuleEditor::createRule(long int serial, Atlas::Objects::Root& rule)
 {
 	Atlas::Objects::Operation::Create op;
-	op->setFrom(mAccount.getId());
+	op->setFrom(mAvatar.getId());
 	op->setArgs1(rule);
 	op->setSerialno(serial);
 
-	mAccount.getConnection()->getResponder()->await(op->getSerialno(), this, &RuleEditor::operationCreateRuleResult);
-	mAccount.getConnection()->send(op);
+	mAvatar.getConnection()->getResponder()->await(op->getSerialno(), this, &RuleEditor::operationCreateRuleResult);
+	mAvatar.getConnection()->send(op);
 }
 
 }

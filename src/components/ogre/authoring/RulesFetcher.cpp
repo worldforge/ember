@@ -43,8 +43,8 @@ namespace OgreView
 namespace Authoring
 {
 
-RulesFetcher::RulesFetcher(Eris::Connection& connection) :
-		mConnection(connection)
+RulesFetcher::RulesFetcher(Eris::Connection& connection, std::string mindId) :
+		mConnection(connection), mMindId(std::move(mindId))
 {
 }
 
@@ -67,6 +67,7 @@ void RulesFetcher::fetchRule(const std::string& id)
 	get->setArgs1(arg);
 	get->setObjtype("op");
 	get->setSerialno(Eris::getNewSerialno());
+	get->setFrom(mMindId);
 
 	mConnection.getResponder()->await(get->getSerialno(), this, &RulesFetcher::operationGetRuleResult);
 	mConnection.send(get);

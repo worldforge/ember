@@ -15,7 +15,7 @@ class RuleEditor
 {
 public:
 
-	RuleEditor(Eris::Account& account);
+	RuleEditor(Eris::Avatar& avatar);
 	virtual ~RuleEditor();
 
 	/**

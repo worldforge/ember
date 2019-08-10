@@ -7,8 +7,11 @@ class Avatar
 {
 public:
 
-    /// Get the Entity id of this Avatar
+    /// Get the Mind id of this Avatar. All interaction with the entity goes through the Mind.
     const std::string & getId() const;
+
+    // Get the Entity if of this Avatar. This can't be directly interacted with; all interaction must go through the Mind.
+    const std::string & getEntityId() const;
 
     /// Get the Entity this Avatar refers to
     Entity* getEntity() const;

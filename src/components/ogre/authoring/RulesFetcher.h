@@ -52,7 +52,7 @@ namespace Authoring
 class RulesFetcher: public virtual sigc::trackable
 {
 public:
-	RulesFetcher(Eris::Connection& connection);
+	explicit RulesFetcher(Eris::Connection& connection, std::string mindId);
 	virtual ~RulesFetcher() = default;
 
 	/**
@@ -97,6 +97,8 @@ private:
 	};
 
 	Eris::Connection& mConnection;
+
+	std::string mMindId;
 
 	std::unordered_map<std::string, Atlas::Objects::Root> mRules;
 

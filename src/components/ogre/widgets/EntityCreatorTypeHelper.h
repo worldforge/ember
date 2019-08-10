@@ -30,55 +30,57 @@
 #include <components/ogre/authoring/DetachedEntity.h>
 #include <CEGUI/widgets/Combobox.h>
 
-namespace CEGUI
-{
+namespace CEGUI {
 class Tree;
+
 class TreeItem;
+
 class Editbox;
+
 class PushButton;
+
 class Window;
+
 class EventArgs;
 }
 
-namespace Eris
-{
+namespace Eris {
 class TypeInfo;
+
 class Connection;
+
 class Entity;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
-namespace Adapters
-{
-namespace Eris
-{
+namespace Adapters {
+namespace Eris {
 class RuleTreeAdapter;
 }
 }
 
 class ModelRenderer;
+
 class EntityTextureManipulator;
+
 /**
  * @author Erik Ogenvik
  *
  * A helper class for creating simple entities directly from entity types.
  * The helper binds to a tree widget, which will be filled with entity types.
  */
-class EntityCreatorTypeHelper : public virtual sigc::trackable
-{
+class EntityCreatorTypeHelper : public virtual sigc::trackable {
 public:
 
-	EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree,
+	EntityCreatorTypeHelper(Eris::Avatar& avatar, CEGUI::Tree& typeTree,
 							CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton,
 							CEGUI::Window& modelPreview, CEGUI::Combobox& modeCombobox,
 							CEGUI::Window& defaultModeWindow, CEGUI::Window& plantedOnWindow);
+
 	virtual ~EntityCreatorTypeHelper();
 
 	/**
@@ -88,7 +90,7 @@ public:
 
 protected:
 
-	Eris::Connection& mConnection;
+	Eris::Avatar& mAvatar;
 
 
 	CEGUI::Editbox& mName;
@@ -122,6 +124,7 @@ protected:
 	void buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 
 	bool createButton_Click(const CEGUI::EventArgs& args);
+
 	bool typeTree_SelectionChanged(const CEGUI::EventArgs& args);
 
 	void updatePreview();

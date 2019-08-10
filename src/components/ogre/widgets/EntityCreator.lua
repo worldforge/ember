@@ -200,7 +200,7 @@ function EntityCreator.buildWidget(world)
 		local plantedOnWindow = typesWindow:getChild("PlantedOn")
 		entityCreator.typesCreator = {}
 
-		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar():getConnection(),
+		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar(),
 			typesTree, typesName, typesCreateButton, typesPreviewImage, modeCombobox, defaultModeWindow, plantedOnWindow)
 		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
 	

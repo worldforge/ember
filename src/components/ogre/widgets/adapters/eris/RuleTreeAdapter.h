@@ -30,42 +30,35 @@
 #include <string>
 #include <memory>
 
-namespace Eris
-{
+namespace Eris {
 class Connection;
 }
 
-namespace CEGUI
-{
+namespace CEGUI {
 class Tree;
+
 class TreeItem;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 namespace Authoring {
 class RulesFetcher;
 }
-namespace Gui
-{
+namespace Gui {
 
-namespace Adapters
-{
+namespace Adapters {
 
-namespace Eris
-{
+namespace Eris {
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief An adapter which the server rule tree to a cegui tree widget.
  *
  * Make sure to call refresh(...) to activate the adapter.
  */
-class RuleTreeAdapter: public virtual sigc::trackable
-{
+class RuleTreeAdapter : public virtual sigc::trackable {
 public:
-	RuleTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget);
+	RuleTreeAdapter(::Eris::Connection& connection, std::string mindId, CEGUI::Tree& treeWidget);
 
 	virtual ~RuleTreeAdapter() = default;
 
@@ -102,6 +95,7 @@ public:
 private:
 
 	::Eris::Connection& mConnection;
+	std::string mMindId;
 	CEGUI::Tree& mTreeWidget;
 	std::unordered_map<std::string, std::unique_ptr<Authoring::RulesFetcher>> mFetchers;
 
@@ -111,10 +105,10 @@ private:
 	/**
 	 * @brief Hooked up to the RuleFetcher::EventAllRulesReceived signal.
 	 */
-	void fetcherAllRulesReceived(std::string rootRule);
+	void fetcherAllRulesReceived(const std::string& rootRule);
 
 	/**
-	 * @brief Adds a rule to the tree.
+	 * @brief Addsconst  a rule to &the tree.
 	 * @param rule The rule to add.
 	 * @param parent The parent of the rule, or 0 if we should add to the top.
 	 * @param addRecursive If true, all the current children of the rule will be added as well.

@@ -32,7 +32,7 @@
 
 namespace Eris
 {
-class Account;
+class Avatar;
 }
 
 namespace Ember
@@ -49,7 +49,7 @@ class RuleEditor: public virtual sigc::trackable
 {
 public:
 
-	explicit RuleEditor(Eris::Account& account);
+	explicit RuleEditor(Eris::Avatar& avatar);
 	virtual ~RuleEditor() = default;
 
 	/**
@@ -79,7 +79,7 @@ public:
 
 private:
 
-	Eris::Account& mAccount;
+	Eris::Avatar& mAvatar;
 
 	std::unordered_map<long int, Atlas::Objects::Root> mQueuedRules;
 

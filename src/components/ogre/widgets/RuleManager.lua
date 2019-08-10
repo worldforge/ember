@@ -24,7 +24,7 @@ function RuleManager:buildWidget()
 		
 		self.ruleInfoText = CEGUI.toMultiLineEditbox(self.widget:getWindow("RuleInfoText"))
 	
-		self.ruleAdapter = Ember.OgreView.Gui.Adapters.Eris.RuleTreeAdapter:new_local(self.account:getConnection(), self.ruleTree)
+		self.ruleAdapter = Ember.OgreView.Gui.Adapters.Eris.RuleTreeAdapter:new_local(self.avatar:getConnection(), self.avatar:getId(), self.ruleTree)
 		local loadingOverlay = self.widget:getWindow("LoadingOverlay")
 		local refreshButton = self.widget:getWindow("Refresh")
 
@@ -60,7 +60,7 @@ function RuleManager:buildWidget()
 			return true
 		end)
 					
-		self.editor = Ember.OgreView.Authoring.RuleEditor:new_local(self.account)
+		self.editor = Ember.OgreView.Authoring.RuleEditor:new_local(self.avatar)
 		
 		connect(self.connectors, self.editor.EventRuleCreated, function(refno)
 			ruleUpdateOverlay:setVisible(true)
@@ -168,12 +168,12 @@ function RuleManager:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-RuleManager.gotAccountConnector = createConnector(emberServices:getServerService().GotAccount):connect(function(account)
-		ruleManager = {connectors={}, codecClass=Atlas.Codecs.XML, account=account}
+RuleManager.gotAvatarConnector = createConnector(emberServices:getServerService().GotAvatar):connect(function(avatar)
+		ruleManager = {connectors={}, codecClass=Atlas.Codecs.XML, avatar=avatar}
 		setmetatable(ruleManager, {__index = RuleManager})
 		
 		ruleManager:buildWidget()
-		connect(ruleManager.connectors, emberServices:getServerService().DestroyedAccount, function()
+		connect(ruleManager.connectors, emberServices:getServerService().DestroyedAvatar, function()
 				ruleManager:shutdown()
 				ruleManager = nil
 			end

@@ -40,7 +40,7 @@ namespace Eris
 class RuleTreeAdapter
 {
 public:
-	RuleTreeAdapter(Eris::Connection& connection, CEGUI::Tree& treeWidget);
+	RuleTreeAdapter(Eris::Connection& connection, std::string mindId, CEGUI::Tree& treeWidget);
 
 	virtual ~RuleTreeAdapter();
 
