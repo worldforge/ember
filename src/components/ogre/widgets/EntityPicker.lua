@@ -13,17 +13,16 @@ function EntityPicker:buildWidget(world)
 
     self.world = world
     self.widget = guiManager:createWidget()
-    self.selectorWidget = guiManager:createWidget()
 
     local entityPickListener = world:getEntityPickListener()
     connect(self.connectors, entityPickListener.EventPickedEntity, self.pickedEntity, self)
     --createConnector(mousePicker.EventPickedNothing):connect(self.pickedNothing, self)
 
     self.widget:loadMainSheet("EntityPicker.layout", "EntityPicker")
+    self.selectorWidget = self.widget:getWindow("Selector")
 
-    self.selectorWidget:loadMainSheet("EntityPickerSelector.layout", "EntityPickerSelector")
-    self.selectorWidget:getWindow("PreviousButton"):subscribeEvent("MouseEntersSurface", self.previousButton_MouseEnters, self)
-    self.selectorWidget:getWindow("NextButton"):subscribeEvent("MouseEntersSurface", self.nextButton_MouseEnters, self)
+    self.widget:getWindow("PreviousButton"):subscribeEvent("MouseEntersSurface", self.previousButton_MouseEnters, self)
+    self.widget:getWindow("NextButton"):subscribeEvent("MouseEntersSurface", self.nextButton_MouseEnters, self)
 
     self.menuWindow = CEGUI.toLayoutContainer(self.widget:getWindow("Menu"))
     self.entityName = self.widget:getWindow("EntityName")
@@ -87,13 +86,13 @@ function EntityPicker:showMenu(position)
     self.menuWindow:layout()
     local menuSize = self.menuWindow:getPixelSize()
 
-    local newHeight = CEGUI.UDim(0.0, menuSize.height + self.entityName:getPixelSize().height)
+    local newHeight = CEGUI.UDim(0.0, menuSize.height + self.entityName:getPixelSize().height + self.selectorWidget:getPixelSize().height)
     self.widget:getMainWindow():setHeight(newHeight)
 
     local localPosition = CEGUI.Vector2f:new_local(position.x, position.y)
 
     localPosition.x = localPosition.x - self.widget:getMainWindow():getPixelSize().width * 0.5
-    localPosition.y = localPosition.y - 10.0
+    localPosition.y = localPosition.y - self.selectorWidget:getPixelSize().height - (self.entityName:getPixelSize().height * 0.5)
 
     --Make sure the menu is fully contained within the main window
     if localPosition.x < 0 then
@@ -132,10 +131,10 @@ function EntityPicker:nextButton_MouseEnters()
 end
 
 function EntityPicker:updateSelector()
-    local numberingWidget = self.selectorWidget:getWindow("Numbering")
+    local numberingWidget = self.widget:getWindow("Numbering")
     numberingWidget:setText((self.currentPickedEntityIndex + 1) .. "/" .. (#self.pickedEntities + 1))
-    local previousWidget = self.selectorWidget:getWindow("PreviousButton")
-    local nextWidget = self.selectorWidget:getWindow("NextButton")
+    local previousWidget = self.widget:getWindow("PreviousButton")
+    local nextWidget = self.widget:getWindow("NextButton")
 
     if self.currentPickedEntityIndex == #self.pickedEntities then
         nextWidget:setVisible(false)
@@ -191,12 +190,7 @@ function EntityPicker:pickedEntity(results, args)
         end
 
         if results:size() > 1 then
-            local point = CEGUI.Vector2f:new_local(args.windowX, args.windowY)
             self.selectorWidget:show()
-            point.x = point.x - self.selectorWidget:getMainWindow():getPixelSize().width * 0.5
-            point.y = point.y - 40.0
-            local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0, point.x), CEGUI.UDim(0, point.y))
-            self.selectorWidget:getMainWindow():setPosition(uPosition)
             self:updateSelector()
         else
             self.selectorWidget:hide()

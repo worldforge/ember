@@ -1,19 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
-	<Window name="MainWindow" type="DefaultWindow">
-		<Property name="Size" value="{{0,120.0},{0,25}}" />
-		<Property name="Visible" value="false" />
-		<Property name="AlwaysOnTop" value="true" />
-		<Window name="EntityName" type="EmberLook/StaticText">
-			<Property name="Size" value="{{1.0,0.0},{0.00,25.0}}" />
-			<Property name="InheritsAlpha" value="true" />
-			<Property name="FrameEnabled" value="true" />
-            <Property name="BackgroundEnabled" value="true" />
-			<Property name="HorzFormatting" value="CentreAligned" />
-		</Window>
-		<Window name="Menu" type="VerticalLayoutContainer">
-			<Property name="Position" value="{{0.0,0.0},{0.00,25.0}}" />
-			<Property name="InheritsAlpha" value="true" />
-		</Window>
-	</Window>
+    <Window name="MainWindow" type="DefaultWindow">
+        <Property name="Size" value="{{0,120.0},{0,25}}"/>
+        <Property name="Visible" value="false"/>
+        <Property name="AlwaysOnTop" value="true"/>
+        <Window name="Selector" type="DefaultWindow">
+            <Property name="Size" value="{{1,0},{0.0,30}}"/>
+            <Property name="Visible" value="false"/>
+            <Window name="Numbering" type="EmberLook/StaticText">
+                <Property name="Size" value="{{1.0,-80},{1,0}}"/>
+                <Property name="Position" value="{{0,40},{0,0}}"/>
+                <Property name="InheritsAlpha" value="true"/>
+                <Property name="FrameEnabled" value="false"/>
+                <Property name="HorzFormatting" value="CentreAligned"/>
+            </Window>
+            <Window name="PreviousButton" type="EmberLook/Button">
+                <Property name="Size" value="{{0,40},{1,0}}"/>
+                <Property name="Position" value="{{0,0},{0,0}}"/>
+                <Property name="Text" value="&lt;&lt;"/>
+                <Property name="InheritsAlpha" value="True"/>
+                <Property name="TooltipText" value="Next selected entity."/>
+            </Window>
+            <Window name="NextButton" type="EmberLook/Button">
+                <Property name="Size" value="{{0,40},{1,0}}"/>
+                <Property name="Position" value="{{1,-40},{0,0}}"/>
+                <Property name="Text" value="&gt;&gt;"/>
+                <Property name="InheritsAlpha" value="True"/>
+                <Property name="TooltipText" value="Next selected entity."/>
+            </Window>
+        </Window>
+
+        <Window name="EntityName" type="EmberLook/StaticText">
+            <Property name="Size" value="{{1,0},{0,25}}"/>
+            <Property name="Position" value="{{0,0},{0,30}}"/>
+            <Property name="InheritsAlpha" value="true"/>
+            <Property name="FrameEnabled" value="true"/>
+            <Property name="BackgroundEnabled" value="true"/>
+            <Property name="HorzFormatting" value="CentreAligned"/>
+        </Window>
+        <Window name="Menu" type="VerticalLayoutContainer">
+            <Property name="Position" value="{{0,0},{0,55}}"/>
+            <Property name="InheritsAlpha" value="true"/>
+        </Window>
+    </Window>
 </GUILayout>
