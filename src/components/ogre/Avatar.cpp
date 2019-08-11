@@ -459,7 +459,10 @@ void Avatar::useTool(const EmberEntity& tool, const std::string& operation, cons
 				Atlas::Objects::Entity::RootEntity entityArg;
 				entityArg->setId(target->getId());
 				if (pos.isValid()) {
-					entityArg->setPosAsList(Atlas::Message::Element(pos.toAtlas()).List());
+					//pos must be relative to the entity
+					//TODO: walk up and down the entity hierachy; the current code only works for entities that share location
+					auto localPos = pos.toLocalCoords(target->getPredictedPos(), target->getPredictedOrientation());
+					entityArg->setPosAsList(Atlas::Message::Element(localPos.toAtlas()).List());
 				}
 				list.emplace_back(entityArg->asMessage());
 			}
