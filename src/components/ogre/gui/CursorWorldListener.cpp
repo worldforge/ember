@@ -42,6 +42,7 @@
 #include <components/ogre/OgreInfo.h>
 #include <OgreRenderQueue.h>
 #include <OgreSubEntity.h>
+#include <OgreTagPoint.h>
 #include <OgreMovableObject.h>
 #include <OgreInstancedEntity.h>
 
@@ -276,8 +277,8 @@ void CursorWorldListener::highlightSelectedEntity() {
 
 	if (mOutline.selectedEntity.get() != selectedEntity) {
 		for (auto& entity: mOutline.generatedEntities) {
-			if (entity->getParentSceneNode()) {
-				entity->getParentSceneNode()->detachObject(entity);
+			if (mOutline.model && mOutline.model->getNodeProvider()) {
+				mOutline.model->getNodeProvider()->detachObject(entity);
 			}
 			mWorld.getSceneManager().destroyMovableObject(entity);
 		}
@@ -286,7 +287,7 @@ void CursorWorldListener::highlightSelectedEntity() {
 		}
 
 		if (mOutline.selectedEntity) {
-			auto* oldEmberEntity = dynamic_cast<EmberEntity*>(mOutline.selectedEntity.get());
+			auto* oldEmberEntity = mOutline.selectedEntity.get();
 			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(oldEmberEntity->getGraphicalRepresentation());
 
 			if (modelRep) {
@@ -320,6 +321,7 @@ void CursorWorldListener::highlightSelectedEntity() {
 		if (selectedEntity) {
 			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(selectedEntity->getGraphicalRepresentation());
 			if (modelRep && modelRep->getModel().getNodeProvider()) {
+				mOutline.model = &modelRep->getModel();
 
 				if (modelRep->getModel().useInstancing()) {
 					modelRep->getModel().doWithMovables([](Ogre::MovableObject* movable, int index) {
@@ -339,7 +341,7 @@ void CursorWorldListener::highlightSelectedEntity() {
 
 							ogreEntity->setRenderQueueGroup(RENDER_QUEUE_OUTLINE_OBJECT);
 
-							if (!ogreEntity->getParentSceneNode()) {
+							if (!ogreEntity->getParentNode()) {
 								modelRep->getModel().getNodeProvider()->attachObject(ogreEntity);
 							}
 

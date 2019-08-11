@@ -46,6 +46,9 @@ class TimeFrame;
 namespace OgreView
 {
 class World;
+namespace Model {
+class Model;
+}
 namespace Camera
 {
 class MainCamera;
@@ -113,6 +116,11 @@ protected:
 		 * The original render queue groups used for the selected entities.
 		 */
 		std::vector<std::uint8_t> originalRenderQueueGroups;
+
+		/**
+		 * The model representing the entity.
+		 */
+		Model::Model* model = nullptr;
 
 	};
 
