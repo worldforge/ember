@@ -61,6 +61,8 @@ const char* const ModelRepresentation::ACTION_WALK_LEFT("walk_left");
 const char* const ModelRepresentation::ACTION_WALK_BACKWARDS("walk_backwards");
 
 const char* const ModelRepresentation::ACTION_SWIM("swim");
+const char* const ModelRepresentation::ACTION_TREAD_WATER("tread_water");
+
 const char* const ModelRepresentation::ACTION_FLOAT("float");
 
 ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scene& scene, EntityMapping::EntityMapping& mapping) :
@@ -271,7 +273,11 @@ Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& veloc
 	}
 
 	if (mEntity.getPositioningMode() == EmberEntity::PositioningMode::SUBMERGED || mEntity.getPositioningMode() == EmberEntity::PositioningMode::FLOATING) {
-		return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_SWIM, ACTION_WALK});
+		if (mag < 0.01f) {
+			return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_TREAD_WATER, ACTION_SWIM, ACTION_WALK});
+		} else {
+			return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_SWIM, ACTION_TREAD_WATER, ACTION_WALK});
+		}
 	} else {
 
 		if (mag < 0.01f) {

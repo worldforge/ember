@@ -126,6 +126,12 @@ public:
 	 * @brief The name of the swimming action.
 	 */
 	static const char * const ACTION_SWIM;
+
+	/**
+	 * @brief The name of the water treading action.
+	 */
+	static const char * const ACTION_TREAD_WATER;
+
 	/**
 	 * @brief The name of the float action.
 	 */
