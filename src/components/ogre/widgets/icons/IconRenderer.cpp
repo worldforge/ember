@@ -93,33 +93,39 @@ void IconRenderer::renderDelayed(const std::shared_ptr<Model::Model>& model, Ico
 void IconRenderer::performRendering(Model::Model* model, Icon*) {
 
 	if (model) {
-		S_LOG_VERBOSE("Rendering " << model->getName() << " of type " << model->getDefinition()->getOrigin());
-		// 		icon->getImageStoreEntry()->getTexture()->get
 
 		model->attachToNode(&mSceneNodeProvider);
 
 		//check for a defined "icon" view and use that if available, else just reposition the camera
 		const Model::ViewDefinitionStore::const_iterator I = model->getDefinition()->getViewDefinitions().find("icon");
 		if (I != model->getDefinition()->getViewDefinitions().end()) {
+			mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3(), Ogre::Quaternion::IDENTITY);
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
 			mRenderContext->showFull(model->getCombinedBoundingRadius());
 			if (I->second->Distance) {
 				mRenderContext->setCameraDistance(I->second->Distance);
 			}
-			// 			Ogre::Camera* camera = mRenderContext->getCamera();
 			mRenderContext->getCameraRootNode()->setOrientation(I->second->Rotation);
 		} else {
+
+			auto size = model->getBoundingBox().getSize();
+			auto depth_to_height_ratio = size.z / size.y;
+			auto radius = std::max(size.x, size.y);
+			//If the ratio between the height and the depth of the item is larger than 3 it's probably being rendered from the side. Let's flip it to show it better. This ought to work in most cases.
+			if (depth_to_height_ratio > 3) {
+				mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3(), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_X));
+				radius = std::max(size.x, size.z);
+			} else {
+				mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3(), Ogre::Quaternion::IDENTITY);
+			}
+
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
-			mRenderContext->showFull(model->getCombinedBoundingRadius());
+			mRenderContext->showFull(radius);
 			mRenderContext->setCameraDistance(mRenderContext->getDefaultCameraDistance() * 0.75);
 		}
 
-		// 		mRenderContext->setCameraDistance(0.75);
-
-		//the problem with PBuffer and Copy might be that we need to wait a little before we try to blit, since it's not guaranteed that the content will be correctly rendered (since the render ops are queued to the GPU)
-		//thus we need to create some kind of frame listener callback mechanism
 		if (mRenderContext->getViewport()) {
 			try {
 				mRenderContext->getViewport()->update();
@@ -186,7 +192,6 @@ void DirectRendererWorker::render(const std::shared_ptr<Model::Model>& model, Ic
 	mRenderer.getRenderContext()->getViewport()->setDimensions(iconBox.left, iconBox.top, iconBox.right - iconBox.left, iconBox.bottom - iconBox.top);
 
 	mRenderer.performRendering(model.get(), icon);
-	// 	mRenderer.blitRenderToIcon(icon);
 }
 
 DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, std::shared_ptr<Model::Model> model, Icon* icon)
