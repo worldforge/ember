@@ -28,7 +28,7 @@
 
 
 namespace CEGUI {
-	class Window;
+class Window;
 }
 
 namespace Ember {
@@ -41,34 +41,33 @@ namespace Adapters {
 namespace Atlas {
 
 
-
-
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class MapAdapter : public AdapterBase
-{
+class MapAdapter : public AdapterBase {
 public:
-    
-    MapAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer);
 
-    virtual ~MapAdapter();
+	MapAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer);
 
-    std::vector<std::string> getAttributeNames();
+	~MapAdapter() override;
+
+	std::vector<std::string> getAttributeNames();
 
 	const ::Atlas::Message::Element& valueOfAttr(const std::string& attr) const;
+
 	bool hasAttr(const std::string& attr) const;
 
 	/**
 	Updates the gui with new values.
 	*/
-	virtual void updateGui(const ::Atlas::Message::Element& element);
+	void updateGui(const ::Atlas::Message::Element& element) override;
 
-    void addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
-    void removeAdapters();
-    
+	void addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
+
+	void removeAdapters();
+
 	::Atlas::Message::Element getSelectedChangedElements();
-	
+
 	/**
 	 * @brief Returns true if the map adapter already contains an adapter with the specified name.
 	 * This works very much like hasAttr(), with the exception that this also will take into considerations those adapters that have been added but not yet applied to the underlying element.
@@ -79,16 +78,18 @@ public:
 
 protected:
 	typedef std::map<std::string, AdapterWrapper> AdapterStore;
-	
+
 	CEGUI::Window* mChildContainer;
 // 	StackableContainer mStackableContainer;
 	const ::Atlas::Message::MapType& mAttributes;
-	
+
 	AdapterStore mAdapters;
-	
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
-	virtual ::Atlas::Message::Element _getChangedElement();
+
+	void fillElementFromGui() override;
+
+	bool _hasChanges() override;
+
+	::Atlas::Message::Element _getChangedElement() override;
 
 };
 

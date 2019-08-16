@@ -36,26 +36,24 @@ namespace OgreView {
 
 namespace Gui {
 
-EntityIconSlot::EntityIconSlot(CEGUI::Window* container)
-: EntityIconDragDropTarget(container), mContainer(container), mContainedIcon(0)
-{
+EntityIconSlot::EntityIconSlot(UniqueWindowPtr<CEGUI::Window> container)
+		: EntityIconDragDropTarget(container.get()),
+		  mContainer(std::move(container)),
+		  mContainedIcon(nullptr) {
 }
 
-EntityIconSlot::~EntityIconSlot()
-{
+EntityIconSlot::~EntityIconSlot() {
 	removeEntityIcon();
-	CEGUI::WindowManager::getSingleton().destroyWindow(mContainer);
 }
 
 
-bool EntityIconSlot::addEntityIcon(EntityIcon* icon)
-{
+bool EntityIconSlot::addEntityIcon(EntityIcon* icon) {
 	if (icon) {
 		if (!mContainedIcon) {
 			//Resize the icon window to fit entirely in the slot window.
 			icon->getDragContainer()->setSize(this->getWindow()->getSize());
 			mContainedIcon = icon;
-			mContainer->addChild(icon->getDragContainer()); 
+			mContainer->addChild(icon->getDragContainer());
 			icon->setSlot(this);
 			//we have to notify the container that things have changed else it won't update itself when we add the entity without dragging (cegui bug?)
 			mContainer->notifyScreenAreaChanged();
@@ -68,41 +66,36 @@ bool EntityIconSlot::addEntityIcon(EntityIcon* icon)
 	return true;
 }
 
-EntityIcon* EntityIconSlot::removeEntityIcon()
-{
+EntityIcon* EntityIconSlot::removeEntityIcon() {
 	if (mContainedIcon) {
 		mContainer->removeChild(mContainedIcon->getDragContainer());
 		EntityIcon* icon = mContainedIcon;
-		mContainedIcon = 0;
-		icon->setSlot(0);
+		mContainedIcon = nullptr;
+		icon->setSlot(nullptr);
 		//we have to notify the container that things have changed else it won't update itself when we remove the entity without dragging (cegui bug?)		
 		mContainer->notifyScreenAreaChanged();
 		mContainer->invalidate();
 		return icon;
 	} else {
-		return 0;
+		return nullptr;
 	}
 }
 
-EntityIcon* EntityIconSlot::getEntityIcon()
-{
+EntityIcon* EntityIconSlot::getEntityIcon() {
 	return mContainedIcon;
 }
 
 
-void EntityIconSlot::notifyIconRemoved()
-{
+void EntityIconSlot::notifyIconRemoved() {
 	removeEntityIcon();
-	mContainedIcon = 0;
+	mContainedIcon = nullptr;
 }
 
-CEGUI::Window* EntityIconSlot::getWindow()
-{
-	return mContainer;
+CEGUI::Window* EntityIconSlot::getWindow() {
+	return mContainer.get();
 }
 
-void EntityIconSlot::notifyIconDraggedOff(EntityIcon* entityIcon)
-{
+void EntityIconSlot::notifyIconDraggedOff(EntityIcon* entityIcon) {
 	EventIconDraggedOff.emit(entityIcon);
 }
 

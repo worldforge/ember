@@ -60,14 +60,14 @@ public:
      */
     GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreRenderer *renderer);
 
-    virtual ~GUICEGUIAdapter();
+    ~GUICEGUIAdapter() override;
 	
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
-	virtual bool injectChar(int character);
-	virtual bool injectKeyDown(const SDL_Scancode& key);
-	virtual bool injectKeyUp(const SDL_Scancode& key);
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
+	bool injectMouseButtonUp(const Input::MouseButton& button) override;
+	bool injectMouseButtonDown(const Input::MouseButton& button) override;
+	bool injectChar(int character) override;
+	bool injectKeyDown(const SDL_Scancode& key) override;
+	bool injectKeyUp(const SDL_Scancode& key) override;
     
 private:
 	CEGUI::System *mGuiSystem;

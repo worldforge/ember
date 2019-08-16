@@ -26,6 +26,7 @@
 #include <sigc++/signal.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace Eris {
 class ServerInfo;
@@ -37,12 +38,12 @@ namespace OgreView {
 class GUIManager;
 namespace Gui {
 
-namespace Icons
-{
+namespace Icons {
 class Icon;
 }
 
 class ActionBarIconSlot;
+
 class ActionBarIcon;
 
 /**
@@ -53,8 +54,7 @@ An action bar icon is an icon which can be used to execute actions on a number o
 This class is responsible for handling all of them in the UI, creating new and destroying old.
 You normally don't create instances of neither ActionBarIconSlot nor ActionBarIcon yourself, but use the create* and destroy* methods in this class instead.
 */
-class ActionBarIconManager
-{
+class ActionBarIconManager {
 public:
 
 	/**
@@ -113,7 +113,7 @@ public:
 	 *
 	 * @returns The saved value.
 	 */
-	const std::string getSavedValue(const AvatarIdType& avatarId, const std::string& name) const;
+	std::string getSavedValue(const AvatarIdType& avatarId, const std::string& name) const;
 
 	/**
 	 * @brief Saves a value specific for the supplied avatar.
@@ -143,8 +143,8 @@ public:
 	sigc::signal<void, ActionBarIcon*> EventIconDragStop;
 
 protected:
-	typedef std::vector<ActionBarIconSlot*> ActionBarIconSlotStore;
-	typedef std::vector<ActionBarIcon*> ActionBarIconStore;
+	typedef std::vector<std::unique_ptr<ActionBarIconSlot>> ActionBarIconSlotStore;
+	typedef std::vector<std::unique_ptr<ActionBarIcon>> ActionBarIconStore;
 
 	/**
 	 * @brief All of the action bar icon slots managed by this instance.

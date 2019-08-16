@@ -88,7 +88,28 @@ namespace OgreView
 unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController) :
-		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mEnabled(true), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Cegui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0), mNativeClipboardProvider(nullptr)
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."),
+		ReloadGui("reloadgui", this, "Reloads the gui."),
+		ToggleGui("toggle_gui", this, "Toggle the gui display"),
+		mConfigService(configService),
+		mMainLoopController(mainLoopController),
+		mGuiCommandMapper("gui", "key_bindings_gui"),
+		mSheet(nullptr),
+		mWindowManager(nullptr),
+		mWindow(window),
+		mGuiSystem(nullptr),
+		mGuiRenderer(nullptr),
+		mOgreResourceProvider(nullptr),
+		mOgreImageCodec(nullptr),
+		mCursorWorldListener(nullptr),
+		mEnabled(true),
+		mLuaScriptModule(nullptr),
+		mIconManager(nullptr),
+		mActiveWidgetHandler(nullptr),
+		mCEGUILogger(new Cegui::CEGUILogger()),
+		mRenderedStringParser(nullptr),
+		mEntityTooltip(nullptr),
+		mNativeClipboardProvider(nullptr)
 {
 
 //Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
@@ -301,7 +322,7 @@ void GUIManager::server_GotView(Eris::View* view)
 void GUIManager::view_EntityCreated(Eris::Entity* entity)
 {
 	//It's safe to cast to EmberEntity, since all entities in the system are guaranteed to be of this type.
-	auto* emberEntity = static_cast<EmberEntity*>(entity);
+	auto* emberEntity = dynamic_cast<EmberEntity*>(entity);
 	//The Entity has a shorter lifespan than ours, so we don't need to store references to the connections.
 	emberEntity->EventTalk.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Talk), emberEntity));
 	emberEntity->Emote.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Emote), emberEntity));
@@ -515,7 +536,8 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 
 void GUIManager::EmberOgre_WorldCreated(World& world)
 {
-	mEntityTooltip = new EntityTooltip(world, *static_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")), *mIconManager);
+	UniqueWindowPtr<EmberEntityTooltipWidget> tooltipWindow(dynamic_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")));
+	mEntityTooltip = new EntityTooltip(world, std::move(tooltipWindow), *mIconManager);
 	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world);
 }
 

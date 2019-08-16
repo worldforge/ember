@@ -25,10 +25,13 @@
 
 #include <sigc++/signal.h>
 #include "ActionBarIconDragDropTarget.h"
+#include "CEGUIUtils.h"
 
 namespace CEGUI {
 class DragContainer;
+
 class Window;
+
 class EventArgs;
 }
 
@@ -38,7 +41,9 @@ namespace OgreView {
 namespace Gui {
 
 class ActionBarIcon;
+
 class ActionBarIconManager;
+
 class EntityIcon;
 
 /**
@@ -51,18 +56,24 @@ A typical usage example would be an action bar which contains slots that the use
 
 @note You don't normally directly create or destroy an instance of this. Instead use the EntityIconManager.
 */
-class ActionBarIconSlot : public ActionBarIconDragDropTarget
-{
-friend class ActionBarIconManager;
-friend class ActionBarIcon;
+class ActionBarIconSlot : public ActionBarIconDragDropTarget {
+	friend class ActionBarIconManager;
+
+	friend class ActionBarIcon;
+
 public:
+
+	/**
+	 * @brief Dtor.
+	 * Any icon contained in the slot will be removed upon destruction.
+	 */
+	~ActionBarIconSlot() override;
 
 	/**
 	 * @brief Adds an ActionBarIcon to the slot. If the slot already contains an icon, the method will return false and an error will be logged.
 	 * @param icon
 	 * @return true if successful, else false
 	 */
-
 	bool addActionBarIcon(ActionBarIcon* icon);
 
 	/**
@@ -94,7 +105,6 @@ public:
 	sigc::signal<void, ActionBarIcon*> EventIconDraggedOff;
 
 
-
 protected:
 	/**
 	 * @brief Ctor.
@@ -102,18 +112,13 @@ protected:
 	 * @param The main action bar icon manager.
 	 * @param container The CEGUI window which will be used by the slot. This can be any window, but should preferably be something which makes it clear that it's a slot onto which an icon can be dragged and dropped.
 	 */
-	ActionBarIconSlot(CEGUI::Window* container);
+	explicit ActionBarIconSlot(UniqueWindowPtr<CEGUI::Window> container);
 
-	/**
-	 * @brief Dtor.
-	 * Any icon contained in the slot will be removed upon destruction.
-	 */
-	virtual ~ActionBarIconSlot();
 
 	/**
 	 * @brief The CEGUI window representing the slot.
 	 */
-	CEGUI::Window* mContainer;
+	UniqueWindowPtr<CEGUI::Window> mContainer;
 
 	/**
 	 * @brief Holds any entity icon currently contained in the slot.

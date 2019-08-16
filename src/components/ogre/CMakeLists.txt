@@ -92,6 +92,7 @@ add_library(emberogre
         widgets/representations/RepresentationBase.h
         widgets/representations/SingleAdapterRepresentationBase.h
         widgets/representations/SliderRepresentation.h
+        widgets/CEGUIUtils.h
 
         Avatar.cpp AvatarCameraWarper.cpp
         MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp

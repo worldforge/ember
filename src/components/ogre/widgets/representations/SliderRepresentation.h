@@ -41,8 +41,7 @@ namespace Representations {
  * @brief represents given value by a slider (the underlying value has to be float!)
  */
 template<typename ValueType>
-class SliderRepresentation : public SingleAdapterRepresentationBase<ValueType>, public virtual sigc::trackable
-{
+class SliderRepresentation : public SingleAdapterRepresentationBase<ValueType>, public virtual sigc::trackable {
 public:
 	/**
 	 * @brief Ctor
@@ -51,68 +50,59 @@ public:
 	 * @param max Maximum value representable by this slider
 	 */
 	SliderRepresentation(const ValueType& value, float max, bool showValue = true);
-	
+
 	/**
 	 * @brief Dtor
 	 */
 	virtual ~SliderRepresentation();
-	
+
 	virtual CEGUI::Window* getGuiRoot();
-	
+
 protected:
 	void valueChanged();
-	
-	CEGUI::Window* mLayout;
+
+	UniqueWindowPtr <CEGUI::Window> mLayout;
 	CEGUI::Slider* mSlider;
 	CEGUI::Window* mText;
-	
+
 	CEGUI::String mPrefix;
 };
 
 template<typename ValueType>
 SliderRepresentation<ValueType>::SliderRepresentation(const ValueType& value, float max, bool showValue):
-	SingleAdapterRepresentationBase<ValueType>()
-{
-	mLayout = LayoutHelper::loadLayout("representations/SliderRepresentation.layout", mPrefix);
-	
+		SingleAdapterRepresentationBase<ValueType>() {
+	mLayout = UniqueWindowPtr<CEGUI::Window>(LayoutHelper::loadLayout("representations/SliderRepresentation.layout", mPrefix));
+
 	mSlider = static_cast<CEGUI::Slider*>(mLayout->getChild(mPrefix + "Slider"));
 	mSlider->setMaxValue(max);
-	
+
 	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, float>(value, mSlider, "CurrentValue", CEGUI::Slider::EventValueChanged));
-	
+
 	mText = mLayout->getChild(mPrefix + "Text");
-	
-	if (!showValue)
-	{
+
+	if (!showValue) {
 		mText->setVisible(false);
 		mSlider->setSize(CEGUI::USize(CEGUI::UDim(1.0f, 0.0f), CEGUI::UDim(1.0f, 0.0f)));
-	}
-	else
-	{
+	} else {
 		this->mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &SliderRepresentation::valueChanged));
-		
+
 		// we call this initially to get the value to the Text widget
 		valueChanged();
 	}
 }
 
 template<typename ValueType>
-SliderRepresentation<ValueType>::~SliderRepresentation()
-{
-	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
-}
+SliderRepresentation<ValueType>::~SliderRepresentation() = default;
 
 template<typename ValueType>
-void SliderRepresentation<ValueType>::valueChanged()
-{
+void SliderRepresentation<ValueType>::valueChanged() {
 	// update the verbatim static text
 	mText->setText(Adapters::ValueTypeHelper<float, std::string>::convert(mSlider->getCurrentValue()));
 }
 
 template<typename ValueType>
-CEGUI::Window* SliderRepresentation<ValueType>::getGuiRoot()
-{
-	return mLayout;
+CEGUI::Window* SliderRepresentation<ValueType>::getGuiRoot() {
+	return mLayout.get();
 }
 
 }

@@ -27,6 +27,7 @@
 #include "../adapters/GenericPropertyAdapter.h"
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/widgets/ToggleButton.h>
+#include <components/ogre/widgets/CEGUIUtils.h>
 
 namespace Ember {
 namespace OgreView {
@@ -39,47 +40,41 @@ namespace Representations {
  * @brief represents given value by a checkbox (the underlying value has to be bool!)
  */
 template<typename ValueType>
-class CheckboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
-{
+class CheckboxRepresentation : public SingleAdapterRepresentationBase<ValueType> {
 public:
 	/**
 	 * @brief Ctor
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	CheckboxRepresentation(const ValueType& value);
-	
+	explicit CheckboxRepresentation(const ValueType& value);
+
 	/**
 	 * @brief Dtor
 	 */
 	virtual ~CheckboxRepresentation();
-	
+
 	virtual CEGUI::Window* getGuiRoot();
-	
+
 protected:
-	CEGUI::Window* mLayout;
+	UniqueWindowPtr<CEGUI::Window> mLayout;
 	CEGUI::String mPrefix;
 };
 
 template<typename ValueType>
 CheckboxRepresentation<ValueType>::CheckboxRepresentation(const ValueType& value):
-	SingleAdapterRepresentationBase<ValueType>()
-{
-	mLayout = LayoutHelper::loadLayout("representations/CheckboxRepresentation.layout", mPrefix);
-	
+		SingleAdapterRepresentationBase<ValueType>() {
+	mLayout = UniqueWindowPtr<CEGUI::Window>(LayoutHelper::loadLayout("representations/CheckboxRepresentation.layout", mPrefix));
+
 	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, bool>(value, mLayout->getChild(mPrefix + "Checkbox"), "Selected", CEGUI::ToggleButton::EventSelectStateChanged));
 }
 
 template<typename ValueType>
-CheckboxRepresentation<ValueType>::~CheckboxRepresentation()
-{
-	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
-}
+CheckboxRepresentation<ValueType>::~CheckboxRepresentation() = default;
 
 template<typename ValueType>
-CEGUI::Window* CheckboxRepresentation<ValueType>::getGuiRoot()
-{
-	return mLayout;
+CEGUI::Window* CheckboxRepresentation<ValueType>::getGuiRoot() {
+	return mLayout.get();
 }
 
 }

@@ -21,10 +21,13 @@
 
 #include <string>
 #include <CEGUI/widgets/Tooltip.h>
+#include "CEGUIUtils.h"
 
 namespace CEGUI {
 class Tooltip;
+
 class EventArgs;
+
 class Window;
 }
 
@@ -45,15 +48,14 @@ class IconManager;
  * This is used to show entity bound tooltip information.
  *
  */
-class EmberEntityTooltipWidget: public CEGUI::Tooltip
-{
+class EmberEntityTooltipWidget : public CEGUI::Tooltip {
 
 public:
 	static const CEGUI::String WidgetTypeName;
 
 	EmberEntityTooltipWidget(const CEGUI::String& type, const CEGUI::String& name);
 
-	CEGUI::Sizef getTextSize_impl() const;
+	CEGUI::Sizef getTextSize_impl() const override;
 };
 
 /**
@@ -63,8 +65,7 @@ public:
  * This class provides mechanism through which a CEGUI::Tooltip can be setup to show information for a certain entity. This is done by setting the tooltip text of the window for which you want this functionality to the entity id, and then tell the window to use the specific EmberEntityTooltipWidget instance wrapped by this class.
  * This will set everything up so that when the tooltip is shown, the entity id will be used to fetch the correct entity from the World, and information about it will be shown.
  */
-class EntityTooltip
-{
+class EntityTooltip {
 public:
 
 	/**
@@ -73,7 +74,7 @@ public:
 	 * @param tooltip A tooltip instance. Ownership will not be passed. This window will be altered.
 	 * @param iconManager The icon manager, from which icons for the entities will be extracted.
 	 */
-	EntityTooltip(World& world, EmberEntityTooltipWidget& tooltip, Icons::IconManager& iconManager);
+	EntityTooltip(World& world, UniqueWindowPtr<EmberEntityTooltipWidget> tooltip, Icons::IconManager& iconManager);
 
 	/**
 	 * @brief Dtor.
@@ -103,7 +104,7 @@ protected:
 	/**
 	 * @brief The tooltip widget instance, not owned by this class.
 	 */
-	EmberEntityTooltipWidget& mTooltip;
+	UniqueWindowPtr<EmberEntityTooltipWidget> mTooltip;
 
 	/**
 	 * @brief The icon manager, from which we'll extract entity icons.
@@ -131,7 +132,7 @@ protected:
 	 * Preferably we would like to listen to a signal emitted when the target window changes, but alas there is no such signal.
 	 * @param e Events args.
 	 */
-	bool tooltip_TextChanged(const CEGUI::EventArgs &e);
+	bool tooltip_TextChanged(const CEGUI::EventArgs& e);
 
 	/**
 	 * @brief Tries to extract the active entity of the tooltip target window.

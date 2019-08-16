@@ -41,8 +41,7 @@ namespace Representations {
  * @see ComboboxAdapter
  */
 template<typename ValueType, typename PropertyNativeType>
-class ComboboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
-{
+class ComboboxRepresentation : public SingleAdapterRepresentationBase<ValueType> {
 public:
 	/**
 	 * @brief Ctor
@@ -50,42 +49,37 @@ public:
 	 * @param value Value this representation should represent
 	 * @param suggestionOnly If true, user can't type in to the combobox but only choose one of the suggestions
 	 */
-	ComboboxRepresentation(const ValueType& value, bool suggestionOnly = false);
-	
+	explicit ComboboxRepresentation(const ValueType& value, bool suggestionOnly = false);
+
 	/**
 	 * @brief Dtor
 	 */
 	virtual ~ComboboxRepresentation();
-	
+
 	virtual CEGUI::Window* getGuiRoot();
-	
+
 protected:
-	CEGUI::Window* mLayout;
+	UniqueWindowPtr<CEGUI::Window> mLayout;
 	CEGUI::Combobox* mCombobox;
 	CEGUI::String mPrefix;
 };
 
 template<typename ValueType, typename PropertyNativeType>
 ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(const ValueType& value, bool suggestionOnly):
-	SingleAdapterRepresentationBase<ValueType>()
-{
-	mLayout = LayoutHelper::loadLayout("representations/ComboboxRepresentation.layout", mPrefix);
+		SingleAdapterRepresentationBase<ValueType>() {
+	mLayout = UniqueWindowPtr<CEGUI::Window>(LayoutHelper::loadLayout("representations/ComboboxRepresentation.layout", mPrefix));
 	mCombobox = static_cast<CEGUI::Combobox*>(mLayout->getChild(mPrefix + "String"));
 	this->setAdapter(new Adapters::ComboboxAdapter<ValueType, PropertyNativeType>(value, mCombobox));
-	
+
 	mCombobox->setReadOnly(suggestionOnly);
 }
 
 template<typename ValueType, typename PropertyNativeType>
-ComboboxRepresentation<ValueType, PropertyNativeType>::~ComboboxRepresentation()
-{
-	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
-}
+ComboboxRepresentation<ValueType, PropertyNativeType>::~ComboboxRepresentation() = default;
 
 template<typename ValueType, typename PropertyNativeType>
-CEGUI::Window* ComboboxRepresentation<ValueType, PropertyNativeType>::getGuiRoot()
-{
-	return mLayout;
+CEGUI::Window* ComboboxRepresentation<ValueType, PropertyNativeType>::getGuiRoot() {
+	return mLayout.get();
 }
 
 }

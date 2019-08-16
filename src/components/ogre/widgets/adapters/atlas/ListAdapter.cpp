@@ -40,88 +40,72 @@ namespace Adapters {
 namespace Atlas {
 
 ListAdapter::ListAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer)
-:  AdapterBase(element), mChildContainer(childContainer), mAttributes(element.asList())
-{
+		: AdapterBase(element), mChildContainer(childContainer), mAttributes(element.asList()) {
 }
 
 
-ListAdapter::~ListAdapter()
-{
+ListAdapter::~ListAdapter() {
 	removeAdapters();
 }
 
-size_t ListAdapter::getSize()
-{
+size_t ListAdapter::getSize() {
 	return mAttributes.size();
 }
 
 
-const ::Atlas::Message::Element& ListAdapter::valueOfAttr(size_t index) const
-{
+const ::Atlas::Message::Element& ListAdapter::valueOfAttr(size_t index) const {
 	static Element emptyElement;
-    if (index > mAttributes.size())
-    {
-        return emptyElement;
-    } else {
-	    return mAttributes[index];
-    }
+	if (index > mAttributes.size()) {
+		return emptyElement;
+	} else {
+		return mAttributes[index];
+	}
 }
 
 
-void ListAdapter::updateGui(const ::Atlas::Message::Element& element)
-{
+void ListAdapter::updateGui(const ::Atlas::Message::Element& element) {
 }
 
 
-void ListAdapter::fillElementFromGui()
-{
-	
+void ListAdapter::fillElementFromGui() {
+
 }
 
-bool ListAdapter::_hasChanges()
-{
+bool ListAdapter::_hasChanges() {
 	bool hasChanges = false;
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		if (I->Adapter == 0) {
+	for (auto& wrapper : mAdapters) {
+		if (!wrapper.Adapter) {
 // 			S_LOG_WARNING("The list of adapters contained a null reference. This should never happen.");
 		} else {
-			hasChanges = hasChanges || I->Adapter->hasChanges();
+			hasChanges = hasChanges || wrapper.Adapter->hasChanges();
 		}
 	}
 	return hasChanges;
 }
 
 
-void ListAdapter::addAttributeAdapter(Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow)
-{
+void ListAdapter::addAttributeAdapter(Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow) {
 	if (adapter) {
 		AdapterWrapper wrapper;
-		wrapper.Adapter = adapter;
-		wrapper.ContainerWindow = containerWindow;
-		mAdapters.push_back(wrapper);
+		wrapper.Adapter.reset(adapter);
+		wrapper.ContainerWindow.reset(containerWindow);
+		mAdapters.emplace_back(std::move(wrapper));
 	} else {
 // 		S_LOG_WARNING("Tried to add a null adapter.");
 	}
 }
-    
-void ListAdapter::removeAdapters()
-{
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		delete I->Adapter;
-// 		I->second.ContainerWindow->getParent()->removeChild(I->second.ContainerWindow);
-		CEGUI::WindowManager::getSingleton().destroyWindow(I->ContainerWindow);
-	}
+
+void ListAdapter::removeAdapters() {
 	mAdapters.clear();
 }
 
-::Atlas::Message::Element ListAdapter::_getChangedElement()
-{
+::Atlas::Message::Element ListAdapter::_getChangedElement() {
 	//if one adapter has changes, we have to send all
 	::Atlas::Message::ListType attributes;
-	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		Adapters::Atlas::AdapterBase* adapter = I->Adapter;
+	for (auto& wrapper : mAdapters) {
+		auto& adapter = wrapper.Adapter;
 		if (!adapter->isRemoved()) {
-			attributes.push_back(adapter->getChangedElement());
+			attributes.emplace_back(adapter->getChangedElement());
 		}
 	}
 	return Element(attributes);

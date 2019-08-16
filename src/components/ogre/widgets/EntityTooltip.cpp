@@ -31,38 +31,36 @@
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/WindowFactoryManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 EmberEntityTooltipWidget::EmberEntityTooltipWidget(const CEGUI::String& type, const CEGUI::String& name) :
-	CEGUI::Tooltip(type, name)
-{
+		CEGUI::Tooltip(type, name) {
 }
 
-CEGUI::Sizef EmberEntityTooltipWidget::getTextSize_impl() const
-{
+CEGUI::Sizef EmberEntityTooltipWidget::getTextSize_impl() const {
 	return CEGUI::Sizef(180, 80);
 }
 
 const CEGUI::String EmberEntityTooltipWidget::WidgetTypeName("Ember/EntityTooltip");
 
-void EntityTooltip::registerFactory()
-{
+void EntityTooltip::registerFactory() {
 	CEGUI::WindowFactoryManager::addFactory<CEGUI::TplWindowFactory<EmberEntityTooltipWidget>>();
 }
 
-EntityTooltip::EntityTooltip(World& world, EmberEntityTooltipWidget& tooltip, Icons::IconManager& iconManager) :
-	mWorld(world), mTooltip(tooltip), mIconManager(iconManager), isUpdatingOurselves(false), mImageWindow(0), mTextWindow(0)
-{
+EntityTooltip::EntityTooltip(World& world, UniqueWindowPtr<EmberEntityTooltipWidget> tooltip, Icons::IconManager& iconManager) :
+		mWorld(world),
+		mTooltip(std::move(tooltip)),
+		mIconManager(iconManager),
+		isUpdatingOurselves(false),
+		mImageWindow(nullptr),
+		mTextWindow(nullptr) {
 	mImageWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticImage");
 	mImageWindow->setSize(CEGUI::USize(CEGUI::UDim(0, 64), CEGUI::UDim(0, 64)));
 	mImageWindow->setProperty("FrameEnabled", "false");
 	mImageWindow->setProperty("BackgroundEnabled", "false");
-	tooltip.addChild(mImageWindow);
+	mTooltip->addChild(mImageWindow);
 
 	mTextWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticText");
 	mTextWindow->setSize(CEGUI::USize(CEGUI::UDim(1, -64), CEGUI::UDim(1, 0)));
@@ -71,24 +69,20 @@ EntityTooltip::EntityTooltip(World& world, EmberEntityTooltipWidget& tooltip, Ic
 	mTextWindow->setProperty("VertFormatting", "TopAligned");
 	mTextWindow->setProperty("FrameEnabled", "false");
 	mTextWindow->setProperty("BackgroundEnabled", "false");
-	tooltip.addChild(mTextWindow);
+	mTooltip->addChild(mTextWindow);
 
 	//listen to the text being changed, since that indicates that the tooltip has been activated for a new window (alas there's no signal when the tooltip is attached to a target window, so this is the best we can do)
-	tooltip.subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&EntityTooltip::tooltip_TextChanged, this));
+	mTooltip->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&EntityTooltip::tooltip_TextChanged, this));
 }
 
 EntityTooltip::~EntityTooltip()
-{
-	CEGUI::WindowManager::getSingleton().destroyWindow(&mTooltip);
+= default;
+
+CEGUI::Tooltip& EntityTooltip::getTooltipWindow() const {
+	return *mTooltip;
 }
 
-CEGUI::Tooltip& EntityTooltip::getTooltipWindow() const
-{
-	return mTooltip;
-}
-
-bool EntityTooltip::tooltip_TextChanged(const CEGUI::EventArgs &e)
-{
+bool EntityTooltip::tooltip_TextChanged(const CEGUI::EventArgs& e) {
 	//Check the guard so we don't end up in an infinite loop, as we'll be resetting the text of the tooltip.
 	if (!isUpdatingOurselves) {
 		EmberEntity* entity = getActiveEntity();
@@ -101,18 +95,17 @@ bool EntityTooltip::tooltip_TextChanged(const CEGUI::EventArgs &e)
 			} else {
 				mImageWindow->setProperty("Image", "");
 			}
-			mTooltip.setWidth(CEGUI::UDim(0, 120));
-			mTooltip.setHeight(CEGUI::UDim(0, 80));
-			mTooltip.positionSelf();
+			mTooltip->setWidth(CEGUI::UDim(0, 120));
+			mTooltip->setHeight(CEGUI::UDim(0, 80));
+			mTooltip->positionSelf();
 		}
-		mTooltip.setText(""); //The text has contained the id of the entity and should now be removed.
+		mTooltip->setText(""); //The text has contained the id of the entity and should now be removed.
 	}
 	isUpdatingOurselves = false;
 	return true;
 }
 
-std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity)
-{
+std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity) {
 	std::stringstream ss;
 	if (!entity.getName().empty()) {
 		ss << entity.getName() << " (of type " << entity.getType()->getName() << ")";
@@ -132,10 +125,9 @@ std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity)
 	return ss.str();
 }
 
-EmberEntity* EntityTooltip::getActiveEntity()
-{
-	if (mTooltip.getTargetWindow()) {
-		return mWorld.getEmberEntity(mTooltip.getTargetWindow()->getTooltipText().c_str());
+EmberEntity* EntityTooltip::getActiveEntity() {
+	if (mTooltip->getTargetWindow()) {
+		return mWorld.getEmberEntity(mTooltip->getTargetWindow()->getTooltipText().c_str());
 	}
 	return nullptr;
 }

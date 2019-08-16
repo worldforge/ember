@@ -28,7 +28,7 @@
 
 
 namespace CEGUI {
-	class Window;
+class Window;
 }
 
 namespace Ember {
@@ -43,38 +43,41 @@ namespace Atlas {
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class ListAdapter : public AdapterBase
-{
+class ListAdapter : public AdapterBase {
 public:
-    ListAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer);
+	ListAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer);
 
-    virtual ~ListAdapter();
-    
+	~ListAdapter() override;
 
-    size_t getSize();
+
+	size_t getSize();
+
 	const ::Atlas::Message::Element& valueOfAttr(size_t index) const;
 
 	/**
 	Updates the gui with new values.
 	*/
-	virtual void updateGui(const ::Atlas::Message::Element& element);
+	void updateGui(const ::Atlas::Message::Element& element) override;
 
 //     void addAttributeAdapter(int index, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
-    void addAttributeAdapter(Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
-    void removeAdapters();
-    
+	void addAttributeAdapter(Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
+
+	void removeAdapters();
+
 protected:
 	typedef std::vector<AdapterWrapper> AdapterStore;
-	
+
 	CEGUI::Window* mChildContainer;
 // 	StackableContainer mStackableContainer;
 	const ::Atlas::Message::ListType& mAttributes;
-	
+
 	AdapterStore mAdapters;
-	
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
-	virtual ::Atlas::Message::Element _getChangedElement();
+
+	void fillElementFromGui() override;
+
+	bool _hasChanges() override;
+
+	::Atlas::Message::Element _getChangedElement() override;
 
 };
 

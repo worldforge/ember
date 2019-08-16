@@ -22,6 +22,7 @@
 //
 
 #include "ActionBarIcon.h"
+#include "CEGUIUtils.h"
 
 #include <CEGUI/widgets/DragContainer.h>
 #include <CEGUI/WindowManager.h>
@@ -32,92 +33,83 @@ namespace OgreView {
 
 namespace Gui {
 
-ActionBarIcon::ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon)
-: ActionBarIconDragDropTarget(dragContainer), mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mUserDataWrapper(mUserData), mCurrentSlot(0)
-{
+ActionBarIcon::ActionBarIcon(ActionBarIconManager& manager, UniqueWindowPtr<CEGUI::DragContainer> dragContainer, UniqueWindowPtr<CEGUI::Window> image, Gui::Icons::Icon* icon)
+		: ActionBarIconDragDropTarget(dragContainer.get()),
+		  mManager(manager),
+		  mDragContainer(std::move(dragContainer)),
+		  mImage(std::move(image)),
+		  mIcon(icon),
+		  mUserData(*this),
+		  mUserDataWrapper(mUserData),
+		  mCurrentSlot(nullptr) {
 	mDragContainer->setUserData(&mUserDataWrapper);
-	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(& ActionBarIcon::dragContainer_DragStarted, this));
-	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(& ActionBarIcon::dragContainer_DragStopped, this));
+	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(&ActionBarIcon::dragContainer_DragStarted, this));
+	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(&ActionBarIcon::dragContainer_DragStopped, this));
 	icon->EventUpdated.connect(sigc::mem_fun(*this, &ActionBarIcon::icon_Updated));
 
 }
 
-ActionBarIcon::~ActionBarIcon()
-{
+ActionBarIcon::~ActionBarIcon() {
 	if (mCurrentSlot) {
 		mCurrentSlot->removeActionBarIcon();
 	}
-	CEGUI::WindowManager::getSingleton().destroyWindow(mImage);
-	CEGUI::WindowManager::getSingleton().destroyWindow(mDragContainer);
 }
 
-void ActionBarIcon::defaultAction()
-{
+void ActionBarIcon::defaultAction() {
 }
 
-CEGUI::Window* ActionBarIcon::getImage()
-{
-	return mImage;
+CEGUI::Window* ActionBarIcon::getImage() {
+	return mImage.get();
 }
 
-Gui::Icons::Icon* ActionBarIcon::getIcon()
-{
+Gui::Icons::Icon* ActionBarIcon::getIcon() {
 	return mIcon;
 }
 
-CEGUI::DragContainer* ActionBarIcon::getDragContainer()
-{
-	return mDragContainer;
+CEGUI::DragContainer* ActionBarIcon::getDragContainer() {
+	return mDragContainer.get();
 }
 
-void ActionBarIcon::setSlot(ActionBarIconSlot* slot)
-{
+void ActionBarIcon::setSlot(ActionBarIconSlot* slot) {
 	if (mCurrentSlot) {
 		mCurrentSlot->notifyIconRemoved();
 	}
 	mCurrentSlot = slot;
 }
 
-ActionBarIconSlot* ActionBarIcon::getSlot()
-{
+ActionBarIconSlot* ActionBarIcon::getSlot() {
 	return mCurrentSlot;
 }
 
-void ActionBarIcon::setTooltipText(const std::string& text)
-{
+void ActionBarIcon::setTooltipText(const std::string& text) {
 	mDragContainer->setTooltipText(text);
 }
 
-bool ActionBarIcon::dragContainer_DragStarted(const CEGUI::EventArgs& args)
-{
+bool ActionBarIcon::dragContainer_DragStarted(const CEGUI::EventArgs& args) {
 	mManager.EventIconDragStart.emit(this);
 	return true;
 }
 
-bool ActionBarIcon::dragContainer_DragStopped(const CEGUI::EventArgs& args)
-{
+bool ActionBarIcon::dragContainer_DragStopped(const CEGUI::EventArgs& args) {
 	mManager.EventIconDragStop.emit(this);
 	return true;
 }
 
 
-
-void ActionBarIcon::icon_Updated()
-{
+void ActionBarIcon::icon_Updated() {
 	//It seems that we're forced to invalidate the CEGUI Window to get it to update itself. This is perhaps a bug in CEGUI?
 	mImage->invalidate();
 }
 
-bool ActionBarIcon::handleDragEnter(const CEGUI::EventArgs& args, ActionBarIcon* icon)
-{
+bool ActionBarIcon::handleDragEnter(const CEGUI::EventArgs& args, ActionBarIcon* icon) {
 	ActionBarIconDragDropTarget::handleDragEnter(args, icon);
 	if (mCurrentSlot) {
 		return mCurrentSlot->handleDragEnter(args, icon);
 	}
 	return true;
 }
-bool ActionBarIcon::handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon* icon)
-{
+
+bool ActionBarIcon::handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon* icon) {
 	ActionBarIconDragDropTarget::handleDragLeave(args, icon);
 	if (mCurrentSlot) {
 		return mCurrentSlot->handleDragLeave(args, icon);
@@ -125,8 +117,7 @@ bool ActionBarIcon::handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon*
 	return true;
 }
 
-bool ActionBarIcon::handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon)
-{
+bool ActionBarIcon::handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon) {
 	ActionBarIconDragDropTarget::handleDragActionBarIconDropped(args, icon);
 	if (mCurrentSlot) {
 		return mCurrentSlot->handleDragActionBarIconDropped(args, icon);
@@ -134,8 +125,8 @@ bool ActionBarIcon::handleDragActionBarIconDropped(const CEGUI::EventArgs& args,
 	return true;
 
 }
-bool ActionBarIcon::handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon)
-{
+
+bool ActionBarIcon::handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon) {
 	ActionBarIconDragDropTarget::handleDragEntityIconDropped(args, icon);
 	if (mCurrentSlot) {
 		return mCurrentSlot->handleDragEntityIconDropped(args, icon);

@@ -20,29 +20,27 @@
 #define WORLDLOADINGSCREEN_H_
 
 #include <sigc++/sigc++.h>
+#include "CEGUIUtils.h"
 
-namespace CEGUI
-{
+namespace CEGUI {
 class Window;
+
 class WindowManager;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 /**
  @author Sean Ryan
  @brief This class serves as a static transition that obscures the the 3d
  world as it builds behind the scenes to prevent user disorientation.
  */
-class WorldLoadingScreen: public virtual sigc::trackable
-{
+class WorldLoadingScreen : public virtual sigc::trackable {
 public:
 	WorldLoadingScreen();
+
 	~WorldLoadingScreen();
 
 	/**
@@ -65,7 +63,7 @@ protected:
 	/**
 	 * @brief Internal CEGUI Widget/Window for the loading screen
 	 */
-	CEGUI::Window* mLoadingWindow;
+	UniqueWindowPtr <CEGUI::Window> mLoadingWindow;
 
 };
 

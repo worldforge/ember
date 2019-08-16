@@ -30,33 +30,26 @@
 
 using namespace CEGUI;
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
 IconBar::IconBar(const std::string& name) :
-		mIconPadding(0)
-{
-	mWindow = WindowManager::getSingleton().createWindow("DefaultWindow", "iconbars/" + name);
+		mIconPadding(0) {
+	mWindow = UniqueWindowPtr<CEGUI::Window>(WindowManager::getSingleton().createWindow("DefaultWindow", "iconbars/" + name));
 	mWindow->setUsingAutoRenderingSurface(true);
 	/*	mWindow->setProperty("BackgroundEnabled", "false");
 	 mWindow->setProperty("FrameEnabled", "false");*/
 }
 
-IconBar::~IconBar()
-{
-	for (std::vector<IconBase*>::iterator I = mIconBases.begin(); I != mIconBases.end(); ++I) {
-		delete *I;
+IconBar::~IconBar() {
+	for (auto& iconBase : mIconBases) {
+		delete iconBase;
 	}
-	CEGUI::WindowManager::getSingleton().destroyWindow(mWindow);
 }
 
-void IconBar::addIcon(IconBase* iconBase)
-{
+void IconBar::addIcon(IconBase* iconBase) {
 	mIconBases.push_back(iconBase);
 	mWindow->addChild(iconBase->getContainer());
 
@@ -66,9 +59,8 @@ void IconBar::addIcon(IconBase* iconBase)
 	iconBase->getContainer()->subscribeEvent(CEGUI::Window::EventHidden, CEGUI::Event::Subscriber(&IconBar::iconVisibilityChanged, this));
 }
 
-void IconBar::removeIcon(IconBase* iconBase)
-{
-	IconBaseStore::iterator I = std::find(mIconBases.begin(), mIconBases.end(), iconBase);
+void IconBar::removeIcon(IconBase* iconBase) {
+	auto I = std::find(mIconBases.begin(), mIconBases.end(), iconBase);
 	if (I != mIconBases.end()) {
 		mWindow->removeChild(iconBase->getContainer());
 		mIconBases.erase(I);
@@ -76,29 +68,24 @@ void IconBar::removeIcon(IconBase* iconBase)
 	repositionIcons();
 }
 
-bool IconBar::iconVisibilityChanged(const CEGUI::EventArgs& e)
-{
+bool IconBar::iconVisibilityChanged(const CEGUI::EventArgs& e) {
 	repositionIcons();
 	return true;
 }
 
-CEGUI::Window* IconBar::getWindow()
-{
-	return mWindow;
+CEGUI::Window* IconBar::getWindow() {
+	return mWindow.get();
 }
 
-void IconBar::setIconPadding(int iconPadding)
-{
+void IconBar::setIconPadding(int iconPadding) {
 	mIconPadding = iconPadding;
 }
 
-void IconBar::repositionIcons()
-{
+void IconBar::repositionIcons() {
 	float accumulatedWidth(0);
 	float maxHeight(0);
 
-	for (IconBaseStore::iterator I(mIconBases.begin()); I != mIconBases.end(); ++I) {
-		IconBase* icon = (*I);
+	for (auto icon : mIconBases) {
 		if (icon->getContainer() && icon->getContainer()->isVisible()) {
 			float absHeight = icon->getContainer()->getPixelSize().d_height;
 			float absWidth = icon->getContainer()->getPixelSize().d_width;
@@ -115,13 +102,11 @@ void IconBar::repositionIcons()
 	mWindow->notifyScreenAreaChanged();
 }
 
-float IconBar::getAbsoluteHeight()
-{
+float IconBar::getAbsoluteHeight() {
 	return mWindow->getPixelSize().d_height;
 }
 
-float IconBar::getAbsoluteWidth()
-{
+float IconBar::getAbsoluteWidth() {
 	return mWindow->getPixelSize().d_width;
 }
 

@@ -38,7 +38,7 @@ WorldLoadingScreen::WorldLoadingScreen() {
 	 */
 
 	// Black background with white text
-	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticText", "WorldLoadingScreen");
+	mLoadingWindow = UniqueWindowPtr<CEGUI::Window>(CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticText", "WorldLoadingScreen"));
 	mLoadingWindow->setProperty("BackgroundColours", "FFFFFF");
 	mLoadingWindow->setProperty("TextColours", "FFFFFFFF");
 	mLoadingWindow->setProperty("BackgroundEnabled", "true");
@@ -58,9 +58,7 @@ WorldLoadingScreen::WorldLoadingScreen() {
 
 }
 
-WorldLoadingScreen::~WorldLoadingScreen() {
-	CEGUI::WindowManager::getSingleton().destroyWindow(mLoadingWindow);
-}
+WorldLoadingScreen::~WorldLoadingScreen() = default;
 
 CEGUI::Window& WorldLoadingScreen::getWindow() {
 	return *mLoadingWindow;
@@ -82,7 +80,7 @@ void WorldLoadingScreen::showScreen() {
 		/*
 		 * Add to the main sheet.  This is "turning on" the load screen
 		 */
-		GUIManager::getSingleton().getMainSheet()->addChild(mLoadingWindow);
+		GUIManager::getSingleton().getMainSheet()->addChild(mLoadingWindow.get());
 	}
 }
 
@@ -91,7 +89,7 @@ void WorldLoadingScreen::hideScreen() {
 		/*
 		 * Remove from the main sheet.  This is "turning off" the load screen
 		 */
-		GUIManager::getSingleton().getMainSheet()->removeChild(mLoadingWindow);
+		GUIManager::getSingleton().getMainSheet()->removeChild(mLoadingWindow.get());
 	}
 }
 

@@ -42,46 +42,38 @@ namespace Atlas {
 
 
 MapAdapter::MapAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer)
-:  AdapterBase(element), mChildContainer(childContainer),
-mAttributes(element.asMap())
-{
+		: AdapterBase(element), mChildContainer(childContainer),
+		  mAttributes(element.asMap()) {
 }
 
 
-MapAdapter::~MapAdapter()
-{
+MapAdapter::~MapAdapter() {
 	removeAdapters();
 }
 
-const ::Atlas::Message::Element& MapAdapter::valueOfAttr(const std::string& attr) const
-{
+const ::Atlas::Message::Element& MapAdapter::valueOfAttr(const std::string& attr) const {
 	static Element emptyElement;
 	auto A = mAttributes.find(attr);
-    if (A == mAttributes.end())
-    {
-        return emptyElement;
-    } else {
-        return A->second;
-    }
+	if (A == mAttributes.end()) {
+		return emptyElement;
+	} else {
+		return A->second;
+	}
 }
 
-bool MapAdapter::hasAttr(const std::string& attr) const
-{
-    return mAttributes.count(attr) > 0;
+bool MapAdapter::hasAttr(const std::string& attr) const {
+	return mAttributes.count(attr) > 0;
 }
 
-void MapAdapter::updateGui(const ::Atlas::Message::Element& element)
-{
+void MapAdapter::updateGui(const ::Atlas::Message::Element& element) {
 }
 
 
-void MapAdapter::fillElementFromGui()
-{
-	
+void MapAdapter::fillElementFromGui() {
+
 }
 
-bool MapAdapter::_hasChanges()
-{
+bool MapAdapter::_hasChanges() {
 	bool hasChanges = false;
 	for (auto& item : mAdapters) {
 		if (item.second.Adapter) {
@@ -91,8 +83,7 @@ bool MapAdapter::_hasChanges()
 	return hasChanges;
 }
 
-std::vector<std::string> MapAdapter::getAttributeNames()
-{
+std::vector<std::string> MapAdapter::getAttributeNames() {
 	std::vector<std::string> attributeNames;
 	for (const auto& attribute : mAttributes) {
 		attributeNames.push_back(attribute.first);
@@ -100,29 +91,21 @@ std::vector<std::string> MapAdapter::getAttributeNames()
 	return attributeNames;
 }
 
-void MapAdapter::addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow)
-{
+void MapAdapter::addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow) {
 	AdapterWrapper wrapper;
-	wrapper.Adapter = adapter;
-	wrapper.ContainerWindow = containerWindow;
-	mAdapters.insert(AdapterStore::value_type(attributeName, wrapper));
+	wrapper.Adapter.reset(adapter);
+	wrapper.ContainerWindow.reset(containerWindow);
+	mAdapters.emplace(attributeName, std::move(wrapper));
 }
-    
-void MapAdapter::removeAdapters()
-{
-	for (auto& item : mAdapters) {
-		delete item.second.Adapter;
-// 		I->second.ContainerWindow->getParent()->removeChild(I->second.ContainerWindow);
-		CEGUI::WindowManager::getSingleton().destroyWindow(item.second.ContainerWindow);
-	}
+
+void MapAdapter::removeAdapters() {
 	mAdapters.clear();
 }
 
-::Atlas::Message::Element MapAdapter::_getChangedElement()
-{
+::Atlas::Message::Element MapAdapter::_getChangedElement() {
 	::Atlas::Message::MapType attributes;
 	for (auto& item : mAdapters) {
-		Adapters::Atlas::AdapterBase* adapter = item.second.Adapter;
+		auto& adapter = item.second.Adapter;
 		if (!adapter->isRemoved()) {
 			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(item.first, adapter->getChangedElement()));
 		}
@@ -130,11 +113,10 @@ void MapAdapter::removeAdapters()
 	return Element(attributes);
 }
 
-::Atlas::Message::Element MapAdapter::getSelectedChangedElements()
-{
+::Atlas::Message::Element MapAdapter::getSelectedChangedElements() {
 	::Atlas::Message::MapType attributes;
 	for (auto& item : mAdapters) {
-		Adapters::Atlas::AdapterBase* adapter = item.second.Adapter;
+		auto& adapter = item.second.Adapter;
 		if (adapter->hasChanges() && !adapter->isRemoved()) {
 			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(item.first, adapter->getChangedElement()));
 		}
@@ -142,8 +124,7 @@ void MapAdapter::removeAdapters()
 	return Element(attributes);
 }
 
-bool MapAdapter::hasAdapter(const std::string& attr) const
-{
+bool MapAdapter::hasAdapter(const std::string& attr) const {
 	return mAdapters.find(attr) != mAdapters.end();
 }
 

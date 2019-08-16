@@ -26,6 +26,7 @@
 #include "Widget.h"
 #include "WidgetPool.h"
 #include "services/config/ConfigListenerContainer.h"
+#include "CEGUIUtils.h"
 #include <Eris/Entity.h>
 #include <OgreMovableObject.h>
 #include <unordered_map>
@@ -35,25 +36,27 @@
 namespace Ember {
 
 class CommandHistory;
+
 class EmberEntity;
 
 namespace OgreView {
 
-namespace Camera
-{
+namespace Camera {
 class MainCamera;
 }
 
 namespace Model {
 class Model;
+
 class ModelRepresentation;
 }
 class GUIManager;
+
 class Widget;
+
 class World;
 
 namespace Gui {
-
 
 
 /**
@@ -68,280 +71,293 @@ namespace Gui {
  * 
  * @author Erik Ogenvik
  */
-class IngameChatWidget : public Widget, public ConfigListenerContainer, public Ogre::Camera::Listener
-{
+class IngameChatWidget : public Widget, public ConfigListenerContainer, public Ogre::Camera::Listener {
 	class EntityObserver;
+
 	class Label;
 
-	class EntityObserver : public virtual sigc::trackable
-	{
-		public:
-			EntityObserver(IngameChatWidget& chatWidget, EmberEntity& entity);
-			virtual ~EntityObserver();
-			void updateLabel(const Ogre::Camera * camera);
+	class EntityObserver : public virtual sigc::trackable {
+	public:
+		EntityObserver(IngameChatWidget& chatWidget, EmberEntity& entity);
 
-			/**
-			 * @brief Gets the id of the observed entity.
-			 * @return The id of the observed entity.
-			 */
-			const std::string& getEntityId() const;
+		virtual ~EntityObserver();
 
-			/**
-			 * @brief Shows the detached chat widget for the entity.
-			 */
-			void showDetachedChat();
+		void updateLabel(const Ogre::Camera* camera);
 
-		protected:
-			IngameChatWidget& mChatWidget;
-			EmberEntity& mEntity;
-			Label* mLabel;
-			Eris::Entity::PropertyChangedSlot mExternalSlot; //, mNameSlot;
+		/**
+		 * @brief Gets the id of the observed entity.
+		 * @return The id of the observed entity.
+		 */
+		const std::string& getEntityId() const;
 
-			void showLabel();
-			void hideLabel();
+		/**
+		 * @brief Shows the detached chat widget for the entity.
+		 */
+		void showDetachedChat();
 
-			void entity_VisibilityChanged(bool visible);
-			void entity_BeingDeleted();
-			void entity_Say(const Atlas::Objects::Root& talk);
-			void entity_attributeChanged(const Atlas::Message::Element& attributeValue);
+	protected:
+		IngameChatWidget& mChatWidget;
+		EmberEntity& mEntity;
+		Label* mLabel;
+		Eris::Entity::PropertyChangedSlot mExternalSlot; //, mNameSlot;
 
-			void entity_GraphicalRepresentationChanged();
+		void showLabel();
+
+		void hideLabel();
+
+		void entity_VisibilityChanged(bool visible);
+
+		void entity_BeingDeleted();
+
+		void entity_Say(const Atlas::Objects::Root& talk);
+
+		void entity_attributeChanged(const Atlas::Message::Element& attributeValue);
+
+		void entity_GraphicalRepresentationChanged();
 
 
 	};
 
 	class ChatText;
-	
+
 	/**
 	 * @brief Holds the actual chat window and keeps track of fading, catching clicks etc.
 	 * 
 	 * The chat text is contained in the mChatText member variable.
 	 */
-	class Label : public virtual sigc::trackable
-	{
-		public:
-			/**
-			 * @brief Ctor
-			 */
-			Label(CEGUI::Window* window, CEGUI::WindowManager* windowManager, IngameChatWidget& containerWidget, const std::string& prefix);
+	class Label : public virtual sigc::trackable {
+	public:
+		/**
+		 * @brief Ctor
+		 */
+		Label(UniqueWindowPtr<CEGUI::Window> window, IngameChatWidget& containerWidget, const std::string& prefix);
 
-			/**
-			 * @brief Dtor
-			 */
-			virtual ~Label();
+		/**
+		 * @brief Dtor
+		 */
+		virtual ~Label();
 
-			/**
-			 * @brief Called when Entity says a new message
-			 * 
-			 * @param line the new message (this will show up next to the entity and in chat history)
-			 */
-			void updateText(const std::string& line);
+		/**
+		 * @brief Called when Entity says a new message
+		 *
+		 * @param line the new message (this will show up next to the entity and in chat history)
+		 */
+		void updateText(const std::string& line);
 
-			/**
-			 * @brief Gets the entity the window belongs to
-			 */
-			EmberEntity* getEntity();
+		/**
+		 * @brief Gets the entity the window belongs to
+		 */
+		EmberEntity* getEntity();
 
-			void attachToEntity(EmberEntity* entity, Model::Model* model);
+		void attachToEntity(EmberEntity* entity, Model::Model* model);
 
-			void setVisible(bool visible);
-			void setActive(bool active);
-			bool getActive() const;
-			void markForRender();
+		void setVisible(bool visible);
 
-			CEGUI::Window* getWindow();
-			
-			/**
-			 * @brief Called each frame to update the window
-			 * 
-			 * This mostly takes care of fading and wiping the history if the entity hasn't seen any
-			 * activity for prolonged periods of time (this is configurable)
-			 */
-			void frameStarted( const Ogre::FrameEvent & event );
+		void setActive(bool active);
 
-			/**
-			 * @brief Positions the window on top of the entity
-			 * 
-			 * Does 3D -> 2D projection and places the 2D CEGUI window so that it appears to be on top
-			 * of the entity.
-			 * 
-			 * @see IngameChatWidget::Label::getEntity()
-			 */
-			void placeWindowOnEntity();
+		bool getActive() const;
 
-			IngameChatWidget& getIngameChatWidget() { return mContainerWidget;}
+		void markForRender();
 
-			void updateEntityName();
+		CEGUI::Window* getWindow();
 
-			/**
-			 * @brief Removes the attached chat text widget (i.e. the widget which shows what an entity says, and any optional response buttons).
-			 */
-			void removeChatText();
+		/**
+		 * @brief Called each frame to update the window
+		 *
+		 * This mostly takes care of fading and wiping the history if the entity hasn't seen any
+		 * activity for prolonged periods of time (this is configurable)
+		 */
+		void frameStarted(const Ogre::FrameEvent& event);
 
-			/**
-			 * @brief Shows the detached chat text widget.
-			 */
-			void showDetachedChatText();
+		/**
+		 * @brief Positions the window on top of the entity
+		 *
+		 * Does 3D -> 2D projection and places the 2D CEGUI window so that it appears to be on top
+		 * of the entity.
+		 *
+		 * @see IngameChatWidget::Label::getEntity()
+		 */
+		void placeWindowOnEntity();
 
-			/**
-			 * @brief Resets the label.
-			 *
-			 * This involves removing any chat texts.
-			 */
-			void reset();
+		IngameChatWidget& getIngameChatWidget() { return mContainerWidget; }
 
-			void objectRendering(const Ogre::Camera * camera);
+		void updateEntityName();
 
-		protected:
-			CEGUI::Window* mWindow;
-			Model::Model* mModel;
-			EmberEntity* mEntity;
-			CEGUI::WindowManager* mWindowManager;
-			IngameChatWidget& mContainerWidget;
+		/**
+		 * @brief Removes the attached chat text widget (i.e. the widget which shows what an entity says, and any optional response buttons).
+		 */
+		void removeChatText();
 
-			/**
-			 * @brief If true, the label is actively monitoring an entity.
-			 */
-			bool mActive;
+		/**
+		 * @brief Shows the detached chat text widget.
+		 */
+		void showDetachedChatText();
 
-			/**
-			 * @brief If true, the label is visible to the user.
-			 */
-			bool mVisible;
+		/**
+		 * @brief Resets the label.
+		 *
+		 * This involves removing any chat texts.
+		 */
+		void reset();
 
-			/**
-			 * @brief If true, the label should be shown on the next frame rendering.
-			 */
-			bool mRenderNextFrame;
-			ChatText* mChatText;
+		void objectRendering(const Ogre::Camera* camera);
 
-			/**
-			 * @brief Gets the attached chat text instance, or create a new one if needed.
-			 * @return A chat text instance.
-			 */
-			ChatText* getOrCreateChatText();
+	protected:
+		UniqueWindowPtr<CEGUI::Window> mWindow;
+		Model::Model* mModel;
+		EmberEntity* mEntity;
+		IngameChatWidget& mContainerWidget;
+
+		/**
+		 * @brief If true, the label is actively monitoring an entity.
+		 */
+		bool mActive;
+
+		/**
+		 * @brief If true, the label is visible to the user.
+		 */
+		bool mVisible;
+
+		/**
+		 * @brief If true, the label should be shown on the next frame rendering.
+		 */
+		bool mRenderNextFrame;
+		ChatText* mChatText;
+
+		/**
+		 * @brief Gets the attached chat text instance, or create a new one if needed.
+		 * @return A chat text instance.
+		 */
+		ChatText* getOrCreateChatText();
 	};
 
-	class LabelCreator : public WidgetPool<IngameChatWidget::Label>::WidgetCreator
-	{
-		public:
-			LabelCreator(IngameChatWidget& ingameChatWidget);
-			virtual ~LabelCreator();
-			virtual IngameChatWidget::Label* createWidget(unsigned int currentPoolSize);
-			
-		protected:
-			IngameChatWidget& mIngameChatWidget;
-			CEGUI::Window* mLayout;
+	class LabelCreator : public WidgetPool<IngameChatWidget::Label>::WidgetCreator {
+	public:
+		explicit LabelCreator(IngameChatWidget& ingameChatWidget);
+
+		~LabelCreator() override;
+
+		IngameChatWidget::Label* createWidget(unsigned int currentPoolSize) override;
+
+	protected:
+		IngameChatWidget& mIngameChatWidget;
+		UniqueWindowPtr<CEGUI::Window> mLayout;
 	};
 
 	/**
 	 * @brief Responsible for displaying chat messages and chat related interaction
 	 */
-	class ChatText : public virtual sigc::trackable
-	{
-		public:
-			/**
-			 * @brief Ctor
-			 * 
-			 */
-			ChatText(CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow);
-			
-			/**
-			 * @brief Dtor
-			 */ 
-			virtual ~ChatText();
+	class ChatText : public virtual sigc::trackable {
+	public:
+		/**
+		 * @brief Ctor
+		 *
+		 */
+		ChatText(CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow);
 
-			/**
-			 * @brief Called when the entity says something new
-			 * 
-			 * This adds given message to chat history and displays it next to the entity (if in attached mode)
-			 */
-			void updateText(const std::string& line);
+		/**
+		 * @brief Dtor
+		 */
+		virtual ~ChatText();
 
-			/**
-			 * @brief Called each frame to update the window
-			 */
-			bool frameStarted( const Ogre::FrameEvent & event );
+		/**
+		 * @brief Called when the entity says something new
+		 *
+		 * This adds given message to chat history and displays it next to the entity (if in attached mode)
+		 */
+		void updateText(const std::string& line);
 
-			float getElapsedTimeSinceLastUpdate();
+		/**
+		 * @brief Called each frame to update the window
+		 */
+		bool frameStarted(const Ogre::FrameEvent& event);
 
-			/**
-			 * @brief Increases the elapsed time with the supplied amount
-			 */
-			void increaseElapsedTime(float timeSlice);
+		float getElapsedTimeSinceLastUpdate();
 
-			void attachToLabel(Label* label);
+		/**
+		 * @brief Increases the elapsed time with the supplied amount
+		 */
+		void increaseElapsedTime(float timeSlice);
 
-			/**
-			 * @brief switches from detached to attached mode
-			 */
-			void switchToAttachedMode(bool updateHelpMessage = true);
+		void attachToLabel(Label* label);
 
-			/**
-			 * @brief switches from attached to detached mode
-			 */
-			void switchToDetachedMode();
+		/**
+		 * @brief switches from detached to attached mode
+		 */
+		void switchToAttachedMode(bool updateHelpMessage = true);
 
-		protected:
-			std::vector<CEGUI::Window*> mResponseTextWidgets;
-			
-			Label* mLabel;
-			
-			CEGUI::Window* mAttachedWindow;
-			CEGUI::Window* mAttachedTextWidget;
-			CEGUI::Window* mAttachedResponseContainer;
-			CEGUI::Window* mAttachedEllipsisButton;
-			
-			CEGUI::Window* mDetachedWindow;
-			CEGUI::Window* mDetachedChatHistory;
-			CEGUI::Window* mDetachedResponseContainer;
-			CEGUI::Window* mDetachedEditbox;
-			CEGUI::Window* mDetachedTradeButton;
-			
-			CEGUI::Window* mResponseWidget;
-			
-			CommandHistory* mCommandHistory;
-			
-			float mElapsedTimeSinceLastUpdate;
-			
-			/**
-			 * @brief respond to the entity with given message
-			 * 
-			 * This method clears all suggested responses and adds this message to the chat history
-			 */
-			void respondWithMessage(const std::string& message);
+		/**
+		 * @brief switches from attached to detached mode
+		 */
+		void switchToDetachedMode();
 
-			bool buttonResponse_Click(const CEGUI::EventArgs& args);
-			bool buttonAttachedText_Click(const CEGUI::EventArgs& args);
-			bool buttonDetachedClose_Click(const CEGUI::EventArgs& args);
-			bool editboxDetachedKey_Event(const CEGUI::EventArgs& args);
-			bool buttonDetachedTrade_Click(const CEGUI::EventArgs& args);
-			bool detachedSized_Event(const CEGUI::EventArgs& args);
-			
-			/**
-			 * @brief Removes all response buttons.
-			 */
-			void clearResponses();
+	protected:
+		std::vector<UniqueWindowPtr<CEGUI::Window>> mResponseTextWidgets;
+
+		Label* mLabel;
+
+		UniqueWindowPtr<CEGUI::Window> mAttachedWindow;
+		CEGUI::Window* mAttachedTextWidget;
+		CEGUI::Window* mAttachedResponseContainer;
+		CEGUI::Window* mAttachedEllipsisButton;
+
+		UniqueWindowPtr<CEGUI::Window> mDetachedWindow;
+		CEGUI::Window* mDetachedChatHistory;
+		CEGUI::Window* mDetachedResponseContainer;
+		CEGUI::Window* mDetachedEditbox;
+		CEGUI::Window* mDetachedTradeButton;
+
+		CEGUI::Window* mResponseWidget;
+
+		std::unique_ptr<CommandHistory> mCommandHistory;
+
+		float mElapsedTimeSinceLastUpdate;
+
+		/**
+		 * @brief respond to the entity with given message
+		 *
+		 * This method clears all suggested responses and adds this message to the chat history
+		 */
+		void respondWithMessage(const std::string& message);
+
+		bool buttonResponse_Click(const CEGUI::EventArgs& args);
+
+		bool buttonAttachedText_Click(const CEGUI::EventArgs& args);
+
+		bool buttonDetachedClose_Click(const CEGUI::EventArgs& args);
+
+		bool editboxDetachedKey_Event(const CEGUI::EventArgs& args);
+
+		bool buttonDetachedTrade_Click(const CEGUI::EventArgs& args);
+
+		bool detachedSized_Event(const CEGUI::EventArgs& args);
+
+		/**
+		 * @brief Removes all response buttons.
+		 */
+		void clearResponses();
 	};
 
-	class ChatTextCreator : public WidgetPool<IngameChatWidget::ChatText>::WidgetCreator
-	{
-		public:
-			ChatTextCreator(IngameChatWidget& ingameChatWidget);
-			virtual ~ChatTextCreator();
-			virtual IngameChatWidget::ChatText* createWidget(unsigned int currentPoolSize);
-			
-		protected:
-			IngameChatWidget& mIngameChatWidget;
-			CEGUI::Window* mAttachedLayout;
-			CEGUI::Window* mDetachedLayout;
+	class ChatTextCreator : public WidgetPool<IngameChatWidget::ChatText>::WidgetCreator {
+	public:
+		explicit ChatTextCreator(IngameChatWidget& ingameChatWidget);
+
+		~ChatTextCreator() override;
+
+		IngameChatWidget::ChatText* createWidget(unsigned int currentPoolSize) override;
+
+	protected:
+		IngameChatWidget& mIngameChatWidget;
+		UniqueWindowPtr<CEGUI::Window> mAttachedLayout;
+		UniqueWindowPtr<CEGUI::Window> mDetachedLayout;
 	};
 
-typedef std::unordered_map<std::string, Label*> LabelMap;
-typedef std::vector<Label*> LabelStore;
-typedef std::stack<Label*> LabelStack;
-typedef std::unordered_map<std::string, EntityObserver*> EntityObserverStore;
-friend class IngameChatWidget::EntityObserver;
+	typedef std::unordered_map<std::string, Label*> LabelMap;
+	typedef std::vector<Label*> LabelStore;
+	typedef std::stack<Label*> LabelStack;
+	typedef std::unordered_map<std::string, EntityObserver*> EntityObserverStore;
+
+	friend class IngameChatWidget::EntityObserver;
 
 public:
 	/**
@@ -357,15 +373,19 @@ public:
 	static std::function<void(EmberEntity&)> sDisableForEntity;
 
 	IngameChatWidget();
-    virtual ~IngameChatWidget();
-	void buildWidget();
-	virtual void frameStarted(const Ogre::FrameEvent & event);
+
+	~IngameChatWidget() override;
+
+	void buildWidget() override;
+
+	void frameStarted(const Ogre::FrameEvent& event) override;
 
 	void removeWidget(const std::string& windowName);
 
 	void removeEntityObserver(EntityObserver* observer);
 
 	WidgetPool<Label>& getLabelPool();
+
 	WidgetPool<ChatText>& getChatTextPool();
 
 	float getTimeShown();
@@ -383,6 +403,7 @@ protected:
 	void EmberOgre_WorldCreated(World& world);
 
 	void Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 	void Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
@@ -391,6 +412,7 @@ protected:
 	 * @param entity An entity.
 	 */
 	void enableForEntity(EmberEntity& entity);
+
 	void disableForEntity(EmberEntity& entity);
 
 	/**
@@ -434,7 +456,6 @@ inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() {
 inline float IngameChatWidget::getTimeShown() {
 	return mTimeShown;
 }
-
 
 
 }

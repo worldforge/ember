@@ -28,8 +28,11 @@
 #include "EntityIconManager.h"
 #include "EntityIconDragDropTarget.h"
 #include "GenericIconUserData.h"
+#include "CEGUIUtils.h"
 #include <sigc++/trackable.h>
 #include <boost/any.hpp>
+#include <memory>
+#include <functional>
 
 namespace CEGUI {
 class DragContainer;
@@ -133,14 +136,14 @@ protected:
 	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
 	 * @param entity The entity to which this icon belongs. Ownership is not transferred.
 	 */
-	EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity);
+	EntityIcon(EntityIconManager& manager, UniqueWindowPtr<CEGUI::DragContainer> dragContainer, UniqueWindowPtr<CEGUI::Window> image, Gui::Icons::Icon* icon, EmberEntity* entity);
 
 	/**
 	 * @brief Dtor.
 	 *
 	 * If the ícon is attached to a slot it will be detached at destruction.
 	 */
-	virtual ~EntityIcon();
+	~EntityIcon() override;
 	
 	/**
 	 * @brief The main entity icon manager.
@@ -150,12 +153,12 @@ protected:
 	/**
 	 * @brief The CEGUI drag container instance which provides drag and drop behavior for this entity icon.
 	 */
-	CEGUI::DragContainer* mDragContainer;
+	UniqueWindowPtr<CEGUI::DragContainer> mDragContainer;
 
 	/**
 	 * @brief The image which represents the entity. In many cases this will be the same image as provided by the icon parameter.
 	 */
-	CEGUI::Window* mImage;
+	UniqueWindowPtr<CEGUI::Window> mImage;
 
 	/**
 	 * @brief The Icon instance responsible for providing the image.
@@ -196,11 +199,13 @@ protected:
 	 */
 	bool dragContainer_DragStopped(const CEGUI::EventArgs& args);
 	
-	virtual bool handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon);
-	virtual bool handleDragLeave(const CEGUI::EventArgs& args, EntityIcon* icon);
-	virtual bool handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* icon);
+	bool handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon) override;
+	bool handleDragLeave(const CEGUI::EventArgs& args, EntityIcon* icon) override;
+	bool handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* icon) override;
 
 	void icon_Updated();
+
+	void updateAmount();
 
 };
 

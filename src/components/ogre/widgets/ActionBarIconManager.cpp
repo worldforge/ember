@@ -42,71 +42,57 @@ namespace OgreView {
 namespace Gui {
 
 ActionBarIconManager::ActionBarIconManager(GUIManager& guiManager)
-: mGuiManager(guiManager), mIconsCounter(0), mSlotsCounter(0)
-{
+		: mGuiManager(guiManager),
+		  mIconsCounter(0),
+		  mSlotsCounter(0) {
 }
 
-ActionBarIconManager::~ActionBarIconManager()
-{
-	for (ActionBarIconSlotStore::iterator I = mSlots.begin(); I != mSlots.end(); ++I) {
-		delete *I;
-	}
-
-	for (ActionBarIconStore::iterator I = mIcons.begin(); I != mIcons.end(); ++I) {
-		delete *I;
-	}
-}
+ActionBarIconManager::~ActionBarIconManager() = default;
 
 
-
-ActionBarIconSlot* ActionBarIconManager::createSlot(unsigned int pixelSize)
-{
+ActionBarIconSlot* ActionBarIconManager::createSlot(unsigned int pixelSize) {
 	std::stringstream ss;
 	ss << "actionBarIconSlot" << mSlotsCounter++;
 	//Make the slot more visible.
-	CEGUI::Window* container = mGuiManager.createWindow("EmberLook/StaticImage", ss.str());
+	UniqueWindowPtr<CEGUI::Window> container(mGuiManager.createWindow("EmberLook/StaticImage", ss.str()));
 	container->setSize(CEGUI::USize(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
-	ActionBarIconSlot* slot = new ActionBarIconSlot(container);
-	mSlots.push_back(slot);
+	auto* slot = new ActionBarIconSlot(std::move(container));
+	mSlots.emplace_back(slot);
 	return slot;
 }
 
 
-ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned int pixelSize)
-{
+ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned int pixelSize) {
 	if (!icon) {
 		S_LOG_WARNING("Trying to create an EntityIcon with an invalid Icon.");
-		return 0;
+		return nullptr;
 	}
 	std::stringstream ss;
 	ss << "actionBarIcon" << mIconsCounter++;
 
-	CEGUI::DragContainer* item = static_cast<CEGUI::DragContainer*>(mGuiManager.createWindow("DragContainer", ss.str()));
+	UniqueWindowPtr<CEGUI::DragContainer> item(dynamic_cast<CEGUI::DragContainer*>(mGuiManager.createWindow("DragContainer", ss.str())));
+	ss << "Image";
+	UniqueWindowPtr<CEGUI::Window> iconWindow(mGuiManager.createWindow("EmberLook/StaticImage", ss.str()));
 
-	if (item) {
+	if (item && iconWindow) {
 		item->setSize(CEGUI::USize(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 		//item->setTooltipText(name);
 
-		ss << "Image" ;
-		CEGUI::Window* iconWindow = mGuiManager.createWindow("EmberLook/StaticImage", ss.str());
-		if (iconWindow) {
-			iconWindow->setProperty("BackgroundEnabled", "false");
- 			iconWindow->setProperty("FrameEnabled", "false");
-			iconWindow->disable();
+		iconWindow->setProperty("BackgroundEnabled", "false");
+		iconWindow->setProperty("FrameEnabled", "false");
+		iconWindow->disable();
 // 			iconWindow->setProperty("FrameEnabled", "false");
-			iconWindow->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(icon->getImage()));
-			item->addChild(iconWindow);
+		iconWindow->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(icon->getImage()));
+		item->addChild(iconWindow.get());
 
-			ActionBarIcon* actionBarIcon = new ActionBarIcon(*this, item, iconWindow, icon);
-			mIcons.push_back(actionBarIcon);
-			return actionBarIcon;
-		}
+		auto* actionBarIcon = new ActionBarIcon(*this, std::move(item), std::move(iconWindow), icon);
+		mIcons.emplace_back(actionBarIcon);
+		return actionBarIcon;
 	}
-	return 0;
+	return nullptr;
 }
 
-const std::string ActionBarIconManager::getSavedValue(const AvatarIdType& avatarId, const std::string& key) const
-{
+std::string ActionBarIconManager::getSavedValue(const AvatarIdType& avatarId, const std::string& key) const {
 	const Eris::ServerInfo& sInfo = avatarId.first;
 	std::string accountIdKey = avatarId.second;
 	accountIdKey.append(key);
@@ -120,8 +106,7 @@ const std::string ActionBarIconManager::getSavedValue(const AvatarIdType& avatar
 	return "null";
 }
 
-void ActionBarIconManager::saveValue(const AvatarIdType& avatarId, const std::string& key, const std::string& value)
-{
+void ActionBarIconManager::saveValue(const AvatarIdType& avatarId, const std::string& key, const std::string& value) {
 	const Eris::ServerInfo& sInfo = avatarId.first;
 	std::string accountIdKey = avatarId.second;
 	accountIdKey.append(key);
@@ -133,8 +118,7 @@ void ActionBarIconManager::saveValue(const AvatarIdType& avatarId, const std::st
 	serverSettings.writeToDisk();
 }
 
-void ActionBarIconManager::eraseValue(const AvatarIdType& avatarId, const std::string& key)
-{
+void ActionBarIconManager::eraseValue(const AvatarIdType& avatarId, const std::string& key) {
 	const Eris::ServerInfo& sInfo = avatarId.first;
 	std::string accountIdKey = avatarId.second;
 	accountIdKey.append(key);
@@ -147,22 +131,21 @@ void ActionBarIconManager::eraseValue(const AvatarIdType& avatarId, const std::s
 	}
 }
 
-void ActionBarIconManager::destroyIcon(ActionBarIcon* icon)
-{
-	ActionBarIconStore::iterator I = std::find(mIcons.begin(), mIcons.end(), icon);
+void ActionBarIconManager::destroyIcon(ActionBarIcon* icon) {
+	auto I = std::find_if(mIcons.begin(), mIcons.end(), [&icon](const std::unique_ptr<ActionBarIcon>& ptr) {
+		return ptr.get() == icon;
+	});
 	if (I != mIcons.end()) {
 		mIcons.erase(I);
-		//TODO: make sure to delete the cegui elements
-		delete icon;
 	}
 }
 
-void ActionBarIconManager::destroySlot(ActionBarIconSlot* slot)
-{
-	ActionBarIconSlotStore::iterator I = std::find(mSlots.begin(), mSlots.end(), slot);
+void ActionBarIconManager::destroySlot(ActionBarIconSlot* slot) {
+	auto I = std::find_if(mSlots.begin(), mSlots.end(), [&slot](const std::unique_ptr<ActionBarIconSlot>& ptr) {
+		return ptr.get() == slot;
+	});
 	if (I != mSlots.end()) {
 		mSlots.erase(I);
-		delete slot;
 	}
 }
 

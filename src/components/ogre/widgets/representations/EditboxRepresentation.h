@@ -40,47 +40,41 @@ namespace Representations {
  * @see GenericPropertyAdapter
  */
 template<typename ValueType, typename PropertyNativeType>
-class EditboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
-{
+class EditboxRepresentation : public SingleAdapterRepresentationBase<ValueType> {
 public:
 	/**
 	 * @brief Ctor
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	EditboxRepresentation(const ValueType& value);
-	
+	explicit EditboxRepresentation(const ValueType& value);
+
 	/**
 	 * @brief Dtor
 	 */
 	virtual ~EditboxRepresentation();
-	
+
 	virtual CEGUI::Window* getGuiRoot();
-	
+
 protected:
-	CEGUI::Window* mLayout;
+	UniqueWindowPtr <CEGUI::Window> mLayout;
 	CEGUI::String mPrefix;
 };
 
 template<typename ValueType, typename PropertyNativeType>
 EditboxRepresentation<ValueType, PropertyNativeType>::EditboxRepresentation(const ValueType& value):
-	SingleAdapterRepresentationBase<ValueType>()
-{
-	mLayout = LayoutHelper::loadLayout("representations/EditboxRepresentation.layout", mPrefix);
-	
+		SingleAdapterRepresentationBase<ValueType>() {
+	mLayout = UniqueWindowPtr<CEGUI::Window>(LayoutHelper::loadLayout("representations/EditboxRepresentation.layout", mPrefix));
+
 	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, PropertyNativeType>(value, mLayout->getChild(mPrefix + "String"), "Text", CEGUI::Window::EventTextChanged));
 }
 
 template<typename ValueType, typename PropertyNativeType>
-EditboxRepresentation<ValueType, PropertyNativeType>::~EditboxRepresentation()
-{
-	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
-}
+EditboxRepresentation<ValueType, PropertyNativeType>::~EditboxRepresentation() = default;
 
 template<typename ValueType, typename PropertyNativeType>
-CEGUI::Window* EditboxRepresentation<ValueType, PropertyNativeType>::getGuiRoot()
-{
-	return mLayout;
+CEGUI::Window* EditboxRepresentation<ValueType, PropertyNativeType>::getGuiRoot() {
+	return mLayout.get();
 }
 
 }

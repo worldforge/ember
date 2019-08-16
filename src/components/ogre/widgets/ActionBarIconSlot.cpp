@@ -37,20 +37,18 @@ namespace OgreView {
 
 namespace Gui {
 
-ActionBarIconSlot::ActionBarIconSlot(CEGUI::Window* container)
-: ActionBarIconDragDropTarget(container), mContainer(container), mContainedIcon(0)
-{
+ActionBarIconSlot::ActionBarIconSlot(UniqueWindowPtr<CEGUI::Window> container)
+		: ActionBarIconDragDropTarget(container.get()),
+		  mContainer(std::move(container)),
+		  mContainedIcon(nullptr) {
 }
 
-ActionBarIconSlot::~ActionBarIconSlot()
-{
+ActionBarIconSlot::~ActionBarIconSlot() {
 	removeActionBarIcon();
-	CEGUI::WindowManager::getSingleton().destroyWindow(mContainer);
 }
 
 
-bool ActionBarIconSlot::addActionBarIcon(ActionBarIcon* icon)
-{
+bool ActionBarIconSlot::addActionBarIcon(ActionBarIcon* icon) {
 	if (icon) {
 		if (!mContainedIcon) {
 			//Resize the icon window to fit entirely in the slot window.
@@ -69,41 +67,36 @@ bool ActionBarIconSlot::addActionBarIcon(ActionBarIcon* icon)
 	return true;
 }
 
-ActionBarIcon* ActionBarIconSlot::removeActionBarIcon()
-{
+ActionBarIcon* ActionBarIconSlot::removeActionBarIcon() {
 	if (mContainedIcon) {
 		mContainer->removeChild(mContainedIcon->getDragContainer());
 		ActionBarIcon* icon = mContainedIcon;
-		mContainedIcon = 0;
-		icon->setSlot(0);
+		mContainedIcon = nullptr;
+		icon->setSlot(nullptr);
 		//we have to notify the container that things have changed else it won't update itself when we remove the entity without dragging (cegui bug?)
 		mContainer->notifyScreenAreaChanged();
 		mContainer->invalidate();
 		return icon;
 	} else {
-		return 0;
+		return nullptr;
 	}
 }
 
-ActionBarIcon* ActionBarIconSlot::getActionBarIcon()
-{
+ActionBarIcon* ActionBarIconSlot::getActionBarIcon() {
 	return mContainedIcon;
 }
 
 
-void ActionBarIconSlot::notifyIconRemoved()
-{
+void ActionBarIconSlot::notifyIconRemoved() {
 	removeActionBarIcon();
-	mContainedIcon = 0;
+	mContainedIcon = nullptr;
 }
 
-CEGUI::Window* ActionBarIconSlot::getWindow()
-{
-	return mContainer;
+CEGUI::Window* ActionBarIconSlot::getWindow() {
+	return mContainer.get();
 }
 
-void ActionBarIconSlot::notifyIconDraggedOff(ActionBarIcon* actionBarIcon)
-{
+void ActionBarIconSlot::notifyIconDraggedOff(ActionBarIcon* actionBarIcon) {
 	EventIconDraggedOff.emit(actionBarIcon);
 }
 

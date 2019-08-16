@@ -25,10 +25,13 @@
 
 #include <sigc++/signal.h>
 #include "EntityIconDragDropTarget.h"
+#include "CEGUIUtils.h"
 
 namespace CEGUI {
 class DragContainer;
+
 class Window;
+
 class EventArgs;
 }
 
@@ -38,6 +41,7 @@ namespace OgreView {
 namespace Gui {
 
 class EntityIcon;
+
 class EntityIconManager;
 
 /**
@@ -50,50 +54,50 @@ A typical usage example would be an inventory, where each entity icon is stored 
 
 @note You don't normally directly create or destroy an instance of this. Instead use the EntityIconManager.
 */
-class EntityIconSlot : public EntityIconDragDropTarget
-{
-friend class EntityIconManager;
-friend class EntityIcon;
+class EntityIconSlot : public EntityIconDragDropTarget {
+	friend class EntityIconManager;
+
+	friend class EntityIcon;
+
 public:
-	
+
 	/**
 	 * @brief Adds an EntityIcon to the slot. If the slot already contains an icon, the method will return false and an error will be logged.
 	 * @param icon 
 	 * @return true if successful, else false
 	 */
-	
+
 	bool addEntityIcon(EntityIcon* icon);
-	
+
 	/**
 	 * @brief Removes and returns the contained EntityIcon. If none is contained, nothing will happen.
 	 * @return The contained EntityIcon or null if none contained.
 	 */
 	EntityIcon* removeEntityIcon();
-	
+
 	/**
 	 * @brief Gets the contained EntityIcon
 	 * @return 
 	 */
 	EntityIcon* getEntityIcon();
-	
+
 	/**
 	 * @brief Gets the window which this slot is using.
 	 * @returns The window used by this slot.
 	 */
 	CEGUI::Window* getWindow();
-	
+
 	/**
 	 * @brief Call this from the gui code whenever an icon is dragged away from the slot.
 	 */
 	void notifyIconDraggedOff(EntityIcon* entityIcon);
-	
+
 	/**
 	 * @brief Emitted when an icon has been dragged away from the slot as a result of an user action.
 	 */
 	sigc::signal<void, EntityIcon*> EventIconDraggedOff;
 
-	
-	
+
 protected:
 	/**
 	 * @brief Ctor.
@@ -101,24 +105,24 @@ protected:
 	 * @param The main entity icon manager.
 	 * @param container The CEGUI window which will be used by the slot. This can be any window, but should preferably be something which makes it clear that it's a slot onto which an icon can be dragged and dropped.
 	 */
-	EntityIconSlot(CEGUI::Window* container);
+	explicit EntityIconSlot(UniqueWindowPtr<CEGUI::Window> container);
 
 	/**
 	 * @brief Dtor.
 	 * Any icon contained in the slot will be removed upon destruction.
 	 */
-	virtual ~EntityIconSlot();
-	
+	~EntityIconSlot() override;
+
 	/**
 	 * @brief The CEGUI window representing the slot.
 	 */
-	CEGUI::Window* mContainer;
+	UniqueWindowPtr<CEGUI::Window> mContainer;
 
 	/**
 	 * @brief Holds any entity icon currently contained in the slot.
 	 */
 	EntityIcon* mContainedIcon;
-		
+
 	/**
 	 * @brief Internal method called by the EntityIcon when it's removed from the slot.
 	 */

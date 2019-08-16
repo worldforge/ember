@@ -29,12 +29,15 @@
 #include "ActionBarIconDragDropTarget.h"
 #include "ActionBarIconSlot.h"
 #include "GenericIconUserData.h"
+#include "CEGUIUtils.h"
 #include <sigc++/trackable.h>
 #include <boost/any.hpp>
 
 namespace CEGUI {
 class DragContainer;
+
 class Window;
+
 class EventArgs;
 }
 
@@ -44,6 +47,7 @@ namespace OgreView {
 namespace Gui {
 
 class ActionBarIconSlot;
+
 class ActionBarIcon;
 
 /**
@@ -51,9 +55,9 @@ class ActionBarIcon;
 	CEGUI allows for "user data" to be attached to windows. The user data can be anything, and this class is used as a means to bind an EntityIcon to a CEGUI::Window. Whenever it's used it must be correctly casted (since the user data stored by CEGUI::Window is just a void pointer.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class ActionBarIconUserData
-{
-friend class ActionBarIcon;
+class ActionBarIconUserData {
+	friend class ActionBarIcon;
+
 public:
 
 	/**
@@ -61,12 +65,13 @@ public:
 	 * @return The entity icon to which to which this user data belongs.
 	 */
 	ActionBarIcon& getActionBarIcon() const;
+
 private:
 	/**
 	 * @brief Ctor.
 	 * @param entityIcon The entity icon to which to which this user data belongs.
 	 */
-	ActionBarIconUserData(ActionBarIcon& actionBarIcon);
+	explicit ActionBarIconUserData(ActionBarIcon& actionBarIcon);
 
 	/**
 	@brief The entity icon to which to which this user data belongs.
@@ -83,19 +88,20 @@ private:
 	Additionally, another action bar icon can be dragged and dropped onto an instance of this class. When this happens the EventIcon* events are emitted. This allows you to implement functionality for combining different entities.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class ActionBarIcon : public ActionBarIconDragDropTarget, public virtual sigc::trackable
-{
-friend class ActionBarIconManager;
+class ActionBarIcon : public ActionBarIconDragDropTarget, public virtual sigc::trackable {
+	friend class ActionBarIconManager;
+
 public:
 	/**
 	 * @brief Dtor.
 	 *
 	 * If the ícon is attached to a slot it will be detached at destruction.
 	 */
-	virtual ~ActionBarIcon();
+	~ActionBarIcon() override;
 
 
 	virtual void defaultAction();
+
 	/**
 	 * @brief Gets the CEGUI image which shows the object represented. This can in some cases be a 3d render of the icon, or a prerendered texture. The actual handling of this is often taken care of by the mIcon instance.
 	 * @return The image displaying the entity in the CEGUI system.
@@ -154,7 +160,7 @@ public:
 	 * @param value Another object to compare to.
 	 * @return True if the objects are identical.
 	 */
-	bool operator==(const ActionBarIcon& value) {return this == &value;}
+	bool operator==(const ActionBarIcon& value) { return this == &value; }
 
 	/**
 	 * @brief Handler for CEGUI drag start event.
@@ -172,13 +178,13 @@ public:
 	 * @brief Handler for CEGUI drag enter event.
 	 * @param args Event args.
 	 */
-	virtual bool handleDragEnter(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+	bool handleDragEnter(const CEGUI::EventArgs& args, ActionBarIcon* icon) override;
 
 	/**
 	 * @brief Handler for CEGUI drag enter event.
 	 * @param args Event args.
 	 */
-	virtual bool handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+	bool handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon* icon) override;
 
 	/**
 	 * @brief Handler for dropping an existing action bar icon onto this icon.
@@ -186,7 +192,7 @@ public:
 	 * @param icon The action bar icon.
 	 * @note Event is passed to the slot the icon belongs to.
 	 */
-	virtual bool handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+	bool handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon) override;
 
 	/**
 	 * @brief Handler for dropping an existing entity icon onto this icon.
@@ -194,7 +200,7 @@ public:
 	 * @param icon The entity icon.
 	 * @note Event is passed to the slot the icon belongs to.
 	 */
-	virtual bool handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon);
+	bool handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon) override;
 
 	void icon_Updated();
 
@@ -207,7 +213,7 @@ protected:
 	 * @param image The image which represents the entity. In many cases this will be the same image as provided by the icon parameter. Ownership is not transferred.
 	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
 	 */
-	ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon);
+	ActionBarIcon(ActionBarIconManager& manager, UniqueWindowPtr <CEGUI::DragContainer> dragContainer, UniqueWindowPtr <CEGUI::Window> image, Gui::Icons::Icon* icon);
 
 	/**
 	 * @brief The main entity icon manager.
@@ -217,12 +223,12 @@ protected:
 	/**
 	 * @brief The CEGUI drag container instance which provides drag and drop behavior for this entity icon.
 	 */
-	CEGUI::DragContainer* mDragContainer;
+	UniqueWindowPtr <CEGUI::DragContainer> mDragContainer;
 
 	/**
 	 * @brief The image which represents the entity. In many cases this will be the same image as provided by the icon parameter.
 	 */
-	CEGUI::Window* mImage;
+	UniqueWindowPtr <CEGUI::Window> mImage;
 
 	/**
 	 * @brief The Icon instance responsible for providing the image.

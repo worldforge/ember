@@ -22,12 +22,14 @@
 //
 #ifndef EMBEROGRE_WIDGETSICONBAR_H
 #define EMBEROGRE_WIDGETSICONBAR_H
+
 #include <string>
 #include <vector>
+#include "CEGUIUtils.h"
 
-namespace CEGUI
-{
+namespace CEGUI {
 class Window;
+
 class EventArgs;
 }
 
@@ -41,34 +43,36 @@ class IconBase;
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class IconBar
-{
+class IconBar {
 public:
-	IconBar(const std::string& name);
+	explicit IconBar(const std::string& name);
+
 	virtual ~IconBar();
-	
+
 	void addIcon(IconBase* iconBase);
+
 	void removeIcon(IconBase* iconBase);
-	
+
 	CEGUI::Window* getWindow();
-	
+
 	void setIconPadding(int iconPadding);
 
 	float getAbsoluteHeight();
+
 	float getAbsoluteWidth();
 
 protected:
 	typedef std::vector<IconBase*> IconBaseStore;
-	
-	CEGUI::Window* mWindow;
-	
+
+	UniqueWindowPtr<CEGUI::Window> mWindow;
+
 	IconBaseStore mIconBases;
-	
+
 	/**
 	Repositions all icons as they are added and removed to the list.
 	*/
 	void repositionIcons();
-	
+
 	bool iconVisibilityChanged(const CEGUI::EventArgs& e);
 
 

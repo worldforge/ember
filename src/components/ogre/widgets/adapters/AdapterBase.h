@@ -23,6 +23,7 @@
 #ifndef EMBEROGRE_GUI_ADAPTERS_ADAPTERBASE_H
 #define EMBEROGRE_GUI_ADAPTERS_ADAPTERBASE_H
 
+#include "components/ogre/widgets/CEGUIUtils.h"
 #include "framework/LoggingInstance.h"
 #include "ValueTypeHelper.h"
 #include <CEGUI/Event.h>
@@ -295,8 +296,8 @@ private:
 template<typename AdapterType>
 struct AdapterWrapper
 {
-	AdapterType* Adapter;
-	CEGUI::Window* ContainerWindow;
+	std::unique_ptr<AdapterType> Adapter;
+	UniqueWindowPtr<CEGUI::Window> ContainerWindow;
 };
 
 template<typename ValueType>

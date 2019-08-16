@@ -44,8 +44,8 @@ EntityIconDragDropTarget::EntityIconDragDropTarget(CEGUI::Window* container)
 
 EntityIconDragDropTarget::~EntityIconDragDropTarget()
 {
-	for (std::vector<CEGUI::Event::Connection>::iterator I = mConnections.begin(); I != mConnections.end(); ++I) {
-		(*I)->disconnect();
+	for (auto & connection : mConnections) {
+		connection->disconnect();
 	}
 }
 
@@ -97,16 +97,16 @@ bool EntityIconDragDropTarget::handleDragDropped(const CEGUI::EventArgs& args, E
 
 EntityIcon* EntityIconDragDropTarget::parseIcon(const CEGUI::EventArgs& args)
 {
-	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
+	const auto& ddea = dynamic_cast<const DragDropEventArgs&>(args);
 	DragContainer* container = ddea.dragDropItem;
 	if (container) {
-		const boost::any* anyData = static_cast<const boost::any*>(container->getUserData());
+		const auto* anyData = static_cast<const boost::any*>(container->getUserData());
 		if (typeid(GenericIconUserData<EntityIcon>) == anyData->type()) {
-			const GenericIconUserData<EntityIcon>& mUserData = boost::any_cast<const GenericIconUserData<EntityIcon>&>(*anyData);
+			const auto& mUserData = boost::any_cast<const GenericIconUserData<EntityIcon>&>(*anyData);
 			return &mUserData.getIcon();
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 

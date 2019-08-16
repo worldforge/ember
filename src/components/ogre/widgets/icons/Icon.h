@@ -78,7 +78,7 @@ private:
 	 * @param key The key for this icon.
 	 * @param imageStoreEntry The image store entry which represents the image used by the icon.
 	 */
-    Icon(const std::string& key, IconImageStoreEntry* imageStoreEntry);
+    Icon(std::string key, IconImageStoreEntry* imageStoreEntry);
 
     /**
      * @brief Dtor.

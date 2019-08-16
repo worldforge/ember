@@ -121,7 +121,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~GUIManager();
+	~GUIManager() override;
 
 	sigc::signal<void, const EntityTalk&, EmberEntity*> AppendIGChatLine;
 	sigc::signal<void, const std::string&, EmberEntity*> AppendOOGChatLine;
