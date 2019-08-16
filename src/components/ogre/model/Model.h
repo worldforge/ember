@@ -282,6 +282,8 @@ public:
 
 	bool useInstancing() const;
 
+	void setUseInstancing(bool useInstancing);
+
 	/**
 	 * Applies the supplied callback to all movables.
 	 * @param callback

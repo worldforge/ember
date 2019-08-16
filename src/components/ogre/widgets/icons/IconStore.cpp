@@ -62,7 +62,7 @@ Icon* IconStore::createIcon(const std::string& key)
 
 Icon* IconStore::createIcon(const std::string& key, Ogre::TexturePtr texPtr)
 {
-	IconImageStore* store = new IconImageStore(key, texPtr);
+	auto* store = new IconImageStore(key, texPtr);
 	mPremadeIconImageStores.insert(IconImageStoreMap::value_type(key, store));
 	IconImageStoreEntry* imageStoreEntry = store->claimImageEntry();
 	
@@ -102,7 +102,7 @@ IconImageStoreEntry* IconStore::getImageStoreEntry()
 	}
 	std::stringstream ss;
 	ss << "iconImageStore_" << mIconImageStores.size();
-	IconImageStore* store = new IconImageStore(ss.str());
+	auto* store = new IconImageStore(ss.str());
 	mIconImageStores.push_back(store);
 	return store->claimImageEntry();
 }

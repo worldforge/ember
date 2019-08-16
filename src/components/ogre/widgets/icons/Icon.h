@@ -27,8 +27,9 @@
 #include <sigc++/signal.h>
 
 namespace CEGUI {
-	class Imageset;
-	class Image;
+class Imageset;
+
+class Image;
 }
 
 namespace Ember {
@@ -39,7 +40,9 @@ namespace Gui {
 namespace Icons {
 
 class IconImageStoreEntry;
+
 class IconStore;
+
 class IconRenderer;
 
 /**
@@ -49,12 +52,12 @@ class IconRenderer;
 This is the basic class for the icon system, which deals with icons. Normal icon behavior allows icons to be dragged, dropped and invoked.
 This class however only deals with the base functionality of presenting the icon, and further behavior should be provided by higher abstractions.
 */
-class Icon
-{
+class Icon {
 public:
 	friend class IconStore;
+
 	friend class IconRenderer;
-	
+
 	/**
 	 * @brief Gets the image representing this icon.
 	 * @returns The image representing the icon.
@@ -66,7 +69,7 @@ public:
 	 * @returns The image representing the icon.
 	 */
 	const CEGUI::Image* getImage() const;
-	
+
 	/**
 	 * @brief Emitted when the icon is updated.
 	 */
@@ -78,27 +81,27 @@ private:
 	 * @param key The key for this icon.
 	 * @param imageStoreEntry The image store entry which represents the image used by the icon.
 	 */
-    Icon(std::string key, IconImageStoreEntry* imageStoreEntry);
+	Icon(std::string key, IconImageStoreEntry* imageStoreEntry);
 
-    /**
-     * @brief Dtor.
-     */
-    virtual ~Icon() = default;
-    
-    /**
-     * @brief Gets the icon image store entry.
-     * @returns The icon image store entry.
-     */
-    IconImageStoreEntry* getImageStoreEntry();
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~Icon() = default;
 
-    /**
-     * @brief The key for the icon.
-     */
-    std::string mKey;
+	/**
+	 * @brief Gets the icon image store entry.
+	 * @returns The icon image store entry.
+	 */
+	IconImageStoreEntry* getImageStoreEntry();
 
-    /**
-     * @brief The icon image store entry used by this icon.
-     */
+	/**
+	 * @brief The key for the icon.
+	 */
+	std::string mKey;
+
+	/**
+	 * @brief The icon image store entry used by this icon.
+	 */
 	IconImageStoreEntry* mImageStoreEntry;
 
 };

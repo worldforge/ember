@@ -36,22 +36,18 @@ namespace Gui {
 namespace Icons {
 
 Icon::Icon(std::string key, IconImageStoreEntry* imageStoreEntry)
-: mKey(std::move(key)), mImageStoreEntry(imageStoreEntry)
-{
+		: mKey(std::move(key)), mImageStoreEntry(imageStoreEntry) {
 }
 
-IconImageStoreEntry* Icon::getImageStoreEntry()
-{
+IconImageStoreEntry* Icon::getImageStoreEntry() {
 	return mImageStoreEntry;
 }
 
-const CEGUI::Image* Icon::getImage()
-{
+const CEGUI::Image* Icon::getImage() {
 	return mImageStoreEntry->getImage();
 }
 
-const CEGUI::Image* Icon::getImage() const
-{
+const CEGUI::Image* Icon::getImage() const {
 	return mImageStoreEntry->getImage();
 }
 

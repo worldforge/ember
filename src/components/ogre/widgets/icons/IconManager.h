@@ -26,9 +26,8 @@
 #include "IconStore.h"
 #include "IconRenderer.h"
 
-namespace Eris 
-{
-	class TypeInfo;
+namespace Eris {
+class TypeInfo;
 }
 
 namespace Ember {
@@ -43,19 +42,22 @@ namespace Icons {
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class IconManager{
+class IconManager {
 public:
 
-    explicit IconManager();
+	explicit IconManager();
 
-    ~IconManager() = default;
-    
-    Icon* getIcon(int pixelWidth, EmberEntity* entity);
-    Icon* getIcon(int pixelWidth, Eris::TypeInfo* erisType);
+	~IconManager() = default;
 
-    void render(Icon& icon, const std::string& modelName);
-    void render(Icon& icon, EmberEntity& entity);
-    void render(Icon& icon, Eris::TypeInfo& erisType);
+	Icon* getIcon(int pixelWidth, EmberEntity* entity);
+
+	Icon* getIcon(int pixelWidth, Eris::TypeInfo* erisType);
+
+	void render(Icon& icon, const std::string& modelName);
+
+	void render(Icon& icon, EmberEntity& entity);
+
+	void render(Icon& icon, Eris::TypeInfo& erisType);
 
 protected:
 

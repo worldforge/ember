@@ -55,7 +55,7 @@ An entry belonging to the DelayedIconRendererWorker.
 class DelayedIconRendererEntry
 {
 public:
-	DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, const std::shared_ptr<Model::Model>& model, Icon* icon);
+	DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, std::shared_ptr<Model::Model>  model, Icon* icon);
 	virtual ~DelayedIconRendererEntry();
 	/**
 	 *    Accessor for the model which will be rendered.

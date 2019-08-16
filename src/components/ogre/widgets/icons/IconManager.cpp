@@ -43,6 +43,8 @@
 
 #include <OgreTextureManager.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 
@@ -79,9 +81,9 @@ public:
 IconManager::IconManager() :
 		mIconRenderer("IconManager", 64) {
 	//if the direct renderer is activated you must also update IconImageStore so that a RenderTarget texture is used
-	// 	mIconRenderer.setWorker(new DirectRendererWorker(mIconRenderer));
+	 	mIconRenderer.setWorker(new DirectRendererWorker(mIconRenderer));
 
-	mIconRenderer.setWorker(new DelayedIconRendererWorker(mIconRenderer));
+	//mIconRenderer.setWorker(new DelayedIconRendererWorker(mIconRenderer));
 }
 
 Icon* IconManager::getIcon(int, EmberEntity* entity) {
@@ -93,9 +95,9 @@ Icon* IconManager::getIcon(int, EmberEntity* entity) {
 		std::string modelName;
 
 
-		Mapping::ModelActionCreator actionCreator(*entity, [&](std::string newModelName){
-			modelName = newModelName;
-		}, [&](std::string partName){
+		Mapping::ModelActionCreator actionCreator(*entity, [&](std::string newModelName) {
+			modelName = std::move(newModelName);
+		}, [&](const std::string& partName) {
 			//Ignore parts
 		});
 		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
@@ -159,9 +161,9 @@ Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType) {
 
 void IconManager::render(Icon& icon, EmberEntity& entity) {
 	std::string modelName;
-	Mapping::ModelActionCreator actionCreator(entity, [&](std::string newModelName){
-		modelName = newModelName;
-	}, [&](std::string partName){
+	Mapping::ModelActionCreator actionCreator(entity, [&](std::string newModelName) {
+		modelName = std::move(newModelName);
+	}, [&](const std::string& partName) {
 		//Ignore parts
 	});
 	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
@@ -185,9 +187,9 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 		if (typeService) {
 			DummyEntity dummyEntity("-1", &erisType, typeService);
 			std::string modelName;
-			Mapping::ModelActionCreator actionCreator(dummyEntity, [&](std::string newModelName){
-				modelName = newModelName;
-			}, [&](std::string partName){
+			Mapping::ModelActionCreator actionCreator(dummyEntity, [&](std::string newModelName) {
+				modelName = std::move(newModelName);
+			}, [&](const std::string& partName) {
 				//Ignore parts
 			});
 			std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));

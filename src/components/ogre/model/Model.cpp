@@ -939,6 +939,14 @@ bool Model::useInstancing() const {
 	return mUseInstancing;
 }
 
+void Model::setUseInstancing(bool useInstancing)
+{
+	if (mLoaded) {
+		S_LOG_WARNING("Altering 'useInstancing' on a Model which already is loaded. This will have no effect.");
+	}
+	mUseInstancing = useInstancing;
+}
+
 void Model::doWithMovables(const std::function<void(Ogre::MovableObject*, int)>& callback) {
 	int i = 0;
 	for (auto movable : mMovableObjects) {

@@ -39,40 +39,39 @@
 #include <OgreViewport.h>
 #include <sigc++/bind.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+#include <utility>
 
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Icons
-{
+namespace Gui {
+
+namespace Icons {
 
 IconRenderer::IconRenderer(const std::string& prefix, int pixelWidth) :
-	mPixelWidth(pixelWidth), mRenderContext(new SimpleRenderContext(prefix, pixelWidth, pixelWidth)), mWorker(nullptr), mSceneNodeProvider(mRenderContext->getSceneNode(), nullptr, false)
-{
+		mPixelWidth(pixelWidth),
+		mRenderContext(new SimpleRenderContext(prefix, pixelWidth, pixelWidth)),
+		mWorker(nullptr),
+		mSceneNodeProvider(mRenderContext->getSceneNode(), nullptr, false) {
 	mRenderContext->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
 	mRenderContext->setBackgroundColour(Ogre::ColourValue::ZERO);
 
 }
 
-IconRenderer::~IconRenderer()
-{
+IconRenderer::~IconRenderer() {
 	delete mWorker;
 }
 
-void IconRenderer::setWorker(IconRenderWorker* worker)
-{
+void IconRenderer::setWorker(IconRenderWorker* worker) {
 	mWorker = worker;
 }
 
-void IconRenderer::render(const std::string& modelName, Icon* icon)
-{
+void IconRenderer::render(const std::string& modelName, Icon* icon) {
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 	if (modelDef) {
 		auto model = std::make_shared<Model::Model>(*getRenderContext()->getSceneManager(), modelDef);
+		//No need to use instancing, and it seems that there are bugs (at least in Ogre 1.9) which will make some models linger, polluting other icons.
+		model->setUseInstancing(false);
 		model->load();
 		if (model->isLoaded()) {
 			render(model, icon);
@@ -83,20 +82,18 @@ void IconRenderer::render(const std::string& modelName, Icon* icon)
 	}
 }
 
-void IconRenderer::render(const std::shared_ptr<Model::Model>& model, Icon* icon)
-{
+void IconRenderer::render(const std::shared_ptr<Model::Model>& model, Icon* icon) {
 	mWorker->render(model, icon, icon->getImageStoreEntry());
 }
 
-void IconRenderer::renderDelayed(const std::shared_ptr<Model::Model>& model, Icon* icon)
-{
+void IconRenderer::renderDelayed(const std::shared_ptr<Model::Model>& model, Icon* icon) {
 	render(model, icon);
 }
 
-void IconRenderer::performRendering(Model::Model* model, Icon*)
-{
+void IconRenderer::performRendering(Model::Model* model, Icon*) {
 
 	if (model) {
+		S_LOG_VERBOSE("Rendering " << model->getName() << " of type " << model->getDefinition()->getOrigin());
 		// 		icon->getImageStoreEntry()->getTexture()->get
 
 		model->attachToNode(&mSceneNodeProvider);
@@ -136,8 +133,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon*)
 	}
 }
 
-void IconRenderer::blitRenderToIcon(Icon* icon)
-{
+void IconRenderer::blitRenderToIcon(Icon* icon) {
 	if (mRenderContext->getTexture()) {
 		Ogre::HardwarePixelBufferSharedPtr srcBuffer = mRenderContext->getTexture()->getBuffer();
 		Ogre::HardwarePixelBufferSharedPtr dstBuffer = icon->getImageStoreEntry()->getTexture()->getBuffer();
@@ -167,31 +163,23 @@ void IconRenderer::blitRenderToIcon(Icon* icon)
 	}
 }
 
-SimpleRenderContext* IconRenderer::getRenderContext()
-{
+SimpleRenderContext* IconRenderer::getRenderContext() {
 	return mRenderContext.get();
 }
 
 IconRenderWorker::IconRenderWorker(IconRenderer& renderer) :
-	mRenderer(renderer), mImageStoreEntry(0)
-{
+		mRenderer(renderer), mImageStoreEntry(nullptr) {
 }
 
-IconRenderWorker::~IconRenderWorker()
-{
-}
+IconRenderWorker::~IconRenderWorker() = default;
 
 DirectRendererWorker::DirectRendererWorker(IconRenderer& renderer) :
-	IconRenderWorker(renderer)
-{
+		IconRenderWorker(renderer) {
 }
 
-DirectRendererWorker::~DirectRendererWorker()
-{
-}
+DirectRendererWorker::~DirectRendererWorker() = default;
 
-void DirectRendererWorker::render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry* imageStoreEntry)
-{
+void DirectRendererWorker::render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry* imageStoreEntry) {
 	//set the viewport to render into the icon texture
 	mRenderer.getRenderContext()->setTexture(imageStoreEntry->getTexture());
 	Ogre::TRect<float> iconBox(imageStoreEntry->getRelativeBox());
@@ -201,27 +189,24 @@ void DirectRendererWorker::render(const std::shared_ptr<Model::Model>& model, Ic
 	// 	mRenderer.blitRenderToIcon(icon);
 }
 
-DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, const std::shared_ptr<Model::Model>& model, Icon* icon) :
-	mRenderer(renderer), mModel(model), mIcon(icon), mFrames(0)
-{
+DelayedIconRendererEntry::DelayedIconRendererEntry(DelayedIconRendererWorker& renderer, std::shared_ptr<Model::Model> model, Icon* icon)
+		: mRenderer(renderer),
+		  mModel(std::move(model)),
+		  mIcon(icon),
+		  mFrames(0) {
 }
 
-DelayedIconRendererEntry::~DelayedIconRendererEntry()
-{
-}
+DelayedIconRendererEntry::~DelayedIconRendererEntry() = default;
 
-Model::Model* DelayedIconRendererEntry::getModel()
-{
+Model::Model* DelayedIconRendererEntry::getModel() {
 	return mModel.get();
 }
 
-Icon* DelayedIconRendererEntry::getIcon()
-{
+Icon* DelayedIconRendererEntry::getIcon() {
 	return mIcon;
 }
 
-void DelayedIconRendererEntry::frameStarted()
-{
+void DelayedIconRendererEntry::frameStarted() {
 	//on the first frame we'll do the rendering, and then do the blitting on the second frame
 	if (mFrames == 0) {
 		//do render
@@ -236,26 +221,22 @@ void DelayedIconRendererEntry::frameStarted()
 }
 
 DelayedIconRendererWorker::DelayedIconRendererWorker(IconRenderer& renderer) :
-	IconRenderWorker(renderer)
-{
+		IconRenderWorker(renderer) {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-DelayedIconRendererWorker::~DelayedIconRendererWorker()
-{
+DelayedIconRendererWorker::~DelayedIconRendererWorker() {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-void DelayedIconRendererWorker::render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry*)
-{
+void DelayedIconRendererWorker::render(const std::shared_ptr<Model::Model>& model, Icon* icon, IconImageStoreEntry*) {
 	DelayedIconRendererEntry entry(*this, model, icon);
 	entries.push(entry);
 }
 
-bool DelayedIconRendererWorker::frameStarted(const Ogre::FrameEvent&)
-{
+bool DelayedIconRendererWorker::frameStarted(const Ogre::FrameEvent&) {
 	try {
-		if (entries.size()) {
+		if (!entries.empty()) {
 			entries.front().frameStarted();
 		}
 	} catch (const std::exception& e) {
@@ -265,18 +246,15 @@ bool DelayedIconRendererWorker::frameStarted(const Ogre::FrameEvent&)
 	return true;
 }
 
-IconRenderer& DelayedIconRendererWorker::getRenderer()
-{
+IconRenderer& DelayedIconRendererWorker::getRenderer() {
 	return mRenderer;
 }
 
-void DelayedIconRendererWorker::performRendering(DelayedIconRendererEntry& entry)
-{
+void DelayedIconRendererWorker::performRendering(DelayedIconRendererEntry& entry) {
 	mRenderer.performRendering(entry.getModel(), entry.getIcon());
 }
 
-void DelayedIconRendererWorker::finalizeRendering(DelayedIconRendererEntry& entry)
-{
+void DelayedIconRendererWorker::finalizeRendering(DelayedIconRendererEntry& entry) {
 	mRenderer.blitRenderToIcon(entry.getIcon());
 	entries.pop();
 }
