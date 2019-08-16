@@ -69,13 +69,14 @@
 #include <sigc++/bind.h>
 #include <utility>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals,
-		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter,
+World::World(Eris::View& view,
+			 Ogre::RenderWindow& renderWindow,
+			 Ember::OgreView::EmberOgreSignals& signals,
+			 Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager,
+			 GraphicalChangeAdapter& graphicalChangeAdapter,
 			 EntityMapping::EntityMappingManager& entityMappingManager) :
 		mView(view),
 		mRenderWindow(renderWindow),
@@ -100,8 +101,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 		mFoliageInitializer(nullptr),
 		mEnvironment(nullptr),
 		mConfigListenerContainer(new ConfigListenerContainer()),
-		mCalendar(new Eris::Calendar(view.getAvatar()))
-{
+		mCalendar(new Eris::Calendar(view.getAvatar())) {
 	mAfterTerrainUpdateConnection = mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
 	mTerrainEntityManager = new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager());
@@ -111,7 +111,12 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 
 	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 
-	mEnvironment = new Environment::Environment(mScene->getSceneManager(), *mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
+	auto mainEnvironment = new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar);
+	auto fallbackEnvironment = new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera());
+	mEnvironment = new Environment::Environment(mScene->getSceneManager(),
+												*mTerrainManager,
+												mainEnvironment,
+												fallbackEnvironment);
 
 	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
 	mTerrainManager->getHandler().setLightning(mEnvironment);
@@ -137,8 +142,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 	mRenderDistanceManager = new RenderDistanceManager(graphicalChangeAdapter, *(mEnvironment->getFog()), mScene->getMainCamera());
 }
 
-World::~World()
-{
+World::~World() {
 	mAfterTerrainUpdateConnection.disconnect();
 
 	delete mFoliageInitializer;
@@ -180,127 +184,106 @@ World::~World()
 	delete mCalendar;
 }
 
-Eris::View& World::getView() const
-{
+Eris::View& World::getView() const {
 	return mView;
 }
 
-Eris::EventService& World::getEventService() const
-{
+Eris::EventService& World::getEventService() const {
 	return mView.getEventService();
 }
 
 
-Scene& World::getScene() const
-{
+Scene& World::getScene() const {
 	assert(mScene);
 	return *mScene;
 }
 
-Ogre::SceneManager& World::getSceneManager() const
-{
+Ogre::SceneManager& World::getSceneManager() const {
 	return mScene->getSceneManager();
 }
 
-Avatar* World::getAvatar() const
-{
+Avatar* World::getAvatar() const {
 	return mAvatar;
 }
 
-MotionManager& World::getMotionManager() const
-{
+MotionManager& World::getMotionManager() const {
 	assert(mMotionManager);
 	return *mMotionManager;
 }
 
-Camera::MainCamera& World::getMainCamera() const
-{
+Camera::MainCamera& World::getMainCamera() const {
 	assert(mMainCamera);
 	return *mMainCamera;
 }
 
-EmberEntityFactory& World::getEntityFactory() const
-{
+EmberEntityFactory& World::getEntityFactory() const {
 	assert(mEmberEntityFactory);
 	return *mEmberEntityFactory;
 }
 
-MovementController* World::getMovementController() const
-{
+MovementController* World::getMovementController() const {
 	return mMovementController;
 }
 
-EmberEntity* World::getEmberEntity(const std::string & eid) const
-{
+EmberEntity* World::getEmberEntity(const std::string& eid) const {
 	return static_cast<EmberEntity*>(mView.getEntity(eid));
 }
 
-EntityWorldPickListener& World::getEntityPickListener() const
-{
+EntityWorldPickListener& World::getEntityPickListener() const {
 	assert(mEntityWorldPickListener);
 	return *mEntityWorldPickListener;
 }
 
-Authoring::AuthoringManager& World::getAuthoringManager() const
-{
+Authoring::AuthoringManager& World::getAuthoringManager() const {
 	assert(mAuthoringManager);
 	//This can never be null.
 	return *mAuthoringManager;
 }
 
-Terrain::TerrainManager& World::getTerrainManager() const
-{
+Terrain::TerrainManager& World::getTerrainManager() const {
 	assert(mTerrainManager);
 	return *mTerrainManager;
 }
 
-Lod::LodLevelManager& World::getLodLevelManager() const
-{
+Lod::LodLevelManager& World::getLodLevelManager() const {
 	assert(mLodLevelManager);
 	return *mLodLevelManager;
 }
 
-RenderDistanceManager& World::getRenderDistanceManager() const
-{
+RenderDistanceManager& World::getRenderDistanceManager() const {
 	assert(mRenderDistanceManager);
 	return *mRenderDistanceManager;
 }
 
-Environment::Environment* World::getEnvironment() const
-{
+Environment::Environment* World::getEnvironment() const {
 	return mEnvironment;
 }
 
-Environment::Foliage* World::getFoliage() const
-{
+Environment::Foliage* World::getFoliage() const {
 	return mFoliage;
 }
 
-Eris::Calendar& World::getCalendar() const
-{
+Eris::Calendar& World::getCalendar() const {
 	assert(mCalendar);
 	return *mCalendar;
 }
 
-void World::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages)
-{
+void World::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages) {
 	EmberEntity* emberEntity = static_cast<EmberEntity*>(mView.getTopLevel());
 	if (emberEntity) {
 		updateEntityPosition(emberEntity, areas);
 	}
 }
 
-void World::updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2>>& areas)
-{
+void World::updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2>>& areas) {
 	entity->adjustPosition();
-	for (unsigned int i = 0; i < entity->numContained(); ++i) {
+	for (size_t i = 0; i < entity->numContained(); ++i) {
 		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
 		updateEntityPosition(containedEntity, areas);
 	}
 }
 
-void World::View_gotAvatarCharacter(Eris::Entity* entity)
-{
+void World::View_gotAvatarCharacter(Eris::Entity* entity) {
 	if (entity) {
 		EmberEntity& emberEntity = static_cast<EmberEntity&>(*entity);
 		//Set up the third person avatar camera and switch to it.
@@ -326,8 +309,7 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 	}
 }
 
-void World::avatarEntity_BeingDeleted()
-{
+void World::avatarEntity_BeingDeleted() {
 	delete mAvatarCameraWarper;
 	mAvatarCameraWarper = nullptr;
 	mMainCamera->attachToMount(nullptr);
@@ -341,8 +323,7 @@ void World::avatarEntity_BeingDeleted()
 	mAvatar = nullptr;
 }
 
-void World::Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, GraphicalChangeAdapter& graphicalChangeAdapter)
-{
+void World::Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, GraphicalChangeAdapter& graphicalChangeAdapter) {
 	if (variable.is_bool() && static_cast<bool>(variable)) {
 		if (!mFoliage) {
 			//create the foliage
@@ -360,8 +341,7 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 	}
 }
 
-void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter)
-{
+void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter) {
 	if (mFoliage) {
 		mFoliage->initialize();
 		mFoliageDetailManager = new Environment::FoliageDetailManager(*mFoliage, graphicalChangeAdapter);
@@ -374,28 +354,25 @@ DelayedFoliageInitializer::DelayedFoliageInitializer(sigc::slot<void> callback, 
 		mView(view),
 		mIntervalMs(intervalMs),
 		mMaxTimeMs(maxTimeMs),
-		mTimeout(new Eris::TimedEvent(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&](){this->timout_Expired();})),
-		mTotalElapsedTime(0)
-{
+		mTimeout(new Eris::TimedEvent(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&]() { this->timout_Expired(); })),
+		mTotalElapsedTime(0) {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload
 	//by delaying the foliage we can thus in most cases avoid those reloads
 	//wait three seconds
 }
 
-DelayedFoliageInitializer::~DelayedFoliageInitializer()
-{
+DelayedFoliageInitializer::~DelayedFoliageInitializer() {
 	delete mTimeout;
 }
 
-void DelayedFoliageInitializer::timout_Expired()
-{
+void DelayedFoliageInitializer::timout_Expired() {
 	//load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
 	if (mView.lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
 		mCallback();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
-		mTimeout = new Eris::TimedEvent(mView.getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&](){this->timout_Expired();});
+		mTimeout = new Eris::TimedEvent(mView.getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&]() { this->timout_Expired(); });
 	}
 }
 

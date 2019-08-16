@@ -35,28 +35,30 @@
 //#include "Caelum/include/CaelumSystem.h"
 #include <Eris/Calendar.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
-CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera, Eris::Calendar& calendar) :
-		SetCaelumTime("set_caelumtime", this, "Sets the caelum time. parameters: <hour> <minute>"), mCaelumSystem(0), mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mCalendar(calendar), mSky(0), mSun(0), mWater(0)
-{
+CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager* sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera, Eris::Calendar& calendar) :
+		SetCaelumTime("set_caelumtime", this, "Sets the caelum time. parameters: <hour> <minute>"),
+		mCaelumSystem(nullptr),
+		mSceneMgr(sceneMgr),
+		mWindow(window),
+		mCamera(camera),
+		mCalendar(calendar),
+		mSky(nullptr),
+		mSun(nullptr),
+		mWater(nullptr) {
 	mCalendar.Updated.connect(sigc::mem_fun(*this, &CaelumEnvironment::Calendar_Updated));
 }
 
-CaelumEnvironment::~CaelumEnvironment()
-{
+CaelumEnvironment::~CaelumEnvironment() {
 	destroyFirmament();
 	delete mWater;
 }
 
-void CaelumEnvironment::createFirmament()
-{
+void CaelumEnvironment::createFirmament() {
 	try {
 		setupCaelum(mSceneMgr, mWindow, mCamera);
 	} catch (const std::exception& ex) {
@@ -65,22 +67,20 @@ void CaelumEnvironment::createFirmament()
 	}
 }
 
-void CaelumEnvironment::destroyFirmament()
-{
+void CaelumEnvironment::destroyFirmament() {
 	delete mSky;
-	mSky = 0;
+	mSky = nullptr;
 	delete mSun;
-	mSun = 0;
+	mSun = nullptr;
 	mWindow->removeListener(mCaelumSystem);
 	if (mCaelumSystem) {
 		mCaelumSystem->shutdown(true); //This will actually delete the instance
-		mCaelumSystem = 0;
+		mCaelumSystem = nullptr;
 	}
 
 }
 
-void CaelumEnvironment::Calendar_Updated()
-{
+void CaelumEnvironment::Calendar_Updated() {
 	Eris::DateTime now = mCalendar.now();
 	if (now.valid()) {
 		if (mCaelumSystem) {
@@ -89,8 +89,7 @@ void CaelumEnvironment::Calendar_Updated()
 	}
 }
 
-void CaelumEnvironment::setWaterEnabled(bool enabled)
-{
+void CaelumEnvironment::setWaterEnabled(bool enabled) {
 	if (enabled) {
 		if (!mWater) {
 			setupWater();
@@ -103,8 +102,7 @@ void CaelumEnvironment::setWaterEnabled(bool enabled)
 	}
 }
 
-void CaelumEnvironment::setupWater()
-{
+void CaelumEnvironment::setupWater() {
 	try {
 		//mWater = new Water(mCamera, mSceneMgr);
 		//	mWater = new HydraxWater(mCamera, *mSceneMgr);
@@ -120,13 +118,12 @@ void CaelumEnvironment::setupWater()
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not load water." << ex);
 		delete mWater;
-		mWater = 0;
+		mWater = nullptr;
 	}
 
 }
 
-void CaelumEnvironment::setupCaelum(::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera&)
-{
+void CaelumEnvironment::setupCaelum(::Ogre::SceneManager* sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera&) {
 
 	Ogre::Root* root = Ogre::Root::getSingletonPtr();
 
@@ -208,29 +205,24 @@ void CaelumEnvironment::setupCaelum(::Ogre::SceneManager *sceneMgr, ::Ogre::Rend
 	Ogre::Root::getSingleton().addFrameListener(mCaelumSystem);
 }
 
-ISun* CaelumEnvironment::getSun()
-{
+ISun* CaelumEnvironment::getSun() {
 	return mSun;
 }
 
-ISky* CaelumEnvironment::getSky()
-{
+ISky* CaelumEnvironment::getSky() {
 	return mSky;
 }
 
-IFog* CaelumEnvironment::getFog()
-{
+IFog* CaelumEnvironment::getFog() {
 	return mSky;
 	//return mFog;
 }
 
-IWater* CaelumEnvironment::getWater()
-{
+IWater* CaelumEnvironment::getWater() {
 	return mWater;
 }
 
-void CaelumEnvironment::setTime(int hour, int minute, int second)
-{
+void CaelumEnvironment::setTime(int hour, int minute, int second) {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		Eris::DateTime currentServerTime = mCalendar.now();
 		if (currentServerTime.valid()) {
@@ -243,8 +235,7 @@ void CaelumEnvironment::setTime(int hour, int minute, int second)
 	}
 }
 
-void CaelumEnvironment::setTime(int seconds)
-{
+void CaelumEnvironment::setTime(int seconds) {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		Eris::DateTime currentServerTime = mCalendar.now();
 		if (currentServerTime.valid()) {
@@ -257,31 +248,27 @@ void CaelumEnvironment::setTime(int seconds)
 	}
 }
 
-void CaelumEnvironment::setTimeMultiplier(float multiplier)
-{
+void CaelumEnvironment::setTimeMultiplier(float multiplier) {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		mCaelumSystem->getUniversalClock()->setTimeScale(multiplier);
 	}
 }
 
-float CaelumEnvironment::getTimeMultiplier() const
-{
+float CaelumEnvironment::getTimeMultiplier() const {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		return mCaelumSystem->getUniversalClock()->getTimeScale();
 	}
 	return 0;
 }
 
-void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
-{
+void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees) {
 	if (mCaelumSystem) {
 		mCaelumSystem->setObserverLatitude(Ogre::Degree(latitudeDegrees));
 		mCaelumSystem->setObserverLongitude(Ogre::Degree(longitudeDegrees));
 	}
 }
 
-void CaelumEnvironment::runCommand(const std::string &command, const std::string &args)
-{
+void CaelumEnvironment::runCommand(const std::string& command, const std::string& args) {
 	if (SetCaelumTime == command) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -290,7 +277,7 @@ void CaelumEnvironment::runCommand(const std::string &command, const std::string
 
 		int hour = ::Ogre::StringConverter::parseInt(hourString);
 		int minute = ::Ogre::StringConverter::parseInt(minuteString);
-		setTime(hour, minute);
+		setTime(hour, minute, 0);
 	}
 }
 

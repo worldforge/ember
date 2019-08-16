@@ -33,6 +33,7 @@
 #include <boost/any.hpp>
 #include <memory>
 #include <functional>
+#include <framework/AttributeObserver.h>
 
 namespace CEGUI {
 class DragContainer;
@@ -136,7 +137,12 @@ protected:
 	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
 	 * @param entity The entity to which this icon belongs. Ownership is not transferred.
 	 */
-	EntityIcon(EntityIconManager& manager, UniqueWindowPtr<CEGUI::DragContainer> dragContainer, UniqueWindowPtr<CEGUI::Window> image, Gui::Icons::Icon* icon, EmberEntity* entity);
+	EntityIcon(EntityIconManager& manager,
+			UniqueWindowPtr<CEGUI::DragContainer> dragContainer,
+			UniqueWindowPtr<CEGUI::Window> image,
+			UniqueWindowPtr<CEGUI::Window> amountWindow,
+			Gui::Icons::Icon* icon,
+			EmberEntity* entity);
 
 	/**
 	 * @brief Dtor.
@@ -159,6 +165,8 @@ protected:
 	 * @brief The image which represents the entity. In many cases this will be the same image as provided by the icon parameter.
 	 */
 	UniqueWindowPtr<CEGUI::Window> mImage;
+
+	UniqueWindowPtr<CEGUI::Window> mAmount;
 
 	/**
 	 * @brief The Icon instance responsible for providing the image.
@@ -186,6 +194,8 @@ protected:
 	 * @brief The entity which the icon represents.
 	 */
 	EmberEntity* mEntity;
+
+	AttributeObserver mAmountObserver;
 	
 	/**
 	 * @brief Handler for CEGUI drag start event.

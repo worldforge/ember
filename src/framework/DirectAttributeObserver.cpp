@@ -23,29 +23,29 @@
 #include "DirectAttributeObserver.h"
 #include "framework/LoggingInstance.h"
 
-namespace Ember
-{
+namespace Ember {
 
-DirectAttributeObserver::DirectAttributeObserver(Eris::Entity& entity, sigc::signal<void, const Atlas::Message::Element&>& eventChanged, const std::string& attributeName) :
-	mEntity(entity), mAttributeName(attributeName), mEventChanged(eventChanged), mSlot(sigc::mem_fun(*this, &DirectAttributeObserver::attributeChanged))
-{
+DirectAttributeObserver::DirectAttributeObserver(Eris::Entity& entity,
+												 sigc::signal<void, const Atlas::Message::Element&>& eventChanged,
+												 const std::string& attributeName)
+		: mEntity(entity),
+		  mAttributeName(attributeName),
+		  mEventChanged(eventChanged),
+		  mSlot(sigc::mem_fun(*this, &DirectAttributeObserver::attributeChanged)) {
 	entity.observe(attributeName, mSlot);
 }
 
-DirectAttributeObserver::~DirectAttributeObserver()
-{
+DirectAttributeObserver::~DirectAttributeObserver() {
 	mSlot.disconnect();
 }
 
-void DirectAttributeObserver::forceEvaluation()
-{
+void DirectAttributeObserver::forceEvaluation() {
 	if (mEntity.hasProperty(mAttributeName)) {
 		attributeChanged(mEntity.valueOfProperty(mAttributeName));
 	}
 }
 
-void DirectAttributeObserver::attributeChanged(const Atlas::Message::Element& attributeValue)
-{
+void DirectAttributeObserver::attributeChanged(const Atlas::Message::Element& attributeValue) {
 	mEventChanged.emit(attributeValue);
 }
 

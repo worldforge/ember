@@ -29,44 +29,37 @@
 #include "DeepAttributeObserver.h"
 #include "Tokeniser.h"
 
-namespace Ember
-{
+namespace Ember {
 
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& attributeName)
-: mDirectAttributeObserver(new DirectAttributeObserver(entity, EventChanged, attributeName))
-{
+		: mDirectAttributeObserver(new DirectAttributeObserver(entity, EventChanged, attributeName)) {
 }
 
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::vector<std::string>& attributePath)
-: mDeepAttributeObserver(nullptr)
-{
+		: mDeepAttributeObserver(nullptr) {
 	if (attributePath.size() > 1) {
 		mDeepAttributeObserver.reset(new DeepAttributeObserver(entity, EventChanged, attributePath));
-	} else if (attributePath.size() > 0) {
+	} else if (!attributePath.empty()) {
 		mDirectAttributeObserver.reset(new DirectAttributeObserver(entity, EventChanged, attributePath.front()));
 	}
 }
 
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& attributePath, const std::string& delimitor)
-: mDeepAttributeObserver(nullptr)
-{
+		: mDeepAttributeObserver(nullptr) {
 	std::vector<std::string> path = Tokeniser::split(attributePath, delimitor);
 	if (path.size() > 1) {
 		mDeepAttributeObserver.reset(new DeepAttributeObserver(entity, EventChanged, path));
-	} else if (path.size() > 0) {
+	} else if (!path.empty()) {
 		mDirectAttributeObserver.reset(new DirectAttributeObserver(entity, EventChanged, path.front()));
 	}
 }
 
-AttributeObserver::~AttributeObserver()
-{
-}
+AttributeObserver::~AttributeObserver() = default;
 
-void AttributeObserver::forceEvaluation()
-{
-	if (mDeepAttributeObserver.get()) {
+void AttributeObserver::forceEvaluation() {
+	if (mDeepAttributeObserver) {
 		mDeepAttributeObserver->forceEvaluation();
-	} else if (mDirectAttributeObserver.get()) {
+	} else if (mDirectAttributeObserver) {
 		mDirectAttributeObserver->forceEvaluation();
 	}
 }

@@ -101,8 +101,7 @@ function Console:getColourIndexForEntityName(entityName)
 		--lets find a colour that's the least used one
 		local min = self.chatTotalColourUsage[1]
 		ret = 1
-		local i = 1
-		
+
 		--we start from index 2 because we have already set min to the first colour
 		for i = 2, 8 do
 			--if this particular colour is less used, use it instead

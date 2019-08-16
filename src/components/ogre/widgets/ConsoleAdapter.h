@@ -44,7 +44,7 @@ namespace Gui {
 */
 class ConsoleAdapter{
 public:
-    ConsoleAdapter(CEGUI::Editbox* inputBox);
+    explicit ConsoleAdapter(CEGUI::Editbox* inputBox);
 
     ~ConsoleAdapter();
     

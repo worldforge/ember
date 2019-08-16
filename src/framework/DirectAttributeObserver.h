@@ -22,8 +22,7 @@
 #include <sigc++/trackable.h>
 #include <Eris/Entity.h>
 
-namespace Ember
-{
+namespace Ember {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -35,8 +34,7 @@ namespace Ember
  *
  * Note that this class most often isn't used directly; instead an instance of AttributeObserver is used.
  */
-class DirectAttributeObserver : public virtual sigc::trackable
-{
+class DirectAttributeObserver : public virtual sigc::trackable {
 public:
 
 	/**
@@ -45,7 +43,9 @@ public:
 	 * @param eventChanged The event to emit when the attribute changes.
 	 * @param attributeName The name of the attribute to watch.
 	 */
-	DirectAttributeObserver(Eris::Entity& entity, sigc::signal<void, const Atlas::Message::Element&>& eventChanged, const std::string& attributeName);
+	DirectAttributeObserver(Eris::Entity& entity,
+							sigc::signal<void, const Atlas::Message::Element&>& eventChanged,
+							const std::string& attributeName);
 
 	/**
 	 * @brief Dtor.

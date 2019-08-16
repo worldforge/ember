@@ -29,68 +29,70 @@
 
 #include <sigc++/trackable.h>
 
-namespace Caelum
-{
+namespace Caelum {
 class CaelumSystem;
+
 class SkyDome;
+
 class BaseSkyLight;
 }
 
-namespace Eris
-{
+namespace Eris {
 class Calendar;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
 class CaelumSky;
+
 class CaelumSun;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class CaelumEnvironment: public IEnvironmentProvider, public ConsoleObject, public virtual sigc::trackable
-{
+class CaelumEnvironment : public IEnvironmentProvider, public ConsoleObject, public virtual sigc::trackable {
 public:
-	CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera, Eris::Calendar& calendar);
+	CaelumEnvironment(Ogre::SceneManager* sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera, Eris::Calendar& calendar);
 
-	virtual ~CaelumEnvironment();
+	~CaelumEnvironment() override;
 
-	virtual void createFirmament();
-	virtual void destroyFirmament();
+	void createFirmament() override;
 
-	void setWaterEnabled(bool enabled);
+	void destroyFirmament() override;
 
-	virtual ISun* getSun();
-	virtual ISky* getSky();
-	virtual IFog* getFog();
-	virtual IWater* getWater();
+	void setWaterEnabled(bool enabled) override;
+
+	ISun* getSun() override;
+
+	ISky* getSky() override;
+
+	IFog* getFog() override;
+
+	IWater* getWater() override;
 
 	Caelum::CaelumSystem* getCaelumSystem() const;
 
 	const ConsoleCommandWrapper SetCaelumTime;
 
-	virtual void setTime(int hour, int minute, int second = 0);
-	virtual void setTime(int seconds);
+	void setTime(int hour, int minute, int second) override;
 
-	virtual void setTimeMultiplier(float multiplier);
+	void setTime(int seconds) override;
 
-	virtual float getTimeMultiplier() const;
+	void setTimeMultiplier(float multiplier) override;
+
+	float getTimeMultiplier() const override;
 
 	/**
 	 * @brief Sets the position of the world.
 	 * @param longitudeDegrees The longitude, as degrees.
 	 * @param latitudeDegrees The latitude, as degrees.
 	 */
-	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
+	void setWorldPosition(float longitudeDegrees, float latitudeDegrees) override;
 
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 private:
 
@@ -100,7 +102,7 @@ private:
 	 * @param window 
 	 * @param camera 
 	 */
-	void setupCaelum(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
+	void setupCaelum(Ogre::SceneManager* sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 
 	/**
 	 * @brief Creates a water plane.
@@ -113,9 +115,9 @@ private:
 	void Calendar_Updated();
 
 	// Caelum system
-	Caelum::CaelumSystem *mCaelumSystem;
+	Caelum::CaelumSystem* mCaelumSystem;
 
-	Ogre::SceneManager *mSceneMgr;
+	Ogre::SceneManager* mSceneMgr;
 	Ogre::RenderWindow* mWindow;
 	Ogre::Camera& mCamera;
 
@@ -130,22 +132,20 @@ private:
 
 };
 
-inline Caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const
-{
+inline Caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const {
 	return mCaelumSystem;
 }
 
-class CaelumEnvironmentComponent
-{
+class CaelumEnvironmentComponent {
 protected:
-	CaelumEnvironmentComponent(CaelumEnvironment& environment) :
-			mEnvironment(environment), mCaelumSystem(environment.getCaelumSystem())
-	{
+	explicit CaelumEnvironmentComponent(CaelumEnvironment& environment) :
+			mEnvironment(environment), mCaelumSystem(environment.getCaelumSystem()) {
 	}
+
 	CaelumEnvironment& mEnvironment;
 
 	/// Caelum system
-	Caelum::CaelumSystem *mCaelumSystem;
+	Caelum::CaelumSystem* mCaelumSystem;
 
 };
 

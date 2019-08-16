@@ -29,83 +29,97 @@
 #include <vector>
 #include <set>
 
-namespace WFMath
-{
+namespace WFMath {
 template<int>
 class AxisBox;
 }
 
-namespace Eris
-{
+namespace Eris {
 class View;
+
 class Connection;
+
 class Entity;
+
 class TimedEvent;
+
 class Calendar;
+
 class EventService;
 }
 
-namespace varconf
-{
+namespace varconf {
 class Variable;
 }
 
-namespace Ember
-{
+namespace Ember {
 class Input;
+
 class ConfigListenerContainer;
+
 class EmberEntity;
 
 namespace EntityMapping {
 class EntityMappingManager;
 }
-namespace OgreView
-{
+namespace OgreView {
 
 class RenderDistanceManager;
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainManager;
+
 class TerrainPage;
 }
 
-namespace Camera
-{
+namespace Camera {
 class MainCamera;
 }
 
-namespace Authoring
-{
+namespace Authoring {
 class AuthoringManager;
+
 class AuthoringMoverConnector;
+
 class EntityMoveManager;
 }
 
-namespace Environment
-{
+namespace Environment {
 class Environment;
+
 class Foliage;
+
 class FoliageDetailManager;
 }
 
-namespace Lod
-{
+namespace Lod {
 class LodLevelManager;
 }
 
 class Avatar;
+
 class MovementController;
+
 class EmberEntityFactory;
+
 class MotionManager;
+
 class Scene;
+
 class EmberOgreSignals;
+
 class ICameraMotionHandler;
+
 class IPageDataProvider;
+
 class EntityWorldPickListener;
+
 class TerrainEntityManager;
+
 class DelayedFoliageInitializer;
+
 class ShaderManager;
+
 class AvatarCameraWarper;
 
 /**
@@ -116,8 +130,7 @@ class AvatarCameraWarper;
  * An instance of this is created when an Eris::View instance is available, and destroyed along with it. It's responsibility is to handle the Ogre scene (along with a main camera, movement controllers etc.).
  * It in many ways acts as a hub through which many other subsystems can access both the Ogre and the Eris state of the world.
  */
-class World: public virtual sigc::trackable
-{
+class World : public virtual sigc::trackable {
 public:
 
 	/**
@@ -470,8 +483,7 @@ protected:
  @author Erik Ogenvik <erik@worldforge.org>
 
  */
-class DelayedFoliageInitializer
-{
+class DelayedFoliageInitializer {
 public:
 	/**
 	 * @brief Ctor.
@@ -503,8 +515,7 @@ protected:
 
 };
 
-inline Authoring::EntityMoveManager& World::getMoveManager() const
-{
+inline Authoring::EntityMoveManager& World::getMoveManager() const {
 	return *mMoveManager;
 }
 

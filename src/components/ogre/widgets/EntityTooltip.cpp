@@ -112,6 +112,10 @@ std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity) {
 	} else {
 		ss << entity.getType()->getName();
 	}
+	auto amountPtr = entity.ptrOfProperty("amount");
+	if (amountPtr && amountPtr->isInt() && amountPtr->Int() > 1) {
+		ss << std::endl << "Amount: " << amountPtr->Int();
+	}
 	if (entity.hasProperty("worn")) {
 		const Atlas::Message::Element& element = entity.valueOfProperty("worn");
 		if (element.isString()) {

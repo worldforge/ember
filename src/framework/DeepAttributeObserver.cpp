@@ -19,12 +19,14 @@
 #include "DeepAttributeObserver.h"
 #include <Eris/Entity.h>
 
-namespace Ember
-{
+namespace Ember {
 
-DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity, sigc::signal<void, const Atlas::Message::Element&>& eventChanged, const std::vector<std::string>& elementPath) :
-	mEntity(entity), mEventChanged(eventChanged), mElementPath(elementPath)
-{
+DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity,
+											 sigc::signal<void, const Atlas::Message::Element&>& eventChanged,
+											 const std::vector<std::string>& elementPath)
+		: mEntity(entity),
+		  mEventChanged(eventChanged),
+		  mElementPath(elementPath) {
 	const std::string& firstAttributeName = elementPath.front();
 	entity.observe(firstAttributeName, sigc::mem_fun(*this, &DeepAttributeObserver::entity_AttrChanged));
 	if (entity.hasProperty(firstAttributeName)) {
@@ -32,12 +34,9 @@ DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity, sigc::signal<
 	}
 }
 
-DeepAttributeObserver::~DeepAttributeObserver()
-{
-}
+DeepAttributeObserver::~DeepAttributeObserver() = default;
 
-void DeepAttributeObserver::forceEvaluation()
-{
+void DeepAttributeObserver::forceEvaluation() {
 	const std::string& firstAttributeName = mElementPath.front();
 	if (mEntity.hasProperty(firstAttributeName)) {
 		mEventChanged(getCurrentAttribute(mEntity.valueOfProperty(firstAttributeName)));
@@ -45,8 +44,7 @@ void DeepAttributeObserver::forceEvaluation()
 }
 
 
-void DeepAttributeObserver::entity_AttrChanged(const Atlas::Message::Element& attributeValue)
-{
+void DeepAttributeObserver::entity_AttrChanged(const Atlas::Message::Element& attributeValue) {
 	const Atlas::Message::Element& newElement = getCurrentAttribute(attributeValue);
 	if (mLastElementValue != newElement) {
 		mEventChanged(newElement);
@@ -55,16 +53,15 @@ void DeepAttributeObserver::entity_AttrChanged(const Atlas::Message::Element& at
 
 }
 
-const Atlas::Message::Element& DeepAttributeObserver::getCurrentAttribute(const Atlas::Message::Element& baseAttribute) const
-{
+const Atlas::Message::Element& DeepAttributeObserver::getCurrentAttribute(const Atlas::Message::Element& baseAttribute) const {
 	static Atlas::Message::Element nullElement;
 	if (baseAttribute.isMap()) {
 		const Atlas::Message::Element* currentElement = &baseAttribute;
-		std::vector<std::string>::const_iterator I = mElementPath.begin();
+		auto I = mElementPath.begin();
 		I++;
 		for (; I != mElementPath.end(); ++I) {
 			if (currentElement->isMap()) {
-				Atlas::Message::MapType::const_iterator mapI = currentElement->asMap().find(*I);
+				auto mapI = currentElement->asMap().find(*I);
 				if (mapI != currentElement->asMap().end()) {
 					currentElement = &(mapI->second);
 					continue;

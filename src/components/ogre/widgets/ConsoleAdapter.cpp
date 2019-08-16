@@ -42,13 +42,11 @@ ConsoleAdapter::ConsoleAdapter(CEGUI::Editbox* inputBox)
 }
 
 
-ConsoleAdapter::~ConsoleAdapter()
-{
-}
+ConsoleAdapter::~ConsoleAdapter() = default;
 
 bool ConsoleAdapter::consoleInputBox_KeyDown(const CEGUI::EventArgs& args)
 {
-	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
+	const auto& keyargs = dynamic_cast<const CEGUI::KeyEventArgs&>(args);
 	if (keyargs.scancode == CEGUI::Key::Return || keyargs.scancode == CEGUI::Key::NumpadEnter) {
 		mReturnKeyDown = true;
 		return true;
@@ -58,7 +56,7 @@ bool ConsoleAdapter::consoleInputBox_KeyDown(const CEGUI::EventArgs& args)
 
 bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 {
-	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
+	const auto& keyargs = dynamic_cast<const CEGUI::KeyEventArgs&>(args);
 	
 	if(keyargs.scancode != CEGUI::Key::Tab)
 	{
@@ -114,14 +112,14 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				return true;
 			}
 			sCommand = sCommand.substr(1, mInputBox->getCaretIndex() - 1);
-			if(mTabPressed == true)
+			if(mTabPressed)
 			{
 				const std::set< std::string > commands(mBackend->getPrefixes(sCommand));
 				
-				if(commands.size() > 0)
+				if(!commands.empty())
 				{
-					std::set< std::string >::const_iterator iCommand(commands.begin());
-					std::string sMessage("");
+					auto iCommand(commands.begin());
+					std::string sMessage;
 				
 					mSelected = (mSelected + 1) % commands.size();
 				
@@ -151,7 +149,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				
 				const std::set< std::string > commands(mBackend->getPrefixes(sCommand));
 				
-				if(commands.size() == 0)
+				if(commands.empty())
 				{
 					// TODO: Error reporting?
 				}
@@ -167,8 +165,8 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 					else
 					{
 						//If there are multiple matches we need to find the lowest common denominator. We'll do this by iterating through all characters and then checking with all the possible commands if they match that prefix, until we get a false.
-						std::set< std::string >::const_iterator iSelected(commands.begin());
-						std::set< std::string >::const_iterator iCommand(commands.begin());
+						auto iSelected(commands.begin());
+						auto iCommand(commands.begin());
 						std::string sCommonPrefix(*iCommand);
 						int select = 1;
 						

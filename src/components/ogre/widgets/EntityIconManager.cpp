@@ -76,8 +76,10 @@ EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* e
 	UniqueWindowPtr<CEGUI::DragContainer> item(dynamic_cast<CEGUI::DragContainer*>(mGuiManager.createWindow("DragContainer", ss.str())));
 	ss << "Image";
 	UniqueWindowPtr<CEGUI::Window> iconWindow(mGuiManager.createWindow("EmberLook/StaticImage", ss.str()));
+	ss << "Amount";
+	UniqueWindowPtr<CEGUI::Window> amountWindow(mGuiManager.createWindow("EmberLook/StaticText", ss.str()));
 
-	if (item && iconWindow) {
+	if (item && iconWindow && amountWindow) {
 		item->setSize(CEGUI::USize(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 		//item->setTooltipText(name);
 
@@ -89,7 +91,18 @@ EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* e
 		iconWindow->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(icon->getImage()));
 		item->addChild(iconWindow.get());
 
-		auto* entityIcon = new EntityIcon(*this, std::move(item), std::move(iconWindow), icon, entity);
+		amountWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0), CEGUI::UDim(1, -20)));
+		amountWindow->setWidth(CEGUI::UDim(1, 0));
+		amountWindow->setHeight(CEGUI::UDim(0, 20));
+		amountWindow->setProperty("TextColours", "FFFFFFFF");
+		amountWindow->setProperty("BackgroundColours", "FFFFFF");
+		amountWindow->setProperty("BackgroundEnabled", "true");
+		amountWindow->setProperty("HorzFormatting", "CentreAligned");
+		amountWindow->setMousePassThroughEnabled(true);
+
+		item->addChild(amountWindow.get());
+
+		auto* entityIcon = new EntityIcon(*this, std::move(item), std::move(iconWindow), std::move(amountWindow), icon, entity);
 		mIcons.push_back(entityIcon);
 		return entityIcon;
 	}

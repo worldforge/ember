@@ -29,16 +29,14 @@ namespace Eris {
 class Entity;
 }
 
-namespace Ember
-{
+namespace Ember {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Allows the observation of an element which isn't necessarily a top level attribute.
  * The Eris::Entity::observe() method only allows for observation of top level attributes. However, in many cases you would want to look for changes to a nestled attribute. This class comes in handy then.
  */
-class DeepAttributeObserver : public virtual sigc::trackable
-{
+class DeepAttributeObserver : public virtual sigc::trackable {
 public:
 
 	/**
@@ -46,7 +44,9 @@ public:
 	 * @param entity The entity to observe.
 	 * @param elementPath The path to the element to observe.
 	 */
-	DeepAttributeObserver(Eris::Entity& entity, sigc::signal<void, const Atlas::Message::Element&>& eventChanged, const std::vector<std::string>& elementPath);
+	DeepAttributeObserver(Eris::Entity& entity,
+						  sigc::signal<void, const Atlas::Message::Element&>& eventChanged,
+						  const std::vector<std::string>& elementPath);
 
 	/**
 	 * @brief Dtor.

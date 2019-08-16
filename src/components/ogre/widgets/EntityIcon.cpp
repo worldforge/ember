@@ -26,7 +26,9 @@
 
 #include "EntityIcon.h"
 #include "EntityIconSlot.h"
+#include "domain/EmberEntity.h"
 #include <CEGUI/widgets/DragContainer.h>
+#include <CEGUI/Font.h>
 
 using namespace CEGUI;
 namespace Ember {
@@ -34,20 +36,29 @@ namespace OgreView {
 
 namespace Gui {
 
-EntityIcon::EntityIcon(EntityIconManager& manager, UniqueWindowPtr<CEGUI::DragContainer> dragContainer, UniqueWindowPtr<CEGUI::Window> image, Gui::Icons::Icon* icon, EmberEntity* entity)
+EntityIcon::EntityIcon(EntityIconManager& manager,
+					   UniqueWindowPtr<CEGUI::DragContainer> dragContainer,
+					   UniqueWindowPtr<CEGUI::Window> image,
+					   UniqueWindowPtr<CEGUI::Window> amountWindow,
+					   Gui::Icons::Icon* icon,
+					   EmberEntity* entity)
 		: EntityIconDragDropTarget(dragContainer.get()),
 		  mManager(manager),
 		  mDragContainer(std::move(dragContainer)),
 		  mImage(std::move(image)),
+		  mAmount(std::move(amountWindow)),
 		  mIcon(icon),
 		  mUserData(*this),
 		  mUserDataWrapper(mUserData),
 		  mCurrentSlot(nullptr),
-		  mEntity(entity) {
+		  mEntity(entity),
+		  mAmountObserver(*mEntity, "amount") {
 	mDragContainer->setUserData(&mUserDataWrapper);
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(&EntityIcon::dragContainer_DragStarted, this));
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(&EntityIcon::dragContainer_DragStopped, this));
 	icon->EventUpdated.connect(sigc::mem_fun(*this, &EntityIcon::icon_Updated));
+	updateAmount();
+	mAmountObserver.EventChanged.connect([&](const Atlas::Message::Element&) { this->updateAmount(); });
 }
 
 EntityIcon::~EntityIcon() {
@@ -125,6 +136,29 @@ bool EntityIcon::handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* ico
 	}
 	return true;
 
+}
+
+void EntityIcon::updateAmount() {
+	auto amountPtr = mEntity->ptrOfProperty("amount");
+	if (amountPtr && amountPtr->isInt() && amountPtr->Int() > 1) {
+		mAmount->show();
+		std::stringstream ss;
+		ss << amountPtr->Int();
+		auto text = ss.str();
+
+		auto font = mAmount->getFont();
+		auto width = font->getTextExtent(text, 1.0) + 4;
+		auto height = font->getFontHeight(1.0);
+
+		//Adjust the width and height after the text.
+		mAmount->setWidth({0, width});
+		mAmount->setHeight({0, height});
+		mAmount->setYPosition({1, -(height + 2)});
+		mAmount->setXPosition({1, -(width + 2)});
+		mAmount->setText(text);
+	} else {
+		mAmount->hide();
+	}
 }
 }
 
