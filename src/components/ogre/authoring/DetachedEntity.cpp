@@ -35,19 +35,11 @@ void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 
 	Atlas::Message::MapType::const_iterator A;
 
-	/*
-	 attrs.erase("loc");
-	 attrs.erase("id");
-	 attrs.erase("contains");
-
-	 if (!allowMove) filterMoveAttrs(attrs);
-	 */
-
 	for (A = attrs.begin(); A != attrs.end(); ++A) {
 		if (A->first == "loc" || A->first == "id" || A->first == "contains")
 			continue;
 
-		// see if the value in the sight matches the exsiting value
+		// see if the value in the sight matches the existing value
 		auto I = m_properties.find(A->first);
 		if ((I != m_properties.end()) && (I->second == A->second))
 			continue;
@@ -73,7 +65,7 @@ void DetachedEntity::removeFromMovementPrediction()
 {
 }
 
-void DetachedEntity::addToMovementPredition()
+void DetachedEntity::addToMovementPrediction()
 {
 }
 

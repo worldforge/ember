@@ -68,7 +68,7 @@ public:
 	void removeFromMovementPrediction() override {
 	}
 
-	void addToMovementPredition() override {
+	void addToMovementPrediction() override {
 	}
 
 	Eris::Entity* getEntity(const std::string&) override {

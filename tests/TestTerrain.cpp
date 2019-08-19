@@ -156,7 +156,7 @@ public:
 	{
 	}
 
-	void addToMovementPredition()
+	void addToMovementPrediction()
 	{
 	}
 

@@ -76,7 +76,7 @@ protected:
      * @brief Adds the entity to any movement prediction service.
      * This is called when movement has started.
      */
-	void addToMovementPredition() override;
+	void addToMovementPrediction() override;
 
     /**
      * @brief Gets an entity with the supplied id from the system.
