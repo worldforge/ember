@@ -37,7 +37,7 @@ AuthoringVisualizationMover::AuthoringVisualizationMover(AuthoringVisualization&
 AuthoringVisualizationMover::~AuthoringVisualizationMover()
 {
 	//At deletion time we'll detach ourselves as a control delegate and tell the visualization to update its position.
-	mVisualization.setControlDelegate(0);
+	mVisualization.setControlDelegate(nullptr);
 	mVisualization.updatePositionAndOrientation();
 }
 

@@ -34,29 +34,24 @@
 #include <Eris/Connection.h>
 #include <sigc++/bind.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Authoring
-{
+namespace Authoring {
 AuthoringManager::AuthoringManager(World& world) :
-	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."),
-	HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."),
-	mWorld(world),
-	mHandler(nullptr),
-	mEntityConsoleEditor(nullptr)
-{
+		DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."),
+		HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."),
+		mWorld(world),
+		mHandler(nullptr),
+		mEntityConsoleEditor(nullptr) {
 	//Delay checking the visualization config value until we've entered the world and can see if we're an admin or not.
 	world.EventGotAvatar.connect(sigc::mem_fun(*this, &AuthoringManager::worldGotAvatar));
 }
 
-AuthoringManager::~AuthoringManager()
-{
-	for (SimpleEntityVisualizationStore::iterator I = mSimpleVisualizations.begin(); I != mSimpleVisualizations.end(); ++I) {
-		SimpleEntityVisualization* vis = I->second.first;
-		sigc::connection& conn = I->second.second;
+AuthoringManager::~AuthoringManager() {
+	for (auto& simpleVisualization : mSimpleVisualizations) {
+		SimpleEntityVisualization* vis = simpleVisualization.second.first;
+		sigc::connection& conn = simpleVisualization.second.second;
 		delete vis;
 		conn.disconnect();
 	}
@@ -67,25 +62,23 @@ AuthoringManager::~AuthoringManager()
 void AuthoringManager::worldGotAvatar() {
 	delete mEntityConsoleEditor;
 	mEntityConsoleEditor = nullptr;
+	//We'll only look at the config if we're an admin.
+	// This means that visualizations won't be turned on automatically for non-admin characters,
+	// but can still be enabled by issuing the "displayauthoringvisualizations"
+	// console command. This is to not confuse users.
 	if (mWorld.getAvatar()->isAdmin()) {
 		registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
 		mEntityConsoleEditor = new EntityConsoleEditor();
 	}
 }
 
-void AuthoringManager::displayAuthoringVisualization()
-{
-	//Only show authoring visualizations for admins. Mainly to not confuse users.
-	//This isn't optimal, since if this method is called before the avatar has been received, we'll go ahead anyway. Should be fixed...
-	if (mWorld.getAvatar() == nullptr || mWorld.getAvatar()->isAdmin()) {
-		if (!mHandler) {
-			mHandler = new AuthoringHandler(mWorld);
-		}
+void AuthoringManager::displayAuthoringVisualization() {
+	if (!mHandler) {
+		mHandler = new AuthoringHandler(mWorld);
 	}
 }
 
-void AuthoringManager::hideAuthoringVisualization()
-{
+void AuthoringManager::hideAuthoringVisualization() {
 	delete mHandler;
 	mHandler = nullptr;
 }
@@ -103,13 +96,12 @@ void AuthoringManager::displayGeometryVisualization(EmberEntity& entity) {
 			node->getCreator()->destroySceneNode(node);
 			return;
 		}
-		sigc::connection conn = entity.BeingDeleted.connect([&]() {hideGeometryVisualization(entity); });
+		sigc::connection conn = entity.BeingDeleted.connect([&]() { hideGeometryVisualization(entity); });
 		mGeometryVisualizations.insert(std::make_pair(&entity, std::make_pair(vis, conn)));
 	}
 }
 
-void AuthoringManager::hideGeometryVisualization(EmberEntity& entity)
-{
+void AuthoringManager::hideGeometryVisualization(EmberEntity& entity) {
 	auto I = mGeometryVisualizations.find(&entity);
 	if (I != mGeometryVisualizations.end()) {
 		GeometryVisualization* vis = I->second.first;
@@ -121,17 +113,15 @@ void AuthoringManager::hideGeometryVisualization(EmberEntity& entity)
 }
 
 
-bool AuthoringManager::hasGeometryVisualization(const EmberEntity& entity) const
-{
+bool AuthoringManager::hasGeometryVisualization(const EmberEntity& entity) const {
 	return mGeometryVisualizations.count(&entity) != 0;
 }
 
 
-void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity)
-{
+void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity) {
 	if (!mSimpleVisualizations.count(&entity)) {
 		Ogre::SceneNode* node = mWorld.getScene().getSceneManager().getRootSceneNode()->createChildSceneNode();
-		SimpleEntityVisualization* vis(0);
+		SimpleEntityVisualization* vis(nullptr);
 		try {
 			vis = new SimpleEntityVisualization(entity, node);
 		} catch (const std::exception& ex) {
@@ -139,14 +129,13 @@ void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity)
 			node->getCreator()->destroySceneNode(node);
 			return;
 		}
-		sigc::connection conn = entity.BeingDeleted.connect([&]() {hideSimpleEntityVisualization(entity); });
+		sigc::connection conn = entity.BeingDeleted.connect([&]() { hideSimpleEntityVisualization(entity); });
 		mSimpleVisualizations.insert(SimpleEntityVisualizationStore::value_type(&entity, std::make_pair(vis, conn)));
 	}
 
 }
 
-void AuthoringManager::hideSimpleEntityVisualization(EmberEntity& entity)
-{
+void AuthoringManager::hideSimpleEntityVisualization(EmberEntity& entity) {
 	auto I = mSimpleVisualizations.find(&entity);
 	if (I != mSimpleVisualizations.end()) {
 		SimpleEntityVisualization* vis = I->second.first;
@@ -157,22 +146,19 @@ void AuthoringManager::hideSimpleEntityVisualization(EmberEntity& entity)
 	}
 }
 
-bool AuthoringManager::hasSimpleEntityVisualization(const EmberEntity& entity) const
-{
+bool AuthoringManager::hasSimpleEntityVisualization(const EmberEntity& entity) const {
 	return mSimpleVisualizations.count(&entity) != 0;
 }
 
-void AuthoringManager::runCommand(const std::string &command, const std::string &)
-{
+void AuthoringManager::runCommand(const std::string& command, const std::string&) {
 	if (DisplayAuthoringVisualizations == command) {
-		EmberServices::getSingleton().getConfigService().setValue("authoring", "visualizations", true);
+		displayAuthoringVisualization();
 	} else if (HideAuthoringVisualizations == command) {
-		EmberServices::getSingleton().getConfigService().setValue("authoring", "visualizations", false);
+		hideAuthoringVisualization();
 	}
 }
 
-void AuthoringManager::config_AuthoringVisualizations(const std::string& section, const std::string&, varconf::Variable& variable)
-{
+void AuthoringManager::config_AuthoringVisualizations(const std::string& section, const std::string&, varconf::Variable& variable) {
 	if (variable.is_bool()) {
 		if (static_cast<bool> (variable)) {
 			displayAuthoringVisualization();
@@ -182,20 +168,17 @@ void AuthoringManager::config_AuthoringVisualizations(const std::string& section
 	}
 }
 
-void AuthoringManager::startMovement(EmberEntity& entity, EntityMover& mover)
-{
+void AuthoringManager::startMovement(EmberEntity& entity, EntityMover& mover) {
 	if (mHandler) {
 		mHandler->startMovement(entity, mover);
 	}
 }
 
-void AuthoringManager::stopMovement()
-{
+void AuthoringManager::stopMovement() {
 	if (mHandler) {
-		mHandler ->stopMovement();
+		mHandler->stopMovement();
 	}
 }
-
 
 
 }

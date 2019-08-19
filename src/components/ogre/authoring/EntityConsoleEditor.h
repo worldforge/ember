@@ -32,7 +32,7 @@ class EntityConsoleEditor : public ConsoleObject
 {
 public:
 	EntityConsoleEditor();
-	virtual ~EntityConsoleEditor() = default;
+	~EntityConsoleEditor() override = default;
 
 	/**
 	 * @copydoc ConsoleObject::runCommand

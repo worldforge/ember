@@ -37,7 +37,6 @@
 #include <OgreGpuProgramManager.h>
 #include <OgreTextureManager.h>
 #include <OgreMaterialManager.h>
-#include <OgreTechnique.h>
 #include <Ogre.h>
 #include <components/ogre/OgreInfo.h>
 
@@ -126,7 +125,7 @@ void ConsoleDevTools::showTexture(const std::string& textureName) {
 	mWindow->setVisible(true);
 
 	auto onCloseClicked = [&](const CEGUI::EventArgs& e) -> bool {
-		const CEGUI::MouseEventArgs& me = static_cast<const CEGUI::MouseEventArgs&>(e);
+		const auto& me = static_cast<const CEGUI::MouseEventArgs&>(e);
 		me.window->destroy();
 		return true;
 	};

@@ -103,7 +103,7 @@ void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 		}
 
 		Ogre::SceneNode* sceneNode = parentNode->createChildSceneNode();
-		AuthoringVisualization* visualization = new AuthoringVisualization(*entity, sceneNode);
+		auto visualization = new AuthoringVisualization(*entity, sceneNode);
 		mVisualizations.insert(VisualizationStore::value_type(entity, visualization));
 	} else {
 		S_LOG_WARNING("Got create signal for entity which already has an authoring visualization. This should not happen.");
