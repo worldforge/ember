@@ -30,17 +30,16 @@
 
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/EmberEntityFactory.h"
-#include "components/ogre/EmberOgre.h"
 #include "components/ogre/MotionManager.h"
 #include "components/ogre/Scene.h"
+#include "components/ogre/Convert.h"
+#include "components/ogre/EntityCollisionInfo.h"
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreParticleSystem.h>
 
 #include <Eris/Task.h>
-#include <components/ogre/Convert.h>
-#include <components/ogre/EntityCollisionInfo.h>
 
 namespace Ember {
 namespace OgreView {
@@ -91,6 +90,7 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 //listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
 	mModel->Resetting.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Resetting));
+	mEntity.EventPositioningModeChanged.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_PositioningModeChanged));
 
 	mModel->setQueryFlags(MousePicker::CM_ENTITY);
 
@@ -111,6 +111,10 @@ ModelRepresentation::~ModelRepresentation() {
 	if (renderingDef && !renderingDef->getScheme().empty()) {
 		mScene.deregisterEntityWithTechnique(mEntity, renderingDef->getScheme());
 	}
+	if (mEntity.getPositioningMode() == EmberEntity::PositioningMode::PROJECTILE) {
+		mScene.deregisterEntityWithTechnique(mEntity, "projectile");
+	}
+
 
 	delete mSoundEntity;
 	delete mModel;
@@ -196,6 +200,10 @@ void ModelRepresentation::initFromModel() {
 //		forest->addEmberEntity(this);
 	}
 
+	if (mEntity.getPositioningMode() == EmberEntity::PositioningMode::PROJECTILE) {
+		mScene.registerEntityWithTechnique(mEntity, "projectile");
+	}
+
 	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similar entities with synchronized animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */
 	Action* idleaction = mModel->getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	if (idleaction) {
@@ -204,14 +212,15 @@ void ModelRepresentation::initFromModel() {
 
 	//If there are particles, update the bindings.
 	if (mModel->hasParticles()) {
-        auto& bindings = mModel->getAllParticleSystemBindings();
-        for (auto binding : bindings) {
-            auto elemPtr = mEntity.ptrOfProperty(binding->getVariableName());
-            if (elemPtr && elemPtr->isNum()) {
-                binding->scaleValue(static_cast<Ogre::Real>(elemPtr->asNum()));
-            }
-        }
+		auto& bindings = mModel->getAllParticleSystemBindings();
+		for (auto binding : bindings) {
+			auto elemPtr = mEntity.ptrOfProperty(binding->getVariableName());
+			if (elemPtr && elemPtr->isNum()) {
+				binding->scaleValue(static_cast<Ogre::Real>(elemPtr->asNum()));
+			}
+		}
 	}
+
 
 }
 
@@ -449,6 +458,14 @@ void ModelRepresentation::entity_TaskRemoved(const std::string& id, Eris::Task*)
 	}
 }
 
+void ModelRepresentation::entity_PositioningModeChanged(EmberEntity::PositioningMode newMode) {
+	if (newMode == EmberEntity::PositioningMode::PROJECTILE) {
+		mScene.registerEntityWithTechnique(mEntity, "projectile");
+	} else if (mEntity.getPositioningMode() == EmberEntity::PositioningMode::PROJECTILE) {
+		mScene.deregisterEntityWithTechnique(mEntity, "projectile");
+	}
+}
+
 void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize) {
 }
 
@@ -486,6 +503,22 @@ void ModelRepresentation::updateCollisionDetection() {
 
 BulletCollisionDetector& ModelRepresentation::getCollisionDetector() {
 	return *mBulletCollisionDetector;
+}
+
+Model* ModelRepresentation::getModelForEntity(EmberEntity& entity) {
+	IGraphicalRepresentation* representation = entity.getGraphicalRepresentation();
+	if (representation && representation->getType() == ModelRepresentation::getTypeNameForClass()) {
+		return &dynamic_cast<ModelRepresentation*>(representation)->getModel();
+	}
+	return nullptr;
+}
+
+ModelRepresentation* ModelRepresentation::getRepresentationForEntity(EmberEntity& entity) {
+	IGraphicalRepresentation* representation = entity.getGraphicalRepresentation();
+	if (representation && representation->getType() == ModelRepresentation::getTypeNameForClass()) {
+		return dynamic_cast<ModelRepresentation*>(representation);
+	}
+	return nullptr;
 }
 
 }

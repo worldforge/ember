@@ -25,29 +25,28 @@
 #endif
 #include "EmberEntityPartAction.h"
 
+#include <utility>
+
 #include "domain/EmberEntity.h"
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 
 
 namespace Ember {
 namespace OgreView {
 
 
-EmberEntityPartAction::EmberEntityPartAction(EmberEntity& entity, const std::string& partName)
-: mEntity(entity), mPartName(partName)
+EmberEntityPartAction::EmberEntityPartAction(EmberEntity& entity, std::string partName)
+: mEntity(entity), mPartName(std::move(partName))
 {
 }
 
 
-EmberEntityPartAction::~EmberEntityPartAction()
-{
-}
+EmberEntityPartAction::~EmberEntityPartAction() = default;
 
 void EmberEntityPartAction::activate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing part " << mPartName);
-	Model::ModelRepresentation* representation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mEntity);
+	Model::ModelRepresentation* representation = Model::ModelRepresentation::getRepresentationForEntity(mEntity);
 	if (representation) {
 		representation->setModelPartShown(mPartName, true);
 	}
@@ -56,7 +55,7 @@ void EmberEntityPartAction::activate(EntityMapping::ChangeContext& context)
 void EmberEntityPartAction::deactivate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding part " << mPartName);
-	Model::ModelRepresentation* representation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mEntity);
+	Model::ModelRepresentation* representation = Model::ModelRepresentation::getRepresentationForEntity(mEntity);
 	if (representation) {
 		representation->setModelPartShown(mPartName, false);
 	}

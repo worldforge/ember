@@ -22,7 +22,6 @@
 
 #include "ForestRenderingTechnique.h"
 #include "environment/Forest.h"
-#include "model/ModelRepresentationManager.h"
 #include "model/ModelRepresentation.h"
 
 namespace Ember
@@ -38,7 +37,7 @@ ForestRenderingTechnique::ForestRenderingTechnique(Environment::Forest& forest) 
 
 void ForestRenderingTechnique::registerEntity(EmberEntity& entity)
 {
-	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
+	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity);
 	if (modelRepresentation) {
 		mForest.addEmberEntity(modelRepresentation);
 	}

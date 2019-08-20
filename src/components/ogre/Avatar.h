@@ -201,9 +201,18 @@ public:
 	 */
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 
-	void useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
+	void useTool(const EmberEntity& tool,
+				 const std::string& operation,
+				 const Eris::Entity* target = nullptr,
+				 const WFMath::Point<3>& pos = WFMath::Point<3>(),
+				 const WFMath::Vector<3>& direction = WFMath::Vector<3>());
 
-	void useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity::Usage& usage, const Eris::Entity* target = nullptr, const WFMath::Point<3>& pos = WFMath::Point<3>());
+	void useTool(const EmberEntity& tool,
+				 const std::string& operation,
+				 const EmberEntity::Usage& usage,
+				 const Eris::Entity* target = nullptr,
+				 const WFMath::Point<3>& posInWorld = WFMath::Point<3>(),
+				 WFMath::Vector<3> direction = WFMath::Vector<3>());
 
 	void taskUsage(std::string taskId, std::string usage);
 

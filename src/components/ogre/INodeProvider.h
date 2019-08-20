@@ -21,20 +21,20 @@
 
 #include "domain/IVisualizable.h"
 
-namespace Ogre
-{
+namespace Ogre {
 class Node;
+
 class MovableObject;
+
 class Vector3;
+
 class Quaternion;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 namespace Model {
-    class Model;
+class Model;
 }
 
 /**
@@ -45,15 +45,12 @@ namespace Model {
  * Subclasses of this are therefore used for providing concrete instances.
  * A typical use is as a binding between a parent and child node.
  */
-class INodeProvider: public IVisualizable
-{
+class INodeProvider : public IVisualizable {
 public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~INodeProvider()
-	{
-	}
+	~INodeProvider() override = default;
 
 	/**
 	 * @brief Gets the main node instance, as created and managed by this instance.

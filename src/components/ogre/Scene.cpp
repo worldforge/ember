@@ -72,7 +72,7 @@ Ogre::SceneManager& Scene::getSceneManager() const
 
 void Scene::registerEntityWithTechnique(EmberEntity& entity, const std::string& technique)
 {
-	RenderingTechniqueStore::const_iterator I = mTechniques.find(technique);
+	auto I = mTechniques.find(technique);
 	if (I != mTechniques.end()) {
 		I->second->registerEntity(entity);
 	}
@@ -80,7 +80,7 @@ void Scene::registerEntityWithTechnique(EmberEntity& entity, const std::string& 
 
 void Scene::deregisterEntityWithTechnique(EmberEntity& entity, const std::string& technique)
 {
-	RenderingTechniqueStore::const_iterator I = mTechniques.find(technique);
+	auto I = mTechniques.find(technique);
 	if (I != mTechniques.end()) {
 		I->second->deregisterEntity(entity);
 	}
@@ -106,7 +106,7 @@ ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& nam
 
 Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 {
-	ConfigService& configService(EmberServices::getSingleton().getConfigService());
+	ConfigService& configService = EmberServices::getSingleton().getConfigService();
 	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
 
 	if (pageSize <= 0) {

@@ -35,7 +35,8 @@ class IMovable;
 /**
  * @brief Responsible for making sure that movement and animation within the graphical system is managed and synchronized.
  *
- * The main task of the manager is to keep track of all movables and animatables, i.e. implementations of IMovable and IAnimated, and make sure that these are asked to update their movement or animation when needed (usually each frame).
+ * The main task of the manager is to keep track of all movables and animatables, i.e. implementations of IMovable
+ * and IAnimated, and make sure that these are asked to update their movement or animation when needed (usually each frame).
  */
 class MotionManager : public Ogre::FrameListener, public Singleton<MotionManager> {
 public:
@@ -57,7 +58,7 @@ public:
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~MotionManager();
+	~MotionManager() override;
 
 	/**
 	 * @brief Adds a movable to the movement list.
@@ -92,11 +93,11 @@ public:
 	/**
 	 * @see Ogre::FrameListener::frameStarted
 	 */
-	bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
 	/**
 	 * @see Ogre::FrameListener::frameEnded
 	 */
-	bool frameEnded(const Ogre::FrameEvent& event);
+	bool frameEnded(const Ogre::FrameEvent& event) override;
 
 	/**
 	 * @brief Gets info about the MotionManager.

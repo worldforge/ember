@@ -42,7 +42,6 @@
 #include <OgreSkeletonInstance.h>
 #include <OgreMaterialManager.h>
 #include <OgreInstancedEntity.h>
-#include <OgreMaterial.h>
 #include <OgreTechnique.h>
 #include <OgrePass.h>
 #include <OgreInstanceBatch.h>
@@ -214,7 +213,7 @@ bool Model::createModelAssets() {
 				timedLog.report("Created entity '" + entity->getName() + "' of mesh '" + mesh->getName() + "'.");
 
 
-				SubModel* submodel = new SubModel(*entity, *this);
+				auto submodel = new SubModel(*entity, *this);
 				//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 
 
@@ -240,6 +239,7 @@ bool Model::createModelAssets() {
 											subEntity = entity->getSubEntity(subEntityIndex);
 										} else {
 											S_LOG_WARNING("Model definition " << mDefinition->getOrigin() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
+											continue;
 										}
 									}
 									if (subEntity) {

@@ -220,6 +220,11 @@ public:
 
 	BulletCollisionDetector& getCollisionDetector();
 
+
+	static Model* getModelForEntity(EmberEntity& entity);
+
+	static ModelRepresentation* getRepresentationForEntity(EmberEntity& entity);
+
 protected:
 
 	/**
@@ -297,6 +302,8 @@ protected:
 
 	void entity_TaskAdded(const std::string& id, Eris::Task* task);
 	void entity_TaskRemoved(const std::string& id, Eris::Task* task);
+
+	void entity_PositioningModeChanged(EmberEntity::PositioningMode newMode);
 
 	/**
 	 * @brief Creates a new action for the supplied task (if any is found).

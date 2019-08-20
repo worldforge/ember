@@ -40,7 +40,7 @@ namespace OgreView
 class EmberEntityPartAction: public EntityMapping::Actions::Action
 {
 public:
-	EmberEntityPartAction(EmberEntity& entity, const std::string& partName);
+	EmberEntityPartAction(EmberEntity& entity, std::string partName);
 
 	~EmberEntityPartAction() override;
 

@@ -19,7 +19,6 @@
 #include "ModelActionBase.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/entitymapping/ChangeContext.h"
 #include "components/entitymapping/EntityMapping.h"
@@ -90,7 +89,7 @@ void ModelActionBase::deactivate(EntityMapping::ChangeContext& context) {
 
 void ModelActionBase::showModel(const std::string& modelName) {
 
-	Model::Model* model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
+	Model::Model* model = Model::ModelRepresentation::getModelForEntity(mEntity);
 	if (!model || model->getDefinition()->getOrigin() != modelName) {
 		mEntity.setGraphicalRepresentation(nullptr);
 

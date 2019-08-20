@@ -18,64 +18,64 @@
 
 #include "NodeAttachment.h"
 
-#include "domain/IGraphicalRepresentation.h"
 #include "domain/IEntityControlDelegate.h"
 #include "components/ogre/INodeProvider.h"
 #include "domain/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/NodeController.h"
-#include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/DelegatingNodeController.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
 #include "components/ogre/model/Model.h"
 #include "OgreInfo.h"
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
-namespace Ember
-{
-namespace OgreView
-{
+
+namespace Ember {
+namespace OgreView {
 
 NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
-	AttachmentBase(parentEntity, childEntity), mNodeProvider(nodeProvider), mAttachmentController(nullptr)
-{
+		AttachmentBase(parentEntity, childEntity),
+		mNodeProvider(nodeProvider),
+		mAttachmentController(nullptr) {
 	setupListeners();
 }
 
-NodeAttachment::~NodeAttachment()
-{
+NodeAttachment::~NodeAttachment() {
 	delete mNodeProvider;
 	delete mAttachmentController;
 }
 
-void NodeAttachment::init()
-{
+void NodeAttachment::init() {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 }
 
-void NodeAttachment::setupListeners()
-{
+void NodeAttachment::setupListeners() {
 	mChildEntity.VisibilityChanged.connect(sigc::mem_fun(this, &NodeAttachment::entity_VisibilityChanged));
+	mChildEntity.EventPositioningModeChanged.connect(sigc::mem_fun(this, &NodeAttachment::entity_PositioningModeChanged));
 }
 
-void NodeAttachment::entity_VisibilityChanged(bool visible)
-{
+void NodeAttachment::entity_VisibilityChanged(bool visible) {
 	setVisible(visible);
 }
 
-void NodeAttachment::setVisible(bool visible)
-{
+void NodeAttachment::entity_PositioningModeChanged(EmberEntity::PositioningMode newMode) {
+//	if (newMode == EmberEntity::PositioningMode::PROJECTILE) {
+//		mScene.registerEntityWithTechnique(mEntity, "projectile");
+//	} else if (mChildEntity.getPositioningMode() == EmberEntity::PositioningMode::PROJECTILE) {
+//		mScene.deregisterEntityWithTechnique(mEntity, "projectile");
+//	}
+}
+
+void NodeAttachment::setVisible(bool visible) {
 	mNodeProvider->setVisible(visible);
 }
 
-IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
-{
+IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity) {
 
-	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
+	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity);
 	//	NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
 	//	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*> (entity.getAttachment());
 	//	if (currentModelAttachment) {
@@ -99,8 +99,7 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//	}
 }
 
-void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate)
-{
+void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate) {
 	delete mAttachmentController;
 	if (controllerDelegate) {
 		mAttachmentController = new DelegatingNodeController(*this, *controllerDelegate);
@@ -109,16 +108,14 @@ void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelega
 	}
 }
 
-IEntityControlDelegate* NodeAttachment::getControlDelegate() const
-{
+IEntityControlDelegate* NodeAttachment::getControlDelegate() const {
 	if (mAttachmentController) {
 		return mAttachmentController->getControlDelegate();
 	}
 	return nullptr;
 }
 
-void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity)
-{
+void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity) {
 	assert(position.isValid());
 	assert(orientation.isValid());
 	assert(velocity.isValid());
@@ -131,26 +128,23 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 	}
 	mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
 }
-Ogre::Node* NodeAttachment::getNode() const
-{
+
+Ogre::Node* NodeAttachment::getNode() const {
 	return mNodeProvider->getNode();
 }
 
-void NodeAttachment::updatePosition()
-{
+void NodeAttachment::updatePosition() {
 	if (mAttachmentController) {
 		mAttachmentController->forceMovementUpdate();
 	}
 }
 
-void NodeAttachment::setVisualize(const std::string& visualization, bool visualize)
-{
+void NodeAttachment::setVisualize(const std::string& visualization, bool visualize) {
 	mNodeProvider->setVisualize(visualization, visualize);
 	AttachmentBase::setVisualize(visualization, visualize);
 }
 
-bool NodeAttachment::getVisualize(const std::string& visualization) const
-{
+bool NodeAttachment::getVisualize(const std::string& visualization) const {
 	bool providerResult = mNodeProvider->getVisualize(visualization);
 	return AttachmentBase::getVisualize(visualization) || providerResult;
 }

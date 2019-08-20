@@ -19,6 +19,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include "EmberEntity.h"
 
 #include "IGraphicalRepresentation.h"
@@ -32,13 +33,11 @@
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
-#include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/MultiLineListFormatter.h>
 
-namespace Ember
-{
+namespace Ember {
 
 
 /**
@@ -86,29 +85,24 @@ EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View* vw) :
 		mGraphicalRepresentation(nullptr),
 		mAttachment(nullptr),
 		mAttachmentControlDelegate(nullptr),
-		mHeightProvider(nullptr)
-{
+		mHeightProvider(nullptr) {
 }
 
-EmberEntity::~EmberEntity()
-{
+EmberEntity::~EmberEntity() {
 	delete mAttachment;
 	delete mGraphicalRepresentation;
 }
 
-void EmberEntity::registerGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener)
-{
+void EmberEntity::registerGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener) {
 	sGlobalDispatcher.registerListener(attributeName, listener);
 }
 
-void EmberEntity::deregisterGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener)
-{
+void EmberEntity::deregisterGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener) {
 	sGlobalDispatcher.deregisterListener(attributeName, listener);
 }
 
 
-void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
-{
+void EmberEntity::init(const Atlas::Objects::Entity::RootEntity& ge, bool fromCreateOp) {
 	Eris::Entity::init(ge, fromCreateOp);
 
 	// Setup Sounds
@@ -128,28 +122,24 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	}
 }
 
-std::string EmberEntity::getNameOrType() const
-{
+std::string EmberEntity::getNameOrType() const {
 	if (!m_name.empty()) {
 		return m_name;
 	}
 	return m_type->getName();
 }
 
-void EmberEntity::adjustPosition()
-{
+void EmberEntity::adjustPosition() {
 	if (mAttachment) {
 		mAttachment->updatePosition();
 	}
 }
 
-void EmberEntity::setHeightProvider(IHeightProvider* heightProvider)
-{
+void EmberEntity::setHeightProvider(IHeightProvider* heightProvider) {
 	mHeightProvider = heightProvider;
 }
 
-float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
-{
+float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const {
 
 	if (mHeightProvider) {
 		float height = 0;
@@ -182,14 +172,13 @@ float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 	}
 }
 
-void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
-{
+void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs) {
 	EntityTalk entityTalk(talkArgs);
 
 	//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 	mSuggestedResponses = entityTalk.getSuggestedResponses();
 
-	S_LOG_VERBOSE("Entity " << getName() << " ("<< getType()->getName() << ") says: \"" << entityTalk.getMessage() << "\"");
+	S_LOG_VERBOSE("Entity " << getName() << " (" << getType()->getName() << ") says: \"" << entityTalk.getMessage() << "\"");
 
 	EventTalk.emit(entityTalk);
 
@@ -201,8 +190,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	Eris::ViewEntity::onTalk(talkArgs);
 }
 
-void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation & op)
-{
+void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation& op) {
 	//We'll just catch the call and write something to both the log and the console, and then pass it on.
 
 	std::string message = getNameOrType() + " emits a " + op->getParent() + ".";
@@ -212,29 +200,25 @@ void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation &
 	Eris::ViewEntity::onSoundAction(op);
 }
 
-void EmberEntity::setAttachmentControlDelegate(IEntityControlDelegate* delegate)
-{
+void EmberEntity::setAttachmentControlDelegate(IEntityControlDelegate* delegate) {
 	mAttachmentControlDelegate = delegate;
 	if (mAttachment) {
 		mAttachment->setControlDelegate(delegate);
 	}
 }
 
-IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const
-{
+IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const {
 	return mAttachmentControlDelegate;
 }
 
-void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
-{
+void EmberEntity::onLocationChanged(Eris::Entity* oldLocation) {
 	updateAttachment();
 
 	Eris::Entity::onLocationChanged(oldLocation);
 
 }
 
-void EmberEntity::updateAttachment()
-{
+void EmberEntity::updateAttachment() {
 	//Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
 
@@ -264,8 +248,7 @@ void EmberEntity::updateAttachment()
 }
 
 
-void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
-{
+void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act) {
 	if (act->getParent() == "hit" && !act->isDefaultTo()) {
 		//Hits are special, since we need to check the "to" instead.
 		auto hitEntity = dynamic_cast<EmberEntity*>(getView()->getEntity(act->getTo()));
@@ -296,20 +279,17 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 	Entity::onAction(act);
 }
 
-const std::vector<std::string>& EmberEntity::getSuggestedResponses() const
-{
+const std::vector<std::string>& EmberEntity::getSuggestedResponses() const {
 	return mSuggestedResponses;
 }
 
-bool EmberEntity::hasSuggestedResponses() const
-{
+bool EmberEntity::hasSuggestedResponses() const {
 	return !mSuggestedResponses.empty();
 }
 
-void EmberEntity::onPropertyChanged(const std::string& str, const Atlas::Message::Element& v)
-{
-	if (str == "mode") {
-		parsePositioningModeChange(v);
+void EmberEntity::onPropertyChanged(const std::string& str, const Atlas::Message::Element& v) {
+	if (str == "mode" && v.isString()) {
+		parsePositioningModeChange(v.String());
 	} else if (str == "bbox" || str == "scale") {
 		Entity::onPropertyChanged(str, v);
 		onBboxChanged();
@@ -327,9 +307,7 @@ void EmberEntity::onPropertyChanged(const std::string& str, const Atlas::Message
 
 }
 
-void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
-{
-	const std::string& mode = v.asString();
+void EmberEntity::parsePositioningModeChange(const std::string& mode) {
 	PositioningMode newMode;
 	if (mode == "floating") {
 		newMode = PositioningMode::FLOATING;
@@ -339,56 +317,52 @@ void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 		newMode = PositioningMode::SUBMERGED;
 	} else if (mode == "planted") {
 		newMode = PositioningMode::PLANTED;
+	} else if (mode == "projectile") {
+		newMode = PositioningMode::PROJECTILE;
 	} else {
 		newMode = PositioningMode::FREE;
 	}
 
-	onPositioningModeChanged(newMode);
+	if (newMode != mPositioningMode) {
+		onPositioningModeChanged(newMode);
+	}
 }
 
-void EmberEntity::onPositioningModeChanged(PositioningMode newMode)
-{
-	if (newMode != mPositioningMode) {
-		adjustPosition();
-	}
+void EmberEntity::onPositioningModeChanged(PositioningMode newMode) {
+	adjustPosition();
+
 	EventPositioningModeChanged.emit(newMode);
 	mPositioningMode = newMode;
 }
 
-void EmberEntity::setVisualize(const std::string& visualization, bool visualize)
-{
+void EmberEntity::setVisualize(const std::string& visualization, bool visualize) {
 	if (mAttachment) {
 		mAttachment->setVisualize(visualization, visualize);
 	}
 }
 
-bool EmberEntity::getVisualize(const std::string& visualization) const
-{
+bool EmberEntity::getVisualize(const std::string& visualization) const {
 	if (mAttachment) {
 		return mAttachment->getVisualize(visualization);
 	}
 	return false;
 }
 
-void EmberEntity::onBboxChanged()
-{
+void EmberEntity::onBboxChanged() {
 	if (mAttachment) {
 		mAttachment->updateScale();
 	}
 }
 
-EmberEntity* EmberEntity::getEmberLocation() const
-{
+EmberEntity* EmberEntity::getEmberLocation() const {
 	return dynamic_cast<EmberEntity*>(getLocation());
 }
 
-EmberEntity* EmberEntity::getEmberContained(unsigned int index) const
-{
+EmberEntity* EmberEntity::getEmberContained(unsigned int index) const {
 	return dynamic_cast<EmberEntity*>(getContained(index));
 }
 
-void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const
-{
+void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOutstream) const {
 	logOutstream << "Dumping attributes for entity " << getId() << "(" << getName() << ")" << std::endl;
 
 	Atlas::Message::QueuedDecoder decoder;
@@ -402,13 +376,11 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 	formatter.streamEnd();
 }
 
-IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const
-{
+IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const {
 	return mGraphicalRepresentation;
 }
 
-void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation)
-{
+void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation) {
 	if (graphicalRepresentation != mGraphicalRepresentation) {
 		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
 		//FIXME This is a little hackish; how can we improve it to not require special cases?
@@ -423,8 +395,7 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 	}
 }
 
-void EmberEntity::setAttachment(IEntityAttachment* attachment)
-{
+void EmberEntity::setAttachment(IEntityAttachment* attachment) {
 	IEntityAttachment* oldAttachment = mAttachment;
 	mAttachment = attachment;
 	if (attachment != oldAttachment) {
@@ -434,8 +405,7 @@ void EmberEntity::setAttachment(IEntityAttachment* attachment)
 
 }
 
-void EmberEntity::reattachChildren()
-{
+void EmberEntity::reattachChildren() {
 	for (unsigned int i = 0; i < numContained(); ++i) {
 		EmberEntity* entity = getEmberContained(i);
 		if (entity) {
@@ -445,13 +415,11 @@ void EmberEntity::reattachChildren()
 	}
 }
 
-IEntityAttachment* EmberEntity::getAttachment() const
-{
+IEntityAttachment* EmberEntity::getAttachment() const {
 	return mAttachment;
 }
 
-EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment)
-{
+EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment) {
 	auto* attachmentElement = ptrOfProperty(attachment);
 	if (attachmentElement) {
 		auto id = Eris::Entity::extractEntityId(*attachmentElement);
@@ -468,8 +436,7 @@ EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment)
 	return nullptr;
 }
 
-void EmberEntity::accept(IEntityVisitor& visitor)
-{
+void EmberEntity::accept(IEntityVisitor& visitor) {
 	visitor.visit(*this);
 	for (size_t i = 0; i < numContained(); ++i) {
 		EmberEntity* entity = getEmberContained(i);
@@ -479,8 +446,7 @@ void EmberEntity::accept(IEntityVisitor& visitor)
 	}
 }
 
-void EmberEntity::accept(std::function<bool(EmberEntity&)>& visitor)
-{
+void EmberEntity::accept(std::function<bool(EmberEntity&)>& visitor) {
 	if (visitor(*this)) {
 		for (size_t i = 0; i < numContained(); ++i) {
 			EmberEntity* entity = getEmberContained(i);
@@ -491,8 +457,7 @@ void EmberEntity::accept(std::function<bool(EmberEntity&)>& visitor)
 	}
 }
 
-void EmberEntity::accept(std::function<bool(const EmberEntity&)>& visitor) const
-{
+void EmberEntity::accept(std::function<bool(const EmberEntity&)>& visitor) const {
 	if (visitor(*this)) {
 		for (size_t i = 0; i < numContained(); ++i) {
 			EmberEntity* entity = getEmberContained(i);
@@ -503,13 +468,11 @@ void EmberEntity::accept(std::function<bool(const EmberEntity&)>& visitor) const
 	}
 }
 
-EmberEntity::CompositionMode EmberEntity::getCompositionMode() const
-{
+EmberEntity::CompositionMode EmberEntity::getCompositionMode() const {
 	return mCompositionMode;
 }
 
-void EmberEntity::setCompositionMode(EmberEntity::CompositionMode mode)
-{
+void EmberEntity::setCompositionMode(EmberEntity::CompositionMode mode) {
 	mCompositionMode = mode;
 }
 
@@ -544,9 +507,9 @@ void EmberEntity::parseUsages(std::map<std::string, EmberEntity::Usage>& map, co
 				}
 			});
 			usage.name = entry.first;
-            AtlasQuery::find<Atlas::Message::StringType>(entry.second, "name", [&](const auto& name) {
-                usage.name = name;
-            });
+			AtlasQuery::find<Atlas::Message::StringType>(entry.second, "name", [&](const auto& name) {
+				usage.name = name;
+			});
 
 			map.emplace(entry.first, std::move(usage));
 		}

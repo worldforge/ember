@@ -35,7 +35,6 @@
 #include "../World.h"
 #include "../Avatar.h"
 
-#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/camera/MainCamera.h"
@@ -135,7 +134,7 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 		if (I != mEntityObservers.end()) {
 			observer = I->second;
 		} else {
-			Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(*entity);
+			Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(*entity);
 			if (modelRepresentation) {
 				observer = new EntityObserver(*this, *entity);
 				mEntityObservers.insert(std::make_pair(entity->getId(), observer));
@@ -216,7 +215,7 @@ IngameChatWidget::EntityObserver::~EntityObserver() {
 
 void IngameChatWidget::EntityObserver::entity_GraphicalRepresentationChanged() {
 	if (mLabel) {
-		auto model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
+		auto model = Model::ModelRepresentation::getModelForEntity(mEntity);
 		if (model) {
 			mLabel->attachToEntity(&mEntity, model);
 		} else {
@@ -270,7 +269,7 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera* camera) {
 
 void IngameChatWidget::EntityObserver::showLabel() {
 	if (!mLabel) {
-		auto model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
+		auto model = Model::ModelRepresentation::getModelForEntity(mEntity);
 		if (model) {
 			mLabel = mChatWidget.getLabelPool().checkoutWidget();
 			mLabel->attachToEntity(&mEntity, model);

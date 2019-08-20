@@ -37,9 +37,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ISceneRenderingTechnique()
-	{
-	}
+	virtual ~ISceneRenderingTechnique()	= default;
 
 	/**
 	 * @brief Registers an entity with this rendering technique.

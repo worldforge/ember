@@ -20,6 +20,7 @@
 #define EMBEROGRENodeAttachment_H_
 
 #include "components/ogre/AttachmentBase.h"
+#include "domain/EmberEntity.h"
 #include <sigc++/trackable.h>
 
 namespace Ogre
@@ -63,34 +64,34 @@ public:
 	 * @brief Dtor.
 	 * During destruction the INodeProvider instance will be destroyed.
 	 */
-	virtual ~NodeAttachment();
+	~NodeAttachment() override;
 
 	/**
 	 * @brief Initializes the attachment. This must be called after an instance has been created.
 	 */
 	virtual void init();
 
-	virtual void setControlDelegate(IEntityControlDelegate* controllerDelegate);
+	void setControlDelegate(IEntityControlDelegate* controllerDelegate) override;
 
-	virtual IEntityControlDelegate* getControlDelegate() const;
+	IEntityControlDelegate* getControlDelegate() const override;
 
-	virtual IEntityAttachment* attachEntity(EmberEntity& entity);
+	IEntityAttachment* attachEntity(EmberEntity& entity) override;
 
-	virtual void updatePosition();
+	void updatePosition() override;
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize) override;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	virtual bool getVisualize(const std::string& visualization) const;
+	bool getVisualize(const std::string& visualization) const override;
 
 	/**
 	 * @brief Sets the position and orientation of the node.
@@ -130,6 +131,8 @@ protected:
 	 * @param visible Whether the entity is visible or not.
 	 */
 	void entity_VisibilityChanged(bool visible);
+
+	void entity_PositioningModeChanged(EmberEntity::PositioningMode newMode);
 
 	/**
 	 * @brief Sets the visibility of the attachment.

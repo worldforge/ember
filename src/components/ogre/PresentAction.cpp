@@ -22,7 +22,6 @@
 #include "PresentAction.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/entitymapping/ChangeContext.h"
 #include "components/entitymapping/EntityMapping.h"
 #include "components/ogre/Scene.h"

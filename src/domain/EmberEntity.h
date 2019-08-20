@@ -99,7 +99,12 @@ public:
 		/**
 		 * @brief Submerged
 		 */
-		SUBMERGED
+		SUBMERGED,
+
+		/**
+		 * @brief Projectile
+		 */
+		PROJECTILE
 	};
 
 	/**
@@ -421,9 +426,8 @@ protected:
 	/**
 	 * @brief Parses the current positioning mode from the submitted element, which should be taken from the "mode" attribute.
 	 * This method will in turn call onPositioningModeChanged if the mode is changed
-	 * @param v The element that contains the mode attribute, should be the "mode" attribute in the root attributes map.
 	 */
-	void parsePositioningModeChange(const Atlas::Message::Element& v);
+	void parsePositioningModeChange(const std::string& mode);
 
 	/**
 	 * @brief Re-attaches all child entities.

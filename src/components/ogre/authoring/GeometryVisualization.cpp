@@ -23,7 +23,6 @@
 #include "framework/LoggingInstance.h"
 #include "framework/AtlasQuery.h"
 #include "components/ogre/model/Model.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 
 #include <wfmath/atlasconv.h>
 

@@ -26,7 +26,7 @@
 #include "IAnimated.h"
 
 
-template<> Ember::OgreView::MotionManager* Ember::Singleton<Ember::OgreView::MotionManager>::ms_Singleton = 0;
+template<> Ember::OgreView::MotionManager* Ember::Singleton<Ember::OgreView::MotionManager>::ms_Singleton = nullptr;
 namespace Ember {
 namespace OgreView {
 
@@ -38,14 +38,13 @@ MotionManager::MotionManager()
 }
 
 
-MotionManager::~MotionManager()
-{}
+MotionManager::~MotionManager()= default;
 
 
 void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
 {
-	for (MovableStore::const_iterator I = mMotionSet.begin(); I != mMotionSet.end(); ++I) {
-		(*I)->updateMotion(timeSlice);
+	for (auto I : mMotionSet) {
+		I->updateMotion(timeSlice);
 	}
 }
 

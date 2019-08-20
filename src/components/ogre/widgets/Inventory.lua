@@ -374,7 +374,7 @@ function Inventory:setupDoll(avatarEntity)
 	self.doll.feetAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.feet, "feet")
 		
 	local representationUpdate = function()
-		local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
+		local model = Ember.OgreView.Model.ModelRepresentation:getModelForEntity(avatarEntity)
 		if model ~= nil then
 			self.doll.renderer:showModel(model:getDefinition())
 			self.doll.renderer:setCameraDistance(0.75)

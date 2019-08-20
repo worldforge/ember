@@ -54,6 +54,7 @@
 #include "services/config/ConfigService.h"
 
 #include "framework/MainLoopController.h"
+#include "ProjectileRenderingTechnique.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
@@ -119,6 +120,7 @@ World::World(Eris::View& view,
 												fallbackEnvironment);
 
 	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
+	mScene->addRenderingTechnique("projectile", new ProjectileRenderingTechnique(mScene->getSceneManager()));
 	mTerrainManager->getHandler().setLightning(mEnvironment);
 
 	//set the background colour to black

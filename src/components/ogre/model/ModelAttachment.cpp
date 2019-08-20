@@ -27,7 +27,6 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelMount.h"
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelBoneProvider.h"
 #include "components/ogre/model/ModelFitting.h"
 
@@ -98,7 +97,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 	if (attachPoint.empty() && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
 		return new HiddenAttachment(getAttachedEntity(), entity);
 	} else {
-		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
+		ModelRepresentation* modelRepresentation = ModelRepresentation::getRepresentationForEntity(entity);
 
 		INodeProvider* nodeProvider = nullptr;
 		std::string pose;

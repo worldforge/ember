@@ -29,7 +29,6 @@ namespace Model {
  * @brief Represents an entity through a Model instance.
  *
  * An instance of this binds an EmberEntity instance and a Model instance together. It's normally not meant to be created externally.
- * You can access instances of it attached to an entity through the ModelRepresentationManager class.
  */
 class ModelRepresentation : public IGraphicalRepresentation
 {
@@ -52,6 +51,9 @@ public:
      */
     Model& getModel() const;
 
+    static Model* getModelForEntity(Ember::EmberEntity& entity);
+
+	static ModelRepresentation* getRepresentationForEntity(Ember::EmberEntity& entity);
 
 };
 

@@ -91,7 +91,6 @@ class EmberEntityMappingManager;
 namespace Model
 {
 class ModelDefinitionManager;
-class ModelRepresentationManager;
 }
 
 namespace Authoring
@@ -313,11 +312,6 @@ protected:
 	 * @brief Helper object that allows for easy Ogre material editing.
 	 */
 	Authoring::MaterialEditor* mMaterialEditor;
-
-	/**
-	 * @brief Manages the model representation instances and allows for access of a specific model representation attached to any entity.
-	 */
-	Model::ModelRepresentationManager* mModelRepresentationManager;
 
 	/**
 	 * @brief The sound resource provider, which loads sounds using the Ogre resource system.

@@ -29,7 +29,6 @@
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/entitymapping/ChangeContext.h"
 #include "components/entitymapping/EntityMapping.h"

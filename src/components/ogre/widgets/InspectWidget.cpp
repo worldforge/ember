@@ -31,7 +31,6 @@
 #include "domain/EmberEntity.h"
 #include "../World.h"
 #include "components/ogre/authoring/AuthoringManager.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/Model.h"
 
 
@@ -48,6 +47,7 @@
 
 #include <Atlas/PresentationBridge.h>
 #include <framework/Singleton.h>
+#include <components/ogre/model/ModelRepresentation.h>
 
 
 namespace Ember {
@@ -118,7 +118,7 @@ void InspectWidget::buildWidget()
 
 	getWindow("ShowModel")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
 		if (mCurrentEntity) {
-			auto model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(*mCurrentEntity);
+			auto model = Model::ModelRepresentation::getModelForEntity(*mCurrentEntity);
 			if (model) {
 				model->setVisible(!model->getVisible());
 			}

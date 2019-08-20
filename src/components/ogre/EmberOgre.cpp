@@ -59,7 +59,6 @@
 //#include "carpenter/BluePrint.h"
 
 #include "model/ModelDefinitionManager.h"
-#include "model/ModelRepresentationManager.h"
 #include "mapping/EmberEntityMappingManager.h"
 
 #include "lod/LodDefinitionManager.h"
@@ -127,7 +126,6 @@ EmberOgre::EmberOgre() :
 		mEntityRecipeManager(nullptr),
 		mLogObserver(nullptr),
 		mMaterialEditor(nullptr),
-		mModelRepresentationManager(nullptr),
 		mSoundResourceProvider(nullptr),
 		mLodDefinitionManager(nullptr),
 		mLodManager(nullptr),
@@ -146,7 +144,6 @@ EmberOgre::EmberOgre() :
 EmberOgre::~EmberOgre()
 {
 	delete mWorld;
-	delete mModelRepresentationManager;
 	delete mMaterialEditor;
 
 	delete mConsoleDevTools;
@@ -454,8 +451,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		mSceneManagerOutOfWorld->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
 
 		mMaterialEditor = new Authoring::MaterialEditor();
-
-		mModelRepresentationManager = new Model::ModelRepresentationManager();
 
 		mConsoleDevTools = new ConsoleDevTools;
 

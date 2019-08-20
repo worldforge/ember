@@ -127,7 +127,6 @@ $pfile "ActionBarIconDragDropTarget.pkg"
 
 $pfile "Model.pkg"
 $pfile "ModelRepresentation.pkg"
-$pfile "ModelRepresentationManager.pkg"
 $pfile "SubModel.pkg"
 $pfile "ModelDefinition.pkg"
 

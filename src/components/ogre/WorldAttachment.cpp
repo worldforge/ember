@@ -22,7 +22,6 @@
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
 #include "OgreInfo.h"
 
@@ -65,7 +64,7 @@ IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 {
 	NodeAttachment* nodeAttachment;
 	Ogre::SceneNode* node = mWorldNode->createChildSceneNode( OgreInfo::createUniqueResourceName(entity.getId()));
-	if (Model::ModelRepresentation * modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
+	if (Model::ModelRepresentation * modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity)) {
 		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(node, mWorldNode));
 	}
 	else {

@@ -16,7 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <OgreResourceGroupManager.h>
 #include "components/entitymapping/ChangeContext.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 #include "components/ogre/model/ModelDefinitionManager.h"

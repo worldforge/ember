@@ -33,7 +33,7 @@ add_library(emberogre
         model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp
         model/ModelDefinitionManager.cpp model/ModelPart.cpp model/ParticleSystem.cpp model/ParticleSystemBinding.cpp model/SubModel.cpp
         model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp
-        model/ModelRepresentationManager.cpp model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelFitting.cpp model/ModelPartReactivatorVisitor.cpp
+        model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelFitting.cpp model/ModelPartReactivatorVisitor.cpp
 
         sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp
         sound/SoundEntity.cpp sound/SoundGroup.cpp sound/SoundGroupDefinition.cpp sound/XMLSoundDefParser.cpp
@@ -113,7 +113,10 @@ add_library(emberogre
         EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ILightning.h
         IMovable.h IMovementProvider.h INodeProvider.h ISceneRenderingTechnique.h IWorldPickListener.h
         MousePicker.h OgreIncludes.h authoring/GeometryVisualization.cpp authoring/GeometryVisualization.h PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h widgets/adapters/ModelDefinitionsAdapter.cpp widgets/adapters/ModelDefinitionsAdapter.h
-        BulletCollisionDetector.cpp BulletCollisionDetector.h BulletWorld.cpp BulletWorld.h EntityCollisionInfo.h SkeletonDisplay.cpp SkeletonDisplay.h widgets/adapters/atlas/ScaleAdapter.cpp widgets/adapters/atlas/ScaleAdapter.h widgets/adapters/atlas/EntityRefAdapter.cpp widgets/adapters/atlas/EntityRefAdapter.h)
+        BulletCollisionDetector.cpp BulletCollisionDetector.h BulletWorld.cpp BulletWorld.h EntityCollisionInfo.h SkeletonDisplay.cpp SkeletonDisplay.h widgets/adapters/atlas/ScaleAdapter.cpp widgets/adapters/atlas/ScaleAdapter.h widgets/adapters/atlas/EntityRefAdapter.cpp widgets/adapters/atlas/EntityRefAdapter.h
+
+        ProjectileRenderingTechnique.cpp
+        )
 
 
 file(GLOB ENTITY_RECIPES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.entityrecipe" "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.xsd")

@@ -40,7 +40,6 @@
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
 
 #include "components/ogre/authoring/EntityMaker.h"
 #include "components/ogre/GUIManager.h"
@@ -63,7 +62,7 @@
 #include <wfmath/atlasconv.h>
 
 #include <OgreRoot.h>
-
+#include <OgreCamera.h>
 #include <OgreTagPoint.h>
 
 #include <wfmath/stream.h>
@@ -148,7 +147,7 @@ void Avatar::runCommand(const std::string& command, const std::string& args) {
 			if (!x.empty() && !y.empty() && !z.empty() && !degrees.empty()) {
 				Ogre::Degree ogreDegrees(Ogre::StringConverter::parseReal(degrees));
 				Ogre::Quaternion rotation(ogreDegrees, Ogre::Vector3(Ogre::StringConverter::parseReal(x), Ogre::StringConverter::parseReal(y), Ogre::StringConverter::parseReal(z)));
-				Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mErisAvatarEntity);
+				Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(mErisAvatarEntity);
 				if (modelRepresentation) {
 					Model::Model& model = modelRepresentation->getModel();
 					const auto& attachPoints = model.getAttachedPoints();
@@ -422,7 +421,7 @@ void Avatar::viewEntityDeleted() {
 	EventAvatarEntityDestroyed();
 }
 
-void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target, const WFMath::Point<3>& pos) {
+void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction) {
 
 	const EmberEntity::Usage* usage = nullptr;
 	auto I = tool.getUsages().find(operation);
@@ -439,11 +438,16 @@ void Avatar::useTool(const EmberEntity& tool, const std::string& operation, cons
 		return;
 	}
 
-	useTool(tool, operation, *usage, target, pos);
+	useTool(tool, operation, *usage, target, pos, direction);
 
 }
 
-void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const EmberEntity::Usage& usage, const Eris::Entity* target, const WFMath::Point<3>& pos) {
+void Avatar::useTool(const EmberEntity& tool,
+					 const std::string& operation,
+					 const EmberEntity::Usage& usage,
+					 const Eris::Entity* target,
+					 const WFMath::Point<3>& posInWorld,
+					 WFMath::Vector<3> direction) {
 
 	Atlas::Objects::Operation::Use use;
 	use->setFrom(mErisAvatar->getId());
@@ -451,40 +455,41 @@ void Avatar::useTool(const EmberEntity& tool, const std::string& operation, cons
 	Atlas::Objects::Entity::RootEntity entity;
 	entity->setId(tool.getId());
 
-
 	for (auto& param : usage.params) {
 		Atlas::Message::ListType list;
 		if (param.second.type == "entity" || param.second.type == "entity_location") {
 			if (target) {
 				Atlas::Objects::Entity::RootEntity entityArg;
 				entityArg->setId(target->getId());
-				if (pos.isValid()) {
+				if (posInWorld.isValid()) {
 					//pos must be relative to the entity
-					//TODO: walk up and down the entity hierachy; the current code only works for entities that share location
-					auto localPos = pos.toLocalCoords(target->getPredictedPos(), target->getPredictedOrientation());
+					//TODO: walk up and down the entity hierarchy; the current code only works for entities that share location
+					auto localPos = posInWorld.toLocalCoords(target->getPredictedPos(), target->getPredictedOrientation());
 					entityArg->setPosAsList(Atlas::Message::Element(localPos.toAtlas()).List());
 				}
 				list.emplace_back(entityArg->asMessage());
 			}
 		} else if (param.second.type == "position") {
-			list.emplace_back(pos.toAtlas());
+			if (posInWorld.isValid()) {
+				list.emplace_back(posInWorld.toAtlas());
+			}
 		} else {
-			WFMath::Vector<3> direction(0, 1, 0);
-			direction.rotate(mErisAvatarEntity.getOrientation());
-			list.emplace_back(direction.toAtlas());
+			//If there's no direction, calculate it using the position.
+			if (!direction.isValid() && posInWorld.isValid()) {
+				auto avatarPos = mErisAvatarEntity.getPredictedPos();
+				auto size = mErisAvatarEntity.getBBox().highCorner() - mErisAvatarEntity.getBBox().lowCorner();
+				//When using something we have our hands at approx. 80% our height. Since the server will take this into account we need to also do it.
+				//TODO: put this into a property so we have full sync between server and client.
+				avatarPos.y() += size.y() * 0.8;
+				direction = posInWorld - avatarPos;
+			}
+			if (direction.isValid()) {
+				direction.normalize();
+				list.emplace_back(direction.toAtlas());
+			}
 		}
 		entity->setAttr(param.first, std::move(list));
 	}
-//
-//
-//	if (target) {
-//		Atlas::Objects::Entity::RootEntity target1;
-//		target1->setId(target->getId());
-//		if (pos.isValid()) {
-//			target1->setPosAsList(Atlas::Message::Element(pos.toAtlas()).List());
-//		}
-//		op->setArgs1(target1);
-//	}
 
 	Atlas::Objects::Operation::RootOperation op;
 	op->setParent(operation);
@@ -530,6 +535,8 @@ boost::optional<std::string> Avatar::performDefaultUsage() {
 
 
 	auto useWithSelectedEntity = [&](EmberEntity& attachedEntity, const EmberEntity::Usage& usage, const std::string& op) {
+		auto ray = mScene.getMainCamera().getCameraToViewportRay(0.5, 0.5);
+
 		auto& pickedResults = EmberOgre::getSingleton().getWorld()->getEntityPickListener().getPersistentResult();
 		Eris::Entity* entity = nullptr;
 		WFMath::Point<3> pos;
@@ -543,7 +550,7 @@ boost::optional<std::string> Avatar::performDefaultUsage() {
 			}
 		}
 
-		useTool(attachedEntity, op, usage, entity, pos);
+		useTool(attachedEntity, op, usage, entity, pos, Convert::toWF<WFMath::Vector<3>>(ray.getDirection()));
 		if (entity) {
 			GUIManager::getSingleton().EmitEntityAction("use", dynamic_cast<EmberEntity*>(entity));
 		}
