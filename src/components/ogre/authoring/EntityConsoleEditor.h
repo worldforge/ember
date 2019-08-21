@@ -18,31 +18,33 @@
 #ifndef COMPONENTS_OGRE_AUTHORING_ENTITYCONSOLEEDITOR_H_
 #define COMPONENTS_OGRE_AUTHORING_ENTITYCONSOLEEDITOR_H_
 
+#include <components/ogre/Avatar.h>
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 
-class EntityConsoleEditor : public ConsoleObject
-{
+class EntityConsoleEditor : public ConsoleObject {
 public:
-	EntityConsoleEditor();
+	explicit EntityConsoleEditor(Ember::OgreView::Avatar* pAvatar);
+
 	~EntityConsoleEditor() override = default;
 
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	void runCommand(const std::string &command, const std::string &args) override;
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	 * @brief Command for settings property on an entity.
 	 */
 	const ConsoleCommandWrapper SetProperty;
+
+private:
+	Ember::OgreView::Avatar* mAvatar;
+
 };
 
 }

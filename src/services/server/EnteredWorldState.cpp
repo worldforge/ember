@@ -34,104 +34,36 @@
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 
-namespace Ember
-{
+namespace Ember {
 
 EnteredWorldState::EnteredWorldState(IState& parentState, Eris::Avatar& avatar, Eris::Account& account) :
-		StateBase<void>::StateBase(parentState), Say("say", this, "Say something."),
-		SayTo("sayto", this, "Say something address to one or many entities. Format: '/sayto entityid,entityid,... message"),
-		Emote("me", this, "Emotes something."),
-		Delete("delete", this, "Deletes an entity."),
-		AdminTell("admin_tell", this, "Uses admin mode to directly tell a NPC something. Usage: /admin_tell <entityid> <key> <value>"),
+		StateBase<void>::StateBase(parentState),
 		mAvatar(avatar),
-		mAccount(account),
-		mAdapter(account, avatar)
-{
+		mAccount(account) {
 	getSignals().GotAvatar.emit(&mAvatar);
 	getSignals().GotView.emit(&getView());
 
 }
 
-EnteredWorldState::~EnteredWorldState()
-{
+EnteredWorldState::~EnteredWorldState() {
 	getSignals().DestroyedView.emit();
 	getSignals().DestroyedAvatar.emit();
 }
 
-bool EnteredWorldState::logout()
-{
+bool EnteredWorldState::logout() {
 	mAvatar.deactivate();
 	return true;
 }
 
-void EnteredWorldState::runCommand(const std::string &command, const std::string &args)
-{
-	if (Say == command) {
-		mAdapter.say(args);
-	} else if (SayTo == command) {
-		Tokeniser tokeniser(args);
-		std::string entityIdsString = tokeniser.nextToken();
-		std::vector<std::string> entityIds = Tokeniser::split(entityIdsString, ",");
-		std::string message = tokeniser.remainingTokens();
+void EnteredWorldState::runCommand(const std::string& command, const std::string& args) {
 
-		mAdapter.sayTo(message, entityIds);
-	} else if (Emote == command) {
-		mAdapter.emote(args);
-	} else if (Delete == command) {
-		Tokeniser tokeniser(args);
-		std::string entityId = tokeniser.nextToken();
-		if (!entityId.empty()) {
-			Eris::Entity* entity = getView().getEntity(entityId);
-			if (entity) {
-				mAdapter.deleteEntity(entity);
-			}
-		}
-
-		/*		// Touch Command
-		 } else if (command==TOUCH) {
-		 // TODO: make this switch call the touch method
-		 // TODO: polish this rough check
-		 S_LOG_VERBOSE("Touching");
-		 if(!mAvatar) {
-		 S_LOG_WARNING("No avatar.");
-		 return;
-		 }
-
-		 Atlas::Objects::Operation::Touch touch;
-		 Atlas::Message::MapType opargs;
-
-		 opargs["id"] = args;
-		 touch->setFrom(mAvatar->getId());
-		 touch->setArgsAsList(Atlas::Message::ListType(1, opargs));
-
-		 mConn->send(touch);*/
-	} else if (AdminTell == command) {
-		Tokeniser tokeniser(args);
-		std::string entityId = tokeniser.nextToken();
-		if (!entityId.empty()) {
-			std::string key = tokeniser.nextToken();
-			if (!key.empty()) {
-				std::string value = tokeniser.nextToken();
-				if (!value.empty()) {
-					mAdapter.adminTell(entityId, key, value);
-				}
-			}
-		}
-	}
 }
 
-IServerAdapter& EnteredWorldState::getServerAdapter()
-{
-	return mAdapter;
-}
-
-Eris::Connection& EnteredWorldState::getConnection() const
-{
+Eris::Connection& EnteredWorldState::getConnection() const {
 	return *mAvatar.getConnection();
 }
 
-Eris::View& EnteredWorldState::getView() const
-{
+Eris::View& EnteredWorldState::getView() const {
 	return *mAvatar.getView();
 }
 

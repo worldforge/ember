@@ -20,7 +20,6 @@
 #define STATEBASE_H_
 
 #include "IState.h"
-#include "NonConnectedAdapter.h"
 #include <sigc++/trackable.h>
 
 namespace Ember
@@ -48,8 +47,6 @@ public:
 	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo) override;
 
 	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) override;
-
-	IServerAdapter& getServerAdapter() override;
 
 	void transfer(const Eris::TransferInfo& transferInfo) override;
 
@@ -161,14 +158,6 @@ inline StateBaseCore* StateBaseCore::getCoreChildState()
 
 inline void StateBaseCore::clearChildState()
 {
-}
-
-
-
-inline IServerAdapter& StateBaseCore::getServerAdapter()
-{
-	static NonConnectedAdapter sNonConnectedAdapter;
-	return sNonConnectedAdapter;
 }
 
 template<typename TChildState>

@@ -40,9 +40,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IMovementProvider()
-	{
-	}
+	virtual ~IMovementProvider() = default;
 
 	/**
 	 * @brief Provide the movement for the current frame.

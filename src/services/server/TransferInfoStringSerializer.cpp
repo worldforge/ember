@@ -29,17 +29,13 @@
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/Bach.h>
-#include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
 
-namespace Ember
-{
+namespace Ember {
 
-bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObjects, std::iostream& ostream)
-{
+bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObjects, std::iostream& ostream) {
 	Atlas::Message::ListType infos;
-	for (TransferInfoStore::const_iterator I = infoObjects.begin(); I != infoObjects.end(); ++I) {
-		const AvatarTransferInfo& transferInfo = *I;
+	for (const auto& transferInfo : infoObjects) {
 		Atlas::Message::MapType info;
 		info["host"] = transferInfo.getTransferInfo().getHost();
 		info["port"] = transferInfo.getTransferInfo().getPort();
@@ -65,8 +61,7 @@ bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObject
 	return true;
 }
 
-bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, std::iostream& istream)
-{
+bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, std::iostream& istream) {
 	try {
 		Atlas::Message::QueuedDecoder decoder;
 

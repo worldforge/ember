@@ -225,6 +225,13 @@ public:
 	 */
 	void runCommand(const std::string& command, const std::string& args) override;
 
+	void deleteEntity(Eris::Entity* entity);
+
+	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements);
+
+	void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value);
+
+
 	/**
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
 	 */
@@ -232,6 +239,11 @@ public:
 
 	const ConsoleCommandWrapper AvatarActionDefaultStart;
 	const ConsoleCommandWrapper AvatarActionDefaultStop;
+	const ConsoleCommandWrapper Delete;
+	const ConsoleCommandWrapper Say;
+	const ConsoleCommandWrapper SayTo;
+	const ConsoleCommandWrapper Emote;
+	const ConsoleCommandWrapper AdminTell;
 
 protected:
 

@@ -27,34 +27,32 @@
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
-namespace Eris
-{
+namespace Eris {
 class Account;
+
 class Avatar;
+
 class TimedEvent;
 }
 
-namespace Ember
-{
+namespace Ember {
 
-class TransferEvent;
 class AvatarTransferInfo;
 
 /**
  * @brief State for when the user is logged in to a server account, but has yet not taken a character in the world.
  */
-class LoggedInState: public virtual StateBase<EnteredWorldState>, public ConsoleObject
-{
+class LoggedInState : public virtual StateBase<EnteredWorldState>, public ConsoleObject {
 public:
 	LoggedInState(IState& parentState, Eris::Account& account);
 
 	~LoggedInState() override;
 
-	void runCommand(const std::string &, const std::string &) override;
+	void runCommand(const std::string&, const std::string&) override;
 
 	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo) override;
 
-	void takeCharacter(const std::string &id) override;
+	void takeCharacter(const std::string& id) override;
 
 	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) override;
 

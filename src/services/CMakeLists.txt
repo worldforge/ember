@@ -13,21 +13,18 @@ add_library(services
         scripting/ScriptingService.cpp
         server/AccountAvailableState.cpp
         server/AvatarTransferInfo.cpp
-        server/ConnectedAdapter.cpp
         server/ConnectedState.cpp
         server/ConnectingState.cpp
         server/Connection.cpp
         server/EnteredWorldState.cpp
         server/LocalServerAdminCreator.cpp
         server/LoggedInState.cpp
-        server/NonConnectedAdapter.cpp
         server/NonConnectedState.cpp
         server/OOGChat.cpp
         server/ServerService.cpp
         server/ServerServiceConnectionListener.cpp
         server/TransferInfoStringSerializer.cpp
         server/IConnectionListener.h
-        server/IServerAdapter.h
         server/IState.h
         server/ServerServiceSignals.h
         server/StateBase.h

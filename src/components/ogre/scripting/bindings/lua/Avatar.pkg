@@ -10,7 +10,10 @@ class Avatar
 	
 	Ember::EmberEntity& getEmberEntity();
 	
-	
+	Eris::Avatar* getErisAvatar() const;
+
+	void deleteEntity(Eris::Entity* entity);
+
 	/**
 	 *    sets the minimum interval to wait before sending new rotation changes to the server
 	 *    this is not done instantly to prevent swamping of data to the server

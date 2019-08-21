@@ -30,12 +30,13 @@
 #include "services/config/ConfigService.h"
 
 
-namespace Ember
-{
+namespace Ember {
 
 AccountAvailableState::AccountAvailableState(IState& parentState, Eris::Connection& connection) :
-	StateBase<LoggedInState>::StateBase(parentState), CreateAcc("create", this, "Create an account on the server."), Login("login", this, "Login to the connected server."), mAccount(&connection)
-{
+		StateBase<LoggedInState>::StateBase(parentState),
+		CreateAcc("create", this, "Create an account on the server."),
+		Login("login", this, "Login to the connected server."),
+		mAccount(&connection) {
 	mAccount.LoginFailure.connect(sigc::mem_fun(*this, &AccountAvailableState::loginFailure));
 	mAccount.LoginSuccess.connect(sigc::mem_fun(*this, &AccountAvailableState::loginSuccess));
 	mAccount.LogoutComplete.connect(sigc::mem_fun(*this, &AccountAvailableState::logoutComplete));
@@ -45,13 +46,11 @@ AccountAvailableState::AccountAvailableState(IState& parentState, Eris::Connecti
 	getSignals().GotAccount.emit(&mAccount);
 }
 
-AccountAvailableState::~AccountAvailableState()
-{
+AccountAvailableState::~AccountAvailableState() {
 	getSignals().DestroyedAccount.emit();
 }
 
-void AccountAvailableState::loginFailure(const std::string& msg)
-{
+void AccountAvailableState::loginFailure(const std::string& msg) {
 	std::ostringstream temp;
 
 	temp << "Login Failure:" << msg;
@@ -61,24 +60,21 @@ void AccountAvailableState::loginFailure(const std::string& msg)
 	getSignals().LoginFailure.emit(&mAccount, msg);
 }
 
-void AccountAvailableState::loginSuccess()
-{
+void AccountAvailableState::loginSuccess() {
 	S_LOG_INFO("Login Success.");
 	ConsoleBackend::getSingleton().pushMessage("Login Successful", "important");
 	setChildState(new LoggedInState(*this, mAccount));
 	getSignals().LoginSuccess.emit(&mAccount);
 }
 
-void AccountAvailableState::logoutComplete(bool clean)
-{
+void AccountAvailableState::logoutComplete(bool clean) {
 	S_LOG_INFO("Logout Complete cleanness=" << clean);
 	ConsoleBackend::getSingleton().pushMessage("Logged out from server", "important");
 
 	destroyChildState();
 }
 
-void AccountAvailableState::runCommand(const std::string &command, const std::string &args)
-{
+void AccountAvailableState::runCommand(const std::string& command, const std::string& args) {
 	if (CreateAcc == command) {
 
 		Tokeniser tokeniser = Tokeniser();

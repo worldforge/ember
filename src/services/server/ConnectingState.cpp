@@ -29,11 +29,11 @@
 
 #include <Eris/Exceptions.h>
 
-namespace Ember
-{
+namespace Ember {
 ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, const std::string& host, short port) :
-	StateBase<ConnectedState>::StateBase(parentState), mConnection(session, std::string("Ember ") + VERSION, host, port, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false)
-{
+		StateBase<ConnectedState>::StateBase(parentState),
+		mConnection(session, std::string("Ember ") + VERSION, host, port, std::make_unique<ServerServiceConnectionListener>(getSignals())),
+		mHasSignalledDisconnected(false) {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
 	mConnection.StatusChanged.connect(sigc::mem_fun(*this, &ConnectingState::statusChanged));
@@ -43,8 +43,9 @@ ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, co
 }
 
 ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, const std::string& socket) :
-	StateBase<ConnectedState>::StateBase(parentState), mConnection(session, std::string("Ember ") + VERSION, socket, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false)
-{
+		StateBase<ConnectedState>::StateBase(parentState),
+		mConnection(session, std::string("Ember ") + VERSION, socket, std::make_unique<ServerServiceConnectionListener>(getSignals())),
+		mHasSignalledDisconnected(false) {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
 	mConnection.StatusChanged.connect(sigc::mem_fun(*this, &ConnectingState::statusChanged));
@@ -53,16 +54,14 @@ ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, co
 	//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 }
 
-ConnectingState::~ConnectingState()
-{
+ConnectingState::~ConnectingState() {
 	if (!mHasSignalledDisconnected) {
 		//If we get a failure there's a great risk that the Disconnected signal isn't emitted. We'll therefore do it ourselves.
 		mConnection.Disconnected.emit();
 	}
 }
 
-bool ConnectingState::connect()
-{
+bool ConnectingState::connect() {
 	try {
 		// If the connection fails here an errnumber is returned
 		int errorno = mConnection.connect();
@@ -80,8 +79,7 @@ bool ConnectingState::connect()
 	return true;
 }
 
-void ConnectingState::connected()
-{
+void ConnectingState::connected() {
 	S_LOG_INFO("Connected");
 	getSignals().GotConnection.emit(&mConnection);
 
@@ -94,24 +92,20 @@ void ConnectingState::connected()
 	ConsoleBackend::getSingleton().pushMessage("Connected to Server", "important");
 }
 
-void ConnectingState::statusChanged(Eris::BaseConnection::Status status)
-{
+void ConnectingState::statusChanged(Eris::BaseConnection::Status status) {
 	getSignals().EventStatusChanged.emit(status);
 	S_LOG_INFO("Status Changed to: " << status);
 }
 
-void ConnectingState::disconnected()
-{
+void ConnectingState::disconnected() {
 	mHasSignalledDisconnected = true;
 }
 
-Eris::Connection& ConnectingState::getConnection()
-{
+Eris::Connection& ConnectingState::getConnection() {
 	return mConnection;
 }
 
-void ConnectingState::gotFailure(const std::string & msg)
-{
+void ConnectingState::gotFailure(const std::string& msg) {
 	std::ostringstream temp;
 
 	temp << "Got Server error: " << msg;

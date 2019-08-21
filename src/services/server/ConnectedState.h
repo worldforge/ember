@@ -25,27 +25,24 @@
 #include "framework/ConsoleObject.h"
 #include <Eris/Account.h>
 
-namespace Eris
-{
+namespace Eris {
 class Connection;
 }
 
-namespace Ember
-{
+namespace Ember {
 
 /**
  * @brief State for when a connection to a server has been made.
  *
  * This is a very transient state, as the next state, AccountAvailableState, is loaded immediately.
  */
-class ConnectedState: public virtual StateBase<AccountAvailableState>, public ConsoleObject
-{
+class ConnectedState : public virtual StateBase<AccountAvailableState>, public ConsoleObject {
 public:
 	ConnectedState(IState& parentState, Eris::Connection& connection);
 
 	~ConnectedState() override = default;
 
-	void runCommand(const std::string &, const std::string &) override;
+	void runCommand(const std::string&, const std::string&) override;
 
 	void disconnect() override;
 
@@ -60,7 +57,7 @@ private:
 
 	bool disconnecting();
 
-	void gotFailure(const std::string & msg);
+	void gotFailure(const std::string& msg);
 
 };
 

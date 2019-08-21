@@ -33,24 +33,32 @@
 #include <boost/filesystem/path.hpp>
 #include <memory>
 
-namespace Eris
-{
+namespace Eris {
 class Avatar;
+
 class Connection;
+
 class View;
+
 class Lobby;
+
 class Account;
+
 class Entity;
+
 class TransferInfo;
+
 class Session;
 }
 
-namespace Ember
-{
+namespace Ember {
 
 class ConfigService;
+
 class OOGChat;
+
 class NonConnectedState;
+
 class IServerAdapter;
 
 /**
@@ -64,8 +72,7 @@ class IServerAdapter;
  * @see Ember::MetaserverService
  * @see Ember::ConsoleObject
  */
-class ServerService: public Service, public ServerServiceSignals
-{
+class ServerService : public Service, public ServerServiceSignals {
 public:
 
 	/**
@@ -80,9 +87,9 @@ public:
 
 	void setupLocalServerObservation(ConfigService& configService);
 
-	bool start();
+	bool start() override;
 
-	void stop();
+	void stop() override;
 
 	/**
 	 * @brief Connects to a remote host.
@@ -124,7 +131,7 @@ public:
 	 *
 	 * @param id The id of the character to take.
 	 */
-	void takeCharacter(const std::string &id);
+	void takeCharacter(const std::string& id);
 
 	/**
 	 * @brief Creates a new character on the server.
@@ -137,7 +144,6 @@ public:
 	 */
 	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties = Atlas::Message::MapType());
 
-//	Eris::View* getView() const;
 	Eris::Avatar* getAvatar() const;
 
 	/**
@@ -151,93 +157,6 @@ public:
 	 * @return An account, or null if none has been created.
 	 */
 	Eris::Account* getAccount() const;
-
-	/**
-	 *    Tells the server to try to move the user to the specified point.
-	 * @param dest
-	 */
-	void moveToPoint(const WFMath::Point<3>& dest);
-
-	/**
-	 * @brief Moves the user.
-	 * @param velocity The velocity with which to move the user.
-	 * @param orientation The user's orientation.
-	 */
-	void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
-
-	/**
-	 * @brief Moves the user.
-	 * @param velocity The velocity with which to move the user.
-	 */
-	void moveInDirection(const WFMath::Vector<3>& velocity);
-
-	/**
-	 * @brief Say something out loud.
-	 * @param message The message being said.
-	 */
-	void say(const std::string &message);
-
-	/**
-	 * @brief Says something, addressed to a list of entities.
-	 *
-	 * Note that the message will be heard by everyone within earshot, even those not addressed.
-	 *
-	 * @param message The message.
-	 * @param entities A list of entities to which the message will be addressed.
-	 */
-	void sayTo(const std::string &message, const std::vector<std::string>& entities);
-
-	/**
-	 * @brief Says something, addressed to an entity.
-	 *
-	 * Note that the message will be heard by everyone within earshot, even those not addressed.
-	 *
-	 * @param message The message.
-	 * @param entities The entity to which the message is addressed.
-	 */
-	void sayTo(const std::string &message, const Eris::Entity& entity);
-
-	/**
-	 * @brief Touch another entity.
-	 * @param entity
-	 */
-	void touch(Eris::Entity* entity, WFMath::Point<3> pos = WFMath::Point<3>());
-
-	/**
-	 * @brief Emotes something.
-	 * @param entity
-	 */
-	void emote(const std::string& emote);
-	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>::ZERO(), const WFMath::Quaternion& orientation = WFMath::Quaternion());
-	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>::ZERO());
-	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
-	void wield(Eris::Entity* entity, const std::string& attachment);
-	void take(Eris::Entity* entity);
-
-	/**
-	 * @brief Uses the currently wielded entity on the supplied entity.
-	 * @param entity The entity on which the currently wielded entity will be used.
-	 * @param pos The position on the entity to perform the action. In some cases this won't matter, whereas in others (such as digging on the world entity) it will.
-	 * @param operation The operation to perform. If left blank the default will be used.
-	 */
-	void use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos = WFMath::Point<3>());
-
-	void deleteEntity(Eris::Entity* entity);
-	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
-
-	/**
-	 * @brief Creates new type data on the server.
-	 * This will only be allowed if you have admin rights on the server.
-	 * @param typeInfo The new type info.
-	 */
-	void createTypeInfo(const Atlas::Objects::Root& typeInfo);
-
-	/**
-	 * @brief Update existing type data on the server.
-	 * This will only be allowed if you have admin rights on the server.
-	 * @param typeInfo The new type info.
-	 */
-	void setTypeInfo(const Atlas::Objects::Root& typeInfo);
 
 	sigc::signal<void> EventLocalSocketChanged;
 
@@ -253,8 +172,6 @@ private:
 
 	void destroyedAvatar();
 
-	IServerAdapter& getAdapter();
-
 	Eris::Session& mSession;
 
 	Eris::Connection* mConnection;
@@ -264,7 +181,7 @@ private:
 	/**
 	 * @brief Contains the class that controls Out of Game Chat
 	 */
-	OOGChat *mOOGChat;
+	OOGChat* mOOGChat;
 
 	/**
 	 * @brief The adapter which holds the actual implementation of any server communication.

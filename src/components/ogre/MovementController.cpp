@@ -48,7 +48,7 @@
 #include "framework/ConsoleBackend.h"
 
 #include <Eris/View.h>
-#include <Eris/EventService.h>
+#include <Eris/Avatar.h>
 
 #include <OgreRoot.h>
 #include <OgreCamera.h>
@@ -376,7 +376,7 @@ void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* loc
 	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3>>(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
-	EmberServices::getSingleton().getServerService().place(&mAvatar.getEmberEntity(), mAvatar.getEmberEntity().getLocation(), atlasPos);
+	mAvatar.getErisAvatar()->place(&mAvatar.getEmberEntity(), mAvatar.getEmberEntity().getLocation(), atlasPos);
 }
 
 WFMath::Vector<3> MovementController::getMovementForCurrentFrame() const {

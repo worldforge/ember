@@ -36,7 +36,7 @@ namespace Camera
 {
 
 FirstPersonCameraMount::FirstPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager) :
-	CameraMountBase(cameraSettings), mCameraNode(0)
+	CameraMountBase(cameraSettings), mCameraNode(nullptr)
 {
 	mCameraRootNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("FirstPersonCameraNodeRootNode"));
 	mCameraRootNode->setInheritOrientation(false);

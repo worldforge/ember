@@ -50,8 +50,9 @@ function Give:Give_Click(args)
 		local entityId = item:getID()
 		local entity = emberOgre:getWorld():getEmberEntity(entityId);
 		if (entity ~= nil) then
-			emberOgre:doWithEntity(self.targetEntityId, function (targetEntity) 
-				emberServices:getServerService():place(entity, targetEntity)
+			emberOgre:doWithEntity(self.targetEntityId, function (targetEntity)
+				--TODO implement using an Offer op or similar. It's not ok to have the protocol just be to add stuff in other entities.
+				--emberServices:getServerService():place(entity, targetEntity)
 			end)
 		end
 		item = self.listbox:getNextSelected(item)

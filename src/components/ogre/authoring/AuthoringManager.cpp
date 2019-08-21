@@ -68,7 +68,7 @@ void AuthoringManager::worldGotAvatar() {
 	// console command. This is to not confuse users.
 	if (mWorld.getAvatar()->isAdmin()) {
 		registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
-		mEntityConsoleEditor = new EntityConsoleEditor();
+		mEntityConsoleEditor = new EntityConsoleEditor(mWorld.getAvatar());
 	}
 }
 

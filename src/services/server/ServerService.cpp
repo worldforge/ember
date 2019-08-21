@@ -23,9 +23,7 @@
 
 #include "ServerService.h"
 
-#include "NonConnectedAdapter.h"
 #include "NonConnectedState.h"
-#include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
 #include <Eris/Session.h>
@@ -39,8 +37,7 @@
 
 #include "framework/FileSystemObserver.h"
 
-namespace Ember
-{
+namespace Ember {
 
 ServerService::ServerService(Eris::Session& session) :
 		Service("Server"),
@@ -49,8 +46,8 @@ ServerService::ServerService(Eris::Session& session) :
 		mAccount(nullptr),
 		mAvatar(nullptr),
 		mOOGChat(nullptr),
-		mNonConnectedState(new NonConnectedState(*this, session))
-{
+		mServerAdapter(nullptr),
+		mNonConnectedState(new NonConnectedState(*this, session)) {
 	GotAccount.connect(sigc::mem_fun(*this, &ServerService::gotAccount));
 	GotAvatar.connect(sigc::mem_fun(*this, &ServerService::gotAvatar));
 	GotConnection.connect(sigc::mem_fun(*this, &ServerService::gotConnection));
@@ -59,13 +56,10 @@ ServerService::ServerService(Eris::Session& session) :
 	DestroyedAvatar.connect(sigc::mem_fun(*this, &ServerService::destroyedAvatar));
 }
 
-ServerService::~ServerService() {
-
-}
+ServerService::~ServerService() = default;
 
 /* Method for starting this service 	*/
-bool ServerService::start()
-{
+bool ServerService::start() {
 	setRunning(true);
 
 	return true;
@@ -73,8 +67,7 @@ bool ServerService::start()
 }
 
 /* Interface method for stopping this service 	*/
-void ServerService::stop()
-{
+void ServerService::stop() {
 	if (isRunning()) {
 		auto directory = boost::filesystem::path(mLocalSocketPath).remove_filename().string();
 		Ember::FileSystemObserver::getSingleton().remove_directory(directory);
@@ -84,59 +77,48 @@ void ServerService::stop()
 	Service::stop();
 }
 
-void ServerService::gotConnection(Eris::Connection* connection)
-{
+void ServerService::gotConnection(Eris::Connection* connection) {
 	mConnection = connection;
 }
 
-void ServerService::gotAvatar(Eris::Avatar* avatar)
-{
+void ServerService::gotAvatar(Eris::Avatar* avatar) {
 	mAvatar = avatar;
 }
 
-void ServerService::gotAccount(Eris::Account* account)
-{
+void ServerService::gotAccount(Eris::Account* account) {
 	mAccount = account;
 }
 
-void ServerService::destroyedAccount()
-{
+void ServerService::destroyedAccount() {
 	mAccount = nullptr;
 }
 
-void ServerService::destroyedAvatar()
-{
+void ServerService::destroyedAvatar() {
 	mAvatar = nullptr;
 }
 
-Eris::Connection* ServerService::getConnection() const
-{
+Eris::Connection* ServerService::getConnection() const {
 	return mConnection;
 }
 
-Eris::Account* ServerService::getAccount() const
-{
+Eris::Account* ServerService::getAccount() const {
 	return mAccount;
 }
 
-Eris::Avatar* ServerService::getAvatar() const
-{
+Eris::Avatar* ServerService::getAvatar() const {
 	return mAvatar;
 }
 
 /* Interface method for connecting to host */
-bool ServerService::connect(const std::string& host, short port)
-{
+bool ServerService::connect(const std::string& host, short port) {
 	return mNonConnectedState->connect(host, port);
 }
 
-bool ServerService::connectLocal()
-{
+bool ServerService::connectLocal() {
 	return mNonConnectedState->connectLocal(mLocalSocketPath.string());
 }
 
-bool ServerService::hasLocalSocket()
-{
+bool ServerService::hasLocalSocket() {
 	//No socket support on win32
 #ifdef _WIN32
 	return false;
@@ -157,124 +139,24 @@ bool ServerService::hasLocalSocket()
 #endif
 }
 
-void ServerService::disconnect()
-{
+void ServerService::disconnect() {
 	mNonConnectedState->getTopState().disconnect();
 }
 
-bool ServerService::logout()
-{
+bool ServerService::logout() {
 	return mNonConnectedState->getTopState().logout();
 }
 
-void ServerService::takeTransferredCharacter(const Eris::TransferInfo& transferInfo)
-{
+void ServerService::takeTransferredCharacter(const Eris::TransferInfo& transferInfo) {
 	mNonConnectedState->getTopState().takeTransferredCharacter(transferInfo);
 }
 
-void ServerService::takeCharacter(const std::string &id)
-{
+void ServerService::takeCharacter(const std::string& id) {
 	mNonConnectedState->getTopState().takeCharacter(id);
 }
 
-bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties)
-{
+bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) {
 	return mNonConnectedState->getTopState().createCharacter(name, sex, type, description, spawnName, extraProperties);
-}
-
-void ServerService::moveToPoint(const WFMath::Point<3>& dest)
-{
-	getAdapter().moveToPoint(dest);
-}
-
-void ServerService::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation)
-{
-	getAdapter().moveInDirection(velocity, orientation);
-}
-
-void ServerService::moveInDirection(const WFMath::Vector<3>& velocity)
-{
-	getAdapter().moveInDirection(velocity);
-}
-
-void ServerService::touch(Eris::Entity* entity, WFMath::Point<3> pos)
-{
-	getAdapter().touch(entity, pos);
-}
-
-void ServerService::take(Eris::Entity* entity)
-{
-	getAdapter().take(entity);
-}
-
-void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation)
-{
-	getAdapter().drop(entity, offset, orientation);
-}
-
-void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
-{
-	getAdapter().place(entity, target, pos);
-}
-
-void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
-{
-	getAdapter().place(entity, target, pos, orient);
-}
-
-void ServerService::wield(Eris::Entity* entity, const std::string& attachment)
-{
-	getAdapter().wield(entity, attachment);
-}
-
-void ServerService::use(Eris::Entity* entity, const std::string& operation, WFMath::Point<3> pos)
-{
-	getAdapter().use(entity, operation, pos);
-}
-
-void ServerService::say(const std::string &message)
-{
-	getAdapter().say(message);
-}
-
-void ServerService::sayTo(const std::string &message, const std::vector<std::string>& entities)
-{
-	getAdapter().sayTo(message, entities);
-}
-
-void ServerService::sayTo(const std::string &message, const Eris::Entity& entity)
-{
-	getAdapter().sayTo(message, entity);
-}
-
-void ServerService::emote(const std::string &message)
-{
-	getAdapter().emote(message);
-}
-
-void ServerService::deleteEntity(Eris::Entity* entity)
-{
-	getAdapter().deleteEntity(entity);
-}
-
-void ServerService::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes)
-{
-	getAdapter().setAttributes(entity, attributes);
-}
-
-void ServerService::createTypeInfo(const Atlas::Objects::Root& typeInfo)
-{
-	getAdapter().createTypeInfo(typeInfo);
-}
-
-void ServerService::setTypeInfo(const Atlas::Objects::Root& typeInfo)
-{
-	getAdapter().setTypeInfo(typeInfo);
-}
-
-IServerAdapter& ServerService::getAdapter()
-{
-	return mNonConnectedState->getTopState().getServerAdapter();
 }
 
 void ServerService::setupLocalServerObservation(ConfigService& configService) {

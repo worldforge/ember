@@ -27,18 +27,16 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
 
-#include <iostream>
-
-namespace Ember
-{
+namespace Ember {
 
 NonConnectedState::NonConnectedState(ServerServiceSignals& signals, Eris::Session& session) :
-	Connect("connect", this, "Connect to a server."), mSignals(signals), mSession(session), mChildState(nullptr)
-{
+		Connect("connect", this, "Connect to a server."),
+		mSignals(signals),
+		mSession(session),
+		mChildState(nullptr) {
 }
 
-void NonConnectedState::destroyChildState()
-{
+void NonConnectedState::destroyChildState() {
 	//Make sure to sever the connection, so that we don't end up in an infinite loop if something goes wrong when shutting down.
 	mDisconnectedConnection.disconnect();
 	if (mChildState) {
@@ -48,21 +46,18 @@ void NonConnectedState::destroyChildState()
 	}
 }
 
-ServerServiceSignals& NonConnectedState::getSignals() const
-{
+ServerServiceSignals& NonConnectedState::getSignals() const {
 	return mSignals;
 }
 
-IState& NonConnectedState::getTopState()
-{
+IState& NonConnectedState::getTopState() {
 	if (mChildState) {
 		return mChildState->getTopState();
 	}
 	return *this;
 }
 
-bool NonConnectedState::connect(const std::string& host, short port)
-{
+bool NonConnectedState::connect(const std::string& host, short port) {
 	destroyChildState();
 	mChildState = new ConnectingState(*this, mSession, host, port);
 	if (!mChildState->connect()) {
@@ -75,8 +70,7 @@ bool NonConnectedState::connect(const std::string& host, short port)
 	return mChildState != nullptr;
 }
 
-bool NonConnectedState::connectLocal(const std::string& socket)
-{
+bool NonConnectedState::connectLocal(const std::string& socket) {
 	destroyChildState();
 	mChildState = new ConnectingState(*this, mSession, socket);
 	if (!mChildState->connect()) {
@@ -90,8 +84,7 @@ bool NonConnectedState::connectLocal(const std::string& socket)
 }
 
 
-void NonConnectedState::disconnected()
-{
+void NonConnectedState::disconnected() {
 	S_LOG_INFO("Disconnected");
 
 	ConsoleBackend::getSingleton().pushMessage("Disconnected from server.", "important");
@@ -99,8 +92,7 @@ void NonConnectedState::disconnected()
 	destroyChildState();
 }
 
-void NonConnectedState::runCommand(const std::string &command, const std::string &args)
-{
+void NonConnectedState::runCommand(const std::string& command, const std::string& args) {
 	// Connect command
 	if (Connect == command) {
 		// Split string into server / port pair
@@ -114,41 +106,30 @@ void NonConnectedState::runCommand(const std::string &command, const std::string
 		if (port.empty())
 			connect(server);
 		else
-			connect(server, (short)std::stoi(port));
+			connect(server, (short) std::stoi(port));
 
 		// Disonnect command
 	}
 }
 
-IServerAdapter& NonConnectedState::getServerAdapter()
-{
-	return mAdapter;
+void NonConnectedState::disconnect() {
 }
 
-void NonConnectedState::disconnect()
-{
-}
-
-bool NonConnectedState::logout()
-{
+bool NonConnectedState::logout() {
 	return false;
 }
 
-void NonConnectedState::takeCharacter(const std::string &id)
-{
+void NonConnectedState::takeCharacter(const std::string& id) {
 }
 
-void NonConnectedState::takeTransferredCharacter(const Eris::TransferInfo& transferInfo)
-{
+void NonConnectedState::takeTransferredCharacter(const Eris::TransferInfo& transferInfo) {
 }
 
-bool NonConnectedState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties)
-{
+bool NonConnectedState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) {
 	return false;
 }
 
-void NonConnectedState::transfer(const Eris::TransferInfo& transferInfo)
-{
+void NonConnectedState::transfer(const Eris::TransferInfo& transferInfo) {
 	//Start by disconnecting from current server, and reconnecting to new server.
 	destroyChildState();
 	connect(transferInfo.getHost(), static_cast<short>(transferInfo.getPort()));

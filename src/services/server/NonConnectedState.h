@@ -20,7 +20,6 @@
 #define NONCONNECTEDSTATE_H_
 
 #include "IState.h"
-#include "NonConnectedAdapter.h"
 #include "framework/ConsoleObject.h"
 
 #include <sigc++/connection.h>
@@ -64,8 +63,6 @@ public:
 
 	void transfer(const Eris::TransferInfo& transferInfo) override;
 
-	IServerAdapter& getServerAdapter() override;
-
 	void runCommand(const std::string &, const std::string &) override;
 
 	/**
@@ -92,8 +89,6 @@ private:
 	Eris::Session& mSession;
 
 	ConnectingState* mChildState;
-
-	NonConnectedAdapter mAdapter;
 
 	/**
 	 * @brief Track the Disconnected connection, so to sever it when aborting and thus avoiding infinite loops.

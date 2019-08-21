@@ -81,7 +81,7 @@ Listens for left mouse button pressed in movement mode and moves the character f
 class MovementControllerInputListener : public virtual sigc::trackable
 {
 public:
-	MovementControllerInputListener(MovementController& controller);
+	explicit MovementControllerInputListener(MovementController& controller);
 
 protected:
 
@@ -108,7 +108,7 @@ public:
      */
     MovementController(Avatar& avatar, Camera::MainCamera& camera, IHeightProvider& heightProvider);
 
-	virtual ~MovementController();
+	~MovementController() override;
 
 
 	/**
@@ -148,7 +148,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+		void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	Moves the avatar to the specified point.
@@ -164,7 +164,7 @@ public:
 	void teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity);
 
 
-	virtual WFMath::Vector<3> getMovementForCurrentFrame() const;
+	WFMath::Vector<3> getMovementForCurrentFrame() const override;
 
 	MovementControllerMode::Mode getMode() const;
 

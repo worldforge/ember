@@ -22,25 +22,22 @@
 
 #include "EntityConsoleEditor.h"
 
-#include "services/server/ServerService.h"
 #include "services/EmberServices.h"
 #include "framework/Tokeniser.h"
 #include <Eris/Avatar.h>
 #include <boost/algorithm/string.hpp>
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+#include <components/ogre/Avatar.h>
 
-EntityConsoleEditor::EntityConsoleEditor() :
-		SetProperty("set_property", this, "Sets a property on the avatar.")
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
+
+EntityConsoleEditor::EntityConsoleEditor(Ember::OgreView::Avatar* avatar) :
+		SetProperty("set_property", this, "Sets a property on the avatar."),
+		mAvatar(avatar) {
 }
 
-void EntityConsoleEditor::runCommand(const std::string &command, const std::string &args)
-{
+void EntityConsoleEditor::runCommand(const std::string& command, const std::string& args) {
 	if (SetProperty == command) {
 		Atlas::Message::MapType map;
 		Tokeniser tokeniser(args);
@@ -72,9 +69,8 @@ void EntityConsoleEditor::runCommand(const std::string &command, const std::stri
 				}
 
 				if (!map.empty()) {
-					auto entity = EmberServices::getSingleton().getServerService().getAvatar()->getEntity();
-					if (entity) {
-						EmberServices::getSingleton().getServerService().setAttributes(entity, map);
+					if (mAvatar) {
+						mAvatar->setAttributes(&mAvatar->getEmberEntity(), map);
 					}
 				}
 			}

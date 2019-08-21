@@ -20,20 +20,18 @@
 #define EMBER_TRANSFERINFOSTRINGSERIALIZER_H_
 
 
-
 #include <vector>
 #include <iostream>
 
-namespace Ember
-{
+namespace Ember {
 class AvatarTransferInfo;
+
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Handles serialization of server transfer info objects.
  */
-class TransferInfoStringSerializer
-{
+class TransferInfoStringSerializer {
 public:
 	typedef std::vector<AvatarTransferInfo> TransferInfoStore;
 

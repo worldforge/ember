@@ -47,7 +47,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~CameraSettings();
+	~CameraSettings() override;
 
 	/**
 	 * @brief Accessor for the number of degrees to move the camera per mouse unit.

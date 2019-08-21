@@ -41,6 +41,8 @@ class EmberEntity;
 
 namespace OgreView {
 
+class Avatar;
+
 namespace Camera {
 class MainCamera;
 }
@@ -253,7 +255,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 		 * @brief Ctor
 		 *
 		 */
-		ChatText(CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow);
+		ChatText(IngameChatWidget& chatWidget, CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow);
 
 		/**
 		 * @brief Dtor
@@ -292,6 +294,9 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 		void switchToDetachedMode();
 
 	protected:
+
+		IngameChatWidget& mChatWidget;
+
 		std::vector<UniqueWindowPtr<CEGUI::Window>> mResponseTextWidgets;
 
 		Label* mLabel;
@@ -401,6 +406,7 @@ protected:
 	 * @param world The new world.
 	 */
 	void EmberOgre_WorldCreated(World& world);
+	void EmberOgre_WorldBeingDestroyed();
 
 	void Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 
@@ -443,7 +449,7 @@ protected:
 	/// this sheet contains all labels of the entities
 	CEGUI::Window* mLabelSheet;
 
-	std::string mAvatarEntityId;
+	Avatar* mAvatar;
 
 	/// camera used for 3D -> 2D projection (placing labels and chat texts on top of Entities)
 	Camera::MainCamera* mCamera;

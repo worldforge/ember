@@ -37,12 +37,12 @@
 #include <Eris/Entity.h>
 #include <Eris/EventService.h>
 
+#include <Atlas/Objects/Entity.h>
 #include <fstream>
 
 #include <sigc++/bind.h>
 
-namespace Ember
-{
+namespace Ember {
 LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
 		StateBase<EnteredWorldState>::StateBase(parentState),
 		Logout("logout", this, "Logout from the connected server."),
@@ -50,8 +50,7 @@ LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
 		TakeChar("take", this, "Take control of one of your characters."),
 		ListChars("list", this, "List you available characters on the server."),
 		mAccount(account),
-		mTransferEvent(nullptr)
-{
+		mTransferEvent(nullptr) {
 	mAccount.AvatarSuccess.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarSuccess));
 	mAccount.AvatarFailure.connect([&](const std::string& message) {
 		ConsoleBackend::getSingleton().pushMessage(message, "error");
@@ -62,13 +61,11 @@ LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
 
 }
 
-LoggedInState::~LoggedInState()
-{
+LoggedInState::~LoggedInState() {
 	delete mTransferEvent;
 }
 
-void LoggedInState::checkTransfer()
-{
+void LoggedInState::checkTransfer() {
 	TransferInfoStringSerializer serializer;
 	std::string teleportFilePath(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "teleports");
 	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
@@ -95,19 +92,16 @@ void LoggedInState::checkTransfer()
 
 }
 
-void LoggedInState::takeTransferredCharacter(const Eris::TransferInfo& transferInfo)
-{
+void LoggedInState::takeTransferredCharacter(const Eris::TransferInfo& transferInfo) {
 	S_LOG_INFO("Trying to take transferred character with id " << transferInfo.getPossessEntityId() << ".");
 	mAccount.takeTransferredCharacter(transferInfo.getPossessEntityId(), transferInfo.getPossessKey());
 }
 
-void LoggedInState::takeCharacter(const std::string &id)
-{
+void LoggedInState::takeCharacter(const std::string& id) {
 	mAccount.takeCharacter(id);
 }
 
-bool LoggedInState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties)
-{
+bool LoggedInState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) {
 	ConsoleBackend::getSingleton().pushMessage("Creating char...", "important");
 	std::string msg;
 	msg = "Creating character of type '" + type + "' with name '" + name + "' and sex '" + sex + "'.";
@@ -142,8 +136,7 @@ bool LoggedInState::createCharacter(const std::string& name, const std::string& 
 	return true;
 }
 
-bool LoggedInState::logout()
-{
+bool LoggedInState::logout() {
 	Eris::Result result = mAccount.logout();
 	if (result != Eris::NO_ERR) {
 		//If something went wrong when logging out, just disconnect.
@@ -153,20 +146,17 @@ bool LoggedInState::logout()
 	return result == Eris::NO_ERR;
 }
 
-void LoggedInState::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
-{
+void LoggedInState::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity& info) {
 	S_LOG_INFO("Got character info");
 	getSignals().GotCharacterInfo.emit(info);
 }
 
-void LoggedInState::gotAllCharacters()
-{
+void LoggedInState::gotAllCharacters() {
 	S_LOG_INFO("Got all characters");
 	getSignals().GotAllCharacters.emit(&mAccount);
 }
 
-void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar)
-{
+void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar) {
 	//First check if there are any transfer infos for this server, and if this login operation means that one of them successfully has been used.
 	//If so, it should be removed from the persistent storage.
 	if (!mTransferInfos.empty()) {
@@ -185,8 +175,7 @@ void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar)
 	mAccount.AvatarDeactivated.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarDeactivated));
 }
 
-void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo)
-{
+void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo) {
 	TransferInfoStringSerializer serializer;
 	const std::string teleportFilePath(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "teleports");
 	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
@@ -217,8 +206,7 @@ void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo)
 
 }
 
-void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInfo, const Eris::Avatar* avatar)
-{
+void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInfo, const Eris::Avatar* avatar) {
 	TransferInfoStringSerializer serializer;
 	std::string teleportFilePath(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "teleports");
 	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
@@ -238,18 +226,16 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	}
 	teleportsOutputFile.close();
 
-	mTransferEvent = new Eris::TimedEvent(mAccount.getConnection()->getEventService(), boost::posix_time::seconds(0), [=](){
+	mTransferEvent = new Eris::TimedEvent(mAccount.getConnection()->getEventService(), boost::posix_time::seconds(0), [=]() {
 		this->transfer(transferInfo);
 	});
 }
 
-void LoggedInState::gotAvatarDeactivated(Eris::Avatar*)
-{
+void LoggedInState::gotAvatarDeactivated(Eris::Avatar*) {
 	destroyChildState();
 }
 
-void LoggedInState::runCommand(const std::string &command, const std::string &args)
-{
+void LoggedInState::runCommand(const std::string& command, const std::string& args) {
 	if (Logout == command) {
 		ConsoleBackend::getSingleton().pushMessage("Logging out...", "important");
 		mAccount.logout();

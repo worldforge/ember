@@ -22,13 +22,11 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <sigc++/trackable.h>
 
-namespace Eris
-{
+namespace Eris {
 class Account;
 }
 
-namespace Ember
-{
+namespace Ember {
 class ServerService;
 
 /**
@@ -41,8 +39,7 @@ class ServerService;
  * Note that you need to delete any instance as soon as the user has logged in to
  * prevent it from interacting with any other attempt to log in to a server.
  */
-class LocalServerAdminCreator: public sigc::trackable
-{
+class LocalServerAdminCreator : public sigc::trackable {
 public:
 	/**
 	 * @brief Ctor.
@@ -54,6 +51,7 @@ public:
 	 * @brief Dtor.
 	 */
 	~LocalServerAdminCreator() = default;
+
 private:
 
 	/**
@@ -62,6 +60,7 @@ private:
 	ServerService& mServerService;
 
 	void server_GotAccount(Eris::Account* account);
+
 	void server_LoginSuccess(Eris::Account* account);
 
 };

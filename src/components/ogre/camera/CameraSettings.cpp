@@ -34,9 +34,7 @@ CameraSettings::CameraSettings() : mDegreesPerMouseUnit(180), mInvertCamera(fals
 	registerConfigListenerWithDefaults("input", "invertcamera", sigc::mem_fun(*this, &CameraSettings::Config_InvertCamera), mInvertCamera);
 }
 
-CameraSettings::~CameraSettings()
-{
-}
+CameraSettings::~CameraSettings() = default;
 
 void CameraSettings::Config_DegreesPerMouseUnit(const std::string& /*section*/, const std::string& /*key*/, varconf::Variable& variable)
 {

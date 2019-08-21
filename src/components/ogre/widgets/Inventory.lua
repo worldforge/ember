@@ -178,7 +178,7 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.dropButton_MouseClick = function(args)
 		if self.menu.activeEntityWrapper ~= nil then
 			if self.menu.activeEntityWrapper.entity ~= nil then
-				emberServices:getServerService():drop(self.menu.activeEntityWrapper.entity)
+				emberOgre:getWorld():getAvatar():getErisAvatar():drop(self.menu.activeEntityWrapper.entity)
 			end
 		end
 		self.menu.hide()
@@ -232,7 +232,7 @@ function Inventory:buildWidget(avatarEntity)
 		if emberEntity ~= nil then
 			local offset = self.helper:getDropOffset()
 			local orientation = self.helper:getDropOrientation()
-			emberServices:getServerService():drop(emberEntity, offset, orientation)
+			emberOgre:getWorld():getAvatar():getErisAvatar():drop(emberEntity, offset, orientation)
 		end
 	end
 	connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)
@@ -278,7 +278,7 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
 -- 	self.doll.torso = self:createDollSlot("body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.")
 	dollSlot.droppedHandler = function(entityIcon)
 		if dollSlot.isValidDrop(entityIcon) then
-			emberServices:getServerService():wield(entityIcon:getEntity(), attachment)
+			emberOgre:getWorld():getAvatar():getErisAvatar():wield(entityIcon:getEntity(), attachment)
 			local icon = dollSlot.slot:getEntityIcon()
 			if icon ~= nil then
 				local slotWrapper = self:getFreeSlot()

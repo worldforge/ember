@@ -261,7 +261,7 @@ function EntityPicker:pickedOneEntity(pickedResult)
                     if (not isPhysicalDomain) then
                         self:showButton("Pick up", "Pick up the entity.", function()
                             self:doWithPickedEntity(function(pickedEntity)
-                                emberServices:getServerService():take(pickedEntity)
+                                self.world:getAvatar():getErisAvatar():take(pickedEntity)
                                 guiManager:EmitEntityAction("take", pickedEntity)
                             end)
                             self:removeMenu()
@@ -426,7 +426,6 @@ end
 function EntityPicker:shutdown()
     disconnectAll(self.connectors)
     guiManager:destroyWidget(self.widget)
-    guiManager:destroyWidget(self.selectorWidget)
 end
 
 connect(connectors, emberOgre.EventWorldCreated, function(world)

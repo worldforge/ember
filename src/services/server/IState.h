@@ -105,12 +105,6 @@ public:
 	 */
 	virtual void transfer(const Eris::TransferInfo& transferInfo) = 0;
 
-	/**
-	 * @brief Gets the server adapter.
-	 * The server adapter is the main class for performing actions against the server (move, take, drop etc.) once the user has entered into the world.
-	 * @return The server adapter.
-	 */
-	virtual IServerAdapter& getServerAdapter() = 0;
 
 };
 

@@ -20,7 +20,6 @@
 #define ENTEREDWORLDSTATE_H_
 
 #include "StateBase.h"
-#include "ConnectedAdapter.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include <Atlas/Objects/ObjectsFwd.h>
@@ -28,47 +27,39 @@
 #include <wfmath/vector.h>
 #include <wfmath/point.h>
 
-namespace WFMath
-{
+namespace WFMath {
 class Quaternion;
 }
 
-namespace Eris
-{
+namespace Eris {
 class Avatar;
+
 class Account;
+
 class View;
+
 class Connection;
+
 class Entity;
+
 class TransferInfo;
 }
 
-namespace Ember
-{
-
-class TeleportRequestedState;
+namespace Ember {
 
 /**
  * @brief State for when the user has entered into the world. For most cases this is the desired state.
  */
-class EnteredWorldState: public virtual StateBase<void>, public ConsoleObject
-{
+class EnteredWorldState : public virtual StateBase<void>, public ConsoleObject {
 public:
 	EnteredWorldState(IState& parentState, Eris::Avatar& avatar, Eris::Account& account);
 
 	~EnteredWorldState() override;
 
-	void runCommand(const std::string &, const std::string &) override;
-
-	IServerAdapter& getServerAdapter() override;
+	void runCommand(const std::string&, const std::string&) override;
 
 	bool logout() override;
 
-	const Ember::ConsoleCommandWrapper Say;
-	const Ember::ConsoleCommandWrapper SayTo;
-	const Ember::ConsoleCommandWrapper Emote;
-	const Ember::ConsoleCommandWrapper Delete;
-	const Ember::ConsoleCommandWrapper AdminTell;
 
 private:
 
@@ -81,9 +72,6 @@ private:
 	 * @brief Holds the account object we are connected with.
 	 */
 	Eris::Account& mAccount;
-
-	ConnectedAdapter mAdapter;
-
 
 	Eris::Connection& getConnection() const;
 

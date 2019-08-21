@@ -20,9 +20,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.//
 //
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 #include "EntityEditor.h"
 
@@ -45,7 +42,6 @@
 #include <Atlas/PresentationBridge.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
-#include <Atlas/Codecs/Bach.h>
 #include <Atlas/Formatter.h>
 
 #include <wfmath/segment.h>
@@ -209,7 +205,7 @@ EntityEditor::~EntityEditor() {
 }
 
 void EntityEditor::submitChanges() {
-	if (mRootAdapter->hasChanges()) {
+	if (mRootAdapter->hasChanges() && mWorld.getAvatar()) {
 		Atlas::Message::Element rootElement = mRootAdapter->getSelectedChangedElements();
 		if (rootElement.isMap()) {
 			auto attributes = rootElement.asMap();
@@ -227,7 +223,7 @@ void EntityEditor::submitChanges() {
 				formatter.streamEnd();
 				S_LOG_VERBOSE("Sending attribute update to server:\n" << ss.str());
 
-				EmberServices::getSingleton().getServerService().setAttributes(&mEntity, attributes);
+				mWorld.getAvatar()->setAttributes(&mEntity, attributes);
 			}
 		}
 	}

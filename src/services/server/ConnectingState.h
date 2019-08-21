@@ -24,21 +24,18 @@
 #include "Connection.h"
 #include "ConnectedState.h"
 
-namespace Eris
-{
+namespace Eris {
 class Session;
 }
 
-namespace Ember
-{
+namespace Ember {
 
 class DestroyChildStateEvent;
 
 /**
  * @brief State for when a connection to a server is in progress.
  */
-class ConnectingState: public virtual StateBase<ConnectedState>
-{
+class ConnectingState : public virtual StateBase<ConnectedState> {
 public:
 
 	/**

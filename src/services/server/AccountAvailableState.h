@@ -25,22 +25,20 @@
 #include "framework/ConsoleObject.h"
 #include <Eris/Account.h>
 
-namespace Ember
-{
+namespace Ember {
 
 /**
  * @brief State for when a connection to a server has been made, but the user has not yet logged in.
  *
  * The user can either create a new account, or login using an existing one.
  */
-class AccountAvailableState: public virtual StateBase<LoggedInState> , public ConsoleObject
-{
+class AccountAvailableState : public virtual StateBase<LoggedInState>, public ConsoleObject {
 public:
 	AccountAvailableState(IState& parentState, Eris::Connection& connection);
 
 	~AccountAvailableState() override;
 
-	void runCommand(const std::string &, const std::string &) override;
+	void runCommand(const std::string&, const std::string&) override;
 
 	/**
 	 * @brief Creates a new account.

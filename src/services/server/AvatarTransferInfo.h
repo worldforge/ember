@@ -22,16 +22,14 @@
 #include <Eris/TransferInfo.h>
 #include <wfmath/timestamp.h>
 
-namespace Ember
-{
+namespace Ember {
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Envelopes an Eris::TransferInfo object with time stamp and avatar name.
  *
  * So that we can present a little more informative message to the user.
  */
-class AvatarTransferInfo
-{
+class AvatarTransferInfo {
 public:
 	/**
 	 * @brief Ctor.
@@ -39,7 +37,7 @@ public:
 	 * @param timestamp A timestamp for when the transfer info was created.
 	 * @param transferInfo A transfer info object.
 	 */
-	AvatarTransferInfo(const std::string& avatarName, WFMath::TimeStamp timestamp, const Eris::TransferInfo& transferInfo);
+	AvatarTransferInfo(std::string avatarName, WFMath::TimeStamp timestamp, Eris::TransferInfo transferInfo);
 
 	/**
 	 * @brief Gets the name of the avatar which was transferred.

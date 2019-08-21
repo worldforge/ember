@@ -21,27 +21,25 @@
 #endif
 
 #include "AvatarTransferInfo.h"
-namespace Ember
-{
-AvatarTransferInfo::AvatarTransferInfo(const std::string& avatarName, WFMath::TimeStamp timestamp, const Eris::TransferInfo& transferInfo) :
-	mAvatarName(avatarName),
-	mTimestamp(timestamp),
-	mTransferInfo(transferInfo)
-{
+
+#include <utility>
+
+namespace Ember {
+AvatarTransferInfo::AvatarTransferInfo(std::string avatarName, WFMath::TimeStamp timestamp, Eris::TransferInfo transferInfo) :
+		mAvatarName(std::move(avatarName)),
+		mTimestamp(timestamp),
+		mTransferInfo(std::move(transferInfo)) {
 }
 
-const std::string& AvatarTransferInfo::getAvatarName() const
-{
+const std::string& AvatarTransferInfo::getAvatarName() const {
 	return mAvatarName;
 }
 
-const WFMath::TimeStamp& AvatarTransferInfo::getTimestamp() const
-{
+const WFMath::TimeStamp& AvatarTransferInfo::getTimestamp() const {
 	return mTimestamp;
 }
 
-const Eris::TransferInfo& AvatarTransferInfo::getTransferInfo() const
-{
+const Eris::TransferInfo& AvatarTransferInfo::getTransferInfo() const {
 	return mTransferInfo;
 }
 

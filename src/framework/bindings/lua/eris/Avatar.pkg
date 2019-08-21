@@ -19,7 +19,17 @@ public:
     View* getView() const;
 
     Connection* getConnection() const;
- 
+
+    void take(Entity*) const;
+
+    void drop(Entity* entity, const WFMath::Point<3>& pos,
+            const WFMath::Quaternion& orientation, const std::string& loc) const;
+
+    void drop(Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>(0, 0, 0),
+            const WFMath::Quaternion& orientation = WFMath::Quaternion()) const;
+
+     void wield(Eris::Entity* entity, std::string attachPoint) const;
+
 };
 
 } // of namespace Eris

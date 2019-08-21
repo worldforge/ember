@@ -43,18 +43,15 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::RootOperation;
 
-namespace Ember
-{
+namespace Ember {
 
 LocalServerAdminCreator::LocalServerAdminCreator(ServerService& serverService) :
-		mServerService(serverService)
-{
+		mServerService(serverService) {
 	serverService.GotAccount.connect(sigc::mem_fun(*this, &LocalServerAdminCreator::server_GotAccount));
 	serverService.LoginSuccess.connect(sigc::mem_fun(*this, &LocalServerAdminCreator::server_LoginSuccess));
 }
 
-void LocalServerAdminCreator::server_GotAccount(Eris::Account* account)
-{
+void LocalServerAdminCreator::server_GotAccount(Eris::Account* account) {
 	//When connecting to a local socket we should use a "sys" account.
 	//This works very much like an "admin" account, but is not persisted on the server.
 	//Thus we will first create a new account on the server, with a random name and password.
@@ -79,8 +76,7 @@ void LocalServerAdminCreator::server_GotAccount(Eris::Account* account)
 
 }
 
-void LocalServerAdminCreator::server_LoginSuccess(Eris::Account* account)
-{
+void LocalServerAdminCreator::server_LoginSuccess(Eris::Account* account) {
 	//If there are any spawn points defined we'll use the first one.
 	//It would be nice if we could present the user with an option to choose amongst many,
 	//or just to spawn at origo. But for now this will do in its simplicity.

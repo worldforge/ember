@@ -41,7 +41,6 @@
 #include "framework/CommandHistory.h"
 
 #include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 
 #include <CEGUI/WindowManager.h>
@@ -76,7 +75,8 @@ IngameChatWidget::IngameChatWidget() :
 		mLabelPool(mLabelCreator),
 		mChatTextCreator(*this),
 		mChatTextPool(mChatTextCreator),
-		mAvatarEntityId(""),
+		mLabelSheet(nullptr),
+		mAvatar(nullptr),
 		mCamera(nullptr) {
 
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));
@@ -106,6 +106,8 @@ void IngameChatWidget::buildWidget() {
 	mLabelPool.initializePool(15);
 	mChatTextPool.initializePool(5);
 	EmberOgre::getSingleton().EventWorldCreated.connect(sigc::mem_fun(*this, &IngameChatWidget::EmberOgre_WorldCreated));
+	EmberOgre::getSingleton().EventWorldBeingDestroyed.connect(sigc::mem_fun(*this, &IngameChatWidget::EmberOgre_WorldBeingDestroyed));
+
 	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &IngameChatWidget::GUIManager_EntityAction));
 }
 
@@ -123,8 +125,12 @@ Window* IngameChatWidget::getLabelSheet() {
 
 void IngameChatWidget::EmberOgre_WorldCreated(World& world) {
 	mCamera = &world.getMainCamera();
+	mAvatar = world.getAvatar();
+}
 
-	mAvatarEntityId = world.getView().getAvatar()->getId();
+void IngameChatWidget::EmberOgre_WorldBeingDestroyed() {
+	mCamera = nullptr;
+	mAvatar = nullptr;
 }
 
 void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberEntity* entity) {
@@ -147,7 +153,7 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 }
 
 void IngameChatWidget::enableForEntity(EmberEntity& entity) {
-	if (mAvatarEntityId != entity.getId()) {
+	if (mAvatar && mAvatar->getEmberEntity().getId() != entity.getId()) {
 		auto* observer = new EntityObserver(*this, entity);
 		mEntityObservers.insert(std::make_pair(entity.getId(), observer));
 	}
@@ -491,7 +497,8 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 	return label;
 }
 
-IngameChatWidget::ChatText::ChatText(CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow) :
+IngameChatWidget::ChatText::ChatText(IngameChatWidget& chatWidget, CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow) :
+		mChatWidget(chatWidget),
 		mLabel(nullptr),
 		mAttachedWindow(attachedWindow),
 		mAttachedTextWidget(mAttachedWindow->getChild("Text")),
@@ -512,13 +519,13 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* attachedWindow, CEGUI::Windo
 	mDetachedWindow->setVisible(false);
 	GUIManager::getSingleton().getMainSheet()->addChild(mDetachedWindow.get());
 
-	BIND_CEGUI_EVENT(mAttachedTextWidget, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click);
+	BIND_CEGUI_EVENT(mAttachedTextWidget, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click)
 	// clicking the ellipsis button should do exactly the same as clicking the attached text
-	BIND_CEGUI_EVENT(mAttachedEllipsisButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click);
+	BIND_CEGUI_EVENT(mAttachedEllipsisButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click)
 
-	BIND_CEGUI_EVENT(mDetachedWindow, FrameWindow::EventCloseClicked, IngameChatWidget::ChatText::buttonDetachedClose_Click);
-	BIND_CEGUI_EVENT(mDetachedEditbox, Window::EventKeyDown, IngameChatWidget::ChatText::editboxDetachedKey_Event);
-	BIND_CEGUI_EVENT(mDetachedTradeButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonDetachedTrade_Click);
+	BIND_CEGUI_EVENT(mDetachedWindow, FrameWindow::EventCloseClicked, IngameChatWidget::ChatText::buttonDetachedClose_Click)
+	BIND_CEGUI_EVENT(mDetachedEditbox, Window::EventKeyDown, IngameChatWidget::ChatText::editboxDetachedKey_Event)
+	BIND_CEGUI_EVENT(mDetachedTradeButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonDetachedTrade_Click)
 
 	// workaround, see: http://www.cegui.org.uk/mantis/view.php?id=464
 	BIND_CEGUI_EVENT(mDetachedWindow, Window::EventSized, IngameChatWidget::ChatText::detachedSized_Event);
@@ -590,7 +597,7 @@ void IngameChatWidget::ChatText::updateText(const std::string& line) {
 			ss_ << i;
 			PushButton* responseTextButton = dynamic_cast<PushButton*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/IngameChatResponseButton", "Response/" + ss_.str()));
 
-			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click);
+			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click)
 
 			responseTextButton->setInheritsAlpha(true);
 			responseTextButton->setText(*I);
@@ -611,7 +618,10 @@ void IngameChatWidget::ChatText::updateText(const std::string& line) {
 
 void IngameChatWidget::ChatText::respondWithMessage(const std::string& message) {
 	EmberEntity* entity = mLabel->getEntity();
-	EmberServices::getSingleton().getServerService().sayTo(message, *entity);
+
+	if (mChatWidget.mAvatar) {
+		mChatWidget.mAvatar->getErisAvatar()->sayTo(message, {entity->getId()});
+	}
 
 	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']You: " + message);
 	mDetachedChatHistory->setProperty("VertScrollPosition", mDetachedChatHistory->getProperty("VertExtent"));
@@ -685,9 +695,9 @@ void IngameChatWidget::ChatText::switchToDetachedMode() {
 }
 
 bool IngameChatWidget::ChatText::buttonResponse_Click(const EventArgs& args) {
-	const MouseEventArgs* mouseArgs = dynamic_cast<const MouseEventArgs*>(&args);
+	auto mouseArgs = dynamic_cast<const MouseEventArgs*>(&args);
 	if (mouseArgs) {
-		//each button contains a static text window, which is the one containg the actual text
+		//each button contains a static text window, which is the one containing the actual text
 		respondWithMessage(mouseArgs->window->getText().c_str());
 	}
 	return true;
@@ -790,7 +800,7 @@ IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsi
 	auto newDetached = mDetachedLayout->clone();
 	newDetached->setName("MainWindow/Detached");
 
-	auto* widget = new ChatText(newAttached, newDetached);
+	auto* widget = new ChatText(mIngameChatWidget, newAttached, newDetached);
 	return widget;
 }
 

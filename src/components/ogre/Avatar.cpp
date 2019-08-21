@@ -58,6 +58,7 @@
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
 #include <Eris/Task.h>
+#include <Eris/Response.h>
 
 #include <wfmath/atlasconv.h>
 
@@ -78,6 +79,11 @@ Avatar::Avatar(Eris::Avatar* erisAvatar,
 		SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"),
 		AvatarActionDefaultStart("+avatar_action_default", this, "Performs the default action for the avatar."),
 		AvatarActionDefaultStop("-avatar_action_default", this, "Stops performing the default action for the avatar."),
+		Delete("delete", this, "Deletes an entity."),
+		Say("say", this, "Say something."),
+		SayTo("sayto", this, "Say something address to one or many entities. Format: '/sayto entityid,entityid,... message"),
+		Emote("me", this, "Emotes something."),
+		AdminTell("admin_tell", this, "Uses admin mode to directly tell a NPC something. Usage: /admin_tell <entityid> <key> <value>"),
 		mMinIntervalOfRotationChanges(1000),
 		mErisAvatar(erisAvatar),
 		mErisAvatarEntity(erisAvatarEntity),
@@ -163,6 +169,52 @@ void Avatar::runCommand(const std::string& command, const std::string& args) {
 		}
 	} else if (AvatarActionDefaultStart == command) {
 		performDefaultUsage();
+	} else if (Delete == command) {
+		Tokeniser tokeniser(args);
+		std::string entityId = tokeniser.nextToken();
+		if (!entityId.empty()) {
+			Eris::Entity* entity = mErisAvatar->getView()->getEntity(entityId);
+			if (entity) {
+				deleteEntity(entity);
+			}
+		}
+	} else if (Say == command) {
+		mErisAvatar->say(args);
+		std::string msg;
+		msg = "Saying: [" + args + "]. ";
+		S_LOG_VERBOSE(msg);
+	} else if (SayTo == command) {
+		Tokeniser tokeniser(args);
+		std::string entityIdsString = tokeniser.nextToken();
+		std::vector<std::string> entityIds = Tokeniser::split(entityIdsString, ",");
+		std::string message = tokeniser.remainingTokens();
+
+		mErisAvatar->sayTo(message, entityIds);
+
+		std::string msg;
+		if (entityIds.size() > 1) {
+			msg = "Saying to many entities: [" + message + "]. ";
+		} else if (entityIds.size() == 1) {
+			msg = "Saying to entity " + entityIds[0] + ": [" + message + "]. ";
+		} else {
+			msg = "Saying to no entity: [" + message + "]. ";
+		}
+		S_LOG_VERBOSE(msg);
+	} else if (Emote == command) {
+		mErisAvatar->emote(args);
+
+	} else if (AdminTell == command) {
+		Tokeniser tokeniser(args);
+		std::string entityId = tokeniser.nextToken();
+		if (!entityId.empty()) {
+			std::string key = tokeniser.nextToken();
+			if (!key.empty()) {
+				std::string value = tokeniser.nextToken();
+				if (!value.empty()) {
+					adminTell(entityId, key, value);
+				}
+			}
+		}
 	}
 }
 
@@ -248,7 +300,8 @@ void Avatar::attemptMove() {
 		if (mLastTransmittedMovements.size() > 10) {
 			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
 		}
-		EmberServices::getSingleton().getServerService().moveInDirection(newMovementState.movement, newMovementState.orientation);
+
+		mErisAvatar->moveInDirection(newMovementState.movement, newMovementState.orientation);
 
 	}
 
@@ -292,6 +345,131 @@ Scene& Avatar::getScene() const {
 	return mScene;
 }
 
+void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements) {
+	try {
+		Atlas::Objects::Entity::Anonymous what;
+		what->setId(entity->getId());
+		//We'll use this flag to make sure that nothing gets sent in the case that the only thing changed was immutable attributes (like "pos").
+		bool areAttributesToSend = false;
+		Atlas::Message::MapType moveAttributes;
+		for (auto& element : elements) {
+			if (element.first == "pos" ||
+				element.first == "mode" ||
+				element.first == "orientation" ||
+				element.first == "planted-offset" ||
+				element.first == "loc" ||
+				element.first == "velocity" ||
+				element.first == "propel") {
+				moveAttributes.insert(element);
+			} else {
+				what->setAttr(element.first, element.second);
+				areAttributesToSend = true;
+			}
+		}
+
+		//Some attributes can only be changed through a Move op.
+		if (!moveAttributes.empty()) {
+			Atlas::Objects::Entity::Anonymous moveArgs;
+			if (entity->getLocation()) {
+				moveArgs->setLoc(entity->getLocation()->getId());
+			}
+			for (auto& element : moveAttributes) {
+				moveArgs->setAttr(element.first, element.second);
+			}
+
+			moveArgs->setId(entity->getId());
+
+			Atlas::Objects::Operation::Move moveOp;
+			moveOp->setFrom(getId());
+			moveOp->setArgs1(moveArgs);
+
+			moveOp->setSerialno(Eris::getNewSerialno());
+			mErisAvatar->getConnection()->getResponder()->await(moveOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+				//For now ignore; perhaps we should do some error checking instead?
+				return Eris::Router::IGNORED;
+			});
+
+			//if the avatar is an admin, we will set the TO property
+			//this will bypass all of the server's filtering, allowing us to place any
+			//entity, unrelated to if it's too heavy or belong to someone else
+			if (isAdmin()) {
+				moveOp->setTo(entity->getId());
+			}
+
+			mErisAvatar->getConnection()->send(moveOp);
+		}
+
+
+		if (areAttributesToSend) {
+			Atlas::Objects::Operation::Set setOp;
+			setOp->setFrom(getId());
+			if (entity->getId() != getId()) {
+				setOp->setTo(entity->getId());
+			}
+			setOp->setArgs1(what);
+
+			setOp->setSerialno(Eris::getNewSerialno());
+			mErisAvatar->getConnection()->getResponder()->await(setOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+				//For now ignore; perhaps we should do some error checking instead?
+				return Eris::Router::IGNORED;
+			});
+			S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
+			mErisAvatar->getConnection()->send(setOp);
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Got error on setting attributes on entity." << ex);
+	}
+}
+
+void Avatar::adminTell(const std::string& entityId, const std::string& attribute, const std::string& value) {
+	try {
+
+		Atlas::Objects::Entity::Anonymous what;
+		what->setAttr(attribute, value);
+		Atlas::Objects::Operation::Talk talk;
+		talk->setFrom(entityId);
+		talk->setTo(entityId);
+		talk->setArgs1(what);
+
+		Atlas::Objects::Operation::Sound sound;
+		sound->setFrom(getId());
+		sound->setTo(entityId);
+		sound->setArgs1(talk);
+
+		sound->setSerialno(Eris::getNewSerialno());
+		mErisAvatar->getConnection()->getResponder()->await(sound->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+			//Handle it here, so it does not propagate into the regular system.
+			return Eris::Router::HANDLED;
+		});
+		S_LOG_INFO("Admin telling entity" << entityId << ": " << attribute << ": " << value);
+		mErisAvatar->getConnection()->send(sound);
+
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Got error on admin_tell." << ex);
+	}
+}
+
+void Avatar::deleteEntity(Eris::Entity* entity) {
+	try {
+		Atlas::Objects::Entity::Anonymous what;
+		what->setId(entity->getId());
+
+		Atlas::Objects::Operation::Delete deleteOp;
+		deleteOp->setFrom(getId());
+		deleteOp->setTo(entity->getId());
+		deleteOp->setArgs1(what);
+		deleteOp->setSerialno(Eris::getNewSerialno());
+		mErisAvatar->getConnection()->getResponder()->await(deleteOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+			//For now ignore; perhaps we should do some error checking instead?
+			return Eris::Router::IGNORED;
+		});
+
+		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
+		mErisAvatar->getConnection()->send(deleteOp);
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Got error on deleting entity." << ex);
+	}
+}
 
 void Avatar::movedInWorld() {
 	//only snap the avatar to the postition and orientation sent from the server if we're not moving or if we're not recently changed location
