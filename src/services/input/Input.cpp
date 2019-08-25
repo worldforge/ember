@@ -813,7 +813,7 @@ void Input::lostFocus()
 
 void Input::setMouseGrab(bool enabled)
 {
-	S_LOG_INFO("mouse grab: " << enabled);
+	S_LOG_VERBOSE("mouse grab: " << enabled);
 
 	auto result = SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE);
 	if (result != 0) {
