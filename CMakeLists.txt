@@ -48,7 +48,7 @@ macro(wf_generate_lua_bindings PKG_PATH)
     get_filename_component(PACKAGE_NAME ${PKG_PATH} NAME)
     get_filename_component(PACKAGE_DIR ${PKG_PATH} DIRECTORY)
 
-    file(GLOB_RECURSE LUA_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" *.pkg)
+    file(GLOB_RECURSE LUA_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" *.pkg *.h)
 
     add_custom_command(
             OUTPUT ${PACKAGE_NAME}.cxx
