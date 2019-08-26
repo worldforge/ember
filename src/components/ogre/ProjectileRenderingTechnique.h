@@ -21,11 +21,12 @@
 
 #include "components/ogre/ISceneRenderingTechnique.h"
 #include "OgreIncludes.h"
+#include <OgreFrameListener.h>
 
 namespace Ember {
 namespace OgreView {
 
-class ProjectileRenderingTechnique : public ISceneRenderingTechnique {
+class ProjectileRenderingTechnique : public ISceneRenderingTechnique, Ogre::FrameListener {
 public:
 	/**
 	 * @brief Ctor.
@@ -41,7 +42,18 @@ public:
 
 	void deregisterEntity(EmberEntity& entity) override;
 
+	bool frameStarted(const Ogre::FrameEvent& evt) override;
+
 protected:
+
+	struct ActiveEntityEntry {
+		Ogre::Node* entityNode;
+		Ogre::SceneNode* particleNode;
+		float inactiveTime;
+	};
+
+	std::vector<Ogre::SceneNode*> mAvailableNodes;
+	std::map<EmberEntity*, ActiveEntityEntry> mActiveNodes;
 
 	Ogre::SceneManager& mSceneManager;
 

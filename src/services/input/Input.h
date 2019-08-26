@@ -202,7 +202,7 @@ public:
 
 	Input();
 
-	virtual ~Input();
+	~Input() override;
 
 	/**
 	 * @brief Creates a new main window.
@@ -386,7 +386,7 @@ public:
 	 * @param command 
 	 * @param args 
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 * @brief Suppress all further event handling of the current event. Call this inside event handling methods to prevent further event handling.

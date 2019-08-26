@@ -47,22 +47,22 @@ public:
 		/**
 		 * Graphics was updated.
 		 */
-				FA_GRAPHICS = 1 << 0,
+				FA_GRAPHICS = 1u << 0u,
 
 		/**
 		 * Eris was polled.
 		 */
-				FA_ERIS = 1 << 1,
+				FA_ERIS = 1u << 1u,
 
 		/**
 		 * Sound was updated.
 		 */
-				FA_SOUND = 1 << 2,
+				FA_SOUND = 1u << 2u,
 
 		/**
 		 * Input was handled.
 		 */
-				FA_INPUT = 1 << 3
+				FA_INPUT = 1u << 3u
 	};
 
 	/**
