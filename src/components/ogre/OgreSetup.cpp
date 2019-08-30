@@ -48,6 +48,7 @@
 #endif
 
 #include <OgreBuildSettings.h>
+
 #if OGRE_THREAD_SUPPORT == 0
 #error OGRE must be built with thread support.
 #endif
@@ -90,7 +91,7 @@ OgreSetup::OgreSetup() :
 		mOgreWindowProvider(nullptr),
 #endif
 		mConfigListenerContainer(nullptr),
-		mSaveShadersToCache(false){
+		mSaveShadersToCache(false) {
 }
 
 OgreSetup::~OgreSetup() {
@@ -129,7 +130,8 @@ void OgreSetup::shutdown() {
 
 		if (Ogre::GpuProgramManager::getSingletonPtr()) {
 			try {
-				auto cacheStream = Ogre::Root::createFileStream(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) + "/gpu-" VERSION ".cache");
+				auto cachePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" VERSION ".cache");
+				auto cacheStream = Ogre::Root::createFileStream(cachePath.string());
 				if (cacheStream) {
 					Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
 				}
@@ -151,9 +153,9 @@ void OgreSetup::shutdown() {
 			mRenderWindow = nullptr;
 		}
 	}
-	OGRE_DELETE(mOverlaySystem);
+	OGRE_DELETE (mOverlaySystem);
 	mOverlaySystem = nullptr;
-	OGRE_DELETE(mRoot);
+	OGRE_DELETE (mRoot);
 	mRoot = nullptr;
 	S_LOG_INFO("Ogre shut down.");
 
@@ -193,7 +195,7 @@ Ogre::Root* OgreSetup::createOgreSystem() {
 	mRoot->setRenderSystem(renderSystem);
 
 	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
-		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory() << "'.");
+		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory().string() << "'.");
 	}
 
 	return mRoot;
@@ -273,7 +275,7 @@ Ogre::Root* OgreSetup::configure() {
 	try {
 
 		auto rendererConfig = configService.getSection("renderer");
-		for (auto entry : rendererConfig) {
+		for (const auto& entry : rendererConfig) {
 			if (entry.second.is_string()) {
 				try {
 					//Keys in varconf are mangled, so we've stored the entry with a ":" delimiter.
@@ -306,7 +308,6 @@ Ogre::Root* OgreSetup::configure() {
 	}
 
 
-
 	bool handleOpenGL = false;
 #ifdef __APPLE__
 	handleOpenGL = true;
@@ -337,10 +338,10 @@ Ogre::Root* OgreSetup::configure() {
 	if (mSaveShadersToCache) {
 		Ogre::GpuProgramManager::getSingleton().setSaveMicrocodesToCache(true);
 
-		std::string cacheFilePath = configService.getHomeDirectory(BaseDirType_CACHE) + "/gpu-" VERSION ".cache";
-		if (std::ifstream(cacheFilePath).good()) {
+		auto cacheFilePath = configService.getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" VERSION ".cache");
+		if (std::ifstream(cacheFilePath.string()).good()) {
 			try {
-				auto cacheStream = Ogre::Root::openFileStream(cacheFilePath);
+				auto cacheStream = Ogre::Root::openFileStream(cacheFilePath.string());
 				if (cacheStream) {
 					Ogre::GpuProgramManager::getSingleton().loadMicrocodeCache(cacheStream);
 				}
@@ -456,8 +457,7 @@ void OgreSetup::setStandardValues() {
 					Ogre::MaterialManager::DEFAULT_SCHEME_NAME,
 					schemeName);
 
-			if (!techniqueCreated)
-			{
+			if (!techniqueCreated) {
 				return nullptr;
 			}
 			// Case technique registration succeeded.
@@ -469,12 +469,10 @@ void OgreSetup::setStandardValues() {
 
 			// Grab the generated technique.
 			Ogre::Material::Techniques::const_iterator it;
-			for(it = originalMaterial->getTechniques().begin(); it != originalMaterial->getTechniques().end(); ++it)
-			{
+			for (it = originalMaterial->getTechniques().begin(); it != originalMaterial->getTechniques().end(); ++it) {
 				Ogre::Technique* curTech = *it;
 
-				if (curTech->getSchemeName() == schemeName)
-				{
+				if (curTech->getSchemeName() == schemeName) {
 					return curTech;
 				}
 			}
@@ -482,25 +480,23 @@ void OgreSetup::setStandardValues() {
 			return nullptr;
 		}
 
-		bool afterIlluminationPassesCreated(Ogre::Technique *tech) override {
-			if(tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME)
-			{
+		bool afterIlluminationPassesCreated(Ogre::Technique* tech) override {
+			if (tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME) {
 				auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
 				Ogre::Material* mat = tech->getParent();
 				shaderGenerator->validateMaterialIlluminationPasses(tech->getSchemeName(),
-																	 mat->getName(), mat->getGroup());
+																	mat->getName(), mat->getGroup());
 				return true;
 			}
 			return false;
 		}
 
-		bool beforeIlluminationPassesCleared(Ogre::Technique *tech) override {
-			if(tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME)
-			{
+		bool beforeIlluminationPassesCleared(Ogre::Technique* tech) override {
+			if (tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME) {
 				auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
 				Ogre::Material* mat = tech->getParent();
 				shaderGenerator->invalidateMaterialIlluminationPasses(tech->getSchemeName(),
-																	   mat->getName(), mat->getGroup());
+																	  mat->getName(), mat->getGroup());
 				return true;
 			}
 			return false;

@@ -26,7 +26,6 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
-#include "framework/osdir.h"
 #include "framework/Exception.h"
 #include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
@@ -35,24 +34,26 @@
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <OgreViewport.h>
+#include <boost/filesystem/operations.hpp>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 Screen::Screen(Ogre::RenderWindow& window) :
-		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."), Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk."), mWindow(window), mRecorder(new Camera::Recorder()), mPolygonMode(Ogre::PM_SOLID)
-{
+		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
+		Screenshot("screenshot", this, "Take a screenshot and write to disk."),
+		Record("+record", this, "Record to disk."),
+		mWindow(window),
+		mRecorder(new Camera::Recorder()),
+		mPolygonMode(Ogre::PM_SOLID),
+		mFrameStats{} {
 }
 
-Screen::~Screen()
-{
+Screen::~Screen() {
 	delete mRecorder;
 }
 
-void Screen::runCommand(const std::string &command, const std::string &args)
-{
+void Screen::runCommand(const std::string& command, const std::string& args) {
 	if (Screenshot == command) {
 		//just take a screen shot
 		takeScreenshot();
@@ -65,8 +66,7 @@ void Screen::runCommand(const std::string &command, const std::string &args)
 	}
 }
 
-void Screen::toggleRenderMode()
-{
+void Screen::toggleRenderMode() {
 
 	if (mPolygonMode == Ogre::PM_SOLID) {
 		mPolygonMode = Ogre::PM_WIREFRAME;
@@ -89,8 +89,7 @@ void Screen::toggleRenderMode()
 
 }
 
-const std::string Screen::_takeScreenshot()
-{
+std::string Screen::_takeScreenshot() {
 	// retrieve current time
 	time_t rawtime;
 	struct tm* timeinfo;
@@ -127,14 +126,12 @@ const std::string Screen::_takeScreenshot()
 	}
 	filename << sec << ".jpg";
 
-	const std::string dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "screenshots/";
+	auto dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "screenshots";
 	try {
 		//make sure the directory exists
 
-		oslink::directory osdir(dir);
-
-		if (!osdir.isExisting()) {
-			oslink::directory::mkdir(dir.c_str());
+		if (!boost::filesystem::exists(dir)) {
+			boost::filesystem::create_directories(dir);
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating directory for screenshots." << ex);
@@ -143,16 +140,15 @@ const std::string Screen::_takeScreenshot()
 
 	try {
 		// take screenshot
-		mWindow.writeContentsToFile(dir + filename.str());
+		mWindow.writeContentsToFile((dir / filename.str()).string());
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not write screenshot to disc." << ex);
 		throw Exception("Error when saving screenshot.");
 	}
-	return dir + filename.str();
+	return (dir / filename.str()).string();
 }
 
-void Screen::takeScreenshot()
-{
+void Screen::takeScreenshot() {
 	try {
 		const std::string& result = _takeScreenshot();
 		S_LOG_INFO("Screenshot saved at: " << result);
@@ -164,8 +160,7 @@ void Screen::takeScreenshot()
 	}
 }
 
-const Ogre::RenderTarget::FrameStats& Screen::getFrameStats()
-{
+const Ogre::RenderTarget::FrameStats& Screen::getFrameStats() {
 	mFrameStats = Ogre::RenderTarget::FrameStats();
 	Ogre::RenderSystem::RenderTargetIterator renderTargetI = Ogre::Root::getSingleton().getRenderSystem()->getRenderTargetIterator();
 

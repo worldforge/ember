@@ -102,10 +102,8 @@
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = nullptr;
 
 using namespace Ember;
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 EmberOgre::EmberOgre() :
 		mInput(nullptr),
@@ -136,13 +134,11 @@ EmberOgre::EmberOgre() :
 		mWorld(nullptr),
 		mPMInjectorSignaler(nullptr),
 		mConsoleDevTools(nullptr),
-		mConfigListenerContainer(new ConfigListenerContainer())
-{
+		mConfigListenerContainer(new ConfigListenerContainer()) {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
 
-EmberOgre::~EmberOgre()
-{
+EmberOgre::~EmberOgre() {
 	delete mWorld;
 	delete mMaterialEditor;
 
@@ -184,7 +180,7 @@ EmberOgre::~EmberOgre()
 
 	if (mOgreSetup) {
 		// Deregister the overlay system before deleting it in OgreSetup::shutdown
-		if(mSceneManagerOutOfWorld) {
+		if (mSceneManagerOutOfWorld) {
 			mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
 		}
 		mOgreSetup->shutdown();
@@ -203,8 +199,7 @@ EmberOgre::~EmberOgre()
 
 }
 
-bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
-{
+bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 	Log::sCurrentFrame = mRoot->getNextFrameNumber();
 
 	if (mInput->isApplicationVisible()) {
@@ -249,8 +244,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 	}
 }
 
-void EmberOgre::clearDirtyPassLists()
-{
+void EmberOgre::clearDirtyPassLists() {
 	if (!Ogre::Pass::getDirtyHashList().empty() || !Ogre::Pass::getPassGraveyard().empty()) {
 		for (auto entry : Ogre::Root::getSingleton().getSceneManagers()) {
 			Ogre::SceneManager* pScene = entry.second;
@@ -263,14 +257,12 @@ void EmberOgre::clearDirtyPassLists()
 	}
 }
 
-void EmberOgre::shutdownGui()
-{
+void EmberOgre::shutdownGui() {
 	delete mGUIManager;
 	mGUIManager = nullptr;
 }
 
-bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris::EventService& eventService)
-{
+bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris::EventService& eventService) {
 	if (mRoot) {
 		throw Exception("EmberOgre::setup has already been called.");
 	}
@@ -315,7 +307,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	//We'll control the rendering ourself and need to turn off the autoupdating.
 	mWindow->setAutoUpdated(false);
 
-	std::string exportDir(configSrv.getHomeDirectory(BaseDirType_DATA) + "user-media/data/");
+	auto exportDir = configSrv.getHomeDirectory(BaseDirType_DATA) / "user-media" / "data";
 	//Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
 
@@ -351,8 +343,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	mResourceLoader->initialize();
 
 	//check if we should preload the media
-	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool)configSrv.getValue("media", "preloadmedia");
-	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool)configSrv.getValue("wfut", "enabled");
+	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool) configSrv.getValue("media", "preloadmedia");
+	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool) configSrv.getValue("wfut", "enabled");
 
 	mResourceLoader->loadBootstrap();
 	mResourceLoader->loadGui();
@@ -371,7 +363,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		// Needed for QueuedProgressiveMeshGenerator.
 		mPMInjectorSignaler = new Lod::PMInjectorSignaler();
 
-		if(!Ogre::MeshLodGenerator::getSingletonPtr()) {
+		if (!Ogre::MeshLodGenerator::getSingletonPtr()) {
 			new Ogre::MeshLodGenerator();
 		}
 		Ogre::MeshLodGenerator::getSingleton()._initWorkQueue();
@@ -421,10 +413,10 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 		//should media be preloaded?
 		if (preloadMedia) {
-			S_LOG_INFO( "Begin preload.");
+			S_LOG_INFO("Begin preload.");
 			mResourceLoader->preloadMedia();
 
-			S_LOG_INFO( "End preload.");
+			S_LOG_INFO("End preload.");
 		}
 		try {
 			mGUIManager = new GUIManager(mWindow, configSrv, EmberServices::getSingleton().getServerService(), mainLoopController);
@@ -435,7 +427,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		}
 
 		if (chdir(configSrv.getHomeDirectory(BaseDirType_DATA).c_str())) {
-			S_LOG_WARNING("Failed to change directory to '"<< configSrv.getHomeDirectory(BaseDirType_DATA) << "'");
+			S_LOG_WARNING("Failed to change directory to '" << configSrv.getHomeDirectory(BaseDirType_DATA).string() << "'");
 		}
 
 		try {
@@ -470,18 +462,15 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	return true;
 }
 
-World* EmberOgre::getWorld() const
-{
+World* EmberOgre::getWorld() const {
 	return mWorld;
 }
 
-Screen& EmberOgre::getScreen() const
-{
+Screen& EmberOgre::getScreen() const {
 	return *mScreen;
 }
 
-void EmberOgre::preloadMedia()
-{
+void EmberOgre::preloadMedia() {
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
@@ -496,12 +485,12 @@ void EmberOgre::preloadMedia()
 		try {
 			Ogre::TextureManager::getSingleton().load(shaderTexture, "General");
 		} catch (const std::exception& e) {
-			S_LOG_FAILURE( "Error when loading texture " << shaderTexture << "." << e);
+			S_LOG_FAILURE("Error when loading texture " << shaderTexture << "." << e);
 		}
 	}
 
 	//only autogenerate trees if we're not using the pregenerated ones
-	if (configSrv.itemExists("tree", "usedynamictrees") && ((bool)configSrv.getValue("tree", "usedynamictrees"))) {
+	if (configSrv.itemExists("tree", "usedynamictrees") && ((bool) configSrv.getValue("tree", "usedynamictrees"))) {
 		Environment::Tree tree;
 		tree.makeMesh("GeneratedTrees/European_Larch", Ogre::TParameters::European_Larch);
 		tree.makeMesh("GeneratedTrees/Fir", Ogre::TParameters::Fir);
@@ -509,8 +498,7 @@ void EmberOgre::preloadMedia()
 
 }
 
-void EmberOgre::Server_GotView(Eris::View* view)
-{
+void EmberOgre::Server_GotView(Eris::View* view) {
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
@@ -525,8 +513,7 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	EventWorldCreated.emit(*mWorld);
 }
 
-void EmberOgre::EntityFactory_BeingDeleted()
-{
+void EmberOgre::EntityFactory_BeingDeleted() {
 	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
 	EventWorldBeingDestroyed.emit();
 	delete mWorld;
@@ -547,25 +534,21 @@ void EmberOgre::EntityFactory_BeingDeleted()
 
 }
 
-Ogre::Root* EmberOgre::getOgreRoot() const
-{
+Ogre::Root* EmberOgre::getOgreRoot() const {
 	assert(mRoot);
 	return mRoot;
 }
 
-ShaderManager* EmberOgre::getShaderManager() const
-{
+ShaderManager* EmberOgre::getShaderManager() const {
 	return mShaderManager;
 }
 
-AutomaticGraphicsLevelManager* EmberOgre::getAutomaticGraphicsLevelManager() const
-{
+AutomaticGraphicsLevelManager* EmberOgre::getAutomaticGraphicsLevelManager() const {
 	return mAutomaticGraphicsLevelManager;
 }
 
 
-void EmberOgre::Application_ServicesInitialized()
-{
+void EmberOgre::Application_ServicesInitialized() {
 	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 
 	mSoundResourceProvider = std::make_unique<OgreResourceProvider>("General");
@@ -573,8 +556,7 @@ void EmberOgre::Application_ServicesInitialized()
 
 }
 
-Eris::View* EmberOgre::getMainView() const
-{
+Eris::View* EmberOgre::getMainView() const {
 	return Application::getSingleton().getMainView();
 }
 

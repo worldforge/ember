@@ -67,7 +67,7 @@ LoggedInState::~LoggedInState() {
 
 void LoggedInState::checkTransfer() {
 	TransferInfoStringSerializer serializer;
-	std::string teleportFilePath(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "teleports");
+	auto teleportFilePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "teleports";
 	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
 	TransferInfoStringSerializer::TransferInfoStore transferObjects;
 	if (teleportsFile.good()) {
@@ -177,7 +177,7 @@ void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar) {
 
 void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo) {
 	TransferInfoStringSerializer serializer;
-	const std::string teleportFilePath(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "teleports");
+	auto teleportFilePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "teleports";
 	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
 	TransferInfoStringSerializer::TransferInfoStore transferObjects;
 	if (teleportsFile.good()) {
@@ -208,7 +208,7 @@ void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo) {
 
 void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInfo, const Eris::Avatar* avatar) {
 	TransferInfoStringSerializer serializer;
-	std::string teleportFilePath(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "teleports");
+	auto teleportFilePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "teleports";
 	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
 	TransferInfoStringSerializer::TransferInfoStore transferObjects;
 	if (teleportsFile.good()) {

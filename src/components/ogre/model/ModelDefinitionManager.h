@@ -31,6 +31,7 @@
 #include "framework/ConsoleObject.h"
 
 #include <OgreScriptLoader.h>
+#include <boost/filesystem/path.hpp>
 
 namespace Eris {
 class EventService;
@@ -61,7 +62,7 @@ public:
 	 *
 	 * @param exportDirectory The path to the export directory, where exported models will be stored.
 	 */
-	explicit ModelDefinitionManager(std::string exportDirectory, Eris::EventService& eventService);
+	explicit ModelDefinitionManager(boost::filesystem::path exportDirectory, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
@@ -89,7 +90,7 @@ public:
 	 * @param definition The definition to export.
 	 * @return The path to the exported script. If the export failed, the string will be empty.
 	 */
-	std::string exportScript(const std::string& name, ModelDefinitionPtr definition);
+	std::string exportScript(const std::string& name, const ModelDefinitionPtr& definition);
 
 
 	/// Get a ModelDefinition by name
@@ -147,7 +148,7 @@ protected:
 	/**
 	 * @brief The path to the export directory.
 	 */
-	const std::string mExportDirectory;
+	const boost::filesystem::path mExportDirectory;
 
 
 };

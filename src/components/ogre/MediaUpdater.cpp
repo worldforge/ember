@@ -23,6 +23,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include "MediaUpdater.h"
 
 #include "services/EmberServices.h"
@@ -32,34 +33,24 @@
 namespace Ember {
 namespace OgreView {
 
-MediaUpdater::MediaUpdater()
-{
-}
+MediaUpdater::MediaUpdater() = default;
 
+MediaUpdater::~MediaUpdater() = default;
 
-MediaUpdater::~MediaUpdater()
-{
-}
-
-void MediaUpdater::performUpdate()
-{
+void MediaUpdater::performUpdate() {
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
-	WfutService& wfutSrv= EmberServices::getSingleton().getWfutService();
+	WfutService& wfutSrv = EmberServices::getSingleton().getWfutService();
 
 	if (configSrv.itemExists("wfut", "server")) {
 		std::string server(configSrv.getValue("wfut", "server"));
 		if (configSrv.itemExists("wfut", "channel")) {
 			std::string channel(configSrv.getValue("wfut", "channel"));
 
-			wfutSrv.startUpdate(server, channel, configSrv.getHomeDirectory(BaseDirType_DATA) , "");
+			wfutSrv.startUpdate(server, channel, configSrv.getHomeDirectory(BaseDirType_DATA).string(), "");
 			while (wfutSrv.poll()) {
 			}
-
 		}
 	}
-
 }
-
-
 }
 }

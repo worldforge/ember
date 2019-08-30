@@ -24,18 +24,14 @@
 #include "LodManager.h"
 
 template<>
-Ember::OgreView::Lod::LodDefinitionManager * Ember::Singleton<Ember::OgreView::Lod::LodDefinitionManager>::ms_Singleton = 0;
+Ember::OgreView::Lod::LodDefinitionManager* Ember::Singleton<Ember::OgreView::Lod::LodDefinitionManager>::ms_Singleton = nullptr;
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Lod
-{
+namespace Ember {
+namespace OgreView {
+namespace Lod {
 
-LodDefinitionManager::LodDefinitionManager(const std::string& exportDirectory) :
-	mLodDefinitionSerializer(exportDirectory)
-{
+LodDefinitionManager::LodDefinitionManager(const boost::filesystem::path& exportDirectory) :
+		mLodDefinitionSerializer(exportDirectory) {
 	// MeshManager has a load order of 350, so this should be bigger then that.
 	mLoadOrder = 400.0f;
 	mResourceType = "LodDefinition";
@@ -43,35 +39,30 @@ LodDefinitionManager::LodDefinitionManager(const std::string& exportDirectory) :
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 }
 
-LodDefinitionManager::~LodDefinitionManager()
-{
+LodDefinitionManager::~LodDefinitionManager() {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
-LodDefinitionPtr LodDefinitionManager::create (const Ogre::String& name, const Ogre::String& group,
-        bool isManual, Ogre::ManualResourceLoader* loader,
-        const Ogre::NameValuePairList* createParams)
-{
-    return Ogre::static_pointer_cast<LodDefinition>(createResource(name, group, isManual, loader, createParams));
+LodDefinitionPtr LodDefinitionManager::create(const Ogre::String& name, const Ogre::String& group,
+											  bool isManual, Ogre::ManualResourceLoader* loader,
+											  const Ogre::NameValuePairList* createParams) {
+	return Ogre::static_pointer_cast<LodDefinition>(createResource(name, group, isManual, loader, createParams));
 }
 
-LodDefinitionPtr LodDefinitionManager::getByName(const Ogre::String& name, const Ogre::String& groupName)
-{
-    return Ogre::static_pointer_cast<LodDefinition>(getResourceByName(name, groupName));
+LodDefinitionPtr LodDefinitionManager::getByName(const Ogre::String& name, const Ogre::String& groupName) {
+	return Ogre::static_pointer_cast<LodDefinition>(getResourceByName(name, groupName));
 }
 
 Ogre::Resource* LodDefinitionManager::createImpl(const Ogre::String& name,
-        Ogre::ResourceHandle handle,
-        const Ogre::String& group,
-        bool isManual,
-        Ogre::ManualResourceLoader* loader,
-        const Ogre::NameValuePairList* createParams)
-{
-    return OGRE_NEW LodDefinition(this, name, handle, group, isManual, loader);
+												 Ogre::ResourceHandle handle,
+												 const Ogre::String& group,
+												 bool isManual,
+												 Ogre::ManualResourceLoader* loader,
+												 const Ogre::NameValuePairList* createParams) {
+	return OGRE_NEW LodDefinition(this, name, handle, group, isManual, loader);
 }
 
-void LodDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
-{
+void LodDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) {
 	std::string lodName = stream->getName();
 
 	// Extract file name from path.
@@ -88,8 +79,7 @@ void LodDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::
 	mLodDefinitionSerializer.importLodDefinition(stream, *resource.get());
 }
 
-void LodDefinitionManager::exportScript(std::string meshName, LodDefinitionPtr definition)
-{
+void LodDefinitionManager::exportScript(std::string meshName, LodDefinitionPtr definition) {
 	std::string lodName = LodManager::getSingleton().convertMeshNameToLodName(meshName);
 	mLodDefinitionSerializer.exportScript(definition, lodName);
 }

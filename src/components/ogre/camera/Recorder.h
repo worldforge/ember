@@ -18,25 +18,26 @@
 
 #ifndef RECORDER_H_
 #define RECORDER_H_
+
 #include <OgreFrameListener.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Camera
-{
+namespace Ember {
+namespace OgreView {
+namespace Camera {
 
-class Recorder : public Ogre::FrameListener
-{
+class Recorder : public Ogre::FrameListener {
 public:
- 	Recorder();
+	Recorder();
+
 	void startRecording();
+
 	void stopRecording();
+
 	/**
 	 * Methods from Ogre::FrameListener
 	 */
-	bool frameStarted(const Ogre::FrameEvent& event);
+	bool frameStarted(const Ogre::FrameEvent& event) override;
+
 private:
 	int mSequence;
 	float mAccruedTime;

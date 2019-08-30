@@ -31,6 +31,8 @@
 #include "services/config/ConfigService.h"
 #include "framework/TimeHelper.h"
 #include "domain/EntityTalk.h"
+#include <boost/filesystem/operations.hpp>
+
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #endif
@@ -42,17 +44,15 @@ namespace Ember {
 namespace OgreView {
 
 AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
-: mChatLogger(nullptr)
-{
+		: mChatLogger(nullptr) {
 	//Put log files in a "logs" subdirectory of the home directory.
-	const std::string dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "logs/";
+	auto dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "logs";
 	try {
 		//make sure the directory exists
 
-		oslink::directory osdir(dir);
 
-		if (!osdir.isExisting()) {
-			oslink::directory::mkdir(dir.c_str());
+		if (!boost::filesystem::exists(dir)) {
+			boost::filesystem::create_directories(dir);
 		}
 		//perform setup of the stream
 		std::stringstream logFileSS;
@@ -61,7 +61,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
 
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
-		*mChatLogger << "Chat Logging Initialized at " <<  TimeHelper::getLocalTimeStr() << std::endl;
+		*mChatLogger << "Chat Logging Initialized at " << TimeHelper::getLocalTimeStr() << std::endl;
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
 
 		//wait with connecting until everything has been properly set up
@@ -73,24 +73,20 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 }
 
 
-AvatarLogger::~AvatarLogger()
-{
+AvatarLogger::~AvatarLogger() {
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
-	*mChatLogger << "Chat Logging Ended at " <<  TimeHelper::getLocalTimeStr() << std::endl;
+	*mChatLogger << "Chat Logging Ended at " << TimeHelper::getLocalTimeStr() << std::endl;
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
 }
 
-void AvatarLogger::GUIManager_AppendIGChatLine(const EntityTalk& entityTalk, EmberEntity* entity)
-{
-	*mChatLogger << "[" << TimeHelper::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << entityTalk.getMessage() << std::endl;
+void AvatarLogger::GUIManager_AppendIGChatLine(const EntityTalk& entityTalk, EmberEntity* entity) {
+	*mChatLogger << "[" << TimeHelper::getLocalTimeStr() << "] <" << entity->getName() << "> says: " << entityTalk.getMessage() << std::endl;
 }
 
-AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)
-{
-	//we either already have an entity, or we need to wait until it's creeated
+AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar) {
+	//we either already have an entity, or we need to wait until it's created
 	mLogger = std::unique_ptr<AvatarLogger>(new AvatarLogger(avatar.getEmberEntity()));
 }
-
 
 
 }

@@ -74,7 +74,7 @@
 #include "platform/platform_windows.h"
 #endif
 
-template<> Ember::OgreView::GUIManager* Ember::Singleton<Ember::OgreView::GUIManager>::ms_Singleton = 0;
+template<> Ember::OgreView::GUIManager* Ember::Singleton<Ember::OgreView::GUIManager>::ms_Singleton = nullptr;
 
 using namespace CEGUI;
 using namespace Ember::OgreView::Gui;
@@ -144,7 +144,7 @@ CEGUI is not built with Freetype
 
 		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
 		if (provider != nullptr) {
-			auto* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
+			auto* luaScriptProvider = dynamic_cast<Lua::LuaScriptingProvider*>(provider);
 			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
 			if (!luaScriptProvider->getErrorHandlingFunctionName().empty()) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
@@ -154,7 +154,7 @@ CEGUI is not built with Freetype
 
 			EmberServices::getSingleton().getScriptingService().EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, 0, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, nullptr, "cegui/datafiles/configs/cegui.config");
 		}
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
@@ -208,7 +208,7 @@ CEGUI is not built with Freetype
 	}
 
 	if (chdir(configService.getEmberDataDirectory().c_str())) {
-		S_LOG_WARNING("Failed to change to the data directory '" << configService.getEmberDataDirectory() << "'.");
+		S_LOG_WARNING("Failed to change to the data directory '" << configService.getEmberDataDirectory().string() << "'.");
 	}
 
 }
@@ -233,10 +233,10 @@ GUIManager::~GUIManager()
 	CEGUI::System::destroy();
 
 	if (mOgreResourceProvider) {
-		mGuiRenderer->destroyOgreResourceProvider(*mOgreResourceProvider);
+		CEGUI::OgreRenderer::destroyOgreResourceProvider(*mOgreResourceProvider);
 	}
 	if (mOgreImageCodec) {
-		mGuiRenderer->destroyOgreImageCodec(*mOgreImageCodec);
+		CEGUI::OgreRenderer::destroyOgreImageCodec(*mOgreImageCodec);
 	}
 
 	//note that we normally would delete the mCEGUILogger here, but we don't have to since mGuiSystem will do that in it's desctructor, even though it doesn't own the logger

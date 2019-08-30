@@ -38,7 +38,6 @@
 #include "framework/ShutdownException.h"
 #include "framework/TimeFrame.h"
 #include "framework/FileResourceProvider.h"
-#include "framework/osdir.h"
 #include "framework/StackChecker.h"
 
 #include "components/lua/LuaScriptingProvider.h"
@@ -132,7 +131,7 @@ protected:
 
 			if (mEnableStackCheck && mDesiredFps > 0) {
 				//Pad the frame duration by 1.5 to only catch those frames that are noticeable off
-				StackChecker::start(std::chrono::milliseconds((int64_t)((1000L / mDesiredFps) * 1.5)));
+				StackChecker::start(std::chrono::milliseconds((int64_t) ((1000L / mDesiredFps) * 1.5)));
 			} else {
 				StackChecker::stop();
 			}
@@ -144,7 +143,7 @@ protected:
 			mEnableStackCheck = static_cast<bool>(variable);
 			if (mEnableStackCheck && mDesiredFps > 0) {
 				//Pad the frame duration by 1.5 to only catch those frames that are noticeable off
-				StackChecker::start(std::chrono::milliseconds((int64_t)((1000L / mDesiredFps) * 1.5)));
+				StackChecker::start(std::chrono::milliseconds((int64_t) ((1000L / mDesiredFps) * 1.5)));
 			} else {
 				StackChecker::stop();
 			}
@@ -183,17 +182,17 @@ public:
 	}
 };
 
-template<> Application* Singleton<Application>::ms_Singleton = 0;
+template<> Application* Singleton<Application>::ms_Singleton = nullptr;
 
-Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
+Application::Application(std::string prefix, std::string homeDir, const ConfigMap& configSettings) :
 		mSession(new Eris::Session()),
 		mFileSystemObserver(new FileSystemObserver(mSession->getIoService())),
 		mOgreView(nullptr),
 		mShouldQuit(false),
 		mPollEris(true),
 		mMainLoopController(mShouldQuit, mPollEris, *mSession),
-		mPrefix(prefix),
-		mHomeDir(homeDir),
+		mPrefix(std::move(prefix)),
+		mHomeDir(std::move(homeDir)),
 		mLogObserver(nullptr),
 		mServices(nullptr),
 		mWorldView(nullptr),
@@ -212,7 +211,7 @@ Application::~Application() {
 
 	// before shutting down, we write out the user config to user's ember home directory
 	ConfigService& configService = mServices->getConfigService();
-	configService.saveConfig(configService.getHomeDirectory(BaseDirType_CONFIG) + "ember.conf", varconf::USER);
+	configService.saveConfig(configService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf", varconf::USER);
 
 	mServices->getServerService().stop();
 	mServices->getMetaserverService().stop();
@@ -362,7 +361,7 @@ void Application::initializeServices() {
 	}
 
 	//output all logging to ember.log
-	std::string filename(configService.getHomeDirectory(BaseDirType_DATA) + "ember.log");
+	auto filename = configService.getHomeDirectory(BaseDirType_DATA) / "ember.log";
 	mLogOutStream = std::unique_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
 
 	//write to the log the version number
@@ -375,11 +374,12 @@ void Application::initializeServices() {
 	mLogObserver->setFilter(Log::INFO);
 
 	// Change working directory
-	const std::string& dirName = configService.getHomeDirectory(BaseDirType_CONFIG);
-	oslink::directory osdir(dirName);
+	auto& dirName = configService.getHomeDirectory(BaseDirType_CONFIG);
 
-	if (!osdir) {
-		oslink::directory::mkdir(dirName.c_str());
+	boost::filesystem::path homePath(dirName);
+
+	if (!boost::filesystem::is_directory(dirName)) {
+		boost::filesystem::create_directories(dirName);
 	}
 
 	int result = chdir(configService.getHomeDirectory(BaseDirType_CONFIG).c_str());
@@ -391,17 +391,17 @@ void Application::initializeServices() {
 	configService.loadSavedConfig("ember.conf", mConfigSettings);
 
 	//Check if there's a user specific ember.conf file. If not, create an empty template one.
-	std::string userConfigFilePath = configService.getHomeDirectory(BaseDirType_CONFIG) + "ember.conf";
+	auto userConfigFilePath = configService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
 	struct stat tagStat{};
 	int ret = stat(userConfigFilePath.c_str(), &tagStat);
 	if (ret == -1) {
 		//Create empty template file.
 		std::ofstream outstream(userConfigFilePath.c_str());
 		outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
-		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath << "'.");
+		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath.string() << "'.");
 	}
 
-	S_LOG_INFO("Using media from " << configService.getEmberMediaDirectory());
+	S_LOG_INFO("Using media from " << configService.getEmberMediaDirectory().string());
 
 	// Initialize the Sound Service
 	S_LOG_INFO("Initializing sound service");
@@ -437,7 +437,7 @@ void Application::initializeServices() {
 	mServices->getServerService().setupLocalServerObservation(configService);
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
-	Lua::LuaScriptingProvider* luaProvider = new Lua::LuaScriptingProvider();
+	auto luaProvider = new Lua::LuaScriptingProvider();
 
 	tolua_Lua_open(luaProvider->getLuaState());
 	tolua_Framework_open(luaProvider->getLuaState());
@@ -458,7 +458,7 @@ void Application::initializeServices() {
 	mServices->getScriptingService().registerScriptingProvider(luaProvider);
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 
-	mScriptingResourceProvider = new FileResourceProvider(mServices->getConfigService().getSharedDataDirectory() + "/scripting/");
+	mScriptingResourceProvider = new FileResourceProvider(mServices->getConfigService().getSharedDataDirectory() / "scripting");
 	mServices->getScriptingService().setResourceProvider(mScriptingResourceProvider);
 
 	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
@@ -491,30 +491,30 @@ void Application::startScripting() {
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script." << e);
 	}
+	static const std::string luaSuffix = ".lua";
+	std::list<std::string> luaFiles;
 
 	//load any user defined scripts
-	const std::string userScriptDirectoryPath = mServices->getConfigService().getHomeDirectory(BaseDirType_CONFIG) + "scripts/";
-	oslink::directory scriptDir(userScriptDirectoryPath);
-	if (scriptDir.isExisting()) {
-		static const std::string luaSuffix = ".lua";
-		std::list<std::string> luaFiles;
-		while (scriptDir) {
-			std::string fileName = scriptDir.next();
-			if (fileName != "." && fileName != "..") {
-				std::string lowerCaseFileName = fileName;
-				std::transform(lowerCaseFileName.begin(), lowerCaseFileName.end(), lowerCaseFileName.begin(), ::tolower);
+	auto userScriptDirectoryPath = boost::filesystem::path(mServices->getConfigService().getHomeDirectory(BaseDirType_CONFIG)) / "scripts";
 
-				if (lowerCaseFileName.compare(lowerCaseFileName.length() - luaSuffix.length(), luaSuffix.length(), luaSuffix) == 0) {
-					luaFiles.push_back(fileName);
-				}
+	if (boost::filesystem::is_directory(userScriptDirectoryPath)) {
 
+		for (auto& dir_entry : boost::filesystem::recursive_directory_iterator(userScriptDirectoryPath)) {
+			auto fileName = dir_entry.path().string();
+			std::string lowerCaseFileName = fileName;
+			std::transform(lowerCaseFileName.begin(), lowerCaseFileName.end(), lowerCaseFileName.begin(), ::tolower);
+
+			if (lowerCaseFileName.compare(lowerCaseFileName.length() - luaSuffix.length(), luaSuffix.length(), luaSuffix) == 0) {
+				luaFiles.push_back(fileName);
 			}
+
 		}
+
 
 		//Sorting, because we want to load the scripts in a deterministic order.
 		luaFiles.sort();
 		for (auto& fileName : luaFiles) {
-			std::ifstream stream(userScriptDirectoryPath + "/" + fileName, std::ios::in);
+			std::ifstream stream((userScriptDirectoryPath / fileName).string(), std::ios::in);
 			if (stream) {
 				std::stringstream ss;
 				ss << stream.rdbuf();
@@ -527,11 +527,11 @@ void Application::startScripting() {
 	} else {
 		try {
 			//Create the script user script directory
-			oslink::directory::mkdir(userScriptDirectoryPath.c_str());
-			std::ofstream readme(userScriptDirectoryPath + "/README", std::ios::out);
+			boost::filesystem::create_directories(userScriptDirectoryPath);
+			std::ofstream readme((userScriptDirectoryPath / "/README").string(), std::ios::out);
 			readme << "Any script files placed here will be executed as long as they have a supported file suffix.\nScripts are executed in alphabetical order.\nEmber currently supports lua scripts (ending with '.lua').";
 			readme.close();
-			S_LOG_INFO("Created user user scripting directory (" + userScriptDirectoryPath + ").");
+			S_LOG_INFO("Created user user scripting directory (" + userScriptDirectoryPath.string() + ").");
 		} catch (const std::exception& e) {
 			S_LOG_INFO("Could not create user scripting directory.");
 		}

@@ -53,31 +53,27 @@
  *
  * Provides a relative path.
  */
-static boost::filesystem::path relativeTo(boost::filesystem::path from, boost::filesystem::path to)
-{
+static boost::filesystem::path relativeTo(boost::filesystem::path from, boost::filesystem::path to) {
 	// Start at the root path and while they are the same then do nothing then when they first
 	// diverge take the entire from path, swap it with '..' segments, and then append the remainder of the to path.
 	boost::filesystem::path::const_iterator fromIter = from.begin();
 	boost::filesystem::path::const_iterator toIter = to.begin();
 
 	// Loop through both while they are the same to find nearest common directory
-	while (fromIter != from.end() && toIter != to.end() && (*toIter) == (*fromIter))
-	{
+	while (fromIter != from.end() && toIter != to.end() && (*toIter) == (*fromIter)) {
 		++toIter;
 		++fromIter;
 	}
 
 	// Replace from path segments with '..' (from => nearest common directory)
 	boost::filesystem::path finalPath;
-	while (fromIter != from.end())
-	{
+	while (fromIter != from.end()) {
 		finalPath /= "..";
 		++fromIter;
 	}
 
 	// Append the remainder of the to path (nearest common directory => to)
-	while (toIter != to.end())
-	{
+	while (toIter != to.end()) {
 		finalPath /= *toIter;
 		++toIter;
 	}
@@ -172,8 +168,8 @@ void OgreResourceLoader::unloadUnusedResources() {
 }
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
-	const std::string& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
-	return addResourceDirectory(sharedMediaPath + path, type, section, recursive, true, true);
+	auto& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
+	return addResourceDirectory(sharedMediaPath / path, type, section, recursive, true, true);
 }
 
 bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::string& section, bool recursive) {
@@ -210,38 +206,37 @@ bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::
 
 
 bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
-	const std::string& userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
-	const std::string& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
+	auto& userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
+	auto& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
-	bool foundDir = addResourceDirectory(emberMediaPath + path, type, section, recursive, true);
+	bool foundDir = addResourceDirectory(emberMediaPath / path, type, section, recursive, true);
 
-	return addResourceDirectory(userMediaPath + path, type, section, recursive, false) || foundDir;
+	return addResourceDirectory(userMediaPath / path, type, section, recursive, false) || foundDir;
 }
 
-bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure) {
-	if (isExistingDir(path)) {
-		S_LOG_VERBOSE("Adding dir " << path);
+bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure) {
+	if (boost::filesystem::is_directory(path)) {
+		S_LOG_VERBOSE("Adding dir " << path.string());
 		try {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, type, section, recursive);
-			mResourceRootPaths.emplace_back(path);
-			if (oslink::directory(path).isExisting()) {
-				observeDirectory(path);
-			}
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path.string(), type, section, recursive);
+			mResourceRootPaths.emplace_back(path.string());
+			observeDirectory(path);
+
 			return true;
 		} catch (const std::exception&) {
 			if (throwOnFailure) {
-				throw Ember::Exception(std::string("Could not load from required directory '") + path + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
+				throw Ember::Exception(std::string("Could not load from required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
 			}
 			if (reportFailure) {
-				S_LOG_FAILURE("Couldn't load " << path << ". Continuing as if nothing happened.");
+				S_LOG_FAILURE("Couldn't load " << path.string() << ". Continuing as if nothing happened.");
 			}
 		}
 	} else {
 		if (throwOnFailure) {
-			throw Ember::Exception(std::string("Could not find required directory '") + path + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
+			throw Ember::Exception(std::string("Could not find required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
 		}
 		if (reportFailure) {
-			S_LOG_VERBOSE("Couldn't find resource directory " << path);
+			S_LOG_VERBOSE("Couldn't find resource directory " << path.string());
 		}
 	}
 	return false;
@@ -306,7 +301,7 @@ bool OgreResourceLoader::isExistingDir(const std::string& path) const {
 }
 
 
-void OgreResourceLoader::observeDirectory(const std::string& path) {
+void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 	try {
 		FileSystemObserver::getSingleton().add_directory(path, [this](const FileSystemObserver::FileSystemEvent& event) {
 			auto& ev = event.ev;

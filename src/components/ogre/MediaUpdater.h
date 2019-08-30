@@ -29,15 +29,14 @@ namespace OgreView {
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class MediaUpdater{
+class MediaUpdater {
 public:
-    MediaUpdater();
+	MediaUpdater();
 
-    ~MediaUpdater();
-    
-    void performUpdate();
-    
-    
+	~MediaUpdater();
+
+	void performUpdate();
+
 
 };
 

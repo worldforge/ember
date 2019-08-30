@@ -38,10 +38,10 @@ namespace Model {
 
 class ModelDefinitionManager;
 
-class XMLModelDefinitionSerializer
-{
+class XMLModelDefinitionSerializer {
 public :
 	XMLModelDefinitionSerializer() = default;
+
 	virtual ~XMLModelDefinitionSerializer() = default;
 
 	ModelDefinitionPtr parseScript(Ogre::DataStreamPtr& stream);
@@ -55,56 +55,75 @@ public :
 	 * @param filename The name of the file to which the script will be written.
 	 * @return True if the script was successfully written.
 	 */
-	bool exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename);
+	bool exportScript(const ModelDefinitionPtr& modelDef, const boost::filesystem::path& path);
 
 private:
 
 	ModelDefinitionPtr parseDocument(TiXmlDocument& xmlDoc, const std::string& origin);
 
 	void readModel(const ModelDefinitionPtr& modelDef, TiXmlElement* modelNode);
+
 	void readSubModels(const ModelDefinitionPtr& modelDef, TiXmlElement* mSubModelNode);
+
 	void readParts(TiXmlElement* mPartNode, SubModelDefinition* def);
+
 	void readSubEntities(TiXmlElement* mSubEntNode, PartDefinition* def);
-	void readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode);
+
+	void readActions(const ModelDefinitionPtr& modelDef, TiXmlElement* mAnimNode);
+
 	void readAnimations(TiXmlElement* mAnimationsNode, ActionDefinition* action);
+
 	void readAnimationParts(TiXmlElement* mAnimPartNode, AnimationDefinition* animDef);
-	void readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode);
-	void readParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement* mParticleSystemsNode);
+
+	void readAttachPoints(const ModelDefinitionPtr& modelDef, TiXmlElement* mAnimPartNode);
+
+	void readParticleSystems(const ModelDefinitionPtr& modelDef, TiXmlElement* mParticleSystemsNode);
+
 	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode);
-	void readViews(ModelDefinitionPtr modelDef, TiXmlElement* viewsNode);
+
+	void readViews(const ModelDefinitionPtr& modelDef, TiXmlElement* viewsNode);
+
 	void readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action);
+
 	void readActivations(TiXmlElement* activationsNode, ActionDefinition* action);
-	void readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode);
-	void readPoses(ModelDefinitionPtr modelDef, TiXmlElement* mPoseNode);
+
+	void readLights(const ModelDefinitionPtr& modelDef, TiXmlElement* mLightsNode);
+
+	void readPoses(const ModelDefinitionPtr& modelDef, TiXmlElement* mPoseNode);
 
 	/**
 	 * @brief Reads bone groups data.
 	 * @param modelDef The modeldefinition node.
 	 * @param boneGroupsNode The bone groups node.
 	 */
-	void readBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement* boneGroupsNode);
+	void readBoneGroups(const ModelDefinitionPtr& modelDef, TiXmlElement* boneGroupsNode);
 
 
-	void exportSubModels(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
-	void exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
-	void exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
-	void exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
-	void exportParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
-	void exportPoses(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
-	
+	void exportSubModels(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
+
+	void exportActions(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
+
+	void exportAttachPoints(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
+
+	void exportViews(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
+
+	void exportParticleSystems(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
+
+	void exportPoses(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
+
 	/**
 	 * @brief Exports the light data.
 	 * @param modelDef The model definition.
 	 * @param modelElem The model xml element.
 	 */
-	void exportLights(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+	void exportLights(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
 
 	/**
 	 * @brief Exports bone groups data.
 	 * @param modelDef The model definition.
 	 * @param modelElem The model xml element.
 	 */
-	void exportBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+	void exportBoneGroups(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
 
 };
 

@@ -22,12 +22,12 @@
 
 #include "framework/Service.h"
 #include <varconf/variable.h>
+#include <boost/filesystem/path.hpp>
 #include <string>
 #include <memory>
 #include <map>
 
-namespace varconf
-{
+namespace varconf {
 class Config;
 }
 
@@ -49,8 +49,7 @@ class ServerSettingsCredentials;
  * All server settings are stored in one file, by default "serversettings.conf", to be found in the Ember home config directory. Each server is represented by one section in this config file.
  * The mapping between servers and sections is handled by the getSectionForServerCredentials(...) method. This method currently only uses the host name to map servers to config file section, but it might be extended with more complex authentication methods for making sure that the right server is matched to the correct section.
  */
-class ServerSettings : public Service
-{
+class ServerSettings : public Service {
 public:
 	/**
 	 * @brief Ctor.
@@ -60,17 +59,17 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ServerSettings();
+	~ServerSettings() override;
 
 	/**
 	 * @copydoc Service::start()
 	 */
-	bool start();
+	bool start() override;
 
 	/**
 	 * @copydoc Service::stop()
 	 */
-	void stop();
+	void stop() override;
 
 	/**
 	 * @brief Checks for the existence of a specific key.
@@ -138,7 +137,7 @@ private:
 	 *
 	 * @returns The full path to the config file on the file system.
 	 */
-	std::string getFullConfigFilePath() const;
+	boost::filesystem::path getFullConfigFilePath() const;
 
 	/**
 	 * @brief Reads any saved settings from disk into the config instance.

@@ -20,45 +20,40 @@
 #include "components/ogre/EmberOgre.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include "framework/osdir.h"
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
+#include <boost/filesystem/operations.hpp>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Camera
-{
+namespace Ember {
+namespace OgreView {
+namespace Camera {
 
-Recorder::Recorder(): mSequence(0), mAccruedTime(0.0f), mFramesPerSecond(20.0f)
-{
+Recorder::Recorder() :
+		mSequence(0),
+		mAccruedTime(0.0f),
+		mFramesPerSecond(20.0f) {
 }
 
-void Recorder::startRecording()
-{
+void Recorder::startRecording() {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
-void Recorder::stopRecording()
-{
+
+void Recorder::stopRecording() {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-bool Recorder::frameStarted(const Ogre::FrameEvent& event)
-{
+bool Recorder::frameStarted(const Ogre::FrameEvent& event) {
 	mAccruedTime += event.timeSinceLastFrame;
 	if (mAccruedTime >= (1.0f / mFramesPerSecond)) {
 		mAccruedTime = 0.0f;
 		std::stringstream filename;
 		filename << "screenshot_" << mSequence++ << ".tga";
-		const std::string dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "recordings/";
+		auto dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "recordings";
 		try {
 			//make sure the directory exists
 
-			oslink::directory osdir(dir);
-
-			if (!osdir.isExisting()) {
-				oslink::directory::mkdir(dir.c_str());
+			if (!boost::filesystem::exists(dir)) {
+				boost::filesystem::create_directories(dir);
 			}
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when creating directory for screenshots." << ex);
@@ -67,7 +62,7 @@ bool Recorder::frameStarted(const Ogre::FrameEvent& event)
 		}
 		try {
 			// take screenshot
-			EmberOgre::getSingleton().getRenderWindow()->writeContentsToFile(dir + filename.str());
+			EmberOgre::getSingleton().getRenderWindow()->writeContentsToFile((dir / filename.str()).string());
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Could not write screenshot to disc." << ex);
 			stopRecording();

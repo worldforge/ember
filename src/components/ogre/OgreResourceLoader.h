@@ -129,9 +129,9 @@ protected:
 	 * @param throwOnFailure Throws an exception on failure.
 	 * @return True if the path was successfully added.
 	 */
-	bool addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure = false);
+	bool addResourceDirectory(const boost::filesystem::path& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure = false);
 
-	void observeDirectory(const std::string& path);
+	void observeDirectory(const boost::filesystem::path& path);
 
 	/**
 	 * Refresh an updated model definition, either by just adding it if it doesn't already exists, or by updating it and reloading all instances.

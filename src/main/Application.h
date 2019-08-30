@@ -123,12 +123,12 @@ public:
 	 * @param homeDir The path to the Ember home directory. On a UNIX system this was historically "~/.ember". By default, this is now set according to the XDG Base Directory Specification.
 	 * @param configSettings Command line configuration settings.
 	 */
-	Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
+	Application(std::string prefix, std::string homeDir, const ConfigMap& configSettings);
 
 	/**
 	 * @brief At destruction pretty much all game objects will be destroyed.
 	 */
-	virtual ~Application();
+	~Application() override;
 
 	/**
 	 * @brief Enters the main loop.
@@ -169,7 +169,7 @@ public:
 	/**
 	 * @brief Callback for running Console Commands
 	 */
-	void runCommand(const std::string& command, const std::string& args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	 * @brief Accessor for the main eris world view, if any.

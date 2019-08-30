@@ -43,9 +43,8 @@
 	//#include <ostream>
 #endif
 
-#include "framework/osdir.h"
-
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem/operations.hpp>
 
 namespace Ember {
 namespace OgreView {
@@ -120,11 +119,11 @@ void XMLModelDefinitionSerializer::readModel(const ModelDefinitionPtr& modelDef,
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_DEPTH;
 		} else if (useScaleOf == "none") {
 			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_NONE;
-        } else if (useScaleOf == "fit") {
-            modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_FIT;
-        } else if (useScaleOf == "all") {
-		    //This is also the default
-            modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_ALL;
+		} else if (useScaleOf == "fit") {
+			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_FIT;
+		} else if (useScaleOf == "all") {
+			//This is also the default
+			modelDef->mUseScaleOf = ModelDefinition::UseScaleOf::MODEL_ALL;
 		} else {
 			S_LOG_WARNING("Unrecognized model scaling directive: " << useScaleOf);
 		}
@@ -345,7 +344,7 @@ void XMLModelDefinitionSerializer::readSubEntities(TiXmlElement* mSubEntNode, Pa
 	}
 }
 
-void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXmlElement* mAnimNode) {
+void XMLModelDefinitionSerializer::readActions(const ModelDefinitionPtr& modelDef, TiXmlElement* mAnimNode) {
 	TiXmlElement* elem;
 	const char* tmp = nullptr;
 	bool notfound = true;
@@ -513,7 +512,7 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
 }
 
 
-void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement* mAnimPartNode) {
+void XMLModelDefinitionSerializer::readAttachPoints(const ModelDefinitionPtr& modelDef, TiXmlElement* mAnimPartNode) {
 	AttachPointDefinitionStore& attachPoints = modelDef->mAttachPoints;
 
 	const char* tmp = nullptr;
@@ -557,7 +556,7 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 
 }
 
-void XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement* mParticleSystemsNode) {
+void XMLModelDefinitionSerializer::readParticleSystems(const ModelDefinitionPtr& modelDef, TiXmlElement* mParticleSystemsNode) {
 	TiXmlElement* elem;
 	ModelDefinition::ParticleSystemSet& particleSystems = modelDef->mParticleSystems;
 
@@ -619,7 +618,7 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 
 }
 
-void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlElement* viewsNode) {
+void XMLModelDefinitionSerializer::readViews(const ModelDefinitionPtr& modelDef, TiXmlElement* viewsNode) {
 	TiXmlElement* elem;
 
 	const char* tmp = nullptr;
@@ -654,7 +653,7 @@ void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlE
 	}
 }
 
-void XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode) {
+void XMLModelDefinitionSerializer::readLights(const ModelDefinitionPtr& modelDef, TiXmlElement* mLightsNode) {
 	TiXmlElement* elem;
 	ModelDefinition::LightSet& lights = modelDef->mLights;
 
@@ -743,7 +742,7 @@ void XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXml
 	}
 }
 
-void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement* boneGroupsNode) {
+void XMLModelDefinitionSerializer::readBoneGroups(const ModelDefinitionPtr& modelDef, TiXmlElement* boneGroupsNode) {
 	TiXmlElement* elem;
 
 	const char* tmp = nullptr;
@@ -777,7 +776,7 @@ void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, T
 	}
 }
 
-void XMLModelDefinitionSerializer::readPoses(ModelDefinitionPtr modelDef, TiXmlElement* mNode) {
+void XMLModelDefinitionSerializer::readPoses(const ModelDefinitionPtr& modelDef, TiXmlElement* mNode) {
 	PoseDefinitionStore& poses = modelDef->mPoseDefinitions;
 
 	const char* tmp = nullptr;
@@ -823,8 +822,8 @@ void XMLModelDefinitionSerializer::readPoses(ModelDefinitionPtr modelDef, TiXmlE
 }
 
 
-bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename) {
-	if (filename.empty()) {
+bool XMLModelDefinitionSerializer::exportScript(const ModelDefinitionPtr& modelDef, const boost::filesystem::path& path) {
+	if (path.empty()) {
 		return false;
 	}
 
@@ -832,9 +831,9 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 	try {
 
-		if (!oslink::directory(directory).isExisting()) {
-			S_LOG_INFO("Creating directory " << directory);
-			oslink::directory::mkdir(directory.c_str());
+		if (!boost::filesystem::exists(path.parent_path())) {
+			S_LOG_INFO("Creating directory " << path.parent_path().string());
+			boost::filesystem::create_directories(path.parent_path());
 		}
 
 		TiXmlElement elem("models");
@@ -938,19 +937,20 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		elem.InsertEndChild(modelElem);
 
 		xmlDoc.InsertEndChild(elem);
-		xmlDoc.SaveFile((directory + filename));
-		S_LOG_INFO("Saved file " << (directory + filename));
+
+		xmlDoc.SaveFile(path.string());
+		S_LOG_INFO("Saved file " << path.string());
 		return true;
 	}
 	catch (...) {
-		S_LOG_FAILURE("An error occurred saving the modeldefinition for " << filename << ".");
+		S_LOG_FAILURE("An error occurred saving the modeldefinition for " << path.filename().string() << ".");
 		return false;
 	}
 
 
 }
 
-void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+void XMLModelDefinitionSerializer::exportViews(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
 	TiXmlElement viewsElem("views");
 
 	for (const auto& viewDefinition : modelDef->getViewDefinitions()) {
@@ -972,7 +972,7 @@ void XMLModelDefinitionSerializer::exportViews(ModelDefinitionPtr modelDef, TiXm
 	modelElem.InsertEndChild(viewsElem);
 }
 
-void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+void XMLModelDefinitionSerializer::exportActions(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
 	TiXmlElement actionsElem("actions");
 
 	for (ActionDefinitionsStore::const_iterator I = modelDef->getActionDefinitions().begin(); I != modelDef->getActionDefinitions().end(); ++I) {
@@ -1043,7 +1043,7 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 	modelElem.InsertEndChild(actionsElem);
 }
 
-void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+void XMLModelDefinitionSerializer::exportSubModels(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
 	TiXmlElement submodelsElem("submodels");
 
 	for (const auto& subModelDefinition : modelDef->getSubModelDefinitions()) {
@@ -1087,7 +1087,7 @@ void XMLModelDefinitionSerializer::exportSubModels(ModelDefinitionPtr modelDef, 
 
 }
 
-void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+void XMLModelDefinitionSerializer::exportAttachPoints(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
 	TiXmlElement attachpointsElem("attachpoints");
 
 	for (const auto& attachPointDef : modelDef->getAttachPointsDefinitions()) {
@@ -1109,7 +1109,7 @@ void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDe
 	modelElem.InsertEndChild(attachpointsElem);
 }
 
-void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+void XMLModelDefinitionSerializer::exportLights(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
 	TiXmlElement lightsElem("lights");
 
 	for (ModelDefinition::LightSet::const_iterator I = modelDef->mLights.begin(); I != modelDef->mLights.end(); ++I) {
@@ -1153,7 +1153,7 @@ void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiX
 	modelElem.InsertEndChild(lightsElem);
 }
 
-void XMLModelDefinitionSerializer::exportPoses(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+void XMLModelDefinitionSerializer::exportPoses(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
 	if (!modelDef->mPoseDefinitions.empty()) {
 		TiXmlElement elem("poses");
 
@@ -1180,7 +1180,7 @@ void XMLModelDefinitionSerializer::exportPoses(ModelDefinitionPtr modelDef, TiXm
 	}
 }
 
-void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+void XMLModelDefinitionSerializer::exportParticleSystems(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
 	if (!modelDef->mParticleSystems.empty()) {
 		TiXmlElement particleSystemsElem("particlesystems");
 
@@ -1208,10 +1208,10 @@ void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr mode
 	}
 }
 
-void XMLModelDefinitionSerializer::exportBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement& modelElem) {
+void XMLModelDefinitionSerializer::exportBoneGroups(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
 	TiXmlElement boneGroupsElem("bonegroups");
 
-	for (auto entry : modelDef->getBoneGroupDefinitions()) {
+	for (const auto& entry : modelDef->getBoneGroupDefinitions()) {
 		TiXmlElement boneGroupElem("bonegroup");
 		boneGroupElem.SetAttribute("name", entry.second->Name);
 
@@ -1229,7 +1229,6 @@ void XMLModelDefinitionSerializer::exportBoneGroups(ModelDefinitionPtr modelDef,
 	}
 	modelElem.InsertEndChild(boneGroupsElem);
 }
-
 
 
 } //end namespace

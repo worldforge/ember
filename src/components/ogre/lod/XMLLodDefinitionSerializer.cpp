@@ -27,16 +27,13 @@
 
 #include <OgreStringConverter.h>
 #include <OgreResourceGroupManager.h>
+#include <boost/filesystem/operations.hpp>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Lod
-{
+namespace Ember {
+namespace OgreView {
+namespace Lod {
 
-void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& stream, LodDefinition& lodDef) const
-{
+void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& stream, LodDefinition& lodDef) const {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (!xmlHelper.Load(xmlDoc, stream)) {
@@ -84,8 +81,8 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 
 			// <level>...</level> <level>...</level> <level>...</level>
 			for (TiXmlElement* distElem = manElem->FirstChildElement("level");
-			     distElem != 0;
-			     distElem = distElem->NextSiblingElement("level")) {
+				 distElem != nullptr;
+				 distElem = distElem->NextSiblingElement("level")) {
 				LodDistance dist;
 
 				if (lodDef.getType() == LodDefinition::LT_USER_CREATED_MESH) {
@@ -98,9 +95,9 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 							dist.setMeshName(tmp);
 						} else {
 							S_LOG_FAILURE(
-							    lodDef.getName()	<<
-							    " contains invalid mesh name for user created lod level. Skipping lod level for distance "
-							                        << distElem->Attribute("distance"));
+									lodDef.getName() <<
+													 " contains invalid mesh name for user created lod level. Skipping lod level for distance "
+													 << distElem->Attribute("distance"));
 							continue;
 						}
 					}
@@ -142,17 +139,16 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 	}
 }
 
-bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, const std::string& fileName) const
-{
-	if (fileName == "") {
+bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, const std::string& fileName) const {
+	if (fileName.empty()) {
 		return false;
 	}
 
 	TiXmlDocument xmlDoc;
 
-	if (!oslink::directory(mExportDirectory).isExisting()) {
-		S_LOG_INFO("Creating directory " << mExportDirectory);
-		oslink::directory::mkdir(mExportDirectory.c_str());
+	if (!boost::filesystem::exists(mExportDirectory)) {
+		S_LOG_INFO("Creating directory " << mExportDirectory.string());
+		boost::filesystem::create_directories(mExportDirectory);
 	}
 
 	// <lod>...</lod>
@@ -201,21 +197,21 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 						TiXmlElement methodElem("method");
 						const char* pMethodText;
 						switch (dist.getReductionMethod()) {
-						case Ogre::LodLevel::VRM_PROPORTIONAL:
-							pMethodText = "proportional";
-							break;
+							case Ogre::LodLevel::VRM_PROPORTIONAL:
+								pMethodText = "proportional";
+								break;
 
-						case Ogre::LodLevel::VRM_CONSTANT:
-							pMethodText = "constant";
-							break;
+							case Ogre::LodLevel::VRM_CONSTANT:
+								pMethodText = "constant";
+								break;
 
-						case Ogre::LodLevel::VRM_COLLAPSE_COST:
-							pMethodText = "collapsecost";
-							break;
+							case Ogre::LodLevel::VRM_COLLAPSE_COST:
+								pMethodText = "collapsecost";
+								break;
 
-						default:
-							assert(0);
-							break;
+							default:
+								assert(0);
+								break;
 						}
 						TiXmlText methodText(pMethodText);
 						methodElem.InsertEndChild(methodText);
@@ -237,13 +233,12 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 	}
 
 	xmlDoc.InsertEndChild(rootElem);
-	S_LOG_INFO("Saved file " << (mExportDirectory + fileName));
-	return xmlDoc.SaveFile((mExportDirectory + fileName).c_str());
+	S_LOG_INFO("Saved file " << (mExportDirectory / fileName).string());
+	return xmlDoc.SaveFile((mExportDirectory / fileName).c_str());
 }
 
-XMLLodDefinitionSerializer::XMLLodDefinitionSerializer(const std::string& exportDirectory) :
-	mExportDirectory(exportDirectory)
-{
+XMLLodDefinitionSerializer::XMLLodDefinitionSerializer(boost::filesystem::path exportDirectory) :
+		mExportDirectory(std::move(exportDirectory)) {
 
 }
 

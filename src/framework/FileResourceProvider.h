@@ -20,21 +20,24 @@
 #define FILERESOURCEPROVIDER_H_
 
 #include "IResourceProvider.h"
+#include <boost/filesystem/path.hpp>
 
 #include <string>
 
-namespace Ember
-{
+namespace Ember {
 
-class FileResourceWrapper: public IResourceWrapper
-{
+class FileResourceWrapper : public IResourceWrapper {
 public:
-	FileResourceWrapper(std::ifstream& stream);
-	virtual ~FileResourceWrapper();
+	explicit FileResourceWrapper(std::ifstream& stream);
 
-	virtual const char* getDataPtr();
-	virtual bool hasData();
-	virtual size_t getSize();
+	~FileResourceWrapper() override;
+
+	const char* getDataPtr() override;
+
+	bool hasData() override;
+
+	size_t getSize() override;
+
 private:
 
 	char* mBuffer;
@@ -45,20 +48,20 @@ private:
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Loads files relative to a base directory.
  */
-class FileResourceProvider: public IResourceProvider
-{
+class FileResourceProvider : public IResourceProvider {
 public:
 	/**
 	 * @brief Ctor.
 	 * @param baseDirectory The base directory.
 	 */
-	FileResourceProvider(const std::string& baseDirectory);
-	virtual ~FileResourceProvider();
+	explicit FileResourceProvider(boost::filesystem::path baseDirectory);
 
-	virtual ResourceWrapper getResource(const std::string& name);
+	~FileResourceProvider() override;
+
+	ResourceWrapper getResource(const std::string& name) override;
 
 private:
-	const std::string mBaseDirectory;
+	const boost::filesystem::path mBaseDirectory;
 };
 
 }

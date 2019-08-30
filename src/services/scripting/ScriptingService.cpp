@@ -30,41 +30,36 @@
 #include "framework/LoggingInstance.h"
 #include "framework/IScriptingProvider.h"
 #include "framework/Tokeniser.h"
-#include "framework/ConsoleBackend.h"
 
 namespace Ember {
 
 ScriptingService::ScriptingService()
-: Service("Scripting"), LoadScript("loadscript", this, "Loads a script."), mResourceProvider(nullptr), mAlwaysLookup(false)
-{
+		: Service("Scripting"),
+		  LoadScript("loadscript", this, "Loads a script."),
+		  mResourceProvider(nullptr),
+		  mAlwaysLookup(false) {
 }
 
 
-ScriptingService::~ScriptingService()
-{
-	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
-	{
+ScriptingService::~ScriptingService() {
+	for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
 		delete I->second;
 	}
 }
 
-void ScriptingService::stop()
-{
+void ScriptingService::stop() {
 	Service::stop();
-	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
-	{
+	for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
 		I->second->stop();
 	}
 }
 
-bool ScriptingService::start()
-{
+bool ScriptingService::start() {
 	setRunning(true);
 	return true;
 }
 
-void ScriptingService::loadScript(const std::string& script)
-{
+void ScriptingService::loadScript(const std::string& script) {
 	if (mResourceProvider) {
 		ResourceWrapper resWrapper = mResourceProvider->getResource(script);
 		if (!resWrapper.hasData()) {
@@ -73,11 +68,10 @@ void ScriptingService::loadScript(const std::string& script)
 			return;
 		}
 
-		for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
-		{
+		for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
 			//check if the provider will load the script
 			if (I->second->willLoadScript(script)) {
-				S_LOG_INFO("Loading script: " << script << " with scripting provider " << I->second->getName() );
+				S_LOG_INFO("Loading script: " << script << " with scripting provider " << I->second->getName());
 				try {
 					I->second->loadScript(resWrapper, nullptr);
 				} catch (const std::exception& ex) {
@@ -85,7 +79,7 @@ void ScriptingService::loadScript(const std::string& script)
 					scriptError(ex.what());
 				} catch (...) {
 					S_LOG_WARNING("Got unknown script error when loading the script " << script);
-					scriptError("Unknown error loading script " + script );
+					scriptError("Unknown error loading script " + script);
 				}
 				return;
 			}
@@ -94,8 +88,7 @@ void ScriptingService::loadScript(const std::string& script)
 	}
 }
 
-void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext)
-{
+void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext) {
 	ProviderStore::const_iterator I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
@@ -112,8 +105,7 @@ void ScriptingService::executeCode(const std::string& scriptCode, const std::str
 	}
 }
 
-void ScriptingService::callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext)
-{
+void ScriptingService::callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext) {
 	ProviderStore::const_iterator I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
@@ -130,13 +122,11 @@ void ScriptingService::callFunction(const std::string& functionName, int narg, c
 	}
 }
 
-sigc::signal<void, const std::string&>& ScriptingService::getEventScriptError()
-{
+sigc::signal<void, const std::string&>& ScriptingService::getEventScriptError() {
 	return mEventScriptError;
 }
 
-void ScriptingService::registerScriptingProvider(IScriptingProvider* provider)
-{
+void ScriptingService::registerScriptingProvider(IScriptingProvider* provider) {
 	if (mProviders.find(provider->getName()) != mProviders.end()) {
 		S_LOG_FAILURE("Could not add already existing scripting provider with name " + provider->getName());
 	} else {
@@ -146,66 +136,52 @@ void ScriptingService::registerScriptingProvider(IScriptingProvider* provider)
 	}
 }
 
-void ScriptingService::scriptError(const std::string& error)
-{
+void ScriptingService::scriptError(const std::string& error) {
 	//S_LOG_WARNING(error);
 	mEventScriptError.emit(error);
 }
 
-IScriptingProvider* ScriptingService::getProviderFor(const std::string &providerName)
-{
+IScriptingProvider* ScriptingService::getProviderFor(const std::string& providerName) {
 	ProviderStore::const_iterator I = mProviders.find(providerName);
-	if (I != mProviders.end())
-	{
+	if (I != mProviders.end()) {
 		return I->second;
 	}
-	return 0;
+	return nullptr;
 }
 
-void ScriptingService::forceGCForAllProviders()
-{
-	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
-	{
+void ScriptingService::forceGCForAllProviders() {
+	for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
 		I->second->forceGC();
 	}
 }
 
-void ScriptingService::runCommand(const std::string &command, const std::string &args)
-{
-    if (LoadScript == command){
- 		Tokeniser tokeniser;
+void ScriptingService::runCommand(const std::string& command, const std::string& args) {
+	if (LoadScript == command) {
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string script = tokeniser.nextToken();
-		if (script != "") {
+		if (!script.empty()) {
 			loadScript(script);
 		}
-    }
-
-    return;
+	}
 }
 
-std::vector<std::string> ScriptingService::getProviderNames()
-{
+std::vector<std::string> ScriptingService::getProviderNames() {
 	std::vector<std::string> names;
-	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
-	{
+	for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
 		names.push_back(I->second->getName());
 	}
 	return names;
 
 }
 
-IResourceProvider* ScriptingService::getResourceProvider()
-{
+IResourceProvider* ScriptingService::getResourceProvider() {
 	return mResourceProvider;
 }
 
-void ScriptingService::setResourceProvider(IResourceProvider* resourceProvider)
-{
+void ScriptingService::setResourceProvider(IResourceProvider* resourceProvider) {
 	mResourceProvider = resourceProvider;
 }
-
-
 
 
 }

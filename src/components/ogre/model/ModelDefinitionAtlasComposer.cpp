@@ -31,16 +31,14 @@
 #include "../Convert.h"
 #include "services/config/ConfigService.h"
 
-#include "framework/osdir.h"
-
 #include <Atlas/MultiLineListFormatter.h>
-#include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Ogre.h>
 #include <wfmath/atlasconv.h>
 #include <wfmath/stream.h>
+#include <boost/filesystem/operations.hpp>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -195,20 +193,21 @@ std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std:
 	if (model) {
 		try {
 			//make sure the directory exists
-			std::string dir(EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) + "typeexport/");
+			auto dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "typeexport";
 
-			if (!oslink::directory(dir).isExisting()) {
-				S_LOG_INFO("Creating directory " << dir);
-				oslink::directory::mkdir(dir.c_str());
+			if (!boost::filesystem::exists(dir)) {
+				S_LOG_INFO("Creating directory " << dir.string());
+				boost::filesystem::create_directories(dir);
 			}
 
-			const std::string fileName(dir + typeName + ".xml");
+
+			auto fileName = dir / (typeName + ".xml");
 			std::fstream exportFile(fileName.c_str(), std::fstream::out);
 
-			S_LOG_INFO("Creating atlas type " << fileName);
+			S_LOG_INFO("Creating atlas type " << fileName.string());
 			composeToStream(exportFile, model, typeName, parentTypeName, scale, collisionType);
 			exportFile.close();
-			return fileName;
+			return fileName.string();
 		} catch (const std::exception& e) {
 			S_LOG_WARNING("Error when exporting Model to Atlas data." << e);
 		}

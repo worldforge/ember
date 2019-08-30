@@ -23,36 +23,28 @@
 #include "services/config/ConfigService.h"
 #include <fstream>
 
-namespace Ember
-{
+namespace Ember {
 
-namespace Services
-{
+namespace Services {
 
 ServerSettings::ServerSettings() :
-	Service("Server settings"), mConfig(new varconf::Config())
-{
+		Service("Server settings"), mConfig(new varconf::Config()) {
 }
 
-ServerSettings::~ServerSettings()
-{
-}
+ServerSettings::~ServerSettings() = default;
 
-bool ServerSettings::start()
-{
+bool ServerSettings::start() {
 	readFromDisk();
 	setRunning(true);
 	return true;
 }
 
-void ServerSettings::stop()
-{
+void ServerSettings::stop() {
 	Service::stop();
 	writeToDisk();
 }
 
-std::string ServerSettings::getSectionForServerCredentials(const ServerSettingsCredentials & credentials) const
-{
+std::string ServerSettings::getSectionForServerCredentials(const ServerSettingsCredentials& credentials) const {
 	//This should be expanded to a more complex way of assuring that the section returned is correct for the server credentials.
 	std::stringstream ss;
 	ss << "hostname_" << credentials.getHostName() << "_servername_" << credentials.getServerName();
@@ -61,16 +53,14 @@ std::string ServerSettings::getSectionForServerCredentials(const ServerSettingsC
 	return sectionName;
 }
 
-void ServerSettings::writeToDisk()
-{
-	std::string filePath = getFullConfigFilePath();
+void ServerSettings::writeToDisk() {
+	auto filePath = getFullConfigFilePath();
 
-	mConfig->writeToFile(filePath); //calling this without any scope arguments makes it write all settings in all scopes
+	mConfig->writeToFile(filePath.string()); //calling this without any scope arguments makes it write all settings in all scopes
 }
 
-void ServerSettings::readFromDisk()
-{
-	std::string filePath = getFullConfigFilePath();
+void ServerSettings::readFromDisk() {
+	auto filePath = getFullConfigFilePath();
 
 	std::ifstream file(filePath.c_str());
 
@@ -78,7 +68,7 @@ void ServerSettings::readFromDisk()
 	if (!file.fail()) {
 		// read in file
 		// 		serverCache.readFromFile(cacheFile.c_str(),varconf::GLOBAL);
-		S_LOG_VERBOSE("Loading existing server settings [ " << filePath << " ]");
+		S_LOG_VERBOSE("Loading existing server settings [ " << filePath.string() << " ]");
 		try {
 			// make sure it is well formed
 			mConfig->parseStream(file, varconf::GLOBAL);
@@ -90,47 +80,44 @@ void ServerSettings::readFromDisk()
 	}
 }
 
-void ServerSettings::setItem(const ServerSettingsCredentials & credentials, const std::string & key, const varconf::Variable& item)
-{
+void ServerSettings::setItem(const ServerSettingsCredentials& credentials, const std::string& key, const varconf::Variable& item) {
 	mConfig->setItem(getSectionForServerCredentials(credentials), key, item);
 }
 
-bool ServerSettings::findItem(const ServerSettingsCredentials & credentials, const std::string & key) const
-{
+bool ServerSettings::findItem(const ServerSettingsCredentials& credentials, const std::string& key) const {
 	std::string cleanKey(key);
 	mConfig->clean(cleanKey);
 	return mConfig->findItem(getSectionForServerCredentials(credentials), cleanKey);
 }
 
-varconf::Variable ServerSettings::getItem(const ServerSettingsCredentials & credentials, const std::string & key) const
-{
+varconf::Variable ServerSettings::getItem(const ServerSettingsCredentials& credentials, const std::string& key) const {
 	std::string cleanKey(key);
 	mConfig->clean(cleanKey);
 	return mConfig->getItem(getSectionForServerCredentials(credentials), cleanKey);
 }
 
-bool ServerSettings::eraseItem(const ServerSettingsCredentials & credentials, const std::string & key)
-{
+bool ServerSettings::eraseItem(const ServerSettingsCredentials& credentials, const std::string& key) {
 	std::string cleanKey(key);
 	mConfig->clean(cleanKey);
 	return mConfig->erase(getSectionForServerCredentials(credentials), cleanKey);
 }
 
-const varconf::sec_map & ServerSettings::getServerSettings(const ServerSettingsCredentials & credentials)
-{
+const varconf::sec_map& ServerSettings::getServerSettings(const ServerSettingsCredentials& credentials) {
 	return mConfig->getSection(getSectionForServerCredentials(credentials));
 }
 
-std::string ServerSettings::getFullConfigFilePath() const
-{
+boost::filesystem::path ServerSettings::getFullConfigFilePath() const {
 	ConfigService& cfgService = EmberServices::getSingleton().getConfigService();
 	// fetch the configuration file
 	if (cfgService.hasItem("general", "serversettings")) {
-		return cfgService.getHomeDirectory(BaseDirType_CONFIG) + static_cast<std::string>(cfgService.getValue("general", "serversettings"));
-	} else {
-		// default fallback value
-		return cfgService.getHomeDirectory(BaseDirType_CONFIG) + "serversettings.conf";
+		auto value = cfgService.getValue("general", "serversettings");
+		if (value.is_string()) {
+			return cfgService.getHomeDirectory(BaseDirType_CONFIG) / value.as_string();
+		}
 	}
+	// default fallback value
+	return cfgService.getHomeDirectory(BaseDirType_CONFIG) / "serversettings.conf";
+
 }
 }
 }

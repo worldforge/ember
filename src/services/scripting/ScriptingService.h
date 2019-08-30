@@ -32,8 +32,11 @@
 
 namespace Ember {
 class IResourceProvider;
+
 class IScriptingProvider;
+
 class IScriptingCallContext;
+
 /**
 @author Erik Ogenvik
 
@@ -41,75 +44,75 @@ This service provides scripting support.
 In order to use it, an instance implementing IScriptingProvider must be created and registered with the service.
 Scripts are then loaded through call to the method loadScript(...). Scripts can also be loaded through the console command /loadscript <path>
 */
-class ScriptingService : public Service, public ConsoleObject
-{
-friend class IScriptingProvider;
+class ScriptingService : public Service, public ConsoleObject {
+	friend class IScriptingProvider;
+
 public:
-    
-    ScriptingService();
 
-    virtual ~ScriptingService();
+	ScriptingService();
 
-	virtual bool start();
-    
-    virtual void stop();
-	
-    /**
-    Console command for loading scripts.
-    */
+	~ScriptingService() override;
+
+	bool start() override;
+
+	void stop() override;
+
+	/**
+	Console command for loading scripts.
+	*/
 	const ConsoleCommandWrapper LoadScript;
-	
+
 	/**
 	 *    Registers a new scripting provider.
 	 * @param provider 
 	 */
 	void registerScriptingProvider(IScriptingProvider* provider);
-	
+
 	/**
 	 *    Loads a new script, if there is an registered scripting provider which will be able to load it.
 	 * @param script 
 	 */
 	void loadScript(const std::string& script);
-	
+
 	/**
 	 *    Executes the supplied code directly into the provider with the supplied name.
 	 * @param scriptCode 
 	 * @param scriptType  
 	 */
-	void executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext = 0);
+	void executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext = nullptr);
 
-	void callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext = 0);
+	void callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext = nullptr);
 
 	/**
 	 *    The EventScriptError signal will be emitted when there is an error in a script.
 	 * @return 
 	 */
 	sigc::signal<void, const std::string&>& getEventScriptError();
-	
+
 	/**
 	 *    Implement ConsoleObject method.
 	 * @param command 
 	 * @param args 
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
-	
+	void runCommand(const std::string& command, const std::string& args) override;
+
 	/**
 	 *    Returns the provider with the specified name, or 0 if no can be found.
 	 * @param providerName 
 	 * @return 
 	 */
-	IScriptingProvider* getProviderFor(const std::string &providerName);
-	
+	IScriptingProvider* getProviderFor(const std::string& providerName);
+
 	/**
 	 *    Returns a list of the names of all registered scripting providers.
 	 * @return 
 	 */
 	std::vector<std::string> getProviderNames();
-	
+
 	IResourceProvider* getResourceProvider();
-	
+
 	void setResourceProvider(IResourceProvider* resourceProvider);
-	
+
 	/**
 	Returns whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
 	*/
@@ -132,29 +135,27 @@ private:
 	 * @param error 
 	 */
 	void scriptError(const std::string& error);
-	
+
 	typedef std::map<std::string, IScriptingProvider*> ProviderStore;
-	
+
 	/**
 	A map of all scripting providers.
 	*/
 	ProviderStore mProviders;
-	
+
 	sigc::signal<void, const std::string&> mEventScriptError;
 
 	IResourceProvider* mResourceProvider;
-	
+
 	bool mAlwaysLookup;
 
 };
 
-inline bool ScriptingService::getAlwaysLookup() const
-{
+inline bool ScriptingService::getAlwaysLookup() const {
 	return mAlwaysLookup;
 }
 
-inline void ScriptingService::setAlwaysLookup(bool alwaysLookup)
-{
+inline void ScriptingService::setAlwaysLookup(bool alwaysLookup) {
 	mAlwaysLookup = alwaysLookup;
 }
 

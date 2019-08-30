@@ -33,6 +33,7 @@
 
 namespace Ember {
 class EmberEntity;
+
 class EntityTalk;
 namespace OgreView {
 
@@ -47,12 +48,11 @@ class Avatar;
 	@author Sean Ryan <sryan@evercrack.com>
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class AvatarLogger
-: public  sigc::trackable
-{
+class AvatarLogger : public sigc::trackable {
 public:
-    AvatarLogger(EmberEntity& avatarEntity);
-    virtual ~AvatarLogger();
+	explicit AvatarLogger(EmberEntity& avatarEntity);
+
+	virtual ~AvatarLogger();
 
 protected:
 
@@ -78,16 +78,15 @@ protected:
 Since the AvatarLogger is dependent on an actual EmberEntity instance it can't be created until such an instance exists in the system. This class will take care of delaying the creation until it's suitable.
 You can create an instance of this anytime.
 */
-class AvatarLoggerParent
-{
+class AvatarLoggerParent {
 public:
 	/**
 	 *    Ctor.
 	 * @param avatar
 	 */
-	AvatarLoggerParent(Avatar& avatar);
+	explicit AvatarLoggerParent(Avatar& avatar);
 
-	~AvatarLoggerParent() {}
+	~AvatarLoggerParent() = default;
 
 protected:
 

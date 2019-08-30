@@ -20,14 +20,17 @@
 
 #include <Eris/ServerInfo.h>
 
+#include <utility>
+
 namespace Ember
 {
 
 namespace Services
 {
 
-ServerSettingsCredentials::ServerSettingsCredentials(const std::string& hostName, const std::string& serverName) :
-	mHostName(hostName), mServerName(serverName)
+ServerSettingsCredentials::ServerSettingsCredentials(std::string hostName, std::string serverName) :
+	mHostName(std::move(hostName)),
+	mServerName(std::move(serverName))
 {
 }
 

@@ -36,8 +36,7 @@ namespace Services {
  *
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class ServerSettingsCredentials
-{
+class ServerSettingsCredentials {
 public:
 
 	/**
@@ -46,14 +45,14 @@ public:
 	 * @param hostName The host name of the server
 	 * @param serverName The name of the server instance.
 	 */
-	ServerSettingsCredentials(const std::string& hostName, const std::string& serverName);
+	ServerSettingsCredentials(std::string hostName, std::string serverName);
 
 	/**
 	 * @brief Ctor.
 	 *
 	 * @param serverInfo A server info object from Eris from which the needed data will be extracted.
 	 */
-	ServerSettingsCredentials(const Eris::ServerInfo& serverInfo);
+	explicit ServerSettingsCredentials(const Eris::ServerInfo& serverInfo);
 
 	/**
 	 * @brief Gets the host name of the server.

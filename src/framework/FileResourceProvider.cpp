@@ -24,12 +24,11 @@
 #include <sstream>
 #include <fstream>
 
-namespace Ember
-{
+namespace Ember {
 
 FileResourceWrapper::FileResourceWrapper(std::ifstream& stream) :
-		mBuffer(nullptr), mSize(0)
-{
+		mBuffer(nullptr),
+		mSize(0) {
 	if (stream.is_open()) {
 
 		stream.seekg(0, std::ios::end);
@@ -45,38 +44,30 @@ FileResourceWrapper::FileResourceWrapper(std::ifstream& stream) :
 
 }
 
-FileResourceWrapper::~FileResourceWrapper()
-{
+FileResourceWrapper::~FileResourceWrapper() {
 	delete[] mBuffer;
 }
 
-const char* FileResourceWrapper::getDataPtr()
-{
+const char* FileResourceWrapper::getDataPtr() {
 	return mBuffer;
 }
 
-bool FileResourceWrapper::hasData()
-{
+bool FileResourceWrapper::hasData() {
 	return mSize != 0;
 }
 
-size_t FileResourceWrapper::getSize()
-{
+size_t FileResourceWrapper::getSize() {
 	return mSize;
 }
 
-FileResourceProvider::FileResourceProvider(const std::string& baseDirectory) :
-		mBaseDirectory(baseDirectory)
-{
+FileResourceProvider::FileResourceProvider(boost::filesystem::path baseDirectory) :
+		mBaseDirectory(std::move(baseDirectory)) {
 }
 
-FileResourceProvider::~FileResourceProvider()
-{
-}
+FileResourceProvider::~FileResourceProvider() = default;
 
-ResourceWrapper FileResourceProvider::getResource(const std::string& name)
-{
-	std::ifstream stream(mBaseDirectory + name, std::ios::binary | std::ios::in);
+ResourceWrapper FileResourceProvider::getResource(const std::string& name) {
+	std::ifstream stream((mBaseDirectory / name).string(), std::ios::binary | std::ios::in);
 	return ResourceWrapper(new FileResourceWrapper(stream), name);
 }
 

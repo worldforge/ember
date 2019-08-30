@@ -43,7 +43,7 @@ class Model;
  * This is useful when you already have a model (most often made up by a mesh) and want to create a server entity type for it.
  * The Atlas data created is pretty bare, mainly providing a correct bounding box which perfectly fits with the bounding box of the model.
  */
-class ModelDefinitionAtlasComposer{
+class ModelDefinitionAtlasComposer {
 public:
 
 	/**
@@ -56,36 +56,37 @@ public:
 	 * @param collisionType The type of collision shape to use.
 	 * @return Atlas data describing a type.
 	 */
-    Atlas::Message::MapType compose(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
+	Atlas::Message::MapType compose(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
 
-    /**
-     * @brief Composes Atlas data from a supplied model and exports it to a stream.
-     *
-     * @param outstream A stream to export to.
+	/**
+	 * @brief Composes Atlas data from a supplied model and exports it to a stream.
+	 *
+	 * @param outstream A stream to export to.
 	 * @param model The model for which we want Atlas data generated.
 	 * @param typeName The name of the type which should be generated.
 	 * @param parentTypeName The name of the parent of the new type (for example "thing" or "mobile").
 	 * @param scale Any scale to apply to the bounding box which is generated.
 	 * @param collisionType The type of collision shape to use.
-     */
-    void composeToStream(std::iostream& outstream, Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
+	 */
+	void composeToStream(std::iostream& outstream, Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
 
-    /**
-     * @brief Composes Atlas data from a supplied model and exports it to a file.
-     *
+	/**
+	 * @brief Composes Atlas data from a supplied model and exports it to a file.
+	 *
 	 * @param model The model for which we want Atlas data generated.
 	 * @param typeName The name of the type which should be generated.
 	 * @param parentTypeName The name of the parent of the new type (for example "thing" or "mobile").
 	 * @param scale Any scale to apply to the bounding box which is generated.
 	 * @param collisionType The type of collision shape to use.
-     * @return The path of the file to which the Atlas data was exported. An empty string if the exporting failed.
-     */
-    std::string composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
+	 * @return The path of the file to which the Atlas data was exported. An empty string if the exporting failed.
+	 */
+	std::string composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType);
 
 private:
 
-    Atlas::Message::Element composeGeometry(Model* model, const std::string& collisionType) const;
-    void copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData) const;
+	Atlas::Message::Element composeGeometry(Model* model, const std::string& collisionType) const;
+
+	void copyVertexData(std::vector<Atlas::Message::Element>& vertices, Ogre::VertexData& vertexData) const;
 
 
 };

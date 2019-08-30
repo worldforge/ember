@@ -41,16 +41,13 @@ namespace varconf {
 class Variable;
 }
 
-namespace Ogre
-{
+namespace Ogre {
 class SceneManagerFactory;
 }
 
-namespace Ember
-{
+namespace Ember {
 class ConfigListenerContainer;
-namespace OgreView
-{
+namespace OgreView {
 
 class MeshSerializerListener;
 
@@ -61,8 +58,7 @@ class MeshSerializerListener;
 
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class OgreSetup: public ConsoleObject, public virtual sigc::trackable
-{
+class OgreSetup : public ConsoleObject, public virtual sigc::trackable {
 public:
 	OgreSetup();
 
@@ -180,13 +176,11 @@ private:
 
 };
 
-inline Ogre::RenderWindow* OgreSetup::getRenderWindow() const
-{
+inline Ogre::RenderWindow* OgreSetup::getRenderWindow() const {
 	return mRenderWindow;
 }
 
-inline Ogre::OverlaySystem* OgreSetup::getOverlaySystem() const
-{
+inline Ogre::OverlaySystem* OgreSetup::getOverlaySystem() const {
 	return mOverlaySystem;
 }
 

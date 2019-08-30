@@ -29,12 +29,9 @@
 
 #include <sigc++/trackable.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Camera
-{
+namespace Ember {
+namespace OgreView {
+namespace Camera {
 class Recorder;
 }
 
@@ -43,21 +40,20 @@ class Recorder;
  * @brief Handles the main screen.
  *
  */
-class Screen: public ConsoleObject, public virtual sigc::trackable
-{
+class Screen : public ConsoleObject, public virtual sigc::trackable {
 public:
 	/**
 	 * @brief Ctor.
 	 * @param window The main render window.
 	 */
-	Screen(Ogre::RenderWindow& window);
+	explicit Screen(Ogre::RenderWindow& window);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~Screen();
+	~Screen() override;
 
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	 * @brief Toggles between wireframe and solid render mode.
@@ -107,7 +103,7 @@ protected:
 	 * @brief Takes and saves a screenshot to disk.
 	 * @return The file name of the new screenshot.
 	 */
-	const std::string _takeScreenshot();
+	std::string _takeScreenshot();
 
 };
 

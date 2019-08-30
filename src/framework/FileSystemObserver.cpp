@@ -46,8 +46,8 @@ void FileSystemObserver::observe() {
 		mDirectoryMonitor->async_monitor([this](const boost::system::error_code& ec, const boost::asio::dir_monitor_event& ev) {
 			if (!ec && ev.type != boost::asio::dir_monitor_event::null) {
 				for (const auto& I : mCallBacks) {
-					if (boost::starts_with(ev.path.string(), I.first)) {
-						std::string relative = ev.path.string().substr(I.first.length() + 1);
+					if (boost::starts_with(ev.path.string(), I.first.string())) {
+						auto relative = boost::filesystem::relative(ev.path, I.first);
 						FileSystemEvent event{
 								ev,
 								relative
@@ -63,18 +63,18 @@ void FileSystemObserver::observe() {
 	}
 }
 
-void FileSystemObserver::add_directory(const std::string& dirname, std::function<void(const FileSystemObserver::FileSystemEvent&)> callback) {
+void FileSystemObserver::add_directory(const boost::filesystem::path& dirname, std::function<void(const FileSystemObserver::FileSystemEvent&)> callback) {
 	if (mDirectoryMonitor) {
-		mCallBacks.insert(std::make_pair(dirname, callback));
-		mDirectoryMonitor->add_directory(dirname);
+		mCallBacks.insert(std::make_pair(dirname, std::move(callback)));
+		mDirectoryMonitor->add_directory(dirname.string());
 	}
 }
 
-void FileSystemObserver::remove_directory(const std::string& dirname) {
+void FileSystemObserver::remove_directory(const boost::filesystem::path& dirname) {
 	if (mDirectoryMonitor) {
 		mCallBacks.erase(dirname);
 		try {
-			mDirectoryMonitor->remove_directory(dirname);
+			mDirectoryMonitor->remove_directory(dirname.string());
 		} catch (...) {
 			//Just swallow exceptions when removing watches; this is often because the directory has been removed. Doesn't change anything.
 		}

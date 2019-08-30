@@ -45,7 +45,7 @@ public:
 		/**
 		 * The path relative to the watched directory.
 		 */
-		const std::string& relativePath;
+		const boost::filesystem::path relativePath;
 	};
 
 	explicit FileSystemObserver(boost::asio::io_service& ioService);
@@ -57,18 +57,18 @@ public:
 	 * @param dirname The path.
 	 * @param callback A callback, called whenever a change is detected.
 	 */
-	void add_directory(const std::string& dirname, std::function<void(const FileSystemEvent&)> callback);
+	void add_directory(const boost::filesystem::path& dirname, std::function<void(const FileSystemEvent&)> callback);
 
 	/**
 	 * Removes a previously watched directory.
 	 * @param dirname
 	 */
-	void remove_directory(const std::string& dirname);
+	void remove_directory(const boost::filesystem::path& dirname);
 
 private:
 	std::unique_ptr<boost::asio::dir_monitor> mDirectoryMonitor;
 
-	std::map<std::string, std::function<void(const FileSystemEvent&)>> mCallBacks;
+	std::map<boost::filesystem::path, std::function<void(const FileSystemEvent&)>> mCallBacks;
 
 	void observe();
 };
