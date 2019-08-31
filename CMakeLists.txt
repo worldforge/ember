@@ -80,7 +80,7 @@ link_libraries(${WF_LIBRARIES})
 
 
 find_package(Boost
-        1.46.0
+        1.60.0
         REQUIRED
         COMPONENTS system filesystem)
 
