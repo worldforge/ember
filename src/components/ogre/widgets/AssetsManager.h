@@ -26,11 +26,13 @@
 #include "TexturePair.h"
 
 #include <string>
+#include <boost/filesystem/path.hpp>
 
-namespace CEGUI
-{
+namespace CEGUI {
 class OgreCEGUITexture;
+
 class Image;
+
 class Texture;
 }
 
@@ -38,7 +40,6 @@ namespace Ember {
 namespace OgreView {
 
 namespace Gui {
-
 
 
 /**
@@ -49,23 +50,23 @@ namespace Gui {
 	Whenever you want to do something in Lua related to resource management that you feel will be overly complicated, or will require a lot of additional lua bindings, this is a good place to place it.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class AssetsManager{
+class AssetsManager {
 public:
-    AssetsManager();
+	AssetsManager();
 
-    ~AssetsManager();
+	~AssetsManager();
 
-    /**
-     * @brief Shorthand for quickly creating a CEGUI::OmageSet for an Ogre::Texture.
-     *
-     * This will create a new CEGUI Imageset and Image for the Ogre Texture with the supplied name.
-     *
-     * @see createTextureImage
-     * @param textureName The name of the texture to create a CEGUI representation of.
+	/**
+	 * @brief Shorthand for quickly creating a CEGUI::OmageSet for an Ogre::Texture.
+	 *
+	 * This will create a new CEGUI Imageset and Image for the Ogre Texture with the supplied name.
+	 *
+	 * @see createTextureImage
+	 * @param textureName The name of the texture to create a CEGUI representation of.
 	 * @return A TexturePair struct, which basically just is a wrapper around both a Ogre::TexturePtr and a CEGUI::ImageSet amd a CEGUI::Image.
-     */
-    TexturePair showTexture(const std::string textureName);
-    
+	 */
+	TexturePair showTexture(const std::string& textureName);
+
 	/**
 	 *    @brief Creates a CEGUI texture from an ogre image.
 	 *
@@ -74,8 +75,8 @@ public:
 	 * @param imageSetName The new name of the imageset which will be created. This must be unique and not already created.
 	 * @return A TexturePair struct, which basically just is a wrapper around both a Ogre::TexturePtr and a CEGUI::ImageSet amd a CEGUI::Image.
 	 */
-	TexturePair createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageSetName);
-	
+	TexturePair createTextureImage(Ogre::TexturePtr& texturePtr, const std::string& imageSetName);
+
 	/**
 	 *    @brief Returns a string representation of the material.
 	 *
@@ -83,7 +84,7 @@ public:
 	 * @param material A valid material pointer which you want to see the string representation for.
 	 * @return A string which is a representation of the material as defined in a .material file.
 	 */
-	std::string materialAsText(Ogre::MaterialPtr material);
+	std::string materialAsText(const Ogre::MaterialPtr& material);
 
 	/**
 	 * @brief Tries to resolve a file path to a local resource path.
@@ -98,7 +99,7 @@ public:
 	 * @param meshPtr The mesh.
 	 * @returns A fully qualified file name, or an empty string if none could be resolved.
 	 */
-	std::string resolveFilePathForMesh(Ogre::MeshPtr meshPtr);
+	std::string resolveFilePathForMesh(const Ogre::MeshPtr& meshPtr);
 
 	/**
 	 * @brief Exports a mesh.
@@ -107,15 +108,13 @@ public:
 	 * @param filePath The path to export to, local on the file system.
 	 * @returns True if the mesh was exported successfully.
 	 */
-	bool exportMesh(Ogre::MeshPtr mesh, const std::string& filePath);
+	bool exportMesh(const Ogre::MeshPtr& mesh, const boost::filesystem::path& filePath);
 
 	/**
 	 * Creates and exports a model from the mesh.
 	 * @param mesh
 	 */
-	void createModel(Ogre::MeshPtr mesh);
-
-private:
+	void createModel(const Ogre::MeshPtr& mesh);
 
 
 };

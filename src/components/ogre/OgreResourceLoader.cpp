@@ -34,7 +34,6 @@
 
 #include "EmberOgreFileSystem.h"
 
-#include "framework/osdir.h"
 #include "framework/TimedLog.h"
 #include <OgreArchiveManager.h>
 #include <Ogre.h>

@@ -38,8 +38,6 @@
 #endif
 
 
-#include "framework/osdir.h"
-
 namespace Ember {
 namespace OgreView {
 

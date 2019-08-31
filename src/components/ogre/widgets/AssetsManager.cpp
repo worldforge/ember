@@ -33,7 +33,6 @@
 #include "components/ogre/model/ModelDefinition.h"
 
 #include "framework/Tokeniser.h"
-#include "framework/osdir.h"
 
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
 #include <CEGUI/RendererModules/Ogre/Texture.h>
@@ -46,26 +45,18 @@
 #include <CEGUI/BasicImage.h>
 #include <CEGUI/ImageManager.h>
 #include <CEGUI/System.h>
+#include <boost/filesystem/operations.hpp>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
-AssetsManager::AssetsManager()
-{
-	// 	createTextureImage();
-}
+AssetsManager::AssetsManager() = default;
 
-AssetsManager::~AssetsManager()
-{
-}
+AssetsManager::~AssetsManager() = default;
 
-TexturePair AssetsManager::showTexture(const std::string textureName)
-{
+TexturePair AssetsManager::showTexture(const std::string& textureName) {
 	// 	if (!mOgreCEGUITexture) {
 	// 		S_LOG_WARNING("You must first create a valid OgreCEGUITexture instance.");
 	// 		return;
@@ -91,8 +82,7 @@ TexturePair AssetsManager::showTexture(const std::string textureName)
 
 }
 
-TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageName)
-{
+TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr& texturePtr, const std::string& imageName) {
 	// 	if (mOgreCEGUITexture) {
 	// 		GUIManager::getSingleton().getGuiRenderer()->destroyTexture(mOgreCEGUITexture);
 	// 		mOgreCEGUITexture = 0;
@@ -118,7 +108,7 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 		textureImage = &CEGUI::ImageManager::getSingleton().create("BasicImage", imageName);
 	}
 
-	CEGUI::BasicImage* basicImage = static_cast<CEGUI::BasicImage*>(textureImage);
+	auto* basicImage = static_cast<CEGUI::BasicImage*>(textureImage);
 	basicImage->setTexture(ogreCEGUITexture);
 	auto area = CEGUI::Rectf(0, 0, ogreCEGUITexture->getSize().d_width, ogreCEGUITexture->getSize().d_height);
 	basicImage->setArea(area);
@@ -129,8 +119,7 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 
 }
 
-std::string AssetsManager::materialAsText(Ogre::MaterialPtr material)
-{
+std::string AssetsManager::materialAsText(const Ogre::MaterialPtr& material) {
 	if (!material) {
 		return "";
 	}
@@ -139,8 +128,7 @@ std::string AssetsManager::materialAsText(Ogre::MaterialPtr material)
 	return serializer.getQueuedAsString();
 }
 
-std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& filePath)
-{
+std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& filePath) {
 	Ogre::ResourceGroupManager& manager = Ogre::ResourceGroupManager::getSingleton();
 
 	auto groups = manager.getResourceGroups();
@@ -162,14 +150,13 @@ std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& fi
 	return "";
 }
 
-std::string AssetsManager::resolveFilePathForMesh(Ogre::MeshPtr meshPtr)
-{
+std::string AssetsManager::resolveFilePathForMesh(const Ogre::MeshPtr& meshPtr) {
 	Ogre::ResourceGroupManager& manager = Ogre::ResourceGroupManager::getSingleton();
 
-	auto group = manager.findGroupContainingResource(meshPtr->getName());
+	const auto& group = manager.findGroupContainingResource(meshPtr->getName());
 	Ogre::FileInfoListPtr files = manager.findResourceFileInfo(group, meshPtr->getName(), false);
 	if (files.get()) {
-		for (auto fileInfo : *files) {
+		for (const auto& fileInfo : *files) {
 			if (fileInfo.archive && fileInfo.filename == meshPtr->getName()) {
 				return fileInfo.archive->getName() + "/" + fileInfo.filename;
 			}
@@ -179,24 +166,17 @@ std::string AssetsManager::resolveFilePathForMesh(Ogre::MeshPtr meshPtr)
 	return "";
 }
 
-bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)
-{
-	if (filePath != "") {
+bool AssetsManager::exportMesh(const Ogre::MeshPtr& mesh, const boost::filesystem::path& filePath) {
+	if (!filePath.empty()) {
 		Ogre::MeshSerializer serializer;
 		try {
-			std::string dirname(filePath);
-			size_t end = dirname.find_last_of("/\\");
-			if (end != std::string::npos) {
-				dirname = dirname.substr(0, end);
+			if (!boost::filesystem::exists(filePath.parent_path())) {
+				boost::filesystem::create_directories(filePath.parent_path());
 			}
-			oslink::directory osdir(dirname);
-			if (!osdir.isExisting()) {
-				oslink::directory::mkdir(dirname.c_str());
-			}
-			serializer.exportMesh(mesh.get(), filePath);
-			S_LOG_INFO("Exported mesh " << filePath);
+			serializer.exportMesh(mesh.get(), filePath.string());
+			S_LOG_INFO("Exported mesh " << filePath.string());
 		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE("Error when exporting mesh " << mesh->getName() << "to path " << filePath <<"." << ex);
+			S_LOG_FAILURE("Error when exporting mesh " << mesh->getName() << "to path " << filePath.string() << "." << ex);
 			return false;
 		}
 		return true;
@@ -204,8 +184,7 @@ bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)
 	return false;
 }
 
-void AssetsManager::createModel(Ogre::MeshPtr mesh)
-{
+void AssetsManager::createModel(const Ogre::MeshPtr& mesh) {
 	auto& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
 	std::string name = mesh->getName();
 	if (name.empty()) {
@@ -216,7 +195,7 @@ void AssetsManager::createModel(Ogre::MeshPtr mesh)
 	std::string modelName = Tokeniser::split(tokens.back(), ".").front();
 	auto modelDefinition = std::make_shared<Model::ModelDefinition>();
 	modelDefinition->createSubModelDefinition(mesh->getName());
-	modelDefinitionManager.exportScript(modelName, std::move(modelDefinition));
+	modelDefinitionManager.exportScript(modelName, modelDefinition);
 
 }
 

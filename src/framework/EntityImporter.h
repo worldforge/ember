@@ -23,21 +23,21 @@
 
 #include "EntityImporterBase.h"
 #include <Atlas/Objects/RootOperation.h>
-namespace Eris
-{
+#include <boost/filesystem/path.hpp>
+
+namespace Eris {
 class Account;
 }
-namespace Ember
-{
+namespace Ember {
 
 /**
  * @brief Imports a previously exported entity.
  */
-class EntityImporter: public EntityImporterBase
-{
+class EntityImporter : public EntityImporterBase {
 public:
 	explicit EntityImporter(Eris::Account& account);
-	virtual ~EntityImporter();
+
+	~EntityImporter() override;
 
 	/**
 	 * @brief Reads a directory and gets information on any entity dumps found.
@@ -46,7 +46,7 @@ public:
 	 * @param directoryPath The path to the directory.
 	 * @return Information on any entity dumps found.
 	 */
-	static std::vector<ShortInfo> getInfoFromDirectory(const std::string& directoryPath);
+	static std::vector<ShortInfo> getInfoFromDirectory(const boost::filesystem::path& directoryPath);
 
 protected:
 	Eris::Account& mAccount;
@@ -57,27 +57,27 @@ protected:
 	 * @brief Create a new unique serial number for operations.
 	 * @return A new serial number.
 	 */
-	virtual long int newSerialNumber();
+	long int newSerialNumber() override;
 
 	/**
 	 * @brief Send an object to the server.
 	 * @param op An object which is to be sent.
 	 */
-	virtual void send(const Atlas::Objects::Operation::RootOperation& op);
+	void send(const Atlas::Objects::Operation::RootOperation& op) override;
 
 	/**
 	 * @brief Send an object to the server and await a response.
 	 * @param op An object which is to be sent.
 	 * @param callback A callback, called when a response is received.
 	 */
-	virtual void sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback);
+	void sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback) override;
 
 	/**
 	 * @brief Loads from a file.
 	 * @param filename The full path to the file.
 	 * @return The top level object stored in the file.
 	 */
-	virtual Atlas::Objects::Root loadFromFile(const std::string& filename);
+	Atlas::Objects::Root loadFromFile(const std::string& filename) override;
 
 	void operationResult(const Atlas::Objects::Operation::RootOperation& op);
 

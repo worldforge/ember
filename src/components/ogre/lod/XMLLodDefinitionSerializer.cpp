@@ -23,7 +23,6 @@
 #include "XMLLodDefinitionSerializer.h"
 
 #include "components/ogre/XMLHelper.h"
-#include "framework/osdir.h"
 
 #include <OgreStringConverter.h>
 #include <OgreResourceGroupManager.h>

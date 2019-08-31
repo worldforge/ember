@@ -20,7 +20,6 @@
 
 #include "AtlasObjectDecoder.h"
 #include "LoggingInstance.h"
-#include "osdir.h"
 #include <Atlas/Codecs/XML.h>
 
 #include <Eris/Account.h>
@@ -29,6 +28,7 @@
 #include <Eris/Avatar.h>
 
 #include <fstream>
+#include <boost/filesystem/operations.hpp>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -40,38 +40,30 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Set;
 using Atlas::Message::Element;
 
-namespace Ember
-{
+namespace Ember {
 
 EntityImporter::EntityImporter(Eris::Account& account) :
-		EntityImporterBase(account.getId(), account.getActiveCharacters().begin()->second->getId()), mAccount(account)
-{
+		EntityImporterBase(account.getId(), account.getActiveCharacters().begin()->second->getId()), mAccount(account) {
 }
 
-EntityImporter::~EntityImporter()
-{
-}
+EntityImporter::~EntityImporter() = default;
 
-long int EntityImporter::newSerialNumber()
-{
+long int EntityImporter::newSerialNumber() {
 	return Eris::getNewSerialno();
 }
 
-void EntityImporter::send(const Atlas::Objects::Operation::RootOperation& op)
-{
+void EntityImporter::send(const Atlas::Objects::Operation::RootOperation& op) {
 	mAccount.getConnection()->send(op);
 }
 
-void EntityImporter::sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback)
-{
+void EntityImporter::sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback) {
 	mCallbacks.insert(std::make_pair(op->getSerialno(), callback));
 	mAccount.getConnection()->getResponder()->await(op->getSerialno(), this, &EntityImporter::operationResult);
 	mAccount.getConnection()->send(op);
 
 }
 
-void EntityImporter::operationResult(const Atlas::Objects::Operation::RootOperation& op)
-{
+void EntityImporter::operationResult(const Atlas::Objects::Operation::RootOperation& op) {
 	auto I = mCallbacks.find(op->getRefno());
 	if (I != mCallbacks.end()) {
 		auto callback = I->second;
@@ -80,8 +72,7 @@ void EntityImporter::operationResult(const Atlas::Objects::Operation::RootOperat
 	}
 }
 
-Atlas::Objects::Root EntityImporter::loadFromFile(const std::string& filename)
-{
+Atlas::Objects::Root EntityImporter::loadFromFile(const std::string& filename) {
 	std::fstream fileStream(filename, std::ios::in);
 	AtlasObjectDecoder atlasLoader;
 
@@ -91,57 +82,54 @@ Atlas::Objects::Root EntityImporter::loadFromFile(const std::string& filename)
 	return atlasLoader.getLastObject();
 }
 
-std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(const std::string& directoryPath)
-{
+std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(const boost::filesystem::path& directoryPath) {
 	std::vector<ShortInfo> infos;
-	oslink::directory osdir(directoryPath);
-	while (osdir) {
-		const std::string filename = osdir.next();
-		if (filename != "." && filename != "..") {
-			try {
-				ShortInfo info;
+	for (auto& dir_entry : boost::filesystem::directory_iterator(directoryPath)) {
+		auto& file_path = dir_entry.path();
+		try {
+			ShortInfo info;
 
-				std::fstream fileStream(directoryPath + "/" + filename, std::ios::in);
-				AtlasObjectDecoder atlasLoader;
+			std::fstream fileStream(file_path.string(), std::ios::in);
+			AtlasObjectDecoder atlasLoader;
 
-				Atlas::Codecs::XML codec(fileStream, fileStream, atlasLoader);
-				codec.poll();
+			Atlas::Codecs::XML codec(fileStream, fileStream, atlasLoader);
+			codec.poll();
 
-				auto rootObj = atlasLoader.getLastObject();
+			auto rootObj = atlasLoader.getLastObject();
 
-				if (!rootObj.isValid()) {
-					continue;
-				}
-				Atlas::Message::Element metaElem;
-				if (rootObj->copyAttr("meta", metaElem) == 0 && metaElem.isMap()) {
-					auto meta = metaElem.asMap();
-					info.filename = directoryPath + "/" + filename;
-					if (meta["name"].isString() && meta["name"] != "") {
-						info.name = meta["name"].asString();
-					} else {
-						info.name = filename;
-					}
-					if (meta["description"].isString()) {
-						info.description = meta["description"].asString();
-					}
-
-					Atlas::Message::Element entitiesElem;
-					if (rootObj->copyAttr("entities", entitiesElem) == 0 && entitiesElem.isList()) {
-						info.entityCount = entitiesElem.asList().size();
-					}
-					if (rootObj->copyAttr("rules", entitiesElem) == 0 && entitiesElem.isList()) {
-						info.rulesCount = entitiesElem.asList().size();
-					}
-					if (rootObj->copyAttr("minds", entitiesElem) == 0 && entitiesElem.isList()) {
-						info.mindsCount = entitiesElem.asList().size();
-					}
-					infos.push_back(info);
-				}
-
-			} catch (const std::exception& ex) {
-				S_LOG_FAILURE("Error when trying to read import info from '" << filename << "'." << ex);
+			if (!rootObj.isValid()) {
+				continue;
 			}
+			Atlas::Message::Element metaElem;
+			if (rootObj->copyAttr("meta", metaElem) == 0 && metaElem.isMap()) {
+				auto meta = metaElem.asMap();
+				info.filename = file_path.filename().string();
+				if (meta["name"].isString() && meta["name"] != "") {
+					info.name = meta["name"].asString();
+				} else {
+					info.name = file_path.filename().string();
+				}
+				if (meta["description"].isString()) {
+					info.description = meta["description"].asString();
+				}
+
+				Atlas::Message::Element entitiesElem;
+				if (rootObj->copyAttr("entities", entitiesElem) == 0 && entitiesElem.isList()) {
+					info.entityCount = entitiesElem.asList().size();
+				}
+				if (rootObj->copyAttr("rules", entitiesElem) == 0 && entitiesElem.isList()) {
+					info.rulesCount = entitiesElem.asList().size();
+				}
+				if (rootObj->copyAttr("minds", entitiesElem) == 0 && entitiesElem.isList()) {
+					info.mindsCount = entitiesElem.asList().size();
+				}
+				infos.push_back(info);
+			}
+
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when trying to read import info from '" << file_path.string() << "'." << ex);
 		}
+
 
 	}
 
