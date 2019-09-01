@@ -695,14 +695,12 @@ void Avatar::taskUsage(std::string taskId, std::string usage) {
 }
 
 void Avatar::stopCurrentTask() {
-	//Check if there are any tasks, and get the first one with a "stop" action and invoke that action.
+	//Get the first task with a usage, and invoke that. The protocol is that the first usage always should be the "default".
 	auto& tasks = mErisAvatarEntity.getTasks();
 	for (auto& entry : tasks) {
 		auto task = entry.second;
-		for (auto& usage : task->getUsages()) {
-			if (usage.name == "stop") {
-				taskUsage(entry.first, usage.name);
-			}
+		if (!task->getUsages().empty()) {
+			taskUsage(entry.first, task->getUsages().front().name);
 			break;
 		}
 	}
