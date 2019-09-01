@@ -599,9 +599,13 @@ void Avatar::viewEntityDeleted() {
 	EventAvatarEntityDestroyed();
 }
 
-void Avatar::useTool(const EmberEntity& tool, const std::string& operation, const Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction) {
+void Avatar::useTool(const EmberEntity& tool,
+					 const std::string& operation,
+					 const Eris::Entity* target,
+					 const WFMath::Point<3>& pos,
+					 const WFMath::Vector<3>& direction) {
 
-	const EmberEntity::Usage* usage = nullptr;
+	const Eris::Usage* usage = nullptr;
 	auto I = tool.getUsages().find(operation);
 	if (I == tool.getUsages().end()) {
 		I = tool.getUsagesProtected().find(operation);
@@ -620,20 +624,12 @@ void Avatar::useTool(const EmberEntity& tool, const std::string& operation, cons
 
 }
 
-void Avatar::useTool(const EmberEntity& tool,
-					 const std::string& operation,
-					 const EmberEntity::Usage& usage,
-					 const Eris::Entity* target,
-					 const WFMath::Point<3>& posInWorld,
-					 WFMath::Vector<3> direction) {
-
-	Atlas::Objects::Operation::Use use;
-	use->setFrom(mErisAvatar->getId());
-
-	Atlas::Objects::Entity::RootEntity entity;
-	entity->setId(tool.getId());
-
-	for (auto& param : usage.params) {
+void Avatar::populateUsageArgs(Atlas::Objects::Entity::RootEntity& entity,
+							   const std::map<std::string, Eris::UsageParameter>& params,
+							   const Eris::Entity* target,
+							   const WFMath::Point<3>& posInWorld,
+							   WFMath::Vector<3> direction) {
+	for (auto& param : params) {
 		Atlas::Message::ListType list;
 		if (param.second.type == "entity" || param.second.type == "entity_location") {
 			if (target) {
@@ -668,6 +664,23 @@ void Avatar::useTool(const EmberEntity& tool,
 		}
 		entity->setAttr(param.first, std::move(list));
 	}
+}
+
+
+void Avatar::useTool(const EmberEntity& tool,
+					 const std::string& operation,
+					 const Eris::Usage& usage,
+					 const Eris::Entity* target,
+					 const WFMath::Point<3>& posInWorld,
+					 WFMath::Vector<3> direction) {
+
+	Atlas::Objects::Operation::Use use;
+	use->setFrom(mErisAvatar->getId());
+
+	Atlas::Objects::Entity::RootEntity entity;
+	entity->setId(tool.getId());
+
+	populateUsageArgs(entity, usage.params, target, posInWorld, direction);
 
 	Atlas::Objects::Operation::RootOperation op;
 	op->setParent(operation);
@@ -679,7 +692,43 @@ void Avatar::useTool(const EmberEntity& tool,
 
 }
 
-void Avatar::taskUsage(std::string taskId, std::string usage) {
+void Avatar::taskUsage(std::string taskId, std::string usageName) {
+	auto I = mErisAvatarEntity.getTasks().find(taskId);
+	if (I == mErisAvatarEntity.getTasks().end()) {
+		return;
+	}
+
+	auto& usages = I->second->getUsages();
+	auto J = std::find_if(usages.begin(), usages.end(), [&](const Eris::TaskUsage& usage) -> bool { return usage.name == usageName; });
+	if (J == usages.end()) {
+		return;
+	}
+
+
+	taskUsage(taskId, *J);
+}
+
+
+void Avatar::taskUsage(std::string taskId, const Eris::TaskUsage& usage) {
+
+	auto ray = mScene.getMainCamera().getCameraToViewportRay(0.5, 0.5);
+
+	auto& pickedResults = EmberOgre::getSingleton().getWorld()->getEntityPickListener().getPersistentResult();
+	Eris::Entity* target = nullptr;
+	WFMath::Point<3> posInWorld;
+	for (auto& pickedResult : pickedResults) {
+		if (pickedResult.entityRef) {
+			target = pickedResult.entityRef.get();
+			if (!pickedResult.position.isNaN()) {
+				posInWorld = Convert::toWF<WFMath::Point<3>>(pickedResult.position);
+			}
+			break;
+		}
+	}
+
+	auto direction = Convert::toWF<WFMath::Vector<3>>(ray.getDirection());
+
+
 	Atlas::Objects::Operation::Use use;
 	use->setFrom(mErisAvatar->getId());
 
@@ -687,7 +736,11 @@ void Avatar::taskUsage(std::string taskId, std::string usage) {
 	task->setId(std::move(taskId));
 	task->setObjtype("task");
 
-	task->setAttr("args", Atlas::Message::ListType{Atlas::Message::MapType{{"id", std::move(usage)}}});
+	Atlas::Objects::Entity::RootEntity entity;
+	entity->setId(usage.name);
+	populateUsageArgs(entity, usage.params, target, posInWorld, direction);
+
+	task->setAttr("args", Atlas::Message::ListType{entity->asMessage()});
 
 	use->setArgs1(task);
 
@@ -700,7 +753,7 @@ void Avatar::stopCurrentTask() {
 	for (auto& entry : tasks) {
 		auto task = entry.second;
 		if (!task->getUsages().empty()) {
-			taskUsage(entry.first, task->getUsages().front().name);
+			taskUsage(entry.first, task->getUsages().front());
 			break;
 		}
 	}
@@ -710,7 +763,7 @@ boost::optional<std::string> Avatar::performDefaultUsage() {
 	//Check if there's a tool in our primary hand and use if, otherwise check if we have any default usages.
 
 
-	auto useWithSelectedEntity = [&](EmberEntity& attachedEntity, const EmberEntity::Usage& usage, const std::string& op) {
+	auto useWithSelectedEntity = [&](EmberEntity& attachedEntity, const Eris::Usage& usage, const std::string& op) {
 		auto ray = mScene.getMainCamera().getCameraToViewportRay(0.5, 0.5);
 
 		auto& pickedResults = EmberOgre::getSingleton().getWorld()->getEntityPickListener().getPersistentResult();

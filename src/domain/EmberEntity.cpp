@@ -406,7 +406,7 @@ void EmberEntity::setAttachment(IEntityAttachment* attachment) {
 }
 
 void EmberEntity::reattachChildren() {
-	for (unsigned int i = 0; i < numContained(); ++i) {
+	for (size_t i = 0; i < numContained(); ++i) {
 		EmberEntity* entity = getEmberContained(i);
 		if (entity) {
 			entity->updateAttachment();
@@ -476,12 +476,12 @@ void EmberEntity::setCompositionMode(EmberEntity::CompositionMode mode) {
 	mCompositionMode = mode;
 }
 
-void EmberEntity::parseUsages(std::map<std::string, EmberEntity::Usage>& map, const Atlas::Message::Element& element) {
+void EmberEntity::parseUsages(std::map<std::string, Eris::Usage>& map, const Atlas::Message::Element& element) {
 	map.clear();
 
 	if (element.isMap()) {
 		for (auto& entry : element.Map()) {
-			Usage usage;
+			Eris::Usage usage;
 			AtlasQuery::find<Atlas::Message::StringType>(entry.second, "constraint", [&](const auto& constraint) {
 				usage.constraint = constraint;
 			});
@@ -490,7 +490,7 @@ void EmberEntity::parseUsages(std::map<std::string, EmberEntity::Usage>& map, co
 			});
 			AtlasQuery::find<Atlas::Message::MapType>(entry.second, "params", [&](const auto& params) {
 				for (auto& paramEntry: params) {
-					UsageParameter usageParam;
+					Eris::UsageParameter usageParam;
 					AtlasQuery::find<Atlas::Message::StringType>(paramEntry.second, "type", [&](const auto& type) {
 						usageParam.type = type;
 					});
@@ -516,11 +516,11 @@ void EmberEntity::parseUsages(std::map<std::string, EmberEntity::Usage>& map, co
 	}
 }
 
-const std::map<std::string, EmberEntity::Usage>& EmberEntity::getUsages() const {
+const std::map<std::string, Eris::Usage>& EmberEntity::getUsages() const {
 	return mUsages;
 }
 
-const std::map<std::string, EmberEntity::Usage>& EmberEntity::getUsagesProtected() const {
+const std::map<std::string, Eris::Usage>& EmberEntity::getUsagesProtected() const {
 	return mUsagesProtected;
 }
 

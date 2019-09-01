@@ -38,6 +38,7 @@
 #include <memory>
 #include <set>
 #include <domain/EmberEntity.h>
+#include <Eris/Task.h>
 
 namespace Eris {
 class Entity;
@@ -209,12 +210,14 @@ public:
 
 	void useTool(const EmberEntity& tool,
 				 const std::string& operation,
-				 const EmberEntity::Usage& usage,
+				 const Eris::Usage& usage,
 				 const Eris::Entity* target = nullptr,
 				 const WFMath::Point<3>& posInWorld = WFMath::Point<3>(),
 				 WFMath::Vector<3> direction = WFMath::Vector<3>());
 
 	void taskUsage(std::string taskId, std::string usage);
+
+	void taskUsage(std::string taskId, const Eris::TaskUsage& usage);
 
 	boost::optional<std::string> performDefaultUsage();
 
@@ -229,7 +232,7 @@ public:
 
 	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements);
 
-	void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value);
+	void adminTell(const std::string& entityId, const std::string& attribute, const std::string& value);
 
 
 	/**
@@ -410,6 +413,11 @@ protected:
 	void attachCameraToEntity();
 
 
+	void populateUsageArgs(Atlas::Objects::Entity::RootEntity& entity,
+						   const std::map<std::string, Eris::UsageParameter>& params,
+						   const Eris::Entity* target,
+						   const WFMath::Point<3>& posInWorld,
+						   WFMath::Vector<3> direction);
 };
 
 inline bool Avatar::isAdmin() const {

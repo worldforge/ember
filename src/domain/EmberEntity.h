@@ -25,6 +25,7 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <Eris/ViewEntity.h>
+#include <Eris/Usage.h>
 
 #include <functional>
 
@@ -53,22 +54,6 @@ class EntityTalk;
 class EmberEntity: public Eris::ViewEntity, public IVisualizable
 {
 public:
-
-	struct UsageParameter {
-		std::string type;
-		std::string constraint;
-		int min;
-		int max;
-	};
-
-	struct Usage {
-	    std::string name;
-		std::string constraint;
-		std::string description;
-
-		std::map<std::string, UsageParameter> params;
-
-	};
 
 	/**
 	 * @brief The different positioning modes the entity can be in.
@@ -299,8 +284,8 @@ public:
 
 	void setHeightProvider(IHeightProvider* heightProvider);
 
-	const std::map<std::string, Usage>& getUsages() const;
-	const std::map<std::string, Usage>& getUsagesProtected() const;
+	const std::map<std::string, Eris::Usage>& getUsages() const;
+	const std::map<std::string, Eris::Usage>& getUsagesProtected() const;
 
 	CompositionMode getCompositionMode() const;
 	void setCompositionMode(CompositionMode mode);
@@ -342,8 +327,8 @@ protected:
 	 */
 	std::vector<std::string> mSuggestedResponses;
 
-	std::map<std::string, Usage> mUsages;
-	std::map<std::string, Usage> mUsagesProtected;
+	std::map<std::string, Eris::Usage> mUsages;
+	std::map<std::string, Eris::Usage> mUsagesProtected;
 
 	/**
 	 * @brief The positioning mode the entity is in, like gravity affected, fixed or floating.
@@ -442,7 +427,7 @@ protected:
 	 */
 	void updateAttachment();
 
-	void parseUsages(std::map<std::string, Usage>& map, const Atlas::Message::Element& element);
+	void parseUsages(std::map<std::string, Eris::Usage>& map, const Atlas::Message::Element& element);
 };
 
 inline bool EmberEntity::isInitialized() const

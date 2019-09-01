@@ -1,0 +1,11 @@
+$#include <Eris/Usage.h>
+
+namespace Eris {
+struct Usage {
+	std::string name;
+	std::string constraint;
+	std::string description;
+};
+}
+
+#endif //ERIS_USAGE_H
