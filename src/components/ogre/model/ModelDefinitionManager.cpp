@@ -37,6 +37,7 @@
 #include <OgreRoot.h>
 
 #include <utility>
+#include <boost/algorithm/string.hpp>
 
 
 template<> Ember::OgreView::Model::ModelDefinitionManager* Ember::Singleton<Ember::OgreView::Model::ModelDefinitionManager>::ms_Singleton = nullptr;
@@ -70,9 +71,16 @@ void ModelDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre
 
 std::string ModelDefinitionManager::exportScript(const std::string& name, const ModelDefinitionPtr& definition) {
 	XMLModelDefinitionSerializer serializer;
-	bool success = serializer.exportScript(definition, mExportDirectory / (name + ".modeldef"));
+	auto fileName = name;
+	if (!boost::algorithm::ends_with(name, ".modeldef")) {
+		fileName = name + ".modeldef";
+	}
+
+	auto path = mExportDirectory / fileName;
+
+	bool success = serializer.exportScript(definition, path);
 	if (success) {
-		return (mExportDirectory / (name + ".modeldef")).string();
+		return path.string();
 	}
 
 	return "";
