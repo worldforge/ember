@@ -195,6 +195,10 @@ float MovableObjectRenderer::getAbsoluteCameraDistance() {
 	return mTexture->getRenderContext()->getAbsoluteCameraDistance();
 }
 
+Ogre::Quaternion MovableObjectRenderer::getCameraOrientation() const {
+	return mTexture->getRenderContext()->getCameraOrientation();
+}
+
 bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event) {
 	if (mLightAnimState) {
 		mLightAnimState->addTime(event.timeSinceLastFrame);

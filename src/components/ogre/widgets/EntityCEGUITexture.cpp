@@ -36,35 +36,31 @@
 #include "../model/Model.h"
 #include "../SimpleRenderContext.h"
 
-#include <OgreBitwise.h>
-
 
 namespace Ember {
 namespace OgreView {
 namespace Gui {
 
 
-
 EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int width, int height)
-: mImage(0), mWidth(width), mHeight(height), mRenderContext(new SimpleRenderContext(imageSetName, width, height)), mCeguiTexture(0)
-{
+		: mImage(nullptr),
+		  mWidth(width),
+		  mHeight(height),
+		  mRenderContext(new SimpleRenderContext(imageSetName, width, height)), mCeguiTexture(nullptr) {
 	createImage(imageSetName);
 }
 
-EntityCEGUITexture::~EntityCEGUITexture()
-{
+EntityCEGUITexture::~EntityCEGUITexture() {
 	CEGUI::ImageManager::getSingleton().destroy(*mImage);
 	GUIManager::getSingleton().getGuiRenderer()->destroyTexture(*mCeguiTexture);
 }
 
 
-const CEGUI::Image* EntityCEGUITexture::getImage() const
-{
+const CEGUI::Image* EntityCEGUITexture::getImage() const {
 	return mImage;
 }
 
-void EntityCEGUITexture::createImage(const std::string& imageSetName)
-{
+void EntityCEGUITexture::createImage(const std::string& imageSetName) {
 	//create a CEGUI texture from our Ogre texture
 	S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
 	Ogre::TexturePtr texturePtr(mRenderContext->getTexture());
@@ -73,9 +69,9 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 //	//we need a imageset in order to create GUI elements from the ceguiTexture
 //	S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");
 	mImage = &CEGUI::ImageManager::getSingleton().create("BasicImage", imageSetName + "_EntityCEGUITextureImageset");
-	CEGUI::BasicImage* basicImage = static_cast<CEGUI::BasicImage*>(mImage);
+	auto* basicImage = static_cast<CEGUI::BasicImage*>(mImage);
 	basicImage->setTexture(mCeguiTexture);
-	basicImage->setArea(CEGUI::Rectf(0,0, mCeguiTexture->getSize().d_width, mCeguiTexture->getSize().d_height));
+	basicImage->setArea(CEGUI::Rectf(0, 0, mCeguiTexture->getSize().d_width, mCeguiTexture->getSize().d_height));
 	basicImage->setNativeResolution(mCeguiTexture->getSize());
 	basicImage->setAutoScaled(CEGUI::ASM_Both);
 
@@ -97,12 +93,9 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 }
 
 
-SimpleRenderContext* EntityCEGUITexture::getRenderContext()
-{
+SimpleRenderContext* EntityCEGUITexture::getRenderContext() {
 	return mRenderContext.get();
 }
-
-
 
 
 }

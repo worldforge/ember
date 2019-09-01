@@ -1242,7 +1242,7 @@ function ModelEdit:buildWidget()
 		self.widget:getWindow("GetIconFromPreviewButton"):subscribeEvent("Clicked", function(args)
 			if self.definition then
 				local definition = self.definition:createViewDefinition("icon")
-				definition.Rotation = self.renderer:getEntityRotation():Inverse()
+				definition.Rotation = self.renderer:getCameraOrientation()
 				--only set the camera distance if it has been moved from the optimal position
 				if self.renderer:getCameraDistance() ~= 1 then
 					definition.Distance = self.renderer:getAbsoluteCameraDistance()

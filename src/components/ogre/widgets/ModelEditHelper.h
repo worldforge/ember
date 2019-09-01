@@ -26,22 +26,17 @@
 #include <string>
 #include <memory>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Model
-{
+namespace Ember {
+namespace OgreView {
+namespace Model {
 class ModelMount;
 }
-namespace Gui
-{
+namespace Gui {
 
 /**
  * @brief A helper class for showing attach points.
  */
-class AttachPointHelper
-{
+class AttachPointHelper {
 public:
 
 	/**
@@ -49,7 +44,7 @@ public:
 	 * @param model The model for which we want to show attach points.
 	 * @param attachPointName The name of the attach point to show.
 	 */
-	AttachPointHelper(Model::Model& model, const std::string& attachPointName);
+	AttachPointHelper(Model::Model& model, std::string attachPointName);
 
 	/**
 	 * @brief Dtor.
@@ -96,8 +91,7 @@ protected:
 /**
  * @brief A helper class for using an Ogre::Entity instance for showing the attach point.
  */
-class EntityAttachPointHelper: public AttachPointHelper
-{
+class EntityAttachPointHelper : public AttachPointHelper {
 public:
 
 	/**
@@ -111,8 +105,10 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~EntityAttachPointHelper();
-	virtual Ogre::Quaternion getOrientation() const;
+	~EntityAttachPointHelper() override;
+
+	Ogre::Quaternion getOrientation() const override;
+
 private:
 
 	/**
@@ -125,8 +121,7 @@ private:
 /**
  * @brief A helper class for using a Model instance for showing the attach point.
  */
-class ModelAttachPointHelper: public AttachPointHelper
-{
+class ModelAttachPointHelper : public AttachPointHelper {
 public:
 	/**
 	 * @brief Ctor.
@@ -139,9 +134,10 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~ModelAttachPointHelper();
+	~ModelAttachPointHelper() override;
 
-	virtual Ogre::Quaternion getOrientation() const;
+	Ogre::Quaternion getOrientation() const override;
+
 private:
 
 	/**
@@ -158,8 +154,7 @@ private:
 /**
  * @brief Allows for movement of the attach point through the mouse.
  */
-class AttachPointMouseMover
-{
+class AttachPointMouseMover {
 public:
 
 	/**
@@ -170,9 +165,7 @@ public:
 	 */
 	AttachPointMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
 
-	virtual ~AttachPointMouseMover()
-	{
-	}
+	virtual ~AttachPointMouseMover() = default;
 
 	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse) = 0;
 
@@ -182,6 +175,7 @@ public:
 	 * @return True if the mover should be deleted as a result.
 	 */
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button) = 0;
+
 protected:
 
 	/**
@@ -203,8 +197,7 @@ protected:
 /**
  * @brief Allows for rotation of the attach point through the mouse.
  */
-class RotateMouseMover: public AttachPointMouseMover
-{
+class RotateMouseMover : public AttachPointMouseMover {
 public:
 	/**
 	 * @brief Ctor.
@@ -213,15 +206,16 @@ public:
 	 * @param renderContext The render context which contains the model.
 	 */
 	RotateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
-	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+
+	void injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
+
+	bool injectMouseButtonUp(const Input::MouseButton& button) override;
 };
 
 /**
  * @brief Allows for translation of the attach point through the mouse.
  */
-class TranslateMouseMover: public AttachPointMouseMover
-{
+class TranslateMouseMover : public AttachPointMouseMover {
 public:
 	/**
 	 * @brief Ctor.
@@ -230,8 +224,10 @@ public:
 	 * @param renderContext The render context which contains the model.
 	 */
 	TranslateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
-	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+
+	void injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
+
+	bool injectMouseButtonUp(const Input::MouseButton& button) override;
 };
 
 /**
@@ -243,8 +239,7 @@ public:
  *
  * It currently mainly helps with attach point editing. As such, it requires a Model instance (even though it mainly deals with ModelDefinition editing).
  */
-class ModelEditHelper: public IInputAdapter
-{
+class ModelEditHelper : public IInputAdapter {
 public:
 
 	/**
@@ -257,7 +252,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~ModelEditHelper();
+	~ModelEditHelper() override;
 
 	/**
 	 * @brief Shows a helper entity attached to the specified attach point, to help when authoring.
@@ -296,12 +291,17 @@ public:
 	 ---------Methods implemented from IInputAdapter
 	 @see IInputAdapter
 	 */
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
-	virtual bool injectChar(int character);
-	virtual bool injectKeyDown(const SDL_Scancode& key);
-	virtual bool injectKeyUp(const SDL_Scancode& key);
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
+
+	bool injectMouseButtonUp(const Input::MouseButton& button) override;
+
+	bool injectMouseButtonDown(const Input::MouseButton& button) override;
+
+	bool injectChar(int character) override;
+
+	bool injectKeyDown(const SDL_Scancode& key) override;
+
+	bool injectKeyUp(const SDL_Scancode& key) override;
 
 private:
 

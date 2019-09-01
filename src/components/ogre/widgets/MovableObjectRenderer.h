@@ -73,6 +73,8 @@ public:
 	 */
 	float getAbsoluteCameraDistance();
 
+	Ogre::Quaternion getCameraOrientation() const;
+
 	/**
 	 * Gets whether the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
 	 * Defaults to true.
