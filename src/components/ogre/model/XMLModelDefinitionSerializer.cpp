@@ -828,6 +828,8 @@ bool XMLModelDefinitionSerializer::exportScript(const ModelDefinitionPtr& modelD
 	}
 
 	TiXmlDocument xmlDoc;
+	TiXmlDeclaration xmlDeclaration("1.0","UTF-8", "");
+	xmlDoc.InsertEndChild(xmlDeclaration);
 
 	try {
 
@@ -836,7 +838,6 @@ bool XMLModelDefinitionSerializer::exportScript(const ModelDefinitionPtr& modelD
 			boost::filesystem::create_directories(path.parent_path());
 		}
 
-		TiXmlElement elem("models");
 		TiXmlElement modelElem("model");
 
 		std::string useScaleOf;
@@ -934,9 +935,7 @@ bool XMLModelDefinitionSerializer::exportScript(const ModelDefinitionPtr& modelD
 
 		exportPoses(modelDef, modelElem);
 
-		elem.InsertEndChild(modelElem);
-
-		xmlDoc.InsertEndChild(elem);
+		xmlDoc.InsertEndChild(modelElem);
 
 		xmlDoc.SaveFile(path.string());
 		S_LOG_INFO("Saved file " << path.string());
