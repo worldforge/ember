@@ -655,7 +655,7 @@ void ServerWidget::gotAvatar(Eris::Avatar* avatar) {
 	mTypeServiceConnection.disconnect();
 
 	mAccount->AvatarDeactivated.connect(sigc::mem_fun(*this, &ServerWidget::avatar_Deactivated));
-	avatar->getView()->AvatarEntityDeleted.connect(sigc::mem_fun(*this, &ServerWidget::avatar_EntityDeleted));
+	avatar->CharacterEntityDeleted.connect(sigc::mem_fun(*this, &ServerWidget::avatar_EntityDeleted));
 	hide();
 }
 

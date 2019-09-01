@@ -128,7 +128,7 @@ Avatar::Avatar(Eris::Avatar* erisAvatar,
 
 	mCameraMount->attachToNode(getAvatarSceneNode());
 
-	mErisAvatarEntity.getView()->AvatarEntityDeleted.connect(sigc::mem_fun(*this, &Avatar::viewEntityDeleted));
+	erisAvatar->CharacterEntityDeleted.connect(sigc::mem_fun(*this, &Avatar::viewEntityDeleted));
 
 	attachCameraToEntity();
 }
