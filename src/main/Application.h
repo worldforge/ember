@@ -71,6 +71,12 @@
  * A coding style guideline can be found in the "doc/template_header.h" file. If you're using Eclipse as your IDE there's a code formatting style available in EclipseCodeStyle.xml.
  */
 
+namespace Atlas {
+namespace Objects {
+class Factories;
+}
+}
+
 namespace Eris
 {
 class Session;
@@ -177,6 +183,8 @@ public:
 	Eris::View* getMainView();
 
 private:
+
+	std::unique_ptr<Atlas::Objects::Factories> mAtlasFactories;
 
 	Eris::Session* mSession;
 

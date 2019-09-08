@@ -49,7 +49,7 @@ private:
 	 *
 	 * @param obj
 	 */
-	virtual void objectArrived(const Atlas::Objects::Root & obj);
+	void objectArrived(const Atlas::Objects::Root & obj) override;
 public:
 
 	/**
@@ -61,7 +61,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~AtlasMessageLoader();
+	~AtlasMessageLoader() override;
 
 	/**
 	 * @brief Read only accessor for the number of messages loaded

@@ -17,19 +17,18 @@
  */
 
 #include "AtlasObjectDecoder.h"
-
+#include <Atlas/Objects/Factories.h>
 
 namespace Ember
 {
 
 AtlasObjectDecoder::AtlasObjectDecoder()
+: ObjectsDecoder(*Atlas::Objects::Factories::instance())
 {
 
 }
 
-AtlasObjectDecoder::~AtlasObjectDecoder()
-{
-}
+AtlasObjectDecoder::~AtlasObjectDecoder() = default;
 
 Atlas::Objects::Root AtlasObjectDecoder::getLastObject()
 {

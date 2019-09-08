@@ -43,7 +43,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~AtlasObjectDecoder();
+	~AtlasObjectDecoder() override;
 
 	/**
 	 * @brief Gets the last decoded atlas object.
@@ -58,7 +58,7 @@ public:
 
 private:
 
-    virtual void objectArrived(const Atlas::Objects::Root& obj);
+    void objectArrived(const Atlas::Objects::Root& obj) override;
 
     /**
      * @brief Retain a copy of the last decoded object.

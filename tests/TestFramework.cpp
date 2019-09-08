@@ -16,6 +16,9 @@
 
 #include <boost/thread.hpp>
 #include <boost/date_time.hpp>
+#include <Atlas/Objects/Factories.h>
+
+Atlas::Objects::Factories factories;
 
 namespace Ember
 {

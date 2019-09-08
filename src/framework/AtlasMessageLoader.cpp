@@ -21,19 +21,18 @@
 
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Factories.h>
 
 using Atlas::Objects::Root;
 namespace Ember
 {
 
 AtlasMessageLoader::AtlasMessageLoader(std::map<std::string, Root>& messages) :
-		mCount(0), mMessages(messages)
+		ObjectsDecoder(*Atlas::Objects::Factories::instance()), mCount(0), mMessages(messages)
 {
 }
 
-AtlasMessageLoader::~AtlasMessageLoader()
-{
-}
+AtlasMessageLoader::~AtlasMessageLoader() = default;
 
 void AtlasMessageLoader::objectArrived(const Root & obj)
 {

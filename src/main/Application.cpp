@@ -48,6 +48,7 @@
 #include "ConfigBoundLogObserver.h"
 
 #include "components/lua/embertolua++.h"
+#include <Atlas/Objects/Factories.h>
 
 TOLUA_API int tolua_Ogre_open(lua_State* tolua_S);
 
@@ -185,6 +186,7 @@ public:
 template<> Application* Singleton<Application>::ms_Singleton = nullptr;
 
 Application::Application(std::string prefix, std::string homeDir, const ConfigMap& configSettings) :
+		mAtlasFactories(new Atlas::Objects::Factories()),
 		mSession(new Eris::Session()),
 		mFileSystemObserver(new FileSystemObserver(mSession->getIoService())),
 		mOgreView(nullptr),
@@ -197,7 +199,8 @@ Application::Application(std::string prefix, std::string homeDir, const ConfigMa
 		mServices(nullptr),
 		mWorldView(nullptr),
 		mConfigSettings(configSettings),
-		mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."),
+		mConsoleBackend(new ConsoleBackend()),
+		Quit("quit", this, "Quit Ember."),
 		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."),
 		mScriptingResourceProvider(nullptr) {
 
