@@ -108,7 +108,7 @@ function RuleManager:sendRuleToServer()
 	local ruleUpdateOverlay = self.widget:getWindow("RuleUpdateOverlay")
 
 	local outstream = std.stringstream:new_local(self.ruleInfoText:getText())
-	local decoder = Ember.AtlasObjectDecoder:new_local()
+	local decoder = Ember.AtlasObjectDecoder:new_local(self.avatar:getConnection():getFactories())
 
 	local istream = tolua.cast(outstream, "std::istream")
 	local ostream = tolua.cast(std.stringstream:new_local(), "std::ostream")

@@ -195,7 +195,7 @@ void EntityCreatorCreationInstance::finalizeCreation()
 		c->setTo(mWorld.getAvatar()->getEmberEntity().getId());
 	}
 
-	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage));
+	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage), &mWorld.getView().getAvatar()->getConnection()->getFactories());
 	mWorld.getView().getAvatar()->getConnection()->send(c);
 
 	std::stringstream ss;

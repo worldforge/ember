@@ -22,10 +22,9 @@
 namespace Ember
 {
 
-AtlasObjectDecoder::AtlasObjectDecoder()
-: ObjectsDecoder(*Atlas::Objects::Factories::instance())
+AtlasObjectDecoder::AtlasObjectDecoder(const Atlas::Objects::Factories& factories)
+: ObjectsDecoder(factories)
 {
-
 }
 
 AtlasObjectDecoder::~AtlasObjectDecoder() = default;

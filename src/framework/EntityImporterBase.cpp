@@ -24,6 +24,7 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <fstream>
+#include <utility>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -35,13 +36,13 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Set;
 using Atlas::Message::Element;
 
-StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o, const std::list<std::string>::const_iterator & c) :
-		obj(o), currentChildIterator(c)
+StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity  o, const std::list<std::string>::const_iterator & c) :
+		obj(std::move(o)), currentChildIterator(c)
 {
 }
 
-StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o) :
-		obj(o)
+StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity  o) :
+		obj(std::move(o))
 {
 	currentChildIterator = obj->getContains().end();
 }
@@ -211,8 +212,9 @@ void EntityImporterBase::walkEntities(OpVector & res)
 void EntityImporterBase::sendMinds()
 {
 	if (!mResolvedMindMapping.empty()) {
+		Atlas::Objects::Factories factories;
 		S_LOG_INFO("Sending minds.");
-		for (auto mind : mResolvedMindMapping) {
+		for (const auto& mind : mResolvedMindMapping) {
 			Atlas::Message::MapType message;
 			mind.second->addToMessage(message);
 
@@ -307,7 +309,7 @@ void EntityImporterBase::sendMinds()
 			thinkOp->setSerialno(newSerialNumber());
 
 			Atlas::Objects::Operation::Set setOp;
-			setOp->setArgsAsList(thoughtArgs);
+			setOp->setArgsAsList(thoughtArgs, &factories);
 			thinkOp->setArgs1(setOp);
 
 			mStats.mindsProcessedCount++;
@@ -327,7 +329,7 @@ void EntityImporterBase::sendMinds()
 void EntityImporterBase::sendResolvedEntityReferences()
 {
 	if (!mEntitiesWithReferenceAttributes.empty()) {
-		for (auto entryI : mEntitiesWithReferenceAttributes) {
+		for (const auto& entryI : mEntitiesWithReferenceAttributes) {
 			const auto& persistedEntityId = entryI.first;
 			const auto& attributeNames = entryI.second;
 
@@ -402,7 +404,7 @@ void EntityImporterBase::createEntity(const RootEntity & obj, OpVector & res)
 	m_state = ENTITY_CREATING;
 
 	assert(mTreeStack.size() > 1);
-	std::deque<StackEntry>::reverse_iterator I = mTreeStack.rbegin();
+	auto I = mTreeStack.rbegin();
 	++I;
 	assert(I != mTreeStack.rend());
 	const std::string & loc = I->restored_id;
@@ -583,7 +585,7 @@ void EntityImporterBase::errorArrived(const Operation & op, OpVector & res)
 	default:
 		S_LOG_FAILURE("Unexpected state in state machine. Server message: " << errorMessage);
 		break;
-	};
+	}
 }
 
 void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
@@ -729,21 +731,25 @@ void EntityImporterBase::sightArrived(const Operation & op, OpVector & res)
 	default:
 		S_LOG_WARNING("Unexpected state in state machine.");
 		break;
-	};
+	}
 }
 
-EntityImporterBase::EntityImporterBase(const std::string& accountId, const std::string& avatarId) :
-		mAccountId(accountId), mAvatarId(avatarId), mStats( { }), m_state(INIT), mThoughtOpsInTransit(0), mSetOpsInTransit(0), mResumeWorld(0)
+EntityImporterBase::EntityImporterBase(std::string accountId, std::string avatarId) :
+		mAccountId(std::move(accountId)),
+		mAvatarId(std::move(avatarId)),
+		mStats( { }),
+		m_state(INIT),
+		mThoughtOpsInTransit(0),
+		mSetOpsInTransit(0),
+		mResumeWorld(false)
 {
 }
 
-EntityImporterBase::~EntityImporterBase()
-{
-}
+EntityImporterBase::~EntityImporterBase() = default;
 
 void EntityImporterBase::start(const std::string& filename)
 {
-	auto factories = Atlas::Objects::Factories::instance();
+	Atlas::Objects::Factories factories;
 
 	auto rootObj = loadFromFile(filename);
 
@@ -766,7 +772,7 @@ void EntityImporterBase::start(const std::string& filename)
 		} else {
 			for (auto& ruleMessage : rulesElem.asList()) {
 				if (ruleMessage.isMap()) {
-					auto object = factories->createObject(ruleMessage.asMap());
+					auto object = factories.createObject(ruleMessage.asMap());
 					if (object.isValid()) {
 						if (!object->isDefaultId()) {
 							mPersistedRules.insert(std::make_pair(object->getId(), object));
@@ -792,7 +798,7 @@ void EntityImporterBase::start(const std::string& filename)
 	for (auto& entityMessage : entitiesElem.asList()) {
 		if (entityMessage.isMap()) {
 			auto& entityMap = entityMessage.asMap();
-			auto object = factories->createObject(entityMap);
+			auto object = factories.createObject(entityMap);
 			if (object.isValid()) {
 				if (!object->isDefaultId()) {
 					registerEntityReferences(object->getId(), entityMap);
@@ -814,7 +820,7 @@ void EntityImporterBase::start(const std::string& filename)
 	}
 	for (auto& mindMessage : mindsElem.asList()) {
 		if (mindMessage.isMap()) {
-			auto object = factories->createObject(mindMessage.asMap());
+			auto object = factories.createObject(mindMessage.asMap());
 			if (object.isValid()) {
 				if (!object->isDefaultId()) {
 					mPersistedMinds.insert(std::make_pair(object->getId(), object));
@@ -840,7 +846,7 @@ void EntityImporterBase::start(const std::string& filename)
 
 void EntityImporterBase::registerEntityReferences(const std::string& id, const Atlas::Message::MapType& element)
 {
-	for (auto I : element) {
+	for (const auto& I : element) {
 		const auto& name = I.first;
 		if (name == "id" || name == "parent" || name == "contains") {
 			continue;
@@ -894,7 +900,7 @@ void EntityImporterBase::startRuleWalking()
 
 	OpVector res;
 	getRule("root", res);
-	for (auto op : res) {
+	for (const auto& op : res) {
 		sendOperation(op);
 	}
 }

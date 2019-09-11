@@ -71,8 +71,8 @@ public:
 	 */
 	std::list<std::string>::const_iterator currentChildIterator;
 
-	StackEntry(const Atlas::Objects::Entity::RootEntity & o, const std::list<std::string>::const_iterator & c);
-	explicit StackEntry(const Atlas::Objects::Entity::RootEntity & o);
+	StackEntry(Atlas::Objects::Entity::RootEntity  o, const std::list<std::string>::const_iterator & c);
+	explicit StackEntry(Atlas::Objects::Entity::RootEntity  o);
 };
 
 /**
@@ -199,7 +199,7 @@ public:
 	 * @param accountId The id of the account.
 	 * @param avatarId The id of the avatar.
 	 */
-	explicit EntityImporterBase(const std::string& accountId, const std::string& avatarId);
+	explicit EntityImporterBase(std::string accountId, std::string avatarId);
 	virtual ~EntityImporterBase();
 
 	/**

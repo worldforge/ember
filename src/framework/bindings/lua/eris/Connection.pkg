@@ -21,6 +21,8 @@ class Connection : public BaseConnection {
     connection will be placed into the DISCONNECTED state after the signal
     is emitted; thus the current state (when the failure occured) is still valid
     during the callback */
-    sigc::signal<void, const std::string&> Failure;    
+    sigc::signal<void, const std::string&> Failure;
+
+    const Atlas::Objects::Factories& getFactories() const;
 };
 }

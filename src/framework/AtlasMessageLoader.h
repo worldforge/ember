@@ -56,7 +56,7 @@ public:
 	 * @brief Ctor.
 	 * @param messages The map into which decoded messages will be put.
 	 */
-	AtlasMessageLoader(std::map<std::string, Atlas::Objects::Root> & messages);
+	AtlasMessageLoader(const Atlas::Objects::Factories& factories, std::map<std::string, Atlas::Objects::Root> & messages);
 
 	/**
 	 * @brief Dtor.

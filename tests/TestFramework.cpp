@@ -41,7 +41,7 @@ public:
 		std::map<std::string, Atlas::Objects::Root> messages;
 
 		{
-			AtlasMessageLoader loader(messages);
+			AtlasMessageLoader loader(factories, messages);
 			TinyXmlCodec codec(*xmlDoc.RootElement(), loader);
 
 			codec.poll();

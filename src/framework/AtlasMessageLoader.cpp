@@ -27,8 +27,10 @@ using Atlas::Objects::Root;
 namespace Ember
 {
 
-AtlasMessageLoader::AtlasMessageLoader(std::map<std::string, Root>& messages) :
-		ObjectsDecoder(*Atlas::Objects::Factories::instance()), mCount(0), mMessages(messages)
+AtlasMessageLoader::AtlasMessageLoader(const Atlas::Objects::Factories& factories, std::map<std::string, Root>& messages) :
+		ObjectsDecoder(factories),
+		mCount(0),
+		mMessages(messages)
 {
 }
 

@@ -107,7 +107,7 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	}
 	msg["parent"] = typeinfo->getName();
 
-	c->setArgsAsList(Atlas::Message::ListType(1, msg));
+	c->setArgsAsList(Atlas::Message::ListType(1, msg), &mConnection.getFactories());
 	mConnection.send(c);
 	std::stringstream ss;
 	ss << pos;

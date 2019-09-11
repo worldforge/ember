@@ -74,7 +74,8 @@ void EntityImporter::operationResult(const Atlas::Objects::Operation::RootOperat
 
 Atlas::Objects::Root EntityImporter::loadFromFile(const std::string& filename) {
 	std::fstream fileStream(filename, std::ios::in);
-	AtlasObjectDecoder atlasLoader;
+	Atlas::Objects::Factories factories;
+	AtlasObjectDecoder atlasLoader(factories);
 
 	Atlas::Codecs::XML codec(fileStream, fileStream, atlasLoader);
 	codec.poll();
@@ -90,7 +91,8 @@ std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(cons
 			ShortInfo info;
 
 			std::fstream fileStream(file_path.string(), std::ios::in);
-			AtlasObjectDecoder atlasLoader;
+			Atlas::Objects::Factories factories;
+			AtlasObjectDecoder atlasLoader(factories);
 
 			Atlas::Codecs::XML codec(fileStream, fileStream, atlasLoader);
 			codec.poll();

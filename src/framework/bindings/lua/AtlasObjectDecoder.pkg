@@ -25,7 +25,7 @@ namespace Ember
 class AtlasObjectDecoder : public Atlas::Objects::ObjectsDecoder
 {
 public:
-	AtlasObjectDecoder();
+	AtlasObjectDecoder(const Atlas::Objects::Factories& factories);
 	virtual ~AtlasObjectDecoder();
 
 	Atlas::Objects::Root getLastObject();

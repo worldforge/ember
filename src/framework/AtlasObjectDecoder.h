@@ -38,7 +38,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	AtlasObjectDecoder();
+	explicit AtlasObjectDecoder(const Atlas::Objects::Factories& factories);
 
 	/**
 	 * @brief Dtor.

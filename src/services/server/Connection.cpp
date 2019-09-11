@@ -24,13 +24,13 @@
 namespace Ember
 {
 Connection::Connection(Eris::Session& session, const std::string& clientName, const std::string& host, short port, std::unique_ptr<IConnectionListener> listener) :
-		Eris::Connection(session.getIoService(), session.getEventService(), *Atlas::Objects::Factories::instance(), clientName, host, port),
+		Eris::Connection(session.getIoService(), session.getEventService(), clientName, host, port),
 		mListener(std::move(listener))
 {
 }
 
 Connection::Connection(Eris::Session& session, const std::string& clientName, const std::string& socket, std::unique_ptr<IConnectionListener> listener) :
-		Eris::Connection(session.getIoService(), session.getEventService(), *Atlas::Objects::Factories::instance(), clientName, socket),
+		Eris::Connection(session.getIoService(), session.getEventService(), clientName, socket),
 		mListener(std::move(listener))
 {
 }
