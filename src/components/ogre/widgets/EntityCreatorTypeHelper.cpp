@@ -198,7 +198,8 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args) {
 					}
 
 					if (!mPlantedOnWindow.getText().empty()) {
-						definition["planted_on"] = mPlantedOnWindow.getText().c_str();
+						definition["mode_data"] = Atlas::Message::MapType{{"mode", "planted"},
+																		  {"$eid", mPlantedOnWindow.getText().c_str()}};
 					}
 
 					EventCreateFromType(definition);

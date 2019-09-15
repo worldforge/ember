@@ -852,9 +852,6 @@ EntityEditor.prototypes =
 		--    adapter = EntityEditor.adapters.static
 		adapter = nil
 	},
-	planted_on = {
-		adapter = EntityEditor.adapters.entityRef
-	},
 	attached_hand_primary= {
 		adapter = EntityEditor.adapters.entityRef
 	}
