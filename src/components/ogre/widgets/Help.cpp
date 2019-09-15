@@ -40,19 +40,14 @@ namespace Gui {
 
 
 Help::Help()
- : HelpCommand("help", this, "Display the help.")
-{
-
+		: HelpCommand("help", this, "Display the help.") {
 }
 
 
-Help::~Help()
-{
-}
+Help::~Help() = default;
 
 
-void Help::buildWidget()
-{
+void Help::buildWidget() {
 
 	loadMainSheet("HelpWidget.layout", "Help/");
 
@@ -60,7 +55,7 @@ void Help::buildWidget()
 
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
-	if (configSrv.itemExists("general", "startuphelp") && ((bool)configSrv.getValue("general", "startuphelp"))) {
+	if (configSrv.itemExists("general", "startuphelp") && ((bool) configSrv.getValue("general", "startuphelp"))) {
 		show();
 	}
 
@@ -70,19 +65,15 @@ void Help::buildWidget()
 }
 
 
-
-void Help::show()
-{
+void Help::show() {
 	Widget::show();
 	if (mMainWindow) {
 		mMainWindow->moveToFront();
 	}
 }
 
-void Help::runCommand(const std::string &command, const std::string &args)
-{
-	if(HelpCommand == command)
-	{
+void Help::runCommand(const std::string& command, const std::string& args) {
+	if (HelpCommand == command) {
 		show();
 	} else {
 		Widget::runCommand(command, args);
@@ -90,8 +81,7 @@ void Help::runCommand(const std::string &command, const std::string &args)
 
 }
 
-void Help::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
-{
+void Help::EmberOgre_CreatedAvatarEntity(EmberEntity& entity) {
 	QuickHelp::getSingleton().updateText(HelpMessage("UI modes", "Click right mouse button to switch between MOVEMENT and INPUT MODE.", "input", "ui_modes"));
 }
 

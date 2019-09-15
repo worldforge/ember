@@ -69,6 +69,7 @@
 #include <CEGUI/widgets/MultiLineEditbox.h>
 #include <CEGUI/widgets/Editbox.h>
 #include <components/cegui/CEGUISetup.h>
+#include "components/ogre/widgets/HitDisplayer.h"
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -122,7 +123,7 @@ CEGUI is not built with Freetype
 	serverSignals.GotView.connect(sigc::mem_fun(*this, &GUIManager::server_GotView));
 
 	//we need this here just to force the linker to also link in the WidgetDefinitions
-	WidgetDefinitions w;
+	WidgetDefinitions w{};
 
 	try {
 
@@ -539,10 +540,13 @@ void GUIManager::EmberOgre_WorldCreated(World& world)
 	UniqueWindowPtr<EmberEntityTooltipWidget> tooltipWindow(dynamic_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")));
 	mEntityTooltip = new EntityTooltip(world, std::move(tooltipWindow), *mIconManager);
 	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world);
+
+	mHitDisplayer = std::make_unique<HitDisplayer>(world.getView(), world.getSceneManager());
 }
 
 void GUIManager::EmberOgre_WorldBeingDestroyed()
 {
+	mHitDisplayer.reset();
 	delete mEntityTooltip;
 	mEntityTooltip = nullptr;
 	delete mCursorWorldListener;

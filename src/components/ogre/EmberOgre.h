@@ -150,7 +150,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~EmberOgre();
+	~EmberOgre() override;
 
 	/**
 	 * @brief Gets the Ogre root object.

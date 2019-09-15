@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout version="4">
+	<Window type="EmberLook/StaticText">
+		<Property name="Size" value="{{000000,200.0},{0.0,25.0}}" />
+		<Property name="InheritsAlpha" value="true" />
+		<Property name="HorzFormatting" value="WordWrapCentreAligned" />
+		<Property name="VertFormatting" value="TopAligned" />
+		<Property name="FrameEnabled" value="false" />
+		<Property name="BackgroundEnabled" value="false" />
+		<Property name="Font" value="DejaVuSans-Bold-10" />
+		<Property name="TextColours" value="tl:FFae1919 tr:FFae1919 bl:FFae1919 br:FFae1919" />
+	</Window>
+</GUILayout>

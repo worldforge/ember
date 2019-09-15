@@ -43,13 +43,8 @@ class World;
  *
  * These signals are emitted by the EmberOgre class. Since an instance of EmberOgre forms the base of the Ogre component of Ember, many of these signals are of use by subcomponents, both in their lifecycle as well as on frame render basis.
  */
-class EmberOgreSignals
+struct EmberOgreSignals
 {
-public:
-	virtual ~EmberOgreSignals()
-	{
-	}
-
 	/**
 	 * @brief Emitted when the Ember entity factory has been created.
 	 */

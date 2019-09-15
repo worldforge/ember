@@ -296,6 +296,19 @@ bool MainCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& scr
 	return true;
 }
 
+Ogre::Vector2 MainCamera::worldToScreen(Ogre::Camera& camera, const Ogre::Vector3& worldPos) {
+	Ogre::Vector3 hcsPosition = camera.getProjectionMatrix() * (camera.getViewMatrix() * worldPos);
+
+	if ((hcsPosition.x < -1.0f) || (hcsPosition.x > 1.0f) || (hcsPosition.y < -1.0f) || (hcsPosition.y > 1.0f))
+		return Ogre::Vector2(NAN, NAN);
+
+	Ogre::Vector2 screenPos;
+	screenPos.x = (hcsPosition.x + 1) * 0.5f;
+	screenPos.y = (-hcsPosition.y + 1) * 0.5f;
+
+	return screenPos;
+}
+
 bool MainCamera::frameStarted(const Ogre::FrameEvent& event) {
 	if (mCameraMount) {
 		if (mMovementProvider) {

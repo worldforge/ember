@@ -147,6 +147,7 @@ public:
 	 */
 	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos);
 
+	static Ogre::Vector2 worldToScreen(Ogre::Camera& camera, const Ogre::Vector3& worldPos);
 	/**
 	 * Methods from Ogre::FrameListener
 	 */

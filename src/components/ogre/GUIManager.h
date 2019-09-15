@@ -84,6 +84,7 @@ class ActiveWidgetHandler;
 class EntityTooltip;
 class CursorWorldListener;
 class WorldLoadingScreen;
+class HitDisplayer;
 
 namespace Icons
 {
@@ -337,6 +338,8 @@ protected:
 	WidgetStore mWidgets;
 
 	Gui::CursorWorldListener* mCursorWorldListener;
+
+	std::unique_ptr<Gui::HitDisplayer> mHitDisplayer;
 
 	/**
 	 * @brief Sets whether the GUI is enabled; i.e. will be rendered each frame.

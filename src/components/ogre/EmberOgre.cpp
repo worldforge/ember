@@ -500,7 +500,7 @@ void EmberOgre::Server_GotView(Eris::View* view) {
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
-	mWorld.reset(new World(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), mEntityMappingManager->getManager()));
+	mWorld = std::make_unique<World>(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), mEntityMappingManager->getManager());
 	//We want the overlay system available for the main camera, in case we need to do profiling.
 	mWorld->getSceneManager().addRenderQueueListener(mOgreSetup->getOverlaySystem());
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
