@@ -56,6 +56,16 @@ ProjectileRenderingTechnique::ProjectileRenderingTechnique(Ogre::SceneManager& s
 }
 
 ProjectileRenderingTechnique::~ProjectileRenderingTechnique() {
+	for (const auto& entity: mActiveNodes) {
+		mSceneManager.destroySceneNode(entity.second.particleNode);
+	}
+	mActiveNodes.clear();
+	for (const auto& entity: mAvailableNodes) {
+		mSceneManager.destroySceneNode(entity);
+	}
+	mAvailableNodes.clear();
+
+
 	mSceneManager.destroyMovableObject(mTrail);
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }

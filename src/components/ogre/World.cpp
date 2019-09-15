@@ -82,53 +82,49 @@ World::World(Eris::View& view,
 		mView(view),
 		mRenderWindow(renderWindow),
 		mSignals(signals),
+		mCalendar(new Eris::Calendar(view.getAvatar())),
 		mScene(new Scene()),
 		mViewport(renderWindow.addViewport(&mScene->getMainCamera())),
 		mAvatar(nullptr),
 		mMovementController(nullptr),
 		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getEventService())),
 		mMainCamera(new Camera::MainCamera(*mScene, mRenderWindow, input, *mTerrainManager->getTerrainAdapter())),
-		mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene, entityMappingManager)),
+		mMoveManager(new Authoring::EntityMoveManager(*this)),
+		mEmberEntityFactory(new EmberEntityFactory(view, *mScene, entityMappingManager)),
 		mMotionManager(new MotionManager()),
 		mAvatarCameraMotionHandler(nullptr),
 		mAvatarCameraWarper(nullptr),
-		mEntityWorldPickListener(nullptr),
+		mEntityWorldPickListener(new EntityWorldPickListener(mView, *mScene)),
 		mAuthoringManager(new Authoring::AuthoringManager(*this)),
 		mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)),
-		mTerrainEntityManager(nullptr),
+		mTerrainEntityManager(new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager())),
 		mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),
+		mPageDataProvider(new TerrainPageDataProvider(mTerrainManager->getHandler())),
 		mFoliage(nullptr),
 		mFoliageDetailManager(nullptr),
 		mFoliageInitializer(nullptr),
-		mEnvironment(nullptr),
-		mConfigListenerContainer(new ConfigListenerContainer()),
-		mCalendar(new Eris::Calendar(view.getAvatar())) {
+		mEnvironment(new Environment::Environment(mScene->getSceneManager(),
+												  *mTerrainManager,
+												  std::make_unique<Environment::CaelumEnvironment>(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar),
+												  std::make_unique<Environment::SimpleEnvironment>(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()))),
+		mRenderDistanceManager(new RenderDistanceManager(graphicalChangeAdapter, *(mEnvironment->getFog()), mScene->getMainCamera())),
+		mConfigListenerContainer(new ConfigListenerContainer()) {
 	mAfterTerrainUpdateConnection = mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
-	mTerrainEntityManager = new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager());
-
-	mPageDataProvider = new TerrainPageDataProvider(mTerrainManager->getHandler());
-	mTerrainManager->getTerrainAdapter()->setPageDataProvider(mPageDataProvider);
+	mTerrainManager->getTerrainAdapter()->setPageDataProvider(mPageDataProvider.get());
 
 	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 
-	auto mainEnvironment = new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar);
-	auto fallbackEnvironment = new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera());
-	mEnvironment = new Environment::Environment(mScene->getSceneManager(),
-												*mTerrainManager,
-												mainEnvironment,
-												fallbackEnvironment);
-
 	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
 	mScene->addRenderingTechnique("projectile", new ProjectileRenderingTechnique(mScene->getSceneManager()));
-	mTerrainManager->getHandler().setLightning(mEnvironment);
+	mTerrainManager->getHandler().setLightning(mEnvironment.get());
 
 	//set the background colour to black
 	mViewport->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 	mScene->getMainCamera().setAspectRatio(Ogre::Real(mViewport->getActualWidth()) / Ogre::Real(mViewport->getActualHeight()));
 
 	signals.EventMotionManagerCreated.emit(*mMotionManager);
-	Ogre::Root::getSingleton().addFrameListener(mMotionManager);
+	Ogre::Root::getSingleton().addFrameListener(mMotionManager.get());
 
 	//When calling Eris::View::registerFactory ownership is transferred
 	view.registerFactory(mEmberEntityFactory);
@@ -136,54 +132,25 @@ World::World(Eris::View& view,
 
 	view.getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &World::View_gotAvatarCharacter));
 
-	mEntityWorldPickListener = new EntityWorldPickListener(mView, *mScene);
-	mMainCamera->pushWorldPickListener(mEntityWorldPickListener);
+	mMainCamera->pushWorldPickListener(mEntityWorldPickListener.get());
 
 	mConfigListenerContainer->registerConfigListener("graphics", "foliage", sigc::bind<-1>(sigc::mem_fun(*this, &World::Config_Foliage), sigc::ref(graphicalChangeAdapter)));
 
-	mRenderDistanceManager = new RenderDistanceManager(graphicalChangeAdapter, *(mEnvironment->getFog()), mScene->getMainCamera());
 }
 
 World::~World() {
 	mAfterTerrainUpdateConnection.disconnect();
 
-	delete mFoliageInitializer;
-	delete mConfigListenerContainer;
-	delete mTerrainEntityManager;
 	mSignals.EventTerrainManagerBeingDestroyed();
-	delete mTerrainManager;
+	mTerrainManager.reset();
 	mSignals.EventTerrainManagerDestroyed();
-	delete mAuthoringMoverConnector;
-	delete mAuthoringManager;
 
-	delete mMainCamera;
-	delete mEntityWorldPickListener;
-	delete mMoveManager;
-
-	//The factory will be deleted by the mWorldView when that is deleted later on, so we shall not delete it here
-	// 	delete mEmberEntityFactory;
-	delete mAvatarCameraWarper;
-	delete mMovementController;
-	delete mAvatar;
-	delete mAvatarCameraMotionHandler;
-
-	Ogre::Root::getSingleton().removeFrameListener(mMotionManager);
-	delete mMotionManager;
+	Ogre::Root::getSingleton().removeFrameListener(mMotionManager.get());
+	mMotionManager.reset();
 	mSignals.EventMotionManagerDestroyed();
-
-	delete mRenderDistanceManager;
 
 	ISceneRenderingTechnique* technique = mScene->removeRenderingTechnique("forest");
 	delete technique;
-	delete mFoliageDetailManager;
-	delete mFoliage;
-	delete mEnvironment;
-
-	delete mLodLevelManager;
-
-	delete mScene;
-	delete mPageDataProvider;
-	delete mCalendar;
 }
 
 Eris::View& World::getView() const {
@@ -205,7 +172,7 @@ Ogre::SceneManager& World::getSceneManager() const {
 }
 
 Avatar* World::getAvatar() const {
-	return mAvatar;
+	return mAvatar.get();
 }
 
 MotionManager& World::getMotionManager() const {
@@ -224,7 +191,7 @@ EmberEntityFactory& World::getEntityFactory() const {
 }
 
 MovementController* World::getMovementController() const {
-	return mMovementController;
+	return mMovementController.get();
 }
 
 EmberEntity* World::getEmberEntity(const std::string& eid) const {
@@ -258,11 +225,11 @@ RenderDistanceManager& World::getRenderDistanceManager() const {
 }
 
 Environment::Environment* World::getEnvironment() const {
-	return mEnvironment;
+	return mEnvironment.get();
 }
 
 Environment::Foliage* World::getFoliage() const {
-	return mFoliage;
+	return mFoliage.get();
 }
 
 Eris::Calendar& World::getCalendar() const {
@@ -289,15 +256,15 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity) {
 	if (entity) {
 		EmberEntity& emberEntity = static_cast<EmberEntity&>(*entity);
 		//Set up the third person avatar camera and switch to it.
-		mAvatar = new Avatar(mView.getAvatar(), emberEntity, *mScene, mMainCamera->getCameraSettings(), *(mTerrainManager->getTerrainAdapter()));
-		mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
-		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
-		mMovementController = new MovementController(*mAvatar, *mMainCamera, *mTerrainManager);
-		mMainCamera->setMovementProvider(mMovementController);
+		mAvatar.reset(new Avatar(mView.getAvatar(), emberEntity, *mScene, mMainCamera->getCameraSettings(), *(mTerrainManager->getTerrainAdapter())));
+		mAvatarCameraMotionHandler.reset(new AvatarCameraMotionHandler(*mAvatar));
+		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler.get());
+		mMovementController.reset(new MovementController(*mAvatar, *mMainCamera, *mTerrainManager));
+		mMainCamera->setMovementProvider(mMovementController.get());
 		mMainCamera->attachToMount(&mAvatar->getCameraMount());
 
 		if (mAvatar->isAdmin()) {
-			mAvatarCameraWarper = new AvatarCameraWarper(*mMovementController, *mMainCamera, mView);
+			mAvatarCameraWarper.reset(new AvatarCameraWarper(*mMovementController, *mMainCamera, mView));
 		}
 
 		emberEntity.BeingDeleted.connect(sigc::mem_fun(*this, &World::avatarEntity_BeingDeleted));
@@ -312,41 +279,34 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity) {
 }
 
 void World::avatarEntity_BeingDeleted() {
-	delete mAvatarCameraWarper;
-	mAvatarCameraWarper = nullptr;
+	mAvatarCameraWarper.reset();
 	mMainCamera->attachToMount(nullptr);
 	mMainCamera->setMovementProvider(nullptr);
-	delete mMovementController;
-	mMovementController = nullptr;
+	mMovementController.reset();
 	mSignals.EventMovementControllerDestroyed.emit();
-	delete mAvatarCameraMotionHandler;
-	mAvatarCameraMotionHandler = nullptr;
-	delete mAvatar;
-	mAvatar = nullptr;
+	mAvatarCameraMotionHandler.reset();
+	mAvatar.reset();
 }
 
 void World::Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, GraphicalChangeAdapter& graphicalChangeAdapter) {
 	if (variable.is_bool() && static_cast<bool>(variable)) {
 		if (!mFoliage) {
 			//create the foliage
-			mFoliage = new Environment::Foliage(*mTerrainManager);
+			mFoliage.reset(new Environment::Foliage(*mTerrainManager));
 			EventFoliageCreated.emit();
-			mFoliageInitializer = new DelayedFoliageInitializer(sigc::bind(sigc::mem_fun(*this, &World::initializeFoliage), sigc::ref(graphicalChangeAdapter)), mView, 1000, 15000);
+			mFoliageInitializer.reset(new DelayedFoliageInitializer(sigc::bind(sigc::mem_fun(*this, &World::initializeFoliage), sigc::ref(graphicalChangeAdapter)), mView, 1000, 15000));
 		}
 	} else {
-		delete mFoliageDetailManager;
-		mFoliageDetailManager = nullptr;
-		delete mFoliageInitializer;
-		mFoliageInitializer = nullptr;
-		delete mFoliage;
-		mFoliage = nullptr;
+		mFoliageDetailManager.reset();
+		mFoliageInitializer.reset();
+		mFoliage.reset();
 	}
 }
 
 void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter) {
 	if (mFoliage) {
 		mFoliage->initialize();
-		mFoliageDetailManager = new Environment::FoliageDetailManager(*mFoliage, graphicalChangeAdapter);
+		mFoliageDetailManager.reset(new Environment::FoliageDetailManager(*mFoliage, graphicalChangeAdapter));
 		mFoliageDetailManager->initialize();
 	}
 }
@@ -364,9 +324,7 @@ DelayedFoliageInitializer::DelayedFoliageInitializer(sigc::slot<void> callback, 
 	//wait three seconds
 }
 
-DelayedFoliageInitializer::~DelayedFoliageInitializer() {
-	delete mTimeout;
-}
+DelayedFoliageInitializer::~DelayedFoliageInitializer() = default;
 
 void DelayedFoliageInitializer::timout_Expired() {
 	//load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
@@ -374,7 +332,7 @@ void DelayedFoliageInitializer::timout_Expired() {
 		mCallback();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
-		mTimeout = new Eris::TimedEvent(mView.getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&]() { this->timout_Expired(); });
+		mTimeout = std::make_unique<Eris::TimedEvent>(mView.getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&]() { this->timout_Expired(); });
 	}
 }
 

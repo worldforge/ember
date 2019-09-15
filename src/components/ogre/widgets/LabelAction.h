@@ -32,18 +32,18 @@ namespace Gui
 class LabelAction: public EntityMapping::Actions::Action
 {
 public:
-	LabelAction(EmberEntity& entity);
-	virtual ~LabelAction();
+	explicit LabelAction(EmberEntity& entity);
+	~LabelAction() override;
 
 	/**
 	 * @copydoc EntityMapping::Actions::Action::activate()
 	 */
-	virtual void activate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
 
 	/**
 	 * @copydoc EntityMapping::Actions::Action::deactivate()
 	 */
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void deactivate(EntityMapping::ChangeContext& context) override;
 
 private:
 

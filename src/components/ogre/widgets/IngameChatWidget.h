@@ -32,6 +32,7 @@
 #include <unordered_map>
 #include <functional>
 #include <OgreCamera.h>
+#include <components/ogre/INodeProvider.h>
 
 namespace Ember {
 
@@ -151,7 +152,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 		 */
 		EmberEntity* getEntity();
 
-		void attachToEntity(EmberEntity* entity, Model::Model* model);
+		void attachToEntity(EmberEntity* entity);
 
 		void setVisible(bool visible);
 
@@ -206,7 +207,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 
 	protected:
 		UniqueWindowPtr<CEGUI::Window> mWindow;
-		Model::Model* mModel;
+		//INodeProvider* mNodeProvider;
 		EmberEntity* mEntity;
 		IngameChatWidget& mContainerWidget;
 
@@ -449,7 +450,7 @@ protected:
 	/// this sheet contains all labels of the entities
 	CEGUI::Window* mLabelSheet;
 
-	Avatar* mAvatar;
+	World* mWorld;
 
 	/// camera used for 3D -> 2D projection (placing labels and chat texts on top of Entities)
 	Camera::MainCamera* mCamera;

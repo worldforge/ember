@@ -47,7 +47,7 @@ WorldAttachment::~WorldAttachment()
 
 IGraphicalRepresentation* WorldAttachment::getGraphicalRepresentation() const
 {
-	return 0;
+	return nullptr;
 }
 
 EmberEntity& WorldAttachment::getAttachedEntity() const
@@ -57,7 +57,7 @@ EmberEntity& WorldAttachment::getAttachedEntity() const
 
 EmberEntity* WorldAttachment::getParentEntity() const
 {
-	return 0;
+	return nullptr;
 }
 
 IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
@@ -94,7 +94,7 @@ void WorldAttachment::setControlDelegate(IEntityControlDelegate* controllerDeleg
 
 IEntityControlDelegate* WorldAttachment::getControlDelegate() const
 {
-	return 0;
+	return nullptr;
 }
 
 void WorldAttachment::setVisualize(const std::string& visualization, bool visualize)

@@ -302,9 +302,14 @@ protected:
 	EmberOgreSignals& mSignals;
 
 	/**
+	 * @brief Represents the server calendar.
+	 */
+	std::unique_ptr<Eris::Calendar> mCalendar;
+
+	/**
 	 * @brief The scene instance, which handles the Ogre::SceneManager.
 	 */
-	Scene* mScene;
+	std::unique_ptr<Scene> mScene;
 
 	/**
 	 * @brief The main viewport, attached to the main RenderWindow.
@@ -314,111 +319,107 @@ protected:
 	/**
 	 * @brief The user avatar
 	 */
-	Avatar* mAvatar;
+	std::unique_ptr<Avatar> mAvatar;
 
 	/**
 	 * @brief When connected to a world, handles the avatar and patches mouse and keyboard movement events on the avatar.
 	 */
-	MovementController* mMovementController;
+	std::unique_ptr<MovementController> mMovementController;
 
 	/**
 	 * @brief The terrain manager, owned by this instance.
 	 */
-	Terrain::TerrainManager* mTerrainManager;
+	std::unique_ptr<Terrain::TerrainManager> mTerrainManager;
 
 	/**
 	 * @brief The main camera, which handles input to be shown in the main viewpoint.
 	 */
-	Camera::MainCamera* mMainCamera;
+	std::unique_ptr<Camera::MainCamera> mMainCamera;
 
 	/**
 	 * @brief Responsible for allowing movement of entities in the world by the user.
 	 */
-	Authoring::EntityMoveManager* mMoveManager;
+	std::unique_ptr<Authoring::EntityMoveManager> mMoveManager;
 
 	/**
-	 * @brief Main factory for all entities created in the world.
+	 * @brief Main factory for all entities created in the world. Ownership passed to Eris::View.
 	 */
 	EmberEntityFactory* mEmberEntityFactory;
 
 	/**
 	 * @brief Responsible for updating motions and animations of entities.
 	 */
-	MotionManager* mMotionManager;
+	std::unique_ptr<MotionManager> mMotionManager;
 
 	/**
 	 * @brief The main motion handler for the avatar camera.
 	 */
-	ICameraMotionHandler* mAvatarCameraMotionHandler;
+	std::unique_ptr<ICameraMotionHandler> mAvatarCameraMotionHandler;
 
 	/**
 	 * @brief Optional movement adjuster used if the avatar is an admin.
 	 *
 	 * This allows the player to let the avatar follow the camera (which helps when authoring).
 	 */
-	AvatarCameraWarper* mAvatarCameraWarper;
+	std::unique_ptr<AvatarCameraWarper> mAvatarCameraWarper;
 
 	/**
 	 * @brief The entity world pick listener instance, which handles picking of entities in the world.
 	 */
-	EntityWorldPickListener* mEntityWorldPickListener;
+	std::unique_ptr<EntityWorldPickListener> mEntityWorldPickListener;
 
 	/**
 	 * @brief The authoring manager, used for displaying authoring markers.
 	 */
-	Authoring::AuthoringManager* mAuthoringManager;
+	std::unique_ptr<Authoring::AuthoringManager> mAuthoringManager;
 
 	/**
 	 * @brief Connects the authoring manager to the entity mover manager, so that the authoring info is updated as entities are moved.
 	 */
-	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
+	std::unique_ptr<Authoring::AuthoringMoverConnector> mAuthoringMoverConnector;
 
-	TerrainEntityManager* mTerrainEntityManager;
+	std::unique_ptr<TerrainEntityManager> mTerrainEntityManager;
 
 	/**
 	 * @brief The lod level manager, owned by this instance, used to adjust the level of detail of materials and meshes.
 	 */
-	Lod::LodLevelManager* mLodLevelManager;
-
-	/**
-	 * @brief The render distance manager, owned by this instance, used to adjust the absolute rendering distance of the world.
-	 */
-	RenderDistanceManager* mRenderDistanceManager;
+	std::unique_ptr<Lod::LodLevelManager> mLodLevelManager;
 
 	/**
 	 * @brief The page data provider for the terrain rendering system.
 	 */
-	IPageDataProvider* mPageDataProvider;
+	std::unique_ptr<IPageDataProvider> mPageDataProvider;
 
 	/**
 	 * @brief The foliage system which provides different foliage functions.
 	 */
-	Environment::Foliage* mFoliage;
+	std::unique_ptr<Environment::Foliage> mFoliage;
 
 	/**
 	 * Utility object that can be used to manage detail level of foliage.
 	 */
-	Environment::FoliageDetailManager* mFoliageDetailManager;
+	std::unique_ptr<Environment::FoliageDetailManager> mFoliageDetailManager;
 
 	/**
 	 * @brief A foliage initializer which acts a bit delayed.
 	 */
-	DelayedFoliageInitializer* mFoliageInitializer;
+	std::unique_ptr<DelayedFoliageInitializer> mFoliageInitializer;
 
 	/**
 	 * @brief The main environment object. There should only be one in the system, and it's kept here.
 	 */
-	Environment::Environment* mEnvironment;
+	std::unique_ptr<Environment::Environment> mEnvironment;
+
+	/**
+	 * @brief The render distance manager, owned by this instance, used to adjust the absolute rendering distance of the world.
+	 */
+	std::unique_ptr<RenderDistanceManager> mRenderDistanceManager;
+
 
 	/**
 	 * @brief Listens for configuration changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
-
-	/**
-	 * @brief Represents the server calendar.
-	 */
-	Eris::Calendar* mCalendar;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
 	 * @brief Keeps track of the after terrain update connection.
@@ -505,7 +506,7 @@ protected:
 	unsigned int mIntervalMs;
 	unsigned int mMaxTimeMs;
 
-	Eris::TimedEvent* mTimeout;
+	std::unique_ptr<Eris::TimedEvent> mTimeout;
 	unsigned int mTotalElapsedTime;
 
 	/**

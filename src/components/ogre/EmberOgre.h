@@ -367,7 +367,7 @@ protected:
 	 *
 	 * The World instance is only available when the client through an Avatar and View instance has entered into the server side world.
 	 */
-	World* mWorld;
+	std::unique_ptr<World> mWorld;
 
 	/**
 	 * @brief Signals, when a Lod is injected.

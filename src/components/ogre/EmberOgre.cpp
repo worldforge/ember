@@ -131,7 +131,6 @@ EmberOgre::EmberOgre() :
 		mOgreLogManager(nullptr),
 		mIsInPausedMode(false),
 		mCameraOutOfWorld(nullptr),
-		mWorld(nullptr),
 		mPMInjectorSignaler(nullptr),
 		mConsoleDevTools(nullptr),
 		mConfigListenerContainer(new ConfigListenerContainer()) {
@@ -139,7 +138,6 @@ EmberOgre::EmberOgre() :
 }
 
 EmberOgre::~EmberOgre() {
-	delete mWorld;
 	delete mMaterialEditor;
 
 	delete mConsoleDevTools;
@@ -463,7 +461,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 }
 
 World* EmberOgre::getWorld() const {
-	return mWorld;
+	return mWorld.get();
 }
 
 Screen& EmberOgre::getScreen() const {
@@ -502,7 +500,7 @@ void EmberOgre::Server_GotView(Eris::View* view) {
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
-	mWorld = new World(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), mEntityMappingManager->getManager());
+	mWorld.reset(new World(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), mEntityMappingManager->getManager()));
 	//We want the overlay system available for the main camera, in case we need to do profiling.
 	mWorld->getSceneManager().addRenderQueueListener(mOgreSetup->getOverlaySystem());
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
@@ -516,8 +514,7 @@ void EmberOgre::Server_GotView(Eris::View* view) {
 void EmberOgre::EntityFactory_BeingDeleted() {
 	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
 	EventWorldBeingDestroyed.emit();
-	delete mWorld;
-	mWorld = nullptr;
+	mWorld.reset();
 	EventWorldDestroyed.emit();
 	mWindow->removeAllViewports();
 	mWindow->addViewport(mCameraOutOfWorld);

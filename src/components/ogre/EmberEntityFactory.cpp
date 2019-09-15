@@ -29,7 +29,6 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include "services/server/ServerService.h"
 
 #include <Eris/EntityRef.h>
 #include <Eris/View.h>
@@ -48,7 +47,10 @@ namespace OgreView
 {
 
 EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene, EntityMappingManager& mappingManager) :
-		mView(view), mTypeService(view.getTypeService()), mScene(scene), mMappingManager(mappingManager)
+		mView(view),
+		mTypeService(view.getTypeService()),
+		mScene(scene),
+		mMappingManager(mappingManager)
 {
 }
 
@@ -61,7 +63,7 @@ EmberEntityFactory::~EmberEntityFactory()
 Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w)
 {
 
-	EmberEntity* entity = new EmberEntity(ge->getId(), type, w);
+	auto entity = new EmberEntity(ge->getId(), type, w);
 	Eris::EntityRef entityRef(entity);
 	mView.getEventService().runOnMainThread([this, entityRef, entity] {
 		if (entityRef) {

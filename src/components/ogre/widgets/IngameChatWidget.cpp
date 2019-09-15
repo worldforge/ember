@@ -33,6 +33,7 @@
 
 #include "../EmberOgre.h"
 #include "../World.h"
+#include "../Scene.h"
 #include "../Avatar.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
@@ -57,7 +58,8 @@
 #include <Eris/Avatar.h>
 
 #include <OgreCamera.h>
-#include <OgreNode.h>
+#include <OgreSceneNode.h>
+#include <OgreRoot.h>
 
 using namespace CEGUI;
 namespace Ember {
@@ -76,7 +78,7 @@ IngameChatWidget::IngameChatWidget() :
 		mChatTextCreator(*this),
 		mChatTextPool(mChatTextCreator),
 		mLabelSheet(nullptr),
-		mAvatar(nullptr),
+		mWorld(nullptr),
 		mCamera(nullptr) {
 
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));
@@ -89,6 +91,12 @@ IngameChatWidget::IngameChatWidget() :
 	sDisableForEntity = [&](EmberEntity& entity) {
 		this->disableForEntity(entity);
 	};
+
+	//No need to deregister.
+	EmberOgre::getSingleton().EventWorldCreated.connect([&](World& world) {
+
+	});
+
 }
 
 IngameChatWidget::~IngameChatWidget() {
@@ -125,17 +133,19 @@ Window* IngameChatWidget::getLabelSheet() {
 
 void IngameChatWidget::EmberOgre_WorldCreated(World& world) {
 	mCamera = &world.getMainCamera();
-	mAvatar = world.getAvatar();
+	mWorld = &world;
+	mCamera->getCamera().addListener(this);
 }
 
 void IngameChatWidget::EmberOgre_WorldBeingDestroyed() {
+	mCamera->getCamera().removeListener(this);
 	mCamera = nullptr;
-	mAvatar = nullptr;
+	mWorld = nullptr;
 }
 
 void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberEntity* entity) {
 	if (action == "talk") {
-		EntityObserverStore::const_iterator I = mEntityObservers.find(entity->getId());
+		auto I = mEntityObservers.find(entity->getId());
 		EntityObserver* observer = nullptr;
 		if (I != mEntityObservers.end()) {
 			observer = I->second;
@@ -153,7 +163,8 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 }
 
 void IngameChatWidget::enableForEntity(EmberEntity& entity) {
-	if (mAvatar && mAvatar->getEmberEntity().getId() != entity.getId()) {
+	//Any entity created before we've gotten mAvatar is the avatar entity itself, which we'll ignore.
+	if (mWorld->getAvatar() && mWorld->getAvatar()->getEmberEntity().getId() != entity.getId()) {
 		auto* observer = new EntityObserver(*this, entity);
 		mEntityObservers.insert(std::make_pair(entity.getId(), observer));
 	}
@@ -221,12 +232,7 @@ IngameChatWidget::EntityObserver::~EntityObserver() {
 
 void IngameChatWidget::EntityObserver::entity_GraphicalRepresentationChanged() {
 	if (mLabel) {
-		auto model = Model::ModelRepresentation::getModelForEntity(mEntity);
-		if (model) {
-			mLabel->attachToEntity(&mEntity, model);
-		} else {
-			hideLabel();
-		}
+		mLabel->attachToEntity(&mEntity);
 	} else {
 		if (mEntity.isVisible()) {
 			showLabel();
@@ -256,7 +262,12 @@ void IngameChatWidget::EntityObserver::entity_Say(const Atlas::Objects::Root& ta
 		if (!talk->hasAttr("say")) {
 			return;
 		}
-		const std::string& msg = talk->getAttr("say").asString();
+
+		auto talkElement = talk->getAttr("say");
+		if (!talkElement.isString()) {
+			return;
+		}
+		const std::string& msg = talkElement.String();
 
 		mLabel->updateText(msg);
 	}
@@ -275,11 +286,8 @@ void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera* camera) {
 
 void IngameChatWidget::EntityObserver::showLabel() {
 	if (!mLabel) {
-		auto model = Model::ModelRepresentation::getModelForEntity(mEntity);
-		if (model) {
-			mLabel = mChatWidget.getLabelPool().checkoutWidget();
-			mLabel->attachToEntity(&mEntity, model);
-		}
+		mLabel = mChatWidget.getLabelPool().checkoutWidget();
+		mLabel->attachToEntity(&mEntity);
 	}
 }
 
@@ -300,7 +308,6 @@ void IngameChatWidget::EntityObserver::showDetachedChat() {
 
 IngameChatWidget::Label::Label(UniqueWindowPtr<CEGUI::Window> window, IngameChatWidget& containerWidget, const std::string& prefix) :
 		mWindow(std::move(window)),
-		mModel(nullptr),
 		mEntity(nullptr),
 		mContainerWidget(containerWidget),
 		mActive(false),
@@ -324,10 +331,10 @@ void IngameChatWidget::Label::objectRendering(const Ogre::Camera* camera) {
 		//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
 		// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
 		//getWorldPosition is faster than getting the center of the boundingbox...
+		auto model = Model::ModelRepresentation::getModelForEntity(*mEntity);
+		if (model) {
 
-		const INodeProvider* nodeProvider = mModel->getNodeProvider();
-		if (nodeProvider) {
-			Ogre::Node* node = nodeProvider->getNode();
+			Ogre::Node* node = model->getNodeProvider()->getNode();
 			Ogre::Vector3 diff = node->_getDerivedPosition() - camera->getDerivedPosition();
 
 			//remove the window if it's either too far away
@@ -345,26 +352,30 @@ void IngameChatWidget::Label::objectRendering(const Ogre::Camera* camera) {
 
 
 void IngameChatWidget::Label::placeWindowOnEntity() {
-	const INodeProvider* nodeProvider = mModel->getNodeProvider();
-	if (nodeProvider) {
-		//make sure that the window stays on the entity
-		Ogre::Vector2 screenCoords;
 
-		bool result = false;
+	//make sure that the window stays on the entity
+	Ogre::Vector2 screenCoords;
+
+	bool result = false;
+	auto model = Model::ModelRepresentation::getModelForEntity(*mEntity);
+	if (model) {
 //		Ogre::Vector3 entityWorldCoords = mMovableObject->getWorldBoundingSphere().getCenter();
 //		entityWorldCoords.y = mMovableObject->getWorldBoundingBox().getMaximum().y;
-		Ogre::Vector3 entityWorldCoords = nodeProvider->getNode()->convertLocalToWorldPosition(Ogre::Vector3::ZERO);
-		entityWorldCoords.y = mModel->getCombinedBoundingBox().getMaximum().y;
+		Ogre::Vector3 entityWorldCoords = model->getNodeProvider()->getNode()->convertLocalToWorldPosition(Ogre::Vector3::ZERO);
+		auto sceneNode = dynamic_cast<Ogre::SceneNode*>(model->getNodeProvider()->getNode());
+		if (sceneNode) {
+			entityWorldCoords.y = sceneNode->_getWorldAABB().getMaximum().y;
+		}
 		//check what the new position is in screen coords
 		result = mContainerWidget.mCamera->worldToScreen(entityWorldCoords, screenCoords);
-
-		if (result) {
-			mWindow->setVisible(true);
-			mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getPixelSize().d_width * 0.5)), UDim(screenCoords.y, -(mWindow->getPixelSize().d_height * 0.5))));
-		} else {
-			mWindow->setVisible(false);
-		}
 	}
+	if (result) {
+		mWindow->setVisible(true);
+		mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getPixelSize().d_width * 0.5)), UDim(screenCoords.y, -(mWindow->getPixelSize().d_height * 0.5))));
+	} else {
+		mWindow->setVisible(false);
+	}
+
 }
 
 void IngameChatWidget::Label::frameStarted(const Ogre::FrameEvent& event) {
@@ -392,9 +403,8 @@ void IngameChatWidget::Label::removeChatText() {
 	}
 }
 
-void IngameChatWidget::Label::attachToEntity(EmberEntity* entity, Model::Model* model) {
+void IngameChatWidget::Label::attachToEntity(EmberEntity* entity) {
 	mEntity = entity;
-	mModel = model;
 	reset();
 	try {
 		updateEntityName();
@@ -555,15 +565,7 @@ void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice) {
 
 inline void inPlaceReplace(std::string& s, const std::string& sub, const std::string& replace) {
 	assert(!sub.empty());
-	size_t pos = 0;
-	while (true) {
-		pos = s.find(sub, pos);
-		if (pos == std::string::npos)
-			break;
-
-		s.replace(pos, sub.size(), replace);
-		pos += replace.size();
-	}
+	boost::algorithm::replace_all(s, sub, replace);
 }
 
 inline std::string escapeForCEGUI(const std::string& str) {
@@ -619,8 +621,8 @@ void IngameChatWidget::ChatText::updateText(const std::string& line) {
 void IngameChatWidget::ChatText::respondWithMessage(const std::string& message) {
 	EmberEntity* entity = mLabel->getEntity();
 
-	if (mChatWidget.mAvatar) {
-		mChatWidget.mAvatar->getErisAvatar()->sayTo(message, {entity->getId()});
+	if (mChatWidget.mWorld && mChatWidget.mWorld->getAvatar()) {
+		mChatWidget.mWorld->getAvatar()->getErisAvatar()->sayTo(message, {entity->getId()});
 	}
 
 	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']You: " + message);

@@ -87,7 +87,13 @@ float SimpleFog::getDensity() const
 }
 
 SimpleEnvironment::SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera) :
-		mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mSun(0), mSky(0), mFog(0), mWater(0)
+		mSceneMgr(sceneMgr),
+		mWindow(window),
+		mCamera(camera),
+		mSun(nullptr),
+		mSky(nullptr),
+		mFog(nullptr),
+		mWater(nullptr)
 {
 }
 
@@ -109,11 +115,11 @@ void SimpleEnvironment::createFirmament()
 void SimpleEnvironment::destroyFirmament()
 {
 	delete mSun;
-	mSun = 0;
+	mSun = nullptr;
 	delete mSky;
-	mSky = 0;
+	mSky = nullptr;
 	delete mFog;
-	mFog = 0;
+	mFog = nullptr;
 }
 
 void SimpleEnvironment::setWaterEnabled(bool enabled)

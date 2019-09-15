@@ -33,17 +33,21 @@
 #include <OgreStringConverter.h>
 #include <OgreSceneManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
-Environment::Environment(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider) :
-		SetTime("set_time", this, "Sets the time. parameters: <hour> <minute>"), SetFogDensity("set_fogdensity", this, "Sets the fog density."), SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>"), mProvider(provider), mFallbackProvider(fallbackProvider), mEnabledFirmamentProvider(0), mForest(new Forest(terrainManager))
-{
+Environment::Environment(Ogre::SceneManager& sceneMgr,
+						 Terrain::TerrainManager& terrainManager,
+						 std::unique_ptr<IEnvironmentProvider> provider,
+						 std::unique_ptr<IEnvironmentProvider> fallbackProvider) :
+		SetTime("set_time", this, "Sets the time. parameters: <hour> <minute>"),
+		SetFogDensity("set_fogdensity", this, "Sets the fog density."),
+		SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>"),
+		mProvider(std::move(provider)),
+		mFallbackProvider(std::move(fallbackProvider)),
+		mForest(new Forest(terrainManager)) {
 	//Set some default ambient light
 	sceneMgr.setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 	terrainManager.getHandler().EventTerrainEnabled.connect(sigc::mem_fun(*this, &Environment::terrainEnabled));
@@ -51,15 +55,9 @@ Environment::Environment(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& 
 
 }
 
-Environment::~Environment()
-{
-	delete mProvider;
-	delete mFallbackProvider;
-	delete mForest;
-}
+Environment::~Environment() = default;
 
-void Environment::terrainEnabled(EmberEntity& entity)
-{
+void Environment::terrainEnabled(EmberEntity& entity) {
 	setFirmamentEnabled(true);
 	if (entity.getPredictedPos().isValid()) {
 		setWorldPosition(entity.getPredictedPos().x(), entity.getPredictedPos().y());
@@ -69,13 +67,11 @@ void Environment::terrainEnabled(EmberEntity& entity)
 
 }
 
-void Environment::terrainDisabled()
-{
+void Environment::terrainDisabled() {
 	setFirmamentEnabled(false);
 }
 
-void Environment::runCommand(const std::string &command, const std::string &args)
-{
+void Environment::runCommand(const std::string& command, const std::string& args) {
 // 	if (SetTime == command) {
 // 		Tokeniser tokeniser;
 // 		tokeniser.initTokens(args);
@@ -104,7 +100,7 @@ void Environment::runCommand(const std::string &command, const std::string &args
 		std::string b = tokeniser.nextToken();
 		std::string g = tokeniser.nextToken();
 
-		if (r == "" || b == "" || g == "") {
+		if (r.empty() || b.empty() || g.empty()) {
 			return;
 		} else {
 			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r), Ogre::StringConverter::parseReal(b), Ogre::StringConverter::parseReal(g));
@@ -115,86 +111,67 @@ void Environment::runCommand(const std::string &command, const std::string &args
 
 }
 
-void Environment::setFirmamentEnabled(bool enabled)
-{
-	if (enabled && !mEnabledFirmamentProvider) {
+void Environment::setFirmamentEnabled(bool enabled) {
+	if (enabled && mProvider) {
 		try {
 			mProvider->createFirmament();
-			mEnabledFirmamentProvider = mProvider;
 			EventEnvironmentSetup.emit();
 		} catch (...) {
 			if (mFallbackProvider) {
 				S_LOG_FAILURE("Error when creating environment, trying with fallback provider.");
-				delete mProvider;
-				mProvider = mFallbackProvider;
-				mFallbackProvider = 0;
-				mProvider->createFirmament();
-				mEnabledFirmamentProvider = mProvider;
+				mProvider = std::move(mFallbackProvider);
+				setFirmamentEnabled(enabled);
 			} else {
 				S_LOG_FAILURE("Error when creating environment. There's no fallback provider to use however, so we have to abort.");
 				throw;
 			}
 		}
-	} else if (!enabled && mEnabledFirmamentProvider) {
-		mEnabledFirmamentProvider->destroyFirmament();
-		mEnabledFirmamentProvider = 0;
+	} else if (!enabled && mProvider) {
+		mProvider->destroyFirmament();
 	}
 }
 
-void Environment::setTime(int hour, int minute, int second)
-{
+void Environment::setTime(int hour, int minute, int second) {
 	mProvider->setTime(hour, minute, second);
 }
 
-void Environment::setTime(int seconds)
-{
+void Environment::setTime(int seconds) {
 	mProvider->setTime(seconds);
 }
 
-void Environment::setTimeMultiplier(float multiplier)
-{
+void Environment::setTimeMultiplier(float multiplier) {
 	mProvider->setTimeMultiplier(multiplier);
 }
 
-float Environment::getTimeMultiplier() const
-{
+float Environment::getTimeMultiplier() const {
 	return mProvider->getTimeMultiplier();
 }
 
-void Environment::setAmbientLight(const Ogre::ColourValue& colour)
-{
+void Environment::setAmbientLight(const Ogre::ColourValue& colour) {
 	if (getSun()) {
 		getSun()->setAmbientLight(colour);
 		EventUpdatedAmbientLight.emit(colour);
 	}
 }
 
-void Environment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
-{
+void Environment::setWorldPosition(float longitudeDegrees, float latitudeDegrees) {
 	mProvider->setWorldPosition(longitudeDegrees, latitudeDegrees);
 }
 
-void Environment::setWaterEnabled(bool enabled)
-{
+void Environment::setWaterEnabled(bool enabled) {
 	mProvider->setWaterEnabled(enabled);
 }
 
-WFMath::Vector<3> Environment::getMainLightDirection() const
-{
-	if (mEnabledFirmamentProvider && mEnabledFirmamentProvider->getSun()) {
-		return mEnabledFirmamentProvider->getSun()->getMainLightDirection();
-	} else if (mProvider && mProvider->getSun()) {
+WFMath::Vector<3> Environment::getMainLightDirection() const {
+	if (mProvider && mProvider->getSun()) {
 		return mProvider->getSun()->getMainLightDirection();
 	}
 	//If no provider, just point downwards.
 	return WFMath::Vector<3>(0, 0, -1);
 }
 
-Ogre::ColourValue Environment::getAmbientLightColour() const
-{
-	if (mEnabledFirmamentProvider && mEnabledFirmamentProvider->getSun()) {
-		return mEnabledFirmamentProvider->getSun()->getAmbientLightColour();
-	} else if (mProvider && mProvider->getSun()) {
+Ogre::ColourValue Environment::getAmbientLightColour() const {
+	if (mProvider && mProvider->getSun()) {
 		return mProvider->getSun()->getAmbientLightColour();
 	}
 	//If no provider, use white

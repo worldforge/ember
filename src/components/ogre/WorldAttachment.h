@@ -44,39 +44,39 @@ class WorldAttachment: public IEntityAttachment
 {
 public:
 	WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode);
-	virtual ~WorldAttachment();
+	~WorldAttachment() override;
 
-	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
+	IGraphicalRepresentation* getGraphicalRepresentation() const override;
 
-	virtual EmberEntity& getAttachedEntity() const;
+	EmberEntity& getAttachedEntity() const override;
 
-	virtual EmberEntity* getParentEntity() const;
+	EmberEntity* getParentEntity() const override;
 
-	virtual IEntityAttachment* attachEntity(EmberEntity& entity);
+	IEntityAttachment* attachEntity(EmberEntity& entity) override;
 
-	virtual void updateScale();
+	void updateScale() override;
 
-	virtual void updatePosition();
+	void updatePosition() override;
 
-	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
+	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) override;
 
-	virtual void setControlDelegate(IEntityControlDelegate* controllerDelegate);
+	void setControlDelegate(IEntityControlDelegate* controllerDelegate) override;
 
-	virtual IEntityControlDelegate* getControlDelegate() const;
+	IEntityControlDelegate* getControlDelegate() const override;
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize) override;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	virtual bool getVisualize(const std::string& visualization) const;
+	bool getVisualize(const std::string& visualization) const override;
 protected:
 
 	EmberEntity& mWorldEntity;

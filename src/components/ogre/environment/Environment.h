@@ -30,13 +30,10 @@
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
-namespace Terrain
-{
+namespace OgreView {
+namespace Terrain {
 class TerrainManager;
 }
 
@@ -44,8 +41,7 @@ class TerrainManager;
  * @brief Namespace for environment related classes and activities.
  * With "environment" we refer to things like the weather, the ocean, the foliage etc.
  */
-namespace Environment
-{
+namespace Environment {
 
 class Forest;
 
@@ -59,8 +55,7 @@ class Forest;
  *
  * Note that the actual instances used are provided by an instance of IEnvironmentProvider.
  */
-class Environment: public ConsoleObject, public ILightning, public virtual sigc::trackable
-{
+class Environment : public ConsoleObject, public ILightning, public virtual sigc::trackable {
 public:
 
 	/**
@@ -70,25 +65,32 @@ public:
 	 * @param provider Main environment provider.
 	 * @param fallbackProvider A fallback provider which is used if the main provider for some reason fails to create the environment (if for instance the hardware doesn't support it).
 	 */
-	Environment(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
+	Environment(Ogre::SceneManager& sceneMgr,
+				Terrain::TerrainManager& terrainManager,
+				std::unique_ptr<IEnvironmentProvider> provider,
+				std::unique_ptr<IEnvironmentProvider> fallbackProvider);
 
-	~Environment();
+	~Environment() override;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command
 	 * @param args
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	const ConsoleCommandWrapper SetTime;
 	const ConsoleCommandWrapper SetFogDensity;
 	const ConsoleCommandWrapper SetAmbientLight;
 
 	ISun* getSun();
+
 	ISky* getSky();
+
 	IFog* getFog();
+
 	IWater* getWater();
+
 	Forest* getForest();
 
 	/**
@@ -146,13 +148,13 @@ public:
 	 * @brief Gets the direction of the main light, in world space.
 	 * @returns The direction of the main light, in world space.
 	 */
-	virtual WFMath::Vector<3> getMainLightDirection() const;
+	WFMath::Vector<3> getMainLightDirection() const override;
 
 	/**
 	 * @brief Gets the default ambient light colour.
 	 * @returns The default ambient light colour.
 	 */
-	virtual Ogre::ColourValue getAmbientLightColour() const;
+	Ogre::ColourValue getAmbientLightColour() const override;
 
 
 	/**
@@ -168,8 +170,9 @@ public:
 
 private:
 
-	IEnvironmentProvider* mProvider, *mFallbackProvider, *mEnabledFirmamentProvider;
-	Forest* mForest;
+	std::unique_ptr<IEnvironmentProvider> mProvider;
+	std::unique_ptr<IEnvironmentProvider> mFallbackProvider;
+	std::unique_ptr<Forest> mForest;
 
 	/**
 	 * Called when the terrain handler signals that the terrain is enabled.
@@ -188,29 +191,24 @@ private:
 	void terrainDisabled();
 };
 
-inline ISun* Environment::getSun()
-{
+inline ISun* Environment::getSun() {
 	return mProvider->getSun();
 }
 
-inline ISky* Environment::getSky()
-{
+inline ISky* Environment::getSky() {
 	return mProvider->getSky();
 }
 
-inline IFog* Environment::getFog()
-{
+inline IFog* Environment::getFog() {
 	return mProvider->getFog();
 }
 
-inline IWater* Environment::getWater()
-{
+inline IWater* Environment::getWater() {
 	return mProvider->getWater();
 }
 
-inline Forest* Environment::getForest()
-{
-	return mForest;
+inline Forest* Environment::getForest() {
+	return mForest.get();
 }
 
 }

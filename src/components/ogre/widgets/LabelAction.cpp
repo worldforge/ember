@@ -35,9 +35,7 @@ LabelAction::LabelAction(EmberEntity& entity)
 {
 }
 
-LabelAction::~LabelAction()
-{
-}
+LabelAction::~LabelAction() = default;
 
 void LabelAction::activate(EntityMapping::ChangeContext& context)
 {
