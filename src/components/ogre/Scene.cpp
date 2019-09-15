@@ -60,6 +60,8 @@ Scene::~Scene()
 	if (!mTechniques.empty()) {
 		S_LOG_WARNING("Scene was deleted while there still was registered techniques.");
 	}
+	//Delete all techniques before destroying the scene manager.
+	mTechniques.clear();
 	//No need to delete the camera, as that will taken care of when destroying the scene manager.
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
@@ -86,18 +88,18 @@ void Scene::deregisterEntityWithTechnique(EmberEntity& entity, const std::string
 	}
 }
 
-void Scene::addRenderingTechnique(const std::string& name, ISceneRenderingTechnique* technique)
+void Scene::addRenderingTechnique(const std::string& name, std::unique_ptr<ISceneRenderingTechnique> technique)
 {
 	if (mTechniques.count(name) == 0) {
-		mTechniques.insert(RenderingTechniqueStore::value_type(name, technique));
+		mTechniques.emplace(name, std::move(technique));
 	}
 }
 
-ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& name)
+std::unique_ptr<ISceneRenderingTechnique> Scene::removeRenderingTechnique(const std::string& name)
 {
 	auto I = mTechniques.find(name);
 	if (I != mTechniques.end()) {
-		ISceneRenderingTechnique* technique = I->second;
+		auto technique = std::move(I->second);
 		mTechniques.erase(I);
 		return technique;
 	}

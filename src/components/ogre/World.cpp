@@ -115,8 +115,8 @@ World::World(Eris::View& view,
 
 	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 
-	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
-	mScene->addRenderingTechnique("projectile", new ProjectileRenderingTechnique(mScene->getSceneManager()));
+	mScene->addRenderingTechnique("forest", std::make_unique<ForestRenderingTechnique>(*mEnvironment->getForest()));
+	mScene->addRenderingTechnique("projectile", std::make_unique<ProjectileRenderingTechnique>(mScene->getSceneManager()));
 	mTerrainManager->getHandler().setLightning(mEnvironment.get());
 
 	//set the background colour to black
@@ -148,9 +148,6 @@ World::~World() {
 	Ogre::Root::getSingleton().removeFrameListener(mMotionManager.get());
 	mMotionManager.reset();
 	mSignals.EventMotionManagerDestroyed();
-
-	ISceneRenderingTechnique* technique = mScene->removeRenderingTechnique("forest");
-	delete technique;
 }
 
 Eris::View& World::getView() const {

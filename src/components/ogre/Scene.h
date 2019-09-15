@@ -84,14 +84,14 @@ public:
 	 * @param name The name of the technique.
 	 * @param technique The rendering technique.
 	 */
-	void addRenderingTechnique(const std::string& name, ISceneRenderingTechnique* technique);
+	void addRenderingTechnique(const std::string& name, std::unique_ptr<ISceneRenderingTechnique> technique);
 
 	/**
 	 * @brief Removes a technique.
 	 * @param name The name of the technique to remove.
 	 * @returns A pointer to the technique if one such is found, else a null pointer.
 	 */
-	ISceneRenderingTechnique* removeRenderingTechnique(const std::string& name);
+	std::unique_ptr<ISceneRenderingTechnique> removeRenderingTechnique(const std::string& name);
 
 	/**
 	 * @brief Creates a terrain adapter which can be used to communicate with the terrain rendering system.
@@ -110,7 +110,6 @@ public:
 	BulletWorld& getBulletWorld() const;
 
 protected:
-	typedef std::map<std::string, ISceneRenderingTechnique*> RenderingTechniqueStore;
 
 	/**
 	 * @brief The scene manager which manages the main world.
@@ -126,7 +125,7 @@ protected:
 	/**
 	 * @brief A store of rendering techniques.
 	 */
-	RenderingTechniqueStore mTechniques;
+	std::map<std::string, std::unique_ptr<ISceneRenderingTechnique>> mTechniques;
 
 	std::unique_ptr<BulletWorld> mBulletWorld;
 
