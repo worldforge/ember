@@ -271,29 +271,25 @@ void XMLModelDefinitionSerializer::readParts(TiXmlElement* mPartNode, SubModelDe
 
 		// name
 		tmp = partElem->Attribute("name");
-		if (tmp) {
-			notfound = false;
+		notfound = false;
 
-			PartDefinition* partDef = def->createPartDefinition(tmp);
+		PartDefinition* partDef = tmp ? def->createPartDefinition(tmp) : def->createPartDefinition("");
 
-			S_LOG_VERBOSE("  Add part  : " + partDef->getName());
+		S_LOG_VERBOSE("  Add part  : " + partDef->getName());
 
-			// show
-			tmp = partElem->Attribute("show");
-			if (tmp)
-				partDef->setShow(boost::algorithm::to_lower_copy(std::string(tmp)) == "true");
+		// show
+		tmp = partElem->Attribute("show");
+		if (tmp)
+			partDef->setShow(boost::algorithm::to_lower_copy(std::string(tmp)) == "true");
 
-			tmp = partElem->Attribute("group");
-			if (tmp)
-				partDef->setGroup(tmp);
+		tmp = partElem->Attribute("group");
+		if (tmp)
+			partDef->setGroup(tmp);
 
-			elem = partElem->FirstChildElement("subentities");
-			if (elem)
-				readSubEntities(elem, partDef);
+		elem = partElem->FirstChildElement("subentities");
+		if (elem)
+			readSubEntities(elem, partDef);
 
-		} else {
-			S_LOG_FAILURE("A name must be specified for each part.");
-		}
 	}
 
 	if (notfound) {
@@ -828,7 +824,7 @@ bool XMLModelDefinitionSerializer::exportScript(const ModelDefinitionPtr& modelD
 	}
 
 	TiXmlDocument xmlDoc;
-	TiXmlDeclaration xmlDeclaration("1.0","UTF-8", "");
+	TiXmlDeclaration xmlDeclaration("1.0", "UTF-8", "");
 	xmlDoc.InsertEndChild(xmlDeclaration);
 
 	try {
