@@ -6,7 +6,7 @@ Console = {}
 
 --Set up the widget.
 function Console:buildWidget()
-	self.tabs = {self.gameTab, self.systemTab}
+	self.tabs = {self.gameTab}
 	
 	--console has transitions, if we don't set this to false, every time it gets activated a 
 	--visible "alpha pop" would happen and then the transition would continue
@@ -27,23 +27,7 @@ function Console:buildWidget()
 	self.gameTab.prefix = self.gameTab.tabWindow:getText()
 	self.gameTab.maxLines = 100
 	self.gameTab.lines = 0
-	
-	self.systemTab.textWindow = self.widget:getWindow("SystemTextBox")
-	self.systemTab.tabWindow = self.widget:getWindow("SystemPanel")
-	self.systemTab.prefix = self.systemTab.tabWindow:getText()
-	self.systemTab.maxLines = 100
-	self.systemTab.lines = 0
 
-	--When a tab has been selected and shown, the unread indicator should be reset	
-	self.tabControl = CEGUI.toTabControl(self.widget:getWindow("MainTabControl"))
-	self.tabControl:subscribeEvent("SelectionChanged", function(args)
-			local selectedTab = self.tabs[self.tabControl:getSelectedTabIndex() + 1] --Lua uses 1 as the first index
-			selectedTab.tabWindow:setText(selectedTab.prefix)
-			selectedTab.unviewedCount = 0
-			return true	
-		end
-	)
-	
 	
 	self.consoleInputWindow = CEGUI.toEditbox(self.widget:getWindow("InputBox"))
 	
@@ -288,10 +272,6 @@ function Console:appendLine(line, tab)
 		window:setProperty("VertScrollPosition", window:getProperty("VertExtent"))
 	end
 
-	if self.tabControl:getSelectedTabIndex() ~= tab.index then
-		tab.unviewedCount = tab.unviewedCount + 1
-		tab.tabWindow:setText(tab.prefix .. "(" .. tab.unviewedCount .. ")")
-	end
 end
 
 --Retrieves suitable AARRGGBB colour for console messages based on their tag
@@ -316,7 +296,7 @@ end
 --message is the message string
 --tag can be "" or "error", "warning" or such
 function Console:consoleGotMessage(message, tag)
-	self:appendLine("[colour='" .. self:getConsoleMessageColourForTag(tag) .. "']" .. escapeForCEGUI(message), self.systemTab)
+	self:appendLine("[colour='" .. self:getConsoleMessageColourForTag(tag) .. "']" .. escapeForCEGUI(message), self.gameTab)
 	
 	if tag == "error" or tag == "important" then
 		--user might want to pay attention to the console, either error or an important message was appended
@@ -337,7 +317,6 @@ local consoleInit = function()
 	local console = {connectors={}, 
 		widget = guiManager:createWidget(), 
 		gameTab = {unviewedCount = 0, index = 0},
-		systemTab = {unviewedCount = 0, index = 1},
 		consoleAdapter = nil,
 		consoleInputWindow = nil
 	}
