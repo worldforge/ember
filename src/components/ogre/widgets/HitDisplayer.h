@@ -19,22 +19,28 @@
 #ifndef EMBER_HITDISPLAYER_H
 #define EMBER_HITDISPLAYER_H
 
+#include "CEGUIUtils.h"
+#include "TextNodeRenderer.h"
 
 #include <Eris/View.h>
 #include <Ogre.h>
+#include <boost/noncopyable.hpp>
 
 namespace Ember {
 namespace OgreView {
-
 namespace Gui {
 
 /**
  * Responsible for showing hit text indicators whenever an Entity is hit.
  */
-class HitDisplayer : public virtual sigc::trackable, public Ogre::FrameListener {
+class HitDisplayer : public virtual sigc::trackable, public Ogre::FrameListener, public boost::noncopyable {
 
 public:
-	explicit HitDisplayer(Eris::View& view, Ogre::SceneManager& sceneManager);
+	explicit HitDisplayer(CEGUI::Window& mainSheet,
+						  const UniqueWindowPtr<CEGUI::Window>& textTemplate,
+						  Ogre::Camera& camera,
+						  Eris::View& view,
+						  Ogre::SceneManager& sceneManager);
 
 	~HitDisplayer() override;
 
@@ -43,8 +49,11 @@ public:
 protected:
 	void entityActed(Eris::Entity& entity, const Atlas::Objects::Operation::RootOperation& arg);
 
+	std::unique_ptr<TextNodeRenderer> mTextNodeRenderer;
+	Ogre::Camera& mCamera;
 	Eris::View& mView;
 	Ogre::SceneManager& mSceneManager;
+
 
 	struct Hit {
 		float time;
@@ -54,7 +63,9 @@ protected:
 	std::list<std::shared_ptr<Hit>> mHits;
 
 
-	void createHit(const Ogre::Vector3& pos, std::string basicString);
+	void createHit(const Ogre::Vector3& pos, const std::string& basicString);
+
+
 };
 
 }

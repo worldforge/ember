@@ -124,37 +124,6 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 
 	class ChatText;
 
-	/**
-	 * A SceneNode attached text window.
-	 *
-	 * The text window will be attached to the scene node, so that when either it or the camera moves the
-	 * window is adjusted accordingly.
-	 */
-	struct TextNode : boost::noncopyable {
-		UniqueWindowPtr<CEGUI::Window> mWindow;
-		Ogre::SceneNode* mNode;
-		std::function<void(Ogre::Vector2&)> mAdjustFn;
-
-		explicit TextNode(UniqueWindowPtr<CEGUI::Window> window) :
-				mWindow(std::move(window)),
-				mNode(nullptr) {
-		}
-
-		TextNode(TextNode&& rhs) noexcept
-				: mWindow(std::move(rhs.mWindow)),
-				  mNode(rhs.mNode),
-				  mAdjustFn(std::move(rhs.mAdjustFn)) {
-			rhs.mNode = nullptr;
-		}
-
-		TextNode& operator=(TextNode&& rhs) noexcept {
-			mNode = rhs.mNode;
-			rhs.mNode = nullptr;
-			mWindow = std::move(rhs.mWindow);
-			mAdjustFn = std::move(rhs.mAdjustFn);
-			return *this;
-		}
-	};
 
 	/**
 	 * @brief Holds the actual chat window and keeps track of fading, catching clicks etc.
@@ -411,10 +380,6 @@ public:
 	 */
 	static std::function<void(EmberEntity&)> sDisableForEntity;
 
-	static std::function<void(Ogre::SceneNode* node, std::string text, std::function<void(Ogre::Vector2&)> adjustFn)> sAttachTextToNode;
-
-	static std::function<void(Ogre::SceneNode* node)> sDetachTextNode;
-
 	IngameChatWidget();
 
 	~IngameChatWidget() override;
@@ -439,7 +404,6 @@ public:
 
 protected:
 
-	void renderTextNode(Ogre::Camera* camera, const TextNode& textNode);
 
 	/**
 	 * @brief Listen to the world created event, and attach listeners.
@@ -495,8 +459,7 @@ protected:
 	/// camera used for 3D -> 2D projection (placing labels and chat texts on top of Entities)
 	Camera::MainCamera* mCamera;
 
-	std::vector<TextNode> mFreeTextNodes;
-	std::vector<TextNode> mActiveTextNodes;
+
 };
 
 inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() {

@@ -20,6 +20,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include "GUIManager.h"
 #include "EmberOgre.h"
 #include "domain/EmberEntity.h"
@@ -81,10 +82,8 @@ using namespace CEGUI;
 using namespace Ember::OgreView::Gui;
 using namespace Ember;
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 unsigned long GUIManager::msAutoGenId(0);
 
@@ -110,12 +109,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mCEGUILogger(new Cegui::CEGUILogger()),
 		mRenderedStringParser(nullptr),
 		mEntityTooltip(nullptr),
-		mNativeClipboardProvider(nullptr)
-{
+		mNativeClipboardProvider(nullptr) {
 
 //Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
 #ifndef CEGUI_HAS_FREETYPE
-CEGUI is not built with Freetype
+	CEGUI is not built with Freetype
 #endif
 
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
@@ -129,7 +127,7 @@ CEGUI is not built with Freetype
 
 		S_LOG_INFO("Starting CEGUI");
 		mDefaultScheme = "EmberLook";
-		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
+		S_LOG_VERBOSE("Setting default scheme to " << mDefaultScheme);
 
 		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI.
 		mGuiRenderer = &Ember::Cegui::CEGUISetup::createRenderer(window);
@@ -149,7 +147,8 @@ CEGUI is not built with Freetype
 			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
 			if (!luaScriptProvider->getErrorHandlingFunctionName().empty()) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
-				mLuaScriptModule->executeString(""); //We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
+				mLuaScriptModule->executeString(
+						""); //We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
 			}
 			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
@@ -214,8 +213,7 @@ CEGUI is not built with Freetype
 
 }
 
-GUIManager::~GUIManager()
-{
+GUIManager::~GUIManager() {
 	S_LOG_INFO("Shutting down GUI manager.");
 
 	WidgetStore widgetStoreCopy(mWidgets);
@@ -260,8 +258,7 @@ GUIManager::~GUIManager()
 
 }
 
-void GUIManager::initialize()
-{
+void GUIManager::initialize() {
 	try {
 		createWidget("Quit");
 	} catch (const std::exception& e) {
@@ -301,27 +298,23 @@ void GUIManager::initialize()
 
 }
 
-void GUIManager::render()
-{
+void GUIManager::render() {
 	if (mEnabled) {
 		CEGUI::System::getSingleton().renderAllGUIContexts();
 	}
 }
 
-void GUIManager::input_SizeChanged(int width, int height)
-{
+void GUIManager::input_SizeChanged(int width, int height) {
 	mGuiSystem->notifyDisplaySizeChanged(CEGUI::Sizef(width, height));
 }
 
-void GUIManager::server_GotView(Eris::View* view)
-{
+void GUIManager::server_GotView(Eris::View* view) {
 	//The View has a shorter lifespan than ours, so we don't need to store references to the connections.
 	view->EntityCreated.connect(sigc::mem_fun(*this, &GUIManager::view_EntityCreated));
 	view->EntitySeen.connect(sigc::mem_fun(*this, &GUIManager::view_EntityCreated));
 }
 
-void GUIManager::view_EntityCreated(Eris::Entity* entity)
-{
+void GUIManager::view_EntityCreated(Eris::Entity* entity) {
 	//It's safe to cast to EmberEntity, since all entities in the system are guaranteed to be of this type.
 	auto* emberEntity = dynamic_cast<EmberEntity*>(entity);
 	//The Entity has a shorter lifespan than ours, so we don't need to store references to the connections.
@@ -329,13 +322,11 @@ void GUIManager::view_EntityCreated(Eris::Entity* entity)
 	emberEntity->Emote.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Emote), emberEntity));
 }
 
-void GUIManager::entity_Talk(const EntityTalk& entityTalk, EmberEntity* entity)
-{
+void GUIManager::entity_Talk(const EntityTalk& entityTalk, EmberEntity* entity) {
 	AppendIGChatLine.emit(entityTalk, entity);
 }
 
-void GUIManager::entity_Emote(const std::string& description, EmberEntity* entity)
-{
+void GUIManager::entity_Emote(const std::string& description, EmberEntity* entity) {
 	//If it's our own entity we should just print what it says.
 	if (entity == entity->getView()->getAvatar()->getEntity()) {
 		AppendAvatarImaginary(description);
@@ -344,8 +335,7 @@ void GUIManager::entity_Emote(const std::string& description, EmberEntity* entit
 	}
 }
 
-void GUIManager::scriptingServiceStopping()
-{
+void GUIManager::scriptingServiceStopping() {
 	mGuiSystem->setScriptingModule(nullptr);
 	if (mLuaScriptModule) {
 		LuaScriptModule::destroy(*mLuaScriptModule);
@@ -353,20 +343,17 @@ void GUIManager::scriptingServiceStopping()
 	mLuaScriptModule = nullptr;
 }
 
-void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity)
-{
+void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity) {
 	EventEntityAction.emit(action, entity);
 }
 
-CEGUI::Window* GUIManager::createWindow(const std::string& windowType)
-{
+CEGUI::Window* GUIManager::createWindow(const std::string& windowType) {
 	std::stringstream ss;
 	ss << "_autoWindow_" << (msAutoGenId++);
 	return createWindow(windowType, ss.str());
 }
 
-CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std::string& windowName)
-{
+CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std::string& windowName) {
 	try {
 		CEGUI::Window* window = mWindowManager->createWindow(windowType, windowName);
 		return window;
@@ -379,13 +366,11 @@ CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std
 	}
 }
 
-Widget* GUIManager::createWidget()
-{
+Widget* GUIManager::createWidget() {
 	return createWidget("Widget");
 }
 
-Widget* GUIManager::createWidget(const std::string& name)
-{
+Widget* GUIManager::createWidget(const std::string& name) {
 	try {
 
 		Widget* widget = WidgetLoader::createWidget(name);
@@ -404,8 +389,7 @@ Widget* GUIManager::createWidget(const std::string& name)
 	}
 }
 
-void GUIManager::destroyWidget(Widget* widget)
-{
+void GUIManager::destroyWidget(Widget* widget) {
 	if (!widget) {
 		S_LOG_WARNING("Trying to destroy null widget.");
 		return;
@@ -414,39 +398,33 @@ void GUIManager::destroyWidget(Widget* widget)
 	delete widget;
 }
 
-CEGUI::Texture& GUIManager::createTexture(Ogre::TexturePtr& ogreTexture, std::string name)
-{
+CEGUI::Texture& GUIManager::createTexture(Ogre::TexturePtr& ogreTexture, std::string name) {
 	if (name.empty()) {
 		name = ogreTexture->getName();
 	}
 	return mGuiRenderer->createTexture(name, ogreTexture);
 }
 
-Input& GUIManager::getInput() const
-{
+Input& GUIManager::getInput() const {
 	return Input::getSingleton();
 }
 
-CEGUI::Window* GUIManager::getMainSheet() const
-{
+CEGUI::Window* GUIManager::getMainSheet() const {
 	return mSheet;
 }
 
-void GUIManager::removeWidget(Widget* widget)
-{
+void GUIManager::removeWidget(Widget* widget) {
 	auto I = std::find(mWidgets.begin(), mWidgets.end(), widget);
 	if (I != mWidgets.end()) {
 		mWidgets.erase(I);
 	}
 }
 
-void GUIManager::addWidget(Widget* widget)
-{
+void GUIManager::addWidget(Widget* widget) {
 	mWidgets.push_back(widget);
 }
 
-bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
-{
+bool GUIManager::frameStarted(const Ogre::FrameEvent& evt) {
 	try {
 		CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
 		CEGUI::System::getSingleton().getDefaultGUIContext().injectTimePulse(evt.timeSinceLastFrame);
@@ -473,19 +451,16 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 }
 
-bool GUIManager::isInMovementKeysMode() const
-{
+bool GUIManager::isInMovementKeysMode() const {
 	return mSheet->isCapturedByThis() || !isInGUIMode();
 }
 
-bool GUIManager::isInGUIMode() const
-{
+bool GUIManager::isInGUIMode() const {
 	return getInput().getInputMode() == Input::IM_GUI;
 }
 
-void GUIManager::pressedKey(const SDL_Keysym& key, Input::InputMode inputMode)
-{
-	if (((key.mod & KMOD_CTRL)|| (key.mod & KMOD_LCTRL) || (key.mod & KMOD_RCTRL))) {
+void GUIManager::pressedKey(const SDL_Keysym& key, Input::InputMode inputMode) {
+	if (((key.mod & KMOD_CTRL) || (key.mod & KMOD_LCTRL) || (key.mod & KMOD_RCTRL))) {
 		if (key.sym == SDLK_c) {
 			mGuiSystem->getDefaultGUIContext().injectCopyRequest();
 		} else if (key.sym == SDLK_x) {
@@ -496,8 +471,7 @@ void GUIManager::pressedKey(const SDL_Keysym& key, Input::InputMode inputMode)
 	}
 }
 
-void GUIManager::runCommand(const std::string &command, const std::string &args)
-{
+void GUIManager::runCommand(const std::string& command, const std::string& args) {
 	if (command == ToggleInputMode.getCommand()) {
 		getInput().toggleInputMode();
 	} else if (command == ToggleGui.getCommand()) {
@@ -525,27 +499,26 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 	}
 }
 
-void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
-{
+void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity) {
 	//switch to movement mode, since it appears most people don't know how to change from gui mode
 	varconf::Variable var;
 	if (!EmberServices::getSingleton().getConfigService().getValue("input", "automovementmode", var)
-			|| (var.is_bool() && (bool)var)) {
+		|| (var.is_bool() && (bool) var)) {
 		getInput().setInputMode(Input::IM_MOVEMENT);
 	}
 }
 
-void GUIManager::EmberOgre_WorldCreated(World& world)
-{
+void GUIManager::EmberOgre_WorldCreated(World& world) {
 	UniqueWindowPtr<EmberEntityTooltipWidget> tooltipWindow(dynamic_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")));
 	mEntityTooltip = new EntityTooltip(world, std::move(tooltipWindow), *mIconManager);
 	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world);
 
-	mHitDisplayer = std::make_unique<HitDisplayer>(world.getView(), world.getSceneManager());
+	UniqueWindowPtr<CEGUI::Window> labelWindow(WindowManager::getSingleton().loadLayoutFromFile(GUIManager::getSingleton().getLayoutDir() + "Hit.layout"));
+
+	mHitDisplayer = std::make_unique<HitDisplayer>(*mSheet,  labelWindow, world.getMainCamera().getCamera(), world.getView(), world.getSceneManager());
 }
 
-void GUIManager::EmberOgre_WorldBeingDestroyed()
-{
+void GUIManager::EmberOgre_WorldBeingDestroyed() {
 	mHitDisplayer.reset();
 	delete mEntityTooltip;
 	mEntityTooltip = nullptr;
@@ -553,39 +526,32 @@ void GUIManager::EmberOgre_WorldBeingDestroyed()
 	mCursorWorldListener = nullptr;
 }
 
-Gui::EntityTooltip* GUIManager::getEntityTooltip() const
-{
+Gui::EntityTooltip* GUIManager::getEntityTooltip() const {
 	return mEntityTooltip;
 }
 
-const std::string& GUIManager::getLayoutDir() const
-{
+const std::string& GUIManager::getLayoutDir() const {
 	static std::string dir("cegui/datafiles/layouts/");
 	return dir;
 }
 
-const std::string& GUIManager::getDefaultScheme() const
-{
+const std::string& GUIManager::getDefaultScheme() const {
 	return mDefaultScheme;
 }
 
-Gui::Icons::IconManager* GUIManager::getIconManager() const
-{
+Gui::Icons::IconManager* GUIManager::getIconManager() const {
 	return mIconManager;
 }
 
-Gui::EntityIconManager* GUIManager::getEntityIconManager() const
-{
+Gui::EntityIconManager* GUIManager::getEntityIconManager() const {
 	return mEntityIconManager;
 }
 
-Gui::ActionBarIconManager* GUIManager::getActionBarIconManager() const
-{
+Gui::ActionBarIconManager* GUIManager::getActionBarIconManager() const {
 	return mActionBarIconManager;
 }
 
-CEGUI::Renderer* GUIManager::getGuiRenderer() const
-{
+CEGUI::Renderer* GUIManager::getGuiRenderer() const {
 	return mGuiRenderer;
 }
 

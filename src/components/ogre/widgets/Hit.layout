@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
 	<Window type="EmberLook/StaticText">
-		<Property name="Size" value="{{000000,200.0},{0.0,25.0}}" />
+		<Property name="Size" value="{{0,200.0},{0.0,25.0}}" />
 		<Property name="InheritsAlpha" value="true" />
 		<Property name="HorzFormatting" value="WordWrapCentreAligned" />
 		<Property name="VertFormatting" value="TopAligned" />

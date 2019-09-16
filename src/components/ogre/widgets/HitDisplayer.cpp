@@ -18,7 +18,6 @@
 
 #include "HitDisplayer.h"
 
-#include "IngameChatWidget.h"
 #include "../Convert.h"
 #include "../model/ModelRepresentation.h"
 #include "../model/Model.h"
@@ -36,10 +35,17 @@ namespace Ember {
 namespace OgreView {
 
 namespace Gui {
-HitDisplayer::HitDisplayer(Eris::View& view, Ogre::SceneManager& sceneManager)
-		: mView(view),
+HitDisplayer::HitDisplayer(CEGUI::Window& mainSheet,
+						   const UniqueWindowPtr<CEGUI::Window>& textTemplate,
+						   Ogre::Camera& camera,
+						   Eris::View& view,
+						   Ogre::SceneManager& sceneManager)
+		: mTextNodeRenderer(std::make_unique<TextNodeRenderer>(mainSheet, textTemplate)),
+		  mCamera(camera),
+		  mView(view),
 		  mSceneManager(sceneManager) {
 
+	camera.addListener(mTextNodeRenderer.get());
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	view.EntitySeen.connect([this](Eris::Entity* entity) {
@@ -50,6 +56,7 @@ HitDisplayer::HitDisplayer(Eris::View& view, Ogre::SceneManager& sceneManager)
 }
 
 HitDisplayer::~HitDisplayer() {
+	mCamera.removeListener(mTextNodeRenderer.get());
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
@@ -87,32 +94,31 @@ bool HitDisplayer::frameStarted(const Ogre::FrameEvent& evt) {
 		auto hit = *I;
 		hit->time += evt.timeSinceLastFrame;
 		if (hit->time >= 2.0) {
-			if (IngameChatWidget::sDetachTextNode) {
-				IngameChatWidget::sDetachTextNode(hit->node);
-			}
+			mTextNodeRenderer->detachTextNode(hit->node);
 			I = mHits.erase(I);
 		}
 	}
 	return true;
 }
 
-void HitDisplayer::createHit(const Ogre::Vector3& pos, std::string text) {
-	if (IngameChatWidget::sAttachTextToNode) {
-		auto sceneNode = mSceneManager.getRootSceneNode()->createChildSceneNode(pos);
+void HitDisplayer::createHit(const Ogre::Vector3& pos, const std::string& text) {
+	auto sceneNode = mSceneManager.getRootSceneNode()->createChildSceneNode(pos);
 
-		auto x = WFMath::MTRand::instance.rand() - 0.5f;
+	auto x = WFMath::MTRand::instance.rand() - 0.5f;
 
-		Ogre::Vector2 direction(x * 0.01f, -0.1f);
+	Ogre::Vector2 direction(x * 0.01f, -0.1f);
 
-		auto hit = std::make_shared<Hit>(Hit{0.f, sceneNode});
-		IngameChatWidget::sAttachTextToNode(sceneNode, std::move(text), [hit, direction](Ogre::Vector2& screenPos) {
-			screenPos += (direction * hit->time);
-		});
+	auto hit = std::make_shared<Hit>(Hit{0.f, sceneNode});
+	mTextNodeRenderer->attachTextToNode(sceneNode, text, [hit, direction](Ogre::Vector2& screenPos) {
+		screenPos += (direction * hit->time);
+	});
 
-		mHits.emplace_back(std::move(hit));
-	}
+	mHits.emplace_back(std::move(hit));
+
 
 }
+
+
 
 }
 }

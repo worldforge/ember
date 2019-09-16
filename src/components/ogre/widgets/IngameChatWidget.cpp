@@ -68,9 +68,6 @@ namespace Gui {
 
 std::function<void(EmberEntity&)> IngameChatWidget::sEnableForEntity;
 std::function<void(EmberEntity&)> IngameChatWidget::sDisableForEntity;
-std::function<void(Ogre::SceneNode* node, std::string text, std::function<void(Ogre::Vector2&)> adjustFn)> IngameChatWidget::sAttachTextToNode;
-std::function<void(Ogre::SceneNode* node)> IngameChatWidget::sDetachTextNode;
-
 
 IngameChatWidget::IngameChatWidget() :
 		mTimeShown(0),
@@ -88,18 +85,6 @@ IngameChatWidget::IngameChatWidget() :
 	assert(!sEnableForEntity);
 	assert(!sDisableForEntity);
 
-	UniqueWindowPtr<CEGUI::Window> labelWindow(WindowManager::getSingleton().loadLayoutFromFile(GUIManager::getSingleton().getLayoutDir() + "TextNode.layout"));
-
-	for (int i = 0; i < 20; ++i) {
-		UniqueWindowPtr<CEGUI::Window> window(labelWindow->clone(true));
-		window->setMousePassThroughEnabled(true);
-		window->setRiseOnClickEnabled(false);
-		window->setName("TextNode_" + std::to_string(i));
-
-		TextNode textNode(std::move(window));
-		mFreeTextNodes.emplace_back(std::move(textNode));
-	}
-
 	sEnableForEntity = [&](EmberEntity& entity) {
 		this->enableForEntity(entity);
 	};
@@ -107,38 +92,11 @@ IngameChatWidget::IngameChatWidget() :
 		this->disableForEntity(entity);
 	};
 
-	sAttachTextToNode = [&](Ogre::SceneNode* node, const std::string& text, std::function<void(Ogre::Vector2&)> adjustFn) {
-		if (!mFreeTextNodes.empty()) {
-			auto textNode = std::move(mFreeTextNodes.back());
-			mFreeTextNodes.pop_back();
-			textNode.mNode = node;
-			textNode.mAdjustFn = std::move(adjustFn);
-			textNode.mWindow->setText(text);
-			getMainSheet()->addChild(textNode.mWindow.get());
-			mActiveTextNodes.emplace_back(std::move(textNode));
-		}
-	};
-
-	sDetachTextNode = [&](Ogre::SceneNode* node) {
-		auto I = std::find_if(mActiveTextNodes.begin(), mActiveTextNodes.end(), [&](const TextNode& textNode) -> bool { return node == textNode.mNode; });
-		if (I != mActiveTextNodes.end()) {
-			getMainSheet()->removeChild(I->mWindow.get());
-			mFreeTextNodes.emplace_back(std::move(*I));
-			mActiveTextNodes.erase(I);
-		}
-	};
-
-	static std::function<void(Ogre::SceneNode* node, std::string text)> sAttachTextToNode;
-
-	static std::function<void(Ogre::SceneNode* node)> sDetachTextNode;
-
 }
 
 IngameChatWidget::~IngameChatWidget() {
 	sEnableForEntity = nullptr;
 	sDisableForEntity = nullptr;
-	sAttachTextToNode = nullptr;
-	sDetachTextNode = nullptr;
 }
 
 void IngameChatWidget::buildWidget() {
@@ -244,28 +202,6 @@ void IngameChatWidget::removeWidget(const std::string& windowName) {
 void IngameChatWidget::cameraPreRenderScene(Ogre::Camera* cam) {
 	for (auto& label : mLabelPool.getUsedWidgets()) {
 		label->objectRendering(cam);
-	}
-
-	for (const auto& textNode : mActiveTextNodes) {
-		renderTextNode(cam, textNode);
-	}
-}
-
-void IngameChatWidget::renderTextNode(Ogre::Camera* camera, const TextNode& textNode) {
-	auto worldCoords = textNode.mNode->_getDerivedPosition();
-	//check what the new position is in screen coords
-	auto screenCoords = Camera::MainCamera::worldToScreen(*camera, worldCoords);
-
-	if (screenCoords.isNaN()) {
-		textNode.mWindow->setVisible(false);
-	} else {
-		if (textNode.mAdjustFn) {
-			textNode.mAdjustFn(screenCoords);
-		}
-		textNode.mWindow->setVisible(true);
-		textNode.mWindow->setPosition(UVector2(
-				UDim(screenCoords.x, -(textNode.mWindow->getPixelSize().d_width * 0.5)),
-				UDim(screenCoords.y, -(textNode.mWindow->getPixelSize().d_height * 0.5))));
 	}
 }
 
