@@ -21,10 +21,8 @@
 
 #include <CEGUI/Clipboard.h>
 
-namespace Ember
-{
-namespace Cegui
-{
+namespace Ember {
+namespace Cegui {
 
 /**
  * @brief A native clipboard provider which will interface with Input.
@@ -32,14 +30,15 @@ namespace Cegui
  * This allows the CEGUI clipboard to interact with the native one, through the
  * Input service.
  */
-class SDLNativeClipboardProvider: public CEGUI::NativeClipboardProvider
-{
+class SDLNativeClipboardProvider : public CEGUI::NativeClipboardProvider {
 public:
 	SDLNativeClipboardProvider();
-	virtual ~SDLNativeClipboardProvider();
 
-	void sendToClipboard(const CEGUI::String &mimeType, void *buffer, size_t size);
-	void retrieveFromClipboard(CEGUI::String &mimeType, void *&buffer, size_t &size);
+	~SDLNativeClipboardProvider() override;
+
+	void sendToClipboard(const CEGUI::String& mimeType, void* buffer, size_t size) override;
+
+	void retrieveFromClipboard(CEGUI::String& mimeType, void*& buffer, size_t& size) override;
 
 private:
 	char* m_buffer;

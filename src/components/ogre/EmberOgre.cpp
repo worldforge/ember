@@ -99,6 +99,8 @@
 #include <framework/TimedLog.h>
 #include <RTShaderSystem/OgreShaderGenerator.h>
 
+#include <memory>
+
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = nullptr;
 
 using namespace Ember;
@@ -244,7 +246,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 
 void EmberOgre::clearDirtyPassLists() {
 	if (!Ogre::Pass::getDirtyHashList().empty() || !Ogre::Pass::getPassGraveyard().empty()) {
-		for (auto entry : Ogre::Root::getSingleton().getSceneManagers()) {
+		for (const auto& entry : Ogre::Root::getSingleton().getSceneManagers()) {
 			Ogre::SceneManager* pScene = entry.second;
 			pScene->getRenderQueue()->clear();
 		}
@@ -287,7 +289,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
 	//Create a setup object through which we will start up Ogre.
-	mOgreSetup.reset(new OgreSetup());
+	mOgreSetup = std::make_unique<OgreSetup>();
 
 	mLogObserver = new OgreLogObserver();
 
@@ -398,6 +400,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
 
 		Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+		loadingBar.updateRender(true);
 
 		//out of pure interest we'll print out how many modeldefinitions we've loaded
 		auto count = Model::ModelDefinitionManager::getSingleton().getEntries().size();

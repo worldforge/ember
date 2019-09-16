@@ -31,8 +31,7 @@
 namespace Ember {
 namespace Cegui {
 
-CEGUILogger::CEGUILogger()
-{
+CEGUILogger::CEGUILogger() {
 	registerConfigListener("cegui", "minimumlogginglevel", sigc::mem_fun(*this, &CEGUILogger::Config_MinimumLogLevel));
 
 	//By default CEGUI will print all exceptions to std::cerr as well as the log; disable this.
@@ -40,12 +39,9 @@ CEGUILogger::CEGUILogger()
 }
 
 
-CEGUILogger::~CEGUILogger()
-{
-}
+CEGUILogger::~CEGUILogger() = default;
 
-void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level)
-{
+void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level) {
 	//just reroute to the Ember logging service
 	static std::string cegui("(CEGUI) ");
 	if (d_level >= level) {
@@ -70,10 +66,9 @@ void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel lev
 }
 
 
-void CEGUILogger::Config_MinimumLogLevel(const std::string& section, const std::string& /*key */, varconf::Variable& variable)
-{
+void CEGUILogger::Config_MinimumLogLevel(const std::string& section, const std::string& /*key */, varconf::Variable& variable) {
 	std::string newLogLevel(variable);
-	
+
 	S_LOG_INFO("Setting CEGUI logging level to '" << newLogLevel << "'.");
 
 	if (newLogLevel == "insane") {
@@ -86,7 +81,7 @@ void CEGUILogger::Config_MinimumLogLevel(const std::string& section, const std::
 		d_level = CEGUI::Warnings;
 	} else if (newLogLevel == "errors") {
 		d_level = CEGUI::Errors;
-	} 
+	}
 }
 
 }

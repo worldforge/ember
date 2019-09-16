@@ -21,6 +21,7 @@
 #define GUIMANAGER_H
 
 #include "EmberOgrePrerequisites.h"
+#include "widgets/CEGUIUtils.h"
 #include "services/input/InputCommandMapper.h"
 #include "framework/Singleton.h"
 #include "framework/ConsoleObject.h"
@@ -105,7 +106,7 @@ class GUIManager: public Singleton<GUIManager>, Ogre::FrameListener, public virt
 {
 public:
 
-	typedef std::vector<Gui::Widget*> WidgetStore;
+	typedef std::vector<std::unique_ptr<Gui::Widget>> WidgetStore;
 
 	static const std::string SCREENSHOT;
 	static const std::string TOGGLEINPUTMODE;
@@ -307,6 +308,20 @@ public:
 
 protected:
 
+
+	/**
+	 * @brief We'll provide our own CEGUI logger instance, which will route all cegui log messages to the main ember log.
+	 */
+	std::unique_ptr<Cegui::CEGUILogger> mCEGUILogger;
+
+
+	struct SystemDestroyer{
+		GUIManager& manager;
+		~SystemDestroyer();
+	};
+
+	SystemDestroyer mSystemDestroyer;
+
 	/**
 	 Counter for autonaming of windows.
 	 */
@@ -321,7 +336,7 @@ protected:
 
 	InputCommandMapper mGuiCommandMapper;
 
-	CEGUI::Window* mSheet;
+	Gui::UniqueWindowPtr<CEGUI::Window> mSheet;
 	CEGUI::WindowManager* mWindowManager;
 
 	Ogre::RenderWindow* mWindow;
@@ -337,15 +352,55 @@ protected:
 	 */
 	WidgetStore mWidgets;
 
-	Gui::CursorWorldListener* mCursorWorldListener;
+	std::unique_ptr<Gui::CursorWorldListener> mCursorWorldListener;
 
 	std::unique_ptr<Gui::HitDisplayer> mHitDisplayer;
+
+	/**
+	 Adapter for CEGUI which will send input events to CEGUI
+	 */
+	std::unique_ptr<GUICEGUIAdapter> mCEGUIAdapter;
+
+	CEGUI::LuaScriptModule* mLuaScriptModule;
 
 	/**
 	 * @brief Sets whether the GUI is enabled; i.e. will be rendered each frame.
 	 * Defaults to true.
 	 */
 	bool mEnabled;
+
+	std::unique_ptr<Gui::Icons::IconManager> mIconManager;
+	std::unique_ptr<Gui::EntityIconManager> mEntityIconManager;
+	std::unique_ptr<Gui::ActionBarIconManager> mActionBarIconManager;
+	std::unique_ptr<Gui::ActiveWidgetHandler> mActiveWidgetHandler;
+
+
+	/**
+	 * @brief An instance of our own CEGUI RenderedStringParser which will better handle coloured strings.
+	 *
+	 * Owner by this instance.
+	 */
+	std::unique_ptr<Cegui::ColouredRenderedStringParser> mRenderedStringParser;
+
+	/**
+	 * @brief Responsible for the help system
+	 */
+	std::unique_ptr<Gui::QuickHelp> mQuickHelp;
+
+	/**
+	 * @brief The entity tooltip instance, created when a World has been created, and destroyed along with it.
+	 */
+	std::unique_ptr<Gui::EntityTooltip> mEntityTooltip;
+
+	/**
+	 * @brief Bridges the CEGUI clipboard and the system one.
+	 */
+	std::unique_ptr<CEGUI::NativeClipboardProvider> mNativeClipboardProvider;
+
+	/**
+	 * @brief Provides loading screen to handle transitions
+	 */
+	std::unique_ptr<Gui::WorldLoadingScreen> mWorldLoadingScreen;
 
 	/**
 	 * @brief Listens to window resize events and alerts CEGUI.
@@ -394,12 +449,6 @@ protected:
 	void entity_Emote(const std::string& description, EmberEntity* entity);
 
 
-	/**
-	 Adapter for CEGUI which will send input events to CEGUI
-	 */
-	GUICEGUIAdapter* mCEGUIAdapter;
-
-	CEGUI::LuaScriptModule* mLuaScriptModule;
 
 	/**
 	 * @brief Stops the CEGUI scripting service.
@@ -407,42 +456,8 @@ protected:
 	 */
 	void scriptingServiceStopping();
 
-	Gui::Icons::IconManager* mIconManager;
-	Gui::EntityIconManager* mEntityIconManager;
-	Gui::ActionBarIconManager* mActionBarIconManager;
-	Gui::ActiveWidgetHandler* mActiveWidgetHandler;
 
-	/**
-	 * @brief We'll provide our own CEGUI logger instance, which will route all cegui log messages to the main ember log.
-	 */
-	Cegui::CEGUILogger* mCEGUILogger;
 
-	/**
-	 * @brief An instance of our own CEGUI RenderedStringParser which will better handle coloured strings.
-	 *
-	 * Owner by this instance.
-	 */
-	Cegui::ColouredRenderedStringParser* mRenderedStringParser;
-
-	/**
-	 * @brief Responsible for the help system
-	 */
-	Gui::QuickHelp* mQuickHelp;
-
-	/**
-	 * @brief The entity tooltip instance, created when a World has been created, and destroyed along with it.
-	 */
-	Gui::EntityTooltip* mEntityTooltip;
-
-	/**
-	 * @brief Bridges the CEGUI clipboard and the system one.
-	 */
-	CEGUI::NativeClipboardProvider* mNativeClipboardProvider;
-
-	/**
-	 * @brief Provides loading screen to handle transitions
-	 */
-	Gui::WorldLoadingScreen* mWorldLoadingScreen;
 };
 
 }

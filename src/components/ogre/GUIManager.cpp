@@ -91,6 +91,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."),
 		ReloadGui("reloadgui", this, "Reloads the gui."),
 		ToggleGui("toggle_gui", this, "Toggle the gui display"),
+		mCEGUILogger(new Cegui::CEGUILogger()),
+		mSystemDestroyer{*this},
 		mConfigService(configService),
 		mMainLoopController(mainLoopController),
 		mGuiCommandMapper("gui", "key_bindings_gui"),
@@ -101,15 +103,13 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mGuiRenderer(nullptr),
 		mOgreResourceProvider(nullptr),
 		mOgreImageCodec(nullptr),
-		mCursorWorldListener(nullptr),
-		mEnabled(true),
 		mLuaScriptModule(nullptr),
-		mIconManager(nullptr),
+		mEnabled(true),
 		mActiveWidgetHandler(nullptr),
-		mCEGUILogger(new Cegui::CEGUILogger()),
-		mRenderedStringParser(nullptr),
+		mRenderedStringParser(std::make_unique<Cegui::ColouredRenderedStringParser>()),
+		mQuickHelp(std::make_unique<Gui::QuickHelp>()),
 		mEntityTooltip(nullptr),
-		mNativeClipboardProvider(nullptr) {
+		mNativeClipboardProvider(std::make_unique<Ember::Cegui::SDLNativeClipboardProvider>()) {
 
 //Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
 #ifndef CEGUI_HAS_FREETYPE
@@ -147,8 +147,12 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
 			if (!luaScriptProvider->getErrorHandlingFunctionName().empty()) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
-				mLuaScriptModule->executeString(
-						""); //We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
+				mLuaScriptModule->executeString("");
+				// We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up.
+				// The reason for this is that we never use the execute* methods in the CEGUI lua module later on,
+				// instead loading our scripts ourselves. And CEGUI is currently set up
+				// to require the execute* methods to be called in order for
+				// the error function to be registered.
 			}
 			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
@@ -161,22 +165,20 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 			// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 			throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
-		mNativeClipboardProvider = new Ember::Cegui::SDLNativeClipboardProvider();
-		mGuiSystem->getClipboard()->setNativeProvider(mNativeClipboardProvider);
+		mGuiSystem->getClipboard()->setNativeProvider(mNativeClipboardProvider.get());
 
-		mRenderedStringParser = new Cegui::ColouredRenderedStringParser();
-		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser);
+		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser.get());
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 		EntityTooltip::registerFactory();
 
-		mSheet = mWindowManager->createWindow("DefaultWindow", "root_wnd");
-		mGuiSystem->getDefaultGUIContext().setRootWindow(mSheet);
+		mSheet.reset(mWindowManager->createWindow("DefaultWindow", "root_wnd"));
+		mGuiSystem->getDefaultGUIContext().setRootWindow(mSheet.get());
 		mSheet->activate();
 		mSheet->moveToBack();
 		mSheet->setDistributesCapturedInputs(false);
 
-		mWorldLoadingScreen = new WorldLoadingScreen();
+		mWorldLoadingScreen = std::make_unique<WorldLoadingScreen>();
 
 		S_LOG_INFO("CEGUI system set up");
 
@@ -184,8 +186,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		getInput().setInputMode(Input::IM_GUI);
 
 		//add adapter for CEGUI, this will route input event to the gui
-		mCEGUIAdapter = new GUICEGUIAdapter(mGuiSystem, mGuiRenderer);
-		getInput().addAdapter(mCEGUIAdapter);
+		mCEGUIAdapter = std::make_unique<GUICEGUIAdapter>(mGuiSystem, mGuiRenderer);
+		getInput().addAdapter(mCEGUIAdapter.get());
 
 		mGuiCommandMapper.bindToInput(getInput());
 
@@ -194,11 +196,10 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		EmberOgre::getSingleton().EventWorldCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldCreated));
 		EmberOgre::getSingleton().EventWorldBeingDestroyed.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldBeingDestroyed));
 
-		mActiveWidgetHandler = new Gui::ActiveWidgetHandler(*this);
+		mActiveWidgetHandler = std::make_unique<Gui::ActiveWidgetHandler>(*this);
 
 		Ogre::Root::getSingleton().addFrameListener(this);
 
-		mQuickHelp = new Gui::QuickHelp();
 
 		getInput().EventSizeChanged.connect(sigc::mem_fun(*this, &GUIManager::input_SizeChanged));
 
@@ -215,47 +216,14 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 
 GUIManager::~GUIManager() {
 	S_LOG_INFO("Shutting down GUI manager.");
-
-	WidgetStore widgetStoreCopy(mWidgets);
-	for (auto& widget : widgetStoreCopy) {
-		S_LOG_INFO("Deleting widget " << widget->getPrefix() << ".");
-		delete widget;
+	mWorldLoadingScreen.reset();
+	if (mCEGUIAdapter) {
+		getInput().removeAdapter(mCEGUIAdapter.get());
 	}
-
-	delete mWorldLoadingScreen;
-	delete mActiveWidgetHandler;
-	delete mEntityIconManager;
-	delete mActionBarIconManager;
-	delete mIconManager;
-	delete mCursorWorldListener;
-
-	CEGUI::System::destroy();
-
-	if (mOgreResourceProvider) {
-		CEGUI::OgreRenderer::destroyOgreResourceProvider(*mOgreResourceProvider);
-	}
-	if (mOgreImageCodec) {
-		CEGUI::OgreRenderer::destroyOgreImageCodec(*mOgreImageCodec);
-	}
-
-	//note that we normally would delete the mCEGUILogger here, but we don't have to since mGuiSystem will do that in it's desctructor, even though it doesn't own the logger
-	Ogre::Root::getSingleton().removeFrameListener(this);
-	delete mCEGUIAdapter;
-
-	if (mGuiRenderer) {
-		CEGUI::OgreRenderer::destroy(*mGuiRenderer);
-	}
-	if (mLuaScriptModule) {
-		LuaScriptModule::destroy(*mLuaScriptModule);
-	}
-	delete mRenderedStringParser;
-	delete mQuickHelp;
-
+	mWidgets.clear();
 	WidgetLoader::removeAllWidgetFactories();
 
-	delete mCEGUILogger;
-	delete mNativeClipboardProvider;
-
+	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
 void GUIManager::initialize() {
@@ -266,18 +234,18 @@ void GUIManager::initialize() {
 		throw e;
 	}
 	try {
-		mIconManager = new Gui::Icons::IconManager();
+		mIconManager = std::make_unique<Gui::Icons::IconManager>();
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating icon manager." << e);
 	}
 
 	try {
-		mEntityIconManager = new Gui::EntityIconManager(*this);
+		mEntityIconManager = std::make_unique<Gui::EntityIconManager>(*this);
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating entity icon manager." << e);
 	}
 	try {
-		mActionBarIconManager = new Gui::ActionBarIconManager(*this);
+		mActionBarIconManager = std::make_unique<Gui::ActionBarIconManager>(*this);
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating ActionBar icon manager." << e);
 	}
@@ -395,7 +363,6 @@ void GUIManager::destroyWidget(Widget* widget) {
 		return;
 	}
 	removeWidget(widget);
-	delete widget;
 }
 
 CEGUI::Texture& GUIManager::createTexture(Ogre::TexturePtr& ogreTexture, std::string name) {
@@ -410,18 +377,18 @@ Input& GUIManager::getInput() const {
 }
 
 CEGUI::Window* GUIManager::getMainSheet() const {
-	return mSheet;
+	return mSheet.get();
 }
 
 void GUIManager::removeWidget(Widget* widget) {
-	auto I = std::find(mWidgets.begin(), mWidgets.end(), widget);
+	auto I = std::find_if(mWidgets.begin(), mWidgets.end(), [widget](const std::unique_ptr<Widget>& item) { return item.get() == widget; });
 	if (I != mWidgets.end()) {
 		mWidgets.erase(I);
 	}
 }
 
 void GUIManager::addWidget(Widget* widget) {
-	mWidgets.push_back(widget);
+	mWidgets.emplace_back(std::unique_ptr<Widget>(widget));
 }
 
 bool GUIManager::frameStarted(const Ogre::FrameEvent& evt) {
@@ -437,7 +404,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt) {
 	auto I_end = mWidgets.end();
 
 	for (; I != I_end; ++I) {
-		Widget* aWidget = *I;
+		auto& aWidget = *I;
 		try {
 			aWidget->frameStarted(evt);
 		} catch (const CEGUI::Exception& ex) {
@@ -482,13 +449,13 @@ void GUIManager::runCommand(const std::string& command, const std::string& args)
 			S_LOG_INFO("Disabling GUI");
 			mEnabled = false;
 
-			getInput().removeAdapter(mCEGUIAdapter);
+			getInput().removeAdapter(mCEGUIAdapter.get());
 
 		} else {
 			S_LOG_INFO("Enabling GUI");
 			mEnabled = true;
 
-			getInput().addAdapter(mCEGUIAdapter);
+			getInput().addAdapter(mCEGUIAdapter.get());
 		}
 	} else if (command == ReloadGui.getCommand()) {
 		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();
@@ -510,24 +477,22 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity) {
 
 void GUIManager::EmberOgre_WorldCreated(World& world) {
 	UniqueWindowPtr<EmberEntityTooltipWidget> tooltipWindow(dynamic_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")));
-	mEntityTooltip = new EntityTooltip(world, std::move(tooltipWindow), *mIconManager);
-	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world);
+	mEntityTooltip = std::make_unique<EntityTooltip>(world, std::move(tooltipWindow), *mIconManager);
+	mCursorWorldListener = std::make_unique<CursorWorldListener>(mMainLoopController, *mSheet, world);
 
 	UniqueWindowPtr<CEGUI::Window> labelWindow(WindowManager::getSingleton().loadLayoutFromFile(GUIManager::getSingleton().getLayoutDir() + "Hit.layout"));
 
-	mHitDisplayer = std::make_unique<HitDisplayer>(*mSheet,  labelWindow, world.getMainCamera().getCamera(), world.getView(), world.getSceneManager());
+	mHitDisplayer = std::make_unique<HitDisplayer>(*mSheet, labelWindow, world.getMainCamera().getCamera(), world.getView(), world.getSceneManager());
 }
 
 void GUIManager::EmberOgre_WorldBeingDestroyed() {
 	mHitDisplayer.reset();
-	delete mEntityTooltip;
-	mEntityTooltip = nullptr;
-	delete mCursorWorldListener;
-	mCursorWorldListener = nullptr;
+	mEntityTooltip.reset();
+	mCursorWorldListener.reset();
 }
 
 Gui::EntityTooltip* GUIManager::getEntityTooltip() const {
-	return mEntityTooltip;
+	return mEntityTooltip.get();
 }
 
 const std::string& GUIManager::getLayoutDir() const {
@@ -540,21 +505,37 @@ const std::string& GUIManager::getDefaultScheme() const {
 }
 
 Gui::Icons::IconManager* GUIManager::getIconManager() const {
-	return mIconManager;
+	return mIconManager.get();
 }
 
 Gui::EntityIconManager* GUIManager::getEntityIconManager() const {
-	return mEntityIconManager;
+	return mEntityIconManager.get();
 }
 
 Gui::ActionBarIconManager* GUIManager::getActionBarIconManager() const {
-	return mActionBarIconManager;
+	return mActionBarIconManager.get();
 }
 
 CEGUI::Renderer* GUIManager::getGuiRenderer() const {
 	return mGuiRenderer;
 }
 
+GUIManager::SystemDestroyer::~SystemDestroyer() {
+	CEGUI::System::destroy();
+
+	if (manager.mOgreResourceProvider) {
+		CEGUI::OgreRenderer::destroyOgreResourceProvider(*manager.mOgreResourceProvider);
+	}
+	if (manager.mOgreImageCodec) {
+		CEGUI::OgreRenderer::destroyOgreImageCodec(*manager.mOgreImageCodec);
+	}
+	if (manager.mGuiRenderer) {
+		CEGUI::OgreRenderer::destroy(*manager.mGuiRenderer);
+	}
+	if (manager.mLuaScriptModule) {
+		LuaScriptModule::destroy(*manager.mLuaScriptModule);
+	}
+}
 }
 }
 

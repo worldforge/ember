@@ -83,9 +83,15 @@ class Widget :
 		public ConsoleObject {
 public:
 
+
 	friend class ::Ember::OgreView::GUIManager;
 
 	friend class WidgetLoader;
+
+	/**
+	 * @brief Dtor.
+	 */
+	~Widget() override;
 
 	/**
 	 *    Sets up the widget, called upon creation.
@@ -255,11 +261,6 @@ protected:
 	 * This is protected to avoid direct creation of instances of this. Instead use GUIManager::createWidget().
 	 */
 	Widget();
-
-	/**
-	 * @brief Dtor.
-	 */
-	~Widget() override;
 
 	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
 

@@ -36,8 +36,9 @@ namespace OgreView {
 namespace Gui {
 
 ActiveWidgetHandler::ActiveWidgetHandler(GUIManager& guiManager)
-: mLastActiveWindow(nullptr), mLastMode(Input::IM_GUI), mGuiManager(guiManager)
-{
+		: mLastActiveWindow(nullptr),
+		  mLastMode(Input::IM_GUI),
+		  mGuiManager(guiManager) {
 
 	//connect to the changing of input mode since we want to deactivate the current active input window when switching from gui mode to movement mode
 	Input::getSingleton().EventChangedInputMode.connect(sigc::mem_fun(*this, &ActiveWidgetHandler::Input_InputModeChanged));
@@ -53,8 +54,7 @@ bool ActiveWidgetHandler::lastActiveWindowDestructionStarted(const CEGUI::EventA
 	return true;
 }
 
-void ActiveWidgetHandler::Input_InputModeChanged(Input::InputMode mode)
-{
+void ActiveWidgetHandler::Input_InputModeChanged(Input::InputMode mode) {
 	if (mode != Input::IM_GUI && mLastMode == Input::IM_GUI) {
 		//save the current active widget
 		CEGUI::Window* window = mGuiManager.getMainSheet()->getActiveChild();
@@ -75,11 +75,10 @@ void ActiveWidgetHandler::Input_InputModeChanged(Input::InputMode mode)
 			//restore the previously active widget
 			try {
 				mLastActiveWindow->activate();
-			} catch (...)
-			{
+			} catch (...) {
 				S_LOG_WARNING("Error when trying to restore previously captured window.");
 			}
-			mLastActiveWindow = 0;
+			mLastActiveWindow = nullptr;
 			mLastActiveWindowDestructionStartedConnection->disconnect();
 		}
 		mLastMode = mode;

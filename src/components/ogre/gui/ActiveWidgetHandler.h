@@ -22,6 +22,7 @@
 //
 #ifndef EMBEROGRE_GUIACTIVEWIDGETHANDLER_H
 #define EMBEROGRE_GUIACTIVEWIDGETHANDLER_H
+
 #include "services/input/Input.h"
 
 #include <CEGUI/Event.h>
@@ -36,11 +37,11 @@ namespace Gui {
 	Responsible for deactivating the current input focused window when we switch to movement mode, and returning it when we switch back to gui mode.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class ActiveWidgetHandler{
+class ActiveWidgetHandler {
 public:
 	explicit ActiveWidgetHandler(GUIManager& guiManager);
 
-    ~ActiveWidgetHandler();
+	~ActiveWidgetHandler();
 
 protected:
 	void Input_InputModeChanged(Input::InputMode mode);
@@ -51,14 +52,14 @@ protected:
 	The window which last had input when we switched to movement mode.
 	*/
 	CEGUI::Window* mLastActiveWindow;
-	
+
 	CEGUI::Event::Connection mLastActiveWindowDestructionStartedConnection;
 
 	/**
 	The last mode we were in.
 	*/
 	Input::InputMode mLastMode;
-	
+
 	/**
 	A reference to the gui manager.
 	*/

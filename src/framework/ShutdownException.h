@@ -1,5 +1,6 @@
 #include <string>
 #include <ostream>
+#include <utility>
 
 /**
  * @brief Exception, which can be thrown ONLY at game loading to abort.
@@ -12,17 +13,15 @@ public:
 	 * @brief Ctor
 	 * @param reason The reason for the exception. You can also call it error message.
 	 */
-	ShutdownException(const std::string& reason) :
-		mReason(reason)
-	{
+	explicit ShutdownException(std::string reason) :
+			mReason(std::move(reason)) {
 	}
-	
+
 	/**
 	 * @brief Allows to read the reason for the exception. 
 	 * @return Returns the reason passed to the Ctor as string.
 	 */
-	const std::string& getReason() const
-	{
+	const std::string& getReason() const {
 		return mReason;
 	}
 

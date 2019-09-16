@@ -161,8 +161,8 @@ WidgetLoader::WidgetLoader(const std::string& name, FactoryFunc functor) {
 }
 
 std::map<std::string, FactoryFunc>& WidgetLoader::getFactories() {
-	static auto* factoryMap = new std::map<std::string, FactoryFunc>();
-	return *factoryMap;
+	static std::map<std::string, FactoryFunc> factoryMap;
+	return factoryMap;
 }
 
 void WidgetLoader::registerWidgetFactory(const std::string& name, FactoryFunc functor) {

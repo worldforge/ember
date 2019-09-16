@@ -32,7 +32,7 @@ namespace Cegui
 class ColouredRenderedStringParser: public CEGUI::BasicRenderedStringParser
 {
 protected:
-	void appendRenderedText(CEGUI::RenderedString& rs, const CEGUI::String& text) const;
+	void appendRenderedText(CEGUI::RenderedString& rs, const CEGUI::String& text) const override;
 
 };
 

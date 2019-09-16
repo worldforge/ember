@@ -58,7 +58,7 @@ public:
 	/**
 	 * @brief Destructor
 	 */
-	virtual ~QuickHelp();
+	~QuickHelp() override;
 
 	/**
 	 * @brief Add the message to the front of the list and update the widget.
@@ -70,27 +70,27 @@ public:
 	 * @brief Returns an iterator to the end of the list of messages.
 	 *
 	 */
-	const std::list<HelpMessage>::const_iterator getEnd() const;
+	std::list<HelpMessage>::const_iterator getEnd() const;
 
 	/**
 	 * @brief Returns an iterator to the beginning of the list of messages.
 	 *
 	 */
-	const std::list<HelpMessage>::const_iterator getBeginning() const;
+	std::list<HelpMessage>::const_iterator getBeginning() const;
 
 	/**
 	 * @brief Inserts a help message at the end of the list.
 	 * @params message The message to insert.
 	 * @return An iterator to the end of the list.
 	 */
-	const std::list<HelpMessage>::const_iterator insertAtEnd(const HelpMessage& message);
+	std::list<HelpMessage>::const_iterator insertAtEnd(const HelpMessage& message);
 
 	/**
 	 * @brief Finds the position to insert the message and inserts it if it doesn't already exist.
 	 * @params message The message to insert.
 	 * @return The position where the message is located in the list.
 	 */
-	const std::list<HelpMessage>::const_iterator messagePosition(const HelpMessage& message);
+	std::list<HelpMessage>::const_iterator messagePosition(const HelpMessage& message);
 
 	/**
 	 * @brief We use this function to respond to the "?" icon pressed.

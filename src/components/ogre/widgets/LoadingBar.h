@@ -29,6 +29,7 @@ the basic resources required for the progress bar and will be loaded automatical
 
 #include <OgreResourceGroupManager.h>
 #include <OgreTimer.h>
+
 namespace Ember {
 class MainLoopController;
 namespace OgreView {
@@ -36,17 +37,22 @@ namespace Gui {
 
 class LoadingBar;
 
-class LoadingBarSection
-{
-friend class LoadingBar;
+class LoadingBarSection {
+	friend class LoadingBar;
+
 public:
-	LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name);
+	LoadingBarSection(LoadingBar& loadingBar, float size, std::string name);
+
 	virtual ~LoadingBarSection() = default;
 
 	float getSize() const;
+
 	const std::string& getName() const;
+
 	void tick(float tickSize);
+
 	void setCaption(const std::string& caption);
+
 	void setProgress(float progress);
 
 private:
@@ -59,11 +65,12 @@ private:
 	bool mActive;
 };
 
-class WfutLoadingBarSection : public virtual sigc::trackable
-{
+class WfutLoadingBarSection : public virtual sigc::trackable {
 public:
 	explicit WfutLoadingBarSection(LoadingBarSection& section);
+
 	virtual ~WfutLoadingBarSection() = default;
+
 private:
 
 	void wfutService_DownloadComplete(const std::string& url, const std::string& filename);
@@ -81,26 +88,34 @@ private:
 	unsigned int mNumberOfFilesToUpdate, mDownloadedSoFar;
 };
 
-class ResourceGroupLoadingBarSection : public Ogre::ResourceGroupListener
-{
+class ResourceGroupLoadingBarSection : public Ogre::ResourceGroupListener {
 public:
 	explicit ResourceGroupLoadingBarSection(LoadingBarSection& section, unsigned short numGroupsInit = 1,
-		unsigned short numGroupsLoad = 1,
-		Ogre::Real initProportion = 0.70f);
+											unsigned short numGroupsLoad = 1,
+											Ogre::Real initProportion = 0.70f);
 
 	~ResourceGroupLoadingBarSection() override;
 
 	// ResourceGroupListener callbacks
-	void resourceGroupScriptingStarted(const Ogre::String & groupName, size_t scriptCount) override;
-	void scriptParseStarted(const Ogre::String & scriptName, bool& skipThisScript) override;
+	void resourceGroupScriptingStarted(const Ogre::String& groupName, size_t scriptCount) override;
+
+	void scriptParseStarted(const Ogre::String& scriptName, bool& skipThisScript) override;
+
 	void scriptParseEnded(const Ogre::String& scriptName, bool skipped) override;
-	void resourceGroupScriptingEnded(const Ogre::String & groupName) override;
-	void resourceGroupLoadStarted(const Ogre::String & groupName, size_t resourceCount) override;
+
+	void resourceGroupScriptingEnded(const Ogre::String& groupName) override;
+
+	void resourceGroupLoadStarted(const Ogre::String& groupName, size_t resourceCount) override;
+
 	void resourceLoadStarted(const Ogre::ResourcePtr& resource) override;
+
 	void resourceLoadEnded() override;
-	void worldGeometryStageStarted(const Ogre::String & description) override {}
+
+	void worldGeometryStageStarted(const Ogre::String& description) override {}
+
 	void worldGeometryStageEnded() override {}
-	void resourceGroupLoadEnded(const Ogre::String & groupName) override;
+
+	void resourceGroupLoadEnded(const Ogre::String& groupName) override;
 
 private:
 	Ogre::Real mInitProportion;
@@ -127,11 +142,9 @@ private:
 	added to a resource group called 'Bootstrap' - this provides the basic
 	resources required for the progress bar and will be loaded automatically.
 */
-class LoadingBar
-{
+class LoadingBar {
 protected:
-	typedef std::vector<LoadingBarSection*> SectionStore;
-	SectionStore mSections;
+	std::vector<LoadingBarSection*> mSections;
 	float mProgress;
 	Ogre::Real mProgressBarMaxSize, mProgressBarMaxLeft;
 
@@ -153,6 +166,7 @@ public:
 	 * @param mainLoopController Allows the loading bar to see if the application should shut down.
 	 */
 	LoadingBar(Ogre::RenderWindow& window, MainLoopController& mainLoopController);
+
 	virtual ~LoadingBar();
 
 	/**
@@ -167,8 +181,11 @@ public:
 	void addSection(LoadingBarSection* section);
 
 	void increase(float amount);
+
 	void setProgress(float progress);
+
 	void setCaption(const std::string& caption);
+
 	void setVersionText(const std::string& versionText);
 
 	/**
@@ -182,7 +199,7 @@ public:
 	 *
 	 * Be sure to call this after each change, else nothing will be updated to the user.
 	 */
-	void updateRender();
+	void updateRender(bool forceUpdate = false);
 
 };
 }

@@ -33,34 +33,31 @@ namespace OgreView
 namespace Gui
 {
 
-QuickHelp::QuickHelp()
-{
-
-}
+QuickHelp::QuickHelp() = default;
 
 QuickHelp::~QuickHelp()
 {
 	mTutorialText.clear();
 }
 
-const std::list<HelpMessage>::const_iterator QuickHelp::getEnd() const
+std::list<HelpMessage>::const_iterator QuickHelp::getEnd() const
 {
 	return mTutorialText.end();
 }
 
-const std::list<HelpMessage>::const_iterator QuickHelp::getBeginning() const
+std::list<HelpMessage>::const_iterator QuickHelp::getBeginning() const
 {
 	return mTutorialText.begin();
 }
 
-const std::list<HelpMessage>::const_iterator QuickHelp::insertAtEnd(const HelpMessage& message)
+std::list<HelpMessage>::const_iterator QuickHelp::insertAtEnd(const HelpMessage& message)
 {
 	mTutorialText.push_back(message);
 	EventHelpMessageLocationChanged.emit(getSize());
 	return --(mTutorialText.end());
 }
 
-const std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const HelpMessage& message)
+std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const HelpMessage& message)
 {
 	//If the message doesn't have an optional id, we can just insert.
 	if (!message.hasId())

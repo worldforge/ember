@@ -36,12 +36,11 @@ namespace Cegui {
 	@note When CEGUI::System is destroyed, it will automatically delete the system wide Logger instance, even though it didn't create it in the first place. That means that when you use this class, make sure to use a pointer (no auto_ptr, no regular, stack object allocation), and don't try to delete it yourself.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class CEGUILogger : public CEGUI::Logger, ConfigListenerContainer
-{
+class CEGUILogger : public CEGUI::Logger, ConfigListenerContainer {
 public:
-    CEGUILogger();
+	CEGUILogger();
 
-    virtual ~CEGUILogger();
+	~CEGUILogger() override;
 
 	/*!
 	\brief
@@ -56,24 +55,25 @@ public:
 	\return
 		Nothing
 	*/
-	virtual void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard);
+	void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level) override;
 
-    /*!
-    \brief
-        Set the name of the log file where all subsequent log entries should be written.
+	/*!
+	\brief
+		Set the name of the log file where all subsequent log entries should be written.
 
-    \note
-        When this is called, and the log file is created, any cached log entries are
-        flushed to the log file.
+	\note
+		When this is called, and the log file is created, any cached log entries are
+		flushed to the log file.
 
-    \param filename
-        Name of the file to put log messages.
+	\param filename
+		Name of the file to put log messages.
 
-    \param append
-        - true if events should be added to the end of the current file.
-        - false if the current contents of the file should be discarded.
-     */
-    virtual void setLogFilename(const CEGUI::String& /*filename */, bool /*append */ = false) {}
+	\param append
+		- true if events should be added to the end of the current file.
+		- false if the current contents of the file should be discarded.
+	 */
+	void setLogFilename(const CEGUI::String& /*filename */, bool /*append */) override {}
+
 private:
 	void Config_MinimumLogLevel(const std::string& section, const std::string& key, varconf::Variable& variable);
 
