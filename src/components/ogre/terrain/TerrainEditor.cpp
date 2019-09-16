@@ -31,25 +31,20 @@
 #include <OgreSceneManager.h>
 
 using namespace Ember;
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 TerrainEditor::TerrainEditor(TerrainManager& manager, Camera::MainCamera& camera) :
-	mManager(manager), mCamera(camera), mOverlay(0), mMovementRadiusInMeters(0), mFalloff(0)
-{
+		mManager(manager),
+		mCamera(camera),
+		mMovementRadiusInMeters(0),
+		mFalloff(0) {
 }
 
-TerrainEditor::~TerrainEditor()
-{
-	delete mOverlay;
-}
+TerrainEditor::~TerrainEditor() = default;
 
-void TerrainEditor::showOverlay()
-{
+void TerrainEditor::showOverlay() {
 	if (!mOverlay) {
 		sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&> slot = sigc::mem_fun(*this, &TerrainEditor::basepointsRecieved);
 		mManager.getBasePoints(slot);
@@ -58,45 +53,43 @@ void TerrainEditor::showOverlay()
 	}
 }
 
-void TerrainEditor::hideOverlay()
-{
+void TerrainEditor::hideOverlay() {
 	if (mOverlay) {
 		mOverlay->setVisible(false);
 	}
 }
 
-bool TerrainEditor::isOverlayShown() const
-{
-	return mOverlay != 0 && mOverlay->getVisible();
+bool TerrainEditor::isOverlayShown() const {
+	return mOverlay && mOverlay->getVisible();
 }
 
-float TerrainEditor::getRadius() const
-{
+float TerrainEditor::getRadius() const {
 	return mMovementRadiusInMeters;
 }
 
-void TerrainEditor::setRadius(float radiusInMeters)
-{
+void TerrainEditor::setRadius(float radiusInMeters) {
 	mMovementRadiusInMeters = radiusInMeters;
 }
 
-float TerrainEditor::getFalloff() const
-{
+float TerrainEditor::getFalloff() const {
 	return mFalloff;
 }
 
-void TerrainEditor::setFalloff(float falloff)
-{
+void TerrainEditor::setFalloff(float falloff) {
 	mFalloff = falloff;
 }
 
-void TerrainEditor::basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints)
-{
+void TerrainEditor::basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints) {
 	if (mOverlay) {
-		delete mOverlay;
+		mOverlay.reset();
 		EventOverlayDestroyed.emit();
 	}
-	mOverlay = new TerrainEditorOverlay(*this, mManager.getScene().getSceneManager(), *mManager.getScene().getSceneManager().getRootSceneNode(), mManager, mCamera, basePoints);
+	mOverlay = std::make_unique<TerrainEditorOverlay>(*this,
+													  mManager.getScene().getSceneManager(),
+													  *mManager.getScene().getSceneManager().getRootSceneNode(),
+													  mManager,
+													  mCamera,
+													  basePoints);
 	EventOverlayCreated(*mOverlay);
 }
 

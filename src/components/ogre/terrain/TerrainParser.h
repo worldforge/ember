@@ -43,7 +43,7 @@ namespace Terrain
 {
 
 class TerrainManager;
-class TerrainDefPoint;
+struct TerrainDefPoint;
 
 /**
 

@@ -33,11 +33,13 @@ class PagedGeometry;
 namespace Ember {
 namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainFoliageDefinition;
+
 class TerrainLayerDefinition;
+
 class TerrainShader;
+
 class TerrainArea;
 }
 
@@ -48,22 +50,24 @@ class FoliageLoader;
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class ShrubberyFoliage : public FoliageBase
-{
+class ShrubberyFoliage : public FoliageBase {
 public:
-	ShrubberyFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
-	virtual ~ShrubberyFoliage();
-	
-	virtual void frameStarted();
-	
-	virtual void initialize();
-	
-	virtual void setDensity(float newGrassDensity);
-	
-	virtual void setFarDistance(float factor);
+	ShrubberyFoliage(Terrain::TerrainManager& terrainManager,
+					 const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+					 const Terrain::TerrainFoliageDefinition& foliageDefinition);
+
+	~ShrubberyFoliage() override;
+
+	void frameStarted() override;
+
+	void initialize() override;
+
+	void setDensity(float newGrassDensity) override;
+
+	void setFarDistance(float factor) override;
 
 protected:
-	FoliageLoader* mLoader;
+	std::unique_ptr<FoliageLoader> mLoader;
 };
 }
 

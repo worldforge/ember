@@ -70,7 +70,7 @@ class ITerrainPageBridge;
 class ICompilerTechniqueProvider;
 class HeightMap;
 class HeightMapBufferProvider;
-class TerrainDefPoint;
+struct TerrainDefPoint;
 class PlantAreaQuery;
 class PlantAreaQueryResult;
 class SegmentManager;
@@ -97,12 +97,14 @@ public:
 	 * @param pageIndexSize The size of one side of a page, in indices.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-	TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider, Eris::EventService& eventService);
+	TerrainHandler(unsigned int pageIndexSize,
+			ICompilerTechniqueProvider& compilerTechniqueProvider,
+			Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~TerrainHandler();
+	~TerrainHandler() override;
 
 	/**
 	 * @brief Shuts down the handler; call this before deleting the instance.

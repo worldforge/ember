@@ -67,14 +67,14 @@ Foliage::~Foliage()
 void Foliage::initialize()
 {
 	S_LOG_INFO("Initializing foliage system.");
-	for (auto layerDef : TerrainLayerDefinitionManager::getSingleton().getDefinitions()) {
-		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator J = layerDef->getFoliages().begin(); J != layerDef->getFoliages().end(); ++J) {
+	for (auto& layerDef : TerrainLayerDefinitionManager::getSingleton().getDefinitions()) {
+		for (auto& foliage : layerDef->getFoliages()) {
 			FoliageBase* foliageBase = nullptr;
 			try {
-				if (J->getRenderTechnique() == "grass") {
-					foliageBase = new GrassFoliage(mTerrainManager, *layerDef, *J);
-				} else if (J->getRenderTechnique() == "shrubbery") {
-					foliageBase = new ShrubberyFoliage(mTerrainManager, *layerDef, *J);
+				if (foliage.getRenderTechnique() == "grass") {
+					foliageBase = new GrassFoliage(mTerrainManager, *layerDef, foliage);
+				} else if (foliage.getRenderTechnique() == "shrubbery") {
+					foliageBase = new ShrubberyFoliage(mTerrainManager, *layerDef, foliage);
 				}
 				if (foliageBase) {
 					foliageBase->initialize();

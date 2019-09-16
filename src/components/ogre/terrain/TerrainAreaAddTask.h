@@ -25,29 +25,33 @@
 #include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainHandler;
+
 class TerrainLayerDefinitionManager;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A task for adding a new terrain area to the terrain.
  */
-class TerrainAreaAddTask: public TerrainAreaTaskBase
-{
+class TerrainAreaAddTask : public TerrainAreaTaskBase {
 public:
-	TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders);
-	virtual ~TerrainAreaAddTask();
+	TerrainAreaAddTask(Mercator::Terrain& terrain,
+					   Mercator::Area* area,
+					   ShaderUpdateSlotType markForUpdateSlot,
+					   TerrainHandler& terrainHandler,
+					   TerrainLayerDefinitionManager& terrainLayerDefinitionManager,
+					   AreaShaderstore& areaShaders);
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	~TerrainAreaAddTask() override;
 
-	virtual bool executeTaskInMainThread();
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
+
+	bool executeTaskInMainThread() override;
+
 private:
 
 	TerrainHandler& mTerrainHandler;

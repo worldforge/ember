@@ -30,79 +30,64 @@
 
 #include <Atlas/Message/Element.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-TerrainParser::TerrainParser()
-{
-}
-TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::Element& terrain, const WFMath::Point<3>& offset) const
-{
+TerrainParser::TerrainParser() = default;
+
+TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::Element& terrain, const WFMath::Point<3>& offset) const {
+	Terrain::TerrainDefPointStore pointStore;
+
 	//_fpreset();
 	if (!terrain.isMap()) {
 		S_LOG_FAILURE("Terrain is not a map");
-	}
-	const Atlas::Message::MapType & tmap = terrain.asMap();
-	Atlas::Message::MapType::const_iterator I = tmap.find("points");
-	if (I == tmap.end()) {
-		S_LOG_FAILURE("No terrain points");
-	}
-
-	Terrain::TerrainDefPointStore pointStore;
-	auto parsePointFn = [&](const Atlas::Message::ListType & point) {
-		if (point.size() < 3) {
-			S_LOG_INFO("Point with less than 3 nums.");
-			return;
-		}
-
-		Terrain::TerrainDefPoint defPoint;
-
-		defPoint.position = WFMath::Point<2>(static_cast<int>(point[0].asNum() + offset.x()), static_cast<int>(point[1].asNum() + offset.z()));
-		defPoint.height = static_cast<float>(point[2].asNum() + offset.y());
-		if (point.size() > 3) {
-			defPoint.roughness = point[3].asFloat();
-		} else {
-			defPoint.roughness = Mercator::BasePoint::ROUGHNESS;
-		}
-		if (point.size() > 4) {
-			defPoint.falloff = point[4].asFloat();
-		} else {
-			defPoint.falloff = Mercator::BasePoint::FALLOFF;
-		}
-		pointStore.push_back(defPoint);
-
-	};
-
-	if (I->second.isList()) {
-		// Legacy support for old list format.
-		const Atlas::Message::ListType& plist = I->second.asList();
-		Atlas::Message::ListType::const_iterator J = plist.begin();
-		for (; J != plist.end(); ++J) {
-			if (!J->isList()) {
-				S_LOG_INFO("Non list in points");
-				continue;
-			}
-			const Atlas::Message::ListType & point = J->asList();
-			parsePointFn(point);
-		}
-	} else if (I->second.isMap()) {
-		const Atlas::Message::MapType& plist = I->second.asMap();
-		Atlas::Message::MapType::const_iterator J = plist.begin();
-		for (; J != plist.end(); ++J) {
-			if (!J->second.isList()) {
-				S_LOG_INFO("Non list in points.");
-				continue;
-			}
-			const Atlas::Message::ListType & point = J->second.asList();
-			parsePointFn(point);
-		}
 	} else {
-		S_LOG_FAILURE("Terrain is the wrong type");
+		auto& tmap = terrain.Map();
+		auto I = tmap.find("points");
+		if (I == tmap.end()) {
+			S_LOG_FAILURE("No terrain points");
+		}
+
+		auto parsePointFn = [&](const Atlas::Message::ListType& point) {
+			if (point.size() < 3) {
+				S_LOG_INFO("Point with less than 3 nums.");
+				return;
+			}
+
+			Terrain::TerrainDefPoint defPoint;
+
+			defPoint.position = WFMath::Point<2>(static_cast<int>(point[0].asNum() + offset.x()), static_cast<int>(point[1].asNum() + offset.z()));
+			defPoint.height = static_cast<float>(point[2].asNum() + offset.y());
+			if (point.size() > 3) {
+				defPoint.roughness = point[3].asFloat();
+			} else {
+				defPoint.roughness = Mercator::BasePoint::ROUGHNESS;
+			}
+			if (point.size() > 4) {
+				defPoint.falloff = point[4].asFloat();
+			} else {
+				defPoint.falloff = Mercator::BasePoint::FALLOFF;
+			}
+			pointStore.push_back(defPoint);
+
+		};
+
+		if (I->second.isMap()) {
+			auto& plist = I->second.Map();
+			auto J = plist.begin();
+			for (; J != plist.end(); ++J) {
+				if (!J->second.isList()) {
+					S_LOG_INFO("Non list in points.");
+					continue;
+				}
+				const Atlas::Message::ListType& point = J->second.List();
+				parsePointFn(point);
+			}
+		} else {
+			S_LOG_FAILURE("Terrain is the wrong type");
+		}
 	}
 	return pointStore;
 

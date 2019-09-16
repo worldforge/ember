@@ -37,51 +37,60 @@ namespace OgreView {
 namespace Terrain {
 
 class TerrainPageSurfaceLayer;
+
 class TerrainPageShadow;
+
 class TerrainPage;
+
 class TerrainPageGeometry;
+
 class ICompilerTechniqueProvider;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A technique for rendering the terrain.
  *
- * Since there are many different ways to perform terrain rendering (depending on hardware, features etc.) we provide multiple implementations of this interface, and let the terrain surface compiler choose which one to use.
+ * Since there are many different ways to perform terrain rendering (depending on hardware, features etc.) we
+ * provide multiple implementations of this interface, and let the terrain surface compiler choose which one to use.
  * An implementation of this interface should be able to generate a complete Ogre::Material for any terrain geometry.
  *
- * Surface generation happens in two steps, where the first preparation step occurs in a background thread, and the final compilation step occurs in the main thread.
+ * Surface generation happens in two steps, where the first preparation step occurs in a background thread, and
+ * the final compilation step occurs in the main thread.
  */
-class TerrainPageSurfaceCompilerTechnique
-{
+class TerrainPageSurfaceCompilerTechnique {
 public:
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~TerrainPageSurfaceCompilerTechnique() {}
+	virtual ~TerrainPageSurfaceCompilerTechnique() = default;
 
 	/**
 	 * @brief Prepares the material.
 	 *
-	 * This is called in a background thread, so any implementation must be sure to perform this in a thread safe way. In most instances that means not touching Ogre (and if it needs to be touched, be very careful when doing so).
-	 * @return False is something went wrong during preparation. The surface generation process will then be halted, and compileMaterial() not called.
+	 * This is called in a background thread, so any implementation must be sure to perform this in a thread safe way.
+	 * In most instances that means not touching Ogre (and if it needs to be touched, be very careful when doing so).
+	 * @return False is something went wrong during preparation. The surface generation process will then be halted,
+	 * and compileMaterial() not called.
 	 */
-    virtual bool prepareMaterial() = 0;
+	virtual bool prepareMaterial() = 0;
 
-    /**
-     * @brief Compiles a previously prepared material.
-     *
-     * This is called in the main thread, and thus has full access to the Ogre system. It's expected that all heavy lifting has occurred in prepareMaterial, and any code here merely handled the setup of the Ogre structures needed.
-     * @param material The material which will be used for the terrain geometry.
-     * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
-     * @return False if something went wrong during compilation.
-     */
-    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const = 0;
+	/**
+	 * @brief Compiles a previously prepared material.
+	 *
+	 * This is called in the main thread, and thus has full access to the Ogre system. It's expected that all heavy lifting
+	 * has occurred in prepareMaterial, and any code here merely handled the setup of the Ogre structures needed.
+	 * @param material The material which will be used for the terrain geometry.
+	 * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
+	 * @return False if something went wrong during compilation.
+	 */
+	virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const = 0;
 
 	/**
 	 * @brief Compiles a previously prepared material for the terrain composite map. May not be implemented.
 	 *
-	 * This is called in the main thread, and thus has full access to the Ogre system. It's expected that all heavy lifting has occurred in prepareMaterial, and any code here merely handled the setup of the Ogre structures needed.
+	 * This is called in the main thread, and thus has full access to the Ogre system. It's expected that all heavy lifting
+	 * has occurred in prepareMaterial, and any code here merely handled the setup of the Ogre structures needed.
 	 * @param material The material which will be used for rendering of the terrain composite map.
      * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
 	 * @return False if something went wrong during compilation or if the technique does not support generating composite maps.
@@ -110,8 +119,7 @@ public:
  *
  * An instance of this is created by the TerrainPageSurfaceCompiler.
  */
-class TerrainPageSurfaceCompilationInstance
-{
+class TerrainPageSurfaceCompilationInstance {
 public:
 
 	/**
@@ -128,7 +136,8 @@ public:
 
 	/**
 	 * @brief Prepares the surface. This is called in a background thread.
-	 * @return False is something went wrong during preparation. The surface generation process will then be halted, and compileMaterial() not called.
+	 * @return False is something went wrong during preparation.
+	 * 	The surface generation process will then be halted, and compileMaterial() not called.
 	 */
 	bool prepare();
 
@@ -163,7 +172,7 @@ private:
 	/**
 	 * @brief The technique to use. Owned by this instance.
 	 */
-	TerrainPageSurfaceCompilerTechnique* mTechnique;
+	std::unique_ptr<TerrainPageSurfaceCompilerTechnique> mTechnique;
 
 	/**
      * A set of textures created in the process. These will be destroyed when the page is destroyed.
@@ -176,51 +185,56 @@ private:
  *
  * @brief Compiles Ogre::Materials for terrain geometries, to be used in the Ogre terrain manager.
  *
- * The actual preparation and compilation occurs in instances of TerrainPageSurfaceCompilationInstance and TerrainPageSurfaceCompilerTechnique which are created by the compiler.
+ * The actual preparation and compilation occurs in instances of TerrainPageSurfaceCompilationInstance
+ * and TerrainPageSurfaceCompilerTechnique which are created by the compiler.
  */
-class TerrainPageSurfaceCompiler{
+class TerrainPageSurfaceCompiler {
 public:
 
 	/**
 	 * @brief Ctor.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-    TerrainPageSurfaceCompiler(ICompilerTechniqueProvider& compilerTechniqueProvider);
+	explicit TerrainPageSurfaceCompiler(ICompilerTechniqueProvider& compilerTechniqueProvider);
 
-    /**
-     * @brief Dtor.
-     */
-    virtual ~TerrainPageSurfaceCompiler();
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~TerrainPageSurfaceCompiler();
 
-    /**
-     * @brief Creates a new compilation instance.
-     * @param geometry The geometry to operate on.
-     * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
-     * @param terrainPageShadow An optional shadow.
-     * @return A compilation instance.
-     */
-    TerrainPageSurfaceCompilationInstance* createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
+	/**
+	 * @brief Creates a new compilation instance.
+	 * @param geometry The geometry to operate on.
+	 * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
+	 * @param terrainPageShadow An optional shadow.
+	 * @return A compilation instance.
+	 */
+	TerrainPageSurfaceCompilationInstance* createCompilationInstance(const TerrainPageGeometryPtr& geometry,
+																	 const SurfaceLayerStore& terrainPageSurfaces,
+																	 TerrainPageShadow* terrainPageShadow);
 
 private:
 
-    /**
-     * @brief The compiler technique provider, which creates new techniques.
-     */
-    ICompilerTechniqueProvider& mCompilerTechniqueProvider;
+	/**
+	 * @brief The compiler technique provider, which creates new techniques.
+	 */
+	ICompilerTechniqueProvider& mCompilerTechniqueProvider;
 
-    /**
-     * A set of textures created in the process. These will be destroyed when this instance is destroyed.
-     */
-    std::set<std::string> mManagedTextures;
+	/**
+	 * A set of textures created in the process. These will be destroyed when this instance is destroyed.
+	 */
+	std::set<std::string> mManagedTextures;
 
-    /**
-     * @brief Selects and creates a new technique. The selection depends on hardware being used and features required.
-     * @param geometry The geometry to operate on.
-     * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
-     * @param terrainPageShadow An optional shadow.
-     * @return A technique.
-     */
-    TerrainPageSurfaceCompilerTechnique* selectTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const;
+	/**
+	 * @brief Selects and creates a new technique. The selection depends on hardware being used and features required.
+	 * @param geometry The geometry to operate on.
+	 * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
+	 * @param terrainPageShadow An optional shadow.
+	 * @return A technique.
+	 */
+	TerrainPageSurfaceCompilerTechnique* selectTechnique(const TerrainPageGeometryPtr& geometry,
+														 const SurfaceLayerStore& terrainPageSurfaces,
+														 const TerrainPageShadow* terrainPageShadow) const;
 
 };
 

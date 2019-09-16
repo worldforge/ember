@@ -27,6 +27,7 @@
 #include <sigc++/signal.h>
 #include <map>
 #include <sigc++/trackable.h>
+#include <memory>
 
 namespace Mercator {
 
@@ -134,7 +135,7 @@ private:
 	 *
 	 * This will be lazily created when the overlay is first asked to be shown.
 	 */
-	TerrainEditorOverlay* mOverlay;
+	std::unique_ptr<TerrainEditorOverlay> mOverlay;
 
 	/**
 	 * @brief The radius, in world units, within which base points will be affected.

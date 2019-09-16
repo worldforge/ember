@@ -18,6 +18,7 @@
 
 #ifndef EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_
 #define EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_
+
 #include "TerrainAreaTaskBase.h"
 
 #include <Mercator/Area.h>
@@ -25,21 +26,17 @@
 #include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainShader;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Updates terrain areas.
  */
-class TerrainAreaUpdateTask: public TerrainAreaTaskBase
-{
+class TerrainAreaUpdateTask : public TerrainAreaTaskBase {
 public:
 
 	/**
@@ -50,8 +47,13 @@ public:
 	 * @param markForUpdateSlot A slot which will be called in the main thread when the update is complete.
 	 * @param oldShape The old shape, before the update.
 	 */
-	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, const Mercator::Area& newArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
-	virtual ~TerrainAreaUpdateTask();
+	TerrainAreaUpdateTask(Mercator::Terrain& terrain,
+						  Mercator::Area* area,
+						  const Mercator::Area& newArea,
+						  ShaderUpdateSlotType markForUpdateSlot,
+						  const TerrainShader* shader);
+
+	~TerrainAreaUpdateTask() override;
 
 	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 

@@ -59,7 +59,7 @@ class ICompilerTechniqueProvider;
 class TerrainPageSurface
 {
 public:
-	typedef std::map<int, TerrainPageSurfaceLayer*> TerrainPageSurfaceLayerStore;
+	typedef std::map<int, std::unique_ptr<TerrainPageSurfaceLayer>> TerrainPageSurfaceLayerStore;
 	/**
 	 * @brief Ctor.
 	 *
@@ -87,11 +87,11 @@ public:
 	 */
 	int getNumberOfSegmentsPerAxis() const;
 
-	TerrainPageSurfaceLayer* createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader);
+	void createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader);
 
-	const Ogre::MaterialPtr getMaterial() const;
+	Ogre::MaterialPtr getMaterial() const;
 
-	const Ogre::MaterialPtr getCompositeMapMaterial() const;
+	Ogre::MaterialPtr getCompositeMapMaterial() const;
 
 	/**
 	 * @brief Recompiles the material.
@@ -101,7 +101,7 @@ public:
 
 	const TerrainPageSurfaceLayerStore& getLayers() const;
 
-	TerrainPageSurfaceLayer* updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate);
+	void updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate);
 
 	/**
 	 * @brief Gets the precomputed shadow attached to this surface.
@@ -117,7 +117,7 @@ protected:
 	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::unique_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
-	TerrainPageShadow* mShadow;
+	std::unique_ptr<TerrainPageShadow> mShadow;
 	Ogre::MaterialPtr mMaterial;
 	Ogre::MaterialPtr mMaterialComposite;
 

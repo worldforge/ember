@@ -59,7 +59,7 @@ namespace OgreView {
 		 @brief Defines the height of a special "base point" in the terrain.
 		 These base points are then user by Mercator::Terrain for generating the actual terrain.
 		 */
-		class TerrainDefPoint;
+		struct TerrainDefPoint;
 
 		/**
 		 * @brief A type used for storing changes to areas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.

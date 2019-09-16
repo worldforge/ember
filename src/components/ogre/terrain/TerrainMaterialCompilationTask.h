@@ -25,23 +25,20 @@
 #include <sigc++/signal.h>
 #include <vector>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainPageSurfaceCompilationInstance;
+
 class TerrainPage;
 
 /**
  * @brief Recompiles the material for a terrain page.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class TerrainMaterialCompilationTask : public Tasks::TemplateNamedTask<TerrainMaterialCompilationTask>
-{
+class TerrainMaterialCompilationTask : public Tasks::TemplateNamedTask<TerrainMaterialCompilationTask> {
 public:
 
 	/**
@@ -50,14 +47,18 @@ public:
 	 * @param signal The signal to emit once the compilation is finished.
 	 * @param lightDirection The main light direction.
 	 */
-	TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection);
+	TerrainMaterialCompilationTask(GeometryPtrVector geometry,
+								   sigc::signal<void, TerrainPage*>& signal,
+								   const WFMath::Vector<3>& lightDirection);
 
 	/**
 	 * @brief Ctor.
 	 * @param page The page which needs to have its material recompiled.
 	 * @param lightDirection The main light direction.
 	 */
-	TerrainMaterialCompilationTask(TerrainPageGeometryPtr pageGeometry, sigc::signal<void, TerrainPage* >& signal, const WFMath::Vector<3>& lightDirection);
+	TerrainMaterialCompilationTask(TerrainPageGeometryPtr pageGeometry,
+								   sigc::signal<void, TerrainPage*>& signal,
+								   const WFMath::Vector<3>& lightDirection);
 
 	/**
 	 * @brief Dtor.
@@ -67,6 +68,7 @@ public:
 	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 
 	bool executeTaskInMainThread() override;
+
 private:
 
 	/**
@@ -88,7 +90,7 @@ private:
 	/**
 	 * @brief A signal to emit once the update is done.
 	 */
-	sigc::signal<void, TerrainPage* >& mSignal;
+	sigc::signal<void, TerrainPage*>& mSignal;
 
 	/**
 	 * @brief The main light direction.

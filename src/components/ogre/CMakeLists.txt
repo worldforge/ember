@@ -58,7 +58,7 @@ add_library(emberogre
         terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/Buffer.cpp terrain/HeightMapBuffer.cpp
         terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp
         terrain/TerrainAreaRemoveTask.cpp terrain/TerrainModUpdateTask.cpp
-        terrain/GeometryUpdateTask.cpp terrain/TerrainEditorOverlay.cpp terrain/TerrainDefPoint.cpp
+        terrain/GeometryUpdateTask.cpp terrain/TerrainEditorOverlay.cpp
         terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/ShadowUpdateTask.cpp terrain/PlantQueryTask.cpp
         terrain/HeightMapFlatSegment.cpp terrain/Segment.cpp terrain/SegmentHolder.cpp terrain/SegmentManager.cpp
         terrain/foliage/PlantPopulator.cpp terrain/foliage/ClusterPopulator.cpp terrain/foliage/Vegetation.cpp terrain/TerrainHandler.cpp

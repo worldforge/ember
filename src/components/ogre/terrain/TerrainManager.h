@@ -75,7 +75,7 @@ class ITerrainAdapter;
 class ITerrainPageBridge;
 class HeightMap;
 class HeightMapBufferProvider;
-class TerrainDefPoint;
+struct TerrainDefPoint;
 class PlantAreaQuery;
 class PlantAreaQueryResult;
 class SegmentManager;
@@ -240,12 +240,12 @@ protected:
 	/**
 	 * @brief Compiler technique provider.
 	 */
-	Techniques::CompilerTechniqueProvider* mCompilerTechniqueProvider;
+	std::unique_ptr<Techniques::CompilerTechniqueProvider> mCompilerTechniqueProvider;
 
 	/**
 	 * @brief The terrain handler, which handles the underlying Mercator terrain.
 	 */
-	TerrainHandler* mHandler;
+	std::unique_ptr<TerrainHandler> mHandler;
 
 	/**
 	 * @brief True if foliage should be shown.
@@ -256,11 +256,11 @@ protected:
 	 * @brief The adapter acts as a bridge between the manager and the terrain rendering component,
 	 * 		  allowing a certain degree of decoupling.
 	 */
-	ITerrainAdapter* mTerrainAdapter;
+	std::unique_ptr<ITerrainAdapter> mTerrainAdapter;
 
 	unsigned int mFoliageBatchSize;
 
-	Foliage::Vegetation* mVegetation;
+	std::unique_ptr<Foliage::Vegetation> mVegetation;
 
 	/**
 	 * @brief The scene in which the terrain manager operates.

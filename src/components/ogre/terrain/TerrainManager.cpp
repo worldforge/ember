@@ -105,11 +105,6 @@ TerrainManager::~TerrainManager()
 
 	//We must make sure that any tasks are purged in the handler before we destroy the terrain adapter.
     mHandler->shutdown();
-
-	delete mTerrainAdapter;
-	delete mHandler;
-	delete mVegetation;
-	delete mCompilerTechniqueProvider;
 }
 
 void TerrainManager::startPaging()
@@ -137,7 +132,7 @@ const TerrainInfo& TerrainManager::getTerrainInfo() const
 
 ITerrainAdapter* TerrainManager::getTerrainAdapter() const
 {
-	return mTerrainAdapter;
+	return mTerrainAdapter.get();
 }
 
 void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback)
@@ -181,7 +176,7 @@ void TerrainManager::config_TerrainTechnique(const std::string& section, const s
 void TerrainManager::config_TerrainPageSize(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	if (variable.is_int()) {
-		unsigned int size = static_cast<unsigned int>(static_cast<int>(variable));
+		auto size = static_cast<unsigned int>(static_cast<int>(variable));
 		mTerrainAdapter->setPageSize(size);
 		mHandler->setPageSize(size);
 		mHandler->updateAllPages();
@@ -191,7 +186,7 @@ void TerrainManager::config_TerrainPageSize(const std::string& section, const st
 void TerrainManager::config_TerrainLoadRadius(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	if (variable.is_int()) {
-		unsigned int radius = static_cast<unsigned int>(static_cast<int>(variable));
+		auto radius = static_cast<unsigned int>(static_cast<int>(variable));
 		mTerrainAdapter->setLoadRadius(Ogre::Real(radius));
 	}
 }
@@ -237,10 +232,10 @@ void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* p
 
 void TerrainManager::initializeTerrain()
 {
-	ITerrainAdapter* adapter = mTerrainAdapter;
-	assert(adapter);
-	adapter->loadScene();
+	assert(mTerrainAdapter);
+	mTerrainAdapter->loadScene();
 }
+
 bool TerrainManager::isFoliageShown() const
 {
 	return mIsFoliageShown;

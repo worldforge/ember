@@ -46,10 +46,7 @@ namespace OgreView {
 namespace Environment {
 
 FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition)
-, mFoliageDefinition(foliageDefinition)
-, mPagedGeometry(0)
-{
+		: mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition), mFoliageDefinition(foliageDefinition) {
 	initializeDependentLayers();
 
 	mTerrainManager.getHandler().EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_LayerUpdated));
@@ -59,29 +56,24 @@ FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager, const Terrain:
 
 }
 
-FoliageBase::~FoliageBase()
-{
-	delete mPagedGeometry;
-}
+FoliageBase::~FoliageBase() = default;
 
-void FoliageBase::initializeDependentLayers()
-{
-	bool foundLayer(false);
+void FoliageBase::initializeDependentLayers() {
+	bool foundLayer = false;
 	for (auto& definition : TerrainLayerDefinitionManager::getSingleton().getDefinitions()) {
 
 		if (foundLayer) {
-			mDependentDefinitions.push_back(definition);
-		} else if (!foundLayer && definition == &mTerrainLayerDefinition) {
+			mDependentDefinitions.push_back(definition.get());
+		} else if (!foundLayer && definition.get() == &mTerrainLayerDefinition) {
 			foundLayer = true;
 		}
 	}
 }
 
-void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const AreaStore& areas)
-{
+void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const AreaStore& areas) {
 	if (mPagedGeometry) {
 		//check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
-		bool isRelevant(0);
+		bool isRelevant = false;
 		if (&shader->getLayerDefinition() == &mTerrainLayerDefinition) {
 			isRelevant = true;
 		} else {
@@ -98,8 +90,7 @@ void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shad
 	}
 }
 
-void FoliageBase::TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader)
-{
+void FoliageBase::TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader) {
 	//we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
 	mDependentDefinitions.push_back(&shader.getLayerDefinition());
 	if (mPagedGeometry) {
@@ -107,8 +98,7 @@ void FoliageBase::TerrainHandler_EventShaderCreated(const Terrain::TerrainShader
 	}
 }
 
-void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage* >&)
-{
+void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>&) {
 	if (mPagedGeometry) {
 		for (const auto& area : areas) {
 			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(area));
@@ -118,8 +108,7 @@ void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::Ax
 	}
 }
 
-void FoliageBase::TerrainManager_TerrainShown(const std::vector<Ogre::TRect<Ogre::Real>>& areas)
-{
+void FoliageBase::TerrainManager_TerrainShown(const std::vector<Ogre::TRect<Ogre::Real>>& areas) {
 	if (mPagedGeometry) {
 		for (auto& area : areas) {
 			mPagedGeometry->reloadGeometryPages(area);
@@ -127,8 +116,7 @@ void FoliageBase::TerrainManager_TerrainShown(const std::vector<Ogre::TRect<Ogre
 	}
 }
 
-void FoliageBase::reloadAtPosition(const WFMath::Point<2>& worldPosition)
-{
+void FoliageBase::reloadAtPosition(const WFMath::Point<2>& worldPosition) {
 	if (mPagedGeometry) {
 		mPagedGeometry->reloadGeometryPage(Ogre::Vector3(worldPosition.x(), 0, worldPosition.y()), true);
 	}
@@ -138,9 +126,8 @@ void FoliageBase::reloadAtPosition(const WFMath::Point<2>& worldPosition)
 //Gets the height of the terrain at the specified x/z coordinate
 //The userData parameter isn't used in this implementation of a height function, since
 //there's no need for extra data other than the x/z coordinates.
-float getTerrainHeight(float x, float z, void* userData)
-{
-	IHeightProvider* heightProvider = reinterpret_cast<IHeightProvider*>(userData);
+float getTerrainHeight(float x, float z, void* userData) {
+	auto heightProvider = reinterpret_cast<IHeightProvider*>(userData);
 	float height = 0;
 	heightProvider->getHeight(TerrainPosition(x, z), height);
 	return height;
@@ -149,12 +136,11 @@ float getTerrainHeight(float x, float z, void* userData)
 //Gets the height of the terrain at the specified x/z coordinate
 //The userData parameter isn't used in this implementation of a height function, since
 //there's no need for extra data other than the x/z coordinates.
-double getTerrainHeight(double x, double z, void* userData)
-{
-	IHeightProvider* heightProvider = reinterpret_cast<IHeightProvider*>(userData);
+double getTerrainHeight(double x, double z, void* userData) {
+	auto heightProvider = reinterpret_cast<IHeightProvider*>(userData);
 	float height = 0;
 	heightProvider->getHeight(TerrainPosition(x, z), height);
-	return (double)height;
+	return (double) height;
 }
 }
 

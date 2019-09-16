@@ -34,11 +34,13 @@ class PagedGeometry;
 namespace Ember {
 namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainFoliageDefinition;
+
 class TerrainLayerDefinition;
+
 class TerrainShader;
+
 class TerrainArea;
 }
 
@@ -49,22 +51,26 @@ class FoliageLayer;
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class GrassFoliage : public FoliageBase
-{
+class GrassFoliage : public FoliageBase {
 public:
-	GrassFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
-	virtual ~GrassFoliage();
-	
-	virtual void initialize();
-	virtual void frameStarted();
-	virtual void setDensity(float newGrassDensity);
-	virtual void setFarDistance(float factor);
+	GrassFoliage(Terrain::TerrainManager& terrainManager,
+				 const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+				 const Terrain::TerrainFoliageDefinition& foliageDefinition);
+
+	~GrassFoliage() override;
+
+	void initialize() override;
+
+	void frameStarted() override;
+
+	void setDensity(float newGrassDensity) override;
+
+	void setFarDistance(float factor) override;
 
 protected:
-	
-	::Forests::PagedGeometry* mGrass;
-	::Forests::GrassLoader<FoliageLayer>* mGrassLoader;
-	
+
+	std::unique_ptr<::Forests::GrassLoader<FoliageLayer>> mGrassLoader;
+
 	float mMinHeight;
 	float mMaxHeight;
 	float mMinWidth;

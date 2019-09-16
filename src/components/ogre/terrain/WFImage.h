@@ -21,21 +21,19 @@
 #define EMBEROGRETERRAINWFIMAGE_H_
 
 #include "Image.h"
-namespace Ember
-{
-namespace OgreView
-{
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
 
-class WFImage : public Image
-{
+namespace Terrain {
+
+class WFImage : public Image {
 public:
-	WFImage(Image::ImageBuffer* buffer);
+	explicit WFImage(Image::ImageBuffer* buffer);
 
-	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0);
-	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0);
+	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0) override;
+
+	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0) override;
 };
 
 }

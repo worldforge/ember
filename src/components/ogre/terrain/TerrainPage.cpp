@@ -43,69 +43,56 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 TerrainPage::TerrainPage(const TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-	mIndex(index),
-	mPageSize(pageSize),
-	mPosition(index.first, index.second),
-	mTerrainSurface(new TerrainPageSurface(*this, compilerTechniqueProvider)),
-	mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), -(mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), -(mPosition.y()) * (getPageSize() - 1)))
-{
+		mIndex(index),
+		mPageSize(pageSize),
+		mPosition(index.first, index.second),
+		mTerrainSurface(new TerrainPageSurface(*this, compilerTechniqueProvider)),
+		mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), -(mPosition.y() - 1) * (getPageSize() - 1)),
+				WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), -(mPosition.y()) * (getPageSize() - 1))) {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << index.first << ":" << index.second);
 }
 
-TerrainPage::~TerrainPage()
-{
-}
+TerrainPage::~TerrainPage() = default;
 
-int TerrainPage::getPageSize() const
-{
+int TerrainPage::getPageSize() const {
 	return mPageSize;
 }
 
-int TerrainPage::getVerticeCount() const
-{
+int TerrainPage::getVerticeCount() const {
 	return (getPageSize() * getPageSize());
 }
 
-int TerrainPage::getNumberOfSegmentsPerAxis() const
-{
+int TerrainPage::getNumberOfSegmentsPerAxis() const {
 	return (getPageSize() - 1) / 64;
 }
 
-const TerrainPosition& TerrainPage::getWFPosition() const
-{
+const TerrainPosition& TerrainPage::getWFPosition() const {
 	return mPosition;
 }
 
-const TerrainIndex& TerrainPage::getWFIndex() const
-{
+const TerrainIndex& TerrainPage::getWFIndex() const {
 	return mIndex;
 }
 
 
-const Ogre::MaterialPtr TerrainPage::getMaterial() const
-{
+Ogre::MaterialPtr TerrainPage::getMaterial() const {
 	return mTerrainSurface->getMaterial();
 }
 
-const Ogre::MaterialPtr TerrainPage::getCompositeMapMaterial() const
-{
+Ogre::MaterialPtr TerrainPage::getCompositeMapMaterial() const {
 	return mTerrainSurface->getCompositeMapMaterial();
 }
 
-unsigned int TerrainPage::getBlendMapScale() const
-{
+unsigned int TerrainPage::getBlendMapScale() const {
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 	if (configSrv.itemExists("terrain", "scalealphamap")) {
-		int value = (int)configSrv.getValue("terrain", "scalealphamap");
+		int value = (int) configSrv.getValue("terrain", "scalealphamap");
 		//make sure it can't go below 1
 		return std::max<unsigned int>(1, value);
 	} else {
@@ -113,49 +100,43 @@ unsigned int TerrainPage::getBlendMapScale() const
 	}
 }
 
-const WFMath::AxisBox<2>& TerrainPage::getWorldExtent() const
-{
+const WFMath::AxisBox<2>& TerrainPage::getWorldExtent() const {
 	return mExtent;
 }
 
-const TerrainPageSurface* TerrainPage::getSurface() const
-{
+const TerrainPageSurface* TerrainPage::getSurface() const {
 	return mTerrainSurface.get();
 }
 
-TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
-{
-	TerrainPageSurfaceLayer* layer = mTerrainSurface->createSurfaceLayer(shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());
-	auto& definition = shader->getLayerDefinition();
+void TerrainPage::addShader(const TerrainShader* shader) {
+	mTerrainSurface->createSurfaceLayer(shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());
+	auto I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
+	if (I != mTerrainSurface->getLayers().end()) {
+		auto& layer = I->second;
+		auto& definition = shader->getLayerDefinition();
 
-	layer->setDiffuseTextureName(definition.getDiffuseTextureName());
-	layer->setNormalTextureName(definition.getNormalMapTextureName());
-	//get the scale by dividing the total size of the page with the size of each tile
-	float scale = getBlendMapSize() / definition.getTileSize();
-	layer->setScale(scale);
-	return layer;
+		layer->setDiffuseTextureName(definition.getDiffuseTextureName());
+		layer->setNormalTextureName(definition.getNormalMapTextureName());
+		//get the scale by dividing the total size of the page with the size of each tile
+		float scale = getBlendMapSize() / definition.getTileSize();
+		layer->setScale(scale);
+	}
 }
 
-void TerrainPage::updateAllShaderTextures(TerrainPageGeometry& geometry, bool repopulate)
-{
-	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin();
+void TerrainPage::updateAllShaderTextures(TerrainPageGeometry& geometry, bool repopulate) {
+	auto I = mTerrainSurface->getLayers().begin();
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
 		mTerrainSurface->updateLayer(geometry, I->second->getSurfaceIndex(), repopulate);
 	}
 }
 
-TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* shader, TerrainPageGeometry& geometry, bool repopulate)
-{
-	TerrainPageSurfaceLayer* layer;
-	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
+void TerrainPage::updateShaderTexture(const TerrainShader* shader, TerrainPageGeometry& geometry, bool repopulate) {
+	auto I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
 	if (I == mTerrainSurface->getLayers().end()) {
-		layer = addShader(shader);
-	} else {
-		layer = I->second;
+		addShader(shader);
 	}
 	mTerrainSurface->updateLayer(geometry, shader->getTerrainIndex(), repopulate);
 
-	return layer;
 }
 
 

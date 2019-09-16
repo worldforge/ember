@@ -36,7 +36,6 @@ These base points are then user by Mercator::Terrain for generating the actual t
 */
 struct TerrainDefPoint
 {
-	public:
 
 	/**
 	The position of the point, in world units.

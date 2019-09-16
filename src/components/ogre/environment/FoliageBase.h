@@ -39,14 +39,18 @@ class PagedGeometry;
 namespace Ember {
 namespace OgreView {
 
-namespace Terrain
-{
-	class TerrainArea;
-	class TerrainFoliageDefinition;
-	class TerrainLayerDefinition;
-	class TerrainPage;
-	class TerrainShader;
-	class TerrainManager;
+namespace Terrain {
+class TerrainArea;
+
+class TerrainFoliageDefinition;
+
+class TerrainLayerDefinition;
+
+class TerrainPage;
+
+class TerrainShader;
+
+class TerrainManager;
 }
 
 namespace Environment {
@@ -60,7 +64,7 @@ struct DistanceStore {
 	float nearDistance;
 	float transition;
 };
-	
+
 /**
 	@brief Base class for all foliage layers.
 	
@@ -72,8 +76,7 @@ struct DistanceStore {
 	@see Foliage
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class FoliageBase : public virtual sigc::trackable
-{
+class FoliageBase : public virtual sigc::trackable {
 public:
 	/**
 	@brief A store of terrain layer definition.
@@ -87,17 +90,18 @@ public:
 	 * @param foliageDefinition The foliage definition which is to be used for generation of this layer. This should contain all info needed for properly setting up the layer.
 	 */
 	FoliageBase(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
+
 	/**
 	 * @brief Dtor. This will also delete the main PagedGeomtry instance held by this class.
 	 */
 	virtual ~FoliageBase();
-	
+
 	void reloadAtPosition(const WFMath::Point<2>& worldPosition);
 
 	virtual void initialize() = 0;
 
 	virtual void frameStarted() = 0;
-	
+
 	/**
 	 * @brief Sets the density factor of the foliage.
 	 * This affects the overall density of the foliage by a factor.
@@ -105,8 +109,8 @@ public:
 	 * @param newDensity the new density factor in float, where 1 implies normal or full density and 0 implies no density.
 	 * @note Should be overriden in the deriving foliage layer to provide ability to set the far distance. 
 	 */
-	virtual void setDensity(float) { }
-	
+	virtual void setDensity(float) {}
+
 	/**
 	 * @brief Sets the far distance factor of the foliage.
 	 * This affects the far distance of the foliage by a factor.
@@ -114,7 +118,7 @@ public:
 	 * @param factor the new far distance factor, where 1 implies normal or max far distance and 0 implies minimum far distance;
 	 * @note Should be overriden in the deriving foliage layer to provide ability to set the far distance. 
 	 */
-	virtual void setFarDistance(float) { };
+	virtual void setFarDistance(float) {};
 
 protected:
 
@@ -122,26 +126,31 @@ protected:
 
 	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;
-	::Forests::PagedGeometry* mPagedGeometry;
-	
+	std::unique_ptr<::Forests::PagedGeometry> mPagedGeometry;
+
 	TerrainLayerDefinitionStore mDependentDefinitions;
-	
+
 	/**
 	 * A store of all distances for foliage detail levels added to this foliage.
 	 * @see Forests::PagedGeometry::addDetailLevel
 	 */
 	std::list<DistanceStore> mDistanceStore;
-	
+
 	void initializeDependentLayers();
+
 	void TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const Terrain::AreaStore& areas);
+
 	void TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader);
+
 	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages);
+
 	void TerrainManager_TerrainShown(const std::vector<Ogre::TRect<Ogre::Real>>& areas);
 
 };
 
-float getTerrainHeight(float x, float z, void* userData = 0);
-double getTerrainHeight(double x, double z, void* userData = 0);
+float getTerrainHeight(float x, float z, void* userData = nullptr);
+
+double getTerrainHeight(double x, double z, void* userData = nullptr);
 
 }
 

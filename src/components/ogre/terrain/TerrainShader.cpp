@@ -32,7 +32,10 @@ namespace Ember {
 namespace OgreView {
 namespace Terrain {
 
-TerrainShader::TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const TerrainLayerDefinition& layerDef, Mercator::Shader* shader)
+TerrainShader::TerrainShader(Mercator::Terrain& terrain,
+		int terrainIndex,
+		const TerrainLayerDefinition& layerDef,
+		Mercator::Shader* shader)
 : mLayerDef(layerDef)
 , mShader(shader)
 , mTerrain(terrain)
@@ -62,7 +65,7 @@ const TerrainLayerDefinition& TerrainShader::getLayerDefinition() const
 Mercator::Surface* TerrainShader::getSurfaceForSegment(Mercator::Segment& segment) const
 {
 
-	Mercator::Surface* surface = 0;
+	Mercator::Surface* surface = nullptr;
 	if (segment.getSurfaces().find(getTerrainIndex()) != segment.getSurfaces().end()) {
 		surface = segment.getSurfaces().find(getTerrainIndex())->second;
 	}

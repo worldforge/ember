@@ -40,7 +40,7 @@ class TerrainLayerDefinition;
 class TerrainLayerDefinitionManager : public Ogre::ResourceManager, public Singleton<TerrainLayerDefinitionManager>
 {
 public:
-	typedef std::vector<TerrainLayerDefinition*> DefinitionStore;
+	typedef std::vector<std::unique_ptr<TerrainLayerDefinition>> DefinitionStore;
     TerrainLayerDefinitionManager();
 
 	~TerrainLayerDefinitionManager() override;

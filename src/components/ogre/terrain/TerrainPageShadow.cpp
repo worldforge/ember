@@ -34,32 +34,23 @@
 #include <OgreColourValue.h>
 #include <OgreImage.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage) :
-		mTerrainPage(terrainPage), mLightDirection(WFMath::Vector<3>::ZERO()), mImage(nullptr)
-{
+		mTerrainPage(terrainPage), mLightDirection(WFMath::Vector<3>::ZERO()), mImage(nullptr) {
 }
 
-TerrainPageShadow::~TerrainPageShadow()
-{
-	delete mImage;
-}
+TerrainPageShadow::~TerrainPageShadow() = default;
 
-void TerrainPageShadow::setLightDirection(const WFMath::Vector<3>& lightDirection)
-{
+void TerrainPageShadow::setLightDirection(const WFMath::Vector<3>& lightDirection) {
 	mLightDirection = lightDirection;
 }
 
-void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
-{
+void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry) {
 	if (!mImage) {
-		mImage = new OgreImage(new Image::ImageBuffer(mTerrainPage.getBlendMapSize(), 1));
+		mImage = std::make_unique<OgreImage>(new Image::ImageBuffer(mTerrainPage.getBlendMapSize(), 1));
 	}
 	mImage->reset();
 
@@ -79,7 +70,7 @@ void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 
 	for (int i = 0; i < pageSizeInMeters; ++i) {
 		position = origPosition;
-		position[1] = position[1] - i;
+		position[1] = position[1] - (float) i;
 		for (int j = 0; j < pageSizeInMeters; ++j) {
 			WFMath::Vector<3> normal;
 			if (geometry.getNormal(position, normal)) {
@@ -98,20 +89,17 @@ void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 
 }
 
-void TerrainPageShadow::loadIntoImage(Ogre::Image& ogreImage) const
-{
+void TerrainPageShadow::loadIntoImage(Ogre::Image& ogreImage) const {
 	ogreImage.loadDynamicImage(mImage->getData(), mImage->getResolution(), mImage->getResolution(), 1, Ogre::PF_L8);
 
 }
 
 
-void TerrainPageShadow::setShadowTextureName(const std::string& shadowTextureName)
-{
+void TerrainPageShadow::setShadowTextureName(const std::string& shadowTextureName) {
 	mShadowTextureName = shadowTextureName;
 }
 
-const std::string& TerrainPageShadow::getShadowTextureName() const
-{
+const std::string& TerrainPageShadow::getShadowTextureName() const {
 	return mShadowTextureName;
 }
 

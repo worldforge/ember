@@ -45,13 +45,13 @@ bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMat
 	//possibilities.
 	const Atlas::Message::MapType* shapeMap(&areaData);
 
-	Atlas::Message::MapType::const_iterator shapeI = areaData.find("shape");
+	auto shapeI = areaData.find("shape");
 	if (shapeI != areaData.end()) {
 		//If we enter here we know we're dealing with the newer format.
 		const Atlas::Message::Element& shapeElement = shapeI->second;
 		if (shapeElement.isMap()) {
-			shapeMap = &shapeElement.asMap();
-			Atlas::Message::MapType::const_iterator shapeTypeI = shapeMap->find("type");
+			shapeMap = &shapeElement.Map();
+			auto shapeTypeI = shapeMap->find("type");
 			if (shapeTypeI == shapeMap->end() || !shapeTypeI->second.isString() || shapeTypeI->second != "polygon") {
 				S_LOG_FAILURE("TerrainArea 'shape' element must be of type 'polygon', since Ember currently doesn't support any other shape type.");
 				return false;
@@ -67,9 +67,9 @@ bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMat
 		return false;
 	}
 
-	Atlas::Message::MapType::const_iterator it = areaData.find("layer");
+	auto it = areaData.find("layer");
 	if ((it != areaData.end()) && it->second.isInt()) {
-		layer = it->second.asInt();
+		layer = it->second.Int();
 	} else {
 		layer = 0;
 	}
@@ -77,13 +77,13 @@ bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMat
 	return true;
 }
 
-const Atlas::Message::Element TerrainAreaParser::createElement(const WFMath::Polygon<2>& poly, int layer)
+Atlas::Message::Element TerrainAreaParser::createElement(const WFMath::Polygon<2>& poly, int layer)
 {
 	Atlas::Message::MapType map;
 	if (poly.isValid()) {
 		Atlas::Message::Element shapeElement = poly.toAtlas();
 		if (shapeElement.isMap()) {
-			shapeElement.asMap()["type"] = "polygon";
+			shapeElement.Map()["type"] = "polygon";
 			map.insert(std::make_pair("shape", shapeElement));
 		} else {
 			S_LOG_WARNING("A polygon should be serialized into a map.");

@@ -46,15 +46,14 @@ namespace OgreView {
 
 namespace Environment {
 
-GrassFoliage::GrassFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition)
-, mGrass(0)
-, mGrassLoader(0)
-, mMinHeight(1.0f)
-, mMaxHeight(1.5f)
-, mMinWidth(1.0f)
-, mMaxWidth(1.5f)
-{
+GrassFoliage::GrassFoliage(Terrain::TerrainManager& terrainManager,
+						   const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+						   const Terrain::TerrainFoliageDefinition& foliageDefinition)
+		: FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition),
+		mMinHeight(1.0f),
+		mMaxHeight(1.5f),
+		mMinWidth(1.0f),
+		mMaxWidth(1.5f) {
 	if (mFoliageDefinition.hasParameter("minHeight")) {
 		mMinHeight = atof(mFoliageDefinition.getParameter("minHeight").c_str());
 	}
@@ -69,14 +68,10 @@ GrassFoliage::GrassFoliage(Terrain::TerrainManager& terrainManager, const Terrai
 	}
 }
 
-GrassFoliage::~GrassFoliage()
-{
-	delete mGrassLoader;
-}
+GrassFoliage::~GrassFoliage() = default;
 
-void GrassFoliage::initialize()
-{
-	mPagedGeometry = new ::Forests::PagedGeometry(&mTerrainManager.getScene().getMainCamera(), mTerrainManager.getFoliageBatchSize());
+void GrassFoliage::initialize() {
+	mPagedGeometry = std::make_unique<::Forests::PagedGeometry>(&mTerrainManager.getScene().getMainCamera(), mTerrainManager.getFoliageBatchSize());
 	const WFMath::AxisBox<2>& worldSize = mTerrainManager.getTerrainInfo().getWorldSizeInIndices();
 
 	::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
@@ -96,46 +91,46 @@ void GrassFoliage::initialize()
 	mPagedGeometry->setShadersEnabled(false);
 
 	//Create a GrassLoader object
-	mGrassLoader = new ::Forests::GrassLoader<FoliageLayer>(mPagedGeometry);
- 	mPagedGeometry->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load
+	mGrassLoader = std::make_unique<::Forests::GrassLoader<FoliageLayer>>(mPagedGeometry.get());
+	mPagedGeometry->setPageLoader(mGrassLoader.get());    //Assign the "treeLoader" to be used to load
 	mGrassLoader->setHeightFunction(&getTerrainHeight, static_cast<IHeightProvider*>(&mTerrainManager));
 
 	//Add some grass to the scene with GrassLoader::addLayer()
-	FoliageLayer *l = mGrassLoader->addLayer(mFoliageDefinition.getParameter("material"));
+	FoliageLayer* l = mGrassLoader->addLayer(mFoliageDefinition.getParameter("material"));
 
 	l->configure(&mTerrainManager, &mTerrainLayerDefinition, &mFoliageDefinition);
 	//Configure the grass layer properties (size, density, animation properties, fade settings, etc.)
 	l->setMinimumSize(mMinWidth, mMinHeight);
 	l->setMaximumSize(mMaxWidth, mMaxHeight);
-	l->setAnimationEnabled(true);		//Enable animations
+	l->setAnimationEnabled(true);        //Enable animations
 	if (mFoliageDefinition.hasParameter("swayDistribution")) {
 		l->setSwayDistribution(atof(mFoliageDefinition.getParameter("swayDistribution").c_str()));
 	} else {
-		l->setSwayDistribution(10.0f);		//Sway fairly unsynchronized
+		l->setSwayDistribution(10.0f);        //Sway fairly unsynchronized
 	}
 	if (mFoliageDefinition.hasParameter("swayLength")) {
 		l->setSwayLength(atof(mFoliageDefinition.getParameter("swayLength").c_str()));
 	} else {
-		l->setSwayLength(0.5f);				//Sway back and forth 0.5 units in length
+		l->setSwayLength(0.5f);                //Sway back and forth 0.5 units in length
 	}
 
 	if (mFoliageDefinition.hasParameter("swaySpeed")) {
 		l->setSwaySpeed(atof(mFoliageDefinition.getParameter("swaySpeed").c_str()));
 	} else {
-		l->setSwaySpeed(0.5f);				//Sway 1/2 a cycle every second
+		l->setSwaySpeed(0.5f);                //Sway 1/2 a cycle every second
 	}
 
 	if (mFoliageDefinition.hasParameter("fadeTech")) {
 		const std::string& fadeTech(mFoliageDefinition.getParameter("fadeTech"));
 		if (fadeTech == "alphagrow") {
-			l->setFadeTechnique(::Forests::FADETECH_ALPHAGROW);	//Distant grass should slowly fade in
+			l->setFadeTechnique(::Forests::FADETECH_ALPHAGROW);    //Distant grass should slowly fade in
 		} else if (fadeTech == "grow") {
-			l->setFadeTechnique(::Forests::FADETECH_GROW);	//Distant grass should slowly fade in
+			l->setFadeTechnique(::Forests::FADETECH_GROW);    //Distant grass should slowly fade in
 		} else {
-			l->setFadeTechnique(::Forests::FADETECH_ALPHA);	//Distant grass should slowly fade in
+			l->setFadeTechnique(::Forests::FADETECH_ALPHA);    //Distant grass should slowly fade in
 		}
 	} else {
-		l->setFadeTechnique(::Forests::FADETECH_ALPHA);	//Distant grass should slowly fade in
+		l->setFadeTechnique(::Forests::FADETECH_ALPHA);    //Distant grass should slowly fade in
 	}
 // 	l->setDensity(1.5f);				//Relatively dense grass
 	if (mFoliageDefinition.hasParameter("renderTech")) {
@@ -145,51 +140,45 @@ void GrassFoliage::initialize()
 		} else if (renderTech == "sprite") {
 			l->setRenderTechnique(::Forests::GRASSTECH_SPRITE);
 		} else {
-			l->setRenderTechnique(::Forests::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
+			l->setRenderTechnique(::Forests::GRASSTECH_CROSSQUADS);    //Draw grass as scattered quads
 		}
 	} else {
-		l->setRenderTechnique(::Forests::GRASSTECH_CROSSQUADS);	//Draw grass as scattered quads
+		l->setRenderTechnique(::Forests::GRASSTECH_CROSSQUADS);    //Draw grass as scattered quads
 	}
 
 	l->setMapBounds(Convert::toOgre(worldSize));
 	l->setMaxSlope(Ogre::Degree(40.0f));
 
 	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
-	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end(); ++I) {
-		DistanceStore tempDistance = { (*I)->getFarRange(), (*I)->getNearRange(), (*I)->getTransition() };
+	for (auto& detailLevel : detailLevels) {
+		DistanceStore tempDistance = {detailLevel->getFarRange(), detailLevel->getNearRange(), detailLevel->getTransition()};
 		mDistanceStore.push_back(tempDistance);
 	}
 
 }
 
-void GrassFoliage::frameStarted()
-{
+void GrassFoliage::frameStarted() {
 	if (mPagedGeometry) {
 		try {
 			mPagedGeometry->update();
-		} catch (const std::exception& ex)
-		{
-			S_LOG_FAILURE("Error when updating grass. Will disable grass."<< ex);
-			delete mGrassLoader;
-			delete mPagedGeometry;
-			mGrassLoader = 0;
-			mPagedGeometry = 0;
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when updating grass. Will disable grass." << ex);
+			mGrassLoader.reset();
+			mPagedGeometry.reset();
 		}
 	}
 }
 
-void GrassFoliage::setDensity(float newGrassDensity)
-{
+void GrassFoliage::setDensity(float newGrassDensity) {
 	mGrassLoader->setDensityFactor(newGrassDensity);
 	mPagedGeometry->reloadGeometry();
 }
 
-void GrassFoliage::setFarDistance(float factor)
-{
+void GrassFoliage::setFarDistance(float factor) {
 	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
 
-	std::list<DistanceStore>::iterator J = mDistanceStore.begin();
-	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end() && J != mDistanceStore.end(); ++I) {
+	auto J = mDistanceStore.begin();
+	for (auto I = detailLevels.begin(); I != detailLevels.end() && J != mDistanceStore.end(); ++I) {
 		(*I)->setFarRange(factor * J->farDistance);
 		(*I)->setNearRange(factor * J->nearDistance);
 		(*I)->setTransition(factor * J->transition);

@@ -34,16 +34,14 @@
 #include <OgreMaterialManager.h>
 #include <OgreRoot.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider)), mShadow(new TerrainPageShadow(terrainPage))
-{
+		mTerrainPage(terrainPage),
+		mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider)),
+		mShadow(new TerrainPageShadow(terrainPage)) {
 	//create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
 	std::stringstream materialNameSS;
@@ -52,83 +50,67 @@ TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompiler
 	mMaterialName = materialNameSS.str();
 
 	mMaterial = Ogre::MaterialManager::getSingleton().create(mMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	mMaterialComposite = Ogre::MaterialManager::getSingleton().create(mMaterialName+ "/CompositeMap", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	mMaterialComposite = Ogre::MaterialManager::getSingleton().create(mMaterialName + "/CompositeMap", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 }
 
-TerrainPageSurface::~TerrainPageSurface()
-{
-	for (auto& entry : mLayers) {
-		delete entry.second;
-	}
+TerrainPageSurface::~TerrainPageSurface() {
+	mLayers.clear();
 	Ogre::MaterialManager::getSingleton().remove(mMaterial);
 	Ogre::MaterialManager::getSingleton().remove(mMaterialComposite);
-	delete mShadow;
 }
 
-const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getLayers() const
-{
+const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getLayers() const {
 	return mLayers;
 }
 
-TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate)
-{
+void TerrainPageSurface::updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate) {
 	auto I = mLayers.find(layerIndex);
 	if (I != mLayers.end()) {
 		if (repopulate) {
 			I->second->populate(geometry);
 		}
 		//		I->second->updateCoverageImage(geometry);
-		return I->second;
 	}
-	return 0;
 }
 
-const TerrainPosition& TerrainPageSurface::getWFPosition() const
-{
+const TerrainPosition& TerrainPageSurface::getWFPosition() const {
 	return mTerrainPage.getWFPosition();
 }
 
-int TerrainPageSurface::getNumberOfSegmentsPerAxis() const
-{
+int TerrainPageSurface::getNumberOfSegmentsPerAxis() const {
 	return mTerrainPage.getNumberOfSegmentsPerAxis();
 }
 
-unsigned int TerrainPageSurface::getPixelWidth() const
-{
+unsigned int TerrainPageSurface::getPixelWidth() const {
 	return mTerrainPage.getBlendMapSize();
 }
 
-const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
-{
+Ogre::MaterialPtr TerrainPageSurface::getMaterial() const {
 	return mMaterial;
 }
 
-const Ogre::MaterialPtr TerrainPageSurface::getCompositeMapMaterial() const
-{
+Ogre::MaterialPtr TerrainPageSurface::getCompositeMapMaterial() const {
 	return mMaterialComposite;
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const
-{
+TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const {
 	//The compiler only works with const surfaces, so we need to create such a copy of our surface map.
+	//TODO: perhaps store surfaces as shared_ptr, so they can be shared?
 	SurfaceLayerStore constLayers;
-	for (auto entry : mLayers) {
-		constLayers.insert(SurfaceLayerStore::value_type(entry.first, entry.second));
+	for (auto& entry : mLayers) {
+		constLayers.emplace(entry.first, entry.second.get());
 	}
-	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow);
+	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow.get());
 }
 
-TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader)
-{
-	TerrainPageSurfaceLayer* terrainSurface = new TerrainPageSurfaceLayer(*this, definition, surfaceIndex, shader);
+void TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader) {
+	auto* terrainSurface = new TerrainPageSurfaceLayer(*this, definition, surfaceIndex, shader);
 	mLayers.insert(TerrainPageSurfaceLayerStore::value_type(surfaceIndex, terrainSurface));
-	return terrainSurface;
 }
 
-TerrainPageShadow* TerrainPageSurface::getShadow() const
-{
-	return mShadow;
+TerrainPageShadow* TerrainPageSurface::getShadow() const {
+	return mShadow.get();
 }
 
 

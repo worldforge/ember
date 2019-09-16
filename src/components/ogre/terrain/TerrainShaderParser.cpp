@@ -31,26 +31,20 @@
 #include <Mercator/ShaderFactory.h>
 
 #include <Atlas/Message/Element.h>
-namespace Ember
-{
-namespace OgreView
-{
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+
+namespace Terrain {
 
 TerrainShaderParser::TerrainShaderParser(TerrainHandler& terrainHandler) :
-	mTerrainHandler(terrainHandler)
-{
+		mTerrainHandler(terrainHandler) {
 }
 
 
-TerrainShaderParser::~TerrainShaderParser()
-{
-}
+TerrainShaderParser::~TerrainShaderParser() = default;
 
-float extractFloat(const Atlas::Message::ListType& params, size_t position)
-{
+float extractFloat(const Atlas::Message::ListType& params, size_t position) {
 	if (params.size() > position) {
 		const Atlas::Message::Element& elem(params[position]);
 		if (elem.isNum()) {
@@ -60,8 +54,7 @@ float extractFloat(const Atlas::Message::ListType& params, size_t position)
 	return 0;
 }
 
-void TerrainShaderParser::createShaders(const Atlas::Message::Element& terrain)
-{
+void TerrainShaderParser::createShaders(const Atlas::Message::Element& terrain) {
 	//For now don't allow updating of shaders.
 	//TODO: add support for altering terrain shaders
 	if (!mTerrainHandler.getAllShaders().empty()) {
@@ -76,35 +69,35 @@ void TerrainShaderParser::createShaders(const Atlas::Message::Element& terrain)
 		if (Isurfaces != terrainMap.end()) {
 			auto& surfaces = Isurfaces->second;
 			if (surfaces.isList()) {
-				const Atlas::Message::ListType & slist(surfaces.asList());
-				for (Atlas::Message::ListType::const_iterator I = slist.begin(); I != slist.end(); ++I) {
-					if (I->isMap()) {
-						std::string name;
-						std::string pattern;
-						const Atlas::Message::MapType& surfaceMap(I->asMap());
+				auto& slist = surfaces.List();
+				for (const auto& surfaceElement : slist) {
+					if (surfaceElement.isMap()) {
+						auto& surfaceMap = surfaceElement.Map();
 
 						Mercator::Shader::Parameters params;
 						if (surfaceMap.count("params")) {
 							const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
 							if (paramsElem.isMap()) {
-								for (Atlas::Message::MapType::const_iterator J = paramsElem.asMap().begin(); J != paramsElem.asMap().end(); ++J) {
-									if (J->second.isNum()) {
-										params[J->first] = J->second.asNum();
+								for (const auto& param : paramsElem.asMap()) {
+									if (param.second.isNum()) {
+										params[param.first] = param.second.asNum();
 									}
 								}
 							}
 						}
 
-						if (surfaceMap.count("name")) {
-							const Atlas::Message::Element& nameElem(surfaceMap.find("name")->second);
+						auto Iname = surfaceMap.find("name");
+						if (Iname != surfaceMap.end()) {
+							auto& nameElem = Iname->second;
 							if (nameElem.isString()) {
-								const std::string& name = nameElem.asString();
-								Terrain::TerrainLayerDefinition* def(terrainManager.getDefinitionForShader(name));
+								auto& name = nameElem.String();
+								auto def = terrainManager.getDefinitionForShader(name);
 								if (def) {
-									if (surfaceMap.count("pattern")) {
-										const Atlas::Message::Element& patternElem(surfaceMap.find("pattern")->second);
+									auto Ipattern = surfaceMap.find("pattern");
+									if (Ipattern != surfaceMap.end()) {
+										auto& patternElem = Ipattern->second;
 										if (patternElem.isString()) {
-											const std::string& pattern = patternElem.asString();
+											const std::string& pattern = patternElem.String();
 											Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
 											if (shader) {
 												isValid = true;
@@ -127,8 +120,7 @@ void TerrainShaderParser::createShaders(const Atlas::Message::Element& terrain)
 	}
 }
 
-void TerrainShaderParser::createDefaultShaders()
-{
+void TerrainShaderParser::createDefaultShaders() {
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
 	Terrain::TerrainLayerDefinition* def(0);
 	if ((def = terrainManager.getDefinitionForShader("rock"))) {

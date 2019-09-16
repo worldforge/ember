@@ -19,22 +19,17 @@
 #ifndef TERRAINSHADERPARSER_H_
 #define TERRAINSHADERPARSER_H_
 
-namespace Atlas
-{
-namespace Message
-{
+namespace Atlas {
+namespace Message {
 class Element;
 }
 }
 
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainHandler;
 
@@ -45,15 +40,14 @@ class TerrainHandler;
  @author Erik Ogenvik <erik@ogenvik.org>
 
  */
-class TerrainShaderParser
-{
+class TerrainShaderParser {
 public:
 
 	/**
 	 * @brief Ctor.
 	 * @param terrainHandler The terrain handler.
 	 */
-	TerrainShaderParser(TerrainHandler& terrainHandler);
+	explicit TerrainShaderParser(TerrainHandler& terrainHandler);
 
 	virtual ~TerrainShaderParser();
 

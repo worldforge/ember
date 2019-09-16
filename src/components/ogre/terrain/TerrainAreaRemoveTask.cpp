@@ -20,31 +20,28 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Area.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+#include <utility>
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
 
-TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader) :
-	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mShader(shader)
-{
+namespace Terrain {
+
+TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain,
+											 Mercator::Area* area,
+											 ShaderUpdateSlotType markForUpdateSlot,
+											 const TerrainShader* shader) :
+		TerrainAreaTaskBase(terrain, area, std::move(markForUpdateSlot)), mShader(shader) {
 
 }
 
-TerrainAreaRemoveTask::~TerrainAreaRemoveTask()
-{
-}
+TerrainAreaRemoveTask::~TerrainAreaRemoveTask() = default;
 
-void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	mTerrain.removeArea(mArea);
 }
 
-bool TerrainAreaRemoveTask::executeTaskInMainThread()
-{
+bool TerrainAreaRemoveTask::executeTaskInMainThread() {
 	if (mShader) {
 		//mark the shader for update
 		//we'll not update immediately, we try to batch many area updates and then only update once per frame

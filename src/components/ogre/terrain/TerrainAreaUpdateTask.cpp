@@ -20,25 +20,26 @@
 #include "TerrainArea.h"
 #include <Mercator/Terrain.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+#include <utility>
 
-namespace Terrain
-{
-TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, const Mercator::Area& newArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader) :
-	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mNewArea(newArea), mShader(shader)
-{
+namespace Ember {
+namespace OgreView {
+
+namespace Terrain {
+TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain,
+											 Mercator::Area* area,
+											 const Mercator::Area& newArea,
+											 ShaderUpdateSlotType markForUpdateSlot,
+											 const TerrainShader* shader) :
+		TerrainAreaTaskBase(terrain, area, std::move(markForUpdateSlot)),
+		mNewArea(newArea),
+		mShader(shader) {
 
 }
 
-TerrainAreaUpdateTask::~TerrainAreaUpdateTask()
-{
-}
+TerrainAreaUpdateTask::~TerrainAreaUpdateTask() = default;
 
-void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	mOldShape = mArea->bbox();
 	mArea->setShape(mNewArea.shape());
 	mNewShape = mArea->bbox();
@@ -46,8 +47,7 @@ void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCo
 	mTerrain.updateArea(mArea);
 }
 
-bool TerrainAreaUpdateTask::executeTaskInMainThread()
-{
+bool TerrainAreaUpdateTask::executeTaskInMainThread() {
 	if (mShader) {
 		//mark the shader for update
 		//we'll not update immediately, we try to batch many area updates and then only update once per frame

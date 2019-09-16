@@ -48,7 +48,7 @@ namespace Terrain
 class TerrainHandler;
 class TerrainMod;
 class TerrainArea;
-class TerrainDefPoint;
+struct TerrainDefPoint;
 }
 
 class TerrainEffectorListener;

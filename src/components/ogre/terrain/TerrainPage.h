@@ -121,25 +121,25 @@ public:
 	 * @brief The material used for the page.
 	 * @return
 	 */
-	const Ogre::MaterialPtr getMaterial() const;
+	Ogre::MaterialPtr getMaterial() const;
 
 	/**
 	 * @brief The material used for rendering a page's composite map. The composite map is a precomputed version of the terrain texture(with blending, maybe shadows etc) which can be used to render far away pages faster.
 	 * @return The composite map material.
 	 */
-	const Ogre::MaterialPtr getCompositeMapMaterial() const;
+	Ogre::MaterialPtr getCompositeMapMaterial() const;
 
 	/**
 	 * @brief Adds a shader to the page, meaning that it will be used in rendering.
 	 * @param shader The new shader to add.
 	 */
-	TerrainPageSurfaceLayer* addShader(const TerrainShader* shader);
+	void addShader(const TerrainShader* shader);
 
 	/**
 	 * @brief Updates the shader texture for the specific shader.
 	 * @param shader The shader to update.
 	 */
-	TerrainPageSurfaceLayer* updateShaderTexture(const TerrainShader* shader, TerrainPageGeometry& geometry, bool repopulate = true);
+	void updateShaderTexture(const TerrainShader* shader, TerrainPageGeometry& geometry, bool repopulate = true);
 
 	/**
 	 * @brief Updates all the shader textures of the page.

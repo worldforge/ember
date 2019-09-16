@@ -32,27 +32,34 @@ namespace OgreView {
 
 namespace Terrain {
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage*>& signal, const WFMath::Vector<3>& lightDirection) :
-		mGeometry(geometry), mSignal(signal), mLightDirection(lightDirection) {
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(GeometryPtrVector geometry,
+															   sigc::signal<void, TerrainPage*>& signal,
+															   const WFMath::Vector<3>& lightDirection) :
+		mGeometry(std::move(geometry)),
+		mSignal(signal),
+		mLightDirection(lightDirection) {
 }
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry, sigc::signal<void, TerrainPage*>& signal, const WFMath::Vector<3>& lightDirection) :
-		mSignal(signal), mLightDirection(lightDirection) {
-	mGeometry.push_back(geometry);
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry,
+															   sigc::signal<void, TerrainPage*>& signal,
+															   const WFMath::Vector<3>& lightDirection) :
+		mSignal(signal),
+		mLightDirection(lightDirection) {
+	mGeometry.push_back(std::move(geometry));
 }
 
 void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
-	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
-		(*J)->repopulate();
-		TerrainPage& page = (*J)->getPage();
-		TerrainPageSurfaceCompilationInstance* compilationInstance = page.getSurface()->createSurfaceCompilationInstance(*J);
+	for (auto & geometry : mGeometry) {
+		geometry->repopulate();
+		TerrainPage& page = geometry->getPage();
+		TerrainPageSurfaceCompilationInstance* compilationInstance = page.getSurface()->createSurfaceCompilationInstance(geometry);
 		//If the technique requires a pregenerated shadow we must also populate normals.
 		if (compilationInstance->requiresPregenShadow()) {
-			(*J)->repopulate(true);
-			page.getSurface()->getShadow()->updateShadow(**J);
+			geometry->repopulate(true);
+			page.getSurface()->getShadow()->updateShadow(*geometry);
 		}
 		if (compilationInstance->prepare()) {
-			mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &(*J)->getPage()));
+			mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &geometry->getPage()));
 		}
 	}
 	//Release Segment references as soon as we can
@@ -63,8 +70,8 @@ bool TerrainMaterialCompilationTask::executeTaskInMainThread() {
 	TimedLog timedLog("TerrainMaterialCompilationTask::executeTaskInMainThread");
 	if (!mMaterialRecompilations.empty()) {
 		auto J = mMaterialRecompilations.begin();
-		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
-		TerrainPage* page = J->second;
+		auto compilationInstance = J->first;
+		auto page = J->second;
 		compilationInstance->compile(page->getMaterial());
 		S_LOG_VERBOSE("Compiling terrain page composite map material");
 		compilationInstance->compileCompositeMap(page->getCompositeMapMaterial());
@@ -85,7 +92,7 @@ bool TerrainMaterialCompilationTask::executeTaskInMainThread() {
 void TerrainMaterialCompilationTask::updateSceneManagersAfterMaterialsChange() {
 	//We need to do this to prevent stale hashes in Ogre, which will lead to crashes during rendering.
 	if (!Ogre::Pass::getDirtyHashList().empty() || !Ogre::Pass::getPassGraveyard().empty()) {
-		for (auto entry : Ogre::Root::getSingleton().getSceneManagers()) {
+		for (const auto& entry : Ogre::Root::getSingleton().getSceneManagers()) {
 			Ogre::SceneManager* pScene = entry.second;
 			if (pScene) {
 				Ogre::RenderQueue* pQueue = pScene->getRenderQueue();

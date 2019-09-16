@@ -113,7 +113,7 @@ public:
 	/**
 	 * @brief Gets the collection of segments which make up this geometry.
 	 */
-	const SegmentVector getValidSegments() const;
+	SegmentVector getValidSegments() const;
 
 	/**
 	 * @brief Gets the normal at the specified local position.

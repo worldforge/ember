@@ -40,16 +40,20 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader) :
-	mTerrainPageSurface(terrainPageSurface), mShader(shader), mSurfaceIndex(surfaceIndex), mScale(1.0f), mDefinition(definition)
+TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface,
+		const TerrainLayerDefinition& definition,
+		int surfaceIndex,
+		const Mercator::Shader& shader) :
+	mTerrainPageSurface(terrainPageSurface),
+	mShader(shader),
+	mSurfaceIndex(surfaceIndex),
+	mScale(1.0f),
+	mDefinition(definition)
 {
 
 }
 
-TerrainPageSurfaceLayer::~TerrainPageSurfaceLayer()
-{
-
-}
+TerrainPageSurfaceLayer::~TerrainPageSurfaceLayer() = default;
 
 bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) const
 {

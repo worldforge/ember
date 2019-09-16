@@ -13,7 +13,7 @@ class TerrainLayerDefinitionManager : public Ogre::ResourceManager
 	
 		class const_iterator {
 			public:
-				Ember::OgreView::Terrain::TerrainLayerDefinition* __operator_ptr @ get();
+				const std::unique_ptr<Ember::OgreView::Terrain::TerrainLayerDefinition>& __operator_ptr @ get();
 				Ember::OgreView::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& __operator_pp @ next();
 // 				bool operator==(const Ember::OgreView::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& value);
 		};

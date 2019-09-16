@@ -46,64 +46,58 @@ namespace OgreView {
 
 namespace Environment {
 
-ShrubberyFoliage::ShrubberyFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition)
-, mLoader(0)
-{
+ShrubberyFoliage::ShrubberyFoliage(Terrain::TerrainManager& terrainManager,
+								   const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+								   const Terrain::TerrainFoliageDefinition& foliageDefinition)
+		: FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition) {
 }
 
-ShrubberyFoliage::~ShrubberyFoliage()
-{
-	delete mLoader;
-}
+ShrubberyFoliage::~ShrubberyFoliage() = default;
 
-void ShrubberyFoliage::initialize()
-{
-	mPagedGeometry = new ::Forests::PagedGeometry(&mTerrainManager.getScene().getMainCamera(), mTerrainManager.getFoliageBatchSize());
+void ShrubberyFoliage::initialize() {
+	mPagedGeometry = std::make_unique<::Forests::PagedGeometry>(&mTerrainManager.getScene().getMainCamera(), mTerrainManager.getFoliageBatchSize());
 
 	mPagedGeometry->setInfinite();
 
 
 	mPagedGeometry->addDetailLevel<Forests::BatchPage>(64, 32);
 
-	mLoader = new FoliageLoader(mTerrainManager.getScene().getSceneManager(), mTerrainManager, mTerrainLayerDefinition, mFoliageDefinition, *mPagedGeometry);
- 	mPagedGeometry->setPageLoader(mLoader);
+	mLoader = std::make_unique<FoliageLoader>(mTerrainManager.getScene().getSceneManager(),
+											  mTerrainManager,
+											  mTerrainLayerDefinition,
+											  mFoliageDefinition,
+											  *mPagedGeometry);
+	mPagedGeometry->setPageLoader(mLoader.get());
 
 	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
-	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end(); ++I) {
-		DistanceStore tempDistance = { (*I)->getFarRange(), (*I)->getNearRange(), (*I)->getTransition() };
+	for (auto& detailLevel : detailLevels) {
+		DistanceStore tempDistance = {detailLevel->getFarRange(), detailLevel->getNearRange(), detailLevel->getTransition()};
 		mDistanceStore.push_back(tempDistance);
 	}
 }
 
-void ShrubberyFoliage::frameStarted()
-{
+void ShrubberyFoliage::frameStarted() {
 	if (mPagedGeometry) {
 		try {
 			mPagedGeometry->update();
-		} catch (const std::exception& ex)
-		{
-			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayerDefinition.getName() << " and areaId " << mTerrainLayerDefinition.getAreaId() << ". Will disable shrubbery."<< ex);
-			delete mPagedGeometry;
-			delete mLoader;
-			mPagedGeometry = 0;
-			mLoader = 0;
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayerDefinition.getName() << " and areaId " << mTerrainLayerDefinition.getAreaId() << ". Will disable shrubbery." << ex);
+			mPagedGeometry.reset();
+			mLoader.reset();
 		}
 	}
 }
 
-void ShrubberyFoliage::setDensity(float newGrassDensity)
-{
+void ShrubberyFoliage::setDensity(float newGrassDensity) {
 	mLoader->setDensityFactor(newGrassDensity);
 	mPagedGeometry->reloadGeometry();
 }
 
-void ShrubberyFoliage::setFarDistance(float factor)
-{
+void ShrubberyFoliage::setFarDistance(float factor) {
 	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
 
-	std::list<DistanceStore>::iterator J = mDistanceStore.begin();
-	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end() && J != mDistanceStore.end(); ++I) {
+	auto J = mDistanceStore.begin();
+	for (auto I = detailLevels.begin(); I != detailLevels.end() && J != mDistanceStore.end(); ++I) {
 		(*I)->setFarRange(factor * J->farDistance);
 		(*I)->setNearRange(factor * J->nearDistance);
 		(*I)->setTransition(factor * J->transition);

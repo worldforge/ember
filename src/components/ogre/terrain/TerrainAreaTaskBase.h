@@ -24,36 +24,36 @@
 
 namespace Mercator {
 
-	class Terrain;
-	class Area;
+class Terrain;
+
+class Area;
 
 }
 
 namespace WFMath {
-	template <int> class AxisBox;
+template<int>
+class AxisBox;
 }
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainArea;
+
 class TerrainShader;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Common base class for terrain area related tasks.
  */
-class TerrainAreaTaskBase: public Tasks::TemplateNamedTask<TerrainAreaTaskBase>
-{
+class TerrainAreaTaskBase : public Tasks::TemplateNamedTask<TerrainAreaTaskBase> {
 public:
 	typedef sigc::slot<void, const TerrainShader*, const WFMath::AxisBox<2>&> ShaderUpdateSlotType;
 
 	TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType shaderUpdateSlot);
-	virtual ~TerrainAreaTaskBase();
+
+	~TerrainAreaTaskBase() override;
 
 protected:
 

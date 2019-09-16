@@ -30,6 +30,7 @@ namespace OgreView {
 namespace Terrain {
 
 class TerrainPageSurfaceCompilerTechnique;
+
 class TerrainPageShadow;
 
 /**
@@ -40,15 +41,13 @@ class TerrainPageShadow;
  *
  * These techniques often are tightly bound to both Ogre and SceneManager instances, which is the main reason this is provided as an interface.
  */
-class ICompilerTechniqueProvider
-{
-public:
+struct ICompilerTechniqueProvider {
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ICompilerTechniqueProvider() {}
-	
+	virtual ~ICompilerTechniqueProvider() = default;
+
 	/**
 	 * @brief Creates a new compiler technique.
 	 *
@@ -56,10 +55,11 @@ public:
 	 * @param terrainPageSurfaces The surfaces attached to the geometry.
 	 * @param terrainPageShadow An optional shadow for the geometry.
 	 */
-	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const = 0;
+	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry,
+																 const SurfaceLayerStore& terrainPageSurfaces,
+																 const TerrainPageShadow* terrainPageShadow) const = 0;
 
 };
-
 
 
 }

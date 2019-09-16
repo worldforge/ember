@@ -137,7 +137,7 @@ float BasePointUserObject::getFalloff() const
 
 void BasePointUserObject::updateMarking()
 {
-	Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
+	auto entity = dynamic_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
 	try {
 		if (mIsMoving) {
 			entity->setMaterialName("/common/base/authoring/point/moving");
@@ -228,7 +228,7 @@ TerrainEditorOverlay::~TerrainEditorOverlay()
 	}
 	//TODO: also delete user objects
 	if (mOverlayNode) {
-		Ogre::SceneNode* parent = dynamic_cast<Ogre::SceneNode*>(mOverlayNode->getParent());
+		auto* parent = dynamic_cast<Ogre::SceneNode*>(mOverlayNode->getParent());
 		if (parent) {
 			parent->removeAndDestroyChild(mOverlayNode);
 		} else {
@@ -276,7 +276,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			basepointNode->setPosition(ogrePos);
 			basepointNode->attachObject(entity);
 
-			BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode, mManager.getScene().getBulletWorld());
+			auto* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode, mManager.getScene().getBulletWorld());
 
 			//store the base point user object
 			std::stringstream ss_;

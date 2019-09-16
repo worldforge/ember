@@ -22,13 +22,10 @@
 #include "TerrainAreaTaskBase.h"
 #include "Types.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainShader;
 
@@ -36,15 +33,18 @@ class TerrainShader;
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Removes terrain areas.
  */
-class TerrainAreaRemoveTask : public TerrainAreaTaskBase
-{
+class TerrainAreaRemoveTask : public TerrainAreaTaskBase {
 public:
-	TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
-	virtual ~TerrainAreaRemoveTask();
+	TerrainAreaRemoveTask(Mercator::Terrain& terrain,
+						  Mercator::Area* area,
+						  ShaderUpdateSlotType markForUpdateSlot,
+						  const TerrainShader* shader);
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	~TerrainAreaRemoveTask() override;
 
-	virtual bool executeTaskInMainThread();
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
+
+	bool executeTaskInMainThread() override;
 
 private:
 

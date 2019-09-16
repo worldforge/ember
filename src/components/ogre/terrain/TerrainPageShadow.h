@@ -22,6 +22,7 @@
 //
 #ifndef EMBEROGRETERRAINPAGESHADOW_H
 #define EMBEROGRETERRAINPAGESHADOW_H
+
 #include "../EmberOgrePrerequisites.h"
 
 #include <memory>
@@ -29,9 +30,11 @@
 #include <OgreMath.h>
 
 namespace Ogre {
-	class ColourValue;
-	class Image;
-	class Vector2;
+class ColourValue;
+
+class Image;
+
+class Vector2;
 }
 
 namespace Ember {
@@ -39,16 +42,17 @@ namespace OgreView {
 namespace Terrain {
 
 class TerrainPage;
+
 class TerrainPageGeometry;
+
 class OgreImage;
 
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class TerrainPageShadow
-{
+class TerrainPageShadow {
 public:
-	TerrainPageShadow(const TerrainPage& terrainPage);
+	explicit TerrainPageShadow(const TerrainPage& terrainPage);
 
 	virtual ~TerrainPageShadow();
 
@@ -83,7 +87,7 @@ protected:
 	const TerrainPage& mTerrainPage;
 	WFMath::Vector<3> mLightDirection;
 
-	OgreImage* mImage;
+	std::unique_ptr<OgreImage> mImage;
 
 	/**
 	 * @brief An optional shadow texture name.

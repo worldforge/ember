@@ -67,8 +67,7 @@ TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page, SegmentManager& segm
 	}
 }
 
-TerrainPageGeometry::~TerrainPageGeometry() {
-}
+TerrainPageGeometry::~TerrainPageGeometry() = default;
 
 void TerrainPageGeometry::repopulate(bool alsoNormals) {
 	for (const auto& column : mLocalSegments) {
@@ -146,8 +145,8 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 }
 
 Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos) const {
-	int ix = I_ROUND(floor(pos.x() / 64));
-	int iz = I_ROUND(floor(pos.y() / 64));
+	int ix = I_ROUND(std::floor(pos.x() / 64));
+	int iz = I_ROUND(std::floor(pos.y() / 64));
 
 	auto I = mLocalSegments.find(ix);
 	if (I == mLocalSegments.end()) {
@@ -161,8 +160,8 @@ Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainP
 }
 
 Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const {
-	int ix = I_ROUND(floor(pos.x() / 64));
-	int iz = I_ROUND(floor(pos.y() / 64));
+	int ix = I_ROUND(std::floor(pos.x() / 64));
+	int iz = I_ROUND(std::floor(pos.y() / 64));
 
 	localPositionInSegment.x() = pos.x() - (ix * 64);
 	localPositionInSegment.y() = pos.y() - (iz * 64);
@@ -178,7 +177,7 @@ Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainP
 	return &J->second->getMercatorSegment();
 }
 
-const SegmentVector TerrainPageGeometry::getValidSegments() const {
+SegmentVector TerrainPageGeometry::getValidSegments() const {
 	SegmentVector validSegments;
 	for (const auto& column : mLocalSegments) {
 		for (const auto& entry : column.second) {
@@ -198,8 +197,8 @@ bool TerrainPageGeometry::getNormal(const TerrainPosition& localPosition, WFMath
 	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
 	if (segment && segment->getNormals()) {
 		int resolution = segment->getResolution();
-		size_t xPos = localPosition.x() - (I_ROUND(floor(localPosition.x() / resolution)) * resolution);
-		size_t zPos = localPosition.y() - (I_ROUND(floor(localPosition.y() / resolution)) * resolution);
+		size_t xPos = localPosition.x() - (I_ROUND(std::floor(localPosition.x() / resolution)) * resolution);
+		size_t zPos = localPosition.y() - (I_ROUND(std::floor(localPosition.y() / resolution)) * resolution);
 		size_t normalPos = (zPos * segment->getSize() * 3) + (xPos * 3);
 		normal = WFMath::Vector<3>(segment->getNormals()[normalPos], segment->getNormals()[normalPos + 1], segment->getNormals()[normalPos] + 2);
 		return true;

@@ -39,19 +39,18 @@ class TerrainArea;
 The element must be of map type and contain an int value named "layer", and a list of float tuples named "area".
 @author Erik Ogenvik
 */
-class TerrainAreaParser
-{
+class TerrainAreaParser {
 public:
-/**
-* @brief Parses the area data from the atlas element.
-* @param areaData The root area element.
-* @param poly The shape of the area will be put here.
-* @param layer The layer of the area will be put here.
-* @return True if the parsing was successful.
-*/
-bool parseArea(const Atlas::Message::MapType& areaData, WFMath::Polygon<2>& poly, int& layer);
+	/**
+	* @brief Parses the area data from the atlas element.
+	* @param areaData The root area element.
+	* @param poly The shape of the area will be put here.
+	* @param layer The layer of the area will be put here.
+	* @return True if the parsing was successful.
+	*/
+	bool parseArea(const Atlas::Message::MapType& areaData, WFMath::Polygon<2>& poly, int& layer);
 
-const Atlas::Message::Element createElement(const WFMath::Polygon<2>& poly, int layer);
+	Atlas::Message::Element createElement(const WFMath::Polygon<2>& poly, int layer);
 
 };
 

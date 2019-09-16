@@ -17,39 +17,42 @@
  */
 
 #include "TerrainAreaAddTask.h"
+
+#include <utility>
 #include "TerrainHandler.h"
 #include "TerrainLayerDefinitionManager.h"
 
 #include "Mercator/Area.h"
 #include "Mercator/Terrain.h"
 #include "Mercator/AreaShader.h"
-namespace Ember
-{
-namespace OgreView
-{
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
 
-TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders) :
-	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mTerrainHandler(terrainHandler), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders)
-{
+namespace Terrain {
+
+TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain,
+									   Mercator::Area* area,
+									   ShaderUpdateSlotType markForUpdateSlot,
+									   TerrainHandler& terrainHandler,
+									   TerrainLayerDefinitionManager& terrainLayerDefinitionManager,
+									   AreaShaderstore& areaShaders) :
+		TerrainAreaTaskBase(terrain, area, std::move(markForUpdateSlot)),
+		mTerrainHandler(terrainHandler),
+		mTerrainLayerDefinitionManager(terrainLayerDefinitionManager),
+		mAreaShaders(areaShaders) {
 }
 
-TerrainAreaAddTask::~TerrainAreaAddTask()
-{
-}
+TerrainAreaAddTask::~TerrainAreaAddTask() = default;
 
-void TerrainAreaAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void TerrainAreaAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	//We know by now that this area is valid, so we don't need to check the layer or the shape for validity.
 	mTerrain.addArea(mArea);
 	//We can only access the bbox in the background thread, so lets pass on a copy of the bbox to the main thread.
 	mNewBbox = mArea->bbox();
 }
 
-bool TerrainAreaAddTask::executeTaskInMainThread()
-{
+bool TerrainAreaAddTask::executeTaskInMainThread() {
 	//Note that "layer" never gets updated, so it's ok to access that from the main thread.
 	if (mArea->getLayer() != 0) {
 		if (!mAreaShaders.count(mArea->getLayer())) {

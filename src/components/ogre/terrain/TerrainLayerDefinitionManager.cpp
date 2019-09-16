@@ -52,9 +52,7 @@ TerrainLayerDefinitionManager::TerrainLayerDefinitionManager() {
 
 
 TerrainLayerDefinitionManager::~TerrainLayerDefinitionManager() {
-	for (auto& mDefinition : mDefinitions) {
-		delete mDefinition;
-	}
+	mDefinitions.clear();
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 }
@@ -65,7 +63,7 @@ void TerrainLayerDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, con
 }
 
 void TerrainLayerDefinitionManager::addDefinition(TerrainLayerDefinition* definition) {
-	mDefinitions.push_back(definition);
+	mDefinitions.emplace_back(definition);
 }
 
 const TerrainLayerDefinitionManager::DefinitionStore& TerrainLayerDefinitionManager::getDefinitions() const {
@@ -81,7 +79,7 @@ Ogre::Resource* TerrainLayerDefinitionManager::createImpl(const Ogre::String& na
 TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(unsigned int areaIndex) {
 	for (auto& definition : mDefinitions) {
 		if (definition->getAreaId() == areaIndex) {
-			return definition;
+			return definition.get();
 		}
 	}
 	return nullptr;
@@ -90,7 +88,7 @@ TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(unsi
 TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForShader(const std::string& shaderType) {
 	for (auto& definition : mDefinitions) {
 		if (definition->getShaderName() == shaderType) {
-			return definition;
+			return definition.get();
 		}
 	}
 	return nullptr;
@@ -99,7 +97,7 @@ TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForShader(co
 void TerrainLayerDefinitionManager::resolveTextureReferences() {
 	//Since we support using both the raw media repository as well as the processed media we need to make sure we
 	//can load textures independent of whether they are .png or .dds.
-	auto resolveTextureFn = [&](const std::string texture) -> std::string {
+	auto resolveTextureFn = [&](const std::string& texture) -> std::string {
 		auto& textureMgr = Ogre::TextureManager::getSingleton();
 		if (textureMgr.resourceExists(texture, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 			return texture;
@@ -130,7 +128,7 @@ void TerrainLayerDefinitionManager::resolveTextureReferences() {
 		return "";
 	};
 
-	for (auto def : mDefinitions) {
+	for (auto& def : mDefinitions) {
 		if (!def->getDiffuseTextureName().empty()) {
 			def->setDiffuseTextureName(resolveTextureFn(def->getDiffuseTextureName()));
 		}
