@@ -380,6 +380,10 @@ protected:
 	 */
 	void onAction(const Atlas::Objects::Operation::RootOperation& act) override;
 	/**
+	 *    @copydoc Eris::Entity::onHit()
+	 */
+	void onHit(const Atlas::Objects::Operation::Hit& hit) override;
+	/**
 	 *    @copydoc Eris::Entity::onSoundAction()
 	 */
 	void onSoundAction(const Atlas::Objects::Operation::RootOperation& op) override;

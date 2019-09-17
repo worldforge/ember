@@ -249,46 +249,43 @@ void EmberEntity::updateAttachment() {
 
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act) {
-	if (act->getParent() == "hit" && !act->isDefaultTo()) {
-		//Hits are special, since we need to check the "to" instead.
-		auto hitEntity = dynamic_cast<EmberEntity*>(getView()->getEntity(act->getTo()));
-		if (hitEntity) {
-			std::string message;
-			if (!act->getArgs().empty()) {
-				auto& arg = act->getArgs().front();
-				EmberEntity* actingEntity = nullptr;
-				if (!arg->isDefaultId()) {
-					actingEntity = dynamic_cast<EmberEntity*>(m_view->getEntity(arg->getId()));
-				}
-				if (arg->hasAttr("damage")) {
-					auto damageElem = arg->getAttr("damage");
-					if (damageElem.isNum()) {
-						std::stringstream ss;
-						ss.precision(2);
-						ss << damageElem.asNum();
-						auto damageString = ss.str();
-						if (actingEntity) {
-							message = hitEntity->getNameOrType() + " is hit by " + actingEntity->getNameOrType() + " for " + damageString + " damage.";
-						} else {
-							message = hitEntity->getNameOrType() + " is hit for " + damageString + " damage.";
-						}
-					}
-				}
-			}
-			if (message.empty()) {
-				message = hitEntity->getNameOrType() + " is hit.";
-			}
-			ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
-		}
-
-	} else {
+	if (act->getClassNo() != Atlas::Objects::Operation::HIT_NO) {
 		std::string message = getNameOrType() + " performs a " + act->getParent() + ".";
 		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
+
+		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << act->getParent());
 	}
 
-	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << act->getParent());
-
 	Entity::onAction(act);
+}
+
+void EmberEntity::onHit(const Atlas::Objects::Operation::Hit& act) {
+
+	std::string message;
+	if (!act->getArgs().empty()) {
+		auto& arg = act->getArgs().front();
+		EmberEntity* actingEntity = nullptr;
+		if (!arg->isDefaultId()) {
+			actingEntity = dynamic_cast<EmberEntity*>(m_view->getEntity(arg->getId()));
+		}
+		if (arg->hasAttr("damage")) {
+			auto damageElem = arg->getAttr("damage");
+			if (damageElem.isNum()) {
+				std::stringstream ss;
+				ss.precision(2);
+				ss << damageElem.asNum();
+				auto damageString = ss.str();
+				if (actingEntity) {
+					message = getNameOrType() + " is hit by " + actingEntity->getNameOrType() + " for " + damageString + " damage.";
+				} else {
+					message = getNameOrType() + " is hit for " + damageString + " damage.";
+				}
+				ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
+			}
+		}
+	}
+
+	Entity::onHit(act);
 }
 
 const std::vector<std::string>& EmberEntity::getSuggestedResponses() const {

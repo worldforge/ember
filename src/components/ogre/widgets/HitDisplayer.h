@@ -47,7 +47,7 @@ public:
 	bool frameStarted(const Ogre::FrameEvent& evt) override;
 
 protected:
-	void entityActed(Eris::Entity& entity, const Atlas::Objects::Operation::RootOperation& arg);
+	void entityHit(Eris::Entity& entity, const Atlas::Objects::Operation::Hit& arg);
 
 	std::unique_ptr<TextNodeRenderer> mTextNodeRenderer;
 	Ogre::Camera& mCamera;

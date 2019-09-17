@@ -49,8 +49,8 @@ HitDisplayer::HitDisplayer(CEGUI::Window& mainSheet,
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	view.EntitySeen.connect([this](Eris::Entity* entity) {
-		entity->Acted.connect([this, entity](const Atlas::Objects::Operation::RootOperation& arg) {
-			entityActed(*entity, arg);
+		entity->Hit.connect([this, entity](const Atlas::Objects::Operation::Hit& arg) {
+			entityHit(*entity, arg);
 		});
 	});
 }
@@ -60,31 +60,24 @@ HitDisplayer::~HitDisplayer() {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-void HitDisplayer::entityActed(Eris::Entity& entity, const Atlas::Objects::Operation::RootOperation& act) {
-	if (act->getParent() == "hit" && !act->isDefaultTo()) {
-		//Hits are special, since we need to check the "to" instead.
-		auto hitEntity = mView.getEntity(act->getTo());
-		if (hitEntity) {
-			if (!act->getArgs().empty()) {
-				auto& arg = act->getArgs().front();
-				if (arg->hasAttr("damage")) {
-					auto damageElem = arg->getAttr("damage");
-					if (damageElem.isNum()) {
-						std::stringstream ss;
-						ss.precision(2);
-						ss << damageElem.asNum();
-						auto damageString = ss.str();
-						auto pos = Convert::toOgre(hitEntity->getPredictedPos());
-						auto model = Model::ModelRepresentation::getModelForEntity(*static_cast<EmberEntity*>(hitEntity));
-						if (model && model->isLoaded()) {
-							pos += model->getCombinedBoundingBox().getCenter();
-						}
-						createHit(pos, damageString);
-					}
+void HitDisplayer::entityHit(Eris::Entity& entity, const Atlas::Objects::Operation::Hit& act) {
+	if (!act->getArgs().empty()) {
+		auto& arg = act->getArgs().front();
+		if (arg->hasAttr("damage")) {
+			auto damageElem = arg->getAttr("damage");
+			if (damageElem.isNum()) {
+				std::stringstream ss;
+				ss.precision(2);
+				ss << damageElem.asNum();
+				auto damageString = ss.str();
+				auto pos = Convert::toOgre(entity.getPredictedPos());
+				auto model = Model::ModelRepresentation::getModelForEntity(static_cast<EmberEntity&>(entity));
+				if (model && model->isLoaded()) {
+					pos += model->getCombinedBoundingBox().getCenter();
 				}
+				createHit(pos, damageString);
 			}
 		}
-
 	}
 }
 
@@ -117,7 +110,6 @@ void HitDisplayer::createHit(const Ogre::Vector3& pos, const std::string& text) 
 
 
 }
-
 
 
 }
