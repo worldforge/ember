@@ -27,6 +27,7 @@
 
 #define UNW_LOCAL_ONLY
 #include <libunwind.h>
+#include <cxxabi.h>
 
 #endif
 
