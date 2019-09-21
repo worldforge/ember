@@ -24,7 +24,7 @@
 #define EMBEROGREXMLHELPER_H
 
 #include "EmberOgrePrerequisites.h"
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
 #include <boost/filesystem/path.hpp>
 

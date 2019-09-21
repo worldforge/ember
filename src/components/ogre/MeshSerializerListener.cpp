@@ -37,9 +37,7 @@ MeshSerializerListener::MeshSerializerListener(bool requireTangents)
 }
 
 
-MeshSerializerListener::~MeshSerializerListener()
-{
-}
+MeshSerializerListener::~MeshSerializerListener() = default;
 
 void MeshSerializerListener::processMaterialName(Ogre::Mesh* mesh, Ogre::String* name)
 {
@@ -50,13 +48,13 @@ void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String 
 {
 	//If the skeleton path starts with ".." it's a relative path and we need to use the path of the current mesh to create a new skeleton path
 	if (Ogre::StringUtil::startsWith(*name, "../") || Ogre::StringUtil::startsWith(*name, "./")) {
-		std::string meshPath = mesh->getName();
+		const std::string& meshPath = mesh->getName();
 		std::string path;
 		std::string baseName;
 		Ogre::StringUtil::splitFilename(meshPath, baseName, path);
-		
-		Ogre::vector<std::string>::type skeletonPathSegments = Ogre::StringUtil::split(*name, "/");
-		Ogre::vector<std::string>::type pathSegments = Ogre::StringUtil::split(path, "/");
+
+		auto skeletonPathSegments = Ogre::StringUtil::split(*name, "/");
+		auto pathSegments = Ogre::StringUtil::split(path, "/");
 		
 		//For every ".." part in the skeleton path, walk upwards in the directory hierarcy
 		while (*skeletonPathSegments.begin() == ".." || *skeletonPathSegments.begin() == ".") {
@@ -67,14 +65,14 @@ void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String 
 		}
 		
 		std::stringstream ss;
-		for (Ogre::vector<std::string>::type::const_iterator I = pathSegments.begin(); I != pathSegments.end(); ++I) {
+		for (auto I = pathSegments.begin(); I != pathSegments.end(); ++I) {
 			if (I != pathSegments.begin()) {
 				ss << "/";
 			}
 			ss << *I;
 		}
-		for (Ogre::vector<std::string>::type::const_iterator I = skeletonPathSegments.begin(); I != skeletonPathSegments.end(); ++I) {
-			ss << "/" << *I;
+		for (auto & skeletonPathSegment : skeletonPathSegments) {
+			ss << "/" << skeletonPathSegment;
 		}
 		name->assign(ss.str());
 	}
@@ -88,7 +86,7 @@ void MeshSerializerListener::processMeshCompleted(Ogre::Mesh* mesh)
 		unsigned short outIndex;
 		try {
 			if (!mesh->suggestTangentVectorBuildParams(Ogre::VES_TANGENT, outSourceCoordSet, outIndex)) {
-		#if DEBUG
+		#ifdef DEBUG
 				S_LOG_VERBOSE("No tangents available for " << mesh->getName() << " mesh; generating new ones now.");
 		#else
 				S_LOG_WARNING("No tangents available for " << mesh->getName() << " mesh; generating new ones now. You should instead make sure that all meshes have tangents pregenerated.");

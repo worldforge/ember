@@ -293,9 +293,9 @@ public:
 	 */
 	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
 
-	bool injectMouseButtonUp(const Input::MouseButton& button) override;
+	bool injectMouseButtonUp(Input::MouseButton button) override;
 
-	bool injectMouseButtonDown(const Input::MouseButton& button) override;
+	bool injectMouseButtonDown(Input::MouseButton button) override;
 
 	bool injectChar(int character) override;
 

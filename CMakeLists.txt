@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.2)
 project(Ember)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 include(GNUInstallDirs)
 include(FindPkgConfig)
@@ -16,7 +17,9 @@ set(EMBER_VERSION_PATCH 0)
 set(VERSION ${EMBER_VERSION_MAJOR}.${EMBER_VERSION_MINOR}.${EMBER_VERSION_PATCH})
 
 # Set compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+#set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wmissing-declarations -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
+set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
+
 add_definitions(-DVERSION="${VERSION}")
 add_definitions(-DPREFIX="${CMAKE_INSTALL_PREFIX}")
 add_definitions(-DEMBER_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
@@ -37,7 +40,7 @@ endif (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 add_definitions(-DBOOST_ASIO_DISABLE_SMALL_BLOCK_RECYCLING)
 
 
-include_directories("${PROJECT_SOURCE_DIR}/src")
+include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external)
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
@@ -289,19 +292,9 @@ endif(UNWIND_FOUND)
 find_program(XMLLINT xmllint)
 
 add_subdirectory(external)
-add_subdirectory(src/domain)
-add_subdirectory(src/bindings/lua)
-add_subdirectory(src/services)
-add_subdirectory(src/framework)
-add_subdirectory(src/components/cegui)
-add_subdirectory(src/components/entitymapping)
-add_subdirectory(src/components/lua)
-add_subdirectory(src/components/navigation)
-add_subdirectory(src/components/ogre)
-add_subdirectory(src/components/terrain)
+add_subdirectory(src)
 #Only build tests if the "check" target is used.
 add_subdirectory(tests EXCLUDE_FROM_ALL)
-add_subdirectory(src/main)
 
 file(GLOB MODELDEFINITIONS_FILES data/dural/*.modeldef)
 foreach (FILE ${MODELDEFINITIONS_FILES})

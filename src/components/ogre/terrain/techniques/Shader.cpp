@@ -214,7 +214,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
 		if (mIncludeShadows) {
-			for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+			for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
 				Ogre::TextureUnitState* shadowMapTus = pass->createTextureUnitState();
 				shadowMapTus->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
 				shadowMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
@@ -231,7 +231,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 			float scales[1] = { 1.0f };
 			fpParams->setNamedConstant("scales", scales, 1); // The composite map spreads over the entire terrain, no uv scaling needed
 			if (mIncludeShadows) {
-				Ogre::PSSMShadowCameraSetup* pssmSetup = dynamic_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
+				auto* pssmSetup = dynamic_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
 				if (pssmSetup) {
 					Ogre::Vector4 splitPoints;
 					Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
@@ -293,7 +293,7 @@ ShaderPass* Shader::addPass()
 {
 	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition()));
 	if (mIncludeShadows) {
-		for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+		for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
 			shaderPass->addShadowLayer(mTerrainPageShadow);
 		}
 	}
@@ -305,7 +305,7 @@ ShaderPass* Shader::addPassNormalMapped()
 {
 	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition(), true));
 	if (mIncludeShadows) {
-		for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+		for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
 			shaderPass->addShadowLayer(mTerrainPageShadow);
 		}
 	}

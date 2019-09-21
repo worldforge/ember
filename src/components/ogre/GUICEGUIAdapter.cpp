@@ -162,7 +162,7 @@ bool GUICEGUIAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMou
 	return true;
 }
 
-bool GUICEGUIAdapter::injectMouseButtonUp(const Input::MouseButton& button)
+bool GUICEGUIAdapter::injectMouseButtonUp(Input::MouseButton button)
 {
 	CEGUI::MouseButton ceguiButton;
 	if (button == Input::MouseButtonLeft) {
@@ -186,7 +186,7 @@ bool GUICEGUIAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 	return true;
 }
 
-bool GUICEGUIAdapter::injectMouseButtonDown(const Input::MouseButton& button)
+bool GUICEGUIAdapter::injectMouseButtonDown(Input::MouseButton button)
 {
 	CEGUI::MouseButton ceguiButton(CEGUI::LeftButton);
 	if (button == Input::MouseButtonLeft) {

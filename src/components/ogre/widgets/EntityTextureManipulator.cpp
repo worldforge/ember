@@ -52,7 +52,7 @@ EntityTextureManipulator::~EntityTextureManipulator()
 	Input::getSingleton().removeAdapter(this);
 }
 
-bool EntityTextureManipulator::injectMouseButtonUp(const Input::MouseButton& button)
+bool EntityTextureManipulator::injectMouseButtonUp(Input::MouseButton button)
 {
 	if (button == Input::MouseButtonLeft) {
 		releaseInput();
@@ -60,7 +60,7 @@ bool EntityTextureManipulator::injectMouseButtonUp(const Input::MouseButton& but
 	return true;
 }
 
-bool EntityTextureManipulator::injectMouseButtonDown(const Input::MouseButton& button)
+bool EntityTextureManipulator::injectMouseButtonDown(Input::MouseButton button)
 {
 	return true;
 }
@@ -126,10 +126,7 @@ DirectEntityTextureManipulator::DirectEntityTextureManipulator(CEGUI::Window& wi
 
 }
 
-DirectEntityTextureManipulator::~DirectEntityTextureManipulator()
-{
-
-}
+DirectEntityTextureManipulator::~DirectEntityTextureManipulator() = default;
 bool DirectEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 
@@ -168,10 +165,8 @@ CameraEntityTextureManipulator::CameraEntityTextureManipulator(CEGUI::Window& wi
 
 }
 
-CameraEntityTextureManipulator::~CameraEntityTextureManipulator()
-{
+CameraEntityTextureManipulator::~CameraEntityTextureManipulator() = default;
 
-}
 bool CameraEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 
@@ -205,10 +200,7 @@ CombinedEntityTextureManipulator::CombinedEntityTextureManipulator(CEGUI::Window
 
 }
 
-CombinedEntityTextureManipulator::~CombinedEntityTextureManipulator()
-{
-
-}
+CombinedEntityTextureManipulator::~CombinedEntityTextureManipulator() = default;
 
 bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
@@ -277,7 +269,7 @@ void CombinedEntityTextureManipulator::handleMouseButtonDown(const CEGUI::MouseE
 	}
 }
 
-bool CombinedEntityTextureManipulator::injectMouseButtonUp(const Input::MouseButton& button)
+bool CombinedEntityTextureManipulator::injectMouseButtonUp(Input::MouseButton button)
 {
 	if (button == Input::MouseButtonLeft || button == Input::MouseButtonMiddle) {
 		releaseInput();

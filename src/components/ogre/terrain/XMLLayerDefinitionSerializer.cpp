@@ -25,7 +25,7 @@
 #endif
 
 #include "XMLLayerDefinitionSerializer.h"
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "components/ogre/XMLHelper.h"
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"

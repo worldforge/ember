@@ -27,11 +27,14 @@
 #include "MovementAdapter.h"
 #include "IMovementBridge.h"
 #include "components/ogre/camera/MainCamera.h"
-#include "components/ogre/EntityCollisionInfo.h"
 #include "../AvatarTerrainCursor.h"
 #include "../Convert.h"
 #include <OgreRoot.h>
 #include <OgreCamera.h>
+
+#include <utility>
+
+#include <memory>
 
 using namespace WFMath;
 using namespace Ember;
@@ -149,9 +152,7 @@ MovementAdapter::MovementAdapter(const Camera::MainCamera& camera) :
 		mWorker(nullptr) {
 }
 
-MovementAdapter::~MovementAdapter() {
-	//detach(); //A call to this will delete both the bridge and the adapter.
-}
+MovementAdapter::~MovementAdapter() = default;
 
 void MovementAdapter::finalizeMovement() {
 	removeAdapter();
@@ -176,7 +177,7 @@ bool MovementAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMou
 	return true;
 }
 
-bool MovementAdapter::injectMouseButtonUp(const Input::MouseButton& button) {
+bool MovementAdapter::injectMouseButtonUp(Input::MouseButton button) {
 	if (button == Input::MouseButtonLeft) {
 		finalizeMovement();
 		//After we've finalized we've done here, so we should let other IInputAdapters handle the mouse button up (we've had an issue where cegui didn't receive the mouse up event, which made it think that icons that were dragged were still being dragged (as the end-drag event is emitted on mouse up))
@@ -189,7 +190,7 @@ bool MovementAdapter::injectMouseButtonUp(const Input::MouseButton& button) {
 	return false;
 }
 
-bool MovementAdapter::injectMouseButtonDown(const Input::MouseButton& button) {
+bool MovementAdapter::injectMouseButtonDown(Input::MouseButton button) {
 	if (button == Input::MouseButtonLeft) {
 	} else if (button == Input::MouseButtonRight) {
 
@@ -220,11 +221,11 @@ bool MovementAdapter::injectKeyDown(const SDL_Scancode& key) {
 	if (mWorker) {
 		//by pressing and holding shift we'll allow the user to position it with more precision. We do this by switching the worker instances.
 		if (key == SDL_SCANCODE_LSHIFT || key == SDL_SCANCODE_RSHIFT) {
-			mWorker.reset(new MovementAdapterWorkerDiscrete(*this));
+			mWorker = std::make_unique<MovementAdapterWorkerDiscrete>(*this);
 		}
 
 		if (key == SDL_SCANCODE_Q) {
-			mWorker.reset(new MovementAdapterWorkerHeightOffset(*this));
+			mWorker = std::make_unique<MovementAdapterWorkerHeightOffset>(*this);
 		}
 	}
 	return true;
@@ -236,7 +237,7 @@ bool MovementAdapter::injectKeyUp(const SDL_Scancode& key) {
 		return false;
 	} else if (key == SDL_SCANCODE_LSHIFT || key == SDL_SCANCODE_RSHIFT || key == SDL_SCANCODE_Q) {
 		if (mWorker) {
-			mWorker.reset(new MovementAdapterWorkerTerrainCursor(*this));
+			mWorker = std::make_unique<MovementAdapterWorkerTerrainCursor>(*this);
 		}
 	}
 
@@ -244,7 +245,7 @@ bool MovementAdapter::injectKeyUp(const SDL_Scancode& key) {
 }
 
 void MovementAdapter::attachToBridge(std::shared_ptr<IMovementBridge> bridge) {
-	mBridge = bridge;
+	mBridge = std::move(bridge);
 	addAdapter();
 }
 
@@ -261,7 +262,7 @@ void MovementAdapter::removeAdapter() {
 void MovementAdapter::addAdapter() {
 	Input::getSingleton().addAdapter(this);
 	//default to the terrain cursor positioning mode
-	mWorker.reset(new MovementAdapterWorkerTerrainCursor(*this));
+	mWorker = std::make_unique<MovementAdapterWorkerTerrainCursor>(*this);
 }
 
 void MovementAdapter::update() {

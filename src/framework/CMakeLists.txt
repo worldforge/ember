@@ -12,18 +12,14 @@ add_library(framework
         tasks/ITask.h
         tasks/ITaskExecutionListener.h
         tasks/TemplateNamedTask.h
-        tinyxml/tinystr.cpp tinyxml/tinyxml.cpp tinyxml/tinyxmlerror.cpp tinyxml/tinyxmlparser.cpp FileSystemObserver.cpp FileSystemObserver.h
-        dir_monitor/include/dir_monitor/basic_dir_monitor.hpp dir_monitor/include/dir_monitor/dir_monitor.hpp
-        dir_monitor/include/dir_monitor/inotify/basic_dir_monitor_service.hpp dir_monitor/include/dir_monitor/inotify/dir_monitor_impl.hpp
-        dir_monitor/include/dir_monitor/fsevents/basic_dir_monitor_service.hpp dir_monitor/include/dir_monitor/fsevents/dir_monitor_impl.hpp
-        dir_monitor/include/dir_monitor/kqueue/basic_dir_monitor_service.hpp dir_monitor/include/dir_monitor/kqueue/dir_monitor_impl.hpp
-        dir_monitor/include/dir_monitor/windows/basic_dir_monitor_service.hpp dir_monitor/include/dir_monitor/windows/dir_monitor_impl.hpp
+        FileSystemObserver.cpp FileSystemObserver.h
 
         ConsoleObject.h IGameView.h IResourceProvider.h IScriptingProvider.h LogObserver.h osdir.h ShutdownException.h Singleton.h utf8.h
         AtlasQuery.h
 
         StackChecker.cpp)
 
+target_link_libraries(framework tinyxml)
 
 wf_generate_lua_bindings(bindings/lua/Framework)
 wf_generate_lua_bindings(bindings/lua/atlas/Atlas)

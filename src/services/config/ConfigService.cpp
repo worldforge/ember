@@ -415,7 +415,7 @@ const boost::filesystem::path& ConfigService::getHomeDirectory(BaseDirType baseD
 		}
 		finalPath += "\\Ember\\";
 		return finalPath;
-#elif __APPLE__
+#elif defined(__APPLE__)
 		static std::string path ( getAppSupportDirPath() + "/Ember/" );
 		return path;
 #else
@@ -450,9 +450,9 @@ const boost::filesystem::path& ConfigService::getHomeDirectory(BaseDirType baseD
 	}
 }
 
-const boost::filesystem::path& ConfigService::getSharedDataDirectory() const {
+boost::filesystem::path ConfigService::getSharedDataDirectory() const {
 	if (hasItem("paths", "sharedir")) {
-		static std::string path = static_cast<std::string> ( getValue("paths", "sharedir")) + "/";
+		std::string path = static_cast<std::string> ( getValue("paths", "sharedir")) + "/";
 		return path;
 	}
 #ifdef __APPLE__

@@ -37,8 +37,8 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-long integerId(const std::string & id)
-{
+namespace {
+long integerId(const std::string& id) {
 	long intId = strtol(id.c_str(), 0, 10);
 	if (intId == 0 && id != "0") {
 		intId = -1L;
@@ -47,9 +47,9 @@ long integerId(const std::string & id)
 	return intId;
 }
 
-bool idSorter(const std::string& lhs, const std::string& rhs)
-{
+bool idSorter(const std::string& lhs, const std::string& rhs) {
 	return integerId(lhs) < integerId(rhs);
+}
 }
 
 EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& mindId, const std::string& currentTimestamp) :

@@ -46,11 +46,11 @@ public:
 	 * @param orientation The rotation around the vertical axis for the plant.
 	 * @param scale The scale of the plant in width and height.
 	 */
-	Plant2DInstance(const Ogre::Vector2& position, float orientation, const Ogre::Vector2& scale)
+	Plant2DInstance(const Ogre::Vector2& positionIn, float orientationIn, const Ogre::Vector2& scaleIn)
 	{
-		this->position = position;
-		this->orientation = orientation;
-		this->scale = scale;
+		this->position = positionIn;
+		this->orientation = orientationIn;
+		this->scale = scaleIn;
 	}
 
 	/**
@@ -84,11 +84,11 @@ public:
 	 * @param orientation The rotation around the vertical axis for the plant.
 	 * @param scale The scale of the plant in width and height.
 	 */
-	PlantInstance(const Ogre::Vector3& position, float orientation, const Ogre::Vector2& scale)
+	PlantInstance(const Ogre::Vector3& positionIn, float orientationIn, const Ogre::Vector2& scaleIn)
 	{
-		this->position = position;
-		this->orientation = orientation;
-		this->scale = scale;
+		this->position = positionIn;
+		this->orientation = orientationIn;
+		this->scale = scaleIn;
 	}
 
 	/**

@@ -505,7 +505,7 @@ void WindBatchPage::_updateShaders()
 								pass->setSceneBlending(SBT_TRANSPARENT_ALPHA);
 						}
 					}
-					catch (Ogre::Exception e)
+					catch (const Ogre::Exception& e)
 					{
 						// test for shader source	
 						std::ofstream shaderOutput;

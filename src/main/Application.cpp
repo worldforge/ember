@@ -237,6 +237,7 @@ Application::~Application() {
 /**
  * Detach the input system, else the mouse will be locked.
  */
+extern "C" void shutdownHandler(int sig);
 extern "C" void shutdownHandler(int sig) {
 	std::cerr << "Crashed with signal " << sig << ", will try to detach the input system gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl << std::flush;
 	if (Input::hasInstance()) {

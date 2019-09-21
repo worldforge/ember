@@ -20,7 +20,7 @@
 #define EMBEROGRE_GUIADAPTERBINDINGS_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include <Atlas/Message/Element.h>
 
 namespace Ember

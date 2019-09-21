@@ -20,13 +20,13 @@
 #define EMBER_ENTITY_HELPER_H
 
 #include <Eris/Entity.h>
-int _Entity_getTasksSize(Eris::Entity* entity)
-{
+
+namespace {
+int _Entity_getTasksSize(Eris::Entity* entity) {
 	return entity->getTasks().size();
 }
 
-Eris::Task* _Entity_getTask(Eris::Entity* entity, std::string name)
-{
+Eris::Task* _Entity_getTask(Eris::Entity* entity, std::string name) {
 	auto I = entity->getTasks().find(name);
 	if (I != entity->getTasks().end()) {
 		return I->second;
@@ -34,16 +34,14 @@ Eris::Task* _Entity_getTask(Eris::Entity* entity, std::string name)
 	return nullptr;
 }
 
-Eris::Task* _Entity_getTaskFirst(Eris::Entity* entity)
-{
+Eris::Task* _Entity_getTaskFirst(Eris::Entity* entity) {
 	if (!entity->getTasks().empty()) {
 		return entity->getTasks().begin()->second;
 	}
 	return nullptr;
 }
 
-std::string _Entity_getTaskIdFirst(Eris::Entity* entity)
-{
+std::string _Entity_getTaskIdFirst(Eris::Entity* entity) {
 	if (!entity->getTasks().empty()) {
 		return entity->getTasks().begin()->first;
 	}
@@ -59,5 +57,6 @@ bool _Entity_extractEntityId(const Atlas::Message::Element& element, std::string
 	return false;
 }
 
+}
 
 #endif //EMBER_ENTITY_HELPER_H

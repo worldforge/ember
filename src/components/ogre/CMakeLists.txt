@@ -143,8 +143,4 @@ wf_generate_lua_bindings(widgets/adapters/bindings/lua/Adapters)
 wf_generate_lua_bindings(widgets/adapters/atlas/bindings/lua/AtlasAdapters)
 wf_generate_lua_bindings(widgets/representations/bindings/lua/Representations)
 
-add_subdirectory(environment/caelum)
-add_subdirectory(environment/meshtree)
-add_subdirectory(environment/pagedgeometry)
-
 target_link_libraries(emberogre caelum meshtree pagedgeometry)

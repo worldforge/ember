@@ -18,15 +18,14 @@
 
 #ifndef MODELDEFINITION_HELPER_H_
 #define MODELDEFINITION_HELPER_H_
-
-int _ModelDefinition_getUseScaleOf(Ember::OgreView::Model::ModelDefinition* modelDefinition)
-{
+namespace {
+int _ModelDefinition_getUseScaleOf(Ember::OgreView::Model::ModelDefinition* modelDefinition) {
 	return static_cast<int>(modelDefinition->getUseScaleOf());
 }
 
-void _ModelDefinition_setUseScaleOf(Ember::OgreView::Model::ModelDefinition* modelDefinition, int useScaleOf)
-{
+void _ModelDefinition_setUseScaleOf(Ember::OgreView::Model::ModelDefinition* modelDefinition, int useScaleOf) {
 	modelDefinition->setUseScaleOf(static_cast<Ember::OgreView::Model::ModelDefinition::UseScaleOf>(useScaleOf));
+}
 }
 
 #endif /* MODELDEFINITION_HELPER_H_ */

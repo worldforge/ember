@@ -48,18 +48,18 @@ public:
 	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
 	 */
 	EntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture);
-	virtual ~EntityTextureManipulator();
+	~EntityTextureManipulator() override;
 
 	/**
 	 ---------Methods implemented from IInputAdapter
 	 @see IInputAdapter
 	 */
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) = 0;
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
-	virtual bool injectChar(int character);
-	virtual bool injectKeyDown(const SDL_Scancode& key);
-	virtual bool injectKeyUp(const SDL_Scancode& key);
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override = 0;
+	bool injectMouseButtonUp(Input::MouseButton button) override;
+	bool injectMouseButtonDown(Input::MouseButton button) override;
+	bool injectChar(int character) override;
+	bool injectKeyDown(const SDL_Scancode& key) override;
+	bool injectKeyUp(const SDL_Scancode& key) override;
 
 	/**
 	 * @brief Emitted when movement of the entity or camera has started.
@@ -120,9 +120,9 @@ public:
 	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
 	 */
 	DirectEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture);
-	virtual ~DirectEntityTextureManipulator();
+	~DirectEntityTextureManipulator() override;
 
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
 
 };
 
@@ -138,9 +138,9 @@ public:
 	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
 	 */
 	CameraEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture);
-	virtual ~CameraEntityTextureManipulator();
+	~CameraEntityTextureManipulator() override;
 
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
 
 };
 
@@ -156,11 +156,11 @@ public:
 	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
 	 */
 	CombinedEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture);
-	virtual ~CombinedEntityTextureManipulator();
+	~CombinedEntityTextureManipulator() override;
 
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
 
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+	bool injectMouseButtonUp(Input::MouseButton button) override;
 
 	/**
 	 * @brief Emitted when editing of the entity has started.
@@ -180,7 +180,7 @@ protected:
 	 */
 	bool mLeftMouseButtonDown;
 
-	virtual void handleMouseButtonDown(const CEGUI::MouseEventArgs& mouseArgs);
+	void handleMouseButtonDown(const CEGUI::MouseEventArgs& mouseArgs) override;
 
 };
 }

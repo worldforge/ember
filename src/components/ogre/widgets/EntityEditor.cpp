@@ -543,12 +543,12 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 		if (pathEntity->copyAttr("path", pathElem) == 0) {
 			mHasPath = true;
 			if (pathElem.isList()) {
-				int currentIndex = -1;
+				size_t currentIndex = 0;
 				const auto& path = pathElem.List();
 				S_LOG_VERBOSE("Got path info from entity with length of " << path.size());
 				Element currentPathIndexElement;
 				if (pathEntity->copyAttr("current_path_index", currentPathIndexElement) == 0 && currentPathIndexElement.isInt()) {
-					currentIndex = static_cast<int>(currentPathIndexElement.Int());
+					currentIndex = currentPathIndexElement.Int();
 				}
 				if (!path.empty()) {
 					//Put one point at the entity itself.

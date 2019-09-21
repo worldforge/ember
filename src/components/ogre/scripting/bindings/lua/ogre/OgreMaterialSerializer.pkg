@@ -57,7 +57,7 @@ namespace Ogre {
             to be exported and includeProgDef is false 
 			when calling queueForExport.
         */
-		void exportQueued(const std::string& filename, const bool includeProgDef = false, const std::string& programFilename = "");
+		void exportQueued(const std::string& filename, bool includeProgDef = false, const std::string& programFilename = "");
         /** Exports a single in-memory Material to the named material script file.
         @param exportDefaults if true then exports all values including defaults
         @param includeProgDef if true includes Gpu shader program definitions in the
@@ -68,7 +68,7 @@ namespace Ogre {
 			script to be exported. This is only used if includeProgDef is false.
         */
         void exportMaterial(const Ogre::MaterialPtr& pMat, const std::string& filename, bool exportDefaults = false,
-            const bool includeProgDef = false, const std::string& programFilename = "");
+            bool includeProgDef = false, const std::string& programFilename = "");
 		/** Returns a std::string representing the parsed material(s) */
 		const std::string &getQueuedAsString() const;
 		/** Clears the internal buffer */

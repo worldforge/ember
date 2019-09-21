@@ -53,13 +53,13 @@ public:
 	 * @param button 
 	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
 	 */
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button) = 0;
+	virtual bool injectMouseButtonUp(Input::MouseButton button) = 0;
 	/**
 	 *    Injects a mouse button down event. Returns false if the event shouldn't be processed any more.
 	 * @param button 
 	 * @return true if other IInputAdapters should continue handle the event, false if no more handling should happen
 	 */
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button) = 0;
+	virtual bool injectMouseButtonDown(Input::MouseButton button) = 0;
 	/**
 	 *    Injects a character. Returns false if the event shouldn't be processed any more.
 	 * @param character 

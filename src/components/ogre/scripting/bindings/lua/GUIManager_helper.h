@@ -18,14 +18,14 @@
 
 #ifndef GUIMANAGER_HELPER_H_
 #define GUIMANAGER_HELPER_H_
+namespace {
 /**
  * Helper method for Lua to allow easy calling of GUIManager::AppendAvatarImaginary::emit(...).
  * @param guiManager
  * @param message
  */
-void _GUIManager_appendAvatarImaginary(Ember::OgreView::GUIManager* guiManager, const std::string& message)
-{
+void _GUIManager_appendAvatarImaginary(Ember::OgreView::GUIManager* guiManager, const std::string& message) {
 	guiManager->AppendAvatarImaginary.emit(message);
 }
-
+}
 #endif /* GUIMANAGER_HELPER_H_ */

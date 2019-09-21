@@ -55,7 +55,7 @@ bool ShadowDetailManager::setShadowCameraLodBias(float factor)
 	}
 	mShadowCameraLodBias = factor;
 
-	size_t textureCount = mSceneManager.getShadowTextureCount();
+	size_t textureCount = mSceneManager.getShadowTextureConfigList().size();
 	for (size_t i = 0; i < textureCount; i++) {
 		Ogre::TexturePtr texture = mSceneManager.getShadowTexture(i);
 		unsigned short viewportCount = texture->getBuffer()->getRenderTarget()->getNumViewports();

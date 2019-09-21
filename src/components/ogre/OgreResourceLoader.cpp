@@ -167,7 +167,7 @@ void OgreResourceLoader::unloadUnusedResources() {
 }
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
-	auto& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
+	auto sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
 	return addResourceDirectory(sharedMediaPath / path, type, section, recursive, true, true);
 }
 

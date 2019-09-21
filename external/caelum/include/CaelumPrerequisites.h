@@ -42,7 +42,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 // By default only compile type descriptors for scripting.
 #ifndef CAELUM_TYPE_DESCRIPTORS
-    #if (OGRE_VERSION >= 0x00010600) && OGRE_USE_NEW_COMPILERS
+    #if (OGRE_VERSION >= 0x00010600) && defined(OGRE_USE_NEW_COMPILERS)
         #define CAELUM_TYPE_DESCRIPTORS 1
     #else
         #define CAELUM_TYPE_DESCRIPTORS 0
@@ -52,7 +52,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 // Scripting support requires Ogre 1.6
 // Can be also configured on compiler command line
 #ifndef CAELUM_SCRIPT_SUPPORT
-    #if (OGRE_VERSION >= 0x00010600) && OGRE_USE_NEW_COMPILERS
+    #if (OGRE_VERSION >= 0x00010600) && defined(OGRE_USE_NEW_COMPILERS)
         #define CAELUM_SCRIPT_SUPPORT 1
     #else
         #define CAELUM_SCRIPT_SUPPORT 0

@@ -260,7 +260,7 @@ public:
 	/**
 	* returns the path to the shared data directory, where common media is
 	*/
-	const boost::filesystem::path& getSharedDataDirectory() const;
+	boost::filesystem::path getSharedDataDirectory() const;
 
 	/**
 	* returns the path to the ember data directory, where ember media is

@@ -36,19 +36,19 @@ typedef enum { GLOBAL           = 0x1 << 0,
 class VarBase
 {
 public:
-  const Scope scope() const;
+  Scope scope() const;
   void setScope(Scope s);
 };
 
 class Variable  {
 public:
 
-  Variable(const bool b);
-  Variable(const int i);
-  Variable(const double d);
+  Variable(bool b);
+  Variable(int i);
+  Variable(double d);
   Variable(const std::string& s);
 
-  virtual ~Variable();
+  ~Variable();
 
   operator bool();
   operator int();

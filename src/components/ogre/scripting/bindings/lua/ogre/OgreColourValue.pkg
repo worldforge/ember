@@ -76,19 +76,19 @@ namespace Ogre {
 
 	    /** Sets colour as RGBA.
 	    */
-        void setAsRGBA(const unsigned int val);
+        void setAsRGBA(unsigned int val);
 
 	    /** Sets colour as ARGB.
 	    */
-        void setAsARGB(const unsigned int val);
+        void setAsARGB(unsigned int val);
 
 		/** Sets colour as BGRA.
 		*/
-		void setAsBGRA(const unsigned int val);
+		void setAsBGRA(unsigned int val);
 
 	    /** Sets colour as ABGR.
 	    */
-        void setAsABGR(const unsigned int val);
+        void setAsABGR(unsigned int val);
 
         /** Clamps colour value to the range [0, 1].
         */
@@ -98,41 +98,14 @@ namespace Ogre {
             the saturated colour value is returned as a copy. */
         Ogre::ColourValue saturateCopy(void) const;
 
-		/// Array accessor operator
-//		float operator [] ( const size_t i ) const;
-
-		/// Array accessor operator
-//		float& operator [] ( const size_t i )
-
-		/// Pointer accessor for direct copying
-		//float* ptr();
-		/// Pointer accessor for direct copying
-		//const float* ptr() const;
-
-		
 		// arithmetic operations
         Ogre::ColourValue operator + ( const Ogre::ColourValue& rkVector ) const;
 
         Ogre::ColourValue operator - ( const Ogre::ColourValue& rkVector ) const;
 
-//        Ogre::ColourValue operator * (const float fScalar ) const;
-
-//        Ogre::ColourValue operator * ( const Ogre::ColourValue& rhs) const;
-
         Ogre::ColourValue operator / ( const Ogre::ColourValue& rhs) const;
 
-        Ogre::ColourValue operator / (const float fScalar ) const;
-
-        //Ogre::ColourValue operator * (const float fScalar, const Ogre::ColourValue& rkVector );
-
-        // arithmetic updates
-        //Ogre::ColourValue& operator += ( const Ogre::ColourValue& rkVector );
-
-        //Ogre::ColourValue& operator -= ( const Ogre::ColourValue& rkVector );
-
-        //Ogre::ColourValue& operator *= (const float fScalar );
-
-        //Ogre::ColourValue& operator /= (const float fScalar );
+        Ogre::ColourValue operator / (float fScalar ) const;
 
 		/** Set a colour value from Hue, Saturation and Brightness.
 		@param hue Hue value, scaled to the [0,1] range as opposed to the 0-360
@@ -141,11 +114,6 @@ namespace Ogre {
 		*/
 		void setHSB(float hue, float saturation, float brightness);
 
-
-		/** Function for writing to a stream.
-		*/
-//		inline _OgreExport friend std::ostream& operator <<
-//			( std::ostream& o, const ColourValue& c );
 
     };
 

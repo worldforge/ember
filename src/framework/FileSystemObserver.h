@@ -19,7 +19,7 @@
 #ifndef EMBER_FILESYSTEMOBSERVER_H
 #define EMBER_FILESYSTEMOBSERVER_H
 
-#include "framework/dir_monitor/include/dir_monitor/dir_monitor.hpp"
+#include "dir_monitor/include/dir_monitor/dir_monitor.hpp"
 #include "Singleton.h"
 
 #include <boost/asio/io_service.hpp>

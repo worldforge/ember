@@ -73,34 +73,32 @@ std::string OgreInfo::createUniqueResourceName(const std::string& resourceName)
 	return ss.str();
 }
 
-unsigned int countNodes(Ogre::Node* node)
-{
+namespace {
+unsigned int countNodes(Ogre::Node* node) {
 	unsigned int counter = 1;
 	for (unsigned short i = 0; i < node->numChildren(); ++i) {
 		counter += countNodes(node->getChild(i));
 	}
 	return counter;
 }
-
+}
 void OgreInfo::diagnose(std::ostream& outputStream)
 {
-	for (auto entry : Ogre::Root::getSingleton().getSceneManagers()) {
-		Ogre::SceneManager* sceneManager = entry.second;
+	for (const auto& sceneManagerEntry : Ogre::Root::getSingleton().getSceneManagers()) {
+		Ogre::SceneManager* sceneManager = sceneManagerEntry.second;
 		outputStream << "Scenemanager(" << sceneManager->getTypeName() << ") " << sceneManager->getName() << std::endl;
 		outputStream << " Number of scene nodes: " << countNodes(sceneManager->getRootSceneNode()) << std::endl;
 		outputStream << " Movable objects:" << std::endl;
 		unsigned int movableObjectCounter = 0;
-		Ogre::Root::MovableObjectFactoryIterator movableObjectFactoryI = Ogre::Root::getSingleton().getMovableObjectFactoryIterator();
-		while (movableObjectFactoryI.hasMoreElements()) {
-			Ogre::MovableObjectFactory* factory = movableObjectFactoryI.getNext();
-			std::string type(factory->getType());
+		for (auto& movableFactoryEntry : Ogre::Root::getSingleton().getMovableObjectFactories()) {
+			Ogre::MovableObjectFactory* factory = movableFactoryEntry.second;
+			const std::string& type = factory->getType();
 			{
-				Ogre::SceneManager::MovableObjectIterator I = sceneManager->getMovableObjectIterator(type);
-				while (I.hasMoreElements()) {
+				for (auto& movableObjectEntry: sceneManager->getMovableObjects(type)) {
 					movableObjectCounter++;
-					Ogre::MovableObject* movable = I.getNext();
+					Ogre::MovableObject* movable = movableObjectEntry.second;
 					if (movable->getMovableType() == "Light") {
-						Ogre::Light* light = static_cast<Ogre::Light*> (movable);
+						auto* light = dynamic_cast<Ogre::Light*> (movable);
 						outputStream << "  * Light " << light->getName() << "(" << (light->isInScene() ? "in scene" : "not in scene") << ")" << std::endl;
 						outputStream << "   Pos: " << light->getDerivedPosition() << std::endl;
 						outputStream << "   Direction: " << light->getDerivedDirection() << std::endl;
@@ -122,7 +120,7 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 
 		outputStream << " Cameras:" << std::endl;
 		{
-			for (auto entry : sceneManager->getCameras()) {
+			for (const auto& entry : sceneManager->getCameras()) {
 				Ogre::Camera* camera = entry.second;
 				outputStream << "  Camera " << camera->getName() << "(" << (camera->isInScene() ? "in scene" : "not in scene") << ")" << std::endl;
 				outputStream << "  Pos: " << camera->getDerivedPosition() << std::endl;
@@ -158,7 +156,7 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 				if (resource->isLoaded()) {
 					std::string reloadable = resource->isReloadable() ? " reloadable" : "";
 					outputStream << "   " << resource->getName() << " ( " << resource->getSize() << " bytes)" << reloadable;
-					Ogre::Texture* texture = dynamic_cast<Ogre::Texture*>(resource.get());
+					auto* texture = dynamic_cast<Ogre::Texture*>(resource.get());
 					if (texture) {
 						outputStream << texture->getWidth() << "x" << texture->getHeight() << " ";
 					}

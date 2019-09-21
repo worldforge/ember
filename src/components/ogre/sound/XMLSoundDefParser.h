@@ -20,7 +20,7 @@
 #define _XML_SOUND_DEF_PARSER_
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
 
 namespace Ember {

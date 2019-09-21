@@ -366,7 +366,7 @@ bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& free
 	return false;
 }
 
-bool TerrainEditorOverlay::injectMouseButtonUp(const Input::MouseButton& button)
+bool TerrainEditorOverlay::injectMouseButtonUp(Input::MouseButton button)
 {
 	if (button == Input::MouseButtonLeft) {
 		releaseInput();
@@ -374,7 +374,7 @@ bool TerrainEditorOverlay::injectMouseButtonUp(const Input::MouseButton& button)
 	return true;
 }
 
-bool TerrainEditorOverlay::injectMouseButtonDown(const Input::MouseButton& button)
+bool TerrainEditorOverlay::injectMouseButtonDown(Input::MouseButton button)
 {
 	return true;
 }

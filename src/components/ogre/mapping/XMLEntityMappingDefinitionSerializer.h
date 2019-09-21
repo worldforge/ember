@@ -27,7 +27,7 @@
 #include "config.h"
 #endif
 
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/EntityMappingManager.h"
 

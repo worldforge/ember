@@ -40,7 +40,7 @@ namespace Caelum
         typedef PointedT* InnerPointerType;
 
         /// Return an InnerPointerType repressenting a null value.
-        static inline const InnerPointerType getNullValue() {
+        static inline InnerPointerType getNullValue() {
             return 0;
         }
 

@@ -20,15 +20,16 @@
 #define EMBER_TASK_HELPER_H
 #include <Eris/Task.h>
 
+namespace {
 int _Task_usages_size(Eris::Task* task) {
 	return task->getUsages().size();
 }
 
 std::string _Task_usage_name(Eris::Task* task, int index) {
-	if (index < task->getUsages().size()) {
+	if (index < static_cast<int>(task->getUsages().size())) {
 		return task->getUsages()[index].name;
 	}
 	return "";
 }
-
+}
 #endif //EMBER_TASK_HELPER_H

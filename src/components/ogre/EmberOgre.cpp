@@ -52,7 +52,7 @@
 
 #include "GUIManager.h"
 
-#include "environment/meshtree/TParameters.h"
+#include "meshtree/TParameters.h"
 #include "environment/Tree.h"
 
 //#include "carpenter/Carpenter.h"

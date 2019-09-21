@@ -26,14 +26,15 @@
 namespace Ember {
 namespace OgreView {
 
-btVector3 toBullet(const Ogre::Vector3& p) {
-	return {p.x, p.y, p.z};
-}
-
-
-btQuaternion toBullet(const Ogre::Quaternion& aq) {
-	return {aq.x, aq.y, aq.z, aq.w};
-}
+namespace {
+//btVector3 toBullet(const Ogre::Vector3& p) {
+//	return {p.x, p.y, p.z};
+//}
+//
+//
+//btQuaternion toBullet(const Ogre::Quaternion& aq) {
+//	return {aq.x, aq.y, aq.z, aq.w};
+//}
 
 btVector3 toBullet(const WFMath::Point<3>& p) {
 	return {p.x(), p.y(), p.z()};
@@ -47,7 +48,7 @@ btVector3 toBullet(const WFMath::Vector<3>& p) {
 btQuaternion toBullet(const WFMath::Quaternion& aq) {
 	return {aq.vector().x(), aq.vector().y(), aq.vector().z(), aq.scalar()};
 }
-
+}
 
 BulletCollisionDetector::BulletCollisionDetector(BulletWorld& bulletWorld)
 		: mBulletWorld(bulletWorld),

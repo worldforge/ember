@@ -26,7 +26,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 #include "EntityRecipe.h"
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
 
 namespace Ember

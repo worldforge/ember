@@ -44,15 +44,17 @@ TerrainShaderParser::TerrainShaderParser(TerrainHandler& terrainHandler) :
 
 TerrainShaderParser::~TerrainShaderParser() = default;
 
-float extractFloat(const Atlas::Message::ListType& params, size_t position) {
-	if (params.size() > position) {
-		const Atlas::Message::Element& elem(params[position]);
-		if (elem.isNum()) {
-			return elem.asNum();
-		}
-	}
-	return 0;
-}
+//namespace {
+//float extractFloat(const Atlas::Message::ListType& params, size_t position) {
+//	if (params.size() > position) {
+//		const Atlas::Message::Element& elem(params[position]);
+//		if (elem.isNum()) {
+//			return elem.asNum();
+//		}
+//	}
+//	return 0;
+//}
+//}
 
 void TerrainShaderParser::createShaders(const Atlas::Message::Element& terrain) {
 	//For now don't allow updating of shaders.

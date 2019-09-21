@@ -177,7 +177,7 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	std::stringstream ss;
 #ifdef __APPLE__
 	//On OSX we'll tell Ogre to use the current OpenGL context; thus we don't need to return the window id
-#elif _WIN32
+#elif defined(_WIN32)
 	ss << (size_t)info.info.win.window;
 #else
 	ss << info.info.x11.window;

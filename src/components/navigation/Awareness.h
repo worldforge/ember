@@ -19,7 +19,7 @@
 #ifndef AWARENESS_H_
 #define AWARENESS_H_
 
-#include "external/RecastDetour/Recast/Include/Recast.h"
+#include "RecastDetour/Recast/Include/Recast.h"
 
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>

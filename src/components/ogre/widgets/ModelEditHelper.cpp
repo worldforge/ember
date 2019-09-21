@@ -258,7 +258,7 @@ bool ModelEditHelper::injectMouseMove(const MouseMotion& motion, bool& freezeMou
 	return false;
 }
 
-bool ModelEditHelper::injectMouseButtonUp(const Input::MouseButton& button) {
+bool ModelEditHelper::injectMouseButtonUp(Input::MouseButton button) {
 	if (mMouseMover) {
 		if (mMouseMover->injectMouseButtonUp(button)) {
 			delete mMouseMover;
@@ -269,7 +269,7 @@ bool ModelEditHelper::injectMouseButtonUp(const Input::MouseButton& button) {
 	return true;
 }
 
-bool ModelEditHelper::injectMouseButtonDown(const Input::MouseButton& button) {
+bool ModelEditHelper::injectMouseButtonDown(Input::MouseButton button) {
 	return true;
 }
 

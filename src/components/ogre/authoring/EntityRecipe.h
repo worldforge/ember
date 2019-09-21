@@ -27,7 +27,7 @@
 #include "GUIAdapter.h"
 #include "GUIAdapterBindings.h"
 
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include <Atlas/Message/Element.h>
 #include <sigc++/signal.h>
 #include <OgreSharedPtr.h>

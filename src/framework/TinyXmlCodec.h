@@ -19,7 +19,7 @@
 #ifndef TINYXMLCODEC_H_
 #define TINYXMLCODEC_H_
 
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 
 #include <Atlas/Codec.h>
 #include <stack>

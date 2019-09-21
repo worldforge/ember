@@ -30,7 +30,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 #include "ModelDefinition.h"
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 
 namespace Ember {
 namespace OgreView {

@@ -21,6 +21,7 @@
 
 #include "services/config/ConfigService.h"
 
+namespace {
 const std::string& _ConfigService_getHomeDirectory(const Ember::ConfigService* service, Ember::BaseDirType baseDirType) {
 	return service->getHomeDirectory(baseDirType).string();
 }
@@ -47,6 +48,7 @@ const std::string& _ConfigService_getSharedMediaDirectory(const Ember::ConfigSer
 
 const std::string& _ConfigService_getSharedConfigDirectory(const Ember::ConfigService* service) {
 	return service->getSharedConfigDirectory().string();
+}
 }
 
 #endif //EMBER_CONFIGSERVICEHELPER_H
