@@ -21,7 +21,7 @@ def collect_licenses(src_assets_path, licenses, assets):
 			asset_path_tokens = os.path.dirname(asset).split(os.sep)
 			while len(asset_path_tokens) > 0:
 				dir = (os.sep).join(asset_path_tokens)
-				for file in find_matches(os.listdir(os.path.join(src_assets_path, dir)), ["*license*", "*LICENSE*", "*authors*", "*AUTHORS*"]):
+				for file in find_matches(os.listdir(os.path.join(src_assets_path, dir)), ["*license*", "*LICENSE*", "*authors*", "*AUTHORS*", "*COPYING*"]):
 					licenses.add(os.path.join(dir, file))
 				del asset_path_tokens[-1]
 				
@@ -161,6 +161,7 @@ OPTIONS
 	#First copy all directories that we should just provide unchanged
 	copytree(os.path.join(src_media_dir, "assets_external/caelum"), os.path.join(dest_media_dir, "assets_external/caelum"))
 	copytree(os.path.join(src_media_dir, "assets_external/OGRE"), os.path.join(dest_media_dir, "assets_external/OGRE"))
+	copytree(os.path.join(src_media_dir, "splash"), os.path.join(dest_media_dir, "splash"))
 	#Copy license files
 	shutil.copy(os.path.join(src_media_dir, "LICENSING.txt"), dest_media_dir)
 	shutil.copy(os.path.join(src_media_dir, "COPYING.txt"), dest_media_dir)
