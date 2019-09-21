@@ -193,7 +193,7 @@ void AwarenessVisualizer::createMesh(unsigned int tileRef, dtTileCachePolyMesh& 
 
 	unsigned short regions[npolys];
 	for (int i = 0; i < npolys; i++) {
-		regions[i] = (const unsigned short)regs[i];
+		regions[i] = (unsigned short)regs[i];
 	}
 
 	createRecastPolyMesh(name, verts, nverts, polys, npolys, areas, maxpolys, regions, nvp, cellsize, cellheight, origin, true);

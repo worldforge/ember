@@ -17,6 +17,7 @@
  */
 
 #include <thread>
+#include <Ogre.h>
 #include "EmberWorkQueue.h"
 #include "EmberOgrePrerequisites.h"
 

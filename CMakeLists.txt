@@ -91,7 +91,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 #TODO: check for binreloc?
 
 
-set(OGREVER 1.11.6)
+set(OGREVER 1.12.2)
 find_package(OGRE ${OGREVER} REQUIRED)
 link_directories(${OGRE_LIBRARY_DIRS})
 link_libraries(${OGRE_LIBRARIES})
@@ -133,6 +133,8 @@ if (NOT OGRE_RTShaderSystem_FOUND)
 endif (NOT OGRE_RTShaderSystem_FOUND)
 link_libraries(${OGRE_RTShaderSystem_LIBRARIES})
 include_directories(${OGRE_RTShaderSystem_INCLUDE_DIRS})
+
+add_definitions(-DOGRE_MEDIA_DIR="${OGRE_MEDIA_DIR}")
 
 
 #On UNIX with PKG_CONFIG we can be more assertive of the paths than the FindOGRE.cmake macro is, so lets

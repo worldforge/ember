@@ -93,6 +93,8 @@ LoadingBar::~LoadingBar() {
 		S_LOG_WARNING("Error when destroying loading bar overlay." << ex);
 	}
 
+	//Remove the resource group used for the loading bar.
+	Ogre::ResourceGroupManager::getSingleton().destroyResourceGroup("splash");
 }
 
 void LoadingBar::deleteOverlayContainerContents(Ogre::OverlayContainer& container) const {
@@ -113,18 +115,7 @@ void LoadingBar::start() {
 	auto& resourceGrpMgr = Ogre::ResourceGroupManager::getSingleton();
 
 	//Parse the materials used for the loading bar
-	auto programPtr = resourceGrpMgr.openResource("common/ui/Overlay.program");
-	Ogre::MaterialManager::getSingleton().parseScript(programPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-	auto materialPtr = resourceGrpMgr.openResource("common/ui/splash/EmberCore.material");
-	Ogre::MaterialManager::getSingleton().parseScript(materialPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-	auto fontdefPtr = resourceGrpMgr.openResource("common/ui/splash/Ember.fontdef");
-	Ogre::FontManager::getSingleton().parseScript(fontdefPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-	auto overlayPtr = resourceGrpMgr.openResource("common/ui/splash/EmberLoadingPanel.overlay");
-	Ogre::OverlayManager::getSingleton().parseScript(overlayPtr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
+	resourceGrpMgr.initialiseResourceGroup("splash");
 
 	try {
 		OverlayManager& omgr = OverlayManager::getSingleton();
@@ -171,7 +162,6 @@ void LoadingBar::addSection(LoadingBarSection* section) {
 void LoadingBar::setProgress(float progress) {
 	progress = std::max(0.f, std::min(1.0f, progress));
 	if (mLoadingBarElement) {
-		S_LOG_VERBOSE(progress);
 		//make the black blocking block a little bit smaller and move it to the right
 		mLoadingBarElement->setWidth(mProgressBarMaxSize * (1.f - progress));
 		mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));

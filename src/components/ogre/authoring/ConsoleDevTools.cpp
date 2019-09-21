@@ -163,7 +163,7 @@ void ConsoleDevTools::reloadMaterial(const std::string& materialName) {
 				name += fragmentProgram->getName();
 			}
 			// NOTE: Microcode name may depend on render system. This works for OpenGL!
-			Ogre::GpuProgramManager::getSingleton().removeMicrocodeFromCache(name);
+			//Ogre::GpuProgramManager::getSingleton().removeMicrocodeFromCache(name);
 
 			if (vertexProgram) {
 				vertexProgram->reload();

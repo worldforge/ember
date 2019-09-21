@@ -501,7 +501,7 @@ void OgreSetup::setStandardValues() {
 
 }
 
-void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen) {
+void OgreSetup::parseWindowGeometry(const Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen) {
 	auto opt = config.find("Video Mode");
 	if (opt != config.end()) {
 		Ogre::String val = opt->second.currentValue;

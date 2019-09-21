@@ -242,12 +242,14 @@ bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& pat
 }
 
 void OgreResourceLoader::loadBootstrap() {
-	//Add the "assets" directory, which contains most of the assets
+	addMedia("splash", "splash");
 
+	//Add the "assets" directory, which contains most of the assets
 	addMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-	addMedia("assets_external/OGRE/RTShaderLib/materials", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	addMedia("assets_external/OGRE/RTShaderLib/GLSL", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "RTShaderLib" / "materials", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true, true);
+	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "RTShaderLib" / "GLSL", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true, true);
+	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "ShadowVolume", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true, true);
 
 	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 }

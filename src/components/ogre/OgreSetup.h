@@ -156,7 +156,7 @@ private:
 
 	bool showConfigurationDialog();
 
-	void parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen);
+	void parseWindowGeometry(const Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen);
 
 	void input_SizeChanged(unsigned int width, unsigned int height);
 
