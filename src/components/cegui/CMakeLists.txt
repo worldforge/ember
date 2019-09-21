@@ -3,7 +3,8 @@ add_library(cegui
         ColouredRenderedStringParser.cpp
         RenderedColourStringTextComponent.cpp
         SDLNativeClipboardProvider.cpp CEGUISetup.cpp CEGUISetup.h)
-
+target_link_libraries(cegui
+        CEGUIOgreRenderer)
 
 wf_generate_lua_bindings(bindings/lua/Cegui)
 

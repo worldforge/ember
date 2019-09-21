@@ -214,16 +214,10 @@ link_libraries(${LUA_LIBRARIES})
 include_directories(${LUA_INCLUDE_DIR})
 
 
-find_package(CEGUI 0.8.4 REQUIRED)
+find_package(CEGUI 0.8.7 REQUIRED)
 link_directories(${CEGUI_LIBRARY_DIRS})
 link_libraries(${CEGUI_LIBRARIES})
 include_directories(${CEGUI_INCLUDE_DIRS})
-
-if (NOT CEGUI_OgreRenderer_FOUND)
-    MESSAGE(FATAL_ERROR "Could not find CEGUI Ogre component. Make sure you've built CEGUI with Ogre support.")
-endif (NOT CEGUI_OgreRenderer_FOUND)
-link_libraries(${CEGUI_OgreRenderer_LIBRARIES})
-include_directories(${CEGUI_OgreRenderer_INCLUDE_DIRS})
 
 if (NOT CEGUI_LuaScriptModule_FOUND)
     MESSAGE(FATAL_ERROR "Could not find CEGUI Lua component. Make sure you've built CEGUI with Lua support.")
@@ -292,6 +286,7 @@ endif(UNWIND_FOUND)
 #We'll use xmllint for validating schemas of some of our xml files.
 find_program(XMLLINT xmllint)
 
+add_subdirectory(external)
 add_subdirectory(src/domain)
 add_subdirectory(src/bindings/lua)
 add_subdirectory(src/services)
