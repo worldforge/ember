@@ -34,15 +34,8 @@
 
 #include <vector>
 
-#if (defined( __WIN32__ ) || defined( _WIN32 )) && !defined(CEGUI_STATIC)
-#   ifdef CEGUIOGRERENDERER_EXPORTS
-#       define OGRE_GUIRENDERER_API __declspec(dllexport)
-#   else
-#       define OGRE_GUIRENDERER_API __declspec(dllimport)
-#   endif
-#else
-#   define OGRE_GUIRENDERER_API
-#endif
+
+#define OGRE_GUIRENDERER_API
 
 #if defined(_MSC_VER)
 #   pragma warning(push)
@@ -54,28 +47,24 @@ namespace Ogre
 class Root;
 class RenderSystem;
 class RenderTarget;
-#if (CEGUI_OGRE_VERSION < ((1 << 16) | (9 << 8) | 0))
-class TexturePtr;
-#else
 template<typename T> class SharedPtr;
 class Texture;
 typedef SharedPtr<Texture> TexturePtr;
-#endif
 class Matrix4;
 }
 
-#if (CEGUI_OGRE_VERSION >= (2 << 16))
-// The new Ogre Compositor2 system has to be used since ViewPorts 
-// no longer have the required functionality
-#define CEGUI_USE_OGRE_COMPOSITOR2
-#endif
-
-#if (CEGUI_OGRE_VERSION >= ((2 << 16) | (1 << 8) | 0))
-// The HLMS has to be used since fixed pipeline is disabled
-#define CEGUI_USE_OGRE_HLMS
-#include <OgreRenderOperation.h>
-#include <OgreHlmsSamplerblock.h>
-#endif
+//#if (CEGUI_OGRE_VERSION >= (2 << 16))
+//// The new Ogre Compositor2 system has to be used since ViewPorts
+//// no longer have the required functionality
+//#define CEGUI_USE_OGRE_COMPOSITOR2
+//#endif
+//
+//#if (CEGUI_OGRE_VERSION >= ((2 << 16) | (1 << 8) | 0))
+//// The HLMS has to be used since fixed pipeline is disabled
+//#define CEGUI_USE_OGRE_HLMS
+//#include <OgreRenderOperation.h>
+//#include <OgreHlmsSamplerblock.h>
+//#endif
 
 // Start of CEGUI namespace section
 namespace CEGUI
