@@ -20,7 +20,7 @@
 #include "framework/LoggingInstance.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include <CEGUI/RendererModules/Ogre/Renderer.h>
+#include "CEGUIOgreRenderer/Renderer.h"
 #include <OgreRenderWindow.h>
 
 namespace Ember {

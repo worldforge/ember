@@ -64,8 +64,8 @@
 #include <CEGUI/SchemeManager.h>
 #include <CEGUI/FactoryModule.h>
 #include <CEGUI/ScriptModules/Lua/ScriptModule.h>
-#include <CEGUI/RendererModules/Ogre/ResourceProvider.h>
-#include <CEGUI/RendererModules/Ogre/ImageCodec.h>
+#include "CEGUIOgreRenderer/ResourceProvider.h"
+#include "CEGUIOgreRenderer/ImageCodec.h"
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/MultiLineEditbox.h>
 #include <CEGUI/widgets/Editbox.h>

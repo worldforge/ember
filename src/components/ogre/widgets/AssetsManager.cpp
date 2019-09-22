@@ -34,8 +34,8 @@
 
 #include "framework/Tokeniser.h"
 
-#include <CEGUI/RendererModules/Ogre/Renderer.h>
-#include <CEGUI/RendererModules/Ogre/Texture.h>
+#include "CEGUIOgreRenderer/Renderer.h"
+#include "CEGUIOgreRenderer/Texture.h"
 #include <OgreMaterialSerializer.h>
 #include <OgreTextureManager.h>
 #include <OgreMeshSerializer.h>

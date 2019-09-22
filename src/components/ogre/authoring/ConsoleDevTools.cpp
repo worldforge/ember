@@ -33,7 +33,7 @@
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/widgets/DefaultWindow.h>
 #include <CEGUI/widgets/FrameWindow.h>
-#include <CEGUI/RendererModules/Ogre/Renderer.h>
+#include "CEGUIOgreRenderer/Renderer.h"
 #include <OgreGpuProgramManager.h>
 #include <OgreTextureManager.h>
 #include <OgreMaterialManager.h>

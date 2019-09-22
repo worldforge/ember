@@ -34,8 +34,8 @@
 #include "framework/TimeHelper.h"
 #include "framework/MainLoopController.h"
 
-#include <CEGUI/RendererModules/Ogre/Renderer.h>
-#include <CEGUI/RendererModules/Ogre/ResourceProvider.h>
+#include "CEGUIOgreRenderer/Renderer.h"
+#include "CEGUIOgreRenderer/ResourceProvider.h"
 #include <CEGUI/CEGUI.h>
 
 
