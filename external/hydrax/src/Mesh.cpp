@@ -56,7 +56,7 @@ namespace Hydrax
             mSceneNode->getParentSceneNode()->removeAndDestroyChild(mSceneNode->getName());
 			mSceneNode = 0;
 
-            Ogre::MeshManager::getSingleton().remove("HydraxMesh");
+            Ogre::MeshManager::getSingleton().remove("HydraxMesh", HYDRAX_RESOURCE_GROUP);
             mHydrax->getSceneManager()->destroyEntity(mEntity);
 
 			mMesh.reset();
@@ -398,43 +398,43 @@ namespace Hydrax
 
 	const Ogre::Vector3 Mesh::getObjectSpacePosition(const Ogre::Vector3& WorldSpacePosition) const
 	{
-		Ogre::Matrix4 mWorldMatrix;
+		Ogre::Affine3 worldMatrix;
 
 		if (mCreated)
 		{
-			mEntity->getParentSceneNode()->getWorldTransforms(&mWorldMatrix);
+			worldMatrix = mEntity->getParentSceneNode()->_getFullTransform();
 		}
 		else
 		{
 			Ogre::SceneNode *mTmpSN = new Ogre::SceneNode(0);
 		    mTmpSN->setPosition(mHydrax->getPosition());
 
-			mTmpSN->getWorldTransforms(&mWorldMatrix);
+			worldMatrix = mTmpSN->_getFullTransform();
 
 		    delete mTmpSN;
 		}
 
-		return mWorldMatrix.inverseAffine().transformAffine(WorldSpacePosition);
+		return worldMatrix.inverse() * WorldSpacePosition;
 	}
 
 	const Ogre::Vector3 Mesh::getWorldSpacePosition(const Ogre::Vector3& ObjectSpacePosition) const
 	{
-		Ogre::Matrix4 mWorldMatrix;
+		Ogre::Affine3 worldMatrix;
 
 		if (mCreated)
 		{
-			mEntity->getParentSceneNode()->getWorldTransforms(&mWorldMatrix);
+			worldMatrix = mEntity->getParentSceneNode()->_getFullTransform();
 		}
 		else
 		{
 			Ogre::SceneNode *mTmpSN = new Ogre::SceneNode(0);
 		    mTmpSN->setPosition(mHydrax->getPosition());
 
-			mTmpSN->getWorldTransforms(&mWorldMatrix);
+			worldMatrix = mTmpSN->_getFullTransform();
 
 		    delete mTmpSN;
 		}
 
-		return mWorldMatrix.transformAffine(ObjectSpacePosition);
+		return worldMatrix * ObjectSpacePosition;
 	}
 }

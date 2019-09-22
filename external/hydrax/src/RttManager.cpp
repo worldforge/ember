@@ -135,8 +135,8 @@ namespace Hydrax
             RT->removeAllListeners();
             RT->removeAllViewports();
 
-			Ogre::TextureManager::getSingleton().remove(mRttOptions[Rtt].Name);
-			Ogre::MeshManager::getSingleton().remove(mRttOptions[Rtt].Name + "ClipPlane");
+			Ogre::TextureManager::getSingleton().remove(mRttOptions[Rtt].Name, HYDRAX_RESOURCE_GROUP);
+			Ogre::MeshManager::getSingleton().remove(mRttOptions[Rtt].Name + "ClipPlane", HYDRAX_RESOURCE_GROUP);
 
 			Tex.reset();
 			delete mPlanes[Rtt];
@@ -144,9 +144,9 @@ namespace Hydrax
 		}
 
 		// Check it to avoid any possible problem(texture initializated by createTextureUnit(Name..))
-		if (Ogre::TextureManager::getSingleton().resourceExists(mRttOptions[Rtt].Name))
+		if (Ogre::TextureManager::getSingleton().resourceExists(mRttOptions[Rtt].Name, HYDRAX_RESOURCE_GROUP))
 		{
-			Ogre::TextureManager::getSingleton().remove(mRttOptions[Rtt].Name);
+			Ogre::TextureManager::getSingleton().remove(mRttOptions[Rtt].Name, HYDRAX_RESOURCE_GROUP);
 		}
 	}
 

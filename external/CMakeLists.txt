@@ -1,7 +1,7 @@
 add_subdirectory(CEGUIOgreRenderer)
 add_subdirectory(pagedgeometry)
 add_subdirectory(caelum)
-add_subdirectory(hydrax)
+#add_subdirectory(hydrax)
 add_subdirectory(meshtree)
 add_subdirectory(RecastDetour)
 add_subdirectory(tinyxml)

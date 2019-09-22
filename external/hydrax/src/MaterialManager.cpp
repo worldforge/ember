@@ -75,44 +75,44 @@ namespace Hydrax
 
 	void MaterialManager::removeMaterials()
 	{
-		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Water_Material_Name))
+		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Water_Material_Name, HYDRAX_RESOURCE_GROUP))
 		{
-			Ogre::MaterialManager::getSingleton().remove(_def_Water_Material_Name);
+			Ogre::MaterialManager::getSingleton().remove(_def_Water_Material_Name, HYDRAX_RESOURCE_GROUP);
 
-			Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Water_Shader_VP_Name);
-		    Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Water_Shader_FP_Name);
-			Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Water_Shader_VP_Name);
-		    Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Water_Shader_FP_Name);
+			Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Water_Shader_VP_Name, HYDRAX_RESOURCE_GROUP);
+		    Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Water_Shader_FP_Name, HYDRAX_RESOURCE_GROUP);
+			Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Water_Shader_VP_Name, HYDRAX_RESOURCE_GROUP);
+		    Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Water_Shader_FP_Name, HYDRAX_RESOURCE_GROUP);
 		}
 
-		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Depth_Material_Name))
+		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Depth_Material_Name, HYDRAX_RESOURCE_GROUP))
 		{
-			Ogre::MaterialManager::getSingleton().remove(_def_Depth_Material_Name);
+			Ogre::MaterialManager::getSingleton().remove(_def_Depth_Material_Name, HYDRAX_RESOURCE_GROUP);
 
-			Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Depth_Shader_VP_Name);
-		    Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Depth_Shader_FP_Name);
-			Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Depth_Shader_VP_Name);
-		    Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Depth_Shader_FP_Name);
+			Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Depth_Shader_VP_Name, HYDRAX_RESOURCE_GROUP);
+		    Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Depth_Shader_FP_Name, HYDRAX_RESOURCE_GROUP);
+			Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Depth_Shader_VP_Name, HYDRAX_RESOURCE_GROUP);
+		    Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Depth_Shader_FP_Name, HYDRAX_RESOURCE_GROUP);
 		}
 
-		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Underwater_Material_Name))
+		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Underwater_Material_Name, HYDRAX_RESOURCE_GROUP))
 		{
-			Ogre::MaterialManager::getSingleton().remove(_def_Underwater_Material_Name);
+			Ogre::MaterialManager::getSingleton().remove(_def_Underwater_Material_Name, HYDRAX_RESOURCE_GROUP);
 
-			Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Underwater_Shader_VP_Name);
-		    Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Underwater_Shader_FP_Name);
-			Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Underwater_Shader_VP_Name);
-		    Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Underwater_Shader_FP_Name);
+			Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Underwater_Shader_VP_Name, HYDRAX_RESOURCE_GROUP);
+		    Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Underwater_Shader_FP_Name, HYDRAX_RESOURCE_GROUP);
+			Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Underwater_Shader_VP_Name, HYDRAX_RESOURCE_GROUP);
+		    Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Underwater_Shader_FP_Name, HYDRAX_RESOURCE_GROUP);
 		}
 
-		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Simple_Red_Material_Name))
+		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Simple_Red_Material_Name, HYDRAX_RESOURCE_GROUP))
 		{
-			Ogre::MaterialManager::getSingleton().remove(_def_Simple_Red_Material_Name);
+			Ogre::MaterialManager::getSingleton().remove(_def_Simple_Red_Material_Name, HYDRAX_RESOURCE_GROUP);
 		}
 
-		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Simple_Black_Material_Name))
+		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Simple_Black_Material_Name, HYDRAX_RESOURCE_GROUP))
 		{
-			Ogre::MaterialManager::getSingleton().remove(_def_Simple_Black_Material_Name);
+			Ogre::MaterialManager::getSingleton().remove(_def_Simple_Black_Material_Name, HYDRAX_RESOURCE_GROUP);
 		}
 
 		removeCompositor();
@@ -122,17 +122,17 @@ namespace Hydrax
 
 	void MaterialManager::removeCompositor()
 	{
-		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Underwater_Compositor_Material_Name))
+		if (Ogre::MaterialManager::getSingleton().resourceExists(_def_Underwater_Compositor_Material_Name, HYDRAX_RESOURCE_GROUP))
 		{
 			setCompositorEnable(COMP_UNDERWATER, false);
-			Ogre::CompositorManager::getSingleton().remove(_def_Underwater_Compositor_Name);
+			Ogre::CompositorManager::getSingleton().remove(_def_Underwater_Compositor_Name, HYDRAX_RESOURCE_GROUP);
 
-			Ogre::MaterialManager::getSingleton().remove(_def_Underwater_Compositor_Material_Name);
+			Ogre::MaterialManager::getSingleton().remove(_def_Underwater_Compositor_Material_Name, HYDRAX_RESOURCE_GROUP);
 
-			Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Underwater_Compositor_Shader_VP_Name);
-		    Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Underwater_Compositor_Shader_FP_Name);
-			Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Underwater_Compositor_Shader_VP_Name);
-		    Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Underwater_Compositor_Shader_FP_Name);
+			Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Underwater_Compositor_Shader_VP_Name, HYDRAX_RESOURCE_GROUP);
+		    Ogre::HighLevelGpuProgramManager::getSingleton().unload(_def_Underwater_Compositor_Shader_FP_Name, HYDRAX_RESOURCE_GROUP);
+			Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Underwater_Compositor_Shader_VP_Name, HYDRAX_RESOURCE_GROUP);
+		    Ogre::HighLevelGpuProgramManager::getSingleton().remove(_def_Underwater_Compositor_Shader_FP_Name, HYDRAX_RESOURCE_GROUP);
 		}
 	}
 
@@ -225,7 +225,7 @@ namespace Hydrax
 							               const Ogre::String& EntryPoint,
 							               const Ogre::String& Data)
 	{
-		if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(Name))
+		if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(Name, HYDRAX_RESOURCE_GROUP))
 		{
 			HydraxLOG("Error in bool MaterialManager::createGpuProgram(): "+ Name + " exists.");
 			return false;
@@ -1945,12 +1945,10 @@ namespace Hydrax
 					Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
 					if(pQueue)
 					{
-					Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
-					while(groupIter.hasMoreElements())
-					{
-						Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
-						if(pGroup)
-							pGroup->clear(false);
+					for (auto& entry : pQueue->_getQueueGroups()) {
+						if (entry) {
+							entry->clear(false);
+						}
 					}//end_while(groupIter.hasMoreElements())
 					}//end_if(pScene)
 				}//end_if(pScene)
@@ -1964,7 +1962,7 @@ namespace Hydrax
 
 	void MaterialManager::addDepthTechnique(Ogre::Technique *Technique, const bool& AutoUpdate)
 	{
-		if (!Ogre::MaterialManager::getSingleton().resourceExists(_def_Depth_Material_Name))
+		if (!Ogre::MaterialManager::getSingleton().resourceExists(_def_Depth_Material_Name, HYDRAX_RESOURCE_GROUP))
 		{
 			_createDepthMaterial(mComponents, mOptions);
 		}

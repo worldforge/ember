@@ -120,7 +120,7 @@ namespace Hydrax
 		 */
 		inline void removeTexture(const int& Index)
 		{
-			Ogre::TextureManager::getSingleton().remove(mTextures.at(Index)->getName());
+			Ogre::TextureManager::getSingleton().remove(mTextures.at(Index));
 
 			TextureStore::iterator TexIt = mTextures.begin() + Index;
 
@@ -128,7 +128,7 @@ namespace Hydrax
 		}
 
 	private:
-		typedef std::vector<Ogre::TexturePtr, Ogre::STLAllocator<Ogre::TexturePtr, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GENERAL>> > TextureStore;
+		typedef std::vector<Ogre::TexturePtr> TextureStore;
 
 		/// Hydrax main pointer
 		Hydrax *mHydrax;

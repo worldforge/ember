@@ -3,7 +3,7 @@
 This source file is part of Hydrax.
 Visit ---
 
-Copyright (C) 2008 Xavier Verguín González <xavierverguin@hotmail.com>
+Copyright (C) 2008 Xavier Verguï¿½n Gonzï¿½lez <xavierverguin@hotmail.com>
                                            <xavyiy@gmail.com>
 
 This program is free software; you can redistribute it and/or modify it under
@@ -286,8 +286,7 @@ namespace Hydrax{namespace Module
 			// For object-space to world-space conversion
 			// RTT normals calculation needs world-space coords
 			Ogre::Vector3 p;
-		    Ogre::Matrix4 mWorldMatrix;
-		    mHydrax->getMesh()->getEntity()->getParentSceneNode()->getWorldTransforms(&mWorldMatrix);
+		    auto& worldTransform  = mHydrax->getMesh()->getEntity()->getParentSceneNode()->_getFullTransform();
 
 			for(v=0; v<mOptions.Complexity; v++)
 			{
@@ -298,7 +297,7 @@ namespace Hydrax{namespace Module
 					p = Ogre::Vector3(v_,0,(static_cast<float>(u)/(mOptions.Complexity-1)) * mOptions.MeshSize.Height);
 					
 					// Calculate the world-space position
-					mWorldMatrix.transformAffine(p);
+					p = worldTransform * p;
 
 					Vertices[i].y  = 
 						mNoise->getValue(p.x, p.z) * mOptions.Strength;

@@ -68,7 +68,7 @@ namespace Hydrax
 
 		for (int k = 0; k < 1; k++)
 		{
-		     Ogre::TextureManager::getSingleton().remove(mTextureNames[k]);
+		     Ogre::TextureManager::getSingleton().remove(mTextureNames[k], HYDRAX_RESOURCE_GROUP);
 			 mTextures[k].reset();
 		}
 
@@ -132,7 +132,7 @@ namespace Hydrax
 	{
 		try
 		{
-			Ogre::TextureManager::getSingleton().remove(Name);
+			Ogre::TextureManager::getSingleton().remove(Name, HYDRAX_RESOURCE_GROUP);
 
 			Texture = Ogre::TextureManager::getSingleton().
 				createManual(Name,
