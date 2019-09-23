@@ -230,14 +230,6 @@ endif (NOT CEGUI_LuaScriptModule_FOUND)
 link_libraries(${CEGUI_LuaScriptModule_LIBRARIES})
 include_directories(${CEGUI_LuaScriptModule_INCLUDE_DIRS})
 
-
-pkg_check_modules(TINYXML QUIET tinyxml)
-if (TINYXML_FOUND)
-    link_directories(${TINYXML_LIBRARY_DIRS})
-    link_libraries(${TINYXML_LIBRARIES})
-    include_directories(${TINYXML_INCLUDE_DIRS})
-endif (TINYXML_FOUND)
-
 find_package(SDL2 REQUIRED)
 link_libraries(${SDL2_LIBRARY})
 link_libraries(${SDL2_LIBRARIES})
