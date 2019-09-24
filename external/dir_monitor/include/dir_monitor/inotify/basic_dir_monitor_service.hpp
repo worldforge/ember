@@ -130,7 +130,11 @@ public:
     template <typename Handler>
     void async_monitor(implementation_type &impl, Handler handler)
     {
-        this->async_monitor_io_service_.post(monitor_operation<Handler>(impl, this->get_io_context(), handler));
+#if BOOST_VERSION < 106600
+		this->async_monitor_io_service_.post(monitor_operation<Handler>(impl, this->get_io_service(), handler));
+#else
+		this->async_monitor_io_service_.post(monitor_operation<Handler>(impl, this->get_io_context(), handler));
+#endif
     }
 
 private:
