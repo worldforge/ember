@@ -34,7 +34,7 @@ void ConvertTestCase::testWFMathToOgre()
 
 	Ogre::Quaternion ogreQuat2(ogreMatrix);
 
-	ogreBox.transform(ogreQuat);
+	ogreBox.transform(Ogre::Affine3(Ogre::Vector3::ZERO, ogreQuat2));
 
 
 

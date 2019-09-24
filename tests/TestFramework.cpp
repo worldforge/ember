@@ -6,7 +6,7 @@
 
 #include "framework/TinyXmlCodec.h"
 #include "framework/AtlasMessageLoader.h"
-#include "framework/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Root.h>
