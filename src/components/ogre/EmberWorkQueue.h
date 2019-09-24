@@ -34,7 +34,7 @@ namespace OgreView {
 class EmberWorkQueue : public Ogre::DefaultWorkQueue {
 
 public:
-	EmberWorkQueue(Eris::EventService& eventService);
+	explicit EmberWorkQueue(Eris::EventService& eventService);
 
 	~EmberWorkQueue() override = default;
 

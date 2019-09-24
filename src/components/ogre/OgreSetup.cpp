@@ -75,6 +75,7 @@
 #include <RTShaderSystem/OgreShaderGenerator.h>
 #include <RTShaderSystem/OgreRTShaderSystem.h>
 #include <boost/filesystem.hpp>
+#include <memory>
 
 namespace Ember {
 namespace OgreView {
@@ -82,15 +83,10 @@ namespace OgreView {
 
 OgreSetup::OgreSetup() :
 		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."),
-		mRoot(nullptr),
 		mRenderWindow(nullptr),
-		mSceneManagerFactory(nullptr),
-		mMeshSerializerListener(nullptr),
-		mOverlaySystem(nullptr),
 #ifdef BUILD_WEBEMBER
 		mOgreWindowProvider(nullptr),
 #endif
-		mConfigListenerContainer(nullptr),
 		mSaveShadersToCache(false) {
 }
 
@@ -98,7 +94,6 @@ OgreSetup::~OgreSetup() {
 #ifdef BUILD_WEBEMBER
 	delete mOgreWindowProvider;
 #endif
-	delete mConfigListenerContainer;
 }
 
 void OgreSetup::runCommand(const std::string& command, const std::string& args) {
@@ -140,9 +135,8 @@ void OgreSetup::shutdown() {
 			}
 		}
 		if (mSceneManagerFactory) {
-			mRoot->removeSceneManagerFactory(mSceneManagerFactory);
-			delete mSceneManagerFactory;
-			mSceneManagerFactory = nullptr;
+			mRoot->removeSceneManagerFactory(mSceneManagerFactory.get());
+			mSceneManagerFactory.reset();
 		}
 
 		//This should normally not be needed, but there seems to be a bug in Ogre for Windows where it will hang if the render window isn't first detached.
@@ -153,17 +147,15 @@ void OgreSetup::shutdown() {
 			mRenderWindow = nullptr;
 		}
 	}
-	OGRE_DELETE (mOverlaySystem);
-	mOverlaySystem = nullptr;
-	OGRE_DELETE (mRoot);
-	mRoot = nullptr;
+	mOverlaySystem.reset();
+	mRoot.reset();
 	S_LOG_INFO("Ogre shut down.");
 
-	delete mMeshSerializerListener;
+	mMeshSerializerListener.reset();
 
 }
 
-Ogre::Root* OgreSetup::createOgreSystem() {
+void OgreSetup::createOgreSystem() {
 	ConfigService& configSrv(EmberServices::getSingleton().getConfigService());
 
 	if (!configSrv.getPrefix().empty()) {
@@ -176,11 +168,11 @@ Ogre::Root* OgreSetup::createOgreSystem() {
 	}
 
 	std::string pluginExtension = ".so";
-	mRoot = OGRE_NEW Ogre::Root("", "", "");
+	mRoot = std::make_unique<Ogre::Root>("", "", "");
 	//Ownership of the queue instance is passed to Root.
 	mRoot->setWorkQueue(OGRE_NEW EmberWorkQueue(MainLoopController::getSingleton().getEventService()));
 
-	mOverlaySystem = OGRE_NEW Ogre::OverlaySystem();
+	mOverlaySystem = std::make_unique<Ogre::OverlaySystem>();
 
 	mPluginLoader.loadPlugin("Codec_FreeImage");
 	mPluginLoader.loadPlugin("Plugin_ParticleFX");
@@ -199,7 +191,6 @@ Ogre::Root* OgreSetup::createOgreSystem() {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory().string() << "'.");
 	}
 
-	return mRoot;
 }
 
 bool OgreSetup::showConfigurationDialog() {
@@ -209,17 +200,13 @@ bool OgreSetup::showConfigurationDialog() {
 		result = configurator.configure();
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when showing configuration window." << ex);
-		delete mOverlaySystem;
-		mOverlaySystem = nullptr;
-		delete mRoot;
-		mRoot = nullptr;
+		mOverlaySystem.reset();
+		mRoot.reset();
 		createOgreSystem();
 		throw ex;
 	}
-	delete mOverlaySystem;
-	mOverlaySystem = nullptr;
-	delete mRoot;
-	mRoot = nullptr;
+	mOverlaySystem.reset();
+	mRoot.reset();
 	if (result == OgreConfigurator::OC_CANCEL) {
 		return false;
 	}
@@ -249,8 +236,7 @@ void OgreSetup::Config_ogreLogChanged(const std::string& section, const std::str
 
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 Ogre::Root* OgreSetup::configure() {
-	delete mConfigListenerContainer;
-	mConfigListenerContainer = new ConfigListenerContainer();
+	mConfigListenerContainer = std::make_unique<ConfigListenerContainer>();
 	mConfigListenerContainer->registerConfigListener("ogre", "loglevel", sigc::mem_fun(*this, &OgreSetup::Config_ogreLogChanged), true);
 
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
@@ -391,8 +377,7 @@ Ogre::Root* OgreSetup::configure() {
 	mRenderWindow->setVisible(true);
 
 	setStandardValues();
-
-	return mRoot;
+	return mRoot.get();
 }
 
 void OgreSetup::input_SizeChanged(unsigned int width, unsigned int height) {
@@ -418,9 +403,9 @@ void OgreSetup::setStandardValues() {
 	Ogre::MovableObject::setDefaultQueryFlags(0);
 
 	//Default to require tangents for all meshes. This could perhaps be turned off on platforms which has no use, like Android?
-	mMeshSerializerListener = new MeshSerializerListener(true);
+	mMeshSerializerListener = std::make_unique<MeshSerializerListener>(true);
 
-	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
+	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener.get());
 
 	//We provide our own pixel size scaled LOD strategy. Note that ownership is transferred to the LodStrategyManager, hence we won't hold on to this instance.
 	Ogre::LodStrategy* lodStrategy = OGRE_NEW Lod::ScaledPixelCountLodStrategy();
@@ -524,7 +509,7 @@ void OgreSetup::parseWindowGeometry(const Ogre::ConfigOptionMap& config, unsigne
 void OgreSetup::registerOpenGLContextFix() {
 	/**
 	 * This is needed to combat a bug found at least on KDE 4.14.4 when using OpenGL in the window manager.
-	 * For some reason the OpenGL context of the application somtimes is altered when the window is minimized and restored.
+	 * For some reason the OpenGL context of the application sometimes is altered when the window is minimized and restored.
 	 * This results in segfaults when Ogre then tries to issue OpenGL commands.
 	 * The exact cause and reasons for this bug are unknown, but by making sure that the OpenGL context is set each
 	 * time the window is resized, minimized or restored we seem to avoid the bug.

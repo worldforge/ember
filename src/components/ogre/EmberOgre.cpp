@@ -280,9 +280,26 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	S_LOG_INFO("Compiled against Ogre with multi threading support.");
 #elif OGRE_THREAD_SUPPORT == 2
 	S_LOG_INFO("Compiled against Ogre with semi threading support.");
+#elif OGRE_THREAD_SUPPORT == 3
+	S_LOG_INFO("Compiled against Ogre with threading support without synchronization.");
 #else
 	S_LOG_INFO("Compiled against Ogre with unknown threading support.");
 #endif
+
+#if OGRE_THREAD_PROVIDER == 0
+	S_LOG_INFO("Using no thread provider.");
+#elif OGRE_THREAD_PROVIDER == 1
+	S_LOG_INFO("Using Boost thread provider.");
+#elif OGRE_THREAD_PROVIDER == 2
+	S_LOG_INFO("Using Poco thread provider.");
+#elif OGRE_THREAD_PROVIDER == 3
+	S_LOG_INFO("Using TBB thread provider.");
+#elif OGRE_THREAD_PROVIDER == 4
+	S_LOG_INFO("Using STD thread provider.");
+#else
+	S_LOG_INFO("Using unknown thread provider.");
+#endif
+
 
 	mInput = &input;
 

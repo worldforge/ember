@@ -68,7 +68,7 @@ public:
 	 * Creates the Ogre base system.
 	 * @return The new Ogre Root object.
 	 */
-	Ogre::Root* createOgreSystem();
+	void createOgreSystem();
 
 	/**
 	 * @brief Configures the application - returns false if the user chooses to abandon configuration.
@@ -107,7 +107,7 @@ private:
 	/**
 	 * @brief Holds the Ogre root object.
 	 */
-	Ogre::Root* mRoot;
+	std::unique_ptr<Ogre::Root> mRoot;
 
 	/**
 	 * @brief Holds the main render window.
@@ -117,17 +117,17 @@ private:
 	/**
 	 We'll use our own scene manager factory.
 	 */
-	Ogre::SceneManagerFactory* mSceneManagerFactory;
+	std::unique_ptr<Ogre::SceneManagerFactory> mSceneManagerFactory;
 
 	/**
 	 * @brief Provides the ability to use relative paths for skeletons in meshes.
 	 */
-	MeshSerializerListener* mMeshSerializerListener;
+	std::unique_ptr<MeshSerializerListener> mMeshSerializerListener;
 
 	/**
 	 * @brief The Ogre overlay system
 	 */
-	Ogre::OverlaySystem* mOverlaySystem;
+	std::unique_ptr<Ogre::OverlaySystem> mOverlaySystem;
 	/**
 	 * @brief Ogre plugin loader, which handles OS specific and build specific differences.
 	 *
@@ -145,7 +145,7 @@ private:
 	OgreWindowProvider* mOgreWindowProvider;
 #endif
 
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	bool mSaveShadersToCache;
 
@@ -181,7 +181,7 @@ inline Ogre::RenderWindow* OgreSetup::getRenderWindow() const {
 }
 
 inline Ogre::OverlaySystem* OgreSetup::getOverlaySystem() const {
-	return mOverlaySystem;
+	return mOverlaySystem.get();
 }
 
 }

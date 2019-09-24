@@ -24,7 +24,8 @@
 namespace Ember {
 namespace OgreView {
 EmberWorkQueue::EmberWorkQueue(Eris::EventService& eventService)
-		: DefaultWorkQueue(), mEventService(eventService) {
+		: DefaultWorkQueue("EmberWorkQueue"),
+		  mEventService(eventService) {
 	//Set the number of Ogre worker threads to half the number of logical cores.
 	unsigned int logicalCores = std::thread::hardware_concurrency();
 	if (logicalCores == 0) {
