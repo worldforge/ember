@@ -223,12 +223,6 @@ private:
 	const std::string mHomeDir;
 
 	/**
-	 * @brief The main log observer used for all logging.
-	 * The default implementation is to write all log messages to a file out stream.
-	 */
-	std::unique_ptr<LogObserver> mLogObserver;
-
-	/**
 	 * @brief The main services object.
 	 */
 	std::unique_ptr<EmberServices> mServices;
@@ -242,6 +236,12 @@ private:
 	 * @brief We hold a pointer to the stream to which all logging messages are written.
 	 */
 	std::unique_ptr<std::ofstream> mLogOutStream;
+
+	/**
+	 * @brief The main log observer used for all logging.
+	 * The default implementation is to write all log messages to a file out stream.
+	 */
+	std::unique_ptr<LogObserver> mLogObserver;
 
 	/**
 	 * @brief A transient copy of command line set config settings. The settings here will be injected into the ConfigService when the services are started.
