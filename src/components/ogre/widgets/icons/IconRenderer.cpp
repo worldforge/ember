@@ -99,7 +99,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon*) {
 		//check for a defined "icon" view and use that if available, else just reposition the camera
 		const Model::ViewDefinitionStore::const_iterator I = model->getDefinition()->getViewDefinitions().find("icon");
 		if (I != model->getDefinition()->getViewDefinitions().end()) {
-			mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3(), Ogre::Quaternion::IDENTITY);
+			mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
 			mRenderContext->showFull(model->getCombinedBoundingRadius());
@@ -114,10 +114,10 @@ void IconRenderer::performRendering(Model::Model* model, Icon*) {
 			auto radius = std::max(size.x, size.y);
 			//If the ratio between the height and the depth of the item is larger than 3 it's probably being rendered from the side. Let's flip it to show it better. This ought to work in most cases.
 			if (depth_to_height_ratio > 3) {
-				mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3(), Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_X));
+				mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_X));
 				radius = std::max(size.x, size.z);
 			} else {
-				mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3(), Ogre::Quaternion::IDENTITY);
+				mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
 			}
 
 			mRenderContext->resetCameraOrientation();
