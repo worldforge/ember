@@ -186,14 +186,14 @@ private:
 
 	std::unique_ptr<Atlas::Objects::Factories> mAtlasFactories;
 
-	Eris::Session* mSession;
+	std::unique_ptr<Eris::Session> mSession;
 
-	FileSystemObserver* mFileSystemObserver;
+	std::unique_ptr<FileSystemObserver> mFileSystemObserver;
 
 	/**
 	 * @brief The main Ogre graphical view.
 	 */
-	OgreView::EmberOgre* mOgreView;
+	std::unique_ptr<OgreView::EmberOgre> mOgreView;
 
 	/**
 	 * @brief If set to true, Ember should quit before next loop step.
@@ -226,12 +226,12 @@ private:
 	 * @brief The main log observer used for all logging.
 	 * The default implementation is to write all log messages to a file out stream.
 	 */
-	LogObserver* mLogObserver;
+	std::unique_ptr<LogObserver> mLogObserver;
 
 	/**
 	 * @brief The main services object.
 	 */
-	EmberServices* mServices;
+	std::unique_ptr<EmberServices> mServices;
 
 	/**
 	 * @brief Once connected to a world, this will hold the main world view.
@@ -267,7 +267,7 @@ private:
 	/**
 	 * @brief Provides resources to the scripting system.
 	 */
-	IResourceProvider* mScriptingResourceProvider;
+	std::unique_ptr<IResourceProvider> mScriptingResourceProvider;
 
 	/**
 	 * @brief We listen to the GotView event to be able to store a reference to the View instance.

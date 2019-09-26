@@ -80,6 +80,7 @@ TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
 
 TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 
+#include <memory>
 #include <boost/thread.hpp>
 
 #ifndef HAVE_SIGHANDLER_T
@@ -223,15 +224,14 @@ Application::~Application() {
 	mSession->getIoService().stop();
 	mSession->getIoService().reset();
 
-	delete mOgreView;
+	mOgreView.reset();
 
-	delete mServices;
-	delete mScriptingResourceProvider;
-	delete mFileSystemObserver;
-	delete mSession;
+	mServices.reset();
+	mScriptingResourceProvider.reset();
+	mFileSystemObserver.reset();
+	mSession.reset();
 	S_LOG_INFO("Ember shut down normally.");
-	Log::removeObserver(mLogObserver);
-	delete mLogObserver;
+	Log::removeObserver(mLogObserver.get());
 }
 
 /**
@@ -254,7 +254,7 @@ extern "C" void shutdownHandler(int sig) {
 }
 
 void Application::registerComponents() {
-	mOgreView = new OgreView::EmberOgre();
+	mOgreView = std::make_unique<OgreView::EmberOgre>();
 }
 
 void Application::mainLoop() {
@@ -351,7 +351,7 @@ void Application::initializeServices() {
 	// Initialize Ember services
 	std::cout << "Initializing Ember services" << std::endl;
 
-	mServices = new EmberServices(*mSession);
+	mServices = std::make_unique<EmberServices>(*mSession);
 	// Initialize the Configuration Service
 	ConfigService& configService = mServices->getConfigService();
 	configService.start();
@@ -366,13 +366,13 @@ void Application::initializeServices() {
 
 	//output all logging to ember.log
 	auto filename = configService.getHomeDirectory(BaseDirType_DATA) / "ember.log";
-	mLogOutStream = std::unique_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
+	mLogOutStream = std::make_unique<std::ofstream>(filename.c_str());
 
 	//write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
 
-	mLogObserver = new ConfigBoundLogObserver(configService, *mLogOutStream);
-	Log::addObserver(mLogObserver);
+	mLogObserver = std::make_unique<ConfigBoundLogObserver>(configService, *mLogOutStream);
+	Log::addObserver(mLogObserver.get());
 
 	//default to INFO, though this can be changed by the config file
 	mLogObserver->setFilter(Log::INFO);
@@ -462,8 +462,8 @@ void Application::initializeServices() {
 	mServices->getScriptingService().registerScriptingProvider(luaProvider);
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 
-	mScriptingResourceProvider = new FileResourceProvider(mServices->getConfigService().getSharedDataDirectory() / "scripting");
-	mServices->getScriptingService().setResourceProvider(mScriptingResourceProvider);
+	mScriptingResourceProvider = std::make_unique<FileResourceProvider>(mServices->getConfigService().getSharedDataDirectory() / "scripting");
+	mServices->getScriptingService().setResourceProvider(mScriptingResourceProvider.get());
 
 	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
 	oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
