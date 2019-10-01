@@ -39,27 +39,24 @@
 
 using namespace std;
 
-namespace Ember
-{
+namespace Ember {
 
 typedef std::list<Eris::ServerInfo> svrl;
-typedef svrl::iterator Iter;
 
 MetaserverService::MetaserverService(Eris::Session& session) :
-	Service("Metaserver"), mSession(session), mMetaserver(nullptr), MetaRefresh("meta_refresh", this, "Refresh the meta server listing."), MetaAbort("meta_abort", this, "Abort the meta server update process.")
+		Service("Metaserver"),
+		mSession(session),
+		MetaRefresh("meta_refresh", this, "Refresh the meta server listing."),
+		MetaAbort("meta_abort", this, "Abort the meta server update process.")
 //   , MetaList("meta_list", this, "List all servers.")
 {
 	S_LOG_INFO("Metaserver Service created");
 }
 
-MetaserverService::~MetaserverService()
-{
-	delete mMetaserver;
-}
+MetaserverService::~MetaserverService() = default;
 
 /* Method for starting this service 	*/
-bool MetaserverService::start()
-{
+bool MetaserverService::start() {
 	setRunning(true);
 
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
@@ -72,7 +69,7 @@ bool MetaserverService::start()
 	}
 
 	S_LOG_INFO("Connecting to meta server at address " << metaserverHostname << ".");
-	mMetaserver = new Eris::Meta(mSession.getIoService(), mSession.getEventService(), metaserverHostname, 20);
+	mMetaserver = std::make_unique<Eris::Meta>(mSession.getIoService(), mSession.getEventService(), metaserverHostname, 20);
 	mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
 	mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
 	mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));
@@ -89,34 +86,30 @@ bool MetaserverService::start()
 	return true;
 }
 
-void MetaserverService::stop()
-{
+void MetaserverService::stop() {
 	mMetaserver->cancel();
 	Service::stop();
 }
 
 
-void MetaserverService::gotFailure(const string& msg)
-{
+void MetaserverService::gotFailure(const string& msg) {
 	S_LOG_WARNING("Got Meta-server error: " << msg);
 }
 
-void MetaserverService::receivedServerInfo(const Eris::ServerInfo& sInfo)
-{
+void MetaserverService::receivedServerInfo(const Eris::ServerInfo& sInfo) {
 
 	S_LOG_VERBOSE("Got serverinfo:\n"
-			<< "Hostname: " <<sInfo.getHostname()
-			<< "\nServerName: "<<sInfo.getServername()
-			<< "\nRuleset: "<<sInfo.getRuleset()
-			<< "\nServer Type: "<<sInfo.getServer()
-			<< "\nClients: "<<sInfo.getNumClients()
-			<< "\nPing: "<< sInfo.getPing()
-			<< "\nUptime: "<< (int)sInfo.getUptime()
-			<< "\nEntities: "<< sInfo.getEntities());
+						  << "Hostname: " << sInfo.getHostname()
+						  << "\nServerName: " << sInfo.getServername()
+						  << "\nRuleset: " << sInfo.getRuleset()
+						  << "\nServer Type: " << sInfo.getServer()
+						  << "\nClients: " << sInfo.getNumClients()
+						  << "\nPing: " << sInfo.getPing()
+						  << "\nUptime: " << (int) sInfo.getUptime()
+						  << "\nEntities: " << sInfo.getEntities());
 }
 
-void MetaserverService::completedServerList(int count)
-{
+void MetaserverService::completedServerList(int count) {
 	S_LOG_INFO("Server List completed.");
 	S_LOG_INFO("Servers: " << count);
 
@@ -137,13 +130,11 @@ void MetaserverService::completedServerList(int count)
 
 }
 
-Eris::Meta& MetaserverService::getMetaServer() const
-{
+Eris::Meta& MetaserverService::getMetaServer() const {
 	return *mMetaserver;
 }
 
-void MetaserverService::runCommand(const std::string &command, const std::string &args)
-{
+void MetaserverService::runCommand(const std::string& command, const std::string& args) {
 	if (!mMetaserver)
 		return;
 	/*    if (MetaList == command){
@@ -153,12 +144,9 @@ void MetaserverService::runCommand(const std::string &command, const std::string
 	} else if (MetaRefresh == command) {
 		mMetaserver->refresh();
 	}
-
-	return;
 }
 
-int MetaserverService::compareVersions(const std::string& firstVersion, const std::string& secondVersion)
-{
+int MetaserverService::compareVersions(const std::string& firstVersion, const std::string& secondVersion) {
 	std::vector<std::string> firstVersionStrings = Tokeniser::split(firstVersion, ".");
 	std::vector<std::string> secondVersionStrings = Tokeniser::split(secondVersion, ".");
 

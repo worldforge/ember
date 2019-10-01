@@ -28,66 +28,56 @@
 #include <AL/alut.h>
 
 
-namespace Ember
-{
+namespace Ember {
 
 StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& sample)
-: SoundBinding(source), mSample(sample)
-{
+		: SoundBinding(source), mSample(sample) {
 	// Bind it to the buffer.
 	alSourcei(source.getALSource(), AL_BUFFER, sample.getBuffer());
 	SoundGeneral::checkAlError("Binding sound source to static sound buffer.");
 }
 
-SoundGeneral::SoundSampleType BaseSoundSample::getType() const
-{
+SoundGeneral::SoundSampleType BaseSoundSample::getType() const {
 	return mType;
 }
 
 
 StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume)
-: mBuffer(0), mResource(resource)
-{
-	mType = SoundGeneral::SAMPLE_WAV;
+		: BaseSoundSample(SoundGeneral::SAMPLE_WAV), mBuffer(0), mResource(resource) {
 	mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), mResource.getSize());
-	
+
 	if (!SoundGeneral::checkAlError("Generated buffer for static sample.")) {
 		alDeleteBuffers(1, &mBuffer);
 	}
 }
 
-StaticSoundSample::~StaticSoundSample()
-{
+StaticSoundSample::~StaticSoundSample() {
 	if (alIsBuffer(mBuffer)) {
 		alDeleteBuffers(1, &mBuffer);
 		SoundGeneral::checkAlError("Deleting static sound buffers.");
 	}
 }
 
-ALuint StaticSoundSample::getBuffer() const
-{
+ALuint StaticSoundSample::getBuffer() const {
 	return mBuffer;
 }
-	
-BaseSoundSample::BufferStore StaticSoundSample::getBuffers() const
-{
+
+BaseSoundSample::BufferStore StaticSoundSample::getBuffers() const {
 	BaseSoundSample::BufferStore buffers;
 	buffers.push_back(mBuffer);
 	return buffers;
 }
 
 
-SoundBinding* StaticSoundSample::createBinding(SoundSource& source)
-{
+SoundBinding* StaticSoundSample::createBinding(SoundSource& source) {
 	return new StaticSoundBinding(source, *this);
 }
 
-unsigned int StaticSoundSample::getNumberOfBuffers() const
-{
+unsigned int StaticSoundSample::getNumberOfBuffers() const {
 	return 1;
 }
 
-	// Streamed (OGG)
+// Streamed (OGG)
 // 	StreamedSoundSample::StreamedSoundSample(const std::string& filename, bool playsLocal, float volume)
 // 	{
 // 		mPlaying = false;

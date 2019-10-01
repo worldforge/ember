@@ -28,35 +28,30 @@
 #include "ConfigService.h"
 #include <utility>
 
-namespace Ember
-{
+namespace Ember {
 
-ConfigListener::ConfigListener(const std::string& section, const std::string& key, ConfigListenerContainer::SettingChangedSlot slot)
-		:		mSection(section),
-				 mKey(key),
-				 mSlot(std::move(slot)),
-				 mInternalSlot(sigc::mem_fun(*this, &ConfigListener::ConfigService_EventChangedConfigItem))
-{
+ConfigListener::ConfigListener(std::string section, std::string key, SettingChangedSlot slot)
+		: mSection(std::move(section)),
+		  mKey(std::move(key)),
+		  mSlot(std::move(slot)),
+		  mInternalSlot(sigc::mem_fun(*this, &ConfigListener::ConfigService_EventChangedConfigItem)) {
 	mConnection = EmberServices::getSingleton().getConfigService().EventChangedConfigItem.connect(mInternalSlot);
 }
 
-ConfigListener::~ConfigListener()
-{
+ConfigListener::~ConfigListener() {
 	mSlot.disconnect();
 	mInternalSlot.disconnect();
 	mConnection.disconnect();
 }
 
-void ConfigListener::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
-{
+void ConfigListener::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key) {
 	if (section == mSection && key == mKey) {
 		varconf::Variable variable = EmberServices::getSingleton().getConfigService().getValue(section, key);
 		mSlot(section, key, variable);
 	}
 }
 
-bool ConfigListener::evaluate()
-{
+bool ConfigListener::evaluate() {
 	if (EmberServices::getSingleton().getConfigService().itemExists(mSection, mKey)) {
 		varconf::Variable variable = EmberServices::getSingleton().getConfigService().getValue(mSection, mKey);
 		mSlot(mSection, mKey, variable);

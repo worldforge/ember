@@ -21,7 +21,6 @@
 #endif
 
 #include "StreamLogObserver.h"
-#include <boost/date_time.hpp>
 #include <thread>
 #include <atomic>
 

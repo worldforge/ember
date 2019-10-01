@@ -35,7 +35,7 @@ namespace Ember
 void TimeHelper::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
 	// latest version of boost::posix_time seems to be broken on win32. Fallback to boost::date_time::c_time
-	tm storage;
+	tm storage{};
 	time_t t = time(nullptr);
 	tm* now = boost::date_time::c_time::localtime(&t, &storage); // Thread-safe version of localtime
 

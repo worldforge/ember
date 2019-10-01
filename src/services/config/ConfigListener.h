@@ -23,16 +23,13 @@
 #ifndef EMBERCONFIGLISTENER_H
 #define EMBERCONFIGLISTENER_H
 
-#include "ConfigListenerContainer.h"
 #include <varconf/variable.h>
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 #include <string>
 
 
-
-namespace Ember
-{
+namespace Ember {
 
 /**
  @author Erik Ogenvik <erik@ogenvik.org>
@@ -42,9 +39,10 @@ namespace Ember
 
  You cannot create instances of this class directly, instead your consumer class must inherit from ConfigListenerContainer and call the registerConfigListener in order to create and register instances.
  */
-class ConfigListener
-{
+class ConfigListener {
 public:
+	using SettingChangedSlot = sigc::slot<void, const std::string&, const std::string&, varconf::Variable&>;
+
 	friend class ConfigListenerContainer;
 
 	~ConfigListener();
@@ -54,12 +52,13 @@ public:
 	 * @return True if the setting existed.
 	 */
 	bool evaluate();
+
 protected:
-	ConfigListener(const std::string& section, const std::string& key, ConfigListenerContainer::SettingChangedSlot slot);
+	ConfigListener(std::string section, std::string key, SettingChangedSlot slot);
 
 	std::string mSection;
 	std::string mKey;
-	ConfigListenerContainer::SettingChangedSlot mSlot;
+	SettingChangedSlot mSlot;
 	sigc::slot<void, const std::string&, const std::string&> mInternalSlot;
 	sigc::connection mConnection;
 

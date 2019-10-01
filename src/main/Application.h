@@ -129,7 +129,7 @@ public:
 	 * @param homeDir The path to the Ember home directory. On a UNIX system this was historically "~/.ember". By default, this is now set according to the XDG Base Directory Specification.
 	 * @param configSettings Command line configuration settings.
 	 */
-	Application(std::string prefix, std::string homeDir, const ConfigMap& configSettings);
+	Application(std::string prefix, std::string homeDir, ConfigMap configSettings);
 
 	/**
 	 * @brief At destruction pretty much all game objects will be destroyed.

@@ -22,25 +22,22 @@
 
 #include "TimeFrame.h"
 
-namespace Ember
-{
-TimeFrame::TimeFrame(const boost::posix_time::time_duration timeSlice) :
-		mStartTime(boost::posix_time::microsec_clock::local_time()), mEndTime(mStartTime + timeSlice),  mTimeSlice(timeSlice)
-{
+namespace Ember {
+TimeFrame::TimeFrame(boost::posix_time::time_duration timeSlice) :
+		mStartTime(boost::posix_time::microsec_clock::local_time()),
+		mEndTime(mStartTime + timeSlice),
+		mTimeSlice(std::move(timeSlice)) {
 }
 
-bool TimeFrame::isTimeLeft() const
-{
+bool TimeFrame::isTimeLeft() const {
 	return boost::posix_time::microsec_clock::local_time() < mEndTime;
 }
 
-boost::posix_time::time_duration TimeFrame::getRemainingTime() const
-{
+boost::posix_time::time_duration TimeFrame::getRemainingTime() const {
 	return mEndTime - boost::posix_time::microsec_clock::local_time();
 }
 
-boost::posix_time::time_duration TimeFrame::getElapsedTime() const
-{
+boost::posix_time::time_duration TimeFrame::getElapsedTime() const {
 	return boost::posix_time::microsec_clock::local_time() - mStartTime;
 }
 

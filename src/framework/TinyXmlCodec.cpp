@@ -49,11 +49,9 @@ public:
 		mState.push(PARSE_NOTHING);
 	}
 
-	virtual ~AtlasXmlVisitor() {
-	}
+	~AtlasXmlVisitor() override = default;
 
-	virtual bool VisitEnter(const TiXmlElement& element, const TiXmlAttribute* firstAttribute)
-
+	bool VisitEnter(const TiXmlElement& element, const TiXmlAttribute* firstAttribute) override
 	{
 		const std::string& tag = element.ValueStr();
 		switch (mState.top()) {
@@ -129,7 +127,7 @@ public:
 		return true;
 	}
 	/// Visit an element.
-	virtual bool VisitExit(const TiXmlElement& element)
+	bool VisitExit(const TiXmlElement& element) override
 	{
 		const std::string& tag = element.ValueStr();
 		switch (mState.top()) {
@@ -213,7 +211,7 @@ public:
 
 		return true;
 	}
-	virtual bool Visit(const TiXmlText& text)
+	bool Visit(const TiXmlText& text) override
 	{
 		mData = text.ValueStr();
 		return true;
@@ -240,7 +238,7 @@ void TinyXmlCodec::streamBegin()
 
 void TinyXmlCodec::streamEnd()
 {
-	mCurrentNode = 0;
+	mCurrentNode = nullptr;
 }
 
 void TinyXmlCodec::streamMessage()

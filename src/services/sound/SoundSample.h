@@ -29,12 +29,13 @@
 #elif defined(_MSC_VER)
 #include <al.h>
 #else
+
 #include <AL/al.h>
+
 #endif
 
 
-namespace Ember
-{
+namespace Ember {
 class SoundSource;
 
 
@@ -43,17 +44,16 @@ class SoundSource;
  *
  * Defines general properties of sound data
  */
-class BaseSoundSample
-{
+class BaseSoundSample {
 public:
-	
+
 	typedef std::vector<ALuint> BufferStore;
 
 	/**
 	 * Dtor.
 	 */
-	virtual ~BaseSoundSample() { }
-	
+	virtual ~BaseSoundSample() = default;
+
 	/**
 	 * @return entity type
 	 */
@@ -64,14 +64,14 @@ public:
 	 * @return The number of buffers.
 	 */
 	virtual unsigned int getNumberOfBuffers() const = 0;
-	
+
 	/**
 	 * @brief Returns a store of the sound data buffers stored by this sample.
 	 * The buffers will be returned as ALuint which is the internal buffer reference within OpenAL. Any further operation on the buffer must therefore go through OpenAL (i.e. the values returned are _not_ memory pointers).
 	 * @return A store of OpenAL buffer identifiers.
 	 */
 	virtual BufferStore getBuffers() const = 0;
-	
+
 	/**
 	 * @brief Creates a new binding to this buffer, to be used together with an instance of SoundInstance.
 	 * If you want the sound held by this buffer to be played, one way would be to call this to create a binding which you then feed to an instance of SoundInstance.
@@ -87,19 +87,19 @@ protected:
 	/**
 	 * @brief Ctor. This is protected to disallow direct creation of this class except by subclasses.
 	 */
-	BaseSoundSample() { }
+	BaseSoundSample(SoundGeneral::SoundSampleType type) : mType(type) {
+	}
 
 	/**
 	 * Type of the sample
 	 */
-	SoundGeneral::SoundSampleType	mType;
+	SoundGeneral::SoundSampleType mType;
 };
 
 /**
  * The class StaticSoundSample is responsible to keep track of samples that doesnt need often updates and only have one buffer
  */
-class StaticSoundSample : public BaseSoundSample
-{
+class StaticSoundSample : public BaseSoundSample {
 public:
 	/**
 	 * Ctor.
@@ -112,7 +112,7 @@ public:
 	/**
 	 * Dtor.
 	 */
-	~StaticSoundSample();
+	~StaticSoundSample() override;
 
 	/**
 	 * @return the unique buffer this sample has.
@@ -122,24 +122,24 @@ public:
 	/**
 	 * Within this class, this is always 1.
 	 */
-	unsigned int getNumberOfBuffers() const;
+	unsigned int getNumberOfBuffers() const override;
 
 	/**
 	 * @copydoc BaseSoundSample::createBinding()
 	 */
-	virtual SoundBinding* createBinding(SoundSource& source);
+	SoundBinding* createBinding(SoundSource& source) override;
 
 	/**
 	 * @copydoc BaseSoundSample::getBuffers()
 	 */
-	virtual BaseSoundSample::BufferStore getBuffers() const;
+	BaseSoundSample::BufferStore getBuffers() const override;
 
 private:
 	/**
 	 * Sample buffer
 	 */
 	ALuint mBuffer;
-	
+
 	/**
 	 * @brief The resource wrapper instance which holds the actual data.
 	 */
@@ -152,8 +152,7 @@ private:
  * A "static" sound is one that is small enough to fit into one continous buffer, and thus doesn't need to be dynamically updated as is the case with "streaming" sounds. As a result, this binding is very simple and will just bind the sound data to the source in the constructor, without having to provide any functionality in the update() method.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class StaticSoundBinding : public SoundBinding
-{
+class StaticSoundBinding : public SoundBinding {
 public:
 
 	/**
@@ -166,7 +165,7 @@ public:
 	/**
 	 * @copydoc SoundBinding::update()
 	 */
-	virtual void update() {
+	void update() override {
 		// Since it's a static sound we don't need to update anything.
 	}
 

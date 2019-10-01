@@ -24,16 +24,15 @@
 #ifndef CONFIGLISTENERCONTAINER_H_
 #define CONFIGLISTENERCONTAINER_H_
 
+#include "ConfigListener.h"
 #include <sigc++/slot.h>
 #include <vector>
 #include <string>
-
+#include <memory>
 #include <varconf/variable.h>
 
 namespace Ember
 {
-
-class ConfigListener;
 
 /**
  @author Erik Ogenvik <erik@ogenvik.org>
@@ -45,36 +44,39 @@ class ConfigListener;
 class ConfigListenerContainer
 {
 public:
-	typedef sigc::slot<void, const std::string&, const std::string&, varconf::Variable&> SettingChangedSlot;
 
 	virtual ~ConfigListenerContainer();
 
 	/**
-	 * @brief Registers a new listener. The listener instance will be owned by this class and automatically deleted when the destructor is called.
+	 * @brief Registers a new listener. The listener instance will be owned by this
+	 * class and automatically deleted when the destructor is called.
 	 * @param section The config section to listen to.
 	 * @param key The config key to listen to.
 	 * @param slot The slot to execute when a change has occurred.
-	 * @param evaluateNow If true, the listener will be evaluated instantly, possibly triggering a call to the signal. Defaults to true.
+	 * @param evaluateNow If true, the listener will be evaluated instantly,
+	 * possibly triggering a call to the signal. Defaults to true.
 	 * @return A pointer to the newly created listener instance.
 	 */
-	ConfigListener* registerConfigListener(const std::string& section, const std::string& key, SettingChangedSlot slot, bool evaluateNow = true);
+	ConfigListener* registerConfigListener(const std::string& section, const std::string& key, ConfigListener::SettingChangedSlot slot, bool evaluateNow = true);
 
 	/**
-	 * @brief Registers a new listener. The listener instance will be owned by this class and automatically deleted when the destructor is called. The setting will always be evaluated, and if no setting can be found the default value will be used to trigger a call to the listener method.
+	 * @brief Registers a new listener. The listener instance will be owned by this class and
+	 * automatically deleted when the destructor is called. The setting will always be evaluated,
+	 * and if no setting can be found the default value will be used to trigger a call to the listener method.
 	 * @param section The config section to listen to.
 	 * @param key The config key to listen to.
 	 * @param slot The slot to execute when a change has occurred.
 	 * @param defaultValue The default value, to use if no existing setting can be found.
 	 * @return A pointer to the newly created listener instance.
 	 */
-	ConfigListener* registerConfigListenerWithDefaults(const std::string& section, const std::string& key, SettingChangedSlot slot, varconf::Variable defaultValue);
+	ConfigListener* registerConfigListenerWithDefaults(const std::string& section, const std::string& key, ConfigListener::SettingChangedSlot slot, varconf::Variable defaultValue);
 
 
 private:
 	/**
 	 A collection of listeners.
 	 */
-	std::vector<ConfigListener*> mConfigListeners;
+	std::vector<std::unique_ptr<ConfigListener>> mConfigListeners;
 
 };
 

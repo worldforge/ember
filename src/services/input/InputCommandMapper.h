@@ -40,8 +40,7 @@ namespace Ember {
 
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class InputCommandMapper : public virtual sigc::trackable
-{
+class InputCommandMapper : public virtual sigc::trackable {
 public:
 	typedef std::multimap<std::string, std::string> KeyCommandStore;
 	typedef std::map<SDL_Scancode, std::string> KeyMapStore;
@@ -52,45 +51,45 @@ public:
 	 * @brief Ctor.
 	 * @param state The state which this instance should apply to, such as "general" or "gui"
 	 */
-	InputCommandMapper(const std::string& state);
+	explicit InputCommandMapper(std::string state);
 
 	/**
 	 * @brief Constructor which also reads values from the config and sets up bindings.
 	 * @param state The state which this instance should apply to, such as "general" or "gui"
 	 * @param configSection The name of the config section to read values from.
 	 */
-	InputCommandMapper(const std::string& state, const std::string& configSection);
+	InputCommandMapper(std::string state, const std::string& configSection);
 
-    /**
-     * @brief At destruction the instance is also deregistered from the Input instance.
-     */
-    virtual ~InputCommandMapper();
+	/**
+	 * @brief At destruction the instance is also deregistered from the Input instance.
+	 */
+	virtual ~InputCommandMapper();
 
-    /**
-     * @brief Binds a command to a key.
-     * @param key The name of the key.
-     * @param command The full command to execute, such as "/show_inventory" or "+run"
-     */
-    void bindCommand(const std::string& key, const std::string& command);
+	/**
+	 * @brief Binds a command to a key.
+	 * @param key The name of the key.
+	 * @param command The full command to execute, such as "/show_inventory" or "+run"
+	 */
+	void bindCommand(const std::string& key, const std::string& command);
 
-    /**
-     * @brief Removes all binding for a certain key.
-     * @param key The name of the key to remove bindings for.
-     */
-    void unbindCommand(const std::string& key);
+	/**
+	 * @brief Removes all binding for a certain key.
+	 * @param key The name of the key to remove bindings for.
+	 */
+	void unbindCommand(const std::string& key);
 
-    /**
-     * @brief Removes a binding for a certain key.
-     * @param key The name of the key to remove bindings for.
-     * @param command The name of the command to remove.
-     */
-    void unbindCommand(const std::string& key, const std::string& command);
+	/**
+	 * @brief Removes a binding for a certain key.
+	 * @param key The name of the key to remove bindings for.
+	 * @param command The name of the command to remove.
+	 */
+	void unbindCommand(const std::string& key, const std::string& command);
 
-    /**
-     * @brief The name of the state that this instance applies to.
-     * @return The name of the state.
-     */
-    const std::string& getState() const;
+	/**
+	 * @brief The name of the state that this instance applies to.
+	 * @return The name of the state.
+	 */
+	const std::string& getState() const;
 
 	/**
 	 * @brief Reads a section from the config and sets up bindings accordingly.
@@ -98,23 +97,23 @@ public:
 	 */
 	void readFromConfigSection(const std::string& sectionName);
 
-    /**
-     * @brief Sets whether this instance is enabled or not.
-     * @param enabled If this mapper should be enabled or not.
-     */
-    void setEnabled(bool enabled);
+	/**
+	 * @brief Sets whether this instance is enabled or not.
+	 * @param enabled If this mapper should be enabled or not.
+	 */
+	void setEnabled(bool enabled);
 
-    /**
-     * @brief Returns whether this instance is enabled or not.
-     * @return True if enabled.
-     */
-    bool getEnabled() const;
+	/**
+	 * @brief Returns whether this instance is enabled or not.
+	 * @return True if enabled.
+	 */
+	bool getEnabled() const;
 
-    /**
-     * @brief Binds the instance to a Input object. Call this to start recieving input.
-     * @param input
-     */
-    void bindToInput(Input& input);
+	/**
+	 * @brief Binds the instance to a Input object. Call this to start recieving input.
+	 * @param input
+	 */
+	void bindToInput(Input& input);
 
 	/**
 	 * @brief Sets which modes this instance should be restricted to. An empty list will make it listen for all modes.
@@ -136,6 +135,7 @@ protected:
 	 * @param inputMode
 	 */
 	void Input_EventKeyPressed(const SDL_Keysym& key, Input::InputMode inputMode);
+
 	/**
 	 * @brief At keyrelease time, see if there's a command prefixed with "+", such as "+run", which should have its "-" twin command sent out.
 	 * @param key
@@ -193,27 +193,23 @@ protected:
 	Input* mInput;
 };
 
-inline const std::string& InputCommandMapper::getState() const
-{
+inline const std::string& InputCommandMapper::getState() const {
 	return mState;
 }
 
-inline void InputCommandMapper::setEnabled(bool enabled)
-{
+inline void InputCommandMapper::setEnabled(bool enabled) {
 	mEnabled = enabled;
 }
-inline bool InputCommandMapper::getEnabled() const
-{
+
+inline bool InputCommandMapper::getEnabled() const {
 	return mEnabled;
 }
 
-inline void InputCommandMapper::restrictToInputModes(InputModeStore modes)
-{
+inline void InputCommandMapper::restrictToInputModes(InputModeStore modes) {
 	mInputModesRestriction = modes;
 }
 
-inline void InputCommandMapper::restrictToInputMode(Input::InputMode mode)
-{
+inline void InputCommandMapper::restrictToInputMode(Input::InputMode mode) {
 	InputModeStore modes;
 	modes.push_back(mode);
 	restrictToInputModes(modes);

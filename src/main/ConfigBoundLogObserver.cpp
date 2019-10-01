@@ -38,9 +38,7 @@ ConfigBoundLogObserver::ConfigBoundLogObserver(ConfigService& configService, std
 }
 
 
-ConfigBoundLogObserver::~ConfigBoundLogObserver()
-{
-}
+ConfigBoundLogObserver::~ConfigBoundLogObserver() = default;
 
 void ConfigBoundLogObserver::updateFromConfig()
 {

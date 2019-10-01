@@ -27,15 +27,12 @@
 #include <memory>
 
 
-
-namespace Ember
-{
+namespace Ember {
 
 class ErisLogReciever;
 
-class LoggingService : public Service
-{
-	public:
+class LoggingService : public Service {
+public:
 
 	/**
 	* Creates a new LoggingService using default values.
@@ -45,9 +42,9 @@ class LoggingService : public Service
 	/**
 	* Deletes a LoggingService instance.
 	*/
-	virtual ~LoggingService();
+	~LoggingService() override;
 
-	virtual bool start();
+	bool start() override;
 
 private:
 

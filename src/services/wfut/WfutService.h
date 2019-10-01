@@ -44,9 +44,9 @@ class WfutService : public Service
 public:
     WfutService();
 
-    virtual ~WfutService();
+    ~WfutService() override;
     
-    virtual bool start();
+    bool start() override;
     
     
     void startUpdate(const std::string &serverRoot,

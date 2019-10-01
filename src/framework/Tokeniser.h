@@ -37,41 +37,40 @@ namespace Ember {
  * The main use for this is in a console environment where you need to act on the arguments submitted along with a command.
  * For example, a typical scenario would be that the command "set_value foo bar" was entered. The command object would then be "set_value", and the following string would need to be split into "tokens" (i.e. two tokens, "foo" and "bar").
  */
-class Tokeniser
-{
-	protected:
+class Tokeniser {
+protected:
 	const std::string mDelimeters;
 	std::string::size_type mPos, mLastPos;
 	std::string mTokenString;
-	
-	public:
+
+public:
 
 
 	/**
 	* Creates a new Tokeniser using default values.
 	*/
 	Tokeniser();
-	
+
 	/**
 	 * @brief Creates a new Tokeniser using the supplied string, using a space character as delimiter.
 	 * @param tokens The string which we want split into tokens.
 	 */
-	Tokeniser(const std::string &tokens);
-	
+	explicit Tokeniser(const std::string& tokens);
+
 	/**
 	 * @brief Creates a new Tokeniser using the supplied string, using the supplied delimiter.
 	 * @param tokens The string which we want split into tokens.
 	 * @param delimiters The delimiter to use for splitting up the tokens.
 	 */
-	Tokeniser(const std::string &tokens, const std::string &delimiters);
-	
+	Tokeniser(const std::string& tokens, std::string delimiters);
+
 	/**
 	 * @brief Initializes the tokeniser with the supplied string.
 	 * This allows you to initialize an already existing tokeniser with a new string.
 	 * @param tokens 
 	 */
-	void initTokens(const std::string &tokens);
-	
+	void initTokens(const std::string& tokens);
+
 	/**
 	 * @brief Advances to the next token and returns it.
 	 * @return The next token.
@@ -97,8 +96,8 @@ class Tokeniser
 	 * @param delimiters The delimiters to use.
 	 * @returns A vector of the tokens.
 	 */
-	static std::vector<std::string> split(const std::string &tokens, const std::string &delimiters);
-}; 
+	static std::vector<std::string> split(const std::string& tokens, const std::string& delimiters);
+};
 
 }
 

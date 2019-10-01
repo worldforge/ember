@@ -29,8 +29,7 @@
 
 #include <string>
 
-namespace Eris
-{
+namespace Eris {
 class Session;
 }
 
@@ -45,16 +44,15 @@ namespace Ember {
  * @see Ember::ServerService
  * @see Ember::ConsoleObject
  */
-class MetaserverService: public Service,
-  public ConsoleObject
-{
-    //======================================================================
-    // Private Variables
-    //======================================================================
-    private:
+class MetaserverService : public Service,
+						  public ConsoleObject {
+	//======================================================================
+	// Private Variables
+	//======================================================================
+private:
 
 	Eris::Session& mSession;
-    Eris::Meta* mMetaserver;
+	std::unique_ptr<Eris::Meta> mMetaserver;
 //     Eris::ServerList serverlist;
 //     bool listed;
 //     //StringProvider * myStateDMP;
@@ -63,53 +61,56 @@ class MetaserverService: public Service,
 // 	const ConsoleCommandWrapper MetaList;
 
 
-		
-    //----------------------------------------------------------------------
-    // Constructors & Destructor
 
-	public:
-	
-    /** Creates a new ConfigService using default values. */
-    MetaserverService(Eris::Session& session);
+	//----------------------------------------------------------------------
+	// Constructors & Destructor
+
+public:
+
+	/** Creates a new ConfigService using default values. */
+	explicit MetaserverService(Eris::Session& session);
 
 
-    /** Deletes a ConfigService instance. */
-    ~MetaserverService();
+	/** Deletes a ConfigService instance. */
+	~MetaserverService() override;
 
-    //----------------------------------------------------------------------
-    // Getters & Setters
+	//----------------------------------------------------------------------
+	// Getters & Setters
 
-    Eris::Meta& getMetaServer() const;
-    
-    //----------------------------------------------------------------------
-    // Methods
-	
-    bool start();
+	Eris::Meta& getMetaServer() const;
 
-    void stop();
+	//----------------------------------------------------------------------
+	// Methods
 
-    void gotFailure(const std::string& msg);
+	bool start() override;
 
-    void receivedServerInfo(const Eris::ServerInfo& sInfo);
-	
-    void completedServerList(int count);
+	void stop() override;
 
-    /**
-     * This is the function that needs to be extended to use the console.
-     * command is a command that has been previously registered with the console
-     * args is the argument string that has been provided for the command
-     */ 
-    virtual void runCommand(const std::string &command, const std::string &args);
+	void gotFailure(const std::string& msg);
 
-    /**
-     * @brief Compares two version strings.
-     *
-     * A version string should be in the format <major>.<minor>.<point>.
-     * @returns 0 if the versions are the same, or if it wasn't possible to correctly parse the version string. 1 if the first version was larger than the second. -1 if the second version was larger then the first.
-     * @param firstVersion The first version to compare.
-     * @param secondVersion The second version to compare.
-     */
-    static int compareVersions(const std::string& firstVersion, const std::string& secondVersion);
+	void receivedServerInfo(const Eris::ServerInfo& sInfo);
+
+	void completedServerList(int count);
+
+	/**
+	 * This is the function that needs to be extended to use the console.
+	 * command is a command that has been previously registered with the console
+	 * args is the argument string that has been provided for the command
+	 */
+	void runCommand(const std::string& command, const std::string& args) override;
+
+	/**
+	 * @brief Compares two version strings.
+	 *
+	 * A version string should be in the format <major>.<minor>.<point>.
+	 * @returns 0 if the versions are the same, or if it wasn't
+	 * possible to correctly parse the version string.
+	 * 1 if the first version was larger than the second.
+	 * -1 if the second version was larger then the first.
+	 * @param firstVersion The first version to compare.
+	 * @param secondVersion The second version to compare.
+	 */
+	static int compareVersions(const std::string& firstVersion, const std::string& secondVersion);
 
 }; //MetaserverService
 

@@ -86,7 +86,7 @@ class StreamLogObserver : public LogObserver
     /**
      * Creates a new StreamLogObserver using default values.
      */
-     StreamLogObserver(std::ostream &out);
+     explicit StreamLogObserver(std::ostream &out);
 
     /**
      * Copy constructor.
@@ -102,7 +102,7 @@ class StreamLogObserver : public LogObserver
     /**
      * Deletes a StreamLogObserver instance.
      */
-    virtual ~StreamLogObserver ();
+    ~StreamLogObserver () override;
 
     //----------------------------------------------------------------------
     // Implmented methods from LogginService::Observer
@@ -110,8 +110,8 @@ class StreamLogObserver : public LogObserver
     /**
      * Prints out the message provided with file, line and datestamp to myOut;
      */
-    virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                  const Log::MessageImportance & importance);
+    void onNewMessage(const std::string & message, const std::string & file, const int & line,
+                                  const Log::MessageImportance & importance) override;
 
     /**
      * @brief Sets whether the log output should be detailed or not.

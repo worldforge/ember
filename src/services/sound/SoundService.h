@@ -29,15 +29,20 @@
 
 #include <list>
 #include <unordered_map>
+
 #ifdef _MSC_VER
 #include <alc.h>
 #endif
 namespace Ember {
 
 class IResourceProvider;
+
 class StreamedSoundSample;
+
 class SoundInstance;
+
 class SoundGroup;
+
 class BaseSoundSample;
 
 /**
@@ -47,36 +52,31 @@ class BaseSoundSample;
  * @author Romulo Fernandes Machado (nightz)
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class SoundService: public Service, public ConsoleObject
-{
-/**
- * @note This is a list because we want to allow removal or insertion in the list while we're iterating over it (which isn't allowed with a vector).
- */
-typedef std::list<SoundInstance*> SoundInstanceStore;
-typedef std::unordered_map<std::string, BaseSoundSample*> SoundSampleStore;
-
+class SoundService : public Service, public ConsoleObject {
 public:
 	/**
 	 * @brief Ctor.
 	 */
 	SoundService();
 
+	~SoundService();
+
 	/**
 	 * @copydoc Service::start()
 	 */
-	bool start();
+	bool start() override;
 
 	/**
 	 * @copydoc Service::stop()
 	 */
-	void stop();
+	void stop() override;
 
 	/**
 	 * @copydoc ConsoleObject::runCommand()
 	 */
-	void runCommand(const std::string& command, const std::string& args);
-	
-	
+	void runCommand(const std::string& command, const std::string& args) override;
+
+
 	/**
 	 * @brief Attempts to retrieve, or create if not already existing, the sound sample with the supplied identifier.
 	 * Each sound sample is identified through the path to it, within the Ember resource system. This method will first look within the already allocated sound samples, and if the sought after sound sample is found there it will be returned.
@@ -85,7 +85,7 @@ public:
 	 * @return A sound sample, or null if none could be created.
 	 */
 	BaseSoundSample* createOrRetrieveSoundSample(const std::string& soundPath);
-	
+
 	/**
 	 * @brief Destroys the specified sound sample.
 	 * Call this to destroy a specified sound sample. If no sound sample with the specified path can be found nothing will happen.
@@ -117,14 +117,14 @@ public:
 	 * @param up The up vector of the listener.
 	 */
 	void updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3>& up);
-	
+
 	/**
 	 * @brief Call this each frame to update the sound samples.
 	 * Through a call of this all registered and active SoundInstance instances will be asked to update themselves. Such an update could involve updating streaming buffers in the case of a streaming sound, or update the position of the sound if it's positioned within the 3d world.
 	 */
 	void cycle();
-	
-	
+
+
 	/**
 	 * @brief Creates a new SoundInstance.
 	 * Every time you want to play a sound you must create a SoundInstance and use that to play it. The only way to (normally) create such an instance is through this method. The sound service will keep track of all SoundInstance instances that are created, and will call SoundInstance::update() each frame, granted that SoundService::cycle() is called.
@@ -133,7 +133,7 @@ public:
 	 * @return A new SoundInstance instance, or null if no instance could be created or the sound system is disabled. Before you can play it, through SoundInstance::play(), you must bind it to a SoundSample.
 	 */
 	SoundInstance* createInstance();
-	
+
 	/**
 	 * @brief Destroys a SoundInstance.
 	 * Once you're done with a sound instance, for example when the sound has completed, you are expected to return it to the sound service.
@@ -142,7 +142,7 @@ public:
 	 * @return True if the instance could be properly destroyed, else false. The behaviour if the destruction fails is undefined, and you should probably throw some kind of exception, or just mark the SoundInstance as a memory/resource leak and carry on.
 	 */
 	bool destroyInstance(SoundInstance* instance);
-	
+
 	/**
 	 * @brief Gets the resource provider for this service.
 	 * @return The resource provider registered for this service, or null if none has been registered.
@@ -155,7 +155,7 @@ public:
 	 * @param resourceProvider A pointer to the resource provider to use. Ownership will not be transferred to this service.
 	 */
 	void setResourceProvider(IResourceProvider* resourceProvider);
-	
+
 	/**
 	 * @brief Returns true if the sound system is enabled.
 	 * @return True if the sound is enabled.
@@ -163,14 +163,14 @@ public:
 	bool isEnabled() const;
 
 private:
-	
+
 	/**
 	 * @brief All the samples registered with the service are stored here.
 	 * These are owned by the service and should be destroyed when the service is stopped.
 	 */
-	SoundSampleStore mBaseSamples;
+	std::unordered_map<std::string, std::unique_ptr<BaseSoundSample>> mBaseSamples;
 
-	#ifdef _MSC_VER
+#ifdef _MSC_VER
 	/**
 	 * @brief The main OpenAL context.
 	 */
@@ -180,20 +180,21 @@ private:
 	 * @brief The main OpenAL device.
 	 */
 	ALCdevice* mDevice;
-	#endif
-	
+#endif
+
 	/**
 	 * @brief Stores all SoundInstances.
 	 * These are owned by the service and should be destroyed when the service is stopped.
+	 * @note This is a list because we want to allow removal or insertion in the list while we're iterating over it (which isn't allowed with a vector).
 	 */
-	SoundInstanceStore mInstances;
+	std::list<std::unique_ptr<SoundInstance>> mInstances;
 
 	/**
 	 * @brief The resource provider used for loading resources.
 	 * This is not owned by the service and won't be destroyed when the service shuts down.
 	 */
 	IResourceProvider* mResourceProvider;
-	
+
 	/**
 	 * @brief True if the sound system is enabled.
 	 * @see isEnabled()

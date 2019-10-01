@@ -26,6 +26,8 @@
 #endif
 
 #include "WfutService.h"
+
+#include <memory>
 #include "WfutSession.h"
 
 #include "framework/LoggingInstance.h"
@@ -44,13 +46,11 @@ WfutService::WfutService()
 	mServerListDownloadingSlot = sigc::mem_fun(this, &WfutService::wfutSession_ServerListDownloading);
 	mUpdatesCalculatedSlot = sigc::mem_fun(this, &WfutService::wfutSession_UpdatesCalculated);
 	
-	mSession = std::unique_ptr<WfutSession>(new WfutSession(mDownloadCompleteSlot, mDownloadFailureSlot, mServerListDownloadingSlot, mUpdatesCalculatedSlot));
+	mSession = std::make_unique<WfutSession>(mDownloadCompleteSlot, mDownloadFailureSlot, mServerListDownloadingSlot, mUpdatesCalculatedSlot);
 }
 
 
-WfutService::~WfutService()
-{
-}
+WfutService::~WfutService() = default;
 
 bool WfutService::start()
 {

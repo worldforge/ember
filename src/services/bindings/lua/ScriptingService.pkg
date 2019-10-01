@@ -11,12 +11,7 @@ Scripts are then loaded through call to the method loadScript(...). Scripts can 
 */
 class ScriptingService 
 {
-	/**
-	 *    Registers a new scripting provider.
-	 * @param provider 
-	 */
-	void registerScriptingProvider(Ember::IScriptingProvider* provider);
-	
+
 	/**
 	 *    Loads a new script, if there is an registered scripting provider which will be able to load it.
 	 * @param script 

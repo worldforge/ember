@@ -52,12 +52,11 @@
 #endif
 #endif
 
-template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
+template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = nullptr;
 using boost::posix_time::microsec_clock;
 using boost::posix_time::ptime;
 
-namespace Ember
-{
+namespace Ember {
 
 const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
@@ -67,23 +66,22 @@ Input::Input() :
 		mCurrentInputMode(IM_GUI),
 		mMouseState(0),
 		mTimeSinceLastRightMouseClick(0),
+		mMousePosition{},
 		mSuppressForCurrentEvent(false),
 		mMovementModeEnabled(false),
 		mConfigListenerContainer(new ConfigListenerContainer()),
 		mMouseGrabbingRequested(false),
 		mMouseGrab(false),
-		mMainLoopController(0),
-		mWindowProvider(nullptr),
+		mMainLoopController(nullptr),
 		mScreenWidth(0),
 		mScreenHeight(0),
-		mMainVideoSurface(0),
+		mMainVideoSurface(nullptr),
 		mIconSurface(nullptr),
 		mInvertMouse(1),
 		mHandleOpenGL(false),
 		mMainWindowId(0),
 		mLastTimeInputProcessingStart(microsec_clock::local_time()),
-		mLastTimeInputProcessingEnd(microsec_clock::local_time())
-{
+		mLastTimeInputProcessingEnd(microsec_clock::local_time()) {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
 	mMousePosition.xRelativePosition = 0.0f;
@@ -100,21 +98,18 @@ Input::Input() :
 
 }
 
-Input::~Input()
-{
-	delete mConfigListenerContainer;
+Input::~Input() {
 	shutdownInteraction();
 	if (mIconSurface) {
 		SDL_FreeSurface(mIconSurface);
 	}
 }
 
-std::string Input::createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable, bool centered, bool handleOpenGL)
-{
+std::string Input::createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable, bool centered, bool handleOpenGL) {
 
 
 	mHandleOpenGL = handleOpenGL;
-	int flags = SDL_WINDOW_SHOWN;
+	unsigned int flags = SDL_WINDOW_SHOWN;
 
 	if (resizable) {
 		flags |= SDL_WINDOW_RESIZABLE;
@@ -133,7 +128,7 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 		mMainVideoSurface = nullptr;
 		mMainWindowId = 0;
 	}
-	mMainVideoSurface = SDL_CreateWindow("Ember", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags); // create an SDL window
+	mMainVideoSurface = SDL_CreateWindow("Ember", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int) width, (int) height, flags); // create an SDL window
 	createIcon();
 
 	mMainWindowId = SDL_GetWindowID(mMainVideoSurface);
@@ -187,18 +182,17 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	console.registerCommand(BINDCOMMAND, this);
 	console.registerCommand(UNBINDCOMMAND, this);
 
-	setGeometry(width, height);
+	setGeometry((int) width, (int) height);
 
 	if (!ToggleFullscreen) {
-		ToggleFullscreen = new ConsoleCommandWrapper("toggle_fullscreen", this, "Switch between windowed and full screen mode.");
+		ToggleFullscreen = std::make_unique<ConsoleCommandWrapper>("toggle_fullscreen", this, "Switch between windowed and full screen mode.");
 	}
 
 	return ss.str();
 }
 
-void Input::shutdownInteraction()
-{
-	mWindowProvider = nullptr;
+void Input::shutdownInteraction() {
+	mWindowProvider.reset();
 
 	if (mMainVideoSurface) {
 		SDL_DestroyWindow(mMainVideoSurface);
@@ -214,11 +208,10 @@ void Input::shutdownInteraction()
 	ConsoleBackend& console = ConsoleBackend::getSingleton();
 	console.deregisterCommand(BINDCOMMAND);
 	console.deregisterCommand(UNBINDCOMMAND);
-	delete ToggleFullscreen;
+	ToggleFullscreen.reset();
 }
 
-void Input::createIcon()
-{
+void Input::createIcon() {
 #ifndef BUILD_WEBEMBER
 	//set the icon of the window
 	Uint32 rmask, gmask, bmask;
@@ -244,15 +237,14 @@ void Input::createIcon()
 #endif // !BUILD_WEBEMBER
 }
 
-void Input::attach(IWindowProvider* windowProvider)
-{
+void Input::attach(std::unique_ptr<IWindowProvider> windowProvider) {
 
 	//TODO: this code probably doesn't work with SDL2.
 	//This should be redesigned to use the new features found in SDL2 which allows SDL to attach to an already created window
 
 	//The windowProvider should not be nullptr.
 	assert(windowProvider);
-	mWindowProvider = windowProvider;
+	mWindowProvider = std::move(windowProvider);
 
 	char tmp[64];
 	// Set the SDL_WINDOWID environment variable
@@ -262,7 +254,7 @@ void Input::attach(IWindowProvider* windowProvider)
 	createIcon();
 	unsigned int width, height;
 	mWindowProvider->getWindowSize(width, height);
-	setGeometry(width, height);
+	setGeometry((int) width, (int) height);
 
 	SDL_ShowCursor(0);
 
@@ -302,8 +294,7 @@ void Input::attach(IWindowProvider* windowProvider)
 
 }
 
-void Input::setGeometry(int width, int height)
-{
+void Input::setGeometry(int width, int height) {
 	if (mScreenHeight != height || mScreenWidth != width) {
 		mScreenWidth = width;
 		mScreenHeight = height;
@@ -312,8 +303,7 @@ void Input::setGeometry(int width, int height)
 	}
 }
 
-void Input::runCommand(const std::string &command, const std::string &args)
-{
+void Input::runCommand(const std::string& command, const std::string& args) {
 	if (command == BINDCOMMAND) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -350,69 +340,58 @@ void Input::runCommand(const std::string &command, const std::string &args)
 	}
 }
 
-void Input::suppressFurtherHandlingOfCurrentEvent()
-{
+void Input::suppressFurtherHandlingOfCurrentEvent() {
 	mSuppressForCurrentEvent = true;
 }
 
-bool Input::getMovementModeEnabled() const
-{
+bool Input::getMovementModeEnabled() const {
 	return mMovementModeEnabled;
 }
 
-void Input::setMovementModeEnabled(bool value)
-{
+void Input::setMovementModeEnabled(bool value) {
 	mMovementModeEnabled = value;
 }
 
-void Input::writeToClipboard(char* text, size_t length)
-{
+void Input::writeToClipboard(char* text, size_t length) {
 	SDL_SetClipboardText(text);
 }
 
-void Input::pasteFromClipboard(char*& text, size_t& length)
-{
+void Input::pasteFromClipboard(char*& text, size_t& length) {
 	char* sdl_text = SDL_GetClipboardText();
 
 	length = strlen(sdl_text) + 1;
 
-	text = (char*)malloc(length);
+	text = (char*) malloc(length);
 	strcpy(text, sdl_text);
 
 	SDL_free(sdl_text);
 }
 
-void Input::registerCommandMapper(InputCommandMapper* mapper)
-{
+void Input::registerCommandMapper(InputCommandMapper* mapper) {
 	mInputCommandMappers[mapper->getState()] = mapper;
 }
 
-void Input::deregisterCommandMapper(InputCommandMapper* mapper)
-{
+void Input::deregisterCommandMapper(InputCommandMapper* mapper) {
 	mInputCommandMappers.erase(mInputCommandMappers.find(mapper->getState()));
 }
 
-bool Input::isApplicationVisible()
-{
+bool Input::isApplicationVisible() {
 	if (mWindowProvider) {
 		return mWindowProvider->isWindowVisible();
 	}
 	return SDL_GetWindowFlags(mMainVideoSurface) & SDL_WINDOW_SHOWN;
 }
 
-bool Input::isApplicationFocused()
-{
+bool Input::isApplicationFocused() {
 	return SDL_GetWindowFlags(mMainVideoSurface) & SDL_WINDOW_MOUSE_FOCUS;
 }
 
-void Input::startInteraction()
-{
+void Input::startInteraction() {
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "catchmouse", sigc::mem_fun(*this, &Input::Config_CatchMouse), true);
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "invertcamera", sigc::mem_fun(*this, &Input::Config_InvertCamera), true);
 }
 
-void Input::processInput()
-{
+void Input::processInput() {
 
 	ptime currentTime = microsec_clock::local_time();
 	mMainLoopController->EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).total_microseconds() / 1000000.0f);
@@ -432,8 +411,7 @@ void Input::processInput()
 	mLastTimeInputProcessingEnd = currentTime;
 }
 
-void Input::pollMouse(float secondsSinceLast)
-{
+void Input::pollMouse(float secondsSinceLast) {
 	SDL_PumpEvents(); // Loop through all pending system events to get the latest mouse position.
 	int mouseX, mouseY, mouseRelativeX, mouseRelativeY;
 	mMouseState = SDL_GetMouseState(&mouseX, &mouseY);
@@ -459,8 +437,8 @@ void Input::pollMouse(float secondsSinceLast)
 			//we'll calculate the mouse movement difference and send the values to those
 			//listening to the MouseMoved event
 			float diffX, diffY;
-			diffX = mouseRelativeX / (float)mScreenWidth;
-			diffY = mouseRelativeY / (float)mScreenHeight;
+			diffX = mouseRelativeX / (float) mScreenWidth;
+			diffY = mouseRelativeY / (float) mScreenHeight;
 			MouseMotion motion{};
 			motion.xPosition = mouseX;
 			motion.yPosition = mouseY;
@@ -494,8 +472,8 @@ void Input::pollMouse(float secondsSinceLast)
 			} else {
 				mMousePosition.xPixelPosition = mouseX;
 				mMousePosition.yPixelPosition = mouseY;
-				mMousePosition.xRelativePosition = mouseX / (float)mScreenWidth;
-				mMousePosition.yRelativePosition = mouseY / (float)mScreenHeight;
+				mMousePosition.xRelativePosition = mouseX / (float) mScreenWidth;
+				mMousePosition.yRelativePosition = mouseY / (float) mScreenHeight;
 			}
 
 		}
@@ -503,136 +481,134 @@ void Input::pollMouse(float secondsSinceLast)
 
 }
 
-void Input::pollEvents(float secondsSinceLast)
-{
+void Input::pollEvents(float secondsSinceLast) {
 	mTimeSinceLastRightMouseClick += secondsSinceLast;
 	static SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		EventSDLEventReceived(event);
 		switch (event.type) {
-		/* Look for a keypress */
-		case SDL_KEYDOWN:
-		case SDL_KEYUP:
-			keyChanged(event.key);
-			break;
-		case SDL_TEXTINPUT:
-			textInput(event.text);
-			break;
-		case SDL_QUIT:
-			if (mMainLoopController) {
-				mMainLoopController->requestQuit();
-			}
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
-			if (event.button.state == SDL_RELEASED) {
-				if (event.button.button == SDL_BUTTON_RIGHT) {
-					//right mouse button released
-					mTimeSinceLastRightMouseClick = 0.0f;
-					//toggleInputMode();
-					EventMouseButtonReleased.emit(MouseButtonRight, mCurrentInputMode);
+			/* Look for a keypress */
+			case SDL_KEYDOWN:
+			case SDL_KEYUP:
+				keyChanged(event.key);
+				break;
+			case SDL_TEXTINPUT:
+				textInput(event.text);
+				break;
+			case SDL_QUIT:
+				if (mMainLoopController) {
+					mMainLoopController->requestQuit();
+				}
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONUP:
+				if (event.button.state == SDL_RELEASED) {
+					if (event.button.button == SDL_BUTTON_RIGHT) {
+						//right mouse button released
+						mTimeSinceLastRightMouseClick = 0.0f;
+						//toggleInputMode();
+						EventMouseButtonReleased.emit(MouseButtonRight, mCurrentInputMode);
 
-				} else if (event.button.button == SDL_BUTTON_LEFT) {
-					//left mouse button released
+					} else if (event.button.button == SDL_BUTTON_LEFT) {
+						//left mouse button released
+						for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+							IInputAdapter* adapter = *I;
+							++I;
+							if (!(adapter)->injectMouseButtonUp(Input::MouseButtonLeft))
+								break;
+						}
+
+						EventMouseButtonReleased.emit(MouseButtonLeft, mCurrentInputMode);
+
+					} else if (event.button.button == SDL_BUTTON_MIDDLE) {
+						//middle mouse button released
+						for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+							IInputAdapter* adapter = *I;
+							++I;
+							if (!(adapter)->injectMouseButtonUp(Input::MouseButtonMiddle))
+								break;
+						}
+
+						EventMouseButtonReleased.emit(MouseButtonMiddle, mCurrentInputMode);
+					}
+				} else {
+
+					if (event.button.button == SDL_BUTTON_RIGHT) {
+						//right mouse button pressed
+
+						//if the right mouse button is pressed, switch from gui mode
+
+						if (mMovementModeEnabled) {
+							toggleInputMode();
+						}
+						EventMouseButtonPressed.emit(MouseButtonRight, mCurrentInputMode);
+
+					} else if (event.button.button == SDL_BUTTON_LEFT) {
+						//left mouse button pressed
+
+						for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+							IInputAdapter* adapter = *I;
+							++I;
+							if (!(adapter)->injectMouseButtonDown(Input::MouseButtonLeft))
+								break;
+						}
+
+						EventMouseButtonPressed.emit(MouseButtonLeft, mCurrentInputMode);
+					} else if (event.button.button == SDL_BUTTON_MIDDLE) {
+						//middle mouse button pressed
+						for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+							IInputAdapter* adapter = *I;
+							++I;
+							if (!(adapter)->injectMouseButtonDown(Input::MouseButtonMiddle))
+								break;
+						}
+
+						EventMouseButtonPressed.emit(MouseButtonMiddle, mCurrentInputMode);
+
+					}
+				}
+				break;
+			case SDL_MOUSEWHEEL:
+				if (event.wheel.y > 0) {
+					EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
 					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
 						IInputAdapter* adapter = *I;
 						++I;
-						if (!(adapter)->injectMouseButtonUp(Input::MouseButtonLeft))
+						if (!(adapter)->injectMouseButtonDown(Input::MouseWheelUp))
 							break;
 					}
-
-					EventMouseButtonReleased.emit(MouseButtonLeft, mCurrentInputMode);
-
-				} else if (event.button.button == SDL_BUTTON_MIDDLE) {
-					//middle mouse button released
+				} else if (event.wheel.y < 0) {
+					EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
 					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
 						IInputAdapter* adapter = *I;
 						++I;
-						if (!(adapter)->injectMouseButtonUp(Input::MouseButtonMiddle))
+						if (!(adapter)->injectMouseButtonDown(Input::MouseWheelDown))
 							break;
 					}
-
-					EventMouseButtonReleased.emit(MouseButtonMiddle, mCurrentInputMode);
 				}
-			} else {
-
-				if (event.button.button == SDL_BUTTON_RIGHT) {
-					//right mouse button pressed
-
-					//if the right mouse button is pressed, switch from gui mode
-
-					if (mMovementModeEnabled) {
-						toggleInputMode();
-					}
-					EventMouseButtonPressed.emit(MouseButtonRight, mCurrentInputMode);
-
-				} else if (event.button.button == SDL_BUTTON_LEFT) {
-					//left mouse button pressed
-
-					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
-						IInputAdapter* adapter = *I;
-						++I;
-						if (!(adapter)->injectMouseButtonDown(Input::MouseButtonLeft))
-							break;
-					}
-
-					EventMouseButtonPressed.emit(MouseButtonLeft, mCurrentInputMode);
-				} else if (event.button.button == SDL_BUTTON_MIDDLE) {
-					//middle mouse button pressed
-					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
-						IInputAdapter* adapter = *I;
-						++I;
-						if (!(adapter)->injectMouseButtonDown(Input::MouseButtonMiddle))
-							break;
-					}
-
-					EventMouseButtonPressed.emit(MouseButtonMiddle, mCurrentInputMode);
-
-				}
-			}
-			break;
-		case SDL_MOUSEWHEEL:
-			if (event.wheel.y > 0) {
-				EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
-				for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
-					IInputAdapter* adapter = *I;
-					++I;
-					if (!(adapter)->injectMouseButtonDown(Input::MouseWheelUp))
-						break;
-				}
-			} else if (event.wheel.y < 0) {
-				EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
-				for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
-					IInputAdapter* adapter = *I;
-					++I;
-					if (!(adapter)->injectMouseButtonDown(Input::MouseWheelDown))
-						break;
-				}
-			}
-			break;
-		case SDL_WINDOWEVENT:
-			if (event.window.windowID == mMainWindowId) {
-				if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
-					EventWindowActive.emit(true);
-				} else if (event.window.event == SDL_WINDOWEVENT_HIDDEN) {
-					EventWindowActive.emit(false);
-					//On Windows we get a corrupted screen if we just switch to non-fullscreen here.
+				break;
+			case SDL_WINDOWEVENT:
+				if (event.window.windowID == mMainWindowId) {
+					if (event.window.event == SDL_WINDOWEVENT_SHOWN) {
+						EventWindowActive.emit(true);
+					} else if (event.window.event == SDL_WINDOWEVENT_HIDDEN) {
+						EventWindowActive.emit(false);
+						//On Windows we get a corrupted screen if we just switch to non-fullscreen here.
 #ifndef _WIN32
-					lostFocus();
+						lostFocus();
 #endif
-				} else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-					setGeometry(event.window.data1, event.window.data2);
+					} else if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+						setGeometry(event.window.data1, event.window.data2);
+					}
 				}
-			}
-			break;
-		default:
-			break;
+				break;
+			default:
+				break;
 		}
 	}
 }
 
-void Input::textInput(const SDL_TextInputEvent &textEvent)
-{
+void Input::textInput(const SDL_TextInputEvent& textEvent) {
 	if (mCurrentInputMode == IM_GUI) {
 
 		const char* text = textEvent.text;
@@ -658,8 +634,7 @@ void Input::textInput(const SDL_TextInputEvent &textEvent)
 	}
 }
 
-void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
-{
+void Input::keyChanged(const SDL_KeyboardEvent& keyEvent) {
 //On windows the OS will handle alt-tab independently, so we don't need to check here
 #ifndef _WIN32
 	if ((keyEvent.keysym.mod & KMOD_LALT) && (keyEvent.keysym.sym == SDLK_TAB)) {
@@ -681,13 +656,11 @@ void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 
 }
 
-bool Input::isKeyDown(const SDL_Scancode &key) const
-{
+bool Input::isKeyDown(const SDL_Scancode& key) const {
 	return mKeysPressed.find(key) != mKeysPressed.end();
 }
 
-void Input::keyPressed(const SDL_KeyboardEvent &keyEvent)
-{
+void Input::keyPressed(const SDL_KeyboardEvent& keyEvent) {
 	mSuppressForCurrentEvent = false;
 	if (mCurrentInputMode == IM_GUI) {
 		// do event injection
@@ -706,8 +679,7 @@ void Input::keyPressed(const SDL_KeyboardEvent &keyEvent)
 
 }
 
-void Input::keyReleased(const SDL_KeyboardEvent &keyEvent)
-{
+void Input::keyReleased(const SDL_KeyboardEvent& keyEvent) {
 	mSuppressForCurrentEvent = false;
 	if (mCurrentInputMode == IM_GUI) {
 		for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
@@ -723,20 +695,17 @@ void Input::keyReleased(const SDL_KeyboardEvent &keyEvent)
 	mSuppressForCurrentEvent = false;
 }
 
-void Input::setInputMode(InputMode mode)
-{
+void Input::setInputMode(InputMode mode) {
 	setMouseGrab(mode == IM_MOVEMENT);
 	mCurrentInputMode = mode;
 	EventChangedInputMode.emit(mode);
 }
 
-Input::InputMode Input::getInputMode() const
-{
+Input::InputMode Input::getInputMode() const {
 	return mCurrentInputMode;
 }
 
-Input::InputMode Input::toggleInputMode()
-{
+Input::InputMode Input::toggleInputMode() {
 	if (mCurrentInputMode == IM_GUI) {
 		setInputMode(IM_MOVEMENT);
 		return IM_MOVEMENT;
@@ -746,33 +715,27 @@ Input::InputMode Input::toggleInputMode()
 	}
 }
 
-void Input::addAdapter(IInputAdapter* adapter)
-{
+void Input::addAdapter(IInputAdapter* adapter) {
 	mAdapters.push_front(adapter);
 }
 
-void Input::removeAdapter(IInputAdapter* adapter)
-{
+void Input::removeAdapter(IInputAdapter* adapter) {
 	mAdapters.remove(adapter);
 }
 
-const MousePosition& Input::getMousePosition() const
-{
+const MousePosition& Input::getMousePosition() const {
 	return mMousePosition;
 }
 
-void Input::setMainLoopController(MainLoopController* mainLoopController)
-{
+void Input::setMainLoopController(MainLoopController* mainLoopController) {
 	mMainLoopController = mainLoopController;
 }
 
-MainLoopController* Input::getMainLoopController() const
-{
+MainLoopController* Input::getMainLoopController() const {
 	return mMainLoopController;
 }
 
-void Input::Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void Input::Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	try {
 		if (variable.is_bool()) {
 			bool enabled = static_cast<bool>(variable);
@@ -787,32 +750,27 @@ void Input::Config_CatchMouse(const std::string& section, const std::string& key
 	}
 }
 
-void Input::Config_InvertCamera(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void Input::Config_InvertCamera(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_bool()) {
 		mInvertMouse = static_cast<bool>(variable) ? -1 : 1;
 	}
 }
 
-void Input::setFullscreen(bool enabled)
-{
+void Input::setFullscreen(bool enabled) {
 	SDL_SetWindowFullscreen(mMainVideoSurface, enabled ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
-bool Input::hasWindow() const
-{
-	return mMainVideoSurface != 0;
+bool Input::hasWindow() const {
+	return mMainVideoSurface != nullptr;
 }
 
-void Input::lostFocus()
-{
+void Input::lostFocus() {
 	setInputMode(Input::IM_GUI);
 	setMouseGrab(false);
 	setFullscreen(false);
 }
 
-void Input::setMouseGrab(bool enabled)
-{
+void Input::setMouseGrab(bool enabled) {
 	S_LOG_VERBOSE("mouse grab: " << enabled);
 
 	auto result = SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE);

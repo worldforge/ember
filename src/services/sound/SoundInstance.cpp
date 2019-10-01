@@ -31,55 +31,48 @@
 namespace Ember {
 
 SoundInstance::SoundInstance()
-: mSource(new SoundSource()), mBinding(0), mMotionProvider(0), mPreviousState(0)
-{
+		: mSource(new SoundSource()),
+		  mMotionProvider(nullptr),
+		  mPreviousState(0) {
 }
 
 
-SoundInstance::~SoundInstance()
-{
+SoundInstance::~SoundInstance() {
 	stop();
-	delete mBinding;
 }
 
-void SoundInstance::bind(SoundBinding* binding)
-{
+void SoundInstance::bind(std::unique_ptr<SoundBinding> binding) {
 	if (mBinding) {
 		//TODO: handle calling this when there's already a binder
 	}
-	mBinding = binding;
+	mBinding = std::move(binding);
 
 }
 
-SoundSource& SoundInstance::getSource()
-{
+SoundSource& SoundInstance::getSource() {
 	return *mSource;
 }
 
-bool SoundInstance::play()
-{
+bool SoundInstance::play() {
 	alGetError();
 	alSourcePlay(mSource->getALSource());
 	mPreviousState = AL_PLAYING;
 	return SoundGeneral::checkAlError("Playing sound instance.");
 }
 
-bool SoundInstance::stop()
-{
+bool SoundInstance::stop() {
 	alGetError();
 	alSourceStop(mSource->getALSource());
 	return SoundGeneral::checkAlError("Stopping sound instance.");
 }
 
-bool SoundInstance::pause()
-{
+bool SoundInstance::pause() {
 	alGetError();
 	alSourcePause(mSource->getALSource());
 	return SoundGeneral::checkAlError("Pausing sound instance.");
 }
 
-void SoundInstance::update()
-{
+void SoundInstance::update() {
 	if (mMotionProvider) {
 		mMotionProvider->update(*mSource);
 	}
@@ -100,35 +93,29 @@ void SoundInstance::update()
 }
 
 
-void SoundInstance::setIsLooping(bool isLooping)
-{
+void SoundInstance::setIsLooping(bool isLooping) {
 	alSourcei(mSource->getALSource(), AL_LOOPING, isLooping ? AL_TRUE : AL_FALSE);
 	SoundGeneral::checkAlError("Setting looping status.");
 }
 
-bool SoundInstance::getIsLooping() const
-{
+bool SoundInstance::getIsLooping() const {
 	ALint alValue;
 	alGetSourcei(mSource->getALSource(), AL_LOOPING, &alValue);
 	SoundGeneral::checkAlError("Checking looping status.");
 	return alValue == AL_TRUE;
 }
 
-void SoundInstance::setMaxDistance(float maxDistance)
-{
+void SoundInstance::setMaxDistance(float maxDistance) {
 	alSourcef(mSource->getALSource(), AL_MAX_DISTANCE, maxDistance);
 	SoundGeneral::checkAlError("Setting max distance.");
 }
 
-float SoundInstance::getMaxDistance() const
-{
+float SoundInstance::getMaxDistance() const {
 	ALfloat alValue;
 	alGetSourcef(mSource->getALSource(), AL_MAX_DISTANCE, &alValue);
 	SoundGeneral::checkAlError("Checking max distance.");
 	return alValue;
 }
-
-
 
 
 }

@@ -39,11 +39,11 @@ class InputService : public Service
 public:
     InputService();
 
-    virtual ~InputService();
+    ~InputService() override;
 
-	virtual bool start();
+	bool start() override;
     
-    virtual void stop();
+    void stop() override;
     
     /**
      * @brief Returns the main input instance.

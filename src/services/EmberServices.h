@@ -20,6 +20,7 @@
 #ifndef EMBER_EMBERSERVICES_H
 #define EMBER_EMBERSERVICES_H
 
+#include <memory>
 #include "framework/Singleton.h"
 
 namespace Eris
@@ -70,12 +71,12 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	EmberServices(Eris::Session& session);
+	explicit EmberServices(Eris::Session& session);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EmberServices();
+	~EmberServices() override;
 
 	/**
 	 * @brief Returns an instance of the LoggingService
@@ -143,37 +144,17 @@ public:
 	//----------------------------------------------------------------------
 	// Setters
 
-	//======================================================================
-	// Disabled constructors and operators
-	//======================================================================
 private:
 
-	/**
-	 * Copy constructor not provided.
-	 */
-	EmberServices(const EmberServices &source)
-	{
-	}
-
-	/**
-	 * Assignment operator not provided.
-	 */
-	EmberServices &operator=(const EmberServices &source)
-	{
-		return *this;
-	}
-
-private:
-
-	LoggingService* mLoggingService;
-	ScriptingService* mScriptingService;
-	SoundService* mSoundService;
-	ServerService* mServerService;
-	MetaserverService* mMetaserverService;
-	InputService* mInputService;
-	WfutService* mWfutService;
-	ConfigService* mConfigService;
-	Services::ServerSettings* mServerSettingsService;
+	std::unique_ptr<LoggingService> mLoggingService;
+	std::unique_ptr<ScriptingService> mScriptingService;
+	std::unique_ptr<SoundService> mSoundService;
+	std::unique_ptr<ServerService> mServerService;
+	std::unique_ptr<MetaserverService> mMetaserverService;
+	std::unique_ptr<InputService> mInputService;
+	std::unique_ptr<WfutService> mWfutService;
+	std::unique_ptr<ConfigService> mConfigService;
+	std::unique_ptr<Services::ServerSettings> mServerSettingsService;
 
 };
 }

@@ -25,36 +25,33 @@
 #endif
 
 #include "InputService.h"
+
+#include <memory>
 #include "Input.h"
 
 namespace Ember {
 
 InputService::InputService()
-: Service("Input"), mInput(nullptr)
-{
+		: Service("Input"),
+		  mInput(nullptr) {
 }
 
 
-InputService::~InputService()
-{
+InputService::~InputService() = default;
+
+Input& InputService::getInput() {
+	return *mInput;
 }
 
-Input& InputService::getInput()
-{
-	return *mInput.get();
-}
-
-bool InputService::start()
-{
-	if (!mInput.get()) {
-		mInput = std::unique_ptr<Input>(new Input());
+bool InputService::start() {
+	if (!mInput) {
+		mInput = std::make_unique<Input>();
 	}
 	setRunning(true);
 	return true;
 }
 
-void InputService::stop()
-{
+void InputService::stop() {
 	Service::stop();
 	mInput.reset();
 }

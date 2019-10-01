@@ -27,28 +27,29 @@
 
 #include "Tokeniser.h"
 
-namespace Ember
-{
+namespace Ember {
 
 Tokeniser::Tokeniser() :
-	mDelimeters(" "), mPos(std::string::npos), mLastPos(std::string::npos)
-{
+		mDelimeters(" "),
+		mPos(std::string::npos),
+		mLastPos(std::string::npos) {
 }
 
-Tokeniser::Tokeniser(const std::string &tokens) :
-	mDelimeters(" "), mPos(std::string::npos), mLastPos(std::string::npos)
-{
+Tokeniser::Tokeniser(const std::string& tokens) :
+		mDelimeters(" "),
+		mPos(std::string::npos),
+		mLastPos(std::string::npos) {
 	initTokens(tokens);
 }
 
-Tokeniser::Tokeniser(const std::string &tokens, const std::string &delimiters) :
-	mDelimeters(delimiters), mPos(std::string::npos), mLastPos(std::string::npos)
-{
+Tokeniser::Tokeniser(const std::string& tokens, std::string delimiters) :
+		mDelimeters(std::move(delimiters)),
+		mPos(std::string::npos),
+		mLastPos(std::string::npos) {
 	initTokens(tokens);
 }
 
-void Tokeniser::initTokens(const std::string &tokens)
-{
+void Tokeniser::initTokens(const std::string& tokens) {
 	mTokenString = tokens;
 	//  try {
 	mLastPos = mTokenString.find_first_not_of(mDelimeters, 0);
@@ -59,8 +60,7 @@ void Tokeniser::initTokens(const std::string &tokens)
 
 }
 
-std::string Tokeniser::nextToken()
-{
+std::string Tokeniser::nextToken() {
 	if (mLastPos == std::string::npos)
 		return "";
 	//  try {
@@ -73,8 +73,7 @@ std::string Tokeniser::nextToken()
 	//  }
 }
 
-std::string Tokeniser::remainingTokens() const
-{
+std::string Tokeniser::remainingTokens() const {
 	if (!hasRemainingTokens())
 		return "";
 	//try {
@@ -84,13 +83,11 @@ std::string Tokeniser::remainingTokens() const
 	//  }
 }
 
-bool Tokeniser::hasRemainingTokens() const
-{
+bool Tokeniser::hasRemainingTokens() const {
 	return mLastPos != std::string::npos;
 }
 
-std::vector<std::string> Tokeniser::split(const std::string &tokens, const std::string &delimiters)
-{
+std::vector<std::string> Tokeniser::split(const std::string& tokens, const std::string& delimiters) {
 	std::vector<std::string> tokenStore;
 	Tokeniser tokeniser(tokens, delimiters);
 	while (tokeniser.hasRemainingTokens()) {

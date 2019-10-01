@@ -82,6 +82,7 @@ TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 
 #include <memory>
 #include <boost/thread.hpp>
+#include <utility>
 
 #ifndef HAVE_SIGHANDLER_T
 
@@ -186,7 +187,7 @@ public:
 
 template<> Application* Singleton<Application>::ms_Singleton = nullptr;
 
-Application::Application(std::string prefix, std::string homeDir, const ConfigMap& configSettings) :
+Application::Application(std::string prefix, std::string homeDir, ConfigMap configSettings) :
 		mAtlasFactories(new Atlas::Objects::Factories()),
 		mSession(new Eris::Session()),
 		mFileSystemObserver(new FileSystemObserver(mSession->getIoService())),
@@ -196,7 +197,7 @@ Application::Application(std::string prefix, std::string homeDir, const ConfigMa
 		mPrefix(std::move(prefix)),
 		mHomeDir(std::move(homeDir)),
 		mWorldView(nullptr),
-		mConfigSettings(configSettings),
+		mConfigSettings(std::move(configSettings)),
 		mConsoleBackend(new ConsoleBackend()),
 		Quit("quit", this, "Quit Ember."),
 		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."),
@@ -377,8 +378,6 @@ void Application::initializeServices() {
 	// Change working directory
 	auto& dirName = configService.getHomeDirectory(BaseDirType_CONFIG);
 
-	boost::filesystem::path homePath(dirName);
-
 	if (!boost::filesystem::is_directory(dirName)) {
 		boost::filesystem::create_directories(dirName);
 	}
@@ -438,7 +437,7 @@ void Application::initializeServices() {
 	mServices->getServerService().setupLocalServerObservation(configService);
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
-	auto luaProvider = new Lua::LuaScriptingProvider();
+	auto luaProvider = std::make_unique<Lua::LuaScriptingProvider>();
 
 	tolua_Lua_open(luaProvider->getLuaState());
 	tolua_Framework_open(luaProvider->getLuaState());
@@ -456,8 +455,8 @@ void Application::initializeServices() {
 	tolua_Domain_open(luaProvider->getLuaState());
 	tolua_Cegui_open(luaProvider->getLuaState());
 
-	mServices->getScriptingService().registerScriptingProvider(luaProvider);
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
+	mServices->getScriptingService().registerScriptingProvider(std::move(luaProvider));
 
 	mScriptingResourceProvider = std::make_unique<FileResourceProvider>(mServices->getConfigService().getSharedDataDirectory() / "scripting");
 	mServices->getScriptingService().setResourceProvider(mScriptingResourceProvider.get());

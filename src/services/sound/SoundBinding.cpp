@@ -29,12 +29,9 @@
 namespace Ember {
 
 SoundBinding::SoundBinding(SoundSource& source)
-: mSource(source)
-{
+		: mSource(source) {
 }
 
-SoundBinding::~SoundBinding()
-{
-}
+SoundBinding::~SoundBinding() = default;
 
 }

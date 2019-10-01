@@ -22,6 +22,8 @@
 #endif
 
 #include "LoggingService.h"
+
+#include <memory>
 #include "ErisLogReciever.h"
 
 
@@ -30,24 +32,19 @@
 namespace Ember {
 
 
-bool LoggingService::start ()
-{
+bool LoggingService::start() {
 	setRunning(true);
 	return true;
 }
 
-LoggingService::LoggingService () : Service("Logging")
-{
+LoggingService::LoggingService() : Service("Logging") {
 	//set service properties
-	
-	mErisLogReciever = std::unique_ptr<ErisLogReciever>(new ErisLogReciever());
+
+	mErisLogReciever = std::make_unique<ErisLogReciever>();
 }
 
 
-LoggingService::~LoggingService ()
-{
-
-}
+LoggingService::~LoggingService() = default;
 
 
 }

@@ -35,40 +35,41 @@
 #ifdef _MSC_VER
 //#include <ALUT/alut.h>
 #else
+
 #include <AL/alut.h>
+
 #endif
 
-namespace Ember
-{
+namespace Ember {
 /* Constructor */
 SoundService::SoundService()
-: Service("Sound")
+		: Service("Sound")
 #ifdef _MSC_VER
-	, mContext(0), mDevice(0), mResourceProvider(0)
+		, mContext(0), mDevice(0), mResourceProvider(0)
 #else
-	, mResourceProvider(0)
+		, mResourceProvider(nullptr)
 #endif
-, mEnabled(false)
-{
+		, mEnabled(false) {
 }
 
+SoundService::~SoundService() = default;
+
 /* Method for starting this service */
-bool SoundService::start()
-{
+bool SoundService::start() {
 	S_LOG_INFO("Sound Service starting");
-	
+
 	if (EmberServices::getSingleton().getConfigService().hasItem("audio", "enabled")
-	    && static_cast<bool>(EmberServices::getSingleton().getConfigService().getValue("audio", "enabled")) == false) {
+		&& !static_cast<bool>(EmberServices::getSingleton().getConfigService().getValue("audio", "enabled"))) {
 		S_LOG_INFO("Sound disabled.");
 	} else {
-	
+
 		if (isEnabled()) {
 			S_LOG_FAILURE("Can't start the sound system if it's already started.");
 		} else {
 
-		#ifndef _MSC_VER
+#ifndef _MSC_VER
 			mEnabled = alutInit(nullptr, nullptr) == ALC_TRUE;
-		#else
+#else
 			mDevice = alcOpenDevice("DirectSound3D");
 	
 			if (!mDevice) {
@@ -84,56 +85,48 @@ bool SoundService::start()
 				return false;
 			}
 			mEnabled = alcMakeContextCurrent(mContext) == ALC_TRUE;
-		#endif
-		
+#endif
+
 			SoundGeneral::checkAlError();
 		}
 	}
-	
+
 	setRunning(true);
 	return true;
 }
 
 /* Interface method for stopping this service */
-void SoundService::stop()
-{
-	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
+void SoundService::stop() {
+	if (!mInstances.empty()) {
 		S_LOG_WARNING("Found a still registered SoundInstance when shutting down sound service. This shouldn't normally happen, since all instances should be handled by their proper owners and removed well in advance of the SoundService shutting down. We'll now delete the instance, which might lead to a segfault or similar problem as the instance owner might still expect it to be existing.");
-		delete *I;
 	}
 	mInstances.clear();
-	
-	for (SoundSampleStore::iterator I = mBaseSamples.begin(); I != mBaseSamples.end(); ++I) {
-		delete I->second;
-	}
+
 	mBaseSamples.clear();
-	
- 	if (isEnabled()) {
- 		#ifndef __WIN32__
- 			alutExit();
- 		#else
- 			alcMakeContextCurrent(nullptr);
- 			alcDestroyContext(mContext);
- 			alcCloseDevice(mDevice);
- 			mDevice = 0;
- 			mContext = 0;
- 		#endif
- 	}
+
+	if (isEnabled()) {
+#ifndef __WIN32__
+		alutExit();
+#else
+		alcMakeContextCurrent(nullptr);
+		alcDestroyContext(mContext);
+		alcCloseDevice(mDevice);
+		mDevice = 0;
+		mContext = 0;
+#endif
+	}
 	mEnabled = false;
 	Service::stop();
 }
 
-bool SoundService::isEnabled() const
-{
+bool SoundService::isEnabled() const {
 	return mEnabled;
 }
 
-void SoundService::runCommand(const std::string& command, const std::string& args)
-{
+void SoundService::runCommand(const std::string& command, const std::string& args) {
 }
 
-void SoundService::registerStream(StreamedSoundSample* copy)
-{
+void SoundService::registerStream(StreamedSoundSample* copy) {
 /*		#ifdef THREAD_SAFE
 	pthread_mutex_lock(&mSamplesMutex);
 	#endif
@@ -145,8 +138,7 @@ void SoundService::registerStream(StreamedSoundSample* copy)
 	#endif*/
 }
 
-bool SoundService::unregisterStream(const StreamedSoundSample* sample)
-{
+bool SoundService::unregisterStream(const StreamedSoundSample* sample) {
 // 		#ifdef THREAD_SAFE
 // 		pthread_mutex_lock(&mSamplesMutex);
 // 		#endif
@@ -172,8 +164,7 @@ bool SoundService::unregisterStream(const StreamedSoundSample* sample)
 	return false;
 }
 
-void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3>& up)
-{
+void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFMath::Vector<3>& direction, const WFMath::Vector<3>& up) {
 	if (!isEnabled()) {
 		return;
 	}
@@ -195,75 +186,66 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 	SoundGeneral::checkAlError("Setting the listener orientation.");
 }
 
-void SoundService::cycle()
-{
-	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ) {
+void SoundService::cycle() {
+	for (auto I = mInstances.begin(); I != mInstances.end();) {
 		//We do the iteration this way to allow for instances to be removed inside the iteration.
 		//A typical example would be a sound instance that has played to its completion and thus should be destroyed. The signal for this is emitted as a result of calling SoundInstance::update().
-		SoundInstance* instance(*I);
+		auto instance = I->get();
 		++I;
 		instance->update();
 	}
 }
-	
-BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& soundPath)
-{
-	SoundSampleStore::iterator I = mBaseSamples.find(soundPath);
+
+BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& soundPath) {
+	auto I = mBaseSamples.find(soundPath);
 	if (I != mBaseSamples.end()) {
-		return I->second;
+		return I->second.get();
 	}
 	if (mResourceProvider) {
 		ResourceWrapper resWrapper = mResourceProvider->getResource(soundPath);
 		if (resWrapper.hasData()) {
-			StaticSoundSample* sample = new StaticSoundSample(resWrapper, false, 1.0);
-			mBaseSamples.insert(SoundSampleStore::value_type(soundPath, sample));
+			auto* sample = new StaticSoundSample(resWrapper, false, 1.0);
+			mBaseSamples.emplace(soundPath, sample);
 			return sample;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
-bool SoundService::destroySoundSample(const std::string& soundPath)
-{
-	SoundSampleStore::iterator I = mBaseSamples.find(soundPath);
+bool SoundService::destroySoundSample(const std::string& soundPath) {
+	auto I = mBaseSamples.find(soundPath);
 	if (I != mBaseSamples.end()) {
-		delete I->second;
 		mBaseSamples.erase(I);
 		return true;
 	}
 	return false;
 }
 
-SoundInstance* SoundService::createInstance()
-{
+SoundInstance* SoundService::createInstance() {
 	if (!isEnabled()) {
-		return 0;
+		return nullptr;
 	}
-	SoundInstance* instance = new SoundInstance();
-	mInstances.push_back(instance);
+	auto* instance = new SoundInstance();
+	mInstances.emplace_back(instance);
 	return instance;
 }
 
-bool SoundService::destroyInstance(SoundInstance* instance)
-{
-	SoundInstanceStore::iterator I = std::find(mInstances.begin(), mInstances.end(), instance);
+bool SoundService::destroyInstance(SoundInstance* instance) {
+	auto I = std::find_if(mInstances.begin(), mInstances.end(), [instance](const std::unique_ptr<SoundInstance>& entry) { return entry.get() == instance; });
 	if (I != mInstances.end()) {
 		mInstances.erase(I);
-		delete instance;
 		return true;
 	}
 	return false;
 }
-	
-IResourceProvider* SoundService::getResourceProvider()
-{
+
+IResourceProvider* SoundService::getResourceProvider() {
 	return mResourceProvider;
 }
-	
-void SoundService::setResourceProvider(IResourceProvider* resourceProvider)
-{
+
+void SoundService::setResourceProvider(IResourceProvider* resourceProvider) {
 	mResourceProvider = resourceProvider;
-}	
+}
 
 } // namespace Ember
 

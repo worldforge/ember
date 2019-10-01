@@ -21,8 +21,7 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-namespace Ember
-{
+namespace Ember {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -31,15 +30,14 @@ namespace Ember
  * An instance of this is to be used whenever you want to check whether a certain amount of time has elapsed.
  * The typical situation where it would be useful is when rendering a frame, and you don't want to spend too much time until the next frame.
  */
-class TimeFrame
-{
+class TimeFrame {
 public:
 
 	/**
 	 * @brief Ctor.
 	 * @param timeSlice The slice of time for this time frame.
 	 */
-	explicit TimeFrame(const boost::posix_time::time_duration timeSlice);
+	explicit TimeFrame(boost::posix_time::time_duration timeSlice);
 
 	/**
 	 * @brief Checks whether there's any time left until the threshold has passed.

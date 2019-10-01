@@ -34,112 +34,100 @@
 
 using namespace Ember;
 
-namespace Ember
-{
-namespace OgreView
-{
-	SoundAction::SoundAction(SoundEntity& soundEntity)
-	: mSoundEntity(soundEntity), mGroup(0), mInstance(0), mIsLooping(false)
-	{
+namespace Ember {
+namespace OgreView {
+SoundAction::SoundAction(SoundEntity& soundEntity)
+		: mSoundEntity(soundEntity),
+		  mGroup(nullptr),
+		  mInstance(nullptr),
+		  mIsLooping(false) {
+}
+
+SoundAction::~SoundAction() {
+	if (mInstance) {
+		EmberServices::getSingleton().getSoundService().destroyInstance(mInstance);
 	}
-	
-	SoundAction::~SoundAction()
-	{
-		if (mInstance) {
-			EmberServices::getSingleton().getSoundService().destroyInstance(mInstance);
-		}
-	}
+}
 
-	SoundGroup* SoundAction::getGroup()
-	{
-		return mGroup;
-	}
+SoundGroup* SoundAction::getGroup() {
+	return mGroup;
+}
 
-	SoundGroup* SoundAction::setGroup(const std::string& name)
-	{
-		if (mGroup) {
-			return 0;
-		}
-	
-		SoundGroupDefinition* groupModel = SoundDefinitionManager::getSingleton().getSoundGroupDefinition(name);
-
-		if (!groupModel)
-		{
-			S_LOG_FAILURE("A template to the group " << name << " could not be found.");
-			return 0;
-		}
-
-		SoundGroup* newGroup = new SoundGroup();
-
-		const SoundGroupDefinition::SoundDefinitionStore& soundDefinitions = groupModel->getSoundDefinitions();
-		for (SoundGroupDefinition::SoundDefinitionStore::const_iterator I = soundDefinitions.begin(); I != soundDefinitions.end(); I++)
-		{
-			// Register Individual samples
-			const SoundDefinition& thisModel = *I;
-			newGroup->addSound(thisModel);
-		}
-
-		mGroup = newGroup;
-		return newGroup;
+SoundGroup* SoundAction::setGroup(const std::string& name) {
+	if (mGroup) {
+		return nullptr;
 	}
 
-	void SoundAction::play()
-	{
-		if (mGroup) {
+	SoundGroupDefinition* groupModel = SoundDefinitionManager::getSingleton().getSoundGroupDefinition(name);
+
+	if (!groupModel) {
+		S_LOG_FAILURE("A template to the group " << name << " could not be found.");
+		return nullptr;
+	}
+
+	auto* newGroup = new SoundGroup();
+
+	const SoundGroupDefinition::SoundDefinitionStore& soundDefinitions = groupModel->getSoundDefinitions();
+	for (const auto& soundDefinition : soundDefinitions) {
+		// Register Individual samples
+		newGroup->addSound(soundDefinition);
+	}
+
+	mGroup = newGroup;
+	return newGroup;
+}
+
+void SoundAction::play() {
+	if (mGroup) {
+		if (!mInstance) {
+			mInstance = EmberServices::getSingleton().getSoundService().createInstance();
 			if (!mInstance) {
-				mInstance = EmberServices::getSingleton().getSoundService().createInstance();
-				if (!mInstance) {
-					//The sound system seems to be disabled (could be for a valid reason) so just return without any fuss.
-					return;
-				}
-				mInstance->setMotionProvider(this);
-				mInstance->setIsLooping(mIsLooping);
-				//If the sound is set not to loop, we need to listen for when it's done playing and remove the instance once it's done (to save on sound resources).
-				if (!mIsLooping) {
-					mInstance->EventPlayComplete.connect(sigc::mem_fun(*this, &SoundAction::SoundInstance_PlayComplete));
-				}
-				
-				mGroup->bindToInstance(mInstance);
+				//The sound system seems to be disabled (could be for a valid reason) so just return without any fuss.
+				return;
 			}
-			mInstance->play();
-		}
-	}
+			mInstance->setMotionProvider(this);
+			mInstance->setIsLooping(mIsLooping);
+			//If the sound is set not to loop, we need to listen for when it's done playing and remove the instance once it's done (to save on sound resources).
+			if (!mIsLooping) {
+				mInstance->EventPlayComplete.connect(sigc::mem_fun(*this, &SoundAction::SoundInstance_PlayComplete));
+			}
 
-	void SoundAction::stop()
-	{
-		if (mInstance) {
-			EmberServices::getSingleton().getSoundService().destroyInstance(mInstance);
-			mInstance = 0;
+			mGroup->bindToInstance(mInstance);
 		}
+		mInstance->play();
 	}
-	
-	
-	void SoundAction::SoundInstance_PlayComplete()
-	{
-		if (mInstance) {
-			if (EmberServices::getSingleton().getSoundService().destroyInstance(mInstance)) {
-				mInstance = 0;
-			}
-		} else {
-			S_LOG_WARNING("Got a play complete signal while there's no sound instance registered. For some reason the sound instance must have already been removed.");
+}
+
+void SoundAction::stop() {
+	if (mInstance) {
+		EmberServices::getSingleton().getSoundService().destroyInstance(mInstance);
+		mInstance = nullptr;
+	}
+}
+
+
+void SoundAction::SoundInstance_PlayComplete() {
+	if (mInstance) {
+		if (EmberServices::getSingleton().getSoundService().destroyInstance(mInstance)) {
+			mInstance = nullptr;
 		}
+	} else {
+		S_LOG_WARNING("Got a play complete signal while there's no sound instance registered. For some reason the sound instance must have already been removed.");
 	}
-	
-	SoundInstance* SoundAction::getInstance() const
-	{
-		return mInstance;
-	}
-	
-	void SoundAction::update(SoundSource& soundSource)
-	{
-		soundSource.setPosition(mSoundEntity.getPosition());
+}
+
+SoundInstance* SoundAction::getInstance() const {
+	return mInstance;
+}
+
+void SoundAction::update(SoundSource& soundSource) {
+	soundSource.setPosition(mSoundEntity.getPosition());
 // 		soundSource.setVelocity(mSoundEntity.getVelocity());
-	}
-	
-	void SoundAction::setIsLooping(bool isLooping)
-	{
-		mIsLooping = isLooping;
-	}
+}
+
+void SoundAction::setIsLooping(bool isLooping) {
+	mIsLooping = isLooping;
+}
 
 }
 }

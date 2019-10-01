@@ -42,11 +42,7 @@
 #include <unordered_map>
 #include <chrono>
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#else
-typedef unsigned int uint32_t;
-#endif
+#include <cstdint>
 
 struct SDL_KeyboardEvent;
 struct SDL_TextInputEvent;
@@ -55,18 +51,19 @@ struct SDL_Surface;
 struct SDL_Window;
 union SDL_Event;
 
-namespace varconf
-{
+namespace varconf {
 class Variable;
 }
 
-namespace Ember
-{
+namespace Ember {
 
-class IInputAdapter;
-class IWindowProvider;
+struct IInputAdapter;
+struct IWindowProvider;
+
 class InputCommandMapper;
+
 class ConfigListenerContainer;
+
 class MainLoopController;
 
 typedef std::set<SDL_Scancode> KeysSet;
@@ -76,8 +73,7 @@ typedef std::list<IInputAdapter*> IInputAdapterStore;
  * @brief Struct for a mouse movement.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-struct MouseMotion
-{
+struct MouseMotion {
 	/**
 	 * @brief The horizontal position of the mouse in pixels.
 	 */
@@ -126,8 +122,7 @@ struct MouseMotion
  * Positions are from the upper left corner.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-struct MousePosition
-{
+struct MousePosition {
 	/**
 	 * @brief The horizontal position of the mouse in pixels.
 	 */
@@ -155,16 +150,21 @@ struct MousePosition
  * 
  * @brief This class handles input and the main window.
  * It takes care of all input and routes it to the correct place in Ember.
- * Right now that means that when in GUI mode, all input will be routed to the registered list of @see IInputAdapter, and when in non-gui mode (ie. movement mode), all input will be routed directly to Ember, where it can be handled by the camera and movement system.
+ * Right now that means that when in GUI mode, all input will be routed to the
+ * registered list of @see IInputAdapter, and when in non-gui mode (ie. movement mode),
+ * all input will be routed directly to Ember, where it can be handled by the camera and movement system.
  * 
  * Note that while keyboard input is buffered, mouse input is not.
  * 
- * You can listen to input updates either by listening directly to the events, or by registering an instance of IInputAdapter through the addAdapter and removeAdapter methods.
+ * You can listen to input updates either by listening directly to the events, or
+ * by registering an instance of IInputAdapter through the addAdapter and removeAdapter methods.
  * 
- * This class can operate in two modes with regards to the main window. It can either itself handle the main window (through SDL), or it can let an external class handle it. In the latter case, this is done by using the attach method.
+ * This class can operate in two modes with regards to the main window.
+ * It can either itself handle the main window (through SDL),
+ * or it can let an external class handle it.
+ * In the latter case, this is done by using the attach method.
  */
-class Input: public ConsoleObject, public Singleton<Input>
-{
+class Input : public ConsoleObject, public Singleton<Input> {
 	friend class InputCommandMapper;
 
 public:
@@ -179,25 +179,23 @@ public:
 	 */
 	static const std::string UNBINDCOMMAND;
 
-	enum MouseButton
-	{
+	enum MouseButton {
 		MouseButtonLeft, MouseButtonRight, MouseButtonMiddle, MouseWheelUp, MouseWheelDown,
 	};
 
 	/**
 	 * @brief Describes different input modes.
 	 */
-	enum InputMode
-	{
+	enum InputMode {
 		/**
 		 * @brief In gui mode, the mouse will move the cursor and allow interaction with the GUI system
 		 */
-		IM_GUI,
+				IM_GUI,
 
 		/**
 		 * @brief In movement mode, the mouse will move the camera and the keys will move the player. Interaction with the gui is not possible.
 		 */
-		IM_MOVEMENT
+				IM_MOVEMENT
 	};
 
 	Input();
@@ -219,7 +217,12 @@ public:
 	 * @param handleOpenGL Whether SDL should handle the OpenGL context. This should be true for OSX, and true for Windows if the OpenGL render plugin is used.
 	 * @return The platform specific id of the window.
 	 */
-	std::string createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable = true, bool centered = true, bool handleOpenGL = false);
+	std::string createWindow(unsigned int width,
+							 unsigned int height,
+							 bool fullscreen,
+							 bool resizable = true,
+							 bool centered = true,
+							 bool handleOpenGL = false);
 
 	/**
 	 * @brief Initializes the input object. Call this before you want to receive input.
@@ -228,7 +231,7 @@ public:
 	 *
 	 * @param window The target window to attach the input system to.
 	 */
-	void attach(IWindowProvider* windowProvider);
+	void attach(std::unique_ptr<IWindowProvider> windowProvider);
 
 	/**
 	 * @brief This will shut down the interaction.
@@ -386,7 +389,7 @@ public:
 	 * @param command 
 	 * @param args 
 	 */
-	void runCommand(const std::string &command, const std::string &args) override;
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	 * @brief Suppress all further event handling of the current event. Call this inside event handling methods to prevent further event handling.
@@ -457,14 +460,13 @@ public:
 	 */
 	bool hasWindow() const;
 
-	/**
-	 * @brief Console command for toggling full screen mode.
-	 */
-	const ConsoleCommandWrapper* ToggleFullscreen;
 
 private:
 
-	typedef std::unordered_map<std::string, InputCommandMapper*> InputCommandMapperStore;
+	/**
+	 * @brief Console command for toggling full screen mode.
+	 */
+	std::unique_ptr<ConsoleCommandWrapper> ToggleFullscreen;
 
 	/**
 	 * @brief Polls all input for the mouse.
@@ -480,11 +482,13 @@ private:
 	 */
 	void pollEvents(float secondsSinceLast);
 
-	void keyChanged(const SDL_KeyboardEvent &keyEvent);
-	void textInput(const SDL_TextInputEvent &textEvent);
+	void keyChanged(const SDL_KeyboardEvent& keyEvent);
 
-	void keyPressed(const SDL_KeyboardEvent &keyEvent);
-	void keyReleased(const SDL_KeyboardEvent &keyEvent);
+	void textInput(const SDL_TextInputEvent& textEvent);
+
+	void keyPressed(const SDL_KeyboardEvent& keyEvent);
+
+	void keyReleased(const SDL_KeyboardEvent& keyEvent);
 
 	/**
 	 * @brief Bind the ability for Ember to catch the mouse to the input:catchmouse key.
@@ -553,7 +557,7 @@ private:
 	/**
 	 * @brief A store of InputCommandMappers with their state as the key.
 	 */
-	InputCommandMapperStore mInputCommandMappers;
+	std::unordered_map<std::string, InputCommandMapper*> mInputCommandMappers;
 
 	/**
 	 * @brief Whether no more event should be processed.
@@ -569,7 +573,7 @@ private:
 	/**
 	 * @brief Keeps track of configuration changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
 	 * @brief True if mouse grabbing has been requested.
@@ -597,7 +601,7 @@ private:
 	 * This is only used if the attach method is used.
 	 *
 	 */
-	IWindowProvider* mWindowProvider;
+	std::unique_ptr<IWindowProvider> mWindowProvider;
 
 	/**
 	 @brief The dimensions of the window.

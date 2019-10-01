@@ -109,10 +109,10 @@ int main(int argc, char **argv)
 					std::string fullkey(argv[0]);
 					std::string value(argv[1]);
 					Ember::Tokeniser tokeniser(fullkey, ":");
-					if (tokeniser.remainingTokens() != "")
+					if (!tokeniser.remainingTokens().empty())
 					{
 						std::string category(tokeniser.nextToken());
-						if (tokeniser.remainingTokens() != "")
+						if (!tokeniser.remainingTokens().empty())
 						{
 							std::string key(tokeniser.nextToken());
 							configMap[category][key] = value;

@@ -23,34 +23,29 @@
 #include "Service.h"
 #include "LoggingInstance.h"
 
-namespace Ember
-{
+namespace Ember {
 
-Service::Service(const std::string& name) :
-	mName(name), mRunning(false)
-{
+Service::Service(std::string name) :
+		mName(std::move(name)),
+		mRunning(false) {
 }
 
-Service::~Service()
-{
+Service::~Service() {
 	assert(!mRunning); //Make sure that stop() is called before the destruction of the service.
 }
 
-bool Service::isRunning() const
-{
+bool Service::isRunning() const {
 	return mRunning;
 }
 
-void Service::stop()
-{
+void Service::stop() {
 	EventStopping.emit();
 	setRunning(false);
 }
 
-void Service::setRunning(bool running)
-{
+void Service::setRunning(bool running) {
 	if (mRunning && !running) {
-		S_LOG_INFO("Service '"<< mName <<"' stopped.");
+		S_LOG_INFO("Service '" << mName << "' stopped.");
 	}
 	mRunning = running;
 }

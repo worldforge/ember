@@ -26,37 +26,32 @@
 #endif
 
 #include "ConfigListenerContainer.h"
-#include <utility>
 #include "ConfigListener.h"
 
 
-namespace Ember
-{
+namespace Ember {
 
-ConfigListenerContainer::~ConfigListenerContainer()
-{
-	for (auto& configListener : mConfigListeners) {
-		delete configListener;
-	}
-}
+ConfigListenerContainer::~ConfigListenerContainer() = default;
 
-ConfigListener* ConfigListenerContainer::registerConfigListener(const std::string& section, const std::string& key, SettingChangedSlot slot, bool evaluateNow)
-{
-	ConfigListener* listener = new ConfigListener(section, key, std::move(slot));
-	mConfigListeners.push_back(listener);
-	if (evaluateNow)
-	{
+ConfigListener* ConfigListenerContainer::registerConfigListener(const std::string& section,
+																const std::string& key,
+																ConfigListener::SettingChangedSlot slot,
+																bool evaluateNow) {
+	auto* listener = new ConfigListener(section, key, std::move(slot));
+	mConfigListeners.emplace_back(listener);
+	if (evaluateNow) {
 		listener->evaluate();
 	}
 	return listener;
 }
 
-ConfigListener* ConfigListenerContainer::registerConfigListenerWithDefaults(const std::string& section, const std::string& key, SettingChangedSlot slot, varconf::Variable defaultValue)
-{
-	ConfigListener* listener = new ConfigListener(section, key, std::move(slot));
-	mConfigListeners.push_back(listener);
-	if (!listener->evaluate())
-	{
+ConfigListener* ConfigListenerContainer::registerConfigListenerWithDefaults(const std::string& section,
+																			const std::string& key,
+																			ConfigListener::SettingChangedSlot slot,
+																			varconf::Variable defaultValue) {
+	auto* listener = new ConfigListener(section, key, std::move(slot));
+	mConfigListeners.emplace_back(listener);
+	if (!listener->evaluate()) {
 		listener->mSlot(section, key, defaultValue);
 	}
 	return listener;

@@ -28,14 +28,12 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
-namespace Ember
-{
+namespace Ember {
 
 /**
  * @author Miguel Guzman Miranda
  */
-class Service: public virtual sigc::trackable
-{
+class Service : public virtual sigc::trackable {
 private:
 
 	/** Stores the unique name of the service */
@@ -45,12 +43,12 @@ private:
 	bool mRunning;
 
 	/** Don't allow copy constructor. */
-	Service(const Service &source);
+	Service(const Service& source);
 
 public:
 
 	/** Creates a new Service using default values. */
-	explicit Service(const std::string& name);
+	explicit Service(std::string name);
 
 	/**
 	 * @brief Dtor.

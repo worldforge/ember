@@ -73,7 +73,7 @@ const std::string &systemPath
 	// This is the base path for all files that will be downloaded
 	const std::string local_root = localPath + "/" + channelName + "/";
 	
-	std::string channel(channelName);
+	const std::string& channel = channelName;
 	std::string channel_file = "wfut.xml";
 	std::string tmpfile = "tempwfut.xml";
 	
@@ -95,8 +95,8 @@ const std::string &systemPath
 			S_LOG_WARNING("Error reading local tmpwfut.xml file.");
 		} else {
 			const FileMap &fm = mTmplist.getFiles();
-			FileMap::const_iterator I = fm.begin();
-			FileMap::const_iterator Iend = fm.end();
+			auto I = fm.begin();
+			auto Iend = fm.end();
 			for (; I != Iend; ++I) {
 				mLocal.addFile(I->second);
 			}

@@ -37,9 +37,7 @@ ErisLogReciever::ErisLogReciever()
 }
 
 
-ErisLogReciever::~ErisLogReciever()
-{
-}
+ErisLogReciever::~ErisLogReciever() = default;
 
 void ErisLogReciever::Eris_Logged (Eris::LogLevel level, const std::string & msg)
 {

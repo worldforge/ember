@@ -28,7 +28,8 @@ namespace Ember {
 namespace Services {
 
 ServerSettings::ServerSettings() :
-		Service("Server settings"), mConfig(new varconf::Config()) {
+		Service("Server settings"),
+		mConfig(new varconf::Config()) {
 }
 
 ServerSettings::~ServerSettings() = default;

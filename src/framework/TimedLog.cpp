@@ -70,9 +70,7 @@ TimedLog::TimedLog(const std::string& logName, bool reportStart)
 {
 }
 
-TimedLog::~TimedLog()
-{
-}
+TimedLog::~TimedLog() = default;
 
 void TimedLog::report()
 {

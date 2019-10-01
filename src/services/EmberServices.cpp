@@ -34,105 +34,95 @@
 #include "serversettings/ServerSettings.h"
 
 
-template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Singleton = 0;
-namespace Ember{
+template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Singleton = nullptr;
+namespace Ember {
 
 
-	EmberServices::~EmberServices()
-	{
-		if (mWfutService) {
-			mWfutService->stop();
-			delete mWfutService;
-		}
-		if (mServerService) {
-			mServerService->stop();
-			delete mServerService;
-		}
-		if (mServerSettingsService) {
-			mServerSettingsService->stop();
-			delete mServerSettingsService;
-		}
-		if (mMetaserverService) {
-			mMetaserverService->stop();
-			delete mMetaserverService;
-		}
-		if (mScriptingService) {
-			mScriptingService->stop();
-			delete mScriptingService;
-		}
-		if (mSoundService) {
-			mSoundService->stop();
-			delete mSoundService;
-		}
-		if (mInputService) {
-			mInputService->stop();
-			delete mInputService;
-		}
-		if (mConfigService) {
-			mConfigService->stop();
-			delete mConfigService;
-		}
-		if (mLoggingService) {
-			mLoggingService->stop();
-			delete mLoggingService;
-		}
+EmberServices::~EmberServices() {
+	if (mWfutService) {
+		mWfutService->stop();
+		mWfutService.reset();
 	}
+	if (mServerService) {
+		mServerService->stop();
+		mServerService.reset();
+	}
+	if (mServerSettingsService) {
+		mServerSettingsService->stop();
+		mServerSettingsService.reset();
+	}
+	if (mMetaserverService) {
+		mMetaserverService->stop();
+		mMetaserverService.reset();
+	}
+	if (mScriptingService) {
+		mScriptingService->stop();
+		mScriptingService.reset();
+	}
+	if (mSoundService) {
+		mSoundService->stop();
+		mSoundService.reset();
+	}
+	if (mInputService) {
+		mInputService->stop();
+		mInputService.reset();
+	}
+	if (mConfigService) {
+		mConfigService->stop();
+		mConfigService.reset();
+	}
+	if (mLoggingService) {
+		mLoggingService->stop();
+		mLoggingService.reset();
+	}
+}
 
-	LoggingService& EmberServices::getLoggingService()
-	{
-		return *mLoggingService;
-	}
+LoggingService& EmberServices::getLoggingService() {
+	return *mLoggingService;
+}
 
-	ConfigService& EmberServices::getConfigService()
-	{
-		return *mConfigService;
-	}
+ConfigService& EmberServices::getConfigService() {
+	return *mConfigService;
+}
 
-	InputService& EmberServices::getInputService()
-	{
-		return *mInputService;
-	}
+InputService& EmberServices::getInputService() {
+	return *mInputService;
+}
 
-	MetaserverService& EmberServices::getMetaserverService()
-	{
-		return *mMetaserverService;
-	}
-  
-	ServerService& EmberServices::getServerService()
-	{
-		return *mServerService;
-	}
+MetaserverService& EmberServices::getMetaserverService() {
+	return *mMetaserverService;
+}
 
-	SoundService& EmberServices::getSoundService()
-	{
-		return *mSoundService;
-	}
+ServerService& EmberServices::getServerService() {
+	return *mServerService;
+}
 
-	ScriptingService& EmberServices::getScriptingService()
-	{
-		return *mScriptingService;
-	}
-  
-	WfutService& EmberServices::getWfutService()
-	{
-		return *mWfutService;
-	}
-  
-	Services::ServerSettings& EmberServices::getServerSettingsService() {
-		return *mServerSettingsService;
-	}
+SoundService& EmberServices::getSoundService() {
+	return *mSoundService;
+}
 
-	EmberServices::EmberServices(Eris::Session& session)
-	: mLoggingService(new LoggingService())
-	, mScriptingService(new ScriptingService())
-	, mSoundService(new SoundService())
-	, mServerService(new ServerService(session))
-	, mMetaserverService(new MetaserverService(session))
-	, mInputService(new InputService())
-	, mWfutService(new WfutService())
-	, mConfigService(new ConfigService())
-	, mServerSettingsService(new Services::ServerSettings())
-	{
-	}
+ScriptingService& EmberServices::getScriptingService() {
+	return *mScriptingService;
+}
+
+WfutService& EmberServices::getWfutService() {
+	return *mWfutService;
+}
+
+Services::ServerSettings& EmberServices::getServerSettingsService() {
+	return *mServerSettingsService;
+}
+
+EmberServices::EmberServices(Eris::Session& session)
+		: mLoggingService(new LoggingService()),
+		  mScriptingService(new ScriptingService()),
+		  mSoundService(new SoundService()),
+		  mServerService(new ServerService(session)),
+		  mMetaserverService(new MetaserverService(session)),
+		  mInputService(new InputService()),
+		  mWfutService(new WfutService()),
+		  mConfigService(new ConfigService()),
+		  mServerSettingsService(new Services::ServerSettings()) {
+}
 
 }

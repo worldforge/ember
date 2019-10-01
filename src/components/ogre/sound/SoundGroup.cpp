@@ -157,8 +157,8 @@ void SoundGroupBinding::update()
 	
 	bool SoundGroup::bindToInstance(SoundInstance* instance)
 	{
-		SoundGroupBinding* binding = new SoundGroupBinding(instance->getSource(), *this);
-		instance->bind(binding);
+		auto binding = std::make_unique<SoundGroupBinding>(instance->getSource(), *this);
+		instance->bind(std::move(binding));
 		return true;
 	}
 	

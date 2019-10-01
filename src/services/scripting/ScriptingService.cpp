@@ -41,16 +41,12 @@ ScriptingService::ScriptingService()
 }
 
 
-ScriptingService::~ScriptingService() {
-	for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
-		delete I->second;
-	}
-}
+ScriptingService::~ScriptingService() = default;
 
 void ScriptingService::stop() {
 	Service::stop();
-	for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
-		I->second->stop();
+	for (auto& entry: mProviders) {
+		entry.second->stop();
 	}
 }
 
@@ -68,14 +64,14 @@ void ScriptingService::loadScript(const std::string& script) {
 			return;
 		}
 
-		for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
+		for (auto& entry : mProviders) {
 			//check if the provider will load the script
-			if (I->second->willLoadScript(script)) {
-				S_LOG_INFO("Loading script: " << script << " with scripting provider " << I->second->getName());
+			if (entry.second->willLoadScript(script)) {
+				S_LOG_INFO("Loading script: " << script << " with scripting provider " << entry.second->getName());
 				try {
-					I->second->loadScript(resWrapper, nullptr);
+					entry.second->loadScript(resWrapper, nullptr);
 				} catch (const std::exception& ex) {
-					S_LOG_WARNING("Error when loading script " << script << " with provider " << I->second->getName() << "." << ex);
+					S_LOG_WARNING("Error when loading script " << script << " with provider " << entry.second->getName() << "." << ex);
 					scriptError(ex.what());
 				} catch (...) {
 					S_LOG_WARNING("Got unknown script error when loading the script " << script);
@@ -89,7 +85,7 @@ void ScriptingService::loadScript(const std::string& script) {
 }
 
 void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext) {
-	ProviderStore::const_iterator I = mProviders.find(scriptType);
+	auto I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
 	} else {
@@ -106,7 +102,7 @@ void ScriptingService::executeCode(const std::string& scriptCode, const std::str
 }
 
 void ScriptingService::callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext) {
-	ProviderStore::const_iterator I = mProviders.find(scriptType);
+	auto I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
 	} else {
@@ -126,13 +122,13 @@ sigc::signal<void, const std::string&>& ScriptingService::getEventScriptError() 
 	return mEventScriptError;
 }
 
-void ScriptingService::registerScriptingProvider(IScriptingProvider* provider) {
+void ScriptingService::registerScriptingProvider(std::unique_ptr<IScriptingProvider> provider) {
 	if (mProviders.find(provider->getName()) != mProviders.end()) {
 		S_LOG_FAILURE("Could not add already existing scripting provider with name " + provider->getName());
 	} else {
-		mProviders[provider->getName()] = provider;
+		S_LOG_INFO("Registering scripting provider " << provider->getName());
 		provider->_registerWithService(this);
-		S_LOG_INFO("Registered scripting provider " << provider->getName());
+		mProviders[provider->getName()] = std::move(provider);
 	}
 }
 
@@ -142,9 +138,9 @@ void ScriptingService::scriptError(const std::string& error) {
 }
 
 IScriptingProvider* ScriptingService::getProviderFor(const std::string& providerName) {
-	ProviderStore::const_iterator I = mProviders.find(providerName);
+	auto I = mProviders.find(providerName);
 	if (I != mProviders.end()) {
-		return I->second;
+		return I->second.get();
 	}
 	return nullptr;
 }
@@ -168,8 +164,8 @@ void ScriptingService::runCommand(const std::string& command, const std::string&
 
 std::vector<std::string> ScriptingService::getProviderNames() {
 	std::vector<std::string> names;
-	for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
-		names.push_back(I->second->getName());
+	for (auto& entry: mProviders) {
+		names.push_back(entry.second->getName());
 	}
 	return names;
 

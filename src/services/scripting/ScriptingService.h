@@ -29,6 +29,7 @@
 #include <sigc++/signal.h>
 #include <map>
 #include <vector>
+#include <memory>
 
 namespace Ember {
 class IResourceProvider;
@@ -66,7 +67,7 @@ public:
 	 *    Registers a new scripting provider.
 	 * @param provider 
 	 */
-	void registerScriptingProvider(IScriptingProvider* provider);
+	void registerScriptingProvider(std::unique_ptr<IScriptingProvider> provider);
 
 	/**
 	 *    Loads a new script, if there is an registered scripting provider which will be able to load it.
@@ -136,12 +137,12 @@ private:
 	 */
 	void scriptError(const std::string& error);
 
-	typedef std::map<std::string, IScriptingProvider*> ProviderStore;
+	typedef std::map<std::string, std::unique_ptr<IScriptingProvider>> ProviderStore;
 
 	/**
 	A map of all scripting providers.
 	*/
-	ProviderStore mProviders;
+	std::map<std::string, std::unique_ptr<IScriptingProvider>> mProviders;
 
 	sigc::signal<void, const std::string&> mEventScriptError;
 

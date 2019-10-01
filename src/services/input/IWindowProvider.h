@@ -27,11 +27,10 @@ namespace Ember {
 /**
  * @brief Provides a Window interface for the Input class.
  */
-class IWindowProvider
+struct IWindowProvider
 {
-public:
 
-	virtual ~IWindowProvider() {}
+	virtual ~IWindowProvider() = default;
 
 	/**
 	 * @brief Returns wether the window is visible.

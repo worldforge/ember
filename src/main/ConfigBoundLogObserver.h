@@ -50,7 +50,7 @@ public:
     /**
      * @brief Dtor.
      */
-    virtual ~ConfigBoundLogObserver();
+    ~ConfigBoundLogObserver() override;
 
 protected:
 
