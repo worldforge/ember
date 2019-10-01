@@ -35,15 +35,15 @@ namespace OgreView {
 	@brief Hides the current graphical representation when activated.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class EmberEntityHideModelAction : public EntityMapping::Actions::Action
-{
+class EmberEntityHideModelAction : public EntityMapping::Actions::Action {
 public:
-    EmberEntityHideModelAction(EmberEntity& entity);
+	explicit EmberEntityHideModelAction(EmberEntity& entity);
 
-    virtual ~EmberEntityHideModelAction();
+	~EmberEntityHideModelAction() override;
 
-	virtual void activate(EntityMapping::ChangeContext& context);
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void activate(EntityMapping::ChangeContext& context) override;
+
+	void deactivate(EntityMapping::ChangeContext& context) override;
 
 protected:
 	EmberEntity& mEntity;

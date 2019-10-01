@@ -35,7 +35,7 @@ namespace Cases
 class CaseBase;
 }
 
-class IVisitor;
+struct IVisitor;
 class ChangeContext;
 
 namespace Actions

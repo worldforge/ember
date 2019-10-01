@@ -33,6 +33,7 @@
 
 #include <Eris/TypeInfo.h>
 #include <Eris/Entity.h>
+#include <boost/noncopyable.hpp>
 
 #include "Definitions/EntityMappingDefinition.h"
 #include "EntityMapping.h"
@@ -41,12 +42,11 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 class EntityMapping;
-class IActionCreator;
 
+struct IActionCreator;
 
 
 /**
@@ -57,37 +57,37 @@ class IActionCreator;
 
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class EntityMappingManager{
+class EntityMappingManager : boost::noncopyable {
 public:
-	typedef std::unordered_map<std::string, Definitions::EntityMappingDefinition*> EntityMappingDefinitionStore;
+	typedef std::unordered_map<std::string, std::unique_ptr<Definitions::EntityMappingDefinition>> EntityMappingDefinitionStore;
 
 	/**
 	Default constructor.
 	*/
-    EntityMappingManager();
+	EntityMappingManager();
 
-    ~EntityMappingManager();
+	~EntityMappingManager();
 
-    /**
-    Sets the type service. Applications are required to set this before calling createMapping(...)
-    @param typeService An Eris::TypeService instance.
-    */
-    void setTypeService(Eris::TypeService* typeService);
+	/**
+	Sets the type service. Applications are required to set this before calling createMapping(...)
+	@param typeService An Eris::TypeService instance.
+	*/
+	void setTypeService(Eris::TypeService* typeService);
 
-    /**
-    Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
-    @param definition A valid definition.
-    */
-    void addDefinition(Definitions::EntityMappingDefinition* definition);
+	/**
+	Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
+	@param definition A valid definition.
+	*/
+	void addDefinition(std::unique_ptr<Definitions::EntityMappingDefinition> definition);
 
-    /**
-    Creates a new EntityMapping instance. This will not be handled by the manager and needs to be deleted by the application when suitable.
-    Remember to call EntityMapping::initialize(...).
-    @param entity An eris type info instance.
-    @param actionCreator An eris type info instance.
-    @param view An optional view, if any such is available.
-    */
-    EntityMapping* createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view);
+	/**
+	Creates a new EntityMapping instance. This will not be handled by the manager and needs to be deleted by the application when suitable.
+	Remember to call EntityMapping::initialize(...).
+	@param entity An eris type info instance.
+	@param actionCreator An eris type info instance.
+	@param view An optional view, if any such is available.
+	*/
+	std::unique_ptr<EntityMapping> createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view);
 
 protected:
 
@@ -98,8 +98,7 @@ protected:
 
 };
 
-inline void EntityMappingManager::setTypeService(Eris::TypeService* typeService)
-{
+inline void EntityMappingManager::setTypeService(Eris::TypeService* typeService) {
 	mTypeService = typeService;
 }
 

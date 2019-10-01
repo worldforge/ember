@@ -38,7 +38,8 @@ namespace Ember {
 namespace EntityMapping {
 
 class ChangeContext;
-class IVisitor;
+
+struct IVisitor;
 
 namespace Actions {
 class Action;

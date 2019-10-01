@@ -34,7 +34,6 @@
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/entitymapping/EntityMappingManager.h"
 #include "components/entitymapping/IActionCreator.h"
-#include "components/entitymapping/Actions/Action.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/ogre/mapping/ModelActionCreator.h"
 #include "services/server/ServerService.h"
@@ -81,7 +80,7 @@ public:
 IconManager::IconManager() :
 		mIconRenderer("IconManager", 64) {
 	//if the direct renderer is activated you must also update IconImageStore so that a RenderTarget texture is used
-	 	mIconRenderer.setWorker(new DirectRendererWorker(mIconRenderer));
+	mIconRenderer.setWorker(new DirectRendererWorker(mIconRenderer));
 
 	//mIconRenderer.setWorker(new DelayedIconRendererWorker(mIconRenderer));
 }
@@ -100,15 +99,15 @@ Icon* IconManager::getIcon(int, EmberEntity* entity) {
 		}, [&](const std::string& partName) {
 			//Ignore parts
 		});
-		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
+		auto& manager = Mapping::EmberEntityMappingManager::getSingleton().getManager();
+		auto modelMapping = manager.createMapping(*entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView());
 
 
 		if (modelMapping) {
 			modelMapping->initialize();
 		}
-		//if there's no model defined for this use the placeholder model
 		if (modelName.empty()) {
-			modelName = "common/primitives/placeholder.modeldef";
+			return nullptr;
 		}
 		auto modelDefPtr = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 		if (modelDefPtr) {

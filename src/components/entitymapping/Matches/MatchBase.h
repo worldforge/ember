@@ -35,7 +35,7 @@ namespace Ember {
 
 namespace EntityMapping {
 
-class IVisitor;
+struct IVisitor;
 
 namespace Matches {
 

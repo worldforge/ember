@@ -43,9 +43,8 @@ class CaseBase;
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Interface for visitor classes intended to walk the entity mapping hierarchy.
  */
-class IVisitor
+struct IVisitor
 {
-public:
 	/**
 	 * @brief Dtor.
 	 */

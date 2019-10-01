@@ -135,7 +135,7 @@ void XMLEntityMappingDefinitionSerializer::parseSingleMapping(TiXmlElement* root
 	definition->setName(path);
 
 	parseCaseElement(*definition, definition->getRoot(), rootElem);
-	mEntityMappingManager.addDefinition(definition.release());
+	mEntityMappingManager.addDefinition(std::move(definition));
 }
 
 }

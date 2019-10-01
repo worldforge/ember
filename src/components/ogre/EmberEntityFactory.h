@@ -49,8 +49,6 @@ class EntityMappingManager;
 namespace OgreView
 {
 
-class ViewEmberEntity;
-class WorldEmberEntity;
 class Scene;
 
 /**
@@ -69,22 +67,22 @@ public:
 	 * This should be instantiated by EmberOgre or similar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	 */
 	EmberEntityFactory(Eris::View& view, Scene& scene, EntityMapping::EntityMappingManager& mappingManager);
-	virtual ~EmberEntityFactory();
+	~EmberEntityFactory() override;
 
 	/**
 	 * @brief Will always return true as we want all entities created to be handled by this class.
 	 */
-	virtual bool accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type);
+	bool accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type) override;
 
 	/**
 	 Creates instances of EmberEntity and its subclasses.
 	 */
-	virtual Eris::Entity* instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w);
+	Eris::Entity* instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w) override;
 
 	/** retrieve this factory's priority level; higher priority factories
 	 get first chance to process a received Atlas entity. The default implementation
 	 returns one. */
-	virtual int priority();
+	int priority() override;
 
 	/**
 	 * @brief Emitted when the factory is being deleted.
@@ -104,14 +102,6 @@ protected:
 
 	EntityMapping::EntityMappingManager& mMappingManager;
 
-	/**
-	 * @brief Deletes the entity mapping.
-	 *
-	 * This serves as a callback to Entity::BeingDeleted, allowing us to remove any bound mappings.
-	 *
-	 * @param mapping The mapping which should be deleted.
-	 */
-	void deleteMapping(EntityMapping::EntityMapping* mapping);
 
 };
 

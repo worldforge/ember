@@ -59,6 +59,8 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 			aCase->addAction(new CompositionAction(mEntity, actionDef.getValue()));
 		} else if (actionDef.getType() == "present") {
 			aCase->addAction(new PresentAction(mEntity, mScene, modelMapping));
+//		} else if (actionDef.getType() == "show-effect") {
+//			aCase->addAction(new PresentAction(mEntity, mScene, modelMapping));
 		} else {
 			S_LOG_WARNING("Could not recognize entity action '" << actionDef.getType() << "'.");
 		}

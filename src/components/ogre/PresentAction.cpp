@@ -37,10 +37,10 @@ PresentAction::PresentAction(EmberEntity& entity, Scene& scene, EntityMapping::E
 
 void PresentAction::activate(EntityMapping::ChangeContext& context) {
 
-	if (mEntity.hasProperty("present")) {
-		auto& element = mEntity.valueOfProperty("present");
-		if (element.isString()) {
-			auto& present = element.String();
+	auto element = mEntity.ptrOfProperty("present");
+	if (element) {
+		if (element->isString()) {
+			auto& present = element->String();
 
 			//If it's not an entity map it's either a mesh or a model.
 			// Check if there's a model created already, if not we'll assume it's a mesh and create a model using that mesh

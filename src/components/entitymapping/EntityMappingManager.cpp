@@ -42,22 +42,15 @@ EntityMappingManager::EntityMappingManager() :
 		mTypeService(nullptr) {
 }
 
-EntityMappingManager::~EntityMappingManager() {
-	for (auto& entry : mDefinitions) {
-		delete entry.second;
-	}
+EntityMappingManager::~EntityMappingManager() = default;
+
+void EntityMappingManager::addDefinition(std::unique_ptr<EntityMappingDefinition> definition) {
+	auto name = definition->getName();
+	//Overwrite any existing definition.
+	mDefinitions[name] = std::move(definition);
 }
 
-void EntityMappingManager::addDefinition(EntityMappingDefinition* definition) {
-	auto result = mDefinitions.insert(EntityMappingDefinitionStore::value_type(definition->getName(), definition));
-
-	//If it was already added, delete the definition now.
-	if (!result.second) {
-		delete definition;
-	}
-}
-
-EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view) {
+std::unique_ptr<EntityMapping> EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view) {
 	if (mTypeService) {
 		EntityMappingDefinition* definition = nullptr;
 		if (entity.hasProperty("present")) {
@@ -65,7 +58,7 @@ EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IAction
 			if (mappingElement.isString() && !mappingElement.String().empty()) {
 				auto I = mDefinitions.find(mappingElement.String());
 				if (I != mDefinitions.end()) {
-					definition = I->second;
+					definition = I->second.get();
 				}
 			}
 		}
@@ -74,11 +67,11 @@ EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IAction
 			EntityMappingCreator creator(*definition, entity, actionCreator, *mTypeService, view);
 			return creator.create();
 		} else {
-			auto mapping = new EntityMapping(entity);
+			auto mapping = std::make_unique<EntityMapping>(entity);
 
 			auto attributeMatch = new Matches::SingleAttributeMatch("present");
 			auto* attributeCase = new Cases::AttributeCase(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
-			Matches::Observers::MatchAttributeObserver* observer = new Matches::Observers::MatchAttributeObserver(attributeMatch, "present");
+			auto* observer = new Matches::Observers::MatchAttributeObserver(attributeMatch, "present");
 			attributeMatch->setMatchAttributeObserver(observer);
 
 			attributeMatch->addCase(attributeCase);

@@ -23,16 +23,18 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPINGCREATOR_H
 #define EMBEROGRE_MODEL_MAPPINGMODELMAPPINGCREATOR_H
 
+#include <memory>
 #include "Definitions/EntityMappingDefinition.h"
-namespace Eris
-{
+
+namespace Eris {
 class Entity;
+
 class TypeService;
+
 class View;
 }
 
 namespace Ember {
-
 
 
 namespace EntityMapping {
@@ -43,30 +45,36 @@ class EntityMappingDefinition;
 
 namespace Matches {
 class EntityTypeMatch;
+
 class AttributeMatch;
+
 class EntityRefMatch;
 }
 namespace Cases {
 
 namespace AttributeComparers {
-	class NumericComparer;
-	class AttributeComparerWrapper;
+class NumericComparer;
+
+class AttributeComparerWrapper;
 }
 
 class AttributeCase;
+
 class EntityRefCase;
+
 class CaseBase;
 }
 class EntityMapping;
-class IActionCreator;
+
+struct IActionCreator;
+
 /**
 	Creates a EntityMapping instances from the supplied definition.
 
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
 
-class EntityMappingCreator
-{
+class EntityMappingCreator {
 public:
 	/**
 	 *    Default constructor.
@@ -76,7 +84,11 @@ public:
 	 * @param typeService A valid typeservice instance.
 	 * @param view An optional View instance.
 	 */
-	EntityMappingCreator(Definitions::EntityMappingDefinition& definition, Eris::Entity& entity, IActionCreator& actionCreator, Eris::TypeService& typeService, Eris::View* view);
+	EntityMappingCreator(Definitions::EntityMappingDefinition& definition,
+						 Eris::Entity& entity,
+						 IActionCreator& actionCreator,
+						 Eris::TypeService& typeService,
+						 Eris::View* view);
 
 	~EntityMappingCreator() = default;
 
@@ -84,14 +96,14 @@ public:
 	/**
 	 *    Creates a new EntityMapping instance.
 	 */
-	EntityMapping* create();
+	std::unique_ptr<EntityMapping> create();
 
 protected:
 
 	/**
 	Main entry point for mapping creation.
 	*/
-	EntityMapping* createMapping();
+	void createMapping();
 
 	/**
 	 * Adds EntityTypeCases to the supplied match.
@@ -159,7 +171,7 @@ protected:
 
 	IActionCreator& mActionCreator;
 	Eris::Entity& mEntity;
-	EntityMapping* mEntityMapping;
+	std::unique_ptr<EntityMapping> mEntityMapping;
 	Definitions::EntityMappingDefinition& mDefinition;
 	Eris::TypeService& mTypeService;
 	Eris::View* mView;

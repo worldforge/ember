@@ -42,9 +42,8 @@ Interface that allows for client specific actions to be created.
 
 Clients that use the Mapping framework are required to implement this interface. This interface is used in EntityMappingManager::createMapping(...)
 */
-class IActionCreator
+struct IActionCreator
 {
-public:
 	virtual ~IActionCreator() = default;
 
 	/**
@@ -52,7 +51,6 @@ public:
 	Use Cases::CaseBase::addAction(...) to add the actions to the case.
 	*/
 	virtual void createActions(EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition) = 0;
-private:
 };
 
 }

@@ -30,22 +30,16 @@ namespace Ember {
 namespace OgreView {
 
 EmberEntityHideModelAction::EmberEntityHideModelAction(EmberEntity& entity)
-: mEntity(entity)
-{
+		: mEntity(entity) {
 }
 
+EmberEntityHideModelAction::~EmberEntityHideModelAction() = default;
 
-EmberEntityHideModelAction::~EmberEntityHideModelAction()
-{
+void EmberEntityHideModelAction::activate(EntityMapping::ChangeContext& context) {
+	mEntity.setGraphicalRepresentation(nullptr);
 }
 
-void EmberEntityHideModelAction::activate(EntityMapping::ChangeContext& context)
-{
-	mEntity.setGraphicalRepresentation(0);
-}
-
-void EmberEntityHideModelAction::deactivate(EntityMapping::ChangeContext& context)
-{
+void EmberEntityHideModelAction::deactivate(EntityMapping::ChangeContext& context) {
 // 	mEntity.setModel("");
 }
 

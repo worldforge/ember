@@ -25,6 +25,8 @@
 #endif
 
 #include "EntityMappingCreator.h"
+
+#include <memory>
 #include "EntityMapping.h"
 #include "EntityMappingManager.h"
 
@@ -79,13 +81,14 @@ EntityMappingCreator::EntityMappingCreator(EntityMappingDefinition& definition, 
 }
 
 
-EntityMapping* EntityMappingCreator::create() {
-	return createMapping();
+std::unique_ptr<EntityMapping> EntityMappingCreator::create() {
+	createMapping();
+	return std::move(mEntityMapping);
 }
 
 
-EntityMapping* EntityMappingCreator::createMapping() {
-	mEntityMapping = new EntityMapping(mEntity);
+void EntityMappingCreator::createMapping() {
+	mEntityMapping = std::make_unique<EntityMapping>(mEntity);
 
 	mActionCreator.createActions(*mEntityMapping, &mEntityMapping->getBaseCase(), mDefinition.getRoot());
 
@@ -95,7 +98,6 @@ EntityMapping* EntityMappingCreator::createMapping() {
 
 	//since we already have the entity, we can perform a check right away
 	mEntityMapping->getBaseCase().setEntity(&mEntity);
-	return mEntityMapping;
 }
 
 void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, MatchDefinition& matchDefinition) {
@@ -237,8 +239,8 @@ void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& m
 		if (attributeName == "height") {
 
 			auto virtualMatch = new VirtualAttributeMatch(attributeName, {"bbox", "scale"});
-			virtualMatch->addMatchAttributeObserver(std::unique_ptr<MatchAttributeObserver>(new MatchAttributeObserver(virtualMatch, "bbox")));
-			virtualMatch->addMatchAttributeObserver(std::unique_ptr<MatchAttributeObserver>(new MatchAttributeObserver(virtualMatch, "scale")));
+			virtualMatch->addMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(virtualMatch, "bbox"));
+			virtualMatch->addMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(virtualMatch, "scale"));
 			match = virtualMatch;
 		}
 	} else {
