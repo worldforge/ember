@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
 project(Ember)
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
@@ -56,7 +56,7 @@ macro(wf_generate_lua_bindings PKG_PATH)
     add_custom_command(
             OUTPUT ${PACKAGE_NAME}.cxx
             COMMAND ${CMAKE_COMMAND} -E echo_append "Building Lua bindings for ${PACKAGE_NAME}.cxx"
-            COMMAND TOLUAXX=${TOLUA++_APP} ${PROJECT_SOURCE_DIR}/scripts/update_lua_bindings.sh ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx
+            COMMAND TOLUAXX=${TOLUA++_APP} ${PROJECT_SOURCE_DIR}/tools/support/update_lua_bindings.sh ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx
             COMMAND ${CMAKE_COMMAND} -E echo "Done."
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR}
             DEPENDS ${LUA_FILES}
@@ -295,16 +295,16 @@ foreach (FILE ${MODELDEFINITIONS_FILES})
 endforeach (FILE MODELDEFINITIONS_FILES)
 
 
-configure_file(ember.conf.in ember.conf @ONLY)
-configure_file(ember.in ember @ONLY)
-configure_file(ember.dox.in ember.dox @ONLY)
-configure_file(scripts/refresh-amber-media-dev.sh.in scripts/refresh-amber-media-dev.sh @ONLY)
-configure_file(scripts/make_dist_media.py.in scripts/make_dist_media.py @ONLY)
+configure_file(tools/ember.conf.in ember.conf @ONLY)
+configure_file(tools/ember.in ember @ONLY)
+configure_file(docs/ember.dox.in ember.dox @ONLY)
+configure_file(tools/support/refresh-amber-media-dev.sh.in scripts/refresh-amber-media-dev.sh @ONLY)
+configure_file(tools/support/make_dist_media.py.in scripts/make_dist_media.py @ONLY)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ember.conf DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ember)
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ember DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
-install(FILES ember.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-install(FILES media/ember.png DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/64x64/apps)
+install(FILES tools/ember.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+install(FILES data/media/ember.png DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/64x64/apps)
 install(FILES README.md COPYING AUTHORS NEWS DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/ember-${VERSION})
 
 install(DIRECTORY data DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember)
@@ -313,7 +313,7 @@ file(GLOB SOUND_DEFINITION_FILES "${CMAKE_CURRENT_SOURCE_DIR}/sounddefinitions/*
 install(FILES ${SOUND_DEFINITION_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/sounddefinitions)
 
 # man files
-install(FILES man/man1/ember.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+install(FILES docs/man/man1/ember.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 set(MEDIA_DIR media-${VERSION})
 set(MEDIAREPO_DIR ${PROJECT_SOURCE_DIR}/mediarepo)

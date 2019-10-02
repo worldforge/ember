@@ -14,7 +14,7 @@ if [[ $(wc -l < "${distdir}/ChangeLog") = "0" ]]; then
 	echo "Generating ChangeLog by appending the old CVS ChangeLog to the one generated from git. This requires that you create the dist in the git repository."
 
     cd "${top_srcdir}" || exit
-	chmod u+w "${distdir}/ChangeLog" && git log "${commitid}"..HEAD --stat --name-only --date=short --abbrev-commit > "${distdir}"/ChangeLog && echo "" >> "${distdir}/ChangeLog" && cat "${top_srcdir}/support/ChangeLog-CVS" >> "${distdir}/ChangeLog"
+	chmod u+w "${distdir}/ChangeLog" && git log "${commitid}"..HEAD --stat --name-only --date=short --abbrev-commit > "${distdir}"/ChangeLog && echo "" >> "${distdir}/ChangeLog" && cat "${top_srcdir}/tools/support/ChangeLog-CVS" >> "${distdir}/ChangeLog"
 	#Put a notice in the legacy ChangeLog-CVS file, thus bringing the size of the dist down a bit.
-	chmod u+w "${distdir}/support/ChangeLog-CVS" && echo "This file was needed for generating the proper ChangeLog as an aggregate of the code held in git and older code in CVS. It's now empty, but needs to be included in the source distribution to not upset automake." > "${distdir}/support/ChangeLog-CVS"
+	chmod u+w "${distdir}/tools/support/ChangeLog-CVS" && echo "This file was needed for generating the proper ChangeLog as an aggregate of the code held in git and older code in CVS. It's now empty, but needs to be included in the source distribution to not upset automake." > "${distdir}/tools/support/ChangeLog-CVS"
 fi
