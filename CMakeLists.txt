@@ -5,6 +5,9 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
+# Meta data
+set(DESCRIPTION "The Worldforge client.")
+
 include(GNUInstallDirs)
 include(FindPkgConfig)
 
@@ -44,8 +47,6 @@ include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external)
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
-
-# Meta data
 
 macro(wf_generate_lua_bindings PKG_PATH)
     get_filename_component(PACKAGE_NAME ${PKG_PATH} NAME)
@@ -374,7 +375,7 @@ else(PYTHON_CMD)
     )
 endif(PYTHON_CMD)
 
-# Doxygen support, exports a "docs" target.
+# Doxygen support, exports a "dox" target.
 
 find_package(Doxygen)
 
@@ -392,7 +393,7 @@ if (DOXYGEN_FOUND)
             DEPENDS ${DOXYGEN_INPUT}
     )
 
-    add_custom_target(docs DEPENDS ${DOXYGEN_OUTPUT})
+    add_custom_target(dox DEPENDS ${DOXYGEN_OUTPUT})
 
 endif (DOXYGEN_FOUND)
 
