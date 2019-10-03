@@ -40,7 +40,7 @@ namespace Representations {
 /**
  * @brief class that takes care of layout loading and all the fuss associated with it (prefixes mostly)
  * 
- * @todo I am not sure I like the way this is done, perhaps I will move this to Representation base class
+ * TODO: I am not sure I like the way this is done, perhaps I will move this to Representation base class
  */
 class LayoutHelper
 {

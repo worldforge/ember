@@ -297,7 +297,7 @@ endforeach (FILE MODELDEFINITIONS_FILES)
 
 configure_file(tools/ember.conf.in ember.conf @ONLY)
 configure_file(tools/ember.in ember @ONLY)
-configure_file(docs/ember.dox.in ember.dox @ONLY)
+configure_file(docs/Doxyfile.in Doxyfile @ONLY)
 configure_file(tools/support/refresh-amber-media-dev.sh.in scripts/refresh-amber-media-dev.sh @ONLY)
 configure_file(tools/support/make_dist_media.py.in scripts/make_dist_media.py @ONLY)
 
@@ -380,8 +380,8 @@ find_package(Doxygen)
 
 if (DOXYGEN_FOUND)
 
-    set(DOXYGEN_INPUT ${CMAKE_CURRENT_BINARY_DIR}/ember.dox)
-    set(DOXYGEN_OUTPUT doc)
+    set(DOXYGEN_INPUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+    set(DOXYGEN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/docs)
 
     add_custom_command(
             OUTPUT ${DOXYGEN_OUTPUT}
