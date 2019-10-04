@@ -27,7 +27,7 @@
 #ifndef _CEGUIOgreTexture_h_
 #define _CEGUIOgreTexture_h_
 
-#include "../../Texture.h"
+#include <CEGUI/Texture.h>
 #include "Renderer.h"
 #include <OgreTexture.h>
 

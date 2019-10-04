@@ -27,10 +27,10 @@
 #ifndef _CEGUIOgreRenderer_h_
 #define _CEGUIOgreRenderer_h_
 
-#include "../../Renderer.h"
-#include "../../Size.h"
-#include "../../Vector.h"
-#include "CEGUI/Config.h"
+#include <CEGUI/Renderer.h>
+#include <CEGUI/Size.h>
+#include <CEGUI/Vector.h>
+#include <CEGUI/Config.h>
 
 #include <vector>
 

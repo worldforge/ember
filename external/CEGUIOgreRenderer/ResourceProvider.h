@@ -29,7 +29,7 @@
 #ifndef _CEGUIOgreResourceProvider_h_
 #define _CEGUIOgreResourceProvider_h_
 
-#include "../../ResourceProvider.h"
+#include <CEGUI/ResourceProvider.h>
 #include "Renderer.h"
 
 // Start of CEGUI namespace section

@@ -27,9 +27,9 @@
 #ifndef _CEGUIOgreRenderTarget_h_
 #define _CEGUIOgreRenderTarget_h_
 
-#include "../../RenderTarget.h"
+#include <CEGUI/RenderTarget.h>
 #include "Renderer.h"
-#include "../../Rect.h"
+#include <CEGUI/Rect.h>
 #include <OgreMatrix4.h>
 
 // Start of CEGUI namespace section
