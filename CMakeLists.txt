@@ -71,17 +71,81 @@ macro(wf_generate_lua_bindings PKG_PATH)
 endmacro()
 
 
+set(WF_LIBRARY_DIRS)
+set(WF_INCLUDE_DIRS)
+set(WF_LIBRARIES)
+
+if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+    MESSAGE("Using Conan for dependency resolution.")
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+    #Prefer static linkage when using Conan
+    IF(WIN32)
+        SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    ELSE(WIN32)
+        SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    ENDIF(WIN32)
+    #set(CEGUI_STATIC 1)
+endif()
+
+find_package(ZLIB REQUIRED)
+
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 link_directories(${SDL2_LIBRARY_DIRS})
 link_libraries(${SDL2_LIBRARIES})
 
+find_package(SigC++
+        2.0
+        REQUIRED)
+list(APPEND WF_LIBRARIES ${SIGC++_LIBRARY})
+list(APPEND WF_INCLUDE_DIRS ${SIGC++_INCLUDE_DIR})
 
-pkg_check_modules(WF REQUIRED sigc++-2.0>=2.0.0 eris-1.4>=1.4.0 varconf-1.0>=0.6.7 mercator-0.4>=0.4.0 atlascpp-0.7>=0.7.0 wfmath-1.0>=1.0.3 libwfut-0.2>=0.2.2)
+find_package(Atlas
+        0.7.0
+        REQUIRED)
+list(APPEND WF_LIBRARIES ${Atlas_LIBRARIES})
+list(APPEND WF_INCLUDE_DIRS ${Atlas_INCLUDE_DIR})
+list(APPEND WF_LIBRARY_DIRS ${Atlas_LIBRARY_DIR})
+
+find_package(wfmath
+        1.0.3
+        REQUIRED)
+list(APPEND WF_LIBRARIES ${wfmath_LIBRARIES})
+list(APPEND WF_INCLUDE_DIRS ${wfmath_INCLUDE_DIR})
+list(APPEND WF_LIBRARY_DIRS ${wfmath_LIBRARY_DIR})
+
+find_package(eris
+        1.4.0
+        REQUIRED)
+list(APPEND WF_LIBRARIES ${eris_LIBRARIES})
+list(APPEND WF_INCLUDE_DIRS ${eris_INCLUDE_DIR})
+list(APPEND WF_LIBRARY_DIRS ${eris_LIBRARY_DIR})
+
+find_package(varconf
+        1.0.3
+        REQUIRED)
+list(APPEND WF_LIBRARIES ${varconf_LIBRARIES})
+list(APPEND WF_INCLUDE_DIRS ${varconf_INCLUDE_DIR})
+list(APPEND WF_LIBRARY_DIRS ${varconf_LIBRARY_DIR})
+
+find_package(mercator
+        0.4.0
+        REQUIRED)
+list(APPEND WF_LIBRARIES ${mercator_LIBRARIES})
+list(APPEND WF_INCLUDE_DIRS ${mercator_INCLUDE_DIR})
+list(APPEND WF_LIBRARY_DIRS ${mercator_LIBRARY_DIR})
+
+find_package(wfut
+        0.2.4
+        REQUIRED)
+list(APPEND WF_LIBRARIES ${wfut_LIBRARIES})
+list(APPEND WF_INCLUDE_DIRS ${wfut_INCLUDE_DIR})
+list(APPEND WF_LIBRARY_DIRS ${wfut_LIBRARY_DIR})
+
 link_directories(${WF_LIBRARY_DIRS})
 include_directories(${WF_INCLUDE_DIRS})
 link_libraries(${WF_LIBRARIES})
-
 
 find_package(Boost
         1.60.0
@@ -101,12 +165,10 @@ link_directories(${OGRE_LIBRARY_DIRS})
 link_libraries(${OGRE_LIBRARIES})
 include_directories(${OGRE_INCLUDE_DIRS})
 if (APPLE)
-    if (NOT OGRE_RenderSystem_GL_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL plugin. Make sure you've built Ogre with RenderSystem GL support.")
-    endif (NOT OGRE_RenderSystem_GL_FOUND)
+    if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
+        MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
+    endif (NOT OGRE_RenderSystem_GL3Plus_FOUND)
 endif (APPLE)
-# Required to find glew.h header. Backtrace: OgreSetup.cpp ==> OgreGLContext.h ==> OgreGLPrerequisites.h ==> <GL/glew.h>
-include_directories("${OGRE_RenderSystem_GL_INCLUDE_DIR}")
 
 if (NOT OGRE_Terrain_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
@@ -138,53 +200,12 @@ endif (NOT OGRE_RTShaderSystem_FOUND)
 link_libraries(${OGRE_RTShaderSystem_LIBRARIES})
 include_directories(${OGRE_RTShaderSystem_INCLUDE_DIRS})
 
+if (NOT OGRE_Codec_FreeImage_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
+endif (NOT OGRE_Codec_FreeImage_FOUND)
+
 add_definitions(-DOGRE_MEDIA_DIR="${OGRE_MEDIA_DIR}")
-
-
-#On UNIX with PKG_CONFIG we can be more assertive of the paths than the FindOGRE.cmake macro is, so lets
-#get the correct paths from pkg-config.
-if (UNIX)
-    pkg_check_modules(OGREPKGCFG REQUIRED OGRE>=${OGREVER})
-
-    set(OGRE_DEBUGBUILD FALSE)
-    add_definitions(-DOGRE_PLUGINDIR="${OGREPKGCFG_LIBDIR}/OGRE")
-    #Check if any library ends with "_d", which indicates that OGRE is a debug build.
-    foreach (LIBRARY ${OGREPKGCFG_LIBRARIES})
-        string(FIND ${LIBRARY} "_d" IS_DEBUG)
-        if (NOT IS_DEBUG MATCHES -1)
-            set(OGRE_DEBUGBUILD TRUE)
-        endif (NOT IS_DEBUG MATCHES -1)
-    endforeach ()
-
-    if (OGRE_DEBUGBUILD)
-        MESSAGE(STATUS "Ogre was built in debug mode.")
-        add_definitions(-DOGRE_DEBUG_BUILD)
-    else (OGRE_DEBUGBUILD)
-        MESSAGE(STATUS "Ogre was built in release mode.")
-    endif (OGRE_DEBUGBUILD)
-
-else (UNIX)
-    #On other systems we need to rely on the FindOGRE.cmake macros finding things in correct places.
-    if (OGRE_LIBRARY_DBG)
-        set(OGRE_LIBRARY ${OGRE_LIBRARY_DBG})
-    else (OGRE_LIBRARY_DBG)
-        set(OGRE_LIBRARY ${OGRE_LIBRARY_REL})
-    endif (OGRE_LIBRARY_DBG)
-
-    #It's not enough to check for the _DBG and _REL keys since they can both be set. We also need to check if the library ends with "_d.so" to
-    #determine if it's built for debug or release.
-    string(FIND ${OGRE_LIBRARY} "_d.so" OGRE_DEBUG_BUILD)
-    if (OGRE_DEBUG_BUILD MATCHES -1)
-        MESSAGE(STATUS "Ogre was built in release mode.")
-        add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_REL}")
-    else (OGRE_DEBUG_BUILD MATCHES -1)
-        MESSAGE(STATUS "Ogre was built in debug mode.")
-        add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR_DBG}")
-        add_definitions(-DOGRE_DEBUG_BUILD)
-    endif (OGRE_DEBUG_BUILD MATCHES -1)
-
-
-endif (UNIX)
+add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR}")
 
 if (APPLE)
     pkg_check_modules(TOLUAPP tolua++)
@@ -283,6 +304,11 @@ endif(UNWIND_FOUND)
 
 #We'll use xmllint for validating schemas of some of our xml files.
 find_program(XMLLINT xmllint)
+
+if (NOT TOLUA++_APP)
+    MESSAGE(FATAL_ERROR "Could not find tolua++ executable.")
+endif(NOT TOLUA++_APP)
+
 
 add_subdirectory(external)
 add_subdirectory(src)

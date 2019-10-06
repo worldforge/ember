@@ -21,20 +21,12 @@
 #include "services/config/ConfigService.h"
 
 #include <OgreRoot.h>
+#include <OgreBuildSettings.h>
 
 #ifdef OGRE_STATIC_LIB
 
-#ifdef OGRE_BUILD_PLUGIN_CG
-#include <OgreCgPlugin.h>
-#endif
-#ifdef OGRE_BUILD_PLUGIN_OCTREE
-#include <OgreOctreePlugin.h>
-#endif
 #ifdef OGRE_BUILD_PLUGIN_PFX
 #include <OgreParticleFXPlugin.h>
-#endif
-#ifdef OGRE_BUILD_RENDERSYSTEM_GL
-#include <OgreGLPlugin.h>
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_GL3PLUS
 #include <OgreGL3PlusPlugin.h>
@@ -58,9 +50,6 @@ namespace Ember {
 namespace OgreView {
 OgrePluginLoader::OgrePluginLoader() {
 #ifdef OGRE_STATIC_LIB
-#ifdef OGRE_BUILD_RENDERSYSTEM_GL
-	mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_GL", OGRE_NEW Ogre::GLPlugin()));
-#endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_GL3PLUS
 	mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_GL3Plus", OGRE_NEW Ogre::GL3PlusPlugin()));
 #endif
@@ -72,15 +61,6 @@ OgrePluginLoader::OgrePluginLoader() {
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_D3D9
 	mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_Direct3D9", OGRE_NEW Ogre::D3D9Plugin()));
-#endif
-	//#ifdef OGRE_BUILD_RENDERSYSTEM_D3D11
-	//		mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_Direct3D11", OGRE_NEW Ogre::D3D11Plugin()));
-	//#endif
-#ifdef OGRE_BUILD_PLUGIN_CG
-	mPlugins.insert(PluginInstanceMap::value_type("Plugin_CgProgramManager", OGRE_NEW Ogre::CgPlugin()));
-#endif
-#ifdef OGRE_BUILD_PLUGIN_OCTREE
-	mPlugins.insert(PluginInstanceMap::value_type("Plugin_OctreeSceneManager", OGRE_NEW Ogre::OctreePlugin()));
 #endif
 #ifdef OGRE_BUILD_PLUGIN_PFX
 	mPlugins.insert(PluginInstanceMap::value_type("Plugin_ParticleFX", OGRE_NEW Ogre::ParticleFXPlugin()));
@@ -141,6 +121,7 @@ bool OgrePluginLoader::loadPlugin(const std::string& pluginName) {
 		Ogre::Root::getSingleton().installPlugin(it->second);
 		return true;
 	}
+	S_LOG_FAILURE("Could not find required plugin " << pluginName);
 	return false;
 #endif
 }
@@ -157,11 +138,11 @@ bool OgrePluginLoader::loadDynPlugin(const std::string& pluginName) {
 
 	for (const std::string& dir : mPluginDirs) {
 		std::string pluginPath;
-#ifdef OGRE_DEBUG_BUILD
-		pluginPath = dir + "/" + pluginName + "_d" + mPluginExtension;
-#else
+//#ifdef OGRE_DEBUG_MODE
+//		pluginPath = dir + "/" + pluginName + "_d" + mPluginExtension;
+//#else
 		pluginPath = dir + "/" + pluginName + mPluginExtension;
-#endif
+//#endif
 		if (std::ifstream(pluginPath).good()) {
 			S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
 			try {

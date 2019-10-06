@@ -53,7 +53,7 @@
 #error OGRE must be built with thread support.
 #endif
 
-#include <RenderSystems/GL/OgreGLContext.h>
+#include <RenderSystems/GL3Plus/OgreGLContext.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -69,6 +69,12 @@
 #include <OgreConfigDialog.h>
 #include <OgreTextureManager.h>
 #include <OgreLodStrategyManager.h>
+
+#ifdef OGRE_STATIC_LIB
+#include <Plugins/FreeImageCodec/OgreFreeImageCodec.h>
+#include <Plugins/ParticleFX/OgreParticleFXPlugin.h>
+#include <RenderSystems/GL3Plus/OgreGL3PlusPlugin.h>
+#endif
 
 #include <SDL.h>
 #include <Ogre.h>
@@ -174,9 +180,15 @@ void OgreSetup::createOgreSystem() {
 
 	mOverlaySystem = std::make_unique<Ogre::OverlaySystem>();
 
+#ifdef OGRE_STATIC_LIB
+	mRoot->installPlugin(OGRE_NEW Ogre::FreeImagePlugin());
+	mRoot->installPlugin(OGRE_NEW Ogre::GL3PlusPlugin());
+	mRoot->installPlugin(OGRE_NEW Ogre::ParticleFXPlugin());
+#else
 	mPluginLoader.loadPlugin("Codec_FreeImage");
 	mPluginLoader.loadPlugin("Plugin_ParticleFX");
 	mPluginLoader.loadPlugin("RenderSystem_GL3Plus"); //We'll use OpenGL on Windows too, to make it easier to develop
+#endif
 
 	auto renderSystem = mRoot->getAvailableRenderers().front();
 	try {
