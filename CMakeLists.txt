@@ -21,7 +21,11 @@ set(VERSION ${EMBER_VERSION_MAJOR}.${EMBER_VERSION_MINOR}.${EMBER_VERSION_PATCH}
 
 # Set compiler flags
 #set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wmissing-declarations -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
-set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(WF_WARNING_FLAGS /Wall)
+else ()
+    set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
+endif ()
 
 add_definitions(-DVERSION="${VERSION}")
 add_definitions(-DPREFIX="${CMAKE_INSTALL_PREFIX}")
@@ -75,18 +79,18 @@ set(WF_LIBRARY_DIRS)
 set(WF_INCLUDE_DIRS)
 set(WF_LIBRARIES)
 
-if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     MESSAGE("Using Conan for dependency resolution.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
     #Prefer static linkage when using Conan
-    IF(WIN32)
+    IF (WIN32)
         SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-    ELSE(WIN32)
+    ELSE (WIN32)
         SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-    ENDIF(WIN32)
+    ENDIF (WIN32)
     #set(CEGUI_STATIC 1)
-endif()
+endif ()
 
 find_package(ZLIB REQUIRED)
 
@@ -300,14 +304,14 @@ if (UNWIND_FOUND)
     link_libraries(${UNWIND_LIBRARIES})
     include_directories(${UNWIND_INCLUDE_DIR})
     add_definitions(-DUNWIND_ENABLED)
-endif(UNWIND_FOUND)
+endif (UNWIND_FOUND)
 
 #We'll use xmllint for validating schemas of some of our xml files.
 find_program(XMLLINT xmllint)
 
 if (NOT TOLUA++_APP)
     MESSAGE(FATAL_ERROR "Could not find tolua++ executable.")
-endif(NOT TOLUA++_APP)
+endif (NOT TOLUA++_APP)
 
 
 add_subdirectory(external)
@@ -362,14 +366,12 @@ if (RSYNC_CMD)
             COMMAND ${CMAKE_COMMAND} -E echo "Done."
             WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     )
-else(RSYNC_CMD)
+else (RSYNC_CMD)
     add_custom_command(
             TARGET media-download
             COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Rsync command. The target 'media-download' is disabled."
     )
-endif(RSYNC_CMD)
-
-
+endif (RSYNC_CMD)
 
 
 add_custom_target(mediarepo-checkout)
@@ -380,12 +382,12 @@ if (SUBVERSION_CMD)
             COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIAREPO_DIR}
             COMMAND ${SUBVERSION_CMD} co https://svn.worldforge.org:886/svn/media/trunk ${MEDIAREPO_DIR}/trunk
     )
-else(SUBVERSION_CMD)
+else (SUBVERSION_CMD)
     add_custom_command(
             TARGET mediarepo-checkout
             COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Subversion command 'svn'. The target 'mediarepo-checkout' is disabled."
     )
-endif(SUBVERSION_CMD)
+endif (SUBVERSION_CMD)
 
 add_custom_target(mediarepo-process)
 if (PYTHON_CMD)
@@ -394,12 +396,12 @@ if (PYTHON_CMD)
             COMMAND ${CMAKE_COMMAND} -E echo "Processing media in ${MEDIAREPO_DIR}/trunk and placing it in ${MEDIAREPO_PROCESSED_DIR}."
             COMMAND ${CMAKE_BINARY_DIR}/scripts/make_dist_media.py ${MEDIAREPO_DIR}/trunk ${MEDIAREPO_PROCESSED_DIR}
     )
-else(PYTHON_CMD)
+else (PYTHON_CMD)
     add_custom_command(
             TARGET mediarepo-process
             COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Python command 'python'. The target 'mediarepo-process' is disabled."
     )
-endif(PYTHON_CMD)
+endif (PYTHON_CMD)
 
 # Doxygen support, exports a "dox" target.
 
