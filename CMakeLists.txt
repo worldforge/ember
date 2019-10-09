@@ -22,7 +22,7 @@ set(VERSION ${EMBER_VERSION_MAJOR}.${EMBER_VERSION_MINOR}.${EMBER_VERSION_PATCH}
 # Set compiler flags
 #set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wmissing-declarations -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set(WF_WARNING_FLAGS /Wall)
+    set(WF_WARNING_FLAGS /W3)
 else ()
     set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
 endif ()
