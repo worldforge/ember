@@ -106,7 +106,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 
 void TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader) {
 	auto* terrainSurface = new TerrainPageSurfaceLayer(*this, definition, surfaceIndex, shader);
-	mLayers.insert(TerrainPageSurfaceLayerStore::value_type(surfaceIndex, terrainSurface));
+	mLayers.emplace(surfaceIndex, std::unique_ptr<TerrainPageSurfaceLayer>(terrainSurface));
 }
 
 TerrainPageShadow* TerrainPageSurface::getShadow() const {
