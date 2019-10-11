@@ -92,6 +92,8 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     #set(CEGUI_STATIC 1)
 endif ()
 
+set(CEGUI_STATIC "ON")
+
 find_package(ZLIB REQUIRED)
 
 find_package(SDL2 REQUIRED)
@@ -271,10 +273,9 @@ link_libraries(${OPENAL_LIBRARY})
 link_libraries(${OPENAL_LIBRARIES})
 include_directories(${OPENAL_INCLUDE_DIR})
 
-pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.0.0)
-link_directories(${XDG_LIBRARY_DIRS})
-link_libraries(${XDG_LIBRARIES})
-include_directories(${XDG_INCLUDE_DIRS})
+find_package(XDGBaseDir REQUIRED 1.0.0)
+link_libraries(${XDGBaseDir_LIBRARIES})
+include_directories(${XDGBaseDir_INLUDE_DIR})
 
 find_package(OpenGL)
 link_directories(${OPENGL_LIBRARY_DIRS})
@@ -282,22 +283,17 @@ link_libraries(${OPENGL_LIBRARIES})
 include_directories(${OPENGL_INCLUDE_DIR})
 
 #The default FindBullet.cmake macro doesn't look in pkg-config first, so we'll do that ourselves.
-pkg_check_modules(BULLET bullet>=2.81)
+find_package(Bullet 2.81)
 if (NOT BULLET_FOUND)
     find_package(Bullet 2.81 REQUIRED)
 endif (NOT BULLET_FOUND)
-
-#Remove SoftBody and Dynamics since we're not using those
-list(REMOVE_ITEM BULLET_LIBRARIES BulletSoftBody BulletDynamics)
-
-link_directories(${BULLET_LIBRARY_DIRS})
 include_directories(${BULLET_INCLUDE_DIRS})
 
-pkg_check_modules(CPPUNIT cppunit>=1.8.0)
+find_package(cppunit 1.8.0)
 
 #Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.
 #This allows for a developer to get some insight into why some frames take too long.
-pkg_check_modules(UNWIND libunwind>=1.1)
+find_package(unwind 1.1)
 if (UNWIND_FOUND)
     message("Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
     link_directories(${UNWIND_LIBRARY_DIRS})
