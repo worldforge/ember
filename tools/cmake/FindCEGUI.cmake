@@ -392,7 +392,7 @@ if (CEGUI_STATIC)
     if (WIN32)
         set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib;.dll")
     else()
-        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a;.so")
+        set(CMAKE_FIND_LIBRARY_SUFFIXES "_Static.a;.a;.so")
     endif()
 endif ()
 
