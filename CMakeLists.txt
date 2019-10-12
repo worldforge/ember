@@ -80,7 +80,7 @@ set(WF_INCLUDE_DIRS)
 set(WF_LIBRARIES)
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-    MESSAGE("Using Conan for dependency resolution.")
+    message(STATUS "Using Conan for dependency resolution.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
     #Prefer static linkage when using Conan
@@ -210,6 +210,18 @@ if (NOT OGRE_Codec_FreeImage_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
 endif (NOT OGRE_Codec_FreeImage_FOUND)
 
+
+if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" AND OGRE_STATIC)
+    #If we're building with Conan we don't want any absolute references, so we need to clear the library links from some OGRE components.
+    message(STATUS "Clearing link libraries for OgreOverlay and Codec_FreeImage to remove any hard coded paths.")
+    set_target_properties(OgreOverlay PROPERTIES
+            INTERFACE_LINK_LIBRARIES "OgreMain"
+            )
+    set_target_properties(Codec_FreeImage PROPERTIES
+            INTERFACE_LINK_LIBRARIES "OgreMain"
+            )
+endif ()
+
 add_definitions(-DOGRE_MEDIA_DIR="${OGRE_MEDIA_DIR}")
 add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR}")
 
@@ -282,11 +294,7 @@ link_directories(${OPENGL_LIBRARY_DIRS})
 link_libraries(${OPENGL_LIBRARIES})
 include_directories(${OPENGL_INCLUDE_DIR})
 
-#The default FindBullet.cmake macro doesn't look in pkg-config first, so we'll do that ourselves.
-find_package(Bullet 2.81)
-if (NOT BULLET_FOUND)
-    find_package(Bullet 2.81 REQUIRED)
-endif (NOT BULLET_FOUND)
+find_package(Bullet 2.81 REQUIRED)
 include_directories(${BULLET_INCLUDE_DIRS})
 
 find_package(cppunit 1.8.0)
@@ -295,7 +303,7 @@ find_package(cppunit 1.8.0)
 #This allows for a developer to get some insight into why some frames take too long.
 find_package(unwind 1.1)
 if (UNWIND_FOUND)
-    message("Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
+    message(STATUS "Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
     link_directories(${UNWIND_LIBRARY_DIRS})
     link_libraries(${UNWIND_LIBRARIES})
     include_directories(${UNWIND_INCLUDE_DIR})
@@ -451,11 +459,12 @@ set(CPACK_SOURCE_IGNORE_FILES
 
 include(CPack)
 
-message("*********\nEmber is configured and ready to be built.")
-message("To run it you also need media. There are two ways of getting the media:")
-message("1. Simplest is to use the 'media-download' target. This will use 'rsync' to download only the required preprocessed media.")
-message("2. If you want to also make changes to the raw media you can use the target 'mediarepo-checkout' to use Subversion to check out the raw media repo.")
-message("   Note that this might take a while, will download ~10GB of data and will consume ~20GB on disk.")
-message("In addition, if you've downloaded the raw media repo, but want Ember to use processed media instead of the raw media repo,")
-message("you can use the target 'mediarepo-process' to create 'processed' media. This requires Python and ImageMagick.")
-message("*********")
+message(STATUS "*********")
+message(STATUS "Ember is configured and ready to be built.")
+message(STATUS "To run it you also need media. There are two ways of getting the media:")
+message(STATUS "1. Simplest is to use the 'media-download' target. This will use 'rsync' to download only the required preprocessed media.")
+message(STATUS "2. If you want to also make changes to the raw media you can use the target 'mediarepo-checkout' to use Subversion to check out the raw media repo.")
+message(STATUS "   Note that this might take a while, will download ~10GB of data and will consume ~20GB on disk.")
+message(STATUS "In addition, if you've downloaded the raw media repo, but want Ember to use processed media instead of the raw media repo,")
+message(STATUS "you can use the target 'mediarepo-process' to create 'processed' media. This requires Python and ImageMagick.")
+message(STATUS "*********")
