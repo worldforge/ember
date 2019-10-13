@@ -1,7 +1,7 @@
 [requires]
 cegui/0.8.7@worldforge/testing
 ogre/1.12.3@worldforge/testing
-sdl2/2.0.10@bincrafters/stable
+sdl2/2.0.10@worldforge/testing
 boost/1.71.0@conan/stable
 bullet3/2.88@bincrafters/stable
 alut/1.1.0@worldforge/testing
@@ -19,14 +19,3 @@ bzip2/1.0.8
 cmake
 
 [options]
-sdl2:alsa=False
-sdl2:jack=False
-sdl2:nas=False
-sdl2:pulse=False
-sdl2:xcursor=False
-sdl2:xinerama=False
-sdl2:xinput=False
-sdl2:xrandr=False
-sdl2:xscrnsaver=False
-sdl2:xshape=True
-sdl2:xvm=False
