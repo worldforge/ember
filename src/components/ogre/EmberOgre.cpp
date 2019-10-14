@@ -101,8 +101,6 @@
 
 #include <memory>
 
-template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = nullptr;
-
 using namespace Ember;
 namespace Ember {
 namespace OgreView {

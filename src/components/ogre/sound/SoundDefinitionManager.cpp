@@ -28,8 +28,6 @@
 #include "XMLSoundDefParser.h"
 #include "SoundGroupDefinition.h"
 
-template<> Ember::OgreView::SoundDefinitionManager* Ember::Singleton<Ember::OgreView::SoundDefinitionManager>::ms_Singleton = 0;
-
 namespace Ember {
 namespace OgreView {
 

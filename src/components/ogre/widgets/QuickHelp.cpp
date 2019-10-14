@@ -22,8 +22,6 @@
 
 #include "QuickHelp.h"
 
-template<> Ember::OgreView::Gui::QuickHelp* Ember::Singleton<Ember::OgreView::Gui::QuickHelp>::ms_Singleton = 0;
-
 using namespace Ember;
 namespace Ember
 {

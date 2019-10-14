@@ -26,7 +26,6 @@
 #include "IAnimated.h"
 
 
-template<> Ember::OgreView::MotionManager* Ember::Singleton<Ember::OgreView::MotionManager>::ms_Singleton = nullptr;
 namespace Ember {
 namespace OgreView {
 

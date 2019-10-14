@@ -24,9 +24,6 @@
 
 #include <MeshLodGenerator/OgreLodWorkQueueRequest.h>
 
-template<>
-Ember::OgreView::Lod::PMInjectorSignaler * Ember::Singleton<Ember::OgreView::Lod::PMInjectorSignaler>::ms_Singleton = 0;
-
 namespace Ember
 {
 namespace OgreView

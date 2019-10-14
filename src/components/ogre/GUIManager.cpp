@@ -76,8 +76,6 @@
 #include "platform/platform_windows.h"
 #endif
 
-template<> Ember::OgreView::GUIManager* Ember::Singleton<Ember::OgreView::GUIManager>::ms_Singleton = nullptr;
-
 using namespace CEGUI;
 using namespace Ember::OgreView::Gui;
 using namespace Ember;

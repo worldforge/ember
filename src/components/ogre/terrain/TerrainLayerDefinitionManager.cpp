@@ -31,8 +31,6 @@
 #include <OgreTextureManager.h>
 #include <boost/algorithm/string.hpp>
 
-template<> Ember::OgreView::Terrain::TerrainLayerDefinitionManager* Ember::Singleton<Ember::OgreView::Terrain::TerrainLayerDefinitionManager>::ms_Singleton = nullptr;
-
 namespace Ember {
 namespace OgreView {
 

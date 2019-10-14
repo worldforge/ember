@@ -40,7 +40,6 @@
 #include <boost/algorithm/string.hpp>
 
 
-template<> Ember::OgreView::Model::ModelDefinitionManager* Ember::Singleton<Ember::OgreView::Model::ModelDefinitionManager>::ms_Singleton = nullptr;
 namespace Ember {
 namespace OgreView {
 namespace Model {

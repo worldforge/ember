@@ -36,7 +36,6 @@
 
 #include <wfmath/point.h>
 
-template<> Ember::OgreView::Environment::Foliage* Ember::Singleton<Ember::OgreView::Environment::Foliage>::ms_Singleton = 0;
 using namespace Ember::OgreView::Terrain;
 
 namespace Ember

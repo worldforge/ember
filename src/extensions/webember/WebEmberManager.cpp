@@ -38,8 +38,6 @@
 #include <cassert>
 #include <iostream>
 
-template<> Ember::WebEmberManager *Ember::Singleton<Ember::WebEmberManager>::ms_Singleton = 0;
-
 namespace Ember
 {
 

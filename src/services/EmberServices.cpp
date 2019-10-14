@@ -33,8 +33,6 @@
 #include "wfut/WfutService.h"
 #include "serversettings/ServerSettings.h"
 
-
-template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Singleton = nullptr;
 namespace Ember {
 
 

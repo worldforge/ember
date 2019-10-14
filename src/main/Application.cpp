@@ -185,8 +185,6 @@ public:
 	}
 };
 
-template<> Application* Singleton<Application>::ms_Singleton = nullptr;
-
 Application::Application(std::string prefix, std::string homeDir, ConfigMap configSettings) :
 		mAtlasFactories(new Atlas::Objects::Factories()),
 		mSession(new Eris::Session()),

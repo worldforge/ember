@@ -27,8 +27,6 @@
 
 #include "EntityRecipeManager.h"
 
-template<> Ember::OgreView::Authoring::EntityRecipeManager* Ember::Singleton<Ember::OgreView::Authoring::EntityRecipeManager>::ms_Singleton = 0;
-
 namespace Ember
 {
 namespace OgreView

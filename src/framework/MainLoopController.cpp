@@ -24,7 +24,6 @@
 #include "MainLoopController.h"
 
 namespace Ember {
-template<> MainLoopController* Singleton<MainLoopController>::ms_Singleton = nullptr;
 
 MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris, Eris::Session& session) :
 		mShouldQuit(shouldQuit), mPollEris(pollEris), mSession(session) {

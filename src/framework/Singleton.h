@@ -94,6 +94,10 @@ public:
 		return ms_Singleton != nullptr;
 	}
 };
+
+template<typename T> T* Singleton<T>::ms_Singleton = nullptr;
+
+
 }
 #endif
 

@@ -52,7 +52,6 @@
 #endif
 #endif
 
-template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = nullptr;
 using boost::posix_time::microsec_clock;
 using boost::posix_time::ptime;
 

@@ -35,7 +35,6 @@
 using namespace Ember::EntityMapping;
 
 
-template<> Ember::OgreView::Mapping::EmberEntityMappingManager* Ember::Singleton<Ember::OgreView::Mapping::EmberEntityMappingManager>::ms_Singleton = nullptr;
 
 namespace Ember {
 namespace OgreView {

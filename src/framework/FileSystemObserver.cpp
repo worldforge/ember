@@ -23,9 +23,6 @@
 
 namespace Ember {
 
-template<> Ember::FileSystemObserver* Ember::Singleton<Ember::FileSystemObserver>::ms_Singleton = nullptr;
-
-
 FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService) {
 	try {
 		mDirectoryMonitor.reset(new boost::asio::dir_monitor(ioService));

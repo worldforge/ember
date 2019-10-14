@@ -28,9 +28,6 @@
 #include <OgrePixelCountLodStrategy.h>
 #include <OgreDistanceLodStrategy.h>
 
-template<>
-Ember::OgreView::Lod::LodManager * Ember::Singleton<Ember::OgreView::Lod::LodManager>::ms_Singleton = 0;
-
 namespace Ember
 {
 namespace OgreView

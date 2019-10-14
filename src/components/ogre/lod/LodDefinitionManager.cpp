@@ -23,9 +23,6 @@
 #include "LodDefinitionManager.h"
 #include "LodManager.h"
 
-template<>
-Ember::OgreView::Lod::LodDefinitionManager* Ember::Singleton<Ember::OgreView::Lod::LodDefinitionManager>::ms_Singleton = nullptr;
-
 namespace Ember {
 namespace OgreView {
 namespace Lod {

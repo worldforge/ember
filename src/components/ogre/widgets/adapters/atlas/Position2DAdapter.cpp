@@ -78,7 +78,7 @@ bool Position2DAdapter::window_TextChanged(const CEGUI::EventArgs& e)
 
 void Position2DAdapter::fillElementFromGui()
 {
-	WFMath::Vector<2> vector;
+	WFMath::Vector<2> vector{};
 	if (mXWindow) {
 		vector.x() = std::strtof(mXWindow->getText().c_str(), nullptr);
 	}
