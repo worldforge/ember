@@ -209,8 +209,7 @@ struct ValueTypeHelper< ::varconf::Variable, bool>
 {
 	static bool convert(const ::varconf::Variable& v)
 	{
-		// uses operator bool()
-		return v;
+		return (bool)v;
 	}
 };
 
@@ -228,8 +227,7 @@ struct ValueTypeHelper< ::varconf::Variable, int>
 {
 	static int convert(const ::varconf::Variable& v)
 	{
-		// uses operator int()
-		return v;
+		return (int)v;
 	}
 };
 

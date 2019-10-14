@@ -111,7 +111,7 @@ void ShadowCameraSetup::Config_ShadowSplitPoints(const std::string& section, con
 	try {
 		if (variable.is_string()) {
 			Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = mPssmSetup->getSplitPoints();
-			Tokeniser tokeniser(variable);
+			Tokeniser tokeniser(variable.as_string());
 			splitPointList[0] = atof(tokeniser.nextToken().c_str());
 			splitPointList[1] = atof(tokeniser.nextToken().c_str());
 			splitPointList[2] = atof(tokeniser.nextToken().c_str());
@@ -140,7 +140,7 @@ void ShadowCameraSetup::Config_ShadowOptimalAdjustFactors(const std::string& sec
 	try {
 		if (variable.is_string()) {
 			S_LOG_VERBOSE("Setting shadow optimal adjust factor: " << static_cast<std::string>(variable));
-			Tokeniser tokeniser(variable);
+			Tokeniser tokeniser(variable.as_string());
 			mPssmSetup->setOptimalAdjustFactor(0, atof(tokeniser.nextToken().c_str()));
 			mPssmSetup->setOptimalAdjustFactor(1, atof(tokeniser.nextToken().c_str()));
 			mPssmSetup->setOptimalAdjustFactor(2, atof(tokeniser.nextToken().c_str()));

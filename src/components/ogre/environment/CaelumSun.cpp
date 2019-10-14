@@ -117,7 +117,7 @@ void CaelumSun::Config_SunSpecularMultiplier(const std::string&, const std::stri
 bool CaelumSun::parse(varconf::Variable& variable, Ogre::ColourValue& colour)
 {
 	if (variable.is_string()) {
-		Tokeniser tokeniser(variable);
+		Tokeniser tokeniser(variable.as_string());
 		colour.r = atof(tokeniser.nextToken().c_str());
 		colour.g = atof(tokeniser.nextToken().c_str());
 		colour.b = atof(tokeniser.nextToken().c_str());

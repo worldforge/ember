@@ -117,7 +117,7 @@ const CameraSettings& MainCamera::getCameraSettings() const {
 
 void MainCamera::Config_ClipDistances(const std::string& /*section*/, const std::string& /*key*/, varconf::Variable& variable) {
 	if (variable.is_string()) {
-		Tokeniser tokeniser(variable);
+		Tokeniser tokeniser(variable.as_string());
 		float nearDistance = std::stof(tokeniser.nextToken());
 		float farDistance = std::stof(tokeniser.nextToken());
 
