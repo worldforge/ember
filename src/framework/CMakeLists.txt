@@ -19,7 +19,7 @@ add_library(framework
 
         StackChecker.cpp)
 
-target_link_libraries(framework tinyxml)
+target_link_libraries(framework ember_tinyxml)
 
 wf_generate_lua_bindings(bindings/lua/Framework)
 wf_generate_lua_bindings(bindings/lua/atlas/Atlas)
