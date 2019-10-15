@@ -22,11 +22,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #define CAELUM__CAELUM_PREREQUISITES_H
 
 // Include external headers
-#ifdef __APPLE__
-#include "Ogre/Ogre.h"
-#else
-#include "Ogre.h"
-#endif
+#include <Ogre.h>
 
 #include <memory>
 

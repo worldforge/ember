@@ -18,9 +18,5 @@ You should have received a copy of the GNU Lesser General Public License
 along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 */
 #ifdef CAELUM_USE_PRECOMPILED
-#ifdef __APPLE__
-#include "Ogre/Ogre.h"
-#else
-#include "Ogre.h"
-#endif
+#include <Ogre.h>
 #endif
