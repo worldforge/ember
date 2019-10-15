@@ -40,7 +40,9 @@ TaskExecutor::~TaskExecutor()
 
 void TaskExecutor::run()
 {
-#ifndef _WIN32
+#ifdef APPLE
+    pthread_setname_np("Task Executor");
+#elif !defined(_WIN32)
 	pthread_setname_np(pthread_self(), "Task Executor");
 #endif
 	while (mActive) {
