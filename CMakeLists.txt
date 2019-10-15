@@ -46,11 +46,6 @@ endif (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 # crashes
 add_definitions(-DBOOST_ASIO_DISABLE_SMALL_BLOCK_RECYCLING)
 
-if (APPLE)
-    #We've had issues with compilation on Clang with boost::path
-    message(STATUS "Disabling variadic templates on Apple Clang.")
-    add_definitions(-DBOOST_NO_CXX11_VARIADIC_TEMPLATES)
-endif(APPLE)
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external)
 
 enable_testing()

@@ -416,8 +416,7 @@ const boost::filesystem::path& ConfigService::getHomeDirectory(BaseDirType baseD
 		finalPath += "\\Ember\\";
 		return finalPath;
 #elif defined(__APPLE__)
-		static std::string path ( getAppSupportDirPath() + "/Ember/" );
-		return path;
+		return getAppSupportDirPath() / "Ember/";
 #else
 		xdgHandle baseDirHandle{};
 		static boost::filesystem::path path;
@@ -456,8 +455,7 @@ boost::filesystem::path ConfigService::getSharedDataDirectory() const {
 		return path;
 	}
 #ifdef __APPLE__
-	static std::string path ( getBundleResourceDirPath() );
-	return path;
+	return getBundleResourceDirPath();
 #else
 	return mSharedDataDir;
 #endif
@@ -466,7 +464,7 @@ boost::filesystem::path ConfigService::getSharedDataDirectory() const {
 
 const boost::filesystem::path& ConfigService::getSharedConfigDirectory() const {
 #ifdef __APPLE__
-	static std::string path ( getSharedDataDirectory() + "/etc/ember/" );
+	static std::string path ( getSharedDataDirectory() / "etc/ember/" );
 	return path;
 #else
 	return mEtcDir;
