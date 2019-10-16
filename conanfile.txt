@@ -1,11 +1,11 @@
 [requires]
-cegui/0.8.7@worldforge/testing
+cegui/0.8.7@worldforge/stable
 ogre/1.12.3@worldforge/testing
-sdl2/2.0.10@worldforge/testing
+sdl2/2.0.10@worldforge/stable
 boost/1.71.0@conan/stable
-bullet3/2.88@worldforge/testing
-alut/1.1.0@worldforge/testing
-libxdg-basedir/1.2.0@worldforge/testing
+bullet3/2.88@worldforge/stable
+alut/1.1.0@worldforge/stable
+libxdg-basedir/1.2.0@worldforge/stable
 atlas/0.7.0@worldforge/testing
 eris/1.4.0@worldforge/testing
 mercator/0.4.0@worldforge/testing
