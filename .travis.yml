@@ -21,6 +21,7 @@ addons:
       - python3-pip
       - doxygen
       - graphviz
+      - libgl1-mesa-dev
   homebrew:
     packages:
       - xz
