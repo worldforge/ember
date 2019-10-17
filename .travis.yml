@@ -22,6 +22,8 @@ addons:
       - doxygen
       - graphviz
       - libgl1-mesa-dev
+      - libxrandr-dev
+      - libxaw7-dev
   homebrew:
     packages:
       - xz
