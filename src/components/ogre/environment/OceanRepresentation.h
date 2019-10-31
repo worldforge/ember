@@ -33,7 +33,7 @@ namespace Environment
 {
 
 class Environment;
-class IWater;
+struct IWater;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

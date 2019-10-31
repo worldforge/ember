@@ -59,8 +59,6 @@ class OOGChat;
 
 class NonConnectedState;
 
-class IServerAdapter;
-
 /**
  * @brief Ember Server Service
  *
@@ -182,12 +180,6 @@ private:
 	 * @brief Contains the class that controls Out of Game Chat
 	 */
 	OOGChat* mOOGChat;
-
-	/**
-	 * @brief The adapter which holds the actual implementation of any server communication.
-	 * When the client isn't connected this will be represented by an instance of NonConnectedAdapter, whereas when it is connected to a server it will be represented by an instance of ConnectedAdapter.
-	 */
-	IServerAdapter* mServerAdapter;
 
 	std::unique_ptr<NonConnectedState> mNonConnectedState;
 

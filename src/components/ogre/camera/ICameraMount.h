@@ -31,7 +31,7 @@ namespace Ember
 {
 namespace OgreView
 {
-class ICameraMotionHandler;
+struct ICameraMotionHandler;
 
 namespace Camera
 {
@@ -47,9 +47,8 @@ class MainCamera;
  * When the user wants to move, the mount will also receive calls to move(). This allow the different types of mounts to implement different movement styles. A camera which is attached to an entity would for example probably want to try to move the entity within the world, whereas a free flying camera would want to move the camera directly.
  * In most cases the handling of the motion will need to be separated from the actual mount, and therefore the setMotionHandler() method is provided.
  */
-class ICameraMount
+struct ICameraMount
 {
-public:
 
 	/**
 	 * @brief Dtor.

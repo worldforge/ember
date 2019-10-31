@@ -34,10 +34,9 @@ namespace Terrain {
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Represents one segment (mapped to a Mercator::Segment) in the height map.
  */
-class IHeightMapSegment {
-public:
+struct IHeightMapSegment {
 
-	virtual ~IHeightMapSegment() {}
+	virtual ~IHeightMapSegment() = default;
 
 	/**
 	 * @brief Gets the height at the specified location.

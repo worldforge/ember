@@ -46,8 +46,8 @@ namespace Terrain
 {
 class Map;
 class MapView;
-class ITerrainAdapter;
-class ITerrainObserver;
+struct ITerrainAdapter;
+struct ITerrainObserver;
 }
 
 namespace Gui {

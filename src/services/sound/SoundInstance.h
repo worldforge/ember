@@ -43,9 +43,8 @@ This interface allows a SoundInstance to get motion updates each frame. If an in
 
 @author Erik Ogenvik <erik@ogenvik.org>
 */
-class ISoundMotionProvider {
-public:
-	virtual ~ISoundMotionProvider() {}
+struct ISoundMotionProvider {
+	virtual ~ISoundMotionProvider() = default;
 
 	virtual void update(SoundSource& soundSource) = 0;
 };

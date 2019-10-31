@@ -45,9 +45,8 @@ namespace Authoring
  All movement that happens through this class will be on the client only, until either finalizeMovement() or cancelMovement() are called.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class IMovementBridge
+struct IMovementBridge
 {
-public:
 
 	virtual ~IMovementBridge() = default;
 

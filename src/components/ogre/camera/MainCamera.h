@@ -54,16 +54,16 @@ namespace OgreView
 {
 class Avatar;
 struct EntityPickResult;
-class IWorldPickListener;
-class IMovementProvider;
-class ICameraMotionHandler;
+struct IWorldPickListener;
+struct IMovementProvider;
+struct ICameraMotionHandler;
 struct MousePickerArgs;
 class AvatarTerrainCursor;
 class Scene;
 
 namespace Terrain
 {
-class ITerrainAdapter;
+struct ITerrainAdapter;
 }
 
 /**
@@ -71,7 +71,7 @@ class ITerrainAdapter;
  */
 namespace Camera
 {
-class ICameraMount;
+struct ICameraMount;
 class Recorder;
 class CameraSettings;
 

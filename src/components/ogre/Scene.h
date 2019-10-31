@@ -33,10 +33,10 @@ namespace OgreView
 class BulletWorld;
 namespace Terrain
 {
-class ITerrainAdapter;
+struct ITerrainAdapter;
 }
-class ISceneRenderingTechnique;
-class IPageDataProvider;
+struct ISceneRenderingTechnique;
+struct IPageDataProvider;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

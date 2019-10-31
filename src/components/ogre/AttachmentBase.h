@@ -34,8 +34,8 @@ class SceneNode;
 namespace Ember
 {
 class EmberEntity;
-class IGraphicalRepresentation;
-class IEntityControlDelegate;
+struct IGraphicalRepresentation;
+struct IEntityControlDelegate;
 namespace OgreView
 {
 

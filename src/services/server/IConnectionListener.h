@@ -28,9 +28,8 @@ namespace Ember
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Listens for objects sent and received through a Connection.
  */
-class IConnectionListener
+struct IConnectionListener
 {
-public:
 
 	virtual ~IConnectionListener() = default;
 

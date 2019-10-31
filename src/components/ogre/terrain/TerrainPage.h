@@ -58,7 +58,7 @@ class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageSurfaceLayer;
 class TerrainPageGeometry;
-class ICompilerTechniqueProvider;
+struct ICompilerTechniqueProvider;
 
 /**
 
@@ -76,7 +76,6 @@ class ICompilerTechniqueProvider;
 class TerrainPage
 {
 	friend class TerrainPageShadow;
-	friend class ITerrainPageShadowTechnique;
 public:
 
 	/**

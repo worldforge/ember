@@ -32,8 +32,8 @@ template<int> class Vector;
 namespace Ember
 {
 
-class IGraphicalRepresentation;
-class IEntityControlDelegate;
+struct IGraphicalRepresentation;
+struct IEntityControlDelegate;
 class EmberEntity;
 
 /**
@@ -44,14 +44,13 @@ class EmberEntity;
  * The normal case would be two entities being both represented through an instance of Ogre::SceneNode, and a Model. However, there are other instances where a SceneNode doesn't make any sense, and instead another kind of attachment is suitable.
  *
  */
-class IEntityAttachment: public IVisualizable
+struct IEntityAttachment: public IVisualizable
 {
-public:
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IEntityAttachment() = default;
+	~IEntityAttachment() override = default;
 
 	/**
 	 * @brief Gets the graphical representation that this attachment is bound to.

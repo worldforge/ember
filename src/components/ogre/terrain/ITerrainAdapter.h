@@ -34,12 +34,12 @@ namespace Ember {
 class EmberEntity;
 namespace OgreView {
 
-class IPageDataProvider;
+struct IPageDataProvider;
 
 namespace Terrain {
 
 class TerrainManager;
-class ITerrainObserver;
+struct ITerrainObserver;
 
 
 /**
@@ -49,9 +49,8 @@ Thus, if you have a feature which requires some kind of interfacing with the ter
 
 @author Erik Ogenvik
 */
-class ITerrainAdapter
+struct ITerrainAdapter
 {
-public:
 
 	virtual ~ITerrainAdapter() = default;
 

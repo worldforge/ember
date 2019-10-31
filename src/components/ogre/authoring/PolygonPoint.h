@@ -45,7 +45,7 @@ namespace Authoring
 
 class Polygon;
 class PolygonPointMover;
-class IPolygonPositionProvider;
+struct IPolygonPositionProvider;
 /**
  @brief A graphical representation of one point in a polygon.
  The point is represented by a sphere, which can be manipulated through dragging.

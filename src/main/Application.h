@@ -102,7 +102,7 @@ class EmberOgre;
 class FileSystemObserver;
 class EmberServices;
 class LogObserver;
-class IResourceProvider;
+struct IResourceProvider;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

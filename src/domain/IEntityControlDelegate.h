@@ -36,9 +36,8 @@ namespace Ember
  * Under normal operations the position and orientation for an entity used for displaying ingame graphical representations would be obtained directly from the entity. However, by using an instance of this class it's possible to redirect this.
  *
  */
-class IEntityControlDelegate
+struct IEntityControlDelegate
 {
-public:
 
 	/**
 	 * @brief Dtor.

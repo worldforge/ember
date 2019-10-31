@@ -44,7 +44,7 @@ class TerrainPage;
 
 class TerrainPageGeometry;
 
-class ICompilerTechniqueProvider;
+struct ICompilerTechniqueProvider;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

@@ -43,7 +43,7 @@ namespace Ember
 namespace OgreView
 {
 
-class INodeProvider;
+struct INodeProvider;
 
 namespace Model
 {

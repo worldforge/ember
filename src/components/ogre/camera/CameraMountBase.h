@@ -32,7 +32,7 @@ namespace Ember
 {
 namespace OgreView
 {
-class ICameraMotionHandler;
+struct ICameraMotionHandler;
 
 namespace Camera
 {

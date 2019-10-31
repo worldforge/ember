@@ -27,8 +27,8 @@ namespace Ember
 namespace Tasks
 {
 
-class ITask;
-class ITaskExecutionListener;
+struct ITask;
+struct ITaskExecutionListener;
 class TaskExecutionContext;
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

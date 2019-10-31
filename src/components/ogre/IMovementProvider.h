@@ -34,9 +34,8 @@ namespace OgreView
  * @brief Provides movement updates for a frame.
  * A typical user of this interface would be a camera which needs to get movement updates each frame.
  */
-class IMovementProvider
+struct IMovementProvider
 {
-public:
 	/**
 	 * @brief Dtor.
 	 */

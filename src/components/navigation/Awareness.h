@@ -53,7 +53,7 @@ class Entity;
 
 namespace Ember
 {
-class IHeightProvider;
+struct IHeightProvider;
 namespace Navigation
 {
 template <typename T>

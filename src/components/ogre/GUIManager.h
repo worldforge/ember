@@ -54,7 +54,7 @@ class Entity;
 
 namespace Ember
 {
-class IScriptingProvider;
+struct IScriptingProvider;
 class Input;
 class ConfigService;
 

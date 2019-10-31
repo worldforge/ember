@@ -28,10 +28,8 @@ class PlantAreaQueryResult;
 namespace Foliage
 {
 
-class IScaler
+struct IScaler
 {
-public:
-
 	/**
 	 * @brief Dtor.
 	 */

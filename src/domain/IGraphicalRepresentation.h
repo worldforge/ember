@@ -35,8 +35,7 @@ class EmberEntity;
  *
  * Most of the subclasses of this are expected to provide methods for safely casting into the concrete subclass. The getType() method is expected to be used for helping with this.
  */
-class IGraphicalRepresentation : public IVisualizable {
-public:
+struct IGraphicalRepresentation : public IVisualizable {
 
 	/**
 	 * @brief Dtor.

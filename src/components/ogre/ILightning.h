@@ -35,10 +35,9 @@ namespace OgreView {
  * @brief Provider of main light (like a sun or moon) lightning information.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class ILightning
+struct ILightning
 {
-public:
-	virtual ~ILightning(){}
+	virtual ~ILightning() = default;
 
 	/**
 	 * @brief Gets the direction of the main light, in world space.

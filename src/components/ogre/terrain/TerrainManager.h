@@ -57,7 +57,7 @@ class TimeFrame;
 
 namespace OgreView {
 class ShaderManager;
-class ILightning;
+struct ILightning;
 class Scene;
 
 /**
@@ -71,7 +71,7 @@ class TerrainPage;
 class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
-class ITerrainAdapter;
+struct ITerrainAdapter;
 class ITerrainPageBridge;
 class HeightMap;
 class HeightMapBufferProvider;

@@ -35,12 +35,11 @@ class TaskExecutionContext;
  *
  * @note Avoid doing any setup in the constructor of an implementation of this interface. The reason is that in contrast to the two execute* methods there's no guarantee in which thread the constructor will be called. It might be called in the main thread, or in any background thread.
  */
-class ITask {
-public:
+struct ITask {
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ITask() {};
+	virtual ~ITask() = default;;
 
 	/**
 	 * @brief Executes the task in a background thread. This is where the bulk of the work should happen.

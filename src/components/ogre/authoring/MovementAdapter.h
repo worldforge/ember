@@ -36,7 +36,7 @@ class MainCamera;
 }
 namespace Authoring
 {
-class IMovementBridge;
+struct IMovementBridge;
 class EntityMoveManager;
 class MovementAdapter;
 

@@ -26,30 +26,30 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 namespace Ember {
 
 /**
 An internal interface to be implemented by data providers.
 */
-class IResourceWrapper
-{
+struct IResourceWrapper {
 public:
-	virtual ~IResourceWrapper() {}
-	
+	virtual ~IResourceWrapper() = default;
+
 	/**
 	Gets raw data pointer.
 	*/
 	virtual const char* getDataPtr() = 0;
-	
+
 	/**
 	True if the wrapper has data.
 	*/
 	virtual bool hasData() = 0;
-	
+
 	/**
 	Gets the size of the data.
-	*/	
+	*/
 	virtual size_t getSize() = 0;
 };
 
@@ -57,29 +57,32 @@ public:
 A simple wrapper for general data.
 A wrapper does not need to contain any data: use the hasData method to check before accessing.
 */
-class ResourceWrapper
-{
+class ResourceWrapper {
 public:
-	ResourceWrapper(const ResourceWrapper& wrapper) : mInternalWrapper(wrapper.mInternalWrapper), mName(wrapper.mName) 
-	{
-	}
-	ResourceWrapper(IResourceWrapper* internalWrapper, const std::string& name) : mInternalWrapper(internalWrapper), mName(name) {}
-	
+	ResourceWrapper(const ResourceWrapper& wrapper) = default;
+
+	ResourceWrapper(IResourceWrapper* internalWrapper, std::string name) :
+			mInternalWrapper(internalWrapper),
+			mName(std::move(name)) {}
+
 	/**
 	Gets raw data pointer.
 	*/
 	const char* getDataPtr() const;
+
 	/**
 	True if the wrapper has data.
 	*/
 	bool hasData() const;
+
 	/**
 	Gets the size of the data.
-	*/	
+	*/
 	size_t getSize() const;
+
 	/**
 	Gets the name of the resource.
-	*/	
+	*/
 	const std::string& getName() const;
 
 private:
@@ -90,21 +93,23 @@ private:
 /**
 Interface implemented by resource providers.
 */
-class IResourceProvider
-{
+struct IResourceProvider {
 public:
-	virtual ~IResourceProvider() {}
-	
+	virtual ~IResourceProvider() = default;
+
 	/**
 	Returns a resource by the name.
 	*/
 	virtual ResourceWrapper getResource(const std::string& name) = 0;
 };
 
-inline const char* ResourceWrapper::getDataPtr() const { return mInternalWrapper->getDataPtr();}
-inline bool ResourceWrapper::hasData() const { return mInternalWrapper->hasData();}
-inline size_t ResourceWrapper::getSize() const { return mInternalWrapper->getSize();}
-inline const std::string& ResourceWrapper::getName() const {return mName;}
+inline const char* ResourceWrapper::getDataPtr() const { return mInternalWrapper->getDataPtr(); }
+
+inline bool ResourceWrapper::hasData() const { return mInternalWrapper->hasData(); }
+
+inline size_t ResourceWrapper::getSize() const { return mInternalWrapper->getSize(); }
+
+inline const std::string& ResourceWrapper::getName() const { return mName; }
 
 }
 #endif //EMBERIRESOURCEWRAPPER_H

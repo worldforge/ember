@@ -29,16 +29,14 @@ class TransferInfo;
 namespace Ember {
 
 class ServerServiceSignals;
-class IServerAdapter;
 
 /**
  * @brief Represents one state in the server connection process, from a connection is created, to the user has entered into the world (and beyond, when the user might be teleporting to another server).
  *
  * Each state can have a child state, which represents the next possible connection state (for example going from "connecting" to "connected"). When a state is destroyed it must also destroy its child state.
  */
-class IState
+struct IState
 {
-public:
 
 	/**
 	 * @brief Dtor.

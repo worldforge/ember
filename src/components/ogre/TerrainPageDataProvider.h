@@ -40,9 +40,8 @@ class ITerrainPageBridge;
 /**
  * @brief Page data for one page in the terrain rendering system.
  */
-class IPageData
+struct IPageData
 {
-public:
 	virtual ~IPageData() = default;
 
 	virtual Ogre::MaterialPtr getMaterial() = 0;
@@ -53,9 +52,8 @@ public:
 /**
  * @brief Provides IPageData instances for the terrain rendering system.
  */
-class IPageDataProvider
+struct IPageDataProvider
 {
-public:
 	virtual ~IPageDataProvider() = default;
 	//TODO SK: fix ogre index to be consistent
 	typedef std::pair<long, long> OgreIndex;

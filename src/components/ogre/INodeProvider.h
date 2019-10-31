@@ -36,8 +36,8 @@ class Model;
  * Subclasses of this are therefore used for providing concrete instances.
  * A typical use is as a binding between a parent and child node.
  */
-class INodeProvider : public IVisualizable {
-public:
+struct INodeProvider : public IVisualizable {
+
 	/**
 	 * @brief Dtor.
 	 */

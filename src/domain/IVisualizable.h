@@ -31,9 +31,8 @@ namespace Ember
  * Typical features would be debug visualizations.
  *
  */
-class IVisualizable
+struct IVisualizable
 {
-public:
 
 	/**
 	 * @brief Dtor.

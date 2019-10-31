@@ -35,7 +35,7 @@ Thus, if you have a feature which requires some kind of interfacing with the ter
 
 @author Erik Ogenvik
 */
-class ITerrainAdapter
+struct ITerrainAdapter
 {
 public:
 

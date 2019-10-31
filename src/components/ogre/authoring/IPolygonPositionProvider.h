@@ -36,10 +36,8 @@ namespace Authoring
  For example, if a polygon is placed on terrain we want the height to be adjusted so that it snaps to the ground.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class IPolygonPositionProvider
+struct IPolygonPositionProvider
 {
-public:
-
 	/**
 	 * @brief Dtor.
 	 */

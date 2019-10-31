@@ -14,7 +14,7 @@ add_library(framework
         tasks/TemplateNamedTask.h
         FileSystemObserver.cpp FileSystemObserver.h
 
-        ConsoleObject.h IGameView.h IResourceProvider.h IScriptingProvider.h LogObserver.h osdir.h ShutdownException.h Singleton.h utf8.h
+        ConsoleObject.h IResourceProvider.h IScriptingProvider.h LogObserver.h osdir.h ShutdownException.h Singleton.h utf8.h
         AtlasQuery.h
 
         StackChecker.cpp)

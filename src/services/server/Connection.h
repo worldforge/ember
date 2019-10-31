@@ -29,7 +29,7 @@ class Session;
 namespace Ember
 {
 
-class IConnectionListener;
+struct IConnectionListener;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

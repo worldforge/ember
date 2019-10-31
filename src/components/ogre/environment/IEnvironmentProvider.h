@@ -29,28 +29,22 @@ namespace OgreView
 namespace Environment
 {
 
-class ISun: public ILightning
+struct ISun: public ILightning
 {
-public:
-	virtual ~ISun()
-	{
-	}
+	~ISun() override = default;
+
 	virtual void setAmbientLight(const Ogre::ColourValue& colour) = 0;
 	virtual Ogre::Vector3 getSunDirection() const = 0;
 
 };
 
-class ISky
+struct ISky
 {
-public:
 };
 
-class IFog
+struct IFog
 {
-public:
-	virtual ~IFog()
-	{
-	}
+	virtual ~IFog()	= default;
 	virtual void setDensity(float density) = 0;
 	virtual float getDensity() const = 0;
 };
@@ -59,12 +53,9 @@ public:
  @brief Interface for all water techniques. Call isSupported() first to see if the water can be created, and then initialize() to set it all up.
  @author Erik Ogenvik <erik@worldforge.org>
  */
-class IWater
+struct IWater
 {
-public:
-	virtual ~IWater()
-	{
-	}
+	virtual ~IWater() = default;
 
 	/**
 	 * @brief Performs checks to see whether this technique is supported on the current hardware.
@@ -97,13 +88,10 @@ public:
  *
  * An implementation of this is expected to be able to supply the instances which make up the environment.
  */
-class IEnvironmentProvider
+struct IEnvironmentProvider
 {
-public:
 
-	virtual ~IEnvironmentProvider()
-	{
-	}
+	virtual ~IEnvironmentProvider()	= default;
 
 	/**
 	 * @brief Creates the firmament (sky, sun, moon, starfield etc.).

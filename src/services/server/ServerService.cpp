@@ -46,7 +46,6 @@ ServerService::ServerService(Eris::Session& session) :
 		mAccount(nullptr),
 		mAvatar(nullptr),
 		mOOGChat(nullptr),
-		mServerAdapter(nullptr),
 		mNonConnectedState(new NonConnectedState(*this, session)) {
 	GotAccount.connect(sigc::mem_fun(*this, &ServerService::gotAccount));
 	GotAvatar.connect(sigc::mem_fun(*this, &ServerService::gotAvatar));

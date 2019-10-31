@@ -44,7 +44,7 @@ namespace Authoring
 class PolygonPointUserObject;
 class Polygon;
 class PolygonPoint;
-class IPolygonPositionProvider;
+struct IPolygonPositionProvider;
 class PolygonPointPickListener;
 
 /**

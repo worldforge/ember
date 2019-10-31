@@ -41,7 +41,7 @@ namespace OgreView
 class Scene;
 namespace Terrain
 {
-class ITerrainAdapter;
+struct ITerrainAdapter;
 }
 namespace Camera
 {

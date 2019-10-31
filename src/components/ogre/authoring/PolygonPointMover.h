@@ -43,9 +43,8 @@ class Polygon;
  @brief A listener interface which will receive updates when the movement of the point changes.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class IMovementListener
+struct IMovementListener
 {
-public:
 
 	/**
 	 * @brief Dtor.

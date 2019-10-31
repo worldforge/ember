@@ -29,8 +29,8 @@ namespace Ember {
 class EmberEntity;
 namespace OgreView {
 
-class IAnimated;
-class IMovable;
+struct IAnimated;
+struct IMovable;
 
 /**
  * @brief Responsible for making sure that movement and animation within the graphical system is managed and synchronized.

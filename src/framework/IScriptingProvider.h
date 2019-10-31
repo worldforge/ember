@@ -51,9 +51,8 @@ Sometimes when you make a call into a scripting environment, from the C++ code, 
 Whenever you then want to act on values returned from a call into a specific scripting environment you have to first create the suitable instance of a subclass of this, and then pass that onto a call to the ScriptingService::executeScript method.
 @author Erik Ogenvik <erik.hjortsber@gmail.com>
 */
-class IScriptingCallContext
+struct IScriptingCallContext
 {
-public:
 	virtual ~IScriptingCallContext() = default;
 // 	IScriptingCallReturnValue* getReturnValue() = 0;
 
@@ -68,10 +67,9 @@ Any implementation of this interface is expected to handle setup and teardown of
 Often you want to do it in two separate steps, where a call to stop() forces the scripting environment to unload all allocated objects and structs, and the desctructor then handles destroying the scripting environment completely.
 @author Erik Ogenvik <erik.hjortsber@iteam.se>
 */
-class IScriptingProvider
+struct IScriptingProvider
 {
-public:
-	
+
 	virtual ~IScriptingProvider() = default;
 	
 	/**

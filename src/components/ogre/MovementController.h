@@ -37,7 +37,7 @@
 
 namespace Ember {
 class EmberEntity;
-class IHeightProvider;
+struct IHeightProvider;
 class ConfigListenerContainer;
 class TimeFrame;
 namespace Navigation

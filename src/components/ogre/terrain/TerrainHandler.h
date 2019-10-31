@@ -53,7 +53,7 @@ namespace Tasks {
 }
 namespace OgreView
 {
-class ILightning;
+struct ILightning;
 
 namespace Terrain
 {
@@ -65,9 +65,9 @@ class TerrainArea;
 class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
-class ITerrainAdapter;
+struct ITerrainAdapter;
 class ITerrainPageBridge;
-class ICompilerTechniqueProvider;
+struct ICompilerTechniqueProvider;
 class HeightMap;
 class HeightMapBufferProvider;
 struct TerrainDefPoint;

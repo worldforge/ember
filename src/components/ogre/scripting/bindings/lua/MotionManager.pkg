@@ -1,7 +1,7 @@
 namespace Ember {
 namespace OgreView {
 
-class IAnimated
+struct IAnimated
 {
 public:
 	void updateAnimation(float timeSlice);

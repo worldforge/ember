@@ -35,7 +35,7 @@
 #endif
 namespace Ember {
 
-class IResourceProvider;
+struct IResourceProvider;
 
 class StreamedSoundSample;
 

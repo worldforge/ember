@@ -23,7 +23,7 @@
 
 namespace Ember
 {
-class IEntityControlDelegate;
+struct IEntityControlDelegate;
 namespace OgreView
 {
 

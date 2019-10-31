@@ -32,11 +32,11 @@
 #include <memory>
 
 namespace Ember {
-class IResourceProvider;
+struct IResourceProvider;
 
-class IScriptingProvider;
+struct IScriptingProvider;
 
-class IScriptingCallContext;
+struct IScriptingCallContext;
 
 /**
 @author Erik Ogenvik
@@ -46,7 +46,7 @@ In order to use it, an instance implementing IScriptingProvider must be created 
 Scripts are then loaded through call to the method loadScript(...). Scripts can also be loaded through the console command /loadscript <path>
 */
 class ScriptingService : public Service, public ConsoleObject {
-	friend class IScriptingProvider;
+	friend struct IScriptingProvider;
 
 public:
 

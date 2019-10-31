@@ -48,9 +48,8 @@ namespace Terrain
  * Listener interface for an terrain observer, which is observes a particular terrain area.
  * @author Erik Ogenvik
  */
-class ITerrainObserver
+struct ITerrainObserver
 {
-public:
 
 	/**
 	 * @brief Instructs the observer to observe a certain area.

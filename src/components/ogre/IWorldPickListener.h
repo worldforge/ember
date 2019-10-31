@@ -120,9 +120,8 @@ struct PickResult {
  Normal operation for an implementation of this is then, if it can handle the object picked, to mark it, but wait with performing the action action until endPickingContext(...) is called (as opposed to performing the action directly when processPickResult(...) is called).
 
  */
-class IWorldPickListener
+struct IWorldPickListener
 {
-public:
 
 	/**
 	 * @brief Dtor.

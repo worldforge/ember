@@ -27,9 +27,9 @@ namespace Tasks
 {
 
 class TaskExecutor;
-class ITask;
+struct ITask;
 class TaskUnit;
-class ITaskExecutionListener;
+struct ITaskExecutionListener;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

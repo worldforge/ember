@@ -106,11 +106,11 @@ class MotionManager;
 
 class Scene;
 
-class EmberOgreSignals;
+struct EmberOgreSignals;
 
-class ICameraMotionHandler;
+struct ICameraMotionHandler;
 
-class IPageDataProvider;
+struct IPageDataProvider;
 
 class EntityWorldPickListener;
 

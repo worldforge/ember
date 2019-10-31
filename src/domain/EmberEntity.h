@@ -36,11 +36,11 @@ class View;
 
 namespace Ember
 {
-class IGraphicalRepresentation;
-class IEntityAttachment;
-class IEntityControlDelegate;
-class IEntityVisitor;
-class IHeightProvider;
+struct IGraphicalRepresentation;
+struct IEntityAttachment;
+struct IEntityControlDelegate;
+struct IEntityVisitor;
+struct IHeightProvider;
 class EntityTalk;
 
 

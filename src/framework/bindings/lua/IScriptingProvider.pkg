@@ -28,7 +28,7 @@ namespace Ember {
 /**
 @author Erik Ogenvik
 */
-class IScriptingProvider{
+struct IScriptingProvider{
 public:
 	
 	/**

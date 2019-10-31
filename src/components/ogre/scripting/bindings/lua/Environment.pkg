@@ -26,26 +26,26 @@ namespace OgreView {
 
 namespace Environment {
 
-class ISun
+struct ISun
 {
 public:
 	virtual void setAmbientLight(const Ogre::ColourValue& colour) = 0;
 
 };
 
-class ISky
+struct ISky
 {
 public:
 };
 
-class IFog
+struct IFog
 {
 public:
 	virtual void setDensity(float density) = 0;
 	virtual float getDensity() const = 0;
 };
 
-class IWater
+struct IWater
 {
 public:
 };

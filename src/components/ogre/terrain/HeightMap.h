@@ -36,7 +36,7 @@ namespace OgreView
 namespace Terrain
 {
 
-class IHeightMapSegment;
+struct IHeightMapSegment;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>

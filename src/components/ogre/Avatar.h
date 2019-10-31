@@ -62,7 +62,7 @@ namespace Authoring {
 class EntityMaker;
 }
 namespace Terrain {
-class ITerrainAdapter;
+struct ITerrainAdapter;
 }
 
 class AvatarLogger;

@@ -33,16 +33,13 @@ namespace OgreView
  * It's up to the actual implementation to determine how to present the animation update.
  * For something represented by an instance of Model it would be suitable to update the current animation of the model.
  */
-class IAnimated
+struct IAnimated
 {
-public:
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IAnimated()
-	{
-	}
+	virtual ~IAnimated() = default;
 
 	/**
 	 * @brief Updates the animation.

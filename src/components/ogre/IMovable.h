@@ -32,16 +32,13 @@ namespace OgreView
  * An instance of this should be registered with the MotionManager. This will ensure that it will receive requests for movement updates through calls to the updateMotion() method each frame.
  * It's up to the actual implementation to determine how to present the movement update. For something attached to an Ogre::SceneNode it would be suitable to update the position and orientation of the scene node.
  */
-class IMovable
+struct IMovable
 {
-public:
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IMovable()
-	{
-	}
+	virtual ~IMovable() = default;
 
 	/**
 	 * @brief Called each frame to inform the implementation that it needs to update the motion.

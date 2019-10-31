@@ -24,7 +24,7 @@
 
 namespace Ember {
 namespace OgreView {
-class IPageDataProvider;
+struct IPageDataProvider;
 
 namespace Terrain {
 

@@ -37,7 +37,7 @@ namespace OgreView {
 
 namespace Terrain
 {
-class ITerrainAdapter;
+struct ITerrainAdapter;
 }
 
 	/**

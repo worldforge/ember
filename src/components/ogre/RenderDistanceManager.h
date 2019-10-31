@@ -34,7 +34,7 @@ namespace OgreView
 {
 namespace Environment
 {
-class IFog;
+struct IFog;
 }
 
 class GraphicalChangeAdapter;

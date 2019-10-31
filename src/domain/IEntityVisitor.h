@@ -28,9 +28,8 @@ class EmberEntity;
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A visitor interface for traversing the entity hierarchy.
  */
-class IEntityVisitor
+struct IEntityVisitor
 {
-public:
 	/**
 	 * @brief Dtor.
 	 */
