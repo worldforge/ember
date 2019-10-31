@@ -28,7 +28,7 @@ namespace helper {
             if (condition)
             {
                 DWORD last_error = GetLastError();
-                boost::system::system_error e(boost::system::error_code(last_error, boost::system::get_system_category()), msg);
+                boost::system::system_error e(boost::system::error_code(last_error, boost::system::system_category()), msg);
                 boost::throw_exception(e);
             }
         }
@@ -250,7 +250,11 @@ private:
             catch (...)
             {
                 last_work_thread_exception_ptr_ = std::current_exception();
+		#if BOOST_VERSION < 106600
                 this->get_io_service().post(boost::bind(&boost::asio::basic_dir_monitor_service<DirMonitorImplementation>::throw_work_exception_handler, this));
+		#else
+                this->get_io_context().post(boost::bind(&boost::asio::basic_dir_monitor_service<DirMonitorImplementation>::throw_work_exception_handler, this));
+		#endif
             }
         }
     }

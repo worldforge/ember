@@ -233,7 +233,7 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 
 	xmlDoc.InsertEndChild(rootElem);
 	S_LOG_INFO("Saved file " << (mExportDirectory / fileName).string());
-	return xmlDoc.SaveFile((mExportDirectory / fileName).c_str());
+	return xmlDoc.SaveFile((mExportDirectory / fileName).string());
 }
 
 XMLLodDefinitionSerializer::XMLLodDefinitionSerializer(boost::filesystem::path exportDirectory) :

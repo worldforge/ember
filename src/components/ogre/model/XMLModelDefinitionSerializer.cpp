@@ -32,7 +32,6 @@
 
 #ifdef WIN32
 #include <tchar.h>
-#define snprintf _snprintf
 #include <io.h> // for _access, Win32 version of stat()
 #include <direct.h> // for _mkdir
 //	#include <sys/stat.h>

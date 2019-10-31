@@ -32,13 +32,7 @@
 
 #include <cstring>
 
-#ifdef _MSC_VER
-//#include <ALUT/alut.h>
-#else
-
 #include <AL/alut.h>
-
-#endif
 
 namespace Ember {
 /* Constructor */

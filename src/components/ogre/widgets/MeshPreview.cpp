@@ -361,7 +361,7 @@ void MeshPreview::fillAnimationList(MeshPreviewMeshInstance& instance )
 	mAnimationNames.clear();
 	Ogre::AnimationStateSet* states = instance.getEntity()->getAllAnimationStates();
 	if (states != 0) {
-		uint i = 0;
+		unsigned int i = 0;
 		Ogre::AnimationStateIterator I = states->getAnimationStateIterator ();
 		while (I.hasMoreElements()) {
 			Ogre::AnimationState* state = I.getNext();

@@ -443,9 +443,20 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 			throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
 		}
 
+#ifdef _WIN32
+		char fstring[1024];
+		size_t result = wcstombs(fstring, configSrv.getHomeDirectory(BaseDirType_DATA).c_str(), 1024);
+		if (result <= 1024) {
+			if (chdir(fstring)) {
+				S_LOG_WARNING("Failed to change directory to '" << configSrv.getHomeDirectory(BaseDirType_DATA).string() << "'");
+			}
+		}
+#else
 		if (chdir(configSrv.getHomeDirectory(BaseDirType_DATA).c_str())) {
 			S_LOG_WARNING("Failed to change directory to '" << configSrv.getHomeDirectory(BaseDirType_DATA).string() << "'");
 		}
+#endif
+
 
 		try {
 			mGUIManager->initialize();

@@ -89,6 +89,15 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
 #        SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 #    ENDIF (WIN32)
     #set(CEGUI_STATIC 1)
+else()
+	find_package(Boost
+			1.60.0
+			REQUIRED
+			COMPONENTS system filesystem thread)
+
+	link_directories(${Boost_LIBRARY_DIRS})
+	link_libraries(${Boost_LIBRARIES})
+	include_directories(${Boost_INCLUDE_DIRS})
 endif ()
 
 set(CEGUI_STATIC "ON")
@@ -152,14 +161,6 @@ link_directories(${WF_LIBRARY_DIRS})
 include_directories(${WF_INCLUDE_DIRS})
 link_libraries(${WF_LIBRARIES})
 
-find_package(Boost
-        1.60.0
-        REQUIRED
-        COMPONENTS system filesystem thread)
-
-link_directories(${Boost_LIBRARY_DIRS})
-link_libraries(${Boost_LIBRARIES})
-include_directories(${Boost_INCLUDE_DIRS})
 
 #TODO: check for binreloc?
 
@@ -269,9 +270,11 @@ link_libraries(${OPENAL_LIBRARY})
 link_libraries(${OPENAL_LIBRARIES})
 include_directories(${OPENAL_INCLUDE_DIR})
 
-find_package(XDGBaseDir REQUIRED 1.0.0)
-link_libraries(${XDGBaseDir_LIBRARIES})
-include_directories(${XDGBaseDir_INLUDE_DIR})
+if (NOT WIN32)
+	find_package(XDGBaseDir REQUIRED 1.0.0)
+	link_libraries(${XDGBaseDir_LIBRARIES})
+	include_directories(${XDGBaseDir_INLUDE_DIR})
+endif()
 
 find_package(OpenGL)
 link_directories(${OPENGL_LIBRARY_DIRS})

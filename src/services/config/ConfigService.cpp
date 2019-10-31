@@ -40,7 +40,7 @@
 // #include <iostream>
 #include <fstream>
 
-#if !defined(__APPLE__) && !defined(__WIN32__)
+#if !defined(__APPLE__) && !defined(_WIN32)
 
 #include <basedir.h>
 #include <boost/filesystem.hpp>
@@ -127,20 +127,20 @@ ConfigService::ConfigService() :
 		mUserConfig(new varconf::Config()),
 		mCommandLineConfig(new varconf::Config()),
 		mInstanceConfig(new varconf::Config()) {
-#ifdef __WIN32__
+#ifdef _WIN32
 	char cwd[512];
 	//get the full path for the current executable
 	GetModuleFileName ( 0, cwd, 512 );
 
 	//use this utility function for removing the file part
 	PathRemoveFileSpec ( cwd );
-	baseDir = std::string ( cwd ) + "\\";
-	mSharedDataDir = baseDir + "\\..\\share\\ember\\";
-	mEtcDir = baseDir + "\\..\\etc\\ember\\";
+	boost::filesystem::path baseDir( cwd );
+	mSharedDataDir = baseDir / ".." / "share" / "ember";
+	mEtcDir = baseDir / ".." / "etc" / "ember";
 
 #endif
 
-#if !defined(__APPLE__) && !defined(__WIN32__)
+#if !defined(__APPLE__) && !defined(_WIN32)
 	mSharedDataDir = EMBER_DATADIR "/ember/";
 	mEtcDir = EMBER_SYSCONFDIR "/ember/";
 	S_LOG_INFO("Setting config directory to " << mEtcDir.string());
@@ -397,7 +397,7 @@ const boost::filesystem::path& ConfigService::getHomeDirectory(BaseDirType baseD
 	if (!mHomeDir.empty()) {
 		return mHomeDir;
 	} else {
-#ifdef __WIN32__
+#ifdef _WIN32
 		static std::string finalPath;
 		if ( !finalPath.empty() )
 		{

@@ -191,12 +191,13 @@ void AwarenessVisualizer::createMesh(unsigned int tileRef, dtTileCachePolyMesh& 
 	const int npolys = mesh.npolys;
 	const int maxpolys = 256; //m_maxPolysPerTile;
 
-	unsigned short regions[npolys];
+	std::vector<unsigned short> regions;
+	regions.resize(npolys);
 	for (int i = 0; i < npolys; i++) {
 		regions[i] = (unsigned short)regs[i];
 	}
 
-	createRecastPolyMesh(name, verts, nverts, polys, npolys, areas, maxpolys, regions, nvp, cellsize, cellheight, origin, true);
+	createRecastPolyMesh(name, verts, nverts, polys, npolys, areas, maxpolys, regions.data(), nvp, cellsize, cellheight, origin, true);
 
 }
 

@@ -11,7 +11,7 @@ eris/1.4.0@worldforge/testing
 mercator/0.4.0@worldforge/testing
 libwfut/0.2.4@worldforge/testing
 varconf/1.0.3@worldforge/testing
-tolua++/1.0.93@worldforge/testing
+tolua++/1.0.93@worldforge/stable
 zlib/1.2.11
 bzip2/1.0.8
 

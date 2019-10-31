@@ -199,9 +199,20 @@ void OgreSetup::createOgreSystem() {
 	}
 	mRoot->setRenderSystem(renderSystem);
 
+
+#ifdef _WIN32
+	char fstring[1024];
+	size_t result = wcstombs(fstring, configSrv.getEmberDataDirectory().c_str(), 1024);
+	if (result <= 1024) {
+		if (chdir(fstring)) {
+			S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory().string() << "'.");
+		}
+	}
+#else
 	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory().string() << "'.");
 	}
+#endif
 
 }
 

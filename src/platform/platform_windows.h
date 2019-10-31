@@ -18,7 +18,6 @@
 #define putenv _putenv
 #define unlink _unlink
 #define chdir _chdir
-#define snprintf _snprintf
 #define stricmp _stricmp
 #define access _access
 

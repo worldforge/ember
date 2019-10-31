@@ -17,6 +17,11 @@
  */
 
 #include "CEGUISetup.h"
+
+#ifdef _WIN32
+#include "platform/platform_windows.h"
+#endif
+
 #include "framework/LoggingInstance.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -31,7 +36,7 @@ CEGUI::OgreRenderer& CEGUISetup::createRenderer(Ogre::RenderWindow* renderWindow
 	auto& configService = EmberServices::getSingleton().getConfigService();
 	if (!configService.getPrefix().empty()) {
 
-#ifndef __WIN32__
+#ifndef _WIN32
 		//The environment variable CEGUI_MODULE_DIR points to where CEGUI can find its modules. Lets check if they are under the prefix,
 		//for relocatable packages. We need to check both "lib64" and "lib".
 		std::string modulePath = configService.getPrefix() + "/lib64/cegui-0.8";
