@@ -20,9 +20,6 @@
 #include "config.h"
 #endif
 
-//This should be included only to the file, where main function is defined.
-#include "MainWrapper.h"
-
 #include "Application.h"
 #include "framework/Tokeniser.h"
 
@@ -34,6 +31,9 @@
 #include <ostream>
 #else
 #endif
+
+ //This should be included only to the file, where main function is defined.
+#include "MainWrapper.h"
 
 extern "C"
 int main(int argc, char **argv)

@@ -1,0 +1,6 @@
+set pkg_name=%1
+set file_name=%2
+set out_path=%3
+
+@TOLUA++_APP@ -n %pkg_name% -o %out_path% %file_name%
+

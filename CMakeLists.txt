@@ -57,10 +57,16 @@ macro(wf_generate_lua_bindings PKG_PATH)
 
     file(GLOB_RECURSE LUA_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" *.pkg *.h)
 
+	if(WIN32)
+		set(TOLUA_SCRIPT_COMMAND "${CMAKE_BINARY_DIR}/scripts/update_lua_bindings.bat ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx")
+	else()
+		set(TOLUA_SCRIPT_COMMAND "${CMAKE_BINARY_DIR}/scripts/update_lua_bindings.sh ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx")
+	endif()
+
     add_custom_command(
             OUTPUT ${PACKAGE_NAME}.cxx
             COMMAND ${CMAKE_COMMAND} -E echo_append "Building Lua bindings for ${PACKAGE_NAME}.cxx"
-            COMMAND TOLUAXX=${TOLUA++_APP} ${PROJECT_SOURCE_DIR}/tools/support/update_lua_bindings.sh ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx
+            COMMAND "${TOLUA_SCRIPT_COMMAND}"
             COMMAND ${CMAKE_COMMAND} -E echo "Done."
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR}
             DEPENDS ${LUA_FILES}
@@ -317,6 +323,8 @@ foreach (FILE ${MODELDEFINITIONS_FILES})
 endforeach (FILE MODELDEFINITIONS_FILES)
 
 
+configure_file(tools/support/update_lua_bindings.bat.in scripts/update_lua_bindings.bat @ONLY)
+configure_file(tools/support/update_lua_bindings.sh.in scripts/update_lua_bindings.sh @ONLY)
 configure_file(tools/ember.conf.in ember.conf @ONLY)
 configure_file(tools/ember.in ember @ONLY)
 configure_file(docs/Doxyfile.in Doxyfile @ONLY)

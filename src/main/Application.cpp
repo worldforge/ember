@@ -16,10 +16,7 @@
 
 #include "Application.h"
 
-#ifdef _WIN32
-#include "platform/platform_windows.h"
-#else
-#endif
+
 
 #include <Eris/View.h>
 
@@ -82,7 +79,10 @@ TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 
 #include <memory>
 #include <boost/thread.hpp>
-#include <utility>
+
+#ifdef _WIN32
+#include "platform/platform_windows.h"
+#endif
 
 #ifndef HAVE_SIGHANDLER_T
 
@@ -380,7 +380,18 @@ void Application::initializeServices() {
 		boost::filesystem::create_directories(dirName);
 	}
 
-	int result = chdir(configService.getHomeDirectory(BaseDirType_CONFIG).c_str());
+	int result = -1;
+//TODO: put into one place
+#ifdef _WIN32
+	char fstring[1024];
+	size_t convert_result = wcstombs(fstring, configService.getHomeDirectory(BaseDirType_DATA).c_str(), 1024);
+	if (convert_result <= 1024) {
+		result = chdir(fstring);
+	}
+#else
+	result = chdir(configService.getHomeDirectory(BaseDirType_CONFIG).c_str());
+#endif
+
 	if (result) {
 		S_LOG_WARNING("Could not change directory to '" << configService.getHomeDirectory(BaseDirType_CONFIG).c_str() << "'.");
 	}
@@ -390,9 +401,7 @@ void Application::initializeServices() {
 
 	//Check if there's a user specific ember.conf file. If not, create an empty template one.
 	auto userConfigFilePath = configService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
-	struct stat tagStat{};
-	int ret = stat(userConfigFilePath.c_str(), &tagStat);
-	if (ret == -1) {
+	if (boost::filesystem::exists(userConfigFilePath)) {
 		//Create empty template file.
 		std::ofstream outstream(userConfigFilePath.c_str());
 		outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
