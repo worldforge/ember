@@ -90,6 +90,11 @@ set(WF_LIBRARY_DIRS)
 set(WF_INCLUDE_DIRS)
 set(WF_LIBRARIES)
 
+if (WIN32)
+    link_libraries("Shlwapi")
+endif()
+
+
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     message(STATUS "Using Conan for dependency resolution.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
