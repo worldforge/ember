@@ -144,31 +144,31 @@ public:
 	              Ogre::ResourceHandle handle,
 	              const Ogre::String& group,
 	              bool isManual = false,
-	              Ogre::ManualResourceLoader* loader = 0);
+	              Ogre::ManualResourceLoader* loader = nullptr);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~LodDefinition();
+	~LodDefinition() override;
 
 	/**
 	 * @brief Pure function inherited from Ogre::Resource.
 	 *        Loads the resource file as DataStream, then it will call
 	 *        XMLLodDefinitionSerializer to load the user data.
 	 */
-	void loadImpl(void);
+	void loadImpl() override;
 
 	/**
 	 * @brief Pure function inherited from Ogre::Resource.
 	 */
-	void unloadImpl(void);
+	void unloadImpl() override;
 
 	/**
 	 * @brief Pure function inherited from Ogre::Resource.
 	 *        Should return the size of the user data.
 	 *        We don't use this, so it will always return 0.
 	 */
-	size_t calculateSize(void) const;
+	size_t calculateSize() const override;
 
 	/**
 	 * @brief Returns whether automatic mesh Lod management is used.
@@ -218,7 +218,7 @@ public:
 	/**
 	 * @brief Returns a Lod distance count for the manual Lod configuration.
 	 */
-	int getLodDistanceCount() const;
+	size_t getLodDistanceCount() const;
 
 	/**
 	 * @brief Creates a list of distances in a sorted order.
@@ -313,16 +313,16 @@ inline LodDefinition::LodStrategy LodDefinition::getStrategy() const
 	return mStrategy;
 }
 
-inline void LodDefinition::setStrategy(LodStrategy type)
+inline void LodDefinition::setStrategy(LodStrategy strategy)
 {
-	mStrategy = type;
+	mStrategy = strategy;
 }
 
 inline const LodDefinition::LodDistanceMap& LodDefinition::getManualLodData() const
 {
 	return mManualLod;
 }
-inline int LodDefinition::getLodDistanceCount() const
+inline size_t LodDefinition::getLodDistanceCount() const
 {
 	return mManualLod.size();
 }

@@ -32,7 +32,16 @@ namespace Environment
 {
 
 FoliageDetailManager::FoliageDetailManager(Foliage& foliage, GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mFoliage(foliage), mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mUpdatedDensity(1.0f), mDefaultDistanceStep(0.3f), mFarDistance(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer())
+		mFoliage(foliage),
+		mThresholdLevel(2.0f),
+		mDefaultDensityStep(0.3f),
+		mUpdatedDensity(1.0f),
+		mDefaultDistanceStep(0.3f),
+		mFarDistance(1.0f),
+		mMaxFarDistance(2.0f),
+		mMinFarDistance(0.3f),
+		mGraphicalChangeAdapter(graphicalChangeAdapter),
+		mConfigListenerContainer(new ConfigListenerContainer())
 {
 }
 
@@ -163,16 +172,16 @@ bool FoliageDetailManager::setFoliageDensity(float density)
 void FoliageDetailManager::Config_FoliageDensity(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_double()) {
-		float density = static_cast<double>(variable);
-		setFoliageDensity(density / 100);
+		auto density = static_cast<double>(variable);
+		setFoliageDensity((float)density / 100.0f);
 	}
 }
 
 void FoliageDetailManager::Config_FoliageFarDistance(const std::string&, const std::string&, varconf::Variable& variable)
 {
 	if (variable.is_double()) {
-		float distanceFactor = static_cast<double>(variable);
-		setFoliageDistance(distanceFactor / 100);
+		auto distanceFactor = static_cast<double>(variable);
+		setFoliageDistance((float)distanceFactor / 100.0f);
 	}
 }
 
