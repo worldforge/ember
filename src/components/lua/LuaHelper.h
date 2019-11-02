@@ -52,7 +52,7 @@ public:
 	 * @param state The lua state.
 	 * @param luaMethod A lua method name.
 	 */
-	static void pushNamedFunction(lua_State* state, const std::string luaMethod);
+	static void pushNamedFunction(lua_State* state, const std::string& luaMethod);
 
 };
 

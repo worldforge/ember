@@ -26,7 +26,6 @@
 
 #include "LuaConsoleObject.h"
 #include "Connectors_impl.h"
-#include "framework/ConsoleBackend.h"
 
 namespace Ember
 {

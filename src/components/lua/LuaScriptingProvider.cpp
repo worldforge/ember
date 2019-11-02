@@ -36,26 +36,23 @@
 #include "LuaScriptingCallContext.h"
 
 
-
 namespace Ember {
 
 namespace Lua {
 
 LuaScriptingProvider::LuaScriptingProvider()
-: mService(nullptr)
-{
+		: mService(nullptr),
+		  mLuaState(nullptr) {
 	initialize();
 }
 
 
-LuaScriptingProvider::~LuaScriptingProvider()
-{
+LuaScriptingProvider::~LuaScriptingProvider() {
 	S_LOG_INFO("Shutting down lua environment.");
 	lua_close(mLuaState);
 }
 
-void LuaScriptingProvider::stop()
-{
+void LuaScriptingProvider::stop() {
 	try {
 		//we want to clear up the lua environment without destroying it (lua_close destroys it)
 		std::string shutdownScript(R"""(for key,value in pairs(_G) do if key ~= "_G" and key ~= "pairs" then _G[key] = nil end end)""");
@@ -68,46 +65,43 @@ void LuaScriptingProvider::stop()
 	}
 }
 
-void LuaScriptingProvider::initialize()
-{
+void LuaScriptingProvider::initialize() {
 	createState();
 
 }
 
-void LuaScriptingProvider::createState()
-{
+void LuaScriptingProvider::createState() {
 	bool loadDebugLib = true;
 	if (EmberServices::getSingleton().getConfigService().itemExists("lua", "debug")) {
 		loadDebugLib = static_cast<bool>(EmberServices::getSingleton().getConfigService().getValue("lua", "debug"));
 	}
 
 	static const luaL_Reg lualibs[] = {
-		{"", luaopen_base},
-		{LUA_LOADLIBNAME, luaopen_package},
-		{LUA_TABLIBNAME, luaopen_table},
-		{LUA_IOLIBNAME, luaopen_io},
-		{LUA_STRLIBNAME, luaopen_string},
-		{LUA_MATHLIBNAME, luaopen_math},
-		{nullptr, nullptr}
-		};
+			{"",              luaopen_base},
+			{LUA_LOADLIBNAME, luaopen_package},
+			{LUA_TABLIBNAME,  luaopen_table},
+			{LUA_IOLIBNAME,   luaopen_io},
+			{LUA_STRLIBNAME,  luaopen_string},
+			{LUA_MATHLIBNAME, luaopen_math},
+			{nullptr,         nullptr}
+	};
 	static const luaL_Reg lualibsDebug[] = {
-		{"", luaopen_base},
-		{LUA_LOADLIBNAME, luaopen_package},
-		{LUA_TABLIBNAME, luaopen_table},
-		{LUA_IOLIBNAME, luaopen_io},
-		{LUA_STRLIBNAME, luaopen_string},
-		{LUA_MATHLIBNAME, luaopen_math},
-		{LUA_DBLIBNAME, luaopen_debug},
-		{nullptr, nullptr}
-		};
+			{"",              luaopen_base},
+			{LUA_LOADLIBNAME, luaopen_package},
+			{LUA_TABLIBNAME,  luaopen_table},
+			{LUA_IOLIBNAME,   luaopen_io},
+			{LUA_STRLIBNAME,  luaopen_string},
+			{LUA_MATHLIBNAME, luaopen_math},
+			{LUA_DBLIBNAME,   luaopen_debug},
+			{nullptr,         nullptr}
+	};
 
 	mLuaState = luaL_newstate();
 
 	// init all standard libraries
 
-	const luaL_Reg *lib = loadDebugLib ? lualibsDebug : lualibs;
-	for (; lib->func; lib++)
-	{
+	const luaL_Reg* lib = loadDebugLib ? lualibsDebug : lualibs;
+	for (; lib->func; lib++) {
 		lua_pushcfunction(mLuaState, lib->func);
 		lua_pushstring(mLuaState, lib->name);
 		lua_call(mLuaState, 1, 0);
@@ -139,50 +133,39 @@ void LuaScriptingProvider::createState()
 // 	return mErrorHandlingFunctionIndex;
 // }
 
-const std::string& LuaScriptingProvider::getErrorHandlingFunctionName() const
-{
+const std::string& LuaScriptingProvider::getErrorHandlingFunctionName() const {
 	return mErrorHandlingFunctionName;
 }
 
-lua_State* LuaScriptingProvider::getLuaState()
-{
+lua_State* LuaScriptingProvider::getLuaState() {
 	return mLuaState;
 }
 
 
-
-void LuaScriptingProvider::loadScript(ResourceWrapper& resWrapper, IScriptingCallContext* callContext)
-{
+void LuaScriptingProvider::loadScript(ResourceWrapper& resWrapper, IScriptingCallContext* callContext) {
 	executeScriptImpl(std::string(resWrapper.getDataPtr(), resWrapper.getSize()), static_cast<LuaScriptingCallContext*>(callContext), resWrapper.getName());
 }
 
-void LuaScriptingProvider::executeScript(const std::string& scriptCode, IScriptingCallContext* callContext)
-{
+void LuaScriptingProvider::executeScript(const std::string& scriptCode, IScriptingCallContext* callContext) {
 	executeScriptImpl(scriptCode, static_cast<LuaScriptingCallContext*>(callContext), "");
 }
 
-void LuaScriptingProvider::callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext)
-{
+void LuaScriptingProvider::callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext) {
 	callFunctionImpl(functionName, narg, static_cast<LuaScriptingCallContext*>(callContext));
 }
 
-void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName)
-{
+void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName) {
 	try {
 		int top = lua_gettop(mLuaState);
 		int loaderr = luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str());
 
-		if (loaderr)
-		{
-			std::string errMsg(lua_tostring(mLuaState,-1));
-			lua_settop(mLuaState,top);
-			if (!scriptName.empty())
-			{
-				throw Exception("Unable to load Lua script file: '"+scriptName+"'\n\n"+errMsg+"\n");
-			}
-			else
-			{
-				throw Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
+		if (loaderr) {
+			std::string errMsg(lua_tostring(mLuaState, -1));
+			lua_settop(mLuaState, top);
+			if (!scriptName.empty()) {
+				throw Exception("Unable to load Lua script file: '" + scriptName + "'\n\n" + errMsg + "\n");
+			} else {
+				throw Exception("Unable to load Lua script: '" + scriptCode + "'\n\n" + errMsg + "\n");
 			}
 		}
 
@@ -200,39 +183,30 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 //		int nresults;
 		lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
-		if (luaCallContext)
-		{
+		if (luaCallContext) {
 			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
 //			nresults = lua_gettop(mLuaState) - level; // number of results
-		}
-		else
-		{
+		} else {
 			error = lua_pcall(mLuaState, 0, 0, error_index);
 		}
 
 		// handle errors
-		if (error)
-		{
-			std::string errMsg(lua_tostring(mLuaState,-1));
-			lua_settop(mLuaState,top);
-			if (!scriptName.empty())
-			{
-				throw Exception("Unable to load Lua script file: '"+scriptName+"'\n\n"+errMsg+"\n");
-			}
-			else
-			{
-				throw Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
+		if (error) {
+			std::string errMsg(lua_tostring(mLuaState, -1));
+			lua_settop(mLuaState, top);
+			if (!scriptName.empty()) {
+				throw Exception("Unable to load Lua script file: '" + scriptName + "'\n\n" + errMsg + "\n");
+			} else {
+				throw Exception("Unable to load Lua script: '" + scriptCode + "'\n\n" + errMsg + "\n");
 			}
 		}
 
-		if (luaCallContext)
-		{
+		if (luaCallContext) {
 			fromStack fs(mLuaState);
-			LuaRef* luaRef = new LuaRef(fs);
-			luaCallContext->setReturnValue(luaRef);
+			luaCallContext->setReturnValue(std::make_unique<LuaRef>(fs));
 		}
 
-		lua_settop(mLuaState,top); // just in case :P - do we need it?
+		lua_settop(mLuaState, top); // just in case :P - do we need it?
 
 // 		getScriptModule().executeString(scriptCode);
 	} catch (const std::exception& ex) {
@@ -242,56 +216,49 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 	}
 }
 
-void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int narg, LuaScriptingCallContext* luaCallContext)
-{
+void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int narg, LuaScriptingCallContext* luaCallContext) {
 	try {
-																				// st: args
+		// st: args
 		int top = lua_gettop(mLuaState);
-		LuaHelper::pushNamedFunction(mLuaState, functionName.c_str());		// st: args func
+		LuaHelper::pushNamedFunction(mLuaState, functionName);        // st: args func
 
 		//push our error handling method before calling the code
 		int error_index = top + 1; //lua_gettop(mLuaState);
 		lua_pushcfunction(mLuaState, LuaHelper::luaErrorHandler);   // st: args func err_h
-		lua_insert(mLuaState, error_index);										// st: args err_h func
+		lua_insert(mLuaState, error_index);                                        // st: args err_h func
 
 		luaPop pop(mLuaState, 1); // pops error handler on exit
 
 		// insert error handler and function before arguments
-		lua_insert(mLuaState, top - narg + 1);									// st: func args err_h
-		lua_insert(mLuaState, top - narg + 1);									// st: err_h func args
+		lua_insert(mLuaState, top - narg + 1);                                    // st: func args err_h
+		lua_insert(mLuaState, top - narg + 1);                                    // st: err_h func args
 		error_index = top - narg + 1;
 		// load code into lua and call it
 		int error, nresults;
 		int level = lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
-		if (luaCallContext)
-		{
+		if (luaCallContext) {
 			S_LOG_VERBOSE("Calling function with " << narg << " arguments");
 			error = lua_pcall(mLuaState, narg, LUA_MULTRET, error_index);
 			nresults = lua_gettop(mLuaState) - level; // number of results
 			S_LOG_VERBOSE("Got " << nresults << " results");
-		}
-		else
-		{
+		} else {
 			error = lua_pcall(mLuaState, narg, 0, error_index);
 		}
 
 		// handle errors
-		if (error)
-		{
-			std::string errMsg(lua_tostring(mLuaState,-1));
+		if (error) {
+			std::string errMsg(lua_tostring(mLuaState, -1));
 			//lua_settop(mLuaState,top);
-			throw Exception("Unable to call Lua function '"+functionName+"'\n\n"+errMsg+"\n");
+			throw Exception("Unable to call Lua function '" + functionName + "'\n\n" + errMsg + "\n");
 		}
 
-		if (luaCallContext)
-		{
+		if (luaCallContext) {
 			fromStack fs(mLuaState);
-			LuaRef* luaRef = new LuaRef(fs);
-			luaCallContext->setReturnValue(luaRef);
+			luaCallContext->setReturnValue(std::make_unique<LuaRef>(fs));
 		}
 
-		lua_settop(mLuaState,top); // just in case :P - do we need it?
+		lua_settop(mLuaState, top); // just in case :P - do we need it?
 
 // 		getScriptModule().executeString(scriptCode);
 	} catch (const std::exception& ex) {
@@ -301,26 +268,22 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 	}
 }
 
-bool LuaScriptingProvider::willLoadScript(const std::string& scriptName)
-{
+bool LuaScriptingProvider::willLoadScript(const std::string& scriptName) {
 	size_t pos = scriptName.rfind(".lua");
 	return (pos == scriptName.size() - 4);
 }
 
-const std::string& LuaScriptingProvider::getName() const
-{
+const std::string& LuaScriptingProvider::getName() const {
 	static std::string name = "LuaScriptingProvider";
 	return name;
 }
 
-void LuaScriptingProvider::_registerWithService(ScriptingService* service)
-{
+void LuaScriptingProvider::_registerWithService(ScriptingService* service) {
 	mService = service;
 }
 
 
-void LuaScriptingProvider::forceGC()
-{
+void LuaScriptingProvider::forceGC() {
 	lua_gc(mLuaState, LUA_GCCOLLECT, 0);
 }
 

@@ -55,7 +55,7 @@ int LuaHelper::luaErrorHandler(lua_State *L) {
     Pushes a named function on the stack
     This whole method is pilfered from the CEGUI project. (CEGUILuaFunctor.cpp)
 *************************************************************************/
-void LuaHelper::pushNamedFunction(lua_State* state, const std::string luaMethod)
+void LuaHelper::pushNamedFunction(lua_State* state, const std::string& luaMethod)
 {
 //     int top = lua_gettop(state);
 

@@ -30,14 +30,9 @@ namespace Ember {
 
 namespace Lua {
 
-LuaScriptingCallContext::LuaScriptingCallContext() : mReturnValue(0)
-{
-}
+LuaScriptingCallContext::LuaScriptingCallContext() = default;
 
-LuaScriptingCallContext::~LuaScriptingCallContext()
-{
-	delete mReturnValue;
-}
+LuaScriptingCallContext::~LuaScriptingCallContext() = default;
 
 }
 

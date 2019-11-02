@@ -120,7 +120,7 @@ Connector::Connector(ConnectorBase* connector)
 Connector::Connector(const Connector& connector)
 : mConnector(connector.mConnector)
 {
-	connector.mConnector = 0;
+	connector.mConnector = nullptr;
 }
 
 

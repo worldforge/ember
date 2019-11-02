@@ -41,7 +41,7 @@ class LuaScriptingCallContext : public IScriptingCallContext
 friend class LuaScriptingProvider;
 public:
 	LuaScriptingCallContext();
-	virtual ~LuaScriptingCallContext();
+	~LuaScriptingCallContext() override;
 	/**
 	 *    Gets the return value of the lua call.
 	 * @return 
@@ -52,18 +52,17 @@ protected:
 	 *    Sets the return value of the lua call. This is an internal method used only by the lua scripting provider.
 	 * @param returnValue 
 	 */
-	void setReturnValue(LuaRef* returnValue);
+	void setReturnValue(std::unique_ptr<LuaRef> returnValue);
 	
 	/**
 	The return value from the lua call.
 	*/
-	LuaRef* mReturnValue;
+	std::unique_ptr<LuaRef> mReturnValue;
 };
 
-inline void LuaScriptingCallContext::setReturnValue(LuaRef* returnValue)
+inline void LuaScriptingCallContext::setReturnValue(std::unique_ptr<LuaRef> returnValue)
 {
-	delete mReturnValue;
-	mReturnValue = returnValue;
+	mReturnValue = std::move(returnValue);
 }
 
 inline LuaRef LuaScriptingCallContext::getReturnValue()

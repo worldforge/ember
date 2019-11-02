@@ -82,14 +82,14 @@ public:
 	 * @brief Ctor.
 	 * @param signal The signal to connect to.
 	 */
-	Connector(sigc::signal<void>& signal);
+	explicit Connector(sigc::signal<void>& signal);
 
 	/**
 	 * @brief Ctor.
 	 * @param signal The signal to connect to.
 	 */
 	template <typename TAdapter0, typename TSignal>
-	Connector(TSignal& signal);
+	explicit Connector(TSignal& signal);
 
 	template <typename TAdapter0, typename TSignal>
 	Connector(TSignal& signal, TAdapter0& adapter0);
@@ -99,7 +99,7 @@ public:
 	 * @param signal The signal to connect to.
 	 */
 	template <typename TAdapter0, typename TAdapter1, typename TSignal>
-	Connector(TSignal& signal);
+	explicit Connector(TSignal& signal);
 	template <typename TAdapter0, typename TAdapter1, typename TSignal>
 	Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1);
 
@@ -199,7 +199,7 @@ private:
 	 * @brief Ctor.
 	 * @param connector The underlying connector instance.
 	 */
-	Connector(ConnectorBase* connector);
+	explicit Connector(ConnectorBase* connector);
 
 
 	/**
@@ -216,7 +216,7 @@ template <typename TAdapter0, typename TSignal>
 class ConnectorOne_ : public Connector
 {
 public:
-	ConnectorOne_(TSignal& signal)
+	explicit ConnectorOne_(TSignal& signal)
 	: Connector::Connector(signal, TAdapter0())
 	{
 
@@ -227,7 +227,7 @@ template <typename TAdapter0, typename TAdapter1, typename TSignal>
 class ConnectorTwo_ : public Connector
 {
 public:
-	ConnectorTwo_(TSignal& signal)
+	explicit ConnectorTwo_(TSignal& signal)
 	: Connector::Connector(signal, TAdapter0(), TAdapter1())
 	{
 
@@ -238,7 +238,7 @@ template <typename TSignal, typename TAdapter0, typename TAdapter1 = EmptyValueA
 class Connector_ : public Connector
 {
 public:
-	Connector_(TSignal& signal)
+	explicit Connector_(TSignal& signal)
 	: Connector::Connector(signal, TAdapter0(), TAdapter1())
 	{
 
