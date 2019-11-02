@@ -23,7 +23,7 @@ namespace asio {
 
 namespace helper {
 
-        void throw_system_error_if(bool condition, const std::string& msg)
+        inline void throw_system_error_if(bool condition, const std::string& msg)
         {
             if (condition)
             {
@@ -33,7 +33,7 @@ namespace helper {
             }
         }
 
-        std::string to_utf8(WCHAR *filename, DWORD length)
+        inline std::string to_utf8(WCHAR *filename, DWORD length)
         {
             int size = WideCharToMultiByte(CP_UTF8, 0, filename, length, NULL, 0, NULL, NULL);
 
