@@ -165,19 +165,19 @@ public:
 
 	static void log(const char *file, const char *message, ...);
 
-	static void log(const char *file, const int line, const char *message, ...);
+	static void log(const char *file, int line, const char *message, ...);
 
-	static void log(const MessageImportance importance, const char *message, ...);
+	static void log(MessageImportance importance, const char *message, ...);
 
-	static void log(const char *file, const MessageImportance importance, const char *message, ...);
+	static void log(const char *file, MessageImportance importance, const char *message, ...);
 
-	static void log(const char *file, const int line, const MessageImportance importance, const char *message, ...);
+	static void log(const char *file, int line, MessageImportance importance, const char *message, ...);
 
 	/**
 	 * @brief Is actually used in all cases of log. (Generates the message and then uses sendMessage.)
 	 * @see log
 	 */
-	static void logVarParam(const char *file, const int line, const MessageImportance importance, const char *message, va_list argptr);
+	static void logVarParam(const char *file, int line, MessageImportance importance, const char *message, va_list argptr);
 
 	/**
 	 * @brief Gives the possibility to specify options when using the streaming method << for messages.
@@ -190,15 +190,15 @@ public:
 	 * can thus easily apply the shifting operator to it.
 	 */
 
-	static LoggingInstance slog(const std::string & file, const int line, const MessageImportance importance);
+	static LoggingInstance slog(std::string file, int line, MessageImportance importance);
 
-	static LoggingInstance slog(const MessageImportance importance);
+	static LoggingInstance slog(MessageImportance importance);
 
-	static LoggingInstance slog(const std::string & file, const MessageImportance importance);
+	static LoggingInstance slog(std::string file, MessageImportance importance);
 
-	static LoggingInstance slog(const std::string & file, const int line);
+	static LoggingInstance slog(std::string file, int line);
 
-	static LoggingInstance slog(const std::string & file);
+	static LoggingInstance slog(std::string file);
 
 	/**
 	 * @brief Adds an observer to the list.
@@ -218,12 +218,12 @@ public:
 	/**
 	 * @brief Converts a normal int to a hexadecimal int that can be streamed into the LoggingService object. (use HEX_NUM macro if you want)
 	 */
-	static HexNumber hexNumber(const int intDecimal);
+	static HexNumber hexNumber(int intDecimal);
 
 	/**
 	 * Unifies the sending mechanism for streaming- and formatting-input
 	 */
-	static void sendMessage(const std::string & message, const std::string & file, const int line, const MessageImportance importance);
+	static void sendMessage(const std::string & message, const std::string & file, int line, MessageImportance importance);
 
 private:
 

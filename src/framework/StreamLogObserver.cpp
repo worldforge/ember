@@ -43,28 +43,13 @@ public:
 };
 std::atomic<int> ThreadIdentifier::sCounter;
 
-    /**
-     * Creates a new StreamLogObserver using default values.
-     */
+
     StreamLogObserver::StreamLogObserver(std::ostream &out) 
         : myOut(out), mDetailed(false), mStart(boost::posix_time::microsec_clock::local_time())
     {
     }
 
-    /**
-     * Copy constructor.
-     */
-    StreamLogObserver::StreamLogObserver( const StreamLogObserver &source )
-        : myOut(source.myOut), mDetailed(source.mDetailed), mStart(boost::posix_time::microsec_clock::local_time())
-        {
-        }
 
-    //----------------------------------------------------------------------
-    // Destructor
-
-    /**
-     * Deletes a StreamLogObserver instance.
-     */
     StreamLogObserver::~StreamLogObserver () {
     	myOut.flush();
     }

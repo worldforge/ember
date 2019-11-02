@@ -45,11 +45,10 @@ public:
 		Log::sObserverList.push_back(this);
 	}
 
-	void onNewMessage (const std::string & message,
-							const std::string & file,
-							const int &line,
-							const Log::MessageImportance & importance) override
-	{
+	void onNewMessage(const std::string& message,
+					  const std::string& file,
+					  const int& line,
+					  const Log::MessageImportance& importance) override {
 		std::cout << message << std::endl;
 	}
 };
@@ -64,9 +63,7 @@ unsigned long Log::sCurrentFrame = 0;
 boost::posix_time::ptime Log::sCurrentFrameStartMilliseconds = boost::posix_time::microsec_clock::local_time();
 
 
-
-void Log::log (const char *message, ...)
-{
+void Log::log(const char* message, ...) {
 	va_list vl;
 	va_start(vl, message);
 	logVarParam("", -1, INFO, message, vl);
@@ -74,8 +71,7 @@ void Log::log (const char *message, ...)
 }
 
 
-void Log::log (const char *file, const char *message, ...)
-{
+void Log::log(const char* file, const char* message, ...) {
 	va_list vl;
 	va_start(vl, message);
 	logVarParam(file, -1, INFO, message, vl);
@@ -83,9 +79,7 @@ void Log::log (const char *file, const char *message, ...)
 }
 
 
-
-void Log::log (const char *file, const int line, const char *message, ...)
-{
+void Log::log(const char* file, int line, const char* message, ...) {
 	va_list vl;
 	va_start(vl, message);
 	logVarParam(file, line, INFO, message, vl);
@@ -93,68 +87,56 @@ void Log::log (const char *file, const int line, const char *message, ...)
 }
 
 
-void Log::log (const MessageImportance importance, const char *message, ...)
-{
+void Log::log(const MessageImportance importance, const char* message, ...) {
 	va_list vl;
 	va_start(vl, message);
 	logVarParam("", -1, importance, message, vl);
 	va_end(vl);
 }
 
-void Log::log (const char *file, const MessageImportance importance, const char *message, ...)
-{
+void Log::log(const char* file, MessageImportance importance, const char* message, ...) {
 	va_list vl;
 	va_start(vl, message);
 	logVarParam(file, -1, importance, message, vl);
 	va_end(vl);
 }
 
-void Log::log (const char *file, const int line,  const MessageImportance importance, const char *message, ...)
-{
+void Log::log(const char* file, int line, MessageImportance importance, const char* message, ...) {
 	va_list vl;
 	va_start(vl, message);
 	logVarParam(file, line, importance, message, vl);
 	va_end(vl);
 }
 
-void Log::logVarParam (const char *file, const int line, const MessageImportance importance, const char *message, va_list argptr)
-{
+void Log::logVarParam(const char* file, int line, MessageImportance importance, const char* message, va_list argptr) {
 	char Buffer[MESSAGE_BUFFER_SIZE];
-	vsprintf((char *) Buffer, message, argptr);
-	sendMessage(std::string((char *) Buffer), file, line, importance);
+	vsprintf((char*) Buffer, message, argptr);
+	sendMessage(std::string((char*) Buffer), file, line, importance);
 }
 
 
-LoggingInstance Log::slog (const std::string & file, const int line, const MessageImportance importance)
-{
-	return LoggingInstance(file, line, importance);
+LoggingInstance Log::slog(std::string file, int line, MessageImportance importance) {
+	return LoggingInstance(std::move(file), line, importance);
 }
 
-LoggingInstance Log::slog (const MessageImportance importance)
-{
+LoggingInstance Log::slog(const MessageImportance importance) {
 	return LoggingInstance(importance);
 }
 
-LoggingInstance Log::slog (const std::string & file, const MessageImportance importance)
-{
-	return LoggingInstance(file, importance);
+LoggingInstance Log::slog(std::string file, MessageImportance importance) {
+	return LoggingInstance(std::move(file), importance);
 }
 
-LoggingInstance Log::slog (const std::string & file, const int line)
-{
-	return LoggingInstance(file, line);
+LoggingInstance Log::slog(std::string file, int line) {
+	return LoggingInstance(std::move(file), line);
 }
 
-LoggingInstance Log::slog (const std::string & file)
-{
-	return LoggingInstance(file);
+LoggingInstance Log::slog(std::string file) {
+	return LoggingInstance(std::move(file));
 }
 
 
-
-
-void Log::addObserver(LogObserver* observer)
-{
+void Log::addObserver(LogObserver* observer) {
 	//test on already existing observer
 	if (std::find(sObserverList.begin(), sObserverList.end(), observer) == sObserverList.end()) {
 		if (sNumberOfExternalObservers == 0) {
@@ -166,9 +148,8 @@ void Log::addObserver(LogObserver* observer)
 	}
 }
 
-int Log::removeObserver(LogObserver* observer)
-{
-	ObserverList::iterator I = std::find(sObserverList.begin(), sObserverList.end(), observer);
+int Log::removeObserver(LogObserver* observer) {
+	auto I = std::find(sObserverList.begin(), sObserverList.end(), observer);
 	if (I != sObserverList.end()) {
 		sObserverList.erase(I);
 		sNumberOfExternalObservers--;
@@ -180,19 +161,15 @@ int Log::removeObserver(LogObserver* observer)
 	return -1;
 }
 
-Log::HexNumber Log::hexNumber(const int intDecimal)
-{
-	HexNumber intHex;
-	intHex.myNumber = intDecimal;
-	return intHex;
+Log::HexNumber Log::hexNumber(const int intDecimal) {
+	return HexNumber{intDecimal};
 }
 
-void Log::sendMessage(const std::string & message, const std::string & file, const int line, const MessageImportance importance)
-{
+void Log::sendMessage(const std::string& message, const std::string& file, const int line, const MessageImportance importance) {
 
-	for (ObserverList::iterator i = sObserverList.begin(); i != sObserverList.end(); i++) {
-		if (static_cast<int>(importance) >= static_cast<int>((*i)->getFilter())) {
-			(*i)->onNewMessage(message, file, line, importance);
+	for (auto& observer : sObserverList) {
+		if (static_cast<int>(importance) >= static_cast<int>(observer->getFilter())) {
+			observer->onNewMessage(message, file, line, importance);
 		}
 	}
 }

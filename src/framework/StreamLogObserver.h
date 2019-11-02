@@ -48,89 +48,63 @@ namespace Ember {
  * @see Log::Observer
  */
 
-class StreamLogObserver : public LogObserver
-{
+class StreamLogObserver : public LogObserver, boost::noncopyable {
 
-    //======================================================================
-    // Private Variables
-    //======================================================================/
-    private:
+	//======================================================================
+	// Private Variables
+	//======================================================================/
+private:
 
-		/**
-		 * @brief The output stream to which the log will be written.
-		 */
-        std::ostream &myOut;
+	/**
+	 * @brief The output stream to which the log will be written.
+	 */
+	std::ostream& myOut;
 
-        /**
-         * @brief If true, the output will be detailed.
-         *
-         * Meaning that it will contain millisecond precision as well as the thread id.
-         */
-        bool mDetailed;
+	/**
+	 * @brief If true, the output will be detailed.
+	 *
+	 * Meaning that it will contain millisecond precision as well as the thread id.
+	 */
+	bool mDetailed;
 
-        /**
-         * @brief Record the start time.
-         *
-         * To be used when in detailed mode.
-         */
-        boost::posix_time::ptime mStart;
-
-    //======================================================================
-    // Public Methods
-    //======================================================================
-    public:
-
-    //----------------------------------------------------------------------
-    // Constructors
-
-    /**
-     * Creates a new StreamLogObserver using default values.
-     */
-     explicit StreamLogObserver(std::ostream &out);
-
-    /**
-     * Copy constructor.
-     */
-    StreamLogObserver( const StreamLogObserver &source );
+	/**
+	 * @brief Record the start time.
+	 *
+	 * To be used when in detailed mode.
+	 */
+	boost::posix_time::ptime mStart;
 
 
+public:
+
+	explicit StreamLogObserver(std::ostream& out);
 
 
-    //----------------------------------------------------------------------
-    // Destructor
+	~StreamLogObserver() override;
 
-    /**
-     * Deletes a StreamLogObserver instance.
-     */
-    ~StreamLogObserver () override;
+	/**
+	 * Prints out the message provided with file, line and datestamp to myOut;
+	 */
+	void onNewMessage(const std::string& message, const std::string& file, const int& line,
+					  const Log::MessageImportance& importance) override;
 
-    //----------------------------------------------------------------------
-    // Implmented methods from LogginService::Observer
+	/**
+	 * @brief Sets whether the log output should be detailed or not.
+	 *
+	 * If detailed is enabled, millisecond timestamp as well as thread id will be included.
+	 * @param enabled True if enabled.
+	 */
+	void setDetailed(bool enabled);
 
-    /**
-     * Prints out the message provided with file, line and datestamp to myOut;
-     */
-    void onNewMessage(const std::string & message, const std::string & file, const int & line,
-                                  const Log::MessageImportance & importance) override;
+	//----------------------------------------------------------------------
+	// Disable Assignment operator
+private:
+	/**
+	 * Disabled Assignment operator.
+	 */
+	StreamLogObserver& operator=(const StreamLogObserver& source);
 
-    /**
-     * @brief Sets whether the log output should be detailed or not.
-     *
-     * If detailed is enabled, millisecond timestamp as well as thread id will be included.
-     * @param enabled True if enabled.
-     */
-    void setDetailed(bool enabled);
+};
 
-    //----------------------------------------------------------------------
-    // Disable Assignment operator
-    private:
-    /**
-     * Disabled Assignment operator.
-     */
-    StreamLogObserver &operator= ( const StreamLogObserver &source );
-
-}; // End of StreamLogObserver
-
-} // End of Ember namespace
-
+}
 #endif

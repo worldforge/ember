@@ -52,15 +52,15 @@ class LoggingInstance {
 public:
 	friend class Log;
 
-	LoggingInstance(const std::string& file, int line, Log::MessageImportance importance);
+	LoggingInstance(std::string  file, int line, Log::MessageImportance importance);
 
-	LoggingInstance(Log::MessageImportance importance);
+	explicit LoggingInstance(Log::MessageImportance importance);
 
-	LoggingInstance(const std::string& file, Log::MessageImportance importance);
+	LoggingInstance(std::string  file, Log::MessageImportance importance);
 
-	LoggingInstance(const std::string& file, int line);
+	LoggingInstance(std::string  file, int line);
 
-	LoggingInstance(const std::string& file);
+	explicit LoggingInstance(std::string  file);
 
 
 	LoggingInstance& operator<<(const std::string& stringToAdd);

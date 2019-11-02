@@ -113,7 +113,6 @@ struct IResourceProvider;
  * After creating it, be sure to call these methods in order:
  *
  * registerComponents();
- * prepareComponents();
  * initializeServices();
  *
  * start();
@@ -144,19 +143,13 @@ public:
 
 	/**
 	 * @brief Registers all components with the system.
-	 * Make sure to call this before calling prepareComponents(). This will allow all components to register themselves with the system, but won't do anything more.
 	 */
 	void registerComponents();
 
-	/**
-	 * @brief Prepares all components.
-	 * Make sure to call this after you've called registerComponents(). This will tell all components to prepare themselves before the application and services are started. The reason this is separate from registerComponents() is that some components needs to know about the existence of others, which they might not properly do at the registerComponents() step.
-	 */
-	void prepareComponents();
 
 	/**
 	 * @brief Initializes all services.
-	 * Make sure to call this before calling start() and after calling registerComponents() and prepareComponents().
+	 * Make sure to call this before calling start() and after calling registerComponents().
 	 */
 	void initializeServices();
 

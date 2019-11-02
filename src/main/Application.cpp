@@ -340,9 +340,6 @@ void Application::mainLoop() {
 	} while (!mShouldQuit);
 }
 
-void Application::prepareComponents() {
-}
-
 void Application::initializeServices() {
 	// Initialize Ember services
 	std::cout << "Initializing Ember services" << std::endl;
@@ -362,7 +359,8 @@ void Application::initializeServices() {
 
 	//output all logging to ember.log
 	auto filename = configService.getHomeDirectory(BaseDirType_DATA) / "ember.log";
-	mLogOutStream = std::make_unique<std::ofstream>(filename.c_str());
+	std::cout << "Writing logs to " << filename.string() << std::flush;
+	mLogOutStream = std::make_unique<std::ofstream>(filename.string());
 
 	//write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;

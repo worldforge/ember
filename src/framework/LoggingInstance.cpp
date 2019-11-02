@@ -27,12 +27,14 @@
 #include <Atlas/Codecs/Bach.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/SmartPtr.h>
+
+#include <utility>
 #include "LoggingInstance.h"
 
 namespace Ember {
 
-LoggingInstance::LoggingInstance(const std::string & file, int line, Log::MessageImportance importance)
-: mFile(file), mLine(line), mImportance(importance)
+LoggingInstance::LoggingInstance(std::string file, int line, Log::MessageImportance importance)
+: mFile(std::move(file)), mLine(line), mImportance(importance)
 {
 	mMessage.reserve(256);
 }
@@ -43,20 +45,20 @@ LoggingInstance::LoggingInstance(Log::MessageImportance importance)
 	mMessage.reserve(256);
 }
 
-LoggingInstance::LoggingInstance(const std::string & file, Log::MessageImportance importance)
-: mFile(file), mLine(-1), mImportance(importance)
+LoggingInstance::LoggingInstance(std::string file, Log::MessageImportance importance)
+: mFile(std::move(file)), mLine(-1), mImportance(importance)
 {
 	mMessage.reserve(256);
 }
 
-LoggingInstance::LoggingInstance(const std::string & file, int line)
-: mFile(file), mLine(line), mImportance(Log::INFO)
+LoggingInstance::LoggingInstance(std::string file, int line)
+: mFile(std::move(file)), mLine(line), mImportance(Log::INFO)
 {
 	mMessage.reserve(256);
 }
 
-LoggingInstance::LoggingInstance(const std::string & file)
-: mFile(file), mLine(-1), mImportance(Log::INFO)
+LoggingInstance::LoggingInstance(std::string file)
+: mFile(std::move(file)), mLine(-1), mImportance(Log::INFO)
 {
 	mMessage.reserve(256);
 }
@@ -161,7 +163,7 @@ LoggingInstance& LoggingInstance::operator<<(const Atlas::Objects::SmartPtr<Atla
 LoggingInstance& LoggingInstance::operator<<(const Atlas::Message::Element& msg)
 {
 	std::stringstream s;
-	Atlas::Codecs::Bach debugCodec(s, s, *(Atlas::Bridge*)0);
+	Atlas::Codecs::Bach debugCodec(s, s, *(Atlas::Bridge*)nullptr);
 	Atlas::Message::Encoder debugEncoder(debugCodec);
 	debugEncoder.streamMessageElement(msg.asMap());
 	mMessage += s.str();

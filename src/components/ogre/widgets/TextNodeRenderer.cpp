@@ -78,8 +78,8 @@ void TextNodeRenderer::renderTextNode(Ogre::Camera* camera, const TextNode& text
 		}
 		textNode.mWindow->setVisible(true);
 		textNode.mWindow->setPosition(CEGUI::UVector2(
-				CEGUI::UDim(screenCoords.x, -(textNode.mWindow->getPixelSize().d_width * 0.5)),
-				CEGUI::UDim(screenCoords.y, -(textNode.mWindow->getPixelSize().d_height * 0.5))));
+				CEGUI::UDim(screenCoords.x, -(textNode.mWindow->getPixelSize().d_width * 0.5f)),
+				CEGUI::UDim(screenCoords.y, -(textNode.mWindow->getPixelSize().d_height * 0.5f))));
 	}
 }
 

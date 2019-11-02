@@ -34,7 +34,6 @@ ConfigBoundLogObserver::ConfigBoundLogObserver(ConfigService& configService, std
 : StreamLogObserver(out), mConfigService(configService)
 {
 	configService.EventChangedConfigItem.connect(sigc::mem_fun(*this, &ConfigBoundLogObserver::ConfigService_EventChangedConfigItem));
-
 }
 
 

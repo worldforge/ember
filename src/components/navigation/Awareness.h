@@ -156,7 +156,7 @@ public:
 	 * @param ty Y index.
 	 * @param processor A processing callback.
 	 */
-	void processTile(const int tx, const int ty, const TileProcessor& processor) const;
+	void processTile(int tx, int ty, const TileProcessor& processor) const;
 
 	/**
 	 * @brief Process the tiles within the specified area.
@@ -246,9 +246,9 @@ protected:
 	 */
 	std::list<sigc::connection> mSignalConnections;
 
-	struct LinearAllocator* mTalloc;
-	struct FastLZCompressor* mTcomp;
-	struct MeshProcess* mTmproc;
+	std::unique_ptr<struct LinearAllocator> mTalloc;
+	std::unique_ptr<struct FastLZCompressor> mTcomp;
+	std::unique_ptr<struct MeshProcess> mTmproc;
 
 	/**
 	 * @brief The radius of the avatar.
@@ -268,7 +268,7 @@ protected:
 	/**
 	 * @brief The main Recast context.
 	 */
-	rcContext* mCtx;
+	std::unique_ptr<rcContext> mCtx;
 
 	/**
 	 * @brief The Recast configuration.
@@ -287,9 +287,9 @@ protected:
 	 */
 	dtNavMesh* mNavMesh;
 	dtNavMeshQuery* mNavQuery;
-	dtQueryFilter* mFilter;
+	std::unique_ptr<dtQueryFilter> mFilter;
 	dtObstacleAvoidanceQuery* mObstacleAvoidanceQuery;
-	dtObstacleAvoidanceParams* mObstacleAvoidanceParams;
+	std::unique_ptr<dtObstacleAvoidanceParams> mObstacleAvoidanceParams;
 
 	/**
 	 * @brief A set of all of the tiles that currently are inside our awareness area.
@@ -349,7 +349,7 @@ protected:
 	 * Whenever a tile is added to the awareness area it has it's priority increased within this list.
 	 * This makes sure that those tiles that are at the back of the list always are the least used ones.
 	 */
-	MRUList<std::pair<int, int>>* mActiveTileList;
+	std::unique_ptr<MRUList<std::pair<int, int>>> mActiveTileList;
 
 	/**
 	 * @brief Rebuild the tile at the specific index.
@@ -382,7 +382,7 @@ protected:
 	 * @param maxTiles The maximum number of tile layers to create.
 	 * @return The number of tile layers that were created.
 	 */
-	int rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, TileCacheData* tiles, const int maxTiles);
+	int rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, int tx, int ty, TileCacheData* tiles, int maxTiles);
 
 	/**
 	 * @brief Applies the supplied processor on the supplied tiles.

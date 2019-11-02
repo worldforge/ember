@@ -40,7 +40,7 @@ public:
 		mFilter = Log::INFO;        //No filtering assumed
 	}
 	
-	virtual ~LogObserver() {}
+	virtual ~LogObserver() = default;
 
 	/**
 	* Called every time a new message arrived at the LoggingService

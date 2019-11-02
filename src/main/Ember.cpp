@@ -167,7 +167,6 @@ int main(int argc, char **argv)
 			app.registerComponents();
 
 			// Initialize all Ember services needed for this application
-			app.prepareComponents();
 			app.initializeServices();
 
 			app.start();

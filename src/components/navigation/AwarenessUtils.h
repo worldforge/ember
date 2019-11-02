@@ -48,97 +48,76 @@
 #include "DetourTileCacheBuilder.h"
 #include <string.h>
 
-namespace Ember
-{
-namespace Navigation
-{
+namespace Ember {
+namespace Navigation {
 
-struct FastLZCompressor: public dtTileCacheCompressor
-{
-	virtual ~FastLZCompressor()
-	{
+struct FastLZCompressor : public dtTileCacheCompressor {
+	virtual ~FastLZCompressor() = default;
+
+	int maxCompressedSize(const int bufferSize) override {
+		return (int) ((float) bufferSize * 1.05f);
 	}
 
-	virtual int maxCompressedSize(const int bufferSize)
-	{
-		return (int)(bufferSize * 1.05f);
-	}
-
-	virtual dtStatus compress(const unsigned char* buffer, const int bufferSize, unsigned char* compressed, const int /*maxCompressedSize*/, int* compressedSize)
-	{
-		*compressedSize = fastlz_compress((void *)buffer, bufferSize, compressed);
+	dtStatus compress(const unsigned char* buffer, const int bufferSize, unsigned char* compressed, const int /*maxCompressedSize*/, int* compressedSize) override {
+		*compressedSize = fastlz_compress((void*) buffer, bufferSize, compressed);
 		return DT_SUCCESS;
 	}
 
-	virtual dtStatus decompress(const unsigned char* compressed, const int compressedSize, unsigned char* buffer, const int maxBufferSize, int* bufferSize)
-	{
+	dtStatus decompress(const unsigned char* compressed, const int compressedSize, unsigned char* buffer, const int maxBufferSize, int* bufferSize) override {
 		*bufferSize = fastlz_decompress(compressed, compressedSize, buffer, maxBufferSize);
 		return *bufferSize < 0 ? DT_FAILURE : DT_SUCCESS;
 	}
 };
 
-struct LinearAllocator: public dtTileCacheAlloc
-{
+struct LinearAllocator : public dtTileCacheAlloc {
 	unsigned char* buffer;
 	int capacity;
 	int top;
 	int high;
 
-	LinearAllocator(const int cap) :
-			buffer(0), capacity(0), top(0), high(0)
-	{
+	explicit LinearAllocator(const int cap) :
+			buffer(nullptr), capacity(0), top(0), high(0) {
 		resize(cap);
 	}
 
-	virtual ~LinearAllocator()
-	{
+	virtual ~LinearAllocator() {
 		dtFree(buffer);
 	}
 
-	void resize(const int cap)
-	{
+	void resize(const int cap) {
 		if (buffer)
 			dtFree(buffer);
-		buffer = (unsigned char*)dtAlloc(cap, DT_ALLOC_PERM);
+		buffer = (unsigned char*) dtAlloc(cap, DT_ALLOC_PERM);
 		capacity = cap;
 	}
 
-	virtual void reset()
-	{
+	void reset() override {
 		high = dtMax(high, top);
 		top = 0;
 	}
 
-	virtual void* alloc(const int size)
-	{
+	void* alloc(const int size) override {
 		if (!buffer)
-			return 0;
+			return nullptr;
 		if (top + size > capacity)
-			return 0;
+			return nullptr;
 		unsigned char* mem = &buffer[top];
 		top += size;
 		return mem;
 	}
 
-	virtual void free(void* /*ptr*/)
-	{
+	void free(void* /*ptr*/) override {
 		// Empty
 	}
 };
 
-struct MeshProcess: public dtTileCacheMeshProcess
-{
+struct MeshProcess : public dtTileCacheMeshProcess {
 
-	inline MeshProcess()
-	{
-	}
+	inline MeshProcess() = default;
 
-	virtual ~MeshProcess()
-	{
-	}
+	virtual ~MeshProcess() = default;
 
-	virtual void process(struct dtNavMeshCreateParams* params, unsigned char* polyAreas, unsigned short* polyFlags)
-	{
+	void process(struct dtNavMeshCreateParams* params, unsigned char* polyAreas, unsigned short* polyFlags) override {
 		// Update poly flags from areas.
 		for (int i = 0; i < params->polyCount; ++i) {
 			if (polyAreas[i] == DT_TILECACHE_WALKABLE_AREA)
@@ -155,31 +134,31 @@ struct MeshProcess: public dtTileCacheMeshProcess
 	}
 };
 
-struct TileCacheData
-{
+struct TileCacheData {
 	unsigned char* data;
 	int dataSize;
 };
 
 static const int MAX_LAYERS = 32;
 
-struct RasterizationContext
-{
+struct RasterizationContext {
 	RasterizationContext() :
-			solid(0), triareas(0), lset(0), chf(0), ntiles(0)
-	{
+			solid(nullptr),
+			triareas(nullptr),
+			lset(nullptr),
+			chf(nullptr),
+			ntiles(0) {
 		memset(tiles, 0, sizeof(TileCacheData) * MAX_LAYERS);
 	}
 
-	~RasterizationContext()
-	{
+	~RasterizationContext() {
 		rcFreeHeightField(solid);
 		delete[] triareas;
 		rcFreeHeightfieldLayerSet(lset);
 		rcFreeCompactHeightfield(chf);
-		for (int i = 0; i < MAX_LAYERS; ++i) {
-			dtFree(tiles[i].data);
-			tiles[i].data = 0;
+		for (auto & tile : tiles) {
+			dtFree(tile.data);
+			tile.data = nullptr;
 		}
 	}
 
@@ -187,7 +166,7 @@ struct RasterizationContext
 	unsigned char* triareas;
 	rcHeightfieldLayerSet* lset;
 	rcCompactHeightfield* chf;
-	TileCacheData tiles[MAX_LAYERS];
+	TileCacheData tiles[MAX_LAYERS]{};
 	int ntiles;
 };
 
