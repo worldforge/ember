@@ -19,3 +19,7 @@ bzip2/1.0.8
 cmake
 
 [options]
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.dylib* -> ./bin
