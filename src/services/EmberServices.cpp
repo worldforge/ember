@@ -65,10 +65,6 @@ EmberServices::~EmberServices() {
 		mInputService->stop();
 		mInputService.reset();
 	}
-	if (mConfigService) {
-		mConfigService->stop();
-		mConfigService.reset();
-	}
 	if (mLoggingService) {
 		mLoggingService->stop();
 		mLoggingService.reset();
@@ -80,7 +76,7 @@ LoggingService& EmberServices::getLoggingService() {
 }
 
 ConfigService& EmberServices::getConfigService() {
-	return *mConfigService;
+	return mConfigService;
 }
 
 InputService& EmberServices::getInputService() {
@@ -111,15 +107,15 @@ Services::ServerSettings& EmberServices::getServerSettingsService() {
 	return *mServerSettingsService;
 }
 
-EmberServices::EmberServices(Eris::Session& session)
-		: mLoggingService(new LoggingService()),
+EmberServices::EmberServices(Eris::Session& session, ConfigService& configService)
+		: mConfigService(configService),
+		  mLoggingService(new LoggingService()),
 		  mScriptingService(new ScriptingService()),
 		  mSoundService(new SoundService()),
 		  mServerService(new ServerService(session)),
 		  mMetaserverService(new MetaserverService(session)),
 		  mInputService(new InputService()),
 		  mWfutService(new WfutService()),
-		  mConfigService(new ConfigService()),
 		  mServerSettingsService(new Services::ServerSettings()) {
 }
 

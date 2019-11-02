@@ -151,8 +151,6 @@ private:
         // destroyed _after_ the thread is finished (not that the thread tries to access
         // instance properties which don't exist anymore).
         async_monitor_thread_.join();
-        
-        std::cout << "shutdown complete" << std::endl;
     }
 
     boost::asio::io_service async_monitor_io_service_;

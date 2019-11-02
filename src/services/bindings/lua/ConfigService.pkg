@@ -13,9 +13,6 @@ namespace Ember {
 class ConfigService
 {
 
-    static const std::string SETVALUE;
-    static const std::string GETVALUE;
-
     //----------------------------------------------------------------------
     // Getters & Setters
     //----------------------------------------------------------------------

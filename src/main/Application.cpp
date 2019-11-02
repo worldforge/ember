@@ -17,7 +17,6 @@
 #include "Application.h"
 
 
-
 #include <Eris/View.h>
 
 #include "services/logging/LoggingService.h"
@@ -45,6 +44,7 @@
 #include "ConfigBoundLogObserver.h"
 
 #include "components/lua/embertolua++.h"
+#include "services/config/ConfigConsoleCommands.h"
 #include <Atlas/Objects/Factories.h>
 
 TOLUA_API int tolua_Ogre_open(lua_State* tolua_S);
@@ -185,7 +185,8 @@ public:
 	}
 };
 
-Application::Application(std::string prefix, std::string homeDir, ConfigMap configSettings) :
+Application::Application(std::string prefix, std::string homeDir, ConfigMap configSettings, ConfigService& configService) :
+		mConfigService(configService),
 		mAtlasFactories(new Atlas::Objects::Factories()),
 		mSession(new Eris::Session()),
 		mFileSystemObserver(new FileSystemObserver(mSession->getIoService())),
@@ -197,10 +198,47 @@ Application::Application(std::string prefix, std::string homeDir, ConfigMap conf
 		mWorldView(nullptr),
 		mConfigSettings(std::move(configSettings)),
 		mConsoleBackend(new ConsoleBackend()),
+		mConfigConsoleCommands(new ConfigConsoleCommands(mConfigService)),
 		Quit("quit", this, "Quit Ember."),
 		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."),
 		mScriptingResourceProvider(nullptr) {
 
+	// Change working directory
+	auto& dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
+
+	if (!boost::filesystem::is_directory(dirName)) {
+		boost::filesystem::create_directories(dirName);
+	}
+
+	int result = -1;
+//TODO: put into one place
+#ifdef _WIN32
+	char fstring[1024];
+	size_t convert_result = wcstombs(fstring, mConfigService.getHomeDirectory(BaseDirType_DATA).c_str(), 1024);
+	if (convert_result <= 1024) {
+		result = chdir(fstring);
+	}
+#else
+	result = chdir(mConfigService.getHomeDirectory(BaseDirType_CONFIG).c_str());
+#endif
+
+	if (result) {
+		S_LOG_WARNING("Could not change directory to '" << mConfigService.getHomeDirectory(BaseDirType_CONFIG).c_str() << "'.");
+	}
+
+	//load the config file. Note that this will load the shared config file, and then the user config file if available.
+	mConfigService.loadSavedConfig("ember.conf", mConfigSettings);
+
+	//Check if there's a user specific ember.conf file. If not, create an empty template one.
+	auto userConfigFilePath = mConfigService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
+	if (!boost::filesystem::exists(userConfigFilePath)) {
+		//Create empty template file.
+		std::ofstream outstream(userConfigFilePath.c_str());
+		outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
+		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath.string() << "'.");
+	}
+
+	S_LOG_INFO("Using media from " << mConfigService.getEmberMediaDirectory().string());
 }
 
 Application::~Application() {
@@ -342,71 +380,9 @@ void Application::mainLoop() {
 
 void Application::initializeServices() {
 	// Initialize Ember services
-	std::cout << "Initializing Ember services" << std::endl;
+	S_LOG_INFO("Initializing Ember services");
 
-	mServices = std::make_unique<EmberServices>(*mSession);
-	// Initialize the Configuration Service
-	ConfigService& configService = mServices->getConfigService();
-	configService.start();
-	if (!mPrefix.empty()) {
-		configService.setPrefix(mPrefix);
-	}
-
-	if (!mHomeDir.empty()) {
-		configService.setHomeDirectory(mHomeDir);
-		std::cout << "Setting home directory to " << mHomeDir << std::endl;
-	}
-
-	//output all logging to ember.log
-	auto filename = configService.getHomeDirectory(BaseDirType_DATA) / "ember.log";
-	std::cout << "Writing logs to " << filename.string() << std::flush;
-	mLogOutStream = std::make_unique<std::ofstream>(filename.string());
-
-	//write to the log the version number
-	*mLogOutStream << "Ember version " << VERSION << std::endl;
-
-	mLogObserver = std::make_unique<ConfigBoundLogObserver>(configService, *mLogOutStream);
-	Log::addObserver(mLogObserver.get());
-
-	//default to INFO, though this can be changed by the config file
-	mLogObserver->setFilter(Log::INFO);
-
-	// Change working directory
-	auto& dirName = configService.getHomeDirectory(BaseDirType_CONFIG);
-
-	if (!boost::filesystem::is_directory(dirName)) {
-		boost::filesystem::create_directories(dirName);
-	}
-
-	int result = -1;
-//TODO: put into one place
-#ifdef _WIN32
-	char fstring[1024];
-	size_t convert_result = wcstombs(fstring, configService.getHomeDirectory(BaseDirType_DATA).c_str(), 1024);
-	if (convert_result <= 1024) {
-		result = chdir(fstring);
-	}
-#else
-	result = chdir(configService.getHomeDirectory(BaseDirType_CONFIG).c_str());
-#endif
-
-	if (result) {
-		S_LOG_WARNING("Could not change directory to '" << configService.getHomeDirectory(BaseDirType_CONFIG).c_str() << "'.");
-	}
-
-	//load the config file. Note that this will load the shared config file, and then the user config file if available.
-	configService.loadSavedConfig("ember.conf", mConfigSettings);
-
-	//Check if there's a user specific ember.conf file. If not, create an empty template one.
-	auto userConfigFilePath = configService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
-	if (boost::filesystem::exists(userConfigFilePath)) {
-		//Create empty template file.
-		std::ofstream outstream(userConfigFilePath.c_str());
-		outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
-		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath.string() << "'.");
-	}
-
-	S_LOG_INFO("Using media from " << configService.getEmberMediaDirectory().string());
+	mServices = std::make_unique<EmberServices>(*mSession, mConfigService);
 
 	// Initialize the Sound Service
 	S_LOG_INFO("Initializing sound service");
@@ -439,7 +415,7 @@ void Application::initializeServices() {
 	mServices->getServerService().GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
 	mServices->getServerService().DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
 
-	mServices->getServerService().setupLocalServerObservation(configService);
+	mServices->getServerService().setupLocalServerObservation(mConfigService);
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	auto luaProvider = std::make_unique<Lua::LuaScriptingProvider>();

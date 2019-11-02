@@ -40,24 +40,23 @@ namespace OgreView {
 namespace Environment {
 
 
-Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr):
-SetSunPosition("setsunposition", this, "Set the position of the sun.")
-,SetSunColour("setsuncolour", this, "Set the colour of the sun.")
-,SetAmbientLight("setambientlight", this, "Set the ambient light of the world.")
-,mLensFlare(camera, sceneMgr)
-{
+Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr) :
+		SetSunPosition("setsunposition", this, "Set the position of the sun."),
+		SetSunColour("setsuncolour", this, "Set the colour of the sun."),
+		SetAmbientLight("setambientlight", this, "Set the ambient light of the world."),
+		mLensFlare(camera, sceneMgr) {
 	mSun = sceneMgr->createLight("SunLight");
 	mSun->setType(Ogre::Light::LT_DIRECTIONAL);
 
 	if (sceneMgr->hasSceneNode("SunNode")) {
-		mSunNode = sceneMgr->getSceneNode( "SunNode");
+		mSunNode = sceneMgr->getSceneNode("SunNode");
 	} else {
-		mSunNode = sceneMgr->getRootSceneNode ()->createChildSceneNode("SunNode");
+		mSunNode = sceneMgr->getRootSceneNode()->createChildSceneNode("SunNode");
 	}
 
 	mSunNode->attachObject(mSun);
 
-	mLensFlare.setNode(mSunNode );
+	mLensFlare.setNode(mSunNode);
 	mLensFlare.initialize();
 
 //disable for now
@@ -68,7 +67,7 @@ SetSunPosition("setsunposition", this, "Set the position of the sun.")
 // 		S_LOG_FAILURE("Error when creating sun. Message: " << ex.getFullDescription());
 // 	}
 
-	setSunPosition(Ogre::Vector3(-500,300,-350));
+	setSunPosition(Ogre::Vector3(-500, 300, -350));
 	setSunColour(Ogre::ColourValue(1, 1, 0.7)); //yellow
 	//mSun->setSpecularColour(1, 1, 0.7); //yellow
 	mSun->setCastShadows(true);
@@ -83,67 +82,60 @@ SetSunPosition("setsunposition", this, "Set the position of the sun.")
 }
 
 
-Sun::~Sun()
-{
+Sun::~Sun() {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
 }
 
-void Sun::runCommand(const std::string &command, const std::string &args)
-{
-	if(SetSunPosition == command)
-	{
+void Sun::runCommand(const std::string& command, const std::string& args) {
+	if (SetSunPosition == command) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string x = tokeniser.nextToken();
 		std::string y = tokeniser.nextToken();
 		std::string z = tokeniser.nextToken();
 
-		if (x == "" || y == "" || z == "") {
+		if (x.empty() || y.empty() || z.empty()) {
 			return;
 		} else {
-			Ogre::Vector3 position(Ogre::StringConverter::parseReal(x),Ogre::StringConverter::parseReal(y),Ogre::StringConverter::parseReal(z));
+			Ogre::Vector3 position(Ogre::StringConverter::parseReal(x), Ogre::StringConverter::parseReal(y), Ogre::StringConverter::parseReal(z));
 			setSunPosition(position);
 		}
-	} else if (SetSunColour == command)
-	{
+	} else if (SetSunColour == command) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string r = tokeniser.nextToken();
 		std::string b = tokeniser.nextToken();
 		std::string g = tokeniser.nextToken();
 
-		if (r == "" || b == "" || g == "") {
+		if (r.empty() || b.empty() || g.empty()) {
 			return;
 		} else {
-			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r),Ogre::StringConverter::parseReal(b),Ogre::StringConverter::parseReal(g));
+			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r), Ogre::StringConverter::parseReal(b), Ogre::StringConverter::parseReal(g));
 			setSunColour(colour);
 		}
 
-	} else if (SetAmbientLight == command)
-	{
+	} else if (SetAmbientLight == command) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string r = tokeniser.nextToken();
 		std::string b = tokeniser.nextToken();
 		std::string g = tokeniser.nextToken();
 
-		if (r == "" || b == "" || g == "") {
+		if (r.empty() || b.empty() || g.empty()) {
 			return;
 		} else {
-			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r),Ogre::StringConverter::parseReal(b),Ogre::StringConverter::parseReal(g));
+			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r), Ogre::StringConverter::parseReal(b), Ogre::StringConverter::parseReal(g));
 			setAmbientLight(colour);
 		}
 
 	}
 }
 
-bool Sun::frameEnded(const Ogre::FrameEvent & event)
-{
+bool Sun::frameEnded(const Ogre::FrameEvent& event) {
 	mLensFlare.update();
 	return true;
 }
-
 
 
 void Sun::setSunPosition(const Ogre::Vector3& position) {

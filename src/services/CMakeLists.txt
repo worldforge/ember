@@ -2,6 +2,7 @@ add_library(services
         config/ConfigListener.cpp
         config/ConfigListenerContainer.cpp
         config/ConfigService.cpp
+        config/ConfigConsoleCommands.cpp
         input/Input.cpp
         input/InputCommandMapper.cpp
         input/InputService.cpp

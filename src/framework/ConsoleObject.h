@@ -47,21 +47,20 @@ namespace Ember {
  * @author Xmp (Martin Pollard)
  *
  * @see Console
- */ 
-class ConsoleObject {
-public:
+ */
+struct ConsoleObject {
 
-  /**
-   * Dtor.
-   */ 
-  virtual ~ConsoleObject() = default;
+	/**
+	 * Dtor.
+	 */
+	virtual ~ConsoleObject() = default;
 
-   /**
-   * This is the function that needs to be extended to use the console.
-   * "command" is a command that has been previously registered with the console
-   * "args" is the argument string that has been provided for the command
-   */ 
-  virtual void runCommand(const std::string& command, const std::string& args) = 0;
+	/**
+	* This is the function that needs to be extended to use the console.
+	* "command" is a command that has been previously registered with the console
+	* "args" is the argument string that has been provided for the command
+	*/
+	virtual void runCommand(const std::string& command, const std::string& args) = 0;
 };
 
 } /* namespace Ember */

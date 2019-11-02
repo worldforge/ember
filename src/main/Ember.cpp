@@ -21,7 +21,9 @@
 #endif
 
 #include "Application.h"
+#include "ConfigBoundLogObserver.h"
 #include "framework/Tokeniser.h"
+#include "services/config/ConfigService.h"
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -32,34 +34,28 @@
 #else
 #endif
 
- //This should be included only to the file, where main function is defined.
+//This should be included only to the file, where main function is defined.
 #include "MainWrapper.h"
 
 extern "C"
-int main(int argc, char **argv)
-{
+int main(int argc, char** argv) {
 	int exitStatus(0);
 	bool exit_program = false;
 	std::string prefix;
 	std::string homeDir;
 	Ember::Application::ConfigMap configMap;
 #ifndef __WIN32__
-	if (argc > 1)
-	{
+	if (argc > 1) {
 		(argv)++;
 		argc--;
-		while (argc > 0)
-		{
+		while (argc > 0) {
 			std::string arg = std::string(argv[0]);
 			argv++;
 			argc--;
-			if (arg == "-v" || arg == "--version")
-			{
+			if (arg == "-v" || arg == "--version") {
 				std::cout << "Ember version: " << VERSION << std::endl;
 				exit_program = true;
-			}
-			else if (arg == "-h" || arg == "--help")
-			{
+			} else if (arg == "-h" || arg == "--help") {
 				std::cout << "-h, --help    - display this message" << std::endl;
 				std::cout << "-v, --version - display version info" << std::endl;
 				std::cout << "--home <path> - sets the home directory to something different than the default (XDG Base Directory Specification on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
@@ -67,53 +63,36 @@ int main(int argc, char **argv)
 				std::cout << "--config <section>:<key> <value> - allows you to override config file settings. See the ember.conf file for examples. (~/.config/ember/ember.conf on *NIX systems)" << std::endl;
 				exit_program = true;
 				break;
-			}
-			else if (arg == "-p" || arg == "--prefix")
-			{
-				if (!argc)
-				{
+			} else if (arg == "-p" || arg == "--prefix") {
+				if (!argc) {
 					std::cout << "You didn't supply a prefix.";
 					exit_program = true;
-				}
-				else
-				{
+				} else {
 					prefix = std::string(argv[0]);
 					argv++;
 					argc--;
 				}
 
-			}
-			else if (arg == "--home")
-			{
-				if (!argc)
-				{
+			} else if (arg == "--home") {
+				if (!argc) {
 					std::cout << "You didn't supply a home directory.";
 					exit_program = true;
-				}
-				else
-				{
+				} else {
 					homeDir = std::string(argv[0]);
 					argv++;
 					argc--;
 				}
 
-			}
-			else if (arg == "--config")
-			{
-				if (argc < 2)
-				{
+			} else if (arg == "--config") {
+				if (argc < 2) {
 					std::cout << "You didn't supply any config arguments.";
-				}
-				else
-				{
+				} else {
 					std::string fullkey(argv[0]);
 					std::string value(argv[1]);
 					Ember::Tokeniser tokeniser(fullkey, ":");
-					if (!tokeniser.remainingTokens().empty())
-					{
+					if (!tokeniser.remainingTokens().empty()) {
 						std::string category(tokeniser.nextToken());
-						if (!tokeniser.remainingTokens().empty())
-						{
+						if (!tokeniser.remainingTokens().empty()) {
 							std::string key(tokeniser.nextToken());
 							configMap[category][key] = value;
 						}
@@ -124,8 +103,7 @@ int main(int argc, char **argv)
 	}
 
 #if !defined(__WIN32__) && !defined(__APPLE__)
-	if (exit_program)
-	{
+	if (exit_program) {
 		return 0;
 	}
 #endif
@@ -151,9 +129,8 @@ int main(int argc, char **argv)
 
 #endif
 
-	try
-	{
-	//put the application object in its own scope so it gets destroyed before we signal all clear
+	try {
+		//put the application object in its own scope so it gets destroyed before we signal all clear
 		{
 			if (prefix.empty()) {
 				std::cout << "Starting Ember version " << VERSION << "." << std::endl;
@@ -161,8 +138,32 @@ int main(int argc, char **argv)
 				std::cout << "Starting Ember version " << VERSION << " with prefix '" << prefix << "'." << std::endl;
 			}
 
+			Ember::ConfigService configService{};
+			if (!prefix.empty()) {
+				configService.setPrefix(prefix);
+			}
+
+			if (!homeDir.empty()) {
+				configService.setHomeDirectory(homeDir);
+				std::cout << "Setting home directory to " << homeDir << std::endl;
+			}
+
+			//output all logging to ember.log
+			auto filename = configService.getHomeDirectory(Ember::BaseDirType_DATA) / "ember.log";
+			std::cout << "Writing logs to " << filename.string() << std::endl;
+			std::ofstream logOutStream(filename.string());
+
+			//write to the log the version number
+			logOutStream << "Ember version " << VERSION << std::endl;
+
+			Ember::ConfigBoundLogObserver logObserver(configService, logOutStream);
+			Ember::Log::addObserver(&logObserver);
+
+			//default to INFO, though this can be changed by the config file
+			logObserver.setFilter(Ember::Log::INFO);
+
 			// Create application object
-			Ember::Application app(prefix, homeDir, configMap);
+			Ember::Application app(prefix, homeDir, configMap, configService);
 
 			app.registerComponents();
 
@@ -171,12 +172,11 @@ int main(int argc, char **argv)
 
 			app.start();
 		}
-	} catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		std::cerr << "Unexpected error, aborting.\n\r\t" << ex.what() << std::endl;
 		exitStatus = 1;
 	}
-    std::cout << "Ember shut down successfully." << std::endl;
+	std::cout << "Ember shut down successfully." << std::endl;
 
 	return exitStatus;
 }

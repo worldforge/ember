@@ -21,8 +21,6 @@
 #ifndef CONFIGSERVICE_H
 #define CONFIGSERVICE_H
 
-#include "framework/Service.h"
-#include "framework/ConsoleObject.h"
 #include <varconf/varconf.h>
 
 #include "../EmberServices.h"
@@ -57,7 +55,7 @@ enum BaseDirType {
 * @see Ember::Service
 * @see varconf
 */
-class ConfigService : public Service, public ConsoleObject {
+class ConfigService {
 private:
 	//----------------------------------------------------------------------
 	// Class Variables
@@ -79,10 +77,6 @@ private:
 	 */
 	std::string mPrefix;
 
-	void registerConsoleCommands();
-
-	void deregisterConsoleCommands();
-
 	/**
 	 * just a facade for the underlying varconf::Config::sigv
 	 * @param  the section of the item
@@ -97,28 +91,28 @@ private:
 	 *
 	 * This contains values read in from either the global config.
 	 */
-	varconf::Config* mGlobalConfig;
+	std::unique_ptr<varconf::Config> mGlobalConfig;
 
 	/**
 	 * @brief The user configuration store.
 	 *
 	 * This contains values read in from the user config file (for example ~/.config/ember/ember.conf).
 	 */
-	varconf::Config* mUserConfig;
+	std::unique_ptr<varconf::Config> mUserConfig;
 
 	/**
 	 * @brief The command line configuration store.
 	 *
 	 * This contains values read from the command line. These should not factor in when saving the configuration.
 	 */
-	varconf::Config* mCommandLineConfig;
+	std::unique_ptr<varconf::Config> mCommandLineConfig;
 
 	/**
 	 * @brief The instance configuration store.
 	 *
 	 * This contains values altered at run time.
 	 */
-	varconf::Config* mInstanceConfig;
+	std::unique_ptr<varconf::Config> mInstanceConfig;
 
 
 protected:
@@ -143,7 +137,7 @@ public:
 	 * Dtor for Ember::service::ConfigService.
 	 *
 	 */
-	~ConfigService() override;
+	~ConfigService();
 
 
 	//----------------------------------------------------------------------
@@ -170,30 +164,6 @@ public:
 	 * @param scope The underlying configuration to save the value to. In almost all cases varconf::INSTANCE is appropriate.
 	 */
 	void setValue(const std::string& section, const std::string& key, const varconf::Variable& value, int scope = varconf::INSTANCE);
-
-	//----------------------------------------------------------------------
-	// Methods
-	//----------------------------------------------------------------------
-
-	/**
-	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command
-	 * @param args
-	 */
-	void runCommand(const std::string& command, const std::string& args) override;
-
-
-	/**
-	 * Starts ConfigService.  Returns status.
-	 *
-	 */
-	bool start() override;
-
-	/**
-	 * Stops ConfigService.
-	 *
-	 */
-	void stop() override;
 
 	/**
 	 * Returns true if the key exists in the section given.
@@ -249,7 +219,7 @@ public:
 	 * @param filename of file to save to.
 	 * @param scopeMask we will only write out variables which have their scope in this mask
 	 */
-	bool saveConfig(const boost::filesystem::path& filename, int scopeMask = varconf::GLOBAL | varconf::USER | varconf::INSTANCE);
+	bool saveConfig(const boost::filesystem::path& filename, unsigned int scopeMask = varconf::GLOBAL | varconf::USER | varconf::INSTANCE);
 
 
 	/**

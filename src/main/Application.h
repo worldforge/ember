@@ -103,6 +103,7 @@ class FileSystemObserver;
 class EmberServices;
 class LogObserver;
 struct IResourceProvider;
+class ConfigConsoleCommands;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -128,7 +129,7 @@ public:
 	 * @param homeDir The path to the Ember home directory. On a UNIX system this was historically "~/.ember". By default, this is now set according to the XDG Base Directory Specification.
 	 * @param configSettings Command line configuration settings.
 	 */
-	Application(std::string prefix, std::string homeDir, ConfigMap configSettings);
+	Application(std::string prefix, std::string homeDir, ConfigMap configSettings, ConfigService& configService);
 
 	/**
 	 * @brief At destruction pretty much all game objects will be destroyed.
@@ -176,6 +177,8 @@ public:
 	Eris::View* getMainView();
 
 private:
+
+	ConfigService& mConfigService;
 
 	std::unique_ptr<Atlas::Objects::Factories> mAtlasFactories;
 
@@ -246,6 +249,8 @@ private:
 	 * @brief The main console backend instance.
 	 */
 	std::unique_ptr<ConsoleBackend> mConsoleBackend;
+
+	std::unique_ptr<ConfigConsoleCommands> mConfigConsoleCommands;
 
 	/**
 	 * @brief The "quit" command will quit the application, bypassing any confirmation dialog.

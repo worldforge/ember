@@ -71,7 +71,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	explicit EmberServices(Eris::Session& session);
+	explicit EmberServices(Eris::Session& session, ConfigService& configService);
 
 	/**
 	 * @brief Dtor.
@@ -145,6 +145,7 @@ public:
 	// Setters
 
 private:
+	ConfigService& mConfigService;
 
 	std::unique_ptr<LoggingService> mLoggingService;
 	std::unique_ptr<ScriptingService> mScriptingService;
@@ -153,7 +154,6 @@ private:
 	std::unique_ptr<MetaserverService> mMetaserverService;
 	std::unique_ptr<InputService> mInputService;
 	std::unique_ptr<WfutService> mWfutService;
-	std::unique_ptr<ConfigService> mConfigService;
 	std::unique_ptr<Services::ServerSettings> mServerSettingsService;
 
 };

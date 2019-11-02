@@ -34,47 +34,27 @@
 namespace Ember {
 
 // List of ConsoleBackend's console commands
-const char * const ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
+const char* const ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
 const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
 
 
 ConsoleBackend::ConsoleBackend()
-		: mCommandHistory(new CommandHistory())
-{
+		: mCommandHistory(new CommandHistory()) {
 	// Register console commands
 	registerCommand(LIST_CONSOLE_COMMANDS, this);
 }
 
-ConsoleBackend::ConsoleBackend(const ConsoleBackend &source)
-{
-	// Use assignment operator to do the copy
-	// NOTE: If you need to do custom initialization in the constructor this may not be enough.
-	*this = source;
-}
+ConsoleBackend::~ConsoleBackend() = default;
 
-ConsoleBackend& ConsoleBackend::operator=(const ConsoleBackend &source)
-{
-	// Copy fields from source class to this class here.
-
-	// Return this object with new value
-	return *this;
-}
-
-ConsoleBackend::~ConsoleBackend()
-{
-	delete mCommandHistory;
-}
-
-CommandHistory& ConsoleBackend::getHistory()
-{
+CommandHistory& ConsoleBackend::getHistory() {
 	return *mCommandHistory;
 }
 
 
-void ConsoleBackend::pushMessage(const std::string &message, const std::string& tag) {
+void ConsoleBackend::pushMessage(const std::string& message, const std::string& tag) {
 	//only save message if onGotMessage returns true
 	if (!onGotMessage(message, tag)) {
-	// If we have reached our message limit, remove the oldest message
+		// If we have reached our message limit, remove the oldest message
 		if (mConsoleMessages.size() >= MAX_MESSAGES) {
 			mConsoleMessages.erase(mConsoleMessages.begin());
 		}
@@ -82,14 +62,12 @@ void ConsoleBackend::pushMessage(const std::string &message, const std::string& 
 	}
 }
 
-bool ConsoleBackend::onGotMessage(const std::string &message, const std::string& tag)
-{
+bool ConsoleBackend::onGotMessage(const std::string& message, const std::string& tag) {
 	return GotMessage.emit(message, tag);
 }
 
 
-void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *object, const std::string& description, bool suppressLogging)
-{
+void ConsoleBackend::registerCommand(const std::string& command, ConsoleObject* object, const std::string& description, bool suppressLogging) {
 	if (!suppressLogging) {
 		S_LOG_INFO("Registering: " << command);
 	}
@@ -104,15 +82,13 @@ void ConsoleBackend::registerCommand(const std::string &command, ConsoleObject *
 		mRegisteredCommands[command] = entry;
 
 		// prepare the prefix map to have fast access to commands
-		for(std::string::size_type i = 1; i <= command.length(); ++i)
-		{
+		for (std::string::size_type i = 1; i <= command.length(); ++i) {
 			mPrefixes[command.substr(0, i)].insert(command);
 		}
 	}
 }
 
-void ConsoleBackend::deregisterCommand(const std::string &command, bool suppressLogging)
-{
+void ConsoleBackend::deregisterCommand(const std::string& command, bool suppressLogging) {
 	if (!suppressLogging) {
 		S_LOG_INFO("Deregistering: " << command);
 	}
@@ -124,8 +100,7 @@ void ConsoleBackend::deregisterCommand(const std::string &command, bool suppress
 		// Delete from the map
 		mRegisteredCommands.erase(I);
 
-		for(std::string::size_type i = 1; i <= command.length(); ++i)
-		{
+		for (std::string::size_type i = 1; i <= command.length(); ++i) {
 			std::string prefix = command.substr(0, i);
 			auto entryI = mPrefixes.find(prefix);
 			if (entryI != mPrefixes.end()) {
@@ -138,8 +113,7 @@ void ConsoleBackend::deregisterCommand(const std::string &command, bool suppress
 	}
 }
 
-void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
-{
+void ConsoleBackend::runCommand(const std::string& command, bool addToHistory) {
 	if (command.empty()) return; // Ignore empty string
 
 	// Grab first character of command string
@@ -154,7 +128,7 @@ void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 	}
 
 	// If command has a leading /, remove it
-	std::string command_string = (c == '/')? command.substr(1) : command;
+	std::string command_string = (c == '/') ? command.substr(1) : command;
 
 	// Split string into command / arguments pair
 	Tokeniser tokeniser = Tokeniser();
@@ -180,31 +154,28 @@ void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 	}
 }
 
-void ConsoleBackend::runCommand(const std::string &command, const std::string &args)
-{
+void ConsoleBackend::runCommand(const std::string& command, const std::string& args) {
 	std::ostringstream temp;
 
 	// This commands prints all currently registered commands to the Log File
 	if (command == LIST_CONSOLE_COMMANDS) {
 		for (ConsoleObjectEntryStore::const_iterator I = mRegisteredCommands.begin(); I != mRegisteredCommands.end(); I++) {
-		// TODO - should we check to see if I->second is valid?
-		temp << I->first<< " : " << I->second.Description << std::endl;
+			// TODO - should we check to see if I->second is valid?
+			temp << I->first << " : " << I->second.Description << std::endl;
 		}
 	}
 
 	S_LOG_VERBOSE(temp.str());
-	temp<< std::ends;
+	temp << std::ends;
 
 	pushMessage(temp.str());
 }
 
-const std::set< std::string > & ConsoleBackend::getPrefixes(const std::string & prefix) const
-{
-	static std::set< std::string > empty;
+const std::set<std::string>& ConsoleBackend::getPrefixes(const std::string& prefix) const {
+	static std::set<std::string> empty;
 	auto iPrefixes(mPrefixes.find(prefix));
 
-	if(iPrefixes != mPrefixes.end())
-	{
+	if (iPrefixes != mPrefixes.end()) {
 		return iPrefixes->second;
 	}
 

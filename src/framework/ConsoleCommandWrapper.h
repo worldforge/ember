@@ -26,7 +26,7 @@
 #include <string>
 
 namespace Ember {
-class ConsoleObject;
+struct ConsoleObject;
 /**
 @author Erik Ogenvik <erik@ogenvik.org>
 

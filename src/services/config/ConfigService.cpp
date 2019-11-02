@@ -114,11 +114,7 @@ std::string getAppSupportDirPath()
 
 namespace Ember {
 
-const std::string ConfigService::SETVALUE("set_value");
-const std::string ConfigService::GETVALUE("get_value");
-
 ConfigService::ConfigService() :
-		Service("Configuration"),
 		mSharedDataDir(""),
 		mEtcDir(""),
 		mHomeDir(""),
@@ -145,16 +141,15 @@ ConfigService::ConfigService() :
 	mEtcDir = EMBER_SYSCONFDIR "/ember/";
 	S_LOG_INFO("Setting config directory to " << mEtcDir.string());
 #endif
-
+	mGlobalConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
+	mGlobalConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
+	mUserConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
+	mUserConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
+	mInstanceConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
+	mInstanceConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
 }
 
-ConfigService::~ConfigService() {
-	delete mGlobalConfig;
-	delete mUserConfig;
-	delete mCommandLineConfig;
-	delete mInstanceConfig;
-}
-
+ConfigService::~ConfigService() = default;
 
 void ConfigService::setPrefix(const std::string& prefix) {
 	S_LOG_INFO("Setting prefix to '" << prefix << "'.");
@@ -237,46 +232,22 @@ bool ConfigService::getValue(const std::string& section, const std::string& key,
 void ConfigService::setValue(const std::string& section, const std::string& key, const varconf::Variable& value, int iscope) {
 	auto scope = static_cast<varconf::Scope>(iscope);
 
-	varconf::Config* config = mInstanceConfig;
-	if (scope == varconf::GLOBAL) {
-		config = mGlobalConfig;
-	} else if (scope == varconf::USER) {
-		config = mUserConfig;
+	switch (scope) {
+		case varconf::GLOBAL:
+			mGlobalConfig->setItem(section, key, value);
+			break;
+		case varconf::USER:
+			mUserConfig->setItem(section, key, value);
+			break;
+		case varconf::INSTANCE:
+			mInstanceConfig->setItem(section, key, value);
+			break;
 	}
-	config->setItem(section, key, value);
 }
 
 bool ConfigService::isItemSet(const std::string& section, const std::string& key, const std::string& value) const {
 	return (hasItem(section, key) && getValue(section, key) == value);
 }
-
-bool ConfigService::start() {
-	mGlobalConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
-	mGlobalConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
-	mUserConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
-	mUserConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
-	mInstanceConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
-	mInstanceConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
-	registerConsoleCommands();
-	setRunning(true);
-	return true;
-}
-
-void ConfigService::stop() {
-	Service::stop();
-	deregisterConsoleCommands();
-}
-
-void ConfigService::deregisterConsoleCommands() {
-	ConsoleBackend::getSingleton().deregisterCommand(SETVALUE);
-	ConsoleBackend::getSingleton().deregisterCommand(GETVALUE);
-}
-
-void ConfigService::registerConsoleCommands() {
-	ConsoleBackend::getSingleton().registerCommand(SETVALUE, this, "Sets a value in the configuration. Usage: set_value <section> <key> <value>");
-	ConsoleBackend::getSingleton().registerCommand(GETVALUE, this, "Gets a value from the configuration. Usage: get_value <section> <key>");
-}
-
 bool ConfigService::itemExists(const std::string& section, const std::string& key) const {
 	return hasItem(section, key);
 }
@@ -319,7 +290,7 @@ bool ConfigService::loadSavedConfig(const std::string& filename, const StringCon
 	return success;
 }
 
-bool ConfigService::saveConfig(const boost::filesystem::path& filename, int scopeMask) {
+bool ConfigService::saveConfig(const boost::filesystem::path& filename, unsigned int scopeMask) {
 	//Go through all user config values and save those (as they were defined in the original user config file).
 	//Also save any instance values that aren't present in the user config if they differ from the global value.
 	varconf::Config exportConfig;
@@ -350,39 +321,7 @@ bool ConfigService::saveConfig(const boost::filesystem::path& filename, int scop
 	return exportConfig.writeToFile(filename.string());
 }
 
-void ConfigService::runCommand(const std::string& command, const std::string& args) {
-	if (command == SETVALUE) {
-		Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string section(tokeniser.nextToken());
-		std::string key(tokeniser.nextToken());
-		std::string value(tokeniser.remainingTokens());
 
-		if (section.empty() || key.empty() || value.empty()) {
-			ConsoleBackend::getSingleton().pushMessage("Usage: set_value <section> <key> <value>", "help");
-		} else {
-			setValue(section, key, value);
-			ConsoleBackend::getSingleton().pushMessage("New value set, section: " + section + " key: " + key + " value: " + value, "info");
-		}
-
-	} else if (command == GETVALUE) {
-		Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string section(tokeniser.nextToken());
-		std::string key(tokeniser.nextToken());
-
-		if (section.empty() || key.empty()) {
-			ConsoleBackend::getSingleton().pushMessage("Usage: get_value <section> <key>", "help");
-		} else {
-			if (!hasItem(section, key)) {
-				ConsoleBackend::getSingleton().pushMessage("No such value.", "error");
-			} else {
-				varconf::Variable value = getValue(section, key);
-				ConsoleBackend::getSingleton().pushMessage(std::string("Value: ") + value.as_string(), "info");
-			}
-		}
-	}
-}
 
 void ConfigService::updatedConfig(const std::string& section, const std::string& key) {
 	EventChangedConfigItem.emit(section, key);
@@ -416,7 +355,7 @@ const boost::filesystem::path& ConfigService::getHomeDirectory(BaseDirType baseD
 		finalPath += "\\Ember\\";
 		return finalPath;
 #elif defined(__APPLE__)
-        static boost::filesystem::path path = boost::filesystem::path(getAppSupportDirPath()) / "Ember";
+		static boost::filesystem::path path = boost::filesystem::path(getAppSupportDirPath()) / "Ember";
 		return path;
 #else
 		xdgHandle baseDirHandle{};
@@ -465,7 +404,7 @@ boost::filesystem::path ConfigService::getSharedDataDirectory() const {
 
 const boost::filesystem::path& ConfigService::getSharedConfigDirectory() const {
 #ifdef __APPLE__
-    static boost::filesystem::path path = getSharedDataDirectory() / "etc/ember/";
+	static boost::filesystem::path path = getSharedDataDirectory() / "etc/ember/";
 	return path;
 #else
 	return mEtcDir;
