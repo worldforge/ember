@@ -206,21 +206,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		throw Exception(ex.getMessage().c_str());
 	}
 
-#ifdef _WIN32
-	char fstring[1024];
-	size_t result = wcstombs(fstring, configService.getEmberDataDirectory().c_str(), 1024);
-	if (result <= 1024) {
-		if (chdir(fstring)) {
-			S_LOG_WARNING("Failed to change to the data directory '" << configService.getEmberDataDirectory().string() << "'.");
-		}
-	}
-#else
-	if (chdir(configService.getEmberDataDirectory().c_str())) {
+	if (chdir(configService.getEmberDataDirectory().generic_string().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configService.getEmberDataDirectory().string() << "'.");
 	}
-#endif
-
-
 
 }
 

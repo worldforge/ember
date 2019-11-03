@@ -204,23 +204,13 @@ Application::Application(std::string prefix, std::string homeDir, ConfigMap conf
 		mScriptingResourceProvider(nullptr) {
 
 	// Change working directory
-	auto& dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
+	auto dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
 
 	if (!boost::filesystem::is_directory(dirName)) {
 		boost::filesystem::create_directories(dirName);
 	}
 
-	int result = -1;
-//TODO: put into one place
-#ifdef _WIN32
-	char fstring[1024];
-	size_t convert_result = wcstombs(fstring, mConfigService.getHomeDirectory(BaseDirType_DATA).c_str(), 1024);
-	if (convert_result <= 1024) {
-		result = chdir(fstring);
-	}
-#else
-	result = chdir(mConfigService.getHomeDirectory(BaseDirType_CONFIG).c_str());
-#endif
+	int result = chdir(mConfigService.getHomeDirectory(BaseDirType_CONFIG).generic_string().c_str());
 
 	if (result) {
 		S_LOG_WARNING("Could not change directory to '" << mConfigService.getHomeDirectory(BaseDirType_CONFIG).c_str() << "'.");

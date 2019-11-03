@@ -205,8 +205,8 @@ bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::
 
 
 bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
-	auto& userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
-	auto& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
+	auto userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
+	auto emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
 	bool foundDir = addResourceDirectory(emberMediaPath / path, type, section, recursive, true);
 

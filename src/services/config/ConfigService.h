@@ -225,7 +225,7 @@ public:
 	/**
 	* returns the path to the home directory, where all configuration is stored
 	*/
-	const boost::filesystem::path& getHomeDirectory(BaseDirType baseDirType) const;
+	boost::filesystem::path getHomeDirectory(BaseDirType baseDirType) const;
 
 	/**
 	* returns the path to the shared data directory, where common media is
@@ -235,31 +235,31 @@ public:
 	/**
 	* returns the path to the ember data directory, where ember media is
 	*/
-	const boost::filesystem::path& getEmberDataDirectory() const;
+	boost::filesystem::path getEmberDataDirectory() const;
 
 	/**
 	 *    returns the path to the media directory specific to a user, but synced with the main server, which would normally be ~/.local/share/ember/ember-media
 	 * @return
 	 */
-	const boost::filesystem::path& getEmberMediaDirectory() const;
+	boost::filesystem::path getEmberMediaDirectory() const;
 
 	/**
 	 *    returns the path to the media directory specific to a user, containing media created by the user, which would normally be ~/.local/share/ember/user-media
 	 * @return
 	 */
-	const boost::filesystem::path& getUserMediaDirectory() const;
+	boost::filesystem::path getUserMediaDirectory() const;
 
 	/**
 	 *    returns the path to the media directory shared between users, which would normally be $prefix/ember/media
 	 * @return
 	 */
-	const boost::filesystem::path& getSharedMediaDirectory() const;
+	boost::filesystem::path getSharedMediaDirectory() const;
 
 	/**
 	 *    returns the path to the shared config directory where all the original configuration files are stored
 	 * @return
 	 */
-	const boost::filesystem::path& getSharedConfigDirectory() const;
+	boost::filesystem::path getSharedConfigDirectory() const;
 
 	/**
 	*	Emitted when a config item is changed.

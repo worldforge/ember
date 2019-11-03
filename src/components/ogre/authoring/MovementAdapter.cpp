@@ -197,13 +197,13 @@ bool MovementAdapter::injectMouseButtonDown(Input::MouseButton button) {
 	} else if (button == Input::MouseButtonMiddle) {
 
 	} else if (button == Input::MouseWheelUp) {
-		int movementDegrees = 10;
+		float movementDegrees = 10;
 		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT)) {
 			movementDegrees = 1;
 		}
 		mBridge->yaw(movementDegrees);
 	} else if (button == Input::MouseWheelDown) {
-		int movementDegrees = 10;
+		float movementDegrees = 10;
 		if (Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT)) {
 			movementDegrees = 1;
 		}

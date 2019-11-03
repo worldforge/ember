@@ -331,17 +331,13 @@ void ConfigService::configError(const char* error) {
 	S_LOG_FAILURE (std::string ( error ));
 }
 
-const boost::filesystem::path& ConfigService::getHomeDirectory(BaseDirType baseDirType) const {
+boost::filesystem::path ConfigService::getHomeDirectory(BaseDirType baseDirType) const {
 	//check if the home directory is set, and if so use the setting. If else, fall back to the default path.
 	if (!mHomeDir.empty()) {
 		return mHomeDir;
 	} else {
 #ifdef _WIN32
-		static std::string finalPath;
-		if ( !finalPath.empty() )
-		{
-			return finalPath;
-		}
+		boost::filesystem::path finalPath;
 
 		//special folders in windows:
 		//http://msdn.microsoft.com/en-us/library/bb762494%28v=vs.85%29.aspx
@@ -352,14 +348,13 @@ const boost::filesystem::path& ConfigService::getHomeDirectory(BaseDirType baseD
 		}else{
 			finalPath = ".";
 		}
-		finalPath += "\\Ember\\";
+		finalPath /= "\\Ember\\";
 		return finalPath;
 #elif defined(__APPLE__)
-		static boost::filesystem::path path = boost::filesystem::path(getAppSupportDirPath()) / "Ember";
-		return path;
+		return boost::filesystem::path(getAppSupportDirPath()) / "Ember";
 #else
 		xdgHandle baseDirHandle{};
-		static boost::filesystem::path path;
+		boost::filesystem::path path;
 		if (!xdgInitHandle(&baseDirHandle)) {
 			path = (std::string(getenv("HOME")) + "/.ember/");
 		} else {
@@ -402,19 +397,17 @@ boost::filesystem::path ConfigService::getSharedDataDirectory() const {
 
 }
 
-const boost::filesystem::path& ConfigService::getSharedConfigDirectory() const {
+boost::filesystem::path ConfigService::getSharedConfigDirectory() const {
 #ifdef __APPLE__
-	static boost::filesystem::path path = getSharedDataDirectory() / "etc/ember/";
-	return path;
+	return getSharedDataDirectory() / "etc/ember/";
 #else
 	return mEtcDir;
 #endif
 }
 
-const boost::filesystem::path& ConfigService::getEmberDataDirectory() const {
+boost::filesystem::path ConfigService::getEmberDataDirectory() const {
 	if (hasItem("paths", "datadir")) {
-		static boost::filesystem::path path(static_cast<std::string> ( getValue("paths", "datadir")));
-		return path;
+		return boost::filesystem::path(static_cast<std::string> ( getValue("paths", "datadir")));
 	}
 //#ifdef __APPLE__
 //			return getBundleResourceDirPath();
@@ -426,8 +419,8 @@ const boost::filesystem::path& ConfigService::getEmberDataDirectory() const {
 	return getHomeDirectory(BaseDirType_DATA);
 }
 
-const boost::filesystem::path& ConfigService::getEmberMediaDirectory() const {
-	static boost::filesystem::path path;
+boost::filesystem::path ConfigService::getEmberMediaDirectory() const {
+	boost::filesystem::path path;
 	//look for a media channel key in the config, and if found use that, else use the version of ember as a standard path
 	if (hasItem("wfut", "channel")) {
 		path = getEmberDataDirectory() / static_cast<std::string> ( getValue("wfut", "channel"));
@@ -438,14 +431,12 @@ const boost::filesystem::path& ConfigService::getEmberMediaDirectory() const {
 }
 
 
-const boost::filesystem::path& ConfigService::getUserMediaDirectory() const {
-	static boost::filesystem::path path = getHomeDirectory(BaseDirType_DATA) / "user-media";
-	return path;
+boost::filesystem::path ConfigService::getUserMediaDirectory() const {
+	return getHomeDirectory(BaseDirType_DATA) / "user-media";
 }
 
-const boost::filesystem::path& ConfigService::getSharedMediaDirectory() const {
-	static boost::filesystem::path path = getSharedDataDirectory() / "media";
-	return path;
+boost::filesystem::path ConfigService::getSharedMediaDirectory() const {
+	return getSharedDataDirectory() / "media";
 }
 
 } // namespace Ember
