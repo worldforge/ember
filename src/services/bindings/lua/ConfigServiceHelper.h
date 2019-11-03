@@ -22,31 +22,31 @@
 #include "services/config/ConfigService.h"
 
 namespace {
-const std::string& _ConfigService_getHomeDirectory(const Ember::ConfigService* service, Ember::BaseDirType baseDirType) {
+std::string _ConfigService_getHomeDirectory(const Ember::ConfigService* service, Ember::BaseDirType baseDirType) {
 	return service->getHomeDirectory(baseDirType).string();
 }
 
-const std::string& _ConfigService_getSharedDataDirectory(const Ember::ConfigService* service) {
+std::string _ConfigService_getSharedDataDirectory(const Ember::ConfigService* service) {
 	return service->getSharedDataDirectory().string();
 }
 
-const std::string& _ConfigService_getEmberDataDirectory(const Ember::ConfigService* service) {
+std::string _ConfigService_getEmberDataDirectory(const Ember::ConfigService* service) {
 	return service->getEmberDataDirectory().string();
 }
 
-const std::string& _ConfigService_getEmberMediaDirectory(const Ember::ConfigService* service) {
+std::string _ConfigService_getEmberMediaDirectory(const Ember::ConfigService* service) {
 	return service->getEmberMediaDirectory().string();
 }
 
-const std::string& _ConfigService_getUserMediaDirectory(const Ember::ConfigService* service) {
+std::string _ConfigService_getUserMediaDirectory(const Ember::ConfigService* service) {
 	return service->getUserMediaDirectory().string();
 }
 
-const std::string& _ConfigService_getSharedMediaDirectory(const Ember::ConfigService* service) {
+std::string _ConfigService_getSharedMediaDirectory(const Ember::ConfigService* service) {
 	return service->getSharedMediaDirectory().string();
 }
 
-const std::string& _ConfigService_getSharedConfigDirectory(const Ember::ConfigService* service) {
+std::string _ConfigService_getSharedConfigDirectory(const Ember::ConfigService* service) {
 	return service->getSharedConfigDirectory().string();
 }
 }
