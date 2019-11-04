@@ -33,451 +33,227 @@ Torus Knot Software Ltd.
 #include <OgreFileSystem.h>
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX || OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-#include <sys/param.h>
-#include <dirent.h>
-#include <fnmatch.h>
-
-
-
-
-namespace Ember {
-namespace OgreView {
-
-/* Our simplified data entry structure */
-struct _finddata_t
-{
-    char *name;
-    int attrib;
-    unsigned long size;
-};
-
-long _findfirst(const char *pattern, struct _finddata_t *data);
-int _findnext(long id, struct _finddata_t *data);
-int _findclose(long id);
-
-}
-}
-#define _A_NORMAL 0x00  /* Normalfile-Noread/writerestrictions */
-#define _A_RDONLY 0x01  /* Read only file */
-#define _A_HIDDEN 0x02  /* Hidden file */
-#define _A_SYSTEM 0x04  /* System file */
-#define _A_SUBDIR 0x10  /* Subdirectory */
-#define _A_ARCH   0x20  /* Archive file */
-#define MAX_PATH MAXPATHLEN
-
-#endif
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-
-#include <windows.h>
-#include <direct.h>
-#include <io.h>
-#include <stdio.h>
-#include <ctype.h>
-
-#endif
+#include <boost/algorithm/string/replace.hpp>
 
 using namespace Ogre;
+
+namespace {
+
+boost::filesystem::path concatenate_path(const boost::filesystem::path& base, const boost::filesystem::path& name) {
+	if (base.empty() || name.is_absolute()) {
+		return name;
+	} else {
+		return base / name;
+	}
+}
+
+}
+
 namespace Ember {
 namespace OgreView {
-
-#if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
-
-struct _find_search_t
-{
-    char *pattern;
-    char *curfn;
-    char *directory;
-    int dirlen;
-    DIR *dirfd;
-};
-
-long _findfirst(const char *pattern, struct _finddata_t *data)
-{
-    _find_search_t *fs = new _find_search_t;
-    fs->curfn = NULL;
-    fs->pattern = NULL;
-
-    // Separate the mask from directory name
-    const char *mask = strrchr (pattern, '/');
-    if (mask)
-    {
-        fs->dirlen = mask - pattern;
-        mask++;
-        fs->directory = (char *)malloc (fs->dirlen + 1);
-        memcpy (fs->directory, pattern, fs->dirlen);
-        fs->directory [fs->dirlen] = 0;
-    }
-    else
-    {
-        mask = pattern;
-        fs->directory = strdup (".");
-        fs->dirlen = 1;
-    }
-
-    fs->dirfd = opendir (fs->directory);
-    if (!fs->dirfd)
-    {
-        _findclose ((long)fs);
-        return -1;
-    }
-
-    /* Hack for "*.*" -> "*' from DOS/Windows */
-    if (strcmp (mask, "*.*") == 0)
-        mask += 2;
-    fs->pattern = strdup (mask);
-
-    /* Get the first entry */
-    if (_findnext ((long)fs, data) < 0)
-    {
-        _findclose ((long)fs);
-        return -1;
-    }
-
-    return (long)fs;
+//-----------------------------------------------------------------------
+FileSystemArchive::FileSystemArchive(const String& name, const String& archType)
+		: Archive(name, archType), mBaseName(name) {
 }
 
-int _findnext(long id, struct _finddata_t *data)
-{
-    _find_search_t *fs = (_find_search_t *)id;
-
-    /* Loop until we run out of entries or find the next one */
-    dirent *entry;
-    for (;;)
-    {
-        if (!(entry = readdir (fs->dirfd)))
-            return -1;
-
-        /* See if the filename matches our pattern */
-        if (fnmatch (fs->pattern, entry->d_name, 0) == 0)
-            break;
-    }
-
-    if (fs->curfn)
-        free (fs->curfn);
-    data->name = fs->curfn = strdup (entry->d_name);
-
-    size_t namelen = strlen (entry->d_name);
-    char *xfn = new char [fs->dirlen + 1 + namelen + 1];
-    sprintf (xfn, "%s/%s", fs->directory, entry->d_name);
-
-    /* stat the file to get if it's a subdir and to find its length */
-    struct stat stat_buf;
-    if (stat (xfn, &stat_buf))
-    {
-        // Hmm strange, imitate a zero-length file then
-        data->attrib = _A_NORMAL;
-        data->size = 0;
-    }
-    else
-    {
-        if (S_ISDIR(stat_buf.st_mode))
-            data->attrib = _A_SUBDIR;
-        else
-            /* Default type to a normal file */
-            data->attrib = _A_NORMAL;
-
-        data->size = stat_buf.st_size;
-    }
-
-    delete [] xfn;
-
-    /* Files starting with a dot are hidden files in Unix */
-    if (data->name [0] == '.')
-        data->attrib |= _A_HIDDEN;
-
-    return 0;
-}
-
-int _findclose(long id)
-{
-    int ret;
-    _find_search_t *fs = (_find_search_t *)id;
-
-    ret = fs->dirfd ? closedir (fs->dirfd) : 0;
-    free (fs->pattern);
-    free (fs->directory);
-    if (fs->curfn)
-        free (fs->curfn);
-    delete fs;
-
-    return ret;
-}
-
-
-#endif
-}
-
-}
-
-    //-----------------------------------------------------------------------
-    static bool is_reserved_dir (const char *fn)
-    {
-        return (fn [0] == '.' && (fn [1] == 0 || (fn [1] == '.' && fn [2] == 0)));
-    }
-    //-----------------------------------------------------------------------
-    static bool is_absolute_path(const char* path)
-    {
+//-----------------------------------------------------------------------
+bool FileSystemArchive::isCaseSensitive() const {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        if (isalpha(uchar(path[0])) && path[1] == ':')
-            return true;
+	return false;
+#else
+	return true;
 #endif
-        return path[0] == '/' || path[0] == '\\';
-    }
-    //-----------------------------------------------------------------------
-    static String concatenate_path(const String& base, const String& name)
-    {
-        if (base.empty() || is_absolute_path(name.c_str()))
-            return name;
-        else
-            return base + '/' + name;
-    }
-namespace Ember {
-namespace OgreView {
-    //-----------------------------------------------------------------------
-    FileSystemArchive::FileSystemArchive(const String& name, const String& archType )
-        : Archive(name, archType)
-    {
-    }
-    //-----------------------------------------------------------------------
-    bool FileSystemArchive::isCaseSensitive(void) const
-    {
-        #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-            return false;
-        #else
-            return true;
-        #endif
 
-    }
+}
 
-    //-----------------------------------------------------------------------
-    void FileSystemArchive::findFiles(const String& pattern, bool recursive,
-        bool dirs, StringVector* simpleList, FileInfoList* detailList) const
-    {
-        long lHandle, res;
-        struct _finddata_t tagData{};
-        // pattern can contain a directory name, separate it from mask
-        size_t pos1 = pattern.rfind ('/');
-        size_t pos2 = pattern.rfind ('\\');
-        if (pos1 == pattern.npos || ((pos2 != pattern.npos) && (pos1 < pos2)))
-            pos1 = pos2;
-        String directory;
-        if (pos1 != pattern.npos)
-            directory = pattern.substr (0, pos1 + 1);
+void FileSystemArchive::findFiles(String pattern, bool recursive,
+								  bool dirs, StringVector* simpleList, FileInfoList* detailList) const {
 
-		String base_dir = mName;
-		if (!directory.empty ())
-		{
-			base_dir = concatenate_path(mName, directory);
-			// Remove the last '/'
-			base_dir.erase (base_dir.length () - 1);
-		}
+	std::unique_ptr<std::regex> regex = nullptr;
 
-		//if there's a file with the name "norecurse" we shouldn't recurse further
-		std::ifstream norecurseFile((base_dir + "/norecurse").c_str());
-		if (!norecurseFile.fail()) {
-			return;
-		}
-
-		base_dir.append ("/*");
-
-
-        String full_pattern = concatenate_path(mName, pattern);
-
-        lHandle = _findfirst(full_pattern.c_str(), &tagData);
-        res = 0;
-        while (lHandle != -1 && res != -1)
-        {
-            if ((dirs == ((tagData.attrib & _A_SUBDIR) != 0)) &&
-                (!dirs || !is_reserved_dir (tagData.name)))
-            {
-
-                if (simpleList)
-                {
-                    simpleList->push_back(directory + tagData.name);
-                }
-                else if (detailList)
-                {
-                    FileInfo fi;
-                    fi.archive = this;
-                    fi.filename = directory + tagData.name;
-                    fi.basename = tagData.name;
-                    fi.path = directory;
-                    fi.compressedSize = tagData.size;
-                    fi.uncompressedSize = tagData.size;
-                    detailList->push_back(fi);
-
-                }
-            }
-            res = _findnext( lHandle, &tagData );
-        }
-        // Close if we found any files
-        if(lHandle != -1)
-            _findclose(lHandle);
-
-
-        // Now find directories
-        if (recursive)
-        {
-
-
-            // Remove directory name from pattern
-            String mask ("/");
-            if (pos1 != pattern.npos)
-                mask.append (pattern.substr (pos1 + 1));
-            else
-                mask.append (pattern);
-
-            lHandle = _findfirst(base_dir.c_str (), &tagData);
-            res = 0;
-            while (lHandle != -1 && res != -1)
-            {
-        		//if the name of the directory is "source" we should ignore it, since these are directories
-        		//containing raw source materials (.psd files, .blend files etc) which we don't want to bring
-        		//into the client (they tend to be rather large)
-                if ((tagData.attrib & _A_SUBDIR) &&
-                    !is_reserved_dir (tagData.name) && !(tagData.attrib & _A_HIDDEN) &&
-                    std::strcmp(tagData.name, "source") != 0)
-                {
-                    // recurse
-                    base_dir = directory;
-                    base_dir.append (tagData.name).append (mask);
-                    findFiles(base_dir, recursive, dirs, simpleList, detailList);
-                }
-                res = _findnext( lHandle, &tagData );
-            }
-            // Close if we found any files
-            if(lHandle != -1)
-                _findclose(lHandle);
-        }
-    }
-    //-----------------------------------------------------------------------
-    FileSystemArchive::~FileSystemArchive()
-    {
-        unload();
-    }
-    //-----------------------------------------------------------------------
-    void FileSystemArchive::load()
-    {
-        // do nothing here, what has to be said will be said later
-    }
-    //-----------------------------------------------------------------------
-    void FileSystemArchive::unload()
-    {
-        // nothing to see here, move along
-    }
-    //-----------------------------------------------------------------------
-    DataStreamPtr FileSystemArchive::open(const String& filename, bool readOnly) const
-    {
-        String full_path = concatenate_path(mName, filename);
-
-        // Use filesystem to determine size
-        // (quicker than streaming to the end and back)
-        struct stat tagStat;
-		stat(full_path.c_str(), &tagStat);
-
-        // Always open in binary mode
-        std::ifstream *origStream = OGRE_NEW_T(std::ifstream, MEMCATEGORY_GENERAL)();
-        origStream->open(full_path.c_str(), std::ios::in | std::ios::binary);
-
-        // Should check ensure open succeeded, in case fail for some reason.
-        if (origStream->fail())
-        {
-            OGRE_DELETE_T(origStream, basic_ifstream, MEMCATEGORY_GENERAL);
-			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND,
-                "Cannot open file: " + filename,
-                "FileSystemArchive::open");
-        }
-
-        // Construct return stream, tell it to delete on destroy
-        FileStreamDataStream* stream = OGRE_NEW FileStreamDataStream(filename,
-            origStream, tagStat.st_size, true);
-        return DataStreamPtr(stream);
-    }
-    //-----------------------------------------------------------------------
-    StringVectorPtr FileSystemArchive::list(bool recursive, bool dirs) const
-    {
-		// directory change requires locking due to saved returns
-		StringVectorPtr ret(OGRE_NEW_T(StringVector, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
-
-        findFiles("*", recursive, dirs, ret.get(), 0);
-
-        return ret;
-    }
-    //-----------------------------------------------------------------------
-    FileInfoListPtr FileSystemArchive::listFileInfo(bool recursive, bool dirs) const
-    {
-        FileInfoListPtr ret(OGRE_NEW_T(FileInfoList, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
-
-        findFiles("*", recursive, dirs, 0, ret.get());
-
-        return ret;
-    }
-    //-----------------------------------------------------------------------
-    StringVectorPtr FileSystemArchive::find(const String& pattern,
-                                            bool recursive, bool dirs) const
-    {
-		StringVectorPtr ret(OGRE_NEW_T(StringVector, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
-
-        findFiles(pattern, recursive, dirs, ret.get(), 0);
-
-        return ret;
-
-    }
-    //-----------------------------------------------------------------------
-    FileInfoListPtr FileSystemArchive::findFileInfo(const String& pattern,
-        bool recursive, bool dirs) const
-    {
-		FileInfoListPtr ret(OGRE_NEW_T(FileInfoList, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
-
-        findFiles(pattern, recursive, dirs, 0, ret.get());
-
-        return ret;
-    }
-    //-----------------------------------------------------------------------
-	bool FileSystemArchive::exists(const String& filename) const
-	{
-        String full_path = concatenate_path(mName, filename);
-
-        struct stat tagStat;
-        bool ret = (stat(full_path.c_str(), &tagStat) == 0);
-
-		// stat will return true if the filename is absolute, but we need to check
-		// the file is actually in this archive
-        if (ret && is_absolute_path(filename.c_str()))
-		{
-			// only valid if full path starts with our base
-			ret = Ogre::StringUtil::startsWith(full_path, mName);
-		}
-
-		return ret;
+	// pattern can contain a directory name, separate it from mask
+	size_t pos1 = pattern.rfind('/');
+	size_t pos2 = pattern.rfind('\\');
+	if (pos1 == String::npos || ((pos2 != String::npos) && (pos1 < pos2)))
+		pos1 = pos2;
+	String directory;
+	if (pos1 != String::npos) {
+		directory = pattern.substr(0, pos1 + 1);
+		pattern = pattern.substr(pos1 + 1);
 	}
-	
-	time_t FileSystemArchive::getModifiedTime(const String& filename) const
-	{
-		String full_path = concatenate_path(mName, filename);
 
-		struct stat tagStat;
-		bool ret = (stat(full_path.c_str(), &tagStat) == 0);
-
-		if (ret)
-		{
-			return tagStat.st_mtime;
-		}
-		else
-		{
-			return 0;
-		}
-
+	auto base_dir = mBaseName;
+	if (!directory.empty()) {
+		base_dir = concatenate_path(mBaseName, directory);
 	}
-    //-----------------------------------------------------------------------
-    const String& FileSystemArchiveFactory::getType(void) const
-    {
-        static String name = "EmberFileSystem";
-        return name;
-    }
+
+	if (pattern != "*") {
+		auto patternEscaped = pattern;
+		boost::replace_all(patternEscaped, "\\", "\\\\");
+		boost::replace_all(patternEscaped, "^", "\\^");
+		boost::replace_all(patternEscaped, ".", "\\.");
+		boost::replace_all(patternEscaped, "$", "\\$");
+		boost::replace_all(patternEscaped, "|", "\\|");
+		boost::replace_all(patternEscaped, "(", "\\(");
+		boost::replace_all(patternEscaped, ")", "\\)");
+		boost::replace_all(patternEscaped, "[", "\\[");
+		boost::replace_all(patternEscaped, "]", "\\]");
+		boost::replace_all(patternEscaped, "*", "\\*");
+		boost::replace_all(patternEscaped, "+", "\\+");
+		boost::replace_all(patternEscaped, "?", "\\?");
+		boost::replace_all(patternEscaped, "/", "\\/");
+		boost::replace_all(patternEscaped, "{", "\\{");
+		boost::replace_all(patternEscaped, "}", "\\}");
+
+		boost::replace_all(patternEscaped, "\\?", ".");
+		boost::replace_all(patternEscaped, "\\*", ".*");
+
+		regex = std::make_unique<std::regex>(patternEscaped);
+	}
+
+	if (boost::filesystem::exists(base_dir)) {
+		findFiles(base_dir, regex, recursive, dirs, simpleList, detailList);
+	}
+
+}
+
+//-----------------------------------------------------------------------
+void FileSystemArchive::findFiles(const boost::filesystem::path& directory,
+								  const std::unique_ptr<std::regex>& pattern,
+								  bool recursive,
+								  bool dirs, StringVector* simpleList, FileInfoList* detailList) const {
+
+	//if there's a file with the name "norecurse" we shouldn't recurse further
+	if (boost::filesystem::exists(directory / "norecurse")) {
+		return;
+	}
+
+	boost::filesystem::directory_iterator it(directory);
+	boost::filesystem::directory_iterator end{};
+	while (it != end) {
+		if (boost::filesystem::is_directory(it->path())) {
+			if (recursive) {
+				if (it->path().filename().string() != "source") {
+					findFiles(it->path(), pattern, recursive, dirs, simpleList, detailList);
+				}
+			}
+		} else {
+			if (!pattern || std::regex_match(it->path().filename().string(), *pattern)) {
+				if (simpleList) {
+					simpleList->emplace_back(boost::filesystem::relative(it->path(), mBaseName).string());
+				} else if (detailList) {
+					auto relativePath = boost::filesystem::relative(it->path(), mBaseName);
+					auto parentPath = relativePath.parent_path();
+					FileInfo fi;
+					fi.archive = this;
+					fi.filename = relativePath.string();
+					fi.basename = it->path().filename().string();
+					fi.path = parentPath.empty() ? "" : parentPath.string() + "/";
+					fi.compressedSize = boost::filesystem::file_size(it->path());
+					fi.uncompressedSize = fi.compressedSize;
+					detailList->emplace_back(std::move(fi));
+				}
+			}
+		}
+		it++;
+	}
+
+}
+
+//-----------------------------------------------------------------------
+FileSystemArchive::~FileSystemArchive() {
+	unload();
+}
+
+//-----------------------------------------------------------------------
+void FileSystemArchive::load() {
+	// do nothing here, what has to be said will be said later
+}
+
+//-----------------------------------------------------------------------
+void FileSystemArchive::unload() {
+	// nothing to see here, move along
+}
+
+//-----------------------------------------------------------------------
+DataStreamPtr FileSystemArchive::open(const String& filename, bool readOnly) const {
+	auto full_path = concatenate_path(mName, filename);
+
+	// Always open in binary mode
+	auto* origStream = OGRE_NEW_T(std::ifstream, MEMCATEGORY_GENERAL)();
+	origStream->open(full_path.c_str(), std::ios::in | std::ios::binary);
+
+	// Should check ensure open succeeded, in case fail for some reason.
+	if (origStream->fail()) {
+		OGRE_DELETE_T(origStream, basic_ifstream, MEMCATEGORY_GENERAL);
+		OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND,
+					"Cannot open file: " + filename,
+					"FileSystemArchive::open");
+	}
+
+	auto size = boost::filesystem::file_size(full_path);
+	// Construct return stream, tell it to delete on destroy
+	auto* stream = OGRE_NEW FileStreamDataStream(filename,
+												 origStream, size, true);
+	return DataStreamPtr(stream);
+}
+
+//-----------------------------------------------------------------------
+StringVectorPtr FileSystemArchive::list(bool recursive, bool dirs) const {
+	// directory change requires locking due to saved returns
+	StringVectorPtr ret(OGRE_NEW_T(StringVector, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
+
+	findFiles("*", recursive, dirs, ret.get(), nullptr);
+
+	return ret;
+}
+
+//-----------------------------------------------------------------------
+FileInfoListPtr FileSystemArchive::listFileInfo(bool recursive, bool dirs) const {
+	FileInfoListPtr ret(OGRE_NEW_T(FileInfoList, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
+
+	findFiles("*", recursive, dirs, nullptr, ret.get());
+
+	return ret;
+}
+
+//-----------------------------------------------------------------------
+StringVectorPtr FileSystemArchive::find(const String& pattern,
+										bool recursive, bool dirs) const {
+	StringVectorPtr ret(OGRE_NEW_T(StringVector, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
+
+	findFiles(pattern, recursive, dirs, ret.get(), nullptr);
+
+	return ret;
+
+}
+
+//-----------------------------------------------------------------------
+FileInfoListPtr FileSystemArchive::findFileInfo(const String& pattern,
+												bool recursive, bool dirs) const {
+	FileInfoListPtr ret(OGRE_NEW_T(FileInfoList, MEMCATEGORY_GENERAL)(), SPFM_DELETE_T);
+
+	findFiles(pattern, recursive, dirs, nullptr, ret.get());
+
+	return ret;
+}
+
+//-----------------------------------------------------------------------
+bool FileSystemArchive::exists(const String& filename) const {
+	auto full_path = concatenate_path(mBaseName, filename);
+	return boost::filesystem::exists(full_path);
+}
+
+time_t FileSystemArchive::getModifiedTime(const String& filename) const {
+	auto full_path = concatenate_path(mBaseName, filename);
+	return boost::filesystem::last_write_time(full_path);
+}
+
+//-----------------------------------------------------------------------
+const String& FileSystemArchiveFactory::getType() const {
+	static String name = "EmberFileSystem";
+	return name;
+}
 
 }
 }

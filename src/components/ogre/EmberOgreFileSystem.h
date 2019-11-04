@@ -35,6 +35,9 @@ Torus Knot Software Ltd.
 #include <OgreArchive.h>
 #include <OgreArchiveFactory.h>
 
+#include <boost/filesystem.hpp>
+#include <regex>
+
 namespace Ember {
 namespace OgreView {
 
@@ -47,6 +50,8 @@ namespace OgreView {
     class FileSystemArchive : public Ogre::Archive
     {
     protected:
+
+    	boost::filesystem::path mBaseName;
         /** Utility method to retrieve all files in a directory matching pattern.
         @param pattern File pattern
         @param recursive Whether to cascade down directories
@@ -54,10 +59,10 @@ namespace OgreView {
             instead of files
         @param simpleList Populated if retrieving a simple list
         @param detailList Populated if retrieving a detailed list
-        @param currentDir The current directory relative to the base of the
-            archive, for file naming
         */
-        void findFiles(const Ogre::String& pattern, bool recursive, bool dirs,
+		void findFiles(Ogre::String pattern, bool recursive, bool dirs,
+					   Ogre::StringVector* simpleList, Ogre::FileInfoList* detailList) const;
+        void findFiles(const boost::filesystem::path& directory, const std::unique_ptr<std::regex>& pattern, bool recursive, bool dirs,
             Ogre::StringVector* simpleList, Ogre::FileInfoList* detailList) const;
 
     public:
@@ -104,7 +109,7 @@ namespace OgreView {
     class FileSystemArchiveFactory : public Ogre::ArchiveFactory
     {
     public:
-        virtual ~FileSystemArchiveFactory() {}
+        ~FileSystemArchiveFactory() override = default;
         /// @copydoc FactoryObj::getType
         const Ogre::String& getType() const override;
 
