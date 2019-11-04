@@ -140,15 +140,15 @@ void FileSystemArchive::findFiles(const boost::filesystem::path& directory,
 		} else {
 			if (!pattern || std::regex_match(it->path().filename().string(), *pattern)) {
 				if (simpleList) {
-					simpleList->emplace_back(boost::filesystem::relative(it->path(), mBaseName).string());
+					simpleList->emplace_back(boost::filesystem::relative(it->path(), mBaseName).generic_string());
 				} else if (detailList) {
 					auto relativePath = boost::filesystem::relative(it->path(), mBaseName);
 					auto parentPath = relativePath.parent_path();
 					FileInfo fi;
 					fi.archive = this;
-					fi.filename = relativePath.string();
-					fi.basename = it->path().filename().string();
-					fi.path = parentPath.empty() ? "" : parentPath.string() + "/";
+					fi.filename = relativePath.generic_string();
+					fi.basename = it->path().filename().generic_string();
+					fi.path = parentPath.empty() ? "" : parentPath.generic_string() + "/";
 					fi.compressedSize = boost::filesystem::file_size(it->path());
 					fi.uncompressedSize = fi.compressedSize;
 					detailList->emplace_back(std::move(fi));
