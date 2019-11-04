@@ -91,7 +91,8 @@ set(WF_INCLUDE_DIRS)
 set(WF_LIBRARIES)
 
 if (WIN32)
-    link_libraries("Shlwapi")
+    link_libraries("Shlwapi") #Needed for getting Windows specific directories.
+    add_definitions(-D_WIN32_WINNT=0x0601) #target Windows 7
 endif()
 
 
