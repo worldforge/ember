@@ -173,7 +173,7 @@ struct ValueTypeHelper< ::Atlas::Message::Element, float>
 {
 	static float convert(const ::Atlas::Message::Element& v)
 	{
-		return v.asFloat();
+		return static_cast<float>(v.asFloat());
 	}
 };
 
@@ -245,7 +245,7 @@ struct ValueTypeHelper< ::varconf::Variable, float>
 {
 	static float convert(const ::varconf::Variable& v)
 	{
-		return static_cast<double>(v);
+		return static_cast<float>(static_cast<double>(v));
 	}
 };
 
