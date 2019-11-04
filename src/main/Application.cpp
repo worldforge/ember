@@ -503,7 +503,7 @@ void Application::startScripting() {
 			readme << "Any script files placed here will be executed as long as they have a supported file suffix.\nScripts are executed in alphabetical order.\nEmber currently supports lua scripts (ending with '.lua').";
 			readme.close();
 			S_LOG_INFO("Created user user scripting directory (" + userScriptDirectoryPath.string() + ").");
-		} catch (const std::exception& e) {
+		} catch (const std::exception&) {
 			S_LOG_INFO("Could not create user scripting directory.");
 		}
 	}

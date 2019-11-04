@@ -367,7 +367,7 @@ EmberEntity* EmberEntity::getEmberLocation() const {
 	return dynamic_cast<EmberEntity*>(getLocation());
 }
 
-EmberEntity* EmberEntity::getEmberContained(unsigned int index) const {
+EmberEntity* EmberEntity::getEmberContained(size_t index) const {
 	return dynamic_cast<EmberEntity*>(getContained(index));
 }
 

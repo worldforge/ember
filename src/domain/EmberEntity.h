@@ -154,7 +154,7 @@ public:
 	 * @param index The index of the child entity.
 	 * @return A pointer to a contained entity.
 	 */
-	EmberEntity* getEmberContained(unsigned int index) const;
+	EmberEntity* getEmberContained(size_t index) const;
 
 	/**
 	 * @brief Returns true if init(...) has been called and the entity been set up.
