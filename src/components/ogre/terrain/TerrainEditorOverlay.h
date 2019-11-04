@@ -51,7 +51,7 @@ namespace Terrain
 class TerrainEditor;
 class TerrainManager;
 class BasePointUserObject;
-class TerrainEditBasePointMovement;
+struct TerrainEditBasePointMovement;
 class TerrainEditorOverlay;
 class TerrainPage;
 

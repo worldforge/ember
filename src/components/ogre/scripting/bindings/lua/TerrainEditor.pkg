@@ -66,7 +66,7 @@ public:
 };
 
 
-class TerrainEditBasePointMovement
+struct TerrainEditBasePointMovement
 {
 
 float mVerticalMovement;
