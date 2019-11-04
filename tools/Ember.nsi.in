@@ -11,10 +11,10 @@
 ;General
 
   ; The name of the installer
-  Name "Ember-0.7.2"
+  Name "Ember"
 
   ; The file to write
-  OutFile "Ember-0.7.2.exe"
+  OutFile "Ember-@VERSION@.exe"
 
   ; The default installation directory
   InstallDir $PROGRAMFILES\Worldforge\Ember
@@ -62,7 +62,7 @@ Section "Ember (required)"
   SetOutPath $INSTDIR
   
   ; Put files there
-  File /r "release\*.*"
+  File /r "@CMAKE_INSTALL_PREFIX@\*.*"
 
   ; Write the installation path into the registry
   WriteRegStr HKLM SOFTWARE\Ember "Install_Dir" "$INSTDIR"

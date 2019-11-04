@@ -1,6 +1,12 @@
-add_executable(ember.bin Application.cpp ConfigBoundLogObserver.cpp Ember.cpp)
+if (WIN32)
+	set(EMBER_EXECUTABLE_NAME ember)
+else()
+	set(EMBER_EXECUTABLE_NAME ember.bin)
+endif()
 
-target_link_libraries(ember.bin
+add_executable(${EMBER_EXECUTABLE_NAME} Application.cpp ConfigBoundLogObserver.cpp Ember.cpp)
+
+target_link_libraries(${EMBER_EXECUTABLE_NAME}
         ConnectorDefinitions_bindings_lua
         Domain_bindings_lua
         EmberServices_bindings_lua
@@ -26,9 +32,9 @@ target_link_libraries(ember.bin
         domain
         framework)
 
-target_link_libraries(ember.bin ${BULLET_LIBRARIES})
+target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-    conan_target_link_libraries(ember.bin)
+    conan_target_link_libraries(${EMBER_EXECUTABLE_NAME})
 endif ()
 
-install(TARGETS ember.bin DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
