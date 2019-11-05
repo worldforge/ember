@@ -100,13 +100,12 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     message(STATUS "Using Conan for dependency resolution.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
-    #Prefer static linkage when using Conan
-#    IF (WIN32)
-#        SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-#    ELSE (WIN32)
-#        SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-#    ENDIF (WIN32)
-    #set(CEGUI_STATIC 1)
+	#We need to copy all .dll files that Conan installed too.
+	#TODO: make sure that Conan only builds static libraries on Windows.
+	if (WIN32)
+		file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/bin/*.dll")
+		install(FILES ${DLL_FILES} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+	endif()
 else()
 	find_package(Boost
 			1.60.0
