@@ -93,7 +93,7 @@ SectionEnd
 ;--------------------------------
 ; Uninstaller
 
-Section "Uninstall"
+Section "un.Uninstall"
   
   ; Remove registry keys
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Ember"
