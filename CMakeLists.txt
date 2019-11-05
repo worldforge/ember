@@ -116,6 +116,17 @@ else()
 	link_directories(${Boost_LIBRARY_DIRS})
 	link_libraries(${Boost_LIBRARIES})
 	include_directories(${Boost_INCLUDE_DIRS})
+
+    #Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.
+    #This allows for a developer to get some insight into why some frames take too long.
+    find_package(unwind 1.1)
+    if (UNWIND_FOUND)
+        message(STATUS "Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
+        link_directories(${UNWIND_LIBRARY_DIRS})
+        link_libraries(${UNWIND_LIBRARIES})
+        include_directories(${UNWIND_INCLUDE_DIR})
+        add_definitions(-DUNWIND_ENABLED)
+    endif (UNWIND_FOUND)
 endif ()
 
 set(CEGUI_STATIC "ON")
@@ -303,17 +314,6 @@ find_package(Bullet 2.81 REQUIRED)
 include_directories(${BULLET_INCLUDE_DIRS})
 
 find_package(cppunit 1.8.0)
-
-#Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.
-#This allows for a developer to get some insight into why some frames take too long.
-find_package(unwind 1.1)
-if (UNWIND_FOUND)
-    message(STATUS "Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
-    link_directories(${UNWIND_LIBRARY_DIRS})
-    link_libraries(${UNWIND_LIBRARIES})
-    include_directories(${UNWIND_INCLUDE_DIR})
-    add_definitions(-DUNWIND_ENABLED)
-endif (UNWIND_FOUND)
 
 #We'll use xmllint for validating schemas of some of our xml files.
 find_program(XMLLINT xmllint)
