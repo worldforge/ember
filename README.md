@@ -1,6 +1,8 @@
 # Ember
 
 [![Join us on Gitter!](https://badges.gitter.im/Worldforge.svg)](https://gitter.im/Worldforge/Lobby)
+[![Appveyor build status](https://ci.appveyor.com/api/projects/status/github/worldforge/ember?branch=master&svg=true)](https://ci.appveyor.com/project/erikogenvik/ember)
+[![Travis build Status](https://travis-ci.com/worldforge/ember.svg?branch=master)](https://travis-ci.com/worldforge/ember)
 
 Ember is the client for the [WorldForge](http://worldforge.org/ "The main Worldforge site") virtual world system.
 It can be used for playing and exploring as well as authoring.
@@ -13,21 +15,21 @@ To learn more about Worldforge visit our [website](http://worldforge.org/ "The m
 
 ## Installation
 
-Since Ember uses a lot of internal Worldforge libraries which might not be supplied by your system we strongly suggest 
-that you use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool to compile Ember.
+The simplest way to install all required dependencies is by using [Conan](https://www.conan.io).
+
+```bash
+conan remote add worldforge https://api.bintray.com/conan/worldforge/worldforge-conan
+mkdir build && cd build
+conan install .. --build missing
+cmake ..
+make -j all install media-download
+```
+
+Alternatively you can use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool to compile Ember.
 This is script provided by the Worldforge project which will download and install all of the required libraries and 
 components used by Worldforge.
 
-If you want to compile yourself, make sure that both OGRE and CEGUI is available on your system and do
-```
-mkdir build_`arch` && cd build_`arch`
-cmake ..
-make
-make media-download
-make install
-```
-
-The ```make media-download``` will fetch all of the needed media files from the net. Rsync is required.
+The ```make media-download``` target will fetch all of the needed media files from the net. Rsync is required.
 
 ### Tests
 
