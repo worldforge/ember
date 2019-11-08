@@ -35,7 +35,7 @@ The ```make media-download``` target will fetch all of the needed media files fr
 
 The test suite can be built and run using the ```check``` target. For example:
 
-```
+```bash
 make check
 ```
 
@@ -43,7 +43,7 @@ make check
 
 If Doxygen is available API documentation can be generated using the ```dox``` target. For example:
 
-```
+```bash
 make dox
 ```
 
