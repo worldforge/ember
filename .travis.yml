@@ -51,10 +51,28 @@ script:
       conan profile update settings.compiler.libcxx=libstdc++11 default
     fi
   - conan install .. -pr default --build=missing
-  - mkdir -p ~/install
-  - cmake -DCMAKE_INSTALL_PREFIX=~/install ..
+  - mkdir -p ~/install/usr
+  - cmake -DCMAKE_INSTALL_PREFIX=~/install/usr ..
   - make media-download
   - make -j2
   - make -j2 check
   - if [ "$TRAVIS_OS_NAME" != "osx" -a "$CC" == "gcc" ]; then make dox; fi
   - make install
+  - |
+    if [[ "$TRAVIS_OS_NAME" != "osx" && "$CXX" == "gcc" ]]; then
+      ln -s ~/install/usr/share/icons/hicolor/64x64/apps/ember.png ~/install/
+      ln -s ~/install/usr/share/applications/ember.desktop ~/install/
+      ln -s ~/install/ember.png ~/install/.DirIcon
+      curl https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-x86_64 > ~/install/AppRun
+      chmod a+x ~/install/AppRun
+      curlhttps://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage > appimagetool-x86_64.AppImage
+      chmod a+x appimagetool-x86_64.AppImage
+      appimagetool-x86_64.AppImage ~/install
+    fi
+deploy:
+  provider: bintray
+  file: build/bintray.json
+  edge: true # opt in to dpl v2
+  on:
+    branch: master
+    condition: $TRAVIS_OS_NAME != "osx" && $CXX == "gcc"

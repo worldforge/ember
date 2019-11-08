@@ -335,6 +335,7 @@ endforeach (FILE MODELDEFINITIONS_FILES)
 
 
 configure_file(tools/support/update_lua_bindings.bat.in scripts/update_lua_bindings.bat @ONLY)
+configure_file(tools/bintray.json.in bintray.json @ONLY)
 configure_file(tools/ember.conf.in ember.conf @ONLY)
 configure_file(tools/ember.in ember @ONLY)
 configure_file(tools/Ember.nsi.in Ember.nsi @ONLY)
