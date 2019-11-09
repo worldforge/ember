@@ -9,8 +9,6 @@
 [media]
 #if true, all media will be preloaded upon startup, resulting in a longer startup time, but avoiding ingame stuttering when media is requested
 preloadmedia=false
-#if true, all media catalogs will be searched recursive. This takes some time at startup, but is needed for media authoring
-loadmediarecursive = true
 #a list of extra resource locations to look in for resources. These will be added in addition to those found in resources.cfg
 #Use ";" as separator between multiple locations. For example: extraresourcelocations="/home/foo/media;/home/foo/morestuff"
 extraresourcelocations=""

@@ -35,7 +35,9 @@ namespace Ember {
 namespace OgreView {
 
 class FileSystemArchiveFactory;
+
 struct EmberResourceLoadingListener;
+
 
 /**
 @author Erik Ogenvik
@@ -49,6 +51,13 @@ If a directory contains a file named "norecurse" (it can be empty) Ember won't r
 */
 class OgreResourceLoader : public ConsoleObject {
 public:
+	enum class OnFailure {
+		IGNORE,
+		REPORT,
+		THROW
+	};
+
+
 	explicit OgreResourceLoader();
 
 	~OgreResourceLoader() override;
@@ -56,7 +65,9 @@ public:
 	void initialize();
 
 	void loadBootstrap();
+
 	void loadGui();
+
 	void loadGeneral();
 
 	void preloadMedia();
@@ -70,7 +81,7 @@ public:
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	void runCommand(const std::string &command, const std::string &args) override;
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	 * Adds a media location in the filesystem.
@@ -90,24 +101,22 @@ public:
 	const ConsoleCommandWrapper UnloadUnusedResources;
 
 protected:
-	bool mLoadRecursive;
-
 	/**
 	 * @brief A store of extra locations, as specified in config or command line.
 	 */
 	std::vector<std::string> mExtraResourceLocations;
 
-	std::vector<std::string> mLoadedSections;
+	std::unique_ptr<FileSystemArchiveFactory> mFileSystemArchiveFactory;
 
-	FileSystemArchiveFactory* mFileSystemArchiveFactory;
-
-	EmberResourceLoadingListener* mLoadingListener;
+	std::unique_ptr<EmberResourceLoadingListener> mLoadingListener;
 
 	std::vector<std::string> mResourceRootPaths;
 
 
-	bool addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
-	bool addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive);
+	bool addUserMedia(const std::string& path, const std::string& type, const std::string& section);
+
+	bool addSharedMedia(const std::string& path, const std::string& type, const std::string& section);
+
 	/**
 	 * Checks if there's either processed media, or raw media repository available, and use that if possible.
 	 * @param path
@@ -115,21 +124,20 @@ protected:
 	 * @param recursive
 	 * @return True if media was found.
 	 */
-	bool addSourceRepoMedia(const std::string& path, const std::string& section, bool recursive);
-
-	bool isExistingDir(const std::string& path) const;
+	bool addSourceRepoMedia(const std::string& path, const std::string& section);
 
 	/**
 	 * @brief Adds a resource directory to the Ogre resource system.
 	 * @param path File system path.
 	 * @param type The type of archive.
 	 * @param section The resource group to add it to.
-	 * @param recursive Whether it should be searched recursively.
-	 * @param reportFailure Whether any failures to find or add the path should be written to the log.
-	 * @param throwOnFailure Throws an exception on failure.
+	 * @param onFailure What to do if we fail to find the directory.
 	 * @return True if the path was successfully added.
 	 */
-	bool addResourceDirectory(const boost::filesystem::path& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure = false);
+	bool addResourceDirectory(const boost::filesystem::path& path,
+							  const std::string& type,
+							  const std::string& section,
+							  OnFailure onFailure);
 
 	void observeDirectory(const boost::filesystem::path& path);
 

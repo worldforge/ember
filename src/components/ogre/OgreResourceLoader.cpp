@@ -115,16 +115,13 @@ struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
 
 OgreResourceLoader::OgreResourceLoader() :
 		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."),
-		mLoadRecursive(false) {
-	mFileSystemArchiveFactory = new FileSystemArchiveFactory();
-	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory);
+		mFileSystemArchiveFactory(std::make_unique<FileSystemArchiveFactory>()),
+		mLoadingListener(std::make_unique<EmberResourceLoadingListener>()) {
+	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory.get());
 }
 
 OgreResourceLoader::~OgreResourceLoader() {
-	//Don't deregister, since this destructor needs to be called after OGRE has been shut down.
-	delete mLoadingListener;
-
-	delete mFileSystemArchiveFactory;
+	//Don't deregister mLoadingListener, since this destructor needs to be called after OGRE has been shut down.
 	for (auto& path : mResourceRootPaths) {
 		Ember::FileSystemObserver::getSingleton().remove_directory(path);
 	}
@@ -132,19 +129,12 @@ OgreResourceLoader::~OgreResourceLoader() {
 
 void OgreResourceLoader::initialize() {
 
-	mLoadingListener = new EmberResourceLoadingListener();
-	Ogre::ResourceGroupManager::getSingleton().setLoadingListener(mLoadingListener);
+	Ogre::ResourceGroupManager::getSingleton().setLoadingListener(mLoadingListener.get());
 
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	auto& configSrv = EmberServices::getSingleton().getConfigService();
 
-	//check from the config if we should load media recursively
-	//this is needed for most authoring, since it allows us to find all meshes before they are loaded
-	if (configSrv.itemExists("media", "loadmediarecursive")) {
-		mLoadRecursive = (bool) configSrv.getValue("media", "loadmediarecursive");
-	}
-
-	if (EmberServices::getSingleton().getConfigService().itemExists("media", "extraresourcelocations")) {
-		varconf::Variable resourceConfigFilesVar = EmberServices::getSingleton().getConfigService().getValue("media", "extraresourcelocations");
+	if (configSrv.itemExists("media", "extraresourcelocations")) {
+		varconf::Variable resourceConfigFilesVar = configSrv.getValue("media", "extraresourcelocations");
 		std::string resourceConfigFiles = resourceConfigFilesVar.as_string();
 		mExtraResourceLocations = Tokeniser::split(resourceConfigFiles, ";");
 	}
@@ -166,12 +156,12 @@ void OgreResourceLoader::unloadUnusedResources() {
 	}
 }
 
-bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
+bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section) {
 	auto sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
-	return addResourceDirectory(sharedMediaPath / path, type, section, recursive, true, true);
+	return addResourceDirectory(sharedMediaPath / path, type, section, OnFailure::THROW);
 }
 
-bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::string& section, bool recursive) {
+bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::string& section) {
 
 	//If there's processed media available, use that.
 	//Otherwise, if the raw media repository is available, use that instead.
@@ -183,7 +173,7 @@ bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::
 		processedMediaRepoDir /= relativePath;
 		if (boost::filesystem::is_directory(processedMediaRepoDir)) {
 			S_LOG_INFO("Found processed media repo at '" << processedMediaRepoDir.string() << "'.");
-			return addResourceDirectory(processedMediaRepoDir.string(), "EmberFileSystem", section, recursive, true, true);
+			return addResourceDirectory(processedMediaRepoDir.string(), "EmberFileSystem", section, OnFailure::THROW);
 		}
 	}
 #endif
@@ -196,7 +186,7 @@ bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::
 		sourceMediaRepoDir /= relativePath;
 		if (boost::filesystem::is_directory(sourceMediaRepoDir)) {
 			S_LOG_INFO("Found source media repo at '" << sourceMediaRepoDir.string() << "'.");
-			return addResourceDirectory(sourceMediaRepoDir.string(), "EmberFileSystem", section, recursive, true, true);
+			return addResourceDirectory(sourceMediaRepoDir.string(), "EmberFileSystem", section, OnFailure::THROW);
 		}
 	}
 #endif
@@ -204,38 +194,49 @@ bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::
 }
 
 
-bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive) {
+bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section) {
 	auto userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
 	auto emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
-	bool foundDir = addResourceDirectory(emberMediaPath / path, type, section, recursive, true);
+	bool foundDir = addResourceDirectory(emberMediaPath / path, type, section, OnFailure::REPORT);
 
-	return addResourceDirectory(userMediaPath / path, type, section, recursive, false) || foundDir;
+	return addResourceDirectory(userMediaPath / path, type, section, OnFailure::IGNORE) || foundDir;
 }
 
-bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure) {
+bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& path,
+											  const std::string& type,
+											  const std::string& section,
+											  OnFailure onFailure) {
 	if (boost::filesystem::is_directory(path)) {
 		S_LOG_VERBOSE("Adding dir " << path.string());
 		try {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path.string(), type, section, recursive);
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path.string(), type, section, true);
 			mResourceRootPaths.emplace_back(path.string());
 			observeDirectory(path);
 
 			return true;
 		} catch (const std::exception&) {
-			if (throwOnFailure) {
-				throw Ember::Exception(std::string("Could not load from required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
-			}
-			if (reportFailure) {
-				S_LOG_FAILURE("Couldn't load " << path.string() << ". Continuing as if nothing happened.");
+			switch (onFailure) {
+				case OnFailure::IGNORE:
+					break;
+				case OnFailure::REPORT:
+					S_LOG_FAILURE("Couldn't load " << path.string() << ". Continuing as if nothing happened.");
+					break;
+				case OnFailure::THROW:
+					throw Ember::Exception(std::string("Could not load from required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
+					break;
 			}
 		}
 	} else {
-		if (throwOnFailure) {
-			throw Ember::Exception(std::string("Could not find required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
-		}
-		if (reportFailure) {
-			S_LOG_VERBOSE("Couldn't find resource directory " << path.string());
+		switch (onFailure) {
+			case OnFailure::IGNORE:
+				break;
+			case OnFailure::REPORT:
+				S_LOG_FAILURE("Couldn't find resource directory " << path.string());
+				break;
+			case OnFailure::THROW:
+				throw Ember::Exception(std::string("Could not find required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
+				break;
 		}
 	}
 	return false;
@@ -247,39 +248,39 @@ void OgreResourceLoader::loadBootstrap() {
 	//Add the "assets" directory, which contains most of the assets
 	addMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "RTShaderLib" / "materials", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true, true);
-	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "RTShaderLib" / "GLSL", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true, true);
-	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "ShadowVolume", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true, true);
+	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "RTShaderLib" / "materials", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, OnFailure::THROW);
+	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "RTShaderLib" / "GLSL", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, OnFailure::THROW);
+	addResourceDirectory(boost::filesystem::path(OGRE_MEDIA_DIR) / "ShadowVolume", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, OnFailure::THROW);
 
-	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
 void OgreResourceLoader::loadGui() {
-	addSharedMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-	addUserMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	addSharedMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	addUserMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
 void OgreResourceLoader::loadGeneral() {
 
 	//Lua scripts
-	addSharedMedia("scripting", "EmberFileSystem", "Scripting", true);
-	addUserMedia("scripting", "EmberFileSystem", "Scripting", true);
+	addSharedMedia("scripting", "EmberFileSystem", "Scripting");
+	addUserMedia("scripting", "EmberFileSystem", "Scripting");
 
 	//Model definitions, terrain definitions, sound definitions and entity mappings
-	addSharedMedia("data", "EmberFileSystem", "Data", true);
-	addUserMedia("data", "EmberFileSystem", "Data", true);
+	addSharedMedia("data", "EmberFileSystem", "Data");
+	addUserMedia("data", "EmberFileSystem", "Data");
 
 	//The Caelum component
 	addMedia("assets_external/caelum", "Caelum");
-	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum", true);
+	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum");
 
 	//Entity recipes
-	addSharedMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);
-	addUserMedia("entityrecipes", "EmberFileSystem", "EntityRecipes", true);
+	addSharedMedia("entityrecipes", "EmberFileSystem", "EntityRecipes");
+	addUserMedia("entityrecipes", "EmberFileSystem", "EntityRecipes");
 
 	//End with adding any extra defined locations.
 	for (auto& location : mExtraResourceLocations) {
-		addResourceDirectory(location, "EmberFileSystem", "Extra", mLoadRecursive, false);
+		addResourceDirectory(location, "EmberFileSystem", "Extra", OnFailure::REPORT);
 	}
 }
 
@@ -295,12 +296,6 @@ void OgreResourceLoader::preloadMedia() {
 		}
 	}
 }
-
-
-bool OgreResourceLoader::isExistingDir(const std::string& path) const {
-	return boost::filesystem::is_directory(path);
-}
-
 
 void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 	try {
@@ -436,8 +431,8 @@ void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 }
 
 bool OgreResourceLoader::addMedia(const std::string& path, const std::string& resourceGroup) {
-	if (!addSourceRepoMedia(path, resourceGroup, true)) {
-		return addSharedMedia("media/" + path, "EmberFileSystem", resourceGroup, true);
+	if (!addSourceRepoMedia(path, resourceGroup)) {
+		return addSharedMedia("media/" + path, "EmberFileSystem", resourceGroup);
 	}
 	return true;
 }
