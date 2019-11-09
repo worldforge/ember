@@ -60,9 +60,9 @@ script:
   - make install
   - |
     if [[ "$TRAVIS_OS_NAME" != "osx" && "$CC" == "gcc" ]]; then
-      ln -s ~/install/usr/share/icons/hicolor/64x64/apps/ember.png ~/install/
-      ln -s ~/install/usr/share/applications/org.worldforge.ember.desktop ~/install/
-      ln -s ~/install/ember.png ~/install/.DirIcon
+      ln -s ./usr/share/icons/hicolor/64x64/apps/ember.png ~/install/
+      ln -s ./usr/share/applications/org.worldforge.ember.desktop ~/install/
+      ln -s ember.png ~/install/.DirIcon
       curl https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-x86_64 > ~/install/AppRun
       chmod a+x ~/install/AppRun
       curl -L https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage > appimagetool-x86_64.AppImage
