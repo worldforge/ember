@@ -25,7 +25,7 @@
   },
   "files": [
     {
-      "includePattern": "build/(Ember-x86_64.AppImage)",
+      "includePattern": "\./build/(Ember-x86_64\.AppImage)",
       "uploadPattern": "$1",
       "listInDownloads": true,
       "matrixParams": {
