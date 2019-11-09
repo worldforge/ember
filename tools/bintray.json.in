@@ -1,6 +1,6 @@
 {
   "package": {
-    "name": "Ember",
+    "name": "ember",
     "repo": "installers",
     "subject": "worldforge",
     "desc": "3d client for Worldforge MMORPGs",
@@ -25,7 +25,8 @@
   },
   "files": [
     {
-      "includePattern": "build/Ember-x86_64\\.AppImage",
+      "includePattern": "build/(Ember-x86_64.AppImage)",
+      "uploadPattern": "$1",
       "listInDownloads": true,
       "matrixParams": {
         "override": 1
