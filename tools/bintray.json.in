@@ -20,7 +20,7 @@
     ]
   },
   "version": {
-    "name": "@VERSION@",
+    "name": "master",
     "desc": "Automatic build from master branch."
   },
   "files": [
