@@ -61,13 +61,13 @@ script:
   - |
     if [[ "$TRAVIS_OS_NAME" != "osx" && "$CXX" == "gcc" ]]; then
       ln -s ~/install/usr/share/icons/hicolor/64x64/apps/ember.png ~/install/
-      ln -s ~/install/usr/share/applications/ember.desktop ~/install/
+      ln -s ~/install/usr/share/applications/org.worldforge.ember.desktop ~/install/
       ln -s ~/install/ember.png ~/install/.DirIcon
       curl https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-x86_64 > ~/install/AppRun
       chmod a+x ~/install/AppRun
-      curlhttps://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage > appimagetool-x86_64.AppImage
+      curl https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage > appimagetool-x86_64.AppImage
       chmod a+x appimagetool-x86_64.AppImage
-      appimagetool-x86_64.AppImage ~/install
+      appimagetool-x86_64.AppImage -n ~/install
     fi
 deploy:
   provider: bintray

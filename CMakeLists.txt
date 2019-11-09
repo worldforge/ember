@@ -345,9 +345,10 @@ configure_file(tools/support/make_dist_media.py.in scripts/make_dist_media.py @O
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ember.conf DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ember)
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ember DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
-install(FILES tools/ember.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+install(FILES tools/org.worldforge.ember.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install(FILES data/media/ember.png DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/64x64/apps)
 install(FILES README.md COPYING AUTHORS NEWS DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/ember-${VERSION})
+install(FILES tools/org.worldforge.ember.appdata.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
 
 install(DIRECTORY data DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember)
 

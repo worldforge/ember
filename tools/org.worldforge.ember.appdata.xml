@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Erik Ogenvik <erik@ogenvik.org> -->
+<component type="desktop-application">
+    <id>org.worldforge.ember</id>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-2.0+</project_license>
+    <name>Ember</name>
+    <summary>3d client for Worldforge MMORPGs</summary>
+    <description>
+        <p>A 3d client for the Worldforge MMORPG system. Use this to connect to any Worldforge servers.</p>
+    </description>
+    <launchable type="desktop-id">org.worldforge.ember.desktop</launchable>
+    <url type="homepage">https://www.worldforge.org</url>
+    <screenshots>
+        <screenshot type="default">
+            <image>https://www.worldforge.org/files/4314/0726/7276/screenshot_20130210_203609.jpg</image>
+        </screenshot>
+    </screenshots>
+    <provides>
+        <id>org.worldforge.ember.desktop</id>
+    </provides>
+</component>
