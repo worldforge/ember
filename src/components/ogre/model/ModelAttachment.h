@@ -61,7 +61,7 @@ class ModelFitting;
 class ModelAttachment: public NodeAttachment, public virtual sigc::trackable
 {
 public:
-	typedef std::unordered_map<std::string, ModelFitting*> ModelFittingStore;
+	typedef std::unordered_map<std::string, std::unique_ptr<ModelFitting>> ModelFittingStore;
 	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose = "");
 
 	~ModelAttachment() override;
@@ -100,7 +100,7 @@ public:
 
 protected:
 
-	typedef std::vector<AttributeObserver*> AttributeObserverStore;
+	typedef std::vector<std::unique_ptr<AttributeObserver>> AttributeObserverStore;
 
 	/**
 	 * @brief The Model representation which this attachment is connected to.
@@ -112,7 +112,7 @@ protected:
 	 * This also owns the scale node, which will be destroyed when the mount is destroyed.
 	 * The model mount can be connected to either an Ogre::SceneNode or an Ogre::TagPoint. The former is the normal situation, while the latter is the situation if this attachment represents an attachment to a bone on an Ogre::Skeleton instance.
 	 */
-	ModelMount* mModelMount;
+	std::unique_ptr<ModelMount> mModelMount;
 
 	/**
 	 * @brief The fittings, i.e. the connections to child entities which are connected to bones on the Model which this attachment belongs to.

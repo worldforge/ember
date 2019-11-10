@@ -23,27 +23,19 @@
 #include <wfmath/vector.h>
 #include <cassert>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-HeightMapSegment::HeightMapSegment(HeightMapBuffer* buffer) :
-	mBuffer(buffer)
-{
+HeightMapSegment::HeightMapSegment(std::unique_ptr<HeightMapBuffer> buffer) :
+		mBuffer(std::move(buffer)) {
 
 }
 
-HeightMapSegment::~HeightMapSegment()
-{
-	delete mBuffer;
-}
+HeightMapSegment::~HeightMapSegment() = default;
 
-float HeightMapSegment::getHeight(int x, int y) const
-{
+float HeightMapSegment::getHeight(int x, int y) const {
 	return mBuffer->getBuffer()->getData()[y * (mBuffer->getResolution()) + x];
 }
 
@@ -59,8 +51,7 @@ float HeightMapSegment::getHeight(int x, int y) const
 /// divide the area is defined by the gradient y = x, so the first
 /// triangle has relative vertex coordinates (0,0) (1,0) (1,1) and
 /// the second triangle has vertex coordinates (0,0) (0,1) (1,1).
-void HeightMapSegment::getHeightAndNormal(float x, float y, float& h, WFMath::Vector<3> &normal) const
-{
+void HeightMapSegment::getHeightAndNormal(float x, float y, float& h, WFMath::Vector<3>& normal) const {
 	// FIXME this ignores edges and corners
 	assert(x <= mBuffer->getResolution());
 	assert(x >= 0.0f);
@@ -68,12 +59,12 @@ void HeightMapSegment::getHeightAndNormal(float x, float y, float& h, WFMath::Ve
 	assert(y >= 0.0f);
 
 	// get index of the actual tile in the segment
-	int tile_x = (int)floor(x);
-	int tile_y = (int)floor(y);
+	int tile_x = (int) std::floor(x);
+	int tile_y = (int) std::floor(y);
 
 	// work out the offset into that tile
-	float off_x = x - tile_x;
-	float off_y = y - tile_y;
+	float off_x = x - (float) tile_x;
+	float off_y = y - (float) tile_y;
 
 	float h1 = getHeight(tile_x, tile_y);
 	float h2 = getHeight(tile_x, tile_y + 1);
@@ -92,7 +83,7 @@ void HeightMapSegment::getHeightAndNormal(float x, float y, float& h, WFMath::Ve
 		normal.normalize();
 		h = h1 + (h3 - h2) * off_x + (h2 - h1) * off_y;
 	}
-	// bottom triangle /|
+		// bottom triangle /|
 	else {
 		normal = WFMath::Vector<3>(h1 - h4, 1.0f, h4 - h3);
 		normal.normalize();

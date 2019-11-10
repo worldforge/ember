@@ -49,7 +49,7 @@ add_library(emberogre
         terrain/TerrainPage.cpp terrain/TerrainPageGeometry.cpp
         terrain/TerrainPageShadow.cpp terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp
         terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp
-        terrain/PlantAreaQuery.cpp terrain/PlantAreaQueryResult.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp
+        terrain/PlantAreaQueryResult.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp
         terrain/TerrainShaderUpdateTask.cpp terrain/TerrainAreaUpdateTask.cpp
         terrain/techniques/Shader.cpp
         terrain/techniques/ShaderPass.cpp

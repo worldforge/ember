@@ -26,21 +26,21 @@
 #include <OgreVector3.h>
 #include <OgreVector2.h>
 #include <OgreColourValue.h>
+#include "PlantAreaQuery.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-template<typename> class Buffer;
+template<typename>
+class Buffer;
 
 class PlantInstance;
+
 class PlantAreaQuery;
-class PlantAreaQueryResult
-{
+
+class PlantAreaQueryResult {
 public:
 	typedef Buffer<unsigned char> ShadowBuffer;
 	/**
@@ -48,29 +48,34 @@ public:
 	*/
 	typedef std::vector<PlantInstance> PlantStore;
 
-	PlantAreaQueryResult(const PlantAreaQuery& query);
+	explicit PlantAreaQueryResult(PlantAreaQuery query);
+
 	virtual ~PlantAreaQueryResult();
 
 	PlantStore& getStore();
+
 	const PlantStore& getStore() const;
 
 	const PlantAreaQuery& getQuery() const;
 
 	void getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::uint32& colour) const;
+
 	void getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
 
 	void setDefaultShadowColour(const Ogre::ColourValue& colour);
 
 	ShadowBuffer* getShadow() const;
-	void setShadow(ShadowBuffer* shadow);
+
+	void setShadow(std::unique_ptr<PlantAreaQueryResult::ShadowBuffer> shadow);
+
 	bool hasShadow() const;
 
 private:
-	const PlantAreaQuery* mQuery;
+	PlantAreaQuery mQuery;
+	std::unique_ptr<ShadowBuffer> mShadow;
 
 	PlantStore mStore;
 
-	ShadowBuffer* mShadow;
 
 	Ogre::ColourValue mDefaultShadowColourValue;
 	Ogre::uint32 mDefaultShadowColourLong;

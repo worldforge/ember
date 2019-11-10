@@ -116,8 +116,6 @@ ModelRepresentation::~ModelRepresentation() {
 	}
 
 
-	delete mSoundEntity;
-	delete mModel;
 	//mModel->_getManager()->destroyMovableObject(&mModel);
 
 	//make sure it's not in the MotionManager
@@ -213,7 +211,7 @@ void ModelRepresentation::initFromModel() {
 	//If there are particles, update the bindings.
 	if (mModel->hasParticles()) {
 		auto& bindings = mModel->getAllParticleSystemBindings();
-		for (auto binding : bindings) {
+		for (auto& binding : bindings) {
 			auto elemPtr = mEntity.ptrOfProperty(binding->getVariableName());
 			if (elemPtr && elemPtr->isNum()) {
 				binding->scaleValue(static_cast<Ogre::Real>(elemPtr->asNum()));
@@ -266,7 +264,7 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 	//TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
 	if (mModel->hasParticles()) {
 		const ParticleSystemBindingsPtrSet& bindings = mModel->getAllParticleSystemBindings();
-		for (auto binding : bindings) {
+		for (auto& binding : bindings) {
 			if (binding->getVariableName() == str && v.isNum()) {
 				binding->scaleValue(static_cast<Ogre::Real>(v.asNum()));
 			}

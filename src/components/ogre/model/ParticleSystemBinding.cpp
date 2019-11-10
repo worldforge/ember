@@ -29,16 +29,17 @@
 #include <OgreParticleEmitter.h>
 #include <OgreParticleSystem.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 namespace Model {
 
-ParticleSystemBinding::ParticleSystemBinding(ParticleSystem* parentSystem, const std::string& emitterVal, const std::string& variableName) :
-mEmitterVal(emitterVal)
-, mVariableName(variableName)
-, mParticleSystem(parentSystem)
-, mOriginalValue(0)
-{
+ParticleSystemBinding::ParticleSystemBinding(ParticleSystem* parentSystem, std::string emitterVal, std::string variableName) :
+		mEmitterVal(std::move(emitterVal)),
+		mVariableName(std::move(variableName)),
+		mParticleSystem(parentSystem),
+		mOriginalValue(0) {
 	//TODO: add more emitter values to bind
 	if (mEmitterVal == "emission_rate") {
 		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
@@ -54,8 +55,7 @@ mEmitterVal(emitterVal)
 
 }
 
-void ParticleSystemBinding::scaleValue(Ogre::Real scaler)
-{
+void ParticleSystemBinding::scaleValue(Ogre::Real scaler) {
 
 	//TODO: add more emitter values to bind
 	if (mEmitterVal == "emission_rate") {

@@ -27,22 +27,18 @@
 #include "LuaConsoleObject.h"
 #include "Connectors_impl.h"
 
-namespace Ember
-{
-namespace Lua
-{
+namespace Ember {
+namespace Lua {
 
 LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description) :
-	mCommandWrapper(command, this, description)
-{
-	mConnector = new TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>(StringValueAdapter(), StringValueAdapter());
+		mConnector(std::make_unique<TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>>(StringValueAdapter(), StringValueAdapter())),
+		mCommandWrapper(command, this, description) {
 	mConnector->connect(luaMethod);
 }
 
 LuaConsoleObject::LuaConsoleObject(const std::string& command, lua_Object /*luaMethod */, const std::string& description) :
-	mCommandWrapper(command, this, description)
-{
-	mConnector = new TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>(StringValueAdapter(), StringValueAdapter());
+		mConnector(std::make_unique<TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>>(StringValueAdapter(), StringValueAdapter())),
+		mCommandWrapper(command, this, description) {
 	//we need to get the correct lua function
 	lua_State* state = ConnectorBase::getState();
 	int luaType = lua_type(state, -1);
@@ -54,18 +50,13 @@ LuaConsoleObject::LuaConsoleObject(const std::string& command, lua_Object /*luaM
 	}
 }
 
-LuaConsoleObject::~LuaConsoleObject()
-{
-	delete mConnector;
+LuaConsoleObject::~LuaConsoleObject() = default;
+
+void LuaConsoleObject::runCommand(const std::string& command, const std::string& args) {
+	mConnector->callLuaMethod<std::string, std::string>(command, args);
 }
 
-void LuaConsoleObject::runCommand(const std::string& command, const std::string& args)
-{
-	mConnector->callLuaMethod<std::string, std::string> (command, args);
-}
-
-LuaConsoleObject* LuaConsoleObject::setSelf(lua_Object selfIndex)
-{
+LuaConsoleObject* LuaConsoleObject::setSelf(lua_Object selfIndex) {
 	if (mConnector) {
 		if (selfIndex != LUA_NOREF) {
 			//we need to get the correct lua table

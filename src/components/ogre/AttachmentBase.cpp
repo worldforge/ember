@@ -21,54 +21,41 @@
 #include "domain/EmberEntity.h"
 #include "domain/IGraphicalRepresentation.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 AttachmentBase::AttachmentBase(EmberEntity& parentEntity, EmberEntity& childEntity) :
-	mParentEntity(parentEntity), mChildEntity(childEntity)
-{
+		mParentEntity(parentEntity), mChildEntity(childEntity) {
 }
 
-AttachmentBase::~AttachmentBase()
-{
+AttachmentBase::~AttachmentBase() = default;
+
+IGraphicalRepresentation* AttachmentBase::getGraphicalRepresentation() const {
+	return nullptr;
 }
 
-IGraphicalRepresentation* AttachmentBase::getGraphicalRepresentation() const
-{
-	return 0;
-}
-
-EmberEntity& AttachmentBase::getAttachedEntity() const
-{
+EmberEntity& AttachmentBase::getAttachedEntity() const {
 	return mChildEntity;
 }
 
-EmberEntity* AttachmentBase::getParentEntity() const
-{
+EmberEntity* AttachmentBase::getParentEntity() const {
 	return &mParentEntity;
 }
 
-void AttachmentBase::setControlDelegate(IEntityControlDelegate* controllerDelegate)
-{
+void AttachmentBase::setControlDelegate(IEntityControlDelegate*) {
 }
 
-IEntityControlDelegate* AttachmentBase::getControlDelegate() const
-{
-	return 0;
+IEntityControlDelegate* AttachmentBase::getControlDelegate() const {
+	return nullptr;
 }
 
-void AttachmentBase::updateScale()
-{
+void AttachmentBase::updateScale() {
 }
 
-void AttachmentBase::updatePosition()
-{
+void AttachmentBase::updatePosition() {
 }
 
-void AttachmentBase::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
-{
+void AttachmentBase::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
 	if (mParentEntity.getAttachment()) {
 		WFMath::Vector<3> localPositionShift(mChildEntity.getPredictedPos());
 		if (!localPositionShift.isValid()) {
@@ -79,15 +66,13 @@ void AttachmentBase::getOffsetForContainedNode(const IEntityAttachment& attachme
 	}
 }
 
-void AttachmentBase::setVisualize(const std::string& visualization, bool visualize)
-{
+void AttachmentBase::setVisualize(const std::string& visualization, bool visualize) {
 	if (getGraphicalRepresentation()) {
 		getGraphicalRepresentation()->setVisualize(visualization, visualize);
 	}
 }
 
-bool AttachmentBase::getVisualize(const std::string& visualization) const
-{
+bool AttachmentBase::getVisualize(const std::string& visualization) const {
 	if (getGraphicalRepresentation()) {
 		return getGraphicalRepresentation()->getVisualize(visualization);
 	}

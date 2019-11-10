@@ -52,9 +52,7 @@ ParticleSystem::ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem, const O
 
 ParticleSystem::~ParticleSystem() {
 	//make sure all bindings are removed
-	for (auto entry: mBindings) {
-		delete entry;
-	}
+	mBindings.clear();
 
 	//and then destroy the system to save resources
 	mOgreParticleSystem->_getManager()->destroyParticleSystem(mOgreParticleSystem);
@@ -67,8 +65,8 @@ ParticleSystemBindingsPtrSet& ParticleSystem::getBindings() {
 }
 
 ParticleSystemBinding* ParticleSystem::addBinding(const std::string& emitterVal, const std::string& variableName) {
-	ParticleSystemBinding* binding = new ParticleSystemBinding(this, emitterVal, variableName);
-	mBindings.push_back(binding);
+	auto* binding = new ParticleSystemBinding(this, emitterVal, variableName);
+	mBindings.emplace_back(binding);
 	return binding;
 }
 

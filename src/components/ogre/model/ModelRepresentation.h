@@ -237,7 +237,7 @@ protected:
 	 * This is the main graphical representation of this entity.
 	 * Note that the Model won't be directly connected to the main scene node, instead the mModelMount instance will take care of setting everything up to use an intermediary "scale node".
 	 */
-	Model* mModel;
+	std::unique_ptr<Model> mModel;
 
 	/**
 	 * @brief The scene to which the entity belongs.
@@ -270,8 +270,7 @@ protected:
 	/**
 	 * @brief The sound entity this entity is connected to.
 	 */
-	SoundEntity* mSoundEntity;
-
+	std::unique_ptr<SoundEntity> mSoundEntity;
 
 	std::shared_ptr<EmberEntityUserObject> mUserObject;
 

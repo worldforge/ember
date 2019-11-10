@@ -211,7 +211,7 @@ void ThirdPersonCameraMount::adjustForOcclusion() {
 
 		mScene.getBulletWorld().getCollisionWorld().rayTest(from, to, callback);
 
-		for (int i = 0; i < callback.m_collisionObjects.size(); i++) {
+		for (int i = 0; i < callback.m_collisionObjects.size(); ++i) {
 			auto* collisionObject = callback.m_collisionObjects[i];
 			auto* collisionDetector = static_cast<BulletCollisionDetector*>(collisionObject->getUserPointer());
 			if (collisionDetector->collisionInfo.type() == typeid(EntityCollisionInfo)) {

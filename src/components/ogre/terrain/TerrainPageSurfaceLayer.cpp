@@ -33,30 +33,25 @@
 #include <Mercator/Surface.h>
 #include <Mercator/Shader.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface,
-		const TerrainLayerDefinition& definition,
-		int surfaceIndex,
-		const Mercator::Shader& shader) :
-	mTerrainPageSurface(terrainPageSurface),
-	mShader(shader),
-	mSurfaceIndex(surfaceIndex),
-	mScale(1.0f),
-	mDefinition(definition)
-{
+												 const TerrainLayerDefinition& definition,
+												 int surfaceIndex,
+												 const Mercator::Shader& shader) :
+		mTerrainPageSurface(terrainPageSurface),
+		mShader(shader),
+		mSurfaceIndex(surfaceIndex),
+		mScale(1.0f),
+		mDefinition(definition) {
 
 }
 
 TerrainPageSurfaceLayer::~TerrainPageSurfaceLayer() = default;
 
-bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) const
-{
+bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) const {
 	const SegmentVector validSegments = geometry.getValidSegments();
 	//check if at least one surface intersects
 	for (const auto& validSegment : validSegments) {
@@ -67,50 +62,45 @@ bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) co
 	return false;
 }
 
-void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Image& image, unsigned int channel) const
-{
+void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Image& image, unsigned int channel) const {
 	SegmentVector validSegments = geometry.getValidSegments();
 	for (SegmentVector::const_iterator I = validSegments.begin(); I != validSegments.end(); ++I) {
 		Mercator::Segment* segment = I->segment;
 		if (mShader.checkIntersect(*segment)) {
 			Mercator::Surface* surface = getSurfaceForSegment(segment);
 			if (surface && surface->isValid()) {
-				WFImage sourceImage(new Image::ImageBuffer(segment->getResolution(), 1));
+				WFImage sourceImage(std::make_unique<Image::ImageBuffer>(segment->getResolution(), 1));
 				auto srcPtr = surface->getData();
 				auto dataPtr = sourceImage.getData();
 				auto segmentSize = segment->getSize();
 				for (int i = 0; i < segment->getResolution(); ++i) {
 					for (int j = 0; j < segment->getResolution(); ++j) {
 						//interpolate four samples to get the fragment coverage
-						*dataPtr = (unsigned char)((srcPtr[(i * segmentSize) + j] + srcPtr[(i * segmentSize) + j + 1] + srcPtr[((i + 1) * segmentSize) + j] + srcPtr[((i + 1) * segmentSize) + j + 1]) / 4);
+						*dataPtr = (unsigned char) ((srcPtr[(i * segmentSize) + j] + srcPtr[(i * segmentSize) + j + 1] + srcPtr[((i + 1) * segmentSize) + j] + srcPtr[((i + 1) * segmentSize) + j + 1]) / 4);
 						dataPtr++;
 					}
 				}
 
-				image.blit(sourceImage, channel, ((int)I->index.x() * segment->getResolution()), ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * segment->getResolution()));
+				image.blit(sourceImage, channel, ((int) I->index.x() * segment->getResolution()), ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int) I->index.y() - 1) * segment->getResolution()));
 			}
 		}
 	}
 }
 
-unsigned int TerrainPageSurfaceLayer::getPixelWidth() const
-{
+unsigned int TerrainPageSurfaceLayer::getPixelWidth() const {
 	return mTerrainPageSurface.getPixelWidth();
 }
 
-float TerrainPageSurfaceLayer::getScale() const
-{
+float TerrainPageSurfaceLayer::getScale() const {
 	return mScale;
 }
 
-void TerrainPageSurfaceLayer::setScale(float scale)
-{
+void TerrainPageSurfaceLayer::setScale(float scale) {
 	mScale = scale;
 }
 
 
-Mercator::Surface* TerrainPageSurfaceLayer::getSurfaceForSegment(const Mercator::Segment* segment) const
-{
+Mercator::Surface* TerrainPageSurfaceLayer::getSurfaceForSegment(const Mercator::Segment* segment) const {
 	auto I = segment->getSurfaces().find(mSurfaceIndex);
 	if (I == segment->getSurfaces().end()) {
 		return nullptr;
@@ -119,43 +109,39 @@ Mercator::Surface* TerrainPageSurfaceLayer::getSurfaceForSegment(const Mercator:
 }
 
 
-const std::string& TerrainPageSurfaceLayer::getDiffuseTextureName() const
-{
+const std::string& TerrainPageSurfaceLayer::getDiffuseTextureName() const {
 	return mDiffuseTextureName;
 }
-void TerrainPageSurfaceLayer::setDiffuseTextureName(const std::string& textureName)
-{
+
+void TerrainPageSurfaceLayer::setDiffuseTextureName(const std::string& textureName) {
 	mDiffuseTextureName = textureName;
 }
-const std::string& TerrainPageSurfaceLayer::getSpecularTextureName() const
-{
+
+const std::string& TerrainPageSurfaceLayer::getSpecularTextureName() const {
 	return mSpecularTextureName;
 }
-void TerrainPageSurfaceLayer::setSpecularTextureName(const std::string& textureName)
-{
+
+void TerrainPageSurfaceLayer::setSpecularTextureName(const std::string& textureName) {
 	mSpecularTextureName = textureName;
 }
-const std::string& TerrainPageSurfaceLayer::getNormalTextureName() const
-{
+
+const std::string& TerrainPageSurfaceLayer::getNormalTextureName() const {
 	return mNormalTextureName;
 }
-void TerrainPageSurfaceLayer::setNormalTextureName(const std::string& textureName)
-{
+
+void TerrainPageSurfaceLayer::setNormalTextureName(const std::string& textureName) {
 	mNormalTextureName = textureName;
 }
 
-int TerrainPageSurfaceLayer::getSurfaceIndex() const
-{
+int TerrainPageSurfaceLayer::getSurfaceIndex() const {
 	return mSurfaceIndex;
 }
 
-const TerrainLayerDefinition& TerrainPageSurfaceLayer::getDefinition() const
-{
+const TerrainLayerDefinition& TerrainPageSurfaceLayer::getDefinition() const {
 	return mDefinition;
 }
 
-void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry)
-{
+void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry) {
 	const SegmentVector validSegments = geometry.getValidSegments();
 	for (const auto& validSegment : validSegments) {
 #if 0
@@ -177,7 +163,7 @@ void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry)
 			//the segment doesn't contain this surface yet, lets add it
 			if (mShader.checkIntersect(*segment)) {
 				S_LOG_VERBOSE("Adding new surface with id " << mSurfaceIndex << " to segment at x: " << segment->getXRef() << " z: " << segment->getZRef());
-				Mercator::Segment::Surfacestore & sss = segment->getSurfaces();
+				Mercator::Segment::Surfacestore& sss = segment->getSurfaces();
 				sss[mSurfaceIndex] = mShader.newSurface(*segment);
 			}
 		}

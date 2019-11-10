@@ -38,8 +38,6 @@
 
 #include "framework/TimeFrame.h"
 
-#include "services/config/ConfigService.h"
-
 #include "../ShaderManager.h"
 #include "../Scene.h"
 #include "../Convert.h"
@@ -242,7 +240,7 @@ bool TerrainManager::isFoliageShown() const
 
 void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
 {
-	Foliage::PlantPopulator* populator = mVegetation->getPopulator(query.getPlantType());
+	auto* populator = mVegetation->getPopulator(query.mPlantType);
 	if (populator) {
 		mHandler->getPlantsForArea(*populator, query, std::move(asyncCallback));
 	}

@@ -66,7 +66,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~AvatarCameraWarper();
+	~AvatarCameraWarper() override;
 
 	/**
 	 * @brief Sets whether the adjuster should be enabled or not.
@@ -74,7 +74,7 @@ public:
 	 */
 	void setEnabled(bool enabled);
 
-	void runCommand(const std::string& command, const std::string& args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	ConsoleCommandWrapper AvatarFollowsCamera;
 private:

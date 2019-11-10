@@ -29,10 +29,8 @@ Torus Knot Software Ltd.
 */
 
 #include "EmberOgreFileSystem.h"
-#include "framework/LoggingInstance.h"
 #include <OgreFileSystem.h>
 #include <OgreLogManager.h>
-#include <OgreRoot.h>
 #include <boost/algorithm/string/replace.hpp>
 
 using namespace Ogre;

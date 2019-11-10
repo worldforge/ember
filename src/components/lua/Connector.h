@@ -193,7 +193,7 @@ private:
 	 * @brief The internal connector which will handle the actual lua binding.
 	 * @note This is mutable so that it can be set to null when the copy constructor is invoked.
 	 */
-	mutable ConnectorBase* mConnector;
+	mutable std::unique_ptr<ConnectorBase> mConnector;
 
 	/**
 	 * @brief Ctor.

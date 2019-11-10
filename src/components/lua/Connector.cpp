@@ -27,24 +27,17 @@
 #include "Connector.h"
 
 
-namespace Ember
-{
+namespace Ember {
 
-namespace Lua
-{
+namespace Lua {
 
-Connector::~Connector()
-{
-	delete mConnector;
-}
+Connector::~Connector() = default;
 
-lua_State* Connector::getState()
-{
+lua_State* Connector::getState() {
 	return ConnectorBase::getState();
 }
 
-Connector* Connector::connect(const std::string& luaMethod, lua_Object selfIndex)
-{
+Connector* Connector::connect(const std::string& luaMethod, lua_Object selfIndex) {
 	if (!mConnector) {
 		S_LOG_WARNING("Tried to connect the lua method '" << luaMethod << "' to a non existent signal.");
 	} else {
@@ -54,8 +47,7 @@ Connector* Connector::connect(const std::string& luaMethod, lua_Object selfIndex
 	return this;
 }
 
-Connector* Connector::connect(lua_Object /*luaMethod */, lua_Object selfIndex)
-{
+Connector* Connector::connect(lua_Object /*luaMethod */, lua_Object selfIndex) {
 	if (!mConnector) {
 		S_LOG_WARNING("Tried to connect lua method to a non existent signal.");
 	} else {
@@ -72,15 +64,13 @@ Connector* Connector::connect(lua_Object /*luaMethod */, lua_Object selfIndex)
 	return this;
 }
 
-void Connector::disconnect()
-{
+void Connector::disconnect() {
 	if (mConnector) {
 		mConnector->disconnect();
 	}
 }
 
-Connector* Connector::setSelf(lua_Object selfIndex)
-{
+Connector* Connector::setSelf(lua_Object selfIndex) {
 	if (mConnector) {
 		if (selfIndex != LUA_NOREF) {
 			//we need to get the correct lua table
@@ -95,8 +85,7 @@ Connector* Connector::setSelf(lua_Object selfIndex)
 }
 
 
-bool Connector::checkSignalExistence(void* signal)
-{
+bool Connector::checkSignalExistence(void* signal) {
 	if (!signal) {
 		S_LOG_WARNING("Tried to connect lua to a non existent signal.");
 		return false;
@@ -105,32 +94,26 @@ bool Connector::checkSignalExistence(void* signal)
 
 }
 
-Connector::Connector(sigc::signal<void>& signal)
-{
+Connector::Connector(sigc::signal<void>& signal) {
 	if (checkSignalExistence(&signal)) {
-		mConnector = new ConnectorZero<void>(signal);
+		mConnector = std::make_unique<ConnectorZero<void>>(signal);
 	}
 }
 
 Connector::Connector(ConnectorBase* connector)
-: mConnector(connector)
-{
+		: mConnector(connector) {
 }
 
 Connector::Connector(const Connector& connector)
-: mConnector(connector.mConnector)
-{
-	connector.mConnector = nullptr;
+		: mConnector(std::move(connector.mConnector)) {
 }
 
 
-Connector Connector::createConnector(sigc::signal<void>* signal)
-{
+Connector Connector::createConnector(sigc::signal<void>* signal) {
 	return Connector(*signal);
 }
 
-Connector Connector::createConnector(sigc::signal<void>& signal)
-{
+Connector Connector::createConnector(sigc::signal<void>& signal) {
 	return Connector(signal);
 }
 

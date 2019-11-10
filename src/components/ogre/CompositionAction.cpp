@@ -23,18 +23,15 @@
 #include "CompositionAction.h"
 #include "domain/EmberEntity.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-CompositionAction::CompositionAction(EmberEntity& entity, const std::string& mode) :
-		mEntity(entity), mMode(mode)
-{
+CompositionAction::CompositionAction(EmberEntity& entity, std::string mode) :
+		mEntity(entity),
+		mMode(std::move(mode)) {
 }
 
-void CompositionAction::activate(EntityMapping::ChangeContext& context)
-{
+void CompositionAction::activate(EntityMapping::ChangeContext& context) {
 	EmberEntity::CompositionMode compositionMode = EmberEntity::CM_COMPOSITION;
 	if (mMode == "none") {
 		compositionMode = EmberEntity::CM_DISABLED;
@@ -44,8 +41,7 @@ void CompositionAction::activate(EntityMapping::ChangeContext& context)
 	mEntity.setCompositionMode(compositionMode);
 }
 
-void CompositionAction::deactivate(EntityMapping::ChangeContext& context)
-{
+void CompositionAction::deactivate(EntityMapping::ChangeContext& context) {
 }
 
 }

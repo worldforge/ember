@@ -27,8 +27,7 @@
 #include <OgreMemoryAllocatorConfig.h>
 #include <OgreVector2.h>
 
-namespace Ogre
-{
+namespace Ogre {
 class MemoryDataStream;
 }
 
@@ -39,21 +38,11 @@ namespace Terrain {
 
 class TerrainLayerDefinition;
 
-class PlantAreaQuery
-{
-public:
-
-	PlantAreaQuery(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<Ogre::Real> area, Ogre::Vector2 center);
-
-	const TerrainLayerDefinition& getLayerDef() const;
-	const std::string& getPlantType() const;
-	const Ogre::TRect<Ogre::Real>& getArea() const;
-	const Ogre::Vector2& getCenter() const;
-private:
+struct PlantAreaQuery {
 	const TerrainLayerDefinition& mLayerDef;
-	const std::string& mPlantType;
-	Ogre::Vector2 mCenter;
+	std::string mPlantType;
 	Ogre::TRect<Ogre::Real> mArea;
+	Ogre::Vector2 mCenter;
 };
 }
 }

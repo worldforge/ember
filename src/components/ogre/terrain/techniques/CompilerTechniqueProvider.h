@@ -24,17 +24,13 @@
 #include "components/ogre/terrain/Types.h"
 
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 class ShaderManager;
 
-namespace Terrain
-{
+namespace Terrain {
 
-namespace Techniques
-{
+namespace Techniques {
 
 class OnePixelMaterialGenerator;
 
@@ -42,8 +38,7 @@ class OnePixelMaterialGenerator;
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A compiler technique provider which uses the base techniques found in the OgreView::Terrain::Techniques namespace.
  */
-class CompilerTechniqueProvider : public ICompilerTechniqueProvider
-{
+class CompilerTechniqueProvider : public ICompilerTechniqueProvider {
 public:
 	/**
 	 * @brief Ctor.
@@ -52,9 +47,11 @@ public:
 	 */
 	CompilerTechniqueProvider(ShaderManager& shaderManager, Ogre::SceneManager& sceneManager);
 
-	virtual ~CompilerTechniqueProvider();
+	~CompilerTechniqueProvider() override;
 
-	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const;
+	TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry,
+														 const SurfaceLayerStore& terrainPageSurfaces,
+														 const TerrainPageShadow* terrainPageShadow) const override;
 
 protected:
 
@@ -72,7 +69,7 @@ protected:
 	/**
 	 * @brief Handles generation of the one pixel texture used as dummy normal map in the shader technique.
 	 */
-	OnePixelMaterialGenerator* mOnePixelMaterialGenerator;
+	std::unique_ptr<OnePixelMaterialGenerator> mOnePixelMaterialGenerator;
 };
 
 }

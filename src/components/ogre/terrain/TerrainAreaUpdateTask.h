@@ -49,7 +49,7 @@ public:
 	 */
 	TerrainAreaUpdateTask(Mercator::Terrain& terrain,
 						  Mercator::Area* area,
-						  const Mercator::Area& newArea,
+						  Mercator::Area newArea,
 						  ShaderUpdateSlotType markForUpdateSlot,
 						  const TerrainShader* shader);
 

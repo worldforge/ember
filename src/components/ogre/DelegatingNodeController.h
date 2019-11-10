@@ -45,13 +45,13 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~DelegatingNodeController();
+	~DelegatingNodeController() override;
 
 	/**
 	 * @brief Gets the delegate.
 	 * @return The delegate which performs the actual controlling.
 	 */
-	virtual IEntityControlDelegate* getControlDelegate() const;
+	IEntityControlDelegate* getControlDelegate() const override;
 
 private:
 	/**
@@ -59,7 +59,7 @@ private:
 	 */
 	IEntityControlDelegate& mAttachmentControlDelegate;
 
-	virtual void updatePosition();
+	void updatePosition() override;
 
 };
 

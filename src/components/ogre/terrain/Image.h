@@ -20,23 +20,23 @@
 #define IMAGE_H_
 
 #include "Buffer.h"
+#include <memory>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class WFImage;
+
 class OgreImage;
 
-class Image
-{
+class Image {
 public:
 	typedef Buffer<unsigned char> ImageBuffer;
-	Image(ImageBuffer* buffer);
+
+	explicit Image(std::unique_ptr<ImageBuffer> buffer);
+
 	virtual ~Image();
 
 	unsigned char* getData();
@@ -53,11 +53,12 @@ public:
 
 
 	virtual void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0) = 0;
+
 	virtual void blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0) = 0;
 
 protected:
 
-	ImageBuffer* mBuffer;
+	std::unique_ptr<ImageBuffer> mBuffer;
 };
 
 }

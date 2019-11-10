@@ -63,7 +63,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 		MapType bboxMap;
 
 		Ogre::AxisAlignedBox aabb;
-		for (SubModel* submodel: model->getSubmodels()) {
+		for (auto& submodel: model->getSubmodels()) {
 			const Ogre::Entity* entity = submodel->getEntity();
 			aabb.merge(entity->getMesh()->getBounds());
 		}
@@ -102,7 +102,7 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 		std::vector<Atlas::Message::Element> vertices;
 		std::vector<Atlas::Message::Element> indices;
 
-		for (SubModel* submodel : model->getSubmodels()) {
+		for (auto& submodel : model->getSubmodels()) {
 			auto mesh = submodel->getEntity()->getMesh();
 			if (mesh->sharedVertexData) {
 				copyVertexData(vertices, *mesh->sharedVertexData);

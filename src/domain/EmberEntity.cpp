@@ -88,10 +88,7 @@ EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View* vw) :
 		mHeightProvider(nullptr) {
 }
 
-EmberEntity::~EmberEntity() {
-	delete mAttachment;
-	delete mGraphicalRepresentation;
-}
+EmberEntity::~EmberEntity() = default;
 
 void EmberEntity::registerGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener) {
 	sGlobalDispatcher.registerListener(attributeName, listener);
@@ -224,8 +221,7 @@ void EmberEntity::updateAttachment() {
 
 	if (newLocationEntity && newLocationEntity->getAttachment()) {
 		try {
-			delete mAttachment;
-			mAttachment = nullptr;
+			mAttachment.reset();
 			IEntityAttachment* newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
 			if (newAttachment) {
 				setAttachment(newAttachment);
@@ -386,32 +382,28 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 }
 
 IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const {
-	return mGraphicalRepresentation;
+	return mGraphicalRepresentation.get();
 }
 
 void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation) {
-	if (graphicalRepresentation != mGraphicalRepresentation) {
+	if (graphicalRepresentation != mGraphicalRepresentation.get()) {
 		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
 		//FIXME This is a little hackish; how can we improve it to not require special cases?
 		if (m_view->getTopLevel() != this) {
 			//We must delete the attachment before we delete the graphical representation.
 			setAttachment(nullptr);
 		}
-		delete mGraphicalRepresentation;
-		mGraphicalRepresentation = graphicalRepresentation;
+		mGraphicalRepresentation.reset(graphicalRepresentation);
 		updateAttachment();
 		EventChangedGraphicalRepresentation();
 	}
 }
 
 void EmberEntity::setAttachment(IEntityAttachment* attachment) {
-	IEntityAttachment* oldAttachment = mAttachment;
-	mAttachment = attachment;
-	if (attachment != oldAttachment) {
+	if (mAttachment.get() != attachment) {
+		mAttachment.reset(attachment);
 		reattachChildren();
-		delete oldAttachment;
 	}
-
 }
 
 void EmberEntity::reattachChildren() {
@@ -425,7 +417,7 @@ void EmberEntity::reattachChildren() {
 }
 
 IEntityAttachment* EmberEntity::getAttachment() const {
-	return mAttachment;
+	return mAttachment.get();
 }
 
 EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment) {

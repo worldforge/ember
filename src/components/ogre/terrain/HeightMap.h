@@ -63,7 +63,7 @@ public:
      * @param defaultLevel The default level of the terrain, if no valid segment can be found for a requested location.
      * @param segmentResolution The resolution of one segment, in world units.
      */
-	HeightMap(float defaultLevel, unsigned int segmentResolution = 64);
+	explicit HeightMap(float defaultLevel, int segmentResolution = 64);
 
 	/**
 	 * @brief Dtor.
@@ -77,7 +77,7 @@ public:
 	 * @param yIndex The y index.
 	 * @param segment The segment to insert.
 	 */
-	void insert(int xIndex, int yIndex, IHeightMapSegment* segment);
+	void insert(int xIndex, int yIndex, std::unique_ptr<IHeightMapSegment> segment);
 
 	/**
 	 * @brief Removes a segment at the specified index location.
@@ -135,7 +135,7 @@ private:
 	/**
 	 * @brief The size of one side of a segment.
 	 */
-	unsigned int mSegmentResolution;
+	int mSegmentResolution;
 
 	/**
 	 * @brief Gets the segment at the specified index.

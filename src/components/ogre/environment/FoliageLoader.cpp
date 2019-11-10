@@ -38,17 +38,13 @@
 #include <Ogre.h>
 
 using namespace Ember::OgreView::Terrain;
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
 FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition, ::Forests::PagedGeometry& pagedGeometry) :
-		mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition), mFoliageDefinition(foliageDefinition), mPagedGeometry(pagedGeometry), mMinScale(1), mMaxScale(1), mLatestPlantsResult(0), mDensityFactor(1)
-{
+		mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition), mFoliageDefinition(foliageDefinition), mPagedGeometry(pagedGeometry), mMinScale(1), mMaxScale(1), mLatestPlantsResult(0), mDensityFactor(1) {
 	mEntity = sceneMgr.createEntity(std::string("shrubbery_") + mFoliageDefinition.getPlantType(), mFoliageDefinition.getParameter("mesh"));
 
 	mMinScale = std::stof(mFoliageDefinition.getParameter("minScale"));
@@ -56,19 +52,18 @@ FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManag
 
 }
 
-FoliageLoader::~FoliageLoader()
-{
+FoliageLoader::~FoliageLoader() {
 	if (mEntity) {
 		mEntity->_getManager()->destroyEntity(mEntity);
 	}
 }
 
-bool FoliageLoader::preparePage(::Forests::PageInfo &page)
-{
-	if (mLatestPlantsResult && WFMath::Equal(mLatestPlantsResult->getQuery().getCenter().x, page.centerPoint.x) && WFMath::Equal(mLatestPlantsResult->getQuery().getCenter().y, page.centerPoint.z)) {
+bool FoliageLoader::preparePage(::Forests::PageInfo& page) {
+	if (mLatestPlantsResult && WFMath::Equal(mLatestPlantsResult->getQuery().mCenter.x, page.centerPoint.x) &&
+		WFMath::Equal(mLatestPlantsResult->getQuery().mCenter.y, page.centerPoint.z)) {
 		return true;
 	} else {
-		PlantAreaQuery query(mTerrainLayerDefinition, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
+		PlantAreaQuery query{mTerrainLayerDefinition, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLoader::plantQueryExecuted);
 
 		mTerrainManager.getPlantsForArea(query, slot);
@@ -76,41 +71,37 @@ bool FoliageLoader::preparePage(::Forests::PageInfo &page)
 	}
 }
 
-void FoliageLoader::loadPage(::Forests::PageInfo&)
-{
+void FoliageLoader::loadPage(::Forests::PageInfo&) {
 	Ogre::ColourValue colour(1, 1, 1, 1);
 	int plantNo = 0;
 
 	const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
-	const int maxCount = (int)(store.size() * mDensityFactor);
+	const int maxCount = (int) (store.size() * mDensityFactor);
 
-	for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
+	for (const auto& plantInstance : store) {
 		if (plantNo == maxCount) {
 			break;
 		}
-		const PlantInstance& plantInstance(*I);
 		addEntity(mEntity, plantInstance.position, Ogre::Quaternion(Ogre::Degree(plantInstance.orientation), Ogre::Vector3::UNIT_Y), Ogre::Vector3(plantInstance.scale.x, plantInstance.scale.y, plantInstance.scale.x), colour);
 		plantNo++;
 	}
 }
 
-void FoliageLoader::plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult)
-{
+void FoliageLoader::plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult) {
 	mLatestPlantsResult = &queryResult;
 	//Be sure to catch errors so that we always reset the mLatestPlantsResult field when done.
 	try {
-		mPagedGeometry.reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().getCenter().x, 0, queryResult.getQuery().getCenter().y), true);
+		mPagedGeometry.reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().mCenter.x, 0, queryResult.getQuery().mCenter.y), true);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when reloading geometry." << ex);
 	} catch (...) {
 		S_LOG_FAILURE("Unknown error when reloading geometry.");
 	}
-	mLatestPlantsResult = 0;
+	mLatestPlantsResult = nullptr;
 
 }
 
-void FoliageLoader::setDensityFactor(float density)
-{
+void FoliageLoader::setDensityFactor(float density) {
 	mDensityFactor = density;
 }
 

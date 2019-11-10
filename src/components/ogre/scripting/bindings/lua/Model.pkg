@@ -57,7 +57,6 @@ class Model
 	
 	virtual ~Model();
 
-	bool addSubmodel(Ember::OgreView::Model::SubModel* submodel);
  	bool removeSubmodel(Ember::OgreView::Model::SubModel* submodel);
  	
 	Ember::OgreView::Model::Action* getAction(const std::string& name);	

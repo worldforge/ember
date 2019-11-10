@@ -36,7 +36,7 @@ namespace Techniques
 void OnePixelMaterialGenerator::loadResource(Ogre::Resource* resource)
 {
 
-	Ogre::Texture* texture = static_cast<Ogre::Texture*>(resource);
+	auto* texture = static_cast<Ogre::Texture*>(resource);
 	static Ogre::uchar data[3] = {0xFF, 0x7F, 0x7F};
 
 	Ogre::DataStreamPtr stream(new Ogre::MemoryDataStream(&data, 3, false, true));

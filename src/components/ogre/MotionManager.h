@@ -44,8 +44,7 @@ public:
 	/**
 	 * @brief Struct containing information about the MotionManager.
 	 */
-	struct MotionManagerInfo
-	{
+	struct MotionManagerInfo {
 		size_t AnimatedEntities;
 		size_t MovingEntities;
 	};
@@ -94,6 +93,7 @@ public:
 	 * @see Ogre::FrameListener::frameStarted
 	 */
 	bool frameStarted(const Ogre::FrameEvent& event) override;
+
 	/**
 	 * @see Ogre::FrameListener::frameEnded
 	 */
@@ -110,7 +110,7 @@ private:
 	/**
 	 * @brief A store of animatables, identified by a string.
 	 */
-	typedef std::unordered_map<std::string , IAnimated*> AnimatedStore;
+	typedef std::unordered_map<std::string, IAnimated*> AnimatedStore;
 
 	/**
 	 * @brief A store of movables.
@@ -145,8 +145,7 @@ private:
 	void doAnimationUpdate(Ogre::Real timeSlice);
 };
 
-inline const MotionManager::MotionManagerInfo& MotionManager::getInfo() const
-{
+inline const MotionManager::MotionManagerInfo& MotionManager::getInfo() const {
 	return mInfo;
 }
 

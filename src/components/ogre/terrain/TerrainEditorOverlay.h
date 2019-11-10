@@ -79,8 +79,6 @@ private:
 class BasePointUserObject
 {
 public:
-	//typedef std::shared_ptr<BasePointUserObject> SharedPtr;
-
 	BasePointUserObject(TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint,
 						Ogre::SceneNode* basePointMarkerNode, BulletWorld& bulletWorld);
 

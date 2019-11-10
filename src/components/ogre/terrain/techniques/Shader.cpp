@@ -40,8 +40,17 @@ namespace Techniques
 const std::string Shader::NORMAL_TEXTURE_ALIAS = "EmberTerrain/NormalTexture";
 const std::string Shader::COMPOSITE_MAP_ALIAS = "EmberTerrain/CompositeMap";
 
-Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool UseNormalMapping) :
-		Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager), mUseNormalMapping(UseNormalMapping), mUseCompositeMap(false)
+Shader::Shader(bool includeShadows,
+		const TerrainPageGeometryPtr& mGeometry,
+		const SurfaceLayerStore& mTerrainPageSurfaces,
+		const TerrainPageShadow* terrainPageShadow,
+		Ogre::SceneManager& sceneManager,
+		bool UseNormalMapping) :
+		Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow),
+		mIncludeShadows(includeShadows),
+		mSceneManager(sceneManager),
+		mUseNormalMapping(UseNormalMapping),
+		mUseCompositeMap(false)
 {
 }
 
@@ -235,7 +244,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 				if (pssmSetup) {
 					Ogre::Vector4 splitPoints;
 					Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
-					for (int i = 0; i < 3; i++) {
+					for (int i = 0; i < 3; ++i) {
 						splitPoints[i] = splitPointList[i];
 					}
 					fpParams->setNamedConstant("pssmSplitPoints", splitPoints);

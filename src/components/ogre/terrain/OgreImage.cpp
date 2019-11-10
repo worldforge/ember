@@ -26,8 +26,8 @@ namespace OgreView {
 
 namespace Terrain {
 
-OgreImage::OgreImage(Image::ImageBuffer* buffer) :
-		Image(buffer) {
+OgreImage::OgreImage(std::unique_ptr<Image::ImageBuffer> buffer) :
+		Image(std::move(buffer)) {
 
 }
 

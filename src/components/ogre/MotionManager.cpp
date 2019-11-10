@@ -31,62 +31,52 @@ namespace OgreView {
 
 
 MotionManager::MotionManager()
-{
-	mInfo.MovingEntities = mMotionSet.size();
-	mInfo.AnimatedEntities = mAnimatedEntities.size();
+		: mInfo{} {
 }
 
 
-MotionManager::~MotionManager()= default;
+MotionManager::~MotionManager() = default;
 
 
-void MotionManager::doMotionUpdate(Ogre::Real timeSlice)
-{
+void MotionManager::doMotionUpdate(Ogre::Real timeSlice) {
 	for (auto I : mMotionSet) {
 		I->updateMotion(timeSlice);
 	}
 }
 
-void MotionManager::doAnimationUpdate(Ogre::Real timeSlice)
-{
+void MotionManager::doAnimationUpdate(Ogre::Real timeSlice) {
 	for (AnimatedStore::const_iterator I = mAnimatedEntities.begin(); I != mAnimatedEntities.end(); ++I) {
 		I->second->updateAnimation(timeSlice);
 	}
 }
 
-bool MotionManager::frameStarted(const Ogre::FrameEvent& event)
-{
+bool MotionManager::frameStarted(const Ogre::FrameEvent& event) {
 	doMotionUpdate(event.timeSinceLastFrame);
 	doAnimationUpdate(event.timeSinceLastFrame);
 	return true;
 }
 
-bool MotionManager::frameEnded(const Ogre::FrameEvent& event)
-{
+bool MotionManager::frameEnded(const Ogre::FrameEvent& event) {
 	return true;
 }
 
-void MotionManager::addMovable(IMovable* movable)
-{
+void MotionManager::addMovable(IMovable* movable) {
 	mMotionSet.insert(movable);
 	mInfo.MovingEntities = mMotionSet.size();
 	movable->updateMotion(0);
 }
 
-void MotionManager::removeMovable(IMovable* movable)
-{
+void MotionManager::removeMovable(IMovable* movable) {
 	mMotionSet.erase(movable);
 	mInfo.MovingEntities = mMotionSet.size();
 }
 
-void MotionManager::addAnimated(const std::string& id, IAnimated* animated)
-{
+void MotionManager::addAnimated(const std::string& id, IAnimated* animated) {
 	mAnimatedEntities[id] = animated;
 	mInfo.AnimatedEntities = mAnimatedEntities.size();
 }
 
-void MotionManager::removeAnimated(const std::string& id)
-{
+void MotionManager::removeAnimated(const std::string& id) {
 	mAnimatedEntities.erase(id);
 	mInfo.AnimatedEntities = mAnimatedEntities.size();
 }

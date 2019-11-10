@@ -31,6 +31,7 @@
 #include "services/config/ConfigService.h"
 #include "framework/TimeHelper.h"
 #include "domain/EntityTalk.h"
+#include <memory>
 #include <boost/filesystem/operations.hpp>
 
 #ifdef _WIN32
@@ -55,7 +56,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		//perform setup of the stream
 		std::stringstream logFileSS;
 		logFileSS << dir << "/" << avatarEntity.getName() << "_chatlog.log";
-		mChatLogger = std::unique_ptr<std::ofstream>(new std::ofstream(logFileSS.str().c_str(), std::ios::app));
+		mChatLogger = std::make_unique<std::ofstream>(logFileSS.str().c_str(), std::ios::app);
 		S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
 
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
@@ -83,7 +84,7 @@ void AvatarLogger::GUIManager_AppendIGChatLine(const EntityTalk& entityTalk, Emb
 
 AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar) {
 	//we either already have an entity, or we need to wait until it's created
-	mLogger = std::unique_ptr<AvatarLogger>(new AvatarLogger(avatar.getEmberEntity()));
+	mLogger = std::make_unique<AvatarLogger>(avatar.getEmberEntity());
 }
 
 

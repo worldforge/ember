@@ -21,15 +21,14 @@
 
 #include <vector>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-template <typename> class Buffer;
+template<typename>
+class Buffer;
+
 class HeightMapBuffer;
 
 /**
@@ -38,9 +37,9 @@ class HeightMapBuffer;
  * To help with performance and to avoid memory fragmentation this class is used to keep a collection of Buffer instances, which are used by HeightMapBuffer instances.
  * The HeightMapBuffer class will at destruction automatically return the Buffer instance to the provider.
  */
-class HeightMapBufferProvider
-{
+class HeightMapBufferProvider {
 	friend class HeightMapBuffer;
+
 public:
 	/**
 	 * @brief Ctor.
@@ -48,7 +47,9 @@ public:
 	 * @param desiredBuffers The amount of desired buffers to keep in the pool.
 	 * @param desiredBuffersTolerance How much the amount in the pool is allowed to differ from the desired amount before buffers are created or destroyed.
 	 */
-	HeightMapBufferProvider(unsigned int bufferResolution, unsigned int desiredBuffers = 5, unsigned int desiredBuffersTolerance = 2);
+	explicit HeightMapBufferProvider(unsigned int bufferResolution,
+									 unsigned int desiredBuffers = 5,
+									 unsigned int desiredBuffersTolerance = 2);
 
 	/**
 	 * @brief Dtor.
@@ -67,7 +68,7 @@ private:
 	/**
 	 * @brief A store of buffer instances.
 	 */
-	typedef std::vector<Buffer<float>* > BufferStore;
+	typedef std::vector<Buffer<float>*> BufferStore;
 
 	/**
 	 * @brief The pool of unused Buffer instances.

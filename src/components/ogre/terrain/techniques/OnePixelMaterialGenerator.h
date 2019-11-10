@@ -21,24 +21,19 @@
 
 #include <OgreResource.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
-namespace Techniques
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
+namespace Techniques {
 
 /**
  * @brief Generates a one pixel texture used as normal map placeholder.
  *
  */
-class OnePixelMaterialGenerator : public Ogre::ManualResourceLoader
-{
+class OnePixelMaterialGenerator : public Ogre::ManualResourceLoader {
 public:
 
-	virtual void loadResource(Ogre::Resource* resource);
+	void loadResource(Ogre::Resource* resource) override;
 };
 
 }

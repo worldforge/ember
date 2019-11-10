@@ -35,7 +35,7 @@ class WFImage;
 class OgreImage : public Image
 {
 public:
-	explicit OgreImage(Image::ImageBuffer* buffer);
+	explicit OgreImage(std::unique_ptr<Image::ImageBuffer> buffer);
 
 	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset) override;
 	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset) override;

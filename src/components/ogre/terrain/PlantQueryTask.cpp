@@ -17,37 +17,38 @@
  */
 
 #include "PlantQueryTask.h"
+
+#include <utility>
 #include "PlantAreaQuery.h"
 #include "foliage/PlantPopulator.h"
 #include "components/ogre/Convert.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-PlantQueryTask::PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, const Ogre::ColourValue& defaultShadowColour, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
-	mSegmentRef(segmentRef), mPlantPopulator(plantPopulator), mAsyncCallback(asyncCallback), mQueryResult(query)
-{
+PlantQueryTask::PlantQueryTask(SegmentRefPtr segmentRef,
+							   Foliage::PlantPopulator& plantPopulator,
+							   PlantAreaQuery query,
+							   const Ogre::ColourValue& defaultShadowColour,
+							   sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
+		mSegmentRef(std::move(segmentRef)),
+		mPlantPopulator(plantPopulator),
+		mAsyncCallback(std::move(asyncCallback)),
+		mQueryResult(std::move(query)) {
 	mQueryResult.setDefaultShadowColour(defaultShadowColour);
 }
 
-PlantQueryTask::~PlantQueryTask()
-{
-}
+PlantQueryTask::~PlantQueryTask() = default;
 
-void PlantQueryTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void PlantQueryTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	mPlantPopulator.populate(mQueryResult, mSegmentRef);
 	//Release Segment references as soon as we can
 	mSegmentRef.reset();
 }
 
-bool PlantQueryTask::executeTaskInMainThread()
-{
+bool PlantQueryTask::executeTaskInMainThread() {
 	mAsyncCallback(mQueryResult);
 	return true;
 }

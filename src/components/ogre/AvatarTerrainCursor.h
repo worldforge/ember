@@ -63,9 +63,9 @@ struct ITerrainAdapter;
 		*/
 		const static int DEFAULT_THRESHOLD_MILLIS = 100;
 
-		/* C and D */
 		AvatarTerrainCursor(Ogre::Camera& camera, Terrain::ITerrainAdapter& terrainAdapter);
-		virtual ~AvatarTerrainCursor();
+
+		~AvatarTerrainCursor() override;
 
 		/**
 		 * @brief Gets the minimum time, in milliseconds, that must elapse before a new raycheck is carried out if only the camera has changed.

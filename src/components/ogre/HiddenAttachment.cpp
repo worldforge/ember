@@ -19,22 +19,16 @@
 #include "HiddenAttachment.h"
 #include "domain/EmberEntity.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 HiddenAttachment::HiddenAttachment(EmberEntity& parentEntity, EmberEntity& childEntity)
-: AttachmentBase(parentEntity, childEntity)
-{
+		: AttachmentBase(parentEntity, childEntity) {
 }
 
-HiddenAttachment::~HiddenAttachment()
-{
-}
+HiddenAttachment::~HiddenAttachment() = default;
 
-IEntityAttachment* HiddenAttachment::attachEntity(EmberEntity& entity)
-{
+IEntityAttachment* HiddenAttachment::attachEntity(EmberEntity& entity) {
 	return new HiddenAttachment(getAttachedEntity(), entity);
 }
 

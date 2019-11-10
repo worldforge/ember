@@ -34,18 +34,19 @@ namespace Model {
 
 class ParticleSystemBinding;
 
-typedef std::vector<ParticleSystemBinding*> ParticleSystemBindingsPtrSet;
+typedef std::vector<std::unique_ptr<ParticleSystemBinding>> ParticleSystemBindingsPtrSet;
 
 /**
 @author Erik Ogenvik
 */
-class ParticleSystem : public Ogre::MovableObject::Listener
-{
+class ParticleSystem : public Ogre::MovableObject::Listener {
 public:
 	ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem, const Ogre::Vector3& direction);
-	virtual ~ParticleSystem();
+
+	~ParticleSystem() override;
+
 	Ogre::ParticleSystem* getOgreParticleSystem();
-	
+
 	/**
 	 * @brief Adds a new binding.
 	 * @param emitterVal the name of the particle emitter
@@ -53,8 +54,9 @@ public:
 	 * @return a pointer to the newly created binding
 	 */
 	ParticleSystemBinding* addBinding(const std::string& emitterVal, const std::string& variableName);
+
 	ParticleSystemBindingsPtrSet& getBindings();
-	
+
 	/**
 	 * @brief Sets the visibility of the particle system.
 	 * @param visibility Whether the particle system should be shown.

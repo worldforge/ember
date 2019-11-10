@@ -22,43 +22,35 @@
 #include "TaskUnit.h"
 #include "framework/LoggingInstance.h"
 
-namespace Ember
-{
+namespace Ember {
 
-namespace Tasks
-{
+namespace Tasks {
 TaskExecutor::TaskExecutor(TaskQueue& taskQueue) :
-	mTaskQueue(taskQueue), mActive(true)
-{
-	mThread = new std::thread([&](){this->run();});
+		mTaskQueue(taskQueue),
+		mActive(true),
+		mThread([&]() { this->run(); }) {
 }
 
-TaskExecutor::~TaskExecutor()
-{
-	delete mThread;
-}
+TaskExecutor::~TaskExecutor() = default;
 
-void TaskExecutor::run()
-{
+void TaskExecutor::run() {
 #ifdef __APPLE__
-    pthread_setname_np("Task Executor");
+	pthread_setname_np("Task Executor");
 #elif !defined(_WIN32)
 	pthread_setname_np(pthread_self(), "Task Executor");
 #endif
 	while (mActive) {
-		TaskUnit* taskUnit = mTaskQueue.fetchNextTask();
+		auto taskUnit = mTaskQueue.fetchNextTask();
 		//If the queue returns a null pointer, it means that the queue is being shut down, and this executor is expected to exit its main processing loop.
 		if (taskUnit) {
 			try {
 				TaskExecutionContext context(*this, *taskUnit);
 				taskUnit->executeInBackgroundThread(context);
-				mTaskQueue.addProcessedTask(taskUnit);
+				mTaskQueue.addProcessedTask(std::move(taskUnit));
 			} catch (const std::exception& ex) {
 				S_LOG_CRITICAL("Error when executing task in background." << ex);
-				delete taskUnit;
 			} catch (...) {
 				S_LOG_CRITICAL("Unknown error when executing task in background.");
-				delete taskUnit;
 			}
 		} else {
 			break;
@@ -66,14 +58,12 @@ void TaskExecutor::run()
 	}
 }
 
-void TaskExecutor::setActive(bool active)
-{
+void TaskExecutor::setActive(bool active) {
 	mActive = active;
 }
 
-void TaskExecutor::join()
-{
-	mThread->join();
+void TaskExecutor::join() {
+	mThread.join();
 }
 
 }

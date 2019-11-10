@@ -21,23 +21,20 @@
 
 #include "domain/IEntityAttachment.h"
 
-namespace WFMath
-{
+namespace WFMath {
 class Quaternion;
 }
 
-namespace Ogre
-{
+namespace Ogre {
 class SceneNode;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
+
 struct IGraphicalRepresentation;
 struct IEntityControlDelegate;
-namespace OgreView
-{
+namespace OgreView {
 
 
 /**
@@ -45,41 +42,41 @@ namespace OgreView
  *
  * This basically means all attachments except the top world attachment.
  */
-class AttachmentBase: public IEntityAttachment
-{
+class AttachmentBase : public IEntityAttachment {
 public:
 	AttachmentBase(EmberEntity& parentEntity, EmberEntity& childEntity);
-	virtual ~AttachmentBase();
 
-	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
+	~AttachmentBase() override;
 
-	virtual EmberEntity& getAttachedEntity() const;
+	IGraphicalRepresentation* getGraphicalRepresentation() const override;
 
-	virtual EmberEntity* getParentEntity() const;
+	EmberEntity& getAttachedEntity() const override;
 
-	virtual void updateScale();
+	EmberEntity* getParentEntity() const override;
 
-	virtual void updatePosition();
+	void updateScale() override;
 
-	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
+	void updatePosition() override;
 
-	virtual void setControlDelegate(IEntityControlDelegate* controllerDelegate);
+	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) override;
 
-	virtual IEntityControlDelegate* getControlDelegate() const;
+	void setControlDelegate(IEntityControlDelegate* controllerDelegate) override;
+
+	IEntityControlDelegate* getControlDelegate() const override;
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize);
+	void setVisualize(const std::string& visualization, bool visualize) override;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
 	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
-	virtual bool getVisualize(const std::string& visualization) const;
+	bool getVisualize(const std::string& visualization) const override;
 
 protected:
 

@@ -22,11 +22,9 @@
 #include "components/entitymapping/Actions/Action.h"
 #include <string>
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
+namespace OgreView {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -35,15 +33,14 @@ namespace OgreView
  * Some entities can be "composition" entities. That means that they and their children make up one single conceptual entity.
  * An example might be a table, where each table leg is a separate entity. Each leg is then part of the "table composition".
  */
-class CompositionAction: public EntityMapping::Actions::Action
-{
+class CompositionAction : public EntityMapping::Actions::Action {
 public:
 	/**
 	 * @brief Ctor.
 	 * @param entity The entity being affected.
 	 * @param mode The mode of the composition. Either "none", "composition" or "exclusive". This corresponds to EmberEntity::CompositionMode.
 	 */
-	CompositionAction(EmberEntity& entity, const std::string& mode);
+	CompositionAction(EmberEntity& entity, std::string mode);
 
 	void activate(EntityMapping::ChangeContext& context) override;
 

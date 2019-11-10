@@ -21,13 +21,10 @@
 
 #include "IHeightMapSegment.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class HeightMapBuffer;
 
@@ -35,20 +32,19 @@ class HeightMapBuffer;
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Represents one segment (mapped to a Mercator::Segment) in the height map, backed by a height map buffer.
  */
-class HeightMapSegment : public IHeightMapSegment
-{
+class HeightMapSegment : public IHeightMapSegment {
 public:
 
 	/**
 	 * @brief Ctor.
 	 * @param buffer The buffer to use for this segment. Ownership will be transferred.
 	 */
-	HeightMapSegment(HeightMapBuffer* buffer);
+	explicit HeightMapSegment(std::unique_ptr<HeightMapBuffer> buffer);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~HeightMapSegment();
+	~HeightMapSegment() override;
 
 	/**
 	 * @brief Gets the height at the specified location.
@@ -58,24 +54,24 @@ public:
 	 * @param y The y location, in world units.
 	 * @returns The height at the location.
 	 */
-	virtual float getHeight(int x, int y) const;
+	float getHeight(int x, int y) const override;
 
-    /**
-     * @brief Gets the height and normal at the location.
-     * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
+	/**
+	 * @brief Gets the height and normal at the location.
+	 * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
 	 * @param x The x location, in world units.
 	 * @param y The y location, in world units.
 	 * @param height The height will be stored here.
 	 * @param normal The normal will be stored here.
-     */
-	virtual void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const;
+	 */
+	void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const override;
 
 private:
 
 	/**
 	 * @brief The buffer which contains the height data.
 	 */
-    HeightMapBuffer* mBuffer;
+	std::unique_ptr<HeightMapBuffer> mBuffer;
 };
 
 }

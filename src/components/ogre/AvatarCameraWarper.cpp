@@ -77,7 +77,7 @@ void AvatarCameraWarper::frameProcessed(const TimeFrame&, unsigned int) {
 
 void AvatarCameraWarper::updateAvatarPosition(const Ogre::Vector3& worldPosition) {
 	if (mView.getTopLevel()) {
-		mMovementController.teleportTo(worldPosition, static_cast<EmberEntity*>(mView.getTopLevel()));
+		mMovementController.teleportTo(worldPosition, dynamic_cast<EmberEntity*>(mView.getTopLevel()));
 	}
 }
 

@@ -193,7 +193,7 @@ void AwarenessVisualizer::createMesh(unsigned int tileRef, dtTileCachePolyMesh& 
 
 	std::vector<unsigned short> regions;
 	regions.resize(npolys);
-	for (int i = 0; i < npolys; i++) {
+	for (int i = 0; i < npolys; ++i) {
 		regions[i] = (unsigned short)regs[i];
 	}
 

@@ -28,8 +28,8 @@ namespace OgreView
 namespace Terrain
 {
 
-WFImage::WFImage(Image::ImageBuffer* buffer) :
-	Image(buffer)
+WFImage::WFImage(std::unique_ptr<Image::ImageBuffer> buffer) :
+	Image(std::move(buffer))
 {
 
 }

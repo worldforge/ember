@@ -31,11 +31,12 @@ DelegatingNodeController::DelegatingNodeController(NodeAttachment& attachment, I
 
 }
 
-DelegatingNodeController::~DelegatingNodeController() {
-}
+DelegatingNodeController::~DelegatingNodeController() = default;
 
 void DelegatingNodeController::updatePosition() {
-	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation(), mAttachmentControlDelegate.getVelocity());
+	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(),
+							mAttachmentControlDelegate.getOrientation(),
+							mAttachmentControlDelegate.getVelocity());
 }
 
 IEntityControlDelegate* DelegatingNodeController::getControlDelegate() const {

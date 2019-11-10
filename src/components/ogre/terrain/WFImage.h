@@ -29,7 +29,7 @@ namespace Terrain {
 
 class WFImage : public Image {
 public:
-	explicit WFImage(Image::ImageBuffer* buffer);
+	explicit WFImage(std::unique_ptr<Image::ImageBuffer> buffer);
 
 	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0) override;
 

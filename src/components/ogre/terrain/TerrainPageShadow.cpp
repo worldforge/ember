@@ -50,7 +50,7 @@ void TerrainPageShadow::setLightDirection(const WFMath::Vector<3>& lightDirectio
 
 void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry) {
 	if (!mImage) {
-		mImage = std::make_unique<OgreImage>(new Image::ImageBuffer(mTerrainPage.getBlendMapSize(), 1));
+		mImage = std::make_unique<OgreImage>(std::make_unique<Image::ImageBuffer>(mTerrainPage.getBlendMapSize(), 1));
 	}
 	mImage->reset();
 

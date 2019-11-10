@@ -48,6 +48,8 @@
 #include <OgreHighLevelGpuProgramManager.h>
 #include <components/ogre/OgreInfo.h>
 
+#include <utility>
+
 
 namespace Ember {
 namespace OgreView {
@@ -56,11 +58,11 @@ namespace Model {
 std::map<Ogre::SceneManager*, std::map<Ogre::InstancedEntity*, Model*>> Model::sInstancedEntities;
 
 
-Model::Model(Ogre::SceneManager& manager, const ModelDefinitionPtr& definition, const std::string& name) :
+Model::Model(Ogre::SceneManager& manager, const ModelDefinitionPtr& definition, std::string name) :
 		mManager(manager),
 		mDefinition(definition),
 		mParentNodeProvider(nullptr),
-		mName(name),
+		mName(std::move(name)),
 		mSkeletonOwnerEntity(nullptr),
 		mSkeletonInstance(nullptr),
 		mRotation(Ogre::Quaternion::IDENTITY),
@@ -79,8 +81,8 @@ Model::~Model() {
 	mDefinition->removeModelInstance(this);
 	for (auto& submodel : mSubmodels) {
 		removeMovable(submodel->getEntity());
-		delete submodel;
 	}
+	mSubmodels.clear();
 
 	//Lights are not parts of mMovableObjects, so we need to destroy them ourselves here.
 	resetLights();
@@ -89,14 +91,6 @@ Model::~Model() {
 		mManager.destroyMovableObject(movable);
 	}
 	mDefinition->removeFromLoadingQueue(this);
-
-	//Clean up any submodels not yet added.
-	for (auto submodel : mAssetCreationContext.mSubmodels) {
-		delete submodel;
-	}
-
-
-//	S_LOG_VERBOSE("Deleted "<< getName());
 }
 
 void Model::reset() {
@@ -213,7 +207,7 @@ bool Model::createModelAssets() {
 				timedLog.report("Created entity '" + entity->getName() + "' of mesh '" + mesh->getName() + "'.");
 
 
-				auto submodel = new SubModel(*entity, *this);
+				auto submodel = std::make_unique<SubModel>(*entity, *this);
 				//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 
 
@@ -287,7 +281,7 @@ bool Model::createModelAssets() {
 					ModelPart& modelPart = mAssetCreationContext.mModelParts[part.getName()];
 					modelPart.addSubModelPart(&part);
 				}
-				mAssetCreationContext.mSubmodels.insert(submodel);
+				mAssetCreationContext.mSubmodels.emplace_back(std::move(submodel));
 				timedLog.report("Created submodel.");
 
 			} else {
@@ -305,8 +299,8 @@ bool Model::createModelAssets() {
 
 	setRenderingDistance(mDefinition->getRenderingDistance());
 
-	for (auto submodel : mAssetCreationContext.mSubmodels) {
-		addSubmodel(submodel);
+	for (auto& submodel : mAssetCreationContext.mSubmodels) {
+		addSubmodel(std::move(submodel));
 	}
 	mModelParts = mAssetCreationContext.mModelParts;
 	mGroupsToPartMap = mAssetCreationContext.mGroupsToPartMap;
@@ -407,7 +401,7 @@ void Model::createParticles() {
 				auto particleSystem = new ParticleSystem(ogreParticleSystem, particleSystemDef.Direction);
 				for (auto& bindingDef : particleSystemDef.Bindings) {
 					ParticleSystemBinding* binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
-					mAllParticleSystemBindings.push_back(binding);
+					mAllParticleSystemBindings.emplace_back(binding);
 				}
 				mParticleSystems.push_back(particleSystem);
 
@@ -458,25 +452,24 @@ void Model::createLights() {
 
 			lightInfo.light = ogreLight;
 			lightInfo.position = lightDef.position;
-			addLight(std::move(lightInfo));
+			addLight(lightInfo);
 		}
 	}
 }
 
-void Model::addLight(LightInfo lightInfo)
-{
+void Model::addLight(LightInfo lightInfo) {
 
-    if (mParentNodeProvider) {
-        //If the light has a position we need to create a different node to attach it to.
-        if (!lightInfo.position.isNaN() && !lightInfo.position.isZeroLength()) {
-            lightInfo.nodeProvider = mParentNodeProvider->createChildProvider("");
-            lightInfo.nodeProvider->setPositionAndOrientation(lightInfo.position, Ogre::Quaternion::IDENTITY);
-            lightInfo.nodeProvider->attachObject(lightInfo.light);
-        } else {
-            mParentNodeProvider->attachObject(lightInfo.light);
-        }
-    }
-    mLights.emplace_back(std::move(lightInfo));
+	if (mParentNodeProvider) {
+		//If the light has a position we need to create a different node to attach it to.
+		if (!lightInfo.position.isNaN() && !lightInfo.position.isZeroLength()) {
+			lightInfo.nodeProvider = mParentNodeProvider->createChildProvider("");
+			lightInfo.nodeProvider->setPositionAndOrientation(lightInfo.position, Ogre::Quaternion::IDENTITY);
+			lightInfo.nodeProvider->attachObject(lightInfo.light);
+		} else {
+			mParentNodeProvider->attachObject(lightInfo.light);
+		}
+	}
+	mLights.emplace_back(lightInfo);
 
 }
 
@@ -496,7 +489,7 @@ std::vector<LightInfo>& Model::getLights() {
 	return mLights;
 }
 
-bool Model::addSubmodel(SubModel* submodel) {
+bool Model::addSubmodel(std::unique_ptr<SubModel> submodel) {
 	auto entity = submodel->getEntity();
 
 	entity->getUserObjectBindings().setUserAny("model", Ogre::Any(this));
@@ -509,7 +502,7 @@ bool Model::addSubmodel(SubModel* submodel) {
 			// 			mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 		}
 	}
-	auto result = mSubmodels.insert(submodel);
+	auto result = mSubmodels.insert(std::move(submodel));
 	if (result.second) {
 		if (!mUseInstancing) {
 			addMovable(entity);
@@ -521,9 +514,10 @@ bool Model::addSubmodel(SubModel* submodel) {
 
 
 bool Model::removeSubmodel(SubModel* submodel) {
-	auto numberRemoved = mSubmodels.erase(submodel);
-	if (numberRemoved > 0) {
+	auto I = std::find_if(mSubmodels.begin(), mSubmodels.end(), [&](const std::unique_ptr<SubModel>& entry) { return entry.get() == submodel; });
+	if (I != mSubmodels.end()) {
 		removeMovable(submodel->getEntity());
+		mSubmodels.erase(I);
 	}
 	return true;
 }
@@ -531,10 +525,10 @@ bool Model::removeSubmodel(SubModel* submodel) {
 SubModel* Model::getSubModel(size_t index) {
 	size_t i = 0;
 	auto result = std::find_if(mSubmodels.begin(), mSubmodels.end(),
-							   [&i, &index](SubModel*) -> bool { return i++ == index; }
+							   [&i, &index](const std::unique_ptr<SubModel>&) -> bool { return i++ == index; }
 	);
 	if (result != mSubmodels.end()) {
-		return *result;
+		return result->get();
 	}
 	S_LOG_FAILURE("Could not find submodel with index " << index << " in model " << mName);
 	return nullptr;
@@ -595,7 +589,7 @@ void Model::setVisible(bool visible) {
 		movable->setVisible(visible);
 	}
 	for (auto& lightEntry: mLights) {
-	    lightEntry.light->setVisible(visible);
+		lightEntry.light->setVisible(visible);
 	}
 }
 
@@ -687,7 +681,6 @@ void Model::removeMovable(Ogre::MovableObject* movable) {
 void Model::resetSubmodels() {
 	for (auto& submodel : mSubmodels) {
 		removeMovable(submodel->getEntity());
-		delete submodel;
 	}
 	mSubmodels.clear();
 	mModelParts.clear();
@@ -706,15 +699,15 @@ void Model::resetParticles() {
 }
 
 void Model::resetLights() {
-    for (auto& lightInfo : mLights) {
-        Ogre::Light* light = lightInfo.light;
-        delete lightInfo.nodeProvider;
+	for (auto& lightInfo : mLights) {
+		Ogre::Light* light = lightInfo.light;
+		delete lightInfo.nodeProvider;
 
-        if (light) {
-            mManager.destroyLight(light);
-        }
-    }
-    mLights.clear();
+		if (light) {
+			mManager.destroyLight(light);
+		}
+	}
+	mLights.clear();
 }
 
 void Model::attachToNode(INodeProvider* nodeProvider) {
@@ -728,21 +721,21 @@ void Model::attachToNode(INodeProvider* nodeProvider) {
 		}
 	}
 	for (auto& lightEntry : mLights) {
-	    if (lightEntry.nodeProvider) {
-	        lightEntry.nodeProvider->detachObject(lightEntry.light);
-	        delete lightEntry.nodeProvider;
-	        lightEntry.nodeProvider = nullptr;
-	    }
+		if (lightEntry.nodeProvider) {
+			lightEntry.nodeProvider->detachObject(lightEntry.light);
+			delete lightEntry.nodeProvider;
+			lightEntry.nodeProvider = nullptr;
+		}
 
-	    if (nodeProvider) {
-            if (!lightEntry.position.isNaN() && !lightEntry.position.isZeroLength()) {
-                lightEntry.nodeProvider = nodeProvider->createChildProvider("");
-                lightEntry.nodeProvider->setPositionAndOrientation(lightEntry.position, Ogre::Quaternion::IDENTITY);
-                lightEntry.nodeProvider->attachObject(lightEntry.light);
-            } else {
-                nodeProvider->attachObject(lightEntry.light);
-            }
-        }
+		if (nodeProvider) {
+			if (!lightEntry.position.isNaN() && !lightEntry.position.isZeroLength()) {
+				lightEntry.nodeProvider = nodeProvider->createChildProvider("");
+				lightEntry.nodeProvider->setPositionAndOrientation(lightEntry.position, Ogre::Quaternion::IDENTITY);
+				lightEntry.nodeProvider->attachObject(lightEntry.light);
+			} else {
+				nodeProvider->attachObject(lightEntry.light);
+			}
+		}
 	}
 	mParentNodeProvider = nodeProvider;
 }
@@ -823,10 +816,10 @@ void Model::setRenderingDistance(Ogre::Real dist) {
 		for (auto& movable : mMovableObjects) {
 			movable->setRenderingDistance(dist);
 		}
-        for (auto& lightEntry: mLights) {
-            lightEntry.light->setRenderingDistance(dist);
-        }
-    }
+		for (auto& lightEntry: mLights) {
+			lightEntry.light->setRenderingDistance(dist);
+		}
+	}
 }
 
 void Model::setQueryFlags(unsigned int flags) {
@@ -834,9 +827,9 @@ void Model::setQueryFlags(unsigned int flags) {
 	for (auto& movable : mMovableObjects) {
 		movable->setQueryFlags(flags);
 	}
-    for (auto& lightEntry: mLights) {
-        lightEntry.light->setQueryFlags(flags);
-    }
+	for (auto& lightEntry: mLights) {
+		lightEntry.light->setQueryFlags(flags);
+	}
 }
 
 /** Overridden from MovableObject */
@@ -887,12 +880,12 @@ void Model::setUserObject(std::shared_ptr<EmberEntityUserObject> userObject) {
 	for (auto& movable : mMovableObjects) {
 		movable->getUserObjectBindings().setUserAny(Ogre::Any(userObject));
 	}
-    for (auto& lightEntry: mLights) {
-        lightEntry.light->getUserObjectBindings().setUserAny(Ogre::Any(userObject));
-    }
+	for (auto& lightEntry: mLights) {
+		lightEntry.light->getUserObjectBindings().setUserAny(Ogre::Any(userObject));
+	}
 
 
-    mUserObject = userObject;
+	mUserObject = userObject;
 }
 
 Ogre::SceneManager& Model::getManager() {
@@ -939,8 +932,7 @@ bool Model::useInstancing() const {
 	return mUseInstancing;
 }
 
-void Model::setUseInstancing(bool useInstancing)
-{
+void Model::setUseInstancing(bool useInstancing) {
 	if (mLoaded) {
 		S_LOG_WARNING("Altering 'useInstancing' on a Model which already is loaded. This will have no effect.");
 	}

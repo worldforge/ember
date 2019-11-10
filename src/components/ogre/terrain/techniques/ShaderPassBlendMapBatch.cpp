@@ -26,47 +26,37 @@
 #include <OgreTextureUnitState.h>
 #include <OgrePass.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-namespace Techniques
-{
+namespace Techniques {
 
 ShaderPassBlendMapBatch::ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize) :
-	mShaderPass(shaderPass), mCombinedBlendMapImage(new Image::ImageBuffer(imageSize, 4))
-{
+		mShaderPass(shaderPass),
+		mCombinedBlendMapImage(std::make_unique<Image::ImageBuffer>(imageSize, 4)) {
 	//reset the blendMap image
 	mCombinedBlendMapImage.reset();
 }
 
-ShaderPassBlendMapBatch::~ShaderPassBlendMapBatch()
-{
-}
+ShaderPassBlendMapBatch::~ShaderPassBlendMapBatch() = default;
 
-void ShaderPassBlendMapBatch::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer)
-{
+void ShaderPassBlendMapBatch::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer) {
 	addBlendMap(geometry, layer, mLayers.size());
 	mLayers.push_back(layer);
 }
 
-void ShaderPassBlendMapBatch::addBlendMap(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel)
-{
+void ShaderPassBlendMapBatch::addBlendMap(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel) {
 	layer->fillImage(geometry, mCombinedBlendMapImage, channel);
 	mSyncedTextures.clear();
 }
 
-std::vector<const TerrainPageSurfaceLayer*>& ShaderPassBlendMapBatch::getLayers()
-{
+std::vector<const TerrainPageSurfaceLayer*>& ShaderPassBlendMapBatch::getLayers() {
 	return mLayers;
 }
 
-void ShaderPassBlendMapBatch::assignCombinedBlendMapTexture(Ogre::TexturePtr texture)
-{
+void ShaderPassBlendMapBatch::assignCombinedBlendMapTexture(Ogre::TexturePtr texture) {
 	if (std::find(mSyncedTextures.begin(), mSyncedTextures.end(), texture->getName()) == mSyncedTextures.end()) {
 		TimedLog log("ShaderPassBlendMapBatch::assignCombinedBlendMapTexture", true);
 
@@ -78,8 +68,7 @@ void ShaderPassBlendMapBatch::assignCombinedBlendMapTexture(Ogre::TexturePtr tex
 			Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, 0));
 			hardwareBuffer->blitFromMemory(sourceBox);
 		} else {
-			for (size_t i = 0; i <= texture->getNumMipmaps(); ++i)
-			{
+			for (size_t i = 0; i <= texture->getNumMipmaps(); ++i) {
 				Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
 				hardwareBuffer->blitFromMemory(sourceBox);
 			}
@@ -89,26 +78,24 @@ void ShaderPassBlendMapBatch::assignCombinedBlendMapTexture(Ogre::TexturePtr tex
 	}
 }
 
-void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture, bool useNormalMapping)
-{
+void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture, bool useNormalMapping) {
 	//add our blend map textures first
 	assignCombinedBlendMapTexture(texture);
-	Ogre::TextureUnitState * blendMapTUS = pass.createTextureUnitState();
+	Ogre::TextureUnitState* blendMapTUS = pass.createTextureUnitState();
 	blendMapTUS->setTextureScale(1, 1);
 	blendMapTUS->setTextureName(texture->getName());
 	blendMapTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
-	for (LayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
-		const TerrainPageSurfaceLayer* layer(*I);
+	for (auto& layer : mLayers) {
 		//add the layer textures
 		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
-		Ogre::TextureUnitState * diffuseTUS = pass.createTextureUnitState();
+		Ogre::TextureUnitState* diffuseTUS = pass.createTextureUnitState();
 		//textureUnitState->setTextureScale(0.025, 0.025);
 		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
 		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
 		if (useNormalMapping) {
-			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
+			Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
 			std::string normalTextureName = layer->getNormalTextureName();
 			if (normalTextureName.empty()) {
 				normalTextureName = "dynamic/onepixel";

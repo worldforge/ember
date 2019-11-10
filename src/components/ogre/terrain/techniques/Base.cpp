@@ -17,27 +17,27 @@
  */
 
 #include "Base.h"
+
+#include <utility>
 #include "components/ogre/terrain/TerrainPageGeometry.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-namespace Techniques
-{
+namespace Techniques {
 
-Base::Base(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow)
-: mGeometry(geometry), mTerrainPageSurfaces(terrainPageSurfaces), mTerrainPageShadow(terrainPageShadow), mPage(geometry->getPage())
-{
+Base::Base(const TerrainPageGeometryPtr& geometry,
+		   SurfaceLayerStore terrainPageSurfaces,
+		   const TerrainPageShadow* terrainPageShadow)
+		: mGeometry(geometry),
+		  mTerrainPageSurfaces(std::move(terrainPageSurfaces)),
+		  mTerrainPageShadow(terrainPageShadow),
+		  mPage(geometry->getPage()) {
 }
 
-Base::~Base()
-{
-}
+Base::~Base() = default;
 
 }
 

@@ -25,22 +25,27 @@
 #include <wfmath/vector.h>
 #include <set>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainPage;
+
 class TerrainHandler;
+
 class HeightMapBufferProvider;
+
 class HeightMap;
 
-class GeometryUpdateTask : public Tasks::TemplateNamedTask<GeometryUpdateTask>
-{
+class GeometryUpdateTask : public Tasks::TemplateNamedTask<GeometryUpdateTask> {
 public:
-	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2>>& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3> lightDirection);
+	GeometryUpdateTask(BridgeBoundGeometryPtrVector geometry,
+					   std::vector<WFMath::AxisBox<2>> areas,
+					   TerrainHandler& handler,
+					   ShaderStore shaders,
+					   HeightMapBufferProvider& heightMapBufferProvider,
+					   HeightMap& heightMap,
+					   const WFMath::Vector<3>& lightDirection);
 
 	~GeometryUpdateTask() override = default;
 

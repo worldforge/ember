@@ -43,13 +43,13 @@ class XMLSoundDefParser;
 class SoundDefinitionManager : public Ogre::ResourceManager, public Singleton<SoundDefinitionManager>
 {
 public:
-	typedef std::unordered_map<std::string, SoundGroupDefinition*> SoundGroupDefinitionStore;
+	typedef std::unordered_map<std::string, std::unique_ptr<SoundGroupDefinition>> SoundGroupDefinitionStore;
 
 	SoundDefinitionManager();
 
-	virtual ~SoundDefinitionManager();
+	~SoundDefinitionManager() override;
 
-	virtual void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
+	void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName) override;
 	
 	/**
 	* Register a new SoundDefinition used to define soundgroups

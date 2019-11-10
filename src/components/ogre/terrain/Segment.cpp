@@ -19,55 +19,49 @@
 #include "Segment.h"
 #include <Mercator/Segment.h>
 #include <sstream>
-namespace Ember
-{
-namespace OgreView
-{
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+
+namespace Terrain {
 
 Segment::Segment(int xIndex, int yIndex, std::function<Mercator::Segment*()>& segmentProvider, std::function<void(Mercator::Segment*)>& segmentInvalidator) :
-		mXIndex(xIndex), mYIndex(yIndex), mSegment(nullptr), mSegmentProvider(segmentProvider), mSegmentInvalidator(segmentInvalidator)
-{
+		mXIndex(xIndex),
+		mYIndex(yIndex),
+		mSegment(nullptr),
+		mSegmentProvider(segmentProvider),
+		mSegmentInvalidator(segmentInvalidator) {
 }
 
-Segment::~Segment()
-{
-}
+Segment::~Segment() = default;
 
-Mercator::Segment& Segment::getMercatorSegment()
-{
+Mercator::Segment& Segment::getMercatorSegment() {
 	if (!mSegment) {
 		mSegment = mSegmentProvider();
 	}
 	return *mSegment;
 }
 
-int Segment::getXIndex() const
-{
+int Segment::getXIndex() const {
 	return mXIndex;
 
 }
-int Segment::getYIndex() const
-{
+
+int Segment::getYIndex() const {
 	return mYIndex;
 }
 
-std::string Segment::getKey() const
-{
+std::string Segment::getKey() const {
 	std::stringstream ss;
 	ss << getXIndex() << "_" << getYIndex();
 	return ss.str();
 }
 
-void Segment::invalidate()
-{
+void Segment::invalidate() {
 	mSegmentInvalidator(mSegment);
 }
 
-bool Segment::hasSegment() const
-{
+bool Segment::hasSegment() const {
 	return mSegment != nullptr;
 }
 

@@ -84,7 +84,7 @@ protected:
 	/**
 	 * @brief The segment this holder manages.
 	 */
-	Segment* mSegment;
+	std::unique_ptr<Segment> mSegment;
 
 	/**
 	 * @brief The segment manager to which this instance belongs.

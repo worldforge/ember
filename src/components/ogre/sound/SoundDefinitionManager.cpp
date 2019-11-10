@@ -33,67 +33,53 @@ namespace OgreView {
 
 
 SoundDefinitionManager::SoundDefinitionManager()
-: mSoundParser(new XMLSoundDefParser(*this))
-{
+		: mSoundParser(new XMLSoundDefParser(*this)) {
 	mResourceType = "SoundDefinition";
-	
+
 	mScriptPatterns.push_back("*.sounddef");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 }
 
 
-SoundDefinitionManager::~SoundDefinitionManager()
-{
+SoundDefinitionManager::~SoundDefinitionManager() {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
-	
-	for (SoundGroupDefinitionStore::iterator I = mSoundGroupDefinitions.begin(); I != mSoundGroupDefinitions.end(); ++I) {
-		delete I->second;
-	}
 }
 
-void SoundDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
-{
+void SoundDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) {
 	mSoundParser->parseScript(stream);
 }
 
-Ogre::Resource* SoundDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
-{
-	return 0;
+Ogre::Resource* SoundDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams) {
+	return nullptr;
 }
 
-SoundGroupDefinition* SoundDefinitionManager::getSoundGroupDefinition(const std::string& name)
-{
+SoundGroupDefinition* SoundDefinitionManager::getSoundGroupDefinition(const std::string& name) {
 	auto it(mSoundGroupDefinitions.find(name));
-	if (it != mSoundGroupDefinitions.end())
-	{
-		return it->second;
+	if (it != mSoundGroupDefinitions.end()) {
+		return it->second.get();
 	}
 
 	return nullptr;
 }
 
-SoundGroupDefinition* SoundDefinitionManager::createSoundGroupDefinition(const std::string& name)
-{
-	SoundGroupDefinition* newModel = getSoundGroupDefinition(name);
-	if (!newModel)
-	{
-		newModel = new SoundGroupDefinition();
-		#ifdef THREAD_SAFE
+SoundGroupDefinition* SoundDefinitionManager::createSoundGroupDefinition(const std::string& name) {
+	SoundGroupDefinition* newGroup = getSoundGroupDefinition(name);
+	if (!newGroup) {
+		newGroup = new SoundGroupDefinition();
+#ifdef THREAD_SAFE
 		pthread_mutex_lock(&mGroupModelsMutex);
-		#endif
+#endif
 
-		mSoundGroupDefinitions[name] = newModel;
+		mSoundGroupDefinitions[name].reset(newGroup);
 
-		#ifdef THREAD_SAFE
+#ifdef THREAD_SAFE
 		pthread_mutex_unlock(&mGroupModelsMutex);
-		#endif
+#endif
 
-		return newModel;
-	}
-	else
-	{
+		return newGroup;
+	} else {
 		S_LOG_INFO("Sound Group definition " << name << " already exists.");
 		return nullptr;
 	}

@@ -49,7 +49,7 @@ class ShaderPass
 {
 public:
 friend class ShaderPassBlendMapBatch;
-	ShaderPass(Ogre::SceneManager& sceneManager, unsigned int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping = false);
+	ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping = false);
 	virtual ~ShaderPass();
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -70,7 +70,6 @@ friend class ShaderPassBlendMapBatch;
 	LayerStore& getLayers();
 
 protected:
-	typedef std::vector<ShaderPassBlendMapBatch*> BlendMapBatchStore;
 
 	ShaderPassBlendMapBatch* getCurrentBatch();
 	virtual ShaderPassBlendMapBatch* createNewBatch();
@@ -79,14 +78,14 @@ protected:
 	Ogre::TexturePtr getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const;
 
 	float mScales[16];
-	BlendMapBatchStore mBlendMapBatches;
+	std::vector<std::unique_ptr<ShaderPassBlendMapBatch>> mBlendMapBatches;
 	LayerStore mLayers;
 	const TerrainPageSurfaceLayer* mBaseLayer;
 	Ogre::SceneManager& mSceneManager;
-	unsigned int mBlendMapPixelWidth;
+	int mBlendMapPixelWidth;
 	WFMath::Point<2> mPosition;
 
-	unsigned int mShadowLayers;
+	int mShadowLayers;
 
 	bool mUseNormalMapping;
 };

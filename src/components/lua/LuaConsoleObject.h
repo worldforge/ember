@@ -27,6 +27,7 @@
 #include "components/lua/Connectors.h"
 
 #include <tolua++.h>
+#include <memory>
 
 namespace Ember {
 namespace Lua {
@@ -85,7 +86,7 @@ private:
 	 *
 	 * This is called when the command is executed.
 	 */
-	TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>* mConnector;
+	std::unique_ptr<TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>> mConnector;
 
 	/**
 	 * @brief The console command registered.

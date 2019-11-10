@@ -67,7 +67,7 @@ size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::Mesh* mesh)
 	size_t vertexCount = 0;
 	size_t submeshCount = mesh->getNumSubMeshes();
 	// Loop to determine vertex count for tuning hash table size.
-	for (unsigned short i = 0; i < submeshCount; i++) {
+	for (unsigned short i = 0; i < submeshCount; ++i) {
 		const Ogre::SubMesh* submesh = mesh->getSubMesh(i);
 		if (submesh->useSharedVertices) {
 			if (!addedShared) {
@@ -110,7 +110,7 @@ size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::VertexData& data)
 int MeshInfoProvider::getVertexSize(const Ogre::VertexData* data)
 {
 	int size = 0;
-	for (unsigned short i = 0; i < data->vertexDeclaration->getMaxSource() + 1; i++) {
+	for (unsigned short i = 0; i < data->vertexDeclaration->getMaxSource() + 1; ++i) {
 		size += data->vertexDeclaration->getVertexSize(i);
 	}
 	return size;

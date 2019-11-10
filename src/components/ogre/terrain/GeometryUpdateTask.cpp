@@ -17,6 +17,8 @@
  */
 
 #include "GeometryUpdateTask.h"
+
+#include <utility>
 #include "TerrainPage.h"
 #include "TerrainHandler.h"
 #include "TerrainShaderUpdateTask.h"
@@ -25,34 +27,30 @@
 #include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
-namespace Ember
-{
-namespace OgreView
-{
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
 
-GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages,
-									   const std::vector<WFMath::AxisBox<2>>& areas,
+namespace Terrain {
+
+GeometryUpdateTask::GeometryUpdateTask(BridgeBoundGeometryPtrVector pages,
+									   std::vector<WFMath::AxisBox<2>> areas,
 									   TerrainHandler& handler,
-									   const ShaderStore& shaders,
+									   ShaderStore shaders,
 									   HeightMapBufferProvider& heightMapBufferProvider,
 									   HeightMap& heightMap,
-									   const WFMath::Vector<3> lightDirection) :
-	mGeometry(pages),
-	mAreas(areas),
-	mHandler(handler),
-	mShaders(shaders),
-	mHeightMapBufferProvider(heightMapBufferProvider),
-	mHeightMap(heightMap),
-	mLightDirection(lightDirection)
-{
+									   const WFMath::Vector<3>& lightDirection) :
+		mGeometry(std::move(pages)),
+		mAreas(std::move(areas)),
+		mHandler(handler),
+		mShaders(std::move(shaders)),
+		mHeightMapBufferProvider(heightMapBufferProvider),
+		mHeightMap(heightMap),
+		mLightDirection(lightDirection) {
 
 }
 
-void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	std::vector<Mercator::Segment*> segments;
 	// build a vector of shaders so we can more efficiently update them
 	std::vector<const Terrain::TerrainShader*> shaderList;
@@ -93,8 +91,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 	mGeometry.clear();
 }
 
-bool GeometryUpdateTask::executeTaskInMainThread()
-{
+bool GeometryUpdateTask::executeTaskInMainThread() {
 	if (!mBridgesToNotify.empty()) {
 		auto I = mBridgesToNotify.begin();
 		(*I)->terrainPageReady();

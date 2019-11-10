@@ -30,7 +30,7 @@
 #include <vector>
 
 namespace Ogre {
-	class SubEntity;
+class SubEntity;
 }
 
 
@@ -39,33 +39,39 @@ namespace OgreView {
 namespace Model {
 
 class SubModel;
+
 class Model;
+
 class ModelDefinition;
+
 class SubEntityDefinition;
 
-struct SubModelPartEntity
-{
+struct SubModelPartEntity {
 	Ogre::SubEntity* SubEntity;
 	SubEntityDefinition* Definition;
 	unsigned short subEntityIndex;
 };
 
 
-class SubModelPart{
-friend class ModelDefinition;
+class SubModelPart {
+	friend class ModelDefinition;
+
 public:
 
-	SubModelPart(const std::string& name, SubModel& subModel);
+	SubModelPart(std::string name, SubModel& subModel);
+
 	virtual ~SubModelPart();
 
 
 	bool addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition, unsigned short subEntityIndex);
- 	bool removeSubEntity(const Ogre::SubEntity* subentity);
 
- 	void show();
- 	void hide();
+	bool removeSubEntity(const Ogre::SubEntity* subentity);
 
- 	const std::string& getName() const;
+	void show();
+
+	void hide();
+
+	const std::string& getName() const;
 
 	const std::vector<SubModelPartEntity>& getSubentities() const;
 

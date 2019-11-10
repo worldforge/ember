@@ -113,7 +113,7 @@ public:
 	 * @param name
 	 * @return
 	 */
-	Model(Ogre::SceneManager& manager, const ModelDefinitionPtr& definition, const std::string& name = "");
+	Model(Ogre::SceneManager& manager, const ModelDefinitionPtr& definition, std::string name = "");
 
 	/**
 	 * @brief Ctor.
@@ -137,7 +137,7 @@ public:
 	 */
 	sigc::signal<void> Resetting;
 
-	bool addSubmodel(SubModel* submodel);
+	bool addSubmodel(std::unique_ptr<SubModel> submodel);
 
 	bool removeSubmodel(SubModel* submodel);
 
@@ -201,7 +201,7 @@ public:
 
 	// 	inline const SubModelPartStoreMap& getSubmodelParts() const;
 
-	const std::set<SubModel*>& getSubmodels() const;
+	const std::set<std::unique_ptr<SubModel>>& getSubmodels() const;
 
 	//SubModel* getSubModel(const std::string& name);
 	SubModel* getSubModel(size_t index);
@@ -299,7 +299,7 @@ protected:
 
 	struct AssetCreationContext {
 		size_t mCurrentlyLoadingSubModelIndex = 0;
-		std::set<SubModel*> mSubmodels;
+		std::vector<std::unique_ptr<SubModel>> mSubmodels;
 		std::vector<std::string> showPartVector;
 		ModelPartStore mModelParts;
 		PartGroupStore mGroupsToPartMap;
@@ -381,7 +381,7 @@ protected:
 	/**
 	 a set of all submodels belonging to the model
 	 */
-	std::set<SubModel*> mSubmodels;
+	std::set<std::unique_ptr<SubModel>> mSubmodels;
 	/**
 	 a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
 	 */
@@ -426,7 +426,7 @@ protected:
 
 };
 
-inline const std::set<SubModel*>& Model::getSubmodels() const {
+inline const std::set<std::unique_ptr<SubModel>>& Model::getSubmodels() const {
 	return mSubmodels;
 }
 

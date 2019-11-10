@@ -19,30 +19,22 @@
 #include "HeightMapFlatSegment.h"
 #include "wfmath/vector.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 HeightMapFlatSegment::HeightMapFlatSegment(float height) :
-	mHeight(height)
-{
+		mHeight(height) {
 }
 
-HeightMapFlatSegment::~HeightMapFlatSegment()
-{
-}
+HeightMapFlatSegment::~HeightMapFlatSegment() = default;
 
-float HeightMapFlatSegment::getHeight(int x, int y) const
-{
+float HeightMapFlatSegment::getHeight(int x, int y) const {
 	return mHeight;
 }
 
-void HeightMapFlatSegment::getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const
-{
+void HeightMapFlatSegment::getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const {
 	height = mHeight;
 	normal.x() = 0;
 	normal.y() = 1;

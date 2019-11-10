@@ -30,8 +30,8 @@ namespace Terrain
 namespace Foliage
 {
 
-ClusterPopulator::ClusterPopulator(unsigned int layerIndex, IScaler* scaler, size_t plantIndex) :
-	PlantPopulator(layerIndex, scaler, plantIndex),
+ClusterPopulator::ClusterPopulator(unsigned int layerIndex, std::unique_ptr<IScaler> scaler, size_t plantIndex) :
+	PlantPopulator(layerIndex, std::move(scaler), plantIndex),
 	mMinClusterRadius(1.0f),
 	mMaxClusterRadius(1.0f),
 	mClusterDistance(1.0f),
@@ -50,7 +50,7 @@ void ClusterPopulator::populate(PlantAreaQueryResult& result, SegmentRefPtr segm
 
 	const PlantAreaQuery& query = result.getQuery();
 
-	const WFMath::AxisBox<2>& area = Convert::toWF(query.getArea());
+	const WFMath::AxisBox<2>& area = Convert::toWF(query.mArea);
 
 	//Make a small list of surfaces in order
 	std::list<int> indexSort;

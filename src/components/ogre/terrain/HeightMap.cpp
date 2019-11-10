@@ -21,42 +21,27 @@
 #include "framework/LoggingInstance.h"
 #include <wfmath/vector.h>
 
-//MSVC 11.0 doesn't support std::lround so we'll use boost. When MSVC gains support for std::lround this could be removed.
-#ifdef _MSC_VER
-#include <boost/math/special_functions/round.hpp>
-#define I_ROUND(_x) (boost::math::lround(_x))
-#else
-#define I_ROUND(_x) (std::lround(_x))
-#endif
+namespace Ember {
+namespace OgreView {
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Terrain {
 
-namespace Terrain
-{
-
-HeightMap::HeightMap(float defaultLevel, unsigned int segmentResolution) :
-		mDefaultLevel(defaultLevel), mSegmentResolution(segmentResolution)
-{
+HeightMap::HeightMap(float defaultLevel, int segmentResolution) :
+		mDefaultLevel(defaultLevel),
+		mSegmentResolution(segmentResolution) {
 
 }
 
-HeightMap::~HeightMap()
-{
+HeightMap::~HeightMap() = default;
+
+void HeightMap::insert(int xIndex, int yIndex, std::unique_ptr<IHeightMapSegment> segment) {
+	mSegments[xIndex][yIndex] = std::shared_ptr<IHeightMapSegment>(std::move(segment));
 }
 
-void HeightMap::insert(int xIndex, int yIndex, IHeightMapSegment* segment)
-{
-	mSegments[xIndex][yIndex] = std::shared_ptr < IHeightMapSegment > (segment);
-}
-
-bool HeightMap::remove(int xIndex, int yIndex)
-{
-	Segmentstore::iterator column = mSegments.find(xIndex);
+bool HeightMap::remove(int xIndex, int yIndex) {
+	auto column = mSegments.find(xIndex);
 	if (column != mSegments.end()) {
-		Segmentcolumn::iterator row = column->second.find(yIndex);
+		auto row = column->second.find(yIndex);
 		if (row != column->second.end()) {
 			column->second.erase(row);
 			return true;
@@ -65,15 +50,14 @@ bool HeightMap::remove(int xIndex, int yIndex)
 	return false;
 }
 
-void HeightMap::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
-{
+void HeightMap::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const {
 
 	int xSize = xMax - xMin;
 
-	int segmentXMin = I_ROUND(floor(xMin / (double)mSegmentResolution));
-	int segmentXMax = I_ROUND(floor(xMax / (double)mSegmentResolution));
-	int segmentYMin = I_ROUND(floor(yMin / (double)mSegmentResolution));
-	int segmentYMax = I_ROUND(floor(yMax / (double)mSegmentResolution));
+	int segmentXMin = (int) std::lround(std::floor(xMin / (double) mSegmentResolution));
+	int segmentXMax = (int) std::lround(std::floor(xMax / (double) mSegmentResolution));
+	int segmentYMin = (int) std::lround(std::floor(yMin / (double) mSegmentResolution));
+	int segmentYMax = (int) std::lround(std::floor(yMax / (double) mSegmentResolution));
 
 	for (int segmentX = segmentXMin; segmentX <= segmentXMax; ++segmentX) {
 		for (int segmentY = segmentYMin; segmentY <= segmentYMax; ++segmentY) {
@@ -102,39 +86,36 @@ void HeightMap::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<
 	}
 }
 
-float HeightMap::getHeight(float x, float y) const
-{
-	int ix = I_ROUND(floor(x / mSegmentResolution));
-	int iy = I_ROUND(floor(y / mSegmentResolution));
+float HeightMap::getHeight(float x, float y) const {
+	int ix = (int) std::lround(std::floor(x / (float) mSegmentResolution));
+	int iy = (int) std::lround(std::floor(y / (float) mSegmentResolution));
 
 	std::shared_ptr<IHeightMapSegment> segment(getSegment(ix, iy));
 	if (!segment.get()) {
 		return mDefaultLevel;
 	}
-	return segment->getHeight(I_ROUND(x) - (ix * mSegmentResolution), I_ROUND(y) - (iy * mSegmentResolution));
+	return segment->getHeight((int) std::lround(x) - (ix * mSegmentResolution), (int) std::lround(y) - (iy * mSegmentResolution));
 
 }
 
-bool HeightMap::getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const
-{
-	int ix = I_ROUND(floor(x / mSegmentResolution));
-	int iy = I_ROUND(floor(y / mSegmentResolution));
+bool HeightMap::getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const {
+	int ix = (int) std::lround(std::floor(x / (float) mSegmentResolution));
+	int iy = (int) std::lround(std::floor(y / (float) mSegmentResolution));
 
 	std::shared_ptr<IHeightMapSegment> segment(getSegment(ix, iy));
 	if (!segment.get()) {
 		return false;
 	}
-	segment->getHeightAndNormal(x - (ix * (int)mSegmentResolution), y - (iy * (int)mSegmentResolution), height, normal);
+	segment->getHeightAndNormal(x - (float) (ix * mSegmentResolution), y - (float) (iy * mSegmentResolution), height, normal);
 	return true;
 }
 
-std::shared_ptr<IHeightMapSegment> HeightMap::getSegment(int xIndex, int yIndex) const
-{
-	Segmentstore::const_iterator I = mSegments.find(xIndex);
+std::shared_ptr<IHeightMapSegment> HeightMap::getSegment(int xIndex, int yIndex) const {
+	auto I = mSegments.find(xIndex);
 	if (I == mSegments.end()) {
 		return std::shared_ptr<IHeightMapSegment>();
 	}
-	Segmentcolumn::const_iterator J = I->second.find(yIndex);
+	auto J = I->second.find(yIndex);
 	if (J == I->second.end()) {
 		return std::shared_ptr<IHeightMapSegment>();
 	}

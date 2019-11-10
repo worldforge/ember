@@ -29,18 +29,20 @@
 
 #include <Mercator/Segment.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 
 namespace Terrain {
 
-HeightMapUpdateTask::HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, const SegmentStore& segments) :
-		mProvider(provider), mHeightMap(heightMap), mSegments(segments) {
-
+HeightMapUpdateTask::HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, SegmentStore segments) :
+		mProvider(provider),
+		mHeightMap(heightMap),
+		mSegments(std::move(segments)) {
 }
 
-HeightMapUpdateTask::~HeightMapUpdateTask() {
-}
+HeightMapUpdateTask::~HeightMapUpdateTask() = default;
 
 void HeightMapUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	createHeightMapSegments();
@@ -55,20 +57,25 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 	for (SegmentStore::const_iterator I = mSegments.begin(); I != mSegments.end(); ++I) {
 		Mercator::Segment* segment = *I;
 		if (segment) {
-			IHeightMapSegment* heightMapSegment = 0;
+			std::unique_ptr<IHeightMapSegment> heightMapSegment;
 			Mercator::Matrix<2, 2, Mercator::BasePoint>& basePoints(segment->getControlPoints());
 			//If all of the base points are on the same level, and there are no mods, we know that the segment is completely flat, and we can save some memory by using a HeightMapFlatSegment instance.
-			if (WFMath::Equal(basePoints[0].height(), basePoints[1].height()) && WFMath::Equal(basePoints[1].height(), basePoints[2].height()) && WFMath::Equal(basePoints[2].height(), basePoints[3].height()) && (segment->getMods().empty())) {
-				heightMapSegment = new HeightMapFlatSegment(basePoints[0].height());
+			if (WFMath::Equal(basePoints[0].height(), basePoints[1].height()) &&
+				WFMath::Equal(basePoints[1].height(), basePoints[2].height()) &&
+				WFMath::Equal(basePoints[2].height(), basePoints[3].height()) &&
+				(segment->getMods().empty())) {
+				heightMapSegment = std::make_unique<HeightMapFlatSegment>(basePoints[0].height());
 			} else {
 				HeightMapBuffer* buffer = mProvider.checkout();
 				if (buffer) {
 					memcpy(buffer->getBuffer()->getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
-					heightMapSegment = new HeightMapSegment(buffer);
+					heightMapSegment = std::make_unique<HeightMapSegment>(std::unique_ptr<HeightMapBuffer>(buffer));
 				}
 			}
 			if (heightMapSegment) {
-				mHeightMapSegments.emplace_back(WFMath::Point<2>(segment->getXRef() / segment->getResolution(), segment->getZRef() / segment->getResolution()), heightMapSegment);
+				mHeightMapSegments.emplace_back(WFMath::Point<2>(segment->getXRef() / segment->getResolution(),
+																 segment->getZRef() / segment->getResolution()),
+												std::move(heightMapSegment));
 			}
 		}
 	}
@@ -76,10 +83,9 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 }
 
 void HeightMapUpdateTask::injectHeightMapSegmentsIntoHeightMap() {
-	for (auto entry : mHeightMapSegments) {
+	for (auto& entry : mHeightMapSegments) {
 		const WFMath::Point<2>& position = entry.first;
-		IHeightMapSegment* heightMapSegment = entry.second;
-		mHeightMap.insert(position.x(), position.y(), heightMapSegment);
+		mHeightMap.insert(position.x(), position.y(), std::move(entry.second));
 	}
 
 }

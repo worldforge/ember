@@ -124,7 +124,7 @@ Avatar::Avatar(Eris::Avatar* erisAvatar,
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 	mClientSideAvatarPosition = mErisAvatarEntity.getPosition();
 
-	mErisAvatarEntity.setAttachmentControlDelegate(mAvatarAttachmentController);
+	mErisAvatarEntity.setAttachmentControlDelegate(mAvatarAttachmentController.get());
 
 	mCameraMount->attachToNode(getAvatarSceneNode());
 
@@ -133,12 +133,8 @@ Avatar::Avatar(Eris::Avatar* erisAvatar,
 	attachCameraToEntity();
 }
 
-Avatar::~Avatar() {
-	//The Eris entity is already deleted when this is called.
-	//mErisAvatarEntity.setAttachmentControlDelegate(0);
-	delete mAvatarAttachmentController;
-	delete mEntityMaker;
-}
+//The Eris entity is already deleted when this is called.
+Avatar::~Avatar() = default;
 
 void Avatar::runCommand(const std::string& command, const std::string& args) {
 	if (SetAttachedOrientation == command) {
@@ -472,7 +468,7 @@ void Avatar::deleteEntity(Eris::Entity* entity) {
 }
 
 void Avatar::movedInWorld() {
-	//only snap the avatar to the postition and orientation sent from the server if we're not moving or if we're not recently changed location
+	//only snap the avatar to the position and orientation sent from the server if we're not moving or if we're not recently changed location
 	//The main reason when moving is that we don't want to have the avatar snapping back in the case of lag
 	//However, if we've just recently changed location, we need to also update the orientation to work with the new location.
 	//	if (!mCurrentMovementState.isMoving || mHasChangedLocation)

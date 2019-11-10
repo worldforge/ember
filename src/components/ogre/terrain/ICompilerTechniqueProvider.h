@@ -29,7 +29,7 @@ namespace Ember {
 namespace OgreView {
 namespace Terrain {
 
-class TerrainPageSurfaceCompilerTechnique;
+struct TerrainPageSurfaceCompilerTechnique;
 
 class TerrainPageShadow;
 

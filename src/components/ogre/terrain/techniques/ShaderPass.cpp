@@ -26,19 +26,14 @@
 #include <OgreShadowCameraSetupPSSM.h>
 #include <OgreTextureManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-namespace Techniques
-{
+namespace Techniques {
 
-Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const
-{
+Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const {
 	// we need an unique name for our alpha texture
 	std::stringstream combinedBlendMapTextureNameSS;
 
@@ -49,7 +44,7 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 	if (textureMgr->resourceExists(combinedBlendMapName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 		S_LOG_VERBOSE("Using already created blendMap texture " << combinedBlendMapName);
 		combinedBlendMapTexture = static_cast<Ogre::TexturePtr>(textureMgr->getByName(combinedBlendMapName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
-		if(!combinedBlendMapTexture->isLoaded()) {
+		if (!combinedBlendMapTexture->isLoaded()) {
 			combinedBlendMapTexture->createInternalResources();
 		}
 		return combinedBlendMapTexture;
@@ -67,59 +62,53 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 	return combinedBlendMapTexture;
 }
 
-ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, unsigned int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping) :
-		mBaseLayer(nullptr), mSceneManager(sceneManager), mBlendMapPixelWidth(blendMapPixelWidth), mPosition(position), mShadowLayers(0), mUseNormalMapping(useNormalMapping)
-{
-	for (float& mScale : mScales) {
-		mScale = 0.0;
+ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping) :
+		mScales{},
+		mBaseLayer(nullptr),
+		mSceneManager(sceneManager),
+		mBlendMapPixelWidth(blendMapPixelWidth),
+		mPosition(position),
+		mShadowLayers(0),
+		mUseNormalMapping(useNormalMapping) {
+	for (float& scale : mScales) {
+		scale = 0.0;
 	}
 }
 
-ShaderPass::~ShaderPass()
-{
-	for (auto& mBlendMapBatche : mBlendMapBatches) {
-		delete mBlendMapBatche;
-	}
-}
+ShaderPass::~ShaderPass() = default;
 
-void ShaderPass::setBaseLayer(const TerrainPageSurfaceLayer* layer)
-{
+void ShaderPass::setBaseLayer(const TerrainPageSurfaceLayer* layer) {
 	mLayers.push_back(layer);
 	mBaseLayer = layer;
 	mScales[0] = layer->getScale();
 }
 
-ShaderPassBlendMapBatch* ShaderPass::getCurrentBatch()
-{
+ShaderPassBlendMapBatch* ShaderPass::getCurrentBatch() {
 	auto I = mBlendMapBatches.rbegin();
 	if (mBlendMapBatches.empty() || (*I)->getLayers().size() >= 4) {
 		ShaderPassBlendMapBatch* batch = createNewBatch();
-		mBlendMapBatches.push_back(batch);
+		mBlendMapBatches.emplace_back(std::unique_ptr<ShaderPassBlendMapBatch>(batch));
 		return batch;
 	}
-	return *I;
+	return I->get();
 }
 
-ShaderPassBlendMapBatch* ShaderPass::createNewBatch()
-{
+ShaderPassBlendMapBatch* ShaderPass::createNewBatch() {
 	return new ShaderPassBlendMapBatch(*this, getBlendMapPixelWidth());
 }
 
-void ShaderPass::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer)
-{
+void ShaderPass::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer) {
 	getCurrentBatch()->addLayer(geometry, layer);
 
 	mScales[mLayers.size()] = layer->getScale();
 	mLayers.push_back(layer);
 }
 
-LayerStore& ShaderPass::getLayers()
-{
+LayerStore& ShaderPass::getLayers() {
 	return mLayers;
 }
 
-bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows, const std::string& shaderSuffix) const
-{
+bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows, const std::string& shaderSuffix) const {
 	S_LOG_VERBOSE("Creating terrain material pass with: NormalMapping=" << mUseNormalMapping << " Shadows=" << useShadows << " Suffix=" << shaderSuffix);
 	if (shaderSuffix != "/NoLighting") {
 		S_LOG_VERBOSE("Adding normal map texture unit state.");
@@ -152,7 +141,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
 		if (mUseNormalMapping) {
-			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
+			Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
 			std::string normalTextureName = mBaseLayer->getNormalTextureName();
 			if (normalTextureName.empty()) {
 				//Since the shader always expects a normal texture we need to supply a dummy one if no specific one exists.
@@ -165,7 +154,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 
 	size_t i = 0;
 	// add our blendMap textures first
-	for (auto batch : mBlendMapBatches) {
+	for (auto& batch : mBlendMapBatches) {
 		batch->finalize(pass, getCombinedBlendMapTexture(pass.getIndex(), i++, managedTextures), mUseNormalMapping);
 	}
 
@@ -207,7 +196,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
 
 		if (useShadows) {
-			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
+			auto* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
 			if (pssmSetup) {
 				Ogre::Vector4 splitPoints;
 				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
@@ -242,8 +231,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 	return true;
 }
 
-bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
-{
+bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer) {
 	//TODO: calculate this once
 	Ogre::ushort numberOfTextureUnitsOnCard = std::min(static_cast<Ogre::ushort>(OGRE_MAX_TEXTURE_LAYERS), Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits());
 
@@ -273,13 +261,11 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 	return (numberOfTextureUnitsOnCard - projectedTakenUnits) >= 0;
 }
 
-void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow)
-{
+void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow) {
 	mShadowLayers++;
 }
 
-unsigned int ShaderPass::getBlendMapPixelWidth() const
-{
+unsigned int ShaderPass::getBlendMapPixelWidth() const {
 	return mBlendMapPixelWidth;
 }
 

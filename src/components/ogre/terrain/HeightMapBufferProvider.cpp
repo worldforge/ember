@@ -51,7 +51,7 @@ void HeightMapBufferProvider::checkin(HeightMapBuffer& heightMapBuffer)
 
 HeightMapBuffer* HeightMapBufferProvider::checkout()
 {
-	if (mPrimitiveBuffers.size() == 0) {
+	if (mPrimitiveBuffers.empty()) {
 		while (mPrimitiveBuffers.size() < mDesiredBuffers) {
 			mPrimitiveBuffers.push_back(new Buffer<float> (mBufferResolution, 1));
 		}

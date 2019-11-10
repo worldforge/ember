@@ -33,17 +33,16 @@ namespace OgreView {
 namespace Model {
 
 SubModel::SubModel(Ogre::Entity& entity, Model& model) :
-mEntity(entity), mModel(model)
-{
+		mEntity(entity), mModel(model) {
 	//begin by hiding all subentities
 	size_t numSubEntities = mEntity.getNumSubEntities();
-	for (unsigned int i = 0;i < numSubEntities; ++i) {
+	for (unsigned int i = 0; i < numSubEntities; ++i) {
 		mEntity.getSubEntity(i)->setVisible(false);
 	}
 
 }
-SubModel::~SubModel()
-{
+
+SubModel::~SubModel() {
 	for (auto& entry : mSubModelParts) {
 		entry.second.destroy();
 	}
@@ -53,24 +52,19 @@ SubModel::~SubModel()
 
 }
 
-std::map<std::string, SubModelPart>& SubModel::getSubModelPartMap()
-{
+std::map<std::string, SubModelPart>& SubModel::getSubModelPartMap() {
 	return mSubModelParts;
 }
 
-SubModelPart& SubModel::createSubModelPart(const std::string& name)
-{
+SubModelPart& SubModel::createSubModelPart(const std::string& name) {
 	auto result = mSubModelParts.insert(std::make_pair(name, SubModelPart(name, *this)));
 	return result.first->second;
 
 }
 
-Ogre::Entity* SubModel::getEntity() const
-{
+Ogre::Entity* SubModel::getEntity() const {
 	return &mEntity;
 }
-
-
 
 
 }

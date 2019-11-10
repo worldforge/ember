@@ -26,27 +26,25 @@
 #include <wfmath/axisbox.h>
 #include <string>
 
-namespace WFMath
-{
-template<int> class AxisBox;
+namespace WFMath {
+template<int>
+class AxisBox;
 }
 
-namespace Ogre
-{
+namespace Ogre {
 class SceneNode;
+
 class Node;
+
 class MovableObject;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 struct INodeProvider;
 
-namespace Model
-{
+namespace Model {
 class Model;
 
 /**
@@ -55,8 +53,7 @@ class Model;
  The scale node will be owned by this class.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class ModelMount
-{
+class ModelMount {
 public:
 
 	/**
@@ -105,7 +102,7 @@ protected:
 	 * @brief The node provider used by the mount.
 	 * The node to which the Model is attached to is provided by this instance. It can be either a SceneNode or a TagPoint.
 	 */
-	INodeProvider* mNodeProvider;
+	std::unique_ptr<INodeProvider> mNodeProvider;
 
 	const std::string mPose;
 
@@ -124,8 +121,7 @@ protected:
 
 };
 
-inline Model& ModelMount::getModel() const
-{
+inline Model& ModelMount::getModel() const {
 	return mModel;
 }
 

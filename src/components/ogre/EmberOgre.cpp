@@ -138,17 +138,14 @@ EmberOgre::EmberOgre() :
 }
 
 EmberOgre::~EmberOgre() {
-	delete mMaterialEditor;
-
-	delete mConsoleDevTools;
 
 	EmberServices::getSingleton().getSoundService().setResourceProvider(nullptr);
-	delete mSoundManager;
+	mSoundManager.reset();
 
 	EventGUIManagerBeingDestroyed();
 	//Right before we destroy the GUI manager we want to force a garbage collection of all scripting providers. The main reason is that there might be widgets which have been shut down, and they should be collected.
 	EmberServices::getSingleton().getScriptingService().forceGCForAllProviders();
-	delete mGUIManager;
+	mGUIManager.reset();
 	EventGUIManagerDestroyed();
 
 	delete mEntityRecipeManager;
@@ -256,8 +253,7 @@ void EmberOgre::clearDirtyPassLists() {
 }
 
 void EmberOgre::shutdownGui() {
-	delete mGUIManager;
-	mGUIManager = nullptr;
+	mGUIManager.reset();
 }
 
 bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris::EventService& eventService) {
@@ -334,7 +330,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
 
 	// Sounds
-	mSoundManager = new SoundDefinitionManager();
+	mSoundManager = std::make_unique<SoundDefinitionManager>();
 
 	mEntityRecipeManager = new Authoring::EntityRecipeManager();
 
@@ -436,7 +432,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 			S_LOG_INFO("End preload.");
 		}
 		try {
-			mGUIManager = new GUIManager(mWindow, configSrv, EmberServices::getSingleton().getServerService(), mainLoopController);
+			mGUIManager = std::make_unique<GUIManager>(mWindow, configSrv, EmberServices::getSingleton().getServerService(), mainLoopController);
 			EventGUIManagerCreated.emit(*mGUIManager);
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
@@ -459,9 +455,9 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		mSceneManagerOutOfWorld->clearSpecialCaseRenderQueues();
 		mSceneManagerOutOfWorld->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
 
-		mMaterialEditor = new Authoring::MaterialEditor();
+		mMaterialEditor = std::make_unique<Authoring::MaterialEditor>();
 
-		mConsoleDevTools = new ConsoleDevTools;
+		mConsoleDevTools = std::make_unique<ConsoleDevTools>();
 
 		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
 		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");

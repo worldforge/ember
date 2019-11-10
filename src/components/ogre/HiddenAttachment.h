@@ -42,12 +42,9 @@ class HiddenAttachment : public AttachmentBase
 public:
 	HiddenAttachment(EmberEntity& parentEntity, EmberEntity& childEntity);
 
-	virtual ~HiddenAttachment();
+	~HiddenAttachment() override;
 
-	virtual IEntityAttachment* attachEntity(EmberEntity& entity);
-
-private:
-
+	IEntityAttachment* attachEntity(EmberEntity& entity) override;
 };
 
 }

@@ -113,13 +113,13 @@ protected:
 	 * @brief A node provider instance, from which the mNode instance is created.
 	 * Also used when child attachment are created.
 	 */
-	INodeProvider* mNodeProvider;
+	std::unique_ptr<INodeProvider> mNodeProvider;
 
 	/**
 	 * @brief The controller used for the attachment.
 	 * This is normally either a NodeController instance, which will use the position and orientation of the entity directly, or a DelegatingNodeController which will use an instance IEntityControlDelegate.
 	 */
-	NodeController* mAttachmentController;
+	std::unique_ptr<NodeController> mAttachmentController;
 
 	/**
 	 * @brief Setup listening of entity events.

@@ -308,9 +308,9 @@ int TerrainHandler::getPageMetersSize() const
 void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
 {
 
-	TerrainPosition wfPos(Convert::toWF(query.getCenter()));
+	TerrainPosition wfPos(Convert::toWF(query.mCenter));
 
-	TerrainIndex index(std::floor(query.getCenter().x / (mPageIndexSize - 1)), -std::floor(query.getCenter().y / (mPageIndexSize - 1)));
+	TerrainIndex index(std::floor(query.mCenter.x / (mPageIndexSize - 1)), -std::floor(query.mCenter.y / (mPageIndexSize - 1)));
 
 	//If there's either no terrain page created, or it's not shown, we shouldn't create any foliage at this moment.
 	//Later on when the terrain page actually is shown, the TerrainManager::EventTerrainShown signal will be emitted

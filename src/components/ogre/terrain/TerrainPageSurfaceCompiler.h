@@ -57,8 +57,7 @@ struct ICompilerTechniqueProvider;
  * Surface generation happens in two steps, where the first preparation step occurs in a background thread, and
  * the final compilation step occurs in the main thread.
  */
-class TerrainPageSurfaceCompilerTechnique {
-public:
+struct TerrainPageSurfaceCompilerTechnique {
 
 	/**
 	 * @brief Dtor.

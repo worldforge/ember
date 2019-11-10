@@ -55,7 +55,6 @@ public:
 	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
 
 	std::vector<const TerrainPageSurfaceLayer*>& getLayers();
-	Image& getCombinedBlendMapImage();
 
 	virtual void finalize(Ogre::Pass& pass, Ogre::TexturePtr texture, bool useNormalMapping);
 

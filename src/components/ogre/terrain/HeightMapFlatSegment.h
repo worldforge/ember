@@ -37,8 +37,8 @@ namespace Terrain
 class HeightMapFlatSegment : public IHeightMapSegment
 {
 public:
-	HeightMapFlatSegment(float height);
-	virtual ~HeightMapFlatSegment();
+	explicit HeightMapFlatSegment(float height);
+	~HeightMapFlatSegment() override;
 
 	/**
 	 * @brief Gets the height at the specified location.
@@ -48,7 +48,7 @@ public:
 	 * @param y The y location, in world units.
 	 * @returns The height at the location.
 	 */
-	virtual float getHeight(int x, int y) const;
+	float getHeight(int x, int y) const override;
 
     /**
      * @brief Gets the height and normal at the location.
@@ -58,7 +58,7 @@ public:
 	 * @param height The height will be stored here.
 	 * @param normal The normal will be stored here.
      */
-	virtual void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const;
+	void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const override;
 
 
 protected:

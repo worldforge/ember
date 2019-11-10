@@ -101,7 +101,7 @@ protected:
 	/**
 	 * @brief A queue of task units.
 	 */
-	typedef std::queue<TaskUnit*> TaskUnitQueue;
+	typedef std::queue<std::unique_ptr<TaskUnit>> TaskUnitQueue;
 
 	/**
 	 * @brief A store of executors.
@@ -155,13 +155,13 @@ protected:
 	 * Calling this while there's no current tasks will result in the current thread being put on hold until a new task is enqueued.
 	 * @returns A pointer to a task unit, or a null pointer if the executor is expected to exit its processing loop (i.e. when the queue is being shut down).
 	 */
-	TaskUnit* fetchNextTask();
+	std::unique_ptr<TaskUnit> fetchNextTask();
 
 	/**
 	 * @brief Adds a processed task back to the queue, to be handled in the main thread and then deleted.
 	 * @param taskUnit The processed task unit.
 	 */
-	void addProcessedTask(TaskUnit* taskUnit);
+	void addProcessedTask(std::unique_ptr<TaskUnit> taskUnit);
 
 	void processCompletedTasks();
 

@@ -38,13 +38,14 @@ namespace OgreView {
 namespace Model {
 
 ModelMount::ModelMount(Model& model, INodeProvider* nodeProvider, std::string pose) :
-		mModel(model), mNodeProvider(nodeProvider), mPose(std::move(pose)) {
+		mModel(model),
+		mNodeProvider(nodeProvider),
+		mPose(std::move(pose)) {
 	model.attachToNode(nodeProvider);
 }
 
 ModelMount::~ModelMount() {
 	mModel.attachToNode(nullptr);
-	delete mNodeProvider;
 }
 
 void ModelMount::rescale(const WFMath::AxisBox<3>* wfBbox) {
@@ -180,7 +181,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox) {
 }
 
 INodeProvider* ModelMount::getNodeProvider() const {
-	return mNodeProvider;
+	return mNodeProvider.get();
 }
 
 }

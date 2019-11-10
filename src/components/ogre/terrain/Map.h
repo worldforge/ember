@@ -50,15 +50,14 @@ You don't use this directly when you want to render however, instead you use an 
 
 @author Erik Ogenvik <erik@ogenvik.org>
 */
-class MapCameraLightning
-{
+class MapCameraLightning {
 public:
 	/**
 	 * @brief Ctor.
 	 * The light will automatically be created in the constructor.
 	 * @param sceneManager The scene manager which is used for rendering.
 	 */
-	MapCameraLightning(Ogre::SceneManager& sceneManager);
+	explicit MapCameraLightning(Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Dtor.
@@ -104,7 +103,7 @@ public:
 	 * @brief Ctor.
 	 * @param lightning The lightning.
 	 */
-	MapCameraLightningInstance(MapCameraLightning& lightning);
+	explicit MapCameraLightningInstance(MapCameraLightning& lightning);
 
 	/**
 	 * @brief Dtor.
@@ -135,23 +134,25 @@ protected:
 	@author Erik Ogenvik <erik@ogenvik.org>
 
 */
-class MapCamera
-{
+class MapCamera {
 public:
 	MapCamera(Map& map, Ogre::SceneManager& manager);
+
 	virtual ~MapCamera();
 
 	void render();
 
 	void setDistance(float distance);
+
 	float getDistance() const;
 
 	void reposition(const Ogre::Vector2& pos);
+
 	/**
 	 * @brief Gets the current 2d position of the camera, in world space.
 	 * @return The current position of the camera, in world space.
 	 */
-	const Ogre::Vector2 getPosition() const;
+	Ogre::Vector2 getPosition() const;
 
 
 	void setRenderTarget(Ogre::RenderTarget* renderTarget);
@@ -173,8 +174,7 @@ protected:
 	@author Erik Ogenvik <erik@ogenvik.org>
 
 */
-class MapView
-{
+class MapView {
 public:
 	MapView(Map& map, MapCamera& mapCamera);
 
@@ -254,29 +254,32 @@ protected:
  * @brief An overhead map of the terrain, rendered into a texture.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class Map{
+class Map {
 public:
-    Map(Ogre::SceneManager& sceneManager);
+	explicit Map(Ogre::SceneManager& sceneManager);
 
-    virtual ~Map();
+	virtual ~Map();
 
-    void initialize();
+	void initialize();
 
-    Ogre::TexturePtr getTexture() const;
+	Ogre::TexturePtr getTexture() const;
 
-    /**
-     * @brief Gets the render texture into which the map is being rendered.
-     * This is the same texture as the one you will get from getTexture(), but this accesses the more low level rendering structure, allowing you to access the actual ViewPort.
-     * If you haven't called initialize() yet this will return a null pointer.
-     * @return A pointer to the render texture being used for rendering the map, or null if no such has been created yet.
-     */
-    Ogre::RenderTexture* getRenderTexture() const;
+	/**
+	 * @brief Gets the render texture into which the map is being rendered.
+	 * This is the same texture as the one you will get from getTexture(), but this accesses the more low level rendering structure, allowing you to access the actual ViewPort.
+	 * If you haven't called initialize() yet this will return a null pointer.
+	 * @return A pointer to the render texture being used for rendering the map, or null if no such has been created yet.
+	 */
+	Ogre::RenderTexture* getRenderTexture() const;
 
-    void render();
-    void reposition(const Ogre::Vector2& pos);
-    void reposition(float x, float y);
+	void render();
+
+	void reposition(const Ogre::Vector2& pos);
+
+	void reposition(float x, float y);
 
 	void setDistance(float distance);
+
 	float getDistance() const;
 
 	/**
@@ -304,6 +307,7 @@ public:
 protected:
 
 	void setupCamera();
+
 	void createTexture();
 
 
@@ -319,15 +323,14 @@ protected:
 };
 
 
-
 /**
 	By using an instance of this every time you want to alter the scene manager for a certain render operation, you can make sure that the scene manager is returned to its initial state after the render operation is complete, even if something goes wrong.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class RenderingInstance
-{
+class RenderingInstance {
 public:
-	RenderingInstance(Ogre::SceneManager* manager);
+	explicit RenderingInstance(Ogre::SceneManager* manager);
+
 	virtual ~RenderingInstance();
 
 protected:

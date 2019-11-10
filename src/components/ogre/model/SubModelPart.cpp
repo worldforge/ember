@@ -46,18 +46,18 @@
 #include <OgreHighLevelGpuProgram.h>
 #include <OgreInstanceBatch.h>
 #include <boost/algorithm/string.hpp>
+#include <utility>
 
 namespace Ember {
 namespace OgreView {
 namespace Model {
 
-SubModelPart::SubModelPart(const std::string& name, SubModel& subModel) :
-		mName(name), mSubModel(subModel) {
+SubModelPart::SubModelPart(std::string name, SubModel& subModel) :
+		mName(std::move(name)), mSubModel(subModel) {
 }
 
-SubModelPart::~SubModelPart() {
-	//no need to try to delete the Ogre::Subentities in the mSubEntities store, since Ogre will take care of this
-}
+//no need to try to delete the Ogre::Subentities in the mSubEntities store, since Ogre will take care of this
+SubModelPart::~SubModelPart() = default;
 
 bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition, unsigned short subEntityIndex) {
 	mSubEntities.emplace_back(SubModelPartEntity{subentity, definition, subEntityIndex});

@@ -27,37 +27,27 @@
 
 #include <wfmath/MersenneTwister.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 SegmentManager::SegmentManager(Mercator::Terrain& terrain, unsigned int desiredSegmentBuffer) :
 		mTerrain(terrain),
 		mDesiredSegmentBuffer(desiredSegmentBuffer),
 		mFakeSegmentHeight(-12.0f),
 		mFakeSegmentHeightVariation(10.0f),
-		mEndlessWorldEnabled(false)
-{
+		mEndlessWorldEnabled(false) {
 
 }
 
-SegmentManager::~SegmentManager()
-{
-	for (SegmentStore::const_iterator I = mSegments.begin(); I != mSegments.end(); ++I) {
-		delete I->second;
-	}
-}
+SegmentManager::~SegmentManager() = default;
 
-SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex)
-{
+SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex) {
 	std::stringstream ss;
 	ss << xIndex << "_" << yIndex;
 	std::string key = ss.str();
-	std::unique_lock < std::mutex > l(mSegmentsMutex);
+	std::unique_lock<std::mutex> l(mSegmentsMutex);
 	SegmentStore::const_iterator I = mSegments.find(key);
 	if (I != mSegments.end()) {
 		return I->second->getReference();
@@ -68,10 +58,9 @@ SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex)
 	}
 }
 
-size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indices, SegmentRefStore& segments)
-{
+size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indices, SegmentRefStore& segments) {
 	size_t count = 0;
-	std::unique_lock < std::mutex > l(mSegmentsMutex);
+	std::unique_lock<std::mutex> l(mSegmentsMutex);
 
 	for (const auto& index : indices) {
 		for (auto entry : index.second) {
@@ -93,28 +82,25 @@ size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indi
 	return count;
 }
 
-std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& key, int xIndex, int zIndex)
-{
+std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& key, int xIndex, int zIndex) {
 
-	std::function<void(Mercator::Segment*)> invalidate = [](Mercator::Segment* s)
-	{
+	std::function<void(Mercator::Segment*)> invalidate = [](Mercator::Segment* s) {
 		if (s) {
 			s->invalidate();
 		}
 	};
-	std::function<Mercator::Segment*()> segmentProvider = [=]()
-	{
-		Mercator::Segment* segment = new Mercator::Segment(xIndex * mTerrain.getResolution(), zIndex * mTerrain.getResolution(), mTerrain.getResolution());
+	std::function<Mercator::Segment*()> segmentProvider = [=]() {
+		auto* segment = new Mercator::Segment(xIndex * mTerrain.getResolution(), zIndex * mTerrain.getResolution(), mTerrain.getResolution());
 
 		WFMath::MTRand rand;
 		auto setPoint = [&](unsigned int x, unsigned int z) {
-				Mercator::BasePoint bp;
-				if (mTerrain.getBasePoint(xIndex + x, zIndex + z, bp)) {
-					segment->setCornerPoint(x,z, bp);
-				} else {
-					//Use a predictive way of generating a random height.
+			Mercator::BasePoint bp;
+			if (mTerrain.getBasePoint(xIndex + x, zIndex + z, bp)) {
+				segment->setCornerPoint(x, z, bp);
+			} else {
+				//Use a predictive way of generating a random height.
 				rand.seed(xIndex + x + ((zIndex + z) * 10000.0f));
-				segment->setCornerPoint(x,z, Mercator::BasePoint(mFakeSegmentHeight - (rand.rand<float>() * mFakeSegmentHeightVariation)));
+				segment->setCornerPoint(x, z, Mercator::BasePoint(mFakeSegmentHeight - (rand.rand<float>() * mFakeSegmentHeightVariation)));
 			}
 		};
 
@@ -131,7 +117,7 @@ std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& ke
 		return segment;
 	};
 
-	Segment* fakeSegment = new Segment(xIndex, zIndex, segmentProvider, invalidate);
+	auto* fakeSegment = new Segment(xIndex, zIndex, segmentProvider, invalidate);
 
 	//When using fake segments we must delete the mercator segment when we delete the Segment instance.
 	auto deleter = [](Segment* p) {
@@ -146,26 +132,23 @@ std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& ke
 	return std::shared_ptr<Segment>(fakeSegment, deleter);
 }
 
-void SegmentManager::addSegment(Mercator::Segment& segment)
-{
+void SegmentManager::addSegment(Mercator::Segment& segment) {
 	std::stringstream ss;
 	ss << (segment.getXRef() / segment.getResolution()) << "_" << (segment.getZRef() / segment.getResolution());
-	std::unique_lock < std::mutex > l(mSegmentsMutex);
+	std::unique_lock<std::mutex> l(mSegmentsMutex);
 	SegmentStore::const_iterator I = mSegments.find(ss.str());
 	if (I == mSegments.end()) {
-		std::function<void(Mercator::Segment*)> invalidate = [](Mercator::Segment* s)
-		{
+		std::function<void(Mercator::Segment*)> invalidate = [](Mercator::Segment* s) {
 			if (s) {
 				s->invalidate();
 			}
 		};
-		std::function<Mercator::Segment*()> segmentProvider = [&]() {return &segment;};
+		std::function<Mercator::Segment*()> segmentProvider = [&]() { return &segment; };
 		mSegments.insert(SegmentStore::value_type(ss.str(), new SegmentHolder(new Segment(segment.getXRef() / segment.getResolution(), segment.getZRef() / segment.getResolution(), segmentProvider, invalidate), *this)));
 	}
 }
 
-void SegmentManager::syncWithTerrain()
-{
+void SegmentManager::syncWithTerrain() {
 //There's currently no way to remove segments from the terrain, so we don't have to worry about that for now.
 
 	Mercator::Terrain::Segmentstore segmentStore = mTerrain.getTerrain();
@@ -178,10 +161,9 @@ void SegmentManager::syncWithTerrain()
 	}
 }
 
-void SegmentManager::pruneUnusedSegments()
-{
-	std::unique_lock < std::mutex > l(mSegmentsMutex);
-	std::unique_lock < std::mutex > l1(mUnusedAndDirtySegmentsMutex);
+void SegmentManager::pruneUnusedSegments() {
+	std::unique_lock<std::mutex> l(mSegmentsMutex);
+	std::unique_lock<std::mutex> l1(mUnusedAndDirtySegmentsMutex);
 	while (mUnusedAndDirtySegments.size() > mDesiredSegmentBuffer) {
 		SegmentHolder* holder = mUnusedAndDirtySegments.front();
 		mUnusedAndDirtySegments.pop_front();
@@ -189,49 +171,41 @@ void SegmentManager::pruneUnusedSegments()
 	}
 }
 
-void SegmentManager::markHolderAsDirtyAndUnused(SegmentHolder* holder)
-{
-	std::unique_lock < std::mutex > l(mUnusedAndDirtySegmentsMutex);
+void SegmentManager::markHolderAsDirtyAndUnused(SegmentHolder* holder) {
+	std::unique_lock<std::mutex> l(mUnusedAndDirtySegmentsMutex);
 
 	mUnusedAndDirtySegments.push_back(holder);
 }
 
-void SegmentManager::unmarkHolder(SegmentHolder* holder)
-{
-	std::unique_lock < std::mutex > l(mUnusedAndDirtySegmentsMutex);
+void SegmentManager::unmarkHolder(SegmentHolder* holder) {
+	std::unique_lock<std::mutex> l(mUnusedAndDirtySegmentsMutex);
 	auto I = std::find(mUnusedAndDirtySegments.begin(), mUnusedAndDirtySegments.end(), holder);
 	if (I != mUnusedAndDirtySegments.end()) {
 		mUnusedAndDirtySegments.erase(I);
 	}
 }
 
-void SegmentManager::setEndlessWorldEnabled(bool enabled)
-{
+void SegmentManager::setEndlessWorldEnabled(bool enabled) {
 	mEndlessWorldEnabled = enabled;
 }
 
-bool SegmentManager::getEndlessWorldEnabled() const
-{
+bool SegmentManager::getEndlessWorldEnabled() const {
 	return mEndlessWorldEnabled;
 }
 
-void SegmentManager::setDefaultHeight(float height)
-{
+void SegmentManager::setDefaultHeight(float height) {
 	mFakeSegmentHeight = height;
 }
 
-float SegmentManager::getDefaultHeight() const
-{
+float SegmentManager::getDefaultHeight() const {
 	return mFakeSegmentHeight;
 }
 
-void SegmentManager::setDefaultHeightVariation(float height)
-{
+void SegmentManager::setDefaultHeightVariation(float height) {
 	mFakeSegmentHeightVariation = height;
 }
 
-float SegmentManager::getDefaultHeightVariation() const
-{
+float SegmentManager::getDefaultHeightVariation() const {
 	return mFakeSegmentHeightVariation;
 }
 

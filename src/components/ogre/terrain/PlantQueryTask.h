@@ -25,30 +25,32 @@
 
 #include <sigc++/slot.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainPage;
+
 class TerrainPageGeometry;
 
 namespace Foliage {
 class PlantPopulator;
 }
 
-class PlantQueryTask : public Tasks::TemplateNamedTask<PlantQueryTask>
-{
+class PlantQueryTask : public Tasks::TemplateNamedTask<PlantQueryTask> {
 public:
-	PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, const Ogre::ColourValue& defaultShadowColour, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
-	virtual ~PlantQueryTask();
+	PlantQueryTask(SegmentRefPtr segmentRef,
+				   Foliage::PlantPopulator& plantPopulator,
+				   PlantAreaQuery query,
+				   const Ogre::ColourValue& defaultShadowColour,
+				   sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	~PlantQueryTask() override;
 
-	virtual bool executeTaskInMainThread();
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
+
+	bool executeTaskInMainThread() override;
 
 private:
 	SegmentRefPtr mSegmentRef;

@@ -22,27 +22,21 @@
 
 #include <cassert>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 SegmentHolder::SegmentHolder(Segment* segment, SegmentManager& segmentManager) :
-	mSegment(segment), mSegmentManager(segmentManager), mRefCount(0)
-{
+		mSegment(segment),
+		mSegmentManager(segmentManager),
+		mRefCount(0) {
 
 }
 
-SegmentHolder::~SegmentHolder()
-{
-	delete mSegment;
-}
+SegmentHolder::~SegmentHolder() = default;
 
-std::shared_ptr<Segment> SegmentHolder::getReference()
-{
+std::shared_ptr<Segment> SegmentHolder::getReference() {
 	mRefCount++;
 	//If mRefCount is 1 we're guaranteed to be the only one interacting with the segment, so it's thread safe to call Mercator::Segment::isValid
 	if (mRefCount == 1 && mSegment->getMercatorSegment().isValid()) {
@@ -50,14 +44,13 @@ std::shared_ptr<Segment> SegmentHolder::getReference()
 	}
 
 	//When the shared pointer is deleted we should just decrease our internal reference counter.
-	auto deleter=[&](Segment* ptr){
+	auto deleter = [&](Segment* ptr) {
 		returnReference();
 	};
-	return std::shared_ptr<Segment>(mSegment, deleter);
+	return std::shared_ptr<Segment>(mSegment.get(), deleter);
 }
 
-void SegmentHolder::returnReference()
-{
+void SegmentHolder::returnReference() {
 	assert(mRefCount > 0);
 	mRefCount--;
 	//If mRefCount is 0 we're guaranteed to be the only one interacting with the segment, so it's thread safe to call Mercator::Segment::isValid
@@ -67,13 +60,11 @@ void SegmentHolder::returnReference()
 	}
 }
 
-bool SegmentHolder::isUnused()
-{
+bool SegmentHolder::isUnused() {
 	return mRefCount == 0;
 }
 
-Segment& SegmentHolder::getSegment()
-{
+Segment& SegmentHolder::getSegment() {
 	return *mSegment;
 }
 

@@ -31,10 +31,8 @@
 #include <wfmath/segment.h>
 #include <Atlas/Message/Element.h>
 
-namespace Ember
-{
-namespace Navigation
-{
+namespace Ember {
+namespace Navigation {
 
 Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
 		mAwareness(awareness),
@@ -44,8 +42,7 @@ Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
 		mPadding(16),
 		mSpeed(5),
 		mExpectingServerMovement(false),
-		mLoitering(nullptr)
-{
+		mLoitering(nullptr) {
 	mAwareness.EventTileUpdated.connect(sigc::mem_fun(*this, &Steering::Awareness_TileUpdated));
 
 	if (avatar.getEntity()->hasProperty("speed-ground")) {
@@ -56,24 +53,18 @@ Steering::Steering(Awareness& awareness, Eris::Avatar& avatar) :
 	}
 }
 
-Steering::~Steering()
-{
-	delete mLoitering;
-}
+Steering::~Steering() = default;
 
-void Steering::setDestination(const WFMath::Point<3>& viewPosition)
-{
+void Steering::setDestination(const WFMath::Point<3>& viewPosition) {
 	mViewDestination = viewPosition;
 	mUpdateNeeded = true;
 
 	setAwareness();
 }
 
-void Steering::setAwareness()
-{
+void Steering::setAwareness() {
 	//If we are loitering we should stop that now.
-	delete mLoitering;
-	mLoitering = nullptr;
+	mLoitering.reset();
 
 	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
 
@@ -100,8 +91,7 @@ void Steering::setAwareness()
 
 }
 
-bool Steering::updatePath()
-{
+bool Steering::updatePath() {
 	mPath.clear();
 
 	int result = mAwareness.findPath(mAvatar.getEntity()->getViewPosition(), mViewDestination, mPath);
@@ -110,19 +100,16 @@ bool Steering::updatePath()
 	return result > 0;
 }
 
-void Steering::requestUpdate()
-{
+void Steering::requestUpdate() {
 	mUpdateNeeded = true;
 }
 
-void Steering::startSteering()
-{
+void Steering::startSteering() {
 	mSteeringEnabled = true;
 	mExpectingServerMovement = false;
 }
 
-void Steering::stopSteering()
-{
+void Steering::stopSteering() {
 	if (!mSteeringEnabled) {
 		return;
 	}
@@ -131,8 +118,7 @@ void Steering::stopSteering()
 	mLastSentVelocity = WFMath::Vector<2>();
 
 	//When we stopped steering we'll retain an awareness around the avatar. We'll do this by "loitering".
-	delete mLoitering;
-	mLoitering = new Loitering(mAwareness, mAvatar, WFMath::Vector<2>(mPadding * 2, mPadding * 2));
+	mLoitering = std::make_unique<Loitering>(mAwareness, mAvatar, WFMath::Vector<2>(mPadding * 2, mPadding * 2));
 
 	//reset path
 	mPath.clear();
@@ -140,18 +126,15 @@ void Steering::stopSteering()
 
 }
 
-bool Steering::isEnabled() const
-{
+bool Steering::isEnabled() const {
 	return mSteeringEnabled;
 }
 
-const std::list<WFMath::Point<3>>& Steering::getPath() const
-{
+const std::list<WFMath::Point<3>>& Steering::getPath() const {
 	return mPath;
 }
 
-void Steering::update()
-{
+void Steering::update() {
 	if (mSteeringEnabled) {
 		if (mUpdateNeeded) {
 			updatePath();
@@ -240,8 +223,7 @@ void Steering::update()
 
 }
 
-void Steering::moveInDirection(const WFMath::Vector<2>& direction)
-{
+void Steering::moveInDirection(const WFMath::Vector<2>& direction) {
 	WFMath::Vector<3> fullDirection(direction.x(), 0, direction.y());
 	WFMath::Quaternion orientation;
 	if (direction != WFMath::Vector<2>::ZERO()) {
@@ -253,8 +235,7 @@ void Steering::moveInDirection(const WFMath::Vector<2>& direction)
 	mExpectingServerMovement = true;
 }
 
-void Steering::moveToPoint(const WFMath::Point<3>& point)
-{
+void Steering::moveToPoint(const WFMath::Point<3>& point) {
 
 	auto entity3dPosition = mAvatar.getEntity()->getViewPosition();
 	WFMath::Vector<3> vel = point - entity3dPosition;
@@ -270,18 +251,15 @@ void Steering::moveToPoint(const WFMath::Point<3>& point)
 	mExpectingServerMovement = true;
 }
 
-void Steering::Awareness_TileUpdated(int tx, int ty)
-{
+void Steering::Awareness_TileUpdated(int tx, int ty) {
 	mUpdateNeeded = true;
 }
 
-bool Steering::getIsExpectingServerMovement() const
-{
+bool Steering::getIsExpectingServerMovement() const {
 	return mExpectingServerMovement;
 }
 
-void Steering::setIsExpectingServerMovement(bool expected)
-{
+void Steering::setIsExpectingServerMovement(bool expected) {
 	mExpectingServerMovement = expected;
 }
 

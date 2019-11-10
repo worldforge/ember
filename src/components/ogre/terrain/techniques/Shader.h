@@ -72,7 +72,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-    virtual ~Shader();
+    ~Shader() override;
 
     virtual bool prepareMaterial();
     virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;

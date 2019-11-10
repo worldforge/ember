@@ -79,7 +79,7 @@ public:
 
 		// Unwind frames one by one, going up the frame stack.
 
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 3; ++i) {
 			unw_step(&cursor);
 		}
 

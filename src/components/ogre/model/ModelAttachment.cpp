@@ -54,25 +54,18 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 }
 
 ModelAttachment::~ModelAttachment() {
-	mNodeProvider = nullptr;
+	//We've delegated the ownership of the node provider to the model mount, so we need to release it here so it's not deleted twice.
+	if (mModelMount) {
+		mNodeProvider.release();
+	}
 	//When the modelmount is deleted the scale node will also be destroyed.
 	//Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
-	delete mModelMount;
-
-	for (auto& fitting : mFittings) {
-		delete fitting.second;
-	}
-
-	for (auto& fittingsObserver : mFittingsObservers) {
-		delete fittingsObserver;
-	}
-
 }
 
 void ModelAttachment::init() {
 	NodeAttachment::init();
 
-	mModelMount = new ModelMount(mModelRepresentation.getModel(), mNodeProvider, mPose);
+	mModelMount = std::make_unique<ModelMount>(mModelRepresentation.getModel(), mNodeProvider.get(), mPose);
 	mModelMount->reset();
 	setupFittings();
 	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
@@ -203,8 +196,8 @@ void ModelAttachment::setupFittings() {
 	for (const auto& attachpoint : attachpoints) {
 		auto observer = new AttributeObserver(mChildEntity, attachpoint.Name, ".");
 		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), attachpoint.Name));
-		mFittingsObservers.push_back(observer);
 		observer->forceEvaluation();
+		mFittingsObservers.emplace_back(observer);
 	}
 }
 

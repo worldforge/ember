@@ -346,14 +346,14 @@ protected:
 	 * @brief The graphical representation used for representing this entity.
 	 * Some entities won't have any graphical representation, and this will in those cases be null.
 	 */
-	IGraphicalRepresentation* mGraphicalRepresentation;
+	std::unique_ptr<IGraphicalRepresentation> mGraphicalRepresentation;
 
 	/**
 	 * @brief The attachment for this entity.
 	 *
 	 * Since the graphical representation of an entity can be expressed in many different way, that is handled by an instance of IEntityAttachment and not by the entity itself.
 	 */
-	IEntityAttachment* mAttachment;
+	std::unique_ptr<IEntityAttachment> mAttachment;
 
 	/**
 	 * @brief An attachment control delegate used by this entity.

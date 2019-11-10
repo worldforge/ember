@@ -9,6 +9,7 @@
 #define VEGETATION_H_
 
 #include "components/ogre/terrain/Types.h"
+#include "PlantPopulator.h"
 #include <cstdlib>
 #include <map>
 
@@ -26,8 +27,6 @@ class PlantAreaQueryResult;
 namespace Foliage
 {
 
-class PlantPopulator;
-
 class Vegetation
 {
 public:
@@ -41,9 +40,8 @@ public:
 	PlantPopulator* getPopulator(const std::string& plantType);
 
 protected:
-	typedef std::map<std::string, PlantPopulator*> PopulatorStore;
 
-	PopulatorStore mPopulators;
+	std::map<std::string, std::unique_ptr<PlantPopulator>> mPopulators;
 };
 
 }

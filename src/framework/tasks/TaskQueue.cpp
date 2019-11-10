@@ -34,7 +34,7 @@ TaskQueue::TaskQueue(unsigned int numberOfExecutors, Eris::EventService& eventSe
 		mEventService(eventService), mActive(true), mIsQueuedOnMainThread(false) {
 	S_LOG_VERBOSE("Creating task queue with " << numberOfExecutors << " executors.");
 	for (unsigned int i = 0; i < numberOfExecutors; ++i) {
-		TaskExecutor* executor = new TaskExecutor(*this);
+		auto* executor = new TaskExecutor(*this);
 		mExecutors.push_back(executor);
 	}
 }
@@ -51,8 +51,7 @@ void TaskQueue::deactivate() {
 		}
 		mUnprocessedQueueCond.notify_all();
 		//Join all executors. Since the queue is shutting down they will all exit their main loop if there are no more tasks to process.
-		for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
-			TaskExecutor* executor = *I;
+		for (auto executor : mExecutors) {
 			executor->join();
 			delete executor;
 		}
@@ -68,7 +67,7 @@ void TaskQueue::deactivate() {
 bool TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener) {
 	std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
 	if (mActive) {
-		mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
+		mUnprocessedTaskUnits.emplace(new TaskUnit(task, listener));
 		mUnprocessedQueueCond.notify_one();
 		return true;
 	} else {
@@ -78,27 +77,28 @@ bool TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener) {
 
 }
 
-TaskUnit* TaskQueue::fetchNextTask() {
-	//The semantics of this method is that if a null pointer is returned the task executor is required to exit its main processing loop, since this indicates that the queue is shuttin down.
-	TaskUnit* taskUnit(0);
+std::unique_ptr<TaskUnit> TaskQueue::fetchNextTask() {
+	//The semantics of this method is that if a null pointer is returned the task executor is
+	// required to exit its main processing loop, since this indicates that the queue is shutting down.
+	std::unique_ptr<TaskUnit> taskUnit;
 	std::unique_lock<std::mutex> lock(mUnprocessedQueueMutex);
 	if (mUnprocessedTaskUnits.empty()) {
 		if (!mActive) {
-			return 0;
+			return {};
 		}
 		mUnprocessedQueueCond.wait(lock);
 	}
 	if (!mUnprocessedTaskUnits.empty()) {
-		taskUnit = mUnprocessedTaskUnits.front();
+		taskUnit = std::move(mUnprocessedTaskUnits.front());
 		mUnprocessedTaskUnits.pop();
 	}
 	return taskUnit;
 }
 
-void TaskQueue::addProcessedTask(TaskUnit* taskUnit) {
+void TaskQueue::addProcessedTask(std::unique_ptr<TaskUnit> taskUnit) {
 	std::unique_lock<std::mutex> lock(mProcessedQueueMutex);
 
-	mProcessedTaskUnits.push(taskUnit);
+	mProcessedTaskUnits.push(std::move(taskUnit));
 	if (!mIsQueuedOnMainThread) {
 		//Make sure that the task is handled on the main queue.
 		mEventService.runOnMainThread([this] {
@@ -117,21 +117,18 @@ void TaskQueue::processCompletedTasks() {
 		TaskUnit* taskUnit;
 		{
 			std::unique_lock<std::mutex> lock(mProcessedQueueMutex);
-			taskUnit = mProcessedTaskUnits.front();
+			taskUnit = mProcessedTaskUnits.front().get();
 		}
 		try {
 			bool result = taskUnit->executeInMainThread();
 			if (result) {
 				try {
-					delete taskUnit;
+					std::unique_lock<std::mutex> lock(mProcessedQueueMutex);
+					mProcessedTaskUnits.pop();
 				} catch (const std::exception& ex) {
 					S_LOG_FAILURE("Error when deleting task in main thread." << ex);
 				} catch (...) {
 					S_LOG_FAILURE("Unknown error when deleting task in main thread.");
-				}
-				{
-					std::unique_lock<std::mutex> lock(mProcessedQueueMutex);
-					mProcessedTaskUnits.pop();
 				}
 			}
 

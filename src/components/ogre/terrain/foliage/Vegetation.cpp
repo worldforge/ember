@@ -11,39 +11,28 @@
 #include "ClusterPopulator.h"
 #include "components/ogre/terrain/TerrainLayerDefinition.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-namespace Foliage
-{
+namespace Foliage {
 
 
-Vegetation::~Vegetation()
-{
-	for (PopulatorStore::const_iterator I = mPopulators.begin(); I != mPopulators.end(); ++I) {
-		delete I->second;
-	}
+Vegetation::~Vegetation() = default;
 
-}
-
-void Vegetation::createPopulator(const TerrainFoliageDefinition& foliageDef, unsigned int surfaceLayerIndex)
-{
+void Vegetation::createPopulator(const TerrainFoliageDefinition& foliageDef, unsigned int surfaceLayerIndex) {
 	if (foliageDef.getPopulationTechnique() == "cluster") {
-		IScaler* scaler = 0;
+		std::unique_ptr<IScaler> scaler;
 		if (foliageDef.hasParameter("minScale")) {
-			scaler = new UniformScaler(std::stof(foliageDef.getParameter("minScale")), std::stof(foliageDef.getParameter("maxScale")));
+			scaler = std::make_unique<UniformScaler>(std::stof(foliageDef.getParameter("minScale")), std::stof(foliageDef.getParameter("maxScale")));
 		} else {
-			scaler = new Scaler(std::stof(foliageDef.getParameter("minWidth")),
-								std::stof(foliageDef.getParameter("maxWidth")),
-								std::stof(foliageDef.getParameter("minHeight")),
-								std::stof(foliageDef.getParameter("maxHeight")));
+			scaler = std::make_unique<Scaler>(std::stof(foliageDef.getParameter("minWidth")),
+											  std::stof(foliageDef.getParameter("maxWidth")),
+											  std::stof(foliageDef.getParameter("minHeight")),
+											  std::stof(foliageDef.getParameter("maxHeight")));
 		}
-		ClusterPopulator* populator = new ClusterPopulator(surfaceLayerIndex, scaler, mPopulators.size());
+		auto populator = std::make_unique<ClusterPopulator>(surfaceLayerIndex, std::move(scaler), mPopulators.size());
 		populator->setClusterDistance(std::stof(foliageDef.getParameter("clusterDistance")));
 		populator->setMinClusterRadius(std::stof(foliageDef.getParameter("minClusterRadius")));
 		populator->setMaxClusterRadius(std::stof(foliageDef.getParameter("maxClusterRadius")));
@@ -55,26 +44,24 @@ void Vegetation::createPopulator(const TerrainFoliageDefinition& foliageDef, uns
 		}
 		populator->setThreshold(threshold);
 
-		mPopulators[foliageDef.getPlantType()] = populator;
+		mPopulators[foliageDef.getPlantType()] = std::move(populator);
 
 	}
 }
 
-void Vegetation::populate(const std::string& plantType, PlantAreaQueryResult& result, SegmentRefPtr segmentRef, const WFMath::AxisBox<2>& area)
-{
-	PopulatorStore::const_iterator I = mPopulators.find(plantType);
+void Vegetation::populate(const std::string& plantType, PlantAreaQueryResult& result, SegmentRefPtr segmentRef, const WFMath::AxisBox<2>& area) {
+	auto I = mPopulators.find(plantType);
 	if (I != mPopulators.end()) {
 		I->second->populate(result, std::move(segmentRef));
 	}
 }
 
-PlantPopulator* Vegetation::getPopulator(const std::string& plantType)
-{
-	PopulatorStore::const_iterator I = mPopulators.find(plantType);
+PlantPopulator* Vegetation::getPopulator(const std::string& plantType) {
+	auto I = mPopulators.find(plantType);
 	if (I != mPopulators.end()) {
-		return I->second;
+		return I->second.get();
 	}
-	return 0;
+	return nullptr;
 }
 
 }

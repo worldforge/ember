@@ -26,26 +26,20 @@
 #include <OgreRoot.h>
 #include <OgreHardwarePixelBuffer.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-ShadowUpdateTask::ShadowUpdateTask(const GeometryPtrVector& pageGeometries, const WFMath::Vector<3>& lightDirection) :
-		mPageGeometries(pageGeometries), mLightDirection(lightDirection)
-{
+ShadowUpdateTask::ShadowUpdateTask(GeometryPtrVector pageGeometries, const WFMath::Vector<3>& lightDirection) :
+		mPageGeometries(std::move(pageGeometries)),
+		mLightDirection(lightDirection) {
 
 }
 
-ShadowUpdateTask::~ShadowUpdateTask()
-{
-}
+ShadowUpdateTask::~ShadowUpdateTask() = default;
 
-void ShadowUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void ShadowUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	for (auto& pageGeometry : mPageGeometries) {
 		auto& page = pageGeometry->getPage();
 		if (page.getSurface()) {
@@ -62,8 +56,7 @@ void ShadowUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext
 	}
 }
 
-bool ShadowUpdateTask::executeTaskInMainThread()
-{
+bool ShadowUpdateTask::executeTaskInMainThread() {
 	if (!mPageGeometries.empty()) {
 		auto pageGeometry = mPageGeometries.back();
 		mPageGeometries.pop_back();

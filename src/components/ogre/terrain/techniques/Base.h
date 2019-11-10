@@ -22,48 +22,42 @@
 
 #include "components/ogre/terrain/TerrainPageSurfaceCompiler.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-namespace Techniques
-{
+namespace Techniques {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Abstract base class for terrain techniques.
  */
-class Base : public TerrainPageSurfaceCompilerTechnique
-{
+class Base : public TerrainPageSurfaceCompilerTechnique {
 public:
-    /**
-     * @brief Ctor.
-     * @param geometry The geometry to operate on.
-     * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
-     * @param terrainPageShadow An optional shadow.
-     */
-	Base(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
+	/**
+	 * @brief Ctor.
+	 * @param geometry The geometry to operate on.
+	 * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
+	 * @param terrainPageShadow An optional shadow.
+	 */
+	Base(const TerrainPageGeometryPtr& geometry,
+		 SurfaceLayerStore terrainPageSurfaces,
+		 const TerrainPageShadow* terrainPageShadow);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~Base();
+	~Base() override;
 
-	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const
-	{
+	std::string getShadowTextureName(const Ogre::MaterialPtr& material) const override {
 		return "";
 	}
 
-	virtual bool requiresPregenShadow() const
-	{
+	bool requiresPregenShadow() const override {
 		return false;
 	}
-
 
 
 protected:

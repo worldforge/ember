@@ -179,7 +179,7 @@ private:
 	 * The idea here is that the avatar probably want to move within the closest area, so we'll keep awareness of that
 	 * until the avatar has moved out of the area.
 	 */
-	Loitering* mLoitering;
+	std::unique_ptr<Loitering> mLoitering;
 
 	/**
 	 * @brief Sets the awareness to be a corridor between where the avatar currently is and our destination.

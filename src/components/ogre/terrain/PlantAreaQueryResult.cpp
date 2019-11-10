@@ -21,63 +21,50 @@
 #include "PlantInstance.h"
 #include "Buffer.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-PlantAreaQueryResult::PlantAreaQueryResult(const PlantAreaQuery& query) :
-	mQuery(new PlantAreaQuery(query)), mShadow(0)
-{
+PlantAreaQueryResult::PlantAreaQueryResult(PlantAreaQuery query) :
+		mQuery(std::move(query)),
+		mShadow(nullptr),
+		mDefaultShadowColourLong(0) {
 	setDefaultShadowColour(Ogre::ColourValue(1, 1, 1, 1));
 }
 
-PlantAreaQueryResult::~PlantAreaQueryResult()
-{
-	delete mShadow;
-	delete mQuery;
-}
+PlantAreaQueryResult::~PlantAreaQueryResult() = default;
 
-PlantAreaQueryResult::PlantStore& PlantAreaQueryResult::getStore()
-{
+PlantAreaQueryResult::PlantStore& PlantAreaQueryResult::getStore() {
 	return mStore;
 }
 
-const PlantAreaQueryResult::PlantStore& PlantAreaQueryResult::getStore() const
-{
+const PlantAreaQueryResult::PlantStore& PlantAreaQueryResult::getStore() const {
 	return mStore;
 }
 
-const PlantAreaQuery& PlantAreaQueryResult::getQuery() const
-{
-	return *mQuery;
+const PlantAreaQuery& PlantAreaQueryResult::getQuery() const {
+	return mQuery;
 }
 
-PlantAreaQueryResult::ShadowBuffer* PlantAreaQueryResult::getShadow() const
-{
-	return mShadow;
+PlantAreaQueryResult::ShadowBuffer* PlantAreaQueryResult::getShadow() const {
+	return mShadow.get();
 }
 
-void PlantAreaQueryResult::setShadow(PlantAreaQueryResult::ShadowBuffer* shadow)
-{
-	delete mShadow;
-	mShadow = shadow;
+void PlantAreaQueryResult::setShadow(std::unique_ptr<PlantAreaQueryResult::ShadowBuffer> shadow) {
+	mShadow = std::move(shadow);
 }
 
-bool PlantAreaQueryResult::hasShadow() const
-{
-	return mShadow != 0;
+bool PlantAreaQueryResult::hasShadow() const {
+	return mShadow.get();
 }
-void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::uint32& colour) const
-{
+
+void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::uint32& colour) const {
 	if (mShadow) {
-		Ogre::uint8* aVal((Ogre::uint8*)&colour);
+		Ogre::uint8* aVal = ((Ogre::uint8*) &colour);
 		//first translate world position to local coords
-		Ogre::Vector2 localPos = position - Ogre::Vector2(mQuery->getArea().left, mQuery->getArea().bottom);
-		if (localPos.x >= 0 && localPos.x < mQuery->getArea().width() && localPos.y >= 0 && localPos.y < mQuery->getArea().height()) {
+		Ogre::Vector2 localPos = position - Ogre::Vector2(mQuery.mArea.left, mQuery.mArea.bottom);
+		if (localPos.x >= 0 && localPos.x < mQuery.mArea.width() && localPos.y >= 0 && localPos.y < mQuery.mArea.height()) {
 			unsigned char val = mShadow->getData()[static_cast<size_t> ((localPos.y * mShadow->getResolution()) + localPos.x)];
 			aVal[0] = aVal[1] = aVal[2] = val;
 			aVal[3] = 0xFF;
@@ -87,13 +74,12 @@ void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& p
 	colour = mDefaultShadowColourLong;
 }
 
-void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
-{
+void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::ColourValue& colour) const {
 	if (mShadow) {
 		//first translate world position to local coords
-		Ogre::Vector2 localPos = position - Ogre::Vector2(mQuery->getArea().left, mQuery->getArea().bottom);
-		if (localPos.x >= 0 && localPos.x < mQuery->getArea().width() && localPos.y >= 0 && localPos.y < mQuery->getArea().height()) {
-			unsigned char val = mShadow->getData()[static_cast<size_t> ((localPos.y * mShadow->getResolution()) + localPos.x)];
+		Ogre::Vector2 localPos = position - Ogre::Vector2(mQuery.mArea.left, mQuery.mArea.bottom);
+		if (localPos.x >= 0 && localPos.x < mQuery.mArea.width() && localPos.y >= 0 && localPos.y < mQuery.mArea.height()) {
+			unsigned char val = mShadow->getValueAt(localPos.x, localPos.y, 0);
 			colour.r = colour.g = colour.b = val;
 			colour.a = 1.0f;
 			return;
@@ -102,8 +88,7 @@ void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& p
 	colour = mDefaultShadowColourValue;
 }
 
-void PlantAreaQueryResult::setDefaultShadowColour(const Ogre::ColourValue& colour)
-{
+void PlantAreaQueryResult::setDefaultShadowColour(const Ogre::ColourValue& colour) {
 	//Make sure to saturate so the values are clamped to [0..1]
 	mDefaultShadowColourValue = colour.saturateCopy();
 	mDefaultShadowColourLong = mDefaultShadowColourValue.getAsARGB();

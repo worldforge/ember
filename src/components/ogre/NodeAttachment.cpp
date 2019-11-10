@@ -43,10 +43,7 @@ NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEnti
 	setupListeners();
 }
 
-NodeAttachment::~NodeAttachment() {
-	delete mNodeProvider;
-	delete mAttachmentController;
-}
+NodeAttachment::~NodeAttachment() = default;
 
 void NodeAttachment::init() {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
@@ -100,11 +97,10 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity) {
 }
 
 void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate) {
-	delete mAttachmentController;
 	if (controllerDelegate) {
-		mAttachmentController = new DelegatingNodeController(*this, *controllerDelegate);
+		mAttachmentController = std::make_unique<DelegatingNodeController>(*this, *controllerDelegate);
 	} else {
-		mAttachmentController = new NodeController(*this);
+		mAttachmentController = std::make_unique<NodeController>(*this);
 	}
 }
 

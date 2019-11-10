@@ -22,26 +22,25 @@
 #include "framework/tasks/TemplateNamedTask.h"
 
 #include <vector>
+#include <memory>
 
-namespace WFMath
-{
-	template<int> class Point;
+namespace WFMath {
+template<int>
+class Point;
 }
 
-namespace Mercator
-{
-	class Segment;
+namespace Mercator {
+class Segment;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class HeightMap;
+
 class HeightMapBufferProvider;
+
 struct IHeightMapSegment;
 
 /**
@@ -49,8 +48,7 @@ struct IHeightMapSegment;
  * @brief Builds new HeightMapSegments in the background and then inserts these into the HeightMap.
  * This is the main task for making sure that the HeightMap is kept up to date with changes to the Mercator terrain.
  */
-class HeightMapUpdateTask : public Tasks::TemplateNamedTask<HeightMapUpdateTask>
-{
+class HeightMapUpdateTask : public Tasks::TemplateNamedTask<HeightMapUpdateTask> {
 public:
 	typedef std::vector<Mercator::Segment*> SegmentStore;
 
@@ -60,8 +58,9 @@ public:
 	 * @param heightMap The main HeightMap instance, which holds the whole height map.
 	 * @param segments The Mercator::Segments for which we'll be creating HeightMapSegments.
 	 */
-	HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, const SegmentStore& segments);
-	virtual ~HeightMapUpdateTask();
+	HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, SegmentStore segments);
+
+	~HeightMapUpdateTask() override;
 
 	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 
@@ -69,7 +68,7 @@ public:
 
 private:
 
-	typedef std::vector<std::pair<WFMath::Point<2>, IHeightMapSegment*>> HeightMapSegmentStore;
+	typedef std::vector<std::pair<WFMath::Point<2>, std::unique_ptr<IHeightMapSegment>>> HeightMapSegmentStore;
 
 	/**
 	 * @brief The provider which is tasked to create the HeightMapBuffer instances.

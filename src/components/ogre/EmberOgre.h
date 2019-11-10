@@ -276,12 +276,12 @@ protected:
 	/**
 	 * @brief Responsible for handling sound loading
 	 */
-	SoundDefinitionManager* mSoundManager;
+	std::unique_ptr<SoundDefinitionManager> mSoundManager;
 
 	/**
 	 * @brief Responsible for the GUI.
 	 */
-	GUIManager* mGUIManager;
+	std::unique_ptr<GUIManager> mGUIManager;
 
 	/**
 	 * @brief Resonsible for managing all Model definitions;
@@ -311,7 +311,7 @@ protected:
 	/**
 	 * @brief Helper object that allows for easy Ogre material editing.
 	 */
-	Authoring::MaterialEditor* mMaterialEditor;
+	std::unique_ptr<Authoring::MaterialEditor> mMaterialEditor;
 
 	/**
 	 * @brief The sound resource provider, which loads sounds using the Ogre resource system.
@@ -374,7 +374,7 @@ protected:
 	 */
 	Lod::PMInjectorSignaler* mPMInjectorSignaler;
 
-	ConsoleDevTools* mConsoleDevTools;
+	std::unique_ptr<ConsoleDevTools> mConsoleDevTools;
 
 	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 

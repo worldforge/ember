@@ -23,28 +23,26 @@
 #include "Types.h"
 #include <wfmath/vector.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Async task for updating precomputed shadows for pages.
  * This is only of use when using the fixed function pipeline.
  */
-class ShadowUpdateTask : public Tasks::TemplateNamedTask<ShadowUpdateTask>
-{
+class ShadowUpdateTask : public Tasks::TemplateNamedTask<ShadowUpdateTask> {
 public:
-	ShadowUpdateTask(const GeometryPtrVector& pageGeometries, const WFMath::Vector<3>& lightDirection);
-	virtual ~ShadowUpdateTask();
+	ShadowUpdateTask(GeometryPtrVector pageGeometries, const WFMath::Vector<3>& lightDirection);
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	~ShadowUpdateTask() override;
 
-	virtual bool executeTaskInMainThread();
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
+
+	bool executeTaskInMainThread() override;
+
 private:
 
 	GeometryPtrVector mPageGeometries;
