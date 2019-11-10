@@ -26,7 +26,7 @@
 #include "EmberOgrePrerequisites.h"
 #include <CEGUI/System.h>
 #include <CEGUI/EventArgs.h>
-#include <CEGUI/InputEvent.h> 
+#include <CEGUI/InputEvent.h>
 
 #include "services/input/IInputAdapter.h"
 #include "services/input/Input.h"
@@ -35,6 +35,7 @@
 
 namespace CEGUI {
 class System;
+
 class OgreRenderer;
 
 }
@@ -52,33 +53,38 @@ typedef std::map<SDL_Scancode, CEGUI::Key::Scan> SDLKeyMap;
 class GUICEGUIAdapter : public IInputAdapter {
 public:
 
-    /**
-     * Creates a new instance.
-     * @param system A valid CEGUI::System
-     * @param renderer A valid CEGUI::OgreCEGUIRenderer
-     * @return 
-     */
-    GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreRenderer *renderer);
+	/**
+	 * Creates a new instance.
+	 * @param system A valid CEGUI::System
+	 * @param renderer A valid CEGUI::OgreCEGUIRenderer
+	 * @return
+	 */
+	GUICEGUIAdapter(CEGUI::System* system, CEGUI::OgreRenderer* renderer);
 
-    ~GUICEGUIAdapter() override;
-	
+	~GUICEGUIAdapter() override;
+
 	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
+
 	bool injectMouseButtonUp(Input::MouseButton button) override;
+
 	bool injectMouseButtonDown(Input::MouseButton button) override;
+
 	bool injectChar(int character) override;
+
 	bool injectKeyDown(const SDL_Scancode& key) override;
+
 	bool injectKeyUp(const SDL_Scancode& key) override;
-    
+
 private:
-	CEGUI::System *mGuiSystem;
-	CEGUI::OgreRenderer *mGuiRenderer;
-	CEGUI::GUIContext &mGuiContext;
-	
+	CEGUI::System* mGuiSystem;
+	CEGUI::OgreRenderer* mGuiRenderer;
+	CEGUI::GUIContext& mGuiContext;
+
 	/**
 	mapping of SDL-keys to CEGUI keys
 	*/
 	SDLKeyMap mKeyMap;
-	
+
 };
 
 }

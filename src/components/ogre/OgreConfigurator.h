@@ -117,7 +117,7 @@ protected:
 	 * Since an ArchiveFactory cannot be removed from the Ogre::ArchiveFactoryManager this must be deleted after Ogre has been torn down.
 	 * Thus, this is deleted in the destructor.
 	 */
-	OgreResourceLoader* mLoader;
+	std::unique_ptr<OgreResourceLoader> mLoader;
 
 	/**
 	 * @brief The root window of the config dialog.

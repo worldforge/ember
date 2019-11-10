@@ -34,12 +34,12 @@ namespace OgreView {
 class OgreResourceWrapper : public IResourceWrapper
 {
 public:
-	OgreResourceWrapper(Ogre::DataStreamPtr dataStream);
-	virtual ~OgreResourceWrapper();
+	explicit OgreResourceWrapper(const Ogre::DataStreamPtr& dataStream);
+	~OgreResourceWrapper() override;
 
-	virtual const char* getDataPtr();
-	virtual bool hasData();
-	virtual size_t getSize();
+	const char* getDataPtr() override;
+	bool hasData() override;
+	size_t getSize() override;
 private:
 	char* mBuffer;
 	size_t mSize;
@@ -52,11 +52,11 @@ private:
 class OgreResourceProvider : public IResourceProvider
 {
 public:
-    OgreResourceProvider(const std::string& groupName);
+    explicit OgreResourceProvider(std::string groupName);
 
-    virtual ~OgreResourceProvider();
+    ~OgreResourceProvider() override;
 
-	virtual ResourceWrapper getResource(const std::string& name);
+	ResourceWrapper getResource(const std::string& name) override;
 private:
 	std::string mGroupName;
 

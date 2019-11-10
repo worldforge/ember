@@ -76,7 +76,7 @@ Input::Input() :
 		mScreenHeight(0),
 		mMainVideoSurface(nullptr),
 		mIconSurface(nullptr),
-		mInvertMouse(1),
+		mInvertMouse(false),
 		mHandleOpenGL(false),
 		mMainWindowId(0),
 		mLastTimeInputProcessingStart(microsec_clock::local_time()),
@@ -104,7 +104,7 @@ Input::~Input() {
 	}
 }
 
-std::string Input::createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable, bool centered, bool handleOpenGL) {
+std::string Input::createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable, bool handleOpenGL) {
 
 
 	mHandleOpenGL = handleOpenGL;
@@ -127,7 +127,12 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 		mMainVideoSurface = nullptr;
 		mMainWindowId = 0;
 	}
-	mMainVideoSurface = SDL_CreateWindow("Ember", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int) width, (int) height, flags); // create an SDL window
+	mMainVideoSurface = SDL_CreateWindow("Ember",
+										 SDL_WINDOWPOS_CENTERED,
+										 SDL_WINDOWPOS_CENTERED,
+										 (int) width,
+										 (int) height,
+										 flags); // create an SDL window
 	createIcon();
 
 	mMainWindowId = SDL_GetWindowID(mMainVideoSurface);
@@ -386,8 +391,14 @@ bool Input::isApplicationFocused() {
 }
 
 void Input::startInteraction() {
-	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "catchmouse", sigc::mem_fun(*this, &Input::Config_CatchMouse), true);
-	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "invertcamera", sigc::mem_fun(*this, &Input::Config_InvertCamera), true);
+	mConfigListenerContainer->registerConfigListenerWithDefaults("input",
+																 "catchmouse",
+																 sigc::mem_fun(*this, &Input::Config_CatchMouse),
+																 true);
+	mConfigListenerContainer->registerConfigListenerWithDefaults("input",
+																 "invertcamera",
+																 sigc::mem_fun(*this, &Input::Config_InvertCamera),
+																 true);
 }
 
 void Input::processInput() {
@@ -433,18 +444,18 @@ void Input::pollMouse(float secondsSinceLast) {
 		}
 		if (mouseRelativeX != 0 || mouseRelativeY != 0) {
 
+
 			//we'll calculate the mouse movement difference and send the values to those
 			//listening to the MouseMoved event
-			float diffX, diffY;
-			diffX = mouseRelativeX / (float) mScreenWidth;
-			diffY = mouseRelativeY / (float) mScreenHeight;
+			float diffX = (float) mouseRelativeX / (float) mScreenWidth;
+			float diffY = (float) mouseRelativeY / (float) mScreenHeight;
 			MouseMotion motion{};
 			motion.xPosition = mouseX;
 			motion.yPosition = mouseY;
-			motion.xRelativeMovement = diffX * mInvertMouse;
-			motion.yRelativeMovement = diffY * mInvertMouse;
-			motion.xRelativeMovementInPixels = mouseRelativeX * mInvertMouse;
-			motion.yRelativeMovementInPixels = mouseRelativeY * mInvertMouse;
+			motion.xRelativeMovement = mInvertMouse ? -diffX : diffX;
+			motion.yRelativeMovement = mInvertMouse ? -diffY : diffY;
+			motion.xRelativeMovementInPixels = mInvertMouse ? -mouseRelativeX : mouseRelativeX;
+			motion.yRelativeMovementInPixels = mInvertMouse ? -mouseRelativeY : mouseRelativeY;
 			motion.timeSinceLastMovement = secondsSinceLast;
 
 			EventMouseMoved.emit(motion, mCurrentInputMode);
@@ -471,8 +482,8 @@ void Input::pollMouse(float secondsSinceLast) {
 			} else {
 				mMousePosition.xPixelPosition = mouseX;
 				mMousePosition.yPixelPosition = mouseY;
-				mMousePosition.xRelativePosition = mouseX / (float) mScreenWidth;
-				mMousePosition.yRelativePosition = mouseY / (float) mScreenHeight;
+				mMousePosition.xRelativePosition = (float) mouseX / (float) mScreenWidth;
+				mMousePosition.yRelativePosition = (float) mouseY / (float) mScreenHeight;
 			}
 
 		}
@@ -622,7 +633,7 @@ void Input::textInput(const SDL_TextInputEvent& textEvent) {
 		utf8::utf8to32(text, text + len, std::back_inserter(utf32result));
 		if (!utf32result.empty()) {
 			int character = utf32result.front();
-			for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
+			for (auto I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
 				IInputAdapter* adapter = *I;
 				++I;
 				if (!(adapter)->injectChar(character)) {
@@ -751,7 +762,7 @@ void Input::Config_CatchMouse(const std::string& section, const std::string& key
 
 void Input::Config_InvertCamera(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_bool()) {
-		mInvertMouse = static_cast<bool>(variable) ? -1 : 1;
+		mInvertMouse = static_cast<bool>(variable);
 	}
 }
 

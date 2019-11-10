@@ -31,22 +31,14 @@
 #include <OgreString.h>
 
 using namespace Ogre;
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-OgreLogObserver::OgreLogObserver()
-{
-}
+OgreLogObserver::OgreLogObserver() = default;
 
-OgreLogObserver::~OgreLogObserver()
-{
+OgreLogObserver::~OgreLogObserver() = default;
 
-}
-
-void OgreLogObserver::messageLogged(const String& message, LogMessageLevel lml, bool maskDebug, const String &logName, bool& skipThisMessage)
-{
+void OgreLogObserver::messageLogged(const String& message, LogMessageLevel lml, bool maskDebug, const String& logName, bool& skipThisMessage) {
 	if (!skipThisMessage) {
 		static std::string ogre("(Ogre) ");
 		//if there's a problem setting material name, log as verbose as these messages are quite common and not necessarily errors since the Model format in many cases overrides the material defined in the mesh
@@ -54,18 +46,18 @@ void OgreLogObserver::messageLogged(const String& message, LogMessageLevel lml, 
 			lml = Ogre::LML_TRIVIAL;
 		}
 		switch (lml) {
-		case Ogre::LML_TRIVIAL:
-			Log::slog("Ogre", Log::VERBOSE) << ogre << message << Log::END_MESSAGE;
-			break;
-		case Ogre::LML_NORMAL:
-			Log::slog("Ogre", Log::INFO) << ogre << message << Log::END_MESSAGE;
-			break;
-		case Ogre::LML_WARNING:
-			Log::slog("Ogre", Log::WARNING) << ogre << message << Log::END_MESSAGE;
-			break;
-		case Ogre::LML_CRITICAL:
-			Log::slog("Ogre", Log::FAILURE) << ogre << message << Log::END_MESSAGE;
-			break;
+			case Ogre::LML_TRIVIAL:
+				Log::slog("Ogre", Log::VERBOSE) << ogre << message << Log::END_MESSAGE;
+				break;
+			case Ogre::LML_NORMAL:
+				Log::slog("Ogre", Log::INFO) << ogre << message << Log::END_MESSAGE;
+				break;
+			case Ogre::LML_WARNING:
+				Log::slog("Ogre", Log::WARNING) << ogre << message << Log::END_MESSAGE;
+				break;
+			case Ogre::LML_CRITICAL:
+				Log::slog("Ogre", Log::FAILURE) << ogre << message << Log::END_MESSAGE;
+				break;
 
 		}
 	}

@@ -34,18 +34,18 @@ A log observer which writes to the Ogre log system.
 This is a combined Ogre::LogListener and a StreamLogObserver.
 The StreamLogObserver part does the main work, while the Ogre::LogListener implementation allow us to receive ogre log events.
 */
-class OgreLogObserver: public Ogre::LogListener
-{
-	public:
-		/**
-		* Creates a new OgreLogObserver using default values.
-		*/
-		OgreLogObserver();
-		virtual ~OgreLogObserver();
-		virtual void messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage );
+class OgreLogObserver : public Ogre::LogListener {
+public:
+	/**
+	* Creates a new OgreLogObserver using default values.
+	*/
+	OgreLogObserver();
 
-	protected:
+	~OgreLogObserver() override;
 
+	void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String& logName, bool& skipThisMessage) override;
+
+protected:
 
 
 };

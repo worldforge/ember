@@ -61,9 +61,11 @@ class ResourceWrapper {
 public:
 	ResourceWrapper(const ResourceWrapper& wrapper) = default;
 
-	ResourceWrapper(IResourceWrapper* internalWrapper, std::string name) :
-			mInternalWrapper(internalWrapper),
-			mName(std::move(name)) {}
+	ResourceWrapper(std::shared_ptr<IResourceWrapper> internalWrapper, std::string name) :
+			mInternalWrapper(std::move(internalWrapper)),
+			mName(std::move(name)) {
+
+	}
 
 	/**
 	Gets raw data pointer.

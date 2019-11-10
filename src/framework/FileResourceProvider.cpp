@@ -68,7 +68,7 @@ FileResourceProvider::~FileResourceProvider() = default;
 
 ResourceWrapper FileResourceProvider::getResource(const std::string& name) {
 	std::ifstream stream((mBaseDirectory / name).string(), std::ios::binary | std::ios::in);
-	return ResourceWrapper(new FileResourceWrapper(stream), name);
+	return ResourceWrapper(std::make_shared<FileResourceWrapper>(stream), name);
 }
 
 }

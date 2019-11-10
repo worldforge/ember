@@ -23,6 +23,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include "GUICEGUIAdapter.h"
 
 #include <CEGUI/Exceptions.h>
@@ -33,11 +34,8 @@
 namespace Ember {
 namespace OgreView {
 
-GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreRenderer *renderer):
-mGuiSystem(system)
-, mGuiRenderer(renderer)
-, mGuiContext(system->getDefaultGUIContext())
-{
+GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System* system, CEGUI::OgreRenderer* renderer) :
+		mGuiSystem(system), mGuiRenderer(renderer), mGuiContext(system->getDefaultGUIContext()) {
 
 	//lookup table for sdl scancodes and CEGUI keys
 	mKeyMap[SDL_SCANCODE_BACKSPACE] = CEGUI::Key::Backspace;
@@ -148,28 +146,24 @@ mGuiSystem(system)
 }
 
 
-GUICEGUIAdapter::~GUICEGUIAdapter()
-{
-}
+GUICEGUIAdapter::~GUICEGUIAdapter() = default;
 
-bool GUICEGUIAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
-{
+bool GUICEGUIAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
 	try {
-		mGuiContext.injectMousePosition(motion.xPosition, motion.yPosition);
+		mGuiContext.injectMousePosition((float) motion.xPosition, (float) motion.yPosition);
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
 	return true;
 }
 
-bool GUICEGUIAdapter::injectMouseButtonUp(Input::MouseButton button)
-{
+bool GUICEGUIAdapter::injectMouseButtonUp(Input::MouseButton button) {
 	CEGUI::MouseButton ceguiButton;
 	if (button == Input::MouseButtonLeft) {
 		ceguiButton = CEGUI::LeftButton;
-	} else if(button == Input::MouseButtonRight) {
+	} else if (button == Input::MouseButtonRight) {
 		ceguiButton = CEGUI::RightButton;
-	} else if(button == Input::MouseButtonMiddle) {
+	} else if (button == Input::MouseButtonMiddle) {
 		ceguiButton = CEGUI::MiddleButton;
 	} else {
 		return true;
@@ -186,23 +180,22 @@ bool GUICEGUIAdapter::injectMouseButtonUp(Input::MouseButton button)
 	return true;
 }
 
-bool GUICEGUIAdapter::injectMouseButtonDown(Input::MouseButton button)
-{
+bool GUICEGUIAdapter::injectMouseButtonDown(Input::MouseButton button) {
 	CEGUI::MouseButton ceguiButton(CEGUI::LeftButton);
 	if (button == Input::MouseButtonLeft) {
 		ceguiButton = CEGUI::LeftButton;
-	} else if(button == Input::MouseButtonRight) {
+	} else if (button == Input::MouseButtonRight) {
 		ceguiButton = CEGUI::RightButton;
-	} else if(button == Input::MouseButtonMiddle) {
+	} else if (button == Input::MouseButtonMiddle) {
 		ceguiButton = CEGUI::MiddleButton;
-	} else if(button == Input::MouseWheelDown) {
+	} else if (button == Input::MouseWheelDown) {
 		try {
 			mGuiContext.injectMouseWheelChange(-1.0);
 		} catch (const CEGUI::Exception& ex) {
 			S_LOG_WARNING("Error in CEGUI." << ex);
 		}
 		return false;
-	} else if(button == Input::MouseWheelUp) {
+	} else if (button == Input::MouseWheelUp) {
 		try {
 			mGuiContext.injectMouseWheelChange(1.0);
 		} catch (const CEGUI::Exception& ex) {
@@ -222,8 +215,7 @@ bool GUICEGUIAdapter::injectMouseButtonDown(Input::MouseButton button)
 	return true;
 }
 
-bool GUICEGUIAdapter::injectChar(int character)
-{
+bool GUICEGUIAdapter::injectChar(int character) {
 	try {
 		//cegui can't handle tabs, so we have to convert it to a couple of spaces
 		if (character == '\t') {
@@ -231,11 +223,11 @@ bool GUICEGUIAdapter::injectChar(int character)
 			mGuiContext.injectChar(' ');
 			mGuiContext.injectChar(' ');
 			mGuiContext.injectChar(' ');
-		//can't handle CR either really, insert a line break (0x0a) instead
+			//can't handle CR either really, insert a line break (0x0a) instead
 		} else if (character == '\r') {
- 			//mGuiContext.injectChar(0x0a);
- 			mGuiContext.injectKeyDown(CEGUI::Key::Return);
- 			mGuiContext.injectKeyUp(CEGUI::Key::Return);
+			//mGuiContext.injectChar(0x0a);
+			mGuiContext.injectKeyDown(CEGUI::Key::Return);
+			mGuiContext.injectKeyUp(CEGUI::Key::Return);
 		} else {
 			mGuiContext.injectChar(character);
 		}
@@ -246,11 +238,10 @@ bool GUICEGUIAdapter::injectChar(int character)
 
 }
 
-bool GUICEGUIAdapter::injectKeyDown(const SDL_Scancode& key)
-{
+bool GUICEGUIAdapter::injectKeyDown(const SDL_Scancode& key) {
 	try {
-		SDLKeyMap::const_iterator I =  mKeyMap.find(key);
-		if (I != mKeyMap.end())  {
+		SDLKeyMap::const_iterator I = mKeyMap.find(key);
+		if (I != mKeyMap.end()) {
 			const auto& scanCode = I->second;
 			mGuiContext.injectKeyDown(scanCode);
 		}
@@ -261,11 +252,10 @@ bool GUICEGUIAdapter::injectKeyDown(const SDL_Scancode& key)
 
 }
 
-bool GUICEGUIAdapter::injectKeyUp(const SDL_Scancode& key)
-{
+bool GUICEGUIAdapter::injectKeyUp(const SDL_Scancode& key) {
 	try {
-		SDLKeyMap::const_iterator I =  mKeyMap.find(key);
-		if (I != mKeyMap.end())  {
+		SDLKeyMap::const_iterator I = mKeyMap.find(key);
+		if (I != mKeyMap.end()) {
 			const auto& scanCode = I->second;
 			mGuiContext.injectKeyUp(scanCode);
 		}
@@ -275,7 +265,6 @@ bool GUICEGUIAdapter::injectKeyUp(const SDL_Scancode& key)
 	return true;
 
 }
-
 
 
 }

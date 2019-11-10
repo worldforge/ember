@@ -304,7 +304,7 @@ Ogre::Root* OgreSetup::configure() {
 	handleOpenGL = true;
 #endif
 
-	std::string windowId = Input::getSingleton().createWindow(width, height, fullscreen, true, true, handleOpenGL);
+	std::string windowId = Input::getSingleton().createWindow(width, height, fullscreen, true, handleOpenGL);
 
 	mRoot->initialise(false, "Ember");
 	Ogre::NameValuePairList misc;

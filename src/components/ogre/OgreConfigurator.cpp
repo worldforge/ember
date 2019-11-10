@@ -44,23 +44,20 @@
 #include <thread>
 #include <components/cegui/CEGUISetup.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 OgreConfigurator::OgreConfigurator() :
-		mLastFrameTime(0), mResult(OC_CANCEL), mContinueInLoop(true), mLoader(new OgreResourceLoader()), mConfigWindow(0)
-{
+		mLastFrameTime(0),
+		mResult(OC_CANCEL),
+		mContinueInLoop(true),
+		mLoader(std::make_unique<OgreResourceLoader>()),
+		mConfigWindow(nullptr) {
 }
 
-OgreConfigurator::~OgreConfigurator()
-{
-	delete mLoader;
-}
+OgreConfigurator::~OgreConfigurator() = default;
 
-OgreConfigurator::Result OgreConfigurator::configure()
-{
+OgreConfigurator::Result OgreConfigurator::configure() {
 	unsigned int width = 250;
 	unsigned int height = 300;
 	auto& root = Ogre::Root::getSingleton();
@@ -81,7 +78,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	}
 #endif
 
-	const std::string windowId = Input::getSingleton().createWindow(width, height, false, false, true, handleOpenGL);
+	const std::string windowId = Input::getSingleton().createWindow(width, height, false, false, handleOpenGL);
 
 	Ogre::NameValuePairList misc;
 #ifdef __APPLE__
@@ -130,7 +127,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 		updateResolutionList(renderSystem);
 		CEGUI::Window* okButton = mConfigWindow->getChildRecursive("Button_ok");
-		okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber([&](){
+		okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber([&]() {
 			mResult = OC_OK;
 			mContinueInLoop = false;
 		}));
@@ -142,7 +139,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		auto dontShowAgainCheckbox = dynamic_cast<CEGUI::ToggleButton*>(mConfigWindow->getChildRecursive("DontShowAgain"));
 
 		Input& input = Input::getSingleton();
-		auto adapterDeleter = [&](IInputAdapter* ptr){
+		auto adapterDeleter = [&](IInputAdapter* ptr) {
 			input.removeAdapter(ptr);
 			delete ptr;
 		};
@@ -163,7 +160,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			if (input.getMainLoopController()->shouldQuit()) {
 				break;
 			}
-			float timeElapsed = (float)(TimeHelper::currentTimeMillis() - lastTime) / 1000.0f;
+			float timeElapsed = (float) (TimeHelper::currentTimeMillis() - lastTime) / 1000.0f;
 			CEGUI::System::getSingleton().injectTimePulse(timeElapsed);
 			CEGUI::System::getSingleton().getDefaultGUIContext().injectTimePulse(timeElapsed);
 			lastTime = TimeHelper::currentTimeMillis();
@@ -187,7 +184,6 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		}
 
 
-
 		CEGUI::System::destroy();
 		CEGUI::OgreRenderer::destroy(renderer);
 		CEGUI::OgreRenderer::destroyOgreResourceProvider(rp);
@@ -203,13 +199,11 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	return mResult;
 }
 
-Ogre::ConfigOptionMap OgreConfigurator::getConfigOptions() const
-{
+Ogre::ConfigOptionMap OgreConfigurator::getConfigOptions() const {
 	return mConfigOptions;
 }
 
-void OgreConfigurator::updateResolutionList(Ogre::RenderSystem* renderSystem)
-{
+void OgreConfigurator::updateResolutionList(Ogre::RenderSystem* renderSystem) {
 	assert(renderSystem);
 
 	Ogre::ConfigOptionMap configOptions = renderSystem->getConfigOptions();
@@ -236,15 +230,14 @@ void OgreConfigurator::updateResolutionList(Ogre::RenderSystem* renderSystem)
 		}
 	}
 }
-bool OgreConfigurator::buttonOkClicked(const CEGUI::EventArgs& args)
-{
+
+bool OgreConfigurator::buttonOkClicked(const CEGUI::EventArgs& args) {
 	mResult = OC_OK;
 	mContinueInLoop = false;
 	return true;
 }
 
-bool OgreConfigurator::buttonCancelClicked(const CEGUI::EventArgs& args)
-{
+bool OgreConfigurator::buttonCancelClicked(const CEGUI::EventArgs& args) {
 	mResult = OC_CANCEL;
 	mContinueInLoop = false;
 	return true;

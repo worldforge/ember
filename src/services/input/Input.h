@@ -213,7 +213,6 @@ public:
 	 * @param height The height of the window, in pixels.
 	 * @param fullscreen Whether the window should be full screen.
 	 * @param resizable Whether the window should be resizable (only applicable if it's not full screen).
-	 * @param centered Whether the window should be centered  (only applicable if it's not full screen).
 	 * @param handleOpenGL Whether SDL should handle the OpenGL context. This should be true for OSX, and true for Windows if the OpenGL render plugin is used.
 	 * @return The platform specific id of the window.
 	 */
@@ -221,7 +220,6 @@ public:
 							 unsigned int height,
 							 bool fullscreen,
 							 bool resizable = true,
-							 bool centered = true,
 							 bool handleOpenGL = false);
 
 	/**
@@ -623,9 +621,8 @@ private:
 	/**
 	 * @brief Whether to invert relative movement.
 	 * 
-	 * It can be 1(normal) or -1(inverted).
 	 */
-	int mInvertMouse;
+	bool mInvertMouse;
 
 	/**
 	 * @brief If true, SDL will handle the OpenGL context.

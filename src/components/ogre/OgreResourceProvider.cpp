@@ -30,69 +30,47 @@
 namespace Ember {
 namespace OgreView {
 
-OgreResourceWrapper::OgreResourceWrapper(Ogre::DataStreamPtr dataStream)
-{
+OgreResourceWrapper::OgreResourceWrapper(const Ogre::DataStreamPtr& dataStream) {
 	mSize = dataStream->size();
 	mBuffer = new char[mSize];
 	dataStream->read(mBuffer, mSize);
 }
 
-OgreResourceWrapper::~OgreResourceWrapper()
-{
+OgreResourceWrapper::~OgreResourceWrapper() {
 	delete[] mBuffer;
 }
 
-const char* OgreResourceWrapper::getDataPtr()
-{
+const char* OgreResourceWrapper::getDataPtr() {
 	return mBuffer;
 }
 
-bool OgreResourceWrapper::hasData()
-{
+bool OgreResourceWrapper::hasData() {
 	return mSize != 0;
 }
 
-size_t OgreResourceWrapper::getSize()
-{
+size_t OgreResourceWrapper::getSize() {
 	return mSize;
 }
 
 
-
-OgreResourceProvider::OgreResourceProvider(const std::string& groupName)
-: mGroupName(groupName)
-{
+OgreResourceProvider::OgreResourceProvider(std::string groupName)
+		: mGroupName(std::move(groupName)) {
 }
 
 
-OgreResourceProvider::~OgreResourceProvider()
-{
-}
+OgreResourceProvider::~OgreResourceProvider() = default;
 
-ResourceWrapper OgreResourceProvider::getResource(const std::string& name)
-{
+ResourceWrapper OgreResourceProvider::getResource(const std::string& name) {
 	Ogre::DataStreamPtr input =
-		Ogre::ResourceGroupManager::getSingleton().openResource(name, mGroupName);
+			Ogre::ResourceGroupManager::getSingleton().openResource(name, mGroupName);
 
-	if (!input)
-	{
+	if (!input) {
 		throw Exception("Unable to open resource file '" + name + "' in resource group '" + name + "'.");
 	}
-	OgreResourceWrapper* wrapper = new OgreResourceWrapper(input);
+	auto wrapper = std::make_shared<OgreResourceWrapper>(input);
 	input->close();
-	return ResourceWrapper(wrapper, name);
-
-// 	Ogre::String buf = input->getAsString();
-// 	const size_t memBuffSize = buf.length();
-//
-// 	unsigned char* mem = new unsigned char[memBuffSize];
-// 	memcpy(mem, buf.c_str(), memBuffSize);
-//
-// 	output.setData(mem);
-// 	output.setSize(memBuffSize);
+	return ResourceWrapper(std::move(wrapper), name);
 }
-
-
 
 
 }
