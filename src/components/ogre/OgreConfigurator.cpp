@@ -30,7 +30,6 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
-#include "framework/LoggingInstance.h"
 #include "framework/TimeHelper.h"
 #include "framework/MainLoopController.h"
 
@@ -41,11 +40,6 @@
 
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-//Needed for preventing resize of window
-#include <X11/Xutil.h>
-#endif
 
 #include <thread>
 #include <components/cegui/CEGUISetup.h>
@@ -116,7 +110,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	mLoader->loadBootstrap();
 	mLoader->loadGui();
 
-	Cegui::CEGUILogger* logger = new Cegui::CEGUILogger();
+	auto* logger = new Cegui::CEGUILogger();
 
 	CEGUI::OgreRenderer& renderer = Ember::Cegui::CEGUISetup::createRenderer(renderWindow);
 	renderer.setRenderingEnabled(false);
@@ -169,7 +163,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			if (input.getMainLoopController()->shouldQuit()) {
 				break;
 			}
-			float timeElapsed = (TimeHelper::currentTimeMillis() - lastTime) / 1000.0f;
+			float timeElapsed = (float)(TimeHelper::currentTimeMillis() - lastTime) / 1000.0f;
 			CEGUI::System::getSingleton().injectTimePulse(timeElapsed);
 			CEGUI::System::getSingleton().getDefaultGUIContext().injectTimePulse(timeElapsed);
 			lastTime = TimeHelper::currentTimeMillis();
@@ -194,7 +188,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 
 
-		CEGUI::System::getSingleton().destroy();
+		CEGUI::System::destroy();
 		CEGUI::OgreRenderer::destroy(renderer);
 		CEGUI::OgreRenderer::destroyOgreResourceProvider(rp);
 		delete logger;
@@ -202,7 +196,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
 
 	} catch (const std::exception& ex) {
-		CEGUI::System::getSingleton().destroy();
+		CEGUI::System::destroy();
 		CEGUI::OgreRenderer::destroy(renderer);
 		CEGUI::OgreRenderer::destroyOgreResourceProvider(rp);
 		delete logger;
@@ -232,7 +226,7 @@ void OgreConfigurator::updateResolutionList(Ogre::RenderSystem* renderSystem)
 			//Trim away extra spaces which Ogre seem to generate
 			resolution = Ogre::StringUtil::replaceAll(resolution, "  ", " ");
 			Ogre::StringUtil::trim(resolution, true, true);
-			Gui::ColouredListItem* item = new Gui::ColouredListItem(resolution);
+			auto* item = new Gui::ColouredListItem(resolution);
 			resolutionsCombobox->addItem(item);
 			if (possibleResolution == optionsIter->second.currentValue) {
 				resolutionsCombobox->setItemSelectState(item, true);
