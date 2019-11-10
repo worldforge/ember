@@ -250,7 +250,16 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" AND OGRE_STATIC)
             )
 endif ()
 
-add_definitions(-DOGRE_MEDIA_DIR="${OGRE_MEDIA_DIR}")
+if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+    message(STATUS "Copying OGRE media to our own installation directory.")
+    set(CONAN_OGRE_MEDIA_DIR ${CMAKE_INSTALL_FULL_DATADIR}/OGRE/Media)
+    install(DIRECTORY ${OGRE_MEDIA_DIR} DESTINATION ${CONAN_OGRE_MEDIA_DIR})
+    add_definitions(-DOGRE_MEDIA_DIR="${CONAN_OGRE_MEDIA_DIR}")
+else()
+    add_definitions(-DOGRE_MEDIA_DIR="${OGRE_MEDIA_DIR}")
+endif()
+
+
 add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR}")
 
 find_package(Tolua++ REQUIRED)
