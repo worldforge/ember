@@ -110,7 +110,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	mLoader->loadBootstrap();
 	mLoader->loadGui();
 
-	auto* logger = new Cegui::CEGUILogger();
+	auto logger = std::make_unique<Cegui::CEGUILogger>();
 
 	CEGUI::OgreRenderer& renderer = Ember::Cegui::CEGUISetup::createRenderer(renderWindow);
 	renderer.setRenderingEnabled(false);
@@ -149,8 +149,8 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		std::unique_ptr<IInputAdapter, decltype(adapterDeleter)> adapter(new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer), adapterDeleter);
 		input.addAdapter(adapter.get());
 
-		Ogre::ConfigOptionMap configOptions = renderSystem->getConfigOptions();
-		Ogre::ConfigOptionMap::const_iterator optionsIter = configOptions.find("Full Screen");
+		auto& configOptions = renderSystem->getConfigOptions();
+		auto optionsIter = configOptions.find("Full Screen");
 		if (optionsIter != configOptions.end()) {
 			fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
 		}
@@ -191,7 +191,6 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		CEGUI::System::destroy();
 		CEGUI::OgreRenderer::destroy(renderer);
 		CEGUI::OgreRenderer::destroyOgreResourceProvider(rp);
-		delete logger;
 
 		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
 
@@ -199,7 +198,6 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		CEGUI::System::destroy();
 		CEGUI::OgreRenderer::destroy(renderer);
 		CEGUI::OgreRenderer::destroyOgreResourceProvider(rp);
-		delete logger;
 		throw ex;
 	}
 	return mResult;
