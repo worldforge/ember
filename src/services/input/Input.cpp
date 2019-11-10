@@ -476,8 +476,8 @@ void Input::pollMouse(float secondsSinceLast) {
 				freezeMouse = true;
 			}
 
-			if (freezeMouse) {
-				//std::cout << "Warping " << mMousePosition.xPixelPosition << ":" << mMousePosition.yPixelPosition <<std::endl;
+			//Only warp if we want to freeze and hasn't put the mouse into relative mode.
+			if (freezeMouse && mCurrentInputMode == IM_GUI) {
 				SDL_WarpMouseInWindow(nullptr, mMousePosition.xPixelPosition, mMousePosition.yPixelPosition);
 			} else {
 				mMousePosition.xPixelPosition = mouseX;
@@ -692,7 +692,7 @@ void Input::keyPressed(const SDL_KeyboardEvent& keyEvent) {
 void Input::keyReleased(const SDL_KeyboardEvent& keyEvent) {
 	mSuppressForCurrentEvent = false;
 	if (mCurrentInputMode == IM_GUI) {
-		for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
+		for (auto I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
 			IInputAdapter* adapter = *I;
 			++I;
 			if (!(adapter)->injectKeyUp(keyEvent.keysym.scancode))
