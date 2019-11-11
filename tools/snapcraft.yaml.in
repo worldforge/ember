@@ -1,0 +1,41 @@
+name: ember
+base: core18
+version: '@SNAP_VERSION@'
+summary: 3d client for Worldforge MMORPGs
+description: |
+  3d client for Worldforge MMORPGs.
+grade: devel
+confinement: strict
+license: GPL-3.0
+
+apps:
+  ember:
+    command: desktop-launch $SNAP/bin/ember
+    plugs:
+      - x11
+      - alsa
+      - audio-playback
+      - network
+      - opengl
+      - wayland
+
+parts:
+  ember:
+    stage-packages:
+      - libgcc1
+      - libglu1-mesa
+      - libstdc++6
+      - libx11-6
+      - libxrandr2
+    source: .
+    plugin: dump
+    after:
+      - desktop-glib-only
+  desktop-glib-only:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: glib-only
+    plugin: make
+    build-packages:
+      - libglib2.0-dev
+    stage-packages:
+      - libglib2.0-bin

@@ -58,7 +58,7 @@ macro(wf_generate_lua_bindings PKG_PATH)
     file(GLOB_RECURSE LUA_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" *.pkg *.h)
 
     #I couldn't get the script copying to work well on UNIX, so we use slightly different approach on windows and unix.
-	if(WIN32)
+    if (WIN32)
         add_custom_command(
                 OUTPUT ${PACKAGE_NAME}.cxx
                 COMMAND ${CMAKE_COMMAND} -E echo "Building Lua bindings for ${PACKAGE_NAME}.cxx"
@@ -67,7 +67,7 @@ macro(wf_generate_lua_bindings PKG_PATH)
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR}
                 DEPENDS ${LUA_FILES}
         )
-    else()
+    else ()
         add_custom_command(
                 OUTPUT ${PACKAGE_NAME}.cxx
                 COMMAND ${CMAKE_COMMAND} -E echo "Building Lua bindings for ${PACKAGE_NAME}.cxx"
@@ -76,7 +76,7 @@ macro(wf_generate_lua_bindings PKG_PATH)
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR}
                 DEPENDS ${LUA_FILES}
         )
-	endif()
+    endif ()
 
     add_library(${PACKAGE_NAME}_bindings_lua ${PACKAGE_NAME}.cxx ${ARGN})
 
@@ -93,28 +93,28 @@ set(WF_LIBRARIES)
 if (WIN32)
     link_libraries("Shlwapi") #Needed for getting Windows specific directories.
     add_definitions(-D_WIN32_WINNT=0x0601) #target Windows 7
-endif()
+endif ()
 
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     message(STATUS "Using Conan for dependency resolution.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
-	#We need to copy all .dll files that Conan installed too.
-	#TODO: make sure that Conan only builds static libraries on Windows.
-	if (WIN32)
-		file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/bin/*.dll")
-		install(FILES ${DLL_FILES} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
-	endif()
-else()
-	find_package(Boost
-			1.60.0
-			REQUIRED
-			COMPONENTS system filesystem thread)
+    #We need to copy all .dll files that Conan installed too.
+    #TODO: make sure that Conan only builds static libraries on Windows.
+    if (WIN32)
+        file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/bin/*.dll")
+        install(FILES ${DLL_FILES} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+    endif ()
+else ()
+    find_package(Boost
+            1.60.0
+            REQUIRED
+            COMPONENTS system filesystem thread)
 
-	link_directories(${Boost_LIBRARY_DIRS})
-	link_libraries(${Boost_LIBRARIES})
-	include_directories(${Boost_INCLUDE_DIRS})
+    link_directories(${Boost_LIBRARY_DIRS})
+    link_libraries(${Boost_LIBRARIES})
+    include_directories(${Boost_INCLUDE_DIRS})
 
     #Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.
     #This allows for a developer to get some insight into why some frames take too long.
@@ -303,10 +303,10 @@ link_libraries(${OPENAL_LIBRARIES})
 include_directories(${OPENAL_INCLUDE_DIR})
 
 if (NOT WIN32)
-	find_package(XDGBaseDir REQUIRED 1.0.0)
-	link_libraries(${XDGBaseDir_LIBRARIES})
-	include_directories(${XDGBaseDir_INLUDE_DIR})
-endif()
+    find_package(XDGBaseDir REQUIRED 1.0.0)
+    link_libraries(${XDGBaseDir_LIBRARIES})
+    include_directories(${XDGBaseDir_INLUDE_DIR})
+endif ()
 
 find_package(OpenGL)
 link_directories(${OPENGL_LIBRARY_DIRS})
@@ -337,9 +337,12 @@ foreach (FILE ${MODELDEFINITIONS_FILES})
             COMMAND "${XMLLINT}" --schema "${PROJECT_SOURCE_DIR}/data/modeldefinition.xsd" --nonet --noout "${FILE}")
 endforeach (FILE MODELDEFINITIONS_FILES)
 
+set(SNAP_VERSION "${VERSION}")
 
 configure_file(tools/support/update_lua_bindings.bat.in scripts/update_lua_bindings.bat @ONLY)
 configure_file(tools/bintray.json.in bintray.json @ONLY)
+message(STATUS "Installing snapcraft.yaml file into build directory. Copy this one to the installation directory if you want to build snaps.")
+configure_file(tools/snapcraft.yaml.in snap/snapcraft.yaml @ONLY)
 configure_file(tools/ember.conf.in ember.conf @ONLY)
 configure_file(tools/ember.in ember @ONLY)
 configure_file(tools/Ember.nsi.in Ember.nsi @ONLY)
@@ -369,6 +372,19 @@ set(MEDIAREPO_PROCESSED_DIR ${CMAKE_BINARY_DIR}/ember-media-${VERSION})
 find_program(SUBVERSION_CMD NAMES svn)
 find_program(PYTHON_CMD NAMES python)
 find_program(RSYNC_CMD NAMES rsync)
+
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    #On systems with Snapcraft this command will build a snap, otherwise one has to do some extra copying of the "snap" folder.
+    add_custom_target(snap-build)
+    add_custom_command(
+            TARGET snap-build
+            COMMAND ${CMAKE_COMMAND} -E echo "I will now copy the snapfile to the installation directory and run 'snapcraft'."
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_PREFIX}/snap
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/snap/snapcraft.yaml ${CMAKE_INSTALL_PREFIX}/snap/snapcraft.yaml
+            COMMAND snapcraft
+            WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}
+    )
+endif ()
 
 add_custom_target(media-download)
 if (RSYNC_CMD)

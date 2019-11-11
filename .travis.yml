@@ -1,20 +1,24 @@
 language: cpp
-dist: xenial
-osx_image: xcode10.2
-compiler:
-  - clang
-  - gcc
-
-os:
-  - linux
-  - osx
-
-matrix:
-  exclude:
-    - os: osx
+jobs:
+  include:
+    - os: linux
+      dist: xenial
+      compiler: clang
+    - os: linux #This one builds the AppImage
+      dist: xenial
       compiler: gcc
+      env: BUILD_APPIMAGE=1
+    - os: linux #This one builds the snap (since core18 is based on bionic)
+      dist: bionic
+      compiler: gcc
+      env: BUILD_SNAP=1
+    - os: osx
+      osx_image: xcode10.2
+      compiler: clang
 
 addons:
+  snaps:
+    - snapcraft
   apt:
     packages:
       - ccache
@@ -56,10 +60,11 @@ script:
   - make media-download
   - make -j2
   - make -j2 check
-  - if [ "$TRAVIS_OS_NAME" != "osx" -a "$CC" == "gcc" ]; then make dox; fi
+ # - if [ "$TRAVIS_OS_NAME" != "osx" -a "$CC" == "gcc" ]; then make dox; fi
   - make install
   - |
-    if [[ "$TRAVIS_OS_NAME" != "osx" && "$CC" == "gcc" ]]; then
+    if [[ x"$BUILD_APPIMAGE" == x"1" ]]; then
+      echo "Building AppImage"
       ln -s ./usr/share/icons/hicolor/64x64/apps/ember.png ~/install/
       ln -s ./usr/share/applications/org.worldforge.ember.desktop ~/install/
       ln -s ember.png ~/install/.DirIcon
@@ -69,10 +74,16 @@ script:
       chmod a+x appimagetool-x86_64.AppImage
       ./appimagetool-x86_64.AppImage -n ~/install
     fi
+  - |
+    if [[ x"$BUILD_SNAP" == x"1" ]]; then
+      echo "Building Snap"
+      cp snap/snapcraft.yaml ~/install/usr/
+      cd ~/install/usr/ && snapcraft
+    fi
 deploy:
   provider: bintray
   file: $HOME/build/worldforge/ember/build/bintray.json
   edge: true # opt in to dpl v2
   on:
     branch: master
-    condition: $TRAVIS_OS_NAME != "osx" && $CC == "gcc"
+    condition: x"$BUILD_APPIMAGE" == x"1"
