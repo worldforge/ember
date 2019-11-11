@@ -147,7 +147,7 @@ void BulletWorld::getMeshInformation(const Ogre::MeshPtr& mesh,
 
 		Ogre::VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
 
-		if ((!submesh->useSharedVertices) || (submesh->useSharedVertices && !added_shared)) {
+		if ((!submesh->useSharedVertices) || (!added_shared)) {
 			if (submesh->useSharedVertices) {
 				added_shared = true;
 				shared_offset = current_offset;
