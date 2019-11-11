@@ -300,7 +300,7 @@ protected:
 	/**
 	 * @brief Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
 	 */
-	std::unique_ptr<AvatarLoggerParent> mChatLoggerParent;
+	std::unique_ptr<AvatarLogger> mChatLogger;
 
 	/**
 	 * @brief We save the five latest orientations that we send to the server.

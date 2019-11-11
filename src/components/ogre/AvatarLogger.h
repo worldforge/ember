@@ -72,27 +72,6 @@ protected:
 
 };
 
-/**
-@brief Handles the creation of an instance of AvatarLogger.
-
-Since the AvatarLogger is dependent on an actual EmberEntity instance it can't be created until such an instance exists in the system. This class will take care of delaying the creation until it's suitable.
-You can create an instance of this anytime.
-*/
-class AvatarLoggerParent {
-public:
-	/**
-	 *    Ctor.
-	 * @param avatar
-	 */
-	explicit AvatarLoggerParent(Avatar& avatar);
-
-	~AvatarLoggerParent() = default;
-
-protected:
-
-	std::unique_ptr<AvatarLogger> mLogger;
-
-};
 }
 
 }

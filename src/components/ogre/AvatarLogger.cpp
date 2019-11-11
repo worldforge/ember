@@ -82,11 +82,5 @@ void AvatarLogger::GUIManager_AppendIGChatLine(const EntityTalk& entityTalk, Emb
 	*mChatLogger << "[" << TimeHelper::getLocalTimeStr() << "] <" << entity->getName() << "> says: " << entityTalk.getMessage() << std::endl;
 }
 
-AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar) {
-	//we either already have an entity, or we need to wait until it's created
-	mLogger = std::make_unique<AvatarLogger>(avatar.getEmberEntity());
-}
-
-
 }
 }

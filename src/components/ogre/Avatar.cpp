@@ -91,7 +91,6 @@ Avatar::Avatar(Eris::Avatar* erisAvatar,
 		mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene, terrainAdapter)),
 		mIsAdmin(false),
 		mHasChangedLocation(false),
-		mChatLoggerParent(nullptr),
 		mIsMovingServerOnly(false),
 		mScene(scene),
 		mEntityMaker(new Authoring::EntityMaker(*erisAvatar, *EmberServices::getSingleton().getServerService().getConnection())) {
@@ -540,9 +539,9 @@ void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, co
 
 void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (static_cast<bool> (variable)) {
-		mChatLoggerParent = std::make_unique<AvatarLoggerParent>(*this);
+		mChatLogger = std::make_unique<AvatarLogger>(this->getEmberEntity());
 	} else {
-		mChatLoggerParent.reset();
+		mChatLogger.reset();
 	}
 }
 
