@@ -214,8 +214,8 @@ void ModelAttachment::detachFitting(EmberEntity& entity) {
 }
 
 void ModelAttachment::createFitting(const std::string& fittingName, const std::string& entityId) {
-	auto fitting = new ModelFitting(mChildEntity, fittingName, entityId);
-	mFittings.insert(ModelFittingStore::value_type(fittingName, fitting));
+	auto fitting = std::make_unique<ModelFitting>(mChildEntity, fittingName, entityId);
+	mFittings.emplace(fittingName, std::move(fitting));
 	for (size_t i = 0; i < mChildEntity.numContained(); ++i) {
 		Eris::Entity* entity = mChildEntity.getContained(i);
 		if (entity && entity->getId() == entityId) {

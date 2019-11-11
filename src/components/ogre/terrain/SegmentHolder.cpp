@@ -27,8 +27,8 @@ namespace OgreView {
 
 namespace Terrain {
 
-SegmentHolder::SegmentHolder(Segment* segment, SegmentManager& segmentManager) :
-		mSegment(segment),
+SegmentHolder::SegmentHolder(std::unique_ptr<Segment> segment, SegmentManager& segmentManager) :
+		mSegment(std::move(segment)),
 		mSegmentManager(segmentManager),
 		mRefCount(0) {
 

@@ -53,7 +53,7 @@ public:
 	 * @param segment The segment which this holder should refer to. Ownership is passed.
 	 * @param segmentManager The segment manager to which the holder belongs to.
 	 */
-	SegmentHolder(Segment* segment, SegmentManager& segmentManager);
+	SegmentHolder(std::unique_ptr<Segment> segment, SegmentManager& segmentManager);
 
 	/**
 	 * @brief Dtor.

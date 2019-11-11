@@ -144,7 +144,11 @@ void SegmentManager::addSegment(Mercator::Segment& segment) {
 			}
 		};
 		std::function<Mercator::Segment*()> segmentProvider = [&]() { return &segment; };
-		mSegments.insert(SegmentStore::value_type(ss.str(), new SegmentHolder(new Segment(segment.getXRef() / segment.getResolution(), segment.getZRef() / segment.getResolution(), segmentProvider, invalidate), *this)));
+		auto aSegment = std::make_unique<Segment>(segment.getXRef() / segment.getResolution(),
+												  segment.getZRef() / segment.getResolution(),
+												  segmentProvider,
+												  invalidate);
+		mSegments.emplace(ss.str(), std::make_unique<SegmentHolder>(std::move(aSegment), *this));
 	}
 }
 
