@@ -29,6 +29,8 @@ if (NOT VERSION)
     endif ()
 endif ()
 
+message(STATUS "Building version ${VERSION}")
+
 #Split a version number like "1.2.3" into a list to extract parts.
 string(REPLACE "." ";" VERSION_LIST ${VERSION})
 list(GET VERSION_LIST 0 EMBER_VERSION_MAJOR)
@@ -36,7 +38,6 @@ list(GET VERSION_LIST 1 EMBER_VERSION_MINOR)
 list(GET VERSION_LIST 2 EMBER_VERSION_PATCH)
 
 
-message(STATUS "Building version ${VERSION}")
 
 
 # Set compiler flags
