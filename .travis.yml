@@ -36,6 +36,8 @@ addons:
       - ccache
       - python3
       - rsync
+git:
+  depth: false # We want the complete depth to be able to do "git describe" to get version numbers.
 
 cache:
   - pip
@@ -89,7 +91,9 @@ deploy:
       branch: master
       condition: x"$BUILD_APPIMAGE" == x"1"
   - provider: snap
-    edge: true # opt in to dpl v2
+    channel: edge
+    snap: $HOME/install/usr/*.snap
+    skip_cleanup: true
     on:
       branch: master
       condition: x"$BUILD_SNAP" == x"1"
