@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.2)
 
+#Specifies the version of the media. This should normally be the version after the current version.
+set(MEDIA_VERSION "0.8.0")
+#If no VERSION is set externally, and we can't figure out the Git version, we'll use this version as fallback.
+set(VERSION_FALLBACK "0.8.0-dev")
+
 project(Ember)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
 set(CMAKE_CXX_STANDARD 14)
@@ -12,11 +17,16 @@ include(GNUInstallDirs)
 include(FindPkgConfig)
 
 # Version setup. Figure out the version from 'git describe' if VERSION isn't set externally.
-execute_process(COMMAND git describe
+message(${PROJECT_SOURCE_DIR})
+execute_process(COMMAND git -C ${PROJECT_SOURCE_DIR} describe
         OUTPUT_VARIABLE GIT_REPO_VERSION)
 string(REGEX REPLACE "\n$" "" GIT_REPO_VERSION "${GIT_REPO_VERSION}")
 if (NOT VERSION)
-    set(VERSION "${GIT_REPO_VERSION}")
+    if (NOT GIT_REPO_VERSION)
+        set(VERSION "${VERSION_FALLBACK}")
+    else ()
+        set(VERSION "${GIT_REPO_VERSION}")
+    endif ()
 endif ()
 
 #Split a version number like "1.2.3" into a list to extract parts.
@@ -25,8 +35,6 @@ list(GET VERSION_LIST 0 EMBER_VERSION_MAJOR)
 list(GET VERSION_LIST 1 EMBER_VERSION_MINOR)
 list(GET VERSION_LIST 2 EMBER_VERSION_PATCH)
 
-#Specifies the version of the media. This should normally be the version after the current version.
-set(MEDIA_VERSION "0.8.0")
 
 message(STATUS "Building version ${VERSION}")
 
