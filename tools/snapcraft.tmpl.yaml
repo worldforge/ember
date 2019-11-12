@@ -1,12 +1,14 @@
 name: ember
 base: core18
 version: '@VERSION@'
+title: Ember MMORPG client
 summary: 3d client for Worldforge MMORPGs
 description: |
-  3d client for Worldforge MMORPGs.
+  A client for the Worldforge MMORPG system.
+  Play online multiuser games, or create them yourself.
 grade: devel
 confinement: strict
-license: GPL-3.0
+license: GPL-2.0
 
 apps:
   ember:
