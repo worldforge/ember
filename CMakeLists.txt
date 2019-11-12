@@ -11,23 +11,33 @@ set(DESCRIPTION "The Worldforge client.")
 include(GNUInstallDirs)
 include(FindPkgConfig)
 
-# Version setup
+# Version setup. Figure out the version from 'git describe' if VERSION isn't set externally.
+execute_process(COMMAND git describe
+        OUTPUT_VARIABLE GIT_REPO_VERSION)
+string(REGEX REPLACE "\n$" "" GIT_REPO_VERSION "${GIT_REPO_VERSION}")
+if (NOT VERSION)
+    set(VERSION "${GIT_REPO_VERSION}")
+endif ()
 
-set(EMBER_VERSION_MAJOR 0)
-set(EMBER_VERSION_MINOR 8)
-set(EMBER_VERSION_PATCH 0)
+#Split a version number like "1.2.3" into a list to extract parts.
+string(REPLACE "." ";" VERSION_LIST ${VERSION})
+list(GET VERSION_LIST 0 EMBER_VERSION_MAJOR)
+list(GET VERSION_LIST 1 EMBER_VERSION_MINOR)
+list(GET VERSION_LIST 2 EMBER_VERSION_PATCH)
 
-set(VERSION ${EMBER_VERSION_MAJOR}.${EMBER_VERSION_MINOR}.${EMBER_VERSION_PATCH})
+#Specifies the version of the media. This should normally be the version after the current version.
+set(MEDIA_VERSION "0.8.0")
+
+message(STATUS "Building version ${VERSION}")
+
 
 # Set compiler flags
-#set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wmissing-declarations -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(WF_WARNING_FLAGS /W3)
 else ()
     set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
 endif ()
 
-add_definitions(-DVERSION="${VERSION}")
 add_definitions(-DPREFIX="${CMAKE_INSTALL_PREFIX}")
 add_definitions(-DEMBER_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
 add_definitions(-DEMBER_SYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}")
@@ -37,7 +47,7 @@ if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_definitions(-DEMBER_SOURCEMEDIAREPODIR="${PROJECT_SOURCE_DIR}/mediarepo/trunk")
     # EMBER_PROCESSEDMEDIAREPODIR points to an optional "processed" media path, i.e. a directory where the source media
     # found at EMBER_SOURCEMEDIAREPODIR has been processed using the "scripts/make_dist_media.py" script.
-    add_definitions(-DEMBER_PROCESSEDMEDIAREPODIR="${CMAKE_BINARY_DIR}/ember-media-${VERSION}/media")
+    add_definitions(-DEMBER_PROCESSEDMEDIAREPODIR="${CMAKE_BINARY_DIR}/ember-media-${MEDIA_VERSION}/media")
 endif (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 
 
@@ -46,7 +56,7 @@ endif (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 # crashes
 add_definitions(-DBOOST_ASIO_DISABLE_SMALL_BLOCK_RECYCLING)
 
-include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external)
+include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${PROJECT_BINARY_DIR}/generated)
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
@@ -337,8 +347,8 @@ foreach (FILE ${MODELDEFINITIONS_FILES})
             COMMAND "${XMLLINT}" --schema "${PROJECT_SOURCE_DIR}/data/modeldefinition.xsd" --nonet --noout "${FILE}")
 endforeach (FILE MODELDEFINITIONS_FILES)
 
-set(SNAP_VERSION "${VERSION}")
 
+configure_file(tools/Version.h.in generated/Version.h @ONLY)
 configure_file(tools/support/update_lua_bindings.bat.in scripts/update_lua_bindings.bat @ONLY)
 configure_file(tools/bintray.json.in bintray.json @ONLY)
 message(STATUS "Installing snapcraft.yaml file into build directory. Copy this one to the installation directory if you want to build snaps.")
@@ -354,7 +364,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ember.conf DESTINATION ${CMAKE_INSTALL
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/ember DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 install(FILES tools/org.worldforge.ember.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install(FILES data/media/ember.png DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/64x64/apps)
-install(FILES README.md COPYING AUTHORS NEWS DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/ember-${VERSION})
+install(FILES README.md COPYING AUTHORS NEWS DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/ember)
 install(FILES tools/org.worldforge.ember.appdata.xml DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
 
 install(DIRECTORY data DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember)
@@ -365,9 +375,9 @@ install(FILES ${SOUND_DEFINITION_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR
 # man files
 install(FILES docs/man/man1/ember.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
-set(MEDIA_DIR media-${VERSION})
+set(MEDIA_DIR media-${MEDIA_VERSION})
 set(MEDIAREPO_DIR ${PROJECT_SOURCE_DIR}/mediarepo)
-set(MEDIAREPO_PROCESSED_DIR ${CMAKE_BINARY_DIR}/ember-media-${VERSION})
+set(MEDIAREPO_PROCESSED_DIR ${CMAKE_BINARY_DIR}/ember-media-${MEDIA_VERSION})
 
 find_program(SUBVERSION_CMD NAMES svn)
 find_program(PYTHON_CMD NAMES python)
@@ -392,7 +402,7 @@ if (RSYNC_CMD)
             TARGET media-download
             COMMAND ${CMAKE_COMMAND} -E echo "I will now use rsync to install the media from amber.worldforge.org into ${MEDIA_DIR}."
             COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_DIR}
-            COMMAND rsync -rtvzu amber.worldforge.org::ember-media/ember-media-${VERSION}/ ${MEDIA_DIR}
+            COMMAND rsync -rtzu amber.worldforge.org::ember-media/ember-media-${MEDIA_VERSION}/ ${MEDIA_DIR}
             COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_DIR}/media to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_DIR}/media ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
             COMMAND ${CMAKE_COMMAND} -E echo "Done."

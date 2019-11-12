@@ -42,6 +42,7 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/MainLoopController.h"
 #include "EmberWorkQueue.h"
+#include "Version.h"
 
 #ifdef BUILD_WEBEMBER
 #include "extensions/webember/WebEmberManager.h"
@@ -131,7 +132,7 @@ void OgreSetup::shutdown() {
 
 		if (Ogre::GpuProgramManager::getSingletonPtr()) {
 			try {
-				auto cachePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" VERSION ".cache");
+				auto cachePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" EMBER_VERSION ".cache");
 				auto cacheStream = Ogre::Root::createFileStream(cachePath.string());
 				if (cacheStream) {
 					Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
@@ -329,7 +330,7 @@ Ogre::Root* OgreSetup::configure() {
 	if (mSaveShadersToCache) {
 		Ogre::GpuProgramManager::getSingleton().setSaveMicrocodesToCache(true);
 
-		auto cacheFilePath = configService.getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" VERSION ".cache");
+		auto cacheFilePath = configService.getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" EMBER_VERSION ".cache");
 		if (std::ifstream(cacheFilePath.string()).good()) {
 			try {
 				auto cacheStream = Ogre::Root::openFileStream(cacheFilePath.string());

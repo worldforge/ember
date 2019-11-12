@@ -26,13 +26,14 @@
 
 #include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
+#include "Version.h"
 
 #include <Eris/Exceptions.h>
 
 namespace Ember {
 ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, const std::string& host, short port) :
 		StateBase<ConnectedState>::StateBase(parentState),
-		mConnection(session, std::string("Ember ") + VERSION, host, port, std::make_unique<ServerServiceConnectionListener>(getSignals())),
+		mConnection(session, "Ember " EMBER_VERSION, host, port, std::make_unique<ServerServiceConnectionListener>(getSignals())),
 		mHasSignalledDisconnected(false) {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
@@ -44,7 +45,7 @@ ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, co
 
 ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, const std::string& socket) :
 		StateBase<ConnectedState>::StateBase(parentState),
-		mConnection(session, std::string("Ember ") + VERSION, socket, std::make_unique<ServerServiceConnectionListener>(getSignals())),
+		mConnection(session, "Ember " EMBER_VERSION, socket, std::make_unique<ServerServiceConnectionListener>(getSignals())),
 		mHasSignalledDisconnected(false) {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));

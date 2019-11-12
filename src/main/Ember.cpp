@@ -37,6 +37,8 @@
 //This should be included only to the file, where main function is defined.
 #include "MainWrapper.h"
 
+#include "Version.h"
+
 extern "C"
 int main(int argc, char** argv) {
 	int exitStatus(0);
@@ -53,7 +55,7 @@ int main(int argc, char** argv) {
 			argv++;
 			argc--;
 			if (arg == "-v" || arg == "--version") {
-				std::cout << "Ember version: " << VERSION << std::endl;
+				std::cout << "Ember version: " EMBER_VERSION << std::endl;
 				exit_program = true;
 			} else if (arg == "-h" || arg == "--help") {
 				std::cout << "-h, --help    - display this message" << std::endl;
@@ -133,9 +135,9 @@ int main(int argc, char** argv) {
 		//put the application object in its own scope so it gets destroyed before we signal all clear
 		{
 			if (prefix.empty()) {
-				std::cout << "Starting Ember version " << VERSION << "." << std::endl;
+				std::cout << "Starting Ember version " EMBER_VERSION "." << std::endl;
 			} else {
-				std::cout << "Starting Ember version " << VERSION << " with prefix '" << prefix << "'." << std::endl;
+				std::cout << "Starting Ember version " EMBER_VERSION " with prefix '" << prefix << "'." << std::endl;
 			}
 
 			Ember::ConfigService configService{};
@@ -154,7 +156,7 @@ int main(int argc, char** argv) {
 			std::ofstream logOutStream(filename.string());
 
 			//write to the log the version number
-			logOutStream << "Ember version " << VERSION << std::endl;
+			logOutStream << "Ember version " EMBER_VERSION << std::endl;
 
 			Ember::ConfigBoundLogObserver logObserver(configService, logOutStream);
 			Ember::Log::addObserver(&logObserver);

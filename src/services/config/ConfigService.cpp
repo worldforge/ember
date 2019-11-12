@@ -111,6 +111,7 @@ std::string getAppSupportDirPath()
 }
 
 #endif
+#include "Version.h"
 
 namespace Ember {
 
@@ -425,7 +426,7 @@ boost::filesystem::path ConfigService::getEmberMediaDirectory() const {
 	if (hasItem("wfut", "channel")) {
 		path = getEmberDataDirectory() / static_cast<std::string> ( getValue("wfut", "channel"));
 	} else {
-		path = getEmberDataDirectory() / ("ember-media-" + std::string(VERSION));
+		path = getEmberDataDirectory() / ("ember-media-" EMBER_MEDIA_VERSION);
 	}
 	return path;
 }

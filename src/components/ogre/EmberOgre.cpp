@@ -90,6 +90,7 @@
 #include "main/Application.h"
 
 #include "OgreResourceProvider.h"
+#include "Version.h"
 
 #include <Eris/Connection.h>
 #include <Eris/View.h>
@@ -393,7 +394,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7f : 1.0f));
 
 		loadingBar.start();
-		loadingBar.setVersionText(std::string("Version ") + VERSION);
+		loadingBar.setVersionText(std::string("Version ") + EMBER_VERSION);
 
 		// Turn off rendering of everything except overlays
 		mSceneManagerOutOfWorld->clearSpecialCaseRenderQueues();

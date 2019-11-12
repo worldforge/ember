@@ -1,6 +1,6 @@
 name: ember
 base: core18
-version: '@SNAP_VERSION@'
+version: '@VERSION@'
 summary: 3d client for Worldforge MMORPGs
 description: |
   3d client for Worldforge MMORPGs.
@@ -24,7 +24,6 @@ parts:
     stage-packages:
       - libgcc1
       - libglu1-mesa
-      - libstdc++6
       - libx11-6
       - libxrandr2
     source: .
