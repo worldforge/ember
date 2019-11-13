@@ -143,30 +143,28 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	SDL_GetWindowWMInfo(mMainVideoSurface, &info);
 
 #ifdef _WIN32
-	if (centered) {
-		// When SDL is centering the window, it doesn't take into account the tray bar.
-		// This approach will center the window to the work area.
-		HWND hwnd = info.info.win.window;
-		HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-		if (hMonitor) {
-			MONITORINFO mon;
-			memset(&mon, 0, sizeof(MONITORINFO));
-			mon.cbSize = sizeof(MONITORINFO);
-			GetMonitorInfo(hMonitor, &mon);
+    // When SDL is centering the window, it doesn't take into account the tray bar.
+    // This approach will center the window to the work area.
+    HWND hwnd = info.info.win.window;
+    HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    if (hMonitor) {
+        MONITORINFO mon;
+        memset(&mon, 0, sizeof(MONITORINFO));
+        mon.cbSize = sizeof(MONITORINFO);
+        GetMonitorInfo(hMonitor, &mon);
 
-			RECT r;
-			GetWindowRect(hwnd, &r);
+        RECT r;
+        GetWindowRect(hwnd, &r);
 
-			int winWidth = r.right - r.left;
-			int winLeft = mon.rcWork.left + (mon.rcWork.right - mon.rcWork.left) / 2 - winWidth / 2;
+        int winWidth = r.right - r.left;
+        int winLeft = mon.rcWork.left + (mon.rcWork.right - mon.rcWork.left) / 2 - winWidth / 2;
 
-			int winHeight = r.bottom - r.top;
-			int winTop = mon.rcWork.top + (mon.rcWork.bottom - mon.rcWork.top) / 2 - winHeight / 2;
-			winTop = std::max(winTop, 0);
+        int winHeight = r.bottom - r.top;
+        int winTop = mon.rcWork.top + (mon.rcWork.bottom - mon.rcWork.top) / 2 - winHeight / 2;
+        winTop = std::max(winTop, 0);
 
-			SetWindowPos(hwnd, 0, winLeft, winTop, 0, 0, SWP_NOSIZE);
-		}
-	}
+        SetWindowPos(hwnd, 0, winLeft, winTop, 0, 0, SWP_NOSIZE);
+    }
 #endif
 
 

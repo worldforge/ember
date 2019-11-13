@@ -52,9 +52,9 @@ If a directory contains a file named "norecurse" (it can be empty) Ember won't r
 class OgreResourceLoader : public ConsoleObject {
 public:
 	enum class OnFailure {
-		IGNORE,
-		REPORT,
-		THROW
+		Ignore,
+		Report,
+		Throw
 	};
 
 
