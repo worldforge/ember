@@ -43,7 +43,7 @@ extern "C"
 int main(int argc, char** argv) {
 	int exitStatus(0);
 	bool exit_program = false;
-	std::string prefix;
+	std::string prefix = PREFIX;
 	std::string homeDir;
 	Ember::Application::ConfigMap configMap;
 #ifndef __WIN32__
@@ -140,10 +140,7 @@ int main(int argc, char** argv) {
 				std::cout << "Starting Ember version " EMBER_VERSION " with prefix '" << prefix << "'." << std::endl;
 			}
 
-			Ember::ConfigService configService{};
-			if (!prefix.empty()) {
-				configService.setPrefix(prefix);
-			}
+			Ember::ConfigService configService(prefix);
 
 			if (!homeDir.empty()) {
 				configService.setHomeDirectory(homeDir);

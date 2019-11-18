@@ -131,7 +131,7 @@ public:
 	 * Ctor for Ember::service::ConfigService.
 	 *
 	 */
-	ConfigService();
+	ConfigService(std::string prefix);
 
 	/**
 	 * Dtor for Ember::service::ConfigService.
@@ -267,12 +267,6 @@ public:
 	*	@param the key of the config item
 	*/
 	sigc::signal<void, const std::string&, const std::string&> EventChangedConfigItem;
-
-	/**
-	 * Sets the prefix for all the configuration and resources. Call this before other services have initialized.
-	 * @param prefix
-	 */
-	void setPrefix(const std::string& prefix);
 
 	/**
 	 * @brief Gets the prefix, i.e. the root directory where Ember is installed.

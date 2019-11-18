@@ -12,7 +12,7 @@ license: GPL-2.0
 
 apps:
   ember:
-    command: desktop-launch $SNAP/bin/ember
+    command: desktop-launch $SNAP/bin/ember --prefix $SNAP
     plugs:
       - x11
       - alsa

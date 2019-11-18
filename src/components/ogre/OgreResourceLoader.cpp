@@ -171,7 +171,8 @@ bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::
 	if (!processedMediaRepoDir.empty()) {
 		boost::filesystem::path relativePath(path);
 		processedMediaRepoDir /= relativePath;
-		if (boost::filesystem::is_directory(processedMediaRepoDir)) {
+		boost::system::error_code ec;
+		if (boost::filesystem::is_directory(processedMediaRepoDir, ec)) {
 			S_LOG_INFO("Found processed media repo at '" << processedMediaRepoDir.string() << "'.");
 			return addResourceDirectory(processedMediaRepoDir.string(), "EmberFileSystem", section, OnFailure::Throw);
 		}
@@ -184,7 +185,8 @@ bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::
 	if (!sourceMediaRepoDir.empty()) {
 		boost::filesystem::path relativePath(path);
 		sourceMediaRepoDir /= relativePath;
-		if (boost::filesystem::is_directory(sourceMediaRepoDir)) {
+		boost::system::error_code ec;
+		if (boost::filesystem::is_directory(sourceMediaRepoDir, ec)) {
 			S_LOG_INFO("Found source media repo at '" << sourceMediaRepoDir.string() << "'.");
 			return addResourceDirectory(sourceMediaRepoDir.string(), "EmberFileSystem", section, OnFailure::Throw);
 		}

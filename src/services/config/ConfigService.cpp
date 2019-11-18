@@ -115,11 +115,11 @@ std::string getAppSupportDirPath()
 
 namespace Ember {
 
-ConfigService::ConfigService() :
+ConfigService::ConfigService(std::string prefix) :
 		mSharedDataDir(""),
 		mEtcDir(""),
 		mHomeDir(""),
-		mPrefix(PREFIX),
+		mPrefix(std::move(prefix)),
 		mGlobalConfig(new varconf::Config()),
 		mUserConfig(new varconf::Config()),
 		mCommandLineConfig(new varconf::Config()),
@@ -138,8 +138,19 @@ ConfigService::ConfigService() :
 #endif
 
 #if !defined(__APPLE__) && !defined(_WIN32)
-	mSharedDataDir = EMBER_DATADIR "/ember/";
-	mEtcDir = EMBER_SYSCONFDIR "/ember/";
+	if (mPrefix.empty()) {
+		mSharedDataDir = EMBER_DATADIR "/ember/";
+		mEtcDir = EMBER_SYSCONFDIR "/ember/";
+	} else {
+		mSharedDataDir = mPrefix + "/share/ember/";
+		//CMake handles the install prefix of "/usr" differently, in that it puts config files in "/etc" instead of "/usr/etc".
+		//We need to detect this.
+		if (std::string(PREFIX) == "/usr") {
+			mEtcDir = mPrefix.substr(0, mPrefix.length() - 3) + "/etc/ember/";
+		} else {
+			mEtcDir = mPrefix + "/etc/ember/";
+		}
+	}
 	S_LOG_INFO("Setting config directory to " << mEtcDir.string());
 #endif
 	mGlobalConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
@@ -151,19 +162,6 @@ ConfigService::ConfigService() :
 }
 
 ConfigService::~ConfigService() = default;
-
-void ConfigService::setPrefix(const std::string& prefix) {
-	S_LOG_INFO("Setting prefix to '" << prefix << "'.");
-	mPrefix = prefix;
-	mSharedDataDir = prefix + "/share/ember/";
-	//CMake handles the install prefix of "/usr" differently, in that it puts config files in "/etc" instead of "/usr/etc".
-	//We need to detect this.
-	if (std::string(PREFIX) == "/usr") {
-		mEtcDir = prefix.substr(0, prefix.length() - 3) + "/etc/ember/";
-	} else {
-		mEtcDir = prefix + "/etc/ember/";
-	}
-}
 
 const std::string& ConfigService::getPrefix() const {
 	return mPrefix;
