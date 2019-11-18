@@ -111,18 +111,17 @@ bool AuthoringManager::hasGeometryVisualization(const EmberEntity& entity) const
 void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity) {
 	if (!mSimpleVisualizations.count(&entity)) {
 		Ogre::SceneNode* node = mWorld.getScene().getSceneManager().getRootSceneNode()->createChildSceneNode();
-		SimpleEntityVisualization* vis(nullptr);
+		std::unique_ptr<SimpleEntityVisualization> vis;
 		try {
-			vis = new SimpleEntityVisualization(entity, node);
+			vis = std::make_unique<SimpleEntityVisualization>(entity, node);
 		} catch (const std::exception& ex) {
 			//just delete the node and return
 			node->getCreator()->destroySceneNode(node);
 			return;
 		}
 		sigc::connection conn = entity.BeingDeleted.connect([&]() { hideSimpleEntityVisualization(entity); });
-		mSimpleVisualizations.insert(SimpleEntityVisualizationStore::value_type(&entity, std::make_pair(vis, conn)));
+		mSimpleVisualizations.emplace(&entity, std::make_pair(std::move(vis), conn));
 	}
-
 }
 
 void AuthoringManager::hideSimpleEntityVisualization(EmberEntity& entity) {
