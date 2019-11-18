@@ -162,7 +162,7 @@ protected:
 	/**
 	 * @brief Listens to configuration changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
 	 * @brief The terrain adapter used to find terrain intersections.

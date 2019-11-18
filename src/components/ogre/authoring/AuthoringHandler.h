@@ -23,6 +23,7 @@
 #include "components/ogre/EntityObserverBase.h"
 #include <unordered_map>
 #include <sigc++/trackable.h>
+#include <memory>
 namespace Eris
 {
 class View;
@@ -59,7 +60,7 @@ public:
 private:
 	void cleanup() override;
 
-	AuthoringVisualizationMover* mMover;
+	std::unique_ptr<AuthoringVisualizationMover> mMover;
 	AuthoringHandler& mMoveHandler;
 	AuthoringVisualization& mVisualization;
 };
@@ -107,7 +108,7 @@ public:
 
 protected:
 
-	typedef std::unordered_map<EmberEntity*, AuthoringVisualization*> VisualizationStore;
+	typedef std::unordered_map<EmberEntity*, std::unique_ptr<AuthoringVisualization>> VisualizationStore;
 
 	/**
 	 * @brief A store of all visualizations in the world.
@@ -117,7 +118,7 @@ protected:
 	/**
 	 * @brief If an entity is moved client side, this instance will make sure that the visualization is synced with the movement.
 	 */
-	AuthoringMoveInstance* mMoveInstance;
+	std::unique_ptr<AuthoringMoveInstance> mMoveInstance;
 
 	/**
 	 * @brief The world for which we should create visualizations.

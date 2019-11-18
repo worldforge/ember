@@ -41,55 +41,47 @@ namespace Authoring {
 AuthoringManager::AuthoringManager(World& world) :
 		DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."),
 		HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."),
-		mWorld(world),
-		mHandler(nullptr),
-		mEntityConsoleEditor(nullptr) {
+		mWorld(world) {
 	//Delay checking the visualization config value until we've entered the world and can see if we're an admin or not.
 	world.EventGotAvatar.connect(sigc::mem_fun(*this, &AuthoringManager::worldGotAvatar));
 }
 
 AuthoringManager::~AuthoringManager() {
 	for (auto& simpleVisualization : mSimpleVisualizations) {
-		SimpleEntityVisualization* vis = simpleVisualization.second.first;
 		sigc::connection& conn = simpleVisualization.second.second;
-		delete vis;
 		conn.disconnect();
 	}
-	delete mHandler;
-	delete mEntityConsoleEditor;
 }
 
 void AuthoringManager::worldGotAvatar() {
-	delete mEntityConsoleEditor;
-	mEntityConsoleEditor = nullptr;
+	mEntityConsoleEditor.reset();
 	//We'll only look at the config if we're an admin.
 	// This means that visualizations won't be turned on automatically for non-admin characters,
 	// but can still be enabled by issuing the "displayauthoringvisualizations"
 	// console command. This is to not confuse users.
 	if (mWorld.getAvatar()->isAdmin()) {
 		registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
-		mEntityConsoleEditor = new EntityConsoleEditor(mWorld.getAvatar());
+		mEntityConsoleEditor = std::make_unique<EntityConsoleEditor>(mWorld.getAvatar());
 	}
 }
 
 void AuthoringManager::displayAuthoringVisualization() {
 	if (!mHandler) {
-		mHandler = new AuthoringHandler(mWorld);
+		mHandler = std::make_unique<AuthoringHandler>(mWorld);
 	}
 }
 
 void AuthoringManager::hideAuthoringVisualization() {
-	delete mHandler;
-	mHandler = nullptr;
+	mHandler.reset();
 }
 
 
 void AuthoringManager::displayGeometryVisualization(EmberEntity& entity) {
 	if (!mGeometryVisualizations.count(&entity)) {
 		Ogre::SceneNode* node = mWorld.getScene().getSceneManager().getRootSceneNode()->createChildSceneNode();
-		GeometryVisualization* vis(nullptr);
+		std::unique_ptr<GeometryVisualization> vis;
 		try {
-			vis = new GeometryVisualization(entity, node);
+			vis = std::make_unique<GeometryVisualization>(entity, node);
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when displaying geometry." << ex);
 			//just delete the node and return
@@ -97,16 +89,14 @@ void AuthoringManager::displayGeometryVisualization(EmberEntity& entity) {
 			return;
 		}
 		sigc::connection conn = entity.BeingDeleted.connect([&]() { hideGeometryVisualization(entity); });
-		mGeometryVisualizations.insert(std::make_pair(&entity, std::make_pair(vis, conn)));
+		mGeometryVisualizations.emplace(&entity, std::make_pair(std::move(vis), conn));
 	}
 }
 
 void AuthoringManager::hideGeometryVisualization(EmberEntity& entity) {
 	auto I = mGeometryVisualizations.find(&entity);
 	if (I != mGeometryVisualizations.end()) {
-		GeometryVisualization* vis = I->second.first;
 		sigc::connection& conn = I->second.second;
-		delete vis;
 		conn.disconnect();
 		mGeometryVisualizations.erase(I);
 	}
@@ -138,9 +128,7 @@ void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity) {
 void AuthoringManager::hideSimpleEntityVisualization(EmberEntity& entity) {
 	auto I = mSimpleVisualizations.find(&entity);
 	if (I != mSimpleVisualizations.end()) {
-		SimpleEntityVisualization* vis = I->second.first;
 		sigc::connection& conn = I->second.second;
-		delete vis;
 		conn.disconnect();
 		mSimpleVisualizations.erase(I);
 	}

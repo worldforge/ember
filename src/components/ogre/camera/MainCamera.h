@@ -215,12 +215,12 @@ private:
 	/**
 	 * @brief The shared camera settings, which is used by the various mounts.
 	 */
-	CameraSettings* mCameraSettings;
+	std::unique_ptr<CameraSettings> mCameraSettings;
 
 	/**
 	 * @brief Listens for config changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
 	 * @brief The terrain adapter used to check for intersections with the terrain.

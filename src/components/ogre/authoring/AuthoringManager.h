@@ -139,7 +139,7 @@ protected:
 	 * @brief Store for simple visualizations of entities.
 	 * The sigc::connection is used for the Eris::Entity::BeingDeleted listening, which we want to remove when we're deleting the visualization.
 	 */
-	typedef std::unordered_map<const EmberEntity*, std::pair<SimpleEntityVisualization*, sigc::connection>> SimpleEntityVisualizationStore;
+	typedef std::unordered_map<const EmberEntity*, std::pair<std::unique_ptr<SimpleEntityVisualization>, sigc::connection>> SimpleEntityVisualizationStore;
 
 	/**
 	 * @brief The world to which this manager belongs.
@@ -149,16 +149,16 @@ protected:
 	/**
 	 * @brief The handler, which will take care of the actual handling of visualizations.
 	 */
-	AuthoringHandler* mHandler;
+	std::unique_ptr<AuthoringHandler> mHandler;
 
 	/**
 	 * @brief Keeps track of all simple visualizations of entities.
 	 */
 	SimpleEntityVisualizationStore mSimpleVisualizations;
 
-	std::unordered_map<const EmberEntity*, std::pair<GeometryVisualization*, sigc::connection>> mGeometryVisualizations;
+	std::unordered_map<const EmberEntity*, std::pair<std::unique_ptr<GeometryVisualization>, sigc::connection>> mGeometryVisualizations;
 
-	EntityConsoleEditor* mEntityConsoleEditor;
+	std::unique_ptr<EntityConsoleEditor> mEntityConsoleEditor;
 
 	/**
 	 * Determines whether visualizations should be shown or not.

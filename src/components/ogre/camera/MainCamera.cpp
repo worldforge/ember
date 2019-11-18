@@ -94,8 +94,6 @@ MainCamera::~MainCamera() {
 		mScene.getSceneManager().destroyQuery(mCameraRaySceneQuery);
 	}
 	Ogre::Root::getSingleton().removeFrameListener(this);
-	delete mCameraSettings;
-	delete mConfigListenerContainer;
 	Ogre::CompositorManager::getSingleton().removeCompositorChain(mWindow.getViewport(0));
 }
 

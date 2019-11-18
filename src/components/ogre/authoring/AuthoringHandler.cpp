@@ -44,10 +44,7 @@ AuthoringMoveInstance::AuthoringMoveInstance(EmberEntity& entity, AuthoringVisua
 {
 }
 
-AuthoringMoveInstance::~AuthoringMoveInstance()
-{
-	delete mMover;
-}
+AuthoringMoveInstance::~AuthoringMoveInstance() = default;
 
 void AuthoringMoveInstance::cleanup()
 {
@@ -66,13 +63,7 @@ AuthoringHandler::AuthoringHandler(World& world) :
 	createVisualizationsForExistingEntities(world.getView());
 }
 
-AuthoringHandler::~AuthoringHandler()
-{
-	delete mMoveInstance;
-	for (auto& visualization : mVisualizations) {
-		delete visualization.second;
-	}
-}
+AuthoringHandler::~AuthoringHandler() = default;
 
 void AuthoringHandler::view_EntityInitialSight(Eris::Entity* entity)
 {
@@ -92,7 +83,7 @@ void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 		if (entity->getLocation()) {
 			auto parentVisIterator = mVisualizations.find(entity->getEmberLocation());
 			if (parentVisIterator != mVisualizations.end()) {
-				parentVis = parentVisIterator->second;
+				parentVis = parentVisIterator->second.get();
 				parentNode = parentVis->getSceneNode();
 			} else {
 				S_LOG_WARNING("Could not find parent visualization for entity.");
@@ -117,11 +108,10 @@ void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 	if (I != mVisualizations.end()) {
 		//see if there's an ongoing movement for the deleted entity, and if we therefore should stop that
 		if (mMoveInstance) {
-			if (I->second == &mMoveInstance->getVisualization()) {
+			if (I->second.get() == &mMoveInstance->getVisualization()) {
 				stopMovement();
 			}
 		}
-		delete I->second;
 		mVisualizations.erase(I);
 	} else {
 		S_LOG_WARNING("Got delete signal for entity which doesn't has an authoring visualization. This should not happen.");
@@ -167,18 +157,16 @@ void AuthoringHandler::visit(EmberEntity& entity)
 
 void AuthoringHandler::startMovement(EmberEntity& entity, EntityMover& mover)
 {
-	delete mMoveInstance;
-	mMoveInstance = nullptr;
+	mMoveInstance.reset();
 	auto I = mVisualizations.find(&entity);
 	if (I != mVisualizations.end()) {
-		mMoveInstance = new AuthoringMoveInstance(entity, *(I->second), mover, *this);
+		mMoveInstance = std::make_unique<AuthoringMoveInstance>(entity, *(I->second), mover, *this);
 	}
 }
 
 void AuthoringHandler::stopMovement()
 {
-	delete mMoveInstance;
-	mMoveInstance = nullptr;
+	mMoveInstance.reset();
 }
 
 }

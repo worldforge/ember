@@ -69,7 +69,6 @@ ThirdPersonCameraMount::~ThirdPersonCameraMount() {
 		mCameraRootNode->removeAndDestroyAllChildren();
 		mCameraRootNode->getCreator()->destroySceneNode(mCameraRootNode);
 	}
-	delete mConfigListenerContainer;
 }
 
 void ThirdPersonCameraMount::attachToNode(Ogre::Node* sceneNode) {
