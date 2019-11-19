@@ -17,42 +17,38 @@
  */
 
 #include "SerialTask.h"
+
+#include <utility>
 #include "TaskExecutionContext.h"
 
-namespace Ember
-{
+namespace Ember {
 
-namespace Tasks
-{
+namespace Tasks {
 
-SerialTask::SerialTask(const TaskStore& subTasks) :
-	mSubTasks(subTasks)
-{
+SerialTask::SerialTask(TaskStore subTasks)
+		: mSubTasks(std::move(subTasks)) {
 }
 
-SerialTask::SerialTask(ITask* firstTask, ITask* secondTask, ITask* thirdTask, ITask* fourthTask)
+SerialTask::SerialTask(std::unique_ptr<ITask> firstTask, std::unique_ptr<ITask> secondTask, std::unique_ptr<ITask> thirdTask, std::unique_ptr<ITask> fourthTask)
 {
 	if (firstTask) {
-		mSubTasks.push_back(firstTask);
+		mSubTasks.push_back(std::move(firstTask));
 	}
 	if (secondTask) {
-		mSubTasks.push_back(secondTask);
+		mSubTasks.push_back(std::move(secondTask));
 	}
 	if (thirdTask) {
-		mSubTasks.push_back(thirdTask);
+		mSubTasks.push_back(std::move(thirdTask));
 	}
 	if (fourthTask) {
-		mSubTasks.push_back(fourthTask);
+		mSubTasks.push_back(std::move(fourthTask));
 	}
 }
 
-SerialTask::~SerialTask()
-{
-}
+SerialTask::~SerialTask() = default;
 
-void SerialTask::executeTaskInBackgroundThread(TaskExecutionContext& context)
-{
-	context.executeTasks(mSubTasks);
+void SerialTask::executeTaskInBackgroundThread(TaskExecutionContext& context) {
+	context.executeTasks(std::move(mSubTasks));
 }
 
 }

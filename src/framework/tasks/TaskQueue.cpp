@@ -34,8 +34,7 @@ TaskQueue::TaskQueue(unsigned int numberOfExecutors, Eris::EventService& eventSe
 		mEventService(eventService), mActive(true), mIsQueuedOnMainThread(false) {
 	S_LOG_VERBOSE("Creating task queue with " << numberOfExecutors << " executors.");
 	for (unsigned int i = 0; i < numberOfExecutors; ++i) {
-		auto* executor = new TaskExecutor(*this);
-		mExecutors.push_back(executor);
+		mExecutors.push_back(std::make_unique<TaskExecutor>(*this));
 	}
 }
 
@@ -51,10 +50,10 @@ void TaskQueue::deactivate() {
 		}
 		mUnprocessedQueueCond.notify_all();
 		//Join all executors. Since the queue is shutting down they will all exit their main loop if there are no more tasks to process.
-		for (auto executor : mExecutors) {
+		for (auto& executor : mExecutors) {
 			executor->join();
-			delete executor;
 		}
+		mExecutors.clear();
 
 		//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
 		mEventService.processAllHandlers();
@@ -64,10 +63,10 @@ void TaskQueue::deactivate() {
 	}
 }
 
-bool TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener) {
+bool TaskQueue::enqueueTask(std::unique_ptr<ITask> task, ITaskExecutionListener* listener) {
 	std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
 	if (mActive) {
-		mUnprocessedTaskUnits.emplace(new TaskUnit(task, listener));
+		mUnprocessedTaskUnits.emplace(std::make_unique<TaskUnit>(std::move(task), listener));
 		mUnprocessedQueueCond.notify_one();
 		return true;
 	} else {

@@ -20,15 +20,17 @@
 #define TASKEXECUTIONCONTEXT_H_
 
 #include <vector>
+#include <memory>
 
-namespace Ember
-{
-namespace Tasks
-{
+namespace Ember {
+namespace Tasks {
 
 class TaskExecutor;
+
 struct ITask;
+
 class TaskUnit;
+
 struct ITaskExecutionListener;
 
 /**
@@ -37,11 +39,11 @@ struct ITaskExecutionListener;
  *
  * This envelopes the context in where a task is executed, and provides information about it.
  */
-class TaskExecutionContext
-{
+class TaskExecutionContext {
 public:
 
 	TaskExecutionContext(TaskExecutor& executor, TaskUnit& taskUnit);
+
 	virtual ~TaskExecutionContext();
 
 	/**
@@ -57,7 +59,7 @@ public:
 	 * @param task A task which will be executed.
 	 * @param listener An optional listener. This won't be owned by the unit.
 	 */
-	void executeTask(ITask* task, ITaskExecutionListener* listener = 0);
+	void executeTask(std::unique_ptr<ITask> task, ITaskExecutionListener* listener = nullptr);
 
 	/**
 	 * @brief Executes a series of subtasks.
@@ -65,7 +67,7 @@ public:
 	 * @note This should only be called from a background thread, i.e. while the task is being executed. Under normal circumstances this shouldn't be a problem however as an instance of this class is only available when a task is being executed in a background thread.
 	 * @param tasks A list of tasks which will be executed.
 	 */
-	void executeTasks(std::vector<ITask*> tasks);
+	void executeTasks(std::vector<std::unique_ptr<ITask>> tasks);
 
 
 private:

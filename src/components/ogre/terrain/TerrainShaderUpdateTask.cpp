@@ -25,29 +25,42 @@
 
 #include <wfmath/intersect.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection) :
-	mGeometry(geometry), mAreas(areas), mSignal(signal), mSignalMaterialRecompiled(signalMaterialRecompiled), mLightDirection(lightDirection)
-{
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
+												 const TerrainShader* shader,
+												 const AreaStore& areas,
+												 sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
+												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
+												 const WFMath::Vector<3>& lightDirection) :
+		mGeometry(std::move(geometry)),
+		mAreas(areas),
+		mSignal(signal),
+		mSignalMaterialRecompiled(signalMaterialRecompiled),
+		mLightDirection(lightDirection) {
 	mShaders.push_back(shader);
 }
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection) :
-	mGeometry(geometry), mShaders(shaders), mAreas(areas), mSignal(signal), mSignalMaterialRecompiled(signalMaterialRecompiled), mLightDirection(lightDirection)
-{
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
+												 const std::vector<const TerrainShader*>& shaders,
+												 const AreaStore& areas,
+												 sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
+												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
+												 const WFMath::Vector<3>& lightDirection) :
+		mGeometry(std::move(geometry)),
+		mShaders(shaders),
+		mAreas(areas),
+		mSignal(signal),
+		mSignalMaterialRecompiled(signalMaterialRecompiled),
+		mLightDirection(lightDirection) {
 }
 
 TerrainShaderUpdateTask::~TerrainShaderUpdateTask() = default;
 
-void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	GeometryPtrVector updatedPages;
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
 		TerrainPageGeometryPtr geometry = *J;
@@ -68,13 +81,12 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 		}
 	}
 
-	context.executeTask(new TerrainMaterialCompilationTask(updatedPages, mSignalMaterialRecompiled, mLightDirection));
+	context.executeTask(std::make_unique<TerrainMaterialCompilationTask>(updatedPages, mSignalMaterialRecompiled, mLightDirection));
 	//Release Segment references as soon as we can
 	mGeometry.clear();
 }
 
-bool TerrainShaderUpdateTask::executeTaskInMainThread()
-{
+bool TerrainShaderUpdateTask::executeTaskInMainThread() {
 	for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
 		mSignal(*I, mAreas);
 	}

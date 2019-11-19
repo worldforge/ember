@@ -21,41 +21,37 @@
 
 #include "TemplateNamedTask.h"
 #include <vector>
+#include <memory>
 
-namespace Ember
-{
+namespace Ember {
 
-namespace Tasks
-{
+namespace Tasks {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A task which wraps two or more other tasks, which will be executed in order.
  * This is useful if you want to make sure that a certain task is executed after another task.
  */
-class SerialTask : public TemplateNamedTask<SerialTask>
-{
+class SerialTask : public TemplateNamedTask<SerialTask> {
 public:
-	typedef std::vector<ITask*> TaskStore;
+	typedef std::vector<std::unique_ptr<ITask>> TaskStore;
 
 	/**
 	 * @brief Ctor.
 	 * @param subTasks The tasks to execute, in order.
 	 */
-	SerialTask(const TaskStore& subTasks);
+	explicit SerialTask(TaskStore subTasks);
 
 	/**
 	 * @brief Ctor.
 	 * This is a convenience constructor which allows you to specify the tasks directly without having to first create a vector instance.
-	 * @param firstTask The first task to execute.
-	 * @param secondTask The second task to execute.
-	 * @param thirdTask The third task to execute.
-	 * @param firstTask The fourth task to execute.
+	 * @param tasks A list of tasks.
 	 */
-	SerialTask(ITask* firstTask, ITask* secondTask, ITask* thirdTask = 0, ITask* fourthTask = 0);
-	virtual ~SerialTask();
+	SerialTask(std::unique_ptr<ITask> firstTask, std::unique_ptr<ITask> secondTask, std::unique_ptr<ITask> thirdTask, std::unique_ptr<ITask> fourthTask);
 
-	virtual void executeTaskInBackgroundThread(TaskExecutionContext& context);
+	~SerialTask() override;
+
+	void executeTaskInBackgroundThread(TaskExecutionContext& context) override;
 
 private:
 	TaskStore mSubTasks;

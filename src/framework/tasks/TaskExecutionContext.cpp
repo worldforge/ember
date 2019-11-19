@@ -21,36 +21,28 @@
 #include "TaskUnit.h"
 #include "ITask.h"
 
-namespace Ember
-{
-namespace Tasks
-{
+namespace Ember {
+namespace Tasks {
 TaskExecutionContext::TaskExecutionContext(TaskExecutor& executor, TaskUnit& taskUnit) :
-	mExecutor(executor), mTaskUnit(taskUnit)
-{
-
+		mExecutor(executor),
+		mTaskUnit(taskUnit) {
 }
 
-TaskExecutionContext::~TaskExecutionContext()
-{
-}
+TaskExecutionContext::~TaskExecutionContext() = default;
 
-const TaskExecutor& TaskExecutionContext::getExecutor() const
-{
+const TaskExecutor& TaskExecutionContext::getExecutor() const {
 	return mExecutor;
 }
 
-void TaskExecutionContext::executeTask(ITask* task, ITaskExecutionListener* listener)
-{
-	TaskUnit* taskUnit = mTaskUnit.addSubtask(task, listener);
+void TaskExecutionContext::executeTask(std::unique_ptr<ITask> task, ITaskExecutionListener* listener) {
+	TaskUnit* taskUnit = mTaskUnit.addSubtask(std::move(task), listener);
 	TaskExecutionContext subtaskContext(mExecutor, *taskUnit);
 	taskUnit->executeInBackgroundThread(subtaskContext);
 }
 
-void TaskExecutionContext::executeTasks(std::vector<ITask*> tasks)
-{
-	for (std::vector<ITask*>::const_iterator I = tasks.begin(); I != tasks.end(); ++I) {
-		executeTask(*I);
+void TaskExecutionContext::executeTasks(std::vector<std::unique_ptr<ITask>> tasks) {
+	for (auto& task : tasks) {
+		executeTask(std::move(task));
 	}
 }
 

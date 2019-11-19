@@ -63,7 +63,12 @@ public:
 	 * @param signalMaterialRecompiled A signal which will be passed on and emitted once a material for a terrain page has been recompiled.
 	 * @param lightDirection The main light direction.
 	 */
-	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection);
+	TerrainShaderUpdateTask(GeometryPtrVector geometry,
+			const TerrainShader* shader,
+			const AreaStore& areas,
+			sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
+			sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
+			const WFMath::Vector<3>& lightDirection);
 
 	/**
 	 * @brief Ctor.
@@ -74,7 +79,12 @@ public:
 	 * @param signalMaterialRecompiled A signal which will be passed on and emitted once a material for a terrain page has been recompiled.
 	 * @param lightDirection The main light direction.
 	 */
-	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal, sigc::signal<void, TerrainPage*>& signalMaterialRecompiled, const WFMath::Vector<3>& lightDirection);
+	TerrainShaderUpdateTask(GeometryPtrVector geometry,
+			const std::vector<const TerrainShader*>& shaders,
+			const AreaStore& areas,
+			sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
+			sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
+			const WFMath::Vector<3>& lightDirection);
 
 	~TerrainShaderUpdateTask() override;
 

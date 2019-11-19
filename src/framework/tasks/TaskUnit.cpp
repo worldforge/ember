@@ -33,21 +33,17 @@ namespace Ember {
 
 namespace Tasks {
 
-TaskUnit::TaskUnit(ITask* task, ITaskExecutionListener* listener) :
-		mTask(task), mListener(listener) {
+TaskUnit::TaskUnit(std::unique_ptr<ITask> task, ITaskExecutionListener* listener) :
+		mTask(std::move(task)),
+		mListener(listener) {
 
 }
 
-TaskUnit::~TaskUnit() {
-	for (SubtasksStore::iterator I = mSubtasks.begin(); I != mSubtasks.end(); ++I) {
-		delete *I;
-	}
-	delete mTask;
-}
+TaskUnit::~TaskUnit() = default;
 
-TaskUnit* TaskUnit::addSubtask(ITask* task, ITaskExecutionListener* listener) {
-	TaskUnit* taskUnit = new TaskUnit(task, listener);
-	mSubtasks.push_back(taskUnit);
+TaskUnit* TaskUnit::addSubtask(std::unique_ptr<ITask> task, ITaskExecutionListener* listener) {
+	auto* taskUnit = new TaskUnit(std::move(task), listener);
+	mSubtasks.emplace_back(std::unique_ptr<TaskUnit>(taskUnit));
 	return taskUnit;
 }
 
@@ -88,7 +84,7 @@ bool TaskUnit::executeInMainThread() {
 #endif
 	//First execute all subtasks
 	if (!mSubtasks.empty()) {
-		TaskUnit* subTask = mSubtasks.front();
+		auto& subTask = mSubtasks.front();
 		bool result = subTask->executeInMainThread();
 		if (result) {
 			mSubtasks.erase(mSubtasks.begin());

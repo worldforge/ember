@@ -153,14 +153,14 @@ public:
 	 *
 	 * @return
 	 */
-	const TerrainPosition getMax() const;
+	TerrainPosition getMax() const;
 
 	/**
 	 * @brief Gets the min boundaries of the terrain.
 	 *
 	 * @return
 	 */
-	const TerrainPosition getMin() const;
+	TerrainPosition getMin() const;
 
 	/**
 	 * @brief Gets the size of one terrain segment.

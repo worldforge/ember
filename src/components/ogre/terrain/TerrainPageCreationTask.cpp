@@ -27,13 +27,10 @@
 
 #include "framework/tasks/TaskExecutionContext.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler,
 												 TerrainPage* page,
@@ -41,19 +38,17 @@ TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler,
 												 HeightMapBufferProvider& heightMapBufferProvider,
 												 HeightMap& heightMap,
 												 const WFMath::Vector<3>& mainLightDirection) :
-	mTerrainHandler(handler),
-	mPage(page),
-	mBridge(bridge),
-	mMainLightDirection(mainLightDirection),
-	mHeightMapBufferProvider(heightMapBufferProvider),
-	mHeightMap(heightMap)
-{
+		mTerrainHandler(handler),
+		mPage(page),
+		mBridge(bridge),
+		mMainLightDirection(mainLightDirection),
+		mHeightMapBufferProvider(heightMapBufferProvider),
+		mHeightMap(heightMap) {
 
 }
 
 
-void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
 	const std::list<TerrainShader*>& baseShaders = mTerrainHandler.getBaseShaders();
@@ -67,12 +62,11 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 	std::vector<WFMath::AxisBox<2>> areas;
 	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
-	context.executeTask(new GeometryUpdateTask(geometry, areas, mTerrainHandler, mTerrainHandler.getAllShaders(), mHeightMapBufferProvider, mHeightMap, mMainLightDirection));
+	context.executeTask(std::make_unique<GeometryUpdateTask>(geometry, areas, mTerrainHandler, mTerrainHandler.getAllShaders(), mHeightMapBufferProvider, mHeightMap, mMainLightDirection));
 
 }
 
-bool TerrainPageCreationTask::executeTaskInMainThread()
-{
+bool TerrainPageCreationTask::executeTaskInMainThread() {
 	return true;
 }
 

@@ -24,23 +24,19 @@
 #include <typeinfo>
 #include <string>
 
-namespace Ember
-{
+namespace Ember {
 
-namespace Tasks
-{
+namespace Tasks {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief An utility subclass of ITask which will provide automatic templated typeinfo discovery for the ITask::getName method.
  */
-template <typename T>
-class TemplateNamedTask : public ITask
-{
+template<typename T>
+class TemplateNamedTask : public ITask {
 public:
 
-	virtual std::string getName() const
-	{
+	std::string getName() const override {
 		return typeid(T).name();
 	}
 

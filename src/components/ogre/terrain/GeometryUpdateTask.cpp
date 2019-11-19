@@ -70,9 +70,9 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
 
-		context.executeTask(new TerrainShaderUpdateTask(geometries, shaderList, mAreas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mLightDirection));
+		context.executeTask(std::make_unique<TerrainShaderUpdateTask>(geometries, shaderList, mAreas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mLightDirection));
 	}
-	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
+	context.executeTask(std::make_unique<HeightMapUpdateTask>(mHeightMapBufferProvider, mHeightMap, segments));
 
 	for (BridgeBoundGeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
 		const TerrainPageGeometryPtr& geometry = I->first;

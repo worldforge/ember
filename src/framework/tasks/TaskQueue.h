@@ -78,7 +78,7 @@ public:
 	 * @param listener An optional listener. Note that ownership won't be transferred.
 	 * @return False if the task couldn't be enqueued, probably because the task queue is inactive.
 	 */
-	bool enqueueTask(ITask* task, ITaskExecutionListener* listener = 0);
+	bool enqueueTask(std::unique_ptr<ITask> task, ITaskExecutionListener* listener = 0);
 
 	/**
 	 * @brief Deactivates the queue.
@@ -106,7 +106,7 @@ protected:
 	/**
 	 * @brief A store of executors.
 	 */
-	typedef std::vector<TaskExecutor*> TaskExecutorStore;
+	typedef std::vector<std::unique_ptr<TaskExecutor>> TaskExecutorStore;
 
 	Eris::EventService& mEventService;
 

@@ -38,6 +38,12 @@ class TaskExecutor
 {
 	friend class TaskQueue;
 public:
+	/**
+	 * @brief Ctor.
+	 * During construction a new thread will be created and executed.
+	 * @param taskQueue The queue to which this executor belongs.
+	 */
+	explicit TaskExecutor(TaskQueue& taskQueue);
 
 	/**
 	 * @brief Dtor.
@@ -72,12 +78,7 @@ protected:
 	 */
 	std::thread mThread;
 
-	/**
-	 * @brief Ctor.
-	 * During construction a new thread will be created and executed.
-	 * @param taskQueue The queue to which this executor belongs.
-	 */
-	explicit TaskExecutor(TaskQueue& taskQueue);
+
 
 	/**
 	 * @brief Main loop method.

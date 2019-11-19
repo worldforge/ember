@@ -20,6 +20,7 @@
 #define TASKUNIT_H_
 
 #include <vector>
+#include <memory>
 
 namespace Ember
 {
@@ -46,14 +47,14 @@ public:
 	/**
 	 * @brief A store of task units.
 	 */
-	typedef std::vector<TaskUnit*> SubtasksStore;
+	typedef std::vector<std::unique_ptr<TaskUnit>> SubtasksStore;
 
 	/**
 	 * @brief Ctor.
 	 * @param task The main task. This will be owned by the unit.
 	 * @param listener An optional listener. This won't be owned by the unit.
 	 */
-	TaskUnit(ITask* task, ITaskExecutionListener* listener = 0);
+	explicit TaskUnit(std::unique_ptr<ITask>, ITaskExecutionListener* listener = nullptr);
 
 	/**
 	 * @brief Dtor.
@@ -69,7 +70,7 @@ public:
 	 * @param listener An optional listener. This won't be owned by the unit.
 	 * @returns The new task unit instance which envelopes the subtask.
 	 */
-	TaskUnit* addSubtask(ITask* task, ITaskExecutionListener* listener = 0);
+	TaskUnit* addSubtask(std::unique_ptr<ITask>, ITaskExecutionListener* listener = nullptr);
 
 	/**
 	 * @brief Gets all subtasks.
@@ -94,7 +95,7 @@ private:
 	/**
 	 * @brief The main task.
 	 */
-	ITask* mTask;
+	std::unique_ptr<ITask> mTask;
 
 	/**
 	 * @brief An optional task listener.

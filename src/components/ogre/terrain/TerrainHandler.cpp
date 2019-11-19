@@ -69,17 +69,13 @@
 
 #include <utility>
 
-namespace Ember
-{
+namespace Ember {
 
-namespace OgreView
-{
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-class BasePointRetrieveTask: public Tasks::TemplateNamedTask<BasePointRetrieveTask>
-{
+class BasePointRetrieveTask : public Tasks::TemplateNamedTask<BasePointRetrieveTask> {
 
 private:
 	Mercator::Terrain& mTerrain;
@@ -88,8 +84,7 @@ private:
 
 public:
 	BasePointRetrieveTask(Mercator::Terrain& terrain, sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback) :
-			mTerrain(terrain), mAsyncCallback(asyncCallback)
-	{
+			mTerrain(terrain), mAsyncCallback(asyncCallback) {
 	}
 
 	~BasePointRetrieveTask() override = default;
@@ -105,8 +100,7 @@ public:
 
 };
 
-class TerrainPageReloadTask: public Tasks::TemplateNamedTask<TerrainPageReloadTask>
-{
+class TerrainPageReloadTask : public Tasks::TemplateNamedTask<TerrainPageReloadTask> {
 private:
 	TerrainHandler& mHandler;
 	ITerrainPageBridgePtr mBridge;
@@ -123,8 +117,7 @@ public:
 			mGeometry(std::move(geometry)),
 			mShaders(shaders),
 			mArea(area),
-			mMainLightDirection(mainLightDirection)
-	{
+			mMainLightDirection(mainLightDirection) {
 	}
 
 	~TerrainPageReloadTask() override = default;
@@ -139,7 +132,7 @@ public:
 		areas.push_back(mArea);
 		GeometryPtrVector geometries;
 		geometries.push_back(mGeometry);
-		context.executeTask(new TerrainShaderUpdateTask(geometries, shaders, areas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mMainLightDirection));
+		context.executeTask(std::make_unique<TerrainShaderUpdateTask>(geometries, shaders, areas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mMainLightDirection));
 		if (mBridge) {
 			mBridge->updateTerrain(*mGeometry);
 		}
@@ -170,8 +163,7 @@ TerrainHandler::TerrainHandler(unsigned int pageIndexSize,
 		//The mercator buffers are one size larger than the resolution
 		mHeightMapBufferProvider(new HeightMapBufferProvider(mTerrain->getResolution() + 1)),
 		mSegmentManager(new SegmentManager(*mTerrain, 64)),
-		mTerrainEntity(nullptr)
-{
+		mTerrainEntity(nullptr) {
 	mSegmentManager->setEndlessWorldEnabled(true);
 	mSegmentManager->setDefaultHeight(getDefaultHeight());
 	//TODO: get these values from the server if possible
@@ -184,8 +176,7 @@ TerrainHandler::TerrainHandler(unsigned int pageIndexSize,
 
 }
 
-TerrainHandler::~TerrainHandler()
-{
+TerrainHandler::~TerrainHandler() {
 	//Deleting the task queue will purge it, making sure that all jobs are processed first.
 	delete mTaskQueue;
 
@@ -204,13 +195,11 @@ TerrainHandler::~TerrainHandler()
 	delete mTerrain;
 }
 
-void TerrainHandler::shutdown()
-{
+void TerrainHandler::shutdown() {
 	mTaskQueue->deactivate();
 }
 
-void TerrainHandler::setPageSize(unsigned int pageSize)
-{
+void TerrainHandler::setPageSize(unsigned int pageSize) {
 	// Wait for all current tasks to finish
 //	mTaskQueue->pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
 	// Delete all page-related data
@@ -225,15 +214,13 @@ void TerrainHandler::setPageSize(unsigned int pageSize)
 	mPageIndexSize = pageSize;
 }
 
-void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback)
-{
-	mTaskQueue->enqueueTask(new BasePointRetrieveTask(*mTerrain, asyncCallback));
+void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback) {
+	mTaskQueue->enqueueTask(std::make_unique<BasePointRetrieveTask>(*mTerrain, asyncCallback));
 }
 
-TerrainShader* TerrainHandler::createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader)
-{
+TerrainShader* TerrainHandler::createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader) {
 	size_t index = mShaderMap.size();
-	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->getShaderName() <<" with index " << index);
+	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->getShaderName() << " with index " << index);
 	TerrainShader* shader = new TerrainShader(*mTerrain, index, *layerDef, mercatorShader);
 
 	mBaseShaders.push_back(shader);
@@ -243,24 +230,21 @@ TerrainShader* TerrainHandler::createShader(const TerrainLayerDefinition* layerD
 	return shader;
 }
 
-void TerrainHandler::markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea)
-{
+void TerrainHandler::markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea) {
 	if (shader) {
 		ShaderUpdateRequest& updateRequest = mShadersToUpdate[shader];
 		updateRequest.Areas.push_back(affectedArea);
-		mEventService.runOnMainThread([&](){
+		mEventService.runOnMainThread([&]() {
 			updateShaders();
 		});
 	}
 }
 
-const ShaderStore& TerrainHandler::getAllShaders() const
-{
+const ShaderStore& TerrainHandler::getAllShaders() const {
 	return mShaderMap;
 }
 
-void TerrainHandler::addPage(TerrainPage* page)
-{
+void TerrainHandler::addPage(TerrainPage* page) {
 	const TerrainPosition& pos = page->getWFPosition();
 
 	auto oldPage = mTerrainPages[pos.x()][pos.y()];
@@ -276,8 +260,7 @@ void TerrainHandler::addPage(TerrainPage* page)
 	pagesToUpdate.insert(page);
 }
 
-void TerrainHandler::destroyPage(TerrainPage* page)
-{
+void TerrainHandler::destroyPage(TerrainPage* page) {
 	const TerrainPosition& pos = page->getWFPosition();
 	auto pageIter = std::find(mPages.begin(), mPages.end(), page);
 	if (pageIter != mPages.end()) {
@@ -288,25 +271,22 @@ void TerrainHandler::destroyPage(TerrainPage* page)
 	if (!mTaskQueue->isActive()) {
 		delete page;
 	} else {
-		if (!mTaskQueue->enqueueTask(new TerrainPageDeletionTask(page))) {
+		if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageDeletionTask>(page))) {
 			//If the task queue is inactive there's no risk of deleting it.
 			delete page;
 		}
 	}
 }
 
-int TerrainHandler::getPageIndexSize() const
-{
+int TerrainHandler::getPageIndexSize() const {
 	return mPageIndexSize;
 }
 
-int TerrainHandler::getPageMetersSize() const
-{
+int TerrainHandler::getPageMetersSize() const {
 	return getPageIndexSize() - 1;
 }
 
-void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
-{
+void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) {
 
 	TerrainPosition wfPos(Convert::toWF(query.mCenter));
 
@@ -334,18 +314,16 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 		if (mLightning) {
 			defaultShadowColour = mLightning->getAmbientLightColour();
 		}
-		mTaskQueue->enqueueTask(new PlantQueryTask(segmentRef, populator, query, defaultShadowColour, std::move(asyncCallback)));
+		mTaskQueue->enqueueTask(std::make_unique<PlantQueryTask>(segmentRef, populator, query, defaultShadowColour, std::move(asyncCallback)));
 
 	}
 }
 
-ICompilerTechniqueProvider& TerrainHandler::getCompilerTechniqueProvider()
-{
+ICompilerTechniqueProvider& TerrainHandler::getCompilerTechniqueProvider() {
 	return mCompilerTechniqueProvider;
 }
 
-void TerrainHandler::removeBridge(const TerrainIndex& index)
-{
+void TerrainHandler::removeBridge(const TerrainIndex& index) {
 	auto I = mPageBridges.find(index);
 	if (I != mPageBridges.end()) {
 		auto page = I->second->getTerrainPage();
@@ -356,27 +334,31 @@ void TerrainHandler::removeBridge(const TerrainIndex& index)
 	}
 }
 
-void TerrainHandler::updateShaders()
-{
+void TerrainHandler::updateShaders() {
 	//update shaders that needs updating
 	if (!mShadersToUpdate.empty()) {
 		GeometryPtrVector geometry;
-		for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-			geometry.emplace_back(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight()));
+		for (auto& page : mPages) {
+			geometry.emplace_back(std::make_shared<TerrainPageGeometry>(*page, *mSegmentManager, getDefaultHeight()));
 		}
 		//use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
-		for (auto I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
-			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, EventLayerUpdated, EventTerrainMaterialRecompiled, mLightning->getMainLightDirection()), 0);
+		for (auto& entry : mShadersToUpdate) {
+			mTaskQueue->enqueueTask(std::make_unique<TerrainShaderUpdateTask>(geometry,
+																			  entry.first,
+																			  entry.second.Areas,
+																			  EventLayerUpdated,
+																			  EventTerrainMaterialRecompiled,
+																			  mLightning->getMainLightDirection())
+			);
 		}
 		mShadersToUpdate.clear();
 	}
 }
 
-void TerrainHandler::updateAllPages()
-{
+void TerrainHandler::updateAllPages() {
 	GeometryPtrVector geometry;
 	for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		geometry.emplace_back(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight()));
+		geometry.emplace_back(std::make_shared<TerrainPageGeometry>(**I, *mSegmentManager, getDefaultHeight()));
 	}
 
 	//Update all pages
@@ -385,17 +367,15 @@ void TerrainHandler::updateAllPages()
 
 	//Update all shaders on all pages
 	for (ShaderStore::const_iterator I = mShaderMap.begin(); I != mShaderMap.end(); ++I) {
-		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, areas, EventLayerUpdated, EventTerrainMaterialRecompiled, mLightning->getMainLightDirection()), 0);
+		mTaskQueue->enqueueTask(std::make_unique<TerrainShaderUpdateTask>(geometry, I->second, areas, EventLayerUpdated, EventTerrainMaterialRecompiled, mLightning->getMainLightDirection()), 0);
 	}
 }
 
-void TerrainHandler::terrainEnabled(EmberEntity& entity)
-{
+void TerrainHandler::terrainEnabled(EmberEntity& entity) {
 	mTerrainEntity = &entity;
 }
 
-void TerrainHandler::terrainDisabled()
-{
+void TerrainHandler::terrainDisabled() {
 	mTerrainEntity = nullptr;
 }
 
@@ -403,13 +383,11 @@ EmberEntity* TerrainHandler::getTerrainHoldingEntity() {
 	return mTerrainEntity;
 }
 
-const TerrainInfo& TerrainHandler::getTerrainInfo() const
-{
+const TerrainInfo& TerrainHandler::getTerrainInfo() const {
 	return *mTerrainInfo;
 }
 
-TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
-{
+TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const {
 
 	int xRemainder = static_cast<int>(getMin().x()) % (getPageMetersSize());
 	int yRemainder = static_cast<int>(getMin().y()) % (getPageMetersSize());
@@ -420,8 +398,7 @@ TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& wor
 	return getTerrainPageAtIndex(TerrainIndex(xIndex, yIndex));
 }
 
-void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge)
-{
+void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge) {
 	std::shared_ptr<ITerrainPageBridge> bridgePtr(bridge);
 	mEventService.runOnMainThread([this, index, bridgePtr]() {
 		//_fpreset();
@@ -439,13 +416,13 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 
 			mTerrainPages[x][y] = page;
 			mPages.push_back(page);
-			S_LOG_VERBOSE("Adding terrain page to TerrainHandler: " << "[" << index.first << "|" << index.second <<"]");
+			S_LOG_VERBOSE("Adding terrain page to TerrainHandler: " << "[" << index.first << "|" << index.second << "]");
 
 			WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, -1, 0);
 			if (mLightning) {
 				sunDirection = mLightning->getMainLightDirection();
 			}
-			if (!mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, page, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
+			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageCreationTask>(*this, page, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
 				//We need to alert the bridge since it's holding up a thread waiting for this call.
 				bridgePtr->terrainPageReady();
 			}
@@ -453,7 +430,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 			TerrainPage* page = mTerrainPages[x][y];
 			TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*page, getSegmentManager(), getDefaultHeight()));
 
-			if (!mTaskQueue->enqueueTask(new TerrainPageReloadTask(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
+			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
 				//We need to alert the bridge since it's holding up a thread waiting for this call.
 				bridgePtr->terrainPageReady();
 			}
@@ -462,8 +439,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 
 }
 
-TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) const
-{
+TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) const {
 
 	auto I = mTerrainPages.find(index.first);
 	if (I != mTerrainPages.end()) {
@@ -475,26 +451,22 @@ TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) co
 	return nullptr;
 }
 
-bool TerrainHandler::getHeight(const TerrainPosition& point, float& height) const
-{
+bool TerrainHandler::getHeight(const TerrainPosition& point, float& height) const {
 	WFMath::Vector<3> vector;
 
 	return mHeightMap->getHeightAndNormal(point.x(), point.y(), height, vector);
 }
 
-void TerrainHandler::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
-{
+void TerrainHandler::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const {
 	mHeightMap->blitHeights(xMin, xMax, yMin, yMax, heights);
 }
 
 
-void TerrainHandler::setLightning(ILightning* lightning)
-{
+void TerrainHandler::setLightning(ILightning* lightning) {
 	mLightning = lightning;
 }
 
-void TerrainHandler::updateShadows()
-{
+void TerrainHandler::updateShadows() {
 	if (mLightning) {
 		//Only update if there's a shadow texture set.
 		if (!mPages.empty()) {
@@ -508,7 +480,7 @@ void TerrainHandler::updateShadows()
 					geometry.emplace_back(new TerrainPageGeometry(*aPage, *mSegmentManager, getDefaultHeight()));
 				}
 
-				mTaskQueue->enqueueTask(new ShadowUpdateTask(geometry, sunDirection));
+				mTaskQueue->enqueueTask(std::make_unique<ShadowUpdateTask>(geometry, sunDirection));
 			}
 		}
 	} else {
@@ -516,19 +488,16 @@ void TerrainHandler::updateShadows()
 	}
 }
 
-float TerrainHandler::getDefaultHeight() const
-{
+float TerrainHandler::getDefaultHeight() const {
 	return -12;
 }
 
-bool TerrainHandler::updateTerrain(const TerrainDefPointStore& terrainPoints)
-{
-	mTaskQueue->enqueueTask(new TerrainUpdateTask(*mTerrain, terrainPoints, *this, *mTerrainInfo, mHasTerrainInfo, *mSegmentManager));
+bool TerrainHandler::updateTerrain(const TerrainDefPointStore& terrainPoints) {
+	mTaskQueue->enqueueTask(std::make_unique<TerrainUpdateTask>(*mTerrain, terrainPoints, *this, *mTerrainInfo, mHasTerrainInfo, *mSegmentManager));
 	return true;
 }
 
-void TerrainHandler::reloadTerrain(const std::vector<TerrainPosition>& positions)
-{
+void TerrainHandler::reloadTerrain(const std::vector<TerrainPosition>& positions) {
 	std::vector<WFMath::AxisBox<2>> areas;
 	for (const auto& worldPosition : positions) {
 		//Make an area which will cover the area affected by the basepoint
@@ -538,8 +507,7 @@ void TerrainHandler::reloadTerrain(const std::vector<TerrainPosition>& positions
 	reloadTerrain(areas);
 }
 
-void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
-{
+void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas) {
 	if (mTaskQueue->isActive()) {
 		std::set<TerrainPage*> pagesToUpdate;
 		for (const auto& area : areas) {
@@ -561,39 +529,33 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 				bridgePtr = J->second;
 			}
 			geometryToUpdate.emplace_back(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr);
-			mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap, mLightning->getMainLightDirection()));
+			mTaskQueue->enqueueTask(std::make_unique<GeometryUpdateTask>(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap, mLightning->getMainLightDirection()));
 		}
 	}
 }
 
-const TerrainPosition TerrainHandler::getMax() const
-{
+TerrainPosition TerrainHandler::getMax() const {
 	return mTerrainInfo->getWorldSizeInIndices().highCorner();
 }
 
-const TerrainPosition TerrainHandler::getMin() const
-{
+TerrainPosition TerrainHandler::getMin() const {
 	return mTerrainInfo->getWorldSizeInIndices().lowCorner();
 }
 
-SegmentManager& TerrainHandler::getSegmentManager()
-{
+SegmentManager& TerrainHandler::getSegmentManager() {
 	return *mSegmentManager;
 }
 
-void TerrainHandler::updateMod(TerrainMod* terrainMod)
-{
-	mTaskQueue->enqueueTask(new TerrainModUpdateTask(*mTerrain, *terrainMod, *this));
+void TerrainHandler::updateMod(TerrainMod* terrainMod) {
+	mTaskQueue->enqueueTask(std::make_unique<TerrainModUpdateTask>(*mTerrain, *terrainMod, *this));
 }
 
-const std::unordered_map<std::string, Mercator::Area*>& TerrainHandler::getAreas() const
-{
+const std::unordered_map<std::string, Mercator::Area*>& TerrainHandler::getAreas() const {
 	return mAreas;
 };
 
 
-void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainArea)
-{
+void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainArea) {
 	auto I = mAreas.find(id);
 	if (I == mAreas.end()) {
 		if (terrainArea && terrainArea->getLayer() != 0 && terrainArea->shape().isValid()) {
@@ -601,19 +563,19 @@ void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainAr
 			Mercator::Area* newArea = new Mercator::Area(*terrainArea);
 			mAreas.insert(AreaMap::value_type(id, newArea));
 
-			mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
+			mTaskQueue->enqueueTask(std::make_unique<TerrainAreaAddTask>(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
 		}
 		//If there's no existing area, and no valid supplied one, just don't do anything.
 	} else {
 		Mercator::Area* existingArea = I->second;
 		if (!terrainArea || terrainArea->getLayer() == 0 || !terrainArea->shape().isValid()) {
 			//We should remove the area.
-			const TerrainShader* shader = 0;
+			const TerrainShader* shader = nullptr;
 			if (mAreaShaders.count(existingArea->getLayer())) {
 				shader = mAreaShaders[existingArea->getLayer()];
 			}
 			mAreas.erase(I);
-			mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
+			mTaskQueue->enqueueTask(std::make_unique<TerrainAreaRemoveTask>(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
 		} else {
 			//Check if we need to swap the area (if the layer has changed) or if we just can update the shape.
 			if (terrainArea->getLayer() != existingArea->getLayer()) {
@@ -623,24 +585,23 @@ void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainAr
 				}
 
 				mAreas.erase(I);
-				mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
+				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaRemoveTask>(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
 
-				Mercator::Area* newArea = new Mercator::Area(*terrainArea);
+				auto* newArea = new Mercator::Area(*terrainArea);
 				mAreas.insert(AreaMap::value_type(id, newArea));
-				mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
+				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaAddTask>(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
 			} else {
-				const TerrainShader* shader = 0;
+				const TerrainShader* shader = nullptr;
 				if (mAreaShaders.count(terrainArea->getLayer())) {
 					shader = mAreaShaders[terrainArea->getLayer()];
 				}
-				mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, existingArea, *terrainArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
+				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaUpdateTask>(*mTerrain, existingArea, *terrainArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
 			}
 		}
 	}
 }
 
-void TerrainHandler::frameProcessed(const TimeFrame&, unsigned int)
-{
+void TerrainHandler::frameProcessed(const TimeFrame&, unsigned int) {
 	if (mLightning) {
 		//Update shadows every hour
 		if (!mLastLightingUpdateAngle.isValid() || WFMath::Angle(mLightning->getMainLightDirection(), mLastLightingUpdateAngle) > (WFMath::numeric_constants<float>::pi() / 12)) {
