@@ -57,7 +57,7 @@ std::map<std::string, SubModelPart>& SubModel::getSubModelPartMap() {
 }
 
 SubModelPart& SubModel::createSubModelPart(const std::string& name) {
-	auto result = mSubModelParts.insert(std::make_pair(name, SubModelPart(name, *this)));
+	auto result = mSubModelParts.emplace(name, SubModelPart(name, *this));
 	return result.first->second;
 
 }

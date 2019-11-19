@@ -34,7 +34,7 @@ namespace Model {
 
 struct BoneGroupRef
 {
-	BoneGroupDefinition* boneGroupDefinition;
+	BoneGroupDefinition boneGroupDefinition;
 	Ogre::Real weight;
 };
 

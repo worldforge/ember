@@ -5,7 +5,7 @@ function ModelEdit:selectMaterial(subentity)
 		--there is no subentity (for example if the part doesn't have any defined), just clear the selection
 		self.materials:clearAllSelections()
 	else
-		local materialName = subentity:getMaterialName()
+		local materialName = subentity.materialName
 		local item
 --		if materialName == "" then
 			--no material specified, get the default for this subentity
@@ -26,14 +26,14 @@ end
 
 function ModelEdit:updateMaterial(subentity, material)
 	if subentity then
-		subentity:setMaterialName(material)
+		subentity.materialName = material
 		self:reloadModel()
 	end
 end
 
 function ModelEdit:updatePartShown(part, shown)
 	if part then
-		part:setShow(shown)
+		part.show = shown
 		self:reloadModel()
 --		self:updateModelContentList()
 	end
@@ -63,14 +63,14 @@ function ModelEdit:fillMeshList()
 	end	
 end
 
-function ModelEdit:fillSubMeshList(part)
+function ModelEdit:fillSubMeshList(part, submodel)
 	local list = self.widget:getWindow("SubmeshList")
 	list = CEGUI.toListbox(list)
 	list:resetList()
 	
 	--we need to get hold of a mesh instance
 	local manager = Ogre.MeshManager:getSingleton()
-	local name = part:getSubModelDefinition():getMeshName()
+	local name = submodel.meshName
 	local meshPtr = manager:getByName(name, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 	--meshPtr = tolua.cast(meshPtr, "Ogre::MeshPtr")
 	local mesh = meshPtr:get()
@@ -114,7 +114,7 @@ function ModelEdit:updateSubmodelsList()
 	self.submodels:clearAllSelections()
 	local submodels = self.definition:getSubModelDefinitions()
 	for val = 0, submodels:size() - 1 do
-		local name = submodels[val]:getMeshName()
+		local name = submodels[val].meshName
 		local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
 		self.submodels:addItem(item)
 	end	
@@ -126,7 +126,7 @@ function ModelEdit:updatePartsList(submodel)
 	if submodel then
 		local parts = submodel:getPartDefinitions()
 		for val = 0, parts:size() - 1 do
-			local name = parts[val]:getName()
+			local name = parts[val].name
 			local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
 			self.parts:addItem(item)
 		end
@@ -141,9 +141,9 @@ function ModelEdit:updateSubentitiesList(part)
 	if part then
 		local subentities = part:getSubEntityDefinitions()
 		for val = 0, subentities:size() - 1 do
-			local name = subentities[val]:getSubEntityName()
+			local name = subentities[val].subEntityName
 			if name == "" then
-				name = subentities[val]:getSubEntityIndex()
+				name = subentities[val].subEntityIndex
 			end
 			local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
 			self.subentities:addItem(item)
@@ -259,7 +259,7 @@ function ModelEdit:AddSubmodelButton_Clicked(args)
 		
 		--we need to get hold of a mesh instance
 		local manager = Ogre.MeshManager:getSingleton()
-		local name = submodel:getMeshName()
+		local name = submodel.meshName
 		local meshPtr = manager:load(name, "General")
 		local mesh = meshPtr:get()
 		
@@ -353,7 +353,7 @@ function ModelEdit:updateModelContentList()
 	--first, add all submodels
 	for val = 0, submodels:size() - 1 do
 		local submodel = submodels[val]
-		local name = submodel:getMeshName()
+		local name = submodel.meshName
 		local modelcontentItem = {}
 		
 		--we need to get hold of a mesh instance
@@ -377,12 +377,13 @@ function ModelEdit:updateModelContentList()
 			local parts = submodel:getPartDefinitions()
 			for val_ = 0, parts:size() - 1 do
 				local part = parts[val_]
-				local name = part:getName()
+				local name = part.name
 				
 				local modelcontentItem = {}
 				modelcontentItem.part = part
+				modelcontentItem.submodel = submodel
 				modelcontentItem.activate = function()
-					self:showPart(part)
+					self:showPart(part, submodel)
 				end
 				
 --				local partVisible = ""
@@ -402,11 +403,13 @@ function ModelEdit:updateModelContentList()
 					for val = 0, subentities:size() - 1 do
 						local subentity = subentities[val]
 						
-						local submeshname = self:getSubMeshName(mesh, subentity:getSubEntityIndex())
+						local submeshname = self:getSubMeshName(mesh, subentity.subEntityIndex)
  
 						
 						local modelcontentItem = {}
 						modelcontentItem.subentity = subentity
+						modelcontentItem.part = part
+						modelcontentItem.submodel = submodel
 						modelcontentItem.activate = function()
 							self:showSubEntity(subentity)
 						end
@@ -426,7 +429,7 @@ function ModelEdit:updateModelContentList()
 	--then, add all actions
 	for val = 0, actions:size() - 1 do
 		local action = actions[val]
-		local name = action:getName()
+		local name = action.name
 		local modelcontentItem = {}
 		
 		modelcontentItem.action = action
@@ -519,7 +522,7 @@ function ModelEdit:showSubModel(submodelDef)
 	self:hideAllContentParts()
 	self.contentparts.submodelInfo:setVisible(true)
 
-	self.widget:getWindow("SubModelName"):setText(submodelDef:getMeshName())
+	self.widget:getWindow("SubModelName"):setText(submodelDef.meshName)
 	
 	local sizeWidget = self.widget:getWindow("SubModelSize")
 	
@@ -550,13 +553,13 @@ function ModelEdit:showSubModel(submodelDef)
 	end
 end
 
-function ModelEdit:showPart(part)
+function ModelEdit:showPart(part, submodel)
 	self:hideAllContentParts()
 	self.contentparts.partInfo:setVisible(true)
-	self.widget:getWindow("PartName"):setText(part:getName())
-	self.partShown:setSelected(part:getShow())
+	self.widget:getWindow("PartName"):setText(part.name)
+	self.partShown:setSelected(part.show)
 	
-	self:fillSubMeshList(part)
+	self:fillSubMeshList(part, submodel)
 end
 
 
@@ -576,7 +579,7 @@ function ModelEdit:showAction(action)
 	self.contentparts.actionInfo:setVisible(true)
 	self.action = action
 	
-	self.widget:getWindow("ActionSpeed"):setText(action:getAnimationSpeed())
+	self.widget:getWindow("ActionSpeed"):setText(action.animationSpeed)
 end
 
 function ModelEdit:showAnimation(animation)
@@ -584,7 +587,7 @@ function ModelEdit:showAnimation(animation)
 	self.contentparts.animationInfo:setVisible(true)
 	self.animation = animation
 
-	self.widget:getWindow("AnimationIterations"):setText(animation:getIterations())
+	self.widget:getWindow("AnimationIterations"):setText(animation.iterations)
 end
 
 function ModelEdit:showAnimationPart(animationPart)
@@ -703,7 +706,7 @@ function ModelEdit:buildWidget()
 		self.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("Clicked", function(args)
 			--just remove the subentity definition from the part
 			local subentity = self:getSelectedSubEntity()
-			local part = subentity:getPartDefinition()
+			local part = self:getSelectedPart()
 			part:removeSubEntityDefinition(subentity)
 			self:reloadModel()
 			self:updateModelContentList()
@@ -713,7 +716,7 @@ function ModelEdit:buildWidget()
 		self.widget:getWindow("PartRemoveButton"):subscribeEvent("Clicked", function(args)
 			--just remove the part definition from the submodel
 			local part = self:getSelectedPart()
-			local submodel = part:getSubModelDefinition()
+			local submodel = self:getSelectedSubModel()
 			submodel:removePartDefinition(part)
 			self:reloadModel()
 			self:updateModelContentList()
@@ -750,7 +753,7 @@ function ModelEdit:buildWidget()
 			if name ~= "" then
 				local part = self:getSelectedPart()
 				if part then
-					part:setName(name)
+					part.name = name
 					self:reloadModel()
 					self:updateModelContentList()
 				end
@@ -1261,7 +1264,7 @@ function ModelEdit:buildWidget()
 				playEndFunction = nil
 			else
 				if self.action then
-					local actionName = self.action:getName()
+					local actionName = self.action.name
 					local currentConnection = createConnector(self.widget.EventFrameStarted):connect(function(timeslice)
 						local model = self.renderer:getModel()
 						if model then
@@ -1296,7 +1299,7 @@ function ModelEdit:buildWidget()
 		animationIterationsWindow:subscribeEvent("TextChanged", function(args)
 				if self.animation then
 					local iterations = tonumber(animationIterationsWindow:getText())
-					self.animation:setIterations(iterations)
+					self.animation.iterations = iterations
 				end
 			return true
 		end)		
@@ -1305,7 +1308,7 @@ function ModelEdit:buildWidget()
 		actionSpeedWindow:subscribeEvent("TextChanged", function(args)
 				if self.action then
 					local speed = tonumber(actionSpeedWindow:getText())
-					self.action:setAnimationSpeed(speed)
+					self.action.animationSpeed = speed
 				end
 			return true
 		end)

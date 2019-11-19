@@ -59,8 +59,12 @@ SubModelPart::SubModelPart(std::string name, SubModel& subModel) :
 //no need to try to delete the Ogre::Subentities in the mSubEntities store, since Ogre will take care of this
 SubModelPart::~SubModelPart() = default;
 
-bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition, unsigned short subEntityIndex) {
-	mSubEntities.emplace_back(SubModelPartEntity{subentity, definition, subEntityIndex});
+void SubModelPart::addSubEntity(SubModelPartEntity subModelPartEntity) {
+	mSubEntities.emplace_back(std::move(subModelPartEntity));
+}
+
+bool SubModelPart::addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition definition, unsigned short subEntityIndex) {
+	mSubEntities.emplace_back(SubModelPartEntity{subentity, std::move(definition), subEntityIndex});
 	return true;
 }
 
@@ -88,8 +92,8 @@ void SubModelPart::show() {
 void SubModelPart::showSubEntities() {
 	for (auto& subModelPartEntity : mSubEntities) {
 		std::string materialName;
-		if (subModelPartEntity.Definition != nullptr && !subModelPartEntity.Definition->getMaterialName().empty()) {
-			materialName = subModelPartEntity.Definition->getMaterialName();
+		if (subModelPartEntity.Definition && !subModelPartEntity.Definition->materialName.empty()) {
+			materialName = subModelPartEntity.Definition->materialName;
 		} else {
 			//if no material name is set in the ModelDefinition, use the default one from the mesh
 			materialName = subModelPartEntity.SubEntity->getSubMesh()->getMaterialName();
@@ -195,8 +199,8 @@ bool SubModelPart::createInstancedEntities() {
 
 
 		std::string materialName;
-		if (entry.Definition != nullptr && !entry.Definition->getMaterialName().empty()) {
-			materialName = entry.Definition->getMaterialName();
+		if (entry.Definition && !entry.Definition->materialName.empty()) {
+			materialName = entry.Definition->materialName;
 		} else {
 			//if no material name is set in the ModelDefinition, use the default one from the mesh
 			materialName = entry.SubEntity->getSubMesh()->getMaterialName();

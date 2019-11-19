@@ -66,7 +66,7 @@ class LodStrategy
         //void assertSorted(const Mesh::LodValueList& values) const;
 
         /** Get the name of this strategy. */
-        //const String& getName() const { return mName; }
+        //const String& getName() const { return Name; }
     };
 
 }

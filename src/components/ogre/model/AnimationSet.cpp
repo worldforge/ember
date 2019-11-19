@@ -27,26 +27,20 @@
 #include "AnimationSet.h"
 #include <OgreAnimationState.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Model
-{
+namespace Ember {
+namespace OgreView {
+namespace Model {
 
 AnimationSet::AnimationSet() :
-		mAccumulatedTime(0), mCurrentAnimationSetIndex(0), mSpeed(1.0)
-{
+		mAccumulatedTime(0), mCurrentAnimationSetIndex(0), mSpeed(1.0) {
 }
 
-void AnimationSet::addTime(Ogre::Real timeSlice)
-{
+void AnimationSet::addTime(Ogre::Real timeSlice) {
 	static bool discardThis;
 	addTime(timeSlice, discardThis);
 }
 
-void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
-{
+void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation) {
 	if (!mAnimations.empty()) {
 		continueAnimation = true;
 		Animation* animation = &mAnimations[mCurrentAnimationSetIndex];
@@ -56,7 +50,7 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 			//Ogre will throw an assert exception if an animation with zero length is activated
 		} else {
 			//see if we've done enough iterations to either advance to the next animation, or the mark this animation as done
-			if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * (Ogre::Real)animation->getIterations()) {
+			if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * (Ogre::Real) animation->getIterations()) {
 				animation->setEnabled(false);
 				mAccumulatedTime = 0;
 				if (mAnimations.size() > (mCurrentAnimationSetIndex + 1)) {
@@ -78,9 +72,8 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 
 }
 
-void AnimationSet::reset()
-{
-	for (auto & animation : mAnimations) {
+void AnimationSet::reset() {
+	for (auto& animation : mAnimations) {
 		animation.setEnabled(false);
 		animation.setTime(0.0f);
 	}
@@ -88,39 +81,32 @@ void AnimationSet::reset()
 	mAccumulatedTime = 0;
 }
 
-const AnimationStore& AnimationSet::getAnimations() const
-{
+const AnimationStore& AnimationSet::getAnimations() const {
 	return mAnimations;
 }
 
-AnimationStore& AnimationSet::getAnimations()
-{
+AnimationStore& AnimationSet::getAnimations() {
 	return mAnimations;
 }
 
-void AnimationSet::addAnimation(const Animation& animation)
-{
+void AnimationSet::addAnimation(const Animation& animation) {
 	mAnimations.push_back(animation);
 }
 
 Animation::Animation(int iterations, size_t boneNumber) :
-		mIterationLength(0), mIterations(iterations), mBoneNumber(boneNumber)
-{
+		mIterationLength(0), mIterations(iterations), mBoneNumber(boneNumber) {
 }
 
-AnimationPartSet& Animation::getAnimationParts()
-{
+AnimationPartSet& Animation::getAnimationParts() {
 	return mAnimationParts;
 }
 
-void Animation::addAnimationPart(const AnimationPart& part)
-{
+void Animation::addAnimationPart(const AnimationPart& part) {
 	mAnimationParts.push_back(part);
 	mIterationLength = std::max<Ogre::Real>(part.state->getLength(), mIterationLength);
 }
 
-void Animation::addTime(Ogre::Real timeSlice)
-{
+void Animation::addTime(Ogre::Real timeSlice) {
 	auto I = mAnimationParts.begin();
 	for (; I != mAnimationParts.end(); ++I) {
 		//we'll get an assert error if we try to add time to an animation with zero length
@@ -130,10 +116,9 @@ void Animation::addTime(Ogre::Real timeSlice)
 	}
 }
 
-void Animation::setTime(Ogre::Real time)
-{
+void Animation::setTime(Ogre::Real time) {
 
-	for (auto & animationPart : mAnimationParts) {
+	for (auto& animationPart : mAnimationParts) {
 		//we'll get an assert error if we try to add time to an animation with zero length
 		if (animationPart.state->getLength() != 0) {
 			animationPart.state->setTimePosition(time);
@@ -141,8 +126,7 @@ void Animation::setTime(Ogre::Real time)
 	}
 }
 
-void Animation::setEnabled(bool enabled)
-{
+void Animation::setEnabled(bool enabled) {
 	for (AnimationPartSet::const_iterator I = mAnimationParts.begin(); I != mAnimationParts.end(); ++I) {
 		//we'll get an assert error if we try to enable an animation with zero length
 		Ogre::AnimationState* state = I->state;
@@ -153,7 +137,7 @@ void Animation::setEnabled(bool enabled)
 				if (enabled) {
 					const std::vector<BoneGroupRef>& boneGroupRefs = I->boneGroupRefs;
 					for (auto boneGroupRef : boneGroupRefs) {
-							const BoneGroupDefinition& boneGroupDef = *boneGroupRef.boneGroupDefinition;
+						auto& boneGroupDef = boneGroupRef.boneGroupDefinition;
 						if (!state->hasBlendMask()) {
 							state->createBlendMask(mBoneNumber, 0.0f);
 						}

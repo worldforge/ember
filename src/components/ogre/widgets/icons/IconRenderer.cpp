@@ -97,16 +97,16 @@ void IconRenderer::performRendering(Model::Model* model, Icon*) {
 		model->attachToNode(&mSceneNodeProvider);
 
 		//check for a defined "icon" view and use that if available, else just reposition the camera
-		const Model::ViewDefinitionStore::const_iterator I = model->getDefinition()->getViewDefinitions().find("icon");
+		auto I = model->getDefinition()->getViewDefinitions().find("icon");
 		if (I != model->getDefinition()->getViewDefinitions().end()) {
 			mSceneNodeProvider.setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
 			mRenderContext->showFull(model->getCombinedBoundingRadius());
-			if (I->second->Distance) {
-				mRenderContext->setCameraDistance(I->second->Distance);
+			if (I->second.Distance) {
+				mRenderContext->setCameraDistance(I->second.Distance);
 			}
-			mRenderContext->getCameraRootNode()->setOrientation(I->second->Rotation);
+			mRenderContext->getCameraRootNode()->setOrientation(I->second.Rotation);
 		} else {
 
 			auto size = model->getBoundingBox().getSize();

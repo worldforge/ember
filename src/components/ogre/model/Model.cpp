@@ -145,22 +145,22 @@ bool Model::loadAssets() {
 //	}
 //
 //	for (auto& actionDef : mDefinition->getActionDefinitions()) {
-//		auto actionI = mActions.find(actionDef->getName());
+//		auto actionI = mActions.find(actionDef.getName());
 //		if (actionI != mActions.end()) {
 //			Action& action = actionI->second;
 //			//Important these calls happen in this order, else we'll risk segfaults
 //			action.getAnimations().getAnimations().clear();
 //			action.getAnimations().reset();
 //
-//			for (auto& animationDef : actionDef->getAnimationDefinitions()) {
-//				Animation animation(animationDef->getIterations(), getSkeleton()->getNumBones());
-//				for (auto& animationPartDef : animationDef->getAnimationPartDefinitions()) {
-//					if (getAllAnimationStates()->hasAnimationState(animationPartDef->Name)) {
+//			for (auto& animationDef : actionDef.getAnimationDefinitions()) {
+//				Animation animation(animationDef.getIterations(), getSkeleton()->getNumBones());
+//				for (auto& animationPartDef : animationDef.getAnimationPartDefinitions()) {
+//					if (getAllAnimationStates()->hasAnimationState(animationPartDef.Name)) {
 //						AnimationPart animPart;
 //						try {
-//							Ogre::AnimationState* state = getAnimationState(animationPartDef->Name);
+//							Ogre::AnimationState* state = getAnimationState(animationPartDef.Name);
 //							animPart.state = state;
-//							for (auto& boneGroupDef : animationPartDef->BoneGroupRefs) {
+//							for (auto& boneGroupDef : animationPartDef.BoneGroupRefs) {
 //								auto I_boneGroup = mDefinition->getBoneGroupDefinitions().find(boneGroupDef.Name);
 //								if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {
 //									BoneGroupRef boneGroupRef;
@@ -171,7 +171,7 @@ bool Model::loadAssets() {
 //							}
 //							animation.addAnimationPart(animPart);
 //						} catch (const std::exception& ex) {
-//							S_LOG_FAILURE("Error when loading animation: " << animationPartDef->Name << "." << ex);
+//							S_LOG_FAILURE("Error when loading animation: " << animationPartDef.Name << "." << ex);
 //						}
 //					}
 //				}
@@ -185,10 +185,11 @@ bool Model::createModelAssets() {
 	TimedLog timedLog("Model::createActualModel " + mDefinition->getOrigin());
 
 	if (mAssetCreationContext.mCurrentlyLoadingSubModelIndex < mDefinition->getSubModelDefinitions().size()) {
-		auto& submodelDef = mDefinition->getSubModelDefinitions()[mAssetCreationContext.mCurrentlyLoadingSubModelIndex];
+		auto I = mDefinition->getSubModelDefinitions().begin() + mAssetCreationContext.mCurrentlyLoadingSubModelIndex;
+		auto& submodelDef = *I;
 		try {
 
-			auto mesh = Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			auto mesh = Ogre::MeshManager::getSingleton().getByName(submodelDef.meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			if (mesh) {
 				mesh->load();
 
@@ -199,11 +200,11 @@ bool Model::createModelAssets() {
 
 				Ogre::Entity* entity;
 				if (!mName.empty()) {
-					entity = mManager.createEntity(mName + "/" + submodelDef->getMeshName(), mesh);
+					entity = mManager.createEntity(mName + "/" + submodelDef.meshName, mesh);
 				} else {
 					entity = mManager.createEntity(mesh);
 				}
-				entity->setCastShadows(submodelDef->mShadowCaster);
+				entity->setCastShadows(submodelDef.shadowCaster);
 				timedLog.report("Created entity '" + entity->getName() + "' of mesh '" + mesh->getName() + "'.");
 
 
@@ -211,36 +212,36 @@ bool Model::createModelAssets() {
 				//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 
 
-				if (!submodelDef->getPartDefinitions().empty()) {
-					for (auto& partDef : submodelDef->getPartDefinitions()) {
-						SubModelPart& part = submodel->createSubModelPart(partDef->getName());
+				if (!submodelDef.getPartDefinitions().empty()) {
+					for (auto& partDef : submodelDef.getPartDefinitions()) {
+						SubModelPart& part = submodel->createSubModelPart(partDef.name);
 						//std::string groupName("");
 
-						if (!partDef->getSubEntityDefinitions().empty()) {
-							for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
+						if (!partDef.getSubEntityDefinitions().empty()) {
+							for (auto& subEntityDef : partDef.getSubEntityDefinitions()) {
 								try {
 									Ogre::SubEntity* subEntity(nullptr);
 									size_t subEntityIndex;
 									//try with a submodelname first
-									if (!subEntityDef->getSubEntityName().empty()) {
-										subEntityIndex = entity->getMesh()->_getSubMeshIndex(subEntityDef->getSubEntityName());
+									if (!subEntityDef.subEntityName.empty()) {
+										subEntityIndex = entity->getMesh()->_getSubMeshIndex(subEntityDef.subEntityName);
 
 										subEntity = entity->getSubEntity(subEntityIndex);
 									} else {
 										//no name specified, use the index instead
-										if (entity->getNumSubEntities() > subEntityDef->getSubEntityIndex()) {
-											subEntityIndex = subEntityDef->getSubEntityIndex();
+										if (entity->getNumSubEntities() > subEntityDef.subEntityIndex) {
+											subEntityIndex = subEntityDef.subEntityIndex;
 											subEntity = entity->getSubEntity(subEntityIndex);
 										} else {
-											S_LOG_WARNING("Model definition " << mDefinition->getOrigin() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
+											S_LOG_WARNING("Model definition " << mDefinition->getOrigin() << " has a reference to entity with index " << subEntityDef.subEntityIndex << " which is out of bounds.");
 											continue;
 										}
 									}
 									if (subEntity) {
 										part.addSubEntity(subEntity, subEntityDef, subEntityIndex);
 
-										if (!subEntityDef->getMaterialName().empty()) {
-											subEntity->setMaterialName(subEntityDef->getMaterialName());
+										if (!subEntityDef.materialName.empty()) {
+											subEntity->setMaterialName(subEntityDef.materialName);
 										}
 									} else {
 										S_LOG_WARNING("Could not add subentity.");
@@ -253,21 +254,21 @@ bool Model::createModelAssets() {
 							//if no subentities are defined, add all subentities
 							size_t numSubEntities = entity->getNumSubEntities();
 							for (size_t i = 0; i < numSubEntities; ++i) {
-								part.addSubEntity(entity->getSubEntity(i), nullptr, i);
+								part.addSubEntity({entity->getSubEntity(i), boost::none, (unsigned short) i});
 							}
 						}
-						if (!partDef->getGroup().empty()) {
-							mAssetCreationContext.mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
-							//mPartToGroupMap[partDef->getName()] = partDef->getGroup();
+						if (!partDef.group.empty()) {
+							mAssetCreationContext.mGroupsToPartMap[partDef.group].push_back(partDef.name);
+							//mPartToGroupMap[partDef.getName()] = partDef.getGroup();
 						}
 
-						if (partDef->getShow()) {
-							mAssetCreationContext.showPartVector.push_back(partDef->getName());
+						if (partDef.show) {
+							mAssetCreationContext.showPartVector.push_back(partDef.name);
 						}
 
-						ModelPart& modelPart = mAssetCreationContext.mModelParts[partDef->getName()];
+						ModelPart& modelPart = mAssetCreationContext.mModelParts[partDef.name];
 						modelPart.addSubModelPart(&part);
-						modelPart.setGroupName(partDef->getGroup());
+						modelPart.setGroupName(partDef.group);
 					}
 				} else {
 					//if no parts are defined, add a default "main" part and add all subentities to it. This ought to be a good default behaviour
@@ -275,7 +276,7 @@ bool Model::createModelAssets() {
 					for (size_t i = 0; i < entity->getNumSubEntities(); ++i) {
 
 						Ogre::SubEntity* subentity = entity->getSubEntity(i);
-						part.addSubEntity(subentity, nullptr, i);
+						part.addSubEntity({subentity, boost::none, (unsigned short) i});
 					}
 					mAssetCreationContext.showPartVector.push_back(part.getName());
 					ModelPart& modelPart = mAssetCreationContext.mModelParts[part.getName()];
@@ -285,12 +286,12 @@ bool Model::createModelAssets() {
 				timedLog.report("Created submodel.");
 
 			} else {
-				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getOrigin() << ".");
+				S_LOG_FAILURE("Could not load mesh " << submodelDef.meshName << " which belongs to model " << mDefinition->getOrigin() << ".");
 			}
 
 
 		} catch (const std::exception& e) {
-			S_LOG_FAILURE("Submodel load error for mesh '" << submodelDef->getMeshName() << "'." << e);
+			S_LOG_FAILURE("Submodel load error for mesh '" << submodelDef.meshName << "'." << e);
 		}
 		mAssetCreationContext.mCurrentlyLoadingSubModelIndex++;
 		return false;
@@ -333,9 +334,9 @@ void Model::createActions() {
 
 	for (auto& actionDef : mDefinition->getActionDefinitions()) {
 		Action action;
-		action.mActivations = actionDef->getActivationDefinitions();
-		action.setName(actionDef->getName());
-		action.getAnimations().setSpeed(actionDef->getAnimationSpeed());
+		action.mActivations = actionDef.getActivationDefinitions();
+		action.setName(actionDef.name);
+		action.getAnimations().setSpeed(actionDef.animationSpeed);
 
 		if (getSkeleton() && getAllAnimationStates()) {
 
@@ -344,15 +345,15 @@ void Model::createActions() {
 				getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
 			}
 			if (!mSubmodels.empty()) {
-				for (auto& animationDef : actionDef->getAnimationDefinitions()) {
-					Animation animation(animationDef->getIterations(), getSkeleton()->getNumBones());
-					for (auto& animationPartDef : animationDef->getAnimationPartDefinitions()) {
-						if (getAllAnimationStates()->hasAnimationState(animationPartDef->Name)) {
+				for (auto& animationDef : actionDef.getAnimationDefinitions()) {
+					Animation animation(animationDef.iterations, getSkeleton()->getNumBones());
+					for (auto& animationPartDef : animationDef.getAnimationPartDefinitions()) {
+						if (getAllAnimationStates()->hasAnimationState(animationPartDef.Name)) {
 							AnimationPart animPart;
 							try {
-								Ogre::AnimationState* state = getAnimationState(animationPartDef->Name);
+								Ogre::AnimationState* state = getAnimationState(animationPartDef.Name);
 								animPart.state = state;
-								for (auto& boneGroupDef : animationPartDef->BoneGroupRefs) {
+								for (auto& boneGroupDef : animationPartDef.BoneGroupRefs) {
 									auto I_boneGroup = mDefinition->getBoneGroupDefinitions().find(boneGroupDef.Name);
 									if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {
 										BoneGroupRef boneGroupRef{};
@@ -363,7 +364,7 @@ void Model::createActions() {
 								}
 								animation.addAnimationPart(animPart);
 							} catch (const std::exception& ex) {
-								S_LOG_FAILURE("Error when loading animation: " << animationPartDef->Name << "." << ex);
+								S_LOG_FAILURE("Error when loading animation: " << animationPartDef.Name << "." << ex);
 							}
 						}
 					}
@@ -374,7 +375,7 @@ void Model::createActions() {
 
 		//TODO: add sounds too
 
-		mActions[actionDef->getName()] = action;
+		mActions[actionDef.name] = action;
 	}
 }
 

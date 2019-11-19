@@ -4,11 +4,11 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
-typedef std::vector<Ember::OgreView::Model::SubModelDefinition*> SubModelDefinitionsStore;
-typedef std::vector<Ember::OgreView::Model::PartDefinition*> PartDefinitionsStore;
-typedef std::vector<Ember::OgreView::Model::SubEntityDefinition*> SubEntityDefinitionsStore;
+typedef std::vector<Ember::OgreView::Model::SubModelDefinition> SubModelDefinitionsStore;
+typedef std::vector<Ember::OgreView::Model::PartDefinition> PartDefinitionsStore;
+typedef std::vector<Ember::OgreView::Model::SubEntityDefinition> SubEntityDefinitionsStore;
 typedef std::vector<Ember::OgreView::Model::AttachPointDefinition> AttachPointDefinitionStore;
-typedef std::map<std::string, Ember::OgreView::Model::ViewDefinition*> ViewDefinitionStore;
+typedef std::map<std::string, Ember::OgreView::Model::ViewDefinition> ViewDefinitionStore;
 
 
 /**
@@ -66,43 +66,36 @@ struct AttachPointDefinition
 
 class SubEntityDefinition
 {
-	 std::string& getSubEntityName() ;
-	//void setSubEntityName( std::string&);
-	unsigned int getSubEntityIndex() ;
-
-	 std::string& getMaterialName() ;
-	void setMaterialName( std::string& materialName);
-	Ember::OgreView::Model::PartDefinition& getPartDefinition();
+	 std::string subEntityName;
+ 	 unsigned int subEntityIndex;
+	 std::string materialName;
 
 };	
 
 
 class PartDefinition
 {
-	void setName( std::string& name);
-	 std::string& getName() ;
+	 std::string name;
 	
-	void setShow(bool show);
-	bool getShow() ;
+	bool show;
 	
-	Ember::OgreView::Model::SubEntityDefinition* createSubEntityDefinition(std::string& subEntityName);
-	Ember::OgreView::Model::SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
-	std::vector<Ember::OgreView::Model::SubEntityDefinition*> getSubEntityDefinitions();
-	void removeSubEntityDefinition(Ember::OgreView::Model::SubEntityDefinition* def);
-	Ember::OgreView::Model::SubModelDefinition& getSubModelDefinition();
-	
+	const std::vector<Ember::OgreView::Model::SubEntityDefinition>& getSubEntityDefinitions() const;
+	void removeSubEntityDefinition(size_t index);
+
 };
 
 
 class SubModelDefinition
 {
 	
-	 std::string& getMeshName() ;
-	
-	Ember::OgreView::Model::PartDefinition* createPartDefinition( std::string& partname);
-	std::vector<Ember::OgreView::Model::PartDefinition*> getPartDefinitions();
-	void removePartDefinition(Ember::OgreView::Model::PartDefinition* def);
-	Ember::OgreView::Model::ModelDefinition& getModelDefinition();
+	std::string meshName;
+
+	bool shadowCaster;
+
+
+	const std::vector<Ember::OgreView::Model::PartDefinition>& getPartDefinitions() const;
+	//Ember::OgreView::Model::PartDefinition* createPartDefinition( std::string& partname);
+	void removePartDefinition(size_t index);
 };
 
 /**
@@ -171,31 +164,29 @@ struct BoneGroupRefDefinition {
 class AnimationDefinition
 {
 public:
-	Ember::OgreView::Model::AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName);
-	const std::vector<Ember::OgreView::Model::AnimationPartDefinition*>& getAnimationPartDefinitions() const;
-	void removeAnimationPartDefinition(Ember::OgreView::Model::AnimationPartDefinition* def);
+	//Ember::OgreView::Model::AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName);
+	const std::vector<Ember::OgreView::Model::AnimationPartDefinition>& getAnimationPartDefinitions() const;
+	void removeAnimationPartDefinition(size_t index);
 
-	int getIterations() const;
-	void setIterations(int iterations);
+	int iterations;
 };
 
 class ActionDefinition
 {
 public:
-	Ember::OgreView::Model::AnimationDefinition* createAnimationDefinition(int iterations = 1);
-	std::vector<Ember::OgreView::Model::AnimationDefinition*>& getAnimationDefinitions();
-	void removeAnimationDefinition(Ember::OgreView::Model::AnimationDefinition* def);
+	//Ember::OgreView::Model::AnimationDefinition* createAnimationDefinition(int iterations = 1);
+	const std::vector<Ember::OgreView::Model::AnimationDefinition>& getAnimationDefinitions() const;
+	void removeAnimationDefinition(size_t index);
 
-	Ember::OgreView::Model::SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
-	std::vector<Ember::OgreView::Model::SoundDefinition*>& getSoundDefinitions() const;
-	void removeSoundDefinition(Ember::OgreView::Model::SoundDefinition* def);
+	//Ember::OgreView::Model::SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
+	const std::vector<Ember::OgreView::Model::SoundDefinition>& getSoundDefinitions() const;
+	void removeSoundDefinition(size_t index);
 
-	void createActivationDefinition(const Ember::OgreView::Model::ActivationDefinition::Type& type, const std::string& trigger);
-	std::vector<Ember::OgreView::Model::ActivationDefinition*>& getActivationDefinitions();
+	//void createActivationDefinition(const Ember::OgreView::Model::ActivationDefinition::Type& type, const std::string& trigger);
+	std::vector<Ember::OgreView::Model::ActivationDefinition>& getActivationDefinitions() const;
 
-	const std::string& getName() const;
-	float getAnimationSpeed() const;
-	void setAnimationSpeed(float speed);
+	std::string name;
+	float animationSpeed;
 
 };
 
@@ -258,13 +249,13 @@ public:
 	const Ogre::Quaternion& getRotation() const;
 	void setRotation(const Ogre::Quaternion rotation);
 	
-	Ember::OgreView::Model::SubModelDefinition* createSubModelDefinition(std::string& meshname);
-	std::vector<Ember::OgreView::Model::SubModelDefinition*>& getSubModelDefinitions();
-	void removeSubModelDefinition(Ember::OgreView::Model::SubModelDefinition* def);
+	//Ember::OgreView::Model::SubModelDefinition* createSubModelDefinition(std::string& meshname);
+	std::vector<Ember::OgreView::Model::SubModelDefinition>& getSubModelDefinitions();
+	void removeSubModelDefinition(size_t index);
 	
-	Ember::OgreView::Model::ActionDefinition* createActionDefinition(std::string& actionname);
-	std::vector<Ember::OgreView::Model::ActionDefinition*>& getActionDefinitions();
-	void removeActionDefinition(Ember::OgreView::Model::ActionDefinition* def);
+	//Ember::OgreView::Model::ActionDefinition* createActionDefinition(std::string& actionname);
+	std::vector<Ember::OgreView::Model::ActionDefinition>& getActionDefinitions();
+	void removeActionDefinition(size_t index);
 	
 	const std::vector<Ember::OgreView::Model::AttachPointDefinition>& getAttachPointsDefinitions();
 
@@ -282,7 +273,7 @@ public:
 	@param viewname The name of the view
 	@return A pointer to the new view.
 	*/
-	Ember::OgreView::Model::ViewDefinition* createViewDefinition(const std::string& viewname);
+	//Ember::OgreView::Model::ViewDefinition* createViewDefinition(const std::string& viewname);
 	
 	/**
 	 * Returns all views defined.

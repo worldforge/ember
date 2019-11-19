@@ -108,8 +108,8 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 ModelRepresentation::~ModelRepresentation() {
 
 	const RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
-	if (renderingDef && !renderingDef->getScheme().empty()) {
-		mScene.deregisterEntityWithTechnique(mEntity, renderingDef->getScheme());
+	if (renderingDef && !renderingDef->scheme.empty()) {
+		mScene.deregisterEntityWithTechnique(mEntity, renderingDef->scheme);
 	}
 	if (mEntity.getPositioningMode() == EmberEntity::PositioningMode::PROJECTILE) {
 		mScene.deregisterEntityWithTechnique(mEntity, "projectile");
@@ -158,12 +158,8 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
 bool ModelRepresentation::needSoundEntity() {
 	for (auto& actionDef: mModel->getDefinition()->getActionDefinitions()) {
 		// Setup All Sound Actions
-		for (auto sound : actionDef->getSoundDefinitions()) {
-			// Once we find a single reference
-			// we have an entity to allocate
-			if (sound) {
-				return true;
-			}
+		if (!actionDef.getSoundDefinitions().empty()) {
+			return true;
 		}
 	}
 
@@ -192,8 +188,8 @@ void ModelRepresentation::initFromModel() {
 
 	//see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
 	const RenderingDefinition* renderingDef = mModel->getDefinition()->getRenderingDefinition();
-	if (renderingDef && !renderingDef->getScheme().empty() && mModel->isLoaded()) {
-		mScene.registerEntityWithTechnique(mEntity, renderingDef->getScheme());
+	if (renderingDef && !renderingDef->scheme.empty() && mModel->isLoaded()) {
+		mScene.registerEntityWithTechnique(mEntity, renderingDef->scheme);
 //		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
 //		forest->addEmberEntity(this);
 	}

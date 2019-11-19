@@ -50,7 +50,8 @@ void PresentAction::activate(EntityMapping::ChangeContext& context) {
 					auto modelDef = std::make_shared<Model::ModelDefinition>();
 					modelDef->setOrigin(present);
 					//Create a single submodel definition using the mesh
-					modelDef->createSubModelDefinition(present);
+					Model::SubModelDefinition subModelDefinition{present};
+					modelDef->addSubModelDefinition(subModelDefinition);
 					Model::ModelDefinitionManager::getSingleton().addDefinition(present, std::move(modelDef));
 				}
 				showModel(present);

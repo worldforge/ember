@@ -49,28 +49,11 @@ ModelDefinition::ModelDefinition() :
 		mShowContained(true),
 		mTranslate(0, 0, 0),
 		mIsValid(false),
-		mRenderingDef(nullptr),
-		mBackgroundLoader(nullptr),
 		mAssetsLoaded(false) {
 
 }
 
-ModelDefinition::~ModelDefinition() {
-	delete mBackgroundLoader;
-	for (auto& subModel : mSubModels) {
-		delete subModel;
-	}
-	for (auto& action : mActions) {
-		delete action;
-	}
-	for (auto& view : mViews) {
-		delete view.second;
-	}
-	for (auto& boneGroup : mBoneGroups) {
-		delete boneGroup.second;
-	}
-	delete mRenderingDef;
-}
+ModelDefinition::~ModelDefinition() = default;
 
 
 void ModelDefinition::addModelInstance(Model* model) {
@@ -100,7 +83,7 @@ bool ModelDefinition::requestLoad(Model* model) {
 	mLoadingListeners.insert(model);
 	//If there's already a background loader, it's already in a "poll" loop, so we don't need to do anything.
 	if (!mBackgroundLoader) {
-		mBackgroundLoader = new ModelBackgroundLoader(*this);
+		mBackgroundLoader = std::make_unique<ModelBackgroundLoader>(*this);
 		return mBackgroundLoader->poll();
 	}
 	return false;
@@ -133,20 +116,8 @@ void ModelDefinition::removeFromLoadingQueue(Model* model) {
 	mLoadingListeners.erase(model);
 }
 
-
-ViewDefinition* ModelDefinition::createViewDefinition(const std::string& viewname) {
-	auto view = mViews.find(viewname);
-	if (view != mViews.end()) {
-		return view->second;
-	}
-
-	auto* def = new ViewDefinition();
-	def->Name = viewname;
-	def->Distance = 0;
-	def->Rotation = Ogre::Quaternion::IDENTITY;
-	mViews.insert(ViewDefinitionStore::value_type(viewname, def));
-	return def;
-
+void ModelDefinition::addViewDefinition(std::string name, ViewDefinition def) {
+	mViews.emplace(std::move(name), std::move(def));
 }
 
 const ViewDefinitionStore& ModelDefinition::getViewDefinitions() const {
@@ -157,17 +128,8 @@ void ModelDefinition::removeViewDefinition(const std::string& name) {
 	mViews.erase(name);
 }
 
-BoneGroupDefinition* ModelDefinition::createBoneGroupDefinition(const std::string& name) {
-	auto group = mBoneGroups.find(name);
-	if (group != mBoneGroups.end()) {
-		return group->second;
-	}
-
-	auto* def = new BoneGroupDefinition();
-	def->Name = name;
-	mBoneGroups.insert(std::make_pair(name, def));
-	return def;
-
+void ModelDefinition::addBoneGroupDefinition(std::string name, BoneGroupDefinition def) {
+	mBoneGroups.emplace(std::move(name), std::move(def));
 }
 
 void ModelDefinition::removeBoneGroupDefinition(const std::string& name) {
@@ -215,7 +177,7 @@ void ModelDefinition::setRotation(const Ogre::Quaternion& rotation) {
 }
 
 const RenderingDefinition* ModelDefinition::getRenderingDefinition() const {
-	return mRenderingDef;
+	return mRenderingDef.get();
 }
 
 void ModelDefinition::reloadAllInstances() {
@@ -224,25 +186,23 @@ void ModelDefinition::reloadAllInstances() {
 	}
 }
 
-SubModelDefinition* ModelDefinition::createSubModelDefinition(const std::string& meshname) {
-	auto* def = new SubModelDefinition(meshname, *this);
-	mSubModels.push_back(def);
-	return def;
+void ModelDefinition::addSubModelDefinition(SubModelDefinition def) {
+	mSubModels.emplace_back(std::move(def));
 }
 
-const std::vector<SubModelDefinition*>& ModelDefinition::getSubModelDefinitions() const {
+
+const std::vector<SubModelDefinition>& ModelDefinition::getSubModelDefinitions() const {
 	return mSubModels;
 }
 
-void ModelDefinition::removeSubModelDefinition(SubModelDefinition* def) {
-	ModelDefinition::removeDefinition(def, mSubModels);
+void ModelDefinition::removeSubModelDefinition(size_t index) {
+	mSubModels.erase(mSubModels.begin() + index);
 }
 
-ActionDefinition* ModelDefinition::createActionDefinition(const std::string& actionname) {
-	auto* def = new ActionDefinition(actionname);
-	mActions.push_back(def);
-	return def;
+void ModelDefinition::addActionDefinition(ActionDefinition def) {
+	mActions.emplace_back(std::move(def));
 }
+
 
 const ActionDefinitionsStore& ModelDefinition::getActionDefinitions() const {
 	return mActions;
@@ -267,8 +227,8 @@ void ModelDefinition::addAttachPointDefinition(const AttachPointDefinition& defi
 	mAttachPoints.push_back(definition);
 }
 
-void ModelDefinition::removeActionDefinition(ActionDefinition* def) {
-	ModelDefinition::removeDefinition(def, mActions);
+void ModelDefinition::removeActionDefinition(size_t index) {
+	mActions.erase(mActions.begin() + index);
 }
 
 template<typename T, typename T1>
@@ -293,237 +253,90 @@ void ModelDefinition::moveFrom(ModelDefinition&& rhs) {
 	*this = std::move(rhs);
 }
 
-SubModelDefinition::SubModelDefinition(std::string meshname, ModelDefinition& modelDef) :
-		mMeshName(std::move(meshname)), mModelDef(modelDef) {
+void SubModelDefinition::addPartDefinition(PartDefinition partDefinition) {
+	parts.emplace_back(std::move(partDefinition));
 }
 
-SubModelDefinition::~SubModelDefinition() {
-	for (auto& part : mParts) {
-		delete part;
-	}
+const std::vector<PartDefinition>& SubModelDefinition::getPartDefinitions() const {
+	return parts;
 }
 
-const ModelDefinition& SubModelDefinition::getModelDefinition() const {
-	return mModelDef;
+void SubModelDefinition::removePartDefinition(size_t index) {
+	parts.erase(parts.begin() + index);
 }
 
-const std::string& SubModelDefinition::getMeshName() const {
-	return mMeshName;
+void PartDefinition::addSubEntityDefinition(SubEntityDefinition def) {
+	subEntities.emplace_back(std::move(def));
 }
 
-PartDefinition* SubModelDefinition::createPartDefinition(const std::string& partname) {
-	auto* def = new PartDefinition(partname, *this);
-	mParts.push_back(def);
-	return def;
+const std::vector<SubEntityDefinition>& PartDefinition::getSubEntityDefinitions() const {
+	return subEntities;
 }
 
-const std::vector<PartDefinition*>& SubModelDefinition::getPartDefinitions() const {
-	return mParts;
+void PartDefinition::removeSubEntityDefinition(size_t index) {
+	subEntities.erase(subEntities.begin() + index);
 }
 
-void SubModelDefinition::removePartDefinition(PartDefinition* def) {
-	ModelDefinition::removeDefinition(def, mParts);
-}
-
-PartDefinition::PartDefinition(std::string name, SubModelDefinition& subModelDef) :
-		mName(std::move(name)), mShow(true), mSubModelDef(subModelDef) {
-}
-
-PartDefinition::~PartDefinition() {
-	for (auto& subEntity : mSubEntities) {
-		delete subEntity;
-	}
-}
-
-const SubModelDefinition& PartDefinition::getSubModelDefinition() const {
-	return mSubModelDef;
-}
-
-void PartDefinition::setName(const std::string& name) {
-	mName = name;
-}
-
-const std::string& PartDefinition::getName() const {
-	return mName;
-}
-
-void PartDefinition::setGroup(const std::string& group) {
-	mGroup = group;
-}
-
-const std::string& PartDefinition::getGroup() const {
-	return mGroup;
-}
-
-void PartDefinition::setShow(bool show) {
-	mShow = show;
-}
-
-bool PartDefinition::getShow() const {
-	return mShow;
-}
-
-SubEntityDefinition* PartDefinition::createSubEntityDefinition(const std::string& subEntityName) {
-	auto* def = new SubEntityDefinition(subEntityName, *this);
-	mSubEntities.push_back(def);
-	return def;
-
-}
-
-SubEntityDefinition* PartDefinition::createSubEntityDefinition(unsigned int subEntityIndex) {
-	auto* def = new SubEntityDefinition(subEntityIndex, *this);
-	mSubEntities.push_back(def);
-	return def;
-}
-
-const std::vector<SubEntityDefinition*>& PartDefinition::getSubEntityDefinitions() const {
-	return mSubEntities;
-}
-
-void PartDefinition::removeSubEntityDefinition(SubEntityDefinition* def) {
-	ModelDefinition::removeDefinition(def, mSubEntities);
-}
-
-SubEntityDefinition::SubEntityDefinition(unsigned int subEntityIndex, PartDefinition& partdef) :
-		mSubEntityIndex(subEntityIndex), mPartDef(partdef) {
-}
-
-SubEntityDefinition::SubEntityDefinition(std::string subEntityName, PartDefinition& partdef) :
-		mSubEntityName(std::move(subEntityName)), mSubEntityIndex(0), mPartDef(partdef) {
-}
-
-const PartDefinition& SubEntityDefinition::getPartDefinition() const {
-	return mPartDef;
-}
-
-const std::string& SubEntityDefinition::getSubEntityName() const {
-	return mSubEntityName;
-}
-
-unsigned int SubEntityDefinition::getSubEntityIndex() const {
-	return mSubEntityIndex;
-}
-
-const std::string& SubEntityDefinition::getMaterialName() const {
-	return mMaterialName;
-}
-
-void SubEntityDefinition::setMaterialName(const std::string& materialName) {
-	mMaterialName = materialName;
-}
-
-AnimationDefinition::AnimationDefinition(int iterations) :
-		mIterations(iterations) {
-}
-
-AnimationDefinition::~AnimationDefinition() {
-	for (auto& animationPart : mAnimationParts) {
-		delete animationPart;
-	}
-}
-
-AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(const std::string& ogreAnimationName) {
-	auto* def = new AnimationPartDefinition();
-	def->Name = ogreAnimationName;
-	mAnimationParts.push_back(def);
-	return def;
+void AnimationDefinition::addAnimationPartDefinition(AnimationPartDefinition def) {
+	animationParts.emplace_back(std::move(def));
 }
 
 const AnimationPartDefinitionsStore& AnimationDefinition::getAnimationPartDefinitions() const {
-	return mAnimationParts;
+	return animationParts;
 }
 
-void AnimationDefinition::removeAnimationPartDefinition(AnimationPartDefinition* def) {
-	ModelDefinition::removeDefinition(def, mAnimationParts);
+AnimationPartDefinitionsStore& AnimationDefinition::getAnimationPartDefinitions() {
+	return animationParts;
 }
 
-void AnimationDefinition::setIterations(int iterations) {
-	mIterations = iterations;
+void AnimationDefinition::removeAnimationPartDefinition(size_t index) {
+	animationParts.erase(animationParts.begin() + index);
 }
 
-ActionDefinition::ActionDefinition(std::string name) :
-		mName(std::move(name)), mAnimationSpeed(1.0) {
+
+ActionDefinition::~ActionDefinition() = default;
+
+void ActionDefinition::addAnimationDefinition(AnimationDefinition def) {
+	animations.emplace_back(std::move(def));
 }
 
-ActionDefinition::~ActionDefinition() {
-	for (auto& animation : mAnimations) {
-		delete animation;
-	}
-	for (auto& sound : mSounds) {
-		delete sound;
-	}
-}
-
-AnimationDefinition* ActionDefinition::createAnimationDefinition(int iterations) {
-	auto def = new AnimationDefinition(iterations);
-	mAnimations.push_back(def);
-	return def;
-}
 
 const AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions() const {
-	return mAnimations;
+	return animations;
 }
 
 AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions() {
-	return mAnimations;
+	return animations;
 }
 
-void ActionDefinition::removeAnimationDefinition(AnimationDefinition* def) {
-	ModelDefinition::removeDefinition(def, mAnimations);
+void ActionDefinition::removeAnimationDefinition(size_t index) {
+	animations.erase(animations.begin() + index);
 }
 
-SoundDefinition* ActionDefinition::createSoundDefinition(const std::string& groupName, unsigned int play) {
-	auto def = new SoundDefinition();
-	def->groupName = groupName;
-	def->playOrder = play;
-
-	mSounds.push_back(def);
-	return def;
+void ActionDefinition::addSoundDefinition(SoundDefinition def) {
+	sounds.emplace_back(std::move(def));
 }
 
 const SoundDefinitionsStore& ActionDefinition::getSoundDefinitions() const {
-	return mSounds;
+	return sounds;
 }
 
 SoundDefinitionsStore& ActionDefinition::getSoundDefinitions() {
-	return mSounds;
+	return sounds;
 }
 
-void ActionDefinition::removeSoundDefinition(SoundDefinition* def) {
-	ModelDefinition::removeDefinition(def, mSounds);
-}
-
-void ActionDefinition::createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger) {
-	ActivationDefinition def;
-	def.type = type;
-	def.trigger = trigger;
-
-	mActivations.push_back(std::move(def));
+void ActionDefinition::removeSoundDefinition(size_t index) {
+	sounds.erase(sounds.begin() + index);
 }
 
 const ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() const {
-	return mActivations;
+	return activations;
 }
 
 ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() {
-	return mActivations;
+	return activations;
 }
 
-const std::string& ActionDefinition::getName() const {
-	return mName;
-}
-
-const std::string& RenderingDefinition::getScheme() const {
-	return mScheme;
-}
-
-void RenderingDefinition::setScheme(const std::string& scheme) {
-	mScheme = scheme;
-}
-
-const StringParamStore& RenderingDefinition::getParameters() const {
-	return mParams;
-}
 
 }
 }

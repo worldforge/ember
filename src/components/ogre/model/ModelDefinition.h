@@ -40,23 +40,28 @@
 #include <vector>
 #include <unordered_set>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Model
-{
+namespace Ember {
+namespace OgreView {
+namespace Model {
 
 class Model;
-class ModelBackgroundLoader;
-class PartDefinition;
-class SubModelDefinition;
-class ModelDefinition;
-class SubEntityDefinition;
 
-class ActionDefinition;
+class ModelBackgroundLoader;
+
+struct PartDefinition;
+
+struct SubModelDefinition;
+
+class ModelDefinition;
+
+struct SubEntityDefinition;
+
+struct ActionDefinition;
+
 struct SoundDefinition;
-class AnimationDefinition;
+
+struct AnimationDefinition;
+
 struct AnimationPartDefinition;
 struct ActivationDefinition;
 struct AttachPointDefinition;
@@ -66,19 +71,19 @@ struct PoseDefinition;
 
 typedef std::unordered_set<Model*> ModelInstanceStore;
 
-typedef std::vector<SubModelDefinition*> SubModelDefinitionsStore;
-typedef std::vector<PartDefinition*> PartDefinitionsStore;
-typedef std::vector<SubEntityDefinition*> SubEntityDefinitionsStore;
-typedef std::vector<AnimationDefinition*> AnimationDefinitionsStore;
-typedef std::vector<AnimationPartDefinition*> AnimationPartDefinitionsStore;
-typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
-typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
+typedef std::vector<SubModelDefinition> SubModelDefinitionsStore;
+typedef std::vector<PartDefinition> PartDefinitionsStore;
+typedef std::vector<SubEntityDefinition> SubEntityDefinitionsStore;
+typedef std::vector<AnimationDefinition> AnimationDefinitionsStore;
+typedef std::vector<AnimationPartDefinition> AnimationPartDefinitionsStore;
+typedef std::vector<SoundDefinition> SoundDefinitionsStore;
+typedef std::vector<ActionDefinition> ActionDefinitionsStore;
 typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
 typedef std::vector<ActivationDefinition> ActivationDefinitionStore;
-typedef std::map<std::string, ViewDefinition*> ViewDefinitionStore;
+typedef std::map<std::string, ViewDefinition> ViewDefinitionStore;
 typedef std::map<std::string, PoseDefinition> PoseDefinitionStore;
 typedef std::map<std::string, std::string> StringParamStore;
-typedef std::map<std::string, BoneGroupDefinition*> BoneGroupDefinitionStore;
+typedef std::map<std::string, BoneGroupDefinition> BoneGroupDefinitionStore;
 
 /**
  * @brief A rendering definition.
@@ -86,31 +91,9 @@ typedef std::map<std::string, BoneGroupDefinition*> BoneGroupDefinitionStore;
  * This allows you to specify a different render method than the default one (regular Model).
  * All of this requires that you create functionality for implementing the different schemes that might be specified.
  */
-class RenderingDefinition
-{
-	friend class XMLModelDefinitionSerializer;
-public:
-
-	/**
-	 * Gets the scheme which will be used.
-	 * @return
-	 */
-	const std::string& getScheme() const;
-	/**
-	 * Sets the scheme.
-	 * @param scheme
-	 */
-	void setScheme(const std::string& scheme);
-
-	/**
-	 * Gets a collection of parameters for the rendering scheme.
-	 * @return
-	 */
-	const StringParamStore& getParameters() const;
-
-private:
-	StringParamStore mParams;
-	std::string mScheme;
+struct RenderingDefinition {
+	std::string scheme;
+	StringParamStore params;
 };
 
 /**
@@ -119,25 +102,10 @@ private:
  * Each subentity definitions refers to an Ogre::SubEntity (by index in the Ogre::Entity).
  * In addition, a specific material can be defined which overrides the default material of the subentity.
  */
-class SubEntityDefinition
-{
-	friend class PartDefinition;
-public:
-	const std::string& getSubEntityName() const;
-	unsigned int getSubEntityIndex() const;
-
-	const std::string& getMaterialName() const;
-	void setMaterialName(const std::string& materialName);
-
-	const PartDefinition& getPartDefinition() const;
-
-private:
-	SubEntityDefinition(std::string subEntityName, PartDefinition& partdef);
-	SubEntityDefinition(unsigned int subEntityIndex, PartDefinition& partdef);
-	std::string mSubEntityName;
-	std::string mMaterialName;
-	unsigned int mSubEntityIndex;
-	PartDefinition& mPartDef;
+struct SubEntityDefinition {
+	std::string subEntityName;
+	std::string materialName;
+	unsigned int subEntityIndex;
 };
 
 /**
@@ -151,35 +119,18 @@ private:
  * Each part can be put into a "group". This mechanisms guarantees that only one part from the same group ever is visible.
  * In our example with hair variants it would be very much suitable to put all parts into the same group since we only ever want one hair variant to be visible at once.
  */
-class PartDefinition
-{
-	friend class SubModelDefinition;
-public:
-	~PartDefinition();
+struct PartDefinition {
 
-	void setName(const std::string& name);
-	const std::string& getName() const;
+	void addSubEntityDefinition(SubEntityDefinition partDefinition);
 
-	void setGroup(const std::string& group);
-	const std::string& getGroup() const;
-
-	void setShow(bool show);
-	bool getShow() const;
-
-	SubEntityDefinition* createSubEntityDefinition(const std::string& subEntityName);
-	SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
 	const SubEntityDefinitionsStore& getSubEntityDefinitions() const;
-	void removeSubEntityDefinition(SubEntityDefinition* def);
 
-	const SubModelDefinition& getSubModelDefinition() const;
+	void removeSubEntityDefinition(size_t index);
 
-private:
-	PartDefinition(std::string  name, SubModelDefinition& subModelDef);
-	std::string mName;
-	bool mShow;
-	std::string mGroup;
-	SubEntityDefinitionsStore mSubEntities;
-	SubModelDefinition& mSubModelDef;
+	std::string name;
+	bool show;
+	std::string group;
+	SubEntityDefinitionsStore subEntities;
 };
 
 /**
@@ -188,27 +139,19 @@ private:
  * This represents one mesh within the Model. Each Model can be made up of multiple meshes, and each mesh is then defined through an instance of this class.
  *
  */
-class SubModelDefinition
-{
-	friend class ModelDefinition;
-public:
-	~SubModelDefinition();
+struct SubModelDefinition {
 
-	const std::string& getMeshName() const;
+	void addPartDefinition(PartDefinition partDefinition);
 
-	PartDefinition* createPartDefinition(const std::string& partname);
 	const PartDefinitionsStore& getPartDefinitions() const;
-	void removePartDefinition(PartDefinition* def);
 
-	const ModelDefinition& getModelDefinition() const;
+	void removePartDefinition(size_t index);
 
-	bool mShadowCaster = true;
+	std::string meshName;
 
-private:
-	SubModelDefinition(std::string  meshname, ModelDefinition& modelDef);
-	std::string mMeshName;
-	PartDefinitionsStore mParts;
-	ModelDefinition& mModelDef;
+	bool shadowCaster = true;
+
+	PartDefinitionsStore parts;
 };
 
 /**
@@ -217,8 +160,7 @@ private:
  * These settings needs to be applied to the camera rendering the Model.
  * The main use of this is when providing previews in icons and similar views.
  */
-struct ViewDefinition
-{
+struct ViewDefinition {
 	/**
 	 The name of the view.
 	 */
@@ -235,8 +177,7 @@ struct ViewDefinition
 	float Distance;
 };
 
-struct PoseDefinition
-{
+struct PoseDefinition {
 	/**
 	 * @brief The rotation of the model around the translated origin.
 	 */
@@ -260,8 +201,7 @@ struct PoseDefinition
  * An "attach point" is a place where child entities can be attached. A typical example would be something wielded in the hand of a human.
  * Each attach point has a name, which is used to bind it to the Atlas entity data, and a "bone name" which is used to determine what bone in the Ogre skeleton to bind to.
  */
-struct AttachPointDefinition
-{
+struct AttachPointDefinition {
 	std::string Name;
 	std::string BoneName;
 	std::string Pose;
@@ -280,8 +220,7 @@ struct AttachPointDefinition
 /**
  * @brief A reference to a bone group, with an optional weight.
  */
-struct BoneGroupRefDefinition
-{
+struct BoneGroupRefDefinition {
 	std::string Name;
 	float Weight;
 };
@@ -294,8 +233,7 @@ struct BoneGroupRefDefinition
  *
  * In addition, each part can have a weight attached to it which determines how much it should be blended.
  */
-struct AnimationPartDefinition
-{
+struct AnimationPartDefinition {
 	/**
 	 * The name of the animation.
 	 */
@@ -315,8 +253,7 @@ struct AnimationPartDefinition
  * A typical example would be of one animation which only affects a human character's hands, and another animation which only affects the legs.
  * To make these blend together one would have to add bone groups where one the bones affecting the arms are added to one group, and the bones affecting the legs added to the other group.
  */
-struct BoneGroupDefinition
-{
+struct BoneGroupDefinition {
 	/**
 	 * @brief The name of the group.
 	 */
@@ -336,36 +273,25 @@ struct BoneGroupDefinition
  *
  * In addition, each animation can be specified to iterate a certain number of times.
  */
-class AnimationDefinition
-{
-	friend class ActionDefinition;
-public:
-	~AnimationDefinition();
-	AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName);
+struct AnimationDefinition {
+
+	void addAnimationPartDefinition(AnimationPartDefinition def);
+
 	const AnimationPartDefinitionsStore& getAnimationPartDefinitions() const;
-	void removeAnimationPartDefinition(AnimationPartDefinition* def);
 
-	int getIterations() const;
+	AnimationPartDefinitionsStore& getAnimationPartDefinitions();
 
-	/**
-	 * @brief Sets the number of iterations for the animation.
-	 * @param iterations The number of iterations for the animation.
-	 */
-	void setIterations(int iterations);
+	void removeAnimationPartDefinition(size_t index);
 
-private:
-	explicit AnimationDefinition(int iterations);
-
-	AnimationPartDefinitionsStore mAnimationParts;
-	std::string mName;
-	int mIterations;
+	int iterations;
+	AnimationPartDefinitionsStore animationParts;
+	std::string name;
 };
 
 /**
  * @brief Definition of a sound to play for a certain action.
  */
-struct SoundDefinition
-{
+struct SoundDefinition {
 	std::string groupName;
 	unsigned int playOrder;
 };
@@ -375,27 +301,25 @@ struct SoundDefinition
  *
  * This structure is used to determine when an action should be played.
  */
-struct ActivationDefinition
-{
+struct ActivationDefinition {
 	/**
 	 * @brief The type of activation.
 	 */
-	enum Type
-	{
+	enum Type {
 		/**
 		 * @brief Activation through change of movement type.
 		 */
-		MOVEMENT,
+				MOVEMENT,
 
 		/**
 		 * @brief Activation through an entity action.
 		 */
-		ACTION,
+				ACTION,
 
 		/**
 		 * @brief Activation through a task being carried out.
 		 */
-		TASK
+				TASK
 	};
 
 	/**
@@ -415,40 +339,38 @@ struct ActivationDefinition
  * @brief Definition of an action.
  *
  * An "action" is comprised of both animations and sounds.
- * A typical example would be a "dig" action, which would use both an animation for showing the digging operation as well as some sound (perhaps grunting and the sound of a shovel digging in the ground).
+ * A typical example would be a "dig" action, which would use both an animation
+ * for showing the digging operation as well as some
+ * sound (perhaps grunting and the sound of a shovel digging in the ground).
  */
-class ActionDefinition
-{
-	friend class ModelDefinition;
-public:
+struct ActionDefinition {
 	~ActionDefinition();
 
-	AnimationDefinition* createAnimationDefinition(int iterations = 1);
+	void addAnimationDefinition(AnimationDefinition def);
+
 	const AnimationDefinitionsStore& getAnimationDefinitions() const;
+
 	AnimationDefinitionsStore& getAnimationDefinitions();
-	void removeAnimationDefinition(AnimationDefinition* def);
 
-	SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
+	void removeAnimationDefinition(size_t index);
+
+	void addSoundDefinition(SoundDefinition def);
+
 	const SoundDefinitionsStore& getSoundDefinitions() const;
-	SoundDefinitionsStore& getSoundDefinitions();
-	void removeSoundDefinition(SoundDefinition* def);
 
-	void createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger);
+	SoundDefinitionsStore& getSoundDefinitions();
+
+	void removeSoundDefinition(size_t index);
+
 	const ActivationDefinitionStore& getActivationDefinitions() const;
+
 	ActivationDefinitionStore& getActivationDefinitions();
 
-	const std::string& getName() const;
-	Ogre::Real getAnimationSpeed() const;
-	void setAnimationSpeed(Ogre::Real speed);
-
-private:
-	explicit ActionDefinition(std::string name);
-
-	std::string mName;
-	AnimationDefinitionsStore mAnimations;
-	SoundDefinitionsStore mSounds;
-	ActivationDefinitionStore mActivations;
-	Ogre::Real mAnimationSpeed;
+	std::string name;
+	AnimationDefinitionsStore animations;
+	SoundDefinitionsStore sounds;
+	ActivationDefinitionStore activations;
+	Ogre::Real animationSpeed = 1.0f;
 };
 
 /**
@@ -460,11 +382,12 @@ private:
  *
  * The most common use is to show a mesh though.
  */
-class ModelDefinition
-{
+class ModelDefinition {
 
 	friend class XMLModelDefinitionSerializer;
+
 	friend class Model;
+
 	friend class ModelBackgroundLoader;
 
 public:
@@ -474,36 +397,35 @@ public:
 	 * For example, if you use a model of a human you probably want to scale according to the height.
 	 * This might mean that width and depths aren't correct though.
 	 */
-	enum class UseScaleOf
-	{
+	enum class UseScaleOf {
 		/**
 		 * @brief Scale in all sizes, so that the bounding box of the model exactly matches the entity bounding box.
 		 */
-		MODEL_ALL,
+				MODEL_ALL,
 
 		/**
 		 * @brief Perform no scaling of the model.
 		 */
-		MODEL_NONE,
+				MODEL_NONE,
 
 		/**
 		 * @brief Scale the model so that it matches the width of the entity bounding box.
 		 */
-		MODEL_WIDTH,
+				MODEL_WIDTH,
 
 		/**
 		 * @brief Scale the model so that it matches the depth of the entity bounding box.
 		 */
-		MODEL_DEPTH,
+				MODEL_DEPTH,
 
 		/**
 		 * @brief Scale the model so that it matches the height of the entity bounding box.
 		 */
-		MODEL_HEIGHT,
+				MODEL_HEIGHT,
 		/**
 		 * @brief Scale the model so that it matches all axis, and also translate the model so that it perfectly fits the entity bbox.
 		 */
-		MODEL_FIT
+				MODEL_FIT
 	};
 
 	ModelDefinition();
@@ -517,12 +439,15 @@ public:
 	void moveFrom(ModelDefinition&& rhs);
 
 	bool isValid() const;
+
 	void setValid(bool valid);
+
 	/**
 	 * @brief Gets the amount of scale that needs to be applied to derived Models.
 	 * @return
 	 */
 	Ogre::Real getScale() const;
+
 	void setScale(Ogre::Real scale);
 
 	/**
@@ -531,6 +456,7 @@ public:
 	 * @return
 	 */
 	UseScaleOf getUseScaleOf() const;
+
 	void setUseScaleOf(UseScaleOf useScale);
 
 	/**
@@ -538,6 +464,7 @@ public:
 	 * @return
 	 */
 	const Ogre::Vector3& getTranslate() const;
+
 	void setTranslate(Ogre::Vector3 translate);
 
 	/**
@@ -546,6 +473,7 @@ public:
 	 * @return true if contained entities should be shown, else false
 	 */
 	bool getShowContained() const;
+
 	void setShowContained(bool show);
 
 	/**
@@ -553,6 +481,7 @@ public:
 	 * @return
 	 */
 	float getRenderingDistance() const;
+
 	void setRenderingDistance(float distance);
 
 	/**
@@ -561,6 +490,7 @@ public:
 	 * @return A offset vector.
 	 */
 	const Ogre::Vector3& getContentOffset() const;
+
 	void setContentOffset(const Ogre::Vector3&);
 
 	/**
@@ -581,12 +511,7 @@ public:
 	 */
 	const std::string& getIconPath() const;
 
-	/**
-	 * @brief Creates and returns a new sub model definition for the supplied mesh name.
-	 * @param meshname The name of the mesh to base the new sub model on. Must be a valid mesh.
-	 * @return
-	 */
-	SubModelDefinition* createSubModelDefinition(const std::string& meshname);
+	void addSubModelDefinition(SubModelDefinition def);
 
 	/**
 	 * @brief Returns all SubModelDefinitions defined.
@@ -598,14 +523,9 @@ public:
 	 * @brief Removes a certain SubModelDefinition.
 	 * @param def The definition to remove.
 	 */
-	void removeSubModelDefinition(SubModelDefinition* def);
+	void removeSubModelDefinition(size_t index);
 
-	/**
-	 * @brief Creates and returns a new ActionDefintion with the given name.
-	 * @param actionname The name of the new ActionDefinition.
-	 * @return A pointer to the new ActionDefinition.
-	 */
-	ActionDefinition* createActionDefinition(const std::string& actionname);
+	void addActionDefinition(ActionDefinition def);
 
 	/**
 	 * @brief Returns all ActionDefinitions defined.
@@ -623,7 +543,7 @@ public:
 	 * @brief Removes a certain ActionDefinition.
 	 * @param def The definition to remove.
 	 */
-	void removeActionDefinition(ActionDefinition* def);
+	void removeActionDefinition(size_t index);
 
 	/**
 	 * @brief Gets all attach point definitions.
@@ -640,12 +560,7 @@ public:
 	 */
 	void addAttachPointDefinition(const AttachPointDefinition& definition);
 
-	/**
-	 * @brief Creates and returns a new ViewDefinition with the supplied name.
-	 * @param viewname The name of the view
-	 * @return A pointer to the new view.
-	 */
-	ViewDefinition* createViewDefinition(const std::string& viewname);
+	void addViewDefinition(std::string name, ViewDefinition def);
 
 	/**
 	 * @brief Returns all views defined.
@@ -659,12 +574,7 @@ public:
 	 */
 	void removeViewDefinition(const std::string& name);
 
-	/**
-	 * @brief Creates and returns a new BoneGroupDefinition with the supplied name.
-	 * @param name The name of the definition.
-	 * @return A pointer to the new definition.
-	 */
-	BoneGroupDefinition* createBoneGroupDefinition(const std::string& name);
+	void addBoneGroupDefinition(std::string name, BoneGroupDefinition def);
 
 	/**
 	 * @brief Removed a named bone group. If no bone group can be found, no exception will be thrown.
@@ -715,8 +625,7 @@ private:
 
 	ModelDefinition& operator=(ModelDefinition&& rhs) = default;
 
-	struct BindingDefinition
-	{
+	struct BindingDefinition {
 		std::string EmitterVar;
 		std::string AtlasAttribute;
 	};
@@ -726,8 +635,7 @@ private:
 	/**
 	 * @brief A definition of a particle system.
 	 */
-	struct ParticleSystemDefinition
-	{
+	struct ParticleSystemDefinition {
 		/**
 		 * @brief The script to use for the particle system.
 		 *
@@ -754,8 +662,7 @@ private:
 
 	typedef std::vector<ParticleSystemDefinition> ParticleSystemSet;
 
-	struct LightDefinition
-	{
+	struct LightDefinition {
 		Ogre::Light::LightTypes type;
 		Ogre::ColourValue diffuseColour, specularColour;
 		Ogre::Real range, constant, linear, quadratic;
@@ -832,11 +739,11 @@ private:
 
 	bool mUseInstancing = true;
 
-	RenderingDefinition* mRenderingDef;
+	std::unique_ptr<RenderingDefinition> mRenderingDef;
 
 	std::set<Model*> mLoadingListeners;
 
-	ModelBackgroundLoader* mBackgroundLoader;
+	std::unique_ptr<ModelBackgroundLoader> mBackgroundLoader;
 
 	bool mAssetsLoaded;
 
@@ -849,66 +756,46 @@ typedef std::shared_ptr<ModelDefinition> ModelDefinitionPtr;
 
 ///implementations
 
-inline const Ogre::Vector3& ModelDefinition::getContentOffset() const
-{
+inline const Ogre::Vector3& ModelDefinition::getContentOffset() const {
 	return mContentOffset;
 }
-inline void ModelDefinition::setContentOffset(const Ogre::Vector3& offset)
-{
+
+inline void ModelDefinition::setContentOffset(const Ogre::Vector3& offset) {
 	mContentOffset = offset;
 }
 
-inline void ModelDefinition::setValid(bool valid)
-{
+inline void ModelDefinition::setValid(bool valid) {
 	mIsValid = valid;
 }
 
-inline Ogre::Real ModelDefinition::getScale() const
-{
+inline Ogre::Real ModelDefinition::getScale() const {
 	return mScale;
 }
-inline void ModelDefinition::setScale(Ogre::Real scale)
-{
+
+inline void ModelDefinition::setScale(Ogre::Real scale) {
 	mScale = scale;
 }
 
-inline ModelDefinition::UseScaleOf ModelDefinition::getUseScaleOf() const
-{
+inline ModelDefinition::UseScaleOf ModelDefinition::getUseScaleOf() const {
 	return mUseScaleOf;
 }
-inline void ModelDefinition::setUseScaleOf(UseScaleOf useScale)
-{
+
+inline void ModelDefinition::setUseScaleOf(UseScaleOf useScale) {
 	mUseScaleOf = useScale;
 }
 
-inline float ModelDefinition::getRenderingDistance() const
-{
+inline float ModelDefinition::getRenderingDistance() const {
 	return mRenderingDistance;
 }
 
-inline void ModelDefinition::setRenderingDistance(float distance)
-{
+inline void ModelDefinition::setRenderingDistance(float distance) {
 	mRenderingDistance = distance;
 }
 
-inline const std::string& ModelDefinition::getIconPath() const
-{
+inline const std::string& ModelDefinition::getIconPath() const {
 	return mIconPath;
 }
 
-inline int AnimationDefinition::getIterations() const
-{
-	return mIterations;
-}
-
-inline Ogre::Real ActionDefinition::getAnimationSpeed() const
-{
-	return mAnimationSpeed;
-}
-inline void ActionDefinition::setAnimationSpeed(Ogre::Real speed)
-{
-	mAnimationSpeed = speed;
-}
 
 }
 }

@@ -106,16 +106,16 @@ bool ModelBackgroundLoader::performLoading() {
 //	TimedLog log("performLoading " + mModelDefinition.getName() + " state: " + std::to_string(mState));
 	if (mState == LS_UNINITIALIZED) {
 		//Start to load the meshes
-		for (auto subModel : mModelDefinition.getSubModelDefinitions()) {
-			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName(subModel->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+		for (auto& subModel : mModelDefinition.getSubModelDefinitions()) {
+			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByName(subModel.meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 			if (!meshPtr || (!meshPtr->isPrepared() && !meshPtr->isLoading() && !meshPtr->isLoaded())) {
 				try {
-					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MeshManager::getSingleton().getResourceType(), subModel->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, nullptr, nullptr, &mListener);
+					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MeshManager::getSingleton().getResourceType(), subModel.meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, nullptr, nullptr, &mListener);
 					if (ticket) {
 						addTicket(ticket);
 					}
 				} catch (const std::exception& ex) {
-					S_LOG_FAILURE("Could not load the mesh " << subModel->getMeshName() << " when loading model " << mModelDefinition.getOrigin() << "." << ex);
+					S_LOG_FAILURE("Could not load the mesh " << subModel.meshName << " when loading model " << mModelDefinition.getOrigin() << "." << ex);
 					continue;
 				}
 			}
@@ -132,7 +132,7 @@ bool ModelBackgroundLoader::performLoading() {
 		while (mSubModelLoadingIndex < submodelDefinitions.size()) {
 			auto submodelDef = submodelDefinitions.at(mSubModelLoadingIndex);
 			mSubModelLoadingIndex++;
-			Ogre::MeshPtr meshPtr = Ogre::static_pointer_cast<Ogre::Mesh>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+			Ogre::MeshPtr meshPtr = Ogre::static_pointer_cast<Ogre::Mesh>(Ogre::MeshManager::getSingleton().getByName(submodelDef.meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 			if (meshPtr) {
 				if (!meshPtr->isLoaded()) {
 #if OGRE_THREAD_SUPPORT == 1
@@ -164,7 +164,7 @@ bool ModelBackgroundLoader::performLoading() {
 
 		for (auto& submodelDef : mModelDefinition.getSubModelDefinitions()) {
 
-			Ogre::MeshPtr meshPtr = Ogre::static_pointer_cast<Ogre::Mesh>(Ogre::MeshManager::getSingleton().getByName(submodelDef->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+			Ogre::MeshPtr meshPtr = Ogre::static_pointer_cast<Ogre::Mesh>(Ogre::MeshManager::getSingleton().getByName(submodelDef.meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
 			if (meshPtr) {
 				if (meshPtr->isLoaded()) {
 					for (auto submesh : meshPtr->getSubMeshes()) {
@@ -172,10 +172,10 @@ bool ModelBackgroundLoader::performLoading() {
 					}
 				}
 			}
-			for (auto& partDef : submodelDef->getPartDefinitions()) {
-				if (!partDef->getSubEntityDefinitions().empty()) {
-					for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
-						prepareMaterialInBackground(subEntityDef->getMaterialName());
+			for (auto& partDef : submodelDef.getPartDefinitions()) {
+				if (!partDef.getSubEntityDefinitions().empty()) {
+					for (auto& subEntityDef : partDef.getSubEntityDefinitions()) {
+						prepareMaterialInBackground(subEntityDef.materialName);
 					}
 				}
 			}

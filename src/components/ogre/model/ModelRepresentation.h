@@ -61,8 +61,8 @@ class Action;
 class ModelMount;
 
 typedef std::list<Action*> ActionStore;
-typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
-typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
+typedef std::vector<ActionDefinition> ActionDefinitionsStore;
+typedef std::vector<SoundDefinition> SoundDefinitionsStore;
 typedef std::vector<Ogre::SceneNode*> SceneNodeStore;
 
 /**

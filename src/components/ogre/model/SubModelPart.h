@@ -25,9 +25,11 @@
 #define SUBMODELPART_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "ModelDefinition.h"
 
 #include <set>
 #include <vector>
+#include <boost/optional.hpp>
 
 namespace Ogre {
 class SubEntity;
@@ -44,11 +46,9 @@ class Model;
 
 class ModelDefinition;
 
-class SubEntityDefinition;
-
 struct SubModelPartEntity {
 	Ogre::SubEntity* SubEntity;
-	SubEntityDefinition* Definition;
+	boost::optional<SubEntityDefinition> Definition;
 	unsigned short subEntityIndex;
 };
 
@@ -63,7 +63,8 @@ public:
 	virtual ~SubModelPart();
 
 
-	bool addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition* definition, unsigned short subEntityIndex);
+	void addSubEntity(SubModelPartEntity subModelPartEntity);
+	bool addSubEntity(Ogre::SubEntity* subentity, SubEntityDefinition definition, unsigned short subEntityIndex);
 
 	bool removeSubEntity(const Ogre::SubEntity* subentity);
 

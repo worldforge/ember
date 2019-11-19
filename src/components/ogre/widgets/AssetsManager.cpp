@@ -194,7 +194,8 @@ void AssetsManager::createModel(const Ogre::MeshPtr& mesh) {
 	auto tokens = Tokeniser::split(name, "/");
 	std::string modelName = Tokeniser::split(tokens.back(), ".").front();
 	auto modelDefinition = std::make_shared<Model::ModelDefinition>();
-	modelDefinition->createSubModelDefinition(mesh->getName());
+	Model::SubModelDefinition subModelDefinition{mesh->getName()};
+	modelDefinition->addSubModelDefinition(subModelDefinition);
 	modelDefinitionManager.exportScript(modelName, modelDefinition);
 
 }
