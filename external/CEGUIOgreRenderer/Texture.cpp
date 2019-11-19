@@ -35,39 +35,6 @@
 // Start of CEGUI namespace section
 namespace CEGUI
 {
-//----------------------------------------------------------------------------//
-// helper function to return byte size of image of given size in given format
-static size_t calculateDataSize(const Sizef size, Texture::PixelFormat fmt)
-{
-    switch (fmt)
-    {
-    case Texture::PF_RGBA:
-        return size.d_width * size.d_height * 4;
-
-    case Texture::PF_RGB:
-        return size.d_width * size.d_height * 3;
-
-    case Texture::PF_RGB_565:
-    case Texture::PF_RGBA_4444:
-        return size.d_width * size.d_height * 2;
-
-    case Texture::PF_PVRTC2:
-        return (static_cast<size_t>(size.d_width * size.d_height) * 2 + 7) / 8;
-
-    case Texture::PF_PVRTC4:
-        return (static_cast<size_t>(size.d_width * size.d_height) * 4 + 7) / 8;
-
-    case Texture::PF_RGBA_DXT1:
-        return std::ceil(size.d_width / 4) * std::ceil(size.d_height / 4) * 8;
-
-    case Texture::PF_RGBA_DXT3:
-    case Texture::PF_RGBA_DXT5:
-        return std::ceil(size.d_width / 4) * std::ceil(size.d_height / 4) * 16;
-
-    default:
-        return 0;
-    }
-}
 
 //----------------------------------------------------------------------------//
 uint32 OgreTexture::d_textureNumber = 0;
@@ -207,20 +174,15 @@ void OgreTexture::loadFromMemory(const void* buffer, const Sizef& buffer_size,
         CEGUI_THROW(InvalidRequestException(
             "Data was supplied in an unsupported pixel format."));
 
-    const size_t byte_size = calculateDataSize(buffer_size, pixel_format);
-
-    char* bufferCopy = new char[byte_size];
-    memcpy(bufferCopy, buffer, byte_size);
-
-    const Ogre::PixelBox* pixelBox = new Ogre::PixelBox(buffer_size.d_width, buffer_size.d_height,
-                                                        1, toOgrePixelFormat(pixel_format), bufferCopy);
+	Ogre::PixelBox pixelBox(buffer_size.d_width, buffer_size.d_height,
+							1, toOgrePixelFormat(pixel_format), (char*)buffer);
     createEmptyOgreTexture(pixel_format);
     d_texture->freeInternalResources();
     d_texture->setWidth(buffer_size.d_width);
     d_texture->setHeight(buffer_size.d_height);
     d_texture->setDepth(1);
     d_texture->createInternalResources();
-    d_texture->getBuffer(0,0).get()->blitFromMemory(*pixelBox);
+    d_texture->getBuffer(0,0).get()->blitFromMemory(pixelBox);
 
     // throw exception if no texture was able to be created
     if (OGRE_ISNULL(d_texture))
