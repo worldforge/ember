@@ -82,14 +82,14 @@ void ProjectileRenderingTechnique::registerEntity(EmberEntity& entity) {
 		auto I = mActiveNodes.find(&entity);
 		if (I != mActiveNodes.end()) {
 			auto model = Model::ModelRepresentation::getModelForEntity(entity);
-			if (model) {
+			if (model && model->getNodeProvider()) {
 				I->second.entityNode = model->getNodeProvider()->getNode();
 				I->second.inactiveTime = 0.0f;
 			}
 		} else {
 			if (!mAvailableNodes.empty()) {
 				auto model = Model::ModelRepresentation::getModelForEntity(entity);
-				if (model) {
+				if (model && model->getNodeProvider()) {
 					try {
 						auto node = mAvailableNodes.back();
 						mAvailableNodes.pop_back();
@@ -100,7 +100,7 @@ void ProjectileRenderingTechnique::registerEntity(EmberEntity& entity) {
 
 						auto chainIndex = mTrail->getChainIndexForNode(node);
 						//Adapt the colour fading to the simulation speed.
-						mTrail->setColourChange(chainIndex, 0, 0, 0, 0.5 * entity.getView()->getSimulationSpeed());
+						mTrail->setColourChange(chainIndex, 0, 0, 0, 0.5f * entity.getView()->getSimulationSpeed());
 
 					} catch (const Ogre::Exception& ex) {
 						S_LOG_WARNING("Error when trying to add ribbon trail." << ex);
