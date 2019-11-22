@@ -17,6 +17,7 @@
  */
 
 #include "ProjectileRenderingTechnique.h"
+#include "Convert.h"
 
 #include <Eris/View.h>
 #include <OgreSceneManager.h>
@@ -95,7 +96,8 @@ void ProjectileRenderingTechnique::registerEntity(EmberEntity& entity) {
 						mAvailableNodes.pop_back();
 						auto entityNode = model->getNodeProvider()->getNode();
 						mActiveNodes.emplace(&entity, ActiveEntityEntry{entityNode, node, 0.f});
-						node->setPosition(entityNode->_getDerivedPosition());
+						//Set the initial position of the trail to where the projectile entity was reported to be when received from the server.
+						node->setPosition(Convert::toOgre(entity.getPosition()));
 						mTrail->addNode(node);
 
 						auto chainIndex = mTrail->getChainIndexForNode(node);
