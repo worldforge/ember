@@ -56,23 +56,21 @@ namespace Gui {
 
 
 InspectWidget::InspectWidget() :
-Inspect("inspect", this, "Inspect an entity."),
-mChildList(0), mInfo(0), mCurrentEntity(0), mChangedThisFrame(false)
-{
-}
-InspectWidget::~InspectWidget()
-{
+		Inspect("inspect", this, "Inspect an entity."),
+		mChildList(nullptr),
+		mInfo(nullptr),
+		mCurrentEntity(nullptr),
+		mChangedThisFrame(false) {
 }
 
+InspectWidget::~InspectWidget() = default;
 
-void InspectWidget::entity_BeingDeleted()
-{
+void InspectWidget::entity_BeingDeleted() {
 	disconnectFromEntity();
-	mCurrentEntity = 0;
+	mCurrentEntity = nullptr;
 }
 
-void InspectWidget::buildWidget()
-{
+void InspectWidget::buildWidget() {
 
 
 	loadMainSheet("InspectWidget.layout", "InspectWidget/");
@@ -127,8 +125,7 @@ void InspectWidget::buildWidget()
 
 }
 
-void InspectWidget::updateAttributeString()
-{
+void InspectWidget::updateAttributeString() {
 	std::stringstream ss;
 
 	Atlas::PresentationBridge bridge(ss);
@@ -139,10 +136,8 @@ void InspectWidget::updateAttributeString()
 	mAttributesString = ss.str();
 }
 
-void InspectWidget::runCommand(const std::string &command, const std::string &args)
-{
-	if(Inspect == command && EmberOgre::getSingleton().getWorld())
-	{
+void InspectWidget::runCommand(const std::string& command, const std::string& args) {
+	if (Inspect == command && EmberOgre::getSingleton().getWorld()) {
 		//the first argument must be a valid entity id
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -162,8 +157,7 @@ void InspectWidget::runCommand(const std::string &command, const std::string &ar
 
 }
 
-void InspectWidget::disconnectFromEntity()
-{
+void InspectWidget::disconnectFromEntity() {
 	mChangedConnection.disconnect();
 	mChildAddedConnection.disconnect();
 	mChildRemovedConnection.disconnect();
@@ -176,8 +170,7 @@ void InspectWidget::handleAction(const std::string& action, EmberEntity* entity)
 	}
 }
 
-void InspectWidget::startInspecting(EmberEntity* entity)
-{
+void InspectWidget::startInspecting(EmberEntity* entity) {
 	disconnectFromEntity();
 
 	mChangedThisFrame = true;
@@ -198,15 +191,13 @@ void InspectWidget::startInspecting(EmberEntity* entity)
 
 }
 
-void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
-{
+void InspectWidget::frameStarted(const Ogre::FrameEvent& evt) {
 	if (mMainWindow->isVisible() && mCurrentEntity && mChangedThisFrame) {
 		showEntityInfo(mCurrentEntity);
 	}
 }
 
-void InspectWidget::showEntityInfo(EmberEntity* entity)
-{
+void InspectWidget::showEntityInfo(EmberEntity* entity) {
 	Eris::Entity* parent = entity->getLocation();
 	std::stringstream ss;
 	ss.precision(4);
@@ -227,7 +218,7 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 	if (entity->getPosition().isValid()) {
 		ss << "Position: " << entity->getPosition() << "\n";
 	}
-	WFMath::Vector<3> velocity = entity->getPredictedVelocity();
+	const WFMath::Vector<3>& velocity = entity->getPredictedVelocity();
 	if (velocity.isValid()) {
 		ss << "Velocity: " << velocity << ": " << sqrt(velocity.sqrMag()) << "\n";
 	}
@@ -250,25 +241,23 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 
 }
 
-void InspectWidget::fillChildrenList()
-{
+void InspectWidget::fillChildrenList() {
 	size_t numberOfChildren = mCurrentEntity->numContained();
 	mChildList->resetList();
 
-	for (unsigned int i = 0; i < numberOfChildren;  ++i) {
+	for (size_t i = 0; i < numberOfChildren; ++i) {
 		Eris::Entity* child = mCurrentEntity->getContained(i);
 		addChildToList(child);
 	}
 
 }
 
-void InspectWidget::addChildToList(Eris::Entity* child)
-{
+void InspectWidget::addChildToList(Eris::Entity* child) {
 	CEGUI::String name(child->getType()->getName());
 	if (child->getName().empty()) {
-		name += " ("+ child->getId() + ")";
+		name += " (" + child->getId() + ")";
 	} else {
-		name += " ("+ child->getId() +" : "+child->getName()+")";
+		name += " (" + child->getId() + " : " + child->getName() + ")";
 	}
 	if (!child->isVisible()) {
 		name += " (not visible)";
@@ -278,14 +267,12 @@ void InspectWidget::addChildToList(Eris::Entity* child)
 	mChildList->addItem(item);
 }
 
-void InspectWidget::entity_ChildAdded(Eris::Entity* entity)
-{
+void InspectWidget::entity_ChildAdded(Eris::Entity* entity) {
 	addChildToList(entity);
 }
 
-void InspectWidget::entity_ChildRemoved(Eris::Entity* entity)
-{
-	for (unsigned int i = 0; i < mChildList->getItemCount(); ++i) {
+void InspectWidget::entity_ChildRemoved(Eris::Entity* entity) {
+	for (size_t i = 0; i < mChildList->getItemCount(); ++i) {
 		CEGUI::ListboxItem* item = mChildList->getListboxItemFromIndex(i);
 		if (item->getUserData() == entity) {
 			mChildList->removeItem(item);
@@ -294,15 +281,13 @@ void InspectWidget::entity_ChildRemoved(Eris::Entity* entity)
 	}
 }
 
-void InspectWidget::entity_Changed(const Eris::StringSet& attributes)
-{
+void InspectWidget::entity_Changed(const Eris::StringSet& attributes) {
 	updateAttributeString();
 	mChangedThisFrame = true;
 }
 
 
-bool InspectWidget::ChildList_MouseDoubleClick(const CEGUI::EventArgs& args)
-{
+bool InspectWidget::ChildList_MouseDoubleClick(const CEGUI::EventArgs& args) {
 	//Inspect the child entity
 	CEGUI::ListboxItem* item = mChildList->getFirstSelectedItem();
 	if (item) {
@@ -311,8 +296,6 @@ bool InspectWidget::ChildList_MouseDoubleClick(const CEGUI::EventArgs& args)
 
 	return true;
 }
-
-
 
 
 }

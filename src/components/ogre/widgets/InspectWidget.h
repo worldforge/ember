@@ -42,9 +42,9 @@ class InspectWidget : public Widget
 public:
 
     InspectWidget();
-    virtual ~InspectWidget();
-	void buildWidget();
-	virtual void frameStarted(const Ogre::FrameEvent & evt);
+    ~InspectWidget() override;
+	void buildWidget() override;
+	void frameStarted(const Ogre::FrameEvent & evt) override;
 
 	const ConsoleCommandWrapper Inspect;
 
@@ -54,7 +54,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 protected:
 
