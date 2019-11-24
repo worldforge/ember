@@ -283,10 +283,15 @@ void MainCamera::setMovementProvider(IMovementProvider* movementProvider) {
 }
 
 bool MainCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos) {
-	Ogre::Vector3 hcsPosition = mScene.getMainCamera().getProjectionMatrix() * (mScene.getMainCamera().getViewMatrix() * worldPos);
-
-	if ((hcsPosition.x < -1.0f) || (hcsPosition.x > 1.0f) || (hcsPosition.y < -1.0f) || (hcsPosition.y > 1.0f))
+	auto cameraRelativePos = mScene.getMainCamera().getViewMatrix() * worldPos;
+	if (cameraRelativePos.z >= 0) {
 		return false;
+	}
+	Ogre::Vector3 hcsPosition = mScene.getMainCamera().getProjectionMatrix() * cameraRelativePos;
+
+	if ((hcsPosition.x < -1.0f) || (hcsPosition.x > 1.0f) || (hcsPosition.y < -1.0f) || (hcsPosition.y > 1.0f)) {
+		return false;
+	}
 
 	screenPos.x = (hcsPosition.x + 1) * 0.5f;
 	screenPos.y = (-hcsPosition.y + 1) * 0.5f;
@@ -295,10 +300,15 @@ bool MainCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& scr
 }
 
 Ogre::Vector2 MainCamera::worldToScreen(Ogre::Camera& camera, const Ogre::Vector3& worldPos) {
-	Ogre::Vector3 hcsPosition = camera.getProjectionMatrix() * (camera.getViewMatrix() * worldPos);
+	auto cameraRelativePos = camera.getViewMatrix() * worldPos;
+	if (cameraRelativePos.z >= 0) {
+		return {NAN, NAN};
+	}
+	Ogre::Vector3 hcsPosition = camera.getProjectionMatrix() * cameraRelativePos;
 
-	if ((hcsPosition.x < -1.0f) || (hcsPosition.x > 1.0f) || (hcsPosition.y < -1.0f) || (hcsPosition.y > 1.0f))
-		return Ogre::Vector2(NAN, NAN);
+	if ((hcsPosition.x < -1.0f) || (hcsPosition.x > 1.0f) || (hcsPosition.y < -1.0f) || (hcsPosition.y > 1.0f)) {
+		return {NAN, NAN};
+	}
 
 	Ogre::Vector2 screenPos;
 	screenPos.x = (hcsPosition.x + 1) * 0.5f;

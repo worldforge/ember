@@ -360,10 +360,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 		UniqueWindowPtr<CEGUI::Window> mDetachedLayout;
 	};
 
-	typedef std::unordered_map<std::string, Label*> LabelMap;
-	typedef std::vector<Label*> LabelStore;
-	typedef std::stack<Label*> LabelStack;
-	typedef std::unordered_map<std::string, EntityObserver*> EntityObserverStore;
+	typedef std::unordered_map<std::string, std::unique_ptr<EntityObserver>> EntityObserverStore;
 
 	friend class IngameChatWidget::EntityObserver;
 

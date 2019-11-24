@@ -143,12 +143,12 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 		auto I = mEntityObservers.find(entity->getId());
 		EntityObserver* observer = nullptr;
 		if (I != mEntityObservers.end()) {
-			observer = I->second;
+			observer = I->second.get();
 		} else {
 			Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(*entity);
 			if (modelRepresentation) {
 				observer = new EntityObserver(*this, *entity);
-				mEntityObservers.insert(std::make_pair(entity->getId(), observer));
+				mEntityObservers.emplace(entity->getId(), std::unique_ptr<EntityObserver>(observer));
 			}
 		}
 		if (observer) {
@@ -160,15 +160,15 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 void IngameChatWidget::enableForEntity(EmberEntity& entity) {
 	//Any entity created before we've gotten mAvatar is the avatar entity itself, which we'll ignore.
 	if (mWorld->getAvatar() && mWorld->getAvatar()->getEmberEntity().getId() != entity.getId()) {
-		auto* observer = new EntityObserver(*this, entity);
-		mEntityObservers.insert(std::make_pair(entity.getId(), observer));
+		auto observer = std::make_unique<EntityObserver>(*this, entity);
+		mEntityObservers.emplace(entity.getId(), std::move(observer));
 	}
 }
 
 void IngameChatWidget::disableForEntity(EmberEntity& entity) {
 	auto I = mEntityObservers.find(entity.getId());
 	if (I != mEntityObservers.end()) {
-		removeEntityObserver(I->second);
+		mEntityObservers.erase(I);
 	}
 }
 
@@ -177,7 +177,6 @@ void IngameChatWidget::removeEntityObserver(EntityObserver* observer) {
 	if (I != mEntityObservers.end()) {
 		mEntityObservers.erase(I);
 	}
-	delete observer;
 }
 
 WidgetPool<IngameChatWidget::Label>& IngameChatWidget::getLabelPool() {
