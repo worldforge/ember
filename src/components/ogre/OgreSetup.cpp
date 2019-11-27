@@ -29,7 +29,6 @@
 
 
 #include "OgreInfo.h"
-#include "OgreConfigurator.h"
 #include "MeshSerializerListener.h"
 #include "lod/ScaledPixelCountLodStrategy.h"
 
@@ -206,34 +205,6 @@ void OgreSetup::createOgreSystem() {
 
 }
 
-bool OgreSetup::showConfigurationDialog() {
-	OgreConfigurator configurator;
-	OgreConfigurator::Result result;
-	try {
-		result = configurator.configure();
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when showing configuration window." << ex);
-		mOverlaySystem.reset();
-		mRoot.reset();
-		createOgreSystem();
-		throw ex;
-	}
-	mOverlaySystem.reset();
-	mRoot.reset();
-	if (result == OgreConfigurator::OC_CANCEL) {
-		return false;
-	}
-	createOgreSystem();
-
-	auto configOptions = configurator.getConfigOptions();
-	for (const auto& configOption : configOptions) {
-		mRoot->getRenderSystem()->setConfigOption(configOption.first, configOption.second.currentValue);
-		//Keys in varconf are mangled, so we store the entry with a ":" delimiter.
-		EmberServices::getSingleton().getConfigService().setValue("renderer", configOption.second.name, configOption.second.name + ":" + configOption.second.currentValue);
-	}
-	return true;
-}
-
 void OgreSetup::Config_ogreLogChanged(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_string()) {
 		auto string = variable.as_string();
@@ -255,15 +226,11 @@ Ogre::Root* OgreSetup::configure() {
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
 	createOgreSystem();
 #ifndef BUILD_WEBEMBER
-	bool suppressConfig = false;
 
 	// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not.
 	unsigned int height = 720, width = 1280; //default resolution unless user selects other
 	bool fullscreen = false;
 
-	if (configService.itemExists("ogre", "suppressconfigdialog")) {
-		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
-	}
 	try {
 
 		auto rendererConfig = configService.getSection("renderer");
@@ -286,12 +253,6 @@ Ogre::Root* OgreSetup::configure() {
 			S_LOG_WARNING("Possible issue when setting render system options: " << validation);
 		}
 
-		if (!suppressConfig) {
-			bool configResult = showConfigurationDialog();
-			if (!configResult) {
-				return nullptr;
-			}
-		}
 		parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
 
 

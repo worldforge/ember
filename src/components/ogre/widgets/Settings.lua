@@ -227,16 +227,7 @@ function SettingsWidget:buildSettingsUi()
 					key = "desiredfps",
 					
 					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 150) end,
-				},
-				{
-					label = "Suppress Ogre settings window",
-					helpString = "Suppress the showing of the Ogre settings window at startup.",
-					
-					section = "ogre",
-					key = "suppressconfigdialog",
-					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
-				},
+				}
 			},
 		},
 		{

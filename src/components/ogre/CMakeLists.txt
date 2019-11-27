@@ -110,7 +110,7 @@ add_library(emberogre
         DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp
         AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp
         EntityObserverBase.cpp TerrainPageDataProvider.cpp Scene.cpp ForestRenderingTechnique.cpp World.cpp
-        Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp CompositionAction.cpp GraphicalChangeAdapter.cpp
+        Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp CompositionAction.cpp GraphicalChangeAdapter.cpp
         EmberWorkQueue.cpp
         EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ILightning.h
         IMovable.h IMovementProvider.h INodeProvider.h ISceneRenderingTechnique.h IWorldPickListener.h

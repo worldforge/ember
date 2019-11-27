@@ -51,7 +51,6 @@ int WebEmberManager::start(const std::string& windowHandle, const std::string& p
 	std::string homeDir("");
 	Ember::Application::ConfigMap configMap;
 	std::map<std::string, std::string> ogremap;
-	ogremap.insert(std::make_pair("suppressconfigdialog", "true"));
 	ogremap.insert(std::make_pair("windowhandle", mWindowHandle));
 	configMap.insert(std::make_pair("ogre", ogremap));
 
