@@ -34,8 +34,8 @@
 namespace Ember {
 namespace OgreView {
 
-GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System* system, CEGUI::OgreRenderer* renderer) :
-		mGuiSystem(system), mGuiRenderer(renderer), mGuiContext(system->getDefaultGUIContext()) {
+GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System& system, CEGUI::OgreRenderer& renderer) :
+		mGuiSystem(system), mGuiRenderer(renderer), mGuiContext(system.getDefaultGUIContext()) {
 
 	//lookup table for sdl scancodes and CEGUI keys
 	mKeyMap[SDL_SCANCODE_BACKSPACE] = CEGUI::Key::Backspace;

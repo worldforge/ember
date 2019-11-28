@@ -49,6 +49,10 @@ void EntityTooltip::registerFactory() {
 	CEGUI::WindowFactoryManager::addFactory<CEGUI::TplWindowFactory<EmberEntityTooltipWidget>>();
 }
 
+void EntityTooltip::deregisterFactory() {
+	CEGUI::WindowFactoryManager::getSingleton().removeFactory(EmberEntityTooltipWidget::WidgetTypeName);
+}
+
 EntityTooltip::EntityTooltip(World& world, UniqueWindowPtr<EmberEntityTooltipWidget> tooltip, Icons::IconManager& iconManager) :
 		mWorld(world),
 		mTooltip(std::move(tooltip)),

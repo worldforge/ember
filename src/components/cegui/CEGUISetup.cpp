@@ -26,7 +26,13 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "CEGUIOgreRenderer/Renderer.h"
+#include "CEGUIOgreRenderer/ResourceProvider.h"
+#include "CEGUIOgreRenderer/ImageCodec.h"
+#include "CEGUILogger.h"
 #include <OgreRenderWindow.h>
+#include <CEGUI/System.h>
+#include <CEGUI/SchemeManager.h>
+#include <framework/Exception.h>
 
 namespace Ember {
 namespace Cegui {
@@ -58,6 +64,46 @@ CEGUI::OgreRenderer& CEGUISetup::createRenderer(Ogre::RenderWindow* renderWindow
 	}
 
 	return CEGUI::OgreRenderer::create(*renderWindow);
+}
+
+CEGUISetup::CEGUISetup(Ogre::RenderWindow& window)
+		: mCEGUILogger(new Cegui::CEGUILogger()) {
+//Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
+#ifndef CEGUI_HAS_FREETYPE
+	CEGUI is not built with Freetype
+#endif
+
+	//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI.
+	mGuiRenderer = &Ember::Cegui::CEGUISetup::createRenderer(&window);
+
+	//We'll do our own rendering, interleaved with Ogre's, so we'll turn off the automatic rendering.
+	mGuiRenderer->setRenderingEnabled(false);
+	mGuiRenderer->setFrameControlExecutionEnabled(false);
+
+	mOgreResourceProvider = &CEGUI::OgreRenderer::createOgreResourceProvider();
+	mOgreResourceProvider->setDefaultResourceGroup("UI");
+
+	mOgreImageCodec = &CEGUI::OgreRenderer::createOgreImageCodec();
+
+	mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, nullptr, "cegui/datafiles/configs/cegui.config");
+	auto schemeI = CEGUI::SchemeManager::getSingleton().getIterator();
+	if (schemeI.isAtEnd()) {
+		// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
+		throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
+	}
+}
+
+CEGUISetup::~CEGUISetup() {
+	CEGUI::System::destroy();
+	if (mOgreResourceProvider) {
+		CEGUI::OgreRenderer::destroyOgreResourceProvider(*mOgreResourceProvider);
+	}
+	if (mOgreImageCodec) {
+		CEGUI::OgreRenderer::destroyOgreImageCodec(*mOgreImageCodec);
+	}
+	if (mGuiRenderer) {
+		CEGUI::OgreRenderer::destroy(*mGuiRenderer);
+	}
 }
 
 }

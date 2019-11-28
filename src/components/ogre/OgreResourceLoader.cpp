@@ -258,8 +258,9 @@ void OgreResourceLoader::loadBootstrap() {
 }
 
 void OgreResourceLoader::loadGui() {
-	addSharedMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	addUserMedia("gui", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	addMedia("ui", "UI");
+	addSharedMedia("gui", "EmberFileSystem", "UI");
+	addUserMedia("gui", "EmberFileSystem", "UI");
 }
 
 void OgreResourceLoader::loadGeneral() {

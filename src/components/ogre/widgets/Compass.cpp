@@ -250,7 +250,7 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 					//Make sure that the compass material is using the map texture for the base rendering
 					mCompassMaterialMapTUS->setTexture(mMap->getTexture());
 
-					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompass", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, 128, 128, 1, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
+					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompass", originalMaterial->getGroup(), Ogre::TEX_TYPE_2D, 128, 128, 1, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
 					mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 					mRenderTexture->removeAllViewports();
 					mRenderTexture->setAutoUpdated(false);
@@ -265,7 +265,7 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 					mViewport->setBackgroundColour(Ogre::ColourValue::ZERO);
 
 					mMapRectangle = OGRE_NEW Ogre::Rectangle2D(true);
-					auto mapMaterialPtr = Ogre::MaterialManager::getSingleton().getByName(mCompassMaterial->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					auto mapMaterialPtr = Ogre::MaterialManager::getSingleton().getByName(mCompassMaterial->getName(), originalMaterial->getGroup());
 					if (mapMaterialPtr) {
 						mMapRectangle->setMaterial(mapMaterialPtr);
 					}

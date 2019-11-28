@@ -91,6 +91,7 @@
 
 #include "OgreResourceProvider.h"
 #include "Version.h"
+#include "components/cegui/CEGUISetup.h"
 
 #include <Eris/Connection.h>
 #include <Eris/View.h>
@@ -174,6 +175,7 @@ EmberOgre::~EmberOgre() {
 	delete mShaderManager;
 	delete mScreen;
 
+	mGuiSetup.reset();
 	if (mOgreSetup) {
 		// Deregister the overlay system before deleting it in OgreSetup::shutdown
 		if (mSceneManagerOutOfWorld) {
@@ -319,6 +321,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	//We'll control the rendering ourself and need to turn off the autoupdating.
 	mWindow->setAutoUpdated(false);
 
+
 	auto exportDir = configSrv.getHomeDirectory(BaseDirType_DATA) / "user-media" / "data";
 	//Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
@@ -360,6 +363,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 	mResourceLoader->loadBootstrap();
 	mResourceLoader->loadGui();
+	mGuiSetup = std::make_unique<Cegui::CEGUISetup>(*mWindow);
+
 	mResourceLoader->loadGeneral();
 
 	mScreen = new Screen(*mWindow);
@@ -433,7 +438,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 			S_LOG_INFO("End preload.");
 		}
 		try {
-			mGUIManager = std::make_unique<GUIManager>(mWindow, configSrv, EmberServices::getSingleton().getServerService(), mainLoopController);
+			mGUIManager = std::make_unique<GUIManager>(*mGuiSetup, configSrv, EmberServices::getSingleton().getServerService(), mainLoopController);
 			EventGUIManagerCreated.emit(*mGUIManager);
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)

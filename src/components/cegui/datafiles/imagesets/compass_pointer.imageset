@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Imageset autoScaled="false" imagefile="common/ui/texture/arrow.png" name="compass_pointer" nativeHorzRes="32" nativeVertRes="32" version="2">
+<Imageset autoScaled="false" imagefile="ember/texture/arrow.png" name="compass_pointer" nativeHorzRes="32" nativeVertRes="32" version="2">
 	<Image height="32" name="full" width="32" xPos="0" yPos="0" />
 </Imageset>

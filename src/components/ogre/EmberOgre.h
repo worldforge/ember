@@ -31,22 +31,23 @@
 #include <memory>
 #include <map>
 
-namespace Eris
-{
+namespace Eris {
 class EventService;
+
 class View;
+
 class Connection;
+
 class Entity;
 }
 
-namespace Carpenter
-{
+namespace Carpenter {
 class Carpenter;
+
 class BluePrint;
 }
 
-namespace OgreOpcode
-{
+namespace OgreOpcode {
 class CollisionManager;
 }
 
@@ -57,44 +58,50 @@ class CollisionManager;
  * @note While a more natural name for this namespace would be Ogre, such a naming would be to cumbersome as it would clash with the Ogre namespace.
  *
  */
-namespace Ember
-{
+namespace Ember {
 class InputCommandMapper;
-class Input;
-class MainLoopController;
-class TimeFrame;
-class EmberEntity;
-class ConfigListenerContainer;
-namespace OgreView
-{
 
-namespace Terrain
-{
+class Input;
+
+class MainLoopController;
+
+class TimeFrame;
+
+class EmberEntity;
+
+class ConfigListenerContainer;
+
+namespace Cegui {
+class CEGUISetup;
+}
+
+namespace OgreView {
+
+namespace Terrain {
 class TerrainManager;
+
 class TerrainLayerDefinitionManager;
 }
 
 class SoundDefinitionManager;
 
-namespace Lod
-{
+namespace Lod {
 class LodDefinitionManager;
+
 class LodManager;
+
 class PMInjectorSignaler;
 }
 
-namespace Mapping
-{
+namespace Mapping {
 class EmberEntityMappingManager;
 }
 
-namespace Model
-{
+namespace Model {
 class ModelDefinitionManager;
 }
 
-namespace Authoring
-{
+namespace Authoring {
 class EntityMoveManager;
 
 class MaterialEditor;
@@ -102,6 +109,8 @@ class MaterialEditor;
 class EntityRecipeManager;
 
 }
+
+
 
 class ConsoleDevTools;
 
@@ -114,10 +123,13 @@ class OgreLogObserver;
 class OgreSetup;
 
 class OgreResourceProvider;
+
 class OpcodeCollisionDetectorVisualizer;
 
 class ShaderManager;
+
 class ShaderDetailManager;
+
 class AutomaticGraphicsLevelManager;
 
 class World;
@@ -138,8 +150,7 @@ class Screen;
  @author Erik Ogenvik <erik@ogenvik.org>
 
  */
-class EmberOgre: public Singleton<EmberOgre>, public virtual sigc::trackable, public EmberOgreSignals
-{
+class EmberOgre : public Singleton<EmberOgre>, public virtual sigc::trackable, public EmberOgreSignals {
 public:
 
 	/**
@@ -172,7 +183,7 @@ public:
 	 * @return The automatic graphics level manager.
 	 */
 	AutomaticGraphicsLevelManager* getAutomaticGraphicsLevelManager() const;
-	
+
 	/**
 	 * @brief Gets the main render window.
 	 *
@@ -234,7 +245,7 @@ protected:
 	/**
 	 * @brief The main Ogre root object. All of Ogre is accessed through this.
 	 */
-	Ogre::Root *mRoot;
+	Ogre::Root* mRoot;
 
 	/**
 	 * @brief The Ogre scene manager used when not connected to a world.
@@ -248,6 +259,8 @@ protected:
 	 */
 	Ogre::RenderWindow* mWindow;
 
+	std::unique_ptr<Cegui::CEGUISetup> mGuiSetup;
+
 	/**
 	 * Handles the main rendering window.
 	 */
@@ -257,7 +270,7 @@ protected:
 	 * @brief Utility object to configure shaders
 	 */
 	ShaderManager* mShaderManager;
-	
+
 	/**
 	 * @brief Hooks into the auto adjustment system and alters shaders.
 	 */
@@ -422,8 +435,7 @@ protected:
 
 };
 
-inline Ogre::RenderWindow* EmberOgre::getRenderWindow() const
-{
+inline Ogre::RenderWindow* EmberOgre::getRenderWindow() const {
 	return mWindow;
 }
 

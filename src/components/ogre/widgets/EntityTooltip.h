@@ -93,6 +93,7 @@ public:
 	 * @note Call this as soon as you can, after CEGUI has been initialized.
 	 */
 	static void registerFactory();
+	static void deregisterFactory();
 
 protected:
 

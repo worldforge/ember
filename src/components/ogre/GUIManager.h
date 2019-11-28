@@ -66,7 +66,7 @@ namespace Cegui
 {
 class ColouredRenderedStringParser;
 class CEGUILogger;
-
+class CEGUISetup;
 }
 namespace OgreView
 {
@@ -118,7 +118,7 @@ public:
 	 * @param serverSignals Server signals which signals when a new View has been created.
 	 * @param mainLoopController The main loop controller for the system.
 	 */
-	GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController);
+	GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController);
 
 	/**
 	 * @brief Dtor.
@@ -308,24 +308,12 @@ public:
 
 protected:
 
-
-	/**
-	 * @brief We'll provide our own CEGUI logger instance, which will route all cegui log messages to the main ember log.
-	 */
-	std::unique_ptr<Cegui::CEGUILogger> mCEGUILogger;
-
-
-	struct SystemDestroyer{
-		GUIManager& manager;
-		~SystemDestroyer();
-	};
-
-	SystemDestroyer mSystemDestroyer;
-
 	/**
 	 Counter for autonaming of windows.
 	 */
 	static unsigned long msAutoGenId;
+
+	Cegui::CEGUISetup& mCeguiSetup;
 
 	/**
 	 * @brief The config service.
@@ -338,12 +326,6 @@ protected:
 
 	Gui::UniqueWindowPtr<CEGUI::Window> mSheet;
 	CEGUI::WindowManager* mWindowManager;
-
-	Ogre::RenderWindow* mWindow;
-	CEGUI::System* mGuiSystem;
-	CEGUI::OgreRenderer* mGuiRenderer;
-	CEGUI::OgreResourceProvider* mOgreResourceProvider;
-	CEGUI::OgreImageCodec* mOgreImageCodec;
 
 	std::string mDefaultScheme;
 

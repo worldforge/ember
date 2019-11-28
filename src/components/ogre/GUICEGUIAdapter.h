@@ -59,7 +59,7 @@ public:
 	 * @param renderer A valid CEGUI::OgreCEGUIRenderer
 	 * @return
 	 */
-	GUICEGUIAdapter(CEGUI::System* system, CEGUI::OgreRenderer* renderer);
+	GUICEGUIAdapter(CEGUI::System& system, CEGUI::OgreRenderer& renderer);
 
 	~GUICEGUIAdapter() override;
 
@@ -76,8 +76,8 @@ public:
 	bool injectKeyUp(const SDL_Scancode& key) override;
 
 private:
-	CEGUI::System* mGuiSystem;
-	CEGUI::OgreRenderer* mGuiRenderer;
+	CEGUI::System& mGuiSystem;
+	CEGUI::OgreRenderer& mGuiRenderer;
 	CEGUI::GUIContext& mGuiContext;
 
 	/**

@@ -66,10 +66,9 @@
 #include <CEGUI/ScriptModules/Lua/ScriptModule.h>
 #include "CEGUIOgreRenderer/ResourceProvider.h"
 #include "CEGUIOgreRenderer/ImageCodec.h"
-#include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/MultiLineEditbox.h>
 #include <CEGUI/widgets/Editbox.h>
-#include <components/cegui/CEGUISetup.h>
+#include "components/cegui/CEGUISetup.h"
 #include "components/ogre/widgets/HitDisplayer.h"
 
 #ifdef _WIN32
@@ -85,22 +84,16 @@ namespace OgreView {
 
 unsigned long GUIManager::msAutoGenId(0);
 
-GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController) :
+GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController) :
 		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."),
 		ReloadGui("reloadgui", this, "Reloads the gui."),
 		ToggleGui("toggle_gui", this, "Toggle the gui display"),
-		mCEGUILogger(new Cegui::CEGUILogger()),
-		mSystemDestroyer{*this},
+		mCeguiSetup(ceguiSetup),
 		mConfigService(configService),
 		mMainLoopController(mainLoopController),
 		mGuiCommandMapper("gui", "key_bindings_gui"),
 		mSheet(nullptr),
 		mWindowManager(nullptr),
-		mWindow(window),
-		mGuiSystem(nullptr),
-		mGuiRenderer(nullptr),
-		mOgreResourceProvider(nullptr),
-		mOgreImageCodec(nullptr),
 		mLuaScriptModule(nullptr),
 		mEnabled(true),
 		mActiveWidgetHandler(nullptr),
@@ -109,10 +102,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mEntityTooltip(nullptr),
 		mNativeClipboardProvider(std::make_unique<Ember::Cegui::SDLNativeClipboardProvider>()) {
 
-//Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
-#ifndef CEGUI_HAS_FREETYPE
-	CEGUI is not built with Freetype
-#endif
+
 
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -127,17 +117,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mDefaultScheme = "EmberLook";
 		S_LOG_VERBOSE("Setting default scheme to " << mDefaultScheme);
 
-		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI.
-		mGuiRenderer = &Ember::Cegui::CEGUISetup::createRenderer(window);
-
-		//We'll do our own rendering, interleaved with Ogre's, so we'll turn off the automatic rendering.
-		mGuiRenderer->setRenderingEnabled(false);
-		mGuiRenderer->setFrameControlExecutionEnabled(false);
-
-		mOgreResourceProvider = &CEGUI::OgreRenderer::createOgreResourceProvider();
-		mOgreResourceProvider->setDefaultResourceGroup(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-		mOgreImageCodec = &CEGUI::OgreRenderer::createOgreImageCodec();
 
 		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
 		if (provider != nullptr) {
@@ -152,26 +131,20 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 				// to require the execute* methods to be called in order for
 				// the error function to be registered.
 			}
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
+			mCeguiSetup.getSystem().setScriptingModule(mLuaScriptModule);
 
 			EmberServices::getSingleton().getScriptingService().EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
-		} else {
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, nullptr, "cegui/datafiles/configs/cegui.config");
 		}
-		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
-		if (schemeI.isAtEnd()) {
-			// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
-			throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
-		}
-		mGuiSystem->getClipboard()->setNativeProvider(mNativeClipboardProvider.get());
 
-		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser.get());
+		mCeguiSetup.getSystem().getClipboard()->setNativeProvider(mNativeClipboardProvider.get());
+
+		mCeguiSetup.getSystem().setDefaultCustomRenderedStringParser(mRenderedStringParser.get());
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 		EntityTooltip::registerFactory();
 
 		mSheet.reset(mWindowManager->createWindow("DefaultWindow", "root_wnd"));
-		mGuiSystem->getDefaultGUIContext().setRootWindow(mSheet.get());
+		mCeguiSetup.getSystem().getDefaultGUIContext().setRootWindow(mSheet.get());
 		mSheet->activate();
 		mSheet->moveToBack();
 		mSheet->setDistributesCapturedInputs(false);
@@ -184,7 +157,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		getInput().setInputMode(Input::IM_GUI);
 
 		//add adapter for CEGUI, this will route input event to the gui
-		mCEGUIAdapter = std::make_unique<GUICEGUIAdapter>(mGuiSystem, mGuiRenderer);
+		mCEGUIAdapter = std::make_unique<GUICEGUIAdapter>(mCeguiSetup.getSystem(), mCeguiSetup.getRenderer());
 		getInput().addAdapter(mCEGUIAdapter.get());
 
 		mGuiCommandMapper.bindToInput(getInput());
@@ -220,6 +193,8 @@ GUIManager::~GUIManager() {
 	}
 	mWidgets.clear();
 	WidgetLoader::removeAllWidgetFactories();
+	CEGUI::WindowManager::getSingleton().cleanDeadPool();
+	EntityTooltip::deregisterFactory();
 
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
@@ -271,7 +246,7 @@ void GUIManager::render() {
 }
 
 void GUIManager::input_SizeChanged(int width, int height) {
-	mGuiSystem->notifyDisplaySizeChanged(CEGUI::Sizef(width, height));
+	mCeguiSetup.getSystem().notifyDisplaySizeChanged(CEGUI::Sizef(width, height));
 }
 
 void GUIManager::server_GotView(Eris::View* view) {
@@ -302,7 +277,7 @@ void GUIManager::entity_Emote(const std::string& description, EmberEntity* entit
 }
 
 void GUIManager::scriptingServiceStopping() {
-	mGuiSystem->setScriptingModule(nullptr);
+	mCeguiSetup.getSystem().setScriptingModule(nullptr);
 	if (mLuaScriptModule) {
 		LuaScriptModule::destroy(*mLuaScriptModule);
 	}
@@ -367,7 +342,7 @@ CEGUI::Texture& GUIManager::createTexture(Ogre::TexturePtr& ogreTexture, std::st
 	if (name.empty()) {
 		name = ogreTexture->getName();
 	}
-	return mGuiRenderer->createTexture(name, ogreTexture);
+	return mCeguiSetup.getRenderer().createTexture(name, ogreTexture);
 }
 
 Input& GUIManager::getInput() const {
@@ -427,11 +402,11 @@ bool GUIManager::isInGUIMode() const {
 void GUIManager::pressedKey(const SDL_Keysym& key, Input::InputMode inputMode) {
 	if (((key.mod & KMOD_CTRL) || (key.mod & KMOD_LCTRL) || (key.mod & KMOD_RCTRL))) {
 		if (key.sym == SDLK_c) {
-			mGuiSystem->getDefaultGUIContext().injectCopyRequest();
+			mCeguiSetup.getSystem().getDefaultGUIContext().injectCopyRequest();
 		} else if (key.sym == SDLK_x) {
-			mGuiSystem->getDefaultGUIContext().injectCutRequest();
+			mCeguiSetup.getSystem().getDefaultGUIContext().injectCutRequest();
 		} else if (key.sym == SDLK_v) {
-			mGuiSystem->getDefaultGUIContext().injectPasteRequest();
+			mCeguiSetup.getSystem().getDefaultGUIContext().injectPasteRequest();
 		}
 	}
 }
@@ -515,25 +490,9 @@ Gui::ActionBarIconManager* GUIManager::getActionBarIconManager() const {
 }
 
 CEGUI::Renderer* GUIManager::getGuiRenderer() const {
-	return mGuiRenderer;
+	return &mCeguiSetup.getRenderer();
 }
 
-GUIManager::SystemDestroyer::~SystemDestroyer() {
-	CEGUI::System::destroy();
-
-	if (manager.mOgreResourceProvider) {
-		CEGUI::OgreRenderer::destroyOgreResourceProvider(*manager.mOgreResourceProvider);
-	}
-	if (manager.mOgreImageCodec) {
-		CEGUI::OgreRenderer::destroyOgreImageCodec(*manager.mOgreImageCodec);
-	}
-	if (manager.mGuiRenderer) {
-		CEGUI::OgreRenderer::destroy(*manager.mGuiRenderer);
-	}
-	if (manager.mLuaScriptModule) {
-		LuaScriptModule::destroy(*manager.mLuaScriptModule);
-	}
-}
 }
 }
 

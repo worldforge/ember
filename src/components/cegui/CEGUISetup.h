@@ -19,22 +19,78 @@
 #ifndef EMBER_CEGUISETUP_H
 #define EMBER_CEGUISETUP_H
 
+#include <memory>
+
 namespace Ogre {
 class RenderWindow;
 }
 
 namespace CEGUI {
 class OgreRenderer;
+
+class System;
+
+class OgreResourceProvider;
+
+class OgreImageCodec;
 }
 
 namespace Ember {
 namespace Cegui {
+class CEGUILogger;
+
 class CEGUISetup {
 public:
 
+	explicit CEGUISetup(Ogre::RenderWindow& window);
+
+	~CEGUISetup();
+
 	static CEGUI::OgreRenderer& createRenderer(Ogre::RenderWindow* renderWindow);
 
+	Ogre::RenderWindow& getRenderWindow() const;
+
+	CEGUI::System& getSystem() const;
+
+	CEGUI::OgreRenderer& getRenderer() const;
+
+	CEGUI::OgreResourceProvider& getResourceProvider() const;
+
+	CEGUI::OgreImageCodec& getImageCodec() const;
+
+protected:
+	/**
+	 * @brief We'll provide our own CEGUI logger instance, which will route all cegui log messages to the main ember log.
+	 */
+	std::unique_ptr<CEGUILogger> mCEGUILogger;
+
+	Ogre::RenderWindow* mWindow;
+	CEGUI::System* mGuiSystem;
+	CEGUI::OgreRenderer* mGuiRenderer;
+	CEGUI::OgreResourceProvider* mOgreResourceProvider;
+	CEGUI::OgreImageCodec* mOgreImageCodec;
+
 };
+
+inline Ogre::RenderWindow& CEGUISetup::getRenderWindow() const {
+	return *mWindow;
+}
+
+inline CEGUI::System& CEGUISetup::getSystem() const {
+	return *mGuiSystem;
+}
+
+inline CEGUI::OgreRenderer& CEGUISetup::getRenderer() const {
+	return *mGuiRenderer;
+}
+
+inline CEGUI::OgreResourceProvider& CEGUISetup::getResourceProvider() const {
+	return *mOgreResourceProvider;
+}
+
+inline CEGUI::OgreImageCodec& CEGUISetup::getImageCodec() const {
+	return *mOgreImageCodec;
+}
 
 }
 }

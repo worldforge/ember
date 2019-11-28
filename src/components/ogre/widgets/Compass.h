@@ -209,9 +209,8 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param compassMaterialName The name of the compass ogre material, defaults to "/common/ui/compass". The material must have a texture unit state named "Background" in it's first pass.
-	 * @param pointerMaterialName The name of the pointer ogre material, defaults to "/common/ui/compass/pointer". The material must have a texture unit state named "Pointer", which must reside in the first pass.
 	 */
-	explicit RenderedCompassImpl(CEGUI::Window* pointerElement, std::string compassMaterialName = "/common/ui/compass");
+	explicit RenderedCompassImpl(CEGUI::Window* pointerElement, std::string compassMaterialName = "/ember/compass");
 
 	/**
 	 * @brief Dtor.
