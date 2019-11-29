@@ -64,7 +64,7 @@ protected:
 	 */
 	std::unique_ptr<CEGUILogger> mCEGUILogger;
 
-	Ogre::RenderWindow* mWindow;
+	Ogre::RenderWindow& mWindow;
 	CEGUI::System* mGuiSystem;
 	CEGUI::OgreRenderer* mGuiRenderer;
 	CEGUI::OgreResourceProvider* mOgreResourceProvider;
@@ -73,7 +73,7 @@ protected:
 };
 
 inline Ogre::RenderWindow& CEGUISetup::getRenderWindow() const {
-	return *mWindow;
+	return mWindow;
 }
 
 inline CEGUI::System& CEGUISetup::getSystem() const {
