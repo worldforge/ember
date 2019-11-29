@@ -3,13 +3,14 @@
 #
 # Requires Python 3 or higher
 
+import fileinput
+import fnmatch
 import os
+import re
 import shutil
 import subprocess
-import fnmatch
-import re
+
 import sys
-import fileinput
 
 
 def find_matches(files, patterns):
@@ -113,6 +114,9 @@ def copytree(src, dst):
         s = os.path.join(src, item)
         d = os.path.join(dst, item)
         if os.path.isdir(s):
+            # Skip "source" directories.
+            if item == "source":
+                continue
             copytree(s, d)
         else:
             if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
@@ -168,6 +172,7 @@ OPTIONS
     copytree(os.path.join(src_media_dir, "assets_external/caelum"), os.path.join(dest_media_dir, "assets_external/caelum"))
     copytree(os.path.join(src_media_dir, "assets_external/OGRE"), os.path.join(dest_media_dir, "assets_external/OGRE"))
     copytree(os.path.join(src_media_dir, "splash"), os.path.join(dest_media_dir, "splash"))
+    copytree(os.path.join(src_media_dir, "ui"), os.path.join(dest_media_dir, "ui"))
     # Copy license files
     shutil.copy(os.path.join(src_media_dir, "LICENSING.txt"), dest_media_dir)
     shutil.copy(os.path.join(src_media_dir, "COPYING.txt"), dest_media_dir)

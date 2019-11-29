@@ -9,10 +9,10 @@ fi
 #updates amber with the needed media. This will only work for me (Erik Ogenvik) since only I know the password (as found in rsyncpasswd)
 #usage: ./refresh-amber-media-dev.sh <media svn directory> 
 
-@CMAKE_BINARY_DIR@/scripts/make_dist_media.py $1 @CMAKE_BINARY_DIR@/ember-media-@VERSION@ 512
-echo "Generated media files in @CMAKE_BINARY_DIR@/ember-media-@VERSION@"
-echo "Generating @CMAKE_BINARY_DIR@/ember-media-@VERSION@.tar.xz"
-tar --directory="@CMAKE_BINARY_DIR@" -cJf @CMAKE_BINARY_DIR@/ember-media-@VERSION@.tar.xz ember-media-@VERSION@
+@CMAKE_BINARY_DIR@/scripts/make_dist_media.py $1 @CMAKE_BINARY_DIR@/ember-media-@MEDIA_VERSION@ 512
+echo "Generated media files in @CMAKE_BINARY_DIR@/ember-media-@MEDIA_VERSION@"
+echo "Generating @CMAKE_BINARY_DIR@/ember-media-@MEDIA_VERSION@.tar.xz"
+tar --directory="@CMAKE_BINARY_DIR@" -cJf @CMAKE_BINARY_DIR@/ember-media-@MEDIA_VERSION@.tar.xz ember-media-@MEDIA_VERSION@
 echo "Sending through rsync to amber.worldforge.org"
-rsync -uavzcP --password-file @PROJECT_SOURCE_DIR@/rsyncpasswd @CMAKE_BINARY_DIR@/ember-media-@VERSION@.tar.xz amber.worldforge.org::ember-media-update/ember-media-@VERSION@.tar.xz
-rsync -uavzP --delete --password-file @PROJECT_SOURCE_DIR@/rsyncpasswd @CMAKE_BINARY_DIR@/ember-media-@VERSION@/* amber.worldforge.org::ember-media-update/ember-media-@VERSION@/
+rsync -uavzcP --password-file @PROJECT_SOURCE_DIR@/rsyncpasswd @CMAKE_BINARY_DIR@/ember-media-@MEDIA_VERSION@.tar.xz amber.worldforge.org::ember-media-update/ember-media-@MEDIA_VERSION@.tar.xz
+rsync -uavzP --delete --password-file @PROJECT_SOURCE_DIR@/rsyncpasswd @CMAKE_BINARY_DIR@/ember-media-@MEDIA_VERSION@/* amber.worldforge.org::ember-media-update/ember-media-@MEDIA_VERSION@/
