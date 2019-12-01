@@ -32,7 +32,6 @@
 namespace Ogre
 {
 class Rectangle2D;
-class Overlay;
 }
 
 namespace CEGUI {

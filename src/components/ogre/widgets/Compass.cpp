@@ -37,8 +37,6 @@
 
 #include <Ogre.h>
 #include <OgreRectangle2D.h>
-#include <Overlay/OgreOverlay.h>
-#include <Overlay/OgreOverlayManager.h>
 
 #include <CEGUI/Image.h>
 #include <CEGUI/Window.h>
