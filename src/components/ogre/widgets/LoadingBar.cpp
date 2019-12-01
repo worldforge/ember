@@ -32,127 +32,45 @@ the basic resources required for the progress bar and will be loaded automatical
 #include "framework/ShutdownException.h"
 #include "framework/MainLoopController.h"
 
-#include <OgreOverlay.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayContainer.h>
-#include <OgreOverlayManager.h>
 #include <OgreMaterialManager.h>
 #include <OgreFontManager.h>
 #include <OgreRenderWindow.h>
 #include <Ogre.h>
 
-#include <utility>
+#include <components/cegui/CEGUISetup.h>
+#include <CEGUI/ImageManager.h>
 
 using namespace Ogre;
 namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-/** Defines an example loading progress bar which you can use during
-	startup, level changes etc to display loading progress.
-@remarks
-	Basically you just need to create an instance of this class, call start()
-	before loading and finish() afterwards. You may also need to stop areas of
-	your scene rendering in between since this method will call
-	RenderWindow::update() to update the display of the bar - we advise using
-	SceneManager's 'special case render queues' for this, see
-	SceneManager::addSpecialCaseRenderQueue for details.
-@note
-	This progress bar relies on you having the OgreCore.zip and EmberCore.zip package already
-	added to a resource group called 'Bootstrap' - this provides the basic
-	resources required for the progress bar and will be loaded automatically.
-*/
-LoadingBar::LoadingBar(Ogre::RenderWindow& window, MainLoopController& mainLoopController) :
+
+LoadingBar::LoadingBar(const Cegui::CEGUISetup& ceguiSetup, MainLoopController& mainLoopController) :
+		mGuiSetup(ceguiSetup),
 		mProgress(0),
 		mProgressBarMaxSize(0),
 		mProgressBarMaxLeft(0),
-		mWindow(window),
-		mLoadOverlay(nullptr),
 		mProgressBarScriptSize(0),
-		mLoadingBarElement(nullptr),
-		mLoadingDescriptionElement(nullptr),
-		mLoadingCommentElement(nullptr),
-		mVersionElement(nullptr),
 		mMainLoopController(mainLoopController) {
 
 
-}
+	CEGUI::ImageManager::getSingleton().loadImageset("cegui/datafiles/imagesets/splash.imageset", "");
+	CEGUI::ImageManager::getSingleton().loadImageset("cegui/datafiles/imagesets/progressbar.imageset", "");
+	CEGUI::ImageManager::getSingleton().loadImageset("cegui/datafiles/imagesets/progressbar_frame.imageset", "");
 
-LoadingBar::~LoadingBar() {
-	try {
-		if (mLoadOverlay) {
-			//Make a copy since it will be invalidated by the calls to "destroy".
-			auto elements = mLoadOverlay->get2DElements();
-			for (auto* container : elements) {
-				deleteOverlayContainerContents(*container);
-				OverlayManager::getSingleton().destroyOverlayElement(container);
-			}
-			OverlayManager::getSingleton().destroy(mLoadOverlay);
-		}
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when destroying loading bar overlay." << ex);
-	}
+	mSheet.reset(CEGUI::WindowManager::getSingleton().loadLayoutFromFile("cegui/datafiles/layouts/Splash.layout"));
 
-	//Remove the resource group used for the loading bar.
-	Ogre::ResourceGroupManager::getSingleton().destroyResourceGroup("splash");
-}
+	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(mSheet.get());
+	mSheet->update(0);
 
-void LoadingBar::deleteOverlayContainerContents(Ogre::OverlayContainer& container) const {
-	{
-		auto I = container.getChildContainerIterator();
-		while (I.hasMoreElements()) {
-			deleteOverlayContainerContents(*I.getNext());
-		}
-	}
-	auto I = container.getChildIterator();
-	while (I.hasMoreElements()) {
-		OverlayManager::getSingleton().destroyOverlayElement(I.getNext());
-	}
-}
-
-void LoadingBar::start() {
-
-	auto& resourceGrpMgr = Ogre::ResourceGroupManager::getSingleton();
-
-	//Parse the materials used for the loading bar
-	resourceGrpMgr.initialiseResourceGroup("splash");
-
-	try {
-		OverlayManager& omgr = OverlayManager::getSingleton();
-		mLoadOverlay = omgr.getByName("EmberCore/LoadOverlay");
-		if (!mLoadOverlay) {
-			OGRE_EXCEPT(::Ogre::Exception::ERR_ITEM_NOT_FOUND, "Cannot find loading overlay", "LoadingBar::start");
-		}
-		mLoadOverlay->show();
-
-		// Save links to the bar and to the loading text, for updates as we go
-		mLoadingBarElement = omgr.getOverlayElement("EmberCore/LoadPanel/Bar/Progress");
-		mLoadingCommentElement = omgr.getOverlayElement("EmberCore/LoadPanel/Comment");
-		mLoadingDescriptionElement = omgr.getOverlayElement("EmberCore/LoadPanel/Description");
-		mVersionElement = omgr.getOverlayElement("EmberCore/Splash/VersionInfo");
-
-		//OverlayElement* barContainer = omgr.getOverlayElement("EmberCore/LoadPanel/Bar");
-		mProgressBarMaxSize = mLoadingBarElement->getWidth();
-		mProgressBarMaxLeft = mLoadingBarElement->getLeft();
-
-		//mLoadingBarElement->setWidth(300);
-
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when creating loading bar." << ex);
-	}
-
+	mVersionText.reset(mSheet->getChildRecursive("version"));
+	mProgressWindow.reset(mSheet->getChildRecursive("progress"));
+	mDescriptionText.reset(mSheet->getChildRecursive("details"));
 
 }
 
-/** Hide the loading bar and stop listening.
-*/
-void LoadingBar::finish() {
-	if (mLoadOverlay) {
-		// hide loading screen
-		mLoadOverlay->hide();
-	}
-}
-
+LoadingBar::~LoadingBar() = default;
 
 void LoadingBar::addSection(LoadingBarSection* section) {
 	mSections.push_back(section);
@@ -161,12 +79,10 @@ void LoadingBar::addSection(LoadingBarSection* section) {
 
 void LoadingBar::setProgress(float progress) {
 	progress = std::max(0.f, std::min(1.0f, progress));
-	if (mLoadingBarElement) {
-		//make the black blocking block a little bit smaller and move it to the right
-		mLoadingBarElement->setWidth(mProgressBarMaxSize * (1.f - progress));
-		mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));
-		updateRender();
-	}
+	//make the black blocking block a little bit smaller and move it to the right
+	mProgressWindow->setWidth({1.0f - progress, 0});
+	mProgressWindow->setXPosition({progress, 0});
+	updateRender();
 	mProgress = progress;
 }
 
@@ -175,17 +91,13 @@ void LoadingBar::increase(float amount) {
 }
 
 void LoadingBar::setCaption(const std::string& caption) {
-	if (mLoadingCommentElement) {
-		mLoadingCommentElement->setCaption(caption);
-		updateRender();
-	}
+	mDescriptionText->setText(caption);
+	updateRender();
 }
 
 void LoadingBar::setVersionText(const std::string& versionText) {
-	if (mVersionElement) {
-		mVersionElement->setCaption(versionText);
-		updateRender();
-	}
+	mVersionText->setText(versionText);
+	updateRender();
 }
 
 void LoadingBar::updateRender(bool forceUpdate) {
@@ -193,15 +105,13 @@ void LoadingBar::updateRender(bool forceUpdate) {
 	unsigned long millisecondsSinceLastFrame = mTimer.getMilliseconds();
 	if (millisecondsSinceLastFrame > oneFrame || forceUpdate) {
 		try {
-			//There's a bug in Ogre 1.7.1 (at least) which makes the text of some elements not appear. By asking it to update the positions it seems to work.
-			mVersionElement->_positionsOutOfDate();
-
 			Input::getSingleton().processInput();
-			if (mMainLoopController.shouldQuit() || mWindow.isClosed()) {
+			if (mMainLoopController.shouldQuit() || mGuiSetup.getRenderWindow().isClosed()) {
 				throw ShutdownException("Aborting startup");
 			}
-
-			mWindow.update();
+			mGuiSetup.getRenderWindow().update(false);
+			CEGUI::System::getSingleton().getDefaultGUIContext().draw();
+			mGuiSetup.getRenderWindow().swapBuffers();
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when updating render for loading bar." << ex);
 		}
@@ -249,7 +159,12 @@ ResourceGroupLoadingBarSection::ResourceGroupLoadingBarSection(LoadingBarSection
 															   unsigned short numGroupsInit,
 															   unsigned short numGroupsLoad,
 															   Ogre::Real initProportion)
-		: mInitProportion(initProportion), mNumGroupsInit(numGroupsInit), mNumGroupsLoad(numGroupsLoad), mSection(section), mProgressBarInc(0), mCompletedSections(0) {
+		: mInitProportion(initProportion),
+		  mNumGroupsInit(numGroupsInit),
+		  mNumGroupsLoad(numGroupsLoad),
+		  mSection(section),
+		  mProgressBarInc(0),
+		  mCompletedSections(0) {
 	// self is listener
 	ResourceGroupManager::getSingleton().addResourceGroupListener(this);
 }

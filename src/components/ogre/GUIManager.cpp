@@ -172,8 +172,6 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 		Ogre::Root::getSingleton().addFrameListener(this);
 
 
-		getInput().EventSizeChanged.connect(sigc::mem_fun(*this, &GUIManager::input_SizeChanged));
-
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("GUIManager - error when creating gui." << ex);
 		throw Exception(ex.getMessage().c_str());
@@ -243,10 +241,6 @@ void GUIManager::render() {
 	if (mEnabled) {
 		CEGUI::System::getSingleton().renderAllGUIContexts();
 	}
-}
-
-void GUIManager::input_SizeChanged(int width, int height) {
-	mCeguiSetup.getSystem().notifyDisplaySizeChanged(CEGUI::Sizef(width, height));
 }
 
 void GUIManager::server_GotView(Eris::View* view) {

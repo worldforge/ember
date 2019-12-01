@@ -151,8 +151,8 @@ void OgreResourceLoader::unloadUnusedResources() {
 	Ogre::ResourceGroupManager& resourceGroupManager(Ogre::ResourceGroupManager::getSingleton());
 
 	Ogre::StringVector resourceGroups = resourceGroupManager.getResourceGroups();
-	for (Ogre::StringVector::const_iterator I = resourceGroups.begin(); I != resourceGroups.end(); ++I) {
-		resourceGroupManager.unloadUnreferencedResourcesInGroup(*I, false);
+	for (const auto& resourceGroup : resourceGroups) {
+		resourceGroupManager.unloadUnreferencedResourcesInGroup(resourceGroup, false);
 	}
 }
 
@@ -200,7 +200,7 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	auto userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
 	auto emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
-	bool foundDir = addResourceDirectory(emberMediaPath / path, type, section, OnFailure::Report);
+	bool foundDir = addResourceDirectory(emberMediaPath / path, type, section, OnFailure::Ignore);
 
 	return addResourceDirectory(userMediaPath / path, type, section, OnFailure::Ignore) || foundDir;
 }
@@ -245,7 +245,7 @@ bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& pat
 }
 
 void OgreResourceLoader::loadBootstrap() {
-	addMedia("splash", "splash");
+	addMedia("splash", "UI");
 
 	//Add the "assets" directory, which contains most of the assets
 	addMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);

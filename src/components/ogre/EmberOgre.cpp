@@ -375,7 +375,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 	{
 		//we need a nice loading bar to show the user how far the setup has progressed
-		Gui::LoadingBar loadingBar(*mWindow, mainLoopController);
+		Gui::LoadingBar loadingBar(*mGuiSetup, mainLoopController);
 
 		// Needed for QueuedProgressiveMeshGenerator.
 		mPMInjectorSignaler = new Lod::PMInjectorSignaler();
@@ -398,13 +398,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		size_t numberOfSections = Ogre::ResourceGroupManager::getSingleton().getResourceGroups().size() - 1; //remove bootstrap since that's already loaded
 		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7f : 1.0f));
 
-		loadingBar.start();
 		loadingBar.setVersionText(std::string("Version ") + EMBER_VERSION);
-
-		// Turn off rendering of everything except overlays
-		mSceneManagerOutOfWorld->clearSpecialCaseRenderQueues();
-		mSceneManagerOutOfWorld->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
-		mSceneManagerOutOfWorld->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
 
 		if (useWfut) {
 			S_LOG_INFO("Updating media.");
@@ -429,6 +423,18 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(mainLoopController);
 		mShaderManager = new ShaderManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter());
 		mShaderDetailManager = new ShaderDetailManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter(), *mShaderManager);
+		mMaterialEditor = std::make_unique<Authoring::MaterialEditor>();
+
+		mConsoleDevTools = std::make_unique<ConsoleDevTools>();
+
+		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
+		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");
+		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
+		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");
+
+		mTerrainLayerManager->resolveTextureReferences();
+
+		setupProfiler();
 
 		//should media be preloaded?
 		if (preloadMedia) {
@@ -456,25 +462,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
 			throw Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
 		}
-
-		// Back to full rendering
-		mSceneManagerOutOfWorld->clearSpecialCaseRenderQueues();
-		mSceneManagerOutOfWorld->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
-
-		mMaterialEditor = std::make_unique<Authoring::MaterialEditor>();
-
-		mConsoleDevTools = std::make_unique<ConsoleDevTools>();
-
-		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
-		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");
-		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
-		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");
-
-		mTerrainLayerManager->resolveTextureReferences();
-
-		setupProfiler();
-
-		loadingBar.finish();
 	}
 
 	mResourceLoader->unloadUnusedResources();

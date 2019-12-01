@@ -25,10 +25,12 @@ the basic resources required for the progress bar and will be loaded automatical
 #define EMBEROGRELOADERBAR_H
 
 #include "../EmberOgrePrerequisites.h"
+#include "CEGUIUtils.h"
 #include <sigc++/trackable.h>
 
 #include <OgreResourceGroupManager.h>
 #include <OgreTimer.h>
+#include <components/cegui/CEGUISetup.h>
 
 namespace Ember {
 class MainLoopController;
@@ -130,31 +132,19 @@ private:
 
 /** Defines an example loading progress bar which you can use during
 	startup, level changes etc to display loading progress.
-@remarks
-	Basically you just need to create an instance of this class, call start()
-	before loading and finish() afterwards. You may also need to stop areas of
-	your scene rendering in between since this method will call
-	RenderWindow::update() to update the display of the bar - we advise using
-	SceneManager's 'special case render queues' for this, see
-	SceneManager::addSpecialCaseRenderQueue for details.
-@note
-	This progress bar relies on you having the OgreCore.zip package already
-	added to a resource group called 'Bootstrap' - this provides the basic
-	resources required for the progress bar and will be loaded automatically.
 */
 class LoadingBar {
 protected:
+	const Cegui::CEGUISetup& mGuiSetup;
 	std::vector<LoadingBarSection*> mSections;
 	float mProgress;
 	Ogre::Real mProgressBarMaxSize, mProgressBarMaxLeft;
 
-	Ogre::RenderWindow& mWindow;
-	Ogre::Overlay* mLoadOverlay;
 	Ogre::Real mProgressBarScriptSize;
-	Ogre::OverlayElement* mLoadingBarElement;
-	Ogre::OverlayElement* mLoadingDescriptionElement;
-	Ogre::OverlayElement* mLoadingCommentElement;
-	Ogre::OverlayElement* mVersionElement;
+	Gui::UniqueWindowPtr<CEGUI::Window> mSheet;
+	Gui::UniqueWindowPtr<CEGUI::Window> mVersionText;
+	Gui::UniqueWindowPtr<CEGUI::Window> mDescriptionText;
+	Gui::UniqueWindowPtr<CEGUI::Window> mProgressWindow;
 
 	Ogre::Timer mTimer;
 	MainLoopController& mMainLoopController;
@@ -165,18 +155,9 @@ public:
 	 * @param window The window to update
 	 * @param mainLoopController Allows the loading bar to see if the application should shut down.
 	 */
-	LoadingBar(Ogre::RenderWindow& window, MainLoopController& mainLoopController);
+	LoadingBar(const Cegui::CEGUISetup& ceguiSetup, MainLoopController& mainLoopController);
 
 	virtual ~LoadingBar();
-
-	/**
-	 * @brief Show the loading bar and start listening.
-	 */
-	virtual void start();
-
-	/** Hide the loading bar and stop listening.
-	*/
-	virtual void finish();
 
 	void addSection(LoadingBarSection* section);
 
@@ -187,12 +168,6 @@ public:
 	void setCaption(const std::string& caption);
 
 	void setVersionText(const std::string& versionText);
-
-	/**
-	 * @brief Deletes the content of the overlay container.
-	 * @param container The container for which we want to delete the contents.
-	 */
-	void deleteOverlayContainerContents(Ogre::OverlayContainer& container) const;
 
 	/**
 	 * @brief Updates the render of the loading bar.

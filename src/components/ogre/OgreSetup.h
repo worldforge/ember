@@ -36,7 +36,7 @@
 #include <OgreConfigOptionMap.h>
 #include <OgreFrameListener.h>
 #include <sigc++/trackable.h>
-
+#include <memory>
 namespace varconf {
 class Variable;
 }

@@ -25,6 +25,7 @@
 #include "framework/LoggingInstance.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/input/Input.h"
 #include "CEGUIOgreRenderer/Renderer.h"
 #include "CEGUIOgreRenderer/ResourceProvider.h"
 #include "CEGUIOgreRenderer/ImageCodec.h"
@@ -68,7 +69,7 @@ CEGUI::OgreRenderer& CEGUISetup::createRenderer(Ogre::RenderWindow* renderWindow
 
 CEGUISetup::CEGUISetup(Ogre::RenderWindow& window)
 		: mCEGUILogger(new Cegui::CEGUILogger()),
-          mWindow(window) {
+		  mWindow(window) {
 //Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
 #ifndef CEGUI_HAS_FREETYPE
 	CEGUI is not built with Freetype
@@ -92,6 +93,10 @@ CEGUISetup::CEGUISetup(Ogre::RenderWindow& window)
 		// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 	}
+
+	Input::getSingleton().EventSizeChanged.connect([this](int width, int height) { mGuiSystem->notifyDisplaySizeChanged(CEGUI::Sizef(width, height)); });
+
+
 }
 
 CEGUISetup::~CEGUISetup() {

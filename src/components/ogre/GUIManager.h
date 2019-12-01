@@ -385,13 +385,6 @@ protected:
 	std::unique_ptr<Gui::WorldLoadingScreen> mWorldLoadingScreen;
 
 	/**
-	 * @brief Listens to window resize events and alerts CEGUI.
-	 * @param width The new width.
-	 * @param height The new height.
-	 */
-	void input_SizeChanged(int width, int height);
-
-	/**
 	 *    hooked to OgreView::EventCreatedAvatarEntity, switches the input mode to movement mode
 	 * @param entity
 	 */
