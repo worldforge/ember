@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout version="4">
+    <Window type="DefaultWindow">
+        <Window type="DefaultWindow">
+            <Property name="Size" value="{{0,1007},{1,0}}"/>
+            <Property name="Position" value="{{0.5,-503},{0.1,0}}"/>
+
+            <Window type="EmberLook/StaticImage">
+                <Property name="Size" value="{{1,0},{0,382}}"/>
+                <Property name="MaxSize" value="{{1,0},{0,382}}"/>
+                <Property name="Image" value="splash/main"/>
+            </Window>
+            <Window type="EmberLook/StaticText" name="version">
+                <Property name="TextColours" value="tl:ffef756d tr:ffef756d bl:ffe5d1bc br:ffe5d1bc"/>
+                <Property name="Size" value="{{0,200},{0,30}}"/>
+                <Property name="Position" value="{{0.5,303},{0,400}}"/>
+                <Property name="HorzFormatting" value="RightAligned"/>
+            </Window>
+            <Window type="EmberLook/StaticText">
+                <Property name="TextColours" value="tl:ffef756d tr:ffef756d bl:ffe5d1bc br:ffe5d1bc"/>
+                <Property name="Size" value="{{0,200},{0,30}}"/>
+                <Property name="Font" value="DejaVuSans-10"/>
+                <Property name="Position" value="{{0.5,-256},{0,400}}"/>
+                <Property name="Text" value="Loading, please wait..."/>
+            </Window>
+            <Window type="DefaultWindow">
+                <Property name="Size" value="{{0,512},{0,64}}"/>
+                <Property name="Position" value="{{0.5,-256},{0,440}}"/>
+                <Window type="EmberLook/StaticImage">
+                    <Property name="Image" value="progressbar/main"/>
+                </Window>
+                <Window type="EmberLook/StaticImage" name="progress">
+                    <Property name="BackgroundEnabled" value="True"/>
+                    <Property name="BackgroundColours" value="000000"/>
+                </Window>
+                <Window type="EmberLook/StaticImage">
+                    <Property name="Image" value="progressbar_frame/main"/>
+                </Window>
+            </Window>
+            <Window type="EmberLook/StaticText" name="details">
+                <Property name="TextColours" value="tl:ffef756d tr:ffef756d bl:ffe5d1bc br:ffe5d1bc"/>
+                <Property name="Size" value="{{1,0},{0,30}}"/>
+                <Property name="Position" value="{{0.5,-256},{0,510}}"/>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
