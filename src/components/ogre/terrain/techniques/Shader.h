@@ -67,20 +67,20 @@ public:
      * @param sceneManager The scene manager which will hold the terrain.
 	 * @param useNormalMapping Whether to use normal mapping.
      */
-	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool useNormalMapping = false);
+	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, Ogre::SceneManager& sceneManager, bool useNormalMapping = false);
 
 	/**
 	 * @brief Dtor.
 	 */
     ~Shader() override;
 
-    virtual bool prepareMaterial();
-    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
+    bool prepareMaterial() override;
+    bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const override;
 
-	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const;
+	bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const override;
 
 protected:
-	typedef std::vector<ShaderPass*> PassStore;
+	typedef std::vector<std::unique_ptr<ShaderPass>> PassStore;
 
 	/**
 	 * @brief Sets whether shadows should be used.
@@ -133,20 +133,6 @@ protected:
 	 * @param normalMapped Whether the passes should use normal mapped shaders.
 	 */
 	void buildPasses(bool normalMapped);
-
-	/**
-	 * @brief Adds the first layer.
-	 * @param pass The pass which is used to draw this layer.
-	 * @param layer The layer definition.
-	 */
-	void addBaseLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
-
-	/**
-	 * @brief Adds a layer, apart from the first layer.
-	 * @param pass The pass which is used to draw this layer.
-	 * @param layer The layer definition.
-	 */
-	void addLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
 
 	/**
 	 * @brief Resets the technique, removing all passes.

@@ -47,19 +47,19 @@ add_library(emberogre
         terrain/TerrainManager.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp
         terrain/TerrainLayerDefinitionManager.cpp terrain/TerrainMod.cpp
         terrain/TerrainPage.cpp terrain/TerrainPageGeometry.cpp
-        terrain/TerrainPageShadow.cpp terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp
+        terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp
         terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp
         terrain/PlantAreaQueryResult.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp
         terrain/TerrainShaderUpdateTask.cpp terrain/TerrainAreaUpdateTask.cpp
         terrain/techniques/Shader.cpp
         terrain/techniques/ShaderPass.cpp
-        terrain/techniques/ShaderPassBlendMapBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp
+        terrain/techniques/ShaderPassBlendMapBatch.cpp terrain/techniques/Base.cpp
         terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp terrain/TerrainMaterialCompilationTask.cpp
         terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/Buffer.cpp terrain/HeightMapBuffer.cpp
         terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp
         terrain/TerrainAreaRemoveTask.cpp terrain/TerrainModUpdateTask.cpp
         terrain/GeometryUpdateTask.cpp terrain/TerrainEditorOverlay.cpp
-        terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/ShadowUpdateTask.cpp terrain/PlantQueryTask.cpp
+        terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/PlantQueryTask.cpp
         terrain/HeightMapFlatSegment.cpp terrain/Segment.cpp terrain/SegmentHolder.cpp terrain/SegmentManager.cpp
         terrain/foliage/PlantPopulator.cpp terrain/foliage/ClusterPopulator.cpp terrain/foliage/Vegetation.cpp terrain/TerrainHandler.cpp
         terrain/techniques/CompilerTechniqueProvider.cpp terrain/ITerrainObserver.h terrain/TerrainPageDeletionTask.cpp

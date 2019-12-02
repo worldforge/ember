@@ -246,11 +246,6 @@ public:
 	const std::list<TerrainShader*>& getBaseShaders() const;
 
 	/**
-	 * @brief Regenerates all terrain shadow maps.
-	 */
-	void updateShadows();
-
-	/**
 	 * @brief Gets the size of one page as indices.
 	 * @return The size of one page as indices.
 	 */
@@ -547,13 +542,6 @@ protected:
 	 * @param affectedArea The area affected.
 	 */
 	void markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea);
-
-	/**
-	 * @brief Called each frame.
-	 * @param
-	 * @param
-	 */
-	void frameProcessed(const TimeFrame&, unsigned int);
 
 	/**
 	 * @brief Updates shaders needing updating.

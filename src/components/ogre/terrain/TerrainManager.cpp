@@ -65,7 +65,6 @@ namespace Terrain
 
 
 TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
 	mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())),
 	mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
 	mIsFoliageShown(false),
@@ -245,16 +244,6 @@ void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, co
 		mHandler->getPlantsForArea(*populator, query, std::move(asyncCallback));
 	}
 }
-
-void TerrainManager::runCommand(const std::string& command, const std::string& args)
-{
-	if (UpdateShadows == command) {
-		mHandler->updateShadows();
-	}
-}
-
-
-
 
 Scene& TerrainManager::getScene() const
 {

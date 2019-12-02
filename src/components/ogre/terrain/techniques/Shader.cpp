@@ -27,57 +27,35 @@
 #include <OgreMaterialManager.h>
 #include <OgreSceneManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-namespace Techniques
-{
+namespace Techniques {
 const std::string Shader::NORMAL_TEXTURE_ALIAS = "EmberTerrain/NormalTexture";
 const std::string Shader::COMPOSITE_MAP_ALIAS = "EmberTerrain/CompositeMap";
 
 Shader::Shader(bool includeShadows,
-		const TerrainPageGeometryPtr& mGeometry,
-		const SurfaceLayerStore& mTerrainPageSurfaces,
-		const TerrainPageShadow* terrainPageShadow,
-		Ogre::SceneManager& sceneManager,
-		bool UseNormalMapping) :
-		Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow),
+			   const TerrainPageGeometryPtr& mGeometry,
+			   const SurfaceLayerStore& mTerrainPageSurfaces,
+			   Ogre::SceneManager& sceneManager,
+			   bool UseNormalMapping) :
+		Base(mGeometry, mTerrainPageSurfaces),
 		mIncludeShadows(includeShadows),
 		mSceneManager(sceneManager),
 		mUseNormalMapping(UseNormalMapping),
-		mUseCompositeMap(false)
-{
+		mUseCompositeMap(false) {
 }
 
-Shader::~Shader()
-{
-	for (auto& pass : mPasses) {
-		delete pass;
-	}
-	for (auto& pass : mPassesNormalMapped) {
-		delete pass;
-	}
-}
+Shader::~Shader() = default;
 
-void Shader::reset()
-{
-	for (auto& pass : mPasses) {
-		delete pass;
-	}
+void Shader::reset() {
 	mPasses.clear();
-	for (auto& pass : mPassesNormalMapped) {
-		delete pass;
-	}
 	mPassesNormalMapped.clear();
 }
 
-bool Shader::prepareMaterial()
-{
+bool Shader::prepareMaterial() {
 	reset();
 	if (mUseNormalMapping) {
 		buildPasses(true);
@@ -90,8 +68,7 @@ bool Shader::prepareMaterial()
 	return true;
 }
 
-void Shader::buildPasses(bool normalMapped)
-{
+void Shader::buildPasses(bool normalMapped) {
 	ShaderPass* shaderPass;
 	if (normalMapped) {
 		shaderPass = addPassNormalMapped();
@@ -132,8 +109,7 @@ void Shader::buildPasses(bool normalMapped)
 	}
 }
 
-bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
-{
+bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const {
 	S_LOG_VERBOSE("Compiling terrain page material " << material->getName());
 
 	// Preserve any texture name aliases that may have been set
@@ -237,7 +213,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 
 		try {
 			Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-			float scales[1] = { 1.0f };
+			float scales[1] = {1.0f};
 			fpParams->setNamedConstant("scales", scales, 1); // The composite map spreads over the entire terrain, no uv scaling needed
 			if (mIncludeShadows) {
 				auto* pssmSetup = dynamic_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
@@ -280,8 +256,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	return true;
 }
 
-bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const
-{
+bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const {
 	material->removeAllTechniques();
 	if (mUseCompositeMap) {
 
@@ -298,27 +273,25 @@ bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<st
 	return true;
 }
 
-ShaderPass* Shader::addPass()
-{
-	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition()));
+ShaderPass* Shader::addPass() {
+	auto shaderPass = new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition());
 	if (mIncludeShadows) {
 		for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
-			shaderPass->addShadowLayer(mTerrainPageShadow);
+			shaderPass->addShadowLayer();
 		}
 	}
-	mPasses.push_back(shaderPass);
+	mPasses.push_back(std::unique_ptr<ShaderPass>(shaderPass));
 	return shaderPass;
 }
 
-ShaderPass* Shader::addPassNormalMapped()
-{
-	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition(), true));
+ShaderPass* Shader::addPassNormalMapped() {
+	auto shaderPass = new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition(), true);
 	if (mIncludeShadows) {
 		for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
-			shaderPass->addShadowLayer(mTerrainPageShadow);
+			shaderPass->addShadowLayer();
 		}
 	}
-	mPassesNormalMapped.push_back(shaderPass);
+	mPassesNormalMapped.push_back(std::unique_ptr<ShaderPass>(shaderPass));
 	return shaderPass;
 }
 

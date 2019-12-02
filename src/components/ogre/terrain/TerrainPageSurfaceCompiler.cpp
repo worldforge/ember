@@ -25,7 +25,6 @@
 #endif
 
 #include "TerrainPageSurfaceCompiler.h"
-#include "TerrainPageShadow.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "ICompilerTechniqueProvider.h"
 #include "TerrainPageGeometry.h"
@@ -49,10 +48,9 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler() {
 
 TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(
 		const TerrainPageGeometryPtr& geometry,
-		const SurfaceLayerStore& terrainPageSurfaces,
-		TerrainPageShadow* terrainPageShadow) {
+		const SurfaceLayerStore& terrainPageSurfaces) {
 	return new TerrainPageSurfaceCompilationInstance(
-			mCompilerTechniqueProvider.createTechnique(geometry, terrainPageSurfaces, terrainPageShadow),
+			mCompilerTechniqueProvider.createTechnique(geometry, terrainPageSurfaces),
 			mManagedTextures);
 
 }
@@ -99,14 +97,6 @@ bool TerrainPageSurfaceCompilationInstance::compileCompositeMap(Ogre::MaterialPt
 		material->removeAllTechniques();
 		return false;
 	}
-}
-
-std::string TerrainPageSurfaceCompilationInstance::getShadowTextureName(const Ogre::MaterialPtr& material) const {
-	return mTechnique->getShadowTextureName(material);
-}
-
-bool TerrainPageSurfaceCompilationInstance::requiresPregenShadow() const {
-	return mTechnique->requiresPregenShadow();
 }
 
 }

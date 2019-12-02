@@ -29,11 +29,9 @@ namespace Terrain {
 namespace Techniques {
 
 Base::Base(const TerrainPageGeometryPtr& geometry,
-		   SurfaceLayerStore terrainPageSurfaces,
-		   const TerrainPageShadow* terrainPageShadow)
+		   SurfaceLayerStore terrainPageSurfaces)
 		: mGeometry(geometry),
 		  mTerrainPageSurfaces(std::move(terrainPageSurfaces)),
-		  mTerrainPageShadow(terrainPageShadow),
 		  mPage(geometry->getPage()) {
 }
 

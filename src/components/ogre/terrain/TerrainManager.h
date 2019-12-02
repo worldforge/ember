@@ -99,7 +99,6 @@ class Vegetation;
  * It works closely with EmberTerrainPageSource.
  */
 class TerrainManager : public virtual sigc::trackable,
-					   public ConsoleObject,
 					   public ConfigListenerContainer,
 					   public Ember::IHeightProvider
 {
@@ -120,12 +119,6 @@ public:
 	~TerrainManager() override;
 
 	/**
-	 * @copydoc ConsoleObject::runCommand
-	 */
-	void runCommand(const std::string& command, const std::string& args) override;
-
-
-	/**
 	 * @brief Gets the adapter used to bind this manager to a scene manager.
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
@@ -144,11 +137,6 @@ public:
 	 * @return The size of on foliage batch, in world units.
 	 */
 	unsigned int getFoliageBatchSize() const;
-
-	/**
-	 * @brief Console command for updating all terrain shadow maps.
-	 */
-	const ConsoleCommandWrapper UpdateShadows;
 
 	/**
 	 * @brief Whether the foliage should be shown or not.

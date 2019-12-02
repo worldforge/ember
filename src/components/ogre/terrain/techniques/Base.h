@@ -43,22 +43,12 @@ public:
 	 * @param terrainPageShadow An optional shadow.
 	 */
 	Base(const TerrainPageGeometryPtr& geometry,
-		 SurfaceLayerStore terrainPageSurfaces,
-		 const TerrainPageShadow* terrainPageShadow);
+		 SurfaceLayerStore terrainPageSurfaces);
 
 	/**
 	 * @brief Dtor.
 	 */
 	~Base() override;
-
-	std::string getShadowTextureName(const Ogre::MaterialPtr& material) const override {
-		return "";
-	}
-
-	bool requiresPregenShadow() const override {
-		return false;
-	}
-
 
 protected:
 
@@ -71,11 +61,6 @@ protected:
 	 * @brief The surfaces to generate a rendering technique for.
 	 */
 	const SurfaceLayerStore mTerrainPageSurfaces;
-
-	/**
-	 * @brief An optional shadow.
-	 */
-	const TerrainPageShadow* mTerrainPageShadow;
 
 	/**
 	 * @brief The affected page.

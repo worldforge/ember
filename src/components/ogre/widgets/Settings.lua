@@ -366,7 +366,7 @@ function SettingsWidget:buildSettingsUi()
 					key = "preferredtechnique",
 					
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
-					suggestions = {"ShaderNormalMapped", "Shader", "Base"},
+					suggestions = {"ShaderNormalMapped", "Shader"},
 				},
 				{
 					label = "Terrain page size",

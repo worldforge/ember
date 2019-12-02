@@ -22,7 +22,6 @@
 
 #include "CompilerTechniqueProvider.h"
 #include "Shader.h"
-#include "Simple.h"
 #include "OnePixelMaterialGenerator.h"
 
 #include "components/ogre/ShaderManager.h"
@@ -63,33 +62,21 @@ CompilerTechniqueProvider::~CompilerTechniqueProvider() {
 	Ogre::TextureManager::getSingleton().remove("dynamic/onepixel", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
-TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const {
+TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces) const {
 	std::string preferredTech;
 	if (EmberServices::getSingleton().getConfigService().itemExists("terrain", "preferredtechnique")) {
 		preferredTech = static_cast<std::string>(EmberServices::getSingleton().getConfigService().getValue("terrain", "preferredtechnique"));
 	}
 
-	bool shaderSupport = false;
-	const Ogre::RenderSystemCapabilities* caps = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities();
-	if (caps->hasCapability(Ogre::RSC_VERTEX_PROGRAM) && (caps->hasCapability(Ogre::RSC_FRAGMENT_PROGRAM))) {
-		if ((Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0") && Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0")) || (Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") && Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1"))) {
-			shaderSupport = true;
-		}
-	}
-
 	ShaderManager::GraphicsLevel graphicsLevel = mShaderManager.getGraphicsLevel();
 
 	bool useNormalMapping = (preferredTech == "ShaderNormalMapped");
-	if ((useNormalMapping || preferredTech == "Shader") && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
+	if ((useNormalMapping || preferredTech == "Shader") && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		//Use shader tech with shadows
-		return new Techniques::Shader(true, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, useNormalMapping);
+		return new Techniques::Shader(true, geometry, terrainPageSurfaces, mSceneManager, useNormalMapping);
 	}
-//	if ((preferredTech == "Shader" || useNormalMapping) && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 	//Use shader tech without shadows
-	return new Techniques::Shader(false, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, false);
-//	} else {
-//		return new Techniques::Simple(geometry, terrainPageSurfaces, terrainPageShadow);
-//	}
+	return new Techniques::Shader(false, geometry, terrainPageSurfaces, mSceneManager, false);
 }
 
 }

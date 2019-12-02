@@ -50,8 +50,7 @@ public:
 	~CompilerTechniqueProvider() override;
 
 	TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry,
-														 const SurfaceLayerStore& terrainPageSurfaces,
-														 const TerrainPageShadow* terrainPageShadow) const override;
+														 const SurfaceLayerStore& terrainPageSurfaces) const override;
 
 protected:
 

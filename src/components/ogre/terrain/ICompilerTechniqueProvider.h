@@ -56,8 +56,7 @@ struct ICompilerTechniqueProvider {
 	 * @param terrainPageShadow An optional shadow for the geometry.
 	 */
 	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry,
-																 const SurfaceLayerStore& terrainPageSurfaces,
-																 const TerrainPageShadow* terrainPageShadow) const = 0;
+																 const SurfaceLayerStore& terrainPageSurfaces) const = 0;
 
 };
 

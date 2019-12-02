@@ -26,10 +26,8 @@
 #include "TerrainDefPoint.h"
 #include "TerrainShader.h"
 #include "TerrainPage.h"
-#include "TerrainPageShadow.h"
 #include "TerrainPageSurface.h"
 #include "TerrainPageGeometry.h"
-#include "TerrainArea.h"
 #include "TerrainMod.h"
 #include "TerrainInfo.h"
 #include "TerrainPageCreationTask.h"
@@ -45,7 +43,6 @@
 #include "TerrainLayerDefinition.h"
 
 #include "GeometryUpdateTask.h"
-#include "ShadowUpdateTask.h"
 #include "PlantQueryTask.h"
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
@@ -56,9 +53,7 @@
 #include "../ILightning.h"
 
 #include "framework/tasks/TaskQueue.h"
-#include "framework/tasks/SerialTask.h"
 #include "framework/tasks/TaskExecutionContext.h"
-#include "framework/MainLoopController.h"
 
 #include <Eris/EventService.h>
 
@@ -168,8 +163,6 @@ TerrainHandler::TerrainHandler(unsigned int pageIndexSize,
 	mSegmentManager->setDefaultHeight(getDefaultHeight());
 	//TODO: get these values from the server if possible
 	mSegmentManager->setDefaultHeightVariation(10);
-
-	MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &TerrainHandler::frameProcessed));
 
 	EventTerrainEnabled.connect(sigc::mem_fun(*this, &TerrainHandler::terrainEnabled));
 	EventTerrainDisabled.connect(sigc::mem_fun(*this, &TerrainHandler::terrainDisabled));
@@ -466,28 +459,6 @@ void TerrainHandler::setLightning(ILightning* lightning) {
 	mLightning = lightning;
 }
 
-void TerrainHandler::updateShadows() {
-	if (mLightning) {
-		//Only update if there's a shadow texture set.
-		if (!mPages.empty()) {
-			auto page = mPages.front();
-			if (page->getSurface() && page->getSurface()->getShadow() && !page->getSurface()->getShadow()->getShadowTextureName().empty()) {
-				S_LOG_VERBOSE("Updating precomputed shadows.");
-				WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
-
-				GeometryPtrVector geometry;
-				for (auto& aPage : mPages) {
-					geometry.emplace_back(new TerrainPageGeometry(*aPage, *mSegmentManager, getDefaultHeight()));
-				}
-
-				mTaskQueue->enqueueTask(std::make_unique<ShadowUpdateTask>(geometry, sunDirection));
-			}
-		}
-	} else {
-		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
-	}
-}
-
 float TerrainHandler::getDefaultHeight() const {
 	return -12;
 }
@@ -597,16 +568,6 @@ void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainAr
 				}
 				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaUpdateTask>(*mTerrain, existingArea, *terrainArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
 			}
-		}
-	}
-}
-
-void TerrainHandler::frameProcessed(const TimeFrame&, unsigned int) {
-	if (mLightning) {
-		//Update shadows every hour
-		if (!mLastLightingUpdateAngle.isValid() || WFMath::Angle(mLightning->getMainLightDirection(), mLastLightingUpdateAngle) > (WFMath::numeric_constants<float>::pi() / 12)) {
-			updateShadows();
-			mLastLightingUpdateAngle = mLightning->getMainLightDirection();
 		}
 	}
 }

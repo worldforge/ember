@@ -54,7 +54,7 @@ friend class ShaderPassBlendMapBatch;
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
 	virtual void setBaseLayer(const TerrainPageSurfaceLayer* layer);
-	void addShadowLayer(const TerrainPageShadow* terrainPageShadow);
+	void addShadowLayer();
 
 	virtual bool hasRoomForLayer(const TerrainPageSurfaceLayer* layer);
 

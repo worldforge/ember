@@ -96,19 +96,6 @@ struct TerrainPageSurfaceCompilerTechnique {
 	 */
 	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const = 0;
 
-	/**
-	 * @brief Get shadow texture name, if such has been created.
-	 * @return A texture name, or empty if none is used.
-	 */
-	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const = 0;
-
-	/**
-	 * @brief Returns true if a precomputed shadow is required.
-	 * @return True if a precomputed shadow is required.
-	 */
-	virtual bool requiresPregenShadow() const = 0;
-
-
 };
 
 /**
@@ -154,18 +141,6 @@ public:
 	 */
 	bool compileCompositeMap(Ogre::MaterialPtr material);
 
-	/**
-	 * @brief Get shadow texture name, if such has been created.
-	 * @return A texture name, or empty if none is used.
-	 */
-	virtual std::string getShadowTextureName(const Ogre::MaterialPtr& material) const;
-
-	/**
-	 * @brief Returns true if a precomputed shadow is required.
-	 * @return True if a precomputed shadow is required.
-	 */
-	virtual bool requiresPregenShadow() const;
-
 private:
 
 	/**
@@ -209,8 +184,7 @@ public:
 	 * @return A compilation instance.
 	 */
 	TerrainPageSurfaceCompilationInstance* createCompilationInstance(const TerrainPageGeometryPtr& geometry,
-																	 const SurfaceLayerStore& terrainPageSurfaces,
-																	 TerrainPageShadow* terrainPageShadow);
+																	 const SurfaceLayerStore& terrainPageSurfaces);
 
 private:
 
@@ -223,17 +197,6 @@ private:
 	 * A set of textures created in the process. These will be destroyed when this instance is destroyed.
 	 */
 	std::set<std::string> mManagedTextures;
-
-	/**
-	 * @brief Selects and creates a new technique. The selection depends on hardware being used and features required.
-	 * @param geometry The geometry to operate on.
-	 * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
-	 * @param terrainPageShadow An optional shadow.
-	 * @return A technique.
-	 */
-	TerrainPageSurfaceCompilerTechnique* selectTechnique(const TerrainPageGeometryPtr& geometry,
-														 const SurfaceLayerStore& terrainPageSurfaces,
-														 const TerrainPageShadow* terrainPageShadow) const;
 
 };
 

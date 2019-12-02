@@ -121,7 +121,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 	}
 
 	if (useShadows) {
-		for (unsigned int i = 0; i < mShadowLayers; ++i) {
+		for (int i = 0; i < mShadowLayers; ++i) {
 			Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
 
 			textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
@@ -196,7 +196,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
 
 		if (useShadows) {
-			auto* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
+			auto* pssmSetup = dynamic_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
 			if (pssmSetup) {
 				Ogre::Vector4 splitPoints;
 				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
@@ -261,7 +261,7 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer) {
 	return (numberOfTextureUnitsOnCard - projectedTakenUnits) >= 0;
 }
 
-void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow) {
+void ShaderPass::addShadowLayer() {
 	mShadowLayers++;
 }
 

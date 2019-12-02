@@ -48,11 +48,6 @@ public:
 	 * @return The terrain handler.
 	 */
 	Ember::OgreView::Terrain::TerrainHandler& getHandler();
-	
-	/**
-	 * @brief Console command for updating all terrain shadow maps.
-	 */
-	const Ember::ConsoleCommandWrapper UpdateShadows;
 
 	/**
 	 * @brief Emitted when a terrain page has had its geometry updated.

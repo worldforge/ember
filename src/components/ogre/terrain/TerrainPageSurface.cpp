@@ -25,7 +25,6 @@
 #endif
 
 #include "TerrainPageSurface.h"
-#include "TerrainPageShadow.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainPageGeometry.h"
@@ -40,8 +39,7 @@ namespace Terrain {
 
 TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider) :
 		mTerrainPage(terrainPage),
-		mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider)),
-		mShadow(new TerrainPageShadow(terrainPage)) {
+		mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider)) {
 	//create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
 	std::stringstream materialNameSS;
@@ -101,7 +99,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 	for (auto& entry : mLayers) {
 		constLayers.emplace(entry.first, entry.second.get());
 	}
-	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow.get());
+	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers);
 }
 
 void TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader) {
@@ -109,9 +107,6 @@ void TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& defini
 	mLayers.emplace(surfaceIndex, std::unique_ptr<TerrainPageSurfaceLayer>(terrainSurface));
 }
 
-TerrainPageShadow* TerrainPageSurface::getShadow() const {
-	return mShadow.get();
-}
 
 
 }
