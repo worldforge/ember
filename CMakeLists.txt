@@ -411,7 +411,7 @@ if (RSYNC_CMD)
             TARGET media-download
             COMMAND ${CMAKE_COMMAND} -E echo "I will now use rsync to install the media from amber.worldforge.org into ${MEDIA_DIR}."
             COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_DIR}
-            COMMAND rsync -rtzu amber.worldforge.org::ember-media/ember-media-${MEDIA_VERSION}/ ${MEDIA_DIR}
+            COMMAND rsync -rtzu --delete amber.worldforge.org::ember-media/ember-media-${MEDIA_VERSION}/ ${MEDIA_DIR}
             COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_DIR}/media to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_DIR}/media ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
             COMMAND ${CMAKE_COMMAND} -E echo "Done."
