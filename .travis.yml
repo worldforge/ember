@@ -57,7 +57,7 @@ script:
     if [[ "$TRAVIS_OS_NAME" != "osx" && "$CXX" != "clang++" ]]; then
       conan profile update settings.compiler.libcxx=libstdc++11 default
     fi
-  - conan install .. -pr default --build=outdated --update
+  - conan install .. -pr default --build=missing --update
   - mkdir -p ~/install/usr
   - cmake -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=Release ..
   - make media-download
