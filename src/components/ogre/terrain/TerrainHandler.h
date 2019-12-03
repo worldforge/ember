@@ -32,47 +32,63 @@
 #include <memory>
 
 namespace Mercator {
-	class Area;
-	class Terrain;
-	class Shader;
-	class TerrainMod;
-	class BasePoint;
+class Area;
+
+class Terrain;
+
+class Shader;
+
+class TerrainMod;
+
+class BasePoint;
 }
 
-namespace Eris
-{
+namespace Eris {
 class EventService;
 }
 
-namespace Ember
-{
+namespace Ember {
 class TimeFrame;
+
 class EmberEntity;
 namespace Tasks {
-	class TaskQueue;
+class TaskQueue;
 }
-namespace OgreView
-{
+namespace OgreView {
 struct ILightning;
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainShader;
+
 class TerrainInfo;
+
 class TerrainPage;
+
 class TerrainArea;
+
 class TerrainMod;
+
 class TerrainLayerDefinition;
+
 class TerrainPageSurfaceLayer;
+
 struct ITerrainAdapter;
+
 class ITerrainPageBridge;
+
 struct ICompilerTechniqueProvider;
+
 class HeightMap;
+
 class HeightMapBufferProvider;
+
 struct TerrainDefPoint;
+
 class PlantAreaQuery;
+
 class PlantAreaQueryResult;
+
 class SegmentManager;
 
 namespace Foliage {
@@ -88,8 +104,7 @@ class PlantPopulator;
  *
  * Most terrain handling functions are implemented as Tasks, which are performed on a Task queue. As much work as possible is done in background threads, and then synced with both Ogre and the Mercator representations in the main thread.
  */
-class TerrainHandler : public virtual sigc::trackable, public Ember::IHeightProvider
-{
+class TerrainHandler : public virtual sigc::trackable, public Ember::IHeightProvider {
 public:
 
 	/**
@@ -97,9 +112,9 @@ public:
 	 * @param pageIndexSize The size of one side of a page, in indices.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-	TerrainHandler(unsigned int pageIndexSize,
-			ICompilerTechniqueProvider& compilerTechniqueProvider,
-			Eris::EventService& eventService);
+	TerrainHandler(int pageIndexSize,
+				   ICompilerTechniqueProvider& compilerTechniqueProvider,
+				   Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.
@@ -118,7 +133,7 @@ public:
 	 * @brief Sets the size of the width of one page. This must be a power of two and at least 64.
 	 * @param pageSize The number of "units" along one side of a page. Must be a power of two and at least 64.
 	 */
-	void setPageSize(unsigned int pageSize);
+	void setPageSize(int pageSize);
 
 	/**
 	 * @brief Returns the height at the specified position in the world.
@@ -129,17 +144,18 @@ public:
 	 * @param height The height, in world space, at the specified position.
 	 * @returns True if there was a valid, populated segment at the position (and therefore also a valid height).
 	 */
-	bool getHeight(const TerrainPosition& atPosition, float& height) const;
+	bool getHeight(const TerrainPosition& atPosition, float& height) const override;
 
-    /**
-     * @brief Performs a fast copy of the raw height data for the supplied area.
-     * @param xMin Minimum x coord of the area.
-     * @param xMax Maximum x coord of the area.
-     * @param yMin Minimum y coord of the area.
-     * @param yMax Maximum y coord of the area.
-     * @param heights A vector into which heigh data will be placed. This should preferably already have a capacity reserved.
-     */
-	void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
+	/**
+	 * @brief Performs a fast copy of the raw height data for the supplied area.
+	 * @param xMin Minimum x coord of the area.
+	 * @param xMax Maximum x coord of the area.
+	 * @param yMin Minimum y coord of the area.
+	 * @param yMax Maximum y coord of the area.
+	 * @param heights A vector into which heigh data will be placed. This should preferably already have a capacity reserved.
+	 */
+	void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const override;
+
 	/**
 	 * @brief Updates the terrain with new terrain points.
 	 *
@@ -251,12 +267,12 @@ public:
 	 */
 	int getPageIndexSize() const;
 
-	/**
-	 * @brief Adds a new page to the handler.
-	 *
-	 * @param page A terrain page instance.
-	 */
-	void addPage(TerrainPage* page);
+//	/**
+//	 * @brief Adds a new page to the handler.
+//	 *
+//	 * @param page A terrain page instance.
+//	 */
+//	void addPage(TerrainPage* page);
 
 	/**
 	 * @brief Destroys a page, removing it from the handler and deleting the instance.
@@ -287,7 +303,7 @@ public:
 	 * The call to the callback will happen in the main thread.
 	 * @param asyncCallback The callback which will be called when all base points have been fetched.
 	 */
-	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback);
+	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&>& asyncCallback);
 
 	/**
 	 * @brief Sets the lightning instance to use.
@@ -311,7 +327,7 @@ public:
 	 *
 	 * @returns A store of all the shaders registered with the manager.
 	 */
-	const ShaderStore& getAllShaders() const;
+	const std::map<const Mercator::Shader*, std::unique_ptr<TerrainShader>>& getAllShaders() const;
 
 	/**
 	 * @brief Gets the default height of any uninitialized or undefined terrain.
@@ -352,7 +368,7 @@ public:
 	 *
 	 * The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	 */
-	sigc::signal<void, const TerrainShader*, const AreaStore& > EventLayerUpdated;
+	sigc::signal<void, const TerrainShader*, const AreaStore&> EventLayerUpdated;
 
 	/**
 	 * @brief Emitted when a new shader is created.
@@ -399,7 +415,7 @@ public:
 	/**
 	 * @brief Emitted after a terrain material has been recompiled.
 	 */
-	sigc::signal<void, TerrainPage* > EventTerrainMaterialRecompiled;
+	sigc::signal<void, TerrainPage*> EventTerrainMaterialRecompiled;
 
 protected:
 
@@ -408,7 +424,7 @@ protected:
 	/**
 	 * @brief The size in indices of one side of a page.
 	 */
-	unsigned int mPageIndexSize;
+	int mPageIndexSize;
 
 	/**
 	 * @brief The terrain page surface compiler technique provider which allows Ogre Material instances to be generated for the terrain pages.
@@ -425,7 +441,42 @@ protected:
 	/**
 	 * @brief The main Mercator terrain instance, which holds all of the Mercator terrain structures.
 	 */
-	Mercator::Terrain* mTerrain;
+	std::unique_ptr<Mercator::Terrain> mTerrain;
+
+	/**
+	 * @brief Handles the Segments used by the pages.
+	 *
+	 * In order to better be able to conserve memory we don't directly interact with Mercator::Segment instances. Instead we use the Segment class which allows us to keep track of which segments can be released to preserve memory.
+	 */
+	std::unique_ptr<SegmentManager> mSegmentManager;
+
+	/**
+	 * @brief A provider of height map buffers, used in conjuncture with mHeightMap.
+	 */
+	std::unique_ptr<HeightMapBufferProvider> mHeightMapBufferProvider;
+
+	/**
+	 * @brief Handles the height map, which is the basis for most of the terrain.
+	 * The height map mirrors the data normally only kept in Mercator::Terrain, but unlike the latter it is thread safe.
+	 */
+	std::unique_ptr<HeightMap> mHeightMap;
+
+	/**
+	 * @brief Holds a map of the TerrainShaders.
+	 */
+	std::map<const Mercator::Shader*, std::unique_ptr<TerrainShader>> mShaderMap;
+
+	/**
+	 * @brief A collection of all the pages used by the handler.
+	 * This is the canonical collection of pages.
+	 * @see mTerrainPages
+	 */
+	std::vector<std::unique_ptr<TerrainPage>> mPages;
+
+	/**
+	 * @brief The task queue we'll use for all background terrain updates.
+	 */
+	std::unique_ptr<Tasks::TaskQueue> mTaskQueue;
 
 	/**
 	 * @brief We use this to keep track on the terrain shaders used for areas, stored with the layer id as the key.
@@ -446,12 +497,6 @@ protected:
 	 */
 	ShaderUpdateSet mShadersToUpdate;
 
-	/**
-	 * @brief A collection of all the pages used by the handler.
-	 * This is the canonical collection of pages.
-	 * @see mTerrainPages
-	 */
-	PageVector mPages;
 
 	/**
 	 * @brief A map of all terrain areas used by the handler.
@@ -481,51 +526,18 @@ protected:
 	 */
 	bool mHasTerrainInfo;
 
-	/**
-	 * @brief The task queue we'll use for all background terrain updates.
-	 */
-	Tasks::TaskQueue* mTaskQueue;
 
 	/**
 	 * @brief Provides lightning information for the terrain.
 	 */
 	ILightning* mLightning;
 
-	/**
-	 * @brief Holds a map of the TerrainShaders.
-	 */
-	ShaderStore mShaderMap;
 
 	/**
 	 * @brief A list of the shaders, which will all be used on all Pages.
 	 */
 	std::list<TerrainShader*> mBaseShaders;
 
-	/**
-	 * @brief Handles the height map, which is the basis for most of the terrain.
-	 * The height map mirrors the data normally only kept in Mercator::Terrain, but unlike the latter it is thread safe.
-	 */
-	HeightMap* mHeightMap;
-
-	/**
-	 * @brief A provider of height map buffers, used in conjuncture with mHeightMap.
-	 */
-	HeightMapBufferProvider* mHeightMapBufferProvider;
-
-	/**
-	 * @brief Handles the Segments used by the pages.
-	 *
-	 * In order to better be able to conserve memory we don't directly interact with Mercator::Segment instances. Instead we use the Segment class which allows us to keep track of which segments can be released to preserve memory.
-	 */
-	SegmentManager* mSegmentManager;
-
-	/**
-	 * @brief The angle used when lighting for precomputed shadows was last updated.
-	 *
-	 * We need to keep track of this in order to know when to update the precomputed shadows (once every hour).
-	 * This is only of used when using the fixed function pipeline (which requries precomputed shadows).
-	 */
-	WFMath::Vector<3> mLastLightingUpdateAngle;
 
 	/**
 	 * @brief Keeps track of the current terrain entity.
@@ -557,8 +569,7 @@ protected:
 
 };
 
-inline const std::list<TerrainShader*>& TerrainHandler::getBaseShaders() const
-{
+inline const std::list<TerrainShader*>& TerrainHandler::getBaseShaders() const {
 	return mBaseShaders;
 }
 

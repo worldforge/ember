@@ -24,29 +24,21 @@
 
 #include "TerrainPage.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
-TerrainPageDeletionTask::TerrainPageDeletionTask(TerrainPage* page) :
-		mPage(page)
-{
+TerrainPageDeletionTask::TerrainPageDeletionTask(std::unique_ptr<TerrainPage> page) :
+		mPage(std::move(page)) {
 }
 
-TerrainPageDeletionTask::~TerrainPageDeletionTask()
-{
+TerrainPageDeletionTask::~TerrainPageDeletionTask() = default;
+
+void TerrainPageDeletionTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 }
 
-void TerrainPageDeletionTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
-}
-
-bool TerrainPageDeletionTask::executeTaskInMainThread()
-{
-	delete mPage;
+bool TerrainPageDeletionTask::executeTaskInMainThread() {
+	mPage.reset();
 	return true;
 }
 }

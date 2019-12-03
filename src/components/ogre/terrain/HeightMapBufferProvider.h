@@ -20,6 +20,7 @@
 #define HEIGHTMAPBUFFERPROVIDER_H_
 
 #include <vector>
+#include <memory>
 
 namespace Ember {
 namespace OgreView {
@@ -68,7 +69,7 @@ private:
 	/**
 	 * @brief A store of buffer instances.
 	 */
-	typedef std::vector<Buffer<float>*> BufferStore;
+	typedef std::vector<std::unique_ptr<Buffer<float>>> BufferStore;
 
 	/**
 	 * @brief The pool of unused Buffer instances.
@@ -93,9 +94,9 @@ private:
 	/**
 	 * @brief Returns a previous checked out height map buffer instance.
 	 * This will return the Buffer instance to the pool.
-	 * @param heightMapBuffer The height buffer to return to the pool.
+	 * @param buffer The height buffer to return to the pool.
 	 */
-	void checkin(HeightMapBuffer& heightMapBuffer);
+	void checkin(std::unique_ptr<Buffer<float>> buffer);
 
 	/**
 	 * @brief Makes sure that the pool contains the desired amount of buffers.

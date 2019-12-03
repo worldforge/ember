@@ -19,26 +19,26 @@
 #ifndef HEIGHTMAPBUFFER_H_
 #define HEIGHTMAPBUFFER_H_
 
-namespace Ember
-{
-namespace OgreView
-{
+#include <memory>
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+
+namespace Terrain {
 
 class HeightMapBufferProvider;
 
-template <typename> class Buffer;
+template<typename>
+class Buffer;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Wraps a buffer instance and presents it to the height map system.
  * An instance of this will be created by the HeightMapBufferProvider, and at destruction it will automatically return the underlying Buffer instance to the provider.
  */
-class HeightMapBuffer
-{
+class HeightMapBuffer {
 	friend class HeightMapBufferProvider;
+
 public:
 	/**
 	 * @brief The buffer type for a height map.
@@ -74,7 +74,7 @@ private:
 	 * @brief The underlying buffer which contains the data.
 	 * This isn't destroyed along with this instance, rather it's recycled back to the provider.
 	 */
-	BufferType* mBuffer;
+	std::unique_ptr<BufferType> mBuffer;
 
 	/**
 	 * @brief Ctor.
@@ -82,7 +82,7 @@ private:
 	 * @param provider The provider to which this instance belongs.
 	 * @param buffer The buffer instance which will hold the actual data.
 	 */
-	HeightMapBuffer(HeightMapBufferProvider& provider, BufferType* buffer);
+	HeightMapBuffer(HeightMapBufferProvider& provider, std::unique_ptr<BufferType> buffer);
 
 };
 

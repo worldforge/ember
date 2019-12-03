@@ -20,31 +20,24 @@
 #include "HeightMapBufferProvider.h"
 #include "Buffer.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-HeightMapBuffer::HeightMapBuffer(HeightMapBufferProvider& provider, BufferType* buffer) :
-	mProvider(provider), mBuffer(buffer)
-{
+HeightMapBuffer::HeightMapBuffer(HeightMapBufferProvider& provider, std::unique_ptr<BufferType> buffer) :
+		mProvider(provider), mBuffer(std::move(buffer)) {
 }
 
-HeightMapBuffer::~HeightMapBuffer()
-{
-	mProvider.checkin(*this);
+HeightMapBuffer::~HeightMapBuffer() {
+	mProvider.checkin(std::move(this->mBuffer));
 }
 
-HeightMapBuffer::BufferType* HeightMapBuffer::getBuffer()
-{
-	return mBuffer;
+HeightMapBuffer::BufferType* HeightMapBuffer::getBuffer() {
+	return mBuffer.get();
 }
 
-unsigned int HeightMapBuffer::getResolution() const
-{
+unsigned int HeightMapBuffer::getResolution() const {
 	return mBuffer->getResolution();
 }
 

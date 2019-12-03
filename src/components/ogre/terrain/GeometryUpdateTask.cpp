@@ -36,7 +36,7 @@ namespace Terrain {
 GeometryUpdateTask::GeometryUpdateTask(BridgeBoundGeometryPtrVector pages,
 									   std::vector<WFMath::AxisBox<2>> areas,
 									   TerrainHandler& handler,
-									   ShaderStore shaders,
+									   std::vector<const Terrain::TerrainShader*> shaders,
 									   HeightMapBufferProvider& heightMapBufferProvider,
 									   HeightMap& heightMap,
 									   const WFMath::Vector<3>& lightDirection) :
@@ -52,16 +52,10 @@ GeometryUpdateTask::GeometryUpdateTask(BridgeBoundGeometryPtrVector pages,
 
 void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	std::vector<Mercator::Segment*> segments;
-	// build a vector of shaders so we can more efficiently update them
-	std::vector<const Terrain::TerrainShader*> shaderList;
-
-	for (auto& entry : mShaders) {
-		shaderList.push_back(entry.second);
-	}
 
 	//first populate the geometry for all pages, and then regenerate the shaders
-	for (BridgeBoundGeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
-		TerrainPageGeometryPtr geometry = I->first;
+	for (const auto& geometryEntry : mGeometry) {
+		TerrainPageGeometryPtr geometry = geometryEntry.first;
 		geometry->repopulate();
 		const SegmentVector& segmentVector = geometry->getValidSegments();
 		for (const auto& entry : segmentVector) {
@@ -70,20 +64,20 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
 
-		context.executeTask(std::make_unique<TerrainShaderUpdateTask>(geometries, shaderList, mAreas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mLightDirection));
+		context.executeTask(std::make_unique<TerrainShaderUpdateTask>(geometries, mShaders, mAreas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mLightDirection));
 	}
 	context.executeTask(std::make_unique<HeightMapUpdateTask>(mHeightMapBufferProvider, mHeightMap, segments));
 
-	for (BridgeBoundGeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
-		const TerrainPageGeometryPtr& geometry = I->first;
-		const ITerrainPageBridgePtr& bridge = I->second;
+	for (const auto& geometryEntry : mGeometry) {
+		const TerrainPageGeometryPtr& geometry = geometryEntry.first;
+		const ITerrainPageBridgePtr& bridge = geometryEntry.second;
 		if (bridge) {
 			bridge->updateTerrain(*geometry);
 			mBridgesToNotify.insert(bridge);
 		}
 	}
-	for (BridgeBoundGeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
-		TerrainPage* page = &(I->first)->getPage();
+	for (const auto& geometryEntry : mGeometry) {
+		TerrainPage* page = &(geometryEntry.first)->getPage();
 		mPages.insert(page);
 	}
 

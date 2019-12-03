@@ -20,61 +20,46 @@
 #include "HeightMapBuffer.h"
 #include "Buffer.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 HeightMapBufferProvider::HeightMapBufferProvider(unsigned int bufferResolution, unsigned int desiredBuffers, unsigned int desiredBuffersTolerance) :
-	mBufferResolution(bufferResolution), mDesiredBuffers(desiredBuffers), mDesiredBuffersTolerance(desiredBuffersTolerance)
-{
+		mBufferResolution(bufferResolution), mDesiredBuffers(desiredBuffers), mDesiredBuffersTolerance(desiredBuffersTolerance) {
 	while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-		mPrimitiveBuffers.push_back(new Buffer<float> (mBufferResolution, 1));
+		mPrimitiveBuffers.emplace_back(new Buffer<float>(mBufferResolution, 1));
 	}
 }
 
-HeightMapBufferProvider::~HeightMapBufferProvider()
-{
-	for (BufferStore::const_iterator I = mPrimitiveBuffers.begin(); I != mPrimitiveBuffers.end(); ++I) {
-		delete *I;
-	}
+HeightMapBufferProvider::~HeightMapBufferProvider() = default;
+
+void HeightMapBufferProvider::checkin(std::unique_ptr<Buffer<float>> buffer) {
+	mPrimitiveBuffers.push_back(std::move(buffer));
 }
 
-void HeightMapBufferProvider::checkin(HeightMapBuffer& heightMapBuffer)
-{
-	Buffer<float>* buffer = heightMapBuffer.getBuffer();
-	mPrimitiveBuffers.push_back(buffer);
-}
-
-HeightMapBuffer* HeightMapBufferProvider::checkout()
-{
+HeightMapBuffer* HeightMapBufferProvider::checkout() {
 	if (mPrimitiveBuffers.empty()) {
 		while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-			mPrimitiveBuffers.push_back(new Buffer<float> (mBufferResolution, 1));
+			mPrimitiveBuffers.emplace_back(new Buffer<float>(mBufferResolution, 1));
 		}
 	}
-	Buffer<float>* buffer = mPrimitiveBuffers.back();
+	auto buffer = std::move(mPrimitiveBuffers.back());
 	mPrimitiveBuffers.pop_back();
-	return new HeightMapBuffer(*this, buffer);
+	return new HeightMapBuffer(*this, std::move(buffer));
 }
 
-void HeightMapBufferProvider::maintainPool()
-{
+void HeightMapBufferProvider::maintainPool() {
 
 	if (mPrimitiveBuffers.size() <= mDesiredBuffers - mDesiredBuffersTolerance) {
 		while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-			mPrimitiveBuffers.push_back(new Buffer<float> (mBufferResolution, 1));
+			mPrimitiveBuffers.emplace_back(new Buffer<float>(mBufferResolution, 1));
 		}
 	}
 
 	if (mPrimitiveBuffers.size() >= mDesiredBuffers + mDesiredBuffersTolerance) {
 		while (mPrimitiveBuffers.size() > mDesiredBuffers) {
-			Buffer<float>* buffer = mPrimitiveBuffers.back();
 			mPrimitiveBuffers.pop_back();
-			delete buffer;
 		}
 	}
 }

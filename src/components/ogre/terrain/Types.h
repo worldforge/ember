@@ -105,8 +105,6 @@ namespace OgreView {
 
 		typedef std::unordered_map<std::string, TerrainPage*> PageStore;
 
-		typedef std::vector<TerrainPage*> PageVector;
-
 		typedef std::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
 
 		typedef std::vector<TerrainPageGeometryPtr> GeometryPtrVector;
@@ -119,7 +117,7 @@ namespace OgreView {
 
 		typedef std::unordered_map<std::string, Mercator::Area*> AreaMap;
 
-		typedef std::map<const Mercator::Shader*, const TerrainShader*> ShaderStore;
+		typedef std::map<const Mercator::Shader*, std::unique_ptr<const TerrainShader>> ShaderStore;
 	}
 }
 

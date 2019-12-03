@@ -42,7 +42,7 @@ public:
 	GeometryUpdateTask(BridgeBoundGeometryPtrVector geometry,
 					   std::vector<WFMath::AxisBox<2>> areas,
 					   TerrainHandler& handler,
-					   ShaderStore shaders,
+					   std::vector<const Terrain::TerrainShader*> shaders,
 					   HeightMapBufferProvider& heightMapBufferProvider,
 					   HeightMap& heightMap,
 					   const WFMath::Vector<3>& lightDirection);
@@ -58,7 +58,7 @@ private:
 	BridgeBoundGeometryPtrVector mGeometry;
 	const std::vector<WFMath::AxisBox<2>> mAreas;
 	TerrainHandler& mHandler;
-	ShaderStore mShaders;
+	std::vector<const Terrain::TerrainShader*> mShaders;
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;
 	std::set<TerrainPage*> mPages;

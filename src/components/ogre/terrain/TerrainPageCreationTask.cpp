@@ -62,7 +62,12 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 	std::vector<WFMath::AxisBox<2>> areas;
 	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
-	context.executeTask(std::make_unique<GeometryUpdateTask>(geometry, areas, mTerrainHandler, mTerrainHandler.getAllShaders(), mHeightMapBufferProvider, mHeightMap, mMainLightDirection));
+	std::vector<const TerrainShader*> shaders;
+	shaders.reserve(mTerrainHandler.getAllShaders().size());
+	for (auto& entry : mTerrainHandler.getAllShaders()) {
+		shaders.push_back(entry.second.get());
+	}
+	context.executeTask(std::make_unique<GeometryUpdateTask>(geometry, areas, mTerrainHandler, std::move(shaders), mHeightMapBufferProvider, mHeightMap, mMainLightDirection));
 
 }
 

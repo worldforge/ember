@@ -21,12 +21,11 @@
 
 #include "framework/tasks/TemplateNamedTask.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+#include <memory>
+
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 class TerrainPage;
 
@@ -36,18 +35,18 @@ class TerrainPage;
  * This task only deletes a page. The reason for having it as a task is that we want to make sure no other tasks
  * are using the page when it's deleted.
  */
-class TerrainPageDeletionTask: public Tasks::TemplateNamedTask<TerrainPageDeletionTask>
-{
+class TerrainPageDeletionTask : public Tasks::TemplateNamedTask<TerrainPageDeletionTask> {
 public:
-	TerrainPageDeletionTask(TerrainPage* page);
-	virtual ~TerrainPageDeletionTask();
+	explicit TerrainPageDeletionTask(std::unique_ptr<TerrainPage> page);
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	~TerrainPageDeletionTask() override;
 
-	virtual bool executeTaskInMainThread();
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
+
+	bool executeTaskInMainThread() override;
 
 private:
-	TerrainPage* mPage;
+	std::unique_ptr<TerrainPage> mPage;
 };
 
 }
