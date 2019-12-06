@@ -188,9 +188,29 @@ void OgreSetup::createOgreSystem() {
 	mPluginLoader.loadPlugin("Codec_FreeImage");
 	mPluginLoader.loadPlugin("Plugin_ParticleFX");
 	mPluginLoader.loadPlugin("RenderSystem_GL3Plus"); //We'll use OpenGL on Windows too, to make it easier to develop
+	mPluginLoader.loadPlugin("RenderSystem_Direct3D11");
+	mPluginLoader.loadPlugin("RenderSystem_Direct3D10");
+	mPluginLoader.loadPlugin("RenderSystem_Direct3D9");
 #endif
 
-	auto renderSystem = mRoot->getAvailableRenderers().front();
+	//auto renderSystem = mRoot->getAvailableRenderers().front();
+	const auto& renderers = mRoot->getAvailableRenderers();
+	if (renderers.size() == 0){
+		S_LOG_WARNING("\nFatal error: Empty renderer list!\n");
+		exit(1);
+	}
+	const char* envRenderName = getenv("OGRE_RENDER_SYSTEM");
+	if (envRenderName!= NULL)
+	{
+		auto renderSystem =  mRoot->getRenderSystemByName(envRenderName);
+		if (renderSystem == NULL){
+			S_LOG_WARNING("\nmRoot->getRenderSystemByName() return NULL!Render name:\n");
+			S_LOG_WARNING(envRenderName);
+			renderSystem = renderers.front();
+		}
+		mRoot->setRenderSystem(renderSystem);
+	}else{
+	auto renderSystem = renderers.front();
 	try {
 		//Set the default resolution to 1280 x 720 unless overridden by the user.
 		renderSystem->setConfigOption("Video Mode", "1280 x  720"); //OGRE stores the value with two spaces after "x".
@@ -198,6 +218,7 @@ void OgreSetup::createOgreSystem() {
 		S_LOG_WARNING("Could not set default resolution." << ex);
 	}
 	mRoot->setRenderSystem(renderSystem);
+	}
 
 	if (chdir(configSrv.getEmberDataDirectory().generic_string().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory().string() << "'.");

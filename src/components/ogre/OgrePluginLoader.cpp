@@ -71,6 +71,9 @@ OgrePluginLoader::OgrePluginLoader() {
 	//on windows we'll bundle the dll files in the same directory as the executable
 	mPluginDirs.push_back(".");
 	mPluginExtension = ".dll";
+	mPluginDirs.push_back("bin");// Prefix + "bin", or alternatives:	
+	mPluginDirs.push_back("lib64");
+	mPluginDirs.push_back("lib");
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 
 	//If any prefix is set (for example for AppImage builds), check for the plugins in directories relative to the prefix first.
@@ -143,6 +146,12 @@ bool OgrePluginLoader::loadDynPlugin(const std::string& pluginName) {
 //#else
 		pluginPath = dir + "/" + pluginName + mPluginExtension;
 //#endif
+		if (!std::ifstream(pluginPath).good()) {
+			pluginPath = pluginName + mPluginExtension;// if absent, use plugin in current directory
+		} 
+		if (!std::ifstream(pluginPath).good()) {
+			pluginPath = dir + "/" + pluginName + "_d" + mPluginExtension;
+		}
 		if (std::ifstream(pluginPath).good()) {
 			S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
 			try {
@@ -151,6 +160,9 @@ bool OgrePluginLoader::loadDynPlugin(const std::string& pluginName) {
 			} catch (...) {
 			}
 		}
+		else{
+			printf("\nUnable to load:%s", pluginPath.c_str());
+ 		}
 	}
 	S_LOG_FAILURE("Failed to load the plugin '" << pluginName << "'!");
 #else
