@@ -30,7 +30,7 @@
 #include <list>
 #include <unordered_map>
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(WIN32)
 #include <alc.h>
 #endif
 namespace Ember {
@@ -170,7 +170,7 @@ private:
 	 */
 	std::unordered_map<std::string, std::unique_ptr<BaseSoundSample>> mBaseSamples;
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(WIN32)
 	/**
 	 * @brief The main OpenAL context.
 	 */
