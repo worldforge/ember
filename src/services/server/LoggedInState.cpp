@@ -68,7 +68,7 @@ LoggedInState::~LoggedInState() {
 void LoggedInState::checkTransfer() {
 	TransferInfoStringSerializer serializer;
 	auto teleportFilePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "teleports";
-	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
+	std::fstream teleportsFile(teleportFilePath.string().c_str(), std::ios_base::in);
 	TransferInfoStringSerializer::TransferInfoStore transferObjects;
 	if (teleportsFile.good()) {
 		serializer.deserialize(transferObjects, teleportsFile);
@@ -178,7 +178,7 @@ void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar) {
 void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo) {
 	TransferInfoStringSerializer serializer;
 	auto teleportFilePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "teleports";
-	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
+	std::fstream teleportsFile(teleportFilePath.string().c_str(), std::ios_base::in);
 	TransferInfoStringSerializer::TransferInfoStore transferObjects;
 	if (teleportsFile.good()) {
 		serializer.deserialize(transferObjects, teleportsFile);
@@ -196,7 +196,7 @@ void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo) {
 		}
 	}
 
-	std::fstream teleportsOutputFile(teleportFilePath.c_str(), std::ios_base::out);
+	std::fstream teleportsOutputFile(teleportFilePath.string().c_str(), std::ios_base::out);
 	if (teleportsOutputFile.good()) {
 		serializer.serialize(transferObjects, teleportsOutputFile);
 	} else {
@@ -209,7 +209,7 @@ void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo) {
 void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInfo, const Eris::Avatar* avatar) {
 	TransferInfoStringSerializer serializer;
 	auto teleportFilePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "teleports";
-	std::fstream teleportsFile(teleportFilePath.c_str(), std::ios_base::in);
+	std::fstream teleportsFile(teleportFilePath.string().c_str(), std::ios_base::in);
 	TransferInfoStringSerializer::TransferInfoStore transferObjects;
 	if (teleportsFile.good()) {
 		serializer.deserialize(transferObjects, teleportsFile);
@@ -218,7 +218,7 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	AvatarTransferInfo avatarTransferInfo(avatar->getEntity()->getName(), WFMath::TimeStamp::now(), transferInfo);
 	transferObjects.push_back(avatarTransferInfo);
 
-	std::fstream teleportsOutputFile(teleportFilePath.c_str(), std::ios_base::out);
+	std::fstream teleportsOutputFile(teleportFilePath.string().c_str(), std::ios_base::out);
 	if (teleportsOutputFile.good()) {
 		serializer.serialize(transferObjects, teleportsOutputFile);
 	} else {

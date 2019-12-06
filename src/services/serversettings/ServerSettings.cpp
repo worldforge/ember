@@ -63,7 +63,7 @@ void ServerSettings::writeToDisk() {
 void ServerSettings::readFromDisk() {
 	auto filePath = getFullConfigFilePath();
 
-	std::ifstream file(filePath.c_str());
+	std::ifstream file(filePath.string().c_str());
 
 	// If an existing server settings is present, then read it in.
 	if (!file.fail()) {

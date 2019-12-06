@@ -223,7 +223,7 @@ Application::Application(std::string prefix, std::string homeDir, ConfigMap conf
 	auto userConfigFilePath = mConfigService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
 	if (!boost::filesystem::exists(userConfigFilePath)) {
 		//Create empty template file.
-		std::ofstream outstream(userConfigFilePath.c_str());
+		std::ofstream outstream(userConfigFilePath.string().c_str());
 		outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
 		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath.string() << "'.");
 	}
