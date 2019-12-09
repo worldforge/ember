@@ -89,11 +89,11 @@ deploy:
     edge: true # opt in to dpl v2
     on:
       branch: master
-      condition: x"$BUILD_APPIMAGE" == x"1"
+      condition: x"$BUILD_APPIMAGE" == x"1" && x"$TRAVIS_PULL_REQUEST" == x"false"
   - provider: snap
     channel: edge
     snap: $HOME/install/usr/*.snap
     skip_cleanup: true
     on:
       branch: master
-      condition: x"$BUILD_SNAP" == x"1"
+      condition: x"$BUILD_SNAP" == x"1" && x"$TRAVIS_PULL_REQUEST" == x"false"
