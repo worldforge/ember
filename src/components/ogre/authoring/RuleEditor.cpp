@@ -70,8 +70,8 @@ long int RuleEditor::updateOrCreateRule(Atlas::Objects::Root& rule)
 	get->setSerialno(serial);
 	get->setFrom(mAvatar.getId());
 
-	mAvatar.getConnection()->getResponder()->await(get->getSerialno(), this, &RuleEditor::operationGetRuleResult);
-	mAvatar.getConnection()->send(get);
+	mAvatar.getConnection().getResponder().await(get->getSerialno(), this, &RuleEditor::operationGetRuleResult);
+	mAvatar.getConnection().send(get);
 
 	return serial;
 }
@@ -135,8 +135,8 @@ void RuleEditor::updateRule(long int serial, Atlas::Objects::Root& rule)
 	op->setArgs1(rule);
 	op->setSerialno(serial);
 
-	mAvatar.getConnection()->getResponder()->await(op->getSerialno(), this, &RuleEditor::operationUpdateRuleResult);
-	mAvatar.getConnection()->send(op);
+	mAvatar.getConnection().getResponder().await(op->getSerialno(), this, &RuleEditor::operationUpdateRuleResult);
+	mAvatar.getConnection().send(op);
 }
 
 void RuleEditor::createRule(long int serial, Atlas::Objects::Root& rule)
@@ -146,8 +146,8 @@ void RuleEditor::createRule(long int serial, Atlas::Objects::Root& rule)
 	op->setArgs1(rule);
 	op->setSerialno(serial);
 
-	mAvatar.getConnection()->getResponder()->await(op->getSerialno(), this, &RuleEditor::operationCreateRuleResult);
-	mAvatar.getConnection()->send(op);
+	mAvatar.getConnection().getResponder().await(op->getSerialno(), this, &RuleEditor::operationCreateRuleResult);
+	mAvatar.getConnection().send(op);
 }
 
 }

@@ -51,6 +51,8 @@
 
 #include "IActionCreator.h"
 
+#include <Eris/TypeService.h>
+
 namespace Ember {
 
 

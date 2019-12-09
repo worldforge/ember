@@ -141,7 +141,7 @@ protected:
 Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned int tileSize) :
 		mView(view),
 		mHeightProvider(heightProvider),
-		mAvatarEntity(view.getAvatar()->getEntity()),
+		mAvatarEntity(view.getAvatar().getEntity()),
 		mCurrentLocation(mAvatarEntity->getLocation()),
 		mTalloc(nullptr),
 		mTcomp(nullptr),

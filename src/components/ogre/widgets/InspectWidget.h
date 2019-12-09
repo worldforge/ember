@@ -95,7 +95,7 @@ protected:
 
 	void updateAttributeString();
 
-	void entity_Changed(const Eris::StringSet& attributes);
+	void entity_Changed(const std::set<std::string>& attributes);
 
 	std::string mAttributesString;
 

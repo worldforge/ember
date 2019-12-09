@@ -263,7 +263,7 @@ void GUIManager::entity_Talk(const EntityTalk& entityTalk, EmberEntity* entity) 
 
 void GUIManager::entity_Emote(const std::string& description, EmberEntity* entity) {
 	//If it's our own entity we should just print what it says.
-	if (entity == entity->getView()->getAvatar()->getEntity()) {
+	if (entity == entity->getView()->getAvatar().getEntity()) {
 		AppendAvatarImaginary(description);
 	} else {
 		AppendAvatarImaginary(entity->getName() + " " + description);

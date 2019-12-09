@@ -86,7 +86,7 @@ private:
 
 	void gotAvatarSuccess(Eris::Avatar* avatar);
 
-	void gotAvatarDeactivated(Eris::Avatar* avatar);
+	void gotAvatarDeactivated(const std::string& avatarId);
 
 	void gotCharacterInfo(const Atlas::Objects::Entity::RootEntity& characterInfo);
 

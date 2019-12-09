@@ -39,8 +39,7 @@ namespace Ember {
     OOGChat::OOGChat(Eris::Account* account) : myLobby(nullptr)
     {
       // Set up the lobby object
-      //HACK: to get it to work with eris 1.3
-	  myLobby = new Eris::Lobby(account);
+	  myLobby = new Eris::Lobby(*account);
 
       // Specfic to lobby Callbacks setup
       myLobby->SightPerson.connect(sigc::mem_fun(*this,&OOGChat::sightPerson));
@@ -185,7 +184,7 @@ namespace Ember {
     ConsoleBackend::getSingletonPtr()->pushMessage(temp.str(), "info");
   }
 
-  void OOGChat::changed(const Eris::StringSet& sset, Eris::Room *room)
+  void OOGChat::changed(const std::set<std::string>& sset, Eris::Room *room)
   {
   }
 }

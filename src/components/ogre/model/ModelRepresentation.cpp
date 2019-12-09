@@ -248,7 +248,7 @@ void ModelRepresentation::model_Resetting() {
 	mTaskAction = nullptr;
 }
 
-void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds) {
+void ModelRepresentation::entity_Changed(const std::set<std::string>& attributeIds) {
 	for (const auto& attributeId : attributeIds) {
 		attrChanged(attributeId, mEntity.valueOfProperty(attributeId));
 	}

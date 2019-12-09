@@ -52,7 +52,7 @@ bool EntityBaseCase::testMatch(Eris::Entity* entity)
 	return false;
 }
 
-void EntityBaseCase::addEntityType(Eris::TypeInfoPtr typeInfo)
+void EntityBaseCase::addEntityType(Eris::TypeInfo* typeInfo)
 {
 	mEntityTypes.push_back(typeInfo);
 }

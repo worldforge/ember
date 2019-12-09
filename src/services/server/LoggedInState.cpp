@@ -80,7 +80,7 @@ void LoggedInState::checkTransfer() {
 	for (TransferInfoStringSerializer::TransferInfoStore::const_iterator I = transferObjects.begin(); I != transferObjects.end(); ++I) {
 		const AvatarTransferInfo& avatarTransferInfo(*I);
 		const Eris::TransferInfo& transferInfo(avatarTransferInfo.getTransferInfo());
-		if (transferInfo.getHost() == mAccount.getConnection()->getHost() && transferInfo.getPort() == mAccount.getConnection()->getPort()) {
+		if (transferInfo.getHost() == mAccount.getConnection().getHost() && transferInfo.getPort() == mAccount.getConnection().getPort()) {
 			mTransferInfos.push_back(avatarTransferInfo);
 			//			mAccount.takeTransferredCharacter(transferInfo.getPossessEntityId(), transferInfo.getPossessKey());
 		}
@@ -191,7 +191,7 @@ void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo) {
 	for (auto I = transferObjects.begin(); I != transferObjects.end(); ++I) {
 		AvatarTransferInfo& info = *I;
 		const Eris::TransferInfo& erisTransferInfo = info.getTransferInfo();
-		if (erisTransferInfo.getHost() == mAccount.getConnection()->getHost() && erisTransferInfo.getPort() == mAccount.getConnection()->getPort()) {
+		if (erisTransferInfo.getHost() == mAccount.getConnection().getHost() && erisTransferInfo.getPort() == mAccount.getConnection().getPort()) {
 			transferObjects.erase(I);
 		}
 	}
@@ -226,12 +226,12 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	}
 	teleportsOutputFile.close();
 
-	mTransferEvent = new Eris::TimedEvent(mAccount.getConnection()->getEventService(), boost::posix_time::seconds(0), [=]() {
+	mTransferEvent = new Eris::TimedEvent(mAccount.getConnection().getEventService(), boost::posix_time::seconds(0), [=]() {
 		this->transfer(transferInfo);
 	});
 }
 
-void LoggedInState::gotAvatarDeactivated(Eris::Avatar*) {
+void LoggedInState::gotAvatarDeactivated(const std::string& avatarId) {
 	destroyChildState();
 }
 

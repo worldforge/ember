@@ -48,6 +48,7 @@
 
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
+#include <Eris/TypeService.h>
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
@@ -98,7 +99,6 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 
 	// Deleting temporary entity
 	mEntity->shutdown();
-	delete mEntity;
 
 	mWorld.getSceneManager().destroySceneNode(mEntityNode);
 
@@ -141,7 +141,7 @@ void EntityCreatorCreationInstance::createEntity()
 	mEntityMessage["parent"] = erisType->getName();
 
 	// Temporary entity
-	mEntity = new Authoring::DetachedEntity("-1", erisType, &mTypeService);
+	mEntity = std::make_unique<Authoring::DetachedEntity>("-1", erisType, mTypeService);
 	Atlas::Objects::Entity::RootEntity rootEntity;
 	mEntity->doInit(rootEntity);
 	mEntity->setFromMessage(mEntityMessage);
@@ -195,8 +195,8 @@ void EntityCreatorCreationInstance::finalizeCreation()
 		c->setTo(mWorld.getAvatar()->getEmberEntity().getId());
 	}
 
-	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage), &mWorld.getView().getAvatar()->getConnection()->getFactories());
-	mWorld.getView().getAvatar()->getConnection()->send(c);
+	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage), &mWorld.getView().getAvatar().getConnection().getFactories());
+	mWorld.getView().getAvatar().getConnection().send(c);
 
 	std::stringstream ss;
 	ss << mPos;
@@ -313,7 +313,7 @@ void EntityCreatorCreationInstance::setOrientation(const WFMath::Quaternion& ori
 }
 
 const Authoring::DetachedEntity* EntityCreatorCreationInstance::getEntity() const {
-	return mEntity;
+	return mEntity.get();
 }
 
 EntityCreatorMovement* EntityCreatorCreationInstance::getMovement() {

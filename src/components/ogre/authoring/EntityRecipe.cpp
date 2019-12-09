@@ -35,6 +35,7 @@
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
 
+#include <Eris/TypeService.h>
 #include <Eris/TypeInfo.h>
 
 #include <tolua++.h>
@@ -221,7 +222,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	// 	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
 	// 	if (elem)
 	// 	{
-	// 		Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(getEntityType());
+	// 		Eris::TypeInfo* erisType = mConn->getTypeService().getTypeByName(getEntityType());
 	// 		if (erisType) {
 	// 			const Atlas::Message::MapType& defaultAttributes = erisType->getProperties();
 	// 			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
@@ -281,7 +282,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 			Atlas::Message::MapType m = decoder.popMessage();
 			auto parentI = m.find("parent");
 			if (parentI != m.end() && parentI->second.isString()) {
-				Eris::TypeInfo* erisType = typeService.getTypeByName(parentI->second.String());
+				auto erisType = typeService.getTypeByName(parentI->second.String());
 				if (erisType) {
 					const Atlas::Message::MapType& defaultAttributes = erisType->getProperties();
 					for (const auto& defaultAttribute : defaultAttributes) {

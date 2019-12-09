@@ -508,7 +508,7 @@ void TerrainHandler::updateMod(TerrainMod* terrainMod) {
 
 const std::unordered_map<std::string, Mercator::Area*>& TerrainHandler::getAreas() const {
 	return mAreas;
-};
+}
 
 
 void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainArea) {

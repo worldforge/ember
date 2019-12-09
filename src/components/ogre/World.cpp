@@ -90,7 +90,6 @@ World::World(Eris::View& view,
 		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getEventService())),
 		mMainCamera(new Camera::MainCamera(*mScene, mRenderWindow, input, *mTerrainManager->getTerrainAdapter())),
 		mMoveManager(new Authoring::EntityMoveManager(*this)),
-		mEmberEntityFactory(new EmberEntityFactory(view, *mScene, entityMappingManager)),
 		mMotionManager(new MotionManager()),
 		mAvatarCameraMotionHandler(nullptr),
 		mAvatarCameraWarper(nullptr),
@@ -126,11 +125,9 @@ World::World(Eris::View& view,
 	signals.EventMotionManagerCreated.emit(*mMotionManager);
 	Ogre::Root::getSingleton().addFrameListener(mMotionManager.get());
 
-	//When calling Eris::View::registerFactory ownership is transferred
-	view.registerFactory(mEmberEntityFactory);
-	signals.EventCreatedEmberEntityFactory.emit(*mEmberEntityFactory);
+	view.registerFactory(std::make_unique<EmberEntityFactory>(view, *mScene, entityMappingManager));
 
-	view.getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &World::View_gotAvatarCharacter));
+	view.getAvatar().GotCharacterEntity.connect(sigc::mem_fun(*this, &World::View_gotAvatarCharacter));
 
 	mMainCamera->pushWorldPickListener(mEntityWorldPickListener.get());
 
@@ -180,11 +177,6 @@ MotionManager& World::getMotionManager() const {
 Camera::MainCamera& World::getMainCamera() const {
 	assert(mMainCamera);
 	return *mMainCamera;
-}
-
-EmberEntityFactory& World::getEntityFactory() const {
-	assert(mEmberEntityFactory);
-	return *mEmberEntityFactory;
 }
 
 MovementController* World::getMovementController() const {

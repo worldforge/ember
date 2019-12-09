@@ -281,7 +281,7 @@ void InspectWidget::entity_ChildRemoved(Eris::Entity* entity) {
 	}
 }
 
-void InspectWidget::entity_Changed(const Eris::StringSet& attributes) {
+void InspectWidget::entity_Changed(const std::set<std::string>& attributes) {
 	updateAttributeString();
 	mChangedThisFrame = true;
 }

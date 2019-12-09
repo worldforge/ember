@@ -274,9 +274,7 @@ void EntityEditor::addGoal(const std::string& definition) {
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
 	thinkOp->setFrom(mWorld.getAvatar()->getId());
 
-	Eris::Connection* connection = account->getConnection();
-
-	connection->send(thinkOp);
+	account->getConnection().send(thinkOp);
 
 }
 
@@ -298,9 +296,7 @@ void EntityEditor::updateGoal(const std::string& replaceDefinition, const std::s
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
 	thinkOp->setFrom(mWorld.getAvatar()->getId());
 
-	Eris::Connection* connection = account->getConnection();
-
-	connection->send(thinkOp);
+	account->getConnection().send(thinkOp);
 }
 
 void EntityEditor::removeGoal(const std::string& definition) {
@@ -320,9 +316,7 @@ void EntityEditor::removeGoal(const std::string& definition) {
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
 	thinkOp->setFrom(mWorld.getAvatar()->getId());
 
-	Eris::Connection* connection = account->getConnection();
-
-	connection->send(thinkOp);
+	account->getConnection().send(thinkOp);
 }
 
 void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge) {
@@ -344,9 +338,7 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
 	thinkOp->setFrom(mWorld.getAvatar()->getId());
 
-	Eris::Connection* connection = account->getConnection();
-
-	connection->send(thinkOp);
+	account->getConnection().send(thinkOp);
 
 }
 
@@ -386,10 +378,10 @@ void EntityEditor::getGoals() {
 	//response operation from the target entity will be sent back to us.
 	thinkOp->setSerialno(Eris::getNewSerialno());
 
-	Eris::Connection* connection = account->getConnection();
+	auto& connection = account->getConnection();
 
-	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetGoalsResult);
-	connection->send(thinkOp);
+	connection.getResponder().await(thinkOp->getSerialno(), this, &EntityEditor::operationGetGoalsResult);
+	connection.send(thinkOp);
 
 }
 
@@ -399,7 +391,7 @@ void EntityEditor::relayToMind(Atlas::Objects::Operation::RootOperation op, Eris
 	if (mindsAttr && mindsAttr->isList() && !mindsAttr->List().empty()) {
 		if (mindsAttr->List().front().isString()) {
 			Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
-			Eris::Connection* connection = account->getConnection();
+			auto& connection = account->getConnection();
 
 			auto mindId = mindsAttr->List().front().String();
 
@@ -408,18 +400,18 @@ void EntityEditor::relayToMind(Atlas::Objects::Operation::RootOperation op, Eris
 			relayOp->setTo(mEntity.getId());
 			relayOp->setId(mindId);
 
-			relayOp->setFrom(mWorld.getView().getAvatar()->getId());
+			relayOp->setFrom(mWorld.getView().getAvatar().getId());
 
 			if (callback) {
 				//By setting a serial number we tell the server to "relay" the operation. This means that any
 				//response operation from the target entity will be sent back to us.
 				relayOp->setSerialno(Eris::getNewSerialno());
-				connection->getResponder()->await(relayOp->getSerialno(), callback);
+				connection.getResponder().await(relayOp->getSerialno(), callback);
 			}
 			relayOp->setArgs1(op);
 
 
-			connection->send(relayOp);
+			connection.send(relayOp);
 		}
 	}
 }
@@ -466,10 +458,10 @@ void EntityEditor::getThoughts() {
 	//response operation from the target entity will be sent back to us.
 	thinkOp->setSerialno(Eris::getNewSerialno());
 
-	Eris::Connection* connection = account->getConnection();
+	auto& connection = account->getConnection();
 
-	connection->getResponder()->await(thinkOp->getSerialno(), this, &EntityEditor::operationGetThoughtResult);
-	connection->send(thinkOp);
+	connection.getResponder().await(thinkOp->getSerialno(), this, &EntityEditor::operationGetThoughtResult);
+	connection.send(thinkOp);
 
 }
 

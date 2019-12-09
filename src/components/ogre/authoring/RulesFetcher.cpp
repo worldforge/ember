@@ -69,7 +69,7 @@ void RulesFetcher::fetchRule(const std::string& id)
 	get->setSerialno(Eris::getNewSerialno());
 	get->setFrom(mMindId);
 
-	mConnection.getResponder()->await(get->getSerialno(), this, &RulesFetcher::operationGetRuleResult);
+	mConnection.getResponder().await(get->getSerialno(), this, &RulesFetcher::operationGetRuleResult);
 	mConnection.send(get);
 
 }

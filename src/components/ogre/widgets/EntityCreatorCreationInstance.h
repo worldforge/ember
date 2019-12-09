@@ -156,7 +156,7 @@ protected:
 	/**
 	 * @brief Detached entity that is used in process of creating preview.
 	 */
-	Authoring::DetachedEntity* mEntity;
+	std::unique_ptr<Authoring::DetachedEntity> mEntity;
 
 	/**
 	 * @brief Preview scene node.

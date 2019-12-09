@@ -46,11 +46,6 @@ class World;
 struct EmberOgreSignals
 {
 	/**
-	 * @brief Emitted when the Ember entity factory has been created.
-	 */
-	sigc::signal<void, EmberEntityFactory&> EventCreatedEmberEntityFactory;
-
-	/**
 	 * @brief Emitted when the avatar entity has been created.
 	 */
 	sigc::signal<void, EmberEntity&> EventCreatedAvatarEntity;

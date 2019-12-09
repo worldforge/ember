@@ -36,7 +36,7 @@ AccountAvailableState::AccountAvailableState(IState& parentState, Eris::Connecti
 		StateBase<LoggedInState>::StateBase(parentState),
 		CreateAcc("create", this, "Create an account on the server."),
 		Login("login", this, "Login to the connected server."),
-		mAccount(&connection) {
+		mAccount(connection) {
 	mAccount.LoginFailure.connect(sigc::mem_fun(*this, &AccountAvailableState::loginFailure));
 	mAccount.LoginSuccess.connect(sigc::mem_fun(*this, &AccountAvailableState::loginSuccess));
 	mAccount.LogoutComplete.connect(sigc::mem_fun(*this, &AccountAvailableState::logoutComplete));

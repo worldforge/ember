@@ -53,8 +53,8 @@ void EntityMaker::runCommand(const std::string& command, const std::string& args
 		Tokeniser tokeniser(args);
 		if (tokeniser.hasRemainingTokens()) {
 			std::string typeName = tokeniser.nextToken();
-			Eris::TypeService* typeService = mConnection.getTypeService();
-			Eris::TypeInfo* typeinfo = typeService->getTypeByName(typeName);
+			auto& typeService = mConnection.getTypeService();
+			Eris::TypeInfo* typeinfo = typeService.getTypeByName(typeName);
 			if (typeinfo) {
 				std::string parentEntityId = mAvatar.getEntity()->getLocation()->getId();
 				if (MakeMe == command) {

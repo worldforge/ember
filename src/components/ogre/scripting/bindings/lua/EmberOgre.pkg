@@ -196,7 +196,6 @@ class EmberOgre
 	
 	Ogre::RenderWindow* getRenderWindow() const;
 	
-	sigc::signal<void, Ember::OgreView::EmberEntityFactory&> EventCreatedEmberEntityFactory;
 	sigc::signal<void, Ember::EmberEntity&> EventCreatedAvatarEntity;
 		
 	sigc::signal<void, Ember::OgreView::GUIManager&> EventGUIManagerCreated;

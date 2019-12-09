@@ -53,13 +53,13 @@ long int EntityImporter::newSerialNumber() {
 }
 
 void EntityImporter::send(const Atlas::Objects::Operation::RootOperation& op) {
-	mAccount.getConnection()->send(op);
+	mAccount.getConnection().send(op);
 }
 
 void EntityImporter::sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback) {
 	mCallbacks.insert(std::make_pair(op->getSerialno(), callback));
-	mAccount.getConnection()->getResponder()->await(op->getSerialno(), this, &EntityImporter::operationResult);
-	mAccount.getConnection()->send(op);
+	mAccount.getConnection().getResponder().await(op->getSerialno(), this, &EntityImporter::operationResult);
+	mAccount.getConnection().send(op);
 
 }
 

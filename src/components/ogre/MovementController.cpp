@@ -126,7 +126,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 		try {
 			mAwareness = new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider);
 			mAwarenessVisualizer = new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager());
-			mSteering = new Navigation::Steering(*mAwareness, *avatar.getEmberEntity().getView()->getAvatar());
+			mSteering = new Navigation::Steering(*mAwareness, avatar.getEmberEntity().getView()->getAvatar());
 			mSteering->EventPathUpdated.connect(sigc::mem_fun(*this, &MovementController::Steering_PathUpdated));
 
 			mAwareness->EventTileDirty.connect([this] {
@@ -376,7 +376,7 @@ void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* loc
 	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3>>(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
-	mAvatar.getErisAvatar()->place(&mAvatar.getEmberEntity(), mAvatar.getEmberEntity().getLocation(), atlasPos);
+	mAvatar.getErisAvatar().place(&mAvatar.getEmberEntity(), mAvatar.getEmberEntity().getLocation(), atlasPos);
 }
 
 WFMath::Vector<3> MovementController::getMovementForCurrentFrame() const {

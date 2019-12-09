@@ -111,7 +111,7 @@ public:
 	 * @param ty The type info which specified the type for this entity.
 	 * @param vw The world view to which this entity belongs.
 	 */
-	EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View* vw);
+	EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View& vw);
 
 	/**
 	 * @brief Dtor.

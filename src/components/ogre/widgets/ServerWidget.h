@@ -124,7 +124,7 @@ protected:
 	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
 	void avatar_EntityDeleted();
-	void avatar_Deactivated(Eris::Avatar* avatar);
+	void avatar_Deactivated(const std::string& avatarId);
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
 	bool LogoutButton_Click(const CEGUI::EventArgs& args);

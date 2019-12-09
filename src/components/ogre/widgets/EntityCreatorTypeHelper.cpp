@@ -42,6 +42,7 @@
 
 #include <Eris/Connection.h>
 #include <Eris/Avatar.h>
+#include <Eris/TypeService.h>
 
 #include <CEGUI/widgets/Listbox.h>
 #include <CEGUI/widgets/Editbox.h>
@@ -84,14 +85,14 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	mCreateButton = &pushButton;
 	mCreateButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
 
-	mRuleTreeAdapter = new Adapters::Eris::RuleTreeAdapter(*mAvatar.getConnection(), mAvatar.getId(), typeTree);
+	mRuleTreeAdapter = new Adapters::Eris::RuleTreeAdapter(mAvatar.getConnection(), mAvatar.getId(), typeTree);
 	mRuleTreeAdapter->refreshRules({"game_entity", "archetype"});
 
 	mModelPreviewRenderer = new ModelRenderer(&modelPreview, "modelPreview");
 	mModelPreviewManipulator = new CameraEntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
 
 
-	mAvatar.getConnection()->getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityCreatorTypeHelper::typeService_BoundType));
+	mAvatar.getConnection().getTypeService().BoundType.connect(sigc::mem_fun(*this, &EntityCreatorTypeHelper::typeService_BoundType));
 
 	mModeCombobox.addItem(Gui::ColouredListItem::createColouredListItem("free"));
 	mModeCombobox.addItem(Gui::ColouredListItem::createColouredListItem("planted"));
@@ -106,9 +107,9 @@ void EntityCreatorTypeHelper::updatePreview() {
 		if (typeData.isValid()) {
 			//check if the type is bound
 			mCurrentType = typeData->getId();
-			auto type = mAvatar.getConnection()->getTypeService()->getTypeByName(typeData->getId());
+			auto type = mAvatar.getConnection().getTypeService().getTypeByName(typeData->getId());
 			if (type && type->isBound()) {
-				Authoring::DetachedEntity entity("0", type, mAvatar.getConnection()->getTypeService());
+				Authoring::DetachedEntity entity("0", type, mAvatar.getConnection().getTypeService());
 				showPreview(entity);
 
 				mCreateButton->setEnabled(true);
@@ -156,7 +157,7 @@ void EntityCreatorTypeHelper::typeService_BoundType(Eris::TypeInfo* typeInfo) {
 	if (mModelPreviewRenderer && mRuleTreeAdapter && typeInfo->getName() == mCurrentType) {
 		auto typeData = mRuleTreeAdapter->getSelectedRule();
 		if (typeData.isValid()) {
-			Authoring::DetachedEntity entity("0", typeInfo, mAvatar.getConnection()->getTypeService());
+			Authoring::DetachedEntity entity("0", typeInfo, mAvatar.getConnection().getTypeService());
 			showPreview(entity);
 			mCreateButton->setEnabled(true);
 			auto modeElement = typeInfo->getProperty("mode");
@@ -185,7 +186,7 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args) {
 					name = mName.getText().c_str();
 				}
 
-				auto typeInfo = mAvatar.getConnection()->getTypeService()->getTypeByName(typeData->getId());
+				auto typeInfo = mAvatar.getConnection().getTypeService().getTypeByName(typeData->getId());
 				if (typeInfo) {
 					Atlas::Message::MapType definition{{"parent", typeInfo->getName()}};
 

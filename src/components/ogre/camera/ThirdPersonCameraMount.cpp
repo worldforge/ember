@@ -216,7 +216,7 @@ void ThirdPersonCameraMount::adjustForOcclusion() {
 			if (collisionDetector->collisionInfo.type() == typeid(EntityCollisionInfo)) {
 				auto& entityCollisionInfo = boost::any_cast<EntityCollisionInfo&>(collisionDetector->collisionInfo);
 				//Ignore the avatar entity.
-				if (entityCollisionInfo.entity != entityCollisionInfo.entity->getView()->getAvatar()->getEntity()) {
+				if (entityCollisionInfo.entity != entityCollisionInfo.entity->getView()->getAvatar().getEntity()) {
 					float hitDistance = from.distance(callback.m_hitPointWorld[i]);
 					if (hitDistance < distance) {
 						distance = hitDistance;

@@ -188,13 +188,6 @@ public:
 	MotionManager& getMotionManager() const;
 
 	/**
-	 * @brief Gets the entity factory which is responsible for creating all new entities in the world.
-	 *
-	 * @return The entity factory.
-	 */
-	EmberEntityFactory& getEntityFactory() const;
-
-	/**
 	 * @brief Gets the main camera.
 	 *
 	 * @return The main camera.
@@ -340,11 +333,6 @@ protected:
 	 * @brief Responsible for allowing movement of entities in the world by the user.
 	 */
 	std::unique_ptr<Authoring::EntityMoveManager> mMoveManager;
-
-	/**
-	 * @brief Main factory for all entities created in the world. Ownership passed to Eris::View.
-	 */
-	EmberEntityFactory* mEmberEntityFactory;
 
 	/**
 	 * @brief Responsible for updating motions and animations of entities.

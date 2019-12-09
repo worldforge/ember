@@ -127,7 +127,7 @@ ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
 	mEntityMessage = entity->getInstanceProperties();
 
 	// Temporary entity
-	mEntity = new Authoring::DetachedEntity("-1", erisType, &entity->getView()->getTypeService());
+	mEntity = new Authoring::DetachedEntity("-1", erisType, entity->getView()->getTypeService());
 	mEntity->setFromMessage(mEntityMessage);
 
 	// Creating scene node

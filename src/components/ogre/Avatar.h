@@ -98,7 +98,7 @@ public:
 	 * @param cameraSettings Camera settings.
 	 * @param terrainAdapter The terrain adapter needed for the third person camera.
 	 */
-	Avatar(Eris::Avatar* erisAvatar, EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter);
+	Avatar(Eris::Avatar& erisAvatar, EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter);
 
 	/**
 	 * @brief Dtor.
@@ -124,7 +124,7 @@ public:
 	 */
 	void movedInWorld();
 
-	Eris::Avatar* getErisAvatar() const;
+	Eris::Avatar& getErisAvatar() const;
 
 	/**
 	 * @brief Accessor for the Eris::Entity which represents the Avatar.
@@ -257,7 +257,7 @@ protected:
 	 */
 	Ogre::Real mMinIntervalOfRotationChanges;
 
-	Eris::Avatar* mErisAvatar;
+	Eris::Avatar& mErisAvatar;
 
 	/**
 	 * @brief The Eris::Entity which represents the Avatar.
@@ -424,7 +424,7 @@ inline bool Avatar::isAdmin() const {
 	return mIsAdmin;
 }
 
-inline Eris::Avatar* Avatar::getErisAvatar() const {
+inline Eris::Avatar& Avatar::getErisAvatar() const {
 	return mErisAvatar;
 }
 

@@ -77,17 +77,12 @@ public:
 	/**
 	 Creates instances of EmberEntity and its subclasses.
 	 */
-	Eris::Entity* instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w) override;
+	Eris::Entity* instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View& w) override;
 
 	/** retrieve this factory's priority level; higher priority factories
 	 get first chance to process a received Atlas entity. The default implementation
 	 returns one. */
 	int priority() override;
-
-	/**
-	 * @brief Emitted when the factory is being deleted.
-	 */
-	sigc::signal<void> EventBeingDeleted;
 
 protected:
 

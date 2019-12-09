@@ -4,6 +4,6 @@ namespace Eris {
 class Account {
 public:
 
-	Eris::Connection* getConnection();
+	Eris::Connection& getConnection();
 };
 }

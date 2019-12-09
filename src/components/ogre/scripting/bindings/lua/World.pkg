@@ -29,13 +29,6 @@ public:
 	 */
 	Ember::OgreView::MotionManager& getMotionManager() const;
 
-	/**
-	 * @brief Gets the entity factory which is responsible for creating all new entities in the world.
-	 *
-	 * @return The entity factory.
-	 */
-	Ember::OgreView::EmberEntityFactory& getEntityFactory() const;
-
 
 	/**
 	 * @brief Gets the main camera.

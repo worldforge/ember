@@ -620,7 +620,7 @@ void IngameChatWidget::ChatText::respondWithMessage(const std::string& message) 
 	EmberEntity* entity = mLabel->getEntity();
 
 	if (mChatWidget.mWorld && mChatWidget.mWorld->getAvatar()) {
-		mChatWidget.mWorld->getAvatar()->getErisAvatar()->sayTo(message, {entity->getId()});
+		mChatWidget.mWorld->getAvatar()->getErisAvatar().sayTo(message, {entity->getId()});
 	}
 
 	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']You: " + message);

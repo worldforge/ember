@@ -53,14 +53,14 @@ namespace Icons {
 
 class DummyEntity : public Eris::Entity {
 protected:
-	Eris::TypeService* mTypeService;
+	Eris::TypeService& mTypeService;
 
 public:
-	DummyEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService* typeService) :
+	DummyEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService& typeService) :
 			Eris::Entity(id, ty), mTypeService(typeService) {
 	}
 
-	Eris::TypeService* getTypeService() const override {
+	Eris::TypeService& getTypeService() const override {
 		return mTypeService;
 	}
 
@@ -182,30 +182,29 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 	//once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
 	Eris::Connection* conn = EmberServices::getSingleton().getServerService().getConnection();
 	if (conn) {
-		Eris::TypeService* typeService = conn->getTypeService();
-		if (typeService) {
-			DummyEntity dummyEntity("-1", &erisType, typeService);
-			std::string modelName;
-			Mapping::ModelActionCreator actionCreator(dummyEntity, [&](std::string newModelName) {
-				modelName = std::move(newModelName);
-			}, [&](const std::string& partName) {
-				//Ignore parts
-			});
-			std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
-			if (modelMapping) {
-				modelMapping->initialize();
-			}
-			//if there's no model defined for this use the placeholder model
-			if (modelName.empty()) {
-				modelName = "common/primitives/placeholder.modeldef";
-			}
-			//update the model preview window
-			// 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
-			render(icon, modelName);
-			// 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
-
-			dummyEntity.shutdown();
+		auto& typeService = conn->getTypeService();
+		DummyEntity dummyEntity("-1", &erisType, typeService);
+		std::string modelName;
+		Mapping::ModelActionCreator actionCreator(dummyEntity, [&](std::string newModelName) {
+			modelName = std::move(newModelName);
+		}, [&](const std::string& partName) {
+			//Ignore parts
+		});
+		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
+		if (modelMapping) {
+			modelMapping->initialize();
 		}
+		//if there's no model defined for this use the placeholder model
+		if (modelName.empty()) {
+			modelName = "common/primitives/placeholder.modeldef";
+		}
+		//update the model preview window
+		// 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
+		render(icon, modelName);
+		// 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
+
+		dummyEntity.shutdown();
+
 	}
 }
 

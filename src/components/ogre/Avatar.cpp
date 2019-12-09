@@ -56,6 +56,7 @@
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
+#include <Eris/TypeService.h>
 #include <Eris/View.h>
 #include <Eris/Task.h>
 #include <Eris/Response.h>
@@ -71,7 +72,7 @@
 namespace Ember {
 namespace OgreView {
 
-Avatar::Avatar(Eris::Avatar* erisAvatar,
+Avatar::Avatar(Eris::Avatar& erisAvatar,
 			   EmberEntity& erisAvatarEntity,
 			   Scene& scene,
 			   const Camera::CameraSettings& cameraSettings,
@@ -93,7 +94,7 @@ Avatar::Avatar(Eris::Avatar* erisAvatar,
 		mHasChangedLocation(false),
 		mIsMovingServerOnly(false),
 		mScene(scene),
-		mEntityMaker(new Authoring::EntityMaker(*erisAvatar, *EmberServices::getSingleton().getServerService().getConnection())) {
+		mEntityMaker(new Authoring::EntityMaker(erisAvatar, *EmberServices::getSingleton().getServerService().getConnection())) {
 
 	MainLoopController::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
 
@@ -106,10 +107,10 @@ Avatar::Avatar(Eris::Avatar* erisAvatar,
 
 	//check if the user is of type "creator" and thus an admin
 	//TODO: get from properties instead
-	Eris::TypeService* typeService = EmberServices::getSingleton().getServerService().getConnection()->getTypeService();
-	if (mErisAvatarEntity.getType()->isA(typeService->getTypeByName("creator"))) {
+	auto& typeService = EmberServices::getSingleton().getServerService().getConnection()->getTypeService();
+	if (mErisAvatarEntity.getType()->isA(typeService.getTypeByName("creator"))) {
 		mIsAdmin = true;
-		EmberServices::getSingleton().getServerService().getAvatar()->setIsAdmin(true);
+		erisAvatar.setIsAdmin(true);
 	} else {
 		mIsAdmin = false;
 	}
@@ -127,7 +128,7 @@ Avatar::Avatar(Eris::Avatar* erisAvatar,
 
 	mCameraMount->attachToNode(getAvatarSceneNode());
 
-	erisAvatar->CharacterEntityDeleted.connect(sigc::mem_fun(*this, &Avatar::viewEntityDeleted));
+	erisAvatar.CharacterEntityDeleted.connect(sigc::mem_fun(*this, &Avatar::viewEntityDeleted));
 
 	attachCameraToEntity();
 }
@@ -168,13 +169,13 @@ void Avatar::runCommand(const std::string& command, const std::string& args) {
 		Tokeniser tokeniser(args);
 		std::string entityId = tokeniser.nextToken();
 		if (!entityId.empty()) {
-			Eris::Entity* entity = mErisAvatar->getView()->getEntity(entityId);
+			Eris::Entity* entity = mErisAvatar.getView().getEntity(entityId);
 			if (entity) {
 				deleteEntity(entity);
 			}
 		}
 	} else if (Say == command) {
-		mErisAvatar->say(args);
+		mErisAvatar.say(args);
 		std::string msg;
 		msg = "Saying: [" + args + "]. ";
 		S_LOG_VERBOSE(msg);
@@ -184,7 +185,7 @@ void Avatar::runCommand(const std::string& command, const std::string& args) {
 		std::vector<std::string> entityIds = Tokeniser::split(entityIdsString, ",");
 		std::string message = tokeniser.remainingTokens();
 
-		mErisAvatar->sayTo(message, entityIds);
+		mErisAvatar.sayTo(message, entityIds);
 
 		std::string msg;
 		if (entityIds.size() > 1) {
@@ -196,7 +197,7 @@ void Avatar::runCommand(const std::string& command, const std::string& args) {
 		}
 		S_LOG_VERBOSE(msg);
 	} else if (Emote == command) {
-		mErisAvatar->emote(args);
+		mErisAvatar.emote(args);
 
 	} else if (AdminTell == command) {
 		Tokeniser tokeniser(args);
@@ -296,7 +297,7 @@ void Avatar::attemptMove() {
 			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
 		}
 
-		mErisAvatar->moveInDirection(newMovementState.movement, newMovementState.orientation);
+		mErisAvatar.moveInDirection(newMovementState.movement, newMovementState.orientation);
 
 	}
 
@@ -332,7 +333,7 @@ Ogre::Node* Avatar::getAvatarSceneNode() const {
 }
 
 const std::string& Avatar::getId() const {
-	return mErisAvatar->getId();
+	return mErisAvatar.getId();
 }
 
 
@@ -379,7 +380,7 @@ void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elemen
 			moveOp->setArgs1(moveArgs);
 
 			moveOp->setSerialno(Eris::getNewSerialno());
-			mErisAvatar->getConnection()->getResponder()->await(moveOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+			mErisAvatar.getConnection().getResponder().await(moveOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
 				//For now ignore; perhaps we should do some error checking instead?
 				return Eris::Router::IGNORED;
 			});
@@ -391,7 +392,7 @@ void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elemen
 				moveOp->setTo(entity->getId());
 			}
 
-			mErisAvatar->getConnection()->send(moveOp);
+			mErisAvatar.getConnection().send(moveOp);
 		}
 
 
@@ -404,12 +405,12 @@ void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elemen
 			setOp->setArgs1(what);
 
 			setOp->setSerialno(Eris::getNewSerialno());
-			mErisAvatar->getConnection()->getResponder()->await(setOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+			mErisAvatar.getConnection().getResponder().await(setOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
 				//For now ignore; perhaps we should do some error checking instead?
 				return Eris::Router::IGNORED;
 			});
 			S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
-			mErisAvatar->getConnection()->send(setOp);
+			mErisAvatar.getConnection().send(setOp);
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on setting attributes on entity." << ex);
@@ -432,12 +433,12 @@ void Avatar::adminTell(const std::string& entityId, const std::string& attribute
 		sound->setArgs1(talk);
 
 		sound->setSerialno(Eris::getNewSerialno());
-		mErisAvatar->getConnection()->getResponder()->await(sound->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+		mErisAvatar.getConnection().getResponder().await(sound->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
 			//Handle it here, so it does not propagate into the regular system.
 			return Eris::Router::HANDLED;
 		});
 		S_LOG_INFO("Admin telling entity" << entityId << ": " << attribute << ": " << value);
-		mErisAvatar->getConnection()->send(sound);
+		mErisAvatar.getConnection().send(sound);
 
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on admin_tell." << ex);
@@ -454,13 +455,13 @@ void Avatar::deleteEntity(Eris::Entity* entity) {
 		deleteOp->setTo(entity->getId());
 		deleteOp->setArgs1(what);
 		deleteOp->setSerialno(Eris::getNewSerialno());
-		mErisAvatar->getConnection()->getResponder()->await(deleteOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
+		mErisAvatar.getConnection().getResponder().await(deleteOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
 			//For now ignore; perhaps we should do some error checking instead?
 			return Eris::Router::IGNORED;
 		});
 
 		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
-		mErisAvatar->getConnection()->send(deleteOp);
+		mErisAvatar.getConnection().send(deleteOp);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on deleting entity." << ex);
 	}
@@ -670,7 +671,7 @@ void Avatar::useTool(const EmberEntity& tool,
 					 WFMath::Vector<3> direction) {
 
 	Atlas::Objects::Operation::Use use;
-	use->setFrom(mErisAvatar->getId());
+	use->setFrom(mErisAvatar.getId());
 
 	Atlas::Objects::Entity::RootEntity entity;
 	entity->setId(tool.getId());
@@ -683,7 +684,7 @@ void Avatar::useTool(const EmberEntity& tool,
 
 	use->setArgs1(op);
 
-	mErisAvatar->getConnection()->send(use);
+	mErisAvatar.getConnection().send(use);
 
 }
 
@@ -725,7 +726,7 @@ void Avatar::taskUsage(std::string taskId, const Eris::TaskUsage& usage) {
 
 
 	Atlas::Objects::Operation::Use use;
-	use->setFrom(mErisAvatar->getId());
+	use->setFrom(mErisAvatar.getId());
 
 	Atlas::Objects::Root task;
 	task->setId(std::move(taskId));
@@ -739,14 +740,14 @@ void Avatar::taskUsage(std::string taskId, const Eris::TaskUsage& usage) {
 
 	use->setArgs1(task);
 
-	mErisAvatar->getConnection()->send(use);
+	mErisAvatar.getConnection().send(use);
 }
 
 void Avatar::stopCurrentTask() {
 	//Get the first task with a usage, and invoke that. The protocol is that the first usage always should be the "default".
 	auto& tasks = mErisAvatarEntity.getTasks();
 	for (auto& entry : tasks) {
-		auto task = entry.second;
+		auto& task = entry.second;
 		if (!task->getUsages().empty()) {
 			taskUsage(entry.first, task->getUsages().front());
 			break;

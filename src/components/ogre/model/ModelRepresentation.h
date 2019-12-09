@@ -297,7 +297,7 @@ protected:
 	 */
 	void connectEntities();
 
-	void entity_Changed(const Eris::StringSet& attributeIds);
+	void entity_Changed(const std::set<std::string>& attributeIds);
 
 	void entity_TaskAdded(const std::string& id, Eris::Task* task);
 	void entity_TaskRemoved(const std::string& id, Eris::Task* task);

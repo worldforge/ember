@@ -44,6 +44,7 @@
 
 #include <Eris/SpawnPoint.h>
 #include <Eris/CharacterType.h>
+#include <Eris/TypeService.h>
 
 #include <CEGUI/widgets/Listbox.h>
 #include <CEGUI/widgets/PushButton.h>
@@ -253,7 +254,7 @@ bool ServerWidget::saveCredentials() {
 	// check the main account is good, and fetch server info
 	assert(mAccount);
 	Eris::ServerInfo sInfo;
-	mAccount->getConnection()->getServerInfo(sInfo);
+	mAccount->getConnection().getServerInfo(sInfo);
 
 	// pull widget references
 	CEGUI::Window* nameBox(nullptr);
@@ -307,7 +308,7 @@ void ServerWidget::loginSuccess(Eris::Account* account) {
 		}
 	}
 
-	mTypeServiceConnection = account->getConnection()->getTypeService()->BoundType.connect(sigc::mem_fun(*this, &ServerWidget::typeService_TypeBound));
+	mTypeServiceConnection = account->getConnection().getTypeService().BoundType.connect(sigc::mem_fun(*this, &ServerWidget::typeService_TypeBound));
 
 }
 
@@ -514,8 +515,8 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args) {
 
 
 void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype) {
-	Eris::TypeService* typeService = mAccount->getConnection()->getTypeService();
-	Eris::TypeInfo* erisType = typeService->getTypeByName(typeOrArchetype);
+	auto& typeService = mAccount->getConnection().getTypeService();
+	Eris::TypeInfo* erisType = typeService.getTypeByName(typeOrArchetype);
 	//If the type is an archetype, we need to instead check what kind of entity will be created and show a preview for that.
 	if (erisType && erisType->isBound()) {
 		if (erisType->getObjType() == "archetype") {
@@ -668,7 +669,7 @@ void ServerWidget::avatar_EntityDeleted() {
 }
 
 
-void ServerWidget::avatar_Deactivated(Eris::Avatar* avatar) {
+void ServerWidget::avatar_Deactivated(const std::string& avatarId) {
 	mCharacterList->resetList();
 	mCharacterModel.clear();
 	mAccount->refreshCharacterInfo();

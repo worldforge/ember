@@ -77,7 +77,7 @@ public:
 
 GlobalAttributeDispatcher sGlobalDispatcher;
 
-EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View* vw) :
+EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View& vw) :
 		Eris::ViewEntity(std::move(id), ty, vw),
 		mIsInitialized(false),
 		mPositioningMode(PositioningMode::FREE),
@@ -232,7 +232,7 @@ void EmberEntity::updateAttachment() {
 		}
 		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
 		//FIXME This is a little hackish; how can we improve it to not require special cases?
-	} else if (m_view->getTopLevel() == this) {
+	} else if (m_view.getTopLevel() == this) {
 		return;
 	} else {
 		try {
@@ -262,7 +262,7 @@ void EmberEntity::onHit(const Atlas::Objects::Operation::Hit& act) {
 		auto& arg = act->getArgs().front();
 		EmberEntity* actingEntity = nullptr;
 		if (!arg->isDefaultId()) {
-			actingEntity = dynamic_cast<EmberEntity*>(m_view->getEntity(arg->getId()));
+			actingEntity = dynamic_cast<EmberEntity*>(m_view.getEntity(arg->getId()));
 		}
 		if (arg->hasAttr("damage")) {
 			auto damageElem = arg->getAttr("damage");
@@ -389,7 +389,7 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 	if (graphicalRepresentation != mGraphicalRepresentation.get()) {
 		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
 		//FIXME This is a little hackish; how can we improve it to not require special cases?
-		if (m_view->getTopLevel() != this) {
+		if (m_view.getTopLevel() != this) {
 			//We must delete the attachment before we delete the graphical representation.
 			setAttachment(nullptr);
 		}

@@ -75,8 +75,6 @@
 #include "OgreResourceLoader.h"
 #include "authoring/ConsoleDevTools.h"
 
-#include "EmberEntityFactory.h"
-
 #include "widgets/LoadingBar.h"
 
 #include "sound/XMLSoundDefParser.h"
@@ -95,6 +93,8 @@
 
 #include <Eris/Connection.h>
 #include <Eris/View.h>
+#include <Eris/Avatar.h>
+#include <Eris/Account.h>
 
 #include <Overlay/OgreOverlaySystem.h>
 #include <MeshLodGenerator/OgreLodWorkQueueInjector.h>
@@ -505,13 +505,13 @@ void EmberOgre::preloadMedia() {
 }
 
 void EmberOgre::Server_GotView(Eris::View* view) {
+	view->getAvatar().getAccount().AvatarDeactivated.connect([this](const std::string& avatarId){Server_DestroyedView();});
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
 	mWorld = std::make_unique<World>(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), mEntityMappingManager->getManager());
 	//We want the overlay system available for the main camera, in case we need to do profiling.
 	mWorld->getSceneManager().addRenderQueueListener(mOgreSetup->getOverlaySystem());
-	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
 
 	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(&mWorld->getSceneManager());
 
@@ -519,7 +519,7 @@ void EmberOgre::Server_GotView(Eris::View* view) {
 	EventWorldCreated.emit(*mWorld);
 }
 
-void EmberOgre::EntityFactory_BeingDeleted() {
+void EmberOgre::Server_DestroyedView() {
 	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
 	EventWorldBeingDestroyed.emit();
 	mWorld.reset();

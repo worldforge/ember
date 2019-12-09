@@ -85,7 +85,7 @@ Ogre::Resource* EmberEntityMappingManager::createImpl(const Ogre::String&, Ogre:
 
 
 void EmberEntityMappingManager::ServerService_GotConnection(Eris::Connection* connection) {
-	mEntityMappingManager.setTypeService(connection->getTypeService());
+	mEntityMappingManager.setTypeService(&connection->getTypeService());
 }
 
 

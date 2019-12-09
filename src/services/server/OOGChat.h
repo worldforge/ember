@@ -200,7 +200,7 @@ class OOGChat : public ConsoleObject
 
     void disappearance(Eris::Room *room,  Eris::Person* person);
 
-    void changed(const Eris::StringSet& sset, Eris::Room *room);
+    void changed(const std::set<std::string>& sset, Eris::Room *room);
 
 
     //======================================================================

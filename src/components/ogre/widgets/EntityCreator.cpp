@@ -36,6 +36,7 @@
 #include "components/ogre/authoring/EntityRecipe.h"
 
 #include <Eris/TypeInfo.h>
+#include <Eris/TypeService.h>
 #include <Eris/View.h>
 
 using namespace Ember;

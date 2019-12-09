@@ -29,14 +29,14 @@ int _Entity_getTasksSize(Eris::Entity* entity) {
 Eris::Task* _Entity_getTask(Eris::Entity* entity, std::string name) {
 	auto I = entity->getTasks().find(name);
 	if (I != entity->getTasks().end()) {
-		return I->second;
+		return I->second.get();
 	}
 	return nullptr;
 }
 
 Eris::Task* _Entity_getTaskFirst(Eris::Entity* entity) {
 	if (!entity->getTasks().empty()) {
-		return entity->getTasks().begin()->second;
+		return entity->getTasks().begin()->second.get();
 	}
 	return nullptr;
 }

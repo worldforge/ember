@@ -60,11 +60,11 @@ void EnteredWorldState::runCommand(const std::string& command, const std::string
 }
 
 Eris::Connection& EnteredWorldState::getConnection() const {
-	return *mAvatar.getConnection();
+	return mAvatar.getConnection();
 }
 
 Eris::View& EnteredWorldState::getView() const {
-	return *mAvatar.getView();
+	return mAvatar.getView();
 }
 
 }

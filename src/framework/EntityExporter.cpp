@@ -59,14 +59,14 @@ long int EntityExporter::newSerialNumber()
 
 void EntityExporter::send(const Atlas::Objects::Operation::RootOperation& op)
 {
-	mAccount.getConnection()->send(op);
+	mAccount.getConnection().send(op);
 }
 
 void EntityExporter::sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback)
 {
 	mCallbacks.insert(std::make_pair(op->getSerialno(), callback));
-	mAccount.getConnection()->getResponder()->await(op->getSerialno(), this, &EntityExporter::operationResult);
-	mAccount.getConnection()->send(op);
+	mAccount.getConnection().getResponder().await(op->getSerialno(), this, &EntityExporter::operationResult);
+	mAccount.getConnection().send(op);
 
 }
 
@@ -86,7 +86,7 @@ std::string EntityExporter::getCurrentTime()
 void EntityExporter::fillWithServerData(Atlas::Message::MapType& serverMap)
 {
 	Eris::ServerInfo serverInfo;
-	mAccount.getConnection()->getServerInfo(serverInfo);
+	mAccount.getConnection().getServerInfo(serverInfo);
 	serverMap["host"] = serverInfo.getHostname();
 	serverMap["name"] = serverInfo.getServername();
 	serverMap["ruleset"] = serverInfo.getRuleset();

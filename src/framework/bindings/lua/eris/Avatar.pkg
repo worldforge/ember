@@ -16,9 +16,9 @@ public:
     /// Get the Entity this Avatar refers to
     Entity* getEntity() const;
 
-    View* getView() const;
+    View& getView() const;
 
-    Connection* getConnection() const;
+    Connection& getConnection() const;
 
     void take(Entity*) const;
 

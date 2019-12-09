@@ -10,7 +10,7 @@ class Avatar
 	
 	Ember::EmberEntity& getEmberEntity();
 	
-	Eris::Avatar* getErisAvatar() const;
+	Eris::Avatar& getErisAvatar() const;
 
 	void deleteEntity(Eris::Entity* entity);
 
