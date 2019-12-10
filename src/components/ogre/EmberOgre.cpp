@@ -505,7 +505,7 @@ void EmberOgre::preloadMedia() {
 }
 
 void EmberOgre::Server_GotView(Eris::View* view) {
-	view->getAvatar().getAccount().AvatarDeactivated.connect([this](const std::string& avatarId){Server_DestroyedView();});
+	view->getAvatar().getAccount().AvatarDeactivated.connect([this](const std::string& avatarId){ destroyWorld();});
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
@@ -519,7 +519,7 @@ void EmberOgre::Server_GotView(Eris::View* view) {
 	EventWorldCreated.emit(*mWorld);
 }
 
-void EmberOgre::Server_DestroyedView() {
+void EmberOgre::destroyWorld() {
 	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
 	EventWorldBeingDestroyed.emit();
 	mWorld.reset();

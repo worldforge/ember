@@ -79,7 +79,7 @@ class Factories;
 
 namespace Eris
 {
-class Session;
+struct Session;
 class View;
 }
 

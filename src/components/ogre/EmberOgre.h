@@ -409,7 +409,7 @@ protected:
 	/**
 	 * @brief Sent from the server service when the View instance is destroyed.
 	 */
-	void Server_DestroyedView();
+	void destroyWorld();
 
 	/**
 	 * @brief Preloads the media, thus avoiding frame rate drops ingame.

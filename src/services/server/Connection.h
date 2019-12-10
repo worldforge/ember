@@ -23,7 +23,7 @@
 
 namespace Eris
 {
-class Session;
+struct Session;
 }
 
 namespace Ember

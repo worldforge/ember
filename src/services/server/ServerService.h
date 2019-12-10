@@ -48,7 +48,7 @@ class Entity;
 
 class TransferInfo;
 
-class Session;
+struct Session;
 }
 
 namespace Ember {
