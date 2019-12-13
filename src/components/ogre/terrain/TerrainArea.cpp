@@ -41,44 +41,46 @@ TerrainArea::TerrainArea(EmberEntity& entity) :
 		mEntity(entity), mParsedLayer(0) {
 }
 
-void TerrainArea::parse(const Atlas::Message::Element& value, Mercator::Area** area) {
+std::unique_ptr<Mercator::Area> TerrainArea::parse(const Atlas::Message::Element& value) {
 	if (!value.isMap()) {
 		S_LOG_FAILURE("TerrainArea element ('area') must be of map type.");
-		return;
+		return {};
 	}
 
 	const Atlas::Message::MapType& areaData = value.Map();
 	TerrainAreaParser parser;
 	if (!parser.parseArea(areaData, mParsedPoly, mParsedLayer)) {
-		return;
+		return {};
 	} else {
 
 		WFMath::Polygon<2> poly = mParsedPoly;
 		if (!placeArea(poly)) {
-			return;
+			return {};
 		}
 		//TODO: handle holes
-		*area = new Mercator::Area(mParsedLayer, false);
-		(*area)->setShape(poly);
+		auto area = std::make_unique<Mercator::Area>(mParsedLayer, false);
+		area->setShape(poly);
+		return area;
 	}
 }
 
-void TerrainArea::updatePosition(Mercator::Area** area) {
+std::unique_ptr<Mercator::Area> TerrainArea::updatePosition() {
 	if (mParsedLayer == 0) {
-		return;
+		return {};
 	}
 
 	if (!mParsedPoly.isValid() || mParsedPoly.numCorners() == 0) {
-		return;
+		return {};
 	}
 
 	WFMath::Polygon<2> poly = mParsedPoly;
 	if (!placeArea(poly)) {
-		return;
+		return {};
 	}
 	//TODO: handle holes
-	*area = new Mercator::Area(mParsedLayer, false);
-	(*area)->setShape(poly);
+	auto area = std::make_unique<Mercator::Area>(mParsedLayer, false);
+	area->setShape(poly);
+	return area;
 }
 
 bool TerrainArea::placeArea(WFMath::Polygon<2>& poly) {

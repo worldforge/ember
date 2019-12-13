@@ -22,6 +22,7 @@
 #include "IVisualizable.h"
 
 #include <string>
+#include <memory>
 
 namespace WFMath
 {
@@ -82,7 +83,7 @@ struct IEntityAttachment: public IVisualizable
 	 * @param entity The new entity to attach as a child to this attachment.
 	 * @return A new attachment instance. This can never be null.
 	 */
-	virtual IEntityAttachment* attachEntity(EmberEntity& entity) = 0;
+	virtual std::unique_ptr<IEntityAttachment> attachEntity(EmberEntity& entity) = 0;
 
 	/**
 	 * @brief Asks the attachment to update its scaling.

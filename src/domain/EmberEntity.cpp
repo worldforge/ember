@@ -222,10 +222,10 @@ void EmberEntity::updateAttachment() {
 	if (newLocationEntity && newLocationEntity->getAttachment()) {
 		try {
 			mAttachment.reset();
-			IEntityAttachment* newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
+			auto newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
 			if (newAttachment) {
-				setAttachment(newAttachment);
 				newAttachment->updateScale();
+				setAttachment(std::move(newAttachment));
 			}
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
@@ -399,11 +399,9 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 	}
 }
 
-void EmberEntity::setAttachment(IEntityAttachment* attachment) {
-	if (mAttachment.get() != attachment) {
-		mAttachment.reset(attachment);
-		reattachChildren();
-	}
+void EmberEntity::setAttachment(std::unique_ptr<IEntityAttachment> attachment) {
+	mAttachment = std::move(attachment);
+	reattachChildren();
 }
 
 void EmberEntity::reattachChildren() {

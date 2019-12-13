@@ -70,7 +70,7 @@ void NodeAttachment::setVisible(bool visible) {
 	mNodeProvider->setVisible(visible);
 }
 
-IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity) {
+std::unique_ptr<IEntityAttachment> NodeAttachment::attachEntity(EmberEntity& entity) {
 
 	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity);
 	//	NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
@@ -84,12 +84,12 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity) {
 	//	else {
 
 	//If there's a model representation available, use a "ModelAttachment" instance to attach to it, otherwise just use a regular NodeAttachment.
-	NodeAttachment* nodeAttachment = nullptr;
+	std::unique_ptr<NodeAttachment> nodeAttachment;
 	INodeProvider* nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
 	if (modelRepresentation) {
-		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
+		nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), *modelRepresentation, nodeProvider);
 	} else {
-		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
+		nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, nodeProvider);
 	}
 	nodeAttachment->init();
 	return nodeAttachment;

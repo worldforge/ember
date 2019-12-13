@@ -220,9 +220,8 @@ public:
 	/**
 	 * @brief Sets the attachment to use.
 	 * @param attachment The new attachment to use. Ownership will be transferred to this instance.
-	 * If there's already an attachment set, it will be destroyed, unless it's the same instance as the supplied attachment.
 	 */
-	void setAttachment(IEntityAttachment* attachment);
+	void setAttachment(std::unique_ptr<IEntityAttachment> attachment);
 
 	/**
 	 * @brief Gets the attachment used for this entity.

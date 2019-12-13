@@ -70,7 +70,7 @@ public:
 
 	IGraphicalRepresentation* getGraphicalRepresentation() const override;
 
-	IEntityAttachment* attachEntity(EmberEntity& entity) override;
+	std::unique_ptr<IEntityAttachment> attachEntity(EmberEntity& entity) override;
 
 	void updateScale() override;
 

@@ -65,13 +65,13 @@ public:
 	 * @brief Parses the data into an area, and tries to place it using the entity's position.
 	 * @param area If the area and position are valid, this will point to a new Area instance. Ownership is transferred to the caller.
 	 */
-	void parse(const Atlas::Message::Element& value, Mercator::Area** area);
+	std::unique_ptr<Mercator::Area> parse(const Atlas::Message::Element& value);
 
 	/**
 	 * @brief Updates the position of the area, using the position of the entity.
 	 * @param area If the area and position are valid, this will point to a new Area instance. Ownership is transferred to the caller.
 	 */
-	void updatePosition(Mercator::Area** area);
+	std::unique_ptr<Mercator::Area> updatePosition();
 
 protected:
 

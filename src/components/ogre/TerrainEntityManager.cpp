@@ -73,21 +73,19 @@ public:
 };
 
 
-
 TerrainEntityManager::TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager) :
 		mView(view),
 		mTerrainHandler(terrainHandler),
-		mSceneManager(sceneManager)
-{
+		mSceneManager(sceneManager) {
 	view.TopLevelEntityChanged.connect(sigc::mem_fun(*this, &TerrainEntityManager::topLevelEntityChanged));
 
-	mTerrainListener = [&](EmberEntity& entity, const Atlas::Message::Element& element){
+	mTerrainListener = [&](EmberEntity& entity, const Atlas::Message::Element& element) {
 		entityTerrainAttrChanged(entity, element);
 	};
-	mTerrainModListener = [&](EmberEntity& entity, const Atlas::Message::Element& element){
+	mTerrainModListener = [&](EmberEntity& entity, const Atlas::Message::Element& element) {
 		entityTerrainModAttrChanged(entity, element);
 	};
-	mTerrainAreaListener = [&](EmberEntity& entity, const Atlas::Message::Element& element){
+	mTerrainAreaListener = [&](EmberEntity& entity, const Atlas::Message::Element& element) {
 		entityAreaAttrChanged(entity, element);
 	};
 
@@ -103,9 +101,9 @@ TerrainEntityManager::~TerrainEntityManager() {
 }
 
 void TerrainEntityManager::topLevelEntityChanged() {
-	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
-	entity->setAttachment(nullptr);
-	entity->setAttachment(new WorldAttachment(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId())));
+	auto entity = static_cast<EmberEntity*>(mView.getTopLevel());
+	entity->setAttachment({});
+	entity->setAttachment(std::make_unique<WorldAttachment>(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId())));
 }
 
 void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
@@ -132,7 +130,7 @@ void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, cons
 		mod = new Terrain::TerrainMod(entity, value.Map());
 		auto listener = new TerrainEffectorListener(entity);
 
-		listener->EventEntityBeingDeleted.connect([this, &entity, mod](){
+		listener->EventEntityBeingDeleted.connect([this, &entity, mod]() {
 			mod->reset();
 			mTerrainHandler.updateMod(mod);
 			mTerrainMods.erase(&entity);
@@ -168,13 +166,11 @@ void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atla
 		terrainArea = I->second.first.get();
 	}
 
-	Mercator::Area* area = nullptr;
-	terrainArea->parse(value, &area);
+	auto area = terrainArea->parse(value);
 	//Only add area if we're planted
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-		mTerrainHandler.updateArea(entity.getId(), area);
+		mTerrainHandler.updateArea(entity.getId(), area.get());
 	}
-	delete area;
 }
 
 void TerrainEntityManager::entityBeingDeleted(EmberEntity& entity) {
@@ -187,10 +183,8 @@ void TerrainEntityManager::entityBeingDeleted(EmberEntity& entity) {
 void TerrainEntityManager::entityMoved(EmberEntity& entity, Terrain::TerrainArea& terrainArea) {
 
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-		Mercator::Area* area = nullptr;
-		terrainArea.updatePosition(&area);
-		mTerrainHandler.updateArea(entity.getId(), area);
-		delete area;
+		auto area = terrainArea.updatePosition();
+		mTerrainHandler.updateArea(entity.getId(), area.get());
 	}
 }
 
@@ -199,10 +193,10 @@ void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::Terra
 	auto I = mTerrainHandler.getAreas().find(entity.getId());
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
 		if (I == mTerrainHandler.getAreas().end()) {
-			Mercator::Area* area = nullptr;
-			terrainArea.updatePosition(&area);
-			mTerrainHandler.updateArea(entity.getId(), area);
-			delete area;
+			auto area = terrainArea.updatePosition();
+			if (area) {
+				mTerrainHandler.updateArea(entity.getId(), area.get());
+			}
 		}
 	} else {
 		if (I != mTerrainHandler.getAreas().end()) {

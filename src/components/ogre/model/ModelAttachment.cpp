@@ -76,7 +76,7 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const {
 	return &mModelRepresentation;
 }
 
-IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
+std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& entity) {
 	std::string attachPoint;
 	for (auto& fitting : mFittings) {
 		if (fitting.second->getChildEntityId() == entity.getId()) {
@@ -88,7 +88,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 	}
 	//Don't show a graphical representation if the model is set not to show any contained entities AND we're not set to attach ourselves to an attach point.
 	if (attachPoint.empty() && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
-		return new HiddenAttachment(getAttachedEntity(), entity);
+		return std::make_unique<HiddenAttachment>(getAttachedEntity(), entity);
 	} else {
 		ModelRepresentation* modelRepresentation = ModelRepresentation::getRepresentationForEntity(entity);
 
@@ -108,7 +108,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 					nodeProvider = new ModelBoneProvider(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
 				} catch (const std::exception& ex) {
 					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getOrigin() << "'.");
-					return new HiddenAttachment(entity, getAttachedEntity());
+					return std::make_unique<HiddenAttachment>(entity, getAttachedEntity());
 				}
 			} else {
 				//If the model isn't loaded yet we can't attach yet. Instead we'll return a null attachment and wait until the model is reloaded, at which point reattachEntities() is called.
@@ -117,11 +117,12 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity) {
 		} else {
 			nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
 		}
-		NodeAttachment* nodeAttachment;
+
+		std::unique_ptr<NodeAttachment> nodeAttachment;
 		if (modelRepresentation) {
-			nodeAttachment = new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, pose);
+			nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), *modelRepresentation, nodeProvider, pose);
 		} else {
-			nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
+			nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, nodeProvider);
 		}
 		nodeAttachment->init();
 		return nodeAttachment;
@@ -205,11 +206,11 @@ void ModelAttachment::detachFitting(EmberEntity& entity) {
 	//If the detached entity still is a child of this entity, re-evaluate the attachment.
 	if (entity.getLocation() == &mChildEntity) {
 		entity.setAttachment(nullptr);
-		IEntityAttachment* attachment = attachEntity(entity);
-		entity.setAttachment(attachment);
+		auto attachment = attachEntity(entity);
 		if (attachment) {
 			attachment->updateScale();
 		}
+		entity.setAttachment(std::move(attachment));
 	}
 }
 
@@ -221,11 +222,11 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 		if (entity && entity->getId() == entityId) {
 			auto emberEntity = dynamic_cast<EmberEntity*>(entity);
 			emberEntity->setAttachment(nullptr);
-			IEntityAttachment* attachment = attachEntity(*emberEntity);
-			emberEntity->setAttachment(attachment);
+			auto attachment = attachEntity(*emberEntity);
 			if (attachment) {
 				attachment->updateScale();
 			}
+			emberEntity->setAttachment(std::move(attachment));
 			break;
 		}
 	}
@@ -244,11 +245,11 @@ void ModelAttachment::reattachEntities() {
 		if (fitting.second->getChild() && mChildEntity.hasChild(fitting.second->getChildEntityId())) {
 			EmberEntity* entity = fitting.second->getChild();
 			entity->setAttachment(nullptr);
-			IEntityAttachment* attachment = attachEntity(*entity);
-			entity->setAttachment(attachment);
+			auto attachment = attachEntity(*entity);
 			if (attachment) {
 				attachment->updateScale();
 			}
+			entity->setAttachment(std::move(attachment));
 		}
 	}
 }
