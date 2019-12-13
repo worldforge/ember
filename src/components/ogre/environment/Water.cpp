@@ -49,10 +49,12 @@ namespace OgreView {
 namespace Environment {
 
 class RefractionTextureListener : public RenderTargetListener {
-	Entity* pPlaneEnt;
+	Entity* pPlaneEnt{};
 	std::vector<Entity*> aboveWaterEnts;
 
 public:
+
+	RefractionTextureListener() = default;
 
 	void setPlaneEntity(Entity* plane) {
 		pPlaneEnt = plane;
@@ -84,11 +86,13 @@ public:
 
 class ReflectionTextureListener : public RenderTargetListener {
 	Plane reflectionPlane;
-	Entity* pPlaneEnt;
+	Entity* pPlaneEnt{};
 	std::vector<Entity*> belowWaterEnts;
-	Ogre::Camera* theCam;
+	Ogre::Camera* theCam{};
 
 public:
+
+	ReflectionTextureListener() = default;
 
 	void setPlaneEntity(Entity* plane) {
 		pPlaneEnt = plane;
