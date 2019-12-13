@@ -72,7 +72,7 @@ RenderedColourStringTextComponent::RenderedColourStringTextComponent(const Strin
 
 void RenderedColourStringTextComponent::draw(const CEGUI::Window* ref_wnd, CEGUI::GeometryBuffer& buffer, const CEGUI::Vector2f& position, const CEGUI::ColourRect* /*mod_colours*/, const CEGUI::Rectf* clip_rect, const float vertical_space, const float space_extra) const
 {
-	RenderedStringTextComponent::draw(ref_wnd, buffer, position, 0, clip_rect, vertical_space, space_extra);
+	RenderedStringTextComponent::draw(ref_wnd, buffer, position, nullptr, clip_rect, vertical_space, space_extra);
 }
 
 RenderedStringTextComponent* RenderedColourStringTextComponent::clone() const
@@ -80,9 +80,9 @@ RenderedStringTextComponent* RenderedColourStringTextComponent::clone() const
 	return new RenderedColourStringTextComponent(*this);
 }
 
-RenderedStringTextComponent* RenderedColourStringTextComponent::split(float split_point, bool first_component)
+RenderedStringTextComponent* RenderedColourStringTextComponent::split(const CEGUI::Window* ref_wnd, float split_point, bool first_component)
 {
-	const Font* fnt = d_font ? d_font : System::getSingleton().getDefaultGUIContext().getDefaultFont();
+	const Font* fnt = getEffectiveFont(ref_wnd);
 
 	// This is checked, but should never fail, since if we had no font our
 	// extent would be 0 and we would never cause a split to be needed here.

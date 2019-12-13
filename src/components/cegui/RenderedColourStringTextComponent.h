@@ -43,11 +43,11 @@ public:
 	void draw(const CEGUI::Window* ref_wnd, CEGUI::GeometryBuffer& buffer,
 	              const CEGUI::Vector2f& position, const CEGUI::ColourRect* mod_colours,
 	              const CEGUI::Rectf* clip_rect, const float vertical_space,
-	              const float space_extra) const;
+	              const float space_extra) const override;
 
-	CEGUI::RenderedStringTextComponent* clone() const;
+	CEGUI::RenderedStringTextComponent* clone() const override;
 
-	CEGUI::RenderedStringTextComponent* split(float split_point, bool first_component);
+	CEGUI::RenderedStringTextComponent* split(const CEGUI::Window* ref_wnd, float split_point, bool first_component) override;
 };
 
 }
