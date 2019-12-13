@@ -1,8 +1,8 @@
 add_library(entitymapping
         Actions/Action.cpp Actions/DummyAction.cpp
 
-        Cases/AttributeCase.cpp Cases/AttributeComparers/AttributeComparerWrapper.cpp
-        Cases/AttributeComparers/HeightComparerWrapper.cpp Cases/AttributeComparers/NumericComparer.cpp
+        Cases/AttributeCase.cpp
+        Cases/AttributeComparers/HeightComparerWrapper.cpp
         Cases/AttributeComparers/NumericComparerWrapper.cpp Cases/AttributeComparers/NumericEqualsComparer.cpp
         Cases/AttributeComparers/NumericEqualsOrGreaterComparer.cpp Cases/AttributeComparers/NumericEqualsOrLesserComparer.cpp
         Cases/AttributeComparers/NumericGreaterComparer.cpp Cases/AttributeComparers/NumericLesserComparer.cpp

@@ -42,7 +42,7 @@ namespace Cases {
 
 namespace AttributeComparers {
 
-class NumericComparer;
+struct NumericComparer;
 
 /**
 	Compares the height of an entity. The height is calculated from the bounding box.

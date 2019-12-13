@@ -38,8 +38,7 @@ namespace AttributeComparers {
 	Interface for string comparison.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class StringComparer {
-public:
+struct StringComparer {
 
 	/**
 	Returns true if the supplied value equals the stored value. The comparison is case sensitive.

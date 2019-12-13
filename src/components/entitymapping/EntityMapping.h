@@ -64,7 +64,7 @@ class EntityTypeCase;
 class AttributeCase;
 
 namespace AttributeComparers {
-class AttributeComparerWrapper;
+struct AttributeComparerWrapper;
 }
 
 }

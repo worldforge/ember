@@ -39,9 +39,8 @@ namespace AttributeComparers {
 	Abtract base class for an wrapper that compares attributes.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class AttributeComparerWrapper
+struct AttributeComparerWrapper
 {
-public:
 	virtual ~AttributeComparerWrapper() = default;
 
 	/**

@@ -53,9 +53,9 @@ class EntityRefMatch;
 namespace Cases {
 
 namespace AttributeComparers {
-class NumericComparer;
+struct NumericComparer;
 
-class AttributeComparerWrapper;
+struct AttributeComparerWrapper;
 }
 
 class AttributeCase;

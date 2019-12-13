@@ -37,9 +37,8 @@ namespace AttributeComparers {
 	Base class for all numeric comparers.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class NumericComparer
+struct NumericComparer
 {
-public:
 	virtual ~NumericComparer() = default;
 
 	/**
@@ -48,7 +47,6 @@ public:
 	*/
 	virtual bool test(float value) = 0;
 
-protected:
 };
 
 }

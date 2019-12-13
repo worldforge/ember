@@ -36,7 +36,7 @@ namespace Cases {
 
 namespace AttributeComparers {
 
-class NumericComparer;
+struct NumericComparer;
 
 /**
 	An attribute comparer wrapper that handles numeric values.
