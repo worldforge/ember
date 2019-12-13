@@ -46,19 +46,19 @@ class Water : public IWater
 public:
     Water(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr);
 
-    virtual ~Water();
+    ~Water() override;
 
 	/**
 	 * @brief Performs checks to see whether this technique is supported on the current hardware.
 	 * @return True if the water technique is supported.
 	 */
-	virtual bool isSupported() const;
+	bool isSupported() const override;
 
 	/**
 	 * @brief Initializes the water. You must call this in order for the water to show up.
 	 * @return True if the water technique could be setup, else false.
 	 */
-	virtual bool initialize();
+	bool initialize() override;
 
 
 protected:
@@ -75,8 +75,8 @@ protected:
 	 */
 	Ogre::SceneManager& mSceneMgr;
 
-    RefractionTextureListener* mRefractionListener;
-    ReflectionTextureListener* mReflectionListener;
+    std::unique_ptr<RefractionTextureListener> mRefractionListener;
+    std::unique_ptr<ReflectionTextureListener> mReflectionListener;
 
 	/**
 	 * @brief The node to which the water entity is attached to. Owned by this instance-

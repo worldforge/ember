@@ -48,7 +48,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~OceanAction() = default;
+	~OceanAction() override = default;
 
 	/**
 	 * @copydoc EntityMapping::Actions::Action::activate()
@@ -58,7 +58,7 @@ public:
 	/**
 	 * @copydoc EntityMapping::Actions::Action::deactivate()
 	 */
-	virtual void deactivate(EntityMapping::ChangeContext& context);
+	void deactivate(EntityMapping::ChangeContext& context) override;
 
 private:
 

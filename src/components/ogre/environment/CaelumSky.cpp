@@ -28,17 +28,13 @@
 #include "caelum/include/Caelum.h"
 #include "framework/Tokeniser.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
 CaelumSky::CaelumSky(CaelumEnvironment& environment) :
-	CaelumEnvironmentComponent(environment)
-{
+		CaelumEnvironmentComponent(environment) {
 	// Setup cloud options.
 	if (mCaelumSystem->getCloudSystem()) {
 		Caelum::CloudSystem* cloudSystem = mCaelumSystem->getCloudSystem();
@@ -63,12 +59,9 @@ CaelumSky::CaelumSky(CaelumEnvironment& environment) :
 
 }
 
-CaelumSky::~CaelumSky()
-{
-}
+CaelumSky::~CaelumSky() = default;
 
-void CaelumSky::Config_CloudSpeed(const std::string&, const std::string&, varconf::Variable& variable)
-{
+void CaelumSky::Config_CloudSpeed(const std::string&, const std::string&, varconf::Variable& variable) {
 	if (variable.is_string() && mCaelumSystem->getCloudSystem()) {
 		Ogre::Vector2 vector;
 		Tokeniser tokeniser(variable.as_string());
@@ -78,30 +71,27 @@ void CaelumSky::Config_CloudSpeed(const std::string&, const std::string&, varcon
 	}
 }
 
-void CaelumSky::Config_CloudBlendTime(const std::string&, const std::string&, varconf::Variable& variable)
-{
+void CaelumSky::Config_CloudBlendTime(const std::string&, const std::string&, varconf::Variable& variable) {
 	if (variable.is_double() && mCaelumSystem->getCloudSystem()) {
 		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudBlendTime(static_cast<double> (variable));
 	}
 }
-void CaelumSky::Config_CloudCover(const std::string&, const std::string&, varconf::Variable& variable)
-{
+
+void CaelumSky::Config_CloudCover(const std::string&, const std::string&, varconf::Variable& variable) {
 	if (variable.is_double() && mCaelumSystem->getCloudSystem()) {
 		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudCover(static_cast<double> (variable));
 	}
 }
 
-void CaelumSky::setDensity(float density)
-{
+void CaelumSky::setDensity(float density) {
 	mCaelumSystem->setGlobalFogDensityMultiplier(density);
 }
-float CaelumSky::getDensity() const
-{
+
+float CaelumSky::getDensity() const {
 	return mCaelumSystem->getGlobalFogDensityMultiplier();
 }
 
-bool CaelumSky::frameEnded(const Ogre::FrameEvent &)
-{
+bool CaelumSky::frameEnded(const Ogre::FrameEvent&) {
 	return true;
 }
 

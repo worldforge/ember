@@ -32,17 +32,13 @@
 
 #include "services/config/ConfigService.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
 CaelumSun::CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun) :
-	CaelumEnvironmentComponent(environment), mSun(sun)
-{
+		CaelumEnvironmentComponent(environment), mSun(sun) {
 	sun->setAmbientMultiplier(Ogre::ColourValue(0.7, 0.7, 0.7));
 	// 		mCaelumSystem->getSun ()->setAmbientMultiplier (Ogre::ColourValue(0.5, 0.5, 0.5));
 	sun->setDiffuseMultiplier(Ogre::ColourValue(3, 3, 2.7));
@@ -65,57 +61,46 @@ CaelumSun::CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun) 
 
 }
 
-CaelumSun::~CaelumSun()
-{
+CaelumSun::~CaelumSun() = default;
 
-}
-
-void CaelumSun::setAmbientLight(const Ogre::ColourValue& colour)
-{
+void CaelumSun::setAmbientLight(const Ogre::ColourValue& colour) {
 	mCaelumSystem->getSceneMgr()->setAmbientLight(colour);
 }
 
-Ogre::Vector3 CaelumSun::getSunDirection() const
-{
+Ogre::Vector3 CaelumSun::getSunDirection() const {
 	return mSun->getLightDirection();
 }
 
-WFMath::Vector<3> CaelumSun::getMainLightDirection() const
-{
+WFMath::Vector<3> CaelumSun::getMainLightDirection() const {
 	return Convert::toWF<WFMath::Vector<3>>(getSunDirection());
 }
 
-Ogre::ColourValue CaelumSun::getAmbientLightColour() const
-{
+Ogre::ColourValue CaelumSun::getAmbientLightColour() const {
 	return mSun->getMainLight()->getDiffuseColour();
 }
 
-void CaelumSun::Config_SunAmbientMultiplier(const std::string&, const std::string&, varconf::Variable& variable)
-{
+void CaelumSun::Config_SunAmbientMultiplier(const std::string&, const std::string&, varconf::Variable& variable) {
 	Ogre::ColourValue colour;
 	if (parse(variable, colour) && mSun) {
 		mSun->setAmbientMultiplier(colour);
 	}
 }
 
-void CaelumSun::Config_SunDiffuseMultiplier(const std::string&, const std::string&, varconf::Variable& variable)
-{
+void CaelumSun::Config_SunDiffuseMultiplier(const std::string&, const std::string&, varconf::Variable& variable) {
 	Ogre::ColourValue colour;
 	if (parse(variable, colour) && mSun) {
 		mSun->setDiffuseMultiplier(colour);
 	}
 }
 
-void CaelumSun::Config_SunSpecularMultiplier(const std::string&, const std::string&, varconf::Variable& variable)
-{
+void CaelumSun::Config_SunSpecularMultiplier(const std::string&, const std::string&, varconf::Variable& variable) {
 	Ogre::ColourValue colour;
 	if (parse(variable, colour) && mSun) {
 		mSun->setSpecularMultiplier(colour);
 	}
 }
 
-bool CaelumSun::parse(varconf::Variable& variable, Ogre::ColourValue& colour)
-{
+bool CaelumSun::parse(varconf::Variable& variable, Ogre::ColourValue& colour) {
 	if (variable.is_string()) {
 		Tokeniser tokeniser(variable.as_string());
 		colour.r = atof(tokeniser.nextToken().c_str());

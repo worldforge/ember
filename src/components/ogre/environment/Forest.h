@@ -23,10 +23,12 @@
 #ifndef EMBEROGRE_ENVIRONMENTFOREST_H
 #define EMBEROGRE_ENVIRONMENTFOREST_H
 
+#include "components/ogre/OgreIncludes.h"
 #include <OgreMath.h>
 #include <OgreFrameListener.h>
 #include <sigc++/trackable.h>
-#include "components/ogre/OgreIncludes.h"
+
+#include <memory>
 
 namespace Forests {
 class PagedGeometry;
@@ -56,9 +58,9 @@ class EmberEntityLoader;
 class Forest : public Ogre::FrameListener, public virtual sigc::trackable
 {
 public:
-    Forest(Terrain::TerrainManager& terrainManager);
+    explicit Forest(Terrain::TerrainManager& terrainManager);
 
-    virtual ~Forest();
+    ~Forest() override;
 
     void initialize();
 
@@ -68,14 +70,14 @@ public:
     void removeEmberEntity(EmberEntity* entity);
 
 
-	bool frameStarted(const Ogre::FrameEvent & evt);
+	bool frameStarted(const Ogre::FrameEvent & evt) override;
 
 protected:
 
 	Terrain::TerrainManager& mTerrainManager;
-	Forests::PagedGeometry *mTrees;
-	Forests::TreeLoader3D *mTreeLoader;
-	EmberEntityLoader* mEntityLoader;
+	std::unique_ptr<Forests::PagedGeometry> mTrees;
+	std::unique_ptr<Forests::TreeLoader3D> mTreeLoader;
+	std::unique_ptr<EmberEntityLoader> mEntityLoader;
 
 	/**
 	 * @brief The max range for entities to be rendered in the forest.

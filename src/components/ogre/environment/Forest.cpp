@@ -52,7 +52,7 @@ namespace Environment
 {
 
 Forest::Forest(Terrain::TerrainManager& terrainManager) :
-	mTerrainManager(terrainManager), mTrees(0), mTreeLoader(0), mEntityLoader(0), mMaxRange(500)
+	mTerrainManager(terrainManager), mMaxRange(500)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 	mTerrainManager.getHandler().EventWorldSizeChanged.connect(sigc::mem_fun(*this, &Forest::worldSizeChanged));
@@ -60,9 +60,6 @@ Forest::Forest(Terrain::TerrainManager& terrainManager) :
 
 Forest::~Forest()
 {
-	delete mEntityLoader;
-	delete mTreeLoader;
-	delete mTrees;
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
@@ -70,7 +67,7 @@ void Forest::initialize()
 {
 	S_LOG_INFO("Initializing forest.");
 
-	mTrees = new Forests::PagedGeometry();
+	mTrees = std::make_unique<Forests::PagedGeometry>();
 	mTrees->setCamera(&mTerrainManager.getScene().getMainCamera()); //Set the camera so PagedGeometry knows how to calculate LODs
 	mTrees->setPageSize(128); //Set the size of each page of geometry
 
@@ -81,9 +78,9 @@ void Forest::initialize()
 	mTrees->addDetailLevel<ExclusiveImposterPage> (mMaxRange, 50); //Use impostors up to 500 units, and for for 50 more units
 
 	//Create a new TreeLoader2D object
-	mEntityLoader = new EmberEntityLoader(*mTrees, 64);
+	mEntityLoader = std::make_unique<EmberEntityLoader>(*mTrees, 64);
 	// 	mTreeLoader = new Forests::TreeLoader3D(mTrees, Convert::toOgre(worldSize));
-	mTrees->setPageLoader(mEntityLoader); //Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance
+	mTrees->setPageLoader(mEntityLoader.get()); //Assign the "treeLoader" to be used to load geometry for the PagedGeometry instance
 }
 
 void Forest::addTree(Ogre::Entity *entity, const Ogre::Vector3 &position, Ogre::Degree yaw, Ogre::Real scale)
@@ -107,12 +104,9 @@ bool Forest::frameStarted(const Ogre::FrameEvent & evt)
 			mTrees->update();
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when updating forest. Will disable forest."<< ex);
-			delete mTreeLoader;
-			delete mEntityLoader;
-			delete mTrees;
-			mTrees = 0;
-			mTreeLoader = 0;
-			mEntityLoader = 0;
+			mTrees.reset();
+			mTreeLoader.reset();
+			mEntityLoader.reset();
 		}
 	}
 	return true;

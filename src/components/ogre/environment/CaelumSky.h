@@ -37,25 +37,24 @@ namespace Environment {
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
 class CaelumSky
-: CaelumEnvironmentComponent
-,public IFog,public ISky, ConfigListenerContainer
-{
+		: CaelumEnvironmentComponent, public IFog, public ISky, ConfigListenerContainer {
 public:
-    CaelumSky(CaelumEnvironment& environment);
+	explicit CaelumSky(CaelumEnvironment& environment);
 
-    virtual ~CaelumSky();
+	~CaelumSky() override;
 
+	void setDensity(float density) override;
 
- 	void setDensity(float density);
-	float getDensity() const;
+	float getDensity() const override;
 
-
-	virtual bool frameEnded(const Ogre::FrameEvent & event);
+	virtual bool frameEnded(const Ogre::FrameEvent& event);
 
 protected:
 
 	void Config_CloudSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 	void Config_CloudBlendTime(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 	void Config_CloudCover(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 

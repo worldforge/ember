@@ -54,8 +54,7 @@ CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager* sceneMgr, Ogre::RenderW
 }
 
 CaelumEnvironment::~CaelumEnvironment() {
-	destroyFirmament();
-	delete mWater;
+	destroyCaelumFirmament();
 }
 
 void CaelumEnvironment::createFirmament() {
@@ -68,17 +67,19 @@ void CaelumEnvironment::createFirmament() {
 }
 
 void CaelumEnvironment::destroyFirmament() {
-	delete mSky;
-	mSky = nullptr;
-	delete mSun;
-	mSun = nullptr;
-	mWindow->removeListener(mCaelumSystem);
-	if (mCaelumSystem) {
-		mCaelumSystem->shutdown(true); //This will actually delete the instance
-		mCaelumSystem = nullptr;
-	}
-
+	destroyCaelumFirmament();
 }
+
+void CaelumEnvironment::destroyCaelumFirmament() {
+	mSky.reset();
+	mSun.reset();
+	if (mCaelumSystem) {
+		mWindow->removeListener(mCaelumSystem.get());
+		mCaelumSystem->shutdown(true); //This will actually delete the instance
+		mCaelumSystem.release();
+	}
+}
+
 
 void CaelumEnvironment::Calendar_Updated() {
 	Eris::DateTime now = mCalendar.now();
@@ -96,8 +97,7 @@ void CaelumEnvironment::setWaterEnabled(bool enabled) {
 		}
 	} else {
 		if (mWater) {
-			delete mWater;
-			mWater = 0;
+			mWater.reset();
 		}
 	}
 }
@@ -107,27 +107,25 @@ void CaelumEnvironment::setupWater() {
 		//mWater = new Water(mCamera, mSceneMgr);
 		//	mWater = new HydraxWater(mCamera, *mSceneMgr);
 		//NOTE: we default to simple water for now since there are a couple of performance problems with hydrax
-		mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
-		if (mWater->isSupported()) {
-			mWater->initialize();
+		std::unique_ptr<SimpleWater> water;
+		water = std::make_unique<SimpleWater>(mCamera, *mSceneMgr, *mWindow);
+		if (water->isSupported()) {
+			water->initialize();
 		} else {
-			delete mWater;
-			mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
-			mWater->initialize();
+			water = std::make_unique<SimpleWater>(mCamera, *mSceneMgr, *mWindow);
+			water->initialize();
 		}
+		mWater = std::move(water);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not load water." << ex);
-		delete mWater;
-		mWater = nullptr;
 	}
-
 }
 
 void CaelumEnvironment::setupCaelum(::Ogre::SceneManager* sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera&) {
 
 	Ogre::Root* root = Ogre::Root::getSingletonPtr();
 
-	mCaelumSystem = new Caelum::CaelumSystem(root, sceneMgr, Caelum::CaelumSystem::CAELUM_COMPONENTS_NONE);
+	mCaelumSystem = std::make_unique<Caelum::CaelumSystem>(root, sceneMgr, Caelum::CaelumSystem::CAELUM_COMPONENTS_NONE);
 
 	try {
 		mCaelumSystem->setSkyDome(new Caelum::SkyDome(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
@@ -136,7 +134,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::SceneManager* sceneMgr, ::Ogre::Rend
 	}
 	try {
 		mCaelumSystem->setSun(new Caelum::SpriteSun(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
-		mSun = new CaelumSun(*this, mCaelumSystem->getSun());
+		mSun = std::make_unique<CaelumSun>(*this, mCaelumSystem->getSun());
 	} catch (const Caelum::UnsupportedException& ex) {
 		//TODO: use a simple sun object
 		S_LOG_WARNING("Error when creating Caelum sun." << ex);
@@ -170,11 +168,11 @@ void CaelumEnvironment::setupCaelum(::Ogre::SceneManager* sceneMgr, ::Ogre::Rend
 	mCaelumSystem->setEnsureSingleShadowSource(true); //we want to use only one shadow caster source, for now at least
 	mCaelumSystem->setEnsureSingleLightSource(true); //We want to only use the brightest light source only, even if another is closer. This is to make sure the main light is taken from the sun instead of the moon (which will result in a dark landscape).
 
-	mSky = new CaelumSky(*this);
+	mSky = std::make_unique<CaelumSky>(*this);
 
 	// Register all to the render window
 	mCaelumSystem->attachViewport(window->getViewport(0));
-	window->addListener(mCaelumSystem);
+	window->addListener(mCaelumSystem.get());
 
 	// Set time acceleration to fit with real world time
 	mCaelumSystem->getUniversalClock()->setTimeScale(1);
@@ -202,24 +200,24 @@ void CaelumEnvironment::setupCaelum(::Ogre::SceneManager* sceneMgr, ::Ogre::Rend
 	mCaelumSystem->updateSubcomponents(1);
 
 	//This will make caelum update itself automatically each frame
-	Ogre::Root::getSingleton().addFrameListener(mCaelumSystem);
+	Ogre::Root::getSingleton().addFrameListener(mCaelumSystem.get());
 }
 
 ISun* CaelumEnvironment::getSun() {
-	return mSun;
+	return mSun.get();
 }
 
 ISky* CaelumEnvironment::getSky() {
-	return mSky;
+	return mSky.get();
 }
 
 IFog* CaelumEnvironment::getFog() {
-	return mSky;
+	return mSky.get();
 	//return mFog;
 }
 
 IWater* CaelumEnvironment::getWater() {
-	return mWater;
+	return mWater.get();
 }
 
 void CaelumEnvironment::setTime(int hour, int minute, int second) {

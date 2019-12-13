@@ -47,12 +47,12 @@ namespace Environment
 class SimpleSun: public ISun
 {
 public:
-	SimpleSun(Ogre::SceneManager *sceneMgr);
-	virtual void setAmbientLight(const Ogre::ColourValue& colour);
-	virtual Ogre::Vector3 getSunDirection() const;
-	virtual WFMath::Vector<3> getMainLightDirection() const;
+	explicit SimpleSun(Ogre::SceneManager *sceneMgr);
+	void setAmbientLight(const Ogre::ColourValue& colour) override;
+	Ogre::Vector3 getSunDirection() const override;
+	WFMath::Vector<3> getMainLightDirection() const override;
 
-	virtual Ogre::ColourValue getAmbientLightColour() const;
+	Ogre::ColourValue getAmbientLightColour() const override;
 
 protected:
 	Ogre::Light* mMainLight;
@@ -73,9 +73,9 @@ protected:
 class SimpleFog: public IFog
 {
 public:
-	SimpleFog(Ogre::SceneManager *sceneMgr);
-	virtual void setDensity(float density);
-	virtual float getDensity() const;
+	explicit SimpleFog(Ogre::SceneManager *sceneMgr);
+	void setDensity(float density) override;
+	float getDensity() const override;
 protected:
 };
 
@@ -91,41 +91,41 @@ class SimpleEnvironment: public IEnvironmentProvider
 public:
 	SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 
-	virtual ~SimpleEnvironment();
+	~SimpleEnvironment() override;
 
-	virtual void createFirmament();
-	virtual void destroyFirmament();
+	void createFirmament() override;
+	void destroyFirmament() override;
 
-	void setWaterEnabled(bool enabled);
+	void setWaterEnabled(bool enabled) override;
 
-	virtual ISun* getSun();
-	virtual ISky* getSky();
-	virtual IFog* getFog();
-	virtual IWater* getWater();
+	ISun* getSun() override;
+	ISky* getSky() override;
+	IFog* getFog() override;
+	IWater* getWater() override;
 
-	virtual void setTime(int hour, int minute, int second = 0);
-	virtual void setTime(int seconds);
+	void setTime(int hour, int minute, int second = 0) override;
+	void setTime(int seconds) override;
 
-	virtual void setTimeMultiplier(float multiplier);
+	void setTimeMultiplier(float multiplier) override;
 
-	virtual float getTimeMultiplier() const;
+	float getTimeMultiplier() const override;
 
 	/**
 	 * @brief Sets the position of the world.
 	 * @param longitudeDegrees The longitude, as degrees.
 	 * @param latitudeDegrees The latitude, as degrees.
 	 */
-	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
+	void setWorldPosition(float longitudeDegrees, float latitudeDegrees) override;
 
 protected:
 	Ogre::SceneManager *mSceneMgr;
 	Ogre::RenderWindow* mWindow;
 	Ogre::Camera& mCamera;
 
-	SimpleSun* mSun;
-	SimpleSky* mSky;
-	SimpleFog* mFog;
-	IWater* mWater;
+	std::unique_ptr<SimpleSun> mSun;
+	std::unique_ptr<SimpleSky> mSky;
+	std::unique_ptr<SimpleFog> mFog;
+	std::unique_ptr<IWater> mWater;
 
 };
 

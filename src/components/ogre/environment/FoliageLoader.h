@@ -26,20 +26,22 @@
 #include "pagedgeometry/include/PagedGeometry.h"
 #include <sigc++/trackable.h>
 
-namespace Ogre
-{
+namespace Ogre {
 class Entity;
+
 class SceneManager;
 }
 
 namespace Ember {
 namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainFoliageDefinition;
+
 class TerrainLayerDefinition;
+
 class TerrainManager;
+
 class PlantAreaQueryResult;
 }
 
@@ -48,16 +50,19 @@ namespace Environment {
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class FoliageLoader : public ::Forests::PageLoader, public virtual sigc::trackable
-{
+class FoliageLoader : public ::Forests::PageLoader, public virtual sigc::trackable {
 public:
-    FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition, ::Forests::PagedGeometry& pagedGeometry);
+	FoliageLoader(Ogre::SceneManager& sceneMgr,
+				  Terrain::TerrainManager& terrainManager,
+				  const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+				  const Terrain::TerrainFoliageDefinition& foliageDefinition,
+				  ::Forests::PagedGeometry& pagedGeometry);
 
-    virtual ~FoliageLoader();
+	~FoliageLoader() override;
 
-	virtual void loadPage(::Forests::PageInfo &page);
-	
-	virtual bool preparePage(::Forests::PageInfo &page);
+	void loadPage(::Forests::PageInfo& page) override;
+
+	bool preparePage(::Forests::PageInfo& page) override;
 
 
 	/** 
@@ -75,15 +80,15 @@ protected:
 	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;
 	::Forests::PagedGeometry& mPagedGeometry;
-	
+
 	Ogre::Entity* mEntity;
-	
+
 	float mMinScale, mMaxScale;
 
 	const Terrain::PlantAreaQueryResult* mLatestPlantsResult;
 
 	void plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult);
-	
+
 	/**
 	 * The density factor used by this loader to determine the density of the foliage
 	 * loaded by it.

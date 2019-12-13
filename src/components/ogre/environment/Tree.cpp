@@ -36,8 +36,7 @@ namespace Environment {
 
 using namespace Ogre;
 
-Tree::Tree()
-{
+Tree::Tree() {
 /*        Material *pBarkMat = (Material*)MaterialManager::getSingleton().create( "BarkTextMat" );
         pBarkMat->getTechnique(0)->getPass(0)->createTextureUnitState( "tree_bark.jpg" );
 	Material *pLeafMat = (Material*)MaterialManager::getSingleton().create( "LeafTextMat" );
@@ -56,17 +55,14 @@ Tree::Tree()
 }
 
 
-Tree::~Tree()
-{
-}
+Tree::~Tree() = default;
 
 
-void Tree::makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type)
-{
-        //pCoordFrameMat->getTechnique(0)->getPass(0)->setShadingMode();
+void Tree::makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type) {
+	//pCoordFrameMat->getTechnique(0)->getPass(0)->setShadingMode();
 
 
-        // Attach the entity to the root of the scene
+	// Attach the entity to the root of the scene
 
 
 //        uchar u8Levels = 2;

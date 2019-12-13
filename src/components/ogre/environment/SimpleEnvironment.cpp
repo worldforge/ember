@@ -58,7 +58,7 @@ void SimpleSun::setAmbientLight(const Ogre::ColourValue& colour)
 
 Ogre::Vector3 SimpleSun::getSunDirection() const
 {
-	return Ogre::Vector3(-0.5f, -1.0f, -0.5f);
+	return {-0.5f, -1.0f, -0.5f};
 }
 
 WFMath::Vector<3> SimpleSun::getMainLightDirection() const
@@ -89,73 +89,59 @@ float SimpleFog::getDensity() const
 SimpleEnvironment::SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera) :
 		mSceneMgr(sceneMgr),
 		mWindow(window),
-		mCamera(camera),
-		mSun(nullptr),
-		mSky(nullptr),
-		mFog(nullptr),
-		mWater(nullptr)
+		mCamera(camera)
 {
 }
 
-SimpleEnvironment::~SimpleEnvironment()
-{
-	delete mSun;
-	delete mSky;
-	delete mFog;
-	delete mWater;
-}
+SimpleEnvironment::~SimpleEnvironment() = default;
 
 void SimpleEnvironment::createFirmament()
 {
-	mSun = new SimpleSun(mSceneMgr);
-	mSky = new SimpleSky();
-	mFog = new SimpleFog(mSceneMgr);
+	mSun = std::make_unique<SimpleSun>(mSceneMgr);
+	mSky = std::make_unique<SimpleSky>();
+	mFog = std::make_unique<SimpleFog>(mSceneMgr);
 }
 
 void SimpleEnvironment::destroyFirmament()
 {
-	delete mSun;
-	mSun = nullptr;
-	delete mSky;
-	mSky = nullptr;
-	delete mFog;
-	mFog = nullptr;
+	mSun.reset();
+	mSky.reset();
+	mFog.reset();
 }
 
 void SimpleEnvironment::setWaterEnabled(bool enabled)
 {
 	if (enabled) {
 		if (!mWater) {
-			mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
+			mWater = std::make_unique<SimpleWater>(mCamera, *mSceneMgr, *mWindow);
 			mWater->initialize();
 
 		}
 	} else {
 		if (mWater) {
-			delete mWater;
-			mWater = 0;
+			mWater.reset();
 		}
 	}
 }
 
 ISun* SimpleEnvironment::getSun()
 {
-	return mSun;
+	return mSun.get();
 }
 
 ISky* SimpleEnvironment::getSky()
 {
-	return mSky;
+	return mSky.get();
 }
 
 IFog* SimpleEnvironment::getFog()
 {
-	return mFog;
+	return mFog.get();
 }
 
 IWater* SimpleEnvironment::getWater()
 {
-	return mWater;
+	return mWater.get();
 }
 
 void SimpleEnvironment::setTime(int hour, int minute, int second)

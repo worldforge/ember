@@ -45,8 +45,12 @@ namespace OgreView {
 
 namespace Environment {
 
-FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-		: mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition), mFoliageDefinition(foliageDefinition) {
+FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager,
+						 const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+						 const Terrain::TerrainFoliageDefinition& foliageDefinition)
+		: mTerrainManager(terrainManager),
+		  mTerrainLayerDefinition(terrainLayerDefinition),
+		  mFoliageDefinition(foliageDefinition) {
 	initializeDependentLayers();
 
 	mTerrainManager.getHandler().EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_LayerUpdated));

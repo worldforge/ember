@@ -42,20 +42,18 @@ namespace Environment {
 @author Erik Ogenvik
 */
 class Sun :
-public ConsoleObject
-, public Ogre::FrameListener
-{
+		public ConsoleObject, public Ogre::FrameListener {
 public:
-    Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
+	Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr);
 
-    ~Sun();
+	~Sun() override;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command
 	 * @param args
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	* emitted when the sun changes position
@@ -98,7 +96,7 @@ public:
 	void setAmbientLight(const Ogre::ColourValue& colour);
 
 
-	virtual bool frameEnded(const Ogre::FrameEvent & event);
+	bool frameEnded(const Ogre::FrameEvent& event) override;
 
 protected:
 	Ogre::Light* mSun;

@@ -96,6 +96,8 @@ public:
 
 private:
 
+	void destroyCaelumFirmament();
+
 	/**
 	 * @brief Creates and initializes the Caelum system.
 	 * @param sceneMgr 
@@ -115,7 +117,7 @@ private:
 	void Calendar_Updated();
 
 	// Caelum system
-	Caelum::CaelumSystem* mCaelumSystem;
+	std::unique_ptr<Caelum::CaelumSystem> mCaelumSystem;
 
 	Ogre::SceneManager* mSceneMgr;
 	Ogre::RenderWindow* mWindow;
@@ -126,14 +128,14 @@ private:
 	 */
 	Eris::Calendar& mCalendar;
 
-	CaelumSky* mSky;
-	CaelumSun* mSun;
-	IWater* mWater;
+	std::unique_ptr<CaelumSky> mSky;
+	std::unique_ptr<CaelumSun> mSun;
+	std::unique_ptr<IWater> mWater;
 
 };
 
 inline Caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const {
-	return mCaelumSystem;
+	return mCaelumSystem.get();
 }
 
 class CaelumEnvironmentComponent {

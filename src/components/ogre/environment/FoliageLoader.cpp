@@ -43,8 +43,19 @@ namespace OgreView {
 
 namespace Environment {
 
-FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition, ::Forests::PagedGeometry& pagedGeometry) :
-		mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition), mFoliageDefinition(foliageDefinition), mPagedGeometry(pagedGeometry), mMinScale(1), mMaxScale(1), mLatestPlantsResult(0), mDensityFactor(1) {
+FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr,
+							 Terrain::TerrainManager& terrainManager,
+							 const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+							 const Terrain::TerrainFoliageDefinition& foliageDefinition,
+							 ::Forests::PagedGeometry& pagedGeometry) :
+		mTerrainManager(terrainManager),
+		mTerrainLayerDefinition(terrainLayerDefinition),
+		mFoliageDefinition(foliageDefinition),
+		mPagedGeometry(pagedGeometry),
+		mMinScale(1),
+		mMaxScale(1),
+		mLatestPlantsResult(0),
+		mDensityFactor(1) {
 	mEntity = sceneMgr.createEntity(std::string("shrubbery_") + mFoliageDefinition.getPlantType(), mFoliageDefinition.getParameter("mesh"));
 
 	mMinScale = std::stof(mFoliageDefinition.getParameter("minScale"));

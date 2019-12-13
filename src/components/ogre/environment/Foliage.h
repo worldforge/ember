@@ -62,20 +62,20 @@ public:
 
 	typedef std::vector<FoliageBase*> FoliageStore;
 
-	Foliage(Terrain::TerrainManager& terrainManager);
+	explicit Foliage(Terrain::TerrainManager& terrainManager);
 
-	~Foliage();
+	~Foliage() override;
 	
 	void initialize();
 
-	virtual bool frameStarted(const Ogre::FrameEvent& evt);
+	bool frameStarted(const Ogre::FrameEvent& evt) override;
 
 	void reloadAtPosition(const WFMath::Point<2>& worldPosition);
 
 	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	const ConsoleCommandWrapper ReloadFoliage;
 	
@@ -100,9 +100,6 @@ protected:
 
 	FoliageStore mFoliages;
 
-
-	void createGrassMesh();
-	
 };
 
 }

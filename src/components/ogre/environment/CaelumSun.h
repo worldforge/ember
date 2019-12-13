@@ -22,17 +22,16 @@
 //
 #ifndef EMBEROGRECAELUMSUN_H
 #define EMBEROGRECAELUMSUN_H
+
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "CaelumEnvironment.h"
 #include "services/config/ConfigListenerContainer.h"
 
-namespace Ember
-{
+namespace Ember {
 class ConfigListener;
 }
 
-namespace varconf
-{
+namespace varconf {
 class Variable;
 }
 
@@ -40,26 +39,24 @@ namespace Ember {
 namespace OgreView {
 
 
-
 namespace Environment {
 
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class CaelumSun :  public CaelumEnvironmentComponent, public ISun, public ConfigListenerContainer
-{
+class CaelumSun : public CaelumEnvironmentComponent, public ISun, public ConfigListenerContainer {
 public:
-    CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun);
+	CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun);
 
-    virtual ~CaelumSun();
+	~CaelumSun() override;
 
-	virtual void setAmbientLight(const Ogre::ColourValue& colour);
+	void setAmbientLight(const Ogre::ColourValue& colour) override;
 
-	virtual Ogre::Vector3 getSunDirection() const;
+	Ogre::Vector3 getSunDirection() const override;
 
-	virtual WFMath::Vector<3> getMainLightDirection() const;
+	WFMath::Vector<3> getMainLightDirection() const override;
 
-	virtual Ogre::ColourValue getAmbientLightColour() const;
+	Ogre::ColourValue getAmbientLightColour() const override;
 
 private:
 
@@ -73,6 +70,7 @@ private:
 	 * @param variable
 	 */
 	void Config_SunAmbientMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 	/**
 	 *    Listend for changes to the config.
 	 * @param section
@@ -80,6 +78,7 @@ private:
 	 * @param variable
 	 */
 	void Config_SunDiffuseMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 	/**
 	 *    Listend for changes to the config.
 	 * @param section
@@ -87,7 +86,6 @@ private:
 	 * @param variable
 	 */
 	void Config_SunSpecularMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable);
-
 
 
 	bool parse(varconf::Variable& variable, Ogre::ColourValue& colour);
