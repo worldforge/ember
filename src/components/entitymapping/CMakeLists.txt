@@ -13,7 +13,7 @@ add_library(entitymapping
         ChangeContext.cpp
 
         Definitions/ActionDefinition.cpp Definitions/CaseDefinition.cpp
-        Definitions/DefinitionBase.cpp Definitions/MatchDefinition.cpp Definitions/EntityMappingDefinition.cpp
+        Definitions/MatchDefinition.cpp Definitions/EntityMappingDefinition.cpp
 
         Matches/AttributeMatch.cpp Matches/EntityTypeMatch.cpp
         Matches/Observers/MatchAttributeObserver.cpp Matches/Observers/EntityCreationObserver.cpp Matches/EntityRefMatch.cpp

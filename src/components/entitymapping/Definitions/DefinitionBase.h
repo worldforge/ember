@@ -45,29 +45,10 @@ namespace Definitions {
 	Base class for all Definitions.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class DefinitionBase
+struct DefinitionBase
 {
-public:
-	typedef std::unordered_map<std::string, std::string> PropertiesMap;
-	/**
-	Returns a map of arbitrary properties.
-	*/
-	PropertiesMap& getProperties();
-
-	/**
-	Returns a map of arbitrary properties.
-	*/
-	const PropertiesMap& getProperties() const;
-
-	/**
-	Gets the type of this definition.
-	*/
-    const std::string& getType() const;
-    void setType(std::string type);
-
-protected:
-    PropertiesMap mProperties;
-	std::string mType;
+	std::unordered_map<std::string, std::string> Properties;
+	std::string Type;
 };
 
 }

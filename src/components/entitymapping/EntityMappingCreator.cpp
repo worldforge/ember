@@ -144,7 +144,7 @@ void EntityMappingCreator::addEntityRefCases(EntityRefMatch* match, MatchDefinit
 
 
 Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAttributeCaseComparer(AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition) {
-	const std::string& matchType = matchDefinition.getProperties()["type"];
+	const std::string& matchType = matchDefinition.Properties["type"];
 
 	if ((matchType.empty()) || (matchType == "string")) {
 		//default is string comparison
@@ -221,21 +221,21 @@ void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinit
 }
 
 void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
-	if (matchDefinition.getType() == "attribute") {
+	if (matchDefinition.Type == "attribute") {
 		addAttributeMatch(aCase, matchDefinition);
-	} else if (matchDefinition.getType() == "entitytype") {
+	} else if (matchDefinition.Type == "entitytype") {
 		addEntityTypeMatch(aCase, matchDefinition);
-	} else if (matchDefinition.getType() == "entityref") {
+	} else if (matchDefinition.Type == "entityref") {
 		addEntityRefCase(aCase, matchDefinition);
 	}
 }
 
 void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
-	const std::string& attributeName = matchDefinition.getProperties()["attribute"];
+	const std::string& attributeName = matchDefinition.Properties["attribute"];
 
 	AttributeMatch* match = nullptr;
 	std::string internalAttributeName;
-	const std::string& matchType = matchDefinition.getProperties()["type"];
+	const std::string& matchType = matchDefinition.Properties["type"];
 	//TODO: make this check better
 	if (matchType == "function") {
 		if (attributeName == "height") {
@@ -268,7 +268,7 @@ void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& 
 
 void EntityMappingCreator::addEntityRefCase(CaseBase* aCase, MatchDefinition& matchDefinition) {
 	if (mView) {
-		const std::string& attributeName = matchDefinition.getProperties()["attribute"];
+		const std::string& attributeName = matchDefinition.Properties["attribute"];
 		auto* match = new EntityRefMatch(attributeName, mView);
 		aCase->addMatch(match);
 

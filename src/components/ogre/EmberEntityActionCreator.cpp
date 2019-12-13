@@ -45,24 +45,24 @@ EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity, Scene& s
 void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition)
 {
 	for (auto& actionDef : caseDefinition.getActions()) {
-		if (actionDef.getType() == "display-part") {
+		if (actionDef.Type == "display-part") {
 			aCase->addAction(new EmberEntityPartAction(mEntity, actionDef.getValue()));
-		} else if (actionDef.getType() == "display-model") {
+		} else if (actionDef.Type == "display-model") {
 			aCase->addAction(new EmberEntityModelAction(mEntity, actionDef.getValue(), mScene, modelMapping));
-		} else if (actionDef.getType() == "hide-model") {
+		} else if (actionDef.Type == "hide-model") {
 			aCase->addAction(new EmberEntityHideModelAction(mEntity));
-		} else if (actionDef.getType() == "display-label") {
+		} else if (actionDef.Type == "display-label") {
 			aCase->addAction(new Gui::LabelAction(mEntity));
-		} else if (actionDef.getType() == "display-ocean") {
+		} else if (actionDef.Type == "display-ocean") {
 			aCase->addAction(new Environment::OceanAction(mEntity, mScene));
-		} else if (actionDef.getType() == "enable-composition") {
+		} else if (actionDef.Type == "enable-composition") {
 			aCase->addAction(new CompositionAction(mEntity, actionDef.getValue()));
-		} else if (actionDef.getType() == "present") {
+		} else if (actionDef.Type == "present") {
 			aCase->addAction(new PresentAction(mEntity, mScene, modelMapping));
-//		} else if (actionDef.getType() == "show-effect") {
+//		} else if (actionDef.Type == "show-effect") {
 //			aCase->addAction(new PresentAction(mEntity, mScene, modelMapping));
 		} else {
-			S_LOG_WARNING("Could not recognize entity action '" << actionDef.getType() << "'.");
+			S_LOG_WARNING("Could not recognize entity action '" << actionDef.Type << "'.");
 		}
 	}
 

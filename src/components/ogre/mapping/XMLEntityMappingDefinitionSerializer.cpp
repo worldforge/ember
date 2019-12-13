@@ -56,29 +56,29 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument xmlDocument
 void XMLEntityMappingDefinitionSerializer::parseMatchElement(EntityMappingDefinition& definition, MatchDefinition& matchDef, TiXmlElement* element) {
 	std::string caseType;
 	if (element->ValueStr() == "entitymatch") {
-		matchDef.setType("entitytype");
+		matchDef.Type = "entitytype";
 		caseType = "entitytypecase";
 	} else if (element->ValueStr() == "attributematch") {
-		matchDef.setType("attribute");
+		matchDef.Type = "attribute";
 		caseType = "attributecase";
 
 /*		const char* tmp =  smElem->Attribute("attribute");
-		matchDef.getProperties()["attribute"] = std::string(tmp);*/
+		matchDef.Properties["attribute"] = std::string(tmp);*/
 	} else if (element->ValueStr() == "entityrefmatch") {
-		matchDef.setType("entityref");
+		matchDef.Type = "entityref";
 		caseType = "entityrefcase";
 	}
 
 	for (TiXmlAttribute* attribute = element->FirstAttribute();
 		 attribute != nullptr; attribute = attribute->Next()) {
-		matchDef.getProperties()[attribute->Name()] = attribute->Value();
+		matchDef.Properties[attribute->Name()] = attribute->Value();
 	}
 
 	if (!element->NoChildren()) {
 		for (auto childElement = element->FirstChildElement();
 			 childElement != nullptr; childElement = childElement->NextSiblingElement()) {
 			CaseDefinition caseDef;
-			caseDef.setType(caseType);
+			caseDef.Type = caseType;
 			parseCaseElement(definition, caseDef, childElement);
 			matchDef.getCases().push_back(std::move(caseDef));
 		}
@@ -88,7 +88,7 @@ void XMLEntityMappingDefinitionSerializer::parseMatchElement(EntityMappingDefini
 void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinition& definition, CaseDefinition& caseDef, TiXmlElement* element) {
 	for (TiXmlAttribute* attribute = element->FirstAttribute();
 		 attribute != nullptr; attribute = attribute->Next()) {
-		caseDef.getProperties()[attribute->Name()] = attribute->Value();
+		caseDef.Properties[attribute->Name()] = attribute->Value();
 	}
 
 
@@ -118,9 +118,9 @@ void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinit
 
 void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefinition& definition, ActionDefinition& actionDef, TiXmlElement* element) {
 	for (auto attribute = element->FirstAttribute(); attribute != nullptr; attribute = attribute->Next()) {
-		actionDef.getProperties()[attribute->Name()] = attribute->Value();
+		actionDef.Properties[attribute->Name()] = attribute->Value();
 	}
-	actionDef.setType(element->Attribute("type"));
+	actionDef.Type = element->Attribute("type");
 	TiXmlNode* textNode = element->FirstChild();
 	if (textNode) {
 		actionDef.setValue(textNode->Value());

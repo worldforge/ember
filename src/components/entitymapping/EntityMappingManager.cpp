@@ -77,7 +77,7 @@ std::unique_ptr<EntityMapping> EntityMappingManager::createMapping(Eris::Entity&
 			attributeMatch->addCase(attributeCase);
 			CaseDefinition caseDefinition;
 			ActionDefinition actionDefinition;
-			actionDefinition.setType("present");
+			actionDefinition.Type = "present";
 			caseDefinition.getActions().emplace_back(std::move(actionDefinition));
 			actionCreator.createActions(*mapping, attributeCase, caseDefinition);
 			mapping->getBaseCase().addMatch(attributeMatch);
