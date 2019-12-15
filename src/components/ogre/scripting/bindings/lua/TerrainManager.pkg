@@ -24,7 +24,7 @@ namespace Terrain {
 class TerrainShader;
 class TerrainPage;
 class TerrainMod;
-class TerrainLayerDefinition;
+struct TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 struct ITerrainAdapter;
 

@@ -24,6 +24,7 @@
 #define EMBEROGRE_TERRAINXMLLAYERDEFINITIONSERIALIZER_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "TerrainLayerDefinition.h"
 #include <OgreDataStream.h>
 
 namespace Ember {
@@ -38,14 +39,11 @@ class TerrainLayerDefinitionManager;
 class XMLLayerDefinitionSerializer
 {
 public:
-    XMLLayerDefinitionSerializer(TerrainLayerDefinitionManager& manager);
+    XMLLayerDefinitionSerializer();
 
     ~XMLLayerDefinitionSerializer();
 
-	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
-
-protected:
-	TerrainLayerDefinitionManager& mManager;
+	std::vector<TerrainLayerDefinition> parseScript(Ogre::DataStreamPtr& stream);
 
 };
 

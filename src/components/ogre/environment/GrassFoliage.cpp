@@ -41,15 +41,17 @@
 
 #include <OgreTechnique.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 
 namespace Environment {
 
 GrassFoliage::GrassFoliage(Terrain::TerrainManager& terrainManager,
-						   const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
-						   const Terrain::TerrainFoliageDefinition& foliageDefinition)
-		: FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition),
+						   Terrain::TerrainLayerDefinition terrainLayerDefinition,
+						   Terrain::TerrainFoliageDefinition foliageDefinition)
+		: FoliageBase(terrainManager, std::move(terrainLayerDefinition), std::move(foliageDefinition)),
 		mMinHeight(1.0f),
 		mMaxHeight(1.5f),
 		mMinWidth(1.0f),
@@ -149,7 +151,7 @@ void GrassFoliage::initialize() {
 	l->setMapBounds(Convert::toOgre(worldSize));
 	l->setMaxSlope(Ogre::Degree(40.0f));
 
-	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
+	auto& detailLevels = mPagedGeometry->getDetailLevels();
 	for (auto& detailLevel : detailLevels) {
 		DistanceStore tempDistance = {detailLevel->getFarRange(), detailLevel->getNearRange(), detailLevel->getTransition()};
 		mDistanceStore.push_back(tempDistance);

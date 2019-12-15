@@ -69,7 +69,7 @@ class TerrainShader;
 class TerrainInfo;
 class TerrainPage;
 class TerrainMod;
-class TerrainLayerDefinition;
+struct TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 struct ITerrainAdapter;
 class ITerrainPageBridge;

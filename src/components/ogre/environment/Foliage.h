@@ -43,8 +43,8 @@ namespace OgreView {
 
 namespace Terrain
 {
-class TerrainFoliageDefinition;
-class TerrainLayerDefinition;
+struct TerrainFoliageDefinition;
+struct TerrainLayerDefinition;
 class TerrainManager;
 }
 
@@ -59,8 +59,6 @@ class Foliage : public Singleton<Foliage>, public Ogre::FrameListener, public Co
 {
 
 public:
-
-	typedef std::vector<FoliageBase*> FoliageStore;
 
 	explicit Foliage(Terrain::TerrainManager& terrainManager);
 
@@ -98,7 +96,7 @@ protected:
 
 	Terrain::TerrainManager& mTerrainManager;
 
-	FoliageStore mFoliages;
+	std::vector<std::unique_ptr<FoliageBase>> mFoliages;
 
 };
 

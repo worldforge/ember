@@ -22,7 +22,7 @@ namespace Foliage {
 Vegetation::~Vegetation() = default;
 
 void Vegetation::createPopulator(const TerrainFoliageDefinition& foliageDef, unsigned int surfaceLayerIndex) {
-	if (foliageDef.getPopulationTechnique() == "cluster") {
+	if (foliageDef.mPopulationTechnique == "cluster") {
 		std::unique_ptr<IScaler> scaler;
 		if (foliageDef.hasParameter("minScale")) {
 			scaler = std::make_unique<UniformScaler>(std::stof(foliageDef.getParameter("minScale")), std::stof(foliageDef.getParameter("maxScale")));
@@ -44,7 +44,7 @@ void Vegetation::createPopulator(const TerrainFoliageDefinition& foliageDef, uns
 		}
 		populator->setThreshold(threshold);
 
-		mPopulators[foliageDef.getPlantType()] = std::move(populator);
+		mPopulators[foliageDef.mPlantType] = std::move(populator);
 
 	}
 }

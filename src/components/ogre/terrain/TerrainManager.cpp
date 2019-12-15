@@ -189,7 +189,7 @@ void TerrainManager::terrainHandler_ShaderCreated(const TerrainShader& shader) {
 	size_t index = mHandler->getAllShaders().size() - 1;
 
 	const TerrainLayerDefinition& layerDef = shader.getLayerDefinition();
-	for (const auto& foliage : layerDef.getFoliages()) {
+	for (const auto& foliage : layerDef.mFoliages) {
 		mVegetation->createPopulator(foliage, index);
 	}
 }

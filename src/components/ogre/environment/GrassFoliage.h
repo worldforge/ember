@@ -35,9 +35,9 @@ namespace Ember {
 namespace OgreView {
 
 namespace Terrain {
-class TerrainFoliageDefinition;
+struct TerrainFoliageDefinition;
 
-class TerrainLayerDefinition;
+struct TerrainLayerDefinition;
 
 class TerrainShader;
 
@@ -54,8 +54,8 @@ class FoliageLayer;
 class GrassFoliage : public FoliageBase {
 public:
 	GrassFoliage(Terrain::TerrainManager& terrainManager,
-				 const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
-				 const Terrain::TerrainFoliageDefinition& foliageDefinition);
+				 Terrain::TerrainLayerDefinition terrainLayerDefinition,
+				 Terrain::TerrainFoliageDefinition foliageDefinition);
 
 	~GrassFoliage() override;
 

@@ -190,7 +190,7 @@ void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstor
 
 TerrainShader* TerrainHandler::createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader) {
 	size_t index = mShaderMap.size();
-	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->getShaderName() << " with index " << index);
+	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->mShaderName << " with index " << index);
 	auto shader = new TerrainShader(*mTerrain, index, *layerDef, mercatorShader);
 
 	mBaseShaders.push_back(shader);

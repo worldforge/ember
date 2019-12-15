@@ -54,9 +54,9 @@ FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr,
 		mPagedGeometry(pagedGeometry),
 		mMinScale(1),
 		mMaxScale(1),
-		mLatestPlantsResult(0),
+		mLatestPlantsResult(nullptr),
 		mDensityFactor(1) {
-	mEntity = sceneMgr.createEntity(std::string("shrubbery_") + mFoliageDefinition.getPlantType(), mFoliageDefinition.getParameter("mesh"));
+	mEntity = sceneMgr.createEntity(std::string("shrubbery_") + mFoliageDefinition.mPlantType, mFoliageDefinition.getParameter("mesh"));
 
 	mMinScale = std::stof(mFoliageDefinition.getParameter("minScale"));
 	mMaxScale = std::stof(mFoliageDefinition.getParameter("maxScale"));
@@ -74,7 +74,7 @@ bool FoliageLoader::preparePage(::Forests::PageInfo& page) {
 		WFMath::Equal(mLatestPlantsResult->getQuery().mCenter.y, page.centerPoint.z)) {
 		return true;
 	} else {
-		PlantAreaQuery query{mTerrainLayerDefinition, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
+		PlantAreaQuery query{mTerrainLayerDefinition, mFoliageDefinition.mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLoader::plantQueryExecuted);
 
 		mTerrainManager.getPlantsForArea(query, slot);

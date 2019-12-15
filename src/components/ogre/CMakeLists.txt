@@ -44,7 +44,7 @@ add_library(emberogre
         terrain/OgreTerrain/EmberTerrainGroup.cpp terrain/OgreTerrain/EmberTerrain.cpp terrain/OgreTerrain/CameraFocusedGrid2DPageStrategy.cpp
         terrain/Map.cpp terrain/TerrainArea.cpp
         terrain/TerrainAreaParser.cpp terrain/TerrainEditor.cpp
-        terrain/TerrainManager.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp
+        terrain/TerrainManager.cpp terrain/TerrainInfo.cpp
         terrain/TerrainLayerDefinitionManager.cpp terrain/TerrainMod.cpp
         terrain/TerrainPage.cpp terrain/TerrainPageGeometry.cpp
         terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp

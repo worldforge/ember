@@ -49,7 +49,7 @@ class TerrainPage;
 class TerrainPageSurfaceCompiler;
 class TerrainPageShadow;
 class TerrainPageGeometry;
-class TerrainLayerDefinition;
+struct TerrainLayerDefinition;
 class TerrainPageSurfaceCompilationInstance;
 struct ICompilerTechniqueProvider;
 

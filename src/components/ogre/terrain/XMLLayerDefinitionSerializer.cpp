@@ -35,90 +35,84 @@ namespace OgreView {
 
 namespace Terrain {
 
-XMLLayerDefinitionSerializer::XMLLayerDefinitionSerializer(TerrainLayerDefinitionManager& manager)
-: mManager(manager)
-{
-}
+XMLLayerDefinitionSerializer::XMLLayerDefinitionSerializer() = default;
 
 
-XMLLayerDefinitionSerializer::~XMLLayerDefinitionSerializer()
-{
-}
+XMLLayerDefinitionSerializer::~XMLLayerDefinitionSerializer() = default;
 
-void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
-{
+std::vector<TerrainLayerDefinition> XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream) {
+	std::vector<TerrainLayerDefinition> definitions;
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
-	if (!xmlHelper.Load(xmlDoc, stream)) {
-		return;
-	}
+	if (xmlHelper.Load(xmlDoc, stream)) {
 
-	TiXmlElement* rootElem = xmlDoc.RootElement();
-	TiXmlElement* layersElem = rootElem->FirstChildElement("layers");
-	if (layersElem) {
+		TiXmlElement* rootElem = xmlDoc.RootElement();
+		TiXmlElement* layersElem = rootElem->FirstChildElement("layers");
+		if (layersElem) {
 
-		for (TiXmlElement* smElem = layersElem->FirstChildElement("layer");
-				smElem != 0; smElem = smElem->NextSiblingElement("layer"))
-		{
-			const char* tmp = smElem->Attribute("shadername");
-			std::string shadername;
-			int areaId(0);
-			if (tmp) {
-				//make sure it's not added yet
-				if (!mManager.getDefinitionForShader(tmp)) {
+			for (TiXmlElement* smElem = layersElem->FirstChildElement("layer");
+				 smElem != nullptr; smElem = smElem->NextSiblingElement("layer")) {
+				const char* tmp = smElem->Attribute("shadername");
+				std::string shadername;
+				int areaId(0);
+				if (tmp) {
 					shadername = tmp;
+					//make sure it's not added yet
+//					if (!mManager.getDefinitionForShader(tmp)) {
+//					}
+				} else {
+					smElem->QueryIntAttribute("areaindex", &areaId);
+					//make sure it's not added yet
+//					if (mManager.getDefinitionForArea(areaId)) {
+//						areaId = 0;
+//					}
 				}
-			} else {
-				smElem->QueryIntAttribute("areaindex", &areaId);
-				//make sure it's not added yet
-				if (mManager.getDefinitionForArea(areaId)) {
-					areaId = 0;
-				}
-			}
 
-			if (shadername != "" || areaId != 0) {
-				//make sure that there's no preexisting shader defined
-				S_LOG_VERBOSE("Adding terrain layer definition for shader '" << shadername << "' and area index '"<< areaId << "'.");
-				try {
-					TerrainLayerDefinition* definition = new TerrainLayerDefinition();
-					definition->setShaderName(shadername);
-					definition->setAreaId(static_cast<unsigned int>(areaId));
+				if (!shadername.empty() || areaId != 0) {
+					//make sure that there's no preexisting shader defined
+					S_LOG_VERBOSE("Adding terrain layer definition for shader '" << shadername << "' and area index '" << areaId << "'.");
+					try {
+						TerrainLayerDefinition definition{};
+						definition.index = definitions.size();
+						definition.mShaderName = shadername;
+						definition.mAreaId = static_cast<unsigned int>(areaId);
 
-					definition->setName(smElem->Attribute("name"));
-					definition->setDiffuseTextureName(smElem->Attribute("diffusetexture"));
-					definition->setNormalMapTextureName(smElem->Attribute("normalmaptexture"));
-					float tileSize;
-					if (smElem->QueryFloatAttribute("tilesize", &tileSize) == TIXML_SUCCESS) {
-						definition->setTileSize(tileSize);
-					}
-
-					for (TiXmlElement* foliageElem = smElem->FirstChildElement("foliage");
-							foliageElem != 0; foliageElem = foliageElem->NextSiblingElement("foliage"))
-					{
-						TerrainFoliageDefinition foliageDef;
-						foliageDef.setPlantType(foliageElem->Attribute("planttype"));
-						foliageDef.setPopulationTechnique(foliageElem->Attribute("populationtechnique"));
-						foliageDef.setRenderTechnique(foliageElem->Attribute("rendertechnique"));
-						for (TiXmlElement* paramElem = foliageElem->FirstChildElement("param");
-								paramElem != 0; paramElem = paramElem->NextSiblingElement())
-						{
-							tmp = paramElem->Attribute("key");
-							if (tmp) {
-								foliageDef.getParameters().insert(TerrainLayerDefinition::StringParamStore::value_type(tmp, paramElem->GetText()));
-							}
+						definition.mName = smElem->Attribute("name");
+						definition.mDiffuseTextureName = smElem->Attribute("diffusetexture");
+						definition.mNormalMapTextureName  = smElem->Attribute("normalmaptexture");
+						float tileSize;
+						if (smElem->QueryFloatAttribute("tilesize", &tileSize) == TIXML_SUCCESS) {
+							definition.mTileSize = tileSize;
 						}
-						definition->getFoliages().push_back(foliageDef);
-					}
 
-					mManager.addDefinition(definition);
-				} catch (const std::exception& ex) {
-					S_LOG_FAILURE("Error when reading terrain layer definition." << ex);
-				} catch (...) {
-					S_LOG_FAILURE("Error when reading terrain layer definition.");
+						for (TiXmlElement* foliageElem = smElem->FirstChildElement("foliage");
+							 foliageElem != nullptr; foliageElem = foliageElem->NextSiblingElement("foliage")) {
+							TerrainFoliageDefinition foliageDef;
+							foliageDef.mPlantType = foliageElem->Attribute("planttype");
+							foliageDef.mPopulationTechnique = foliageElem->Attribute("populationtechnique");
+							foliageDef.mRenderTechnique = foliageElem->Attribute("rendertechnique");
+							for (TiXmlElement* paramElem = foliageElem->FirstChildElement("param");
+								 paramElem != nullptr; paramElem = paramElem->NextSiblingElement()) {
+								tmp = paramElem->Attribute("key");
+								if (tmp) {
+									foliageDef.mParameters.emplace(tmp, paramElem->GetText());
+								}
+							}
+							definition.mFoliages.emplace_back(std::move(foliageDef));
+						}
+
+						definitions.emplace_back(std::move(definition));
+					} catch (const std::exception& ex) {
+						S_LOG_FAILURE("Error when reading terrain layer definition." << ex);
+					} catch (...) {
+						S_LOG_FAILURE("Error when reading terrain layer definition.");
+					}
 				}
 			}
 		}
 	}
+	return definitions;
+
 }
 }
 

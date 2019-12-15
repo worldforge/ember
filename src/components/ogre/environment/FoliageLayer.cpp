@@ -82,7 +82,7 @@ unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float den
 		isAvailable = true;
 		return (unsigned int) (mLatestPlantsResult->getStore().size() * densityFactor);
 	} else {
-		PlantAreaQuery query{*mTerrainLayerDefinition, mFoliageDefinition->getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
+		PlantAreaQuery query{*mTerrainLayerDefinition, mFoliageDefinition->mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLayer::plantQueryExecuted);
 
 		mTerrainManager->getPlantsForArea(query, slot);

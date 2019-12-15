@@ -38,46 +38,29 @@ namespace Terrain {
 
 
 TerrainLayerDefinitionManager::TerrainLayerDefinitionManager() {
-	mLoadOrder = 310.0f;
-	mResourceType = "TerrainLayerDefinition";
-
-	mScriptPatterns.emplace_back("*.terrain");
-// 	mScriptPatterns.push_back("*.modelmap.xml");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
-	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 }
-
 
 TerrainLayerDefinitionManager::~TerrainLayerDefinitionManager() {
 	mDefinitions.clear();
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
-	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 }
 
 void TerrainLayerDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) {
-	XMLLayerDefinitionSerializer serializer(*this);
-	serializer.parseScript(stream, groupName);
+	XMLLayerDefinitionSerializer serializer;
+	mDefinitions = serializer.parseScript(stream);
 }
 
-void TerrainLayerDefinitionManager::addDefinition(TerrainLayerDefinition* definition) {
-	mDefinitions.emplace_back(definition);
-}
 
-const TerrainLayerDefinitionManager::DefinitionStore& TerrainLayerDefinitionManager::getDefinitions() const {
+const std::vector<TerrainLayerDefinition>& TerrainLayerDefinitionManager::getDefinitions() const {
 	return mDefinitions;
-}
-
-Ogre::Resource* TerrainLayerDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
-														  const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
-														  const Ogre::NameValuePairList* createParams) {
-	return nullptr;
 }
 
 TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(unsigned int areaIndex) {
 	for (auto& definition : mDefinitions) {
-		if (definition->getAreaId() == areaIndex) {
-			return definition.get();
+		if (definition.mAreaId == areaIndex) {
+			return &definition;
 		}
 	}
 	return nullptr;
@@ -85,8 +68,8 @@ TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(unsi
 
 TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForShader(const std::string& shaderType) {
 	for (auto& definition : mDefinitions) {
-		if (definition->getShaderName() == shaderType) {
-			return definition.get();
+		if (definition.mShaderName == shaderType) {
+			return &definition;
 		}
 	}
 	return nullptr;
@@ -127,15 +110,23 @@ void TerrainLayerDefinitionManager::resolveTextureReferences() {
 	};
 
 	for (auto& def : mDefinitions) {
-		if (!def->getDiffuseTextureName().empty()) {
-			def->setDiffuseTextureName(resolveTextureFn(def->getDiffuseTextureName()));
+		if (!def.mDiffuseTextureName.empty()) {
+			def.mDiffuseTextureName = resolveTextureFn(def.mDiffuseTextureName);
 		}
-		if (!def->getNormalMapTextureName().empty()) {
-			def->setNormalMapTextureName(resolveTextureFn(def->getNormalMapTextureName()));
+		if (!def.mNormalMapTextureName.empty()) {
+			def.mNormalMapTextureName = resolveTextureFn(def.mNormalMapTextureName);
 		}
 	}
 }
 
+const Ogre::StringVector& TerrainLayerDefinitionManager::getScriptPatterns() const {
+	static Ogre::StringVector patterns{"*.terrain", "*.terrain.xml"};
+	return patterns;
+}
+
+Ogre::Real TerrainLayerDefinitionManager::getLoadingOrder() const {
+	return 310;
+}
 
 }
 

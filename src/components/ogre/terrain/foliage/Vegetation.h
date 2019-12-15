@@ -20,7 +20,7 @@ namespace OgreView
 
 namespace Terrain
 {
-class TerrainFoliageDefinition;
+struct TerrainFoliageDefinition;
 class PlantAreaQueryResult;
 
 

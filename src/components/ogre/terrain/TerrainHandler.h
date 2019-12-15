@@ -69,7 +69,7 @@ class TerrainArea;
 
 class TerrainMod;
 
-class TerrainLayerDefinition;
+struct TerrainLayerDefinition;
 
 class TerrainPageSurfaceLayer;
 

@@ -36,7 +36,7 @@ namespace OgreView {
 
 namespace Terrain {
 
-class TerrainLayerDefinition;
+struct TerrainLayerDefinition;
 
 struct PlantAreaQuery {
 	const TerrainLayerDefinition& mLayerDef;

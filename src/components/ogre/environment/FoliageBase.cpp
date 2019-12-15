@@ -46,12 +46,11 @@ namespace OgreView {
 namespace Environment {
 
 FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager,
-						 const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
-						 const Terrain::TerrainFoliageDefinition& foliageDefinition)
+						 Terrain::TerrainLayerDefinition terrainLayerDefinition,
+						 Terrain::TerrainFoliageDefinition foliageDefinition)
 		: mTerrainManager(terrainManager),
-		  mTerrainLayerDefinition(terrainLayerDefinition),
-		  mFoliageDefinition(foliageDefinition) {
-	initializeDependentLayers();
+		  mTerrainLayerDefinition(std::move(terrainLayerDefinition)),
+		  mFoliageDefinition(std::move(foliageDefinition)) {
 
 	mTerrainManager.getHandler().EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_LayerUpdated));
 	mTerrainManager.getHandler().EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_EventShaderCreated));
@@ -62,28 +61,13 @@ FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager,
 
 FoliageBase::~FoliageBase() = default;
 
-void FoliageBase::initializeDependentLayers() {
-	bool foundLayer = false;
-	for (auto& definition : TerrainLayerDefinitionManager::getSingleton().getDefinitions()) {
-
-		if (foundLayer) {
-			mDependentDefinitions.push_back(definition.get());
-		} else if (!foundLayer && definition.get() == &mTerrainLayerDefinition) {
-			foundLayer = true;
-		}
-	}
-}
 
 void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const AreaStore& areas) {
 	if (mPagedGeometry) {
 		//check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
 		bool isRelevant = false;
-		if (&shader->getLayerDefinition() == &mTerrainLayerDefinition) {
+		if (shader->getLayerDefinition().index >= mTerrainLayerDefinition.index) {
 			isRelevant = true;
-		} else {
-			if (std::find(mDependentDefinitions.begin(), mDependentDefinitions.end(), &shader->getLayerDefinition()) != mDependentDefinitions.end()) {
-				isRelevant = true;
-			}
 		}
 		if (isRelevant) {
 			for (const auto& area : areas) {
@@ -96,7 +80,6 @@ void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shad
 
 void FoliageBase::TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader) {
 	//we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
-	mDependentDefinitions.push_back(&shader.getLayerDefinition());
 	if (mPagedGeometry) {
 		mPagedGeometry->reloadGeometry();
 	}

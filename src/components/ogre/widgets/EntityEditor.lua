@@ -489,14 +489,15 @@ EntityEditor = {
 
 				--fill the area adapter with suggested areas, which we get from the terrain layer definitions
 				local layerDefinitions = Ember.OgreView.Terrain.TerrainLayerDefinitionManager:getSingleton():getDefinitions()
-				for index,value in layerDefinitions:ipairs() do
-					if value:getAreaId() ~= 0 then
-						local name = value:getName()
+                for i = 0, layerDefinitions:size() - 1 do
+                    local value = layerDefinitions[i]
+					if value.mAreaId ~= 0 then
+						local name = value.mName
 						--fall back to the area id if there's no name given
 						if name == "" then
-							name = value:getAreaId()
+							name = value.mAreaId
 						end
-						wrapper.adapter:addAreaSuggestion(value:getAreaId(), name)
+						wrapper.adapter:addAreaSuggestion(value.mAreaId, name)
 					end
 				end
 				return wrapper

@@ -33,43 +33,38 @@ namespace OgreView {
 
 namespace Terrain {
 
-class TerrainLayerDefinition;
+struct TerrainLayerDefinition;
+
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class TerrainLayerDefinitionManager : public Ogre::ResourceManager, public Singleton<TerrainLayerDefinitionManager>
-{
+class TerrainLayerDefinitionManager : public Ogre::ScriptLoader, public Singleton<TerrainLayerDefinitionManager> {
 public:
-	typedef std::vector<std::unique_ptr<TerrainLayerDefinition>> DefinitionStore;
-    TerrainLayerDefinitionManager();
+	TerrainLayerDefinitionManager();
 
 	~TerrainLayerDefinitionManager() override;
 
-	void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName) override;
+	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) override;
 
-    /**
-    Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
-    @param definition A valid definition.
-    */
-    void addDefinition(TerrainLayerDefinition* definition);
-    
-    const DefinitionStore& getDefinitions() const;
-    
-    TerrainLayerDefinition* getDefinitionForArea(unsigned int areaIndex);
-    TerrainLayerDefinition* getDefinitionForShader(const std::string& shaderType);
+	const Ogre::StringVector& getScriptPatterns() const override;
+
+	Ogre::Real getLoadingOrder() const override;
+
+	const std::vector<TerrainLayerDefinition>& getDefinitions() const;
+
+	TerrainLayerDefinition* getDefinitionForArea(unsigned int areaIndex);
+
+	TerrainLayerDefinition* getDefinitionForShader(const std::string& shaderType);
 
 	/**
 	 * Call this right after all resources have been setup.
 	 * It will go through all textures and make sure that they refer to either .dds or .png versions, whatever is available.
 	 */
 	void resolveTextureReferences();
-    
+
 protected:
-	DefinitionStore mDefinitions;
-	
-	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, 
-    	const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
-    	const Ogre::NameValuePairList* createParams) override;
+	std::vector<TerrainLayerDefinition> mDefinitions;
+
 };
 
 }

@@ -38,61 +38,45 @@
 
 using namespace Ember::OgreView::Terrain;
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Environment
-{
+namespace Environment {
 
 Foliage::Foliage(Terrain::TerrainManager& terrainManager) :
-	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager)
-{
+		ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager) {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-Foliage::~Foliage()
-{
+Foliage::~Foliage() {
 	S_LOG_INFO("Shutting down foliage system.");
-	
-	for (auto& foliage : mFoliages) {
-		delete foliage;
-	}
 
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-void Foliage::initialize()
-{
+void Foliage::initialize() {
 	S_LOG_INFO("Initializing foliage system.");
 	for (auto& layerDef : TerrainLayerDefinitionManager::getSingleton().getDefinitions()) {
-		for (auto& foliage : layerDef->getFoliages()) {
-			FoliageBase* foliageBase = nullptr;
+		for (auto& foliage : layerDef.mFoliages) {
+			std::unique_ptr<FoliageBase> foliageBase;
 			try {
-				if (foliage.getRenderTechnique() == "grass") {
-					foliageBase = new GrassFoliage(mTerrainManager, *layerDef, foliage);
-				} else if (foliage.getRenderTechnique() == "shrubbery") {
-					foliageBase = new ShrubberyFoliage(mTerrainManager, *layerDef, foliage);
+				if (foliage.mRenderTechnique == "grass") {
+					foliageBase = std::make_unique<GrassFoliage>(mTerrainManager, layerDef, foliage);
+				} else if (foliage.mRenderTechnique == "shrubbery") {
+					foliageBase = std::make_unique<ShrubberyFoliage>(mTerrainManager, layerDef, foliage);
 				}
 				if (foliageBase) {
 					foliageBase->initialize();
-					mFoliages.push_back(foliageBase);
+					mFoliages.emplace_back(std::move(foliageBase));
 				}
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when creating foliage." << ex);
-				try {
-					delete foliageBase;
-				} catch (const std::exception& innerEx) {
-					S_LOG_FAILURE("Even got an error when deleting the foliage, things could get ugly from here on." << innerEx);
-				}
 			}
 		}
 	}
 }
 
-void Foliage::runCommand(const std::string &command, const std::string &args)
-{
+void Foliage::runCommand(const std::string& command, const std::string& args) {
 	if (ReloadFoliage == command) {
 		Tokeniser tokeniser(args);
 		std::string xString = tokeniser.nextToken();
@@ -102,15 +86,13 @@ void Foliage::runCommand(const std::string &command, const std::string &args)
 	}
 }
 
-void Foliage::reloadAtPosition(const WFMath::Point<2>& worldPosition)
-{
+void Foliage::reloadAtPosition(const WFMath::Point<2>& worldPosition) {
 	for (auto& foliage : mFoliages) {
 		foliage->reloadAtPosition(worldPosition);
 	}
 }
 
-bool Foliage::frameStarted(const Ogre::FrameEvent&)
-{
+bool Foliage::frameStarted(const Ogre::FrameEvent&) {
 	for (auto& foliage : mFoliages) {
 		foliage->frameStarted();
 	}
@@ -118,15 +100,13 @@ bool Foliage::frameStarted(const Ogre::FrameEvent&)
 	return true;
 }
 
-void Foliage::setDensity(float newDensity)
-{
+void Foliage::setDensity(float newDensity) {
 	for (auto& foliage : mFoliages) {
 		foliage->setDensity(newDensity);
 	}
 }
 
-void Foliage::setFarDistance(float newFarDistance)
-{
+void Foliage::setFarDistance(float newFarDistance) {
 	for (auto& foliage : mFoliages) {
 		foliage->setFarDistance(newFarDistance);
 	}

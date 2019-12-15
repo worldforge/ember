@@ -33,87 +33,42 @@ namespace OgreView {
 
 namespace Terrain {
 
-class TerrainFoliageDefinition;
+struct TerrainFoliageDefinition {
+	std::map<std::string, std::string> mParameters;
+	std::string mPlantType;
+	std::string mPopulationTechnique;
+	std::string mRenderTechnique;
+
+	const std::string& getParameter(const std::string& key) const {
+		static std::string empty;
+		auto I = mParameters.find(key);
+		if (I != mParameters.end()) {
+			return I->second;
+		}
+		return empty;
+	}
+
+	bool hasParameter(const std::string& key) const {
+		return mParameters.find(key) != mParameters.end();
+	}
+};
 
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class TerrainLayerDefinition {
-public:
-	typedef std::map<std::string, std::string> StringParamStore;
-	typedef std::vector<TerrainFoliageDefinition> TerrainFoliageDefinitionStore;
-    
-    TerrainLayerDefinition();
-
-    ~TerrainLayerDefinition() = default;
-    
-    /**
-     * @brief Sets a descriptive name for the layer.
-     * @param name A descriptive name.
-     */
-    void setName(const std::string& name);
-    
-    /**
-     * @brief Gets the descriptive name for the layer.
-     * @return The descriptive name.
-     */
-    const std::string& getName() const;
-    
-    void setAreaId(unsigned int areaId);
-    unsigned int getAreaId() const;
-    
-    void setDiffuseTextureName(const std::string& textureName);
-    const std::string& getDiffuseTextureName() const;
-    
-    void setNormalMapTextureName(const std::string& textureName);
-    const std::string& getNormalMapTextureName() const;
-    
-    void setShaderName(const std::string& shaderName);
-    const std::string& getShaderName() const;
-    
-    void setTileSize(float tileSize);
-    float getTileSize() const;
-
-	const TerrainFoliageDefinitionStore& getFoliages() const;
-	TerrainFoliageDefinitionStore& getFoliages();
-	
-
-protected:
-
+struct TerrainLayerDefinition {
+	size_t index;
 	unsigned int mAreaId;
 	std::string mName;
 	std::string mDiffuseTextureName;
 	std::string mNormalMapTextureName;
 	std::string mShaderName;
 	float mTileSize;
-	
-	TerrainFoliageDefinitionStore mFoliages;
+
+	std::vector<TerrainFoliageDefinition> mFoliages;
 
 };
 
-class TerrainFoliageDefinition
-{
-public:
-	const TerrainLayerDefinition::StringParamStore& getParameters() const;
-	TerrainLayerDefinition::StringParamStore& getParameters();
-	const std::string& getParameter(const std::string& key) const;
-	bool hasParameter(const std::string& key) const;
-
-	void setPlantType(const std::string& theValue);
-	const std::string& getPlantType() const;
-
-	void setPopulationTechnique (const std::string& theValue);
-	const std::string& getPopulationTechnique() const;
-	
-	void setRenderTechnique (const std::string& theValue);
-	const std::string& getRenderTechnique() const;
-	
-protected:
-	TerrainLayerDefinition::StringParamStore mParameters;
-	std::string mPlantType;
-	std::string mPopulationTechnique;
-	std::string mRenderTechnique;
-};
 
 }
 

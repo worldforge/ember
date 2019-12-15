@@ -115,10 +115,10 @@ void TerrainPage::addShader(const TerrainShader* shader) {
 		auto& layer = I->second;
 		auto& definition = shader->getLayerDefinition();
 
-		layer->setDiffuseTextureName(definition.getDiffuseTextureName());
-		layer->setNormalTextureName(definition.getNormalMapTextureName());
+		layer->setDiffuseTextureName(definition.mDiffuseTextureName);
+		layer->setNormalTextureName(definition.mNormalMapTextureName);
 		//get the scale by dividing the total size of the page with the size of each tile
-		float scale = getBlendMapSize() / definition.getTileSize();
+		float scale = getBlendMapSize() / definition.mTileSize;
 		layer->setScale(scale);
 	}
 }

@@ -44,7 +44,7 @@ namespace OgreView {
 namespace Terrain {
 
 class TerrainPageSurface;
-class TerrainLayerDefinition;
+struct TerrainLayerDefinition;
 class TerrainPageGeometry;
 class Image;
 
