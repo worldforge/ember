@@ -45,7 +45,7 @@ EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm,
 		mMaterialGenerator(materialGenerator) {
 
 	//Setting this to 65 makes the terrain system use much less batches, which is good for modern GPUs.
-	getDefaultImportSettings().minBatchSize = 65;
+	mDefaultImportData.minBatchSize = 65;
 }
 
 EmberTerrainGroup::~EmberTerrainGroup() {

@@ -31,29 +31,26 @@
 
 #define EMBER_OGRE_TERRAIN_HALF_RANGE 0x7FFF
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
-OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
+OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, int terrainPageSize) :
 		mLoadRadius(300),
 		mHoldRadius(mLoadRadius * 2),
 		mSceneManager(sceneManager),
-		mMaterialGenerator(OGRE_NEW OgreTerrainMaterialGeneratorEmber()),
-		mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
-		mPageManager(OGRE_NEW Ogre::PageManager()),
-		mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)),
+		mTerrainPageSize(terrainPageSize),
+		mMaterialGenerator(new OgreTerrainMaterialGeneratorEmber()),
+		mTerrainGlobalOptions(new Ogre::TerrainGlobalOptions()),
+		mPageManager(new Ogre::PageManager()),
+		mTerrainPaging(new Ogre::TerrainPaging(mPageManager.get())),
 		mPagedWorld(nullptr),
 		mTerrainPagedWorldSection(nullptr),
-		mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, terrainPageSize, mTerrainShownSignal, mMaterialGenerator)),
+		mTerrainGroup(new EmberTerrainGroup(&sceneManager, terrainPageSize, mTerrainShownSignal, mMaterialGenerator)),
 		mPageDataProvider(nullptr),
 		mMaterialProfile(nullptr),
-		mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager)),
-		mEntity(nullptr)
-{
+		mPageStrategy(new CameraFocusedGrid2DPageStrategy(mPageManager.get())),
+		mEntity(nullptr) {
 
 	// Other params
 	mTerrainGlobalOptions->setSkirtSize(1.0f);
@@ -62,38 +59,29 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 	mTerrainGlobalOptions->setCompositeMapSize(512);
 	mTerrainGlobalOptions->setDefaultMaterialGenerator(mMaterialGenerator);
 
-	setPageSize(terrainPageSize);
+	setOgrePageSize(terrainPageSize);
 
 	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
 	mPageManager->setPageProvider(&mTerrainPageProvider);
 
 	//This will overwrite the default 2Dgrid strategy with our own, which loads pages close to the camera first.
-	mPageManager->addStrategy(mPageStrategy);
+	mPageManager->addStrategy(mPageStrategy.get());
 
 }
 
-OgreTerrainAdapter::~OgreTerrainAdapter()
-{
+OgreTerrainAdapter::~OgreTerrainAdapter() {
 	//Need to remove all cameras, since this isn't done by the PageManager itself.
 	for (auto currentCamera : mPageManager->getCameraList()) {
 		mPageManager->removeCamera(currentCamera);
 	}
-
-	OGRE_DELETE mTerrainPaging;
 	mPageManager->destroyWorld(mPagedWorld);
-	OGRE_DELETE mPageManager;
-	OGRE_DELETE mTerrainGlobalOptions;
-	OGRE_DELETE mPageStrategy;
-	OGRE_DELETE mMaterialProfile;
 }
 
-unsigned int OgreTerrainAdapter::getPageSize()
-{
-	return static_cast<unsigned int>(mTerrainGroup->getTerrainSize());
+int OgreTerrainAdapter::getPageSize() {
+	return mTerrainGroup->getTerrainSize();
 }
 
-void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
-{
+void OgreTerrainAdapter::setOgrePageSize(int pageSize) {
 	if (mTerrainPagedWorldSection) {
 		mTerrainPagedWorldSection->removeAllPages();
 	}
@@ -112,8 +100,13 @@ void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
 	}
 }
 
-void OgreTerrainAdapter::setLoadRadius(Ogre::Real loadRadius)
-{
+
+void OgreTerrainAdapter::setPageSize(int pageSize) {
+	setOgrePageSize(pageSize);
+
+}
+
+void OgreTerrainAdapter::setLoadRadius(Ogre::Real loadRadius) {
 	mLoadRadius = loadRadius;
 	mHoldRadius = mLoadRadius * 2;
 	if (mTerrainPagedWorldSection) {
@@ -122,15 +115,13 @@ void OgreTerrainAdapter::setLoadRadius(Ogre::Real loadRadius)
 	}
 }
 
-bool OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z, float& height)
-{
+bool OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z, float& height) {
 	Ogre::Terrain* foundTerrain = nullptr;
 	height = mTerrainGroup->getHeightAtWorldPosition(x, 0.0, z, &foundTerrain);
 	return foundTerrain != nullptr;
 }
 
-void OgreTerrainAdapter::setCamera(Ogre::Camera* camera)
-{
+void OgreTerrainAdapter::setCamera(Ogre::Camera* camera) {
 	if (!mPageManager->hasCamera(camera)) {
 		// For now, we want only one camera to affect paging
 		for (auto currentCamera : mPageManager->getCameraList()) {
@@ -140,34 +131,39 @@ void OgreTerrainAdapter::setCamera(Ogre::Camera* camera)
 	}
 }
 
-void OgreTerrainAdapter::loadScene()
-{
+void OgreTerrainAdapter::loadScene() {
 	mPagedWorld = mPageManager->createWorld();
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
 																   -EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE,
 																   EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE,
 																   "", 0);
-	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(*mPageDataProvider));
+	mTerrainPagedWorldSection->setDefiner(OGRE_NEW OgreTerrainDefiner(*mPageDataProvider)); //ownership is passed
 }
 
-void OgreTerrainAdapter::reset()
-{
-	if (mTerrainPagedWorldSection) {
-		mTerrainPagedWorldSection->removeAllPages();
-	}
+void OgreTerrainAdapter::reset() {
 	mTerrainGroup->removeAllTerrains();
+
+	if (mTerrainPagedWorldSection) {
+		mPagedWorld->destroySection(mTerrainPagedWorldSection);
+		mTerrainPagedWorldSection = nullptr;
+		mTerrainGroup = new EmberTerrainGroup(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mMaterialGenerator);
+		setOgrePageSize(mTerrainPageSize);
+		mTerrainGroup->setPageDataProvider(mPageDataProvider);
+	}
+//	if (mPagedWorld) {
+//		mPageManager->destroyWorld(mPagedWorld);
+//		mPagedWorld = nullptr;
+//	}
 }
 
 
-void OgreTerrainAdapter::reloadAllPages()
-{
+void OgreTerrainAdapter::reloadAllPages() {
 	if (mTerrainPagedWorldSection) {
 		mTerrainPagedWorldSection->removeAllPages();
 	}
 }
 
-void OgreTerrainAdapter::reloadPage(const TerrainIndex& index)
-{
+void OgreTerrainAdapter::reloadPage(const TerrainIndex& index) {
 	if (mTerrainPagedWorldSection) {
 		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
 		if (page && !page->isDerivedDataUpdateInProgress()) {
@@ -177,10 +173,9 @@ void OgreTerrainAdapter::reloadPage(const TerrainIndex& index)
 	}
 }
 
-void OgreTerrainAdapter::reloadPageMaterial(const TerrainIndex& index)
-{
+void OgreTerrainAdapter::reloadPageMaterial(const TerrainIndex& index) {
 	if (mTerrainGroup) {
-		EmberTerrain* page = dynamic_cast<EmberTerrain*>(mTerrainGroup->getTerrain(index.first, index.second));
+		auto* page = dynamic_cast<EmberTerrain*>(mTerrainGroup->getTerrain(index.first, index.second));
 		if (page) {
 			//We must tell the page what area needs updating. For now we'll update the whole page.
 			//But we should really look into only updating the area that has changed.
@@ -191,40 +186,28 @@ void OgreTerrainAdapter::reloadPageMaterial(const TerrainIndex& index)
 	}
 }
 
-std::string OgreTerrainAdapter::getDebugInfo()
-{
+std::string OgreTerrainAdapter::getDebugInfo() {
 	return "Not available";
 }
 
-ITerrainObserver* OgreTerrainAdapter::createObserver()
-{
-	return new OgreTerrainObserver(mTerrainGroup->EventTerrainAreaUpdated);
+std::unique_ptr<ITerrainObserver> OgreTerrainAdapter::createObserver() {
+	return std::make_unique<OgreTerrainObserver>(mTerrainGroup->EventTerrainAreaUpdated);
 }
 
-void OgreTerrainAdapter::destroyObserver(ITerrainObserver* observer)
-{
-	// Will only delete the observer if it was of the right type
-	OgreTerrainObserver* ogreTerrainObserver = dynamic_cast<OgreTerrainObserver*>(observer);
-	delete ogreTerrainObserver;
-}
-
-std::pair<EmberEntity*, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const
-{
+std::pair<EmberEntity*, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const {
 	Ogre::TerrainGroup::RayResult result = mTerrainGroup->rayIntersects(ray, mHoldRadius + mTerrainGroup->getTerrainWorldSize());
 	return std::make_pair(result.hit ? mEntity : nullptr, result.position);
 }
 
-void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider)
-{
+void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider) {
 	mPageDataProvider = pageDataProvider;
 	auto materialGenerator = mTerrainGlobalOptions->getDefaultMaterialGenerator();
-	mMaterialProfile = OGRE_NEW EmberTerrainProfile(*mPageDataProvider, materialGenerator.get());
-	materialGenerator->setActiveProfile(mMaterialProfile);
+	mMaterialProfile = std::make_unique<EmberTerrainProfile>(*mPageDataProvider, materialGenerator.get());
+	materialGenerator->setActiveProfile(mMaterialProfile.get());
 	mTerrainGroup->setPageDataProvider(pageDataProvider);
 }
 
-sigc::connection OgreTerrainAdapter::bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal)
-{
+sigc::connection OgreTerrainAdapter::bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal) {
 	return mTerrainShownSignal.connect(signal);
 }
 

@@ -111,7 +111,7 @@ public:
 	 * @param scene The world scene.
 	 * @param shaderManager The shader manager.
 	 */
-	TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService);
+	TerrainManager(std::unique_ptr<ITerrainAdapter> adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService);
 
 	/**
 	 * @brief Dtor.

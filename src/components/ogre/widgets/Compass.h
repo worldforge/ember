@@ -139,15 +139,10 @@ protected:
 	ICompassImpl* mCompassImpl;
 
 	/**
-	 * @brief A terrain adapter, from which we'll obtain a terrain observer.
-	 */
-	Terrain::ITerrainAdapter& mTerrainAdapter;
-
-	/**
 	 * @brief A terrain observer, which observes when parts of the terrain is shown.
 	 * @see terrainObserver_AreaShown
 	 */
-	Terrain::ITerrainObserver* mTerrainObserver;
+	std::unique_ptr<Terrain::ITerrainObserver> mTerrainObserver;
 
 	DelayedCompassRenderer mDelayedRenderer;
 

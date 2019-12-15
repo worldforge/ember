@@ -47,7 +47,7 @@ void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain)
 	terrain->_setNormalMapRequired(true);
 	terrain->_setLightMapRequired(false, false);
 
-	EmberTerrain* emberTerrain = dynamic_cast<EmberTerrain*>(terrain);
+	auto* emberTerrain = dynamic_cast<EmberTerrain*>(terrain);
 
 	// Allocate in main thread so no race conditions
 	std::unique_ptr<IPageData> pageData = mDataProvider.getPageData(emberTerrain->getIndex());
@@ -60,7 +60,7 @@ void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain)
 
 Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain)
 {
-	const EmberTerrain* emberTerrain = dynamic_cast<const EmberTerrain*>(terrain);
+	const auto* emberTerrain = dynamic_cast<const EmberTerrain*>(terrain);
 
 	const auto& index = emberTerrain->getIndex();
 
@@ -97,7 +97,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain)
 
 Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terrain* terrain)
 {
-	const EmberTerrain* emberTerrain = static_cast<const EmberTerrain*>(terrain);
+	const auto* emberTerrain = static_cast<const EmberTerrain*>(terrain);
 
 	const auto& index = emberTerrain->getIndex();
 

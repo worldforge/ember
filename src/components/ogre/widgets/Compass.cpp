@@ -43,27 +43,21 @@
 
 using namespace Ember::OgreView::Terrain;
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
 DelayedCompassRenderer::DelayedCompassRenderer(Compass& compass) :
-		mCompass(compass), mRenderNextFrame(false)
-{
+		mCompass(compass), mRenderNextFrame(false) {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-DelayedCompassRenderer::~DelayedCompassRenderer()
-{
+DelayedCompassRenderer::~DelayedCompassRenderer() {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-bool DelayedCompassRenderer::frameStarted(const Ogre::FrameEvent& event)
-{
+bool DelayedCompassRenderer::frameStarted(const Ogre::FrameEvent& event) {
 	if (mRenderNextFrame) {
 		try {
 			mRenderNextFrame = false;
@@ -76,18 +70,15 @@ bool DelayedCompassRenderer::frameStarted(const Ogre::FrameEvent& event)
 	return true;
 }
 
-void DelayedCompassRenderer::queueRendering()
-{
+void DelayedCompassRenderer::queueRendering() {
 	mRenderNextFrame = true;
 }
 
 Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& terrainAdapter) :
 		mMap(new Map(sceneManager)),
 		mCompassImpl(compassImpl),
-		mTerrainAdapter(terrainAdapter),
 		mTerrainObserver(terrainAdapter.createObserver()),
-		mDelayedRenderer(*this)
-{
+		mDelayedRenderer(*this) {
 	mMap->initialize();
 	if (compassImpl) {
 		compassImpl->setCompass(this);
@@ -97,71 +88,57 @@ Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Te
 	mTerrainObserver->EventAreaShown.connect(sigc::mem_fun(*this, &Compass::terrainObserver_AreaShown));
 }
 
-Compass::~Compass()
-{
-	mTerrainAdapter.destroyObserver(mTerrainObserver);
-}
+Compass::~Compass() = default;
 
-Terrain::Map& Compass::getMap()
-{
+Terrain::Map& Compass::getMap() {
 	return *mMap;
 }
 
-void Compass::reposition(float x, float y)
-{
+void Compass::reposition(float x, float y) {
 	if (mCompassImpl) {
 		mCompassImpl->reposition(x, y);
 	}
 }
 
-void Compass::rotate(const Ogre::Degree& degree)
-{
+void Compass::rotate(const Ogre::Degree& degree) {
 	if (mCompassImpl) {
 		mCompassImpl->rotate(degree);
 	}
 }
 
 //Note: duplicate method to make it easier for scripts interacting with the code
-void Compass::rotate(const Ogre::Radian& radian)
-{
+void Compass::rotate(const Ogre::Radian& radian) {
 	rotate(Ogre::Degree(radian));
 }
 
-void Compass::refresh()
-{
+void Compass::refresh() {
 	if (mCompassImpl) {
 		mCompassImpl->refresh();
 	}
 }
 
-void Compass::terrainObserver_AreaShown()
-{
+void Compass::terrainObserver_AreaShown() {
 	queueRefresh();
 }
 
-void Compass::queueRefresh()
-{
+void Compass::queueRefresh() {
 	mDelayedRenderer.queueRendering();
 }
 
-void Compass::mapView_BoundsChanged()
-{
+void Compass::mapView_BoundsChanged() {
 	updateTerrainObserver();
 }
 
-void Compass::updateTerrainObserver()
-{
+void Compass::updateTerrainObserver() {
 	mTerrainObserver->observeArea(mMap->getView().getFullBounds());
 }
 
 ICompassImpl::ICompassImpl() :
 		mMap(nullptr),
-		mCompass(nullptr)
-{
+		mCompass(nullptr) {
 }
 
-void ICompassImpl::setCompass(Compass* compass)
-{
+void ICompassImpl::setCompass(Compass* compass) {
 	mCompass = compass;
 	mMap = &compass->getMap();
 	_setCompass(compass);
@@ -177,15 +154,13 @@ RenderedCompassImpl::RenderedCompassImpl(CEGUI::Window* pointerElement, std::str
 		mY(0),
 		mMapRectangle(nullptr),
 		mPointerElement(pointerElement),
-		mMaterialName(std::move(compassMaterialName))
-{
-    //Make sure we create the most simple scene manager.
+		mMaterialName(std::move(compassMaterialName)) {
+	//Make sure we create the most simple scene manager.
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "RenderedCompassImpl_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0, 0, 0, 0), 0.0f, 0.0f, 0.0f);
 }
 
-RenderedCompassImpl::~RenderedCompassImpl()
-{
+RenderedCompassImpl::~RenderedCompassImpl() {
 	//We should probably not do this ourselves, since it will corrupt the material.
 	if (mTexture) {
 		Ogre::TextureManager::getSingleton().remove(mTexture->getHandle());
@@ -204,8 +179,7 @@ RenderedCompassImpl::~RenderedCompassImpl()
 
 }
 
-void RenderedCompassImpl::reposition(float x, float y)
-{
+void RenderedCompassImpl::reposition(float x, float y) {
 	mMap->getView().reposition(Ogre::Vector2(x, y));
 
 	if (mCompassMaterialMapTUS) {
@@ -222,20 +196,17 @@ void RenderedCompassImpl::reposition(float x, float y)
 	mY = y;
 }
 
-void RenderedCompassImpl::rotate(const Ogre::Degree& degree)
-{
+void RenderedCompassImpl::rotate(const Ogre::Degree& degree) {
 	auto rotation = CEGUI::Quaternion::axisAngleDegrees(CEGUI::Vector3f(0, 0, 1), degree.valueDegrees() + 45.0f);
 
 	mPointerElement->setRotation(rotation);
 }
 
-void RenderedCompassImpl::refresh()
-{
+void RenderedCompassImpl::refresh() {
 	reposition(mX, mY);
 }
 
-void RenderedCompassImpl::_setCompass(Compass* compass)
-{
+void RenderedCompassImpl::_setCompass(Compass* compass) {
 	Ogre::MaterialPtr originalMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(mMaterialName));
 	if (originalMaterial) {
 		originalMaterial->load();
@@ -291,26 +262,22 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 	S_LOG_WARNING("Could not load material '" << mMaterialName << "' for the compass.");
 }
 
-Ogre::TexturePtr RenderedCompassImpl::getTexture() const
-{
+Ogre::TexturePtr RenderedCompassImpl::getTexture() const {
 	return mTexture;
 }
 
 
 CompassAnchor::CompassAnchor(Compass& compass, const Ogre::Vector3& position, const Ogre::Quaternion& orientation) :
-		mCompass(compass), mPreviousX(0), mPreviousZ(0), mPosition(position), mOrientation(orientation)
-{
+		mCompass(compass), mPreviousX(0), mPreviousZ(0), mPosition(position), mOrientation(orientation) {
 	// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
-CompassAnchor::~CompassAnchor()
-{
+CompassAnchor::~CompassAnchor() {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-bool CompassAnchor::frameStarted(const Ogre::FrameEvent& event)
-{
+bool CompassAnchor::frameStarted(const Ogre::FrameEvent& event) {
 	mCompass.rotate(-mOrientation.getYaw());
 	if (mPosition.x != mPreviousX || mPosition.z != mPreviousZ) {
 		mCompass.reposition(mPosition.x, mPosition.z);
@@ -321,18 +288,15 @@ bool CompassAnchor::frameStarted(const Ogre::FrameEvent& event)
 }
 
 CompassCameraAnchor::CompassCameraAnchor(Compass& compass, Ogre::Camera* camera) :
-		mAnchor(compass, camera->getDerivedPosition(), camera->getDerivedOrientation()), mCamera(camera)
-{
+		mAnchor(compass, camera->getDerivedPosition(), camera->getDerivedOrientation()), mCamera(camera) {
 }
 
 CompassSceneNodeAnchor::CompassSceneNodeAnchor(Compass& compass, Ogre::SceneNode* sceneNode) :
-		mAnchor(compass, sceneNode->_getDerivedPosition(), sceneNode->_getDerivedOrientation()), mSceneNode(sceneNode)
-{
+		mAnchor(compass, sceneNode->_getDerivedPosition(), sceneNode->_getDerivedOrientation()), mSceneNode(sceneNode) {
 }
 
 CompassThirdPersonCameraAnchor::CompassThirdPersonCameraAnchor(Compass& compass, Ogre::Camera* camera, Ogre::SceneNode* sceneNode) :
-		mAnchor(compass, sceneNode->_getDerivedPosition(), camera->getDerivedOrientation()), mCamera(camera), mSceneNode(sceneNode)
-{
+		mAnchor(compass, sceneNode->_getDerivedPosition(), camera->getDerivedOrientation()), mCamera(camera), mSceneNode(sceneNode) {
 }
 
 }

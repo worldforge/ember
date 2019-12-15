@@ -24,25 +24,29 @@
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainHandler;
+
 class TerrainPage;
+
 class ITerrainPageBridge;
 
 class HeightMapBufferProvider;
+
 class HeightMap;
 
-class TerrainPageCreationTask : public Tasks::TemplateNamedTask<TerrainPageCreationTask>
-{
+class TerrainPageCreationTask : public Tasks::TemplateNamedTask<TerrainPageCreationTask> {
 public:
-	TerrainPageCreationTask(TerrainHandler& handler, TerrainPage* page, const std::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
+	TerrainPageCreationTask(TerrainHandler& handler, TerrainPage* page,
+							std::shared_ptr<ITerrainPageBridge> bridge,
+							HeightMapBufferProvider& heightMapBufferProvider,
+							HeightMap& heightMap,
+							const WFMath::Vector<3>& mainLightDirection);
+
 	~TerrainPageCreationTask() override = default;
 
 	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;

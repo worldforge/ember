@@ -23,31 +23,25 @@
 
 #include "framework/TimedLog.h"
 
-#include <mutex> 
+#include <mutex>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 OgreTerrainDefiner::OgreTerrainDefiner(IPageDataProvider& provider)
-:
-		mProvider(provider)
-{
+		: mProvider(provider) {
 }
 
 
-void OgreTerrainDefiner::define(Ogre::TerrainGroup* terrainGroup, long x, long y)
-{
+void OgreTerrainDefiner::define(Ogre::TerrainGroup* terrainGroup, long x, long y) {
 	std::stringstream ss;
 	ss << "OgreTerrainDefiner::define page x: " << x << " y: " << y;
 	Ember::TimedLog timedLog(ss.str());
-	OgreTerrainPageBridge* bridge = new OgreTerrainPageBridge(*terrainGroup, OgreTerrainPageBridge::IndexType(x, y));
+	auto bridge = std::make_shared<OgreTerrainPageBridge>(*terrainGroup, OgreTerrainPageBridge::IndexType(x, y));
 	//TODO SK: fix ogre index types to be uniform
 	mProvider.setUpTerrainPageAtIndex(IPageDataProvider::OgreIndex(x, y), bridge);
-	
+
 	// Wait until the terrain page has finished loading
 	std::unique_lock<std::mutex> lock(bridge->mMutex);
 	bridge->mConditionVariable.wait(lock);

@@ -32,31 +32,21 @@
 #include <OgreRoot.h>
 
 
-
-
-namespace Ember
-{
-namespace OgreView
-{
-
+namespace Ember {
+namespace OgreView {
 
 
 Scene::Scene() :
-		mSceneManager(nullptr),
-		mMainCamera(nullptr),
-		mBulletWorld(new BulletWorld())
-{
-	//The default scene manager actually provides better performance in our benchmarks than the Octree SceneManager
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "World");
-
+		//The default scene manager actually provides better performance in our benchmarks than the Octree SceneManager
+		mSceneManager(Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "World")),
+		//create the main camera, we will of course have a couple of different cameras, but this will be the main one
+		mMainCamera(mSceneManager->createCamera("MainCamera")),
+		mBulletWorld(new BulletWorld()) {
 	S_LOG_INFO("Using SceneManager: " << mSceneManager->getTypeName());
 
-	//create the main camera, we will of course have a couple of different cameras, but this will be the main one
-	mMainCamera = mSceneManager->createCamera("MainCamera");
 }
 
-Scene::~Scene()
-{
+Scene::~Scene() {
 	if (!mTechniques.empty()) {
 		S_LOG_WARNING("Scene was deleted while there still was registered techniques.");
 	}
@@ -66,37 +56,32 @@ Scene::~Scene()
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
 
-Ogre::SceneManager& Scene::getSceneManager() const
-{
+Ogre::SceneManager& Scene::getSceneManager() const {
 	assert(mSceneManager);
 	return *mSceneManager;
 }
 
-void Scene::registerEntityWithTechnique(EmberEntity& entity, const std::string& technique)
-{
+void Scene::registerEntityWithTechnique(EmberEntity& entity, const std::string& technique) {
 	auto I = mTechniques.find(technique);
 	if (I != mTechniques.end()) {
 		I->second->registerEntity(entity);
 	}
 }
 
-void Scene::deregisterEntityWithTechnique(EmberEntity& entity, const std::string& technique)
-{
+void Scene::deregisterEntityWithTechnique(EmberEntity& entity, const std::string& technique) {
 	auto I = mTechniques.find(technique);
 	if (I != mTechniques.end()) {
 		I->second->deregisterEntity(entity);
 	}
 }
 
-void Scene::addRenderingTechnique(const std::string& name, std::unique_ptr<ISceneRenderingTechnique> technique)
-{
+void Scene::addRenderingTechnique(const std::string& name, std::unique_ptr<ISceneRenderingTechnique> technique) {
 	if (mTechniques.count(name) == 0) {
 		mTechniques.emplace(name, std::move(technique));
 	}
 }
 
-std::unique_ptr<ISceneRenderingTechnique> Scene::removeRenderingTechnique(const std::string& name)
-{
+std::unique_ptr<ISceneRenderingTechnique> Scene::removeRenderingTechnique(const std::string& name) {
 	auto I = mTechniques.find(name);
 	if (I != mTechniques.end()) {
 		auto technique = std::move(I->second);
@@ -106,8 +91,7 @@ std::unique_ptr<ISceneRenderingTechnique> Scene::removeRenderingTechnique(const 
 	return nullptr;
 }
 
-Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
-{
+std::unique_ptr<Terrain::ITerrainAdapter> Scene::createTerrainAdapter() {
 	ConfigService& configService = EmberServices::getSingleton().getConfigService();
 	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
 
@@ -118,11 +102,10 @@ Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 
 	assert(mSceneManager);
 	assert(mMainCamera);
-	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera, pageSize);
+	return std::make_unique<Terrain::OgreTerrainAdapter>(*mSceneManager, mMainCamera, pageSize);
 }
 
-Ogre::Camera& Scene::getMainCamera() const
-{
+Ogre::Camera& Scene::getMainCamera() const {
 	assert(mMainCamera);
 	return *mMainCamera;
 }

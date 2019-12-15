@@ -59,7 +59,7 @@ struct IPageDataProvider
 	typedef std::pair<long, long> OgreIndex;
 	virtual std::unique_ptr<IPageData> getPageData(const OgreIndex& index) = 0;
 	virtual int getPageIndexSize() const = 0;
-	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, ::Ember::OgreView::Terrain::ITerrainPageBridge* bridge) = 0;
+	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, std::shared_ptr<::Ember::OgreView::Terrain::ITerrainPageBridge> bridge) = 0;
 	virtual void removeBridge(const OgreIndex& ogreIndexPosition) = 0;
 };
 
@@ -92,7 +92,7 @@ public:
 
 	std::unique_ptr<IPageData> getPageData(const OgreIndex& ogreIndexPosition) override;
 	int getPageIndexSize() const override;
-	void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge) override;
+	void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, std::shared_ptr<Terrain::ITerrainPageBridge> bridge) override;
 	void removeBridge(const OgreIndex& ogreIndexPosition) override;
 
 protected:

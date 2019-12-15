@@ -51,6 +51,7 @@ namespace Terrain
 struct ITerrainObserver
 {
 
+	virtual ~ITerrainObserver() = default;
 	/**
 	 * @brief Instructs the observer to observe a certain area.
 	 * @param area The area to observe.
@@ -67,17 +68,6 @@ struct ITerrainObserver
 	 * @brief Emitted when a piece of the area being observed is shown.
 	 */
 	sigc::signal<void> EventAreaShown;
-
-protected:
-
-	/**
-	 * @brief Dtor.
-	 *
-	 * Made protected to prevent abstract instances from being deleted.
-	 */
-	virtual ~ITerrainObserver()
-	{
-	}
 
 };
 }

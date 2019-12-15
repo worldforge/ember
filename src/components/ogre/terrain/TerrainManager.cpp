@@ -56,24 +56,20 @@
 #include <utility>
 
 using namespace Ogre;
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 
-TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService) :
-	mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())),
-	mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
-	mIsFoliageShown(false),
-	mTerrainAdapter(adapter),
-	mFoliageBatchSize(32),
-	mVegetation(new Foliage::Vegetation()),
-	mScene(scene),
-	mIsInitialized(false)
-{
+TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService) :
+		mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())),
+		mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
+		mIsFoliageShown(false),
+		mTerrainAdapter(std::move(adapter)),
+		mFoliageBatchSize(32),
+		mVegetation(new Foliage::Vegetation()),
+		mScene(scene),
+		mIsInitialized(false) {
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
 	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique), false);
 	registerConfigListener("terrain", "pagesize", sigc::mem_fun(*this, &TerrainManager::config_TerrainPageSize), false);
@@ -87,58 +83,52 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 	mHandler->EventTerrainMaterialRecompiled.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_TerrainPageMaterialRecompiled));
 
 	sigc::slot<void, const Ogre::TRect<Ogre::Real>> slot = sigc::mem_fun(*this, &TerrainManager::adapter_terrainShown);
-	adapter->bindTerrainShown(slot);
+	mTerrainAdapter->bindTerrainShown(slot);
 
 	mHandler->setPageSize(mTerrainAdapter->getPageSize());
 	mHandler->updateAllPages();
 
-	mHandler->EventTerrainEnabled.connect([&](EmberEntity& entity){ mTerrainAdapter->setTerrainEntity(&entity);});
+	mHandler->EventTerrainEnabled.connect([&](EmberEntity& entity) { mTerrainAdapter->setTerrainEntity(&entity); });
+	mHandler->EventTerrainDisabled.connect([&]() { mTerrainAdapter->reset(); });
 }
 
-TerrainManager::~TerrainManager()
-{
+TerrainManager::~TerrainManager() {
+	//Reset adapter before shutting down handler.
 	mTerrainAdapter->reset();
 
 	//We must make sure that any tasks are purged in the handler before we destroy the terrain adapter.
-    mHandler->shutdown();
+	mHandler->shutdown();
 }
 
-void TerrainManager::startPaging()
-{
+void TerrainManager::startPaging() {
 	//Setting the camera will start the paging system
 	mTerrainAdapter->setCamera(&getScene().getMainCamera());
 }
 
-bool TerrainManager::getHeight(const TerrainPosition& atPosition, float& height) const
-{
+bool TerrainManager::getHeight(const TerrainPosition& atPosition, float& height) const {
 	return mHandler->getHeight(atPosition, height);
 }
 
-void TerrainManager::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
-{
+void TerrainManager::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const {
 	mHandler->blitHeights(xMin, xMax, yMin, yMax, heights);
 }
 
 
-const TerrainInfo& TerrainManager::getTerrainInfo() const
-{
+const TerrainInfo& TerrainManager::getTerrainInfo() const {
 	return mHandler->getTerrainInfo();
 }
 
 
-ITerrainAdapter* TerrainManager::getTerrainAdapter() const
-{
+ITerrainAdapter* TerrainManager::getTerrainAdapter() const {
 	return mTerrainAdapter.get();
 }
 
-void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback)
-{
+void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&>& asyncCallback) {
 	mHandler->getBasePoints(asyncCallback);
 }
 
 
-void TerrainManager::updateFoliageVisibility()
-{
+void TerrainManager::updateFoliageVisibility() {
 	//	bool showFoliage = isFoliageShown();
 	//
 	//	PageVector::iterator I = mPages.begin();
@@ -153,8 +143,7 @@ void TerrainManager::updateFoliageVisibility()
 	//	}
 }
 
-void TerrainManager::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void TerrainManager::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_bool()) {
 		mIsFoliageShown = static_cast<bool> (variable);
 	} else {
@@ -163,14 +152,12 @@ void TerrainManager::config_Foliage(const std::string& section, const std::strin
 	updateFoliageVisibility();
 }
 
-void TerrainManager::config_TerrainTechnique(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void TerrainManager::config_TerrainTechnique(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	//TODO this is a bit crude and does more updates than necessary
 	mHandler->updateAllPages();
 }
 
-void TerrainManager::config_TerrainPageSize(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void TerrainManager::config_TerrainPageSize(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_int()) {
 		auto size = static_cast<unsigned int>(static_cast<int>(variable));
 		mTerrainAdapter->setPageSize(size);
@@ -179,16 +166,14 @@ void TerrainManager::config_TerrainPageSize(const std::string& section, const st
 	}
 }
 
-void TerrainManager::config_TerrainLoadRadius(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void TerrainManager::config_TerrainLoadRadius(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_int()) {
 		auto radius = static_cast<unsigned int>(static_cast<int>(variable));
 		mTerrainAdapter->setLoadRadius(Ogre::Real(radius));
 	}
 }
 
-void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages)
-{
+void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages) {
 
 	for (auto page : pages) {
 		const TerrainIndex& index = page->getWFIndex();
@@ -200,8 +185,7 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 }
 
 
-void TerrainManager::terrainHandler_ShaderCreated(const TerrainShader& shader)
-{
+void TerrainManager::terrainHandler_ShaderCreated(const TerrainShader& shader) {
 	size_t index = mHandler->getAllShaders().size() - 1;
 
 	const TerrainLayerDefinition& layerDef = shader.getLayerDefinition();
@@ -210,8 +194,7 @@ void TerrainManager::terrainHandler_ShaderCreated(const TerrainShader& shader)
 	}
 }
 
-void TerrainManager::terrainHandler_WorldSizeChanged()
-{
+void TerrainManager::terrainHandler_WorldSizeChanged() {
 	if (!mIsInitialized) {
 		initializeTerrain();
 		mIsInitialized = true;
@@ -219,51 +202,43 @@ void TerrainManager::terrainHandler_WorldSizeChanged()
 
 }
 
-void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* page)
-{
+void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* page) {
 	if (mTerrainAdapter) {
 		mTerrainAdapter->reloadPageMaterial(page->getWFIndex());
 	}
 }
 
-void TerrainManager::initializeTerrain()
-{
+void TerrainManager::initializeTerrain() {
 	assert(mTerrainAdapter);
 	mTerrainAdapter->loadScene();
 }
 
-bool TerrainManager::isFoliageShown() const
-{
+bool TerrainManager::isFoliageShown() const {
 	return mIsFoliageShown;
 }
 
-void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
-{
+void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) {
 	auto* populator = mVegetation->getPopulator(query.mPlantType);
 	if (populator) {
 		mHandler->getPlantsForArea(*populator, query, std::move(asyncCallback));
 	}
 }
 
-Scene& TerrainManager::getScene() const
-{
+Scene& TerrainManager::getScene() const {
 	return mScene;
 }
 
 
-void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
-{
+void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager) {
 	mHandler->updateAllPages();
 }
 
-TerrainHandler& TerrainManager::getHandler()
-{
+TerrainHandler& TerrainManager::getHandler() {
 	return *mHandler;
 }
 
 
-void TerrainManager::adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect)
-{
+void TerrainManager::adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect) {
 	std::vector<Ogre::TRect<Ogre::Real>> areas;
 	areas.push_back(rect);
 

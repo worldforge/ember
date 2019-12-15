@@ -97,7 +97,7 @@ public:
 	 * @brief Creates a terrain adapter which can be used to communicate with the terrain rendering system.
 	 * @return An instance of the terrain adapter
 	 */
-	Terrain::ITerrainAdapter* createTerrainAdapter();
+	std::unique_ptr<Terrain::ITerrainAdapter> createTerrainAdapter();
 
 	/**
 	 * @brief Gets the main camera of the scene.

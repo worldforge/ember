@@ -59,13 +59,13 @@ struct ITerrainAdapter
 	 *
 	 * @return The page size in indices.
 	 */
-	virtual unsigned int getPageSize() = 0;
+	virtual int getPageSize() = 0;
 
 	/**
 	 * @brief Sets the size of the width of one page. This must be a power of two and at least 64. Depending on the implementation, this might require a full reload.
 	 * @param size The number of vertices along one side of a page. Must be a power of two and at least 64.
 	 */
-	virtual void setPageSize(unsigned int size) = 0;
+	virtual void setPageSize(int size) = 0;
 
 	/**
 	 * @brief Sets the distance from the camera at which terrain pages are loaded.
@@ -134,13 +134,7 @@ struct ITerrainAdapter
 	 * @brief Creates a new terrain observer.
 	 * @return A new terrain observer.
 	 */
-	virtual ITerrainObserver* createObserver() = 0;
-
-	/**
-	 * @brief Destroys a terrain observer.
-	 * @param observer A terrain observer.
-	 */
-	virtual void destroyObserver(ITerrainObserver* observer) = 0;
+	virtual std::unique_ptr<ITerrainObserver> createObserver() = 0;
 
 	/**
 	 * Checks if the given ray intersects the terrain. Returns whether there was an intersection,

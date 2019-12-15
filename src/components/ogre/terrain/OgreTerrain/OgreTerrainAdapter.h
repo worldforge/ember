@@ -57,13 +57,13 @@ class CameraFocusedGrid2DPageStrategy;
  */
 class OgreTerrainAdapter : public ITerrainAdapter {
 public:
-	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize = 257);
+	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, int terrainPageSize = 257);
 
 	~OgreTerrainAdapter() override;
 
-	unsigned int getPageSize() override;
+	int getPageSize() override;
 
-	void setPageSize(unsigned int pageSize) override;
+	void setPageSize(int pageSize) override;
 
 	void setLoadRadius(Ogre::Real loadRadius) override;
 
@@ -86,9 +86,7 @@ public:
 	/**
 	 * @brief Currently setPageDataProvider MUST be called before this. Otherwise a nullptr will be returned.
 	 */
-	ITerrainObserver* createObserver() override;
-
-	void destroyObserver(ITerrainObserver* observer) override;
+	std::unique_ptr<ITerrainObserver> createObserver() override;
 
 	std::pair<EmberEntity*, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const override;
 
@@ -104,6 +102,8 @@ private:
 
 	Ogre::SceneManager& mSceneManager;
 
+	int mTerrainPageSize;
+
 	/**
 	 * @brief Signal emitted when a page has been shown for the first time.
 	 * The argument is the area (in world coordinates) that was shown.
@@ -111,9 +111,9 @@ private:
 	sigc::signal<void, const Ogre::TRect<Ogre::Real>> mTerrainShownSignal;
 
 	Ogre::TerrainMaterialGeneratorPtr mMaterialGenerator;
-	Ogre::TerrainGlobalOptions* mTerrainGlobalOptions;
-	Ogre::PageManager* mPageManager;
-	Ogre::TerrainPaging* mTerrainPaging;
+	std::unique_ptr<Ogre::TerrainGlobalOptions> mTerrainGlobalOptions;
+	std::unique_ptr<Ogre::PageManager> mPageManager;
+	std::unique_ptr<Ogre::TerrainPaging> mTerrainPaging;
 	Ogre::PagedWorld* mPagedWorld;
 	Ogre::TerrainPagedWorldSection* mTerrainPagedWorldSection;
 	OgreTerrainPageProvider mTerrainPageProvider;
@@ -121,9 +121,11 @@ private:
 	EmberTerrainGroup* mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
-	Ogre::TerrainMaterialGenerator::Profile* mMaterialProfile;
-	CameraFocusedGrid2DPageStrategy* mPageStrategy;
+	std::unique_ptr<Ogre::TerrainMaterialGenerator::Profile> mMaterialProfile;
+	std::unique_ptr<CameraFocusedGrid2DPageStrategy> mPageStrategy;
 	EmberEntity* mEntity;
+
+	void setOgrePageSize(int pageSize);
 };
 
 } /* namespace Terrain */

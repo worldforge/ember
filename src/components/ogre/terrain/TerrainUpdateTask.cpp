@@ -24,32 +24,36 @@
 #include <Mercator/Terrain.h>
 #include <OgreAxisAlignedBox.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+#include <utility>
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
 
-TerrainUpdateTask::TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainHandler& handler, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager) :
-	mTerrain(terrain), mTerrainPoints(terrainPoints), mTerrainHandler(handler), mTerrainInfo(terrainInfo), mHasTerrainInfo(hasTerrainInfo), mSegmentManager(segmentManager)
-{
+namespace Terrain {
 
+TerrainUpdateTask::TerrainUpdateTask(Mercator::Terrain& terrain,
+									 TerrainDefPointStore terrainPoints,
+									 TerrainHandler& handler,
+									 TerrainInfo& terrainInfo,
+									 bool& hasTerrainInfo,
+									 SegmentManager& segmentManager) :
+		mTerrain(terrain),
+		mTerrainPoints(std::move(terrainPoints)),
+		mTerrainHandler(handler),
+		mTerrainInfo(terrainInfo),
+		mHasTerrainInfo(hasTerrainInfo),
+		mSegmentManager(segmentManager) {
 }
 
-TerrainUpdateTask::~TerrainUpdateTask()
-{
-}
+TerrainUpdateTask::~TerrainUpdateTask() = default;
 
-void TerrainUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void TerrainUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	int terrainRes = mTerrain.getResolution();
-	for (TerrainDefPointStore::const_iterator I = mTerrainPoints.begin(); I != mTerrainPoints.end(); ++I) {
+	for (auto I = mTerrainPoints.begin(); I != mTerrainPoints.end(); ++I) {
 		Mercator::BasePoint bp;
 		const TerrainPosition& pos = I->position;
 		if (mTerrain.getBasePoint(static_cast<int> (pos.x()), static_cast<int> (pos.y()), bp) && (WFMath::Equal(I->height, bp.height()))
-				&& (WFMath::Equal(I->roughness, bp.roughness()) && (WFMath::Equal(I->falloff, bp.falloff())))) {
+			&& (WFMath::Equal(I->roughness, bp.roughness()) && (WFMath::Equal(I->falloff, bp.falloff())))) {
 			S_LOG_VERBOSE("Point [" << pos.x() << "," << pos.y() << "] unchanged");
 			continue;
 		} else {
@@ -62,14 +66,14 @@ void TerrainUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContex
 		// FIXME Sort out roughness and falloff, and generally verify this code is the same as that in Terrain layer
 		mTerrain.setBasePoint(static_cast<int> (pos.x()), static_cast<int> (pos.y()), bp);
 		mUpdatedBasePoints.push_back(UpdateBasePointStore::value_type(pos, bp));
-		mUpdatedPositions.push_back(TerrainPosition(pos.x() * terrainRes, pos.y() * terrainRes));
+		mUpdatedPositions.emplace_back(pos.x() * terrainRes, pos.y() * terrainRes);
 	}
 	mSegmentManager.syncWithTerrain();
 }
 
 bool TerrainUpdateTask::executeTaskInMainThread() {
-	for (UpdateBasePointStore::const_iterator I = mUpdatedBasePoints.begin(); I != mUpdatedBasePoints.end(); ++I) {
-		mTerrainInfo.setBasePoint(I->first, I->second);
+	for (const auto& updatedBasePoint : mUpdatedBasePoints) {
+		mTerrainInfo.setBasePoint(updatedBasePoint.first, updatedBasePoint.second);
 	}
 	mTerrainHandler.EventWorldSizeChanged.emit();
 

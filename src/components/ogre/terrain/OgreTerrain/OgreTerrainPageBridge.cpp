@@ -39,10 +39,7 @@ OgreTerrainPageBridge::OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, I
 
 }
 
-OgreTerrainPageBridge::~OgreTerrainPageBridge()
-{
-	mHeightData.reset();
-}
+OgreTerrainPageBridge::~OgreTerrainPageBridge() = default;
 
 void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 {

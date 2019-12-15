@@ -42,11 +42,6 @@ namespace Mercator
 class Segment;
 }
 
-namespace Ogre
-{
-class TerrainOptions;
-}
-
 namespace Ember
 {
 namespace OgreView
@@ -75,7 +70,6 @@ struct ICompilerTechniqueProvider;
  */
 class TerrainPage
 {
-	friend class TerrainPageShadow;
 public:
 
 	/**

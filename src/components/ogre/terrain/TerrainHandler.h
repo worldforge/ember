@@ -222,7 +222,7 @@ public:
 	 * @param index The index to create the new page on.
 	 * @param bridge The bridge to which will bind the page to a graphical representation. Ownership of this will be transferred.
 	 */
-	void setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge);
+	void setUpTerrainPageAtIndex(const TerrainIndex& index, std::shared_ptr<Terrain::ITerrainPageBridge> bridge);
 
 	/**
 	 * @brief Removes an already registered bridge at the specified index.

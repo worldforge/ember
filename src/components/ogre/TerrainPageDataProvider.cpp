@@ -22,25 +22,20 @@
 #include "components/ogre/terrain/TerrainPage.h"
 #include "Convert.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 TerrainPageData::TerrainPageData(Terrain::TerrainPage* page) :
-		mPage(page)
-{
+		mPage(page) {
 }
 
-Ogre::MaterialPtr TerrainPageData::getMaterial()
-{
+Ogre::MaterialPtr TerrainPageData::getMaterial() {
 	if (mPage) {
 		return mPage->getMaterial();
 	}
 	return Ogre::MaterialPtr();
 }
 
-Ogre::MaterialPtr TerrainPageData::getCompositeMapMaterial()
-{
+Ogre::MaterialPtr TerrainPageData::getCompositeMapMaterial() {
 	if (mPage) {
 		return mPage->getCompositeMapMaterial();
 	}
@@ -48,33 +43,28 @@ Ogre::MaterialPtr TerrainPageData::getCompositeMapMaterial()
 }
 
 TerrainPageDataProvider::TerrainPageDataProvider(Terrain::TerrainHandler& handler) :
-		mHandler(handler)
-{
+		mHandler(handler) {
 }
 
 
-std::unique_ptr<IPageData> TerrainPageDataProvider::getPageData(const OgreIndex& ogreIndexPosition)
-{
+std::unique_ptr<IPageData> TerrainPageDataProvider::getPageData(const OgreIndex& ogreIndexPosition) {
 	return std::unique_ptr<IPageData>(new TerrainPageData(mHandler.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition))));
 }
 
-int TerrainPageDataProvider::getPageIndexSize() const
-{
+int TerrainPageDataProvider::getPageIndexSize() const {
 	return mHandler.getPageIndexSize();
 }
-void TerrainPageDataProvider::setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge)
-{
-	mHandler.setUpTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition), bridge);
+
+void TerrainPageDataProvider::setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, std::shared_ptr<Terrain::ITerrainPageBridge> bridge) {
+	mHandler.setUpTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition), std::move(bridge));
 }
 
-void TerrainPageDataProvider::removeBridge(const OgreIndex& ogreIndexPosition)
-{
+void TerrainPageDataProvider::removeBridge(const OgreIndex& ogreIndexPosition) {
 	mHandler.removeBridge(convertToWFTerrainIndex(ogreIndexPosition));
 }
 
-TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition)
-{
-	return TerrainIndex(ogreIndexPosition.first, ogreIndexPosition.second);
+TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition) {
+	return {ogreIndexPosition.first, ogreIndexPosition.second};
 }
 
 }

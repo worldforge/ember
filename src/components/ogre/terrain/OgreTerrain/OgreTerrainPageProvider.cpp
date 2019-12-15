@@ -18,38 +18,27 @@
 
 #include "OgreTerrainPageProvider.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
-OgreTerrainPageProvider::OgreTerrainPageProvider()
-{
-}
+OgreTerrainPageProvider::OgreTerrainPageProvider() = default;
 
-OgreTerrainPageProvider::~OgreTerrainPageProvider()
-{
-}
+OgreTerrainPageProvider::~OgreTerrainPageProvider() = default;
 
-bool OgreTerrainPageProvider::prepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section)
-{
+bool OgreTerrainPageProvider::prepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section) {
 	return true;
 }
 
-bool OgreTerrainPageProvider::loadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section)
-{
+bool OgreTerrainPageProvider::loadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section) {
 	return true;
 }
 
-bool OgreTerrainPageProvider::unloadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section)
-{
+bool OgreTerrainPageProvider::unloadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section) {
 	return true;
 }
 
-bool OgreTerrainPageProvider::unprepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section)
-{
+bool OgreTerrainPageProvider::unprepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section) {
 	return true;
 }
 

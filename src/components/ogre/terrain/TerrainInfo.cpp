@@ -33,9 +33,15 @@ namespace Terrain {
 
 
 TerrainInfo::TerrainInfo(int pageIndicesSize)
-:  mXminBasePoint(-1), mXmaxBasePoint(1), mYminBasePoint(-1), mYmaxBasePoint(1),
-	 mXminBasePointAdjusted(0), mXmaxBasePointAdjusted(0), mYminBasePointAdjusted(0), mYmaxBasePointAdjusted(0), mPageIndicesSize(pageIndicesSize)
-{
+		: mXminBasePoint(-1),
+		  mXmaxBasePoint(1),
+		  mYminBasePoint(-1),
+		  mYmaxBasePoint(1),
+		  mXminBasePointAdjusted(0),
+		  mXmaxBasePointAdjusted(0),
+		  mYminBasePointAdjusted(0),
+		  mYmaxBasePointAdjusted(0),
+		  mPageIndicesSize(pageIndicesSize) {
 	adjustBasePointPositionDown(mXminBasePointAdjusted, mXminBasePoint);
 	adjustBasePointPositionUp(mXmaxBasePointAdjusted, mXmaxBasePoint);
 	adjustBasePointPositionDown(mYminBasePointAdjusted, mYminBasePoint);
@@ -44,8 +50,7 @@ TerrainInfo::TerrainInfo(int pageIndicesSize)
 }
 
 
-void TerrainInfo::setBasePoint(const WFMath::Point<2>& position, const Mercator::BasePoint& basepoint)
-{
+void TerrainInfo::setBasePoint(const WFMath::Point<2>& position, const Mercator::BasePoint& basepoint) {
 	mXminBasePoint = std::min<WFMath::CoordType>(position.x(), mXminBasePoint);
 	mXmaxBasePoint = std::max<WFMath::CoordType>(position.x(), mXmaxBasePoint);
 	mYminBasePoint = std::min<WFMath::CoordType>(position.y(), mYminBasePoint);
@@ -59,18 +64,25 @@ void TerrainInfo::setBasePoint(const WFMath::Point<2>& position, const Mercator:
 	recalculateSize();
 }
 
-void TerrainInfo::recalculateSize()
-{
-	mCalculatedSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted * 64, mYminBasePointAdjusted * 64), WFMath::Point<2>(mXmaxBasePointAdjusted * 64, mYmaxBasePointAdjusted * 64));
-	mCalculatedSegmentSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted, mYminBasePointAdjusted ), WFMath::Point<2>(mXmaxBasePointAdjusted , mYmaxBasePointAdjusted ));
+void TerrainInfo::recalculateSize() {
+	mCalculatedSize = WFMath::AxisBox<2>(
+			WFMath::Point<2>(mXminBasePointAdjusted * 64, mYminBasePointAdjusted * 64),
+			WFMath::Point<2>(mXmaxBasePointAdjusted * 64, mYmaxBasePointAdjusted * 64)
+	);
+	mCalculatedSegmentSize = WFMath::AxisBox<2>(
+			WFMath::Point<2>(mXminBasePointAdjusted, mYminBasePointAdjusted),
+			WFMath::Point<2>(mXmaxBasePointAdjusted, mYmaxBasePointAdjusted)
+	);
 
 	int mercatorSegmentsPerOgrePage = mPageIndicesSize / 64;
-	mCalculatedPageSize = WFMath::AxisBox<2>(WFMath::Point<2>(mXminBasePointAdjusted / mercatorSegmentsPerOgrePage, mYminBasePointAdjusted / mercatorSegmentsPerOgrePage), WFMath::Point<2>(mXmaxBasePointAdjusted / mercatorSegmentsPerOgrePage, mYmaxBasePointAdjusted / mercatorSegmentsPerOgrePage));
+	mCalculatedPageSize = WFMath::AxisBox<2>(
+			WFMath::Point<2>(mXminBasePointAdjusted / mercatorSegmentsPerOgrePage, mYminBasePointAdjusted / mercatorSegmentsPerOgrePage),
+			WFMath::Point<2>(mXmaxBasePointAdjusted / mercatorSegmentsPerOgrePage, mYmaxBasePointAdjusted / mercatorSegmentsPerOgrePage)
+	);
 }
 
 
-void TerrainInfo::adjustBasePointPositionUp(WFMath::CoordType& basePointPositionAdjusted, WFMath::CoordType newBasePointPosition)
-{
+void TerrainInfo::adjustBasePointPositionUp(WFMath::CoordType& basePointPositionAdjusted, WFMath::CoordType newBasePointPosition) {
 	int mercatorSegmentsPerOgrePage = mPageIndicesSize / 64;
 	int remainder = static_cast<int>(newBasePointPosition) % mercatorSegmentsPerOgrePage;
 	if (remainder != 0) {
@@ -81,8 +93,7 @@ void TerrainInfo::adjustBasePointPositionUp(WFMath::CoordType& basePointPosition
 	}
 }
 
-void TerrainInfo::adjustBasePointPositionDown(WFMath::CoordType& basePointPositionAdjusted, WFMath::CoordType newBasePointPosition)
-{
+void TerrainInfo::adjustBasePointPositionDown(WFMath::CoordType& basePointPositionAdjusted, WFMath::CoordType newBasePointPosition) {
 	int mercatorSegmentsPerOgrePage = mPageIndicesSize / 64;
 	//FIXME SK: when mPageIndicesSize == 0, this throws an arithmetic exception
 	int remainder = std::abs(static_cast<int>(newBasePointPosition) % mercatorSegmentsPerOgrePage);
@@ -94,53 +105,45 @@ void TerrainInfo::adjustBasePointPositionDown(WFMath::CoordType& basePointPositi
 	}
 }
 
-const WFMath::AxisBox<2>& TerrainInfo::getWorldSizeInSegments() const
-{
+const WFMath::AxisBox<2>& TerrainInfo::getWorldSizeInSegments() const {
 	return mCalculatedSegmentSize;
 }
 
 
-const WFMath::AxisBox<2>& TerrainInfo::getWorldSizeInIndices() const
-{
+const WFMath::AxisBox<2>& TerrainInfo::getWorldSizeInIndices() const {
 	return mCalculatedSize;
 }
 
-const WFMath::AxisBox<2>& TerrainInfo::getWorldSizeInPages() const
-{
+const WFMath::AxisBox<2>& TerrainInfo::getWorldSizeInPages() const {
 	return mCalculatedPageSize;
 }
 
 
-double TerrainInfo::getWorldSizeX() const
-{
+double TerrainInfo::getWorldSizeX() const {
 	return mCalculatedSize.highCorner().x() - mCalculatedSize.lowCorner().x();
 }
 
-double TerrainInfo::getWorldSizeY() const
-{
+double TerrainInfo::getWorldSizeY() const {
 	return mCalculatedSize.highCorner().y() - mCalculatedSize.lowCorner().y();
 }
 
-int TerrainInfo::getTotalNumberOfPagesX() const
-{
+int TerrainInfo::getTotalNumberOfPagesX() const {
 	return static_cast<int>(mCalculatedPageSize.highCorner().x() - mCalculatedPageSize.lowCorner().x());
 }
-int TerrainInfo::getTotalNumberOfPagesY() const
-{
+
+int TerrainInfo::getTotalNumberOfPagesY() const {
 	return static_cast<int>(mCalculatedPageSize.highCorner().y() - mCalculatedPageSize.lowCorner().y());
 }
 
-int TerrainInfo::getPageOffsetX() const
-{
+int TerrainInfo::getPageOffsetX() const {
 	return static_cast<int>(-mCalculatedPageSize.lowCorner().x());
 }
-int TerrainInfo::getPageOffsetY() const
-{
+
+int TerrainInfo::getPageOffsetY() const {
 	return static_cast<int>(-mCalculatedPageSize.lowCorner().y());
 }
 
-void TerrainInfo::setPageIndicesSize(int size)
-{
+void TerrainInfo::setPageIndicesSize(int size) {
 	mPageIndicesSize = size;
 }
 

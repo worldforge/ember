@@ -22,33 +22,37 @@
 #include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
 
-namespace Mercator
-{
+namespace Mercator {
 class Terrain;
+
 class BasePoint;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainHandler;
+
 class TerrainInfo;
+
 class SegmentManager;
 
-class TerrainUpdateTask : public Tasks::TemplateNamedTask<TerrainUpdateTask>
-{
+class TerrainUpdateTask : public Tasks::TemplateNamedTask<TerrainUpdateTask> {
 public:
-	TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainHandler& handler, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager);
-	virtual ~TerrainUpdateTask();
+	TerrainUpdateTask(Mercator::Terrain& terrain,
+					  TerrainDefPointStore terrainPoints,
+					  TerrainHandler& handler,
+					  TerrainInfo& terrainInfo,
+					  bool& hasTerrainInfo,
+					  SegmentManager& segmentManager);
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	~TerrainUpdateTask() override;
 
-	virtual bool executeTaskInMainThread();
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
+
+	bool executeTaskInMainThread() override;
 
 private:
 

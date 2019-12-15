@@ -366,21 +366,20 @@ TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& wor
 	return getTerrainPageAtIndex(TerrainIndex(xIndex, yIndex));
 }
 
-void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge) {
-	std::shared_ptr<ITerrainPageBridge> bridgePtr(bridge);
-	mEventService.runOnMainThread([this, index, bridgePtr]() {
+void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::shared_ptr<Terrain::ITerrainPageBridge> bridge) {
+	mEventService.runOnMainThread([this, index, bridge]() {
 		//_fpreset();
 
 		int x = index.first;
 		int y = index.second;
 
 		//Add to our store of page bridges
-		mPageBridges.insert(PageBridgeStore::value_type(index, bridgePtr));
+		mPageBridges.insert(PageBridgeStore::value_type(index, bridge));
 
 		S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 		if (mTerrainPages[x][y] == nullptr) {
 			auto page = new TerrainPage(index, getPageIndexSize(), getCompilerTechniqueProvider());
-			bridgePtr->bindToTerrainPage(page);
+			bridge->bindToTerrainPage(page);
 
 			mTerrainPages[x][y] = page;
 			mPages.emplace_back(page);
@@ -390,9 +389,9 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 			if (mLightning) {
 				sunDirection = mLightning->getMainLightDirection();
 			}
-			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageCreationTask>(*this, page, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
+			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageCreationTask>(*this, page, bridge, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
 				//We need to alert the bridge since it's holding up a thread waiting for this call.
-				bridgePtr->terrainPageReady();
+				bridge->terrainPageReady();
 			}
 		} else {
 			TerrainPage* page = mTerrainPages[x][y];
@@ -404,9 +403,9 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 				shaders.push_back(entry.second.get());
 			}
 
-			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this, bridgePtr, geometryInstance, std::move(shaders), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
+			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this, bridge, geometryInstance, std::move(shaders), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
 				//We need to alert the bridge since it's holding up a thread waiting for this call.
-				bridgePtr->terrainPageReady();
+				bridge->terrainPageReady();
 			}
 		}
 	});
