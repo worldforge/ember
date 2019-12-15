@@ -29,7 +29,7 @@
                         <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
                     </Window>
                 </Window>
-                <Window type="EmberLook/StaticText">
+                <Window name="RoughnessText" type="EmberLook/StaticText">
                     <Property name="Text" value="Roughness:" />
                     <Property name="Size" value="{{1,0},{0,25}}" />
                 </Window>
@@ -37,7 +37,7 @@
                     <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}" />
                     <Property name="TooltipText" value="Sets the roughness of the basepoint." />
                 </Window>
-                <Window type="EmberLook/StaticText">
+                <Window name="FalloffText" type="EmberLook/StaticText">
                     <Property name="Text" value="Falloff" />
                     <Property name="Size" value="{{1,0},{0,25}}" />
                 </Window>
