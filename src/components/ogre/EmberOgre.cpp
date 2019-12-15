@@ -505,7 +505,6 @@ void EmberOgre::preloadMedia() {
 }
 
 void EmberOgre::Server_GotView(Eris::View* view) {
-	view->getAvatar().getAccount().AvatarDeactivated.connect([this](const std::string& avatarId){ destroyWorld();});
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
@@ -554,6 +553,9 @@ AutomaticGraphicsLevelManager* EmberOgre::getAutomaticGraphicsLevelManager() con
 
 
 void EmberOgre::Application_ServicesInitialized() {
+	EmberServices::getSingleton().getServerService().GotAccount.connect([this](Eris::Account* account) {
+		account->AvatarDeactivated.connect([this](const std::string& avatarId) { destroyWorld(); });
+	});
 	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 
 	mSoundResourceProvider = std::make_unique<OgreResourceProvider>("General");
