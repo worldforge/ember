@@ -53,10 +53,10 @@ struct TerrainDefPoint;
 
 class TerrainEffectorListener;
 
-class TerrainEntityManager: public virtual sigc::trackable
-{
+class TerrainEntityManager: public virtual sigc::trackable {
 public:
 	TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager);
+
 	virtual ~TerrainEntityManager();
 
 private:
@@ -76,20 +76,27 @@ private:
 	AreaStore mAreas;
 
 	sigc::connection mTerrainEntityDeleteConnection;
+	sigc::connection mTerrainEntityVisibilityConnection;
 
 	void entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
+
 	void entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
+
 	void entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 
 	void entityBeingDeleted(EmberEntity& entity);
+
 	void entityMoved(EmberEntity& entity, Terrain::TerrainArea& terrainArea);
+
 	void entityModeChanged(EmberEntity& entity, Terrain::TerrainArea& terrainArea);
+
 	void entityModeChanged(EmberEntity& entity, Terrain::TerrainMod& terrainMod);
 
 	void topLevelEntityChanged();
 
-};
+	void parseTerrainAttribute(EmberEntity& entity, const Atlas::Message::Element& value);
 
+};
 }
 }
 #endif /* TERRAINENTITYMANAGER_H_ */

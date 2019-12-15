@@ -101,19 +101,12 @@ TerrainEntityManager::~TerrainEntityManager() {
 }
 
 void TerrainEntityManager::topLevelEntityChanged() {
-	auto entity = static_cast<EmberEntity*>(mView.getTopLevel());
+	auto entity = dynamic_cast<EmberEntity*>(mView.getTopLevel());
 	entity->setAttachment({});
 	entity->setAttachment(std::make_unique<WorldAttachment>(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId())));
 }
 
-void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
-	if (!mTerrainEntityDeleteConnection) {
-		mTerrainEntityDeleteConnection = entity.BeingDeleted.connect([this]() {
-			mTerrainHandler.EventTerrainDisabled();
-			mTerrainEntityDeleteConnection.disconnect();
-		});
-	}
-
+void TerrainEntityManager::parseTerrainAttribute(EmberEntity& entity, const Atlas::Message::Element& value) {
 	Terrain::TerrainShaderParser terrainShaderParser(mTerrainHandler);
 	terrainShaderParser.createShaders(value);
 	Terrain::TerrainParser terrainParser;
@@ -121,6 +114,30 @@ void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const A
 	mTerrainHandler.updateTerrain(terrainParser.parseTerrain(value, pos));
 	entity.setHeightProvider(&mTerrainHandler);
 	mTerrainHandler.EventTerrainEnabled(entity);
+}
+
+void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
+	if (!mTerrainEntityDeleteConnection) {
+		mTerrainEntityDeleteConnection = entity.BeingDeleted.connect([this]() {
+			mTerrainHandler.EventTerrainDisabled();
+			mTerrainEntityDeleteConnection.disconnect();
+			mTerrainEntityVisibilityConnection.disconnect();
+		});
+	}
+	if (!mTerrainEntityVisibilityConnection) {
+		mTerrainEntityVisibilityConnection = entity.VisibilityChanged.connect([this, &entity](bool visible) {
+			if (!visible) {
+				mTerrainHandler.EventTerrainDisabled();
+			} else {
+				parseTerrainAttribute(entity, entity.valueOfProperty("terrain"));
+			}
+		});
+	}
+
+	if (entity.isVisible()) {
+		parseTerrainAttribute(entity, value);
+	}
+
 }
 
 void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
