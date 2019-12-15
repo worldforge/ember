@@ -68,6 +68,7 @@
 #include <OgreViewport.h>
 
 #include <sigc++/bind.h>
+#include <memory>
 #include <utility>
 
 namespace Ember {
@@ -227,7 +228,7 @@ Eris::Calendar& World::getCalendar() const {
 }
 
 void World::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages) {
-	EmberEntity* emberEntity = static_cast<EmberEntity*>(mView.getTopLevel());
+	auto* emberEntity = static_cast<EmberEntity*>(mView.getTopLevel());
 	if (emberEntity) {
 		updateEntityPosition(emberEntity, areas);
 	}
@@ -236,24 +237,24 @@ void World::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<
 void World::updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2>>& areas) {
 	entity->adjustPosition();
 	for (size_t i = 0; i < entity->numContained(); ++i) {
-		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
+		auto* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
 		updateEntityPosition(containedEntity, areas);
 	}
 }
 
 void World::View_gotAvatarCharacter(Eris::Entity* entity) {
 	if (entity) {
-		EmberEntity& emberEntity = static_cast<EmberEntity&>(*entity);
+		auto& emberEntity = static_cast<EmberEntity&>(*entity);
 		//Set up the third person avatar camera and switch to it.
-		mAvatar.reset(new Avatar(mView.getAvatar(), emberEntity, *mScene, mMainCamera->getCameraSettings(), *(mTerrainManager->getTerrainAdapter())));
-		mAvatarCameraMotionHandler.reset(new AvatarCameraMotionHandler(*mAvatar));
+		mAvatar = std::make_unique<Avatar>(mView.getAvatar(), emberEntity, *mScene, mMainCamera->getCameraSettings(), *(mTerrainManager->getTerrainAdapter()));
+		mAvatarCameraMotionHandler = std::make_unique<AvatarCameraMotionHandler>(*mAvatar);
 		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler.get());
-		mMovementController.reset(new MovementController(*mAvatar, *mMainCamera, *mTerrainManager));
+		mMovementController = std::make_unique<MovementController>(*mAvatar, *mMainCamera, *mTerrainManager);
 		mMainCamera->setMovementProvider(mMovementController.get());
 		mMainCamera->attachToMount(&mAvatar->getCameraMount());
 
 		if (mAvatar->isAdmin()) {
-			mAvatarCameraWarper.reset(new AvatarCameraWarper(*mMovementController, *mMainCamera, mView));
+			mAvatarCameraWarper = std::make_unique<AvatarCameraWarper>(*mMovementController, *mMainCamera, mView);
 		}
 
 		emberEntity.BeingDeleted.connect(sigc::mem_fun(*this, &World::avatarEntity_BeingDeleted));
@@ -281,9 +282,9 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 	if (variable.is_bool() && static_cast<bool>(variable)) {
 		if (!mFoliage) {
 			//create the foliage
-			mFoliage.reset(new Environment::Foliage(*mTerrainManager));
+			mFoliage = std::make_unique<Environment::Foliage>(*mTerrainManager);
 			EventFoliageCreated.emit();
-			mFoliageInitializer.reset(new DelayedFoliageInitializer(sigc::bind(sigc::mem_fun(*this, &World::initializeFoliage), sigc::ref(graphicalChangeAdapter)), mView, 1000, 15000));
+			mFoliageInitializer = std::make_unique<DelayedFoliageInitializer>(sigc::bind(sigc::mem_fun(*this, &World::initializeFoliage), sigc::ref(graphicalChangeAdapter)), mView, 1000, 15000);
 		}
 	} else {
 		mFoliageDetailManager.reset();
@@ -295,7 +296,7 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter) {
 	if (mFoliage) {
 		mFoliage->initialize();
-		mFoliageDetailManager.reset(new Environment::FoliageDetailManager(*mFoliage, graphicalChangeAdapter));
+		mFoliageDetailManager = std::make_unique<Environment::FoliageDetailManager>(*mFoliage, graphicalChangeAdapter);
 		mFoliageDetailManager->initialize();
 	}
 }
