@@ -42,6 +42,11 @@
 #include "../Scene.h"
 #include "../Convert.h"
 
+#include "components/ogre/environment/Foliage.h"
+#include "components/ogre/environment/FoliageDetailManager.h"
+
+#include <Eris/View.h>
+
 #include <OgreRoot.h>
 #include <OgreGpuProgramManager.h>
 
@@ -54,6 +59,7 @@
 #include <sigc++/bind.h>
 
 #include <utility>
+#include <framework/MainLoopController.h>
 
 using namespace Ogre;
 namespace Ember {
@@ -61,7 +67,12 @@ namespace OgreView {
 namespace Terrain {
 
 
-TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService) :
+TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter,
+							   Scene& scene,
+							   Eris::View& view,
+							   ShaderManager& shaderManager,
+							   Eris::EventService& eventService,
+							   GraphicalChangeAdapter& graphicalChangeAdapter) :
 		mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())),
 		mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
 		mIsFoliageShown(false),
@@ -69,6 +80,8 @@ TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter, Scene& 
 		mFoliageBatchSize(32),
 		mVegetation(new Foliage::Vegetation()),
 		mScene(scene),
+		mGraphicalChangeAdapter(graphicalChangeAdapter),
+		mView(view),
 		mIsInitialized(false) {
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
 	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique), false);
@@ -88,8 +101,15 @@ TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter, Scene& 
 	mHandler->setPageSize(mTerrainAdapter->getPageSize());
 	mHandler->updateAllPages();
 
-	mHandler->EventTerrainEnabled.connect([&](EmberEntity& entity) { mTerrainAdapter->setTerrainEntity(&entity); });
-	mHandler->EventTerrainDisabled.connect([&]() { mTerrainAdapter->reset(); });
+	mHandler->EventTerrainEnabled.connect([&](EmberEntity& entity) {
+		mTerrainAdapter->setTerrainEntity(&entity);
+		updateFoliageVisibility();
+	});
+	mHandler->EventTerrainDisabled.connect([&]() {
+		mTerrainAdapter->reset();
+		mIsInitialized = false;
+		updateFoliageVisibility();
+	});
 }
 
 TerrainManager::~TerrainManager() {
@@ -129,18 +149,18 @@ void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, 
 
 
 void TerrainManager::updateFoliageVisibility() {
-	//	bool showFoliage = isFoliageShown();
-	//
-	//	PageVector::iterator I = mPages.begin();
-	//	for (; I != mPages.end(); ++I) {
-	//		if (showFoliage) {
-	//			PageVector pages;
-	//			pages.push_back(*I);
-	//			mTaskQueue->enqueueTask(new FoliagePreparationTask(pages));
-	//		} else {
-	//			//TODO: implement destruction of the foliage data
-	//		}
-	//	}
+	if (mIsFoliageShown && mIsInitialized) {
+		if (!mFoliage) {
+			//create the foliage
+			mFoliage = std::make_unique<Environment::Foliage>(*this);
+			EventFoliageCreated.emit();
+			mFoliageInitializer = std::make_unique<DelayedFoliageInitializer>([this]() { initializeFoliage(); }, mView, 1000, 15000);
+		}
+	} else {
+		mFoliageDetailManager.reset();
+		mFoliageInitializer.reset();
+		mFoliage.reset();
+	}
 }
 
 void TerrainManager::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable) {
@@ -198,6 +218,7 @@ void TerrainManager::terrainHandler_WorldSizeChanged() {
 	if (!mIsInitialized) {
 		initializeTerrain();
 		mIsInitialized = true;
+		updateFoliageVisibility();
 	}
 
 }
@@ -244,6 +265,40 @@ void TerrainManager::adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect) {
 
 	EventTerrainShown(areas);
 
+}
+
+
+void TerrainManager::initializeFoliage() {
+	if (mFoliage) {
+		mFoliage->initialize();
+		mFoliageDetailManager = std::make_unique<Environment::FoliageDetailManager>(*mFoliage, mGraphicalChangeAdapter);
+		mFoliageDetailManager->initialize();
+	}
+}
+
+DelayedFoliageInitializer::DelayedFoliageInitializer(std::function<void()> callback, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
+		mCallback(std::move(callback)),
+		mView(view),
+		mIntervalMs(intervalMs),
+		mMaxTimeMs(maxTimeMs),
+		mTimeout(new Eris::TimedEvent(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&]() { this->timout_Expired(); })),
+		mTotalElapsedTime(0) {
+	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
+	//the main reason is that new terrain areas will invalidate the foliage causing a reload
+	//by delaying the foliage we can thus in most cases avoid those reloads
+	//wait three seconds
+}
+
+DelayedFoliageInitializer::~DelayedFoliageInitializer() = default;
+
+void DelayedFoliageInitializer::timout_Expired() {
+	//load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
+	if (mView.lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
+		mCallback();
+	} else {
+		mTotalElapsedTime += mIntervalMs;
+		mTimeout = std::make_unique<Eris::TimedEvent>(mView.getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&]() { this->timout_Expired(); });
+	}
 }
 
 

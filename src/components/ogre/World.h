@@ -86,10 +86,6 @@ class EntityMoveManager;
 
 namespace Environment {
 class Environment;
-
-class Foliage;
-
-class FoliageDetailManager;
 }
 
 namespace Lod {
@@ -115,8 +111,6 @@ struct IPageDataProvider;
 class EntityWorldPickListener;
 
 class TerrainEntityManager;
-
-class DelayedFoliageInitializer;
 
 class ShaderManager;
 
@@ -236,12 +230,6 @@ public:
 	Environment::Environment* getEnvironment() const;
 
 	/**
-	 * @brief Gets the main Foliage object of the world. Note that the initialization of the foliage might be delayed.
-	 * @return A foliage object, or null if none created.
-	 */
-	Environment::Foliage* getFoliage() const;
-
-	/**
 	 * @brief Accessor for the terrain manager.
 	 * @returns The terrain manager.
 	 */
@@ -271,10 +259,6 @@ public:
 	 */
 	sigc::signal<void> EventGotAvatar;
 
-	/**
-	 * @brief Emitted when the foliage has been created.
-	 */
-	sigc::signal<void> EventFoliageCreated;
 
 protected:
 
@@ -379,21 +363,6 @@ protected:
 	std::unique_ptr<IPageDataProvider> mPageDataProvider;
 
 	/**
-	 * @brief The foliage system which provides different foliage functions.
-	 */
-	std::unique_ptr<Environment::Foliage> mFoliage;
-
-	/**
-	 * Utility object that can be used to manage detail level of foliage.
-	 */
-	std::unique_ptr<Environment::FoliageDetailManager> mFoliageDetailManager;
-
-	/**
-	 * @brief A foliage initializer which acts a bit delayed.
-	 */
-	std::unique_ptr<DelayedFoliageInitializer> mFoliageInitializer;
-
-	/**
 	 * @brief The main environment object. There should only be one in the system, and it's kept here.
 	 */
 	std::unique_ptr<Environment::Environment> mEnvironment;
@@ -445,64 +414,9 @@ protected:
 	 */
 	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2>>& areas);
 
-	/**
-	 * @brief Listen to changes the "graphics:foliage" config element, and create or destroy the foliage accordingly.
-	 * @param section
-	 * @param key
-	 * @param variable
-	 */
-	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, GraphicalChangeAdapter& graphicalChangeAdapter);
-
-	/**
-	 * @brief Initializes foliage.
-	 * @param graphicalChangeAdapter An adapter for graphical change events.
-	 */
-	void initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter);
 
 };
 
-/**
- @brief Allows for a delayed initialization of the foliage.
-
- The initialization will occur when either the sight queue is empty, or a certain time has elapsed.
- The main reason for doing this is that whenever a new area is added to the world, the foliage is invalidated and reloaded.
- As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.
- By delaying the loading of the foliage we can avoid this.
-
- @author Erik Ogenvik <erik@worldforge.org>
-
- */
-class DelayedFoliageInitializer {
-public:
-	/**
-	 * @brief Ctor.
-	 * @param callback The callback to call when the foliage should be initialized.
-	 * @param view The Eris::View object of the world. This will be used for querying about the size of the Sight queue.
-	 * @param intervalMs In milliseconds how often to check if the queue is empty or time has elapsed. Defaults to 1 second.
-	 * @param maxTimeMs In milliseconds the max time to wait until we initialize the foliage anyway.
-	 */
-	DelayedFoliageInitializer(sigc::slot<void> callback, Eris::View& view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
-
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~DelayedFoliageInitializer();
-
-protected:
-	sigc::slot<void> mCallback;
-	Eris::View& mView;
-	unsigned int mIntervalMs;
-	unsigned int mMaxTimeMs;
-
-	std::unique_ptr<Eris::TimedEvent> mTimeout;
-	unsigned int mTotalElapsedTime;
-
-	/**
-	 * @brief Called when the time out has expired. We'll check for if either the set max time has elapsed, or if there's no more entities in the sight queue, and if so initialize the foliage. If not we'll just extend the waiting time.
-	 */
-	void timout_Expired();
-
-};
 
 inline Authoring::EntityMoveManager& World::getMoveManager() const {
 	return *mMoveManager;

@@ -36,18 +36,26 @@
 #include <memory>
 
 namespace Ogre {
-	class TerrainOptions;
+class TerrainOptions;
 }
 
 namespace Mercator {
-	class Area;
-	class Terrain;
-	class Shader;
-	class TerrainMod;
-	class BasePoint;
+class Area;
+
+class Terrain;
+
+class Shader;
+
+class TerrainMod;
+
+class BasePoint;
 }
 
 namespace Eris {
+class View;
+
+class TimedEvent;
+
 class EventService;
 }
 
@@ -57,8 +65,20 @@ class TimeFrame;
 
 namespace OgreView {
 class ShaderManager;
+
 struct ILightning;
+
 class Scene;
+
+class GraphicalChangeAdapter;
+
+namespace Environment {
+class Environment;
+
+class Foliage;
+
+class FoliageDetailManager;
+}
 
 /**
  * @brief Namespace for all terrain related classes and activities.
@@ -66,19 +86,33 @@ class Scene;
 namespace Terrain {
 
 class TerrainShader;
+
 class TerrainInfo;
+
 class TerrainPage;
+
 class TerrainMod;
+
 struct TerrainLayerDefinition;
+
 class TerrainPageSurfaceLayer;
+
 struct ITerrainAdapter;
+
 class ITerrainPageBridge;
+
 class HeightMap;
+
 class HeightMapBufferProvider;
+
 struct TerrainDefPoint;
+
 class PlantAreaQuery;
+
 class PlantAreaQueryResult;
+
 class SegmentManager;
+
 class TerrainHandler;
 
 namespace Techniques {
@@ -88,6 +122,8 @@ class CompilerTechniqueProvider;
 namespace Foliage {
 class Vegetation;
 }
+
+class DelayedFoliageInitializer;
 
 /**
  * @brief Handles generation and updates of the terrain.
@@ -100,8 +136,7 @@ class Vegetation;
  */
 class TerrainManager : public virtual sigc::trackable,
 					   public ConfigListenerContainer,
-					   public Ember::IHeightProvider
-{
+					   public Ember::IHeightProvider {
 public:
 
 	/*
@@ -111,7 +146,12 @@ public:
 	 * @param scene The world scene.
 	 * @param shaderManager The shader manager.
 	 */
-	TerrainManager(std::unique_ptr<ITerrainAdapter> adapter, Scene& scene, ShaderManager& shaderManager, Eris::EventService& eventService);
+	TerrainManager(std::unique_ptr<ITerrainAdapter> adapter,
+				   Scene& scene,
+				   Eris::View& view,
+				   ShaderManager& shaderManager,
+				   Eris::EventService& eventService,
+				   GraphicalChangeAdapter& graphicalChangeAdapter);
 
 	/**
 	 * @brief Dtor.
@@ -157,14 +197,14 @@ public:
 	 */
 	bool getHeight(const TerrainPosition& atPosition, float& height) const override;
 
-    /**
-     * @brief Performs a fast copy of the raw height data for the supplied area.
-     * @param xMin Minimum x coord of the area.
-     * @param xMax Maximum x coord of the area.
-     * @param yMin Minimum y coord of the area.
-     * @param yMax Maximum y coord of the area.
-     * @param heights A vector into which heigh data will be placed. This should preferably already have a capacity reserved.
-     */
+	/**
+	 * @brief Performs a fast copy of the raw height data for the supplied area.
+	 * @param xMin Minimum x coord of the area.
+	 * @param xMax Maximum x coord of the area.
+	 * @param yMin Minimum y coord of the area.
+	 * @param yMax Maximum y coord of the area.
+	 * @param heights A vector into which heigh data will be placed. This should preferably already have a capacity reserved.
+	 */
 	void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const override;
 
 	/**
@@ -197,7 +237,7 @@ public:
 	 * The call to the callback will happen in the main thread.
 	 * @param asyncCallback The callback which will be called when all base points have been fetched.
 	 */
-	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback);
+	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&>& asyncCallback);
 
 	/**
 	 * @brief Starts the terrain paging.
@@ -222,6 +262,10 @@ public:
 	 */
 	sigc::signal<void, std::vector<Ogre::TRect<Ogre::Real>>> EventTerrainShown;
 
+	/**
+	 * @brief Emitted when the foliage has been created.
+	 */
+	sigc::signal<void> EventFoliageCreated;
 
 protected:
 
@@ -255,7 +299,25 @@ protected:
 	 */
 	Scene& mScene;
 
+	GraphicalChangeAdapter& mGraphicalChangeAdapter;
+	Eris::View& mView;
+
 	bool mIsInitialized;
+
+	/**
+	 * @brief The foliage system which provides different foliage functions.
+	 */
+	std::unique_ptr<Environment::Foliage> mFoliage;
+
+	/**
+	 * Utility object that can be used to manage detail level of foliage.
+	 */
+	std::unique_ptr<Environment::FoliageDetailManager> mFoliageDetailManager;
+
+	/**
+	 * @brief A foliage initializer which acts a bit delayed.
+	 */
+	std::unique_ptr<DelayedFoliageInitializer> mFoliageInitializer;
 
 	void initializeTerrain();
 
@@ -295,12 +357,61 @@ protected:
 	 */
 	void adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect);
 
+	/**
+	 * @brief Initializes foliage.
+	 * @param graphicalChangeAdapter An adapter for graphical change events.
+	 */
+	void initializeFoliage();
+
 };
 
-inline unsigned int TerrainManager::getFoliageBatchSize() const
-{
+inline unsigned int TerrainManager::getFoliageBatchSize() const {
 	return mFoliageBatchSize;
 }
+
+
+/**
+ @brief Allows for a delayed initialization of the foliage.
+
+ The initialization will occur when either the sight queue is empty, or a certain time has elapsed.
+ The main reason for doing this is that whenever a new area is added to the world, the foliage is invalidated and reloaded.
+ As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.
+ By delaying the loading of the foliage we can avoid this.
+
+ @author Erik Ogenvik <erik@worldforge.org>
+
+ */
+class DelayedFoliageInitializer {
+public:
+	/**
+	 * @brief Ctor.
+	 * @param callback The callback to call when the foliage should be initialized.
+	 * @param view The Eris::View object of the world. This will be used for querying about the size of the Sight queue.
+	 * @param intervalMs In milliseconds how often to check if the queue is empty or time has elapsed. Defaults to 1 second.
+	 * @param maxTimeMs In milliseconds the max time to wait until we initialize the foliage anyway.
+	 */
+	DelayedFoliageInitializer(std::function<void()> callback, Eris::View& view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~DelayedFoliageInitializer();
+
+protected:
+	std::function<void()> mCallback;
+	Eris::View& mView;
+	unsigned int mIntervalMs;
+	unsigned int mMaxTimeMs;
+
+	std::unique_ptr<Eris::TimedEvent> mTimeout;
+	unsigned int mTotalElapsedTime;
+
+	/**
+	 * @brief Called when the time out has expired. We'll check for if either the set max time has elapsed, or if there's no more entities in the sight queue, and if so initialize the foliage. If not we'll just extend the waiting time.
+	 */
+	void timout_Expired();
+
+};
 
 }
 }

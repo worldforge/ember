@@ -44,8 +44,6 @@
 #include "camera/MainCamera.h"
 #include "camera/ThirdPersonCameraMount.h"
 
-#include "environment/Foliage.h"
-#include "environment/FoliageDetailManager.h"
 #include "environment/Environment.h"
 #include "environment/CaelumEnvironment.h"
 #include "environment/SimpleEnvironment.h"
@@ -88,7 +86,7 @@ World::World(Eris::View& view,
 		mViewport(renderWindow.addViewport(&mScene->getMainCamera())),
 		mAvatar(nullptr),
 		mMovementController(nullptr),
-		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, shaderManager, view.getEventService())),
+		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, view, shaderManager, view.getEventService(), graphicalChangeAdapter)),
 		mMainCamera(new Camera::MainCamera(*mScene, mRenderWindow, input, *mTerrainManager->getTerrainAdapter())),
 		mMoveManager(new Authoring::EntityMoveManager(*this)),
 		mMotionManager(new MotionManager()),
@@ -100,9 +98,6 @@ World::World(Eris::View& view,
 		mTerrainEntityManager(new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager())),
 		mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),
 		mPageDataProvider(new TerrainPageDataProvider(mTerrainManager->getHandler())),
-		mFoliage(nullptr),
-		mFoliageDetailManager(nullptr),
-		mFoliageInitializer(nullptr),
 		mEnvironment(new Environment::Environment(mScene->getSceneManager(),
 												  *mTerrainManager,
 												  std::make_unique<Environment::CaelumEnvironment>(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar),
@@ -131,8 +126,6 @@ World::World(Eris::View& view,
 	view.getAvatar().GotCharacterEntity.connect(sigc::mem_fun(*this, &World::View_gotAvatarCharacter));
 
 	mMainCamera->pushWorldPickListener(mEntityWorldPickListener.get());
-
-	mConfigListenerContainer->registerConfigListener("graphics", "foliage", sigc::bind<-1>(sigc::mem_fun(*this, &World::Config_Foliage), sigc::ref(graphicalChangeAdapter)));
 
 }
 
@@ -218,10 +211,6 @@ Environment::Environment* World::getEnvironment() const {
 	return mEnvironment.get();
 }
 
-Environment::Foliage* World::getFoliage() const {
-	return mFoliage.get();
-}
-
 Eris::Calendar& World::getCalendar() const {
 	assert(mCalendar);
 	return *mCalendar;
@@ -278,53 +267,6 @@ void World::avatarEntity_BeingDeleted() {
 	mAvatar.reset();
 }
 
-void World::Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, GraphicalChangeAdapter& graphicalChangeAdapter) {
-	if (variable.is_bool() && static_cast<bool>(variable)) {
-		if (!mFoliage) {
-			//create the foliage
-			mFoliage = std::make_unique<Environment::Foliage>(*mTerrainManager);
-			EventFoliageCreated.emit();
-			mFoliageInitializer = std::make_unique<DelayedFoliageInitializer>(sigc::bind(sigc::mem_fun(*this, &World::initializeFoliage), sigc::ref(graphicalChangeAdapter)), mView, 1000, 15000);
-		}
-	} else {
-		mFoliageDetailManager.reset();
-		mFoliageInitializer.reset();
-		mFoliage.reset();
-	}
-}
-
-void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter) {
-	if (mFoliage) {
-		mFoliage->initialize();
-		mFoliageDetailManager = std::make_unique<Environment::FoliageDetailManager>(*mFoliage, graphicalChangeAdapter);
-		mFoliageDetailManager->initialize();
-	}
-}
-
-DelayedFoliageInitializer::DelayedFoliageInitializer(sigc::slot<void> callback, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
-		mCallback(std::move(callback)),
-		mView(view),
-		mIntervalMs(intervalMs),
-		mMaxTimeMs(maxTimeMs),
-		mTimeout(new Eris::TimedEvent(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&]() { this->timout_Expired(); })),
-		mTotalElapsedTime(0) {
-	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
-	//the main reason is that new terrain areas will invalidate the foliage causing a reload
-	//by delaying the foliage we can thus in most cases avoid those reloads
-	//wait three seconds
-}
-
-DelayedFoliageInitializer::~DelayedFoliageInitializer() = default;
-
-void DelayedFoliageInitializer::timout_Expired() {
-	//load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
-	if (mView.lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
-		mCallback();
-	} else {
-		mTotalElapsedTime += mIntervalMs;
-		mTimeout = std::make_unique<Eris::TimedEvent>(mView.getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&]() { this->timout_Expired(); });
-	}
-}
 
 }
 }
