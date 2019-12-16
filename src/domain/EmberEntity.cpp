@@ -401,6 +401,7 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 
 void EmberEntity::setAttachment(std::unique_ptr<IEntityAttachment> attachment) {
 	mAttachment = std::move(attachment);
+	EventAttachmentChanged();
 	reattachChildren();
 }
 

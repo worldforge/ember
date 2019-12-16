@@ -50,7 +50,7 @@ EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene, EntityMap
 EmberEntityFactory::~EmberEntityFactory() = default;
 
 // create whatever entity the client desires
-Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity& ge, Eris::TypeInfo* type, Eris::View& w) {
+Eris::ViewEntity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity& ge, Eris::TypeInfo* type, Eris::View& w) {
 
 	auto entity = new EmberEntity(ge->getId(), type, w);
 	Eris::EntityRef entityRef(entity);

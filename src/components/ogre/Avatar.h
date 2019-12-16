@@ -357,12 +357,6 @@ protected:
 	void attemptMove();
 
 	/**
-	 * @brief Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
-	 * @param entity The new parent entity.
-	 */
-	void avatar_LocationChanged(Eris::Entity* entity);
-
-	/**
 	 * @brief Listen to avatar movement and update the internal representation of the position and orientation of the avatar if suitable.
 	 */
 	void avatar_Moved();

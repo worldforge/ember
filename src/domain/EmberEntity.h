@@ -296,6 +296,8 @@ public:
 	 */
 	sigc::signal<void> EventChangedGraphicalRepresentation;
 
+	sigc::signal<void> EventAttachmentChanged;
+
 	/**
 	 * Registers a global attribute change listener.
 	 *

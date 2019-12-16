@@ -115,7 +115,7 @@ Avatar::Avatar(Eris::Avatar& erisAvatar,
 		mIsAdmin = false;
 	}
 
-	mErisAvatarEntity.LocationChanged.connect(sigc::mem_fun(*this, &Avatar::avatar_LocationChanged));
+	mErisAvatarEntity.EventAttachmentChanged.connect(sigc::mem_fun(*this, &Avatar::attachCameraToEntity));
 	mErisAvatarEntity.EventChangedGraphicalRepresentation.connect(sigc::mem_fun(*this, &Avatar::attachCameraToEntity));
 	mErisAvatarEntity.Moved.connect(sigc::mem_fun(*this, &Avatar::avatar_Moved));
 	mErisAvatarEntity.ChildAdded.connect(sigc::mem_fun(*this, &Avatar::entity_ChildAdded));
@@ -490,10 +490,6 @@ void Avatar::movedInWorld() {
 	//		mMovementStateAtLastServerMessage.orientation = mAvatarNode->getOrientation();
 	//		mHasChangedLocation = false;
 	//	}
-}
-
-void Avatar::avatar_LocationChanged(Eris::Entity* entity) {
-	attachCameraToEntity();
 }
 
 void Avatar::attachCameraToEntity() {
