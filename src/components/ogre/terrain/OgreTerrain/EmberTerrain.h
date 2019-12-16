@@ -50,8 +50,8 @@ public:
 	 */
 	EmberTerrain(std::function<void()>& unloader,
 				 Ogre::SceneManager* sm,
-				 sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal,
-				 sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal,
+				 sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainAreaUpdatedSignal,
+				 sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainShownSignal,
 				 Ogre::TerrainMaterialGeneratorPtr materialGenerator);
 
 	~EmberTerrain() override;
@@ -111,13 +111,13 @@ protected:
 	 * @brief Signal emitted when an area of the terrain has been updated.
 	 * The argument is the area (in world coordinates) that was updated.
 	 */
-	sigc::signal<void, Ogre::TRect<Ogre::Real>> mTerrainAreaUpdatedSignal;
+	sigc::signal<void, const Ogre::TRect<Ogre::Real>&> mTerrainAreaUpdatedSignal;
 
 	/**
 	 * @brief Signal emitted when a page has been shown for the first time.
 	 * The argument is the area (in world coordinates) that was shown.
 	 */
-	sigc::signal<void, const Ogre::TRect<Ogre::Real>> mTerrainShownSignal;
+	sigc::signal<void, const Ogre::TRect<Ogre::Real>&> mTerrainShownSignal;
 
 
 };

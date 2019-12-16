@@ -32,8 +32,8 @@ const Ogre::uint16 EmberTerrain::WORKQUEUE_GEOMETRY_UPDATE_REQUEST = 100;
 
 EmberTerrain::EmberTerrain(std::function<void()>& unloader,
 						   Ogre::SceneManager* sm,
-						   sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal,
-						   sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal,
+						   sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainAreaUpdatedSignal,
+						   sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainShownSignal,
 						   Ogre::TerrainMaterialGeneratorPtr materialGenerator) :
 		Ogre::Terrain(sm),
 		mUnloader(unloader),

@@ -46,7 +46,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mTerrainPaging(new Ogre::TerrainPaging(mPageManager.get())),
 		mPagedWorld(nullptr),
 		mTerrainPagedWorldSection(nullptr),
-		mTerrainGroup(new EmberTerrainGroup(&sceneManager, terrainPageSize, mTerrainShownSignal, mMaterialGenerator)),
+		mTerrainGroup(new EmberTerrainGroup(&sceneManager, terrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator)),
 		mPageDataProvider(nullptr),
 		mMaterialProfile(nullptr),
 		mPageStrategy(new CameraFocusedGrid2DPageStrategy(mPageManager.get())),
@@ -146,7 +146,7 @@ void OgreTerrainAdapter::reset() {
 	if (mTerrainPagedWorldSection) {
 		mPagedWorld->destroySection(mTerrainPagedWorldSection);
 		mTerrainPagedWorldSection = nullptr;
-		mTerrainGroup = new EmberTerrainGroup(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mMaterialGenerator);
+		mTerrainGroup = new EmberTerrainGroup(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator);
 		setOgrePageSize(mTerrainPageSize);
 		mTerrainGroup->setPageDataProvider(mPageDataProvider);
 	}
@@ -191,7 +191,7 @@ std::string OgreTerrainAdapter::getDebugInfo() {
 }
 
 std::unique_ptr<ITerrainObserver> OgreTerrainAdapter::createObserver() {
-	return std::make_unique<OgreTerrainObserver>(mTerrainGroup->EventTerrainAreaUpdated);
+	return std::make_unique<OgreTerrainObserver>(mTerrainAreaUpdated);
 }
 
 std::pair<EmberEntity*, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const {

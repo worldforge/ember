@@ -108,7 +108,13 @@ private:
 	 * @brief Signal emitted when a page has been shown for the first time.
 	 * The argument is the area (in world coordinates) that was shown.
 	 */
-	sigc::signal<void, const Ogre::TRect<Ogre::Real>> mTerrainShownSignal;
+	sigc::signal<void, const Ogre::TRect<Ogre::Real>&> mTerrainShownSignal;
+
+	/**
+	 * @brief Signal emitted when an area of the terrain has been updated.
+	 * The argument is the area (in world coordinates) that was updated.
+	 */
+	sigc::signal<void, const Ogre::TRect<Ogre::Real>&> mTerrainAreaUpdated;
 
 	Ogre::TerrainMaterialGeneratorPtr mMaterialGenerator;
 	std::unique_ptr<Ogre::TerrainGlobalOptions> mTerrainGlobalOptions;
@@ -124,6 +130,7 @@ private:
 	std::unique_ptr<Ogre::TerrainMaterialGenerator::Profile> mMaterialProfile;
 	std::unique_ptr<CameraFocusedGrid2DPageStrategy> mPageStrategy;
 	EmberEntity* mEntity;
+
 
 	void setOgrePageSize(int pageSize);
 };

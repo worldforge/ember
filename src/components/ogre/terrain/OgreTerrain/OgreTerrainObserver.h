@@ -46,7 +46,7 @@ public:
 	 * @brief Usually you should call OgreTerrainAdapter::createObserver to create an instance of this observer.
 	 * @param terrainAreaUpdatedSignal A valid signal that can be listened to for terrain updates.
 	 */
-	explicit OgreTerrainObserver(sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal);
+	explicit OgreTerrainObserver(sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainAreaUpdatedSignal);
 
 	~OgreTerrainObserver() override;
 

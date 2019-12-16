@@ -37,11 +37,13 @@ unsigned int EmberTerrainGroup::sLoadingTaskNum;
 
 EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm,
 									 Ogre::uint16 terrainSize,
-									 sigc::signal<void, const Ogre::TRect<Ogre::Real>>& terrainShownSignal,
+									 sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainShownSignal,
+									 sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainAreaUpdatedSignal,
 									 Ogre::TerrainMaterialGeneratorPtr materialGenerator) :
 		Ogre::TerrainGroup(sm, Ogre::Terrain::ALIGN_X_Z, terrainSize + 1, terrainSize),
 		mPageDataProvider(nullptr),
 		mTerrainShownSignal(terrainShownSignal),
+		mTerrainAreaUpdated(terrainAreaUpdatedSignal),
 		mMaterialGenerator(materialGenerator) {
 
 	//Setting this to 65 makes the terrain system use much less batches, which is good for modern GPUs.
@@ -101,7 +103,7 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 		std::function<void()> unloader = [=] { mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y)); };
 
 		// Allocate in main thread so no race conditions
-		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager, EventTerrainAreaUpdated, mTerrainShownSignal, mMaterialGenerator);
+		EmberTerrain* terrain = OGRE_NEW EmberTerrain(unloader, mSceneManager, mTerrainAreaUpdated, mTerrainShownSignal, mMaterialGenerator);
 		terrain->setIndex(IPageDataProvider::OgreIndex(x, y));
 
 		terrain->setResourceGroup(mResourceGroup);
