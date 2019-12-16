@@ -51,20 +51,22 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 		if (segment) {
 
 			WFMath::Point<3> modPos = mPosition;
+			float height;
 
 			//If there's no mods we can just use position right away
 			if (segment->getMods().empty()) {
 				if (!segment->isValid()) {
 					segment->populate();
 				}
-				segment->getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), modPos.y());
+				segment->getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), height);
 			} else {
 				Mercator::HeightMap heightMap(segment->getResolution());
 				heightMap.allocate();
 				segment->populateHeightMap(heightMap);
 
-				heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), modPos.y());
+				heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), height);
 			}
+			modPos.y() = height;
 
 			terrainMod = mTranslator.parseData(modPos, mOrientation);
 		}

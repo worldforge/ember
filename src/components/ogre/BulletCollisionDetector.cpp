@@ -37,23 +37,22 @@ namespace {
 //}
 
 btVector3 toBullet(const WFMath::Point<3>& p) {
-	return {p.x(), p.y(), p.z()};
+	return {static_cast<float>(p.x()), static_cast<float>(p.y()), static_cast<float>(p.z())};
 }
 
 btVector3 toBullet(const WFMath::Vector<3>& p) {
-	return {p.x(), p.y(), p.z()};
+	return {static_cast<float>(p.x()), static_cast<float>(p.y()), static_cast<float>(p.z())};
 }
 
 
 btQuaternion toBullet(const WFMath::Quaternion& aq) {
-	return {aq.vector().x(), aq.vector().y(), aq.vector().z(), aq.scalar()};
+	return {static_cast<float>(aq.vector().x()), static_cast<float>(aq.vector().y()), static_cast<float>(aq.vector().z()), static_cast<float>(aq.scalar())};
 }
 }
 
 BulletCollisionDetector::BulletCollisionDetector(BulletWorld& bulletWorld)
 		: mBulletWorld(bulletWorld),
-		  mMask(COLLISION_MASK_OCCLUDING | COLLISION_MASK_PICKABLE)
-{
+		  mMask(COLLISION_MASK_OCCLUDING | COLLISION_MASK_PICKABLE) {
 }
 
 BulletCollisionDetector::~BulletCollisionDetector() {
@@ -69,7 +68,7 @@ void BulletCollisionDetector::updateTransforms(const WFMath::Point<3>& position,
 	if (position.isValid()) {
 		transform.setOrigin(toBullet(position));
 	} else {
-		transform.setOrigin(btVector3(0,0,0));
+		transform.setOrigin(btVector3(0, 0, 0));
 	}
 	if (orientation.isValid()) {
 		transform.setBasis(btMatrix3x3(toBullet(orientation)));

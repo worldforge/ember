@@ -180,7 +180,7 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned
 				auto avatarBbox = mAvatarEntity->getBBox();
 				//get the radius from the avatar entity
 				WFMath::AxisBox<2> avatar2dBbox(WFMath::Point<2>(avatarBbox.lowCorner().x(), avatarBbox.lowCorner().z()), WFMath::Point<2>(avatarBbox.highCorner().x(), avatarBbox.highCorner().z()));
-				mAvatarRadius = std::max(0.2f, avatar2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
+				mAvatarRadius = std::max(0.2, avatar2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
 
 				//height of our agent
 				h = avatarBbox.highCorner().y() - avatarBbox.lowCorner().y();
@@ -191,10 +191,10 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned
 
 			//Recast uses y for the vertical axis
 			mCfg.bmin[0] = lower.x();
-			mCfg.bmin[1] = std::min(-500.f, lower.y());
+			mCfg.bmin[1] = std::min(-500.0, lower.y());
 			mCfg.bmin[2] = lower.z();
 			mCfg.bmax[0] = upper.x();
-			mCfg.bmax[1] = std::max(500.f, upper.y());
+			mCfg.bmax[1] = std::max(500.0, upper.y());
 			mCfg.bmax[2] = upper.z();
 
 			int gw = 0, gh = 0;
@@ -272,8 +272,8 @@ Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned
 			dtNavMeshParams params{};
 			memset(&params, 0, sizeof(params));
 			rcVcopy(params.orig, mCfg.bmin);
-			params.tileWidth = (float)tileSize * cellsize;
-			params.tileHeight = (float)tileSize * cellsize;
+			params.tileWidth = (float) tileSize * cellsize;
+			params.tileHeight = (float) tileSize * cellsize;
 			params.maxTiles = maxTiles;
 			params.maxPolys = maxPolysPerTile;
 
@@ -478,7 +478,7 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
 			WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->getBBox().boundingSphereSloppy().radius());
 
 			if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
-				nearestEntities.push(EntityCollisionEntry({WFMath::Distance(position, entityView2dPos), entity, entityView2dPos, entityViewRadius}));
+				nearestEntities.push(EntityCollisionEntry({static_cast<float>(WFMath::Distance(position, entityView2dPos)), entity, entityView2dPos, entityViewRadius}));
 			}
 		}
 
@@ -490,16 +490,16 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
 		while (!nearestEntities.empty() && i < MAX_OBSTACLES_CIRCLES) {
 			const EntityCollisionEntry& entry = nearestEntities.top();
 			auto entity = entry.entity;
-			float pos[]{entry.viewPosition.x(), 0, entry.viewPosition.y()};
-			float vel[]{entity->getPredictedVelocity().x(), 0, entity->getPredictedVelocity().z()};
+			float pos[]{static_cast<float>(entry.viewPosition.x()), 0, static_cast<float>(entry.viewPosition.y())};
+			float vel[]{static_cast<float>(entity->getPredictedVelocity().x()), 0, static_cast<float>(entity->getPredictedVelocity().z())};
 			mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
 			nearestEntities.pop();
 			++i;
 		}
 
-		float pos[]{position.x(), 0, position.y()};
-		float vel[]{desiredVelocity.x(), 0, desiredVelocity.y()};
-		float dvel[]{desiredVelocity.x(), 0, desiredVelocity.y()};
+		float pos[]{static_cast<float>(position.x()), 0, static_cast<float>(position.y())};
+		float vel[]{static_cast<float>(desiredVelocity.x()), 0, static_cast<float>(desiredVelocity.y())};
+		float dvel[]{static_cast<float>(desiredVelocity.x()), 0, static_cast<float>(desiredVelocity.y())};
 		float nvel[]{0, 0, 0};
 		float desiredSpeed = desiredVelocity.mag();
 
@@ -697,8 +697,8 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
 
 int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path) const {
 
-	float pStartPos[]{start.x(), start.y(), start.z()};
-	float pEndPos[]{end.x(), end.y(), end.z()};
+	float pStartPos[]{static_cast<float>(start.x()), static_cast<float>(start.y()), static_cast<float>(start.z())};
+	float pEndPos[]{static_cast<float>(end.x()), static_cast<float>(end.y()), static_cast<float>(end.z())};
 	float extent[]{2, 100, 2}; //Look two meters in each direction
 
 	dtStatus status;
@@ -1129,8 +1129,8 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 }
 
 void Awareness::processTiles(const WFMath::AxisBox<2>& area, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const {
-	float bmin[]{area.lowCorner().x(), -100, area.lowCorner().y()};
-	float bmax[]{area.highCorner().x(), 100, area.highCorner().y()};
+	float bmin[]{static_cast<float>(area.lowCorner().x()), -100, static_cast<float>(area.lowCorner().y())};
+	float bmax[]{static_cast<float>(area.highCorner().x()), 100, static_cast<float>(area.highCorner().y())};
 
 	dtCompressedTileRef tilesRefs[256];
 	int ntiles;

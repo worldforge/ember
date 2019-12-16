@@ -64,7 +64,7 @@ EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& mana
 	manager.getWorld().getTerrainManager().getHeight({viewPosition.x(), viewPosition.z()}, height);
 
 	if (std::abs(height - viewPosition.y())> 0.01) {
-		setOffset({viewPosition.y() - height});
+		setOffset({static_cast<float>(viewPosition.y()) - height});
 	}
 }
 
