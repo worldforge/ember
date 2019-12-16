@@ -1545,7 +1545,7 @@ function EntityEditor:DeleteButton_Clicked(args)
 		local entity = self.instance.entity
 		if entity then
 			-- 	self:clearEditing()
-			emberOgre:getWorld():getView():getAvatar():deleteEntity(entity)
+			emberOgre:getWorld():getAvatar():deleteEntity(entity)
 		end
 	end
 	return true
