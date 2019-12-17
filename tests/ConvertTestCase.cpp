@@ -52,7 +52,7 @@ void ConvertTestCase::testWFMathToOgre()
 	CPPUNIT_ASSERT(wfMathVector3 == Convert::toWF<Vector<3>>(Convert::toOgre(wfMathVector3)));
 
 	Quaternion wfQuaternion(1, 2.4f);
-	CPPUNIT_ASSERT(wfQuaternion == Convert::toWF(Convert::toOgre(wfQuaternion)));
+	CPPUNIT_ASSERT(wfQuaternion.isEqualTo(Convert::toWF(Convert::toOgre(wfQuaternion)), 0.0001));
 
 	WFMath::AxisBox<3> wfAxisBox3(Point<3>(1,2,3), Point<3>(10, 20, 30));
 	CPPUNIT_ASSERT(wfAxisBox3 == Convert::toWF(Convert::toOgre(wfAxisBox3)));
