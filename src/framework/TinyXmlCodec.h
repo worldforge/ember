@@ -23,6 +23,7 @@
 
 #include <Atlas/Codec.h>
 #include <stack>
+#include <Atlas/Message/Element.h>
 
 namespace Ember
 {
@@ -50,15 +51,15 @@ public:
 
 	void mapMapItem(std::string name) override;
 	void mapListItem(std::string name) override;
-	void mapIntItem(std::string name, long) override;
-	void mapFloatItem(std::string name, double) override;
+	void mapIntItem(std::string name, Atlas::Message::IntType) override;
+	void mapFloatItem(std::string name, Atlas::Message::FloatType) override;
 	void mapStringItem(std::string name, std::string) override;
 	void mapEnd() override;
 
 	void listMapItem() override;
 	void listListItem() override;
-	void listIntItem(long) override;
-	void listFloatItem(double) override;
+	void listIntItem(Atlas::Message::IntType) override;
+	void listFloatItem(Atlas::Message::FloatType) override;
 	void listStringItem(std::string) override;
 	void listEnd() override;
 

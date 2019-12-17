@@ -260,7 +260,7 @@ void TinyXmlCodec::mapListItem(std::string name)
 	mCurrentNode = mCurrentNode->InsertEndChild(element);
 }
 
-void TinyXmlCodec::mapIntItem(std::string name, long data)
+void TinyXmlCodec::mapIntItem(std::string name, Atlas::Message::IntType data)
 {
 	std::stringstream ss;
 	ss << data;
@@ -270,7 +270,7 @@ void TinyXmlCodec::mapIntItem(std::string name, long data)
 	mCurrentNode->InsertEndChild(element);
 }
 
-void TinyXmlCodec::mapFloatItem(std::string name, double data)
+void TinyXmlCodec::mapFloatItem(std::string name, Atlas::Message::FloatType data)
 {
 	std::stringstream ss;
 	ss << data;
@@ -303,7 +303,7 @@ void TinyXmlCodec::listListItem()
 	mCurrentNode = mCurrentNode->InsertEndChild(TiXmlElement("list"));
 }
 
-void TinyXmlCodec::listIntItem(long data)
+void TinyXmlCodec::listIntItem(Atlas::Message::IntType data)
 {
 	std::stringstream ss;
 	ss << data;
@@ -312,7 +312,7 @@ void TinyXmlCodec::listIntItem(long data)
 	mCurrentNode->InsertEndChild(element);
 }
 
-void TinyXmlCodec::listFloatItem(double data)
+void TinyXmlCodec::listFloatItem(Atlas::Message::FloatType data)
 {
 	std::stringstream ss;
 	ss << data;
