@@ -245,7 +245,7 @@ void EmberEntity::updateAttachment() {
 
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act) {
-	if (act->getClassNo() != Atlas::Objects::Operation::HIT_NO) {
+	if (act->getClassNo() != Atlas::Objects::Operation::HIT_NO && act->getClassNo() != Atlas::Objects::Operation::MOVE_NO) {
 		std::string message = getNameOrType() + " performs a " + act->getParent() + ".";
 		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
 
