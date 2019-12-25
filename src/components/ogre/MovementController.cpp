@@ -122,7 +122,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 		mVisualizePath(false) {
 
 	//We can only do navigation if there's a valid bbox for the top level entity
-	if (avatar.getEmberEntity().getView()->getTopLevel()->getBBox().isValid()) {
+	if (avatar.getEmberEntity().getView()->getTopLevel() && avatar.getEmberEntity().getView()->getTopLevel()->getBBox().isValid()) {
 		try {
 			mAwareness = new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider);
 			mAwarenessVisualizer = new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager());

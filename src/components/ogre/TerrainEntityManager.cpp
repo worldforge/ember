@@ -75,6 +75,7 @@ public:
 
 TerrainEntityManager::TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager) :
 		mView(view),
+        mTopLevelEntity(nullptr),
 		mTerrainHandler(terrainHandler),
 		mSceneManager(sceneManager) {
 	view.TopLevelEntityChanged.connect(sigc::mem_fun(*this, &TerrainEntityManager::topLevelEntityChanged));
@@ -102,8 +103,13 @@ TerrainEntityManager::~TerrainEntityManager() {
 
 void TerrainEntityManager::topLevelEntityChanged() {
 	auto entity = dynamic_cast<EmberEntity*>(mView.getTopLevel());
-	entity->setAttachment({});
-	entity->setAttachment(std::make_unique<WorldAttachment>(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId())));
+	if (mTopLevelEntity) {
+        mTopLevelEntity->setAttachment({});
+	}
+	if (entity) {
+        entity->setAttachment(std::make_unique<WorldAttachment>(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId())));
+    }
+	mTopLevelEntity = entity;
 }
 
 void TerrainEntityManager::parseTerrainAttribute(EmberEntity& entity, const Atlas::Message::Element& value) {

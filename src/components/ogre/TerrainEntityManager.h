@@ -69,6 +69,7 @@ private:
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainModListener;
 
 	Eris::View& mView;
+	EmberEntity* mTopLevelEntity;
 	Terrain::TerrainHandler& mTerrainHandler;
 	Ogre::SceneManager& mSceneManager;
 
