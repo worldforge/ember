@@ -30,6 +30,8 @@
 #include "components/ogre/Convert.h"
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
+#include <OgreSceneNode.h>
+
 namespace Ember
 {
 namespace OgreView
