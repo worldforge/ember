@@ -29,7 +29,7 @@
 #include "framework/Tokeniser.h"
 
 #include "framework/ConsoleBackend.h"
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>
 #include <OgreSceneNode.h>

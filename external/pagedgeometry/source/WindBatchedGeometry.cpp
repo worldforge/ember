@@ -19,7 +19,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreRoot.h>
 #include <OgreRenderSystem.h>
 #include <OgreCamera.h>
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreQuaternion.h>
 #include <OgreSceneNode.h>
 #include <OgreString.h>

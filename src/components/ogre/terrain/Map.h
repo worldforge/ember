@@ -27,7 +27,7 @@
 #include <vector>
 #include <OgrePrerequisites.h>
 #include <OgreColourValue.h>
-#include <OgreVector2.h>
+#include <OgreVector.h>
 #include <OgreCommon.h>
 #include <OgreTexture.h>
 #include <OgreSceneManager.h>

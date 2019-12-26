@@ -25,7 +25,7 @@
 #endif
 
 #include "XMLHelper.h"
-#include <OgreVector3.h>
+#include <OgreVector.h>
 
 namespace Ember {
 namespace OgreView {

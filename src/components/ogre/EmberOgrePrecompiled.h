@@ -37,8 +37,8 @@
 #include <OgreStringConverter.h>
 #include <OgreTexture.h>
 #include <OgreTextureManager.h>
-#include <OgreVector2.h>
-#include <OgreVector3.h>
+#include <OgreVector.h>
+#include <OgreVector.h>
 
 #include <CEGUI/Event.h>
 #include <CEGUI/Window.h>

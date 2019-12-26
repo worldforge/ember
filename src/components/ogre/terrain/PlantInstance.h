@@ -20,8 +20,8 @@
 #ifndef EMBEROGRE_TERRAIN_PLANTINSTANCE_H_
 #define EMBEROGRE_TERRAIN_PLANTINSTANCE_H_
 
-#include <OgreVector3.h>
-#include <OgreVector2.h>
+#include <OgreVector.h>
+#include <OgreVector.h>
 
 namespace Ember
 {

@@ -25,7 +25,7 @@
 #include <OgrePrerequisites.h>
 #include <OgreCommon.h>
 #include <OgreMemoryAllocatorConfig.h>
-#include <OgreVector2.h>
+#include <OgreVector.h>
 
 namespace Ogre {
 class MemoryDataStream;

@@ -26,7 +26,7 @@
 #include "services/input/Input.h"
 #include "services/input/InputCommandMapper.h"
 #include "framework/ConsoleObject.h"
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreQuaternion.h>
 
 #include <Eris/ActiveMarker.h>

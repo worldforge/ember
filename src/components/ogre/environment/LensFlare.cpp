@@ -27,7 +27,7 @@
 #include "LensFlare.h"
 #include "domain/EmberEntity.h"
 
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreSceneManager.h>
 #include <OgreBillboard.h>
 #include <OgreBillboardSet.h>

@@ -14,7 +14,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 #include <OgreRoot.h>
 #include <OgreException.h>
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreQuaternion.h>
 #include <OgreLogManager.h>
 #include <OgreStringConverter.h>

@@ -18,7 +18,7 @@
 
 #include "components/ogre/widgets/OgreEntityRenderer.h"
 #include <OgreLodListener.h>
-#include <OgreVector3.h>
+#include <OgreVector.h>
 
 #include <boost/unordered_set.hpp>
 

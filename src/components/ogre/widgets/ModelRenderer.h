@@ -24,7 +24,7 @@
 #define EMBEROGREMODELRENDERER_H
 
 #include "MovableObjectRenderer.h"
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreQuaternion.h>
 
 #include <sigc++/connection.h>

@@ -112,7 +112,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreEntity.h>
 #include <OgreCommon.h>
 #include <OgreCamera.h>
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreTimer.h>
 #include <OgreMesh.h>
 #include <components/ogre/model/Model.h>

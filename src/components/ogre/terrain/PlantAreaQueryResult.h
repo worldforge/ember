@@ -23,8 +23,8 @@
 
 #include <OgrePrerequisites.h>
 #include <OgreCommon.h>
-#include <OgreVector3.h>
-#include <OgreVector2.h>
+#include <OgreVector.h>
+#include <OgreVector.h>
 #include <OgreColourValue.h>
 #include "PlantAreaQuery.h"
 

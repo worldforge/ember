@@ -28,7 +28,7 @@
 #include "EmberOgrePrerequisites.h"
 #include <sigc++/trackable.h>
 #include "services/config/ConfigListenerContainer.h"
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreQuaternion.h>
 
 namespace Ember {

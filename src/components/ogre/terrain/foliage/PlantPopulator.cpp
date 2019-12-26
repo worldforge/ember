@@ -7,7 +7,7 @@
 
 #include "PlantPopulator.h"
 #include <wfmath/randgen.h>
-#include <OgreVector2.h>
+#include <OgreVector.h>
 
 namespace Ember {
 namespace OgreView {

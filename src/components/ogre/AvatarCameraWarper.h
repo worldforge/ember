@@ -24,7 +24,7 @@
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <sigc++/trackable.h>
 
 namespace Eris

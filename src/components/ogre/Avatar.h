@@ -32,7 +32,7 @@
 #include <wfmath/quaternion.h>
 #include <wfmath/vector.h>
 
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreQuaternion.h>
 
 #include <memory>

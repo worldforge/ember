@@ -24,7 +24,7 @@
 #define EMBEROGREEMBERENTITYUSEROBJECT_H
 
 #include "EmberOgrePrerequisites.h"
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <memory>
 
 namespace Ogre

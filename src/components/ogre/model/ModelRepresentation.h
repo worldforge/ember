@@ -25,7 +25,7 @@
 #include "domain/IGraphicalRepresentation.h"
 #include "domain/EmberEntity.h"
 #include <OgreMath.h>
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreQuaternion.h>
 #include <sigc++/trackable.h>
 #include <vector>

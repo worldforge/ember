@@ -27,7 +27,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "ModelBackgroundLoader.h"
 #include <OgreQuaternion.h>
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <OgreLight.h>
 #include <OgreColourValue.h>
 #include <OgreResource.h>

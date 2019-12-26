@@ -24,7 +24,7 @@
 #define EMBEROGREPARTICLESYSTEM_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include <OgreVector3.h>
+#include <OgreVector.h>
 #include <vector>
 #include <OgreMovableObject.h>
 

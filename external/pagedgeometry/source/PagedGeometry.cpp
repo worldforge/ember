@@ -18,7 +18,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreRoot.h>
 #include <OgreTimer.h>
 #include <OgreCamera.h>
-#include <OgreVector3.h>
+#include <OgreVector.h>
 using namespace Ogre;
 using namespace std;
 
