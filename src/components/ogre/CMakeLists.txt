@@ -8,7 +8,7 @@ add_library(emberogre
         authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RulesFetcher.cpp authoring/RuleEditor.cpp
         authoring/SimpleEntityVisualization.cpp authoring/EntityMaker.cpp authoring/AwarenessVisualizer.cpp
         authoring/EntityConsoleEditor.cpp authoring/EntityConsoleEditor.cpp
-        authoring/IMovementBridge.h authoring/IPolygonPositionProvider.h
+        authoring/IMovementBridge.h authoring/IPolygonPositionProvider.h authoring/GeometryVisualization.cpp authoring/GeometryVisualization.h
 
         lod/LodLevelManager.cpp
 
@@ -27,7 +27,7 @@ add_library(emberogre
         lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/XMLLodDefinitionSerializer.cpp lod/PMInjectorSignaler.cpp
         lod/ScaledPixelCountLodStrategy.cpp
 
-        mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp
+        mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp  mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h
 
         model/ModelAction.cpp model/AnimationSet.cpp model/Model.cpp
         model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp
@@ -95,6 +95,10 @@ add_library(emberogre
         widgets/CEGUIUtils.h
         widgets/HitDisplayer.cpp
         widgets/TextNodeRenderer.cpp
+        widgets/adapters/ModelDefinitionsAdapter.cpp
+        widgets/adapters/ModelDefinitionsAdapter.h
+        widgets/adapters/atlas/ScaleAdapter.cpp widgets/adapters/atlas/ScaleAdapter.h
+        widgets/adapters/atlas/EntityRefAdapter.cpp widgets/adapters/atlas/EntityRefAdapter.h
 
         Avatar.cpp AvatarCameraWarper.cpp
         MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp
@@ -114,9 +118,10 @@ add_library(emberogre
         EmberWorkQueue.cpp
         EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ILightning.h
         IMovable.h IMovementProvider.h INodeProvider.h ISceneRenderingTechnique.h IWorldPickListener.h
-        MousePicker.h OgreIncludes.h authoring/GeometryVisualization.cpp authoring/GeometryVisualization.h PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h widgets/adapters/ModelDefinitionsAdapter.cpp widgets/adapters/ModelDefinitionsAdapter.h
-        BulletCollisionDetector.cpp BulletCollisionDetector.h BulletWorld.cpp BulletWorld.h EntityCollisionInfo.h SkeletonDisplay.cpp SkeletonDisplay.h widgets/adapters/atlas/ScaleAdapter.cpp widgets/adapters/atlas/ScaleAdapter.h widgets/adapters/atlas/EntityRefAdapter.cpp widgets/adapters/atlas/EntityRefAdapter.h
-
+        MousePicker.h OgreIncludes.h  PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h
+        BulletCollisionDetector.cpp
+        BulletWorld.cpp
+        SkeletonDisplay.cpp
         ProjectileRenderingTechnique.cpp
         )
 

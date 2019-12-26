@@ -187,14 +187,31 @@ EmberEntity* World::getEmberEntity(const std::string& eid) const {
 }
 
 void World::View_topLevelEntityChanged() {
-    auto entity = dynamic_cast<EmberEntity*>(mView.getTopLevel());
     if (mTopLevelEntity) {
         mTopLevelEntity->setAttachment({});
     }
-    if (entity) {
-        entity->setAttachment(std::make_unique<WorldAttachment>(*entity, mScene->getSceneManager().getRootSceneNode()->createChildSceneNode("entity_" + entity->getId())));
+    EmberEntity* nearestPhysicalDomainEntity = nullptr;
+    EmberEntity* currentEntity = dynamic_cast<EmberEntity*>(mView.getAvatar().getEntity());
+
+    //Find any parent entity with a physical domain. If so, create a WorldAttachment to
+    do {
+        if (currentEntity->hasProperty("domain")) {
+            auto& domainProp = currentEntity->valueOfProperty("domain");
+            if (domainProp.isString() && domainProp.String() == "physical") {
+                nearestPhysicalDomainEntity = currentEntity;
+                break;
+            }
+        }
+        if (!currentEntity->getLocation()) {
+            break;
+        }
+        currentEntity = currentEntity->getEmberLocation();
+    } while (true);
+
+    if (nearestPhysicalDomainEntity) {
+        nearestPhysicalDomainEntity->setAttachment(std::make_unique<WorldAttachment>(*nearestPhysicalDomainEntity, mScene->getSceneManager().getRootSceneNode()->createChildSceneNode("entity_" + nearestPhysicalDomainEntity->getId())));
     }
-    mTopLevelEntity = entity;
+    mTopLevelEntity = nearestPhysicalDomainEntity;
 }
 
 EntityWorldPickListener& World::getEntityPickListener() const {
