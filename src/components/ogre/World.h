@@ -385,7 +385,9 @@ protected:
 	 */
 	sigc::connection mAfterTerrainUpdateConnection;
 
-	/**
+    EmberEntity* mTopLevelEntity;
+
+    /**
 	 * @brief Listens to updates to the terrain and makes sure that entities are adjusted.
 	 * @param areas The areas that were changed.
 	 * @param pages The pages that were changed.
@@ -414,6 +416,7 @@ protected:
 	 */
 	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2>>& areas);
 
+    void View_topLevelEntityChanged();
 
 };
 

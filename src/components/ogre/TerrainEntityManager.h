@@ -69,7 +69,6 @@ private:
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainModListener;
 
 	Eris::View& mView;
-	EmberEntity* mTopLevelEntity;
 	Terrain::TerrainHandler& mTerrainHandler;
 	Ogre::SceneManager& mSceneManager;
 
@@ -92,8 +91,6 @@ private:
 	void entityModeChanged(EmberEntity& entity, Terrain::TerrainArea& terrainArea);
 
 	void entityModeChanged(EmberEntity& entity, Terrain::TerrainMod& terrainMod);
-
-	void topLevelEntityChanged();
 
 	void parseTerrainAttribute(EmberEntity& entity, const Atlas::Message::Element& value);
 
