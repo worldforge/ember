@@ -118,8 +118,9 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 	createCamera(prefix);
 	Ogre::ColourValue colour(0.7, 0.7, 0.7);
 	mMainLight = mSceneManager->createLight("MainLight");
-	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
-	mMainLight->setDirection(Ogre::Vector3(-1, 0, 0));
+    mRootNode->createChildSceneNode()->attachObject(mMainLight);
+    mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
+    mMainLight->getParentSceneNode()->setDirection(Ogre::Vector3(-1, 0, 0), Ogre::Node::TS_WORLD);
 	mMainLight->setDiffuseColour(colour);
 	mMainLight->setSpecularColour(colour);
 	mMainLight->setVisible(true);

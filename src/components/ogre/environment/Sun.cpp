@@ -143,7 +143,7 @@ void Sun::setSunPosition(const Ogre::Vector3& position) {
 	mSunNode->setPosition(position);
 	Ogre::Vector3 dir = -mSunNode->getPosition();
 	dir.normalise();
-	mSun->setDirection(dir);
+    mSunNode->setDirection(dir, Ogre::Node::TS_WORLD);
 	EventUpdatedSunPosition.emit(this, position);
 }
 

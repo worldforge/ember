@@ -42,6 +42,7 @@ namespace Caelum
 
         mMainLight = sceneMgr->createLight (lightName);
         mMainLight->setType (Ogre::Light::LT_DIRECTIONAL);
+        sceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(mMainLight);
 
         sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_SUN)->setShadowsEnabled(false);
 
@@ -55,6 +56,7 @@ namespace Caelum
         }
 
         if (mMainLight) {
+            mMainLight->getParentSceneNode()->getCreator()->destroySceneNode(mMainLight->getParentSceneNode());
             mMainLight->_getManager ()->destroyLight (mMainLight);
             mMainLight = 0;
         }
@@ -85,9 +87,9 @@ namespace Caelum
         	//To prevent the light from shining from below the horizon (and thus producing strange, strange shadows) we'll clip the direction of the light so it never points upwards.
         	float minAngle = 0;
         	if (dir.y > minAngle) {
-        		mMainLight->setDirection (mNode->_getDerivedOrientation() * Ogre::Vector3(dir.x, minAngle, dir.z).normalisedCopy());
+        	    mMainLight->getParentSceneNode()->setDirection(mNode->_getDerivedOrientation() * Ogre::Vector3(dir.x, minAngle, dir.z).normalisedCopy(), Ogre::Node::TS_WORLD);
         	} else {
-                mMainLight->setDirection (mNode->_getDerivedOrientation() * dir);
+                mMainLight->getParentSceneNode()->setDirection(mNode->_getDerivedOrientation() * dir, Ogre::Node::TS_WORLD);
         	}
         }
     }

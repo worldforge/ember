@@ -42,6 +42,7 @@ SimpleSun::SimpleSun(Ogre::SceneManager *sceneMgr)
 {
 
 	mMainLight = sceneMgr->createLight("SimpleSun");
+    sceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(mMainLight);
 	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
 	// HDR power scale, REALLY bright:
 // 	mMainLight->setPowerScale (10);
@@ -49,7 +50,7 @@ SimpleSun::SimpleSun(Ogre::SceneManager *sceneMgr)
 	mMainLight->setVisible(true);
 	mMainLight->setDiffuseColour(Ogre::ColourValue(0.9, 0.9, 0.9));
 	mMainLight->setSpecularColour(Ogre::ColourValue(0.9, 0.9, 0.9));
-	mMainLight->setDirection(Ogre::Vector3(1, -1, 0));
+    mMainLight->getParentSceneNode()->setDirection(Ogre::Vector3(1, -1, 0), Ogre::Node::TS_WORLD);
 }
 
 void SimpleSun::setAmbientLight(const Ogre::ColourValue& colour)
