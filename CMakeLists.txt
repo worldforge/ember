@@ -29,6 +29,11 @@ if (NOT VERSION)
     endif ()
 endif ()
 
+if (NOT VERSION_PACKAGE) 
+	message(STATUS "Setting VERSION_PACKAGE to ${VERSION}. You can override this by setting the 'VERSION_PACKAGE' variable externally.")
+	set(VERSION_PACKAGE "${VERSION}")
+endif ()
+
 message(STATUS "Building version ${VERSION}")
 
 #Split a version number like "1.2.3" into a list to extract parts.

@@ -14,7 +14,7 @@
   Name "Ember"
 
   ; The file to write
-  OutFile "Ember-@VERSION@.exe"
+  OutFile "Ember-@VERSION_PACKAGE@.exe"
 
   ; The default installation directory
   InstallDir $PROGRAMFILES\Worldforge\Ember
