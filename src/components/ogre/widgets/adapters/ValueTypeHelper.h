@@ -155,7 +155,7 @@ struct ValueTypeHelper< ::Atlas::Message::Element, int>
 {
 	static int convert(const ::Atlas::Message::Element& v)
 	{
-		return v.asInt();
+		return static_cast<int>(v.asInt());
 	}
 };
 
