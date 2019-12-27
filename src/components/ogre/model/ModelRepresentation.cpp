@@ -484,13 +484,15 @@ void ModelRepresentation::notifyTransformsChanged() {
 
 void ModelRepresentation::updateCollisionDetection() {
 	mBulletCollisionDetector->clear();
-	for (auto& subModel : mModel->getSubmodels()) {
-		auto meshPtr = subModel->getEntity()->getMesh();
-		auto collisionShape = mScene.getBulletWorld().createMeshShape(meshPtr);
-		if (collisionShape) {
-			mBulletCollisionDetector->addCollisionShape(std::move(collisionShape));
-		}
-	}
+	if (mModel->getNodeProvider()) {
+        for (auto& subModel : mModel->getSubmodels()) {
+            auto meshPtr = subModel->getEntity()->getMesh();
+            auto collisionShape = mScene.getBulletWorld().createMeshShape(meshPtr);
+            if (collisionShape) {
+                mBulletCollisionDetector->addCollisionShape(std::move(collisionShape));
+            }
+        }
+    }
 	notifyTransformsChanged();
 
 }
