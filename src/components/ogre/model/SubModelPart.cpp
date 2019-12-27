@@ -290,6 +290,7 @@ bool SubModelPart::createInstancedEntities() {
 		try {
 			auto instancedEntity = entry.first->createInstancedEntity(entry.second);
 			if (instancedEntity) {
+			    instancedEntity->setVisible(false);
 				mInstancedEntities.push_back(instancedEntity);
 				mSubModel.mModel.addMovable(instancedEntity);
 				::Ember::OgreView::Model::Model::sInstancedEntities[entry.first->getSceneManager()][instancedEntity] = &mSubModel.mModel;
