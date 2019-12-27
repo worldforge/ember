@@ -32,6 +32,8 @@
 #include <OgreSceneManager.h>
 #include <components/ogre/EntityCollisionInfo.h>
 
+#include <memory>
+
 namespace Ember
 {
 namespace OgreView
@@ -84,14 +86,14 @@ void AuthoringVisualization::updatePositionAndOrientation()
 			mCollisionDetector->updateTransforms(mControlDelegate->getPosition(), mControlDelegate->getOrientation());
 		}
 	} else {
-		if (mEntity.getPredictedPos().isValid()) {
-			mSceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
+		if (mEntity.getViewPosition().isValid()) {
+			mSceneNode->setPosition(Convert::toOgre(mEntity.getViewPosition()));
 		}
-		if (mEntity.getOrientation().isValid()) {
-			mSceneNode->setOrientation(Convert::toOgre(mEntity.getPredictedOrientation()));
+		if (mEntity.getViewOrientation().isValid()) {
+			mSceneNode->setOrientation(Convert::toOgre(mEntity.getViewOrientation()));
 		}
-		if (mCollisionDetector) {
-			mCollisionDetector->updateTransforms(mEntity.getPredictedPos(), mEntity.getPredictedOrientation());
+		if (mCollisionDetector && mEntity.getViewOrientation().isValid() && mEntity.getViewPosition().isValid()) {
+			mCollisionDetector->updateTransforms(mEntity.getViewPosition(), mEntity.getViewOrientation());
 		}
 	}
 }
@@ -106,7 +108,7 @@ void AuthoringVisualization::createGraphicalRepresentation()
 				mGraphicalRepresentation->setRenderingDistance(100);
 
 				auto& bulletWorld = EmberOgre::getSingleton().getWorld()->getScene().getBulletWorld();
-				mCollisionDetector.reset(new BulletCollisionDetector(bulletWorld));
+				mCollisionDetector = std::make_unique<BulletCollisionDetector>(bulletWorld);
 				//These should only be pickable, not occluding.
 				mCollisionDetector->setMask(COLLISION_MASK_PICKABLE);
 				auto shape = bulletWorld.createMeshShape(mGraphicalRepresentation->getMesh());
