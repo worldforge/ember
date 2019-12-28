@@ -31,6 +31,7 @@
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 #include <Atlas/Message/Element.h>
+#include <sigc++/connection.h>
 
 namespace Eris {
 class ViewEntity;
@@ -143,6 +144,9 @@ private:
 	 */
 	std::unique_ptr<ModelPreviewWorker> mModelPreviewWorker;
 
+    sigc::connection mEntityDeleteConnection;
+    sigc::connection mEntityLocationChangeConnection;
+
 };
 
 class ModelPreviewWorker
@@ -175,15 +179,15 @@ public:
 	 * @brief Get the current position of the world
 	 * @returns The current position in the world.
 	 */
-	const WFMath::Point<3> getPosition() const;
+	WFMath::Point<3> getPosition() const;
 
 	/**
 	 * @brief Gets the current orientation.
 	 * @returns The current orientation.
 	 */
-	const WFMath::Quaternion getOrientation() const;
+	WFMath::Quaternion getOrientation() const;
 
-	const Authoring::DetachedEntity* getEntity() const;
+	const Eris::Entity* getEntity() const;
 
 	sigc::signal<void> EventFinalizeCreation;
 	sigc::signal<void> EventCleanupCreation;
@@ -226,12 +230,8 @@ private:
 	/**
 	 * @brief Detached entity that is used in process of creating preview.
 	 */
-	std::unique_ptr<Authoring::DetachedEntity> mEntity;
-
-	/**
-	* @brief Message that is composed from attributes of the entity we're creating a preview for.
-	*/
-	Atlas::Message::MapType mEntityMessage;
+	//std::unique_ptr<Authoring::DetachedEntity> mEntity;
+	Eris::Entity* mEntity;
 
 	/**
 	 * @brief Preview scene node.
@@ -269,7 +269,7 @@ class ModelPreviewWorkerMovementBridge : public Authoring::EntityMoverBase
 {
 public:
 
-	ModelPreviewWorkerMovementBridge(ModelPreviewWorker& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	ModelPreviewWorkerMovementBridge(ModelPreviewWorker& creator, Eris::Entity& entity, Ogre::SceneNode* node);
 
 	~ModelPreviewWorkerMovementBridge() override = default;
 
@@ -286,7 +286,7 @@ class ModelPreviewWorkerMovement
 {
 public:
 
-	ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Eris::Entity& entity, Ogre::SceneNode* node);
 	~ModelPreviewWorkerMovement();
 
 protected:

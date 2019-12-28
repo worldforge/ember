@@ -41,9 +41,6 @@
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <framework/Singleton.h>
-
-#include <utility>
 
 using namespace Ember;
 namespace Ember {
@@ -58,7 +55,10 @@ EntityIconDragDropPreview::EntityIconDragDropPreview(World& world) :
         mIconEntity(nullptr) {
 }
 
-EntityIconDragDropPreview::~EntityIconDragDropPreview() = default;
+EntityIconDragDropPreview::~EntityIconDragDropPreview() {
+    mEntityDeleteConnection.disconnect();
+    mEntityLocationChangeConnection.disconnect();
+}
 
 void EntityIconDragDropPreview::createPreview(EntityIcon* icon) {
     if (!mModelPreviewWorker) {
@@ -69,6 +69,12 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon) {
             mModelPreviewWorker = std::make_unique<ModelPreviewWorker>(mWorld, mIconEntity);
             mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
             mModelPreviewWorker->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
+            mEntityDeleteConnection = mIconEntity->BeingDeleted.connect([&]() {
+                cleanupCreation();
+            });
+            mEntityLocationChangeConnection = mIconEntity->LocationChanged.connect([&](Eris::Entity*) {
+                cleanupCreation();
+            });
         }
     }
 }
@@ -76,6 +82,8 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon) {
 void EntityIconDragDropPreview::cleanupCreation() {
     mIconEntity = nullptr;
     mModelPreviewWorker.reset();
+    mEntityDeleteConnection.disconnect();
+    mEntityLocationChangeConnection.disconnect();
 }
 
 void EntityIconDragDropPreview::finalizeCreation() {
@@ -95,51 +103,31 @@ WFMath::Quaternion EntityIconDragDropPreview::getDropOrientation() const {
 
 ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
         mWorld(world),
-        mEntity(nullptr),
-        mEntityNode(nullptr),
-        mModel(nullptr),
-        mModelMount(nullptr),
-        mMovement(nullptr) {
-    mOrientation.identity();
+        mEntity(entity),
+        mEntityNode(mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode()),
+        mPos(WFMath::Point<3>::ZERO()),
+        mOrientation(WFMath::Quaternion::IDENTITY()),
+        mMovement(std::make_unique<ModelPreviewWorkerMovement>(*this, mWorld.getMainCamera(), *entity, mEntityNode))    // Registering move adapter to track mouse movements
+{
 
-    Eris::TypeInfo* erisType = entity->getType();
-
-    mPos = WFMath::Point<3>::ZERO();
-
-    mEntityMessage = entity->getInstanceProperties();
-
-    // Temporary entity
-    mEntity = new Authoring::DetachedEntity("-1", erisType, entity->getView()->getTypeService());
-    mEntity->setFromMessage(mEntityMessage);
-
-    // Creating scene node
-    mEntityNode = mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode();
-
-    // Making model from temporary entity
     Mapping::ModelActionCreator actionCreator(*entity, [&](std::string modelName) {
         setModel(modelName);
     }, [&](std::string partName) {
         showModelPart(partName);
     });
 
-    std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, nullptr));
+    auto modelMapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, nullptr);
     if (modelMapping) {
         modelMapping->initialize();
     }
 
-    // Registering move adapter to track mouse movements
-    mMovement = std::make_unique<ModelPreviewWorkerMovement>(*this, mWorld.getMainCamera(), *mEntity, mEntityNode);
-    //mMoveAdapter->addAdapter();
 }
 
 ModelPreviewWorker::~ModelPreviewWorker() {
     mEntityNode->detachAllObjects();
     mOrientation = Convert::toWF(mEntityNode->getOrientation());
     mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
-    //	delete mEntityNode;
 
-    // Deleting temporary entity
-    mEntity->shutdown();
 }
 
 void ModelPreviewWorker::setModel(const std::string& modelName) {
@@ -156,7 +144,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName) {
     mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
     mModel->load();
 
-    mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(mEntityNode, nullptr, false));
+    mModelMount = std::make_unique<Model::ModelMount>(*mModel, new SceneNodeProvider(mEntityNode, nullptr, false));
     mModelMount->reset();
 
     initFromModel();
@@ -168,11 +156,11 @@ void ModelPreviewWorker::setModel(const std::string& modelName) {
     mEntityNode->setOrientation(Convert::toOgre(mOrientation));
 }
 
-const WFMath::Point<3> ModelPreviewWorker::getPosition() const {
+WFMath::Point<3> ModelPreviewWorker::getPosition() const {
     return Convert::toWF<WFMath::Point<3>>(mEntityNode->getPosition());
 }
 
-const WFMath::Quaternion ModelPreviewWorker::getOrientation() const {
+WFMath::Quaternion ModelPreviewWorker::getOrientation() const {
     return Convert::toWF(mEntityNode->getOrientation());
 }
 
@@ -194,6 +182,7 @@ void ModelPreviewWorker::initFromModel() {
 
 void ModelPreviewWorker::model_Reloaded() {
     initFromModel();
+    mModel->setVisible(true);
 }
 
 void ModelPreviewWorker::scaleNode() {
@@ -212,11 +201,11 @@ const WFMath::AxisBox<3>& ModelPreviewWorker::getBBox() {
     return mEntity->getBBox();
 }
 
-const Authoring::DetachedEntity* ModelPreviewWorker::getEntity() const {
+const Eris::Entity* ModelPreviewWorker::getEntity() const {
     return mEntity;
 }
 
-ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
+ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Eris::Entity& entity, Ogre::SceneNode* node) :
         Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker) {
 }
 
@@ -228,7 +217,7 @@ void ModelPreviewWorkerMovementBridge::cancelMovement() {
     mModelPreviewWorker.EventCleanupCreation.emit();
 }
 
-ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
+ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Eris::Entity& entity, Ogre::SceneNode* node) :
         mMoveAdapter(camera) {
     // When the point is moved, an instance of this will be created and the movement handled by it.
     // Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
