@@ -199,9 +199,7 @@ public:
 	 */
 	ModelDefinition::UseScaleOf getUseScaleOf() const;
 
-	// 	inline const SubModelPartStoreMap& getSubmodelParts() const;
-
-	const std::set<std::unique_ptr<SubModel>>& getSubmodels() const;
+	const std::vector<std::unique_ptr<SubModel>>& getSubmodels() const;
 
 	//SubModel* getSubModel(const std::string& name);
 	SubModel* getSubModel(size_t index);
@@ -365,8 +363,6 @@ protected:
 
 	const std::string mName;
 
-	Ogre::Entity::ChildObjectList mChildObjectList;
-
 	/**
 	 if the model has a skeleton, it can be shared between many different entities
 	 this denotes the "owning" entity
@@ -381,7 +377,7 @@ protected:
 	/**
 	 a set of all submodels belonging to the model
 	 */
-	std::set<std::unique_ptr<SubModel>> mSubmodels;
+	std::vector<std::unique_ptr<SubModel>> mSubmodels;
 	/**
 	 a set of all submodelparts belonging to the model (in reality they belong to the submodels though)
 	 */
@@ -426,7 +422,7 @@ protected:
 
 };
 
-inline const std::set<std::unique_ptr<SubModel>>& Model::getSubmodels() const {
+inline const std::vector<std::unique_ptr<SubModel>>& Model::getSubmodels() const {
 	return mSubmodels;
 }
 

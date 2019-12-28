@@ -26,9 +26,6 @@
 #include "SubModelPart.h"
 #include "ParticleSystemBinding.h"
 
-#include "ModelDefinitionManager.h"
-
-
 #include "framework/TimeFrame.h"
 #include "framework/TimedLog.h"
 
@@ -48,7 +45,7 @@
 #include <OgreHighLevelGpuProgramManager.h>
 #include <components/ogre/OgreInfo.h>
 
-#include <utility>
+#include <memory>
 
 
 namespace Ember {
@@ -503,11 +500,9 @@ bool Model::addSubmodel(std::unique_ptr<SubModel> submodel) {
 			// 			mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 		}
 	}
-	auto result = mSubmodels.insert(std::move(submodel));
-	if (result.second) {
-		if (!mUseInstancing) {
-			addMovable(entity);
-		}
+	mSubmodels.emplace_back(std::move(submodel));
+    if (!mUseInstancing) {
+        addMovable(entity);
 	}
 
 	return true;
@@ -749,7 +744,7 @@ Ogre::TagPoint* Model::attachObject(const std::string& attachPoint, Ogre::Movabl
 				//use the rotation in the attach point def
 				Ogre::TagPoint* tagPoint = mSkeletonOwnerEntity->attachObjectToBone(boneName, movable);
 				if (!mAttachPoints) {
-					mAttachPoints.reset(new std::vector<AttachPointWrapper>());
+					mAttachPoints = std::make_unique<std::vector<AttachPointWrapper>>();
 				}
 
 				AttachPointWrapper wrapper;
@@ -895,9 +890,14 @@ Ogre::SceneManager& Model::getManager() {
 
 float Model::getCombinedBoundingRadius() const {
 	float radius = 0;
-	for (auto& movable : mMovableObjects) {
-		radius = std::max(movable->getBoundingRadius(), radius);
-	}
+    for (auto& submodel : mSubmodels) {
+        auto entity = submodel->getEntity();
+        if (entity) {
+            if (entity->getMesh()->isLoaded()) {
+                radius = std::max(entity->getMesh()->getBoundingSphereRadius(), radius);
+            }
+        }
+    }
 	return radius;
 }
 
@@ -907,8 +907,13 @@ float Model::getBoundingRadius() const {
 
 Ogre::AxisAlignedBox Model::getCombinedBoundingBox() const {
 	Ogre::AxisAlignedBox aabb;
-	for (auto& movable : mMovableObjects) {
-		aabb.merge(movable->getBoundingBox());
+	for (auto& submodel : mSubmodels) {
+	    auto entity = submodel->getEntity();
+	    if (entity) {
+	        if (entity->getMesh()->isLoaded()) {
+	            aabb.merge(entity->getMesh()->getBounds());
+	        }
+	    }
 	}
 	return aabb;
 }
