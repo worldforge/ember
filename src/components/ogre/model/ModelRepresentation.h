@@ -144,7 +144,7 @@ public:
 	 * @param scene The scene to which the entity belongs.
 	 * @param mapping The model mapping tied to the model.
 	 */
-	ModelRepresentation(EmberEntity& entity, Model* model, Scene& scene, EntityMapping::EntityMapping& mapping);
+	ModelRepresentation(EmberEntity& entity, std::unique_ptr<Model> model, Scene& scene, EntityMapping::EntityMapping& mapping);
 
 	/**
 	 * @brief Dtor.

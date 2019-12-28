@@ -42,8 +42,7 @@ void OceanAction::activate(EntityMapping::ChangeContext& context)
 	if (EmberOgre::getSingleton().getWorld()) {
 		World* world = EmberOgre::getSingleton().getWorld();
 		if (Environment* environment = world->getEnvironment()) {
-			OceanRepresentation* ocean = new OceanRepresentation(mEntity, *environment, mScene);
-			mEntity.setGraphicalRepresentation(ocean);
+			mEntity.setGraphicalRepresentation(std::make_unique<OceanRepresentation>(mEntity, *environment, mScene));
 			return;
 		} else {
 			S_LOG_WARNING("Tried to activate ocean representation, but there was no world instance available.");

@@ -89,8 +89,8 @@ void ModelActionBase::deactivate(EntityMapping::ChangeContext& context) {
 
 void ModelActionBase::showModel(const std::string& modelName) {
 
-	Model::Model* model = Model::ModelRepresentation::getModelForEntity(mEntity);
-	if (!model || model->getDefinition()->getOrigin() != modelName) {
+	Model::Model* existingModel = Model::ModelRepresentation::getModelForEntity(mEntity);
+	if (!existingModel || existingModel->getDefinition()->getOrigin() != modelName) {
 		mEntity.setGraphicalRepresentation(nullptr);
 
 		Model::ModelDefinitionManager& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
@@ -102,13 +102,13 @@ void ModelActionBase::showModel(const std::string& modelName) {
 				definition = modelDefinitionManager.getByName("common/primitives/placeholder.modeldef");
 			}
 			if (definition) {
-				model = new Model::Model(mScene.getSceneManager(), definition, mEntity.getId());
+				auto model = std::make_unique<Model::Model>(mScene.getSceneManager(), definition, mEntity.getId());
 				model->setVisible(mEntity.isVisible());
 				model->load();
 
-				Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, model, mScene, mMapping);
-				mEntity.setGraphicalRepresentation(representation);
+				auto representation = std::make_unique<Model::ModelRepresentation>(mEntity, std::move(model), mScene, mMapping);
 				representation->initFromModel();
+                mEntity.setGraphicalRepresentation(std::move(representation));
 			}
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Could not load model of type " << modelName << " from group 'ModelDefinitions'." << ex);

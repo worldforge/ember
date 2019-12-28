@@ -64,9 +64,9 @@ const char* const ModelRepresentation::ACTION_TREAD_WATER("tread_water");
 
 const char* const ModelRepresentation::ACTION_FLOAT("float");
 
-ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scene& scene, EntityMapping::EntityMapping& mapping) :
+ModelRepresentation::ModelRepresentation(EmberEntity& entity, std::unique_ptr<Model> model, Scene& scene, EntityMapping::EntityMapping& mapping) :
 		mEntity(entity),
-		mModel(model),
+		mModel(std::move(model)),
 		mScene(scene),
 		mMapping(mapping),
 		mCurrentMovementAction(nullptr),
@@ -77,7 +77,7 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model* model, Scen
 		mBulletCollisionDetector(new BulletCollisionDetector(scene.getBulletWorld())) {
 	mBulletCollisionDetector->collisionInfo = EntityCollisionInfo{&entity, false};
 	//Only connect if we have actions to act on
-	if (!model->getDefinition()->getActionDefinitions().empty()) {
+	if (!mModel->getDefinition()->getActionDefinitions().empty()) {
 		mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 		mEntity.TaskAdded.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskAdded));
 		mEntity.TaskRemoved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskRemoved));

@@ -25,6 +25,7 @@
 #endif
 
 #include "EmberEntityHideModelAction.h"
+#include "domain/IGraphicalRepresentation.h"
 
 namespace Ember {
 namespace OgreView {

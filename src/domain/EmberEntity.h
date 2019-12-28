@@ -206,7 +206,7 @@ public:
 	 * If any previous graphical representation has been set, it will be deleted.
 	 * @param graphicalRepresentation The new graphical representation. Ownership will be transferred to this class.
 	 */
-	void setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation);
+	void setGraphicalRepresentation(std::unique_ptr<IGraphicalRepresentation> graphicalRepresentation);
 
 	/**
 	 * @brief Emitted when the positioning mode has changed.

@@ -386,18 +386,17 @@ IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const {
 	return mGraphicalRepresentation.get();
 }
 
-void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation) {
-	if (graphicalRepresentation != mGraphicalRepresentation.get()) {
-		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
-		//FIXME This is a little hackish; how can we improve it to not require special cases?
+void EmberEntity::setGraphicalRepresentation(std::unique_ptr<IGraphicalRepresentation> graphicalRepresentation) {
+    //If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
+    //FIXME This is a little hackish; how can we improve it to not require special cases?
 //		if (m_view.getTopLevel() != this) {
 //			//We must delete the attachment before we delete the graphical representation.
 //			setAttachment(nullptr);
 //		}
-		mGraphicalRepresentation.reset(graphicalRepresentation);
-		updateAttachment();
-		EventChangedGraphicalRepresentation();
-	}
+    mGraphicalRepresentation = std::move(graphicalRepresentation);
+    updateAttachment();
+    EventChangedGraphicalRepresentation();
+
 }
 
 void EmberEntity::setAttachment(std::unique_ptr<IEntityAttachment> attachment) {
