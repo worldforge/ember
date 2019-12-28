@@ -141,7 +141,7 @@ private:
 	/**
 	 * @brief Manages the detached entity / preview model used
 	 */
-	ModelPreviewWorker *mModelPreviewWorker;
+	std::unique_ptr<ModelPreviewWorker> mModelPreviewWorker;
 
 };
 
@@ -226,7 +226,7 @@ private:
 	/**
 	 * @brief Detached entity that is used in process of creating preview.
 	 */
-	Authoring::DetachedEntity* mEntity;
+	std::unique_ptr<Authoring::DetachedEntity> mEntity;
 
 	/**
 	* @brief Message that is composed from attributes of the entity we're creating a preview for.
@@ -241,12 +241,12 @@ private:
 	/**
 	 * @brief Preview model.
 	 */
-	Model::Model* mModel;
+	std::unique_ptr<Model::Model> mModel;
 
 	/**
 	 * @brief Preview model mount.
 	 */
-	Model::ModelMount* mModelMount;
+	std::unique_ptr<Model::ModelMount> mModelMount;
 
 	/**
 	 * @brief Current position of preview in the world.
@@ -262,7 +262,7 @@ private:
 	/**
 	 * @brief Movement adapter for our preview model
 	 */
-	ModelPreviewWorkerMovement* mMovement;
+	std::unique_ptr<ModelPreviewWorkerMovement> mMovement;
 };
 
 class ModelPreviewWorkerMovementBridge : public Authoring::EntityMoverBase

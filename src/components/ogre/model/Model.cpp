@@ -25,6 +25,7 @@
 #include "SubModel.h"
 #include "SubModelPart.h"
 #include "ParticleSystemBinding.h"
+#include "components/ogre/OgreInfo.h"
 
 #include "framework/TimeFrame.h"
 #include "framework/TimedLog.h"
@@ -43,7 +44,6 @@
 #include <OgrePass.h>
 #include <OgreInstanceBatch.h>
 #include <OgreHighLevelGpuProgramManager.h>
-#include <components/ogre/OgreInfo.h>
 
 #include <memory>
 

@@ -72,6 +72,7 @@ void NodeAttachment::setVisible(bool visible) {
 
 std::unique_ptr<IEntityAttachment> NodeAttachment::attachEntity(EmberEntity& entity) {
 
+    return nullptr;
 	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity);
 	//	NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
 	//	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*> (entity.getAttachment());

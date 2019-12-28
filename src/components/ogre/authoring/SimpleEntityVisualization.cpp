@@ -33,7 +33,7 @@ namespace Ogre
 {
 
 /**
- This is just like a WireBoundBox but not aligned to the axes, hence it will correctly line up according to it's orientation.
+ This is just like a WireBoundBox but not aligned to the axes, hence it will correctly line up according to its orientation.
  */
 class OOBBWireBoundingBox: public WireBoundingBox
 {

@@ -77,6 +77,18 @@ IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const {
 }
 
 std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& entity) {
+//    //Check if we are a domain, and so handle that case.
+//    if (entity.hasProperty("domain")) {
+//        auto& domainProp = valueOfProperty("domain");
+//        if (domainProp.isString()) {
+//            if (domainProp.String() == "physical") {
+//                setAttachment(std::make_unique<WorldAttachment>(*nearestPhysicalDomainEntity, mScene->getSceneManager().getRootSceneNode()->createChildSceneNode("entity_" + nearestPhysicalDomainEntity->getId())));
+//
+//            }
+//        }
+//    }
+
+
 	std::string attachPoint;
 	for (auto& fitting : mFittings) {
 		if (fitting.second->getChildEntityId() == entity.getId()) {
@@ -88,7 +100,7 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
 	}
 	//Don't show a graphical representation if the model is set not to show any contained entities AND we're not set to attach ourselves to an attach point.
 	if (attachPoint.empty() && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
-		return std::make_unique<HiddenAttachment>(&getAttachedEntity(), entity);
+		return nullptr;
 	} else {
 		ModelRepresentation* modelRepresentation = ModelRepresentation::getRepresentationForEntity(entity);
 
@@ -115,7 +127,8 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
 				return nullptr;
 			}
 		} else {
-			nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
+		    return nullptr;
+//			nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
 		}
 
 		std::unique_ptr<NodeAttachment> nodeAttachment;

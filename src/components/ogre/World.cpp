@@ -54,6 +54,7 @@
 #include "framework/MainLoopController.h"
 #include "ProjectileRenderingTechnique.h"
 #include "WorldAttachment.h"
+#include "HiddenAttachment.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/View.h>

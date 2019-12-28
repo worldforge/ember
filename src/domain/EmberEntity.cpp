@@ -233,8 +233,8 @@ void EmberEntity::updateAttachment() {
 		}
 		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
 		//FIXME This is a little hackish; how can we improve it to not require special cases?
-	} else if (m_view.getTopLevel() == this) {
-		return;
+//	} else if (m_view.getTopLevel() == this) {
+//		return;
 	} else {
 		try {
 			setAttachment(nullptr);
@@ -390,10 +390,10 @@ void EmberEntity::setGraphicalRepresentation(IGraphicalRepresentation* graphical
 	if (graphicalRepresentation != mGraphicalRepresentation.get()) {
 		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
 		//FIXME This is a little hackish; how can we improve it to not require special cases?
-		if (m_view.getTopLevel() != this) {
-			//We must delete the attachment before we delete the graphical representation.
-			setAttachment(nullptr);
-		}
+//		if (m_view.getTopLevel() != this) {
+//			//We must delete the attachment before we delete the graphical representation.
+//			setAttachment(nullptr);
+//		}
 		mGraphicalRepresentation.reset(graphicalRepresentation);
 		updateAttachment();
 		EventChangedGraphicalRepresentation();
