@@ -220,6 +220,9 @@ public:
 
 	BulletCollisionDetector& getCollisionDetector();
 
+    Scene& getScene() { return mScene;}
+    const Scene& getScene() const { return mScene;}
+
 
 	static Model* getModelForEntity(EmberEntity& entity);
 

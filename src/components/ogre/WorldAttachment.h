@@ -38,12 +38,12 @@ namespace Terrain
 class TerrainManager;
 }
 
-class WorldEmberEntity;
+class Scene;
 
 class WorldAttachment: public IEntityAttachment
 {
 public:
-	WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode);
+	WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Scene& scene);
 	~WorldAttachment() override;
 
 	IGraphicalRepresentation* getGraphicalRepresentation() const override;
@@ -81,6 +81,7 @@ protected:
 
 	EmberEntity& mWorldEntity;
 	Ogre::SceneNode* mWorldNode;
+	Scene& mScene;
 };
 
 }

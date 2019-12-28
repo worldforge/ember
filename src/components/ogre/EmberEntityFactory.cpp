@@ -53,20 +53,6 @@ EmberEntityFactory::~EmberEntityFactory() = default;
 Eris::ViewEntity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity& ge, Eris::TypeInfo* type, Eris::View& w) {
 
 	auto entity = new EmberEntity(ge->getId(), type, w);
-	Eris::EntityRef entityRef(entity);
-	mView.getEventService().runOnMainThread([this, entityRef, entity] {
-		if (entityRef) {
-			//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
-			EmberEntityActionCreator creator(*entity, mScene);
-			auto mapping = mMappingManager.createMapping(*entity, creator, &mView);
-			if (mapping) {
-				mapping->initialize();
-				std::shared_ptr<EntityMapping::EntityMapping> sharedMapping(std::move(mapping));
-				//Retain the mapping while the signal exists.
-				entity->BeingDeleted.connect([sharedMapping]() {});
-			}
-		}
-	});
 	S_LOG_VERBOSE("Entity " << entity->getId() << " (" << type->getName() << ") added to game view.");
 	return entity;
 }

@@ -24,45 +24,61 @@
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelAttachment.h"
 #include "OgreInfo.h"
+#include "EmberEntityActionCreator.h"
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
+#include <components/ogre/mapping/EmberEntityMappingManager.h>
 
 namespace Ember {
 namespace OgreView {
 
-WorldAttachment::WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode) :
-		mWorldEntity(worldEntity), mWorldNode(worldNode) {
-	//set the position to always 0, 0, 0
-	mWorldNode->setPosition(Ogre::Vector3(0, 0, 0));
+WorldAttachment::WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Scene& scene) :
+        mWorldEntity(worldEntity),
+        mWorldNode(worldNode),
+        mScene(scene) {
+    //set the position to always 0, 0, 0
+    mWorldNode->setPosition(Ogre::Vector3(0, 0, 0));
 }
 
 WorldAttachment::~WorldAttachment() {
-	mWorldNode->getCreator()->destroySceneNode(mWorldNode);
+    mWorldNode->getCreator()->destroySceneNode(mWorldNode);
 }
 
 IGraphicalRepresentation* WorldAttachment::getGraphicalRepresentation() const {
-	return nullptr;
+    return nullptr;
 }
 
 EmberEntity& WorldAttachment::getAttachedEntity() const {
-	return mWorldEntity;
+    return mWorldEntity;
 }
 
 EmberEntity* WorldAttachment::getParentEntity() const {
-	return nullptr;
+    return nullptr;
 }
 
 std::unique_ptr<IEntityAttachment> WorldAttachment::attachEntity(EmberEntity& entity) {
-	std::unique_ptr<NodeAttachment> nodeAttachment;
-	Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
-	if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity)) {
-		nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(node, mWorldNode));
-	} else {
-		nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, new SceneNodeProvider(node, mWorldNode));
-	}
-	nodeAttachment->init();
-	return nodeAttachment;
+
+    //the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
+    EmberEntityActionCreator creator(entity, mScene);
+    auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, creator, entity.getView());
+    if (mapping) {
+        mapping->initialize();
+        std::shared_ptr<EntityMapping::EntityMapping> sharedMapping(std::move(mapping));
+        //Retain the mapping while the signal exists.
+        entity.BeingDeleted.connect([sharedMapping]() {});
+    }
+
+
+    std::unique_ptr<NodeAttachment> nodeAttachment;
+    Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
+    if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity)) {
+        nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(node, mWorldNode));
+    } else {
+        nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, new SceneNodeProvider(node, mWorldNode));
+    }
+    nodeAttachment->init();
+    return nodeAttachment;
 }
 
 void WorldAttachment::updateScale() {
@@ -72,28 +88,28 @@ void WorldAttachment::updatePosition() {
 }
 
 void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
-	//No offset
+    //No offset
 }
 
 void WorldAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate) {
-	//You can never control the world.
+    //You can never control the world.
 }
 
 IEntityControlDelegate* WorldAttachment::getControlDelegate() const {
-	return nullptr;
+    return nullptr;
 }
 
 void WorldAttachment::setVisualize(const std::string& visualization, bool visualize) {
-	if (visualization == "OgreBBox") {
-		mWorldNode->showBoundingBox(visualize);
-	}
+    if (visualization == "OgreBBox") {
+        mWorldNode->showBoundingBox(visualize);
+    }
 }
 
 bool WorldAttachment::getVisualize(const std::string& visualization) const {
-	if (visualization == "OgreBBox") {
-		return mWorldNode->getShowBoundingBox();
-	}
-	return false;
+    if (visualization == "OgreBBox") {
+        return mWorldNode->getShowBoundingBox();
+    }
+    return false;
 }
 
 }
