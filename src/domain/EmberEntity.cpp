@@ -216,6 +216,7 @@ void EmberEntity::onLocationChanged(Eris::Entity* oldLocation) {
 }
 
 void EmberEntity::updateAttachment() {
+
 	//Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
 
@@ -225,8 +226,8 @@ void EmberEntity::updateAttachment() {
 			auto newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
 			if (newAttachment) {
 				newAttachment->updateScale();
-				setAttachment(std::move(newAttachment));
 			}
+            setAttachment(std::move(newAttachment));
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}

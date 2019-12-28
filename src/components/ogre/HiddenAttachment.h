@@ -40,7 +40,7 @@ namespace OgreView
 class HiddenAttachment : public AttachmentBase
 {
 public:
-	HiddenAttachment(EmberEntity& parentEntity, EmberEntity& childEntity);
+	HiddenAttachment(EmberEntity* parentEntity, EmberEntity& childEntity);
 
 	~HiddenAttachment() override;
 

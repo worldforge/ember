@@ -24,7 +24,7 @@
 namespace Ember {
 namespace OgreView {
 
-AttachmentBase::AttachmentBase(EmberEntity& parentEntity, EmberEntity& childEntity) :
+AttachmentBase::AttachmentBase(EmberEntity* parentEntity, EmberEntity& childEntity) :
 		mParentEntity(parentEntity), mChildEntity(childEntity) {
 }
 
@@ -39,7 +39,7 @@ EmberEntity& AttachmentBase::getAttachedEntity() const {
 }
 
 EmberEntity* AttachmentBase::getParentEntity() const {
-	return &mParentEntity;
+	return mParentEntity;
 }
 
 void AttachmentBase::setControlDelegate(IEntityControlDelegate*) {
@@ -56,13 +56,13 @@ void AttachmentBase::updatePosition() {
 }
 
 void AttachmentBase::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
-	if (mParentEntity.getAttachment()) {
+	if (mParentEntity->getAttachment()) {
 		WFMath::Vector<3> localPositionShift(mChildEntity.getPredictedPos());
 		if (!localPositionShift.isValid()) {
 			localPositionShift = WFMath::Vector<3>::ZERO();
 		}
 		WFMath::Point<3> adjustedLocalPosition = localPosition + localPositionShift;
-		mParentEntity.getAttachment()->getOffsetForContainedNode(attachment, adjustedLocalPosition, offset);
+		mParentEntity->getAttachment()->getOffsetForContainedNode(attachment, adjustedLocalPosition, offset);
 	}
 }
 

@@ -88,7 +88,7 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
 	}
 	//Don't show a graphical representation if the model is set not to show any contained entities AND we're not set to attach ourselves to an attach point.
 	if (attachPoint.empty() && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
-		return std::make_unique<HiddenAttachment>(getAttachedEntity(), entity);
+		return std::make_unique<HiddenAttachment>(&getAttachedEntity(), entity);
 	} else {
 		ModelRepresentation* modelRepresentation = ModelRepresentation::getRepresentationForEntity(entity);
 
@@ -108,7 +108,7 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
 					nodeProvider = new ModelBoneProvider(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
 				} catch (const std::exception& ex) {
 					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getOrigin() << "'.");
-					return std::make_unique<HiddenAttachment>(entity, getAttachedEntity());
+					return std::make_unique<HiddenAttachment>(&entity, getAttachedEntity());
 				}
 			} else {
 				//If the model isn't loaded yet we can't attach yet. Instead we'll return a null attachment and wait until the model is reloaded, at which point reattachEntities() is called.

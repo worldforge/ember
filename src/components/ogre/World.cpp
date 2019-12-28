@@ -210,8 +210,11 @@ void World::View_topLevelEntityChanged() {
 
     if (nearestPhysicalDomainEntity) {
         nearestPhysicalDomainEntity->setAttachment(std::make_unique<WorldAttachment>(*nearestPhysicalDomainEntity, mScene->getSceneManager().getRootSceneNode()->createChildSceneNode("entity_" + nearestPhysicalDomainEntity->getId())));
+        mTopLevelEntity = nearestPhysicalDomainEntity;
+    } else {
+        mTopLevelEntity = dynamic_cast<EmberEntity*>(mView.getAvatar().getEntity()->getTopEntity());
+        mTopLevelEntity->setAttachment({});
     }
-    mTopLevelEntity = nearestPhysicalDomainEntity;
 }
 
 EntityWorldPickListener& World::getEntityPickListener() const {

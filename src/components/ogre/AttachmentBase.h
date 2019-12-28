@@ -44,7 +44,7 @@ namespace OgreView {
  */
 class AttachmentBase : public IEntityAttachment {
 public:
-	AttachmentBase(EmberEntity& parentEntity, EmberEntity& childEntity);
+	AttachmentBase(EmberEntity* parentEntity, EmberEntity& childEntity);
 
 	~AttachmentBase() override;
 
@@ -80,7 +80,7 @@ public:
 
 protected:
 
-	EmberEntity& mParentEntity;
+	EmberEntity* mParentEntity;
 	EmberEntity& mChildEntity;
 
 };
