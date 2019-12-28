@@ -25,6 +25,8 @@
 #endif
 
 #include "EmberEntityModelAction.h"
+
+#include <utility>
 #include "Scene.h"
 
 #include "components/ogre/model/Model.h"
@@ -36,8 +38,8 @@
 namespace Ember {
 namespace OgreView {
 
-EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene, EntityMapping::EntityMapping& modelMapping) :
-		ModelActionBase(entity, scene, modelMapping), mModelName(modelName) {
+EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene, EntityMapping::EntityMapping& modelMapping) :
+		ModelActionBase(entity, scene, modelMapping), mModelName(std::move(modelName)) {
 }
 
 void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context) {

@@ -165,7 +165,7 @@ void EntityCreatorCreationInstance::createEntity()
 		showModelPart(partName);
 	});
 
-	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, nullptr));
+	std::unique_ptr<EntityMapping::EntityMapping> modelMapping= Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, nullptr);
 	if (modelMapping) {
 		modelMapping->initialize();
 	}

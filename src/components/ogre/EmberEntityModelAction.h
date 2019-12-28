@@ -37,7 +37,7 @@ namespace OgreView
 class EmberEntityModelAction: public ModelActionBase
 {
 public:
-	EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene, EntityMapping::EntityMapping& mMapping);
+	EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene, EntityMapping::EntityMapping& mMapping);
 
 	~EmberEntityModelAction() override = default;
 

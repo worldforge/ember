@@ -35,57 +35,40 @@
 using namespace Ember::EntityMapping;
 
 
-
 namespace Ember {
 namespace OgreView {
 
 namespace Mapping {
 
-EmberEntityMappingManager::EmberEntityMappingManager() : mEntityMappingManager(), mXmlSerializer(mEntityMappingManager)
-{
-    mLoadOrder = 300.0f;
-    mResourceType = "EntityMappingDefinition";
+EmberEntityMappingManager::EmberEntityMappingManager() : mEntityMappingManager(), mXmlSerializer(mEntityMappingManager) {
 
-	mScriptPatterns.emplace_back("*.entitymap");
-	mScriptPatterns.emplace_back("*.entitymap.xml");
-	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
-
-	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
-
-	EmberServices::getSingleton().getServerService().GotConnection.connect(sigc::mem_fun(*this, &EmberEntityMappingManager::ServerService_GotConnection));
-
+    Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 
 }
 
-
-EmberEntityMappingManager::~EmberEntityMappingManager()
-{
-	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
-	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
+EmberEntityMappingManager::~EmberEntityMappingManager() {
+    Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
 
-void EmberEntityMappingManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
-{
-	TiXmlDocument xmlDoc;
-	XMLHelper xmlHelper;
-	if (!xmlHelper.Load(xmlDoc, stream)) {
-		return;
-	}
-
-	mXmlSerializer.parseScript(xmlDoc, stream->getName());
+const Ogre::StringVector& EmberEntityMappingManager::getScriptPatterns() const {
+    static Ogre::StringVector patterns{"*.entitymap", "*.entitymap.xml"};
+    return patterns;
 }
 
-Ogre::Resource* EmberEntityMappingManager::createImpl(const Ogre::String&, Ogre::ResourceHandle,
-    const Ogre::String&, bool, Ogre::ManualResourceLoader*,
-    const Ogre::NameValuePairList*)
-{
-	return nullptr;
+Ogre::Real EmberEntityMappingManager::getLoadingOrder() const {
+    return 300;
 }
 
 
-void EmberEntityMappingManager::ServerService_GotConnection(Eris::Connection* connection) {
-	mEntityMappingManager.setTypeService(&connection->getTypeService());
+void EmberEntityMappingManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) {
+    TiXmlDocument xmlDoc;
+    XMLHelper xmlHelper;
+    if (!xmlHelper.Load(xmlDoc, stream)) {
+        return;
+    }
+
+    mXmlSerializer.parseScript(xmlDoc, stream->getName());
 }
 
 

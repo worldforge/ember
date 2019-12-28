@@ -69,12 +69,6 @@ public:
 	~EntityMappingManager();
 
 	/**
-	Sets the type service. Applications are required to set this before calling createMapping(...)
-	@param typeService An Eris::TypeService instance.
-	*/
-	void setTypeService(Eris::TypeService* typeService);
-
-	/**
 	Adds a definition to the manager. This definition will be deleted by the manager upon destruction.
 	@param definition A valid definition.
 	*/
@@ -93,14 +87,9 @@ protected:
 
 	EntityMappingDefinitionStore mDefinitions;
 
-	Eris::TypeService* mTypeService;
-
 
 };
 
-inline void EntityMappingManager::setTypeService(Eris::TypeService* typeService) {
-	mTypeService = typeService;
-}
 
 
 }
