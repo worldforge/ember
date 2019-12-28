@@ -41,7 +41,7 @@ namespace Definitions {
 	A definition for an Action.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class ActionDefinition : public DefinitionBase
+struct ActionDefinition : public DefinitionBase
 {
 public:
     const std::string& getValue() const;

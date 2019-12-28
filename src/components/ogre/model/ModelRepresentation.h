@@ -54,7 +54,7 @@ class Scene;
 namespace Model
 {
 
-class ActionDefinition;
+struct ActionDefinition;
 struct SoundDefinition;
 class Model;
 class Action;
