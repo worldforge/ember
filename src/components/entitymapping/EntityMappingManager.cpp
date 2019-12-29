@@ -51,43 +51,40 @@ void EntityMappingManager::addDefinition(std::unique_ptr<EntityMappingDefinition
 }
 
 std::unique_ptr<EntityMapping> EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view) {
-    if (view) {
-        EntityMappingDefinition* definition = nullptr;
-        if (entity.hasProperty("present")) {
-            auto mappingElement = entity.valueOfProperty("present");
-            if (mappingElement.isString()) {
-                auto I = mDefinitions.find(mappingElement.String());
-                if (I != mDefinitions.end()) {
-                    definition = I->second.get();
-                }
+    EntityMappingDefinition* definition = nullptr;
+    if (entity.hasProperty("present")) {
+        auto mappingElement = entity.valueOfProperty("present");
+        if (mappingElement.isString()) {
+            auto I = mDefinitions.find(mappingElement.String());
+            if (I != mDefinitions.end()) {
+                definition = I->second.get();
             }
         }
-
-        if (definition) {
-            EntityMappingCreator creator(*definition, entity, actionCreator, view->getTypeService(), view);
-            return creator.create();
-        } else {
-            auto mapping = std::make_unique<EntityMapping>(entity);
-
-            auto attributeMatch = new Matches::SingleAttributeMatch("present");
-            auto* attributeCase = new Cases::AttributeCase(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
-            auto* observer = new Matches::Observers::MatchAttributeObserver(attributeMatch, "present");
-            attributeMatch->setMatchAttributeObserver(observer);
-
-            attributeMatch->addCase(attributeCase);
-            CaseDefinition caseDefinition;
-            ActionDefinition actionDefinition;
-            actionDefinition.Type = "present";
-            caseDefinition.getActions().emplace_back(std::move(actionDefinition));
-            actionCreator.createActions(*mapping, attributeCase, caseDefinition);
-            mapping->getBaseCase().addMatch(attributeMatch);
-
-            mapping->getBaseCase().setEntity(&entity);
-
-            return mapping;
-        }
     }
-    return nullptr;
+
+    if (definition) {
+        EntityMappingCreator creator(*definition, entity, actionCreator, view->getTypeService(), view);
+        return creator.create();
+    } else {
+        auto mapping = std::make_unique<EntityMapping>(entity);
+
+        auto attributeMatch = new Matches::SingleAttributeMatch("present");
+        auto* attributeCase = new Cases::AttributeCase(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
+        auto* observer = new Matches::Observers::MatchAttributeObserver(attributeMatch, "present");
+        attributeMatch->setMatchAttributeObserver(observer);
+
+        attributeMatch->addCase(attributeCase);
+        CaseDefinition caseDefinition;
+        ActionDefinition actionDefinition;
+        actionDefinition.Type = "present";
+        caseDefinition.getActions().emplace_back(std::move(actionDefinition));
+        actionCreator.createActions(*mapping, attributeCase, caseDefinition);
+        mapping->getBaseCase().addMatch(attributeMatch);
+
+        mapping->getBaseCase().setEntity(&entity);
+
+        return mapping;
+    }
 }
 
 }
