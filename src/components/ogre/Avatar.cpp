@@ -684,7 +684,7 @@ void Avatar::useTool(const EmberEntity& tool,
 
 }
 
-void Avatar::taskUsage(const std::string& taskId, std::string usageName) {
+void Avatar::taskUsage(const std::string& taskId, const std::string& usageName) {
 	auto I = mErisAvatarEntity.getTasks().find(taskId);
 	if (I == mErisAvatarEntity.getTasks().end()) {
 		return;
