@@ -33,15 +33,12 @@ namespace OgreView
 namespace Authoring
 {
 GUIAdapterBindings::GUIAdapterBindings() :
-	mElement(0)
+	mElement(nullptr)
 {
 
 }
 
-GUIAdapterBindings::~GUIAdapterBindings()
-{
-
-}
+GUIAdapterBindings::~GUIAdapterBindings() = default;
 
 const std::string& GUIAdapterBindings::getFunc()
 {
@@ -50,12 +47,12 @@ const std::string& GUIAdapterBindings::getFunc()
 
 void GUIAdapterBindings::setFunc(std::string func)
 {
-	mFunc = func;
+	mFunc = std::move(func);
 }
 
 void GUIAdapterBindings::addAdapter(std::string adapterName)
 {
-	mAdapters.push_back(adapterName);
+	mAdapters.push_back(std::move(adapterName));
 }
 
 std::vector<std::string>& GUIAdapterBindings::getAdapters()

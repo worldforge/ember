@@ -53,7 +53,7 @@ public:
 		CEGUI::ToggleButton* editable;
 	};
 
-    SizeAdapter(const ::Atlas::Message::Element& element, Widgets widgets);
+    SizeAdapter(const ::Atlas::Message::Element& element, const Widgets& widgets);
 
 	~SizeAdapter() override;
 	

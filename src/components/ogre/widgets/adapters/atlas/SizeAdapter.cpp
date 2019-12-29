@@ -42,7 +42,7 @@ namespace Adapters
 namespace Atlas
 {
 
-SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, Widgets widgets) :
+SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, const Widgets& widgets) :
 	AdapterBase(element), mWidgets(widgets)
 {
 	if (mWidgets.lowerXWindow) {

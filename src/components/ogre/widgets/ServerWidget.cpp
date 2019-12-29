@@ -494,7 +494,7 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args) {
 		if (!mCharacterAndSpawns.empty()) {
 			CharacterAndSpawnsStore::const_iterator I = mCharacterAndSpawns.begin();
 			for (unsigned int i = 0; i < itemIndex; ++i) {
-				I++;
+				++I;
 			}
 			mNewChar.type = I->first;
 			mNewChar.spawnPoint = I->second;

@@ -215,7 +215,7 @@ public:
 				 const WFMath::Point<3>& posInWorld = WFMath::Point<3>(),
 				 WFMath::Vector<3> direction = WFMath::Vector<3>());
 
-	void taskUsage(std::string taskId, std::string usage);
+	void taskUsage(const std::string& taskId, std::string usage);
 
 	void taskUsage(std::string taskId, const Eris::TaskUsage& usage);
 

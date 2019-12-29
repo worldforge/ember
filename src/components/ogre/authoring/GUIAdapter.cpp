@@ -94,8 +94,8 @@ Atlas::Message::Element GUIAdapter::getValue() {
             // No sequental access to the map.
             SuggestionsStore::const_iterator I = mSuggestions.begin();
             while (i > 0) {
-                I++;
-                i--;
+                ++I;
+                --i;
             }
             return I->second;
         } else {
