@@ -66,7 +66,7 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon) {
             mIconEntity = icon->getEntity();
             Gui::HelpMessage message("Entity Drag Preview", "Release the left mouse button to place the entity at the selected location. Press Escape to cancel.", "entity icon drag drop preview", "dragDropMessage");
             Gui::QuickHelp::getSingleton().updateText(message);
-            mModelPreviewWorker = std::make_unique<ModelPreviewWorker>(mWorld, mIconEntity);
+            mModelPreviewWorker = std::make_unique<ModelPreviewWorker>(mWorld, *mIconEntity);
             mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
             mModelPreviewWorker->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
             mEntityDeleteConnection = mIconEntity->BeingDeleted.connect([&]() {
@@ -101,22 +101,22 @@ WFMath::Quaternion EntityIconDragDropPreview::getDropOrientation() const {
     return mDropOrientation;
 }
 
-ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
+ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity& entity) :
         mWorld(world),
         mEntity(entity),
         mEntityNode(mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode()),
         mPos(WFMath::Point<3>::ZERO()),
         mOrientation(WFMath::Quaternion::IDENTITY()),
-        mMovement(std::make_unique<ModelPreviewWorkerMovement>(*this, mWorld.getMainCamera(), *entity, mEntityNode))    // Registering move adapter to track mouse movements
+        mMovement(std::make_unique<ModelPreviewWorkerMovement>(*this, mWorld.getMainCamera(), entity, mEntityNode))    // Registering move adapter to track mouse movements
 {
 
-    Mapping::ModelActionCreator actionCreator(*entity, [&](std::string modelName) {
+    Mapping::ModelActionCreator actionCreator(entity, [&](std::string modelName) {
         setModel(modelName);
     }, [&](std::string partName) {
         showModelPart(partName);
     });
 
-    auto modelMapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, nullptr);
+    auto modelMapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, entity.getView());
     if (modelMapping) {
         modelMapping->initialize();
     }
@@ -194,14 +194,14 @@ void ModelPreviewWorker::scaleNode() {
 }
 
 bool ModelPreviewWorker::hasBBox() {
-    return mEntity->hasBBox();
+    return mEntity.hasBBox();
 }
 
 const WFMath::AxisBox<3>& ModelPreviewWorker::getBBox() {
-    return mEntity->getBBox();
+    return mEntity.getBBox();
 }
 
-const Eris::Entity* ModelPreviewWorker::getEntity() const {
+const Eris::Entity& ModelPreviewWorker::getEntity() const {
     return mEntity;
 }
 

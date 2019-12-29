@@ -157,7 +157,7 @@ public:
 	 * @param world The world.
 	 * @param entity The entity being moved.
 	 */
-	ModelPreviewWorker(World& world, Eris::ViewEntity* entity);
+	ModelPreviewWorker(World& world, Eris::ViewEntity& entity);
 	~ModelPreviewWorker();
 	/**
 	 * @brief Sets model information based on the entity type.
@@ -187,7 +187,7 @@ public:
 	 */
 	WFMath::Quaternion getOrientation() const;
 
-	const Eris::Entity* getEntity() const;
+	const Eris::Entity& getEntity() const;
 
 	sigc::signal<void> EventFinalizeCreation;
 	sigc::signal<void> EventCleanupCreation;
@@ -227,11 +227,7 @@ private:
 	 */
 	World& mWorld;
 
-	/**
-	 * @brief Detached entity that is used in process of creating preview.
-	 */
-	//std::unique_ptr<Authoring::DetachedEntity> mEntity;
-	Eris::Entity* mEntity;
+	Eris::Entity& mEntity;
 
 	/**
 	 * @brief Preview scene node.
