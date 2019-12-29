@@ -194,26 +194,21 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
     //Check if we got a ModelRepresentation from the mapping creator we just executed.
     ModelRepresentation* modelRepresentation = ModelRepresentation::getRepresentationForEntity(entity);
 
-    INodeProvider* nodeProvider = nullptr;
-    std::string pose;
     if (modelRepresentation) {
         if (mModelRepresentation.getModel().isLoaded()) {
             try {
                 const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
                 for (const auto& attachpoint : attachpoints) {
                     if (attachpoint.Name == attachPoint) {
-                        pose = attachpoint.Pose;
-                        break;
+                        auto nodeProvider = new ModelBoneProvider(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
+                        auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), *modelRepresentation, nodeProvider, attachpoint.Pose);
+                        nodeAttachment->init();
+                        return nodeAttachment;
                     }
                 }
-
-                nodeProvider = new ModelBoneProvider(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
-                auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), *modelRepresentation, nodeProvider, pose);
-                nodeAttachment->init();
-                return nodeAttachment;
             } catch (const std::exception& ex) {
                 S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getOrigin() << "'.");
-                return std::make_unique<HiddenAttachment>(&entity, getAttachedEntity());
+                return nullptr;
             }
         } else {
             //If the model isn't loaded yet we can't attach yet. Instead we'll return a null attachment and wait until the model is reloaded, at which point reattachEntities() is called.
