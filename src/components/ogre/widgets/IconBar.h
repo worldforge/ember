@@ -62,11 +62,10 @@ public:
 	float getAbsoluteWidth();
 
 protected:
-	typedef std::vector<IconBase*> IconBaseStore;
 
 	UniqueWindowPtr<CEGUI::Window> mWindow;
 
-	IconBaseStore mIconBases;
+    std::vector<std::unique_ptr<IconBase>> mIconBases;
 
 	/**
 	Repositions all icons as they are added and removed to the list.

@@ -26,7 +26,6 @@
 #include "components/ogre/widgets/ColouredListItem.h"
 
 #include <OgreResourceManager.h>
-#include <Eris/EventService.h>
 #include <framework/MainLoopController.h>
 
 namespace Ember {
@@ -40,7 +39,9 @@ namespace Ogre {
 
 
 ResourceListAdapter::ResourceListAdapter(ListHolder* listHolder, ::Ogre::ResourceManager* resourceManager)
-		: mListHolder(listHolder), mResourceManager(resourceManager) {
+		: mListHolder(listHolder),
+		mResourceManager(resourceManager),
+		mIndex(0){
 }
 
 void ResourceListAdapter::update() {

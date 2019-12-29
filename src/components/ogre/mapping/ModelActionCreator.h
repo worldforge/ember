@@ -33,57 +33,59 @@ namespace Mapping {
  */
 class ModelActionCreator : public Ember::EntityMapping::IActionCreator {
 public:
-	ModelActionCreator(Eris::Entity& entity,
-					   std::function<void(std::string)> showModelFn,
-					   std::function<void(std::string)> showPartFn);
+    ModelActionCreator(Eris::Entity& entity,
+                       std::function<void(const std::string&)> showModelFn,
+                       std::function<void(const std::string&)> showPartFn);
 
-	void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition) override;
+    void createActions(EntityMapping::EntityMapping& modelMapping,
+                       EntityMapping::Cases::CaseBase* aCase,
+                       EntityMapping::Definitions::CaseDefinition& caseDefinition) override;
 
 protected:
-	Eris::Entity& mEntity;
-	std::function<void(std::string)> mShowModelFn;
-	std::function<void(std::string)> mShowPartFn;
+    Eris::Entity& mEntity;
+    std::function<void(std::string)> mShowModelFn;
+    std::function<void(std::string)> mShowPartFn;
 
-	class DisplayModelAction : public EntityMapping::Actions::Action {
-	public:
-		ModelActionCreator* mCreator;
-		std::string mModelName;
+    class DisplayModelAction : public EntityMapping::Actions::Action {
+    public:
+        ModelActionCreator* mCreator;
+        std::string mModelName;
 
-		explicit DisplayModelAction(ModelActionCreator* creator, std::string modelName);
+        explicit DisplayModelAction(ModelActionCreator* creator, std::string modelName);
 
-		void activate(EntityMapping::ChangeContext& context) override;
+        void activate(EntityMapping::ChangeContext& context) override;
 
-		void deactivate(EntityMapping::ChangeContext& context) override {
-		}
+        void deactivate(EntityMapping::ChangeContext& context) override {
+        }
 
-	};
+    };
 
-	class DisplayPartAction : public EntityMapping::Actions::Action {
-	public:
-		ModelActionCreator* mCreator;
-		std::string mPartName;
+    class DisplayPartAction : public EntityMapping::Actions::Action {
+    public:
+        ModelActionCreator* mCreator;
+        std::string mPartName;
 
-		explicit DisplayPartAction(ModelActionCreator* creator, std::string partName);
+        explicit DisplayPartAction(ModelActionCreator* creator, std::string partName);
 
-		void activate(EntityMapping::ChangeContext& context) override;
+        void activate(EntityMapping::ChangeContext& context) override;
 
-		void deactivate(EntityMapping::ChangeContext& context) override {
-		}
+        void deactivate(EntityMapping::ChangeContext& context) override {
+        }
 
-	};
+    };
 
-	class PresentAction : public EntityMapping::Actions::Action {
-	public:
-		ModelActionCreator* mCreator;
+    class PresentAction : public EntityMapping::Actions::Action {
+    public:
+        ModelActionCreator* mCreator;
 
-		explicit PresentAction(ModelActionCreator* creator);
+        explicit PresentAction(ModelActionCreator* creator);
 
-		void activate(EntityMapping::ChangeContext& context) override;
+        void activate(EntityMapping::ChangeContext& context) override;
 
-		void deactivate(EntityMapping::ChangeContext& context) override {
-		}
+        void deactivate(EntityMapping::ChangeContext& context) override {
+        }
 
-	};
+    };
 
 
 };

@@ -39,15 +39,12 @@ QuickHelpCursor::QuickHelpCursor() : mQuickHelp(Gui::QuickHelp::getSingleton())
 	mCursorLocation = getSize();
 	mCurrentPosition = mQuickHelp.getEnd();
 	if (mCursorLocation > 0) {
-		mCurrentPosition--;
+		--mCurrentPosition;
 		updateMessage();
 	}
 }
 
-QuickHelpCursor::~QuickHelpCursor()
-{
-
-}
+QuickHelpCursor::~QuickHelpCursor() = default;
 
 void QuickHelpCursor::getLatestHelpMessage(std::list<HelpMessage>::const_iterator position)
 {
@@ -66,13 +63,13 @@ void QuickHelpCursor::nextMessage()
 {
 	if (getSize()) {
 		//list.end() returns an iterator that is one past the front of the list, so we have a bit of extra work
-		mCurrentPosition++;
+		++mCurrentPosition;
 		if (mCurrentPosition != mQuickHelp.getEnd())
 		{
-			mCursorLocation++;
+			++mCursorLocation;
 			updateMessage();
 		} else {
-			mCurrentPosition--;
+			--mCurrentPosition;
 		}
 	}
 }
@@ -81,8 +78,8 @@ void QuickHelpCursor::previousMessage()
 {
 	if (mCurrentPosition != mQuickHelp.getBeginning())
 	{
-		mCursorLocation--;
-		mCurrentPosition--;
+		--mCursorLocation;
+		--mCurrentPosition;
 		updateMessage();
 	}
 }

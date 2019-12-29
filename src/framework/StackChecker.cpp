@@ -54,7 +54,7 @@ class StackChecker::StackCheckerInstance {
 public:
 	StackEntry stackEntry{};
 
-	std::thread* pollingThread = nullptr;
+	std::thread pollingThread;
 	std::atomic_bool hasReportedThisFrame;
 	std::chrono::steady_clock::time_point resetTime{};
 	std::chrono::milliseconds lastFrameMilliseconds{};
@@ -148,7 +148,7 @@ public:
 		//Store the main thread id.
 		auto nativeThread = pthread_self();
 		installSignalHandler();
-		pollingThread = new std::thread([this, maxFrameDuration, nativeThread]() {
+		pollingThread = std::thread([this, maxFrameDuration, nativeThread]() {
 			while (true) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				if (!hasReportedThisFrame) {
@@ -173,8 +173,7 @@ public:
 			std::lock_guard<std::mutex> lock(mutex);
 			*activeMarker = false;
 		}
-		pollingThread->join();
-		delete pollingThread;
+		pollingThread.join();
 		if (oldSignalHandler != SIG_ERR) {
 			std::signal(SIGUSR1, oldSignalHandler);
 		}

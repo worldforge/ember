@@ -166,17 +166,17 @@ protected:
 	/**
 	 * @brief A model mount, to which the model is attached.
 	 */
-	Model::ModelMount* mModelMount;
+	std::unique_ptr<Model::ModelMount> mModelMount;
 
 	/**
 	 * @brief Preview model.
 	 */
-	Model::Model* mModel;
+	std::unique_ptr<Model::Model> mModel;
 
 	/**
 	 * @brief Handles movement of the entity preview.
 	 */
-	EntityCreatorMovement* mMovement;
+	std::unique_ptr<EntityCreatorMovement> mMovement;
 
 	/**
 	 * @brief Message that is composed from recipe entity spec with placeholders substituted with adapters values.

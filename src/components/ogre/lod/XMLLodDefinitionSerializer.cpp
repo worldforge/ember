@@ -176,14 +176,13 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 
 			// <level>...</level> <level>...</level> <level>...</level>
 			const LodDefinition::LodDistanceMap& manualLod = lodDef->getManualLodData();
-			LodDefinition::LodDistanceMap::const_iterator it;
-			for (it = manualLod.begin(); it != manualLod.end(); it++) {
+			for (const auto & it : manualLod) {
 
 				// <level distance="10">...</level>
 				TiXmlElement levelElem("level");
-				levelElem.SetAttribute("distance", Ogre::StringConverter::toString(it->first));
+				levelElem.SetAttribute("distance", Ogre::StringConverter::toString(it.first));
 
-				const LodDistance& dist = it->second;
+				const LodDistance& dist = it.second;
 				{
 					if (lodDef->getType() == LodDefinition::LT_USER_CREATED_MESH) {
 						// <meshName>.../test.mesh</meshName>

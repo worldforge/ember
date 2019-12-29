@@ -53,7 +53,7 @@ public:
 	 * Constructor.
 	 * @param type The type of new adapter. Should be known to AdaptersFactory.
 	 */
-	GUIAdapter(const std::string& type);
+	GUIAdapter(std::string  type);
 
 	/**
 	 * Destructor.
@@ -151,7 +151,7 @@ protected:
 	/**
 	 * Adapter container.
 	 */
-	Gui::Adapters::Atlas::AdapterBase* mAdapter;
+	std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> mAdapter;
 
 	/**
 	 * Adapter value.

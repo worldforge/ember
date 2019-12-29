@@ -110,9 +110,9 @@ ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity& entity) :
         mMovement(std::make_unique<ModelPreviewWorkerMovement>(*this, mWorld.getMainCamera(), entity, mEntityNode))    // Registering move adapter to track mouse movements
 {
 
-    Mapping::ModelActionCreator actionCreator(entity, [&](std::string modelName) {
+    Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& modelName) {
         setModel(modelName);
-    }, [&](std::string partName) {
+    }, [&](const std::string& partName) {
         showModelPart(partName);
     });
 

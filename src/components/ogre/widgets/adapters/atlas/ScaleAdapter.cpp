@@ -32,7 +32,7 @@ namespace Adapters {
 
 namespace Atlas {
 
-ScaleAdapter::ScaleAdapter(const ::Atlas::Message::Element& element, Widgets widgets)
+ScaleAdapter::ScaleAdapter(const ::Atlas::Message::Element& element, const Widgets& widgets)
 		: AdapterBase(element), mWidgets(widgets) {
 
 	if (mOriginalValue.List().empty()) {

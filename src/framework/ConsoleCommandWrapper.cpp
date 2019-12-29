@@ -33,8 +33,7 @@ namespace Ember {
 
 
 ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject* object, std::string description, bool suppressLogging)
-		: mCommand(command),
-		  mInverseCommand(""),
+		: mCommand(std::move(command)),
 		  mDescription(std::move(description)),
 		  mObject(object),
 		  mSuppressLogging(suppressLogging) {
@@ -47,7 +46,7 @@ ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject*
 			ConsoleBackend::getSingletonPtr()->registerCommand(mInverseCommand, object, std::string("Releases the command ") + mCommand, suppressLogging);
 		}
 	} else {
-		S_LOG_WARNING("Could not register command " << command << " since there was no console backend.");
+		S_LOG_WARNING("Could not register command " << mCommand << " since there was no console backend.");
 	}
 }
 

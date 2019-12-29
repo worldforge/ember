@@ -33,14 +33,13 @@ namespace Ember {
 
 
 bool LoggingService::start() {
-	setRunning(true);
-	return true;
+    setRunning(true);
+    return true;
 }
 
-LoggingService::LoggingService() : Service("Logging") {
-	//set service properties
-
-	mErisLogReciever = std::make_unique<ErisLogReciever>();
+LoggingService::LoggingService() :
+        Service("Logging"),
+        mErisLogReciever(std::make_unique<ErisLogReciever>()) {
 }
 
 

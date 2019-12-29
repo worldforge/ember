@@ -85,15 +85,7 @@ EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris:
 
 EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 {
-	delete mMovement;
-	// 	mInputAdapter->removeAdapter();
-
-	delete mModelMount;
-
 	mEntityNode->detachAllObjects();
-
-
-	delete mModel;
 
 	mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
 
@@ -159,9 +151,9 @@ void EntityCreatorCreationInstance::createEntity()
 	}
 
 	// Making model from temporary entity
-	Mapping::ModelActionCreator actionCreator(*mEntity, [&](std::string modelName){
+	Mapping::ModelActionCreator actionCreator(*mEntity, [&](const std::string& modelName){
 		setModel(modelName);
-	}, [&](std::string partName){
+	}, [&](const std::string& partName){
 		showModelPart(partName);
 	});
 
@@ -172,7 +164,7 @@ void EntityCreatorCreationInstance::createEntity()
 
 	// Registering move adapter to track mouse movements
 	// 		mInputAdapter->addAdapter();
-	mMovement = new EntityCreatorMovement(*this, mWorld.getMainCamera(), *mEntity, mEntityNode);
+	mMovement = std::make_unique<EntityCreatorMovement>(*this, mWorld.getMainCamera(), *mEntity, mEntityNode);
 
 }
 
@@ -210,18 +202,13 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 	if (mModel) {
 		if (mModel->getDefinition()->getOrigin() == modelName) {
 			return;
-		} else {
-			//Reset the model mount to start with.
-			delete mModelMount;
-			mModelMount = nullptr;
-			delete mModel;
 		}
 	}
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 	if (!modelDef) {
 		modelDef = Model::ModelDefinitionManager::getSingleton().getByName("common/primitives/placeholder.modeldef");
 	}
-	mModel = new Model::Model(mWorld.getSceneManager(), modelDef, modelName);
+	mModel = std::make_unique<Model::Model>(mWorld.getSceneManager(), modelDef, modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &EntityCreatorCreationInstance::model_Reloaded));
 	mModel->load();
 
@@ -236,7 +223,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 //	}
 
 	Ogre::SceneNode* node = mEntityNode->createChildSceneNode(OgreInfo::createUniqueResourceName(mRecipe.getName()));
-	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(node, mEntityNode));
+	mModelMount = std::make_unique<Model::ModelMount>(*mModel, new SceneNodeProvider(node, mEntityNode));
 	mModelMount->reset();
 
 	initFromModel();
@@ -264,7 +251,7 @@ void EntityCreatorCreationInstance::hideModelPart(const std::string& partName)
 
 Model::Model* EntityCreatorCreationInstance::getModel()
 {
-	return mModel;
+	return mModel.get();
 }
 
 bool EntityCreatorCreationInstance::hasBBox() const
@@ -317,7 +304,7 @@ const Authoring::DetachedEntity* EntityCreatorCreationInstance::getEntity() cons
 }
 
 EntityCreatorMovement* EntityCreatorCreationInstance::getMovement() {
-	return mMovement;
+	return mMovement.get();
 }
 
 }

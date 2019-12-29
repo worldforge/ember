@@ -26,6 +26,7 @@
 
 #include <sigc++/signal.h>
 #include <memory>
+#include <boost/noncopyable.hpp>
 
 namespace Ogre {
 class TerrainGlobalOptions;
@@ -55,7 +56,7 @@ class CameraFocusedGrid2DPageStrategy;
 /**
  * @brief A ITerrainAdapter implementation which connects to and sets up the Ogre Terrain component.
  */
-class OgreTerrainAdapter : public ITerrainAdapter {
+class OgreTerrainAdapter : public ITerrainAdapter, public boost::noncopyable {
 public:
 	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, int terrainPageSize = 257);
 

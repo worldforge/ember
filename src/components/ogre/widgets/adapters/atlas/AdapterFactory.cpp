@@ -334,7 +334,7 @@ MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std
 	return createMapAdapter(container, adapterPrefix, entity->getProperties());
 }
 
-MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const std::map<std::string, ::Atlas::Message::Element> attributes)
+MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const std::map<std::string, ::Atlas::Message::Element>& attributes)
 {
 	return createMapAdapter(container, adapterPrefix, ::Atlas::Message::Element(attributes));
 }
@@ -374,7 +374,7 @@ EntityRefAdapter* AdapterFactory::createEntityRefAdapter(CEGUI::Window* containe
 	return createAdapter<EntityRefAdapter>(container, adapterPrefix, element);
 }
 
-AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
+AdapterBase* AdapterFactory::createAdapterByType(const std::string& type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	::Atlas::Message::Element newElement(element);
 	if (type == "string") {

@@ -63,30 +63,30 @@ bool LodDefinition::hasLodDistance(Ogre::Real distVal) const
 
 LodDistance& LodDefinition::getLodDistance(Ogre::Real distVal)
 {
-	LodDistanceMap::iterator it = mManualLod.find(distVal);
+	auto it = mManualLod.find(distVal);
 	assert(it != mManualLod.end());
 	return it->second;
 }
 
 void LodDefinition::removeLodDistance(Ogre::Real distVal)
 {
-	LodDistanceMap::iterator it = mManualLod.find(distVal);
+	auto it = mManualLod.find(distVal);
 	assert(it != mManualLod.end());
 	mManualLod.erase(it);
 }
 
 
-void LodDefinition::loadImpl(void)
+void LodDefinition::loadImpl()
 {
 
 }
 
-void LodDefinition::unloadImpl(void)
+void LodDefinition::unloadImpl()
 {
 
 }
 
-size_t LodDefinition::calculateSize(void) const
+size_t LodDefinition::calculateSize() const
 {
 	return 0;
 }
@@ -99,8 +99,8 @@ LodDefinition::~LodDefinition()
 std::vector<float> LodDefinition::createListOfDistances()
 {
 	std::vector<float> out;
-	for (LodDistanceMap::iterator it = mManualLod.begin(); it != mManualLod.end(); it++) {
-		out.push_back(it->first);
+	for (auto & it : mManualLod) {
+		out.push_back(it.first);
 	}
 	return out;
 }

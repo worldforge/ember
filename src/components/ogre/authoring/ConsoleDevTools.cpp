@@ -211,8 +211,7 @@ void ConsoleDevTools::performBenchmark() {
 
 		Ogre::SceneNode* cameraNode = emberOgre.getWorld()->getSceneManager().createSceneNode(OgreInfo::createUniqueResourceName("StaticCameraNode"));
 
-		class StaticCameraMount : public Camera::ICameraMount {
-		public:
+		struct StaticCameraMount : public Camera::ICameraMount {
 			Ogre::SceneNode* mCameraNode = nullptr;
 
 			Ogre::Degree pitch(float relativeMovement) override {
@@ -256,7 +255,7 @@ void ConsoleDevTools::performBenchmark() {
 			int frames = -1;
 			std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 			double originalFps;
-			Ogre::SceneNode* cameraNode;
+			Ogre::SceneNode* cameraNode = nullptr;
 			std::shared_ptr<StaticCameraMount> cameraMount;
 
 			BenchmarkFrameListener() {
@@ -289,7 +288,7 @@ void ConsoleDevTools::performBenchmark() {
 						}
 
 						auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(totalDuration).count();
-						std::string message = "Total FPS: " + std::to_string((60 * results.size()) / (microseconds / 1000000.0));
+						std::string message = "Total FPS: " + std::to_string((float)(60 * results.size()) / (microseconds / 1000000.0));
 						S_LOG_INFO(message);
 						ConsoleBackend::getSingleton().pushMessage(message);
 

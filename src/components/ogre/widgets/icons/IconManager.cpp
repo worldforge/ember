@@ -94,8 +94,8 @@ Icon* IconManager::getIcon(int, EmberEntity* entity) {
 		std::string modelName;
 
 
-		Mapping::ModelActionCreator actionCreator(*entity, [&](std::string newModelName) {
-			modelName = std::move(newModelName);
+		Mapping::ModelActionCreator actionCreator(*entity, [&](const std::string& newModelName) {
+			modelName = newModelName;
 		}, [&](const std::string& partName) {
 			//Ignore parts
 		});
@@ -160,8 +160,8 @@ Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType) {
 
 void IconManager::render(Icon& icon, EmberEntity& entity) {
 	std::string modelName;
-	Mapping::ModelActionCreator actionCreator(entity, [&](std::string newModelName) {
-		modelName = std::move(newModelName);
+	Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& newModelName) {
+		modelName = newModelName;
 	}, [&](const std::string& partName) {
 		//Ignore parts
 	});
@@ -185,8 +185,8 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 		auto& typeService = conn->getTypeService();
 		DummyEntity dummyEntity("-1", &erisType, typeService);
 		std::string modelName;
-		Mapping::ModelActionCreator actionCreator(dummyEntity, [&](std::string newModelName) {
-			modelName = std::move(newModelName);
+		Mapping::ModelActionCreator actionCreator(dummyEntity, [&](const std::string& newModelName) {
+			modelName = newModelName;
 		}, [&](const std::string& partName) {
 			//Ignore parts
 		});

@@ -37,7 +37,10 @@ namespace Gui
 {
 
 StackableContainer::StackableContainer(CEGUI::Window* window) :
-		mWindow(window), mInnerContainerWindow(0), mPadding(0), mFlowDirection(Vertical)
+		mWindow(window),
+		mInnerContainerWindow(nullptr),
+		mPadding(0),
+		mFlowDirection(Vertical)
 {
 	if (mWindow) {
 		mChildAddedConnection = mWindow->subscribeEvent(CEGUI::Window::EventChildAdded, CEGUI::Event::Subscriber(&StackableContainer::window_ChildAdded, this));
@@ -55,8 +58,8 @@ StackableContainer::~StackableContainer()
 
 void StackableContainer::cleanup()
 {
-	for (ConnectorStore::iterator I = mChildConnections.begin(); I != mChildConnections.end(); ++I) {
-		I->second->disconnect();
+	for (auto & childConnection : mChildConnections) {
+		childConnection.second->disconnect();
 	}
 	mChildConnections.clear();
 	if (mChildRemovedConnection.isValid()) {
@@ -165,7 +168,7 @@ void StackableContainer::setInnerContainerWindow(CEGUI::Window* window)
 
 bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 {
-	const WindowEventArgs& windowEventArg = static_cast<const WindowEventArgs&>(e);
+	const auto& windowEventArg = static_cast<const WindowEventArgs&>(e);
 	if (!mInnerContainerWindow) {
 		setInnerContainerWindow(windowEventArg.window->getParent());
 	} else {
@@ -180,13 +183,14 @@ bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 
 bool StackableContainer::window_ChildRemoved(const CEGUI::EventArgs& e)
 {
-	const WindowEventArgs& windowEventArg = static_cast<const WindowEventArgs&>(e);
-	std::pair<ConnectorStore::iterator, ConnectorStore::iterator> ret = mChildConnections.equal_range(windowEventArg.window);
+	const auto& windowEventArg = static_cast<const WindowEventArgs&>(e);
+	auto ret = mChildConnections.equal_range(windowEventArg.window);
 
-	for (ConnectorStore::iterator I = ret.first; I != ret.second; ++I) {
+	for (auto I = ret.first; I != ret.second; ++I) {
 		I->second->disconnect();
-		mChildConnections.erase(I);
 	}
+
+	mChildConnections.erase(ret.first, ret.second);
 
 	repositionWindows();
 	return true;

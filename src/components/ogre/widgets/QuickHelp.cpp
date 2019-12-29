@@ -65,7 +65,7 @@ std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const HelpMess
 
 	//Does the Id exist? If it does, return the position.
 	int location = 1;
-	for (std::list<HelpMessage>::const_iterator list_iterator = mTutorialText.begin(); list_iterator != mTutorialText.end(); list_iterator++)
+	for (auto list_iterator = mTutorialText.begin(); list_iterator != mTutorialText.end(); ++list_iterator)
 	{
 
 		if (list_iterator->getId() == message.getId())

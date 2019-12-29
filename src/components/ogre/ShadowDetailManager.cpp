@@ -27,146 +27,142 @@
 #include <OgreViewport.h>
 #include <OgreCamera.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 ShadowDetailManager::ShadowDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager) :
-		mShadowFarDistance(sceneManager.getShadowFarDistance()), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f), mDefaultShadowDistanceStep(250), mShadowCameraLodBias(1.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mDefaultShadowLodStep(0.3), mSceneManager(sceneManager), mConfigListenerContainer(new ConfigListenerContainer())
-{
-	mChangeRequiredConnection = graphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShadowDetailManager::changeLevel));
-	mConfigListenerContainer->registerConfigListener("graphics", "shadowlodbias", sigc::mem_fun(*this, &ShadowDetailManager::Config_ShadowLodBias));
+        mShadowFarDistance(sceneManager.getShadowFarDistance()),
+        mShadowCameraLodThreshold(3.0f),
+        mShadowDistanceThreshold(3.0f),
+        mMaxShadowFarDistance(1000.0f),
+        mMinShadowFarDistance(0.0f),
+        mDefaultShadowDistanceStep(250),
+        mShadowCameraLodBias(1.0f),
+        mMaxShadowCameraLodBias(1.0f),
+        mMinShadowCameraLodBias(0.1f),
+        mDefaultShadowLodStep(0.3),
+        mSceneManager(sceneManager),
+        mConfigListenerContainer(new ConfigListenerContainer()) {
+    mChangeRequiredConnection = graphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShadowDetailManager::changeLevel));
+    mConfigListenerContainer->registerConfigListener("graphics", "shadowlodbias", sigc::mem_fun(*this, &ShadowDetailManager::Config_ShadowLodBias));
 }
 
-ShadowDetailManager::~ShadowDetailManager()
-{
-	delete mConfigListenerContainer;
-	if (mChangeRequiredConnection) {
-		mChangeRequiredConnection.disconnect();
-	}
+ShadowDetailManager::~ShadowDetailManager() {
+    if (mChangeRequiredConnection) {
+        mChangeRequiredConnection.disconnect();
+    }
 }
 
-bool ShadowDetailManager::setShadowCameraLodBias(float factor)
-{
-	//do not allow shadow lod bias to be set to 0 or a negative value.
-	if (factor <= 0.0f) {
-		factor = 0.1f;
-	}
-	mShadowCameraLodBias = factor;
+bool ShadowDetailManager::setShadowCameraLodBias(float factor) {
+    //do not allow shadow lod bias to be set to 0 or a negative value.
+    if (factor <= 0.0f) {
+        factor = 0.1f;
+    }
+    mShadowCameraLodBias = factor;
 
-	size_t textureCount = mSceneManager.getShadowTextureConfigList().size();
-	for (size_t i = 0; i < textureCount; ++i) {
-		Ogre::TexturePtr texture = mSceneManager.getShadowTexture(i);
-		unsigned short viewportCount = texture->getBuffer()->getRenderTarget()->getNumViewports();
-		for (unsigned short j = 0; j < viewportCount; ++j) {
-			texture->getBuffer()->getRenderTarget()->getViewport(j)->getCamera()->setLodBias(factor);
-		}
-	}
-	return true;
+    size_t textureCount = mSceneManager.getShadowTextureConfigList().size();
+    for (size_t i = 0; i < textureCount; ++i) {
+        Ogre::TexturePtr texture = mSceneManager.getShadowTexture(i);
+        unsigned short viewportCount = texture->getBuffer()->getRenderTarget()->getNumViewports();
+        for (unsigned short j = 0; j < viewportCount; ++j) {
+            texture->getBuffer()->getRenderTarget()->getViewport(j)->getCamera()->setLodBias(factor);
+        }
+    }
+    return true;
 }
 
-bool ShadowDetailManager::setShadowFarDistance(float distance)
-{
-	//do not allow the shadow distance to be set to a negative value.
-	if (distance < 0.0f) {
-		return false;
-	} else {
-		mShadowFarDistance = distance;
-	}
-	mSceneManager.setShadowFarDistance(distance);
-	return true;
+bool ShadowDetailManager::setShadowFarDistance(float distance) {
+    //do not allow the shadow distance to be set to a negative value.
+    if (distance < 0.0f) {
+        return false;
+    } else {
+        mShadowFarDistance = distance;
+    }
+    mSceneManager.setShadowFarDistance(distance);
+    return true;
 }
 
-bool ShadowDetailManager::changeLevel(float level)
-{
-	// If the fps change required is less than any threshold, the changeMade boolean will remain false, else it indicates if a step up or down was made.
-	bool changeMade = false;
+bool ShadowDetailManager::changeLevel(float level) {
+    // If the fps change required is less than any threshold, the changeMade boolean will remain false, else it indicates if a step up or down was made.
+    bool changeMade = false;
 
-	if (std::abs(level) >= mShadowDistanceThreshold) {
-		if (level > 0.0f) {
-			changeMade |= stepDownShadowDistance(mDefaultShadowDistanceStep);
-		} else {
-			changeMade |= stepUpShadowDistance(mDefaultShadowDistanceStep);
-		}
-	} else if (std::abs(level) >= mShadowCameraLodThreshold) {
-		if (level > 0.0f) {
-			changeMade |= stepDownShadowCameraLodBias(mDefaultShadowLodStep);
-		} else {
-			changeMade |= stepUpShadowCameraLodBias(mDefaultShadowLodStep);
-		}
-	}
-	return changeMade;
+    if (std::abs(level) >= mShadowDistanceThreshold) {
+        if (level > 0.0f) {
+            changeMade |= stepDownShadowDistance(mDefaultShadowDistanceStep);
+        } else {
+            changeMade |= stepUpShadowDistance(mDefaultShadowDistanceStep);
+        }
+    } else if (std::abs(level) >= mShadowCameraLodThreshold) {
+        if (level > 0.0f) {
+            changeMade |= stepDownShadowCameraLodBias(mDefaultShadowLodStep);
+        } else {
+            changeMade |= stepUpShadowCameraLodBias(mDefaultShadowLodStep);
+        }
+    }
+    return changeMade;
 }
 
-bool ShadowDetailManager::stepDownShadowDistance(float step)
-{
-	if (mShadowFarDistance > step) { //step down only if existing shadow far distance is greater than step
-		mShadowFarDistance -= step;
-		return setShadowFarDistance(mShadowFarDistance);
-	} else if (mShadowFarDistance < step && mShadowFarDistance > mMinShadowFarDistance) { //if there is still some positive distance left which is smaller than step, set it to the minimum distance
-		mShadowFarDistance = mMinShadowFarDistance;
-		return setShadowFarDistance(mShadowFarDistance);
-	} else { //step down not possible
-		return false;
-	}
+bool ShadowDetailManager::stepDownShadowDistance(float step) {
+    if (mShadowFarDistance > step) { //step down only if existing shadow far distance is greater than step
+        mShadowFarDistance -= step;
+        return setShadowFarDistance(mShadowFarDistance);
+    } else if (mShadowFarDistance < step && mShadowFarDistance > mMinShadowFarDistance) { //if there is still some positive distance left which is smaller than step, set it to the minimum distance
+        mShadowFarDistance = mMinShadowFarDistance;
+        return setShadowFarDistance(mShadowFarDistance);
+    } else { //step down not possible
+        return false;
+    }
 }
 
-bool ShadowDetailManager::stepUpShadowDistance(float step)
-{
-	if (mShadowFarDistance + step <= mMaxShadowFarDistance) { //step up only if the step doesn't cause shadow far distance to go over maximum shadow far distance.
-		mShadowFarDistance += step;
-		return setShadowFarDistance(mShadowFarDistance);
-	} else if (mShadowFarDistance < mMaxShadowFarDistance) { //if the shadow far distance is still below maximum shadow far distance but a default step causes it to go over it.
-		mShadowFarDistance = mMaxShadowFarDistance;
-		return setShadowFarDistance(mShadowFarDistance);
-	} else {
-		return false; //step up not possible
-	}
+bool ShadowDetailManager::stepUpShadowDistance(float step) {
+    if (mShadowFarDistance + step <= mMaxShadowFarDistance) { //step up only if the step doesn't cause shadow far distance to go over maximum shadow far distance.
+        mShadowFarDistance += step;
+        return setShadowFarDistance(mShadowFarDistance);
+    } else if (mShadowFarDistance < mMaxShadowFarDistance) { //if the shadow far distance is still below maximum shadow far distance but a default step causes it to go over it.
+        mShadowFarDistance = mMaxShadowFarDistance;
+        return setShadowFarDistance(mShadowFarDistance);
+    } else {
+        return false; //step up not possible
+    }
 }
 
-bool ShadowDetailManager::stepDownShadowCameraLodBias(float step)
-{
-	if (mShadowCameraLodBias > step) { //step down only if existing shadow camera lod bias is greater than step
-		mShadowCameraLodBias -= step;
-		return setShadowCameraLodBias(mShadowCameraLodBias);
-	} else if (mShadowCameraLodBias < step && mShadowCameraLodBias > mMinShadowCameraLodBias) { //if there is still some positive lod bias left which is smaller than step, set it to the minimum shadow lod
-		mShadowCameraLodBias = mMinShadowCameraLodBias;
-		return setShadowCameraLodBias(mShadowCameraLodBias);
-	} else { //step down not possible
-		return false;
-	}
+bool ShadowDetailManager::stepDownShadowCameraLodBias(float step) {
+    if (mShadowCameraLodBias > step) { //step down only if existing shadow camera lod bias is greater than step
+        mShadowCameraLodBias -= step;
+        return setShadowCameraLodBias(mShadowCameraLodBias);
+    } else if (mShadowCameraLodBias < step && mShadowCameraLodBias > mMinShadowCameraLodBias) { //if there is still some positive lod bias left which is smaller than step, set it to the minimum shadow lod
+        mShadowCameraLodBias = mMinShadowCameraLodBias;
+        return setShadowCameraLodBias(mShadowCameraLodBias);
+    } else { //step down not possible
+        return false;
+    }
 }
 
-bool ShadowDetailManager::stepUpShadowCameraLodBias(float step)
-{
-	if (mShadowCameraLodBias + step <= mMaxShadowCameraLodBias) { //step up only if the step doesn't cause shadow lod bias to go over maximum shadow far distance.
-		mShadowCameraLodBias += step;
-		return setShadowCameraLodBias(mShadowCameraLodBias);
-	} else if (mShadowCameraLodBias < mMaxShadowCameraLodBias) { //if the shadow lod bias is still below maximum shadow lod bias but a default step causes it to go over it.
-		mShadowCameraLodBias = mMaxShadowCameraLodBias;
-		return setShadowCameraLodBias(mShadowCameraLodBias);
-	} else {
-		return false; //step up not possible
-	}
+bool ShadowDetailManager::stepUpShadowCameraLodBias(float step) {
+    if (mShadowCameraLodBias + step <= mMaxShadowCameraLodBias) { //step up only if the step doesn't cause shadow lod bias to go over maximum shadow far distance.
+        mShadowCameraLodBias += step;
+        return setShadowCameraLodBias(mShadowCameraLodBias);
+    } else if (mShadowCameraLodBias < mMaxShadowCameraLodBias) { //if the shadow lod bias is still below maximum shadow lod bias but a default step causes it to go over it.
+        mShadowCameraLodBias = mMaxShadowCameraLodBias;
+        return setShadowCameraLodBias(mShadowCameraLodBias);
+    } else {
+        return false; //step up not possible
+    }
 }
 
-void ShadowDetailManager::Config_ShadowLodBias(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
-	if (variable.is_double()) {
-		float lodBias = static_cast<double>(variable);
-		setShadowCameraLodBias(lodBias / 100);
-	}
+void ShadowDetailManager::Config_ShadowLodBias(const std::string& section, const std::string& key, varconf::Variable& variable) {
+    if (variable.is_double()) {
+        auto lodBias = static_cast<double>(variable);
+        setShadowCameraLodBias((float)lodBias / 100.0f);
+    }
 }
 
-void ShadowDetailManager::pause()
-{
-	mChangeRequiredConnection.block();
+void ShadowDetailManager::pause() {
+    mChangeRequiredConnection.block();
 }
 
-void ShadowDetailManager::unpause()
-{
-	mChangeRequiredConnection.unblock();
+void ShadowDetailManager::unpause() {
+    mChangeRequiredConnection.unblock();
 }
 
 }

@@ -542,13 +542,13 @@ void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype)
 }
 
 void ServerWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entity) {
-	Mapping::ModelActionCreator actionCreator(entity, [&](std::string model) {
+	Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& model) {
 		//update the model preview window
 		mModelPreviewRenderer->showModel(model);
 		//mModelPreviewRenderer->showFull();
 		//we want to zoom in a little
 		mModelPreviewRenderer->setCameraDistance(0.7);
-	}, [&](std::string part) {
+	}, [&](const std::string& part) {
 		if (mModelPreviewRenderer->getModel()) {
 			mModelPreviewRenderer->getModel()->showPart(part);
 		}

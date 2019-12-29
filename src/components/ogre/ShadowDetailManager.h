@@ -16,6 +16,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <boost/noncopyable.hpp>
 #include "OgreIncludes.h"
 
 #include "sigc++/connection.h"
@@ -39,7 +40,7 @@ class GraphicalChangeAdapter;
  * @brief Handles changes in shadow detail automatically.
  * Acts as a sub-component of the automatic handling of graphics system.
  */
-class ShadowDetailManager
+class ShadowDetailManager : public boost::noncopyable
 {
 public:
 	/**
@@ -186,7 +187,7 @@ protected:
 	/**
 	 * @brief Used to listen for configuration changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 };
 }

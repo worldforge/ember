@@ -40,7 +40,7 @@ public:
 		CEGUI::Slider* scaler;
 	};
 
-	ScaleAdapter(const ::Atlas::Message::Element& element, Widgets widgets);
+	ScaleAdapter(const ::Atlas::Message::Element& element, const Widgets& widgets);
 
 	/**
 	Updates the gui with new values.

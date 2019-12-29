@@ -147,11 +147,11 @@ void MetaserverService::runCommand(const std::string& command, const std::string
 }
 
 int MetaserverService::compareVersions(const std::string& firstVersion, const std::string& secondVersion) {
-	std::vector<std::string> firstVersionStrings = Tokeniser::split(firstVersion, ".");
-	std::vector<std::string> secondVersionStrings = Tokeniser::split(secondVersion, ".");
+	auto firstVersionStrings = Tokeniser::split(firstVersion, ".");
+    auto secondVersionStrings = Tokeniser::split(secondVersion, ".");
 
-	std::vector<std::string>::const_iterator firstI = firstVersionStrings.begin();
-	std::vector<std::string>::const_iterator secondI = secondVersionStrings.begin();
+	auto firstI = firstVersionStrings.begin();
+	auto secondI = secondVersionStrings.begin();
 
 	while (firstI != firstVersionStrings.end() && secondI != secondVersionStrings.end()) {
 		std::stringstream ss(*firstI);
@@ -169,8 +169,8 @@ int MetaserverService::compareVersions(const std::string& firstVersion, const st
 		} else if (secondNumber > firstNumber) {
 			return -1;
 		}
-		firstI++;
-		secondI++;
+		++firstI;
+		++secondI;
 	}
 	return 0;
 }

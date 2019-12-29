@@ -27,136 +27,117 @@
 
 #include "GUIAdapter.h"
 #include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
-#include <stdlib.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
-GUIAdapter::GUIAdapter(const std::string& type) :
-	mType(type), mAdapter(0), mAllowRandom(false)
-{
+
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
+GUIAdapter::GUIAdapter(std::string type) :
+        mType(std::move(type)),
+        mAdapter(nullptr),
+        mAllowRandom(false) {
 
 }
 
-GUIAdapter::~GUIAdapter()
-{
-	delete mAdapter;
+GUIAdapter::~GUIAdapter() = default;
+
+const std::string& GUIAdapter::getType() const {
+    return mType;
 }
 
-const std::string& GUIAdapter::getType() const
-{
-	return mType;
+void GUIAdapter::attach(CEGUI::Window* window) {
+    OgreView::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
+    mAdapter.reset(factory.createAdapterByType(mType, window, "adapterPrefix", mElement));
+    mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &GUIAdapter::valueChanged));
+    for (auto& suggestion : mSuggestions) {
+        mAdapter->addSuggestion(suggestion.first);
+    }
+    if (mAllowRandom) {
+        mAdapter->addSuggestion("Random");
+    }
+
+    //If we have a default value set, use that
+    if (!mDefaultValue.empty()) {
+        if (mType == "string") {
+            //NOTE: Why does setValue only accept a non-const ref? Is that by design? If not, we should change it to accept a const reference so that it can be called here. We'll use updateGui here now, but setValue would be preferred...
+            // 			mAdapter->setValue(Atlas::Message::Element(mDefaultValue));
+            mAdapter->updateGui(Atlas::Message::Element(mDefaultValue));
+        } else if (mType == "number") {
+            mAdapter->updateGui(Atlas::Message::Element(atof(mDefaultValue.c_str())));
+        }
+    }
 }
 
-void GUIAdapter::attach(CEGUI::Window* window)
-{
-	OgreView::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
-	mAdapter = factory.createAdapterByType(mType, window, "adapterPrefix", mElement);
-	mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &GUIAdapter::valueChanged));
-	for (SuggestionsStore::iterator I = mSuggestions.begin(); I != mSuggestions.end(); I++) {
-		mAdapter->addSuggestion(I->first);
-	}
-	if (mAllowRandom) {
-		mAdapter->addSuggestion("Random");
-	}
-
-	//If we have a default value set, use that
-	if (mDefaultValue != "") {
-		if (mType == "string") {
-			//NOTE: Why does setValue only accept a non-const ref? Is that by design? If not, we should change it to accept a const reference so that it can be called here. We'll use updateGui here now, but setValue would be preferred...
-			// 			mAdapter->setValue(Atlas::Message::Element(mDefaultValue));
-			mAdapter->updateGui(Atlas::Message::Element(mDefaultValue));
-		} else if (mType == "number") {
-			mAdapter->updateGui(Atlas::Message::Element(atof(mDefaultValue.c_str())));
-		}
-	}
+void GUIAdapter::detach() {
+    mAdapter.reset();
 }
 
-void GUIAdapter::detach()
-{
-	delete mAdapter;
-	mAdapter = 0;
+Atlas::Message::Element GUIAdapter::getValue() {
+    if (!mAdapter) {
+        return Atlas::Message::Element();
+    }
+
+    const Atlas::Message::Element& value = mAdapter->getValue();
+    if (!(mAllowRandom && value.isString() && value.asString() == "Random")) {
+        // Not random. Get value that is correspondent to the entered text.
+        if (value.isString()) {
+            auto I = mSuggestions.find(value.asString());
+            if (I != mSuggestions.end()) {
+                return I->second;
+            }
+        }
+        return value;
+    } else {
+        // Random element selected.
+        if (!mSuggestions.empty()) {
+            int i = (int) (((float) mSuggestions.size()) * (rand() / (RAND_MAX + 1.0)));
+            // No sequental access to the map.
+            SuggestionsStore::const_iterator I = mSuggestions.begin();
+            while (i > 0) {
+                I++;
+                i--;
+            }
+            return I->second;
+        } else {
+            return "";
+        }
+    }
 }
 
-Atlas::Message::Element GUIAdapter::getValue()
-{
-	if (!mAdapter) {
-		return Atlas::Message::Element();
-	}
-
-	const Atlas::Message::Element& value = mAdapter->getValue();
-	if (!(mAllowRandom && value.isString() && value.asString() == "Random")) {
-		// Not random. Get value that is correspondent to the entered text.
-		if (value.isString()) {
-			SuggestionsStore::iterator I = mSuggestions.find(value.asString());
-			if (I != mSuggestions.end()) {
-				return I->second;
-			}
-		}
-		return value;
-	} else {
-		// Random element selected.
-		if (!mSuggestions.empty()) {
-			int i = (int)(((float)mSuggestions.size()) * (rand() / (RAND_MAX + 1.0)));
-			// No sequental access to the map.
-			SuggestionsStore::const_iterator I = mSuggestions.begin();
-			while (i > 0) {
-				I++;
-				i--;
-			}
-			return I->second;
-		} else {
-			return "";
-		}
-	}
+void GUIAdapter::setTitle(const std::string& title) {
+    mTitle = title;
 }
 
-void GUIAdapter::setTitle(const std::string& title)
-{
-	mTitle = title;
+const std::string& GUIAdapter::getTitle() const {
+    return mTitle;
 }
 
-const std::string& GUIAdapter::getTitle() const
-{
-	return mTitle;
+void GUIAdapter::setTooltip(const std::string& tooltip) {
+    mTooltip = tooltip;
 }
 
-void GUIAdapter::setTooltip(const std::string& tooltip)
-{
-	mTooltip = tooltip;
+const std::string& GUIAdapter::getTooltip() const {
+    return mTooltip;
 }
 
-const std::string& GUIAdapter::getTooltip() const
-{
-	return mTooltip;
+void GUIAdapter::setDefaultValue(const std::string& value) {
+    mDefaultValue = value;
 }
 
-void GUIAdapter::setDefaultValue(const std::string& value)
-{
-	mDefaultValue = value;
+const std::string& GUIAdapter::getDefaultValue() const {
+    return mDefaultValue;
 }
 
-const std::string& GUIAdapter::getDefaultValue() const
-{
-	return mDefaultValue;
+void GUIAdapter::addSuggestion(const std::string& value, const std::string& text) {
+    mSuggestions[text] = value;
 }
 
-void GUIAdapter::addSuggestion(const std::string& value, const std::string& text)
-{
-	mSuggestions[text] = value;
+void GUIAdapter::setAllowRandom(bool val) {
+    mAllowRandom = val;
 }
 
-void GUIAdapter::setAllowRandom(bool val)
-{
-	mAllowRandom = val;
-}
-
-void GUIAdapter::valueChanged()
-{
-	EventValueChanged.emit();
+void GUIAdapter::valueChanged() {
+    EventValueChanged.emit();
 }
 }
 

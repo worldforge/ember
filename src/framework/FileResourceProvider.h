@@ -21,12 +21,13 @@
 
 #include "IResourceProvider.h"
 #include <boost/filesystem/path.hpp>
+#include <boost/noncopyable.hpp>
 
 #include <string>
 
 namespace Ember {
 
-class FileResourceWrapper : public IResourceWrapper {
+class FileResourceWrapper : public IResourceWrapper, public boost::noncopyable {
 public:
 	explicit FileResourceWrapper(std::ifstream& stream);
 
@@ -48,7 +49,7 @@ private:
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Loads files relative to a base directory.
  */
-class FileResourceProvider : public IResourceProvider {
+class FileResourceProvider : public IResourceProvider, public boost::noncopyable {
 public:
 	/**
 	 * @brief Ctor.
