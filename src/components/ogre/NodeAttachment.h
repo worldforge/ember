@@ -58,7 +58,7 @@ public:
 	 * @param childEntity The child entity.
 	 * @param nodeProvider A node provider instance, not null. Ownership will be passed to this instance.
 	 */
-	NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider);
+	NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, std::unique_ptr<INodeProvider> nodeProvider);
 
 	/**
 	 * @brief Dtor.

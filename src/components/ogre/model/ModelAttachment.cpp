@@ -110,8 +110,8 @@ struct ModelContainedActionCreator : public EntityMapping::IActionCreator {
 };
 
 
-ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose) :
-        NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider),
+ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose) :
+        NodeAttachment(parentEntity, modelRepresentation.getEntity(), std::move(nodeProvider)),
         mModelRepresentation(modelRepresentation),
         mModelMount(nullptr),
         mIgnoreEntityData(false),
@@ -200,8 +200,8 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
                 const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
                 for (const auto& attachpoint : attachpoints) {
                     if (attachpoint.Name == attachPoint) {
-                        auto nodeProvider = new ModelBoneProvider(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
-                        auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), *modelRepresentation, nodeProvider, attachpoint.Pose);
+                        auto nodeProvider = std::make_unique<ModelBoneProvider>(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
+                        auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), *modelRepresentation, std::move(nodeProvider), attachpoint.Pose);
                         nodeAttachment->init();
                         return nodeAttachment;
                     }

@@ -62,7 +62,7 @@ class ModelAttachment: public NodeAttachment, public virtual sigc::trackable
 {
 public:
 	typedef std::unordered_map<std::string, std::unique_ptr<ModelFitting>> ModelFittingStore;
-	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose = "");
+	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose = "");
 
 	~ModelAttachment() override;
 

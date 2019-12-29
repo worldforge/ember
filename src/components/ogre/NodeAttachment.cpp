@@ -36,9 +36,9 @@
 namespace Ember {
 namespace OgreView {
 
-NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
+NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, std::unique_ptr<INodeProvider> nodeProvider) :
 		AttachmentBase(&parentEntity, childEntity),
-		mNodeProvider(nodeProvider),
+		mNodeProvider(std::move(nodeProvider)),
 		mAttachmentController(nullptr) {
 	setupListeners();
 }
@@ -71,30 +71,8 @@ void NodeAttachment::setVisible(bool visible) {
 }
 
 std::unique_ptr<IEntityAttachment> NodeAttachment::attachEntity(EmberEntity& entity) {
-
+    //No special kind of attachment for things attached to a node.
     return nullptr;
-	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity);
-	//	NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
-	//	Model::ModelAttachment* currentModelAttachment = dynamic_cast<Model::ModelAttachment*> (entity.getAttachment());
-	//	if (currentModelAttachment) {
-	//		return new Model::ModelAttachment(*currentModelAttachment, *this);
-	//	}
-	//	else if (currentNodeAttachment) {
-	//		return new NodeAttachment(*currentNodeAttachment, *this);
-	//	}
-	//	else {
-
-	//If there's a model representation available, use a "ModelAttachment" instance to attach to it, otherwise just use a regular NodeAttachment.
-	std::unique_ptr<NodeAttachment> nodeAttachment;
-	INodeProvider* nodeProvider = mNodeProvider->createChildProvider(OgreInfo::createUniqueResourceName(entity.getId()));
-	if (modelRepresentation) {
-		nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), *modelRepresentation, nodeProvider);
-	} else {
-		nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, nodeProvider);
-	}
-	nodeAttachment->init();
-	return nodeAttachment;
-	//	}
 }
 
 void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate) {

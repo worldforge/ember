@@ -73,9 +73,9 @@ std::unique_ptr<IEntityAttachment> WorldAttachment::attachEntity(EmberEntity& en
     std::unique_ptr<NodeAttachment> nodeAttachment;
     Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
     if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity)) {
-        nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(node, mWorldNode));
+        nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), *modelRepresentation, std::make_unique<SceneNodeProvider>(node, mWorldNode));
     } else {
-        nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, new SceneNodeProvider(node, mWorldNode));
+        nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, std::make_unique<SceneNodeProvider>(node, mWorldNode));
     }
     nodeAttachment->init();
     return nodeAttachment;
