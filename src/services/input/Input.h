@@ -407,21 +407,6 @@ public:
 	void setMovementModeEnabled(bool value);
 
 	/**
-	 * @brief Writes the supplied text to the system clipboard.
-	 * This works on all platform by using SDL2.
-	 * @param text The text to write.
-	 * @param length The length of the text.
-	 */
-	void writeToClipboard(char* text, size_t length);
-
-	/**
-	 * @brief Gets the text in the clipboard and pastes it to the supplied string.
-	 * @param text Point this to the pasted string.
-	 * @param length The length of the pasted string.
-	 */
-	void pasteFromClipboard(char*& text, size_t& length);
-
-	/**
 	 * @brief Gets the current mouse position.
 	 * @return The current mouse position.
 	 */

@@ -354,21 +354,6 @@ void Input::setMovementModeEnabled(bool value) {
 	mMovementModeEnabled = value;
 }
 
-void Input::writeToClipboard(char* text, size_t length) {
-	SDL_SetClipboardText(text);
-}
-
-void Input::pasteFromClipboard(char*& text, size_t& length) {
-	char* sdl_text = SDL_GetClipboardText();
-
-	length = strlen(sdl_text) + 1;
-
-	text = (char*) malloc(length);
-	strcpy(text, sdl_text);
-
-	SDL_free(sdl_text);
-}
-
 void Input::registerCommandMapper(InputCommandMapper* mapper) {
 	mInputCommandMappers[mapper->getState()] = mapper;
 }
