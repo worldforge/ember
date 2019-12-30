@@ -4,6 +4,8 @@
 [![Appveyor build status](https://ci.appveyor.com/api/projects/status/github/worldforge/ember?branch=master&svg=true)](https://ci.appveyor.com/project/erikogenvik/ember)
 [![Travis build Status](https://travis-ci.com/worldforge/ember.svg?branch=master)](https://travis-ci.com/worldforge/ember)
 
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/ember)
+
 Ember is the client for the [WorldForge](http://worldforge.org/ "The main Worldforge site") virtual world system.
 It can be used for playing and exploring as well as authoring.
 
