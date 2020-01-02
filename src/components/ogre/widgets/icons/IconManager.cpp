@@ -39,6 +39,7 @@
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
 #include <Eris/Connection.h>
+#include <Eris/View.h>
 
 #include <OgreTextureManager.h>
 
@@ -100,7 +101,8 @@ Icon* IconManager::getIcon(int, EmberEntity* entity) {
 			//Ignore parts
 		});
 		auto& manager = Mapping::EmberEntityMappingManager::getSingleton().getManager();
-		auto modelMapping = manager.createMapping(*entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView());
+		auto& view = EmberOgre::getSingleton().getWorld()->getView();
+		auto modelMapping = manager.createMapping(*entity, actionCreator, view.getTypeService(), &view);
 
 
 		if (modelMapping) {
@@ -118,7 +120,7 @@ Icon* IconManager::getIcon(int, EmberEntity* entity) {
 				Ogre::TexturePtr texPtr;
 				try {
 					if (Ogre::TextureManager::getSingleton().resourceExists(iconPath, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-						texPtr = static_cast<Ogre::TexturePtr> (Ogre::TextureManager::getSingleton().getByName(iconPath, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
+						texPtr = Ogre::TextureManager::getSingleton().getByName(iconPath, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 						//try to load it to make sure that's it a working image
 						texPtr->load();
 					}
@@ -165,7 +167,8 @@ void IconManager::render(Icon& icon, EmberEntity& entity) {
 	}, [&](const std::string& partName) {
 		//Ignore parts
 	});
-	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
+	auto& view = EmberOgre::getSingleton().getWorld()->getView();
+	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, view.getTypeService(), &view));
 	if (modelMapping) {
 		modelMapping->initialize();
 	}
@@ -190,7 +193,7 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 		}, [&](const std::string& partName) {
 			//Ignore parts
 		});
-		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
+		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, typeService, &EmberOgre::getSingleton().getWorld()->getView()));
 		if (modelMapping) {
 			modelMapping->initialize();
 		}

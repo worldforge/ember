@@ -23,12 +23,13 @@
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelAttachment.h"
+#include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "OgreInfo.h"
 #include "EmberEntityActionCreator.h"
+#include <Eris/View.h>
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <components/ogre/mapping/EmberEntityMappingManager.h>
 
 namespace Ember {
 namespace OgreView {
@@ -61,7 +62,7 @@ std::unique_ptr<IEntityAttachment> WorldAttachment::attachEntity(EmberEntity& en
 
     //the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
     EmberEntityActionCreator creator(entity, mScene);
-    auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, creator, entity.getView());
+    auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, creator, entity.getView()->getTypeService(), entity.getView());
     if (mapping) {
         mapping->initialize();
         std::shared_ptr<EntityMapping::EntityMapping> sharedMapping(std::move(mapping));

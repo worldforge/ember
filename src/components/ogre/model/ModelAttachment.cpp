@@ -35,6 +35,7 @@
 #include "components/ogre/EmberEntityHideModelAction.h"
 
 #include <Eris/TypeInfo.h>
+#include <Eris/View.h>
 
 #include <sigc++/bind.h>
 #include <components/ogre/EmberEntityModelAction.h>
@@ -183,7 +184,7 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
         creator = std::make_unique<ModelAttachedActionCreator>(entity, mModelRepresentation.getScene());
 
     }
-    auto mapping = Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, *creator, entity.getView());
+    auto mapping = Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, *creator, entity.getView()->getTypeService(), entity.getView());
     if (mapping) {
         mapping->initialize();
         std::shared_ptr<EntityMapping::EntityMapping> sharedMapping = std::move(mapping);

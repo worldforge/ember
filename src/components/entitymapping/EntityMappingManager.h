@@ -81,7 +81,7 @@ public:
 	@param actionCreator An eris type info instance.
 	@param view An optional view, if any such is available.
 	*/
-	std::unique_ptr<EntityMapping> createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view);
+	std::unique_ptr<EntityMapping> createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::TypeService& typeService, Eris::View* view);
 
 protected:
 

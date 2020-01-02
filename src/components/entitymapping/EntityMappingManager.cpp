@@ -50,7 +50,7 @@ void EntityMappingManager::addDefinition(std::unique_ptr<EntityMappingDefinition
     mDefinitions[name] = std::move(definition);
 }
 
-std::unique_ptr<EntityMapping> EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view) {
+std::unique_ptr<EntityMapping> EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::TypeService& typeService, Eris::View* view) {
     EntityMappingDefinition* definition = nullptr;
     if (entity.hasProperty("present")) {
         auto mappingElement = entity.valueOfProperty("present");
@@ -63,7 +63,7 @@ std::unique_ptr<EntityMapping> EntityMappingManager::createMapping(Eris::Entity&
     }
 
     if (definition) {
-        EntityMappingCreator creator(*definition, entity, actionCreator, view->getTypeService(), view);
+        EntityMappingCreator creator(*definition, entity, actionCreator, typeService, view);
         return creator.create();
     } else {
         auto mapping = std::make_unique<EntityMapping>(entity);

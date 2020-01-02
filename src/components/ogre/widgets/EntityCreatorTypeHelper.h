@@ -76,62 +76,66 @@ class EntityTextureManipulator;
 class EntityCreatorTypeHelper : public virtual sigc::trackable {
 public:
 
-	EntityCreatorTypeHelper(Eris::Avatar& avatar, CEGUI::Tree& typeTree,
-							CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton,
-							CEGUI::Window& modelPreview, CEGUI::Combobox& modeCombobox,
-							CEGUI::Window& defaultModeWindow, CEGUI::Window& plantedOnWindow);
+    EntityCreatorTypeHelper(Eris::Avatar& avatar,
+                            CEGUI::Tree& typeTree,
+                            CEGUI::Editbox& nameEditbox,
+                            CEGUI::PushButton& pushButton,
+                            CEGUI::Window& modelPreview,
+                            CEGUI::Combobox& modeCombobox,
+                            CEGUI::Window& defaultModeWindow,
+                            CEGUI::Window& plantedOnWindow);
 
-	virtual ~EntityCreatorTypeHelper();
+    virtual ~EntityCreatorTypeHelper();
 
-	/**
-	 * @brief Emitted when an entity should be created from a type.
-	 */
-	sigc::signal<void, const Atlas::Message::MapType&> EventCreateFromType;
+    /**
+     * @brief Emitted when an entity should be created from a type.
+     */
+    sigc::signal<void, const Atlas::Message::MapType&> EventCreateFromType;
 
 protected:
 
-	Eris::Avatar& mAvatar;
+    Eris::Avatar& mAvatar;
 
 
-	CEGUI::Editbox& mName;
+    CEGUI::Editbox& mName;
 
-	/**
-	 * @brief A preview renderer for creating new models.
-	 */
-	ModelRenderer* mModelPreviewRenderer;
+    /**
+     * @brief A preview renderer for creating new models.
+     */
+    ModelRenderer* mModelPreviewRenderer;
 
-	/**
-	 * @brief Handles manipulation of the entity preview.
-	 */
-	EntityTextureManipulator* mModelPreviewManipulator;
+    /**
+     * @brief Handles manipulation of the entity preview.
+     */
+    EntityTextureManipulator* mModelPreviewManipulator;
 
-	Adapters::Eris::RuleTreeAdapter* mRuleTreeAdapter;
+    Adapters::Eris::RuleTreeAdapter* mRuleTreeAdapter;
 
-	CEGUI::PushButton* mCreateButton;
+    CEGUI::PushButton* mCreateButton;
 
-	CEGUI::Combobox& mModeCombobox;
+    CEGUI::Combobox& mModeCombobox;
 
-	CEGUI::Window& mDefaultModeWindow;
+    CEGUI::Window& mDefaultModeWindow;
 
-	CEGUI::Window& mPlantedOnWindow;
+    CEGUI::Window& mPlantedOnWindow;
 
-	/**
-	 * @brief Keep track of the currently selected type, mainly for fast lookups in typeService_BoundType.
-	 */
-	std::string mCurrentType;
+    /**
+     * @brief Keep track of the currently selected type, mainly for fast lookups in typeService_BoundType.
+     */
+    std::string mCurrentType;
 
 
-	void buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
+    void buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 
-	bool createButton_Click(const CEGUI::EventArgs& args);
+    bool createButton_Click(const CEGUI::EventArgs& args);
 
-	bool typeTree_SelectionChanged(const CEGUI::EventArgs& args);
+    bool typeTree_SelectionChanged(const CEGUI::EventArgs& args);
 
-	void updatePreview();
+    void updatePreview();
 
-	void typeService_BoundType(Eris::TypeInfo* typeInfo);
+    void typeService_BoundType(Eris::TypeInfo* typeInfo);
 
-	void showPreview(Ember::OgreView::Authoring::DetachedEntity& entity);
+    void showPreview(Ember::OgreView::Authoring::DetachedEntity& entity);
 };
 }
 
