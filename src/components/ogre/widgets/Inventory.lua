@@ -332,7 +332,7 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
 	
 	dollSlot.iconDraggedOff = function(entityIcon)
 		--do unwield stuff
-		emberServices:getServerService():wield(nil, attachment)
+		emberOgre:getWorld():getAvatar():getErisAvatar():wield(nil, attachment)
 	end
 	dollSlot.iconDraggedOff_connector = createConnector(dollSlot.slot.EventIconDraggedOff):connect(dollSlot.iconDraggedOff)
 	
