@@ -44,6 +44,7 @@ void TextNodeRenderer::attachTextToNode(Ogre::SceneNode* node, const std::string
 		textNode.mAdjustFn = std::move(adjustFn);
 		textNode.mWindow->setText(text);
 		mMainSheet.addChild(textNode.mWindow.get());
+        textNode.mWindow->moveToBack();
 		mActiveTextNodes.emplace_back(std::move(textNode));
 	}
 };
