@@ -288,6 +288,13 @@ void TinyXmlCodec::mapStringItem(std::string name, std::string data)
 	mCurrentNode->InsertEndChild(element);
 }
 
+void TinyXmlCodec::mapNoneItem(std::string name) {
+    TiXmlElement element("none");
+    element.SetAttribute("name", name);
+    mCurrentNode->InsertEndChild(element);
+}
+
+
 void TinyXmlCodec::mapEnd()
 {
 	mCurrentNode = mCurrentNode->Parent();
@@ -326,6 +333,11 @@ void TinyXmlCodec::listStringItem(std::string data)
 	TiXmlElement element("string");
 	element.InsertEndChild(TiXmlText(data));
 	mCurrentNode->InsertEndChild(element);
+}
+
+void TinyXmlCodec::listNoneItem() {
+    TiXmlElement element("none");
+    mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::listEnd()

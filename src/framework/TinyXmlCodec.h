@@ -53,14 +53,16 @@ public:
 	void mapListItem(std::string name) override;
 	void mapIntItem(std::string name, Atlas::Message::IntType) override;
 	void mapFloatItem(std::string name, Atlas::Message::FloatType) override;
-	void mapStringItem(std::string name, std::string) override;
+    void mapStringItem(std::string name, std::string) override;
+    void mapNoneItem(std::string name) override;
 	void mapEnd() override;
 
 	void listMapItem() override;
 	void listListItem() override;
 	void listIntItem(Atlas::Message::IntType) override;
 	void listFloatItem(Atlas::Message::FloatType) override;
-	void listStringItem(std::string) override;
+    void listStringItem(std::string) override;
+    void listNoneItem() override;
 	void listEnd() override;
 
 protected:
