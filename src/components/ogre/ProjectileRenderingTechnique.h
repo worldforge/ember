@@ -47,9 +47,10 @@ public:
 protected:
 
 	struct ActiveEntityEntry {
-		Ogre::Node* entityNode;
 		Ogre::SceneNode* particleNode;
 		float inactiveTime;
+		bool hasBeenAdded; //True if the node has been added to the trail. This is mainly false in the instances where the entity position wasn't valid when the entry was created.
+		bool isActive;
 	};
 
 	std::vector<Ogre::SceneNode*> mAvailableNodes;
