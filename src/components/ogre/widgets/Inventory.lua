@@ -357,7 +357,10 @@ function Inventory:setupDoll(avatarEntity)
 
 	self.doll.handPrimary = self:createDollSlot("attached_hand_primary", self.doll.image:getChild("RightHand"), "Drop an entity here to attach it to the primary hand.", "")
 	self.doll.handPrimaryAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.handPrimary, "hand_primary")
-	
+
+	self.doll.handSecondary = self:createDollSlot("attached_hand_secondary", self.doll.image:getChild("LeftHand"), "Drop an entity here to attach it to the secondary hand.", "hand_secondary")
+	self.doll.handSecondaryAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.handSecondary, "hand_secondary")
+
 	self.doll.torso = self:createDollSlot("attached_torso", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.", "torso")
 	self.doll.torsoAttachmentSlot = self:createAttachmentSlot(avatarEntity, self.doll.torso, "torso")
 	
@@ -401,17 +404,16 @@ function Inventory:createDollSlot(attributePath, containerWindow, tooltipText, w
 	dollSlot.container:setTooltipText(tooltipText)
 	dollSlot.wearRestriction = wearRestriction
 	dollSlot.attributePath = attributePath
-	dollSlot.allowAny = allowAny
-	
+
 	dollSlot.isValidDrop = function(entityIcon)
-		if dollSlot.wearRestriction == "" or dollSlot.allowAny then
+		if wearRestriction == "" then
 			return true
 		end
 		if entityIcon:getEntity():hasProperty("worn") then
 			local wornElement = entityIcon:getEntity():valueOfProperty("worn")
 			if wornElement:isString() then
 				local worn = wornElement:asString()
-				if worn == dollSlot.wearRestriction then
+				if worn == wearRestriction then
 					return true
 				end
 			end

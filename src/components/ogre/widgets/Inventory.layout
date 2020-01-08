@@ -21,7 +21,12 @@
 				<Window name="RightHand" type="EmberLook/StaticImage">
 					<Property name="Position" value="{{0.10,0},{0.45,0}}" />
 					<Property name="Size" value="{{0,32},{0,32}}" />
-                    <Property name="FrameEnabled" value="true" />
+					<Property name="FrameEnabled" value="true" />
+				</Window>
+				<Window name="LeftHand" type="EmberLook/StaticImage">
+					<Property name="Position" value="{{0.9, -32},{0.45,0}}" />
+					<Property name="Size" value="{{0,32},{0,32}}" />
+					<Property name="FrameEnabled" value="true" />
 				</Window>
 				<Window name="Head" type="EmberLook/StaticImage">
 					<Property name="Position" value="{{0.5,-16},{0.1,0}}" />
