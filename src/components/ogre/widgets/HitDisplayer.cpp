@@ -29,6 +29,9 @@
 #include <Atlas/Objects/RootOperation.h>
 #include <wfmath/MersenneTwister.h>
 
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/Window.h>
+
 #include <memory>
 
 namespace Ember {
@@ -40,13 +43,17 @@ HitDisplayer::HitDisplayer(CEGUI::Window& mainSheet,
 						   Ogre::Camera& camera,
 						   Eris::View& view,
 						   Ogre::SceneManager& sceneManager)
-		: mTextNodeRenderer(std::make_unique<TextNodeRenderer>(mainSheet, textTemplate)),
-		  mCamera(camera),
+		: mCamera(camera),
 		  mView(view),
 		  mSceneManager(sceneManager) {
+    mBackgroundWindow.reset(CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "hit_displayer"));
+    mainSheet.addChild(mBackgroundWindow.get());
+    mBackgroundWindow->moveToBack();
+    mTextNodeRenderer = std::make_unique<TextNodeRenderer>(*mBackgroundWindow, textTemplate);
 
 	camera.addListener(mTextNodeRenderer.get());
 	Ogre::Root::getSingleton().addFrameListener(this);
+
 
 	view.EntitySeen.connect([this](Eris::Entity* entity) {
 		entity->Hit.connect([this, entity](const Atlas::Objects::Operation::Hit& arg) {

@@ -53,7 +53,7 @@ protected:
 	Ogre::Camera& mCamera;
 	Eris::View& mView;
 	Ogre::SceneManager& mSceneManager;
-
+    UniqueWindowPtr<CEGUI::Window> mBackgroundWindow;
 
 	struct Hit {
 		float time;

@@ -30,6 +30,7 @@ TextNodeRenderer::TextNodeRenderer(CEGUI::Window& mainSheet, const UniqueWindowP
 		window->setMousePassThroughEnabled(true);
 		window->setRiseOnClickEnabled(false);
 		window->setName("TextNode_" + std::to_string(i));
+		window->disable(); //Don't allow any interaction
 
 		TextNode textNode(std::move(window));
 		mFreeTextNodes.emplace_back(std::move(textNode));
@@ -44,7 +45,7 @@ void TextNodeRenderer::attachTextToNode(Ogre::SceneNode* node, const std::string
 		textNode.mAdjustFn = std::move(adjustFn);
 		textNode.mWindow->setText(text);
 		mMainSheet.addChild(textNode.mWindow.get());
-        textNode.mWindow->moveToBack();
+       // textNode.mWindow->moveToBack();
 		mActiveTextNodes.emplace_back(std::move(textNode));
 	}
 };
