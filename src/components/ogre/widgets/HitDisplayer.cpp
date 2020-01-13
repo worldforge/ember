@@ -49,6 +49,9 @@ HitDisplayer::HitDisplayer(CEGUI::Window& mainSheet,
     mBackgroundWindow.reset(CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "hit_displayer"));
     mainSheet.addChild(mBackgroundWindow.get());
     mBackgroundWindow->moveToBack();
+    mBackgroundWindow->setMousePassThroughEnabled(true);
+    mBackgroundWindow->setDisabled(true);
+    mBackgroundWindow->setRiseOnClickEnabled(false);
     mTextNodeRenderer = std::make_unique<TextNodeRenderer>(*mBackgroundWindow, textTemplate);
 
 	camera.addListener(mTextNodeRenderer.get());
