@@ -118,7 +118,7 @@ protected:
 	 * @brief How long each frame should be in microseconds.
 	 * If set to 0 no capping will occur.
 	 */
-    std::chrono::steady_clock::duration mTimePerFrame;
+	std::chrono::steady_clock::duration mTimePerFrame;
 
 	bool mEnableStackCheck;
 
@@ -127,9 +127,9 @@ protected:
 		if (variable.is_double()) {
 			mDesiredFps = static_cast<int>(variable);
 			if (mDesiredFps != 0) {
-                mTimePerFrame = std::chrono::microseconds(1000000L / mDesiredFps);
+				mTimePerFrame = std::chrono::microseconds(1000000L / mDesiredFps);
 			} else {
-                mTimePerFrame = std::chrono::steady_clock::duration::zero();
+				mTimePerFrame = std::chrono::steady_clock::duration::zero();
 			}
 
 			if (mEnableStackCheck && mDesiredFps > 0) {
@@ -160,9 +160,9 @@ public:
 	 * A listener will be set up listening for the general:desiredfps config setting.
 	 */
 	DesiredFpsListener() :
-            mDesiredFps(0),
-            mTimePerFrame(0),
-            mEnableStackCheck(false) {
+			mDesiredFps(0),
+			mTimePerFrame(0),
+			mEnableStackCheck(false) {
 		registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &DesiredFpsListener::Config_DesiredFps));
 		registerConfigListener("general", "slowframecheck", sigc::mem_fun(*this, &DesiredFpsListener::Config_FrameStackCheck));
 
@@ -180,7 +180,7 @@ public:
 	 * @brief Accessor for the minimum length (in microseconds) that each frame should take in order for the desired fps to be kept.
 	 * If 0 no capping will occur.
 	 */
-    std::chrono::steady_clock::duration getTimePerFrame() const {
+	std::chrono::steady_clock::duration getTimePerFrame() const {
 		return mTimePerFrame;
 	}
 };
@@ -293,11 +293,19 @@ void Application::mainLoop() {
 			StackChecker::resetCounter();
 
 			unsigned int frameActionMask = 0;
-            auto desiredMicrosecondsPerFrame = desiredFpsListener.getTimePerFrame();
-			TimeFrame timeFrame = TimeFrame(desiredMicrosecondsPerFrame);
+			auto timePerFrame = desiredFpsListener.getTimePerFrame();
+			TimeFrame timeFrame(timePerFrame);
 
-			mSession->getIoService().poll_one();
+			auto end = std::chrono::steady_clock::now() + std::chrono::milliseconds(2);
+			//Execute IO handlers for two seconds, if there are any.
+			while (std::chrono::steady_clock::now() < end) {
+				auto executedHandlers = mSession->getIoService().poll_one();
+				if (executedHandlers == 0) {
+					break;
+				}
+			}
 
+			//Then process Eris handlers. These are things that mainly deal with assets being loaded, so it's ok if they are spread out over multiple frames.
 			eventService.processOneHandler();
 
 			if (mWorldView) {
@@ -348,7 +356,7 @@ void Application::mainLoop() {
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 
-			if (updatedRendering && timeFrame.getElapsedTime().count() > (desiredMicrosecondsPerFrame.count() * 1.4f)) {
+			if (updatedRendering && timeFrame.getElapsedTime().count() > (timePerFrame.count() * 1.4f)) {
 				S_LOG_VERBOSE("Frame took too long.");
 			}
 

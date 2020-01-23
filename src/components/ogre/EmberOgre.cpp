@@ -226,7 +226,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 //			log.report("swapBuffers");
 			long remainingTime = timeFrame.getRemainingTime().count();
 			remainingTime = std::max(1L, remainingTime);
-			mRoot->getWorkQueue()->setResponseProcessingTimeLimit(remainingTime);
+			mRoot->getWorkQueue()->setResponseProcessingTimeLimit(remainingTime / 1000L);
 			mRoot->_fireFrameEnded();
 //			log.report("_fireFrameEnded");
 

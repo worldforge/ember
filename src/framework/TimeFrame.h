@@ -49,13 +49,13 @@ public:
 	 * @brief Returns the remaining.
 	 * @return The remaining time.
 	 */
-	std::chrono::steady_clock::duration getRemainingTime() const;
+	std::chrono::nanoseconds getRemainingTime() const;
 
 	/**
 	 * @brief Returns the elapsed time.
 	 * @return The elapsed time.
 	 */
-	std::chrono::steady_clock::duration getElapsedTime() const;
+	std::chrono::nanoseconds getElapsedTime() const;
 
 private:
 

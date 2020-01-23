@@ -35,11 +35,11 @@ bool TimeFrame::isTimeLeft() const {
 	return std::chrono::steady_clock::now() < mEndTime;
 }
 
-std::chrono::steady_clock::duration TimeFrame::getRemainingTime() const {
+std::chrono::nanoseconds TimeFrame::getRemainingTime() const {
 	return mEndTime - std::chrono::steady_clock::now();
 }
 
-std::chrono::steady_clock::duration TimeFrame::getElapsedTime() const {
+std::chrono::nanoseconds TimeFrame::getElapsedTime() const {
 	return std::chrono::steady_clock::now() - mStartTime;
 }
 

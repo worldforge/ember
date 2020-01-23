@@ -6,9 +6,8 @@
 
 #include "framework/TimeFrame.h"
 
-#include <boost/thread.hpp>
-#include <boost/date_time.hpp>
-
+#include <chrono>
+#include <thread>
 namespace Ember
 {
 
@@ -24,30 +23,30 @@ CPPUNIT_TEST_SUITE(TimeFrameTestCase);
 public:
 	void testElapsedTime()
 	{
-		TimeFrame tested = TimeFrame(boost::posix_time::microseconds(10));
-		const boost::posix_time::ptime start = boost::posix_time::microsec_clock::local_time();
-		boost::this_thread::sleep(boost::posix_time::microseconds(5));
+		TimeFrame tested = TimeFrame(std::chrono::microseconds(10));
+		auto start = std::chrono::steady_clock::now();
+		std::this_thread::sleep_for(std::chrono::microseconds(5));
 
-		boost::posix_time::time_duration local_elapsed = (boost::posix_time::microsec_clock::local_time() - start);
-		boost::posix_time::time_duration elapsed = tested.getElapsedTime();
+		auto local_elapsed = (std::chrono::steady_clock::now() - start);
+		auto elapsed = tested.getElapsedTime();
 		CPPUNIT_ASSERT(elapsed >= local_elapsed);
 	}
 
 	void testRemainingTime()
 	{
-		TimeFrame tested = TimeFrame(boost::posix_time::microseconds(10));
-		boost::this_thread::sleep(boost::posix_time::microseconds(5));
+		TimeFrame tested = TimeFrame(std::chrono::microseconds(10));
+		std::this_thread::sleep_for(std::chrono::microseconds(5));
 
-		boost::posix_time::time_duration remaining = tested.getRemainingTime();
-		CPPUNIT_ASSERT(remaining <= boost::posix_time::microseconds(5));
+		auto remaining = tested.getRemainingTime();
+		CPPUNIT_ASSERT(remaining <= std::chrono::microseconds(5));
 	}
 
 	void testRemainingTimeTruncAtZero()
 	{
-		TimeFrame tested = TimeFrame(boost::posix_time::microseconds(2));
-		boost::this_thread::sleep(boost::posix_time::microseconds(5));
+		TimeFrame tested = TimeFrame(std::chrono::microseconds(2));
+		std::this_thread::sleep_for(std::chrono::microseconds(5));
 
-		CPPUNIT_ASSERT(tested.getRemainingTime() == boost::posix_time::microseconds(0));
+		CPPUNIT_ASSERT(tested.getRemainingTime() == std::chrono::microseconds(0));
 	}
 
 };
