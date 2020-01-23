@@ -26,6 +26,7 @@
 #include <Mercator/Terrain.h>
 
 #include <wfmath/MersenneTwister.h>
+#include <sstream>
 
 namespace Ember {
 namespace OgreView {

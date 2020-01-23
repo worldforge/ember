@@ -60,6 +60,7 @@
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
 #include <OgreRoot.h>
+#include <boost/algorithm/string.hpp>
 
 using namespace CEGUI;
 namespace Ember {

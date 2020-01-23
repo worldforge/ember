@@ -20,25 +20,27 @@
 #include "config.h"
 #endif
 
+#include <chrono>
+#include <memory>
 #include "TimeFrame.h"
 
 namespace Ember {
-TimeFrame::TimeFrame(boost::posix_time::time_duration timeSlice) :
-		mStartTime(boost::posix_time::microsec_clock::local_time()),
+TimeFrame::TimeFrame(std::chrono::steady_clock::duration timeSlice) :
+		mStartTime(std::chrono::steady_clock::now()),
 		mEndTime(mStartTime + timeSlice),
-		mTimeSlice(std::move(timeSlice)) {
+		mTimeSlice(timeSlice) {
 }
 
 bool TimeFrame::isTimeLeft() const {
-	return boost::posix_time::microsec_clock::local_time() < mEndTime;
+	return std::chrono::steady_clock::now() < mEndTime;
 }
 
-boost::posix_time::time_duration TimeFrame::getRemainingTime() const {
-	return mEndTime - boost::posix_time::microsec_clock::local_time();
+std::chrono::steady_clock::duration TimeFrame::getRemainingTime() const {
+	return mEndTime - std::chrono::steady_clock::now();
 }
 
-boost::posix_time::time_duration TimeFrame::getElapsedTime() const {
-	return boost::posix_time::microsec_clock::local_time() - mStartTime;
+std::chrono::steady_clock::duration TimeFrame::getElapsedTime() const {
+	return std::chrono::steady_clock::now() - mStartTime;
 }
 
 }

@@ -56,6 +56,7 @@
 #include <CEGUI/widgets/TabControl.h>
 
 #include <sigc++/bind.h>
+#include <boost/algorithm/string.hpp>
 
 using namespace CEGUI;
 namespace Ember {

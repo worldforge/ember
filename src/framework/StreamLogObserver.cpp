@@ -21,6 +21,7 @@
 #endif
 
 #include "StreamLogObserver.h"
+#include <sstream>
 #include <thread>
 #include <atomic>
 
@@ -29,98 +30,88 @@ namespace Ember {
 /**
  * @brief Simple class used for giving a sequential identifier to threads.
  */
-class ThreadIdentifier
-{
+class ThreadIdentifier {
 public:
 	std::string id;
 	static std::atomic<int> sCounter;
-	ThreadIdentifier()
-	{
+
+	ThreadIdentifier() {
 		std::stringstream ss;
 		ss << sCounter++;
 		id = ss.str();
 	}
 };
+
 std::atomic<int> ThreadIdentifier::sCounter;
 
 
-    StreamLogObserver::StreamLogObserver(std::ostream &out) 
-        : myOut(out), mDetailed(false), mStart(boost::posix_time::microsec_clock::local_time())
-    {
-    }
+StreamLogObserver::StreamLogObserver(std::ostream& out)
+		: myOut(out),
+		  mDetailed(false),
+		  mStart(boost::posix_time::microsec_clock::local_time()) {
+}
 
 
-    StreamLogObserver::~StreamLogObserver () {
-    	myOut.flush();
-    }
+StreamLogObserver::~StreamLogObserver() {
+	myOut.flush();
+}
 
-    //----------------------------------------------------------------------
-    // Implemented methods from Log::Observer
+//----------------------------------------------------------------------
+// Implemented methods from Log::Observer
 
-    /**
-     * Prints out the message provided with file, line and datestamp to myOut;
-     */
-    void StreamLogObserver::onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                                 const Log::MessageImportance & importance)
-    {
-    	boost::posix_time::ptime currentTime = boost::posix_time::microsec_clock::local_time();
+/**
+ * Prints out the message provided with file, line and datestamp to myOut;
+ */
+void StreamLogObserver::onNewMessage(const std::string& message, const std::string& file, const int& line,
+									 const Log::MessageImportance& importance) {
+	boost::posix_time::ptime currentTime = boost::posix_time::microsec_clock::local_time();
 
-        myOut.fill('0');
-        myOut << "[";
-        myOut.width(2);
-        myOut << currentTime.time_of_day().hours() << ":";
-        myOut.width(2);
-        myOut << currentTime.time_of_day().minutes() << ":";
-        myOut.width(2);			
-        myOut << currentTime.time_of_day().seconds();
-        if (mDetailed) {
-        	//We don't expect many threads to be created, so we'll use a static variable.
-        	static std::map<std::thread::id, ThreadIdentifier> threadIdentifiers;
-        	myOut << "(";
-			myOut.width(8);
-			myOut << ((currentTime - mStart).total_microseconds()) << ":"<< threadIdentifiers[std::this_thread::get_id()].id << ":" << Log::sCurrentFrame << ":" << (currentTime - Log::sCurrentFrameStartMilliseconds).total_milliseconds() << ")";
-        }
-        myOut << "] ";
+	myOut.fill('0');
+	myOut << "[";
+	myOut.width(2);
+	myOut << currentTime.time_of_day().hours() << ":";
+	myOut.width(2);
+	myOut << currentTime.time_of_day().minutes() << ":";
+	myOut.width(2);
+	myOut << currentTime.time_of_day().seconds();
+	if (mDetailed) {
+		//We don't expect many threads to be created, so we'll use a static variable.
+		static std::map<std::thread::id, ThreadIdentifier> threadIdentifiers;
+		myOut << "(";
+		myOut.width(8);
+		myOut << ((currentTime - mStart).total_microseconds()) << ":" << threadIdentifiers[std::this_thread::get_id()].id << ":" << Log::sCurrentFrame << ":" << (currentTime - Log::sCurrentFrameStartMilliseconds).total_milliseconds() << ")";
+	}
+	myOut << "] ";
 
-        if(importance == Log::CRITICAL)
-		{
-			myOut << "CRITICAL";
-		}
-        else  if(importance == Log::FAILURE)
-		{
-			myOut << "FAILURE";
-		} 
-        else if(importance == Log::WARNING)
-		{
-			myOut << "WARNING";
-		}
-        else if(importance == Log::INFO)
-		{
-			myOut << "INFO";
-		}
-        else
-		{
-			myOut << "VERBOSE";
-		}
-        
-        myOut << " " << message;
-        
-        #ifdef EMBER_LOG_SHOW_ORIGIN
-            if(line != -1){
-                myOut << " [" << file << "(" <<  line << ")]";
-            }
-        #endif
+	if (importance == Log::CRITICAL) {
+		myOut << "CRITICAL";
+	} else if (importance == Log::FAILURE) {
+		myOut << "FAILURE";
+	} else if (importance == Log::WARNING) {
+		myOut << "WARNING";
+	} else if (importance == Log::INFO) {
+		myOut << "INFO";
+	} else {
+		myOut << "VERBOSE";
+	}
 
-        myOut << std::endl;
+	myOut << " " << message;
 
-    }
+#ifdef EMBER_LOG_SHOW_ORIGIN
+	if(line != -1){
+		myOut << " [" << file << "(" <<  line << ")]";
+	}
+#endif
 
-    void StreamLogObserver::setDetailed(bool enabled)
-    {
-    	if (enabled && !mDetailed) {
-    		Log::log("Enabling detailed logging. The values are as follows: microseconds since start: current thread id : current frame : milliseconds since start of current frame");
-    	}
-    	mDetailed = enabled;
-    }
+	myOut << std::endl;
+
+}
+
+void StreamLogObserver::setDetailed(bool enabled) {
+	if (enabled && !mDetailed) {
+		Log::log("Enabling detailed logging. The values are as follows: microseconds since start: current thread id : current frame : milliseconds since start of current frame");
+	}
+	mDetailed = enabled;
+}
 
 }; //end namespace Ember

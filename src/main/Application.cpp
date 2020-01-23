@@ -118,7 +118,7 @@ protected:
 	 * @brief How long each frame should be in microseconds.
 	 * If set to 0 no capping will occur.
 	 */
-	long mMicrosecondsPerFrame;
+    std::chrono::steady_clock::duration mTimePerFrame;
 
 	bool mEnableStackCheck;
 
@@ -127,9 +127,9 @@ protected:
 		if (variable.is_double()) {
 			mDesiredFps = static_cast<int>(variable);
 			if (mDesiredFps != 0) {
-				mMicrosecondsPerFrame = 1000000L / mDesiredFps;
+                mTimePerFrame = std::chrono::microseconds(1000000L / mDesiredFps);
 			} else {
-				mMicrosecondsPerFrame = 0;
+                mTimePerFrame = std::chrono::steady_clock::duration::zero();
 			}
 
 			if (mEnableStackCheck && mDesiredFps > 0) {
@@ -160,9 +160,9 @@ public:
 	 * A listener will be set up listening for the general:desiredfps config setting.
 	 */
 	DesiredFpsListener() :
-			mDesiredFps(0),
-			mMicrosecondsPerFrame(0),
-			mEnableStackCheck(false) {
+            mDesiredFps(0),
+            mTimePerFrame(0),
+            mEnableStackCheck(false) {
 		registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &DesiredFpsListener::Config_DesiredFps));
 		registerConfigListener("general", "slowframecheck", sigc::mem_fun(*this, &DesiredFpsListener::Config_FrameStackCheck));
 
@@ -180,8 +180,8 @@ public:
 	 * @brief Accessor for the minimum length (in microseconds) that each frame should take in order for the desired fps to be kept.
 	 * If 0 no capping will occur.
 	 */
-	long getMicrosecondsPerFrame() const {
-		return mMicrosecondsPerFrame;
+    std::chrono::steady_clock::duration getTimePerFrame() const {
+		return mTimePerFrame;
 	}
 };
 
@@ -293,7 +293,7 @@ void Application::mainLoop() {
 			StackChecker::resetCounter();
 
 			unsigned int frameActionMask = 0;
-			boost::posix_time::microseconds desiredMicrosecondsPerFrame(desiredFpsListener.getMicrosecondsPerFrame());
+            auto desiredMicrosecondsPerFrame = desiredFpsListener.getTimePerFrame();
 			TimeFrame timeFrame = TimeFrame(desiredMicrosecondsPerFrame);
 
 			mSession->getIoService().poll_one();
@@ -335,8 +335,8 @@ void Application::mainLoop() {
 
 			//And if there's yet still time left this frame, wait until time is up, and do io in the meantime.
 			if (timeFrame.isTimeLeft()) {
-				boost::asio::deadline_timer deadlineTimer(mSession->getIoService());
-				deadlineTimer.expires_at(boost::asio::time_traits<boost::posix_time::ptime>::now() + timeFrame.getRemainingTime());
+				boost::asio::steady_timer deadlineTimer(mSession->getIoService());
+				deadlineTimer.expires_at(std::chrono::steady_clock::now() + timeFrame.getRemainingTime());
 
 				deadlineTimer.async_wait([&](boost::system::error_code ec) {
 				});
@@ -348,7 +348,7 @@ void Application::mainLoop() {
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 
-			if (updatedRendering && timeFrame.getElapsedTime().total_microseconds() > (desiredMicrosecondsPerFrame.total_microseconds() * 1.4f)) {
+			if (updatedRendering && timeFrame.getElapsedTime().count() > (desiredMicrosecondsPerFrame.count() * 1.4f)) {
 				S_LOG_VERBOSE("Frame took too long.");
 			}
 

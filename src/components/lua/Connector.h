@@ -33,9 +33,7 @@
 #include <sigc++/connection.h>
 #include <string>
 #include <tolua++.h>
-
-
-
+#include <memory>
 
 namespace Ember
 {
@@ -47,7 +45,7 @@ namespace Lua
 /**
  @author Erik Ogenvik
 
- Class used for connecting sigc signals to lua. Acts as an adapter for the signals, recieving them from the c++ environment and sending them to the lua environment.
+ Class used for connecting sigc signals to lua. Acts as an adapter for the signals, receiving them from the c++ environment and sending them to the lua environment.
 
  To use them in lua, use code like this:
  <code>

@@ -22,6 +22,7 @@
 #include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 #include <fstream>
+#include <sstream>
 
 namespace Ember {
 

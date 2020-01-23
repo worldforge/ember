@@ -27,27 +27,24 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
 #include <Atlas/PresentationBridge.h>
+#include <memory>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
-std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::string& codecType)
-{
+std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::string& codecType) {
 	std::stringstream ss;
 	Atlas::Message::QueuedDecoder decoder;
 	std::unique_ptr<Atlas::Bridge> codec;
 
 	if (codecType == "bach") {
-		codec.reset(new Atlas::Codecs::Bach(ss, ss, decoder));
+		codec = std::make_unique<Atlas::Codecs::Bach>(ss, ss, decoder);
 	} else if (codecType == "xml") {
-		codec.reset(new Atlas::Codecs::XML(ss, ss, decoder));
+		codec = std::make_unique<Atlas::Codecs::XML>(ss, ss, decoder);
 	} else if (codecType == "presentation") {
-		codec.reset(new Atlas::PresentationBridge(ss));
+		codec = std::make_unique<Atlas::PresentationBridge>(ss);
 	} else {
 		S_LOG_WARNING("Could not recognize codec type '" << codecType << "'. Supported types are: xml, bach");
 		return "";

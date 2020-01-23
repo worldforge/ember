@@ -19,7 +19,7 @@
 #ifndef TIMEFRAME_H_
 #define TIMEFRAME_H_
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <chrono>
 
 namespace Ember {
 
@@ -37,7 +37,7 @@ public:
 	 * @brief Ctor.
 	 * @param timeSlice The slice of time for this time frame.
 	 */
-	explicit TimeFrame(boost::posix_time::time_duration timeSlice);
+	explicit TimeFrame(std::chrono::steady_clock::duration timeSlice);
 
 	/**
 	 * @brief Checks whether there's any time left until the threshold has passed.
@@ -49,27 +49,27 @@ public:
 	 * @brief Returns the remaining.
 	 * @return The remaining time.
 	 */
-	boost::posix_time::time_duration getRemainingTime() const;
+	std::chrono::steady_clock::duration getRemainingTime() const;
 
 	/**
 	 * @brief Returns the elapsed time.
 	 * @return The elapsed time.
 	 */
-	boost::posix_time::time_duration getElapsedTime() const;
+	std::chrono::steady_clock::duration getElapsedTime() const;
 
 private:
 
 	/**
 	 * @brief Time when the task started.
 	 */
-	const boost::posix_time::ptime mStartTime;
+	const std::chrono::steady_clock::time_point mStartTime;
 
-	const boost::posix_time::ptime mEndTime;
+	const std::chrono::steady_clock::time_point mEndTime;
 
 	/**
 	 * @brief The slice of time for this time frame.
 	 */
-	const boost::posix_time::time_duration mTimeSlice;
+	const std::chrono::steady_clock::duration mTimeSlice;
 };
 
 }

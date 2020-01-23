@@ -22,20 +22,16 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <string>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Provides simple Atlas help functionality, mainly meant for those things that are cumbersome to do in the script language.
  */
-class AtlasHelper
-{
+class AtlasHelper {
 public:
 
 	/**

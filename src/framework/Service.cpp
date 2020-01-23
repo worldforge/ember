@@ -22,6 +22,7 @@
 
 #include "Service.h"
 #include "LoggingInstance.h"
+#include <cassert>
 
 namespace Ember {
 

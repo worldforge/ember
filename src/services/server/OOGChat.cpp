@@ -25,6 +25,7 @@
 #include "framework/ConsoleBackend.h"
 
 #include <Eris/Person.h>
+#include <sstream>
 
 namespace Ember {
 

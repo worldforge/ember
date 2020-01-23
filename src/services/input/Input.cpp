@@ -52,9 +52,6 @@
 #endif
 #endif
 
-using boost::posix_time::microsec_clock;
-using boost::posix_time::ptime;
-
 namespace Ember {
 
 const std::string Input::BINDCOMMAND("bind");
@@ -79,8 +76,8 @@ Input::Input() :
 		mInvertMouse(false),
 		mHandleOpenGL(false),
 		mMainWindowId(0),
-		mLastTimeInputProcessingStart(microsec_clock::local_time()),
-		mLastTimeInputProcessingEnd(microsec_clock::local_time()) {
+		mLastTimeInputProcessingStart(std::chrono::steady_clock::now()),
+		mLastTimeInputProcessingEnd(std::chrono::steady_clock::now()) {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
 	mMousePosition.xRelativePosition = 0.0f;
@@ -90,7 +87,7 @@ Input::Input() :
 #if !defined(BUILD_WEBEMBER) || defined(_WIN32) || defined(__APPLE__)
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE);
 #endif
-	mLastTick = std::chrono::system_clock::now();
+	mLastTick = std::chrono::steady_clock::now();
 
 	//this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
 	atexit(SDL_Quit);
@@ -386,11 +383,11 @@ void Input::startInteraction() {
 
 void Input::processInput() {
 
-	ptime currentTime = microsec_clock::local_time();
-	mMainLoopController->EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).total_microseconds() / 1000000.0f);
+	auto currentTime = std::chrono::steady_clock::now();
+	mMainLoopController->EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).count() / 1000000000.0f);
 	mLastTimeInputProcessingStart = currentTime;
 
-	auto newTick = std::chrono::system_clock::now();
+	auto newTick = std::chrono::steady_clock::now();
 	float secondsSinceLast = std::chrono::duration_cast<std::chrono::duration<float>>(newTick - mLastTick).count();
 
 	mLastTick = newTick;
@@ -399,8 +396,8 @@ void Input::processInput() {
 	if (mWindowProvider) {
 		mWindowProvider->processInput();
 	}
-	currentTime = microsec_clock::local_time();
-	mMainLoopController->EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).total_microseconds() / 1000000.0f);
+	currentTime = std::chrono::steady_clock::now();
+	mMainLoopController->EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).count() / 1000000000.0f);
 	mLastTimeInputProcessingEnd = currentTime;
 }
 

@@ -31,6 +31,7 @@
 
 #include "framework/LoggingInstance.h"
 #include "framework/Exception.h"
+#include <cassert>
 
 namespace Ember {
 

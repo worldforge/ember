@@ -24,24 +24,22 @@
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
 
-#include <string>
-
 #include <boost/circular_buffer.hpp>
-#include <boost/date_time.hpp>
 
-namespace varconf
-{
+#include <string>
+#include <chrono>
+
+namespace varconf {
 class Variable;
 }
 
-namespace Ember
-{
+namespace Ember {
 class TimeFrame;
 
 class MainLoopController;
+
 class ConfigListenerContainer;
-namespace OgreView
-{
+namespace OgreView {
 
 class GraphicalChangeAdapter;
 
@@ -49,13 +47,12 @@ class GraphicalChangeAdapter;
  * @brief Records the average time per frame.
  * 
  */
-class FrameTimeRecorder: public virtual sigc::trackable
-{
+class FrameTimeRecorder : public virtual sigc::trackable {
 public:
 	/**
 	 * @brief Constructor
 	 */
-	FrameTimeRecorder(MainLoopController& mainLoopController);
+	explicit FrameTimeRecorder(MainLoopController& mainLoopController);
 
 	/**
 	 * @brief Destructor
@@ -65,24 +62,24 @@ public:
 	/**
 	 * @brief Signal sent out with the updated average time per frame.
 	 */
-	sigc::signal<void, const boost::posix_time::time_duration> EventAverageTimePerFrameUpdated;
+	sigc::signal<void, const std::chrono::steady_clock::duration> EventAverageTimePerFrameUpdated;
 
 protected:
 
 	/**
 	 * The amount of time in microseconds that the fps should be averaged over.
 	 */
-	boost::posix_time::time_duration mRequiredTimeSamples;
+	std::chrono::steady_clock::duration mRequiredTimeSamples;
 
 	/**
 	 * Stores averaged time frames.
 	 */
-	boost::circular_buffer<boost::posix_time::time_duration> mTimePerFrameStore;
+	boost::circular_buffer<std::chrono::steady_clock::duration> mTimePerFrameStore;
 
 	/**
 	 * @brief Accumulates frame times since last calculation.
 	 */
-	boost::posix_time::time_duration mAccumulatedFrameTimes;
+	std::chrono::steady_clock::duration mAccumulatedFrameTimes;
 
 	/**
 	 * @brief Accumulates number of frames since last calculation.
@@ -101,14 +98,13 @@ protected:
  * by using the GraphicalChangeAdapter.
  */
 
-class AutomaticGraphicsLevelManager
-{
+class AutomaticGraphicsLevelManager {
 public:
 	/**
 	 * @brief Constructor
 	 * @param mainLoopController The main loop controller.
 	 */
-	AutomaticGraphicsLevelManager(MainLoopController& mainLoopController);
+	explicit AutomaticGraphicsLevelManager(MainLoopController& mainLoopController);
 
 	/**
 	 * @brief Destructor
@@ -182,7 +178,7 @@ protected:
 	 * Called from the FrameTimeRecorder when a new average time per frame has been calculated.
 	 * @param timePerFrame Time per frame, in microseconds.
 	 */
-	void averageTimePerFrameUpdated(const boost::posix_time::time_duration timePerFrame);
+	void averageTimePerFrameUpdated(std::chrono::nanoseconds timePerFrame);
 
 	/**
 	 * @brief Connected to the config service to listen for derired fps settings.

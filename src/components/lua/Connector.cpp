@@ -25,7 +25,7 @@
 #endif
 
 #include "Connector.h"
-
+#include <memory>
 
 namespace Ember {
 

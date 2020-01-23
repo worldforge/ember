@@ -229,7 +229,7 @@ bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args) {
 			aWindow->deactivate();
 		}
 
-		mMousePressedTimeFrame = std::make_unique<TimeFrame>(boost::posix_time::milliseconds(mClickThresholdMilliseconds));
+		mMousePressedTimeFrame = std::make_unique<TimeFrame>(std::chrono::milliseconds(mClickThresholdMilliseconds));
 		sendWorldClick(MPT_PRESS, mMainWindow.getGUIContext().getMouseCursor().getPosition(), 300);
 	}
 

@@ -35,12 +35,12 @@
 #include <sigc++/signal.h>
 
 #include <SDL_scancode.h>
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <set>
 #include <list>
 #include <unordered_map>
 #include <chrono>
+#include <memory>
 
 #include <cstdint>
 
@@ -525,7 +525,7 @@ private:
 	/**
 	 @brief Store the last tick count, to use for looking up how much time has elapsed since our last event polling.
 	 */
-	std::chrono::system_clock::time_point mLastTick;
+	std::chrono::steady_clock::time_point mLastTick;
 
 	/**
 	 * @brief The last positions of the mouse.
@@ -624,12 +624,12 @@ private:
 	/**
 	 * @brief Keeps track of the last time input processing started.
 	 */
-	boost::posix_time::ptime mLastTimeInputProcessingStart;
+	std::chrono::steady_clock::time_point mLastTimeInputProcessingStart;
 
 	/**
 	 * @brief Keeps track of the last time input processing ended.
 	 */
-	boost::posix_time::ptime mLastTimeInputProcessingEnd;
+    std::chrono::steady_clock::time_point mLastTimeInputProcessingEnd;
 
 };
 

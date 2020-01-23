@@ -28,7 +28,7 @@
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/SmartPtr.h>
 
-#include <utility>
+#include <sstream>
 #include "LoggingInstance.h"
 
 namespace Ember {

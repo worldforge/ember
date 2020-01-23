@@ -28,23 +28,20 @@
 
 #include <numeric>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 FrameTimeRecorder::FrameTimeRecorder(MainLoopController& mainLoopController) :
-		mRequiredTimeSamples(boost::posix_time::seconds(2)), mTimePerFrameStore(20), mAccumulatedFrameTimes(boost::posix_time::seconds(0)), mAccumulatedFrames(0)
-{
+		mRequiredTimeSamples(std::chrono::seconds(2)),
+		mTimePerFrameStore(20),
+		mAccumulatedFrameTimes(std::chrono::seconds(0)),
+		mAccumulatedFrames(0) {
 	mainLoopController.EventFrameProcessed.connect(sigc::mem_fun(*this, &FrameTimeRecorder::frameCompleted));
 }
 
-FrameTimeRecorder::~FrameTimeRecorder()
-{
-}
+FrameTimeRecorder::~FrameTimeRecorder() = default;
 
-void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame, unsigned int frameActionMask)
-{
+void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame, unsigned int frameActionMask) {
 	if (frameActionMask & MainLoopController::FA_GRAPHICS) {
 
 		mAccumulatedFrameTimes += timeFrame.getElapsedTime();
@@ -53,10 +50,10 @@ void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame, unsigned int 
 		if (mAccumulatedFrameTimes >= mRequiredTimeSamples) {
 
 			mTimePerFrameStore.push_back(mAccumulatedFrameTimes / mAccumulatedFrames);
-			mAccumulatedFrameTimes = boost::posix_time::seconds(0);
+			mAccumulatedFrameTimes = std::chrono::microseconds::zero();
 			mAccumulatedFrames = 0;
 
-			boost::posix_time::time_duration averageTimePerFrame = std::accumulate(mTimePerFrameStore.begin(), mTimePerFrameStore.end(), boost::posix_time::time_duration()) / mTimePerFrameStore.size();
+			auto averageTimePerFrame = std::accumulate(mTimePerFrameStore.begin(), mTimePerFrameStore.end(), std::chrono::steady_clock::duration::zero()) / mTimePerFrameStore.size();
 			EventAverageTimePerFrameUpdated(averageTimePerFrame);
 
 		}
@@ -64,26 +61,22 @@ void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame, unsigned int 
 }
 
 AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(MainLoopController& mainLoopController) :
-		mDefaultFps(60.0f), mEnabled(false), mFrameTimeRecorder(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer())
-{
+		mDefaultFps(60.0f), mEnabled(false), mFrameTimeRecorder(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer()) {
 	mFpsUpdatedConnection = mFrameTimeRecorder.EventAverageTimePerFrameUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::averageTimePerFrameUpdated));
 	mConfigListenerContainer->registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "autoadjust", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_Enabled), false);
 }
 
-AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
-{
+AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager() {
 	mFpsUpdatedConnection.disconnect();
 	delete mConfigListenerContainer;
 }
 
-void AutomaticGraphicsLevelManager::setFps(float fps)
-{
+void AutomaticGraphicsLevelManager::setFps(float fps) {
 	mDefaultFps = fps;
 }
 
-void AutomaticGraphicsLevelManager::checkFps(float currentFps)
-{
+void AutomaticGraphicsLevelManager::checkFps(float currentFps) {
 	float changeRequired = mDefaultFps - currentFps;
 	//This factor is used to adjust the required fps difference before a change is triggered. Lower required fpses eg. 30 will need to respond to smaller changes.
 	float factor = mDefaultFps / 60.0f;
@@ -92,40 +85,34 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 	}
 }
 
-void AutomaticGraphicsLevelManager::averageTimePerFrameUpdated(const boost::posix_time::time_duration timePerFrame)
-{
+void AutomaticGraphicsLevelManager::averageTimePerFrameUpdated(std::chrono::nanoseconds timePerFrame) {
 	//Convert microseconds per frame to fps.
-	checkFps(1000000.0f / timePerFrame.total_microseconds());
+	checkFps(1000000000.0f / timePerFrame.count());
 }
 
-void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequired)
-{
+void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequired) {
 	//TODO: Need to implement functionality for if further change is not possible
 	mGraphicalChangeAdapter.fpsChangeRequired(changeInFpsRequired);
 }
 
-GraphicalChangeAdapter& AutomaticGraphicsLevelManager::getGraphicalAdapter()
-{
+GraphicalChangeAdapter& AutomaticGraphicsLevelManager::getGraphicalAdapter() {
 	return mGraphicalChangeAdapter;
 }
 
-void AutomaticGraphicsLevelManager::setEnabled(bool newEnabled)
-{
+void AutomaticGraphicsLevelManager::setEnabled(bool newEnabled) {
 	mEnabled = newEnabled;
-	if (newEnabled == false) {
+	if (!newEnabled) {
 		mFpsUpdatedConnection.block();
 	} else {
 		mFpsUpdatedConnection.unblock();
 	}
 }
 
-bool AutomaticGraphicsLevelManager::isEnabled() const
-{
+bool AutomaticGraphicsLevelManager::isEnabled() const {
 	return mEnabled;
 }
 
-void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_double()) {
 		int fps = static_cast<double>(variable);
 		//If set to 0, the fps the manager tries to achieve is 60
@@ -136,8 +123,7 @@ void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section
 	}
 }
 
-void AutomaticGraphicsLevelManager::Config_Enabled(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void AutomaticGraphicsLevelManager::Config_Enabled(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_bool() && static_cast<bool>(variable)) {
 		setEnabled(true);
 	} else {
