@@ -79,6 +79,7 @@ TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 
 #include <memory>
 #include <boost/thread.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"

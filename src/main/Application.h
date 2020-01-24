@@ -18,7 +18,6 @@
 #include "framework/MainLoopController.h"
 
 #include <sigc++/signal.h>
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <list>
 #include <string>
