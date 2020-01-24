@@ -297,7 +297,7 @@ void Application::mainLoop() {
 			TimeFrame timeFrame(timePerFrame);
 
 			auto end = std::chrono::steady_clock::now() + std::chrono::milliseconds(2);
-			//Execute IO handlers for two seconds, if there are any.
+			//Execute IO handlers for two milliseconds, if there are any.
 			while (std::chrono::steady_clock::now() < end) {
 				auto executedHandlers = mSession->getIoService().poll_one();
 				if (executedHandlers == 0) {
@@ -335,10 +335,10 @@ void Application::mainLoop() {
 
 			//If there's still time left this frame, process any outstanding main thread handlers.
 			if (timeFrame.isTimeLeft()) {
-				size_t handersRun = 0;
+				size_t handlersRun = 0;
 				do {
-					handersRun = eventService.processOneHandler();
-				} while (handersRun != 0 && timeFrame.isTimeLeft());
+					handlersRun = eventService.processOneHandler();
+				} while (handlersRun != 0 && timeFrame.isTimeLeft());
 			}
 
 			//And if there's yet still time left this frame, wait until time is up, and do io in the meantime.
