@@ -297,8 +297,20 @@ void Application::mainLoop() {
 			auto timePerFrame = desiredFpsListener.getTimePerFrame();
 			TimeFrame timeFrame(timePerFrame);
 
-			auto end = std::chrono::steady_clock::now() + std::chrono::milliseconds(2);
+			bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
+			if (updatedRendering) {
+				frameActionMask |= MainLoopController::FA_GRAPHICS;
+				frameActionMask |= MainLoopController::FA_INPUT;
+			} else {
+				input.processInput();
+				frameActionMask |= MainLoopController::FA_INPUT;
+			}
+
+			mServices->getSoundService().cycle();
+			frameActionMask |= MainLoopController::FA_SOUND;
+
 			//Execute IO handlers for two milliseconds, if there are any.
+			auto end = std::chrono::steady_clock::now() + std::chrono::milliseconds(2);
 			while (std::chrono::steady_clock::now() < end) {
 				auto executedHandlers = mSession->getIoService().poll_one();
 				if (executedHandlers == 0) {
@@ -312,19 +324,6 @@ void Application::mainLoop() {
 			if (mWorldView) {
 				mWorldView->update();
 			}
-
-
-			bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
-			if (updatedRendering) {
-				frameActionMask |= MainLoopController::FA_GRAPHICS;
-				frameActionMask |= MainLoopController::FA_INPUT;
-			} else {
-				input.processInput();
-				frameActionMask |= MainLoopController::FA_INPUT;
-			}
-
-			mServices->getSoundService().cycle();
-			frameActionMask |= MainLoopController::FA_SOUND;
 
 			//If there's time left this frame, poll any outstanding io handlers.
 			if (timeFrame.isTimeLeft()) {
