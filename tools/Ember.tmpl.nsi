@@ -23,8 +23,8 @@
   ; overwrite the old one automatically)
   InstallDirRegKey HKLM "Software\Ember" "Install_Dir"
 
-  ;Request application privileges for Windows Vista+
-  RequestExecutionLevel user
+  ;Request application privileges for Windows Vista+. Windows 7+ will recognize installers and request "admin" automatically, thus "none" is ok.
+  RequestExecutionLevel none
 
 ;--------------------------------
 ;Interface Settings
