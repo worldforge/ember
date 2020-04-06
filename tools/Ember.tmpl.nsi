@@ -22,9 +22,11 @@
   ; Registry key to check for directory (so if you install again, it will 
   ; overwrite the old one automatically)
   InstallDirRegKey HKLM "Software\Ember" "Install_Dir"
+  !define MSVS_DIR "d:\MSVS2010"
+
 
   ;Request application privileges for Windows Vista+
-  RequestExecutionLevel user
+  RequestExecutionLevel admin
 
 ;--------------------------------
 ;Interface Settings
@@ -61,6 +63,15 @@ Section "Ember (required)"
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
   
+  ;Check if we have redistributable installed
+  Call  CheckRedistributableInstalled
+  Pop $R0
+
+  ${If} $R0 == "Error"
+    File "${MSVS_DIR}\vcredist_x86.exe" 	
+    ExecWait '"$INSTDIR\vcredist_x86.exe"  /passive /norestart'	
+  ${EndIf}  
+
   ; Put files there
   File /r "@CMAKE_INSTALL_PREFIX@\*.*"
 
@@ -115,3 +126,27 @@ Section "un.Uninstall"
   RMDir "$INSTDIR"
 
 SectionEnd
+
+
+Function CheckRedistributableInstalled
+
+  ;{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5} - msvs2010 sp1
+  ;{071c9b48-7c32-4621-a0ac-3f809523288f} - Microsoft Visual C++ 2005 Redistributable
+  ;{8220EEFE-38CD-377E-8595-13398D740ACE} - Microsoft Visual C++ 2008 Redistributable
+
+  Push $R0
+  ClearErrors
+   
+  ;try to read Version subkey to R0
+  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" "Version"
+
+  ;was there error or not?
+  IfErrors 0 NoErrors
+   
+  ;error occured, copy "Error" to R0
+  StrCpy $R0 "Error"
+
+  NoErrors:
+  
+    Exch $R0 
+FunctionEnd
