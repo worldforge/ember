@@ -195,7 +195,7 @@ Function   DownloadRedistributableInstall
    
    ExecWait '$TEMP\vcredist_x64.exe /passive /norestart'
  
-  DetailPrint "Completed .NET Framework install/update. Removing VC++ installer."
+  DetailPrint "Completed VC++ Framework install/update. Removing VC++ installer."
   
    Delete "$TEMP\vcredist_x64.exe"
   
