@@ -6,6 +6,7 @@
 
 ; Use Modern UI
 !include "MUI2.nsh"
+!include "LogicLib.nsh"
 
 ;--------------------------------
 ;General
@@ -22,8 +23,8 @@
   ; Registry key to check for directory (so if you install again, it will 
   ; overwrite the old one automatically)
   InstallDirRegKey HKLM "Software\Ember" "Install_Dir"
-  !define MSVS_DIR "d:\MSVS2010"
 
+  !define VCplus_URL64 "https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe";
 
   ;Request application privileges for Windows Vista+
   RequestExecutionLevel admin
@@ -68,8 +69,7 @@ Section "Ember (required)"
   Pop $R0
 
   ${If} $R0 == "Error"
-    File "${MSVS_DIR}\vcredist_x86.exe" 	
-    ExecWait '"$INSTDIR\vcredist_x86.exe"  /passive /norestart'	
+   Call DownloadRedistributableInstall	
   ${EndIf}  
 
   ; Put files there
@@ -149,4 +149,69 @@ Function CheckRedistributableInstalled
   NoErrors:
   
     Exch $R0 
+  ;ToDo investigate if we can have another way to read installed status
+  ; possible way to read from ReadRegDWORD $0 HKLM Software\Microsoft\VisualStudio\10.0\VC\Runtimes\x64 Installed
+  ;try to read Version subkey to R0
+  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" "Version"
+
+  ;was there error or not?
+  IfErrors 0 NoErrors
+   
+  ;error occured, copy "Error" to R0
+  StrCpy $R0 "Error"
+
+  NoErrors:
+  
+    Exch $R0 
+FunctionEnd
+
+Function   DownloadRedistributableInstall
+
+  DetailPrint "Beginning download of latest VC++ Redistributable."
+  
+  inetc::get /TIMEOUT=30000 ${VCplus_URL64} "$TEMP\vcredist_x64.exe" /END
+  
+  Pop $0
+  DetailPrint "Result: $0"
+  StrCmp $0 "OK" InstallVCplusplus
+  StrCmp $0 "cancelled" GiveUpVCplusplus
+
+  StrCmp $0 "OK" InstallVCplusplus
+ 
+  MessageBox MB_ICONSTOP "Download failed: $0"
+  Abort
+  InstallVCplusplus:
+  DetailPrint "Completed download."
+  Pop $0
+  ${If} $0 == "cancel"
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+    "Download cancelled.  Continue Installation?" \
+    IDYES NewVCplusplus IDNO GiveUpVCplusplus
+  ${EndIf}
+
+;  TryFailedDownload:
+  DetailPrint "Pausing installation while downloaded VC++ installer runs."
+  DetailPrint "Installation could take several minutes to complete."
+   
+   ExecWait '$TEMP\vcredist_x64.exe /passive /norestart'
+ 
+  DetailPrint "Completed .NET Framework install/update. Removing VC++ installer."
+  
+   Delete "$TEMP\vcredist_x64.exe"
+  
+  DetailPrint "VC++ installer removed."
+  goto NewVCplusplus
+ 
+ GiveUpVCplusplus:
+  Abort "Installation cancelled by user."
+ 
+NewVCplusplus:
+  Pop $7
+  Pop $6
+  Pop $5
+  Pop $4
+  Pop $3
+  Pop $2
+  Pop $1
+  Pop $0
 FunctionEnd
