@@ -26,9 +26,8 @@
 
   !define VCplus_URL64 "https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe";
   !define VCplus_URL_man "https://www.microsoft.com/en-us/download/details.aspx?id=26999";
-  ;Request application privileges for Windows Vista+
-  RequestExecutionLevel admin
-
+;Request application privileges for Windows Vista+. Windows 7+ will recognize installers and request "admin" automatically, thus "none" is ok.
+  RequestExecutionLevel none
 ;--------------------------------
 ;Interface Settings
 
