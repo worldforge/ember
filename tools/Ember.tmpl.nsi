@@ -71,11 +71,14 @@ Section "Ember (required)"
   ${If} $R0 == "Error"
    Call DownloadRedistributableInstall
     Pop $0
-        ${if} $0 == "Error"
-            MessageBox MB_ICONSTOP "An error occured: $0"
-          DetailPrint "Please ensure that you have installed VC++ Redistributables."
-          DetailPrint "You can Download from:" 
-          DetailPrint ${VCplus_URL_man}  
+        ${if} $0 == "Success"
+            DetailPrint "Continue installation"
+        ${ElseIf} $0 == 'Cancel'
+            DetailPrint "Please ensure that you have installed VC++ Redistributables."
+        ${Else}
+            MessageBox MB_OK "An error occured: $0"
+            DetailPrint "You can Download vcredist manually from:" 
+            DetailPrint ${VCplus_URL_man}  
         ${EndIf}   
   ${EndIf}  
 
@@ -161,6 +164,8 @@ Function CheckRedistributableInstalled
 FunctionEnd
 
 Function   DownloadRedistributableInstall
+  
+  Push $0
 
   DetailPrint "Beginning download of latest VC++ Redistributable."
   
@@ -170,12 +175,12 @@ Function   DownloadRedistributableInstall
   DetailPrint "Result: $0"
   
   StrCmp $0 "Success" InstallVCplusplus
-  StrCmp $0 "Cancel" GiveUpVCplusplus
+  
+ StrCmp $0 "Cancel" GiveUpVCplusplus
 
-  StrCmp $0 "Error" GeneralError
  
-  MessageBox MB_ICONSTOP "Download failed: $0"
-  Abort
+ StrCpy $0 "Error"
+ 
   InstallVCplusplus:
   DetailPrint "Completed download."
   Pop $0
@@ -184,7 +189,8 @@ Function   DownloadRedistributableInstall
     "Download cancelled.  Continue Installation?" \
     IDYES NewVCplusplus IDNO GiveUpVCplusplus
   ${EndIf}
-
+  
+ 
 ;  TryFailedDownload:
   DetailPrint "Pausing installation while downloaded VC++ installer runs."
   DetailPrint "Installation could take several minutes to complete."
@@ -210,8 +216,5 @@ NewVCplusplus:
   Pop $2
   Pop $1
   Pop $0
- 
- GeneralError:
-   StrCpy $0 "Error"
-
+   
 FunctionEnd
