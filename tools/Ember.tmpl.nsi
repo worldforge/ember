@@ -179,8 +179,6 @@ Function   DownloadRedistributableInstall
  StrCmp $0 "Cancel" GiveUpVCplusplus
 
  
- StrCpy $0 "Error"
- 
   InstallVCplusplus:
   DetailPrint "Completed download."
   Pop $0
