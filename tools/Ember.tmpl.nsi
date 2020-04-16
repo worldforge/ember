@@ -168,7 +168,7 @@ Function   DownloadRedistributableInstall
   Pop $0
   DetailPrint "Result: $0"
   
-  StrCmp $0 "OK" InstallVCplusplus
+  StrCmp $0 "Success" InstallVCplusplus
   StrCmp $0 "cancelled" GiveUpVCplusplus
 
   StrCmp $0 "OK" InstallVCplusplus
