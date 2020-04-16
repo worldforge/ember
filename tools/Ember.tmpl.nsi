@@ -6,7 +6,7 @@
 
 ; Use Modern UI
 !include "MUI2.nsh"
-
+!include "LogicLib.nsh"
 ;--------------------------------
 ;General
 
@@ -25,6 +25,11 @@
 
   ;Request application privileges for Windows Vista+. Windows 7+ will recognize installers and request "admin" automatically, thus "none" is ok.
   RequestExecutionLevel none
+
+;--------------------------------
+;Redestributables  Variables links
+!define VCplus_URL64 "https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe";
+!define VCplus_URL_man "https://www.microsoft.com/en-us/download/details.aspx?id=26999";
 
 ;--------------------------------
 ;Interface Settings
@@ -60,6 +65,26 @@ Section "Ember (required)"
   
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
+
+  ;Check if we have redistributable installed
+  Call  CheckRedistributableInstalled
+  Pop $R0
+  
+  ;Installing redistibutable  
+   ${If} $R0 == "Error"
+   Call DownloadRedistributableInstall
+    Pop $0
+        ${if} $0 == "Success"
+
+        ${ElseIf} $0 == 'Cancel'
+
+        ${Else}
+            MessageBox MB_OK "An error occured: $0"
+          DetailPrint "Please ensure that you have installed VC++ Redistributables."
+          DetailPrint "You can Download from:" 
+          DetailPrint ${VCplus_URL_man}  
+        ${EndIf}   
+  ${EndIf}
   
   ; Put files there
   File /r "@CMAKE_INSTALL_PREFIX@\*.*"
@@ -115,3 +140,81 @@ Section "un.Uninstall"
   RMDir "$INSTDIR"
 
 SectionEnd
+
+Function CheckRedistributableInstalled
+
+  ;{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5} - msvs2010 sp1
+  ;{071c9b48-7c32-4621-a0ac-3f809523288f} - Microsoft Visual C++ 2005 Redistributable
+  ;{8220EEFE-38CD-377E-8595-13398D740ACE} - Microsoft Visual C++ 2008 Redistributable
+
+  Push $R0
+  ClearErrors
+   
+  ;try to read Version subkey to R0
+  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" "Version"
+
+  ;was there error or not?
+  IfErrors 0 NoErrors
+   
+  ;error occured, copy "Error" to R0
+  StrCpy $R0 "Error"
+
+  NoErrors:
+  
+    Exch $R0 
+FunctionEnd
+
+
+Function   DownloadRedistributableInstall
+
+  DetailPrint "Beginning download of latest VC++ Redistributable."
+  
+  NSISdl::download /TIMEOUT=30000 ${VCplus_URL64} "$TEMP\vcredist_x64.exe" 
+  
+  Pop $0
+  DetailPrint "Result: $0"
+  
+  StrCmp $0 "Success" InstallVCplusplus
+  
+ StrCmp $0 "Cancel" GiveUpVCplusplus
+
+ Push $0
+ StrCpy $0 "Error"
+ 
+  InstallVCplusplus:
+  DetailPrint "Completed download."
+  Pop $0
+  ${If} $0 == "cancel"
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+    "Download cancelled.  Continue Installation?" \
+    IDYES NewVCplusplus IDNO GiveUpVCplusplus
+  ${EndIf}
+  
+ 
+;  TryFailedDownload:
+  DetailPrint "Pausing installation while downloaded VC++ installer runs."
+  DetailPrint "Installation could take several minutes to complete."
+   
+   ExecWait '$TEMP\vcredist_x64.exe /passive /norestart'
+ 
+  DetailPrint "Completed VC++ Framework install/update. Removing VC++ installer."
+  
+   Delete "$TEMP\vcredist_x64.exe"
+  
+  DetailPrint "VC++ installer removed."
+  goto NewVCplusplus
+ 
+ GiveUpVCplusplus:
+  Abort "Installation cancelled by user."
+ 
+NewVCplusplus:
+  Pop $7
+  Pop $6
+  Pop $5
+  Pop $4
+  Pop $3
+  Pop $2
+  Pop $1
+  Pop $0
+   
+FunctionEnd
