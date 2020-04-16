@@ -25,7 +25,7 @@
   InstallDirRegKey HKLM "Software\Ember" "Install_Dir"
 
   !define VCplus_URL64 "https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe";
-
+  !define VCplus_URL_man "https://www.microsoft.com/en-us/download/details.aspx?id=26999";
   ;Request application privileges for Windows Vista+
   RequestExecutionLevel admin
 
@@ -69,7 +69,13 @@ Section "Ember (required)"
   Pop $R0
 
   ${If} $R0 == "Error"
-   Call DownloadRedistributableInstall	
+   Call DownloadRedistributableInstall
+    Pop $0
+        ${if} $0 == "Error"
+          DetailPrint "Please ensure that you have installed VC++ Redistributables."
+          DetailPrint "You can Download from:" 
+          DetailPrint ${VCplus_URL_man}  
+        ${EndIf}   
   ${EndIf}  
 
   ; Put files there
@@ -136,19 +142,7 @@ Function CheckRedistributableInstalled
 
   Push $R0
   ClearErrors
-   
-  ;try to read Version subkey to R0
-  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" "Version"
-
-  ;was there error or not?
-  IfErrors 0 NoErrors
-   
-  ;error occured, copy "Error" to R0
-  StrCpy $R0 "Error"
-
-  NoErrors:
   
-    Exch $R0 
   ;ToDo investigate if we can have another way to read installed status
   ; possible way to read from ReadRegDWORD $0 HKLM Software\Microsoft\VisualStudio\10.0\VC\Runtimes\x64 Installed
   ;try to read Version subkey to R0
@@ -169,10 +163,11 @@ Function   DownloadRedistributableInstall
 
   DetailPrint "Beginning download of latest VC++ Redistributable."
   
-  inetc::get /TIMEOUT=30000 ${VCplus_URL64} "$TEMP\vcredist_x64.exe" /END
+  NSISdl::download /TIMEOUT=30000 ${VCplus_URL64} "$TEMP\vcredist_x64.exe" 
   
   Pop $0
   DetailPrint "Result: $0"
+  
   StrCmp $0 "OK" InstallVCplusplus
   StrCmp $0 "cancelled" GiveUpVCplusplus
 
@@ -214,4 +209,5 @@ NewVCplusplus:
   Pop $2
   Pop $1
   Pop $0
+  
 FunctionEnd
