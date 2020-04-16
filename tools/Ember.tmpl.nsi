@@ -72,6 +72,7 @@ Section "Ember (required)"
    Call DownloadRedistributableInstall
     Pop $0
         ${if} $0 == "Error"
+            MessageBox MB_ICONSTOP "An error occured: $0"
           DetailPrint "Please ensure that you have installed VC++ Redistributables."
           DetailPrint "You can Download from:" 
           DetailPrint ${VCplus_URL_man}  
@@ -169,9 +170,9 @@ Function   DownloadRedistributableInstall
   DetailPrint "Result: $0"
   
   StrCmp $0 "Success" InstallVCplusplus
-  StrCmp $0 "cancelled" GiveUpVCplusplus
+  StrCmp $0 "Cancel" GiveUpVCplusplus
 
-  StrCmp $0 "OK" InstallVCplusplus
+  StrCmp $0 "Error" GeneralError
  
   MessageBox MB_ICONSTOP "Download failed: $0"
   Abort
@@ -209,5 +210,8 @@ NewVCplusplus:
   Pop $2
   Pop $1
   Pop $0
-  
+ 
+ GeneralError:
+   StrCpy $0 "Error"
+
 FunctionEnd
