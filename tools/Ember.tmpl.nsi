@@ -28,8 +28,8 @@
 
 ;--------------------------------
 ;Redestributables  Variables links
-!define VCplus_URL64 "https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe";
-!define VCplus_URL_man "https://www.microsoft.com/en-us/download/details.aspx?id=26999";
+!define VCplus_URL64 "https://aka.ms/vs/16/release/vc_redist.x64.exe";
+!define VCplus_URL_man "https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads";
 
 ;--------------------------------
 ;Interface Settings
@@ -151,7 +151,7 @@ Function CheckRedistributableInstalled
   ClearErrors
    
   ;try to read Version subkey to R0
-  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" "Version"
+  ReadRegStr $R0 HKCR "Installer\Dependencies\VC,redist.x64,amd64,14.25,bundle" "Version"
 
   ;was there error or not?
   IfErrors 0 NoErrors
