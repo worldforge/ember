@@ -25,7 +25,7 @@
 #define EMBEROGREOGRERESOURCELOADER_H
 
 #include "EmberOgrePrerequisites.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include <OgreConfigFile.h>
 #include <map>
 #include <Eris/Session.h>

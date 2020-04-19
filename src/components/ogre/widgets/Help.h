@@ -24,7 +24,7 @@
 #define EMBEROGREHELP_H
 
 #include "Widget.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 namespace Ember {
 class EmberEntity;

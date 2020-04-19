@@ -5,11 +5,9 @@ add_library(services
         config/ConfigConsoleCommands.cpp
         input/Input.cpp
         input/InputCommandMapper.cpp
-        input/InputService.cpp
         input/EmberIcon.h
         input/IInputAdapter.h
         logging/ErisLogReciever.cpp
-        logging/LoggingService.cpp
         metaserver/MetaserverService.cpp
         scripting/ScriptingService.cpp
         server/AccountAvailableState.cpp

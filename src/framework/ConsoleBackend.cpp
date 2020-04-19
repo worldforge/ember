@@ -27,6 +27,8 @@
 #endif
 
 #include "ConsoleBackend.h"
+
+#include <utility>
 #include "framework/LoggingInstance.h"
 #include "Tokeniser.h"
 #include "CommandHistory.h"
@@ -67,16 +69,16 @@ bool ConsoleBackend::onGotMessage(const std::string& message, const std::string&
 }
 
 
-void ConsoleBackend::registerCommand(const std::string& command, ConsoleObject* object, const std::string& description, bool suppressLogging) {
+void ConsoleBackend::registerCommand(const std::string& command, ConsoleCallback callback, const std::string& description, bool suppressLogging) {
 	if (!suppressLogging) {
 		S_LOG_INFO("Registering: " << command);
 	}
 
-	if (mRegisteredCommands.count(command) > 0) {
+	if (mRegisteredCommands.find(command) != mRegisteredCommands.end()) {
 		S_LOG_WARNING("The command '" + command + "' already has been registered.");
 	} else {
 		ConsoleObjectEntry entry;
-		entry.Object = object;
+		entry.Object = std::move(callback);
 		entry.Description = description;
 		// Assign the ConsoleObject to the command
 		mRegisteredCommands[command] = entry;
@@ -87,6 +89,11 @@ void ConsoleBackend::registerCommand(const std::string& command, ConsoleObject* 
 		}
 	}
 }
+
+void ConsoleBackend::registerCommand(const std::string& command, ConsoleObject* callback, const std::string& description, bool suppressLogging) {
+	registerCommand(command, [&](const std::string& command, const std::string& args) { callback->runCommand(command, args); }, description, suppressLogging);
+}
+
 
 void ConsoleBackend::deregisterCommand(const std::string& command, bool suppressLogging) {
 	if (!suppressLogging) {
@@ -147,7 +154,7 @@ void ConsoleBackend::runCommand(const std::string& command, bool addToHistory) {
 	}
 	// If object exists, run the command
 	if (I != mRegisteredCommands.end() && I->second.Object != nullptr) {
-		I->second.Object->runCommand(cmd, args);
+		I->second.Object(cmd, args);
 	} else { // Else print error message
 		S_LOG_WARNING("Unknown command:" << command);
 		pushMessage(std::string("Unknown command ") + command, "error");
@@ -159,9 +166,9 @@ void ConsoleBackend::runCommand(const std::string& command, const std::string& a
 
 	// This commands prints all currently registered commands to the Log File
 	if (command == LIST_CONSOLE_COMMANDS) {
-		for (ConsoleObjectEntryStore::const_iterator I = mRegisteredCommands.begin(); I != mRegisteredCommands.end(); ++I) {
+		for (const auto& registeredCommand : mRegisteredCommands) {
 			// TODO - should we check to see if I->second is valid?
-			temp << I->first << " : " << I->second.Description << std::endl;
+			temp << registeredCommand.first << " : " << registeredCommand.second.Description << std::endl;
 		}
 	}
 

@@ -22,7 +22,7 @@
 #define METASERVERSERVICE_H
 
 #include <framework/Service.h>
-#include <framework/ConsoleObject.h>
+#include <framework/ConsoleCommandWrapper.h>
 
 #include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>

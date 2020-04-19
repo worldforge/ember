@@ -23,6 +23,7 @@
 #ifndef ACTIONBARINPUT_H
 #define ACTIONBARINPUT_H
 
+#include "framework/ConsoleCommandWrapper.h"
 #include "services/input/InputCommandMapper.h"
 #include <string>
 #include <sigc++/signal.h>
@@ -46,14 +47,14 @@ public:
 	 * @brief Ctor
 	 * @param actionBarKey The key we intend to capture presses from.
 	 */
-	ActionBarInput(const std::string& actionBarKey);
+	explicit ActionBarInput(const std::string& actionBarKey);
 
 	/**
 	 * @brief Dtor
 	 */
-	~ActionBarInput();
+	~ActionBarInput() override;
 
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	/**
 	 * @brief Signal the event when we get a key press

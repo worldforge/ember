@@ -24,15 +24,16 @@
 #ifndef CONSOLEOBJECT_H
 #define CONSOLEOBJECT_H
 
-// Included headers from the current project
-#include "framework/ConsoleCommandWrapper.h"
-
 // Included custom library headers
 
 // Included system headers
 #include <string>
+#include <functional>
 
 namespace Ember {
+
+typedef std::function<void(const std::string& command, const std::string& args)> ConsoleCallback;
+
 /**
  * ConsoleObject
  *

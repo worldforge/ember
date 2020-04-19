@@ -25,6 +25,7 @@
 #include "services/input/InputCommandMapper.h"
 #include "framework/Singleton.h"
 #include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 #include <OgreFrameListener.h>
 #include <sigc++/trackable.h>

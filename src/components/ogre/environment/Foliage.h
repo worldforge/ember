@@ -25,7 +25,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/Singleton.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 #include <OgreFrameListener.h>
 

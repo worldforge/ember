@@ -27,8 +27,6 @@
 #include "config.h"
 #endif
 
-#include "framework/ConsoleObject.h"
-#include "framework/ConsoleCommandWrapper.h"
 #include "framework/Singleton.h"
 
 #include <sigc++/slot.h>
@@ -164,7 +162,7 @@ struct MousePosition {
  * or it can let an external class handle it.
  * In the latter case, this is done by using the attach method.
  */
-class Input : public ConsoleObject, public Singleton<Input> {
+class Input : public Singleton<Input> {
 	friend class InputCommandMapper;
 
 public:
@@ -383,13 +381,6 @@ public:
 	void removeAdapter(IInputAdapter* adapter);
 
 	/**
-	 * @brief Reimplements the ConsoleObject::runCommand method
-	 * @param command 
-	 * @param args 
-	 */
-	void runCommand(const std::string& command, const std::string& args) override;
-
-	/**
 	 * @brief Suppress all further event handling of the current event. Call this inside event handling methods to prevent further event handling.
 	 */
 	void suppressFurtherHandlingOfCurrentEvent();
@@ -424,6 +415,8 @@ public:
 	 */
 	void deregisterCommandMapper(InputCommandMapper* mapper);
 
+	InputCommandMapper* getMapperForState(const std::string& state);
+
 	/**
 	 * @brief Enabled or disables mouse grabbing.
 	 * @param enabled True if the mouse should be grabbed.
@@ -437,6 +430,8 @@ public:
 	 */
 	void setFullscreen(bool enabled);
 
+	void toggleFullscreen();
+
 	/**
 	 * @brief Returns true if a window already is created.
 	 * @return True if a window already is creatd.
@@ -445,11 +440,6 @@ public:
 
 
 private:
-
-	/**
-	 * @brief Console command for toggling full screen mode.
-	 */
-	std::unique_ptr<ConsoleCommandWrapper> ToggleFullscreen;
 
 	/**
 	 * @brief Polls all input for the mouse.

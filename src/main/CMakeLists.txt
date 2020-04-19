@@ -5,7 +5,11 @@ else()
 endif()
 
 #Use WIN32 to specify that on Windows it should be a non-console app.
-add_executable(${EMBER_EXECUTABLE_NAME} WIN32 Application.cpp ConfigBoundLogObserver.cpp Ember.cpp)
+add_executable(${EMBER_EXECUTABLE_NAME} WIN32
+        Application.cpp
+        ConfigBoundLogObserver.cpp
+        Ember.cpp
+        ConsoleInputBinder.cpp)
 
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
         ConnectorDefinitions_bindings_lua

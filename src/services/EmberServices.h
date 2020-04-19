@@ -34,7 +34,6 @@ namespace Ember
 // some forward declarations before we start
 class LoggingService;
 class ConfigService;
-class InputService;
 class MetaserverService;
 class ServerService;
 class SoundService;
@@ -79,25 +78,11 @@ public:
 	~EmberServices() override;
 
 	/**
-	 * @brief Returns an instance of the LoggingService
-	 *
-	 * @return The logging service.
-	 */
-	LoggingService& getLoggingService();
-
-	/**
 	 * @brief Returns an instance of the ConfigService.
 	 *
 	 * @return The config service.
 	 */
 	ConfigService& getConfigService();
-
-	/**
-	 * @brief Returns an instance of the InputService
-	 *
-	 * @return The input service.
-	 */
-	InputService& getInputService();
 
 	/**
 	 * @brief Returns an instance of the MetaserverService.
@@ -147,12 +132,10 @@ public:
 private:
 	ConfigService& mConfigService;
 
-	std::unique_ptr<LoggingService> mLoggingService;
 	std::unique_ptr<ScriptingService> mScriptingService;
 	std::unique_ptr<SoundService> mSoundService;
 	std::unique_ptr<ServerService> mServerService;
 	std::unique_ptr<MetaserverService> mMetaserverService;
-	std::unique_ptr<InputService> mInputService;
 	std::unique_ptr<WfutService> mWfutService;
 	std::unique_ptr<Services::ServerSettings> mServerSettingsService;
 

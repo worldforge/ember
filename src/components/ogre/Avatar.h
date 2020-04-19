@@ -23,7 +23,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "services/config/ConfigListenerContainer.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>

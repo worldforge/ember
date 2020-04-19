@@ -13,6 +13,7 @@
 #define EMBER_APPLICATION_H
 
 #include "services/EmberServices.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/MainLoopController.h"
@@ -76,9 +77,9 @@ class Factories;
 }
 }
 
-namespace Eris
-{
+namespace Eris {
 struct Session;
+
 class View;
 }
 
@@ -86,23 +87,28 @@ class View;
  * @brief The main namespace for Ember.
  *
  */
-namespace Ember
-{
+namespace Ember {
 
+class Input;
 /**
  * @brief All Ogre specific functionality is contained under this namespace. It currenly also houses all CEGUI related functionality too.
  *
  */
-namespace OgreView
-{
+namespace OgreView {
 class EmberOgre;
 }
 
 class FileSystemObserver;
+
 class EmberServices;
+
 class LogObserver;
+
 struct IResourceProvider;
+
 class ConfigConsoleCommands;
+
+class ConsoleInputBinder;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -117,8 +123,7 @@ class ConfigConsoleCommands;
  *
  * start();
  */
-class Application: public ConsoleObject, public Singleton<Application>, public virtual sigc::trackable
-{
+class Application : public ConsoleObject, public Singleton<Application>, public virtual sigc::trackable {
 public:
 	typedef std::unordered_map<std::string, std::map<std::string, std::string>> ConfigMap;
 
@@ -128,7 +133,11 @@ public:
 	 * @param homeDir The path to the Ember home directory. On a UNIX system this was historically "~/.ember". By default, this is now set according to the XDG Base Directory Specification.
 	 * @param configSettings Command line configuration settings.
 	 */
-	Application(std::string prefix, std::string homeDir, ConfigMap configSettings, ConfigService& configService);
+	Application(Input& input,
+				std::string prefix,
+				std::string homeDir,
+				ConfigMap configSettings,
+				ConfigService& configService);
 
 	/**
 	 * @brief At destruction pretty much all game objects will be destroyed.
@@ -176,6 +185,8 @@ public:
 	Eris::View* getMainView();
 
 private:
+
+	Input& mInput;
 
 	ConfigService& mConfigService;
 
@@ -250,6 +261,8 @@ private:
 	std::unique_ptr<ConsoleBackend> mConsoleBackend;
 
 	std::unique_ptr<ConfigConsoleCommands> mConfigConsoleCommands;
+
+	std::unique_ptr<ConsoleInputBinder> mConsoleInputBinder;
 
 	/**
 	 * @brief The "quit" command will quit the application, bypassing any confirmation dialog.

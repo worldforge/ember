@@ -35,7 +35,6 @@
 #include "services/config/ConfigListenerContainer.h"
 
 #include "framework/Tokeniser.h"
-#include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
 #include "framework/MainLoopController.h"
 #include "framework/utf8.h"
@@ -58,7 +57,6 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		ToggleFullscreen(nullptr),
 		mCurrentInputMode(IM_GUI),
 		mMouseState(0),
 		mTimeSinceLastRightMouseClick(0),
@@ -177,15 +175,9 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	ss << info.info.x11.window;
 #endif
 
-	ConsoleBackend& console = ConsoleBackend::getSingleton();
-	console.registerCommand(BINDCOMMAND, this);
-	console.registerCommand(UNBINDCOMMAND, this);
 
 	setGeometry((int) width, (int) height);
 
-	if (!ToggleFullscreen) {
-		ToggleFullscreen = std::make_unique<ConsoleCommandWrapper>("toggle_fullscreen", this, "Switch between windowed and full screen mode.");
-	}
 
 	return ss.str();
 }
@@ -204,10 +196,6 @@ void Input::shutdownInteraction() {
 	SDL_Quit();
 	S_LOG_INFO("SDL shut down.");
 
-	ConsoleBackend& console = ConsoleBackend::getSingleton();
-	console.deregisterCommand(BINDCOMMAND);
-	console.deregisterCommand(UNBINDCOMMAND);
-	ToggleFullscreen.reset();
 }
 
 void Input::createIcon() {
@@ -286,11 +274,6 @@ void Input::attach(std::unique_ptr<IWindowProvider> windowProvider) {
 	Rid.hwndTarget = (HWND)pInfo.info.win.window;
 	RegisterRawInputDevices(&Rid, 1, sizeof(Rid));
 #endif
-
-	ConsoleBackend& console = ConsoleBackend::getSingleton();
-	console.registerCommand(BINDCOMMAND, this);
-	console.registerCommand(UNBINDCOMMAND, this);
-
 }
 
 void Input::setGeometry(int width, int height) {
@@ -302,42 +285,6 @@ void Input::setGeometry(int width, int height) {
 	}
 }
 
-void Input::runCommand(const std::string& command, const std::string& args) {
-	if (command == BINDCOMMAND) {
-		Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string state("general");
-		std::string key = tokeniser.nextToken();
-		if (!key.empty()) {
-			std::string commandToken(tokeniser.nextToken());
-			if (!commandToken.empty()) {
-				if (!tokeniser.nextToken().empty()) {
-					state = tokeniser.nextToken();
-				}
-				auto I = mInputCommandMappers.find(state);
-				if (I != mInputCommandMappers.end()) {
-					I->second->bindCommand(key, commandToken);
-				}
-			}
-		}
-	} else if (command == UNBINDCOMMAND) {
-		Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string state("general");
-		std::string key(tokeniser.nextToken());
-		if (!key.empty()) {
-			if (!tokeniser.nextToken().empty()) {
-				state = tokeniser.nextToken();
-			}
-			auto I = mInputCommandMappers.find(state);
-			if (I != mInputCommandMappers.end()) {
-				I->second->unbindCommand(key);
-			}
-		}
-	} else if (ToggleFullscreen && *ToggleFullscreen == command) {
-		setFullscreen((SDL_GetWindowFlags(mMainVideoSurface) & SDL_WINDOW_FULLSCREEN) == 0);
-	}
-}
 
 void Input::suppressFurtherHandlingOfCurrentEvent() {
 	mSuppressForCurrentEvent = true;
@@ -358,6 +305,15 @@ void Input::registerCommandMapper(InputCommandMapper* mapper) {
 void Input::deregisterCommandMapper(InputCommandMapper* mapper) {
 	mInputCommandMappers.erase(mInputCommandMappers.find(mapper->getState()));
 }
+
+InputCommandMapper* Input::getMapperForState(const std::string& state) {
+	auto I = mInputCommandMappers.find(state);
+	if (I != mInputCommandMappers.end()) {
+		return I->second;
+	}
+	return nullptr;
+}
+
 
 bool Input::isApplicationVisible() {
 	if (mWindowProvider) {
@@ -764,6 +720,11 @@ void Input::Config_InvertCamera(const std::string& section, const std::string& k
 void Input::setFullscreen(bool enabled) {
 	SDL_SetWindowFullscreen(mMainVideoSurface, enabled ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
+
+void Input::toggleFullscreen() {
+	setFullscreen((SDL_GetWindowFlags(mMainVideoSurface) & SDL_WINDOW_FULLSCREEN) == 0);
+}
+
 
 bool Input::hasWindow() const {
 	return mMainVideoSurface != nullptr;

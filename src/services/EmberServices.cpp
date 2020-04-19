@@ -23,9 +23,7 @@
 
 #include "EmberServices.h"
 
-#include "logging/LoggingService.h"
 #include "config/ConfigService.h"
-#include "input/InputService.h"
 #include "sound/SoundService.h"
 #include "metaserver/MetaserverService.h"
 #include "server/ServerService.h"
@@ -40,10 +38,6 @@ EmberServices::~EmberServices() {
 	if (mWfutService) {
 		mWfutService->stop();
 		mWfutService.reset();
-	}
-	if (mServerService) {
-		mServerService->stop();
-		mServerService.reset();
 	}
 	if (mServerSettingsService) {
 		mServerSettingsService->stop();
@@ -61,26 +55,11 @@ EmberServices::~EmberServices() {
 		mSoundService->stop();
 		mSoundService.reset();
 	}
-	if (mInputService) {
-		mInputService->stop();
-		mInputService.reset();
-	}
-	if (mLoggingService) {
-		mLoggingService->stop();
-		mLoggingService.reset();
-	}
-}
 
-LoggingService& EmberServices::getLoggingService() {
-	return *mLoggingService;
 }
 
 ConfigService& EmberServices::getConfigService() {
 	return mConfigService;
-}
-
-InputService& EmberServices::getInputService() {
-	return *mInputService;
 }
 
 MetaserverService& EmberServices::getMetaserverService() {
@@ -109,12 +88,10 @@ Services::ServerSettings& EmberServices::getServerSettingsService() {
 
 EmberServices::EmberServices(Eris::Session& session, ConfigService& configService)
 		: mConfigService(configService),
-		  mLoggingService(new LoggingService()),
 		  mScriptingService(new ScriptingService()),
 		  mSoundService(new SoundService()),
 		  mServerService(new ServerService(session)),
 		  mMetaserverService(new MetaserverService(session)),
-		  mInputService(new InputService()),
 		  mWfutService(new WfutService()),
 		  mServerSettingsService(new Services::ServerSettings()) {
 }

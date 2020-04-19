@@ -20,7 +20,7 @@
 #define NONCONNECTEDSTATE_H_
 
 #include "IState.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>

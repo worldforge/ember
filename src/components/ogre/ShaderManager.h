@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_SHADERMANAGER_H
 #define EMBEROGRE_SHADERMANAGER_H
 
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include "services/config/ConfigListenerContainer.h"
 #include "OgreIncludes.h"
 

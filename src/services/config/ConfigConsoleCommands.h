@@ -19,7 +19,7 @@
 #ifndef EMBER_CONFIGCONSOLECOMMANDS_H
 #define EMBER_CONFIGCONSOLECOMMANDS_H
 
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include "ConfigService.h"
 
 namespace Ember {

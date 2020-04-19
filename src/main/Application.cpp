@@ -19,7 +19,6 @@
 
 #include <Eris/View.h>
 
-#include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "services/config/ConfigListenerContainer.h"
@@ -27,7 +26,6 @@
 #include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/wfut/WfutService.h"
-#include "services/input/InputService.h"
 #include "services/input/Input.h"
 #include "services/serversettings/ServerSettings.h"
 
@@ -45,6 +43,7 @@
 
 #include "components/lua/embertolua++.h"
 #include "services/config/ConfigConsoleCommands.h"
+#include "ConsoleInputBinder.h"
 #include <Atlas/Objects/Factories.h>
 
 TOLUA_API int tolua_Ogre_open(lua_State* tolua_S);
@@ -186,7 +185,12 @@ public:
 	}
 };
 
-Application::Application(std::string prefix, std::string homeDir, ConfigMap configSettings, ConfigService& configService) :
+Application::Application(Input& input,
+						 std::string prefix,
+						 std::string homeDir,
+						 ConfigMap configSettings,
+						 ConfigService& configService) :
+		mInput(input),
 		mConfigService(configService),
 		mAtlasFactories(new Atlas::Objects::Factories()),
 		mSession(new Eris::Session()),
@@ -200,6 +204,7 @@ Application::Application(std::string prefix, std::string homeDir, ConfigMap conf
 		mConfigSettings(std::move(configSettings)),
 		mConsoleBackend(new ConsoleBackend()),
 		mConfigConsoleCommands(new ConfigConsoleCommands(mConfigService)),
+		mConsoleInputBinder(new ConsoleInputBinder(mInput, *mConsoleBackend)),
 		Quit("quit", this, "Quit Ember."),
 		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."),
 		mScriptingResourceProvider(nullptr) {
@@ -230,6 +235,9 @@ Application::Application(std::string prefix, std::string homeDir, ConfigMap conf
 	}
 
 	S_LOG_INFO("Using media from " << mConfigService.getEmberMediaDirectory().string());
+
+	initializeServices();
+	registerComponents();
 }
 
 Application::~Application() {
@@ -279,7 +287,7 @@ extern "C" void shutdownHandler(int sig) {
 }
 
 void Application::registerComponents() {
-	mOgreView = std::make_unique<OgreView::EmberOgre>();
+	mOgreView = std::make_unique<OgreView::EmberOgre>(mInput, mServices->getServerService(), mServices->getSoundService());
 }
 
 void Application::mainLoop() {
@@ -397,9 +405,7 @@ void Application::initializeServices() {
 	S_LOG_INFO("Initializing server service");
 	mServices->getServerService().start();
 
-	S_LOG_INFO("Initializing input service");
-	mServices->getInputService().start();
-	mServices->getInputService().getInput().setMainLoopController(&mMainLoopController);
+	mInput.setMainLoopController(&mMainLoopController);
 
 	S_LOG_INFO("Initializing scripting service");
 	mServices->getScriptingService().start();
@@ -520,7 +526,7 @@ void Application::startScripting() {
 void Application::start() {
 
 	try {
-		if (!mOgreView->setup(Input::getSingleton(), mMainLoopController, mSession->getEventService())) {
+		if (!mOgreView->setup(mMainLoopController, mSession->getEventService())) {
 			//The setup was cancelled, return.
 			return;
 		}

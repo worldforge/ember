@@ -28,7 +28,7 @@
 
 #include "ModelDefinition.h"
 #include "framework/Singleton.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 #include <OgreScriptLoader.h>
 #include <boost/filesystem/path.hpp>

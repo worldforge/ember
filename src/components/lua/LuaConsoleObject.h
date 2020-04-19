@@ -23,7 +23,7 @@
 #ifndef EMBEROGRELUACONSOLEOBJECT_H
 #define EMBEROGRELUACONSOLEOBJECT_H
 
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include "components/lua/Connectors.h"
 
 #include <tolua++.h>

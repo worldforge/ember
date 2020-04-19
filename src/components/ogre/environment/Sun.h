@@ -28,7 +28,7 @@
 
 #include <sigc++/signal.h>
 
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 #include "LensFlare.h"
 #include <OgreFrameListener.h>

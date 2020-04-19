@@ -20,6 +20,8 @@
 #include "config.h"
 #endif
 
+#include <services/input/Input.h>
+#include <services/logging/ErisLogReciever.h>
 #include "Application.h"
 #include "ConfigBoundLogObserver.h"
 #include "framework/Tokeniser.h"
@@ -161,13 +163,13 @@ int main(int argc, char** argv) {
 			//default to INFO, though this can be changed by the config file
 			logObserver.setFilter(Ember::Log::INFO);
 
+			Ember::ErisLogReciever erisLogReciever;
+
+			//Setup input services
+			Ember::Input input;
+
 			// Create application object
-			Ember::Application app(prefix, homeDir, configMap, configService);
-
-			app.registerComponents();
-
-			// Initialize all Ember services needed for this application
-			app.initializeServices();
+			Ember::Application app(input, prefix, homeDir, configMap, configService);
 
 			app.start();
 		}

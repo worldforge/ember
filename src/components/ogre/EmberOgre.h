@@ -71,6 +71,10 @@ class EmberEntity;
 
 class ConfigListenerContainer;
 
+class ServerService;
+
+class SoundService;
+
 namespace Cegui {
 class CEGUISetup;
 }
@@ -124,8 +128,6 @@ class OgreSetup;
 
 class OgreResourceProvider;
 
-class OpcodeCollisionDetectorVisualizer;
-
 class ShaderManager;
 
 class ShaderDetailManager;
@@ -156,7 +158,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	EmberOgre();
+	EmberOgre(Input& input, ServerService& serverService, SoundService& soundService);
 
 	/**
 	 * @brief Dtor.
@@ -215,11 +217,10 @@ public:
 
 	/**
 	 * @brief Sets up the application - returns false if the user chooses to abandon configuration.
-	 * @param input The main input.
 	 * @param mainLoopController The main loop instance.
 	 * @return True if setup was successful.
 	 */
-	bool setup(Input& input, MainLoopController& mainLoopController, Eris::EventService& eventService);
+	bool setup(MainLoopController& mainLoopController, Eris::EventService& eventService);
 
 	/**
 	 * @brief Shuts down the gui.
@@ -235,7 +236,9 @@ protected:
 	/**
 	 * @brief The main input.
 	 */
-	Input* mInput;
+	Input& mInput;
+
+	Ember::ServerService& mServerService;
 
 	/**
 	 * @brief Utility object for setting up and tearing down ogre
@@ -417,13 +420,6 @@ protected:
 	 * Note that preloading media can take quite a while.
 	 */
 	void preloadMedia();
-
-	/**
-	 * @brief Listen for when all of the application services has been initialized and then register needed objects with them.
-	 *
-	 * This should occur fairly early on in the application life cycle.
-	 */
-	void Application_ServicesInitialized();
 
 	/**
 	 * @brief Clears the dirty passes lists in Ogre.

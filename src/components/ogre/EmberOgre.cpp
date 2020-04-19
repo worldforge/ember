@@ -107,8 +107,9 @@ using namespace Ember;
 namespace Ember {
 namespace OgreView {
 
-EmberOgre::EmberOgre() :
-		mInput(nullptr),
+EmberOgre::EmberOgre(Input& input, ServerService& serverService, SoundService& soundService) :
+		mInput(input),
+		mServerService(serverService),
 		mOgreSetup(nullptr),
 		mRoot(nullptr),
 		mSceneManagerOutOfWorld(nullptr),
@@ -126,7 +127,7 @@ EmberOgre::EmberOgre() :
 		mEntityRecipeManager(nullptr),
 		mLogObserver(nullptr),
 		mMaterialEditor(nullptr),
-		mSoundResourceProvider(nullptr),
+		mSoundResourceProvider(std::make_unique<OgreResourceProvider>("General")),
 		mLodDefinitionManager(nullptr),
 		mLodManager(nullptr),
 		mResourceLoader(nullptr),
@@ -136,7 +137,14 @@ EmberOgre::EmberOgre() :
 		mPMInjectorSignaler(nullptr),
 		mConsoleDevTools(nullptr),
 		mConfigListenerContainer(new ConfigListenerContainer()) {
-	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
+
+	serverService.GotAccount.connect([this](Eris::Account* account) {
+		account->AvatarDeactivated.connect([this](const std::string& avatarId) { destroyWorld(); });
+	});
+	serverService.GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
+
+	soundService.setResourceProvider(mSoundResourceProvider.get());
+
 }
 
 EmberOgre::~EmberOgre() {
@@ -200,7 +208,7 @@ EmberOgre::~EmberOgre() {
 bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 	Log::sCurrentFrame = mRoot->getNextFrameNumber();
 
-	if (mInput->isApplicationVisible()) {
+	if (mInput.isApplicationVisible()) {
 		//If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
 			mIsInPausedMode = false;
@@ -217,7 +225,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 			mWindow->update(false);
 //			log.report("update");
 			//Do input and render the UI at the last moment, to make sure that the UI is responsive.
-			mInput->processInput();
+			mInput.processInput();
 //			log.report("processInput");
 			mGUIManager->render();
 //			log.report("render");
@@ -259,7 +267,7 @@ void EmberOgre::shutdownGui() {
 	mGUIManager.reset();
 }
 
-bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris::EventService& eventService) {
+bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService& eventService) {
 	if (mRoot) {
 		throw Exception("EmberOgre::setup has already been called.");
 	}
@@ -297,8 +305,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 	S_LOG_INFO("Using unknown thread provider.");
 #endif
 
-
-	mInput = &input;
 
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
@@ -371,7 +377,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 
 	//bind general commands
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
-	mGeneralCommandMapper->bindToInput(*mInput);
+	mGeneralCommandMapper->bindToInput(mInput);
 
 	{
 		//we need a nice loading bar to show the user how far the setup has progressed
@@ -444,7 +450,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController, Eris
 			S_LOG_INFO("End preload.");
 		}
 		try {
-			mGUIManager = std::make_unique<GUIManager>(*mGuiSetup, configSrv, EmberServices::getSingleton().getServerService(), mainLoopController);
+			mGUIManager = std::make_unique<GUIManager>(*mGuiSetup, configSrv, mServerService, mainLoopController);
 			EventGUIManagerCreated.emit(*mGUIManager);
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
@@ -508,7 +514,7 @@ void EmberOgre::Server_GotView(Eris::View* view) {
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
-	mWorld = std::make_unique<World>(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), mEntityMappingManager->getManager());
+	mWorld = std::make_unique<World>(*view, *mWindow, *this, mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter(), mEntityMappingManager->getManager());
 	//We want the overlay system available for the main camera, in case we need to do profiling.
 	mWorld->getSceneManager().addRenderQueueListener(mOgreSetup->getOverlaySystem());
 
@@ -551,17 +557,6 @@ AutomaticGraphicsLevelManager* EmberOgre::getAutomaticGraphicsLevelManager() con
 	return mAutomaticGraphicsLevelManager;
 }
 
-
-void EmberOgre::Application_ServicesInitialized() {
-	EmberServices::getSingleton().getServerService().GotAccount.connect([this](Eris::Account* account) {
-		account->AvatarDeactivated.connect([this](const std::string& avatarId) { destroyWorld(); });
-	});
-	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
-
-	mSoundResourceProvider = std::make_unique<OgreResourceProvider>("General");
-	EmberServices::getSingleton().getSoundService().setResourceProvider(mSoundResourceProvider.get());
-
-}
 
 Eris::View* EmberOgre::getMainView() const {
 	return Application::getSingleton().getMainView();

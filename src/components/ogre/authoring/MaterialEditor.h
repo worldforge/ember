@@ -27,7 +27,7 @@
 
 #include "../EmberOgrePrerequisites.h"
 
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 namespace Ember
 {
@@ -43,7 +43,7 @@ class MaterialEditor: public virtual sigc::trackable, public ConsoleObject
 public:
 	MaterialEditor();
 
-	~MaterialEditor();
+	~MaterialEditor() override;
 
 	//updateMaterial(const std::string& materialName, const std::string& );
 	/**
@@ -51,7 +51,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	const ConsoleCommandWrapper AlterMaterial;
 

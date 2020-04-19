@@ -20,7 +20,7 @@
 #define THIRDPERSONCAMERAMOUNT_H_
 
 #include "CameraMountBase.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>

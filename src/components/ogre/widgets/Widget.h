@@ -3,7 +3,7 @@
 
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include "CEGUIUtils.h"
 
 #include <CEGUI/widgets/ListboxTextItem.h>

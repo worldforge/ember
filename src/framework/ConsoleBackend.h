@@ -33,6 +33,7 @@
 #include <set>
 #include <string>
 #include <memory>
+#include <functional>
 
 
 namespace Ember {
@@ -100,6 +101,8 @@ public:
 	 */
 	void registerCommand(const std::string& command, ConsoleObject* object, const std::string& description = "", bool suppressLogging = false);
 
+	void registerCommand(const std::string& command, ConsoleCallback callback, const std::string& description = "", bool suppressLogging = false);
+
 	/**
 	 * @brief Deregisters a command with the console
 	 * @param command The command to deregister.
@@ -149,7 +152,7 @@ protected:
 private:
 
 	struct ConsoleObjectEntry {
-		ConsoleObject* Object;
+		std::function<void(const std::string& command, const std::string& args)> Object;
 		std::string Description;
 	};
 

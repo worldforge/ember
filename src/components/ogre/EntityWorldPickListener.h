@@ -25,7 +25,7 @@
 
 #include "EmberOgrePrerequisites.h"
 #include "IWorldPickListener.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include "domain/EmberEntityRef.h"
 #include <OgreVector.h>
 #include <sigc++/signal.h>

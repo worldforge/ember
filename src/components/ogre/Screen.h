@@ -21,7 +21,7 @@
 
 #include "components/ogre/OgreIncludes.h"
 
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 
 #include <OgrePrerequisites.h>
 #include <OgreCommon.h>

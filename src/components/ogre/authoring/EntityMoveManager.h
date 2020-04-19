@@ -26,6 +26,7 @@
 
 #include "MovementAdapter.h"
 #include "EntityMoveAdjuster.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/EntityObserverBase.h"
 #include "framework/ConsoleObject.h"

@@ -24,7 +24,7 @@
 #define EMBERSCRIPTINGSERVICE_H
 
 #include <framework/Service.h>
-#include <framework/ConsoleObject.h>
+#include <framework/ConsoleCommandWrapper.h>
 
 #include <sigc++/signal.h>
 #include <map>

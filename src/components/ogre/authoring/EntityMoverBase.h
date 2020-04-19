@@ -25,7 +25,7 @@
 #define ENTITYMOVERBASE_H_
 #include "IMovementBridge.h"
 #include "SnapToMovement.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include <wfmath/point.h>
 #include <memory>
 #include <sigc++/signal.h>

@@ -40,7 +40,7 @@ ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject*
 	if (!mCommand.empty() && mCommand[0] == '+') {
 		mInverseCommand = std::string("-") + std::string(mCommand).erase(0, 1);
 	}
-	if (ConsoleBackend::getSingletonPtr()) {
+	if (ConsoleBackend::hasInstance()) {
 		ConsoleBackend::getSingletonPtr()->registerCommand(mCommand, object, mDescription, suppressLogging);
 		if (!mInverseCommand.empty()) {
 			ConsoleBackend::getSingletonPtr()->registerCommand(mInverseCommand, object, std::string("Releases the command ") + mCommand, suppressLogging);
@@ -50,8 +50,29 @@ ConsoleCommandWrapper::ConsoleCommandWrapper(std::string command, ConsoleObject*
 	}
 }
 
+ConsoleCommandWrapper::ConsoleCommandWrapper(ConsoleBackend& consoleBackend, std::string command, ConsoleObject* object, std::string description, bool suppressLogging)
+		: mCommand(std::move(command)),
+		  mDescription(std::move(description)),
+		  mObject(object),
+		  mSuppressLogging(suppressLogging) {
+	if (!mCommand.empty() && mCommand[0] == '+') {
+		mInverseCommand = std::string("-") + std::string(mCommand).erase(0, 1);
+	}
+	consoleBackend.registerCommand(mCommand, object, mDescription, suppressLogging);
+	if (!mInverseCommand.empty()) {
+		consoleBackend.registerCommand(mInverseCommand, object, std::string("Releases the command ") + mCommand, suppressLogging);
+	}
+}
+
+ConsoleCommandWrapper::ConsoleCommandWrapper(ConsoleBackend& consoleBackend, std::string command, ConsoleCallback callback, const std::string& description, bool suppressLogging)
+		: mCommand(std::move(command)),
+		  mSuppressLogging(suppressLogging) {
+	consoleBackend.registerCommand(mCommand, std::move(callback), description, suppressLogging);
+}
+
+
 ConsoleCommandWrapper::~ConsoleCommandWrapper() {
-	if (ConsoleBackend::getSingletonPtr()) {
+	if (ConsoleBackend::hasInstance()) {
 		ConsoleBackend::getSingletonPtr()->deregisterCommand(mCommand, mSuppressLogging);
 		if (!mInverseCommand.empty()) {
 			ConsoleBackend::getSingletonPtr()->deregisterCommand(mInverseCommand, mSuppressLogging);

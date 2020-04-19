@@ -24,9 +24,10 @@
 #define EMBERCONSOLECOMMANDWRAPPER_H
 
 #include <string>
+#include "ConsoleObject.h"
 
 namespace Ember {
-struct ConsoleObject;
+class ConsoleBackend;
 /**
 @author Erik Ogenvik <erik@ogenvik.org>
 
@@ -44,7 +45,10 @@ public:
      * @param description Description of the command, to be presented to the end user.
      * @param suppressLogging If true, logging of the registration and deregistration will be suppressed. This is useful if you have a command which you'll add and remove often.
     */
-    ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description = "", bool suppressLogging = false);
+	ConsoleCommandWrapper(std::string command, ConsoleObject *object, std::string description = "", bool suppressLogging = false);
+
+	ConsoleCommandWrapper(ConsoleBackend& consoleBackend, std::string command, ConsoleObject *object, std::string description = "", bool suppressLogging = false);
+	ConsoleCommandWrapper(ConsoleBackend& consoleBackend, std::string command, ConsoleCallback callback, const std::string& description = "", bool suppressLogging = false);
 
     /**
      * @brief Dtor.

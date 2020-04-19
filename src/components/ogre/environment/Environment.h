@@ -25,7 +25,7 @@
 
 #include "IEnvironmentProvider.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include <wfmath/vector.h>
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
