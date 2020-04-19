@@ -38,59 +38,51 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-Quit::Quit() : SoftQuit("softquit", this, "Display a quit confirmation window.")
-{
+Quit::Quit() : SoftQuit("softquit", this, "Display a quit confirmation window.") {
 }
 
 
-Quit::~Quit()
-{
-}
+Quit::~Quit() = default;
 
-void Quit::buildWidget()
-{
-	
+void Quit::buildWidget() {
+
 	loadMainSheet("Quit.layout", "Quit/");
-	
+
 	MainLoopController::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
-	
+
 	CEGUI::PushButton* shutdownButton = static_cast<CEGUI::PushButton*>(getWindow("ShutdownButton"));
 	CEGUI::PushButton* logoutButton = static_cast<CEGUI::PushButton*>(getWindow("LogoutButton"));
 	CEGUI::PushButton* cancelButton = static_cast<CEGUI::PushButton*>(getWindow("CancelButton"));
-	
-	BIND_CEGUI_EVENT(cancelButton, CEGUI::PushButton::EventClicked, Quit::Cancel_Click );
-	BIND_CEGUI_EVENT(shutdownButton, CEGUI::PushButton::EventClicked, Quit::Shutdown_Click );
-	BIND_CEGUI_EVENT(logoutButton, CEGUI::PushButton::EventClicked, Quit::Logout_Click );
-	
+
+	BIND_CEGUI_EVENT(cancelButton, CEGUI::PushButton::EventClicked, Quit::Cancel_Click);
+	BIND_CEGUI_EVENT(shutdownButton, CEGUI::PushButton::EventClicked, Quit::Shutdown_Click);
+	BIND_CEGUI_EVENT(logoutButton, CEGUI::PushButton::EventClicked, Quit::Logout_Click);
+
 	registerConsoleVisibilityToggleCommand("quit");
 	enableCloseButton();
-	
+
 	mMainWindow->setVisible(false);
 }
 
-bool Quit::Shutdown_Click(const CEGUI::EventArgs& args)
-{
+bool Quit::Shutdown_Click(const CEGUI::EventArgs& args) {
 	MainLoopController::getSingleton().quit();
 	mMainWindow->setVisible(false);
 	return true;
 }
 
-bool Quit::Logout_Click(const CEGUI::EventArgs& args)
-{
+bool Quit::Logout_Click(const CEGUI::EventArgs& args) {
 	EmberServices::getSingleton().getServerService().logout();
 	mMainWindow->setVisible(false);
 	return true;
 }
 
-bool Quit::Cancel_Click(const CEGUI::EventArgs& args)
-{
+bool Quit::Cancel_Click(const CEGUI::EventArgs& args) {
 	mMainWindow->setVisible(false);
 	return true;
 }
 
 
-void Quit::EmberOgre_RequestQuit(bool& handled) 
-{
+void Quit::EmberOgre_RequestQuit(bool& handled) {
 	handled = true;
 	//if the window system twice requests a quit, do it
 	if (mMainWindow->isVisible()) {
@@ -100,26 +92,22 @@ void Quit::EmberOgre_RequestQuit(bool& handled)
 	}
 }
 
-void Quit::softquit()
-{
+void Quit::softquit() {
 	mMainWindow->activate();
 	mMainWindow->moveToFront();
 	mMainWindow->setVisible(true);
-	
+
 	Input::getSingleton().setInputMode(Input::IM_GUI);
 	//mMainWindow->setModalState(true);
 }
 
-void Quit::hide()
-{
+void Quit::hide() {
 	//mMainWindow->setModalState(false);
 }
 
 
-void Quit::runCommand(const std::string &command, const std::string &args)
-{
-	if(SoftQuit == command)
-	{
+void Quit::runCommand(const std::string& command, const std::string& args) {
+	if (SoftQuit == command) {
 		softquit();
 	} else {
 		Widget::runCommand(command, args);

@@ -77,7 +77,7 @@ public:
 	 *
 	 * @return true if "shouldquit" else false
 	 */
-	bool shouldQuit();
+	bool shouldQuit() const;
 
 	/**
 	 * @brief Causes the application to quit.

@@ -32,32 +32,34 @@ namespace Gui {
 /**
 @author Erik Ogenvik
 */
-class Quit : public Widget
-{
+class Quit : public Widget {
 public:
-    Quit();
+	Quit();
 
-    virtual ~Quit();
-	
-	virtual void buildWidget();
-	virtual void runCommand(const std::string &command, const std::string &args);
+	~Quit() override;
+
+	void buildWidget() override;
+
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	const ConsoleCommandWrapper SoftQuit;
-	
-	
+
+
 	/**
 	 *    overloaded to remove the modal state
 	 */
-	virtual void hide();
-	
+	void hide() override;
+
 protected:
-	
+
 	bool Shutdown_Click(const CEGUI::EventArgs& args);
+
 	bool Logout_Click(const CEGUI::EventArgs& args);
+
 	bool Cancel_Click(const CEGUI::EventArgs& args);
-	
+
 	void EmberOgre_RequestQuit(bool& handled);
-	
+
 	void softquit();
 
 };

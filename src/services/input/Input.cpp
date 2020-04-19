@@ -487,7 +487,7 @@ void Input::pollEvents(float secondsSinceLast) {
 				break;
 			case SDL_QUIT:
 				if (mMainLoopController) {
-					mMainLoopController->requestQuit();
+					mMainLoopController->quit();
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:

@@ -29,7 +29,7 @@ MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris, Eris::S
 		mShouldQuit(shouldQuit), mPollEris(pollEris), mSession(session) {
 }
 
-bool MainLoopController::shouldQuit() {
+bool MainLoopController::shouldQuit() const {
 	return mShouldQuit;
 }
 
