@@ -91,7 +91,7 @@ void ConsoleBackend::registerCommand(const std::string& command, ConsoleCallback
 }
 
 void ConsoleBackend::registerCommand(const std::string& command, ConsoleObject* callback, const std::string& description, bool suppressLogging) {
-	registerCommand(command, [&](const std::string& command, const std::string& args) { callback->runCommand(command, args); }, description, suppressLogging);
+	registerCommand(command, [callback](const std::string& command, const std::string& args) { callback->runCommand(command, args); }, description, suppressLogging);
 }
 
 
