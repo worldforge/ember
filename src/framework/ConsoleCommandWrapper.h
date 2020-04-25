@@ -98,11 +98,6 @@ private:
 	std::string mDescription;
 
 	/**
-	The ConsoleObject to which this wrapper is connected.
-	*/
-	ConsoleObject* mObject;
-
-	/**
 	 * @brief If true, logging of the registration and deregistration will be suppressed.
 	 * This is useful if you have a command which you'll add and remove often.
 	 */
