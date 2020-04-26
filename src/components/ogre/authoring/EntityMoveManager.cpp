@@ -31,54 +31,50 @@
 #include "../EmberOgre.h"
 #include "components/ogre/World.h"
 #include "components/ogre/NodeAttachment.h"
+#include "components/ogre/Avatar.h"
 #include "domain/EmberEntity.h"
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/MainLoopController.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+#include <Eris/Avatar.h>
 
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+
+namespace Authoring {
 
 EntityMoveInstance::EntityMoveInstance(EmberEntity& entity,
 									   MovementAdapter& moveAdapter,
 									   sigc::signal<void>& eventFinishedMoving,
 									   sigc::signal<void>& eventCancelledMoving) :
-	EntityObserverBase(entity, true),
-	mMoveAdapter(moveAdapter)
-{
+		EntityObserverBase(entity, true),
+		mMoveAdapter(moveAdapter) {
 	eventCancelledMoving.connect(sigc::mem_fun(*this, &EntityObserverBase::deleteOurselves));
 	eventFinishedMoving.connect(sigc::mem_fun(*this, &EntityObserverBase::deleteOurselves));
 }
 
-void EntityMoveInstance::cleanup()
-{
+void EntityMoveInstance::cleanup() {
 	mMoveAdapter.detach();
 }
 
 EntityMoveManager::EntityMoveManager(World& world) :
-	Move("move", this, "Moves an entity."),
-	mWorld(world),
-	mMoveAdapter(world.getMainCamera()),
-	mAdjuster(this, world.getEventService())
-{
+		Move("move", this, "Moves an entity."),
+		Place(ConsoleBackend::getSingleton(), "place", [&](const std::string& command, const std::string& args) { place(args); }, "Places an entity inside another."),
+		mWorld(world),
+		mMoveAdapter(world.getMainCamera()),
+		mAdjuster(this, world.getEventService()) {
 	GUIManager::getSingleton().EventEntityAction.connect(sigc::mem_fun(*this, &EntityMoveManager::GuiManager_EntityAction));
 }
 
-void EntityMoveManager::GuiManager_EntityAction(const std::string& action, EmberEntity* entity)
-{
+void EntityMoveManager::GuiManager_EntityAction(const std::string& action, EmberEntity* entity) {
 
 	if (action == "move") {
 		startMove(*entity);
 	}
 }
 
-void EntityMoveManager::startMove(EmberEntity& entity)
-{
+void EntityMoveManager::startMove(EmberEntity& entity) {
 	//disallow moving of the root entity
 	if (entity.getLocation()) {
 		//Only provide movement for entities which have a node attachment.
@@ -93,8 +89,7 @@ void EntityMoveManager::startMove(EmberEntity& entity)
 	}
 }
 
-void EntityMoveManager::runCommand(const std::string &command, const std::string &args)
-{
+void EntityMoveManager::runCommand(const std::string& command, const std::string& args) {
 	if (Move == command) {
 		//the first argument must be a valid entity id
 		Tokeniser tokeniser;
@@ -112,13 +107,27 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 	}
 }
 
-World& EntityMoveManager::getWorld() const
-{
+void EntityMoveManager::place(const std::string& args) {
+	Tokeniser tokeniser;
+	tokeniser.initTokens(args);
+	std::string entityId = tokeniser.nextToken();
+	std::string newContainerId = tokeniser.nextToken();
+	if (!entityId.empty() && !newContainerId.empty()) {
+		auto entity = mWorld.getEmberEntity(entityId);
+		auto newContainer = mWorld.getEmberEntity(newContainerId);
+		if (entity && newContainer) {
+			mWorld.getAvatar()->getErisAvatar().place(entity, newContainer);
+		}
+	}
+}
+
+
+World& EntityMoveManager::getWorld() const {
 	return mWorld;
 }
 
 void EntityMoveManager::delayedUpdatePositionForEntity(std::string entityId) {
-	MainLoopController::getSingleton().getEventService().runOnMainThreadDelayed([this, entityId]{
+	MainLoopController::getSingleton().getEventService().runOnMainThreadDelayed([this, entityId] {
 		auto entity = mWorld.getEmberEntity(entityId);
 		if (entity) {
 			if (entity->getAttachment()) {

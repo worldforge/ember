@@ -75,6 +75,7 @@ public:
 	 * @brief Console command for starting the movement operation.
 	 */
 	const ConsoleCommandWrapper Move;
+	const ConsoleCommandWrapper Place;
 
 	/**
 	 * @brief Starts moving of an entity.
@@ -101,6 +102,8 @@ public:
 	 * @param entityId
 	 */
 	void delayedUpdatePositionForEntity(std::string entityId);
+
+	void place(const std::string &args);
 
 	/**
 	 * @brief Emitted when the movement of an entity starts
