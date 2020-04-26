@@ -538,6 +538,7 @@ void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype)
 			Atlas::Message::MapType message = {{"sex", mNewChar.sex}};
 			entity.setFromMessage(message);
 			showPreview(entity);
+			entity.shutdown();
 		}
 	}
 }
@@ -556,7 +557,6 @@ void ServerWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entit
 	});
 
 	auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, entity.getType()->getTypeService(), nullptr);
-	entity.shutdown();
 	if (mapping) {
 		mapping->initialize();
 	}

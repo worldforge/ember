@@ -50,9 +50,9 @@ EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene, EntityMap
 EmberEntityFactory::~EmberEntityFactory() = default;
 
 // create whatever entity the client desires
-Eris::ViewEntity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity& ge, Eris::TypeInfo* type, Eris::View& w) {
+std::unique_ptr<Eris::ViewEntity> EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity& ge, Eris::TypeInfo* type, Eris::View& w) {
 
-	auto entity = new EmberEntity(ge->getId(), type, w);
+	auto entity = std::make_unique<EmberEntity>(ge->getId(), type, w);
 	S_LOG_VERBOSE("Entity " << entity->getId() << " (" << type->getName() << ") added to game view.");
 	return entity;
 }
