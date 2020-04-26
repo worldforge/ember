@@ -30,6 +30,8 @@
 
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/WindowFactoryManager.h>
+#include <CEGUI/RenderedStringWordWrapper.h>
+#include <CEGUI/LeftAlignedRenderedString.h>
 
 namespace Ember {
 namespace OgreView {
@@ -40,7 +42,13 @@ EmberEntityTooltipWidget::EmberEntityTooltipWidget(const CEGUI::String& type, co
 }
 
 CEGUI::Sizef EmberEntityTooltipWidget::getTextSize_impl() const {
-	return CEGUI::Sizef(180, 80);
+	//The first window is the text window.
+	//We need to measure how much vertical space the text window would take, and then use that (or 80 pixels) as the height of the tooltip window.
+	auto textWindow = getChildAtIdx(1);
+	CEGUI::RenderedStringWordWrapper<CEGUI::LeftAlignedRenderedString> wordWrapper(textWindow->getRenderedString());
+	auto pixelSize = textWindow->getPixelSize();
+	wordWrapper.format(textWindow, CEGUI::Sizef(pixelSize.d_width, 1000));
+	return CEGUI::Sizef(180, std::max(wordWrapper.getVerticalExtent(textWindow), 80.0f));
 }
 
 const CEGUI::String EmberEntityTooltipWidget::WidgetTypeName("Ember/EntityTooltip");
@@ -99,8 +107,6 @@ bool EntityTooltip::tooltip_TextChanged(const CEGUI::EventArgs& e) {
 			} else {
 				mImageWindow->setProperty("Image", "");
 			}
-			mTooltip->setWidth(CEGUI::UDim(0, 120));
-			mTooltip->setHeight(CEGUI::UDim(0, 80));
 			mTooltip->positionSelf();
 		}
 		mTooltip->setText(""); //The text has contained the id of the entity and should now be removed.
@@ -128,6 +134,10 @@ std::string EntityTooltip::composeEntityInfoText(EmberEntity& entity) {
 	}
 	for (auto& entry : entity.getUsages()) {
 		ss << std::endl << "Can be used to " << entry.first;
+	}
+	auto description = entity.ptrOfProperty("description");
+	if (description && description->isString()) {
+		ss << std::endl << description->String();
 	}
 
 	return ss.str();
