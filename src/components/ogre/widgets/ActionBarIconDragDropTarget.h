@@ -62,7 +62,7 @@ public:
 	 * @param container The window which will be able to have entity icons and action bar icons dragged and dropped on it.
 	 *
 	 */
-	ActionBarIconDragDropTarget(CEGUI::Window* container);
+	explicit ActionBarIconDragDropTarget(CEGUI::Window* container);
 
 	/**
 	 * @brief Dtor.

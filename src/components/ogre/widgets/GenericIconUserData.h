@@ -31,38 +31,13 @@ namespace Gui
  * @author Tiberiu Paunescu <tpa12@sfu.ca>
  */
 template <class IconType>
-class GenericIconUserData
+struct GenericIconUserData
 {
-public:
-	/**
-	 * @brief Ctor.
-	 * @param entityIcon The entity icon to which to which this user data belongs.
-	 */
-	GenericIconUserData(IconType& mGenericIcon);
-
-	/**
-	 * @brief Gets the entity icon instance to which this user data instance belongs.
-	 * @return The entity icon to which to which this user data belongs.
-	 */
-	IconType& getIcon() const;
-private:
 	/**
 	 * @brief The entity icon to which to which this user data belongs.
 	 */
 	IconType& mGenericIcon;
 };
-
-template <class IconType>
-GenericIconUserData<IconType>::GenericIconUserData(IconType& icon)
-: mGenericIcon(icon)
-{
-}
-
-template <class IconType>
-IconType& GenericIconUserData<IconType>::getIcon() const
-{
-	return mGenericIcon;
-}
 
 }
 }

@@ -44,9 +44,7 @@ ActionBarIconDragDropTarget::ActionBarIconDragDropTarget(CEGUI::Window* containe
 
 }
 
-ActionBarIconDragDropTarget::~ActionBarIconDragDropTarget()
-{
-}
+ActionBarIconDragDropTarget::~ActionBarIconDragDropTarget() = default;
 
 
 bool ActionBarIconDragDropTarget::dragContainer_DragEnter(const CEGUI::EventArgs& args)
@@ -73,14 +71,12 @@ bool ActionBarIconDragDropTarget::dragContainer_DragDropped(const CEGUI::EventAr
 	if (anyData)
 	{
 		if (typeid(GenericIconUserData<ActionBarIcon>) == anyData->type()) {
-			const GenericIconUserData<ActionBarIcon>& mUserData = boost::any_cast<const GenericIconUserData<ActionBarIcon>&>(*anyData);
-			if (&mUserData.getIcon())
-				return handleDragActionBarIconDropped(args, &mUserData.getIcon());
+			const auto& mUserData = boost::any_cast<const GenericIconUserData<ActionBarIcon>&>(*anyData);
+			return handleDragActionBarIconDropped(args, &mUserData.mGenericIcon);
 		}
 		if (typeid(GenericIconUserData<EntityIcon>) == anyData->type()) {
-			const GenericIconUserData<EntityIcon>& mUserData = boost::any_cast<const GenericIconUserData<EntityIcon>&>(*anyData);
-			if (&mUserData.getIcon())
-				return handleDragEntityIconDropped(args, &mUserData.getIcon());
+			const auto& mUserData = boost::any_cast<const GenericIconUserData<EntityIcon>&>(*anyData);
+			return handleDragEntityIconDropped(args, &mUserData.mGenericIcon);
 		}
 	}
 	return true;
@@ -115,21 +111,21 @@ ActionBarIcon* ActionBarIconDragDropTarget::parseIcon(const CEGUI::EventArgs& ar
 	if (anyData)
 	{
 		if (typeid(GenericIconUserData<ActionBarIcon>) == anyData->type()) {
-			const GenericIconUserData<ActionBarIcon>& mUserData = boost::any_cast<const GenericIconUserData<ActionBarIcon>&>(*anyData);
-			return &mUserData.getIcon();
+			const auto& mUserData = boost::any_cast<const GenericIconUserData<ActionBarIcon>&>(*anyData);
+			return &mUserData.mGenericIcon;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 const boost::any* ActionBarIconDragDropTarget::getUserData(const CEGUI::EventArgs& args) const
 {
-	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
+	const auto& ddea = dynamic_cast<const DragDropEventArgs&>(args);
 	DragContainer* container = ddea.dragDropItem;
 	if (container) {
 		return static_cast<const boost::any*>(container->getUserData());
 	}
-	return 0;
+	return nullptr;
 }
 
 

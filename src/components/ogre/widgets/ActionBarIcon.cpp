@@ -39,7 +39,7 @@ ActionBarIcon::ActionBarIcon(ActionBarIconManager& manager, UniqueWindowPtr<CEGU
 		  mDragContainer(std::move(dragContainer)),
 		  mImage(std::move(image)),
 		  mIcon(icon),
-		  mUserData(*this),
+		  mUserData{*this},
 		  mUserDataWrapper(mUserData),
 		  mCurrentSlot(nullptr) {
 	mDragContainer->setUserData(&mUserDataWrapper);

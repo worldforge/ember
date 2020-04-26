@@ -103,7 +103,7 @@ EntityIcon* EntityIconDragDropTarget::parseIcon(const CEGUI::EventArgs& args)
 		const auto* anyData = static_cast<const boost::any*>(container->getUserData());
 		if (typeid(GenericIconUserData<EntityIcon>) == anyData->type()) {
 			const auto& mUserData = boost::any_cast<const GenericIconUserData<EntityIcon>&>(*anyData);
-			return &mUserData.getIcon();
+			return &mUserData.mGenericIcon;
 		}
 	}
 	return nullptr;
