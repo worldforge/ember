@@ -62,6 +62,20 @@ class EntityIconSlot : public EntityIconDragDropTarget {
 public:
 
 	/**
+	 * @brief Ctor.
+	 *
+	 * @param The main entity icon manager.
+	 * @param container The CEGUI window which will be used by the slot. This can be any window, but should preferably be something which makes it clear that it's a slot onto which an icon can be dragged and dropped.
+	 */
+	explicit EntityIconSlot(UniqueWindowPtr<CEGUI::Window> container);
+
+	/**
+	 * @brief Dtor.
+	 * Any icon contained in the slot will be removed upon destruction.
+	 */
+	~EntityIconSlot() override;
+
+	/**
 	 * @brief Adds an EntityIcon to the slot. If the slot already contains an icon, the method will return false and an error will be logged.
 	 * @param icon 
 	 * @return true if successful, else false
@@ -99,19 +113,6 @@ public:
 
 
 protected:
-	/**
-	 * @brief Ctor.
-	 *
-	 * @param The main entity icon manager.
-	 * @param container The CEGUI window which will be used by the slot. This can be any window, but should preferably be something which makes it clear that it's a slot onto which an icon can be dragged and dropped.
-	 */
-	explicit EntityIconSlot(UniqueWindowPtr<CEGUI::Window> container);
-
-	/**
-	 * @brief Dtor.
-	 * Any icon contained in the slot will be removed upon destruction.
-	 */
-	~EntityIconSlot() override;
 
 	/**
 	 * @brief The CEGUI window representing the slot.

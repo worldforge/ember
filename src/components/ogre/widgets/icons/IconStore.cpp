@@ -37,64 +37,41 @@ namespace Gui {
 namespace Icons {
 
 
+IconStore::~IconStore() = default;
 
-IconStore::~IconStore()
-{
-	for (auto& iconEntry : mIcons) {
-		delete iconEntry.second;
-	}
-	for (auto& iconImageStore : mIconImageStores) {
-		delete iconImageStore;
-	}
-	for (auto& premadeIconImageStore : mPremadeIconImageStores) {
-		delete premadeIconImageStore.second;
-	}
-}
-
-Icon* IconStore::createIcon(const std::string& key)
-{
+Icon* IconStore::createIcon(const std::string& key) {
 	IconImageStoreEntry* imageStoreEntry = getImageStoreEntry();
-	Icon* icon = new Icon(key, imageStoreEntry);
-	
-	mIcons.insert(IconMap::value_type(key, icon));
-	return icon;
+	auto I = mIcons.emplace(key, std::make_unique<Icon>(key, imageStoreEntry));
+	return I.first->second.get();
 }
 
-Icon* IconStore::createIcon(const std::string& key, Ogre::TexturePtr texPtr)
-{
-	auto* store = new IconImageStore(key, texPtr);
-	mPremadeIconImageStores.insert(IconImageStoreMap::value_type(key, store));
-	IconImageStoreEntry* imageStoreEntry = store->claimImageEntry();
-	
-	Icon* icon = new Icon(key, imageStoreEntry);
-	
-	mIcons.insert(IconMap::value_type(key, icon));
-	return icon;
+Icon* IconStore::createIcon(const std::string& key, Ogre::TexturePtr texPtr) {
+	auto I = mPremadeIconImageStores.emplace(key, new IconImageStore(key, texPtr));
+	IconImageStoreEntry* imageStoreEntry = I.first->second->claimImageEntry();
+
+	auto J = mIcons.emplace(key, std::make_unique<Icon>(key, imageStoreEntry));
+	return J.first->second.get();
 }
 
 
-Icon* IconStore::getIcon(const std::string& key)
-{
+Icon* IconStore::getIcon(const std::string& key) {
 	auto I = mIcons.find(key);
 	if (I != mIcons.end()) {
-		return I->second;
+		return I->second.get();
 	}
 	return nullptr;
 }
 
-bool IconStore::hasIcon(const std::string& key)
-{
+bool IconStore::hasIcon(const std::string& key) {
 	return mIcons.find(key) != mIcons.end();
 }
 
-void IconStore::destroyIcon(Icon* icon)
-{
+void IconStore::destroyIcon(Icon* icon) {
 	mIcons.erase(icon->mKey);
 	delete icon;
 }
 
-IconImageStoreEntry* IconStore::getImageStoreEntry()
-{
+IconImageStoreEntry* IconStore::getImageStoreEntry() {
 	for (auto& iconImageStore : mIconImageStores) {
 		if (iconImageStore->getNumberOfUnclaimedIcons()) {
 			return iconImageStore->claimImageEntry();
@@ -102,11 +79,9 @@ IconImageStoreEntry* IconStore::getImageStoreEntry()
 	}
 	std::stringstream ss;
 	ss << "iconImageStore_" << mIconImageStores.size();
-	auto* store = new IconImageStore(ss.str());
-	mIconImageStores.push_back(store);
-	return store->claimImageEntry();
+	mIconImageStores.emplace_back(new IconImageStore(ss.str()));
+	return mIconImageStores.back()->claimImageEntry();
 }
-
 
 
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout version="4">
+    <Window name="MainWindow" type="EmberLook/InventoryFrameWindow">
+        <Property name="AutoRenderingSurface" value="False"/>
+        <Property name="Size" value="{{0.00,150.0},{0.00,150.0}}"/>
+        <Property name="Position" value="{{1.00,-450.0},{1.00,-300.0}}"/>
+        <Property name="Text" value="Container"/>
+        <Window name="IconContainer" type="EmberLook/ScrollablePane">
+            <Property name="Size" value="{{1,0},{1.0,0}}"/>
+            <Property name="Text" value=""/>
+            <Property name="InheritsAlpha" value="True"/>
+        </Window>
+    </Window>
+</GUILayout>

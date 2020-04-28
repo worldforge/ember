@@ -111,6 +111,8 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 	//we need this here just to force the linker to also link in the WidgetDefinitions
 	WidgetDefinitions w{};
 
+	WidgetDefinitions::registerWidgets(*this);
+
 	try {
 
 		S_LOG_INFO("Starting CEGUI");

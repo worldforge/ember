@@ -25,6 +25,7 @@
 
 namespace Ember {
 namespace OgreView {
+class GUIManager;
 namespace Gui {
 
 class Widget;
@@ -40,6 +41,7 @@ class WidgetDefinitions{
 public:
     WidgetDefinitions();
 
+    static void registerWidgets(GUIManager& guiManager);
 };
 }
 }

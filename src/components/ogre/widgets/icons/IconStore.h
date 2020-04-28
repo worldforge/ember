@@ -27,6 +27,8 @@
 #include <vector>
 #include <OgreTexture.h>
 
+#include "IconImageStore.h"
+#include "Icon.h"
 namespace Ember {
 namespace OgreView {
 
@@ -35,7 +37,6 @@ namespace Gui {
 namespace Icons {
 
 class Icon;
-class IconImageStore;
 class IconImageStoreEntry;
 
 /**
@@ -43,9 +44,6 @@ class IconImageStoreEntry;
 */
 class IconStore{
 public:
-	typedef std::unordered_map<std::string, Icon*> IconMap;
-	typedef std::vector<IconImageStore*> IconImageStoreStore;
-	typedef std::unordered_map<std::string, IconImageStore*> IconImageStoreMap;
 
 	explicit IconStore() = default;
 
@@ -58,9 +56,9 @@ public:
     void destroyIcon(Icon* icon);
     
 protected:
-	IconMap mIcons;
-	IconImageStoreStore mIconImageStores;
-	IconImageStoreMap mPremadeIconImageStores;
+	std::unordered_map<std::string, std::unique_ptr<Icon>> mIcons;
+	std::vector<std::unique_ptr<IconImageStore>> mIconImageStores;
+	std::unordered_map<std::string, std::unique_ptr<IconImageStore>> mPremadeIconImageStores;
 	
 	IconImageStoreEntry* getImageStoreEntry();
 

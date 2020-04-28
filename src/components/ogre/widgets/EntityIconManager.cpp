@@ -42,15 +42,7 @@ EntityIconManager::EntityIconManager(GUIManager& guiManager)
 		  mSlotsCounter(0) {
 }
 
-EntityIconManager::~EntityIconManager() {
-	for (auto& slot : mSlots) {
-		delete slot;
-	}
-
-	for (auto& icon : mIcons) {
-		delete icon;
-	}
-}
+EntityIconManager::~EntityIconManager() = default;
 
 
 EntityIconSlot* EntityIconManager::createSlot(unsigned int pixelSize) {
@@ -59,13 +51,12 @@ EntityIconSlot* EntityIconManager::createSlot(unsigned int pixelSize) {
 	//Make the slot more visible.
 	UniqueWindowPtr<CEGUI::Window> container(mGuiManager.createWindow("EmberLook/StaticImage", ss.str()));
 	container->setSize(CEGUI::USize(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
-	auto slot = new EntityIconSlot(std::move(container));
-	mSlots.push_back(slot);
-	return slot;
+	auto slot = std::make_unique<EntityIconSlot>(std::move(container));
+	mSlots.emplace_back(std::move(slot));
+	return mSlots.back().get();
 }
 
-
-EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize) {
+std::unique_ptr<EntityIcon> EntityIconManager::createIconInstance(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize) {
 	if (!icon) {
 		S_LOG_WARNING("Trying to create an EntityIcon with an invalid Icon.");
 		return nullptr;
@@ -102,29 +93,35 @@ EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* e
 
 		item->addChild(amountWindow.get());
 
-		auto* entityIcon = new EntityIcon(*this, std::move(item), std::move(iconWindow), std::move(amountWindow), icon, entity);
-		mIcons.push_back(entityIcon);
-		return entityIcon;
+		return std::make_unique<EntityIcon>(*this, std::move(item), std::move(iconWindow), std::move(amountWindow), icon, entity);
+	}
+	return nullptr;
+}
+
+
+EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize) {
+	auto entityIcon = createIconInstance(icon, entity, pixelSize);
+	if (entityIcon) {
+		mIcons.push_back(std::move(entityIcon));
+		return mIcons.back().get();
 	}
 	return nullptr;
 }
 
 void EntityIconManager::destroyIcon(EntityIcon* icon) {
-	auto I = std::find(mIcons.begin(), mIcons.end(), icon);
+	auto I = std::find_if(mIcons.begin(), mIcons.end(), [icon](const std::unique_ptr<EntityIcon>& entry) { return icon == entry.get(); });
 	if (I != mIcons.end()) {
 		mIcons.erase(I);
-		//TODO: make sure to delete the cegui elements
-		delete icon;
 	}
 }
 
 void EntityIconManager::destroySlot(EntityIconSlot* slot) {
-	auto I = std::find(mSlots.begin(), mSlots.end(), slot);
+	auto I = std::find_if(mSlots.begin(), mSlots.end(), [slot](const std::unique_ptr<EntityIconSlot>& entry) { return slot == entry.get(); });
 	if (I != mSlots.end()) {
 		mSlots.erase(I);
-		delete slot;
 	}
 }
+
 
 }
 

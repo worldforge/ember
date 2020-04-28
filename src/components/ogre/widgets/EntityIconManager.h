@@ -25,6 +25,7 @@
 
 #include <sigc++/signal.h>
 #include <vector>
+#include <memory>
 
 namespace Ember {
 class EmberEntity;
@@ -56,7 +57,7 @@ public:
 	 * @brief Ctor.
 	 * @param guiManager The main GUI manager.
 	 */
-	EntityIconManager(GUIManager& guiManager);
+	explicit EntityIconManager(GUIManager& guiManager);
 
 	/**
 	 * @brief Dtor.
@@ -87,6 +88,8 @@ public:
 	 */
 	EntityIcon* createIcon(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize = 64);
 
+	std::unique_ptr<EntityIcon> createIconInstance(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize = 64);
+
 	/**
 	 * @brief Destroys an entity icon.
 	 *
@@ -105,8 +108,8 @@ public:
 	sigc::signal<void, EntityIcon*> EventIconDragStop;
 
 protected:
-	typedef std::vector<EntityIconSlot*> EntityIconSlotStore;
-	typedef std::vector<EntityIcon*> EntityIconStore;
+	typedef std::vector<std::unique_ptr<EntityIconSlot>> EntityIconSlotStore;
+	typedef std::vector<std::unique_ptr<EntityIcon>> EntityIconStore;
 
 	/**
 	 * @brief All of the entity icon slots managed by this instance.

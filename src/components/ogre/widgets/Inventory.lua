@@ -17,7 +17,7 @@ function Inventory:AddedEntityToInventory(entity)
             entityIconBucket = self.icons[entity:getId()]
         end
         table.insert(entityIconBucket, entityIconWrapper)
-        for k, v in pairs(self.newEntityListeners) do
+        for _, v in pairs(self.newEntityListeners) do
             v(entity)
         end
     end
@@ -26,7 +26,7 @@ end
 function Inventory:RemovedEntityFromInventory(entity)
     local entityIconBucket = self.icons[entity:getId()]
     if entityIconBucket ~= nil then
-        for k, v in pairs(entityIconBucket) do
+        for _, v in pairs(entityIconBucket) do
             local entityIconWrapper = v
             entityIconWrapper.entityIcon:setSlot(nil)
             --Reset the entityIcon to let the wrapper know that the icon is being deleted. This fixes an issue where the callback for MouseLeaving would try to access the icon while it was being destroyed.
@@ -41,7 +41,7 @@ end
 
 function Inventory:getFreeSlot()
     --see if there's any free slots
-    for k, v in pairs(self.slots) do
+    for _, v in pairs(self.slots) do
         if v.slot:getEntityIcon() == nil then
             return v
         end
@@ -83,19 +83,11 @@ function Inventory:showMenu(args, entityIconWrapper)
 
 end
 
--- function Inventory:input_MouseButtonReleased()
--- 	if self.menu.menuShown then
--- 		self.menu.container:setVisible(false)
--- 		self.menu.menuShown = false
--- 	end
--- end
-
 function Inventory:createIcon(entity)
 
     local icon = guiManager:getIconManager():getIcon(self.iconsize, entity)
 
     if icon ~= nil then
-        local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
         local entityIconWrapper = {}
         entityIconWrapper.entityIcon = self.entityIconManager:createIcon(icon, entity, self.iconsize)
         entityIconWrapper.entityIcon:getImage():setTooltip(guiManager:getEntityTooltip():getTooltipWindow())
@@ -141,65 +133,6 @@ function Inventory:buildWidget(avatarEntity)
     self.iconContainer = self.widget:getWindow("IconContainer");
 
     self.widget:enableCloseButton()
-
-    self.menu.container = guiManager:createWindow("DefaultWindow")
-    self.menu.container:setSize(CEGUI.USize(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
-    self.menu.container:setClippedByParent(false)
-    self.menu.container:setAlwaysOnTop(true)
-
-    self.menu.innercontainer = guiManager:createWindow("DefaultWindow")
-    self.menu.innercontainer:setSize(CEGUI.USize(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
-    self.menu.innercontainer:setClippedByParent(false)
-    self.menu.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.menu.innercontainer)
-    self.menu.stackableContainer:setInnerContainerWindow(self.menu.innercontainer)
-    self.menu.container:addChild(self.menu.innercontainer)
-    self.menu.innercontainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 10), CEGUI.UDim(1, -self.iconsize)))
-
-    self.menu.hide = function()
-        guiManager:getMainSheet():removeChild(self.menu.container)
-        self.menu.menuShown = false
-    end
-
-    self.menu.mouseLeaves = function(args)
-        if self.menu.menuShown then
-            self.menu.hide()
-        end
-        return true
-    end
-
-    self.menu.container:subscribeEvent("MouseLeavesArea", self.menu.mouseLeaves)
-
-
-    --add default buttons
-
-    self.menu.dropButton = guiManager:createWindow("EmberLook/Button")
-    self.menu.dropButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-    self.menu.dropButton:setText("drop")
-    self.menu.dropButton_MouseClick = function(args)
-        if self.menu.activeEntityWrapper ~= nil then
-            if self.menu.activeEntityWrapper.entity ~= nil then
-                emberOgre:getWorld():getAvatar():getErisAvatar():drop(self.menu.activeEntityWrapper.entity)
-            end
-        end
-        self.menu.hide()
-        return true
-    end
-    self.menu.dropButton:subscribeEvent("Clicked", self.menu.dropButton_MouseClick)
-    self.menu.innercontainer:addChild(self.menu.dropButton)
-
-    for i = 0, 10 do
-        local button = guiManager:createWindow("EmberLook/Button")
-        button:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-        local buttonWrapper = {}
-        buttonWrapper.button = button
-        buttonWrapper.clicked = function()
-            buttonWrapper.clickedHandler()
-        end
-        buttonWrapper.button:subscribeEvent("MouseButtonUp", buttonWrapper.clicked)
-        self.useButtons[table.getn(self.useButtons) + 1] = buttonWrapper
-
-        self.menu.innercontainer:addChild(button)
-    end
 
     self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview:new(emberOgre:getWorld())
     --User has dragged an entityIcon from the inventory to the world
@@ -249,7 +182,6 @@ function Inventory:buildWidget(avatarEntity)
         end
     end)
 
-    self.menu.container:setVisible(true)
 
     connect(self.connectors, emberOgre:getWorld():getAvatar().EventAddedEntityToInventory, self.AddedEntityToInventory, self)
     connect(self.connectors, emberOgre:getWorld():getAvatar().EventRemovedEntityFromInventory, self.RemovedEntityFromInventory, self)
@@ -257,16 +189,7 @@ function Inventory:buildWidget(avatarEntity)
     self.widget:registerConsoleVisibilityToggleCommand("inventory")
     self.avatarEntity = avatarEntity
     self:setupDoll(avatarEntity)
-    --[[
-        connect(self.connectors, avatarEntity.Changed, function(self, keys)
-                self:updateDoll()
-            end
-        , self)
-        ]]--
     self.widget:show()
-    -- 	connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, self.input_MouseButtonReleased, self)
-    --	guiManager:getMainSheet():addChild(self.menu.container)
-
 
 end
 
@@ -464,7 +387,6 @@ function Inventory:shutdown()
         end
     end
 
-    windowManager:destroyWindow(self.menu.container)
     guiManager:destroyWidget(self.widget)
 end
 

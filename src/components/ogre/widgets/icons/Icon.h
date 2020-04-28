@@ -59,6 +59,18 @@ public:
 	friend class IconRenderer;
 
 	/**
+	 * @brief Ctor.
+	 * @param key The key for this icon.
+	 * @param imageStoreEntry The image store entry which represents the image used by the icon.
+	 */
+	Icon(std::string key, IconImageStoreEntry* imageStoreEntry);
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~Icon() = default;
+
+	/**
 	 * @brief Gets the image representing this icon.
 	 * @returns The image representing the icon.
 	 */
@@ -76,17 +88,7 @@ public:
 	sigc::signal<void> EventUpdated;
 
 private:
-	/**
-	 * @brief Ctor.
-	 * @param key The key for this icon.
-	 * @param imageStoreEntry The image store entry which represents the image used by the icon.
-	 */
-	Icon(std::string key, IconImageStoreEntry* imageStoreEntry);
 
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~Icon() = default;
 
 	/**
 	 * @brief Gets the icon image store entry.

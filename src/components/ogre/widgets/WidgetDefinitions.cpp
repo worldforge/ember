@@ -33,7 +33,7 @@
 #include "Help.h"
 #include "Quit.h"
 #include "MeshPreview.h"
-
+#include "ContainerWidget.h"
 
 namespace Ember
 {
@@ -53,6 +53,10 @@ WidgetDefinitions::WidgetDefinitions()
 
 
 
+}
+
+void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
+	ContainerWidget::registerWidget(guiManager);
 }
 
 }
