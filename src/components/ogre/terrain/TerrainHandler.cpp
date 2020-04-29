@@ -502,7 +502,9 @@ SegmentManager& TerrainHandler::getSegmentManager() {
 }
 
 void TerrainHandler::updateMod(TerrainMod* terrainMod) {
-	mTaskQueue->enqueueTask(std::make_unique<TerrainModUpdateTask>(*mTerrain, *terrainMod, *this));
+	if (terrainMod->getEntity().getPosition().isValid()) {
+		mTaskQueue->enqueueTask(std::make_unique<TerrainModUpdateTask>(*mTerrain, *terrainMod, *this));
+	}
 }
 
 const std::unordered_map<std::string, Mercator::Area*>& TerrainHandler::getAreas() const {
