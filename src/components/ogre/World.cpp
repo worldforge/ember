@@ -217,7 +217,9 @@ void World::View_topLevelEntityChanged() {
         mTopLevelEntity = nearestPhysicalDomainEntity;
     } else {
         mTopLevelEntity = dynamic_cast<EmberEntity*>(mView.getAvatar().getEntity()->getTopEntity());
-        mTopLevelEntity->setAttachment({});
+        if (mTopLevelEntity) {
+			mTopLevelEntity->setAttachment({});
+		}
     }
 }
 
