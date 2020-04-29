@@ -38,14 +38,32 @@ void ContainerWidget::registerWidget(GUIManager& guiManager) {
 	});
 }
 
-ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity)
+ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, int slotSize)
 		: mGuiManager(guiManager),
+		  mSlotSize(slotSize),
 		  mWidget(guiManager.createWidget()) {
 	mWidget->loadMainSheet("Container.layout", "Container");
 	mIconContainer = mWidget->getWindow("IconContainer");
 	mWidget->hide();
 	mWidget->enableCloseButton();
 	mWidget->setIsActiveWindowOpaque(false);
+	mIconContainer->subscribeEvent(CEGUI::Window::EventSized, [&]() { layoutSlots(); });
+	entity.ChildAdded.connect([&](Eris::Entity* child) {
+		auto entityIcon = createEntityIcon(dynamic_cast<EmberEntity*>(child));
+		if (entityIcon) {
+			auto* slot = getFreeSlot();
+			slot->addEntityIcon(entityIcon);
+			layoutSlots();
+		}
+	});
+	entity.ChildRemoved.connect([&](Eris::Entity* child) {
+		auto emberEntity = dynamic_cast<EmberEntity*>(child);
+		auto I = std::find_if(mIcons.begin(), mIcons.end(), [emberEntity](const std::unique_ptr<EntityIcon>& entry) { return entry->getEntity() == emberEntity; });
+		if (I != mIcons.end()) {
+			mIcons.erase(I);
+			layoutSlots();
+		}
+	});
 
 	mActionConnection = guiManager.EventEntityAction.connect([&](const std::string& action, EmberEntity* entity) {
 		if (action == "show_container") {
@@ -78,17 +96,11 @@ void ContainerWidget::showEntityContents(const EmberEntity* entity) {
 }
 
 EntityIconSlot* ContainerWidget::addSlot() {
-	int columns = 4;
-
-	int yPosition = std::floor(mSlots.size() / columns);
-	int xPosition = mSlots.size() % columns;
-
 
 	UniqueWindowPtr<CEGUI::Window> container(mGuiManager.createWindow("EmberLook/StaticImage"));
 	container->setSize(CEGUI::USize(CEGUI::UDim(0, 32), CEGUI::UDim(0, 32)));
-	container->setPosition({{0, xPosition * 32.f},
-							{0, yPosition * 32.f}});
 	mIconContainer->addChild(container.get());
+	layoutSlots();
 	auto iconSlot = new EntityIconSlot(std::move(container));
 
 	iconSlot->EventIconDropped.connect([iconSlot](EntityIcon* entityIcon) {
@@ -136,6 +148,19 @@ EntityIcon* ContainerWidget::createEntityIcon(EmberEntity* entity) {
 
 void ContainerWidget::clearShownContent() {
 	mIcons.clear();
+}
+
+void ContainerWidget::layoutSlots() {
+	int columns = std::floor(mIconContainer->getPixelSize().d_width / mSlotSize);
+
+	for (size_t i = 0; i < mSlots.size(); ++i) {
+		auto& slot = mSlots[i];
+		int yPosition = std::floor(i / columns);
+		int xPosition = i % columns;
+		slot->getWindow()->setPosition({{0, xPosition * 32.f},
+										{0, yPosition * 32.f}});
+
+	}
 }
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
-    <Window name="MainWindow" type="EmberLook/InventoryFrameWindow">
+    <Window name="MainWindow" type="EmberLook/FrameWindow">
         <Property name="AutoRenderingSurface" value="False"/>
         <Property name="Size" value="{{0.00,150.0},{0.00,150.0}}"/>
         <Property name="Position" value="{{1.00,-450.0},{1.00,-300.0}}"/>

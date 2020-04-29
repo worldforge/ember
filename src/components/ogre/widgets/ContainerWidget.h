@@ -31,7 +31,7 @@ namespace Gui {
 
 class ContainerWidget {
 public:
-	ContainerWidget(GUIManager& guiManager, EmberEntity& entity);
+	ContainerWidget(GUIManager& guiManager, EmberEntity& entity, int slotSize = 32);
 
 	~ContainerWidget();
 
@@ -41,11 +41,14 @@ public:
 
 protected:
 	GUIManager& mGuiManager;
+	int mSlotSize;
 	Widget* mWidget;
 	CEGUI::Window* mIconContainer;
 	std::vector<std::unique_ptr<EntityIconSlot>> mSlots;
 	std::vector<std::unique_ptr<EntityIcon>> mIcons;
 	sigc::connection mActionConnection;
+	sigc::connection mChildAddedConnection;
+	sigc::connection mChildRemovedConnection;
 
 	EntityIconSlot* addSlot();
 
@@ -55,6 +58,7 @@ protected:
 
 	void clearShownContent();
 
+	void layoutSlots();
 
 };
 }
