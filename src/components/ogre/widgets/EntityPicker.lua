@@ -383,7 +383,7 @@ function EntityPicker:addUseSelf(entityId, wieldedEntity, operation, usage)
         local entity = self.world:getEmberEntity(entityId)
         if entity then
             self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert:toWF_Point3(self.position))
-            guiManager:EmitEntityAction("use", entity)
+            guiManager:EmitEntityAction("use:"..operation, entity)
         end
         self:removeMenu()
     end
@@ -397,7 +397,7 @@ function EntityPicker:addUse(entityId, wieldedEntity, operation, usage)
         if entity then
             self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert:toWF_Point3(self.position))
             --			emberServices:getServerService():use(wieldedEntity, entity, Ember.OgreView.Convert:toWF_Point3(self.position), operation)
-            guiManager:EmitEntityAction("use", entity)
+            guiManager:EmitEntityAction("use:"..operation, entity)
         end
         self:removeMenu()
     end
@@ -410,7 +410,7 @@ function EntityPicker:addAction(entityId, action, usage)
         local entity = self.world:getEmberEntity(entityId)
         if entity ~= nil then
             self.world:getAvatar():useTool(entity, action)
-            guiManager:EmitEntityAction("use", entity)
+            guiManager:EmitEntityAction("use:"..action, entity)
         end
         self:removeMenu()
     end

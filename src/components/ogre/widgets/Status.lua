@@ -58,7 +58,7 @@ function StatusInstance:setEntity(entity)
 		self.observers = {}
 		self.observers.status = Ember.AttributeObserver(entity, "status")
 		connect(self.connectors, self.observers.status.EventChanged, self.status_Changed, self)
-		
+
 		self.observers.stamina = Ember.AttributeObserver(entity, "stamina")
 		connect(self.connectors, self.observers.stamina.EventChanged, self.stamina_Changed, self)
 
@@ -73,12 +73,12 @@ function StatusInstance:setEntity(entity)
 			self.nameWindow:setText(entity:getName())
 		end
 		self:updateStatus()
-		
+
 		local model = Ember.OgreView.Model.ModelRepresentation:getModelForEntity(entity)
 		if model ~= nil then
 			self.renderer:showModel(model:getDefinition())
 			self.renderer:setCameraDistance(0.75)
-		else 
+		else
 			self.renderer:showModel("")
 		end
 		self.renderer:updateRender()
@@ -93,7 +93,7 @@ end
 
 function StatusInstance:shutdown()
 	disconnectAll(self.connectors)
-	
+
 	deleteSafe(self.renderer)
 	if self.widget ~= nil then
 		guiManager:destroyWidget(self.widget)
@@ -106,17 +106,17 @@ function Status:createStatusInstance(name)
 	statusInstance.widget = guiManager:createWidget()
 	statusInstance.widget:loadMainSheet("Status.layout", "Status_" .. name)
 	statusInstance.widget:setIsActiveWindowOpaque(false)
-	
+
 	statusInstance.healthBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("HealthBar"))
 	statusInstance.staminaBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("StaminaBar"))
 	statusInstance.strengthBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("StrengthBar"))
-	
+
 	statusInstance.renderImage = statusInstance.widget:getWindow("RenderImage")
 	statusInstance.renderer = Ember.OgreView.Gui.ModelRenderer:new(statusInstance.renderImage, name)
 	statusInstance.renderer:setActive(false)
-	
+
 	statusInstance.nameWindow = statusInstance.widget:getWindow("EntityName")
-	
+
 	statusInstance.entity = nil
 
 	statusInstance.widget:hide()
@@ -126,21 +126,21 @@ end
 function Status:buildWidget(avatarEntity)
 
 	if emberOgre:getWorld():getAvatar():isAdmin() == false then
-	
+
 		self.avatarStatus = self:createStatusInstance("avatar")
-		
+
 		self.npcStatus = self:createStatusInstance("npc")
 		local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,150), CEGUI.UDim(0,0))
 		self.npcStatus.widget:getMainWindow():setPosition(uPosition )
-		
+
 		connect(self.connectors, guiManager.EventEntityAction, Status.handleAction, self)
 		self.avatarStatus:setEntity(avatarEntity)
 	end
 
 end
 
-function Status:handleAction(action, entity) 
-	if action == "use" or action == "inspect" or action == "attack" then
+function Status:handleAction(action, entity)
+	if string.sub(action,1, 4) == "use:" or action == "inspect" or action == "attack" then
 		self.npcStatus:setEntity(entity)
 	end
 end
@@ -163,6 +163,6 @@ Status.createdAvatarEntityConnector = createConnector(emberOgre.EventCreatedAvat
 				status:shutdown()
 				status = nil
 			end
-		)		
+		)
 	end
 )

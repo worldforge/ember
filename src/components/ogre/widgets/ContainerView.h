@@ -16,38 +16,61 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBER_CONTAINERWIDGET_H
-#define EMBER_CONTAINERWIDGET_H
+#ifndef EMBER_CONTAINERVIEW_H
+#define EMBER_CONTAINERVIEW_H
 
 #include <sigc++/connection.h>
 #include "Widget.h"
 #include "EntityIconSlot.h"
-#include "ContainerView.h"
 
 namespace Ember {
 class EmberEntity;
 namespace OgreView {
 class GUIManager;
 namespace Gui {
+class EntityIconManager;
+namespace Icons {
+class IconManager;
+}
+class ContainerView {
 
-class ContainerWidget {
 public:
-	ContainerWidget(GUIManager& guiManager,  int slotSize = 32);
+	ContainerView(EntityIconManager& entityIconManager,
+				  Icons::IconManager& iconManager,
+				  CEGUI::Tooltip& tooltip,
+				  CEGUI::Window& iconContainer,
+				  int slotSize = 32);
 
-	~ContainerWidget();
+	~ContainerView();
 
-	static void registerWidget(GUIManager& guiManager);
 
 	void showEntityContents(EmberEntity* entity);
 
+	sigc::signal<void, EmberEntity*> EventEntityPicked;
+
 protected:
-	GUIManager& mGuiManager;
+	EntityIconManager& mEntityIconManager;
+	Icons::IconManager& mIconManager;
+	CEGUI::Tooltip& mTooltip;
+	CEGUI::Window& mIconContainer;
 	int mSlotSize;
-	Widget* mWidget;
-	std::unique_ptr<ContainerView> mContainerView;
+	std::vector<std::unique_ptr<EntityIconSlot>> mSlots;
+	std::vector<std::unique_ptr<EntityIcon>> mIcons;
 	sigc::connection mActionConnection;
+	sigc::connection mChildAddedConnection;
+	sigc::connection mChildRemovedConnection;
 	sigc::connection mBeingDeletedConnection;
 	EmberEntity* mObservedEntity;
+
+	EntityIconSlot* addSlot();
+
+	EntityIconSlot* getFreeSlot();
+
+	EntityIcon* createEntityIcon(EmberEntity* entity);
+
+	void clearShownContent();
+
+	void layoutSlots();
 
 //	static std::map<std::string, std::unique_ptr<ContainerWidget>> sActiveContainers;
 
@@ -56,5 +79,4 @@ protected:
 }
 }
 
-
-#endif //EMBER_CONTAINERWIDGET_H
+#endif //EMBER_CONTAINERVIEW_H

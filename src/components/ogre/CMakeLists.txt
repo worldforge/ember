@@ -100,6 +100,7 @@ add_library(emberogre
         widgets/adapters/atlas/ScaleAdapter.cpp widgets/adapters/atlas/ScaleAdapter.h
         widgets/adapters/atlas/EntityRefAdapter.cpp widgets/adapters/atlas/EntityRefAdapter.h
         widgets/ContainerWidget.cpp
+        widgets/ContainerView.cpp
 
         Avatar.cpp AvatarCameraWarper.cpp
         MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp
