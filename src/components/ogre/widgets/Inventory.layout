@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
-	<Window name="MainWindow" type="EmberLook/InventoryFrameWindow">
-		<Property name="AutoRenderingSurface" value="False" />
-		<Property name="Size" value="{{0.00,300.0},{0.00,300.0}}" />
-		<Property name="Position" value="{{1.00,-300.0},{1.00,-300.0}}" />
-		<Property name="Text" value="Inventory" />
-		<Window name="MainInnerWindow" type="DefaultWindow">
-			<Property name="Position" value="{{0.0,2},{0,0}}" />
-			<Property name="Size" value="{{1,-4},{1,0}}" />
-			<Property name="InheritsAlpha" value="True" />
-			<Window name="IconContainer" type="EmberLook/ScrollablePane">
-				<Property name="Size" value="{{0,128},{1.0,0}}" />
-				<Property name="Text" value="" />
-				<Property name="InheritsAlpha" value="True" />
-			</Window>
-			<Window name="DollImage" type="EmberLook/StaticImage">
-				<Property name="Position" value="{{0.0,128},{0,0}}" />
-				<Property name="Size" value="{{1,-128},{1.0,0}}" />
-				<Property name="InheritsAlpha" value="True" />
-				<Window name="RightHand" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0.10,0},{0.45,0}}" />
-					<Property name="Size" value="{{0,32},{0,32}}" />
-					<Property name="FrameEnabled" value="true" />
-				</Window>
-				<Window name="LeftHand" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0.9, -32},{0.45,0}}" />
-					<Property name="Size" value="{{0,32},{0,32}}" />
-					<Property name="FrameEnabled" value="true" />
-				</Window>
-				<Window name="Head" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0.5,-16},{0.1,0}}" />
-					<Property name="Size" value="{{0,32},{0,32}}" />
-                    <Property name="FrameEnabled" value="true" />
-				</Window>
-				<Window name="Back" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0.5,16},{0.2,0}}" />
-					<Property name="Size" value="{{0,32},{0,32}}" />
-                    <Property name="FrameEnabled" value="true" />
-				</Window>
-				<Window name="Torso" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0.5,-16},{0.3,0}}" />
-					<Property name="Size" value="{{0,32},{0,32}}" />
-                    <Property name="FrameEnabled" value="true" />
-				</Window>
-				<Window name="Legs" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0.5,-16},{0.6,0}}" />
-					<Property name="Size" value="{{0,32},{0,32}}" />
-                    <Property name="FrameEnabled" value="true" />
-				</Window>
-				<Window name="Feet" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0.5,-16},{0.8,0}}" />
-					<Property name="Size" value="{{0,32},{0,32}}" />
-                    <Property name="FrameEnabled" value="true" />
-				</Window>
-			</Window>
-		</Window>
-	</Window>
+    <Window name="MainWindow" type="EmberLook/InventoryFrameWindow">
+        <Property name="AutoRenderingSurface" value="False"/>
+        <Property name="Size" value="{{0.00,300.0},{0.00,300.0}}"/>
+        <Property name="Position" value="{{1.00,-300.0},{1.00,-300.0}}"/>
+        <Property name="Text" value="Inventory"/>
+        <Window name="IconContainer" type="EmberLook/ScrollablePane">
+            <Property name="Size" value="{{1,-160},{1.0,0}}"/>
+            <Property name="Text" value=""/>
+            <Property name="InheritsAlpha" value="True"/>
+        </Window>
+        <Window name="DollImage" type="EmberLook/StaticImage">
+            <Property name="Position" value="{{1,-160},{0,0}}"/>
+            <Property name="Size" value="{{0,160},{1.0,0}}"/>
+            <Property name="InheritsAlpha" value="True"/>
+            <Window name="RightHand" type="EmberLook/StaticImage">
+                <Property name="Position" value="{{0.10,0},{0.45,0}}"/>
+                <Property name="Size" value="{{0,32},{0,32}}"/>
+                <Property name="FrameEnabled" value="true"/>
+            </Window>
+            <Window name="LeftHand" type="EmberLook/StaticImage">
+                <Property name="Position" value="{{0.9, -32},{0.45,0}}"/>
+                <Property name="Size" value="{{0,32},{0,32}}"/>
+                <Property name="FrameEnabled" value="true"/>
+            </Window>
+            <Window name="Head" type="EmberLook/StaticImage">
+                <Property name="Position" value="{{0.5,-16},{0.1,0}}"/>
+                <Property name="Size" value="{{0,32},{0,32}}"/>
+                <Property name="FrameEnabled" value="true"/>
+            </Window>
+            <Window name="Back" type="EmberLook/StaticImage">
+                <Property name="Position" value="{{0.5,16},{0.2,0}}"/>
+                <Property name="Size" value="{{0,32},{0,32}}"/>
+                <Property name="FrameEnabled" value="true"/>
+            </Window>
+            <Window name="Torso" type="EmberLook/StaticImage">
+                <Property name="Position" value="{{0.5,-16},{0.3,0}}"/>
+                <Property name="Size" value="{{0,32},{0,32}}"/>
+                <Property name="FrameEnabled" value="true"/>
+            </Window>
+            <Window name="Legs" type="EmberLook/StaticImage">
+                <Property name="Position" value="{{0.5,-16},{0.6,0}}"/>
+                <Property name="Size" value="{{0,32},{0,32}}"/>
+                <Property name="FrameEnabled" value="true"/>
+            </Window>
+            <Window name="Feet" type="EmberLook/StaticImage">
+                <Property name="Position" value="{{0.5,-16},{0.8,0}}"/>
+                <Property name="Size" value="{{0,32},{0,32}}"/>
+                <Property name="FrameEnabled" value="true"/>
+            </Window>
+        </Window>
+    </Window>
 </GUILayout>

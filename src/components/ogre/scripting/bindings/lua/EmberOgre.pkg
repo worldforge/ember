@@ -103,6 +103,7 @@ $pfile "AtlasHelper.pkg"
 $pfile "Compass.pkg"
 $pfile "EntityCreatorTypeHelper.pkg"
 $pfile "ModelEditHelper.pkg"
+$pfile "ContainerView.pkg"
 
 $pfile "RuleTreeAdapter.pkg"
 $pfile "ResourceListAdapter.pkg"

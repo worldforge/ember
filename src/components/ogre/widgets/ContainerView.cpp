@@ -69,16 +69,16 @@ void ContainerView::showEntityContents(EmberEntity* entity) {
 			auto child = entity->getEmberContained(i);
 			auto entityIcon = createEntityIcon(child);
 			if (entityIcon) {
-				auto* slot = getFreeSlot();
-				slot->addEntityIcon(entityIcon);
+				getFreeSlot()->addEntityIcon(entityIcon);
+				EventIconAdded.emit(entityIcon);
 			}
 		}
 		layoutSlots();
 		mChildAddedConnection = entity->ChildAdded.connect([&](Eris::Entity* child) {
 			auto entityIcon = createEntityIcon(dynamic_cast<EmberEntity*>(child));
 			if (entityIcon) {
-				auto* slot = getFreeSlot();
-				slot->addEntityIcon(entityIcon);
+				getFreeSlot()->addEntityIcon(entityIcon);
+				EventIconAdded.emit(entityIcon);
 				layoutSlots();
 			}
 		});
@@ -167,6 +167,24 @@ void ContainerView::layoutSlots() {
 
 	}
 }
+
+EntityIcon* ContainerView::getEntityIcon(const std::string& entityId) {
+	auto I = std::find_if(mIcons.begin(), mIcons.end(), [&entityId](const std::unique_ptr<EntityIcon>& entry) { return entry->getEntity() && entry->getEntity()->getId() == entityId; });
+	if (I != mIcons.end()) {
+		return I->get();
+	}
+	return nullptr;
+}
+
+void ContainerView::addEntityIcon(EntityIcon* entityIcon) {
+	auto oldSlot = entityIcon->getSlot();
+	getFreeSlot()->addEntityIcon(entityIcon);
+	if (oldSlot) {
+		oldSlot->notifyIconDraggedOff(entityIcon);
+	}
+	EventIconAdded.emit(entityIcon);
+}
+
 
 }
 }

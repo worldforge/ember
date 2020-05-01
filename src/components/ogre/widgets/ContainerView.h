@@ -46,7 +46,12 @@ public:
 
 	void showEntityContents(EmberEntity* entity);
 
+	void addEntityIcon(EntityIcon* entityIcon);
+
+	EntityIcon* getEntityIcon(const std::string& entityId);
+
 	sigc::signal<void, EmberEntity*> EventEntityPicked;
+	sigc::signal<void, EntityIcon*> EventIconAdded;
 
 protected:
 	EntityIconManager& mEntityIconManager;
@@ -71,8 +76,6 @@ protected:
 	void clearShownContent();
 
 	void layoutSlots();
-
-//	static std::map<std::string, std::unique_ptr<ContainerWidget>> sActiveContainers;
 
 };
 }

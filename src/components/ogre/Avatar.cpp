@@ -773,7 +773,7 @@ boost::optional<std::string> Avatar::performDefaultUsage() {
 
 		useTool(attachedEntity, op, usage, entity, pos, Convert::toWF<WFMath::Vector<3>>(ray.getDirection()));
 		if (entity) {
-			GUIManager::getSingleton().EmitEntityAction("use", dynamic_cast<EmberEntity*>(entity));
+			GUIManager::getSingleton().EmitEntityAction("use:" + usage.name, dynamic_cast<EmberEntity*>(entity));
 		}
 
 	};

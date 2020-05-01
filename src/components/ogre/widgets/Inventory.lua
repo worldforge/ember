@@ -4,120 +4,6 @@
 -----------------------------------------
 Inventory = {}
 
-function Inventory:AddedEntityToInventory(entity)
-    local entityIconWrapper = self:createIcon(entity)
-    if entityIconWrapper ~= nil then
-        local slotWrapper = self:getFreeSlot()
-        local slot = slotWrapper.slot
-        slot:addEntityIcon(entityIconWrapper.entityIcon)
-        local entityIconBucket = {}
-        if self.icons[entity:getId()] == nil then
-            self.icons[entity:getId()] = entityIconBucket
-        else
-            entityIconBucket = self.icons[entity:getId()]
-        end
-        table.insert(entityIconBucket, entityIconWrapper)
-        for _, v in pairs(self.newEntityListeners) do
-            v(entity)
-        end
-    end
-end
-
-function Inventory:RemovedEntityFromInventory(entity)
-    local entityIconBucket = self.icons[entity:getId()]
-    if entityIconBucket ~= nil then
-        for _, v in pairs(entityIconBucket) do
-            local entityIconWrapper = v
-            entityIconWrapper.entityIcon:setSlot(nil)
-            --Reset the entityIcon to let the wrapper know that the icon is being deleted. This fixes an issue where the callback for MouseLeaving would try to access the icon while it was being destroyed.
-            local entityIcon = entityIconWrapper.entityIcon
-            entityIconWrapper.entityIcon = nil
-            --guiManager:getIconManager():destroyIcon(entityIconWrapper.entityIcon:getIcon())
-            self.entityIconManager:destroyIcon(entityIcon)
-        end
-    end
-    self.icons[entity:getId()] = nil
-end
-
-function Inventory:getFreeSlot()
-    --see if there's any free slots
-    for _, v in pairs(self.slots) do
-        if v.slot:getEntityIcon() == nil then
-            return v
-        end
-    end
-    --if we couldn't find a free one, add one
-    return self:addSlot()
-end
-
-function Inventory:addSlot()
-    local yPosition = math.floor(self.slotcounter / self.columns)
-    local xPosition = self.slotcounter - math.floor(self.slotcounter / self.columns) * self.columns  --lua 5.0 can't do modulus, in 5.1 we would have done: self.slotcounter % self.columns
-
-
-
-    self.slotcounter = self.slotcounter + 1
-
-    local slot = self.entityIconManager:createSlot(self.iconsize)
-    slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconsize * xPosition), CEGUI.UDim(0, self.iconsize * yPosition)))
-    self.iconContainer:addChild(slot:getWindow())
-    local slotWrapper = { slot = slot }
-    table.insert(self.slots, slotWrapper)
-    slotWrapper.entityIconDropped = function(entityIcon)
-        local oldSlot = entityIcon:getSlot()
-        slotWrapper.slot:addEntityIcon(entityIcon)
-        if oldSlot ~= nil then
-            oldSlot:notifyIconDraggedOff(entityIcon)
-        end
-    end
-
-    slotWrapper.entityIconDropped_connector = createConnector(slot.EventIconDropped):connect(slotWrapper.entityIconDropped)
-
-    return slotWrapper
-end
-
-function Inventory:showMenu(args, entityIconWrapper)
-
-    local entity = entityIconWrapper.entity
-    guiManager:EmitEntityAction("pick", entity)
-
-end
-
-function Inventory:createIcon(entity)
-
-    local icon = guiManager:getIconManager():getIcon(self.iconsize, entity)
-
-    if icon ~= nil then
-        local entityIconWrapper = {}
-        entityIconWrapper.entityIcon = self.entityIconManager:createIcon(icon, entity, self.iconsize)
-        entityIconWrapper.entityIcon:getImage():setTooltip(guiManager:getEntityTooltip():getTooltipWindow())
-        entityIconWrapper.entityIcon:getImage():setTooltipText(entity:getId())
-        entityIconWrapper.entity = entity
-        entityIconWrapper.mouseEnters = function(args)
-            if entityIconWrapper.entityIcon then
-                entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "true")
-            end
-            return true
-        end
-        entityIconWrapper.mouseLeaves = function(args)
-            if entityIconWrapper.entityIcon then
-                entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "false")
-            end
-            return true
-        end
-        entityIconWrapper.mouseClick = function(args)
-            self:showMenu(args, entityIconWrapper)
-            return true
-        end
-        entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseClick", entityIconWrapper.mouseClick)
-        entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseEntersSurface", entityIconWrapper.mouseEnters)
-        entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseLeavesSurface", entityIconWrapper.mouseLeaves)
-        return entityIconWrapper
-    else
-        return nil
-    end
-end
-
 function Inventory:buildWidget(avatarEntity)
 
     self.widget = guiManager:createWidget()
@@ -131,6 +17,18 @@ function Inventory:buildWidget(avatarEntity)
     self.entityIconManager = guiManager:getEntityIconManager()
 
     self.iconContainer = self.widget:getWindow("IconContainer");
+    self.iconView = Ember.OgreView.Gui.ContainerView:new(guiManager:getEntityIconManager(), guiManager:getIconManager(), guiManager:getEntityTooltip():getTooltipWindow(), self.iconContainer)
+
+    connect(self.connectors, self.iconView.EventEntityPicked, function(entity)
+        guiManager:EmitEntityAction("pick", entity)
+    end)
+    connect(self.connectors, self.iconView.EventIconAdded, function(entityIcon)
+        for _, v in pairs(self.newEntityListeners) do
+            v(entityIcon)
+        end
+    end)
+
+    self.iconView:showEntityContents(avatarEntity)
 
     self.widget:enableCloseButton()
 
@@ -170,21 +68,16 @@ function Inventory:buildWidget(avatarEntity)
     connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)
 
     --The icon container will create a child window with the suffix "__auto_container__" which will catch all events. We need to attach to that.
-    local iconContainer_inner = self.widget:getWindow("IconContainer"):getChild("__auto_container__")
+    local iconContainer_inner = self.iconContainer:getChild("__auto_container__")
 
     self.IconContainerDragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget:new(iconContainer_inner)
     connect(self.connectors, self.IconContainerDragDrop.EventIconDropped, function(entityIcon)
-        if entityIcon ~= nil then
-            if entityIcon:getEntity() ~= nil then
-                local slotWrapper = self:getFreeSlot()
-                slotWrapper.entityIconDropped(entityIcon)
+        if entityIcon then
+            if entityIcon:getEntity()  then
+                self.iconView:addEntityIcon(entityIcon)
             end
         end
     end)
-
-
-    connect(self.connectors, emberOgre:getWorld():getAvatar().EventAddedEntityToInventory, self.AddedEntityToInventory, self)
-    connect(self.connectors, emberOgre:getWorld():getAvatar().EventRemovedEntityFromInventory, self.RemovedEntityFromInventory, self)
 
     self.widget:registerConsoleVisibilityToggleCommand("inventory")
     self.avatarEntity = avatarEntity
@@ -199,10 +92,8 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
         if dollSlot.isValidDrop(entityIcon) then
             emberOgre:getWorld():getAvatar():getErisAvatar():wield(entityIcon:getEntity(), attachment)
             local icon = dollSlot.slot:getEntityIcon()
-            if icon ~= nil then
-                local slotWrapper = self:getFreeSlot()
-                local slot = slotWrapper.slot
-                slot:addEntityIcon(icon)
+            if icon then
+                self.iconView:addEntityIcon(icon)
             end
             dollSlot.slot:addEntityIcon(entityIcon)
         end
@@ -212,34 +103,25 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
     dollSlot.attributeChanged = function(element)
         local result, entityId = Eris.Entity:extractEntityId(element, entityId)
         if result then
-            local slotUpdateFunc = function()
-                local entityBucket = self.icons[entityId]
-
-                if entityBucket ~= nil then
-                    local icon = entityBucket[1].entityIcon
-                    if icon ~= nil then
-                        --check that we've not already have added the icon to this slot
-                        if dollSlot.slot:getEntityIcon() ~= icon then
-                            local oldIcon = dollSlot.slot:removeEntityIcon()
-                            dollSlot.slot:addEntityIcon(icon)
-                            if oldIcon ~= nil then
-                                local slotWrapper = self:getFreeSlot()
-                                local slot = slotWrapper.slot
-                                slot:addEntityIcon(oldIcon)
-                            end
-                        end
+            local slotUpdateFunc = function(icon)
+                --check that we've not already have added the icon to this slot
+                if dollSlot.slot:getEntityIcon() ~= icon then
+                    local oldIcon = dollSlot.slot:removeEntityIcon()
+                    dollSlot.slot:addEntityIcon(icon)
+                    if oldIcon then
+                        self.iconView:addEntityIcon(oldIcon)
                     end
                 end
             end
 
-            --Either we have created an icon for the entity yet, or we have to wait a little until it's available
-            local entityBucket = self.icons[entityId]
-            if entityBucket ~= nil then
-                slotUpdateFunc()
+            ----Either we have created an icon for the entity yet, or we have to wait a little until it's available
+            local icon = self.iconView:getEntityIcon(entityId)
+            if icon then
+                slotUpdateFunc(icon)
             else
-                local delayedUpdater = function(newEntity)
-                    if newEntity:getId() == entityId then
-                        slotUpdateFunc()
+                local delayedUpdater = function(entityIcon)
+                    if entityIcon:getEntity():getId() == entityId then
+                        slotUpdateFunc(entityIcon)
                         self.newEntityListeners[dollSlot.attributePath] = nil
                     end
                 end
@@ -249,7 +131,7 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
     end
     dollSlot.attributeChanged_connector = createConnector(dollSlot.observer.EventChanged):connect(dollSlot.attributeChanged)
 
-    dollSlot.iconDraggedOff = function(entityIcon)
+    dollSlot.iconDraggedOff = function()
         --do unwield stuff
         emberOgre:getWorld():getAvatar():getErisAvatar():wield(nil, attachment)
     end
@@ -367,7 +249,8 @@ function Inventory:shutdown()
     deleteSafe(self.helper)
     deleteSafe(self.DragDrop)
     deleteSafe(self.IconContainerDragDrop)
-    if self.doll ~= nil then
+    deleteSafe(self.iconView)
+    if self.doll then
         if deleteSafe(self.doll.renderer) then
             self.doll.handPrimary.shutdown()
             self.doll.torso.shutdown()
@@ -375,15 +258,6 @@ function Inventory:shutdown()
             self.doll.head.shutdown()
             self.doll.legs.shutdown()
             self.doll.feet.shutdown()
-        end
-    end
-    for k, v in pairs(self.slots) do
-        self.entityIconManager:destroySlot(v.slot)
-    end
-    for k, v in pairs(self.icons) do
-        local iconBucket = v
-        for _, bucket in pairs(iconBucket) do
-            self.entityIconManager:destroyIcon(bucket.entityIcon)
         end
     end
 
