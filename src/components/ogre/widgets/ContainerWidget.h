@@ -46,8 +46,6 @@ protected:
 	Widget* mWidget;
 	std::unique_ptr<ContainerView> mContainerView;
 	sigc::connection mActionConnection;
-	sigc::connection mBeingDeletedConnection;
-	EmberEntity* mObservedEntity;
 
 //	static std::map<std::string, std::unique_ptr<ContainerWidget>> sActiveContainers;
 

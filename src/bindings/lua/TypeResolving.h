@@ -78,6 +78,7 @@ typedef std::vector<std::string> LuaTypeStore;
 namespace Gui
 {
 class EntityIcon;
+class EntityIconSlot;
 class ActionBarIcon;
 class HelpMessage;
 }

@@ -50,8 +50,13 @@ public:
 
 	EntityIcon* getEntityIcon(const std::string& entityId);
 
+	EmberEntity* getObservedEntity() const {
+		return mObservedEntity;
+	}
+
 	sigc::signal<void, EmberEntity*> EventEntityPicked;
 	sigc::signal<void, EntityIcon*> EventIconAdded;
+	sigc::signal<void, EntityIcon*, EntityIconSlot*> EventIconDropped;
 
 protected:
 	EntityIconManager& mEntityIconManager;
@@ -61,6 +66,7 @@ protected:
 	int mSlotSize;
 	std::vector<std::unique_ptr<EntityIconSlot>> mSlots;
 	std::vector<std::unique_ptr<EntityIcon>> mIcons;
+	std::unique_ptr<EntityIconDragDropTarget> mContainerDropTarget;
 	sigc::connection mActionConnection;
 	sigc::connection mChildAddedConnection;
 	sigc::connection mChildRemovedConnection;

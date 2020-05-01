@@ -44,6 +44,17 @@ ContainerView::ContainerView(EntityIconManager& entityIconManager,
 		mSlotSize(slotSize),
 		mObservedEntity(nullptr) {
 	mIconContainer.subscribeEvent(CEGUI::Window::EventSized, [&]() { layoutSlots(); });
+
+	//Handle the case where there's an automatically created child which will receive all drop events.
+	auto containerDropWindow = mIconContainer.getChild("__auto_container__");
+	if (!containerDropWindow) {
+		containerDropWindow = &mIconContainer;
+	}
+
+	mContainerDropTarget = std::make_unique<EntityIconDragDropTarget>(containerDropWindow);
+	mContainerDropTarget->EventIconDropped.connect([this](EntityIcon* icon) {
+		EventIconDropped.emit(icon, nullptr);
+	});
 }
 
 ContainerView::~ContainerView() {
@@ -63,6 +74,7 @@ void ContainerView::showEntityContents(EmberEntity* entity) {
 	mChildAddedConnection.disconnect();
 	mChildRemovedConnection.disconnect();
 	mBeingDeletedConnection.disconnect();
+	mObservedEntity = entity;
 	clearShownContent();
 	if (entity) {
 		for (size_t i = 0; i < entity->numContained(); ++i) {
@@ -108,11 +120,16 @@ EntityIconSlot* ContainerView::addSlot() {
 	layoutSlots();
 	auto iconSlot = new EntityIconSlot(std::move(container));
 
-	iconSlot->EventIconDropped.connect([iconSlot](EntityIcon* entityIcon) {
-		auto oldSlot = entityIcon->getSlot();
-		iconSlot->addEntityIcon(entityIcon);
-		if (oldSlot) {
-			oldSlot->notifyIconDraggedOff(entityIcon);
+	iconSlot->EventIconDropped.connect([this, iconSlot](EntityIcon* entityIcon) {
+		//If it's an icon that's already in the container, just add it. Otherwise emit a signal and let other code handle it.
+		if (std::find_if(mIcons.begin(), mIcons.end(), [entityIcon](const std::unique_ptr<EntityIcon>& entry) { return entry.get() == entityIcon; }) != mIcons.end()) {
+			auto oldSlot = entityIcon->getSlot();
+			iconSlot->addEntityIcon(entityIcon);
+			if (oldSlot) {
+				oldSlot->notifyIconDraggedOff(entityIcon);
+			}
+		} else {
+			EventIconDropped.emit(entityIcon, iconSlot);
 		}
 	});
 

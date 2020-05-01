@@ -27,6 +27,9 @@ function Inventory:buildWidget(avatarEntity)
             v(entityIcon)
         end
     end)
+    connect(self.connectors, self.iconView.EventIconDropped, function(entityIcon, entityIconSlot)
+        emberOgre:getWorld():getAvatar():getErisAvatar():take(entityIcon:getEntity())
+    end)
 
     self.iconView:showEntityContents(avatarEntity)
 
@@ -59,25 +62,13 @@ function Inventory:buildWidget(avatarEntity)
 
     --Responds when preview model has been released on the world
     local dragDrop_Finalize = function(emberEntity)
-        if emberEntity ~= nil then
+        if emberEntity then
             local offset = self.helper:getDropOffset()
             local orientation = self.helper:getDropOrientation()
             emberOgre:getWorld():getAvatar():getErisAvatar():drop(emberEntity, offset, orientation)
         end
     end
     connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)
-
-    --The icon container will create a child window with the suffix "__auto_container__" which will catch all events. We need to attach to that.
-    local iconContainer_inner = self.iconContainer:getChild("__auto_container__")
-
-    self.IconContainerDragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget:new(iconContainer_inner)
-    connect(self.connectors, self.IconContainerDragDrop.EventIconDropped, function(entityIcon)
-        if entityIcon then
-            if entityIcon:getEntity()  then
-                self.iconView:addEntityIcon(entityIcon)
-            end
-        end
-    end)
 
     self.widget:registerConsoleVisibilityToggleCommand("inventory")
     self.avatarEntity = avatarEntity
@@ -139,15 +130,6 @@ function Inventory:createAttachmentSlot(avatarEntity, dollSlot, attachment)
 
     dollSlot.observer:forceEvaluation()
 
-    --	dollSlot.newEntityCreated = function(newEntity)
-    --		if avatarEntity:hasProperty("outfit") then
-    --			dollSlot.attributeChanged(avatarEntity:valueOfProperty("outfit"))
-    --		end
-    --	end
-
-    --	table.insert(self.newEntityListeners, dollSlot.newEntityCreated)
-
-    -- 	dollSlot.attributeChanged(avatarEntity:valueOfProperty("outfit"))
 end
 
 function Inventory:setupDoll(avatarEntity)
@@ -248,7 +230,6 @@ function Inventory:shutdown()
     disconnectAll(self.connectors)
     deleteSafe(self.helper)
     deleteSafe(self.DragDrop)
-    deleteSafe(self.IconContainerDragDrop)
     deleteSafe(self.iconView)
     if self.doll then
         if deleteSafe(self.doll.renderer) then

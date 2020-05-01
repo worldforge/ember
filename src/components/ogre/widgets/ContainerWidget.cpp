@@ -24,6 +24,9 @@
 #include "icons/IconManager.h"
 #include "EntityTooltip.h"
 #include <CEGUI/widgets/DragContainer.h>
+#include "components/ogre/World.h"
+#include "components/ogre/Avatar.h"
+#include <Eris/Avatar.h>
 
 namespace Ember {
 namespace OgreView {
@@ -46,8 +49,7 @@ void ContainerWidget::registerWidget(GUIManager& guiManager) {
 ContainerWidget::ContainerWidget(GUIManager& guiManager, int slotSize)
 		: mGuiManager(guiManager),
 		  mSlotSize(slotSize),
-		  mWidget(guiManager.createWidget()),
-		  mObservedEntity(nullptr) {
+		  mWidget(guiManager.createWidget()) {
 	mWidget->loadMainSheet("Container.layout", "Container");
 	mContainerView = std::make_unique<ContainerView>(*guiManager.getEntityIconManager(),
 													 *guiManager.getIconManager(),
@@ -56,6 +58,13 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, int slotSize)
 	mContainerView->EventEntityPicked.connect([&](EmberEntity* entity) {
 		guiManager.EmitEntityAction("pick", entity);
 	});
+	mContainerView->EventIconDropped.connect([&](EntityIcon* entityIcon, EntityIconSlot* entityIconSlot) {
+		auto observedEntity = mContainerView->getObservedEntity();
+		if (observedEntity && entityIcon->getEntity()) {
+			EmberOgre::getSingleton().getWorld()->getAvatar()->getErisAvatar().place(entityIcon->getEntity(), observedEntity);
+		}
+	});
+
 	mWidget->hide();
 	mWidget->enableCloseButton();
 	mWidget->setIsActiveWindowOpaque(false);

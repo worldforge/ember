@@ -71,6 +71,8 @@ const char* resolveLuaTypename<const Eris::Task>(){return "Eris::Task";}
 template <>
 const char* resolveLuaTypename<const Ember::OgreView::Gui::EntityIcon>(){return "Ember::OgreView::Gui::EntityIcon";}
 template <>
+const char* resolveLuaTypename<const Ember::OgreView::Gui::EntityIconSlot>(){return "Ember::OgreView::Gui::EntityIconSlot";}
+template <>
 const char* resolveLuaTypename<const Ember::OgreView::Gui::ActionBarIcon>(){return "Ember::OgreView::Gui::ActionBarIcon";}
 template <>
 const char* resolveLuaTypename<const Ember::OgreView::Gui::HelpMessage>(){return "Ember::OgreView::Gui::HelpMessage";}
