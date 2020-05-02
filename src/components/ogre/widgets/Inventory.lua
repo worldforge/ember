@@ -142,7 +142,9 @@ function Inventory:setupDoll(avatarEntity)
             if dollSlot.entityIcon then
                 guiManager:getEntityIconManager():destroyIcon(dollSlot.entityIcon)
             end
-            dollSlot.connection_ChildAdded:disconnect()
+            if dollSlot.connection_ChildAdded then
+                dollSlot.connection_ChildAdded:disconnect()
+            end
         end
 
         return dollSlot
