@@ -129,6 +129,19 @@ public:
 	EmberEntity* getEntity();
 
 	/**
+	 * Set an arbitrary tag on the icon.
+	 *
+	 * @param tag
+	 */
+	void setTag(std::string tag);
+
+	/**
+	 * Gets an arbitrary tag set on the icon.
+	 * @return
+	 */
+	const std::string& getTag() const;
+
+	/**
 	 * @brief Emitted when another EntityIcon instance is dragged and enters this icon.
 	 */
 	sigc::signal<void, EntityIcon*> EventIconEntered;
@@ -168,6 +181,9 @@ protected:
 	 */
 	UniqueWindowPtr<CEGUI::Window> mImage;
 
+	/**
+	 * If there's an amount, this window will show it.
+	 */
 	UniqueWindowPtr<CEGUI::Window> mAmount;
 
 	/**
@@ -198,6 +214,11 @@ protected:
 	EmberEntity* mEntity;
 
 	AttributeObserver mAmountObserver;
+
+	/**
+	 * An arbitrary tag set on the icon.
+	 */
+	std::string mTag;
 	
 	/**
 	 * @brief Handler for CEGUI drag start event.

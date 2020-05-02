@@ -39,7 +39,8 @@ public:
 	void setTooltipText(const std::string& text);
 	Ember::EmberEntity* getEntity();
 	bool operator==(const Ember::OgreView::Gui::EntityIcon& value);
-	
+    void setTag(std::string tag);
+    const std::string& getTag() const;
 };
 
 }

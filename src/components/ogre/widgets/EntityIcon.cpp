@@ -160,6 +160,14 @@ void EntityIcon::updateAmount() {
 		mAmount->hide();
 	}
 }
+
+void EntityIcon::setTag(std::string tag) {
+	mTag = tag;
+}
+
+const std::string& EntityIcon::getTag() const {
+	return mTag;
+}
 }
 
 }

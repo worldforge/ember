@@ -28,7 +28,19 @@ function Inventory:buildWidget(avatarEntity)
         end
     end)
     connect(self.connectors, self.iconView.EventIconDropped, function(entityIcon, entityIconSlot)
-        emberOgre:getWorld():getAvatar():getErisAvatar():take(entityIcon:getEntity())
+        local entity = entityIcon:getEntity()
+
+        --If the parent isn't ourselves we should try to take the entity
+        if entity:getLocation():getId() ~= avatarEntity:getId() then
+            emberOgre:getWorld():getAvatar():getErisAvatar():take(entity)
+        else
+            --Check if the entity is attached, and if so detach it.
+            local iconTag = entityIcon:getTag()
+            if string.sub(iconTag, 1, 4) == "doll" then
+                local attachment = string.sub(iconTag, 6)
+                emberOgre:getWorld():getAvatar():getErisAvatar():wield(null, attachment)
+            end
+        end
     end)
 
     self.iconView:showEntityContents(avatarEntity)
@@ -39,8 +51,8 @@ function Inventory:buildWidget(avatarEntity)
     --User has dragged an entityIcon from the inventory to the world
     self.DragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget:new(root)
     local dragDrop_DraggedOver = function(entityIcon)
-        if entityIcon ~= nil then
-            if entityIcon:getImage() ~= nil then
+        if entityIcon then
+            if entityIcon:getImage() then
                 --alpha is already low when dragging, so 0.7 of an already reduced alpha
                 entityIcon:getImage():setAlpha(0.7)
                 self.helper:createPreview(entityIcon)
@@ -51,8 +63,8 @@ function Inventory:buildWidget(avatarEntity)
 
     --User has dragged an entityIcon over the world, and onto another window
     local dragDrop_DragLeaves = function(entityIcon)
-        if entityIcon ~= nil then
-            if entityIcon:getEntity() ~= nil then
+        if entityIcon then
+            if entityIcon:getEntity() then
                 entityIcon:getImage():setAlpha(1.0)
                 self.helper:cleanupCreation()
             end
@@ -76,8 +88,6 @@ function Inventory:buildWidget(avatarEntity)
     self.widget:show()
 
 end
-
-
 
 function Inventory:setupDoll(avatarEntity)
     local doll = { slots = {} }
@@ -129,6 +139,10 @@ function Inventory:setupDoll(avatarEntity)
 
         dollSlot.shutdown = function()
             self.entityIconManager:destroySlot(dollSlot.slot)
+            if dollSlot.entityIcon then
+                guiManager:getEntityIconManager():destroyIcon(dollSlot.entityIcon)
+            end
+            dollSlot.connection_ChildAdded:disconnect()
         end
 
         return dollSlot
@@ -138,51 +152,44 @@ function Inventory:setupDoll(avatarEntity)
         dollSlot.droppedHandler = function(entityIcon)
             if dollSlot.isValidDrop(entityIcon) then
                 emberOgre:getWorld():getAvatar():getErisAvatar():wield(entityIcon:getEntity(), attachment)
-                local icon = dollSlot.slot:getEntityIcon()
-                if icon then
-                    self.iconView:addEntityIcon(icon)
-                end
-                dollSlot.slot:addEntityIcon(entityIcon)
             end
         end
         dollSlot.entityIconDropped_connector = createConnector(dollSlot.slot.EventIconDropped):connect(dollSlot.droppedHandler)
         dollSlot.observer = Ember.AttributeObserver:new_local(avatarEntity, dollSlot.attributePath, ".")
+        local showAttachedIcon = function(entity)
+            local icon = guiManager:getIconManager():getIcon(self.iconsize, entity)
+            if dollSlot.entityIcon then
+                dollSlot.slot:removeEntityIcon()
+                guiManager:getEntityIconManager():destroyIcon(dollSlot.entityIcon)
+            end
+            dollSlot.entityIcon = guiManager:getEntityIconManager():createIcon(icon, entity)
+            --Mark the entity icon so we know it's on the doll, later useful when dropping on inventory (for unwield).
+            dollSlot.entityIcon:setTag("doll:" .. attachment)
+            dollSlot.slot:addEntityIcon(dollSlot.entityIcon)
+        end
+
         dollSlot.attributeChanged = function(element)
             local result, entityId = Eris.Entity:extractEntityId(element, entityId)
-            if result then
-                local slotUpdateFunc = function(icon)
-                    --check that we've not already have added the icon to this slot
-                    if dollSlot.slot:getEntityIcon() ~= icon then
-                        local oldIcon = dollSlot.slot:removeEntityIcon()
-                        dollSlot.slot:addEntityIcon(icon)
-                        if oldIcon then
-                            self.iconView:addEntityIcon(oldIcon)
-                        end
-                    end
-                end
-
-                ----Either we have created an icon for the entity yet, or we have to wait a little until it's available
-                local icon = self.iconView:getEntityIcon(entityId)
-                if icon then
-                    slotUpdateFunc(icon)
+            if result and entityId then
+                local attachedEntity = self.avatarEntity:getAttachedEntity("attached_" .. attachment)
+                if attachedEntity then
+                    showAttachedIcon(attachedEntity)
                 else
-                    local delayedUpdater = function(entityIcon)
-                        if entityIcon:getEntity():getId() == entityId then
-                            slotUpdateFunc(entityIcon)
-                            self.newEntityListeners[dollSlot.attributePath] = nil
+                    dollSlot.connection_ChildAdded = createConnector(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(function(entity)
+                        if entity:getId() == entityId then
+                            showAttachedIcon(entity)
                         end
-                    end
-                    self.newEntityListeners[dollSlot.attributePath] = delayedUpdater
+                    end)
+                end
+            else
+                local entityIcon = dollSlot.slot:removeEntityIcon()
+                if entityIcon then
+                    guiManager:getEntityIconManager():destroyIcon(entityIcon)
+                    dollSlot.entityIcon = null
                 end
             end
         end
-        dollSlot.attributeChanged_connector = createConnector(dollSlot.observer.EventChanged):connect(dollSlot.attributeChanged)
-
-        dollSlot.iconDraggedOff = function()
-            --do unwield stuff
-            emberOgre:getWorld():getAvatar():getErisAvatar():wield(nil, attachment)
-        end
-        dollSlot.iconDraggedOff_connector = createConnector(dollSlot.slot.EventIconDraggedOff):connect(dollSlot.iconDraggedOff)
+        connect(self.connectors, dollSlot.observer.EventChanged, dollSlot.attributeChanged)
 
         dollSlot.observer:forceEvaluation()
 
@@ -217,7 +224,6 @@ function Inventory:setupDoll(avatarEntity)
 
     self.doll = doll
 end
-
 
 function Inventory:shutdown()
     disconnectAll(self.connectors)

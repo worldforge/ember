@@ -1,3 +1,5 @@
+$#include "View_helper.h"
+$#include "domain/EmberEntity.h"
 namespace Eris
 {
 
@@ -20,6 +22,9 @@ class View
     unsigned int lookQueueSize() const;
     
     Eris::Entity* getTopLevel() const;
+
+    tolua_outside Ember::EmberEntity* View_getEntity @ getEntity(const std::string& eid);
+
     
     /// emitted when the TLVE changes
     sigc::signal<void> TopLevelEntityChanged;    
