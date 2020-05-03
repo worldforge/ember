@@ -105,7 +105,7 @@ void EntityMoverBase::setPosition(const WFMath::Point<3>& position) {
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustment;
 		EmberEntity* entity = nullptr;
-		if (mSnapping.get() && mSnapping->testSnapTo(position, getOrientation(), adjustment, &entity)) {
+		if (mSnapping.get() && mSnapping->testSnapTo(position, getOrientation(), adjustment, &entity) && adjustment.isValid()) {
 			finalPosition = finalPosition.shift(adjustment);
 		}
 
