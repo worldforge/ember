@@ -330,7 +330,7 @@ void IngameChatWidget::Label::objectRendering(const Ogre::Camera* camera) {
 		// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
 		//getWorldPosition is faster than getting the center of the boundingbox...
 		auto model = Model::ModelRepresentation::getModelForEntity(*mEntity);
-		if (model) {
+		if (model && model->getNodeProvider()) {
 
 			Ogre::Node* node = model->getNodeProvider()->getNode();
 			Ogre::Vector3 diff = node->_getDerivedPosition() - camera->getDerivedPosition();

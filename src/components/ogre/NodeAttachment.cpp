@@ -26,7 +26,6 @@
 #include "components/ogre/DelegatingNodeController.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/ModelAttachment.h"
 #include "components/ogre/model/Model.h"
 #include "OgreInfo.h"
 
