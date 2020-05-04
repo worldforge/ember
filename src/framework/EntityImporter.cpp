@@ -130,12 +130,14 @@ std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(cons
 
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when trying to read import info from '" << file_path.string() << "'." << ex);
+		} catch (...) {
+			S_LOG_FAILURE("Unspecified error when trying to read import info from '" << file_path.string() << "'.");
 		}
 
 
 	}
 
-//Sort by name
+	//Sort by name
 	std::sort(infos.begin(), infos.end(), [](const ShortInfo& a, const ShortInfo& b) {
 		return a.name < b.name;
 	});
