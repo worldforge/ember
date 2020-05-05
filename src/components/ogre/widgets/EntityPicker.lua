@@ -261,7 +261,7 @@ function EntityPicker:pickedOneEntity(pickedResult)
                     if (not isPhysicalDomain) then
                         self:showButton("Pick up", "Pick up the entity.", function()
                             self:doWithPickedEntity(function(pickedEntity)
-                                self.world:getAvatar():getErisAvatar():take(pickedEntity)
+                                self.world:getAvatar():getErisAvatar():place(pickedEntity, self.world:getAvatar():getErisAvatar():getEntity())
                                 guiManager:EmitEntityAction("take", pickedEntity)
                             end)
                             self:removeMenu()

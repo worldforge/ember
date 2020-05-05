@@ -1,3 +1,4 @@
+$#include "InputHelper.h"
 namespace Ember {
 
 struct MouseMotion
@@ -96,10 +97,7 @@ class Input
 	 * @param  
 	 * @return 
 	 */
-	bool isKeyDown(const SDL_Scancode&) const;
-
-	
-	
+	tolua_outside bool _Input_isKeyDown @ isKeyDown(int) const;
 	
 	/**
 	 *    Sets the new input mode.

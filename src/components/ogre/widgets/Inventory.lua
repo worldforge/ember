@@ -32,7 +32,16 @@ function Inventory:buildWidget(avatarEntity)
 
         --If the parent isn't ourselves we should try to take the entity
         if entity:getLocation():getId() ~= avatarEntity:getId() then
-            emberOgre:getWorld():getAvatar():getErisAvatar():take(entity)
+            if Ember.Input:getSingleton():isKeyDown(224) then
+                local amount = 1
+                local amountProp = entity:valueOfProperty("amount")
+                if amountProp:isInt() then
+                    amount = amountProp:asInt()
+                end
+                emberOgre:getWorld():getAvatar():getErisAvatar():take(entity, amount)
+            else
+                emberOgre:getWorld():getAvatar():getErisAvatar():take(entity)
+            end
         else
             --Check if the entity is attached, and if so detach it.
             local iconTag = entityIcon:getTag()
@@ -77,7 +86,7 @@ function Inventory:buildWidget(avatarEntity)
         if emberEntity then
             local offset = self.helper:getDropOffset()
             local orientation = self.helper:getDropOrientation()
-            emberOgre:getWorld():getAvatar():getErisAvatar():drop(emberEntity, offset, orientation)
+            emberOgre:getWorld():getAvatar():getErisAvatar():place(emberEntity, emberOgre:getWorld():getAvatar():getErisAvatar():getEntity(), offset, orientation)
         end
     end
     connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)

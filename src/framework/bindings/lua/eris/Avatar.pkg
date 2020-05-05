@@ -1,4 +1,5 @@
 $#include <Eris/Avatar.h>
+$#include "Avatar_helper.h"
 
 namespace Eris
 {
@@ -20,13 +21,26 @@ public:
 
     Connection& getConnection() const;
 
-    void take(Entity*) const;
+	tolua_outside void _Avatar_place @ place(const Eris::Entity* entity,
+			   const Eris::Entity* container,
+			   const WFMath::Point<3>& pos,
+			   const WFMath::Quaternion& orientation);
 
-    void drop(Entity* entity, const WFMath::Point<3>& pos,
-            const WFMath::Quaternion& orientation, const std::string& loc) const;
+	tolua_outside void _Avatar_place @ place(const Eris::Entity* entity,
+			   const Eris::Entity* container,
+			   const WFMath::Point<3>& pos,
+			   const WFMath::Quaternion& orientation,
+			   float offset);
 
-    void drop(Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>(0, 0, 0),
-            const WFMath::Quaternion& orientation = WFMath::Quaternion()) const;
+	tolua_outside void _Avatar_place @ place(const Eris::Entity* entity,
+			   const Eris::Entity* container,
+			   const WFMath::Point<3>& pos,
+			   const WFMath::Quaternion& orientation,
+			   float offset,
+			   int amount);
+
+	tolua_outside void _Avatar_take @ take(const Eris::Entity* entity, int amount = 1);
+
 
      void wield(Eris::Entity* entity, std::string attachPoint) const;
 
