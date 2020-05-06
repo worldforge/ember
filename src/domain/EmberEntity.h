@@ -206,7 +206,7 @@ public:
 	 * If any previous graphical representation has been set, it will be deleted.
 	 * @param graphicalRepresentation The new graphical representation. Ownership will be transferred to this class.
 	 */
-	void setGraphicalRepresentation(std::unique_ptr<IGraphicalRepresentation> graphicalRepresentation);
+	//void setGraphicalRepresentation(std::unique_ptr<IGraphicalRepresentation> graphicalRepresentation);
 
 	/**
 	 * @brief Emitted when the positioning mode has changed.
@@ -342,12 +342,6 @@ protected:
 	 * Is "none" (CM_DISABLED) by default.
 	 */
 	CompositionMode mCompositionMode;
-
-	/**
-	 * @brief The graphical representation used for representing this entity.
-	 * Some entities won't have any graphical representation, and this will in those cases be null.
-	 */
-	std::unique_ptr<IGraphicalRepresentation> mGraphicalRepresentation;
 
 	/**
 	 * @brief The attachment for this entity.

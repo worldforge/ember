@@ -38,8 +38,13 @@
 namespace Ember {
 namespace OgreView {
 
-EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene, EntityMapping::EntityMapping& modelMapping) :
-		ModelActionBase(entity, scene, modelMapping), mModelName(std::move(modelName)) {
+EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity,
+											   std::string modelName,
+											   Scene& scene,
+											   EntityMapping::EntityMapping& modelMapping,
+											   AttachmentFunction attachmentFunction) :
+		ModelActionBase(entity, scene, modelMapping, std::move(attachmentFunction)),
+		mModelName(std::move(modelName)) {
 }
 
 void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context) {

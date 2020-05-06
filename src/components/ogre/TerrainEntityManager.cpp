@@ -21,7 +21,6 @@
 #endif
 
 #include "TerrainEntityManager.h"
-#include "WorldAttachment.h"
 #include "terrain/TerrainHandler.h"
 #include "terrain/TerrainMod.h"
 #include "terrain/TerrainArea.h"

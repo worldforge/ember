@@ -24,8 +24,10 @@
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelAttachment.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
+#include "environment/OceanRepresentation.h"
 #include "OgreInfo.h"
 #include "EmberEntityActionCreator.h"
+#include "World.h"
 #include <Eris/View.h>
 
 #include <OgreSceneManager.h>
@@ -34,52 +36,66 @@
 namespace Ember {
 namespace OgreView {
 
-WorldAttachment::WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Scene& scene) :
-        mWorldEntity(worldEntity),
-        mWorldNode(worldNode),
-        mScene(scene) {
-    //set the position to always 0, 0, 0
-    mWorldNode->setPosition(Ogre::Vector3(0, 0, 0));
+WorldAttachment::WorldAttachment(World& world, EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Scene& scene) :
+		mWorld(world),
+		mWorldEntity(worldEntity),
+		mWorldNode(worldNode),
+		mScene(scene) {
+	//set the position to always 0, 0, 0
+	mWorldNode->setPosition(Ogre::Vector3(0, 0, 0));
 }
 
 WorldAttachment::~WorldAttachment() {
-    mWorldNode->getCreator()->destroySceneNode(mWorldNode);
+	mWorldNode->getCreator()->destroySceneNode(mWorldNode);
 }
 
 IGraphicalRepresentation* WorldAttachment::getGraphicalRepresentation() const {
-    return nullptr;
+	return nullptr;
 }
 
 EmberEntity& WorldAttachment::getAttachedEntity() const {
-    return mWorldEntity;
+	return mWorldEntity;
 }
 
 EmberEntity* WorldAttachment::getParentEntity() const {
-    return nullptr;
+	return nullptr;
 }
 
-std::unique_ptr<IEntityAttachment> WorldAttachment::attachEntity(EmberEntity& entity) {
+void WorldAttachment::attachEntity(EmberEntity& entity) {
 
-    //the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
-    EmberEntityActionCreator creator(entity, mScene);
-    auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, creator, entity.getView()->getTypeService(), entity.getView());
-    if (mapping) {
-        mapping->initialize();
-        std::shared_ptr<EntityMapping::EntityMapping> sharedMapping(std::move(mapping));
-        //Retain the mapping while the signal exists.
-        entity.BeingDeleted.connect([sharedMapping]() {});
-    }
+	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
+	EmberEntityActionCreator creator(entity, mScene, [&](std::unique_ptr<Model::ModelRepresentation> graphicalRepresentation) {
+		if (graphicalRepresentation) {
+			Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
+			auto nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), std::move(graphicalRepresentation), std::make_unique<SceneNodeProvider>(node, mWorldNode));
+			nodeAttachment->init();
+			entity.setAttachment(std::move(nodeAttachment));
+		} else {
+			entity.setAttachment({});
+		}
+	}, [&](bool enableOcean) {
+		if (enableOcean) {
+			if (auto environment = mWorld.getEnvironment()) {
+				Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
+				auto oceanRepresentation = std::make_unique<Environment::OceanRepresentation>(entity, *environment, mScene);
+				auto nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, std::make_unique<SceneNodeProvider>(node, mWorldNode));
+				nodeAttachment->init();
+				entity.setAttachment(std::move(nodeAttachment));
+			} else {
+				S_LOG_WARNING("Tried to activate ocean representation, but there was no world instance available.");
+			}
+		} else {
+			entity.setAttachment({});
+		}
+	});
+	auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, creator, entity.getView()->getTypeService(), entity.getView());
+	if (mapping) {
+		mapping->initialize();
+		std::shared_ptr<EntityMapping::EntityMapping> sharedMapping(std::move(mapping));
+		//Retain the mapping while the signal exists.
+		entity.BeingDeleted.connect([sharedMapping]() {});
+	}
 
-
-    std::unique_ptr<NodeAttachment> nodeAttachment;
-    Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
-    if (Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(entity)) {
-        nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), *modelRepresentation, std::make_unique<SceneNodeProvider>(node, mWorldNode));
-    } else {
-        nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, std::make_unique<SceneNodeProvider>(node, mWorldNode));
-    }
-    nodeAttachment->init();
-    return nodeAttachment;
 }
 
 void WorldAttachment::updateScale() {
@@ -89,28 +105,28 @@ void WorldAttachment::updatePosition() {
 }
 
 void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
-    //No offset
+	//No offset
 }
 
 void WorldAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate) {
-    //You can never control the world.
+	//You can never control the world.
 }
 
 IEntityControlDelegate* WorldAttachment::getControlDelegate() const {
-    return nullptr;
+	return nullptr;
 }
 
 void WorldAttachment::setVisualize(const std::string& visualization, bool visualize) {
-    if (visualization == "OgreBBox") {
-        mWorldNode->showBoundingBox(visualize);
-    }
+	if (visualization == "OgreBBox") {
+		mWorldNode->showBoundingBox(visualize);
+	}
 }
 
 bool WorldAttachment::getVisualize(const std::string& visualization) const {
-    if (visualization == "OgreBBox") {
-        return mWorldNode->getShowBoundingBox();
-    }
-    return false;
+	if (visualization == "OgreBBox") {
+		return mWorldNode->getShowBoundingBox();
+	}
+	return false;
 }
 
 }

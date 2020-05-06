@@ -29,25 +29,26 @@
 #include <sigc++/signal.h>
 #include <set>
 
-namespace Eris
-{
+namespace Eris {
 class Entity;
+
 class View;
+
 class TypeService;
+
 class TypeInfo;
+
 class Avatar;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace EntityMapping
-{
+namespace EntityMapping {
 class EntityMapping;
+
 class EntityMappingManager;
 }
-namespace OgreView
-{
+namespace OgreView {
 
 class Scene;
 
@@ -57,8 +58,7 @@ class Scene;
  * Basically this attaches to Eris and creates Entites on demand.
  * @see Eris::Factory
  */
-class EmberEntityFactory: public Eris::Factory, public virtual sigc::trackable
-{
+class EmberEntityFactory : public Eris::Factory, public virtual sigc::trackable {
 public:
 
 	/**
@@ -66,18 +66,19 @@ public:
 	 *
 	 * This should be instantiated by EmberOgre or similar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	 */
-	EmberEntityFactory(Eris::View& view, Scene& scene, EntityMapping::EntityMappingManager& mappingManager);
+	EmberEntityFactory(Eris::View& view, Scene& scene);
+
 	~EmberEntityFactory() override;
 
 	/**
 	 * @brief Will always return true as we want all entities created to be handled by this class.
 	 */
-	bool accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type) override;
+	bool accept(const Atlas::Objects::Entity::RootEntity& ge, Eris::TypeInfo* type) override;
 
 	/**
 	 Creates instances of EmberEntity and its subclasses.
 	 */
-	std::unique_ptr<Eris::ViewEntity> instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View& w) override;
+	std::unique_ptr<Eris::ViewEntity> instantiate(const Atlas::Objects::Entity::RootEntity& ge, Eris::TypeInfo* type, Eris::View& w) override;
 
 	/** retrieve this factory's priority level; higher priority factories
 	 get first chance to process a received Atlas entity. The default implementation
@@ -94,8 +95,6 @@ protected:
 	 * @brief The scene which will handle the entities.
 	 */
 	Scene& mScene;
-
-	EntityMapping::EntityMappingManager& mMappingManager;
 
 
 };

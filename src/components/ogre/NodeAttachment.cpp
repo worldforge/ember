@@ -69,9 +69,13 @@ void NodeAttachment::setVisible(bool visible) {
 	mNodeProvider->setVisible(visible);
 }
 
-std::unique_ptr<IEntityAttachment> NodeAttachment::attachEntity(EmberEntity& entity) {
-    //No special kind of attachment for things attached to a node.
-    return nullptr;
+//std::unique_ptr<IEntityAttachment> NodeAttachment::attachGraphicalRepresentation(EmberEntity& childEntity, IGraphicalRepresentation* representation) {
+////TODO: return something?
+//	return {};
+//}
+
+void NodeAttachment::attachEntity(EmberEntity& entity) {
+	//No special kind of attachment for things attached to a node.
 }
 
 void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate) {

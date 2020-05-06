@@ -18,9 +18,13 @@
 
 #ifndef EMBER_MODELACTIONBASE_H
 #define EMBER_MODELACTIONBASE_H
+
 #include "components/entitymapping/Actions/Action.h"
 
 #include <string>
+#include <domain/IGraphicalRepresentation.h>
+#include <memory>
+#include <functional>
 
 namespace Ember {
 class EmberEntity;
@@ -28,9 +32,15 @@ namespace EntityMapping {
 class EntityMapping;
 }
 
+
 namespace OgreView {
 
+namespace Model {
+class ModelRepresentation;
+}
 class Scene;
+
+typedef std::function<void(std::unique_ptr<Model::ModelRepresentation>)> AttachmentFunction;
 
 
 /**
@@ -38,7 +48,11 @@ class Scene;
  */
 class ModelActionBase : public EntityMapping::Actions::Action {
 public:
-	explicit ModelActionBase(EmberEntity& entity, Scene& scene, EntityMapping::EntityMapping& mapping);
+
+	explicit ModelActionBase(EmberEntity& entity,
+							 Scene& scene,
+							 EntityMapping::EntityMapping& mapping,
+							 AttachmentFunction attachmentFunction);
 
 	void deactivate(EntityMapping::ChangeContext& context) override;
 
@@ -55,6 +69,8 @@ protected:
 	 * @brief The mapping this action is bound to.
 	 */
 	EntityMapping::EntityMapping& mMapping;
+
+	AttachmentFunction mAttachmentFunction;
 
 	void showModel(const std::string& modelName);
 

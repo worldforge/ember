@@ -28,8 +28,8 @@ HiddenAttachment::HiddenAttachment(EmberEntity* parentEntity, EmberEntity& child
 
 HiddenAttachment::~HiddenAttachment() = default;
 
-std::unique_ptr<IEntityAttachment> HiddenAttachment::attachEntity(EmberEntity& entity) {
-	return std::make_unique<HiddenAttachment>(&getAttachedEntity(), entity);
+
+void HiddenAttachment::attachEntity(EmberEntity& entity) {
 }
 
 

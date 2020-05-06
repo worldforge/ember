@@ -21,29 +21,27 @@
 
 #include "domain/IEntityAttachment.h"
 
-namespace Ogre
-{
+namespace Ogre {
 class SceneNode;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-struct IGraphicalRepresentation;
-namespace OgreView
-{
 
-namespace Terrain
-{
+struct IGraphicalRepresentation;
+namespace OgreView {
+
+namespace Terrain {
 class TerrainManager;
 }
 
 class Scene;
+class World;
 
-class WorldAttachment: public IEntityAttachment
-{
+class WorldAttachment : public IEntityAttachment {
 public:
-	WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Scene& scene);
+	WorldAttachment(World& world, EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Scene& scene);
+
 	~WorldAttachment() override;
 
 	IGraphicalRepresentation* getGraphicalRepresentation() const override;
@@ -52,7 +50,7 @@ public:
 
 	EmberEntity* getParentEntity() const override;
 
-	std::unique_ptr<IEntityAttachment> attachEntity(EmberEntity& entity) override;
+	void attachEntity(EmberEntity& entity) override;
 
 	void updateScale() override;
 
@@ -77,8 +75,10 @@ public:
 	 * @return true if visualization is turned on, else false
 	 */
 	bool getVisualize(const std::string& visualization) const override;
+
 protected:
 
+	World& mWorld;
 	EmberEntity& mWorldEntity;
 	Ogre::SceneNode* mWorldNode;
 	Scene& mScene;

@@ -41,6 +41,8 @@
 #include <components/ogre/EmberEntityModelAction.h>
 #include <components/ogre/PresentAction.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 namespace Model {
@@ -52,10 +54,12 @@ namespace Model {
 struct ModelAttachedActionCreator : public EntityMapping::IActionCreator {
 	EmberEntity& mEntity;
 	Scene& mScene;
+	AttachmentFunction mModelAttachmentFunction;
 
-	ModelAttachedActionCreator(EmberEntity& entity, Scene& scene) :
+	ModelAttachedActionCreator(EmberEntity& entity, Scene& scene, AttachmentFunction modelAttachmentFunction) :
 			mEntity(entity),
-			mScene(scene) {
+			mScene(scene),
+			mModelAttachmentFunction(std::move(modelAttachmentFunction)) {
 
 	}
 
@@ -68,11 +72,11 @@ struct ModelAttachedActionCreator : public EntityMapping::IActionCreator {
 			if (actionDef.Type == "display-part") {
 				aCase->addAction(new EmberEntityPartAction(mEntity, actionDef.getValue()));
 			} else if (actionDef.Type == "display-model") {
-				aCase->addAction(new EmberEntityModelAction(mEntity, actionDef.getValue(), mScene, modelMapping));
+				aCase->addAction(new EmberEntityModelAction(mEntity, actionDef.getValue(), mScene, modelMapping, mModelAttachmentFunction));
 			} else if (actionDef.Type == "hide-model") {
 				aCase->addAction(new EmberEntityHideModelAction(mEntity));
 			} else if (actionDef.Type == "present") {
-				aCase->addAction(new PresentAction(mEntity, mScene, modelMapping));
+				aCase->addAction(new PresentAction(mEntity, mScene, modelMapping, mModelAttachmentFunction));
 			} else {
 				S_LOG_WARNING("Could not recognize entity action '" << actionDef.Type << "'.");
 			}
@@ -111,14 +115,14 @@ struct ModelContainedActionCreator : public EntityMapping::IActionCreator {
 };
 
 
-ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose) :
-		NodeAttachment(parentEntity, modelRepresentation.getEntity(), std::move(nodeProvider)),
-		mModelRepresentation(modelRepresentation),
+ModelAttachment::ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<ModelRepresentation> modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose) :
+		NodeAttachment(parentEntity, modelRepresentation->getEntity(), std::move(nodeProvider)),
+		mModelRepresentation(std::move(modelRepresentation)),
 		mModelMount(nullptr),
 		mIgnoreEntityData(false),
 		mPose(pose) {
 	if (!pose.empty()) {
-		const PoseDefinitionStore& poses = mModelRepresentation.getModel().getDefinition()->getPoseDefinitions();
+		const PoseDefinitionStore& poses = mModelRepresentation->getModel().getDefinition()->getPoseDefinitions();
 		auto I = poses.find(pose);
 		if (I != poses.end()) {
 			mIgnoreEntityData = I->second.IgnoreEntityData;
@@ -138,18 +142,18 @@ ModelAttachment::~ModelAttachment() {
 void ModelAttachment::init() {
 	NodeAttachment::init();
 
-	mModelMount = std::make_unique<ModelMount>(mModelRepresentation.getModel(), mNodeProvider.get(), mPose);
+	mModelMount = std::make_unique<ModelMount>(mModelRepresentation->getModel(), mNodeProvider.get(), mPose);
 	mModelMount->reset();
 	setupFittings();
-	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
+	mModelRepresentation->getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
 	mModelMount->getModel().setVisible(mChildEntity.isVisible());
 }
 
 IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const {
-	return &mModelRepresentation;
+	return mModelRepresentation.get();
 }
 
-std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& entity) {
+void ModelAttachment::attachEntity(EmberEntity& entity) {
 //    //Check if we are a domain, and so handle that case.
 //    if (entity.hasProperty("domain")) {
 //        auto& domainProp = valueOfProperty("domain");
@@ -166,6 +170,7 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
 	for (auto& fitting : mFittings) {
 		if (fitting.second->getChildEntityId() == entity.getId()) {
 			attachPoint = fitting.second->getMountPoint();
+
 			fitting.second->attachChild(entity);
 			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::fittedEntity_BeingDeleted), &entity));
 			break;
@@ -178,10 +183,30 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
 	if (attachPoint.empty()) {
 		//We're not attached, use the contained rules
 		//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
-		creator = std::make_unique<ModelContainedActionCreator>(entity, mModelRepresentation.getScene());
+		creator = std::make_unique<ModelContainedActionCreator>(entity, mModelRepresentation->getScene());
 	} else {
 		//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
-		creator = std::make_unique<ModelAttachedActionCreator>(entity, mModelRepresentation.getScene());
+		creator = std::make_unique<ModelAttachedActionCreator>(entity, mModelRepresentation->getScene(), [attachPoint, this, &entity](std::unique_ptr<ModelRepresentation> modelRepresentation) {
+			if (modelRepresentation) {
+				if (mModelRepresentation->getModel().isLoaded()) {
+					try {
+						const AttachPointDefinitionStore& attachpoints = mModelRepresentation->getModel().getDefinition()->getAttachPointsDefinitions();
+						for (const auto& attachpoint : attachpoints) {
+							if (attachpoint.Name == attachPoint) {
+								auto nodeProvider = std::make_unique<ModelBoneProvider>(mNodeProvider->getNode(), mModelRepresentation->getModel(), attachPoint);
+								auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), std::move(modelRepresentation), std::move(nodeProvider), attachpoint.Pose);
+								nodeAttachment->init();
+								entity.setAttachment(std::move(nodeAttachment));
+							}
+						}
+					} catch (const std::exception& ex) {
+						S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation->getModel().getDefinition()->getOrigin() << "'.");
+					}
+				}
+			} else {
+				entity.setAttachment({});
+			}
+		});
 
 	}
 	auto mapping = Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, *creator, entity.getView()->getTypeService(), entity.getView());
@@ -192,36 +217,11 @@ std::unique_ptr<IEntityAttachment> ModelAttachment::attachEntity(EmberEntity& en
 		entity.BeingDeleted.connect([sharedMapping]() {});
 	}
 
-	//Check if we got a ModelRepresentation from the mapping creator we just executed.
-	ModelRepresentation* modelRepresentation = ModelRepresentation::getRepresentationForEntity(entity);
-
-	if (modelRepresentation) {
-		if (mModelRepresentation.getModel().isLoaded()) {
-			try {
-				const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
-				for (const auto& attachpoint : attachpoints) {
-					if (attachpoint.Name == attachPoint) {
-						auto nodeProvider = std::make_unique<ModelBoneProvider>(mNodeProvider->getNode(), mModelRepresentation.getModel(), attachPoint);
-						auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), *modelRepresentation, std::move(nodeProvider), attachpoint.Pose);
-						nodeAttachment->init();
-						return nodeAttachment;
-					}
-				}
-			} catch (const std::exception& ex) {
-				S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getOrigin() << "'.");
-				return nullptr;
-			}
-		} else {
-			//If the model isn't loaded yet we can't attach yet. Instead we'll return a null attachment and wait until the model is reloaded, at which point reattachEntities() is called.
-			return nullptr;
-		}
-	}
-	return nullptr;
 }
 
 void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
 	//if the model has an offset specified, use that, else just send to the base class
-	const Ogre::Vector3& modelOffset = mModelRepresentation.getModel().getDefinition()->getContentOffset();
+	const Ogre::Vector3& modelOffset = mModelRepresentation->getModel().getDefinition()->getContentOffset();
 	if (modelOffset != Ogre::Vector3::ZERO) {
 		offset = Convert::toWF<WFMath::Vector<3>>(modelOffset);
 	} else {
@@ -252,7 +252,7 @@ void ModelAttachment::updateScale() {
 			mModelMount->rescale(nullptr);
 		}
 	}
-	mModelRepresentation.notifyTransformsChanged();
+	mModelRepresentation->notifyTransformsChanged();
 }
 
 void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName) {
@@ -293,7 +293,7 @@ void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity) {
 }
 
 void ModelAttachment::setupFittings() {
-	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
+	const AttachPointDefinitionStore& attachpoints = mModelRepresentation->getModel().getDefinition()->getAttachPointsDefinitions();
 	for (const auto& attachpoint : attachpoints) {
 		auto observer = new AttributeObserver(mChildEntity, attachpoint.Name, ".");
 		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), attachpoint.Name));
@@ -306,11 +306,10 @@ void ModelAttachment::detachFitting(EmberEntity& entity) {
 	//If the detached entity still is a child of this entity, re-evaluate the attachment.
 	if (entity.getLocation() == &mChildEntity) {
 		entity.setAttachment(nullptr);
-		auto attachment = attachEntity(entity);
-		if (attachment) {
-			attachment->updateScale();
-		}
-		entity.setAttachment(std::move(attachment));
+		attachEntity(entity);
+//		if (attachment) {
+//			attachment->updateScale();
+//		}
 	}
 }
 
@@ -322,11 +321,10 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 		if (entity && entity->getId() == entityId) {
 			auto emberEntity = dynamic_cast<EmberEntity*>(entity);
 			emberEntity->setAttachment(nullptr);
-			auto attachment = attachEntity(*emberEntity);
-			if (attachment) {
-				attachment->updateScale();
-			}
-			emberEntity->setAttachment(std::move(attachment));
+			attachEntity(*emberEntity);
+//			if (attachment) {
+//				attachment->updateScale();
+//			}
 			break;
 		}
 	}
@@ -345,11 +343,10 @@ void ModelAttachment::reattachEntities() {
 		if (fitting.second->getChild() && mChildEntity.hasChild(fitting.second->getChildEntityId())) {
 			EmberEntity* entity = fitting.second->getChild();
 			entity->setAttachment(nullptr);
-			auto attachment = attachEntity(*entity);
-			if (attachment) {
-				attachment->updateScale();
-			}
-			entity->setAttachment(std::move(attachment));
+			attachEntity(*entity);
+//			if (attachment) {
+//				attachment->updateScale();
+//			}
 		}
 	}
 }
@@ -380,12 +377,12 @@ void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath
 	if (!mIgnoreEntityData) {
 		NodeAttachment::setPosition(position, orientation, velocity);
 
-		mModelRepresentation.setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
+		mModelRepresentation->setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
 	} else {
 		NodeAttachment::setPosition(WFMath::Point<3>::ZERO(), WFMath::Quaternion::Identity(), WFMath::Vector<3>::ZERO());
 	}
 
-	mModelRepresentation.notifyTransformsChanged();
+	mModelRepresentation->notifyTransformsChanged();
 }
 
 }

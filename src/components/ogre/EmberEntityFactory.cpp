@@ -23,28 +23,22 @@
 #include "EmberEntityFactory.h"
 
 #include "domain/EmberEntity.h"
-#include "components/ogre/EmberEntityActionCreator.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
-#include <Eris/EntityRef.h>
 #include <Eris/View.h>
 #include <Eris/EventService.h>
+#include <Eris/TypeInfo.h>
 
-#ifdef _WIN32
-#include "platform/platform_windows.h"
-#else
-#endif
-using namespace Ember::EntityMapping;
+
 namespace Ember {
 namespace OgreView {
 
-EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene, EntityMappingManager& mappingManager) :
+EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene) :
 		mView(view),
 		mTypeService(view.getTypeService()),
-		mScene(scene),
-		mMappingManager(mappingManager) {
+		mScene(scene) {
 }
 
 EmberEntityFactory::~EmberEntityFactory() = default;

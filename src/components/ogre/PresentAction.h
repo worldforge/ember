@@ -30,7 +30,10 @@ namespace OgreView {
  */
 class PresentAction : public ModelActionBase {
 public:
-	explicit PresentAction(EmberEntity& entity, Scene& scene, EntityMapping::EntityMapping& mapping);
+	explicit PresentAction(EmberEntity& entity,
+						   Scene& scene,
+						   EntityMapping::EntityMapping& mapping,
+						   AttachmentFunction attachmentFunction);
 
 	void activate(EntityMapping::ChangeContext& context) override;
 

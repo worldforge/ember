@@ -26,6 +26,7 @@
 
 #include "EmberEntityHideModelAction.h"
 #include "domain/IGraphicalRepresentation.h"
+#include "domain/IEntityAttachment.h"
 
 namespace Ember {
 namespace OgreView {
@@ -37,11 +38,12 @@ EmberEntityHideModelAction::EmberEntityHideModelAction(EmberEntity& entity)
 EmberEntityHideModelAction::~EmberEntityHideModelAction() = default;
 
 void EmberEntityHideModelAction::activate(EntityMapping::ChangeContext& context) {
-	mEntity.setGraphicalRepresentation(nullptr);
+
+	//TODO: is this the correct thing?
+	mEntity.setAttachment({});
 }
 
 void EmberEntityHideModelAction::deactivate(EntityMapping::ChangeContext& context) {
-// 	mEntity.setModel("");
 }
 
 }

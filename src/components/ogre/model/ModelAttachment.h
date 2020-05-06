@@ -25,10 +25,9 @@
 #include <map>
 #include <vector>
 #include <string>
-namespace Atlas
-{
-namespace Message
-{
+
+namespace Atlas {
+namespace Message {
 class Element;
 }
 }
@@ -37,20 +36,20 @@ namespace Ember {
 class AttributeObserver;
 }
 
-namespace Ember
-{
+namespace Ember {
 struct IGraphicalRepresentation;
+
 class EmberEntity;
-namespace OgreView
-{
+namespace OgreView {
 
 struct INodeProvider;
 
-namespace Model
-{
+namespace Model {
 
 class ModelMount;
+
 class ModelRepresentation;
+
 class ModelFitting;
 
 /**
@@ -58,11 +57,11 @@ class ModelFitting;
  *
  * Use this attachment when you have a ModelRepresentation you need to attach to an entity.
  */
-class ModelAttachment: public NodeAttachment, public virtual sigc::trackable
-{
+class ModelAttachment : public NodeAttachment, public virtual sigc::trackable {
 public:
 	typedef std::unordered_map<std::string, std::unique_ptr<ModelFitting>> ModelFittingStore;
-	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose = "");
+
+	ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<ModelRepresentation> modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose = "");
 
 	~ModelAttachment() override;
 
@@ -70,7 +69,7 @@ public:
 
 	IGraphicalRepresentation* getGraphicalRepresentation() const override;
 
-	std::unique_ptr<IEntityAttachment> attachEntity(EmberEntity& entity) override;
+	void attachEntity(EmberEntity& entity) override;
 
 	void updateScale() override;
 
@@ -89,6 +88,7 @@ public:
 	bool getVisualize(const std::string& visualization) const override;
 
 	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) override;
+
 	/**
 	 * @brief Sets the position and orientation of the node.
 	 * @param position The position.
@@ -105,7 +105,7 @@ protected:
 	/**
 	 * @brief The Model representation which this attachment is connected to.
 	 */
-	ModelRepresentation& mModelRepresentation;
+	std::unique_ptr<ModelRepresentation> mModelRepresentation;
 
 	/**
 	 * @brief The model mount, which takes care of setting up and handling the rotation and orientation of the model.
@@ -142,6 +142,7 @@ protected:
 	void setupFittings();
 
 	void entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName);
+
 	void fittedEntity_BeingDeleted(EmberEntity* entity);
 
 	/**

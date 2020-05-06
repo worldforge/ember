@@ -22,37 +22,48 @@
 //
 #ifndef EMBEROGREEMBERENTITYACTIONCREATOR_H
 #define EMBEROGREEMBERENTITYACTIONCREATOR_H
+
 #include "EmberOgrePrerequisites.h"
 
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/EntityMappingManager.h"
 #include "components/entitymapping/IActionCreator.h"
+#include "ModelActionBase.h"
 
 namespace Ember {
 class EmberEntity;
 namespace OgreView {
 
+namespace Environment {
+class OceanRepresentation;
+}
 class Scene;
+
+class WorldAttachment;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Creates actions specific to the EmberOgre environment.
  */
-class EmberEntityActionCreator : public EntityMapping::IActionCreator
-{
+class EmberEntityActionCreator : public EntityMapping::IActionCreator {
 public:
-    EmberEntityActionCreator(EmberEntity& entity, Scene& scene);
+	EmberEntityActionCreator(EmberEntity& entity,
+			Scene& scene,
+			AttachmentFunction modelAttachmentFunction,
+			std::function<void(bool)> oceanAttachmentFunction);
 
-    ~EmberEntityActionCreator() override = default;
+	~EmberEntityActionCreator() override = default;
 
 	void createActions(EntityMapping::EntityMapping& modelMapping,
 					   EntityMapping::Cases::CaseBase* aCase,
 					   EntityMapping::Definitions::CaseDefinition& caseDefinition) override;
+
 protected:
 	EmberEntity& mEntity;
 	Scene& mScene;
-
+	AttachmentFunction mAttachmentFunction;
+	std::function<void(bool)> mOceanAttachmentFunction;
 
 };
 

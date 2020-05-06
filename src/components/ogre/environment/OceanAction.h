@@ -20,30 +20,28 @@
 #define OCEANACTION_H_
 
 #include "components/entitymapping/Actions/Action.h"
+#include <functional>
+#include <memory>
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
+namespace OgreView {
 class Scene;
-namespace Environment
-{
+namespace Environment {
 
+class OceanRepresentation;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Creates an OceanRepresentation and binds it to an entity.
  */
-class OceanAction: public EntityMapping::Actions::Action
-{
+class OceanAction : public EntityMapping::Actions::Action {
 public:
 	/**
 	 * @brief Ctor.
-	 * @param entity The entity for which an OceanRepresentation should be created for.
 	 */
-	OceanAction(EmberEntity& entity, Scene& scene);
+	explicit OceanAction(std::function<void(bool)> attachmentFunction);
 
 	/**
 	 * @brief Dtor.
@@ -62,8 +60,7 @@ public:
 
 private:
 
-	EmberEntity& mEntity;
-	Scene& mScene;
+	std::function<void(bool)> mAttachmentFunction;
 };
 }
 }

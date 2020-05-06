@@ -92,12 +92,11 @@ public:
 	 */
 	EntityMoveAdjuster(EntityMoveManager* manager, Eris::EventService& eventService);
 private:
-	typedef std::vector<EntityMoveAdjustmentInstance*> MoveAdjustmentInstanceStore;
 
 	/**
 	 Holds all instances of EntityMoveAdjustmentInstance.
 	 */
-	MoveAdjustmentInstanceStore mInstances;
+	std::vector<std::unique_ptr<EntityMoveAdjustmentInstance>>  mInstances;
 
 	/**
 	 *    Removes the supplied instance from the list of instances.

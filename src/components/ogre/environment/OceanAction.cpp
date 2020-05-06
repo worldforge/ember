@@ -17,42 +17,21 @@
  */
 
 #include "OceanAction.h"
-#include "OceanRepresentation.h"
-#include "Environment.h"
 
-#include "domain/EmberEntity.h"
-#include "components/ogre/EmberOgre.h"
-#include "components/ogre/World.h"
-
-namespace Ember
-{
-namespace OgreView
-{
-namespace Environment
-{
-OceanAction::OceanAction(EmberEntity& entity, Scene& scene) :
-		mEntity(entity),
-		mScene(scene)
-{
+namespace Ember {
+namespace OgreView {
+namespace Environment {
+OceanAction::OceanAction(std::function<void(bool)> attachmentFunction) :
+		mAttachmentFunction(std::move(attachmentFunction)) {
 }
 
 
-void OceanAction::activate(EntityMapping::ChangeContext& context)
-{
-	if (EmberOgre::getSingleton().getWorld()) {
-		World* world = EmberOgre::getSingleton().getWorld();
-		if (Environment* environment = world->getEnvironment()) {
-			mEntity.setGraphicalRepresentation(std::make_unique<OceanRepresentation>(mEntity, *environment, mScene));
-			return;
-		} else {
-			S_LOG_WARNING("Tried to activate ocean representation, but there was no world instance available.");
-		}
-	}
+void OceanAction::activate(EntityMapping::ChangeContext& context) {
+	mAttachmentFunction(true);
 }
 
-void OceanAction::deactivate(EntityMapping::ChangeContext& context)
-{
-	mEntity.setGraphicalRepresentation(0);
+void OceanAction::deactivate(EntityMapping::ChangeContext& context) {
+	mAttachmentFunction(false);
 }
 }
 }

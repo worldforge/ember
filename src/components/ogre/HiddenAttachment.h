@@ -21,13 +21,11 @@
 
 #include "components/ogre/AttachmentBase.h"
 
-namespace Ember
-{
+namespace Ember {
 struct IGraphicalRepresentation;
-class EmberEntity;
-namespace OgreView
-{
 
+class EmberEntity;
+namespace OgreView {
 
 
 /**
@@ -37,14 +35,13 @@ namespace OgreView
  * Use this attachment when you want to hide all graphical representations.
  * All child attachments produced by this will be of HiddenAttachment type, thus guaranteeing that no child is shown.
  */
-class HiddenAttachment : public AttachmentBase
-{
+class HiddenAttachment : public AttachmentBase {
 public:
 	HiddenAttachment(EmberEntity* parentEntity, EmberEntity& childEntity);
 
 	~HiddenAttachment() override;
 
-	std::unique_ptr<IEntityAttachment> attachEntity(EmberEntity& entity) override;
+	void attachEntity(EmberEntity& entity) override;
 };
 
 }

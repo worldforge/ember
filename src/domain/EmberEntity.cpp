@@ -82,7 +82,6 @@ EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View& vw) :
 		mIsInitialized(false),
 		mPositioningMode(PositioningMode::FREE),
 		mCompositionMode(CM_DISABLED),
-		mGraphicalRepresentation(nullptr),
 		mAttachment(nullptr),
 		mAttachmentControlDelegate(nullptr),
 		mHeightProvider(nullptr) {
@@ -223,11 +222,8 @@ void EmberEntity::updateAttachment() {
 	if (newLocationEntity && newLocationEntity->getAttachment()) {
 		try {
 			mAttachment.reset();
-			auto newAttachment = newLocationEntity->getAttachment()->attachEntity(*this);
-			if (newAttachment) {
-				newAttachment->updateScale();
-			}
-            setAttachment(std::move(newAttachment));
+			newLocationEntity->getAttachment()->attachEntity(*this);
+
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}
@@ -383,16 +379,15 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 }
 
 IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const {
-	return mGraphicalRepresentation.get();
-}
-
-void EmberEntity::setGraphicalRepresentation(std::unique_ptr<IGraphicalRepresentation> graphicalRepresentation) {
-    mGraphicalRepresentation = std::move(graphicalRepresentation);
-    EventChangedGraphicalRepresentation();
+	if (mAttachment) {
+		return mAttachment->getGraphicalRepresentation();
+	}
+	return nullptr;
 }
 
 void EmberEntity::setAttachment(std::unique_ptr<IEntityAttachment> attachment) {
 	mAttachment = std::move(attachment);
+	EventChangedGraphicalRepresentation();
 	EventAttachmentChanged();
 	reattachChildren();
 }

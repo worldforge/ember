@@ -24,17 +24,19 @@
 #include <string>
 #include <memory>
 
-namespace WFMath
-{
-template<int> class Point;
-template<int> class Vector;
+namespace WFMath {
+template<int>
+class Point;
+
+template<int>
+class Vector;
 }
 
-namespace Ember
-{
+namespace Ember {
 
 struct IGraphicalRepresentation;
 struct IEntityControlDelegate;
+
 class EmberEntity;
 
 /**
@@ -45,8 +47,7 @@ class EmberEntity;
  * The normal case would be two entities being both represented through an instance of Ogre::SceneNode, and a Model. However, there are other instances where a SceneNode doesn't make any sense, and instead another kind of attachment is suitable.
  *
  */
-struct IEntityAttachment: public IVisualizable
-{
+struct IEntityAttachment : public IVisualizable {
 
 	/**
 	 * @brief Dtor.
@@ -81,9 +82,8 @@ struct IEntityAttachment: public IVisualizable
 	 * The kind of attachment produced is determined by the actual subclass. Different kinds of attachments can produce different kind of new child attachments.
 	 * An example would be an attachment which is designed to hide all child attachments so that they won't have any graphical representation. Such an attachment would therefore always return an instance of itself, thus perpetuating the tree of non visible attachments.
 	 * @param entity The new entity to attach as a child to this attachment.
-	 * @return A new attachment instance. This can never be null.
 	 */
-	virtual std::unique_ptr<IEntityAttachment> attachEntity(EmberEntity& entity) = 0;
+	virtual void attachEntity(EmberEntity& entity) = 0;
 
 	/**
 	 * @brief Asks the attachment to update its scaling.

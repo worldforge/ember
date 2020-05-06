@@ -28,57 +28,44 @@
 #include "domain/EmberEntity.h"
 #include "EntityMoveManager.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 EntityMoveAdjustmentInstance::EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity, Eris::EventService& eventService) :
-	mEntity(entity),
-	mTimeout(eventService, boost::posix_time::milliseconds(1500), [&](){this->timout_Expired();}),
-	mMoveAdjuster(moveAdjuster)
-{
+		mEntity(entity),
+		mTimeout(eventService, boost::posix_time::milliseconds(1500), [&]() { this->timout_Expired(); }),
+		mMoveAdjuster(moveAdjuster) {
 }
 
-void EntityMoveAdjustmentInstance::timout_Expired()
-{
+void EntityMoveAdjustmentInstance::timout_Expired() {
 	//	mEntity->synchronizeWithServer();
 	mMoveAdjuster->removeInstance(this);
 }
 
 EntityMoveAdjuster::EntityMoveAdjuster(EntityMoveManager* manager, Eris::EventService& eventService) :
-	mManager(manager), mEventService(eventService)
-{
+		mManager(manager), mEventService(eventService) {
 	mManager->EventStartMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_StartMoving));
 	mManager->EventFinishedMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_FinishedMoving));
 	mManager->EventCancelledMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_CancelledMoving));
 
 }
 
-void EntityMoveAdjuster::removeInstance(EntityMoveAdjustmentInstance* instance)
-{
-	auto I = std::find(mInstances.begin(), mInstances.end(), instance);
-	delete *I;
-	mInstances.erase(I);
+void EntityMoveAdjuster::removeInstance(EntityMoveAdjustmentInstance* instance) {
+	std::remove_if(mInstances.begin(), mInstances.end(), [instance](const std::unique_ptr<EntityMoveAdjustmentInstance>& entry) { return entry.get() == instance; });
 }
 
-void EntityMoveAdjuster::EntityMoveManager_FinishedMoving()
-{
+void EntityMoveAdjuster::EntityMoveManager_FinishedMoving() {
 	if (mActiveEntity) {
-		EntityMoveAdjustmentInstance* instance = new EntityMoveAdjustmentInstance(this, mActiveEntity, mEventService);
-		mInstances.push_back(instance);
+		mInstances.emplace_back(std::make_unique<EntityMoveAdjustmentInstance>(this, mActiveEntity, mEventService));
 		mActiveEntity = nullptr;
 	}
 }
 
-void EntityMoveAdjuster::EntityMoveManager_CancelledMoving()
-{
+void EntityMoveAdjuster::EntityMoveManager_CancelledMoving() {
 	mActiveEntity = nullptr;
 }
 
-void EntityMoveAdjuster::EntityMoveManager_StartMoving(EmberEntity& entity, EntityMover&)
-{
+void EntityMoveAdjuster::EntityMoveManager_StartMoving(EmberEntity& entity, EntityMover&) {
 	mActiveEntity = &entity;
 }
 

@@ -68,15 +68,16 @@ public:
 };
 
 
-ModelActionBase::ModelActionBase(EmberEntity& entity, Scene& scene, EntityMapping::EntityMapping& mapping)
+ModelActionBase::ModelActionBase(EmberEntity& entity, Scene& scene, EntityMapping::EntityMapping& mapping, AttachmentFunction attachmentFunction)
 		: mEntity(entity),
 		  mScene(scene),
-		  mMapping(mapping) {
+		  mMapping(mapping),
+		  mAttachmentFunction(std::move(attachmentFunction)) {
 
 }
 
 void ModelActionBase::deactivate(EntityMapping::ChangeContext& context) {
-	mEntity.setGraphicalRepresentation(nullptr);
+	mAttachmentFunction({});
 	//As we've now deactivated our model action, removing the graphical representation, we should after the change context is complete also check if there are any other model actions which should be reactivated
 	context.EventContextComplete.connect([&] {
 		//If the entity has no graphical representation, check if there are any existing active model actions which we should reactivate.
@@ -91,7 +92,6 @@ void ModelActionBase::showModel(const std::string& modelName) {
 
 	Model::Model* existingModel = Model::ModelRepresentation::getModelForEntity(mEntity);
 	if (!existingModel || existingModel->getDefinition()->getOrigin() != modelName) {
-		mEntity.setGraphicalRepresentation(nullptr);
 
 		Model::ModelDefinitionManager& modelDefinitionManager = Model::ModelDefinitionManager::getSingleton();
 		try {
@@ -106,14 +106,16 @@ void ModelActionBase::showModel(const std::string& modelName) {
 				model->setVisible(mEntity.isVisible());
 				model->load();
 
-				auto representation = std::make_unique<Model::ModelRepresentation>(mEntity, std::move(model), mScene, mMapping);
-				representation->initFromModel();
-                mEntity.setGraphicalRepresentation(std::move(representation));
+				auto newRepresentation = std::make_unique<Model::ModelRepresentation>(mEntity, std::move(model), mScene, mMapping);
+				newRepresentation->initFromModel();
+				mAttachmentFunction(std::move(newRepresentation));
 			}
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Could not load model of type " << modelName << " from group 'ModelDefinitions'." << ex);
 		}
 	}
 }
+
+
 }
 }

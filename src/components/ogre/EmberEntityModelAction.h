@@ -23,21 +23,23 @@
 #ifndef EMBEROGREEMBERENTITYMODELACTION_H
 #define EMBEROGREEMBERENTITYMODELACTION_H
 
+#include <domain/IEntityAttachment.h>
 #include "ModelActionBase.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 /**
  * @brief Show a certain Model.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class EmberEntityModelAction: public ModelActionBase
-{
+class EmberEntityModelAction : public ModelActionBase {
 public:
-	EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene, EntityMapping::EntityMapping& mMapping);
+	EmberEntityModelAction(EmberEntity& entity,
+						   std::string modelName,
+						   Scene& scene,
+						   EntityMapping::EntityMapping& mMapping,
+						   AttachmentFunction attachmentFunction);
 
 	~EmberEntityModelAction() override = default;
 
@@ -45,7 +47,6 @@ public:
 
 protected:
 	std::string mModelName;
-
 
 };
 

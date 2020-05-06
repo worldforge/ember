@@ -75,7 +75,7 @@ public:
 
 	IEntityControlDelegate* getControlDelegate() const override;
 
-	std::unique_ptr<IEntityAttachment> attachEntity(EmberEntity& entity) override;
+	void attachEntity(EmberEntity& entity) override;
 
 	void updatePosition() override;
 
