@@ -23,8 +23,9 @@
 #ifndef EMBEROGRE_MODEL_MAPPING_CASESCASEBASE_H
 #define EMBEROGRE_MODEL_MAPPING_CASESCASEBASE_H
 
-#include <vector>
 #include "../ChangeContext.h"
+#include <vector>
+#include <memory>
 
 namespace Eris {
 class Entity;
@@ -60,8 +61,8 @@ namespace Cases {
 class CaseBase
 {
 public:
-	typedef std::vector<Actions::Action*> ActionStore;
-	typedef std::vector<Matches::MatchBase*> MatchBaseStore;
+	typedef std::vector<std::unique_ptr<Actions::Action>> ActionStore;
+	typedef std::vector<std::unique_ptr<Matches::MatchBase>> MatchBaseStore;
 
 	CaseBase();
 	virtual ~CaseBase();
@@ -89,7 +90,7 @@ public:
 	/**
 	Adds an Action to this case.
 	*/
-	void addAction(Actions::Action* action);
+	void addAction(std::unique_ptr<Actions::Action> action);
 	/**
 	Gets a list of all the actions contained by this Case.
 	*/
@@ -107,7 +108,7 @@ public:
 	/**
 	Adds an child Match to this case.
 	*/
-	void addMatch(Matches::MatchBase* match);
+	void addMatch(std::unique_ptr<Matches::MatchBase> match);
 	/**
 	Gets a list of all the Matches contained by this Case.
 	*/

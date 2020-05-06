@@ -56,7 +56,7 @@ public:
 	~EmberEntityActionCreator() override = default;
 
 	void createActions(EntityMapping::EntityMapping& modelMapping,
-					   EntityMapping::Cases::CaseBase* aCase,
+					   EntityMapping::Cases::CaseBase& aCase,
 					   EntityMapping::Definitions::CaseDefinition& caseDefinition) override;
 
 protected:

@@ -26,7 +26,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Matches {
@@ -40,9 +39,9 @@ class EntityCreationObserver;
  *  This is mainly used for attachments, such as "attached_hand_primary" or "attached_feet". Whenever an entity is outfitted or removed this will trigger.
  *	@author Erik Ogenvik <erik@ogenvik.org>
  */
-class EntityRefMatch : public AbstractMatch<Cases::EntityRefCase>, public AttributeDependentMatch
-{
-friend class Observers::EntityCreationObserver;
+class EntityRefMatch : public AbstractMatch<Cases::EntityRefCase>, public AttributeDependentMatch {
+	friend class Observers::EntityCreationObserver;
+
 public:
 
 	EntityRefMatch(const std::string& attributeName, Eris::View* view);
@@ -51,15 +50,17 @@ public:
 
 	void setEntity(Eris::Entity* entity) override;
 
-	void setEntityCreationObserver(Observers::EntityCreationObserver* observer);
+	void setEntityCreationObserver(std::unique_ptr<Observers::EntityCreationObserver> observer);
 
 	/**
 	Use the supplied observer to observe changes to the attribute. The supplied observer will be managed by this class.
 	*/
-	void setMatchAttributeObserver(Observers::MatchAttributeObserver* observer);
+	void setMatchAttributeObserver(std::unique_ptr<Observers::MatchAttributeObserver> observer);
+
 protected:
 
 	void testEntity(Eris::Entity* entity);
+
 	std::string mAttributeName;
 	Eris::View* mView;
 	std::unique_ptr<Observers::EntityCreationObserver> mEntityObserver;

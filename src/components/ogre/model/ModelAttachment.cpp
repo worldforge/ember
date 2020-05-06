@@ -66,17 +66,17 @@ struct ModelAttachedActionCreator : public EntityMapping::IActionCreator {
 	~ModelAttachedActionCreator() override = default;
 
 	void createActions(EntityMapping::EntityMapping& modelMapping,
-					   EntityMapping::Cases::CaseBase* aCase,
+					   EntityMapping::Cases::CaseBase& aCase,
 					   EntityMapping::Definitions::CaseDefinition& caseDefinition) override {
 		for (auto& actionDef : caseDefinition.getActions()) {
 			if (actionDef.Type == "display-part") {
-				aCase->addAction(new EmberEntityPartAction(mEntity, actionDef.getValue()));
+				aCase.addAction(std::make_unique<EmberEntityPartAction>(mEntity, actionDef.getValue()));
 			} else if (actionDef.Type == "display-model") {
-				aCase->addAction(new EmberEntityModelAction(mEntity, actionDef.getValue(), mScene, modelMapping, mModelAttachmentFunction));
+				aCase.addAction(std::make_unique<EmberEntityModelAction>(mEntity, actionDef.getValue(), mScene, modelMapping, mModelAttachmentFunction));
 			} else if (actionDef.Type == "hide-model") {
-				aCase->addAction(new EmberEntityHideModelAction(mEntity));
+				aCase.addAction(std::make_unique<EmberEntityHideModelAction>(mEntity));
 			} else if (actionDef.Type == "present") {
-				aCase->addAction(new PresentAction(mEntity, mScene, modelMapping, mModelAttachmentFunction));
+				aCase.addAction(std::make_unique<PresentAction>(mEntity, mScene, modelMapping, mModelAttachmentFunction));
 			} else {
 				S_LOG_WARNING("Could not recognize entity action '" << actionDef.Type << "'.");
 			}
@@ -101,7 +101,7 @@ struct ModelContainedActionCreator : public EntityMapping::IActionCreator {
 	~ModelContainedActionCreator() override = default;
 
 	void createActions(EntityMapping::EntityMapping& modelMapping,
-					   EntityMapping::Cases::CaseBase* aCase,
+					   EntityMapping::Cases::CaseBase& aCase,
 					   EntityMapping::Definitions::CaseDefinition& caseDefinition) override {
 		for (auto& actionDef : caseDefinition.getActions()) {
 			if (actionDef.Type == "display-effect") {

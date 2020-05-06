@@ -25,13 +25,11 @@ namespace EntityMapping {
 namespace Matches {
 
 SingleAttributeMatch::SingleAttributeMatch(const std::string& attributeName)
-		: AttributeMatch(attributeName)
-{
+		: AttributeMatch(attributeName) {
 }
 
 
-void SingleAttributeMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation)
-{
+void SingleAttributeMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) {
 	for (auto& aCase : mCases) {
 		aCase->testMatch(attribute);
 	}
@@ -40,8 +38,7 @@ void SingleAttributeMatch::testAttribute(const Atlas::Message::Element& attribut
 	}
 }
 
-void SingleAttributeMatch::setEntity(Eris::Entity* entity)
-{
+void SingleAttributeMatch::setEntity(Eris::Entity* entity) {
 	AbstractMatch<Cases::AttributeCase>::setEntity(entity);
 	if (mMatchAttributeObserver) {
 		//observe the attribute by the use of an MatchAttributeObserver
@@ -56,9 +53,8 @@ void SingleAttributeMatch::setEntity(Eris::Entity* entity)
 	}
 }
 
-void SingleAttributeMatch::setMatchAttributeObserver(Observers::MatchAttributeObserver* observer)
-{
-	mMatchAttributeObserver.reset(observer);
+void SingleAttributeMatch::setMatchAttributeObserver(std::unique_ptr<Observers::MatchAttributeObserver> observer) {
+	mMatchAttributeObserver = std::move(observer);
 }
 
 }

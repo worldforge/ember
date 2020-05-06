@@ -48,24 +48,24 @@ EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity,
 		  mOceanAttachmentFunction(std::move(oceanAttachmentFunction)) {
 }
 
-void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition) {
+void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, Cases::CaseBase& aCase, Definitions::CaseDefinition& caseDefinition) {
 	for (auto& actionDef : caseDefinition.getActions()) {
 		if (actionDef.Type == "display-part") {
-			aCase->addAction(new EmberEntityPartAction(mEntity, actionDef.getValue()));
+			aCase.addAction(std::make_unique<EmberEntityPartAction>(mEntity, actionDef.getValue()));
 		} else if (actionDef.Type == "display-model") {
-			aCase->addAction(new EmberEntityModelAction(mEntity, actionDef.getValue(), mScene, modelMapping, mAttachmentFunction));
+			aCase.addAction(std::make_unique<EmberEntityModelAction>(mEntity, actionDef.getValue(), mScene, modelMapping, mAttachmentFunction));
 		} else if (actionDef.Type == "hide-model") {
-			aCase->addAction(new EmberEntityHideModelAction(mEntity));
+			aCase.addAction(std::make_unique<EmberEntityHideModelAction>(mEntity));
 		} else if (actionDef.Type == "display-label") {
-			aCase->addAction(new Gui::LabelAction(mEntity));
+			aCase.addAction(std::make_unique<Gui::LabelAction>(mEntity));
 		} else if (actionDef.Type == "display-ocean") {
-			aCase->addAction(new Environment::OceanAction(mOceanAttachmentFunction));
+			aCase.addAction(std::make_unique<Environment::OceanAction>(mOceanAttachmentFunction));
 		} else if (actionDef.Type == "enable-composition") {
-			aCase->addAction(new CompositionAction(mEntity, actionDef.getValue()));
+			aCase.addAction(std::make_unique<CompositionAction>(mEntity, actionDef.getValue()));
 		} else if (actionDef.Type == "present") {
-			aCase->addAction(new PresentAction(mEntity, mScene, modelMapping, mAttachmentFunction));
+			aCase.addAction(std::make_unique<PresentAction>(mEntity, mScene, modelMapping, mAttachmentFunction));
 //		} else if (actionDef.Type == "show-effect") {
-//			aCase->addAction(new PresentAction(mEntity, mScene, modelMapping));
+//			aCase.addAction(new PresentAction(mEntity, mScene, modelMapping));
 		} else {
 			S_LOG_WARNING("Could not recognize entity action '" << actionDef.Type << "'.");
 		}

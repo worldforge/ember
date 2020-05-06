@@ -68,18 +68,18 @@ std::unique_ptr<EntityMapping> EntityMappingManager::createMapping(Eris::Entity&
     } else {
         auto mapping = std::make_unique<EntityMapping>(entity);
 
-        auto attributeMatch = new Matches::SingleAttributeMatch("present");
-        auto* attributeCase = new Cases::AttributeCase(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
-        auto* observer = new Matches::Observers::MatchAttributeObserver(attributeMatch, "present");
-        attributeMatch->setMatchAttributeObserver(observer);
+        auto attributeMatch = std::make_unique<Matches::SingleAttributeMatch>("present");
+        auto attributeCase = std::make_unique< Cases::AttributeCase>(new Cases::AttributeComparers::StringComparerWrapper(new Cases::AttributeComparers::StringNotEmptyComparer()));
+        auto observer = std::make_unique<Matches::Observers::MatchAttributeObserver>(*attributeMatch, "present");
+        attributeMatch->setMatchAttributeObserver(std::move(observer));
 
-        attributeMatch->addCase(attributeCase);
         CaseDefinition caseDefinition;
         ActionDefinition actionDefinition;
         actionDefinition.Type = "present";
         caseDefinition.getActions().emplace_back(std::move(actionDefinition));
-        actionCreator.createActions(*mapping, attributeCase, caseDefinition);
-        mapping->getBaseCase().addMatch(attributeMatch);
+        actionCreator.createActions(*mapping, *attributeCase, caseDefinition);
+		attributeMatch->addCase(std::move(attributeCase));
+        mapping->getBaseCase().addMatch(std::move(attributeMatch));
 
         mapping->getBaseCase().setEntity(&entity);
 

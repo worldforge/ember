@@ -43,18 +43,6 @@ namespace Matches {
 
 
 /**
-Utility method for cleaning a std::vector, deleting all instances held.
-*/
-template <typename T>
-static void cleanVector(T& theVector)
-{
-	for (auto& instance : theVector) {
-		delete instance;
-	}
-	theVector.clear();
-}
-
-/**
 	Base class for all matches which includes templated definitions of the kind of Case it will hold.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
@@ -71,7 +59,7 @@ public:
 	* Adds a child case.
 	* @param aCase
 	*/
-	void addCase(TCase* aCase);
+	void addCase(std::unique_ptr<TCase> aCase);
 
 	/**
 	Gets all child cases.
@@ -100,14 +88,11 @@ public:
 	void accept(IVisitor& visitor) override;
 
 protected:
-	 std::vector<TCase*> mCases;
+	 std::vector<std::unique_ptr<TCase>> mCases;
 };
 
 template <class TCase>
-AbstractMatch<TCase>::~AbstractMatch()
-{
-	cleanVector(mCases);
-}
+AbstractMatch<TCase>::~AbstractMatch() = default;
 
 
 template <class TCase>
@@ -125,9 +110,9 @@ std::vector<TCase*>& AbstractMatch<TCase>::getCases()
 }
 
 template <class TCase>
-void AbstractMatch<TCase>::addCase(TCase* aCase) {
-	mCases.push_back(aCase);
+void AbstractMatch<TCase>::addCase(std::unique_ptr<TCase> aCase) {
 	aCase->setParentCase(mParentCase);
+	mCases.emplace_back(std::move(aCase));
 }
 
 template <class TCase>

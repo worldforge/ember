@@ -92,10 +92,10 @@ std::unique_ptr<EntityMapping> EntityMappingCreator::create() {
 void EntityMappingCreator::createMapping() {
 	mEntityMapping = std::make_unique<EntityMapping>(mEntity);
 
-	mActionCreator.createActions(*mEntityMapping, &mEntityMapping->getBaseCase(), mDefinition.getRoot());
+	mActionCreator.createActions(*mEntityMapping, mEntityMapping->getBaseCase(), mDefinition.getRoot());
 
 	for (auto& aMatch : mDefinition.getRoot().getMatches()) {
-		addMatch(&mEntityMapping->getBaseCase(), aMatch);
+		addMatch(mEntityMapping->getBaseCase(), aMatch);
 	}
 
 	//since we already have the entity, we can perform a check right away
@@ -105,7 +105,7 @@ void EntityMappingCreator::createMapping() {
 void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, MatchDefinition& matchDefinition) {
 
 	for (auto& aCase : matchDefinition.getCases()) {
-		auto* entityCase = new EntityTypeCase();
+		auto entityCase = std::make_unique<EntityTypeCase>();
 
 		for (auto& paramEntry : aCase.getCaseParameters()) {
 			if (paramEntry.first == "equals") {
@@ -113,32 +113,32 @@ void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, 
 			}
 		}
 
-		mActionCreator.createActions(*mEntityMapping, entityCase, aCase);
+		mActionCreator.createActions(*mEntityMapping, *entityCase, aCase);
 
 		for (auto& aMatch : aCase.getMatches()) {
-			addMatch(entityCase, aMatch);
+			addMatch(*entityCase, aMatch);
 		}
-		entityTypeMatch->addCase(entityCase);
 		entityCase->setParentMatch(entityTypeMatch);
+		entityTypeMatch->addCase(std::move(entityCase));
 	}
 }
 
 void EntityMappingCreator::addEntityRefCases(EntityRefMatch* match, MatchDefinition& matchDefinition) {
 	for (auto& aCase : matchDefinition.getCases()) {
-		auto* entityRefCase = new EntityRefCase();
+		auto entityRefCase = std::make_unique<EntityRefCase>();
 
 		for (auto& paramEntry : aCase.getCaseParameters()) {
 			if (paramEntry.first == "equals") {
 				entityRefCase->addEntityType(mTypeService.getTypeByName(paramEntry.second));
 			}
 		}
-		mActionCreator.createActions(*mEntityMapping, entityRefCase, aCase);
+		mActionCreator.createActions(*mEntityMapping, *entityRefCase, aCase);
 
 		for (auto& aMatch : aCase.getMatches()) {
-			addMatch(entityRefCase, aMatch);
+			addMatch(*entityRefCase, aMatch);
 		}
-		match->addCase(entityRefCase);
 		entityRefCase->setParentMatch(match);
+		match->addCase(std::move(entityRefCase));
 	}
 }
 
@@ -167,7 +167,7 @@ Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAt
 }
 
 AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer(CaseDefinition& caseDefinition) {
-	const CaseDefinition::ParameterEntry* param(nullptr);
+	const CaseDefinition::ParameterEntry* param;
 
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "equals"))) {
 		return new AttributeComparers::NumericEqualsComparer(std::stof(param->second));
@@ -205,22 +205,22 @@ void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinit
 	for (auto& aCase : matchDefinition.getCases()) {
 		Cases::AttributeComparers::AttributeComparerWrapper* wrapper = getAttributeCaseComparer(match, matchDefinition, aCase);
 		if (wrapper) {
-			auto* attrCase = new AttributeCase(wrapper);
+			auto attrCase = std::make_unique<AttributeCase>(wrapper);
 
-			mActionCreator.createActions(*mEntityMapping, attrCase, aCase);
+			mActionCreator.createActions(*mEntityMapping, *attrCase, aCase);
 
 			for (auto& aMatch : aCase.getMatches()) {
-				addMatch(attrCase, aMatch);
+				addMatch(*attrCase, aMatch);
 			}
 
-			match->addCase(attrCase);
 			attrCase->setParentMatch(match);
+			match->addCase(std::move(attrCase));
 		}
 	}
 
 }
 
-void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addMatch(CaseBase& aCase, MatchDefinition& matchDefinition) {
 	if (matchDefinition.Type == "attribute") {
 		addAttributeMatch(aCase, matchDefinition);
 	} else if (matchDefinition.Type == "entitytype") {
@@ -230,57 +230,55 @@ void EntityMappingCreator::addMatch(CaseBase* aCase, MatchDefinition& matchDefin
 	}
 }
 
-void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addAttributeMatch(CaseBase& aCase, MatchDefinition& matchDefinition) {
 	const std::string& attributeName = matchDefinition.Properties["attribute"];
 
-	AttributeMatch* match = nullptr;
+	std::unique_ptr<AttributeMatch> match;
 	std::string internalAttributeName;
 	const std::string& matchType = matchDefinition.Properties["type"];
 	//TODO: make this check better
 	if (matchType == "function") {
 		if (attributeName == "height") {
 
-			auto virtualMatch = new VirtualAttributeMatch(attributeName, {"bbox", "scale"});
-			virtualMatch->addMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(virtualMatch, "bbox"));
-			virtualMatch->addMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(virtualMatch, "scale"));
-			match = virtualMatch;
+			std::unique_ptr<VirtualAttributeMatch> virtualMatch(new VirtualAttributeMatch(attributeName, {"bbox", "scale"}));
+			virtualMatch->addMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(*virtualMatch, "bbox"));
+			virtualMatch->addMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(*virtualMatch, "scale"));
+			match = std::move(virtualMatch);
 		}
 	} else {
-		auto singleMatch = new SingleAttributeMatch(attributeName);
-		singleMatch->setMatchAttributeObserver(new MatchAttributeObserver(singleMatch, attributeName));
-		match = singleMatch;
+		auto singleMatch = std::make_unique<SingleAttributeMatch>(attributeName);
+		singleMatch->setMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(*singleMatch, attributeName));
+		match = std::move(singleMatch);
 	}
 	if (match) {
-		aCase->addMatch(match);
-		addAttributeCases(match, matchDefinition);
+		addAttributeCases(match.get(), matchDefinition);
+		aCase.addMatch(std::move(match));
 
 	}
 }
 
-void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& matchDefinition) {
-	auto* match = new EntityTypeMatch();
-	aCase->addMatch(match);
-	addEntityTypeCases(match, matchDefinition);
+void EntityMappingCreator::addEntityTypeMatch(CaseBase& aCase, MatchDefinition& matchDefinition) {
+	auto match = std::make_unique<EntityTypeMatch>();
+	addEntityTypeCases(match.get(), matchDefinition);
+	aCase.addMatch(std::move(match));
 
 	//since we already have the entity, we can perform a check right away
 // 	match->testEntity(mEntity);
 }
 
-void EntityMappingCreator::addEntityRefCase(CaseBase* aCase, MatchDefinition& matchDefinition) {
+void EntityMappingCreator::addEntityRefCase(CaseBase& aCase, MatchDefinition& matchDefinition) {
 	if (mView) {
 		const std::string& attributeName = matchDefinition.Properties["attribute"];
-		auto* match = new EntityRefMatch(attributeName, mView);
-		aCase->addMatch(match);
+		auto match = std::make_unique<EntityRefMatch>(attributeName, mView);
 
-		addEntityRefCases(match, matchDefinition);
+		addEntityRefCases(match.get(), matchDefinition);
 
 
 		//observe the attribute by the use of an MatchAttributeObserver
-		auto* observer = new MatchAttributeObserver(match, attributeName);
-		match->setMatchAttributeObserver(observer);
+		match->setMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(*match, attributeName));
 
-		auto* entityObserver = new EntityCreationObserver(*match);
-		match->setEntityCreationObserver(entityObserver);
+		match->setEntityCreationObserver(std::make_unique<EntityCreationObserver>(*match));
+		aCase.addMatch(std::move(match));
 	}
 
 }

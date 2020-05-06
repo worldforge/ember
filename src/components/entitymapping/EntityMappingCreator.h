@@ -131,28 +131,28 @@ protected:
 	 * @param aCase
 	 * @param matchDefinition
 	 */
-	void addMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
+	void addMatch(Cases::CaseBase& aCase, Definitions::MatchDefinition& matchDefinition);
 
 	/**
 	 * Adds attribute matches to the supplied case.
 	 * @param aCase
 	 * @param matchDefinition
 	 */
-	void addAttributeMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
+	void addAttributeMatch(Cases::CaseBase& aCase, Definitions::MatchDefinition& matchDefinition);
 
 	/**
 	 * Adds entity type matches to the supplied case.
 	 * @param aCase
 	 * @param matchDefinition
 	 */
-	void addEntityTypeMatch(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
+	void addEntityTypeMatch(Cases::CaseBase& aCase, Definitions::MatchDefinition& matchDefinition);
 
 	/**
 	 * Adds attachment matches to the supplied case.
 	 * @param aCase
 	 * @param matchDefinition
 	 */
-	void addEntityRefCase(Cases::CaseBase* aCase, Definitions::MatchDefinition& matchDefinition);
+	void addEntityRefCase(Cases::CaseBase& aCase, Definitions::MatchDefinition& matchDefinition);
 
 	/**
 	 * Creates and returns a numeric comparer for the supplied case.

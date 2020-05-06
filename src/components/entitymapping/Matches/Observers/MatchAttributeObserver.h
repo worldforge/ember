@@ -32,12 +32,12 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Matches {
 
 class AttributeMatch;
+
 class AttributeDependentMatch;
 
 namespace Observers {
@@ -46,12 +46,12 @@ namespace Observers {
 	Observes changes to a specific attribute and automatically pass changes on the Match that the observer is attached to.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class MatchAttributeObserver : public virtual sigc::trackable
-{
+class MatchAttributeObserver : public virtual sigc::trackable {
 public:
 
-	explicit MatchAttributeObserver(AttributeMatch* match) ;
-	MatchAttributeObserver(AttributeDependentMatch* match, const std::string& attributeName);
+	explicit MatchAttributeObserver(AttributeMatch& match);
+
+	MatchAttributeObserver(AttributeDependentMatch& match, const std::string& attributeName);
 
 	/**
 	Sets the entity to observe.
@@ -63,7 +63,7 @@ protected:
 
 	void attributeChanged(const Atlas::Message::Element& attributeValue);
 
-	AttributeDependentMatch* mMatch;
+	AttributeDependentMatch& mMatch;
 
 	std::string mAttributeName;
 

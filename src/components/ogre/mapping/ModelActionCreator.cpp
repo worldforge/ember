@@ -28,73 +28,73 @@ namespace OgreView {
 namespace Mapping {
 
 ModelActionCreator::DisplayModelAction::DisplayModelAction(ModelActionCreator* creator, std::string modelName)
-        : mCreator(creator),
-          mModelName(std::move(modelName)) {
+		: mCreator(creator),
+		  mModelName(std::move(modelName)) {
 }
 
 void ModelActionCreator::DisplayModelAction::activate(EntityMapping::ChangeContext& context) {
-    mCreator->mShowModelFn(mModelName);
+	mCreator->mShowModelFn(mModelName);
 }
 
 
 ModelActionCreator::DisplayPartAction::DisplayPartAction(ModelActionCreator* creator, std::string partName)
-        : mCreator(creator),
-          mPartName(std::move(partName)) {
+		: mCreator(creator),
+		  mPartName(std::move(partName)) {
 }
 
 void ModelActionCreator::DisplayPartAction::activate(EntityMapping::ChangeContext& context) {
-    mCreator->mShowPartFn(mPartName);
+	mCreator->mShowPartFn(mPartName);
 }
 
 ModelActionCreator::PresentAction::PresentAction(ModelActionCreator* creator)
-        : mCreator(creator) {
+		: mCreator(creator) {
 }
 
 void ModelActionCreator::PresentAction::activate(EntityMapping::ChangeContext& context) {
 
-    if (mCreator->mEntity.hasProperty("present")) {
-        auto& element = mCreator->mEntity.valueOfProperty("present");
-        if (element.isString()) {
-            auto& present = element.String();
+	if (mCreator->mEntity.hasProperty("present")) {
+		auto& element = mCreator->mEntity.valueOfProperty("present");
+		if (element.isString()) {
+			auto& present = element.String();
 
-            //If it's not an entity map it's either a mesh or a model.
-            // Check if there's a model created already, if not we'll assume it's a mesh and create a model using that mesh
-            if (!boost::ends_with(present, ".entitymap")) {
-                if (!Model::ModelDefinitionManager::getSingleton().hasDefinition(present)) {
-                    //We'll automatically create a model which shows just the specified mesh.
-                    auto modelDef = std::make_shared<Model::ModelDefinition>();
-                    modelDef->setOrigin(present);
-                    //Create a single submodel definition using the mesh
-                    Model::SubModelDefinition subModelDefinition{present};
-                    modelDef->addSubModelDefinition(subModelDefinition);
-                    Model::ModelDefinitionManager::getSingleton().addDefinition(present, std::move(modelDef));
-                }
-                mCreator->mShowModelFn(present);
-            }
-        }
-    }
+			//If it's not an entity map it's either a mesh or a model.
+			// Check if there's a model created already, if not we'll assume it's a mesh and create a model using that mesh
+			if (!boost::ends_with(present, ".entitymap")) {
+				if (!Model::ModelDefinitionManager::getSingleton().hasDefinition(present)) {
+					//We'll automatically create a model which shows just the specified mesh.
+					auto modelDef = std::make_shared<Model::ModelDefinition>();
+					modelDef->setOrigin(present);
+					//Create a single submodel definition using the mesh
+					Model::SubModelDefinition subModelDefinition{present};
+					modelDef->addSubModelDefinition(subModelDefinition);
+					Model::ModelDefinitionManager::getSingleton().addDefinition(present, std::move(modelDef));
+				}
+				mCreator->mShowModelFn(present);
+			}
+		}
+	}
 
 }
 
 ModelActionCreator::ModelActionCreator(Eris::Entity& entity,
-                                       std::function<void(const std::string&)> showModelFn,
-                                       std::function<void(const std::string&)> showPartFn)
-        : mEntity(entity),
-          mShowModelFn(std::move(showModelFn)),
-          mShowPartFn(std::move(showPartFn)) {
+									   std::function<void(const std::string&)> showModelFn,
+									   std::function<void(const std::string&)> showPartFn)
+		: mEntity(entity),
+		  mShowModelFn(std::move(showModelFn)),
+		  mShowPartFn(std::move(showPartFn)) {
 
 }
 
-void ModelActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition) {
-    for (auto& actionDef : caseDefinition.getActions()) {
-        if (actionDef.Type == "display-part") {
-            aCase->addAction(new DisplayPartAction(this, actionDef.getValue()));
-        } else if (actionDef.Type == "display-model") {
-            aCase->addAction(new DisplayModelAction(this, actionDef.getValue()));
-        } else if (actionDef.Type == "present") {
-            aCase->addAction(new PresentAction(this));
-        }
-    }
+void ModelActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase& aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition) {
+	for (auto& actionDef : caseDefinition.getActions()) {
+		if (actionDef.Type == "display-part") {
+			aCase.addAction(std::make_unique<DisplayPartAction>(this, actionDef.getValue()));
+		} else if (actionDef.Type == "display-model") {
+			aCase.addAction(std::make_unique<DisplayModelAction>(this, actionDef.getValue()));
+		} else if (actionDef.Type == "present") {
+			aCase.addAction(std::make_unique<PresentAction>(this));
+		}
+	}
 }
 
 }

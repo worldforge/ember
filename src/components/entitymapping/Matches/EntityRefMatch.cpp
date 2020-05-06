@@ -61,8 +61,8 @@ void EntityRefMatch::setEntity(Eris::Entity* entity) {
 	mMatchAttributeObserver->observeEntity(entity);
 }
 
-void EntityRefMatch::setEntityCreationObserver(Observers::EntityCreationObserver* observer) {
-	mEntityObserver.reset(observer);
+void EntityRefMatch::setEntityCreationObserver(std::unique_ptr<Observers::EntityCreationObserver> observer) {
+	mEntityObserver = std::move(observer);
 }
 
 void EntityRefMatch::testEntity(Eris::Entity* entity) {
@@ -76,8 +76,8 @@ void EntityRefMatch::testEntity(Eris::Entity* entity) {
 
 }
 
-void EntityRefMatch::setMatchAttributeObserver(Observers::MatchAttributeObserver* observer) {
-	mMatchAttributeObserver.reset(observer);
+void EntityRefMatch::setMatchAttributeObserver(std::unique_ptr<Observers::MatchAttributeObserver> observer) {
+	mMatchAttributeObserver = std::move(observer);
 }
 
 }

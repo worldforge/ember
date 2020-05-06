@@ -32,41 +32,35 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Matches {
 
 namespace Observers {
 
-MatchAttributeObserver::MatchAttributeObserver(Matches::AttributeDependentMatch* match,const std::string& attributeName)
-: mMatch(match), mAttributeName(attributeName)
-{
+MatchAttributeObserver::MatchAttributeObserver(Matches::AttributeDependentMatch& match, const std::string& attributeName)
+		: mMatch(match), mAttributeName(attributeName) {
 }
 
-MatchAttributeObserver::MatchAttributeObserver(Matches::AttributeMatch* match)
-: mMatch(match), mAttributeName(match->getAttributeName())
-{
+MatchAttributeObserver::MatchAttributeObserver(Matches::AttributeMatch& match)
+		: mMatch(match), mAttributeName(match.getAttributeName()) {
 }
 
-void MatchAttributeObserver::attributeChanged( const Atlas::Message::Element& attributeValue)
-{
-	mMatch->testAttribute(attributeValue, true);
+void MatchAttributeObserver::attributeChanged(const Atlas::Message::Element& attributeValue) {
+	mMatch.testAttribute(attributeValue, true);
 }
 
-void MatchAttributeObserver::observeEntity(Eris::Entity* entity)
-{
+void MatchAttributeObserver::observeEntity(Eris::Entity* entity) {
 	mSlot.disconnect();
 	if (entity) {
 		mSlot = sigc::mem_fun(*this, &MatchAttributeObserver::attributeChanged);
 		entity->observe(mAttributeName, mSlot);
 		//If the attribute already exists, trigger a test now.
 		if (entity->hasProperty(mAttributeName)) {
-			mMatch->testAttribute(entity->valueOfProperty(mAttributeName), false);
+			mMatch.testAttribute(entity->valueOfProperty(mAttributeName), false);
 		}
 	}
 }
-
 
 
 }

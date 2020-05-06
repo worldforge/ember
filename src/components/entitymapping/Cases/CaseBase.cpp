@@ -42,14 +42,11 @@ CaseBase::CaseBase()
 {
 }
 
-CaseBase::~CaseBase() {
-	::Ember::EntityMapping::cleanVector(mActions);
-	::Ember::EntityMapping::cleanVector(mMatches);
-}
+CaseBase::~CaseBase() = default;
 
-void CaseBase::addAction(Actions::Action* action) {
-	mActions.push_back(action);
+void CaseBase::addAction(std::unique_ptr<Actions::Action> action) {
 	action->setCase(this);
+	mActions.emplace_back(std::move(action));
 }
 
 void CaseBase::evaluateChanges(ChangeContext& changeContext)
@@ -97,8 +94,8 @@ void CaseBase::deactivateActions(ChangeContext& context)
 	mIsActive = false;
 }
 
-void CaseBase::addMatch(Matches::MatchBase* match) {
-	mMatches.push_back(match);
+void CaseBase::addMatch(std::unique_ptr<Matches::MatchBase> match) {
+	mMatches.push_back(std::move(match));
 }
 
 void CaseBase::setEntity(Eris::Entity* entity)

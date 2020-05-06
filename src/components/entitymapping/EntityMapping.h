@@ -90,18 +90,6 @@ class EntityCreationObserver;
 
 
 /**
-Utility method for deleting all object held in a std::vector.
-*/
-template<typename T>
-static void cleanVector(T& theVector) {
-	for (auto& element : theVector) {
-		delete element;
-	}
-	theVector.clear();
-}
-
-
-/**
 	Instances of this are connected to Eris::Entity instances, and listen for changes in attributes and contained entities. When a change occurs, a client defined action is activated or deactivated, leading to client side changes. A typucal case is the changing of a model's appearance.
 
 	The EntityMapping contains three different types of object: Matches, Cases and Actions.

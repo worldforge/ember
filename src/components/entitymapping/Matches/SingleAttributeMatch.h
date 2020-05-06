@@ -59,7 +59,7 @@ public:
 	/**
 	Use the supplied observer to observe changes to the attribute. The supplied observer will be managed by this class.
 	*/
-	void setMatchAttributeObserver(Observers::MatchAttributeObserver* observer);
+	void setMatchAttributeObserver(std::unique_ptr<Observers::MatchAttributeObserver> observer);
 
 protected:
 
