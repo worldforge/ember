@@ -140,7 +140,7 @@ void ModelRenderer::showModel(const Model::ModelDefinitionPtr& modelDef, const O
 		//override the rendering distance from the model; we want to always show it in the preview
 		mModel->setRenderingDistance(0);
 
-		mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(mTexture->getRenderContext()->getSceneNode(), nullptr, false));
+		mModelMount = new Model::ModelMount(*mModel, std::make_unique<SceneNodeProvider>(mTexture->getRenderContext()->getSceneNode(), nullptr, false));
 
 		mModel->load();
 		showModel();

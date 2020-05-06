@@ -125,6 +125,7 @@ add_library(emberogre
         BulletWorld.cpp
         SkeletonDisplay.cpp
         ProjectileRenderingTechnique.cpp
+        EmptyNodeAttachment.cpp
         )
 
 

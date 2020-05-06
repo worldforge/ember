@@ -39,7 +39,7 @@ class NodeController;
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
- * @brief An attachment which uses an instance of Ogre::Node.
+ * @brief An attachment which uses an instance of INodeProvider.
  *
  * The actual concrete type of node (basically either a normal Ogre::SceneNode or an Ogre::TagPoint) is determined by the INodeProvider instance used.
  * Most entities in the game are expected to be represented by this class, or any subclass of it.
@@ -58,7 +58,7 @@ public:
 	 * @param childEntity The child entity.
 	 * @param nodeProvider A node provider instance, not null. Ownership will be passed to this instance.
 	 */
-	NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, std::unique_ptr<INodeProvider> nodeProvider);
+	NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider& nodeProvider);
 
 	/**
 	 * @brief Dtor.
@@ -66,16 +66,9 @@ public:
 	 */
 	~NodeAttachment() override;
 
-	/**
-	 * @brief Initializes the attachment. This must be called after an instance has been created.
-	 */
-	virtual void init();
-
 	void setControlDelegate(IEntityControlDelegate* controllerDelegate) override;
 
 	IEntityControlDelegate* getControlDelegate() const override;
-
-	void attachEntity(EmberEntity& entity) override;
 
 	void updatePosition() override;
 
@@ -106,14 +99,13 @@ public:
 	 */
 	Ogre::Node* getNode() const;
 
-
 protected:
 
 	/**
 	 * @brief A node provider instance, from which the mNode instance is created.
 	 * Also used when child attachment are created.
 	 */
-	std::unique_ptr<INodeProvider> mNodeProvider;
+	INodeProvider& mNodeProvider;
 
 	/**
 	 * @brief The controller used for the attachment.
@@ -139,6 +131,8 @@ protected:
 	 * The implementation in NodeAttachment will ask the node provider to set the visibility, but there's an option for any subclass to do additional work.
 	 */
 	virtual void setVisible(bool visible);
+
+	void setControlDelegateImpl(IEntityControlDelegate* controllerDelegate);
 
 };
 

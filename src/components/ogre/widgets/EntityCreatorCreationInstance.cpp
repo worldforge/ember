@@ -223,7 +223,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 //	}
 
 	Ogre::SceneNode* node = mEntityNode->createChildSceneNode(OgreInfo::createUniqueResourceName(mRecipe.getName()));
-	mModelMount = std::make_unique<Model::ModelMount>(*mModel, new SceneNodeProvider(node, mEntityNode));
+	mModelMount = std::make_unique<Model::ModelMount>(*mModel, std::make_unique<SceneNodeProvider>(node, mEntityNode));
 	mModelMount->reset();
 
 	initFromModel();

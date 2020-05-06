@@ -153,7 +153,6 @@ ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::s
 	if (definition) {
 		mAttachedModel = new Model::Model(mModel.getManager(), definition, modelName);
 		mAttachedModel->load();
-		auto* boneProvider = new Model::ModelBoneProvider(nullptr, mModel, attachPointName);
 
 		std::string pose;
 		const Model::AttachPointDefinitionStore& attachpoints = model.getDefinition()->getAttachPointsDefinitions();
@@ -163,8 +162,9 @@ ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::s
 				break;
 			}
 		}
+		auto boneProvider = std::make_unique<Model::ModelBoneProvider>(nullptr, mModel, attachPointName);
 
-		mMount = new Model::ModelMount(*mAttachedModel, boneProvider, pose);
+		mMount = new Model::ModelMount(*mAttachedModel, std::move(boneProvider), pose);
 		mMount->reset();
 		//TODO: fix this somehow
 		//mTagPoint = boneProvider->getAttachPointWrapper()->TagPoint;

@@ -28,6 +28,7 @@
 #include "OgreInfo.h"
 #include "EmberEntityActionCreator.h"
 #include "World.h"
+#include "EmptyNodeAttachment.h"
 #include <Eris/View.h>
 
 #include <OgreSceneManager.h>
@@ -68,7 +69,6 @@ void WorldAttachment::attachEntity(EmberEntity& entity) {
 		if (graphicalRepresentation) {
 			Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
 			auto nodeAttachment = std::make_unique<Model::ModelAttachment>(getAttachedEntity(), std::move(graphicalRepresentation), std::make_unique<SceneNodeProvider>(node, mWorldNode));
-			nodeAttachment->init();
 			entity.setAttachment(std::move(nodeAttachment));
 		} else {
 			entity.setAttachment({});
@@ -78,8 +78,7 @@ void WorldAttachment::attachEntity(EmberEntity& entity) {
 			if (auto environment = mWorld.getEnvironment()) {
 				Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
 				auto oceanRepresentation = std::make_unique<Environment::OceanRepresentation>(entity, *environment, mScene);
-				auto nodeAttachment = std::make_unique<NodeAttachment>(getAttachedEntity(), entity, std::make_unique<SceneNodeProvider>(node, mWorldNode));
-				nodeAttachment->init();
+				auto nodeAttachment = std::make_unique<EmptyNodeAttachment>(getAttachedEntity(), entity, std::make_unique<SceneNodeProvider>(node, mWorldNode));
 				entity.setAttachment(std::move(nodeAttachment));
 			} else {
 				S_LOG_WARNING("Tried to activate ocean representation, but there was no world instance available.");

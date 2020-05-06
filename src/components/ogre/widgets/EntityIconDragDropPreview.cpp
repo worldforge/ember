@@ -144,8 +144,8 @@ void ModelPreviewWorker::setModel(const std::string& modelName) {
     mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
     mModel->load();
 
-    mModelMount = std::make_unique<Model::ModelMount>(*mModel, new SceneNodeProvider(mEntityNode, nullptr, false));
-    mModelMount->reset();
+	mModelMount = std::make_unique<Model::ModelMount>(*mModel, std::make_unique<SceneNodeProvider>(mEntityNode, nullptr, false));
+	mModelMount->reset();
 
     initFromModel();
 

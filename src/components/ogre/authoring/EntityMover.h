@@ -73,7 +73,7 @@ private:
 	EntityMoveManager& mManager;
 
 	IEntityControlDelegate* mPreviousControlDelegate;
-	IEntityControlDelegate* mControlDelegate;
+	std::unique_ptr<IEntityControlDelegate> mControlDelegate;
 
 };
 

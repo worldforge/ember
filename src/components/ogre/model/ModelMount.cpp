@@ -37,11 +37,11 @@ namespace OgreView {
 
 namespace Model {
 
-ModelMount::ModelMount(Model& model, INodeProvider* nodeProvider, std::string pose) :
+ModelMount::ModelMount(Model& model, std::unique_ptr<INodeProvider> nodeProvider, std::string pose) :
 		mModel(model),
-		mNodeProvider(nodeProvider),
+		mNodeProvider(std::move(nodeProvider)),
 		mPose(std::move(pose)) {
-	model.attachToNode(nodeProvider);
+	model.attachToNode(mNodeProvider.get());
 }
 
 ModelMount::~ModelMount() {

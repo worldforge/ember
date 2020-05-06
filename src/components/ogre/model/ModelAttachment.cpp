@@ -116,11 +116,11 @@ struct ModelContainedActionCreator : public EntityMapping::IActionCreator {
 
 
 ModelAttachment::ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<ModelRepresentation> modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose) :
-		NodeAttachment(parentEntity, modelRepresentation->getEntity(), std::move(nodeProvider)),
+		NodeAttachment(parentEntity, modelRepresentation->getEntity(), *nodeProvider.get()),
 		mModelRepresentation(std::move(modelRepresentation)),
-		mModelMount(nullptr),
-		mIgnoreEntityData(false),
-		mPose(pose) {
+		mPose(pose),
+		mModelMount(std::make_unique<ModelMount>(mModelRepresentation->getModel(), std::move(nodeProvider), mPose)),
+		mIgnoreEntityData(false) {
 	if (!pose.empty()) {
 		const PoseDefinitionStore& poses = mModelRepresentation->getModel().getDefinition()->getPoseDefinitions();
 		auto I = poses.find(pose);
@@ -128,26 +128,14 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<Mode
 			mIgnoreEntityData = I->second.IgnoreEntityData;
 		}
 	}
-}
 
-ModelAttachment::~ModelAttachment() {
-	//We've delegated the ownership of the node provider to the model mount, so we need to release it here so it's not deleted twice.
-	if (mModelMount) {
-		mNodeProvider.release();
-	}
-	//When the modelmount is deleted the scale node will also be destroyed.
-	//Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
-}
-
-void ModelAttachment::init() {
-	NodeAttachment::init();
-
-	mModelMount = std::make_unique<ModelMount>(mModelRepresentation->getModel(), mNodeProvider.get(), mPose);
 	mModelMount->reset();
 	setupFittings();
 	mModelRepresentation->getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
 	mModelMount->getModel().setVisible(mChildEntity.isVisible());
 }
+
+ModelAttachment::~ModelAttachment() = default;
 
 IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const {
 	return mModelRepresentation.get();
@@ -193,9 +181,8 @@ void ModelAttachment::attachEntity(EmberEntity& entity) {
 						const AttachPointDefinitionStore& attachpoints = mModelRepresentation->getModel().getDefinition()->getAttachPointsDefinitions();
 						for (const auto& attachpoint : attachpoints) {
 							if (attachpoint.Name == attachPoint) {
-								auto nodeProvider = std::make_unique<ModelBoneProvider>(mNodeProvider->getNode(), mModelRepresentation->getModel(), attachPoint);
+								auto nodeProvider = std::make_unique<ModelBoneProvider>(mModelMount->getNodeProvider()->getNode(), mModelRepresentation->getModel(), attachPoint);
 								auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), std::move(modelRepresentation), std::move(nodeProvider), attachpoint.Pose);
-								nodeAttachment->init();
 								entity.setAttachment(std::move(nodeAttachment));
 							}
 						}

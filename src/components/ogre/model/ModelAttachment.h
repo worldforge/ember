@@ -65,8 +65,6 @@ public:
 
 	~ModelAttachment() override;
 
-	void init() override;
-
 	IGraphicalRepresentation* getGraphicalRepresentation() const override;
 
 	void attachEntity(EmberEntity& entity) override;
@@ -108,6 +106,11 @@ protected:
 	std::unique_ptr<ModelRepresentation> mModelRepresentation;
 
 	/**
+	 * @brief An optional pose to use.
+	 */
+	const std::string mPose;
+
+	/**
 	 * @brief The model mount, which takes care of setting up and handling the rotation and orientation of the model.
 	 * This also owns the scale node, which will be destroyed when the mount is destroyed.
 	 * The model mount can be connected to either an Ogre::SceneNode or an Ogre::TagPoint. The former is the normal situation, while the latter is the situation if this attachment represents an attachment to a bone on an Ogre::Skeleton instance.
@@ -130,11 +133,6 @@ protected:
 	 * This is set by the data in any pose that is specified. The main reason is that for some attachments we need to ignore the server for them to look alright.
 	 */
 	bool mIgnoreEntityData;
-
-	/**
-	 * @brief An optional pose to use.
-	 */
-	const std::string mPose;
 
 	/**
 	 * @brief Sets up the ModelFittings and the observers of the attributes to which they are connected.

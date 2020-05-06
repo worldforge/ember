@@ -35,18 +35,16 @@
 namespace Ember {
 namespace OgreView {
 
-NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, std::unique_ptr<INodeProvider> nodeProvider) :
+NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider& nodeProvider) :
 		AttachmentBase(&parentEntity, childEntity),
-		mNodeProvider(std::move(nodeProvider)),
+		mNodeProvider(nodeProvider),
 		mAttachmentController(nullptr) {
 	setupListeners();
+	setControlDelegateImpl(mChildEntity.getAttachmentControlDelegate());
 }
 
 NodeAttachment::~NodeAttachment() = default;
 
-void NodeAttachment::init() {
-	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
-}
 
 void NodeAttachment::setupListeners() {
 	mChildEntity.VisibilityChanged.connect(sigc::mem_fun(this, &NodeAttachment::entity_VisibilityChanged));
@@ -66,24 +64,11 @@ void NodeAttachment::entity_PositioningModeChanged(EmberEntity::PositioningMode 
 }
 
 void NodeAttachment::setVisible(bool visible) {
-	mNodeProvider->setVisible(visible);
-}
-
-//std::unique_ptr<IEntityAttachment> NodeAttachment::attachGraphicalRepresentation(EmberEntity& childEntity, IGraphicalRepresentation* representation) {
-////TODO: return something?
-//	return {};
-//}
-
-void NodeAttachment::attachEntity(EmberEntity& entity) {
-	//No special kind of attachment for things attached to a node.
+	mNodeProvider.setVisible(visible);
 }
 
 void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate) {
-	if (controllerDelegate) {
-		mAttachmentController = std::make_unique<DelegatingNodeController>(*this, *controllerDelegate);
-	} else {
-		mAttachmentController = std::make_unique<NodeController>(*this);
-	}
+	setControlDelegateImpl(controllerDelegate);
 }
 
 IEntityControlDelegate* NodeAttachment::getControlDelegate() const {
@@ -104,11 +89,11 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 			mParentEntity->getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 		}
 	}
-	mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
+	mNodeProvider.setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
 }
 
 Ogre::Node* NodeAttachment::getNode() const {
-	return mNodeProvider->getNode();
+	return mNodeProvider.getNode();
 }
 
 void NodeAttachment::updatePosition() {
@@ -118,13 +103,21 @@ void NodeAttachment::updatePosition() {
 }
 
 void NodeAttachment::setVisualize(const std::string& visualization, bool visualize) {
-	mNodeProvider->setVisualize(visualization, visualize);
+	mNodeProvider.setVisualize(visualization, visualize);
 	AttachmentBase::setVisualize(visualization, visualize);
 }
 
 bool NodeAttachment::getVisualize(const std::string& visualization) const {
-	bool providerResult = mNodeProvider->getVisualize(visualization);
+	bool providerResult = mNodeProvider.getVisualize(visualization);
 	return AttachmentBase::getVisualize(visualization) || providerResult;
+}
+
+void NodeAttachment::setControlDelegateImpl(IEntityControlDelegate* controllerDelegate) {
+	if (controllerDelegate) {
+		mAttachmentController = std::make_unique<DelegatingNodeController>(*this, *controllerDelegate);
+	} else {
+		mAttachmentController = std::make_unique<NodeController>(*this);
+	}
 }
 
 }

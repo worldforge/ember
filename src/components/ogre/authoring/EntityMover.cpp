@@ -48,7 +48,7 @@ EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& mana
 		mManager(manager),
 		mPreviousControlDelegate(nodeAttachment.getControlDelegate()),
 		mControlDelegate(new EntityMoverControlDelegate(*this)) {
-	nodeAttachment.setControlDelegate(mControlDelegate);
+	nodeAttachment.setControlDelegate(mControlDelegate.get());
 
 
 	auto modelRepresentation = dynamic_cast<Model::ModelRepresentation*>(nodeAttachment.getAttachedEntity().getGraphicalRepresentation());
@@ -73,9 +73,6 @@ EntityMover::~EntityMover() {
 	if (modelRepresentation) {
 		modelRepresentation->getCollisionDetector().setMask(COLLISION_MASK_PICKABLE | COLLISION_MASK_OCCLUDING);
 	}
-
-
-	delete mControlDelegate;
 }
 
 const IEntityControlDelegate& EntityMover::getControlDelegate() const {
