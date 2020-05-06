@@ -22,6 +22,9 @@ public:
     Connection& getConnection() const;
 
 	tolua_outside void _Avatar_place @ place(const Eris::Entity* entity,
+			   const Eris::Entity* container);
+
+	tolua_outside void _Avatar_place @ place(const Eris::Entity* entity,
 			   const Eris::Entity* container,
 			   const WFMath::Point<3>& pos,
 			   const WFMath::Quaternion& orientation);

@@ -36,10 +36,10 @@ public:
 	void cleanupCreation();
 	
 	/**
-	 * @brief Returns the offset between the preview model and the avatar.
-	 * @return Vector of the offset between the preview model and the avatar.
+	 * Returns the position where the preview was dropped in the world.
+	 * @return A position.
 	 */
-	WFMath::Vector<3> getDropOffset() const;
+	WFMath::Point<3> getDropPosition() const;
 
 	/**
 	 * @brief Returns the orientation of the preview model.

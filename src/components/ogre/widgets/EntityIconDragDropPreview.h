@@ -101,10 +101,10 @@ public:
 	void finalizeCreation();
 
 	/**
-	 * @brief Returns the offset between the preview model and the avatar.
-	 * @return Vector of the offset between the preview model and the avatar.
+	 * Returns the position where the preview was dropped in the world.
+	 * @return A position.
 	 */
-	WFMath::Vector<3> getDropOffset() const;
+	WFMath::Point<3> getDropPosition() const;
 
 	/**
 	 * @brief Returns the orientation of the preview model.
@@ -130,9 +130,9 @@ private:
 	EmberEntity* mIconEntity;
 
 	/**
-	 * @brief The location of the preview model to the avatar
+	 * @brief The location of the preview model in the world.
 	 */
-	WFMath::Vector<3> mDropOffset;
+	WFMath::Point<3> mDropPosition;
 
 	/**
 	 * @brief The orientation of the preview model.

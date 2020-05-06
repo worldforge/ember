@@ -84,9 +84,9 @@ function Inventory:buildWidget(avatarEntity)
     --Responds when preview model has been released on the world
     local dragDrop_Finalize = function(emberEntity)
         if emberEntity then
-            local offset = self.helper:getDropOffset()
+            local position = self.helper:getDropPosition()
             local orientation = self.helper:getDropOrientation()
-            emberOgre:getWorld():getAvatar():getErisAvatar():place(emberEntity, emberOgre:getWorld():getAvatar():getErisAvatar():getEntity(), offset, orientation)
+            emberOgre:getWorld():getAvatar():getErisAvatar():place(emberEntity, emberOgre:getWorld():getAvatar():getErisAvatar():getEntity():getLocation(), position, orientation)
         end
     end
     connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)

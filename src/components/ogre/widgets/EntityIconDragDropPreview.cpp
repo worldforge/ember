@@ -51,183 +51,184 @@ namespace OgreView {
 namespace Gui {
 
 EntityIconDragDropPreview::EntityIconDragDropPreview(World& world) :
-        mWorld(world),
-        mIconEntity(nullptr) {
+		mWorld(world),
+		mIconEntity(nullptr) {
 }
 
 EntityIconDragDropPreview::~EntityIconDragDropPreview() {
-    mEntityDeleteConnection.disconnect();
-    mEntityLocationChangeConnection.disconnect();
+	mEntityDeleteConnection.disconnect();
+	mEntityLocationChangeConnection.disconnect();
 }
 
 void EntityIconDragDropPreview::createPreview(EntityIcon* icon) {
-    if (!mModelPreviewWorker) {
-        if (icon && icon->getEntity()) {
-            mIconEntity = icon->getEntity();
-            Gui::HelpMessage message("Entity Drag Preview", "Release the left mouse button to place the entity at the selected location. Press Escape to cancel.", "entity icon drag drop preview", "dragDropMessage");
-            Gui::QuickHelp::getSingleton().updateText(message);
-            mModelPreviewWorker = std::make_unique<ModelPreviewWorker>(mWorld, *mIconEntity);
-            mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
-            mModelPreviewWorker->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
-            mEntityDeleteConnection = mIconEntity->BeingDeleted.connect([&]() {
-                cleanupCreation();
-            });
-            mEntityLocationChangeConnection = mIconEntity->LocationChanged.connect([&](Eris::Entity*) {
-                cleanupCreation();
-            });
-        }
-    }
+	if (!mModelPreviewWorker) {
+		if (icon && icon->getEntity()) {
+			mIconEntity = icon->getEntity();
+			Gui::HelpMessage message("Entity Drag Preview", "Release the left mouse button to place the entity at the selected location. Press Escape to cancel.", "entity icon drag drop preview", "dragDropMessage");
+			Gui::QuickHelp::getSingleton().updateText(message);
+			mModelPreviewWorker = std::make_unique<ModelPreviewWorker>(mWorld, *mIconEntity);
+			mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
+			mModelPreviewWorker->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
+			mEntityDeleteConnection = mIconEntity->BeingDeleted.connect([&]() {
+				cleanupCreation();
+			});
+			mEntityLocationChangeConnection = mIconEntity->LocationChanged.connect([&](Eris::Entity*) {
+				cleanupCreation();
+			});
+		}
+	}
 }
 
 void EntityIconDragDropPreview::cleanupCreation() {
-    mIconEntity = nullptr;
-    mModelPreviewWorker.reset();
-    mEntityDeleteConnection.disconnect();
-    mEntityLocationChangeConnection.disconnect();
+	mIconEntity = nullptr;
+	mModelPreviewWorker.reset();
+	mEntityDeleteConnection.disconnect();
+	mEntityLocationChangeConnection.disconnect();
 }
 
 void EntityIconDragDropPreview::finalizeCreation() {
-    mDropOffset = mModelPreviewWorker->getPosition() - mWorld.getAvatar()->getClientSideAvatarPosition();
-    mDropOrientation = mModelPreviewWorker->getOrientation();
-    EventEntityFinalized.emit(mIconEntity);
-    cleanupCreation();
+	mDropPosition = mModelPreviewWorker->getPosition();
+	mDropOrientation = mModelPreviewWorker->getOrientation();
+	EventEntityFinalized.emit(mIconEntity);
+	cleanupCreation();
 }
 
-WFMath::Vector<3> EntityIconDragDropPreview::getDropOffset() const {
-    return mDropOffset;
+
+WFMath::Point<3> EntityIconDragDropPreview::getDropPosition() const {
+	return mDropPosition;
 }
 
 WFMath::Quaternion EntityIconDragDropPreview::getDropOrientation() const {
-    return mDropOrientation;
+	return mDropOrientation;
 }
 
 ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity& entity) :
-        mWorld(world),
-        mEntity(entity),
-        mEntityNode(mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode()),
-        mPos(WFMath::Point<3>::ZERO()),
-        mOrientation(WFMath::Quaternion::IDENTITY()),
-        mMovement(std::make_unique<ModelPreviewWorkerMovement>(*this, mWorld.getMainCamera(), entity, mEntityNode))    // Registering move adapter to track mouse movements
+		mWorld(world),
+		mEntity(entity),
+		mEntityNode(mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode()),
+		mPos(WFMath::Point<3>::ZERO()),
+		mOrientation(WFMath::Quaternion::IDENTITY()),
+		mMovement(std::make_unique<ModelPreviewWorkerMovement>(*this, mWorld.getMainCamera(), entity, mEntityNode))    // Registering move adapter to track mouse movements
 {
 
-    Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& modelName) {
-        setModel(modelName);
-    }, [&](const std::string& partName) {
-        showModelPart(partName);
-    });
+	Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& modelName) {
+		setModel(modelName);
+	}, [&](const std::string& partName) {
+		showModelPart(partName);
+	});
 
-    auto modelMapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, entity.getView()->getTypeService(), entity.getView());
-    if (modelMapping) {
-        modelMapping->initialize();
-    }
+	auto modelMapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, entity.getView()->getTypeService(), entity.getView());
+	if (modelMapping) {
+		modelMapping->initialize();
+	}
 
 }
 
 ModelPreviewWorker::~ModelPreviewWorker() {
-    mEntityNode->detachAllObjects();
-    mOrientation = Convert::toWF(mEntityNode->getOrientation());
-    mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
+	mEntityNode->detachAllObjects();
+	mOrientation = Convert::toWF(mEntityNode->getOrientation());
+	mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
 
 }
 
 void ModelPreviewWorker::setModel(const std::string& modelName) {
-    if (mModel) {
-        if (mModel->getDefinition()->getOrigin() == modelName) {
-            return;
-        }
-    }
-    auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-    if (!modelDef) {
-        modelDef = Model::ModelDefinitionManager::getSingleton().getByName("common/primitives/placeholder.modeldef");
-    }
-    mModel = std::make_unique<Model::Model>(mWorld.getSceneManager(), modelDef, modelName);
-    mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
-    mModel->load();
+	if (mModel) {
+		if (mModel->getDefinition()->getOrigin() == modelName) {
+			return;
+		}
+	}
+	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+	if (!modelDef) {
+		modelDef = Model::ModelDefinitionManager::getSingleton().getByName("common/primitives/placeholder.modeldef");
+	}
+	mModel = std::make_unique<Model::Model>(mWorld.getSceneManager(), modelDef, modelName);
+	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
+	mModel->load();
 
 	mModelMount = std::make_unique<Model::ModelMount>(*mModel, std::make_unique<SceneNodeProvider>(mEntityNode, nullptr, false));
 	mModelMount->reset();
 
-    initFromModel();
+	initFromModel();
 
-    // Setting initial position and orientation
-    if (mPos.isValid()) {
-        mEntityNode->setPosition(Convert::toOgre(mPos));
-    }
-    mEntityNode->setOrientation(Convert::toOgre(mOrientation));
+	// Setting initial position and orientation
+	if (mPos.isValid()) {
+		mEntityNode->setPosition(Convert::toOgre(mPos));
+	}
+	mEntityNode->setOrientation(Convert::toOgre(mOrientation));
 }
 
 WFMath::Point<3> ModelPreviewWorker::getPosition() const {
-    return Convert::toWF<WFMath::Point<3>>(mEntityNode->getPosition());
+	return Convert::toWF<WFMath::Point<3>>(mEntityNode->getPosition());
 }
 
 WFMath::Quaternion ModelPreviewWorker::getOrientation() const {
-    return Convert::toWF(mEntityNode->getOrientation());
+	return Convert::toWF(mEntityNode->getOrientation());
 }
 
 void ModelPreviewWorker::showModelPart(const std::string& partName) {
-    if (mModel) {
-        mModel->showPart(partName);
-    }
+	if (mModel) {
+		mModel->showPart(partName);
+	}
 }
 
 void ModelPreviewWorker::hideModelPart(const std::string& partName) {
-    if (mModel) {
-        mModel->hidePart(partName);
-    }
+	if (mModel) {
+		mModel->hidePart(partName);
+	}
 }
 
 void ModelPreviewWorker::initFromModel() {
-    scaleNode();
+	scaleNode();
 }
 
 void ModelPreviewWorker::model_Reloaded() {
-    initFromModel();
-    mModel->setVisible(true);
+	initFromModel();
+	mModel->setVisible(true);
 }
 
 void ModelPreviewWorker::scaleNode() {
-    if (mModelMount) {
-        mModelMount->rescale(hasBBox() ? &getBBox() : nullptr);
-    } else {
-        S_LOG_WARNING("Tried to scale node without there being a valid model mount.");
-    }
+	if (mModelMount) {
+		mModelMount->rescale(hasBBox() ? &getBBox() : nullptr);
+	} else {
+		S_LOG_WARNING("Tried to scale node without there being a valid model mount.");
+	}
 }
 
 bool ModelPreviewWorker::hasBBox() {
-    return mEntity.hasBBox();
+	return mEntity.hasBBox();
 }
 
 const WFMath::AxisBox<3>& ModelPreviewWorker::getBBox() {
-    return mEntity.getBBox();
+	return mEntity.getBBox();
 }
 
 const Eris::Entity& ModelPreviewWorker::getEntity() const {
-    return mEntity;
+	return mEntity;
 }
 
 ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Eris::Entity& entity, Ogre::SceneNode* node) :
-        Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker) {
+		Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker) {
 }
 
 void ModelPreviewWorkerMovementBridge::finalizeMovement() {
-    mModelPreviewWorker.EventFinalizeCreation.emit();
+	mModelPreviewWorker.EventFinalizeCreation.emit();
 }
 
 void ModelPreviewWorkerMovementBridge::cancelMovement() {
-    mModelPreviewWorker.EventCleanupCreation.emit();
+	mModelPreviewWorker.EventCleanupCreation.emit();
 }
 
 ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Eris::Entity& entity, Ogre::SceneNode* node) :
-        mMoveAdapter(camera) {
-    // When the point is moved, an instance of this will be created and the movement handled by it.
-    // Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
-    auto bridge = std::make_shared<ModelPreviewWorkerMovementBridge>(mModelPreviewWorker, entity, node);
-    mMoveAdapter.attachToBridge(bridge);
-    mMoveAdapter.update();
+		mMoveAdapter(camera) {
+	// When the point is moved, an instance of this will be created and the movement handled by it.
+	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
+	auto bridge = std::make_shared<ModelPreviewWorkerMovementBridge>(mModelPreviewWorker, entity, node);
+	mMoveAdapter.attachToBridge(bridge);
+	mMoveAdapter.update();
 }
 
 ModelPreviewWorkerMovement::~ModelPreviewWorkerMovement() {
-    mMoveAdapter.detach();
+	mMoveAdapter.detach();
 }
 
 }
