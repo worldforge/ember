@@ -26,7 +26,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -37,13 +36,12 @@ class EntityTypeCase;
 
 #include "../Cases/EntityTypeCase.h"
 #include "AbstractMatch.h"
-namespace Eris
-{
+
+namespace Eris {
 class Entity;
 }
 
 namespace Ember {
-
 
 
 namespace EntityMapping {
@@ -54,8 +52,7 @@ namespace Matches {
 	Watches for certain entity types.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class EntityTypeMatch : public AbstractMatch<Cases::EntityTypeCase>
-{
+class EntityTypeMatch : public AbstractMatch<Cases::EntityTypeCase> {
 public:
 
 	void testEntity(Eris::Entity* entity);

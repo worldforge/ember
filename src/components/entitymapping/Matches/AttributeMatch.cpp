@@ -26,20 +26,20 @@
 
 #include "AttributeMatch.h"
 
+#include <utility>
+
 namespace Ember {
 
 namespace EntityMapping {
 
 namespace Matches {
 
-AttributeMatch::AttributeMatch(const std::string& attributeName)
-: mAttributeName(attributeName)
-{
+AttributeMatch::AttributeMatch(std::string attributeName)
+		: mAttributeName(std::move(attributeName)) {
 }
 
 
-void AttributeMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation)
-{
+void AttributeMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) {
 	for (auto& aCase : mCases) {
 		aCase->testMatch(attribute);
 	}

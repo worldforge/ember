@@ -49,11 +49,11 @@ EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity,
 }
 
 void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, Cases::CaseBase& aCase, Definitions::CaseDefinition& caseDefinition) {
-	for (auto& actionDef : caseDefinition.getActions()) {
+	for (auto& actionDef : caseDefinition.Actions) {
 		if (actionDef.Type == "display-part") {
-			aCase.addAction(std::make_unique<EmberEntityPartAction>(mEntity, actionDef.getValue()));
+			aCase.addAction(std::make_unique<EmberEntityPartAction>(mEntity, actionDef.Value));
 		} else if (actionDef.Type == "display-model") {
-			aCase.addAction(std::make_unique<EmberEntityModelAction>(mEntity, actionDef.getValue(), mScene, modelMapping, mAttachmentFunction));
+			aCase.addAction(std::make_unique<EmberEntityModelAction>(mEntity, actionDef.Value, mScene, modelMapping, mAttachmentFunction));
 		} else if (actionDef.Type == "hide-model") {
 			aCase.addAction(std::make_unique<EmberEntityHideModelAction>(mEntity));
 		} else if (actionDef.Type == "display-label") {
@@ -61,7 +61,7 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 		} else if (actionDef.Type == "display-ocean") {
 			aCase.addAction(std::make_unique<Environment::OceanAction>(mOceanAttachmentFunction));
 		} else if (actionDef.Type == "enable-composition") {
-			aCase.addAction(std::make_unique<CompositionAction>(mEntity, actionDef.getValue()));
+			aCase.addAction(std::make_unique<CompositionAction>(mEntity, actionDef.Value));
 		} else if (actionDef.Type == "present") {
 			aCase.addAction(std::make_unique<PresentAction>(mEntity, mScene, modelMapping, mAttachmentFunction));
 //		} else if (actionDef.Type == "show-effect") {

@@ -29,7 +29,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Matches {
@@ -39,10 +38,10 @@ namespace Matches {
 	Base class for all Matches that are dependent on an attribute.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class AttributeDependentMatch
-{
+class AttributeDependentMatch {
 public:
 	AttributeDependentMatch() = default;
+
 	virtual ~AttributeDependentMatch() = default;
 
 	/**

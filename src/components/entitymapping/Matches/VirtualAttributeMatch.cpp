@@ -18,6 +18,8 @@
 
 #include "VirtualAttributeMatch.h"
 
+#include <utility>
+
 namespace Ember {
 
 namespace EntityMapping {
@@ -25,15 +27,13 @@ namespace EntityMapping {
 namespace Matches {
 
 
-VirtualAttributeMatch::VirtualAttributeMatch(const std::string& attributeName, std::initializer_list<std::string> internalAttributeNames)
-		: AttributeMatch(attributeName),
-		  mInternalAttributeNames(internalAttributeNames)
-{
+VirtualAttributeMatch::VirtualAttributeMatch(std::string attributeName, std::initializer_list<std::string> internalAttributeNames)
+		: AttributeMatch(std::move(attributeName)),
+		  mInternalAttributeNames(internalAttributeNames) {
 }
 
 
-void VirtualAttributeMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation)
-{
+void VirtualAttributeMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) {
 	for (auto& aCase : mCases) {
 		aCase->testMatch(attribute);
 	}
@@ -42,8 +42,7 @@ void VirtualAttributeMatch::testAttribute(const Atlas::Message::Element& attribu
 	}
 }
 
-void VirtualAttributeMatch::setEntity(Eris::Entity* entity)
-{
+void VirtualAttributeMatch::setEntity(Eris::Entity* entity) {
 	AbstractMatch<Cases::AttributeCase>::setEntity(entity);
 	for (auto& observer : mMatchAttributeObservers) {
 		observer->observeEntity(entity);
@@ -61,8 +60,7 @@ void VirtualAttributeMatch::setEntity(Eris::Entity* entity)
 	}
 }
 
-void VirtualAttributeMatch::addMatchAttributeObserver(std::unique_ptr<Observers::MatchAttributeObserver> observer)
-{
+void VirtualAttributeMatch::addMatchAttributeObserver(std::unique_ptr<Observers::MatchAttributeObserver> observer) {
 	mMatchAttributeObservers.push_back(std::move(observer));
 }
 

@@ -46,7 +46,7 @@ public:
 	/**
 	Creates a new instance that watches for changes to the supplied attribute.
 	*/
-	explicit SingleAttributeMatch(const std::string& attributeName);
+	explicit SingleAttributeMatch(std::string attributeName);
 
 
 	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) override;

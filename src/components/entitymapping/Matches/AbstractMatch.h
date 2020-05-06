@@ -28,13 +28,11 @@
 #include "../IVisitor.h"
 #include <vector>
 
-namespace Eris
-{
+namespace Eris {
 class Entity;
 }
 
 namespace Ember {
-
 
 
 namespace EntityMapping {
@@ -46,9 +44,8 @@ namespace Matches {
 	Base class for all matches which includes templated definitions of the kind of Case it will hold.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-template <class TCase>
-class AbstractMatch : public MatchBase
-{
+template<class TCase>
+class AbstractMatch : public MatchBase {
 public:
 
 	AbstractMatch() = default;
@@ -88,34 +85,32 @@ public:
 	void accept(IVisitor& visitor) override;
 
 protected:
-	 std::vector<std::unique_ptr<TCase>> mCases;
+	std::vector<std::unique_ptr<TCase>> mCases;
 };
 
-template <class TCase>
+template<class TCase>
 AbstractMatch<TCase>::~AbstractMatch() = default;
 
 
-template <class TCase>
-void AbstractMatch<TCase>::setEntity(Eris::Entity* entity)
-{
+template<class TCase>
+void AbstractMatch<TCase>::setEntity(Eris::Entity* entity) {
 	for (auto& aCase : mCases) {
 		aCase->setEntity(entity);
 	}
 }
 
-template <class TCase>
-std::vector<TCase*>& AbstractMatch<TCase>::getCases()
-{
+template<class TCase>
+std::vector<TCase*>& AbstractMatch<TCase>::getCases() {
 	return mCases;
 }
 
-template <class TCase>
+template<class TCase>
 void AbstractMatch<TCase>::addCase(std::unique_ptr<TCase> aCase) {
 	aCase->setParentCase(mParentCase);
 	mCases.emplace_back(std::move(aCase));
 }
 
-template <class TCase>
+template<class TCase>
 void AbstractMatch<TCase>::evaluateChanges(ChangeContext& changeContext) {
 
 	///we want to make sure that we start with deactivating actions, and then after that activate those that should be activated
@@ -124,7 +119,7 @@ void AbstractMatch<TCase>::evaluateChanges(ChangeContext& changeContext) {
 	}
 }
 
-template <class TCase>
+template<class TCase>
 void AbstractMatch<TCase>::evaluateChanges() {
 
 	///we want to make sure that we start with deactivating actions, and then after that activate those that should be activated
@@ -136,15 +131,13 @@ void AbstractMatch<TCase>::evaluateChanges() {
 	changeContext.performActions();
 }
 
-template <class TCase>
-void AbstractMatch<TCase>::accept(IVisitor& visitor)
-{
+template<class TCase>
+void AbstractMatch<TCase>::accept(IVisitor& visitor) {
 	visitor.visit(*this);
 	for (auto& aCase : mCases) {
 		aCase->accept(visitor);
 	}
 }
-
 
 
 }

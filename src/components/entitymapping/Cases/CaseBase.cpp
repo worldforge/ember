@@ -32,14 +32,12 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
 
 CaseBase::CaseBase()
-: mParentCase(nullptr), mIsTrue(false), mIsActive(false)
-{
+		: mParentCase(nullptr), mIsTrue(false), mIsActive(false) {
 }
 
 CaseBase::~CaseBase() = default;
@@ -49,8 +47,7 @@ void CaseBase::addAction(std::unique_ptr<Actions::Action> action) {
 	mActions.emplace_back(std::move(action));
 }
 
-void CaseBase::evaluateChanges(ChangeContext& changeContext)
-{
+void CaseBase::evaluateChanges(ChangeContext& changeContext) {
 	//if we're true to the root, but not yet active, add ourself to the activation queue. If the opposite, i.e. we're no longer true to the root but active, we need to be deactivated.
 	if (getIsTrueToRoot()) {
 		if (!getIsActive()) {
@@ -68,8 +65,7 @@ void CaseBase::evaluateChanges(ChangeContext& changeContext)
 
 }
 
-void CaseBase::accept(IVisitor& visitor)
-{
+void CaseBase::accept(IVisitor& visitor) {
 	visitor.visit(*this);
 	for (auto& action : mActions) {
 		action->accept(visitor);
@@ -79,15 +75,14 @@ void CaseBase::accept(IVisitor& visitor)
 	}
 }
 
-void CaseBase::activateActions(ChangeContext& context)
-{
+void CaseBase::activateActions(ChangeContext& context) {
 	for (auto& action : mActions) {
 		action->activate(context);
 	}
 	mIsActive = true;
 }
-void CaseBase::deactivateActions(ChangeContext& context)
-{
+
+void CaseBase::deactivateActions(ChangeContext& context) {
 	for (auto& action : mActions) {
 		action->deactivate(context);
 	}
@@ -98,8 +93,7 @@ void CaseBase::addMatch(std::unique_ptr<Matches::MatchBase> match) {
 	mMatches.push_back(std::move(match));
 }
 
-void CaseBase::setEntity(Eris::Entity* entity)
-{
+void CaseBase::setEntity(Eris::Entity* entity) {
 	for (auto& match : mMatches) {
 		match->setEntity(entity);
 	}

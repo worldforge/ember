@@ -86,11 +86,11 @@ ModelActionCreator::ModelActionCreator(Eris::Entity& entity,
 }
 
 void ModelActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase& aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition) {
-	for (auto& actionDef : caseDefinition.getActions()) {
+	for (auto& actionDef : caseDefinition.Actions) {
 		if (actionDef.Type == "display-part") {
-			aCase.addAction(std::make_unique<DisplayPartAction>(this, actionDef.getValue()));
+			aCase.addAction(std::make_unique<DisplayPartAction>(this, actionDef.Value));
 		} else if (actionDef.Type == "display-model") {
-			aCase.addAction(std::make_unique<DisplayModelAction>(this, actionDef.getValue()));
+			aCase.addAction(std::make_unique<DisplayModelAction>(this, actionDef.Value));
 		} else if (actionDef.Type == "present") {
 			aCase.addAction(std::make_unique<PresentAction>(this));
 		}

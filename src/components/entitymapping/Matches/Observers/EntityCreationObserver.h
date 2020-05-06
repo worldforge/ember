@@ -31,7 +31,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Matches {
@@ -42,11 +41,11 @@ namespace Observers {
 	Observes for the creation of a specific entity in the world and automatically trigger the Match the observer is attached to when that entity is created.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class EntityCreationObserver : public virtual sigc::trackable
-{
+class EntityCreationObserver : public virtual sigc::trackable {
 public:
 
 	explicit EntityCreationObserver(EntityRefMatch& entityRefMatch);
+
 	~EntityCreationObserver();
 
 	void observeCreation(Eris::View* view, const std::string& entityId);

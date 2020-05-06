@@ -29,7 +29,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Matches {
@@ -37,23 +36,20 @@ namespace Matches {
 namespace Observers {
 
 EntityCreationObserver::EntityCreationObserver(EntityRefMatch& entityRefMatch)
-: mEntityRefMatch(entityRefMatch)
-{
+		: mEntityRefMatch(entityRefMatch) {
 }
-EntityCreationObserver::~EntityCreationObserver()
-{
+
+EntityCreationObserver::~EntityCreationObserver() {
 	mSlot.disconnect();
 }
 
-void EntityCreationObserver::observeCreation(Eris::View* view, const std::string& entityId)
-{
+void EntityCreationObserver::observeCreation(Eris::View* view, const std::string& entityId) {
 	mSlot.disconnect();
 	mSlot = sigc::mem_fun(*this, &EntityCreationObserver::entitySeen);
 	view->notifyWhenEntitySeen(entityId, mSlot);
 }
 
-void EntityCreationObserver::entitySeen(Eris::Entity* entity)
-{
+void EntityCreationObserver::entitySeen(Eris::Entity* entity) {
 	mSlot.disconnect();
 	mEntityRefMatch.testEntity(entity);
 }

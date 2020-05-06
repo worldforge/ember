@@ -24,13 +24,12 @@
 #define EMBEROGRE_MODEL_MAPPING_MATCHESMATCHBASE_H
 
 #include "../Cases/CaseBase.h"
-namespace Eris
-{
+
+namespace Eris {
 class Entity;
 }
 
 namespace Ember {
-
 
 
 namespace EntityMapping {
@@ -43,15 +42,17 @@ namespace Matches {
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
 
-class MatchBase
-{
+class MatchBase {
 public:
 
 	MatchBase() : mParentCase(0) {}
+
 	virtual ~MatchBase() = default;
 
 	void setParentCase(Cases::CaseBase* aCase);
+
 	virtual void setEntity(Eris::Entity* entity) = 0;
+
 	virtual void evaluateChanges(ChangeContext& changeContext) = 0;
 
 	/**
@@ -62,11 +63,10 @@ public:
 	virtual void accept(IVisitor& visitor) = 0;
 
 protected:
-	 Cases::CaseBase* mParentCase;
+	Cases::CaseBase* mParentCase;
 };
 
-inline void MatchBase::setParentCase(Cases::CaseBase* aCase)
-{
+inline void MatchBase::setParentCase(Cases::CaseBase* aCase) {
 	mParentCase = aCase;
 }
 

@@ -39,13 +39,12 @@ namespace EntityMapping {
 
 using namespace Definitions;
 
-EntityMappingManager::EntityMappingManager() {
-}
+EntityMappingManager::EntityMappingManager() = default;
 
 EntityMappingManager::~EntityMappingManager() = default;
 
 void EntityMappingManager::addDefinition(std::unique_ptr<EntityMappingDefinition> definition) {
-    auto name = definition->getName();
+    auto name = definition->Name;
     //Overwrite any existing definition.
     mDefinitions[name] = std::move(definition);
 }
@@ -76,7 +75,7 @@ std::unique_ptr<EntityMapping> EntityMappingManager::createMapping(Eris::Entity&
         CaseDefinition caseDefinition;
         ActionDefinition actionDefinition;
         actionDefinition.Type = "present";
-        caseDefinition.getActions().emplace_back(std::move(actionDefinition));
+        caseDefinition.Actions.emplace_back(std::move(actionDefinition));
         actionCreator.createActions(*mapping, *attributeCase, caseDefinition);
 		attributeMatch->addCase(std::move(attributeCase));
         mapping->getBaseCase().addMatch(std::move(attributeMatch));

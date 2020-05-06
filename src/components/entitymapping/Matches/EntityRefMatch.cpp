@@ -19,6 +19,8 @@
 #endif
 
 #include "EntityRefMatch.h"
+
+#include <utility>
 #include "Observers/EntityCreationObserver.h"
 
 namespace Ember {
@@ -28,8 +30,8 @@ namespace EntityMapping {
 
 namespace Matches {
 
-EntityRefMatch::EntityRefMatch(const std::string& attributeName, Eris::View* view)
-		: mAttributeName(attributeName),
+EntityRefMatch::EntityRefMatch(std::string attributeName, Eris::View* view)
+		: mAttributeName(std::move(attributeName)),
 		  mView(view),
 		  mEntityObserver(nullptr) {
 }

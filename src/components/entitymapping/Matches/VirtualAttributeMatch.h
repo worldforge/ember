@@ -52,7 +52,7 @@ public:
 	/**
 	Creates a new instance that watches for changes to the supplied attribute. The attribute that is watched differs from the name of the attribute. (Such as when using a function comparer for "height", where the internal attribute watched is "bbox".)
 	*/
-	VirtualAttributeMatch(const std::string& attributeName, std::initializer_list<std::string> internalAttributeNames);
+	VirtualAttributeMatch(std::string attributeName, std::initializer_list<std::string> internalAttributeNames);
 
 	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) override;
 

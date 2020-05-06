@@ -57,16 +57,9 @@ namespace Definitions {
 	A definition for a Match.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class MatchDefinition  : public DefinitionBase
+struct MatchDefinition  : public DefinitionBase
 {
-public:
-	typedef std::vector<CaseDefinition> CaseStore;
-
-	CaseStore& getCases();
-	const CaseStore& getCases() const;
-
-protected:
-	CaseStore mCases;
+	std::vector<CaseDefinition> Cases;
 };
 }
 

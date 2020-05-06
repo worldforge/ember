@@ -44,7 +44,7 @@ class EntityRefMatch : public AbstractMatch<Cases::EntityRefCase>, public Attrib
 
 public:
 
-	EntityRefMatch(const std::string& attributeName, Eris::View* view);
+	EntityRefMatch(std::string attributeName, Eris::View* view);
 
 	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) override;
 

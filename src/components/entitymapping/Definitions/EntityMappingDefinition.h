@@ -48,22 +48,10 @@ namespace Definitions {
 	A definition for a EntityMapping.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class EntityMappingDefinition
+struct EntityMappingDefinition
 {
-public:
-    EntityMappingDefinition();
-
-    ~EntityMappingDefinition() = default;
-
-    const std::string& getName() const;
-    void setName(std::string name);
-
-    CaseDefinition& getRoot();
-    const CaseDefinition& getRoot() const;
-
-protected:
-	CaseDefinition mRootCase;
-	std::string mName;
+	CaseDefinition RootCase;
+	std::string Name;
 };
 
 

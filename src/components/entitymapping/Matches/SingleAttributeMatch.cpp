@@ -18,14 +18,16 @@
 
 #include "SingleAttributeMatch.h"
 
+#include <utility>
+
 namespace Ember {
 
 namespace EntityMapping {
 
 namespace Matches {
 
-SingleAttributeMatch::SingleAttributeMatch(const std::string& attributeName)
-		: AttributeMatch(attributeName) {
+SingleAttributeMatch::SingleAttributeMatch(std::string attributeName)
+		: AttributeMatch(std::move(attributeName)) {
 }
 
 

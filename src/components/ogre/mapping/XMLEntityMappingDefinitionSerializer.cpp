@@ -80,7 +80,7 @@ void XMLEntityMappingDefinitionSerializer::parseMatchElement(EntityMappingDefini
 			CaseDefinition caseDef;
 			caseDef.Type = caseType;
 			parseCaseElement(definition, caseDef, childElement);
-			matchDef.getCases().push_back(std::move(caseDef));
+			matchDef.Cases.push_back(std::move(caseDef));
 		}
 	}
 }
@@ -98,19 +98,19 @@ void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinit
 			if (childElement->ValueStr() == "action") {
 				ActionDefinition actionDef;
 				parseActionElement(definition, actionDef, childElement);
-				caseDef.getActions().push_back(actionDef);
+				caseDef.Actions.push_back(actionDef);
 			} else if (childElement->ValueStr() == "caseparam") {
 				//it's a case parameter
 				if (const char* attributeValue = childElement->Attribute("type")) {
 					if (TiXmlNode* textNode = childElement->FirstChild()) {
-						caseDef.getCaseParameters().emplace_back(attributeValue, textNode->Value());
+						caseDef.Parameters.emplace_back(attributeValue, textNode->Value());
 					}
 				}
 			} else {
 				//we'll assume it's a match
 				MatchDefinition matchDef;
 				parseMatchElement(definition, matchDef, childElement);
-				caseDef.getMatches().push_back(std::move(matchDef));
+				caseDef.Matches.push_back(std::move(matchDef));
 			}
 		}
 	}
@@ -123,7 +123,7 @@ void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefin
 	actionDef.Type = element->Attribute("type");
 	TiXmlNode* textNode = element->FirstChild();
 	if (textNode) {
-		actionDef.setValue(textNode->Value());
+		actionDef.Value = textNode->Value();
 	}
 
 }
@@ -132,9 +132,9 @@ void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefin
 void XMLEntityMappingDefinitionSerializer::parseSingleMapping(TiXmlElement* rootElem, const std::string& path) {
 	std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
 
-	definition->setName(path);
+	definition->Name = path;
 
-	parseCaseElement(*definition, definition->getRoot(), rootElem);
+	parseCaseElement(*definition, definition->RootCase, rootElem);
 	mEntityMappingManager.addDefinition(std::move(definition));
 }
 

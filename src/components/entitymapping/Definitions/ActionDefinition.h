@@ -43,12 +43,7 @@ namespace Definitions {
 */
 struct ActionDefinition : public DefinitionBase
 {
-public:
-    const std::string& getValue() const;
-    void setValue(std::string type);
-protected:
-	std::string mValue;
-
+	std::string Value;
 };
 }
 

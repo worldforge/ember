@@ -34,8 +34,6 @@
 
 namespace Ember {
 
-
-
 namespace EntityMapping {
 
 namespace Definitions {

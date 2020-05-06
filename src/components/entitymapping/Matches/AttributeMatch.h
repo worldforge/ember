@@ -49,14 +49,13 @@ namespace Matches {
 	A Match that inspects a certain attribute.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class AttributeMatch : public AbstractMatch<Cases::AttributeCase>, public AttributeDependentMatch
-{
+class AttributeMatch : public AbstractMatch<Cases::AttributeCase>, public AttributeDependentMatch {
 public:
 
 	/**
 	Creates a new instance that watches for changes to the supplied attribute.
 	*/
-	explicit AttributeMatch(const std::string& attributeName);
+	explicit AttributeMatch(std::string attributeName);
 
 	void testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation) override;
 
@@ -71,8 +70,7 @@ protected:
 	std::string mAttributeName;
 };
 
-inline const std::string& AttributeMatch::getAttributeName()
-{
+inline const std::string& AttributeMatch::getAttributeName() {
 	return mAttributeName;
 }
 

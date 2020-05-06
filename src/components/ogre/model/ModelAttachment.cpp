@@ -68,11 +68,11 @@ struct ModelAttachedActionCreator : public EntityMapping::IActionCreator {
 	void createActions(EntityMapping::EntityMapping& modelMapping,
 					   EntityMapping::Cases::CaseBase& aCase,
 					   EntityMapping::Definitions::CaseDefinition& caseDefinition) override {
-		for (auto& actionDef : caseDefinition.getActions()) {
+		for (auto& actionDef : caseDefinition.Actions) {
 			if (actionDef.Type == "display-part") {
-				aCase.addAction(std::make_unique<EmberEntityPartAction>(mEntity, actionDef.getValue()));
+				aCase.addAction(std::make_unique<EmberEntityPartAction>(mEntity, actionDef.Value));
 			} else if (actionDef.Type == "display-model") {
-				aCase.addAction(std::make_unique<EmberEntityModelAction>(mEntity, actionDef.getValue(), mScene, modelMapping, mModelAttachmentFunction));
+				aCase.addAction(std::make_unique<EmberEntityModelAction>(mEntity, actionDef.Value, mScene, modelMapping, mModelAttachmentFunction));
 			} else if (actionDef.Type == "hide-model") {
 				aCase.addAction(std::make_unique<EmberEntityHideModelAction>(mEntity));
 			} else if (actionDef.Type == "present") {
@@ -103,7 +103,7 @@ struct ModelContainedActionCreator : public EntityMapping::IActionCreator {
 	void createActions(EntityMapping::EntityMapping& modelMapping,
 					   EntityMapping::Cases::CaseBase& aCase,
 					   EntityMapping::Definitions::CaseDefinition& caseDefinition) override {
-		for (auto& actionDef : caseDefinition.getActions()) {
+		for (auto& actionDef : caseDefinition.Actions) {
 			if (actionDef.Type == "display-effect") {
 				//TODO: implement effect. One example would be an entity on fire.
 			} else {
