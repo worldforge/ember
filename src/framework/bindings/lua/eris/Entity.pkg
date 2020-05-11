@@ -18,7 +18,7 @@ class Entity {
 
     /** setup an observer so that the specified slot is fired when the
     named attribue's value changes */
-    sigc::connection observe(const std::string& attr, const PropertyChangedSlot& aslot);
+    sigc::connection observe(const std::string& attr, const PropertyChangedSlot& aslot, bool evaluateNow);
 
 // accesors
     /// retrieve the unique entity ID

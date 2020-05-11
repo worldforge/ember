@@ -43,8 +43,8 @@ GeometryVisualization::GeometryVisualization(EmberEntity& entity, Ogre::SceneNod
 		mSceneNode(sceneNode),
 		mManualObject(nullptr),
 		mOgreEntity(nullptr),
-		mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &GeometryVisualization::entity_BboxChanged))),
-		mScaleConnection(entity.observe("scale", sigc::mem_fun(*this, &GeometryVisualization::entity_BboxChanged))) {
+		mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &GeometryVisualization::entity_BboxChanged), false)),
+		mScaleConnection(entity.observe("scale", sigc::mem_fun(*this, &GeometryVisualization::entity_BboxChanged), false)) {
 	mManualObject = sceneNode->getCreator()->createManualObject();
 	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE - 1); //We want to render the geometry on top of everything
 	mSceneNode->attachObject(mManualObject);

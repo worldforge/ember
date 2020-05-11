@@ -45,8 +45,10 @@ public:
 	tolua_outside void _Avatar_take @ take(const Eris::Entity* entity, int amount = 1);
 
 
-     void wield(Eris::Entity* entity, std::string attachPoint) const;
+    void wield(Eris::Entity* entity, std::string attachPoint) const;
 
+	sigc::signal<void, Eris::Entity&> ContainerOpened;
+	sigc::signal<void, Eris::Entity&> ContainerClosed;
 };
 
 } // of namespace Eris

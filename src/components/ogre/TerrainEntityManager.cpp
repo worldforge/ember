@@ -67,7 +67,7 @@ public:
 	explicit TerrainEffectorListener(Ember::EmberEntity& entity) {
 		entity.Moved.connect([this]() { EventEntityMoved.emit(); });
 		entity.BeingDeleted.connect([this]() { EventEntityBeingDeleted.emit(); });
-		entity.observe("mode", [&](const Atlas::Message::Element&) { EventEntityModeChanged.emit(); });
+		entity.observe("mode", [&](const Atlas::Message::Element&) { EventEntityModeChanged.emit(); }, false);
 	}
 };
 

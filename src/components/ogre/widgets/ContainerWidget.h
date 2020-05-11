@@ -32,22 +32,18 @@ namespace Gui {
 
 class ContainerWidget {
 public:
-	ContainerWidget(GUIManager& guiManager,  int slotSize = 32);
+	ContainerWidget(GUIManager& guiManager, EmberEntity& entity, int slotSize = 32);
 
 	~ContainerWidget();
 
 	static void registerWidget(GUIManager& guiManager);
-
-	void showEntityContents(EmberEntity* entity);
 
 protected:
 	GUIManager& mGuiManager;
 	int mSlotSize;
 	Widget* mWidget;
 	std::unique_ptr<ContainerView> mContainerView;
-	sigc::connection mActionConnection;
 
-//	static std::map<std::string, std::unique_ptr<ContainerWidget>> sActiveContainers;
 
 };
 }

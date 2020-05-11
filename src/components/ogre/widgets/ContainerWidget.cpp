@@ -27,26 +27,30 @@
 #include "components/ogre/World.h"
 #include "components/ogre/Avatar.h"
 #include <Eris/Avatar.h>
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
+
+namespace {
+std::map<std::string, std::unique_ptr<Ember::OgreView::Gui::ContainerWidget>> containerWidgets;
+}
 
 namespace Ember {
 namespace OgreView {
 namespace Gui {
 void ContainerWidget::registerWidget(GUIManager& guiManager) {
-//	guiManager.EventEntityAction.connect([](const std::string& action, EmberEntity* entity) {
-//		if (entity && (action == "use:view" || action == "use:open_container")) {
-//			auto widget = std
-//		}
-//	});
 
-	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect([&](EmberEntity& entity) {
-		auto widget = std::make_shared<ContainerWidget>(guiManager);
-		entity.BeingDeleted.connect([widget]() mutable {
-			widget.reset();
+	EmberServices::getSingleton().getServerService().GotAvatar.connect([&](Eris::Avatar* avatar) {
+		avatar->ContainerOpened.connect([&](Eris::Entity& entity) {
+			auto widget = std::make_unique<ContainerWidget>(guiManager, dynamic_cast<EmberEntity&>(entity));
+			containerWidgets.emplace(entity.getId(), std::move(widget));
+		});
+		avatar->ContainerClosed.connect([&](Eris::Entity& entity) {
+			containerWidgets.erase(entity.getId());
 		});
 	});
 }
 
-ContainerWidget::ContainerWidget(GUIManager& guiManager, int slotSize)
+ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, int slotSize)
 		: mGuiManager(guiManager),
 		  mSlotSize(slotSize),
 		  mWidget(guiManager.createWidget()) {
@@ -65,20 +69,13 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, int slotSize)
 		}
 	});
 
-	mWidget->hide();
 	mWidget->enableCloseButton();
 	mWidget->setIsActiveWindowOpaque(false);
+	mContainerView->showEntityContents(&entity);
 
-	mActionConnection = guiManager.EventEntityAction.connect([&](const std::string& action, EmberEntity* entity) {
-		if (action == "show_container" || action == "use:view" || action == "use:open_container") {
-			mContainerView->showEntityContents(entity);
-			mWidget->show();
-		}
-	});
 }
 
 ContainerWidget::~ContainerWidget() {
-	mActionConnection.disconnect();
 	mGuiManager.removeWidget(mWidget);
 }
 

@@ -285,13 +285,6 @@ function EntityPicker:pickedOneEntity(pickedResult)
                 end
             end
 
-            self:showButton("Open", "Opens the container.", function()
-                self:doWithPickedEntity(function(pickedEntity)
-                    guiManager:EmitEntityAction("show_container", pickedEntity)
-                end)
-                self:removeMenu()
-            end)
-
             if self.showInspect then
                 self:showButton("Inspect", "Inspect the entity.", function()
                     self:doWithPickedEntity(function(pickedEntity)

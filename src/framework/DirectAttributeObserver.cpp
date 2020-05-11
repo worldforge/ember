@@ -32,7 +32,7 @@ DirectAttributeObserver::DirectAttributeObserver(Eris::Entity& entity,
 		  mAttributeName(attributeName),
 		  mEventChanged(eventChanged),
 		  mSlot(sigc::mem_fun(*this, &DirectAttributeObserver::attributeChanged)) {
-	entity.observe(attributeName, mSlot);
+	entity.observe(attributeName, mSlot, true);
 }
 
 DirectAttributeObserver::~DirectAttributeObserver() {

@@ -28,10 +28,7 @@ DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity,
 		  mEventChanged(eventChanged),
 		  mElementPath(elementPath) {
 	const std::string& firstAttributeName = elementPath.front();
-	entity.observe(firstAttributeName, sigc::mem_fun(*this, &DeepAttributeObserver::entity_AttrChanged));
-	if (entity.hasProperty(firstAttributeName)) {
-		mLastElementValue = getCurrentAttribute(entity.valueOfProperty(firstAttributeName));
-	}
+	entity.observe(firstAttributeName, sigc::mem_fun(*this, &DeepAttributeObserver::entity_AttrChanged), true);
 }
 
 DeepAttributeObserver::~DeepAttributeObserver() = default;

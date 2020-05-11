@@ -213,8 +213,8 @@ IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, E
 	entity.EventChangedGraphicalRepresentation.connect(sigc::mem_fun(*this, &EntityObserver::entity_GraphicalRepresentationChanged));
 
 	mExternalSlot = sigc::mem_fun(*this, &IngameChatWidget::EntityObserver::entity_attributeChanged);
-	entity.observe("external", mExternalSlot);
-	entity.observe("name", mExternalSlot);
+	entity.observe("external", mExternalSlot, true);
+	entity.observe("name", mExternalSlot, true);
 
 	if (mEntity.isVisible()) {
 		showLabel();

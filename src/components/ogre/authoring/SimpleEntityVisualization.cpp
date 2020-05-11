@@ -61,8 +61,8 @@ SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::
 		mEntity(entity),
 		mSceneNode(sceneNode),
 		mErisEntityBoundingBox(OGRE_NEW Ogre::OOBBWireBoundingBox()),
-		mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged))),
-		mScaleConnection(entity.observe("scale", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged)))
+		mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged), false)),
+		mScaleConnection(entity.observe("scale", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged), false))
 {
 
 	mVelocityArrowEntity = sceneNode->getCreator()->createEntity("common/primitives/model/arrow.mesh");
