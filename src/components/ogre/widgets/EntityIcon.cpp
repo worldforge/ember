@@ -38,15 +38,15 @@ namespace Gui {
 
 EntityIcon::EntityIcon(EntityIconManager& manager,
 					   UniqueWindowPtr<CEGUI::DragContainer> dragContainer,
-					   UniqueWindowPtr<CEGUI::Window> image,
-					   UniqueWindowPtr<CEGUI::Window> amountWindow,
+					   CEGUI::Window& image,
+					   CEGUI::Window& amountWindow,
 					   Gui::Icons::Icon* icon,
 					   EmberEntity* entity)
 		: EntityIconDragDropTarget(dragContainer.get()),
 		  mManager(manager),
 		  mDragContainer(std::move(dragContainer)),
-		  mImage(std::move(image)),
-		  mAmount(std::move(amountWindow)),
+		  mImage(image),
+		  mAmount(amountWindow),
 		  mIcon(icon),
 		  mUserData{*this},
 		  mUserDataWrapper(mUserData),
@@ -67,8 +67,8 @@ EntityIcon::~EntityIcon() {
 	}
 }
 
-CEGUI::Window* EntityIcon::getImage() {
-	return mImage.get();
+CEGUI::Window& EntityIcon::getImage() {
+	return mImage;
 }
 
 Gui::Icons::Icon* EntityIcon::getIcon() {
@@ -110,7 +110,7 @@ EmberEntity* EntityIcon::getEntity() {
 
 void EntityIcon::icon_Updated() {
 	//It seems that we're forced to invalidate the CEGUI Window to get it to update itself. This is perhaps a bug in CEGUI?
-	mImage->invalidate();
+	mImage.invalidate();
 }
 
 bool EntityIcon::handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon) {
@@ -141,23 +141,23 @@ bool EntityIcon::handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* ico
 void EntityIcon::updateAmount() {
 	auto amountPtr = mEntity->ptrOfProperty("amount");
 	if (amountPtr && amountPtr->isInt() && amountPtr->Int() > 1) {
-		mAmount->show();
+		mAmount.show();
 		std::stringstream ss;
 		ss << amountPtr->Int();
 		auto text = ss.str();
 
-		auto font = mAmount->getFont();
+		auto font = mAmount.getFont();
 		auto width = font->getTextExtent(text, 1.0) + 4;
 		auto height = font->getFontHeight(1.0);
 
 		//Adjust the width and height after the text.
-		mAmount->setWidth({0, width});
-		mAmount->setHeight({0, height});
-		mAmount->setYPosition({1, -(height + 2)});
-		mAmount->setXPosition({1, -(width + 2)});
-		mAmount->setText(text);
+		mAmount.setWidth({0, width});
+		mAmount.setHeight({0, height});
+		mAmount.setYPosition({1, -(height + 2)});
+		mAmount.setXPosition({1, -(width + 2)});
+		mAmount.setText(text);
 	} else {
-		mAmount->hide();
+		mAmount.hide();
 	}
 }
 

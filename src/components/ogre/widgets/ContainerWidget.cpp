@@ -82,6 +82,7 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 }
 
 ContainerWidget::~ContainerWidget() {
+	mContainerView.reset();
 	mGuiManager.removeWidget(mWidget);
 }
 

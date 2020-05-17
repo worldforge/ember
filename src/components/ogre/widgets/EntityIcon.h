@@ -72,8 +72,8 @@ public:
 	 */
 	EntityIcon(EntityIconManager& manager,
 			   UniqueWindowPtr<CEGUI::DragContainer> dragContainer,
-			   UniqueWindowPtr<CEGUI::Window> image,
-			   UniqueWindowPtr<CEGUI::Window> amountWindow,
+			   CEGUI::Window& image,
+			   CEGUI::Window& amountWindow,
 			   Gui::Icons::Icon* icon,
 			   EmberEntity* entity);
 
@@ -88,7 +88,7 @@ public:
 	 * @brief Gets the CEGUI image which shows the entity. This can in some cases be a 3d render of the icon, or a prerendered texture. The actual handling of this is often taken care of by the mIcon instance.
 	 * @return The image displaying the entity in the CEGUI system.
 	 */
-	CEGUI::Window* getImage();
+	CEGUI::Window& getImage();
 	
 	/**
 	 * @brief Gets the CEGUI drag container which allows this entity to be dragged and dropped.
@@ -179,12 +179,12 @@ protected:
 	/**
 	 * @brief The image which represents the entity. In many cases this will be the same image as provided by the icon parameter.
 	 */
-	UniqueWindowPtr<CEGUI::Window> mImage;
+	CEGUI::Window& mImage;
 
 	/**
 	 * If there's an amount, this window will show it.
 	 */
-	UniqueWindowPtr<CEGUI::Window> mAmount;
+	CEGUI::Window& mAmount;
 
 	/**
 	 * @brief The Icon instance responsible for providing the image.

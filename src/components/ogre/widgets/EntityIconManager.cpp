@@ -80,7 +80,7 @@ std::unique_ptr<EntityIcon> EntityIconManager::createIconInstance(Gui::Icons::Ic
 		iconWindow->disable();
 // 			iconWindow->setProperty("FrameEnabled", "false");
 		iconWindow->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(icon->getImage()));
-		item->addChild(iconWindow.get());
+		item->addChild(iconWindow.release());
 
 		amountWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0), CEGUI::UDim(1, -20)));
 		amountWindow->setWidth(CEGUI::UDim(1, 0));
@@ -91,9 +91,9 @@ std::unique_ptr<EntityIcon> EntityIconManager::createIconInstance(Gui::Icons::Ic
 		amountWindow->setProperty("HorzFormatting", "CentreAligned");
 		amountWindow->setMousePassThroughEnabled(true);
 
-		item->addChild(amountWindow.get());
+		item->addChild(amountWindow.release());
 
-		return std::make_unique<EntityIcon>(*this, std::move(item), std::move(iconWindow), std::move(amountWindow), icon, entity);
+		return std::make_unique<EntityIcon>(*this, std::move(item), *item->getChildAtIdx(0), *item->getChildAtIdx(1), icon, entity);
 	}
 	return nullptr;
 }

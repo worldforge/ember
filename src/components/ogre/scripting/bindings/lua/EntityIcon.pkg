@@ -31,7 +31,7 @@ class EntityIcon : public EntityIconDragDropTarget
 {
 public:
 	
-	CEGUI::Window* getImage();
+	CEGUI::Window& getImage();
 	CEGUI::DragContainer* getDragContainer();
 	Ember::OgreView::Gui::Icons::Icon* getIcon();
 	void setSlot(Ember::OgreView::Gui::EntityIconSlot* slot);

@@ -150,14 +150,14 @@ EntityIcon* ContainerView::createEntityIcon(EmberEntity* entity) {
 	auto icon = mIconManager.getIcon(32, entity);
 	if (icon) {
 		auto entityIcon = mEntityIconManager.createIconInstance(icon, entity, 32);
-		entityIcon->getImage()->setTooltip(&mTooltip);
-		entityIcon->getImage()->setTooltipText(entity->getId());
-		auto image = entityIcon->getImage();
-		entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseEntersSurface, [image]() {
-			image->setProperty("FrameEnabled", "true");
+		entityIcon->getImage().setTooltip(&mTooltip);
+		entityIcon->getImage().setTooltipText(entity->getId());
+		auto& image = entityIcon->getImage();
+		entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseEntersSurface, [&image]() {
+			image.setProperty("FrameEnabled", "true");
 		});
-		entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseLeavesSurface, [image]() {
-			image->setProperty("FrameEnabled", "false");
+		entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseLeavesSurface, [&image]() {
+			image.setProperty("FrameEnabled", "false");
 		});
 		entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseClick, [this, entity]() {
 			EventEntityPicked(entity);
