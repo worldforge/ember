@@ -70,7 +70,7 @@ void EntityConsoleEditor::runCommand(const std::string& command, const std::stri
 
 				if (!map.empty()) {
 					if (mAvatar) {
-						mAvatar->setAttributes(&mAvatar->getEmberEntity(), map);
+						mAvatar->setAttributes(mAvatar->getEmberEntity().getId(), map);
 					}
 				}
 			}

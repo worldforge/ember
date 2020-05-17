@@ -223,7 +223,7 @@ void EntityEditor::submitChanges() {
 				formatter.streamEnd();
 				S_LOG_VERBOSE("Sending attribute update to server:\n" << ss.str());
 
-				mWorld.getAvatar()->setAttributes(&mEntity, attributes);
+				mWorld.getAvatar()->setAttributes(mEntity.getId(), attributes);
 			}
 		}
 	}

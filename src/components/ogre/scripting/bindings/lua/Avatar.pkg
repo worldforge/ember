@@ -12,7 +12,7 @@ class Avatar
 	
 	Eris::Avatar& getErisAvatar() const;
 
-	void deleteEntity(Eris::Entity* entity);
+	void deleteEntity(const std::string& entityId);
 
 	/**
 	 *    sets the minimum interval to wait before sending new rotation changes to the server

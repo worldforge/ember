@@ -228,9 +228,9 @@ public:
 	 */
 	void runCommand(const std::string& command, const std::string& args) override;
 
-	void deleteEntity(Eris::Entity* entity);
+	void deleteEntity(const std::string& entityId);
 
-	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements);
+	void setAttributes(const std::string& entityId, Atlas::Message::MapType& elements);
 
 	void adminTell(const std::string& entityId, const std::string& attribute, const std::string& value);
 

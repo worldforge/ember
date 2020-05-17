@@ -169,10 +169,7 @@ void Avatar::runCommand(const std::string& command, const std::string& args) {
 		Tokeniser tokeniser(args);
 		std::string entityId = tokeniser.nextToken();
 		if (!entityId.empty()) {
-			Eris::Entity* entity = mErisAvatar.getView().getEntity(entityId);
-			if (entity) {
-				deleteEntity(entity);
-			}
+			deleteEntity(entityId);
 		}
 	} else if (Say == command) {
 		mErisAvatar.say(args);
@@ -341,10 +338,10 @@ Scene& Avatar::getScene() const {
 	return mScene;
 }
 
-void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements) {
+void Avatar::setAttributes(const std::string& entityId, Atlas::Message::MapType& elements) {
 	try {
 		Atlas::Objects::Entity::Anonymous what;
-		what->setId(entity->getId());
+		what->setId(entityId);
 		//We'll use this flag to make sure that nothing gets sent in the case that the only thing changed was immutable attributes (like "pos").
 		bool areAttributesToSend = false;
 		Atlas::Message::MapType moveAttributes;
@@ -366,14 +363,11 @@ void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elemen
 		//Some attributes can only be changed through a Move op.
 		if (!moveAttributes.empty()) {
 			Atlas::Objects::Entity::Anonymous moveArgs;
-			if (entity->getLocation()) {
-				moveArgs->setLoc(entity->getLocation()->getId());
-			}
 			for (auto& element : moveAttributes) {
 				moveArgs->setAttr(element.first, element.second);
 			}
 
-			moveArgs->setId(entity->getId());
+			moveArgs->setId(entityId);
 
 			Atlas::Objects::Operation::Move moveOp;
 			moveOp->setFrom(getId());
@@ -389,7 +383,7 @@ void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elemen
 			//this will bypass all of the server's filtering, allowing us to place any
 			//entity, unrelated to if it's too heavy or belong to someone else
 			if (isAdmin()) {
-				moveOp->setTo(entity->getId());
+				moveOp->setTo(entityId);
 			}
 
 			mErisAvatar.getConnection().send(moveOp);
@@ -399,8 +393,8 @@ void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elemen
 		if (areAttributesToSend) {
 			Atlas::Objects::Operation::Set setOp;
 			setOp->setFrom(getId());
-			if (entity->getId() != getId()) {
-				setOp->setTo(entity->getId());
+			if (entityId != getId()) {
+				setOp->setTo(entityId);
 			}
 			setOp->setArgs1(what);
 
@@ -409,7 +403,7 @@ void Avatar::setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elemen
 				//For now ignore; perhaps we should do some error checking instead?
 				return Eris::Router::IGNORED;
 			});
-			S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
+			S_LOG_INFO("Setting attributes of entity with id " << entityId);
 			mErisAvatar.getConnection().send(setOp);
 		}
 	} catch (const std::exception& ex) {
@@ -445,14 +439,14 @@ void Avatar::adminTell(const std::string& entityId, const std::string& attribute
 	}
 }
 
-void Avatar::deleteEntity(Eris::Entity* entity) {
+void Avatar::deleteEntity(const std::string& entityId) {
 	try {
 		Atlas::Objects::Entity::Anonymous what;
-		what->setId(entity->getId());
+		what->setId(entityId);
 
 		Atlas::Objects::Operation::Delete deleteOp;
 		deleteOp->setFrom(getId());
-		deleteOp->setTo(entity->getId());
+		deleteOp->setTo(entityId);
 		deleteOp->setArgs1(what);
 		deleteOp->setSerialno(Eris::getNewSerialno());
 		mErisAvatar.getConnection().getResponder().await(deleteOp->getSerialno(), [&](const Atlas::Objects::Operation::RootOperation& op) -> Eris::Router::RouterResult {
@@ -460,7 +454,7 @@ void Avatar::deleteEntity(Eris::Entity* entity) {
 			return Eris::Router::IGNORED;
 		});
 
-		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
+		S_LOG_INFO("Deleting entity with id " << entityId);
 		mErisAvatar.getConnection().send(deleteOp);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on deleting entity." << ex);
