@@ -62,7 +62,7 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 		: mGuiManager(guiManager),
 		  mSlotSize(slotSize),
 		  mWidget(guiManager.createWidget()) {
-	mWidget->loadMainSheet("Container.layout", "Container_" + entity.getId());
+	mWidget->loadMainSheet("ContainerWidget.layout", "Container_" + entity.getId());
 	mContainerView = std::make_unique<ContainerView>(*guiManager.getEntityIconManager(),
 													 *guiManager.getIconManager(),
 													 guiManager.getEntityTooltip()->getTooltipWindow(),
@@ -76,7 +76,7 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 			EmberOgre::getSingleton().getWorld()->getAvatar()->getErisAvatar().place(entityIcon->getEntity(), observedEntity);
 		}
 	});
-
+	mWidget->getMainWindow()->setText("Container " + entity.getNameOrType());
 
 	//Close containers by sending a "close_container" Use op.
 	mWidget->getMainWindow()->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked, [this]() {
