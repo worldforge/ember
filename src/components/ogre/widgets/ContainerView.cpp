@@ -153,14 +153,20 @@ EntityIcon* ContainerView::createEntityIcon(EmberEntity* entity) {
 		entityIcon->getImage().setTooltip(&mTooltip);
 		entityIcon->getImage().setTooltipText(entity->getId());
 		auto& image = entityIcon->getImage();
-		entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseEntersSurface, [&image]() {
+		auto connection1 = entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseEntersSurface, [&image]() {
 			image.setProperty("FrameEnabled", "true");
 		});
-		entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseLeavesSurface, [&image]() {
+		auto connection2 = entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseLeavesSurface, [&image]() {
 			image.setProperty("FrameEnabled", "false");
 		});
-		entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseClick, [this, entity]() {
+		auto connection3 = entityIcon->getDragContainer()->subscribeEvent(CEGUI::DragContainer::EventMouseClick, [this, entity]() {
 			EventEntityPicked(entity);
+		});
+
+		entityIcon->getDragContainer()->subscribeEvent(CEGUI::Window::EventDestructionStarted, [connection1, connection2, connection3]() mutable {
+			connection1->disconnect();
+			connection2->disconnect();
+			connection3->disconnect();
 		});
 		mIcons.emplace_back(std::move(entityIcon));
 		return mIcons.back().get();
