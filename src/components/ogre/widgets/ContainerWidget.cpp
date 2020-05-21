@@ -23,12 +23,14 @@
 #include "EntityIcon.h"
 #include "icons/IconManager.h"
 #include "EntityTooltip.h"
-#include <CEGUI/widgets/DragContainer.h>
 #include "components/ogre/World.h"
 #include "components/ogre/Avatar.h"
-#include <Eris/Avatar.h>
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
+#include <CEGUI/widgets/DragContainer.h>
+#include <CEGUI/widgets/FrameWindow.h>
+#include <Eris/Avatar.h>
+#include <Eris/Connection.h>
 
 namespace {
 std::map<std::string, std::unique_ptr<Ember::OgreView::Gui::ContainerWidget>> containerWidgets;
@@ -75,7 +77,28 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 		}
 	});
 
-	mWidget->enableCloseButton();
+
+	//Close containers by sending a "close_container" Use op.
+	mWidget->getMainWindow()->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked, [this]() {
+
+		auto& erisAvatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getErisAvatar();
+
+		Atlas::Objects::Operation::Use use;
+		use->setFrom(erisAvatar.getId());
+
+		Atlas::Objects::Entity::RootEntity entity;
+		entity->setId(mContainerView->getObservedEntity()->getId());
+
+		Atlas::Objects::Operation::RootOperation op;
+		op->setParent("close_container");
+		op->setArgs1(entity);
+
+		use->setArgs1(op);
+
+		erisAvatar.getConnection().send(use);
+
+	});
+
 	mWidget->setIsActiveWindowOpaque(false);
 	mContainerView->showEntityContents(&entity);
 
