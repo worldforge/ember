@@ -329,7 +329,8 @@ function EntityPicker:showButton(text, tooltip, clickFn)
         buttonWrapper.clickedHandler = clickFn
         buttonWrapper.button:setText(text)
         buttonWrapper.button:setTooltipText(tooltip)
-        buttonWrapper.button:setHeight(CEGUI.UDim(0, 20))
+        local verticalExtent = Ember.Cegui.Helper:calculateRenderedCentredStringVerticalExtent(buttonWrapper.button)
+        buttonWrapper.button:setHeight(CEGUI.UDim(0, verticalExtent + 8))
         table.insert(self.activeButtons, buttonWrapper.button)
     end
 end
