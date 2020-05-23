@@ -202,13 +202,6 @@ public:
 	IGraphicalRepresentation* getGraphicalRepresentation() const;
 
 	/**
-	 * @brief Sets the graphical representation to be used.
-	 * If any previous graphical representation has been set, it will be deleted.
-	 * @param graphicalRepresentation The new graphical representation. Ownership will be transferred to this class.
-	 */
-	//void setGraphicalRepresentation(std::unique_ptr<IGraphicalRepresentation> graphicalRepresentation);
-
-	/**
 	 * @brief Emitted when the positioning mode has changed.
 	 * The entity is placed in the world differently depending on the "positioning mode". The default mode is to be gravity affected, i.e. fall to the ground.
 	 * In a simplified simulation this will in most cases mean that the entity is snapped to the terrain. However, there are other options, such as "fixed" or "floating".

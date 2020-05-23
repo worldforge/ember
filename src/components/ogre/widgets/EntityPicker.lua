@@ -395,7 +395,14 @@ function EntityPicker:addUse(entityId, wieldedEntity, operation, usage)
         self:removeMenu()
     end
 
-    self:showButton(usage.name .. " with " .. wieldedEntity:getType():getName(), usage.description, clickedHandler)
+    self:showButton(usage.name .. " with " .. entityNameOrType(wieldedEntity), usage.description, clickedHandler)
+end
+
+function entityNameOrType(entity)
+    if entity:getName() ~= "" then
+        return entity:getName()
+    end
+    return entity:getType():getName()
 end
 
 function EntityPicker:addAction(entityId, action, usage)
