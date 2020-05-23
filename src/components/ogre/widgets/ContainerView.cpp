@@ -43,7 +43,7 @@ ContainerView::ContainerView(EntityIconManager& entityIconManager,
 		mIconContainer(iconContainer),
 		mSlotSize(slotSize),
 		mObservedEntity(nullptr) {
-	mIconContainer.subscribeEvent(CEGUI::Window::EventSized, [&]() { layoutSlots(); });
+	mResizedConnection = mIconContainer.subscribeEvent(CEGUI::Window::EventSized, [&]() { layoutSlots(); });
 
 	//Handle the case where there's an automatically created child which will receive all drop events.
 	auto containerDropWindow = mIconContainer.getChild("__auto_container__");
@@ -58,13 +58,15 @@ ContainerView::ContainerView(EntityIconManager& entityIconManager,
 }
 
 ContainerView::~ContainerView() {
-	//Needs to remove icons and slots before we remove the widget.
-	mIcons.clear();
-	mSlots.clear();
+	mResizedConnection->disconnect();
 	mActionConnection.disconnect();
 	mChildRemovedConnection.disconnect();
 	mChildAddedConnection.disconnect();
 	mBeingDeletedConnection.disconnect();
+	//Needs to remove icons and slots before we remove the widget.
+	mIcons.clear();
+	mSlots.clear();
+
 }
 
 void ContainerView::showEntityContents(EmberEntity* entity) {

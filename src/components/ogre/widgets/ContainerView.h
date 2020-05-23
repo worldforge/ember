@@ -71,6 +71,7 @@ protected:
 	sigc::connection mChildAddedConnection;
 	sigc::connection mChildRemovedConnection;
 	sigc::connection mBeingDeletedConnection;
+	CEGUI::Event::Connection mResizedConnection;
 	EmberEntity* mObservedEntity;
 
 	EntityIconSlot* addSlot();
