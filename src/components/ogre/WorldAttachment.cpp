@@ -78,7 +78,7 @@ void WorldAttachment::attachEntity(EmberEntity& entity) {
 			if (auto environment = mWorld.getEnvironment()) {
 				Ogre::SceneNode* node = mWorldNode->createChildSceneNode(OgreInfo::createUniqueResourceName(entity.getId()));
 				auto oceanRepresentation = std::make_unique<Environment::OceanRepresentation>(entity, *environment, mScene);
-				auto nodeAttachment = std::make_unique<EmptyNodeAttachment>(getAttachedEntity(), entity, std::make_unique<SceneNodeProvider>(node, mWorldNode));
+				auto nodeAttachment = std::make_unique<EmptyNodeAttachment>(getAttachedEntity(), entity, std::make_unique<SceneNodeProvider>(node, mWorldNode), std::move(oceanRepresentation));
 				entity.setAttachment(std::move(nodeAttachment));
 			} else {
 				S_LOG_WARNING("Tried to activate ocean representation, but there was no world instance available.");

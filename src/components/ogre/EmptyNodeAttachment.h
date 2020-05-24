@@ -38,13 +38,18 @@ class NodeController;
  */
 class EmptyNodeAttachment : public NodeAttachment, public virtual sigc::trackable {
 public:
-	EmptyNodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, std::unique_ptr<INodeProvider> nodeProvider);
+	EmptyNodeAttachment(EmberEntity& parentEntity,
+			EmberEntity& childEntity,
+			std::unique_ptr<INodeProvider> nodeProvider,
+			std::unique_ptr<IGraphicalRepresentation> graphicalRepresentation);
 
 	void attachEntity(EmberEntity& entity) override;
 
+	IGraphicalRepresentation* getGraphicalRepresentation() const override;
 
 protected:
 	std::unique_ptr<INodeProvider> mNodeProvider;
+	std::unique_ptr<IGraphicalRepresentation> mGraphicalRepresentation;
 };
 
 }

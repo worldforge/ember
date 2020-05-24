@@ -18,17 +18,31 @@
 
 #include "EmptyNodeAttachment.h"
 #include "INodeProvider.h"
+#include "domain/IGraphicalRepresentation.h"
 
 namespace Ember {
 namespace OgreView {
-EmptyNodeAttachment::EmptyNodeAttachment(Ember::EmberEntity& parentEntity, Ember::EmberEntity& childEntity, std::unique_ptr<INodeProvider> nodeProvider)
-		: NodeAttachment(parentEntity, childEntity, *nodeProvider.get()), mNodeProvider(std::move(nodeProvider)) {
+EmptyNodeAttachment::EmptyNodeAttachment(Ember::EmberEntity& parentEntity,
+										 Ember::EmberEntity& childEntity,
+										 std::unique_ptr<INodeProvider> nodeProvider,
+										 std::unique_ptr<IGraphicalRepresentation> graphicalRepresentation)
+		: NodeAttachment(parentEntity, childEntity, *nodeProvider.get()),
+		  mNodeProvider(std::move(nodeProvider)),
+		  mGraphicalRepresentation(std::move(graphicalRepresentation)) {
 
 }
 
 void EmptyNodeAttachment::attachEntity(EmberEntity& entity) {
 	//No op
 }
+
+IGraphicalRepresentation* EmptyNodeAttachment::getGraphicalRepresentation() const {
+	if (mGraphicalRepresentation) {
+		return mGraphicalRepresentation.get();
+	}
+	return nullptr;
+}
+
 
 }
 }
