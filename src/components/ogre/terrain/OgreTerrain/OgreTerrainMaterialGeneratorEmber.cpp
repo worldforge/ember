@@ -23,26 +23,20 @@
 
 using namespace Ogre;
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 const std::string EmberTerrainProfile::ERROR_MATERIAL = "/common/primitives/texture/error";
 
 
-
 EmberTerrainProfile::EmberTerrainProfile(IPageDataProvider& dataProvider, TerrainMaterialGenerator* parent) :
-		Ogre::TerrainMaterialGenerator::Profile(parent, "Ember", "Ember specific profile"), mDataProvider(dataProvider)
-{
+		Ogre::TerrainMaterialGenerator::Profile(parent, "Ember", "Ember specific profile"), mDataProvider(dataProvider) {
 	//Check that our error material exists
 	mErrorMaterialTemplate = Ogre::MaterialManager::getSingleton().getByName(ERROR_MATERIAL);
 	assert(mErrorMaterialTemplate);
 }
 
-void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain)
-{
+void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain) {
 	terrain->_setMorphRequired(false);
 	terrain->_setNormalMapRequired(true);
 	terrain->_setLightMapRequired(false, false);
@@ -58,9 +52,13 @@ void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain)
 	}
 }
 
-Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain)
-{
+Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain) {
 	const auto* emberTerrain = dynamic_cast<const EmberTerrain*>(terrain);
+
+	if (!emberTerrain) {
+		//This could happen if the terrain is shutting down.
+		return mErrorMaterialTemplate;
+	}
 
 	const auto& index = emberTerrain->getIndex();
 
@@ -95,8 +93,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain)
 	return mat;
 }
 
-Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terrain* terrain)
-{
+Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terrain* terrain) {
 	const auto* emberTerrain = static_cast<const EmberTerrain*>(terrain);
 
 	const auto& index = emberTerrain->getIndex();
@@ -119,8 +116,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terra
 	}
 }
 
-Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(Ogre::MaterialPtr templateMaterial, const std::string& suffix)
-{
+Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(Ogre::MaterialPtr templateMaterial, const std::string& suffix) {
 	std::string name = templateMaterial->getName() + suffix;
 
 	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(name);
