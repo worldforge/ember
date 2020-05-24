@@ -120,7 +120,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 		Ogre::MovableObject* movable = *I;
 		if (movable->getUserObjectBindings().getUserAny().type() == typeid(EmberEntityUserObject::SharedPtr)) {
 			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(movable->getUserObjectBindings().getUserAny()).get();
-			EmberEntity& entity = anUserObject->getEmberEntity();
+			EmberEntity& entity = anUserObject->mEmberEntity;
 			if (&entity != &mEntity && entity.hasBBox()) {
 				//Ok, we have an entity which is close to our entity. Now check if any of the points of the bounding box is close.
 				WFMath::AxisBox<3> bbox = entity.getBBox();

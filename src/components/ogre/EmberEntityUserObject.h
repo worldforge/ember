@@ -51,37 +51,9 @@ class Model;
  * Instances of this class can be attached to movable objects in the ogre system. They will allow for the Ember system to be accessed directly from Ogre, without having to do lookups.
  * This is generally mostly used for mouse picking and collision handling.
  */
-class EmberEntityUserObject
+struct EmberEntityUserObject
 {
-public:
 	typedef std::shared_ptr<EmberEntityUserObject> SharedPtr;
-
-	/**
-	 * Ctor.
-	 * @param emberEntity A valid EmberEntity instance.
-	 */
-	explicit EmberEntityUserObject(EmberEntity& emberEntity);
-
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~EmberEntityUserObject();
-
-	/**
-	 * @brief Gets the EmberEntity contained.
-	 * @return The entity to which this user object belongs.
-	 */
-	EmberEntity& getEmberEntity() const;
-
-	/**
-	 * @brief Tells the collision detector, is one such is available, to refit any collision shape in need of refitting.
-	 * Call this before you test for collisions, since collision shapes often aren't refitted until needed (to increase performance).
-	 */
-	void refit();
-
-
-protected:
-
 	/**
 	 * @brief The entity to which this user object belongs.
 	 */

@@ -24,6 +24,7 @@
 #include <components/ogre/Scene.h>
 #include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
 #include <components/ogre/EntityCollisionInfo.h>
+#include <memory>
 
 namespace Ember {
 namespace OgreView {
@@ -45,9 +46,7 @@ OceanRepresentation::OceanRepresentation(EmberEntity& entity, Environment& envir
 		mEntity.Moved.connect(sigc::mem_fun(*this, &OceanRepresentation::entity_Moved));
 		updateWaterPosition();
 
-		EmberEntityUserObject* userObject = new EmberEntityUserObject(entity);
-		EmberEntityUserObject::SharedPtr sharedUserObject(userObject);
-		mEnvironment.getWater()->setUserAny(Ogre::Any(sharedUserObject));
+		mEnvironment.getWater()->setUserAny(Ogre::Any(std::make_shared<EmberEntityUserObject>(EmberEntityUserObject{entity})));
 	}
 }
 

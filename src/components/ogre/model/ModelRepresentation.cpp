@@ -73,7 +73,7 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, std::unique_ptr<Mo
 		mActiveAction(nullptr),
 		mTaskAction(nullptr),
 		mSoundEntity(nullptr),
-		mUserObject(std::make_shared<EmberEntityUserObject>(entity)),
+		mUserObject(std::make_shared<EmberEntityUserObject>(EmberEntityUserObject{entity})),
 		mBulletCollisionDetector(new BulletCollisionDetector(scene.getBulletWorld())) {
 	mBulletCollisionDetector->collisionInfo = EntityCollisionInfo{&entity, false};
 	//Only connect if we have actions to act on

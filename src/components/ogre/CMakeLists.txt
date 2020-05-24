@@ -106,7 +106,7 @@ add_library(emberogre
         MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp
         EmberEntityActionCreator.cpp
         EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp
-        EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp
+        EmberEntityPartAction.cpp EmberOgre.cpp EmberOgreFileSystem.cpp
         EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp
         MediaUpdater.cpp MeshSerializerListener.cpp
         MotionManager.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp
