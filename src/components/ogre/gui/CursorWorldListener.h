@@ -56,6 +56,8 @@ class MainCamera;
 namespace Gui
 {
 
+class StencilOpQueueListener;
+
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
@@ -179,12 +181,16 @@ protected:
 	/**
 	 * @brief Listens for config changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
 	 * @brief CEGUI event connections. These will be disconnected when this instance is deleted.
 	 */
 	ConnectionStore mConnections;
+
+	bool mIsCursorInWorld;
+
+	std::unique_ptr<StencilOpQueueListener> mStencilOpQueueListener;
 
 	void afterEventProcessing(float timeslice);
 

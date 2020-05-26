@@ -102,7 +102,9 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 		mCursorLingerStart(0),
 		mClickThresholdMilliseconds(200),
 		mMousePressedTimeFrame(nullptr),
-		mConfigListenerContainer(new ConfigListenerContainer()) {
+		mConfigListenerContainer(new ConfigListenerContainer()),
+		mIsCursorInWorld(false),
+		mStencilOpQueueListener(new StencilOpQueueListener()) {
 
 	mainLoopController.EventAfterInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
 	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorWorldListener::input_MouseButtonReleased));
@@ -116,11 +118,12 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "clickthreshold", sigc::mem_fun(*this, &CursorWorldListener::Config_ClickThreshold), 200);
 
-	world.getSceneManager().addRenderQueueListener(new StencilOpQueueListener());
+	world.getSceneManager().addRenderQueueListener(mStencilOpQueueListener.get());
 
 }
 
 CursorWorldListener::~CursorWorldListener() {
+	mWorld.getSceneManager().removeRenderQueueListener(mStencilOpQueueListener.get());
 	for (auto& entity: mOutline.generatedEntities) {
 		if (entity->getParentSceneNode()) {
 			entity->getParentSceneNode()->detachObject(entity);
@@ -128,7 +131,7 @@ CursorWorldListener::~CursorWorldListener() {
 		mWorld.getSceneManager().destroyMovableObject(entity);
 	}
 
-	delete mConfigListenerContainer;
+	mConfigListenerContainer.reset();
 	for (auto& connection : mConnections) {
 		connection->disconnect();
 	}
@@ -139,24 +142,26 @@ CursorWorldListener::~CursorWorldListener() {
 
 void CursorWorldListener::afterEventProcessing(float timeslice) {
 	if (isInGUIMode()) {
+		if (mIsCursorInWorld) {
 
-		const auto& pixelPosition = mMainWindow.getGUIContext().getMouseCursor().getPosition();
-		sendWorldClick(MPT_SELECT, pixelPosition, 50);
+			const auto& pixelPosition = mMainWindow.getGUIContext().getMouseCursor().getPosition();
+			sendWorldClick(MPT_SELECT, pixelPosition, 50);
 
-		if (!mHoverEventSent) {
-			mCursorLingerStart += static_cast<long long>(timeslice * 1000);
+			if (!mHoverEventSent) {
+				mCursorLingerStart += static_cast<long long>(timeslice * 1000);
 
-			if (mCursorLingerStart > 500) {
-				sendHoverEvent();
+				if (mCursorLingerStart > 500) {
+					sendHoverEvent();
+				}
 			}
-		}
 
-		highlightSelectedEntity();
+			highlightSelectedEntity();
 
-		if (mMousePressedTimeFrame) {
-			if (!mMousePressedTimeFrame->isTimeLeft()) {
-				mMousePressedTimeFrame.reset();
-				sendWorldClick(MPT_PRESSED, mMainWindow.getGUIContext().getMouseCursor().getPosition(), 50);
+			if (mMousePressedTimeFrame) {
+				if (!mMousePressedTimeFrame->isTimeLeft()) {
+					mMousePressedTimeFrame.reset();
+					sendWorldClick(MPT_PRESSED, mMainWindow.getGUIContext().getMouseCursor().getPosition(), 50);
+				}
 			}
 		}
 	} else {
@@ -180,6 +185,7 @@ void CursorWorldListener::afterEventProcessing(float timeslice) {
 bool CursorWorldListener::windowMouseEnters(const CEGUI::EventArgs& args) {
 	mMouseMovesConnection = mMainWindow.subscribeEvent(CEGUI::Window::EventMouseMove, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseMoves, this));
 	mHoverEventSent = false;
+	mIsCursorInWorld = true;
 	return true;
 }
 
@@ -189,6 +195,7 @@ bool CursorWorldListener::windowMouseLeaves(const CEGUI::EventArgs& args) {
 		mMouseMovesConnection = CEGUI::Event::Connection();
 	}
 	mHoverEventSent = true;
+	mIsCursorInWorld = false;
 	return true;
 }
 
