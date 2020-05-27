@@ -195,19 +195,21 @@ void World::View_topLevelEntityChanged() {
 	EmberEntity* currentEntity = dynamic_cast<EmberEntity*>(mView.getAvatar().getEntity());
 
 	//Find any parent entity with a physical domain. If so, create a WorldAttachment to
-	do {
-		if (currentEntity->hasProperty("domain")) {
-			auto& domainProp = currentEntity->valueOfProperty("domain");
-			if (domainProp.isString() && domainProp.String() == "physical") {
-				nearestPhysicalDomainEntity = currentEntity;
+	if (currentEntity) {
+		do {
+			if (currentEntity->hasProperty("domain")) {
+				auto& domainProp = currentEntity->valueOfProperty("domain");
+				if (domainProp.isString() && domainProp.String() == "physical") {
+					nearestPhysicalDomainEntity = currentEntity;
+					break;
+				}
+			}
+			if (!currentEntity->getLocation()) {
 				break;
 			}
-		}
-		if (!currentEntity->getLocation()) {
-			break;
-		}
-		currentEntity = currentEntity->getEmberLocation();
-	} while (true);
+			currentEntity = currentEntity->getEmberLocation();
+		} while (currentEntity);
+	}
 
 	if (nearestPhysicalDomainEntity) {
 		auto attachment = std::make_unique<WorldAttachment>(*this,
