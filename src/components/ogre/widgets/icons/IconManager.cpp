@@ -206,8 +206,6 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 		render(icon, modelName);
 		// 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 
-		dummyEntity.shutdown();
-
 	}
 }
 

@@ -89,9 +89,6 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 
 	mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
 
-	// Deleting temporary entity
-	mEntity->shutdown();
-
 	mWorld.getSceneManager().destroySceneNode(mEntityNode);
 
 	mConnection.disconnect();

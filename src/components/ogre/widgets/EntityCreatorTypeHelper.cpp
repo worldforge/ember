@@ -146,7 +146,6 @@ void EntityCreatorTypeHelper::showPreview(Ember::OgreView::Authoring::DetachedEn
 	});
 
 	auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, mAvatar.getView().getTypeService(), &mAvatar.getView());
-	entity.shutdown();
 	if (mapping) {
 		mapping->initialize();
 	}
