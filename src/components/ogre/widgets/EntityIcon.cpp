@@ -30,6 +30,8 @@
 #include <CEGUI/widgets/DragContainer.h>
 #include <CEGUI/Font.h>
 
+#include <utility>
+
 using namespace CEGUI;
 namespace Ember {
 namespace OgreView {
@@ -163,7 +165,7 @@ void EntityIcon::updateAmount() {
 }
 
 void EntityIcon::setTag(std::string tag) {
-	mTag = tag;
+	mTag = std::move(tag);
 }
 
 const std::string& EntityIcon::getTag() const {

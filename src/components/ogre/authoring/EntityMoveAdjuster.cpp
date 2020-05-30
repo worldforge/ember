@@ -51,7 +51,9 @@ EntityMoveAdjuster::EntityMoveAdjuster(EntityMoveManager* manager, Eris::EventSe
 }
 
 void EntityMoveAdjuster::removeInstance(EntityMoveAdjustmentInstance* instance) {
-	std::remove_if(mInstances.begin(), mInstances.end(), [instance](const std::unique_ptr<EntityMoveAdjustmentInstance>& entry) { return entry.get() == instance; });
+	mInstances.erase(
+			std::remove_if(mInstances.begin(), mInstances.end(), [instance](const std::unique_ptr<EntityMoveAdjustmentInstance>& entry) { return entry.get() == instance; }),
+			mInstances.end());
 }
 
 void EntityMoveAdjuster::EntityMoveManager_FinishedMoving() {
