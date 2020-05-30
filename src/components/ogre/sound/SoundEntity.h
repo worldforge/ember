@@ -25,6 +25,10 @@
 #include <unordered_map>
 #include <Atlas/Objects/Operation.h>
 
+namespace Eris {
+class TypeInfo;
+}
+
 namespace Ember
 {
 class EmberEntity;
@@ -50,7 +54,7 @@ public:
 	 * At creation time, all SoundAction instances will be created and the class will begin listening to the signals on the EmberEntity which are emitted when an action occurs.
 	 * @param parentEntity The entity to which this instance belongs.
 	 */
-	SoundEntity(EmberEntity& parentEntity);
+	explicit SoundEntity(EmberEntity& parentEntity);
 
 	/**
 	 * @brief Dtor.
@@ -118,7 +122,7 @@ protected:
 	 * @brief Listen for entity actions and play a sound if there's anyone registered for that action.
 	 * @param act The action data struct. The name of the action can be obtained by looking at the parent of the operation.
 	 */
-	void Entity_Action(const Atlas::Objects::Operation::RootOperation& act);
+	void Entity_Action(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo);
 
 	/**
 	 * @brief Parses the ModelDefinition for the Model attached to the EmberEntity and creates the required sound actions.

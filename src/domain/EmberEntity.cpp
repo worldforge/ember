@@ -186,14 +186,14 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	Eris::ViewEntity::onTalk(talkArgs);
 }
 
-void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation& op) {
+void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation& op, const Eris::TypeInfo& typeInfo) {
 	//We'll just catch the call and write something to both the log and the console, and then pass it on.
 
 	std::string message = getNameOrType() + " emits a " + op->getParent() + ".";
 	ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
 	S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << op->getParent());
 
-	Eris::ViewEntity::onSoundAction(op);
+	Eris::ViewEntity::onSoundAction(op, typeInfo);
 }
 
 void EmberEntity::setAttachmentControlDelegate(IEntityControlDelegate* delegate) {
@@ -241,18 +241,18 @@ void EmberEntity::updateAttachment() {
 }
 
 
-void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act) {
-	if (act->getClassNo() != Atlas::Objects::Operation::HIT_NO && act->getClassNo() != Atlas::Objects::Operation::MOVE_NO) {
+void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo) {
+	if (typeInfo.isA("activity")) {
 		std::string message = getNameOrType() + " performs a " + act->getParent() + ".";
 		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
 
 		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << act->getParent());
 	}
 
-	Entity::onAction(act);
+	Entity::onAction(act, typeInfo);
 }
 
-void EmberEntity::onHit(const Atlas::Objects::Operation::Hit& act) {
+void EmberEntity::onHit(const Atlas::Objects::Operation::Hit& act, const Eris::TypeInfo& typeInfo) {
 
 	std::string message;
 	if (!act->getArgs().empty()) {
@@ -278,7 +278,7 @@ void EmberEntity::onHit(const Atlas::Objects::Operation::Hit& act) {
 		}
 	}
 
-	Entity::onHit(act);
+	Entity::onHit(act, typeInfo);
 }
 
 const std::vector<std::string>& EmberEntity::getSuggestedResponses() const {

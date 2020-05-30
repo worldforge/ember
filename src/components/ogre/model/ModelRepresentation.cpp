@@ -410,7 +410,7 @@ void ModelRepresentation::resetAnimations() {
 	}
 }
 
-void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOperation& act) {
+void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo) {
 	const std::string& name = act->getParent();
 
 	// If there is a sound entity, ask it to play this action

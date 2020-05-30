@@ -59,7 +59,7 @@ HitDisplayer::HitDisplayer(CEGUI::Window& mainSheet,
 
 
 	view.EntitySeen.connect([this](Eris::Entity* entity) {
-		entity->Hit.connect([this, entity](const Atlas::Objects::Operation::Hit& arg) {
+		entity->Hit.connect([this, entity](const Atlas::Objects::Operation::Hit& arg, const Eris::TypeInfo& typeInfo) {
 			entityHit(*entity, arg);
 		});
 	});

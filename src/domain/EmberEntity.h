@@ -52,6 +52,7 @@ class EntityTalk;
  * Any entity which has a graphical representation in the world, and under normal circumstances that's the most of them, will have mGraphicalRepresentation set to a subclass of IGraphicalRepresentation.
  */
 class EmberEntity: public Eris::ViewEntity, public IVisualizable
+
 {
 public:
 
@@ -366,15 +367,15 @@ protected:
 	/**
 	 *    @copydoc Eris::Entity::onAction()
 	 */
-	void onAction(const Atlas::Objects::Operation::RootOperation& act) override;
+	void onAction(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo) override;
 	/**
 	 *    @copydoc Eris::Entity::onHit()
 	 */
-	void onHit(const Atlas::Objects::Operation::Hit& hit) override;
+	void onHit(const Atlas::Objects::Operation::Hit& hit, const Eris::TypeInfo& typeInfo) override;
 	/**
 	 *    @copydoc Eris::Entity::onSoundAction()
 	 */
-	void onSoundAction(const Atlas::Objects::Operation::RootOperation& op) override;
+	void onSoundAction(const Atlas::Objects::Operation::RootOperation& op, const Eris::TypeInfo& typeInfo) override;
 
 	/**
 	 *    @copydoc Eris::Entity::onPropertyChanged()

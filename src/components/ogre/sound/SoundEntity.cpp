@@ -73,7 +73,7 @@ namespace OgreView
 		return 0;
 	}
 
-	void SoundEntity::Entity_Action(const Atlas::Objects::Operation::RootOperation& act)
+	void SoundEntity::Entity_Action(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo)
 	{
 		playAction(act->getParent());
 	}

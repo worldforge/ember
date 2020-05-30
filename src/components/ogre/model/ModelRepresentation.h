@@ -323,7 +323,7 @@ protected:
 	 *    Overridden from Eris::Entity
 	 * @param act
 	 */
-	void entity_Acted(const Atlas::Objects::Operation::RootOperation& act);
+	void entity_Acted(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo);
 
 	/**
 	 * @brief When the Model is reloaded we need to update with the new values.
