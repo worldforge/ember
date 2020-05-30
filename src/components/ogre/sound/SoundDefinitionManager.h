@@ -44,9 +44,10 @@ class XMLSoundDefParser;
  * @author Romulo Fernandes <abra185@gmail.com>
  * @brief Handles all sound definitions.
  */
-class SoundDefinitionManager : public Ogre::ResourceManager, public Singleton<SoundDefinitionManager> {
+class SoundDefinitionManager :
+		public Ogre::ScriptLoader,
+		public Singleton<SoundDefinitionManager> {
 public:
-	typedef std::unordered_map<std::string, std::unique_ptr<SoundGroupDefinition>> SoundGroupDefinitionStore;
 
 	SoundDefinitionManager();
 
@@ -54,13 +55,11 @@ public:
 
 	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) override;
 
-	/**
-	* Register a new SoundDefinition used to define soundgroups
-	*
-	* @return A pointer to the new created SoundDefinition, if it fails, returns nullptr
-	* TODO: move this to components/ogre since it belongs there and not here
-	*/
-	SoundGroupDefinition* createSoundGroupDefinition(const std::string& name);
+	const Ogre::StringVector& getScriptPatterns() const override;
+
+	Ogre::Real getLoadingOrder() const override {
+		return 300.0;
+	}
 
 	/**
 	* Returns the SoundDefinition from its name
@@ -74,13 +73,11 @@ public:
 protected:
 	std::unique_ptr<XMLSoundDefParser> mSoundParser;
 
-	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams) override;
-
 	/**
 	* Thats the list of the sound groups parsed in
 	* sounddefs
 	*/
-	SoundGroupDefinitionStore mSoundGroupDefinitions;
+	std::unordered_map<std::string, std::unique_ptr<SoundGroupDefinition>> mSoundGroupDefinitions;
 };
 
 }

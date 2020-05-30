@@ -34,16 +34,14 @@ class SoundDefinitionManager;
  */
 class XMLSoundDefParser {
 public:
-	explicit XMLSoundDefParser(SoundDefinitionManager& manager);
 
-	void parseScript(const Ogre::DataStreamPtr& stream);
+	std::map<std::string, std::unique_ptr<SoundGroupDefinition>> parseScript(const Ogre::DataStreamPtr& stream) const;
 
 private:
-	SoundDefinitionManager& mManager;
 
-	void readBuffers(SoundGroupDefinition* act, TiXmlElement* objNode);
+	void readBuffers(SoundGroupDefinition* act, TiXmlElement* objNode) const;
 
-	void readBuffer(SoundGroupDefinition* act, TiXmlElement* objNode);
+	void readBuffer(SoundGroupDefinition* act, TiXmlElement* objNode) const;
 };
 
 }

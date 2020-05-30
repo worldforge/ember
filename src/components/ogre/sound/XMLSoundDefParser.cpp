@@ -29,16 +29,13 @@
 namespace Ember {
 namespace OgreView {
 
-XMLSoundDefParser::XMLSoundDefParser(SoundDefinitionManager& manager)
-		: mManager(manager) {
-}
 
-
-void XMLSoundDefParser::parseScript(const Ogre::DataStreamPtr& stream) {
+std::map<std::string, std::unique_ptr<SoundGroupDefinition>> XMLSoundDefParser::parseScript(const Ogre::DataStreamPtr& stream) const {
+	std::map<std::string, std::unique_ptr<SoundGroupDefinition>> defs;
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (!xmlHelper.Load(xmlDoc, stream)) {
-		return;
+		return defs;
 	}
 
 	TiXmlElement* rootElem = xmlDoc.RootElement();
@@ -53,25 +50,25 @@ void XMLSoundDefParser::parseScript(const Ogre::DataStreamPtr& stream) {
 
 			std::string finalName(tmp);
 
-			SoundGroupDefinition* newModel = mManager.createSoundGroupDefinition(finalName);
+			auto newModel = std::make_unique<SoundGroupDefinition>();
 
-			if (newModel) {
-				S_LOG_INFO("Sound Model " << finalName << " created.");
+			S_LOG_INFO("Sound Model " << finalName << " created.");
 
-				readBuffers(newModel, smElem);
-			}
+			readBuffers(newModel.get(), smElem);
+			defs.emplace(finalName, std::move(newModel));
 		}
 	}
+	return defs;
 }
 
-void XMLSoundDefParser::readBuffers(SoundGroupDefinition* grp, TiXmlElement* objNode) {
+void XMLSoundDefParser::readBuffers(SoundGroupDefinition* grp, TiXmlElement* objNode) const {
 	for (TiXmlElement* smElem = objNode->FirstChildElement();
 		 smElem != nullptr; smElem = smElem->NextSiblingElement()) {
 		readBuffer(grp, smElem);
 	}
 }
 
-void XMLSoundDefParser::readBuffer(SoundGroupDefinition* grp, TiXmlElement* objNode) {
+void XMLSoundDefParser::readBuffer(SoundGroupDefinition* grp, TiXmlElement* objNode) const {
 	const char* filename = objNode->Attribute("filename");
 	const char* format = objNode->Attribute("format");
 // 	const char* playsin = objNode->Attribute("playsIn");

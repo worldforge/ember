@@ -33,26 +33,26 @@ namespace OgreView {
 
 
 SoundDefinitionManager::SoundDefinitionManager()
-		: mSoundParser(new XMLSoundDefParser(*this)) {
-	mResourceType = "SoundDefinition";
+		: mSoundParser(new XMLSoundDefParser()) {
 
-	mScriptPatterns.push_back("*.sounddef");
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
-	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 }
 
 
 SoundDefinitionManager::~SoundDefinitionManager() {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
-	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+}
+
+const Ogre::StringVector& SoundDefinitionManager::getScriptPatterns() const {
+	static Ogre::StringVector patterns{"*.sounddef", "*.sounddef.xml"};
+	return patterns;
 }
 
 void SoundDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) {
-	mSoundParser->parseScript(stream);
-}
-
-Ogre::Resource* SoundDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams) {
-	return nullptr;
+	auto defs = mSoundParser->parseScript(stream);
+	for (auto& entry : defs) {
+		mSoundGroupDefinitions.emplace(entry.first, std::move(entry.second));
+	}
 }
 
 SoundGroupDefinition* SoundDefinitionManager::getSoundGroupDefinition(const std::string& name) {
@@ -62,27 +62,6 @@ SoundGroupDefinition* SoundDefinitionManager::getSoundGroupDefinition(const std:
 	}
 
 	return nullptr;
-}
-
-SoundGroupDefinition* SoundDefinitionManager::createSoundGroupDefinition(const std::string& name) {
-	SoundGroupDefinition* newGroup = getSoundGroupDefinition(name);
-	if (!newGroup) {
-		newGroup = new SoundGroupDefinition();
-#ifdef THREAD_SAFE
-		pthread_mutex_lock(&mGroupModelsMutex);
-#endif
-
-		mSoundGroupDefinitions[name].reset(newGroup);
-
-#ifdef THREAD_SAFE
-		pthread_mutex_unlock(&mGroupModelsMutex);
-#endif
-
-		return newGroup;
-	} else {
-		S_LOG_INFO("Sound Group definition " << name << " already exists.");
-		return nullptr;
-	}
 }
 
 }
