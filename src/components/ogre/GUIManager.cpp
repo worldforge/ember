@@ -96,7 +96,6 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 		mWindowManager(nullptr),
 		mLuaScriptModule(nullptr),
 		mEnabled(true),
-		mActiveWidgetHandler(nullptr),
 		mRenderedStringParser(std::make_unique<Cegui::ColouredRenderedStringParser>()),
 		mQuickHelp(std::make_unique<Gui::QuickHelp>()),
 		mEntityTooltip(nullptr),
@@ -187,6 +186,7 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 
 GUIManager::~GUIManager() {
 	S_LOG_INFO("Shutting down GUI manager.");
+	mCeguiSetup.getSystem().setDefaultCustomRenderedStringParser(nullptr);
 	mWorldLoadingScreen.reset();
 	if (mCEGUIAdapter) {
 		getInput().removeAdapter(mCEGUIAdapter.get());
@@ -464,9 +464,8 @@ Gui::EntityTooltip* GUIManager::getEntityTooltip() const {
 	return mEntityTooltip.get();
 }
 
-const std::string& GUIManager::getLayoutDir() const {
-	static std::string dir("cegui/datafiles/layouts/");
-	return dir;
+std::string GUIManager::getLayoutDir() const {
+	return "cegui/datafiles/layouts/";
 }
 
 const std::string& GUIManager::getDefaultScheme() const {

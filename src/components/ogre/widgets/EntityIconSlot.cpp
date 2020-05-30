@@ -40,6 +40,7 @@ EntityIconSlot::EntityIconSlot(UniqueWindowPtr<CEGUI::Window> container)
 		: EntityIconDragDropTarget(container.get()),
 		  mContainer(std::move(container)),
 		  mContainedIcon(nullptr) {
+	mContainer->setDestroyedByParent(false);
 }
 
 EntityIconSlot::~EntityIconSlot() {

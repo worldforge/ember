@@ -53,6 +53,7 @@ EntityIcon::EntityIcon(EntityIconManager& manager,
 		  mCurrentSlot(nullptr),
 		  mEntity(entity),
 		  mAmountObserver(*mEntity, "amount") {
+	mDragContainer->setDestroyedByParent(false);
 	mDragContainer->setUserData(&mUserDataWrapper);
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(&EntityIcon::dragContainer_DragStarted, this));
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(&EntityIcon::dragContainer_DragStopped, this));
