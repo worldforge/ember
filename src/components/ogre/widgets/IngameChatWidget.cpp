@@ -43,6 +43,7 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/server/ServerService.h"
 
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/Exceptions.h>
@@ -70,21 +71,35 @@ namespace Gui {
 std::function<void(EmberEntity&)> IngameChatWidget::sEnableForEntity;
 std::function<void(EmberEntity&)> IngameChatWidget::sDisableForEntity;
 
-IngameChatWidget::IngameChatWidget() :
+std::unique_ptr<IngameChatWidget> instance;
+
+void IngameChatWidget::registerWidget(GUIManager& guiManager) {
+
+	EmberOgre::getSingleton().EventWorldCreated.connect([&](World& world) {
+		world.EventGotAvatar.connect([&]() {
+			instance = std::make_unique<IngameChatWidget>(guiManager, *world.getAvatar(), world.getMainCamera());
+		});
+	});
+	EmberOgre::getSingleton().EventWorldBeingDestroyed.connect([&]() {
+		instance.reset();
+	});
+}
+
+
+IngameChatWidget::IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camera::MainCamera& mainCamera) :
+		mGuiManager(guiManager),
+		mAvatar(avatar),
+		mCamera(mainCamera),
 		mTimeShown(0),
 		mDistanceShown(100),
 		mLabelCreator(*this),
 		mLabelPool(mLabelCreator),
 		mChatTextCreator(*this),
 		mChatTextPool(mChatTextCreator),
-		mLabelSheet(nullptr),
-		mWorld(nullptr),
-		mCamera(nullptr) {
+		mWidget(guiManager.createWidget()) {
 
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));
 	registerConfigListener("ingamechatwidget", "distanceshown", sigc::mem_fun(*this, &IngameChatWidget::Config_DistanceShown));
-	assert(!sEnableForEntity);
-	assert(!sDisableForEntity);
 
 	sEnableForEntity = [&](EmberEntity& entity) {
 		this->enableForEntity(entity);
@@ -93,26 +108,27 @@ IngameChatWidget::IngameChatWidget() :
 		this->disableForEntity(entity);
 	};
 
-}
 
-IngameChatWidget::~IngameChatWidget() {
-	sEnableForEntity = nullptr;
-	sDisableForEntity = nullptr;
-}
-
-void IngameChatWidget::buildWidget() {
-
-	mLabelSheet = mWindowManager->createWindow("DefaultWindow", "IngameChatWidget/LabelSheet");
+	mLabelSheet.reset(mWidget->createWindow("DefaultWindow", "IngameChatWidget/LabelSheet"));
 	mLabelSheet->setMousePassThroughEnabled(true);
 	mLabelSheet->setRiseOnClickEnabled(false);
-	getMainSheet()->addChild(mLabelSheet);
+	mWidget->getMainSheet()->addChild(mLabelSheet.get());
 
 	mLabelPool.initializePool(15);
 	mChatTextPool.initializePool(5);
-	EmberOgre::getSingleton().EventWorldCreated.connect(sigc::mem_fun(*this, &IngameChatWidget::EmberOgre_WorldCreated));
-	EmberOgre::getSingleton().EventWorldBeingDestroyed.connect(sigc::mem_fun(*this, &IngameChatWidget::EmberOgre_WorldBeingDestroyed));
 
-	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &IngameChatWidget::GUIManager_EntityAction));
+	guiManager.EventEntityAction.connect(sigc::mem_fun(*this, &IngameChatWidget::GUIManager_EntityAction));
+
+	mWidget->EventFrameStarted.connect([&](float time) { frameStarted(time); });
+	mCamera.getCamera().addListener(this);
+
+}
+
+IngameChatWidget::~IngameChatWidget() {
+	mCamera.getCamera().removeListener(this);
+	mGuiManager.removeWidget(mWidget);
+	sEnableForEntity = nullptr;
+	sDisableForEntity = nullptr;
 }
 
 void IngameChatWidget::Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable) {
@@ -124,19 +140,7 @@ void IngameChatWidget::Config_DistanceShown(const std::string& section, const st
 }
 
 Window* IngameChatWidget::getLabelSheet() {
-	return mLabelSheet;
-}
-
-void IngameChatWidget::EmberOgre_WorldCreated(World& world) {
-	mCamera = &world.getMainCamera();
-	mWorld = &world;
-	mCamera->getCamera().addListener(this);
-}
-
-void IngameChatWidget::EmberOgre_WorldBeingDestroyed() {
-	mCamera->getCamera().removeListener(this);
-	mCamera = nullptr;
-	mWorld = nullptr;
+	return mLabelSheet.get();
 }
 
 void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberEntity* entity) {
@@ -159,8 +163,8 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 }
 
 void IngameChatWidget::enableForEntity(EmberEntity& entity) {
-	//Any entity created before we've gotten mAvatar is the avatar entity itself, which we'll ignore.
-	if (mWorld->getAvatar() && mWorld->getAvatar()->getEmberEntity().getId() != entity.getId()) {
+	//Don't show for the avatar.
+	if (mAvatar.getEmberEntity().getId() != entity.getId()) {
 		auto observer = std::make_unique<EntityObserver>(*this, entity);
 		mEntityObservers.emplace(entity.getId(), std::move(observer));
 	}
@@ -190,9 +194,9 @@ WidgetPool<IngameChatWidget::ChatText>& IngameChatWidget::getChatTextPool() {
 
 //---------------------------------------------------
 
-void IngameChatWidget::frameStarted(const Ogre::FrameEvent& event) {
+void IngameChatWidget::frameStarted(float timeSinceLastFrame) {
 	for (auto& label : mLabelPool.getUsedWidgets()) {
-		label->frameStarted(event);
+		label->frameStarted(timeSinceLastFrame);
 	}
 }
 
@@ -323,7 +327,7 @@ void IngameChatWidget::Label::markForRender() {
 
 void IngameChatWidget::Label::objectRendering(const Ogre::Camera* camera) {
 	//only update when being rendered by the main camera
-	if (camera == &mContainerWidget.mCamera->getCamera()) {
+	if (camera == &mContainerWidget.mCamera.getCamera()) {
 		// 	const Ogre::Vector3& entityWorldCoords = mEntity->getDerivedPosition();
 		//	Ogre::Vector3 entityWorldCoords = mEntity->getWorldBoundingBox(true).getCenter();
 		//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
@@ -365,7 +369,7 @@ void IngameChatWidget::Label::placeWindowOnEntity() {
 			entityWorldCoords.y = sceneNode->_getWorldAABB().getMaximum().y;
 		}
 		//check what the new position is in screen coords
-		result = mContainerWidget.mCamera->worldToScreen(entityWorldCoords, screenCoords);
+		result = mContainerWidget.mCamera.worldToScreen(entityWorldCoords, screenCoords);
 	}
 	if (result) {
 		mWindow->setVisible(true);
@@ -376,11 +380,11 @@ void IngameChatWidget::Label::placeWindowOnEntity() {
 
 }
 
-void IngameChatWidget::Label::frameStarted(const Ogre::FrameEvent& event) {
+void IngameChatWidget::Label::frameStarted(float timeSinceLastFrame) {
 	if (mRenderNextFrame) {
 		mRenderNextFrame = false;
 		if (mChatText) {
-			bool keep = mChatText->frameStarted(event);
+			bool keep = mChatText->frameStarted(timeSinceLastFrame);
 			if (!keep) {
 				removeChatText();
 			}
@@ -542,8 +546,8 @@ IngameChatWidget::ChatText::ChatText(IngameChatWidget& chatWidget, CEGUI::Window
 IngameChatWidget::ChatText::~ChatText() =
 default;
 
-bool IngameChatWidget::ChatText::frameStarted(const Ogre::FrameEvent& event) {
-	increaseElapsedTime(event.timeSinceLastFrame);
+bool IngameChatWidget::ChatText::frameStarted(float timeSinceLastFrame) {
+	increaseElapsedTime(timeSinceLastFrame);
 	//unless timeShown is 0 windows will fade over time
 	float timeShown = mLabel->getIngameChatWidget().getTimeShown();
 	if (timeShown > 0) {
@@ -620,9 +624,8 @@ void IngameChatWidget::ChatText::updateText(const std::string& line) {
 void IngameChatWidget::ChatText::respondWithMessage(const std::string& message) {
 	EmberEntity* entity = mLabel->getEntity();
 
-	if (mChatWidget.mWorld && mChatWidget.mWorld->getAvatar()) {
-		mChatWidget.mWorld->getAvatar()->getErisAvatar().sayTo(message, {entity->getId()});
-	}
+	mChatWidget.mAvatar.getErisAvatar().sayTo(message, {entity->getId()});
+
 
 	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']You: " + message);
 	mDetachedChatHistory->setProperty("VertScrollPosition", mDetachedChatHistory->getProperty("VertExtent"));

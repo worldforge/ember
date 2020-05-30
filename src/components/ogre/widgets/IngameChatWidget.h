@@ -75,7 +75,7 @@ namespace Gui {
  * 
  * @author Erik Ogenvik
  */
-class IngameChatWidget : public Widget, public ConfigListenerContainer, public Ogre::Camera::Listener {
+class IngameChatWidget : public ConfigListenerContainer, public Ogre::Camera::Listener {
 	class EntityObserver;
 
 	class Label;
@@ -172,7 +172,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 		 * This mostly takes care of fading and wiping the history if the entity hasn't seen any
 		 * activity for prolonged periods of time (this is configurable)
 		 */
-		void frameStarted(const Ogre::FrameEvent& event);
+		void frameStarted(float timeSinceLastFrame);
 
 		/**
 		 * @brief Positions the window on top of the entity
@@ -275,9 +275,9 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 		/**
 		 * @brief Called each frame to update the window
 		 */
-		bool frameStarted(const Ogre::FrameEvent& event);
+		bool frameStarted(float timeSinceLastFrame);
 
-		float getElapsedTimeSinceLastUpdate();
+		float getElapsedTimeSinceLastUpdate() const;
 
 		/**
 		 * @brief Increases the elapsed time with the supplied amount
@@ -360,11 +360,12 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer, public O
 		UniqueWindowPtr<CEGUI::Window> mDetachedLayout;
 	};
 
-	typedef std::unordered_map<std::string, std::unique_ptr<EntityObserver>> EntityObserverStore;
-
 	friend class IngameChatWidget::EntityObserver;
 
 public:
+
+	static void registerWidget(GUIManager& guiManager);
+
 	/**
 	 * @brief Static function called when we want to enable labels for an entity.
 	 * Be sure to check that the function is valid before calling it.
@@ -377,13 +378,11 @@ public:
 	 */
 	static std::function<void(EmberEntity&)> sDisableForEntity;
 
-	IngameChatWidget();
+	IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camera::MainCamera& mainCamera);
 
 	~IngameChatWidget() override;
 
-	void buildWidget() override;
-
-	void frameStarted(const Ogre::FrameEvent& event) override;
+	void frameStarted(float timeSinceLastFrame);
 
 	void removeWidget(const std::string& windowName);
 
@@ -393,22 +392,13 @@ public:
 
 	WidgetPool<ChatText>& getChatTextPool();
 
-	float getTimeShown();
+	float getTimeShown() const;
 
 	CEGUI::Window* getLabelSheet();
 
 	void cameraPreRenderScene(Ogre::Camera* cam) override;
 
 protected:
-
-
-	/**
-	 * @brief Listen to the world created event, and attach listeners.
-	 * @param world The new world.
-	 */
-	void EmberOgre_WorldCreated(World& world);
-
-	void EmberOgre_WorldBeingDestroyed();
 
 	void Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 
@@ -430,7 +420,14 @@ protected:
 	 */
 	void GUIManager_EntityAction(const std::string& action, EmberEntity* entity);
 
-	EntityObserverStore mEntityObservers;
+
+	GUIManager& mGuiManager;
+	Avatar& mAvatar;
+	/// camera used for 3D -> 2D projection (placing labels and chat texts on top of Entities)
+	Camera::MainCamera& mCamera;
+
+	/// this sheet contains all labels of the entities
+	UniqueWindowPtr<CEGUI::Window> mLabelSheet;
 
 	/**
 	 * @brief The length in seconds a window should be shown after it has been activated.
@@ -448,22 +445,19 @@ protected:
 	ChatTextCreator mChatTextCreator;
 	WidgetPool<ChatText> mChatTextPool;
 
-	/// this sheet contains all labels of the entities
-	CEGUI::Window* mLabelSheet;
 
-	World* mWorld;
 
-	/// camera used for 3D -> 2D projection (placing labels and chat texts on top of Entities)
-	Camera::MainCamera* mCamera;
+	Widget* mWidget;
 
+	std::unordered_map<std::string, std::unique_ptr<EntityObserver>> mEntityObservers;
 
 };
 
-inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() {
+inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() const {
 	return mElapsedTimeSinceLastUpdate;
 }
 
-inline float IngameChatWidget::getTimeShown() {
+inline float IngameChatWidget::getTimeShown() const {
 	return mTimeShown;
 }
 

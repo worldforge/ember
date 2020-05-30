@@ -46,7 +46,6 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
 	WidgetLoader::registerWidgetFactory("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
 	WidgetLoader::registerWidgetFactory("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
-	WidgetLoader::registerWidgetFactory("IngameChatWidget", &WidgetLoader::createWidgetInstance<Gui::IngameChatWidget>);
 	WidgetLoader::registerWidgetFactory("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidgetFactory("Quit", &WidgetLoader::createWidgetInstance<Quit>);
 	WidgetLoader::registerWidgetFactory("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
@@ -57,6 +56,7 @@ WidgetDefinitions::WidgetDefinitions()
 
 void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	ContainerWidget::registerWidget(guiManager);
+	Gui::IngameChatWidget::registerWidget(guiManager);
 }
 
 }
