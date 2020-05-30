@@ -107,7 +107,7 @@ class HeightMapBufferProvider;
 
 struct TerrainDefPoint;
 
-class PlantAreaQuery;
+struct PlantAreaQuery;
 
 class PlantAreaQueryResult;
 

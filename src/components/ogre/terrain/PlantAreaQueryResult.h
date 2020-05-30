@@ -38,7 +38,7 @@ class Buffer;
 
 class PlantInstance;
 
-class PlantAreaQuery;
+struct PlantAreaQuery;
 
 class PlantAreaQueryResult {
 public:
