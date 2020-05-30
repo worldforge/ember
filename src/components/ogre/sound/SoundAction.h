@@ -22,23 +22,24 @@
 
 #include <string>
 #include "services/sound/SoundInstance.h"
-namespace Ember
-{
+
+namespace Ember {
 class SoundInstance;
+
 class SoundInstance;
-namespace OgreView
-{
+namespace OgreView {
 class SoundGroup;
+
 class SoundEntity;
+
 /**
  * @brief Responsible for handling actions (defined in modeldef). It contain references for sound groups defined within the action.
  */
-class SoundAction : public ISoundMotionProvider
-{
+class SoundAction : public ISoundMotionProvider {
 public:
-	SoundAction(SoundEntity& soundEntity);
-	
-	virtual ~SoundAction();
+	explicit SoundAction(SoundEntity& soundEntity);
+
+	~SoundAction() override;
 
 	/**
 	* @brief Register a group within this action.
@@ -68,7 +69,7 @@ public:
 	* @brief Stop all groups playing in this action
 	*/
 	void stop();
-	
+
 	/**
 	 * @brief Accessor for the sound instance used for playing the sound for this action.
 	 * If no sound is currently playing this will be null. Note that the SoundInstance returned here could be deleted at any time, so don't store any reference to it.
@@ -76,8 +77,8 @@ public:
 	 */
 	SoundInstance* getInstance() const;
 
-	virtual void update(SoundSource& soundSource);
-	
+	void update(SoundSource& soundSource) override;
+
 	/**
 	 * @brief Sets whether this sound should loop or not.
 	 * @param isLooping If true, the sound should loop.
@@ -91,7 +92,7 @@ protected:
 	 * Not owned by this class.
 	 */
 	SoundEntity& mSoundEntity;
-	
+
 	/**
 	 * @brief The sound group used for playing this sound.
 	 */
@@ -102,14 +103,14 @@ protected:
 	 * This is owned by this class, but only available when the sound is actually playing. As soon as the sound stops playing this will be set to null (and the instance deleted).
 	 */
 	SoundInstance* mInstance;
-	
+
 	/**
 	 * @brief Set to true if the sounds created by this actions should loop.
 	 * Most actions should not loop, but movement actions should. The default is false.
 	 * Note that if a sound is set to not loop, we must listen for the SoundInstance::EventPlayComplete so that we can remove the sound instance the momement it's done playing.
 	 */
 	bool mIsLooping;
-	
+
 	/**
 	 * @brief Listen for when the sound has been played to completion and then delete the instance.
 	 * This only applies when the sound is set not to loop.

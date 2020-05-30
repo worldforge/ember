@@ -27,39 +27,18 @@
 #include <map>
 #include <list>
 
-namespace Ember
-{
-namespace OgreView
-{
-class SoundDefinition;
+namespace Ember {
+namespace OgreView {
+struct SoundDefinition;
 
 /**
  * @brief Describes a set of sound samples (SoundDefinitions).
  */
-class SoundGroupDefinition
-{
-public:
-	typedef std::list<SoundDefinition> SoundDefinitionStore;
-	SoundGroupDefinition();
-	
-	virtual ~SoundGroupDefinition();
-	
-	/**
-	* Insert a sound sample into this group definition
-	*/
-	void insertSample(const std::string& name, SoundGeneral::SoundSampleType type, float volume);
-
-	/**
-	 * @brief Accessor for the sound definitions store.
-	 * @return 
-	 */
-	const SoundDefinitionStore& getSoundDefinitions() const;
-
-private:
+struct SoundGroupDefinition {
 	/**
 	 * @brief The sounds defined for this group.
 	 */
-	SoundDefinitionStore mSamples;
+	std::list<SoundDefinition> mSamples;
 };
 
 }

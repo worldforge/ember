@@ -23,18 +23,20 @@
 #include "services/sound/SoundBinding.h"
 #include <list>
 
-namespace Ember
-{
+namespace Ember {
 class SoundInstance;
+
 class SoundSource;
+
 class BaseSoundSample;
 }
 namespace Ember {
 namespace OgreView {
 
 class SoundGroup;
+
 class SoundDefinition;
-	
+
 /**
 @author Erik Ogenvik <erik@ogenvik.org>
 @brief Provides sound binding functionality for a SoundGroup.
@@ -42,8 +44,7 @@ class SoundDefinition;
 What makes this differ a little from normal sound binding is that the sound group is made up of many different sounds. If all sounds are static there's no problem, as the sound buffers then can be queued as they are. If however any sample is streaming it becomes a little more complex, since we then must update the buffers etc. as long as we're playing the streaming sample.
 */
 class SoundGroupBinding
-: public SoundBinding
-{
+		: public SoundBinding {
 public:
 	/**
 	 * @brief Ctor.
@@ -51,16 +52,17 @@ public:
 	 * @param soundGroup The soundgroup which we should bind to the source.
 	 */
 	SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup);
+
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~SoundGroupBinding();
-	
+	~SoundGroupBinding() override;
+
 	/**
 	 * @brief If we have any streaming sounds we should update the buffers accordingly here.
 	 */
-	virtual void update();
-	
+	void update() override;
+
 protected:
 	/**
 	 * @brief The sound group which contains the definitions used by this binding.
@@ -71,18 +73,17 @@ protected:
 /**
 * @brief Responsible to keep sound buffers together and play them in a determinated way (specified in the sounddefs).
 */
-class SoundGroup
-{
-public: 
-	enum PlayOrder
-	{
+class SoundGroup {
+public:
+	enum PlayOrder {
 		PLAY_LINEAR,
 		PLAY_INVERSE,
 		PLAY_RANDOM
 	};
 	typedef std::list<BaseSoundSample*> SampleStore;
-	
+
 	SoundGroup();
+
 	~SoundGroup();
 
 	/**
@@ -97,11 +98,12 @@ public:
 	*
 	* @param playO The new play order, from playOrder structure.
 	*/
-	void setPlayOrder(const unsigned int playO);
-	
+	void setPlayOrder(unsigned int playO);
+
 	bool bindToInstance(SoundInstance* instance);
-	
+
 	const SampleStore& getSamples() const;
+
 protected:
 	/**
 	* A list of the Samples allocated within the group
@@ -111,12 +113,12 @@ protected:
 	/**
 	* The frequency (Hz) in wich the sounds should be played.
 	*/
-	unsigned int mFrequency;
+	unsigned int mFrequency{};
 
 	/**
 	* How the buffers should be played, specified by playOrder.
 	*/
-	unsigned int mPlayOrder;
+	unsigned int mPlayOrder{};
 
 	/**
 	* If this Group is playing.

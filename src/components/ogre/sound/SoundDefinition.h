@@ -19,47 +19,17 @@
 
 #ifndef SOUNDMODEL_H
 #define SOUNDMODEL_H
+
 #include "services/sound/SoundGeneral.h"
 #include <string>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 /**
  * @brief Represent each buffer described inside specific sound groups.
  */
-class SoundDefinition
-{
+struct SoundDefinition {
 
-public:
-	/**
-	* Initialize this SoundDefinition
-	*
-	* @param filename The filename (with path) of the sample.
-	* @param type The Format of the sample (OGG/WAV/PCM)
-	* @param playLocal Defines if the sound is 2D or 3D
-	* @param volume The sample volume to be played
-	*/
-	void setup(const std::string& filename, SoundGeneral::SoundSampleType type, float volume);
-
-	/**
-	* Return filename
-	*/
-	const std::string& getFilename() const;
-
-	/**
-	* Return the format
-	*/
-	SoundGeneral::SoundSampleType getFormat() const;
-
-	/**
-	* Return the sound Volume
-	*/
-	float getVolume() const;
-
-protected:
-	
 	/**
 	* Filename WITH path
 	*/

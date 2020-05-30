@@ -35,8 +35,8 @@ add_library(emberogre
         model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp
         model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelFitting.cpp model/ModelPartReactivatorVisitor.cpp
 
-        sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp
-        sound/SoundEntity.cpp sound/SoundGroup.cpp sound/SoundGroupDefinition.cpp sound/XMLSoundDefParser.cpp
+        sound/SoundAction.cpp sound/SoundDefinitionManager.cpp
+        sound/SoundEntity.cpp sound/SoundGroup.cpp sound/XMLSoundDefParser.cpp
 
         terrain/OgreTerrain/OgreTerrainMaterialGeneratorEmber.cpp
         terrain/OgreTerrain/OgreTerrainDefiner.cpp

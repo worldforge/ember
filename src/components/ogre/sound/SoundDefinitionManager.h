@@ -24,6 +24,9 @@
 #ifndef EMBEROGRE_SOUNDDEFINITIONMANAGER_H
 #define EMBEROGRE_SOUNDDEFINITIONMANAGER_H
 
+
+#include "SoundGroupDefinition.h"
+#include "SoundDefinition.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 #include <OgreResourceManager.h>
@@ -34,14 +37,14 @@
 namespace Ember {
 namespace OgreView {
 
-class SoundGroupDefinition;
+
 class XMLSoundDefParser;
+
 /**
  * @author Romulo Fernandes <abra185@gmail.com>
  * @brief Handles all sound definitions.
  */
-class SoundDefinitionManager : public Ogre::ResourceManager, public Singleton<SoundDefinitionManager>
-{
+class SoundDefinitionManager : public Ogre::ResourceManager, public Singleton<SoundDefinitionManager> {
 public:
 	typedef std::unordered_map<std::string, std::unique_ptr<SoundGroupDefinition>> SoundGroupDefinitionStore;
 
@@ -49,8 +52,8 @@ public:
 
 	~SoundDefinitionManager() override;
 
-	void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName) override;
-	
+	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) override;
+
 	/**
 	* Register a new SoundDefinition used to define soundgroups
 	*
@@ -67,11 +70,12 @@ public:
 	* TODO: move this to components/ogre since it belongs there and not here
 	*/
 	SoundGroupDefinition* getSoundGroupDefinition(const std::string& name);
+
 protected:
 	std::unique_ptr<XMLSoundDefParser> mSoundParser;
 
-	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams);
-	
+	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams) override;
+
 	/**
 	* Thats the list of the sound groups parsed in
 	* sounddefs

@@ -28,80 +28,70 @@
 #include "components/ogre/model/ModelDefinition.h"
 #include "domain/EmberEntity.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-	SoundEntity::SoundEntity(EmberEntity& parentEntity)
-	: mParentEntity(parentEntity), mCurrentMovementAction(0)
-	{
-		parentEntity.Acted.connect(sigc::mem_fun(*this, &SoundEntity::Entity_Action));
-		createActions();
-	}
+namespace Ember {
+namespace OgreView {
+SoundEntity::SoundEntity(EmberEntity& parentEntity)
+		: mParentEntity(parentEntity), mCurrentMovementAction(nullptr) {
+	parentEntity.Acted.connect(sigc::mem_fun(*this, &SoundEntity::Entity_Action));
+	createActions();
+}
 
-	SoundEntity::~SoundEntity()
-	{
-		for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-			delete I->second;
-		}
-		for (ActionStore::iterator I = mMovementActions.begin(); I != mMovementActions.end(); ++I) {
-			delete I->second;
-		}
-		//Note that we shouldn't delete the mCurrentMovementAction since that's a pointer to an object held in the mMovementActions store.
+SoundEntity::~SoundEntity() {
+	for (auto& action : mActions) {
+		delete action.second;
 	}
-
-	WFMath::Point<3> SoundEntity::getPosition() const
-	{
-		WFMath::Point<3> pos = mParentEntity.getViewPosition();
-		return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
+	for (auto& movementAction : mMovementActions) {
+		delete movementAction.second;
 	}
+	//Note that we shouldn't delete the mCurrentMovementAction since that's a pointer to an object held in the mMovementActions store.
+}
 
-	WFMath::Vector<3> SoundEntity::getVelocity() const
-	{
-		WFMath::Vector<3> velocity = mParentEntity.getPredictedVelocity();
-		return velocity.isValid() ? velocity : WFMath::Vector<3>::ZERO();
+WFMath::Point<3> SoundEntity::getPosition() const {
+	WFMath::Point<3> pos = mParentEntity.getViewPosition();
+	return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
+}
+
+WFMath::Vector<3> SoundEntity::getVelocity() const {
+	WFMath::Vector<3> velocity = mParentEntity.getPredictedVelocity();
+	return velocity.isValid() ? velocity : WFMath::Vector<3>::ZERO();
+}
+
+const SoundAction* SoundEntity::playAction(const std::string& name) {
+	auto I = mActions.find(name);
+	if (I != mActions.end()) {
+		SoundAction* action = I->second;
+		action->play();
+		return action;
 	}
+	return nullptr;
+}
 
-	const SoundAction* SoundEntity::playAction(const std::string& name)
-	{
-		ActionStore::iterator I = mActions.find(name);
-		if (I != mActions.end()) {
-			SoundAction* action = I->second;
-			action->play();
-			return action;
-		}
-		return 0;
-	}
+void SoundEntity::Entity_Action(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo) {
+	playAction(act->getParent());
+}
 
-	void SoundEntity::Entity_Action(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo)
-	{
-		playAction(act->getParent());
-	}
-
-	const SoundAction* SoundEntity::playMovementSound(const std::string& actionName)
-	{
-		ActionStore::iterator I = mMovementActions.find(actionName);
-		if (I != mMovementActions.end()) {
-			SoundAction* action = I->second;
-			if (mCurrentMovementAction != action) {
-				if (mCurrentMovementAction) {
-					mCurrentMovementAction->stop();
-				}
-				action->play();
-				mCurrentMovementAction = action;
-			}
-		} else {
+const SoundAction* SoundEntity::playMovementSound(const std::string& actionName) {
+	auto I = mMovementActions.find(actionName);
+	if (I != mMovementActions.end()) {
+		SoundAction* action = I->second;
+		if (mCurrentMovementAction != action) {
 			if (mCurrentMovementAction) {
 				mCurrentMovementAction->stop();
 			}
-			mCurrentMovementAction = 0;
+			action->play();
+			mCurrentMovementAction = action;
 		}
-		return mCurrentMovementAction;
+	} else {
+		if (mCurrentMovementAction) {
+			mCurrentMovementAction->stop();
+		}
+		mCurrentMovementAction = nullptr;
 	}
+	return mCurrentMovementAction;
+}
 
 
-	void SoundEntity::createActions()
-	{
+void SoundEntity::createActions() {
 //		Model::Model* model = mParentEntity.getModel();
 //		if (!model) {
 //			S_LOG_FAILURE("Tried to create actions for a entity which has no model specified.");
@@ -141,7 +131,7 @@ namespace OgreView
 //				}*/
 //			}
 //		}
-	}
+}
 
 }
 }

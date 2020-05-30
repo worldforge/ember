@@ -29,12 +29,11 @@ namespace Eris {
 class TypeInfo;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
+namespace OgreView {
 class SoundAction;
+
 /**
 * @brief Represents an ingame EmberEntity instance, providing sound bindings and making sure that the correct sound is played for actions and movements.
 *
@@ -46,8 +45,7 @@ class SoundAction;
 * @author Erik Ogenvik <erik@ogenvik.org>
 * @author Romulo Fernandes Machado
 */
-class SoundEntity
-{
+class SoundEntity {
 public:
 	/**
 	 * @brief Ctor.

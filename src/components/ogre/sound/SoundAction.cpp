@@ -67,7 +67,7 @@ SoundGroup* SoundAction::setGroup(const std::string& name) {
 
 	auto* newGroup = new SoundGroup();
 
-	const SoundGroupDefinition::SoundDefinitionStore& soundDefinitions = groupModel->getSoundDefinitions();
+	auto& soundDefinitions = groupModel->mSamples;
 	for (const auto& soundDefinition : soundDefinitions) {
 		// Register Individual samples
 		newGroup->addSound(soundDefinition);

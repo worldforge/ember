@@ -24,27 +24,20 @@
 #include "SoundGroupDefinition.h"
 #include "SoundDefinitionManager.h"
 #include "components/ogre/XMLHelper.h"
-#ifdef _WIN32
-#include "platform/platform_windows.h"
-#endif
+#include "SoundDefinition.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 XMLSoundDefParser::XMLSoundDefParser(SoundDefinitionManager& manager)
-: mManager(manager)
-{
+		: mManager(manager) {
 }
 
 
-void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
-{
+void XMLSoundDefParser::parseScript(const Ogre::DataStreamPtr& stream) {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
-	if (!xmlHelper.Load(xmlDoc, stream)) 
-	{
+	if (!xmlHelper.Load(xmlDoc, stream)) {
 		return;
 	}
 
@@ -52,39 +45,33 @@ void XMLSoundDefParser::parseScript(Ogre::DataStreamPtr stream)
 
 	if (rootElem) {
 		for (TiXmlElement* smElem = rootElem->FirstChildElement();
-				smElem != 0; smElem = smElem->NextSiblingElement())
-		{
-			const char* tmp =  smElem->Attribute("name");
-			if (!tmp)
-			{
+			 smElem != nullptr; smElem = smElem->NextSiblingElement()) {
+			const char* tmp = smElem->Attribute("name");
+			if (!tmp) {
 				continue;
 			}
-	
+
 			std::string finalName(tmp);
-	
+
 			SoundGroupDefinition* newModel = mManager.createSoundGroupDefinition(finalName);
-				
-			if (newModel)
-			{
+
+			if (newModel) {
 				S_LOG_INFO("Sound Model " << finalName << " created.");
-	
+
 				readBuffers(newModel, smElem);
 			}
 		}
 	}
 }
 
-void XMLSoundDefParser::readBuffers(SoundGroupDefinition* grp, TiXmlElement* objNode)
-{
+void XMLSoundDefParser::readBuffers(SoundGroupDefinition* grp, TiXmlElement* objNode) {
 	for (TiXmlElement* smElem = objNode->FirstChildElement();
-            smElem != 0; smElem = smElem->NextSiblingElement())
-	{
+		 smElem != nullptr; smElem = smElem->NextSiblingElement()) {
 		readBuffer(grp, smElem);
 	}
 }
 
-void XMLSoundDefParser::readBuffer(SoundGroupDefinition* grp, TiXmlElement* objNode)
-{
+void XMLSoundDefParser::readBuffer(SoundGroupDefinition* grp, TiXmlElement* objNode) {
 	const char* filename = objNode->Attribute("filename");
 	const char* format = objNode->Attribute("format");
 // 	const char* playsin = objNode->Attribute("playsIn");
@@ -101,24 +88,19 @@ void XMLSoundDefParser::readBuffer(SoundGroupDefinition* grp, TiXmlElement* objN
 // 		playsReal = PLAY_WORLD;
 
 	SoundGeneral::SoundSampleType type = SoundGeneral::SAMPLE_PCM;
-	if (!stricmp(format, "wav") || !stricmp(format, "pcm"))
-	{
+	if (!stricmp(format, "wav") || !stricmp(format, "pcm")) {
 		type = SoundGeneral::SAMPLE_WAV;
-	}
-	else
-	if (!stricmp(format, "ogg"))
-	{
+	} else if (!stricmp(format, "ogg")) {
 		type = SoundGeneral::SAMPLE_OGG;
 	}
 
-	float soundVolume = 1.0f;
-	if (volume)
-	{
-		soundVolume = atof(volume);
+	double soundVolume = 1.0;
+	if (volume) {
+		soundVolume = std::stod(volume);
 	}
 
 
-	grp->insertSample(filename, type, soundVolume);
+	grp->mSamples.emplace_back(SoundDefinition{filename, type, static_cast<float>(soundVolume)});
 
 }
 

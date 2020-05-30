@@ -33,22 +33,18 @@
 #include "services/sound/SoundSource.h"
 #include "services/sound/SoundSample.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup)
-: SoundBinding(source), mSoundGroup(soundGroup)
-{
+		: SoundBinding(source), mSoundGroup(soundGroup) {
 	const SoundGroup::SampleStore& samples = mSoundGroup.getSamples();
 	std::unique_ptr<ALuint> buffers(new ALuint[samples.size()]);
 	ALuint* pbuffers = buffers.get();
 	int i = 0;
 	//get the buffers and bind the source to them
-	for (SoundGroup::SampleStore::const_iterator I = samples.begin(); I != samples.end(); ++I) 
-	{
-		BaseSoundSample::BufferStore sampleBuffers = (*I)->getBuffers();
+	for (auto& sample : samples) {
+		BaseSoundSample::BufferStore sampleBuffers = sample->getBuffers();
 		pbuffers[i] = *(sampleBuffers.begin());
 		++i;
 	}
@@ -57,36 +53,26 @@ SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup
 
 }
 
-SoundGroupBinding::~SoundGroupBinding()
-{
-}
+SoundGroupBinding::~SoundGroupBinding() = default;
 
-void SoundGroupBinding::update()
-{
+void SoundGroupBinding::update() {
 	//TODO: add support for streaming sounds
 }
 
 
+SoundGroup::SoundGroup()
+		: mIsPlaying(false) {
+}
 
-	SoundGroup::SoundGroup()
-	{
-		mSamples.clear();
-// 		mLastPlayed = 0;
-		mIsPlaying = false;
-	}
-
-	SoundGroup::~SoundGroup()
-	{
-	}
+SoundGroup::~SoundGroup() = default;
 
 // 	void SoundGroup::setFrequency(const unsigned int freq)
 // 	{
 // 		mFrequency = freq;
 // 	}
 
-	void SoundGroup::setPlayOrder(const unsigned int playO)
-	{
-		mPlayOrder = playO;
+void SoundGroup::setPlayOrder(const unsigned int playO) {
+	mPlayOrder = playO;
 // 		switch(mPlayOrder)
 // 		{
 // 			case PLAY_LINEAR:
@@ -99,7 +85,7 @@ void SoundGroupBinding::update()
 // 				getNextToPlay();
 // 				break;
 // 		};
-	}
+}
 
 // 	void SoundGroup::getNextToPlay()
 // 	{
@@ -145,30 +131,25 @@ void SoundGroupBinding::update()
 // 			resetClock();
 // 		}
 // 	}
-	
-	void SoundGroup::addSound(const SoundDefinition& soundDef)
-	{
-		BaseSoundSample* soundSample = EmberServices::getSingleton().getSoundService().createOrRetrieveSoundSample(soundDef.getFilename());
-		if (soundSample)
-		{
-			mSamples.push_back(soundSample);
-		}
+
+void SoundGroup::addSound(const SoundDefinition& soundDef) {
+	BaseSoundSample* soundSample = EmberServices::getSingleton().getSoundService().createOrRetrieveSoundSample(soundDef.mFilename);
+	if (soundSample) {
+		mSamples.push_back(soundSample);
 	}
-	
-	bool SoundGroup::bindToInstance(SoundInstance* instance)
-	{
-		auto binding = std::make_unique<SoundGroupBinding>(instance->getSource(), *this);
-		instance->bind(std::move(binding));
-		return true;
-	}
-	
-	
-	
-	const SoundGroup::SampleStore& SoundGroup::getSamples() const
-	{
-		return mSamples;
-	}
-	
+}
+
+bool SoundGroup::bindToInstance(SoundInstance* instance) {
+	auto binding = std::make_unique<SoundGroupBinding>(instance->getSource(), *this);
+	instance->bind(std::move(binding));
+	return true;
+}
+
+
+const SoundGroup::SampleStore& SoundGroup::getSamples() const {
+	return mSamples;
+}
+
 
 }
 }

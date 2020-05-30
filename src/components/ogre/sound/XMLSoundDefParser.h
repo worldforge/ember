@@ -26,20 +26,23 @@
 namespace Ember {
 namespace OgreView {
 class SoundGroupDefinition;
+
 class SoundDefinitionManager;
 
 /**
  * @brief Parses sound definitions from xml files.
  */
-class XMLSoundDefParser
-{
+class XMLSoundDefParser {
 public:
-	XMLSoundDefParser(SoundDefinitionManager& manager);
-	void parseScript(Ogre::DataStreamPtr stream);
+	explicit XMLSoundDefParser(SoundDefinitionManager& manager);
+
+	void parseScript(const Ogre::DataStreamPtr& stream);
 
 private:
 	SoundDefinitionManager& mManager;
+
 	void readBuffers(SoundGroupDefinition* act, TiXmlElement* objNode);
+
 	void readBuffer(SoundGroupDefinition* act, TiXmlElement* objNode);
 };
 
