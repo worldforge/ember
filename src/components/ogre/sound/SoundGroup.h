@@ -35,7 +35,7 @@ namespace OgreView {
 
 class SoundGroup;
 
-class SoundDefinition;
+struct SoundDefinition;
 
 /**
 @author Erik Ogenvik <erik@ogenvik.org>

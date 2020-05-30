@@ -25,7 +25,7 @@
 
 namespace Ember {
 namespace OgreView {
-class SoundGroupDefinition;
+struct SoundGroupDefinition;
 
 class SoundDefinitionManager;
 
