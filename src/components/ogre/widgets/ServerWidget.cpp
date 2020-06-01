@@ -37,7 +37,6 @@
 #include "components/ogre/mapping/ModelActionCreator.h"
 
 #include "services/server/ServerService.h"
-#include "services/server/AvatarTransferInfo.h"
 #include "services/config/ConfigService.h"
 #include "services/serversettings/ServerSettings.h"
 #include "services/serversettings/ServerSettingsCredentials.h"
@@ -65,24 +64,13 @@ namespace Gui {
 
 ServerWidget::ServerWidget() :
 		mAccount(nullptr),
-		mModelPreviewRenderer(nullptr),
-		mModelPreviewManipulator(nullptr),
 		mCharacterList(nullptr),
 		mCreateChar(nullptr),
 		mUseCreator(nullptr),
-		mNewCharName(nullptr),
-		mNewCharDescription(nullptr),
-		mTypesList(nullptr),
-		mMaleRadioButton(nullptr),
-		mFemaleRadioButton(nullptr),
-		mAvatarTransferInfo(nullptr) {
+		mTypesList(nullptr) {
 }
 
-ServerWidget::~ServerWidget() {
-	delete mModelPreviewManipulator;
-	delete mModelPreviewRenderer;
-	delete mAvatarTransferInfo;
-}
+ServerWidget::~ServerWidget() = default;
 
 void ServerWidget::buildWidget() {
 
@@ -90,54 +78,115 @@ void ServerWidget::buildWidget() {
 
 		CEGUI::PushButton* okButton = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("NoCharactersAlert/OkButton"));
 		if (okButton) {
-			BIND_CEGUI_EVENT(okButton, CEGUI::PushButton::EventClicked, ServerWidget::OkButton_Click);
+			BIND_CEGUI_EVENT(okButton, CEGUI::PushButton::EventClicked, ServerWidget::OkButton_Click)
 		}
 
 		CEGUI::PushButton* entityDestroyedOkButton = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("EntityDestroyed/OkButton"));
 		if (entityDestroyedOkButton) {
-			BIND_CEGUI_EVENT(entityDestroyedOkButton, CEGUI::PushButton::EventClicked, ServerWidget::EntityDestroyedOkButton_Click);
+			BIND_CEGUI_EVENT(entityDestroyedOkButton, CEGUI::PushButton::EventClicked, ServerWidget::EntityDestroyedOkButton_Click)
 		}
 
 		CEGUI::PushButton* login = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/Login"));
-		BIND_CEGUI_EVENT(login, CEGUI::PushButton::EventClicked, ServerWidget::Login_Click);
+		BIND_CEGUI_EVENT(login, CEGUI::PushButton::EventClicked, ServerWidget::Login_Click)
 		CEGUI::PushButton* createAcc = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/CreateAcc"));
-		BIND_CEGUI_EVENT(createAcc, CEGUI::PushButton::EventClicked, ServerWidget::CreateAcc_Click);
+		BIND_CEGUI_EVENT(createAcc, CEGUI::PushButton::EventClicked, ServerWidget::CreateAcc_Click)
 
 		mCharacterList = dynamic_cast<CEGUI::Listbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/CharacterList"));
 		CEGUI::PushButton* chooseChar = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/Choose"));
 		mUseCreator = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/UseCreator"));
 		mCreateChar = dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/CreateButton"));
 
-		BIND_CEGUI_EVENT(chooseChar, CEGUI::PushButton::EventClicked, ServerWidget::Choose_Click);
-		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click);
-		BIND_CEGUI_EVENT(mCreateChar, CEGUI::PushButton::EventClicked, ServerWidget::CreateChar_Click);
-		BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
-		BIND_CEGUI_EVENT(dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/LogoutButton")), CEGUI::PushButton::EventClicked, ServerWidget::LogoutButton_Click);
+		auto chooseFn = [=]() {
+			CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
+			if (item) {
 
-		mNewCharName = dynamic_cast<CEGUI::Editbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/NameEdit"));
-		mNewCharDescription = dynamic_cast<CEGUI::MultiLineEditbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
+				std::string id = mCharacterModel[mCharacterList->getItemIndex(item)];
+
+				EmberServices::getSingleton().getServerService().takeCharacter(id);
+			}
+			return true;
+		};
+
+		chooseChar->subscribeEvent(CEGUI::PushButton::EventClicked, chooseFn);
+		mCharacterList->subscribeEvent(CEGUI::PushButton::EventMouseDoubleClick, chooseFn);
+		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click)
+		mCreateChar->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+			EmberServices::getSingleton().getServerService().createCharacter(mNewChar.name, mNewChar.sex, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
+			return true;
+		});
+
+
+		mMainWindow->getChild("LoggedInPanel/LogoutButton")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+			EmberServices::getSingleton().getServerService().logout();
+			return true;
+		});
+
+		auto newCharName = dynamic_cast<CEGUI::Editbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/NameEdit"));
+		auto newCharDescription = dynamic_cast<CEGUI::MultiLineEditbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
 		mTypesList = dynamic_cast<CEGUI::Combobox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Type"));
 
-		mMaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
-		mFemaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
+		auto maleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
+		auto femaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
 
-		BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
-		BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
-		BIND_CEGUI_EVENT(mTypesList, CEGUI::Combobox::EventListSelectionChanged, ServerWidget::TypesList_SelectionChanged);
-		BIND_CEGUI_EVENT(mMaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Sex_SelectionChanged);
-		BIND_CEGUI_EVENT(mFemaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Sex_SelectionChanged);
+		newCharName->subscribeEvent(CEGUI::Editbox::EventTextChanged, [=]() {
+			std::string name = newCharName->getText().c_str();
+			mNewChar.name = std::move(name);
+			updateNewCharacter();
+			return true;
+		});
 
-		BIND_CEGUI_EVENT(mMainWindow->getChild("LoggedInPanel/TeleportInfo/Yes"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportYes_Click);
-		BIND_CEGUI_EVENT(mMainWindow->getChild("LoggedInPanel/TeleportInfo/No"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportNo_Click);
+		newCharDescription->subscribeEvent(CEGUI::Editbox::EventTextChanged, [=]() {
+			std::string description = newCharDescription->getText().c_str();
+			mNewChar.description = std::move(description);
+			updateNewCharacter();
+			return true;
+		});
+
+		BIND_CEGUI_EVENT(mTypesList, CEGUI::Combobox::EventListSelectionChanged, ServerWidget::TypesList_SelectionChanged)
+
+		auto sexSelectionChangedFn = [=]() {
+			CEGUI::RadioButton* selected = maleRadioButton->getSelectedButtonInGroup();
+			if (selected) {
+				mNewChar.sex = boost::algorithm::to_lower_copy(std::string(selected->getText().c_str()));
+				updateNewCharacter();
+			}
+			return true;
+		};
+
+		maleRadioButton->subscribeEvent(CEGUI::RadioButton::EventSelectStateChanged, sexSelectionChangedFn);
+		femaleRadioButton->subscribeEvent(CEGUI::RadioButton::EventSelectStateChanged, sexSelectionChangedFn);
+
+		mMainWindow->getChild("LoggedInPanel/TeleportInfo/Yes")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+			getWindow("TeleportInfo", true)->setVisible(false);
+			if (mAvatarTransferInfo) {
+				EmberServices::getSingleton().getServerService().takeTransferredCharacter(mAvatarTransferInfo->getTransferInfo());
+			}
+			return true;
+		});
+
+		mMainWindow->getChild("LoggedInPanel/TeleportInfo/No")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+			getWindow("TeleportInfo", true)->setVisible(false);
+			return true;
+		});
 
 		updateNewCharacter();
 
 		CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
 		CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 
-		BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
-		BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
-		BIND_CEGUI_EVENT(dynamic_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/Disconnect")), CEGUI::PushButton::EventClicked, ServerWidget::Disconnect_Click);
+		nameBox->subscribeEvent(CEGUI::Window::EventTextChanged, [=]() {
+			hideLoginFailure();
+			return true;
+		});
+		passwordBox->subscribeEvent(CEGUI::Window::EventTextChanged, [=]() {
+			hideLoginFailure();
+			return true;
+		});
+
+		mMainWindow->getChild("LoginPanel/Disconnect")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+			EmberServices::getSingleton().getServerService().disconnect();
+			return true;
+		});
 
 
 		EmberServices::getSingleton().getServerService().GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
@@ -155,11 +204,11 @@ void ServerWidget::buildWidget() {
 		 addTabbableWindow(createAcc);*/
 		closeTabGroup();
 
-		addTabbableWindow(mNewCharName);
+		addTabbableWindow(newCharName);
 		// 	addTabbableWindow(mTypesList);
 		/*	addTabbableWindow(mSexRadioButton);
 		 addTabbableWindow(femaleRadioButton);*/
-		addTabbableWindow(mNewCharDescription);
+		addTabbableWindow(newCharDescription);
 		addEnterButton(mCreateChar);
 		closeTabGroup();
 
@@ -188,7 +237,7 @@ void ServerWidget::server_TransferInfoAvailable(const std::vector<AvatarTransfer
 	if (!transferInfos.empty()) {
 		CEGUI::Window* teleportInfo = getWindow("TeleportInfo", true);
 		teleportInfo->setVisible(true);
-		mAvatarTransferInfo = new AvatarTransferInfo(transferInfos[0]);
+		mAvatarTransferInfo = transferInfos[0];
 	}
 }
 
@@ -258,31 +307,28 @@ bool ServerWidget::saveCredentials() {
 	mAccount->getConnection().getServerInfo(sInfo);
 
 	// pull widget references
-	CEGUI::Window* nameBox(nullptr);
-	CEGUI::Window* passwordBox(nullptr);
-	CEGUI::ToggleButton* saveBox(nullptr);
+
 	try {
-		nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
-		passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
-		saveBox = dynamic_cast<CEGUI::ToggleButton*> (mMainWindow->getChild("LoginPanel/SavePassCheck"));
+		auto nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
+		auto passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
+		auto saveBox = dynamic_cast<CEGUI::ToggleButton*> (mMainWindow->getChild("LoginPanel/SavePassCheck"));
+		if (nameBox && passwordBox && saveBox) {
+
+			// fetch info from widgets
+			const CEGUI::String& name = nameBox->getText();
+			const CEGUI::String& password = passwordBox->getText();
+			Services::ServerSettingsCredentials serverCredentials(sInfo);
+			Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
+			serverSettings.setItem(serverCredentials, "username", name.c_str());
+			serverSettings.setItem(serverCredentials, "password", password.c_str());
+			serverSettings.writeToDisk();
+			return true;
+		}
+		return false;
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when getting windows from CEGUI." << ex);
 		return false;
 	}
-
-	if (nameBox && passwordBox && saveBox) {
-
-		// fetch info from widgets
-		const CEGUI::String& name = nameBox->getText();
-		const CEGUI::String& password = passwordBox->getText();
-		Services::ServerSettingsCredentials serverCredentials(sInfo);
-		Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
-		serverSettings.setItem(serverCredentials, "username", name.c_str());
-		serverSettings.setItem(serverCredentials, "password", password.c_str());
-		serverSettings.writeToDisk();
-		return true;
-	}
-	return false;
 }
 
 void ServerWidget::logoutComplete(bool clean) {
@@ -332,17 +378,6 @@ bool ServerWidget::hideLoginFailure() {
 	return true;
 }
 
-bool ServerWidget::passwordBox_TextChanged(const CEGUI::EventArgs& args) {
-	hideLoginFailure();
-
-	return true;
-}
-
-bool ServerWidget::nameBox_TextChanged(const CEGUI::EventArgs& args) {
-	hideLoginFailure();
-
-	return true;
-}
 
 void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account) {
 	mTypesList->resetList();
@@ -441,17 +476,6 @@ void ServerWidget::gotAllCharacters(Eris::Account* account) {
 
 }
 
-bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args) {
-	CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
-	if (item) {
-
-		std::string id = mCharacterModel[mCharacterList->getItemIndex(item)];
-
-		EmberServices::getSingleton().getServerService().takeCharacter(id);
-	}
-	return true;
-}
-
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args) {
 	//create a new admin character
 	Atlas::Message::MapType extraProperties;
@@ -471,20 +495,6 @@ bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args) {
 	return true;
 }
 
-bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args) {
-	EmberServices::getSingleton().getServerService().createCharacter(mNewChar.name, mNewChar.sex, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
-	return true;
-}
-
-bool ServerWidget::LogoutButton_Click(const CEGUI::EventArgs& args) {
-	EmberServices::getSingleton().getServerService().logout();
-	return true;
-}
-
-bool ServerWidget::Disconnect_Click(const CEGUI::EventArgs& args) {
-	EmberServices::getSingleton().getServerService().disconnect();
-	return true;
-}
 
 bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args) {
 	CEGUI::ListboxItem* item = mTypesList->getSelectedItem();
@@ -567,31 +577,6 @@ void ServerWidget::typeService_TypeBound(Eris::TypeInfo* type) {
 	}
 }
 
-bool ServerWidget::Sex_SelectionChanged(const CEGUI::EventArgs& args) {
-	CEGUI::RadioButton* selected = mMaleRadioButton->getSelectedButtonInGroup();
-	if (selected) {
-		mNewChar.sex = boost::algorithm::to_lower_copy(std::string(selected->getText().c_str()));
-
-		updateNewCharacter();
-	}
-	return true;
-}
-
-bool ServerWidget::Name_TextChanged(const CEGUI::EventArgs& args) {
-	std::string name = mNewCharName->getText().c_str();
-	mNewChar.name = std::move(name);
-	updateNewCharacter();
-
-	return true;
-}
-
-bool ServerWidget::Description_TextChanged(const CEGUI::EventArgs& args) {
-	std::string description = mNewCharDescription->getText().c_str();
-	mNewChar.description = description;
-	updateNewCharacter();
-	return true;
-}
-
 void ServerWidget::updateNewCharacter() {
 	mCreateChar->setEnabled(mNewChar.isValid());
 	if (!mPreviewTypeName.empty()) {
@@ -638,20 +623,6 @@ bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args) {
 	return true;
 }
 
-
-bool ServerWidget::TeleportYes_Click(const CEGUI::EventArgs& args) {
-	getWindow("TeleportInfo", true)->setVisible(false);
-	if (mAvatarTransferInfo) {
-		EmberServices::getSingleton().getServerService().takeTransferredCharacter(mAvatarTransferInfo->getTransferInfo());
-	}
-	return true;
-}
-
-bool ServerWidget::TeleportNo_Click(const CEGUI::EventArgs& args) {
-	getWindow("TeleportInfo", true)->setVisible(false);
-	return true;
-}
-
 void ServerWidget::gotAvatar(Eris::Avatar* avatar) {
 	mTypeServiceConnection.disconnect();
 
@@ -685,8 +656,8 @@ void ServerWidget::createPreviewTexture() {
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
 	} else {
-		mModelPreviewRenderer = new ModelRenderer(imageWidget, "newCharacterPreview");
-		mModelPreviewManipulator = new CameraEntityTextureManipulator(*imageWidget, mModelPreviewRenderer->getEntityTexture());
+		mModelPreviewRenderer = std::make_unique<ModelRenderer>(imageWidget, "newCharacterPreview");
+		mModelPreviewManipulator = std::make_unique<CameraEntityTextureManipulator>(*imageWidget, mModelPreviewRenderer->getEntityTexture());
 	}
 
 }

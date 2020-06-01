@@ -23,6 +23,10 @@
 #ifndef EMBEROGRE_SERVERWIDGET_H
 #define EMBEROGRE_SERVERWIDGET_H
 
+#include "Widget.h"
+#include "components/ogre/authoring/DetachedEntity.h"
+#include "services/server/AvatarTransferInfo.h"
+
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
 #include <Eris/Avatar.h>
@@ -31,14 +35,13 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Message/Element.h>
 
-#include "Widget.h"
+#include <boost/optional.hpp>
+
 #include <map>
 #include <vector>
-#include <components/ogre/authoring/DetachedEntity.h>
 
 
 namespace Ember {
-class AvatarTransferInfo;
 namespace OgreView {
 
 
@@ -84,28 +87,23 @@ protected:
 	/**
 	 * @brief A preview renderer for creating new characters
 	 */
-	ModelRenderer* mModelPreviewRenderer;
+	std::unique_ptr<ModelRenderer> mModelPreviewRenderer;
 
 	/**
 	 * @brief Handles manipulation of the entity preview.
 	 */
-	EntityTextureManipulator* mModelPreviewManipulator;
+	std::unique_ptr<EntityTextureManipulator> mModelPreviewManipulator;
 
 	NewCharacter mNewChar;
 
 	CEGUI::Listbox* mCharacterList;
 	CEGUI::PushButton* mCreateChar;
 	CEGUI::PushButton* mUseCreator;
-	CEGUI::Editbox* mNewCharName;
-	CEGUI::MultiLineEditbox* mNewCharDescription;
 	CEGUI::Combobox* mTypesList;
-	CEGUI::RadioButton* mMaleRadioButton;
-	CEGUI::RadioButton* mFemaleRadioButton;
-
 
 	CharacterAndSpawnsStore mCharacterAndSpawns;
 
-	AvatarTransferInfo* mAvatarTransferInfo;
+	boost::optional<AvatarTransferInfo> mAvatarTransferInfo;
 
 	/**
 	 * @brief Keeps track of the character ids of the characters in the mCharacterList listbox.
@@ -127,17 +125,10 @@ protected:
 	void avatar_Deactivated(const std::string& avatarId);
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
-	bool LogoutButton_Click(const CEGUI::EventArgs& args);
-	bool Choose_Click(const CEGUI::EventArgs& args);
 	bool UseCreator_Click(const CEGUI::EventArgs& args);
-	bool CreateChar_Click(const CEGUI::EventArgs& args);
 	bool CreateAcc_Click(const CEGUI::EventArgs& args);
 	bool OkButton_Click(const CEGUI::EventArgs& args);
 	bool EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args);
-	bool Disconnect_Click(const CEGUI::EventArgs& args);
-	
-	bool TeleportYes_Click(const CEGUI::EventArgs& args);
-	bool TeleportNo_Click(const CEGUI::EventArgs& args);
 
 
 	bool fetchCredentials(Eris::Connection* connection, std::string& user, std::string& pass);
@@ -156,22 +147,10 @@ protected:
 	*/
 	bool hideLoginFailure();
 
-	/**
-	* This function is a slot reacting on a ChangeEvent in the user name box.
-	*/
-	bool nameBox_TextChanged(const CEGUI::EventArgs& args);
-
-	/**
-	* This function is a slot reacting on a ChangeEvent in the password box.
-	*/
-	bool passwordBox_TextChanged(const CEGUI::EventArgs& args);
 	void gotAllCharacters(Eris::Account* account);
 	
 	bool TypesList_SelectionChanged(const CEGUI::EventArgs& args);
-	bool Sex_SelectionChanged(const CEGUI::EventArgs& args);
-	bool Name_TextChanged(const CEGUI::EventArgs& args);
-	bool Description_TextChanged(const CEGUI::EventArgs& args);
-	
+
 	void updateNewCharacter();
 	
 	
