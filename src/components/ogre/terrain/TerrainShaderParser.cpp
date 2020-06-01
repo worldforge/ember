@@ -56,7 +56,7 @@ TerrainShaderParser::~TerrainShaderParser() = default;
 //}
 //}
 
-void TerrainShaderParser::createShaders(const Atlas::Message::Element& terrain) {
+void TerrainShaderParser::createShaders(const Atlas::Message::ListType& surfaces) {
 	//For now don't allow updating of shaders.
 	//TODO: add support for altering terrain shaders
 	if (!mTerrainHandler.getAllShaders().empty()) {
@@ -65,48 +65,38 @@ void TerrainShaderParser::createShaders(const Atlas::Message::Element& terrain) 
 
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
 	bool isValid = false;
-	if (terrain.isMap()) {
-		auto& terrainMap = terrain.Map();
-		auto Isurfaces = terrainMap.find("surfaces");
-		if (Isurfaces != terrainMap.end()) {
-			auto& surfaces = Isurfaces->second;
-			if (surfaces.isList()) {
-				auto& slist = surfaces.List();
-				for (const auto& surfaceElement : slist) {
-					if (surfaceElement.isMap()) {
-						auto& surfaceMap = surfaceElement.Map();
+	for (const auto& surfaceElement : surfaces) {
+		if (surfaceElement.isMap()) {
+			auto& surfaceMap = surfaceElement.Map();
 
-						Mercator::Shader::Parameters params;
-						if (surfaceMap.count("params")) {
-							const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
-							if (paramsElem.isMap()) {
-								for (const auto& param : paramsElem.asMap()) {
-									if (param.second.isNum()) {
-										params[param.first] = param.second.asNum();
-									}
-								}
-							}
+			Mercator::Shader::Parameters params;
+			if (surfaceMap.count("params")) {
+				const Atlas::Message::Element& paramsElem(surfaceMap.find("params")->second);
+				if (paramsElem.isMap()) {
+					for (const auto& param : paramsElem.asMap()) {
+						if (param.second.isNum()) {
+							params[param.first] = param.second.asNum();
 						}
+					}
+				}
+			}
 
-						auto Iname = surfaceMap.find("name");
-						if (Iname != surfaceMap.end()) {
-							auto& nameElem = Iname->second;
-							if (nameElem.isString()) {
-								auto& name = nameElem.String();
-								auto def = terrainManager.getDefinitionForShader(name);
-								if (def) {
-									auto Ipattern = surfaceMap.find("pattern");
-									if (Ipattern != surfaceMap.end()) {
-										auto& patternElem = Ipattern->second;
-										if (patternElem.isString()) {
-											const std::string& pattern = patternElem.String();
-											Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
-											if (shader) {
-												isValid = true;
-												mTerrainHandler.createShader(def, shader);
-											}
-										}
-									}
+			auto Iname = surfaceMap.find("name");
+			if (Iname != surfaceMap.end()) {
+				auto& nameElem = Iname->second;
+				if (nameElem.isString()) {
+					auto& name = nameElem.String();
+					auto def = terrainManager.getDefinitionForShader(name);
+					if (def) {
+						auto Ipattern = surfaceMap.find("pattern");
+						if (Ipattern != surfaceMap.end()) {
+							auto& patternElem = Ipattern->second;
+							if (patternElem.isString()) {
+								const std::string& pattern = patternElem.String();
+								Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
+								if (shader) {
+									isValid = true;
+									mTerrainHandler.createShader(def, shader);
 								}
 							}
 						}

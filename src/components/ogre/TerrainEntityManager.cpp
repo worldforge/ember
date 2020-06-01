@@ -35,10 +35,12 @@
 #include <OgreSceneNode.h>
 
 #include <Eris/View.h>
+#include <Eris/Avatar.h>
 
 #include <Mercator/Area.h>
 
 #include <sigc++/bind.h>
+#include <framework/EntityImporterBase.h>
 
 namespace Ember {
 namespace OgreView {
@@ -77,8 +79,12 @@ TerrainEntityManager::TerrainEntityManager(Eris::View& view, Terrain::TerrainHan
 		mTerrainHandler(terrainHandler),
 		mSceneManager(sceneManager) {
 
+	//TODO: only react to entities that have domain="physical" and their direct children
 	mTerrainListener = [&](EmberEntity& entity, const Atlas::Message::Element& element) {
 		entityTerrainAttrChanged(entity, element);
+	};
+	mTerrainPointsListener = [&](EmberEntity& entity, const Atlas::Message::Element& element) {
+		entityTerrainPointsAttrChanged(entity, element);
 	};
 	mTerrainModListener = [&](EmberEntity& entity, const Atlas::Message::Element& element) {
 		entityTerrainModAttrChanged(entity, element);
@@ -88,48 +94,66 @@ TerrainEntityManager::TerrainEntityManager(Eris::View& view, Terrain::TerrainHan
 	};
 
 	EmberEntity::registerGlobalAttributeListener("terrain", mTerrainListener);
+	EmberEntity::registerGlobalAttributeListener("terrain_points", mTerrainPointsListener);
 	EmberEntity::registerGlobalAttributeListener("terrainmod", mTerrainModListener);
 	EmberEntity::registerGlobalAttributeListener("area", mTerrainAreaListener);
 }
 
 TerrainEntityManager::~TerrainEntityManager() {
 	EmberEntity::deregisterGlobalAttributeListener("terrain", mTerrainListener);
+	EmberEntity::deregisterGlobalAttributeListener("terrain_points", mTerrainPointsListener);
 	EmberEntity::deregisterGlobalAttributeListener("terrainmod", mTerrainModListener);
 	EmberEntity::deregisterGlobalAttributeListener("area", mTerrainAreaListener);
 }
 
 void TerrainEntityManager::parseTerrainAttribute(EmberEntity& entity, const Atlas::Message::Element& value) {
-	Terrain::TerrainShaderParser terrainShaderParser(mTerrainHandler);
-	terrainShaderParser.createShaders(value);
-	Terrain::TerrainParser terrainParser;
-	WFMath::Point<3> pos = entity.getPosition().isValid() ? entity.getPredictedPos() : WFMath::Point<3>::ZERO();
-	mTerrainHandler.updateTerrain(terrainParser.parseTerrain(value, pos));
-	entity.setHeightProvider(&mTerrainHandler);
-	mTerrainHandler.EventTerrainEnabled(entity);
+	if (value.isList()) {
+		Terrain::TerrainShaderParser terrainShaderParser(mTerrainHandler);
+		terrainShaderParser.createShaders(value.List());
+		entity.setHeightProvider(&mTerrainHandler);
+		mTerrainHandler.EventTerrainEnabled(entity);
+	}
 }
 
 void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
-	if (!mTerrainEntityDeleteConnection) {
-		mTerrainEntityDeleteConnection = entity.BeingDeleted.connect([this]() {
-			mTerrainHandler.EventTerrainDisabled();
-			mTerrainEntityDeleteConnection.disconnect();
-			mTerrainEntityVisibilityConnection.disconnect();
-		});
-	}
-	if (!mTerrainEntityVisibilityConnection) {
-		mTerrainEntityVisibilityConnection = entity.VisibilityChanged.connect([this, &entity](bool visible) {
-			if (!visible) {
+	//Only apply if the entity is both an ancestor to the avatar entity and has a domain.
+	//TODO: for now we only check that it has a domain, because if it's the main parent entity then the avatar entity will not have been bound yet.
+//	if (entity.isAncestorTo(*mView.getAvatar().getEntity()) && entity.hasProperty("domain")) {
+	if (entity.hasProperty("domain")) {
+			if (!mTerrainEntityDeleteConnection) {
+			mTerrainEntityDeleteConnection = entity.BeingDeleted.connect([this]() {
 				mTerrainHandler.EventTerrainDisabled();
-			} else {
-				parseTerrainAttribute(entity, entity.valueOfProperty("terrain"));
-			}
-		});
+				mTerrainEntityDeleteConnection.disconnect();
+				mTerrainEntityVisibilityConnection.disconnect();
+			});
+		}
+		if (!mTerrainEntityVisibilityConnection) {
+			mTerrainEntityVisibilityConnection = entity.VisibilityChanged.connect([this, &entity](bool visible) {
+				if (!visible) {
+					mTerrainHandler.EventTerrainDisabled();
+				} else {
+					parseTerrainAttribute(entity, entity.valueOfProperty("terrain"));
+				}
+			});
+		}
+
+		if (entity.isVisible()) {
+			parseTerrainAttribute(entity, value);
+		}
 	}
 
-	if (entity.isVisible()) {
-		parseTerrainAttribute(entity, value);
-	}
+}
 
+
+void TerrainEntityManager::entityTerrainPointsAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
+
+//	if (entity.isVisible()) {
+	if (value.isMap()) {
+		Terrain::TerrainParser terrainParser;
+		WFMath::Point<3> pos = entity.getPosition().isValid() ? entity.getPredictedPos() : WFMath::Point<3>::ZERO();
+		mTerrainHandler.updateTerrain(terrainParser.parseTerrain(value.Map(), pos));
+	}
+//	}
 }
 
 void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {

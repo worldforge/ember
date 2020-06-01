@@ -21,14 +21,7 @@
 
 #include "Types.h"
 
-namespace Atlas
-{
-namespace Message
-{
-class Element;
-}
-}
-
+#include <Atlas/Message/Element.h>
 namespace WFMath
 {
 template<int> class Point;
@@ -61,7 +54,7 @@ public:
 	 * @brief Extracts terrain updates from the element and updates the terrain.
 	 * @param terrain The element containing the terrain data.
 	 */
-	TerrainDefPointStore parseTerrain(const Atlas::Message::Element& terrain, const WFMath::Point<3>& offset) const;
+	TerrainDefPointStore parseTerrain(const Atlas::Message::MapType& points, const WFMath::Point<3>& offset) const;
 
 };
 

@@ -65,6 +65,7 @@ private:
 	typedef std::unordered_map<EmberEntity*, std::pair<std::unique_ptr<Terrain::TerrainArea>, std::unique_ptr<TerrainEffectorListener>>> AreaStore;
 
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainListener;
+	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainPointsListener;
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainAreaListener;
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainModListener;
 
@@ -79,6 +80,8 @@ private:
 	sigc::connection mTerrainEntityVisibilityConnection;
 
 	void entityTerrainAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
+
+	void entityTerrainPointsAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 
 	void entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value);
 

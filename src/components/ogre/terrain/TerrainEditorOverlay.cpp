@@ -496,9 +496,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 			sarg["id"] = "0";
 		}
 
-		Atlas::Message::MapType & terrain = (sarg["terrain"] = Atlas::Message::MapType()).asMap();
-
-		Atlas::Message::MapType & pointMap = (terrain["points"] = Atlas::Message::MapType()).asMap();
+		Atlas::Message::MapType & pointMap = (sarg["terrain_points!append"] = Atlas::Message::MapType()).asMap();
 
 		auto createPointElementFn = [&](const Mercator::BasePoint& bp, int x, int y, const std::string& key) {
 			Atlas::Message::ListType & point = (pointMap[key] = Atlas::Message::ListType(5)).asList();
