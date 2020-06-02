@@ -25,6 +25,7 @@
 #endif
 
 
+#include <framework/MainLoopController.h>
 #include "WidgetDefinitions.h"
 
 #include "ServerWidget.h"
@@ -48,7 +49,6 @@ WidgetDefinitions::WidgetDefinitions() {
 	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
 	WidgetLoader::registerWidgetFactory("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidgetFactory("Help", &WidgetLoader::createWidgetInstance<Help>);
-	WidgetLoader::registerWidgetFactory("Quit", &WidgetLoader::createWidgetInstance<Quit>);
 	WidgetLoader::registerWidgetFactory("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
 
 }
@@ -63,16 +63,33 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	ContainerWidget::registerWidget(guiManager);
 	Gui::IngameChatWidget::registerWidget(guiManager);
 
+
 	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
 	Ember::FileSystemObserver::getSingleton().add_directory(pluginDirPath, [&](const Ember::FileSystemObserver::FileSystemEvent& event) {
 		if (event.ev.type == boost::asio::dir_monitor_event::added || event.ev.type == boost::asio::dir_monitor_event::modified) {
 			auto I = mPlugins.find(event.ev.path);
 			if (I != mPlugins.end()) {
-				//First remove the existing plugin.
-				mPlugins.erase(I);
-				//Then add the new one
-				registerPlugin(guiManager, event.ev.path);
+				//Mark the path and wait two seconds for file system to settle down.
+				mDirtyPluginPaths.emplace(event.ev.path);
+				MainLoopController::getSingleton().getEventService().runOnMainThreadDelayed([this, &guiManager]() {
+					for (auto& path: mDirtyPluginPaths) {
+						auto J = mPlugins.find(path);
+						if (J != mPlugins.end()) {
+							S_LOG_INFO("Reloading plugin '" << path.string() << "'.");
+							//First remove the existing plugin.
+							mPlugins.erase(J);
+							//Then add the new one
+							registerPlugin(guiManager, path);
+						}
+					}
+					mDirtyPluginPaths.clear();
+
+				}, boost::posix_time::seconds(2));
+
+
 			}
+
+
 		}
 	});
 	registerPluginWithName(guiManager, "ServerWidget");

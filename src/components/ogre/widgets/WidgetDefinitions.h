@@ -25,6 +25,7 @@
 
 #include <boost/dll.hpp>
 #include <vector>
+#include <set>
 #include "WidgetPlugin.h"
 
 namespace Ember {
@@ -77,6 +78,8 @@ public:
 
 private:
 	std::map<boost::filesystem::path, PluginEntry> mPlugins;
+
+	std::set<boost::filesystem::path> mDirtyPluginPaths;
 
 };
 }

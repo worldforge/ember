@@ -19,6 +19,8 @@
 #ifndef EMBER_WIDGETPLUGIN_H
 #define EMBER_WIDGETPLUGIN_H
 
+#include <boost/dll.hpp>
+
 namespace Ember {
 namespace OgreView {
 class GUIManager;
@@ -33,5 +35,6 @@ typedef std::function<void()> PluginCallback;
  */
 typedef boost::dll::detail::library_function<PluginCallback(Ember::OgreView::GUIManager&)> PluginFunction;
 
+#define PLUGIN_API extern "C" BOOST_SYMBOL_EXPORT
 
 #endif //EMBER_WIDGETPLUGIN_H

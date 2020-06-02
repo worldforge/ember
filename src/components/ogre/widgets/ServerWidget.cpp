@@ -58,7 +58,7 @@
 #include <boost/algorithm/string.hpp>
 
 
-std::function<void()> registerWidget(Ember::OgreView::GUIManager& guiManager) {
+PluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	auto connectFn = [&guiManager](Eris::Connection* connection) mutable {
 		auto widget = std::make_shared<Ember::OgreView::Gui::ServerWidget>(guiManager, *connection);
 

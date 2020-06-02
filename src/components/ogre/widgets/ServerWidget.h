@@ -24,6 +24,7 @@
 #define EMBEROGRE_SERVERWIDGET_H
 
 #include "Widget.h"
+#include "WidgetPlugin.h"
 #include "components/ogre/authoring/DetachedEntity.h"
 #include "services/server/AvatarTransferInfo.h"
 
@@ -194,7 +195,6 @@ protected:
 }
 }
 
-#define API extern "C" BOOST_SYMBOL_EXPORT
-API std::function<void()> registerWidget(Ember::OgreView::GUIManager& guiManager);
+PLUGIN_API PluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 #endif
