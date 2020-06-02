@@ -64,6 +64,7 @@ Widget::~Widget() {
 	if (!mCommandSuffix.empty()) {
 		ConsoleBackend::getSingletonPtr()->deregisterCommand("show_" + mCommandSuffix);
 		ConsoleBackend::getSingletonPtr()->deregisterCommand("hide_" + mCommandSuffix);
+		ConsoleBackend::getSingletonPtr()->deregisterCommand("toggleVisibility_" + mCommandSuffix);
 	}
 }
 
@@ -91,6 +92,8 @@ CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::str
 		S_LOG_FAILURE("Unknown error when loading from " << filename << ".");
 		throw;
 	}
+	//Main window is handled by ourselves.
+	mMainWindow->setDestroyedByParent(false);
 	mMainWindow->setName(prefix);
 	mOriginalWindowAlpha = mMainWindow->getAlpha();
 	getMainSheet()->addChild(mMainWindow.get());
