@@ -136,6 +136,10 @@ World::World(Eris::View& view,
 }
 
 World::~World() {
+	mMainCamera->attachToMount(nullptr);
+	mMainCamera->setMovementProvider(nullptr);
+	mSignals.EventMovementControllerDestroyed.emit();
+
 	mAfterTerrainUpdateConnection.disconnect();
 
 	mSignals.EventTerrainManagerBeingDestroyed();
@@ -303,13 +307,13 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity) {
 }
 
 void World::avatarEntity_BeingDeleted() {
-	mAvatarCameraWarper.reset();
-	mMainCamera->attachToMount(nullptr);
-	mMainCamera->setMovementProvider(nullptr);
-	mMovementController.reset();
-	mSignals.EventMovementControllerDestroyed.emit();
-	mAvatarCameraMotionHandler.reset();
-	mAvatar.reset();
+//	mAvatarCameraWarper.reset();
+//	mMainCamera->attachToMount(nullptr);
+//	mMainCamera->setMovementProvider(nullptr);
+//	mMovementController.reset();
+//	mSignals.EventMovementControllerDestroyed.emit();
+//	mAvatarCameraMotionHandler.reset();
+//	mAvatar.reset();
 }
 
 

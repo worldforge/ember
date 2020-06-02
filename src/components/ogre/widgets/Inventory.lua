@@ -251,18 +251,21 @@ end
 
 Inventory.createdAvatarEntityConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
     if emberOgre:getWorld():getAvatar():isAdmin() == false then
-        inventory = { connectors = {},
-                      iconsize = 32,
-                      icons = {},
-                      slots = {},
-                      newEntityListeners = {} }
-        setmetatable(inventory, { __index = Inventory })
-        inventory:buildWidget(avatarEntity)
-        connect(inventory.connectors, avatarEntity.BeingDeleted, function()
-            inventory:shutdown()
-            inventory = nil
-        end
-        )
+        Inventory.instance = { connectors = {},
+                                iconsize = 32,
+                                icons = {},
+                                slots = {},
+                                newEntityListeners = {} }
+        setmetatable(Inventory.instance, { __index = Inventory })
+        Inventory.instance:buildWidget(avatarEntity)
+    end
+end
+)
+
+Inventory.destroyedConnector = createConnector(emberServices:getServerService().DestroyedAvatar):connect(function()
+    if Inventory.instance then
+        Inventory.instance:shutdown()
+        Inventory.instance = nil
     end
 end
 )

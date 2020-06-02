@@ -165,6 +165,7 @@ function MainIconBar:Input_InputModeChanged(inputMode)
 	if inputMode == Ember.Input.IM_GUI then
 		self.crossHair:setVisible(false)
 		CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setVisible(true)
+        self.movementModeIcon:setForeground(self.movementImage_gui)
 	else
 		self.crossHair:setVisible(true)
 		CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setVisible(false)
