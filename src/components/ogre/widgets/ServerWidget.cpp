@@ -57,23 +57,64 @@
 #include <sigc++/bind.h>
 #include <boost/algorithm/string.hpp>
 
-using namespace CEGUI;
-namespace Ember {
-namespace OgreView {
-namespace Gui {
 
-void ServerWidget::registerWidget(GUIManager& guiManager) {
-
-	EmberServices::getSingleton().getServerService().GotConnection.connect([&](Eris::Connection* connection) {
-		auto widget = std::make_shared<ServerWidget>(guiManager, *connection);
+std::function<void()> registerWidget(Ember::OgreView::GUIManager& guiManager) {
+	auto connectFn = [&guiManager](Eris::Connection* connection) mutable {
+		auto widget = std::make_shared<Ember::OgreView::Gui::ServerWidget>(guiManager, *connection);
 
 		connection->Disconnecting.connect([widget]() mutable {
 			widget.reset();
 			return true;
 		});
 
-	});
+	};
+	auto con = Ember::EmberServices::getSingleton().getServerService().GotConnection.connect(connectFn);
+
+	return [=]() {
+		con->disconnect();
+	};
+
+
+
+//
+//The following would allow for live reload, but there are other issues with connections not being fully cleaned up in ServerWidget to allow for it.
+//For now we'll be happy with requiring that the user disconnects and connects again.
+//struct ConnectionHolder {
+//		sigc::connection conn;
+//	};
+//	auto connectionInner = std::make_shared<ConnectionHolder>();
+//
+//	auto connectFn = [connectionInner, &guiManager](Eris::Connection* connection) mutable {
+//		auto widget = std::make_shared<Ember::OgreView::Gui::ServerWidget>(guiManager, *connection);
+//
+//		auto sigc_connection = connection->Disconnecting.connect([widget]() mutable {
+//			widget.reset();
+//			return true;
+//		});
+//		connectionInner->conn = sigc_connection;
+//
+//	};
+//	auto con = Ember::EmberServices::getSingleton().getServerService().GotConnection.connect(connectFn);
+//
+//	if (Ember::EmberServices::getSingleton().getServerService().getConnection()) {
+//		connectFn(Ember::EmberServices::getSingleton().getServerService().getConnection());
+//	}
+//
+//	return [=]() {
+//		if (connectionInner->conn) {
+//			connectionInner->conn.disconnect();
+//		}
+//
+//		con->disconnect();
+//	};
+//
 }
+
+
+using namespace CEGUI;
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Connection& connection) :
 		mWidget(guiManager.createWidget()),

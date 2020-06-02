@@ -52,8 +52,12 @@ else ()
     set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
 endif ()
 
+# This is needed to make Widget Plugins work.
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 add_definitions(-DPREFIX="${CMAKE_INSTALL_PREFIX}")
 add_definitions(-DEMBER_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
+add_definitions(-DEMBER_PLUGINDIR="${CMAKE_INSTALL_FULL_LIBDIR}")
 add_definitions(-DEMBER_SYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}")
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     # EMBER_SOURCEMEDIAREPODIR points to an optional media repo path, i.e. a Subversion checkout of the media repo
@@ -74,6 +78,27 @@ include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${P
 
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+
+#Needs to declare a GLOBAL variable to pass plugin list down to the src/main/CMakeFile.
+define_property(GLOBAL PROPERTY PLUGIN_LIBS_LIST
+        BRIEF_DOCS "Plugins registered."
+        FULL_DOCS "Plugins registered.")
+set_property(GLOBAL PROPERTY PLUGIN_LIBS_LIST "")
+
+
+macro(add_plugin _LIB_NAME _SOURCE_FILES)
+
+    add_library(${_LIB_NAME} MODULE ${_SOURCE_FILES})
+    target_compile_options(${_LIB_NAME} PRIVATE ${WF_WARNING_FLAGS})
+
+    install(TARGETS ${_LIB_NAME}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+    set_property(GLOBAL APPEND PROPERTY PLUGIN_LIBS_LIST "${_LIB_NAME}")
+    message(STATUS "Registered plugin ${_LIB_NAME}")
+
+endmacro()
 
 macro(wf_generate_lua_bindings PKG_PATH)
     get_filename_component(PACKAGE_NAME ${PKG_PATH} NAME)

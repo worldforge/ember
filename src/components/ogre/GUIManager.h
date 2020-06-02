@@ -87,6 +87,7 @@ class EntityTooltip;
 class CursorWorldListener;
 class WorldLoadingScreen;
 class HitDisplayer;
+class WidgetDefinitions;
 
 namespace Icons
 {
@@ -385,6 +386,8 @@ protected:
 	 * @brief Provides loading screen to handle transitions
 	 */
 	std::unique_ptr<Gui::WorldLoadingScreen> mWorldLoadingScreen;
+
+	std::unique_ptr<Gui::WidgetDefinitions> mWidgetDefinitions;
 
 	/**
 	 *    hooked to OgreView::EventCreatedAvatarEntity, switches the input mode to movement mode

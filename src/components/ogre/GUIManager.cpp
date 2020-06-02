@@ -99,7 +99,8 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 		mRenderedStringParser(std::make_unique<Cegui::ColouredRenderedStringParser>()),
 		mQuickHelp(std::make_unique<Gui::QuickHelp>()),
 		mEntityTooltip(nullptr),
-		mNativeClipboardProvider(std::make_unique<Ember::Cegui::SDLNativeClipboardProvider>()) {
+		mNativeClipboardProvider(std::make_unique<Ember::Cegui::SDLNativeClipboardProvider>()),
+		mWidgetDefinitions(new WidgetDefinitions()){
 
 
 
@@ -107,10 +108,6 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 
 	serverSignals.GotView.connect(sigc::mem_fun(*this, &GUIManager::server_GotView));
 
-	//we need this here just to force the linker to also link in the WidgetDefinitions
-	WidgetDefinitions w{};
-
-	WidgetDefinitions::registerWidgets(*this);
 
 	try {
 
@@ -181,6 +178,9 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 	if (chdir(configService.getEmberDataDirectory().generic_string().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configService.getEmberDataDirectory().string() << "'.");
 	}
+
+	mWidgetDefinitions->registerWidgets(*this);
+
 
 }
 

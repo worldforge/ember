@@ -134,6 +134,7 @@ ConfigService::ConfigService(std::string prefix) :
 	boost::filesystem::path baseDir( cwd );
 	mSharedDataDir = baseDir / ".." / "share" / "ember";
 	mEtcDir = baseDir / ".." / "etc" / "ember";
+	mPluginDir = baseDir / ".." / "lib";
 
 #endif
 
@@ -141,6 +142,7 @@ ConfigService::ConfigService(std::string prefix) :
 	if (mPrefix.empty()) {
 		mSharedDataDir = EMBER_DATADIR "/ember/";
 		mEtcDir = EMBER_SYSCONFDIR "/ember/";
+		mPluginDir = EMBER_PLUGINDIR;
 	} else {
 		mSharedDataDir = mPrefix + "/share/ember/";
 		//CMake handles the install prefix of "/usr" differently, in that it puts config files in "/etc" instead of "/usr/etc".
@@ -150,6 +152,7 @@ ConfigService::ConfigService(std::string prefix) :
 		} else {
 			mEtcDir = mPrefix + "/etc/ember/";
 		}
+		mPluginDir = mPrefix  + "/lib64";
 	}
 	S_LOG_INFO("Setting config directory to " << mEtcDir.string());
 #endif
@@ -437,5 +440,10 @@ boost::filesystem::path ConfigService::getUserMediaDirectory() const {
 boost::filesystem::path ConfigService::getSharedMediaDirectory() const {
 	return getSharedDataDirectory() / "media";
 }
+
+boost::filesystem::path ConfigService::getPluginDirectory() const {
+	return mPluginDir;
+}
+
 
 } // namespace Ember

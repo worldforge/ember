@@ -27,7 +27,7 @@ add_library(emberogre
         lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/XMLLodDefinitionSerializer.cpp lod/PMInjectorSignaler.cpp
         lod/ScaledPixelCountLodStrategy.cpp
 
-        mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp  mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h
+        mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h
 
         model/ModelAction.cpp model/AnimationSet.cpp model/Model.cpp
         model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp
@@ -73,7 +73,7 @@ add_library(emberogre
         widgets/EntityIconDragDropPreview.cpp widgets/EntityIconDragDropTarget.cpp widgets/EntityIconManager.cpp widgets/EntityIconSlot.cpp widgets/Help.cpp widgets/IconBar.cpp
         widgets/IconBase.cpp widgets/IngameChatWidget.cpp widgets/InspectWidget.cpp widgets/ListHolder.cpp
         widgets/LoadingBar.cpp widgets/EntityCreatorTypeHelper.cpp widgets/MeshInfoProvider.cpp widgets/MeshPreview.cpp widgets/ModelRenderer.cpp
-        widgets/MovableObjectRenderer.cpp widgets/OgreEntityRenderer.cpp widgets/QuaternionAdapter.cpp widgets/QuickHelp.cpp widgets/QuickHelpCursor.cpp widgets/Quit.cpp widgets/ServerWidget.cpp widgets/HelpMessage.cpp widgets/WorldLoadingScreen.cpp
+        widgets/MovableObjectRenderer.cpp widgets/OgreEntityRenderer.cpp widgets/QuaternionAdapter.cpp widgets/QuickHelp.cpp widgets/QuickHelpCursor.cpp widgets/Quit.cpp widgets/HelpMessage.cpp widgets/WorldLoadingScreen.cpp
         widgets/StackableContainer.cpp widgets/Vector3Adapter.cpp widgets/Widget.cpp widgets/WidgetDefinitions.cpp widgets/WidgetPool.cpp widgets/AtlasHelper.cpp widgets/ModelEditHelper.cpp
         widgets/EntityTextureManipulator.cpp widgets/LabelAction.cpp
         widgets/icons/Icon.cpp widgets/icons/IconImageStore.cpp widgets/icons/IconManager.cpp
@@ -120,12 +120,17 @@ add_library(emberogre
         EmberWorkQueue.cpp
         EmberOgrePrerequisites.h EmberOgreSignals.h Convert.h IAnimated.h ICameraMotionHandler.h ILightning.h
         IMovable.h IMovementProvider.h INodeProvider.h ISceneRenderingTechnique.h IWorldPickListener.h
-        MousePicker.h OgreIncludes.h  PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h
+        MousePicker.h OgreIncludes.h PresentAction.cpp PresentAction.h ModelActionBase.cpp ModelActionBase.h
         BulletCollisionDetector.cpp
         BulletWorld.cpp
         SkeletonDisplay.cpp
         ProjectileRenderingTechnique.cpp
         EmptyNodeAttachment.cpp
+        )
+
+
+add_plugin(ServerWidget
+        widgets/ServerWidget.cpp
         )
 
 
@@ -151,4 +156,8 @@ wf_generate_lua_bindings(widgets/adapters/bindings/lua/Adapters)
 wf_generate_lua_bindings(widgets/adapters/atlas/bindings/lua/AtlasAdapters)
 wf_generate_lua_bindings(widgets/representations/bindings/lua/Representations)
 
-target_link_libraries(emberogre caelum meshtree pagedgeometry)
+target_link_libraries(emberogre caelum meshtree pagedgeometry ${CMAKE_DL_LIBS})
+
+target_compile_definitions(emberogre PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
+
+add_dependencies(emberogre ServerWidget)

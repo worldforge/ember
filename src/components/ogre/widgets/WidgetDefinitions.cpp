@@ -35,28 +35,74 @@
 #include "MeshPreview.h"
 #include "ContainerWidget.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+#include "framework/FileSystemObserver.h"
+
+
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
-WidgetDefinitions::WidgetDefinitions()
-{
+WidgetDefinitions::WidgetDefinitions() {
 	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
 	WidgetLoader::registerWidgetFactory("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidgetFactory("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidgetFactory("Quit", &WidgetLoader::createWidgetInstance<Quit>);
 	WidgetLoader::registerWidgetFactory("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
 
-
-
 }
+
+WidgetDefinitions::~WidgetDefinitions() {
+	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
+	Ember::FileSystemObserver::getSingleton().remove_directory(pluginDirPath);
+}
+
 
 void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	ContainerWidget::registerWidget(guiManager);
 	Gui::IngameChatWidget::registerWidget(guiManager);
-	ServerWidget::registerWidget(guiManager);
+
+	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
+	Ember::FileSystemObserver::getSingleton().add_directory(pluginDirPath, [&](const Ember::FileSystemObserver::FileSystemEvent& event) {
+		if (event.ev.type == boost::asio::dir_monitor_event::added || event.ev.type == boost::asio::dir_monitor_event::modified) {
+			auto I = mPlugins.find(event.ev.path);
+			if (I != mPlugins.end()) {
+				//First remove the existing plugin.
+				mPlugins.erase(I);
+				//Then add the new one
+				registerPlugin(guiManager, event.ev.path);
+			}
+		}
+	});
+	registerPluginWithName(guiManager, "ServerWidget");
+
+}
+
+void WidgetDefinitions::registerPluginWithName(GUIManager& guiManager, const std::string& pluginName) {
+	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
+
+	auto pluginPath = pluginDirPath / (std::string(PLUGIN_PREFIX) + pluginName + std::string(PLUGIN_SUFFIX));
+
+	registerPlugin(guiManager, pluginPath);
+}
+
+
+void WidgetDefinitions::registerPlugin(GUIManager& guiManager, const boost::filesystem::path& pluginPath) {
+
+	auto registerFn = boost::dll::import<std::function<void()>(GUIManager&)>(
+			pluginPath, "registerWidget"
+	);
+	auto disconnectFn = registerFn(guiManager);
+	PluginEntry pluginEntry{std::move(registerFn), std::move(disconnectFn)};
+	mPlugins.emplace(pluginPath, std::move(pluginEntry));
+}
+
+
+WidgetDefinitions::PluginEntry::~PluginEntry() {
+	if (pluginCallback) {
+		pluginCallback();
+	}
 }
 
 }

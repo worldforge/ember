@@ -40,7 +40,6 @@
 #include <map>
 #include <vector>
 
-
 namespace Ember {
 namespace OgreView {
 
@@ -62,6 +61,7 @@ public:
 };
 
 
+
 class Widget;
 class ModelRenderer;
 class EntityTextureManipulator;
@@ -71,7 +71,6 @@ class EntityTextureManipulator;
 class ServerWidget : public virtual sigc::trackable
 {
 public:
-	static void registerWidget(GUIManager& guiManager);
 
     ServerWidget(GUIManager& guiManager, Eris::Connection& connection);
 
@@ -194,5 +193,8 @@ protected:
 }
 }
 }
+
+#define API extern "C" BOOST_SYMBOL_EXPORT
+API std::function<void()> registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 #endif

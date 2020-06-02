@@ -23,6 +23,10 @@
 #ifndef WIDGETDEFINITIONS_H
 #define WIDGETDEFINITIONS_H
 
+#include <boost/dll.hpp>
+#include <vector>
+#include "WidgetPlugin.h"
+
 namespace Ember {
 namespace OgreView {
 class GUIManager;
@@ -41,7 +45,39 @@ class WidgetDefinitions{
 public:
     WidgetDefinitions();
 
-    static void registerWidgets(GUIManager& guiManager);
+    ~WidgetDefinitions();
+
+    void registerWidgets(GUIManager& guiManager);
+
+    /**
+     * Registers a plugin with the supplied name. The system will try to find it by looking for a shared object in the file system,
+     * where plugins should be installed.
+     * @param guiManager
+     * @param pluginName
+     */
+    void registerPluginWithName(GUIManager& guiManager, const std::string& pluginName);
+
+    /**
+     * Registers a plugin from a shared object file.
+     * @param guiManager
+     * @param pluginPath
+     */
+	void registerPlugin(GUIManager& guiManager, const boost::filesystem::path& pluginPath);
+
+	/**
+	 * An entry for a loaded plugin.
+	 * The pluginCallback will automatically be called on destruction.
+	 */
+    struct PluginEntry {
+    	PluginEntry(PluginEntry&& rhs) noexcept = default;
+    	~PluginEntry();
+		PluginFunction pluginFn; //We need to hold on to this, since it the dynamic library's lifetime is bound to it.
+		PluginCallback pluginCallback; //A deregistering function
+    };
+
+private:
+	std::map<boost::filesystem::path, PluginEntry> mPlugins;
+
 };
 }
 }

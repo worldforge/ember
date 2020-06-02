@@ -66,6 +66,7 @@ private:
 
 	boost::filesystem::path mSharedDataDir;
 	boost::filesystem::path mEtcDir;
+	boost::filesystem::path mPluginDir;
 
 	/**
 	The home directory. If this is not set, the default one will be used. See getHomeDirectory(const BaseDirType baseDirType)
@@ -131,7 +132,7 @@ public:
 	 * Ctor for Ember::service::ConfigService.
 	 *
 	 */
-	ConfigService(std::string prefix);
+	explicit ConfigService(std::string prefix);
 
 	/**
 	 * Dtor for Ember::service::ConfigService.
@@ -260,6 +261,8 @@ public:
 	 * @return
 	 */
 	boost::filesystem::path getSharedConfigDirectory() const;
+
+	boost::filesystem::path getPluginDirectory() const;
 
 	/**
 	*	Emitted when a config item is changed.
