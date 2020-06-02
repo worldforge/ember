@@ -44,7 +44,6 @@ namespace Gui {
 WidgetDefinitions::WidgetDefinitions()
 {
 	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
-	WidgetLoader::registerWidgetFactory("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
 	WidgetLoader::registerWidgetFactory("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidgetFactory("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidgetFactory("Quit", &WidgetLoader::createWidgetInstance<Quit>);
@@ -57,6 +56,7 @@ WidgetDefinitions::WidgetDefinitions()
 void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	ContainerWidget::registerWidget(guiManager);
 	Gui::IngameChatWidget::registerWidget(guiManager);
+	ServerWidget::registerWidget(guiManager);
 }
 
 }

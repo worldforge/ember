@@ -244,6 +244,10 @@ public:
 	 */
 	void closeTabGroup();
 
+	GUIManager* getGUIManager() {
+		return mGuiManager;
+	}
+
 	/**
 	 * @brief Emitted each time a frame is started.
 	 */

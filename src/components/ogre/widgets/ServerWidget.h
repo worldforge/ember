@@ -68,19 +68,24 @@ class EntityTextureManipulator;
 /**
 @author Erik Ogenvik
 */
-class ServerWidget : public Widget
+class ServerWidget : public virtual sigc::trackable
 {
 public:
+	static void registerWidget(GUIManager& guiManager);
 
-    ServerWidget();
+    ServerWidget(GUIManager& guiManager, Eris::Connection& connection);
 
-	~ServerWidget() override;
+	~ServerWidget();
 
-	void buildWidget() override;
+	void buildWidget();
 
 protected:
 
 	typedef std::multimap<std::string, std::string> CharacterAndSpawnsStore;
+
+	Widget* mWidget;
+
+	Eris::Connection& mConnection;
 
 	Eris::Account* mAccount;
 
@@ -131,7 +136,7 @@ protected:
 	bool EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args);
 
 
-	bool fetchCredentials(Eris::Connection* connection, std::string& user, std::string& pass);
+	bool fetchCredentials(Eris::Connection& connection, std::string& user, std::string& pass);
 	bool saveCredentials();
 	void loginSuccess(Eris::Account* account);
 	void logoutComplete(bool clean);
@@ -164,20 +169,12 @@ protected:
 	 *    Set up the preview renderer.
 	 */
 	void createPreviewTexture();
-	
-	/**
-	 *    Consume Eris::Connection::GotServerInfo signals.
-	 */
-	void connection_GotServerInfo(Eris::Connection* connection);
-	
-	void setConnection(Eris::Connection* connection);
-	
-	void connection_Disconnected();
+
 
 	/**
 	 *    Shows server info.
 	 */
-	void showServerInfo(Eris::Connection* connection);
+	void showServerInfo(Eris::Connection& connection);
 	
 	/**
 	 * @brief Shows an alert explaining to the user that the server doesn't have any available characters and thus isn't correctly setup.
