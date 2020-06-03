@@ -5,7 +5,8 @@ add_library(widgets
         EntityCreatorMovement.cpp
         EntityCreatorMovementBridge.cpp EntityEditor.cpp EntityIcon.cpp
         EntityIconDragDropPreview.cpp EntityIconDragDropTarget.cpp EntityIconManager.cpp EntityIconSlot.cpp IconBar.cpp
-        IconBase.cpp IngameChatWidget.cpp ListHolder.cpp
+        IconBase.cpp
+        ListHolder.cpp
         LoadingBar.cpp EntityCreatorTypeHelper.cpp MeshInfoProvider.cpp ModelRenderer.cpp
         MovableObjectRenderer.cpp OgreEntityRenderer.cpp QuaternionAdapter.cpp QuickHelp.cpp QuickHelpCursor.cpp HelpMessage.cpp WorldLoadingScreen.cpp
         StackableContainer.cpp Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp WidgetPool.cpp AtlasHelper.cpp ModelEditHelper.cpp
@@ -47,6 +48,10 @@ wf_add_plugin(Help
 
 wf_add_plugin(ContainerWidget
         ContainerWidget.cpp
+        )
+
+wf_add_plugin(IngameChatWidget
+        IngameChatWidget.cpp
         )
 
 file(GLOB LAYOUT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.layout")

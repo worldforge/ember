@@ -84,31 +84,10 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 
 }
 
-namespace {
-std::map<std::string, std::unique_ptr<Ember::OgreView::Gui::ContainerWidget>> containerWidgets;
-}
 
 namespace Ember {
 namespace OgreView {
 namespace Gui {
-void ContainerWidget::registerWidget(GUIManager& guiManager) {
-
-	EmberServices::getSingleton().getServerService().GotAvatar.connect([&](Eris::Avatar* avatar) {
-		avatar->ContainerOpened.connect([&](Eris::Entity& entity) {
-			try {
-				auto widget = std::make_unique<ContainerWidget>(guiManager, dynamic_cast<EmberEntity&>(entity));
-				containerWidgets.emplace(entity.getId(), std::move(widget));
-			} catch (const std::exception& ex) {
-				S_LOG_FAILURE("Could not create container widget." << ex);
-			} catch (...) {
-				S_LOG_FAILURE("Could not create container widget.");
-			}
-		});
-		avatar->ContainerClosed.connect([&](Eris::Entity& entity) {
-			containerWidgets.erase(entity.getId());
-		});
-	});
-}
 
 ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, int slotSize)
 		: mGuiManager(guiManager),

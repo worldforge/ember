@@ -38,8 +38,6 @@ public:
 
 	~ContainerWidget();
 
-	static void registerWidget(GUIManager& guiManager);
-
 protected:
 	GUIManager& mGuiManager;
 	int mSlotSize;

@@ -25,15 +25,15 @@
 #endif
 
 
-#include <framework/MainLoopController.h>
 #include "WidgetDefinitions.h"
 
-#include "IngameChatWidget.h"
-#include "ContainerWidget.h"
-
+#include "framework/LoggingInstance.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "framework/FileSystemObserver.h"
+#include "framework/MainLoopController.h"
+
+#include <CEGUI/WindowManager.h>
 
 
 namespace Ember {
@@ -49,9 +49,6 @@ WidgetDefinitions::~WidgetDefinitions() {
 
 
 void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
-	Gui::IngameChatWidget::registerWidget(guiManager);
-
-
 	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
 	Ember::FileSystemObserver::getSingleton().add_directory(pluginDirPath, [&](const Ember::FileSystemObserver::FileSystemEvent& event) {
 		if (event.ev.type == boost::asio::dir_monitor_event::added || event.ev.type == boost::asio::dir_monitor_event::modified) {
@@ -82,6 +79,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	registerPluginWithName(guiManager, "InspectWidget");
 	registerPluginWithName(guiManager, "Help");
 	registerPluginWithName(guiManager, "ContainerWidget");
+	registerPluginWithName(guiManager, "IngameChatWidget");
 
 }
 
@@ -96,13 +94,17 @@ void WidgetDefinitions::registerPluginWithName(GUIManager& guiManager, const std
 
 void WidgetDefinitions::registerPlugin(GUIManager& guiManager, const boost::filesystem::path& pluginPath) {
 
-	auto registerFn = boost::dll::import<std::function<void()>(GUIManager&)>(
-			pluginPath, "registerWidget"
-	);
-	S_LOG_INFO("Creating Widget Plugin from '" << pluginPath.string() << "'.");
-	auto disconnectFn = registerFn(guiManager);
-	PluginEntry pluginEntry{pluginPath, std::move(registerFn), std::move(disconnectFn)};
-	mPlugins.emplace(pluginPath, std::move(pluginEntry));
+	try {
+		auto registerFn = boost::dll::import<std::function<void()>(GUIManager&)>(
+				pluginPath, "registerWidget"
+		);
+		S_LOG_INFO("Creating Widget Plugin from '" << pluginPath.string() << "'.");
+		auto disconnectFn = registerFn(guiManager);
+		PluginEntry pluginEntry{pluginPath, std::move(registerFn), std::move(disconnectFn)};
+		mPlugins.emplace(pluginPath, std::move(pluginEntry));
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when loading plugin '" << pluginPath.string() << "': " << ex);
+	}
 }
 
 

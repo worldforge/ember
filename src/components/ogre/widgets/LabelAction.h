@@ -20,6 +20,7 @@
 #define LABELACTION_H_
 
 #include "components/entitymapping/Actions/Action.h"
+#include <functional>
 
 namespace Ember
 {
@@ -32,6 +33,21 @@ namespace Gui
 class LabelAction: public EntityMapping::Actions::Action
 {
 public:
+
+
+	/**
+	 * @brief Static function called when we want to enable labels for an entity.
+	 * Be sure to check that the function is valid before calling it.
+	 */
+	static std::function<void(EmberEntity&)> sEnableForEntity;
+
+	/**
+	 * @brief Static function called when we want to disable labels for an entity.
+	 * Be sure to check that the function is valid before calling it.
+	 */
+	static std::function<void(EmberEntity&)> sDisableForEntity;
+
+
 	explicit LabelAction(EmberEntity& entity);
 	~LabelAction() override;
 

@@ -44,6 +44,7 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
+#include "LabelAction.h"
 
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/Exceptions.h>
@@ -63,27 +64,39 @@
 #include <OgreRoot.h>
 #include <boost/algorithm/string.hpp>
 
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+
+	struct State {
+		std::unique_ptr<Ember::OgreView::Gui::IngameChatWidget> instance;
+	};
+	auto state = std::make_shared<State>();
+
+	auto createdConn = Ember::OgreView::EmberOgre::getSingleton().EventWorldCreated.connect([=, &guiManager](Ember::OgreView::World& world) {
+		world.EventGotAvatar.connect([&]() {
+			state->instance = std::make_unique<Ember::OgreView::Gui::IngameChatWidget>(guiManager, *world.getAvatar(), world.getMainCamera());
+		});
+	});
+	auto destroyedConn = Ember::OgreView::EmberOgre::getSingleton().EventWorldBeingDestroyed.connect([=]() {
+		state->instance.reset();
+	});
+
+	//TODO: make reloadable
+
+
+	//Just hold on to an instance.
+	return [state, createdConn, destroyedConn]() mutable {
+		createdConn->disconnect();
+		destroyedConn->disconnect();
+		state->instance.reset();
+		state.reset();
+	};
+
+}
+
 using namespace CEGUI;
 namespace Ember {
 namespace OgreView {
 namespace Gui {
-
-std::function<void(EmberEntity&)> IngameChatWidget::sEnableForEntity;
-std::function<void(EmberEntity&)> IngameChatWidget::sDisableForEntity;
-
-std::unique_ptr<IngameChatWidget> instance;
-
-void IngameChatWidget::registerWidget(GUIManager& guiManager) {
-
-	EmberOgre::getSingleton().EventWorldCreated.connect([&](World& world) {
-		world.EventGotAvatar.connect([&]() {
-			instance = std::make_unique<IngameChatWidget>(guiManager, *world.getAvatar(), world.getMainCamera());
-		});
-	});
-	EmberOgre::getSingleton().EventWorldBeingDestroyed.connect([&]() {
-		instance.reset();
-	});
-}
 
 
 IngameChatWidget::IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camera::MainCamera& mainCamera) :
@@ -101,10 +114,10 @@ IngameChatWidget::IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camer
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));
 	registerConfigListener("ingamechatwidget", "distanceshown", sigc::mem_fun(*this, &IngameChatWidget::Config_DistanceShown));
 
-	sEnableForEntity = [&](EmberEntity& entity) {
+	LabelAction::sEnableForEntity = [&](EmberEntity& entity) {
 		this->enableForEntity(entity);
 	};
-	sDisableForEntity = [&](EmberEntity& entity) {
+	LabelAction::sDisableForEntity = [&](EmberEntity& entity) {
 		this->disableForEntity(entity);
 	};
 
@@ -127,8 +140,8 @@ IngameChatWidget::IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camer
 IngameChatWidget::~IngameChatWidget() {
 	mCamera.getCamera().removeListener(this);
 	mGuiManager.removeWidget(mWidget);
-	sEnableForEntity = nullptr;
-	sDisableForEntity = nullptr;
+	LabelAction::sEnableForEntity = nullptr;
+	LabelAction::sDisableForEntity = nullptr;
 }
 
 void IngameChatWidget::Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable) {

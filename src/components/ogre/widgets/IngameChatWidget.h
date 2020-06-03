@@ -24,6 +24,7 @@
 #define EMBEROGREINTEGRATEDCHATWIDGET_H
 
 #include "Widget.h"
+#include "WidgetPlugin.h"
 #include "WidgetPool.h"
 #include "services/config/ConfigListenerContainer.h"
 #include "CEGUIUtils.h"
@@ -75,7 +76,10 @@ namespace Gui {
  * 
  * @author Erik Ogenvik
  */
-class IngameChatWidget : public ConfigListenerContainer, public Ogre::Camera::Listener {
+class IngameChatWidget
+		: public ConfigListenerContainer,
+		  public Ogre::Camera::Listener,
+		  public virtual sigc::trackable {
 	class EntityObserver;
 
 	class Label;
@@ -364,20 +368,6 @@ class IngameChatWidget : public ConfigListenerContainer, public Ogre::Camera::Li
 
 public:
 
-	static void registerWidget(GUIManager& guiManager);
-
-	/**
-	 * @brief Static function called when we want to enable labels for an entity.
-	 * Be sure to check that the function is valid before calling it.
-	 */
-	static std::function<void(EmberEntity&)> sEnableForEntity;
-
-	/**
-	 * @brief Static function called when we want to disable labels for an entity.
-	 * Be sure to check that the function is valid before calling it.
-	 */
-	static std::function<void(EmberEntity&)> sDisableForEntity;
-
 	IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camera::MainCamera& mainCamera);
 
 	~IngameChatWidget() override;
@@ -446,7 +436,6 @@ protected:
 	WidgetPool<ChatText> mChatTextPool;
 
 
-
 	Widget* mWidget;
 
 	std::unordered_map<std::string, std::unique_ptr<EntityObserver>> mEntityObservers;
@@ -466,5 +455,8 @@ inline float IngameChatWidget::getTimeShown() const {
 }
 
 }
+
+PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
+
 
 #endif

@@ -30,6 +30,9 @@ namespace OgreView
 namespace Gui
 {
 
+std::function<void(EmberEntity&)> LabelAction::sEnableForEntity;
+std::function<void(EmberEntity&)> LabelAction::sDisableForEntity;
+
 LabelAction::LabelAction(EmberEntity& entity)
 : mEntity(entity)
 {
@@ -39,15 +42,15 @@ LabelAction::~LabelAction() = default;
 
 void LabelAction::activate(EntityMapping::ChangeContext& context)
 {
-	if (IngameChatWidget::sEnableForEntity) {
-		IngameChatWidget::sEnableForEntity(mEntity);
+	if (sEnableForEntity) {
+		sEnableForEntity(mEntity);
 	}
 }
 
 void LabelAction::deactivate(EntityMapping::ChangeContext& context)
 {
-	if (IngameChatWidget::sDisableForEntity) {
-		IngameChatWidget::sDisableForEntity(mEntity);
+	if (sDisableForEntity) {
+		sDisableForEntity(mEntity);
 	}
 }
 
