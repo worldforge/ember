@@ -57,7 +57,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_definitions(-DPREFIX="${CMAKE_INSTALL_PREFIX}")
 add_definitions(-DEMBER_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
-add_definitions(-DEMBER_PLUGINDIR="${CMAKE_INSTALL_FULL_LIBDIR}")
+add_definitions(-DEMBER_LIBDIR="${CMAKE_INSTALL_FULL_LIBDIR}")
 add_definitions(-DEMBER_SYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}")
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     # EMBER_SOURCEMEDIAREPODIR points to an optional media repo path, i.e. a Subversion checkout of the media repo
@@ -92,11 +92,11 @@ macro(wf_add_plugin _LIB_NAME _SOURCE_FILES)
     target_compile_options(${_LIB_NAME} PRIVATE ${WF_WARNING_FLAGS})
 
     install(TARGETS ${_LIB_NAME}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/ember/widgets
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/ember/widgets)
 
     set_property(GLOBAL APPEND PROPERTY PLUGIN_LIBS_LIST "${_LIB_NAME}")
-    message(STATUS "Registered plugin ${_LIB_NAME}")
+    message(STATUS "Registered widget plugin ${_LIB_NAME}")
 
 endmacro()
 
