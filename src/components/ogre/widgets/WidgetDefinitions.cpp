@@ -119,6 +119,7 @@ WidgetDefinitions::PluginEntry::~PluginEntry() {
 	if (pluginCallback) {
 		S_LOG_INFO("Shutting down Widget Plugin at '" << path.string() << "'.");
 		pluginCallback();
+		CEGUI::WindowManager::getSingleton().cleanDeadPool(); //Need to make sure there's no reference to the plugin.
 	}
 }
 

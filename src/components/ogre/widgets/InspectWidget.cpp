@@ -72,7 +72,6 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	return [state, con]() mutable {
 		con->disconnect();
 		state.reset();
-		CEGUI::WindowManager::getSingleton().cleanDeadPool(); //Need to make sure there's no reference to the plugin.
 	};
 
 }
