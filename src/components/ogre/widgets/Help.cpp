@@ -40,9 +40,7 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	};
 	auto state = std::make_shared<State>();
 
-	state->widget = std::make_shared<Ember::OgreView::Gui::Help>();
-	state->widget->init(&guiManager);
-	state->widget->buildWidget();
+	state->widget = std::make_shared<Ember::OgreView::Gui::Help>(guiManager);
 	//Just hold on to an instance.
 	return [state]() mutable {
 		state.reset();
@@ -56,16 +54,9 @@ namespace OgreView {
 namespace Gui {
 
 
-Help::Help()
-		: HelpCommand("help", this, "Display the help.") {
-}
-
-
-Help::~Help() = default;
-
-
-void Help::buildWidget() {
-
+Help::Help(GUIManager& guiManager)
+		: Widget(guiManager),
+		  HelpCommand("help", this, "Display the help.") {
 	loadMainSheet("HelpWidget.layout", "Help/");
 
 	enableCloseButton();
@@ -78,8 +69,10 @@ void Help::buildWidget() {
 
 	//connect to the creation of the avatar, since we want to show a help blurb about the movement
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &Help::EmberOgre_CreatedAvatarEntity));
-
 }
+
+
+Help::~Help() = default;
 
 
 void Help::show() {

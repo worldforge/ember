@@ -193,7 +193,6 @@ GUIManager::~GUIManager() {
 	}
 	mWidgetDefinitions.reset();
 	mWidgets.clear();
-	WidgetLoader::removeAllWidgetFactories();
 	CEGUI::WindowManager::getSingleton().cleanDeadPool();
 	EntityTooltip::deregisterFactory();
 
@@ -216,18 +215,6 @@ void GUIManager::initialize() {
 		mActionBarIconManager = std::make_unique<Gui::ActionBarIconManager>(*this);
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating ActionBar icon manager." << e);
-	}
-
-	std::vector<std::string> widgetsToLoad;
-	widgetsToLoad.emplace_back("MeshPreview");
-
-	for (auto& widget : widgetsToLoad) {
-		try {
-			S_LOG_VERBOSE("Loading widget " << widget);
-			createWidget(widget);
-		} catch (const std::exception& e) {
-			S_LOG_FAILURE("Error when initializing widget " << widget << "." << e);
-		}
 	}
 
 }
@@ -296,25 +283,14 @@ CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std
 	}
 }
 
+
 Widget* GUIManager::createWidget() {
-	return createWidget("Widget");
-}
-
-Widget* GUIManager::createWidget(const std::string& name) {
 	try {
-
-		Widget* widget = WidgetLoader::createWidget(name);
-		if (widget == nullptr) {
-			S_LOG_FAILURE("Could not find widget with name " << name);
-			return nullptr;
-		}
-		widget->init(this);
-		widget->buildWidget();
-		addWidget(widget);
-		S_LOG_INFO("Successfully loaded widget " << name);
+		auto widget = new Widget(*this);
+		mWidgets.emplace_back(std::unique_ptr<Widget>(widget));
 		return widget;
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE("Error when loading widget " << name << "." << e);
+		S_LOG_FAILURE("Error when loading widget." << e);
 		return nullptr;
 	}
 }
@@ -350,7 +326,6 @@ void GUIManager::removeWidget(Widget* widget) {
 }
 
 void GUIManager::addWidget(Widget* widget) {
-	mWidgets.emplace_back(std::unique_ptr<Widget>(widget));
 }
 
 bool GUIManager::frameStarted(const Ogre::FrameEvent& evt) {

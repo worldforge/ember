@@ -86,18 +86,15 @@ public:
 
 	friend class ::Ember::OgreView::GUIManager;
 
-	friend class WidgetLoader;
+	/**
+	 * @brief Ctor.
+	 */
+	explicit Widget(GUIManager& guiManager);
 
 	/**
 	 * @brief Dtor.
 	 */
 	~Widget() override;
-
-	/**
-	 *    Sets up the widget, called upon creation.
-	 * @param guiManager 
-	 */
-	void init(GUIManager* guiManager);
 
 
 	/**
@@ -106,13 +103,6 @@ public:
 	 */
 	virtual void frameStarted(const Ogre::FrameEvent& evt);
 
-
-	/**
-	 *    Called by the GUIManager to tell the widget to create all needed GUI elements.
-	 *    Override this in your subclass.
-	 *    Remember to call getMainSheet()->addChild(mMainWindow); to add the main window to the gui system, else it won't be shown.
- 	 */
-	virtual void buildWidget();
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
@@ -244,7 +234,7 @@ public:
 	 */
 	void closeTabGroup();
 
-	GUIManager* getGUIManager() {
+	GUIManager& getGUIManager() {
 		return mGuiManager;
 	}
 
@@ -259,12 +249,6 @@ public:
 	sigc::signal<void> EventFirstTimeShown;
 
 protected:
-
-	/**
-	 * @brief Ctor.
-	 * This is protected to avoid direct creation of instances of this. Instead use GUIManager::createWidget().
-	 */
-	Widget();
 
 	bool MainWindow_CloseClick(const CEGUI::EventArgs& args);
 
@@ -299,10 +283,7 @@ protected:
 	*/
 	UniqueWindowPtr<CEGUI::Window> mMainWindow;
 
-	GUIManager* mGuiManager;
-
-
-	CEGUI::WindowManager* mWindowManager;
+	GUIManager& mGuiManager;
 
 	/**
 	The original alpha value of the window.
@@ -335,54 +316,6 @@ private:
 };
 
 inline const std::string& Widget::getPrefix() const { return mPrefix; }
-
-
-typedef Widget* (* FactoryFunc)();
-
-/**
-@brief Utility class for associating Widgets to strings.
-See WidgetLoaderHolder on how to register Widgets.
-
-Use createWidget("someName") to create widgets.
-@author Erik Ogenvik <erik@ogenvik.org>
-*/
-class WidgetLoader {
-public:
-
-
-	/**
-	upon creation, an entry will be added to the internal WidgetFactoryMap
-	*/
-	WidgetLoader(const std::string& name, FactoryFunc functor);
-
-	/**
-	map of all factories, we have to use a static function to avoid static initialization order fiasco
-	*/
-	static std::map<std::string, FactoryFunc>& getFactories();
-
-	/**creates and returns a widget associated to the submitted string
-	if no widget can be found, a null pointer is returned
-	*/
-	static Widget* createWidget(const std::string& name);
-
-	/**
-	 *    Registers a widget (which functor points at) with a string. The widget can later be loaded through the createWidget method and the same string.
-	 * @param name The name of the widget, which can later be used in createWidget
-	 * @param functor A functor to a Widget, for example "&WidgetLoader::createWidgetInstance<Help>"
-	 */
-	static void registerWidgetFactory(const std::string& name, FactoryFunc functor);
-
-	static void removeAllWidgetFactories();
-
-
-	/**
-	 *    Use this together with registerWidget, which requires a functor to a widget as a parameter.
-	 * @return A functor to a Widget.
-	 */
-	template<typename T>
-	static Widget* createWidgetInstance() { return new T; }
-
-};
 
 }
 

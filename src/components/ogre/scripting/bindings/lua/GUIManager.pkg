@@ -52,13 +52,6 @@ class GUIManager
 	 */
 	Ember::OgreView::Gui::Widget* createWidget();
 	
-	/**
-	 *    creates a widget 
-	 *    @see WidgetLoader
-	 * @param name the type of widget to create
-	 * @return 
-	 */
-	Ember::OgreView::Gui::Widget* createWidget(const std::string& name);
 
 	/**
 	* Destroys a widget previously created by createWidget

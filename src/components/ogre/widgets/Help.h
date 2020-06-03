@@ -40,17 +40,16 @@ class Widget;
 class Help : public Widget
 {
 public:
-    Help();
+    explicit Help(GUIManager& guiManager);
 
-    virtual ~Help();
-	virtual void buildWidget();
-	virtual void runCommand(const std::string &command, const std::string &args);
+    ~Help() override;
+	void runCommand(const std::string &command, const std::string &args) override;
 
 	const ConsoleCommandWrapper HelpCommand;
 
 protected:
 
-	void show();
+	void show() override;
 
 	/**
 	 *    hooked to OgreView::EventCreatedAvatarEntity, show a help blurb about the movement mode

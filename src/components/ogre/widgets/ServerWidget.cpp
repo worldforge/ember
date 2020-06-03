@@ -132,7 +132,7 @@ ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Connection& connection)
 }
 
 ServerWidget::~ServerWidget() {
-	mWidget->getGUIManager()->removeWidget(mWidget);
+	mWidget->getGUIManager().removeWidget(mWidget);
 }
 
 void ServerWidget::buildWidget() {

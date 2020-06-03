@@ -28,8 +28,6 @@
 #include <framework/MainLoopController.h>
 #include "WidgetDefinitions.h"
 
-#include "ServerWidget.h"
-#include "InspectWidget.h"
 #include "IngameChatWidget.h"
 #include "ContainerWidget.h"
 
@@ -42,10 +40,7 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-WidgetDefinitions::WidgetDefinitions() {
-	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
-
-}
+WidgetDefinitions::WidgetDefinitions() = default;
 
 WidgetDefinitions::~WidgetDefinitions() {
 	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();

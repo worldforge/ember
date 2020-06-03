@@ -43,20 +43,14 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-Widget::Widget() : mCommandSuffix(""),
-				   mMainWindow(nullptr),
-				   mGuiManager(nullptr),
-				   mWindowManager(nullptr),
-				   mOriginalWindowAlpha(1.0f),
-				   mActiveWindowIsOpaque(true),
-				   mFirstTabWindow(nullptr),
-				   mLastTabWindow(nullptr),
-				   mWindowHasBeenShown(false) {
-}
-
-void Widget::init(GUIManager* guiManager) {
-	mGuiManager = guiManager;
-	mWindowManager = &CEGUI::WindowManager::getSingleton();
+Widget::Widget(GUIManager& guiManager) : mCommandSuffix(""),
+										 mMainWindow(nullptr),
+										 mGuiManager(guiManager),
+										 mOriginalWindowAlpha(1.0f),
+										 mActiveWindowIsOpaque(true),
+										 mFirstTabWindow(nullptr),
+										 mLastTabWindow(nullptr),
+										 mWindowHasBeenShown(false) {
 }
 
 
@@ -72,19 +66,15 @@ void Widget::frameStarted(const Ogre::FrameEvent& evt) {
 	EventFrameStarted.emit(evt.timeSinceLastFrame);
 }
 
-void Widget::buildWidget() {}
-
-
 CEGUI::Window* Widget::getMainSheet() {
-	return mGuiManager->getMainSheet();
+	return mGuiManager.getMainSheet();
 }
 
 CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) {
-	assert(mWindowManager && "You must call init() before you can call any other methods.");
 	mPrefix = prefix;
-	std::string finalFileName(mGuiManager->getLayoutDir() + filename);
+	std::string finalFileName(mGuiManager.getLayoutDir() + filename);
 	try {
-		mMainWindow = UniqueWindowPtr<CEGUI::Window>(mWindowManager->loadLayoutFromFile(finalFileName));
+		mMainWindow = UniqueWindowPtr<CEGUI::Window>(CEGUI::WindowManager::getSingleton().loadLayoutFromFile(finalFileName));
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when loading from " << filename << "." << ex);
 		throw ex;
@@ -118,7 +108,6 @@ void Widget::onEventFirstTimeShown() {
 
 CEGUI::Window* Widget::getWindow(const std::string& windowName, bool throwIfNotFound) {
 	try {
-		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		if (!mMainWindow) {
 			S_LOG_WARNING("Trying to get a window (" + windowName + ") on widget that has no main sheet loaded (" << mPrefix << ").");
 			return nullptr;
@@ -140,44 +129,11 @@ CEGUI::Window* Widget::getWindow(const std::string& windowName, bool throwIfNotF
 }
 
 CEGUI::Window* Widget::createWindow(const std::string& windowType) {
-	return mGuiManager->createWindow(windowType);
+	return mGuiManager.createWindow(windowType);
 }
 
 CEGUI::Window* Widget::createWindow(const std::string& windowType, const std::string& windowName) {
-	return mGuiManager->createWindow(windowType, windowName);
-}
-
-
-Widget* WidgetLoader::createWidget(const std::string& name) {
-
-	if (getFactories().find(name) == getFactories().end()) {
-		return nullptr;
-	}
-
-	Widget* widget = getFactories()[name]();
-	return widget;
-}
-
-WidgetLoader::WidgetLoader(const std::string& name, FactoryFunc functor) {
-	getFactories().insert(std::make_pair(name, functor));
-
-}
-
-std::map<std::string, FactoryFunc>& WidgetLoader::getFactories() {
-	static std::map<std::string, FactoryFunc> factoryMap;
-	return factoryMap;
-}
-
-void WidgetLoader::registerWidgetFactory(const std::string& name, FactoryFunc functor) {
-	getFactories().insert(std::map<std::string, FactoryFunc>::value_type(name, functor));
-}
-
-void WidgetLoader::removeAllWidgetFactories() {
-	std::map<std::string, FactoryFunc>& factoryMap(getFactories());
-/*		for (WidgetFactoryMap::iterator I = factoryMap.begin(); I != factoryMap.end(); ++I) {
-			delete I->second;
-		}*/
-	factoryMap.clear();
+	return mGuiManager.createWindow(windowType, windowName);
 }
 
 void Widget::registerConsoleVisibilityToggleCommand(const std::string& commandSuffix) {
@@ -286,7 +242,7 @@ void Widget::setIsActiveWindowOpaque(bool isOpaque) {
 }
 
 const std::string& Widget::getDefaultScheme() const {
-	return mGuiManager->getDefaultScheme();
+	return mGuiManager.getDefaultScheme();
 }
 
 

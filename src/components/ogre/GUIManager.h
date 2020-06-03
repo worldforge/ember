@@ -239,14 +239,6 @@ public:
 	Gui::Widget* createWidget();
 
 	/**
-	 *    creates a widget
-	 *    @see WidgetLoader
-	 * @param name the type of widget to create
-	 * @return
-	 */
-	Gui::Widget* createWidget(const std::string& name);
-
-	/**
 	 * Destroys a widget previously created by createWidget
 	 * @param widget The widget to destroy.
 	 */

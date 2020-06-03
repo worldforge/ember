@@ -34,7 +34,6 @@ class GUIManager;
 namespace Gui {
 
 class Widget;
-typedef Widget* (*FactoryFunc)();
 
 /**
 @author Erik Ogenvik

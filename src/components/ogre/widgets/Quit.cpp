@@ -38,9 +38,8 @@
 
 WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 
-	auto widget = std::make_shared<Ember::OgreView::Gui::Quit>();
-	widget->init(&guiManager);
-	widget->buildWidget();
+	auto widget = std::make_shared<Ember::OgreView::Gui::Quit>(guiManager);
+
 
 	return [widget]() mutable {
 		//Just hold on to an instance.
@@ -54,14 +53,9 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-Quit::Quit() : SoftQuit("softquit", this, "Display a quit confirmation window.") {
-}
-
-
-Quit::~Quit() = default;
-
-void Quit::buildWidget() {
-
+Quit::Quit(GUIManager& guiManager) :
+		Widget(guiManager),
+		SoftQuit("softquit", this, "Display a quit confirmation window.") {
 	loadMainSheet("Quit.layout", "Quit/");
 
 	MainLoopController::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
@@ -79,6 +73,10 @@ void Quit::buildWidget() {
 
 	mMainWindow->setVisible(false);
 }
+
+
+Quit::~Quit() = default;
+
 
 bool Quit::Shutdown_Click(const CEGUI::EventArgs& args) {
 	MainLoopController::getSingleton().quit();

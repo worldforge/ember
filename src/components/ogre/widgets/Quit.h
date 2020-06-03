@@ -35,11 +35,9 @@ namespace Gui {
 */
 class Quit : public Widget {
 public:
-	Quit();
+	explicit Quit(GUIManager& guiManager);
 
 	~Quit() override;
-
-	void buildWidget() override;
 
 	void runCommand(const std::string& command, const std::string& args) override;
 

@@ -35,7 +35,6 @@
 #include "components/ogre/EmberOgre.h"
 
 
-#include "../EmberOgre.h"
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 
@@ -57,9 +56,7 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	auto state = std::make_shared<State>();
 
 	auto connectFn = [state, &guiManager](Ember::OgreView::World&) {
-		state->widget = std::make_shared<Ember::OgreView::Gui::InspectWidget>();
-		state->widget->init(&guiManager);
-		state->widget->buildWidget();
+		state->widget = std::make_shared<Ember::OgreView::Gui::InspectWidget>(guiManager);
 	};
 	auto con = Ember::OgreView::EmberOgre::getSingleton().EventWorldCreated.connect(connectFn);
 
@@ -80,24 +77,13 @@ namespace OgreView {
 namespace Gui {
 
 
-InspectWidget::InspectWidget() :
-		Inspect("inspecttt", this, "Inspect an entity."),
+InspectWidget::InspectWidget(GUIManager& guiManager) :
+		Widget(guiManager),
+		Inspect("inspect", this, "Inspect an entity."),
 		mChildList(nullptr),
 		mInfo(nullptr),
 		mCurrentEntity(nullptr),
 		mChangedThisFrame(false) {
-}
-
-InspectWidget::~InspectWidget() = default;
-
-void InspectWidget::entity_BeingDeleted() {
-	disconnectFromEntity();
-	mCurrentEntity = nullptr;
-}
-
-void InspectWidget::buildWidget() {
-
-
 	loadMainSheet("InspectWidget.layout", "InspectWidget/");
 	mMainWindow->setVisible(false);
 
@@ -107,7 +93,7 @@ void InspectWidget::buildWidget() {
 	mInfo = getWindow("EntityInfo");
 
 
-	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));
+	mGuiManager.EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));
 	enableCloseButton();
 
 	getWindow("ShowOgreBoundingBox")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
@@ -148,6 +134,13 @@ void InspectWidget::buildWidget() {
 		}
 	});
 
+}
+
+InspectWidget::~InspectWidget() = default;
+
+void InspectWidget::entity_BeingDeleted() {
+	disconnectFromEntity();
+	mCurrentEntity = nullptr;
 }
 
 void InspectWidget::updateAttributeString() {

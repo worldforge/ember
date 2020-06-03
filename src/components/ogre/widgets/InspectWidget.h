@@ -42,9 +42,8 @@ class InspectWidget : public Widget
 {
 public:
 
-    InspectWidget();
+    InspectWidget(GUIManager& guiManager);
     ~InspectWidget() override;
-	void buildWidget() override;
 	void frameStarted(const Ogre::FrameEvent & evt) override;
 
 	const ConsoleCommandWrapper Inspect;
@@ -60,6 +59,7 @@ public:
 protected:
 
 
+	void buildWidget();
 	void fillChildrenList();
 	void entity_ChildAdded(Eris::Entity* entity);
 	void entity_ChildRemoved(Eris::Entity* entity);
