@@ -32,13 +32,11 @@ template<typename T>
 struct WindowDestroyer {
 	void operator()(T* window) {
 		CEGUI::WindowManager::getSingleton().destroyWindow(window);
-		CEGUI::WindowManager::getSingleton().cleanDeadPool(); //Need to make sure that it's really destroyed.
 	}
 };
 
 /**
- * A specialization of std::unique_ptr which will destroy the contained window through the CEGUI::WindowManager upon destruction,
- * as well as clean the CEGUI dead pool.
+ * A specialization of std::unique_ptr which will destroy the contained window through the CEGUI::WindowManager upon destruction.
  */
 template<typename T>
 using UniqueWindowPtr= std::unique_ptr<T, WindowDestroyer<T>>;

@@ -60,13 +60,14 @@ LoadingBar::LoadingBar(const Cegui::CEGUISetup& ceguiSetup, MainLoopController& 
 	CEGUI::ImageManager::getSingleton().loadImageset("cegui/datafiles/imagesets/progressbar_frame.imageset", "");
 
 	mSheet.reset(CEGUI::WindowManager::getSingleton().loadLayoutFromFile("cegui/datafiles/layouts/Splash.layout"));
+	mSheet->setDestroyedByParent(false);
 
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(mSheet.get());
 	mSheet->update(0);
 
-	mVersionText.reset(mSheet->getChildRecursive("version"));
-	mProgressWindow.reset(mSheet->getChildRecursive("progress"));
-	mDescriptionText.reset(mSheet->getChildRecursive("details"));
+	mVersionText = mSheet->getChildRecursive("version");
+	mProgressWindow = mSheet->getChildRecursive("progress");
+	mDescriptionText = mSheet->getChildRecursive("details");
 
 }
 

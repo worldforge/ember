@@ -191,6 +191,7 @@ GUIManager::~GUIManager() {
 	if (mCEGUIAdapter) {
 		getInput().removeAdapter(mCEGUIAdapter.get());
 	}
+	mWidgetDefinitions.reset();
 	mWidgets.clear();
 	WidgetLoader::removeAllWidgetFactories();
 	CEGUI::WindowManager::getSingleton().cleanDeadPool();

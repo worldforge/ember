@@ -142,9 +142,9 @@ protected:
 
 	Ogre::Real mProgressBarScriptSize;
 	Gui::UniqueWindowPtr<CEGUI::Window> mSheet;
-	Gui::UniqueWindowPtr<CEGUI::Window> mVersionText;
-	Gui::UniqueWindowPtr<CEGUI::Window> mDescriptionText;
-	Gui::UniqueWindowPtr<CEGUI::Window> mProgressWindow;
+	CEGUI::Window* mVersionText;
+	CEGUI::Window* mDescriptionText;
+	CEGUI::Window* mProgressWindow;
 
 	Ogre::Timer mTimer;
 	MainLoopController& mMainLoopController;

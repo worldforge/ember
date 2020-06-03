@@ -42,8 +42,10 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	widget->init(&guiManager);
 	widget->buildWidget();
 
-	return [widget]() {
+	return [widget]() mutable {
 		//Just hold on to an instance.
+		widget.reset();
+		CEGUI::WindowManager::getSingleton().cleanDeadPool(); //Need to make sure there's no reference to the plugin.
 	};
 
 }

@@ -78,6 +78,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 							S_LOG_INFO("Reloading plugin '" << path.string() << "'.");
 							//First remove the existing plugin.
 							mPlugins.erase(J);
+							CEGUI::WindowManager::getSingleton().cleanDeadPool(); //Need to make sure there's no reference to the erased plugin.
 							//Then add the new one
 							registerPlugin(guiManager, path);
 						}
@@ -85,11 +86,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 					mDirtyPluginPaths.clear();
 
 				}, boost::posix_time::seconds(2));
-
-
 			}
-
-
 		}
 	});
 	registerPluginWithName(guiManager, "ServerWidget");
@@ -111,14 +108,16 @@ void WidgetDefinitions::registerPlugin(GUIManager& guiManager, const boost::file
 	auto registerFn = boost::dll::import<std::function<void()>(GUIManager&)>(
 			pluginPath, "registerWidget"
 	);
+	S_LOG_INFO("Creating Widget Plugin from '" << pluginPath.string() << "'.");
 	auto disconnectFn = registerFn(guiManager);
-	PluginEntry pluginEntry{std::move(registerFn), std::move(disconnectFn)};
+	PluginEntry pluginEntry{pluginPath, std::move(registerFn), std::move(disconnectFn)};
 	mPlugins.emplace(pluginPath, std::move(pluginEntry));
 }
 
 
 WidgetDefinitions::PluginEntry::~PluginEntry() {
 	if (pluginCallback) {
+		S_LOG_INFO("Shutting down Widget Plugin at '" << path.string() << "'.");
 		pluginCallback();
 	}
 }
