@@ -252,7 +252,7 @@ function ServerBrowser:refreshServerList()
 
 	for i = 0, numberOfServerInfos - 1 do
 		local sInfo = metaServer:getInfoForServer(i)
-		if sInfo:getStatus() == Eris.ServerInfo.VALID then
+		if sInfo.status == Eris.ServerInfo.VALID then
 			self:addRow(sInfo)
 		end
 	end
@@ -260,11 +260,11 @@ end
 
 function ServerBrowser:addRow(sInfo)
 	if self.hideOldServers then
-		if Ember.MetaserverService:compareVersions(self.minimumVersion, sInfo:getVersion()) > 0 then
+		if Ember.MetaserverService:compareVersions(self.minimumVersion, sInfo.version) > 0 then
 			return
 		end
 	end
-	if self.minimumentitycount >= sInfo:getEntities() then
+	if self.minimumentitycount >= sInfo.entities then
 		return
 	end
 
@@ -274,25 +274,25 @@ function ServerBrowser:addRow(sInfo)
 	local item = Ember.OgreView.Gui.ColouredListItem:new(self:getSavedAccount(sInfo))
 	self.serverList:setItem(item, 0, rowNumber);
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getServername())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.name)
 	self.serverList:setItem(item, 1, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getPing())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.ping)
 	self.serverList:setItem(item, 2, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getNumClients())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.clients)
 	self.serverList:setItem(item, 3,rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getRuleset())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.ruleset)
 	self.serverList:setItem(item, 4, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getServer())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.server)
 	self.serverList:setItem(item, 5, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getVersion())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.version)
 	self.serverList:setItem(item, 6, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getHostname())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.host)
 	self.serverList:setItem(item, 7, rowNumber)
 end
 
@@ -302,7 +302,7 @@ function ServerBrowser:getSavedAccount(sInfo)
 	-- get the 'username' key.  If this has a value, there is saved credentials
 	-- We are always expecting a string ... even if it's empty.
 	local serverService = emberServices:getServerSettingsService()
-	local serverSettingCredentials = Ember.Services.ServerSettingsCredentials:new_local(sInfo:getHostname(), sInfo:getServername())
+	local serverSettingCredentials = Ember.Services.ServerSettingsCredentials:new_local(sInfo.host, sInfo.name)
 	local savedUser = serverService:getItem(serverSettingCredentials,"username")
 	local retFav = savedUser:as_string()
 	if retFav ~= "" then

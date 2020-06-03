@@ -301,12 +301,12 @@ void ServerWidget::showServerInfo(Eris::Connection& connection) {
 		Eris::ServerInfo sInfo;
 		connection.getServerInfo(sInfo);
 		std::stringstream ss;
-		ss << "Server name: " << sInfo.getServername() << "\n";
-		ss << "Ruleset: " << sInfo.getRuleset() << "\n";
-		ss << "Server type: " << sInfo.getServer() << " (v. " << sInfo.getVersion() << ")\n";
-		ss << "Ping: " << sInfo.getPing() << "\n";
-		ss << "Uptime: " << static_cast<int> (sInfo.getUptime() / (60 * 60 * 24)) << " days\n";
-		ss << "Number of clients: " << sInfo.getNumClients() << "\n";
+		ss << "Server name: " << sInfo.name << "\n";
+		ss << "Ruleset: " << sInfo.ruleset << "\n";
+		ss << "Server type: " << sInfo.server << " (v. " << sInfo.version << ")\n";
+		ss << "Ping: " << sInfo.ping << "\n";
+		ss << "Uptime: " << static_cast<int> (sInfo.uptime / (60 * 60 * 24)) << " days\n";
+		ss << "Number of clients: " << sInfo.clients << "\n";
 		info->setText(ss.str());
 
 		/*

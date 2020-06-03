@@ -99,14 +99,14 @@ void MetaserverService::gotFailure(const string& msg) {
 void MetaserverService::receivedServerInfo(const Eris::ServerInfo& sInfo) {
 
 	S_LOG_VERBOSE("Got serverinfo:\n"
-						  << "Hostname: " << sInfo.getHostname()
-						  << "\nServerName: " << sInfo.getServername()
-						  << "\nRuleset: " << sInfo.getRuleset()
-						  << "\nServer Type: " << sInfo.getServer()
-						  << "\nClients: " << sInfo.getNumClients()
-						  << "\nPing: " << sInfo.getPing()
-						  << "\nUptime: " << (int) sInfo.getUptime()
-						  << "\nEntities: " << sInfo.getEntities());
+						  << "Hostname: " << sInfo.host
+						  << "\nServerName: " << sInfo.name
+						  << "\nRuleset: " << sInfo.ruleset
+						  << "\nServer Type: " << sInfo.server
+						  << "\nClients: " << sInfo.clients
+						  << "\nPing: " << sInfo.ping
+						  << "\nUptime: " << (int) sInfo.uptime
+						  << "\nEntities: " << sInfo.entities);
 }
 
 void MetaserverService::completedServerList(int count) {
@@ -148,7 +148,7 @@ void MetaserverService::runCommand(const std::string& command, const std::string
 
 int MetaserverService::compareVersions(const std::string& firstVersion, const std::string& secondVersion) {
 	auto firstVersionStrings = Tokeniser::split(firstVersion, ".");
-    auto secondVersionStrings = Tokeniser::split(secondVersion, ".");
+	auto secondVersionStrings = Tokeniser::split(secondVersion, ".");
 
 	auto firstI = firstVersionStrings.begin();
 	auto secondI = secondVersionStrings.begin();

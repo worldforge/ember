@@ -87,10 +87,10 @@ void EntityExporter::fillWithServerData(Atlas::Message::MapType& serverMap)
 {
 	Eris::ServerInfo serverInfo;
 	mAccount.getConnection().getServerInfo(serverInfo);
-	serverMap["host"] = serverInfo.getHostname();
-	serverMap["name"] = serverInfo.getServername();
-	serverMap["ruleset"] = serverInfo.getRuleset();
-	serverMap["version"] = serverInfo.getVersion();
+	serverMap["host"] = serverInfo.host;
+	serverMap["name"] = serverInfo.name;
+	serverMap["ruleset"] = serverInfo.ruleset;
+	serverMap["version"] = serverInfo.version;
 }
 
 void EntityExporter::operationResult(const Atlas::Objects::Operation::RootOperation& op)

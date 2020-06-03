@@ -35,7 +35,7 @@ ServerSettingsCredentials::ServerSettingsCredentials(std::string hostName, std::
 }
 
 ServerSettingsCredentials::ServerSettingsCredentials(const Eris::ServerInfo& serverInfo) :
-	mHostName(serverInfo.getHostname()), mServerName(serverInfo.getServername())
+	mHostName(serverInfo.host), mServerName(serverInfo.name)
 {
 }
 

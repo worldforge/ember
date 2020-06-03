@@ -12,47 +12,43 @@ class ServerInfo
         TIMEOUT ///< server query timed out
     } Status;
     
-    ServerInfo();
-    
-	// bookmark / favourites functionality 	
+    /** the hostname (or dotted-decimal IP) of the server. For multi-server worlds, this will be
+      a name that resolves to a machine capable of accepting the initial LOGIN, and hence should not need
+      special handling. */
+    std::string host;
 
-// accessors
-    Status getStatus() const;
-    
-    /** retrive the hostname (or dotted-decimal IP) of the server. For multi-server worlds, this will be
-    a name that resolves to a machine capable of accepting the initial LOGIN, and hence should not need
-    special handling. */
-    const std::string& getHostname() const;
+    Status status;
 
     /// retrieve the human-readable name of the server (e.g 'Bob's Mason Server')
-    const std::string& getServername() const;
-    
+    std::string name;
     /// retrieve a human-readable name of the ruleset (e.g. 'mason' or 'circe')
-    const std::string& getRuleset() const;
-    
+    std::string ruleset;
     /// the server program name, i.e 'stage' or 'cyphesis'
-    const std::string& getServer() const;
+    std::string server;
+    /// version of the protocol used
+    long protocol_version;
 
-    /// the server program version, as a free text string
-    const std::string& getVersion() const;
-
-    /// the server program build-date, as a free text string
-    const std::string& getBuildDate() const;
-    
     /// the number of clients currently connected to the server
-    int getNumClients() const;
-
+    int clients;
     /** the round-trip time to the server. The meaning of this when multi-server worlds exist needs to
     be considered.
     \task Verify the accuracy of the ping estimation, since it is currently very poor */
-    int getPing() const;
+    int ping;
+    /// the number of entities on the server
+    long entities;
 
     /// the server's uptime in seconds
-    double getUptime() const;
+    double uptime;
 
-    /// the number of entities on the server
-    long getEntities() const;
+    /// the server program version, as a free text string
+    std::string version;
+    /// the server program build-date, as a free text string
+    std::string buildDate;
 
+    /**
+     * A list of assets URLs, from which assets can be downloaded using WFUT.
+     */
+    std::vector<std::string> assets;
 
 };
 }
