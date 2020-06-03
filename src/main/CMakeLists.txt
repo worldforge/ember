@@ -27,8 +27,8 @@ target_link_libraries(${EMBER_EXECUTABLE_NAME}
         Representations_bindings_lua
         Ogre_bindings_lua
         Helpers_bindings_lua
-        widgets
         emberogre
+        emberogre_terrain
         terrain
         entitymapping
         lua

@@ -1,0 +1,70 @@
+add_library(emberogre_terrain
+        OgreTerrain/OgreTerrainMaterialGeneratorEmber.cpp
+        OgreTerrain/OgreTerrainDefiner.cpp
+        OgreTerrain/OgreTerrainAdapter.cpp
+        OgreTerrain/OgreTerrainObserver.cpp
+        OgreTerrain/OgreTerrainPageBridge.cpp
+        OgreTerrain/OgreTerrainPageProvider.cpp
+        OgreTerrain/EmberTerrainGroup.cpp
+        OgreTerrain/EmberTerrain.cpp
+        OgreTerrain/CameraFocusedGrid2DPageStrategy.cpp
+        Map.cpp
+        TerrainArea.cpp
+        TerrainAreaParser.cpp
+        TerrainEditor.cpp
+        TerrainManager.cpp
+        TerrainInfo.cpp
+        TerrainLayerDefinitionManager.cpp
+        TerrainMod.cpp
+        TerrainPage.cpp
+        TerrainPageGeometry.cpp
+        TerrainPageSurface.cpp
+        TerrainPageSurfaceCompiler.cpp
+        TerrainPageSurfaceLayer.cpp
+        TerrainShader.cpp
+        XMLLayerDefinitionSerializer.cpp
+        PlantAreaQueryResult.cpp
+        TerrainParser.cpp
+        TerrainPageCreationTask.cpp
+        TerrainShaderUpdateTask.cpp
+        TerrainAreaUpdateTask.cpp
+        techniques/Shader.cpp
+        techniques/ShaderPass.cpp
+        techniques/ShaderPassBlendMapBatch.cpp
+        techniques/Base.cpp
+        Image.cpp
+        OgreImage.cpp
+        WFImage.cpp
+        TerrainMaterialCompilationTask.cpp
+        HeightMapSegment.cpp
+        HeightMap.cpp
+        Buffer.cpp
+        HeightMapBuffer.cpp
+        HeightMapBufferProvider.cpp
+        HeightMapUpdateTask.cpp
+        TerrainAreaTaskBase.cpp
+        TerrainAreaAddTask.cpp
+        TerrainAreaRemoveTask.cpp
+        TerrainModUpdateTask.cpp
+        GeometryUpdateTask.cpp
+        TerrainEditorOverlay.cpp
+        TerrainShaderParser.cpp
+        TerrainUpdateTask.cpp
+        PlantQueryTask.cpp
+        HeightMapFlatSegment.cpp
+        Segment.cpp
+        SegmentHolder.cpp
+        SegmentManager.cpp
+        foliage/PlantPopulator.cpp
+        foliage/ClusterPopulator.cpp
+        foliage/Vegetation.cpp
+        TerrainHandler.cpp
+        techniques/CompilerTechniqueProvider.cpp
+        TerrainPageDeletionTask.cpp
+        techniques/OnePixelMaterialGenerator.cpp
+        )
+
+
+target_link_libraries(emberogre_terrain PUBLIC emberogre terrain)
+
+target_compile_definitions(emberogre_terrain PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")

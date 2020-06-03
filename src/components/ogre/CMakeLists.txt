@@ -38,33 +38,6 @@ add_library(emberogre
         sound/SoundAction.cpp sound/SoundDefinitionManager.cpp
         sound/SoundEntity.cpp sound/SoundGroup.cpp sound/XMLSoundDefParser.cpp
 
-        terrain/OgreTerrain/OgreTerrainMaterialGeneratorEmber.cpp
-        terrain/OgreTerrain/OgreTerrainDefiner.cpp
-        terrain/OgreTerrain/OgreTerrainAdapter.cpp terrain/OgreTerrain/OgreTerrainObserver.cpp terrain/OgreTerrain/OgreTerrainPageBridge.cpp terrain/OgreTerrain/OgreTerrainPageProvider.cpp
-        terrain/OgreTerrain/EmberTerrainGroup.cpp terrain/OgreTerrain/EmberTerrain.cpp terrain/OgreTerrain/CameraFocusedGrid2DPageStrategy.cpp
-        terrain/Map.cpp terrain/TerrainArea.cpp
-        terrain/TerrainAreaParser.cpp terrain/TerrainEditor.cpp
-        terrain/TerrainManager.cpp terrain/TerrainInfo.cpp
-        terrain/TerrainLayerDefinitionManager.cpp terrain/TerrainMod.cpp
-        terrain/TerrainPage.cpp terrain/TerrainPageGeometry.cpp
-        terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp
-        terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp
-        terrain/PlantAreaQueryResult.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp
-        terrain/TerrainShaderUpdateTask.cpp terrain/TerrainAreaUpdateTask.cpp
-        terrain/techniques/Shader.cpp
-        terrain/techniques/ShaderPass.cpp
-        terrain/techniques/ShaderPassBlendMapBatch.cpp terrain/techniques/Base.cpp
-        terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp terrain/TerrainMaterialCompilationTask.cpp
-        terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/Buffer.cpp terrain/HeightMapBuffer.cpp
-        terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp
-        terrain/TerrainAreaRemoveTask.cpp terrain/TerrainModUpdateTask.cpp
-        terrain/GeometryUpdateTask.cpp terrain/TerrainEditorOverlay.cpp
-        terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/PlantQueryTask.cpp
-        terrain/HeightMapFlatSegment.cpp terrain/Segment.cpp terrain/SegmentHolder.cpp terrain/SegmentManager.cpp
-        terrain/foliage/PlantPopulator.cpp terrain/foliage/ClusterPopulator.cpp terrain/foliage/Vegetation.cpp terrain/TerrainHandler.cpp
-        terrain/techniques/CompilerTechniqueProvider.cpp terrain/ITerrainObserver.h terrain/TerrainPageDeletionTask.cpp
-        terrain/techniques/OnePixelMaterialGenerator.cpp
-        terrain/IHeightMapSegment.h terrain/ICompilerTechniqueProvider.h terrain/ITerrainAdapter.h terrain/ITerrainPageBridge.h terrain/PlantInstance.h terrain/Types.h
 
         Avatar.cpp AvatarCameraWarper.cpp
         MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp
@@ -102,7 +75,8 @@ wf_generate_lua_bindings(scripting/bindings/lua/ogre/Ogre)
 wf_generate_lua_bindings(scripting/bindings/lua/helpers/Helpers scripting/bindings/lua/helpers/OgreUtils.cpp)
 
 
-target_link_libraries(emberogre caelum meshtree pagedgeometry widgets)
+target_link_libraries(emberogre PUBLIC caelum meshtree pagedgeometry widgets emberogre_terrain)
 
 target_compile_definitions(emberogre PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
 add_subdirectory(widgets)
+add_subdirectory(terrain)
