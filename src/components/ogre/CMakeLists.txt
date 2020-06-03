@@ -66,41 +66,6 @@ add_library(emberogre
         terrain/techniques/OnePixelMaterialGenerator.cpp
         terrain/IHeightMapSegment.h terrain/ICompilerTechniqueProvider.h terrain/ITerrainAdapter.h terrain/ITerrainPageBridge.h terrain/PlantInstance.h terrain/Types.h
 
-        widgets/ActionBarInput.cpp widgets/ActionBarIcon.cpp widgets/ActionBarIconSlot.cpp widgets/ActionBarIconDragDropTarget.cpp widgets/ActionBarIconManager.cpp widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp
-        widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp
-        widgets/EntityCreatorMovement.cpp
-        widgets/EntityCreatorMovementBridge.cpp widgets/EntityEditor.cpp widgets/EntityIcon.cpp
-        widgets/EntityIconDragDropPreview.cpp widgets/EntityIconDragDropTarget.cpp widgets/EntityIconManager.cpp widgets/EntityIconSlot.cpp widgets/IconBar.cpp
-        widgets/IconBase.cpp widgets/IngameChatWidget.cpp widgets/ListHolder.cpp
-        widgets/LoadingBar.cpp widgets/EntityCreatorTypeHelper.cpp widgets/MeshInfoProvider.cpp widgets/MeshPreview.cpp widgets/ModelRenderer.cpp
-        widgets/MovableObjectRenderer.cpp widgets/OgreEntityRenderer.cpp widgets/QuaternionAdapter.cpp widgets/QuickHelp.cpp widgets/QuickHelpCursor.cpp widgets/HelpMessage.cpp widgets/WorldLoadingScreen.cpp
-        widgets/StackableContainer.cpp widgets/Vector3Adapter.cpp widgets/Widget.cpp widgets/WidgetDefinitions.cpp widgets/WidgetPool.cpp widgets/AtlasHelper.cpp widgets/ModelEditHelper.cpp
-        widgets/EntityTextureManipulator.cpp widgets/LabelAction.cpp
-        widgets/icons/Icon.cpp widgets/icons/IconImageStore.cpp widgets/icons/IconManager.cpp
-        widgets/icons/IconRenderer.cpp widgets/icons/IconStore.cpp
-        widgets/adapters/ListBinder.cpp widgets/adapters/atlas/AdapterFactory.cpp widgets/adapters/atlas/AreaAdapter.cpp
-        widgets/adapters/atlas/CustomAdapter.cpp widgets/adapters/atlas/ListAdapter.cpp widgets/adapters/atlas/MapAdapter.cpp widgets/adapters/atlas/NumberAdapter.cpp widgets/adapters/atlas/OrientationAdapter.cpp
-        widgets/adapters/atlas/PolygonAdapter.cpp widgets/adapters/atlas/Position2DAdapter.cpp widgets/adapters/atlas/PositionAdapter.cpp widgets/adapters/atlas/SizeAdapter.cpp
-        widgets/adapters/atlas/StaticAdapter.cpp widgets/adapters/atlas/TerrainModAdapter.cpp
-        widgets/adapters/atlas/AdapterBase.h
-        widgets/adapters/eris/RuleTreeAdapter.cpp widgets/adapters/ogre/ResourceListAdapter.cpp widgets/representations/LayoutHelper.cpp widgets/TexturePair.cpp widgets/EntityTooltip.cpp
-        widgets/adapters/AdapterBase.h widgets/adapters/ComboboxAdapter.h widgets/adapters/GenericPropertyAdapter.h
-        widgets/EntityCreatorCreationInstance.cpp widgets/adapters/ValueTypeHelper.cpp
-        widgets/representations/CheckboxRepresentation.h
-        widgets/representations/ComboboxRepresentation.h
-        widgets/representations/EditboxRepresentation.h
-        widgets/representations/RepresentationBase.h
-        widgets/representations/SingleAdapterRepresentationBase.h
-        widgets/representations/SliderRepresentation.h
-        widgets/HitDisplayer.cpp
-        widgets/TextNodeRenderer.cpp
-        widgets/adapters/ModelDefinitionsAdapter.cpp
-        widgets/adapters/ModelDefinitionsAdapter.h
-        widgets/adapters/atlas/ScaleAdapter.cpp widgets/adapters/atlas/ScaleAdapter.h
-        widgets/adapters/atlas/EntityRefAdapter.cpp widgets/adapters/atlas/EntityRefAdapter.h
-        widgets/ContainerWidget.cpp
-        widgets/ContainerView.cpp
-
         Avatar.cpp AvatarCameraWarper.cpp
         MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp
         EmberEntityActionCreator.cpp
@@ -128,44 +93,16 @@ add_library(emberogre
         )
 
 
-wf_add_plugin(ServerWidget
-        widgets/ServerWidget.cpp
-        )
-wf_add_plugin(Quit
-        widgets/Quit.cpp
-        )
-wf_add_plugin(InspectWidget
-        widgets/InspectWidget.cpp
-        )
-
-wf_add_plugin(Help
-        widgets/Help.cpp
-        )
 
 file(GLOB ENTITY_RECIPES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.entityrecipe" "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.xsd")
 install(FILES ${ENTITY_RECIPES_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/entityrecipes)
 
-file(GLOB LAYOUT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/widgets/*.layout")
-install(FILES ${LAYOUT_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/gui/cegui/datafiles/layouts/)
-
-file(GLOB ATLAS_ADAPTER_LAYOUT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/widgets/adapters/atlas/*.layout")
-install(FILES ${ATLAS_ADAPTER_LAYOUT_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/gui/cegui/datafiles/layouts/adapters/atlas/)
-
-file(GLOB REPRESENTATION_LAYOUT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/widgets/representations/*.layout")
-install(FILES ${REPRESENTATION_LAYOUT_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/gui/cegui/datafiles/layouts/representations)
-
-file(GLOB LUA_FILES "${CMAKE_CURRENT_SOURCE_DIR}/widgets/*.lua")
-install(FILES ${LUA_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/scripting/lua/)
-
 wf_generate_lua_bindings(scripting/bindings/lua/EmberOgre)
 wf_generate_lua_bindings(scripting/bindings/lua/ogre/Ogre)
 wf_generate_lua_bindings(scripting/bindings/lua/helpers/Helpers scripting/bindings/lua/helpers/OgreUtils.cpp)
-wf_generate_lua_bindings(widgets/adapters/bindings/lua/Adapters)
-wf_generate_lua_bindings(widgets/adapters/atlas/bindings/lua/AtlasAdapters)
-wf_generate_lua_bindings(widgets/representations/bindings/lua/Representations)
 
-target_link_libraries(emberogre caelum meshtree pagedgeometry ${CMAKE_DL_LIBS})
+
+target_link_libraries(emberogre caelum meshtree pagedgeometry widgets)
 
 target_compile_definitions(emberogre PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
-
-add_dependencies(emberogre ServerWidget)
+add_subdirectory(widgets)
