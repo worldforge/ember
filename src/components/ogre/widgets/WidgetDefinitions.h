@@ -72,8 +72,8 @@ public:
     struct PluginEntry {
     	PluginEntry(PluginEntry&& rhs) noexcept = default;
     	~PluginEntry();
-		PluginFunction pluginFn; //We need to hold on to this, since it the dynamic library's lifetime is bound to it.
-		PluginCallback pluginCallback; //A deregistering function
+		WidgetPluginFunction pluginFn; //We need to hold on to this, since it the dynamic library's lifetime is bound to it.
+		WidgetPluginCallback pluginCallback; //A deregistering function
     };
 
 private:

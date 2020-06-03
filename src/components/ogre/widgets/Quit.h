@@ -24,6 +24,7 @@
 #define EMBEROGREQUIT_H
 
 #include "Widget.h"
+#include "WidgetPlugin.h"
 
 namespace Ember {
 namespace OgreView {
@@ -66,5 +67,7 @@ protected:
 }
 }
 }
+
+PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 #endif

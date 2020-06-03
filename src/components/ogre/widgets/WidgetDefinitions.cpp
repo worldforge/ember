@@ -93,6 +93,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 		}
 	});
 	registerPluginWithName(guiManager, "ServerWidget");
+	registerPluginWithName(guiManager, "Quit");
 
 }
 

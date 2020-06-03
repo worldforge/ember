@@ -33,6 +33,21 @@
 #include "services/server/ServerService.h"
 
 #include <CEGUI/widgets/PushButton.h>
+#include <iostream>
+
+
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+
+	auto widget = std::make_shared<Ember::OgreView::Gui::Quit>();
+	widget->init(&guiManager);
+	widget->buildWidget();
+
+	return [widget]() {
+		//Just hold on to an instance.
+	};
+
+}
+
 
 namespace Ember {
 namespace OgreView {

@@ -29,11 +29,11 @@ class GUIManager;
 /**
  * A typedef for the return value of a Plugin Function.
  */
-typedef std::function<void()> PluginCallback;
+typedef std::function<void()> WidgetPluginCallback;
 /**
  * A typedef for a Plugin Function as delivered by the Boost.DLL system.
  */
-typedef boost::dll::detail::library_function<PluginCallback(Ember::OgreView::GUIManager&)> PluginFunction;
+typedef boost::dll::detail::library_function<WidgetPluginCallback(Ember::OgreView::GUIManager&)> WidgetPluginFunction;
 
 #define PLUGIN_API extern "C" BOOST_SYMBOL_EXPORT
 

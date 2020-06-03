@@ -195,6 +195,6 @@ protected:
 }
 }
 
-PLUGIN_API PluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
+PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 #endif
