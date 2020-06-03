@@ -24,9 +24,9 @@
 #define EMBEROGREINSPECTWIDGET_H
 
 #include "Widget.h"
+#include "WidgetPlugin.h"
 #include <Eris/Types.h>
 #include <sigc++/connection.h>
-#include "WidgetPlugin.h"
 
 namespace Ember {
 class EmberEntity;

@@ -70,7 +70,7 @@ add_library(emberogre
         widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp
         widgets/EntityCreatorMovement.cpp
         widgets/EntityCreatorMovementBridge.cpp widgets/EntityEditor.cpp widgets/EntityIcon.cpp
-        widgets/EntityIconDragDropPreview.cpp widgets/EntityIconDragDropTarget.cpp widgets/EntityIconManager.cpp widgets/EntityIconSlot.cpp widgets/Help.cpp widgets/IconBar.cpp
+        widgets/EntityIconDragDropPreview.cpp widgets/EntityIconDragDropTarget.cpp widgets/EntityIconManager.cpp widgets/EntityIconSlot.cpp widgets/IconBar.cpp
         widgets/IconBase.cpp widgets/IngameChatWidget.cpp widgets/ListHolder.cpp
         widgets/LoadingBar.cpp widgets/EntityCreatorTypeHelper.cpp widgets/MeshInfoProvider.cpp widgets/MeshPreview.cpp widgets/ModelRenderer.cpp
         widgets/MovableObjectRenderer.cpp widgets/OgreEntityRenderer.cpp widgets/QuaternionAdapter.cpp widgets/QuickHelp.cpp widgets/QuickHelpCursor.cpp widgets/HelpMessage.cpp widgets/WorldLoadingScreen.cpp
@@ -128,14 +128,18 @@ add_library(emberogre
         )
 
 
-add_plugin(ServerWidget
+wf_add_plugin(ServerWidget
         widgets/ServerWidget.cpp
         )
-add_plugin(Quit
+wf_add_plugin(Quit
         widgets/Quit.cpp
         )
-add_plugin(InspectWidget
+wf_add_plugin(InspectWidget
         widgets/InspectWidget.cpp
+        )
+
+wf_add_plugin(Help
+        widgets/Help.cpp
         )
 
 file(GLOB ENTITY_RECIPES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.entityrecipe" "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.xsd")

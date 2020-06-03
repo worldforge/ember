@@ -219,7 +219,6 @@ void GUIManager::initialize() {
 	}
 
 	std::vector<std::string> widgetsToLoad;
-	widgetsToLoad.emplace_back("Help");
 	widgetsToLoad.emplace_back("MeshPreview");
 
 	for (auto& widget : widgetsToLoad) {

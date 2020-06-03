@@ -86,7 +86,7 @@ define_property(GLOBAL PROPERTY PLUGIN_LIBS_LIST
 set_property(GLOBAL PROPERTY PLUGIN_LIBS_LIST "")
 
 
-macro(add_plugin _LIB_NAME _SOURCE_FILES)
+macro(wf_add_plugin _LIB_NAME _SOURCE_FILES)
 
     add_library(${_LIB_NAME} MODULE ${_SOURCE_FILES})
     target_compile_options(${_LIB_NAME} PRIVATE ${WF_WARNING_FLAGS})

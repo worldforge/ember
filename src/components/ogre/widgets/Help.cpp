@@ -33,6 +33,23 @@
 
 #include <CEGUI/Window.h>
 
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+
+	struct State {
+		std::shared_ptr<Ember::OgreView::Gui::Help> widget;
+	};
+	auto state = std::make_shared<State>();
+
+	state->widget = std::make_shared<Ember::OgreView::Gui::Help>();
+	state->widget->init(&guiManager);
+	state->widget->buildWidget();
+	//Just hold on to an instance.
+	return [state]() mutable {
+		state.reset();
+	};
+
+}
+
 using namespace CEGUI;
 namespace Ember {
 namespace OgreView {

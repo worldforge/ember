@@ -47,7 +47,6 @@
 #include <Eris/TypeInfo.h>
 
 #include <Atlas/PresentationBridge.h>
-#include <framework/Singleton.h>
 #include <components/ogre/model/ModelRepresentation.h>
 
 WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {

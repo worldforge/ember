@@ -24,6 +24,7 @@
 #define EMBEROGREHELP_H
 
 #include "Widget.h"
+#include "WidgetPlugin.h"
 #include "framework/ConsoleCommandWrapper.h"
 
 namespace Ember {
@@ -61,5 +62,7 @@ protected:
 }
 }
 }
+
+PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 #endif
