@@ -31,6 +31,58 @@
 #include <CEGUI/widgets/FrameWindow.h>
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
+#include <framework/AutoCloseConnection.h>
+
+
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+
+	struct State {
+		std::map<std::string, std::unique_ptr<Ember::OgreView::Gui::ContainerWidget>> containerWidgets;
+		std::vector<Ember::AutoCloseConnection> connections;
+	};
+	auto state = std::make_shared<State>();
+
+	auto connectFn = [state, &guiManager](Eris::Avatar* avatar) {
+		auto openedFn = [&](Eris::Entity& entity) {
+			try {
+				auto widget = std::make_unique<Ember::OgreView::Gui::ContainerWidget>(guiManager, dynamic_cast<Ember::EmberEntity&>(entity));
+				state->containerWidgets.emplace(entity.getId(), std::move(widget));
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Could not create container widget." << ex);
+			} catch (...) {
+				S_LOG_FAILURE("Could not create container widget.");
+			}
+		};
+
+		state->connections.clear();
+		state->connections.emplace_back(avatar->ContainerOpened.connect(openedFn));
+		state->connections.emplace_back(avatar->ContainerClosed.connect([=](Eris::Entity& entity) {
+			state->containerWidgets.erase(entity.getId());
+		}));
+
+		//Check if there are any active containers already.
+		for (auto& entry: avatar->getActiveContainers()) {
+			if (*entry.second) {
+				openedFn(**entry.second);
+			}
+		}
+	};
+
+	auto con = Ember::EmberServices::getSingleton().getServerService().GotAvatar.connect(connectFn);
+
+	if (Ember::EmberServices::getSingleton().getServerService().getAvatar()) {
+		connectFn(Ember::EmberServices::getSingleton().getServerService().getAvatar());
+	}
+
+	//Just hold on to an instance.
+	return [state, con]() mutable {
+		state->connections.clear();
+		state->containerWidgets.clear();
+		con->disconnect();
+		state.reset();
+	};
+
+}
 
 namespace {
 std::map<std::string, std::unique_ptr<Ember::OgreView::Gui::ContainerWidget>> containerWidgets;
@@ -68,7 +120,7 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 													 guiManager.getEntityTooltip()->getTooltipWindow(),
 													 *mWidget->getWindow("IconContainer"));
 	mContainerView->EventEntityPicked.connect([&](EmberEntity* entity) {
-		guiManager.EmitEntityAction("pick", entity);
+		guiManager.EmitEntityAction("pickk", entity);
 	});
 	mContainerView->EventIconDropped.connect([&](EntityIcon* entityIcon, EntityIconSlot* entityIconSlot) {
 		auto observedEntity = mContainerView->getObservedEntity();

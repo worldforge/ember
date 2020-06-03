@@ -49,7 +49,6 @@ WidgetDefinitions::~WidgetDefinitions() {
 
 
 void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
-	ContainerWidget::registerWidget(guiManager);
 	Gui::IngameChatWidget::registerWidget(guiManager);
 
 
@@ -82,6 +81,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	registerPluginWithName(guiManager, "Quit");
 	registerPluginWithName(guiManager, "InspectWidget");
 	registerPluginWithName(guiManager, "Help");
+	registerPluginWithName(guiManager, "ContainerWidget");
 
 }
 

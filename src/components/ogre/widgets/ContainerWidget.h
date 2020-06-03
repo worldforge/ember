@@ -19,10 +19,12 @@
 #ifndef EMBER_CONTAINERWIDGET_H
 #define EMBER_CONTAINERWIDGET_H
 
-#include <sigc++/connection.h>
 #include "Widget.h"
+#include "WidgetPlugin.h"
 #include "EntityIconSlot.h"
 #include "ContainerView.h"
+
+#include <sigc++/connection.h>
 
 namespace Ember {
 class EmberEntity;
@@ -49,6 +51,8 @@ protected:
 }
 }
 }
+
+PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 
 #endif //EMBER_CONTAINERWIDGET_H

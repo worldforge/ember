@@ -9,15 +9,9 @@ add_library(framework
         tasks/TaskQueue.cpp
         tasks/TaskUnit.cpp
         tasks/SerialTask.cpp
-        tasks/ITask.h
-        tasks/ITaskExecutionListener.h
-        tasks/TemplateNamedTask.h
-        FileSystemObserver.cpp FileSystemObserver.h
-
-        ConsoleObject.h IResourceProvider.h IScriptingProvider.h LogObserver.h ShutdownException.h Singleton.h utf8.h
-        AtlasQuery.h
-
-        StackChecker.cpp)
+        FileSystemObserver.cpp
+        StackChecker.cpp
+        )
 
 target_link_libraries(framework ember_tinyxml binreloc)
 

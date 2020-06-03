@@ -25,6 +25,8 @@
 #endif
 
 #include "AttributeObserver.h"
+
+#include <memory>
 #include "DirectAttributeObserver.h"
 #include "DeepAttributeObserver.h"
 #include "Tokeniser.h"
@@ -38,9 +40,9 @@ AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& at
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::vector<std::string>& attributePath)
 		: mDeepAttributeObserver(nullptr) {
 	if (attributePath.size() > 1) {
-		mDeepAttributeObserver.reset(new DeepAttributeObserver(entity, EventChanged, attributePath));
+		mDeepAttributeObserver = std::make_unique<DeepAttributeObserver>(entity, EventChanged, attributePath);
 	} else if (!attributePath.empty()) {
-		mDirectAttributeObserver.reset(new DirectAttributeObserver(entity, EventChanged, attributePath.front()));
+		mDirectAttributeObserver = std::make_unique<DirectAttributeObserver>(entity, EventChanged, attributePath.front());
 	}
 }
 
@@ -48,9 +50,9 @@ AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& at
 		: mDeepAttributeObserver(nullptr) {
 	std::vector<std::string> path = Tokeniser::split(attributePath, delimitor);
 	if (path.size() > 1) {
-		mDeepAttributeObserver.reset(new DeepAttributeObserver(entity, EventChanged, path));
+		mDeepAttributeObserver = std::make_unique<DeepAttributeObserver>(entity, EventChanged, path);
 	} else if (!path.empty()) {
-		mDirectAttributeObserver.reset(new DirectAttributeObserver(entity, EventChanged, path.front()));
+		mDirectAttributeObserver = std::make_unique<DirectAttributeObserver>(entity, EventChanged, path.front());
 	}
 }
 

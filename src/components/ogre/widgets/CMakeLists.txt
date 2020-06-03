@@ -27,7 +27,6 @@ add_library(widgets
         adapters/ModelDefinitionsAdapter.cpp
         adapters/atlas/ScaleAdapter.cpp
         adapters/atlas/EntityRefAdapter.cpp
-        ContainerWidget.cpp
         ContainerView.cpp
         )
 
@@ -44,6 +43,10 @@ wf_add_plugin(InspectWidget
 
 wf_add_plugin(Help
         Help.cpp
+        )
+
+wf_add_plugin(ContainerWidget
+        ContainerWidget.cpp
         )
 
 file(GLOB LAYOUT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.layout")
