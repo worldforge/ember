@@ -31,9 +31,6 @@
 #include "ServerWidget.h"
 #include "InspectWidget.h"
 #include "IngameChatWidget.h"
-#include "Help.h"
-#include "Quit.h"
-#include "MeshPreview.h"
 #include "ContainerWidget.h"
 
 #include "services/EmberServices.h"
@@ -47,7 +44,6 @@ namespace Gui {
 
 WidgetDefinitions::WidgetDefinitions() {
 	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
-	WidgetLoader::registerWidgetFactory("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
 
 }
 

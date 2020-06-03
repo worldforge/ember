@@ -6,7 +6,7 @@ add_library(widgets
         EntityCreatorMovementBridge.cpp EntityEditor.cpp EntityIcon.cpp
         EntityIconDragDropPreview.cpp EntityIconDragDropTarget.cpp EntityIconManager.cpp EntityIconSlot.cpp IconBar.cpp
         IconBase.cpp IngameChatWidget.cpp ListHolder.cpp
-        LoadingBar.cpp EntityCreatorTypeHelper.cpp MeshInfoProvider.cpp MeshPreview.cpp ModelRenderer.cpp
+        LoadingBar.cpp EntityCreatorTypeHelper.cpp MeshInfoProvider.cpp ModelRenderer.cpp
         MovableObjectRenderer.cpp OgreEntityRenderer.cpp QuaternionAdapter.cpp QuickHelp.cpp QuickHelpCursor.cpp HelpMessage.cpp WorldLoadingScreen.cpp
         StackableContainer.cpp Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp WidgetPool.cpp AtlasHelper.cpp ModelEditHelper.cpp
         EntityTextureManipulator.cpp LabelAction.cpp
