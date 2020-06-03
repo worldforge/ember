@@ -26,6 +26,7 @@
 #include "Widget.h"
 #include <Eris/Types.h>
 #include <sigc++/connection.h>
+#include "WidgetPlugin.h"
 
 namespace Ember {
 class EmberEntity;
@@ -113,5 +114,7 @@ protected:
 }
 }
 }
+
+PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 #endif

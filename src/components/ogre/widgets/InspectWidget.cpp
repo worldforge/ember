@@ -32,6 +32,7 @@
 #include "../World.h"
 #include "components/ogre/authoring/AuthoringManager.h"
 #include "components/ogre/model/Model.h"
+#include "components/ogre/EmberOgre.h"
 
 
 #include "../EmberOgre.h"
@@ -49,6 +50,32 @@
 #include <framework/Singleton.h>
 #include <components/ogre/model/ModelRepresentation.h>
 
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+
+	struct State {
+		std::shared_ptr<Ember::OgreView::Gui::InspectWidget> widget;
+	};
+	auto state = std::make_shared<State>();
+
+	auto connectFn = [state, &guiManager](Ember::OgreView::World&) {
+		state->widget = std::make_shared<Ember::OgreView::Gui::InspectWidget>();
+		state->widget->init(&guiManager);
+		state->widget->buildWidget();
+	};
+	auto con = Ember::OgreView::EmberOgre::getSingleton().EventWorldCreated.connect(connectFn);
+
+	if (Ember::OgreView::EmberOgre::getSingleton().getWorld()) {
+		connectFn(*Ember::OgreView::EmberOgre::getSingleton().getWorld());
+	}
+
+	//Just hold on to an instance.
+	return [state, con]() mutable {
+		con->disconnect();
+		state.reset();
+		CEGUI::WindowManager::getSingleton().cleanDeadPool(); //Need to make sure there's no reference to the plugin.
+	};
+
+}
 
 namespace Ember {
 namespace OgreView {
@@ -56,7 +83,7 @@ namespace Gui {
 
 
 InspectWidget::InspectWidget() :
-		Inspect("inspect", this, "Inspect an entity."),
+		Inspect("inspecttt", this, "Inspect an entity."),
 		mChildList(nullptr),
 		mInfo(nullptr),
 		mCurrentEntity(nullptr),

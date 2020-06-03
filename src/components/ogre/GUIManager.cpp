@@ -202,12 +202,6 @@ GUIManager::~GUIManager() {
 
 void GUIManager::initialize() {
 	try {
-		createWidget("Quit");
-	} catch (const std::exception& e) {
-		S_LOG_FAILURE("GUIManager - error when initializing widgets." << e);
-		throw e;
-	}
-	try {
 		mIconManager = std::make_unique<Gui::Icons::IconManager>();
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating icon manager." << e);

@@ -47,7 +47,6 @@ namespace Gui {
 
 WidgetDefinitions::WidgetDefinitions() {
 	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
-	WidgetLoader::registerWidgetFactory("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidgetFactory("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidgetFactory("MeshPreview", &WidgetLoader::createWidgetInstance<MeshPreview>);
 
@@ -91,6 +90,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	});
 	registerPluginWithName(guiManager, "ServerWidget");
 	registerPluginWithName(guiManager, "Quit");
+	registerPluginWithName(guiManager, "InspectWidget");
 
 }
 
