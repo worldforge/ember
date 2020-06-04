@@ -36,9 +36,16 @@
 #include <iostream>
 
 
-WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 
-	auto widget = std::make_shared<Ember::OgreView::Gui::Quit>(guiManager);
+
+
+namespace Ember {
+namespace OgreView {
+namespace Gui {
+
+WidgetPluginCallback registerWidget(GUIManager& guiManager) {
+
+	auto widget = std::make_shared<Quit>(guiManager);
 
 
 	return [widget]() mutable {
@@ -47,11 +54,6 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	};
 
 }
-
-
-namespace Ember {
-namespace OgreView {
-namespace Gui {
 
 Quit::Quit(GUIManager& guiManager) :
 		Widget(guiManager),

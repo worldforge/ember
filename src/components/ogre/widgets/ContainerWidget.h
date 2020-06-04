@@ -32,6 +32,8 @@ namespace OgreView {
 class GUIManager;
 namespace Gui {
 
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
+
 class ContainerWidget {
 public:
 	ContainerWidget(GUIManager& guiManager, EmberEntity& entity, int slotSize = 32);
@@ -50,7 +52,9 @@ protected:
 }
 }
 
-PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
-
+BOOST_DLL_ALIAS(
+		Ember::OgreView::Gui::registerWidget,
+		registerWidget
+)
 
 #endif //EMBER_CONTAINERWIDGET_H

@@ -59,15 +59,20 @@
 #include <boost/algorithm/string.hpp>
 
 
-WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+using namespace CEGUI;
+namespace Ember {
+namespace OgreView {
+namespace Gui {
+
+WidgetPluginCallback registerWidget(GUIManager& guiManager) {
 	struct State {
-		std::unique_ptr<Ember::OgreView::Gui::ServerWidget> instance;
+		std::unique_ptr<Gui::ServerWidget> instance;
 		std::vector<Ember::AutoCloseConnection> connections;
 	};
 	auto state = std::make_shared<State>();
 
 	auto connectFn = [&guiManager, state](Eris::Connection* connection) mutable {
-		state->instance = std::make_unique<Ember::OgreView::Gui::ServerWidget>(guiManager, *connection);
+		state->instance = std::make_unique<Gui::ServerWidget>(guiManager, *connection);
 
 		state->connections.emplace_back(connection->Disconnecting.connect([state]() mutable {
 			state->instance.reset();
@@ -75,10 +80,10 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 		}));
 
 	};
-	auto con = Ember::EmberServices::getSingleton().getServerService().GotConnection.connect(connectFn);
+	auto con = EmberServices::getSingleton().getServerService().GotConnection.connect(connectFn);
 
-	if (Ember::EmberServices::getSingleton().getServerService().getConnection()) {
-		connectFn(Ember::EmberServices::getSingleton().getServerService().getConnection());
+	if (EmberServices::getSingleton().getServerService().getConnection()) {
+		connectFn(EmberServices::getSingleton().getServerService().getConnection());
 	}
 
 	return [=]() {
@@ -87,12 +92,6 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 		con->disconnect();
 	};
 }
-
-
-using namespace CEGUI;
-namespace Ember {
-namespace OgreView {
-namespace Gui {
 
 ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Connection& connection) :
 		mWidget(guiManager.createWidget()),

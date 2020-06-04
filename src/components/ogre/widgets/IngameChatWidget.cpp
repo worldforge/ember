@@ -64,19 +64,24 @@
 #include <OgreRoot.h>
 #include <boost/algorithm/string.hpp>
 
-WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+using namespace CEGUI;
+namespace Ember {
+namespace OgreView {
+namespace Gui {
+
+WidgetPluginCallback registerWidget(GUIManager& guiManager) {
 
 	struct State {
-		std::unique_ptr<Ember::OgreView::Gui::IngameChatWidget> instance;
+		std::unique_ptr<Gui::IngameChatWidget> instance;
 	};
 	auto state = std::make_shared<State>();
 
-	auto createdConn = Ember::OgreView::EmberOgre::getSingleton().EventWorldCreated.connect([=, &guiManager](Ember::OgreView::World& world) {
+	auto createdConn = EmberOgre::getSingleton().EventWorldCreated.connect([=, &guiManager](World& world) {
 		world.EventGotAvatar.connect([&]() {
-			state->instance = std::make_unique<Ember::OgreView::Gui::IngameChatWidget>(guiManager, *world.getAvatar(), world.getMainCamera());
+			state->instance = std::make_unique<Gui::IngameChatWidget>(guiManager, *world.getAvatar(), world.getMainCamera());
 		});
 	});
-	auto destroyedConn = Ember::OgreView::EmberOgre::getSingleton().EventWorldBeingDestroyed.connect([=]() {
+	auto destroyedConn = EmberOgre::getSingleton().EventWorldBeingDestroyed.connect([=]() {
 		state->instance.reset();
 	});
 
@@ -92,12 +97,6 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	};
 
 }
-
-using namespace CEGUI;
-namespace Ember {
-namespace OgreView {
-namespace Gui {
-
 
 IngameChatWidget::IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camera::MainCamera& mainCamera) :
 		mGuiManager(guiManager),

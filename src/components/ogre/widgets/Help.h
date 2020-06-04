@@ -34,6 +34,8 @@ class GUIManager;
 namespace Gui {
 class Widget;
 
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
+
 /**
 @author Erik Ogenvik
 */
@@ -62,6 +64,8 @@ protected:
 }
 }
 
-PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
-
+BOOST_DLL_ALIAS(
+		Ember::OgreView::Gui::registerWidget,
+		registerWidget
+)
 #endif

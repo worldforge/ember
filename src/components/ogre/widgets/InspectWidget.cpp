@@ -48,20 +48,24 @@
 #include <Atlas/PresentationBridge.h>
 #include <components/ogre/model/ModelRepresentation.h>
 
-WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+namespace Ember {
+namespace OgreView {
+namespace Gui {
+
+WidgetPluginCallback registerWidget(GUIManager& guiManager) {
 
 	struct State {
-		std::shared_ptr<Ember::OgreView::Gui::InspectWidget> widget;
+		std::shared_ptr<Gui::InspectWidget> widget;
 	};
 	auto state = std::make_shared<State>();
 
-	auto connectFn = [state, &guiManager](Ember::OgreView::World&) {
-		state->widget = std::make_shared<Ember::OgreView::Gui::InspectWidget>(guiManager);
+	auto connectFn = [state, &guiManager](World&) {
+		state->widget = std::make_shared<Gui::InspectWidget>(guiManager);
 	};
-	auto con = Ember::OgreView::EmberOgre::getSingleton().EventWorldCreated.connect(connectFn);
+	auto con = EmberOgre::getSingleton().EventWorldCreated.connect(connectFn);
 
-	if (Ember::OgreView::EmberOgre::getSingleton().getWorld()) {
-		connectFn(*Ember::OgreView::EmberOgre::getSingleton().getWorld());
+	if (EmberOgre::getSingleton().getWorld()) {
+		connectFn(*EmberOgre::getSingleton().getWorld());
 	}
 
 	//Just hold on to an instance.
@@ -71,11 +75,6 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	};
 
 }
-
-namespace Ember {
-namespace OgreView {
-namespace Gui {
-
 
 InspectWidget::InspectWidget(GUIManager& guiManager) :
 		Widget(guiManager),

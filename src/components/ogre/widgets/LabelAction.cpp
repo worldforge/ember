@@ -21,7 +21,6 @@
 #endif
 
 #include "LabelAction.h"
-#include "IngameChatWidget.h"
 
 namespace Ember
 {

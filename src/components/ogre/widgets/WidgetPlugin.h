@@ -35,6 +35,4 @@ typedef std::function<void()> WidgetPluginCallback;
  */
 typedef boost::dll::detail::library_function<WidgetPluginCallback(Ember::OgreView::GUIManager&)> WidgetPluginFunction;
 
-#define PLUGIN_API extern "C" BOOST_SYMBOL_EXPORT
-
 #endif //EMBER_WIDGETPLUGIN_H

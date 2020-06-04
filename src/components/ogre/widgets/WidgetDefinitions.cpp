@@ -95,7 +95,7 @@ void WidgetDefinitions::registerPluginWithName(GUIManager& guiManager, const std
 void WidgetDefinitions::registerPlugin(GUIManager& guiManager, const boost::filesystem::path& pluginPath) {
 
 	try {
-		auto registerFn = boost::dll::import<std::function<void()>(GUIManager&)>(
+		auto registerFn = boost::dll::import_alias<std::function<void()>(GUIManager&)>(
 				pluginPath, "registerWidget"
 		);
 		S_LOG_INFO("Creating Widget Plugin from '" << pluginPath.string() << "'.");

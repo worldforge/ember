@@ -33,11 +33,14 @@
 #include <Eris/Connection.h>
 #include <framework/AutoCloseConnection.h>
 
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
-WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
+WidgetPluginCallback registerWidget(GUIManager& guiManager) {
 
 	struct State {
-		std::map<std::string, std::unique_ptr<Ember::OgreView::Gui::ContainerWidget>> containerWidgets;
+		std::map<std::string, std::unique_ptr<Gui::ContainerWidget>> containerWidgets;
 		std::vector<Ember::AutoCloseConnection> connections;
 	};
 	auto state = std::make_shared<State>();
@@ -45,7 +48,7 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 	auto connectFn = [state, &guiManager](Eris::Avatar* avatar) {
 		auto openedFn = [&](Eris::Entity& entity) {
 			try {
-				auto widget = std::make_unique<Ember::OgreView::Gui::ContainerWidget>(guiManager, dynamic_cast<Ember::EmberEntity&>(entity));
+				auto widget = std::make_unique<Gui::ContainerWidget>(guiManager, dynamic_cast<Ember::EmberEntity&>(entity));
 				state->containerWidgets.emplace(entity.getId(), std::move(widget));
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Could not create container widget." << ex);
@@ -68,10 +71,10 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 		}
 	};
 
-	auto con = Ember::EmberServices::getSingleton().getServerService().GotAvatar.connect(connectFn);
+	auto con = EmberServices::getSingleton().getServerService().GotAvatar.connect(connectFn);
 
-	if (Ember::EmberServices::getSingleton().getServerService().getAvatar()) {
-		connectFn(Ember::EmberServices::getSingleton().getServerService().getAvatar());
+	if (EmberServices::getSingleton().getServerService().getAvatar()) {
+		connectFn(EmberServices::getSingleton().getServerService().getAvatar());
 	}
 
 	//Just hold on to an instance.
@@ -84,10 +87,6 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
 
 }
 
-
-namespace Ember {
-namespace OgreView {
-namespace Gui {
 
 ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, int slotSize)
 		: mGuiManager(guiManager),

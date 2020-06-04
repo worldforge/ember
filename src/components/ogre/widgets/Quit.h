@@ -30,11 +30,14 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
+
 /**
 @author Erik Ogenvik
 */
 class Quit : public Widget {
 public:
+
 	explicit Quit(GUIManager& guiManager);
 
 	~Quit() override;
@@ -66,6 +69,8 @@ protected:
 }
 }
 
-PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
-
+BOOST_DLL_ALIAS(
+		Ember::OgreView::Gui::registerWidget,
+		registerWidget
+)
 #endif

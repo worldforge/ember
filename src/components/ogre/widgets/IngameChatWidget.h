@@ -63,6 +63,7 @@ class World;
 
 namespace Gui {
 
+WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 /**
  * @brief Shows chat bubbles over npc's heads when they say something.
@@ -456,7 +457,9 @@ inline float IngameChatWidget::getTimeShown() const {
 
 }
 
-PLUGIN_API WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
-
+BOOST_DLL_ALIAS(
+		Ember::OgreView::Gui::registerWidget,
+		registerWidget
+)
 
 #endif
