@@ -59,12 +59,12 @@ script:
     fi
   - conan install .. -pr default --build=missing --update
   - mkdir -p ~/install/usr
-  - cmake -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=Release ..
-  - make media-download
-  - make -j2
-  - make -j2 check
+  - cmake -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=Release .. || travis_terminate 1
+  - make media-download || travis_terminate 1
+  - make -j2 || travis_terminate 1
+  - make -j2 check || travis_terminate 1
  # - if [ "$TRAVIS_OS_NAME" != "osx" -a "$CC" == "gcc" ]; then make dox; fi
-  - make install
+  - make install || travis_terminate 1
   - |
     if [[ x"$BUILD_APPIMAGE" == x"1" ]]; then
       echo "Building AppImage"
