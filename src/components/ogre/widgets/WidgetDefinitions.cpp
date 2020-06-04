@@ -56,7 +56,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 			if (I != mPlugins.end()) {
 				//Mark the path and wait two seconds for file system to settle down.
 				mDirtyPluginPaths.emplace(event.ev.path);
-				MainLoopController::getSingleton().getEventService().runOnMainThreadDelayed([this, &guiManager]() {
+				MainLoopController::getSingleton().getEventService().runOnMainThreadDelayed([&]() {
 					for (auto& path: mDirtyPluginPaths) {
 						auto J = mPlugins.find(path);
 						if (J != mPlugins.end()) {
