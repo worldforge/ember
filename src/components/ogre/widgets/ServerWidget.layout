@@ -1,299 +1,319 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
-	<Window name="MainWindow" type="EmberLook/FrameWindow">
-		<Property name="Size" value="{{0,400},{0,500}}" />
-		<Property name="Position" value="{{0.5,-200},{0.1,0}}" />
-		<Property name="SizingEnabled" value="false" />
-		<Property name="Alpha" value="0.6" />
-		<Property name="Text" value="Server" />
-		<Window name="Info" type="EmberLook/StaticText">
-			<Property name="Size" value="{{1.0,0},{0,100}}" />
-			<Property name="InheritsAlpha" value="false" />
-			<Property name="VertFormatting" value="TopAligned" />
-			<Property name="Text" value="Server info" />
-		</Window>
-		<Window name="LoginPanel" type="EmberLook/StaticText">
-			<Property name="Position" value="{{0,0},{0,110}}" />
-			<Property name="Size" value="{{1,0},{0,350}}" />
-			<Property name="Text" value="Login" />
-			<Property name="InheritsAlpha" value="false" />
-			<Property name="VertFormatting" value="TopAligned" />
-			<Window name="NameText" type="EmberLook/StaticText">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0,30},{0,40}}" />
-				<Property name="Text" value="Name:" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="FrameEnabled" value="False" />
-				<Property name="BackgroundEnabled" value="False" />
-			</Window>
-			<Window name="NameEdit" type="EmberLook/Editbox">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0,30},{0,70}}" />
-				<Property name="Text" value="" />
-				<Property name="InheritsAlpha" value="True" />
-			</Window>
-			<Window name="PasswordText" type="EmberLook/StaticText">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0,30},{0,100}}" />
-				<Property name="Text" value="Password:" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="FrameEnabled" value="False" />
-				<Property name="BackgroundEnabled" value="False" />
-			</Window>
-			<Window name="PasswordEdit" type="EmberLook/Editbox">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0,30},{0,130}}" />
-				<Property name="Text" value="" />
-				<Property name="MaskText" value="True" />
-				<Property name="InheritsAlpha" value="True" />
-			</Window>
-			<Window name="SavePassCheck" type="EmberLook/Checkbox">
-				<Property name="Position" value="{{0,30},{0,150}}" />
-				<Property name="Size" value="{{0,250},{0,20}}" />
-				<Property name="Text" value="Save Server Credentials" />
-			</Window>
-			<Window name="HelpText" type="EmberLook/StaticText">
-				<Property name="Size" value="{{0,300},{0,150}}" />
-				<Property name="Position" value="{{0,30},{0,200}}" />
-				<Property name="Text" value="If this is your first visit to this server you must create an account. Enter the name and password you want and press 'Create'.  If you already have an account, proceed with a normal login." />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="FrameEnabled" value="False" />
-				<Property name="BackgroundEnabled" value="False" />
-				<Property name="VertFormatting" value="TopAligned" />
-				<Property name="HorzFormatting" value="WordWrapLeftAligned" />
-			</Window>
-			<Window name="Login" type="EmberLook/Button">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0,30},{0,170}}" />
-				<Property name="Text" value="Login" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="TooltipText" value="Login with an already existing account." />
-			</Window>
-			<Window name="CreateAcc" type="EmberLook/Button">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0,140},{0,170}}" />
-				<Property name="Text" value="Create" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="TooltipText" value="Create a new account on the server." />
-			</Window>
-			<Window name="Disconnect" type="EmberLook/Button">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0,250},{0,170}}" />
-				<Property name="Text" value="Disconnect" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="TooltipText" value="Disconnect from the server." />
-			</Window>
-			<Window name="LoginFailure" type="EmberLook/StaticText">
-				<Property name="Size" value="{{0,300},{0,20}}" />
-				<Property name="Position" value="{{0,30},{0,190}}" />
-				<Property name="Text" value="Login Failure" />
-				<Property name="TextColours" value="00FF" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="FrameEnabled" value="False" />
-				<Property name="BackgroundEnabled" value="False" />
-				<Property name="Visible" value="False" />
-			</Window>
-		</Window>
-		<Window name="LoggedInPanel" type="DefaultWindow">
-			<Property name="Position" value="{{0,0},{0,110}}" />
-			<Property name="Size" value="{{1,0},{0,350}}" />
-			<Property name="InheritsAlpha" value="true" />
-			<Property name="Visible" value="false" />
-			<Window name="CharacterTabControl" type="EmberLook/TabControl">
-				<Property name="Position" value="{{0,0},{0,0}}" />
-				<Property name="Size" value="{{1,0},{1,-25}}" />
-				<Property name="InheritsAlpha" value="false" />
-				<Property name="Visible" value="true" />
-				<Window name="ChooseCharacterPanel" type="DefaultWindow">
-					<Property name="Size" value="{{1.0,0},{1.0,0}}" />
-					<Property name="Text" value="Choose" />
-					<Property name="InheritsAlpha" value="false" />
-					<Property name="Visible" value="true" />
-					<Window name="CharacterList" type="EmberLook/Listbox">
-						<Property name="Size" value="{{0.5,0},{0.7,0}}" />
-						<Property name="Position" value="{{0,0},{0.05,0}}" />
-						<Property name="InheritsAlpha" value="True" />
-					</Window>
-					<Window name="Choose" type="EmberLook/Button">
-						<Property name="Size" value="{{0,100},{0,20}}" />
-						<Property name="Position" value="{{0.4,0},{0.8,0}}" />
-						<Property name="Text" value="Choose" />
-						<Property name="InheritsAlpha" value="True" />
-					</Window>
-					<Window name="HelpText" type="EmberLook/StaticText">
-						<Property name="Size" value="{{0.4,0},{0.5,0}}" />
-						<Property name="Position" value="{{0.55,0},{0.05,0}}" />
-						<Property name="Text" value="Choose an already existing character from the list, or switch to the 'create' tab to create a new character." />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="FrameEnabled" value="False" />
-						<Property name="BackgroundEnabled" value="False" />
-						<Property name="VertFormatting" value="TopAligned" />
-						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
-					</Window>
-				</Window>
-				<Window name="CreateCharacterPanel" type="DefaultWindow">
-					<Property name="Size" value="{{1.0,0},{1.0,0}}" />
-					<Property name="Text" value="Create" />
-					<Property name="InheritsAlpha" value="false" />
-					<Window name="NameText" type="EmberLook/StaticText">
-						<Property name="Size" value="{{0,100},{0,20}}" />
-						<Property name="Text" value="Name:" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="FrameEnabled" value="False" />
-						<Property name="BackgroundEnabled" value="False" />
-					</Window>
-					<Window name="NameEdit" type="EmberLook/Editbox">
-						<Property name="Size" value="{{0,100},{0,20}}" />
-						<Property name="Position" value="{{0,90},{0,0}}" />
-						<Property name="Text" value="" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="TooltipText" value="The name of the character." />
-					</Window>
-					<Window name="TypeText" type="EmberLook/StaticText">
-						<Property name="Size" value="{{0,100},{0,20}}" />
-						<Property name="Position" value="{{0,0},{0,30}}" />
-						<Property name="Text" value="Type:" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="FrameEnabled" value="False" />
-						<Property name="BackgroundEnabled" value="False" />
-					</Window>
-					<Window name="Type" type="EmberLook/Combobox">
-						<Property name="Size" value="{{0,100},{0,200}}" />
-						<Property name="Position" value="{{0,90},{0,30}}" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="ReadOnly" value="true" />
-						<Property name="TooltipText" value="The type of character to create." />
-					</Window>
-					<Window name="SexText" type="EmberLook/StaticText">
-						<Property name="Size" value="{{0,100},{0,20}}" />
-						<Property name="Position" value="{{0,0},{0,60}}" />
-						<Property name="Text" value="Sex:" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="FrameEnabled" value="False" />
-						<Property name="BackgroundEnabled" value="False" />
-					</Window>
-					<Window name="Male" type="EmberLook/RadioButton">
-						<Property name="Size" value="{{0,60},{0,20}}" />
-						<Property name="Position" value="{{0,90},{0,60}}" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="Text" value="Male" />
-					</Window>
-					<Window name="Female" type="EmberLook/RadioButton">
-						<Property name="Size" value="{{0,60},{0,20}}" />
-						<Property name="Position" value="{{0,145},{0,60}}" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="Text" value="Female" />
-					</Window>
-					<Window name="DescriptionText" type="EmberLook/StaticText">
-						<Property name="Size" value="{{0,100},{0,20}}" />
-						<Property name="Position" value="{{0,0},{0,90}}" />
-						<Property name="Text" value="Description:" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="FrameEnabled" value="False" />
-						<Property name="BackgroundEnabled" value="False" />
-					</Window>
-					<Window name="Description" type="EmberLook/MultiLineEditbox">
-						<Property name="Size" value="{{0,200},{0,100}}" />
-						<Property name="Position" value="{{0,5},{0,115}}" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="TooltipText" value="A short description of the character." />
-					</Window>
-					<Window name="CreateButton" type="EmberLook/Button">
-						<Property name="Size" value="{{0,100},{0,20}}" />
-						<Property name="Position" value="{{0,100},{0,225}}" />
-						<Property name="Text" value="Create" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="TooltipText" value="Create a new character." />
-					</Window>
-					<Window name="UseCreator" type="EmberLook/Button">
-						<Property name="Size" value="{{0,100},{0,20}}" />
-						<Property name="Position" value="{{0,100},{0,250}}" />
-						<Property name="Text" value="Use Creator" />
-						<Property name="InheritsAlpha" value="True" />
-						<Property name="Visible" value="false" />
-					</Window>
-					<Window name="Image" type="EmberLook/StaticImage">
-						<Property name="Size" value="{{0,150},{0,250}}" />
-						<Property name="Position" value="{{0,210},{0,5}}" />
-						
-					</Window>
-				</Window>
-			</Window>
-			<Window name="TeleportInfo" type="EmberLook/StaticText">
-				<Property name="Position" value="{{0,0},{0,0}}" />
-				<Property name="Size" value="{{1,0},{1,-25}}" />
-				<Property name="InheritsAlpha" value="false" />
-				<Property name="Visible" value="false" />
-				<Property name="BackgroundEnabled" value="True" />
-					<Property name="FrameEnabled" value="False" />
-				<Window name="Information" type="EmberLook/StaticText">
-					<Property name="Size" value="{{1,0},{1,-200}}" />
-					<Property name="Position" value="{{0,0},{0,0}}" />
-					<Property name="Text" value="There's an transfer request available for this server. If you wish, you can claim the transferred character." />
-					<Property name="InheritsAlpha" value="True" />
-					<Property name="FrameEnabled" value="False" />
-					<Property name="BackgroundEnabled" value="False" />
-					<Property name="VertFormatting" value="TopAligned" />
-					<Property name="HorzFormatting" value="WordWrapLeftAligned" />
-				</Window>
-				<Window name="Yes" type="EmberLook/Button">
-					<Property name="Size" value="{{0,250},{0,20}}" />
-					<Property name="Position" value="{{0.5,-125},{1,-150}}" />
-					<Property name="Text" value="Yes, I want to claim the teleported character" />
-					<Property name="InheritsAlpha" value="True" />
-				</Window>
-				<Window name="No" type="EmberLook/Button">
-					<Property name="Size" value="{{0,250},{0,20}}" />
-					<Property name="Position" value="{{0.5,-125},{1,-120}}" />
-					<Property name="Text" value="No, no now" />
-					<Property name="InheritsAlpha" value="True" />
-				</Window>
-			</Window>
-			<Window name="LogoutButton" type="EmberLook/Button">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0.5,-50},{1,-20}}" />
-				<Property name="Text" value="Logout" />
-				<Property name="InheritsAlpha" value="True" />
-			</Window>
-		</Window>
-		<Window name="NoCharactersAlert" type="EmberLook/StaticText">
-			<Property name="Position" value="{{0,4},{0,15}}" />
-			<Property name="Size" value="{{1,-8},{1,-15}}" />
-			<Property name="InheritsAlpha" value="True" />
-			<Property name="FrameEnabled" value="False" />
-			<Property name="Visible" value="False" />
-			<Window name="Text" type="EmberLook/MultiLineEditbox">
-				<Property name="Size" value="{{1.,0},{1.0,-50}}" />
-				<Property name="Text" value="This server has no characters available, and you cannot therefore create any avatar to log in with. The most likely cause is that it hasn't been properly set up. Please restart Ember and try to log in to another server." />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="ReadOnly" value="True" />
-			</Window>
-			<Window name="OkButton" type="EmberLook/Button">
-				<Property name="Size" value="{{0,80},{0,25}}" />
-				<Property name="Position" value="{{0.5,-40},{1.00,-40}}" />
-				<Property name="Text" value="Ok" />
-				<Property name="InheritsAlpha" value="True" />
-			</Window>
-		</Window>
-        <Window name="EntityDestroyed" type="EmberLook/Static">
-            <Property name="Position" value="{{0,0},{0,0}}" />
-            <Property name="Size" value="{{1,0},{1,0}}" />
-            <Property name="InheritsAlpha" value="True" />
-            <Property name="BackgroundEnabled" value="True" />
-            <Property name="Visible" value="False" />
-            <Window type="EmberLook/StaticText">
-                <Property name="Size" value="{{1.,0},{1.0,-50}}" />
-                <Property name="Text" value="Your character was killed." />
-                <Property name="InheritsAlpha" value="True" />
-                <Property name="VertFormatting" value="CentreAligned" />
-                <Property name="HorzFormatting" value="WordWrapCentreAligned" />
+    <Window name="MainWindow" type="EmberLook/FrameWindow">
+        <Property name="Size" value="{{0,400},{0,500}}"/>
+        <Property name="Position" value="{{0.5,-200},{0.1,0}}"/>
+        <Property name="SizingEnabled" value="false"/>
+        <Property name="Alpha" value="0.6"/>
+        <Property name="Text" value="Server"/>
+        <Window name="InfoPanel" type="DefaultWindow">
+            <Window name="Info" type="EmberLook/StaticText">
+                <Property name="Size" value="{{1.0,0},{0,100}}"/>
+                <Property name="InheritsAlpha" value="false"/>
+                <Property name="VertFormatting" value="TopAligned"/>
+                <Property name="Text" value="Server info"/>
             </Window>
-            <Window name="OkButton" type="EmberLook/Button">
-                <Property name="Size" value="{{0,80},{0,25}}" />
-                <Property name="Position" value="{{0.5,-40},{1.00,-40}}" />
-                <Property name="Text" value="Ok" />
-                <Property name="InheritsAlpha" value="True" />
+            <Window name="LoginPanel" type="EmberLook/StaticText">
+                <Property name="Position" value="{{0,0},{0,110}}"/>
+                <Property name="Size" value="{{1,0},{0,350}}"/>
+                <Property name="Text" value="Login"/>
+                <Property name="InheritsAlpha" value="false"/>
+                <Property name="VertFormatting" value="TopAligned"/>
+                <Window name="NameText" type="EmberLook/StaticText">
+                    <Property name="Size" value="{{0,100},{0,20}}"/>
+                    <Property name="Position" value="{{0,30},{0,40}}"/>
+                    <Property name="Text" value="Name:"/>
+                    <Property name="InheritsAlpha" value="True"/>
+                    <Property name="FrameEnabled" value="False"/>
+                    <Property name="BackgroundEnabled" value="False"/>
+                </Window>
+                <Window name="NameEdit" type="EmberLook/Editbox">
+                    <Property name="Size" value="{{0,100},{0,20}}"/>
+                    <Property name="Position" value="{{0,30},{0,70}}"/>
+                    <Property name="Text" value=""/>
+                    <Property name="InheritsAlpha" value="True"/>
+                </Window>
+                <Window name="PasswordText" type="EmberLook/StaticText">
+                    <Property name="Size" value="{{0,100},{0,20}}"/>
+                    <Property name="Position" value="{{0,30},{0,100}}"/>
+                    <Property name="Text" value="Password:"/>
+                    <Property name="InheritsAlpha" value="True"/>
+                    <Property name="FrameEnabled" value="False"/>
+                    <Property name="BackgroundEnabled" value="False"/>
+                </Window>
+                <Window name="PasswordEdit" type="EmberLook/Editbox">
+                    <Property name="Size" value="{{0,100},{0,20}}"/>
+                    <Property name="Position" value="{{0,30},{0,130}}"/>
+                    <Property name="Text" value=""/>
+                    <Property name="MaskText" value="True"/>
+                    <Property name="InheritsAlpha" value="True"/>
+                </Window>
+                <Window name="SavePassCheck" type="EmberLook/Checkbox">
+                    <Property name="Position" value="{{0,30},{0,150}}"/>
+                    <Property name="Size" value="{{0,250},{0,20}}"/>
+                    <Property name="Text" value="Save Server Credentials"/>
+                </Window>
+                <Window name="HelpText" type="EmberLook/StaticText">
+                    <Property name="Size" value="{{0,300},{0,150}}"/>
+                    <Property name="Position" value="{{0,30},{0,200}}"/>
+                    <Property name="Text" value="If this is your first visit to this server you must create an account. Enter the name and password you want and press 'Create'.  If you already have an account, proceed with a normal login."/>
+                    <Property name="InheritsAlpha" value="True"/>
+                    <Property name="FrameEnabled" value="False"/>
+                    <Property name="BackgroundEnabled" value="False"/>
+                    <Property name="VertFormatting" value="TopAligned"/>
+                    <Property name="HorzFormatting" value="WordWrapLeftAligned"/>
+                </Window>
+                <Window name="Login" type="EmberLook/Button">
+                    <Property name="Size" value="{{0,100},{0,20}}"/>
+                    <Property name="Position" value="{{0,30},{0,170}}"/>
+                    <Property name="Text" value="Login"/>
+                    <Property name="InheritsAlpha" value="True"/>
+                    <Property name="TooltipText" value="Login with an already existing account."/>
+                </Window>
+                <Window name="CreateAcc" type="EmberLook/Button">
+                    <Property name="Size" value="{{0,100},{0,20}}"/>
+                    <Property name="Position" value="{{0,140},{0,170}}"/>
+                    <Property name="Text" value="Create"/>
+                    <Property name="InheritsAlpha" value="True"/>
+                    <Property name="TooltipText" value="Create a new account on the server."/>
+                </Window>
+                <Window name="Disconnect" type="EmberLook/Button">
+                    <Property name="Size" value="{{0,100},{0,20}}"/>
+                    <Property name="Position" value="{{0,250},{0,170}}"/>
+                    <Property name="Text" value="Disconnect"/>
+                    <Property name="InheritsAlpha" value="True"/>
+                    <Property name="TooltipText" value="Disconnect from the server."/>
+                </Window>
+                <Window name="LoginFailure" type="EmberLook/StaticText">
+                    <Property name="Size" value="{{0,300},{0,20}}"/>
+                    <Property name="Position" value="{{0,30},{0,190}}"/>
+                    <Property name="Text" value="Login Failure"/>
+                    <Property name="TextColours" value="00FF"/>
+                    <Property name="InheritsAlpha" value="True"/>
+                    <Property name="FrameEnabled" value="False"/>
+                    <Property name="BackgroundEnabled" value="False"/>
+                    <Property name="Visible" value="False"/>
+                </Window>
+            </Window>
+            <Window name="LoggedInPanel" type="DefaultWindow">
+                <Property name="Position" value="{{0,0},{0,110}}"/>
+                <Property name="Size" value="{{1,0},{0,350}}"/>
+                <Property name="InheritsAlpha" value="true"/>
+                <Property name="Visible" value="false"/>
+                <Window name="CharacterTabControl" type="EmberLook/TabControl">
+                    <Property name="Position" value="{{0,0},{0,0}}"/>
+                    <Property name="Size" value="{{1,0},{1,-25}}"/>
+                    <Property name="InheritsAlpha" value="false"/>
+                    <Property name="Visible" value="true"/>
+                    <Window name="ChooseCharacterPanel" type="DefaultWindow">
+                        <Property name="Size" value="{{1.0,0},{1.0,0}}"/>
+                        <Property name="Text" value="Choose"/>
+                        <Property name="InheritsAlpha" value="false"/>
+                        <Property name="Visible" value="true"/>
+                        <Window name="CharacterList" type="EmberLook/Listbox">
+                            <Property name="Size" value="{{0.5,0},{0.7,0}}"/>
+                            <Property name="Position" value="{{0,0},{0.05,0}}"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                        </Window>
+                        <Window name="Choose" type="EmberLook/Button">
+                            <Property name="Size" value="{{0,100},{0,20}}"/>
+                            <Property name="Position" value="{{0.4,0},{0.8,0}}"/>
+                            <Property name="Text" value="Choose"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                        </Window>
+                        <Window name="HelpText" type="EmberLook/StaticText">
+                            <Property name="Size" value="{{0.4,0},{0.5,0}}"/>
+                            <Property name="Position" value="{{0.55,0},{0.05,0}}"/>
+                            <Property name="Text" value="Choose an already existing character from the list, or switch to the 'create' tab to create a new character."/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="FrameEnabled" value="False"/>
+                            <Property name="BackgroundEnabled" value="False"/>
+                            <Property name="VertFormatting" value="TopAligned"/>
+                            <Property name="HorzFormatting" value="WordWrapLeftAligned"/>
+                        </Window>
+                    </Window>
+                    <Window name="CreateCharacterPanel" type="DefaultWindow">
+                        <Property name="Size" value="{{1.0,0},{1.0,0}}"/>
+                        <Property name="Text" value="Create"/>
+                        <Property name="InheritsAlpha" value="false"/>
+                        <Window name="NameText" type="EmberLook/StaticText">
+                            <Property name="Size" value="{{0,100},{0,20}}"/>
+                            <Property name="Text" value="Name:"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="FrameEnabled" value="False"/>
+                            <Property name="BackgroundEnabled" value="False"/>
+                        </Window>
+                        <Window name="NameEdit" type="EmberLook/Editbox">
+                            <Property name="Size" value="{{0,100},{0,20}}"/>
+                            <Property name="Position" value="{{0,90},{0,0}}"/>
+                            <Property name="Text" value=""/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="TooltipText" value="The name of the character."/>
+                        </Window>
+                        <Window name="TypeText" type="EmberLook/StaticText">
+                            <Property name="Size" value="{{0,100},{0,20}}"/>
+                            <Property name="Position" value="{{0,0},{0,30}}"/>
+                            <Property name="Text" value="Type:"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="FrameEnabled" value="False"/>
+                            <Property name="BackgroundEnabled" value="False"/>
+                        </Window>
+                        <Window name="Type" type="EmberLook/Combobox">
+                            <Property name="Size" value="{{0,100},{0,200}}"/>
+                            <Property name="Position" value="{{0,90},{0,30}}"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="ReadOnly" value="true"/>
+                            <Property name="TooltipText" value="The type of character to create."/>
+                        </Window>
+                        <Window name="SexText" type="EmberLook/StaticText">
+                            <Property name="Size" value="{{0,100},{0,20}}"/>
+                            <Property name="Position" value="{{0,0},{0,60}}"/>
+                            <Property name="Text" value="Sex:"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="FrameEnabled" value="False"/>
+                            <Property name="BackgroundEnabled" value="False"/>
+                        </Window>
+                        <Window name="Male" type="EmberLook/RadioButton">
+                            <Property name="Size" value="{{0,60},{0,20}}"/>
+                            <Property name="Position" value="{{0,90},{0,60}}"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="Text" value="Male"/>
+                        </Window>
+                        <Window name="Female" type="EmberLook/RadioButton">
+                            <Property name="Size" value="{{0,60},{0,20}}"/>
+                            <Property name="Position" value="{{0,145},{0,60}}"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="Text" value="Female"/>
+                        </Window>
+                        <Window name="DescriptionText" type="EmberLook/StaticText">
+                            <Property name="Size" value="{{0,100},{0,20}}"/>
+                            <Property name="Position" value="{{0,0},{0,90}}"/>
+                            <Property name="Text" value="Description:"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="FrameEnabled" value="False"/>
+                            <Property name="BackgroundEnabled" value="False"/>
+                        </Window>
+                        <Window name="Description" type="EmberLook/MultiLineEditbox">
+                            <Property name="Size" value="{{0,200},{0,100}}"/>
+                            <Property name="Position" value="{{0,5},{0,115}}"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="TooltipText" value="A short description of the character."/>
+                        </Window>
+                        <Window name="CreateButton" type="EmberLook/Button">
+                            <Property name="Size" value="{{0,100},{0,20}}"/>
+                            <Property name="Position" value="{{0,100},{0,225}}"/>
+                            <Property name="Text" value="Create"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="TooltipText" value="Create a new character."/>
+                        </Window>
+                        <Window name="UseCreator" type="EmberLook/Button">
+                            <Property name="Size" value="{{0,100},{0,20}}"/>
+                            <Property name="Position" value="{{0,100},{0,250}}"/>
+                            <Property name="Text" value="Use Creator"/>
+                            <Property name="InheritsAlpha" value="True"/>
+                            <Property name="Visible" value="false"/>
+                        </Window>
+                        <Window name="Image" type="EmberLook/StaticImage">
+                            <Property name="Size" value="{{0,150},{0,250}}"/>
+                            <Property name="Position" value="{{0,210},{0,5}}"/>
+
+                        </Window>
+                    </Window>
+                </Window>
+                <Window name="TeleportInfo" type="EmberLook/StaticText">
+                    <Property name="Position" value="{{0,0},{0,0}}"/>
+                    <Property name="Size" value="{{1,0},{1,-25}}"/>
+                    <Property name="InheritsAlpha" value="false"/>
+                    <Property name="Visible" value="false"/>
+                    <Property name="BackgroundEnabled" value="True"/>
+                    <Property name="FrameEnabled" value="False"/>
+                    <Window name="Information" type="EmberLook/StaticText">
+                        <Property name="Size" value="{{1,0},{1,-200}}"/>
+                        <Property name="Position" value="{{0,0},{0,0}}"/>
+                        <Property name="Text" value="There's an transfer request available for this server. If you wish, you can claim the transferred character."/>
+                        <Property name="InheritsAlpha" value="True"/>
+                        <Property name="FrameEnabled" value="False"/>
+                        <Property name="BackgroundEnabled" value="False"/>
+                        <Property name="VertFormatting" value="TopAligned"/>
+                        <Property name="HorzFormatting" value="WordWrapLeftAligned"/>
+                    </Window>
+                    <Window name="Yes" type="EmberLook/Button">
+                        <Property name="Size" value="{{0,250},{0,20}}"/>
+                        <Property name="Position" value="{{0.5,-125},{1,-150}}"/>
+                        <Property name="Text" value="Yes, I want to claim the teleported character"/>
+                        <Property name="InheritsAlpha" value="True"/>
+                    </Window>
+                    <Window name="No" type="EmberLook/Button">
+                        <Property name="Size" value="{{0,250},{0,20}}"/>
+                        <Property name="Position" value="{{0.5,-125},{1,-120}}"/>
+                        <Property name="Text" value="No, no now"/>
+                        <Property name="InheritsAlpha" value="True"/>
+                    </Window>
+                </Window>
+                <Window name="LogoutButton" type="EmberLook/Button">
+                    <Property name="Size" value="{{0,100},{0,20}}"/>
+                    <Property name="Position" value="{{0.5,-50},{1,-20}}"/>
+                    <Property name="Text" value="Logout"/>
+                    <Property name="InheritsAlpha" value="True"/>
+                </Window>
             </Window>
         </Window>
-	</Window>
+        <Window name="OutdatedProtocolAlert" type="DefaultWindow">
+            <Property name="Visible" value="False"/>
+            <Window type="EmberLook/StaticText">
+                <Property name="Size" value="{{1.,0},{0,50}}"/>
+                <Property name="Text" value="Outdated protocol"/>
+            </Window>
+            <Window type="EmberLook/MultiLineEditbox">
+                <Property name="Position" value="{{0,0},{0,50}}"/>
+                <Property name="Size" value="{{1.,0},{1.0,-100}}"/>
+                <Property name="Text" value="This server is using a newer protocol version which this client doesn't fully support. You can continue, but expect things to not work completely."/>
+                <Property name="ReadOnly" value="True"/>
+            </Window>
+            <Window name="OkButton" type="EmberLook/Button">
+                <Property name="Size" value="{{0,80},{0,25}}"/>
+                <Property name="Position" value="{{0.5,-40},{1,-40}}"/>
+                <Property name="Text" value="Ok"/>
+            </Window>
+        </Window>
+        <Window name="NoCharactersAlert" type="EmberLook/StaticText">
+            <Property name="Position" value="{{0,4},{0,15}}"/>
+            <Property name="Size" value="{{1,-8},{1,-15}}"/>
+            <Property name="InheritsAlpha" value="True"/>
+            <Property name="FrameEnabled" value="False"/>
+            <Property name="Visible" value="False"/>
+            <Window type="EmberLook/MultiLineEditbox">
+                <Property name="Size" value="{{1.,0},{1.0,-50}}"/>
+                <Property name="Text" value="This server has no characters available, and you cannot therefore create any avatar to log in with. The most likely cause is that it hasn't been properly set up. Please restart Ember and try to log in to another server."/>
+                <Property name="InheritsAlpha" value="True"/>
+                <Property name="ReadOnly" value="True"/>
+            </Window>
+            <Window name="OkButton" type="EmberLook/Button">
+                <Property name="Size" value="{{0,80},{0,25}}"/>
+                <Property name="Position" value="{{0.5,-40},{1.00,-40}}"/>
+                <Property name="Text" value="Ok"/>
+                <Property name="InheritsAlpha" value="True"/>
+            </Window>
+        </Window>
+        <Window name="EntityDestroyed" type="EmberLook/Static">
+            <Property name="Position" value="{{0,0},{0,0}}"/>
+            <Property name="Size" value="{{1,0},{1,0}}"/>
+            <Property name="InheritsAlpha" value="True"/>
+            <Property name="BackgroundEnabled" value="True"/>
+            <Property name="Visible" value="False"/>
+            <Window type="EmberLook/StaticText">
+                <Property name="Size" value="{{1.,0},{1.0,-50}}"/>
+                <Property name="Text" value="Your character was killed."/>
+                <Property name="InheritsAlpha" value="True"/>
+                <Property name="VertFormatting" value="CentreAligned"/>
+                <Property name="HorzFormatting" value="WordWrapCentreAligned"/>
+            </Window>
+            <Window name="OkButton" type="EmberLook/Button">
+                <Property name="Size" value="{{0,80},{0,25}}"/>
+                <Property name="Position" value="{{0.5,-40},{1.00,-40}}"/>
+                <Property name="Text" value="Ok"/>
+                <Property name="InheritsAlpha" value="True"/>
+            </Window>
+        </Window>
+    </Window>
 </GUILayout>

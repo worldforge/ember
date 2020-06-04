@@ -37,6 +37,7 @@
 #include "components/ogre/mapping/ModelActionCreator.h"
 
 #include "services/server/ServerService.h"
+#include "services/server/ProtocolVersion.h"
 #include "services/config/ConfigService.h"
 #include "services/serversettings/ServerSettings.h"
 #include "services/serversettings/ServerSettingsCredentials.h"
@@ -59,55 +60,32 @@
 
 
 WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager) {
-	auto connectFn = [&guiManager](Eris::Connection* connection) mutable {
-		auto widget = std::make_shared<Ember::OgreView::Gui::ServerWidget>(guiManager, *connection);
+	struct State {
+		std::unique_ptr<Ember::OgreView::Gui::ServerWidget> instance;
+		std::vector<Ember::AutoCloseConnection> connections;
+	};
+	auto state = std::make_shared<State>();
 
-		connection->Disconnecting.connect([widget]() mutable {
-			widget.reset();
+	auto connectFn = [&guiManager, state](Eris::Connection* connection) mutable {
+		state->instance = std::make_unique<Ember::OgreView::Gui::ServerWidget>(guiManager, *connection);
+
+		state->connections.emplace_back(connection->Disconnecting.connect([state]() mutable {
+			state->instance.reset();
 			return true;
-		});
+		}));
 
 	};
 	auto con = Ember::EmberServices::getSingleton().getServerService().GotConnection.connect(connectFn);
 
+	if (Ember::EmberServices::getSingleton().getServerService().getConnection()) {
+		connectFn(Ember::EmberServices::getSingleton().getServerService().getConnection());
+	}
+
 	return [=]() {
+		state->connections.clear();
+		state->instance.reset();
 		con->disconnect();
 	};
-
-
-
-//
-//The following would allow for live reload, but there are other issues with connections not being fully cleaned up in ServerWidget to allow for it.
-//For now we'll be happy with requiring that the user disconnects and connects again.
-//struct ConnectionHolder {
-//		sigc::connection conn;
-//	};
-//	auto connectionInner = std::make_shared<ConnectionHolder>();
-//
-//	auto connectFn = [connectionInner, &guiManager](Eris::Connection* connection) mutable {
-//		auto widget = std::make_shared<Ember::OgreView::Gui::ServerWidget>(guiManager, *connection);
-//
-//		auto sigc_connection = connection->Disconnecting.connect([widget]() mutable {
-//			widget.reset();
-//			return true;
-//		});
-//		connectionInner->conn = sigc_connection;
-//
-//	};
-//	auto con = Ember::EmberServices::getSingleton().getServerService().GotConnection.connect(connectFn);
-//
-//	if (Ember::EmberServices::getSingleton().getServerService().getConnection()) {
-//		connectFn(Ember::EmberServices::getSingleton().getServerService().getConnection());
-//	}
-//
-//	return [=]() {
-//		if (connectionInner->conn) {
-//			connectionInner->conn.disconnect();
-//		}
-//
-//		con->disconnect();
-//	};
-//
 }
 
 
@@ -125,10 +103,17 @@ ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Connection& connection)
 		mUseCreator(nullptr),
 		mTypesList(nullptr) {
 
-	connection.GotServerInfo.connect([&]() { showServerInfo(connection); });
+	mConnections.emplace_back(connection.GotServerInfo.connect([&]() { showServerInfo(connection); }));
 	connection.refreshServerInfo();
 
 	buildWidget();
+	if (EmberServices::getSingleton().getServerService().getAccount()) {
+		createdAccount(EmberServices::getSingleton().getServerService().getAccount());
+		if (EmberServices::getSingleton().getServerService().getAvatar()) {
+			gotAvatar(EmberServices::getSingleton().getServerService().getAvatar());
+		}
+	}
+
 }
 
 ServerWidget::~ServerWidget() {
@@ -138,6 +123,10 @@ ServerWidget::~ServerWidget() {
 void ServerWidget::buildWidget() {
 
 	if (mWidget->loadMainSheet("ServerWidget.layout", "Server/")) {
+
+		mWidget->getMainWindow()->getChild("OutdatedProtocolAlert/OkButton")->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
+			displayPanel("InfoPanel");
+		});
 
 		CEGUI::PushButton* okButton = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("NoCharactersAlert/OkButton"));
 		if (okButton) {
@@ -149,15 +138,15 @@ void ServerWidget::buildWidget() {
 			BIND_CEGUI_EVENT(entityDestroyedOkButton, CEGUI::PushButton::EventClicked, ServerWidget::EntityDestroyedOkButton_Click)
 		}
 
-		CEGUI::PushButton* login = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("LoginPanel/Login"));
+		CEGUI::PushButton* login = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/Login"));
 		BIND_CEGUI_EVENT(login, CEGUI::PushButton::EventClicked, ServerWidget::Login_Click)
-		CEGUI::PushButton* createAcc = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("LoginPanel/CreateAcc"));
+		CEGUI::PushButton* createAcc = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/CreateAcc"));
 		BIND_CEGUI_EVENT(createAcc, CEGUI::PushButton::EventClicked, ServerWidget::CreateAcc_Click)
 
-		mCharacterList = dynamic_cast<CEGUI::Listbox*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/CharacterList"));
-		CEGUI::PushButton* chooseChar = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/Choose"));
-		mUseCreator = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/UseCreator"));
-		mCreateChar = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/CreateButton"));
+		mCharacterList = dynamic_cast<CEGUI::Listbox*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/CharacterList"));
+		CEGUI::PushButton* chooseChar = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/Choose"));
+		mUseCreator = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/UseCreator"));
+		mCreateChar = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/CreateButton"));
 
 		auto chooseFn = [=]() {
 			CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
@@ -179,17 +168,17 @@ void ServerWidget::buildWidget() {
 		});
 
 
-		mWidget->getMainWindow()->getChild("LoggedInPanel/LogoutButton")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+		mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/LogoutButton")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
 			EmberServices::getSingleton().getServerService().logout();
 			return true;
 		});
 
-		auto newCharName = dynamic_cast<CEGUI::Editbox*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/NameEdit"));
-		auto newCharDescription = dynamic_cast<CEGUI::MultiLineEditbox*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
-		mTypesList = dynamic_cast<CEGUI::Combobox*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Type"));
+		auto newCharName = dynamic_cast<CEGUI::Editbox*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/NameEdit"));
+		auto newCharDescription = dynamic_cast<CEGUI::MultiLineEditbox*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
+		mTypesList = dynamic_cast<CEGUI::Combobox*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Type"));
 
-		auto maleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
-		auto femaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
+		auto maleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
+		auto femaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
 
 		newCharName->subscribeEvent(CEGUI::Editbox::EventTextChanged, [=]() {
 			std::string name = newCharName->getText().c_str();
@@ -219,7 +208,7 @@ void ServerWidget::buildWidget() {
 		maleRadioButton->subscribeEvent(CEGUI::RadioButton::EventSelectStateChanged, sexSelectionChangedFn);
 		femaleRadioButton->subscribeEvent(CEGUI::RadioButton::EventSelectStateChanged, sexSelectionChangedFn);
 
-		mWidget->getMainWindow()->getChild("LoggedInPanel/TeleportInfo/Yes")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+		mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/TeleportInfo/Yes")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
 			mWidget->getWindow("TeleportInfo", true)->setVisible(false);
 			if (mAvatarTransferInfo) {
 				EmberServices::getSingleton().getServerService().takeTransferredCharacter(mAvatarTransferInfo->getTransferInfo());
@@ -227,15 +216,15 @@ void ServerWidget::buildWidget() {
 			return true;
 		});
 
-		mWidget->getMainWindow()->getChild("LoggedInPanel/TeleportInfo/No")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+		mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/TeleportInfo/No")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
 			mWidget->getWindow("TeleportInfo", true)->setVisible(false);
 			return true;
 		});
 
 		updateNewCharacter();
 
-		CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("LoginPanel/NameEdit");
-		CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("LoginPanel/PasswordEdit");
+		CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit");
+		CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit");
 
 		nameBox->subscribeEvent(CEGUI::Window::EventTextChanged, [=]() {
 			hideLoginFailure();
@@ -246,7 +235,7 @@ void ServerWidget::buildWidget() {
 			return true;
 		});
 
-		mWidget->getMainWindow()->getChild("LoginPanel/Disconnect")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+		mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/Disconnect")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
 			EmberServices::getSingleton().getServerService().disconnect();
 			return true;
 		});
@@ -259,18 +248,13 @@ void ServerWidget::buildWidget() {
 		EmberServices::getSingleton().getServerService().LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
 		EmberServices::getSingleton().getServerService().TransferInfoAvailable.connect(sigc::mem_fun(*this, &ServerWidget::server_TransferInfoAvailable));
 
-		mWidget->addTabbableWindow(mWidget->getMainWindow()->getChild("LoginPanel/NameEdit"));
-		mWidget->addTabbableWindow(mWidget->getMainWindow()->getChild("LoginPanel/PasswordEdit"));
+		mWidget->addTabbableWindow(mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit"));
+		mWidget->addTabbableWindow(mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit"));
 
 		mWidget->addEnterButton(login);
-		/*	addTabbableWindow(login);
-		 addTabbableWindow(createAcc);*/
 		mWidget->closeTabGroup();
 
 		mWidget->addTabbableWindow(newCharName);
-		// 	addTabbableWindow(mTypesList);
-		/*	addTabbableWindow(mSexRadioButton);
-		 addTabbableWindow(femaleRadioButton);*/
 		mWidget->addTabbableWindow(newCharDescription);
 		mWidget->addEnterButton(mCreateChar);
 		mWidget->closeTabGroup();
@@ -314,13 +298,18 @@ void ServerWidget::showServerInfo(Eris::Connection& connection) {
 		 * we must wait until there is a connection before we can fetch
 		 * the credentials
 		 */
-		CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("LoginPanel/NameEdit");
-		CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("LoginPanel/PasswordEdit");
+		CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit");
+		CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit");
 		std::string savedUser;
 		std::string savedPass;
 		if (fetchCredentials(connection, savedUser, savedPass)) {
 			nameBox->setText(savedUser);
 			passwordBox->setText(savedPass);
+		}
+
+		//Check if the protocol version from the server is newer than the one we support, and warn if that's the case.
+		if (sInfo.protocol_version > Ember::protocolVersion) {
+			showOutdatedProtocolAlert();
 		}
 
 	} catch (...) {
@@ -357,9 +346,9 @@ bool ServerWidget::saveCredentials() {
 	// pull widget references
 
 	try {
-		auto nameBox = mWidget->getMainWindow()->getChild("LoginPanel/NameEdit");
-		auto passwordBox = mWidget->getMainWindow()->getChild("LoginPanel/PasswordEdit");
-		auto saveBox = dynamic_cast<CEGUI::ToggleButton*> (mWidget->getMainWindow()->getChild("LoginPanel/SavePassCheck"));
+		auto nameBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit");
+		auto passwordBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit");
+		auto saveBox = dynamic_cast<CEGUI::ToggleButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/SavePassCheck"));
 		if (nameBox && passwordBox && saveBox) {
 
 			// fetch info from widgets
@@ -392,7 +381,7 @@ void ServerWidget::loginSuccess(Eris::Account* account) {
 	account->refreshCharacterInfo();
 	fillAllowedCharacterTypes(account);
 
-	CEGUI::ToggleButton* saveBox = dynamic_cast<CEGUI::ToggleButton*> (mWidget->getMainWindow()->getChild("LoginPanel/SavePassCheck"));
+	CEGUI::ToggleButton* saveBox = dynamic_cast<CEGUI::ToggleButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/SavePassCheck"));
 	if (saveBox->isSelected()) {
 		try {
 			saveCredentials();
@@ -408,19 +397,19 @@ void ServerWidget::loginSuccess(Eris::Account* account) {
 }
 
 void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg) {
-	auto helpText = mWidget->getMainWindow()->getChild("LoginPanel/HelpText");
+	auto helpText = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/HelpText");
 	helpText->setYPosition(UDim(0.6, 0));
 
-	auto loginFailure = mWidget->getMainWindow()->getChild("LoginPanel/LoginFailure");
+	auto loginFailure = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/LoginFailure");
 	loginFailure->setText(msg);
 	loginFailure->setVisible(true);
 }
 
 bool ServerWidget::hideLoginFailure() {
-	auto helpText = mWidget->getMainWindow()->getChild("LoginPanel/HelpText");
+	auto helpText = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/HelpText");
 	helpText->setYPosition(UDim(0.55, 0));
 
-	auto loginFailure = mWidget->getMainWindow()->getChild("LoginPanel/LoginFailure");
+	auto loginFailure = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/LoginFailure");
 	loginFailure->setVisible(false);
 
 	return true;
@@ -515,7 +504,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account) {
 					itemText = "<unknown>";
 				}
 			}
-			Gui::ColouredListItem* item = new Gui::ColouredListItem(itemText);
+			auto* item = new Gui::ColouredListItem(itemText);
 
 			mCharacterList->addItem(item);
 			mCharacterModel.push_back(entity->getId());
@@ -633,8 +622,8 @@ void ServerWidget::updateNewCharacter() {
 }
 
 bool ServerWidget::Login_Click(const CEGUI::EventArgs& args) {
-	CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("LoginPanel/NameEdit");
-	CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("LoginPanel/PasswordEdit");
+	CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit");
 
 	const CEGUI::String& name = nameBox->getText();
 	const CEGUI::String& password = passwordBox->getText();
@@ -645,8 +634,8 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args) {
 }
 
 bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args) {
-	CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("LoginPanel/NameEdit");
-	CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("LoginPanel/PasswordEdit");
+	CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit");
 
 	const CEGUI::String& name = nameBox->getText();
 	const CEGUI::String& password = passwordBox->getText();
@@ -656,18 +645,12 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args) {
 }
 
 bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args) {
-	CEGUI::Window* alert = mWidget->getWindow("NoCharactersAlert");
-	if (alert) {
-		alert->hide();
-	}
+	displayPanel("InfoPanel");
 	return true;
 }
 
 bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args) {
-	CEGUI::Window* alert = mWidget->getWindow("EntityDestroyed");
-	if (alert) {
-		alert->hide();
-	}
+	displayPanel("InfoPanel");
 	return true;
 }
 
@@ -700,7 +683,7 @@ void ServerWidget::avatar_Deactivated(const std::string& avatarId) {
 }
 
 void ServerWidget::createPreviewTexture() {
-	auto imageWidget = mWidget->getMainWindow()->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Image");
+	auto imageWidget = mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Image");
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
 	} else {
@@ -710,10 +693,26 @@ void ServerWidget::createPreviewTexture() {
 
 }
 
+void ServerWidget::showOutdatedProtocolAlert() {
+	displayPanel("OutdatedProtocolAlert");
+}
+
 void ServerWidget::showNoCharactersAlert() {
-	CEGUI::Window* alert = mWidget->getWindow("NoCharactersAlert");
-	alert->setVisible(true);
-	alert->moveToFront();
+	displayPanel("NoCharactersAlert");
+}
+
+void ServerWidget::displayPanel(const std::string& windowName) {
+	for (size_t i = 0; i < mWidget->getMainWindow()->getChildCount(); ++i) {
+		auto child = mWidget->getMainWindow()->getChildAtIdx(i);
+		if (!child->isAutoWindow()) {
+			child->hide();
+		}
+	}
+	auto child = mWidget->getMainWindow()->getChild(windowName);
+	if (child) {
+		child->show();
+		//child->moveToFront();
+	}
 }
 
 

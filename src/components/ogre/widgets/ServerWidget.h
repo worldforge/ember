@@ -40,6 +40,7 @@
 
 #include <map>
 #include <vector>
+#include <framework/AutoCloseConnection.h>
 
 namespace Ember {
 namespace OgreView {
@@ -124,6 +125,8 @@ protected:
 	 */
 	std::string mPreviewTypeName;
 
+	std::vector<AutoCloseConnection> mConnections;
+
 	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
 	void avatar_EntityDeleted();
@@ -180,6 +183,10 @@ protected:
 	 * @brief Shows an alert explaining to the user that the server doesn't have any available characters and thus isn't correctly setup.
 	 */
 	void showNoCharactersAlert();
+
+	void showOutdatedProtocolAlert();
+
+	void displayPanel(const std::string& windowName);
 
 	void server_TransferInfoAvailable(const std::vector<AvatarTransferInfo>& transferInfos);
 

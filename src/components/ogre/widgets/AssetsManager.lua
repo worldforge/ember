@@ -1,4 +1,4 @@
---Lists all of the graphical resources available
+    --Lists all of the graphical resources available
 
 AssetsManager = {}
 
@@ -870,7 +870,7 @@ function AssetsManager:buildWidget()
         local updateWindowSize = function(args)
             if self.windows.selectedWindow then
                 if self.windows.controls.widthRel:getText() ~= "" and self.windows.controls.widthFixed:getText() ~= "" and self.windows.controls.heightRel:getText() ~= "" and self.windows.controls.heightFixed:getText() ~= "" then
-                    local dim = CEGUI.UVector2(CEGUI.UDim(tonumber(self.windows.controls.widthRel:getText()), tonumber(self.windows.controls.widthFixed:getText())), CEGUI.UDim(tonumber(self.windows.controls.heightRel:getText()), tonumber(self.windows.controls.heightFixed:getText())))
+                    local dim = CEGUI.USize(CEGUI.UDim(tonumber(self.windows.controls.widthRel:getText()), tonumber(self.windows.controls.widthFixed:getText())), CEGUI.UDim(tonumber(self.windows.controls.heightRel:getText()), tonumber(self.windows.controls.heightFixed:getText())))
                     self.windows.selectedWindow:setSize(dim)
                 end
             end
