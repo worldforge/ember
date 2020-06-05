@@ -11,7 +11,8 @@ add_executable(${EMBER_EXECUTABLE_NAME} WIN32
         Ember.cpp
         ConsoleInputBinder.cpp)
 
-target_link_libraries(${EMBER_EXECUTABLE_NAME}
+
+set(ALL_LIBRARIES
         ConnectorDefinitions_bindings_lua
         Domain_bindings_lua
         EmberServices_bindings_lua
@@ -38,6 +39,9 @@ target_link_libraries(${EMBER_EXECUTABLE_NAME}
         domain
         framework)
 
+target_link_libraries(${EMBER_EXECUTABLE_NAME}
+       ${ALL_LIBRARIES})
+
 target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     conan_target_link_libraries(${EMBER_EXECUTABLE_NAME})
@@ -48,3 +52,6 @@ install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR
 get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
 add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
+foreach(PLUGIN ${_PLUGIN_LIBS_LIST})
+    add_dependencies(${PLUGIN} ${ALL_LIBRARIES})
+endforeach(PLUGIN)
