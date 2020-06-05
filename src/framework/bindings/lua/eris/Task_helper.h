@@ -22,7 +22,7 @@
 
 namespace {
 int _Task_usages_size(Eris::Task* task) {
-	return task->getUsages().size();
+	return static_cast<int>(task->getUsages().size());
 }
 
 std::string _Task_usage_name(Eris::Task* task, int index) {

@@ -33,7 +33,7 @@ namespace Ember {
 namespace EntityMapping {
 
 namespace Definitions {
-class MatchDefinition;
+struct MatchDefinition;
 }
 }
 }

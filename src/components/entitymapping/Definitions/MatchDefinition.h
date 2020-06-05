@@ -36,7 +36,7 @@ namespace EntityMapping {
 namespace Definitions {
 
 
-class CaseDefinition;
+struct CaseDefinition;
 }
 }
 }

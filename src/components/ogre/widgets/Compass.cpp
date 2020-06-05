@@ -64,7 +64,7 @@ bool DelayedCompassRenderer::frameStarted(const Ogre::FrameEvent& event) {
 			mCompass.getMap().render();
 			mCompass.refresh();
 		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when updating compass.");
+			S_LOG_WARNING("Error when updating compass." << ex);
 		}
 	}
 	return true;
@@ -241,8 +241,8 @@ void RenderedCompassImpl::_setCompass(Compass* compass) {
 
 					//We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
-					Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5 * mViewport->getActualWidth());
-					Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5 * mViewport->getActualHeight());
+					Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5f * mViewport->getActualWidth());
+					Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5f * mViewport->getActualHeight());
 					mMapRectangle->setCorners(-1 + hOffset, 1 - vOffset, 1 + hOffset, -1 - vOffset);
 
 					//Since a Rectangle2D instance is a moveable object it won't be rendered unless it's in the frustrum. If we set the axis aligned box to be "infinite" it will always be rendered.

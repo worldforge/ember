@@ -258,7 +258,8 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 
 	TerrainPosition wfPos(Convert::toWF(query.mCenter));
 
-	TerrainIndex index(std::floor(query.mCenter.x / (mPageIndexSize - 1)), -std::floor(query.mCenter.y / (mPageIndexSize - 1)));
+	TerrainIndex index(static_cast<int>(std::floor(query.mCenter.x / (mPageIndexSize - 1))),
+					   static_cast<int>(-std::floor(query.mCenter.y / (mPageIndexSize - 1))));
 
 	//If there's either no terrain page created, or it's not shown, we shouldn't create any foliage at this moment.
 	//Later on when the terrain page actually is shown, the TerrainManager::EventTerrainShown signal will be emitted
