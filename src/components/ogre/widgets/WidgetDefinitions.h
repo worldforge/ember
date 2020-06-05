@@ -70,12 +70,15 @@ public:
 	 * The pluginCallback will automatically be called on destruction.
 	 */
     struct PluginEntry {
-    	PluginEntry(PluginEntry&& rhs) noexcept = default;
+    	PluginEntry(PluginEntry&& rhs) = default;
     	~PluginEntry();
+		PluginEntry& operator=(PluginEntry&& rhs) = default;
     	boost::filesystem::path path;
 		WidgetPluginFunction pluginFn; //We need to hold on to this, since it the dynamic library's lifetime is bound to it.
 		WidgetPluginCallback pluginCallback; //A deregistering function
     };
+
+	static_assert(std::is_move_constructible<PluginEntry>::value, "PluginEntry must be move constructible.");
 
 private:
 	std::map<boost::filesystem::path, PluginEntry> mPlugins;
