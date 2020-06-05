@@ -26,6 +26,7 @@
 #include <boost/dll.hpp>
 #include <vector>
 #include <set>
+#include <map>
 #include "WidgetPlugin.h"
 
 namespace Ember {
