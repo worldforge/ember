@@ -49,7 +49,7 @@ SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex) {
 	ss << xIndex << "_" << yIndex;
 	std::string key = ss.str();
 	std::unique_lock<std::mutex> l(mSegmentsMutex);
-	SegmentStore::const_iterator I = mSegments.find(key);
+	auto I = mSegments.find(key);
 	if (I != mSegments.end()) {
 		return I->second->getReference();
 	} else if (mEndlessWorldEnabled) {
@@ -70,7 +70,7 @@ size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indi
 			std::stringstream ss;
 			ss << worldIndex.first << "_" << worldIndex.second;
 			std::string key = ss.str();
-			SegmentStore::const_iterator segI = mSegments.find(key);
+			auto segI = mSegments.find(key);
 			if (segI != mSegments.end()) {
 				segments[index.first][entry.first] = segI->second->getReference();
 				count++;
@@ -137,7 +137,7 @@ void SegmentManager::addSegment(Mercator::Segment& segment) {
 	std::stringstream ss;
 	ss << (segment.getXRef() / segment.getResolution()) << "_" << (segment.getZRef() / segment.getResolution());
 	std::unique_lock<std::mutex> l(mSegmentsMutex);
-	SegmentStore::const_iterator I = mSegments.find(ss.str());
+	auto I = mSegments.find(ss.str());
 	if (I == mSegments.end()) {
 		std::function<void(Mercator::Segment*)> invalidate = [](Mercator::Segment* s) {
 			if (s) {
@@ -179,15 +179,12 @@ void SegmentManager::pruneUnusedSegments() {
 void SegmentManager::markHolderAsDirtyAndUnused(SegmentHolder* holder) {
 	std::unique_lock<std::mutex> l(mUnusedAndDirtySegmentsMutex);
 
-	mUnusedAndDirtySegments.push_back(holder);
+	mUnusedAndDirtySegments.emplace_back(holder);
 }
 
-void SegmentManager::unmarkHolder(SegmentHolder* holder) {
+void SegmentManager::unmarkHolder(SegmentHolder* segmentHolderholder) {
 	std::unique_lock<std::mutex> l(mUnusedAndDirtySegmentsMutex);
-	auto I = std::find(mUnusedAndDirtySegments.begin(), mUnusedAndDirtySegments.end(), holder);
-	if (I != mUnusedAndDirtySegments.end()) {
-		mUnusedAndDirtySegments.erase(I);
-	}
+	mUnusedAndDirtySegments.erase(std::remove(std::begin(mUnusedAndDirtySegments), std::end(mUnusedAndDirtySegments), segmentHolderholder), std::end(mUnusedAndDirtySegments));
 }
 
 void SegmentManager::setEndlessWorldEnabled(bool enabled) {

@@ -166,8 +166,6 @@ public:
 
 protected:
 
-	typedef std::unordered_map<std::string, std::unique_ptr<SegmentHolder> > SegmentStore;
-	typedef std::list<SegmentHolder*> SegmentList;
 
 	/**
 	 * @brief The main Mercator terrain instance.
@@ -205,7 +203,7 @@ protected:
 	/**
 	 * @brief A store of Segment instances.
 	 */
-	SegmentStore mSegments;
+	std::unordered_map<std::string, std::unique_ptr<SegmentHolder> > mSegments;
 
 	/**
 	 * @brief A mutex for accessing mSegments.
@@ -215,7 +213,7 @@ protected:
 	/**
 	 * @brief Keeps track of all
 	 */
-	SegmentList mUnusedAndDirtySegments;
+	std::list<SegmentHolder*> mUnusedAndDirtySegments;
 
 	/**
 	 * @brief A mutex for accessing mUnusedAndDirtySegments.
