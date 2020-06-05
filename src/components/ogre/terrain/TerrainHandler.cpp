@@ -178,7 +178,6 @@ void TerrainHandler::setPageSize(int pageSize) {
 	// Delete all page-related data
 	mPageBridges.clear();
 	mPages.clear();
-	mTerrainPages.clear();
 
 	mTerrainInfo = std::make_unique<TerrainInfo>(pageSize + 1); //The number of vertices is always one more than the number of "units".
 	mPageIndexSize = pageSize;
@@ -231,19 +230,17 @@ const std::map<const Mercator::Shader*, std::unique_ptr<TerrainShader>>& Terrain
 //}
 
 void TerrainHandler::destroyPage(TerrainPage* page) {
-	const TerrainPosition& pos = page->getWFPosition();
-	mTerrainPages[pos.x()][pos.y()] = nullptr;
-
-	auto pageIter = std::find_if(mPages.begin(), mPages.end(), [page](const std::unique_ptr<TerrainPage>& entry) { return entry.get() == page; });
-	std::unique_ptr<TerrainPage> pagePtr;
-	if (pageIter != mPages.end()) {
-		pagePtr = std::move(*pageIter);
-		mPages.erase(pageIter);
+	const auto& index = page->getWFIndex();
+	auto I = mPages.find(index);
+	if (I != mPages.end()) {
+		auto pagePtr = std::move(I->second);
+		mPages.erase(I);
 		//We should delete the page first when all existing tasks are completed. This is because some of them might refer to the page.
 		if (mTaskQueue->isActive()) {
 			mTaskQueue->enqueueTask(std::make_unique<TerrainPageDeletionTask>(std::move(pagePtr)));
 		}
 	}
+
 }
 
 int TerrainHandler::getPageIndexSize() const {
@@ -308,7 +305,7 @@ void TerrainHandler::updateShaders() {
 	if (!mShadersToUpdate.empty()) {
 		GeometryPtrVector geometry;
 		for (auto& page : mPages) {
-			geometry.emplace_back(std::make_shared<TerrainPageGeometry>(*page, *mSegmentManager, getDefaultHeight()));
+			geometry.emplace_back(std::make_shared<TerrainPageGeometry>(*page.second, *mSegmentManager, getDefaultHeight()));
 		}
 		//use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
 		for (auto& entry : mShadersToUpdate) {
@@ -327,7 +324,7 @@ void TerrainHandler::updateShaders() {
 void TerrainHandler::updateAllPages() {
 	GeometryPtrVector geometry;
 	for (auto& page : mPages) {
-		geometry.emplace_back(std::make_shared<TerrainPageGeometry>(*page, *mSegmentManager, getDefaultHeight()));
+		geometry.emplace_back(std::make_shared<TerrainPageGeometry>(*page.second, *mSegmentManager, getDefaultHeight()));
 	}
 
 	//Update all pages
@@ -378,12 +375,12 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 		mPageBridges.insert(PageBridgeStore::value_type(index, bridge));
 
 		S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
-		if (mTerrainPages[x][y] == nullptr) {
+		auto I = mPages.find(index);
+		if (I == mPages.end()) {
 			auto page = new TerrainPage(index, getPageIndexSize(), getCompilerTechniqueProvider());
 			bridge->bindToTerrainPage(page);
 
-			mTerrainPages[x][y] = page;
-			mPages.emplace_back(page);
+			mPages.emplace(index, page);
 			S_LOG_VERBOSE("Adding terrain page to TerrainHandler: " << "[" << index.first << "|" << index.second << "]");
 
 			WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, -1, 0);
@@ -395,7 +392,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 				bridge->terrainPageReady();
 			}
 		} else {
-			TerrainPage* page = mTerrainPages[x][y];
+			auto& page = I->second;
 			TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*page, getSegmentManager(), getDefaultHeight()));
 
 			std::vector<const TerrainShader*> shaders;
@@ -415,13 +412,11 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 
 TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) const {
 
-	auto I = mTerrainPages.find(index.first);
-	if (I != mTerrainPages.end()) {
-		auto J = I->second.find(index.second);
-		if (J != I->second.end()) {
-			return J->second;
-		}
+	auto I = mPages.find(index);
+	if (I != mPages.end()) {
+		return I->second.get();
 	}
+
 	return nullptr;
 }
 
@@ -463,9 +458,10 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 	if (mTaskQueue->isActive()) {
 		std::set<TerrainPage*> pagesToUpdate;
 		for (const auto& area : areas) {
-			for (auto& page : mPages) {
+			for (auto& entry : mPages) {
+				auto* page = entry.second.get();
 				if (WFMath::Contains(page->getWorldExtent(), area, false) || WFMath::Intersect(page->getWorldExtent(), area, false) || WFMath::Contains(area, page->getWorldExtent(), false)) {
-					pagesToUpdate.insert(page.get());
+					pagesToUpdate.insert(page);
 				}
 			}
 		}

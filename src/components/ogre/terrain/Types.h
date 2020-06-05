@@ -71,15 +71,6 @@ namespace OgreView {
 		 */
 		typedef std::vector<TerrainDefPoint> TerrainDefPointStore;
 
-		/**
-		 * @brief STL map to store sparse array of TerrainPage pointers.
-		 */
-		typedef std::map<int, TerrainPage *> TerrainPagecolumn;
-
-		/**
-		 * @brief STL map to store sparse array of TerrainPage pointer columns.
-		 */
-		typedef std::map<int, TerrainPagecolumn > TerrainPagestore;
 
 		/**
 		 * @brief Encapsules a shader update request.

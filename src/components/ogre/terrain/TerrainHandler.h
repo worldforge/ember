@@ -471,7 +471,7 @@ protected:
 	 * This is the canonical collection of pages.
 	 * @see mTerrainPages
 	 */
-	std::vector<std::unique_ptr<TerrainPage>> mPages;
+	std::map<TerrainIndex, std::unique_ptr<TerrainPage>> mPages;
 
 	/**
 	 * @brief The task queue we'll use for all background terrain updates.
@@ -502,14 +502,6 @@ protected:
 	 * @brief A map of all terrain areas used by the handler.
 	 */
 	AreaMap mAreas;
-
-	/**
-	 * @brief A map of all the pages used by the handler.
-	 * This mirrors the data held in mPages, but is mainly useful for quick lookup.
-	 *
-	 * @see mPages
-	 */
-	TerrainPagestore mTerrainPages;
 
 	/**
 	 * @brief The maximum height of the generated terrain. In world units.
