@@ -2,7 +2,7 @@ $#include <Eris/ServerInfo.h>
 
 
 namespace Eris {
-class ServerInfo
+struct ServerInfo
 {
     
     typedef enum {

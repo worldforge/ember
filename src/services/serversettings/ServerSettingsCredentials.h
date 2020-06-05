@@ -22,7 +22,7 @@
 #include <string>
 
 namespace Eris {
-class ServerInfo;
+struct ServerInfo;
 }
 
 namespace Ember {

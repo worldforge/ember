@@ -41,7 +41,7 @@ namespace Eris
 class Connection;
 class Account;
 class View;
-class ServerInfo;
+struct ServerInfo;
 class Task;
 class Avatar;
 class TypeInfo;
