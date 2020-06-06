@@ -156,11 +156,14 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
         file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/bin/*.dll")
         install(FILES ${DLL_FILES} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
     endif ()
-    #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
-    #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
-    #boost filesystem lib, otherwise the system one will be used.
-    #This should be removed once it's fixed in the Conan recipes.
-    link_libraries("${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
+
+    if (NOT WIN32)
+        #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
+        #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
+        #boost filesystem lib, otherwise the system one will be used.
+        #This should be removed once it's fixed in the Conan recipes.
+        link_libraries("${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
+    endif ()
 
 else ()
     find_package(Boost
