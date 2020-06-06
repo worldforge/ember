@@ -85,8 +85,6 @@
 #include "authoring/MaterialEditor.h"
 #include "MediaUpdater.h"
 
-#include "main/Application.h"
-
 #include "OgreResourceProvider.h"
 #include "Version.h"
 #include "components/cegui/CEGUISetup.h"
@@ -559,7 +557,10 @@ AutomaticGraphicsLevelManager* EmberOgre::getAutomaticGraphicsLevelManager() con
 
 
 Eris::View* EmberOgre::getMainView() const {
-	return Application::getSingleton().getMainView();
+	if (mWorld) {
+		return &mWorld->getView();
+	}
+	return nullptr;
 }
 
 void EmberOgre::setupProfiler() {
