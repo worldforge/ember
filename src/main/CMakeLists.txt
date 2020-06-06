@@ -11,8 +11,7 @@ add_executable(${EMBER_EXECUTABLE_NAME} WIN32
         Ember.cpp
         ConsoleInputBinder.cpp)
 
-
-set(ALL_LIBRARIES
+set(SCRIPT_LIBRARIES
         ConnectorDefinitions_bindings_lua
         Domain_bindings_lua
         EmberServices_bindings_lua
@@ -28,6 +27,9 @@ set(ALL_LIBRARIES
         Representations_bindings_lua
         Ogre_bindings_lua
         Helpers_bindings_lua
+        )
+
+set(APP_LIBRARIES
         emberogre
         emberogre_terrain
         terrain
@@ -40,7 +42,8 @@ set(ALL_LIBRARIES
         framework)
 
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
-       ${ALL_LIBRARIES})
+        ${SCRIPT_LIBRARIES}
+        ${APP_LIBRARIES})
 
 target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
@@ -53,5 +56,5 @@ get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
 add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
 foreach(PLUGIN ${_PLUGIN_LIBS_LIST})
-    add_dependencies(${PLUGIN} ${ALL_LIBRARIES})
+    add_dependencies(${PLUGIN} ${APP_LIBRARIES})
 endforeach(PLUGIN)
