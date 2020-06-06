@@ -165,6 +165,8 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
         link_libraries("${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
     endif ()
 
+    set(TOLUA++_APP ${CONAN_BIN_DIRS_TOLUA++}/tolua++)
+
     #We need to add some extra Ogre include directories
     include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Terrain)
     include_directories(${CONAN_INCLUDE_DIRS_OGRE}/RTShaderSystem)
@@ -390,11 +392,11 @@ else ()
     #We'll use xmllint for validating schemas of some of our xml files.
     find_program(XMLLINT xmllint)
 
-    if (NOT TOLUA++_APP)
-        MESSAGE(FATAL_ERROR "Could not find tolua++ executable.")
-    endif (NOT TOLUA++_APP)
-
 endif ()
+
+if (NOT TOLUA++_APP)
+    MESSAGE(FATAL_ERROR "Could not find tolua++ executable.")
+endif (NOT TOLUA++_APP)
 
 message(STATUS "Copying OGRE media to our own installation directory.")
 set(LOCAL_OGRE_MEDIA_DIR ${CMAKE_INSTALL_FULL_DATADIR}/ember/OGRE/Media)
