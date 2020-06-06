@@ -1,4 +1,4 @@
-add_library(caelum
+add_library(caelum OBJECT
         src/Astronomy.cpp src/BrightStarCatalogue.cpp src/CaelumDefaultTypeDescriptorData.cpp
         src/CaelumPlugin.cpp src/CaelumPrecompiled.cpp src/CaelumScriptTranslator.cpp src/CaelumSystem.cpp src/CameraBoundElement.cpp
         src/CloudSystem.cpp src/DepthComposer.cpp src/FastGpuParamRef.cpp src/FlatCloudLayer.cpp

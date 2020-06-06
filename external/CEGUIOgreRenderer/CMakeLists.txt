@@ -1,4 +1,4 @@
-add_library(CEGUIOgreRenderer
+add_library(CEGUIOgreRenderer OBJECT
         GeometryBuffer.cpp
         ImageCodec.cpp
         Renderer.cpp

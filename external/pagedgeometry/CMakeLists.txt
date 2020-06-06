@@ -1,4 +1,4 @@
-add_library(pagedgeometry
+add_library(pagedgeometry OBJECT
         source/BatchPage.cpp 
         source/BatchedGeometry.cpp
         source/GrassLoader.cpp 

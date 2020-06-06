@@ -31,6 +31,10 @@ set(SCRIPT_LIBRARIES
 
 set(APP_LIBRARIES
         emberogre
+        caelum
+        meshtree
+        pagedgeometry
+        widgets
         emberogre_terrain
         terrain
         entitymapping
@@ -39,7 +43,14 @@ set(APP_LIBRARIES
         navigation
         services
         domain
-        framework)
+        framework
+        ember_tinyxml
+        binreloc
+        CEGUIOgreRenderer
+        DetourTileCache
+        Detour
+        Recast
+        )
 
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
         ${SCRIPT_LIBRARIES}
@@ -54,7 +65,7 @@ install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR
 
 get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
-add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
+#add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
 foreach(PLUGIN ${_PLUGIN_LIBS_LIST})
-    add_dependencies(${PLUGIN} ${APP_LIBRARIES})
+    add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
 endforeach(PLUGIN)

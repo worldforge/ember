@@ -1,4 +1,4 @@
-add_library(Recast
+add_library(Recast OBJECT
         Source/Recast.cpp
         Source/RecastArea.cpp
         Source/RecastAlloc.cpp

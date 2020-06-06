@@ -1,4 +1,4 @@
-add_library(entitymapping
+add_library(entitymapping OBJECT
         Actions/Action.cpp Actions/DummyAction.cpp
 
         Cases/AttributeCase.cpp

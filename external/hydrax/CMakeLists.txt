@@ -1,4 +1,4 @@
-add_library(hydrax
+add_library(hydrax OBJECT
         src/CfgFileManager.cpp src/DecalsManager.cpp src/Enums.cpp src/GodRaysManager.cpp src/GPUNormalMapManager.cpp
         src/Help.cpp src/Hydrax.cpp src/Image.cpp src/MaterialManager.cpp src/Mesh.cpp src/Prerequisites.cpp
         src/RttManager.cpp src/TextureManager.cpp src/Modules/Module.cpp src/Noise/Noise.cpp

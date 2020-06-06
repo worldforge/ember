@@ -1,4 +1,4 @@
-add_library(Detour
+add_library(Detour OBJECT
         Source/DetourAlloc.cpp
         Source/DetourCommon.cpp
         Source/DetourNavMesh.cpp

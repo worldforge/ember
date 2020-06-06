@@ -1,4 +1,4 @@
-add_library(DetourTileCache
+add_library(DetourTileCache OBJECT
         Source/DetourTileCache.cpp
         Source/DetourTileCacheBuilder.cpp)
 

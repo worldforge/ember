@@ -1,4 +1,4 @@
-add_library(terrain
+add_library(terrain OBJECT
         TerrainModTranslator.cpp)
 
 

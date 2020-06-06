@@ -1,3 +1,3 @@
-add_library(meshtree
+add_library(meshtree OBJECT
         MeshTree.cpp TParameters.cpp TStem.cpp)
 

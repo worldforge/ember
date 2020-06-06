@@ -1,4 +1,4 @@
-add_library(services
+add_library(services OBJECT
         config/ConfigListener.cpp
         config/ConfigListenerContainer.cpp
         config/ConfigService.cpp

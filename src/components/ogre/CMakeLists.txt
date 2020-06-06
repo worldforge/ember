@@ -1,4 +1,6 @@
-add_library(emberogre
+add_subdirectory(widgets)
+add_subdirectory(terrain)
+add_library(emberogre OBJECT
         authoring/ConsoleDevTools.cpp authoring/DetachedEntity.cpp authoring/EntityMoveAdjuster.cpp
         authoring/EntityMoveManager.cpp authoring/EntityMover.cpp authoring/EntityMoverBase.cpp authoring/EntityRecipe.cpp authoring/EntityRecipeManager.cpp authoring/GUIAdapter.cpp
         authoring/GUIAdapterBindings.cpp authoring/MaterialEditor.cpp authoring/MovementAdapter.cpp authoring/Polygon.cpp authoring/PolygonPoint.cpp
@@ -75,8 +77,4 @@ wf_generate_lua_bindings(scripting/bindings/lua/ogre/Ogre)
 wf_generate_lua_bindings(scripting/bindings/lua/helpers/Helpers scripting/bindings/lua/helpers/OgreUtils.cpp)
 
 
-target_link_libraries(emberogre PUBLIC caelum meshtree pagedgeometry widgets emberogre_terrain)
-
 target_compile_definitions(emberogre PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
-add_subdirectory(widgets)
-add_subdirectory(terrain)

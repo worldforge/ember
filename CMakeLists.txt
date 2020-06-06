@@ -128,7 +128,7 @@ macro(wf_generate_lua_bindings PKG_PATH)
         )
     endif ()
 
-    add_library(${PACKAGE_NAME}_bindings_lua ${PACKAGE_NAME}.cxx ${ARGN})
+    add_library(${PACKAGE_NAME}_bindings_lua OBJECT ${PACKAGE_NAME}.cxx ${ARGN})
 
     #Add include directories of both the current source directory as well as the one containing the bindings. This allows for easy includes in the pkg-files.
     target_include_directories(${PACKAGE_NAME}_bindings_lua PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR})

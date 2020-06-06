@@ -1,4 +1,4 @@
-add_library(domain
+add_library(domain OBJECT
         EmberEntity.cpp
         EntityTalk.cpp
         IHeightProvider.h
