@@ -13,8 +13,6 @@ add_library(framework OBJECT
         StackChecker.cpp
         )
 
-target_link_libraries(framework PUBLIC ember_tinyxml binreloc)
-
 wf_generate_lua_bindings(bindings/lua/Framework)
 wf_generate_lua_bindings(bindings/lua/atlas/Atlas)
 wf_generate_lua_bindings(bindings/lua/eris/Eris)

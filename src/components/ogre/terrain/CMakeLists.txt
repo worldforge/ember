@@ -64,7 +64,4 @@ add_library(emberogre_terrain OBJECT
         techniques/OnePixelMaterialGenerator.cpp
         )
 
-
-#target_link_libraries(emberogre_terrain PUBLIC emberogre terrain)
-
 target_compile_definitions(emberogre_terrain PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")

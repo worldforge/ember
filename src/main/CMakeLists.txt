@@ -1,8 +1,8 @@
 if (WIN32)
-	set(EMBER_EXECUTABLE_NAME ember)
-else()
-	set(EMBER_EXECUTABLE_NAME ember.bin)
-endif()
+    set(EMBER_EXECUTABLE_NAME ember)
+else ()
+    set(EMBER_EXECUTABLE_NAME ember.bin)
+endif ()
 
 #Use WIN32 to specify that on Windows it should be a non-console app.
 add_executable(${EMBER_EXECUTABLE_NAME} WIN32
@@ -52,6 +52,10 @@ set(APP_LIBRARIES
         Recast
         )
 
+#Need to include CMAKE_DL_LIBS to get the dynamic linker.
+target_link_libraries(${EMBER_EXECUTABLE_NAME}
+        ${CMAKE_DL_LIBS})
+
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
         ${SCRIPT_LIBRARIES}
         ${APP_LIBRARIES})
@@ -66,6 +70,6 @@ install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR
 get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
 #add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
-foreach(PLUGIN ${_PLUGIN_LIBS_LIST})
+foreach (PLUGIN ${_PLUGIN_LIBS_LIST})
     add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
-endforeach(PLUGIN)
+endforeach (PLUGIN)

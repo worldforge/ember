@@ -70,7 +70,5 @@ wf_generate_lua_bindings(adapters/bindings/lua/Adapters)
 wf_generate_lua_bindings(adapters/atlas/bindings/lua/AtlasAdapters)
 wf_generate_lua_bindings(representations/bindings/lua/Representations)
 
-#Need to include CMAKE_DL_LIBS to get the dynamic linker.
-target_link_libraries(widgets PUBLIC ${CMAKE_DL_LIBS})
 
 target_compile_definitions(widgets PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
