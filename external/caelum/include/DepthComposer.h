@@ -80,10 +80,10 @@ namespace Caelum
 		bool getSkyDomeHazeEnabled () const { return mSkyDomeHazeEnabled; }
 
         void setSunDirection (const Ogre::Vector3& value) { mSunDirection = value; }
-        const Ogre::Vector3 getSunDirection () const { return mSunDirection; }
+        Ogre::Vector3 getSunDirection () const { return mSunDirection; }
 
         void setHazeColour (const Ogre::ColourValue& value) { mHazeColour = value; }
-        const Ogre::ColourValue getHazeColour () const { return mHazeColour; }
+        Ogre::ColourValue getHazeColour () const { return mHazeColour; }
 
     private:
         bool mGroundFogEnabled;

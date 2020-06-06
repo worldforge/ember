@@ -700,7 +700,7 @@ namespace Caelum
         return res;
     }
 
-    const Ogre::Vector3 CaelumSystem::getSunDirection (LongReal jday)
+    Ogre::Vector3 CaelumSystem::getSunDirection (LongReal jday)
     {
         Ogre::Degree azimuth, altitude;
         {
@@ -715,7 +715,7 @@ namespace Caelum
         return res;
     }
 
-	const Ogre::Vector3 CaelumSystem::getMoonDirection (LongReal jday)
+	Ogre::Vector3 CaelumSystem::getMoonDirection (LongReal jday)
     {
         Ogre::Degree azimuth, altitude;
         {
@@ -730,7 +730,7 @@ namespace Caelum
 		return res;
 	}
 
-    const Ogre::Real CaelumSystem::getMoonPhase (LongReal jday)
+    Ogre::Real CaelumSystem::getMoonPhase (LongReal jday)
     {
         // Calculates julian days since January 22, 2008 13:36 (full moon)
         // and divides by the time between lunations (synodic month)

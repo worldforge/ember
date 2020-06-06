@@ -337,19 +337,19 @@ namespace Caelum
 		mParams.fogColour.set(mParams.fpParams, mFogColour = fogColour);
 	}
 
-	const Ogre::Vector3 FlatCloudLayer::getSunDirection () const {
+	Ogre::Vector3 FlatCloudLayer::getSunDirection () const {
 		return mSunDirection;
 	}
 
-	const Ogre::ColourValue FlatCloudLayer::getSunLightColour () const {
+	Ogre::ColourValue FlatCloudLayer::getSunLightColour () const {
 		return mSunLightColour;
 	}
 
-	const Ogre::ColourValue FlatCloudLayer::getSunSphereColour () const {
+	Ogre::ColourValue FlatCloudLayer::getSunSphereColour () const {
 		return mSunSphereColour;
 	}
 
-    const Ogre::ColourValue FlatCloudLayer::getFogColour () const {
+    Ogre::ColourValue FlatCloudLayer::getFogColour () const {
         return mFogColour;
     }
 

@@ -97,10 +97,10 @@ namespace Caelum
 	    void setSunLightColour(const Ogre::ColourValue &sunLightColour);
 		void setSunSphereColour(const Ogre::ColourValue &sunSphereColour);
 	    void setFogColour(const Ogre::ColourValue &fogColour);
-        const Ogre::Vector3 getSunDirection () const; 
-        const Ogre::ColourValue getSunLightColour () const; 
-        const Ogre::ColourValue getSunSphereColour () const; 
-        const Ogre::ColourValue getFogColour () const; 
+        Ogre::Vector3 getSunDirection () const;
+        Ogre::ColourValue getSunLightColour () const;
+        Ogre::ColourValue getSunSphereColour () const;
+        Ogre::ColourValue getFogColour () const;
 
     private:
         /// Pointer to scene manager.
