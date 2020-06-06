@@ -377,19 +377,25 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 		S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 		auto I = mPages.find(index);
 		if (I == mPages.end()) {
-			auto page = new TerrainPage(index, getPageIndexSize(), getCompilerTechniqueProvider());
-			bridge->bindToTerrainPage(page);
 
-			mPages.emplace(index, page);
-			S_LOG_VERBOSE("Adding terrain page to TerrainHandler: " << "[" << index.first << "|" << index.second << "]");
+			auto resultI = mPages.emplace(index, std::make_unique<TerrainPage>(index, getPageIndexSize(), getCompilerTechniqueProvider()));
+			if (resultI.second) {
+				auto& page = resultI.first->second;
+				bridge->bindToTerrainPage(page.get());
 
-			WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, -1, 0);
-			if (mLightning) {
-				sunDirection = mLightning->getMainLightDirection();
-			}
-			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageCreationTask>(*this, page, bridge, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
-				//We need to alert the bridge since it's holding up a thread waiting for this call.
-				bridge->terrainPageReady();
+
+				S_LOG_VERBOSE("Adding terrain page to TerrainHandler: [" << index.first << "|" << index.second << "]");
+
+				WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, -1, 0);
+				if (mLightning) {
+					sunDirection = mLightning->getMainLightDirection();
+				}
+				if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageCreationTask>(*this, page.get(), bridge, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
+					//We need to alert the bridge since it's holding up a thread waiting for this call.
+					bridge->terrainPageReady();
+				}
+			} else {
+				S_LOG_WARNING("Could not insert terrain page at [" << index.first << "|" << index.second << "]");
 			}
 		} else {
 			auto& page = I->second;
