@@ -43,8 +43,8 @@ list(GET VERSION_LIST 1 EMBER_VERSION_MINOR)
 list(GET VERSION_LIST 2 EMBER_VERSION_PATCH)
 
 
-# Set compiler flags, but only if not running in a CI server.
-if (ENV{CI}==1)
+# Set compiler flags, but only if not running in a CI server. CI environments would normally set the environment variable CI.
+if(DEFINED ENV{CI})
     message(STATUS "Build server detected, will not set any compiler warning flags.")
     set(WF_WARNING_FLAGS "")
 else ()
@@ -185,10 +185,6 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     #These things should really be exported by the Conan Ogre recipe, but for now we'll define them instead.
     #Main issue is that this is a bit brittle.
     link_libraries(Codec_FreeImageStatic Plugin_ParticleFXStatic RenderSystem_GL3PlusStatic)
-    if (UNIX)
-        message(STATUS "Adding links to X11 and GL libraries on Unix system")
-        link_libraries(X11 GL Xrandr)
-    endif ()
     if (WIN32)
         set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
     else ()

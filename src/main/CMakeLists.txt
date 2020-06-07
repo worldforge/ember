@@ -61,6 +61,10 @@ target_link_libraries(${EMBER_EXECUTABLE_NAME}
 target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     conan_target_link_libraries(${EMBER_EXECUTABLE_NAME})
+    if (UNIX)
+        message(STATUS "Adding links to X11 and GL libraries on Unix system")
+        link_libraries(X11 GL Xrandr)
+    endif ()
 endif ()
 
 install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
