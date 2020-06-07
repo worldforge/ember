@@ -141,8 +141,8 @@ void Animation::setEnabled(bool enabled) {
 						if (!state->hasBlendMask()) {
 							state->createBlendMask(mBoneNumber, 0.0f);
 						}
-						const std::vector<size_t>& boneIndices = boneGroupDef.Bones;
-						for (unsigned long boneIndex : boneIndices) {
+						auto& boneIndices = boneGroupDef.Bones;
+						for (size_t boneIndex : boneIndices) {
 							state->setBlendMaskEntry(boneIndex, boneGroupRef.weight);
 						}
 					}

@@ -75,9 +75,9 @@ public:
 private:
 
 	template<typename T>
-	void loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh);
+	static void loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh);
 	template<typename T>
-	void loadAutomaticLodImpl(T it, T itEnd, Ogre::LodConfig& lodConfig);
+	static void loadAutomaticLodImpl(T it, T itEnd, Ogre::LodConfig& lodConfig);
 };
 
 }
