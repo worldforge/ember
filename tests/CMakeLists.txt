@@ -28,6 +28,7 @@ if (CPPUNIT_FOUND)
             $<TARGET_OBJECTS:Recast>)
     target_compile_definitions(TestOgreView PUBLIC -DLOG_TASKS)
     target_link_libraries(TestOgreView ${CPPUNIT_LIBRARIES}
+            ${WF_LIBRARIES}
             ${BULLET_LIBRARIES})
     target_include_directories(TestOgreView PUBLIC ${CPPUNIT_INCLUDE_DIRS})
     add_test(NAME TestOgreView COMMAND TestOgreView)
@@ -39,6 +40,7 @@ if (CPPUNIT_FOUND)
             $<TARGET_OBJECTS:ember_tinyxml>)
     target_compile_definitions(TestTasks PUBLIC -DLOG_TASKS)
     target_link_libraries(TestTasks
+            ${WF_LIBRARIES}
             ${CPPUNIT_LIBRARIES})
     target_include_directories(TestTasks PUBLIC ${CPPUNIT_INCLUDE_DIRS})
     add_test(NAME TestTasks COMMAND TestTasks)
@@ -50,6 +52,7 @@ if (CPPUNIT_FOUND)
             $<TARGET_OBJECTS:ember_tinyxml>)
     target_compile_definitions(TestTimeFrame PUBLIC -DLOG_TASKS)
     target_link_libraries(TestTimeFrame
+            ${WF_LIBRARIES}
             ${CPPUNIT_LIBRARIES})
     target_include_directories(TestTimeFrame PUBLIC ${CPPUNIT_INCLUDE_DIRS})
     add_test(NAME TestTimeFrame COMMAND TestTimeFrame)
@@ -61,6 +64,7 @@ if (CPPUNIT_FOUND)
             $<TARGET_OBJECTS:ember_tinyxml>)
     target_compile_definitions(TestFramework PUBLIC -DLOG_TASKS -DSRCDIR="${CMAKE_CURRENT_SOURCE_DIR}")
     target_link_libraries(TestFramework
+            ${WF_LIBRARIES}
             ${CPPUNIT_LIBRARIES})
     target_include_directories(TestFramework PUBLIC ${CPPUNIT_INCLUDE_DIRS})
     add_test(NAME TestFramework COMMAND TestFramework)
