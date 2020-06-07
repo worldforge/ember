@@ -44,7 +44,7 @@ list(GET VERSION_LIST 2 EMBER_VERSION_PATCH)
 
 
 # Set compiler flags, but only if not running in a CI server.
-if ($ENV{CI}==1)
+if (ENV{CI}==1)
     message(STATUS "Build server detected, will not set any compiler warning flags.")
     set(WF_WARNING_FLAGS "")
 else ()
@@ -53,7 +53,10 @@ else ()
     else ()
         set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
     endif ()
+    MESSAGE(STATUS "Setting compiler warnings to '${WF_WARNING_FLAGS}'")
 endif ()
+
+
 
 # This is needed to make Widget Plugins work.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
