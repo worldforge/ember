@@ -43,11 +43,16 @@ list(GET VERSION_LIST 1 EMBER_VERSION_MINOR)
 list(GET VERSION_LIST 2 EMBER_VERSION_PATCH)
 
 
-# Set compiler flags
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set(WF_WARNING_FLAGS /W3)
+# Set compiler flags, but only if not running in a CI server.
+if ($ENV{CI}==1)
+    message(STATUS "Build server detected, will not set any compiler warning flags.")
+    set(WF_WARNING_FLAGS "")
 else ()
-    set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        set(WF_WARNING_FLAGS /W3)
+    else ()
+        set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
+    endif ()
 endif ()
 
 # This is needed to make Widget Plugins work.
@@ -178,6 +183,7 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     #Main issue is that this is a bit brittle.
     link_libraries(Codec_FreeImageStatic Plugin_ParticleFXStatic RenderSystem_GL3PlusStatic)
     if (UNIX)
+        message(STATUS "Adding links to X11 and GL libraries on Unix system")
         link_libraries(X11 GL Xrandr)
     endif ()
     if (WIN32)
