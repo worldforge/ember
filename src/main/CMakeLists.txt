@@ -54,6 +54,9 @@ add_executable(${EMBER_EXECUTABLE_NAME} WIN32
         ${SCRIPT_LIBRARIES}
         ${APP_LIBRARIES})
 
+#The idea here is to allow symbol exports from the main exe, so that the plugins can import them. Not sure if it works though.
+set_property(TARGET ${EMBER_EXECUTABLE_NAME} PROPERTY ENABLE_EXPORTS 1)
+
 #Need to include CMAKE_DL_LIBS to get the dynamic linker.
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
         ${WF_LIBRARIES}
@@ -97,6 +100,7 @@ wf_add_plugin(IngameChatWidget
 #add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
 foreach (PLUGIN ${_PLUGIN_LIBS_LIST})
     add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
-    #target_link_libraries(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
+    #By linking to the exe the needed symbols should be resolved. At least in theory. Not sure how well it works in reality.
+    target_link_libraries(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
 endforeach (PLUGIN)
 
