@@ -105,9 +105,9 @@ macro(wf_add_plugin _LIB_NAME _SOURCE_FILES)
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/ember/widgets)
 
     set_property(GLOBAL APPEND PROPERTY PLUGIN_LIBS_LIST "${_LIB_NAME}")
-    if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-        conan_target_link_libraries(${_LIB_NAME})
-    endif ()
+#    if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+#        conan_target_link_libraries(${_LIB_NAME})
+#    endif ()
     message(STATUS "Registered widget plugin ${_LIB_NAME}")
 
 endmacro()

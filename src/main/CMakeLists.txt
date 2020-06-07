@@ -96,6 +96,6 @@ wf_add_plugin(IngameChatWidget
 #add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
 foreach (PLUGIN ${_PLUGIN_LIBS_LIST})
     add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
-    target_link_libraries(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
+    #target_link_libraries(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
 endforeach (PLUGIN)
 
