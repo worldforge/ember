@@ -44,18 +44,21 @@ list(GET VERSION_LIST 2 EMBER_VERSION_PATCH)
 
 
 # Set compiler flags, but only if not running in a CI server. CI environments would normally set the environment variable CI.
-if(DEFINED ENV{CI})
-    message(STATUS "Build server detected, will not set any compiler warning flags.")
-    set(WF_WARNING_FLAGS "")
+if (DEFINED ENV{CI})
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        set(WF_WARNING_FLAGS "")
+    else ()
+        #Turn of diagnostics. Perhaps a bit too harsh?
+        set(WF_WARNING_FLAGS "-w")
+    endif ()
 else ()
     if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         set(WF_WARNING_FLAGS /W3)
     else ()
         set(WF_WARNING_FLAGS -Wall -Winit-self -Wwrite-strings -Wundef -Wno-unused-parameter -Wno-missing-field-initializers -Wno-long-long)
     endif ()
-    MESSAGE(STATUS "Setting compiler warnings to '${WF_WARNING_FLAGS}'")
 endif ()
-
+MESSAGE(STATUS "Setting compiler warnings to '${WF_WARNING_FLAGS}'")
 
 
 # This is needed to make Widget Plugins work.
@@ -175,21 +178,21 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
 
     set(TOLUA++_APP ${CONAN_BIN_DIRS_TOLUA++}/tolua++)
 
-    #We need to add some extra Ogre include directories
-    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Terrain)
-    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/RTShaderSystem)
-    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Overlay)
-    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/MeshLodGenerator)
-    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Paging)
-    link_directories(${CONAN_LIB_DIRS_OGRE}/OGRE)
-    #These things should really be exported by the Conan Ogre recipe, but for now we'll define them instead.
-    #Main issue is that this is a bit brittle.
-    link_libraries(Codec_FreeImageStatic Plugin_ParticleFXStatic RenderSystem_GL3PlusStatic)
-    if (WIN32)
-        set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
-    else ()
-        set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/share/OGRE/Media)
-    endif ()
+    #    #We need to add some extra Ogre include directories
+    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Terrain)
+    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/RTShaderSystem)
+    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Overlay)
+    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/MeshLodGenerator)
+    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Paging)
+    #    link_directories(${CONAN_LIB_DIRS_OGRE}/OGRE)
+    #    #These things should really be exported by the Conan Ogre recipe, but for now we'll define them instead.
+    #    #Main issue is that this is a bit brittle.
+    #    link_libraries(Codec_FreeImageStatic Plugin_ParticleFXStatic RenderSystem_GL3PlusStatic)
+    #    if (WIN32)
+    #        set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
+    #    else ()
+    #        set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/share/OGRE/Media)
+    #    endif ()
 else ()
     find_package(Boost
             1.60.0
@@ -276,63 +279,6 @@ else ()
     #TODO: check for binreloc?
 
 
-    set(OGREVER 1.12.2)
-    find_package(OGRE ${OGREVER} REQUIRED)
-    link_directories(${OGRE_LIBRARY_DIRS})
-    link_libraries(${OGRE_LIBRARIES})
-    include_directories(${OGRE_INCLUDE_DIRS})
-    if (APPLE)
-        if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
-            MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
-        endif (NOT OGRE_RenderSystem_GL3Plus_FOUND)
-    endif (APPLE)
-
-    if (NOT OGRE_Terrain_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
-    endif (NOT OGRE_Terrain_FOUND)
-    link_libraries(${OGRE_Terrain_LIBRARIES})
-    include_directories(${OGRE_Terrain_INCLUDE_DIRS})
-
-    if (NOT OGRE_Paging_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre Paging component. Make sure you've built Ogre with Paging support.")
-    endif (NOT OGRE_Paging_FOUND)
-    link_libraries(${OGRE_Paging_LIBRARIES})
-    include_directories(${OGRE_Paging_INCLUDE_DIRS})
-
-    if (NOT OGRE_Overlay_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre Overlay component. Make sure you've built Ogre with Overlay support.")
-    endif (NOT OGRE_Overlay_FOUND)
-    link_libraries(${OGRE_Overlay_LIBRARIES})
-    include_directories(${OGRE_Overlay_INCLUDE_DIRS})
-
-    if (NOT OGRE_MeshLodGenerator_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre MeshLodGenerator component. Make sure you've built Ogre with MeshLodGenerator support.")
-    endif (NOT OGRE_MeshLodGenerator_FOUND)
-    link_libraries(${OGRE_MeshLodGenerator_LIBRARIES})
-    include_directories(${OGRE_MeshLodGenerator_INCLUDE_DIRS})
-
-    if (NOT OGRE_RTShaderSystem_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre RTShaderSystem component. Make sure you've built Ogre with RTShaderSystem support.")
-    endif (NOT OGRE_RTShaderSystem_FOUND)
-    link_libraries(${OGRE_RTShaderSystem_LIBRARIES})
-    include_directories(${OGRE_RTShaderSystem_INCLUDE_DIRS})
-
-    if (NOT OGRE_Codec_FreeImage_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
-    endif (NOT OGRE_Codec_FreeImage_FOUND)
-
-
-    if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" AND OGRE_STATIC)
-        #If we're building with Conan we don't want any absolute references, so we need to clear the library links from some OGRE components.
-        message(STATUS "Clearing link libraries for OgreOverlay and Codec_FreeImage to remove any hard coded paths.")
-        set_target_properties(OgreOverlay PROPERTIES
-                INTERFACE_LINK_LIBRARIES "OgreMain"
-                )
-        set_target_properties(Codec_FreeImage PROPERTIES
-                INTERFACE_LINK_LIBRARIES "OgreMain"
-                )
-    endif ()
-
     find_package(Tolua++ REQUIRED)
     link_directories(${TOLUA++_LIBRARY_DIRS})
     link_libraries(${TOLUA++_LIBRARY})
@@ -399,12 +345,71 @@ else ()
 
 endif ()
 
+#Do OGRE checks for both Conan and non-Conan builds, because there's so many things it needs that differs per platform its better to let Ogre handle it.
+set(OGREVER 1.12.2)
+find_package(OGRE ${OGREVER} REQUIRED)
+link_directories(${OGRE_LIBRARY_DIRS})
+link_libraries(${OGRE_LIBRARIES})
+include_directories(${OGRE_INCLUDE_DIRS})
+if (APPLE)
+    if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
+        MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
+    endif (NOT OGRE_RenderSystem_GL3Plus_FOUND)
+endif (APPLE)
+
+if (NOT OGRE_Terrain_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
+endif (NOT OGRE_Terrain_FOUND)
+link_libraries(${OGRE_Terrain_LIBRARIES})
+include_directories(${OGRE_Terrain_INCLUDE_DIRS})
+
+if (NOT OGRE_Paging_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre Paging component. Make sure you've built Ogre with Paging support.")
+endif (NOT OGRE_Paging_FOUND)
+link_libraries(${OGRE_Paging_LIBRARIES})
+include_directories(${OGRE_Paging_INCLUDE_DIRS})
+
+if (NOT OGRE_Overlay_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre Overlay component. Make sure you've built Ogre with Overlay support.")
+endif (NOT OGRE_Overlay_FOUND)
+link_libraries(${OGRE_Overlay_LIBRARIES})
+include_directories(${OGRE_Overlay_INCLUDE_DIRS})
+
+if (NOT OGRE_MeshLodGenerator_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre MeshLodGenerator component. Make sure you've built Ogre with MeshLodGenerator support.")
+endif (NOT OGRE_MeshLodGenerator_FOUND)
+link_libraries(${OGRE_MeshLodGenerator_LIBRARIES})
+include_directories(${OGRE_MeshLodGenerator_INCLUDE_DIRS})
+
+if (NOT OGRE_RTShaderSystem_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre RTShaderSystem component. Make sure you've built Ogre with RTShaderSystem support.")
+endif (NOT OGRE_RTShaderSystem_FOUND)
+link_libraries(${OGRE_RTShaderSystem_LIBRARIES})
+include_directories(${OGRE_RTShaderSystem_INCLUDE_DIRS})
+
+if (NOT OGRE_Codec_FreeImage_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
+endif (NOT OGRE_Codec_FreeImage_FOUND)
+
+
+if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" AND OGRE_STATIC)
+    #If we're building with Conan we don't want any absolute references, so we need to clear the library links from some OGRE components.
+    message(STATUS "Clearing link libraries for OgreOverlay and Codec_FreeImage to remove any hard coded paths.")
+    set_target_properties(OgreOverlay PROPERTIES
+            INTERFACE_LINK_LIBRARIES "OgreMain"
+            )
+    set_target_properties(Codec_FreeImage PROPERTIES
+            INTERFACE_LINK_LIBRARIES "OgreMain"
+            )
+endif ()
+
+
 if (NOT TOLUA++_APP)
     MESSAGE(FATAL_ERROR "Could not find tolua++ executable.")
 endif (NOT TOLUA++_APP)
 
-message(STATUS "Copying OGRE media to our own installation directory.")
 set(LOCAL_OGRE_MEDIA_DIR ${CMAKE_INSTALL_FULL_DATADIR}/ember/OGRE/Media)
+message(STATUS "Copying OGRE media (from ${OGRE_MEDIA_DIR}) to our own installation directory (${LOCAL_OGRE_MEDIA_DIR}).")
 install(DIRECTORY "${OGRE_MEDIA_DIR}/RTShaderLib" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
 install(DIRECTORY "${OGRE_MEDIA_DIR}/ShadowVolume" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
 
