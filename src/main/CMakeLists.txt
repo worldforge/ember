@@ -56,6 +56,7 @@ add_executable(${EMBER_EXECUTABLE_NAME} WIN32
 
 #Need to include CMAKE_DL_LIBS to get the dynamic linker.
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
+        ${WF_LIBRARIES}
         ${CMAKE_DL_LIBS})
 
 target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})

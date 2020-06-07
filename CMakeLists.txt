@@ -152,7 +152,7 @@ set(WF_INCLUDE_DIRS)
 set(WF_LIBRARIES)
 
 if (WIN32)
-    link_libraries("Shlwapi") #Needed for getting Windows specific directories.
+    list(APPEND WF_LIBRARIES "Shlwapi") #Needed for getting Windows specific directories.
     add_definitions(-D_WIN32_WINNT=0x0601) #target Windows 7
 endif ()
 
@@ -173,26 +173,11 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
         #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
         #boost filesystem lib, otherwise the system one will be used.
         #This should be removed once it's fixed in the Conan recipes.
-        link_libraries("${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
+        list(APPEND WF_LIBRARIES "${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
     endif ()
 
     set(TOLUA++_APP ${CONAN_BIN_DIRS_TOLUA++}/tolua++)
 
-    #    #We need to add some extra Ogre include directories
-    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Terrain)
-    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/RTShaderSystem)
-    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Overlay)
-    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/MeshLodGenerator)
-    #    include_directories(${CONAN_INCLUDE_DIRS_OGRE}/Paging)
-    #    link_directories(${CONAN_LIB_DIRS_OGRE}/OGRE)
-    #    #These things should really be exported by the Conan Ogre recipe, but for now we'll define them instead.
-    #    #Main issue is that this is a bit brittle.
-    #    link_libraries(Codec_FreeImageStatic Plugin_ParticleFXStatic RenderSystem_GL3PlusStatic)
-    #    if (WIN32)
-    #        set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
-    #    else ()
-    #        set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/share/OGRE/Media)
-    #    endif ()
 else ()
     find_package(Boost
             1.60.0
@@ -200,7 +185,7 @@ else ()
             COMPONENTS system filesystem thread)
 
     link_directories(${Boost_LIBRARY_DIRS})
-    link_libraries(${Boost_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${Boost_LIBRARIES})
     include_directories(${Boost_INCLUDE_DIRS})
 
     #Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.
@@ -209,7 +194,7 @@ else ()
     if (UNWIND_FOUND)
         message(STATUS "Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
         link_directories(${UNWIND_LIBRARY_DIRS})
-        link_libraries(${UNWIND_LIBRARIES})
+        list(APPEND WF_LIBRARIES ${UNWIND_LIBRARIES})
         include_directories(${UNWIND_INCLUDE_DIR})
         add_definitions(-DUNWIND_ENABLED)
     endif (UNWIND_FOUND)
@@ -221,7 +206,7 @@ else ()
     find_package(SDL2 REQUIRED)
     include_directories(${SDL2_INCLUDE_DIR})
     link_directories(${SDL2_LIBRARY_DIRS})
-    link_libraries(${SDL2_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${SDL2_LIBRARIES})
 
     find_package(SigC++
             2.0
@@ -273,15 +258,11 @@ else ()
 
     link_directories(${WF_LIBRARY_DIRS})
     include_directories(${WF_INCLUDE_DIRS})
-    link_libraries(${WF_LIBRARIES})
-
-
-    #TODO: check for binreloc?
 
 
     find_package(Tolua++ REQUIRED)
     link_directories(${TOLUA++_LIBRARY_DIRS})
-    link_libraries(${TOLUA++_LIBRARY})
+    list(APPEND WF_LIBRARIES ${TOLUA++_LIBRARY})
     include_directories(${TOLUA++_INCLUDE_DIR})
 
     #Allow Lua version to be set from outside, since some system might have CEGUI and tolua++ compiled to 5.2 or 5.3
@@ -294,45 +275,45 @@ else ()
         MESSAGE(FATAL_ERROR "Could not find Lua ${LUA_VERSION}.")
     endif (NOT LUA_FOUND)
     link_directories(${LUA_LIBRARY_DIRS})
-    link_libraries(${LUA_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${LUA_LIBRARIES})
     include_directories(${LUA_INCLUDE_DIR})
 
 
     find_package(CEGUI 0.8.7 REQUIRED)
     link_directories(${CEGUI_LIBRARY_DIRS})
-    link_libraries(${CEGUI_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${CEGUI_LIBRARIES})
     include_directories(${CEGUI_INCLUDE_DIRS})
 
     if (NOT CEGUI_LuaScriptModule_FOUND)
         MESSAGE(FATAL_ERROR "Could not find CEGUI Lua component. Make sure you've built CEGUI with Lua support.")
     endif (NOT CEGUI_LuaScriptModule_FOUND)
-    link_libraries(${CEGUI_LuaScriptModule_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${CEGUI_LuaScriptModule_LIBRARIES})
     include_directories(${CEGUI_LuaScriptModule_INCLUDE_DIRS})
 
     find_package(SDL2 REQUIRED)
-    link_libraries(${SDL2_LIBRARY})
-    link_libraries(${SDL2_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${SDL2_LIBRARY})
+    list(APPEND WF_LIBRARIES ${SDL2_LIBRARIES})
     include_directories(${SDL2_INCLUDE_DIR})
 
     find_package(ALUT REQUIRED)
     link_directories(${ALUT_LIBRARY_DIRS})
-    link_libraries(${ALUT_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${ALUT_LIBRARIES})
     include_directories(${ALUT_INCLUDE_DIRS})
 
     find_package(OpenAL REQUIRED)
-    link_libraries(${OPENAL_LIBRARY})
-    link_libraries(${OPENAL_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${OPENAL_LIBRARY})
+    list(APPEND WF_LIBRARIES ${OPENAL_LIBRARIES})
     include_directories(${OPENAL_INCLUDE_DIR})
 
     if (NOT WIN32)
         find_package(XDGBaseDir REQUIRED 1.0.0)
-        link_libraries(${XDGBaseDir_LIBRARIES})
+        list(APPEND WF_LIBRARIES ${XDGBaseDir_LIBRARIES})
         include_directories(${XDGBaseDir_INLUDE_DIR})
     endif ()
 
     find_package(OpenGL)
     link_directories(${OPENGL_LIBRARY_DIRS})
-    link_libraries(${OPENGL_LIBRARIES})
+    list(APPEND WF_LIBRARIES ${OPENGL_LIBRARIES})
     include_directories(${OPENGL_INCLUDE_DIR})
 
     find_package(Bullet 2.81 REQUIRED)
@@ -340,16 +321,16 @@ else ()
 
     find_package(cppunit 1.8.0)
 
-    #We'll use xmllint for validating schemas of some of our xml files.
-    find_program(XMLLINT xmllint)
-
 endif ()
+
+#We'll use xmllint for validating schemas of some of our xml files.
+find_program(XMLLINT xmllint)
 
 #Do OGRE checks for both Conan and non-Conan builds, because there's so many things it needs that differs per platform its better to let Ogre handle it.
 set(OGREVER 1.12.2)
 find_package(OGRE ${OGREVER} REQUIRED)
 link_directories(${OGRE_LIBRARY_DIRS})
-link_libraries(${OGRE_LIBRARIES})
+list(APPEND WF_LIBRARIES ${OGRE_LIBRARIES})
 include_directories(${OGRE_INCLUDE_DIRS})
 if (APPLE)
     if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
@@ -360,32 +341,34 @@ endif (APPLE)
 if (NOT OGRE_Terrain_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
 endif (NOT OGRE_Terrain_FOUND)
-link_libraries(${OGRE_Terrain_LIBRARIES})
-include_directories(${OGRE_Terrain_INCLUDE_DIRS})
+list(APPEND WF_LIBRARIES ${OGRE_Terrain_LIBRARIES})
 
 if (NOT OGRE_Paging_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Paging component. Make sure you've built Ogre with Paging support.")
 endif (NOT OGRE_Paging_FOUND)
-link_libraries(${OGRE_Paging_LIBRARIES})
-include_directories(${OGRE_Paging_INCLUDE_DIRS})
+list(APPEND WF_LIBRARIES ${OGRE_Paging_LIBRARIES})
 
 if (NOT OGRE_Overlay_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Overlay component. Make sure you've built Ogre with Overlay support.")
 endif (NOT OGRE_Overlay_FOUND)
-link_libraries(${OGRE_Overlay_LIBRARIES})
-include_directories(${OGRE_Overlay_INCLUDE_DIRS})
+list(APPEND WF_LIBRARIES ${OGRE_Overlay_LIBRARIES})
 
 if (NOT OGRE_MeshLodGenerator_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre MeshLodGenerator component. Make sure you've built Ogre with MeshLodGenerator support.")
 endif (NOT OGRE_MeshLodGenerator_FOUND)
-link_libraries(${OGRE_MeshLodGenerator_LIBRARIES})
-include_directories(${OGRE_MeshLodGenerator_INCLUDE_DIRS})
+list(APPEND WF_LIBRARIES ${OGRE_MeshLodGenerator_LIBRARIES})
 
 if (NOT OGRE_RTShaderSystem_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre RTShaderSystem component. Make sure you've built Ogre with RTShaderSystem support.")
 endif (NOT OGRE_RTShaderSystem_FOUND)
-link_libraries(${OGRE_RTShaderSystem_LIBRARIES})
-include_directories(${OGRE_RTShaderSystem_INCLUDE_DIRS})
+list(APPEND WF_LIBRARIES ${OGRE_RTShaderSystem_LIBRARIES})
+
+#Get all include directories from INTERFACE_INCLUDE_DIRECTORIES and add them, since we won't link directly to the targets here.
+foreach(var Terrain Paging Overlay MeshLodGenerator RTShaderSystem)
+    get_target_property(INC_DIR Ogre${var} INTERFACE_INCLUDE_DIRECTORIES)
+    include_directories(${INC_DIR})
+endforeach()
+
 
 if (NOT OGRE_Codec_FreeImage_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
