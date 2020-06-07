@@ -141,7 +141,7 @@ void LodManager::loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh)
 		const Ogre::String& meshName = it->second.meshName;
 		if (meshName != "") {
 			assert(Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(meshName));
-			mesh->updateManualLodLevel(static_cast<ushort>(it->first), meshName);
+			mesh->updateManualLodLevel(static_cast<Ogre::ushort>(it->first), meshName);
 		}
 	}
 }
