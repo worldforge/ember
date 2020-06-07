@@ -1,4 +1,4 @@
-    --Lists all of the graphical resources available
+--Lists all of the graphical resources available
 
 AssetsManager = {}
 
@@ -23,7 +23,6 @@ function AssetsManager:reloadResourceFromList(listbox, manager)
         end
     until item == nil
 end
-
 
 function AssetsManager:TexturesReload_Clicked(args)
     self:reloadResourceFromList(self.textures.controls.listbox, Ogre.TextureManager:getSingleton())
@@ -52,7 +51,6 @@ end
 function AssetsManager:MaterialsRefresh_Clicked(args)
     self.materials.refresh(self)
 end
-
 
 function AssetsManager:MaterialsList_SelectionChanged(args)
     local item = self.materials.controls.listbox:getFirstSelectedItem()
@@ -109,9 +107,6 @@ function AssetsManager:ImagesList_SelectionChanged(args)
         self.images.controls.textureView:setProperty("Image", CEGUI.PropertyHelper:imageToString(image))
     end
 end
-
-
-
 
 function AssetsManager:MeshesRefresh_Clicked(args)
     self.meshes.refresh(self)
@@ -264,7 +259,9 @@ end
 
 -- Rounds a number to given decimal characters.
 function AssetsManager:round(num, decimals)
-    if num == 0 then return 0 end
+    if num == 0 then
+        return 0
+    end
     decimals = decimals or 0
     decimals = decimals - math.ceil(math.log10(num))
     decimals = 10 ^ decimals
@@ -381,14 +378,11 @@ function AssetsManager:sceneNodes_rotationAdapter_changed()
     self.sceneNodes.selectedSceneNode:setOrientation(self.sceneNodes.rotationAdapter:getValue())
 end
 
-
-
 function AssetsManager:addSceneNode(sceneNode, level)
     --	if entity ~= nil then
 
     --	end
 end
-
 
 function AssetsManager:refresh()
     self.listholder:resetList()
@@ -408,7 +402,6 @@ function AssetsManager:addEntity(entity, level)
 
     local item = Ember.OgreView.Gui.ColouredListItem:new(label, entity:getId(), entity)
     self.listholder:addItem(item)
-
 
     local numContained = entity:numContained()
     for i = 0, numContained - 1 do
@@ -510,29 +503,38 @@ end
 
 function AssetsManager:LODSave(dist)
     local loddef = self.meshes.current.lodDefPtr.get()
-    if dist == nil or dist < 0 or not loddef:hasLodDistance(dist) then return end
+    if dist == nil or dist < 0 or not loddef:hasLodDistance(dist) then
+        return
+    end
 
     local distdef = loddef:getLodDistance(dist)
 
-    distdef:setMeshName(self.meshes.current.userlistboxSelected)
+    distdef.meshName = self.meshes.current.userlistboxSelected
 
     local combobox = self.widget:getWindow("LODReductionTypeCombobox")
     combobox = CEGUI.toCombobox(combobox)
     local item = combobox:getSelectedItem()
-    local reductionMethod
+    local reductionMethodIndex
     if item then
-        reductionMethod = combobox:getItemIndex(item)
+        reductionMethodIndex = combobox:getItemIndex(item)
     else
-        reductionMethod = 0
+        reductionMethodIndex = 0
     end
-    distdef:setReductionMethod(reductionMethod)
+
+    if reductionMethodIndex == 0 then
+        distdef.reductionMethod = Ogre.LodLevel.VRM_PROPORTIONAL
+    elseif reductionMethodIndex == 1 then
+        distdef.reductionMethod = Ogre.LodLevel.VRM_CONSTANT
+    else
+        distdef.reductionMethod = Ogre.LodLevel.VRM_COLLAPSE_COST
+    end
 
     local editbox = self.widget:getWindow("LODReductionParameterTextbox")
     local reductionValue = editbox:getText()
-    distdef:setReductionValue(reductionValue)
+    distdef.reductionValue = reductionValue
 
     local meshName = self.meshes.current.userlistboxSelected or ""
-    distdef:setMeshName(meshName)
+    distdef.meshName = meshName
 end
 
 function AssetsManager:LODLoad(dist)
@@ -556,7 +558,7 @@ function AssetsManager:LODLoad(dist)
     container:setEnabled(true)
     distdef = loddef:getLodDistance(dist)
 
-    local meshName = distdef:getMeshName()
+    local meshName = distdef.meshName
     self.meshes.current.userlistboxSelected = meshName
     local listbox = self.meshes.controls.userlistbox
     if loddef:getType() == 1 and listbox and listbox:getItemCount() > 0 and meshName ~= "" then
@@ -579,19 +581,29 @@ function AssetsManager:LODLoad(dist)
 
     local combobox = self.widget:getWindow("LODReductionTypeCombobox")
     combobox = CEGUI.toCombobox(combobox)
-    combobox:setItemSelectState(distdef:getReductionMethodInt(), true)
+    local index = 0
+    if distdef.reductionMethod == Ogre.LodLevel.VRM_PROPORTIONAL then
+        index = 0
+    elseif distdef.reductionMethod == Ogre.LodLevel.VRM_CONSTANT then
+        index = 1
+    else
+        index = 2
+    end
+
+    combobox:setItemSelectState(index, true)
 
     if not self.meshes.current.scrollOnStack then
         self:LODUpdateScroll(true, true)
     end
 
-    self.meshes.current.userlistboxSelected = distdef:getMeshName()
+    self.meshes.current.userlistboxSelected = distdef.meshName
 end
 
 function AssetsManager:LODUpdate()
 
     local loddef = self.meshes.current.lodDefPtr.get()
-    if not self.meshes.current.updateOnStack and loddef then -- recursion protection
+    if not self.meshes.current.updateOnStack and loddef then
+        -- recursion protection
         self.meshes.current.updateOnStack = true
         self:LODSave(self.meshes.current.selectedDistance)
         self.meshes.current.selectedDistance = self:LODGetSelected()
@@ -635,7 +647,9 @@ function AssetsManager:LODUpdateForcedLevel()
     if shouldForce and dist then
         local mesh = self.meshes.current.meshPtr.get()
         local loddef = self.meshes.current.lodDefPtr.get()
-        if not loddef then return end
+        if not loddef then
+            return
+        end
         -- fix rounding problems.
         if loddef:getStrategy() == 0 then
             -- distance Lod strategy
@@ -655,9 +669,13 @@ end
 
 function AssetsManager:LODAdd(distance)
     local loddef = self.meshes.current.lodDefPtr.get()
-    if not loddef then return end
+    if not loddef then
+        return
+    end
     distance = tonumber(distance)
-    if not distance or loddef:hasLodDistance(distance) then return end
+    if not distance or loddef:hasLodDistance(distance) then
+        return
+    end
 
     distdef = loddef:createDistance(distance)
     local selected = self:LODGetSelected()
@@ -674,7 +692,9 @@ end
 function AssetsManager:LODPaste(distance)
     local loddef = self.meshes.current.lodDefPtr.get()
     distance = tonumber(distance)
-    if not distance or loddef:hasLodDistance(distance) then return end
+    if not distance or loddef:hasLodDistance(distance) then
+        return
+    end
 
     local listbox = self.widget:getWindow("LODDistances")
     listbox = CEGUI.toListbox(listbox)
@@ -684,13 +704,13 @@ function AssetsManager:LODPaste(distance)
     loddef:setType(type)
 
     local meshname = self.clipboard.meshName
-    distdef:setMeshName(meshname)
+    distdef.meshName = meshname
 
     local reductionMethod = self.clipboard.reductionMethod
-    distdef:setReductionMethod(reductionMethod)
+    distdef.reductionMethod = reductionMethod
 
     local reductionValue = self.clipboard.reductionValue
-    distdef:setReductionValue(reductionValue)
+    distdef.reductionValue = reductionValue
 
     local selected = self:LODGetSelected()
     self:LODSave(selected)
@@ -721,7 +741,9 @@ function AssetsManager:LODSortDistances()
         table.sort(distances)
     else
         -- Pixel count Lod strategy needs inverted order.
-        table.sort(distances, function(a, b) return a > b end)
+        table.sort(distances, function(a, b)
+            return a > b
+        end)
     end
 
     listbox:resetList()
@@ -745,16 +767,16 @@ function AssetsManager:LODUpdateScroll(shouldUpdateText, shouldUpdateScroll, val
     local distdef = loddef:getLodDistance(dist)
 
     if not value then
-        value = distdef:getReductionValue()
+        value = distdef.reductionValue
     end
 
     local scrollSize
     local stepSize
-    if distdef:getReductionMethodInt() == 0 then
+    if distdef.reductionMethod == 0 then
         -- Proportional
         scrollSize = 1
         stepSize = 0.01
-    elseif distdef:getReductionMethodInt() == 1 then
+    elseif distdef.reductionMethod == 1 then
         -- Constant
         local mesh = self.meshes.current.meshPtr.get()
         scrollSize = Ember.OgreView.Gui.MeshInfoProvider:calcUniqueVertexCount(mesh)
@@ -882,7 +904,6 @@ function AssetsManager:buildWidget()
         self.windows.controls.heightRel:subscribeEvent("TextChanged", updateWindowSize)
         self.windows.controls.heightFixed:subscribeEvent("TextChanged", updateWindowSize)
 
-
         self.windows.refresh = function(self)
             self.windows.listholder:resetList()
 
@@ -980,7 +1001,6 @@ function AssetsManager:buildWidget()
         self.widget:getWindow("ShadersReload"):subscribeEvent("Clicked", self.ShadersReload_Clicked, self)
         self.widget:getWindow("ShadersList"):subscribeEvent("SelectionChanged", self.ShadersList_SelectionChanged, self)
 
-
         self.widget:getWindow("MeshInfoSaveLoddefButton"):subscribeEvent("Clicked", function(args)
             self:LODUpdate()
             local mesh = self.meshes.current.meshPtr.get()
@@ -1040,16 +1060,18 @@ function AssetsManager:buildWidget()
         self.widget:getWindow("LODCopyButton"):subscribeEvent("Clicked", function(args)
             local loddef = self.meshes.current.lodDefPtr.get()
             local distance = self:LODGetSelected()
-            if not distance or not loddef:hasLodDistance(distance) then return end
+            if not distance or not loddef:hasLodDistance(distance) then
+                return
+            end
 
             local distdef = loddef:getLodDistance(distance)
 
             self:LODSave(distance)
             self.clipboard = {}
             self.clipboard.type = loddef:getType()
-            self.clipboard.meshName = distdef:getMeshName()
-            self.clipboard.reductionMethod = distdef:getReductionMethod()
-            self.clipboard.reductionValue = distdef:getReductionValue()
+            self.clipboard.meshName = distdef.meshName
+            self.clipboard.reductionMethod = distdef.reductionMethod
+            self.clipboard.reductionValue = distdef.reductionValue
             return true
         end)
 
@@ -1131,7 +1153,6 @@ function AssetsManager:buildWidget()
             return true
         end)
 
-
         self.widget:getWindow("MeshAnimation"):subscribeEvent("ListSelectionAccepted", function(args)
             local combobox = self.widget:getWindow("MeshAnimation")
             local item = combobox:getSelectedItem()
@@ -1154,7 +1175,6 @@ function AssetsManager:buildWidget()
             self.meshes.renderer:resetCameraOrientation()
             return true
         end)
-
 
         self.widget:getWindow("ForceLodLevelCheckbox"):subscribeEvent("SelectStateChanged", function(args)
             self:LODUpdateForcedLevel()
@@ -1183,8 +1203,6 @@ function AssetsManager:buildWidget()
 
         self.widget:enableCloseButton()
     end
-
-
 
     connect(self.connectors, self.widget.EventFirstTimeShown, setup)
     self.widget:loadMainSheet("AssetsManager.layout", "AssetsManager")

@@ -23,90 +23,69 @@
 #include "LodDefinition.h"
 #include "LodDefinitionManager.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Lod
-{
-
-LodDistance::LodDistance() :
-	mReductionMethod(Ogre::LodLevel::VRM_PROPORTIONAL),
-	mReductionValue(0.5f)
-{
-
-}
+namespace Ember {
+namespace OgreView {
+namespace Lod {
 
 LodDefinition::LodDefinition(Ogre::ResourceManager* creator,
-                             const Ogre::String& name,
-                             Ogre::ResourceHandle handle,
-                             const Ogre::String& group,
-                             bool isManual,
-                             Ogre::ManualResourceLoader* loader) :
-	Resource(creator, name, handle, group, isManual, loader),
-	mUseAutomaticLod(true),
-	mType(LT_AUTOMATIC_VERTEX_REDUCTION),
-	mStrategy(LS_DISTANCE)
-{
+							 const Ogre::String& name,
+							 Ogre::ResourceHandle handle,
+							 const Ogre::String& group,
+							 bool isManual,
+							 Ogre::ManualResourceLoader* loader) :
+		Resource(creator, name, handle, group, isManual, loader),
+		mUseAutomaticLod(true),
+		mType(LT_AUTOMATIC_VERTEX_REDUCTION),
+		mStrategy(LS_DISTANCE) {
 	createParamDictionary("LodDefinition");
 }
 
-void LodDefinition::addLodDistance(Ogre::Real distVal, const LodDistance& distance)
-{
+void LodDefinition::addLodDistance(Ogre::Real distVal, const LodDistance& distance) {
 	mManualLod.insert(std::make_pair(distVal, distance));
 }
 
-bool LodDefinition::hasLodDistance(Ogre::Real distVal) const
-{
+bool LodDefinition::hasLodDistance(Ogre::Real distVal) const {
 	return mManualLod.find(distVal) != mManualLod.end();
 }
 
-LodDistance& LodDefinition::getLodDistance(Ogre::Real distVal)
-{
+LodDistance& LodDefinition::getLodDistance(Ogre::Real distVal) {
 	auto it = mManualLod.find(distVal);
 	assert(it != mManualLod.end());
 	return it->second;
 }
 
-void LodDefinition::removeLodDistance(Ogre::Real distVal)
-{
+void LodDefinition::removeLodDistance(Ogre::Real distVal) {
 	auto it = mManualLod.find(distVal);
 	assert(it != mManualLod.end());
 	mManualLod.erase(it);
 }
 
 
-void LodDefinition::loadImpl()
-{
+void LodDefinition::loadImpl() {
 
 }
 
-void LodDefinition::unloadImpl()
-{
+void LodDefinition::unloadImpl() {
 
 }
 
-size_t LodDefinition::calculateSize() const
-{
+size_t LodDefinition::calculateSize() const {
 	return 0;
 }
 
-LodDefinition::~LodDefinition()
-{
+LodDefinition::~LodDefinition() {
 	unload();
 }
 
-std::vector<float> LodDefinition::createListOfDistances()
-{
+std::vector<float> LodDefinition::createListOfDistances() {
 	std::vector<float> out;
-	for (auto & it : mManualLod) {
+	for (auto& it : mManualLod) {
 		out.push_back(it.first);
 	}
 	return out;
 }
 
-LodDistance& LodDefinition::createDistance(Ogre::Real distance)
-{
+LodDistance& LodDefinition::createDistance(Ogre::Real distance) {
 	assert(mManualLod.find(distance) == mManualLod.end());
 	return mManualLod[distance];
 }

@@ -128,8 +128,8 @@ void LodManager::loadAutomaticLodImpl(T it, T itEnd, Ogre::LodConfig& lodConfig)
 		const LodDistance& dist = it->second;
 		Ogre::LodLevel lodLevel;
 		lodLevel.distance = it->first;
-		lodLevel.reductionMethod = dist.getReductionMethod();
-		lodLevel.reductionValue = dist.getReductionValue();
+		lodLevel.reductionMethod = dist.reductionMethod;
+		lodLevel.reductionValue = dist.reductionValue;
 		lodConfig.levels.push_back(lodLevel);
 	}
 }
@@ -138,7 +138,7 @@ template<typename T>
 void LodManager::loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh)
 {
 	for (; it != itEnd; it++) {
-		const Ogre::String& meshName = it->second.getMeshName();
+		const Ogre::String& meshName = it->second.meshName;
 		if (meshName != "") {
 			assert(Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(meshName));
 			mesh->updateManualLodLevel(static_cast<ushort>(it->first), meshName);

@@ -31,76 +31,36 @@
 #include <string>
 #include <map>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Lod
-{
+namespace Ember {
+namespace OgreView {
+namespace Lod {
 
 
 /**
  * @brief Lod distance config container.
  */
-class LodDistance
-{
-public:
+struct LodDistance {
+	/**
+	 * The mesh name of the Lod distance, which is used in user created meshes.
+	 */
+	std::string meshName;
 
 	/**
-	 * @brief Ctor.
-	 *
-	 * By default, the settings are set to proportional automatic vertex reduction to 50% of original vertex count.
+	 * The vertex reduction method of the Lod distance, which is used in automatic vertex reduction.
 	 */
-	LodDistance();
+	Ogre::LodLevel::VertexReductionMethod reductionMethod = Ogre::LodLevel::VRM_PROPORTIONAL;
 
 	/**
-	 * @brief Returns the mesh name of the Lod distance, which is used in user created meshes.
+	 * The vertex reduction value of the Lod distance, which is used in automatic vertex reduction.
 	 */
-	const std::string& getMeshName() const;
-
-	/**
-	 * @brief Sets the mesh name of the Lod distance, which is used in user created meshes.
-	 */
-	void setMeshName(const std::string& meshName);
-
-	/**
-	 * @brief Returns the vertex reduction method of the Lod distance, which is used in automatic vertex reduction.
-	 */
-	Ogre::LodLevel::VertexReductionMethod getReductionMethod() const;
-
-	/**
-	 * @brief Sets the vertex reduction method of the Lod distance, which is used in automatic vertex reduction.
-	 */
-	void setReductionMethod(Ogre::LodLevel::VertexReductionMethod reductionMethod);
-
-	/**
-	 * @brief Sets the vertex reduction method of the Lod distance. You should not use this if possible.
-	 *        This is required for lua bindings.
-	 */
-	void setReductionMethod(int reductionMethod);
-
-	/**
-	 * @brief Returns the vertex reduction value of the Lod distance, which is used in automatic vertex reduction.
-	 */
-	float getReductionValue() const;
-
-	/**
-	 * @brief Sets the vertex reduction value of the Lod distance, which is used in automatic vertex reduction.
-	 */
-	void setReductionValue(float reductionValue);
-
-private:
-	std::string mMeshName;
-	Ogre::LodLevel::VertexReductionMethod mReductionMethod;
-	float mReductionValue;
+	float reductionValue = 0.5f;
 };
 
 /**
  * @brief Lod Definition resource. Each *.loddef file is represented by a LodDefinition instance.
  */
 class LodDefinition :
-	public Ogre::Resource
-{
+		public Ogre::Resource {
 public:
 	typedef std::map<Ogre::Real, LodDistance> LodDistanceMap;
 
@@ -140,11 +100,11 @@ public:
 	 * By default, the Automatic mesh Lod management system is enabled.
 	 */
 	LodDefinition(Ogre::ResourceManager* creator,
-	              const Ogre::String& name,
-	              Ogre::ResourceHandle handle,
-	              const Ogre::String& group,
-	              bool isManual = false,
-	              Ogre::ManualResourceLoader* loader = nullptr);
+				  const Ogre::String& name,
+				  Ogre::ResourceHandle handle,
+				  const Ogre::String& group,
+				  bool isManual = false,
+				  Ogre::ManualResourceLoader* loader = nullptr);
 
 	/**
 	 * @brief Dtor.
@@ -238,6 +198,7 @@ public:
 	 * @brief Removes a Lod distance from the manual Lod configuration.
 	 */
 	void removeLodDistance(Ogre::Real distVal);
+
 	/**
 	 * @brief Returns a reference to the manual Lod configuration.
 	 *
@@ -254,76 +215,35 @@ private:
 
 typedef Ogre::SharedPtr<LodDefinition> LodDefinitionPtr;
 
-inline const std::string& LodDistance::getMeshName() const
-{
-	return mMeshName;
-}
-
-inline void LodDistance::setMeshName(const std::string& meshName)
-{
-	mMeshName = meshName;
-}
-
-inline Ogre::LodLevel::VertexReductionMethod LodDistance::getReductionMethod() const
-{
-	return mReductionMethod;
-}
-
-inline void LodDistance::setReductionMethod(Ogre::LodLevel::VertexReductionMethod reductionMethod)
-{
-	mReductionMethod = reductionMethod;
-}
-inline void LodDistance::setReductionMethod(int reductionMethod)
-{
-	mReductionMethod = (Ogre::LodLevel::VertexReductionMethod) reductionMethod;
-}
-
-inline float LodDistance::getReductionValue() const
-{
-	return mReductionValue;
-}
-
-inline void LodDistance::setReductionValue(float reductionValue)
-{
-	mReductionValue = reductionValue;
-}
-
-inline bool LodDefinition::getUseAutomaticLod() const
-{
+inline bool LodDefinition::getUseAutomaticLod() const {
 	return mUseAutomaticLod;
 }
 
-inline void LodDefinition::setUseAutomaticLod(bool useAutomaticLod)
-{
+inline void LodDefinition::setUseAutomaticLod(bool useAutomaticLod) {
 	mUseAutomaticLod = useAutomaticLod;
 }
 
-inline LodDefinition::LodType LodDefinition::getType() const
-{
+inline LodDefinition::LodType LodDefinition::getType() const {
 	return mType;
 }
 
-inline void LodDefinition::setType(LodType type)
-{
+inline void LodDefinition::setType(LodType type) {
 	mType = type;
 }
 
-inline LodDefinition::LodStrategy LodDefinition::getStrategy() const
-{
+inline LodDefinition::LodStrategy LodDefinition::getStrategy() const {
 	return mStrategy;
 }
 
-inline void LodDefinition::setStrategy(LodStrategy strategy)
-{
+inline void LodDefinition::setStrategy(LodStrategy strategy) {
 	mStrategy = strategy;
 }
 
-inline const LodDefinition::LodDistanceMap& LodDefinition::getManualLodData() const
-{
+inline const LodDefinition::LodDistanceMap& LodDefinition::getManualLodData() const {
 	return mManualLod;
 }
-inline size_t LodDefinition::getLodDistanceCount() const
-{
+
+inline size_t LodDefinition::getLodDistanceCount() const {
 	return mManualLod.size();
 }
 

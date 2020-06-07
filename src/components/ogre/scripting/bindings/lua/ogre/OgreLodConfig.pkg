@@ -63,42 +63,7 @@ struct LodLevel {
 		VRM_COLLAPSE_COST
 	};
 
-	/**
-	 * @brief Distance to swap the Lod.
-	 *
-	 * This depends on LodStrategy.
-	 */
-	Real distance;
 
-	/**
-	 * @brief Reduction method to use.
-	 *
-	 * @see ProgressiveMeshGenerator::VertexReductionMethod
-	 */
-	VertexReductionMethod reductionMethod;
-
-	/**
-	 * @brief The value, which depends on reductionMethod.
-	 */
-	Real reductionValue;
-
-	/**
-	 * @brief This is set by ProgressiveMeshGenerator::build() function.
-	 *
-	 * Use Mesh::getNumLodLevels() for generated Lod count.
-	 */
-	size_t outUniqueVertexCount;
-
-	/**
-	 * @brief Whether the Lod level generation was skipped, because it has same vertex count as the previous Lod level.
-	 */
-	bool outSkipped;
 };
 
-struct LodConfig {
-	MeshPtr mesh;
-	LodStrategy* strategy;
-	typedef vector<LodLevel>::type LodLevelList;
-	LodLevelList levels;
-};
 }

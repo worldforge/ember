@@ -91,7 +91,7 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 						const char* tmp = elem->GetText();
 						bool isValidMeshName = Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(tmp);
 						if (tmp && isValidMeshName) {
-							dist.setMeshName(tmp);
+							dist.meshName = tmp;
 						} else {
 							S_LOG_FAILURE(
 									lodDef.getName() <<
@@ -107,14 +107,14 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 						const char* tmp = elem->GetText();
 						if (tmp) {
 							if (strcmp(tmp, "constant") == 0) {
-								dist.setReductionMethod(Ogre::LodLevel::VRM_CONSTANT);
+								dist.reductionMethod = Ogre::LodLevel::VRM_CONSTANT;
 							} else if (strcmp(tmp, "proportional") == 0) {
-								dist.setReductionMethod(Ogre::LodLevel::VRM_PROPORTIONAL);
+								dist.reductionMethod = Ogre::LodLevel::VRM_PROPORTIONAL;
 							} else {
-								dist.setReductionMethod(Ogre::LodLevel::VRM_COLLAPSE_COST);
+								dist.reductionMethod = Ogre::LodLevel::VRM_COLLAPSE_COST;
 							}
 						} else {
-							dist.setReductionMethod(Ogre::LodLevel::VRM_PROPORTIONAL);
+							dist.reductionMethod = Ogre::LodLevel::VRM_PROPORTIONAL;
 						}
 					}
 
@@ -123,7 +123,7 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 					if (elem) {
 						const char* tmp = elem->GetText();
 						if (tmp) {
-							dist.setReductionValue(Ogre::StringConverter::parseReal(tmp));
+							dist.reductionValue = Ogre::StringConverter::parseReal(tmp);
 						}
 					}
 				}
@@ -176,7 +176,7 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 
 			// <level>...</level> <level>...</level> <level>...</level>
 			const LodDefinition::LodDistanceMap& manualLod = lodDef->getManualLodData();
-			for (const auto & it : manualLod) {
+			for (const auto& it : manualLod) {
 
 				// <level distance="10">...</level>
 				TiXmlElement levelElem("level");
@@ -187,14 +187,14 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 					if (lodDef->getType() == LodDefinition::LT_USER_CREATED_MESH) {
 						// <meshName>.../test.mesh</meshName>
 						TiXmlElement meshElem("meshName");
-						TiXmlText meshText(dist.getMeshName());
+						TiXmlText meshText(dist.meshName);
 						meshElem.InsertEndChild(meshText);
 						levelElem.InsertEndChild(meshElem);
 					} else {
 						// <method>constant|proportional</method>
 						TiXmlElement methodElem("method");
 						const char* pMethodText;
-						switch (dist.getReductionMethod()) {
+						switch (dist.reductionMethod) {
 							case Ogre::LodLevel::VRM_PROPORTIONAL:
 								pMethodText = "proportional";
 								break;
@@ -216,7 +216,7 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 
 						// <value>0.5</value>
 						TiXmlElement valueElem("value");
-						TiXmlText valueText(Ogre::StringConverter::toString(dist.getReductionValue()));
+						TiXmlText valueText(Ogre::StringConverter::toString(dist.reductionValue));
 						valueElem.InsertEndChild(valueText);
 
 						levelElem.InsertEndChild(methodElem);
