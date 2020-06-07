@@ -111,6 +111,7 @@ std::string getAppSupportDirPath()
 }
 
 #endif
+
 #include "Version.h"
 
 namespace Ember {
@@ -152,7 +153,9 @@ ConfigService::ConfigService(std::string prefix) :
 		} else {
 			mEtcDir = mPrefix + "/etc/ember/";
 		}
-		mPluginDir = mPrefix  + "/lib64/ember/widgets";
+		//Get the last directory from the libdir
+		auto libdirectory = *boost::filesystem::path(EMBER_LIBDIR).rbegin();
+		mPluginDir = boost::filesystem::path(mPrefix) / libdirectory / "ember" / "widgets";
 	}
 	S_LOG_INFO("Setting config directory to " << mEtcDir.string());
 #endif
@@ -250,6 +253,7 @@ void ConfigService::setValue(const std::string& section, const std::string& key,
 bool ConfigService::isItemSet(const std::string& section, const std::string& key, const std::string& value) const {
 	return (hasItem(section, key) && getValue(section, key) == value);
 }
+
 bool ConfigService::itemExists(const std::string& section, const std::string& key) const {
 	return hasItem(section, key);
 }
@@ -322,7 +326,6 @@ bool ConfigService::saveConfig(const boost::filesystem::path& filename, unsigned
 
 	return exportConfig.writeToFile(filename.string());
 }
-
 
 
 void ConfigService::updatedConfig(const std::string& section, const std::string& key) {
