@@ -125,7 +125,6 @@ loadScript("Math.lua")
 
 loadScript("MainIconBar.lua")
 loadScript("Console.lua")
-loadScript("Server.lua")
 loadScript("ServerBrowser.lua")
 loadScript("Performance.lua")
 loadScript("EntityPicker.lua")
