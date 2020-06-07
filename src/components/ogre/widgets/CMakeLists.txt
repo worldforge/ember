@@ -32,27 +32,27 @@ add_library(widgets OBJECT
         )
 
 
-wf_add_plugin(ServerWidget
-        ServerWidget.cpp
-        )
-wf_add_plugin(Quit
-        Quit.cpp
-        )
-wf_add_plugin(InspectWidget
-        InspectWidget.cpp
-        )
-
-wf_add_plugin(Help
-        Help.cpp
-        )
-
-wf_add_plugin(ContainerWidget
-        ContainerWidget.cpp
-        )
-
-wf_add_plugin(IngameChatWidget
-        IngameChatWidget.cpp
-        )
+#wf_add_plugin(ServerWidget
+#        ServerWidget.cpp
+#        )
+#wf_add_plugin(Quit
+#        Quit.cpp
+#        )
+#wf_add_plugin(InspectWidget
+#        InspectWidget.cpp
+#        )
+#
+#wf_add_plugin(Help
+#        Help.cpp
+#        )
+#
+#wf_add_plugin(ContainerWidget
+#        ContainerWidget.cpp
+#        )
+#
+#wf_add_plugin(IngameChatWidget
+#        IngameChatWidget.cpp
+#        )
 
 file(GLOB LAYOUT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.layout")
 install(FILES ${LAYOUT_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/gui/cegui/datafiles/layouts/)

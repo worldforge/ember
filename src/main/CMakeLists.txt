@@ -71,7 +71,31 @@ install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR
 
 get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
+wf_add_plugin(ServerWidget
+        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/ServerWidget.cpp
+        )
+wf_add_plugin(Quit
+        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/Quit.cpp
+        )
+wf_add_plugin(InspectWidget
+        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/InspectWidget.cpp
+        )
+
+wf_add_plugin(Help
+        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/Help.cpp
+        )
+
+wf_add_plugin(ContainerWidget
+        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/ContainerWidget.cpp
+        )
+
+wf_add_plugin(IngameChatWidget
+        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/IngameChatWidget.cpp
+        )
+
 #add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
 foreach (PLUGIN ${_PLUGIN_LIBS_LIST})
     add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
+    target_link_libraries(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
 endforeach (PLUGIN)
+
