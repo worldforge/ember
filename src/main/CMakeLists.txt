@@ -73,7 +73,6 @@ endif ()
 
 install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
-get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
 wf_add_plugin(ServerWidget
         ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/ServerWidget.cpp
@@ -96,11 +95,12 @@ wf_add_plugin(ContainerWidget
 wf_add_plugin(IngameChatWidget
         ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/IngameChatWidget.cpp
         )
+get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
 #add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
 foreach (PLUGIN ${_PLUGIN_LIBS_LIST})
     add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
     #By linking to the exe the needed symbols should be resolved. At least in theory. Not sure how well it works in reality.
-    target_link_libraries(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
+    target_link_libraries(${PLUGIN} PRIVATE ${EMBER_EXECUTABLE_NAME})
 endforeach (PLUGIN)
 
