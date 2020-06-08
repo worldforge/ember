@@ -108,7 +108,13 @@ macro(wf_add_plugin _LIB_NAME _SOURCE_FILES)
         #We need to tell msvc to ignore any problems with resolving symbols since they will be resolved when the plugin is loaded.
         #TODO: make the symbols exported anyway so this isn't needed
         set_target_properties(${_LIB_NAME} PROPERTIES LINK_FLAGS "/FORCE:UNRESOLVED")
-    endif()
+    elseif ()
+        set_target_properties(${_LIB_NAME} PROPERTIES LINK_FLAGS "-Wl,-undefined -Wl,dynamic_lookup \
+    -Wl,-no_pie \
+    -Wl,-search_paths_first")
+    endif ()
+
+
     set_property(GLOBAL APPEND PROPERTY PLUGIN_LIBS_LIST "${_LIB_NAME}")
     #    if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     #        conan_target_link_libraries(${_LIB_NAME})
