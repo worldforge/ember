@@ -193,9 +193,7 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
         set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
     else ()
         if (APPLE)
-            #There's a bug in the build of Ogre 1.12.4 for OSX which installs the media with an extra slash at the end.
-            #For now we'll "fix" it by specifying the path with the extra slash here.
-            set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/share/OGRE/Media/)
+            set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
         else ()
             set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/share/OGRE/Media)
         endif ()
