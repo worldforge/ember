@@ -20,9 +20,9 @@
 #include "config.h"
 #endif
 
-#include <services/input/Input.h>
-#include <services/logging/ErisLogReciever.h>
 #include "Application.h"
+#include "services/input/Input.h"
+#include "services/logging/ErisLogReciever.h"
 #include "ConfigBoundLogObserver.h"
 #include "framework/Tokeniser.h"
 #include "services/config/ConfigService.h"
@@ -43,7 +43,6 @@
 
 extern "C"
 int main(int argc, char** argv) {
-	int exitStatus(0);
 	bool exit_program = false;
 	std::string prefix = PREFIX;
 	std::string homeDir;
@@ -175,9 +174,9 @@ int main(int argc, char** argv) {
 		}
 	} catch (const std::exception& ex) {
 		std::cerr << "Unexpected error, aborting.\n\r\t" << ex.what() << std::endl;
-		exitStatus = 1;
+		return 1;
 	}
 	std::cout << "Ember shut down successfully." << std::endl;
 
-	return exitStatus;
+	return 0;
 }
