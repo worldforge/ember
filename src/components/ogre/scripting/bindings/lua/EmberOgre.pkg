@@ -200,7 +200,6 @@ class EmberOgre
 	sigc::signal<void, Ember::EmberEntity&> EventCreatedAvatarEntity;
 		
 	sigc::signal<void, Ember::OgreView::GUIManager&> EventGUIManagerCreated;
-	sigc::signal<void, Ember::OgreView::GUIManager&> EventGUIManagerInitialized;
 
 	/**
 	 * @brief Emitted before the GUIManager is destroyed.

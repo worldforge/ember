@@ -56,11 +56,6 @@ struct EmberOgreSignals
 	sigc::signal<void, GUIManager&> EventGUIManagerCreated;
 
 	/**
-	 * @brief Emitted after the GUIManager has been initialized.
-	 */
-	sigc::signal<void, GUIManager&> EventGUIManagerInitialized;
-
-	/**
 	 * @brief Emitted before the GUIManager is destroyed.
 	 *
 	 * Right after this has been emitted a garbage collection sweep of all scripting provider will occur.

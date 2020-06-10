@@ -179,12 +179,6 @@ public:
 	CEGUI::Window* getMainSheet() const;
 
 	/**
-	 * @brief Initializes the gui system.
-	 * Be sure to call this before you use the gui system.
-	 */
-	void initialize();
-
-	/**
 	 *    true if we're in GUI mode, which means that input events will be sent to the CEGUI system instead of the "world"
 	 * @return
 	 */

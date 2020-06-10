@@ -463,13 +463,6 @@ bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService
 			S_LOG_WARNING("Failed to change directory to '" << configSrv.getHomeDirectory(BaseDirType_DATA).string() << "'");
 		}
 
-		try {
-			mGUIManager->initialize();
-			EventGUIManagerInitialized.emit(*mGUIManager);
-		} catch (...) {
-			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-			throw Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
-		}
 	}
 
 	mResourceLoader->unloadUnusedResources();

@@ -167,6 +167,11 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 
 		mActiveWidgetHandler = std::make_unique<Gui::ActiveWidgetHandler>(*this);
 
+
+		mIconManager = std::make_unique<Gui::Icons::IconManager>();
+		mEntityIconManager = std::make_unique<Gui::EntityIconManager>(*this);
+		mActionBarIconManager = std::make_unique<Gui::ActionBarIconManager>(*this);
+
 		Ogre::Root::getSingleton().addFrameListener(this);
 
 
@@ -197,26 +202,6 @@ GUIManager::~GUIManager() {
 	EntityTooltip::deregisterFactory();
 
 	Ogre::Root::getSingleton().removeFrameListener(this);
-}
-
-void GUIManager::initialize() {
-	try {
-		mIconManager = std::make_unique<Gui::Icons::IconManager>();
-	} catch (const std::exception& e) {
-		S_LOG_FAILURE("GUIManager - error when creating icon manager." << e);
-	}
-
-	try {
-		mEntityIconManager = std::make_unique<Gui::EntityIconManager>(*this);
-	} catch (const std::exception& e) {
-		S_LOG_FAILURE("GUIManager - error when creating entity icon manager." << e);
-	}
-	try {
-		mActionBarIconManager = std::make_unique<Gui::ActionBarIconManager>(*this);
-	} catch (const std::exception& e) {
-		S_LOG_FAILURE("GUIManager - error when creating ActionBar icon manager." << e);
-	}
-
 }
 
 void GUIManager::render() {
