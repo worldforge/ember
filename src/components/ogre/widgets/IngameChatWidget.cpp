@@ -69,10 +69,10 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-WidgetPluginCallback registerWidget(GUIManager& guiManager) {
+WidgetPluginCallback IngameChatWidget::registerWidget(GUIManager& guiManager) {
 
 	struct State {
-		std::unique_ptr<Gui::IngameChatWidget> instance;
+		std::unique_ptr<IngameChatWidget> instance;
 	};
 	auto state = std::make_shared<State>();
 

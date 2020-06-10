@@ -15,6 +15,7 @@ set(DESCRIPTION "The Worldforge client.")
 
 include(GNUInstallDirs)
 include(FindPkgConfig)
+include(CMakeDependentOption)
 
 # Version setup. Figure out the version from 'git describe' if VERSION isn't set externally.
 message(${PROJECT_SOURCE_DIR})
@@ -88,6 +89,12 @@ include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${P
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 
+#On Unix we'll automatically build all widgets as reloadable modules, but not on Windows (since we couldn't get it to work as we would like).
+cmake_dependent_option(WF_USE_WIDGET_PLUGINS "Build widgets as reloadable plugins." 1 "UNIX" 0)
+if (WF_USE_WIDGET_PLUGINS)
+    add_definitions(-DWF_USE_WIDGET_PLUGINS)
+endif ()
+
 #Needs to declare a GLOBAL variable to pass plugin list down to the src/main/CMakeFile.
 define_property(GLOBAL PROPERTY PLUGIN_LIBS_LIST
         BRIEF_DOCS "Plugins registered."
@@ -114,11 +121,7 @@ macro(wf_add_plugin _LIB_NAME _SOURCE_FILES)
     -Wl,-search_paths_first")
     endif ()
 
-
     set_property(GLOBAL APPEND PROPERTY PLUGIN_LIBS_LIST "${_LIB_NAME}")
-    #    if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-    #        conan_target_link_libraries(${_LIB_NAME})
-    #    endif ()
     message(STATUS "Registered widget plugin ${_LIB_NAME}")
 
 endmacro()

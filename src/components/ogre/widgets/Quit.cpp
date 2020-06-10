@@ -43,7 +43,7 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-WidgetPluginCallback registerWidget(GUIManager& guiManager) {
+WidgetPluginCallback Quit::registerWidget(GUIManager& guiManager) {
 
 	auto widget = std::make_shared<Quit>(guiManager);
 

@@ -450,6 +450,10 @@ bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService
 		try {
 			mGUIManager = std::make_unique<GUIManager>(*mGuiSetup, configSrv, mServerService, mainLoopController);
 			EventGUIManagerCreated.emit(*mGUIManager);
+		} catch (const std::exception& ex) {
+			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+			S_LOG_FAILURE("Error when loading GUIManager." << ex);
+			throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
 			throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");

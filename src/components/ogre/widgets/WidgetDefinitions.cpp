@@ -35,6 +35,17 @@
 
 #include <CEGUI/WindowManager.h>
 
+#ifndef WF_USE_WIDGET_PLUGINS
+
+#include "ServerWidget.h"
+#include "Quit.h"
+#include "InspectWidget.h"
+#include "Help.h"
+#include "ContainerWidget.h"
+#include "IngameChatWidget.h"
+
+#endif
+
 
 namespace Ember {
 namespace OgreView {
@@ -49,6 +60,16 @@ WidgetDefinitions::~WidgetDefinitions() {
 
 
 void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
+
+#ifndef WF_USE_WIDGET_PLUGINS
+	S_LOG_INFO("Loading Widgets statically");
+	mPlugins.emplace("ServerWidget", PluginEntry{ServerWidget::registerWidget(guiManager)});
+	mPlugins.emplace("Quit", PluginEntry{Quit::registerWidget(guiManager)});
+	mPlugins.emplace("InspectWidget", PluginEntry{InspectWidget::registerWidget(guiManager)});
+	mPlugins.emplace("Help", PluginEntry{Help::registerWidget(guiManager)});
+	mPlugins.emplace("ContainerWidget", PluginEntry{ContainerWidget::registerWidget(guiManager)});
+	mPlugins.emplace("IngameChatWidget", PluginEntry{IngameChatWidget::registerWidget(guiManager)});
+#else
 	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
 	Ember::FileSystemObserver::getSingleton().add_directory(pluginDirPath, [&](const Ember::FileSystemObserver::FileSystemEvent& event) {
 		if (event.ev.type == boost::asio::dir_monitor_event::added || event.ev.type == boost::asio::dir_monitor_event::modified) {
@@ -74,13 +95,16 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 			}
 		}
 	});
+
+
+	S_LOG_INFO("Loading Widgets dynamically");
 	registerPluginWithName(guiManager, "ServerWidget");
 	registerPluginWithName(guiManager, "Quit");
 	registerPluginWithName(guiManager, "InspectWidget");
 	registerPluginWithName(guiManager, "Help");
 	registerPluginWithName(guiManager, "ContainerWidget");
 	registerPluginWithName(guiManager, "IngameChatWidget");
-
+#endif
 }
 
 void WidgetDefinitions::registerPluginWithName(GUIManager& guiManager, const std::string& pluginName) {
@@ -93,6 +117,7 @@ void WidgetDefinitions::registerPluginWithName(GUIManager& guiManager, const std
 
 
 void WidgetDefinitions::registerPlugin(GUIManager& guiManager, const boost::filesystem::path& pluginPath) {
+#ifdef WF_USE_WIDGET_PLUGINS
 
 	try {
 		auto registerFn = boost::dll::import_alias<std::function<void()>(GUIManager&)>(
@@ -105,12 +130,15 @@ void WidgetDefinitions::registerPlugin(GUIManager& guiManager, const boost::file
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when loading plugin '" << pluginPath.string() << "': " << ex);
 	}
+#endif
 }
 
 
 WidgetDefinitions::PluginEntry::~PluginEntry() {
 	if (pluginCallback) {
+#ifdef WF_USE_WIDGET_PLUGINS
 		S_LOG_INFO("Shutting down Widget Plugin at '" << path.string() << "'.");
+#endif
 		pluginCallback();
 		CEGUI::WindowManager::getSingleton().cleanDeadPool(); //Need to make sure there's no reference to the plugin.
 	}

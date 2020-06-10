@@ -65,42 +65,39 @@ target_link_libraries(${EMBER_EXECUTABLE_NAME}
 target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     conan_target_link_libraries(${EMBER_EXECUTABLE_NAME})
-#    if (UNIX)
-#        message(STATUS "Adding links to X11 and GL libraries on Unix system")
-#        link_libraries(X11 GL Xrandr)
-#    endif ()
 endif ()
 
 install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
+if (WF_USE_WIDGET_PLUGINS)
+    wf_add_plugin(ServerWidget
+            ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/ServerWidget.cpp
+            )
+    wf_add_plugin(Quit
+            ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/Quit.cpp
+            )
+    wf_add_plugin(InspectWidget
+            ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/InspectWidget.cpp
+            )
 
-wf_add_plugin(ServerWidget
-        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/ServerWidget.cpp
-        )
-wf_add_plugin(Quit
-        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/Quit.cpp
-        )
-wf_add_plugin(InspectWidget
-        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/InspectWidget.cpp
-        )
+    wf_add_plugin(Help
+            ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/Help.cpp
+            )
 
-wf_add_plugin(Help
-        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/Help.cpp
-        )
+    wf_add_plugin(ContainerWidget
+            ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/ContainerWidget.cpp
+            )
 
-wf_add_plugin(ContainerWidget
-        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/ContainerWidget.cpp
-        )
+    wf_add_plugin(IngameChatWidget
+            ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/IngameChatWidget.cpp
+            )
+    get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
-wf_add_plugin(IngameChatWidget
-        ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/IngameChatWidget.cpp
-        )
-get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
+    #add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
+    foreach (PLUGIN ${_PLUGIN_LIBS_LIST})
+        add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
+        #By linking to the exe the needed symbols should be resolved. At least in theory. Not sure how well it works in reality.
+        target_link_libraries(${PLUGIN} PRIVATE ${EMBER_EXECUTABLE_NAME})
+    endforeach (PLUGIN)
 
-#add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
-foreach (PLUGIN ${_PLUGIN_LIBS_LIST})
-    add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
-    #By linking to the exe the needed symbols should be resolved. At least in theory. Not sure how well it works in reality.
-    target_link_libraries(${PLUGIN} PRIVATE ${EMBER_EXECUTABLE_NAME})
-endforeach (PLUGIN)
-
+endif ()

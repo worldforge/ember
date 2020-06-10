@@ -34,7 +34,6 @@ class GUIManager;
 namespace Gui {
 class Widget;
 
-WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 /**
 @author Erik Ogenvik
@@ -42,7 +41,9 @@ WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 class Help : public Widget
 {
 public:
-    explicit Help(GUIManager& guiManager);
+	static WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
+
+	explicit Help(GUIManager& guiManager);
 
     ~Help() override;
 	void runCommand(const std::string &command, const std::string &args) override;
@@ -63,9 +64,11 @@ protected:
 }
 }
 }
+#ifdef WF_USE_WIDGET_PLUGINS
 
 BOOST_DLL_ALIAS(
-		Ember::OgreView::Gui::registerWidget,
+		Ember::OgreView::Gui::Help::registerWidget,
 		registerWidget
 )
+#endif
 #endif

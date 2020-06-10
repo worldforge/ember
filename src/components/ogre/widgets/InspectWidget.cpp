@@ -52,10 +52,10 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-WidgetPluginCallback registerWidget(GUIManager& guiManager) {
+WidgetPluginCallback InspectWidget::registerWidget(GUIManager& guiManager) {
 
 	struct State {
-		std::shared_ptr<Gui::InspectWidget> widget;
+		std::shared_ptr<InspectWidget> widget;
 	};
 	auto state = std::make_shared<State>();
 

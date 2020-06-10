@@ -1,3 +1,14 @@
+if (NOT WF_USE_WIDGET_PLUGINS)
+    set(STATIC_WIDGETS
+            ServerWidget.cpp
+            Quit.cpp
+            InspectWidget.cpp
+            Help.cpp
+            IngameChatWidget.cpp
+            ContainerWidget.cpp)
+endif ()
+
+
 add_library(widgets OBJECT
 
         ActionBarInput.cpp ActionBarIcon.cpp ActionBarIconSlot.cpp ActionBarIconDragDropTarget.cpp ActionBarIconManager.cpp AssetsManager.cpp ColouredListItem.cpp Compass.cpp
@@ -29,6 +40,7 @@ add_library(widgets OBJECT
         adapters/atlas/ScaleAdapter.cpp
         adapters/atlas/EntityRefAdapter.cpp
         ContainerView.cpp
+        ${STATIC_WIDGETS}
         )
 
 

@@ -64,7 +64,7 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-WidgetPluginCallback registerWidget(GUIManager& guiManager) {
+WidgetPluginCallback ServerWidget::registerWidget(GUIManager& guiManager) {
 	struct State {
 		std::unique_ptr<Gui::ServerWidget> instance;
 		std::vector<Ember::AutoCloseConnection> connections;

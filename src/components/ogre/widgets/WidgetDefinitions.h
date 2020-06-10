@@ -42,41 +42,46 @@ class Widget;
 Utility class for registering Widgets.
 If you create a new widget, make sure you add it to this class, else it won't be linked and you cannot create it dynamically.
 */
-class WidgetDefinitions{
+class WidgetDefinitions {
 public:
-    WidgetDefinitions();
+	WidgetDefinitions();
 
-    ~WidgetDefinitions();
+	~WidgetDefinitions();
 
-    void registerWidgets(GUIManager& guiManager);
+	void registerWidgets(GUIManager& guiManager);
 
-    /**
-     * Registers a plugin with the supplied name. The system will try to find it by looking for a shared object in the file system,
-     * where plugins should be installed.
-     * @param guiManager
-     * @param pluginName
-     */
-    void registerPluginWithName(GUIManager& guiManager, const std::string& pluginName);
+	/**
+	 * Registers a plugin with the supplied name. The system will try to find it by looking for a shared object in the file system,
+	 * where plugins should be installed.
+	 * @param guiManager
+	 * @param pluginName
+	 */
+	void registerPluginWithName(GUIManager& guiManager, const std::string& pluginName);
 
-    /**
-     * Registers a plugin from a shared object file.
-     * @param guiManager
-     * @param pluginPath
-     */
+	/**
+	 * Registers a plugin from a shared object file.
+	 * @param guiManager
+	 * @param pluginPath
+	 */
 	void registerPlugin(GUIManager& guiManager, const boost::filesystem::path& pluginPath);
 
 	/**
 	 * An entry for a loaded plugin.
 	 * The pluginCallback will automatically be called on destruction.
 	 */
-    struct PluginEntry {
-    	PluginEntry(PluginEntry&& rhs) = default;
-    	~PluginEntry();
+	struct PluginEntry {
+		PluginEntry(PluginEntry&& rhs) = default;
+
+		~PluginEntry();
+
 		PluginEntry& operator=(PluginEntry&& rhs) = default;
-    	boost::filesystem::path path;
+
+#ifdef WF_USE_WIDGET_PLUGINS
+		boost::filesystem::path path;
 		WidgetPluginFunction pluginFn; //We need to hold on to this, since it the dynamic library's lifetime is bound to it.
+#endif
 		WidgetPluginCallback pluginCallback; //A deregistering function
-    };
+	};
 
 	static_assert(std::is_move_constructible<PluginEntry>::value, "PluginEntry must be move constructible.");
 

@@ -49,7 +49,6 @@ namespace OgreView {
 class GUIManager;
 namespace Gui {
 
-WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 class NewCharacter
 {
@@ -75,6 +74,7 @@ class EntityTextureManipulator;
 class ServerWidget : public virtual sigc::trackable
 {
 public:
+	static WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
     ServerWidget(GUIManager& guiManager, Eris::Connection& connection);
 
@@ -203,9 +203,11 @@ protected:
 }
 }
 }
-
+#ifdef WF_USE_WIDGET_PLUGINS
 BOOST_DLL_ALIAS(
-		Ember::OgreView::Gui::registerWidget,
+		Ember::OgreView::Gui::ServerWidget::registerWidget,
 		registerWidget
 )
+#endif
+
 #endif

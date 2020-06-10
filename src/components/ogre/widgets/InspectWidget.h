@@ -34,19 +34,21 @@ namespace OgreView {
 class GUIManager;
 namespace Gui {
 
-WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 class Widget;
+
 /**
 @author Erik Ogenvik
 */
-class InspectWidget : public Widget
-{
+class InspectWidget : public Widget {
 public:
+	static WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
-    explicit InspectWidget(GUIManager& guiManager);
-    ~InspectWidget() override;
-	void frameStarted(const Ogre::FrameEvent & evt) override;
+	explicit InspectWidget(GUIManager& guiManager);
+
+	~InspectWidget() override;
+
+	void frameStarted(const Ogre::FrameEvent& evt) override;
 
 	const ConsoleCommandWrapper Inspect;
 
@@ -56,14 +58,17 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	void runCommand(const std::string &command, const std::string &args) override;
+	void runCommand(const std::string& command, const std::string& args) override;
 
 protected:
 
 
 	void fillChildrenList();
+
 	void entity_ChildAdded(Eris::Entity* entity);
+
 	void entity_ChildRemoved(Eris::Entity* entity);
+
 	void addChildToList(Eris::Entity* child);
 
 	void disconnectFromEntity();
@@ -84,6 +89,7 @@ protected:
 	void showEntityInfo(EmberEntity* entity);
 
 	void handleAction(const std::string& action, EmberEntity* entity);
+
 	/**
 	 * @brief Listen to double clicks in the child list, and inspect the child if so.
 	 * @param args
@@ -116,8 +122,11 @@ protected:
 }
 }
 
+#ifdef WF_USE_WIDGET_PLUGINS
+
 BOOST_DLL_ALIAS(
-		Ember::OgreView::Gui::registerWidget,
+		Ember::OgreView::Gui::InspectWidget::registerWidget,
 		registerWidget
 )
+#endif
 #endif

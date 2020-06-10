@@ -37,10 +37,10 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-WidgetPluginCallback registerWidget(GUIManager& guiManager) {
+WidgetPluginCallback ContainerWidget::registerWidget(GUIManager& guiManager) {
 
 	struct State {
-		std::map<std::string, std::unique_ptr<Gui::ContainerWidget>> containerWidgets;
+		std::map<std::string, std::unique_ptr<ContainerWidget>> containerWidgets;
 		std::vector<Ember::AutoCloseConnection> connections;
 	};
 	auto state = std::make_shared<State>();
@@ -48,7 +48,7 @@ WidgetPluginCallback registerWidget(GUIManager& guiManager) {
 	auto connectFn = [state, &guiManager](Eris::Avatar* avatar) {
 		auto openedFn = [&](Eris::Entity& entity) {
 			try {
-				auto widget = std::make_unique<Gui::ContainerWidget>(guiManager, dynamic_cast<Ember::EmberEntity&>(entity));
+				auto widget = std::make_unique<Gui::ContainerWidget>(guiManager, dynamic_cast<EmberEntity&>(entity));
 				state->containerWidgets.emplace(entity.getId(), std::move(widget));
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Could not create container widget." << ex);
