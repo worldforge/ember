@@ -74,9 +74,8 @@ WidgetPluginCallback ServerWidget::registerWidget(GUIManager& guiManager) {
 	auto connectFn = [&guiManager, state](Eris::Connection* connection) mutable {
 		state->instance = std::make_unique<Gui::ServerWidget>(guiManager, *connection);
 
-		state->connections.emplace_back(connection->Disconnecting.connect([state]() mutable {
+		state->connections.emplace_back(connection->Disconnected.connect([state]() mutable {
 			state->instance.reset();
-			return true;
 		}));
 
 	};

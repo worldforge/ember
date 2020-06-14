@@ -62,15 +62,17 @@ WidgetPluginCallback InspectWidget::registerWidget(GUIManager& guiManager) {
 	auto connectFn = [state, &guiManager](World&) {
 		state->widget = std::make_shared<Gui::InspectWidget>(guiManager);
 	};
-	auto con = EmberOgre::getSingleton().EventWorldCreated.connect(connectFn);
+	auto conCreated = EmberOgre::getSingleton().EventWorldCreated.connect(connectFn);
+	auto conDestroyed = EmberOgre::getSingleton().EventWorldDestroyed.connect([state]() { state->widget.reset(); });
 
 	if (EmberOgre::getSingleton().getWorld()) {
 		connectFn(*EmberOgre::getSingleton().getWorld());
 	}
 
 	//Just hold on to an instance.
-	return [state, con]() mutable {
-		con->disconnect();
+	return [state, conCreated, conDestroyed]() mutable {
+		conCreated->disconnect();
+		conDestroyed->disconnect();
 		state.reset();
 	};
 
