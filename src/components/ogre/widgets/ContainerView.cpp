@@ -97,8 +97,7 @@ void ContainerView::showEntityContents(EmberEntity* entity) {
 			}
 		});
 		mChildRemovedConnection = entity->ChildRemoved.connect([&](Eris::Entity* child) {
-			auto emberEntity = dynamic_cast<EmberEntity*>(child);
-			auto I = std::find_if(mIcons.begin(), mIcons.end(), [emberEntity](const std::unique_ptr<EntityIcon>& entry) { return entry->getEntity() == emberEntity; });
+			auto I = std::find_if(mIcons.begin(), mIcons.end(), [child](const std::unique_ptr<EntityIcon>& entry) { return dynamic_cast<Eris::Entity*>(entry->getEntity()) == child; });
 			if (I != mIcons.end()) {
 				mIcons.erase(I);
 				layoutSlots();

@@ -68,6 +68,7 @@ EntityTooltip::EntityTooltip(World& world, UniqueWindowPtr<EmberEntityTooltipWid
 		isUpdatingOurselves(false),
 		mImageWindow(nullptr),
 		mTextWindow(nullptr) {
+	mTooltip->setDestroyedByParent(false);
 	mImageWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticImage");
 	mImageWindow->setSize(CEGUI::USize(CEGUI::UDim(0, 64), CEGUI::UDim(0, 64)));
 	mImageWindow->setProperty("FrameEnabled", "false");
