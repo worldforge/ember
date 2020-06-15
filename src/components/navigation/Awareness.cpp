@@ -138,237 +138,205 @@ protected:
 
 };
 
-Awareness::Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned int tileSize) :
-		mView(view),
+Awareness::Awareness(EmberEntity& avatarEntity, IHeightProvider& heightProvider, int tileSize) :
+		mAvatarEntity(avatarEntity),
+		mDomainEntity(*mAvatarEntity.getEmberLocation()),
 		mHeightProvider(heightProvider),
-		mAvatarEntity(view.getAvatar().getEntity()),
-		mCurrentLocation(mAvatarEntity->getLocation()),
-		mTalloc(nullptr),
-		mTcomp(nullptr),
-		mTmproc(nullptr),
+		mTalloc(std::make_unique<LinearAllocator>(128000)),
+		mTcomp(std::make_unique<FastLZCompressor>()),
+		mTmproc(std::make_unique<MeshProcess>()),
 		mAvatarRadius(0.4f),
 		mDesiredTilesAmount(128),
-		mCtx(new AwarenessContext()),
+		mCtx(std::make_unique<AwarenessContext>()),
 		mCfg{},
 		mTileCache(nullptr),
 		mNavMesh(nullptr),
 		mNavQuery(dtAllocNavMeshQuery()),
-		mFilter(nullptr),
-		mActiveTileList(nullptr) {
-	auto entity = static_cast<EmberEntity*>(mView.getTopLevel());
-	auto extent = entity->getBBox();
-	//Don't set anything up unless the bounding box is valid
-	if (extent.isValid()) {
-		try {
-			mActiveTileList = std::make_unique<MRUList<std::pair<int, int>>>();
+		mFilter(std::make_unique<dtQueryFilter>()),
+		mObstacleAvoidanceParams(std::make_unique<dtObstacleAvoidanceParams>()),
+		mActiveTileList(std::make_unique<MRUList<std::pair<int, int>>>()) {
+	try {
 
-			mTalloc = std::make_unique<LinearAllocator>(128000);
-			mTcomp = std::make_unique<FastLZCompressor>();
-			mTmproc = std::make_unique<MeshProcess>();
+		// Setup the default query filter
+		mFilter->setIncludeFlags(0xFFFF);    // Include all
+		mFilter->setExcludeFlags(0);         // Exclude none
+		// Area flags for polys to consider in search, and their cost
+		mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
 
-			// Setup the default query filter
-			mFilter = std::make_unique<dtQueryFilter>();
-			mFilter->setIncludeFlags(0xFFFF);    // Include all
-			mFilter->setExcludeFlags(0);         // Exclude none
-			// Area flags for polys to consider in search, and their cost
-			mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
+		//height of our agent, default to 2 meters unless there's a bbox
+		float h = 2.0f;
 
-			//height of our agent, default to 2 meters unless there's a bbox
-			float h = 2.0f;
+		if (mAvatarEntity.hasBBox() && mAvatarEntity.getBBox().isValid()) {
+			auto avatarBbox = mAvatarEntity.getBBox();
+			//get the radius from the avatar entity
+			WFMath::AxisBox<2> avatar2dBbox(WFMath::Point<2>(avatarBbox.lowCorner().x(), avatarBbox.lowCorner().z()), WFMath::Point<2>(avatarBbox.highCorner().x(), avatarBbox.highCorner().z()));
+			mAvatarRadius = std::max(0.2, avatar2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
 
-			if (mAvatarEntity->hasBBox() && mAvatarEntity->getBBox().isValid()) {
-				auto avatarBbox = mAvatarEntity->getBBox();
-				//get the radius from the avatar entity
-				WFMath::AxisBox<2> avatar2dBbox(WFMath::Point<2>(avatarBbox.lowCorner().x(), avatarBbox.lowCorner().z()), WFMath::Point<2>(avatarBbox.highCorner().x(), avatarBbox.highCorner().z()));
-				mAvatarRadius = std::max(0.2, avatar2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
-
-				//height of our agent
-				h = avatarBbox.highCorner().y() - avatarBbox.lowCorner().y();
-			}
-
-			const WFMath::Point<3>& lower = extent.lowCorner();
-			const WFMath::Point<3>& upper = extent.highCorner();
-
-			//Recast uses y for the vertical axis
-			mCfg.bmin[0] = lower.x();
-			mCfg.bmin[1] = std::min(-500.0, lower.y());
-			mCfg.bmin[2] = lower.z();
-			mCfg.bmax[0] = upper.x();
-			mCfg.bmax[1] = std::max(500.0, upper.y());
-			mCfg.bmax[2] = upper.z();
-
-			int gw = 0, gh = 0;
-			float cellsize = mAvatarRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
-			rcCalcGridSize(mCfg.bmin, mCfg.bmax, cellsize, &gw, &gh);
-			const int tilewidth = (gw + tileSize - 1) / tileSize;
-			const int tileheight = (gh + tileSize - 1) / tileSize;
-
-			// Max tiles and max polys affect how the tile IDs are caculated.
-			// There are 22 bits available for identifying a tile and a polygon.
-			int tileBits = rcMin((int) dtIlog2(dtNextPow2(tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE)), 14);
-			if (tileBits > 14)
-				tileBits = 14;
-			int polyBits = 22 - tileBits;
-			int maxTiles = 1u << tileBits;
-			int maxPolysPerTile = 1u << polyBits;
-
-			//For an explanation of these values see http://digestingduck.blogspot.se/2009/08/recast-settings-uncovered.html
-
-			mCfg.cs = cellsize;
-			mCfg.ch = mCfg.cs / 2.0f; //Height of one voxel; should really only come into play when doing 3d traversal
-			//	m_cfg.ch = std::max(upper.y() - lower.y(), 100.0f); //For 2d traversal make the voxel size as large as possible
-			mCfg.walkableHeight = (int) std::ceil(h / mCfg.ch); //This is in voxels
-			mCfg.walkableClimb = 100; //TODO: implement proper system for limiting climbing; for now just use a large voxel number
-			mCfg.walkableRadius = (int) std::ceil(mAvatarRadius / mCfg.cs);
-			mCfg.walkableSlopeAngle = 70; //TODO: implement proper system for limiting climbing; for now just use 70 degrees
-
-			mCfg.maxEdgeLen = mCfg.walkableRadius * 8;
-			mCfg.maxSimplificationError = 1.3f;
-			mCfg.minRegionArea = (int) rcSqr(8);
-			mCfg.mergeRegionArea = (int) rcSqr(20);
-
-			mCfg.tileSize = tileSize;
-			mCfg.borderSize = mCfg.walkableRadius + 3; // Reserve enough padding.
-			mCfg.width = mCfg.tileSize + mCfg.borderSize * 2;
-			mCfg.height = mCfg.tileSize + mCfg.borderSize * 2;
-			//	m_cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cfg.cs * m_detailSampleDist;
-			//	m_cfg.detailSampleMaxError = m_cfg.m_cellHeight * m_detailSampleMaxError;
-
-			// Tile cache params.
-			dtTileCacheParams tcparams{};
-			memset(&tcparams, 0, sizeof(tcparams));
-			rcVcopy(tcparams.orig, mCfg.bmin);
-			tcparams.cs = mCfg.cs;
-			tcparams.ch = mCfg.ch;
-			tcparams.width = (int) mCfg.tileSize;
-			tcparams.height = (int) mCfg.tileSize;
-			tcparams.walkableHeight = h;
-			tcparams.walkableRadius = mAvatarRadius;
-			tcparams.walkableClimb = mCfg.walkableClimb;
-			//	tcparams.maxSimplificationError = m_edgeMaxError;
-			tcparams.maxTiles = tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE;
-			tcparams.maxObstacles = 128;
-
-			dtFreeTileCache(mTileCache);
-
-			dtStatus status;
-
-			mTileCache = dtAllocTileCache();
-			if (!mTileCache) {
-				throw Exception("buildTiledNavigation: Could not allocate tile cache.");
-			}
-			status = mTileCache->init(&tcparams, mTalloc.get(), mTcomp.get(), mTmproc.get());
-			if (dtStatusFailed(status)) {
-				throw Exception("buildTiledNavigation: Could not init tile cache.");
-			}
-
-			dtFreeNavMesh(mNavMesh);
-
-			mNavMesh = dtAllocNavMesh();
-			if (!mNavMesh) {
-				throw Exception("buildTiledNavigation: Could not allocate navmesh.");
-			}
-
-			dtNavMeshParams params{};
-			memset(&params, 0, sizeof(params));
-			rcVcopy(params.orig, mCfg.bmin);
-			params.tileWidth = (float) tileSize * cellsize;
-			params.tileHeight = (float) tileSize * cellsize;
-			params.maxTiles = maxTiles;
-			params.maxPolys = maxPolysPerTile;
-
-			status = mNavMesh->init(&params);
-			if (dtStatusFailed(status)) {
-				throw Exception("buildTiledNavigation: Could not init navmesh.");
-			}
-
-			status = mNavQuery->init(mNavMesh, 2048);
-			if (dtStatusFailed(status)) {
-				throw Exception("buildTiledNavigation: Could not init Detour navmesh query");
-			}
-
-			mObstacleAvoidanceQuery = dtAllocObstacleAvoidanceQuery();
-			mObstacleAvoidanceQuery->init(MAX_OBSTACLES_CIRCLES, 0);
-
-			mObstacleAvoidanceParams = std::make_unique<dtObstacleAvoidanceParams>();
-			mObstacleAvoidanceParams->velBias = 0.4f;
-			mObstacleAvoidanceParams->weightDesVel = 2.0f;
-			mObstacleAvoidanceParams->weightCurVel = 0.75f;
-			mObstacleAvoidanceParams->weightSide = 0.75f;
-			mObstacleAvoidanceParams->weightToi = 2.5f;
-			mObstacleAvoidanceParams->horizTime = 2.5f;
-			mObstacleAvoidanceParams->gridSize = 33;
-			mObstacleAvoidanceParams->adaptiveDivs = 7;
-			mObstacleAvoidanceParams->adaptiveRings = 2;
-			mObstacleAvoidanceParams->adaptiveDepth = 5;
-
-			mSignalConnections.emplace_back(mAvatarEntity->LocationChanged.connect(sigc::mem_fun(*this, &Awareness::AvatarEntity_LocationChanged)));
-
-			mSignalConnections.emplace_back(view.EntitySeen.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen)));
-			mSignalConnections.emplace_back(view.EntityCreated.connect(sigc::mem_fun(*this, &Awareness::View_EntitySeen)));
-
-			std::function<bool(EmberEntity&)> attachListenersFunction = [&](EmberEntity& entity) {
-				if (&entity != mAvatarEntity) {
-					//Only observe entities that have a bounding box.
-					if (entity.hasBBox() && entity.getBBox().isValid()) {
-						auto result = mObservedEntities.insert(std::make_pair(&entity, EntityConnections()));
-						EntityConnections& connections = result.first->second;
-						connections.locationChanged = entity.LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), &entity));
-						connections.beingDeleted = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), &entity));
-
-						//Only actively observe the entity if it has the same location as the avatar.
-						if (entity.getLocation() == mCurrentLocation) {
-							connections.isIgnored = false;
-							if (entity.hasProperty("velocity")) {
-								mMovingEntities.push_back(&entity);
-								connections.isMoving = true;
-							} else {
-								connections.moved = entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), &entity));
-								connections.isMoving = false;
-							}
-						} else {
-							connections.isIgnored = true;
-						}
-					}
-				}
-				return true;
-			};
-
-			entity->accept(attachListenersFunction);
-			for (size_t i = 0; i < entity->numContained(); ++i) {
-				buildEntityAreas(*entity->getContained(i), mEntityAreas);
-			}
-		} catch (const std::exception& e) {
-			mObstacleAvoidanceParams.reset();
-			dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
-
-			dtFreeNavMesh(mNavMesh);
-			dtFreeNavMeshQuery(mNavQuery);
-			mFilter.reset();
-
-			dtFreeTileCache(mTileCache);
-
-			mTmproc.reset();
-			mTcomp.reset();
-			mTalloc.reset();
-
-			mCtx.reset();
-			mActiveTileList.reset();
-			throw;
+			//height of our agent
+			h = avatarBbox.highCorner().y() - avatarBbox.lowCorner().y();
 		}
+
+		auto& extent = mDomainEntity.getBBox();
+
+		const WFMath::Point<3>& lower = extent.lowCorner();
+		const WFMath::Point<3>& upper = extent.highCorner();
+
+		//Recast uses y for the vertical axis
+		mCfg.bmin[0] = lower.x();
+		mCfg.bmin[1] = std::min(-500.0, lower.y());
+		mCfg.bmin[2] = lower.z();
+		mCfg.bmax[0] = upper.x();
+		mCfg.bmax[1] = std::max(500.0, upper.y());
+		mCfg.bmax[2] = upper.z();
+
+		int gw = 0, gh = 0;
+		float cellsize = mAvatarRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
+		rcCalcGridSize(mCfg.bmin, mCfg.bmax, cellsize, &gw, &gh);
+		const int tilewidth = (gw + tileSize - 1) / tileSize;
+		const int tileheight = (gh + tileSize - 1) / tileSize;
+
+		// Max tiles and max polys affect how the tile IDs are calculated.
+		// There are 22 bits available for identifying a tile and a polygon.
+		int tileBits = rcMin((int) dtIlog2(dtNextPow2(tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE)), 14);
+		if (tileBits > 14)
+			tileBits = 14;
+		int polyBits = 22 - tileBits;
+		int maxTiles = 1u << tileBits;
+		int maxPolysPerTile = 1u << polyBits;
+
+		//For an explanation of these values see http://digestingduck.blogspot.se/2009/08/recast-settings-uncovered.html
+
+		mCfg.cs = cellsize;
+		mCfg.ch = mCfg.cs / 2.0f; //Height of one voxel; should really only come into play when doing 3d traversal
+		//	m_cfg.ch = std::max(upper.y() - lower.y(), 100.0f); //For 2d traversal make the voxel size as large as possible
+		mCfg.walkableHeight = (int) std::ceil(h / mCfg.ch); //This is in voxels
+		mCfg.walkableClimb = 100; //TODO: implement proper system for limiting climbing; for now just use a large voxel number
+		mCfg.walkableRadius = (int) std::ceil(mAvatarRadius / mCfg.cs);
+		mCfg.walkableSlopeAngle = 70; //TODO: implement proper system for limiting climbing; for now just use 70 degrees
+
+		mCfg.maxEdgeLen = mCfg.walkableRadius * 8;
+		mCfg.maxSimplificationError = 1.3f;
+		mCfg.minRegionArea = (int) rcSqr(8);
+		mCfg.mergeRegionArea = (int) rcSqr(20);
+
+		mCfg.tileSize = tileSize;
+		mCfg.borderSize = mCfg.walkableRadius + 3; // Reserve enough padding.
+		mCfg.width = mCfg.tileSize + mCfg.borderSize * 2;
+		mCfg.height = mCfg.tileSize + mCfg.borderSize * 2;
+		//	m_cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cfg.cs * m_detailSampleDist;
+		//	m_cfg.detailSampleMaxError = m_cfg.m_cellHeight * m_detailSampleMaxError;
+
+		// Tile cache params.
+		dtTileCacheParams tcparams{};
+		memset(&tcparams, 0, sizeof(tcparams));
+		rcVcopy(tcparams.orig, mCfg.bmin);
+		tcparams.cs = mCfg.cs;
+		tcparams.ch = mCfg.ch;
+		tcparams.width = (int) mCfg.tileSize;
+		tcparams.height = (int) mCfg.tileSize;
+		tcparams.walkableHeight = h;
+		tcparams.walkableRadius = mAvatarRadius;
+		tcparams.walkableClimb = mCfg.walkableClimb;
+		//	tcparams.maxSimplificationError = m_edgeMaxError;
+		tcparams.maxTiles = tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE;
+		tcparams.maxObstacles = 128;
+
+		dtStatus status;
+
+		mTileCache = dtAllocTileCache();
+		if (!mTileCache) {
+			throw Exception("buildTiledNavigation: Could not allocate tile cache.");
+		}
+		status = mTileCache->init(&tcparams, mTalloc.get(), mTcomp.get(), mTmproc.get());
+		if (dtStatusFailed(status)) {
+			throw Exception("buildTiledNavigation: Could not init tile cache.");
+		}
+
+		dtFreeNavMesh(mNavMesh);
+
+		mNavMesh = dtAllocNavMesh();
+		if (!mNavMesh) {
+			throw Exception("buildTiledNavigation: Could not allocate navmesh.");
+		}
+
+		dtNavMeshParams params{};
+		memset(&params, 0, sizeof(params));
+		rcVcopy(params.orig, mCfg.bmin);
+		params.tileWidth = (float) tileSize * cellsize;
+		params.tileHeight = (float) tileSize * cellsize;
+		params.maxTiles = maxTiles;
+		params.maxPolys = maxPolysPerTile;
+
+		status = mNavMesh->init(&params);
+		if (dtStatusFailed(status)) {
+			throw Exception("buildTiledNavigation: Could not init navmesh.");
+		}
+
+		status = mNavQuery->init(mNavMesh, 2048);
+		if (dtStatusFailed(status)) {
+			throw Exception("buildTiledNavigation: Could not init Detour navmesh query");
+		}
+
+		mObstacleAvoidanceQuery = dtAllocObstacleAvoidanceQuery();
+		mObstacleAvoidanceQuery->init(MAX_OBSTACLES_CIRCLES, 0);
+
+		mObstacleAvoidanceParams->velBias = 0.4f;
+		mObstacleAvoidanceParams->weightDesVel = 2.0f;
+		mObstacleAvoidanceParams->weightCurVel = 0.75f;
+		mObstacleAvoidanceParams->weightSide = 0.75f;
+		mObstacleAvoidanceParams->weightToi = 2.5f;
+		mObstacleAvoidanceParams->horizTime = 2.5f;
+		mObstacleAvoidanceParams->gridSize = 33;
+		mObstacleAvoidanceParams->adaptiveDivs = 7;
+		mObstacleAvoidanceParams->adaptiveRings = 2;
+		mObstacleAvoidanceParams->adaptiveDepth = 5;
+
+		for (auto entity: mDomainEntity.getContent()) {
+			if (entity->getId() != mAvatarEntity.getId()) {
+				//Only observe entities that have a bounding box.
+				if (entity->hasBBox() && entity->getBBox().isValid()) {
+					auto result = mObservedEntities.insert(std::make_pair(entity, EntityConnections()));
+					EntityConnections& connections = result.first->second;
+
+					connections.isIgnored = false;
+					if (entity->hasProperty("velocity")) {
+						mMovingEntities.push_back(entity);
+						connections.isMoving = true;
+					} else {
+						connections.moved = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
+						connections.isMoving = false;
+					}
+					buildEntityAreas(*entity, mEntityAreas);
+				}
+			}
+		}
+		mDomainEntity.ChildAdded.connect(sigc::mem_fun(*this, &Awareness::Domain_ChildAdded));
+		mDomainEntity.ChildRemoved.connect(sigc::mem_fun(*this, &Awareness::Domain_ChildRemoved));
+	} catch (const std::exception& e) {
+		mObstacleAvoidanceParams.reset();
+		dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
+
+		dtFreeNavMesh(mNavMesh);
+		dtFreeNavMeshQuery(mNavQuery);
+		mFilter.reset();
+
+		dtFreeTileCache(mTileCache);
+
+		mTmproc.reset();
+		mTcomp.reset();
+		mTalloc.reset();
+
+		mCtx.reset();
+		mActiveTileList.reset();
+		throw;
+
 	}
 }
 
 Awareness::~Awareness() {
 	//disconnect signals when shutting down
-	for (auto& connection : mSignalConnections) {
-		connection.disconnect();
-	}
-	for (auto& observed : mObservedEntities) {
-		observed.second.locationChanged.disconnect();
-		observed.second.moved.disconnect();
-		observed.second.beingDeleted.disconnect();
-	}
+	mSignalConnections.clear();
+	mObservedEntities.clear();
 
 	dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
 
@@ -379,45 +347,40 @@ Awareness::~Awareness() {
 
 }
 
-void Awareness::View_EntitySeen(Eris::Entity* entity) {
-	if (entity->hasBBox() && entity->getBBox().isValid()) {
-		//We always want to connect to the location changed signal
-		auto result = mObservedEntities.insert(std::make_pair(entity, EntityConnections()));
-		EntityConnections& connections = result.first->second;
-		connections.locationChanged = entity->LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_LocationChanged), entity));
-		connections.isMoving = false;
-		connections.beingDeleted = entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_BeingDeleted), entity));
+void Awareness::Domain_ChildAdded(Eris::Entity* entity) {
+	auto result = mObservedEntities.insert(std::make_pair(entity, EntityConnections()));
+	EntityConnections& connections = result.first->second;
+	connections.isMoving = false;
+	connections.bboxChanged = entity->observe("bbox", [&, entity](const Atlas::Message::Element&) {
+		this->Entity_Moved(entity);
+	}, true);
 
-		//Only actively observe the entity if it has the same location as the avatar.
-		if (entity->getLocation() == mCurrentLocation) {
-			connections.isIgnored = false;
+}
 
-			if (entity->hasProperty("velocity")) {
-				connections.isMoving = true;
-				mMovingEntities.push_back(entity);
+void Awareness::Domain_ChildRemoved(Eris::Entity* entity) {
+	auto I = mObservedEntities.find(entity);
+	if (I != mObservedEntities.end()) {
+		if (!I->second.isIgnored) {
+			if (I->second.isMoving) {
+				mMovingEntities.remove(entity);
 			} else {
-
 				std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+
 				buildEntityAreas(*entity, areas);
+
 				for (auto& entry : areas) {
 					markTilesAsDirty(entry.second.boundingBox());
-					mEntityAreas.insert(entry);
 				}
-
-				connections.moved = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
-				connections.isMoving = false;
+				mEntityAreas.erase(entity);
 			}
-
-		} else {
-			connections.isIgnored = true;
+			mObservedEntities.erase(entity);
 		}
-
 	}
 }
 
 void Awareness::Entity_Moved(Eris::Entity* entity) {
 	//If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
-	if (entity->hasProperty("velocity")) {
+	if (entity->getVelocity().isValid() && entity->getVelocity() != WFMath::Vector<3>::ZERO()) {
 		mMovingEntities.push_back(entity);
 		auto I = mObservedEntities.find(entity);
 		//No need to listen to more Moved events.
@@ -430,22 +393,23 @@ void Awareness::Entity_Moved(Eris::Entity* entity) {
 			mEntityAreas.erase(entity);
 		}
 	} else {
-		std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
+		if (entity->hasBBox()) {
+			std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
 
-		buildEntityAreas(*entity, areas);
+			buildEntityAreas(*entity, areas);
 
-		for (auto& entry : areas) {
-			markTilesAsDirty(entry.second.boundingBox());
-			auto existingI = mEntityAreas.find(entry.first);
-			if (existingI != mEntityAreas.end()) {
-				//The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
-				markTilesAsDirty(existingI->second.boundingBox());
-				existingI->second = entry.second;
-			} else {
-				mEntityAreas.insert(entry);
+			for (auto& entry : areas) {
+				markTilesAsDirty(entry.second.boundingBox());
+				auto existingI = mEntityAreas.find(entry.first);
+				if (existingI != mEntityAreas.end()) {
+					//The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
+					markTilesAsDirty(existingI->second.boundingBox());
+					existingI->second = entry.second;
+				} else {
+					mEntityAreas.insert(entry);
+				}
 			}
 		}
-
 	}
 
 }
@@ -516,68 +480,6 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
 	}
 	return false;
 
-}
-
-void Awareness::Entity_BeingDeleted(Eris::Entity* entity) {
-	auto I = mObservedEntities.find(entity);
-	if (I != mObservedEntities.end()) {
-		if (!I->second.isIgnored) {
-			if (I->second.isMoving) {
-				mMovingEntities.remove(entity);
-			} else {
-				std::map<Eris::Entity*, WFMath::RotBox<2>> areas;
-
-				buildEntityAreas(*entity, areas);
-
-				for (auto& entry : areas) {
-					markTilesAsDirty(entry.second.boundingBox());
-				}
-				mEntityAreas.erase(entity);
-			}
-			mObservedEntities.erase(entity);
-		}
-	}
-}
-
-void Awareness::AvatarEntity_LocationChanged(Eris::Entity*) {
-	//TODO: rebuild awareness as the location has changed
-}
-
-void Awareness::Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entity) {
-	auto I = mObservedEntities.find(entity);
-	if (I != mObservedEntities.end()) {
-		EntityConnections& connections = I->second;
-
-		if (entity->getLocation() == mCurrentLocation) {
-			assert(connections.moved.empty());
-			connections.isIgnored = false;
-			//Entity was ignored but shouldn't be anymore. We should check if the entity is moving or stationary.
-			if (entity->hasProperty("velocity")) {
-				connections.isMoving = true;
-				mMovingEntities.push_back(entity);
-			} else {
-				connections.moved = entity->Moved.connect(sigc::bind(sigc::mem_fun(*this, &Awareness::Entity_Moved), entity));
-			}
-		} else {
-			//Only sever connections if the entity wasn't already ignored.
-			if (!connections.isIgnored) {
-				if (connections.isMoving) {
-					assert(connections.moved.empty());
-					mMovingEntities.remove(entity);
-				} else {
-					assert(connections.moved.connected());
-					connections.moved.disconnect();
-
-					auto areasI = mEntityAreas.find(entity);
-					if (areasI != mEntityAreas.end()) {
-						markTilesAsDirty(areasI->second.boundingBox());
-						mEntityAreas.erase(areasI);
-					}
-				}
-				connections.isIgnored = true;
-			}
-		}
-	}
 }
 
 void Awareness::markTilesAsDirty(const WFMath::AxisBox<2>& area) {
@@ -881,9 +783,6 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
 }
 
 void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, WFMath::RotBox<2>>& entityAreas) {
-	if (&entity == mAvatarEntity) {
-		return;
-	}
 
 	//The entity is solid (i.e. can be collided with) if it has a bbox and the "solid" property isn't set to false (or 0 as it's an int).
 	bool isSolid = entity.hasBBox();
@@ -895,9 +794,8 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 	}
 
 	if (isSolid) {
-		//we now have to get the location of the entity in world space
-		auto pos = entity.getViewPosition();
-		auto orientation = entity.getViewOrientation();
+		auto pos = entity.getPosition();
+		auto orientation = entity.getOrientation();
 		if (pos.isValid() && orientation.isValid()) {
 
 			WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);

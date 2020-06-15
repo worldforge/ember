@@ -121,30 +121,54 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 		mConfigListenerContainer(new ConfigListenerContainer()),
 		mVisualizePath(false) {
 
-	//We can only do navigation if there's a valid bbox for the top level entity
-	if (avatar.getEmberEntity().getView()->getTopLevel() && avatar.getEmberEntity().getView()->getTopLevel()->getBBox().isValid()) {
-		try {
-			mAwareness = new Navigation::Awareness(*avatar.getEmberEntity().getView(), heightProvider);
-			mAwarenessVisualizer = new Authoring::AwarenessVisualizer(*mAwareness, *camera.getCamera().getSceneManager());
-			mSteering = new Navigation::Steering(*mAwareness, avatar.getEmberEntity().getView()->getAvatar());
-			mSteering->EventPathUpdated.connect(sigc::mem_fun(*this, &MovementController::Steering_PathUpdated));
+	auto evaluateLocationFn = [this, &heightProvider, &camera](EmberEntity& location) {
+		if (location.hasBBox()) {
+			try {
+				mAwareness = std::make_unique<Navigation::Awareness>(mAvatar.getEmberEntity(), heightProvider);
+				mAwarenessVisualizer = std::make_unique<Authoring::AwarenessVisualizer>(*mAwareness, *camera.getCamera().getSceneManager());
+				mSteering = std::make_unique<Navigation::Steering>(*mAwareness, location.getView()->getAvatar());
+				mSteering->EventPathUpdated.connect(sigc::mem_fun(*this, &MovementController::Steering_PathUpdated));
 
-			mAwareness->EventTileDirty.connect([this] {
-				mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this]() { this->tileRebuild(); }, mActiveMarker);
-			});
+				mAwareness->EventTileDirty.connect([this] {
+					mAvatar.getEmberEntity().getView()->getEventService().runOnMainThread([this]() { this->tileRebuild(); }, mActiveMarker);
+				});
 
-			mAwareness->EventTileUpdated.connect([&](int, int) {
-				if (mSteering->isEnabled()) {
-					mSteering->requestUpdate();
-				}
-			});
+				mAwareness->EventTileUpdated.connect([&](int, int) {
+					if (mSteering->isEnabled()) {
+						mSteering->requestUpdate();
+					}
+				});
 
-			MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &MovementController::frameProcessed));
+				MainLoopController::getSingleton().EventFrameProcessed.connect(sigc::mem_fun(*this, &MovementController::frameProcessed));
 
 
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Could not setup awareness; steering and path finding will be disabled." << ex);
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Could not setup awareness; steering and path finding will be disabled." << ex);
+			}
+		} else {
+			mSteering.reset();
+			mAwarenessVisualizer.reset();
+			mAwareness.reset();
 		}
+	};
+
+
+	avatar.getEmberEntity().LocationChanged.connect([&avatar, evaluateLocationFn, this](Eris::Entity* oldLocation) {
+		auto newParentLocation = avatar.getEmberEntity().getEmberLocation();
+		if (newParentLocation) {
+			mParentBboxConnection = newParentLocation->observe("bbox", [evaluateLocationFn, newParentLocation](const Atlas::Message::Element&) {
+				evaluateLocationFn(*newParentLocation);
+			}, true);
+			evaluateLocationFn(*avatar.getEmberEntity().getEmberLocation());
+		} else {
+			mParentBboxConnection.disconnect();
+			mSteering.reset();
+			mAwarenessVisualizer.reset();
+			mAwareness.reset();
+		}
+	});
+	if (avatar.getEmberEntity().getEmberLocation()) {
+		evaluateLocationFn(*avatar.getEmberEntity().getEmberLocation());
 	}
 
 	mConfigListenerContainer->registerConfigListenerWithDefaults("authoring", "visualizerecasttiles", sigc::mem_fun(*this, &MovementController::Config_VisualizeRecastTiles), false);
@@ -179,10 +203,6 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 }
 
 MovementController::~MovementController() {
-	delete mConfigListenerContainer;
-	delete mSteering;
-	delete mAwarenessVisualizer;
-	delete mAwareness;
 
 	if (mFreeFlyingNode) {
 		mFreeFlyingNode->getCreator()->destroySceneNode(mFreeFlyingNode);

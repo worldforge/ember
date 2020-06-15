@@ -104,8 +104,7 @@ AwarenessVisualizer::~AwarenessVisualizer()
 	}
 	mSceneManager.destroySceneNode(mTileSceneNode);
 	mSceneManager.destroySceneNode(mPathSceneNode);
-
-	//Note that we don't have to destroy the path since that's destroyed as it was attached to the scene node.
+	mSceneManager.destroyMovableObject(mPath);
 }
 
 void AwarenessVisualizer::setTileVisualizationEnabled(bool enabled)

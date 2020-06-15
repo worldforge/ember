@@ -33,6 +33,7 @@
 
 #include <wfmath/vector.h>
 #include <sigc++/trackable.h>
+#include "framework/AutoCloseConnection.h"
 
 
 namespace Ember {
@@ -243,22 +244,22 @@ protected:
 	/**
 	 * @brief Handles awareness about the world around the avatar.
 	 */
-	Navigation::Awareness* mAwareness;
+	std::unique_ptr<Navigation::Awareness> mAwareness;
 
 	/**
 	 * @brief Optionally visualizes the awareness.
 	 */
-	Authoring::AwarenessVisualizer* mAwarenessVisualizer;
+	std::unique_ptr<Authoring::AwarenessVisualizer> mAwarenessVisualizer;
 
 	/**
 	 * @brief Handles steering of the avatar.
 	 */
-	Navigation::Steering* mSteering;
+	std::unique_ptr<Navigation::Steering> mSteering;
 
 	/**
 	 * @brief Listens to changes to the configuration.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
 	 * @brief True if the path used for steering should be visualized.
@@ -269,6 +270,8 @@ protected:
 	 * @brief An active marker used for cancelling EventService handlers.
 	 */
 	Eris::ActiveMarker mActiveMarker;
+
+	AutoCloseConnection mParentBboxConnection;
 };
 
 

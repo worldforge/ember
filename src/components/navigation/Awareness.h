@@ -34,6 +34,8 @@
 #include <map>
 #include <unordered_map>
 #include <functional>
+#include <Eris/ViewEntity.h>
+#include <framework/AutoCloseConnection.h>
 
 class dtNavMeshQuery;
 class dtNavMesh;
@@ -54,6 +56,7 @@ class Entity;
 namespace Ember
 {
 struct IHeightProvider;
+class EmberEntity;
 namespace Navigation
 {
 template <typename T>
@@ -85,9 +88,8 @@ enum PolyFlags
  */
 struct EntityConnections
 {
-	sigc::connection locationChanged;
-	sigc::connection moved;
-	sigc::connection beingDeleted;
+	Ember::AutoCloseConnection moved;
+	Ember::AutoCloseConnection bboxChanged;
 	bool isMoving;
 	bool isIgnored;
 };
@@ -109,7 +111,7 @@ struct EntityConnections
  * Internally this class uses a dtTileCache to manage the tiles. Since the world is dynamic we need to manage the
  * navmeshes through tiles in order to keep the resource usage down.
  */
-class Awareness
+class Awareness : public virtual sigc::trackable
 {
 public:
 	/**
@@ -119,11 +121,11 @@ public:
 
 	/**
 	 * @brief Ctor.
-	 * @param view The world view.
+	 * @param avatarEntity The avatar entity.
 	 * @param heightProvider A height provider, used for getting terrain height data.
 	 * @param tileSize The size, in voxels, of one side of a tile. The larger this is the longer each tile takes to generate, but the overhead of managing tiles is decreased.
 	 */
-	Awareness(Eris::View& view, IHeightProvider& heightProvider, unsigned int tileSize = 64);
+	Awareness(EmberEntity& avatarEntity, IHeightProvider& heightProvider, int tileSize = 64);
 	virtual ~Awareness();
 
 	/**
@@ -225,18 +227,14 @@ public:
 
 protected:
 
-	Eris::View& mView;
+	EmberEntity& mAvatarEntity;
+	EmberEntity& mDomainEntity;
 	IHeightProvider& mHeightProvider;
 
-	/**
-	 * @brief Keep a reference to the avatar entity for fast lookup.
-	 */
-	Eris::Entity* mAvatarEntity;
 
 	/**
 	 * @brief Keep a reference to the current location of the avatar for fast lookup.
 	 */
-	Eris::Entity* mCurrentLocation;
 
 	/**
 	 * @brief Tracks signal connected to this, so that they can be severed when shutting down.
@@ -244,7 +242,7 @@ protected:
 	 * Note that we don't inherit from sigc::trackable since we're connecting to signals on all entities, which we then
 	 * manage ourselves through EntityConnections.
 	 */
-	std::list<sigc::connection> mSignalConnections;
+	std::list<AutoCloseConnection> mSignalConnections;
 
 	std::unique_ptr<struct LinearAllocator> mTalloc;
 	std::unique_ptr<struct FastLZCompressor> mTcomp;
@@ -420,12 +418,9 @@ protected:
 	 */
 	void findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const;
 
-	void View_EntitySeen(Eris::Entity* entity);
 	void Entity_Moved(Eris::Entity* entity);
-	void Entity_BeingDeleted(Eris::Entity* entity);
-	void Entity_LocationChanged(Eris::Entity* oldLoc, Eris::Entity* entity);
-	void AvatarEntity_LocationChanged(Eris::Entity* oldLoc);
-
+	void Domain_ChildAdded(Eris::Entity* entity);
+	void Domain_ChildRemoved(Eris::Entity* entity);
 
 };
 
