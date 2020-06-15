@@ -43,6 +43,7 @@ TaskQueue::~TaskQueue() {
 }
 
 void TaskQueue::deactivate() {
+	*mActiveMarker.getMarker() = false;
 	if (mActive) {
 		{
 			std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
@@ -56,7 +57,9 @@ void TaskQueue::deactivate() {
 		mExecutors.clear();
 
 		//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
-		mEventService.processAllHandlers();
+		while (!mProcessedTaskUnits.empty()) {
+			processCompletedTasks();
+		}
 
 		assert(mProcessedTaskUnits.empty());
 		assert(mUnprocessedTaskUnits.empty());
@@ -102,7 +105,7 @@ void TaskQueue::addProcessedTask(std::unique_ptr<TaskUnit> taskUnit) {
 		//Make sure that the task is handled on the main queue.
 		mEventService.runOnMainThread([this] {
 			processCompletedTasks();
-		});
+		}, mActiveMarker);
 	}
 
 }
@@ -148,7 +151,7 @@ void TaskQueue::processCompletedTasks() {
 			if (!mProcessedTaskUnits.empty()) {
 				mEventService.runOnMainThread([this] {
 					processCompletedTasks();
-				});
+				}, mActiveMarker);
 			} else {
 				mIsQueuedOnMainThread = false;
 			}

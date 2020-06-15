@@ -25,6 +25,7 @@
 
 #include <condition_variable>
 #include <mutex>
+#include <Eris/ActiveMarker.h>
 
 namespace Eris
 {
@@ -146,6 +147,8 @@ protected:
 	 * This is therefore only set to false if the queue is being shut down.
 	 */
 	bool mActive;
+
+	Eris::ActiveMarker mActiveMarker;
 
 	bool mIsQueuedOnMainThread;
 
