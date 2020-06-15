@@ -33,7 +33,7 @@ class Entity {
     
     Eris::Entity* getLocation() const;
 	
-    WFMath::Point<3> getPosition() const;
+    const WFMath::Point<3>& getPosition() const;
     
     const Atlas::Message::MapType& getProperties() const;
     
