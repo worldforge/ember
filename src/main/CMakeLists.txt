@@ -96,8 +96,6 @@ if (WF_USE_WIDGET_PLUGINS)
     #add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})
     foreach (PLUGIN ${_PLUGIN_LIBS_LIST})
         add_dependencies(${PLUGIN} ${EMBER_EXECUTABLE_NAME})
-        #By linking to the exe the needed symbols should be resolved. At least in theory. Not sure how well it works in reality.
-        target_link_libraries(${PLUGIN} PRIVATE ${EMBER_EXECUTABLE_NAME})
     endforeach (PLUGIN)
 
 endif ()
