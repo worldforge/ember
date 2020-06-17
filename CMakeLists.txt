@@ -62,9 +62,6 @@ endif ()
 MESSAGE(STATUS "Setting compiler warnings to '${WF_WARNING_FLAGS}'")
 
 
-# This is needed to make Widget Plugins work.
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
 add_definitions(-DPREFIX="${CMAKE_INSTALL_PREFIX}")
 add_definitions(-DEMBER_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
 add_definitions(-DEMBER_LIBDIR="${CMAKE_INSTALL_FULL_LIBDIR}")
@@ -89,9 +86,11 @@ include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${P
 enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 
-#On Unix we'll automatically build all widgets as reloadable modules, but not on Windows (since we couldn't get it to work as we would like).
-cmake_dependent_option(WF_USE_WIDGET_PLUGINS "Build widgets as reloadable plugins." 1 "UNIX" 0)
+#On Unix we'll automatically build all widgets as reloadable modules, but not on Windows or OSX (since we couldn't get it to work as we would like).
+cmake_dependent_option(WF_USE_WIDGET_PLUGINS "Build widgets as reloadable plugins." 1 "UNIX AND NOT APPLE" 0)
 if (WF_USE_WIDGET_PLUGINS)
+    # This is needed to make Widget Plugins work.
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
     add_definitions(-DWF_USE_WIDGET_PLUGINS)
 endif ()
 
