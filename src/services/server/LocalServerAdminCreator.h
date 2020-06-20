@@ -21,6 +21,7 @@
 
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <sigc++/trackable.h>
+#include <boost/optional.hpp>
 
 namespace Eris {
 class Account;
@@ -59,9 +60,13 @@ private:
 	 */
 	ServerService& mServerService;
 
+	boost::optional<Eris::Account*> mAccount;
+
 	void server_GotAccount(Eris::Account* account);
 
 	void server_LoginSuccess(Eris::Account* account);
+
+	void operationGetResult(const Atlas::Objects::Operation::RootOperation& op);
 
 };
 

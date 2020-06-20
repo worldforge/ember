@@ -73,20 +73,58 @@ void LocalServerAdminCreator::server_GotAccount(Eris::Account* account) {
 	sysAccountOp->setAttr("username", ss_username.str());
 	sysAccountOp->setAttr("password", ss_password.str());
 	account->createAccount(sysAccountOp);
-
+	mAccount = account;
 }
 
 void LocalServerAdminCreator::server_LoginSuccess(Eris::Account* account) {
 	//If there are any spawn points defined we'll use the first one.
 	//It would be nice if we could present the user with an option to choose amongst many,
 	//or just to spawn at origo. But for now this will do in its simplicity.
-	const Eris::SpawnPointMap& spawnPoints = account->getSpawnPoints();
-	std::string spawn;
+	auto& spawnPoints = account->getSpawnPoints();
 	if (!spawnPoints.empty()) {
-		spawn = spawnPoints.begin()->second.getName();
+		//Get the first spawn
+		auto& spawn = spawnPoints.front();
+
+		Atlas::Objects::Operation::Get get;
+		get->setSerialno(Eris::getNewSerialno());
+
+		get->setTo(account->getId());
+		get->setFrom(account->getId());
+		Atlas::Objects::Entity::Anonymous ent;
+		ent->setId(spawn.id);
+		ent->setObjtype("object");
+		get->setArgs1(std::move(ent));
+
+		account->getConnection().getResponder().await(get->getSerialno(), this, &LocalServerAdminCreator::operationGetResult);
+		account->getConnection().send(get);
+	}
+}
+
+void LocalServerAdminCreator::operationGetResult(const Atlas::Objects::Operation::RootOperation& op) {
+	if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+		if (!op->getArgs().empty()) {
+			auto arg = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(op->getArgs().front());
+			if (arg) {
+				auto pos = arg->getPos();
+				auto loc = arg->getLoc();
+				if (mAccount) {
+					auto account = *mAccount;
+					Atlas::Objects::Entity::Anonymous ent;
+					ent->setAttr("__account", account->getUsername());
+					ent->setName("admin");
+					ent->setParent("creator");
+					ent->setPos(pos);
+					ent->setLoc(loc);
+					Create c;
+					c->setArgs1(ent);
+					c->setFrom(account->getId());
+					c->setTo("0");
+					account->createCharacter(c);
+				}
+			}
+		}
 	}
 
-
-	mServerService.createCharacter("admin", "female", "creator", "", spawn, Atlas::Message::MapType());
 }
+
 }

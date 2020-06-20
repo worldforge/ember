@@ -38,6 +38,7 @@
 #include <Eris/EventService.h>
 
 #include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
 #include <fstream>
 
 #include <sigc++/bind.h>
