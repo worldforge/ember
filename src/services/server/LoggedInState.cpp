@@ -47,7 +47,6 @@ namespace Ember {
 LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
 		StateBase<EnteredWorldState>::StateBase(parentState),
 		Logout("logout", this, "Logout from the connected server."),
-		CreateChar("add", this, "Create a character on the server."),
 		TakeChar("take", this, "Take control of one of your characters."),
 		ListChars("list", this, "List you available characters on the server."),
 		mAccount(account),
@@ -62,9 +61,7 @@ LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
 
 }
 
-LoggedInState::~LoggedInState() {
-	delete mTransferEvent;
-}
+LoggedInState::~LoggedInState() = default;
 
 void LoggedInState::checkTransfer() {
 	TransferInfoStringSerializer serializer;
@@ -96,45 +93,6 @@ void LoggedInState::checkTransfer() {
 void LoggedInState::takeTransferredCharacter(const Eris::TransferInfo& transferInfo) {
 	S_LOG_INFO("Trying to take transferred character with id " << transferInfo.getPossessEntityId() << ".");
 	mAccount.takeTransferredCharacter(transferInfo.getPossessEntityId(), transferInfo.getPossessKey());
-}
-
-void LoggedInState::takeCharacter(const std::string& id) {
-	mAccount.takeCharacter(id);
-}
-
-bool LoggedInState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) {
-	ConsoleBackend::getSingleton().pushMessage("Creating char...", "important");
-	std::string msg;
-	msg = "Creating character of type '" + type + "' with name '" + name + "' and sex '" + sex + "'.";
-	ConsoleBackend::getSingleton().pushMessage(msg, "info");
-
-	S_LOG_INFO("Creating character.");
-	Atlas::Objects::Entity::RootEntity character;
-	for (auto& property : extraProperties) {
-		character->setAttr(property.first, property.second);
-	}
-
-	character->setParent(type);
-	character->setName(name);
-	character->setAttr("sex", sex);
-	character->setAttr("description", description);
-	if (!spawnName.empty()) {
-		character->setAttr("spawn_name", spawnName);
-	}
-
-
-	try {
-		mAccount.createCharacterThroughEntity(character);
-	} catch (const std::exception& except) {
-		S_LOG_WARNING("Got Eris error on character creation." << except);
-		return false;
-	} catch (...) {
-		S_LOG_WARNING("Got unknown error on character creation.");
-		return false;
-	}
-	S_LOG_INFO("Done creating character.");
-
-	return true;
 }
 
 bool LoggedInState::logout() {
@@ -227,7 +185,7 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	}
 	teleportsOutputFile.close();
 
-	mTransferEvent = new Eris::TimedEvent(mAccount.getConnection().getEventService(), boost::posix_time::seconds(0), [=]() {
+	mTransferEvent = std::make_unique<Eris::TimedEvent>(mAccount.getConnection().getEventService(), boost::posix_time::seconds(0), [=]() {
 		this->transfer(transferInfo);
 	});
 }
@@ -240,24 +198,13 @@ void LoggedInState::runCommand(const std::string& command, const std::string& ar
 	if (Logout == command) {
 		ConsoleBackend::getSingleton().pushMessage("Logging out...", "important");
 		mAccount.logout();
-
-		// Create Character command
-	} else if (CreateChar == command) {
-		// Split string into name/type/sex/description
-		Tokeniser tokeniser = Tokeniser();
-		tokeniser.initTokens(args);
-		std::string name = tokeniser.nextToken();
-		std::string sex = tokeniser.nextToken();
-		std::string type = tokeniser.nextToken();
-		std::string spawnPoint = tokeniser.nextToken();
-		std::string description = tokeniser.remainingTokens();
-
-		createCharacter(name, sex, type, description, spawnPoint, Atlas::Message::MapType());
-
 		// Take Character Command
 	} else if (TakeChar == command) {
 
-		takeCharacter(args);
+		Tokeniser tokeniser(args);
+		if (tokeniser.hasRemainingTokens()) {
+			mAccount.takeCharacter(tokeniser.nextToken());
+		}
 
 		// List Characters Command
 	} else if (ListChars == command) {

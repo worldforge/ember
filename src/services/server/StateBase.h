@@ -42,11 +42,7 @@ public:
 
 	bool logout() override;
 
-	void takeCharacter(const std::string &id) override;
-
 	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo) override;
-
-	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) override;
 
 	void transfer(const Eris::TransferInfo& transferInfo) override;
 
@@ -120,19 +116,9 @@ inline bool StateBaseCore::logout()
 	return mParentState.logout();
 }
 
-inline void StateBaseCore::takeCharacter(const std::string &id)
-{
-	mParentState.takeCharacter(id);
-}
-
 inline void StateBaseCore::takeTransferredCharacter(const Eris::TransferInfo& transferInfo)
 {
 	mParentState.takeTransferredCharacter(transferInfo);
-}
-
-inline bool StateBaseCore::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties)
-{
-	return mParentState.createCharacter(name, sex, type, description, spawnName, extraProperties);
 }
 
 inline void StateBaseCore::transfer(const Eris::TransferInfo& transferInfo)

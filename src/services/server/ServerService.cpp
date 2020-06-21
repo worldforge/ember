@@ -150,14 +150,6 @@ void ServerService::takeTransferredCharacter(const Eris::TransferInfo& transferI
 	mNonConnectedState->getTopState().takeTransferredCharacter(transferInfo);
 }
 
-void ServerService::takeCharacter(const std::string& id) {
-	mNonConnectedState->getTopState().takeCharacter(id);
-}
-
-bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) {
-	return mNonConnectedState->getTopState().createCharacter(name, sex, type, description, spawnName, extraProperties);
-}
-
 void ServerService::setupLocalServerObservation(ConfigService& configService) {
 
 	mLocalSocketPath = boost::filesystem::path(configService.getPrefix() + "/var/tmp/cyphesis_cyphesis.sock");

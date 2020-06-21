@@ -52,14 +52,9 @@ public:
 
 	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo) override;
 
-	void takeCharacter(const std::string& id) override;
-
-	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) override;
-
 	bool logout() override;
 
 	const Ember::ConsoleCommandWrapper Logout;
-	const Ember::ConsoleCommandWrapper CreateChar;
 	const Ember::ConsoleCommandWrapper TakeChar;
 	const Ember::ConsoleCommandWrapper ListChars;
 
@@ -77,7 +72,7 @@ private:
 	 *
 	 * This needs to occur separate since it's required that it's implemented through Eris TimedEvent events.
 	 */
-	Eris::TimedEvent* mTransferEvent;
+	std::unique_ptr<Eris::TimedEvent> mTransferEvent;
 
 	/**
 	 * @brief Any optional transfer infos attached to this server.

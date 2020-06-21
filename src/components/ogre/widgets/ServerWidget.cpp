@@ -152,7 +152,9 @@ void ServerWidget::buildWidget() {
 
 				std::string id = mCharacterModel[mCharacterList->getItemIndex(item)];
 
-				EmberServices::getSingleton().getServerService().takeCharacter(id);
+				if (mAccount) {
+					mAccount->takeCharacter(id);
+				}
 			}
 			return true;
 		};

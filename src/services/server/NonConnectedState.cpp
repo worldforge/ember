@@ -119,14 +119,7 @@ bool NonConnectedState::logout() {
 	return false;
 }
 
-void NonConnectedState::takeCharacter(const std::string& id) {
-}
-
 void NonConnectedState::takeTransferredCharacter(const Eris::TransferInfo& transferInfo) {
-}
-
-bool NonConnectedState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties) {
-	return false;
 }
 
 void NonConnectedState::transfer(const Eris::TransferInfo& transferInfo) {

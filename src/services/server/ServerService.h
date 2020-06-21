@@ -124,24 +124,6 @@ public:
 	 */
 	bool logout();
 
-	/**
-	 * @brief Takes the character with the specified id.
-	 *
-	 * @param id The id of the character to take.
-	 */
-	void takeCharacter(const std::string& id);
-
-	/**
-	 * @brief Creates a new character on the server.
-	 * @param name The name of the new character.
-	 * @param sex The sex. In most cases either "male" or "female".
-	 * @param type The type. This should correspond to one of the available types as sent from the server earlier.
-	 * @param description A short description of the character.
-	 * @param spawnName The name of the spawn area to spawn in. This should have been sent from the server earlier. Make sure that the type specified is available for the spawn point. If an empty string is specified the earlier spawn mechanism on the server will be used, which isn't guaranteed to always work.
-	 * @param extraProperties Any additional properties we want to set. Note that the server might reject any property, depending on rules and access rules.
-	 */
-	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties = Atlas::Message::MapType());
-
 	Eris::Avatar* getAvatar() const;
 
 	/**
