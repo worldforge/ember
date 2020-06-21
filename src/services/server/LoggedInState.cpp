@@ -124,7 +124,7 @@ bool LoggedInState::createCharacter(const std::string& name, const std::string& 
 
 
 	try {
-		mAccount.createCharacter(character);
+		mAccount.createCharacterThroughEntity(character);
 	} catch (const std::exception& except) {
 		S_LOG_WARNING("Got Eris error on character creation." << except);
 		return false;

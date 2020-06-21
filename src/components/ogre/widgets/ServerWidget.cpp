@@ -43,7 +43,6 @@
 #include "services/serversettings/ServerSettingsCredentials.h"
 
 #include <Eris/SpawnPoint.h>
-#include <Eris/CharacterType.h>
 #include <Eris/TypeService.h>
 
 #include <CEGUI/widgets/Listbox.h>
@@ -56,7 +55,6 @@
 #include <CEGUI/widgets/TabControl.h>
 
 #include <sigc++/bind.h>
-#include <boost/algorithm/string.hpp>
 
 
 using namespace CEGUI;
@@ -98,8 +96,7 @@ ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Connection& connection)
 		mAccount(nullptr),
 		mCharacterList(nullptr),
 		mCreateChar(nullptr),
-		mUseCreator(nullptr),
-		mTypesList(nullptr) {
+		mUseCreator(nullptr) {
 
 	mConnections.emplace_back(connection.GotServerInfo.connect([&]() { showServerInfo(connection); }));
 	connection.refreshServerInfo();
@@ -107,11 +104,13 @@ ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Connection& connection)
 	buildWidget();
 	if (EmberServices::getSingleton().getServerService().getAccount()) {
 		createdAccount(EmberServices::getSingleton().getServerService().getAccount());
-		if (EmberServices::getSingleton().getServerService().getAvatar()) {
-			gotAvatar(EmberServices::getSingleton().getServerService().getAvatar());
+		if (EmberServices::getSingleton().getServerService().getAccount()->isLoggedIn()) {
+			loginSuccess(EmberServices::getSingleton().getServerService().getAccount());
+			if (EmberServices::getSingleton().getServerService().getAvatar()) {
+				gotAvatar(EmberServices::getSingleton().getServerService().getAvatar());
+			}
 		}
 	}
-
 }
 
 ServerWidget::~ServerWidget() {
@@ -143,8 +142,8 @@ void ServerWidget::buildWidget() {
 
 		mCharacterList = dynamic_cast<CEGUI::Listbox*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/CharacterList"));
 		CEGUI::PushButton* chooseChar = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/Choose"));
-		mUseCreator = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/UseCreator"));
-		mCreateChar = dynamic_cast<CEGUI::PushButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/CreateButton"));
+		mUseCreator = dynamic_cast<CEGUI::PushButton*> (mWidget->getWindow("UseCreator"));
+		mCreateChar = dynamic_cast<CEGUI::PushButton*> (mWidget->getWindow("CreateButton"));
 
 		auto chooseFn = [=]() {
 			CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
@@ -161,7 +160,15 @@ void ServerWidget::buildWidget() {
 		mCharacterList->subscribeEvent(CEGUI::PushButton::EventMouseDoubleClick, chooseFn);
 		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click)
 		mCreateChar->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
-			EmberServices::getSingleton().getServerService().createCharacter(mNewChar.name, mNewChar.sex, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
+			if (mAccount && !mAccount->getSpawnPoints().empty()) {
+				auto& spawnPoint = mAccount->getSpawnPoints().front();
+				Atlas::Objects::Entity::RootEntity ent;
+				for (auto& entry: mNewEntity) {
+					ent->setAttr(entry.first, entry.second);
+				}
+				ent->setId(spawnPoint.id);
+				mAccount->createCharacterThroughEntity(ent);
+			}
 			return true;
 		});
 
@@ -170,41 +177,6 @@ void ServerWidget::buildWidget() {
 			EmberServices::getSingleton().getServerService().logout();
 			return true;
 		});
-
-		auto newCharName = dynamic_cast<CEGUI::Editbox*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/NameEdit"));
-		auto newCharDescription = dynamic_cast<CEGUI::MultiLineEditbox*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
-		mTypesList = dynamic_cast<CEGUI::Combobox*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Type"));
-
-		auto maleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
-		auto femaleRadioButton = dynamic_cast<CEGUI::RadioButton*> (mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
-
-		newCharName->subscribeEvent(CEGUI::Editbox::EventTextChanged, [=]() {
-			std::string name = newCharName->getText().c_str();
-			mNewChar.name = std::move(name);
-			updateNewCharacter();
-			return true;
-		});
-
-		newCharDescription->subscribeEvent(CEGUI::Editbox::EventTextChanged, [=]() {
-			std::string description = newCharDescription->getText().c_str();
-			mNewChar.description = std::move(description);
-			updateNewCharacter();
-			return true;
-		});
-
-		BIND_CEGUI_EVENT(mTypesList, CEGUI::Combobox::EventListSelectionChanged, ServerWidget::TypesList_SelectionChanged)
-
-		auto sexSelectionChangedFn = [=]() {
-			CEGUI::RadioButton* selected = maleRadioButton->getSelectedButtonInGroup();
-			if (selected) {
-				mNewChar.sex = boost::algorithm::to_lower_copy(std::string(selected->getText().c_str()));
-				updateNewCharacter();
-			}
-			return true;
-		};
-
-		maleRadioButton->subscribeEvent(CEGUI::RadioButton::EventSelectStateChanged, sexSelectionChangedFn);
-		femaleRadioButton->subscribeEvent(CEGUI::RadioButton::EventSelectStateChanged, sexSelectionChangedFn);
 
 		mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/TeleportInfo/Yes")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
 			mWidget->getWindow("TeleportInfo", true)->setVisible(false);
@@ -220,18 +192,6 @@ void ServerWidget::buildWidget() {
 		});
 
 		updateNewCharacter();
-
-		CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit");
-		CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit");
-
-		nameBox->subscribeEvent(CEGUI::Window::EventTextChanged, [=]() {
-			hideLoginFailure();
-			return true;
-		});
-		passwordBox->subscribeEvent(CEGUI::Window::EventTextChanged, [=]() {
-			hideLoginFailure();
-			return true;
-		});
 
 		mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/Disconnect")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
 			EmberServices::getSingleton().getServerService().disconnect();
@@ -252,8 +212,6 @@ void ServerWidget::buildWidget() {
 		mWidget->addEnterButton(login);
 		mWidget->closeTabGroup();
 
-		mWidget->addTabbableWindow(newCharName);
-		mWidget->addTabbableWindow(newCharDescription);
 		mWidget->addEnterButton(mCreateChar);
 		mWidget->closeTabGroup();
 
@@ -415,22 +373,8 @@ bool ServerWidget::hideLoginFailure() {
 
 
 void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account) {
-	mTypesList->resetList();
 
-	/**
-	 * The preferred way is to use the spawn point system. However, older servers don't support that, and instead present a single list of characters.
-	 * For spawn points, we still want to show a single list of available characters. In those cases where a character is present in multiple spawn points we'll print out the spawn point name in parenthesis.
-	 */
-	const Eris::SpawnPointMap& spawnPoints = account->getSpawnPoints();
-
-	for (const auto& entry : spawnPoints) {
-		const Eris::SpawnPoint& spawnPoint = entry.second;
-		for (const auto& characterMapEntry : spawnPoint.getAvailableCharacterTypes()) {
-			mCharacterAndSpawns.insert(CharacterAndSpawnsStore::value_type(characterMapEntry.getName(), spawnPoint.getName()));
-		}
-	}
-
-	const std::vector<std::string>& characters = account->getCharacterTypes();
+	auto& spawnPoints = account->getSpawnPoints();
 
 	//If the account inherits from "admin" we're an admin and can create a creator entity. This also applies if we're a "sys" account.
 	if (account->getParent() == "admin" || account->getParent() == "sys") {
@@ -441,39 +385,64 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account) {
 		mUseCreator->setEnabled(false);
 	}
 
-	if (mCharacterAndSpawns.empty() && characters.empty()) {
+	if (spawnPoints.empty()) {
 		showNoCharactersAlert();
 	} else {
-		//The preferred way is by using spawn points. Using the character type list is kept for backwards compatibility.
-		if (!mCharacterAndSpawns.empty()) {
-			unsigned int i = 0;
-			for (CharacterAndSpawnsStore::const_iterator I = mCharacterAndSpawns.begin(); I != mCharacterAndSpawns.end(); ++I) {
-				std::string name = I->first;
-				if (mCharacterAndSpawns.count(I->first) > 1) {
-					name += " (" + I->second + ")";
+		auto& spawnPoint = spawnPoints.front();
+		auto createContainer = mWidget->getWindow("CreateContainer");
+		while (createContainer->getChildCount()) {
+			createContainer->destroyChild(createContainer->getChildAtIdx(0));
+		}
+		for (auto& propEntry : spawnPoint.properties) {
+			if (propEntry.options.size() == 1) {
+				//If there's only one option, then select it and don't show any widgets for it.
+				mNewEntity[propEntry.name] = propEntry.options.front();
+				updateNewCharacter();
+			} else {
+				auto propWindow = createContainer->createChild("HorizontalLayoutContainer");
+				auto nameWindow = propWindow->createChild("EmberLook/StaticText");
+				nameWindow->setText(propEntry.label);
+				nameWindow->setSize({{0, 100},
+									 {0, 20}});
+				if (propEntry.options.empty()) {
+					auto textWindow = propWindow->createChild("EmberLook/Editbox");
+					textWindow->setSize({{0, 100},
+										 {0, 20}});
+					textWindow->subscribeEvent(textWindow->EventTextChanged, [textWindow, this, propEntry]() {
+						mNewEntity[propEntry.name] = textWindow->getText().c_str();
+						updateNewCharacter();
+					});
+				} else {
+					auto selectWindow = dynamic_cast<CEGUI::Combobox*>(propWindow->createChild("EmberLook/Combobox"));
+					selectWindow->setReadOnly(true);
+					selectWindow->setSize({{0, 100},
+										   {0, 100}});
+					for (auto& option : propEntry.options) {
+						auto item = new ColouredListItem(option.String());
+						selectWindow->addItem(item);
+					}
+					selectWindow->subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted, [selectWindow, this, propEntry]() {
+						auto selected = selectWindow->getSelectedItem();
+						if (selected) {
+							mNewEntity[propEntry.name] = selected->getText().c_str();
+							updateNewCharacter();
+						}
+					});
 				}
-				mTypesList->addItem(new Gui::ColouredListItem(name, i++, nullptr));
-			}
-
-		} else {
-			unsigned int i = 0;
-			for (const auto& character : characters) {
-
-				CEGUI::ListboxItem* item = new Gui::ColouredListItem(character, i++, nullptr);
-				mTypesList->addItem(item);
+				propWindow->setMinSize({{0, 200},
+										{0, 30}});
+				propWindow->setMaxSize({{0, 200},
+										{0, 30}});
+				propWindow->setTooltipText(propEntry.description);
 			}
 		}
-	}
-	//If only one selection, select the first one.
-	if (mTypesList->getItemCount() == 1) {
-		mTypesList->setItemSelectState(mTypesList->getListboxItemFromIndex(0), true);
 	}
 }
 
 void ServerWidget::gotAllCharacters(Eris::Account* account) {
 	mCharacterList->resetList();
 	mCharacterModel.clear();
-	Eris::CharacterMap cm = account->getCharacters();
+	auto& cm = account->getCharacters();
 	auto I = cm.begin();
 	auto I_end = cm.end();
 
@@ -512,53 +481,23 @@ void ServerWidget::gotAllCharacters(Eris::Account* account) {
 }
 
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args) {
-	//create a new admin character
-	Atlas::Message::MapType extraProperties;
-	//The admin character should always be transient.
-	//NOTE: This is currently not handled in Cyphesis, as it allows no extra parameters. Nonetheless we'll keep it here, since it's a prudent thing to do.
-	extraProperties.insert(std::make_pair("transient", -1.0f));
-
-	//If there are any spawn points defined we'll use the first one.
-	//It would be nice if we could present the user with an option to choose amongst many,
-	//or just to spawn at origo. But for now this will do in its simplicity.
-	const Eris::SpawnPointMap& spawnPoints = mAccount->getSpawnPoints();
-	std::string spawn;
-	if (!spawnPoints.empty()) {
-		spawn = spawnPoints.begin()->second.getName();
-	}
-	EmberServices::getSingleton().getServerService().createCharacter("The Creator", "female", "creator", "Almighty", spawn, extraProperties);
+//	//create a new admin character
+//	Atlas::Message::MapType extraProperties;
+//	//The admin character should always be transient.
+//	extraProperties.insert(std::make_pair("transient", -1.0f));
+//
+//	//If there are any spawn points defined we'll use the first one.
+//	//It would be nice if we could present the user with an option to choose amongst many,
+//	//or just to spawn at origo. But for now this will do in its simplicity.
+//	auto& spawnPoints = mAccount->getSpawnPoints();
+//	std::string spawn;
+//	if (!spawnPoints.empty()) {
+//		spawn = spawnPoints.begin()->second.getName();
+//	}
+//
+//	EmberServices::getSingleton().getServerService().createCharacter("The Creator", "female", "creator", "Almighty", spawn, extraProperties);
 	return true;
 }
-
-
-bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args) {
-	CEGUI::ListboxItem* item = mTypesList->getSelectedItem();
-	if (item) {
-
-		unsigned int itemIndex = item->getID();
-		//Check if we have a list of spawn points, or if not the older single character type list.
-		if (!mCharacterAndSpawns.empty()) {
-			CharacterAndSpawnsStore::const_iterator I = mCharacterAndSpawns.begin();
-			for (unsigned int i = 0; i < itemIndex; ++i) {
-				++I;
-			}
-			mNewChar.type = I->first;
-			mNewChar.spawnPoint = I->second;
-		} else {
-			mNewChar.type = mAccount->getCharacterTypes()[itemIndex];
-		}
-
-		if (mModelPreviewRenderer) {
-
-			mPreviewTypeName = mNewChar.type;
-			preparePreviewForTypeOrArchetype(mPreviewTypeName);
-
-		}
-	}
-	updateNewCharacter();
-	return true;
-}
-
 
 void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype) {
 	auto& typeService = mAccount->getConnection().getTypeService();
@@ -580,8 +519,7 @@ void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype)
 			}
 		} else {
 			Authoring::DetachedEntity entity("0", erisType, typeService);
-			Atlas::Message::MapType message = {{"sex", mNewChar.sex}};
-			entity.setFromMessage(message);
+			entity.setFromMessage(mNewEntity);
 			showPreview(entity);
 		}
 	}
@@ -613,7 +551,33 @@ void ServerWidget::typeService_TypeBound(Eris::TypeInfo* type) {
 }
 
 void ServerWidget::updateNewCharacter() {
-	mCreateChar->setEnabled(mNewChar.isValid());
+	bool enableCreateButton = true;
+
+	if (mAccount && !mAccount->getSpawnPoints().empty()) {
+		auto& spawnPoint = mAccount->getSpawnPoints().front();
+		for (auto& prop : spawnPoint.properties) {
+			auto I = mNewEntity.find(prop.name);
+			if (I != mNewEntity.end()) {
+				if (I->second.isNone()) {
+					enableCreateButton = false;
+				} else {
+					if (I->second.isString() && I->second.String().empty()) {
+						enableCreateButton = false;
+					}
+				}
+			} else {
+				enableCreateButton = false;
+			}
+		}
+	} else {
+		enableCreateButton = false;
+	}
+
+	mCreateChar->setEnabled(enableCreateButton);
+	auto I = mNewEntity.find("parent");
+	if (I != mNewEntity.end()) {
+		mPreviewTypeName = I->second.String();
+	}
 	if (!mPreviewTypeName.empty()) {
 		preparePreviewForTypeOrArchetype(mPreviewTypeName);
 	}
@@ -681,7 +645,7 @@ void ServerWidget::avatar_Deactivated(const std::string& avatarId) {
 }
 
 void ServerWidget::createPreviewTexture() {
-	auto imageWidget = mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Image");
+	auto imageWidget = mWidget->getWindow("Image");
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
 	} else {
@@ -713,10 +677,6 @@ void ServerWidget::displayPanel(const std::string& windowName) {
 	}
 }
 
-
-bool NewCharacter::isValid() const {
-	return !name.empty() && !sex.empty() && !type.empty();
-}
 
 }
 }

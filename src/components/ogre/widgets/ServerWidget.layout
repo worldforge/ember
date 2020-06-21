@@ -117,7 +117,7 @@
                         </Window>
                         <Window name="Choose" type="EmberLook/Button">
                             <Property name="Size" value="{{0,100},{0,20}}"/>
-                            <Property name="Position" value="{{0.4,0},{0.8,0}}"/>
+                            <Property name="Position" value="{{0.5,-50},{1,-25}}"/>
                             <Property name="Text" value="Choose"/>
                             <Property name="InheritsAlpha" value="True"/>
                         </Window>
@@ -133,90 +133,31 @@
                         </Window>
                     </Window>
                     <Window name="CreateCharacterPanel" type="DefaultWindow">
-                        <Property name="Size" value="{{1.0,0},{1.0,0}}"/>
                         <Property name="Text" value="Create"/>
                         <Property name="InheritsAlpha" value="false"/>
-                        <Window name="NameText" type="EmberLook/StaticText">
-                            <Property name="Size" value="{{0,100},{0,20}}"/>
-                            <Property name="Text" value="Name:"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="FrameEnabled" value="False"/>
-                            <Property name="BackgroundEnabled" value="False"/>
-                        </Window>
-                        <Window name="NameEdit" type="EmberLook/Editbox">
-                            <Property name="Size" value="{{0,100},{0,20}}"/>
-                            <Property name="Position" value="{{0,90},{0,0}}"/>
-                            <Property name="Text" value=""/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="TooltipText" value="The name of the character."/>
-                        </Window>
-                        <Window name="TypeText" type="EmberLook/StaticText">
-                            <Property name="Size" value="{{0,100},{0,20}}"/>
-                            <Property name="Position" value="{{0,0},{0,30}}"/>
-                            <Property name="Text" value="Type:"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="FrameEnabled" value="False"/>
-                            <Property name="BackgroundEnabled" value="False"/>
-                        </Window>
-                        <Window name="Type" type="EmberLook/Combobox">
-                            <Property name="Size" value="{{0,100},{0,200}}"/>
-                            <Property name="Position" value="{{0,90},{0,30}}"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="ReadOnly" value="true"/>
-                            <Property name="TooltipText" value="The type of character to create."/>
-                        </Window>
-                        <Window name="SexText" type="EmberLook/StaticText">
-                            <Property name="Size" value="{{0,100},{0,20}}"/>
-                            <Property name="Position" value="{{0,0},{0,60}}"/>
-                            <Property name="Text" value="Sex:"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="FrameEnabled" value="False"/>
-                            <Property name="BackgroundEnabled" value="False"/>
-                        </Window>
-                        <Window name="Male" type="EmberLook/RadioButton">
-                            <Property name="Size" value="{{0,60},{0,20}}"/>
-                            <Property name="Position" value="{{0,90},{0,60}}"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="Text" value="Male"/>
-                        </Window>
-                        <Window name="Female" type="EmberLook/RadioButton">
-                            <Property name="Size" value="{{0,60},{0,20}}"/>
-                            <Property name="Position" value="{{0,145},{0,60}}"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="Text" value="Female"/>
-                        </Window>
-                        <Window name="DescriptionText" type="EmberLook/StaticText">
-                            <Property name="Size" value="{{0,100},{0,20}}"/>
-                            <Property name="Position" value="{{0,0},{0,90}}"/>
-                            <Property name="Text" value="Description:"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="FrameEnabled" value="False"/>
-                            <Property name="BackgroundEnabled" value="False"/>
-                        </Window>
-                        <Window name="Description" type="EmberLook/MultiLineEditbox">
-                            <Property name="Size" value="{{0,200},{0,100}}"/>
-                            <Property name="Position" value="{{0,5},{0,115}}"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="TooltipText" value="A short description of the character."/>
-                        </Window>
-                        <Window name="CreateButton" type="EmberLook/Button">
-                            <Property name="Size" value="{{0,100},{0,20}}"/>
-                            <Property name="Position" value="{{0,100},{0,225}}"/>
-                            <Property name="Text" value="Create"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="TooltipText" value="Create a new character."/>
-                        </Window>
-                        <Window name="UseCreator" type="EmberLook/Button">
-                            <Property name="Size" value="{{0,100},{0,20}}"/>
-                            <Property name="Position" value="{{0,100},{0,250}}"/>
-                            <Property name="Text" value="Use Creator"/>
-                            <Property name="InheritsAlpha" value="True"/>
-                            <Property name="Visible" value="false"/>
-                        </Window>
-                        <Window name="Image" type="EmberLook/StaticImage">
-                            <Property name="Size" value="{{0,150},{0,250}}"/>
-                            <Property name="Position" value="{{0,210},{0,5}}"/>
-
+                        <Window type="DefaultWindow">
+                            <Window name="CreateContainer" type="VerticalLayoutContainer">
+                                <Property name="Size" value="{{0,200},{1, -60}}"/>
+                                <Property name="Position" value="{{0,5},{0,5}}"/>
+                            </Window>
+                            <Window name="Image" type="EmberLook/StaticImage">
+                                <Property name="Size" value="{{0,150},{1, -60}}"/>
+                                <Property name="Position" value="{{0,210},{0,5}}"/>
+                            </Window>
+                            <Window name="CreateButton" type="EmberLook/Button">
+                                <Property name="Size" value="{{0,100},{0,20}}"/>
+                                <Property name="Position" value="{{0.5,-50},{1,-50}}"/>
+                                <Property name="Text" value="Create"/>
+                                <Property name="InheritsAlpha" value="True"/>
+                                <Property name="TooltipText" value="Create a new character."/>
+                            </Window>
+                            <Window name="UseCreator" type="EmberLook/Button">
+                                <Property name="Size" value="{{0,100},{0,20}}"/>
+                                <Property name="Position" value="{{0.5,-50},{1,-25}}"/>
+                                <Property name="Text" value="Use Creator"/>
+                                <Property name="InheritsAlpha" value="True"/>
+                                <Property name="Visible" value="false"/>
+                            </Window>
                         </Window>
                     </Window>
                 </Window>

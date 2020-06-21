@@ -119,7 +119,7 @@ void LocalServerAdminCreator::operationGetResult(const Atlas::Objects::Operation
 					c->setArgs1(ent);
 					c->setFrom(account->getId());
 					c->setTo("0");
-					account->createCharacter(c);
+					account->createCharacterThroughOperation(c);
 				}
 			}
 		}
