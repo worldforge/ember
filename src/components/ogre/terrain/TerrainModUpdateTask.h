@@ -18,7 +18,7 @@
 
 #ifndef TERRAINMODADDTASK_H_
 #define TERRAINMODADDTASK_H_
-#include "components/terrain/TerrainModTranslator.h"
+#include "TerrainModTranslator.h"
 #include "framework/tasks/TemplateNamedTask.h"
 #include <Mercator/TerrainMod.h>
 #include <Atlas/Message/Element.h>

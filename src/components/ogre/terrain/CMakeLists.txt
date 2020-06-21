@@ -62,6 +62,7 @@ add_library(emberogre_terrain OBJECT
         techniques/CompilerTechniqueProvider.cpp
         TerrainPageDeletionTask.cpp
         techniques/OnePixelMaterialGenerator.cpp
+        TerrainModTranslator.cpp
         )
 
 target_compile_definitions(emberogre_terrain PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")

@@ -12,7 +12,6 @@ if (CPPUNIT_FOUND)
             $<TARGET_OBJECTS:pagedgeometry>
             $<TARGET_OBJECTS:widgets>
             $<TARGET_OBJECTS:emberogre_terrain>
-            $<TARGET_OBJECTS:terrain>
             $<TARGET_OBJECTS:entitymapping>
             $<TARGET_OBJECTS:lua>
             $<TARGET_OBJECTS:cegui>

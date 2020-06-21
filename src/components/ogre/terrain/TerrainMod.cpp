@@ -27,7 +27,7 @@
 
 #include "TerrainMod.h"
 
-#include "components/terrain/TerrainModTranslator.h"
+#include "TerrainModTranslator.h"
 
 namespace Ember
 {
