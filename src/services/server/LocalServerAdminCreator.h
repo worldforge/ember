@@ -22,6 +22,7 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <sigc++/trackable.h>
 #include <boost/optional.hpp>
+#include <memory>
 
 namespace Eris {
 class Account;
@@ -29,6 +30,17 @@ class Account;
 
 namespace Ember {
 class ServerService;
+
+
+class AdminEntityCreator : public sigc::trackable {
+public:
+	AdminEntityCreator(Eris::Account& account);
+
+	void operationGetResult(const Atlas::Objects::Operation::RootOperation& op);
+
+protected:
+	Eris::Account& mAccount;
+};
 
 /**
  * @author Erik Ogenvik
@@ -55,18 +67,11 @@ public:
 
 private:
 
-	/**
-	 * @brief The server service.
-	 */
-	ServerService& mServerService;
-
-	boost::optional<Eris::Account*> mAccount;
-
 	void server_GotAccount(Eris::Account* account);
 
 	void server_LoginSuccess(Eris::Account* account);
 
-	void operationGetResult(const Atlas::Objects::Operation::RootOperation& op);
+	std::unique_ptr<AdminEntityCreator> mAdminEntityCreator;
 
 };
 

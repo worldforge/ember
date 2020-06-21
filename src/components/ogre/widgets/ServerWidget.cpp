@@ -38,6 +38,7 @@
 
 #include "services/server/ServerService.h"
 #include "services/server/ProtocolVersion.h"
+#include "services/server/LocalServerAdminCreator.h"
 #include "services/config/ConfigService.h"
 #include "services/serversettings/ServerSettings.h"
 #include "services/serversettings/ServerSettingsCredentials.h"
@@ -481,21 +482,9 @@ void ServerWidget::gotAllCharacters(Eris::Account* account) {
 }
 
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args) {
-//	//create a new admin character
-//	Atlas::Message::MapType extraProperties;
-//	//The admin character should always be transient.
-//	extraProperties.insert(std::make_pair("transient", -1.0f));
-//
-//	//If there are any spawn points defined we'll use the first one.
-//	//It would be nice if we could present the user with an option to choose amongst many,
-//	//or just to spawn at origo. But for now this will do in its simplicity.
-//	auto& spawnPoints = mAccount->getSpawnPoints();
-//	std::string spawn;
-//	if (!spawnPoints.empty()) {
-//		spawn = spawnPoints.begin()->second.getName();
-//	}
-//
-//	EmberServices::getSingleton().getServerService().createCharacter("The Creator", "female", "creator", "Almighty", spawn, extraProperties);
+	if (mAccount) {
+		mAdminEntityCreator = std::make_unique<AdminEntityCreator>(*mAccount);
+	}
 	return true;
 }
 

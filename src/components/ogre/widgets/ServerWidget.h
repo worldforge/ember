@@ -43,6 +43,7 @@
 #include <framework/AutoCloseConnection.h>
 
 namespace Ember {
+class AdminEntityCreator;
 namespace OgreView {
 
 
@@ -110,6 +111,8 @@ protected:
 	std::string mPreviewTypeName;
 
 	std::vector<AutoCloseConnection> mConnections;
+
+	std::unique_ptr<Ember::AdminEntityCreator> mAdminEntityCreator;
 
 	void createdAccount(Eris::Account* account);
 
