@@ -23,7 +23,7 @@ namespace Ember {
  * The protocol version we're supporting. This should match what's in Cyphesis.
  * If Cyphesis uses a more future protocol version a warning should be shown to the user, since it means that some features won't work.
  */
-constexpr const long protocolVersion = 20200601;
+constexpr const long protocolVersion = 20200622;
 }
 
 #endif //EMBER_PROTOCOLVERSION_H
