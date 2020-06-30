@@ -101,7 +101,10 @@ void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
 	 }
 	 */
 	// Got Atlas XML representation of adapter value
-	TiXmlNode* xmlNode = convertAtlasToXml(val);
+	auto xmlDoc = convertAtlasToXml(val);
+
+	auto xmlNode = xmlDoc.RootElement();
+
 
 	if (xmlNode->NoChildren()) {
 		throw std::logic_error("Empty result from adapter.");
@@ -121,10 +124,9 @@ void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
 	} else {
 		throw std::logic_error("Adapter returns Atlas message with multiply elements.");
 	}
-	delete newNode;
 }
 
-TiXmlNode* GUIAdapterBindings::convertAtlasToXml(Atlas::Message::Element& val)
+TiXmlDocument GUIAdapterBindings::convertAtlasToXml(Atlas::Message::Element& val)
 {
 	// Print out Atlas node
 	std::stringstream data;
@@ -145,7 +147,7 @@ TiXmlNode* GUIAdapterBindings::convertAtlasToXml(Atlas::Message::Element& val)
 		throw std::logic_error("TinyXml unable to parse Atlas generated data.");
 	}
 
-	return xmlDoc.RootElement()->Clone();
+	return xmlDoc;
 }
 
 }

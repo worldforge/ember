@@ -61,7 +61,10 @@ void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame, unsigned int 
 }
 
 AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(MainLoopController& mainLoopController) :
-		mDefaultFps(60.0f), mEnabled(false), mFrameTimeRecorder(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer()) {
+		mDefaultFps(60.0f),
+		mEnabled(false),
+		mFrameTimeRecorder(mainLoopController),
+		mConfigListenerContainer(new ConfigListenerContainer()) {
 	mFpsUpdatedConnection = mFrameTimeRecorder.EventAverageTimePerFrameUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::averageTimePerFrameUpdated));
 	mConfigListenerContainer->registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "autoadjust", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_Enabled), false);
@@ -69,7 +72,6 @@ AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(MainLoopController&
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager() {
 	mFpsUpdatedConnection.disconnect();
-	delete mConfigListenerContainer;
 }
 
 void AutomaticGraphicsLevelManager::setFps(float fps) {

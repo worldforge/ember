@@ -162,7 +162,7 @@ protected:
 	/**
 	 * @brief Used to listen for configuration changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
 	 * @brief The connection through which the automatic graphics manager listens for fps updates.

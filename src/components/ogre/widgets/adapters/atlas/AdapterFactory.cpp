@@ -63,9 +63,7 @@ AdapterFactory::AdapterFactory(std::string prefix) :
 {
 }
 
-AdapterFactory::~AdapterFactory()
-{
-}
+AdapterFactory::~AdapterFactory() = default;
 
 template<typename TAdapter>
 TAdapter* AdapterFactory::createAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)

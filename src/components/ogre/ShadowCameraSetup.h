@@ -83,7 +83,7 @@ protected:
     /**
      * @brief Object that handles shadow detail automatically.
      */
-    ShadowDetailManager* mShadowDetailManager;
+	std::unique_ptr<ShadowDetailManager> mShadowDetailManager;
     
 private:
 

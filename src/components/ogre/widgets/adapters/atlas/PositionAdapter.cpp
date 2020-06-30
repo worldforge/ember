@@ -62,9 +62,7 @@ PositionAdapter::PositionAdapter(const ::Atlas::Message::Element& element, CEGUI
 }
 
 
-PositionAdapter::~PositionAdapter()
-{
-}
+PositionAdapter::~PositionAdapter() = default;
 
 void PositionAdapter::updateGui(const ::Atlas::Message::Element& element)
 {

@@ -51,9 +51,7 @@ NumberAdapter::NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Co
 }
 
 
-NumberAdapter::~NumberAdapter()
-{
-}
+NumberAdapter::~NumberAdapter() = default;
 
 void NumberAdapter::updateGui(const ::Atlas::Message::Element& element)
 {

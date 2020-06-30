@@ -20,6 +20,7 @@
 #include <sigc++/connection.h>
 
 #include <string>
+#include <memory>
 
 namespace varconf
 {
@@ -191,7 +192,7 @@ protected:
 	/**
 	 * @brief Used to listen for configuration changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 };
 

@@ -396,12 +396,12 @@ void Model::createParticles() {
 				ogreParticleSystem->_update(0);
 
 				//ogreParticleSystem->setDefaultDimensions(1, 1);
-				auto particleSystem = new ParticleSystem(ogreParticleSystem, particleSystemDef.Direction);
+				auto particleSystem = std::make_unique<ParticleSystem>(ogreParticleSystem, particleSystemDef.Direction);
 				for (auto& bindingDef : particleSystemDef.Bindings) {
 					ParticleSystemBinding* binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
 					mAllParticleSystemBindings.emplace_back(binding);
 				}
-				mParticleSystems.push_back(particleSystem);
+				mParticleSystems.emplace_back(std::move(particleSystem));
 
 
 				//Check if the material used is transparent. If so, assign it a later render queue.
@@ -450,7 +450,7 @@ void Model::createLights() {
 
 			lightInfo.light = ogreLight;
 			lightInfo.position = lightDef.position;
-			addLight(lightInfo);
+			addLight(std::move(lightInfo));
 		}
 	}
 }
@@ -460,14 +460,14 @@ void Model::addLight(LightInfo lightInfo) {
 	if (mParentNodeProvider) {
 		//If the light has a position we need to create a different node to attach it to.
 		if (!lightInfo.position.isNaN() && !lightInfo.position.isZeroLength()) {
-			lightInfo.nodeProvider = mParentNodeProvider->createChildProvider("");
+			lightInfo.nodeProvider.reset(mParentNodeProvider->createChildProvider(""));
 			lightInfo.nodeProvider->setPositionAndOrientation(lightInfo.position, Ogre::Quaternion::IDENTITY);
 			lightInfo.nodeProvider->attachObject(lightInfo.light);
 		} else {
 			mParentNodeProvider->attachObject(lightInfo.light);
 		}
 	}
-	mLights.emplace_back(lightInfo);
+	mLights.emplace_back(std::move(lightInfo));
 
 }
 
@@ -684,10 +684,9 @@ void Model::resetSubmodels() {
 
 void Model::resetParticles() {
 	if (!mParticleSystems.empty()) {
-		auto particleSystems = mParticleSystems;
+		auto particleSystems = std::move(mParticleSystems);
 		for (auto& system : particleSystems) {
 			removeMovable(system->getOgreParticleSystem());
-			delete system;
 		}
 		mParticleSystems.clear();
 	}
@@ -697,7 +696,6 @@ void Model::resetParticles() {
 void Model::resetLights() {
 	for (auto& lightInfo : mLights) {
 		Ogre::Light* light = lightInfo.light;
-		delete lightInfo.nodeProvider;
 
 		if (light) {
 			mManager.destroyLight(light);
@@ -719,13 +717,12 @@ void Model::attachToNode(INodeProvider* nodeProvider) {
 	for (auto& lightEntry : mLights) {
 		if (lightEntry.nodeProvider) {
 			lightEntry.nodeProvider->detachObject(lightEntry.light);
-			delete lightEntry.nodeProvider;
-			lightEntry.nodeProvider = nullptr;
+			lightEntry.nodeProvider.reset();
 		}
 
 		if (nodeProvider) {
 			if (!lightEntry.position.isNaN() && !lightEntry.position.isZeroLength()) {
-				lightEntry.nodeProvider = nodeProvider->createChildProvider("");
+				lightEntry.nodeProvider.reset(nodeProvider->createChildProvider(""));
 				lightEntry.nodeProvider->setPositionAndOrientation(lightEntry.position, Ogre::Quaternion::IDENTITY);
 				lightEntry.nodeProvider->attachObject(lightEntry.light);
 			} else {

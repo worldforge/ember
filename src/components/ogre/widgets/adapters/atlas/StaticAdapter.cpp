@@ -43,9 +43,7 @@ StaticAdapter::StaticAdapter(const ::Atlas::Message::Element& element, CEGUI::Wi
 }
 
 
-StaticAdapter::~StaticAdapter()
-{
-}
+StaticAdapter::~StaticAdapter() = default;
 
 void StaticAdapter::updateGui(const ::Atlas::Message::Element& element)
 {

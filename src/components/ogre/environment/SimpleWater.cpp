@@ -105,7 +105,6 @@ SimpleWater::SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr, Ogr
 		mWaterBobbingNode(nullptr),
 		mWaterEntity(nullptr),
 		mMainRenderTarget(mainRenderTarget),
-		mRenderTargetListener(nullptr),
 		mWaterBobbingController(nullptr) {
 }
 
@@ -127,12 +126,11 @@ SimpleWater::~SimpleWater() {
 		mSceneMgr.destroyEntity(mWaterEntity);
 	}
 	if (mRenderTargetListener) {
-		mMainRenderTarget.removeListener(mRenderTargetListener);
+		mMainRenderTarget.removeListener(mRenderTargetListener.get());
 	}
 	if (mWaterBobbingController) {
 		Ogre::ControllerManager::getSingleton().destroyController(mWaterBobbingController);
 	}
-	delete mRenderTargetListener;
 }
 
 bool SimpleWater::isSupported() const {
@@ -142,7 +140,8 @@ bool SimpleWater::isSupported() const {
 
 bool SimpleWater::initialize() {
 	try {
-		Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y, 0);
+		Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y,
+		0);
 
 		Ogre::Real farClipDistance = mCamera.getFarClipDistance();
 		float planeSize = farClipDistance * 2;
@@ -166,8 +165,8 @@ bool SimpleWater::initialize() {
 
 			mWaterBobbingNode->attachObject(mWaterEntity);
 
-			mRenderTargetListener = new WaterAdjustRenderTargetListener(mWaterNode);
-			mMainRenderTarget.addListener(mRenderTargetListener);
+			mRenderTargetListener = std::make_unique<WaterAdjustRenderTargetListener>(mWaterNode);
+			mMainRenderTarget.addListener(mRenderTargetListener.get());
 
 			Ogre::ControllerFunctionRealPtr func(OGRE_NEW Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0, 0.1));
 			Ogre::ControllerValueRealPtr dest(OGRE_NEW NodeAnimator(*mWaterBobbingNode, Ogre::Vector3(0, 1, 0)));

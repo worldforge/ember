@@ -55,7 +55,7 @@ private:
 	/**
 	 * @brief Takes care of the setup of the pssm shadow camera. Owned by this instance.
 	 */
-	ShadowCameraSetup* mShadowCameraSetup;
+	std::unique_ptr<ShadowCameraSetup> mShadowCameraSetup;
 
 	/**
 	 * @brief Reference to the automatic graphics manager that is to be passed on when shadow camera is set up.
@@ -65,26 +65,22 @@ private:
 public:
 
 	ShaderSetupInstance(Ogre::SceneManager& sceneManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
-			mSceneManager(sceneManager), mShadowCameraSetup(0), mGraphicalChangeAdapter(graphicalChangeAdapter)
+			mSceneManager(sceneManager),
+			mGraphicalChangeAdapter(graphicalChangeAdapter)
 	{
 
 	}
 
-	~ShaderSetupInstance()
-	{
-		delete mShadowCameraSetup;
-	}
+	~ShaderSetupInstance() = default;
 
 	void setPSSMShadows()
 	{
-		delete mShadowCameraSetup;
-		mShadowCameraSetup = new ShadowCameraSetup(mSceneManager, mGraphicalChangeAdapter);
+		mShadowCameraSetup = std::make_unique<ShadowCameraSetup>(mSceneManager, mGraphicalChangeAdapter);
 	}
 
 	void setNoShadows()
 	{
-		delete mShadowCameraSetup;
-		mShadowCameraSetup = 0;
+		mShadowCameraSetup.reset();
 		mSceneManager.setShadowTechnique(Ogre::SHADOWTYPE_NONE);
 		//This will make any other camera setup delete itself (unless held by another shared pointer).
 		mSceneManager.setShadowCameraSetup(Ogre::ShadowCameraSetupPtr());
@@ -175,12 +171,7 @@ bool ShaderManager::checkMaterial(const std::string& materialName, const std::st
 	return true;
 }
 
-ShaderManager::~ShaderManager()
-{
-	for (ShaderSetupStore::const_iterator I = mShaderSetups.begin(); I != mShaderSetups.end(); ++I) {
-		delete I->second;
-	}
-}
+ShaderManager::~ShaderManager() = default;
 
 ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel() const
 {
@@ -241,7 +232,6 @@ void ShaderManager::deregisterSceneManager(Ogre::SceneManager* sceneManager)
 {
 	auto I = mShaderSetups.find(sceneManager);
 	if (I != mShaderSetups.end()) {
-		delete I->second;
 		mShaderSetups.erase(I);
 	}
 }

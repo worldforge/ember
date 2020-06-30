@@ -117,7 +117,7 @@ protected:
 	/**
 	 * @brief Used to listen for configuration changes.
 	 */
-	ConfigListenerContainer* mConfigListenerContainer;
+	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
 	 * @brief Checks level against this component's threshold value to determine change in material lod.

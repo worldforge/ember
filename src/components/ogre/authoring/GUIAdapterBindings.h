@@ -78,7 +78,7 @@ public:
 	/**
 	 * Helper function, converting Atlas node into TinyXml node
 	 */
-	static TiXmlNode* convertAtlasToXml(Atlas::Message::Element& val);
+	static TiXmlDocument convertAtlasToXml(Atlas::Message::Element& val);
 
 protected:
 	/**

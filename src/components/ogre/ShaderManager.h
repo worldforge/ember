@@ -150,7 +150,7 @@ public:
 
 private:
 
-	typedef std::map<Ogre::SceneManager*, ShaderSetupInstance*> ShaderSetupStore;
+	typedef std::map<Ogre::SceneManager*, std::unique_ptr<ShaderSetupInstance>> ShaderSetupStore;
 	/**
 	 * Current graphics level
 	 */

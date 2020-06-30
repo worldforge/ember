@@ -44,9 +44,7 @@ CustomAdapter::CustomAdapter(const ::Atlas::Message::Element& element)
 }
 
 
-CustomAdapter::~CustomAdapter()
-{
-}
+CustomAdapter::~CustomAdapter() = default;
 
 void CustomAdapter::updateGui(const ::Atlas::Message::Element& element)
 {

@@ -112,7 +112,7 @@ protected:
 	 *
 	 * This makes sure that it appears that the water is infinite.
 	 */
-	WaterAdjustRenderTargetListener* mRenderTargetListener;
+	std::unique_ptr<WaterAdjustRenderTargetListener> mRenderTargetListener;
 
 	/**
 	 * @brief Makes sure that the water bobs up and down a little.

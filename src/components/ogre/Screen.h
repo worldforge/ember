@@ -87,7 +87,7 @@ protected:
 	/**
 	 * @brief A recorder which can record frames to disk.
 	 */
-	Camera::Recorder* mRecorder;
+	std::unique_ptr<Camera::Recorder> mRecorder;
 
 	/**
 	 * @brief The current polygon mode used in render targets.

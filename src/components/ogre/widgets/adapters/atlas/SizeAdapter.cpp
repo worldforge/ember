@@ -81,9 +81,7 @@ SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, const Widgets
 	updateGui(mOriginalValue);
 }
 
-SizeAdapter::~SizeAdapter()
-{
-}
+SizeAdapter::~SizeAdapter() = default;
 
 void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 {

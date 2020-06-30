@@ -41,13 +41,12 @@ FoliageDetailManager::FoliageDetailManager(Foliage& foliage, GraphicalChangeAdap
 		mMaxFarDistance(2.0f),
 		mMinFarDistance(0.3f),
 		mGraphicalChangeAdapter(graphicalChangeAdapter),
-		mConfigListenerContainer(new ConfigListenerContainer())
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>())
 {
 }
 
 FoliageDetailManager::~FoliageDetailManager()
 {
-	delete mConfigListenerContainer;
 	mChangeRequiredConnection.disconnect();
 }
 

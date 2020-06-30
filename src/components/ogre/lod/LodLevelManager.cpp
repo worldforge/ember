@@ -23,28 +23,27 @@
 
 #include <OgreCamera.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Lod
-{
+namespace Ember {
+namespace OgreView {
+namespace Lod {
 
 LodLevelManager::LodLevelManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ogre::Camera& mainCamera) :
-		mLodThresholdLevel(1.0f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mDefaultStep(0.4f), mGraphicalChangeAdapter(graphicalChangeAdapter), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer())
-{
+		mLodThresholdLevel(1.0f),
+		mMinLodFactor(0.2f),
+		mMaxLodFactor(2.0f),
+		mDefaultStep(0.4f),
+		mGraphicalChangeAdapter(graphicalChangeAdapter),
+		mMainCamera(mainCamera),
+		mConfigListenerContainer(new ConfigListenerContainer()) {
 	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
 	mConfigListenerContainer->registerConfigListener("graphics", "lodbias", sigc::mem_fun(*this, &LodLevelManager::Config_LodBias));
 }
 
-LodLevelManager::~LodLevelManager()
-{
-	delete mConfigListenerContainer;
+LodLevelManager::~LodLevelManager() {
 	mChangeRequiredConnection.disconnect();
 }
 
-bool LodLevelManager::setLodBiasAll(Ogre::Real factor)
-{
+bool LodLevelManager::setLodBiasAll(Ogre::Real factor) {
 	//do not allow lod bias to be set to 0 or a negative value.
 	if (factor <= 0.0f) {
 		factor = 0.1f;
@@ -54,8 +53,7 @@ bool LodLevelManager::setLodBiasAll(Ogre::Real factor)
 	return true;
 }
 
-bool LodLevelManager::changeLevel(float level)
-{
+bool LodLevelManager::changeLevel(float level) {
 	if (std::abs(level) < mLodThresholdLevel) {
 		return false;
 	} else {
@@ -67,8 +65,7 @@ bool LodLevelManager::changeLevel(float level)
 	}
 }
 
-bool LodLevelManager::stepDownLodBias(float step)
-{
+bool LodLevelManager::stepDownLodBias(float step) {
 	Ogre::Real lodFactor = mMainCamera.getLodBias();
 	if (lodFactor > step) { //step down only if existing lod is greater than step
 		return setLodBiasAll(lodFactor - step);
@@ -79,8 +76,7 @@ bool LodLevelManager::stepDownLodBias(float step)
 	}
 }
 
-bool LodLevelManager::stepUpLodBias(float step)
-{
+bool LodLevelManager::stepUpLodBias(float step) {
 	Ogre::Real lodFactor = mMainCamera.getLodBias();
 	if (lodFactor + step <= mMaxLodFactor) { //step up only if the step doesn't cause lod to go over maximum lod.
 		return setLodBiasAll(lodFactor + step);
@@ -91,21 +87,18 @@ bool LodLevelManager::stepUpLodBias(float step)
 	}
 }
 
-void LodLevelManager::Config_LodBias(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void LodLevelManager::Config_LodBias(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_double()) {
 		Ogre::Real lodBias = static_cast<double>(variable);
 		setLodBiasAll(lodBias / 100.0f);
 	}
 }
 
-void LodLevelManager::pause()
-{
+void LodLevelManager::pause() {
 	mChangeRequiredConnection.block();
 }
 
-void LodLevelManager::unpause()
-{
+void LodLevelManager::unpause() {
 	mChangeRequiredConnection.unblock();
 }
 

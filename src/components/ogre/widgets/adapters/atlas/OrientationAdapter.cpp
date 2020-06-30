@@ -58,9 +58,7 @@ OrientationAdapter::OrientationAdapter(const ::Atlas::Message::Element& element,
 }
 
 
-OrientationAdapter::~OrientationAdapter()
-{
-}
+OrientationAdapter::~OrientationAdapter() = default;
 
 void OrientationAdapter::updateGui(const ::Atlas::Message::Element& element)
 {

@@ -50,9 +50,7 @@ Position2DAdapter::Position2DAdapter(const ::Atlas::Message::Element& element, C
 }
 
 
-Position2DAdapter::~Position2DAdapter()
-{
-}
+Position2DAdapter::~Position2DAdapter() = default;
 
 void Position2DAdapter::updateGui(const ::Atlas::Message::Element& element)
 {

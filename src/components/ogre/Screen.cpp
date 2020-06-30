@@ -49,9 +49,7 @@ Screen::Screen(Ogre::RenderWindow& window) :
 		mFrameStats{} {
 }
 
-Screen::~Screen() {
-	delete mRecorder;
-}
+Screen::~Screen() = default;
 
 void Screen::runCommand(const std::string& command, const std::string& args) {
 	if (Screenshot == command) {

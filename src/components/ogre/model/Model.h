@@ -68,10 +68,10 @@ struct LightInfo {
 	/**
 	 * If the light has a position defined we need to place it in a separate node. This entry keeps track of that node.
 	 */
-	INodeProvider* nodeProvider = nullptr;
+	std::unique_ptr<INodeProvider> nodeProvider;
 };
 
-typedef std::vector<ParticleSystem*> ParticleSystemSet;
+typedef std::vector<std::unique_ptr<ParticleSystem>> ParticleSystemSet;
 typedef std::vector<ParticleSystemBinding> ParticleSystemBindingsSet;
 
 /**
