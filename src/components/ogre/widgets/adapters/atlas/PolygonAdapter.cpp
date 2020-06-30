@@ -39,23 +39,17 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
-namespace Adapters
-{
+namespace Adapters {
 
-namespace Atlas
-{
+namespace Atlas {
 
 EntityPolygonPositionProvider::EntityPolygonPositionProvider(EmberEntity& entity) :
-	mEntity(entity)
-{
+		mEntity(entity) {
 }
 
 float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>& localPosition) const {
@@ -63,17 +57,13 @@ float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>
 }
 
 PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity) :
-	AdapterBase(element),
-	mShowButton(showButton),
-	mPolygon(nullptr),
-	mPickListener(nullptr),
-	mPointMovement(nullptr),
-	mEntity(entity),
-	mPositionProvider(nullptr)
-{
+		AdapterBase(element),
+		mShowButton(showButton),
+		mEntity(entity),
+		mEntityNode(nullptr) {
 
 	if (entity) {
-		mPositionProvider = new EntityPolygonPositionProvider(*entity);
+		mPositionProvider = std::make_unique<EntityPolygonPositionProvider>(*entity);
 	}
 
 	if (showButton) {
@@ -83,42 +73,34 @@ PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::
 	updateGui(mOriginalValue);
 }
 
-PolygonAdapter::~PolygonAdapter()
-{
+PolygonAdapter::~PolygonAdapter() {
 	if (mPickListener) {
-		EmberOgre::getSingleton().getWorld()->getMainCamera().removeWorldPickListener(mPickListener);
-		try {
-			delete mPickListener;
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when deleting polygon point pick listener.");
-		}
+		EmberOgre::getSingleton().getWorld()->getMainCamera().removeWorldPickListener(mPickListener.get());
 	}
-
-	delete mPolygon;
-	delete mPositionProvider;
+	mPolygon.reset();
+	if (mEntityNode) {
+		EmberOgre::getSingleton().getWorld()->getSceneManager().destroySceneNode(mEntityNode);
+	}
 }
 
-void PolygonAdapter::updateGui(const ::Atlas::Message::Element& element)
-{
+void PolygonAdapter::updateGui(const ::Atlas::Message::Element& element) {
 }
 
-bool PolygonAdapter::showButton_Clicked(const CEGUI::EventArgs& e)
-{
+bool PolygonAdapter::showButton_Clicked(const CEGUI::EventArgs& e) {
 	toggleDisplayOfPolygon();
 	return true;
 }
 
-Ogre::SceneNode* PolygonAdapter::getEntitySceneNode() const
-{
-	auto nodeAttachment = dynamic_cast<NodeAttachment*> (mEntity->getAttachment());
-	if (nodeAttachment) {
-		return dynamic_cast<Ogre::SceneNode*> (nodeAttachment->getNode());
+Ogre::SceneNode* PolygonAdapter::getEntitySceneNode() {
+	if (!mEntityNode) {
+		mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
+		mEntity->Moved.connect(sigc::mem_fun(*this, &PolygonAdapter::entityMoved));
+		entityMoved();
 	}
-	return nullptr;
+	return mEntityNode;
 }
 
-void PolygonAdapter::toggleDisplayOfPolygon()
-{
+void PolygonAdapter::toggleDisplayOfPolygon() {
 	if (!mPolygon) {
 		if (!mEntity) {
 			S_LOG_WARNING("There's no entity attached to the PolygonAdapter, and the polygon can't thus be shown.");
@@ -127,104 +109,89 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 			::Atlas::Message::Element areaElem(getChangedElement());
 
 			Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
-			if (entitySceneNode) {
-				if (areaElem.isMap()) {
-					try {
-						WFMath::Polygon<2> poly(areaElem);
-						createNewPolygon(&poly);
-					} catch (const WFMath::_AtlasBadParse& ex) {
-						createNewPolygon(nullptr);
-					}
-				} else {
+			if (areaElem.isMap()) {
+				try {
+					WFMath::Polygon<2> poly(areaElem);
+					createNewPolygon(&poly);
+				} catch (const WFMath::_AtlasBadParse& ex) {
 					createNewPolygon(nullptr);
 				}
-
+			} else {
+				createNewPolygon(nullptr);
 			}
+
+
 		}
 	} else {
 		if (mPickListener) {
-			EmberOgre::getSingleton().getWorld()->getMainCamera().removeWorldPickListener(mPickListener);
+			EmberOgre::getSingleton().getWorld()->getMainCamera().removeWorldPickListener(mPickListener.get());
 			try {
-				delete mPickListener;
+				mPickListener.reset();
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when deleting polygon point pick listener.");
 			}
-			mPickListener = nullptr;
 		}
 		try {
-			delete mPolygon;
+			mPolygon.reset();
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when deleting polygon.");
 		}
-		mPolygon = nullptr;
 	}
 }
 
-void PolygonAdapter::createNewPolygon(WFMath::Polygon<2>* existingPoly)
-{
-	delete mPolygon;
-	mPolygon = nullptr;
+void PolygonAdapter::createNewPolygon(WFMath::Polygon<2>* existingPoly) {
+	mPolygon.reset();
 	Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
-	if (entitySceneNode) {
-		mPolygon = new Authoring::Polygon(entitySceneNode, mPositionProvider, true);
-		//These polygons should all be interactive.
-		mPolygon->makeInteractive(&EmberOgre::getSingleton().getWorld()->getScene().getBulletWorld());
-		WFMath::Polygon<2> poly;
-		if (existingPoly) {
-			poly = *existingPoly;
-		} else {
-			poly.addCorner(0, WFMath::Point<2>(-1, -1));
-			poly.addCorner(1, WFMath::Point<2>(-1, 1));
-			poly.addCorner(2, WFMath::Point<2>(1, 1));
-			poly.addCorner(3, WFMath::Point<2>(1, -1));
-		}
-
-		mPolygon->loadFromShape(poly);
-		if (!mPickListener) {
-			mPickListener = new Authoring::PolygonPointPickListener(*mPolygon);
-			mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
-			EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
-		}
+	mPolygon = std::make_unique<Authoring::Polygon>(entitySceneNode, mPositionProvider.get(), true);
+	//These polygons should all be interactive.
+	mPolygon->makeInteractive(&EmberOgre::getSingleton().getWorld()->getScene().getBulletWorld());
+	WFMath::Polygon<2> poly;
+	if (existingPoly) {
+		poly = *existingPoly;
+	} else {
+		poly.addCorner(0, WFMath::Point<2>(-1, -1));
+		poly.addCorner(1, WFMath::Point<2>(-1, 1));
+		poly.addCorner(2, WFMath::Point<2>(1, 1));
+		poly.addCorner(3, WFMath::Point<2>(1, -1));
 	}
+
+	mPolygon->loadFromShape(poly);
+	if (!mPickListener) {
+		mPickListener = std::make_unique<Authoring::PolygonPointPickListener>(*mPolygon);
+		mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
+		EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener.get());
+	}
+
 
 }
 
-void PolygonAdapter::fillElementFromGui()
-{
+void PolygonAdapter::fillElementFromGui() {
 	if (mPolygon) {
 		mEditedValue = mPolygon->getShape().toAtlas();
 	}
 }
 
-bool PolygonAdapter::_hasChanges()
-{
+bool PolygonAdapter::_hasChanges() {
 	return mOriginalValue != getChangedElement();
 }
 
-void PolygonAdapter::pickListener_PickedPoint(Authoring::PolygonPoint& point)
-{
-	delete mPointMovement;
-	mPointMovement = new Authoring::PolygonPointMovement(*mPolygon, point, this, EmberOgre::getSingleton().getWorld()->getMainCamera());
+void PolygonAdapter::pickListener_PickedPoint(Authoring::PolygonPoint& point) {
+	mPointMovement = std::make_unique<Authoring::PolygonPointMovement>(*mPolygon, point, this, EmberOgre::getSingleton().getWorld()->getMainCamera());
 }
 
-void PolygonAdapter::endMovement()
-{
-	delete mPointMovement;
-	mPointMovement = nullptr;
-}
-void PolygonAdapter::cancelMovement()
-{
-	delete mPointMovement;
-	mPointMovement = nullptr;
+void PolygonAdapter::endMovement() {
+	mPointMovement.reset();
 }
 
-bool PolygonAdapter::hasShape() const
-{
+void PolygonAdapter::cancelMovement() {
+	mPointMovement.reset();
+}
+
+bool PolygonAdapter::hasShape() const {
 	return mPolygon != nullptr;
 }
 
-const WFMath::Polygon<2> PolygonAdapter::getShape()
-{
+WFMath::Polygon<2> PolygonAdapter::getShape() {
 	if (mPolygon) {
 		return mPolygon->getShape();
 	}
@@ -233,6 +200,11 @@ const WFMath::Polygon<2> PolygonAdapter::getShape()
 		return WFMath::Polygon<2>(element);
 	}
 	return WFMath::Polygon<2>();
+}
+
+void PolygonAdapter::entityMoved() {
+	mEntityNode->setPosition(Convert::toOgre(mEntity->getPosition()));
+	mEntityNode->setOrientation(Convert::toOgre(mEntity->getOrientation()));
 }
 
 }

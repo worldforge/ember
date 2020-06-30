@@ -233,7 +233,7 @@ protected:
 	 *
 	 * This will be owned by this instance and deleted at destruction.
 	 */
-	Adapters::Atlas::MapAdapter* mRootAdapter;
+	std::unique_ptr<Adapters::Atlas::MapAdapter> mRootAdapter;
 
 	/**
 	 * @brief The entity which is being edited.
@@ -245,12 +245,12 @@ protected:
 	/**
 	 * @brief Holds a marker to a location.
 	 */
-	EntityPointMarker* mMarker;
+	std::unique_ptr<EntityPointMarker> mMarker;
 
 	/**
 	 * @brief Draws the path of the entity, if such exists.
 	 */
-	Authoring::Polygon* mPathPolygon;
+	std::unique_ptr<Authoring::Polygon> mPathPolygon;
 
 	/**
 	 * @brief True if the entity has a path, and this should be automatically queried for when the entity moves.

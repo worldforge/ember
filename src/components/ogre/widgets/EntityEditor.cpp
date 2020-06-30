@@ -94,7 +94,7 @@ protected:
 	/**
 	 * @brief A line drawn from the entity to the marker.
 	 */
-	ShapeVisual* mMarkerDirectionIndicator;
+	std::unique_ptr<ShapeVisual> mMarkerDirectionIndicator;
 
 	/**
 	 * @brief Provides height data.
@@ -165,7 +165,7 @@ public:
 		}
 		mMarkerNode->setVisible(true);
 
-		mMarkerDirectionIndicator = new ShapeVisual(*sceneManager.getRootSceneNode(), false);
+		mMarkerDirectionIndicator = std::make_unique<ShapeVisual>(*sceneManager.getRootSceneNode(), false);
 
 		mEntity.Moved.connect(sigc::mem_fun(*this, &EntityPointMarker::entityMoved));
 	}
@@ -180,8 +180,6 @@ public:
 		if (mMarkerNode) {
 			mMarkerNode->getCreator()->destroySceneNode(mMarkerNode);
 		}
-
-		delete mMarkerDirectionIndicator;
 	}
 
 };
@@ -190,19 +188,11 @@ EntityEditor::EntityEditor(World& world, Eris::Entity& entity, Adapters::Atlas::
 		mWorld(world),
 		mRootAdapter(rootAdapter),
 		mEntity(entity),
-		mMarker(nullptr),
-		mPathPolygon(nullptr),
 		mHasPath(false) {
 	mEntity.Moved.connect(sigc::mem_fun(*this, &EntityEditor::entityMoved));
 }
 
-EntityEditor::~EntityEditor() {
-	delete mRootAdapter;
-
-	delete mMarker;
-
-	delete mPathPolygon;
-}
+EntityEditor::~EntityEditor() = default;
 
 void EntityEditor::submitChanges() {
 	if (mRootAdapter->hasChanges() && mWorld.getAvatar()) {
@@ -343,15 +333,13 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 }
 
 void EntityEditor::addMarker(const std::string& entityId, const WFMath::Point<3>& point) {
-	delete mMarker;
-	mMarker = nullptr;
+	mMarker.reset();
 	if (point.isValid()) {
 
 		Eris::Entity* entity = mWorld.getView().getEntity(entityId);
 		if (entity) {
 			const WFMath::Point<3> worldPosition = entity->getViewPosition() + WFMath::Vector<3>(point);
-			delete mMarker;
-			mMarker = new EntityPointMarker(mEntity, mWorld.getSceneManager(), mWorld.getTerrainManager(), worldPosition);
+			mMarker = std::make_unique<EntityPointMarker>(mEntity, mWorld.getSceneManager(), mWorld.getTerrainManager(), worldPosition);
 			mMarker->updateMarker();
 		}
 	}
@@ -406,9 +394,9 @@ void EntityEditor::relayToMind(Atlas::Objects::Operation::RootOperation op, Eris
 				//By setting a serial number we tell the server to "relay" the operation. This means that any
 				//response operation from the target entity will be sent back to us.
 				relayOp->setSerialno(Eris::getNewSerialno());
-				connection.getResponder().await(relayOp->getSerialno(), callback);
+				connection.getResponder().await(relayOp->getSerialno(), std::move(callback));
 			}
-			relayOp->setArgs1(op);
+			relayOp->setArgs1(std::move(op));
 
 
 			connection.send(relayOp);
@@ -524,7 +512,7 @@ void EntityEditor::operationGetPathResult(const Atlas::Objects::Operation::RootO
 		Atlas::Objects::Entity::Anonymous pathEntity = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::Anonymous>(innerOp);
 
 		if (!mPathPolygon) {
-			mPathPolygon = new Authoring::Polygon(mWorld.getSceneManager().getRootSceneNode(), nullptr, false);
+			mPathPolygon = std::make_unique<Authoring::Polygon>(mWorld.getSceneManager().getRootSceneNode(), nullptr, false);
 		}
 
 		mPathPolygon->clear();
@@ -690,8 +678,7 @@ std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map) {
 }
 
 void EntityEditor::removeMarker() {
-	delete mMarker;
-	mMarker = nullptr;
+	mMarker.reset();
 }
 
 WFMath::Point<3> EntityEditor::createPoint(float x, float y, float z) {

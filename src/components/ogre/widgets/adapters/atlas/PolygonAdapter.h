@@ -29,40 +29,36 @@
 #include "components/ogre/authoring/IPolygonPositionProvider.h"
 #include "domain/EmberEntity.h"
 
-namespace CEGUI
-{
+namespace CEGUI {
 class Combobox;
+
 class PushButton;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
-namespace Authoring
-{
+namespace OgreView {
+namespace Authoring {
 class Polygon;
+
 class PolygonPoint;
+
 class PolygonPointPickListener;
+
 class PolygonPointMovement;
 }
-namespace Gui
-{
+namespace Gui {
 
-namespace Adapters
-{
+namespace Adapters {
 
-namespace Atlas
-{
+namespace Atlas {
 
 /**
  @brief Provides height positions for a polygon attached to an EmberEntity instance.
  The height will be adjusted for the terrain.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class EntityPolygonPositionProvider: public Authoring::IPolygonPositionProvider
-{
+class EntityPolygonPositionProvider : public Authoring::IPolygonPositionProvider {
 public:
 
 	/**
@@ -96,8 +92,7 @@ protected:
  This allows the editing of polygons through graphical drag and drop operations.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class PolygonAdapter: public AdapterBase, public Authoring::IMovementListener
-{
+class PolygonAdapter : public AdapterBase, public Authoring::IMovementListener, public virtual sigc::trackable {
 public:
 	/**
 	 * @brief Ctor.
@@ -126,7 +121,7 @@ public:
 	 * @brief Creates a new polygon.
 	 * @param existingPoly An optional existing poly definition to use as base. If null, a default shape will be used.
 	 */
-	void createNewPolygon(WFMath::Polygon<2>* existingPoly = 0);
+	void createNewPolygon(WFMath::Polygon<2>* existingPoly = nullptr);
 
 	/**
 	 * @brief When movement has ended, remove the movement instance.
@@ -149,7 +144,7 @@ public:
 	 * Note that there's no guarantee that the polygon shape returned will be valid. Make sure to check with WFMath::Polygon::isValid().
 	 * @return A polygon shape.
 	 */
-	const WFMath::Polygon<2> getShape();
+	WFMath::Polygon<2> getShape();
 
 protected:
 
@@ -162,17 +157,17 @@ protected:
 	 * @brief The polygon used for graphical representation of this area.
 	 * Owned by this instance.
 	 */
-	Authoring::Polygon* mPolygon;
+	std::unique_ptr<Authoring::Polygon> mPolygon;
 
 	/**
 	 * @brief Responsible for listening for pick events and initiating movements of the points.
 	 */
-	Authoring::PolygonPointPickListener* mPickListener;
+	std::unique_ptr<Authoring::PolygonPointPickListener> mPickListener;
 
 	/**
 	 * @brief Responsible for handling the movement of a specific point.
 	 */
-	Authoring::PolygonPointMovement* mPointMovement;
+	std::unique_ptr<Authoring::PolygonPointMovement> mPointMovement;
 
 	/**
 	 * @brief An optional entity to which the area belongs.
@@ -184,7 +179,9 @@ protected:
 	 * @brief A position provider, for the polygon.
 	 * If an EmberEntity instance is present this will be created (and owned).
 	 */
-	EntityPolygonPositionProvider* mPositionProvider;
+	std::unique_ptr<EntityPolygonPositionProvider> mPositionProvider;
+
+	Ogre::SceneNode* mEntityNode;
 
 	bool showButton_Clicked(const CEGUI::EventArgs& e);
 
@@ -194,15 +191,19 @@ protected:
 	 */
 	void pickListener_PickedPoint(Authoring::PolygonPoint& point);
 
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
+	void fillElementFromGui() override;
+
+	bool _hasChanges() override;
 
 	/**
 	 * @brief Tries to get the scene node the entity is attached to.
 	 * Not all entities are attached to scene nodes, so this might very well also return null.
 	 * @return The scene node to which the entity is attached, or null if it's not attached to any scene node.
 	 */
-	Ogre::SceneNode* getEntitySceneNode() const;
+	Ogre::SceneNode* getEntitySceneNode();
+
+	void entityMoved();
+
 };
 
 }

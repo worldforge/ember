@@ -39,6 +39,8 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 
+#include <memory>
+
 namespace Ember
 {
 namespace OgreView
@@ -180,7 +182,7 @@ bool PolygonPoint::getVisible() const
 
 void PolygonPoint::makeInteractive(BulletWorld* bulletWorld) {
 	if (mEntity && bulletWorld) {
-		mCollisionDetector.reset(new BulletCollisionDetector(*bulletWorld));
+		mCollisionDetector = std::make_unique<BulletCollisionDetector>(*bulletWorld);
 		mCollisionDetector->collisionInfo = &mUserObject;
 		auto shape = std::make_shared<btSphereShape>(mEntity->getWorldBoundingSphere().getRadius());
 		mCollisionDetector->addCollisionShape(std::move(shape));
