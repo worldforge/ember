@@ -101,7 +101,7 @@ const WFMath::Point<3>& EntityMoverBase::getPosition() const {
 }
 
 void EntityMoverBase::setPosition(const WFMath::Point<3>& position) {
-	WFMath::Point<3> finalPosition(position);
+	WFMath::Point<3> finalPosition = position;
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustment;
 		EmberEntity* entity = nullptr;

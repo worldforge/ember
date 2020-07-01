@@ -74,6 +74,11 @@ Eris::Entity* DetachedEntity::getEntity(const std::string&)
 	return nullptr;
 }
 
+void DetachedEntity::setLocationEntity(Eris::Entity* location)
+{
+	setLocation(location);
+}
+
 
 
 }

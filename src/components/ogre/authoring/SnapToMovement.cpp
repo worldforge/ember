@@ -35,18 +35,18 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 #include <OgreSceneNode.h>
+#include <components/ogre/MousePicker.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Authoring
-{
+namespace Authoring {
 
 SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::Node& node, float snapThreshold, Ogre::SceneManager& sceneManager, bool showDebugOverlay) :
-	mEntity(entity), mNode(node), mSnapThreshold(snapThreshold), mSceneManager(sceneManager)
-{
+		mEntity(entity),
+		mNode(node),
+		mSnapThreshold(snapThreshold),
+		mSceneManager(sceneManager) {
 	if (showDebugOverlay) {
 		for (int i = 0; i < 30; ++i) {
 			Ogre::SceneNode* newNode = mSceneManager.getRootSceneNode()->createChildSceneNode();
@@ -63,8 +63,7 @@ SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::Node& node, float sna
 	}
 }
 
-SnapToMovement::~SnapToMovement()
-{
+SnapToMovement::~SnapToMovement() {
 	for (auto node : mDebugNodes) {
 		node->removeAndDestroyAllChildren();
 		mSceneManager.destroySceneNode(node);
@@ -72,8 +71,7 @@ SnapToMovement::~SnapToMovement()
 
 }
 
-bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity** snappedToEntity)
-{
+bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity** snappedToEntity) {
 	try {
 		for (auto node : mDebugNodes) {
 			node->setVisible(false);
@@ -112,61 +110,59 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 
 	//First find all entities which are close enough
 	//Then try to do a snap movement based on the points of the eris bounding boxes. I.e. we only provide support for snapping one corner of a bounding box to another corner (for now).
-	WFMath::Ball<3> boundingSphere = mEntity.getBBox().boundingSphere();
-	Ogre::Sphere sphere(mNode._getDerivedPosition(), boundingSphere.radius() * 2);
-	Ogre::SphereSceneQuery* query = mSceneManager.createSphereQuery(sphere);
-	Ogre::SceneQueryResult& result = query->execute();
-	for (Ogre::SceneQueryResultMovableList::const_iterator I = result.movables.begin(); I != result.movables.end(); ++I) {
-		Ogre::MovableObject* movable = *I;
-		if (movable->getUserObjectBindings().getUserAny().type() == typeid(EmberEntityUserObject::SharedPtr)) {
-			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(movable->getUserObjectBindings().getUserAny()).get();
-			EmberEntity& entity = anUserObject->mEmberEntity;
-			if (&entity != &mEntity && entity.hasBBox()) {
-				//Ok, we have an entity which is close to our entity. Now check if any of the points of the bounding box is close.
-				WFMath::AxisBox<3> bbox = entity.getBBox();
-				if (bbox.isValid()) {
-					WFMath::RotBox<3> rotbox;
-					rotbox.size() = bbox.highCorner() - bbox.lowCorner();
-					rotbox.corner0() = bbox.lowCorner();
-					rotbox.orientation().identity();
-					rotbox.rotatePoint(entity.getViewOrientation(), WFMath::Point<3>(0, 0, 0));
-					rotbox.shift(WFMath::Vector<3>(entity.getViewPosition()));
+	auto parentLocation = mEntity.getLocation();
+	if (parentLocation) {
+		auto entitySphere = mEntity.getBBox().boundingSphere().toParentCoords(position);
+		for (auto& child : parentLocation->getContent()) {
+			if (child != &mEntity) {
+				if (child->hasBBox()) {
+					WFMath::AxisBox<3> bbox = child->getBBox();
+					auto childSphere = bbox.boundingSphereSloppy().toParentCoords(child->getPosition());
+					if (WFMath::Intersect(childSphere, entitySphere, false)) {
+						//Ok, we have an entity which is close to our entity. Now check if any of the points of the bounding box is close.
+						WFMath::RotBox<3> rotbox;
+						rotbox.size() = bbox.highCorner() - bbox.lowCorner();
+						rotbox.corner0() = bbox.lowCorner();
+						rotbox.orientation().identity();
+						rotbox.rotatePoint(child->getViewOrientation(), WFMath::Point<3>(0, 0, 0));
+						rotbox.shift(WFMath::Vector<3>(child->getViewPosition()));
 
-					for (size_t i = 0; i < rotbox.numCorners(); ++i) {
-						WFMath::Point<3> point = rotbox.getCorner(i);
-						Ogre::SceneNode* currentNode(nullptr);
-						//If there is any unclaimed debug node left we'll use it to visualize the corner
-						if (nodeIterator != mDebugNodes.end()) {
-							currentNode = *nodeIterator;
-							currentNode->setPosition(Convert::toOgre(point));
-							currentNode->setVisible(true);
-							nodeIterator++;
-						}
-						point.z() = 0;
-						for (size_t j = 0; j < currentRotbox.numCorners(); ++j) {
-							WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
-							currentPoint.z() = 0;
-							WFMath::CoordType distance = WFMath::Distance(currentPoint, point);
-							if (distance <= mSnapThreshold) {
-								if (currentNode) {
-									Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (currentNode->getAttachedObject(0));
-									if (sphereEntity) {
-										try {
-											sphereEntity->setMaterialName("/common/base/authoring/point/moved");
-										} catch (const std::exception& ex) {
-											S_LOG_WARNING("Error when setting material for point." << ex);
+						for (size_t i = 0; i < rotbox.numCorners(); ++i) {
+							WFMath::Point<3> point = rotbox.getCorner(i);
+							Ogre::SceneNode* currentNode(nullptr);
+							//If there is any unclaimed debug node left we'll use it to visualize the corner
+							if (nodeIterator != mDebugNodes.end()) {
+								currentNode = *nodeIterator;
+								currentNode->setPosition(Convert::toOgre(point));
+								currentNode->setVisible(true);
+								nodeIterator++;
+							}
+							point.y() = 0;
+							for (size_t j = 0; j < currentRotbox.numCorners(); ++j) {
+								WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
+								currentPoint.y() = 0;
+								WFMath::CoordType distance = WFMath::Distance(currentPoint, point);
+								if (distance <= mSnapThreshold) {
+									if (currentNode) {
+										Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (currentNode->getAttachedObject(0));
+										if (sphereEntity) {
+											try {
+												sphereEntity->setMaterialName("/common/base/authoring/point/moved");
+											} catch (const std::exception& ex) {
+												S_LOG_WARNING("Error when setting material for point." << ex);
+											}
 										}
 									}
-								}
-								if (!closestSnapping.get()) {
-									closestSnapping = std::unique_ptr<SnapPointCandidate>(new SnapPointCandidate());
-									closestSnapping->entity = &entity;
-									closestSnapping->distance = distance;
-									closestSnapping->adjustment = point - currentPoint;
-								} else if (distance < closestSnapping->distance) {
-									closestSnapping->entity = &entity;
-									closestSnapping->distance = distance;
-									closestSnapping->adjustment = point - currentPoint;
+									if (!closestSnapping.get()) {
+										closestSnapping = std::unique_ptr<SnapPointCandidate>(new SnapPointCandidate());
+										closestSnapping->entity = static_cast<EmberEntity*>(child);
+										closestSnapping->distance = distance;
+										closestSnapping->adjustment = point - currentPoint;
+									} else if (distance < closestSnapping->distance) {
+										closestSnapping->entity = static_cast<EmberEntity*>(child);
+										closestSnapping->distance = distance;
+										closestSnapping->adjustment = point - currentPoint;
+									}
 								}
 							}
 						}
@@ -175,7 +171,23 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 			}
 		}
 	}
-	mSceneManager.destroyQuery(query);
+
+
+//	WFMath::Ball<3> boundingSphere = mEntity.getBBox().boundingSphere();
+//	Ogre::Sphere sphere(mNode._getDerivedPosition(), boundingSphere.radius() * 2);
+//	Ogre::SphereSceneQuery* query = mSceneManager.createSphereQuery(sphere);
+//	query->setQueryMask(MousePicker::CM_ENTITY);
+//	Ogre::SceneQueryResult& result = query->execute();
+//	for (auto& movable : result.movables) {
+//		if (movable->getUserObjectBindings().getUserAny().type() == typeid(EmberEntityUserObject::SharedPtr)) {
+//			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(movable->getUserObjectBindings().getUserAny()).get();
+//			EmberEntity& entity = anUserObject->mEmberEntity;
+//			if (&entity != &mEntity && entity.hasBBox()) {
+//
+//			}
+//		}
+//	}
+	//mSceneManager.destroyQuery(query);
 	if (closestSnapping) {
 		adjustment = closestSnapping->adjustment;
 		*snappedToEntity = closestSnapping->entity;

@@ -56,6 +56,8 @@ public:
 	 */
 	void doInit(const Atlas::Objects::Entity::RootEntity& rootEntity);
 
+	void setLocationEntity(Eris::Entity* location);
+
 protected:
 
 	Eris::TypeService& mTypeService;

@@ -53,12 +53,9 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService,
 															 Authoring::EntityRecipe& recipe, bool randomizeOrientation,
@@ -71,8 +68,7 @@ EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris:
 		mModelMount(nullptr),
 		mModel(nullptr),
 		mMovement(nullptr),
-		mAxisMarker(nullptr)
-{
+		mAxisMarker(nullptr) {
 	mConnection = mRecipe.EventValueChanged.connect(adapterValueChangedSlot);
 
 	mInitialOrientation.identity();
@@ -83,8 +79,7 @@ EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris:
 
 }
 
-EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
-{
+EntityCreatorCreationInstance::~EntityCreatorCreationInstance() {
 	mEntityNode->detachAllObjects();
 
 	mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
@@ -94,8 +89,7 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 	mConnection.disconnect();
 }
 
-void EntityCreatorCreationInstance::startCreation()
-{
+void EntityCreatorCreationInstance::startCreation() {
 
 	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 
@@ -114,8 +108,7 @@ void EntityCreatorCreationInstance::startCreation()
 	createEntity();
 }
 
-void EntityCreatorCreationInstance::createEntity()
-{
+void EntityCreatorCreationInstance::createEntity() {
 	// Creating entity data
 	mEntityMessage = mRecipe.createEntity(mTypeService);
 	Eris::TypeInfo* erisType = mTypeService.getTypeByName(mRecipe.getEntityType());
@@ -134,6 +127,8 @@ void EntityCreatorCreationInstance::createEntity()
 	Atlas::Objects::Entity::RootEntity rootEntity;
 	mEntity->doInit(rootEntity);
 	mEntity->setFromMessage(mEntityMessage);
+	//Set the parent to the top level by default.
+	mEntity->setLocationEntity(mWorld.getView().getTopLevel());
 
 	// Creating scene node
 	mEntityNode = mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode();
@@ -148,13 +143,13 @@ void EntityCreatorCreationInstance::createEntity()
 	}
 
 	// Making model from temporary entity
-	Mapping::ModelActionCreator actionCreator(*mEntity, [&](const std::string& modelName){
+	Mapping::ModelActionCreator actionCreator(*mEntity, [&](const std::string& modelName) {
 		setModel(modelName);
-	}, [&](const std::string& partName){
+	}, [&](const std::string& partName) {
 		showModelPart(partName);
 	});
 
-	std::unique_ptr<EntityMapping::EntityMapping> modelMapping= Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, mWorld.getView().getTypeService(), &mWorld.getView());
+	std::unique_ptr<EntityMapping::EntityMapping> modelMapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, mWorld.getView().getTypeService(), &mWorld.getView());
 	if (modelMapping) {
 		modelMapping->initialize();
 	}
@@ -165,8 +160,7 @@ void EntityCreatorCreationInstance::createEntity()
 
 }
 
-void EntityCreatorCreationInstance::finalizeCreation()
-{
+void EntityCreatorCreationInstance::finalizeCreation() {
 
 	// Final position
 
@@ -194,8 +188,7 @@ void EntityCreatorCreationInstance::finalizeCreation()
 
 }
 
-void EntityCreatorCreationInstance::setModel(const std::string& modelName)
-{
+void EntityCreatorCreationInstance::setModel(const std::string& modelName) {
 	if (mModel) {
 		if (mModel->getDefinition()->getOrigin() == modelName) {
 			return;
@@ -232,47 +225,39 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 	mEntityNode->setOrientation(Convert::toOgre(mInitialOrientation));
 }
 
-void EntityCreatorCreationInstance::showModelPart(const std::string& partName)
-{
+void EntityCreatorCreationInstance::showModelPart(const std::string& partName) {
 	if (mModel) {
 		mModel->showPart(partName);
 	}
 }
 
-void EntityCreatorCreationInstance::hideModelPart(const std::string& partName)
-{
+void EntityCreatorCreationInstance::hideModelPart(const std::string& partName) {
 	if (mModel) {
 		mModel->hidePart(partName);
 	}
 }
 
-Model::Model* EntityCreatorCreationInstance::getModel()
-{
+Model::Model* EntityCreatorCreationInstance::getModel() {
 	return mModel.get();
 }
 
-bool EntityCreatorCreationInstance::hasBBox() const
-{
+bool EntityCreatorCreationInstance::hasBBox() const {
 	return mEntity->hasBBox();
 }
 
-const WFMath::AxisBox<3> & EntityCreatorCreationInstance::getBBox() const
-{
+const WFMath::AxisBox<3>& EntityCreatorCreationInstance::getBBox() const {
 	return mEntity->getBBox();
 }
 
-void EntityCreatorCreationInstance::initFromModel()
-{
+void EntityCreatorCreationInstance::initFromModel() {
 	scaleNode();
 }
 
-void EntityCreatorCreationInstance::model_Reloaded()
-{
+void EntityCreatorCreationInstance::model_Reloaded() {
 	initFromModel();
 }
 
-void EntityCreatorCreationInstance::scaleNode()
-{
+void EntityCreatorCreationInstance::scaleNode() {
 	if (mModelMount) {
 		mModelMount->rescale(hasBBox() ? &getBBox() : nullptr);
 	} else {
@@ -280,13 +265,11 @@ void EntityCreatorCreationInstance::scaleNode()
 	}
 }
 
-WFMath::Quaternion EntityCreatorCreationInstance::getOrientation() const
-{
+WFMath::Quaternion EntityCreatorCreationInstance::getOrientation() const {
 	return Convert::toWF(mEntityNode->getOrientation());
 }
 
-void EntityCreatorCreationInstance::setOrientation(const WFMath::Quaternion& orientation)
-{
+void EntityCreatorCreationInstance::setOrientation(const WFMath::Quaternion& orientation) {
 	if (orientation.isValid()) {
 		if (mEntityNode) {
 			mEntityNode->setOrientation(Convert::toOgre(orientation));
