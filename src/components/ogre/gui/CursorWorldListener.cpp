@@ -374,6 +374,9 @@ void CursorWorldListener::highlightSelectedEntity() {
 											texture = pass->getTextureUnitState(0)->_getTexturePtr();
 										}
 									}
+									if (!texture) {
+										return;
+									}
 
 									auto outlineMaterial = Ogre::MaterialManager::getSingleton().getByName("/common/base/outline/nonculled")->clone(OgreInfo::createUniqueResourceName("outlineMaterial"));
 									outlineMaterial->load();
