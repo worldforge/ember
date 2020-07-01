@@ -48,16 +48,21 @@
 #include <CEGUI/widgets/Editbox.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/Tree.h>
+#include <CEGUI/widgets/ToggleButton.h>
 #include "components/ogre/mapping/ModelActionCreator.h"
 
 namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Avatar& avatar, CEGUI::Tree& typeTree,
-												 CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton,
-												 CEGUI::Window& modelPreview, CEGUI::Combobox& modeCombobox,
-												 CEGUI::Window& defaultModeWindow, CEGUI::Window& plantedOnWindow) :
+EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Avatar& avatar,
+												 CEGUI::Tree& typeTree,
+												 CEGUI::Editbox& nameEditbox,
+												 CEGUI::PushButton& pushButton,
+												 CEGUI::Window& modelPreview,
+												 CEGUI::Combobox& modeCombobox,
+												 CEGUI::Window& defaultModeWindow,
+												 CEGUI::ToggleButton& plantedOnGroundWindow) :
 		mAvatar(avatar),
 		mName(nameEditbox),
 		mModelPreviewRenderer(nullptr),
@@ -66,7 +71,7 @@ EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Avatar& avatar, CEGUI::Tr
 		mCreateButton(nullptr),
 		mModeCombobox(modeCombobox),
 		mDefaultModeWindow(defaultModeWindow),
-		mPlantedOnWindow(plantedOnWindow) {
+		mPlantedOnGroundWindow(plantedOnGroundWindow) {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
 
@@ -197,9 +202,9 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args) {
 						definition["mode"] = mModeCombobox.getText().c_str();
 					}
 
-					if (!mPlantedOnWindow.getText().empty()) {
+					if (mPlantedOnGroundWindow.isSelected()) {
 						definition["mode_data"] = Atlas::Message::MapType{{"mode", "planted"},
-																		  {"$eid", mPlantedOnWindow.getText().c_str()}};
+																		  {"$eid", mAvatar.getView().getTopLevel()->getId()}};
 					}
 
 					EventCreateFromType(definition);

@@ -30,6 +30,8 @@
 #include <sigc++/trackable.h>
 #include <sigc++/slot.h>
 
+#include <memory>
+
 namespace Eris
 {
 class TypeInfo;
@@ -97,6 +99,8 @@ public:
 	 */
 	void setRandomizeOrientation(bool randomize);
 
+	void setPlantedOnGround(bool planted);
+
 	/**
 	 * Starts entity creation process.
 	 */
@@ -153,7 +157,7 @@ protected:
 	/**
 	 * @brief A creation instance, which represents a preview of the entity, before it's created on the server.
 	 */
-	EntityCreatorCreationInstance* mCreationInstance;
+	std::unique_ptr<EntityCreatorCreationInstance> mCreationInstance;
 
 	/**
 	 * @brief The last orientation used for creation.
@@ -167,6 +171,8 @@ protected:
 	 * @brief If set to true, all new entities will have their orientation randomized around the vertical axis.
 	 */
 	bool mRandomizeOrientation;
+
+	bool mPlantedOnGround;
 
 	/**
 	 * @brief A slot used for listening for changes to the recipe's adapter values.

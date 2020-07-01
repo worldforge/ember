@@ -40,13 +40,10 @@
 #include <Eris/View.h>
 
 using namespace Ember;
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
 EntityCreator::EntityCreator(World& world) :
 		mWorld(world),
@@ -54,25 +51,22 @@ EntityCreator::EntityCreator(World& world) :
 		mRecipe(nullptr),
 		mCreationInstance(nullptr),
 		mRandomizeOrientation(false),
-		mAdapterValueChangedSlot([&](){createNewCreationInstance();})
-{
+		mPlantedOnGround(false),
+		mAdapterValueChangedSlot([&]() { createNewCreationInstance(); }) {
 	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 	mLastOrientation.identity();
 }
 
-EntityCreator::~EntityCreator()
-{
+EntityCreator::~EntityCreator() {
 	stopCreation();
 }
 
-void EntityCreator::setRecipe(Authoring::EntityRecipe& recipe)
-{
+void EntityCreator::setRecipe(Authoring::EntityRecipe& recipe) {
 	mRecipe = &recipe;
 	checkTypeInfoBound();
 }
 
-void EntityCreator::toggleCreateMode()
-{
+void EntityCreator::toggleCreateMode() {
 	if (!mCreationInstance) {
 		startCreation();
 	} else {
@@ -80,13 +74,16 @@ void EntityCreator::toggleCreateMode()
 	}
 }
 
-void EntityCreator::setRandomizeOrientation(bool randomize)
-{
+void EntityCreator::setRandomizeOrientation(bool randomize) {
 	mRandomizeOrientation = randomize;
 }
 
-void EntityCreator::startCreation()
-{
+void EntityCreator::setPlantedOnGround(bool planted) {
+	mPlantedOnGround = planted;
+}
+
+
+void EntityCreator::startCreation() {
 	loadAllTypes();
 	// No recipe selected, nothing to do
 	if (!mRecipe) {
@@ -101,8 +98,7 @@ void EntityCreator::startCreation()
 	Gui::QuickHelp::getSingleton().updateText(message);
 }
 
-void EntityCreator::loadAllTypes()
-{
+void EntityCreator::loadAllTypes() {
 	Eris::TypeInfo* typeInfo = mTypeService.getTypeByName("game_entity");
 	if (typeInfo) {
 		if (typeInfo->hasUnresolvedChildren()) {
@@ -111,19 +107,16 @@ void EntityCreator::loadAllTypes()
 	}
 }
 
-void EntityCreator::stopCreation()
-{
+void EntityCreator::stopCreation() {
 	if (mCreationInstance) {
 		mLastOrientation = mCreationInstance->getOrientation();
-		delete mCreationInstance;
-		mCreationInstance = nullptr;
+		mCreationInstance.reset();
 	}
 
 	EventCreationEnded();
 }
 
-void EntityCreator::finalizeCreation()
-{
+void EntityCreator::finalizeCreation() {
 	if (!mCreationInstance) {
 		return;
 	}
@@ -137,8 +130,7 @@ void EntityCreator::finalizeCreation()
 
 }
 
-void EntityCreator::checkTypeInfoBound()
-{
+void EntityCreator::checkTypeInfoBound() {
 	if (mRecipe) {
 		const std::string& typeName = mRecipe->getEntityType();
 		//Calling getTypeByName will also send a request for type info to the server if no type info exists yet
@@ -151,8 +143,7 @@ void EntityCreator::checkTypeInfoBound()
 	}
 }
 
-void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo)
-{
+void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo) {
 	if (mRecipe) {
 		if (typeInfo->getName() == mRecipe->getEntityType()) {
 			EventTypeInfoLoaded.emit();
@@ -160,13 +151,12 @@ void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo)
 	}
 }
 
-void EntityCreator::createNewCreationInstance()
-{
-	delete mCreationInstance;
-	mCreationInstance = nullptr;
-	mCreationInstance = new EntityCreatorCreationInstance(mWorld, mTypeService, *mRecipe, mRandomizeOrientation, mAdapterValueChangedSlot);
-	mCreationInstance->EventAbortRequested.connect([&](){stopCreation();});
-	mCreationInstance->EventFinalizeRequested.connect([&](){finalizeCreation();});
+void EntityCreator::createNewCreationInstance() {
+	mCreationInstance.reset();
+	mCreationInstance = std::make_unique<EntityCreatorCreationInstance>(mWorld, mTypeService, *mRecipe, mRandomizeOrientation, mAdapterValueChangedSlot);
+	mCreationInstance->setPlantedOnGround(mPlantedOnGround);
+	mCreationInstance->EventAbortRequested.connect([&]() { stopCreation(); });
+	mCreationInstance->EventFinalizeRequested.connect([&]() { finalizeCreation(); });
 	if (!mRandomizeOrientation) {
 		mCreationInstance->setOrientation(mLastOrientation);
 	}

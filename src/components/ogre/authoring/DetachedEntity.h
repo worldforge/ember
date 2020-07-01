@@ -44,7 +44,7 @@ class DetachedEntity: public Eris::Entity
 public:
 	DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService& typeService);
 
-	~DetachedEntity() override = default;
+	~DetachedEntity() override;
 
 	/**
 	 * @brief Sets entity attributes from Atlas message.

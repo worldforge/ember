@@ -121,6 +121,8 @@ public:
 	 */
 	void setOrientation(const WFMath::Quaternion& orientation);
 
+	void setPlantedOnGround(bool planted);
+
 	const Authoring::DetachedEntity* getEntity() const;
 
 	/**
@@ -192,6 +194,8 @@ protected:
 	 * @brief The initial orientation to use, if no entity has been created yet.
 	 */
 	WFMath::Quaternion mInitialOrientation;
+
+	bool mPlantedOnGround;
 
 	/**
 	 * @brief An entity which shows an axis, to mark the preview entity.

@@ -28,6 +28,12 @@ DetachedEntity::DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::
 	Eris::Entity(id, ty), mTypeService(typeService)
 {
 }
+DetachedEntity::~DetachedEntity() {
+	//Since we might have faked that we have a parent we need to reset that to prevent base class from trying to remove us from it.
+	m_location = nullptr;
+}
+
+
 
 void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 {
@@ -76,7 +82,8 @@ Eris::Entity* DetachedEntity::getEntity(const std::string&)
 
 void DetachedEntity::setLocationEntity(Eris::Entity* location)
 {
-	setLocation(location);
+	//We fake that it's a child, while it's really not in reality.
+	m_location = location;
 }
 
 

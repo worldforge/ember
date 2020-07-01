@@ -19,8 +19,14 @@ class EntityCreatorTypeHelper
 {
 public:
 
-	EntityCreatorTypeHelper(Eris::Avatar& avatar, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton,
-	CEGUI::Window& modelPreview, CEGUI::Combobox& modeCombobox, CEGUI::Window& defaultModeWindow, CEGUI::Window& plantedOnWindow);
+	    EntityCreatorTypeHelper(Eris::Avatar& avatar,
+                                CEGUI::Tree& typeTree,
+                                CEGUI::Editbox& nameEditbox,
+                                CEGUI::PushButton& pushButton,
+                                CEGUI::Window& modelPreview,
+                                CEGUI::Combobox& modeCombobox,
+                                CEGUI::Window& defaultModeWindow,
+    							CEGUI::ToggleButton& plantedOnGroundWindow);
 	virtual ~EntityCreatorTypeHelper();
 	
 	/**

@@ -187,7 +187,14 @@ function EntityCreator.buildWidget(world)
 			entityCreator.helper:setRandomizeOrientation(randomizeOrientationCheckbox:isSelected())
 		end) 
 		entityCreator.helper:setRandomizeOrientation(randomizeOrientationCheckbox:isSelected())
-		
+
+        local plantedOnGroundCheckbox = entityCreator.widget:getWindow("PlantedOnGround")
+        plantedOnGroundCheckbox = CEGUI.toToggleButton(plantedOnGroundCheckbox)
+        plantedOnGroundCheckbox:subscribeEvent("SelectStateChanged", function()
+            entityCreator.helper:setPlantedOnGround(plantedOnGroundCheckbox:isSelected())
+        end)
+        entityCreator.helper:setPlantedOnGround(plantedOnGroundCheckbox:isSelected())
+
 		entityCreator.widget:enableCloseButton()
 		
 		local typesWindow = entityCreator.widget:getWindow("TabTypes", true)
@@ -197,11 +204,11 @@ function EntityCreator.buildWidget(world)
 		local typesCreateButton = CEGUI.toPushButton(typesWindow:getChild("CreateButton"))
 		local typesPreviewImage = typesWindow:getChild("ModelPreviewImage")
 		local defaultModeWindow = typesWindow:getChild("DefaultMode")
-		local plantedOnWindow = typesWindow:getChild("PlantedOn")
+		local plantedOnGroundTypeWindow = CEGUI.toToggleButton(typesWindow:getChild("PlantedOnGroundType"))
 		entityCreator.typesCreator = {}
 
 		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar(),
-			typesTree, typesName, typesCreateButton, typesPreviewImage, modeCombobox, defaultModeWindow, plantedOnWindow)
+			typesTree, typesName, typesCreateButton, typesPreviewImage, modeCombobox, defaultModeWindow, plantedOnGroundTypeWindow)
 		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
 	
 		--Entity exports tab

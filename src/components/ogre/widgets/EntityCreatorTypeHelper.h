@@ -83,7 +83,7 @@ public:
                             CEGUI::Window& modelPreview,
                             CEGUI::Combobox& modeCombobox,
                             CEGUI::Window& defaultModeWindow,
-                            CEGUI::Window& plantedOnWindow);
+							CEGUI::ToggleButton& plantedOnGroundWindow);
 
     virtual ~EntityCreatorTypeHelper();
 
@@ -117,7 +117,7 @@ protected:
 
     CEGUI::Window& mDefaultModeWindow;
 
-    CEGUI::Window& mPlantedOnWindow;
+    CEGUI::ToggleButton& mPlantedOnGroundWindow;
 
     /**
      * @brief Keep track of the currently selected type, mainly for fast lookups in typeService_BoundType.

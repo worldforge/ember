@@ -37,16 +37,23 @@
 						<Property name="FrameEnabled" value="false" />
 						<Property name="BackgroundEnabled" value="false" />
 					</Window>
-					<Window name="RandomizeOrientation" type="EmberLook/Checkbox">
-						<Property name="Position" value="{{0,0},{0,50}}" />
-						<Property name="Size" value="{{1,0},{0,25}}" />
-						<Property name="Selected" value="True" />
-						<Property name="TooltipText" value="If checked, will randomize the orientation of all new entities." />
-						<Property name="Text" value="Random orientation" />
-					</Window>
+                    <Window name="RandomizeOrientation" type="EmberLook/Checkbox">
+                        <Property name="Position" value="{{0,0},{0,50}}" />
+                        <Property name="Size" value="{{1,0},{0,25}}" />
+                        <Property name="Selected" value="True" />
+                        <Property name="TooltipText" value="If checked, will randomize the orientation of all new entities." />
+                        <Property name="Text" value="Random orientation" />
+                    </Window>
+                    <Window name="PlantedOnGround" type="EmberLook/Checkbox">
+                        <Property name="Position" value="{{0,0},{0,75}}" />
+                        <Property name="Size" value="{{1,0},{0,25}}" />
+                        <Property name="Selected" value="True" />
+                        <Property name="TooltipText" value="If checked, entities will be planted on the ground by default." />
+                        <Property name="Text" value="Planted on ground" />
+                    </Window>
 					<Window name="AdaptersContainer" type="DefaultWindow">
-						<Property name="Position" value="{{0,0},{0,75}}" />
-						<Property name="Size" value="{{1,0},{1,-75}}" />
+						<Property name="Position" value="{{0,0},{0,100}}" />
+						<Property name="Size" value="{{1,0},{1,-100}}" />
 					</Window>
 				</Window>
 				<Window name="WaitForTypeInfo" type="EmberLook/StaticText">
@@ -90,16 +97,13 @@
 					<Property name="Position" value="{{0,230},{0,30}}" />
 					<Property name="InheritsAlpha" value="True" />
 				</Window>
-				<Window type="EmberLook/StaticText">
-					<Property name="Size" value="{{0,70},{0.00,25.0}}" />
-					<Property name="Position" value="{{0,155},{0,60}}" />
-					<Property name="Text" value="Planted on:" />
-				</Window>
-				<Window name="PlantedOn" type="EmberLook/Editbox">
-					<Property name="Size" value="{{0,75.0},{0,25.0}}" />
-					<Property name="Position" value="{{0,230},{0,60}}" />
-					<Property name="InheritsAlpha" value="True" />
-				</Window>
+                <Window name="PlantedOnGroundType" type="EmberLook/Checkbox">
+                    <Property name="Position" value="{{0,155},{0,60}}" />
+                    <Property name="Size" value="{{1,0},{0,25}}" />
+                    <Property name="Selected" value="True" />
+                    <Property name="TooltipText" value="If checked, entities will be planted on the ground by default." />
+                    <Property name="Text" value="Planted on ground" />
+                </Window>
 				<Window name="ModelPreviewImage" type="EmberLook/StaticImage">
 					<Property name="Position" value="{{0,155},{0,90}}" />
 					<Property name="Size" value="{{1.00,-155.00},{1.00,-90}}" />

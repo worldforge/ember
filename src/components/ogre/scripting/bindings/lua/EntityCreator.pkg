@@ -41,6 +41,8 @@ public:
 	 */
 	void setRandomizeOrientation(bool randomize);
 
+	void setPlantedOnGround(bool planted);
+
 	/**
 	* @brief Emitted when all needed type info for the current recipe is loaded.
 	*/

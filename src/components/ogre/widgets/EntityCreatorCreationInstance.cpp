@@ -57,17 +57,16 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService,
-															 Authoring::EntityRecipe& recipe, bool randomizeOrientation,
+EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world,
+															 Eris::TypeService& typeService,
+															 Authoring::EntityRecipe& recipe,
+															 bool randomizeOrientation,
 															 sigc::slot<void>& adapterValueChangedSlot) :
 		mWorld(world),
 		mTypeService(typeService),
 		mRecipe(recipe),
-		mEntity(nullptr),
 		mEntityNode(nullptr),
-		mModelMount(nullptr),
-		mModel(nullptr),
-		mMovement(nullptr),
+		mPlantedOnGround(true),
 		mAxisMarker(nullptr) {
 	mConnection = mRecipe.EventValueChanged.connect(adapterValueChangedSlot);
 
@@ -167,6 +166,11 @@ void EntityCreatorCreationInstance::finalizeCreation() {
 	auto pos = mMovement->getBridge()->getPosition();;
 	mEntityMessage["orientation"] = mMovement->getBridge()->getOrientation().toAtlas();
 	mEntityMessage["pos"] = pos.toAtlas();
+	if (mPlantedOnGround && mEntity->getLocation()) {
+		mEntityMessage["mode"] = "planted";
+		mEntityMessage["mode_data"] = Atlas::Message::MapType{{"mode", "planted"},
+															  {"$eid", mEntity->getLocation()->getId()}};
+	}
 
 
 	// Making create operation message
@@ -286,6 +290,11 @@ const Authoring::DetachedEntity* EntityCreatorCreationInstance::getEntity() cons
 EntityCreatorMovement* EntityCreatorCreationInstance::getMovement() {
 	return mMovement.get();
 }
+
+void EntityCreatorCreationInstance::setPlantedOnGround(bool planted) {
+	mPlantedOnGround = planted;
+}
+
 
 }
 }
