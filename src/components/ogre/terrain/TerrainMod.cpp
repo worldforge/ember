@@ -29,45 +29,33 @@
 
 #include "TerrainModTranslator.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 TerrainMod::TerrainMod(Eris::Entity& entity, const Atlas::Message::MapType& data) :
 		mEntity(entity),
-		mTranslator(new Ember::Terrain::TerrainModTranslator(data))
-{
+		mTranslator(new Ember::Terrain::TerrainModTranslator(data)) {
 }
 
-TerrainMod::~TerrainMod()
-{
-	delete mTranslator;
-}
+TerrainMod::~TerrainMod() = default;
 
-const std::string& TerrainMod::getEntityId() const
-{
+const std::string& TerrainMod::getEntityId() const {
 	return mEntity.getId();
 }
 
-void TerrainMod::parse(const Atlas::Message::Element& attributeValue)
-{
+void TerrainMod::parse(const Atlas::Message::Element& attributeValue) {
 	if (attributeValue.isMap()) {
-		delete mTranslator;
-		mTranslator = new Ember::Terrain::TerrainModTranslator(attributeValue.Map());
+		mTranslator = std::make_unique<Ember::Terrain::TerrainModTranslator>(attributeValue.Map());
 	}
 }
 
-Eris::Entity& TerrainMod::getEntity() const
-{
+Eris::Entity& TerrainMod::getEntity() const {
 	return mEntity;
 }
 
-const Ember::Terrain::TerrainModTranslator* TerrainMod::getTranslator() const
-{
-	return mTranslator;
+const Ember::Terrain::TerrainModTranslator* TerrainMod::getTranslator() const {
+	return mTranslator.get();
 }
 
 void TerrainMod::reset() {

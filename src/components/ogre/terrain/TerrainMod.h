@@ -107,7 +107,7 @@ protected:
 	*/
 	Eris::Entity& mEntity;
 
-	Ember::Terrain::TerrainModTranslator* mTranslator;
+	std::unique_ptr<Ember::Terrain::TerrainModTranslator> mTranslator;
 
 };
 

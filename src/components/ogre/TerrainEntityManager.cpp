@@ -30,6 +30,7 @@
 #include "terrain/TerrainDefPoint.h"
 
 #include "domain/EmberEntity.h"
+#include "framework/LoggingInstance.h"
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
@@ -120,7 +121,7 @@ void TerrainEntityManager::entityTerrainAttrChanged(EmberEntity& entity, const A
 	//TODO: for now we only check that it has a domain, because if it's the main parent entity then the avatar entity will not have been bound yet.
 //	if (entity.isAncestorTo(*mView.getAvatar().getEntity()) && entity.hasProperty("domain")) {
 	if (entity.hasProperty("domain")) {
-			if (!mTerrainEntityDeleteConnection) {
+		if (!mTerrainEntityDeleteConnection) {
 			mTerrainEntityDeleteConnection = entity.BeingDeleted.connect([this]() {
 				mTerrainHandler.EventTerrainDisabled();
 				mTerrainEntityDeleteConnection.disconnect();
@@ -157,31 +158,41 @@ void TerrainEntityManager::entityTerrainPointsAttrChanged(EmberEntity& entity, c
 }
 
 void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
-	Terrain::TerrainMod* mod;
+	Terrain::TerrainMod* mod = nullptr	;
 	auto I = mTerrainMods.find(&entity);
 	if (mTerrainMods.find(&entity) == mTerrainMods.end()) {
-		mod = new Terrain::TerrainMod(entity, value.Map());
-		auto listener = new TerrainEffectorListener(entity);
+		if (value.isMap()) {
+			try {
+				mod = new Terrain::TerrainMod(entity, value.Map());
+				auto listener = std::make_unique<TerrainEffectorListener>(entity);
 
-		listener->EventEntityBeingDeleted.connect([this, &entity, mod]() {
-			mod->reset();
-			mTerrainHandler.updateMod(mod);
-			mTerrainMods.erase(&entity);
-		});
-		listener->EventEntityMoved.connect([this, &entity, mod]() {
-			if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-				mTerrainHandler.updateMod(mod);
+				listener->EventEntityBeingDeleted.connect([this, &entity, mod]() {
+					mod->reset();
+					mTerrainHandler.updateMod(mod);
+					mTerrainMods.erase(&entity);
+				});
+				listener->EventEntityMoved.connect([this, &entity, mod]() {
+					if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
+						mTerrainHandler.updateMod(mod);
+					}
+				});
+				listener->EventEntityModeChanged.connect([this, &entity, mod]() { entityModeChanged(entity, *mod); });
+				mTerrainMods.insert(std::make_pair(&entity, std::make_pair(std::unique_ptr<Terrain::TerrainMod>(mod), std::move(listener))));
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Error when paring terrain mod." << ex);
 			}
-		});
-		listener->EventEntityModeChanged.connect([this, &entity, mod]() { entityModeChanged(entity, *mod); });
-		mTerrainMods.insert(std::make_pair(&entity, std::make_pair(std::unique_ptr<Terrain::TerrainMod>(mod), std::unique_ptr<TerrainEffectorListener>(listener))));
+		}
 	} else {
 		mod = I->second.first.get();
 		mod->parse(value);
 	}
 
-	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-		mTerrainHandler.updateMod(mod);
+	if (mod) {
+		if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
+			mTerrainHandler.updateMod(mod);
+		}
+	} else {
+		//TODO: add removal of mod
 	}
 }
 
