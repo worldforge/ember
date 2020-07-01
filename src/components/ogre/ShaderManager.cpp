@@ -38,16 +38,13 @@
 #include <OgreTechnique.h>
 #include <OgreViewport.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 /**
  * @brief A shader setup instance which envelops a scene manager and handles the shadow camera setup for that manager.
  */
-class ShaderSetupInstance
-{
+class ShaderSetupInstance {
 private:
 
 	Ogre::SceneManager& mSceneManager;
@@ -66,20 +63,17 @@ public:
 
 	ShaderSetupInstance(Ogre::SceneManager& sceneManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
 			mSceneManager(sceneManager),
-			mGraphicalChangeAdapter(graphicalChangeAdapter)
-	{
+			mGraphicalChangeAdapter(graphicalChangeAdapter) {
 
 	}
 
 	~ShaderSetupInstance() = default;
 
-	void setPSSMShadows()
-	{
+	void setPSSMShadows() {
 		mShadowCameraSetup = std::make_unique<ShadowCameraSetup>(mSceneManager, mGraphicalChangeAdapter);
 	}
 
-	void setNoShadows()
-	{
+	void setNoShadows() {
 		mShadowCameraSetup.reset();
 		mSceneManager.setShadowTechnique(Ogre::SHADOWTYPE_NONE);
 		//This will make any other camera setup delete itself (unless held by another shared pointer).
@@ -88,8 +82,7 @@ public:
 };
 
 ShaderManager::ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
-		SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mGraphicalChangeAdapter(graphicalChangeAdapter)
-{
+		SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mGraphicalChangeAdapter(graphicalChangeAdapter) {
 	mGraphicSchemes[LEVEL_DEFAULT] = std::string("Default");
 	mGraphicSchemes[LEVEL_LOW] = std::string("Low");
 	mGraphicSchemes[LEVEL_MEDIUM] = std::string("Medium");
@@ -102,8 +95,7 @@ ShaderManager::ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
 
 }
 
-void ShaderManager::init()
-{
+void ShaderManager::init() {
 	// We normally want to check base materials
 	std::list<std::string> materialsToCheck;
 	materialsToCheck.push_back("/common/base/simple");
@@ -151,8 +143,7 @@ void ShaderManager::init()
 	setGraphicsLevel(mGraphicsLevel);
 }
 
-bool ShaderManager::checkMaterial(const std::string& materialName, const std::string& schemeName)
-{
+bool ShaderManager::checkMaterial(const std::string& materialName, const std::string& schemeName) {
 	// OGRE scheme is switched in caller
 	Ogre::MaterialPtr material = Ogre::static_pointer_cast<Ogre::Material>(Ogre::MaterialManager::getSingleton().load(materialName, "General"));
 	if (material->getSupportedTechniques().empty()) {
@@ -173,18 +164,15 @@ bool ShaderManager::checkMaterial(const std::string& materialName, const std::st
 
 ShaderManager::~ShaderManager() = default;
 
-ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel() const
-{
+ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel() const {
 	return mGraphicsLevel;
 }
 
-ShaderManager::GraphicsLevel ShaderManager::getBestSupportedGraphicsLevel() const
-{
+ShaderManager::GraphicsLevel ShaderManager::getBestSupportedGraphicsLevel() const {
 	return mBestGraphicsLevel;
 }
 
-void ShaderManager::runCommand(const std::string &command, const std::string &args)
-{
+void ShaderManager::runCommand(const std::string& command, const std::string& args) {
 	if (SetLevel == command) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -193,21 +181,19 @@ void ShaderManager::runCommand(const std::string &command, const std::string &ar
 	}
 }
 
-void ShaderManager::Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
+void ShaderManager::Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_string()) {
 		setGraphicsLevel(getLevelByName(std::string(variable)));
 	}
 }
 
-ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string &level) const
-{
+ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string& level) const {
 	std::string levelString = level;
 	std::transform(levelString.begin(), levelString.end(), levelString.begin(), (int (*)(int)) std::tolower);
 
 	for (const auto& entry : mGraphicSchemes) {
 		std::string scheme = entry.second;
-		std::transform(scheme.begin(), scheme.end(), scheme.begin(), (int(*)(int)) std::tolower);
+		std::transform(scheme.begin(), scheme.end(), scheme.begin(), (int (*)(int)) std::tolower);
 		if (levelString == scheme) {
 			return entry.first;
 		}
@@ -216,28 +202,24 @@ ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string &le
 	return LEVEL_DEFAULT;
 }
 
-const std::map<ShaderManager::GraphicsLevel, std::string>& ShaderManager::getGraphicsScheme() const
-{
+const std::map<ShaderManager::GraphicsLevel, std::string>& ShaderManager::getGraphicsScheme() const {
 	return mGraphicSchemes;
 }
 
-void ShaderManager::registerSceneManager(Ogre::SceneManager* sceneManager)
-{
-	ShaderSetupInstance* instance = new ShaderSetupInstance(*sceneManager, mGraphicalChangeAdapter);
-	mShaderSetups.insert(ShaderSetupStore::value_type(sceneManager, instance));
+void ShaderManager::registerSceneManager(Ogre::SceneManager* sceneManager) {
+	auto instance = std::make_unique<ShaderSetupInstance>(*sceneManager, mGraphicalChangeAdapter);
+	mShaderSetups.emplace(sceneManager, std::move(instance));
 	setGraphicsLevel(mGraphicsLevel); //TODO: set it per new scene manager instead
 }
 
-void ShaderManager::deregisterSceneManager(Ogre::SceneManager* sceneManager)
-{
+void ShaderManager::deregisterSceneManager(Ogre::SceneManager* sceneManager) {
 	auto I = mShaderSetups.find(sceneManager);
 	if (I != mShaderSetups.end()) {
 		mShaderSetups.erase(I);
 	}
 }
 
-ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel)
-{
+ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel) {
 	std::string scheme = mGraphicSchemes[newLevel];
 
 	if (newLevel > mBestGraphicsLevel) {
@@ -254,16 +236,16 @@ ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::Grap
 	}
 
 	switch (newLevel) {
-	case LEVEL_EXPERIMENTAL:
-	case LEVEL_HIGH:
-		setPSSMShadows();
-		break;
+		case LEVEL_EXPERIMENTAL:
+		case LEVEL_HIGH:
+			setPSSMShadows();
+			break;
 
-	case LEVEL_MEDIUM:
-	case LEVEL_LOW:
-	case LEVEL_DEFAULT:
-		setNoShadows();
-		break;
+		case LEVEL_MEDIUM:
+		case LEVEL_LOW:
+		case LEVEL_DEFAULT:
+			setNoShadows();
+			break;
 	}
 	mGraphicsLevel = newLevel;
 
@@ -272,17 +254,15 @@ ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::Grap
 	return mGraphicsLevel;
 }
 
-void ShaderManager::setPSSMShadows()
-{
-	for (ShaderSetupStore::const_iterator I = mShaderSetups.begin(); I != mShaderSetups.end(); ++I) {
-		I->second->setPSSMShadows();
+void ShaderManager::setPSSMShadows() {
+	for (auto& entry : mShaderSetups) {
+		entry.second->setPSSMShadows();
 	}
 }
 
-void ShaderManager::setNoShadows()
-{
-	for (ShaderSetupStore::const_iterator I = mShaderSetups.begin(); I != mShaderSetups.end(); ++I) {
-		I->second->setNoShadows();
+void ShaderManager::setNoShadows() {
+	for (auto& entry : mShaderSetups) {
+		entry.second->setNoShadows();
 	}
 }
 

@@ -31,13 +31,13 @@
 #include <map>
 #include <sigc++/signal.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 class ShadowCameraSetup;
+
 class ShaderSetupInstance;
+
 class GraphicalChangeAdapter;
 
 /**
@@ -49,14 +49,12 @@ class GraphicalChangeAdapter;
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class ShaderManager: public ConsoleObject, public ConfigListenerContainer
-{
+class ShaderManager : public ConsoleObject, public ConfigListenerContainer {
 public:
 	/**
 	 * Enumeration of graphics levels
 	 */
-	enum GraphicsLevel
-	{
+	enum GraphicsLevel {
 		// Default scheme is when no scheme specified, very simple textured models
 		LEVEL_DEFAULT,
 
@@ -110,7 +108,7 @@ public:
 	/**
 	 * Reimplements the ConsoleObject::runCommand method
 	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
+	virtual void runCommand(const std::string& command, const std::string& args);
 
 	/**
 	 * Sets graphics level at runtime
@@ -120,7 +118,7 @@ public:
 	/**
 	 * Returns level id by its name
 	 */
-	GraphicsLevel getLevelByName(const std::string &level) const;
+	GraphicsLevel getLevelByName(const std::string& level) const;
 
 	/**
 	 * @brief Returns a map of levels and their scheme names.
@@ -150,7 +148,6 @@ public:
 
 private:
 
-	typedef std::map<Ogre::SceneManager*, std::unique_ptr<ShaderSetupInstance>> ShaderSetupStore;
 	/**
 	 * Current graphics level
 	 */
@@ -166,7 +163,7 @@ private:
 	 */
 	std::map<GraphicsLevel, std::string> mGraphicSchemes;
 
-	ShaderSetupStore mShaderSetups;
+	std::map<Ogre::SceneManager*, std::unique_ptr<ShaderSetupInstance>> mShaderSetups;
 
 	/**
 	 * Checks whether material is supported in current scheme
