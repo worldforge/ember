@@ -37,27 +37,22 @@
 #include <CEGUI/Image.h>
 #include <CEGUI/Window.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 /**
  * @brief Stops the animation when the observed resource is unloaded.
  *
  * This prevents crashes, since the animation state will be incorrect when the skeleton has been unloaded (which happens when it's reloaded).
  */
-class OgreEntityRendererResourceListener : public Ogre::Resource::Listener
-{
+class OgreEntityRendererResourceListener : public Ogre::Resource::Listener {
 private:
 	OgreEntityRenderer& mRenderer;
 	Ogre::AnimationState** mActiveAnimation;
 
 public:
-	OgreEntityRendererResourceListener(OgreEntityRenderer& renderer, Ogre::AnimationState** activeAnimation) : mRenderer(renderer), mActiveAnimation(activeAnimation)
-	{
+	OgreEntityRendererResourceListener(OgreEntityRenderer& renderer, Ogre::AnimationState** activeAnimation) : mRenderer(renderer), mActiveAnimation(activeAnimation) {
 
 	}
 
@@ -73,24 +68,18 @@ OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
 		mActiveAnimation(nullptr),
 		mMeshListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation)),
 		mSkeletonListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation)),
-		mShowSkeleton(false)
-{
+		mShowSkeleton(false) {
 }
 
-OgreEntityRenderer::~OgreEntityRenderer()
-{
+OgreEntityRenderer::~OgreEntityRenderer() {
 	setEntity(nullptr);
-	delete mMeshListener;
-	delete mSkeletonListener;
 }
 
-Ogre::Entity* OgreEntityRenderer::getEntity()
-{
+Ogre::Entity* OgreEntityRenderer::getEntity() {
 	return mEntity;
 }
 
-void OgreEntityRenderer::showEntity(const std::string& mesh)
-{
+void OgreEntityRenderer::showEntity(const std::string& mesh) {
 	unloadEntity();
 	try {
 		std::string entityName(mTexture->getImage()->getName().c_str());
@@ -103,23 +92,21 @@ void OgreEntityRenderer::showEntity(const std::string& mesh)
 	}
 }
 
-float OgreEntityRenderer::getMovableBoundingRadius()
-{
+float OgreEntityRenderer::getMovableBoundingRadius() {
 	return mEntity->getBoundingRadius();
 }
 
-void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
-{
+void OgreEntityRenderer::setEntity(Ogre::Entity* entity) {
 	mActiveAnimation = nullptr;
 	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 
 	node->detachAllObjects();
 	if (mEntity) {
 		if (mMeshListener) {
-			mEntity->getMesh()->removeListener(mMeshListener);
+			mEntity->getMesh()->removeListener(mMeshListener.get());
 		}
 		if (mEntity->hasSkeleton()) {
-			mEntity->getSkeleton()->removeListener(mSkeletonListener);
+			mEntity->getSkeleton()->removeListener(mSkeletonListener.get());
 		}
 	}
 
@@ -132,9 +119,9 @@ void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 			showFull();
 		}
 
-		entity->getMesh()->addListener(mMeshListener);
+		entity->getMesh()->addListener(mMeshListener.get());
 		if (entity->hasSkeleton()) {
-			entity->getSkeleton()->addListener(mSkeletonListener);
+			entity->getSkeleton()->addListener(mSkeletonListener.get());
 			if (mShowSkeleton) {
 				mSkeletonDisplay.reset(new SkeletonDisplay(*entity));
 			}
@@ -142,13 +129,11 @@ void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 	}
 }
 
-Ogre::SceneManager* OgreEntityRenderer::getSceneManager()
-{
+Ogre::SceneManager* OgreEntityRenderer::getSceneManager() {
 	return mTexture->getRenderContext()->getSceneManager();
 }
 
-void OgreEntityRenderer::unloadEntity()
-{
+void OgreEntityRenderer::unloadEntity() {
 	setEntity(nullptr);
 	if (mEntity) {
 		Ogre::SceneManager* scenemgr = mTexture->getRenderContext()->getSceneManager();
@@ -157,33 +142,28 @@ void OgreEntityRenderer::unloadEntity()
 	}
 }
 
-bool OgreEntityRenderer::getWireframeMode()
-{
+bool OgreEntityRenderer::getWireframeMode() {
 	return (mTexture->getRenderContext()->getCamera()->getPolygonMode() == Ogre::PM_WIREFRAME);
 }
 
-void OgreEntityRenderer::setWireframeMode(bool enabled)
-{
+void OgreEntityRenderer::setWireframeMode(bool enabled) {
 	Ogre::PolygonMode mode = enabled ? Ogre::PM_WIREFRAME : Ogre::PM_SOLID;
 	mTexture->getRenderContext()->getCamera()->setPolygonMode(mode);
 }
 
-void OgreEntityRenderer::setForcedLodLevel(int lodLevel)
-{
+void OgreEntityRenderer::setForcedLodLevel(int lodLevel) {
 	if (mEntity) {
 		mEntity->setMeshLodBias(1, lodLevel, lodLevel);
 	}
 }
 
-void OgreEntityRenderer::clearForcedLodLevel()
-{
+void OgreEntityRenderer::clearForcedLodLevel() {
 	if (mEntity) {
 		mEntity->setMeshLodBias(1.0, 0, std::numeric_limits<unsigned short>::max());
 	}
 }
 
-void OgreEntityRenderer::enableAnimation(const std::string& animationName)
-{
+void OgreEntityRenderer::enableAnimation(const std::string& animationName) {
 	if (mEntity && mEntity->getAllAnimationStates()) {
 		auto I = mEntity->getAllAnimationStates()->getAnimationStateIterator();
 		while (I.hasMoreElements()) {
@@ -198,8 +178,7 @@ void OgreEntityRenderer::enableAnimation(const std::string& animationName)
 	}
 }
 
-std::vector<std::string> OgreEntityRenderer::getEntityAnimationNames() const
-{
+std::vector<std::string> OgreEntityRenderer::getEntityAnimationNames() const {
 	std::vector<std::string> names;
 
 	if (mEntity && mEntity->getAllAnimationStates()) {
@@ -212,8 +191,7 @@ std::vector<std::string> OgreEntityRenderer::getEntityAnimationNames() const
 	return names;
 }
 
-bool OgreEntityRenderer::frameStarted(const Ogre::FrameEvent& event)
-{
+bool OgreEntityRenderer::frameStarted(const Ogre::FrameEvent& event) {
 	if (mActiveAnimation) {
 		mActiveAnimation->addTime(event.timeSinceLastFrame);
 	}

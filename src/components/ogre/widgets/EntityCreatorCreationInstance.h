@@ -32,26 +32,24 @@ namespace Eris {
 class TypeService;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 class World;
 
-namespace Authoring
-{
+namespace Authoring {
 class DetachedEntity;
+
 class EntityRecipe;
 }
-namespace Model
-{
+namespace Model {
 class ModelMount;
+
 class Model;
 }
-namespace Gui
-{
+namespace Gui {
 class EntityCreatorInputAdapter;
+
 class EntityCreatorMovement;
 
 /**
@@ -61,8 +59,7 @@ class EntityCreatorMovement;
  * Once startCreation() has been called, a preview of the entity will be displayed in the world, and the user can position this preview.
  * Calling finalizeCreation() will submit data to the server, trying to create the entity. Note that the server might not allow this, for varying reasons.
  */
-class EntityCreatorCreationInstance : public virtual sigc::trackable
-{
+class EntityCreatorCreationInstance : public virtual sigc::trackable {
 public:
 
 	/**
@@ -74,7 +71,11 @@ public:
 	 * @param randomizeOrientation Whether to randomize orientation.
 	 * @param adapterValueChangedSlot A slot which should be attached to the EntityRecipe::EventValueChanged event.
 	 */
-	EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService, Authoring::EntityRecipe& recipe, bool randomizeOrientation, sigc::slot<void>& adapterValueChangedSlot);
+	EntityCreatorCreationInstance(World& world,
+								  Eris::TypeService& typeService,
+								  Authoring::EntityRecipe& recipe,
+								  bool randomizeOrientation,
+								  sigc::slot<void>& adapterValueChangedSlot);
 
 	/**
 	 * @brief Dtor.
@@ -190,9 +191,9 @@ protected:
 	 */
 	WFMath::Point<3> mPos;
 
- 	/**
-	 * @brief The initial orientation to use, if no entity has been created yet.
-	 */
+	/**
+	* @brief The initial orientation to use, if no entity has been created yet.
+	*/
 	WFMath::Quaternion mInitialOrientation;
 
 	bool mPlantedOnGround;
@@ -244,7 +245,7 @@ protected:
 	 * @brief Gets the bbox for the entity.
 	 * @return The bbox for the entity.
 	 */
-	const WFMath::AxisBox<3> & getBBox() const;
+	const WFMath::AxisBox<3>& getBBox() const;
 
 
 };

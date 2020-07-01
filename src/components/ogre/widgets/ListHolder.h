@@ -87,11 +87,10 @@ public:
 
 protected:
 
-	typedef std::list<CEGUI::ListboxItem*> ListItemStore;
 	/**
 	All items in the listbox, unfiltered.
 	*/
-	ListItemStore mItems;
+	std::list<std::unique_ptr<CEGUI::ListboxItem>> mItems;
 	//const std::string& getFilterString() const;
 	/**
 	The listbox which should be filtered.

@@ -151,7 +151,7 @@ ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::s
 		AttachPointHelper(model, attachPointName), mMount(nullptr) {
 	auto definition = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 	if (definition) {
-		mAttachedModel = new Model::Model(mModel.getManager(), definition, modelName);
+		mAttachedModel = std::make_unique<Model::Model>(mModel.getManager(), definition, modelName);
 		mAttachedModel->load();
 
 		std::string pose;
@@ -164,17 +164,14 @@ ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::s
 		}
 		auto boneProvider = std::make_unique<Model::ModelBoneProvider>(nullptr, mModel, attachPointName);
 
-		mMount = new Model::ModelMount(*mAttachedModel, std::move(boneProvider), pose);
+		mMount = std::make_unique<Model::ModelMount>(*mAttachedModel, std::move(boneProvider), pose);
 		mMount->reset();
 		//TODO: fix this somehow
 		//mTagPoint = boneProvider->getAttachPointWrapper()->TagPoint;
 	}
 }
 
-ModelAttachPointHelper::~ModelAttachPointHelper() {
-	delete mMount;
-	delete mAttachedModel;
-}
+ModelAttachPointHelper::~ModelAttachPointHelper() = default;
 
 Ogre::Quaternion ModelAttachPointHelper::getOrientation() const {
 	//Since the model is rotated 90 degrees by the model mount we need to re-orient it.
@@ -200,7 +197,7 @@ void ModelEditHelper::showAttachPointHelperEntity(const std::string& attachPoint
 	try {
 		hideAttachPointHelper();
 		//this could fail with an exception if the mesh isn't found, so we need to set the mAttachPointHelper to 0 first.
-		mAttachPointHelper = new EntityAttachPointHelper(*mModel, attachPointName, meshName);
+		mAttachPointHelper = std::make_unique<EntityAttachPointHelper>(*mModel, attachPointName, meshName);
 	} catch (const std::exception& e) {
 		S_LOG_WARNING("Could not create attach point helper with mesh " << meshName << ".");
 		return;
@@ -211,7 +208,7 @@ void ModelEditHelper::showAttachPointHelperModel(const std::string& attachPointN
 	try {
 		hideAttachPointHelper();
 		//this could fail with an exception if the model isn't found, so we need to set the mAttachPointHelper to 0 first.
-		mAttachPointHelper = new ModelAttachPointHelper(*mModel, attachPointName, modelName);
+		mAttachPointHelper = std::make_unique<ModelAttachPointHelper>(*mModel, attachPointName, modelName);
 	} catch (const std::exception& e) {
 		S_LOG_WARNING("Could not create attach point helper with model " << modelName << ".");
 		return;
@@ -219,26 +216,23 @@ void ModelEditHelper::showAttachPointHelperModel(const std::string& attachPointN
 }
 
 void ModelEditHelper::hideAttachPointHelper() {
-	delete mAttachPointHelper;
-	mAttachPointHelper = nullptr;
+	mAttachPointHelper.reset();
 }
 
 void ModelEditHelper::startInputRotate() {
-	delete mMouseMover;
-	mMouseMover = nullptr;
+	mMouseMover.reset();
 	releaseInput();
 	if (mAttachPointHelper && mModel) {
-		mMouseMover = new RotateMouseMover(*mAttachPointHelper, mModel->getDefinition(), mRenderContext);
+		mMouseMover = std::make_unique<RotateMouseMover>(*mAttachPointHelper, mModel->getDefinition(), mRenderContext);
 		catchInput();
 	}
 }
 
 void ModelEditHelper::startInputTranslate() {
-	delete mMouseMover;
-	mMouseMover = nullptr;
+	mMouseMover.reset();
 	releaseInput();
 	if (mAttachPointHelper && mModel) {
-		mMouseMover = new TranslateMouseMover(*mAttachPointHelper, mModel->getDefinition(), mRenderContext);
+		mMouseMover = std::make_unique<TranslateMouseMover>(*mAttachPointHelper, mModel->getDefinition(), mRenderContext);
 		catchInput();
 	}
 }
@@ -261,8 +255,7 @@ bool ModelEditHelper::injectMouseMove(const MouseMotion& motion, bool& freezeMou
 bool ModelEditHelper::injectMouseButtonUp(Input::MouseButton button) {
 	if (mMouseMover) {
 		if (mMouseMover->injectMouseButtonUp(button)) {
-			delete mMouseMover;
-			mMouseMover = nullptr;
+			mMouseMover.reset();
 			releaseInput();
 		}
 	}

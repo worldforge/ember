@@ -143,12 +143,12 @@ private:
 	/**
 	 * @brief The model used for preview.
 	 */
-	Model::Model* mAttachedModel;
+	std::unique_ptr<Model::Model> mAttachedModel;
 
 	/**
 	 * @brief The mount used for attaching the preview model.
 	 */
-	Model::ModelMount* mMount;
+	std::unique_ptr<Model::ModelMount> mMount;
 };
 
 /**
@@ -318,7 +318,7 @@ private:
 	/**
 	 * @brief Keeps track of any attach point helper model being shown.
 	 */
-	AttachPointHelper* mAttachPointHelper;
+	std::unique_ptr<AttachPointHelper> mAttachPointHelper;
 
 	/**
 	 * @brief A marker entity used to provide graphical representation of attach points being edited.
@@ -328,7 +328,7 @@ private:
 	/**
 	 * @brief An attach point mover instance, which allows for rotation or rotation of an attach point.
 	 */
-	AttachPointMouseMover* mMouseMover;
+	std::unique_ptr<AttachPointMouseMover> mMouseMover;
 
 	/**
 	 * @brief Catches all future input to direct it to alter the currently shown attach point.

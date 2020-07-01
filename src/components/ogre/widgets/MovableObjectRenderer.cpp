@@ -64,19 +64,17 @@ public:
 };
 
 MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image, const std::string& name) :
-		mTexture(nullptr),
 		mAutoShowFull(true),
 		mImage(image),
 		mActive(true),
 		mAxisEntity(nullptr),
 		mAxesNode(nullptr),
-		mWindowUpdater(nullptr),
-		mLightAnimState(nullptr)
-{
+		mWindowUpdater(std::make_unique<CEGUIWindowUpdater>(*mImage)),
+		mLightAnimState(nullptr) {
 	auto width = static_cast<int>(image->getPixelSize().d_width);
 	auto height = static_cast<int>(image->getPixelSize().d_height);
 	if (width != 0 && height != 0) {
-		mTexture = new EntityCEGUITexture(name, width, height);
+		mTexture = std::make_unique<EntityCEGUITexture>(name, width, height);
 
 		mImage->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(mTexture->getImage()));
 
@@ -85,8 +83,7 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image, const std::st
 		auto sceneManager = mTexture->getRenderContext()->getSceneManager();
 		// Register this as a frame listener
 		Ogre::Root::getSingleton().addFrameListener(this);
-		mWindowUpdater = new CEGUIWindowUpdater(*mImage);
-		mTexture->getRenderContext()->getRenderTexture()->addListener(mWindowUpdater);
+		mTexture->getRenderContext()->getRenderTexture()->addListener(mWindowUpdater.get());
 
 		//Render a blank scene to start with, else we'll get uninitialized buffer garbage shown.
 		mTexture->getRenderContext()->getRenderTexture()->update();
@@ -116,11 +113,9 @@ MovableObjectRenderer::~MovableObjectRenderer() {
 		mImage->setProperty("Image", "");
 	}
 	if (mTexture && mWindowUpdater) {
-		mTexture->getRenderContext()->getRenderTexture()->removeListener(mWindowUpdater);
+		mTexture->getRenderContext()->getRenderTexture()->removeListener(mWindowUpdater.get());
 	}
 
-	delete mTexture;
-	delete mWindowUpdater;
 	// Register this as a frame listener
 	Ogre::Root::getSingleton().removeFrameListener(this);
 

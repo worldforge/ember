@@ -506,7 +506,7 @@ IngameChatWidget::LabelCreator::LabelCreator(IngameChatWidget& ingameChatWidget)
 
 IngameChatWidget::LabelCreator::~LabelCreator() = default;
 
-IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned int currentPoolSize) {
+std::unique_ptr<IngameChatWidget::Label> IngameChatWidget::LabelCreator::createWidget(unsigned int currentPoolSize) {
 	//there is no chat window for this entity, let's create one from the loaded layout (by cloning)
 	std::stringstream ss;
 	ss << "Label/" << currentPoolSize << "/";
@@ -517,8 +517,7 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 	window->setMousePassThroughEnabled(true);
 	window->setRiseOnClickEnabled(false);
 
-	auto label = new Label(std::move(window), mIngameChatWidget, ss.str());
-	return label;
+	return std::make_unique<Label>(std::move(window), mIngameChatWidget, ss.str());
 }
 
 IngameChatWidget::ChatText::ChatText(IngameChatWidget& chatWidget, CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow) :
@@ -809,15 +808,14 @@ IngameChatWidget::ChatTextCreator::ChatTextCreator(IngameChatWidget& ingameChatW
 
 IngameChatWidget::ChatTextCreator::~ChatTextCreator() = default;
 
-IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize) {
+std::unique_ptr<IngameChatWidget::ChatText> IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize) {
 	//there is no chat window for this entity, let's create one by cloning the existing layout
 	auto newAttached = mAttachedLayout->clone();
 	newAttached->setName("MainWindow/Attached");
 	auto newDetached = mDetachedLayout->clone();
 	newDetached->setName("MainWindow/Detached");
 
-	auto* widget = new ChatText(mIngameChatWidget, newAttached, newDetached);
-	return widget;
+	return std::make_unique<ChatText>(mIngameChatWidget, newAttached, newDetached);
 }
 
 }

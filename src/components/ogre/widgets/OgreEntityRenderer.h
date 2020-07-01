@@ -25,13 +25,10 @@
 
 #include "MovableObjectRenderer.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 class SkeletonDisplay;
-namespace Gui
-{
+namespace Gui {
 
 /**
  * Renders a single Ogre::Entity to a EntityCEGUITexture.
@@ -39,8 +36,7 @@ namespace Gui
  * @author Erik Ogenvik
  */
 class OgreEntityRenderer :
-	public MovableObjectRenderer
-{
+		public MovableObjectRenderer {
 public:
 	explicit OgreEntityRenderer(CEGUI::Window* image);
 
@@ -70,10 +66,13 @@ public:
 	 * @return
 	 */
 	Ogre::Entity* getEntity();
+
 	bool getWireframeMode();
+
 	void setWireframeMode(bool enabled);
 
 	void setForcedLodLevel(int lodLevel);
+
 	void clearForcedLodLevel();
 
 	/**
@@ -109,12 +108,12 @@ protected:
 	/**
 	 * Listens to the mesh being unloaded and stops the animation.
 	 */
-	Ogre::Resource::Listener* mMeshListener;
+	std::unique_ptr<Ogre::Resource::Listener> mMeshListener;
 
 	/**
 	 * Listens to the skeleton being unloaded and stops the animation.
 	 */
-	Ogre::Resource::Listener* mSkeletonListener;
+	std::unique_ptr<Ogre::Resource::Listener> mSkeletonListener;
 
 	bool mShowSkeleton;
 

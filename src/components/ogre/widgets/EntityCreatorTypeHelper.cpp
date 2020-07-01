@@ -75,11 +75,7 @@ EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Avatar& avatar,
 	buildWidget(typeTree, pushButton, modelPreview);
 }
 
-EntityCreatorTypeHelper::~EntityCreatorTypeHelper() {
-	delete mModelPreviewManipulator;
-	delete mModelPreviewRenderer;
-	delete mRuleTreeAdapter;
-}
+EntityCreatorTypeHelper::~EntityCreatorTypeHelper() = default;
 
 void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) {
 
@@ -90,11 +86,11 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	mCreateButton = &pushButton;
 	mCreateButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
 
-	mRuleTreeAdapter = new Adapters::Eris::RuleTreeAdapter(mAvatar.getConnection(), mAvatar.getId(), typeTree);
+	mRuleTreeAdapter = std::make_unique<Adapters::Eris::RuleTreeAdapter>(mAvatar.getConnection(), mAvatar.getId(), typeTree);
 	mRuleTreeAdapter->refreshRules({"game_entity", "archetype"});
 
-	mModelPreviewRenderer = new ModelRenderer(&modelPreview, "modelPreview");
-	mModelPreviewManipulator = new CameraEntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
+	mModelPreviewRenderer = std::make_unique< ModelRenderer>(&modelPreview, "modelPreview");
+	mModelPreviewManipulator = std::make_unique< CameraEntityTextureManipulator>(modelPreview, mModelPreviewRenderer->getEntityTexture());
 
 
 	mAvatar.getConnection().getTypeService().BoundType.connect(sigc::mem_fun(*this, &EntityCreatorTypeHelper::typeService_BoundType));

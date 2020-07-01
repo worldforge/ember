@@ -68,7 +68,6 @@ bool IconStore::hasIcon(const std::string& key) {
 
 void IconStore::destroyIcon(Icon* icon) {
 	mIcons.erase(icon->mKey);
-	delete icon;
 }
 
 IconImageStoreEntry* IconStore::getImageStoreEntry() {

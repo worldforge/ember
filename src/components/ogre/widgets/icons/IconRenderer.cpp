@@ -58,12 +58,10 @@ IconRenderer::IconRenderer(const std::string& prefix, int pixelWidth) :
 
 }
 
-IconRenderer::~IconRenderer() {
-	delete mWorker;
-}
+IconRenderer::~IconRenderer() = default;
 
-void IconRenderer::setWorker(IconRenderWorker* worker) {
-	mWorker = worker;
+void IconRenderer::setWorker(std::unique_ptr<IconRenderWorker> worker) {
+	mWorker = std::move(worker);
 }
 
 void IconRenderer::render(const std::string& modelName, Icon* icon) {

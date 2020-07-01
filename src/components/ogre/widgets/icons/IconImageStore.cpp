@@ -120,7 +120,7 @@ IconImageStore::IconImageStore(std::string imagesetName)
 		: mImagesetName(std::move(imagesetName)),
 		  mIconSize(64),
 		  mImageSize(256),
-		 // mImageDataStream(OGRE_NEW Ogre::MemoryDataStream(mImageSize * mImageSize * 4, true)),
+		// mImageDataStream(OGRE_NEW Ogre::MemoryDataStream(mImageSize * mImageSize * 4, true)),
 		  mCeguiTexture(nullptr) {
 	createImageset();
 	createEntries();
@@ -132,7 +132,7 @@ Constructor for when we already have a texture of the whole icon.
 IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr texPtr)
 		: mImagesetName(imagesetName),
 		  mTexPtr(texPtr),
-		  //mImageDataStream(nullptr),
+		//mImageDataStream(nullptr),
 		  mCeguiTexture(nullptr) {
 	mCeguiTexture = &GUIManager::getSingleton().createTexture(mTexPtr, imagesetName);
 
@@ -147,9 +147,7 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 
 
 IconImageStore::~IconImageStore() {
-	for (auto& iconImage : mIconImages) {
-		delete iconImage;
-	}
+	mIconImages.clear();
 	CEGUI::System::getSingleton().getRenderer()->destroyTexture(*mCeguiTexture);
 	//OGRE_DELETE mImageDataStream;
 }
@@ -182,9 +180,10 @@ void IconImageStore::createEntries() {
 		for (unsigned int y = 0; y < entriesPerAxis; ++y) {
 			size_t pixelPosStartX = x * mIconSize;
 			size_t pixelPosStartY = y * mIconSize;
-			auto* entry = new IconImageStoreEntry(*this, IconImageStoreEntry::PixelPos(pixelPosStartX, pixelPosStartY));
-			mIconImages.push_back(entry);
-			mUnclaimedIconImages.push(entry);
+			auto entry = std::make_unique<IconImageStoreEntry>(*this, IconImageStoreEntry::PixelPos(pixelPosStartX, pixelPosStartY));
+			auto entryPtr = entry.get();
+			mIconImages.emplace_back(std::move(entry));
+			mUnclaimedIconImages.push(entryPtr);
 		}
 	}
 }
@@ -207,7 +206,7 @@ void IconImageStore::returnImageEntry(IconImageStoreEntry* imageEntry) {
 // 	if (std::find(mUnclaimedIconImages.begin(), mUnclaimedIconImages.end(), imageEntry) != mUnclaimedIconImages.end()) {
 // 		S_LOG_WARNING("Trying to return an image entry which is unclaimed.");
 // 	}
-	if (std::find(mIconImages.begin(), mIconImages.end(), imageEntry) == mIconImages.end()) {
+	if (std::find_if(mIconImages.begin(), mIconImages.end(), [imageEntry](const std::unique_ptr<IconImageStoreEntry>& entry) { return entry.get() == imageEntry; }) == mIconImages.end()) {
 		S_LOG_WARNING("Trying to return an image entry which doesn't belong to this store.");
 	}
 

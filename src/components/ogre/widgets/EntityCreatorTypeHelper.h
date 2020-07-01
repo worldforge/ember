@@ -102,14 +102,14 @@ protected:
     /**
      * @brief A preview renderer for creating new models.
      */
-    ModelRenderer* mModelPreviewRenderer;
+    std::unique_ptr<ModelRenderer> mModelPreviewRenderer;
 
     /**
      * @brief Handles manipulation of the entity preview.
      */
-    EntityTextureManipulator* mModelPreviewManipulator;
+    std::unique_ptr<EntityTextureManipulator> mModelPreviewManipulator;
 
-    Adapters::Eris::RuleTreeAdapter* mRuleTreeAdapter;
+    std::unique_ptr<Adapters::Eris::RuleTreeAdapter> mRuleTreeAdapter;
 
     CEGUI::PushButton* mCreateButton;
 

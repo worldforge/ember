@@ -219,7 +219,7 @@ protected:
 	 */
 	bool image_Sized(const CEGUI::EventArgs& e);
 
-	EntityCEGUITexture* mTexture;
+	std::unique_ptr<EntityCEGUITexture> mTexture;
 
 
 	/**
@@ -239,7 +239,7 @@ protected:
 	 *
 	 * @note This class shouldn't be needed as there's a way with CEGUI 0.7 now to let CEGUI directly use a Ogre render texture.
 	 */
-	CEGUIWindowUpdater* mWindowUpdater;
+	std::unique_ptr<CEGUIWindowUpdater> mWindowUpdater;
 
 	/**
 	 * An animation for our light, encircling the center.

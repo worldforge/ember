@@ -39,28 +39,21 @@
 #include <sigc++/bind.h>
 #include <components/ogre/SceneNodeProvider.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
 ModelRenderer::ModelRenderer(CEGUI::Window* image, const std::string& name) :
-		MovableObjectRenderer(image, name), mModel(nullptr), mModelMount(nullptr), mDefaultTranslation(Ogre::Vector3::ZERO), mDefaultRotation(Ogre::Quaternion::IDENTITY)
-{
+		MovableObjectRenderer(image, name),
+		mModel(nullptr),
+		mModelMount(nullptr),
+		mDefaultTranslation(Ogre::Vector3::ZERO),
+		mDefaultRotation(Ogre::Quaternion::IDENTITY) {
 }
 
-ModelRenderer::~ModelRenderer()
-{
-	delete mModelMount;
-	delete mModel;
-	mModelReloadedConnection.disconnect();
-	mModelDelayedUpdateConnection.disconnect();
-}
+ModelRenderer::~ModelRenderer() = default;
 
-void ModelRenderer::showModel()
-{
+void ModelRenderer::showModel() {
 	if (mModel) {
 		repositionSceneNode();
 		rescaleAxisMarker();
@@ -73,8 +66,7 @@ void ModelRenderer::showModel()
 
 }
 
-void ModelRenderer::repositionSceneNode()
-{
+void ModelRenderer::repositionSceneNode() {
 	if (mModel) {
 		Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 		if (node) {
@@ -89,8 +81,7 @@ void ModelRenderer::repositionSceneNode()
 	}
 }
 
-void ModelRenderer::updateRender()
-{
+void ModelRenderer::updateRender() {
 	if (mModel && !mModel->isLoaded()) {
 		//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
 		mModelDelayedUpdateConnection.disconnect();
@@ -100,8 +91,7 @@ void ModelRenderer::updateRender()
 	}
 }
 
-void ModelRenderer::delayedUpdateRender()
-{
+void ModelRenderer::delayedUpdateRender() {
 	if (mAutoShowFull) {
 		showFull();
 	}
@@ -111,13 +101,14 @@ void ModelRenderer::delayedUpdateRender()
 	mModelDelayedUpdateConnection.disconnect();
 }
 
-Model::Model* ModelRenderer::getModel()
-{
-	return mModel;
+Model::Model* ModelRenderer::getModel() {
+	if (mModel) {
+		return mModel.get();
+	}
+	return nullptr;
 }
 
-void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3& translation, const Ogre::Quaternion& orientation)
-{
+void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3& translation, const Ogre::Quaternion& orientation) {
 	auto modelDef = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
 	showModel(modelDef, translation, orientation);
 
@@ -127,20 +118,18 @@ void ModelRenderer::showModel(const Model::ModelDefinitionPtr& modelDef, const O
 	mDefaultRotation = orientation;
 	mDefaultTranslation = translation;
 	if (mModel) {
-		delete mModelMount;
-		mModelMount = nullptr;
-		delete mModel;
-		mModel = nullptr;
+		mModelMount.reset();
+		mModel.reset();
 		mModelReloadedConnection.disconnect();
 		mModelDelayedUpdateConnection.disconnect();
 		//delete mModel;
 	}
 	if (modelDef) {
-		mModel = new Model::Model(*mTexture->getRenderContext()->getSceneManager(), modelDef, "");
+		mModel = std::make_unique<Model::Model>(*mTexture->getRenderContext()->getSceneManager(), modelDef, "");
 		//override the rendering distance from the model; we want to always show it in the preview
 		mModel->setRenderingDistance(0);
 
-		mModelMount = new Model::ModelMount(*mModel, std::make_unique<SceneNodeProvider>(mTexture->getRenderContext()->getSceneNode(), nullptr, false));
+		mModelMount = std::make_unique<Model::ModelMount>(*mModel, std::make_unique<SceneNodeProvider>(mTexture->getRenderContext()->getSceneNode(), nullptr, false));
 
 		mModel->load();
 		showModel();
@@ -151,14 +140,12 @@ void ModelRenderer::showModel(const Model::ModelDefinitionPtr& modelDef, const O
 	}
 }
 
-void ModelRenderer::model_Reloaded()
-{
+void ModelRenderer::model_Reloaded() {
 	rescaleAxisMarker();
 	showFull();
 }
 
-float ModelRenderer::getMovableBoundingRadius()
-{
+float ModelRenderer::getMovableBoundingRadius() {
 	if (mModel) {
 		return mModel->getCombinedBoundingRadius();
 	}

@@ -221,7 +221,7 @@ public:
      * Sets the worker instance. Be sure to call this before doing any rendering.
      * @param worker
      */
-    void setWorker(IconRenderWorker* worker);
+    void setWorker(std::unique_ptr<IconRenderWorker> worker);
 
 
     /**
@@ -243,7 +243,7 @@ protected:
 
 	int mPixelWidth;
 	std::unique_ptr<SimpleRenderContext> mRenderContext;
-	IconRenderWorker* mWorker;
+	std::unique_ptr<IconRenderWorker> mWorker;
 	SceneNodeProvider mSceneNodeProvider;
 
 	/**

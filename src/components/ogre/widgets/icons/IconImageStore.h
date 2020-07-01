@@ -148,7 +148,7 @@ private:
 	//Ogre::Image mImage;
 	CEGUI::Texture* mCeguiTexture;
 
-	IconImageStoreEntryStore mIconImages;
+	std::vector<std::unique_ptr<IconImageStoreEntry>>  mIconImages;
 	IconImageStoreEntryStack mUnclaimedIconImages;
 
 };

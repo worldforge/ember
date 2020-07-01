@@ -27,6 +27,7 @@
 #include <vector>
 #include <stack>
 #include <algorithm>
+#include <memory>
 
 namespace Ember {
 namespace OgreView {
@@ -36,54 +37,54 @@ namespace Gui {
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-template <typename T>
-class WidgetPool
-{
+template<typename T>
+class WidgetPool {
+public:
+	typedef std::vector<T*> WidgetStore;
+	typedef std::stack<T*> WidgetStack;
+
+	class WidgetCreator {
 	public:
-		typedef std::vector<T*> WidgetStore;
-		typedef std::stack<T*> WidgetStack;
-		class WidgetCreator
-		{
-			public:
-			virtual ~WidgetCreator() {}
-			virtual T* createWidget(unsigned int currentPoolSize) = 0;
-		};
-		WidgetPool(WidgetCreator& creator) : mCreator(creator) {}
-		virtual ~WidgetPool();
-		T* checkoutWidget();
-		void returnWidget(T* widget);
+		virtual ~WidgetCreator() {}
 
-		void initializePool(unsigned int initialSize);
+		virtual std::unique_ptr<T> createWidget(unsigned int currentPoolSize) = 0;
+	};
 
-		std::vector<T*>& getUsedWidgets();
-		std::vector<T*>& getWidgetPool();
-		std::stack<T*>& getUnusedWidgets();
+	WidgetPool(WidgetCreator& creator) : mCreator(creator) {}
 
-	protected:
-		WidgetCreator& mCreator;
+	virtual ~WidgetPool();
 
-		WidgetStore mUsedWidgets;
+	T* checkoutWidget();
 
-		WidgetStore mWidgetsPool;
-		WidgetStack mUnusedWidgets;
+	void returnWidget(T* widget);
+
+	void initializePool(unsigned int initialSize);
+
+	std::vector<T*>& getUsedWidgets();
+
+	std::vector<T*>& getWidgetPool();
+
+	std::stack<T*>& getUnusedWidgets();
+
+protected:
+	WidgetCreator& mCreator;
+
+	WidgetStore mUsedWidgets;
+
+	std::vector<std::unique_ptr<T>> mWidgetsPool;
+	WidgetStack mUnusedWidgets;
 };
 
-template <typename T>
-WidgetPool<T>::~WidgetPool()
-{
-	for (typename std::vector<T*>::iterator I = mWidgetsPool.begin(); I != mWidgetsPool.end(); ++I) {
-		delete *I;
-	}
-}
+template<typename T>
+WidgetPool<T>::~WidgetPool() = default;
 
-
-template <typename T>
-T* WidgetPool<T>::checkoutWidget()
-{
-	T* widget(0);
+template<typename T>
+T* WidgetPool<T>::checkoutWidget() {
+	T* widget;
 	if (!mUnusedWidgets.size()) {
-		widget = mCreator.createWidget(mWidgetsPool.size());
-		mWidgetsPool.push_back(widget);
+		auto newWidget = mCreator.createWidget(mWidgetsPool.size());
+		widget = newWidget.get();
+		mWidgetsPool.push_back(std::move(newWidget));
 	} else {
 		widget = mUnusedWidgets.top();
 		mUnusedWidgets.pop();
@@ -92,9 +93,8 @@ T* WidgetPool<T>::checkoutWidget()
 	return widget;
 }
 
-template <typename T>
-void WidgetPool<T>::returnWidget(T* widget)
-{
+template<typename T>
+void WidgetPool<T>::returnWidget(T* widget) {
 	mUnusedWidgets.push(widget);
 	typename std::vector<T*>::iterator I = std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget);
 	if (I != mUsedWidgets.end()) {
@@ -102,29 +102,28 @@ void WidgetPool<T>::returnWidget(T* widget)
 	}
 }
 
-template <typename T>
-void WidgetPool<T>::initializePool(unsigned int initialSize)
-{
+template<typename T>
+void WidgetPool<T>::initializePool(unsigned int initialSize) {
 	for (unsigned int i = 0; i < initialSize; ++i) {
-		T* widget = mCreator.createWidget(mWidgetsPool.size());
-		mWidgetsPool.push_back(widget);
+		auto newWidget = mCreator.createWidget(mWidgetsPool.size());
+		auto widget = newWidget.get();
+		mWidgetsPool.push_back(std::move(newWidget));
 		mUnusedWidgets.push(widget);
 	}
 }
 
-template <class T>
-std::vector<T*>& WidgetPool<T>::getUsedWidgets()
-{
+template<class T>
+std::vector<T*>& WidgetPool<T>::getUsedWidgets() {
 	return mUsedWidgets;
 }
-template <typename T>
-std::vector<T*>& WidgetPool<T>::getWidgetPool()
-{
+
+template<typename T>
+std::vector<T*>& WidgetPool<T>::getWidgetPool() {
 	return mWidgetsPool;
 }
-template <typename T>
-std::stack<T*>& WidgetPool<T>::getUnusedWidgets()
-{
+
+template<typename T>
+std::stack<T*>& WidgetPool<T>::getUnusedWidgets() {
 	return mUnusedWidgets;
 }
 }

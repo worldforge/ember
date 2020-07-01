@@ -29,6 +29,7 @@
 
 #include <sigc++/connection.h>
 #include <components/ogre/model/ModelDefinition.h>
+#include <framework/AutoCloseConnection.h>
 
 namespace CEGUI
 {
@@ -109,12 +110,12 @@ protected:
 
 	void delayedUpdateRender();
 
-	Model::Model* mModel;
+	std::unique_ptr<Model::Model> mModel;
 
-	Model::ModelMount* mModelMount;
+	std::unique_ptr<Model::ModelMount> mModelMount;
 
-	sigc::connection mModelReloadedConnection;
-	sigc::connection mModelDelayedUpdateConnection;
+	AutoCloseConnection mModelReloadedConnection;
+	AutoCloseConnection mModelDelayedUpdateConnection;
 
 	/**
 	 * @brief The default translation for the model.
