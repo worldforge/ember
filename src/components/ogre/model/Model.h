@@ -223,7 +223,7 @@ public:
 
 	bool hasAttachPoint(const std::string& attachPoint) const;
 
-	const ParticleSystemBindingsPtrSet& getAllParticleSystemBindings() const;
+	const std::vector<ParticleSystemBinding>& getAllParticleSystemBindings() const;
 
 	ParticleSystemSet& getParticleSystems();
 
@@ -309,7 +309,7 @@ protected:
 	 */
 	bool createModelAssets();
 
-	ParticleSystemBindingsPtrSet mAllParticleSystemBindings;
+	std::vector<ParticleSystemBinding> mAllParticleSystemBindings;
 	ParticleSystemSet mParticleSystems;
     std::vector<LightInfo> mLights;
 

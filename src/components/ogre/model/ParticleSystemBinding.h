@@ -35,27 +35,19 @@ class ParticleSystem;
 /**
 @author Erik Ogenvik
 */
-class ParticleSystemBinding {
-public:
-	ParticleSystemBinding(ParticleSystem* parentSystem, std::string emitterVal, std::string variableName);
+struct ParticleSystemBinding {
 
-	void scaleValue(Ogre::Real scaler);
 
-private:
 	std::string mEmitterVal;
 	std::string mVariableName;
 	ParticleSystem* mParticleSystem;
 	Ogre::Real mOriginalValue;
-public:
-	const std::string& getEmitterVal() const;
 
-	const std::string& getVariableName() const;
+	void scaleValue(Ogre::Real scaler) const;
 
 };
 
-inline const std::string& ParticleSystemBinding::getEmitterVal() const { return mEmitterVal; }
 
-inline const std::string& ParticleSystemBinding::getVariableName() const { return mVariableName; }
 }
 }
 }

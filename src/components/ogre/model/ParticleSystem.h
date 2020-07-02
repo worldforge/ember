@@ -34,7 +34,6 @@ namespace Model {
 
 class ParticleSystemBinding;
 
-typedef std::vector<std::unique_ptr<ParticleSystemBinding>> ParticleSystemBindingsPtrSet;
 
 /**
 @author Erik Ogenvik
@@ -53,9 +52,9 @@ public:
 	 * @param variableName the name of the atlas attribute
 	 * @return a pointer to the newly created binding
 	 */
-	ParticleSystemBinding* addBinding(const std::string& emitterVal, const std::string& variableName);
+	ParticleSystemBinding addBinding(const std::string& emitterVal, const std::string& variableName);
 
-	ParticleSystemBindingsPtrSet& getBindings();
+	//std::vector<ParticleSystemBinding>& getBindings();
 
 	/**
 	 * @brief Sets the visibility of the particle system.
@@ -75,7 +74,7 @@ public:
 
 protected:
 	Ogre::ParticleSystem* mOgreParticleSystem;
-	ParticleSystemBindingsPtrSet mBindings;
+	//std::vector<ParticleSystemBinding> mBindings;
 
 	/**
 	 * @brief The direction of the particle system, in world coords.

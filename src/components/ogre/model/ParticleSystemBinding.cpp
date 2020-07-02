@@ -35,27 +35,7 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
-ParticleSystemBinding::ParticleSystemBinding(ParticleSystem* parentSystem, std::string emitterVal, std::string variableName) :
-		mEmitterVal(std::move(emitterVal)),
-		mVariableName(std::move(variableName)),
-		mParticleSystem(parentSystem),
-		mOriginalValue(0) {
-	//TODO: add more emitter values to bind
-	if (mEmitterVal == "emission_rate") {
-		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
-		if (emitter) {
-			mOriginalValue = emitter->getEmissionRate();
-		}
-	} else if (mEmitterVal == "time_to_live") {
-		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
-		if (emitter) {
-			mOriginalValue = emitter->getTimeToLive();
-		}
-	}
-
-}
-
-void ParticleSystemBinding::scaleValue(Ogre::Real scaler) {
+void ParticleSystemBinding::scaleValue(Ogre::Real scaler) const {
 
 	//TODO: add more emitter values to bind
 	if (mEmitterVal == "emission_rate") {

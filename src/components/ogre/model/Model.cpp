@@ -398,8 +398,8 @@ void Model::createParticles() {
 				//ogreParticleSystem->setDefaultDimensions(1, 1);
 				auto particleSystem = std::make_unique<ParticleSystem>(ogreParticleSystem, particleSystemDef.Direction);
 				for (auto& bindingDef : particleSystemDef.Bindings) {
-					ParticleSystemBinding* binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
-					mAllParticleSystemBindings.emplace_back(binding);
+					ParticleSystemBinding binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
+					mAllParticleSystemBindings.emplace_back(std::move(binding));
 				}
 				mParticleSystems.emplace_back(std::move(particleSystem));
 
@@ -475,7 +475,7 @@ bool Model::hasParticles() const {
 	return !mParticleSystems.empty();
 }
 
-const ParticleSystemBindingsPtrSet& Model::getAllParticleSystemBindings() const {
+const std::vector<ParticleSystemBinding>& Model::getAllParticleSystemBindings() const {
 	return mAllParticleSystemBindings;
 }
 

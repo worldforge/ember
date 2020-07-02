@@ -51,23 +51,24 @@ ParticleSystem::ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem, const O
 }
 
 ParticleSystem::~ParticleSystem() {
-	//make sure all bindings are removed
-	mBindings.clear();
 
-	//and then destroy the system to save resources
-	mOgreParticleSystem->_getManager()->destroyParticleSystem(mOgreParticleSystem);
-
+	//The Ogre ParticleSystem isn't owned by this instance and won't be destroyed here.
 }
 
 
-ParticleSystemBindingsPtrSet& ParticleSystem::getBindings() {
-	return mBindings;
-}
-
-ParticleSystemBinding* ParticleSystem::addBinding(const std::string& emitterVal, const std::string& variableName) {
-	auto* binding = new ParticleSystemBinding(this, emitterVal, variableName);
-	mBindings.emplace_back(binding);
-	return binding;
+ParticleSystemBinding ParticleSystem::addBinding(const std::string& emitterVal, const std::string& variableName) {
+	if (emitterVal == "emission_rate") {
+		Ogre::ParticleEmitter* emitter = mOgreParticleSystem->getEmitter(0);
+		if (emitter) {
+			return {emitterVal, variableName, this, emitter->getEmissionRate()};
+		}
+	} else if (emitterVal == "time_to_live") {
+		Ogre::ParticleEmitter* emitter = mOgreParticleSystem->getEmitter(0);
+		if (emitter) {
+			return {emitterVal, variableName, this, emitter->getTimeToLive()};
+		}
+	}
+	return {};
 }
 
 void ParticleSystem::setVisible(bool visibility) {

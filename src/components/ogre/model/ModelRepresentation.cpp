@@ -208,9 +208,9 @@ void ModelRepresentation::initFromModel() {
 	if (mModel->hasParticles()) {
 		auto& bindings = mModel->getAllParticleSystemBindings();
 		for (auto& binding : bindings) {
-			auto elemPtr = mEntity.ptrOfProperty(binding->getVariableName());
+			auto elemPtr = mEntity.ptrOfProperty(binding.mVariableName);
 			if (elemPtr && elemPtr->isNum()) {
-				binding->scaleValue(static_cast<Ogre::Real>(elemPtr->asNum()));
+				binding.scaleValue(static_cast<Ogre::Real>(elemPtr->asNum()));
 			}
 		}
 	}
@@ -259,10 +259,10 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 	//check if the changed attribute should affect any particle systems
 	//TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
 	if (mModel->hasParticles()) {
-		const ParticleSystemBindingsPtrSet& bindings = mModel->getAllParticleSystemBindings();
+		auto& bindings = mModel->getAllParticleSystemBindings();
 		for (auto& binding : bindings) {
-			if (binding->getVariableName() == str && v.isNum()) {
-				binding->scaleValue(static_cast<Ogre::Real>(v.asNum()));
+			if (binding.mVariableName == str && v.isNum()) {
+				binding.scaleValue(static_cast<Ogre::Real>(v.asNum()));
 			}
 		}
 	}
