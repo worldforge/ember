@@ -45,6 +45,7 @@ struct ServerInfo;
 class Task;
 class Avatar;
 class TypeInfo;
+class Entity;
 }
 
 namespace Ember

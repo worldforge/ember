@@ -106,6 +106,8 @@ template <>
 const char* resolveLuaTypename<const Ember::MouseMotion>(){return "Ember::MouseMotion";}
 template <>
 const char* resolveLuaTypename<const Atlas::Message::MapType>(){return "Atlas::Message::MapType";}
+template <>
+const char* resolveLuaTypename<const Eris::Entity>(){return "Eris::Entity";}
 
 
 }
