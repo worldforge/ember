@@ -146,7 +146,7 @@ public:
 	/**
 	 * @brief Emitted when an entity is removed from the inventory.
 	 */
-	sigc::signal<void, EmberEntity*> EventRemovedEntityFromInventory;
+	sigc::signal<void, Eris::Entity*> EventRemovedEntityFromInventory;
 
 	/**
 	 * @brief Emitted when the entity the avatar controls is deleted on the server.

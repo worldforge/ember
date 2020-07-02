@@ -23,7 +23,7 @@ class Avatar
 	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
 
 	sigc::signal<void, Ember::EmberEntity* > EventAddedEntityToInventory;
-	sigc::signal<void, Ember::EmberEntity* > EventRemovedEntityFromInventory;
+	sigc::signal<void, Eris::Entity* > EventRemovedEntityFromInventory;
 	
 	/**
 	 * @brief Emitted when the entity the avatar controls is deleted on the server.

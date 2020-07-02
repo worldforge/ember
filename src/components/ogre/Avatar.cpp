@@ -521,7 +521,7 @@ void Avatar::entity_ChildAdded(Eris::Entity* childEntity) {
 }
 
 void Avatar::entity_ChildRemoved(Eris::Entity* childEntity) {
-	EventRemovedEntityFromInventory.emit(dynamic_cast<EmberEntity*> (childEntity));
+	EventRemovedEntityFromInventory.emit(childEntity);
 }
 
 void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable) {
