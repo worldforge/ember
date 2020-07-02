@@ -210,9 +210,9 @@ void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atla
 		terrainArea = I->second.first.get();
 	}
 
-	auto area = terrainArea->parse(value);
 	//Only add area if we're planted
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
+		auto area = terrainArea->parse(value);
 		mTerrainHandler.updateArea(entity.getId(), area.get());
 	}
 }
