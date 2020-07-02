@@ -11,7 +11,9 @@ struct ServerInfo
         VALID,
         TIMEOUT ///< server query timed out
     } Status;
-    
+
+    ServerInfo();
+
     /** the hostname (or dotted-decimal IP) of the server. For multi-server worlds, this will be
       a name that resolves to a machine capable of accepting the initial LOGIN, and hence should not need
       special handling. */

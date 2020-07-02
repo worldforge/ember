@@ -1,4 +1,4 @@
---[[
+--[[ActionBar
 Responsible for the functionality of an ActionBar. To add support for different types of icons, first the ActionBarIconDragDropTarget class needs to be updated.
 You can then catch the event of the icon being dropped, and deal with it accordingly. Currently supported are: EntityIcons and ActionBarIcons.
 ]]--
@@ -267,7 +267,7 @@ function ActionBar:gotInput(key)
 end
 
 --Create a new action bar.
---@param rotation The rotation of the action bar, either horizontal or veritcal.
+--@param rotation The rotation of the action bar, either horizontal or vertical.
 function ActionBar.new(rotation, defActionList, erisAvatar)
 	local actionbar = {   iconSize = 50,
 				maxSlots = 5,
