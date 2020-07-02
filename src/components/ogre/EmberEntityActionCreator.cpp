@@ -66,8 +66,6 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 			aCase.addAction(std::make_unique<PresentAction>(mEntity, mScene, modelMapping, mAttachmentFunction));
 //		} else if (actionDef.Type == "show-effect") {
 //			aCase.addAction(new PresentAction(mEntity, mScene, modelMapping));
-		} else {
-			S_LOG_WARNING("Could not recognize entity action '" << actionDef.Type << "'.");
 		}
 	}
 

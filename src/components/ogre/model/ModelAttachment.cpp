@@ -77,8 +77,6 @@ struct ModelAttachedActionCreator : public EntityMapping::IActionCreator {
 				aCase.addAction(std::make_unique<EmberEntityHideModelAction>(mEntity));
 			} else if (actionDef.Type == "present") {
 				aCase.addAction(std::make_unique<PresentAction>(mEntity, mScene, modelMapping, mModelAttachmentFunction));
-			} else {
-				S_LOG_WARNING("Could not recognize entity action '" << actionDef.Type << "'.");
 			}
 		}
 	}
@@ -106,8 +104,6 @@ struct ModelContainedActionCreator : public EntityMapping::IActionCreator {
 		for (auto& actionDef : caseDefinition.Actions) {
 			if (actionDef.Type == "display-effect") {
 				//TODO: implement effect. One example would be an entity on fire.
-			} else {
-				S_LOG_WARNING("Could not recognize entity action '" << actionDef.Type << "'.");
 			}
 		}
 	}
