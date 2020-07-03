@@ -45,16 +45,14 @@ struct TerrainDefPoint;
  @author Erik Ogenvik <erik@worldforge.org>
 
  */
-class TerrainParser
+struct TerrainParser
 {
-public:
-	TerrainParser();
 
 	/**
 	 * @brief Extracts terrain updates from the element and updates the terrain.
 	 * @param terrain The element containing the terrain data.
 	 */
-	TerrainDefPointStore parseTerrain(const Atlas::Message::MapType& points, const WFMath::Point<3>& offset) const;
+	static TerrainDefPointStore parseTerrain(const Atlas::Message::MapType& points, const WFMath::Point<3>& offset);
 
 };
 

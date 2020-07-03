@@ -41,7 +41,6 @@
 #include <Mercator/Area.h>
 
 #include <sigc++/bind.h>
-#include <framework/EntityImporterBase.h>
 
 namespace Ember {
 namespace OgreView {
@@ -150,15 +149,17 @@ void TerrainEntityManager::entityTerrainPointsAttrChanged(EmberEntity& entity, c
 
 //	if (entity.isVisible()) {
 	if (value.isMap()) {
-		Terrain::TerrainParser terrainParser;
-		WFMath::Point<3> pos = entity.getPosition().isValid() ? entity.getPredictedPos() : WFMath::Point<3>::ZERO();
-		mTerrainHandler.updateTerrain(terrainParser.parseTerrain(value.Map(), pos));
+//		WFMath::Point<3> pos = entity.getPosition();
+//		if (pos.isValid()) {
+		//For now hard code position to ZERO
+		mTerrainHandler.updateTerrain(Terrain::TerrainParser::parseTerrain(value.Map(), {0, 0, 0}));
+//		}
 	}
 //	}
 }
 
 void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
-	Terrain::TerrainMod* mod = nullptr	;
+	Terrain::TerrainMod* mod = nullptr;
 	auto I = mTerrainMods.find(&entity);
 	if (mTerrainMods.find(&entity) == mTerrainMods.end()) {
 		if (value.isMap()) {

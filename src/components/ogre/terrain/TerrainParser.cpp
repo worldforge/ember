@@ -35,9 +35,7 @@ namespace OgreView {
 
 namespace Terrain {
 
-TerrainParser::TerrainParser() = default;
-
-TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::MapType& points, const WFMath::Point<3>& offset) const {
+TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::MapType& points, const WFMath::Point<3>& offset) {
 	Terrain::TerrainDefPointStore pointStore;
 
 
@@ -52,16 +50,16 @@ TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::MapType& 
 		defPoint.position = WFMath::Point<2>(static_cast<int>(point[0].asNum() + offset.x()), static_cast<int>(point[1].asNum() + offset.z()));
 		defPoint.height = static_cast<float>(point[2].asNum() + offset.y());
 		if (point.size() > 3) {
-			defPoint.roughness = point[3].asFloat();
+			defPoint.roughness = point[3].asNum();
 		} else {
 			defPoint.roughness = Mercator::BasePoint::ROUGHNESS;
 		}
 		if (point.size() > 4) {
-			defPoint.falloff = point[4].asFloat();
+			defPoint.falloff = point[4].asNum();
 		} else {
 			defPoint.falloff = Mercator::BasePoint::FALLOFF;
 		}
-		pointStore.push_back(defPoint);
+		pointStore.emplace_back(std::move(defPoint));
 
 	};
 
@@ -70,8 +68,11 @@ TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::MapType& 
 			S_LOG_INFO("Non list in points.");
 			continue;
 		}
-		const Atlas::Message::ListType& point = entry.second.List();
-		parsePointFn(point);
+		try {
+			parsePointFn(entry.second.List());
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when parsing terrain points data." << ex);
+		}
 	}
 
 	return pointStore;
