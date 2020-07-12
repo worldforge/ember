@@ -110,11 +110,7 @@ bool EmberTerrain::canHandleResponse(const Ogre::WorkQueue::Response* res, const
 }
 
 void EmberTerrain::handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ) {
-
-	if (res->getRequest()->getType() == WORKQUEUE_DERIVED_DATA_REQUEST) {
-
-		bool wasUpdatingDerivedData = mDerivedDataUpdateInProgress;
-		auto dirtyRect = mDirtyDerivedDataRect;
+	if (res->getRequest()->getType() == WORKQUEUE_GENERATE_MATERIAL_REQUEST) {
 		bool wasLoaded = mIsLoaded;
 		Ogre::Terrain::handleResponse(res, srcQ);
 		if (mIsLoaded && !wasLoaded) {
@@ -123,6 +119,11 @@ void EmberTerrain::handleResponse(const Ogre::WorkQueue::Response* res, const Og
 			Ogre::TRect<Ogre::Real> rect(bbox.getMinimum().x, bbox.getMinimum().z, bbox.getMaximum().x, bbox.getMaximum().z);
 			mTerrainShownSignal(rect);
 		}
+	} else if (res->getRequest()->getType() == WORKQUEUE_DERIVED_DATA_REQUEST) {
+
+		bool wasUpdatingDerivedData = mDerivedDataUpdateInProgress;
+		auto dirtyRect = mDirtyDerivedDataRect;
+		Ogre::Terrain::handleResponse(res, srcQ);
 		if (!mDerivedDataUpdateInProgress && wasUpdatingDerivedData) {
 			//We've finished updating derived data and should signal that we've altered.
 			Ogre::TRect<Ogre::Real> rect(dirtyRect.left, dirtyRect.top, dirtyRect.right, dirtyRect.bottom);
