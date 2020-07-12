@@ -80,7 +80,7 @@ void FoliageLayer::configure(Terrain::TerrainManager* terrainManager, const Terr
 unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float densityFactor, float /*volume*/, bool& isAvailable) {
 	if (mLatestPlantsResult) {
 		isAvailable = true;
-		return (unsigned int) (mLatestPlantsResult->getStore().size() * densityFactor);
+		return (unsigned int) (mLatestPlantsResult->mStore.size() * densityFactor);
 	} else {
 		PlantAreaQuery query{*mTerrainLayerDefinition, mFoliageDefinition->mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLayer::plantQueryExecuted);
@@ -95,7 +95,7 @@ unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float den
 unsigned int FoliageLayer::_populateGrassList(PageInfo /*page*/, float* posBuff, unsigned int grassCount) {
 	unsigned int finalGrassCount = 0;
 	if (mLatestPlantsResult) {
-		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
+		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->mStore;
 		for (const auto& I : store) {
 			if (finalGrassCount == grassCount) {
 				break;
@@ -114,20 +114,20 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo /*page*/, float* posBuff,
 
 void FoliageLayer::plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult) {
 	mLatestPlantsResult = &queryResult;
-	geom->reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().mCenter.x, 0, queryResult.getQuery().mCenter.y), true);
+	geom->reloadGeometryPage(Ogre::Vector3(queryResult.mQuery.mCenter.x, 0, queryResult.mQuery.mCenter.y), true);
 	mLatestPlantsResult = nullptr;
 
 }
 
 Ogre::uint32 FoliageLayer::getColorAt(float x, float z) {
-	if (mLatestPlantsResult) {
-		Ogre::Vector2 pos;
-		Ogre::uint32 colour;
-		pos.x = x;
-		pos.y = z;
-		mLatestPlantsResult->getShadowColourAtWorldPosition(pos, colour);
-		return colour;
-	}
+//	if (mLatestPlantsResult) {
+//		Ogre::Vector2 pos;
+//		Ogre::uint32 colour;
+//		pos.x = x;
+//		pos.y = z;
+//		mLatestPlantsResult->getShadowColourAtWorldPosition(pos, colour);
+//		return colour;
+//	}
 	return geom->getSceneManager()->getAmbientLight().getAsARGB();
 }
 

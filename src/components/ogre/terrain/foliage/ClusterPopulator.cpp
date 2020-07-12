@@ -48,7 +48,7 @@ void ClusterPopulator::populate(PlantAreaQueryResult& result, SegmentRefPtr segm
 		mercatorSegment.populate();
 	}
 
-	const PlantAreaQuery& query = result.getQuery();
+	const PlantAreaQuery& query = result.mQuery;
 
 	const WFMath::AxisBox<2>& area = Convert::toWF(query.mArea);
 
@@ -133,7 +133,7 @@ void ClusterPopulator::populateWithClusters(const SegmentRefPtr& segmentRef, Pla
 
 void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, PlantAreaQueryResult& result, const WFMath::AxisBox<2>& area, const WFMath::Ball<2>& cluster, const Buffer<unsigned char>& combinedCoverage)
 {
-	PlantAreaQueryResult::PlantStore& plants = result.getStore();
+	PlantAreaQueryResult::PlantStore& plants = result.mStore;
 	Mercator::Segment& mercatorSegment = segmentRef->getMercatorSegment();
 
 	float volume = (cluster.radius() * cluster.radius()) * WFMath::numeric_constants<WFMath::CoordType>::pi();
@@ -153,7 +153,7 @@ void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, Plan
 
 		WFMath::Point<2> pos(std::cos(theta) * length, std::sin(theta) * length);
 		pos.shift(WFMath::Vector<2>(cluster.getCenter()));
-		auto rotation = rng.rand(360.0);
+		auto rotation = static_cast<float>(rng.rand(360.0));
 		Ogre::Vector2 scale;
 		mScaler->scale(rng, pos, scale);
 
@@ -161,7 +161,7 @@ void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, Plan
 			WFMath::Point<2> localPos(pos.x() - mercatorSegment.getXRef(), pos.y() - mercatorSegment.getZRef());
 			if (data[((unsigned int)localPos.y() * res) + ((unsigned int)localPos.x())] >= mThreshold) {
 				mercatorSegment.getHeightAndNormal(localPos.x(), localPos.y(), height, normal);
-				plants.emplace_back(Ogre::Vector3(pos.x(), height, pos.y()), rotation, scale);
+				plants.emplace_back(PlantInstance{Ogre::Vector3(pos.x(), height, pos.y()), rotation, scale});
 			}
 		}
 	}

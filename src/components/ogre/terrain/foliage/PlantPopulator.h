@@ -19,7 +19,7 @@ namespace Ember {
 namespace OgreView {
 
 namespace Terrain {
-class PlantAreaQueryResult;
+struct PlantAreaQueryResult;
 
 namespace Foliage {
 

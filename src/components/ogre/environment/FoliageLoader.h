@@ -42,7 +42,7 @@ struct TerrainLayerDefinition;
 
 class TerrainManager;
 
-class PlantAreaQueryResult;
+struct PlantAreaQueryResult;
 }
 
 namespace Environment {

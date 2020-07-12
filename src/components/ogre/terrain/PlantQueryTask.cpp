@@ -37,7 +37,6 @@ PlantQueryTask::PlantQueryTask(SegmentRefPtr segmentRef,
 		mPlantPopulator(plantPopulator),
 		mAsyncCallback(std::move(asyncCallback)),
 		mQueryResult(std::move(query)) {
-	mQueryResult.setDefaultShadowColour(defaultShadowColour);
 }
 
 PlantQueryTask::~PlantQueryTask() = default;

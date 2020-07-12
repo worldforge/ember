@@ -23,7 +23,6 @@ add_library(emberogre_terrain OBJECT
         TerrainPageSurfaceLayer.cpp
         TerrainShader.cpp
         XMLLayerDefinitionSerializer.cpp
-        PlantAreaQueryResult.cpp
         TerrainParser.cpp
         TerrainPageCreationTask.cpp
         TerrainShaderUpdateTask.cpp

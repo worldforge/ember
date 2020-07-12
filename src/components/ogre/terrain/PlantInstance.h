@@ -75,21 +75,8 @@ public:
  * @brief A simple struct for representing one plant instance in a 3d space.
  * To save space some simplifications are made. The orientation is only stored as a rotation around the vertical axis, and the scale is only stored for a flat plant.
  */
-class PlantInstance
+struct PlantInstance
 {
-public:
-	/**
-	 * @brief Ctor.
-	 * @param position A position in 3d space.
-	 * @param orientation The rotation around the vertical axis for the plant.
-	 * @param scale The scale of the plant in width and height.
-	 */
-	PlantInstance(const Ogre::Vector3& positionIn, float orientationIn, const Ogre::Vector2& scaleIn)
-	{
-		this->position = positionIn;
-		this->orientation = orientationIn;
-		this->scale = scaleIn;
-	}
 
 	/**
 	 * @brief The position of the plant.

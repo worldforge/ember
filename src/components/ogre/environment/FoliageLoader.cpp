@@ -70,8 +70,8 @@ FoliageLoader::~FoliageLoader() {
 }
 
 bool FoliageLoader::preparePage(::Forests::PageInfo& page) {
-	if (mLatestPlantsResult && WFMath::Equal(mLatestPlantsResult->getQuery().mCenter.x, page.centerPoint.x) &&
-		WFMath::Equal(mLatestPlantsResult->getQuery().mCenter.y, page.centerPoint.z)) {
+	if (mLatestPlantsResult && WFMath::Equal(mLatestPlantsResult->mQuery.mCenter.x, page.centerPoint.x) &&
+		WFMath::Equal(mLatestPlantsResult->mQuery.mCenter.y, page.centerPoint.z)) {
 		return true;
 	} else {
 		PlantAreaQuery query{mTerrainLayerDefinition, mFoliageDefinition.mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
@@ -86,7 +86,7 @@ void FoliageLoader::loadPage(::Forests::PageInfo&) {
 	Ogre::ColourValue colour(1, 1, 1, 1);
 	int plantNo = 0;
 
-	const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
+	const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->mStore;
 	const int maxCount = (int) (store.size() * mDensityFactor);
 
 	for (const auto& plantInstance : store) {
@@ -102,7 +102,7 @@ void FoliageLoader::plantQueryExecuted(const Terrain::PlantAreaQueryResult& quer
 	mLatestPlantsResult = &queryResult;
 	//Be sure to catch errors so that we always reset the mLatestPlantsResult field when done.
 	try {
-		mPagedGeometry.reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().mCenter.x, 0, queryResult.getQuery().mCenter.y), true);
+		mPagedGeometry.reloadGeometryPage(Ogre::Vector3(queryResult.mQuery.mCenter.x, 0, queryResult.mQuery.mCenter.y), true);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when reloading geometry." << ex);
 	} catch (...) {

@@ -109,7 +109,7 @@ struct TerrainDefPoint;
 
 struct PlantAreaQuery;
 
-class PlantAreaQueryResult;
+struct PlantAreaQueryResult;
 
 class SegmentManager;
 
