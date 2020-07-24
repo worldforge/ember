@@ -30,6 +30,7 @@
 
 #include <set>
 #include <memory>
+#include <Eris/ActiveMarker.h>
 
 namespace Mercator {
 class Area;
@@ -537,6 +538,8 @@ protected:
 	 * TODO: perhaps allow for multiple terrain entities?
 	 */
 	EmberEntity* mTerrainEntity;
+
+	Eris::ActiveMarker mActiveMarker;
 
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.

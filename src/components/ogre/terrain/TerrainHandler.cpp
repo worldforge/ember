@@ -205,7 +205,7 @@ void TerrainHandler::markShaderForUpdate(const TerrainShader* shader, const WFMa
 		updateRequest.Areas.push_back(affectedArea);
 		mEventService.runOnMainThread([&]() {
 			updateShaders();
-		});
+		}, mActiveMarker);
 	}
 }
 
@@ -412,7 +412,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 				bridge->terrainPageReady();
 			}
 		}
-	});
+	}, mActiveMarker);
 
 }
 
