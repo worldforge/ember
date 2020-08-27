@@ -796,13 +796,14 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 	if (isSolid) {
 		auto pos = entity.getPosition();
 		auto orientation = entity.getOrientation();
-		if (pos.isValid() && orientation.isValid()) {
-
-			WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-			auto theta = std::atan2(xVec.z(), xVec.x()); // rotation about Y
-
+		if (pos.isValid()) {
 			WFMath::RotMatrix<2> rm;
-			rm.rotation(theta);
+			if (orientation.isValid()) {
+				WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
+				auto theta = std::atan2(xVec.z(), xVec.x()); // rotation about Y
+
+				rm.rotation(theta);
+			}
 
 			auto bbox = entity.getBBox();
 
@@ -816,7 +817,9 @@ void Awareness::buildEntityAreas(Eris::Entity& entity, std::map<Eris::Entity*, W
 
 			WFMath::RotBox<2> rotbox(WFMath::Point<2>::ZERO(), highCorner - lowCorner, WFMath::RotMatrix<2>().identity());
 			rotbox.shift(WFMath::Vector<2>(lowCorner.x(), lowCorner.y()));
-			rotbox.rotatePoint(rm, WFMath::Point<2>::ZERO());
+			if (rm.isValid()) {
+				rotbox.rotatePoint(rm, WFMath::Point<2>::ZERO());
+			}
 
 			rotbox.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 
