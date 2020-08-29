@@ -144,7 +144,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity) {
 	WFMath::Point<3> pos = entity->getViewPosition();
 	if (pos.isValid()) {
 		//Rebuild geometry if necessary.
-		mGeom.reloadGeometryPage(Convert::toOgre(pos));
+		mGeom.reloadGeometryPage(Convert::toOgre(pos), true);
 	}
 }
 
