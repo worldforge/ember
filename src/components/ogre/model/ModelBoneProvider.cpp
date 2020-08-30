@@ -103,11 +103,11 @@ void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position,
 	//Only apply the attach point definition rotation and translation to the first provider in a chained list of providers.
 	//This is because all providers will in reality use the same Ogre::TagPoint, and therefore the orientation should only be applied once.
 	if (!mParent) {
-		mOrientation = orientation * mAttachPointDefinition.Rotation * mOffsetRotation;
-		mPosition = position + mAttachPointDefinition.Translation + mOffsetTranslation;
+		mOrientation = mAttachPointDefinition.Rotation * mOffsetRotation;
+		mPosition = mAttachPointDefinition.Translation + mOffsetTranslation;
 	} else {
-		mOrientation = orientation * mOffsetRotation;
-		mPosition = position + mOffsetTranslation;
+		mOrientation = mOffsetRotation;
+		mPosition = mOffsetTranslation;
 	}
 	updatePositionAndOrientation();
 }
@@ -135,8 +135,8 @@ void ModelBoneProvider::updatePositionAndOrientation() {
 		tagpoint->setPosition(getDerivedPosition());
 		tagpoint->setOrientation(getDerivedOrientation());
 	}
-	for (ModelBoneProviderStore::const_iterator I = mChildren.begin(); I != mChildren.end(); ++I) {
-		(*I)->updatePositionAndOrientation();
+	for (auto child : mChildren) {
+		child->updatePositionAndOrientation();
 	}
 }
 
