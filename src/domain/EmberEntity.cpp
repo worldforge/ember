@@ -87,7 +87,9 @@ EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View& vw) :
 		mHeightProvider(nullptr) {
 }
 
-EmberEntity::~EmberEntity() = default;
+EmberEntity::~EmberEntity()  {
+	shutdown();
+}
 
 void EmberEntity::registerGlobalAttributeListener(const std::string& attributeName, std::function<void(EmberEntity&, const Atlas::Message::Element&)>& listener) {
 	sGlobalDispatcher.registerListener(attributeName, listener);
