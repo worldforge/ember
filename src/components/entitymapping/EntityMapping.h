@@ -97,7 +97,7 @@ class EntityCreationObserver;
 	Each Match has one or many Cases, which defines valid cases of the value that the Match is set to test for. The Cases are not mutually exclusive, so one or many cases can be true at the same time.
 	Each Case can then contain either Actions or more Matches, or both. Actions are client defined, and can be to display a certain model, or to change a texture.
 
-	These elements are arranged in a node tree structure, contained by the EntityMapping. The EntityMapping is self contained and uses it's own oberservers to watch for changes in the values that will result in changes. At the top of the node tree is an EntityTypeMatch instance, held directly by the EntityMapping. From this instance's Cases the framework determines what EntityMapping to use for a certain Eris::Type.
+	These elements are arranged in a node tree structure, contained by the EntityMapping. The EntityMapping is self contained and uses it's own observers to watch for changes in the values that will result in changes. At the top of the node tree is an EntityTypeMatch instance, held directly by the EntityMapping. From this instance's Cases the framework determines what EntityMapping to use for a certain Eris::Type.
 
 	Instances of this class are normally not created directly by the application, instead EntityMappingManager::createMapping(...) is used.
 

@@ -108,7 +108,6 @@ void PolygonAdapter::toggleDisplayOfPolygon() {
 			//It's important that we do the call to getChangedElement before we create and set mPolygon, since if that's set, the values from there will be used instead of the original atlas values.
 			::Atlas::Message::Element areaElem(getChangedElement());
 
-			Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 			if (areaElem.isMap()) {
 				try {
 					WFMath::Polygon<2> poly(areaElem);

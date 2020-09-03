@@ -27,6 +27,7 @@
 
 #include <wfmath/MersenneTwister.h>
 #include <sstream>
+#include <algorithm>
 
 namespace Ember {
 namespace OgreView {
