@@ -85,6 +85,13 @@ struct IEntityAttachment : public IVisualizable {
 	 */
 	virtual void attachEntity(EmberEntity& entity) = 0;
 
+
+	/**
+	 * Detach the supplied entity. Previously attachEntity(...) should have been called.
+	 * @param entity
+	 */
+	virtual void detachEntity(EmberEntity& entity) = 0;
+
 	/**
 	 * @brief Asks the attachment to update its scaling.
 	 * In most cases this is only of interest for those attachments which have graphical representations.

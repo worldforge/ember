@@ -20,6 +20,8 @@
 #define WORLDATTACHMENT_H_
 
 #include "domain/IEntityAttachment.h"
+#include "components/entitymapping/EntityMapping.h"
+#include <map>
 
 namespace Ogre {
 class SceneNode;
@@ -36,6 +38,7 @@ class TerrainManager;
 }
 
 class Scene;
+
 class World;
 
 class WorldAttachment : public IEntityAttachment {
@@ -51,6 +54,8 @@ public:
 	EmberEntity* getParentEntity() const override;
 
 	void attachEntity(EmberEntity& entity) override;
+
+	void detachEntity(EmberEntity& entity) override;
 
 	void updateScale() override;
 
@@ -82,6 +87,7 @@ protected:
 	EmberEntity& mWorldEntity;
 	Ogre::SceneNode* mWorldNode;
 	Scene& mScene;
+	std::map<EmberEntity*, std::unique_ptr<::Ember::EntityMapping::EntityMapping>> mMappings;
 };
 
 }

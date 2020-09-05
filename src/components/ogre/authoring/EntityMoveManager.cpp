@@ -76,9 +76,9 @@ void EntityMoveManager::GuiManager_EntityAction(const std::string& action, Ember
 
 void EntityMoveManager::startMove(EmberEntity& entity) {
 	//disallow moving of the root entity
-	if (entity.getLocation()) {
+	if (entity.getLocation() && entity.getAttachment()) {
 		//Only provide movement for entities which have a node attachment.
-		NodeAttachment* attachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
+		auto* attachment = dynamic_cast<NodeAttachment*> (entity.getAttachment().get());
 		if (attachment) {
 			auto mover = std::make_shared<EntityMover>(*attachment, *this);
 			mMoveAdapter.attachToBridge(mover);

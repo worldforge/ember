@@ -322,9 +322,11 @@ bool Avatar::isOkayToSendRotationMovementChangeToServer() {
 }
 
 Ogre::Node* Avatar::getAvatarSceneNode() const {
-	auto* attachment = dynamic_cast<NodeAttachment*> (mErisAvatarEntity.getAttachment());
-	if (attachment) {
-		return attachment->getNode();
+	if (mErisAvatarEntity.getAttachment()) {
+		auto* attachment = dynamic_cast<NodeAttachment*> (mErisAvatarEntity.getAttachment().get());
+		if (attachment) {
+			return attachment->getNode();
+		}
 	}
 	return nullptr;
 }

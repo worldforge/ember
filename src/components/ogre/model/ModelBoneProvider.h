@@ -187,7 +187,7 @@ protected:
 
 private:
 
-	std::set<Ogre::TagPoint*> mTagPoints;
+	std::vector<Ogre::TagPoint*> mTagPoints;
 
 	Ogre::Vector3 mScale;
 	bool mVisible;

@@ -112,7 +112,7 @@ struct ModelContainedActionCreator : public EntityMapping::IActionCreator {
 
 
 ModelAttachment::ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<ModelRepresentation> modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose) :
-		NodeAttachment(parentEntity, modelRepresentation->getEntity(), *nodeProvider.get()),
+		NodeAttachment(parentEntity, modelRepresentation->getEntity(), *nodeProvider),
 		mModelRepresentation(std::move(modelRepresentation)),
 		mPose(pose),
 		mModelMount(std::make_unique<ModelMount>(mModelRepresentation->getModel(), std::move(nodeProvider), mPose)),
@@ -152,11 +152,10 @@ void ModelAttachment::attachEntity(EmberEntity& entity) {
 
 	std::string attachPoint;
 	for (auto& fitting : mFittings) {
-		if (fitting.second->getChildEntityId() == entity.getId()) {
-			attachPoint = fitting.second->getMountPoint();
+		if (fitting.second.mChildEntityId == entity.getId()) {
+			attachPoint = fitting.second.mMountPoint;
 
-			fitting.second->attachChild(entity);
-			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::fittedEntity_BeingDeleted), &entity));
+			fitting.second.mChild = &entity;
 			break;
 		}
 	}
@@ -171,23 +170,21 @@ void ModelAttachment::attachEntity(EmberEntity& entity) {
 	} else {
 		//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 		creator = std::make_unique<ModelAttachedActionCreator>(entity, mModelRepresentation->getScene(), [attachPoint, this, &entity](std::unique_ptr<ModelRepresentation> modelRepresentation) {
-			if (modelRepresentation) {
-				if (mModelRepresentation->getModel().isLoaded()) {
-					try {
-						const AttachPointDefinitionStore& attachpoints = mModelRepresentation->getModel().getDefinition()->getAttachPointsDefinitions();
-						for (const auto& attachpoint : attachpoints) {
-							if (attachpoint.Name == attachPoint) {
-								auto nodeProvider = std::make_unique<ModelBoneProvider>(mModelMount->getNodeProvider()->getNode(), mModelRepresentation->getModel(), attachPoint);
-								auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), std::move(modelRepresentation), std::move(nodeProvider), attachpoint.Pose);
-								entity.setAttachment(std::move(nodeAttachment));
-							}
+			entity.setAttachment({});
+			if (modelRepresentation && mModelRepresentation->getModel().isLoaded()) {
+				try {
+					const AttachPointDefinitionStore& attachpoints = mModelRepresentation->getModel().getDefinition()->getAttachPointsDefinitions();
+					for (const auto& attachpoint : attachpoints) {
+						if (attachpoint.Name == attachPoint) {
+							auto nodeProvider = std::make_unique<ModelBoneProvider>(mModelMount->getNodeProvider()->getNode(), mModelRepresentation->getModel(), attachPoint);
+							auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), std::move(modelRepresentation), std::move(nodeProvider), attachpoint.Pose);
+							entity.setAttachment(std::move(nodeAttachment));
+							break;
 						}
-					} catch (const std::exception& ex) {
-						S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation->getModel().getDefinition()->getOrigin() << "'.");
 					}
+				} catch (const std::exception& ex) {
+					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation->getModel().getDefinition()->getOrigin() << "'.");
 				}
-			} else {
-				entity.setAttachment({});
 			}
 		});
 
@@ -195,12 +192,20 @@ void ModelAttachment::attachEntity(EmberEntity& entity) {
 	auto mapping = Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, *creator, entity.getView()->getTypeService(), entity.getView());
 	if (mapping) {
 		mapping->initialize();
-		std::shared_ptr<EntityMapping::EntityMapping> sharedMapping = std::move(mapping);
-		//Retain the mapping while the signal exists.
-		entity.BeingDeleted.connect([sharedMapping]() {});
+		auto result = mMappings.emplace(&entity, std::move(mapping));
+		if (!result.second) {
+			S_LOG_CRITICAL("A model attachment mapping for entity " << entity.getId() << " already existed. This can cause memory corruption.");
+		}
+	} else {
+		mMappings.erase(&entity);
 	}
 
 }
+
+void ModelAttachment::detachEntity(EmberEntity& entity) {
+	mMappings.erase(&entity);
+}
+
 
 void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
 	//if the model has an offset specified, use that, else just send to the base class
@@ -210,7 +215,7 @@ void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 	} else {
 		//If the attachment is on a fitting, don't do any adjustment
 		for (auto& fitting : mFittings) {
-			if (fitting.second->getChildEntityId() == attachment.getAttachedEntity().getId()) {
+			if (fitting.second.mChildEntityId == attachment.getAttachedEntity().getId()) {
 				return;
 			}
 		}
@@ -243,7 +248,7 @@ void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attribut
 	if (newFittingEntityId) {
 		auto I = mFittings.find(fittingName);
 		if (I != mFittings.end()) {
-			EmberEntity* entity = I->second->getChild();
+			EmberEntity* entity = I->second.mChild;
 			mFittings.erase(I);
 			//Check if we should detach the existing fitting
 			if (entity && entity->getId() != *newFittingEntityId) {
@@ -257,7 +262,7 @@ void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attribut
 		//Detach any existing fitting.
 		auto I = mFittings.find(fittingName);
 		if (I != mFittings.end()) {
-			EmberEntity* entity = I->second->getChild();
+			EmberEntity* entity = I->second.mChild;
 			mFittings.erase(I);
 			if (entity) {
 				detachFitting(*entity);
@@ -266,22 +271,13 @@ void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attribut
 	}
 }
 
-void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity) {
-	for (auto I = mFittings.begin(); I != mFittings.end(); ++I) {
-		if (I->second->getChildEntityId() == entity->getId()) {
-			mFittings.erase(I);
-			break;
-		}
-	}
-}
-
 void ModelAttachment::setupFittings() {
 	const AttachPointDefinitionStore& attachpoints = mModelRepresentation->getModel().getDefinition()->getAttachPointsDefinitions();
 	for (const auto& attachpoint : attachpoints) {
-		auto observer = new AttributeObserver(mChildEntity, attachpoint.Name, ".");
+		auto observer = std::make_unique<AttributeObserver>(mChildEntity, attachpoint.Name, ".");
 		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), attachpoint.Name));
 		observer->forceEvaluation();
-		mFittingsObservers.emplace_back(observer);
+		mFittingsObservers.emplace_back(std::move(observer));
 	}
 }
 
@@ -289,7 +285,7 @@ void ModelAttachment::detachFitting(EmberEntity& entity) {
 	//If the detached entity still is a child of this entity, re-evaluate the attachment.
 	if (entity.getLocation() == &mChildEntity) {
 		entity.setAttachment(nullptr);
-		attachEntity(entity);
+		detachEntity(entity);
 //		if (attachment) {
 //			attachment->updateScale();
 //		}
@@ -297,13 +293,13 @@ void ModelAttachment::detachFitting(EmberEntity& entity) {
 }
 
 void ModelAttachment::createFitting(const std::string& fittingName, const std::string& entityId) {
-	auto fitting = std::make_unique<ModelFitting>(mChildEntity, fittingName, entityId);
-	mFittings.emplace(fittingName, std::move(fitting));
+	mFittings.emplace(fittingName, ModelFitting{mChildEntity, fittingName, entityId, nullptr});
 	for (size_t i = 0; i < mChildEntity.numContained(); ++i) {
 		Eris::Entity* entity = mChildEntity.getContained(i);
 		if (entity && entity->getId() == entityId) {
 			auto emberEntity = dynamic_cast<EmberEntity*>(entity);
-			emberEntity->setAttachment(nullptr);
+			emberEntity->setAttachment({});
+			detachEntity(*emberEntity);
 			attachEntity(*emberEntity);
 //			if (attachment) {
 //				attachment->updateScale();
@@ -323,9 +319,10 @@ void ModelAttachment::model_Reloaded() {
 
 void ModelAttachment::reattachEntities() {
 	for (auto& fitting : mFittings) {
-		if (fitting.second->getChild() && mChildEntity.hasChild(fitting.second->getChildEntityId())) {
-			EmberEntity* entity = fitting.second->getChild();
+		if (fitting.second.mChild && mChildEntity.hasChild(fitting.second.mChildEntityId)) {
+			EmberEntity* entity = fitting.second.mChild;
 			entity->setAttachment(nullptr);
+			detachEntity(*entity);
 			attachEntity(*entity);
 //			if (attachment) {
 //				attachment->updateScale();

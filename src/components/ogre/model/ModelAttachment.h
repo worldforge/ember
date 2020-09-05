@@ -20,6 +20,8 @@
 #define MODELATTACHMENT_H_
 
 #include "components/ogre/NodeAttachment.h"
+#include "components/entitymapping/EntityMapping.h"
+#include "ModelFitting.h"
 #include <sigc++/trackable.h>
 #include <unordered_map>
 #include <map>
@@ -50,7 +52,6 @@ class ModelMount;
 
 class ModelRepresentation;
 
-class ModelFitting;
 
 /**
  * @brief Attachment for a ModelRepresentation instance.
@@ -59,7 +60,7 @@ class ModelFitting;
  */
 class ModelAttachment : public NodeAttachment, public virtual sigc::trackable {
 public:
-	typedef std::unordered_map<std::string, std::unique_ptr<ModelFitting>> ModelFittingStore;
+	typedef std::unordered_map<std::string, ModelFitting> ModelFittingStore;
 
 	ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<ModelRepresentation> modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose = "");
 
@@ -68,6 +69,8 @@ public:
 	IGraphicalRepresentation* getGraphicalRepresentation() const override;
 
 	void attachEntity(EmberEntity& entity) override;
+
+	void detachEntity(EmberEntity& entity) override;
 
 	void updateScale() override;
 
@@ -134,14 +137,15 @@ protected:
 	 */
 	bool mIgnoreEntityData;
 
+
+	std::map<EmberEntity*, std::unique_ptr<::Ember::EntityMapping::EntityMapping>> mMappings;
+
 	/**
 	 * @brief Sets up the ModelFittings and the observers of the attributes to which they are connected.
 	 */
 	void setupFittings();
 
 	void entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName);
-
-	void fittedEntity_BeingDeleted(EmberEntity* entity);
 
 	/**
 	 * @brief Detaches a previously attached fitting.

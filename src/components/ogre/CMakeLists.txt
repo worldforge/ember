@@ -35,7 +35,7 @@ add_library(emberogre OBJECT
         model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp
         model/ModelDefinitionManager.cpp model/ModelPart.cpp model/ParticleSystem.cpp model/ParticleSystemBinding.cpp model/SubModel.cpp
         model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp
-        model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelFitting.cpp model/ModelPartReactivatorVisitor.cpp
+        model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelPartReactivatorVisitor.cpp
 
         sound/SoundAction.cpp sound/SoundDefinitionManager.cpp
         sound/SoundEntity.cpp sound/SoundGroup.cpp sound/XMLSoundDefParser.cpp

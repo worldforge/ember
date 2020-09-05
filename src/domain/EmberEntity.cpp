@@ -210,6 +210,10 @@ IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const {
 }
 
 void EmberEntity::onLocationChanged(Eris::Entity* oldLocation) {
+	auto emberEntityOldLocation = static_cast<EmberEntity*>(oldLocation);
+	if (emberEntityOldLocation && emberEntityOldLocation->getAttachment()) {
+		emberEntityOldLocation->getAttachment()->detachEntity(*this);
+	}
 	updateAttachment();
 
 	Eris::Entity::onLocationChanged(oldLocation);
@@ -229,10 +233,6 @@ void EmberEntity::updateAttachment() {
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}
-		//If we're the top level entity the attachment has been set from the outside and shouldn't be changed.
-		//FIXME This is a little hackish; how can we improve it to not require special cases?
-//	} else if (m_view.getTopLevel() == this) {
-//		return;
 	} else {
 		try {
 			setAttachment(nullptr);
@@ -404,8 +404,8 @@ void EmberEntity::reattachChildren() {
 	}
 }
 
-IEntityAttachment* EmberEntity::getAttachment() const {
-	return mAttachment.get();
+const std::unique_ptr<IEntityAttachment>& EmberEntity::getAttachment() const {
+	return mAttachment;
 }
 
 EmberEntity* EmberEntity::getAttachedEntity(const std::string& attachment) {

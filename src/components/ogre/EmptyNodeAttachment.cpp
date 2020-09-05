@@ -36,6 +36,10 @@ void EmptyNodeAttachment::attachEntity(EmberEntity& entity) {
 	//No op
 }
 
+void EmptyNodeAttachment::detachEntity(EmberEntity& entity) {
+	//No op
+}
+
 IGraphicalRepresentation* EmptyNodeAttachment::getGraphicalRepresentation() const {
 	if (mGraphicalRepresentation) {
 		return mGraphicalRepresentation.get();

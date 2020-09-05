@@ -90,11 +90,17 @@ void WorldAttachment::attachEntity(EmberEntity& entity) {
 	auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, creator, entity.getView()->getTypeService(), entity.getView());
 	if (mapping) {
 		mapping->initialize();
-		std::shared_ptr<EntityMapping::EntityMapping> sharedMapping(std::move(mapping));
-		//Retain the mapping while the signal exists.
-		entity.BeingDeleted.connect([sharedMapping]() {});
+		auto result = mMappings.emplace(&entity, std::move(mapping));
+		if (!result.second) {
+			S_LOG_CRITICAL("A world attachment mapping for entity " << entity.getId() << " already existed. This can cause memory corruption.");
+		}
+	} else {
+		mMappings.erase(&entity);
 	}
+}
 
+void WorldAttachment::detachEntity(EmberEntity& entity)   {
+	mMappings.erase(&entity);
 }
 
 void WorldAttachment::updateScale() {

@@ -167,7 +167,7 @@ void ModelBoneProvider::detachObject(Ogre::MovableObject* movable) {
 	for (auto I = mTagPoints.begin(); I != mTagPoints.end();) {
 		Ogre::TagPoint* tagPoint = *I;
 		if (movable == tagPoint->getChildObject()) {
-			//Erasing in a set will invalidate the iterator.
+			//Erasing in a vector will invalidate the iterator.
 			I = mTagPoints.erase(I);
 		} else {
 			I++;
@@ -187,7 +187,7 @@ void ModelBoneProvider::attachObject(Ogre::MovableObject* movable) {
 		tagPoint->setOrientation(getDerivedOrientation());
 
 		movable->setVisible(mVisible);
-		mTagPoints.insert(tagPoint);
+		mTagPoints.emplace_back(tagPoint);
 	}
 }
 

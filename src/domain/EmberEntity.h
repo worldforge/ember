@@ -221,7 +221,7 @@ public:
 	 * @brief Gets the attachment used for this entity.
 	 * @return The attachment used by this entity, or null if there is no attachment.
 	 */
-	IEntityAttachment* getAttachment() const;
+	const std::unique_ptr<IEntityAttachment>& getAttachment() const;
 
 	/**
 	 * @brief Sets a control delegate for the attachment.

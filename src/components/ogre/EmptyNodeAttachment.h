@@ -45,6 +45,8 @@ public:
 
 	void attachEntity(EmberEntity& entity) override;
 
+	void detachEntity(EmberEntity& entity);
+
 	IGraphicalRepresentation* getGraphicalRepresentation() const override;
 
 protected:
