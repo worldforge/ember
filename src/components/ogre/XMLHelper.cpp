@@ -83,7 +83,7 @@ Ogre::Vector3 XMLHelper::fillVector3FromElement(TiXmlElement* elem) {
 		z = std::stof(elem->Attribute("z"));
 	}
 
-	return Ogre::Vector3(x, y, z);
+	return {x, y, z};
 }
 
 
@@ -94,6 +94,7 @@ void XMLHelper::fillElementFromVector3(TiXmlElement& elem, const Ogre::Vector3& 
 }
 
 Ogre::Quaternion XMLHelper::fillQuaternionFromElement(TiXmlElement* elem) {
+	Ogre::Quaternion q;
 	Ogre::Vector3 vector = fillVector3FromElement(elem);
 	Ogre::Degree degrees;
 	//first check if degrees is specified, but also allow for radians to be specified
@@ -102,8 +103,10 @@ Ogre::Quaternion XMLHelper::fillQuaternionFromElement(TiXmlElement* elem) {
 	} else if (elem->Attribute("radians")) {
 		degrees = Ogre::Radian(std::stof(elem->Attribute("radians")));
 	}
-	Ogre::Quaternion q;
 	q.FromAngleAxis(degrees, vector);
+	if (q.isNaN()) {
+		S_LOG_WARNING("Reading rotation resulted in invalid quaternion.");
+	}
 	return q;
 
 }

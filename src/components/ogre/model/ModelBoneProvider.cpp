@@ -113,8 +113,16 @@ void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position,
 }
 
 void ModelBoneProvider::setOffsets(const Ogre::Vector3& translate, const Ogre::Quaternion& rotate) {
-	mOffsetTranslation = translate;
-	mOffsetRotation = rotate;
+	if (!translate.isNaN()) {
+		mOffsetTranslation = translate;
+	} else {
+		S_LOG_WARNING("Translation set for model bone provider for attach point '" << mAttachPointName  << "' is invalid");
+	}
+	if (!rotate.isNaN()) {
+		mOffsetRotation = rotate;
+	} else {
+		S_LOG_WARNING("Rotation set for model bone provider for attach point '" << mAttachPointName  << "' is invalid");
+	}
 	updatePositionAndOrientation();
 }
 
