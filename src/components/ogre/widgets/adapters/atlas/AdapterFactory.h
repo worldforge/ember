@@ -22,16 +22,15 @@
 //
 #ifndef EMBEROGRE_GUI_ADAPTERS_ATLASADAPTERFACTORY_H
 #define EMBEROGRE_GUI_ADAPTERS_ATLASADAPTERFACTORY_H
+
 #include "AdapterBase.h"
 #include "StringAdapter.h"
 
-namespace CEGUI
-{
+namespace CEGUI {
 class Window;
 }
 
-namespace Eris
-{
+namespace Eris {
 class Entity;
 }
 
@@ -46,17 +45,29 @@ namespace Adapters {
 namespace Atlas {
 
 class NumberAdapter;
+
 class SizeAdapter;
+
 class MapAdapter;
+
 class ListAdapter;
+
 class PositionAdapter;
+
 class Position2DAdapter;
+
 class OrientationAdapter;
+
 class StaticAdapter;
+
 class AreaAdapter;
+
 class PolygonAdapter;
+
 class TerrainModAdapter;
+
 class ScaleAdapter;
+
 class EntityRefAdapter;
 
 /**
@@ -64,7 +75,7 @@ class EntityRefAdapter;
 The factory will take care of loading the gui elements from predefined cegui layout definitions, and setting up all gui elements.
 @author Erik Ogenvik <erik@ogenvik.org>
 */
-class AdapterFactory{
+class AdapterFactory {
 public:
 	/**
 	 * @brief Ctor.
@@ -116,6 +127,7 @@ public:
 	 * @return
 	 */
 	PositionAdapter* createPositionAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
 	/**
 	 *    Creates an adapter for a 2d position.
 	 * @param container
@@ -124,6 +136,7 @@ public:
 	 * @return
 	 */
 	Position2DAdapter* createPosition2DAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
 	/**
 	 *    Creates an adapter for a map.
 	 * @param container
@@ -132,6 +145,7 @@ public:
 	 * @return
 	 */
 	MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
 	/**
 	*    Creates an adapter for a map.
 	* @param container
@@ -140,6 +154,7 @@ public:
 	* @return
 	*/
 	MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::MapType& attributes);
+
 	/**
 	*    Creates an adapter for a map.
 	* @param container
@@ -148,6 +163,7 @@ public:
 	* @return
 	*/
 	MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity);
+
 	/**
 	* Creates an adapter for a quaternion orientation.
 	* @param container
@@ -156,6 +172,7 @@ public:
 	* @return
 	*/
 	OrientationAdapter* createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
+
 	/**
 	 *    Creates an adapter for a list.
 	 * @param container
@@ -213,7 +230,7 @@ public:
 	 * @param entity An optional entity to which the adapter is connected. This isn't always needed (since an entity instance is not always available)
 	 * @return A new adapter instance, or null if there either was an error when creating one, or none could be found for the specified type.
 	 */
-	AdapterBase* createAdapterByType(const std::string& type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = 0);
+	AdapterBase* createAdapterByType(const std::string& type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = nullptr);
 
 	/**
 	 * @brief Loads the gui elements as specified in the submitted layout-file into the container window, using the supplied prefix.
@@ -247,14 +264,16 @@ protected:
 	 * @param entity An optional entity to which the adapter is connected. This isn't always needed (since an entity instance is not always available)
 	 * @return A new adapter instance, or null if there was an error in the setup.
 	 */
-	template <typename TAdapter> TAdapter* createAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = 0);
+	template<typename TAdapter>
+	TAdapter* createAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = nullptr);
 
 	/**
 	 * @brief Verifies that the element is of the correct type for the specific adapter.
 	 * @param element The element which should be checked.
 	 * @return True if the element was of the correct type for the adapter type.
 	 */
-	template <typename TAdapter> bool verifyCorrectType(const ::Atlas::Message::Element& element);
+	template<typename TAdapter>
+	bool verifyCorrectType(const ::Atlas::Message::Element& element);
 
 	/**
 	 * @brief Performs the actual creation of the adapter.
@@ -265,7 +284,10 @@ protected:
 	 * @param entity An optional entity to which the adapter is connected. This isn't always needed (since an entity instance is not always available)
 	 * @return A new adapter instance, or null if there was an error in the setup.
 	 */
-	template <typename TAdapter> TAdapter* loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = 0);
+	template<typename TAdapter>
+	TAdapter* loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = nullptr);
+
+	std::map<std::string, UniqueWindowPtr<CEGUI::Window>> mAdapterPrototypes;
 
 
 };
