@@ -956,7 +956,7 @@ function ModelEdit:buildWidget()
 				local poseDefWrapper = self.posesList.model[item:getID()]
 				local poseDef = poseDefWrapper.def
 				self.poseRenderer.poseDefWrapper = poseDefWrapper
-				self.poseRenderer:showModel(self.definition, poseDef.Translate, poseDef.Rotate)
+				self.poseRenderer:showModel(self.definitionName, poseDef.Translate, poseDef.Rotate)
 				removePoseButton:setEnabled(true)
 				updatePoseAdapters()
 			else
