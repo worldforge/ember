@@ -24,7 +24,7 @@ add_library(widgets OBJECT
         EntityTextureManipulator.cpp LabelAction.cpp
         icons/Icon.cpp icons/IconImageStore.cpp icons/IconManager.cpp
         icons/IconRenderer.cpp icons/IconStore.cpp
-        adapters/ListBinder.cpp adapters/atlas/AdapterFactory.cpp adapters/atlas/AreaAdapter.cpp
+        adapters/atlas/AdapterFactory.cpp adapters/atlas/AreaAdapter.cpp
         adapters/atlas/CustomAdapter.cpp adapters/atlas/ListAdapter.cpp adapters/atlas/MapAdapter.cpp adapters/atlas/NumberAdapter.cpp adapters/atlas/OrientationAdapter.cpp
         adapters/atlas/PolygonAdapter.cpp adapters/atlas/Position2DAdapter.cpp adapters/atlas/PositionAdapter.cpp adapters/atlas/SizeAdapter.cpp
         adapters/atlas/StaticAdapter.cpp adapters/atlas/TerrainModAdapter.cpp

@@ -26,10 +26,9 @@
 namespace Ember {
 namespace OgreView {
 namespace Model {
-ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, std::string attachPointName, bool deleteMovableWhenDone) :
+ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel,  bool deleteMovableWhenDone) :
 		mNode(parentSceneNode),
 		mParentModel(parentModel),
-		mAttachPointName(std::move(attachPointName)),
 		mParent(nullptr),
 		mPosition(Ogre::Vector3::ZERO),
 		mOrientation(Ogre::Quaternion::IDENTITY),
@@ -38,19 +37,11 @@ ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentM
 		mVisible(true),
 		mOffsetTranslation(Ogre::Vector3::ZERO),
 		mOffsetRotation(Ogre::Quaternion::IDENTITY) {
-	auto& attachPointDefinitions = parentModel.getDefinition()->getAttachPointsDefinitions();
-	auto I = std::find_if(std::begin(attachPointDefinitions), std::end(attachPointDefinitions), [&](const AttachPointDefinition& def) { return def.Name == mAttachPointName; });
-	if (I != attachPointDefinitions.end()) {
-		mAttachPointDefinition = *I;
-		mPosition = mAttachPointDefinition.Translation;
-		mOrientation = mAttachPointDefinition.Rotation;
-	}
 }
 
-ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, std::string attachPointName, ModelBoneProvider* parent) :
+ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, ModelBoneProvider* parent) :
 		mNode(parentSceneNode),
 		mParentModel(parentModel),
-		mAttachPointName(std::move(attachPointName)),
 		mParent(parent),
 		mPosition(Ogre::Vector3::ZERO),
 		mOrientation(Ogre::Quaternion::IDENTITY),
@@ -80,7 +71,8 @@ Ogre::Node* ModelBoneProvider::getParentNode() const {
 }
 
 INodeProvider* ModelBoneProvider::createChildProvider(const std::string& name) {
-	auto childProvider = new ModelBoneProvider(mNode, mParentModel, mAttachPointName, this);
+	auto childProvider = new ModelBoneProvider(mNode, mParentModel, this);
+	childProvider->setAttachPointDefinition(mAttachPointDefinition);
 	mChildren.push_back(childProvider);
 	return childProvider;
 }
@@ -102,13 +94,7 @@ bool ModelBoneProvider::getVisualize(const std::string&) const {
 void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation) {
 	//Only apply the attach point definition rotation and translation to the first provider in a chained list of providers.
 	//This is because all providers will in reality use the same Ogre::TagPoint, and therefore the orientation should only be applied once.
-	if (!mParent) {
-		mOrientation = mAttachPointDefinition.Rotation * mOffsetRotation;
-		mPosition = mAttachPointDefinition.Translation + mOffsetTranslation;
-	} else {
-		mOrientation = mOffsetRotation;
-		mPosition = mOffsetTranslation;
-	}
+
 	updatePositionAndOrientation();
 }
 
@@ -116,16 +102,15 @@ void ModelBoneProvider::setOffsets(const Ogre::Vector3& translate, const Ogre::Q
 	if (!translate.isNaN()) {
 		mOffsetTranslation = translate;
 	} else {
-		S_LOG_WARNING("Translation set for model bone provider for attach point '" << mAttachPointName  << "' is invalid");
+		S_LOG_WARNING("Translation set for model bone provider for attach point '" << mAttachPointDefinition.BoneName  << "' is invalid");
 	}
 	if (!rotate.isNaN()) {
 		mOffsetRotation = rotate;
 	} else {
-		S_LOG_WARNING("Rotation set for model bone provider for attach point '" << mAttachPointName  << "' is invalid");
+		S_LOG_WARNING("Rotation set for model bone provider for attach point '" << mAttachPointDefinition.BoneName  << "' is invalid");
 	}
 	updatePositionAndOrientation();
 }
-
 
 void ModelBoneProvider::setScale(const Ogre::Vector3& scale) {
 	mScale = scale;
@@ -139,6 +124,13 @@ Ogre::Vector3 ModelBoneProvider::getScale() const {
 }
 
 void ModelBoneProvider::updatePositionAndOrientation() {
+	if (!mParent) {
+		mOrientation = mAttachPointDefinition.Rotation * mOffsetRotation;
+		mPosition = mAttachPointDefinition.Translation + mOffsetTranslation;
+	} else {
+		mOrientation = mOffsetRotation;
+		mPosition = mOffsetTranslation;
+	}
 	for (auto tagpoint : mTagPoints) {
 		tagpoint->setPosition(getDerivedPosition());
 		tagpoint->setOrientation(getDerivedOrientation());
@@ -178,7 +170,7 @@ void ModelBoneProvider::detachObject(Ogre::MovableObject* movable) {
 }
 
 void ModelBoneProvider::attachObject(Ogre::MovableObject* movable) {
-	auto tagPoint = mParentModel.attachObject(mAttachPointName, movable);
+	auto tagPoint = mParentModel.attachObject(mAttachPointDefinition.Name, movable);
 	if (tagPoint) {
 		tagPoint->setInheritScale(false);
 		tagPoint->setInheritParentEntityScale(false);
@@ -189,6 +181,11 @@ void ModelBoneProvider::attachObject(Ogre::MovableObject* movable) {
 		movable->setVisible(mVisible);
 		mTagPoints.emplace_back(tagPoint);
 	}
+}
+
+void ModelBoneProvider::setAttachPointDefinition(AttachPointDefinition attachPointDefinition) {
+	mAttachPointDefinition = std::move(attachPointDefinition);
+	updatePositionAndOrientation();
 }
 
 

@@ -88,11 +88,10 @@ std::string ModelDefinitionManager::exportScript(const std::string& name, const 
 
 std::vector<std::string> ModelDefinitionManager::getAllMeshes() const {
 	std::vector<std::string> meshes;
-	Ogre::StringVectorPtr meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
+	auto meshesVector = Ogre::ResourceGroupManager::getSingleton().findResourceNames("General", "*.mesh");
 	for (auto& meshName : *meshesVector) {
 		meshes.emplace_back(meshName);
 	}
-	meshesVector.reset();
 	return meshes;
 }
 

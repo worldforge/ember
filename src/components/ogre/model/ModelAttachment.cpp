@@ -176,7 +176,8 @@ void ModelAttachment::attachEntity(EmberEntity& entity) {
 					const AttachPointDefinitionStore& attachpoints = mModelRepresentation->getModel().getDefinition()->getAttachPointsDefinitions();
 					for (const auto& attachpoint : attachpoints) {
 						if (attachpoint.Name == attachPoint) {
-							auto nodeProvider = std::make_unique<ModelBoneProvider>(mModelMount->getNodeProvider()->getNode(), mModelRepresentation->getModel(), attachPoint);
+							auto nodeProvider = std::make_unique<ModelBoneProvider>(mModelMount->getNodeProvider()->getNode(), mModelRepresentation->getModel());
+							nodeProvider->setAttachPointDefinition(attachpoint);
 							auto nodeAttachment = std::make_unique<ModelAttachment>(getAttachedEntity(), std::move(modelRepresentation), std::move(nodeProvider), attachpoint.Pose);
 							entity.setAttachment(std::move(nodeAttachment));
 							break;
@@ -310,6 +311,7 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 }
 
 void ModelAttachment::model_Reloaded() {
+	mMappings.clear();
 	if (mModelMount) {
 		mModelMount->reset();
 	}

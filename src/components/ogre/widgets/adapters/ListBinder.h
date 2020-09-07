@@ -104,15 +104,7 @@ protected:
 	/**
 	 * @brief Internal class which wraps a type, a descriptive name and an index in the list widget.
 	 */
-	class BinderInstance {
-		public:
-		/**
-		 * @brief Ctor.
-		 * @param displayName The name to show in the listbox.
-		 * @param type The type instance.
-		 * @param listIndex The list index, corresponding to the item's place in the listbox.
-		 */
-		BinderInstance(const std::string& displayName, T type, size_t listIndex = 0) : DisplayName(displayName), Type(type), ListIndex(listIndex) {}
+	struct BinderInstance {
 		std::string DisplayName;
 		T Type;
 		size_t ListIndex;
@@ -163,7 +155,7 @@ void ListBinder<T, WidgetT>::sync()
 template <typename T, typename WidgetT>
 void ListBinder<T, WidgetT>::addType(const std::string& key, const std::string& displayName, T type)
 {
-	mTypes.insert(typename TypeStore::value_type(key, BinderInstance(displayName, type)));
+	mTypes.insert(typename TypeStore::value_type(key, BinderInstance{displayName, type, 0}));
 }
 
 template <typename T, typename WidgetT>

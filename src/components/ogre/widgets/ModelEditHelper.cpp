@@ -33,31 +33,19 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-AttachPointMouseMover::AttachPointMouseMover(AttachPointHelper& attachPointHelper,
-											 Model::ModelDefinitionPtr modelDefinition,
-											 SimpleRenderContext& renderContext) :
-		mAttachPointHelper(attachPointHelper),
-		mModelDefinition(std::move(modelDefinition)),
-		mRenderContext(renderContext) {
+RotateMouseMover2::RotateMouseMover2(SimpleRenderContext& renderContext,
+									 std::function<void(const Ogre::Quaternion&)> rotateCallback,
+									 std::function<void()> stopCallback)
+		: mRenderContext(renderContext),
+		  mRotateCallback(std::move(rotateCallback)),
+		  mStopCallback(std::move(stopCallback)) {
+
 }
 
-RotateMouseMover::RotateMouseMover(AttachPointHelper& attachPointHelper,
-								   Model::ModelDefinitionPtr modelDefinition,
-								   SimpleRenderContext& renderContext) :
-		AttachPointMouseMover(attachPointHelper, std::move(modelDefinition), renderContext) {
-}
 
-TranslateMouseMover::TranslateMouseMover(AttachPointHelper& attachPointHelper,
-										 Model::ModelDefinitionPtr modelDefinition,
-										 SimpleRenderContext& renderContext) :
-		AttachPointMouseMover(attachPointHelper, std::move(modelDefinition), renderContext) {
-}
-
-void RotateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
-	Ogre::TagPoint* tagPoint = mAttachPointHelper.getTagPoint();
+void RotateMouseMover2::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
 
 	Ogre::Quaternion rotate;
-	//rotate the modelnode
 	if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
 		rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mRenderContext.getCameraOrientation().zAxis());
 	} else {
@@ -66,29 +54,30 @@ void RotateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freezeMo
 		q1.FromAngleAxis(Ogre::Degree(-motion.yRelativeMovement * 180), mRenderContext.getCameraOrientation().xAxis());
 		rotate = rotate * q1;
 	}
-	tagPoint->rotate(rotate);
-	//we don't want to move the cursor
 	freezeMouse = true;
+	mRotateCallback(rotate);
+	//we don't want to move the cursor
+
 }
 
-bool RotateMouseMover::injectMouseButtonUp(const Input::MouseButton& button) {
+bool RotateMouseMover2::injectMouseButtonUp(const Input::MouseButton& button) {
 	if (button == Input::MouseButtonLeft) {
-		for (auto I = mModelDefinition->getAttachPointsDefinitions().begin(); I != mModelDefinition->getAttachPointsDefinitions().end(); ++I) {
-			if (I->Name == mAttachPointHelper.getAttachPointName()) {
-				Model::AttachPointDefinition definition = *I;
-				definition.Rotation = mAttachPointHelper.getOrientation();
-				mModelDefinition->addAttachPointDefinition(definition);
-				break;
-			}
-		}
+		mStopCallback();
 
 		return true;
 	}
 	return false;
 }
 
-void TranslateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
-	Ogre::TagPoint* tagPoint = mAttachPointHelper.getTagPoint();
+TranslateMouseMover2::TranslateMouseMover2(SimpleRenderContext& renderContext,
+										   std::function<void(const Ogre::Vector3&)> translateCallback,
+										   std::function<void()> stopCallback)
+		: mRenderContext(renderContext),
+		  mTranslateCallback(std::move(translateCallback)),
+		  mStopCallback(std::move(stopCallback)) {}
+
+
+void TranslateMouseMover2::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
 
 	Ogre::Vector3 translate;
 	if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RCTRL) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LCTRL)) {
@@ -97,86 +86,34 @@ void TranslateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freez
 		translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
 	}
 	translate = mRenderContext.getCameraOrientation() * translate;
-	tagPoint->translate(translate);
+	mTranslateCallback(translate);
 	//we don't want to move the cursor
 	freezeMouse = true;
 }
 
-bool TranslateMouseMover::injectMouseButtonUp(const Input::MouseButton& button) {
+bool TranslateMouseMover2::injectMouseButtonUp(const Input::MouseButton& button) {
 	if (button == Input::MouseButtonLeft) {
-		for (auto I = mModelDefinition->getAttachPointsDefinitions().begin(); I != mModelDefinition->getAttachPointsDefinitions().end(); ++I) {
-			if (I->Name == mAttachPointHelper.getAttachPointName()) {
-				Model::AttachPointDefinition definition = *I;
-				definition.Translation = mAttachPointHelper.getTagPoint()->getPosition();
-				mModelDefinition->addAttachPointDefinition(definition);
-				break;
-			}
-		}
+		mStopCallback();
 
 		return true;
 	}
 	return false;
 }
 
-AttachPointHelper::AttachPointHelper(Model::Model& model, std::string attachPointName) :
-		mModel(model), mAttachPointName(std::move(attachPointName)), mTagPoint(nullptr) {
-}
+ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, Model::AttachPointDefinition attachPointDefinition, std::unique_ptr<Model::Model> attachedModel) :
+		mAttachPoint(std::move(attachPointDefinition)), mModel(model), mAttachedModel(std::move(attachedModel)), mModelBoneProvider(new Model::ModelBoneProvider(nullptr, mModel)) {
 
-AttachPointHelper::~AttachPointHelper() = default;
+	mModelBoneProvider->setAttachPointDefinition(mAttachPoint);
 
-const std::string& AttachPointHelper::getAttachPointName() const {
-	return mAttachPointName;
-}
+	mMount = std::make_unique<Model::ModelMount>(*mAttachedModel, std::unique_ptr<Model::ModelBoneProvider>(mModelBoneProvider), mAttachPoint.Pose);
+	mMount->reset();
 
-Ogre::TagPoint* AttachPointHelper::getTagPoint() const {
-	return mTagPoint;
-}
+	mAttachedModel->load();
 
-EntityAttachPointHelper::EntityAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& meshName) :
-		AttachPointHelper(model, attachPointName) {
-	mEntity = mModel.getManager().createEntity(meshName);
-	mTagPoint = mModel.attachObject(attachPointName, mEntity);
-}
 
-EntityAttachPointHelper::~EntityAttachPointHelper() {
-	mModel.detachObject(mEntity);
-	mEntity->_getManager()->destroyMovableObject(mEntity);
-}
-
-Ogre::Quaternion EntityAttachPointHelper::getOrientation() const {
-	return getTagPoint()->getOrientation();
-}
-
-ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& modelName) :
-		AttachPointHelper(model, attachPointName), mMount(nullptr) {
-	auto definition = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
-	if (definition) {
-		mAttachedModel = std::make_unique<Model::Model>(mModel.getManager(), definition, modelName);
-		mAttachedModel->load();
-
-		std::string pose;
-		const Model::AttachPointDefinitionStore& attachpoints = model.getDefinition()->getAttachPointsDefinitions();
-		for (const auto& attachpoint : attachpoints) {
-			if (attachpoint.Name == attachPointName) {
-				pose = attachpoint.Pose;
-				break;
-			}
-		}
-		auto boneProvider = std::make_unique<Model::ModelBoneProvider>(nullptr, mModel, attachPointName);
-
-		mMount = std::make_unique<Model::ModelMount>(*mAttachedModel, std::move(boneProvider), pose);
-		mMount->reset();
-		//TODO: fix this somehow
-		//mTagPoint = boneProvider->getAttachPointWrapper()->TagPoint;
-	}
 }
 
 ModelAttachPointHelper::~ModelAttachPointHelper() = default;
-
-Ogre::Quaternion ModelAttachPointHelper::getOrientation() const {
-	//Since the model is rotated 90 degrees by the model mount we need to re-orient it.
-	return getTagPoint()->getOrientation() * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
-}
 
 ModelEditHelper::ModelEditHelper(Model::Model* model, SimpleRenderContext& renderContext) :
 		mModel(model),
@@ -184,6 +121,7 @@ ModelEditHelper::ModelEditHelper(Model::Model* model, SimpleRenderContext& rende
 		mAttachPointHelper(nullptr),
 		mAttachPointMarker(nullptr),
 		mMouseMover(nullptr) {
+	model->Reloaded.connect([this]() { mAttachPointHelper.reset(); });
 }
 
 ModelEditHelper::~ModelEditHelper() {
@@ -194,24 +132,49 @@ ModelEditHelper::~ModelEditHelper() {
 }
 
 void ModelEditHelper::showAttachPointHelperEntity(const std::string& attachPointName, const std::string& meshName) {
-	try {
-		hideAttachPointHelper();
-		//this could fail with an exception if the mesh isn't found, so we need to set the mAttachPointHelper to 0 first.
-		mAttachPointHelper = std::make_unique<EntityAttachPointHelper>(*mModel, attachPointName, meshName);
-	} catch (const std::exception& e) {
-		S_LOG_WARNING("Could not create attach point helper with mesh " << meshName << ".");
-		return;
+	hideAttachPointHelper();
+	auto& attachpoints = mModel->getDefinition()->getAttachPointsDefinitions();
+	for (const auto& attachpoint : attachpoints) {
+		if (attachpoint.Name == attachPointName) {
+			//We'll automatically create a model which shows just the specified mesh.
+			auto modelDef = std::make_shared<Model::ModelDefinition>();
+			modelDef->setOrigin(meshName);
+			//Create a single submodel definition using the mesh
+			Model::SubModelDefinition subModelDefinition{meshName};
+			modelDef->addSubModelDefinition(subModelDefinition);
+
+			auto attachedModel = std::make_unique<Model::Model>(mModel->getManager(), modelDef, meshName);
+			attachedModel->setUseInstancing(false);
+
+			try {
+				mAttachPointHelper = std::make_unique<ModelAttachPointHelper>(*mModel, attachpoint, std::move(attachedModel));
+			} catch (const std::exception& e) {
+				S_LOG_WARNING("Could not create attach point helper with mesh " << meshName << ".");
+				return;
+			}
+			break;
+		}
 	}
 }
 
 void ModelEditHelper::showAttachPointHelperModel(const std::string& attachPointName, const std::string& modelName) {
-	try {
-		hideAttachPointHelper();
-		//this could fail with an exception if the model isn't found, so we need to set the mAttachPointHelper to 0 first.
-		mAttachPointHelper = std::make_unique<ModelAttachPointHelper>(*mModel, attachPointName, modelName);
-	} catch (const std::exception& e) {
-		S_LOG_WARNING("Could not create attach point helper with model " << modelName << ".");
-		return;
+	hideAttachPointHelper();
+	auto& attachpoints = mModel->getDefinition()->getAttachPointsDefinitions();
+	for (const auto& attachpoint : attachpoints) {
+		if (attachpoint.Name == attachPointName) {
+
+			auto definition = Model::ModelDefinitionManager::getSingleton().getByName(modelName);
+			if (definition) {
+				auto attachedModel = std::make_unique<Model::Model>(mModel->getManager(), definition, modelName);
+
+				try {
+					mAttachPointHelper = std::make_unique<ModelAttachPointHelper>(*mModel, attachpoint, std::move(attachedModel));
+				} catch (const std::exception& e) {
+					S_LOG_WARNING("Could not create attach point helper with model " << modelName << ".");
+					return;
+				}
+			}
+		}
 	}
 }
 
@@ -223,7 +186,17 @@ void ModelEditHelper::startInputRotate() {
 	mMouseMover.reset();
 	releaseInput();
 	if (mAttachPointHelper && mModel) {
-		mMouseMover = std::make_unique<RotateMouseMover>(*mAttachPointHelper, mModel->getDefinition(), mRenderContext);
+		mMouseMover = std::make_unique<RotateMouseMover2>(mRenderContext, [&](const Ogre::Quaternion& rotate) {
+			if (mAttachPointHelper) {
+				mAttachPointHelper->mAttachPoint.Rotation = mAttachPointHelper->mAttachPoint.Rotation * rotate;
+				mAttachPointHelper->mModelBoneProvider->setAttachPointDefinition(mAttachPointHelper->mAttachPoint);
+			}
+		}, [&]() {
+			if (mAttachPointHelper) {
+				mModel->getDefinition()->addAttachPointDefinition(mAttachPointHelper->mAttachPoint);
+				mMouseMover.reset();
+			}
+		});
 		catchInput();
 	}
 }
@@ -232,7 +205,17 @@ void ModelEditHelper::startInputTranslate() {
 	mMouseMover.reset();
 	releaseInput();
 	if (mAttachPointHelper && mModel) {
-		mMouseMover = std::make_unique<TranslateMouseMover>(*mAttachPointHelper, mModel->getDefinition(), mRenderContext);
+		mMouseMover = std::make_unique<TranslateMouseMover2>(mRenderContext, [&](const Ogre::Vector3& translate) {
+			if (mAttachPointHelper) {
+				mAttachPointHelper->mAttachPoint.Translation = mAttachPointHelper->mAttachPoint.Translation + translate;
+				mAttachPointHelper->mModelBoneProvider->setAttachPointDefinition(mAttachPointHelper->mAttachPoint);
+			}
+		}, [&]() {
+			if (mAttachPointHelper) {
+				mModel->getDefinition()->addAttachPointDefinition(mAttachPointHelper->mAttachPoint);
+				mMouseMover.reset();
+			}
+		});
 		catchInput();
 	}
 }

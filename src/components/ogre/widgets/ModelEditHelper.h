@@ -30,98 +30,14 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 class ModelMount;
+class ModelBoneProvider;
 }
 namespace Gui {
 
 /**
- * @brief A helper class for showing attach points.
- */
-class AttachPointHelper {
-public:
-
-	/**
-	 * @brief Ctor.
-	 * @param model The model for which we want to show attach points.
-	 * @param attachPointName The name of the attach point to show.
-	 */
-	AttachPointHelper(Model::Model& model, std::string attachPointName);
-
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~AttachPointHelper();
-
-	/**
-	 * @brief Gets the tag point which has been created for the attach point.
-	 * @return A tag point.
-	 */
-	Ogre::TagPoint* getTagPoint() const;
-
-	/**
-	 * @brief Gets the name of the attach point.
-	 * @return A name.
-	 */
-	const std::string& getAttachPointName() const;
-
-	/**
-	 * @brief Gets the orientation of the attach point.
-	 * @return An orientation.
-	 */
-	virtual Ogre::Quaternion getOrientation() const = 0;
-
-protected:
-
-	/**
-	 * @brief The model which is being edited.
-	 */
-	Model::Model& mModel;
-
-	/**
-	 * @brief The name of the attach point.
-	 */
-	const std::string mAttachPointName;
-
-	/**
-	 * @brief Contains data about the attachment.
-	 */
-	Ogre::TagPoint* mTagPoint;
-
-};
-
-/**
- * @brief A helper class for using an Ogre::Entity instance for showing the attach point.
- */
-class EntityAttachPointHelper : public AttachPointHelper {
-public:
-
-	/**
-	 * @brief Ctor.
-	 * @param model The model for which we want to show attach points.
-	 * @param attachPointName The name of the attach point to show.
-	 * @param meshName The mesh we want to use for preview.
-	 */
-	EntityAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& meshName);
-
-	/**
-	 * @brief Dtor.
-	 */
-	~EntityAttachPointHelper() override;
-
-	Ogre::Quaternion getOrientation() const override;
-
-private:
-
-	/**
-	 * @brief The entity used as preview.
-	 */
-	Ogre::Entity* mEntity;
-
-};
-
-/**
  * @brief A helper class for using a Model instance for showing the attach point.
  */
-class ModelAttachPointHelper : public AttachPointHelper {
+class ModelAttachPointHelper {
 public:
 	/**
 	 * @brief Ctor.
@@ -129,16 +45,28 @@ public:
 	 * @param attachPointName The name of the attach point to show.
 	 * @param modelName The model we want to use for preview.
 	 */
-	ModelAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& modelName);
+	ModelAttachPointHelper(Model::Model& model, Model::AttachPointDefinition attachPointDefinition, std::unique_ptr<Model::Model> attachedModel);
 
 	/**
 	 * @brief Dtor.
 	 */
-	~ModelAttachPointHelper() override;
+	~ModelAttachPointHelper() ;
 
-	Ogre::Quaternion getOrientation() const override;
+	//Ogre::Quaternion getOrientation() const ;
+
+	const std::unique_ptr<Model::ModelMount>& getModelMount() const {
+		return mMount;
+	}
+
+	Model::AttachPointDefinition mAttachPoint;
 
 private:
+
+
+	/**
+	 * @brief The model which is being edited.
+	 */
+	Model::Model& mModel;
 
 	/**
 	 * @brief The model used for preview.
@@ -149,24 +77,13 @@ private:
 	 * @brief The mount used for attaching the preview model.
 	 */
 	std::unique_ptr<Model::ModelMount> mMount;
+
+public:
+	Model::ModelBoneProvider* mModelBoneProvider;
+
 };
 
-/**
- * @brief Allows for movement of the attach point through the mouse.
- */
-class AttachPointMouseMover {
-public:
-
-	/**
-	 * @brief Ctor.
-	 * @param attachPointHelper The attach point editor helper.
-	 * @param modelDefinition The model definition for the currently edited model.
-	 * @param renderContext The render context which contains the model.
-	 */
-	AttachPointMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
-
-	virtual ~AttachPointMouseMover() = default;
-
+struct MouseMoveListener {
 	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse) = 0;
 
 	/**
@@ -176,28 +93,10 @@ public:
 	 */
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button) = 0;
 
-protected:
-
-	/**
-	 * @brief The attach point editor helper.
-	 */
-	AttachPointHelper& mAttachPointHelper;
-
-	/**
-	 * @brief The model definition for the currently edited model
-	 */
-	Model::ModelDefinitionPtr mModelDefinition;
-
-	/**
-	 * @brief The simple render context which contains the model.
-	 */
-	SimpleRenderContext& mRenderContext;
 };
 
-/**
- * @brief Allows for rotation of the attach point through the mouse.
- */
-class RotateMouseMover : public AttachPointMouseMover {
+
+class RotateMouseMover2 : public MouseMoveListener {
 public:
 	/**
 	 * @brief Ctor.
@@ -205,17 +104,22 @@ public:
 	 * @param modelDefinition The model definition for the currently edited model.
 	 * @param renderContext The render context which contains the model.
 	 */
-	RotateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
+	RotateMouseMover2(SimpleRenderContext& renderContext, std::function<void(const Ogre::Quaternion&)> rotateCallback, std::function<void()> stopCallback);
 
 	void injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
 
 	bool injectMouseButtonUp(const Input::MouseButton& button) override;
+
+protected:
+	SimpleRenderContext& mRenderContext;
+	std::function<void(Ogre::Quaternion)> mRotateCallback;
+	 std::function<void()> mStopCallback;
 };
 
 /**
  * @brief Allows for translation of the attach point through the mouse.
  */
-class TranslateMouseMover : public AttachPointMouseMover {
+class TranslateMouseMover2 : public MouseMoveListener {
 public:
 	/**
 	 * @brief Ctor.
@@ -223,12 +127,18 @@ public:
 	 * @param modelDefinition The model definition for the currently edited model.
 	 * @param renderContext The render context which contains the model.
 	 */
-	TranslateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
+	TranslateMouseMover2( SimpleRenderContext& renderContext,std::function<void(const Ogre::Vector3&)> translateCallback, std::function<void()> stopCallback);
 
 	void injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
 
 	bool injectMouseButtonUp(const Input::MouseButton& button) override;
+
+private:
+	SimpleRenderContext& mRenderContext;
+	std::function<void(const Ogre::Vector3&)> mTranslateCallback;
+	 std::function<void()> mStopCallback;
 };
+
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -318,7 +228,7 @@ private:
 	/**
 	 * @brief Keeps track of any attach point helper model being shown.
 	 */
-	std::unique_ptr<AttachPointHelper> mAttachPointHelper;
+	std::unique_ptr<ModelAttachPointHelper> mAttachPointHelper;
 
 	/**
 	 * @brief A marker entity used to provide graphical representation of attach points being edited.
@@ -328,7 +238,7 @@ private:
 	/**
 	 * @brief An attach point mover instance, which allows for rotation or rotation of an attach point.
 	 */
-	std::unique_ptr<AttachPointMouseMover> mMouseMover;
+	std::unique_ptr<MouseMoveListener> mMouseMover;
 
 	/**
 	 * @brief Catches all future input to direct it to alter the currently shown attach point.

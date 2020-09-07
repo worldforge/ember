@@ -922,7 +922,7 @@ function ModelEdit:buildWidget()
 					attachPointPreviewModelListFilter:setVisible(true)
 					if not self.attachPointPreviewModelListAdapter then
 						self.attachPointPreviewModelListHolder = Ember.OgreView.Gui.ListHolder:new(attachPointPreviewModelList, attachPointPreviewModelListFilter)
-						self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new(self.attachPointPreviewModelListHolder, Ember.OgreView.Model.ModelDefinitionManager:getSingleton())
+						self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.ModelDefinitionsAdapter:new(self.attachPointPreviewModelListHolder)
 						self.attachPointPreviewModelListAdapter:update()
 					end
 				else

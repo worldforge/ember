@@ -26,7 +26,9 @@
 
 namespace Ogre {
 class TagPoint;
+
 class SceneNode;
+
 class MovableObject;
 }
 
@@ -48,10 +50,9 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param parentModel The model to which the bone will be attached.
-	 * @param attachPoint A named attach point on the model.
 	 * @param movableObject An optional movable object to attach. Note that if no object is submitted, no TagPoint will be created.
 	 */
-	ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, std::string attachPointName, bool deleteMovableWhenDone = false);
+	ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, bool deleteMovableWhenDone = false);
 
 	/**
 	 * @brief Dtor.
@@ -98,6 +99,12 @@ public:
 
 	void attachObject(Ogre::MovableObject* movable) override;
 
+	const std::vector<Ogre::TagPoint*>& getTagPoints() const {
+		return mTagPoints;
+	}
+
+	void setAttachPointDefinition(AttachPointDefinition attachPointDefinition);
+
 protected:
 
 	typedef std::vector<ModelBoneProvider*> ModelBoneProviderStore;
@@ -105,11 +112,10 @@ protected:
 	/**
 	 * @brief Ctor.
 	 * @param parentModel The model to which the bone will be attached.
-	 * @param attachPoint A named attach point on the model.
 	 * @param movableObject An optional movable object to attach. Note that if no object is submitted, no TagPoint will be created.
 	 * @param parent The parent provider.
 	 */
-	ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, std::string  attachPointName, ModelBoneProvider* parent);
+	ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, ModelBoneProvider* parent);
 
 
 	/**
@@ -122,11 +128,6 @@ protected:
 	 * @brief The model to which this TagPoint is attached.
 	 */
 	Model& mParentModel;
-
-	/**
-	 * @brief The name of the attach point used by this instance.
-	 */
-	std::string mAttachPointName;
 
 	/**
 	 * @brief The parent provider, if any.
