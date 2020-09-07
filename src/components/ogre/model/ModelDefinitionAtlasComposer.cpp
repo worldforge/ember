@@ -202,7 +202,7 @@ std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std:
 
 
 			auto fileName = dir / (typeName + ".xml");
-			std::fstream exportFile(fileName.c_str(), std::fstream::out);
+			std::fstream exportFile(fileName.string().c_str(), std::fstream::out);
 
 			S_LOG_INFO("Creating atlas type " << fileName.string());
 			composeToStream(exportFile, model, typeName, parentTypeName, scale, collisionType);

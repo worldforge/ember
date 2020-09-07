@@ -348,7 +348,13 @@ void IngameChatWidget::Label::objectRendering(const Ogre::Camera* camera) {
 		auto model = Model::ModelRepresentation::getModelForEntity(*mEntity);
 		if (model && model->getNodeProvider()) {
 
-			Ogre::Node* node = model->getNodeProvider()->getNode();
+			auto provider = model->getNodeProvider();
+			if (provider == nullptr) // avoid "Pick up" person bug with null provider
+			{
+				S_LOG_WARNING("model->getNodeProvider() returned NULL!");
+				return;
+			}
+			Ogre::Node* node = provider->getNode();
 			Ogre::Vector3 diff = node->_getDerivedPosition() - camera->getDerivedPosition();
 
 			//remove the window if it's either too far away

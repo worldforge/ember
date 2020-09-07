@@ -179,7 +179,7 @@ DataStreamPtr FileSystemArchive::open(const String& filename, bool readOnly) con
 
 	// Always open in binary mode
 	auto* origStream = OGRE_NEW_T(std::ifstream, MEMCATEGORY_GENERAL)();
-	origStream->open(full_path.c_str(), std::ios::in | std::ios::binary);
+	origStream->open(full_path.string().c_str(), std::ios::in | std::ios::binary);
 
 	// Should check ensure open succeeded, in case fail for some reason.
 	if (origStream->fail()) {

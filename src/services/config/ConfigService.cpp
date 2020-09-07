@@ -271,7 +271,7 @@ bool ConfigService::loadSavedConfig(const std::string& filename, const StringCon
 	S_LOG_INFO ("Loading shared config file from " << path.string() << ".");
 	bool success = mGlobalConfig->readFromFile(path.string(), varconf::GLOBAL);
 	auto userConfigPath = getHomeDirectory(BaseDirType_CONFIG) / filename;
-	std::ifstream file(userConfigPath.c_str());
+	std::ifstream file(userConfigPath.string().c_str());
 	if (!file.fail()) {
 		S_LOG_INFO ("Loading user config file from " << userConfigPath.string() << ".");
 		try {
