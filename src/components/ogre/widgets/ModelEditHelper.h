@@ -25,6 +25,7 @@
 #include "services/input/IInputAdapter.h"
 #include <string>
 #include <memory>
+#include <OgreRoot.h>
 
 namespace Ember {
 namespace OgreView {
@@ -33,6 +34,27 @@ class ModelMount;
 class ModelBoneProvider;
 }
 namespace Gui {
+
+
+//struct AnimationInstance : public Ogre::FrameListener {
+//
+//
+//
+//	AnimationInstance() {
+//		Ogre::Root::getSingleton().addFrameListener(this);
+//	}
+//
+//	~AnimationInstance() {
+//		Ogre::Root::getSingleton().removeFrameListener(this);
+//	}
+//
+//	bool frameStarted(const Ogre::FrameEvent& event) {
+//		if (mActiveAnimation) {
+//			mActiveAnimation->addTime(event.timeSinceLastFrame);
+//		}
+//		return MovableObjectRenderer::frameStarted(event);
+//	}
+//};
 
 /**
  * @brief A helper class for using a Model instance for showing the attach point.

@@ -340,13 +340,13 @@ Press shift to switch between rotation and translation.</Property>
                                         </Window>
                                     </Window>
                                     <Window name="AttachPointModelList" type="EmberLook/Listbox">
-                                        <Property name="Size" value="{{0,100.0},{1,-60.0}}" />
+                                        <Property name="Size" value="{{0,300.0},{1,-60.0}}" />
                                         <Property name="Sort" value="true" />
                                         <Property name="Visible" value="False" />
                                         <Property name="TooltipText" value="Select a model to show as preview for the attach point." />
                                     </Window>
                                     <Window name="AttachPointModelListFilter" type="EmberLook/Editbox">
-                                        <Property name="Size" value="{{0,100},{0,25}}" />
+                                        <Property name="Size" value="{{0,300},{0,25}}" />
                                         <Property name="Visible" value="False" />
                                         <Property name="TooltipText" value="Filter available models." />
                                     </Window>
