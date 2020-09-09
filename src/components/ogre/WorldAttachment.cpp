@@ -109,10 +109,6 @@ void WorldAttachment::updateScale() {
 void WorldAttachment::updatePosition() {
 }
 
-void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
-	//No offset
-}
-
 void WorldAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate) {
 	//You can never control the world.
 }

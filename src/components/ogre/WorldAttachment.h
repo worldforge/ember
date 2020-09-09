@@ -61,8 +61,6 @@ public:
 
 	void updatePosition() override;
 
-	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) override;
-
 	void setControlDelegate(IEntityControlDelegate* controllerDelegate) override;
 
 	IEntityControlDelegate* getControlDelegate() const override;

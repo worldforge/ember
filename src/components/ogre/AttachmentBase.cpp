@@ -55,17 +55,6 @@ void AttachmentBase::updateScale() {
 void AttachmentBase::updatePosition() {
 }
 
-void AttachmentBase::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) {
-	if (mParentEntity->getAttachment()) {
-		WFMath::Vector<3> localPositionShift(mChildEntity.getPredictedPos());
-		if (!localPositionShift.isValid()) {
-			localPositionShift = WFMath::Vector<3>::ZERO();
-		}
-		WFMath::Point<3> adjustedLocalPosition = localPosition + localPositionShift;
-		mParentEntity->getAttachment()->getOffsetForContainedNode(attachment, adjustedLocalPosition, offset);
-	}
-}
-
 void AttachmentBase::setVisualize(const std::string& visualization, bool visualize) {
 	if (getGraphicalRepresentation()) {
 		getGraphicalRepresentation()->setVisualize(visualization, visualize);

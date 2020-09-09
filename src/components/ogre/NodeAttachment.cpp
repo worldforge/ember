@@ -82,14 +82,7 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 	assert(position.isValid());
 	assert(orientation.isValid());
 	assert(velocity.isValid());
-	WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
-	//If it's fixed it shouldn't be adjusted
-	if (getAttachedEntity().getPositioningMode() != EmberEntity::PositioningMode::FIXED) {
-		if (mParentEntity->getAttachment()) {
-			mParentEntity->getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
-		}
-	}
-	mNodeProvider.setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
+	mNodeProvider.setPositionAndOrientation(Convert::toOgre(position), Convert::toOgre(orientation));
 }
 
 Ogre::Node* NodeAttachment::getNode() const {

@@ -88,8 +88,6 @@ public:
 	 */
 	bool getVisualize(const std::string& visualization) const override;
 
-	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset) override;
-
 	/**
 	 * @brief Sets the position and orientation of the node.
 	 * @param position The position.
