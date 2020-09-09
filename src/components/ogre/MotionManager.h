@@ -110,7 +110,7 @@ private:
 	/**
 	 * @brief A store of animatables, identified by a string.
 	 */
-	typedef std::unordered_map<std::string, IAnimated*> AnimatedStore;
+	typedef std::map<std::string, IAnimated*> AnimatedStore;
 
 	/**
 	 * @brief A store of movables.
