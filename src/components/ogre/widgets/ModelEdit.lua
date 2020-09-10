@@ -170,12 +170,7 @@ function ModelEdit:updateModelInfo()
 	self.containedOffsetAdapter:updateGui(self.definition:getContentOffset());
 --	self:fillWindowsFromVector("ModelContainedOffset", self.definition:getContentOffset())
 --	self:fillWindowsFromVector("ModelTranslate", self.definition:getTranslate())
-	
-	local showContent = self.widget:getWindow("ModelShowContent")
-	
-	showContent = CEGUI.toToggleButton(showContent)
-	showContent:setSelected(self.definition:getShowContained())
-	
+
 	self.scaleTypes:clearAllSelections()
 	self.scaleTypes:setItemSelectState(self.definition:getUseScaleOf(), true)
 	
@@ -870,6 +865,12 @@ function ModelEdit:buildWidget()
 							local modelName = modelItem:getText()
 							self.modelHelper:showAttachPointHelperModel(attachPoint.Name, modelName)
 						end
+                    elseif selectId == 2 then
+                        local modelItem = attachPointPreviewModelList:getFirstSelectedItem()
+                        if modelItem then
+                            local modelName = modelItem:getText()
+                            self.modelHelper:showAttachPointHelperEntity(attachPoint.Name, modelName)
+                        end
 					end
 				end
 			else
@@ -910,22 +911,38 @@ function ModelEdit:buildWidget()
 
 		local item = Ember.OgreView.Gui.ColouredListItem:new("Arrow", 0)
 		attachPointPreviewCombobox:addItem(item)
-		item = Ember.OgreView.Gui.ColouredListItem:new("Model", 1)
-		attachPointPreviewCombobox:addItem(item)
+        item = Ember.OgreView.Gui.ColouredListItem:new("Model", 1)
+        attachPointPreviewCombobox:addItem(item)
+        item = Ember.OgreView.Gui.ColouredListItem:new("Mesh", 2)
+        attachPointPreviewCombobox:addItem(item)
 		attachPointPreviewCombobox:setItemSelectState(0, true)
-		attachPointPreviewCombobox:subscribeEvent("ListSelectionChanged", function(args)
+        self.attachPointPreviewModelListHolder = Ember.OgreView.Gui.ListHolder:new(attachPointPreviewModelList, attachPointPreviewModelListFilter)
+		attachPointPreviewCombobox:subscribeEvent("ListSelectionAccepted", function(args)
 			local item = attachPointPreviewCombobox:getSelectedItem()
 			if item then
 				local selectId = item:getID()
 				if selectId == 1 then
-					attachPointPreviewModelList:setVisible(true)
-					attachPointPreviewModelListFilter:setVisible(true)
-					if not self.attachPointPreviewModelListAdapter then
-						self.attachPointPreviewModelListHolder = Ember.OgreView.Gui.ListHolder:new(attachPointPreviewModelList, attachPointPreviewModelListFilter)
-						self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.ModelDefinitionsAdapter:new(self.attachPointPreviewModelListHolder)
-						self.attachPointPreviewModelListAdapter:update()
-					end
-				else
+                    attachPointPreviewModelList:setVisible(true)
+                    attachPointPreviewModelListFilter:setVisible(true)
+                    deleteSafe(self.attachPointPreviewModelListAdapter)
+                    self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.ModelDefinitionsAdapter:new(self.attachPointPreviewModelListHolder)
+                    self.attachPointPreviewModelListAdapter:update()
+				elseif selectId == 2 then
+                    attachPointPreviewModelList:setVisible(true)
+                    attachPointPreviewModelListFilter:setVisible(true)
+                    deleteSafe(self.attachPointPreviewModelListAdapter)
+
+                    local meshes =  Ember.OgreView.Model.ModelDefinitionManager:getSingleton():getAllMeshes()
+
+                    for i = 0, meshes:size() - 1 do
+                        local name = meshes[i]
+                        local item = Ember.OgreView.Gui.ColouredListItem:new(name, i)
+                        self.attachPointPreviewModelListHolder:addItem(item)
+                    end
+
+                    --                    self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new(self.attachPointPreviewModelListHolder, Ogre.MeshManager:getSingleton())
+--                    self.attachPointPreviewModelListAdapter:update()
+                else
 					attachPointPreviewModelList:setVisible(false)
 					attachPointPreviewModelListFilter:setVisible(false)
 				end
@@ -937,7 +954,6 @@ function ModelEdit:buildWidget()
 		
 		local removePoseButton = self.widget:getWindow("PoseRemoveButton")
 		
-		local poseIgnoreEntityDataCheckbox = CEGUI.toToggleButton(self.widget:getWindow("PoseIgnoreEntityData"))
 
 		local updatePoseAdapters = function()
 			local translation = self.poseRenderer:getEntityTranslation()
@@ -945,8 +961,7 @@ function ModelEdit:buildWidget()
 			
 			self.poseTranslateAdapter:updateGui(translation);
 			self.poseRotationAdapter:updateGui(orientation);
-			poseIgnoreEntityDataCheckbox:setSelected(self.poseRenderer.poseDefWrapper.def.IgnoreEntityData)
-		end	
+		end
 		
 		
 		self.posesList = CEGUI.toListbox(self.widget:getWindow("PoseList"))
@@ -1036,13 +1051,7 @@ function ModelEdit:buildWidget()
 			updatePoseAdapters()
 			return true
 		end)
-		
-		poseIgnoreEntityDataCheckbox:subscribeEvent("SelectStateChanged", function(args)
-			if self.poseRenderer.poseDefWrapper then
-				self.poseRenderer.poseDefWrapper.def.IgnoreEntityData = poseIgnoreEntityDataCheckbox:isSelected()
-			end
-			return true
-		end)		
+
 		
 		local newPoseButton = self.widget:getWindow("PoseNewButton")
 		newPoseButton:setEnabled(false)

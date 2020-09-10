@@ -46,12 +46,7 @@ struct PoseDefinition
 	 * @brief The translation of the original model, to provide a new origin.
 	 */
 	Ogre::Vector3 Translate;
-	
-	/**
-	 * @brief If true, the orientation and translation of the entity will be ignored.
-	 */
-	bool IgnoreEntityData;
-	
+
 };
 
 struct AttachPointDefinition
@@ -223,15 +218,9 @@ public:
 	 * @return 
 	 */
 	 Ogre::Vector3& getTranslate();
-	void setTranslate(const Ogre::Vector3 translate);
+	 void setTranslate(const Ogre::Vector3 translate);
 	
-	/**
-	 *	Whether contained entities should be shown or not.
-	 Defaults to true.
-	 * @return true if contained entities should be shown, else false
-	 */
-	bool getShowContained() const;
-	void setShowContained(bool show);
+
 	
 	/**
 	 *    Returns a vector defining how much, if ever, contained entities should be offset.

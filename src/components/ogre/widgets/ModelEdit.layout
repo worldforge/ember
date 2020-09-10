@@ -269,11 +269,6 @@ Press shift to switch between rotation and translation.</Property>
 		                            <Property name="TooltipText" value="Z" />
 		                        </Window>
 	                        </Window>
-	                        <Window name="ModelShowContent" type="EmberLook/Checkbox">
-	                            <Property name="Text" value="Show content" />
-	                            <Property name="Position" value="{{0,5},{0,150}}" />
-	                            <Property name="Size" value="{{1.0, 0.0},{0,25}}" />
-	                        </Window>
                         </Window>
                         <Window name="ReloadInstancesButton" type="EmberLook/Button">
                             <Property name="Text" value="Reload models" />
@@ -430,16 +425,7 @@ Press shift to switch between rotation and translation.</Property>
                                     </Window>
                                 </Window>
                             </Window>
-                            <Window name="PoseIgnoreEntityData_wrapper" type="DefaultWindow">
-                                <Property name="Size" value="{{1,0},{0,30}}" />
-                                <Window name="PoseIgnoreEntityData" type="EmberLook/Checkbox">
-                                    <Property name="Text" value="Ignore entity data" />
-                                    <Property name="TooltipText" value="Will ignore any orientation and translation sent from the server for this pose." />
-                                    <Property name="Position" value="{{0,5},{0,0}}" />
-                                    <Property name="Size" value="{{1, 0},{0,25}}" />
-                                </Window>
-                            </Window>
-                        </Window>
+                         </Window>
                         <Window name="PoseRemoveButton" type="EmberLook/Button">
                             <Property name="Position" value="{{0,105},{1,-60}}" />
                             <Property name="Size" value="{{0, 100},{0,25}}" />

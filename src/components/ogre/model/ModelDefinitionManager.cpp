@@ -1,4 +1,4 @@
-//
+ //
 // C++ Implementation: ModelDefinitionManager
 //
 // Description:

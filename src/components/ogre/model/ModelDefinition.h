@@ -188,11 +188,6 @@ struct PoseDefinition {
 	 */
 	Ogre::Vector3 Translate;
 
-	/**
-	 * @brief If true, the orientation and translation of the entity will be ignored.
-	 */
-	bool IgnoreEntityData;
-
 };
 
 /**
@@ -468,15 +463,6 @@ public:
 	void setTranslate(Ogre::Vector3 translate);
 
 	/**
-	 *	Whether contained entities should be shown or not.
-	 * Defaults to true.
-	 * @return true if contained entities should be shown, else false
-	 */
-	bool getShowContained() const;
-
-	void setShowContained(bool show);
-
-	/**
 	 * @brief If set to something else than 0, all models beyond this distance won't be shown.
 	 * @return
 	 */
@@ -715,12 +701,6 @@ private:
 	 * @brief Defines how much contained entities should be offset. ZERO if not.
 	 */
 	Ogre::Vector3 mContentOffset;
-
-	/**
-	 * @brief Whether contained entities should be shown or not.
-	 * Defaults to true.
-	 */
-	bool mShowContained;
 
 	/**
 	 * @brief How, if any, to transform the model from the base position.

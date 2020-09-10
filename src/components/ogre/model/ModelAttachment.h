@@ -128,13 +128,6 @@ protected:
 	 */
 	AttributeObserverStore mFittingsObservers;
 
-	/**
-	 * @brief If true, all entity position and orientation updates will be ignored.
-	 *
-	 * This is set by the data in any pose that is specified. The main reason is that for some attachments we need to ignore the server for them to look alright.
-	 */
-	bool mIgnoreEntityData;
-
 
 	std::map<EmberEntity*, std::unique_ptr<::Ember::EntityMapping::EntityMapping>> mMappings;
 

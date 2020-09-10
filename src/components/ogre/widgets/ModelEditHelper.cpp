@@ -101,7 +101,12 @@ bool TranslateMouseMover2::injectMouseButtonUp(const Input::MouseButton& button)
 }
 
 ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, Model::AttachPointDefinition attachPointDefinition, std::unique_ptr<Model::Model> attachedModel) :
-		mAttachPoint(std::move(attachPointDefinition)), mModel(model), mAttachedModel(std::move(attachedModel)), mModelBoneProvider(new Model::ModelBoneProvider(nullptr, mModel)) {
+		mAttachPoint(std::move(attachPointDefinition)),
+		mModel(model),
+		mAttachedModel(std::move(attachedModel)),
+		mModelBoneProvider(new Model::ModelBoneProvider(nullptr, mModel)) {
+
+	mAttachedModel->setUseInstancing(false);
 
 	mModelBoneProvider->setAttachPointDefinition(mAttachPoint);
 
@@ -144,7 +149,6 @@ void ModelEditHelper::showAttachPointHelperEntity(const std::string& attachPoint
 			modelDef->addSubModelDefinition(subModelDefinition);
 
 			auto attachedModel = std::make_unique<Model::Model>(mModel->getManager(), modelDef, meshName);
-			attachedModel->setUseInstancing(false);
 
 			try {
 				mAttachPointHelper = std::make_unique<ModelAttachPointHelper>(*mModel, attachpoint, std::move(attachedModel));

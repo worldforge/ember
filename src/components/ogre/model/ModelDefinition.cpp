@@ -43,10 +43,9 @@ namespace Model {
 ModelDefinition::ModelDefinition() :
 		mRenderingDistance(0.0f),
 		mUseScaleOf(UseScaleOf::MODEL_ALL),
-		mScale(1),
+		mScale(0),
 		mRotation(Ogre::Quaternion::IDENTITY),
 		mContentOffset(Ogre::Vector3::ZERO),
-		mShowContained(true),
 		mTranslate(0, 0, 0),
 		mIsValid(false),
 		mAssetsLoaded(false) {
@@ -158,14 +157,6 @@ const Ogre::Vector3& ModelDefinition::getTranslate() const {
 
 void ModelDefinition::setTranslate(const Ogre::Vector3 translate) {
 	mTranslate = translate;
-}
-
-bool ModelDefinition::getShowContained() const {
-	return mShowContained;
-}
-
-void ModelDefinition::setShowContained(bool show) {
-	mShowContained = show;
 }
 
 const Ogre::Quaternion& ModelDefinition::getRotation() const {

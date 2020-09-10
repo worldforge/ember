@@ -45,6 +45,20 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 
+namespace {
+bool shouldExport(const Ogre::Vector3& vector) {
+	return !vector.isNaN() && vector != Ogre::Vector3::ZERO;
+}
+
+bool shouldExport(const Ogre::Quaternion& quaternion) {
+	return !quaternion.isNaN() && quaternion != Ogre::Quaternion::IDENTITY;
+}
+
+bool shouldExport(const std::string& string) {
+	return !string.empty();
+}
+}
+
 namespace Ember {
 namespace OgreView {
 namespace Model {
@@ -100,12 +114,6 @@ void XMLModelDefinitionSerializer::readModel(const ModelDefinitionPtr& modelDef,
 	if (tmp)
 		modelDef->mScale = std::stof(tmp);
 
-	//showcontained
-	tmp = modelNode->Attribute("showcontained");
-	if (tmp) {
-		modelDef->mShowContained = boost::algorithm::to_lower_copy(std::string(tmp)) == "true";
-	}
-
 	//usescaleof
 	tmp = modelNode->Attribute("usescaleof");
 	if (tmp) {
@@ -140,7 +148,7 @@ void XMLModelDefinitionSerializer::readModel(const ModelDefinitionPtr& modelDef,
 
 	tmp = modelNode->Attribute("useinstancing");
 	if (tmp) {
-		modelDef->mUseInstancing = modelDef->mShowContained = boost::algorithm::to_lower_copy(std::string(tmp)) == "true";
+		modelDef->mUseInstancing = boost::algorithm::to_lower_copy(std::string(tmp)) == "true";
 	}
 
 	//submodels
@@ -769,14 +777,6 @@ void XMLModelDefinitionSerializer::readPoses(const ModelDefinitionPtr& modelDef,
 		std::string name(tmp);
 		S_LOG_VERBOSE("  Add pose  : " + name);
 
-		tmp = apElem->Attribute("ignoreEntityData");
-		definition.IgnoreEntityData = false;
-		if (tmp) {
-			if (std::string(tmp) == "true") {
-				definition.IgnoreEntityData = true;
-			}
-		}
-
 
 		TiXmlElement* elem = apElem->FirstChildElement("rotate");
 		if (elem) {
@@ -851,8 +851,6 @@ bool XMLModelDefinitionSerializer::exportScript(const ModelDefinitionPtr& modelD
 			modelElem.SetDoubleAttribute("scale", modelDef->getScale());
 		}
 
-		modelElem.SetAttribute("showcontained", modelDef->getShowContained() ? "true" : "false");
-
 		if (modelDef->getContentOffset() != Ogre::Vector3::ZERO) {
 			TiXmlElement contentOffset("contentoffset");
 			XMLHelper::fillElementFromVector3(contentOffset, modelDef->getContentOffset());
@@ -873,15 +871,21 @@ bool XMLModelDefinitionSerializer::exportScript(const ModelDefinitionPtr& modelD
 		}
 
 
-		TiXmlElement translate("translate");
-		XMLHelper::fillElementFromVector3(translate, modelDef->getTranslate());
-		modelElem.InsertEndChild(translate);
+		if (shouldExport(modelDef->getTranslate())) {
+			TiXmlElement translate("translate");
+			XMLHelper::fillElementFromVector3(translate, modelDef->getTranslate());
+			modelElem.InsertEndChild(translate);
+		}
 
-		TiXmlElement rotation("rotation");
-		XMLHelper::fillElementFromQuaternion(rotation, modelDef->getRotation());
-		modelElem.InsertEndChild(rotation);
+		if (shouldExport(modelDef->getRotation())) {
+			TiXmlElement rotation("rotation");
+			XMLHelper::fillElementFromQuaternion(rotation, modelDef->getRotation());
+			modelElem.InsertEndChild(rotation);
+		}
 
-		modelElem.SetAttribute("icon", modelDef->getIconPath());
+		if (shouldExport(modelDef->getIconPath())) {
+			modelElem.SetAttribute("icon", modelDef->getIconPath());
+		}
 
 		if (modelDef->getRenderingDefinition()) {
 			TiXmlElement rendering("rendering");
@@ -926,6 +930,9 @@ bool XMLModelDefinitionSerializer::exportScript(const ModelDefinitionPtr& modelD
 }
 
 void XMLModelDefinitionSerializer::exportViews(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
+	if (modelDef->getViewDefinitions().empty()) {
+		return;
+	}
 	TiXmlElement viewsElem("views");
 
 	for (const auto& viewDefinition : modelDef->getViewDefinitions()) {
@@ -938,9 +945,11 @@ void XMLModelDefinitionSerializer::exportViews(const ModelDefinitionPtr& modelDe
 		distanceElem.InsertEndChild(TiXmlText(ss.str()));
 		viewElem.InsertEndChild(distanceElem);
 
-		TiXmlElement rotation("rotation");
-		XMLHelper::fillElementFromQuaternion(rotation, viewDefinition.second.Rotation);
-		viewElem.InsertEndChild(rotation);
+		if (shouldExport(viewDefinition.second.Rotation)) {
+			TiXmlElement rotation("rotation");
+			XMLHelper::fillElementFromQuaternion(rotation, viewDefinition.second.Rotation);
+			viewElem.InsertEndChild(rotation);
+		}
 
 		viewsElem.InsertEndChild(viewElem);
 	}
@@ -948,16 +957,19 @@ void XMLModelDefinitionSerializer::exportViews(const ModelDefinitionPtr& modelDe
 }
 
 void XMLModelDefinitionSerializer::exportActions(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
+	if (modelDef->getActionDefinitions().empty()) {
+		return;
+	}
 	TiXmlElement actionsElem("actions");
 
-	for (ActionDefinitionsStore::const_iterator I = modelDef->getActionDefinitions().begin(); I != modelDef->getActionDefinitions().end(); ++I) {
+	for (const auto& actionDefinition : modelDef->getActionDefinitions()) {
 		TiXmlElement actionElem("action");
-		actionElem.SetAttribute("name", (*I).name);
-		actionElem.SetDoubleAttribute("speed", (*I).animationSpeed);
+		actionElem.SetAttribute("name", actionDefinition.name);
+		actionElem.SetDoubleAttribute("speed", actionDefinition.animationSpeed);
 
 
 		TiXmlElement activationsElem("activations");
-		for (auto& activationDef : (*I).getActivationDefinitions()) {
+		for (auto& activationDef : actionDefinition.getActivationDefinitions()) {
 			TiXmlElement activationElem("activation");
 			std::string type;
 			switch (activationDef.type) {
@@ -977,13 +989,13 @@ void XMLModelDefinitionSerializer::exportActions(const ModelDefinitionPtr& model
 		}
 		actionElem.InsertEndChild(activationsElem);
 
-		if (!(*I).getAnimationDefinitions().empty()) {
+		if (!actionDefinition.getAnimationDefinitions().empty()) {
 			TiXmlElement animationsElem("animations");
-			for (const auto& animDef : (*I).getAnimationDefinitions()) {
+			for (const auto& animDef : actionDefinition.getAnimationDefinitions()) {
 				TiXmlElement animationElem("animation");
 				animationElem.SetAttribute("iterations", animDef.iterations);
 
-				for (auto animationPartDefinition : animDef.getAnimationPartDefinitions()) {
+				for (const auto& animationPartDefinition : animDef.getAnimationPartDefinitions()) {
 					TiXmlElement animationPartElem("animationpart");
 					animationPartElem.SetAttribute("name", animationPartDefinition.Name);
 					for (auto& boneGroupRef : animationPartDefinition.BoneGroupRefs) {
@@ -1003,13 +1015,13 @@ void XMLModelDefinitionSerializer::exportActions(const ModelDefinitionPtr& model
 		}
 
 		//for now, only allow one sound
-		if (!(*I).getSoundDefinitions().empty()) {
+		if (!actionDefinition.getSoundDefinitions().empty()) {
 			TiXmlElement soundsElem("sounds");
 
-			for (auto& soundDefinition : I->getSoundDefinitions()) {
+			for (auto& soundDefinition : actionDefinition.getSoundDefinitions()) {
 				TiXmlElement soundElem("sound");
 				soundElem.SetAttribute("groupName", soundDefinition.groupName);
-				soundElem.SetAttribute("playOrder", soundDefinition.playOrder);
+				soundElem.SetAttribute("playOrder", (int) soundDefinition.playOrder);
 				soundsElem.InsertEndChild(soundElem);
 			}
 		}
@@ -1019,6 +1031,10 @@ void XMLModelDefinitionSerializer::exportActions(const ModelDefinitionPtr& model
 }
 
 void XMLModelDefinitionSerializer::exportSubModels(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
+	if (modelDef->getSubModelDefinitions().empty()) {
+		return;
+	}
+
 	TiXmlElement submodelsElem("submodels");
 
 	for (const auto& subModelDefinition : modelDef->getSubModelDefinitions()) {
@@ -1027,35 +1043,38 @@ void XMLModelDefinitionSerializer::exportSubModels(const ModelDefinitionPtr& mod
 		if (!subModelDefinition.shadowCaster) {
 			submodelElem.SetAttribute("shadowcaster", "false");
 		}
-		TiXmlElement partsElem("parts");
 
-		for (const auto& partDefinition : subModelDefinition.getPartDefinitions()) {
-			TiXmlElement partElem("part");
-			partElem.SetAttribute("name", partDefinition.name);
-			if (!partDefinition.group.empty()) {
-				partElem.SetAttribute("group", partDefinition.group);
-			}
-			partElem.SetAttribute("show", partDefinition.show ? "true" : "false");
+		if (!subModelDefinition.getPartDefinitions().empty()) {
+			TiXmlElement partsElem("parts");
 
-			if (!partDefinition.getSubEntityDefinitions().empty()) {
-				TiXmlElement subentitiesElem("subentities");
-				for (const auto& subEntityDefinition : partDefinition.getSubEntityDefinitions()) {
-					TiXmlElement subentityElem("subentity");
-					if (!subEntityDefinition.subEntityName.empty()) {
-						subentityElem.SetAttribute("name", subEntityDefinition.subEntityName);
-					} else {
-						subentityElem.SetAttribute("index", subEntityDefinition.subEntityIndex);
-					}
-					if (!subEntityDefinition.materialName.empty()) {
-						subentityElem.SetAttribute("material", subEntityDefinition.materialName);
-					}
-					subentitiesElem.InsertEndChild(subentityElem);
+			for (const auto& partDefinition : subModelDefinition.getPartDefinitions()) {
+				TiXmlElement partElem("part");
+				partElem.SetAttribute("name", partDefinition.name);
+				if (!partDefinition.group.empty()) {
+					partElem.SetAttribute("group", partDefinition.group);
 				}
-				partElem.InsertEndChild(subentitiesElem);
+				partElem.SetAttribute("show", partDefinition.show ? "true" : "false");
+
+				if (!partDefinition.getSubEntityDefinitions().empty()) {
+					TiXmlElement subentitiesElem("subentities");
+					for (const auto& subEntityDefinition : partDefinition.getSubEntityDefinitions()) {
+						TiXmlElement subentityElem("subentity");
+						if (!subEntityDefinition.subEntityName.empty()) {
+							subentityElem.SetAttribute("name", subEntityDefinition.subEntityName);
+						} else {
+							subentityElem.SetAttribute("index", (int) subEntityDefinition.subEntityIndex);
+						}
+						if (shouldExport(subEntityDefinition.materialName)) {
+							subentityElem.SetAttribute("material", subEntityDefinition.materialName);
+						}
+						subentitiesElem.InsertEndChild(subentityElem);
+					}
+					partElem.InsertEndChild(subentitiesElem);
+				}
+				partsElem.InsertEndChild(partElem);
 			}
-			partsElem.InsertEndChild(partElem);
+			submodelElem.InsertEndChild(partsElem);
 		}
-		submodelElem.InsertEndChild(partsElem);
 		submodelsElem.InsertEndChild(submodelElem);
 	}
 	modelElem.InsertEndChild(submodelsElem);
@@ -1063,64 +1082,72 @@ void XMLModelDefinitionSerializer::exportSubModels(const ModelDefinitionPtr& mod
 }
 
 void XMLModelDefinitionSerializer::exportAttachPoints(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
+	if (modelDef->getAttachPointsDefinitions().empty()) {
+		return;
+	}
 	TiXmlElement attachpointsElem("attachpoints");
 
 	for (const auto& attachPointDef : modelDef->getAttachPointsDefinitions()) {
 		TiXmlElement attachpointElem("attachpoint");
 		attachpointElem.SetAttribute("name", attachPointDef.Name);
 		attachpointElem.SetAttribute("bone", attachPointDef.BoneName);
-		if (!attachPointDef.Pose.empty()) {
+		if (shouldExport(attachPointDef.Pose)) {
 			attachpointElem.SetAttribute("pose", attachPointDef.Pose);
 		}
-		TiXmlElement rotationElem("rotation");
-		XMLHelper::fillElementFromQuaternion(rotationElem, attachPointDef.Rotation);
-		attachpointElem.InsertEndChild(rotationElem);
-		TiXmlElement translationElem("translation");
-		XMLHelper::fillElementFromVector3(translationElem, attachPointDef.Translation);
-		attachpointElem.InsertEndChild(translationElem);
-
+		if (shouldExport(attachPointDef.Rotation)) {
+			TiXmlElement rotationElem("rotation");
+			XMLHelper::fillElementFromQuaternion(rotationElem, attachPointDef.Rotation);
+			attachpointElem.InsertEndChild(rotationElem);
+		}
+		if (shouldExport(attachPointDef.Translation)) {
+			TiXmlElement translationElem("translation");
+			XMLHelper::fillElementFromVector3(translationElem, attachPointDef.Translation);
+			attachpointElem.InsertEndChild(translationElem);
+		}
 		attachpointsElem.InsertEndChild(attachpointElem);
 	}
 	modelElem.InsertEndChild(attachpointsElem);
 }
 
 void XMLModelDefinitionSerializer::exportLights(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
+	if (modelDef->mLights.empty()) {
+		return;
+	}
 	TiXmlElement lightsElem("lights");
 
-	for (ModelDefinition::LightSet::const_iterator I = modelDef->mLights.begin(); I != modelDef->mLights.end(); ++I) {
-		ModelDefinition::LightDefinition def(*I);
+	for (auto lightDefinition : modelDef->mLights) {
 		TiXmlElement lightElem("light");
 		std::string type;
-		if (def.type == Ogre::Light::LT_POINT) {
+		if (lightDefinition.type == Ogre::Light::LT_POINT) {
 			type = "point";
-		} else if (def.type == Ogre::Light::LT_DIRECTIONAL) {
+		} else if (lightDefinition.type == Ogre::Light::LT_DIRECTIONAL) {
 			type = "directional";
-		} else if (def.type == Ogre::Light::LT_SPOTLIGHT) {
+		} else if (lightDefinition.type == Ogre::Light::LT_SPOTLIGHT) {
 			type = "spotlight";
 		}
 		lightElem.SetAttribute("type", type);
 
 		TiXmlElement diffuseElem("diffusecolour");
-		diffuseElem.SetDoubleAttribute("r", def.diffuseColour.r);
-		diffuseElem.SetDoubleAttribute("g", def.diffuseColour.g);
-		diffuseElem.SetDoubleAttribute("b", def.diffuseColour.b);
+		diffuseElem.SetDoubleAttribute("r", lightDefinition.diffuseColour.r);
+		diffuseElem.SetDoubleAttribute("g", lightDefinition.diffuseColour.g);
+		diffuseElem.SetDoubleAttribute("b", lightDefinition.diffuseColour.b);
 		lightElem.InsertEndChild(diffuseElem);
 
 		TiXmlElement specularElem("specularcolour");
-		specularElem.SetDoubleAttribute("r", def.specularColour.r);
-		specularElem.SetDoubleAttribute("g", def.specularColour.g);
-		specularElem.SetDoubleAttribute("b", def.specularColour.b);
+		specularElem.SetDoubleAttribute("r", lightDefinition.specularColour.r);
+		specularElem.SetDoubleAttribute("g", lightDefinition.specularColour.g);
+		specularElem.SetDoubleAttribute("b", lightDefinition.specularColour.b);
 		lightElem.InsertEndChild(specularElem);
 
 		TiXmlElement attenuationElem("attenuation");
-		attenuationElem.SetDoubleAttribute("range", def.range);
-		attenuationElem.SetDoubleAttribute("constant", def.constant);
-		attenuationElem.SetDoubleAttribute("linear", def.linear);
-		attenuationElem.SetDoubleAttribute("quadratic", def.quadratic);
+		attenuationElem.SetDoubleAttribute("range", lightDefinition.range);
+		attenuationElem.SetDoubleAttribute("constant", lightDefinition.constant);
+		attenuationElem.SetDoubleAttribute("linear", lightDefinition.linear);
+		attenuationElem.SetDoubleAttribute("quadratic", lightDefinition.quadratic);
 		lightElem.InsertEndChild(attenuationElem);
 
 		TiXmlElement posElem("position");
-		XMLHelper::fillElementFromVector3(posElem, def.position);
+		XMLHelper::fillElementFromVector3(posElem, lightDefinition.position);
 		lightElem.InsertEndChild(posElem);
 
 		lightsElem.InsertEndChild(lightElem);
@@ -1129,23 +1156,25 @@ void XMLModelDefinitionSerializer::exportLights(const ModelDefinitionPtr& modelD
 }
 
 void XMLModelDefinitionSerializer::exportPoses(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
+	if (modelDef->mPoseDefinitions.empty()) {
+		return;
+	}
+
 	if (!modelDef->mPoseDefinitions.empty()) {
 		TiXmlElement elem("poses");
 
-		for (PoseDefinitionStore::const_iterator I = modelDef->mPoseDefinitions.begin(); I != modelDef->mPoseDefinitions.end(); ++I) {
+		for (auto& entry :  modelDef->mPoseDefinitions) {
 			TiXmlElement poseElem("pose");
-			poseElem.SetAttribute("name", I->first);
-			if (I->second.IgnoreEntityData) {
-				poseElem.SetAttribute("ignoreEntityData", "true");
-			}
-			if (!I->second.Translate.isNaN()) {
+			poseElem.SetAttribute("name", entry.first);
+
+			if (shouldExport(entry.second.Translate)) {
 				TiXmlElement translateElem("translate");
-				XMLHelper::fillElementFromVector3(translateElem, I->second.Translate);
+				XMLHelper::fillElementFromVector3(translateElem, entry.second.Translate);
 				poseElem.InsertEndChild(translateElem);
 			}
-			if (!I->second.Rotate.isNaN()) {
+			if (shouldExport(entry.second.Rotate)) {
 				TiXmlElement rotateElem("rotate");
-				XMLHelper::fillElementFromQuaternion(rotateElem, I->second.Rotate);
+				XMLHelper::fillElementFromQuaternion(rotateElem, entry.second.Rotate);
 				poseElem.InsertEndChild(rotateElem);
 			}
 
@@ -1156,13 +1185,17 @@ void XMLModelDefinitionSerializer::exportPoses(const ModelDefinitionPtr& modelDe
 }
 
 void XMLModelDefinitionSerializer::exportParticleSystems(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
+	if (modelDef->mParticleSystems.empty()) {
+		return;
+	}
+
 	if (!modelDef->mParticleSystems.empty()) {
 		TiXmlElement particleSystemsElem("particlesystems");
 
 		for (const auto& particleDef :modelDef->mParticleSystems) {
 			TiXmlElement particleSystemElem("particlesystem");
 			particleSystemElem.SetAttribute("script", particleDef.Script);
-			if (!particleDef.Direction.isNaN()) {
+			if (shouldExport(particleDef.Direction)) {
 				TiXmlElement directionElem("direction");
 				XMLHelper::fillElementFromVector3(directionElem, particleDef.Direction);
 				particleSystemElem.InsertEndChild(directionElem);
@@ -1184,6 +1217,10 @@ void XMLModelDefinitionSerializer::exportParticleSystems(const ModelDefinitionPt
 }
 
 void XMLModelDefinitionSerializer::exportBoneGroups(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem) {
+	if (modelDef->getBoneGroupDefinitions().empty()) {
+		return;
+	}
+
 	TiXmlElement boneGroupsElem("bonegroups");
 
 	for (const auto& entry : modelDef->getBoneGroupDefinitions()) {

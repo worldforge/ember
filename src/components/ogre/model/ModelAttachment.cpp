@@ -115,8 +115,7 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<Mode
 		NodeAttachment(parentEntity, modelRepresentation->getEntity(), *nodeProvider),
 		mModelRepresentation(std::move(modelRepresentation)),
 		mPose(pose),
-		mModelMount(std::make_unique<ModelMount>(mModelRepresentation->getModel(), std::move(nodeProvider), mPose)),
-		mIgnoreEntityData(false) {
+		mModelMount(std::make_unique<ModelMount>(mModelRepresentation->getModel(), std::move(nodeProvider), mPose)) {
 	mModelMount->reset();
 	setupFittings();
 	mModelRepresentation->getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
@@ -331,15 +330,12 @@ bool ModelAttachment::getVisualize(const std::string& visualization) const {
 }
 
 void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity) {
-	if (!mIgnoreEntityData) {
 		NodeAttachment::setPosition(position, orientation, velocity);
 
 		mModelRepresentation->setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
-	} else {
-		NodeAttachment::setPosition(WFMath::Point<3>::ZERO(), WFMath::Quaternion::Identity(), WFMath::Vector<3>::ZERO());
-	}
+		mModelRepresentation->notifyTransformsChanged();
 
-	mModelRepresentation->notifyTransformsChanged();
+
 }
 
 }
