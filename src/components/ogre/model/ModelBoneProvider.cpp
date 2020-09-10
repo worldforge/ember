@@ -26,7 +26,7 @@
 namespace Ember {
 namespace OgreView {
 namespace Model {
-ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel,  bool deleteMovableWhenDone) :
+ModelBoneProvider::ModelBoneProvider(Ogre::Node* parentSceneNode, Model& parentModel, bool deleteMovableWhenDone) :
 		mNode(parentSceneNode),
 		mParentModel(parentModel),
 		mParent(nullptr),
@@ -102,12 +102,12 @@ void ModelBoneProvider::setOffsets(const Ogre::Vector3& translate, const Ogre::Q
 	if (!translate.isNaN()) {
 		mOffsetTranslation = translate;
 	} else {
-		S_LOG_WARNING("Translation set for model bone provider for attach point '" << mAttachPointDefinition.BoneName  << "' is invalid");
+		S_LOG_WARNING("Translation set for model bone provider for attach point '" << mAttachPointDefinition.BoneName << "' is invalid");
 	}
 	if (!rotate.isNaN()) {
 		mOffsetRotation = rotate;
 	} else {
-		S_LOG_WARNING("Rotation set for model bone provider for attach point '" << mAttachPointDefinition.BoneName  << "' is invalid");
+		S_LOG_WARNING("Rotation set for model bone provider for attach point '" << mAttachPointDefinition.BoneName << "' is invalid");
 	}
 	updatePositionAndOrientation();
 }
@@ -126,10 +126,10 @@ Ogre::Vector3 ModelBoneProvider::getScale() const {
 void ModelBoneProvider::updatePositionAndOrientation() {
 	if (!mParent) {
 		mOrientation = mAttachPointDefinition.Rotation * mOffsetRotation;
-		mPosition = mAttachPointDefinition.Translation + mOffsetTranslation;
+		mPosition = (mAttachPointDefinition.Rotation * mAttachPointDefinition.Translation) + (mOffsetRotation *  mOffsetTranslation);
 	} else {
 		mOrientation = mOffsetRotation;
-		mPosition = mOffsetTranslation;
+		mPosition = mOffsetRotation * mOffsetTranslation;
 	}
 	for (auto tagpoint : mTagPoints) {
 		tagpoint->setPosition(getDerivedPosition());
