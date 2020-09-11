@@ -109,7 +109,10 @@ void SubModelPart::showSubEntities() {
 				blendWeightsData = subModelPartEntity.SubEntity->getSubMesh()->vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_BLEND_WEIGHTS);
 			}
 
-			unsigned short numWeightsPerVertex = Ogre::VertexElement::getTypeCount(blendWeightsData->getType());
+			unsigned short numWeightsPerVertex = 0;
+			if (blendWeightsData) {
+				numWeightsPerVertex = Ogre::VertexElement::getTypeCount(blendWeightsData->getType());
+			}
 
 			//The number suffix denotes the number of bones to use.
 			std::string skinningSuffix = "/Skinning/" + std::to_string(numWeightsPerVertex);
