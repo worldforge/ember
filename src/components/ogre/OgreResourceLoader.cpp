@@ -304,6 +304,10 @@ void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 	try {
 		FileSystemObserver::getSingleton().add_directory(path, [this](const FileSystemObserver::FileSystemEvent& event) {
 			auto& ev = event.ev;
+			//Skip if it's not a file. This also means that we won't catch deletion of files. That's ok for now; but perhaps we need to revisit this.
+			if (!boost::filesystem::is_regular_file(ev.path)) {
+				return;
+			}
 			S_LOG_VERBOSE("Resource changed " << ev.path.string() << " " << ev.type_cstr());
 
 			if (ev.type == boost::asio::dir_monitor_event::modified) {
