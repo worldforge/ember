@@ -57,6 +57,7 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 	}
 	MapType attributesMap;
 
+	attributesMap["present"] = MapType{{"default", model->getDefinition()->getOrigin()}};
 
 	//Don't supply bbox if the geometry is a mesh, since we'll get the bbox from the mesh in that case.
 	if (collisionType != "mesh" && collisionType != "asset") {
@@ -73,16 +74,10 @@ Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, cons
 		}
 		WFMath::AxisBox<3> wfmathAabb = Convert::toWF(aabb);
 
-		bboxMap["default"] = wfmathAabb.toAtlas();
-		bboxMap["visibility"] = StringType("public");
-		attributesMap["bbox"] = bboxMap;
+		attributesMap["bbox"] = MapType{{"default", wfmathAabb.toAtlas()}};
 	}
 
-	Atlas::Message::MapType geometryMap;
-	geometryMap["default"] = composeGeometry(model, collisionType);
-
-	geometryMap["visibility"] = "public";
-	attributesMap["geometry"] = geometryMap;
+	attributesMap["geometry"] = MapType{{"default", composeGeometry(model, collisionType)}};
 
 	mainMap["attributes"] = attributesMap;
 
@@ -124,7 +119,7 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 																			   submesh->indexData->indexCount * sizeof(Ogre::uint16),
 																			   Ogre::HardwareBuffer::HBL_READ_ONLY));
 					for (size_t j = 0; j < submesh->indexData->indexCount; ++j) {
-						long index = pIndex[j] + offset;
+						long index = static_cast<IntType>(pIndex[j] + offset);
 						indices.emplace_back(index);
 					}
 				} else {
@@ -132,7 +127,7 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 																			   submesh->indexData->indexCount * sizeof(Ogre::uint32),
 																			   Ogre::HardwareBuffer::HBL_READ_ONLY));
 					for (size_t j = 0; j < submesh->indexData->indexCount; ++j) {
-						long index = pIndex[j] + offset;
+						long index = static_cast<IntType>(pIndex[j] + offset);
 						indices.emplace_back(index);
 					}
 				}
@@ -192,8 +187,14 @@ void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Mod
 std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale, const std::string& collisionType) {
 	if (model) {
 		try {
+
+			auto cleanedTypename = boost::filesystem::path(typeName).filename().stem();
+			auto cleanedDir = boost::filesystem::path(typeName).remove_filename();
+
 			//make sure the directory exists
-			auto dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "typeexport";
+			auto filename = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "typeexport" / cleanedDir / (cleanedTypename.string() + ".xml");
+			auto dir = filename;
+			dir.remove_filename();
 
 			if (!boost::filesystem::exists(dir)) {
 				S_LOG_INFO("Creating directory " << dir.string());
@@ -201,13 +202,12 @@ std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std:
 			}
 
 
-			auto fileName = dir / (typeName + ".xml");
-			std::fstream exportFile(fileName.c_str(), std::fstream::out);
+			std::fstream exportFile(filename.c_str(), std::fstream::out);
 
-			S_LOG_INFO("Creating atlas type " << fileName.string());
-			composeToStream(exportFile, model, typeName, parentTypeName, scale, collisionType);
+			S_LOG_INFO("Creating atlas type " << filename.string());
+			composeToStream(exportFile, model, cleanedTypename.string(), parentTypeName, scale, collisionType);
 			exportFile.close();
-			return fileName.string();
+			return filename.string();
 		} catch (const std::exception& e) {
 			S_LOG_WARNING("Error when exporting Model to Atlas data." << e);
 		}

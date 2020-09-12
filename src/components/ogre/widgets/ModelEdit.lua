@@ -1350,9 +1350,11 @@ function ModelEdit:fillCollisionTypesList()
 
     local types = {'asset', 'mesh', 'box', 'sphere', 'capsule-z', 'capsule-x', 'capsule-y', 'cylinder-z', 'cylinder-x', 'cylinder-y'}
     for i, name in ipairs(types) do
-      local item = Ember.OgreView.Gui.ColouredListItem:new(name, i)
-      self.collisionTypeSelector:addItem(item)
+        local item = Ember.OgreView.Gui.ColouredListItem:new(name, i)
+        self.collisionTypeSelector:addItem(item)
     end
+    self.collisionTypeSelector:setItemSelectState(0, true)
+
 end
 
 function ModelEdit:fillScaleTypesList()
