@@ -417,7 +417,7 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 		auto windowNew = windowManager.loadLayoutFromFile(finalFileName);
 		if (windowNew) {
 			window = windowNew->clone(true);
-			mAdapterPrototypes.emplace(layoutfile, windowNew);
+			mAdapterPrototypes.emplace(layoutfile, UniqueWindowPtr<CEGUI::Window>(windowNew));
 		}
 	}
 	if (!window) {
