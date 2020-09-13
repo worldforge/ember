@@ -545,19 +545,26 @@ void XMLModelDefinitionSerializer::readParticleSystems(const ModelDefinitionPtr&
 
 	const char* tmp = nullptr;
 
-	for (TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
+	for (auto apElem = mParticleSystemsNode->FirstChildElement();
 		 apElem != nullptr; apElem = apElem->NextSiblingElement()) {
 		ModelDefinition::ParticleSystemDefinition def;
 
 		// name
 		tmp = apElem->Attribute("script");
-		if (tmp)
+		if (tmp) {
 			def.Script = tmp;
+		}
 		S_LOG_VERBOSE("  Add particlescript  : " + def.Script);
 
 		elem = apElem->FirstChildElement("bindings");
-		if (elem)
+		if (elem) {
 			readParticleSystemsBindings(def, elem);
+		}
+
+		elem = apElem->FirstChildElement("params");
+		if (elem) {
+			readParticleSystemsParams(def, elem);
+		}
 
 		elem = apElem->FirstChildElement("direction");
 		if (elem) {
@@ -580,23 +587,53 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 		ModelDefinition::BindingDefinition binding;
 
 		// emittervar
-		tmp = apElem->Attribute("emittervar");
-		if (tmp)
-			binding.EmitterVar = tmp;
-		else
+		auto emitterVar = apElem->Attribute("emittervar");
+		if (emitterVar) {
+			auto setting = parseParticleSystemSetting(emitterVar);
+			if (!setting) {
+				continue;
+			}
+			binding.EmitterVar = *setting;
+		} else {
 			continue;
+		}
 
 		// atlasattribute
 		tmp = apElem->Attribute("atlasattribute");
-		if (tmp)
+		if (tmp) {
 			binding.AtlasAttribute = tmp;
-		else
+		} else {
 			continue;
+		}
 
-		S_LOG_VERBOSE("  Add binding between " << binding.EmitterVar << " and " << binding.AtlasAttribute << ".");
+		S_LOG_VERBOSE("  Add binding between " << emitterVar << " and " << binding.AtlasAttribute << ".");
 
 
 		def.Bindings.emplace_back(std::move(binding));
+	}
+
+}
+
+void XMLModelDefinitionSerializer::readParticleSystemsParams(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode) {
+
+	for (auto apElem = mParticleSystemsNode->FirstChildElement();
+		 apElem != nullptr; apElem = apElem->NextSiblingElement()) {
+
+		auto name = apElem->Attribute("emittervar");
+		if (!name) {
+			continue;
+		}
+
+		auto setting = parseParticleSystemSetting(name);
+		if (!setting) {
+			continue;
+		}
+
+		auto text = apElem->GetText();
+		if (!text) {
+			continue;
+		}
+		def.Params.emplace_back(*setting, std::stod(text));
 	}
 
 }
@@ -1205,10 +1242,29 @@ void XMLModelDefinitionSerializer::exportParticleSystems(const ModelDefinitionPt
 
 				for (const auto& binding : particleDef.Bindings) {
 					TiXmlElement bindingElem("binding");
-					bindingsElem.SetAttribute("emittervar", binding.EmitterVar);
+					auto emitterVarName = particleSystemSettingToString(binding.EmitterVar);
+					if (!emitterVarName) {
+						continue;
+					}
+					bindingsElem.SetAttribute("emittervar", *emitterVarName);
 					bindingsElem.SetAttribute("atlasattribute", binding.AtlasAttribute);
 					particleSystemElem.InsertEndChild(bindingsElem);
 				}
+			}
+			if (!particleDef.Params.empty()) {
+				TiXmlElement bindingsElem("params");
+				for (const auto& param : particleDef.Params) {
+					TiXmlElement bindingElem("param");
+					auto emitterVarName = particleSystemSettingToString(param.first);
+					if (!emitterVarName) {
+						continue;
+					}
+					bindingElem.SetAttribute("emittervar", *emitterVarName);
+					bindingElem.SetValue(std::to_string(param.second));
+					bindingsElem.InsertEndChild(bindingElem);
+				}
+				particleSystemElem.InsertEndChild(bindingsElem);
+
 			}
 			particleSystemsElem.InsertEndChild(particleSystemElem);
 		}
@@ -1242,6 +1298,23 @@ void XMLModelDefinitionSerializer::exportBoneGroups(const ModelDefinitionPtr& mo
 	modelElem.InsertEndChild(boneGroupsElem);
 }
 
+boost::optional<ModelDefinition::ParticleSystemSetting> XMLModelDefinitionSerializer::parseParticleSystemSetting(const std::string& setting) {
+	if (setting == "emission_rate") {
+		return ModelDefinition::ParticleSystemSetting::EMISSION_RATE;
+	} else if (setting == "time_to_live") {
+		return ModelDefinition::ParticleSystemSetting::TIME_TO_LIVE;
+	}
+	return boost::none;
+}
+
+boost::optional<std::string> XMLModelDefinitionSerializer::particleSystemSettingToString(ModelDefinition::ParticleSystemSetting setting) {
+	if (setting == ModelDefinition::ParticleSystemSetting::TIME_TO_LIVE) {
+		return std::string("time_to_live");
+	} else if (setting == ModelDefinition::ParticleSystemSetting::EMISSION_RATE) {
+		return std::string("emission_rate");
+	}
+	return boost::none;
+}
 
 } //end namespace
 }

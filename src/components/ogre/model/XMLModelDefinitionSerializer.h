@@ -27,6 +27,7 @@
 
 
 #include <boost/filesystem/path.hpp>
+#include <boost/optional.hpp>
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 #include "ModelDefinition.h"
@@ -81,6 +82,8 @@ private:
 
 	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode);
 
+	void readParticleSystemsParams(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode);
+
 	void readViews(const ModelDefinitionPtr& modelDef, TiXmlElement* viewsNode);
 
 	void readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action);
@@ -124,6 +127,10 @@ private:
 	 * @param modelElem The model xml element.
 	 */
 	void exportBoneGroups(const ModelDefinitionPtr& modelDef, TiXmlElement& modelElem);
+
+	static boost::optional<ModelDefinition::ParticleSystemSetting> parseParticleSystemSetting(const std::string& setting);
+
+	boost::optional<std::string> particleSystemSettingToString(ModelDefinition::ParticleSystemSetting setting);
 
 };
 

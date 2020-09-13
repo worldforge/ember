@@ -24,6 +24,7 @@
 #define EMBEROGREPARTICLESYSTEM_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "ModelDefinition.h"
 #include <OgreVector.h>
 #include <vector>
 #include <OgreMovableObject.h>
@@ -52,7 +53,7 @@ public:
 	 * @param variableName the name of the atlas attribute
 	 * @return a pointer to the newly created binding
 	 */
-	ParticleSystemBinding addBinding(const std::string& emitterVal, const std::string& variableName);
+	ParticleSystemBinding addBinding(ModelDefinition::ParticleSystemSetting emitterVal, const std::string& variableName);
 
 	//std::vector<ParticleSystemBinding>& getBindings();
 

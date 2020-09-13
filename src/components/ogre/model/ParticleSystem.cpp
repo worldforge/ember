@@ -28,6 +28,7 @@
 
 #include "ParticleSystem.h"
 #include "ParticleSystemBinding.h"
+#include "ModelDefinition.h"
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 #include <OgreSceneManager.h>
@@ -50,19 +51,17 @@ ParticleSystem::ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem, const O
 	}
 }
 
-ParticleSystem::~ParticleSystem() {
-
-	//The Ogre ParticleSystem isn't owned by this instance and won't be destroyed here.
-}
+//The Ogre ParticleSystem isn't owned by this instance and won't be destroyed here.
+ParticleSystem::~ParticleSystem() = default;
 
 
-ParticleSystemBinding ParticleSystem::addBinding(const std::string& emitterVal, const std::string& variableName) {
-	if (emitterVal == "emission_rate") {
+ParticleSystemBinding ParticleSystem::addBinding(ModelDefinition::ParticleSystemSetting emitterVal, const std::string& variableName) {
+	if (emitterVal == ModelDefinition::ParticleSystemSetting::EMISSION_RATE) {
 		Ogre::ParticleEmitter* emitter = mOgreParticleSystem->getEmitter(0);
 		if (emitter) {
 			return {emitterVal, variableName, this, emitter->getEmissionRate()};
 		}
-	} else if (emitterVal == "time_to_live") {
+	} else if (emitterVal == ModelDefinition::ParticleSystemSetting::TIME_TO_LIVE) {
 		Ogre::ParticleEmitter* emitter = mOgreParticleSystem->getEmitter(0);
 		if (emitter) {
 			return {emitterVal, variableName, this, emitter->getTimeToLive()};

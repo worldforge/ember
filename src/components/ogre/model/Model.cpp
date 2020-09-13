@@ -400,6 +400,9 @@ void Model::createParticles() {
 					ParticleSystemBinding binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
 					mAllParticleSystemBindings.emplace_back(std::move(binding));
 				}
+				for (auto& param: particleSystemDef.Params) {
+					ParticleSystemBinding::updateSettings(*ogreParticleSystem, param.first, param.second);
+				}
 				mParticleSystems.emplace_back(std::move(particleSystem));
 
 
@@ -500,8 +503,8 @@ bool Model::addSubmodel(std::unique_ptr<SubModel> submodel) {
 		}
 	}
 	mSubmodels.emplace_back(std::move(submodel));
-    if (!mUseInstancing) {
-        addMovable(entity);
+	if (!mUseInstancing) {
+		addMovable(entity);
 	}
 
 	return true;
@@ -886,14 +889,14 @@ Ogre::SceneManager& Model::getManager() {
 
 float Model::getCombinedBoundingRadius() const {
 	float radius = 0;
-    for (auto& submodel : mSubmodels) {
-        auto entity = submodel->getEntity();
-        if (entity) {
-            if (entity->getMesh()->isLoaded()) {
-                radius = std::max(entity->getMesh()->getBoundingSphereRadius(), radius);
-            }
-        }
-    }
+	for (auto& submodel : mSubmodels) {
+		auto entity = submodel->getEntity();
+		if (entity) {
+			if (entity->getMesh()->isLoaded()) {
+				radius = std::max(entity->getMesh()->getBoundingSphereRadius(), radius);
+			}
+		}
+	}
 	return radius;
 }
 
@@ -904,12 +907,12 @@ float Model::getBoundingRadius() const {
 Ogre::AxisAlignedBox Model::getCombinedBoundingBox() const {
 	Ogre::AxisAlignedBox aabb;
 	for (auto& submodel : mSubmodels) {
-	    auto entity = submodel->getEntity();
-	    if (entity) {
-	        if (entity->getMesh()->isLoaded()) {
-	            aabb.merge(entity->getMesh()->getBounds());
-	        }
-	    }
+		auto entity = submodel->getEntity();
+		if (entity) {
+			if (entity->getMesh()->isLoaded()) {
+				aabb.merge(entity->getMesh()->getBounds());
+			}
+		}
 	}
 	return aabb;
 }

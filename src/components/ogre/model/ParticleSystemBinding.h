@@ -24,6 +24,7 @@
 #define EMBEROGREPARTICLESYSTEMBINDING_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "ModelDefinition.h"
 #include <string>
 
 namespace Ember {
@@ -37,13 +38,14 @@ class ParticleSystem;
 */
 struct ParticleSystemBinding {
 
-
-	std::string mEmitterVal;
+	ModelDefinition::ParticleSystemSetting mEmitterVal;
 	std::string mVariableName;
 	ParticleSystem* mParticleSystem;
 	Ogre::Real mOriginalValue;
 
 	void scaleValue(Ogre::Real scaler) const;
+
+	static void updateSettings(Ogre::ParticleSystem& particleSystem, ModelDefinition::ParticleSystemSetting setting, float value);
 
 };
 

@@ -36,19 +36,21 @@ namespace OgreView {
 namespace Model {
 
 void ParticleSystemBinding::scaleValue(Ogre::Real scaler) const {
+	updateSettings(*mParticleSystem->getOgreParticleSystem(), mEmitterVal, std::max(0.f, mOriginalValue * scaler));
+}
 
+void ParticleSystemBinding::updateSettings(Ogre::ParticleSystem& particleSystem, ModelDefinition::ParticleSystemSetting setting, float value) {
 	//TODO: add more emitter values to bind
-	if (mEmitterVal == "emission_rate") {
-		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
-		if (emitter) {
-			emitter->setEmissionRate(mOriginalValue * scaler);
+	if (setting == ModelDefinition::ParticleSystemSetting::EMISSION_RATE) {
+		for (auto i = 0; i < particleSystem.getNumEmitters(); ++i) {
+			particleSystem.getEmitter(i)->setEmissionRate(value);
 		}
-	} else if (mEmitterVal == "time_to_live") {
-		Ogre::ParticleEmitter* emitter = mParticleSystem->getOgreParticleSystem()->getEmitter(0);
-		if (emitter) {
-			emitter->setTimeToLive(std::max(0.f, mOriginalValue * scaler));
+	} else if (setting == ModelDefinition::ParticleSystemSetting::TIME_TO_LIVE) {
+		for (auto i = 0; i < particleSystem.getNumEmitters(); ++i) {
+			particleSystem.getEmitter(i)->setTimeToLive(value);
 		}
 	}
+
 }
 
 }

@@ -607,12 +607,16 @@ public:
 
 	const std::string& getOrigin() const;
 
+	enum class ParticleSystemSetting {
+		EMISSION_RATE,
+		TIME_TO_LIVE
+	};
 private:
 
 	ModelDefinition& operator=(ModelDefinition&& rhs) = default;
 
 	struct BindingDefinition {
-		std::string EmitterVar;
+		ParticleSystemSetting EmitterVar;
 		std::string AtlasAttribute;
 	};
 
@@ -622,6 +626,8 @@ private:
 	 * @brief A definition of a particle system.
 	 */
 	struct ParticleSystemDefinition {
+
+
 		/**
 		 * @brief The script to use for the particle system.
 		 *
@@ -644,6 +650,8 @@ private:
 		 * This allows for such effects as a fire growing larger as the status of the fire entity increases.
 		 */
 		BindingSet Bindings;
+
+		std::vector<std::pair<ParticleSystemSetting, float>> Params;
 	};
 
 	typedef std::vector<ParticleSystemDefinition> ParticleSystemSet;
