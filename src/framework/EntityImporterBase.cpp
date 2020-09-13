@@ -36,7 +36,7 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Set;
 using Atlas::Message::Element;
 
-StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity  o, const std::list<std::string>::const_iterator & c) :
+StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity  o, const std::vector<std::string>::const_iterator & c) :
 		obj(std::move(o)), currentChildIterator(c)
 {
 }

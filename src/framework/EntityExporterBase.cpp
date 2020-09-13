@@ -282,9 +282,9 @@ void EntityExporterBase::infoArrived(const Operation & op)
 		//Make a copy so that we can sort the contains list and update it in the
 		//entity
 		RootEntity entityCopy(ent->copy());
-		std::list<std::string> contains = ent->getContains();
+		auto contains = ent->getContains();
 		//Sort the contains list so it's deterministic
-		contains.sort(idSorter);
+		std::sort(contains.begin(), contains.end(), idSorter);
 		entityCopy->setContains(contains);
 
 		std::string persistedId = entityCopy->getId();
@@ -302,8 +302,8 @@ void EntityExporterBase::infoArrived(const Operation & op)
 		entityCopy->removeAttr(Atlas::Objects::Entity::LOC_ATTR);
 		entityCopy->removeAttr(Atlas::Objects::STAMP_ATTR);
 		dumpEntity(entityCopy);
-		std::list<std::string>::const_iterator I = contains.begin();
-		std::list<std::string>::const_iterator Iend = contains.end();
+		auto I = contains.begin();
+		auto Iend = contains.end();
 		for (; I != Iend; ++I) {
 			mEntityQueue.push_back(*I);
 		}

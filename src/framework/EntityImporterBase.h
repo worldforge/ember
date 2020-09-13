@@ -69,9 +69,9 @@ public:
 	 * As we walk through the children of entity this is updated, thus keeping track
 	 * of what child needs to be updated next.
 	 */
-	std::list<std::string>::const_iterator currentChildIterator;
+	std::vector<std::string>::const_iterator currentChildIterator;
 
-	StackEntry(Atlas::Objects::Entity::RootEntity  o, const std::list<std::string>::const_iterator & c);
+	StackEntry(Atlas::Objects::Entity::RootEntity  o, const std::vector<std::string>::const_iterator & c);
 	explicit StackEntry(Atlas::Objects::Entity::RootEntity  o);
 };
 
