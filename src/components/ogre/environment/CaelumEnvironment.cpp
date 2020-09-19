@@ -29,11 +29,14 @@
 #include "CaelumSky.h"
 #include "CaelumSun.h"
 #include "SimpleWater.h"
-//#include "HydraxWater.h"
 #include "framework/Tokeniser.h"
 #include "framework/TimeHelper.h"
-//#include "Caelum/include/CaelumSystem.h"
 #include <Eris/Calendar.h>
+
+//We've fixed the environment to 2016-11-14 since it's a day with a full moon. And we want the full moon for illumination during night.
+#define TIME_FIXED_YEAR 2016
+#define TIME_FIXED_MONTH 11
+#define TIME_FIXED_DAY 14
 
 namespace Ember {
 namespace OgreView {
@@ -85,7 +88,7 @@ void CaelumEnvironment::Calendar_Updated() {
 	Eris::DateTime now = mCalendar.now();
 	if (now.valid()) {
 		if (mCaelumSystem) {
-			mCaelumSystem->getUniversalClock()->setGregorianDateTime(now.year(), now.month(), now.dayOfMonth(), now.hours(), now.minutes(), now.seconds());
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(TIME_FIXED_YEAR, TIME_FIXED_MONTH, TIME_FIXED_DAY, now.hours(), now.minutes(), now.seconds());
 		}
 	}
 }
@@ -179,12 +182,12 @@ void CaelumEnvironment::setupCaelum(::Ogre::SceneManager* sceneMgr, ::Ogre::Rend
 
 	Eris::DateTime currentServerTime = mCalendar.now();
 	if (currentServerTime.valid()) {
-		mCaelumSystem->getUniversalClock()->setGregorianDateTime(currentServerTime.year(), currentServerTime.month(), currentServerTime.dayOfMonth(), currentServerTime.hours(), currentServerTime.minutes(), currentServerTime.seconds());
+		mCaelumSystem->getUniversalClock()->setGregorianDateTime(TIME_FIXED_YEAR, TIME_FIXED_MONTH, TIME_FIXED_DAY, currentServerTime.hours(), currentServerTime.minutes(), currentServerTime.seconds());
 	} else {
 		S_LOG_WARNING("Could not get server time, using local time for environment.");
 		int year, month, day, hour, minute, second;
 		Ember::TimeHelper::getLocalTime(year, month, day, hour, minute, second);
-		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
+		mCaelumSystem->getUniversalClock()->setGregorianDateTime(TIME_FIXED_YEAR, TIME_FIXED_MONTH, TIME_FIXED_DAY, hour, minute, second);
 	}
 
 	//little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
@@ -224,11 +227,11 @@ void CaelumEnvironment::setTime(int hour, int minute, int second) {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		Eris::DateTime currentServerTime = mCalendar.now();
 		if (currentServerTime.valid()) {
-			mCaelumSystem->getUniversalClock()->setGregorianDateTime(currentServerTime.year(), currentServerTime.month(), currentServerTime.dayOfMonth(), hour, minute, second);
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(TIME_FIXED_YEAR, TIME_FIXED_MONTH, TIME_FIXED_DAY, hour, minute, second);
 		} else {
 			int year, month, day, _hour, _minute, _second;
 			Ember::TimeHelper::getLocalTime(year, month, day, _hour, _minute, _second);
-			mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(TIME_FIXED_YEAR, TIME_FIXED_MONTH, TIME_FIXED_DAY, hour, minute, second);
 		}
 	}
 }
@@ -237,11 +240,11 @@ void CaelumEnvironment::setTime(int seconds) {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		Eris::DateTime currentServerTime = mCalendar.now();
 		if (currentServerTime.valid()) {
-			mCaelumSystem->getUniversalClock()->setGregorianDateTime(currentServerTime.year(), currentServerTime.month(), currentServerTime.dayOfMonth(), 0, 0, seconds);
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(TIME_FIXED_YEAR, TIME_FIXED_MONTH, TIME_FIXED_DAY, 0, 0, seconds);
 		} else {
 			int year, month, day, hour, minute, _second;
 			Ember::TimeHelper::getLocalTime(year, month, day, hour, minute, _second);
-			mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(TIME_FIXED_YEAR, TIME_FIXED_MONTH, TIME_FIXED_DAY, 0, 0, seconds);
 		}
 	}
 }
