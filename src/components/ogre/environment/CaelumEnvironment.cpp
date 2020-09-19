@@ -75,8 +75,8 @@ void CaelumEnvironment::destroyCaelumFirmament() {
 	mSun.reset();
 	if (mCaelumSystem) {
 		mWindow->removeListener(mCaelumSystem.get());
-		mCaelumSystem->shutdown(true); //This will actually delete the instance
-		mCaelumSystem.release();
+		Ogre::Root::getSingleton().removeFrameListener(mCaelumSystem.get());
+		mCaelumSystem.reset();
 	}
 }
 
