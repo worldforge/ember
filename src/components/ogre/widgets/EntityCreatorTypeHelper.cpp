@@ -62,7 +62,8 @@ EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Avatar& avatar,
 												 CEGUI::Window& modelPreview,
 												 CEGUI::Combobox& modeCombobox,
 												 CEGUI::Window& defaultModeWindow,
-												 CEGUI::ToggleButton& plantedOnGroundWindow) :
+												 CEGUI::ToggleButton& plantedOnGroundWindow,
+												 CEGUI::Editbox& filterWindow) :
 		mAvatar(avatar),
 		mName(nameEditbox),
 		mModelPreviewRenderer(nullptr),
@@ -71,14 +72,8 @@ EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Avatar& avatar,
 		mCreateButton(nullptr),
 		mModeCombobox(modeCombobox),
 		mDefaultModeWindow(defaultModeWindow),
-		mPlantedOnGroundWindow(plantedOnGroundWindow) {
-	buildWidget(typeTree, pushButton, modelPreview);
-}
-
-EntityCreatorTypeHelper::~EntityCreatorTypeHelper() = default;
-
-void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) {
-
+		mPlantedOnGroundWindow(plantedOnGroundWindow),
+		mFilterWindow(filterWindow) {
 	typeTree.setItemTooltipsEnabled(true);
 	typeTree.setSortingEnabled(true);
 
@@ -89,8 +84,8 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	mRuleTreeAdapter = std::make_unique<Adapters::Eris::RuleTreeAdapter>(mAvatar.getConnection(), mAvatar.getId(), typeTree);
 	mRuleTreeAdapter->refreshRules({"game_entity", "archetype"});
 
-	mModelPreviewRenderer = std::make_unique< ModelRenderer>(&modelPreview, "modelPreview");
-	mModelPreviewManipulator = std::make_unique< CameraEntityTextureManipulator>(modelPreview, mModelPreviewRenderer->getEntityTexture());
+	mModelPreviewRenderer = std::make_unique<ModelRenderer>(&modelPreview, "modelPreview");
+	mModelPreviewManipulator = std::make_unique<CameraEntityTextureManipulator>(modelPreview, mModelPreviewRenderer->getEntityTexture());
 
 
 	mAvatar.getConnection().getTypeService().BoundType.connect(sigc::mem_fun(*this, &EntityCreatorTypeHelper::typeService_BoundType));
@@ -100,7 +95,10 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	mModeCombobox.addItem(Gui::ColouredListItem::createColouredListItem("fixed"));
 	mModeCombobox.addItem(Gui::ColouredListItem::createColouredListItem("floating"));
 
+	filterWindow.subscribeEvent(CEGUI::Editbox::EventTextChanged, [&](){mRuleTreeAdapter->setFilter(filterWindow.getText().c_str());});
 }
+
+EntityCreatorTypeHelper::~EntityCreatorTypeHelper() = default;
 
 void EntityCreatorTypeHelper::updatePreview() {
 	if (mModelPreviewRenderer && mRuleTreeAdapter) {

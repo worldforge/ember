@@ -117,10 +117,9 @@ function EntityCreator:addAdapter(adapter, title, container, parentContainer)
 	outercontainer:setHeight(container:getHeight())
 	
 	--make sure that the outer container has the same height as the inner container (so that when we add new child adapters it's updated)
-	function syncWindowHeights(args)
-		outercontainer:setHeight(container:getHeight())
-	end
-	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
+	local SizedConnection = container:subscribeEvent("Sized", function(args)
+        outercontainer:setHeight(container:getHeight())
+    end)
 
 	outercontainer:addChild(label)
 	outercontainer:addChild(container)
@@ -141,7 +140,7 @@ end
 -- Builds widget
 function EntityCreator.buildWidget(world)
 
-	entityCreator = {connectors={}}
+	local entityCreator = {connectors={}}
 	setmetatable(entityCreator, {__index = EntityCreator})
 		
 	
@@ -198,17 +197,18 @@ function EntityCreator.buildWidget(world)
 		entityCreator.widget:enableCloseButton()
 		
 		local typesWindow = entityCreator.widget:getWindow("TabTypes", true)
-		local typesTree = CEGUI.toTree(typesWindow:getChild("TypeList"))
-		local typesName = CEGUI.toEditbox(typesWindow:getChild("Name"))
-		local modeCombobox = CEGUI.toCombobox(typesWindow:getChild("Mode"))
-		local typesCreateButton = CEGUI.toPushButton(typesWindow:getChild("CreateButton"))
-		local typesPreviewImage = typesWindow:getChild("ModelPreviewImage")
-		local defaultModeWindow = typesWindow:getChild("DefaultMode")
-		local plantedOnGroundTypeWindow = CEGUI.toToggleButton(typesWindow:getChild("PlantedOnGroundType"))
+		local typesTree = CEGUI.toTree(typesWindow:getChildRecursive("TypeList"))
+        local typesFilter = CEGUI.toEditbox(typesWindow:getChildRecursive("TypeFilter"))
+		local typesName = CEGUI.toEditbox(typesWindow:getChildRecursive("Name"))
+		local modeCombobox = CEGUI.toCombobox(typesWindow:getChildRecursive("Mode"))
+		local typesCreateButton = CEGUI.toPushButton(typesWindow:getChildRecursive("CreateButton"))
+		local typesPreviewImage = typesWindow:getChildRecursive("ModelPreviewImage")
+		local defaultModeWindow = typesWindow:getChildRecursive("DefaultMode")
+		local plantedOnGroundTypeWindow = CEGUI.toToggleButton(typesWindow:getChildRecursive("PlantedOnGroundType"))
 		entityCreator.typesCreator = {}
 
 		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar(),
-			typesTree, typesName, typesCreateButton, typesPreviewImage, modeCombobox, defaultModeWindow, plantedOnGroundTypeWindow)
+			typesTree, typesName, typesCreateButton, typesPreviewImage, modeCombobox, defaultModeWindow, plantedOnGroundTypeWindow, typesFilter)
 		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
 	
 		--Entity exports tab

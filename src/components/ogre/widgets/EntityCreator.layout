@@ -70,11 +70,23 @@
 				<Property name="Size" value="{{1,0},{1,0}}" />
 				<Property name="InheritsAlpha" value="True" />
 				<Property name="Text" value="Types" />
-				<Window name="TypeList" type="EmberLook/Tree">
-					<Property name="Size" value="{{0,150},{1.00,-30}}" />
-					<Property name="InheritsAlpha" value="false" />
-				</Window>
-				<Window type="EmberLook/StaticText">
+                <Window type="VerticalLayoutContainer">
+                    <Property name="Size" value="{{0,150},{1.00,0}}" />
+                    <Window name="TypeList" type="EmberLook/Tree">
+                        <Property name="Size" value="{{0,150},{1.00,-60}}" />
+                        <Property name="InheritsAlpha" value="false" />
+                    </Window>
+                    <Window name="TypeFilter" type="EmberLook/Editbox">
+                        <Property name="Size" value="{{0,150.0},{0,25.0}}" />
+                        <Property name="InheritsAlpha" value="True" />
+                    </Window>
+                    <Window name="CreateButton" type="EmberLook/Button">
+                        <Property name="Size" value="{{0,150.0},{0,25.0}}" />
+                        <Property name="Text" value="Create" />
+                        <Property name="InheritsAlpha" value="True" />
+                    </Window>
+                </Window>
+                <Window type="EmberLook/StaticText">
 					<Property name="Size" value="{{0,70},{0.00,25.0}}" />
 					<Property name="Position" value="{{0,155},{0,0}}" />
 					<Property name="Text" value="Mode:" />
@@ -108,12 +120,6 @@
 					<Property name="Position" value="{{0,155},{0,90}}" />
 					<Property name="Size" value="{{1.00,-155.00},{1.00,-90}}" />
 				</Window>
-				<Window name="CreateButton" type="EmberLook/Button">
-					<Property name="Size" value="{{0,75.0},{0,25.0}}" />
-					<Property name="Position" value="{{0,0},{1.00,-25.0}}" />
-					<Property name="Text" value="Create" />
-					<Property name="InheritsAlpha" value="True" />
-				</Window>
 			</Window>
             <Window name="TabExports" type="DefaultWindow">
                 <Property name="Position" value="{{0,0},{0,0}}" />
@@ -138,7 +144,7 @@
                         <Property name="Text" value="Import" />
                         <Property name="InheritsAlpha" value="True" />
                     </Window>
-                </Window>               
+                </Window>
                 <Window name="ActiveOverlay" type="EmberLook/StaticText">
                     <Property name="Visible" value="false" />
                     <Property name="BackgroundEnabled" value="true" />

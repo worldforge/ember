@@ -52,7 +52,7 @@ namespace Adapters {
 namespace Eris {
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
- * @brief An adapter which the server rule tree to a cegui tree widget.
+ * @brief An adapter which binds the server rule tree to a cegui tree widget.
  *
  * Make sure to call refresh(...) to activate the adapter.
  */
@@ -80,6 +80,8 @@ public:
 	 */
 	::Atlas::Objects::Root getSelectedRule();
 
+	void setFilter(std::string filter);
+
 	/**
 	 * @brief Emitted when a new rule has been received.
 	 *
@@ -94,6 +96,13 @@ public:
 
 private:
 
+	struct Entry {
+		::Atlas::Objects::Root rule;
+		std::vector<Entry> children;
+	};
+
+	std::vector<Entry> mTopEntries;
+
 	::Eris::Connection& mConnection;
 	std::string mMindId;
 	CEGUI::Tree& mTreeWidget;
@@ -101,19 +110,20 @@ private:
 
 	std::unordered_map<std::string, ::Atlas::Objects::Root> mRules;
 
-
 	/**
 	 * @brief Hooked up to the RuleFetcher::EventAllRulesReceived signal.
 	 */
 	void fetcherAllRulesReceived(const std::string& rootRule);
 
+
+	void fillEntry(Entry& entry, ::Atlas::Objects::Root rule);
+
 	/**
-	 * @brief Addsconst  a rule to &the tree.
+	 * @brief Adds a rule to the tree.
 	 * @param rule The rule to add.
 	 * @param parent The parent of the rule, or 0 if we should add to the top.
-	 * @param addRecursive If true, all the current children of the rule will be added as well.
 	 */
-	void addToTree(const ::Atlas::Objects::Root& rule, CEGUI::TreeItem* parent, bool addRecursive = false);
+	void addToTree(const Entry& entry, CEGUI::TreeItem* parent);
 
 
 	/**
@@ -121,7 +131,7 @@ private:
 	 * @param op An atlas op.
 	 * @param children A list which will be filled with children.
 	 */
-	void extractChildren(const ::Atlas::Objects::Root& op, std::list<std::string>& children);
+	static std::list<std::string> extractChildren(const ::Atlas::Objects::Root& op);
 
 	/**
 	 * @brief Gets a rule from the internal store of rules.
@@ -130,6 +140,7 @@ private:
 	 */
 	::Atlas::Objects::Root getRule(const std::string& id);
 
+	void rebuildTree();
 };
 
 }

@@ -23,6 +23,8 @@
 
 #include <CEGUI/widgets/Tree.h>
 
+#include <memory>
+
 using ::Atlas::Objects::Root;
 
 namespace Ember {
@@ -48,7 +50,7 @@ void RuleTreeAdapter::refreshRules(const std::vector<std::string>& rootRules) {
 	mFetchers.clear();
 
 	for (auto& rootRule : rootRules) {
-		auto entry = mFetchers.emplace(rootRule, std::unique_ptr<Authoring::RulesFetcher>(new Authoring::RulesFetcher(mConnection, mMindId)));
+		auto entry = mFetchers.emplace(rootRule, std::make_unique<Authoring::RulesFetcher>(mConnection, mMindId));
 		entry.first->second->EventAllRulesReceived.connect([this, rootRule] { fetcherAllRulesReceived(rootRule); });
 		entry.first->second->EventNewRuleReceived.connect(EventNewRuleReceived);
 		entry.first->second->startFetching(rootRule);
@@ -63,8 +65,12 @@ void RuleTreeAdapter::fetcherAllRulesReceived(const std::string& rootRule) {
 		mRules.insert(fetcher->getRules().begin(), fetcher->getRules().end());
 		const auto& root = getRule(rootRule);
 		if (root.isValid()) {
-			addToTree(root, nullptr, true);
+			Entry entry{root};
+			fillEntry(entry, root);
+			mTopEntries.emplace_back(std::move(entry));
 		}
+
+		rebuildTree();
 
 		mFetchers.erase(rootRule);
 		if (mFetchers.empty()) {
@@ -81,7 +87,8 @@ void RuleTreeAdapter::fetcherAllRulesReceived(const std::string& rootRule) {
 	return ::Atlas::Objects::Root();
 }
 
-void RuleTreeAdapter::extractChildren(const Root& op, std::list<std::string>& children) {
+std::list<std::string> RuleTreeAdapter::extractChildren(const Root& op) {
+	std::list<std::string> children;
 	Atlas::Message::Element childElem;
 	if (op->copyAttr("children", childElem) == 0) {
 		if (childElem.isList()) {
@@ -92,10 +99,25 @@ void RuleTreeAdapter::extractChildren(const Root& op, std::list<std::string>& ch
 			}
 		}
 	}
+	return children;
 }
 
-void RuleTreeAdapter::addToTree(const Root& rule, CEGUI::TreeItem* parent, bool addRecursive) {
+void RuleTreeAdapter::fillEntry(Entry& entry, ::Atlas::Objects::Root rule) {
+	auto children = extractChildren(rule);
+	for (auto& child: children) {
+		auto I = mRules.find(child);
+		if (I != mRules.end()) {
+			Entry childEntry{I->second};
+			fillEntry(childEntry, I->second);
+			entry.children.emplace_back(std::move(childEntry));
+		}
+	}
+}
 
+
+void RuleTreeAdapter::addToTree(const Entry& entry, CEGUI::TreeItem* parent) {
+
+	auto& rule = entry.rule;
 	CEGUI::TreeItem* item = ColouredTreeItem::create(rule->getId());
 	item->toggleIsOpen();
 	if (!parent) {
@@ -104,18 +126,9 @@ void RuleTreeAdapter::addToTree(const Root& rule, CEGUI::TreeItem* parent, bool 
 		parent->addItem(item);
 	}
 
-	if (addRecursive) {
-		std::list<std::string> children;
-		extractChildren(rule, children);
-
-		for (auto& child : children) {
-			const auto& childData = getRule(child);
-			if (childData.isValid()) {
-				addToTree(childData, item, addRecursive);
-			}
-		}
+	for (auto& child : entry.children) {
+		addToTree(child, item);
 	}
-
 }
 
 Atlas::Objects::Root RuleTreeAdapter::getSelectedRule() {
@@ -127,6 +140,26 @@ Atlas::Objects::Root RuleTreeAdapter::getSelectedRule() {
 		}
 	}
 	return Atlas::Objects::Root();
+}
+
+void RuleTreeAdapter::setFilter(std::string filter) {
+	if (!filter.empty()) {
+		auto item = mTreeWidget.findFirstItemWithText(filter);
+		if (item) {
+			mTreeWidget.ensureItemIsVisible(item);
+			mTreeWidget.clearAllSelections();
+			mTreeWidget.setItemSelectState(item, true);
+		}
+	}
+}
+
+void RuleTreeAdapter::rebuildTree() {
+	while (mTreeWidget.getChildCount()) {
+		mTreeWidget.removeChild(mTreeWidget.getChildAtIdx(0));
+	}
+	for (auto& entry: mTopEntries) {
+		addToTree(entry, nullptr);
+	}
 }
 
 }
