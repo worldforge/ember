@@ -69,9 +69,6 @@ add_library(emberogre OBJECT
 
 
 
-file(GLOB ENTITY_RECIPES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.entityrecipe" "${CMAKE_CURRENT_SOURCE_DIR}/authoring/entityrecipes/*.xsd")
-install(FILES ${ENTITY_RECIPES_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/entityrecipes)
-
 wf_generate_lua_bindings(scripting/bindings/lua/EmberOgre)
 wf_generate_lua_bindings(scripting/bindings/lua/ogre/Ogre)
 wf_generate_lua_bindings(scripting/bindings/lua/helpers/Helpers scripting/bindings/lua/helpers/OgreUtils.cpp)

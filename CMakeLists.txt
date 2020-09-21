@@ -420,6 +420,9 @@ foreach (FILE ${MODELDEFINITIONS_FILES})
             COMMAND "${XMLLINT}" --schema "${PROJECT_SOURCE_DIR}/data/modeldefinition.xsd" --nonet --noout "${FILE}")
 endforeach (FILE MODELDEFINITIONS_FILES)
 
+file(GLOB ENTITY_RECIPES_FILES "data/entityrecipes/*.entityrecipe" "data/entityrecipes/*.xsd")
+install(FILES ${ENTITY_RECIPES_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/entityrecipes)
+
 
 configure_file(tools/Version.tmpl.h generated/Version.h @ONLY)
 configure_file(tools/support/update_lua_bindings.bat.in scripts/update_lua_bindings.bat @ONLY)
