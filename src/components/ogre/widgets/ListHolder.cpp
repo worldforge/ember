@@ -33,13 +33,24 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-ListHolder::ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox)
-		: mListbox(listbox), mFilterEditbox(filterEditbox) {
+ListHolder::ListHolder(CEGUI::Listbox& listbox, CEGUI::Editbox* filterEditbox)
+		: mListbox(listbox),
+		  mFilterEditbox(filterEditbox) {
 	if (filterEditbox) {
-		BIND_CEGUI_EVENT(filterEditbox, CEGUI::Window::EventTextChanged, ListHolder::filterEditbox_TextChanged);
+		filterEditbox->subscribeEvent(CEGUI::Window::EventTextChanged, [&]() {
+			updateItems();
+			return true;
+		});
 	}
-// 	BIND_CEGUI_EVENT(listbox, CEGUI::Listbox::EventListContentsChanged, ListHolder::listbox_ListContentsChanged );
 
+	listbox.subscribeEvent(CEGUI::Listbox::EventSelectionChanged, [&](){
+		auto selected = listbox.getFirstSelectedItem();
+		if (selected) {
+			EventSelected(selected->getID());
+		}else {
+			EventSelected(-1);
+		}
+	});
 
 
 }
@@ -53,12 +64,11 @@ ListHolder::~ListHolder() {
 void ListHolder::addItem(CEGUI::ListboxItem* item) {
 	item->setAutoDeleted(false);
 	mItems.emplace_back(item);
-	if (mListbox) {
-		if (isItemAllowed(item)) {
-			//TODO: the ListBox has horrible performance as the number of items increase. Look into how to fix it.
-			mListbox->addItem(item);
-		}
+	if (isItemAllowed(item)) {
+		//TODO: the ListBox has horrible performance as the number of items increase. Look into how to fix it.
+		mListbox.addItem(item);
 	}
+
 }
 
 void ListHolder::insertItem(CEGUI::ListboxItem* item, const CEGUI::ListboxItem* position) {
@@ -70,18 +80,17 @@ void ListHolder::insertItem(CEGUI::ListboxItem* item, const CEGUI::ListboxItem* 
 }
 
 void ListHolder::removeItem(const CEGUI::ListboxItem* item) {
-	if (mListbox) {
-		auto pos = std::find_if(mItems.begin(), mItems.end(), [item](const std::unique_ptr<CEGUI::ListboxItem>& entry) { return entry.get() == item; });
-		if (pos != mItems.end()) {
-			mItems.erase(pos);
-		}
-		mListbox->removeItem(item);
+	auto pos = std::find_if(mItems.begin(), mItems.end(), [item](const std::unique_ptr<CEGUI::ListboxItem>& entry) { return entry.get() == item; });
+	if (pos != mItems.end()) {
+		mItems.erase(pos);
 	}
+	mListbox.removeItem(item);
+
 }
 
 bool ListHolder::isItemAllowed(CEGUI::ListboxItem* item) {
 	if (mFilterEditbox) {
-		if (mFilterEditbox->getText() == "") {
+		if (mFilterEditbox->getText().empty()) {
 			return true;
 		}
 		return item->getText().find(mFilterEditbox->getText()) != CEGUI::String::npos;
@@ -91,12 +100,11 @@ bool ListHolder::isItemAllowed(CEGUI::ListboxItem* item) {
 
 void ListHolder::updateItems() {
 	//Note that this will only work when the items in the list are of class ColouredListItem, since that class doesn't render any disabled items
-	if (mListbox) {
-		for (auto& entry: mItems) {
-			entry->setDisabled(!isItemAllowed(entry.get()));
-		}
-		mListbox->handleUpdatedItemData();
+	for (auto& entry: mItems) {
+		entry->setDisabled(!isItemAllowed(entry.get()));
 	}
+	mListbox.handleUpdatedItemData();
+
 }
 
 
@@ -138,15 +146,10 @@ void ListHolder::updateItems() {
 // 	return true;
 // }
 
-bool ListHolder::filterEditbox_TextChanged(const CEGUI::EventArgs& args) {
-	updateItems();
-	return true;
-}
 
 void ListHolder::resetList() {
-	if (mListbox) {
-		mListbox->resetList();
-	}
+	mListbox.resetList();
+
 	mItems.clear();
 }
 

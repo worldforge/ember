@@ -32,14 +32,14 @@ namespace OgreView {
 namespace Gui {
 
 /**
-@brief A standard ListboxTextItem, with the exeption that the selection will be coloured.
+@brief A standard ListboxTextItem, with the exception that the selection will be coloured.
 This class also has the feature that items that are disabled won't be rendered. This is useful when filtering out items from lists.
 @author Erik Ogenvik <erik@ogenvik.org>
 */
 class ColouredListItem : public CEGUI::ListboxTextItem
 {
 public:
-	ColouredListItem(const CEGUI::String& text); 
+	explicit ColouredListItem(const CEGUI::String& text);
 	ColouredListItem(const CEGUI::String& text, unsigned int item_id);
 	ColouredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 
@@ -51,7 +51,7 @@ public:
 	 * @brief If the item is disabled, return a zero size.
 	 * @return A zero size if the item is disabled.
 	 */
-	virtual CEGUI::Sizef getPixelSize() const;
+	CEGUI::Sizef getPixelSize() const override;
 	
 	/**
 	 * @brief If the item is disabled, don't render anything.
@@ -59,7 +59,7 @@ public:
 	 * @param alpha 
 	 * @param clipper 
 	 */
-	virtual void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rectf& targetRect, float alpha, const CEGUI::Rectf* clipper) const;
+	void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rectf& targetRect, float alpha, const CEGUI::Rectf* clipper) const override;
 
 private:
 	void setColours();
@@ -72,7 +72,7 @@ private:
 class ColouredTreeItem : public CEGUI::TreeItem
 {
 public:
-	ColouredTreeItem(const CEGUI::String& text); 
+	explicit ColouredTreeItem(const CEGUI::String& text);
 	ColouredTreeItem(const CEGUI::String& text, unsigned int item_id);
 	ColouredTreeItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 

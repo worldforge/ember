@@ -11,29 +11,73 @@ endif ()
 
 add_library(widgets OBJECT
 
-        ActionBarInput.cpp ActionBarIcon.cpp ActionBarIconSlot.cpp ActionBarIconDragDropTarget.cpp ActionBarIconManager.cpp AssetsManager.cpp ColouredListItem.cpp Compass.cpp
-        ConsoleAdapter.cpp EntityCEGUITexture.cpp EntityCreator.cpp
+        ActionBarInput.cpp
+        ActionBarIcon.cpp
+        ActionBarIconSlot.cpp
+        ActionBarIconDragDropTarget.cpp
+        ActionBarIconManager.cpp
+        AssetsManager.cpp
+        ColouredListItem.cpp
+        Compass.cpp
+        ConsoleAdapter.cpp
+        EntityCEGUITexture.cpp
+        EntityCreator.cpp
         EntityCreatorMovement.cpp
-        EntityCreatorMovementBridge.cpp EntityEditor.cpp EntityIcon.cpp
-        EntityIconDragDropPreview.cpp EntityIconDragDropTarget.cpp EntityIconManager.cpp EntityIconSlot.cpp IconBar.cpp
+        EntityCreatorMovementBridge.cpp
+        EntityEditor.cpp
+        EntityIcon.cpp
+        EntityIconDragDropPreview.cpp
+        EntityIconDragDropTarget.cpp
+        EntityIconManager.cpp
+        EntityIconSlot.cpp
+        IconBar.cpp
         IconBase.cpp
         ListHolder.cpp
-        LoadingBar.cpp EntityCreatorTypeHelper.cpp MeshInfoProvider.cpp ModelRenderer.cpp
-        MovableObjectRenderer.cpp OgreEntityRenderer.cpp QuaternionAdapter.cpp QuickHelp.cpp QuickHelpCursor.cpp HelpMessage.cpp WorldLoadingScreen.cpp
-        StackableContainer.cpp Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp WidgetPool.cpp AtlasHelper.cpp ModelEditHelper.cpp
-        EntityTextureManipulator.cpp LabelAction.cpp
-        icons/Icon.cpp icons/IconImageStore.cpp icons/IconManager.cpp
-        icons/IconRenderer.cpp icons/IconStore.cpp
-        adapters/atlas/AdapterFactory.cpp adapters/atlas/AreaAdapter.cpp
-        adapters/atlas/CustomAdapter.cpp adapters/atlas/ListAdapter.cpp adapters/atlas/MapAdapter.cpp adapters/atlas/NumberAdapter.cpp adapters/atlas/OrientationAdapter.cpp
-        adapters/atlas/PolygonAdapter.cpp adapters/atlas/Position2DAdapter.cpp adapters/atlas/PositionAdapter.cpp adapters/atlas/SizeAdapter.cpp
-        adapters/atlas/StaticAdapter.cpp adapters/atlas/TerrainModAdapter.cpp
+        LoadingBar.cpp
+        EntityCreatorTypeHelper.cpp
+        MeshInfoProvider.cpp
+        ModelRenderer.cpp
+        MovableObjectRenderer.cpp
+        OgreEntityRenderer.cpp
+        QuaternionAdapter.cpp
+        QuickHelp.cpp
+        QuickHelpCursor.cpp
+        HelpMessage.cpp
+        WorldLoadingScreen.cpp
+        StackableContainer.cpp
+        Vector3Adapter.cpp
+        Widget.cpp
+        WidgetDefinitions.cpp
+        WidgetPool.cpp
+        AtlasHelper.cpp
+        ModelEditHelper.cpp
+        EntityTextureManipulator.cpp
+        LabelAction.cpp
+        icons/Icon.cpp
+        icons/IconImageStore.cpp
+        icons/IconManager.cpp
+        icons/IconRenderer.cpp
+        icons/IconStore.cpp
+        adapters/atlas/AdapterFactory.cpp
+        adapters/atlas/AreaAdapter.cpp
+        adapters/atlas/CustomAdapter.cpp
+        adapters/atlas/ListAdapter.cpp
+        adapters/atlas/MapAdapter.cpp
+        adapters/atlas/NumberAdapter.cpp
+        adapters/atlas/OrientationAdapter.cpp
+        adapters/atlas/PolygonAdapter.cpp
+        adapters/atlas/Position2DAdapter.cpp
+        adapters/atlas/PositionAdapter.cpp
+        adapters/atlas/SizeAdapter.cpp
+        adapters/atlas/StaticAdapter.cpp
+        adapters/atlas/TerrainModAdapter.cpp
         adapters/eris/RuleTreeAdapter.cpp
         adapters/ogre/ResourceListAdapter.cpp
+        adapters/ValueTypeHelper.cpp
+        adapters/StringListAdapter.cpp
         representations/LayoutHelper.cpp
         TexturePair.cpp EntityTooltip.cpp
         EntityCreatorCreationInstance.cpp
-        adapters/ValueTypeHelper.cpp
         HitDisplayer.cpp
         TextNodeRenderer.cpp
         adapters/ModelDefinitionsAdapter.cpp

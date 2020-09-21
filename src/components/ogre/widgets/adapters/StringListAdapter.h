@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Erik Ogenvik
+ Copyright (C) 2020 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,11 +16,16 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBER_MODELDEFINITIONSADAPTER_H
-#define EMBER_MODELDEFINITIONSADAPTER_H
+#ifndef EMBER_STRINGLISTADAPTER_H
+#define EMBER_STRINGLISTADAPTER_H
 
-#include "components/ogre/model/ModelDefinition.h"
-#include <map>
+#include <list>
+#include <vector>
+#include <string>
+
+#include <Eris/ActiveMarker.h>
+#include <sigc++/signal.h>
+
 
 namespace Ember {
 namespace OgreView {
@@ -30,21 +35,28 @@ namespace Gui {
 class ListHolder;
 
 namespace Adapters {
-class ModelDefinitionsAdapter {
+class StringListAdapter {
 public:
-	explicit ModelDefinitionsAdapter(ListHolder& listHolder);
+	explicit StringListAdapter(ListHolder& listHolder);
 
-	~ModelDefinitionsAdapter() = default;
+	~StringListAdapter() = default;
 
-	void update();
+	void add(std::string entry);
+	void add(std::string entry, std::string key);
+
+	void add(const std::vector<std::string>& entries);
+	void add(const std::vector<std::pair<std::string, std::string>>& entries);
+
+	sigc::signal<void, std::string> EventSelected;
 
 private:
 
 	ListHolder& mListHolder;
 
-	std::map<std::string, Model::ModelDefinitionPtr> mEntries;
+	std::vector<std::pair<std::string, std::string>> mEntries;
 
 	unsigned int mIndex;
+	bool mIsPopulating;
 
 	Eris::ActiveMarker mActiveMarker;
 
@@ -56,4 +68,4 @@ private:
 }
 
 
-#endif //EMBER_MODELDEFINITIONSADAPTER_H
+#endif //EMBER_STRINGLISTADAPTER_H
