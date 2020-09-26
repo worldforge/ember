@@ -29,30 +29,23 @@
 #include "EntityRecipeManager.h"
 #include "components/ogre/XMLHelper.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
-XMLEntityRecipeSerializer::XMLEntityRecipeSerializer()
-{
-}
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
+XMLEntityRecipeSerializer::XMLEntityRecipeSerializer() = default;
 
-XMLEntityRecipeSerializer::~XMLEntityRecipeSerializer()
-{
-}
+XMLEntityRecipeSerializer::~XMLEntityRecipeSerializer() = default;
 
-void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
-{
+std::map<std::string, std::unique_ptr<EntityRecipe>> XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream) {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
 	if (!xmlHelper.Load(xmlDoc, stream)) {
-		return;
+		return {};
 	}
 	TiXmlElement* rootElem = xmlDoc.RootElement();
 
-	for (TiXmlElement* smElem = rootElem->FirstChildElement(); smElem != 0; smElem = smElem->NextSiblingElement()) {
+	std::map<std::string, std::unique_ptr<EntityRecipe>> entries;
+	for (TiXmlElement* smElem = rootElem->FirstChildElement(); smElem != nullptr; smElem = smElem->NextSiblingElement()) {
 		const char* tmp = smElem->Attribute("name");
 		std::string name;
 		if (!tmp) {
@@ -62,37 +55,37 @@ void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const O
 		}
 
 		try {
-			EntityRecipePtr entRecipe = EntityRecipeManager::getSingleton().create(name, groupName);
+			auto entRecipe = std::make_unique<EntityRecipe>();
 			if (entRecipe) {
-				readRecipe(entRecipe, smElem);
-				//removed this in the trunk /ehj
-				// 				entRecipe->doTest();
+				entRecipe->mName = name;
+				readRecipe(*entRecipe, smElem);
+				entries.emplace(name, std::move(entRecipe));
 			}
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when parsing entity recipe '" << name << "'." << ex);
 		}
 	}
+	return entries;
 }
 
-void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, TiXmlElement* recipeNode)
-{
+void XMLEntityRecipeSerializer::readRecipe(EntityRecipe& entRecipe, TiXmlElement* recipeNode) {
 	TiXmlElement* elem;
 
 	// Author
 	elem = recipeNode->FirstChildElement("author");
 	if (elem) {
-		const char *text = elem->GetText();
+		const char* text = elem->GetText();
 		if (text) {
-			entRecipe->setAuthor(text);
+			entRecipe.setAuthor(text);
 		}
 	}
 
 	// Description
 	elem = recipeNode->FirstChildElement("description");
 	if (elem) {
-		const char *text = elem->GetText();
+		const char* text = elem->GetText();
 		if (text) {
-			entRecipe->setDescription(text);
+			entRecipe.setDescription(text);
 		}
 	}
 
@@ -121,15 +114,14 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipePtr entRecipe, TiXmlEleme
 	}
 }
 
-void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, TiXmlElement* entSpecNode)
-{
+void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipe& entRecipe, TiXmlElement* entSpecNode) {
 	S_LOG_VERBOSE("Read entity spec.");
 
 	// Copy <entity> part of XML into recipe
-	entRecipe->mEntitySpec = entSpecNode->Clone()->ToElement();
-	const char* type = entRecipe->mEntitySpec->Attribute("type");
+	entRecipe.mEntitySpec.reset(entSpecNode->Clone()->ToElement());
+	const char* type = entRecipe.mEntitySpec->Attribute("type");
 	if (type) {
-		entRecipe->mEntityType = std::string(type);
+		entRecipe.mEntityType = std::string(type);
 	}
 
 	/*
@@ -158,7 +150,7 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, TiXmlE
 	 {
 	 // Decoding map message
 	 m = decoder.popMessage();
-	 entRecipe->mEntitySpec.push_back(m);
+	 entRecipe.mEntitySpec.push_back(m);
 	 for (Atlas::Message::MapType::const_iterator iter = m.begin(); iter != m.end(); iter++)
 	 {
 	 S_LOG_VERBOSE(" " << iter->first);
@@ -167,11 +159,10 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipePtr entRecipe, TiXmlE
 	 */
 }
 
-void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlElement* adaptersNode)
-{
+void XMLEntityRecipeSerializer::readAdapters(EntityRecipe& entRecipe, TiXmlElement* adaptersNode) {
 	S_LOG_VERBOSE("Read adapters.");
 	for (TiXmlElement* smElem = adaptersNode->FirstChildElement("adapter"); smElem != nullptr; smElem = smElem->NextSiblingElement("adapter")) {
-		const std::string *name, *type, *tooltip, *defaultValue;
+		const std::string* name, * type, * tooltip, * defaultValue;
 		std::string tooltipText;
 		if (!(name = smElem->Attribute(std::string("name"))))
 			continue;
@@ -187,9 +178,9 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 
 		S_LOG_VERBOSE(" adapter '" << *name << "' of type " << *type);
 
-		GUIAdapter* adapter = entRecipe->createGUIAdapter(*name, *type, tooltipText);
+		GUIAdapter* adapter = entRecipe.createGUIAdapter(*name, *type, tooltipText);
 
-		const std::string *title;
+		const std::string* title;
 		if ((title = smElem->Attribute(std::string("title")))) {
 			adapter->setTitle(*title);
 		}
@@ -201,8 +192,8 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 		// Custom adapter parameters
 		if (*type == "string") {
 			for (TiXmlElement* item = smElem->FirstChildElement("item"); item != nullptr; item = item->NextSiblingElement("item")) {
-				const char *text;
-				const std::string *value;
+				const char* text;
+				const std::string* value;
 				text = item->GetText();
 				if ((value = item->Attribute(std::string("value")))) {
 					adapter->addSuggestion(*value, text);
@@ -211,7 +202,7 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 				}
 			}
 
-			const std::string *allowRandom;
+			const std::string* allowRandom;
 			if ((allowRandom = smElem->Attribute(std::string("allowrandom"))) && (*allowRandom == "yes" || *allowRandom == "true" || *allowRandom == "on")) {
 				adapter->setAllowRandom(true);
 			}
@@ -219,16 +210,15 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipePtr entRecipe, TiXmlEle
 	}
 }
 
-void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, TiXmlElement* bindingsNode)
-{
+void XMLEntityRecipeSerializer::readBindings(EntityRecipe& entRecipe, TiXmlElement* bindingsNode) {
 	S_LOG_VERBOSE("Read bindings.");
 	for (TiXmlElement* smElem = bindingsNode->FirstChildElement("bind"); smElem != nullptr; smElem = smElem->NextSiblingElement("bind")) {
-		const std::string *name, *func;
+		const std::string* name, * func;
 
 		if (!(name = smElem->Attribute(std::string("name"))))
 			continue;
 
-		GUIAdapterBindings* bindings = entRecipe->createGUIAdapterBindings(*name);
+		GUIAdapterBindings* bindings = entRecipe.createGUIAdapterBindings(*name);
 
 		if ((func = smElem->Attribute(std::string("func")))) {
 			bindings->setFunc(*func);
@@ -238,14 +228,13 @@ void XMLEntityRecipeSerializer::readBindings(EntityRecipePtr entRecipe, TiXmlEle
 	}
 
 	// Associating bindings with placeholders after parsing
-	entRecipe->associateBindings();
+	entRecipe.associateBindings();
 }
 
-void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr /*entRecipe*/, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode)
-{
+void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipe& /*entRecipe*/, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode) {
 	S_LOG_VERBOSE("  Reading bind adapters.");
 	for (TiXmlElement* elem = bindAdaptersNode->FirstChildElement(); elem != nullptr; elem = elem->NextSiblingElement()) {
-		const std::string *name;
+		const std::string* name;
 
 		if (!(name = elem->Attribute(std::string("name"))))
 			continue;
@@ -254,12 +243,11 @@ void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr /*entRecipe*/, 
 	}
 }
 
-void XMLEntityRecipeSerializer::readScript(EntityRecipePtr entRecipe, TiXmlElement* scriptNode)
-{
+void XMLEntityRecipeSerializer::readScript(EntityRecipe& entRecipe, TiXmlElement* scriptNode) {
 	S_LOG_VERBOSE("Read script.");
 	const char* text = scriptNode->GetText();
 	if (text) {
-		entRecipe->mScript = text;
+		entRecipe.mScript = text;
 	}
 }
 

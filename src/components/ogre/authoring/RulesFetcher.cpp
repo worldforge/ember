@@ -48,7 +48,7 @@ RulesFetcher::RulesFetcher(Eris::Connection& connection, std::string mindId) :
 {
 }
 
-const std::unordered_map<std::string, Atlas::Objects::Root>& RulesFetcher::getRules() const
+const std::unordered_map<std::string, RulesFetcher::RuleEntry>& RulesFetcher::getRules() const
 {
 	return mRules;
 }
@@ -83,7 +83,7 @@ void RulesFetcher::operationGetRuleResult(const Atlas::Objects::Operation::RootO
 
 	Root arg = op->getArgs().front();
 
-	std::list<std::string> children;
+	std::vector<std::string> children;
 	if (arg->hasAttr("children")) {
 		Element childrenElement;
 		if (arg->copyAttr("children", childrenElement) == 0) {
@@ -100,7 +100,7 @@ void RulesFetcher::operationGetRuleResult(const Atlas::Objects::Operation::RootO
 		}
 	}
 
-	mRules.insert(std::make_pair(arg->getId(), arg));
+	mRules.insert(std::make_pair(arg->getId(), RuleEntry{arg, children}));
 	EventNewRuleReceived.emit(mRules.size());
 
 	if (!children.empty()) {

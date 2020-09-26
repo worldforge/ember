@@ -29,17 +29,13 @@
 #include "framework/Singleton.h"
 #include "XMLEntityRecipeSerializer.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 /**
  * Resource manager for entity recipes.
  */
-class EntityRecipeManager: public Ogre::ResourceManager, public Singleton<EntityRecipeManager>
-{
+class EntityRecipeManager : public Ogre::ScriptLoader, public Singleton<EntityRecipeManager> {
 public:
 	/**
 	 * Constructor
@@ -51,16 +47,14 @@ public:
 	 */
 	~EntityRecipeManager() override;
 
-	/// Create a new EntityRecipe
-	/// @see ResourceManager::createResource
-	EntityRecipePtr create (const Ogre::String& name, const Ogre::String& group,
-			bool isManual = false, Ogre::ManualResourceLoader* loader = nullptr,
-			const Ogre::NameValuePairList* createParams = nullptr);
-
 	/**
 	 * Parse a script file.
 	 */
-	void parseScript(Ogre::DataStreamPtr &stream, const Ogre::String &groupName) override;
+	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) override;
+
+	const std::map<std::string, std::shared_ptr<EntityRecipe>>& getEntries() const {
+		return mEntries;
+	}
 
 protected:
 	/**
@@ -68,10 +62,12 @@ protected:
 	 */
 	XMLEntityRecipeSerializer mXmlSerializer;
 
-	/**
-	 * Create a new resource instance compatible with this manager.
-	 */
-	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams) override;
+	std::map<std::string, std::shared_ptr<EntityRecipe>> mEntries;
+
+
+	const Ogre::StringVector& getScriptPatterns() const override;
+
+	float getLoadingOrder() const override;
 };
 
 }

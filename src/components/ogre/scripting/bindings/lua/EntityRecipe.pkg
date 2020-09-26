@@ -6,14 +6,13 @@ namespace Authoring {
 /**
  * Resource that stores recipes for entity creator.
  */
-class EntityRecipe : public Ogre::Resource {
+class EntityRecipe  {
 
 public:
-	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
-		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+
 	explicit EntityRecipe(const Atlas::Message::MapType& entityDefinition);
 	virtual ~EntityRecipe();
-	const GUIAdaptersStore& getGUIAdapters();
+	//const GUIAdaptersStore& getGUIAdapters();
 	void setAuthor(const std::string& author);
 	const std::string& getAuthor() const;
 	void setDescription(const std::string& description);
@@ -22,33 +21,26 @@ public:
 	void createEntity(Eris::TypeService& typeService);
 };
 
-class EntityRecipePtr
-{
-public:
-	virtual ~EntityRecipePtr();
-	EntityRecipe* get();
-};
+//class GUIAdaptersStore
+//{
+//class value_type {
+//	const std::string& first;
+//	GUIAdapter* second;
+//};
 
-class GUIAdaptersStore
-{
-class value_type {
-	const std::string& first;
-	GUIAdapter* second;
-};
+//$#define __operator_ptr operator*
+//$#define __operator_pp operator++
 
-$#define __operator_ptr operator*
-$#define __operator_pp operator++
-
-class const_iterator {
-public:
-    value_type& __operator_ptr @ get();
-	Ember::OgreView::Authoring::GUIAdaptersStore::const_iterator& __operator_pp @ next();
-	bool operator==(const Ember::OgreView::Authoring::GUIAdaptersStore::const_iterator& value);
-};
-public:
-	Ember::OgreView::Authoring::GUIAdaptersStore::const_iterator begin() const;
-	Ember::OgreView::Authoring::GUIAdaptersStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
-};
+//class const_iterator {
+//public:
+//    value_type& __operator_ptr @ get();
+//	Ember::OgreView::Authoring::GUIAdaptersStore::const_iterator& __operator_pp @ next();
+//	bool operator==(const Ember::OgreView::Authoring::GUIAdaptersStore::const_iterator& value);
+//};
+//public:
+//	Ember::OgreView::Authoring::GUIAdaptersStore::const_iterator begin() const;
+//	Ember::OgreView::Authoring::GUIAdaptersStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
+//};
 }
 }
 }

@@ -40,25 +40,17 @@
 
 #include <tolua++.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
-EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
-						   const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) :
-	Resource(creator, name, handle, group, isManual, loader),
-	mEntitySpec(nullptr)
-{
-	if (createParamDictionary("EntityRecipe")) {
-		// no custom params
-	}
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
+EntityRecipe::EntityRecipe() :
+		mEntitySpec(nullptr) {
+
 }
 
 EntityRecipe::EntityRecipe(const Atlas::Message::MapType& entityDefinition) :
-	mEntitySpec(nullptr), mEntityDefinition(entityDefinition)
-{
+		mEntitySpec(nullptr),
+		mEntityDefinition(entityDefinition) {
 	auto I = entityDefinition.find("parent");
 	if (I != entityDefinition.end() && I->second.isString()) {
 		mEntityType = I->second.String();
@@ -66,78 +58,53 @@ EntityRecipe::EntityRecipe(const Atlas::Message::MapType& entityDefinition) :
 }
 
 
-EntityRecipe::~EntityRecipe()
-{
-	for (auto& adapter : mGUIAdapters) {
-		delete adapter.second;
-	}
+EntityRecipe::~EntityRecipe() = default;
 
-	for (auto& binding : mBindings) {
-		delete binding.second;
-	}
 
-	delete mEntitySpec;
-}
-
-void EntityRecipe::loadImpl()
-{
-}
-
-void EntityRecipe::unloadImpl()
-{
-}
-
-size_t EntityRecipe::calculateSize() const
-{
-	//TODO:implement this
-	return 0;
-}
-
-const std::string& EntityRecipe::getEntityType() const
-{
+const std::string& EntityRecipe::getEntityType() const {
 	return mEntityType;
 }
 
-GUIAdapter* EntityRecipe::createGUIAdapter(const std::string& name, const std::string& type, const std::string& tooltip)
-{
-	GUIAdapter* adapter;
-	adapter = new GUIAdapter(type);
+GUIAdapter* EntityRecipe::createGUIAdapter(const std::string& name, const std::string& type, const std::string& tooltip) {
+	auto adapter = std::make_unique<GUIAdapter>(type);
 	adapter->setTooltip(tooltip);
-	mGUIAdapters[name] = adapter;
 	adapter->EventValueChanged.connect(sigc::mem_fun(*this, &EntityRecipe::valueChanged));
-	return adapter;
+	auto result = mGUIAdapters.emplace(name, std::move(adapter));
+	if (result.second) {
+		return result.first->second.get();
+	} else {
+		return {};
+	}
 }
 
-GUIAdapter* EntityRecipe::getGUIAdapter(const std::string& name)
-{
+GUIAdapter* EntityRecipe::getGUIAdapter(const std::string& name) {
 	GUIAdaptersStore::iterator adapter;
 	if ((adapter = mGUIAdapters.find(name)) != mGUIAdapters.end()) {
-		return adapter->second;
+		return adapter->second.get();
 	} else {
 		return nullptr;
 	}
 }
 
-const GUIAdaptersStore& EntityRecipe::getGUIAdapters()
-{
+const GUIAdaptersStore& EntityRecipe::getGUIAdapters() {
 	return mGUIAdapters;
 }
 
-GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(const std::string& name)
-{
-	GUIAdapterBindings* adapterBindings;
-	adapterBindings = new GUIAdapterBindings();
-	mBindings[name] = adapterBindings;
-	return adapterBindings;
+GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(const std::string& name) {
+	auto result = mBindings.emplace(name, GUIAdapterBindings());
+	if (result.second) {
+		return &result.first->second;
+	} else {
+		return nullptr;
+	}
 }
 
-void EntityRecipe::associateBindings()
-{
+void EntityRecipe::associateBindings() {
 	S_LOG_VERBOSE("Associating bindings.");
 	if (mEntitySpec) {
 		// Iterate over all entity spec XML nodes
 		EntityRecipe::SpecIterator iter(this);
-		TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
+		TiXmlElement* elem = mEntitySpec->FirstChildElement("atlas");
 		if (elem) {
 			elem->Accept(&iter);
 		}
@@ -145,12 +112,10 @@ void EntityRecipe::associateBindings()
 }
 
 EntityRecipe::SpecIterator::SpecIterator(EntityRecipe* recipe) :
-	TiXmlVisitor(), mRecipe(recipe)
-{
+		TiXmlVisitor(), mRecipe(recipe) {
 }
 
-bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
-{
+bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode) {
 	// We should be the only child of our parent
 	if (textNode.Parent()->FirstChild() != textNode.Parent()->LastChild()) {
 		return false;
@@ -162,7 +127,7 @@ bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 	if (!text.empty() && text.at(0) == '$') {
 		auto bindings = mRecipe->mBindings.find(text.substr(1));
 		if (bindings != mRecipe->mBindings.end()) {
-			bindings->second->associateXmlElement(const_cast<TiXmlNode&> (*textNode.Parent()));
+			bindings->second.associateXmlElement(const_cast<TiXmlNode&> (*textNode.Parent()));
 			S_LOG_VERBOSE("Associated " << bindings->first << " with " << text);
 		} else {
 			S_LOG_WARNING("Binding for " << text << " not found.");
@@ -172,8 +137,7 @@ bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 	return true;
 }
 
-Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeService)
-{
+Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeService) {
 	S_LOG_VERBOSE("Creating entity.");
 
 	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();
@@ -182,17 +146,17 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 
 	// Walking through adapter bindings
 	for (auto I = mBindings.begin(); I != mBindings.end(); ++I) {
-		const std::string& func = I->second->getFunc();
+		const std::string& func = I->second.getFunc();
 
 		S_LOG_VERBOSE(" binding: " << I->first << " to func " << func);
 
 		if (func.empty()) {
-			std::vector<std::string>& adapters = I->second->getAdapters();
+			std::vector<std::string>& adapters = I->second.getAdapters();
 
 			if (adapters.size() == 1) {
 				std::string adapterName = adapters[0];
 				Atlas::Message::Element val = mGUIAdapters[adapterName]->getValue();
-				I->second->setValue(val);
+				I->second.setValue(val);
 			} else {
 				S_LOG_WARNING("Should be only one adapter without calling function.");
 			}
@@ -202,9 +166,9 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 			lua_State* L = static_cast<Lua::LuaScriptingProvider*> (scriptingService.getProviderFor("LuaScriptingProvider"))->getLuaState();
 
 			// Pushing function params
-			std::vector<std::string>& adapters = I->second->getAdapters();
+			std::vector<std::string>& adapters = I->second.getAdapters();
 			for (auto& adapterName : adapters) {
-				Atlas::Message::Element* val = new Atlas::Message::Element(mGUIAdapters[adapterName]->getValue());
+				auto* val = new Atlas::Message::Element(mGUIAdapters[adapterName]->getValue());
 				tolua_pushusertype_and_takeownership(L, val, "Atlas::Message::Element");
 			}
 
@@ -214,8 +178,8 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 			LuaRef returnValue(callContext.getReturnValue());
 
 			Atlas::Message::Element returnObj;
-			returnObj = returnValue.asObject<Atlas::Message::Element> ("Atlas::Message::Element");
-			I->second->setValue(returnObj);
+			returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
+			I->second.setValue(returnObj);
 		}
 	}
 	//Inject all default attributes that aren't yet added.
@@ -301,28 +265,23 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	return Atlas::Message::MapType();
 }
 
-void EntityRecipe::setAuthor(const std::string& author)
-{
+void EntityRecipe::setAuthor(const std::string& author) {
 	mAuthor = author;
 }
 
-const std::string& EntityRecipe::getAuthor() const
-{
+const std::string& EntityRecipe::getAuthor() const {
 	return mAuthor;
 }
 
-void EntityRecipe::setDescription(const std::string& description)
-{
+void EntityRecipe::setDescription(const std::string& description) {
 	mDescription = description;
 }
 
-const std::string& EntityRecipe::getDescription() const
-{
+const std::string& EntityRecipe::getDescription() const {
 	return mDescription;
 }
 
-void EntityRecipe::valueChanged()
-{
+void EntityRecipe::valueChanged() {
 	EventValueChanged.emit();
 }
 

@@ -36,19 +36,15 @@
 #include <map>
 #include <unordered_map>
 
-namespace Eris
-{
+namespace Eris {
 class TypeService;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
-typedef std::map<std::string, GUIAdapter*> GUIAdaptersStore;
-typedef std::unordered_map<std::string, GUIAdapterBindings*> BindingsStore;
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
+typedef std::map<std::string, std::unique_ptr<GUIAdapter>> GUIAdaptersStore;
+typedef std::unordered_map<std::string, GUIAdapterBindings> BindingsStore;
 
 /**
  * @brief Resource that stores entity recipes.
@@ -57,38 +53,18 @@ typedef std::unordered_map<std::string, GUIAdapterBindings*> BindingsStore;
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class EntityRecipe: public Ogre::Resource
-{
+class EntityRecipe {
 
 	friend class XMLEntityRecipeSerializer;
 
 public:
-	/**
-	 * Constructor.
-	 */
-	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+
+	EntityRecipe();
 
 	explicit EntityRecipe(const Atlas::Message::MapType& entityDefinition);
 
-	/**
-	 * Destructor.
-	 */
-	~EntityRecipe() override;
 
-	/**
-	 * Implemented from Ogre::Resource.
-	 */
-	void loadImpl() override;
-
-	/**
-	 * Implemented from Ogre::Resource.
-	 */
-	void unloadImpl() override;
-
-	/**
-	 * Implemented from Ogre::Resource.
-	 */
-	size_t calculateSize() const override;
+	~EntityRecipe();
 
 	/**
 	 * Returns entity type.
@@ -158,8 +134,11 @@ public:
 	 */
 	sigc::signal<void> EventValueChanged;
 
+	std::string mName;
+
 protected:
 	void valueChanged();
+
 
 	/**
 	 * Author of recipe.
@@ -174,7 +153,7 @@ protected:
 	/**
 	 * Stores semi-atlas entity spec.
 	 */
-	TiXmlElement* mEntitySpec;
+	std::unique_ptr<TiXmlElement> mEntitySpec;
 
 	/**
  	 * Entity type.
@@ -201,18 +180,17 @@ protected:
 	/**
 	 * Helper iterator over TinyXml nodes for associateBindings()
 	 */
-	class SpecIterator: public TiXmlVisitor
-	{
+	class SpecIterator : public TiXmlVisitor {
 	public:
 		explicit SpecIterator(EntityRecipe* recipe);
 
 		bool Visit(const TiXmlText& elem) override;
+
 	private:
 		EntityRecipe* mRecipe;
 	};
 };
 
-typedef Ogre::SharedPtr<EntityRecipe> EntityRecipePtr;
 
 }
 }

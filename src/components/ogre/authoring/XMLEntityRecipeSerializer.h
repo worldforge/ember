@@ -29,63 +29,54 @@
 #include "tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 /**
  * Serialize entity recipe from xml files.
  */
-class XMLEntityRecipeSerializer
-{
+class XMLEntityRecipeSerializer {
 public:
-	/**
-	 * Constructor.
-	 */
+
 	XMLEntityRecipeSerializer();
 
-	/**
-	 * Destructor.
-	 */
 	~XMLEntityRecipeSerializer();
 
 	/**
 	 * Parse the xml document and create entity recipe from the data.
 	 */
-	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+	std::map<std::string, std::unique_ptr<EntityRecipe>> parseScript(Ogre::DataStreamPtr& stream);
 
 protected:
 	/**
 	 * Parses xml tree with entity recipe.
 	 */
-	void readRecipe(EntityRecipePtr entRecipe, TiXmlElement* recipeNode);
+	void readRecipe(EntityRecipe& entRecipe, TiXmlElement* recipeNode);
 
 	/**
 	 * Parses xml entity specification.
 	 */
-	void readEntitySpec(EntityRecipePtr entRecipe, TiXmlElement* entSpecNode);
+	void readEntitySpec(EntityRecipe& entRecipe, TiXmlElement* entSpecNode);
 
 	/**
 	 * Parses xml GUI adapters.
 	 */
-	void readAdapters(EntityRecipePtr entRecipe, TiXmlElement* adaptersNode);
+	void readAdapters(EntityRecipe& entRecipe, TiXmlElement* adaptersNode);
 
 	/**
 	 * Parses xml script bindings.
 	 */
-	void readBindings(EntityRecipePtr entRecipe, TiXmlElement* bindingsNode);
+	void readBindings(EntityRecipe& entRecipe, TiXmlElement* bindingsNode);
 
 	/**
 	 * Parses adapters in individual script binding.
 	 */
-	void readBindAdapters(EntityRecipePtr entRecipe, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode);
+	void readBindAdapters(EntityRecipe& entRecipe, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode);
 
 	/**
 	 * Parses xml with Lua script.
 	 */
-	void readScript(EntityRecipePtr entRecipe, TiXmlElement* scriptNode);
+	void readScript(EntityRecipe& entRecipe, TiXmlElement* scriptNode);
 };
 
 }

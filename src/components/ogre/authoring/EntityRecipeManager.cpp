@@ -27,48 +27,34 @@
 
 #include "EntityRecipeManager.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 EntityRecipeManager::EntityRecipeManager() :
-	mXmlSerializer()
-{
-	// Internal params for script loader
-	mLoadOrder = 300.0f;
-	mResourceType = "EntityRecipe";
-
-	mScriptPatterns.emplace_back("*.entityrecipe");
-	mScriptPatterns.emplace_back("*.entityrecipe.xml");
+		mXmlSerializer() {
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
-
-	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 }
 
-EntityRecipeManager::~EntityRecipeManager()
-{
-	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+EntityRecipeManager::~EntityRecipeManager() {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
-EntityRecipePtr EntityRecipeManager::create (const Ogre::String& name, const Ogre::String& group,
-        bool isManual, Ogre::ManualResourceLoader* loader,
-        const Ogre::NameValuePairList* createParams)
-{
-    return Ogre::static_pointer_cast<EntityRecipe>(createResource(name, group, isManual, loader, createParams));
+const Ogre::StringVector& EntityRecipeManager::getScriptPatterns() const {
+	static Ogre::StringVector patterns{"*.entityrecipe", "*.entityrecipe.xml"};
+	return patterns;
 }
 
-void EntityRecipeManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
-{
-	mXmlSerializer.parseScript(stream, groupName);
+Ogre::Real EntityRecipeManager::getLoadingOrder() const {
+	return 300;
 }
 
-Ogre::Resource* EntityRecipeManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* /*createParams*/)
-{
-	return OGRE_NEW EntityRecipe(this, name, handle, group, isManual, loader);
+void EntityRecipeManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) {
+	auto entries = mXmlSerializer.parseScript(stream);
+	for (auto& entry: entries) {
+		mEntries.emplace(entry.first, std::move(entry.second));
+	}
 }
+
 
 }
 }

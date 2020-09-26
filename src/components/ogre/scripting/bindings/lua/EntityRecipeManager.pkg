@@ -7,7 +7,7 @@ namespace Authoring {
 /**
  * Resource manager for entity recipes.
  */
-class EntityRecipeManager: public Ogre::ResourceManager, public Ember::Singleton<EntityRecipeManager>
+class EntityRecipeManager: public Ember::Singleton<EntityRecipeManager>
 {
 public:
 	static EntityRecipeManager& getSingleton();
@@ -17,22 +17,6 @@ public:
 	 */
 	EntityRecipeManager();
 
-	/**
-	 * Destructor
-	 */
-	virtual ~EntityRecipeManager();
-
-	/**
-	 * Creates new resource.
-	 */
-	virtual Ogre::ResourcePtr create(const Ogre::String& name, const Ogre::String& group, 
-		bool isManual = false, Ogre::ManualResourceLoader* loader = 0, 
-		const Ogre::NameValuePairList* createParams = 0);
-
-	/**
-	 * Parse a script file.
-	 */
-	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 };
 
 }

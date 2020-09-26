@@ -52,6 +52,11 @@ namespace Authoring
 class RulesFetcher: public virtual sigc::trackable
 {
 public:
+	struct RuleEntry {
+		Atlas::Objects::Root rule;
+		std::vector<std::string> children;
+	};
+
 	explicit RulesFetcher(Eris::Connection& connection, std::string mindId);
 	virtual ~RulesFetcher() = default;
 
@@ -67,7 +72,7 @@ public:
 	 * Best usage is to only call this once EventAllRulesReceived has been emitted.
 	 * @return All received rules.
 	 */
-	const std::unordered_map<std::string, Atlas::Objects::Root>& getRules() const;
+	const std::unordered_map<std::string, RuleEntry>& getRules() const;
 
 	/**
 	 * @brief Gets the name of the root rule, as specified in startFetching().
@@ -76,14 +81,15 @@ public:
 	const std::string& getRootRule() const;
 
 	/**
-	 * @brief Emitted when a new rule has been received.
-	 *
-	 * The first argument is the total of rules received so far.
+	 * @brief Emitted when all rules have been received.
 	 */
 	sigc::signal<void> EventAllRulesReceived;
 
+
 	/**
-	 * @brief Emitted when all rules have been received.
+	 * @brief Emitted when a new rule has been received.
+	 *
+	 * The first argument is the total of rules received so far.
 	 */
 	sigc::signal<void, int> EventNewRuleReceived;
 
@@ -92,7 +98,7 @@ private:
 	struct StackEntry
 	{
 		std::string id;
-		std::list<std::string> children;
+		std::vector<std::string> children;
 		std::string currentChild;
 	};
 
@@ -100,7 +106,9 @@ private:
 
 	std::string mMindId;
 
-	std::unordered_map<std::string, Atlas::Objects::Root> mRules;
+
+
+	std::unordered_map<std::string, RuleEntry> mRules;
 
 	std::deque<StackEntry> mRulesStack;
 

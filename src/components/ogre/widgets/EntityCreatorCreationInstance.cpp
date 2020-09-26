@@ -112,7 +112,7 @@ void EntityCreatorCreationInstance::createEntity() {
 	mEntityMessage = mRecipe.createEntity(mTypeService);
 	Eris::TypeInfo* erisType = mTypeService.getTypeByName(mRecipe.getEntityType());
 	if (!erisType) {
-		S_LOG_FAILURE("Type " << mRecipe.getEntityType() << " not found in recipe " << mRecipe.getName());
+		S_LOG_FAILURE("Type " << mRecipe.getEntityType() << " not found in recipe " << mRecipe.mName);
 		return;
 	}
 
@@ -163,7 +163,7 @@ void EntityCreatorCreationInstance::finalizeCreation() {
 
 	// Final position
 
-	auto pos = mMovement->getBridge()->getPosition();;
+	auto pos = mMovement->getBridge()->getPosition();
 	mEntityMessage["orientation"] = mMovement->getBridge()->getOrientation().toAtlas();
 	mEntityMessage["pos"] = pos.toAtlas();
 	if (mPlantedOnGround && mEntity->getLocation()) {
@@ -216,7 +216,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName) {
 //		modelDef->reloadAllInstances();
 //	}
 
-	Ogre::SceneNode* node = mEntityNode->createChildSceneNode(OgreInfo::createUniqueResourceName(mRecipe.getName()));
+	Ogre::SceneNode* node = mEntityNode->createChildSceneNode(OgreInfo::createUniqueResourceName(mRecipe.mName));
 	mModelMount = std::make_unique<Model::ModelMount>(*mModel, std::make_unique<SceneNodeProvider>(node, mEntityNode));
 	mModelMount->reset();
 
