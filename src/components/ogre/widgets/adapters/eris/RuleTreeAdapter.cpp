@@ -82,7 +82,7 @@ void RuleTreeAdapter::fetcherAllRulesReceived(const std::string& rootRule) {
 ::Atlas::Objects::Root RuleTreeAdapter::getRule(const std::string& id) {
 	auto I = mRules.find(id);
 	if (I != mRules.end()) {
-		return I->second;
+		return I->second.rule;
 	}
 	return ::Atlas::Objects::Root();
 }
@@ -107,8 +107,8 @@ void RuleTreeAdapter::fillEntry(Entry& entry, ::Atlas::Objects::Root rule) {
 	for (auto& child: children) {
 		auto I = mRules.find(child);
 		if (I != mRules.end()) {
-			Entry childEntry{I->second};
-			fillEntry(childEntry, I->second);
+			Entry childEntry{I->second.rule};
+			fillEntry(childEntry, I->second.rule);
 			entry.children.emplace_back(std::move(childEntry));
 		}
 	}

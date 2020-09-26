@@ -30,7 +30,7 @@ StringListAdapter::StringListAdapter(Ember::OgreView::Gui::ListHolder& listHolde
 		  mIndex(0),
 		  mIsPopulating(false) {
 
-	listHolder.EventSelected.connect([&](int index){
+	listHolder.EventSelected.connect([&](int index) {
 		if (index >= 0 && index < mEntries.size()) {
 			auto& entry = mEntries[index];
 			EventSelected(entry.first);
@@ -57,10 +57,10 @@ void StringListAdapter::add(const std::vector<std::string>& entries) {
 	}
 }
 
-void StringListAdapter::add(const std::vector<std::pair<std::string, std::string>>& entries) {
+void StringListAdapter::add(std::vector<std::pair<std::string, std::string>> entries) {
 	mEntries.reserve(mEntries.size() + entries.size());
 	for (auto& entry : entries) {
-		add(entry.second, entry.first); //swapped key and name
+		add(std::move(entry.second), std::move(entry.first)); //swapped key and name
 	}
 }
 

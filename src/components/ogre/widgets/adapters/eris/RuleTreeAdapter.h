@@ -108,7 +108,7 @@ private:
 	CEGUI::Tree& mTreeWidget;
 	std::unordered_map<std::string, std::unique_ptr<Authoring::RulesFetcher>> mFetchers;
 
-	std::unordered_map<std::string, ::Atlas::Objects::Root> mRules;
+	std::unordered_map<std::string, Authoring::RulesFetcher::RuleEntry> mRules;
 
 	/**
 	 * @brief Hooked up to the RuleFetcher::EventAllRulesReceived signal.

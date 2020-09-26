@@ -42,10 +42,12 @@ public:
 	~StringListAdapter() = default;
 
 	void add(std::string entry);
+
 	void add(std::string entry, std::string key);
 
 	void add(const std::vector<std::string>& entries);
-	void add(const std::vector<std::pair<std::string, std::string>>& entries);
+
+	void add(std::vector<std::pair<std::string, std::string>> entries);
 
 	sigc::signal<void, std::string> EventSelected;
 
