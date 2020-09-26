@@ -27,6 +27,7 @@
 #include "WidgetPlugin.h"
 #include "components/ogre/authoring/DetachedEntity.h"
 #include "services/server/AvatarTransferInfo.h"
+#include "framework/AutoCloseConnection.h"
 
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
@@ -40,7 +41,6 @@
 
 #include <map>
 #include <vector>
-#include <framework/AutoCloseConnection.h>
 
 namespace Ember {
 class AdminEntityCreator;
