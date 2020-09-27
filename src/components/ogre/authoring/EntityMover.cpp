@@ -59,12 +59,12 @@ EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& mana
 
 
 	//Check if the entity already is offset from the terrain, and retain that offset.
-	auto viewPosition = nodeAttachment.getAttachedEntity().getViewPosition();
+	auto position = nodeAttachment.getAttachedEntity().getPosition();
 	float height;
-	manager.getWorld().getTerrainManager().getHeight({viewPosition.x(), viewPosition.z()}, height);
+	manager.getWorld().getTerrainManager().getHeight({position.x(), position.z()}, height);
 
-	if (std::abs(height - viewPosition.y())> 0.01) {
-		setOffset({static_cast<float>(viewPosition.y()) - height});
+	if (std::abs(height - position.y()) > 0.01) {
+		setOffset({static_cast<float>(position.y()) - height});
 	}
 }
 

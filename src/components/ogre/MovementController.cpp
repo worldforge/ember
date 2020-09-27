@@ -292,7 +292,7 @@ void MovementController::runCommand(const std::string& command, const std::strin
 		//		}
 	} else if (CameraOnAvatar == command) {
 		if (mFreeFlyingNode && mAvatar.getEmberEntity().getPosition().isValid()) {
-			mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getViewPosition()));
+			mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getPosition()));
 		}
 	}
 	if (mMovementDirection != WFMath::Vector<3>::ZERO()) {

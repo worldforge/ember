@@ -120,12 +120,12 @@ void SimpleEntityVisualization::updateBbox()
 
 void SimpleEntityVisualization::updatePositionAndOrientation()
 {
-	if (mEntity.getViewPosition().isValid()) {
-		mSceneNode->setPosition(Convert::toOgre(mEntity.getViewPosition()));
-		mVelocitySceneNode->setPosition(Convert::toOgre(mEntity.getViewPosition()));
+	if (mEntity.getPosition().isValid()) {
+		mSceneNode->setPosition(Convert::toOgre(mEntity.getPosition()));
+		mVelocitySceneNode->setPosition(Convert::toOgre(mEntity.getPosition()));
 	}
-	if (mEntity.getViewOrientation().isValid()) {
-		mSceneNode->setOrientation(Convert::toOgre(mEntity.getViewOrientation()));
+	if (mEntity.getOrientation().isValid()) {
+		mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
 	}
 	if (mEntity.getVelocity().isValid() && mEntity.getVelocity() != WFMath::Vector<3>::ZERO()) {
 		mVelocitySceneNode->setVisible(true);

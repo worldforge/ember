@@ -86,14 +86,14 @@ void AuthoringVisualization::updatePositionAndOrientation()
 			mCollisionDetector->updateTransforms(mControlDelegate->getPosition(), mControlDelegate->getOrientation());
 		}
 	} else {
-		if (mEntity.getViewPosition().isValid()) {
-			mSceneNode->setPosition(Convert::toOgre(mEntity.getViewPosition()));
+		if (mEntity.getPosition().isValid()) {
+			mSceneNode->setPosition(Convert::toOgre(mEntity.getPosition()));
 		}
-		if (mEntity.getViewOrientation().isValid()) {
-			mSceneNode->setOrientation(Convert::toOgre(mEntity.getViewOrientation()));
+		if (mEntity.getOrientation().isValid()) {
+			mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
 		}
-		if (mCollisionDetector && mEntity.getViewOrientation().isValid() && mEntity.getViewPosition().isValid()) {
-			mCollisionDetector->updateTransforms(mEntity.getViewPosition(), mEntity.getViewOrientation());
+		if (mCollisionDetector && mEntity.getOrientation().isValid() && mEntity.getPosition().isValid()) {
+			mCollisionDetector->updateTransforms(mEntity.getPosition(), mEntity.getOrientation());
 		}
 	}
 }

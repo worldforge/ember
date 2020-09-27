@@ -121,8 +121,14 @@ SoundInstance* SoundAction::getInstance() const {
 }
 
 void SoundAction::update(SoundSource& soundSource) {
-	soundSource.setPosition(mSoundEntity.getPosition());
-// 		soundSource.setVelocity(mSoundEntity.getVelocity());
+	auto pos = mSoundEntity.getPosition();
+	if (pos.isValid()) {
+		soundSource.setPosition(pos);
+	}
+	auto velocity = mSoundEntity.getVelocity();
+	if (velocity.isValid()) {
+		soundSource.setVelocity(velocity);
+	}
 }
 
 void SoundAction::setIsLooping(bool isLooping) {

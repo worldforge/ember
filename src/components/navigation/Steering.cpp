@@ -66,7 +66,7 @@ void Steering::setAwareness() {
 	//If we are loitering we should stop that now.
 	mLoitering.reset();
 
-	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
+	const auto entityViewPosition = mAvatar.getEntity()->getPredictedPos();
 
 	WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.z());
 	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.z());
@@ -94,7 +94,7 @@ void Steering::setAwareness() {
 bool Steering::updatePath() {
 	mPath.clear();
 
-	int result = mAwareness.findPath(mAvatar.getEntity()->getViewPosition(), mViewDestination, mPath);
+	int result = mAwareness.findPath(mAvatar.getEntity()->getPredictedPos(), mViewDestination, mPath);
 	EventPathUpdated();
 	mUpdateNeeded = false;
 	return result > 0;
@@ -142,7 +142,7 @@ void Steering::update() {
 		auto entity = mAvatar.getEntity();
 		if (!mPath.empty()) {
 			const auto& finalDestination = mPath.back();
-			auto entity3dPosition = entity->getViewPosition();
+			auto entity3dPosition = entity->getPredictedPos();
 			const WFMath::Point<2> entityPosition(entity3dPosition.x(), entity3dPosition.z());
 			//First check if we've arrived at our actual destination.
 			if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.z()), entityPosition) < 0.1f) {
@@ -237,7 +237,7 @@ void Steering::moveInDirection(const WFMath::Vector<2>& direction) {
 
 void Steering::moveToPoint(const WFMath::Point<3>& point) {
 
-	auto entity3dPosition = mAvatar.getEntity()->getViewPosition();
+	auto entity3dPosition = mAvatar.getEntity()->getPredictedPos();
 	WFMath::Vector<3> vel = point - entity3dPosition;
 
 	WFMath::Quaternion orientation;

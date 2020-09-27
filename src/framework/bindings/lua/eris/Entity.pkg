@@ -42,11 +42,7 @@ class Entity {
     WFMath::Point<3> getPredictedPos() const;
     
     WFMath::Vector<3> getPredictedVelocity() const;   
-    
-    WFMath::Point<3> getViewPosition() const;
 
-    WFMath::Quaternion getViewOrientation() const;
-	
 	const WFMath::Vector<3> & getVelocity(void) const;
 	
 	const WFMath::Quaternion & getOrientation(void) const;

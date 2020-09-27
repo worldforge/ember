@@ -53,22 +53,10 @@ namespace Gui {
 namespace Icons {
 
 class DummyEntity : public Eris::Entity {
-protected:
-	Eris::TypeService& mTypeService;
 
 public:
-	DummyEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService& typeService) :
-			Eris::Entity(id, ty), mTypeService(typeService) {
-	}
-
-	Eris::TypeService& getTypeService() const override {
-		return mTypeService;
-	}
-
-	void removeFromMovementPrediction() override {
-	}
-
-	void addToMovementPrediction() override {
+	DummyEntity(const std::string& id, Eris::TypeInfo* ty) :
+			Eris::Entity(id, ty) {
 	}
 
 	Eris::Entity* getEntity(const std::string&) override {
@@ -186,7 +174,7 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType) {
 	Eris::Connection* conn = EmberServices::getSingleton().getServerService().getConnection();
 	if (conn) {
 		auto& typeService = conn->getTypeService();
-		DummyEntity dummyEntity("-1", &erisType, typeService);
+		DummyEntity dummyEntity("-1", &erisType);
 		std::string modelName;
 		Mapping::ModelActionCreator actionCreator(dummyEntity, [&](const std::string& newModelName) {
 			modelName = newModelName;

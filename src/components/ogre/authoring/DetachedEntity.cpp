@@ -24,8 +24,8 @@ namespace OgreView
 {
 namespace Authoring
 {
-DetachedEntity::DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService& typeService) :
-	Eris::Entity(id, ty), mTypeService(typeService)
+DetachedEntity::DetachedEntity(const std::string& id, Eris::TypeInfo* ty) :
+	Eris::Entity(id, ty)
 {
 }
 DetachedEntity::~DetachedEntity() {
@@ -56,23 +56,9 @@ void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 	endUpdate();
 }
 
-Eris::TypeService& DetachedEntity::getTypeService() const
-{
-	return mTypeService;
-}
-
 void DetachedEntity::doInit(const Atlas::Objects::Entity::RootEntity& rootEntity)
 {
 	init(rootEntity, true);
-}
-
-
-void DetachedEntity::removeFromMovementPrediction()
-{
-}
-
-void DetachedEntity::addToMovementPrediction()
-{
 }
 
 Eris::Entity* DetachedEntity::getEntity(const std::string&)

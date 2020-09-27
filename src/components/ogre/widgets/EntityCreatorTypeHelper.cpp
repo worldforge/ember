@@ -108,7 +108,7 @@ void EntityCreatorTypeHelper::updatePreview() {
 			mCurrentType = typeData->getId();
 			auto type = mAvatar.getConnection().getTypeService().getTypeByName(typeData->getId());
 			if (type && type->isBound()) {
-				Authoring::DetachedEntity entity("0", type, mAvatar.getConnection().getTypeService());
+				Authoring::DetachedEntity entity("0", type);
 				showPreview(entity);
 
 				mCreateButton->setEnabled(true);
@@ -155,7 +155,7 @@ void EntityCreatorTypeHelper::typeService_BoundType(Eris::TypeInfo* typeInfo) {
 	if (mModelPreviewRenderer && mRuleTreeAdapter && typeInfo->getName() == mCurrentType) {
 		auto typeData = mRuleTreeAdapter->getSelectedRule();
 		if (typeData.isValid()) {
-			Authoring::DetachedEntity entity("0", typeInfo, mAvatar.getConnection().getTypeService());
+			Authoring::DetachedEntity entity("0", typeInfo);
 			showPreview(entity);
 			mCreateButton->setEnabled(true);
 			auto modeElement = typeInfo->getProperty("mode");

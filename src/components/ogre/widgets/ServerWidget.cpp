@@ -509,7 +509,7 @@ void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype)
 				}
 			}
 		} else {
-			Authoring::DetachedEntity entity("0", erisType, typeService);
+			Authoring::DetachedEntity entity("0", erisType);
 			entity.setFromMessage(mNewEntity);
 			showPreview(entity);
 		}

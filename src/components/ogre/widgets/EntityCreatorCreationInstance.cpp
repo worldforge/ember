@@ -122,7 +122,7 @@ void EntityCreatorCreationInstance::createEntity() {
 	mEntityMessage["parent"] = erisType->getName();
 
 	// Temporary entity
-	mEntity = std::make_unique<Authoring::DetachedEntity>("-1", erisType, mTypeService);
+	mEntity = std::make_unique<Authoring::DetachedEntity>("-1", erisType);
 	Atlas::Objects::Entity::RootEntity rootEntity;
 	mEntity->doInit(rootEntity);
 	mEntity->setFromMessage(mEntityMessage);

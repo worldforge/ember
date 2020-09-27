@@ -75,13 +75,13 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresen
 	instance.visibilityChangedConnection = entity.VisibilityChanged.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_VisibilityChanged), &entity));
 	instance.modelRepresentation = modelRepresentation;
 
-	WFMath::Point<3> viewPosition = entity.getViewPosition();
+	auto pos = entity.getPosition();
 	Ogre::Vector3 position(std::numeric_limits<Ogre::Real>::quiet_NaN(), std::numeric_limits<Ogre::Real>::quiet_NaN(), std::numeric_limits<Ogre::Real>::quiet_NaN());
 
 	bool isValidPos = false;
-	if (viewPosition.isValid()) {
+	if (pos.isValid()) {
 		isValidPos = true;
-		position = Convert::toOgre(viewPosition);
+		position = Convert::toOgre(pos);
 	}
 	instance.lastPosition = position;
 #if EMBERENTITYLOADER_USEBATCH
@@ -141,7 +141,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity) {
 
 #endif
 
-	WFMath::Point<3> pos = entity->getViewPosition();
+	auto& pos = entity->getPosition();
 	if (pos.isValid()) {
 		//Rebuild geometry if necessary.
 		mGeom.reloadGeometryPage(Convert::toOgre(pos), true);
@@ -209,20 +209,20 @@ void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity) {
 			if (!instance.lastPosition.isNaN()) {
 				mGeom.reloadGeometryPage(instance.lastPosition);
 			}
-			WFMath::Point<3> viewPos = entity->getViewPosition();
-			if (viewPos.isValid()) {
-				mGeom.reloadGeometryPage(Convert::toOgre(viewPos));
-				instance.lastPosition = Convert::toOgre(viewPos);
+			auto& pos = entity->getPosition();
+			if (pos.isValid()) {
+				mGeom.reloadGeometryPage(Convert::toOgre(pos));
+				instance.lastPosition = Convert::toOgre(pos);
 			}
 		}
 	}
 }
 
 void EmberEntityLoader::EmberEntity_VisibilityChanged(bool, EmberEntity* entity) {
-	WFMath::Point<3> viewPos = entity->getViewPosition();
-	if (viewPos.isValid()) {
+	auto& pos = entity->getPosition();
+	if (pos.isValid()) {
 		//When the visibility changes, we only need to reload the page the entity is on.
-		mGeom.reloadGeometryPage(Convert::toOgre(viewPos));
+		mGeom.reloadGeometryPage(Convert::toOgre(pos));
 	}
 }
 

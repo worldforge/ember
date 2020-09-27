@@ -37,6 +37,8 @@
 #include <OgreSceneNode.h>
 #include <components/ogre/MousePicker.h>
 
+#include <memory>
+
 namespace Ember {
 namespace OgreView {
 
@@ -75,7 +77,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	try {
 		for (auto node : mDebugNodes) {
 			node->setVisible(false);
-			Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
+			auto* sphereEntity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
 			sphereEntity->setMaterialName("/common/base/authoring/point");
 		}
 	} catch (const std::exception& ex) {
@@ -124,8 +126,8 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 						rotbox.size() = bbox.highCorner() - bbox.lowCorner();
 						rotbox.corner0() = bbox.lowCorner();
 						rotbox.orientation().identity();
-						rotbox.rotatePoint(child->getViewOrientation(), WFMath::Point<3>(0, 0, 0));
-						rotbox.shift(WFMath::Vector<3>(child->getViewPosition()));
+						rotbox.rotatePoint(child->getOrientation(), WFMath::Point<3>(0, 0, 0));
+						rotbox.shift(WFMath::Vector<3>(child->getPosition()));
 
 						for (size_t i = 0; i < rotbox.numCorners(); ++i) {
 							WFMath::Point<3> point = rotbox.getCorner(i);
@@ -144,7 +146,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 								WFMath::CoordType distance = WFMath::Distance(currentPoint, point);
 								if (distance <= mSnapThreshold) {
 									if (currentNode) {
-										Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (currentNode->getAttachedObject(0));
+										auto* sphereEntity = static_cast<Ogre::Entity*> (currentNode->getAttachedObject(0));
 										if (sphereEntity) {
 											try {
 												sphereEntity->setMaterialName("/common/base/authoring/point/moved");
@@ -153,8 +155,8 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 											}
 										}
 									}
-									if (!closestSnapping.get()) {
-										closestSnapping = std::unique_ptr<SnapPointCandidate>(new SnapPointCandidate());
+									if (!closestSnapping) {
+										closestSnapping = std::make_unique<SnapPointCandidate>();
 										closestSnapping->entity = static_cast<EmberEntity*>(child);
 										closestSnapping->distance = distance;
 										closestSnapping->adjustment = point - currentPoint;

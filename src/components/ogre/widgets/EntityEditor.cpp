@@ -122,7 +122,7 @@ public:
 
 		mMarkerNode->setPosition(Convert::toOgre(adjustedPoint));
 
-		WFMath::Segment<3> shape(adjustedPoint, mEntity.getViewPosition() + WFMath::Vector<3>(mEntity.getBBox().getCenter()));
+		WFMath::Segment<3> shape(adjustedPoint, mEntity.getPosition() + WFMath::Vector<3>(mEntity.getBBox().getCenter()));
 		mMarkerDirectionIndicator->update(shape);
 
 	}
@@ -338,7 +338,7 @@ void EntityEditor::addMarker(const std::string& entityId, const WFMath::Point<3>
 
 		Eris::Entity* entity = mWorld.getView().getEntity(entityId);
 		if (entity) {
-			const WFMath::Point<3> worldPosition = entity->getViewPosition() + WFMath::Vector<3>(point);
+			const WFMath::Point<3> worldPosition = entity->getPosition() + WFMath::Vector<3>(point);
 			mMarker = std::make_unique<EntityPointMarker>(mEntity, mWorld.getSceneManager(), mWorld.getTerrainManager(), worldPosition);
 			mMarker->updateMarker();
 		}

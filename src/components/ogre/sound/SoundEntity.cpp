@@ -47,13 +47,11 @@ SoundEntity::~SoundEntity() {
 }
 
 WFMath::Point<3> SoundEntity::getPosition() const {
-	WFMath::Point<3> pos = mParentEntity.getViewPosition();
-	return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
+	return mParentEntity.getPredictedPos();
 }
 
 WFMath::Vector<3> SoundEntity::getVelocity() const {
-	WFMath::Vector<3> velocity = mParentEntity.getPredictedVelocity();
-	return velocity.isValid() ? velocity : WFMath::Vector<3>::ZERO();
+	return mParentEntity.getPredictedVelocity();
 }
 
 const SoundAction* SoundEntity::playAction(const std::string& name) {

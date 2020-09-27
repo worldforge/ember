@@ -42,7 +42,7 @@ namespace Authoring
 class DetachedEntity: public Eris::Entity
 {
 public:
-	DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService& typeService);
+	DetachedEntity(const std::string& id, Eris::TypeInfo* ty);
 
 	~DetachedEntity() override;
 
@@ -60,25 +60,6 @@ public:
 
 protected:
 
-	Eris::TypeService& mTypeService;
-
-    /**
-     * @brief Gets the typeservice used throughout the Eris system.
-     * @returns A type service instance.
-     */
-	Eris::TypeService& getTypeService() const override;
-
-    /**
-     * @brief Removes the entity from any movement prediction service.
-     * This is called when movement has stopped.
-     */
-	void removeFromMovementPrediction() override;
-
-    /**
-     * @brief Adds the entity to any movement prediction service.
-     * This is called when movement has started.
-     */
-	void addToMovementPrediction() override;
 
     /**
      * @brief Gets an entity with the supplied id from the system.

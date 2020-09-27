@@ -39,7 +39,7 @@ Loitering::Loitering(Awareness& awareness, Eris::Avatar& avatar, const WFMath::V
 {
 	mMovedConnection = avatar.getEntity()->Moving.connect(sigc::mem_fun(*this, &Loitering::entity_Moving));
 
-	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
+	auto entityViewPosition = mAvatar.getEntity()->getPredictedPos();
 
 	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.z());
 
@@ -61,7 +61,7 @@ Loitering::~Loitering()
 void Loitering::entity_Moving(bool isMoving)
 {
 
-	const auto entityViewPosition = mAvatar.getEntity()->getViewPosition();
+	auto entityViewPosition = mAvatar.getEntity()->getPredictedPos();
 
 	WFMath::Point<2> entityPosition2d(entityViewPosition.x(), entityViewPosition.z());
 	if (!WFMath::Contains(mLoiterArea, entityPosition2d, false)) {
