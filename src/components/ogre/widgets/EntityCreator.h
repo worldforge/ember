@@ -31,6 +31,7 @@
 #include <sigc++/slot.h>
 
 #include <memory>
+#include <Atlas/Message/Element.h>
 
 namespace Eris
 {
@@ -49,6 +50,7 @@ namespace Authoring
 {
 class DetachedEntity;
 class EntityRecipe;
+class EntityRecipeInstance;
 }
 namespace Model
 {
@@ -85,7 +87,7 @@ public:
 	/**
 	 * Sets recipe that would be used for entity creation in future.
 	 */
-	void setRecipe(Authoring::EntityRecipe& recipe);
+	void setRecipeInstance(Authoring::EntityRecipeInstance* recipeInstance);
 
 	/**
 	 * Toggles create mode and performs correspondent action.
@@ -104,7 +106,7 @@ public:
 	/**
 	 * Starts entity creation process.
 	 */
-	void startCreation();
+	void startCreation(const std::map<std::string, Atlas::Message::Element>& adapterValues);
 
 	/**
 	 * Stops entity creation process.
@@ -131,6 +133,8 @@ public:
 	 */
 	sigc::signal<void> EventCreationEnded;
 
+	sigc::signal<void> EventCreationCompleted;
+
 	/**
 	 * @brief Makes sure that all types are loaded. This is needed for the type lookup we need to do in the recipes in order to get the default values.
 	 */
@@ -152,7 +156,7 @@ protected:
 	/**
 	 * @brief The currently selected recipe.
 	 */
-	Authoring::EntityRecipe* mRecipe;
+	Authoring::EntityRecipeInstance* mRecipeInstance;
 
 	/**
 	 * @brief A creation instance, which represents a preview of the entity, before it's created on the server.
@@ -175,11 +179,6 @@ protected:
 	bool mPlantedOnGround;
 
 	/**
-	 * @brief A slot used for listening for changes to the recipe's adapter values.
-	 */
-	sigc::slot<void> mAdapterValueChangedSlot;
-
-	/**
 	 * @brief Checks whether the type info for the current recipe is fully bound.
 	 * If so, the EventTypeInfoLoaded signal will be emitted right away, else it will be emitted later on when the type is bound through the typeService_BoundType method.
 	 * Call this method right after a new entity recipe has been set, to make sure that the interface doesn't proceed until the type info is bound.
@@ -197,7 +196,7 @@ protected:
 	 *
 	 * Note that any existing such instance will first be destroyed.
 	 */
-	void createNewCreationInstance();
+	void createNewCreationInstance(const std::map<std::string, Atlas::Message::Element>& adapterValues);
 
 
 

@@ -121,7 +121,7 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipe& entRecipe, TiXmlEle
 	entRecipe.mEntitySpec.reset(entSpecNode->Clone()->ToElement());
 	const char* type = entRecipe.mEntitySpec->Attribute("type");
 	if (type) {
-		entRecipe.mEntityType = std::string(type);
+		//entRecipe.mEntityType = std::string(type);
 	}
 
 	/*
@@ -228,7 +228,7 @@ void XMLEntityRecipeSerializer::readBindings(EntityRecipe& entRecipe, TiXmlEleme
 	}
 
 	// Associating bindings with placeholders after parsing
-	entRecipe.associateBindings();
+//	entRecipe.associateBindings();
 }
 
 void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipe& /*entRecipe*/, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode) {

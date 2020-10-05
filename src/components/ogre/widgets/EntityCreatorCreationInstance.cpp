@@ -37,7 +37,6 @@
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/ogre/model/ModelMount.h"
 
-#include "components/ogre/authoring/EntityRecipe.h"
 #include "components/ogre/authoring/DetachedEntity.h"
 
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
@@ -59,16 +58,14 @@ namespace Gui {
 
 EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world,
 															 Eris::TypeService& typeService,
-															 Authoring::EntityRecipe& recipe,
-															 bool randomizeOrientation,
-															 sigc::slot<void>& adapterValueChangedSlot) :
+															 std::map<std::string, Atlas::Message::Element> entityMap,
+															 bool randomizeOrientation) :
 		mWorld(world),
 		mTypeService(typeService),
-		mRecipe(recipe),
 		mEntityNode(nullptr),
+		mEntityMessage(std::move(entityMap)),
 		mPlantedOnGround(true),
 		mAxisMarker(nullptr) {
-	mConnection = mRecipe.EventValueChanged.connect(adapterValueChangedSlot);
 
 	mInitialOrientation.identity();
 	if (randomizeOrientation) {
@@ -79,11 +76,17 @@ EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world,
 }
 
 EntityCreatorCreationInstance::~EntityCreatorCreationInstance() {
-	mEntityNode->detachAllObjects();
+	if (mEntityNode) {
+		mEntityNode->detachAllObjects();
+	}
 
-	mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
+	if (mAxisMarker) {
+		mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
+	}
 
-	mWorld.getSceneManager().destroySceneNode(mEntityNode);
+	if (mEntityNode) {
+		mWorld.getSceneManager().destroySceneNode(mEntityNode);
+	}
 
 	mConnection.disconnect();
 }
@@ -109,17 +112,22 @@ void EntityCreatorCreationInstance::startCreation() {
 
 void EntityCreatorCreationInstance::createEntity() {
 	// Creating entity data
-	mEntityMessage = mRecipe.createEntity(mTypeService);
-	Eris::TypeInfo* erisType = mTypeService.getTypeByName(mRecipe.getEntityType());
+	auto parentI = mEntityMessage.find("parent");
+	if (parentI == mEntityMessage.end() || !parentI->second.isString()) {
+		S_LOG_FAILURE("No parent found.");
+		return;
+	}
+
+	Eris::TypeInfo* erisType = mTypeService.getTypeByName(parentI->second.String());
 	if (!erisType) {
-		S_LOG_FAILURE("Type " << mRecipe.getEntityType() << " not found in recipe " << mRecipe.mName);
+		S_LOG_FAILURE("Type " << parentI->second.String() << " not found.");
 		return;
 	}
 
 	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 
 	mEntityMessage["loc"] = avatar.getLocation()->getId();
-	mEntityMessage["parent"] = erisType->getName();
+	//mEntityMessage["parent"] = erisType->getName();
 
 	// Temporary entity
 	mEntity = std::make_unique<Authoring::DetachedEntity>("-1", erisType);
@@ -216,7 +224,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName) {
 //		modelDef->reloadAllInstances();
 //	}
 
-	Ogre::SceneNode* node = mEntityNode->createChildSceneNode(OgreInfo::createUniqueResourceName(mRecipe.mName));
+	Ogre::SceneNode* node = mEntityNode->createChildSceneNode();
 	mModelMount = std::make_unique<Model::ModelMount>(*mModel, std::make_unique<SceneNodeProvider>(node, mEntityNode));
 	mModelMount->reset();
 
@@ -270,7 +278,11 @@ void EntityCreatorCreationInstance::scaleNode() {
 }
 
 WFMath::Quaternion EntityCreatorCreationInstance::getOrientation() const {
-	return Convert::toWF(mEntityNode->getOrientation());
+	if (mEntityNode) {
+		return Convert::toWF(mEntityNode->getOrientation());
+	} else {
+		return WFMath::Quaternion::IDENTITY();
+	}
 }
 
 void EntityCreatorCreationInstance::setOrientation(const WFMath::Quaternion& orientation) {

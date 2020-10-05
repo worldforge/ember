@@ -4,9 +4,10 @@
     <description>
       A barrel.
     </description>
-    <entity type="barrel">
+    <entity>
       <atlas>
         <map>
+            <string name="parent">barrel</string>
         </map>
       </atlas>
     </entity>

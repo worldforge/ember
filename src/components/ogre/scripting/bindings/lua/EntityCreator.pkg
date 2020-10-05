@@ -32,7 +32,7 @@ class EntityCreator{
 public:
 	EntityCreator(Ember::OgreView::World& world);
 	~EntityCreator();
-	void setRecipe(Ember::OgreView::Authoring::EntityRecipe& recipe);
+	//void setRecipe(Ember::OgreView::Authoring::EntityRecipe& recipe);
 	void toggleCreateMode();
 	/**
 	 * @brief Sets whether to randomize the orientation of all new entities.

@@ -7,7 +7,7 @@
     <entity type="boulder">
       <atlas>
         <map>
-          <list name="bbox">$bbox</list>
+          <list name="bbox">$boulder.calcSize()</list>
           <float name="mass">$mass</float>
           <string name="style">$style</string>
           <string name="mode">none</string>
@@ -24,25 +24,13 @@
         <item value="d">Boulder D</item>
       </adapter>
     </adapters>
-    <bindings>
-      <bind name="bbox" func="boulder.calcSize">
-        <adapter name="mass" />
-        <adapter name="massdev" />
-      </bind>
-      <bind name="mass">
-        <adapter name="mass" />
-      </bind>
-      <bind name="style">
-        <adapter name="style" />
-      </bind>
-    </bindings>
     <script><![CDATA[
       boulder = {}
-      function boulder.calcSize(a, b)
+      function boulder.calcSize(adapters)
         local density = 2500  * 0.52 -- our boulder is not cubic, 0.52 is rough volume of its size 1
 
-        local massmean = a:asNum()
-        local massdev = b:asNum()
+        local massmean = adapters.mass:asNum()
+        local massdev = adapters.massdev:asNum()
         local mass = math.abs(math.randn(massmean, massdev))
         local volume = mass / density
         local len = volume^(1/3)

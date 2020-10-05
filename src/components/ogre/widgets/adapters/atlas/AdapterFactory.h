@@ -230,7 +230,7 @@ public:
 	 * @param entity An optional entity to which the adapter is connected. This isn't always needed (since an entity instance is not always available)
 	 * @return A new adapter instance, or null if there either was an error when creating one, or none could be found for the specified type.
 	 */
-	AdapterBase* createAdapterByType(const std::string& type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = nullptr);
+	std::unique_ptr<AdapterBase> createAdapterByType(const std::string& type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = nullptr);
 
 	/**
 	 * @brief Loads the gui elements as specified in the submitted layout-file into the container window, using the supplied prefix.

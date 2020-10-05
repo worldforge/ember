@@ -90,6 +90,10 @@ if (WF_USE_WIDGET_PLUGINS)
     wf_add_plugin(IngameChatWidget
             ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/IngameChatWidget.cpp
             )
+
+    wf_add_plugin(EntityCreatorWidget
+            ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/EntityCreatorWidget.cpp
+            )
     get_property(_PLUGIN_LIBS_LIST GLOBAL PROPERTY PLUGIN_LIBS_LIST)
 
     #add_dependencies(${EMBER_EXECUTABLE_NAME} ${_PLUGIN_LIBS_LIST})

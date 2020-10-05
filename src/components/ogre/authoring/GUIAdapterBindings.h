@@ -66,14 +66,9 @@ public:
 	std::vector<std::string>& getAdapters();
 
 	/**
-	 * Associates this bindings with XML element
-	 */
-	void associateXmlElement(TiXmlNode& element);
-
-	/**
 	 * Sets value to associated element
 	 */
-	void setValue(Atlas::Message::Element& val);
+	void setValue(Atlas::Message::Element& val, TiXmlNode& element);
 
 	/**
 	 * Helper function, converting Atlas node into TinyXml node

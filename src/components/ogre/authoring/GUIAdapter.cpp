@@ -34,7 +34,6 @@ namespace OgreView {
 namespace Authoring {
 GUIAdapter::GUIAdapter(std::string type) :
         mType(std::move(type)),
-        mAdapter(nullptr),
         mAllowRandom(false) {
 
 }
@@ -45,15 +44,15 @@ const std::string& GUIAdapter::getType() const {
     return mType;
 }
 
-void GUIAdapter::attach(CEGUI::Window* window) {
+std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> GUIAdapter::attach(CEGUI::Window* window) {
     OgreView::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
-    mAdapter.reset(factory.createAdapterByType(mType, window, "adapterPrefix", mElement));
-    mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &GUIAdapter::valueChanged));
+    auto adapter = factory.createAdapterByType(mType, window, "adapterPrefix", mElement);
+	adapter->EventValueChanged.connect(sigc::mem_fun(*this, &GUIAdapter::valueChanged));
     for (auto& suggestion : mSuggestions) {
-        mAdapter->addSuggestion(suggestion.first);
+		adapter->addSuggestion(suggestion.first);
     }
     if (mAllowRandom) {
-        mAdapter->addSuggestion("Random");
+		adapter->addSuggestion("Random");
     }
 
     //If we have a default value set, use that
@@ -61,37 +60,34 @@ void GUIAdapter::attach(CEGUI::Window* window) {
         if (mType == "string") {
             //NOTE: Why does setValue only accept a non-const ref? Is that by design? If not, we should change it to accept a const reference so that it can be called here. We'll use updateGui here now, but setValue would be preferred...
             // 			mAdapter->setValue(Atlas::Message::Element(mDefaultValue));
-            mAdapter->updateGui(Atlas::Message::Element(mDefaultValue));
+			adapter->updateGui(Atlas::Message::Element(mDefaultValue));
         } else if (mType == "number") {
-            mAdapter->updateGui(Atlas::Message::Element(atof(mDefaultValue.c_str())));
+			adapter->updateGui(Atlas::Message::Element(atof(mDefaultValue.c_str())));
         }
     }
+    return adapter;
 }
 
-void GUIAdapter::detach() {
-    mAdapter.reset();
-}
+//void GUIAdapter::detach() {
+//    mAdapter.reset();
+//}
 
-Atlas::Message::Element GUIAdapter::getValue() {
-    if (!mAdapter) {
-        return Atlas::Message::Element();
-    }
+Atlas::Message::Element GUIAdapter::getValue(const Atlas::Message::Element& valueFromAdapter) {
 
-    const Atlas::Message::Element& value = mAdapter->getValue();
-    if (!(mAllowRandom && value.isString() && value.asString() == "Random")) {
+	if (!(mAllowRandom && valueFromAdapter.isString() && valueFromAdapter.asString() == "Random")) {
         // Not random. Get value that is correspondent to the entered text.
-        if (value.isString()) {
-            auto I = mSuggestions.find(value.asString());
+        if (valueFromAdapter.isString()) {
+            auto I = mSuggestions.find(valueFromAdapter.asString());
             if (I != mSuggestions.end()) {
                 return I->second;
             }
         }
-        return value;
+        return valueFromAdapter;
     } else {
         // Random element selected.
         if (!mSuggestions.empty()) {
             int i = (int) (((float) mSuggestions.size()) * (rand() / (RAND_MAX + 1.0)));
-            // No sequental access to the map.
+            // No sequential access to the map.
             SuggestionsStore::const_iterator I = mSuggestions.begin();
             while (i > 0) {
                 ++I;

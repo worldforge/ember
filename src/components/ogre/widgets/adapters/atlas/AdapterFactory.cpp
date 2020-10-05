@@ -331,28 +331,28 @@ EntityRefAdapter* AdapterFactory::createEntityRefAdapter(CEGUI::Window* containe
 	return createAdapter<EntityRefAdapter>(container, adapterPrefix, element);
 }
 
-AdapterBase* AdapterFactory::createAdapterByType(const std::string& type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity) {
+std::unique_ptr<AdapterBase> AdapterFactory::createAdapterByType(const std::string& type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity) {
 	::Atlas::Message::Element newElement(element);
 	if (type == "string") {
 		if (newElement.isNone()) {
 			newElement = "";
 		}
-		return createStringAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createStringAdapter(container, adapterPrefix, newElement));
 	} else if (type == "number") {
 		if (newElement.isNone()) {
 			newElement = 0.0;
 		}
-		return createNumberAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createNumberAdapter(container, adapterPrefix, newElement));
 	} else if (type == "size") {
 		if (newElement.isNone()) {
 			newElement = ::Atlas::Message::ListType();
 		}
-		return createSizeAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createSizeAdapter(container, adapterPrefix, newElement));
 	} else if (type == "scale") {
 		if (newElement.isNone()) {
 			newElement = ::Atlas::Message::ListType();
 		}
-		return createScaleAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createScaleAdapter(container, adapterPrefix, newElement));
 	} else if (type == "position") {
 		if (newElement.isNone()) {
 			::Atlas::Message::ListType list;
@@ -361,7 +361,7 @@ AdapterBase* AdapterFactory::createAdapterByType(const std::string& type, CEGUI:
 			list.push_back(::Atlas::Message::Element(0.0f));
 			newElement = list;
 		}
-		return createPositionAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createPositionAdapter(container, adapterPrefix, newElement));
 	} else if (type == "position2d") {
 		if (newElement.isNone()) {
 			::Atlas::Message::ListType list;
@@ -369,37 +369,37 @@ AdapterBase* AdapterFactory::createAdapterByType(const std::string& type, CEGUI:
 			list.push_back(::Atlas::Message::Element(0.0f));
 			newElement = list;
 		}
-		return createPosition2DAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createPosition2DAdapter(container, adapterPrefix, newElement));
 	} else if (type == "map") {
 		if (newElement.isNone()) {
 			newElement = ::Atlas::Message::MapType();
 		}
-		return createNumberAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createNumberAdapter(container, adapterPrefix, newElement));
 	} else if (type == "list") {
 		if (newElement.isNone()) {
 			newElement = ::Atlas::Message::ListType();
 		}
-		return createListAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createListAdapter(container, adapterPrefix, newElement));
 	} else if (type == "orientation") {
 		if (newElement.isNone()) {
 			newElement = ::Atlas::Message::ListType();
 		}
-		return createNumberAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createNumberAdapter(container, adapterPrefix, newElement));
 	} else if (type == "static") {
 		if (newElement.isNone()) {
 			newElement = "";
 		}
-		return createStaticAdapter(container, adapterPrefix, newElement);
+		return std::unique_ptr<AdapterBase>(createStaticAdapter(container, adapterPrefix, newElement));
 	} else if (type == "area") {
 		if (newElement.isNone()) {
 			newElement = ::Atlas::Message::MapType();
 		}
-		return createAreaAdapter(container, adapterPrefix, newElement, entity);
+		return std::unique_ptr<AdapterBase>(createAreaAdapter(container, adapterPrefix, newElement, entity));
 	} else if (type == "polygon") {
 		if (newElement.isNone()) {
 			newElement = ::Atlas::Message::MapType();
 		}
-		return createPolygonAdapter(container, adapterPrefix, newElement, entity);
+		return std::unique_ptr<AdapterBase>(createPolygonAdapter(container, adapterPrefix, newElement, entity));
 	} else {
 		return nullptr;
 	}

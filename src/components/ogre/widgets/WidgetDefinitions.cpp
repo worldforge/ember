@@ -43,6 +43,7 @@
 #include "Help.h"
 #include "ContainerWidget.h"
 #include "IngameChatWidget.h"
+#include "EntityCreatorWidget.h"
 
 #endif
 
@@ -69,6 +70,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	mPlugins.emplace("Help", PluginEntry{Help::registerWidget(guiManager)});
 	mPlugins.emplace("ContainerWidget", PluginEntry{ContainerWidget::registerWidget(guiManager)});
 	mPlugins.emplace("IngameChatWidget", PluginEntry{IngameChatWidget::registerWidget(guiManager)});
+	mPlugins.emplace("EntityCreatorWidget", PluginEntry{EntityCreatorWidget::registerWidget(guiManager)});
 #else
 	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
 	Ember::FileSystemObserver::getSingleton().add_directory(pluginDirPath, [&](const Ember::FileSystemObserver::FileSystemEvent& event) {
@@ -104,6 +106,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	registerPluginWithName(guiManager, "Help");
 	registerPluginWithName(guiManager, "ContainerWidget");
 	registerPluginWithName(guiManager, "IngameChatWidget");
+	registerPluginWithName(guiManager, "EntityCreatorWidget");
 #endif
 }
 

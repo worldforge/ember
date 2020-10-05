@@ -60,12 +60,7 @@ std::vector<std::string>& GUIAdapterBindings::getAdapters()
 	return mAdapters;
 }
 
-void GUIAdapterBindings::associateXmlElement(TiXmlNode& element)
-{
-	mElement = &element;
-}
-
-void GUIAdapterBindings::setValue(Atlas::Message::Element& val)
+void GUIAdapterBindings::setValue(Atlas::Message::Element& val, TiXmlNode& element)
 {
 	TiXmlNode* parent = mElement->Parent();
 	/*

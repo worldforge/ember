@@ -57,19 +57,16 @@ class EntityRecipe {
 
 	friend class XMLEntityRecipeSerializer;
 
+	friend class EntityRecipeInstance;
+
 public:
 
 	EntityRecipe();
 
-	explicit EntityRecipe(const Atlas::Message::MapType& entityDefinition);
+	explicit EntityRecipe(std::unique_ptr<TiXmlElement> entitySpec);
 
 
 	~EntityRecipe();
-
-	/**
-	 * Returns entity type.
-	 */
-	const std::string& getEntityType() const;
 
 	/**
 	 * Creates and returns GUI adapter. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
@@ -92,17 +89,12 @@ public:
 	GUIAdapterBindings* createGUIAdapterBindings(const std::string& name);
 
 	/**
-	 * Associate each binding with correspondent placeholders (entity spec nodes).
-	 */
-	void associateBindings();
-
-	/**
 	 * @brief Composes an entity.
 	 *
 	 * Grabs current values from adapters, runs it through Lua function and composes resulting Atlas message.
 	 * @param typeService The main eris type service, from which type info will be queried.
 	 */
-	Atlas::Message::MapType createEntity(Eris::TypeService& typeService);
+	//Atlas::Message::MapType createEntity(Eris::TypeService& typeService);
 
 	/**
 	 * Sets author.
@@ -123,11 +115,6 @@ public:
 	 * Gets description.
 	 */
 	const std::string& getDescription() const;
-
-	/**
-	 * Does some test checking.
-	 */
-	//void doTest();
 
 	/**
 	 * Emits when value of any of adapters is changed.
@@ -155,10 +142,6 @@ protected:
 	 */
 	std::unique_ptr<TiXmlElement> mEntitySpec;
 
-	/**
- 	 * Entity type.
- 	 */
-	std::string mEntityType;
 
 	Atlas::Message::MapType mEntityDefinition;
 
@@ -177,18 +160,33 @@ protected:
 	 */
 	std::string mScript;
 
+};
+
+class EntityRecipeInstance {
+public:
+	explicit EntityRecipeInstance(const EntityRecipe& entityRecipe);
+
 	/**
-	 * Helper iterator over TinyXml nodes for associateBindings()
+	 * @brief Composes an entity.
+	 *
+	 * Grabs current values from adapters, runs it through Lua function and composes resulting Atlas message.
+	 * @param typeService The main eris type service, from which type info will be queried.
 	 */
-	class SpecIterator : public TiXmlVisitor {
-	public:
-		explicit SpecIterator(EntityRecipe* recipe);
+	Atlas::Message::MapType createEntity(Eris::TypeService& typeService, const std::map<std::string, Atlas::Message::Element>& adapterValues);
 
-		bool Visit(const TiXmlText& elem) override;
+	const EntityRecipe& getEntityRecipe() const {
+		return mEntityRecipe;
+	}
 
-	private:
-		EntityRecipe* mRecipe;
-	};
+
+
+
+private:
+
+	const EntityRecipe& mEntityRecipe;
+
+
+
 };
 
 

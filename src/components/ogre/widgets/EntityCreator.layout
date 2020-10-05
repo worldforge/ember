@@ -1,170 +1,202 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
-	<Window name="MainWindow" type="EmberLook/FrameWindow">
-		<Property name="Visible" value="false" />
-		<Property name="Position" value="{{1.0,-450},{1.0,-220}}" />
-		<Property name="Size" value="{{0,400},{0,200}}" />
-		<Property name="Alpha" value="0.6" />
-		<Property name="Text" value="Entity Creator" />
-		<Window name="CharacterTabControl" type="EmberLook/TabControl">
-			<Property name="Position" value="{{0.0,0},{0,0}}" />
-			<Property name="Size" value="{{1,0},{1,0}}" />
-			<Property name="InheritsAlpha" value="false" />
-			<Property name="Visible" value="true" />
-			<Window name="TabRecipes" type="DefaultWindow">
-				<Property name="Position" value="{{0,0},{0,0}}" />
-				<Property name="Size" value="{{1,0},{1,0}}" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="Text" value="Recipes" />
-				<Window name="RecipesList" type="EmberLook/Listbox">
-					<Property name="Position" value="{{0,0},{0,0}}" />
-					<Property name="Size" value="{{0,100},{1,-27}}" />
-					<Property name="Sort" value="true" />
-				</Window>
-				<Window name="Create" type="EmberLook/Button">
-					<Property name="Position" value="{{0,0},{1,-25}}" />
-					<Property name="Size" value="{{0,100},{0,25}}" />
-					<Property name="Text" value="Create" />
-					<Property name="InheritsAlpha" value="True" />
-				</Window>
-				<Window name="CreateSection" type="DefaultWindow">
-					<Property name="Position" value="{{0,100},{0,0}}" />
-					<Property name="Size" value="{{1,-100},{1,0}}" />
-					<Property name="Visible" value="false" />
-					<Window name="RecipeDescription" type="EmberLook/StaticText">
-						<Property name="Position" value="{{0,0},{0,0}}" />
-						<Property name="Size" value="{{1,0},{0,50}}" />
-						<Property name="FrameEnabled" value="false" />
-						<Property name="BackgroundEnabled" value="false" />
-					</Window>
+    <Window name="MainWindow" type="EmberLook/FrameWindow">
+        <Property name="Visible" value="false"/>
+        <Property name="Position" value="{{1.0,-450},{1.0,-520}}"/>
+        <Property name="Size" value="{{0,400},{0,500}}"/>
+        <Property name="Alpha" value="0.6"/>
+        <Property name="Text" value="Entity Creator"/>
+        <Window name="CharacterTabControl" type="EmberLook/TabControl">
+            <Property name="Position" value="{{0.0,0},{0,0}}"/>
+            <Property name="Size" value="{{1,0},{1,0}}"/>
+            <Property name="InheritsAlpha" value="false"/>
+            <Property name="Visible" value="true"/>
+            <Window name="TabRecipes" type="DefaultWindow">
+                <Property name="Position" value="{{0,0},{0,0}}"/>
+                <Property name="Size" value="{{1,0},{1,0}}"/>
+                <Property name="InheritsAlpha" value="True"/>
+                <Property name="Text" value="Recipes"/>
+                <Window type="VerticalLayoutContainer">
+                    <Property name="Size" value="{{0,150},{1.00,0}}"/>
+                    <Window name="RecipesList" type="EmberLook/Listbox">
+                        <Property name="Size" value="{{0,150},{1.00,-50}}"/>
+                    </Window>
+                    <Window name="RuleFilter" type="EmberLook/Editbox">
+                        <Property name="Size" value="{{0,150.0},{0,25.0}}"/>
+                    </Window>
+                    <Window name="Create" type="EmberLook/Button">
+                        <Property name="Size" value="{{0,150.0},{0,25.0}}"/>
+                        <Property name="Text" value="Create"/>
+                    </Window>
+                </Window>
+                <Window name="CreateSection" type="DefaultWindow">
+                    <Property name="Position" value="{{0,150},{0,0}}"/>
+                    <Property name="Size" value="{{1,-150},{1,-120}}"/>
+                    <Window name="Description" type="EmberLook/StaticText">
+                        <Property name="Position" value="{{0,0},{0,0}}"/>
+                        <Property name="Size" value="{{1,0},{0,50}}"/>
+                    </Window>
                     <Window name="RandomizeOrientation" type="EmberLook/Checkbox">
-                        <Property name="Position" value="{{0,0},{0,50}}" />
-                        <Property name="Size" value="{{1,0},{0,25}}" />
-                        <Property name="Selected" value="True" />
-                        <Property name="TooltipText" value="If checked, will randomize the orientation of all new entities." />
-                        <Property name="Text" value="Random orientation" />
+                        <Property name="Position" value="{{0,0},{0,50}}"/>
+                        <Property name="Size" value="{{1,0},{0,25}}"/>
+                        <Property name="Selected" value="True"/>
+                        <Property name="TooltipText" value="If checked, will randomize the orientation of all new entities."/>
+                        <Property name="Text" value="Random orientation"/>
                     </Window>
                     <Window name="PlantedOnGround" type="EmberLook/Checkbox">
-                        <Property name="Position" value="{{0,0},{0,75}}" />
-                        <Property name="Size" value="{{1,0},{0,25}}" />
-                        <Property name="Selected" value="True" />
-                        <Property name="TooltipText" value="If checked, entities will be planted on the ground by default." />
-                        <Property name="Text" value="Planted on ground" />
+                        <Property name="Position" value="{{0,0},{0,75}}"/>
+                        <Property name="Size" value="{{1,0},{0,25}}"/>
+                        <Property name="Selected" value="True"/>
+                        <Property name="TooltipText" value="If checked, entities will be planted on the ground by default."/>
+                        <Property name="Text" value="Planted on ground"/>
                     </Window>
-					<Window name="AdaptersContainer" type="DefaultWindow">
-						<Property name="Position" value="{{0,0},{0,100}}" />
-						<Property name="Size" value="{{1,0},{1,-100}}" />
-					</Window>
-				</Window>
-				<Window name="WaitForTypeInfo" type="EmberLook/StaticText">
-					<Property name="Position" value="{{0,100},{0,0}}" />
-					<Property name="Size" value="{{1,-100},{1,0}}" />
-					<Property name="Visible" value="false" />
-					<Property name="FrameEnabled" value="false" />
-					<Property name="BackgroundEnabled" value="false" />
-					<Property name="Text" value="Waiting for type info from the server..." />
-				</Window>
-			</Window>
-			<Window name="TabTypes" type="DefaultWindow">
-				<Property name="Position" value="{{0,0},{0,0}}" />
-				<Property name="Size" value="{{1,0},{1,0}}" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="Text" value="Types" />
-                <Window type="VerticalLayoutContainer">
-                    <Property name="Size" value="{{0,150},{1.00,0}}" />
-                    <Window name="TypeList" type="EmberLook/Tree">
-                        <Property name="Size" value="{{0,150},{1.00,-60}}" />
-                        <Property name="InheritsAlpha" value="false" />
-                    </Window>
-                    <Window name="TypeFilter" type="EmberLook/Editbox">
-                        <Property name="Size" value="{{0,150.0},{0,25.0}}" />
-                        <Property name="InheritsAlpha" value="True" />
-                    </Window>
-                    <Window name="CreateButton" type="EmberLook/Button">
-                        <Property name="Size" value="{{0,150.0},{0,25.0}}" />
-                        <Property name="Text" value="Create" />
-                        <Property name="InheritsAlpha" value="True" />
+                    <Window name="AdaptersContainer" type="VerticalLayoutContainer">
+                        <Property name="Position" value="{{0,0},{0,100}}"/>
+                        <Property name="Size" value="{{1,0},{1,-100}}"/>
                     </Window>
                 </Window>
-                <Window type="EmberLook/StaticText">
-					<Property name="Size" value="{{0,70},{0.00,25.0}}" />
-					<Property name="Position" value="{{0,155},{0,0}}" />
-					<Property name="Text" value="Mode:" />
-				</Window>
-				<Window name="Mode" type="EmberLook/Combobox">
-					<Property name="Size" value="{{0,75.0},{0,125.0}}" />
-					<Property name="Position" value="{{0,230},{0,0}}" />
-				</Window>
-				<Window name="DefaultMode" type="EmberLook/StaticText">
-					<Property name="Size" value="{{0,75.0},{0,25.0}}" />
-					<Property name="Position" value="{{0,310},{0,0}}" />
-				</Window>
-				<Window type="EmberLook/StaticText">
-					<Property name="Size" value="{{0,70},{0.00,25.0}}" />
-					<Property name="Position" value="{{0,155},{0,30}}" />
-					<Property name="Text" value="Name:" />
-				</Window>
-				<Window name="Name" type="EmberLook/Editbox">
-					<Property name="Size" value="{{0,75.0},{0,25.0}}" />
-					<Property name="Position" value="{{0,230},{0,30}}" />
-					<Property name="InheritsAlpha" value="True" />
-				</Window>
-                <Window name="PlantedOnGroundType" type="EmberLook/Checkbox">
-                    <Property name="Position" value="{{0,155},{0,60}}" />
-                    <Property name="Size" value="{{1,0},{0,25}}" />
-                    <Property name="Selected" value="True" />
-                    <Property name="TooltipText" value="If checked, entities will be planted on the ground by default." />
-                    <Property name="Text" value="Planted on ground" />
+                <Window name="TypePreviewImage" type="EmberLook/StaticImage">
+                    <Property name="Position" value="{{0,150},{1,-120}}"/>
+                    <Property name="Size" value="{{1,-150},{0,120}}"/>
                 </Window>
-				<Window name="ModelPreviewImage" type="EmberLook/StaticImage">
-					<Property name="Position" value="{{0,155},{0,90}}" />
-					<Property name="Size" value="{{1.00,-155.00},{1.00,-90}}" />
-				</Window>
-			</Window>
+                <!--                <Window name="CreateSection" type="DefaultWindow">-->
+                <!--                    <Property name="Position" value="{{0,150},{0,0}}"/>-->
+                <!--                    <Property name="Size" value="{{1,-150},{1,0}}"/>-->
+                <!--                    <Property name="Visible" value="false"/>-->
+                <!--                    <Window name="RecipeDescription" type="EmberLook/StaticText">-->
+                <!--                        <Property name="Position" value="{{0,0},{0,0}}"/>-->
+                <!--                        <Property name="Size" value="{{1,0},{0,50}}"/>-->
+                <!--                        <Property name="FrameEnabled" value="false"/>-->
+                <!--                        <Property name="BackgroundEnabled" value="false"/>-->
+                <!--                    </Window>-->
+                <!--                    <Window name="RandomizeOrientation" type="EmberLook/Checkbox">-->
+                <!--                        <Property name="Position" value="{{0,0},{0,50}}"/>-->
+                <!--                        <Property name="Size" value="{{1,0},{0,25}}"/>-->
+                <!--                        <Property name="Selected" value="True"/>-->
+                <!--                        <Property name="TooltipText" value="If checked, will randomize the orientation of all new entities."/>-->
+                <!--                        <Property name="Text" value="Random orientation"/>-->
+                <!--                    </Window>-->
+                <!--                    <Window name="PlantedOnGround" type="EmberLook/Checkbox">-->
+                <!--                        <Property name="Position" value="{{0,0},{0,75}}"/>-->
+                <!--                        <Property name="Size" value="{{1,0},{0,25}}"/>-->
+                <!--                        <Property name="Selected" value="True"/>-->
+                <!--                        <Property name="TooltipText" value="If checked, entities will be planted on the ground by default."/>-->
+                <!--                        <Property name="Text" value="Planted on ground"/>-->
+                <!--                    </Window>-->
+                <!--                    <Window name="AdaptersContainer" type="DefaultWindow">-->
+                <!--                        <Property name="Position" value="{{0,0},{0,100}}"/>-->
+                <!--                        <Property name="Size" value="{{1,0},{1,-100}}"/>-->
+                <!--                    </Window>-->
+                <!--                </Window>-->
+                <!--                <Window name="WaitForTypeInfo" type="EmberLook/StaticText">-->
+                <!--                    <Property name="Position" value="{{0,100},{0,0}}"/>-->
+                <!--                    <Property name="Size" value="{{1,-100},{1,0}}"/>-->
+                <!--                    <Property name="Visible" value="false"/>-->
+                <!--                    <Property name="FrameEnabled" value="false"/>-->
+                <!--                    <Property name="BackgroundEnabled" value="false"/>-->
+                <!--                    <Property name="Text" value="Waiting for type info from the server..."/>-->
+                <!--                </Window>-->
+            </Window>
+            <!--            <Window name="TabTypes" type="DefaultWindow">-->
+            <!--                <Property name="Position" value="{{0,0},{0,0}}"/>-->
+            <!--                <Property name="Size" value="{{1,0},{1,0}}"/>-->
+            <!--                <Property name="InheritsAlpha" value="True"/>-->
+            <!--                <Property name="Text" value="Types"/>-->
+            <!--                <Window type="VerticalLayoutContainer">-->
+            <!--                    <Property name="Size" value="{{0,150},{1.00,0}}"/>-->
+            <!--                    <Window name="TypeList" type="EmberLook/Tree">-->
+            <!--                        <Property name="Size" value="{{0,150},{1.00,-60}}"/>-->
+            <!--                        <Property name="InheritsAlpha" value="false"/>-->
+            <!--                    </Window>-->
+            <!--                    <Window name="TypeFilter" type="EmberLook/Editbox">-->
+            <!--                        <Property name="Size" value="{{0,150.0},{0,25.0}}"/>-->
+            <!--                        <Property name="InheritsAlpha" value="True"/>-->
+            <!--                    </Window>-->
+            <!--                    <Window name="CreateButton" type="EmberLook/Button">-->
+            <!--                        <Property name="Size" value="{{0,150.0},{0,25.0}}"/>-->
+            <!--                        <Property name="Text" value="Create"/>-->
+            <!--                        <Property name="InheritsAlpha" value="True"/>-->
+            <!--                    </Window>-->
+            <!--                </Window>-->
+            <!--                <Window type="EmberLook/StaticText">-->
+            <!--                    <Property name="Size" value="{{0,70},{0.00,25.0}}"/>-->
+            <!--                    <Property name="Position" value="{{0,155},{0,0}}"/>-->
+            <!--                    <Property name="Text" value="Mode:"/>-->
+            <!--                </Window>-->
+            <!--                <Window name="Mode" type="EmberLook/Combobox">-->
+            <!--                    <Property name="Size" value="{{0,75.0},{0,125.0}}"/>-->
+            <!--                    <Property name="Position" value="{{0,230},{0,0}}"/>-->
+            <!--                </Window>-->
+            <!--                <Window name="DefaultMode" type="EmberLook/StaticText">-->
+            <!--                    <Property name="Size" value="{{0,75.0},{0,25.0}}"/>-->
+            <!--                    <Property name="Position" value="{{0,310},{0,0}}"/>-->
+            <!--                </Window>-->
+            <!--                <Window type="EmberLook/StaticText">-->
+            <!--                    <Property name="Size" value="{{0,70},{0.00,25.0}}"/>-->
+            <!--                    <Property name="Position" value="{{0,155},{0,30}}"/>-->
+            <!--                    <Property name="Text" value="Name:"/>-->
+            <!--                </Window>-->
+            <!--                <Window name="Name" type="EmberLook/Editbox">-->
+            <!--                    <Property name="Size" value="{{0,75.0},{0,25.0}}"/>-->
+            <!--                    <Property name="Position" value="{{0,230},{0,30}}"/>-->
+            <!--                    <Property name="InheritsAlpha" value="True"/>-->
+            <!--                </Window>-->
+            <!--                <Window name="PlantedOnGroundType" type="EmberLook/Checkbox">-->
+            <!--                    <Property name="Position" value="{{0,155},{0,60}}"/>-->
+            <!--                    <Property name="Size" value="{{1,0},{0,25}}"/>-->
+            <!--                    <Property name="Selected" value="True"/>-->
+            <!--                    <Property name="TooltipText" value="If checked, entities will be planted on the ground by default."/>-->
+            <!--                    <Property name="Text" value="Planted on ground"/>-->
+            <!--                </Window>-->
+            <!--                <Window name="ModelPreviewImage" type="EmberLook/StaticImage">-->
+            <!--                    <Property name="Position" value="{{0,155},{0,90}}"/>-->
+            <!--                    <Property name="Size" value="{{1.00,-155.00},{1.00,-90}}"/>-->
+            <!--                </Window>-->
+            <!--            </Window>-->
             <Window name="TabExports" type="DefaultWindow">
-                <Property name="Position" value="{{0,0},{0,0}}" />
-                <Property name="Size" value="{{1,0},{1,0}}" />
-                <Property name="InheritsAlpha" value="True" />
-                <Property name="Text" value="Exports" />
+                <Property name="Position" value="{{0,0},{0,0}}"/>
+                <Property name="Size" value="{{1,0},{1,0}}"/>
+                <Property name="InheritsAlpha" value="True"/>
+                <Property name="Text" value="Exports"/>
                 <Window name="Base" type="DefaultWindow">
                     <Window name="ExportsList" type="EmberLook/ItemListbox">
-                        <Property name="Size" value="{{0,150},{1.0,-30}}" />
-                        <Property name="InheritsAlpha" value="false" />
+                        <Property name="Size" value="{{0,150},{1.0,-30}}"/>
+                        <Property name="InheritsAlpha" value="false"/>
                     </Window>
                     <Window name="DetailsText" type="EmberLook/StaticText">
-                        <Property name="Size" value="{{1,-160},{1.0,-95.0}}" />
-                        <Property name="Position" value="{{0,155},{0, 0}}" />
-                        <Property name="InheritsAlpha" value="False" />
-                        <Property name="FrameEnabled" value="False" />
-                        <Property name="BackgroundEnabled" value="False" />
+                        <Property name="Size" value="{{1,-160},{1.0,-95.0}}"/>
+                        <Property name="Position" value="{{0,155},{0, 0}}"/>
+                        <Property name="InheritsAlpha" value="False"/>
+                        <Property name="FrameEnabled" value="False"/>
+                        <Property name="BackgroundEnabled" value="False"/>
                     </Window>
                     <Window name="ImportButton" type="EmberLook/Button">
-                        <Property name="Size" value="{{0,75.0},{0,25.0}}" />
-                        <Property name="Position" value="{{0,0},{1.0,-25.0}}" />
-                        <Property name="Text" value="Import" />
-                        <Property name="InheritsAlpha" value="True" />
+                        <Property name="Size" value="{{0,75.0},{0,25.0}}"/>
+                        <Property name="Position" value="{{0,0},{1.0,-25.0}}"/>
+                        <Property name="Text" value="Import"/>
+                        <Property name="InheritsAlpha" value="True"/>
                     </Window>
                 </Window>
                 <Window name="ActiveOverlay" type="EmberLook/StaticText">
-                    <Property name="Visible" value="false" />
-                    <Property name="BackgroundEnabled" value="true" />
-                    <Property name="FrameEnabled" value="false" />
-                    <Property name="AlwaysOnTop" value="true" />
+                    <Property name="Visible" value="false"/>
+                    <Property name="BackgroundEnabled" value="true"/>
+                    <Property name="FrameEnabled" value="false"/>
+                    <Property name="AlwaysOnTop" value="true"/>
                     <Window name="DumpStatus" type="EmberLook/StaticText">
-                        <Property name="Size" value="{{1.0,0.0},{0.0,20.0}}" />
-                        <Property name="Position" value="{{0,0},{0,20}}" />
-                        <Property name="HorzFormatting" value="CentreAligned" />
-                        <Property name="BackgroundEnabled" value="false" />
-                        <Property name="FrameEnabled" value="false" />
+                        <Property name="Size" value="{{1.0,0.0},{0.0,20.0}}"/>
+                        <Property name="Position" value="{{0,0},{0,20}}"/>
+                        <Property name="HorzFormatting" value="CentreAligned"/>
+                        <Property name="BackgroundEnabled" value="false"/>
+                        <Property name="FrameEnabled" value="false"/>
                     </Window>
                     <Window name="DumpCancel" type="EmberLook/Button">
-                        <Property name="Text" value="Cancel" />
-                        <Property name="TooltipText" value="Cancels the ongoing action." />
-                        <Property name="Position" value="{{0.5,-45},{0,45}}" />
-                        <Property name="Size" value="{{0,70},{0,20}}" />
+                        <Property name="Text" value="Cancel"/>
+                        <Property name="TooltipText" value="Cancels the ongoing action."/>
+                        <Property name="Position" value="{{0.5,-45},{0,45}}"/>
+                        <Property name="Size" value="{{0,70},{0,20}}"/>
                     </Window>
                 </Window>
             </Window>
-		</Window>
-	</Window>
+        </Window>
+    </Window>
 </GUILayout>

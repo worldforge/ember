@@ -5,7 +5,8 @@ if (NOT WF_USE_WIDGET_PLUGINS)
             InspectWidget.cpp
             Help.cpp
             IngameChatWidget.cpp
-            ContainerWidget.cpp)
+            ContainerWidget.cpp
+            EntityCreatorWidget.cpp)
 endif ()
 
 

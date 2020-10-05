@@ -53,7 +53,7 @@ public:
 	 * Constructor.
 	 * @param type The type of new adapter. Should be known to AdaptersFactory.
 	 */
-	GUIAdapter(std::string  type);
+	explicit GUIAdapter(std::string  type);
 
 	/**
 	 * Destructor.
@@ -68,12 +68,12 @@ public:
 	/**
 	 * Attaches adapter to window.
 	 */
-	void attach(CEGUI::Window* window);
+	std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> attach(CEGUI::Window* window);
 
-	/**
-	 * Detaches adapter from previously attached window.
-	 */
-	void detach();
+//	/**
+//	 * Detaches adapter from previously attached window.
+//	 */
+//	void detach();
 
 	/**
 	 * @brief Returns adapter value.
@@ -81,7 +81,7 @@ public:
 	 * This function returns adapter value.
 	 * If allowRandom was set, it return random suggestion if value is equal to &ldquo;Random&rdquo;
 	 */
-	Atlas::Message::Element getValue();
+	Atlas::Message::Element getValue(const Atlas::Message::Element& valueFromAdapter);
 
 	/**
 	 * @brief Sets adapter title.
@@ -151,7 +151,7 @@ protected:
 	/**
 	 * Adapter container.
 	 */
-	std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> mAdapter;
+	//std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> mAdapter;
 
 	/**
 	 * Adapter value.

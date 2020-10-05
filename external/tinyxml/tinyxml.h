@@ -123,7 +123,7 @@ struct TiXmlCursor
 class TiXmlVisitor
 {
 public:
-	virtual ~TiXmlVisitor() {}
+	virtual ~TiXmlVisitor() = default;
 
 	/// Visit a document.
 	virtual bool VisitEnter( const TiXmlDocument& doc )	{ return true; }

@@ -27,6 +27,7 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
+#include "components/ogre/authoring/EntityRecipe.h"
 
 namespace Eris {
 class TypeService;
@@ -73,9 +74,8 @@ public:
 	 */
 	EntityCreatorCreationInstance(World& world,
 								  Eris::TypeService& typeService,
-								  Authoring::EntityRecipe& recipe,
-								  bool randomizeOrientation,
-								  sigc::slot<void>& adapterValueChangedSlot);
+								  std::map<std::string, Atlas::Message::Element> entityMap,
+								  bool randomizeOrientation);
 
 	/**
 	 * @brief Dtor.
@@ -150,11 +150,6 @@ protected:
 	 * @brief The main type service.
 	 */
 	Eris::TypeService& mTypeService;
-
-	/**
-	 * @brief Recipe that is used for creation.
-	 */
-	Authoring::EntityRecipe& mRecipe;
 
 	/**
 	 * @brief Detached entity that is used in process of creating preview.
