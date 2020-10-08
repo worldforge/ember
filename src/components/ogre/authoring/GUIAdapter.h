@@ -42,116 +42,13 @@ namespace Authoring
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class GUIAdapter
+struct GUIAdapter
 {
-
-	// This maps suggestion text to values
-	typedef std::map<std::string, std::string> SuggestionsStore;
-
-public:
-	/**
-	 * Constructor.
-	 * @param type The type of new adapter. Should be known to AdaptersFactory.
-	 */
-	explicit GUIAdapter(std::string  type);
-
-	/**
-	 * Destructor.
-	 */
-	virtual ~GUIAdapter();
-
-	/**
-	 * Returns adapter type.
-	 */
-	const std::string& getType() const;
-
-	/**
-	 * Attaches adapter to window.
-	 */
-	std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> attach(CEGUI::Window* window);
-
-//	/**
-//	 * Detaches adapter from previously attached window.
-//	 */
-//	void detach();
-
-	/**
-	 * @brief Returns adapter value.
-	 *
-	 * This function returns adapter value.
-	 * If allowRandom was set, it return random suggestion if value is equal to &ldquo;Random&rdquo;
-	 */
-	Atlas::Message::Element getValue(const Atlas::Message::Element& valueFromAdapter);
-
-	/**
-	 * @brief Sets adapter title.
-	 *
-	 * This sets adapter title that could be reused later, when populating widget with adapters.
-	 */
-	void setTitle(const std::string& title);
-
-	/**
-	 * Gets adapter title.
-	 */
-	const std::string& getTitle() const;
-
-	/**
-	 * @brief Sets an optional tooltip for the adapter.
-	 * @param tooltip The tooltip text.
-	 */
-	void setTooltip(const std::string& tooltip);
-
-	/**
-	 * @brief Gets the optional tool tip text for the adapter.
-	 * @return The tool tip text.
-	 */
-	const std::string& getTooltip() const;
-
-	/**
-	 * @brief Sets a default value, to which the created gui adapter should be initialized when it's created.
-	 * @param value The default value. This must be translatable to something that the adapter used can handle (i.e. if the adapter used is a numerical adapter, the default value must be parsable into to a number).
-	 */
-	void setDefaultValue(const std::string& value);
-
-	/**
-	 * @brief Gets the default value.
-	 * when using this to set the initial value of an adapter, it should be parsed into a corresponding atlas element value.
-	 * @return The default value, as a string.
-	 */
-	const std::string& getDefaultValue() const;
-
-	/**
-	 * Adds suggestion.
-	 */
-	void addSuggestion(const std::string& value, const std::string& text);
-
-	/**
-	 * @brief Is &ldquo;Random&rdquo; allowed.
-	 *
-	 * If set to true, adds &ldquo;Random&rdquo; suggestion.
-	 */
-	void setAllowRandom(bool val);
-
-	/**
-	 * Emitted when the value has been changed from a gui update.
-	 */
-	sigc::signal<void> EventValueChanged;
-
-protected:
-	/**
-	 * Handles value change of underlying adapter and propagates it forward.
-	 */
-	void valueChanged();
-
 	/**
 	 * Adapter type.
 	 */
 	std::string mType;
 
-	/**
-	 * Adapter container.
-	 */
-	//std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> mAdapter;
 
 	/**
 	 * Adapter value.
@@ -166,10 +63,10 @@ protected:
 	/**
 	 * List of suggestions.
 	 */
-	SuggestionsStore mSuggestions;
+	std::map<std::string, std::string> mSuggestions;
 
 	/**
-	 * If true, adds "Random" suggestion to the list.
+	 * If true, allows randomizing by default.
 	 */
 	bool mAllowRandom;
 

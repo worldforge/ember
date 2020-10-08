@@ -37,26 +37,27 @@ namespace Atlas {
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class NumberAdapter : public AdapterBase
-{
+class NumberAdapter : public AdapterBase {
 public:
-    NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
+	NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
 
-    virtual ~NumberAdapter();
-    
+	~NumberAdapter() override;
+
 	/**
 	Updates the gui with new values.
 	*/
-	virtual void updateGui(const ::Atlas::Message::Element& element);
-	
-	virtual void addSuggestion(const std::string& suggestedValue);
-   
+	void updateGui(const ::Atlas::Message::Element& element) override;
+
+	void addSuggestion(const std::string& suggestedValue) override;
+
 protected:
 	CEGUI::Combobox* mTextWindow;
+
 	bool window_TextChanged(const CEGUI::EventArgs& e);
 
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
+	void fillElementFromGui() override;
+
+	bool _hasChanges() override;
 
 };
 

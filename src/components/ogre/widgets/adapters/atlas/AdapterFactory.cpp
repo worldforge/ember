@@ -38,6 +38,7 @@
 #include "TerrainModAdapter.h"
 #include "ScaleAdapter.h"
 #include "EntityRefAdapter.h"
+#include "NumberRangeAdapter.h"
 #include "components/ogre/GUIManager.h"
 
 using namespace CEGUI;
@@ -86,6 +87,11 @@ bool AdapterFactory::verifyCorrectType<StringAdapter>(const ::Atlas::Message::El
 template<>
 bool AdapterFactory::verifyCorrectType<NumberAdapter>(const ::Atlas::Message::Element& element) {
 	return element.isNum();
+}
+
+template<>
+bool AdapterFactory::verifyCorrectType<NumberRangeAdapter>(const ::Atlas::Message::Element& element) {
+	return element.isNum() || element.isNone();
 }
 
 template<>
@@ -267,6 +273,17 @@ EntityRefAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container
 	return new EntityRefAdapter(element, {text});
 }
 
+template<>
+NumberRangeAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity) {
+	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/NumberRangeAdapter.layout");
+	auto min = static_cast<Editbox*> (container->getChildRecursive("Min"));
+	auto max = static_cast<Editbox*> (container->getChildRecursive("Max"));
+	auto value = static_cast<Editbox*> (container->getChildRecursive("Value"));
+	auto randomize = static_cast<PushButton*> (container->getChildRecursive("Randomize"));
+	return new NumberRangeAdapter(element, {*min, *max, *value, *randomize});
+}
+
+
 StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element) {
 	return createAdapter<StringAdapter>(container, adapterPrefix, element);
 }
@@ -331,6 +348,11 @@ EntityRefAdapter* AdapterFactory::createEntityRefAdapter(CEGUI::Window* containe
 	return createAdapter<EntityRefAdapter>(container, adapterPrefix, element);
 }
 
+NumberRangeAdapter* AdapterFactory::createNumberRangeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element) {
+	return createAdapter<NumberRangeAdapter>(container, adapterPrefix, element);
+}
+
+
 std::unique_ptr<AdapterBase> AdapterFactory::createAdapterByType(const std::string& type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity) {
 	::Atlas::Message::Element newElement(element);
 	if (type == "string") {
@@ -343,6 +365,8 @@ std::unique_ptr<AdapterBase> AdapterFactory::createAdapterByType(const std::stri
 			newElement = 0.0;
 		}
 		return std::unique_ptr<AdapterBase>(createNumberAdapter(container, adapterPrefix, newElement));
+	} else if (type == "number_range") {
+		return std::unique_ptr<AdapterBase>(createNumberRangeAdapter(container, adapterPrefix, newElement));
 	} else if (type == "size") {
 		if (newElement.isNone()) {
 			newElement = ::Atlas::Message::ListType();
@@ -432,6 +456,7 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 	return window;
 
 }
+
 
 }
 

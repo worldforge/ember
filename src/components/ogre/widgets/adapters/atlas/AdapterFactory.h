@@ -70,6 +70,7 @@ class ScaleAdapter;
 
 class EntityRefAdapter;
 
+class NumberRangeAdapter;
 /**
 @brief A factory class through which all adapters are created. Instead of creating the adapters yourself, use this to properly instantiate them.
 The factory will take care of loading the gui elements from predefined cegui layout definitions, and setting up all gui elements.
@@ -220,6 +221,9 @@ public:
 	* @return A new polygon adapter.
 	*/
 	TerrainModAdapter* createTerrainModAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity);
+
+
+	NumberRangeAdapter* createNumberRangeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 
 	/**
 	 * @brief Creates a new adapter based on a specified type.

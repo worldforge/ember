@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout version="4">
+    <Window type="VerticalLayoutContainer">
+        <Property name="Size" value="{{1,0},{0,75}}"/>
+        <Window type="HorizontalLayoutContainer">
+            <Window type="EmberLook/StaticText">
+                <Property name="Size" value="{{0,50},{0,25}}"/>
+                <Property name="Text" value="Min."/>
+            </Window>
+            <Window type="EmberLook/Editbox" name="Min">
+                <Property name="Size" value="{{0,50},{0,25}}"/>
+            </Window>
+        </Window>
+        <Window type="HorizontalLayoutContainer">
+            <Window type="EmberLook/StaticText">
+                <Property name="Size" value="{{0,50},{0,25}}"/>
+                <Property name="Text" value="Max."/>
+            </Window>
+            <Window type="EmberLook/Editbox" name="Max">
+                <Property name="Size" value="{{0,50},{0,25}}"/>
+            </Window>
+        </Window>
+        <Window type="HorizontalLayoutContainer">
+            <Window type="EmberLook/Editbox" name="Value">
+                <Property name="Size" value="{{0,50},{0,25}}"/>
+            </Window>
+            <Window type="EmberLook/Button" name="Randomize">
+                <Property name="Size" value="{{0,75},{0,25}}"/>
+                <Property name="Text" value="Randomize"/>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

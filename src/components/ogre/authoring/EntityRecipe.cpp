@@ -56,35 +56,20 @@ EntityRecipe::EntityRecipe(std::unique_ptr<TiXmlElement> entitySpec) :
 
 EntityRecipe::~EntityRecipe() = default;
 
-
-//const std::string& EntityRecipe::getEntityType() const {
-//	return mEntityType;
-//}
-
-GUIAdapter* EntityRecipe::createGUIAdapter(const std::string& name, const std::string& type, const std::string& tooltip) {
-	auto adapter = std::make_unique<GUIAdapter>(type);
-	adapter->setTooltip(tooltip);
-	adapter->EventValueChanged.connect(sigc::mem_fun(*this, &EntityRecipe::valueChanged));
-	auto result = mGUIAdapters.emplace(name, std::move(adapter));
-	if (result.second) {
-		return result.first->second.get();
-	} else {
-		return {};
-	}
+void EntityRecipe::addGUIAdapter(std::string name, std::unique_ptr<GUIAdapter> adapter) {
+	mGUIAdapters.emplace(std::move(name), std::move(adapter));
 }
 
 GUIAdapter* EntityRecipe::getGUIAdapter(const std::string& name) {
-	GUIAdaptersStore::iterator adapter;
-	if ((adapter = mGUIAdapters.find(name)) != mGUIAdapters.end()) {
+	auto adapter = mGUIAdapters.find(name);
+	if (adapter != mGUIAdapters.end()) {
 		return adapter->second.get();
 	} else {
 		return nullptr;
 	}
 }
 
-const GUIAdaptersStore& EntityRecipe::getGUIAdapters() {
-	return mGUIAdapters;
-}
+
 
 GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(const std::string& name) {
 	auto result = mBindings.emplace(name, GUIAdapterBindings());
@@ -288,8 +273,18 @@ Atlas::Message::MapType EntityRecipeInstance::createEntity(Eris::TypeService& ty
 			if (mStack.empty()) {
 				mStack.emplace(&mMap);
 			} else {
-
 				const auto& elementName = element.ValueStr();
+				auto optionalAttr = element.Attribute(std::string("optional"));
+				if (optionalAttr) {
+					auto valueI = mAdapterValues.find(*optionalAttr);
+					if (valueI == mAdapterValues.end() || valueI->second.isNone()) {
+						if (elementName == "list" || elementName == "map") {
+							mStack.emplace(nullptr);
+						}
+						return false;
+					}
+				}
+
 				if (elementName == "list") {
 					mCurrentType = Atlas::Message::Element::TYPE_LIST;
 					if (mStack.top()->isList()) {
@@ -322,6 +317,7 @@ Atlas::Message::MapType EntityRecipeInstance::createEntity(Eris::TypeService& ty
 
 		bool VisitExit(const TiXmlElement& element) override {
 			const auto& elementName = element.ValueStr();
+
 			if (elementName == "list" || elementName == "map") {
 				mStack.pop();
 			} else {
@@ -330,6 +326,7 @@ Atlas::Message::MapType EntityRecipeInstance::createEntity(Eris::TypeService& ty
 				} else {
 					mStack.top()->Map().emplace(element.Attribute("name"), mCurrentElement);
 				}
+
 				mCurrentElement = Atlas::Message::Element();
 			}
 			if (!mStack.empty()) {

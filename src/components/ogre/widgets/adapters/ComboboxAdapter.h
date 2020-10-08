@@ -26,6 +26,7 @@
 #include "GenericPropertyAdapter.h"
 #include <CEGUI/widgets/Combobox.h>
 #include <CEGUI/widgets/PushButton.h>
+#include <wfmath/MersenneTwister.h>
 #include "../ColouredListItem.h"
 
 namespace Ember {
@@ -39,20 +40,21 @@ namespace Adapters {
  * @brief bridges a string to a CEGUI combobox (and combobox only!)
  */
 template<typename ValueType, typename PropertyNativeType>
-class ComboboxAdapter : public GenericPropertyAdapter<ValueType, PropertyNativeType>
-{
+class ComboboxAdapter : public GenericPropertyAdapter<ValueType, PropertyNativeType> {
 public:
 	/**
 	 * @brief Ctor
 	 */
 	ComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
-	
+
 	/**
 	 * @brief Dtor
 	 */
 	virtual ~ComboboxAdapter();
-	
+
 	void addSuggestion(const std::string& suggestedValue);
+
+	void randomize() override;
 
 protected:
 	CEGUI::Combobox* mCombobox;
@@ -60,34 +62,40 @@ protected:
 
 template<typename ValueType, typename PropertyNativeType>
 ComboboxAdapter<ValueType, PropertyNativeType>::ComboboxAdapter(const ValueType& value, CEGUI::Window* widget):
-	GenericPropertyAdapter<ValueType, PropertyNativeType>(value, widget, "Text", CEGUI::Combobox::EventListSelectionAccepted),
-	
-	mCombobox(dynamic_cast<CEGUI::Combobox*>(widget))
-{
+		GenericPropertyAdapter<ValueType, PropertyNativeType>(value, widget, "Text", CEGUI::Combobox::EventListSelectionAccepted),
+
+		mCombobox(dynamic_cast<CEGUI::Combobox*>(widget)) {
 	// TODO: Do we want to assert that given widget is a combobox or just silently not provide the
 	//       functionality specific to the combobox?
-	
-	if (mCombobox)
-	{
+
+	if (mCombobox) {
 		// at this point no suggestions were added, so hide the combobox dropdown button
 		mCombobox->getPushButton()->setVisible(false);
 	}
 }
 
 template<typename ValueType, typename PropertyNativeType>
-ComboboxAdapter<ValueType, PropertyNativeType>::~ComboboxAdapter()
-{}
+ComboboxAdapter<ValueType, PropertyNativeType>::~ComboboxAdapter() {}
 
 template<typename ValueType, typename PropertyNativeType>
-void ComboboxAdapter<ValueType, PropertyNativeType>::addSuggestion(const std::string& suggestedValue)
-{
-	if (mCombobox)
-	{
+void ComboboxAdapter<ValueType, PropertyNativeType>::addSuggestion(const std::string& suggestedValue) {
+	if (mCombobox) {
 		mCombobox->addItem(new ColouredListItem(suggestedValue));
-		
+
 		// when we add any suggestions (they can't be removed), we immediately show the dropdown button
 		// so that user can access the suggestions
 		mCombobox->getPushButton()->setVisible(true);
+	}
+}
+
+template<typename ValueType, typename PropertyNativeType>
+void ComboboxAdapter<ValueType, PropertyNativeType>::randomize() {
+	if (mCombobox) {
+		if (mCombobox->getItemCount()) {
+			WFMath::MTRand rand;
+			auto index = rand.randInt(mCombobox->getItemCount() - 1);
+			mCombobox->setItemSelectState(index, true);
+		}
 	}
 }
 

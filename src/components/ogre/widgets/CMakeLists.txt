@@ -65,6 +65,7 @@ add_library(widgets OBJECT
         adapters/atlas/ListAdapter.cpp
         adapters/atlas/MapAdapter.cpp
         adapters/atlas/NumberAdapter.cpp
+        adapters/atlas/NumberRangeAdapter.cpp
         adapters/atlas/OrientationAdapter.cpp
         adapters/atlas/PolygonAdapter.cpp
         adapters/atlas/Position2DAdapter.cpp

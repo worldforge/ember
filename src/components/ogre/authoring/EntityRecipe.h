@@ -43,7 +43,6 @@ class TypeService;
 namespace Ember {
 namespace OgreView {
 namespace Authoring {
-typedef std::map<std::string, std::unique_ptr<GUIAdapter>> GUIAdaptersStore;
 typedef std::unordered_map<std::string, GUIAdapterBindings> BindingsStore;
 
 /**
@@ -68,10 +67,7 @@ public:
 
 	~EntityRecipe();
 
-	/**
-	 * Creates and returns GUI adapter. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
-	 */
-	GUIAdapter* createGUIAdapter(const std::string& name, const std::string& type, const std::string& tooltip);
+	void addGUIAdapter(std::string name, std::unique_ptr<GUIAdapter> adapter);
 
 	/**
 	 * Returns named GUI adapter.
@@ -81,7 +77,9 @@ public:
 	/**
 	 * Returns list of GUI adapters.
 	 */
-	const GUIAdaptersStore& getGUIAdapters();
+	const std::map<std::string, std::unique_ptr<GUIAdapter>>& getGUIAdapters() const {
+		return mGUIAdapters;
+	}
 
 	/**
 	 * Creates and returns GUI adapter bindings. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
@@ -148,7 +146,7 @@ protected:
 	/**
 	 * GUI adapters.
 	 */
-	GUIAdaptersStore mGUIAdapters;
+	std::map<std::string, std::unique_ptr<GUIAdapter>> mGUIAdapters;
 
 	/**
 	 * Script bindings.

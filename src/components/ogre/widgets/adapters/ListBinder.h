@@ -33,7 +33,6 @@
 #include <CEGUI/EventArgs.h>
 
 
-
 namespace Ember {
 namespace OgreView {
 
@@ -52,12 +51,11 @@ Note that you must call sync() after you've set up the binder to get it to creat
 
 @author Erik Ogenvik <erik@ogenvik.org>
 */
-template <class T, class WidgetT>
-class ListBinder
-{
+template<class T, class WidgetT>
+class ListBinder {
 public:
 	typedef std::pair<const std::string, T*> SelectedType;
-		
+
 	/**
 	 * @brief Ctor.
 	 * @param listbox The list widget to bind to.
@@ -72,25 +70,25 @@ public:
 	 * @param type The instance to add.
 	 */
 	void addType(const std::string& key, const std::string& displayName, T type);
-	
+
 	/**
 	 * @brief Emitted when the user has changed the selection
 	 * The first parameter is the selected key, and the second is the selected instance.
 	 */
 	sigc::signal<void, const std::string&, T&> EventSelected;
-	
+
 	/**
 	 * @brief Syncs the GUI with the list of items.
 	 * You must call this after you've added items.
 	 */
 	void sync();
-	
+
 	/**
 	 * @brief Gets the currently selected item.
 	 * @return A pair, where the first item is the selected key, and the second item is the selected type.
 	 */
 	SelectedType getCurrentSelected();
-	
+
 	/**
 	 * @brief Selects an item from a key.
 	 * This will update the gui.
@@ -100,7 +98,7 @@ public:
 	T* select(const std::string& key);
 
 protected:
-	
+
 	/**
 	 * @brief Internal class which wraps a type, a descriptive name and an index in the list widget.
 	 */
@@ -111,12 +109,12 @@ protected:
 	};
 
 	typedef std::map<std::string, BinderInstance> TypeStore;
-	
+
 	/**
 	 * @brief The types registered for this binder.
 	 */
 	TypeStore mTypes;
-	
+
 	/**
 	 * @brief The listbox.
 	 */
@@ -131,19 +129,17 @@ protected:
 
 };
 
-template <typename T, typename WidgetT>
+template<typename T, typename WidgetT>
 ListBinder<T, WidgetT>::ListBinder(WidgetT* listbox)
-: mListbox(listbox)
-{
+		: mListbox(listbox) {
 // 	if (listbox) {
 // 		addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&ListBinder<T, WidgetT>::listbox_SelectionChanged, this))); 
 // 	}
 }
 
 
-template <typename T, typename WidgetT>
-void ListBinder<T, WidgetT>::sync()
-{
+template<typename T, typename WidgetT>
+void ListBinder<T, WidgetT>::sync() {
 	mListbox->resetList();
 	for (typename TypeStore::iterator I = mTypes.begin(); I != mTypes.end(); ++I) {
 		CEGUI::ListboxItem* item = new ColouredListItem(I->second.DisplayName, mListbox->getItemCount());
@@ -152,16 +148,14 @@ void ListBinder<T, WidgetT>::sync()
 	}
 }
 
-template <typename T, typename WidgetT>
-void ListBinder<T, WidgetT>::addType(const std::string& key, const std::string& displayName, T type)
-{
+template<typename T, typename WidgetT>
+void ListBinder<T, WidgetT>::addType(const std::string& key, const std::string& displayName, T type) {
 	mTypes.insert(typename TypeStore::value_type(key, BinderInstance{displayName, type, 0}));
 }
 
-template <typename T, typename WidgetT>
-bool ListBinder<T, WidgetT>::listbox_SelectionChanged(const CEGUI::EventArgs& e)
-{
-	
+template<typename T, typename WidgetT>
+bool ListBinder<T, WidgetT>::listbox_SelectionChanged(const CEGUI::EventArgs& e) {
+
 	T* selectedType(getCurrentSelected());
 	for (typename TypeStore::iterator I = mTypes.begin(); I != mTypes.end(); ++I) {
 		if (&(I->second.Type) == selectedType) {
@@ -171,10 +165,9 @@ bool ListBinder<T, WidgetT>::listbox_SelectionChanged(const CEGUI::EventArgs& e)
 	return true;
 }
 
-template <typename T, typename WidgetT>
-typename ListBinder<T, WidgetT>::SelectedType ListBinder<T, WidgetT>::getCurrentSelected()
-{
-	CEGUI::ListboxItem* item = mListbox->getSelectedItem ();
+template<typename T, typename WidgetT>
+typename ListBinder<T, WidgetT>::SelectedType ListBinder<T, WidgetT>::getCurrentSelected() {
+	CEGUI::ListboxItem* item = mListbox->getSelectedItem();
 	if (item) {
 		size_t index = item->getID();
 		for (typename TypeStore::iterator I = mTypes.begin(); I != mTypes.end(); ++I) {
@@ -186,9 +179,8 @@ typename ListBinder<T, WidgetT>::SelectedType ListBinder<T, WidgetT>::getCurrent
 	return SelectedType("", 0);
 }
 
-template <typename T, typename WidgetT>
-T* ListBinder<T, WidgetT>::select(const std::string& key)
-{
+template<typename T, typename WidgetT>
+T* ListBinder<T, WidgetT>::select(const std::string& key) {
 	typename TypeStore::iterator I = mTypes.find(key);
 	if (I != mTypes.end()) {
 		CEGUI::ListboxItem* item = mListbox->getListboxItemFromIndex(I->second.ListIndex);

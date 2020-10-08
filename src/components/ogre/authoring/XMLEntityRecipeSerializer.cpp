@@ -119,44 +119,6 @@ void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipe& entRecipe, TiXmlEle
 
 	// Copy <entity> part of XML into recipe
 	entRecipe.mEntitySpec.reset(entSpecNode->Clone()->ToElement());
-	const char* type = entRecipe.mEntitySpec->Attribute("type");
-	if (type) {
-		//entRecipe.mEntityType = std::string(type);
-	}
-
-	/*
-	 // Print <entity> part of XML into string and wrap it with stream
-	 TiXmlPrinter printer;
-	 printer.SetStreamPrinting();
-	 entSpecNode->Accept( &printer );
-
-	 std::stringstream strStream(printer.CStr(), std::ios::in);
-
-	 // Create objects
-	 Atlas::Message::QueuedDecoder decoder;
-	 Atlas::Codecs::XML codec(strStream, decoder);
-
-	 // Read whole stream into decoder queue
-	 while (!strStream.eof())
-	 {
-	 codec.poll();
-	 }
-
-	 // Read decoder queue
-	 Atlas::Message::MapType m;
-	 std::string str;
-	 Atlas::Message::Element elem;
-	 while (decoder.queueSize() > 0)
-	 {
-	 // Decoding map message
-	 m = decoder.popMessage();
-	 entRecipe.mEntitySpec.push_back(m);
-	 for (Atlas::Message::MapType::const_iterator iter = m.begin(); iter != m.end(); iter++)
-	 {
-	 S_LOG_VERBOSE(" " << iter->first);
-	 }
-	 }
-	 */
 }
 
 void XMLEntityRecipeSerializer::readAdapters(EntityRecipe& entRecipe, TiXmlElement* adaptersNode) {
@@ -178,15 +140,17 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipe& entRecipe, TiXmlEleme
 
 		S_LOG_VERBOSE(" adapter '" << *name << "' of type " << *type);
 
-		GUIAdapter* adapter = entRecipe.createGUIAdapter(*name, *type, tooltipText);
+		auto adapter = std::make_unique<GUIAdapter>();
+		adapter->mType = *type;
+		adapter->mTooltip = tooltipText;
 
 		const std::string* title;
 		if ((title = smElem->Attribute(std::string("title")))) {
-			adapter->setTitle(*title);
+			adapter->mTitle = *title;
 		}
 
 		if (defaultValue) {
-			adapter->setDefaultValue(*defaultValue);
+			adapter->mDefaultValue = *defaultValue;
 		}
 
 		// Custom adapter parameters
@@ -196,17 +160,18 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipe& entRecipe, TiXmlEleme
 				const std::string* value;
 				text = item->GetText();
 				if ((value = item->Attribute(std::string("value")))) {
-					adapter->addSuggestion(*value, text);
+					adapter->mSuggestions.emplace(*value, text);
 				} else {
-					adapter->addSuggestion(text, text);
+					adapter->mSuggestions.emplace(text, text);
 				}
 			}
 
 			const std::string* allowRandom;
 			if ((allowRandom = smElem->Attribute(std::string("allowrandom"))) && (*allowRandom == "yes" || *allowRandom == "true" || *allowRandom == "on")) {
-				adapter->setAllowRandom(true);
+				adapter->mAllowRandom = true;
 			}
 		}
+		entRecipe.addGUIAdapter(*name, std::move(adapter));
 	}
 }
 
@@ -226,9 +191,6 @@ void XMLEntityRecipeSerializer::readBindings(EntityRecipe& entRecipe, TiXmlEleme
 
 		readBindAdapters(entRecipe, bindings, smElem);
 	}
-
-	// Associating bindings with placeholders after parsing
-//	entRecipe.associateBindings();
 }
 
 void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipe& /*entRecipe*/, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode) {

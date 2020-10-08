@@ -32,6 +32,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <components/ogre/mapping/ModelActionCreator.h>
+#include <components/ogre/widgets/adapters/atlas/AdapterFactory.h>
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/ogre/model/Model.h"
 
@@ -82,8 +83,35 @@ EntityCreatorWidget::EntityCreatorWidget(GUIManager& guiManager, Eris::Avatar& a
 		mAvatar(avatar),
 		mWidget(guiManager.createWidget()),
 		mRulesFetcher(avatar.getConnection(), avatar.getId()),
-		mEntityCreator(std::make_unique<EntityCreator>(*EmberOgre::getSingleton().getWorld())) {
+		mEntityCreator(std::make_unique<EntityCreator>(*EmberOgre::getSingleton().getWorld())),
+		mUnboundType(nullptr) {
 	buildWidget();
+
+	mEntityCreator->EventCreationCompleted.connect([this]() {
+		for (auto& entry : mAdapters) {
+			if (entry.second.allowRandom) {
+				entry.second.adapter->randomize();
+			}
+		}
+		std::map<std::string, Atlas::Message::Element> adapterValues;
+		for (auto& entry: mAdapters) {
+			adapterValues.emplace(entry.first, entry.second.adapter->getValue());
+		}
+
+		mEntityCreator->startCreation(adapterValues);
+	});
+
+	mBoundTypeConnection = avatar.getConnection().getTypeService().BoundType.connect([this](Eris::TypeInfo* type) {
+		if (type == mUnboundType) {
+			mUnboundType = nullptr;
+			refreshPreview();
+		}
+	});
+	mBadTypeConnection = avatar.getConnection().getTypeService().BadType.connect([this](Eris::TypeInfo* type) {
+		if (type == mUnboundType) {
+			mUnboundType = nullptr;
+		}
+	});
 }
 
 EntityCreatorWidget::~EntityCreatorWidget() {
@@ -188,9 +216,9 @@ void EntityCreatorWidget::buildWidget() {
 
 void EntityCreatorWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entity) {
 	Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& model) {
+		mModelPreviewRenderer->setCameraPositionMode(SimpleRenderContext::CPM_OBJECTCENTER);
 		mModelPreviewRenderer->showModel(model);
 		mModelPreviewRenderer->showFull();
-		mModelPreviewRenderer->setCameraPositionMode(SimpleRenderContext::CPM_OBJECTCENTER);
 		//we want to zoom in a little
 		mModelPreviewRenderer->setCameraDistance(0.7);
 
@@ -236,29 +264,50 @@ void EntityCreatorWidget::showRecipe(const std::shared_ptr<Authoring::EntityReci
 
 	for (auto& entry: mEntityRecipe->getGUIAdapters()) {
 		auto& guiAdapter = entry.second;
-		auto wrapper = windowManager.createWindow("HorizontalLayoutContainer");
-		auto title = windowManager.createWindow("EmberLook/StaticText");
-		title->setText(guiAdapter->getTitle());
-		title->setWidth({0, 75});
-		title->setHeight({0, 25});
-		auto adapterContainer = windowManager.createWindow("DefaultWindow");
-		auto adapter = entry.second->attach(adapterContainer);
-		adapter->EventValueChanged.connect([this]() { refreshPreview(); });
-		mAdapters.emplace(entry.first, AdapterPair{std::move(adapter), guiAdapter.get()});
-		adapterContainer->setWidth({1, -85});
-		wrapper->setHeight({0, adapterContainer->getHeight().d_offset});
-		wrapper->addChild(title);
-		wrapper->addChild(adapterContainer);
 
-		adaptersContainer.addChild(wrapper);
+		auto adapterContainer = windowManager.createWindow("DefaultWindow");
+		auto adapter = attachToGuiAdapter(*entry.second, adapterContainer);
+
+		if (adapter) {
+			auto wrapper = windowManager.createWindow("HorizontalLayoutContainer");
+			auto titleWrapper = windowManager.createWindow("VerticalLayoutContainer");
+			auto title = windowManager.createWindow("EmberLook/StaticText");
+			title->setText(guiAdapter->mTitle);
+			title->setWidth({0, 75});
+			title->setHeight({0, 20});
+			auto randomCheckbox = dynamic_cast<CEGUI::ToggleButton*>(windowManager.createWindow("EmberLook/Checkbox"));
+			randomCheckbox->setText("Random");
+			randomCheckbox->setTooltipText("If enabled the adapter will get a random value each time an entity is created.");
+			randomCheckbox->setWidth({0, 75});
+			randomCheckbox->setHeight({0, 20});
+			auto entryName = entry.first;
+			randomCheckbox->subscribeEvent(CEGUI::ToggleButton::EventSelectStateChanged, [this, randomCheckbox, entryName]() {
+				auto I = mAdapters.find(entryName);
+				if (I != mAdapters.end()) {
+					I->second.allowRandom = randomCheckbox->isSelected();
+				}
+			});
+			randomCheckbox->setSelected(entry.second->mAllowRandom);
+			titleWrapper->addChild(title);
+			titleWrapper->addChild(randomCheckbox);
+			adapter->EventValueChanged.connect([this]() { refreshEntityMap(); });
+			mAdapters.emplace(entry.first, AdapterPair{std::move(adapter), guiAdapter.get()});
+			adapterContainer->setWidth({1, -85});
+			wrapper->setHeight({0, adapterContainer->getHeight().d_offset});
+			wrapper->addChild(titleWrapper);
+			wrapper->addChild(adapterContainer);
+
+			adaptersContainer.addChild(wrapper);
+		} else {
+			windowManager.destroyWindow(adapterContainer);
+		}
 	}
 
-	refreshPreview();
-
+	refreshEntityMap();
 
 }
 
-void EntityCreatorWidget::refreshPreview() {
+void EntityCreatorWidget::refreshEntityMap() {
 	auto& typeService = mAvatar.getConnection().getTypeService();
 	std::map<std::string, Atlas::Message::Element> adapterValues;
 	for (auto& entry: mAdapters) {
@@ -266,16 +315,30 @@ void EntityCreatorWidget::refreshPreview() {
 	}
 
 	try {
-		auto entityMap = mEntityRecipeInstance->createEntity(typeService, adapterValues);
-		auto parentI = entityMap.find("parent");
-		if (parentI != entityMap.end() && parentI->second.isString()) {
+		mEntityMap = mEntityRecipeInstance->createEntity(typeService, adapterValues);
+		refreshPreview();
+
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Could not create preview entity." << ex);
+	}
+}
+
+void EntityCreatorWidget::refreshPreview() {
+	auto& typeService = mAvatar.getConnection().getTypeService();
+	try {
+		mUnboundType = nullptr;
+		auto parentI = mEntityMap.find("parent");
+		if (parentI != mEntityMap.end() && parentI->second.isString()) {
 			auto& parent = parentI->second.String();
 			Eris::TypeInfo* erisType = typeService.getTypeByName(parent);
-			if (erisType && erisType->isBound()) {
-				Authoring::DetachedEntity entity("0", erisType);
-
-				entity.setFromMessage(entityMap);
-				showPreview(entity);
+			if (erisType) {
+				if (erisType->isBound()) {
+					Authoring::DetachedEntity entity("0", erisType);
+					entity.setFromMessage(mEntityMap);
+					showPreview(entity);
+				} else {
+					mUnboundType = erisType;
+				}
 			}
 		}
 
@@ -285,12 +348,6 @@ void EntityCreatorWidget::refreshPreview() {
 }
 
 void EntityCreatorWidget::showType(const std::string& typeName) {
-
-	auto type = mAvatar.getConnection().getTypeService().getTypeByName(typeName);
-	if (type && type->isBound()) {
-		Authoring::DetachedEntity entity("0", type);
-		showPreview(entity);
-	}
 
 	auto xml = std::make_unique<TiXmlElement>("entity");
 	auto entityMap = xml->InsertEndChild(TiXmlElement("atlas"))->InsertEndChild(TiXmlElement("map"));
@@ -302,6 +359,24 @@ void EntityCreatorWidget::showType(const std::string& typeName) {
 
 
 	showRecipe(std::make_shared<Authoring::EntityRecipe>(std::move(xml)));
+}
+
+std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> EntityCreatorWidget::attachToGuiAdapter(Authoring::GUIAdapter& guiAdapter, CEGUI::Window* window) {
+	OgreView::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
+	auto adapter = factory.createAdapterByType(guiAdapter.mType, window, "adapterPrefix", guiAdapter.mElement);
+	for (auto& suggestion : guiAdapter.mSuggestions) {
+		adapter->addSuggestion(suggestion.first);
+	}
+
+	//If we have a default value set, use that
+	if (!guiAdapter.mDefaultValue.empty()) {
+		if (guiAdapter.mType == "string") {
+			adapter->updateGui(Atlas::Message::Element(guiAdapter.mDefaultValue));
+		} else if (guiAdapter.mType == "number") {
+			adapter->updateGui(Atlas::Message::Element(atof(guiAdapter.mDefaultValue.c_str())));
+		}
+	}
+	return adapter;
 }
 
 }

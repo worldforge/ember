@@ -31,6 +31,7 @@
 #include "EntityCreator.h"
 
 #include <Eris/Connection.h>
+#include <Eris/TypeInfo.h>
 
 namespace Ember {
 namespace OgreView {
@@ -78,13 +79,18 @@ private:
 	struct AdapterPair {
 		std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> adapter;
 		Authoring::GUIAdapter* guiAdapter;
+		bool allowRandom;
 	};
 
 	std::map<std::string, AdapterPair> mAdapters;
 
-	sigc::slot<void> mSlot;
+	Atlas::Message::MapType mEntityMap;
 
-	Atlas::Message::MapType mDefaultValues;
+	AutoCloseConnection mBoundTypeConnection;
+
+	AutoCloseConnection mBadTypeConnection;
+
+	Eris::TypeInfo* mUnboundType;
 
 	void buildWidget();
 
@@ -97,6 +103,11 @@ private:
 	void showPreview(Ember::OgreView::Authoring::DetachedEntity& entity);
 
 	void refreshPreview();
+
+	void refreshEntityMap();
+
+	std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> attachToGuiAdapter(Authoring::GUIAdapter& guiAdapter, CEGUI::Window* window);
+
 };
 
 }
