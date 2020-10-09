@@ -33,7 +33,6 @@ public:
 	EntityCreator(Ember::OgreView::World& world);
 	~EntityCreator();
 	//void setRecipe(Ember::OgreView::Authoring::EntityRecipe& recipe);
-	void toggleCreateMode();
 	/**
 	 * @brief Sets whether to randomize the orientation of all new entities.
 	 * If set, all new entities will have their orientation randomized along the vertical axis.

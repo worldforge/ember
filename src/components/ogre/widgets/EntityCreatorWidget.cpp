@@ -129,14 +129,7 @@ void EntityCreatorWidget::buildWidget() {
 		auto& createButton = mWidget->getWindow<CEGUI::PushButton>("Create");
 
 		createButton.subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
-			if (mEntityRecipeInstance) {
-				std::map<std::string, Atlas::Message::Element> adapterValues;
-				for (auto& entry: mAdapters) {
-					adapterValues.emplace(entry.first, entry.second.adapter->getValue());
-				}
-
-				mEntityCreator->startCreation(adapterValues);
-			}
+			mEntityCreator->startCreation(mEntityMap);
 		});
 
 		auto& randomizeOrientationWidget = mWidget->getWindow<CEGUI::ToggleButton>("RandomizeOrientation");
@@ -249,9 +242,7 @@ void EntityCreatorWidget::addRulesToList(const Authoring::RulesFetcher::RuleEntr
 
 void EntityCreatorWidget::showRecipe(const std::shared_ptr<Authoring::EntityRecipe>& recipe) {
 	auto& typeService = mAvatar.getConnection().getTypeService();
-	mEntityRecipeInstance = std::make_unique<Authoring::EntityRecipeInstance>(*recipe);
 	mEntityRecipe = recipe;
-	mEntityCreator->setRecipeInstance(mEntityRecipeInstance.get());
 
 	auto& adaptersContainer = mWidget->getWindow<CEGUI::Window>("AdaptersContainer");
 	auto& windowManager = CEGUI::WindowManager::getSingleton();
@@ -315,7 +306,7 @@ void EntityCreatorWidget::refreshEntityMap() {
 	}
 
 	try {
-		mEntityMap = mEntityRecipeInstance->createEntity(typeService, adapterValues);
+		mEntityMap = Authoring::EntityRecipe::createEntity(typeService, adapterValues, *mEntityRecipe->getEntitySpec().FirstChildElement("atlas")->FirstChildElement("map"));
 		refreshPreview();
 
 	} catch (const std::exception& ex) {

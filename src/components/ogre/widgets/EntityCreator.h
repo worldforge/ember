@@ -85,16 +85,6 @@ public:
 	~EntityCreator();
 
 	/**
-	 * Sets recipe that would be used for entity creation in future.
-	 */
-	void setRecipeInstance(Authoring::EntityRecipeInstance* recipeInstance);
-
-	/**
-	 * Toggles create mode and performs correspondent action.
-	 */
-	void toggleCreateMode();
-
-	/**
 	 * @brief Sets whether to randomize the orientation of all new entities.
 	 * If set, all new entities will have their orientation randomized along the vertical axis.
 	 * @param randomize Whether to randomize the orientation or not.
@@ -106,7 +96,7 @@ public:
 	/**
 	 * Starts entity creation process.
 	 */
-	void startCreation(const std::map<std::string, Atlas::Message::Element>& adapterValues);
+	void startCreation(const std::map<std::string, Atlas::Message::Element>& entityMap);
 
 	/**
 	 * Stops entity creation process.
@@ -153,10 +143,6 @@ protected:
 	 */
 	Eris::TypeService& mTypeService;
 
-	/**
-	 * @brief The currently selected recipe.
-	 */
-	Authoring::EntityRecipeInstance* mRecipeInstance;
 
 	/**
 	 * @brief A creation instance, which represents a preview of the entity, before it's created on the server.
@@ -177,19 +163,6 @@ protected:
 	bool mRandomizeOrientation;
 
 	bool mPlantedOnGround;
-
-	/**
-	 * @brief Checks whether the type info for the current recipe is fully bound.
-	 * If so, the EventTypeInfoLoaded signal will be emitted right away, else it will be emitted later on when the type is bound through the typeService_BoundType method.
-	 * Call this method right after a new entity recipe has been set, to make sure that the interface doesn't proceed until the type info is bound.
-	 */
-	void checkTypeInfoBound();
-
-	/**
-	 * @brief Listen for the bound signal for the type service, and if the type of our recipe has been bound emit the EventTypeInfoLoaded signal.
-	 * @param typeInfo The type info that was bound.
-	 */
-	void typeService_BoundType(Eris::TypeInfo* typeInfo);
 
 	/**
 	 * @brief Creates a new EntityCreatorCreationInstance.

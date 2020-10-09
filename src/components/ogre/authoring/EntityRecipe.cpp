@@ -26,9 +26,6 @@
 #endif
 
 #include "EntityRecipe.h"
-#include "components/lua/LuaScriptingCallContext.h"
-#include "components/lua/LuaScriptingProvider.h"
-#include "services/scripting/ScriptingService.h"
 #include "services/EmberServices.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -38,16 +35,11 @@
 #include <Eris/TypeService.h>
 #include <Eris/TypeInfo.h>
 
-#include <tolua++.h>
 #include <Atlas/Formatter.h>
 
 namespace Ember {
 namespace OgreView {
 namespace Authoring {
-EntityRecipe::EntityRecipe() :
-		mEntitySpec(nullptr) {
-
-}
 
 EntityRecipe::EntityRecipe(std::unique_ptr<TiXmlElement> entitySpec) :
 		mEntitySpec(std::move(entitySpec)) {
@@ -70,7 +62,6 @@ GUIAdapter* EntityRecipe::getGUIAdapter(const std::string& name) {
 }
 
 
-
 GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(const std::string& name) {
 	auto result = mBindings.emplace(name, GUIAdapterBindings());
 	if (result.second) {
@@ -79,148 +70,6 @@ GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(const std::string& na
 		return nullptr;
 	}
 }
-
-//void EntityRecipe::associateBindings() {
-//	S_LOG_VERBOSE("Associating bindings.");
-//	if (mEntitySpec) {
-//		// Iterate over all entity spec XML nodes
-//		EntityRecipe::SpecIterator iter(*this);
-//		TiXmlElement* elem = mEntitySpec->FirstChildElement("atlas");
-//		if (elem) {
-//			elem->Accept(&iter);
-//		}
-//	}
-//}
-
-//
-//Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeService) {
-//	S_LOG_VERBOSE("Creating entity.");
-//
-//	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();
-//	// Loading script code
-//	scriptingService.executeCode(mScript, "LuaScriptingProvider");
-//
-//	// Walking through adapter bindings
-//	for (auto I = mBindings.begin(); I != mBindings.end(); ++I) {
-//		const std::string& func = I->second.getFunc();
-//
-//		S_LOG_VERBOSE(" binding: " << I->first << " to func " << func);
-//
-//		if (func.empty()) {
-//			std::vector<std::string>& adapters = I->second.getAdapters();
-//
-//			if (adapters.size() == 1) {
-//				std::string adapterName = adapters[0];
-//				Atlas::Message::Element val = mGUIAdapters[adapterName]->getValue();
-//				I->second.setValue(val);
-//			} else {
-//				S_LOG_WARNING("Should be only one adapter without calling function.");
-//			}
-//		} else {
-//			Lua::LuaScriptingCallContext callContext;
-//
-//			lua_State* L = static_cast<Lua::LuaScriptingProvider*> (scriptingService.getProviderFor("LuaScriptingProvider"))->getLuaState();
-//
-//			// Pushing function params
-//			std::vector<std::string>& adapters = I->second.getAdapters();
-//			for (auto& adapterName : adapters) {
-//				auto* val = new Atlas::Message::Element(mGUIAdapters[adapterName]->getValue());
-//				tolua_pushusertype_and_takeownership(L, val, "Atlas::Message::Element");
-//			}
-//
-//			// Calling test function
-//			scriptingService.callFunction(func, adapters.size(), "LuaScriptingProvider", &callContext);
-//
-//			LuaRef returnValue(callContext.getReturnValue());
-//
-//			Atlas::Message::Element returnObj;
-//			returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
-//			I->second.setValue(returnObj);
-//		}
-//	}
-//	//Inject all default attributes that aren't yet added.
-//	// 	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
-//	// 	if (elem)
-//	// 	{
-//	// 		Eris::TypeInfo* erisType = mConn->getTypeService().getTypeByName(getEntityType());
-//	// 		if (erisType) {
-//	// 			const Atlas::Message::MapType& defaultAttributes = erisType->getProperties();
-//	// 			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
-//	// 				bool hasAttribute = false;
-//	// 				TiXmlNode* child(0);
-//	// 				while(child = elem->IterateChildren(child)) {
-//	// 					if (child->ToElement()) {
-//	// 						if (std::string(child->ToElement()->Attribute("name")) == I->first) {
-//	// 							hasAttribute = true;
-//	// 							break;
-//	// 						}
-//	// 					}
-//	// 				}
-//	//
-//	// 				if (!hasAttribute) {
-//	// 					//The attribute isn't present, we'll inject it
-//	// 					//This a bit contrived, since we'll now first convert the atlas into xml and inject it into the TiXmlElement (which will convert the xml strings into TiXml structures). And then later on we'll parse the xml again and create the final atlas data from it. However, the main reason for doing it this way is that in the future we would want to have nested child elements, which could be repeated. And in those cases we'll want to work directly with xml.
-//	// 				}
-//	// 			}
-//	// 		}
-//	// 	}
-//	/*
-//	 std::stringstream str;
-//
-//	 Atlas::Message::Element element(message);
-//
-//	 Atlas::Message::QueuedDecoder decoder;
-//
-//	 Atlas::Codecs::XML codec(str, decoder);
-//	 Atlas::Formatter formatter(str, codec);
-//	 Atlas::Message::Encoder encoder(formatter);
-//	 formatter.streamBegin();
-//	 encoder.streamMessageElement(message);
-//	 formatter.streamEnd();
-//	 */
-//	if (mEntitySpec) {
-//		// Print entity into string
-//		TiXmlPrinter printer;
-//		printer.SetStreamPrinting();
-//		mEntitySpec->Accept(&printer);
-//
-//		S_LOG_VERBOSE("Composed entity: " << printer.Str());
-//
-//		std::stringstream strStream(printer.CStr(), std::ios::in);
-//
-//		// Create objects
-//		Atlas::Message::QueuedDecoder decoder;
-//		Atlas::Codecs::XML codec(strStream, strStream, decoder);
-//
-//		// Read whole stream into decoder queue
-//		while (!strStream.eof()) {
-//			codec.poll();
-//		}
-//
-//		// Read decoder queue; only read the first item.
-//		if (decoder.queueSize() > 0) {
-//			Atlas::Message::MapType m = decoder.popMessage();
-//			return m;
-////			auto parentI = m.find("parent");
-////			if (parentI != m.end() && parentI->second.isString()) {
-////				auto erisType = typeService.getTypeByName(parentI->second.String());
-////				if (erisType && erisType->isBound()) {
-////					const Atlas::Message::MapType& defaultAttributes = erisType->getProperties();
-////					for (const auto& defaultAttribute : defaultAttributes) {
-////						if (m.find(defaultAttribute.first) == m.end()) {
-////							m.insert(Atlas::Message::MapType::value_type(defaultAttribute.first, defaultAttribute.second));
-////						}
-////					}
-////				}
-////				return m;
-////			}
-//		}
-//	} else {
-//		return mEntityDefinition;
-//	}
-//	S_LOG_WARNING("No entity composed");
-//	return Atlas::Message::MapType();
-//}
 
 void EntityRecipe::setAuthor(const std::string& author) {
 	mAuthor = author;
@@ -238,22 +87,14 @@ const std::string& EntityRecipe::getDescription() const {
 	return mDescription;
 }
 
-void EntityRecipe::valueChanged() {
-	EventValueChanged.emit();
-}
-
-EntityRecipeInstance::EntityRecipeInstance(const EntityRecipe& entityRecipe)
-		: mEntityRecipe(entityRecipe) {
-}
-
-Atlas::Message::MapType EntityRecipeInstance::createEntity(Eris::TypeService& typeService, const std::map<std::string, Atlas::Message::Element>& adapterValues) {
+Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeService, const std::map<std::string, Atlas::Message::Element>& adapterValues, const TiXmlElement& entitySpec) {
 	S_LOG_VERBOSE("Creating entity.");
 
-	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();
-	if (!mEntityRecipe.mScript.empty()) {
-		// Loading script code
-		scriptingService.executeCode(mEntityRecipe.mScript, "LuaScriptingProvider");
-	}
+//	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();
+//	if (!mEntityRecipe.mScript.empty()) {
+//		// Loading script code
+//		scriptingService.executeCode(mEntityRecipe.mScript, "LuaScriptingProvider");
+//	}
 
 	struct SpecIterator : public TiXmlVisitor {
 		const std::map<std::string, Atlas::Message::Element>& mAdapterValues;
@@ -380,7 +221,7 @@ Atlas::Message::MapType EntityRecipeInstance::createEntity(Eris::TypeService& ty
 
 	SpecIterator specIterator(adapterValues);
 
-	mEntityRecipe.mEntitySpec->FirstChild("atlas")->FirstChild("map")->Accept(&specIterator);
+	entitySpec.Accept(&specIterator);
 
 	return specIterator.mMap.Map();
 

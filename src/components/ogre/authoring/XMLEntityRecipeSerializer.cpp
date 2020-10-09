@@ -55,12 +55,18 @@ std::map<std::string, std::unique_ptr<EntityRecipe>> XMLEntityRecipeSerializer::
 		}
 
 		try {
-			auto entRecipe = std::make_unique<EntityRecipe>();
-			if (entRecipe) {
-				entRecipe->mName = name;
-				readRecipe(*entRecipe, smElem);
-				entries.emplace(name, std::move(entRecipe));
+			// Entity specification
+			auto entityElement = smElem->FirstChildElement("entity");
+			if (entityElement) {
+				auto entRecipe = std::make_unique<EntityRecipe>(std::unique_ptr<TiXmlElement>(entityElement->Clone()->ToElement()));
+				if (entRecipe) {
+					entRecipe->mName = name;
+					readRecipe(*entRecipe, smElem);
+					entries.emplace(name, std::move(entRecipe));
+				}
 			}
+
+
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when parsing entity recipe '" << name << "'." << ex);
 		}
@@ -89,12 +95,6 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipe& entRecipe, TiXmlElement
 		}
 	}
 
-	// Entity specification
-	elem = recipeNode->FirstChildElement("entity");
-	if (elem) {
-		readEntitySpec(entRecipe, elem);
-	}
-
 	// GUI adapters
 	elem = recipeNode->FirstChildElement("adapters");
 	if (elem) {
@@ -112,13 +112,6 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipe& entRecipe, TiXmlElement
 	if (elem) {
 		readScript(entRecipe, elem);
 	}
-}
-
-void XMLEntityRecipeSerializer::readEntitySpec(EntityRecipe& entRecipe, TiXmlElement* entSpecNode) {
-	S_LOG_VERBOSE("Read entity spec.");
-
-	// Copy <entity> part of XML into recipe
-	entRecipe.mEntitySpec.reset(entSpecNode->Clone()->ToElement());
 }
 
 void XMLEntityRecipeSerializer::readAdapters(EntityRecipe& entRecipe, TiXmlElement* adaptersNode) {

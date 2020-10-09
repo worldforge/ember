@@ -48,28 +48,15 @@ namespace Gui {
 EntityCreator::EntityCreator(World& world) :
 		mWorld(world),
 		mTypeService(mWorld.getView().getTypeService()),
-		mRecipeInstance(nullptr),
 		mCreationInstance(nullptr),
 		mRandomizeOrientation(false),
 		mPlantedOnGround(false) {
-	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
+//	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 	mLastOrientation.identity();
 }
 
 EntityCreator::~EntityCreator() {
 	stopCreation();
-}
-
-void EntityCreator::setRecipeInstance(Authoring::EntityRecipeInstance* recipeInstance) {
-	mRecipeInstance = recipeInstance;
-}
-
-void EntityCreator::toggleCreateMode() {
-//	if (!mCreationInstance) {
-//		startCreation();
-//	} else {
-//		stopCreation();
-//	}
 }
 
 void EntityCreator::setRandomizeOrientation(bool randomize) {
@@ -81,16 +68,12 @@ void EntityCreator::setPlantedOnGround(bool planted) {
 }
 
 
-void EntityCreator::startCreation(const std::map<std::string, Atlas::Message::Element>& adapterValues) {
+void EntityCreator::startCreation(const std::map<std::string, Atlas::Message::Element>& entityMap) {
 	loadAllTypes();
-	// No recipe selected, nothing to do
-	if (!mRecipeInstance) {
-		return;
-	}
 
 	EventCreationStarted();
 
-	createNewCreationInstance(adapterValues);
+	createNewCreationInstance(entityMap);
 
 	Gui::HelpMessage message("EntityCreator", "Click the left mouse button to place the entity. Press Escape to exit from CREATE mode.", "entity creator placement", "entityCreatorMessage");
 	Gui::QuickHelp::getSingleton().updateText(message);
@@ -129,31 +112,8 @@ void EntityCreator::finalizeCreation() {
 	EventCreationCompleted();
 }
 
-void EntityCreator::checkTypeInfoBound() {
-//	if (mRecipeInstance) {
-//		const std::string& typeName = mRecipeInstance->getEntityRecipe().getEntityType();
-//		//Calling getTypeByName will also send a request for type info to the server if no type info exists yet
-//		Eris::TypeInfo* typeInfo = mTypeService.getTypeByName(typeName);
-//		if (typeInfo) {
-//			if (typeInfo->isBound()) {
-//				EventTypeInfoLoaded.emit();
-//			}
-//		}
-//	}
-}
-
-void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo) {
-//	if (mRecipeInstance) {
-//		if (typeInfo->getName() == mRecipeInstance->getEntityRecipe().getEntityType()) {
-//			EventTypeInfoLoaded.emit();
-//		}
-//	}
-}
-
-void EntityCreator::createNewCreationInstance(const std::map<std::string, Atlas::Message::Element>& adapterValues) {
+void EntityCreator::createNewCreationInstance(const std::map<std::string, Atlas::Message::Element>& entityMap) {
 	mCreationInstance.reset();
-
-	auto entityMap = mRecipeInstance->createEntity(mTypeService, adapterValues);
 
 	auto parentI = entityMap.find("parent");
 	if (parentI != entityMap.end() && parentI->second.isString()) {

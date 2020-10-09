@@ -56,11 +56,7 @@ class EntityRecipe {
 
 	friend class XMLEntityRecipeSerializer;
 
-	friend class EntityRecipeInstance;
-
 public:
-
-	EntityRecipe();
 
 	explicit EntityRecipe(std::unique_ptr<TiXmlElement> entitySpec);
 
@@ -92,7 +88,7 @@ public:
 	 * Grabs current values from adapters, runs it through Lua function and composes resulting Atlas message.
 	 * @param typeService The main eris type service, from which type info will be queried.
 	 */
-	//Atlas::Message::MapType createEntity(Eris::TypeService& typeService);
+	static Atlas::Message::MapType createEntity(Eris::TypeService& typeService, const std::map<std::string, Atlas::Message::Element>& adapterValues, const TiXmlElement& entitySpec);
 
 	/**
 	 * Sets author.
@@ -114,6 +110,10 @@ public:
 	 */
 	const std::string& getDescription() const;
 
+	const TiXmlElement& getEntitySpec() const {
+		return *mEntitySpec;
+	}
+
 	/**
 	 * Emits when value of any of adapters is changed.
 	 */
@@ -122,8 +122,6 @@ public:
 	std::string mName;
 
 protected:
-	void valueChanged();
-
 
 	/**
 	 * Author of recipe.
@@ -141,8 +139,6 @@ protected:
 	std::unique_ptr<TiXmlElement> mEntitySpec;
 
 
-	Atlas::Message::MapType mEntityDefinition;
-
 	/**
 	 * GUI adapters.
 	 */
@@ -159,34 +155,6 @@ protected:
 	std::string mScript;
 
 };
-
-class EntityRecipeInstance {
-public:
-	explicit EntityRecipeInstance(const EntityRecipe& entityRecipe);
-
-	/**
-	 * @brief Composes an entity.
-	 *
-	 * Grabs current values from adapters, runs it through Lua function and composes resulting Atlas message.
-	 * @param typeService The main eris type service, from which type info will be queried.
-	 */
-	Atlas::Message::MapType createEntity(Eris::TypeService& typeService, const std::map<std::string, Atlas::Message::Element>& adapterValues);
-
-	const EntityRecipe& getEntityRecipe() const {
-		return mEntityRecipe;
-	}
-
-
-
-
-private:
-
-	const EntityRecipe& mEntityRecipe;
-
-
-
-};
-
 
 }
 }

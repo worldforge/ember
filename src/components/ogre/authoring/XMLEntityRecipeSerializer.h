@@ -54,11 +54,6 @@ protected:
 	void readRecipe(EntityRecipe& entRecipe, TiXmlElement* recipeNode);
 
 	/**
-	 * Parses xml entity specification.
-	 */
-	void readEntitySpec(EntityRecipe& entRecipe, TiXmlElement* entSpecNode);
-
-	/**
 	 * Parses xml GUI adapters.
 	 */
 	void readAdapters(EntityRecipe& entRecipe, TiXmlElement* adaptersNode);

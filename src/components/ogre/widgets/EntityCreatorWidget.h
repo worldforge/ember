@@ -72,8 +72,6 @@ private:
 
 	std::shared_ptr<Authoring::EntityRecipe> mEntityRecipe;
 
-	std::unique_ptr<Authoring::EntityRecipeInstance> mEntityRecipeInstance;
-
 	std::unique_ptr<EntityCreator> mEntityCreator;
 
 	struct AdapterPair {
