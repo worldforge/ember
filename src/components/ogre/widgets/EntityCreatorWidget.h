@@ -50,6 +50,8 @@ public:
 
 	~EntityCreatorWidget();
 
+	void show();
+
 private:
 	Eris::Avatar& mAvatar;
 	Widget* mWidget;

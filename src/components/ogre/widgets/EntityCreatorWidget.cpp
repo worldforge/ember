@@ -59,8 +59,12 @@ WidgetPluginCallback EntityCreatorWidget::registerWidget(GUIManager& guiManager)
 		});
 		state->connections.emplace_back(deactivatedAvatarConn);
 
-		state->showConsoleWrapper = std::make_unique<ConsoleCommandWrapper>(ConsoleBackend::getSingleton(), "show_entityCreator2", [=, &guiManager](const std::string& command, const std::string& args) {
-			state->instance = std::make_unique<Gui::EntityCreatorWidget>(guiManager, *avatar);
+		state->showConsoleWrapper = std::make_unique<ConsoleCommandWrapper>(ConsoleBackend::getSingleton(), "show_entityCreator", [=, &guiManager](const std::string& command, const std::string& args) {
+			if (!state->instance) {
+				state->instance = std::make_unique<Gui::EntityCreatorWidget>(guiManager, *avatar);
+			} else {
+				state->instance->show();
+			}
 		});
 	};
 
@@ -86,6 +90,7 @@ EntityCreatorWidget::EntityCreatorWidget(GUIManager& guiManager, Eris::Avatar& a
 		mEntityCreator(std::make_unique<EntityCreator>(*EmberOgre::getSingleton().getWorld())),
 		mUnboundType(nullptr) {
 	buildWidget();
+	mWidget->enableCloseButton();
 
 	mEntityCreator->EventCreationCompleted.connect([this]() {
 		for (auto& entry : mAdapters) {
@@ -373,6 +378,10 @@ std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> EntityCreatorWidget::attachTo
 		}
 	}
 	return adapter;
+}
+
+void EntityCreatorWidget::show() {
+	mWidget->show();
 }
 
 }
