@@ -1,0 +1,18 @@
+<entityrecipes>
+    <entityrecipe name="tombstone">
+        <entities>
+            <map>
+                <string name="parent">$parent</string>
+            </map>
+        </entities>
+        <adapters>
+            <adapter name="parent" type="string" title="Style" allowrandom="yes" default="tombstone_a">
+                <item value="tombstone_a">tombstone_a</item>
+                <item value="tombstone_b">tombstone_b</item>
+                <item value="tombstone_c">tombstone_c</item>
+                <item value="tombstone_cross_a">tombstone_cross_a</item>
+                <item value="tombstone_cross_b">tombstone_cross_b</item>
+            </adapter>
+        </adapters>
+    </entityrecipe>
+</entityrecipes>

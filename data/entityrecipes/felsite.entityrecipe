@@ -1,0 +1,26 @@
+<entityrecipes>
+    <entityrecipe name="felsite">
+        <entities>
+            <map>
+                <string name="parent">$parent</string>
+                <list name="scale" optional="scale">
+                    <float>$scale</float>
+                </list>
+            </map>
+        </entities>
+        <adapters>
+            <adapter name="scale" type="number_range" allowrandom="yes" title="Scale"/>
+            <adapter name="parent" type="string" title="Style" allowrandom="yes" default="felsite_a">
+                <item value="felsite_a">felsite_a</item>
+                <item value="felsite_b">felsite_b</item>
+                <item value="felsite_c">felsite_c</item>
+                <item value="felsite_d">felsite_d</item>
+                <item value="felsite_e">felsite_e</item>
+                <item value="felsite_f">felsite_f</item>
+                <item value="felsite_g">felsite_g</item>
+                <item value="felsite_h">felsite_h</item>
+                <item value="felsite_i">felsite_i</item>
+            </adapter>
+        </adapters>
+    </entityrecipe>
+</entityrecipes>

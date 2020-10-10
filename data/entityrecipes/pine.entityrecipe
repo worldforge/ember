@@ -1,5 +1,5 @@
 <entityrecipes>
-    <entityrecipe name="birch">
+    <entityrecipe name="pine">
         <entities>
             <map>
                 <string name="parent">$parent</string>
@@ -10,11 +10,10 @@
         </entities>
         <adapters>
             <adapter name="scale" type="number_range" allowrandom="yes" title="Scale"/>
-            <adapter name="parent" type="string" title="Style" allowrandom="yes" default="birch">
-                <item value="birch">birch</item>
-                <item value="birch_b">birch_b</item>
-                <item value="birch_c">birch_c</item>
-                <item value="birch_d">birch_d</item>
+            <adapter name="parent" type="string" title="Style" allowrandom="yes" default="pine">
+                <item value="pine">pine</item>
+                <item value="pine_b">pine_b</item>
+                <item value="pine_c">pine_c</item>
             </adapter>
         </adapters>
     </entityrecipe>

@@ -1,27 +1,21 @@
 <entityrecipes>
-  <entityrecipe name="boulder">
-    <entity>
-      <atlas>
-        <map>
-          <string name="parent">$parent</string>
-          <list name="scale" optional="scale"><float>$scale</float></list>
-        </map>
-      </atlas>
-    </entity>
-      <entities>
-          <map>
-              <string name="parent">$parent</string>
-              <list name="scale" optional="scale"><float>$scale</float></list>
-          </map>
-      </entities>
-    <adapters>
-      <adapter name="scale" type="number_range" allowrandom="yes"  title="Scale"/>
-      <adapter name="parent" type="string" title="Style" allowrandom="yes" default="granite_a">
-        <item value="granite_a">granite_a</item>
-        <item value="granite_b">granite_b</item>
-        <item value="granite_c">granite_c</item>
-        <item value="granite_d">granite_d</item>
-      </adapter>
-    </adapters>
-  </entityrecipe>
+    <entityrecipe name="boulder">
+        <entities>
+            <map>
+                <string name="parent">$parent</string>
+                <list name="scale" optional="scale">
+                    <float>$scale</float>
+                </list>
+            </map>
+        </entities>
+        <adapters>
+            <adapter name="scale" type="number_range" allowrandom="yes" title="Scale"/>
+            <adapter name="parent" type="string" title="Style" allowrandom="yes" default="granite_a">
+                <item value="granite_a">granite_a</item>
+                <item value="granite_b">granite_b</item>
+                <item value="granite_c">granite_c</item>
+                <item value="granite_d">granite_d</item>
+            </adapter>
+        </adapters>
+    </entityrecipe>
 </entityrecipes>

@@ -1,33 +1,22 @@
 <entityrecipes>
-  <entityrecipe name="signpost">
-    <author>Erik Hjortsberg</author>
-    <description>
-      A sign post, optionally pointing left or right.
-    </description>
-    <entity type="signpost">
-      <atlas>
-        <map>
-          <string name="message">$message</string>
-          <string name="direction">$direction</string>
-        </map>
-      </atlas>
-    </entity>
-    <adapters>
-      <adapter name="message" type="string" title="Message"/>
-      <adapter name="direction" type="string" title="Direction" allowrandom="no" default="">
-        <item value="">None</item>
-        <item value="right">Right</item>
-        <item value="left">Left</item>
-      </adapter>
-    </adapters>
-    <bindings>
-      <bind name="message">
-        <adapter name="message" />
-      </bind>
-      <bind name="direction">
-        <adapter name="direction" />
-      </bind>
-    </bindings>
-    <script></script>
-  </entityrecipe>
+    <entityrecipe name="signpost">
+        <author>Erik Hjortsberg</author>
+        <description>
+            A sign post, optionally pointing left or right.
+        </description>
+        <entities>
+            <map>
+                <string name="parent">$parent</string>
+                <string name="message">$message</string>
+            </map>
+        </entities>
+        <adapters>
+            <adapter name="message" type="string" title="Message"/>
+            <adapter name="parent" type="string" title="Direction" allowrandom="no" default="signpost">
+                <item value="signpost">signpost</item>
+                <item value="signpost_right">signpost_right</item>
+                <item value="signpost_left">signpost_left</item>
+            </adapter>
+        </adapters>
+    </entityrecipe>
 </entityrecipes>
