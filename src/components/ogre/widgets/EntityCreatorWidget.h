@@ -82,7 +82,7 @@ private:
 
 	std::map<std::string, AdapterPair> mAdapters;
 
-	Atlas::Message::MapType mEntityMap;
+	std::vector<Atlas::Message::MapType> mEntityMaps;
 
 	AutoCloseConnection mBoundTypeConnection;
 

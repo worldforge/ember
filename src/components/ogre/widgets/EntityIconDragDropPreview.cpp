@@ -207,7 +207,7 @@ const Eris::Entity& ModelPreviewWorker::getEntity() const {
 }
 
 ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Eris::Entity& entity, Ogre::SceneNode* node) :
-		Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker) {
+		Authoring::EntityMoverBase(&entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker) {
 }
 
 void ModelPreviewWorkerMovementBridge::finalizeMovement() {

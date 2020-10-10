@@ -34,7 +34,7 @@ namespace Gui {
 
 EntityCreatorMovement::EntityCreatorMovement(EntityCreatorCreationInstance& creationInstance,
                                              const Camera::MainCamera& camera,
-                                             Authoring::DetachedEntity& entity,
+                                             Authoring::DetachedEntity* entity,
                                              Ogre::SceneNode* node)
         : mMovementBridge(std::make_shared<EntityCreatorMovementBridge>(creationInstance, entity, node)),
           mMoveAdapter(camera) {

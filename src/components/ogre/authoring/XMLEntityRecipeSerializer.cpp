@@ -56,9 +56,15 @@ std::map<std::string, std::unique_ptr<EntityRecipe>> XMLEntityRecipeSerializer::
 
 		try {
 			// Entity specification
-			auto entityElement = smElem->FirstChildElement("entity");
-			if (entityElement) {
-				auto entRecipe = std::make_unique<EntityRecipe>(std::unique_ptr<TiXmlElement>(entityElement->Clone()->ToElement()));
+			auto entitiesElement = smElem->FirstChildElement("entities");
+			if (entitiesElement) {
+				std::vector<std::unique_ptr<TiXmlElement>> entities;
+
+				for (auto entityElem = entitiesElement->FirstChildElement(); entityElem; entityElem = entityElem->NextSiblingElement()) {
+					entities.emplace_back(std::unique_ptr<TiXmlElement>(entityElem->Clone()->ToElement()));
+				}
+
+				auto entRecipe = std::make_unique<EntityRecipe>(std::move(entities));
 				if (entRecipe) {
 					entRecipe->mName = name;
 					readRecipe(*entRecipe, smElem);
@@ -101,11 +107,6 @@ void XMLEntityRecipeSerializer::readRecipe(EntityRecipe& entRecipe, TiXmlElement
 		readAdapters(entRecipe, elem);
 	}
 
-	// Script bindings
-	elem = recipeNode->FirstChildElement("bindings");
-	if (elem) {
-		readBindings(entRecipe, elem);
-	}
 
 	// Script
 	elem = recipeNode->FirstChildElement("script");
@@ -165,24 +166,6 @@ void XMLEntityRecipeSerializer::readAdapters(EntityRecipe& entRecipe, TiXmlEleme
 			}
 		}
 		entRecipe.addGUIAdapter(*name, std::move(adapter));
-	}
-}
-
-void XMLEntityRecipeSerializer::readBindings(EntityRecipe& entRecipe, TiXmlElement* bindingsNode) {
-	S_LOG_VERBOSE("Read bindings.");
-	for (TiXmlElement* smElem = bindingsNode->FirstChildElement("bind"); smElem != nullptr; smElem = smElem->NextSiblingElement("bind")) {
-		const std::string* name, * func;
-
-		if (!(name = smElem->Attribute(std::string("name"))))
-			continue;
-
-		GUIAdapterBindings* bindings = entRecipe.createGUIAdapterBindings(*name);
-
-		if ((func = smElem->Attribute(std::string("func")))) {
-			bindings->setFunc(*func);
-		}
-
-		readBindAdapters(entRecipe, bindings, smElem);
 	}
 }
 

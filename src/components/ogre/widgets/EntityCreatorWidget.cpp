@@ -93,12 +93,9 @@ EntityCreatorWidget::EntityCreatorWidget(GUIManager& guiManager, Eris::Avatar& a
 				entry.second.adapter->randomize();
 			}
 		}
-		std::map<std::string, Atlas::Message::Element> adapterValues;
-		for (auto& entry: mAdapters) {
-			adapterValues.emplace(entry.first, entry.second.adapter->getValue());
-		}
+		refreshEntityMap();
 
-		mEntityCreator->startCreation(adapterValues);
+		mEntityCreator->startCreation(mEntityMaps);
 	});
 
 	mBoundTypeConnection = avatar.getConnection().getTypeService().BoundType.connect([this](Eris::TypeInfo* type) {
@@ -129,7 +126,7 @@ void EntityCreatorWidget::buildWidget() {
 		auto& createButton = mWidget->getWindow<CEGUI::PushButton>("Create");
 
 		createButton.subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
-			mEntityCreator->startCreation(mEntityMap);
+			mEntityCreator->startCreation(mEntityMaps);
 		});
 
 		auto& randomizeOrientationWidget = mWidget->getWindow<CEGUI::ToggleButton>("RandomizeOrientation");
@@ -282,7 +279,7 @@ void EntityCreatorWidget::showRecipe(const std::shared_ptr<Authoring::EntityReci
 			titleWrapper->addChild(title);
 			titleWrapper->addChild(randomCheckbox);
 			adapter->EventValueChanged.connect([this]() { refreshEntityMap(); });
-			mAdapters.emplace(entry.first, AdapterPair{std::move(adapter), guiAdapter.get()});
+			mAdapters.emplace(entry.first, AdapterPair{std::move(adapter), guiAdapter.get(), entry.second->mAllowRandom});
 			adapterContainer->setWidth({1, -85});
 			wrapper->setHeight({0, adapterContainer->getHeight().d_offset});
 			wrapper->addChild(titleWrapper);
@@ -306,33 +303,40 @@ void EntityCreatorWidget::refreshEntityMap() {
 	}
 
 	try {
-		mEntityMap = Authoring::EntityRecipe::createEntity(typeService, adapterValues, *mEntityRecipe->getEntitySpec().FirstChildElement("atlas")->FirstChildElement("map"));
-		refreshPreview();
+		mEntityMaps.clear();
+		for (auto& entitySpec : mEntityRecipe->getEntitySpecs()) {
+			mEntityMaps.emplace_back(Authoring::EntityRecipe::createEntity(typeService, adapterValues, *entitySpec));
+		}
 
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not create preview entity." << ex);
 	}
+
+	refreshPreview();
+
 }
 
 void EntityCreatorWidget::refreshPreview() {
 	auto& typeService = mAvatar.getConnection().getTypeService();
 	try {
 		mUnboundType = nullptr;
-		auto parentI = mEntityMap.find("parent");
-		if (parentI != mEntityMap.end() && parentI->second.isString()) {
-			auto& parent = parentI->second.String();
-			Eris::TypeInfo* erisType = typeService.getTypeByName(parent);
-			if (erisType) {
-				if (erisType->isBound()) {
-					Authoring::DetachedEntity entity("0", erisType);
-					entity.setFromMessage(mEntityMap);
-					showPreview(entity);
-				} else {
-					mUnboundType = erisType;
+		if (!mEntityMaps.empty()) {
+			auto& firstEntity = mEntityMaps.front();
+			auto parentI = firstEntity.find("parent");
+			if (parentI != firstEntity.end() && parentI->second.isString()) {
+				auto& parent = parentI->second.String();
+				Eris::TypeInfo* erisType = typeService.getTypeByName(parent);
+				if (erisType) {
+					if (erisType->isBound()) {
+						Authoring::DetachedEntity entity("0", erisType);
+						entity.setFromMessage(firstEntity);
+						showPreview(entity);
+					} else {
+						mUnboundType = erisType;
+					}
 				}
 			}
 		}
-
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not create preview entity." << ex);
 	}
@@ -340,16 +344,17 @@ void EntityCreatorWidget::refreshPreview() {
 
 void EntityCreatorWidget::showType(const std::string& typeName) {
 
-	auto xml = std::make_unique<TiXmlElement>("entity");
-	auto entityMap = xml->InsertEndChild(TiXmlElement("atlas"))->InsertEndChild(TiXmlElement("map"));
-
+	auto xml = std::make_unique<TiXmlElement>("map");
 	TiXmlElement parentElement("string");
 	parentElement.SetAttribute("name", "parent");
 	parentElement.InsertEndChild(TiXmlText(typeName));
-	entityMap->InsertEndChild(parentElement);
+	xml->InsertEndChild(parentElement);
+
+	std::vector<std::unique_ptr<TiXmlElement>> entities;
+	entities.emplace_back(std::move(xml));
 
 
-	showRecipe(std::make_shared<Authoring::EntityRecipe>(std::move(xml)));
+	showRecipe(std::make_shared<Authoring::EntityRecipe>(std::move(entities)));
 }
 
 std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> EntityCreatorWidget::attachToGuiAdapter(Authoring::GUIAdapter& guiAdapter, CEGUI::Window* window) {

@@ -68,12 +68,12 @@ void EntityCreator::setPlantedOnGround(bool planted) {
 }
 
 
-void EntityCreator::startCreation(const std::map<std::string, Atlas::Message::Element>& entityMap) {
+void EntityCreator::startCreation(const std::vector<Atlas::Message::MapType>& entityMaps) {
 	loadAllTypes();
 
 	EventCreationStarted();
 
-	createNewCreationInstance(entityMap);
+	createNewCreationInstance(entityMaps);
 
 	Gui::HelpMessage message("EntityCreator", "Click the left mouse button to place the entity. Press Escape to exit from CREATE mode.", "entity creator placement", "entityCreatorMessage");
 	Gui::QuickHelp::getSingleton().updateText(message);
@@ -112,20 +112,10 @@ void EntityCreator::finalizeCreation() {
 	EventCreationCompleted();
 }
 
-void EntityCreator::createNewCreationInstance(const std::map<std::string, Atlas::Message::Element>& entityMap) {
+void EntityCreator::createNewCreationInstance(const std::vector<Atlas::Message::MapType>& entityMaps) {
 	mCreationInstance.reset();
 
-	auto parentI = entityMap.find("parent");
-	if (parentI != entityMap.end() && parentI->second.isString()) {
-		Eris::TypeInfo* typeInfo = mTypeService.getTypeByName(parentI->second.String());
-		if (typeInfo) {
-			if (typeInfo->isBound()) {
-				EventTypeInfoLoaded.emit();
-			}
-		}
-	}
-
-	mCreationInstance = std::make_unique<EntityCreatorCreationInstance>(mWorld, mTypeService, entityMap, mRandomizeOrientation);
+	mCreationInstance = std::make_unique<EntityCreatorCreationInstance>(mWorld, mTypeService, entityMaps, mRandomizeOrientation);
 	mCreationInstance->setPlantedOnGround(mPlantedOnGround);
 	mCreationInstance->EventAbortRequested.connect([&]() { stopCreation(); });
 	mCreationInstance->EventFinalizeRequested.connect([&]() { finalizeCreation(); });

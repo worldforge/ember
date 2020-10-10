@@ -96,7 +96,7 @@ public:
 	/**
 	 * Starts entity creation process.
 	 */
-	void startCreation(const std::map<std::string, Atlas::Message::Element>& entityMap);
+	void startCreation(const std::vector<Atlas::Message::MapType>& entityMaps);
 
 	/**
 	 * Stops entity creation process.
@@ -107,11 +107,6 @@ public:
 	 * Sends composed entity to server
 	 */
 	void finalizeCreation();
-
-	/**
-	 * @brief Emitted when all needed type info for the current recipe is loaded.
-	 */
-	sigc::signal<void> EventTypeInfoLoaded;
 
 	/**
 	 * @brief Emitted when creation has started.
@@ -169,7 +164,7 @@ protected:
 	 *
 	 * Note that any existing such instance will first be destroyed.
 	 */
-	void createNewCreationInstance(const std::map<std::string, Atlas::Message::Element>& adapterValues);
+	void createNewCreationInstance(const std::vector<Atlas::Message::MapType>& entityMaps);
 
 
 

@@ -64,8 +64,8 @@ bool SnapListener::getSnappingEnabled() const {
 	return mSnappingEnabled;
 }
 
-EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::SceneManager& sceneManager) :
-		mEntity(&entity),
+EntityMoverBase::EntityMoverBase(Eris::Entity* entity, Ogre::Node* node, Ogre::SceneManager& sceneManager) :
+		mEntity(entity),
 		mNode(node),
 		mSceneManager(sceneManager),
 		mSnapping(nullptr),
@@ -160,7 +160,7 @@ void EntityMoverBase::newEntityPosition(const Ogre::Vector3& /*position*/) {
 void EntityMoverBase::setSnapToEnabled(bool snapTo) {
 	if (snapTo) {
 		if (!mSnapping && mEntity) {
-			mSnapping = std::make_unique<Authoring::SnapToMovement>(*mEntity.get(), *mNode, 2.0f, mSceneManager, true);
+			mSnapping = std::make_unique<Authoring::SnapToMovement>(*mEntity, *mNode, 2.0f, mSceneManager, true);
 			setPosition(Convert::toWF<WFMath::Point<3>>(mNode->getPosition()));
 		}
 	} else {

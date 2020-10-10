@@ -128,7 +128,7 @@ public:
 	 * @param entity The entity which should be moved.
 	 * @param node The node to which the entity belongs.
 	 */
-	EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::SceneManager& sceneManager);
+	EntityMoverBase(Eris::Entity* entity, Ogre::Node* node, Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Dtor.

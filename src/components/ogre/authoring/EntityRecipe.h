@@ -29,9 +29,6 @@
 
 #include "tinyxml/tinyxml.h"
 #include <Atlas/Message/Element.h>
-#include <sigc++/signal.h>
-#include <OgreSharedPtr.h>
-#include <OgreResource.h>
 
 #include <map>
 #include <unordered_map>
@@ -43,7 +40,6 @@ class TypeService;
 namespace Ember {
 namespace OgreView {
 namespace Authoring {
-typedef std::unordered_map<std::string, GUIAdapterBindings> BindingsStore;
 
 /**
  * @brief Resource that stores entity recipes.
@@ -58,7 +54,7 @@ class EntityRecipe {
 
 public:
 
-	explicit EntityRecipe(std::unique_ptr<TiXmlElement> entitySpec);
+	explicit EntityRecipe(std::vector<std::unique_ptr<TiXmlElement>> entitySpecs);
 
 
 	~EntityRecipe();
@@ -76,11 +72,6 @@ public:
 	const std::map<std::string, std::unique_ptr<GUIAdapter>>& getGUIAdapters() const {
 		return mGUIAdapters;
 	}
-
-	/**
-	 * Creates and returns GUI adapter bindings. This used currently by entity recipes parser (XMLEntityRecipeSerializer) for populating entity recipes.
-	 */
-	GUIAdapterBindings* createGUIAdapterBindings(const std::string& name);
 
 	/**
 	 * @brief Composes an entity.
@@ -110,8 +101,8 @@ public:
 	 */
 	const std::string& getDescription() const;
 
-	const TiXmlElement& getEntitySpec() const {
-		return *mEntitySpec;
+	const std::vector<std::unique_ptr<TiXmlElement>>& getEntitySpecs() const {
+		return mEntitySpecs;
 	}
 
 	/**
@@ -136,18 +127,13 @@ protected:
 	/**
 	 * Stores semi-atlas entity spec.
 	 */
-	std::unique_ptr<TiXmlElement> mEntitySpec;
+	std::vector<std::unique_ptr<TiXmlElement>> mEntitySpecs;
 
 
 	/**
 	 * GUI adapters.
 	 */
 	std::map<std::string, std::unique_ptr<GUIAdapter>> mGUIAdapters;
-
-	/**
-	 * Script bindings.
-	 */
-	BindingsStore mBindings;
 
 	/**
 	 * String that contains Lua script.

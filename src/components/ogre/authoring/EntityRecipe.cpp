@@ -41,8 +41,8 @@ namespace Ember {
 namespace OgreView {
 namespace Authoring {
 
-EntityRecipe::EntityRecipe(std::unique_ptr<TiXmlElement> entitySpec) :
-		mEntitySpec(std::move(entitySpec)) {
+EntityRecipe::EntityRecipe(std::vector<std::unique_ptr<TiXmlElement>> entitySpecs) :
+		mEntitySpecs(std::move(entitySpecs)) {
 }
 
 
@@ -56,16 +56,6 @@ GUIAdapter* EntityRecipe::getGUIAdapter(const std::string& name) {
 	auto adapter = mGUIAdapters.find(name);
 	if (adapter != mGUIAdapters.end()) {
 		return adapter->second.get();
-	} else {
-		return nullptr;
-	}
-}
-
-
-GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(const std::string& name) {
-	auto result = mBindings.emplace(name, GUIAdapterBindings());
-	if (result.second) {
-		return &result.first->second;
 	} else {
 		return nullptr;
 	}

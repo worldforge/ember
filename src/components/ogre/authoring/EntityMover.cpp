@@ -43,7 +43,7 @@ namespace Ember {
 namespace OgreView {
 namespace Authoring {
 EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& manager) :
-		EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode(), manager.getWorld().getScene().getSceneManager()),
+		EntityMoverBase(&nodeAttachment.getAttachedEntity(), nodeAttachment.getNode(), manager.getWorld().getScene().getSceneManager()),
 		mNodeAttachment(nodeAttachment),
 		mManager(manager),
 		mPreviousControlDelegate(nodeAttachment.getControlDelegate()),

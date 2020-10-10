@@ -59,11 +59,6 @@ protected:
 	void readAdapters(EntityRecipe& entRecipe, TiXmlElement* adaptersNode);
 
 	/**
-	 * Parses xml script bindings.
-	 */
-	void readBindings(EntityRecipe& entRecipe, TiXmlElement* bindingsNode);
-
-	/**
 	 * Parses adapters in individual script binding.
 	 */
 	void readBindAdapters(EntityRecipe& entRecipe, GUIAdapterBindings* bindings, TiXmlElement* bindAdaptersNode);

@@ -59,7 +59,7 @@ public:
 	 * @param entity The entity which should be moved.
 	 * @param node The node to which the entity belongs.
 	 */
-	EntityCreatorMovementBridge(EntityCreatorCreationInstance& creationInstance, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	EntityCreatorMovementBridge(EntityCreatorCreationInstance& creationInstance, Authoring::DetachedEntity* entity, Ogre::SceneNode* node);
 
 	/**
 	 * @brief Dtor.

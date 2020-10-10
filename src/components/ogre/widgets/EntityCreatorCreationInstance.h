@@ -74,7 +74,7 @@ public:
 	 */
 	EntityCreatorCreationInstance(World& world,
 								  Eris::TypeService& typeService,
-								  std::map<std::string, Atlas::Message::Element> entityMap,
+								  std::vector<Atlas::Message::MapType> entityMaps,
 								  bool randomizeOrientation);
 
 	/**
@@ -95,20 +95,7 @@ public:
 
 	EntityCreatorMovement* getMovement();
 
-	/**
-	 * @brief Sets preview model name
-	 */
-	void setModel(const std::string& modelName);
 
-	/**
-	 * Shows preview model part
-	 */
-	void showModelPart(const std::string& partName);
-
-	/**
-	 * Hide preview model part
-	 */
-	void hideModelPart(const std::string& partName);
 
 	/**
 	 * @brief Gets the current orientation of preview in the world.
@@ -123,8 +110,6 @@ public:
 	void setOrientation(const WFMath::Quaternion& orientation);
 
 	void setPlantedOnGround(bool planted);
-
-	const Authoring::DetachedEntity* getEntity() const;
 
 	/**
 	 * @brief Emitted when a stop of the creation process has been requested.
@@ -151,10 +136,29 @@ protected:
 	 */
 	Eris::TypeService& mTypeService;
 
-	/**
-	 * @brief Detached entity that is used in process of creating preview.
-	 */
-	std::unique_ptr<Authoring::DetachedEntity> mEntity;
+	struct EntityPreview {
+		/**
+		 * @brief Message that is composed from recipe entity spec with placeholders substituted with adapters values.
+		 */
+	 	Atlas::Message::MapType entityMap;
+
+		/**
+		 * @brief Detached entity that is used in process of creating preview.
+		 */
+		std::unique_ptr<Authoring::DetachedEntity> mEntity;
+
+		/**
+		 * @brief A model mount, to which the model is attached.
+		 */
+		std::unique_ptr<Model::ModelMount> mModelMount;
+
+		/**
+		 * @brief Preview model.
+		 */
+		std::unique_ptr<Model::Model> mModel;
+	};
+
+	std::vector<EntityPreview> mEntityPreviews;
 
 	/**
 	 * @brief Preview scene node.
@@ -162,24 +166,10 @@ protected:
 	Ogre::SceneNode* mEntityNode;
 
 	/**
-	 * @brief A model mount, to which the model is attached.
-	 */
-	std::unique_ptr<Model::ModelMount> mModelMount;
-
-	/**
-	 * @brief Preview model.
-	 */
-	std::unique_ptr<Model::Model> mModel;
-
-	/**
 	 * @brief Handles movement of the entity preview.
 	 */
 	std::unique_ptr<EntityCreatorMovement> mMovement;
 
-	/**
-	 * @brief Message that is composed from recipe entity spec with placeholders substituted with adapters values.
-	 */
-	Atlas::Message::MapType mEntityMessage;
 
 	/**
 	 * @brief Current position of preview in the world.
@@ -209,39 +199,19 @@ protected:
 	void createEntity();
 
 	/**
-	 * @brief Sets preview node properties basing on model.
+	 * @brief Sets preview model name
 	 */
-	void initFromModel();
+	void setModel(EntityPreview& entry,const std::string& modelName);
 
 	/**
-	 * @brief Applies correct scaling basing on model definition.
+	 * Shows preview model part
 	 */
-	void scaleNode();
+	void showModelPart(EntityPreview& entry,const std::string& partName);
 
 	/**
-	 * @brief Called when the model is reloaded, which also happens if background loading is enabled and the model has been loaded in the background.
+	 * Hide preview model part
 	 */
-	void model_Reloaded();
-
-
-	/**
-	 * @brief Gets the preview model.
-	 * @return The preview model.
-	 */
-	Model::Model* getModel();
-
-	/**
-	 * @brief True if the entity has a bbox.
-	 * @return True if the entity has a bbox.
-	 */
-	bool hasBBox() const;
-
-	/**
-	 * @brief Gets the bbox for the entity.
-	 * @return The bbox for the entity.
-	 */
-	const WFMath::AxisBox<3>& getBBox() const;
-
+	void hideModelPart(EntityPreview& entry,const std::string& partName);
 
 };
 }
