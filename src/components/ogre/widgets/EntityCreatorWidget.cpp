@@ -243,7 +243,6 @@ void EntityCreatorWidget::addRulesToList(const Authoring::RulesFetcher::RuleEntr
 }
 
 void EntityCreatorWidget::showRecipe(const std::shared_ptr<Authoring::EntityRecipe>& recipe) {
-	auto& typeService = mAvatar.getConnection().getTypeService();
 	mEntityRecipe = recipe;
 
 	auto& adaptersContainer = mWidget->getWindow<CEGUI::Window>("AdaptersContainer");

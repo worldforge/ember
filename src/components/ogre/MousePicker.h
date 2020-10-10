@@ -39,16 +39,13 @@ Since we sometimes want different picking behaviour (sometimes we want to pick b
 
 @author Erik Ogenvik
 */
-class MousePicker 
-{
-public:
-	enum ClickMasks
-	{
-		CM_AVATAR = 1u<<9u,
-		CM_ENTITY = 1u<<10u,
-		CM_NATURE = 1u<<11u,
-		CM_UNDEFINED = 1u<<12u,
-		CM_NONPICKABLE = 1u<<13u
+struct MousePicker {
+	enum ClickMasks {
+		CM_AVATAR = 1u << 9u,
+		CM_ENTITY = 1u << 10u,
+		CM_NATURE = 1u << 11u,
+		CM_UNDEFINED = 1u << 12u,
+		CM_NONPICKABLE = 1u << 13u
 	};
 };
 
