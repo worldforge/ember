@@ -24,15 +24,12 @@
 #define EMBEROGRE_HELPMESSAGE_H
 
 #include <string>
-#include <list>
+#include <vector>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
 /**
 @author Tiberiu Paunescu <tpa12@sfu.ca>
@@ -42,8 +39,7 @@ namespace Gui
 Currently, it only holds plain text messages but future implementations will contain more information regarding the text.
 
 */
-class HelpMessage
-{
+struct HelpMessage {
 public:
 	/**
 	 * @brief Constructor
@@ -51,50 +47,16 @@ public:
 	HelpMessage(std::string title, std::string message, const std::string& tags, std::string id = "");
 
 	/**
-	 * @brief Desctructor
-	 */
-	~HelpMessage();
-
-	/**
-	 * @brief Sets the message.
-	 * @param message The new message.
-	 */
-	void setHelp(const std::string &message);
-
-	/**
-	 * @brief Returns the message stored.
-	 * @return The message.
-	 */
-	const std::string& getHelp() const;
-
-	/**
-	 * @brief Returns the optional id of the message.
-	 * @return The id.
-	 */
-	const std::string& getId() const;
-
-	/**
 	 * @brief Iterates over the list of tags and returns a string containing all of them
 	 * @return String containing all of the tags
 	 */
-	const std::string getTags() const;
+	std::string getTags() const;
+
 
 	/**
-	 * @brief Returns the message title.
-	 * @returns The message title.
+	 * @brief Stores the title of the message.
 	 */
-	const std::string& getTitle() const;
-
-	/**
-	 * @brief Checks if the message contains an optional id.
-	 */
-	bool hasId() const;
-
-private:
-	/**
-	 * @brief Stores the various tags for the message.
-	 */
-	std::list<std::string> mTags;
+	std::string mTitle;
 
 	/**
 	 * @brief Stores the plain text message.
@@ -102,9 +64,9 @@ private:
 	std::string mMessage;
 
 	/**
-	 * @brief Stores the title of the message.
+	 * @brief Stores the various tags for the message.
 	 */
-	std::string mTitle;
+	std::vector<std::string> mTags;
 
 	/**
 	 * @brief Stores the optional id.

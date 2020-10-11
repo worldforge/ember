@@ -23,53 +23,42 @@
 #include "QuickHelp.h"
 
 using namespace Ember;
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
 QuickHelp::QuickHelp() = default;
 
-QuickHelp::~QuickHelp()
-{
+QuickHelp::~QuickHelp() {
 	mTutorialText.clear();
 }
 
-std::list<HelpMessage>::const_iterator QuickHelp::getEnd() const
-{
+std::list<HelpMessage>::const_iterator QuickHelp::getEnd() const {
 	return mTutorialText.end();
 }
 
-std::list<HelpMessage>::const_iterator QuickHelp::getBeginning() const
-{
+std::list<HelpMessage>::const_iterator QuickHelp::getBeginning() const {
 	return mTutorialText.begin();
 }
 
-std::list<HelpMessage>::const_iterator QuickHelp::insertAtEnd(const HelpMessage& message)
-{
+std::list<HelpMessage>::const_iterator QuickHelp::insertAtEnd(const HelpMessage& message) {
 	mTutorialText.push_back(message);
 	EventHelpMessageLocationChanged.emit(getSize());
 	return --(mTutorialText.end());
 }
 
-std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const HelpMessage& message)
-{
+std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const HelpMessage& message) {
 	//If the message doesn't have an optional id, we can just insert.
-	if (!message.hasId())
-	{
+	if (!message.mId.empty()) {
 		return insertAtEnd(message);
 	}
 
 	//Does the Id exist? If it does, return the position.
 	int location = 1;
-	for (auto list_iterator = mTutorialText.begin(); list_iterator != mTutorialText.end(); ++list_iterator)
-	{
+	for (auto list_iterator = mTutorialText.begin(); list_iterator != mTutorialText.end(); ++list_iterator) {
 
-		if (list_iterator->getId() == message.getId())
-		{
+		if (list_iterator->mId == message.mId) {
 			EventHelpMessageLocationChanged.emit(location);
 			return list_iterator;
 		}
@@ -80,21 +69,18 @@ std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const HelpMess
 	return insertAtEnd(message);
 }
 
-void QuickHelp::updateText(const HelpMessage& message)
-{
+void QuickHelp::updateText(const HelpMessage& message) {
 	if (mTutorialText.size() == MAXTUTORIALS)
 		mTutorialText.pop_front();
 
 	EventHelpMessageAdded.emit(messagePosition(message));
 }
 
-int QuickHelp::getSize() const
-{
+int QuickHelp::getSize() const {
 	return mTutorialText.size();
 }
 
-void QuickHelp::showWidget() const
-{
+void QuickHelp::showWidget() const {
 	EventToggleWidgetVisibility.emit();
 }
 

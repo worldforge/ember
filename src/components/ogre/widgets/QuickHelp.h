@@ -37,6 +37,7 @@ namespace OgreView {
 namespace Gui {
 
 const short unsigned int MAXTUTORIALS = 5;
+
 /**
 @author Tiberiu Paunescu <tpa12@sfu.ca>
 
@@ -47,8 +48,7 @@ Help messages are held in a list structure, and are added using the updateText f
 When a message is added, an event is emitted containing an iterator to the position in the list where the message is located.
 
 */
-class QuickHelp : public Singleton<QuickHelp>
-{
+class QuickHelp : public Singleton<QuickHelp> {
 public:
 	/**
 	 * @brief Constructor
@@ -102,14 +102,14 @@ public:
 	 * @brief Emitted when a help message is added to the list.
 	 * @note Emits an iterator to the message.
 	 */
-	sigc::signal <void, std::list<HelpMessage>::const_iterator> EventHelpMessageAdded;
+	sigc::signal<void, std::list<HelpMessage>::const_iterator> EventHelpMessageAdded;
 
-	sigc::signal <void, int> EventHelpMessageLocationChanged;
+	sigc::signal<void, int> EventHelpMessageLocationChanged;
 
 	/**
 	 * @brief Emitted when we want to show the QuickHelp widget
 	 */
-	sigc::signal <void> EventToggleWidgetVisibility;
+	sigc::signal<void> EventToggleWidgetVisibility;
 
 	/**
 	 * @brief Returns the size of the message list

@@ -126,7 +126,7 @@ function QuickHelp:toggleVisibility()
 end
 
 function QuickHelp:updateText(helpMessage)
-	local text = helpMessage:getHelp()
+	local text = helpMessage.mMessage
 	if not self.hidden then
 		--Adapt the time the help widget is shown to how many words there are in the text
 		local words = 0

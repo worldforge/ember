@@ -7,34 +7,36 @@ namespace OgreView {
 
 namespace Gui {
 
-class HelpMessage
+struct HelpMessage
 {
-public:
 	HelpMessage(std::string title, std::string message, const std::string& tags, std::string id = "");
-	
-	/**
-	 * @brief Returns the message stored.
-	 * @return The message.
-	 */
-	const std::string& getHelp() const;
 
-	/**
-	 * @brief Returns the optional id of the message.
-	 * @return The id.
-	 */
-	const std::string& getId() const;
+    /**
+     * @brief Stores the title of the message.
+     */
+    std::string mTitle;
+
+    /**
+     * @brief Stores the plain text message.
+     */
+    std::string mMessage;
+
+    /**
+     * @brief Stores the various tags for the message.
+     */
+    std::vector<std::string> mTags;
+
+    /**
+     * @brief Stores the optional id.
+     */
+    std::string mId;
 
 	/**
 	 * @brief Iterates over the list of tags and returns a string containing all of them
 	 * @return String containing all of the tags
 	 */
-	const std::string getTags() const;
+	std::string getTags() const;
 
-	/**
-	 * @brief Returns the message title.
-	 * @returns The message title.
-	 */
-	const std::string& getTitle() const;
 };
 
 class QuickHelp

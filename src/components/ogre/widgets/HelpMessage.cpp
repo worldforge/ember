@@ -31,36 +31,15 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 HelpMessage::HelpMessage(std::string title, std::string message, const std::string& tags, std::string id) :
-		mMessage(std::move(message)),
 		mTitle(std::move(title)),
+		mMessage(std::move(message)),
 		mId(std::move(id)) {
 	boost::split(mTags, tags, boost::is_any_of(" "));
 }
 
-HelpMessage::~HelpMessage() = default;
-
-void HelpMessage::setHelp(const std::string& message) {
-	mMessage = message;
-}
-
-const std::string& HelpMessage::getHelp() const {
-	return mMessage;
-}
-
-const std::string& HelpMessage::getId() const {
-	return mId;
-}
-
-const std::string& HelpMessage::getTitle() const {
-	return mTitle;
-}
 
 
-bool HelpMessage::hasId() const {
-	return !mId.empty();
-}
-
-const std::string HelpMessage::getTags() const {
+std::string HelpMessage::getTags() const {
 	std::string tags;
 	for (const auto& tag : mTags)
 		tags += " " + tag;
