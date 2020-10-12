@@ -33,24 +33,24 @@ namespace OgreView {
 namespace Gui {
 
 EntityCreatorMovement::EntityCreatorMovement(EntityCreatorCreationInstance& creationInstance,
-                                             const Camera::MainCamera& camera,
-                                             Authoring::DetachedEntity* entity,
-                                             Ogre::SceneNode* node)
-        : mMovementBridge(std::make_shared<EntityCreatorMovementBridge>(creationInstance, entity, node)),
-          mMoveAdapter(camera) {
-    // When the point is moved, an instance of this will be created and the movement handled by it.
-    // Note that ownership will be transferred to the adapter, so we shouldn't delete it ourselves.
+											 const Camera::MainCamera& camera,
+											 Authoring::DetachedEntity* entity,
+											 Ogre::SceneNode* node)
+		: mMovementBridge(std::make_shared<EntityCreatorMovementBridge>(creationInstance, entity, node)),
+		  mMoveAdapter(camera) {
+	// When the point is moved, an instance of this will be created and the movement handled by it.
+	// Note that ownership will be transferred to the adapter, so we shouldn't delete it ourselves.
 
-    mMoveAdapter.attachToBridge(mMovementBridge);
-    mMoveAdapter.update();
+	mMoveAdapter.attachToBridge(mMovementBridge);
+	mMoveAdapter.update();
 }
 
 EntityCreatorMovement::~EntityCreatorMovement() {
-    mMoveAdapter.detach();
+	mMoveAdapter.detach();
 }
 
 const std::shared_ptr<EntityCreatorMovementBridge>& EntityCreatorMovement::getBridge() const {
-    return mMovementBridge;
+	return mMovementBridge;
 }
 
 }

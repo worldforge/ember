@@ -53,24 +53,20 @@ void EntityMaker::runCommand(const std::string& command, const std::string& args
 		Tokeniser tokeniser(args);
 		if (tokeniser.hasRemainingTokens()) {
 			std::string typeName = tokeniser.nextToken();
-			auto& typeService = mConnection.getTypeService();
-			Eris::TypeInfo* typeinfo = typeService.getTypeByName(typeName);
-			if (typeinfo) {
-				std::string parentEntityId = mAvatar.getEntity()->getLocation()->getId();
-				if (MakeMe == command) {
-					parentEntityId = mAvatar.getEntity()->getId();
-				} else {
-					if (tokeniser.hasRemainingTokens()) {
-						parentEntityId = tokeniser.nextToken();
-					}
+			std::string parentEntityId = mAvatar.getEntity()->getLocation()->getId();
+			if (MakeMe == command) {
+				parentEntityId = mAvatar.getEntity()->getId();
+			} else {
+				if (tokeniser.hasRemainingTokens()) {
+					parentEntityId = tokeniser.nextToken();
 				}
-				createEntityOfType(typeinfo, parentEntityId);
 			}
+			createEntityOfType(typeName, parentEntityId);
 		}
 	}
 }
 
-void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& parentEntityId, const std::string& name) {
+void EntityMaker::createEntityOfType(const std::string& type, const std::string& parentEntityId, const std::string& name) {
 	Atlas::Objects::Operation::Create c;
 	c->setFrom(mAvatar.getId());
 	//if the avatar is a "creator", i.e. and admin, we will set the TO property
@@ -105,13 +101,13 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	if (!name.empty()) {
 		msg["name"] = name;
 	}
-	msg["parent"] = typeinfo->getName();
+	msg["parent"] = type;
 
 	c->setArgsAsList(Atlas::Message::ListType(1, msg), &mConnection.getFactories());
 	mConnection.send(c);
 	std::stringstream ss;
 	ss << pos;
-	S_LOG_INFO("Trying to create entity of type " << typeinfo->getName() << " at position " << ss.str());
+	S_LOG_INFO("Trying to create entity of type " << type << " at position " << ss.str());
 
 }
 }

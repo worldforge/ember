@@ -152,9 +152,7 @@ public:
 	void setOrientation(const WFMath::Quaternion& rotation) override;
 
 	void yaw(WFMath::CoordType angle) override;
-
-	bool isCollisionResultValid(Ember::OgreView::PickResult& result) override ;
-
+	
 	/**
 	 * @brief Sets whether snap to functionality should be enabled.
 	 *
@@ -244,6 +242,7 @@ protected:
 	void snapListener_SnappingChanged(bool snapTo);
 
 
+	void processPickResults(const std::vector<PickResult>& results);
 };
 }
 }

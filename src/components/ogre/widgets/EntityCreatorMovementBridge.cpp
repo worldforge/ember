@@ -24,36 +24,52 @@
 #include "config.h"
 #endif
 
+#include "domain/EmberEntity.h"
 #include "EntityCreatorMovementBridge.h"
 #include "EntityCreatorCreationInstance.h"
 #include "components/ogre/authoring/DetachedEntity.h"
+#include "components/ogre/EntityCollisionInfo.h"
 #include <OgreSceneNode.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Gui
-{
+namespace Gui {
 
 EntityCreatorMovementBridge::EntityCreatorMovementBridge(EntityCreatorCreationInstance& creationInstance,
 														 Authoring::DetachedEntity* entity,
 														 Ogre::SceneNode* node) :
-Authoring::EntityMoverBase(entity, node, *node->getCreator()),
-mCreationInstance(creationInstance)
-{
+		Authoring::EntityMoverBase(entity, node, *node->getCreator()),
+		mCreationInstance(creationInstance) {
 }
 
 
-void EntityCreatorMovementBridge::finalizeMovement()
-{
+void EntityCreatorMovementBridge::finalizeMovement() {
 	mCreationInstance.EventFinalizeRequested();
 }
-void EntityCreatorMovementBridge::cancelMovement()
-{
+
+void EntityCreatorMovementBridge::cancelMovement() {
 	mCreationInstance.EventAbortRequested();
 }
+
+
+void EntityCreatorMovementBridge::processPickResults(const std::vector<PickResult>& results) {
+	if (mEntity) {
+		for (auto& result : results) {
+			if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
+				auto& entityCollisionInfo = boost::any_cast<const EntityCollisionInfo&>(result.collisionInfo);
+				//It's a valid entry if it's not transparent and not the entity which is being moved itself.
+				if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity != mEntity.get()) {
+					mCollidedEntity = Eris::EntityRef(entityCollisionInfo.entity);
+					setPosition(result.point);
+					return;
+				}
+			}
+		}
+	}
+	mCollidedEntity = {};
+}
+
 
 }
 

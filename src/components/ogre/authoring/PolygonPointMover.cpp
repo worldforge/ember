@@ -33,47 +33,40 @@
 #include <OgreSceneNode.h>
 #include <SDL_keyboard.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Authoring
-{
+namespace Authoring {
 
 PolygonPointMover::PolygonPointMover(Polygon& polygon, PolygonPoint& point, IMovementListener* listener) :
-	mPolygon(polygon),
-	mPoint(point),
-	mNewPoint(nullptr),
-	mDeleted(false),
-	mPointAfterDeleted(nullptr),
-	mInitialPosition(point.getLocalPosition()),
-	mListener(listener)
-{
+		mPolygon(polygon),
+		mPoint(point),
+		mNewPoint(nullptr),
+		mDeleted(false),
+		mPointAfterDeleted(nullptr),
+		mInitialPosition(point.getLocalPosition()),
+		mListener(listener) {
 	Input::getSingleton().EventKeyPressed.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyPressed));
 	Input::getSingleton().EventKeyReleased.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyReleased));
 }
 
-PolygonPointMover::~PolygonPointMover()
-{
+PolygonPointMover::~PolygonPointMover() {
 	if (mDeleted) {
 		delete &mPoint;
 	}
 }
 
-const WFMath::Quaternion& PolygonPointMover::getOrientation() const
-{
+const WFMath::Quaternion& PolygonPointMover::getOrientation() const {
 	static WFMath::Quaternion orientation;
 	return orientation;
 }
 
-const WFMath::Point<3>& PolygonPointMover::getPosition() const
-{
+const WFMath::Point<3>& PolygonPointMover::getPosition() const {
 	mPosition = Convert::toWF<WFMath::Point<3>>(getActivePoint()->getNode()->_getDerivedPosition());
 	return mPosition;
 }
-void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
-{
+
+void PolygonPointMover::setPosition(const WFMath::Point<3>& position) {
 	if (position.isValid()) {
 		//We need to offset into local space.
 		Ogre::Vector3 posOffset = Ogre::Vector3::ZERO;
@@ -89,34 +82,30 @@ void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
 		mPolygon.updateRender();
 	}
 }
-void PolygonPointMover::move(const WFMath::Vector<3>& directionVector)
-{
+
+void PolygonPointMover::move(const WFMath::Vector<3>& directionVector) {
 	if (directionVector.isValid()) {
 		getActivePoint()->translate(WFMath::Vector<2>(directionVector.x(), directionVector.z()));
 		mPolygon.updateRender();
 	}
 }
-void PolygonPointMover::setRotation(int /*axis*/, WFMath::CoordType /*angle*/)
-{
+
+void PolygonPointMover::setRotation(int /*axis*/, WFMath::CoordType /*angle*/) {
 	//not implemented yet
 }
 
-void PolygonPointMover::yaw(WFMath::CoordType /*angle*/)
-{
+void PolygonPointMover::yaw(WFMath::CoordType /*angle*/) {
 }
 
-void PolygonPointMover::setOrientation(const WFMath::Quaternion& /*rotation*/)
-{
+void PolygonPointMover::setOrientation(const WFMath::Quaternion& /*rotation*/) {
 }
 
-void PolygonPointMover::finalizeMovement()
-{
+void PolygonPointMover::finalizeMovement() {
 	//TODO: clean up if the point has been deleted
 	mListener->endMovement();
 }
 
-void PolygonPointMover::cancelMovement()
-{
+void PolygonPointMover::cancelMovement() {
 	mPoint.setLocalPosition(mInitialPosition);
 	if (mNewPoint) {
 		switchToExistingPointMode();
@@ -125,16 +114,14 @@ void PolygonPointMover::cancelMovement()
 	// 	mPolygon.endMovement();
 }
 
-PolygonPoint* PolygonPointMover::getActivePoint() const
-{
+PolygonPoint* PolygonPointMover::getActivePoint() const {
 	if (mNewPoint) {
 		return mNewPoint;
 	}
 	return &mPoint;
 }
 
-void PolygonPointMover::input_KeyPressed(const SDL_Keysym& key, Input::InputMode /*mode*/)
-{
+void PolygonPointMover::input_KeyPressed(const SDL_Keysym& key, Input::InputMode /*mode*/) {
 	if (key.sym == SDLK_LCTRL || key.sym == SDLK_RCTRL) {
 		if (!mNewPoint) {
 			switchToNewPointMode();
@@ -144,8 +131,7 @@ void PolygonPointMover::input_KeyPressed(const SDL_Keysym& key, Input::InputMode
 	}
 }
 
-void PolygonPointMover::input_KeyReleased(const SDL_Keysym& key, Input::InputMode /*mode*/)
-{
+void PolygonPointMover::input_KeyReleased(const SDL_Keysym& key, Input::InputMode /*mode*/) {
 	if (key.sym == SDLK_LCTRL || key.sym == SDLK_RCTRL) {
 		if (mNewPoint) {
 			switchToExistingPointMode();
@@ -155,8 +141,7 @@ void PolygonPointMover::input_KeyReleased(const SDL_Keysym& key, Input::InputMod
 	}
 }
 
-void PolygonPointMover::switchToNewPointMode()
-{
+void PolygonPointMover::switchToNewPointMode() {
 	if (!mDeleted) {
 		if (!mNewPoint) {
 			//Get the two nearest points and position the new point to the one's that's closest
@@ -184,8 +169,7 @@ void PolygonPointMover::switchToNewPointMode()
 	}
 }
 
-void PolygonPointMover::switchToExistingPointMode()
-{
+void PolygonPointMover::switchToExistingPointMode() {
 	if (mDeleted) {
 		if (mPointAfterDeleted) {
 			mPolygon.reInsertPointBefore(*mPointAfterDeleted, mPoint);
@@ -207,8 +191,7 @@ void PolygonPointMover::switchToExistingPointMode()
 	}
 }
 
-void PolygonPointMover::switchToDeleteMode()
-{
+void PolygonPointMover::switchToDeleteMode() {
 	mPointAfterDeleted = mPolygon.getPointAfter(mPoint);
 	mPolygon.removePoint(mPoint);
 	mPoint.setVisible(false);
@@ -224,15 +207,17 @@ boost::optional<float> PolygonPointMover::getOffset() const {
 	return boost::none;
 }
 
-bool PolygonPointMover::isCollisionResultValid(Ember::OgreView::PickResult& result) {
-	if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
-		auto& entityCollisionInfo = boost::any_cast<EntityCollisionInfo&>(result.collisionInfo);
-		//It's a valid entry if it's the terrain
-		if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity->hasProperty("terrain")) {
-			return true;
+void PolygonPointMover::processPickResults(const std::vector<PickResult>& results) {
+	for (auto& result : results) {
+		if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
+			auto& entityCollisionInfo = boost::any_cast<const EntityCollisionInfo&>(result.collisionInfo);
+			//It's a valid entry if it's not transparent and not the entity which is being moved itself.
+			if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity->hasProperty("terrain")) {
+				setPosition(result.point);
+				return;
+			}
 		}
 	}
-	return false;
 }
 
 }

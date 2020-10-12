@@ -99,8 +99,6 @@ public:
 	void finalizeMovement() override;
 	void cancelMovement() override;
 
-	bool isCollisionResultValid(Ember::OgreView::PickResult& result) override ;
-
 private:
 
 	/**
@@ -173,6 +171,7 @@ private:
 	 */
 	IMovementListener* mListener;
 
+	void processPickResults(const std::vector<PickResult>& results);
 };
 
 }

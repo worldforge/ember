@@ -98,7 +98,7 @@ protected:
 	 * @param parentEntityId The id of the parent entity.
 	 * @param name The optional name of the enttity. If empty, the type name will be used.
 	 */
-	void createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& parentEntityId, const std::string& name = "");
+	void createEntityOfType(const std::string& type, const std::string& parentEntityId, const std::string& name = "");
 
 };
 

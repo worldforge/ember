@@ -115,7 +115,7 @@ struct IMovementBridge
 	 */
 	virtual void cancelMovement() = 0;
 
-	virtual bool isCollisionResultValid(Ember::OgreView::PickResult& result) = 0;
+	virtual void processPickResults(const std::vector<PickResult>& results) = 0;
 };
 
 }

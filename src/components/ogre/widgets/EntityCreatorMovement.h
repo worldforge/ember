@@ -25,24 +25,21 @@
 
 #include "components/ogre/authoring/MovementAdapter.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 class DetachedEntity;
 }
-namespace Gui
-{
+namespace Gui {
 class EntityCreatorCreationInstance;
+
 class EntityCreatorMovementBridge;
+
 /**
  @brief A movement of a DetachedEntity, belonging to the EntityCreator.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class EntityCreatorMovement
-{
+class EntityCreatorMovement {
 public:
 	/**
 	 * @brief Ctor.

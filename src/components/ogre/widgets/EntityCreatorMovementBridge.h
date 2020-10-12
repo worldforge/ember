@@ -27,22 +27,17 @@
 #include "components/ogre/authoring/EntityMoverBase.h"
 #include <wfmath/point.h>
 
-namespace Ogre
-{
+namespace Ogre {
 class SceneNode;
 }
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Authoring
-{
+namespace Authoring {
 class DetachedEntity;
 }
 
-namespace Gui
-{
+namespace Gui {
 
 class EntityCreatorCreationInstance;
 
@@ -50,8 +45,7 @@ class EntityCreatorCreationInstance;
  @brief A movement bridge which knows how to move a DetachedEntity instance, which is a temporary preview entity used by the EntityCreator.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class EntityCreatorMovementBridge: public Authoring::EntityMoverBase
-{
+class EntityCreatorMovementBridge : public Authoring::EntityMoverBase {
 public:
 	/**
 	 * @brief Ctor.
@@ -70,6 +64,9 @@ public:
 
 	void cancelMovement() override;
 
+	Eris::EntityRef mCollidedEntity;
+
+
 private:
 
 	/**
@@ -77,6 +74,7 @@ private:
 	 */
 	EntityCreatorCreationInstance& mCreationInstance;
 
+	void processPickResults(const std::vector<PickResult>& results);
 };
 
 }

@@ -69,8 +69,7 @@ EntityMoverBase::EntityMoverBase(Eris::Entity* entity, Ogre::Node* node, Ogre::S
 		mNode(node),
 		mSceneManager(sceneManager),
 		mSnapping(nullptr),
-		mOffsetMarker(nullptr)
-{
+		mOffsetMarker(nullptr) {
 
 	SnapListener& snapListener = getSnapListener();
 	if (snapListener.getSnappingEnabled()) {
@@ -202,17 +201,19 @@ boost::optional<float> EntityMoverBase::getOffset() const {
 	return mOffset;
 }
 
-bool EntityMoverBase::isCollisionResultValid(Ember::OgreView::PickResult& result) {
+void EntityMoverBase::processPickResults(const std::vector<PickResult>& results) {
 	if (mEntity) {
-		if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
-			auto& entityCollisionInfo = boost::any_cast<EntityCollisionInfo&>(result.collisionInfo);
-			//It's a valid entry if it's not transparent and not the entity which is being moved itself.
-			if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity != mEntity.get()) {
-				return true;
+		for (auto& result : results) {
+			if (result.collisionInfo.type() == typeid(EntityCollisionInfo)) {
+				auto& entityCollisionInfo = boost::any_cast<const EntityCollisionInfo&>(result.collisionInfo);
+				//It's a valid entry if it's not transparent and not the entity which is being moved itself.
+				if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity != mEntity.get()) {
+					setPosition(result.point);
+					return;
+				}
 			}
 		}
 	}
-	return false;
 }
 
 
