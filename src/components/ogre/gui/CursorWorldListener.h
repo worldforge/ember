@@ -56,8 +56,6 @@ class MainCamera;
 namespace Gui
 {
 
-class StencilOpQueueListener;
-
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
@@ -93,40 +91,6 @@ public:
 protected:
 
 	/**
-	 * Keeps track of the entities involved in the "outline".
-	 */
-	struct Outline {
-		/**
-		 * The entity which was selected.
-		 */
-		EmberEntityRef selectedEntity;
-
-		/**
-		 * Any generated Ogre Entities used for the outline.
-		 *
-		 * If the selected entity is represented by InstancedEntities we must generate Ogre::Entities and render these for the outline.
-		 *
-		 */
-		std::vector<Ogre::Entity*> generatedEntities;
-
-		/**
-		 * Any materials generated for the outline.
-		 */
-		std::vector<Ogre::MaterialPtr> generatedMaterials;
-
-		/**
-		 * The original render queue groups used for the selected entities.
-		 */
-		std::vector<std::uint8_t> originalRenderQueueGroups;
-
-		/**
-		 * The model representing the entity.
-		 */
-		Model::Model* model = nullptr;
-
-	};
-
-	/**
 	 * @brief Stores CEGUI::Event::Connection instances.
 	 */
 	typedef std::vector<CEGUI::Event::Connection> ConnectionStore;
@@ -137,11 +101,6 @@ protected:
 	CEGUI::Window& mMainWindow;
 
 	World& mWorld;
-
-	/**
-	 * An outline shown for selected entities.
-	 */
-	Outline mOutline;
 
 	/**
 	 * @brief If a "hover" event already has been sent this will be true.
@@ -190,8 +149,6 @@ protected:
 
 	bool mIsCursorInWorld;
 
-	std::unique_ptr<StencilOpQueueListener> mStencilOpQueueListener;
-
 	void afterEventProcessing(float timeslice);
 
 	bool windowMouseEnters(const CEGUI::EventArgs& args);
@@ -207,8 +164,6 @@ protected:
 	 * Call this when the mouse has lingered long enough.
 	 */
 	void sendHoverEvent();
-
-	void highlightSelectedEntity();
 
 	/**
 	 * @brief Listens to the mouse button being released.

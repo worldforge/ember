@@ -192,14 +192,12 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 			bool willParticipate = false;
 			listener->initializePickingContext(willParticipate, mousePickerArgs);
 			if (willParticipate) {
-				participatingListeners.push_back(listener);
+				participatingListeners.emplace_back(listener);
 			}
 		}
 
 		//Only perform picking if there are any participating pick listeners.
 		if (!participatingListeners.empty()) {
-
-
 			auto results = pick(cameraRay, mousePickerArgs.distance);
 
 			for (auto& result : results) {

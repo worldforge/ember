@@ -31,27 +31,27 @@
 #include <sigc++/signal.h>
 #include <memory>
 #include <vector>
+#include <components/ogre/model/Model.h>
 
-namespace Eris
-{
+namespace Eris {
 class View;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
+namespace OgreView {
 
 class EntityWorldPickListener;
+
 class EmberEntityFactory;
+
 class Scene;
+
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Struct used for returning the result of a mouse pick.
  */
-struct EntityPickResult
-{
+struct EntityPickResult {
 	EmberEntity* entity;
 	Ogre::Vector3 position;
 	Ogre::Real distance;
@@ -64,8 +64,7 @@ struct EntityPickResult
  *
  * It uses entity refs to deal with entities being deleted between first pick and later actions.
  */
-struct PersistentEntityPickResult
-{
+struct PersistentEntityPickResult {
 	EmberEntityRef entityRef;
 	Ogre::Vector3 position;
 	Ogre::Real distance;
@@ -76,17 +75,20 @@ struct PersistentEntityPickResult
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Visualizes the picking operation by placing a large ball at the picked position.
  */
-class EntityWorldPickListenerVisualizer: public virtual sigc::trackable
-{
+class EntityWorldPickListenerVisualizer : public virtual sigc::trackable {
 public:
 	EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener, Ogre::SceneManager& sceneManager);
+
 	virtual ~EntityWorldPickListenerVisualizer();
 
 private:
 	Ogre::Entity* mEntity;
 	Ogre::SceneNode* mDebugNode;
+
 	void picker_EventPickedEntity(const std::vector<EntityPickResult>& result, const MousePickerArgs& mouseArgs);
 };
+
+struct StencilOpQueueListener;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -94,12 +96,11 @@ private:
  *
  * An instance of this is used to allow for picking of entities and terrain in the world.
  */
-class EntityWorldPickListener: public IWorldPickListener, public ConsoleObject
-{
+class EntityWorldPickListener : public IWorldPickListener, public ConsoleObject {
 public:
 	EntityWorldPickListener(Eris::View& view, Scene& scene);
 
-	~EntityWorldPickListener() override = default;
+	~EntityWorldPickListener() override;
 
 	void initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) override;
 
@@ -118,14 +119,55 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	void runCommand(const std::string &command, const std::string &args) override;
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	const std::vector<EntityPickResult>& getResult() const;
+
 	const std::vector<PersistentEntityPickResult>& getPersistentResult() const;
 
 	std::function<bool(const EmberEntity&)> mFilter;
 
 protected:
+
+	/**
+	 * Keeps track of the entities involved in the "outline".
+	 */
+	struct Outline {
+		/**
+		 * The entity which was selected.
+		 */
+		EmberEntityRef selectedEntity;
+
+		/**
+		 * Any generated Ogre Entities used for the outline.
+		 *
+		 * If the selected entity is represented by InstancedEntities we must generate Ogre::Entities and render these for the outline.
+		 *
+		 */
+		std::vector<Ogre::Entity*> generatedEntities;
+
+		/**
+		 * Any materials generated for the outline.
+		 */
+		std::vector<Ogre::MaterialPtr> generatedMaterials;
+
+		/**
+		 * The original render queue groups used for the selected entities.
+		 */
+		std::vector<std::uint8_t> originalRenderQueueGroups;
+
+		/**
+		 * The model representing the entity.
+		 */
+		Model::Model* model = nullptr;
+
+	};
+
+
+	/**
+	 * An outline shown for selected entities.
+	 */
+	Outline mOutline;
 
 
 	float mClosestPickingDistance, mFurthestPickingDistance;
@@ -149,7 +191,10 @@ protected:
 
 	Scene& mScene;
 
+	std::unique_ptr<StencilOpQueueListener> mStencilOpQueueListener;
 
+
+	void highlightSelectedEntity();
 };
 
 }

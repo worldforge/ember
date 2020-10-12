@@ -36,63 +36,14 @@
 #include "components/ogre/model/SubModel.h"
 #include "domain/EmberEntity.h"
 
-#include <OgreSceneNode.h>
 #include <CEGUI/Window.h>
 #include <CEGUI/WindowManager.h>
-#include <components/ogre/OgreInfo.h>
-#include <OgreRenderQueue.h>
-#include <OgreSubEntity.h>
-#include <OgreTagPoint.h>
-#include <OgreMovableObject.h>
-#include <OgreInstancedEntity.h>
 
-
-#include <OgreRenderQueueListener.h>
 #include <Ogre.h>
-
-// render queues
-#define RENDER_QUEUE_OUTLINE_OBJECT        Ogre::RENDER_QUEUE_MAIN + 1
-#define RENDER_QUEUE_OUTLINE_BORDER        Ogre::RENDER_QUEUE_9 + 2
-
-// stencil values
-#define STENCIL_VALUE_FOR_OUTLINE_GLOW 1
-#define STENCIL_FULL_MASK 0xFFFFFFFF
 
 namespace Ember {
 namespace OgreView {
 namespace Gui {
-
-
-class StencilOpQueueListener : public Ogre::RenderQueueListener {
-public:
-	void renderQueueStarted(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) override {
-		if (queueGroupId == RENDER_QUEUE_OUTLINE_OBJECT) {
-			Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
-
-			renderSystem->clearFrameBuffer(Ogre::FBT_STENCIL);
-			renderSystem->setStencilCheckEnabled(true);
-			renderSystem->setStencilBufferParams(Ogre::CMPF_ALWAYS_PASS,
-												 STENCIL_VALUE_FOR_OUTLINE_GLOW, STENCIL_FULL_MASK, STENCIL_FULL_MASK,
-												 Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE, false);
-		}
-		if (queueGroupId == RENDER_QUEUE_OUTLINE_BORDER) {
-			Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
-			renderSystem->setStencilCheckEnabled(true);
-			renderSystem->setStencilBufferParams(Ogre::CMPF_NOT_EQUAL,
-												 STENCIL_VALUE_FOR_OUTLINE_GLOW, STENCIL_FULL_MASK, STENCIL_FULL_MASK,
-												 Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE, false);
-		}
-	}
-
-	void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation) override {
-		if (queueGroupId == RENDER_QUEUE_OUTLINE_OBJECT || queueGroupId == RENDER_QUEUE_OUTLINE_BORDER) {
-			Ogre::RenderSystem* rendersys = Ogre::Root::getSingleton().getRenderSystem();
-			rendersys->setStencilCheckEnabled(false);
-			rendersys->setStencilBufferParams();
-		}
-	}
-
-};
 
 
 CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, World& world) :
@@ -103,8 +54,8 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 		mClickThresholdMilliseconds(200),
 		mMousePressedTimeFrame(nullptr),
 		mConfigListenerContainer(new ConfigListenerContainer()),
-		mIsCursorInWorld(false),
-		mStencilOpQueueListener(new StencilOpQueueListener()) {
+		mIsCursorInWorld(false)
+{
 
 	mainLoopController.EventAfterInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
 	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorWorldListener::input_MouseButtonReleased));
@@ -118,18 +69,10 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "clickthreshold", sigc::mem_fun(*this, &CursorWorldListener::Config_ClickThreshold), 200);
 
-	world.getSceneManager().addRenderQueueListener(mStencilOpQueueListener.get());
 
 }
 
 CursorWorldListener::~CursorWorldListener() {
-	mWorld.getSceneManager().removeRenderQueueListener(mStencilOpQueueListener.get());
-	for (auto& entity: mOutline.generatedEntities) {
-		if (entity->getParentSceneNode()) {
-			entity->getParentSceneNode()->detachObject(entity);
-		}
-		mWorld.getSceneManager().destroyMovableObject(entity);
-	}
 
 	mConfigListenerContainer.reset();
 	for (auto& connection : mConnections) {
@@ -155,12 +98,10 @@ void CursorWorldListener::afterEventProcessing(float timeslice) {
 				}
 			}
 
-			highlightSelectedEntity();
-
 			if (mMousePressedTimeFrame) {
 				if (!mMousePressedTimeFrame->isTimeLeft()) {
 					mMousePressedTimeFrame.reset();
-					sendWorldClick(MPT_PRESSED, mMainWindow.getGUIContext().getMouseCursor().getPosition(), 50);
+					sendWorldClick(MPT_PRESSED, pixelPosition, 50);
 				}
 			}
 		}
@@ -176,7 +117,6 @@ void CursorWorldListener::afterEventProcessing(float timeslice) {
 		pickerArgs.pickType = MousePickType::MPT_SELECT;
 		pickerArgs.distance = 50;
 		mWorld.getMainCamera().pickInWorld(0.5, 0.5, pickerArgs);
-		highlightSelectedEntity();
 		mWorld.getEntityPickListener().mFilter = nullptr;
 
 	}
@@ -269,130 +209,6 @@ bool CursorWorldListener::isInGUIMode() const {
 void CursorWorldListener::Config_ClickThreshold(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_int()) {
 		mClickThresholdMilliseconds = static_cast<int>(variable);
-	}
-}
-
-void CursorWorldListener::highlightSelectedEntity() {
-	EmberEntity* selectedEntity = nullptr;
-
-	auto& results = mWorld.getEntityPickListener().getResult();
-
-	if (!results.empty()) {
-		selectedEntity = results.front().entity;
-	}
-
-
-	if (mOutline.selectedEntity.get() != selectedEntity) {
-		for (auto& entity: mOutline.generatedEntities) {
-			if (mOutline.model && mOutline.model->getNodeProvider()) {
-				mOutline.model->getNodeProvider()->detachObject(entity);
-			}
-			mWorld.getSceneManager().destroyMovableObject(entity);
-		}
-		for (auto& material: mOutline.generatedMaterials) {
-			material->getCreator()->remove(material);
-		}
-
-		if (mOutline.selectedEntity) {
-			auto* oldEmberEntity = mOutline.selectedEntity.get();
-			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(oldEmberEntity->getGraphicalRepresentation());
-
-			if (modelRep) {
-				auto& model = modelRep->getModel();
-				if (model.useInstancing()) {
-					model.doWithMovables([](Ogre::MovableObject* movable, int index) {
-						if (movable->getMovableType() == "InstancedEntity") {
-							movable->setVisible(true);
-						}
-					});
-				}
-
-				auto submodelI = model.getSubmodels().begin();
-				for (size_t i = 0; i < model.getSubmodels().size(); ++i) {
-					//It could be that the entity has been reloaded in the interim, so we need to check that originalRenderQueueGroups size matches.
-					if (i < mOutline.originalRenderQueueGroups.size()) {
-						(*submodelI)->getEntity()->setRenderQueueGroup(mOutline.originalRenderQueueGroups[i]);
-
-					}
-					//If instancing is used we've temporarily attached the Ogre::Entity to the nodes; need to detach it.
-					if (model.useInstancing() && model.getNodeProvider()) {
-						model.getNodeProvider()->detachObject((*submodelI)->getEntity());
-					}
-
-					submodelI++;
-				}
-			}
-		}
-		mOutline = Outline{selectedEntity};
-
-		if (selectedEntity) {
-			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(selectedEntity->getGraphicalRepresentation());
-			if (modelRep && modelRep->getModel().getNodeProvider()) {
-				mOutline.model = &modelRep->getModel();
-
-				if (modelRep->getModel().useInstancing()) {
-					modelRep->getModel().doWithMovables([](Ogre::MovableObject* movable, int index) {
-						if (movable->getMovableType() == "InstancedEntity") {
-							movable->setVisible(false);
-						}
-					});
-				}
-
-				auto& submodels = modelRep->getModel().getSubmodels();
-				for (auto& submodel : submodels) {
-					auto ogreEntity = submodel->getEntity();
-					if (ogreEntity) {
-						mOutline.originalRenderQueueGroups.push_back(ogreEntity->getRenderQueueGroup());
-
-						if (ogreEntity->isVisible()) {
-
-							ogreEntity->setRenderQueueGroup(RENDER_QUEUE_OUTLINE_OBJECT);
-
-							if (!ogreEntity->getParentNode()) {
-								modelRep->getModel().getNodeProvider()->attachObject(ogreEntity);
-							}
-
-							auto outlineEntity = ogreEntity->clone(OgreInfo::createUniqueResourceName("outline"));
-							outlineEntity->setCastShadows(false);
-
-							outlineEntity->setRenderQueueGroup(RENDER_QUEUE_OUTLINE_BORDER);
-							if (outlineEntity->hasSkeleton()) {
-								outlineEntity->shareSkeletonInstanceWith(ogreEntity);
-							}
-							for (size_t i = 0; i < ogreEntity->getNumSubEntities(); ++i) {
-								auto outlineSubEntity = outlineEntity->getSubEntity(i);
-								auto subEntity = ogreEntity->getSubEntity(i);
-
-								outlineSubEntity->setVisible(subEntity->isVisible());
-								Ogre::TexturePtr texture;
-								if (subEntity->isVisible()) {
-									auto& material = subEntity->getMaterial();
-									auto tech = material->getBestTechnique();
-									if (tech && tech->getNumPasses() > 0) {
-										auto pass = tech->getPass(0);
-										if (pass->getNumTextureUnitStates() > 0) {
-											texture = pass->getTextureUnitState(0)->_getTexturePtr();
-										}
-									}
-									if (!texture) {
-										return;
-									}
-
-									auto outlineMaterial = Ogre::MaterialManager::getSingleton().getByName("/common/base/outline/nonculled")->clone(OgreInfo::createUniqueResourceName("outlineMaterial"));
-									outlineMaterial->load();
-									outlineMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTexture(texture);
-									outlineSubEntity->setMaterial(outlineMaterial);
-									mOutline.generatedMaterials.push_back(outlineMaterial);
-								}
-							}
-							modelRep->getModel().getNodeProvider()->attachObject(outlineEntity);
-							mOutline.generatedEntities.push_back(outlineEntity);
-
-						}
-					}
-				}
-			}
-		}
 	}
 }
 
