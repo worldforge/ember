@@ -26,27 +26,23 @@
 #include "PolygonPointMover.h"
 #include "MovementAdapter.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Camera
-{
+namespace Camera {
 class MainCamera;
 }
-namespace Authoring
-{
+namespace Authoring {
 
 class PolygonPoint;
+
 class Polygon;
 
 /**
  @brief Represents one movement action of a specific point. When the movement of the point is complete, either by it being cancelled or completed, the instance should be deleted.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class PolygonPointMovement
-{
+class PolygonPointMovement {
 public:
 	/**
 	 * @brief Ctor.
@@ -55,7 +51,7 @@ public:
 	 * @param movementListener An optional listener which will receive movement updates.
 	 * @param camera The main camera used in the world.
 	 */
-	PolygonPointMovement(Polygon& polygon, PolygonPoint& point, IMovementListener* movementListener, const Camera::MainCamera& camera);
+	PolygonPointMovement(Polygon& polygon, PolygonPoint& point, IMovementListener* movementListener, Camera::MainCamera& camera);
 
 	/**
 	 * @brief Dtor.

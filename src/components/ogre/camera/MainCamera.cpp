@@ -210,7 +210,7 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 			}
 
 			for (auto listener : participatingListeners) {
-				listener->endPickingContext(mousePickerArgs);
+				listener->endPickingContext(mousePickerArgs, results);
 			}
 		}
 	} else {

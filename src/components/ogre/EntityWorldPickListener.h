@@ -104,7 +104,7 @@ public:
 
 	void initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) override;
 
-	void endPickingContext(const MousePickerArgs& mousePickerArgs) override;
+	void endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results) override;
 
 	void processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) override;
 

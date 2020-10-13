@@ -25,19 +25,19 @@
 
 #include "../EmberOgrePrerequisites.h"
 #include "services/input/IInputAdapter.h"
+#include "components/ogre/IWorldPickListener.h"
 #include <OgreFrameListener.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 namespace Camera {
 class MainCamera;
 }
-namespace Authoring
-{
+namespace Authoring {
 struct IMovementBridge;
+
 class EntityMoveManager;
+
 class MovementAdapter;
 
 /**
@@ -46,14 +46,13 @@ class MovementAdapter;
  Implementations of this are responsible for the actual checking of input data to determine whether the bridge should be told to update or not.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class MovementAdapterWorkerBase
-{
+class MovementAdapterWorkerBase {
 public:
 	explicit MovementAdapterWorkerBase(MovementAdapter& adapter);
+
 	virtual ~MovementAdapterWorkerBase() = default;
 
-	virtual bool injectMouseMove(const MouseMotion&, bool&)
-	{
+	virtual bool injectMouseMove(const MouseMotion&, bool&) {
 		return true;
 	}
 
@@ -61,8 +60,7 @@ public:
 	 * @brief Forces an update.
 	 * This could be called to force a position update, even if no input has been received (for example a mouse movement).
 	 */
-	virtual void update()
-	{
+	virtual void update() {
 	}
 
 protected:
@@ -87,8 +85,7 @@ protected:
  @brief An adapter worker implementation which will move the entity a fixed distance for each mouse movement.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class MovementAdapterWorkerDiscrete: public MovementAdapterWorkerBase
-{
+class MovementAdapterWorkerDiscrete : public MovementAdapterWorkerBase {
 public:
 	explicit MovementAdapterWorkerDiscrete(MovementAdapter& adapter);
 
@@ -100,8 +97,7 @@ protected:
 
 };
 
-class MovementAdapterWorkerHeightOffset: public MovementAdapterWorkerBase
-{
+class MovementAdapterWorkerHeightOffset : public MovementAdapterWorkerBase {
 public:
 	explicit MovementAdapterWorkerHeightOffset(MovementAdapter& adapter);
 
@@ -113,31 +109,20 @@ public:
  @brief An adapter worker implementation which will always position the entity where the mouse cursor intersects with the terrain.
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class MovementAdapterWorkerTerrainCursor: public MovementAdapterWorkerBase, public Ogre::FrameListener
-{
+class MovementAdapterWorkerTerrainCursor : public MovementAdapterWorkerBase, public IWorldPickListener {
 public:
 	explicit MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter);
 
 	~MovementAdapterWorkerTerrainCursor() override;
 
-	/**
-	 * Methods from Ogre::FrameListener
-	 */
-	bool frameStarted(const Ogre::FrameEvent& event) override;
+	void initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) override;
 
-	/**
-	 * @brief Forces an update.
-	 * This could be called to force a position update, even if no input has been received (for example a mouse movement).
-	 */
-	void update() override;
+	void processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) override;
 
-protected:
 
-	/**
-	 * @brief Updates the position from the placement of the cursor on the terrain.
-	 * @param forceUpdate True if the position should be updated even if the mouse hasn't been moved.
-	 */
-	void updatePosition(bool forceUpdate = false);
+	void processDelayedPick(const MousePickerArgs& mousePickerArgs) override;
+
+	void endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results) override;
 
 };
 
@@ -149,24 +134,29 @@ protected:
 
  When activates, an instance of this will receive input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into movement of any object movements, as defined in the bridge to which this is attached.
  */
-class MovementAdapter: public IInputAdapter
-{
+class MovementAdapter : public IInputAdapter {
 	friend class MovementAdapterWorkerBase;
+
 public:
 
 	/**
 	 * @brief Ctor.
 	 * @param camera The main camera used in the world.
 	 */
-	explicit MovementAdapter(const Camera::MainCamera& camera);
+	explicit MovementAdapter(Camera::MainCamera& camera);
 
 	~MovementAdapter() override;
 
 	bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) override;
+
 	bool injectMouseButtonUp(Input::MouseButton button) override;
+
 	bool injectMouseButtonDown(Input::MouseButton button) override;
+
 	bool injectChar(int character) override;
+
 	bool injectKeyDown(const SDL_Scancode& key) override;
+
 	bool injectKeyUp(const SDL_Scancode& key) override;
 
 	/**
@@ -189,6 +179,10 @@ public:
 	virtual void update();
 
 	const std::shared_ptr<IMovementBridge>& getBridge() const;
+
+	Camera::MainCamera& getCamera() {
+		return mCamera;
+	}
 
 protected:
 	/**
@@ -214,7 +208,7 @@ protected:
 	/**
 	 * @brief The main camera used in the scene.
 	 */
-	const Camera::MainCamera& mCamera;
+	Camera::MainCamera& mCamera;
 
 	/**
 	 * @brief The bridge through which all movement happens.

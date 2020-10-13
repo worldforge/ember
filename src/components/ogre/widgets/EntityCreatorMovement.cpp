@@ -33,7 +33,7 @@ namespace OgreView {
 namespace Gui {
 
 EntityCreatorMovement::EntityCreatorMovement(EntityCreatorCreationInstance& creationInstance,
-											 const Camera::MainCamera& camera,
+											 Camera::MainCamera& camera,
 											 Authoring::DetachedEntity* entity,
 											 Ogre::SceneNode* node)
 		: mMovementBridge(std::make_shared<EntityCreatorMovementBridge>(creationInstance, entity, node)),

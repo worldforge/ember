@@ -70,7 +70,7 @@ void PolygonPointPickListener::initializePickingContext(bool& willParticipate, c
 
 }
 
-void PolygonPointPickListener::endPickingContext(const MousePickerArgs& /*mousePickerArgs*/)
+void PolygonPointPickListener::endPickingContext(const MousePickerArgs& /*mousePickerArgs*/, const std::vector<PickResult>& results)
 {
 	if (mPickedUserObject) {
 		EventPickedPoint.emit(mPickedUserObject->getPoint());

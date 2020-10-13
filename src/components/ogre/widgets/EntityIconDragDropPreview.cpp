@@ -218,7 +218,7 @@ void ModelPreviewWorkerMovementBridge::cancelMovement() {
 	mModelPreviewWorker.EventCleanupCreation.emit();
 }
 
-ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Eris::Entity& entity, Ogre::SceneNode* node) :
+ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, Camera::MainCamera& camera, Eris::Entity& entity, Ogre::SceneNode* node) :
 		mMoveAdapter(camera) {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference

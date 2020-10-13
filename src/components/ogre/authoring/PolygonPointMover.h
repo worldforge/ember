@@ -171,7 +171,7 @@ private:
 	 */
 	IMovementListener* mListener;
 
-	void processPickResults(const std::vector<PickResult>& results);
+	void processPickResults(const std::vector<PickResult>& results) override;
 };
 
 }

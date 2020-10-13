@@ -62,7 +62,7 @@ public:
 
 	void initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) override;
 
-	void endPickingContext(const MousePickerArgs& mousePickerArgs) override;
+	void endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results) override;
 
 	void processDelayedPick(const MousePickerArgs& mousePickerArgs) override;
 

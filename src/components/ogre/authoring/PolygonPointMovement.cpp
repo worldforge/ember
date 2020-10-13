@@ -27,17 +27,13 @@
 #include "PolygonPointMovement.h"
 #include "PolygonPoint.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Authoring
-{
+namespace Authoring {
 
-PolygonPointMovement::PolygonPointMovement(Polygon& polygon, PolygonPoint& point, IMovementListener* movementListener, const Camera::MainCamera& camera) :
-	mPoint(point), mMoveAdapter(camera)
-{
+PolygonPointMovement::PolygonPointMovement(Polygon& polygon, PolygonPoint& point, IMovementListener* movementListener, Camera::MainCamera& camera) :
+		mPoint(point), mMoveAdapter(camera) {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
 	auto bridge = std::make_shared<PolygonPointMover>(polygon, point, movementListener);

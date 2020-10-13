@@ -156,7 +156,7 @@ void EntityWorldPickListener::initializePickingContext(bool& willParticipate, co
 	}
 }
 
-void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs) {
+void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results) {
 	if (mousePickerArgs.pickType == MPT_SELECT) {
 		highlightSelectedEntity();
 	}

@@ -96,29 +96,31 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, b
 
 MovementAdapterWorkerTerrainCursor::MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter) :
 		MovementAdapterWorkerBase(adapter) {
-	// Register this as a frame listener
-	Ogre::Root::getSingleton().addFrameListener(this);
+	adapter.getCamera().pushWorldPickListener(this);
 }
 
 MovementAdapterWorkerTerrainCursor::~MovementAdapterWorkerTerrainCursor() {
-	Ogre::Root::getSingleton().removeFrameListener(this);
+
+	mAdapter.getCamera().removeWorldPickListener(this);
 }
 
-void MovementAdapterWorkerTerrainCursor::update() {
-	updatePosition(true);
+void MovementAdapterWorkerTerrainCursor::initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) {
+	if (pickArgs.pickType == MPT_SELECT) {
+		willParticipate = true;
+	} else {
+		willParticipate = false;
+	}
 }
 
-bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent&) {
-	updatePosition();
-	return true;
+void MovementAdapterWorkerTerrainCursor::processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) {
+	continuePicking = false;
 }
 
-void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate) {
+void MovementAdapterWorkerTerrainCursor::processDelayedPick(const MousePickerArgs& mousePickerArgs) {
 
-	const MousePosition& mousePosition(Input::getSingleton().getMousePosition());
-	Ogre::Ray cameraRay = getCamera().getCamera().getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition);
-	auto results = getCamera().pick(cameraRay, 300);
+}
 
+void MovementAdapterWorkerTerrainCursor::endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results) {
 	getBridge()->processPickResults(results);
 }
 
@@ -141,7 +143,7 @@ bool MovementAdapterWorkerHeightOffset::injectMouseMove(const MouseMotion& motio
 	return false;
 }
 
-MovementAdapter::MovementAdapter(const Camera::MainCamera& camera) :
+MovementAdapter::MovementAdapter(Camera::MainCamera& camera) :
 		mCamera(camera),
 		mBridge(nullptr),
 		mWorker(nullptr) {

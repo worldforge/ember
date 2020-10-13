@@ -148,7 +148,7 @@ struct IWorldPickListener
 	 @brief Called when the picking is over, either because one of the processPickResult calls set continuePicking to false, or because there are no more objects to pick.
 	 * @param mousePickerArgs The original mouse picking arguments.
 	 */
-	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs)
+	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results)
 	{
 	}
 

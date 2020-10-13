@@ -197,7 +197,7 @@ void BasePointPickListener::initializePickingContext(bool& willParticipate, cons
 	}
 }
 
-void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
+void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results)
 {
 	if (mPickedUserObject) {
 		mOverlay.pickedBasePoint(mPickedUserObject);

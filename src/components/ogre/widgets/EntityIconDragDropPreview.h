@@ -282,7 +282,7 @@ class ModelPreviewWorkerMovement
 {
 public:
 
-	ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Eris::Entity& entity, Ogre::SceneNode* node);
+	ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, Camera::MainCamera& camera, Eris::Entity& entity, Ogre::SceneNode* node);
 	~ModelPreviewWorkerMovement();
 
 protected:
