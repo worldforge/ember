@@ -49,9 +49,7 @@ EntityCreator::EntityCreator(World& world) :
 		mWorld(world),
 		mTypeService(mWorld.getView().getTypeService()),
 		mCreationInstance(nullptr),
-		mRandomizeOrientation(false),
-		mPlantedOnGround(false) {
-//	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
+		mRandomizeOrientation(false) {
 	mLastOrientation.identity();
 }
 
@@ -61,10 +59,6 @@ EntityCreator::~EntityCreator() {
 
 void EntityCreator::setRandomizeOrientation(bool randomize) {
 	mRandomizeOrientation = randomize;
-}
-
-void EntityCreator::setPlantedOnGround(bool planted) {
-	mPlantedOnGround = planted;
 }
 
 
@@ -116,7 +110,7 @@ void EntityCreator::createNewCreationInstance(const std::vector<Atlas::Message::
 	mCreationInstance.reset();
 
 	mCreationInstance = std::make_unique<EntityCreatorCreationInstance>(mWorld, mTypeService, entityMaps, mRandomizeOrientation);
-	mCreationInstance->setPlantedOnGround(mPlantedOnGround);
+	mCreationInstance->EventMoved.connect([&](Eris::Entity* entity, const WFMath::Point<3>& pos) { EventMoved(entity, pos); });
 	mCreationInstance->EventAbortRequested.connect([&]() { stopCreation(); });
 	mCreationInstance->EventFinalizeRequested.connect([&]() { finalizeCreation(); });
 	if (!mRandomizeOrientation) {

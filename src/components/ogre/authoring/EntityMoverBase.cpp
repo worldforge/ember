@@ -214,6 +214,7 @@ void EntityMoverBase::processPickResults(const std::vector<PickResult>& results)
 			}
 		}
 	}
+	mPosition = {};
 }
 
 

@@ -127,10 +127,14 @@ void EntityCreatorWidget::buildWidget() {
 		auto& modelPreview = mWidget->getWindow<CEGUI::Window>("TypePreviewImage");
 		mModelPreviewRenderer = std::make_unique<ModelRenderer>(&modelPreview, "modelPreview");
 		mModelPreviewManipulator = std::make_unique<CameraEntityTextureManipulator>(modelPreview, mModelPreviewRenderer->getEntityTexture());
+		auto& modeWidget = mWidget->getWindow<CEGUI::Combobox>("Mode");
 
 		auto& createButton = mWidget->getWindow<CEGUI::PushButton>("Create");
 
-		createButton.subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
+		createButton.subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+			for (auto& entry: mEntityMaps) {
+				entry.emplace("mode", modeWidget.getText().c_str());
+			}
 			mEntityCreator->startCreation(mEntityMaps);
 		});
 
@@ -140,19 +144,62 @@ void EntityCreatorWidget::buildWidget() {
 		};
 		randomizeOrientationWidget.subscribeEvent(CEGUI::ToggleButton::EventSelectStateChanged, toggleRandomizeOrientationFn);
 		toggleRandomizeOrientationFn();
-		auto& plantedOnGroundWidget = mWidget->getWindow<CEGUI::ToggleButton>("PlantedOnGround");
-		auto togglePlantedOnGroundFn = [&]() {
-			mEntityCreator->setPlantedOnGround(plantedOnGroundWidget.isSelected());
-		};
-		plantedOnGroundWidget.subscribeEvent(CEGUI::ToggleButton::EventSelectStateChanged, togglePlantedOnGroundFn);
-		togglePlantedOnGroundFn();
-
 
 		mWidget->show();
 		auto& listbox = mWidget->getWindow<CEGUI::Listbox>("RecipesList");
 
 		mListHolder = std::make_unique<ListHolder>(listbox, &mWidget->getWindow<CEGUI::Editbox>("RuleFilter"));
 		mListAdapter = std::make_unique<Adapters::StringListAdapter>(*mListHolder);
+
+		modeWidget.addItem(new ColouredListItem("planted"));
+		modeWidget.addItem(new ColouredListItem("free"));
+		modeWidget.addItem(new ColouredListItem("fixed"));
+		modeWidget.setItemSelectState((size_t) 0, true);
+
+
+		auto& posX = mWidget->getWindow<CEGUI::Editbox>("posX");
+		auto& posY = mWidget->getWindow<CEGUI::Editbox>("posY");
+		auto& posZ = mWidget->getWindow<CEGUI::Editbox>("posZ");
+
+
+		auto& parentActiveWidget = mWidget->getWindow<CEGUI::Editbox>("ParentActive");
+		auto& parentSelectionWidget = mWidget->getWindow<CEGUI::Combobox>("ParentSelection");
+		parentSelectionWidget.addItem(new ColouredListItem("at cursor", 0));
+		parentSelectionWidget.addItem(new ColouredListItem("manually specified", 1));
+		parentSelectionWidget.setItemSelectState((size_t) 0, true);
+		auto selectParentSelection = [&]() {
+			if (parentSelectionWidget.getSelectedItem()) {
+				if (parentSelectionWidget.getSelectedItem()->getID() == 0) {
+					parentActiveWidget.setEnabled(false);
+					posX.setEnabled(false);
+					posY.setEnabled(false);
+					posZ.setEnabled(false);
+				} else {
+					parentActiveWidget.setEnabled(true);
+					posX.setEnabled(true);
+					posY.setEnabled(true);
+					posZ.setEnabled(true);
+				}
+			}
+		};
+		parentSelectionWidget.subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted, selectParentSelection);
+		selectParentSelection();
+
+		mEntityCreator->EventMoved.connect([&](Eris::Entity* parentEntity, const WFMath::Point<3>& pos) {
+			if (pos.isValid()) {
+				posX.setText(std::to_string(pos.x()));
+				posY.setText(std::to_string(pos.y()));
+				posZ.setText(std::to_string(pos.z()));
+			} else {
+				posX.setText("");
+				posY.setText("");
+				posZ.setText("");
+			}
+
+			if (parentEntity) {
+				parentActiveWidget.setText(parentEntity->getId());
+			}
+		});
 
 		auto& entityRecipeManager = Authoring::EntityRecipeManager::getSingleton();
 
@@ -209,6 +256,7 @@ void EntityCreatorWidget::buildWidget() {
 	}
 }
 
+
 void EntityCreatorWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entity) {
 	Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& model) {
 		mModelPreviewRenderer->setCameraPositionMode(SimpleRenderContext::CPM_OBJECTCENTER);
@@ -248,11 +296,13 @@ void EntityCreatorWidget::showRecipe(const std::shared_ptr<Authoring::EntityReci
 	auto& adaptersContainer = mWidget->getWindow<CEGUI::Window>("AdaptersContainer");
 	auto& windowManager = CEGUI::WindowManager::getSingleton();
 
-	mAdapters.clear();
-	while (adaptersContainer.getChildCount()) {
-		adaptersContainer.destroyChild(adaptersContainer.getChildAtIdx(0));
+	for (auto& entry: mAdapters) {
+		if (entry.second.container) {
+			adaptersContainer.destroyChild(entry.second.container);
+			entry.second.container = nullptr;
+		}
 	}
-	adaptersContainer.invalidate(true);
+	mAdapters.clear();
 
 	for (auto& entry: mEntityRecipe->getGUIAdapters()) {
 		auto& guiAdapter = entry.second;
@@ -283,17 +333,18 @@ void EntityCreatorWidget::showRecipe(const std::shared_ptr<Authoring::EntityReci
 			titleWrapper->addChild(title);
 			titleWrapper->addChild(randomCheckbox);
 			adapter->EventValueChanged.connect([this]() { refreshEntityMap(); });
-			mAdapters.emplace(entry.first, AdapterPair{std::move(adapter), guiAdapter.get(), entry.second->mAllowRandom});
 			adapterContainer->setWidth({1, -85});
 			wrapper->setHeight({0, adapterContainer->getHeight().d_offset});
 			wrapper->addChild(titleWrapper);
 			wrapper->addChild(adapterContainer);
 
 			adaptersContainer.addChild(wrapper);
+			mAdapters.emplace(entry.first, AdapterEntry{std::move(adapter), guiAdapter.get(), entry.second->mAllowRandom, wrapper});
 		} else {
 			windowManager.destroyWindow(adapterContainer);
 		}
 	}
+
 
 	refreshEntityMap();
 

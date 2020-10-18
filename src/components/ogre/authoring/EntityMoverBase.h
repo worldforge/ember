@@ -242,7 +242,7 @@ protected:
 	void snapListener_SnappingChanged(bool snapTo);
 
 
-	void processPickResults(const std::vector<PickResult>& results);
+	void processPickResults(const std::vector<PickResult>& results) override;
 };
 }
 }

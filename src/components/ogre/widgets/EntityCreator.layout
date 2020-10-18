@@ -31,28 +31,82 @@
                 </Window>
                 <Window name="CreateSection" type="DefaultWindow">
                     <Property name="Position" value="{{0,150},{0,0}}"/>
-                    <Property name="Size" value="{{1,-150},{1,-120}}"/>
-                    <Window name="Description" type="EmberLook/StaticText">
-                        <Property name="Position" value="{{0,0},{0,0}}"/>
-                        <Property name="Size" value="{{1,0},{0,50}}"/>
-                    </Window>
-                    <Window name="RandomizeOrientation" type="EmberLook/Checkbox">
-                        <Property name="Position" value="{{0,0},{0,50}}"/>
-                        <Property name="Size" value="{{1,0},{0,25}}"/>
-                        <Property name="Selected" value="True"/>
-                        <Property name="TooltipText" value="If checked, will randomize the orientation of all new entities."/>
-                        <Property name="Text" value="Random orientation"/>
-                    </Window>
-                    <Window name="PlantedOnGround" type="EmberLook/Checkbox">
-                        <Property name="Position" value="{{0,0},{0,75}}"/>
-                        <Property name="Size" value="{{1,0},{0,25}}"/>
-                        <Property name="Selected" value="True"/>
-                        <Property name="TooltipText" value="If checked, entities will be planted on the ground by default."/>
-                        <Property name="Text" value="Planted on ground"/>
-                    </Window>
+                    <Property name="Size" value="{{1,-150},{1,-170}}"/>
                     <Window name="AdaptersContainer" type="VerticalLayoutContainer">
-                        <Property name="Position" value="{{0,0},{0,100}}"/>
-                        <Property name="Size" value="{{1,0},{1,-100}}"/>
+                        <Property name="Size" value="{{1,0},{0,170}}"/>
+                        <Window name="Description" type="EmberLook/StaticText">
+                            <Property name="MinSize" value="{{1,0},{0,50}}"/>
+                            <Property name="Size" value="{{1,0},{0,50}}"/>
+                        </Window>
+                        <Window name="RandomizeOrientation" type="EmberLook/Checkbox">
+                            <Property name="Size" value="{{1,0},{0,25}}"/>
+                            <Property name="Selected" value="True"/>
+                            <Property name="TooltipText" value="If checked, will randomize the orientation of all new entities."/>
+                            <Property name="Text" value="Random orientation"/>
+                        </Window>
+                        <Window type="HorizontalLayoutContainer">
+                            <Property name="Size" value="{{1,0},{0,25}}"/>
+                            <Window type="EmberLook/StaticText">
+                                <Property name="Size" value="{{0,75},{0,25}}"/>
+                                <Property name="Text" value="Mode"/>
+                            </Window>
+                            <Window type="DefaultWindow">
+                                <Property name="Size" value="{{1,-75},{0,25}}"/>
+                                <Window name="Mode" type="EmberLook/Combobox">
+                                    <Property name="Size" value="{{1,0},{0,100}}"/>
+                                    <Property name="ReadOnly" value="true"/>
+                                </Window>
+                            </Window>
+                        </Window>
+                        <Window type="HorizontalLayoutContainer">
+                            <Property name="Size" value="{{1,0},{0,25}}"/>
+                            <Window type="EmberLook/StaticText">
+                                <Property name="Size" value="{{0,75},{0,25}}"/>
+                                <Property name="Text" value="Parent selection"/>
+                            </Window>
+                            <Window type="DefaultWindow">
+                                <Property name="Size" value="{{1,-75},{0,25}}"/>
+                                <Window name="ParentSelection" type="EmberLook/Combobox">
+                                    <Property name="Size" value="{{1,0},{0,100}}"/>
+                                    <Property name="ReadOnly" value="true"/>
+                                </Window>
+                            </Window>
+                        </Window>
+                        <Window type="HorizontalLayoutContainer">
+                            <Property name="Size" value="{{1,0},{0,25}}"/>
+                            <Window type="EmberLook/StaticText">
+                                <Property name="Size" value="{{0,75},{0,25}}"/>
+                                <Property name="Text" value="Parent"/>
+                            </Window>
+                            <Window name="ParentActive" type="EmberLook/Editbox">
+                                <Property name="Size" value="{{1,-75},{0,25}}"/>
+                            </Window>
+                        </Window>
+                        <Window type="HorizontalLayoutContainer">
+                            <Property name="Size" value="{{1,0},{0,25}}"/>
+                            <Window type="EmberLook/StaticText">
+                                <Property name="Size" value="{{0,75},{0,25}}"/>
+                                <Property name="Text" value="Position"/>
+                            </Window>
+                            <Window type="DefaultWindow">
+                                <Property name="Size" value="{{0,200},{0,25}}"/>
+                                <Window name="posX" type="EmberLook/Editbox">
+                                    <Property name="Position" value="{{0,0},{0,0}}"/>
+                                    <Property name="Size" value="{{0,45},{0,25}}"/>
+                                    <Property name="TooltipText" value="X coord."/>
+                                </Window>
+                                <Window name="posY" type="EmberLook/Editbox">
+                                    <Property name="Position" value="{{0,50},{0,0}}"/>
+                                    <Property name="Size" value="{{0,45},{0,25}}"/>
+                                    <Property name="TooltipText" value="Y coord."/>
+                                </Window>
+                                <Window name="posZ" type="EmberLook/Editbox">
+                                    <Property name="Position" value="{{0,100},{0,0}}"/>
+                                    <Property name="Size" value="{{0,45},{0,25}}"/>
+                                    <Property name="TooltipText" value="Z coord."/>
+                                </Window>
+                            </Window>
+                        </Window>
                     </Window>
                 </Window>
                 <Window name="TypePreviewImage" type="EmberLook/StaticImage">

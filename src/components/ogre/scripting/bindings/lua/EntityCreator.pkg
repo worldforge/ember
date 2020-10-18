@@ -40,9 +40,6 @@ public:
 	 */
 	void setRandomizeOrientation(bool randomize);
 
-	void setPlantedOnGround(bool planted);
-
-
 	/**
 	 * @brief Emitted when creation has started.
 	 */

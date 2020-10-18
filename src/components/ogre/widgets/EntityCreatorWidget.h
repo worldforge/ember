@@ -76,13 +76,14 @@ private:
 
 	std::unique_ptr<EntityCreator> mEntityCreator;
 
-	struct AdapterPair {
+	struct AdapterEntry {
 		std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> adapter;
 		Authoring::GUIAdapter* guiAdapter;
 		bool allowRandom;
+		CEGUI::Window* container;
 	};
 
-	std::map<std::string, AdapterPair> mAdapters;
+	std::map<std::string, AdapterEntry> mAdapters;
 
 	std::vector<Atlas::Message::MapType> mEntityMaps;
 

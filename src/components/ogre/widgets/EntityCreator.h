@@ -32,6 +32,7 @@
 
 #include <memory>
 #include <Atlas/Message/Element.h>
+#include <Eris/Entity.h>
 
 namespace Eris
 {
@@ -91,8 +92,6 @@ public:
 	 */
 	void setRandomizeOrientation(bool randomize);
 
-	void setPlantedOnGround(bool planted);
-
 	/**
 	 * Starts entity creation process.
 	 */
@@ -119,6 +118,8 @@ public:
 	sigc::signal<void> EventCreationEnded;
 
 	sigc::signal<void> EventCreationCompleted;
+
+	sigc::signal<void, Eris::Entity*, const WFMath::Point<3>&> EventMoved;
 
 	/**
 	 * @brief Makes sure that all types are loaded. This is needed for the type lookup we need to do in the recipes in order to get the default values.
@@ -156,8 +157,6 @@ protected:
 	 * @brief If set to true, all new entities will have their orientation randomized around the vertical axis.
 	 */
 	bool mRandomizeOrientation;
-
-	bool mPlantedOnGround;
 
 	/**
 	 * @brief Creates a new EntityCreatorCreationInstance.

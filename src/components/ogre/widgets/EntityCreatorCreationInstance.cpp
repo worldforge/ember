@@ -63,7 +63,6 @@ EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world,
 		mWorld(world),
 		mTypeService(typeService),
 		mEntityNode(nullptr),
-		mPlantedOnGround(true),
 		mAxisMarker(nullptr) {
 
 	for (auto& entityMap : entityMaps) {
@@ -174,7 +173,9 @@ void EntityCreatorCreationInstance::createEntity() {
 	//If only one entity use it for snapping.
 	//TODO: handle snapping if many entities.
 	mMovement = std::make_unique<EntityCreatorMovement>(*this, mWorld.getMainCamera(), mEntityPreviews.size() == 1 ? mEntityPreviews.front().mEntity.get() : nullptr, mEntityNode);
-
+	mMovement->getBridge()->Moved.connect([&]() {
+		EventMoved(mMovement->getBridge()->mCollidedEntity.get(), mMovement->getBridge()->getPosition());
+	});
 }
 
 void EntityCreatorCreationInstance::finalizeCreation() {
@@ -189,11 +190,11 @@ void EntityCreatorCreationInstance::finalizeCreation() {
 			entityMap["orientation"] = mMovement->getBridge()->getOrientation().toAtlas();
 			entityMap["pos"] = pos.toAtlas();
 			entityMap["loc"] = parentEntity->getId();
-			if (mPlantedOnGround && entry.mEntity->getLocation()) {
-				entityMap["mode"] = "planted";
-				entityMap["mode_data"] = Atlas::Message::MapType{{"mode", "planted"},
-																 {"$eid", entry.mEntity->getLocation()->getId()}};
-			}
+//			if (mPlantedOnGround && entry.mEntity->getLocation()) {
+//				entityMap["mode"] = "planted";
+//				entityMap["mode_data"] = Atlas::Message::MapType{{"mode", "planted"},
+//																 {"$eid", entry.mEntity->getLocation()->getId()}};
+//			}
 
 
 			// Making create operation message
@@ -293,11 +294,6 @@ void EntityCreatorCreationInstance::setOrientation(const WFMath::Quaternion& ori
 EntityCreatorMovement* EntityCreatorCreationInstance::getMovement() {
 	return mMovement.get();
 }
-
-void EntityCreatorCreationInstance::setPlantedOnGround(bool planted) {
-	mPlantedOnGround = planted;
-}
-
 
 }
 }

@@ -27,6 +27,7 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
+#include <Eris/Entity.h>
 #include "components/ogre/authoring/EntityRecipe.h"
 
 namespace Eris {
@@ -109,8 +110,6 @@ public:
 	 */
 	void setOrientation(const WFMath::Quaternion& orientation);
 
-	void setPlantedOnGround(bool planted);
-
 	/**
 	 * @brief Emitted when a stop of the creation process has been requested.
 	 *
@@ -122,6 +121,8 @@ public:
 	 * @brief Emitted when a finalization of the creation process has been requested.
 	 */
 	sigc::signal<void> EventFinalizeRequested;
+
+	sigc::signal<void, Eris::Entity*, const WFMath::Point<3>&> EventMoved;
 
 
 protected:
@@ -180,8 +181,6 @@ protected:
 	* @brief The initial orientation to use, if no entity has been created yet.
 	*/
 	WFMath::Quaternion mInitialOrientation;
-
-	bool mPlantedOnGround;
 
 	/**
 	 * @brief An entity which shows an axis, to mark the preview entity.
