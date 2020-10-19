@@ -60,6 +60,9 @@ void EntityCreatorMovementBridge::processPickResults(const std::vector<PickResul
 				auto& entityCollisionInfo = boost::any_cast<const EntityCollisionInfo&>(result.collisionInfo);
 				//It's a valid entry if it's not transparent and not the entity which is being moved itself.
 				if (!entityCollisionInfo.isTransparent && entityCollisionInfo.entity != mEntity.get()) {
+					if (mFixedParentId && *mFixedParentId != entityCollisionInfo.entity->getId()) {
+						continue;
+					}
 					mCollidedEntity = Eris::EntityRef(entityCollisionInfo.entity);
 					setPosition(result.point);
 					return;
@@ -68,6 +71,7 @@ void EntityCreatorMovementBridge::processPickResults(const std::vector<PickResul
 		}
 	}
 	mCollidedEntity = {};
+	setPosition({});
 }
 
 

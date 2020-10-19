@@ -96,7 +96,7 @@ void EntityCreator::finalizeCreation() {
 		return;
 	}
 	mLastOrientation = mCreationInstance->getOrientation();
-	mCreationInstance->finalizeCreation();
+	//mCreationInstance->finalizeCreation();
 
 	//Retain offset
 	auto offset = mCreationInstance->getMovement()->getBridge()->getOffset();

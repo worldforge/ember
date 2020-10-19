@@ -66,6 +66,7 @@ public:
 
 	Eris::EntityRef mCollidedEntity;
 
+	boost::optional<std::string> mFixedParentId;
 
 private:
 
@@ -74,7 +75,7 @@ private:
 	 */
 	EntityCreatorCreationInstance& mCreationInstance;
 
-	void processPickResults(const std::vector<PickResult>& results);
+	void processPickResults(const std::vector<PickResult>& results) override;
 };
 
 }

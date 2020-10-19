@@ -88,14 +88,7 @@ public:
 	 */
 	void startCreation();
 
-
-	/**
-	 * @brief Sends composed entity to server
-	 */
-	void finalizeCreation();
-
 	EntityCreatorMovement* getMovement();
-
 
 
 	/**

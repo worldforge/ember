@@ -25,16 +25,22 @@
 #include "components/ogre/authoring/EntityRecipeManager.h"
 #include "ModelRenderer.h"
 #include "EntityTextureManipulator.h"
+#include "EntityCreatorMovement.h"
+#include "EntityCreatorMovementBridge.h"
+#include <components/ogre/mapping/ModelActionCreator.h>
+#include <components/ogre/widgets/adapters/atlas/AdapterFactory.h>
+#include "components/ogre/mapping/EmberEntityMappingManager.h"
+#include "components/ogre/model/Model.h"
+#include "components/ogre/World.h"
+#include "AtlasHelper.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/Account.h>
 #include <Eris/TypeService.h>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
-#include <components/ogre/mapping/ModelActionCreator.h>
-#include <components/ogre/widgets/adapters/atlas/AdapterFactory.h>
-#include "components/ogre/mapping/EmberEntityMappingManager.h"
-#include "components/ogre/model/Model.h"
+
+#include <wfmath/atlasconv.h>
 
 namespace Ember {
 namespace OgreView {
@@ -50,29 +56,29 @@ WidgetPluginCallback EntityCreatorWidget::registerWidget(GUIManager& guiManager)
 	auto state = std::make_shared<State>();
 
 
-	auto gotAvatarFn = [=, &guiManager](Eris::Avatar* avatar) {
-		auto deactivatedAvatarConn = avatar->getAccount().AvatarDeactivated.connect([=](const std::string& id) {
-			if (avatar->getId() == id) {
-				state->instance.reset();
-				state->showConsoleWrapper.reset();
-			}
-		});
-		state->connections.emplace_back(deactivatedAvatarConn);
+	auto gotWorldFn = [=, &guiManager](World& world) {
 
-		state->showConsoleWrapper = std::make_unique<ConsoleCommandWrapper>(ConsoleBackend::getSingleton(), "show_entityCreator", [=, &guiManager](const std::string& command, const std::string& args) {
+		auto worldDestroyedConn = EmberOgre::getSingleton().EventWorldBeingDestroyed.connect([=]() {
+			state->instance.reset();
+			state->showConsoleWrapper.reset();
+		});
+		state->connections.emplace_back(worldDestroyedConn);
+
+		state->showConsoleWrapper = std::make_unique<ConsoleCommandWrapper>(ConsoleBackend::getSingleton(), "show_entityCreator", [=, &world, &guiManager](const std::string& command, const std::string& args) {
 			if (!state->instance) {
-				state->instance = std::make_unique<Gui::EntityCreatorWidget>(guiManager, *avatar);
+				state->instance = std::make_unique<Gui::EntityCreatorWidget>(guiManager, world);
 			} else {
 				state->instance->show();
 			}
 		});
 	};
 
-	auto gotAvatarConn = EmberServices::getSingleton().getServerService().GotAvatar.connect(gotAvatarFn);
-	state->connections.emplace_back(gotAvatarConn);
+	auto gotWorldConn = EmberOgre::getSingleton().EventWorldCreated.connect(gotWorldFn);
 
-	if (EmberServices::getSingleton().getServerService().getAvatar()) {
-		gotAvatarFn(EmberServices::getSingleton().getServerService().getAvatar());
+	state->connections.emplace_back(gotWorldConn);
+
+	if (EmberOgre::getSingleton().getWorld()) {
+		gotWorldFn(*EmberOgre::getSingleton().getWorld());
 	}
 
 
@@ -83,33 +89,22 @@ WidgetPluginCallback EntityCreatorWidget::registerWidget(GUIManager& guiManager)
 	};
 }
 
-EntityCreatorWidget::EntityCreatorWidget(GUIManager& guiManager, Eris::Avatar& avatar) :
-		mAvatar(avatar),
+EntityCreatorWidget::EntityCreatorWidget(GUIManager& guiManager, World& world) :
+		mWorld(world),
 		mWidget(guiManager.createWidget()),
-		mRulesFetcher(avatar.getConnection(), avatar.getId()),
-		mEntityCreator(std::make_unique<EntityCreator>(*EmberOgre::getSingleton().getWorld())),
-		mUnboundType(nullptr) {
+		mRulesFetcher(world.getView().getConnection(), world.getView().getAvatar().getId()),
+		mUnboundType(nullptr),
+		mRandomizeOrientation(true) {
 	buildWidget();
 	mWidget->enableCloseButton();
 
-	mEntityCreator->EventCreationCompleted.connect([this]() {
-		for (auto& entry : mAdapters) {
-			if (entry.second.allowRandom) {
-				entry.second.adapter->randomize();
-			}
-		}
-		refreshEntityMap();
-
-		mEntityCreator->startCreation(mEntityMaps);
-	});
-
-	mBoundTypeConnection = avatar.getConnection().getTypeService().BoundType.connect([this](Eris::TypeInfo* type) {
+	mBoundTypeConnection = world.getView().getConnection().getTypeService().BoundType.connect([this](Eris::TypeInfo* type) {
 		if (type == mUnboundType) {
 			mUnboundType = nullptr;
 			refreshPreview();
 		}
 	});
-	mBadTypeConnection = avatar.getConnection().getTypeService().BadType.connect([this](Eris::TypeInfo* type) {
+	mBadTypeConnection = world.getView().getConnection().getTypeService().BadType.connect([this](Eris::TypeInfo* type) {
 		if (type == mUnboundType) {
 			mUnboundType = nullptr;
 		}
@@ -129,18 +124,14 @@ void EntityCreatorWidget::buildWidget() {
 		mModelPreviewManipulator = std::make_unique<CameraEntityTextureManipulator>(modelPreview, mModelPreviewRenderer->getEntityTexture());
 		auto& modeWidget = mWidget->getWindow<CEGUI::Combobox>("Mode");
 
-		auto& createButton = mWidget->getWindow<CEGUI::PushButton>("Create");
+		mWidget->getWindow<CEGUI::Window>("CreateSection").setVisible(false);
 
-		createButton.subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
-			for (auto& entry: mEntityMaps) {
-				entry.emplace("mode", modeWidget.getText().c_str());
-			}
-			mEntityCreator->startCreation(mEntityMaps);
-		});
+		auto& createButton = mWidget->getWindow<CEGUI::PushButton>("Create");
+		createButton.setEnabled(false);
 
 		auto& randomizeOrientationWidget = mWidget->getWindow<CEGUI::ToggleButton>("RandomizeOrientation");
 		auto toggleRandomizeOrientationFn = [&]() {
-			mEntityCreator->setRandomizeOrientation(randomizeOrientationWidget.isSelected());
+			mRandomizeOrientation = randomizeOrientationWidget.isSelected();
 		};
 		randomizeOrientationWidget.subscribeEvent(CEGUI::ToggleButton::EventSelectStateChanged, toggleRandomizeOrientationFn);
 		toggleRandomizeOrientationFn();
@@ -166,49 +157,171 @@ void EntityCreatorWidget::buildWidget() {
 		auto& parentSelectionWidget = mWidget->getWindow<CEGUI::Combobox>("ParentSelection");
 		parentSelectionWidget.addItem(new ColouredListItem("at cursor", 0));
 		parentSelectionWidget.addItem(new ColouredListItem("manually specified", 1));
+		parentSelectionWidget.addItem(new ColouredListItem("in parent entity", 2));
 		parentSelectionWidget.setItemSelectState((size_t) 0, true);
 		auto selectParentSelection = [&]() {
 			if (parentSelectionWidget.getSelectedItem()) {
 				if (parentSelectionWidget.getSelectedItem()->getID() == 0) {
+					mFixedParentId = {};
 					parentActiveWidget.setEnabled(false);
 					posX.setEnabled(false);
 					posY.setEnabled(false);
 					posZ.setEnabled(false);
-				} else {
+				} else if (parentSelectionWidget.getSelectedItem()->getID() == 1) {
+					mFixedParentId = {};
 					parentActiveWidget.setEnabled(true);
+					if (mWorld.getView().getAvatar().getEntity()->getLocation()) {
+						parentActiveWidget.setText(mWorld.getView().getAvatar().getEntity()->getLocation()->getId());
+					} else {
+						parentActiveWidget.setText("");
+					}
 					posX.setEnabled(true);
 					posY.setEnabled(true);
 					posZ.setEnabled(true);
+				} else if (parentSelectionWidget.getSelectedItem()->getID() == 2) {
+					parentActiveWidget.setEnabled(false);
+					if (mWorld.getView().getAvatar().getEntity()->getLocation()) {
+						mFixedParentId = mWorld.getView().getAvatar().getEntity()->getLocation()->getId();
+						parentActiveWidget.setText(mWorld.getView().getAvatar().getEntity()->getLocation()->getId());
+					} else {
+						mFixedParentId = {};
+						parentActiveWidget.setText("");
+					}
+					posX.setEnabled(false);
+					posY.setEnabled(false);
+					posZ.setEnabled(false);
 				}
 			}
 		};
 		parentSelectionWidget.subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted, selectParentSelection);
 		selectParentSelection();
 
-		mEntityCreator->EventMoved.connect([&](Eris::Entity* parentEntity, const WFMath::Point<3>& pos) {
-			if (pos.isValid()) {
-				posX.setText(std::to_string(pos.x()));
-				posY.setText(std::to_string(pos.y()));
-				posZ.setText(std::to_string(pos.z()));
-			} else {
-				posX.setText("");
-				posY.setText("");
-				posZ.setText("");
-			}
+		auto createEntitiesFn = [this](WFMath::Point<3> pos, WFMath::Quaternion orientation, boost::optional<float> offset, std::string location, std::string mode) {
+			for (auto& entityMap : mEntityMaps) {
+				entityMap["loc"] = location;
+				if (orientation.isValid()) {
+					entityMap["orientation"] = orientation.toAtlas();
+				}
+				if (pos.isValid()) {
+					entityMap["pos"] = pos.toAtlas();
+				}
+				if (!mode.empty()) {
+					entityMap["mode"] = mode;
+					if (mode == "planted") {
+						entityMap["mode_data"] = Atlas::Message::MapType{{"mode", "planted"},
+																		 {"$eid", location}};
+						if (offset && *offset != 0.0) {
+							entityMap["planted_offset"] = *offset;
+						}
+					}
+				}
 
-			if (parentEntity) {
-				parentActiveWidget.setText(parentEntity->getId());
+				// Making create operation message
+				Atlas::Objects::Operation::Create c;
+				c->setFrom(mWorld.getView().getAvatar().getId());
+				//if the avatar is a "creator", i.e. and admin, we will set the TO property
+				//this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
+				if (mWorld.getView().getAvatar().getIsAdmin()) {
+					c->setTo(mWorld.getView().getAvatar().getEntityId());
+				}
+
+				c->setArgsAsList(Atlas::Message::ListType(1, entityMap), &mWorld.getView().getAvatar().getConnection().getFactories());
+				mWorld.getView().getAvatar().getConnection().send(c);
+
+				std::stringstream ss;
+				ss << pos;
+				S_LOG_INFO("Trying to create entity at position " << ss.str());
+				S_LOG_VERBOSE("Sending entity data to server: " << AtlasHelper::serialize(c, "xml"));
 			}
-		});
+		};
+		mCreateNewEntityFn = [&, createEntitiesFn]() {
+			mCreationInstance.reset();
+
+			mCreationInstance = std::make_unique<EntityCreatorCreationInstance>(*EmberOgre::getSingleton().getWorld(), mWorld.getView().getConnection().getTypeService(), mEntityMaps, mRandomizeOrientation);
+
+			mCreationInstance->EventMoved.connect([&](Eris::Entity* parentEntity, const WFMath::Point<3>& pos) {
+				if (pos.isValid()) {
+					posX.setText(std::to_string(pos.x()));
+					posY.setText(std::to_string(pos.y()));
+					posZ.setText(std::to_string(pos.z()));
+				} else {
+					posX.setText("");
+					posY.setText("");
+					posZ.setText("");
+				}
+
+				if (parentEntity) {
+					parentActiveWidget.setText(parentEntity->getId() + " - " + parentEntity->getType()->getName());
+				}
+			});
+			mCreationInstance->EventAbortRequested.connect([&]() {
+				mLastOrientation = mCreationInstance->getOrientation();
+				mCreationInstance.reset();
+			});
+
+
+			mCreationInstance->EventFinalizeRequested.connect([this, createEntitiesFn, &modeWidget]() {
+				auto& bridge = mCreationInstance->getMovement()->getBridge();
+				auto pos = bridge->getPosition();
+				auto parentEntity = bridge->mCollidedEntity;
+				auto orientation = bridge->getOrientation();
+				auto offset = bridge->getOffset();
+				if (parentEntity) {
+					createEntitiesFn(pos, orientation, offset, parentEntity->getId(), modeWidget.getText().c_str());
+				}
+
+				for (auto& entry : mAdapters) {
+					if (entry.second.allowRandom) {
+						entry.second.adapter->randomize();
+					}
+				}
+				refreshEntityMap();
+
+				mCreateNewEntityFn();
+
+			});
+			if (!mRandomizeOrientation) {
+				mCreationInstance->setOrientation(mLastOrientation);
+			}
+			mCreationInstance->startCreation();
+			mCreationInstance->getMovement()->getBridge()->mFixedParentId = mFixedParentId;
+		};
 
 		auto& entityRecipeManager = Authoring::EntityRecipeManager::getSingleton();
 
 		auto& description = mWidget->getWindow<CEGUI::Window>("Description");
 
+
+		createButton.subscribeEvent(CEGUI::PushButton::EventClicked, [this, &parentSelectionWidget, &posX, &posY, &posZ, &parentActiveWidget, &modeWidget, createEntitiesFn]() {
+			if (parentSelectionWidget.getSelectedItem()) {
+				if (parentSelectionWidget.getSelectedItem()->getID() == 1) {
+					//"manual" parent is used, so create the entity right away.
+					std::string location = parentActiveWidget.getText().c_str();
+					if (location.empty()) {
+						//Must at least have location set.
+						return;
+					}
+
+					WFMath::Point<3> pos;
+					try {
+						pos = {std::stod(posX.getText().c_str()), std::stod(posY.getText().c_str()), std::stod(posZ.getText().c_str())};
+					} catch (...) {
+						//just ignore parser errors
+					}
+					createEntitiesFn(pos, WFMath::Quaternion::IDENTITY(), {}, location, modeWidget.getText().c_str());
+				} else {
+					mCreateNewEntityFn();
+				}
+			}
+		});
+
+
 		mListAdapter->EventSelected.connect([&](const std::string& name) {
-			std::vector<std::string> pair;
+			std::vector <std::string> pair;
 			boost::algorithm::split(pair, name, boost::algorithm::is_any_of(":"));
 			if (pair.size() == 2) {
+				mWidget->getWindow<CEGUI::Window>("CreateSection").setVisible(true);
+				createButton.setEnabled(true);
 				if (pair.front() == "recipe") {
 					auto I = entityRecipeManager.getEntries().find(pair.back());
 					if (I != entityRecipeManager.getEntries().end()) {
@@ -223,11 +336,13 @@ void EntityCreatorWidget::buildWidget() {
 					showType(pair.back());
 				}
 			} else {
+				createButton.setEnabled(false);
+				mWidget->getWindow<CEGUI::Window>("CreateSection").setVisible(false);
 				description.setText("");
 			}
 		});
 
-		std::vector<std::pair<std::string, std::string>> entries;
+		std::vector <std::pair<std::string, std::string>> entries;
 		auto& recipes = Authoring::EntityRecipeManager::getSingleton().getEntries();
 		entries.reserve(recipes.size());
 		entries.emplace_back(std::make_pair("", "Recipes:"));
@@ -256,7 +371,6 @@ void EntityCreatorWidget::buildWidget() {
 	}
 }
 
-
 void EntityCreatorWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entity) {
 	Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& model) {
 		mModelPreviewRenderer->setCameraPositionMode(SimpleRenderContext::CPM_OBJECTCENTER);
@@ -271,7 +385,7 @@ void EntityCreatorWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity
 		}
 	});
 
-	auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, mAvatar.getView().getTypeService(), &mAvatar.getView());
+	auto mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, mWorld.getView().getTypeService(), &mWorld.getView());
 	if (mapping) {
 		mapping->initialize();
 	}
@@ -351,7 +465,7 @@ void EntityCreatorWidget::showRecipe(const std::shared_ptr<Authoring::EntityReci
 }
 
 void EntityCreatorWidget::refreshEntityMap() {
-	auto& typeService = mAvatar.getConnection().getTypeService();
+	auto& typeService = mWorld.getView().getTypeService();
 	std::map<std::string, Atlas::Message::Element> adapterValues;
 	for (auto& entry: mAdapters) {
 		adapterValues.emplace(entry.first, entry.second.adapter->getValue());
@@ -372,7 +486,7 @@ void EntityCreatorWidget::refreshEntityMap() {
 }
 
 void EntityCreatorWidget::refreshPreview() {
-	auto& typeService = mAvatar.getConnection().getTypeService();
+	auto& typeService = mWorld.getView().getTypeService();
 	try {
 		mUnboundType = nullptr;
 		if (!mEntityMaps.empty()) {

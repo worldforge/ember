@@ -95,19 +95,7 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance() {
 
 void EntityCreatorCreationInstance::startCreation() {
 
-	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
-
-	// Making initial position (orientation is preserved)
-	WFMath::Vector<3> offset(0, 0, -2);
-
-	if (avatar.getPosition().isValid()) {
-		mPos = avatar.getPosition();
-	} else {
-		mPos = WFMath::Point<3>::ZERO();
-	}
-	if (avatar.getOrientation().isValid()) {
-		mPos += offset.rotate(avatar.getOrientation());
-	}
+	mPos = {};
 
 	createEntity();
 }
@@ -176,46 +164,6 @@ void EntityCreatorCreationInstance::createEntity() {
 	mMovement->getBridge()->Moved.connect([&]() {
 		EventMoved(mMovement->getBridge()->mCollidedEntity.get(), mMovement->getBridge()->getPosition());
 	});
-}
-
-void EntityCreatorCreationInstance::finalizeCreation() {
-
-	// Final position
-
-	auto pos = mMovement->getBridge()->getPosition();
-	auto parentEntity = mMovement->getBridge()->mCollidedEntity;
-	if (parentEntity) {
-		for (auto& entry : mEntityPreviews) {
-			auto& entityMap = entry.entityMap;
-			entityMap["orientation"] = mMovement->getBridge()->getOrientation().toAtlas();
-			entityMap["pos"] = pos.toAtlas();
-			entityMap["loc"] = parentEntity->getId();
-//			if (mPlantedOnGround && entry.mEntity->getLocation()) {
-//				entityMap["mode"] = "planted";
-//				entityMap["mode_data"] = Atlas::Message::MapType{{"mode", "planted"},
-//																 {"$eid", entry.mEntity->getLocation()->getId()}};
-//			}
-
-
-			// Making create operation message
-			Atlas::Objects::Operation::Create c;
-			c->setFrom(mWorld.getAvatar()->getId());
-			//if the avatar is a "creator", i.e. and admin, we will set the TO property
-			//this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-			if (mWorld.getAvatar()->isAdmin()) {
-				c->setTo(mWorld.getAvatar()->getEmberEntity().getId());
-			}
-
-			c->setArgsAsList(Atlas::Message::ListType(1, entityMap), &mWorld.getView().getAvatar().getConnection().getFactories());
-			mWorld.getView().getAvatar().getConnection().send(c);
-
-			std::stringstream ss;
-			ss << mPos;
-			S_LOG_INFO("Trying to create entity at position " << ss.str());
-			S_LOG_VERBOSE("Sending entity data to server: " << AtlasHelper::serialize(c, "xml"));
-		}
-
-	}
 }
 
 void EntityCreatorCreationInstance::setModel(EntityPreview& entry, const std::string& modelName) {

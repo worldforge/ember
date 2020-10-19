@@ -46,14 +46,14 @@ public:
 	static WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
 
-	EntityCreatorWidget(GUIManager& guiManager, Eris::Avatar& avatar);
+	EntityCreatorWidget(GUIManager& guiManager, World& world);
 
 	~EntityCreatorWidget();
 
 	void show();
 
 private:
-	Eris::Avatar& mAvatar;
+	World& mWorld;
 	Widget* mWidget;
 	std::unique_ptr<ListHolder> mListHolder;
 	std::unique_ptr<Adapters::StringListAdapter> mListAdapter;
@@ -74,8 +74,6 @@ private:
 
 	std::shared_ptr<Authoring::EntityRecipe> mEntityRecipe;
 
-	std::unique_ptr<EntityCreator> mEntityCreator;
-
 	struct AdapterEntry {
 		std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> adapter;
 		Authoring::GUIAdapter* guiAdapter;
@@ -92,6 +90,29 @@ private:
 	AutoCloseConnection mBadTypeConnection;
 
 	Eris::TypeInfo* mUnboundType;
+
+	/**
+	 * @brief A creation instance, which represents a preview of the entity, before it's created on the server.
+	 */
+	std::unique_ptr<EntityCreatorCreationInstance> mCreationInstance;
+
+
+	/**
+	 * @brief The last orientation used for creation.
+	 *
+	 * This is sent to any new creation instance, thus making sure that any new entity starts out with the same orientation as the last one.
+	 * (That is unless we mRandomizeOrientation is set to True.)
+	 */
+	WFMath::Quaternion mLastOrientation;
+
+	/**
+	 * @brief If set to true, all new entities will have their orientation randomized around the vertical axis.
+	 */
+	bool mRandomizeOrientation;
+
+	std::function<void()> mCreateNewEntityFn;
+
+	boost::optional<std::string> mFixedParentId;
 
 	void buildWidget();
 
