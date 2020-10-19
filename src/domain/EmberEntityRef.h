@@ -66,8 +66,12 @@ public:
 		return (mEntity == e.mEntity);
 	}
 
-	bool operator==(const EmberEntity* e) const {
-		return (mEntity == e);
+	bool operator!=(const EmberEntityRef& e) const {
+		return (mEntity != e.mEntity);
+	}
+
+	bool operator!=(const EmberEntity* e) const {
+		return (mEntity != e);
 	}
 
 	bool operator<(const EmberEntityRef& e) const {

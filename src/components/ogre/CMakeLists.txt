@@ -65,6 +65,7 @@ add_library(emberogre OBJECT
         SkeletonDisplay.cpp
         ProjectileRenderingTechnique.cpp
         EmptyNodeAttachment.cpp
+        OutlineEffect.cpp
         )
 
 

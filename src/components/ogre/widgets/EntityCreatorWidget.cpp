@@ -32,6 +32,7 @@
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/World.h"
+#include "components/ogre/Avatar.h"
 #include "AtlasHelper.h"
 
 #include <Eris/Avatar.h>
@@ -237,7 +238,7 @@ void EntityCreatorWidget::buildWidget() {
 		mCreateNewEntityFn = [&, createEntitiesFn]() {
 			mCreationInstance.reset();
 
-			mCreationInstance = std::make_unique<EntityCreatorCreationInstance>(*EmberOgre::getSingleton().getWorld(), mWorld.getView().getConnection().getTypeService(), mEntityMaps, mRandomizeOrientation);
+			mCreationInstance = std::make_unique<EntityCreatorCreationInstance>(mWorld, mWorld.getView().getConnection().getTypeService(), mEntityMaps, mRandomizeOrientation);
 
 			mCreationInstance->EventMoved.connect([&](Eris::Entity* parentEntity, const WFMath::Point<3>& pos) {
 				if (pos.isValid()) {
@@ -252,15 +253,28 @@ void EntityCreatorWidget::buildWidget() {
 
 				if (parentEntity) {
 					parentActiveWidget.setText(parentEntity->getId() + " - " + parentEntity->getType()->getName());
+
+					auto parentEmberEntity = static_cast<EmberEntity*>(parentEntity);
+					if (!mOutlineEffect || !mOutlineEffect->getEntity() || mOutlineEffect->getEntity().get() != parentEmberEntity) {
+						if (parentEmberEntity != mWorld.getAvatar()->getEmberEntity().getEmberLocation()) {
+							mOutlineEffect = std::make_unique<OutlineEffect>(mWorld.getScene(), *parentEmberEntity);
+						} else {
+							mOutlineEffect.reset();
+						}
+					}
+				} else {
+					mOutlineEffect.reset();
 				}
 			});
 			mCreationInstance->EventAbortRequested.connect([&]() {
 				mLastOrientation = mCreationInstance->getOrientation();
 				mCreationInstance.reset();
+				mOutlineEffect.reset();
 			});
 
 
 			mCreationInstance->EventFinalizeRequested.connect([this, createEntitiesFn, &modeWidget]() {
+				mOutlineEffect.reset();
 				auto& bridge = mCreationInstance->getMovement()->getBridge();
 				auto pos = bridge->getPosition();
 				auto parentEntity = bridge->mCollidedEntity;
@@ -317,7 +331,7 @@ void EntityCreatorWidget::buildWidget() {
 
 
 		mListAdapter->EventSelected.connect([&](const std::string& name) {
-			std::vector <std::string> pair;
+			std::vector<std::string> pair;
 			boost::algorithm::split(pair, name, boost::algorithm::is_any_of(":"));
 			if (pair.size() == 2) {
 				mWidget->getWindow<CEGUI::Window>("CreateSection").setVisible(true);
@@ -342,7 +356,7 @@ void EntityCreatorWidget::buildWidget() {
 			}
 		});
 
-		std::vector <std::pair<std::string, std::string>> entries;
+		std::vector<std::pair<std::string, std::string>> entries;
 		auto& recipes = Authoring::EntityRecipeManager::getSingleton().getEntries();
 		entries.reserve(recipes.size());
 		entries.emplace_back(std::make_pair("", "Recipes:"));

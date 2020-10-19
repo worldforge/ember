@@ -37,59 +37,18 @@
 #include "EntityCollisionInfo.h"
 
 #include "components/ogre/model/ModelRepresentation.h"
-#include "components/ogre/model/Model.h"
 #include "components/ogre/model/SubModel.h"
-#include "components/ogre/OgreInfo.h"
+#include "OutlineEffect.h"
 
 #include <OgreSceneQuery.h>
 #include <OgreSceneManager.h>
-#include <OgreEntity.h>
-#include <OgreSceneNode.h>
 
 #include <Eris/View.h>
 #include <Eris/Avatar.h>
 #include <Ogre.h>
 
-// render queues
-#define RENDER_QUEUE_OUTLINE_OBJECT        Ogre::RENDER_QUEUE_MAIN + 1
-#define RENDER_QUEUE_OUTLINE_BORDER        Ogre::RENDER_QUEUE_9 + 2
-
-// stencil values
-#define STENCIL_VALUE_FOR_OUTLINE_GLOW 1
-#define STENCIL_FULL_MASK 0xFFFFFFFF
-
 namespace Ember {
 namespace OgreView {
-
-struct StencilOpQueueListener : public Ogre::RenderQueueListener {
-	void renderQueueStarted(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) override {
-		if (queueGroupId == RENDER_QUEUE_OUTLINE_OBJECT) {
-			Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
-
-			renderSystem->clearFrameBuffer(Ogre::FBT_STENCIL);
-			renderSystem->setStencilCheckEnabled(true);
-			renderSystem->setStencilBufferParams(Ogre::CMPF_ALWAYS_PASS,
-												 STENCIL_VALUE_FOR_OUTLINE_GLOW, STENCIL_FULL_MASK, STENCIL_FULL_MASK,
-												 Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE, false);
-		}
-		if (queueGroupId == RENDER_QUEUE_OUTLINE_BORDER) {
-			Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
-			renderSystem->setStencilCheckEnabled(true);
-			renderSystem->setStencilBufferParams(Ogre::CMPF_NOT_EQUAL,
-												 STENCIL_VALUE_FOR_OUTLINE_GLOW, STENCIL_FULL_MASK, STENCIL_FULL_MASK,
-												 Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE, false);
-		}
-	}
-
-	void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation) override {
-		if (queueGroupId == RENDER_QUEUE_OUTLINE_OBJECT || queueGroupId == RENDER_QUEUE_OUTLINE_BORDER) {
-			Ogre::RenderSystem* rendersys = Ogre::Root::getSingleton().getRenderSystem();
-			rendersys->setStencilCheckEnabled(false);
-			rendersys->setStencilBufferParams();
-		}
-	}
-
-};
 
 EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener, Ogre::SceneManager& sceneManager) :
 		mEntity(nullptr),
@@ -129,20 +88,10 @@ EntityWorldPickListener::EntityWorldPickListener(Eris::View& view, Scene& scene)
 		mContinuePickingThisContext(true),
 		mVisualizer(nullptr),
 		mView(view),
-		mScene(scene),
-		mStencilOpQueueListener(new StencilOpQueueListener()) {
-	scene.getSceneManager().addRenderQueueListener(mStencilOpQueueListener.get());
+		mScene(scene) {
 }
 
-EntityWorldPickListener::~EntityWorldPickListener() {
-	mScene.getSceneManager().removeRenderQueueListener(mStencilOpQueueListener.get());
-	for (auto& entity: mOutline.generatedEntities) {
-		if (entity->getParentSceneNode()) {
-			entity->getParentSceneNode()->detachObject(entity);
-		}
-		mScene.getSceneManager().destroyMovableObject(entity);
-	}
-}
+EntityWorldPickListener::~EntityWorldPickListener() = default;
 
 void EntityWorldPickListener::initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) {
 	mResult.clear();
@@ -256,125 +205,129 @@ const std::vector<EntityPickResult>& EntityWorldPickListener::getResult() const 
 }
 
 void EntityWorldPickListener::highlightSelectedEntity() {
-	EmberEntity* selectedEntity = nullptr;
 
 	if (!mResult.empty()) {
-		selectedEntity = mResult.front().entity;
+		auto selectedEntity = mResult.front().entity;
+		if (!mOutlineEffect || !mOutlineEffect->getEntity() || mOutlineEffect->getEntity() != selectedEntity) {
+			mOutlineEffect = std::make_unique<OutlineEffect>(mScene, *selectedEntity);
+		}
+	} else {
+		mOutlineEffect.reset();
 	}
-
-
-	if (mOutline.selectedEntity.get() != selectedEntity) {
-		for (auto& entity: mOutline.generatedEntities) {
-			if (mOutline.model && mOutline.model->getNodeProvider()) {
-				mOutline.model->getNodeProvider()->detachObject(entity);
-			}
-			mScene.getSceneManager().destroyMovableObject(entity);
-		}
-		for (auto& material: mOutline.generatedMaterials) {
-			material->getCreator()->remove(material);
-		}
-
-		if (mOutline.selectedEntity) {
-			auto* oldEmberEntity = mOutline.selectedEntity.get();
-			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(oldEmberEntity->getGraphicalRepresentation());
-
-			if (modelRep) {
-				auto& model = modelRep->getModel();
-				if (model.useInstancing()) {
-					model.doWithMovables([](Ogre::MovableObject* movable, int index) {
-						if (movable->getMovableType() == "InstancedEntity") {
-							movable->setVisible(true);
-						}
-					});
-				}
-
-				auto submodelI = model.getSubmodels().begin();
-				for (size_t i = 0; i < model.getSubmodels().size(); ++i) {
-					//It could be that the entity has been reloaded in the interim, so we need to check that originalRenderQueueGroups size matches.
-					if (i < mOutline.originalRenderQueueGroups.size()) {
-						(*submodelI)->getEntity()->setRenderQueueGroup(mOutline.originalRenderQueueGroups[i]);
-
-					}
-					//If instancing is used we've temporarily attached the Ogre::Entity to the nodes; need to detach it.
-					if (model.useInstancing() && model.getNodeProvider()) {
-						model.getNodeProvider()->detachObject((*submodelI)->getEntity());
-					}
-
-					submodelI++;
-				}
-			}
-		}
-		mOutline = Outline{selectedEntity};
-
-		if (selectedEntity) {
-			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(selectedEntity->getGraphicalRepresentation());
-			if (modelRep && modelRep->getModel().getNodeProvider()) {
-				mOutline.model = &modelRep->getModel();
-
-				if (modelRep->getModel().useInstancing()) {
-					modelRep->getModel().doWithMovables([](Ogre::MovableObject* movable, int index) {
-						if (movable->getMovableType() == "InstancedEntity") {
-							movable->setVisible(false);
-						}
-					});
-				}
-
-				auto& submodels = modelRep->getModel().getSubmodels();
-				for (auto& submodel : submodels) {
-					auto ogreEntity = submodel->getEntity();
-					if (ogreEntity) {
-						mOutline.originalRenderQueueGroups.push_back(ogreEntity->getRenderQueueGroup());
-
-						if (ogreEntity->isVisible()) {
-
-							ogreEntity->setRenderQueueGroup(RENDER_QUEUE_OUTLINE_OBJECT);
-
-							if (!ogreEntity->getParentNode()) {
-								modelRep->getModel().getNodeProvider()->attachObject(ogreEntity);
-							}
-
-							auto outlineEntity = ogreEntity->clone(OgreInfo::createUniqueResourceName("outline"));
-							outlineEntity->setCastShadows(false);
-
-							outlineEntity->setRenderQueueGroup(RENDER_QUEUE_OUTLINE_BORDER);
-							if (outlineEntity->hasSkeleton()) {
-								outlineEntity->shareSkeletonInstanceWith(ogreEntity);
-							}
-							for (size_t i = 0; i < ogreEntity->getNumSubEntities(); ++i) {
-								auto outlineSubEntity = outlineEntity->getSubEntity(i);
-								auto subEntity = ogreEntity->getSubEntity(i);
-
-								outlineSubEntity->setVisible(subEntity->isVisible());
-								Ogre::TexturePtr texture;
-								if (subEntity->isVisible()) {
-									auto& material = subEntity->getMaterial();
-									auto tech = material->getBestTechnique();
-									if (tech && tech->getNumPasses() > 0) {
-										auto pass = tech->getPass(0);
-										if (pass->getNumTextureUnitStates() > 0) {
-											texture = pass->getTextureUnitState(0)->_getTexturePtr();
-										}
-									}
-									if (!texture) {
-										return;
-									}
-
-									auto outlineMaterial = Ogre::MaterialManager::getSingleton().getByName("/common/base/outline/nonculled")->clone(OgreInfo::createUniqueResourceName("outlineMaterial"));
-									outlineMaterial->load();
-									outlineMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTexture(texture);
-									outlineSubEntity->setMaterial(outlineMaterial);
-									mOutline.generatedMaterials.push_back(outlineMaterial);
-								}
-							}
-							modelRep->getModel().getNodeProvider()->attachObject(outlineEntity);
-							mOutline.generatedEntities.push_back(outlineEntity);
-
-						}
-					}
-				}
-			}
-		}
-	}
+//
+//
+//	if (mOutline.selectedEntity.get() != selectedEntity) {
+//		for (auto& entity: mOutline.generatedEntities) {
+//			if (mOutline.model && mOutline.model->getNodeProvider()) {
+//				mOutline.model->getNodeProvider()->detachObject(entity);
+//			}
+//			mScene.getSceneManager().destroyMovableObject(entity);
+//		}
+//		for (auto& material: mOutline.generatedMaterials) {
+//			material->getCreator()->remove(material);
+//		}
+//
+//		if (mOutline.selectedEntity) {
+//			auto* oldEmberEntity = mOutline.selectedEntity.get();
+//			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(oldEmberEntity->getGraphicalRepresentation());
+//
+//			if (modelRep) {
+//				auto& model = modelRep->getModel();
+//				if (model.useInstancing()) {
+//					model.doWithMovables([](Ogre::MovableObject* movable, int index) {
+//						if (movable->getMovableType() == "InstancedEntity") {
+//							movable->setVisible(true);
+//						}
+//					});
+//				}
+//
+//				auto submodelI = model.getSubmodels().begin();
+//				for (size_t i = 0; i < model.getSubmodels().size(); ++i) {
+//					//It could be that the entity has been reloaded in the interim, so we need to check that originalRenderQueueGroups size matches.
+//					if (i < mOutline.originalRenderQueueGroups.size()) {
+//						(*submodelI)->getEntity()->setRenderQueueGroup(mOutline.originalRenderQueueGroups[i]);
+//
+//					}
+//					//If instancing is used we've temporarily attached the Ogre::Entity to the nodes; need to detach it.
+//					if (model.useInstancing() && model.getNodeProvider()) {
+//						model.getNodeProvider()->detachObject((*submodelI)->getEntity());
+//					}
+//
+//					submodelI++;
+//				}
+//			}
+//		}
+//		mOutline = Outline{selectedEntity};
+//
+//		if (selectedEntity) {
+//			auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(selectedEntity->getGraphicalRepresentation());
+//			if (modelRep && modelRep->getModel().getNodeProvider()) {
+//				mOutline.model = &modelRep->getModel();
+//
+//				if (modelRep->getModel().useInstancing()) {
+//					modelRep->getModel().doWithMovables([](Ogre::MovableObject* movable, int index) {
+//						if (movable->getMovableType() == "InstancedEntity") {
+//							movable->setVisible(false);
+//						}
+//					});
+//				}
+//
+//				auto& submodels = modelRep->getModel().getSubmodels();
+//				for (auto& submodel : submodels) {
+//					auto ogreEntity = submodel->getEntity();
+//					if (ogreEntity) {
+//						mOutline.originalRenderQueueGroups.push_back(ogreEntity->getRenderQueueGroup());
+//
+//						if (ogreEntity->isVisible()) {
+//
+//							ogreEntity->setRenderQueueGroup(RENDER_QUEUE_OUTLINE_OBJECT);
+//
+//							if (!ogreEntity->getParentNode()) {
+//								modelRep->getModel().getNodeProvider()->attachObject(ogreEntity);
+//							}
+//
+//							auto outlineEntity = ogreEntity->clone(OgreInfo::createUniqueResourceName("outline"));
+//							outlineEntity->setCastShadows(false);
+//
+//							outlineEntity->setRenderQueueGroup(RENDER_QUEUE_OUTLINE_BORDER);
+//							if (outlineEntity->hasSkeleton()) {
+//								outlineEntity->shareSkeletonInstanceWith(ogreEntity);
+//							}
+//							for (size_t i = 0; i < ogreEntity->getNumSubEntities(); ++i) {
+//								auto outlineSubEntity = outlineEntity->getSubEntity(i);
+//								auto subEntity = ogreEntity->getSubEntity(i);
+//
+//								outlineSubEntity->setVisible(subEntity->isVisible());
+//								Ogre::TexturePtr texture;
+//								if (subEntity->isVisible()) {
+//									auto& material = subEntity->getMaterial();
+//									auto tech = material->getBestTechnique();
+//									if (tech && tech->getNumPasses() > 0) {
+//										auto pass = tech->getPass(0);
+//										if (pass->getNumTextureUnitStates() > 0) {
+//											texture = pass->getTextureUnitState(0)->_getTexturePtr();
+//										}
+//									}
+//									if (!texture) {
+//										return;
+//									}
+//
+//									auto outlineMaterial = Ogre::MaterialManager::getSingleton().getByName("/common/base/outline/nonculled")->clone(OgreInfo::createUniqueResourceName("outlineMaterial"));
+//									outlineMaterial->load();
+//									outlineMaterial->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTexture(texture);
+//									outlineSubEntity->setMaterial(outlineMaterial);
+//									mOutline.generatedMaterials.push_back(outlineMaterial);
+//								}
+//							}
+//							modelRep->getModel().getNodeProvider()->attachObject(outlineEntity);
+//							mOutline.generatedEntities.push_back(outlineEntity);
+//
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 }
 
 

@@ -27,6 +27,7 @@
 #include "IWorldPickListener.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "domain/EmberEntityRef.h"
+#include "OutlineEffect.h"
 #include <OgreVector.h>
 #include <sigc++/signal.h>
 #include <memory>
@@ -88,8 +89,6 @@ private:
 	void picker_EventPickedEntity(const std::vector<EntityPickResult>& result, const MousePickerArgs& mouseArgs);
 };
 
-struct StencilOpQueueListener;
-
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Listens for mouse picking of entities in the world.
@@ -129,46 +128,8 @@ public:
 
 protected:
 
-	/**
-	 * Keeps track of the entities involved in the "outline".
-	 */
-	struct Outline {
-		/**
-		 * The entity which was selected.
-		 */
-		EmberEntityRef selectedEntity;
 
-		/**
-		 * Any generated Ogre Entities used for the outline.
-		 *
-		 * If the selected entity is represented by InstancedEntities we must generate Ogre::Entities and render these for the outline.
-		 *
-		 */
-		std::vector<Ogre::Entity*> generatedEntities;
-
-		/**
-		 * Any materials generated for the outline.
-		 */
-		std::vector<Ogre::MaterialPtr> generatedMaterials;
-
-		/**
-		 * The original render queue groups used for the selected entities.
-		 */
-		std::vector<std::uint8_t> originalRenderQueueGroups;
-
-		/**
-		 * The model representing the entity.
-		 */
-		Model::Model* model = nullptr;
-
-	};
-
-
-	/**
-	 * An outline shown for selected entities.
-	 */
-	Outline mOutline;
-
+	std::unique_ptr<OutlineEffect> mOutlineEffect;
 
 	float mClosestPickingDistance, mFurthestPickingDistance;
 
@@ -190,9 +151,6 @@ protected:
 	Eris::View& mView;
 
 	Scene& mScene;
-
-	std::unique_ptr<StencilOpQueueListener> mStencilOpQueueListener;
-
 
 	void highlightSelectedEntity();
 };

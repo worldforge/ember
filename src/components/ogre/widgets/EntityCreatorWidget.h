@@ -31,6 +31,7 @@
 
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
+#include <components/ogre/OutlineEffect.h>
 
 namespace Ember {
 namespace OgreView {
@@ -128,6 +129,8 @@ private:
 	void refreshEntityMap();
 
 	std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> attachToGuiAdapter(Authoring::GUIAdapter& guiAdapter, CEGUI::Window* window);
+
+	std::unique_ptr<OutlineEffect> mOutlineEffect;
 
 };
 
