@@ -159,7 +159,6 @@ $pfile "EntityMoveManager.pkg"
 
 $pfile "EntityRecipe.pkg"
 $pfile "EntityRecipeManager.pkg"
-$pfile "EntityCreator.pkg"
 $pfile "AuthoringManager.pkg"
 $pfile "RuleEditor.pkg"
 

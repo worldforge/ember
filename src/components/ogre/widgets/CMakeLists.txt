@@ -22,7 +22,6 @@ add_library(widgets OBJECT
         Compass.cpp
         ConsoleAdapter.cpp
         EntityCEGUITexture.cpp
-        EntityCreator.cpp
         EntityCreatorMovement.cpp
         EntityCreatorMovementBridge.cpp
         EntityEditor.cpp

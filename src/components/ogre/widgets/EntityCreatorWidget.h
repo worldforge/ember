@@ -28,7 +28,6 @@
 #include "components/ogre/authoring/EntityRecipe.h"
 #include "components/ogre/authoring/DetachedEntity.h"
 #include "EntityCreatorCreationInstance.h"
-#include "EntityCreator.h"
 
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
