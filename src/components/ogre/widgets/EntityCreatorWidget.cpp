@@ -163,13 +163,13 @@ void EntityCreatorWidget::buildWidget() {
 		auto selectParentSelection = [&]() {
 			if (parentSelectionWidget.getSelectedItem()) {
 				if (parentSelectionWidget.getSelectedItem()->getID() == 0) {
-					mFixedParentId = {};
+					mFixedParentId = boost::none;
 					parentActiveWidget.setEnabled(false);
 					posX.setEnabled(false);
 					posY.setEnabled(false);
 					posZ.setEnabled(false);
 				} else if (parentSelectionWidget.getSelectedItem()->getID() == 1) {
-					mFixedParentId = {};
+					mFixedParentId = boost::none;
 					parentActiveWidget.setEnabled(true);
 					if (mWorld.getView().getAvatar().getEntity()->getLocation()) {
 						parentActiveWidget.setText(mWorld.getView().getAvatar().getEntity()->getLocation()->getId());
@@ -185,7 +185,7 @@ void EntityCreatorWidget::buildWidget() {
 						mFixedParentId = mWorld.getView().getAvatar().getEntity()->getLocation()->getId();
 						parentActiveWidget.setText(mWorld.getView().getAvatar().getEntity()->getLocation()->getId());
 					} else {
-						mFixedParentId = {};
+						mFixedParentId = boost::none;
 						parentActiveWidget.setText("");
 					}
 					posX.setEnabled(false);
