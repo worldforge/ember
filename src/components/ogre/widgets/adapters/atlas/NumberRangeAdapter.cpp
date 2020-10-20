@@ -40,7 +40,7 @@ NumberRangeAdapter::NumberRangeAdapter(const ::Atlas::Message::Element& element,
 		} catch (...) {
 			mMax = boost::none;
 		}
-		mWindows.Randomize.setEnabled(mMax.has_value() && mMin.has_value());
+		mWindows.Randomize.setEnabled(mMax && mMin);
 	}));
 	addGuiEventConnection(windows.MinWindow.subscribeEvent(CEGUI::Editbox::EventTextChanged, [this]() {
 		try {
@@ -48,7 +48,7 @@ NumberRangeAdapter::NumberRangeAdapter(const ::Atlas::Message::Element& element,
 		} catch (...) {
 			mMin = boost::none;
 		}
-		mWindows.Randomize.setEnabled(mMax.has_value() && mMin.has_value());
+		mWindows.Randomize.setEnabled(mMax && mMin);
 	}));
 	addGuiEventConnection(windows.ValueWindow.subscribeEvent(CEGUI::Editbox::EventTextChanged, [this]() {
 		if (!mSelfUpdate) {
@@ -60,7 +60,7 @@ NumberRangeAdapter::NumberRangeAdapter(const ::Atlas::Message::Element& element,
 	}));
 
 	updateGui(mOriginalValue);
-	mWindows.Randomize.setEnabled(mMax.has_value() && mMin.has_value());
+	mWindows.Randomize.setEnabled(mMax && mMin);
 
 }
 
@@ -88,7 +88,7 @@ void NumberRangeAdapter::fillElementFromGui() {
 }
 
 void NumberRangeAdapter::randomize() {
-	if (mMax.has_value() && mMin.has_value()) {
+	if (mMax && mMin) {
 		if (*mMin <= *mMax) {
 			WFMath::MTRand rand;
 			auto newValue = *mMin + rand.rand(*mMax - *mMin);
