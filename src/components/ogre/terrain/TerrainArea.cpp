@@ -38,7 +38,8 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainArea::TerrainArea(EmberEntity& entity) :
-		mEntity(entity), mParsedLayer(0) {
+		mEntity(entity),
+		mParsedLayer(0) {
 }
 
 std::unique_ptr<Mercator::Area> TerrainArea::parse(const Atlas::Message::Element& value) {

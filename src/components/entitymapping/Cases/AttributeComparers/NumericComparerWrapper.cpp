@@ -30,24 +30,21 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
 
 namespace AttributeComparers {
 
-NumericComparerWrapper::NumericComparerWrapper(NumericComparer* comparer)
-: mNumericComparer(comparer)
-{
+NumericComparerWrapper::NumericComparerWrapper(std::unique_ptr<NumericComparer> comparer)
+		: mNumericComparer(std::move(comparer)) {
 }
 
-bool NumericComparerWrapper::testAttribute(const Atlas::Message::Element& attribute)
-{
- 	if (attribute.isNum()) {
+bool NumericComparerWrapper::testAttribute(const Atlas::Message::Element& attribute) {
+	if (attribute.isNum()) {
 		return mNumericComparer->test(attribute.asNum());
- 	}
- 	return false;
+	}
+	return false;
 }
 
 

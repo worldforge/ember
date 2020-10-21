@@ -27,8 +27,8 @@
 
 #include <Atlas/Message/Element.h>
 #include "AttributeComparers/AttributeComparerWrapper.h"
-namespace Ember {
 
+namespace Ember {
 
 
 namespace EntityMapping {
@@ -45,7 +45,6 @@ class AttributeMatch;
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -56,10 +55,10 @@ namespace Cases {
 
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class AttributeCase : public Case<Matches::AttributeMatch>
-{
+class AttributeCase : public Case<Matches::AttributeMatch> {
 public:
-	explicit AttributeCase(AttributeComparers::AttributeComparerWrapper* comparerWrapper);
+	explicit AttributeCase(std::unique_ptr<AttributeComparers::AttributeComparerWrapper> comparerWrapper);
+
 	bool testMatch(const Atlas::Message::Element& attribute);
 
 protected:

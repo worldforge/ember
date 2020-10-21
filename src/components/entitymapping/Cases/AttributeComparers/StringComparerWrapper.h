@@ -31,7 +31,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -43,12 +42,12 @@ namespace AttributeComparers {
 	Wraps a string comparison comparer.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class StringComparerWrapper : public AttributeComparerWrapper
-{
+class StringComparerWrapper : public AttributeComparerWrapper {
 public:
-	explicit StringComparerWrapper(StringComparer* comparer);
+	explicit StringComparerWrapper(std::unique_ptr<StringComparer> comparer);
 
 	bool testAttribute(const Atlas::Message::Element& attribute) override;
+
 private:
 	std::unique_ptr<StringComparer> mStringComparer;
 };

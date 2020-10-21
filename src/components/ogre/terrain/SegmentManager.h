@@ -85,7 +85,7 @@ public:
 	 * @param yIndex The y index.
 	 * @returns A shared pointer to a SegmentReference instance, or null if no Segment could be found for the specified index position.
 	 */
-	SegmentRefPtr getSegmentReference(int xIndex, int yIndex);
+	std::shared_ptr<Segment> getSegmentReference(int xIndex, int yIndex);
 
 
 	/**
@@ -236,7 +236,7 @@ protected:
 	 * @param zIndex The y index of the segment.
 	 * @return A new segment holder instance which refers to the fake segment.
 	 */
-	SegmentRefPtr createFakeSegment(const std::string& key, int x, int zIndex);
+	std::shared_ptr<Segment> createFakeSegment(const std::string& key, int x, int zIndex);
 
 
 };

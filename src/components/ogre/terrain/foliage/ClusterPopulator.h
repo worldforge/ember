@@ -29,7 +29,7 @@ typedef std::vector<WFMath::Ball<2>> ClusterStore;
 
 class ClusterPopulator : public PlantPopulator {
 public:
-	ClusterPopulator(unsigned int layerIndex, std::unique_ptr<IScaler> scaler, size_t plantIndex);
+	ClusterPopulator(int layerIndex, std::unique_ptr<IScaler> scaler, size_t plantIndex);
 
 	~ClusterPopulator() override = default;
 
@@ -63,9 +63,17 @@ protected:
 
 	void getClustersForArea(const SegmentRefPtr& segmentRef, const WFMath::AxisBox<2>& area, ClusterStore& clusters);
 
-	void populateWithClusters(const SegmentRefPtr& segmentRef, PlantAreaQueryResult& result, const WFMath::AxisBox<2>& area, const ClusterStore& clusters, const Buffer<unsigned char>& combinedCoverage);
+	void populateWithClusters(const SegmentRefPtr& segmentRef,
+							  PlantAreaQueryResult& result,
+							  const WFMath::AxisBox<2>& area,
+							  const ClusterStore& clusters,
+							  const Buffer<unsigned char>& combinedCoverage);
 
-	void populateWithCluster(const SegmentRefPtr& segmentRef, PlantAreaQueryResult& result, const WFMath::AxisBox<2>& area, const WFMath::Ball<2>& cluster, const Buffer<unsigned char>& combinedCoverage);
+	void populateWithCluster(const SegmentRefPtr& segmentRef,
+							 PlantAreaQueryResult& result,
+							 const WFMath::AxisBox<2>& area,
+							 const WFMath::Ball<2>& cluster,
+							 const Buffer<unsigned char>& combinedCoverage);
 
 	float mMinClusterRadius;
 	float mMaxClusterRadius;

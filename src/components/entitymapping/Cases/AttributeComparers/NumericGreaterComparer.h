@@ -30,7 +30,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -41,8 +40,7 @@ namespace AttributeComparers {
 	Test for greater.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class NumericGreaterComparer : public NumericComparer, private NumericValueHolder
-{
+class NumericGreaterComparer : public NumericComparer, private NumericValueHolder {
 public:
 	explicit NumericGreaterComparer(float value);
 

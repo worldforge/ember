@@ -30,7 +30,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -41,8 +40,7 @@ namespace AttributeComparers {
 	Test for numeric equality or lesser.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class NumericEqualsOrLesserComparer : public NumericComparer, private NumericValueHolder
-{
+class NumericEqualsOrLesserComparer : public NumericComparer, private NumericValueHolder {
 public:
 	explicit NumericEqualsOrLesserComparer(float value);
 

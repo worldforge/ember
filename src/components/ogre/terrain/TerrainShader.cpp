@@ -33,43 +33,29 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainShader::TerrainShader(Mercator::Terrain& terrain,
-		int terrainIndex,
-		const TerrainLayerDefinition& layerDef,
-		Mercator::Shader* shader)
-: mLayerDef(layerDef)
-, mShader(shader)
-, mTerrain(terrain)
-, mTerrainIndex(terrainIndex)
-{
-	mTerrain.addShader(shader, mTerrainIndex);
+							 int terrainIndex,
+							 const TerrainLayerDefinition& layerDef,
+							 std::unique_ptr<Mercator::Shader> shader)
+		: mLayerDef(layerDef), mShader(std::move(shader)), mTerrain(terrain), mTerrainIndex(terrainIndex) {
+	mTerrain.addShader(mShader.get(), mTerrainIndex);
 }
 
 
-TerrainShader::~TerrainShader()
-{
-	delete mShader;
-	//not available yet
-	//mTerrain->removeShader(mShader)
-}
+TerrainShader::~TerrainShader() = default;
 
-const Mercator::Shader& TerrainShader::getShader() const
-{
+const Mercator::Shader& TerrainShader::getShader() const {
 	return *mShader;
 }
 
-const TerrainLayerDefinition& TerrainShader::getLayerDefinition() const
-{
+const TerrainLayerDefinition& TerrainShader::getLayerDefinition() const {
 	return mLayerDef;
 }
 
-Mercator::Surface* TerrainShader::getSurfaceForSegment(Mercator::Segment& segment) const
-{
-
-	Mercator::Surface* surface = nullptr;
+Mercator::Surface* TerrainShader::getSurfaceForSegment(Mercator::Segment& segment) const {
 	if (segment.getSurfaces().find(getTerrainIndex()) != segment.getSurfaces().end()) {
-		surface = segment.getSurfaces().find(getTerrainIndex())->second;
+		return segment.getSurfaces().find(getTerrainIndex())->second.get();
 	}
-	return surface;
+	return nullptr;
 }
 
 }

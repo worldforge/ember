@@ -26,7 +26,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -37,8 +36,7 @@ namespace AttributeComparers {
 	Base class for all comparers that must hold a value.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class NumericValueHolder
-{
+class NumericValueHolder {
 public:
 	explicit NumericValueHolder(float value);
 

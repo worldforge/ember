@@ -30,7 +30,7 @@ namespace Terrain
 namespace Foliage
 {
 
-ClusterPopulator::ClusterPopulator(unsigned int layerIndex, std::unique_ptr<IScaler> scaler, size_t plantIndex) :
+ClusterPopulator::ClusterPopulator(int layerIndex, std::unique_ptr<IScaler> scaler, size_t plantIndex) :
 	PlantPopulator(layerIndex, std::move(scaler), plantIndex),
 	mMinClusterRadius(1.0f),
 	mMaxClusterRadius(1.0f),
@@ -74,12 +74,12 @@ void ClusterPopulator::populate(PlantAreaQueryResult& result, SegmentRefPtr segm
 		//The first layer should be copied just as it is
 		std::list<int>::const_iterator I = indexSort.begin();
 		{
-			Mercator::Surface* surface = mercatorSegment.getSurfaces()[*I];
+			auto& surface = mercatorSegment.getSurfaces()[*I];
 			memcpy(combinedCoverageData, surface->getData(), combinedCoverage.getSize());
 		}
 		++I;
 		for (; I != indexSort.end(); ++I) {
-			Mercator::Surface* surface = mercatorSegment.getSurfaces()[*I];
+			auto& surface = mercatorSegment.getSurfaces()[*I];
 			unsigned char* surfaceData = surface->getData();
 			for (size_t i = 0; i < size; ++i) {
 				combinedCoverageData[i] -= std::min<unsigned char>(surfaceData[i], combinedCoverageData[i]);
@@ -109,7 +109,7 @@ void ClusterPopulator::getClustersForArea(const SegmentRefPtr& segmentRef, const
 		for (int j = -1; j < 2; ++j) {
 			auto currentSegmentX = static_cast<int>(xRef + (i * res));
 			auto currentSegmentZ = static_cast<int>(zRef + (j * res));
-			WFMath::MTRand::uint32 seed(static_cast<WFMath::MTRand::uint32>(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (currentSegmentX) << 4) + (static_cast<WFMath::MTRand::uint32> (currentSegmentZ) << 8)));
+			WFMath::MTRand::uint32 seed = static_cast<WFMath::MTRand::uint32>(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (currentSegmentX) << 4) + (static_cast<WFMath::MTRand::uint32> (currentSegmentZ) << 8));
 			rng.seed(seed);
 			for (int k = 0; k < clustersPerSegment; ++k) {
 				WFMath::Ball<2> cluster(WFMath::Point<2>((rng.rand<float>() * res) + currentSegmentX,
@@ -123,7 +123,11 @@ void ClusterPopulator::getClustersForArea(const SegmentRefPtr& segmentRef, const
 	}
 }
 
-void ClusterPopulator::populateWithClusters(const SegmentRefPtr& segmentRef, PlantAreaQueryResult& result, const WFMath::AxisBox<2>& area, const ClusterStore& clusters, const Buffer<unsigned char>& combinedCoverage)
+void ClusterPopulator::populateWithClusters(const SegmentRefPtr& segmentRef,
+											PlantAreaQueryResult& result,
+											const WFMath::AxisBox<2>& area,
+											const ClusterStore& clusters,
+											const Buffer<unsigned char>& combinedCoverage)
 {
 	for (const auto& cluster : clusters) {
 		populateWithCluster(segmentRef, result, area, cluster, combinedCoverage);
@@ -131,7 +135,11 @@ void ClusterPopulator::populateWithClusters(const SegmentRefPtr& segmentRef, Pla
 
 }
 
-void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, PlantAreaQueryResult& result, const WFMath::AxisBox<2>& area, const WFMath::Ball<2>& cluster, const Buffer<unsigned char>& combinedCoverage)
+void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef,
+										   PlantAreaQueryResult& result,
+										   const WFMath::AxisBox<2>& area,
+										   const WFMath::Ball<2>& cluster,
+										   const Buffer<unsigned char>& combinedCoverage)
 {
 	PlantAreaQueryResult::PlantStore& plants = result.mStore;
 	Mercator::Segment& mercatorSegment = segmentRef->getMercatorSegment();

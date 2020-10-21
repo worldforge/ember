@@ -93,10 +93,10 @@ void TerrainShaderParser::createShaders(const Atlas::Message::ListType& surfaces
 							auto& patternElem = Ipattern->second;
 							if (patternElem.isString()) {
 								const std::string& pattern = patternElem.String();
-								Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
+								auto shader = mTerrainHandler.mShaderFactories.newShader(pattern, params);
 								if (shader) {
 									isValid = true;
-									mTerrainHandler.createShader(def, shader);
+									mTerrainHandler.createShader(def, std::move(shader));
 								}
 							}
 						}
@@ -114,16 +114,16 @@ void TerrainShaderParser::createShaders(const Atlas::Message::ListType& surfaces
 
 void TerrainShaderParser::createDefaultShaders() {
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
-	Terrain::TerrainLayerDefinition* def(0);
+	Terrain::TerrainLayerDefinition* def = nullptr;
 	if ((def = terrainManager.getDefinitionForShader("rock"))) {
-		mTerrainHandler.createShader(def, new Mercator::FillShader());
+		mTerrainHandler.createShader(def, std::make_unique<Mercator::FillShader>());
 	}
 	if ((def = terrainManager.getDefinitionForShader("sand"))) {
-		mTerrainHandler.createShader(def, new Mercator::BandShader(-2.f, 1.5f));
+		mTerrainHandler.createShader(def, std::make_unique<Mercator::BandShader>(-2.f, 1.5f));
 	}
 
 	if ((def = terrainManager.getDefinitionForShader("grass"))) {
-		mTerrainHandler.createShader(def, new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
+		mTerrainHandler.createShader(def, std::make_unique<Mercator::GrassShader>(1.f, 80.f, .5f, 1.f));
 	}
 }
 

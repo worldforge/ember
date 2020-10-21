@@ -31,6 +31,7 @@
 #include <set>
 #include <memory>
 #include <Eris/ActiveMarker.h>
+#include <Mercator/ShaderFactory.h>
 
 namespace Mercator {
 class Area;
@@ -214,7 +215,7 @@ public:
 	 * @param mercatorShader The Mercator::Shader to use.
 	 * @return
 	 */
-	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
+	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, std::unique_ptr<Mercator::Shader> mercatorShader);
 
 	/**
 	 * @brief Sets up a TerrainPage.
@@ -364,6 +365,9 @@ public:
 	 */
 	EmberEntity* getTerrainHoldingEntity();
 
+	const Mercator::ShaderFactories mShaderFactories;
+
+
 	/**
 	 * @brief Emitted when a layer is updated.
 	 *
@@ -426,6 +430,7 @@ protected:
 	 * @brief The size in indices of one side of a page.
 	 */
 	int mPageIndexSize;
+
 
 	/**
 	 * @brief The terrain page surface compiler technique provider which allows Ogre Material instances to be generated for the terrain pages.

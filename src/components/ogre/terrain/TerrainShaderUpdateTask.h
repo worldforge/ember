@@ -65,7 +65,7 @@ public:
 	 */
 	TerrainShaderUpdateTask(GeometryPtrVector geometry,
 			const TerrainShader* shader,
-			const AreaStore& areas,
+			AreaStore  areas,
 			sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
 			sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
 			const WFMath::Vector<3>& lightDirection);
@@ -80,8 +80,8 @@ public:
 	 * @param lightDirection The main light direction.
 	 */
 	TerrainShaderUpdateTask(GeometryPtrVector geometry,
-			const std::vector<const TerrainShader*>& shaders,
-			const AreaStore& areas,
+			std::vector<const TerrainShader*>  shaders,
+			AreaStore  areas,
 			sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
 			sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
 			const WFMath::Vector<3>& lightDirection);

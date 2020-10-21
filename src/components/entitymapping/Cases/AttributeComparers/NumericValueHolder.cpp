@@ -29,15 +29,13 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
 
 namespace AttributeComparers {
 
-NumericValueHolder::NumericValueHolder(float value) : mValue(value)
-{
+NumericValueHolder::NumericValueHolder(float value) : mValue(value) {
 }
 
 

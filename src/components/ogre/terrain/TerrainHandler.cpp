@@ -187,16 +187,20 @@ void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstor
 	mTaskQueue->enqueueTask(std::make_unique<BasePointRetrieveTask>(*mTerrain, asyncCallback));
 }
 
-TerrainShader* TerrainHandler::createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader) {
+TerrainShader* TerrainHandler::createShader(const TerrainLayerDefinition* layerDef, std::unique_ptr<Mercator::Shader> mercatorShader) {
 	size_t index = mShaderMap.size();
 	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->mShaderName << " with index " << index);
-	auto shader = new TerrainShader(*mTerrain, index, *layerDef, mercatorShader);
+	auto shader = std::make_unique<TerrainShader>(*mTerrain, index, *layerDef, std::move(mercatorShader));
 
-	mBaseShaders.push_back(shader);
-	mShaderMap[&shader->getShader()].reset(shader);
+	auto result = mShaderMap.emplace(&shader->getShader(), std::move(shader));
 
-	EventShaderCreated.emit(*shader);
-	return shader;
+	if (result.second) {
+		mBaseShaders.emplace_back(result.first->second.get());
+		EventShaderCreated.emit(*result.first->second);
+		return result.first->second.get();
+	} else {
+		return nullptr;
+	}
 }
 
 void TerrainHandler::markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea) {

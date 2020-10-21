@@ -35,7 +35,6 @@ class Entity;
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 class ChangeContext;
@@ -58,13 +57,13 @@ namespace Cases {
 	A Case is activated when it's true and all it's parent cases, all the way up to the root of the EntityMapping, also are true.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class CaseBase
-{
+class CaseBase {
 public:
 	typedef std::vector<std::unique_ptr<Actions::Action>> ActionStore;
 	typedef std::vector<std::unique_ptr<Matches::MatchBase>> MatchBaseStore;
 
 	CaseBase();
+
 	virtual ~CaseBase();
 
 	void setParentCase(CaseBase* aCase);
@@ -73,13 +72,13 @@ public:
 	 * Returns whether this individual case is true.
 	 * @return
 	 */
-	bool getIsTrue();
+	bool getIsTrue() const;
 
 	/**
 	 *    Returns whether this case is active.
 	 * @return
 	 */
-	bool getIsActive();
+	bool getIsActive() const;
 
 	/**
 	 * Returns whether this case is true and all of its parent cases, all the way up to the root, also are true.
@@ -91,6 +90,7 @@ public:
 	Adds an Action to this case.
 	*/
 	void addAction(std::unique_ptr<Actions::Action> action);
+
 	/**
 	Gets a list of all the actions contained by this Case.
 	*/
@@ -100,6 +100,7 @@ public:
 	Activates all actions in the Case. Also switches the mActive flag.
 	*/
 	void activateActions(ChangeContext& context);
+
 	/**
 	Deactivates all actions in the Case. Also switches the mActive flag.
 	*/
@@ -109,6 +110,7 @@ public:
 	Adds an child Match to this case.
 	*/
 	void addMatch(std::unique_ptr<Matches::MatchBase> match);
+
 	/**
 	Gets a list of all the Matches contained by this Case.
 	*/
@@ -143,18 +145,15 @@ protected:
 
 };
 
-inline void CaseBase::setState(bool state)
-{
+inline void CaseBase::setState(bool state) {
 	mIsTrue = state;
 }
 
-inline const CaseBase::MatchBaseStore& CaseBase::getMatches()
-{
+inline const CaseBase::MatchBaseStore& CaseBase::getMatches() {
 	return mMatches;
 }
 
-inline const CaseBase::ActionStore& CaseBase::getActions()
-{
+inline const CaseBase::ActionStore& CaseBase::getActions() {
 	return mActions;
 };
 
@@ -162,13 +161,11 @@ inline void CaseBase::setParentCase(CaseBase* aCase) {
 	mParentCase = aCase;
 }
 
-inline bool CaseBase::getIsTrue()
-{
+inline bool CaseBase::getIsTrue() const {
 	return mIsTrue;
 }
 
-inline bool CaseBase::getIsActive()
-{
+inline bool CaseBase::getIsActive() const {
 	return mIsActive;
 }
 

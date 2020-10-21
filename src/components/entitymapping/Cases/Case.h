@@ -24,8 +24,8 @@
 #define EMBEROGRE_MODEL_MAPPING_CASESCASE_H
 
 #include "CaseBase.h"
-namespace Ember {
 
+namespace Ember {
 
 
 namespace EntityMapping {
@@ -36,30 +36,26 @@ namespace Cases {
 	Base class for all Cases that has a parent Match.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-template <class TMatch>
-class Case : public CaseBase
-{
+template<class TMatch>
+class Case : public CaseBase {
 public:
 
-	Case()
-	: mParentMatch(0)
-	{}
+	Case() : mParentMatch(nullptr) {}
 
 	/**
 	Sets the parent Match instance.
 	*/
- 	void setParentMatch(TMatch* aMatch);
+	void setParentMatch(TMatch* aMatch);
 
 
 protected:
 
- 	TMatch* mParentMatch;
+	TMatch* mParentMatch;
 
 };
 
-template <class TMatch>
-inline void Case<TMatch>::setParentMatch(TMatch* aMatch)
-{
+template<class TMatch>
+inline void Case<TMatch>::setParentMatch(TMatch* aMatch) {
 	mParentMatch = aMatch;
 }
 

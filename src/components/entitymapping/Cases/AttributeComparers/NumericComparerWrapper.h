@@ -29,7 +29,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -42,12 +41,12 @@ struct NumericComparer;
 	An attribute comparer wrapper that handles numeric values.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class NumericComparerWrapper : public AttributeComparerWrapper
-{
+class NumericComparerWrapper : public AttributeComparerWrapper {
 public:
-	explicit NumericComparerWrapper(NumericComparer* comparer);
+	explicit NumericComparerWrapper(std::unique_ptr<NumericComparer> comparer);
 
 	bool testAttribute(const Atlas::Message::Element& attribute) override;
+
 private:
 	std::unique_ptr<NumericComparer> mNumericComparer;
 };

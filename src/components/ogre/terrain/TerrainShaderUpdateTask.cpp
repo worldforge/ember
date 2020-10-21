@@ -25,6 +25,8 @@
 
 #include <wfmath/intersect.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 
@@ -32,12 +34,12 @@ namespace Terrain {
 
 TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
 												 const TerrainShader* shader,
-												 const AreaStore& areas,
+												 AreaStore areas,
 												 sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
 												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
 												 const WFMath::Vector<3>& lightDirection) :
 		mGeometry(std::move(geometry)),
-		mAreas(areas),
+		mAreas(std::move(areas)),
 		mSignal(signal),
 		mSignalMaterialRecompiled(signalMaterialRecompiled),
 		mLightDirection(lightDirection) {
@@ -45,14 +47,14 @@ TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
 }
 
 TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
-												 const std::vector<const TerrainShader*>& shaders,
-												 const AreaStore& areas,
+												 std::vector<const TerrainShader*> shaders,
+												 AreaStore areas,
 												 sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
 												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
 												 const WFMath::Vector<3>& lightDirection) :
 		mGeometry(std::move(geometry)),
-		mShaders(shaders),
-		mAreas(areas),
+		mShaders(std::move(shaders)),
+		mAreas(std::move(areas)),
 		mSignal(signal),
 		mSignalMaterialRecompiled(signalMaterialRecompiled),
 		mLightDirection(lightDirection) {
@@ -62,8 +64,7 @@ TerrainShaderUpdateTask::~TerrainShaderUpdateTask() = default;
 
 void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	GeometryPtrVector updatedPages;
-	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
-		TerrainPageGeometryPtr geometry = *J;
+	for (auto& geometry : mGeometry) {
 		TerrainPage& page = geometry->getPage();
 		bool shouldUpdate = false;
 		for (const auto& area : mAreas) {
@@ -73,9 +74,9 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 			}
 		}
 		if (shouldUpdate) {
-			for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
+			for (auto shader : mShaders) {
 				//repopulate the layer
-				page.updateShaderTexture(*I, *geometry, true);
+				page.updateShaderTexture(shader, *geometry, true);
 			}
 			updatedPages.push_back(geometry);
 		}
@@ -87,8 +88,8 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 }
 
 bool TerrainShaderUpdateTask::executeTaskInMainThread() {
-	for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
-		mSignal(*I, mAreas);
+	for (auto shader : mShaders) {
+		mSignal(shader, mAreas);
 	}
 	return true;
 }

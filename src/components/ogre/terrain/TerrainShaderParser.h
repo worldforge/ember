@@ -64,6 +64,7 @@ private:
 	 * @brief The terrain generator instance used in the system.
 	 */
 	TerrainHandler& mTerrainHandler;
+
 };
 
 }

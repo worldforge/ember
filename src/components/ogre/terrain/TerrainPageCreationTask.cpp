@@ -53,7 +53,7 @@ TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler,
 void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
-	const std::list<TerrainShader*>& baseShaders = mTerrainHandler.getBaseShaders();
+	auto& baseShaders = mTerrainHandler.getBaseShaders();
 	for (auto baseShader : baseShaders) {
 		mPage->addShader(baseShader);
 	}

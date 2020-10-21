@@ -29,21 +29,19 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
 
 namespace AttributeComparers {
 
-NumericRangeComparer::NumericRangeComparer(NumericComparer* minComparer, NumericComparer* maxComparer)
-: mMinComparer(minComparer), mMaxComparer(maxComparer)
-{
+NumericRangeComparer::NumericRangeComparer(std::unique_ptr<NumericComparer> minComparer, std::unique_ptr<NumericComparer> maxComparer)
+		: mMinComparer(std::move(minComparer)),
+		  mMaxComparer(std::move(maxComparer)) {
 }
 
 
-bool NumericRangeComparer::test(float value)
-{
+bool NumericRangeComparer::test(float value) {
 	return mMinComparer->test(value) && mMaxComparer->test(value);
 }
 

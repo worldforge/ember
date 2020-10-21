@@ -60,7 +60,7 @@ bool TerrainAreaAddTask::executeTaskInMainThread() {
 			//try to get the materialdefinition for this kind of area
 			const TerrainLayerDefinition* layerDef = mTerrainLayerDefinitionManager.getDefinitionForArea(mArea->getLayer());
 			if (layerDef) {
-				TerrainShader* shader = mTerrainHandler.createShader(layerDef, new Mercator::AreaShader(mArea->getLayer()));
+				TerrainShader* shader = mTerrainHandler.createShader(layerDef, std::make_unique<Mercator::AreaShader>(mArea->getLayer()));
 				mAreaShaders[mArea->getLayer()] = shader;
 			}
 		}

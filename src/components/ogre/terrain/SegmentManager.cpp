@@ -24,6 +24,7 @@
 
 #include <Mercator/Shader.h>
 #include <Mercator/Terrain.h>
+#include <Mercator/Surface.h>
 
 #include <wfmath/MersenneTwister.h>
 #include <sstream>
@@ -45,7 +46,7 @@ SegmentManager::SegmentManager(Mercator::Terrain& terrain, unsigned int desiredS
 
 SegmentManager::~SegmentManager() = default;
 
-SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex) {
+std::shared_ptr<Segment> SegmentManager::getSegmentReference(int xIndex, int yIndex) {
 	std::stringstream ss;
 	ss << xIndex << "_" << yIndex;
 	std::string key = ss.str();
@@ -56,7 +57,7 @@ SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex) {
 	} else if (mEndlessWorldEnabled) {
 		return createFakeSegment(key, xIndex, yIndex);
 	} else {
-		return SegmentRefPtr();
+		return {};
 	}
 }
 
@@ -112,9 +113,9 @@ std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& ke
 		setPoint(1, 1);
 
 		auto& surfaces = segment->getSurfaces();
-		for (auto shader : mTerrain.getShaders()) {
-			auto surface = shader.second->newSurface(*segment);
-			surfaces[shader.first] = surface;
+		for (auto& entry : mTerrain.getShaders()) {
+			auto surface = entry.second->newSurface(*segment);
+			surfaces[entry.first] = std::move(surface);
 		}
 		return segment;
 	};
@@ -157,11 +158,10 @@ void SegmentManager::addSegment(Mercator::Segment& segment) {
 void SegmentManager::syncWithTerrain() {
 //There's currently no way to remove segments from the terrain, so we don't have to worry about that for now.
 
-	Mercator::Terrain::Segmentstore segmentStore = mTerrain.getTerrain();
-	for (auto& I : segmentStore) {
-		const Mercator::Terrain::Segmentcolumn& segmentColumn = I.second;
-		for (auto entry : segmentColumn) {
-			Mercator::Segment* segment = entry.second;
+	auto& segmentStore = mTerrain.getTerrain();
+	for (auto& segmentEntry : segmentStore) {
+		for (auto& entry : segmentEntry.second) {
+			auto& segment = entry.second;
 			addSegment(*segment);
 		}
 	}

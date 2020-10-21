@@ -29,7 +29,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -37,13 +36,11 @@ namespace Cases {
 namespace AttributeComparers {
 
 
-StringComparerWrapper::StringComparerWrapper(StringComparer* comparer)
-: mStringComparer(comparer)
-{
+StringComparerWrapper::StringComparerWrapper(std::unique_ptr<StringComparer> comparer)
+		: mStringComparer(std::move(comparer)) {
 }
 
-bool StringComparerWrapper::testAttribute(const Atlas::Message::Element& attribute)
-{
+bool StringComparerWrapper::testAttribute(const Atlas::Message::Element& attribute) {
 	return attribute.isString() && mStringComparer->test(attribute.String());
 }
 

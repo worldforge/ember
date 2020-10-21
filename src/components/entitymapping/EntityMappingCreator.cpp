@@ -148,54 +148,54 @@ void EntityMappingCreator::addEntityRefCases(EntityRefMatch* match, MatchDefinit
 }
 
 
-Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAttributeCaseComparer(AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition) {
+std::unique_ptr<AttributeComparers::AttributeComparerWrapper> EntityMappingCreator::getAttributeCaseComparer(AttributeMatch* match, MatchDefinition& matchDefinition, CaseDefinition& caseDefinition) {
 	const std::string& matchType = matchDefinition.Properties["type"];
 
 	if ((matchType.empty()) || (matchType == "string")) {
 		//default is string comparison
 		if (auto param = findCaseParameter(caseDefinition.Parameters, "equals")) {
-			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringValueComparer(param->second));
+			return std::make_unique<AttributeComparers::StringComparerWrapper>(std::make_unique<AttributeComparers::StringValueComparer>(param->second));
 		} else if (findCaseParameter(caseDefinition.Parameters, "notempty")) {
-			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringNotEmptyComparer());
+			return std::make_unique<AttributeComparers::StringComparerWrapper>(std::make_unique<AttributeComparers::StringNotEmptyComparer>());
 		} else {
-			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringValueComparer(""));
+			return std::make_unique<AttributeComparers::StringComparerWrapper>(std::make_unique<AttributeComparers::StringValueComparer>(""));
 		}
 	} else if (matchType == "numeric") {
-		return new AttributeComparers::NumericComparerWrapper(createNumericComparer(caseDefinition));
+		return std::make_unique<AttributeComparers::NumericComparerWrapper>(createNumericComparer(caseDefinition));
 	} else if (matchType == "function") {
 		if (match->getAttributeName() == "height") {
-			return new AttributeComparers::HeightComparerWrapper(createNumericComparer(caseDefinition), mEntity);
+			return std::make_unique<AttributeComparers::HeightComparerWrapper>(createNumericComparer(caseDefinition), mEntity);
 		}
 	}
 	return nullptr;
 
 }
 
-AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer(CaseDefinition& caseDefinition) {
+std::unique_ptr<AttributeComparers::NumericComparer> EntityMappingCreator::createNumericComparer(CaseDefinition& caseDefinition) {
 	const CaseDefinition::ParameterEntry* param;
 
 	if ((param = findCaseParameter(caseDefinition.Parameters, "equals"))) {
-		return new AttributeComparers::NumericEqualsComparer(std::stof(param->second));
+		return std::make_unique<AttributeComparers::NumericEqualsComparer>(std::stof(param->second));
 	}
 
 	//If both a min and max value is set, it's a range comparer
-	AttributeComparers::NumericComparer* mMin(nullptr);
-	AttributeComparers::NumericComparer* mMax(nullptr);
+	std::unique_ptr<AttributeComparers::NumericComparer> mMin;
+	std::unique_ptr<AttributeComparers::NumericComparer> mMax(nullptr);
 	if ((param = findCaseParameter(caseDefinition.Parameters, "lesser"))) {
-		mMin = new AttributeComparers::NumericLesserComparer(std::stof(param->second));
+		mMin = std::make_unique<AttributeComparers::NumericLesserComparer>(std::stof(param->second));
 	} else if ((param = findCaseParameter(caseDefinition.Parameters, "lesserequals"))) {
-		mMin = new AttributeComparers::NumericEqualsOrLesserComparer(std::stof(param->second));
+		mMin = std::make_unique<AttributeComparers::NumericEqualsOrLesserComparer>(std::stof(param->second));
 	}
 
 	if ((param = findCaseParameter(caseDefinition.Parameters, "greater"))) {
-		mMax = new AttributeComparers::NumericGreaterComparer(std::stof(param->second));
+		mMax = std::make_unique<AttributeComparers::NumericGreaterComparer>(std::stof(param->second));
 	} else if ((param = findCaseParameter(caseDefinition.Parameters, "greaterequals"))) {
-		mMax = new AttributeComparers::NumericEqualsOrGreaterComparer(std::stof(param->second));
+		mMax = std::make_unique<AttributeComparers::NumericEqualsOrGreaterComparer>(std::stof(param->second));
 	}
 
 	//check if we have both min and max set, and if so we should use a range comparer
 	if (mMin && mMax) {
-		return new AttributeComparers::NumericRangeComparer(mMin, mMax);
+		return std::make_unique<AttributeComparers::NumericRangeComparer>(std::move(mMin), std::move(mMax));
 	} else if (!mMax && mMin) {
 		return mMin;
 	} else if (mMax) {
@@ -208,9 +208,9 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 
 void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinition& matchDefinition) {
 	for (auto& aCase : matchDefinition.Cases) {
-		Cases::AttributeComparers::AttributeComparerWrapper* wrapper = getAttributeCaseComparer(match, matchDefinition, aCase);
+		auto wrapper = getAttributeCaseComparer(match, matchDefinition, aCase);
 		if (wrapper) {
-			auto attrCase = std::make_unique<AttributeCase>(wrapper);
+			auto attrCase = std::make_unique<AttributeCase>(std::move(wrapper));
 
 			mActionCreator.createActions(*mEntityMapping, *attrCase, aCase);
 
@@ -245,7 +245,7 @@ void EntityMappingCreator::addAttributeMatch(CaseBase& aCase, MatchDefinition& m
 	if (matchType == "function") {
 		if (attributeName == "height") {
 
-			std::unique_ptr<VirtualAttributeMatch> virtualMatch(new VirtualAttributeMatch(attributeName, {"bbox", "scale"}));
+			auto virtualMatch = std::make_unique<VirtualAttributeMatch>(attributeName, std::initializer_list<std::string>{"bbox", "scale"});
 			virtualMatch->addMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(*virtualMatch, "bbox"));
 			virtualMatch->addMatchAttributeObserver(std::make_unique<MatchAttributeObserver>(*virtualMatch, "scale"));
 			match = std::move(virtualMatch);

@@ -29,19 +29,16 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
 
 namespace AttributeComparers {
 
-NumericEqualsOrLesserComparer::NumericEqualsOrLesserComparer(float value) : NumericValueHolder(value)
-{
+NumericEqualsOrLesserComparer::NumericEqualsOrLesserComparer(float value) : NumericValueHolder(value) {
 }
 
-bool NumericEqualsOrLesserComparer::test(float value)
-{
+bool NumericEqualsOrLesserComparer::test(float value) {
 	return value <= mValue;
 }
 

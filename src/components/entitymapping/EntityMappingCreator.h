@@ -158,7 +158,7 @@ protected:
 	 * Creates and returns a numeric comparer for the supplied case.
 	 * @param caseDefinition
 	 */
-	Cases::AttributeComparers::NumericComparer* createNumericComparer(Definitions::CaseDefinition& caseDefinition);
+	std::unique_ptr<Cases::AttributeComparers::NumericComparer> createNumericComparer(Definitions::CaseDefinition& caseDefinition);
 
 	/**
 	 * Creates and returns suitable attribute comparer for the supplied attribute case.
@@ -167,7 +167,9 @@ protected:
 	 * @param caseDefinition
 	 * @returns An AttributeComparers::AttributeComparerWrapper instance or null.
 	*/
-	Cases::AttributeComparers::AttributeComparerWrapper* getAttributeCaseComparer(Matches::AttributeMatch* match, Definitions::MatchDefinition& matchDefinition, Definitions::CaseDefinition& caseDefinition);
+	std::unique_ptr<Cases::AttributeComparers::AttributeComparerWrapper> getAttributeCaseComparer(Matches::AttributeMatch* match,
+																								  Definitions::MatchDefinition& matchDefinition,
+																								  Definitions::CaseDefinition& caseDefinition);
 
 	IActionCreator& mActionCreator;
 	Eris::Entity& mEntity;

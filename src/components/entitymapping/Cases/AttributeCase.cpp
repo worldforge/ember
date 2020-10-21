@@ -30,19 +30,16 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
 
-AttributeCase::AttributeCase(AttributeComparers::AttributeComparerWrapper* comparerWrapper)
-: mComparerWrapper(std::unique_ptr<AttributeComparers::AttributeComparerWrapper>(comparerWrapper))
-{
+AttributeCase::AttributeCase(std::unique_ptr<AttributeComparers::AttributeComparerWrapper> comparerWrapper)
+		: mComparerWrapper(std::move(comparerWrapper)) {
 }
 
 
-bool AttributeCase::testMatch(const Atlas::Message::Element& attribute)
-{
+bool AttributeCase::testMatch(const Atlas::Message::Element& attribute) {
 	if (mComparerWrapper) {
 		if (mComparerWrapper->testAttribute(attribute)) {
 			setState(true);

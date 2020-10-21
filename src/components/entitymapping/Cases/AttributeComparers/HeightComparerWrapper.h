@@ -26,14 +26,12 @@
 #include <memory>
 #include "AttributeComparerWrapper.h"
 
-namespace Eris
-{
+namespace Eris {
 class Entity;
 }
 
 
 namespace Ember {
-
 
 
 namespace EntityMapping {
@@ -48,15 +46,14 @@ struct NumericComparer;
 	Compares the height of an entity. The height is calculated from the bounding box.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class HeightComparerWrapper : public AttributeComparerWrapper
-{
+class HeightComparerWrapper : public AttributeComparerWrapper {
 public:
 	/**
 	* Default constructor.
 	* @param comparer The NumericComparer to use for comparison.
 	* @param entity
 	*/
-	HeightComparerWrapper(NumericComparer* comparer, Eris::Entity& entity);
+	HeightComparerWrapper(std::unique_ptr<NumericComparer> comparer, Eris::Entity& entity);
 
 	/**
 	Test the height. The attribute passed will be ignored.

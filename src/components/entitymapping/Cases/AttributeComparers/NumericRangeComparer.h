@@ -29,7 +29,6 @@
 namespace Ember {
 
 
-
 namespace EntityMapping {
 
 namespace Cases {
@@ -40,10 +39,10 @@ namespace AttributeComparers {
 	Test for values being in a certain range. The range is defined by two different NumericComparer instances.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class NumericRangeComparer : public NumericComparer
-{
+class NumericRangeComparer : public NumericComparer {
 public:
-	NumericRangeComparer(NumericComparer* minComparer, NumericComparer* maxComparer);
+	NumericRangeComparer(std::unique_ptr<NumericComparer> minComparer, std::unique_ptr<NumericComparer> maxComparer);
+
 	/**
 	Returns true if the supplied value is true for both the used comparers.
 	*/

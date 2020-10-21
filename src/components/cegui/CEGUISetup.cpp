@@ -68,7 +68,7 @@ CEGUI::OgreRenderer& CEGUISetup::createRenderer(Ogre::RenderWindow* renderWindow
 }
 
 CEGUISetup::CEGUISetup(Ogre::RenderWindow& window)
-		: mCEGUILogger(new Cegui::CEGUILogger()),
+		: mCEGUILogger(std::make_unique<Cegui::CEGUILogger>()),
 		  mWindow(window) {
 //Check that CEGUI is built with Freetype support. If not you'll get a compilation error here.
 #ifndef CEGUI_HAS_FREETYPE
