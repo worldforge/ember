@@ -33,7 +33,7 @@ namespace OgreView {
 namespace Gui {
 
 class QuickHelp;
-class HelpMessage;
+struct HelpMessage;
 
 /**
 @author Tiberiu Paunescu <tpa12@sfu.ca>

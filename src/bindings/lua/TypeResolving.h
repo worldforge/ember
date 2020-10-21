@@ -81,7 +81,7 @@ namespace Gui
 class EntityIcon;
 class EntityIconSlot;
 class ActionBarIcon;
-class HelpMessage;
+struct HelpMessage;
 }
 
 }
