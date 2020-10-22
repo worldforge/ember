@@ -24,8 +24,6 @@
 #include "framework/LoggingInstance.h"
 #include "framework/TimeFrame.h"
 
-#include <Ogre.h>
-
 #include <numeric>
 
 namespace Ember {
@@ -116,7 +114,7 @@ bool AutomaticGraphicsLevelManager::isEnabled() const {
 
 void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_double()) {
-		int fps = static_cast<double>(variable);
+		auto fps = static_cast<double>(variable);
 		//If set to 0, the fps the manager tries to achieve is 60
 		if (fps == 0.0f) {
 			fps = 60.0f;

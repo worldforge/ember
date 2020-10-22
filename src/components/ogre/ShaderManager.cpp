@@ -89,8 +89,6 @@ ShaderManager::ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
 	mGraphicSchemes[LEVEL_HIGH] = std::string("High");
 	mGraphicSchemes[LEVEL_EXPERIMENTAL] = std::string("Experimental");
 
-	init();
-
 	registerConfigListener("graphics", "level", sigc::mem_fun(*this, &ShaderManager::Config_Level), false);
 
 }

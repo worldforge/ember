@@ -240,6 +240,7 @@ protected:
 
 	Ember::ServerService& mServerService;
 
+
 	/**
 	 * @brief We hold a reference to our own Ogre log manager, thus making sure that Ogre doesn't create one itself.
 	 *
@@ -248,6 +249,20 @@ protected:
 	 */
 	std::unique_ptr<Ogre::LogManager> mOgreLogManager;
 
+	/**
+	* @brief Handles loading of resources.
+	*
+	* This will also take care of registering our own Ogre::ArchiveFactory instance,
+	 * so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
+	*/
+	std::unique_ptr<OgreResourceLoader> mResourceLoader;
+
+
+	/**
+	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
+	 * We don't deregister this from Ogre, so that all Ogre messages are sure to flow through it as it gets destroyed.
+	 */
+	std::unique_ptr<OgreLogObserver> mLogObserver;
 
 	/**
 	 * @brief Utility object for setting up and tearing down ogre
@@ -258,13 +273,6 @@ protected:
 	 * @brief The main Ogre root object. All of Ogre is accessed through this.
 	 */
 	Ogre::Root* mRoot;
-
-	/**
-	* @brief Handles loading of resources.
-	*
-	* This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
-	*/
-	std::unique_ptr<OgreResourceLoader> mResourceLoader;
 
 	/**
 	 * @brief The Ogre scene manager used when not connected to a world.
@@ -286,19 +294,20 @@ protected:
 	std::unique_ptr<Screen> mScreen;
 
 	/**
+	 * @brief Object that manages level of graphics automatically.
+	 */
+	std::unique_ptr<AutomaticGraphicsLevelManager> mAutomaticGraphicsLevelManager;
+
+	/**
 	 * @brief Utility object to configure shaders
 	 */
-	ShaderManager* mShaderManager;
+	std::unique_ptr<ShaderManager> mShaderManager;
 
 	/**
 	 * @brief Hooks into the auto adjustment system and alters shaders.
 	 */
-	ShaderDetailManager* mShaderDetailManager;
+	std::unique_ptr<ShaderDetailManager> mShaderDetailManager;
 
-	/**
-	 * @brief Object that manages level of graphics automatically.
-	 */
-	AutomaticGraphicsLevelManager* mAutomaticGraphicsLevelManager;
 
 	/**
 	 * @brief An InputCommandMapper that will handle all general input events.
@@ -318,7 +327,7 @@ protected:
 	/**
 	 * @brief Resonsible for managing all Model definitions;
 	 */
-	Model::ModelDefinitionManager* mModelDefinitionManager;
+	std::unique_ptr<Model::ModelDefinitionManager> mModelDefinitionManager;
 
 	/**
 	 * @brief Handles all model mappings.
@@ -335,10 +344,6 @@ protected:
 	 */
 	std::unique_ptr<Authoring::EntityRecipeManager> mEntityRecipeManager;
 
-	/**
-	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
-	 */
-	std::unique_ptr<OgreLogObserver> mLogObserver;
 
 	/**
 	 * @brief Helper object that allows for easy Ogre material editing.
@@ -353,7 +358,7 @@ protected:
 	/**
 	 * @brief Manages Lod definition files and loads the Lod information into the mesh.
 	 */
-	Lod::LodDefinitionManager* mLodDefinitionManager;
+	std::unique_ptr<Lod::LodDefinitionManager> mLodDefinitionManager;
 
 	/**
 	 * @brief Allows to add Lod to the meshes.
@@ -398,7 +403,7 @@ protected:
 	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	/**
-	 * @brief Gets the main Eris View instance, which is the main inteface to the world.
+	 * @brief Gets the main Eris View instance, which is the main interface to the world.
 	 *
 	 * The View can also be accessed through the Server service, but this can be used for convenience.
 	 * @return The main Eris View instance which represents the server world.

@@ -110,16 +110,17 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 		mServerService(serverService),
 		//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
 		mOgreLogManager(std::make_unique<Ogre::LogManager>()),
+		mResourceLoader(std::make_unique<OgreResourceLoader>()),
+		mLogObserver(std::make_unique<OgreLogObserver>()),
 		mOgreSetup(std::make_unique<OgreSetup>()),
 		mRoot(Ogre::Root::getSingletonPtr()),
-		mResourceLoader(std::make_unique<OgreResourceLoader>()),
 		// Create the scene manager used for the main menu and load screen. Get the most simple one.
 		mSceneManagerOutOfWorld(mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "OutOfWorldSceneManager")),
 		mWindow(nullptr),
 		mScreen(nullptr),
-		mShaderManager(nullptr),
-		mShaderDetailManager(nullptr),
-		mAutomaticGraphicsLevelManager(nullptr),
+		mAutomaticGraphicsLevelManager(std::make_unique<AutomaticGraphicsLevelManager>(mainLoopController)),
+		mShaderManager(std::make_unique<ShaderManager>(mAutomaticGraphicsLevelManager->getGraphicalAdapter())),
+		mShaderDetailManager(std::make_unique<ShaderDetailManager>(mAutomaticGraphicsLevelManager->getGraphicalAdapter(), *mShaderManager)),
 		mGeneralCommandMapper(std::make_unique<InputCommandMapper>("general")),
 		mSoundManager(std::make_unique<SoundDefinitionManager>()),
 		mGUIManager(nullptr),
@@ -127,7 +128,6 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 		mEntityMappingManager(std::make_unique<Mapping::EmberEntityMappingManager>()),
 		mTerrainLayerManager(std::make_unique<Terrain::TerrainLayerDefinitionManager>()),
 		mEntityRecipeManager(std::make_unique<Authoring::EntityRecipeManager>()),
-		mLogObserver(std::make_unique<OgreLogObserver>()),
 		mMaterialEditor(std::make_unique<Authoring::MaterialEditor>()),
 		mSoundResourceProvider(std::make_unique<OgreResourceProvider>("General")),
 		mLodDefinitionManager(nullptr),
@@ -158,9 +158,9 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 
 	auto exportDir = configSrv.getHomeDirectory(BaseDirType_DATA) / "user-media" / "data";
 	//Create the model definition manager
-	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
+	mModelDefinitionManager = std::make_unique<Model::ModelDefinitionManager>(exportDir, eventService);
 
-	mLodDefinitionManager = new Lod::LodDefinitionManager(exportDir);
+	mLodDefinitionManager = std::make_unique<Lod::LodDefinitionManager>(exportDir);
 
 	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(mSceneManagerOutOfWorld);
 	if (!Ogre::MeshLodGenerator::getSingletonPtr()) {
@@ -194,16 +194,11 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
 	mGeneralCommandMapper->bindToInput(mInput);
 
-
-	// Create shader manager
-	mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(mainLoopController);
-	mShaderManager = new ShaderManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter());
-	mShaderDetailManager = new ShaderDetailManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter(), *mShaderManager);
-
+	mShaderManager->init();
 }
 
 EmberOgre::~EmberOgre() {
-	// Deregister the overlay system before deleting it in OgreSetup::shutdown
+	// Deregister the overlay system before deleting it in OgreSetup.
 	if (mSceneManagerOutOfWorld && mOgreSetup) {
 		mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
 	}
@@ -212,52 +207,10 @@ EmberOgre::~EmberOgre() {
 		Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(nullptr);
 	}
 	EmberServices::getSingleton().getSoundService().setResourceProvider(nullptr);
-	mSoundManager.reset();
 
 	EventGUIManagerBeingDestroyed();
 	//Right before we destroy the GUI manager we want to force a garbage collection of all scripting providers. The main reason is that there might be widgets which have been shut down, and they should be collected.
 	EmberServices::getSingleton().getScriptingService().forceGCForAllProviders();
-	mGUIManager.reset();
-	EventGUIManagerDestroyed();
-
-	mEntityRecipeManager.reset();
-	mTerrainLayerManager.reset();
-	mEntityMappingManager.reset();
-//	delete mEntityRecipeManager;
-//	delete mTerrainLayerManager;
-//	delete mEntityMappingManager;
-
-	EventOgreBeingDestroyed();
-	//Right before we destroy Ogre we want to force a garbage collection of all scripting providers. The main reason is that if there are any instances of SharedPtr in the scripting environments we want to collect them now.
-	EmberServices::getSingleton().getScriptingService().forceGCForAllProviders();
-
-	//we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
-	//this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
-	//by deleting the model manager we'll assure that
-	delete mModelDefinitionManager;
-
-	delete mLodDefinitionManager;
-
-	// 	if (mWindow) {
-	// 		mRoot->getRenderSystem()->destroyRenderTarget(mWindow->getName());
-	// 	}
-
-	delete mAutomaticGraphicsLevelManager;
-	delete mShaderDetailManager;
-	delete mShaderManager;
-	//delete mScreen;
-
-	mGuiSetup.reset();
-	if (mOgreSetup) {
-
-		mOgreSetup.reset();
-		EventOgreDestroyed();
-	}
-
-
-	//delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
-//	delete mResourceLoader;
-
 }
 
 bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
@@ -478,11 +431,11 @@ Ogre::Root* EmberOgre::getOgreRoot() const {
 }
 
 ShaderManager* EmberOgre::getShaderManager() const {
-	return mShaderManager;
+	return mShaderManager.get();
 }
 
 AutomaticGraphicsLevelManager* EmberOgre::getAutomaticGraphicsLevelManager() const {
-	return mAutomaticGraphicsLevelManager;
+	return mAutomaticGraphicsLevelManager.get();
 }
 
 

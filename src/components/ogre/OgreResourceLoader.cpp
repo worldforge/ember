@@ -117,17 +117,20 @@ OgreResourceLoader::OgreResourceLoader() :
 		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."),
 		mFileSystemArchiveFactory(std::make_unique<FileSystemArchiveFactory>()),
 		mLoadingListener(std::make_unique<EmberResourceLoadingListener>()) {
-	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory.get());
 }
 
 OgreResourceLoader::~OgreResourceLoader() {
-	//Don't deregister mLoadingListener, since this destructor needs to be called after OGRE has been shut down.
+	//Don't deregister mLoadingListener, since this destructor needs to be called after OGRE has been shut down, and there won't be any ResourceGroupManager
+	//available by then.
 	for (auto& path : mResourceRootPaths) {
 		Ember::FileSystemObserver::getSingleton().remove_directory(path);
 	}
 }
 
 void OgreResourceLoader::initialize() {
+
+	//We can only add an archive factory, there's no method for removing it. Thus an instance of this needs to survive longer than Ogre itself.
+	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory.get());
 
 	Ogre::ResourceGroupManager::getSingleton().setLoadingListener(mLoadingListener.get());
 

@@ -55,7 +55,10 @@ EmberServices::~EmberServices() {
 		mSoundService->stop();
 		mSoundService.reset();
 	}
-
+	if (mServerService) {
+		mServerService->stop();
+		mServerService.reset();
+	}
 }
 
 ConfigService& EmberServices::getConfigService() {

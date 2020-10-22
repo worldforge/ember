@@ -64,21 +64,6 @@ struct EmberOgreSignals
 	sigc::signal<void> EventGUIManagerBeingDestroyed;
 
 	/**
-	 * @brief Emitted after the GUIManager has been destroyed.
-	 */
-	sigc::signal<void> EventGUIManagerDestroyed;
-
-	/**
-	 * @brief Emitted before the Ogre system is destroyed.
-	 */
-	sigc::signal<void> EventOgreBeingDestroyed;
-
-	/**
-	 * @brief Emitted after the Ogre system has been destroyed.
-	 */
-	sigc::signal<void> EventOgreDestroyed;
-
-	/**
 	 * @brief Emitted after the Motion has been created.
 	 */
 	sigc::signal<void, MotionManager&> EventMotionManagerCreated;
