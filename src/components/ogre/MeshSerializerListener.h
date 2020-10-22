@@ -42,13 +42,13 @@ public:
 	 * @brief Ctor.
 	 * @param requireTangents True if tangents should be created if missing.
 	 */
-    MeshSerializerListener(bool requireTangents);
+    explicit MeshSerializerListener(bool requireTangents);
 
-    ~MeshSerializerListener();
+    ~MeshSerializerListener() override;
     
-	virtual void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name);
-	virtual void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name);
-	virtual void processMeshCompleted(Ogre::Mesh*);
+	void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name) override;
+	void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name) override;
+	void processMeshCompleted(Ogre::Mesh*) override;
 private:
 
 	/**

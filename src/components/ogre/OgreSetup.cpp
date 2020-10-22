@@ -89,17 +89,104 @@ namespace OgreView {
 
 OgreSetup::OgreSetup() :
 		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."),
+		mRoot(std::make_unique<Ogre::Root>("", "", "")),
 		mRenderWindow(nullptr),
+		mMeshSerializerListener(std::make_unique<MeshSerializerListener>(true)),
+		mOverlaySystem(std::make_unique<Ogre::OverlaySystem>()),
 #ifdef BUILD_WEBEMBER
 		mOgreWindowProvider(nullptr),
 #endif
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()),
 		mSaveShadersToCache(false) {
+
+
+	S_LOG_INFO("Compiled against Ogre version " << OGRE_VERSION);
+
+#if OGRE_DEBUG_MODE
+	S_LOG_INFO("Compiled against Ogre in debug mode.");
+#else
+	S_LOG_INFO("Compiled against Ogre in release mode.");
+#endif
+
+#if OGRE_THREAD_SUPPORT == 0
+	S_LOG_INFO("Compiled against Ogre without threading support.");
+#elif OGRE_THREAD_SUPPORT == 1
+	S_LOG_INFO("Compiled against Ogre with multi threading support.");
+#elif OGRE_THREAD_SUPPORT == 2
+	S_LOG_INFO("Compiled against Ogre with semi threading support.");
+#elif OGRE_THREAD_SUPPORT == 3
+	S_LOG_INFO("Compiled against Ogre with threading support without synchronization.");
+#else
+	S_LOG_INFO("Compiled against Ogre with unknown threading support.");
+#endif
+
+#if OGRE_THREAD_PROVIDER == 0
+	S_LOG_INFO("Using no thread provider.");
+#elif OGRE_THREAD_PROVIDER == 1
+	S_LOG_INFO("Using Boost thread provider.");
+#elif OGRE_THREAD_PROVIDER == 2
+	S_LOG_INFO("Using Poco thread provider.");
+#elif OGRE_THREAD_PROVIDER == 3
+	S_LOG_INFO("Using TBB thread provider.");
+#elif OGRE_THREAD_PROVIDER == 4
+	S_LOG_INFO("Using STD thread provider.");
+#else
+	S_LOG_INFO("Using unknown thread provider.");
+#endif
+
+
+	//Ownership of the queue instance is passed to Root.
+	mRoot->setWorkQueue(OGRE_NEW EmberWorkQueue(MainLoopController::getSingleton().getEventService()));
+
+#ifdef OGRE_STATIC_LIB
+	mRoot->installPlugin(OGRE_NEW Ogre::FreeImagePlugin());
+	mRoot->installPlugin(OGRE_NEW Ogre::GL3PlusPlugin());
+	mRoot->installPlugin(OGRE_NEW Ogre::ParticleFXPlugin());
+#else
+	mPluginLoader.loadPlugin("Codec_FreeImage");
+	mPluginLoader.loadPlugin("Plugin_ParticleFX");
+	mPluginLoader.loadPlugin("RenderSystem_GL3Plus"); //We'll use OpenGL on Windows too, to make it easier to develop
+#endif
+
+	auto renderSystem = mRoot->getAvailableRenderers().front();
+	try {
+		//Set the default resolution to 1280 x 720 unless overridden by the user.
+		renderSystem->setConfigOption("Video Mode", "1280 x  720"); //OGRE stores the value with two spaces after "x".
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Could not set default resolution." << ex);
+	}
+	mRoot->setRenderSystem(renderSystem);
 }
 
 OgreSetup::~OgreSetup() {
 #ifdef BUILD_WEBEMBER
 	delete mOgreWindowProvider;
 #endif
+
+	S_LOG_INFO("Shutting down Ogre.");
+	if (mRoot) {
+
+		if (Ogre::GpuProgramManager::getSingletonPtr()) {
+			try {
+				auto cachePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" EMBER_VERSION ".cache");
+				auto cacheStream = Ogre::Root::createFileStream(cachePath.string());
+				if (cacheStream) {
+					Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
+				}
+			} catch (...) {
+				S_LOG_WARNING("Error when trying to save GPU cache file.");
+			}
+		}
+
+		//This should normally not be needed, but there seems to be a bug in Ogre for Windows where it will hang if the render window isn't first detached.
+		//The bug appears in Ogre 1.7.2.
+		if (mRenderWindow) {
+			mRoot->detachRenderTarget(mRenderWindow);
+			mRoot->destroyRenderTarget(mRenderWindow);
+			mRenderWindow = nullptr;
+		}
+
+	}
 }
 
 void OgreSetup::runCommand(const std::string& command, const std::string& args) {
@@ -125,79 +212,19 @@ void OgreSetup::saveConfig() {
 	}
 }
 
-void OgreSetup::shutdown() {
-	S_LOG_INFO("Shutting down Ogre.");
-	if (mRoot) {
-
-		if (Ogre::GpuProgramManager::getSingletonPtr()) {
-			try {
-				auto cachePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" EMBER_VERSION ".cache");
-				auto cacheStream = Ogre::Root::createFileStream(cachePath.string());
-				if (cacheStream) {
-					Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
-				}
-			} catch (...) {
-				S_LOG_WARNING("Error when trying to save GPU cache file.");
-			}
-		}
-		if (mSceneManagerFactory) {
-			mRoot->removeSceneManagerFactory(mSceneManagerFactory.get());
-			mSceneManagerFactory.reset();
-		}
-
-		//This should normally not be needed, but there seems to be a bug in Ogre for Windows where it will hang if the render window isn't first detached.
-		//The bug appears in Ogre 1.7.2.
-		if (mRenderWindow) {
-			mRoot->detachRenderTarget(mRenderWindow);
-			mRoot->destroyRenderTarget(mRenderWindow);
-			mRenderWindow = nullptr;
-		}
-	}
-	mOverlaySystem.reset();
-	mRoot.reset();
-	S_LOG_INFO("Ogre shut down.");
-
-	mMeshSerializerListener.reset();
-
-}
-
 void OgreSetup::createOgreSystem() {
 	ConfigService& configSrv(EmberServices::getSingleton().getConfigService());
 
-	if (!configSrv.getPrefix().empty()) {
-		//We need to set the current directory to the prefix before trying to load Ogre.
-		//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
-		//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
-		if (chdir(configSrv.getPrefix().c_str())) {
-			S_LOG_WARNING("Failed to change to the prefix directory '" << configSrv.getPrefix() << "'. Ogre loading might fail.");
-		}
-	}
+//	if (!configSrv.getPrefix().empty()) {
+//		//We need to set the current directory to the prefix before trying to load Ogre.
+//		//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
+//		//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
+//		if (chdir(configSrv.getPrefix().c_str())) {
+//			S_LOG_WARNING("Failed to change to the prefix directory '" << configSrv.getPrefix() << "'. Ogre loading might fail.");
+//		}
+//	}
 
-	std::string pluginExtension = ".so";
-	mRoot = std::make_unique<Ogre::Root>("", "", "");
-	//Ownership of the queue instance is passed to Root.
-	mRoot->setWorkQueue(OGRE_NEW EmberWorkQueue(MainLoopController::getSingleton().getEventService()));
 
-	mOverlaySystem = std::make_unique<Ogre::OverlaySystem>();
-
-#ifdef OGRE_STATIC_LIB
-	mRoot->installPlugin(OGRE_NEW Ogre::FreeImagePlugin());
-	mRoot->installPlugin(OGRE_NEW Ogre::GL3PlusPlugin());
-	mRoot->installPlugin(OGRE_NEW Ogre::ParticleFXPlugin());
-#else
-	mPluginLoader.loadPlugin("Codec_FreeImage");
-	mPluginLoader.loadPlugin("Plugin_ParticleFX");
-	mPluginLoader.loadPlugin("RenderSystem_GL3Plus"); //We'll use OpenGL on Windows too, to make it easier to develop
-#endif
-
-	auto renderSystem = mRoot->getAvailableRenderers().front();
-	try {
-		//Set the default resolution to 1280 x 720 unless overridden by the user.
-		renderSystem->setConfigOption("Video Mode", "1280 x  720"); //OGRE stores the value with two spaces after "x".
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Could not set default resolution." << ex);
-	}
-	mRoot->setRenderSystem(renderSystem);
 
 	if (chdir(configSrv.getEmberDataDirectory().generic_string().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory().string() << "'.");
@@ -205,26 +232,21 @@ void OgreSetup::createOgreSystem() {
 
 }
 
-void OgreSetup::Config_ogreLogChanged(const std::string& section, const std::string& key, varconf::Variable& variable) {
-	if (variable.is_string()) {
-		auto string = variable.as_string();
-		if (string == "low") {
-			Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_LOW);
-		} else if (string == "normal") {
-			Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_NORMAL);
-		} else if (string == "boreme") {
-			Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_BOREME);
+void OgreSetup::configure() {
+	mConfigListenerContainer->registerConfigListener("ogre", "loglevel", [](const std::string& section, const std::string& key, varconf::Variable& variable) {
+		if (variable.is_string()) {
+			auto string = variable.as_string();
+			if (string == "low") {
+				Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_LOW);
+			} else if (string == "normal") {
+				Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_NORMAL);
+			} else if (string == "boreme") {
+				Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_BOREME);
+			}
 		}
-	}
-}
-
-/** Configures the application - returns false if the user chooses to abandon configuration. */
-Ogre::Root* OgreSetup::configure() {
-	mConfigListenerContainer = std::make_unique<ConfigListenerContainer>();
-	mConfigListenerContainer->registerConfigListener("ogre", "loglevel", sigc::mem_fun(*this, &OgreSetup::Config_ogreLogChanged), true);
+	}, true);
 
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
-	createOgreSystem();
 #ifndef BUILD_WEBEMBER
 
 	// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not.
@@ -347,11 +369,11 @@ Ogre::Root* OgreSetup::configure() {
 #endif // BUILD_WEBEMBER
 
 	mRenderWindow->setActive(true);
-	mRenderWindow->setAutoUpdated(true);
+	//We'll control the rendering ourself and need to turn off the autoupdating.
+	mRenderWindow->setAutoUpdated(false);
 	mRenderWindow->setVisible(true);
 
 	setStandardValues();
-	return mRoot.get();
 }
 
 void OgreSetup::input_SizeChanged(unsigned int width, unsigned int height) {
@@ -377,8 +399,6 @@ void OgreSetup::setStandardValues() {
 	Ogre::MovableObject::setDefaultQueryFlags(0);
 
 	//Default to require tangents for all meshes. This could perhaps be turned off on platforms which has no use, like Android?
-	mMeshSerializerListener = std::make_unique<MeshSerializerListener>(true);
-
 	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener.get());
 
 	//We provide our own pixel size scaled LOD strategy. Note that ownership is transferred to the LodStrategyManager, hence we won't hold on to this instance.

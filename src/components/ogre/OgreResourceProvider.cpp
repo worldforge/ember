@@ -30,26 +30,23 @@
 namespace Ember {
 namespace OgreView {
 
-OgreResourceWrapper::OgreResourceWrapper(const Ogre::DataStreamPtr& dataStream) {
-	mSize = dataStream->size();
-	mBuffer = new char[mSize];
-	dataStream->read(mBuffer, mSize);
+OgreResourceWrapper::OgreResourceWrapper(const Ogre::DataStreamPtr& dataStream)
+		: mBuffer(dataStream->size()) {
+	dataStream->read(mBuffer.data(), mBuffer.size());
 }
 
-OgreResourceWrapper::~OgreResourceWrapper() {
-	delete[] mBuffer;
-}
+OgreResourceWrapper::~OgreResourceWrapper() = default;
 
 const char* OgreResourceWrapper::getDataPtr() {
-	return mBuffer;
+	return mBuffer.data();
 }
 
 bool OgreResourceWrapper::hasData() {
-	return mSize != 0;
+	return !mBuffer.empty();
 }
 
 size_t OgreResourceWrapper::getSize() {
-	return mSize;
+	return mBuffer.size();
 }
 
 

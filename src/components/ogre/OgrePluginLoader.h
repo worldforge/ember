@@ -50,22 +50,11 @@ public:
 	/// @returns Returns the loaded plugin. If the plugin is already loaded, it will return the loaded instance. Returns nullptr on failure.
 	bool loadPlugin(const std::string& pluginName);
 
-	/// @brief Unloads the plugin.
-	/// @param pluginName The basename of the plugin without path, extension, prefix and postfix names!
-	/// @returns Returns true on success.
-	bool unloadPlugin(const std::string& pluginName);
-
 	/// @brief Unloads all plugins.
 	void unloadPlugins();
 private:
 
 	bool loadDynPlugin(const std::string& pluginName);
-
-	/// @brief Sets OS dependent paths for dynamic builds. Can be extended with addPluginDir() later.
-	void initPluginPaths();
-
-	/// @brief Creates a list of plugins on static builds.
-	void prepareStaticPlugins();
 
 	/// Known Plugins, which are initialized and can be used.
 	std::map<std::string, Ogre::Plugin*> mPlugins;

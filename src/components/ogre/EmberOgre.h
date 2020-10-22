@@ -241,6 +241,15 @@ protected:
 	Ember::ServerService& mServerService;
 
 	/**
+	 * @brief We hold a reference to our own Ogre log manager, thus making sure that Ogre doesn't create one itself.
+	 *
+	 * Since we do this we can better steer how Ogre log messages are handled.
+	 * This needs to be created before OgreSetup (and Ogre::Root) is created.
+	 */
+	std::unique_ptr<Ogre::LogManager> mOgreLogManager;
+
+
+	/**
 	 * @brief Utility object for setting up and tearing down ogre
 	 */
 	std::unique_ptr<OgreSetup> mOgreSetup;
@@ -249,6 +258,13 @@ protected:
 	 * @brief The main Ogre root object. All of Ogre is accessed through this.
 	 */
 	Ogre::Root* mRoot;
+
+	/**
+	* @brief Handles loading of resources.
+	*
+	* This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
+	*/
+	std::unique_ptr<OgreResourceLoader> mResourceLoader;
 
 	/**
 	 * @brief The Ogre scene manager used when not connected to a world.
@@ -267,7 +283,7 @@ protected:
 	/**
 	 * Handles the main rendering window.
 	 */
-	Screen* mScreen;
+	std::unique_ptr<Screen> mScreen;
 
 	/**
 	 * @brief Utility object to configure shaders
@@ -307,17 +323,17 @@ protected:
 	/**
 	 * @brief Handles all model mappings.
 	 */
-	Mapping::EmberEntityMappingManager* mEntityMappingManager;
+	std::unique_ptr<Mapping::EmberEntityMappingManager> mEntityMappingManager;
 
 	/**
 	 * @brief Responsible for handling all terrain layers.
 	 */
-	Terrain::TerrainLayerDefinitionManager* mTerrainLayerManager;
+	std::unique_ptr<Terrain::TerrainLayerDefinitionManager> mTerrainLayerManager;
 
 	/**
 	 * @brief Responsible for handling all entity recipes.
 	 */
-	Authoring::EntityRecipeManager* mEntityRecipeManager;
+	std::unique_ptr<Authoring::EntityRecipeManager> mEntityRecipeManager;
 
 	/**
 	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
@@ -352,19 +368,6 @@ protected:
 	 * @brief Responsible for visualizing collisions.
 	 */
 	//	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
-	/**
-	 * @brief Handles loading of resources.
-	 *
-	 * This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
-	 */
-	OgreResourceLoader* mResourceLoader;
-
-	/**
-	 * @brief We hold a reference to our own Ogre log manager, thus making sure that Ogre doesn't create one itself.
-	 *
-	 * Since we do this we can better steer how Ogre log messages are handled.
-	 */
-	std::unique_ptr<Ogre::LogManager> mOgreLogManager;
 
 	/**
 	 * @brief Set this to true when we're not rendering.

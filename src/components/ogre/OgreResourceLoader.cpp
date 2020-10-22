@@ -52,7 +52,7 @@
  *
  * Provides a relative path.
  */
-static boost::filesystem::path relativeTo(boost::filesystem::path from, boost::filesystem::path to) {
+static boost::filesystem::path relativeTo(const boost::filesystem::path& from, const boost::filesystem::path& to) {
 	// Start at the root path and while they are the same then do nothing then when they first
 	// diverge take the entire from path, swap it with '..' segments, and then append the remainder of the to path.
 	boost::filesystem::path::const_iterator fromIter = from.begin();
@@ -226,7 +226,6 @@ bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& pat
 					break;
 				case OnFailure::Throw:
 					throw Ember::Exception(std::string("Could not load from required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
-					break;
 			}
 		}
 	} else {

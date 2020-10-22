@@ -41,8 +41,7 @@ public:
 	bool hasData() override;
 	size_t getSize() override;
 private:
-	char* mBuffer;
-	size_t mSize;
+	std::vector<char> mBuffer;
 };
 
 

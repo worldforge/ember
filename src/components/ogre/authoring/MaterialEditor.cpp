@@ -31,23 +31,16 @@
 #include <OgreTechnique.h>
 #include <OgreMaterialManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 MaterialEditor::MaterialEditor() :
-	AlterMaterial("alter_material", this, "Alters a material. Usage: <material name> <technique index> <pass index> [<tecture unit index>] <property> <value>")
-{
+		AlterMaterial("alter_material", this, "Alters a material. Usage: <material name> <technique index> <pass index> [<tecture unit index>] <property> <value>") {
 }
 
-MaterialEditor::~MaterialEditor()
-{
-}
+MaterialEditor::~MaterialEditor() = default;
 
-void MaterialEditor::runCommand(const std::string &command, const std::string &args)
-{
+void MaterialEditor::runCommand(const std::string& command, const std::string& args) {
 
 	if (AlterMaterial == command) {
 		try {
@@ -56,7 +49,7 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 
 			std::vector<std::string> tokens;
 			std::string token;
-			while ((token = tokeniser.nextToken()) != "") {
+			while (!(token = tokeniser.nextToken()).empty()) {
 				tokens.push_back(token);
 			}
 
@@ -65,12 +58,12 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 			Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(materialName));
 			if (materialPtr) {
 				std::string techniqueIndexString = tokens[1];
-				if (techniqueIndexString != "") {
+				if (!techniqueIndexString.empty()) {
 					int techniqueIndex = Ogre::StringConverter::parseInt(techniqueIndexString);
 					Ogre::Technique* technique = materialPtr->getTechnique(techniqueIndex);
 					if (technique) {
 						std::string passIndexString = tokens[2];
-						if (passIndexString != "") {
+						if (!passIndexString.empty()) {
 							int passIndex = Ogre::StringConverter::parseInt(passIndexString);
 							Ogre::Pass* pass = technique->getPass(passIndex);
 							//is texture unit specified

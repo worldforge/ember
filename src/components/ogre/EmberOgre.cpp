@@ -108,34 +108,35 @@ namespace OgreView {
 EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService& eventService, Input& input, ServerService& serverService, SoundService& soundService) :
 		mInput(input),
 		mServerService(serverService),
+		//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
+		mOgreLogManager(std::make_unique<Ogre::LogManager>()),
 		mOgreSetup(std::make_unique<OgreSetup>()),
-		mRoot(nullptr),
-		mSceneManagerOutOfWorld(nullptr),
+		mRoot(Ogre::Root::getSingletonPtr()),
+		mResourceLoader(std::make_unique<OgreResourceLoader>()),
+		// Create the scene manager used for the main menu and load screen. Get the most simple one.
+		mSceneManagerOutOfWorld(mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "OutOfWorldSceneManager")),
 		mWindow(nullptr),
 		mScreen(nullptr),
 		mShaderManager(nullptr),
 		mShaderDetailManager(nullptr),
 		mAutomaticGraphicsLevelManager(nullptr),
 		mGeneralCommandMapper(std::make_unique<InputCommandMapper>("general")),
-		mSoundManager(nullptr),
+		mSoundManager(std::make_unique<SoundDefinitionManager>()),
 		mGUIManager(nullptr),
 		mModelDefinitionManager(nullptr),
-		mEntityMappingManager(nullptr),
-		mTerrainLayerManager(nullptr),
-		mEntityRecipeManager(nullptr),
+		mEntityMappingManager(std::make_unique<Mapping::EmberEntityMappingManager>()),
+		mTerrainLayerManager(std::make_unique<Terrain::TerrainLayerDefinitionManager>()),
+		mEntityRecipeManager(std::make_unique<Authoring::EntityRecipeManager>()),
 		mLogObserver(std::make_unique<OgreLogObserver>()),
-		mMaterialEditor(nullptr),
+		mMaterialEditor(std::make_unique<Authoring::MaterialEditor>()),
 		mSoundResourceProvider(std::make_unique<OgreResourceProvider>("General")),
 		mLodDefinitionManager(nullptr),
 		mLodManager(std::make_unique<Lod::LodManager>()),
-		mResourceLoader(nullptr),
-		//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
-		mOgreLogManager(std::make_unique<Ogre::LogManager>()),
 		mIsInPausedMode(false),
 		mCameraOutOfWorld(nullptr),
 		// Needed for QueuedProgressiveMeshGenerator.
 		mPMInjectorSignaler(std::make_unique<Lod::PMInjectorSignaler>()),
-		mConsoleDevTools(nullptr),
+		mConsoleDevTools(std::make_unique<ConsoleDevTools>()),
 		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()) {
 
 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
@@ -149,70 +150,17 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 	soundService.setResourceProvider(mSoundResourceProvider.get());
 
 
-	S_LOG_INFO("Compiled against Ogre version " << OGRE_VERSION);
-
-#if OGRE_DEBUG_MODE
-	S_LOG_INFO("Compiled against Ogre in debug mode.");
-#else
-	S_LOG_INFO("Compiled against Ogre in release mode.");
-#endif
-
-#if OGRE_THREAD_SUPPORT == 0
-	S_LOG_INFO("Compiled against Ogre without threading support.");
-#elif OGRE_THREAD_SUPPORT == 1
-	S_LOG_INFO("Compiled against Ogre with multi threading support.");
-#elif OGRE_THREAD_SUPPORT == 2
-	S_LOG_INFO("Compiled against Ogre with semi threading support.");
-#elif OGRE_THREAD_SUPPORT == 3
-	S_LOG_INFO("Compiled against Ogre with threading support without synchronization.");
-#else
-	S_LOG_INFO("Compiled against Ogre with unknown threading support.");
-#endif
-
-#if OGRE_THREAD_PROVIDER == 0
-	S_LOG_INFO("Using no thread provider.");
-#elif OGRE_THREAD_PROVIDER == 1
-	S_LOG_INFO("Using Boost thread provider.");
-#elif OGRE_THREAD_PROVIDER == 2
-	S_LOG_INFO("Using Poco thread provider.");
-#elif OGRE_THREAD_PROVIDER == 3
-	S_LOG_INFO("Using TBB thread provider.");
-#elif OGRE_THREAD_PROVIDER == 4
-	S_LOG_INFO("Using STD thread provider.");
-#else
-	S_LOG_INFO("Using unknown thread provider.");
-#endif
-
-
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
-	mRoot = mOgreSetup->configure();
-	if (!mRoot) {
-		throw std::runtime_error("Could not create Ogre instance.");
-	}
+	mOgreSetup->configure();
 
 	mWindow = mOgreSetup->getRenderWindow();
-	//We'll control the rendering ourself and need to turn off the autoupdating.
-	mWindow->setAutoUpdated(false);
-
 
 	auto exportDir = configSrv.getHomeDirectory(BaseDirType_DATA) / "user-media" / "data";
 	//Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
 
 	mLodDefinitionManager = new Lod::LodDefinitionManager(exportDir);
-
-	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
-
-	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
-
-	// Sounds
-	mSoundManager = std::make_unique<SoundDefinitionManager>();
-
-	mEntityRecipeManager = new Authoring::EntityRecipeManager();
-
-	// Create the scene manager used for the main menu and load screen. Get the most simple one.
-	mSceneManagerOutOfWorld = mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "OutOfWorldSceneManager");
 
 	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(mSceneManagerOutOfWorld);
 	if (!Ogre::MeshLodGenerator::getSingletonPtr()) {
@@ -232,7 +180,6 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 	mSceneManagerOutOfWorld->addRenderQueueListener(mOgreSetup->getOverlaySystem());
 
 	//Create a resource loader which loads all the resources we need.
-	mResourceLoader = new OgreResourceLoader();
 	mResourceLoader->initialize();
 
 	mResourceLoader->loadBootstrap();
@@ -241,7 +188,7 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 
 	mResourceLoader->loadGeneral();
 
-	mScreen = new Screen(*mWindow);
+	mScreen = std::make_unique<Screen>(*mWindow);
 
 	//bind general commands
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
@@ -252,13 +199,14 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 	mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(mainLoopController);
 	mShaderManager = new ShaderManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter());
 	mShaderDetailManager = new ShaderDetailManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter(), *mShaderManager);
-	mMaterialEditor = std::make_unique<Authoring::MaterialEditor>();
-
-	mConsoleDevTools = std::make_unique<ConsoleDevTools>();
 
 }
 
 EmberOgre::~EmberOgre() {
+	// Deregister the overlay system before deleting it in OgreSetup::shutdown
+	if (mSceneManagerOutOfWorld && mOgreSetup) {
+		mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
+	}
 
 	if (mPMInjectorSignaler) {
 		Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(nullptr);
@@ -272,9 +220,12 @@ EmberOgre::~EmberOgre() {
 	mGUIManager.reset();
 	EventGUIManagerDestroyed();
 
-	delete mEntityRecipeManager;
-	delete mTerrainLayerManager;
-	delete mEntityMappingManager;
+	mEntityRecipeManager.reset();
+	mTerrainLayerManager.reset();
+	mEntityMappingManager.reset();
+//	delete mEntityRecipeManager;
+//	delete mTerrainLayerManager;
+//	delete mEntityMappingManager;
 
 	EventOgreBeingDestroyed();
 	//Right before we destroy Ogre we want to force a garbage collection of all scripting providers. The main reason is that if there are any instances of SharedPtr in the scripting environments we want to collect them now.
@@ -294,22 +245,18 @@ EmberOgre::~EmberOgre() {
 	delete mAutomaticGraphicsLevelManager;
 	delete mShaderDetailManager;
 	delete mShaderManager;
-	delete mScreen;
+	//delete mScreen;
 
 	mGuiSetup.reset();
 	if (mOgreSetup) {
-		// Deregister the overlay system before deleting it in OgreSetup::shutdown
-		if (mSceneManagerOutOfWorld) {
-			mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
-		}
-		mOgreSetup->shutdown();
+
 		mOgreSetup.reset();
 		EventOgreDestroyed();
 	}
 
 
 	//delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
-	delete mResourceLoader;
+//	delete mResourceLoader;
 
 }
 

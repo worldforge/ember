@@ -74,7 +74,7 @@ public:
 	 * @brief Configures the application - returns false if the user chooses to abandon configuration.
 	 * @return True if everything was correctly set up, else false.
 	 */
-	Ogre::Root* configure();
+	void configure();
 
 	/**
 	 * @brief Gets the main render window.
@@ -90,11 +90,6 @@ public:
 
 	void saveConfig();
 
-	/**
-	 * @brief Shuts down the Ogre system.
-	 */
-	void shutdown();
-
 	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
@@ -103,6 +98,14 @@ public:
 	ConsoleCommandWrapper DiagnoseOgre;
 
 private:
+
+	/**
+	 * @brief Ogre plugin loader, which handles OS specific and build specific differences.
+	 *
+	 * Don't destroy it before Ogre::Root, even if it works for you with dynamic builds,
+	 * because on static builds it would destroy the plugins!
+	 */
+	OgrePluginLoader mPluginLoader;
 
 	/**
 	 * @brief Holds the Ogre root object.
@@ -115,11 +118,6 @@ private:
 	Ogre::RenderWindow* mRenderWindow;
 
 	/**
-	 We'll use our own scene manager factory.
-	 */
-	std::unique_ptr<Ogre::SceneManagerFactory> mSceneManagerFactory;
-
-	/**
 	 * @brief Provides the ability to use relative paths for skeletons in meshes.
 	 */
 	std::unique_ptr<MeshSerializerListener> mMeshSerializerListener;
@@ -128,13 +126,7 @@ private:
 	 * @brief The Ogre overlay system
 	 */
 	std::unique_ptr<Ogre::OverlaySystem> mOverlaySystem;
-	/**
-	 * @brief Ogre plugin loader, which handles OS specific and build specific differences.
-	 *
-	 * Don't destroy it before Ogre::Root, even if it works for you with dynamic builds,
-	 * because on static builds it would destroy the plugins!
-	 */
-	OgrePluginLoader mPluginLoader;
+
 
 #ifdef BUILD_WEBEMBER
 	/**
@@ -154,8 +146,6 @@ private:
 	 */
 	void setStandardValues();
 
-	bool showConfigurationDialog();
-
 	void parseWindowGeometry(const Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen);
 
 	void input_SizeChanged(unsigned int width, unsigned int height);
@@ -170,8 +160,6 @@ private:
 	 * time the window is resized, minimized or restored we seem to avoid the bug.
 	 */
 	void registerOpenGLContextFix();
-
-	void Config_ogreLogChanged(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 
 };

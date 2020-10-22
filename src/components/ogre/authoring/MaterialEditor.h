@@ -29,17 +29,13 @@
 
 #include "framework/ConsoleCommandWrapper.h"
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 /**
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class MaterialEditor: public virtual sigc::trackable, public ConsoleObject
-{
+class MaterialEditor : public virtual sigc::trackable, public ConsoleObject {
 public:
 	MaterialEditor();
 
@@ -51,7 +47,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	void runCommand(const std::string &command, const std::string &args) override;
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	const ConsoleCommandWrapper AlterMaterial;
 
