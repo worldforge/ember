@@ -35,14 +35,9 @@ namespace OgreView
 namespace Lod
 {
 
-LodManager::LodManager()
-{
-}
+LodManager::LodManager() = default;
 
-LodManager::~LodManager()
-{
-
-}
+LodManager::~LodManager() = default;
 
 void LodManager::loadLod(Ogre::MeshPtr mesh)
 {

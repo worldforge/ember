@@ -88,13 +88,13 @@ Avatar::Avatar(Eris::Avatar& erisAvatar,
 		mMinIntervalOfRotationChanges(1000),
 		mErisAvatar(erisAvatar),
 		mErisAvatarEntity(erisAvatarEntity),
-		mAvatarAttachmentController(new AvatarAttachmentController(*this)),
-		mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene, terrainAdapter)),
+		mAvatarAttachmentController(std::make_unique<AvatarAttachmentController>(*this)),
+		mCameraMount(std::make_unique<Camera::ThirdPersonCameraMount>(cameraSettings, scene, terrainAdapter)),
 		mIsAdmin(false),
 		mHasChangedLocation(false),
 		mIsMovingServerOnly(false),
 		mScene(scene),
-		mEntityMaker(new Authoring::EntityMaker(erisAvatar, *EmberServices::getSingleton().getServerService().getConnection())) {
+		mEntityMaker(std::make_unique<Authoring::EntityMaker>(erisAvatar, *EmberServices::getSingleton().getServerService().getConnection())) {
 
 	MainLoopController::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
 

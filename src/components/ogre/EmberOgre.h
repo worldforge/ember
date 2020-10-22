@@ -158,7 +158,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	EmberOgre(Input& input, ServerService& serverService, SoundService& soundService);
+	EmberOgre(MainLoopController& mainLoopController, Eris::EventService& eventService, Input& input, ServerService& serverService, SoundService& soundService);
 
 	/**
 	 * @brief Dtor.
@@ -322,7 +322,7 @@ protected:
 	/**
 	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
 	 */
-	OgreLogObserver* mLogObserver;
+	std::unique_ptr<OgreLogObserver> mLogObserver;
 
 	/**
 	 * @brief Helper object that allows for easy Ogre material editing.
@@ -342,7 +342,7 @@ protected:
 	/**
 	 * @brief Allows to add Lod to the meshes.
 	 */
-	Lod::LodManager* mLodManager;
+	std::unique_ptr<Lod::LodManager> mLodManager;
 
 	/**
 	 * @brief The collision manager, responsible for handling collisions of the geometry in the world.
@@ -364,7 +364,7 @@ protected:
 	 *
 	 * Since we do this we can better steer how Ogre log messages are handled.
 	 */
-	Ogre::LogManager* mOgreLogManager;
+	std::unique_ptr<Ogre::LogManager> mOgreLogManager;
 
 	/**
 	 * @brief Set this to true when we're not rendering.
@@ -388,7 +388,7 @@ protected:
 	/**
 	 * @brief Signals, when a Lod is injected.
 	 */
-	Lod::PMInjectorSignaler* mPMInjectorSignaler;
+	std::unique_ptr<Lod::PMInjectorSignaler> mPMInjectorSignaler;
 
 	std::unique_ptr<ConsoleDevTools> mConsoleDevTools;
 

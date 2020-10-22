@@ -209,35 +209,38 @@ Application::Application(Input& input,
 		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."),
 		mScriptingResourceProvider(nullptr) {
 
-	// Change working directory
-	auto dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
 
-	if (!boost::filesystem::is_directory(dirName)) {
-		boost::filesystem::create_directories(dirName);
-	}
+		// Change working directory
+		auto dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
 
-	int result = chdir(mConfigService.getHomeDirectory(BaseDirType_CONFIG).generic_string().c_str());
+		if (!boost::filesystem::is_directory(dirName)) {
+			boost::filesystem::create_directories(dirName);
+		}
 
-	if (result) {
-		S_LOG_WARNING("Could not change directory to '" << mConfigService.getHomeDirectory(BaseDirType_CONFIG).c_str() << "'.");
-	}
+		int result = chdir(mConfigService.getHomeDirectory(BaseDirType_CONFIG).generic_string().c_str());
 
-	//load the config file. Note that this will load the shared config file, and then the user config file if available.
-	mConfigService.loadSavedConfig("ember.conf", mConfigSettings);
+		if (result) {
+			S_LOG_WARNING("Could not change directory to '" << mConfigService.getHomeDirectory(BaseDirType_CONFIG).c_str() << "'.");
+		}
 
-	//Check if there's a user specific ember.conf file. If not, create an empty template one.
-	auto userConfigFilePath = mConfigService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
-	if (!boost::filesystem::exists(userConfigFilePath)) {
-		//Create empty template file.
-		std::ofstream outstream(userConfigFilePath.c_str());
-		outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
-		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath.string() << "'.");
-	}
+		//load the config file. Note that this will load the shared config file, and then the user config file if available.
+		mConfigService.loadSavedConfig("ember.conf", mConfigSettings);
 
-	S_LOG_INFO("Using media from " << mConfigService.getEmberMediaDirectory().string());
+		//Check if there's a user specific ember.conf file. If not, create an empty template one.
+		auto userConfigFilePath = mConfigService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
+		if (!boost::filesystem::exists(userConfigFilePath)) {
+			//Create empty template file.
+			std::ofstream outstream(userConfigFilePath.c_str());
+			outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
+			S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath.string() << "'.");
+		}
 
-	initializeServices();
-	registerComponents();
+		S_LOG_INFO("Using media from " << mConfigService.getEmberMediaDirectory().string());
+
+		initializeServices();
+
+		mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController, mSession->getEventService(), mInput, mServices->getServerService(), mServices->getSoundService());
+
 }
 
 Application::~Application() {
@@ -287,7 +290,7 @@ extern "C" void shutdownHandler(int sig) {
 }
 
 void Application::registerComponents() {
-	mOgreView = std::make_unique<OgreView::EmberOgre>(mInput, mServices->getServerService(), mServices->getSoundService());
+//	mOgreView = std::make_unique<OgreView::EmberOgre>(mInput, mServices->getServerService(), mServices->getSoundService());
 }
 
 void Application::mainLoop() {

@@ -91,7 +91,7 @@ void BulletCollisionDetector::updateScale(const WFMath::Vector<3>& scale) {
 
 void BulletCollisionDetector::addCollisionShape(std::shared_ptr<btCollisionShape> shape) {
 	if (shape) {
-		std::unique_ptr<btCollisionObject> collisionObject(new btCollisionObject());
+		auto collisionObject = std::make_unique<btCollisionObject>();
 		collisionObject->setCollisionShape(shape.get());
 		collisionObject->setUserPointer(this);
 		mBulletWorld.getCollisionWorld().addCollisionObject(collisionObject.get(), mMask);

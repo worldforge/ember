@@ -53,7 +53,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~LodManager();
+	~LodManager() override;
 
 	/**
 	 * @brief Loads Lod settings to the passed mesh.

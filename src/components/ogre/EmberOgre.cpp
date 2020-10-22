@@ -105,10 +105,10 @@ using namespace Ember;
 namespace Ember {
 namespace OgreView {
 
-EmberOgre::EmberOgre(Input& input, ServerService& serverService, SoundService& soundService) :
+EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService& eventService, Input& input, ServerService& serverService, SoundService& soundService) :
 		mInput(input),
 		mServerService(serverService),
-		mOgreSetup(nullptr),
+		mOgreSetup(std::make_unique<OgreSetup>()),
 		mRoot(nullptr),
 		mSceneManagerOutOfWorld(nullptr),
 		mWindow(nullptr),
@@ -116,25 +116,30 @@ EmberOgre::EmberOgre(Input& input, ServerService& serverService, SoundService& s
 		mShaderManager(nullptr),
 		mShaderDetailManager(nullptr),
 		mAutomaticGraphicsLevelManager(nullptr),
-		mGeneralCommandMapper(new InputCommandMapper("general")),
+		mGeneralCommandMapper(std::make_unique<InputCommandMapper>("general")),
 		mSoundManager(nullptr),
 		mGUIManager(nullptr),
 		mModelDefinitionManager(nullptr),
 		mEntityMappingManager(nullptr),
 		mTerrainLayerManager(nullptr),
 		mEntityRecipeManager(nullptr),
-		mLogObserver(nullptr),
+		mLogObserver(std::make_unique<OgreLogObserver>()),
 		mMaterialEditor(nullptr),
 		mSoundResourceProvider(std::make_unique<OgreResourceProvider>("General")),
 		mLodDefinitionManager(nullptr),
-		mLodManager(nullptr),
+		mLodManager(std::make_unique<Lod::LodManager>()),
 		mResourceLoader(nullptr),
-		mOgreLogManager(nullptr),
+		//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
+		mOgreLogManager(std::make_unique<Ogre::LogManager>()),
 		mIsInPausedMode(false),
 		mCameraOutOfWorld(nullptr),
-		mPMInjectorSignaler(nullptr),
+		// Needed for QueuedProgressiveMeshGenerator.
+		mPMInjectorSignaler(std::make_unique<Lod::PMInjectorSignaler>()),
 		mConsoleDevTools(nullptr),
-		mConfigListenerContainer(new ConfigListenerContainer()) {
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()) {
+
+	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
+	Ogre::LogManager::getSingleton().getDefaultLog()->addListener(mLogObserver.get());
 
 	serverService.GotAccount.connect([this](Eris::Account* account) {
 		account->AvatarDeactivated.connect([this](const std::string& avatarId) { destroyWorld(); });
@@ -143,10 +148,121 @@ EmberOgre::EmberOgre(Input& input, ServerService& serverService, SoundService& s
 
 	soundService.setResourceProvider(mSoundResourceProvider.get());
 
+
+	S_LOG_INFO("Compiled against Ogre version " << OGRE_VERSION);
+
+#if OGRE_DEBUG_MODE
+	S_LOG_INFO("Compiled against Ogre in debug mode.");
+#else
+	S_LOG_INFO("Compiled against Ogre in release mode.");
+#endif
+
+#if OGRE_THREAD_SUPPORT == 0
+	S_LOG_INFO("Compiled against Ogre without threading support.");
+#elif OGRE_THREAD_SUPPORT == 1
+	S_LOG_INFO("Compiled against Ogre with multi threading support.");
+#elif OGRE_THREAD_SUPPORT == 2
+	S_LOG_INFO("Compiled against Ogre with semi threading support.");
+#elif OGRE_THREAD_SUPPORT == 3
+	S_LOG_INFO("Compiled against Ogre with threading support without synchronization.");
+#else
+	S_LOG_INFO("Compiled against Ogre with unknown threading support.");
+#endif
+
+#if OGRE_THREAD_PROVIDER == 0
+	S_LOG_INFO("Using no thread provider.");
+#elif OGRE_THREAD_PROVIDER == 1
+	S_LOG_INFO("Using Boost thread provider.");
+#elif OGRE_THREAD_PROVIDER == 2
+	S_LOG_INFO("Using Poco thread provider.");
+#elif OGRE_THREAD_PROVIDER == 3
+	S_LOG_INFO("Using TBB thread provider.");
+#elif OGRE_THREAD_PROVIDER == 4
+	S_LOG_INFO("Using STD thread provider.");
+#else
+	S_LOG_INFO("Using unknown thread provider.");
+#endif
+
+
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+
+	mRoot = mOgreSetup->configure();
+	if (!mRoot) {
+		throw std::runtime_error("Could not create Ogre instance.");
+	}
+
+	mWindow = mOgreSetup->getRenderWindow();
+	//We'll control the rendering ourself and need to turn off the autoupdating.
+	mWindow->setAutoUpdated(false);
+
+
+	auto exportDir = configSrv.getHomeDirectory(BaseDirType_DATA) / "user-media" / "data";
+	//Create the model definition manager
+	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
+
+	mLodDefinitionManager = new Lod::LodDefinitionManager(exportDir);
+
+	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
+
+	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
+
+	// Sounds
+	mSoundManager = std::make_unique<SoundDefinitionManager>();
+
+	mEntityRecipeManager = new Authoring::EntityRecipeManager();
+
+	// Create the scene manager used for the main menu and load screen. Get the most simple one.
+	mSceneManagerOutOfWorld = mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "OutOfWorldSceneManager");
+
+	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(mSceneManagerOutOfWorld);
+	if (!Ogre::MeshLodGenerator::getSingletonPtr()) {
+		new Ogre::MeshLodGenerator();
+	}
+	Ogre::MeshLodGenerator::getSingleton()._initWorkQueue();
+	Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(mPMInjectorSignaler.get());
+
+	//create the camera for the main menu and load screen
+	mCameraOutOfWorld = mSceneManagerOutOfWorld->createCamera("MainMenuCamera");
+	Ogre::Viewport* viewPort = mWindow->addViewport(mCameraOutOfWorld);
+	//set the background colour to black
+	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
+	mCameraOutOfWorld->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
+
+	// Register the overlay system so that GUI overlays are shown
+	mSceneManagerOutOfWorld->addRenderQueueListener(mOgreSetup->getOverlaySystem());
+
+	//Create a resource loader which loads all the resources we need.
+	mResourceLoader = new OgreResourceLoader();
+	mResourceLoader->initialize();
+
+	mResourceLoader->loadBootstrap();
+	mResourceLoader->loadGui();
+	mGuiSetup = std::make_unique<Cegui::CEGUISetup>(*mWindow);
+
+	mResourceLoader->loadGeneral();
+
+	mScreen = new Screen(*mWindow);
+
+	//bind general commands
+	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
+	mGeneralCommandMapper->bindToInput(mInput);
+
+
+	// Create shader manager
+	mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(mainLoopController);
+	mShaderManager = new ShaderManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter());
+	mShaderDetailManager = new ShaderDetailManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter(), *mShaderManager);
+	mMaterialEditor = std::make_unique<Authoring::MaterialEditor>();
+
+	mConsoleDevTools = std::make_unique<ConsoleDevTools>();
+
 }
 
 EmberOgre::~EmberOgre() {
 
+	if (mPMInjectorSignaler) {
+		Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(nullptr);
+	}
 	EmberServices::getSingleton().getSoundService().setResourceProvider(nullptr);
 	mSoundManager.reset();
 
@@ -169,7 +285,6 @@ EmberOgre::~EmberOgre() {
 	//by deleting the model manager we'll assure that
 	delete mModelDefinitionManager;
 
-	delete mLodManager;
 	delete mLodDefinitionManager;
 
 	// 	if (mWindow) {
@@ -192,11 +307,6 @@ EmberOgre::~EmberOgre() {
 		EventOgreDestroyed();
 	}
 
-	delete mPMInjectorSignaler;
-
-	//Ogre is destroyed already, so we can't deregister this: we'll just destroy it
-	delete mLogObserver;
-	OGRE_DELETE mOgreLogManager;
 
 	//delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
@@ -266,204 +376,80 @@ void EmberOgre::shutdownGui() {
 }
 
 bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService& eventService) {
-	if (mRoot) {
-		throw Exception("EmberOgre::setup has already been called.");
-	}
-	S_LOG_INFO("Compiled against Ogre version " << OGRE_VERSION);
-
-#if OGRE_DEBUG_MODE
-	S_LOG_INFO("Compiled against Ogre in debug mode.");
-#else
-	S_LOG_INFO("Compiled against Ogre in release mode.");
-#endif
-
-#if OGRE_THREAD_SUPPORT == 0
-	S_LOG_INFO("Compiled against Ogre without threading support.");
-#elif OGRE_THREAD_SUPPORT == 1
-	S_LOG_INFO("Compiled against Ogre with multi threading support.");
-#elif OGRE_THREAD_SUPPORT == 2
-	S_LOG_INFO("Compiled against Ogre with semi threading support.");
-#elif OGRE_THREAD_SUPPORT == 3
-	S_LOG_INFO("Compiled against Ogre with threading support without synchronization.");
-#else
-	S_LOG_INFO("Compiled against Ogre with unknown threading support.");
-#endif
-
-#if OGRE_THREAD_PROVIDER == 0
-	S_LOG_INFO("Using no thread provider.");
-#elif OGRE_THREAD_PROVIDER == 1
-	S_LOG_INFO("Using Boost thread provider.");
-#elif OGRE_THREAD_PROVIDER == 2
-	S_LOG_INFO("Using Poco thread provider.");
-#elif OGRE_THREAD_PROVIDER == 3
-	S_LOG_INFO("Using TBB thread provider.");
-#elif OGRE_THREAD_PROVIDER == 4
-	S_LOG_INFO("Using STD thread provider.");
-#else
-	S_LOG_INFO("Using unknown thread provider.");
-#endif
 
 
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
-
-	//Create a setup object through which we will start up Ogre.
-	mOgreSetup = std::make_unique<OgreSetup>();
-
-	mLogObserver = new OgreLogObserver();
-
-	//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
-	mOgreLogManager = OGRE_NEW Ogre::LogManager();
-	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
-	Ogre::LogManager::getSingleton().getDefaultLog()->addListener(mLogObserver);
-
-	mRoot = mOgreSetup->configure();
-	if (!mRoot) {
-		return false;
-	}
-
-	mWindow = mOgreSetup->getRenderWindow();
-	//We'll control the rendering ourself and need to turn off the autoupdating.
-	mWindow->setAutoUpdated(false);
-
-
-	auto exportDir = configSrv.getHomeDirectory(BaseDirType_DATA) / "user-media" / "data";
-	//Create the model definition manager
-	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir, eventService);
-
-	mLodDefinitionManager = new Lod::LodDefinitionManager(exportDir);
-	mLodManager = new Lod::LodManager();
-
-	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
-
-	mTerrainLayerManager = new Terrain::TerrainLayerDefinitionManager();
-
-	// Sounds
-	mSoundManager = std::make_unique<SoundDefinitionManager>();
-
-	mEntityRecipeManager = new Authoring::EntityRecipeManager();
-
-	// Create the scene manager used for the main menu and load screen. Get the most simple one.
-	mSceneManagerOutOfWorld = mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "OutOfWorldSceneManager");
-
-	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(mSceneManagerOutOfWorld);
-
-	//create the camera for the main menu and load screen
-	mCameraOutOfWorld = mSceneManagerOutOfWorld->createCamera("MainMenuCamera");
-	Ogre::Viewport* viewPort = mWindow->addViewport(mCameraOutOfWorld);
-	//set the background colour to black
-	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
-	mCameraOutOfWorld->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
-
-	// Register the overlay system so that GUI overlays are shown
-	mSceneManagerOutOfWorld->addRenderQueueListener(mOgreSetup->getOverlaySystem());
-
-	//Create a resource loader which loads all the resources we need.
-	mResourceLoader = new OgreResourceLoader();
-	mResourceLoader->initialize();
-
 	//check if we should preload the media
 	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool) configSrv.getValue("media", "preloadmedia");
 	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool) configSrv.getValue("wfut", "enabled");
 
-	mResourceLoader->loadBootstrap();
-	mResourceLoader->loadGui();
-	mGuiSetup = std::make_unique<Cegui::CEGUISetup>(*mWindow);
+	//we need a nice loading bar to show the user how far the setup has progressed
+	Gui::LoadingBar loadingBar(*mGuiSetup, mainLoopController);
 
-	mResourceLoader->loadGeneral();
-
-	mScreen = new Screen(*mWindow);
-
-	//bind general commands
-	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
-	mGeneralCommandMapper->bindToInput(mInput);
-
-	{
-		//we need a nice loading bar to show the user how far the setup has progressed
-		Gui::LoadingBar loadingBar(*mGuiSetup, mainLoopController);
-
-		// Needed for QueuedProgressiveMeshGenerator.
-		mPMInjectorSignaler = new Lod::PMInjectorSignaler();
-
-		if (!Ogre::MeshLodGenerator::getSingletonPtr()) {
-			new Ogre::MeshLodGenerator();
-		}
-		Ogre::MeshLodGenerator::getSingleton()._initWorkQueue();
-		Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(mPMInjectorSignaler);
-
-		Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
-		if (useWfut) {
-			loadingBar.addSection(&wfutSection);
-		}
-		Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
-
-		Gui::LoadingBarSection resourceGroupSection(loadingBar, useWfut ? 0.8f : 1.0f, "Resource loading");
-		loadingBar.addSection(&resourceGroupSection);
-
-		size_t numberOfSections = Ogre::ResourceGroupManager::getSingleton().getResourceGroups().size() - 1; //remove bootstrap since that's already loaded
-		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7f : 1.0f));
-
-		loadingBar.setVersionText(std::string("Version ") + EMBER_VERSION);
-
-		if (useWfut) {
-			S_LOG_INFO("Updating media.");
-			MediaUpdater updater;
-			updater.performUpdate();
-		}
-
-		//create the collision manager
-		//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
-		//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
-
-		Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-		loadingBar.updateRender(true);
-
-		//out of pure interest we'll print out how many modeldefinitions we've loaded
-		auto count = Model::ModelDefinitionManager::getSingleton().getEntries().size();
-
-		S_LOG_INFO("Finished loading " << count << " modeldefinitions.");
-
-		// Create shader manager
-		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(mainLoopController);
-		mShaderManager = new ShaderManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter());
-		mShaderDetailManager = new ShaderDetailManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter(), *mShaderManager);
-		mMaterialEditor = std::make_unique<Authoring::MaterialEditor>();
-
-		mConsoleDevTools = std::make_unique<ConsoleDevTools>();
-
-		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
-		Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");
-		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
-		Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");
-
-		mTerrainLayerManager->resolveTextureReferences();
-
-		setupProfiler();
-
-		//should media be preloaded?
-		if (preloadMedia) {
-			S_LOG_INFO("Begin preload.");
-			mResourceLoader->preloadMedia();
-
-			S_LOG_INFO("End preload.");
-		}
-		try {
-			mGUIManager = std::make_unique<GUIManager>(*mGuiSetup, configSrv, mServerService, mainLoopController);
-			EventGUIManagerCreated.emit(*mGUIManager);
-		} catch (const std::exception& ex) {
-			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-			S_LOG_FAILURE("Error when loading GUIManager." << ex);
-			throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
-		} catch (...) {
-			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-			throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
-		}
-
-		if (chdir(configSrv.getHomeDirectory(BaseDirType_DATA).generic_string().c_str())) {
-			S_LOG_WARNING("Failed to change directory to '" << configSrv.getHomeDirectory(BaseDirType_DATA).string() << "'");
-		}
-
+	Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
+	if (useWfut) {
+		loadingBar.addSection(&wfutSection);
 	}
+	Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
+
+	Gui::LoadingBarSection resourceGroupSection(loadingBar, useWfut ? 0.8f : 1.0f, "Resource loading");
+	loadingBar.addSection(&resourceGroupSection);
+
+	size_t numberOfSections = Ogre::ResourceGroupManager::getSingleton().getResourceGroups().size() - 1; //remove bootstrap since that's already loaded
+	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7f : 1.0f));
+
+	loadingBar.setVersionText(std::string("Version ") + EMBER_VERSION);
+
+	if (useWfut) {
+		S_LOG_INFO("Updating media.");
+		MediaUpdater updater;
+		updater.performUpdate();
+	}
+
+	//create the collision manager
+	//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
+	//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
+
+	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+	loadingBar.updateRender(true);
+
+	//out of pure interest we'll print out how many modeldefinitions we've loaded
+	auto count = Model::ModelDefinitionManager::getSingleton().getEntries().size();
+
+	S_LOG_INFO("Finished loading " << count << " modeldefinitions.");
+	mTerrainLayerManager->resolveTextureReferences();
+
+	setupProfiler();
+
+	Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
+	Ogre::MaterialManager::getSingleton().getDefaultMaterial(false)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");
+	Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setVertexProgram("SimpleVp");
+	Ogre::MaterialManager::getSingleton().getDefaultMaterial(true)->getTechnique(0)->getPass(0)->setFragmentProgram("SimpleWhiteFp");
+
+	//should media be preloaded?
+	if (preloadMedia) {
+		S_LOG_INFO("Begin preload.");
+		mResourceLoader->preloadMedia();
+
+		S_LOG_INFO("End preload.");
+	}
+	try {
+		mGUIManager = std::make_unique<GUIManager>(*mGuiSetup, configSrv, mServerService, mainLoopController);
+		EventGUIManagerCreated.emit(*mGUIManager);
+	} catch (const std::exception& ex) {
+		//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+		S_LOG_FAILURE("Error when loading GUIManager." << ex);
+		throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
+	} catch (...) {
+		//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+		throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
+	}
+
+	if (chdir(configSrv.getHomeDirectory(BaseDirType_DATA).generic_string().c_str())) {
+		S_LOG_WARNING("Failed to change directory to '" << configSrv.getHomeDirectory(BaseDirType_DATA).string() << "'");
+	}
+
 
 	mResourceLoader->unloadUnusedResources();
 	return true;
