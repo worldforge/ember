@@ -43,6 +43,7 @@ class Variable;
 
 namespace Ogre {
 class SceneManagerFactory;
+class MeshLodGenerator;
 }
 
 namespace Ember {
@@ -126,6 +127,8 @@ private:
 	 * @brief The Ogre overlay system
 	 */
 	std::unique_ptr<Ogre::OverlaySystem> mOverlaySystem;
+
+	std::unique_ptr<Ogre::MeshLodGenerator> mMeshLodGenerator;
 
 
 #ifdef BUILD_WEBEMBER

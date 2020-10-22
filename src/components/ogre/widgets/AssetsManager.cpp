@@ -46,15 +46,22 @@
 #include <CEGUI/ImageManager.h>
 #include <CEGUI/System.h>
 #include <boost/filesystem/operations.hpp>
+#include <MeshLodGenerator/OgreLodWorkQueueInjector.h>
 
 namespace Ember {
 namespace OgreView {
 
 namespace Gui {
 
-AssetsManager::AssetsManager() = default;
+AssetsManager::AssetsManager() : mPMInjectorSignaler(std::make_unique<Lod::PMInjectorSignaler>()) {
+	Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(mPMInjectorSignaler.get());
+}
 
-AssetsManager::~AssetsManager() = default;
+AssetsManager::~AssetsManager() {
+	if (mPMInjectorSignaler.get() == Ogre::LodWorkQueueInjector::getSingleton().getInjectorListener()) {
+		Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(nullptr);
+	}
+}
 
 TexturePair AssetsManager::showTexture(const std::string& textureName) {
 	// 	if (!mOgreCEGUITexture) {

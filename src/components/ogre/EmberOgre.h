@@ -94,7 +94,6 @@ class LodDefinitionManager;
 
 class LodManager;
 
-class PMInjectorSignaler;
 }
 
 namespace Mapping {
@@ -392,11 +391,6 @@ protected:
 	 * The World instance is only available when the client through an Avatar and View instance has entered into the server side world.
 	 */
 	std::unique_ptr<World> mWorld;
-
-	/**
-	 * @brief Signals, when a Lod is injected.
-	 */
-	std::unique_ptr<Lod::PMInjectorSignaler> mPMInjectorSignaler;
 
 	std::unique_ptr<ConsoleDevTools> mConsoleDevTools;
 

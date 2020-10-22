@@ -27,6 +27,7 @@
 
 #include <string>
 #include <boost/filesystem/path.hpp>
+#include <components/ogre/lod/PMInjectorSignaler.h>
 
 namespace CEGUI {
 class OgreCEGUITexture;
@@ -116,6 +117,15 @@ public:
 	 */
 	void createModel(const Ogre::MeshPtr& mesh);
 
+	Lod::PMInjectorSignaler& getLodInjectorSignaler() {
+		return *mPMInjectorSignaler;
+	}
+
+protected:
+	/**
+	 * @brief Signals, when a Lod is injected.
+	 */
+	std::unique_ptr<Lod::PMInjectorSignaler> mPMInjectorSignaler;
 
 };
 

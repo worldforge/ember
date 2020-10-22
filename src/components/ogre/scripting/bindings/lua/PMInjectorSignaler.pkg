@@ -35,7 +35,6 @@ namespace Lod
 class PMInjectorSignaler
 {
 public:
-	static Ember::OgreView::Lod::PMInjectorSignaler& getSingleton();
 
 	sigc::signal<void, Ogre::LodConfig*> LodInjected;
 	

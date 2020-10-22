@@ -80,6 +80,7 @@
 #include <Ogre.h>
 #include <RTShaderSystem/OgreShaderGenerator.h>
 #include <RTShaderSystem/OgreRTShaderSystem.h>
+#include <MeshLodGenerator/OgreMeshLodGenerator.h>
 #include <boost/filesystem.hpp>
 #include <memory>
 
@@ -96,6 +97,7 @@ OgreSetup::OgreSetup() :
 #ifdef BUILD_WEBEMBER
 		mOgreWindowProvider(nullptr),
 #endif
+		mMeshLodGenerator(std::make_unique<Ogre::MeshLodGenerator>()),
 		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()),
 		mSaveShadersToCache(false) {
 
@@ -156,6 +158,8 @@ OgreSetup::OgreSetup() :
 		S_LOG_WARNING("Could not set default resolution." << ex);
 	}
 	mRoot->setRenderSystem(renderSystem);
+
+	mMeshLodGenerator->_initWorkQueue();
 }
 
 OgreSetup::~OgreSetup() {

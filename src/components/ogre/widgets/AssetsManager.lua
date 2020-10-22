@@ -1201,6 +1201,20 @@ function AssetsManager:buildWidget()
 
         self.helper = Ember.OgreView.Gui.AssetsManager:new()
 
+
+        connect(self.connectors, self.helper:getLodInjectorSignaler().LodInjected, function()
+            if self.meshes.current and self.meshes.current.meshPtr then
+                self.meshes.current.lodUnderRegeneration = false
+                if self.meshes.current.lodNeedsRegenerate then
+                    self:LODRegenerateLods()
+                end
+
+                self:LODUpdateForcedLevel()
+                self:updatePreviewInfo()
+                self:updateMeshInfo()
+            end
+        end)
+
         self.widget:enableCloseButton()
     end
 
@@ -1252,19 +1266,7 @@ local assetsManagerInit = function()
 
     assetsManager:buildWidget()
 
-    local injector = Ember.OgreView.Lod.PMInjectorSignaler:getSingleton()
-    connect(assetsManager.connectors, injector.LodInjected, function()
-        if assetsManager and assetsManager.meshes.current and assetsManager.meshes.current.meshPtr then
-            assetsManager.meshes.current.lodUnderRegeneration = false
-            if assetsManager.meshes.current.lodNeedsRegenerate then
-                assetsManager:LODRegenerateLods()
-            end
 
-            assetsManager:LODUpdateForcedLevel()
-            assetsManager:updatePreviewInfo()
-            assetsManager:updateMeshInfo()
-        end
-    end)
 
     connect(assetsManager.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
         assetsManager:shutdown()

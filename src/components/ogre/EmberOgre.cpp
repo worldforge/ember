@@ -27,7 +27,6 @@
 #endif
 
 #include "EmberOgre.h"
-#include "lod/PMInjectorSignaler.h"
 
 // Headers to stop compile problems from headers
 
@@ -95,7 +94,6 @@
 #include <Eris/Account.h>
 
 #include <Overlay/OgreOverlaySystem.h>
-#include <MeshLodGenerator/OgreLodWorkQueueInjector.h>
 #include <framework/TimedLog.h>
 #include <RTShaderSystem/OgreShaderGenerator.h>
 
@@ -134,8 +132,6 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 		mLodManager(std::make_unique<Lod::LodManager>()),
 		mIsInPausedMode(false),
 		mCameraOutOfWorld(nullptr),
-		// Needed for QueuedProgressiveMeshGenerator.
-		mPMInjectorSignaler(std::make_unique<Lod::PMInjectorSignaler>()),
 		mConsoleDevTools(std::make_unique<ConsoleDevTools>()),
 		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()) {
 
@@ -163,11 +159,6 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 	mLodDefinitionManager = std::make_unique<Lod::LodDefinitionManager>(exportDir);
 
 	Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(mSceneManagerOutOfWorld);
-	if (!Ogre::MeshLodGenerator::getSingletonPtr()) {
-		new Ogre::MeshLodGenerator();
-	}
-	Ogre::MeshLodGenerator::getSingleton()._initWorkQueue();
-	Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(mPMInjectorSignaler.get());
 
 	//create the camera for the main menu and load screen
 	mCameraOutOfWorld = mSceneManagerOutOfWorld->createCamera("MainMenuCamera");
@@ -203,9 +194,6 @@ EmberOgre::~EmberOgre() {
 		mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
 	}
 
-	if (mPMInjectorSignaler) {
-		Ogre::LodWorkQueueInjector::getSingleton().setInjectorListener(nullptr);
-	}
 	EmberServices::getSingleton().getSoundService().setResourceProvider(nullptr);
 
 	EventGUIManagerBeingDestroyed();

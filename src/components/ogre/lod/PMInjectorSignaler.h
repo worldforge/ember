@@ -43,7 +43,6 @@ namespace Lod
  * @brief Extends PMInjector with sigc++ signaling, when Lod is injected into a mesh.
  */
 class PMInjectorSignaler :
-	public Ember::Singleton<PMInjectorSignaler>,
 	public Ogre::LodWorkQueueInjectorListener
 {
 public:

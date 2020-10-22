@@ -118,6 +118,7 @@ public:
 	 */
 	void createModel(Ogre::MeshPtr mesh);
 	
+	Ember::OgreView::Lod::PMInjectorSignaler& getLodInjectorSignaler();
 
 };
 
