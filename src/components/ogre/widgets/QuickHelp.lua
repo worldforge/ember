@@ -147,7 +147,7 @@ function QuickHelp:updateText(helpMessage)
 	end
 	
 	self.textWindow:setText(text)
-	self.widget:getMainWindow():setText("Help - " .. helpMessage:getTitle())
+	self.widget:getMainWindow():setText("Help - " .. helpMessage.mTitle)
 	self:updateButtons()
 end
 
