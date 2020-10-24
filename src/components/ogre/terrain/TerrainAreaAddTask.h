@@ -40,7 +40,7 @@ class TerrainLayerDefinitionManager;
 class TerrainAreaAddTask : public TerrainAreaTaskBase {
 public:
 	TerrainAreaAddTask(Mercator::Terrain& terrain,
-					   Mercator::Area* area,
+					   std::shared_ptr<Mercator::Area> area,
 					   ShaderUpdateSlotType markForUpdateSlot,
 					   TerrainHandler& terrainHandler,
 					   TerrainLayerDefinitionManager& terrainLayerDefinitionManager,

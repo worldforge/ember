@@ -523,7 +523,7 @@ void TerrainHandler::updateMod(TerrainMod* terrainMod) {
 	}
 }
 
-const std::unordered_map<std::string, Mercator::Area*>& TerrainHandler::getAreas() const {
+const std::unordered_map<std::string, std::shared_ptr<Mercator::Area>>& TerrainHandler::getAreas() const {
 	return mAreas;
 }
 
@@ -533,14 +533,14 @@ void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainAr
 	if (I == mAreas.end()) {
 		if (terrainArea && terrainArea->getLayer() != 0 && terrainArea->shape().isValid()) {
 			//There's no existing area, we need to add a new one.
-			auto* newArea = new Mercator::Area(*terrainArea);
-			mAreas.insert(AreaMap::value_type(id, newArea));
+			auto newArea = std::make_shared<Mercator::Area>(*terrainArea);
+			mAreas.emplace(id, newArea);
 
-			mTaskQueue->enqueueTask(std::make_unique<TerrainAreaAddTask>(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
+			mTaskQueue->enqueueTask(std::make_unique<TerrainAreaAddTask>(*mTerrain, std::move(newArea), sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
 		}
 		//If there's no existing area, and no valid supplied one, just don't do anything.
 	} else {
-		Mercator::Area* existingArea = I->second;
+		auto existingArea = I->second;
 		if (!terrainArea || terrainArea->getLayer() == 0 || !terrainArea->shape().isValid()) {
 			//We should remove the area.
 			const TerrainShader* shader = nullptr;
@@ -560,7 +560,7 @@ void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainAr
 				mAreas.erase(I);
 				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaRemoveTask>(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
 
-				auto* newArea = new Mercator::Area(*terrainArea);
+				auto newArea = std::make_shared<Mercator::Area>(*terrainArea);
 				mAreas.insert(AreaMap::value_type(id, newArea));
 				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaAddTask>(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
 			} else {

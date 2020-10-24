@@ -19,16 +19,18 @@
 #include "TerrainAreaUpdateTask.h"
 #include <Mercator/Terrain.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 
 namespace Terrain {
 TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain,
-											 Mercator::Area* area,
+											 std::shared_ptr<Mercator::Area> area,
 											 Mercator::Area newArea,
 											 ShaderUpdateSlotType markForUpdateSlot,
 											 const TerrainShader* shader) :
-		TerrainAreaTaskBase(terrain, area, std::move(markForUpdateSlot)),
+		TerrainAreaTaskBase(terrain, std::move(area), std::move(markForUpdateSlot)),
 		mNewArea(std::move(newArea)),
 		mShader(shader) {
 
@@ -41,7 +43,7 @@ void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCo
 	mArea->setShape(mNewArea.shape());
 	mNewShape = mArea->bbox();
 
-	mTerrain.updateArea(mArea);
+	mTerrain.updateArea(mArea.get());
 }
 
 bool TerrainAreaUpdateTask::executeTaskInMainThread() {

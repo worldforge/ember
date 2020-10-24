@@ -22,6 +22,8 @@
 #include "framework/tasks/TemplateNamedTask.h"
 #include <sigc++/slot.h>
 
+#include <memory>
+
 namespace Mercator {
 
 class Terrain;
@@ -51,7 +53,7 @@ class TerrainAreaTaskBase : public Tasks::TemplateNamedTask<TerrainAreaTaskBase>
 public:
 	typedef sigc::slot<void, const TerrainShader*, const WFMath::AxisBox<2>&> ShaderUpdateSlotType;
 
-	TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType shaderUpdateSlot);
+	TerrainAreaTaskBase(Mercator::Terrain& terrain, std::shared_ptr<Mercator::Area> area, ShaderUpdateSlotType shaderUpdateSlot);
 
 	~TerrainAreaTaskBase() override;
 
@@ -65,7 +67,7 @@ protected:
 	/**
 	 * @brief The terrain area.
 	 */
-	Mercator::Area* mArea;
+	std::shared_ptr<Mercator::Area> mArea;
 
 	ShaderUpdateSlotType mShaderUpdateSlot;
 

@@ -28,17 +28,17 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain,
-											 Mercator::Area* area,
+											 std::shared_ptr<Mercator::Area> area,
 											 ShaderUpdateSlotType markForUpdateSlot,
 											 const TerrainShader* shader) :
-		TerrainAreaTaskBase(terrain, area, std::move(markForUpdateSlot)), mShader(shader) {
+		TerrainAreaTaskBase(terrain, std::move(area), std::move(markForUpdateSlot)), mShader(shader) {
 
 }
 
 TerrainAreaRemoveTask::~TerrainAreaRemoveTask() = default;
 
 void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
-	mTerrain.removeArea(mArea);
+	mTerrain.removeArea(mArea.get());
 }
 
 bool TerrainAreaRemoveTask::executeTaskInMainThread() {
@@ -49,7 +49,6 @@ bool TerrainAreaRemoveTask::executeTaskInMainThread() {
 		//Note that since we've removed the area we can access the bbox in the main thread, since we're guaranteed that no other thread accesses it.
 		mShaderUpdateSlot(mShader, mArea->bbox());
 	}
-	delete mArea;
 	return true;
 }
 

@@ -19,19 +19,16 @@
 #include "TerrainAreaTaskBase.h"
 
 #include <utility>
-namespace Ember
-{
-namespace OgreView
-{
 
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+
+namespace Terrain {
 
 TerrainAreaTaskBase::TerrainAreaTaskBase(Mercator::Terrain& terrain,
-		Mercator::Area* area,
-		ShaderUpdateSlotType shaderUpdateSlot)
-: mTerrain(terrain), mArea(area), mShaderUpdateSlot(std::move(shaderUpdateSlot))
-{
+										 std::shared_ptr<Mercator::Area> area,
+										 ShaderUpdateSlotType shaderUpdateSlot)
+		: mTerrain(terrain), mArea(std::move(area)), mShaderUpdateSlot(std::move(shaderUpdateSlot)) {
 }
 
 TerrainAreaTaskBase::~TerrainAreaTaskBase() = default;

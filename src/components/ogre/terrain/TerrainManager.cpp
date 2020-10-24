@@ -73,12 +73,12 @@ TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter,
 							   ShaderManager& shaderManager,
 							   Eris::EventService& eventService,
 							   GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())),
-		mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
+		mCompilerTechniqueProvider(std::make_unique<Techniques::CompilerTechniqueProvider>(shaderManager, scene.getSceneManager())),
+		mHandler(std::make_unique<TerrainHandler>(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
 		mIsFoliageShown(false),
 		mTerrainAdapter(std::move(adapter)),
 		mFoliageBatchSize(32),
-		mVegetation(new Foliage::Vegetation()),
+		mVegetation(std::make_unique<Foliage::Vegetation>()),
 		mScene(scene),
 		mGraphicalChangeAdapter(graphicalChangeAdapter),
 		mView(view),
@@ -281,7 +281,7 @@ DelayedFoliageInitializer::DelayedFoliageInitializer(std::function<void()> callb
 		mView(view),
 		mIntervalMs(intervalMs),
 		mMaxTimeMs(maxTimeMs),
-		mTimeout(new Eris::TimedEvent(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&]() { this->timout_Expired(); })),
+		mTimeout(std::make_unique<Eris::TimedEvent>(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&]() { this->timout_Expired(); })),
 		mTotalElapsedTime(0) {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload

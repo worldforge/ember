@@ -259,10 +259,8 @@ void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::Terra
 			mTerrainHandler.updateMod(&terrainMod);
 		}
 	} else {
-		if (terrainMod.getTranslator()) {
-			terrainMod.reset();
-			mTerrainHandler.updateMod(&terrainMod);
-		}
+		terrainMod.reset();
+		mTerrainHandler.updateMod(&terrainMod);
 	}
 }
 }

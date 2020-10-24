@@ -55,7 +55,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 
 	//first populate the geometry for all pages, and then regenerate the shaders
 	for (const auto& geometryEntry : mGeometry) {
-		TerrainPageGeometryPtr geometry = geometryEntry.first;
+		auto& geometry = geometryEntry.first;
 		geometry->repopulate();
 		const SegmentVector& segmentVector = geometry->getValidSegments();
 		for (const auto& entry : segmentVector) {

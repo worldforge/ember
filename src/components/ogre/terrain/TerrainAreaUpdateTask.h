@@ -48,7 +48,7 @@ public:
 	 * @param oldShape The old shape, before the update.
 	 */
 	TerrainAreaUpdateTask(Mercator::Terrain& terrain,
-						  Mercator::Area* area,
+						  std::shared_ptr<Mercator::Area> area,
 						  Mercator::Area newArea,
 						  ShaderUpdateSlotType markForUpdateSlot,
 						  const TerrainShader* shader);

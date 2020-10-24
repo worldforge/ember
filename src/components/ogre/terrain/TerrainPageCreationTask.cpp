@@ -58,9 +58,9 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 		mPage->addShader(baseShader);
 	}
 
-	TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*mPage, mTerrainHandler.getSegmentManager(), mTerrainHandler.getDefaultHeight()));
+	auto geometryInstance = std::make_unique<TerrainPageGeometry>(*mPage, mTerrainHandler.getSegmentManager(), mTerrainHandler.getDefaultHeight());
 	BridgeBoundGeometryPtrVector geometry;
-	geometry.emplace_back(geometryInstance, mBridge);
+	geometry.emplace_back(std::move(geometryInstance), mBridge);
 	std::vector<WFMath::AxisBox<2>> areas;
 	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
@@ -69,7 +69,7 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 	for (auto& entry : mTerrainHandler.getAllShaders()) {
 		shaders.push_back(entry.second.get());
 	}
-	context.executeTask(std::make_unique<GeometryUpdateTask>(geometry, areas, mTerrainHandler, std::move(shaders), mHeightMapBufferProvider, mHeightMap, mMainLightDirection));
+	context.executeTask(std::make_unique<GeometryUpdateTask>(std::move(geometry), areas, mTerrainHandler, std::move(shaders), mHeightMapBufferProvider, mHeightMap, mMainLightDirection));
 
 }
 

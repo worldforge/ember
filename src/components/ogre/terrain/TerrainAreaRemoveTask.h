@@ -36,7 +36,7 @@ class TerrainShader;
 class TerrainAreaRemoveTask : public TerrainAreaTaskBase {
 public:
 	TerrainAreaRemoveTask(Mercator::Terrain& terrain,
-						  Mercator::Area* area,
+						  std::shared_ptr<Mercator::Area> area,
 						  ShaderUpdateSlotType markForUpdateSlot,
 						  const TerrainShader* shader);
 

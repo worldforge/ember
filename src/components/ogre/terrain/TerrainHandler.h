@@ -189,7 +189,7 @@ public:
 	int getPageMetersSize() const;
 
 
-	const std::unordered_map<std::string, Mercator::Area*>& getAreas() const;
+	const std::unordered_map<std::string, std::shared_ptr<Mercator::Area>>& getAreas() const;
 
 	/**
 	 * @brief Updates a terrain area.

@@ -32,12 +32,12 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain,
-									   Mercator::Area* area,
+									   std::shared_ptr<Mercator::Area> area,
 									   ShaderUpdateSlotType markForUpdateSlot,
 									   TerrainHandler& terrainHandler,
 									   TerrainLayerDefinitionManager& terrainLayerDefinitionManager,
 									   AreaShaderstore& areaShaders) :
-		TerrainAreaTaskBase(terrain, area, std::move(markForUpdateSlot)),
+		TerrainAreaTaskBase(terrain, std::move(area), std::move(markForUpdateSlot)),
 		mTerrainHandler(terrainHandler),
 		mTerrainLayerDefinitionManager(terrainLayerDefinitionManager),
 		mAreaShaders(areaShaders) {
@@ -47,7 +47,7 @@ TerrainAreaAddTask::~TerrainAreaAddTask() = default;
 
 void TerrainAreaAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	//We know by now that this area is valid, so we don't need to check the layer or the shape for validity.
-	mTerrain.addArea(mArea);
+	mTerrain.addArea(mArea.get());
 	//We can only access the bbox in the background thread, so lets pass on a copy of the bbox to the main thread.
 	mNewBbox = mArea->bbox();
 }

@@ -36,7 +36,7 @@ TerrainModUpdateTask::TerrainModUpdateTask(Mercator::Terrain& terrain, const Ter
 		mId(std::stol(terrainMod.getEntityId())),
 		mPosition(terrainMod.getEntity().getPosition()),
 		mOrientation(terrainMod.getEntity().getOrientation()),
-		mTranslator(*terrainMod.getTranslator())
+		mTranslator(terrainMod.getTranslator())
 {
 
 }

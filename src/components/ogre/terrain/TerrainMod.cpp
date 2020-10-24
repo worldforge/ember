@@ -35,7 +35,7 @@ namespace Terrain {
 
 TerrainMod::TerrainMod(Eris::Entity& entity, const Atlas::Message::MapType& data) :
 		mEntity(entity),
-		mTranslator(new Ember::Terrain::TerrainModTranslator(data)) {
+		mTranslator(std::make_unique<Ember::Terrain::TerrainModTranslator>(data)) {
 }
 
 TerrainMod::~TerrainMod() = default;
@@ -54,8 +54,8 @@ Eris::Entity& TerrainMod::getEntity() const {
 	return mEntity;
 }
 
-const Ember::Terrain::TerrainModTranslator* TerrainMod::getTranslator() const {
-	return mTranslator.get();
+const Ember::Terrain::TerrainModTranslator& TerrainMod::getTranslator() const {
+	return *mTranslator;
 }
 
 void TerrainMod::reset() {
