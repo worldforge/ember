@@ -390,8 +390,6 @@ void OgreSetup::input_SizeChanged(unsigned int width, unsigned int height) {
 }
 
 void OgreSetup::setStandardValues() {
-	// Set default mipmap level (NB some APIs ignore this)
-	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
 	// Set default animation mode
 	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
