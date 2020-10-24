@@ -395,7 +395,7 @@ void OgreSetup::setStandardValues() {
 	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
 
 	//remove padding for bounding boxes
-	Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);
+	//Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);
 
 	//all new movable objects shall by default be unpickable; it's up to the objects themselves to make themselves pickable
 	Ogre::MovableObject::setDefaultQueryFlags(0);
