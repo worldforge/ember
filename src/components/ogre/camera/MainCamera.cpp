@@ -68,11 +68,11 @@ MainCamera::MainCamera(Scene& scene, Ogre::RenderWindow& window, Input& input, T
 		mWindow(window),
 		mClosestPickingDistance(10000),
 		mCameraRaySceneQuery(nullptr),
-		mAvatarTerrainCursor(new AvatarTerrainCursor(scene.getMainCamera(), terrainAdapter)),
+		mAvatarTerrainCursor(std::make_unique<AvatarTerrainCursor>(scene.getMainCamera(), terrainAdapter)),
 		mCameraOrientationChangedThisFrame(false),
 		mMovementProvider(nullptr),
-		mCameraSettings(new CameraSettings),
-		mConfigListenerContainer(new ConfigListenerContainer()),
+		mCameraSettings(std::make_unique<CameraSettings>()),
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()),
 		mTerrainAdapter(terrainAdapter) {
 
 	scene.getMainCamera().setAutoAspectRatio(true);

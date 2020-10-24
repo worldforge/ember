@@ -51,7 +51,7 @@ class TerrainArea;
 struct TerrainDefPoint;
 }
 
-class TerrainEffectorListener;
+struct TerrainEffectorListener;
 
 class TerrainEntityManager: public virtual sigc::trackable {
 public:

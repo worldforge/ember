@@ -462,7 +462,7 @@ void Model::addLight(LightInfo lightInfo) {
 	if (mParentNodeProvider) {
 		//If the light has a position we need to create a different node to attach it to.
 		if (!lightInfo.position.isNaN() && !lightInfo.position.isZeroLength()) {
-			lightInfo.nodeProvider.reset(mParentNodeProvider->createChildProvider(""));
+			lightInfo.nodeProvider = mParentNodeProvider->createChildProvider("");
 			lightInfo.nodeProvider->setPositionAndOrientation(lightInfo.position, Ogre::Quaternion::IDENTITY);
 			lightInfo.nodeProvider->attachObject(lightInfo.light);
 		} else {
@@ -724,7 +724,7 @@ void Model::attachToNode(INodeProvider* nodeProvider) {
 
 		if (nodeProvider) {
 			if (!lightEntry.position.isNaN() && !lightEntry.position.isZeroLength()) {
-				lightEntry.nodeProvider.reset(nodeProvider->createChildProvider(""));
+				lightEntry.nodeProvider = nodeProvider->createChildProvider("");
 				lightEntry.nodeProvider->setPositionAndOrientation(lightEntry.position, Ogre::Quaternion::IDENTITY);
 				lightEntry.nodeProvider->attachObject(lightEntry.light);
 			} else {

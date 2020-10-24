@@ -100,14 +100,18 @@ class TerrainPageReloadTask : public Tasks::TemplateNamedTask<TerrainPageReloadT
 private:
 	TerrainHandler& mHandler;
 	ITerrainPageBridgePtr mBridge;
-	TerrainPageGeometryPtr mGeometry;
+	std::unique_ptr<TerrainPageGeometry> mGeometry;
 	const std::vector<const TerrainShader*> mShaders;
 	const WFMath::AxisBox<2> mArea;
 	const WFMath::Vector<3> mMainLightDirection;
 
 public:
-	TerrainPageReloadTask(TerrainHandler& handler, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry,
-						  std::vector<const TerrainShader*> shaders, const WFMath::AxisBox<2>& area, const WFMath::Vector<3>& mainLightDirection) :
+	TerrainPageReloadTask(TerrainHandler& handler,
+						  ITerrainPageBridgePtr bridge,
+						  std::unique_ptr<TerrainPageGeometry> geometry,
+						  std::vector<const TerrainShader*> shaders,
+						  const WFMath::AxisBox<2>& area,
+						  const WFMath::Vector<3>& mainLightDirection) :
 			mHandler(handler),
 			mBridge(std::move(bridge)),
 			mGeometry(std::move(geometry)),
@@ -122,12 +126,17 @@ public:
 		mGeometry->repopulate();
 		AreaStore areas;
 		areas.push_back(mArea);
-		GeometryPtrVector geometries;
-		geometries.push_back(mGeometry);
-		context.executeTask(std::make_unique<TerrainShaderUpdateTask>(geometries, mShaders, areas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled, mMainLightDirection));
 		if (mBridge) {
 			mBridge->updateTerrain(*mGeometry);
 		}
+		std::vector<std::shared_ptr<TerrainPageGeometry>> geometries;
+		geometries.emplace_back(std::move(mGeometry));
+		context.executeTask(std::make_unique<TerrainShaderUpdateTask>(std::move(geometries),
+																	  mShaders,
+																	  areas,
+																	  mHandler.EventLayerUpdated,
+																	  mHandler.EventTerrainMaterialRecompiled,
+																	  mMainLightDirection));
 	}
 
 	bool executeTaskInMainThread() override {
@@ -144,14 +153,14 @@ TerrainHandler::TerrainHandler(int pageIndexSize,
 							   Eris::EventService& eventService) :
 		mPageIndexSize(pageIndexSize),
 		mCompilerTechniqueProvider(compilerTechniqueProvider),
-		mTerrainInfo(new TerrainInfo(pageIndexSize)),
+		mTerrainInfo(std::make_unique<TerrainInfo>(pageIndexSize)),
 		mEventService(eventService),
-		mTerrain(new Mercator::Terrain(Mercator::Terrain::SHADED)),
-		mSegmentManager(new SegmentManager(*mTerrain, 64)),
+		mTerrain(std::make_unique<Mercator::Terrain>(Mercator::Terrain::SHADED)),
+		mSegmentManager(std::make_unique<SegmentManager>(*mTerrain, 64)),
 		//The mercator buffers are one size larger than the resolution
-		mHeightMapBufferProvider(new HeightMapBufferProvider(mTerrain->getResolution() + 1)),
-		mHeightMap(new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution())),
-		mTaskQueue(new Tasks::TaskQueue(1, eventService)),
+		mHeightMapBufferProvider(std::make_unique<HeightMapBufferProvider>(mTerrain->getResolution() + 1)),
+		mHeightMap(std::make_unique<HeightMap>(Mercator::Terrain::defaultLevel, mTerrain->getResolution())),
+		mTaskQueue(std::make_unique<Tasks::TaskQueue>(1, eventService)),
 		mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()),
 		mHasTerrainInfo(false),
 		mLightning(nullptr),
@@ -403,7 +412,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 			}
 		} else {
 			auto& page = I->second;
-			TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*page, getSegmentManager(), getDefaultHeight()));
+			auto geometryInstance = std::make_unique<TerrainPageGeometry>(*page, getSegmentManager(), getDefaultHeight());
 
 			std::vector<const TerrainShader*> shaders;
 			shaders.reserve(mShaderMap.size());
@@ -411,7 +420,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 				shaders.push_back(entry.second.get());
 			}
 
-			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this, bridge, geometryInstance, std::move(shaders), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
+			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this, bridge, std::move(geometryInstance), std::move(shaders), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
 				//We need to alert the bridge since it's holding up a thread waiting for this call.
 				bridge->terrainPageReady();
 			}

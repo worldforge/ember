@@ -62,19 +62,14 @@ public:
 	 * @brief Checks out a new HeightMapBuffer instance.
 	 * Note that the buffer is automatically checked in when the checked out instance is destroyed.
 	 */
-	HeightMapBuffer* checkout();
+	std::unique_ptr<HeightMapBuffer> checkout();
 
 private:
 
 	/**
-	 * @brief A store of buffer instances.
-	 */
-	typedef std::vector<std::unique_ptr<Buffer<float>>> BufferStore;
-
-	/**
 	 * @brief The pool of unused Buffer instances.
 	 */
-	BufferStore mPrimitiveBuffers;
+	std::vector<std::unique_ptr<Buffer<float>>> mPrimitiveBuffers;
 
 	/**
 	 * @brief The resolution of one buffer. This is normally the size of one terrain segment plus one (to match Mercator::Segment).

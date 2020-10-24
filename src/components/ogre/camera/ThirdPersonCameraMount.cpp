@@ -50,7 +50,7 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSetti
 		mWantedCameraDistance(10),
 		mCurrentCameraDistance(0),
 		mIsAdjustedToTerrain(true),
-		mConfigListenerContainer(new ConfigListenerContainer()),
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()),
 		mTerrainAdapter(terrainAdapter) {
 	createNodesForCamera(mSceneManager);
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "adjusttoterrain",

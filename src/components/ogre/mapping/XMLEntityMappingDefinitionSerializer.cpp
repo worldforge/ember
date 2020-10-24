@@ -130,7 +130,7 @@ void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefin
 
 
 void XMLEntityMappingDefinitionSerializer::parseSingleMapping(TiXmlElement* rootElem, const std::string& path) {
-	std::unique_ptr<EntityMappingDefinition> definition(new EntityMappingDefinition());
+	auto definition = std::make_unique<EntityMappingDefinition>();
 
 	definition->Name = path;
 

@@ -40,10 +40,20 @@ class HeightMapBuffer {
 	friend class HeightMapBufferProvider;
 
 public:
+
 	/**
 	 * @brief The buffer type for a height map.
 	 */
 	typedef Buffer<float> BufferType;
+
+	/**
+	 * @brief Ctor.
+	 * This is private since only HeightMapBufferProvider are expected to create new instances.
+	 * @param provider The provider to which this instance belongs.
+	 * @param buffer The buffer instance which will hold the actual data.
+	 */
+	HeightMapBuffer(HeightMapBufferProvider& provider, std::unique_ptr<BufferType> buffer);
+
 
 	/**
 	 * @brief Dtor.
@@ -63,6 +73,7 @@ public:
 	 */
 	unsigned int getResolution() const;
 
+
 private:
 
 	/**
@@ -75,14 +86,6 @@ private:
 	 * This isn't destroyed along with this instance, rather it's recycled back to the provider.
 	 */
 	std::unique_ptr<BufferType> mBuffer;
-
-	/**
-	 * @brief Ctor.
-	 * This is private since only HeightMapBufferProvider are expected to create new instances.
-	 * @param provider The provider to which this instance belongs.
-	 * @param buffer The buffer instance which will hold the actual data.
-	 */
-	HeightMapBuffer(HeightMapBufferProvider& provider, std::unique_ptr<BufferType> buffer);
 
 };
 

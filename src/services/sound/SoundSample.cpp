@@ -43,7 +43,9 @@ SoundGeneral::SoundSampleType BaseSoundSample::getType() const {
 
 
 StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool playsLocal, float volume)
-		: BaseSoundSample(SoundGeneral::SAMPLE_WAV), mBuffer(0), mResource(resource) {
+		: BaseSoundSample(SoundGeneral::SAMPLE_WAV),
+		  mBuffer(0),
+		  mResource(resource) {
 	mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), mResource.getSize());
 
 	if (!SoundGeneral::checkAlError("Generated buffer for static sample.")) {
@@ -62,8 +64,8 @@ ALuint StaticSoundSample::getBuffer() const {
 	return mBuffer;
 }
 
-BaseSoundSample::BufferStore StaticSoundSample::getBuffers() const {
-	BaseSoundSample::BufferStore buffers;
+std::vector<ALuint> StaticSoundSample::getBuffers() const {
+	std::vector<ALuint> buffers;
 	buffers.push_back(mBuffer);
 	return buffers;
 }

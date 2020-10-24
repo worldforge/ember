@@ -47,13 +47,10 @@
 #include <sigc++/bind.h>
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 BasePointUserObject::BasePointUserObject(TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint,
 										 Ogre::SceneNode* basePointMarkerNode, BulletWorld& bulletWorld) :
@@ -64,50 +61,42 @@ BasePointUserObject::BasePointUserObject(TerrainPosition terrainPosition, const 
 		mIsMoving(false),
 		mRoughness(basePoint.roughness()),
 		mFalloff(basePoint.falloff()),
-		mCollisionDetector(new BulletCollisionDetector(bulletWorld))
-{
+		mCollisionDetector(std::make_unique<BulletCollisionDetector>(bulletWorld)) {
 	mCollisionDetector->collisionInfo = this;
 	auto sphereShape = std::make_shared<btSphereShape>(basePointMarkerNode->getAttachedObject(0)->getBoundingRadius());
 	mCollisionDetector->addCollisionShape(std::move(sphereShape));
 	mCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(getBasePointMarkerNode()->_getDerivedPosition()), WFMath::Quaternion::IDENTITY());
 }
 
-const Mercator::BasePoint& BasePointUserObject::getBasePoint() const
-{
+const Mercator::BasePoint& BasePointUserObject::getBasePoint() const {
 	return mBasePoint;
 }
 
-void BasePointUserObject::setBasePoint(const Mercator::BasePoint& basePoint)
-{
+void BasePointUserObject::setBasePoint(const Mercator::BasePoint& basePoint) {
 	mBasePoint = basePoint;
 	setHeight(mBasePoint.height());
 }
 
-Ogre::SceneNode* BasePointUserObject::getBasePointMarkerNode() const
-{
+Ogre::SceneNode* BasePointUserObject::getBasePointMarkerNode() const {
 	return mBasePointMarkerNode;
 }
 
-const TerrainPosition& BasePointUserObject::getPosition() const
-{
+const TerrainPosition& BasePointUserObject::getPosition() const {
 	return mPosition;
 }
 
-float BasePointUserObject::getHeight() const
-{
+float BasePointUserObject::getHeight() const {
 	return getBasePointMarkerNode()->getPosition().y;
 }
 
-void BasePointUserObject::translate(Ogre::Real verticalMovement)
-{
+void BasePointUserObject::translate(Ogre::Real verticalMovement) {
 	getBasePointMarkerNode()->translate(Ogre::Vector3(0, verticalMovement, 0));
 	mCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(getBasePointMarkerNode()->_getDerivedPosition()), WFMath::Quaternion::IDENTITY());
 	updateMarking();
 	EventUpdatedPosition();
 }
 
-void BasePointUserObject::setHeight(Ogre::Real height)
-{
+void BasePointUserObject::setHeight(Ogre::Real height) {
 	const Ogre::Vector3& position = getBasePointMarkerNode()->getPosition();
 	getBasePointMarkerNode()->setPosition(position.x, height, position.z);
 	mCollisionDetector->updateTransforms(Convert::toWF<WFMath::Point<3>>(getBasePointMarkerNode()->_getDerivedPosition()), WFMath::Quaternion::IDENTITY());
@@ -115,28 +104,23 @@ void BasePointUserObject::setHeight(Ogre::Real height)
 	EventUpdatedPosition();
 }
 
-void BasePointUserObject::setRoughness(float roughness)
-{
+void BasePointUserObject::setRoughness(float roughness) {
 	mRoughness = roughness;
 }
 
-float BasePointUserObject::getRoughness() const
-{
+float BasePointUserObject::getRoughness() const {
 	return mRoughness;
 }
 
-void BasePointUserObject::setFalloff(float falloff)
-{
+void BasePointUserObject::setFalloff(float falloff) {
 	mFalloff = falloff;
 }
 
-float BasePointUserObject::getFalloff() const
-{
+float BasePointUserObject::getFalloff() const {
 	return mFalloff;
 }
 
-void BasePointUserObject::updateMarking()
-{
+void BasePointUserObject::updateMarking() {
 	auto entity = dynamic_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
 	try {
 		if (mIsMoving) {
@@ -149,31 +133,27 @@ void BasePointUserObject::updateMarking()
 			}
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Could not set new marker material. This is not fatal."<<ex);
+		S_LOG_WARNING("Could not set new marker material. This is not fatal." << ex);
 	}
 }
 
-void BasePointUserObject::resetMarking()
-{
+void BasePointUserObject::resetMarking() {
 	mCanonicalHeight = mBasePoint.height();
 	updateMarking();
 }
 
-void BasePointUserObject::markAsMoving(bool isMoving)
-{
+void BasePointUserObject::markAsMoving(bool isMoving) {
 	mIsMoving = isMoving;
 	updateMarking();
 }
 
 BasePointPickListener::BasePointPickListener(TerrainEditorOverlay& overlay) :
 		mOverlay(overlay),
-		mPickedUserObject(nullptr)
-{
+		mPickedUserObject(nullptr) {
 
 }
 
-void BasePointPickListener::processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
-{
+void BasePointPickListener::processPickResult(bool& continuePicking, PickResult& result, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) {
 	if (result.collisionInfo.type() == typeid(BasePointUserObject*)) {
 		continuePicking = false;
 		if (mousePickerArgs.pickType == MPT_PRESS) {
@@ -183,13 +163,11 @@ void BasePointPickListener::processPickResult(bool& continuePicking, PickResult&
 	}
 }
 
-void BasePointPickListener::processDelayedPick(const MousePickerArgs& mousePickerArgs)
-{
+void BasePointPickListener::processDelayedPick(const MousePickerArgs& mousePickerArgs) {
 	//Don't process any delayed picks.
 }
 
-void BasePointPickListener::initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs)
-{
+void BasePointPickListener::initializePickingContext(bool& willParticipate, const MousePickerArgs& pickArgs) {
 	//We will only react on press events, but we want do silence click and pressed events if they happen with our markers too.
 	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_CLICK || pickArgs.pickType == MPT_PRESSED) {
 		willParticipate = true;
@@ -197,8 +175,7 @@ void BasePointPickListener::initializePickingContext(bool& willParticipate, cons
 	}
 }
 
-void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results)
-{
+void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs, const std::vector<PickResult>& results) {
 	if (mPickedUserObject) {
 		mOverlay.pickedBasePoint(mPickedUserObject);
 	}
@@ -215,13 +192,11 @@ TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneMan
 		mCamera(camera),
 		mOverlayNode(nullptr),
 		mPickListener(*this),
-		mCurrentUserObject(nullptr)
-{
+		mCurrentUserObject(nullptr) {
 	createOverlay(basePoints, worldSceneNode);
 }
 
-TerrainEditorOverlay::~TerrainEditorOverlay()
-{
+TerrainEditorOverlay::~TerrainEditorOverlay() {
 	for (auto entity : mEntities) {
 		entity->detachFromParent();
 		mSceneManager.destroyEntity(entity);
@@ -239,8 +214,7 @@ TerrainEditorOverlay::~TerrainEditorOverlay()
 	mCamera.removeWorldPickListener(&mPickListener);
 }
 
-void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints, Ogre::SceneNode& worldSceneNode)
-{
+void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints, Ogre::SceneNode& worldSceneNode) {
 
 	mOverlayNode = worldSceneNode.createChildSceneNode();
 
@@ -276,12 +250,12 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			basepointNode->setPosition(ogrePos);
 			basepointNode->attachObject(entity);
 
-			auto* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode, mManager.getScene().getBulletWorld());
+			auto userObject = std::make_unique<BasePointUserObject>(TerrainPosition(x, y), basepoint, basepointNode, mManager.getScene().getBulletWorld());
 
 			//store the base point user object
 			std::stringstream ss_;
 			ss_ << x << "_" << y;
-			mBasePointUserObjects[ss_.str()] = userObject;
+			mBasePointUserObjects[ss_.str()] = std::move(userObject);
 		}
 	}
 
@@ -290,25 +264,22 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 
 }
 
-BasePointUserObject* TerrainEditorOverlay::getUserObject(const TerrainPosition& terrainIndex)
-{
+BasePointUserObject* TerrainEditorOverlay::getUserObject(const TerrainPosition& terrainIndex) {
 	std::stringstream ss;
 	ss << terrainIndex.x() << "_" << terrainIndex.y();
 	auto I = mBasePointUserObjects.find(ss.str());
 	if (I != mBasePointUserObjects.end()) {
-		return I->second;
+		return I->second.get();
 	}
 	return nullptr;
 
 }
 
-BasePointUserObject* TerrainEditorOverlay::getCurrentBasePointUserObject() const
-{
+BasePointUserObject* TerrainEditorOverlay::getCurrentBasePointUserObject() const {
 	return mCurrentUserObject;
 }
 
-void TerrainEditorOverlay::pickedBasePoint(BasePointUserObject* userObject)
-{
+void TerrainEditorOverlay::pickedBasePoint(BasePointUserObject* userObject) {
 	assert(userObject);
 	mCurrentUserObject = userObject;
 	catchInput();
@@ -316,24 +287,21 @@ void TerrainEditorOverlay::pickedBasePoint(BasePointUserObject* userObject)
 	EventPickedBasePoint.emit(userObject);
 }
 
-void TerrainEditorOverlay::setRoughness(float roughness)
-{
+void TerrainEditorOverlay::setRoughness(float roughness) {
 	if (mCurrentUserObject) {
 		mCurrentUserObject->setRoughness(roughness);
 		createAction(true);
 	}
 }
 
-void TerrainEditorOverlay::setFalloff(float falloff)
-{
+void TerrainEditorOverlay::setFalloff(float falloff) {
 	if (mCurrentUserObject) {
 		mCurrentUserObject->setFalloff(falloff);
 		createAction(true);
 	}
 }
 
-bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
-{
+bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& freezeMouse) {
 	float multiplier(15.0f);
 	//hard coded to allow the shift button to increase the speed
 	if (Input::getSingleton().isKeyDown(SDL_SCANCODE_RSHIFT) || Input::getSingleton().isKeyDown(SDL_SCANCODE_LSHIFT)) {
@@ -348,12 +316,12 @@ bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& free
 	if (mEditor.getRadius() > 1.0f) {
 		// 		float squaredMovementRadius = mMovementRadiusInMeters * mMovementRadiusInMeters;
 		for (auto& basePointUserObject : mBasePointUserObjects) {
-			if (basePointUserObject.second != mCurrentUserObject) {
-				float distance = WFMath::SquaredDistance<2>((basePointUserObject.second)->getPosition(), mCurrentUserObject->getPosition()) * 64;
+			if (basePointUserObject.second.get() != mCurrentUserObject) {
+				auto distance = WFMath::SquaredDistance<2>((basePointUserObject.second)->getPosition(), mCurrentUserObject->getPosition()) * 64;
 				if (distance <= mEditor.getRadius()) {
-					float movement = 1.0f - (distance / mEditor.getRadius());
+					float movement = 1.0 - (distance / mEditor.getRadius());
 					basePointUserObject.second->translate(translation * movement);
-					mSecondaryUserObjects.insert(basePointUserObject.second);
+					mSecondaryUserObjects.insert(basePointUserObject.second.get());
 				}
 			}
 		}
@@ -366,41 +334,34 @@ bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& free
 	return false;
 }
 
-bool TerrainEditorOverlay::injectMouseButtonUp(Input::MouseButton button)
-{
+bool TerrainEditorOverlay::injectMouseButtonUp(Input::MouseButton button) {
 	if (button == Input::MouseButtonLeft) {
 		releaseInput();
 	}
 	return true;
 }
 
-bool TerrainEditorOverlay::injectMouseButtonDown(Input::MouseButton button)
-{
+bool TerrainEditorOverlay::injectMouseButtonDown(Input::MouseButton button) {
 	return true;
 }
 
-bool TerrainEditorOverlay::injectChar(int)
-{
+bool TerrainEditorOverlay::injectChar(int) {
 	return true;
 }
 
-bool TerrainEditorOverlay::injectKeyDown(const SDL_Scancode&)
-{
+bool TerrainEditorOverlay::injectKeyDown(const SDL_Scancode&) {
 	return true;
 }
 
-bool TerrainEditorOverlay::injectKeyUp(const SDL_Scancode&)
-{
+bool TerrainEditorOverlay::injectKeyUp(const SDL_Scancode&) {
 	return true;
 }
 
-void TerrainEditorOverlay::catchInput()
-{
+void TerrainEditorOverlay::catchInput() {
 	Input::getSingleton().addAdapter(this);
 }
 
-void TerrainEditorOverlay::releaseInput()
-{
+void TerrainEditorOverlay::releaseInput() {
 	Input::getSingleton().removeAdapter(this);
 
 	//react on the movement
@@ -408,8 +369,7 @@ void TerrainEditorOverlay::releaseInput()
 
 }
 
-void TerrainEditorOverlay::createAction(bool alsoCommit)
-{
+void TerrainEditorOverlay::createAction(bool alsoCommit) {
 	if (mCurrentUserObject) {
 		mCurrentUserObject->markAsMoving(false);
 		//lets get how much it moved
@@ -418,13 +378,13 @@ void TerrainEditorOverlay::createAction(bool alsoCommit)
 		TerrainEditAction action{};
 		bool hadChanges = false;
 		if (!WFMath::Equal(distance, .0f)) {
-			TerrainEditBasePointMovement movement = { distance, std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()) };
+			TerrainEditBasePointMovement movement = {distance, std::make_pair((int) mCurrentUserObject->getPosition().x(), (int) mCurrentUserObject->getPosition().y())};
 			action.mMovements.push_back(movement);
 
 			for (auto secondaryUserObject : mSecondaryUserObjects) {
 				distance = secondaryUserObject->getBasePointMarkerNode()->getPosition().y - secondaryUserObject->getBasePoint().height();
 				if (!WFMath::Equal(distance, .0f)) {
-					TerrainEditBasePointMovement newMovement = { distance, std::make_pair((int) secondaryUserObject->getPosition().x(), (int) secondaryUserObject->getPosition().y()) };
+					TerrainEditBasePointMovement newMovement = {distance, std::make_pair((int) secondaryUserObject->getPosition().x(), (int) secondaryUserObject->getPosition().y())};
 					action.mMovements.push_back(newMovement);
 				}
 			}
@@ -432,12 +392,12 @@ void TerrainEditorOverlay::createAction(bool alsoCommit)
 		}
 
 		if (mCurrentUserObject->getRoughness() != mCurrentUserObject->getBasePoint().roughness()) {
-			action.mRoughnesses.emplace_back(std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()), mCurrentUserObject->getRoughness());
+			action.mRoughnesses.emplace_back(std::make_pair((int) mCurrentUserObject->getPosition().x(), (int) mCurrentUserObject->getPosition().y()), mCurrentUserObject->getRoughness());
 			hadChanges = true;
 		}
 
 		if (mCurrentUserObject->getFalloff() != mCurrentUserObject->getBasePoint().falloff()) {
-			action.mFalloffs.emplace_back(std::make_pair((int)mCurrentUserObject->getPosition().x(), (int)mCurrentUserObject->getPosition().y()), mCurrentUserObject->getFalloff());
+			action.mFalloffs.emplace_back(std::make_pair((int) mCurrentUserObject->getPosition().x(), (int) mCurrentUserObject->getPosition().y()), mCurrentUserObject->getFalloff());
 			hadChanges = true;
 		}
 
@@ -457,14 +417,12 @@ void TerrainEditorOverlay::createAction(bool alsoCommit)
 	mSecondaryUserObjects.clear();
 }
 
-void TerrainEditorOverlay::sendChangesToServer()
-{
+void TerrainEditorOverlay::sendChangesToServer() {
 	sigc::slot<void, BasePointStore&> slot = sigc::mem_fun(*this, &TerrainEditorOverlay::sendChangesToServerWithBasePoints);
 	mManager.getBasePoints(slot);
 }
 
-void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints)
-{
+void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints) {
 
 	try {
 		std::set<TerrainIndex> updatedPositions;
@@ -496,15 +454,15 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 			sarg["id"] = "0";
 		}
 
-		Atlas::Message::MapType & pointMap = (sarg["terrain_points!append"] = Atlas::Message::MapType()).asMap();
+		Atlas::Message::MapType& pointMap = (sarg["terrain_points!append"] = Atlas::Message::MapType()).asMap();
 
 		auto createPointElementFn = [&](const Mercator::BasePoint& bp, int x, int y, const std::string& key) {
-			Atlas::Message::ListType & point = (pointMap[key] = Atlas::Message::ListType(5)).asList();
-			point[0] = (Atlas::Message::FloatType)(x);
-			point[1] = (Atlas::Message::FloatType)(y);
-			point[2] = (Atlas::Message::FloatType)(bp.height());
-			point[3] = (Atlas::Message::FloatType)(bp.roughness());
-			point[4] = (Atlas::Message::FloatType)(bp.falloff());
+			Atlas::Message::ListType& point = (pointMap[key] = Atlas::Message::ListType(5)).asList();
+			point[0] = (Atlas::Message::FloatType) (x);
+			point[1] = (Atlas::Message::FloatType) (y);
+			point[2] = (Atlas::Message::FloatType) (bp.height());
+			point[3] = (Atlas::Message::FloatType) (bp.roughness());
+			point[4] = (Atlas::Message::FloatType) (bp.falloff());
 		};
 
 		for (const auto& entry : updatedPositions) {
@@ -565,8 +523,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 
 }
 
-void TerrainEditorOverlay::setVisible(bool visible)
-{
+void TerrainEditorOverlay::setVisible(bool visible) {
 	if (mOverlayNode) {
 		if (visible) {
 			if (!mOverlayNode->getParentSceneNode()) {
@@ -580,13 +537,11 @@ void TerrainEditorOverlay::setVisible(bool visible)
 	}
 }
 
-bool TerrainEditorOverlay::getVisible() const
-{
+bool TerrainEditorOverlay::getVisible() const {
 	return mOverlayNode != nullptr && mOverlayNode->isInSceneGraph();
 }
 
-bool TerrainEditorOverlay::undoLastAction()
-{
+bool TerrainEditorOverlay::undoLastAction() {
 	if (!mActions.empty()) {
 		TerrainEditAction action = mActions.back();
 		//remove the last action from the list of active actions
@@ -601,8 +556,7 @@ bool TerrainEditorOverlay::undoLastAction()
 
 }
 
-bool TerrainEditorOverlay::redoAction()
-{
+bool TerrainEditorOverlay::redoAction() {
 	if (!mUndoneActions.empty()) {
 		TerrainEditAction action = mUndoneActions.front();
 		mUndoneActions.pop_front();
@@ -612,14 +566,12 @@ bool TerrainEditorOverlay::redoAction()
 	return false;
 }
 
-void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool reverse)
-{
+void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool reverse) {
 	sigc::slot<void, BasePointStore&> slot = sigc::bind(sigc::mem_fun(*this, &TerrainEditorOverlay::commitActionWithBasePoints), action, reverse);
 	mManager.getBasePoints(slot);
 }
 
-void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction& action, bool reverse)
-{
+void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction& action, bool reverse) {
 
 	TerrainDefPointStore pointStore;
 
@@ -750,8 +702,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 
 }
 
-bool TerrainEditorOverlay::getBasePoint(const std::map<int, std::map<int, Mercator::BasePoint>>& basePoints, int x, int y, Mercator::BasePoint& z) const
-{
+bool TerrainEditorOverlay::getBasePoint(const std::map<int, std::map<int, Mercator::BasePoint>>& basePoints, int x, int y, Mercator::BasePoint& z) const {
 	auto I = basePoints.find(x);
 	if (I == basePoints.end()) {
 		return false;

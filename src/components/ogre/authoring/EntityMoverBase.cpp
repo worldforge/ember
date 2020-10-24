@@ -168,6 +168,8 @@ void EntityMoverBase::setSnapToEnabled(bool snapTo) {
 }
 
 SnapListener& EntityMoverBase::getSnapListener() const {
+	//TODO: refactor this to not be a static instance. The main issue is that if snapping has been enabled by pressing a key, we want to retain
+	//that feature when a new instance of this is created.
 	if (!msSnapListener) {
 		msSnapListener = new SnapListener();
 	}

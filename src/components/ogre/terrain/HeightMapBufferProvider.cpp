@@ -28,7 +28,7 @@ namespace Terrain {
 HeightMapBufferProvider::HeightMapBufferProvider(unsigned int bufferResolution, unsigned int desiredBuffers, unsigned int desiredBuffersTolerance) :
 		mBufferResolution(bufferResolution), mDesiredBuffers(desiredBuffers), mDesiredBuffersTolerance(desiredBuffersTolerance) {
 	while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-		mPrimitiveBuffers.emplace_back(new Buffer<float>(mBufferResolution, 1));
+		mPrimitiveBuffers.emplace_back(std::make_unique<Buffer<float>>(mBufferResolution, 1));
 	}
 }
 
@@ -38,22 +38,22 @@ void HeightMapBufferProvider::checkin(std::unique_ptr<Buffer<float>> buffer) {
 	mPrimitiveBuffers.push_back(std::move(buffer));
 }
 
-HeightMapBuffer* HeightMapBufferProvider::checkout() {
+std::unique_ptr<HeightMapBuffer> HeightMapBufferProvider::checkout() {
 	if (mPrimitiveBuffers.empty()) {
 		while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-			mPrimitiveBuffers.emplace_back(new Buffer<float>(mBufferResolution, 1));
+			mPrimitiveBuffers.emplace_back(std::make_unique<Buffer<float>>(mBufferResolution, 1));
 		}
 	}
 	auto buffer = std::move(mPrimitiveBuffers.back());
 	mPrimitiveBuffers.pop_back();
-	return new HeightMapBuffer(*this, std::move(buffer));
+	return std::make_unique<HeightMapBuffer>(*this, std::move(buffer));
 }
 
 void HeightMapBufferProvider::maintainPool() {
 
 	if (mPrimitiveBuffers.size() <= mDesiredBuffers - mDesiredBuffersTolerance) {
 		while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-			mPrimitiveBuffers.emplace_back(new Buffer<float>(mBufferResolution, 1));
+			mPrimitiveBuffers.emplace_back(std::make_unique<Buffer<float>>(mBufferResolution, 1));
 		}
 	}
 

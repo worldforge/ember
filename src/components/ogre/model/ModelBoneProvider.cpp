@@ -70,10 +70,10 @@ Ogre::Node* ModelBoneProvider::getParentNode() const {
 	return nullptr;
 }
 
-INodeProvider* ModelBoneProvider::createChildProvider(const std::string& name) {
-	auto childProvider = new ModelBoneProvider(mNode, mParentModel, this);
+std::unique_ptr<INodeProvider> ModelBoneProvider::createChildProvider(const std::string& name) {
+	auto childProvider = std::make_unique<ModelBoneProvider>(mNode, mParentModel, this);
 	childProvider->setAttachPointDefinition(mAttachPointDefinition);
-	mChildren.push_back(childProvider);
+	mChildren.push_back(childProvider.get());
 	return childProvider;
 }
 

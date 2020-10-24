@@ -100,7 +100,7 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 		mQuickHelp(std::make_unique<Gui::QuickHelp>()),
 		mEntityTooltip(nullptr),
 		mNativeClipboardProvider(std::make_unique<Ember::Cegui::SDLNativeClipboardProvider>()),
-		mWidgetDefinitions(new WidgetDefinitions()){
+		mWidgetDefinitions(std::make_unique<WidgetDefinitions>()){
 
 
 

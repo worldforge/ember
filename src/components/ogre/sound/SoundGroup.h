@@ -22,6 +22,8 @@
 
 #include "services/sound/SoundBinding.h"
 #include <list>
+#include <al.h>
+#include <vector>
 
 namespace Ember {
 class SoundInstance;
@@ -68,6 +70,8 @@ protected:
 	 * @brief The sound group which contains the definitions used by this binding.
 	 */
 	SoundGroup& mSoundGroup;
+
+	std::vector<ALuint> mBufferBindings;
 };
 
 /**
@@ -80,7 +84,6 @@ public:
 		PLAY_INVERSE,
 		PLAY_RANDOM
 	};
-	typedef std::list<BaseSoundSample*> SampleStore;
 
 	SoundGroup();
 
@@ -102,13 +105,13 @@ public:
 
 	bool bindToInstance(SoundInstance* instance);
 
-	const SampleStore& getSamples() const;
+	const std::list<BaseSoundSample*>& getSamples() const;
 
 protected:
 	/**
 	* A list of the Samples allocated within the group
 	*/
-	SampleStore mSamples;
+	std::list<BaseSoundSample*> mSamples;
 
 	/**
 	* The frequency (Hz) in wich the sounds should be played.

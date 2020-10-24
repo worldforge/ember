@@ -350,7 +350,7 @@ private:
 
 	Ogre::SceneNode* mOverlayNode;
 
-	std::map<std::string, BasePointUserObject*> mBasePointUserObjects;
+	std::map<std::string, std::unique_ptr<BasePointUserObject>> mBasePointUserObjects;
 
 	BasePointPickListener mPickListener;
 

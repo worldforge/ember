@@ -39,7 +39,7 @@ RenderDistanceManager::RenderDistanceManager(GraphicalChangeAdapter& graphicalCh
         mFog(fog),
         mGraphicalChangeAdapter(graphicalChangeAdapter),
         mMainCamera(mainCamera),
-        mConfigListenerContainer(new ConfigListenerContainer()) {
+        mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()) {
 //	if (!mChangeRequiredConnection) {
 //		mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
 //	}

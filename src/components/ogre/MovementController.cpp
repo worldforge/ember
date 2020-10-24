@@ -118,7 +118,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 		mAwareness(nullptr),
 		mAwarenessVisualizer(nullptr),
 		mSteering(nullptr),
-		mConfigListenerContainer(new ConfigListenerContainer()),
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()),
 		mVisualizePath(false) {
 
 	auto evaluateLocationFn = [this, &heightProvider, &camera](EmberEntity& location) {

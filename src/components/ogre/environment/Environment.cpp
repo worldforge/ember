@@ -47,7 +47,7 @@ Environment::Environment(Ogre::SceneManager& sceneMgr,
 		SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>"),
 		mProvider(std::move(provider)),
 		mFallbackProvider(std::move(fallbackProvider)),
-		mForest(new Forest(terrainManager)) {
+		mForest(std::make_unique<Forest>(terrainManager)) {
 	//Set some default ambient light
 	sceneMgr.setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 	terrainManager.getHandler().EventTerrainEnabled.connect(sigc::mem_fun(*this, &Environment::terrainEnabled));

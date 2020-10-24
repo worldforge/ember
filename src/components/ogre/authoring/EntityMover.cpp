@@ -47,7 +47,7 @@ EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& mana
 		mNodeAttachment(nodeAttachment),
 		mManager(manager),
 		mPreviousControlDelegate(nodeAttachment.getControlDelegate()),
-		mControlDelegate(new EntityMoverControlDelegate(*this)) {
+		mControlDelegate(std::make_unique<EntityMoverControlDelegate>(*this)) {
 	nodeAttachment.setControlDelegate(mControlDelegate.get());
 
 

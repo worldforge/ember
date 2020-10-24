@@ -34,7 +34,7 @@ LodLevelManager::LodLevelManager(GraphicalChangeAdapter& graphicalChangeAdapter,
 		mDefaultStep(0.4f),
 		mGraphicalChangeAdapter(graphicalChangeAdapter),
 		mMainCamera(mainCamera),
-		mConfigListenerContainer(new ConfigListenerContainer()) {
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()) {
 	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
 	mConfigListenerContainer->registerConfigListener("graphics", "lodbias", sigc::mem_fun(*this, &LodLevelManager::Config_LodBias));
 }

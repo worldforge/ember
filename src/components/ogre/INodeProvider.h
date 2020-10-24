@@ -60,7 +60,7 @@ struct INodeProvider : public IVisualizable {
 	 * @param attachedObject An optional movable object which will be attached to the node created by new provider.
 	 * @return A new provider, which is a child of this instance.
 	 */
-	virtual INodeProvider* createChildProvider(const std::string& name) = 0;
+	virtual std::unique_ptr<INodeProvider> createChildProvider(const std::string& name) = 0;
 
 	/**
 	 * @brief Sets the visibility of the node.

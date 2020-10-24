@@ -74,7 +74,7 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, std::unique_ptr<Mo
 		mTaskAction(nullptr),
 		mSoundEntity(nullptr),
 		mUserObject(std::make_shared<EmberEntityUserObject>(EmberEntityUserObject{entity})),
-		mBulletCollisionDetector(new BulletCollisionDetector(scene.getBulletWorld())) {
+		mBulletCollisionDetector(std::make_unique<BulletCollisionDetector>(scene.getBulletWorld())) {
 	mBulletCollisionDetector->collisionInfo = EntityCollisionInfo{&entity, false};
 	//Only connect if we have actions to act on
 	if (!mModel->getDefinition()->getActionDefinitions().empty()) {
@@ -485,14 +485,14 @@ void ModelRepresentation::notifyTransformsChanged() {
 void ModelRepresentation::updateCollisionDetection() {
 	mBulletCollisionDetector->clear();
 	if (mModel->getNodeProvider()) {
-        for (auto& subModel : mModel->getSubmodels()) {
-            auto meshPtr = subModel->getEntity()->getMesh();
-            auto collisionShape = mScene.getBulletWorld().createMeshShape(meshPtr);
-            if (collisionShape) {
-                mBulletCollisionDetector->addCollisionShape(std::move(collisionShape));
-            }
-        }
-    }
+		for (auto& subModel : mModel->getSubmodels()) {
+			auto meshPtr = subModel->getEntity()->getMesh();
+			auto collisionShape = mScene.getBulletWorld().createMeshShape(meshPtr);
+			if (collisionShape) {
+				mBulletCollisionDetector->addCollisionShape(std::move(collisionShape));
+			}
+		}
+	}
 	notifyTransformsChanged();
 
 }

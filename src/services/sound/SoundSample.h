@@ -47,8 +47,6 @@ class SoundSource;
 class BaseSoundSample {
 public:
 
-	typedef std::vector<ALuint> BufferStore;
-
 	/**
 	 * Dtor.
 	 */
@@ -70,7 +68,7 @@ public:
 	 * The buffers will be returned as ALuint which is the internal buffer reference within OpenAL. Any further operation on the buffer must therefore go through OpenAL (i.e. the values returned are _not_ memory pointers).
 	 * @return A store of OpenAL buffer identifiers.
 	 */
-	virtual BufferStore getBuffers() const = 0;
+	virtual std::vector<ALuint> getBuffers() const = 0;
 
 	/**
 	 * @brief Creates a new binding to this buffer, to be used together with an instance of SoundInstance.
@@ -87,7 +85,7 @@ protected:
 	/**
 	 * @brief Ctor. This is protected to disallow direct creation of this class except by subclasses.
 	 */
-	BaseSoundSample(SoundGeneral::SoundSampleType type) : mType(type) {
+	explicit BaseSoundSample(SoundGeneral::SoundSampleType type) : mType(type) {
 	}
 
 	/**
@@ -132,7 +130,7 @@ public:
 	/**
 	 * @copydoc BaseSoundSample::getBuffers()
 	 */
-	BaseSoundSample::BufferStore getBuffers() const override;
+	std::vector<ALuint> getBuffers() const override;
 
 private:
 	/**

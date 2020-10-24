@@ -94,9 +94,6 @@ OgreSetup::OgreSetup() :
 		mRenderWindow(nullptr),
 		mMeshSerializerListener(std::make_unique<MeshSerializerListener>(true)),
 		mOverlaySystem(std::make_unique<Ogre::OverlaySystem>()),
-#ifdef BUILD_WEBEMBER
-		mOgreWindowProvider(nullptr),
-#endif
 		mMeshLodGenerator(std::make_unique<Ogre::MeshLodGenerator>()),
 		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()),
 		mSaveShadersToCache(false) {
@@ -164,8 +161,14 @@ OgreSetup::OgreSetup() :
 
 OgreSetup::~OgreSetup() {
 #ifdef BUILD_WEBEMBER
-	delete mOgreWindowProvider;
+	if (mOgreWindowProvider) {
+		Input::getSingleton().detach(mOgreWindowProvider.get());
+	}
 #endif
+
+	if (mMaterialsListener) {
+		Ogre::MaterialManager::getSingleton().removeListener(mMaterialsListener.get());
+	}
 
 	S_LOG_INFO("Shutting down Ogre.");
 	if (mRoot) {
@@ -367,8 +370,8 @@ void OgreSetup::configure() {
 	}
 
 	mRenderWindow = mRoot->createRenderWindow("Ember",800,600,false,&options);
-	mOgreWindowProvider = new OgreWindowProvider(*mRenderWindow);
-	Input::getSingleton().attach(mOgreWindowProvider);
+	mOgreWindowProvider = std::make_unique<OgreWindowProvider>(*mRenderWindow);
+	Input::getSingleton().attach(mOgreWindowProvider.get());
 
 #endif // BUILD_WEBEMBER
 
@@ -409,7 +412,7 @@ void OgreSetup::setStandardValues() {
 
 	Ogre::RTShader::ShaderGenerator::initialize();
 
-	struct MyListener : public Ogre::MaterialManager::Listener {
+	struct GenerateShadersListener : public Ogre::MaterialManager::Listener {
 		Ogre::Technique* handleSchemeNotFound(unsigned short schemeIndex,
 											  const Ogre::String& schemeName,
 											  Ogre::Material* originalMaterial,
@@ -477,8 +480,9 @@ void OgreSetup::setStandardValues() {
 		}
 	};
 
+	mMaterialsListener = std::make_unique<GenerateShadersListener>();
 
-	Ogre::MaterialManager::getSingleton().addListener(new MyListener());
+	Ogre::MaterialManager::getSingleton().addListener(mMaterialsListener.get());
 
 }
 

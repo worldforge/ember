@@ -41,7 +41,7 @@ Scene::Scene() :
 		mSceneManager(Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "World")),
 		//create the main camera, we will of course have a couple of different cameras, but this will be the main one
 		mMainCamera(mSceneManager->createCamera("MainCamera")),
-		mBulletWorld(new BulletWorld()) {
+		mBulletWorld(std::make_unique<BulletWorld>()) {
 	S_LOG_INFO("Using SceneManager: " << mSceneManager->getTypeName());
 
 }

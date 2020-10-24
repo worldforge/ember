@@ -218,11 +218,11 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 	static Ogre::ColourValue m_pathCol(1, 0, 0);         // Red
 
 	// When drawing regions choose different random colors for each region
-	Ogre::ColourValue* regionColors = nullptr;
+	std::vector<Ogre::ColourValue> regionColors;
 	if (colorRegions) {
-		regionColors = new Ogre::ColourValue[maxpolys];
+		regionColors.reserve(maxpolys);
 		for (int i = 0; i < maxpolys; ++i) {
-			regionColors[i] = Ogre::ColourValue(Ogre::Math::RangeRandom(0, 1), Ogre::Math::RangeRandom(0, 1), Ogre::Math::RangeRandom(0, 1), 1);
+			regionColors.emplace_back(Ogre::ColourValue(Ogre::Math::RangeRandom(0, 1), Ogre::Math::RangeRandom(0, 1), Ogre::Math::RangeRandom(0, 1), 1));
 		}
 	}
 
@@ -366,8 +366,6 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 
 
 	}     // end areacount
-
-	delete[] regionColors;
 
 }
 

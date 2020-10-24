@@ -54,9 +54,8 @@ bool HeightMapUpdateTask::executeTaskInMainThread() {
 }
 
 void HeightMapUpdateTask::createHeightMapSegments() {
-	for (SegmentStore::const_iterator I = mSegments.begin(); I != mSegments.end(); ++I) {
-		Mercator::Segment* segment = *I;
-		if (segment) {
+	for (auto segment : mSegments) {
+			if (segment) {
 			std::unique_ptr<IHeightMapSegment> heightMapSegment;
 			Mercator::Matrix<2, 2, Mercator::BasePoint>& basePoints(segment->getControlPoints());
 			//If all of the base points are on the same level, and there are no mods, we know that the segment is completely flat, and we can save some memory by using a HeightMapFlatSegment instance.
@@ -66,10 +65,10 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 				(segment->getMods().empty())) {
 				heightMapSegment = std::make_unique<HeightMapFlatSegment>(basePoints[0].height());
 			} else {
-				HeightMapBuffer* buffer = mProvider.checkout();
+				auto buffer = mProvider.checkout();
 				if (buffer) {
 					memcpy(buffer->getBuffer()->getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
-					heightMapSegment = std::make_unique<HeightMapSegment>(std::unique_ptr<HeightMapBuffer>(buffer));
+					heightMapSegment = std::make_unique<HeightMapSegment>(std::move(buffer));
 				}
 			}
 			if (heightMapSegment) {

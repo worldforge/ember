@@ -38,7 +38,6 @@ namespace Ember {
 namespace OgreView {
 SoundAction::SoundAction(SoundEntity& soundEntity)
 		: mSoundEntity(soundEntity),
-		  mGroup(nullptr),
 		  mInstance(nullptr),
 		  mIsLooping(false) {
 }
@@ -50,7 +49,7 @@ SoundAction::~SoundAction() {
 }
 
 SoundGroup* SoundAction::getGroup() {
-	return mGroup;
+	return mGroup.get();
 }
 
 SoundGroup* SoundAction::setGroup(const std::string& name) {
@@ -58,23 +57,22 @@ SoundGroup* SoundAction::setGroup(const std::string& name) {
 		return nullptr;
 	}
 
-	SoundGroupDefinition* groupModel = SoundDefinitionManager::getSingleton().getSoundGroupDefinition(name);
+	auto groupModel = SoundDefinitionManager::getSingleton().getSoundGroupDefinition(name);
 
 	if (!groupModel) {
 		S_LOG_FAILURE("A template to the group " << name << " could not be found.");
 		return nullptr;
 	}
 
-	auto* newGroup = new SoundGroup();
+	mGroup = std::make_unique<SoundGroup>();
 
 	auto& soundDefinitions = groupModel->mSamples;
 	for (const auto& soundDefinition : soundDefinitions) {
 		// Register Individual samples
-		newGroup->addSound(soundDefinition);
+		mGroup->addSound(soundDefinition);
 	}
 
-	mGroup = newGroup;
-	return newGroup;
+	return mGroup.get();
 }
 
 void SoundAction::play() {

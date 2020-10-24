@@ -44,7 +44,7 @@ Screen::Screen(Ogre::RenderWindow& window) :
 		Screenshot("screenshot", this, "Take a screenshot and write to disk."),
 		Record("+record", this, "Record to disk."),
 		mWindow(window),
-		mRecorder(new Camera::Recorder()),
+		mRecorder(std::make_unique<Camera::Recorder>()),
 		mPolygonMode(Ogre::PM_SOLID),
 		mFrameStats{} {
 }

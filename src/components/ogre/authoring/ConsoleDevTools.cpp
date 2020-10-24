@@ -50,6 +50,12 @@ ConsoleDevTools::ConsoleDevTools() :
 
 }
 
+ConsoleDevTools::~ConsoleDevTools() {
+	if (mFrameListener) {
+		Ogre::Root::getSingleton().addFrameListener(mFrameListener.get());
+	}
+}
+
 void ConsoleDevTools::runCommand(const std::string& command, const std::string& args) {
 	if (mReloadMaterial == command) {
 		Tokeniser tokeniser;
@@ -243,7 +249,7 @@ void ConsoleDevTools::performBenchmark() {
 			void setMotionHandler(ICameraMotionHandler* handler) override {}
 		};
 
-		std::shared_ptr<StaticCameraMount> cameraMount(new StaticCameraMount());
+		auto cameraMount = std::make_shared<StaticCameraMount>();
 		cameraMount->mCameraNode = cameraNode;
 		emberOgre.getWorld()->getMainCamera().attachToMount(cameraMount.get());
 
@@ -288,7 +294,7 @@ void ConsoleDevTools::performBenchmark() {
 						}
 
 						auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(totalDuration).count();
-						std::string message = "Total FPS: " + std::to_string((float)(60 * results.size()) / (microseconds / 1000000.0));
+						std::string message = "Total FPS: " + std::to_string((float) (60 * results.size()) / (microseconds / 1000000.0));
 						S_LOG_INFO(message);
 						ConsoleBackend::getSingleton().pushMessage(message);
 
@@ -305,18 +311,20 @@ void ConsoleDevTools::performBenchmark() {
 			}
 		};
 
-		auto benchmarkFrameListener = new BenchmarkFrameListener();
-		benchmarkFrameListener->cameraNode = cameraNode;
-		benchmarkFrameListener->cameraMount = cameraMount;
+		auto benchmarkListener = std::make_unique<BenchmarkFrameListener>();
+		benchmarkListener->cameraNode = cameraNode;
+		benchmarkListener->cameraMount = cameraMount;
 
-		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 20, 990), Ogre::Vector3(0, 0, -1));
-		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 50, 590), Ogre::Vector3(0, 0, -1));
-		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-870, 5, 800), Ogre::Vector3(0, 0, -1));
-		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-707, 5, 750), Ogre::Vector3(0, 0, -1));
-		benchmarkFrameListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 20, 990), Ogre::Vector3(0, 0, -1));
+		benchmarkListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 20, 990), Ogre::Vector3(0, 0, -1));
+		benchmarkListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 50, 590), Ogre::Vector3(0, 0, -1));
+		benchmarkListener->positionsAndDirections.emplace_back(Ogre::Vector3(-870, 5, 800), Ogre::Vector3(0, 0, -1));
+		benchmarkListener->positionsAndDirections.emplace_back(Ogre::Vector3(-707, 5, 750), Ogre::Vector3(0, 0, -1));
+		benchmarkListener->positionsAndDirections.emplace_back(Ogre::Vector3(-800, 20, 990), Ogre::Vector3(0, 0, -1));
 
 
-		Ogre::Root::getSingleton().addFrameListener(benchmarkFrameListener);
+		Ogre::Root::getSingleton().addFrameListener(benchmarkListener.get());
+
+		mFrameListener = std::move(benchmarkListener);
 
 	}
 }

@@ -23,21 +23,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief A simple image bitmap buffer, square in size.
  */
 template<typename DataType>
-class Buffer
-{
+class Buffer {
 public:
 
 	/**
@@ -134,57 +130,52 @@ protected:
 
 template<typename DataType>
 Buffer<DataType>::Buffer(unsigned int width, unsigned int channels) :
-	mResolution(width), mChannels(channels), mData(new DataType[width * width * channels]), mDataOwned(true)
-{
+		mResolution(width), mChannels(channels),
+		mData(new DataType[width * width * channels]),
+		mDataOwned(true) {
 }
 
 template<typename DataType>
 Buffer<DataType>::Buffer(unsigned int width, unsigned int channels, DataType* data, bool transferOwnership) :
-	mResolution(width), mChannels(channels), mData(data), mDataOwned(transferOwnership)
-{
+		mResolution(width), mChannels(channels),
+		mData(data),
+		mDataOwned(transferOwnership) {
 }
 
 template<typename DataType>
-Buffer<DataType>::~Buffer()
-{
+Buffer<DataType>::~Buffer() {
 	if (mDataOwned) {
 		delete[] mData;
 	}
 }
 
 template<typename DataType>
-DataType* Buffer<DataType>::getData()
-{
+DataType* Buffer<DataType>::getData() {
 	return mData;
 }
 
 template<typename DataType>
-const DataType* Buffer<DataType>::getData() const
-{
+const DataType* Buffer<DataType>::getData() const {
 	return mData;
 }
 
 template<typename DataType>
-DataType Buffer<DataType>::getValueAt(unsigned int x, unsigned int y, unsigned int channel)
-{
+DataType Buffer<DataType>::getValueAt(unsigned int x, unsigned int y, unsigned int channel) {
 	return mData[(y * mResolution * mChannels) + (x * mChannels) + (channel - 1)];
 }
 
 template<typename DataType>
-unsigned int Buffer<DataType>::getChannels() const
-{
+unsigned int Buffer<DataType>::getChannels() const {
 	return mChannels;
 }
 
 template<typename DataType>
-size_t Buffer<DataType>::getSize() const
-{
+size_t Buffer<DataType>::getSize() const {
 	return mResolution * mResolution * mChannels;
 }
 
 template<typename DataType>
-unsigned int Buffer<DataType>::getResolution() const
-{
+unsigned int Buffer<DataType>::getResolution() const {
 	return mResolution;
 }
 

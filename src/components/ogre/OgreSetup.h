@@ -35,6 +35,7 @@
 #include "framework/ConsoleObject.h"
 #include <OgreConfigOptionMap.h>
 #include <OgreFrameListener.h>
+#include <OgreMaterialManager.h>
 #include <sigc++/trackable.h>
 #include <memory>
 namespace varconf {
@@ -137,12 +138,14 @@ private:
 	 *
 	 * When used in WebEmber mode, Ogre will handle the window (instead of SDL).
 	 */
-	OgreWindowProvider* mOgreWindowProvider;
+	std::unique_ptr<OgreWindowProvider> mOgreWindowProvider;
 #endif
 
 	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
 	bool mSaveShadersToCache;
+
+	std::unique_ptr<Ogre::MaterialManager::Listener> mMaterialsListener;
 
 	/**
 	 * @brief Sets standard values in the Ogre environment.

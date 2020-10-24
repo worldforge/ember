@@ -96,11 +96,11 @@ protected:
 	/**
 	 * @brief The sound group used for playing this sound.
 	 */
-	SoundGroup* mGroup;
+	std::unique_ptr<SoundGroup> mGroup;
 
 	/**
 	 * @brief The sound instance which will be used to play this action.
-	 * This is owned by this class, but only available when the sound is actually playing. As soon as the sound stops playing this will be set to null (and the instance deleted).
+	 * This is not owned by this class, but only available when the sound is actually playing. As soon as the sound stops playing this will be set to null (and the instance deleted).
 	 */
 	SoundInstance* mInstance;
 

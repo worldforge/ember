@@ -21,20 +21,18 @@
 
 #include "framework/ConsoleObject.h"
 #include "framework/ConsoleCommandWrapper.h"
+#include <OgreFrameListener.h>
 
 #include <string>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 /**
  * @brief Adds developer console commands.
  */
 class ConsoleDevTools :
-	protected ConsoleObject
-{
+		protected ConsoleObject {
 public:
 	/**
 	 * @brief Ctor.
@@ -43,9 +41,14 @@ public:
 	 */
 	ConsoleDevTools();
 
+	~ConsoleDevTools() override;
+
 	void showTexture(const std::string& textureName);
+
 	void reloadMaterial(const std::string& materialName);
+
 	void reloadTexture(const std::string& textureName);
+
 	void performBenchmark();
 
 protected:
@@ -61,10 +64,13 @@ protected:
 
 	const ConsoleCommandWrapper mBenchmark;
 
+	std::unique_ptr<Ogre::FrameListener> mFrameListener;
+
 	/**
 	 * Reimplements the ConsoleObject::runCommand method
 	 */
 	void runCommand(const std::string& command, const std::string& args) override;
+
 	std::string genUniqueName();
 };
 

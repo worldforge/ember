@@ -84,29 +84,29 @@ World::World(Eris::View& view,
 		mView(view),
 		mRenderWindow(renderWindow),
 		mSignals(signals),
-		mCalendar(new Eris::Calendar(view.getAvatar())),
-		mScene(new Scene()),
+		mCalendar(std::make_unique<Eris::Calendar>(view.getAvatar())),
+		mScene(std::make_unique<Scene>()),
 		mViewport(renderWindow.addViewport(&mScene->getMainCamera())),
 		mAvatar(nullptr),
 		mMovementController(nullptr),
-		mTerrainManager(new Terrain::TerrainManager(mScene->createTerrainAdapter(), *mScene, view, shaderManager, view.getEventService(), graphicalChangeAdapter)),
-		mMainCamera(new Camera::MainCamera(*mScene, mRenderWindow, input, *mTerrainManager->getTerrainAdapter())),
-		mMoveManager(new Authoring::EntityMoveManager(*this)),
-		mMotionManager(new MotionManager()),
+		mTerrainManager(std::make_unique<Terrain::TerrainManager>(mScene->createTerrainAdapter(), *mScene, view, shaderManager, view.getEventService(), graphicalChangeAdapter)),
+		mMainCamera(std::make_unique<Camera::MainCamera>(*mScene, mRenderWindow, input, *mTerrainManager->getTerrainAdapter())),
+		mMoveManager(std::make_unique<Authoring::EntityMoveManager>(*this)),
+		mMotionManager(std::make_unique<MotionManager>()),
 		mAvatarCameraMotionHandler(nullptr),
 		mAvatarCameraWarper(nullptr),
-		mEntityWorldPickListener(new EntityWorldPickListener(mView, *mScene)),
-		mAuthoringManager(new Authoring::AuthoringManager(*this)),
-		mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)),
-		mTerrainEntityManager(new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager())),
-		mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),
-		mPageDataProvider(new TerrainPageDataProvider(mTerrainManager->getHandler())),
-		mEnvironment(new Environment::Environment(mScene->getSceneManager(),
-												  *mTerrainManager,
-												  std::make_unique<Environment::CaelumEnvironment>(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar),
-												  std::make_unique<Environment::SimpleEnvironment>(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()))),
-		mRenderDistanceManager(new RenderDistanceManager(graphicalChangeAdapter, *(mEnvironment->getFog()), mScene->getMainCamera())),
-		mConfigListenerContainer(new ConfigListenerContainer()),
+		mEntityWorldPickListener(std::make_unique<EntityWorldPickListener>(mView, *mScene)),
+		mAuthoringManager(std::make_unique<Authoring::AuthoringManager>(*this)),
+		mAuthoringMoverConnector(std::make_unique<Authoring::AuthoringMoverConnector>(*mAuthoringManager, *mMoveManager)),
+		mTerrainEntityManager(std::make_unique<TerrainEntityManager>(view, mTerrainManager->getHandler(), mScene->getSceneManager())),
+		mLodLevelManager(std::make_unique<Lod::LodLevelManager>(graphicalChangeAdapter, mScene->getMainCamera())),
+		mPageDataProvider(std::make_unique<TerrainPageDataProvider>(mTerrainManager->getHandler())),
+		mEnvironment(std::make_unique<Environment::Environment>(mScene->getSceneManager(),
+																*mTerrainManager,
+																std::make_unique<Environment::CaelumEnvironment>(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar),
+																std::make_unique<Environment::SimpleEnvironment>(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()))),
+		mRenderDistanceManager(std::make_unique<RenderDistanceManager>(graphicalChangeAdapter, *(mEnvironment->getFog()), mScene->getMainCamera())),
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()),
 		mTopLevelEntity(nullptr) {
 	mAfterTerrainUpdateConnection = mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
@@ -146,8 +146,9 @@ World::~World() {
 	mTerrainManager.reset();
 	mSignals.EventTerrainManagerDestroyed();
 
-	Ogre::Root::getSingleton().removeFrameListener(mMotionManager.get());
-	mMotionManager.reset();
+	if (mMotionManager) {
+		Ogre::Root::getSingleton().removeFrameListener(mMotionManager.get());
+	}
 	mSignals.EventMotionManagerDestroyed();
 }
 

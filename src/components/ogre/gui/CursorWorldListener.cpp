@@ -53,9 +53,8 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 		mCursorLingerStart(0),
 		mClickThresholdMilliseconds(200),
 		mMousePressedTimeFrame(nullptr),
-		mConfigListenerContainer(new ConfigListenerContainer()),
-		mIsCursorInWorld(false)
-{
+		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()),
+		mIsCursorInWorld(false) {
 
 	mainLoopController.EventAfterInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
 	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorWorldListener::input_MouseButtonReleased));

@@ -38,17 +38,16 @@ namespace OgreView {
 
 SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup)
 		: SoundBinding(source), mSoundGroup(soundGroup) {
-	const SoundGroup::SampleStore& samples = mSoundGroup.getSamples();
-	std::unique_ptr<ALuint> buffers(new ALuint[samples.size()]);
-	ALuint* pbuffers = buffers.get();
-	int i = 0;
+	auto& samples = mSoundGroup.getSamples();
+	mBufferBindings.resize(samples.size());
+	size_t i = 0;
 	//get the buffers and bind the source to them
 	for (auto& sample : samples) {
-		BaseSoundSample::BufferStore sampleBuffers = sample->getBuffers();
-		pbuffers[i] = *(sampleBuffers.begin());
+		auto sampleBuffers = sample->getBuffers();
+		mBufferBindings[i] = *(sampleBuffers.begin());
 		++i;
 	}
-	alSourceQueueBuffers(source.getALSource(), i, pbuffers);
+	alSourceQueueBuffers(source.getALSource(), i, mBufferBindings.data());
 // 	alSourcei(source.getALSource(), AL_BUFFER, sample.getBuffer());
 
 }
@@ -146,7 +145,7 @@ bool SoundGroup::bindToInstance(SoundInstance* instance) {
 }
 
 
-const SoundGroup::SampleStore& SoundGroup::getSamples() const {
+const std::list<BaseSoundSample*>& SoundGroup::getSamples() const {
 	return mSamples;
 }
 

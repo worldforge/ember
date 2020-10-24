@@ -48,8 +48,7 @@ namespace OgreView {
 /**
  * Listens to entity signal which is of interest to terrain mods and areas.
  */
-class TerrainEffectorListener : public sigc::trackable {
-public:
+struct TerrainEffectorListener : public sigc::trackable {
 
 	/**
 	 * @brief Emitted when the entity has moved.
@@ -164,6 +163,7 @@ void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, cons
 	if (mTerrainMods.find(&entity) == mTerrainMods.end()) {
 		if (value.isMap()) {
 			try {
+				//TODO: make TerrainEffectorListener own the terrain mod instead.
 				mod = new Terrain::TerrainMod(entity, value.Map());
 				auto listener = std::make_unique<TerrainEffectorListener>(entity);
 

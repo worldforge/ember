@@ -48,7 +48,7 @@ TerrainPageDataProvider::TerrainPageDataProvider(Terrain::TerrainHandler& handle
 
 
 std::unique_ptr<IPageData> TerrainPageDataProvider::getPageData(const OgreIndex& ogreIndexPosition) {
-	return std::unique_ptr<IPageData>(new TerrainPageData(mHandler.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition))));
+	return std::make_unique<TerrainPageData>(mHandler.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition)));
 }
 
 int TerrainPageDataProvider::getPageIndexSize() const {

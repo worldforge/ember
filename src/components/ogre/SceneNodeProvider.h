@@ -40,7 +40,7 @@ public:
 
 	Ogre::Node* getParentNode() const override;
 
-	INodeProvider* createChildProvider(const std::string& name) override;
+	std::unique_ptr<INodeProvider> createChildProvider(const std::string& name) override;
 
 	void setVisible(bool visible) override;
 

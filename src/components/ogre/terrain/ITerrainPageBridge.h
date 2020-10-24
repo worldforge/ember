@@ -46,11 +46,11 @@ public:
 	/**
 	 *    @brief Ctor.
 	 */
-	ITerrainPageBridge() : mTerrainPage(0) {}
+	ITerrainPageBridge() : mTerrainPage(nullptr) {}
 	/**
 	 *    @brief Dtor.
 	 */
-	virtual ~ITerrainPageBridge() {}
+	virtual ~ITerrainPageBridge() = default;
 	
 	
 	/**
@@ -109,7 +109,7 @@ inline void ITerrainPageBridge::bindToTerrainPage(TerrainPage* terrainPage)
 
 inline void ITerrainPageBridge::unbindFromTerrainPage()
 {
-	mTerrainPage = 0;
+	mTerrainPage = nullptr;
 }
 	
 inline TerrainPage* ITerrainPageBridge::getTerrainPage() const

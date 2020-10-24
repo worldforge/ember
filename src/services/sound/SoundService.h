@@ -59,7 +59,7 @@ public:
 	 */
 	SoundService();
 
-	~SoundService();
+	~SoundService() override;
 
 	/**
 	 * @copydoc Service::start()

@@ -28,50 +28,41 @@
 #include <OgreSceneManager.h>
 #include <sigc++/bind.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Authoring
-{
+namespace Authoring {
 
 AuthoringMoveInstance::AuthoringMoveInstance(EmberEntity& entity, AuthoringVisualization& visualization, EntityMover& mover, AuthoringHandler& moveHandler) :
-	EntityObserverBase(entity, false),
-	mMover(new AuthoringVisualizationMover(visualization, mover)),
-	mMoveHandler(moveHandler),
-	mVisualization(visualization)
-{
+		EntityObserverBase(entity, false),
+		mMover(std::make_unique<AuthoringVisualizationMover>(visualization, mover)),
+		mMoveHandler(moveHandler),
+		mVisualization(visualization) {
 }
 
 AuthoringMoveInstance::~AuthoringMoveInstance() = default;
 
-void AuthoringMoveInstance::cleanup()
-{
+void AuthoringMoveInstance::cleanup() {
 	mMoveHandler.stopMovement();
 }
 
-AuthoringVisualization& AuthoringMoveInstance::getVisualization()
-{
+AuthoringVisualization& AuthoringMoveInstance::getVisualization() {
 	return mVisualization;
 }
 
 AuthoringHandler::AuthoringHandler(World& world) :
-	mMoveInstance(nullptr), mWorld(world)
-{
+		mMoveInstance(nullptr), mWorld(world) {
 	world.getView().InitialSightEntity.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityInitialSight));
 	createVisualizationsForExistingEntities(world.getView());
 }
 
 AuthoringHandler::~AuthoringHandler() = default;
 
-void AuthoringHandler::view_EntityInitialSight(Eris::Entity* entity)
-{
+void AuthoringHandler::view_EntityInitialSight(Eris::Entity* entity) {
 	createVisualizationForEntity(dynamic_cast<EmberEntity*> (entity));
 }
 
-void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
-{
+void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity) {
 
 	auto I = mVisualizations.find(entity);
 	if (I == mVisualizations.end()) {
@@ -101,8 +92,7 @@ void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 
 }
 
-void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
-{
+void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity) {
 	auto I = mVisualizations.find(dynamic_cast<EmberEntity*> (entity));
 	if (I != mVisualizations.end()) {
 		//see if there's an ongoing movement for the deleted entity, and if we therefore should stop that
@@ -117,8 +107,7 @@ void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 	}
 }
 
-void AuthoringHandler::view_EntityLocationChanged(Eris::Entity* newLocation, EmberEntity* entity)
-{
+void AuthoringHandler::view_EntityLocationChanged(Eris::Entity* newLocation, EmberEntity* entity) {
 	auto I = mVisualizations.find(entity);
 	if (I != mVisualizations.end()) {
 		if (I->second->getSceneNode()->getParent()) {
@@ -142,20 +131,17 @@ void AuthoringHandler::view_EntityLocationChanged(Eris::Entity* newLocation, Emb
 	}
 }
 
-void AuthoringHandler::createVisualizationsForExistingEntities(Eris::View& view)
-{
+void AuthoringHandler::createVisualizationsForExistingEntities(Eris::View& view) {
 	if (view.getTopLevel()) {
 		static_cast<EmberEntity*> (view.getTopLevel())->accept(*this);
 	}
 }
 
-void AuthoringHandler::visit(EmberEntity& entity)
-{
+void AuthoringHandler::visit(EmberEntity& entity) {
 	createVisualizationForEntity(&entity);
 }
 
-void AuthoringHandler::startMovement(EmberEntity& entity, EntityMover& mover)
-{
+void AuthoringHandler::startMovement(EmberEntity& entity, EntityMover& mover) {
 	mMoveInstance.reset();
 	auto I = mVisualizations.find(&entity);
 	if (I != mVisualizations.end()) {
@@ -163,8 +149,7 @@ void AuthoringHandler::startMovement(EmberEntity& entity, EntityMover& mover)
 	}
 }
 
-void AuthoringHandler::stopMovement()
-{
+void AuthoringHandler::stopMovement() {
 	mMoveInstance.reset();
 }
 

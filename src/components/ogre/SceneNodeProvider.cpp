@@ -45,7 +45,7 @@ Ogre::Node* SceneNodeProvider::getParentNode() const {
 	return mNode->getParent();
 }
 
-INodeProvider* SceneNodeProvider::createChildProvider(const std::string& name) {
+std::unique_ptr<INodeProvider> SceneNodeProvider::createChildProvider(const std::string& name) {
 	Ogre::SceneNode* node;
 	if (!name.empty()) {
 		node = mNode->createChildSceneNode(name);
@@ -53,7 +53,7 @@ INodeProvider* SceneNodeProvider::createChildProvider(const std::string& name) {
 		node = mNode->createChildSceneNode();
 	}
 	mNode->setInheritScale(false);
-	return new SceneNodeProvider(node, mNode, mOwnsNode);
+	return std::make_unique<SceneNodeProvider>(node, mNode, mOwnsNode);
 }
 
 void SceneNodeProvider::setVisible(bool visible) {

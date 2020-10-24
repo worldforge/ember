@@ -33,7 +33,7 @@ namespace OgreView {
 
 
 SoundDefinitionManager::SoundDefinitionManager()
-		: mSoundParser(new XMLSoundDefParser()) {
+		: mSoundParser(std::make_unique<XMLSoundDefParser>()) {
 
 	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 }

@@ -83,6 +83,7 @@ void EntityMoveManager::startMove(EmberEntity& entity) {
 			auto mover = std::make_shared<EntityMover>(*attachment, *this);
 			mMoveAdapter.attachToBridge(mover);
 			//The EntityMoveInstance will delete itself when either movement is finished or the entity is deleted, so we don't need to hold a reference to it.
+			//TODO: this feels unsafe; alter this so that the instance is owned by something
 			new EntityMoveInstance(entity, mMoveAdapter, EventFinishedMoving, EventCancelledMoving);
 			EventStartMoving.emit(entity, *mover);
 		}
