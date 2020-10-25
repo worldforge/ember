@@ -37,6 +37,8 @@
 #include <CEGUI/Image.h>
 #include <CEGUI/Window.h>
 
+#include <memory>
+
 namespace Ember {
 namespace OgreView {
 namespace Gui {
@@ -66,8 +68,8 @@ OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
 		MovableObjectRenderer(image, image->getName().c_str()),
 		mEntity(nullptr),
 		mActiveAnimation(nullptr),
-		mMeshListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation)),
-		mSkeletonListener(new OgreEntityRendererResourceListener(*this, &mActiveAnimation)),
+		mMeshListener(std::make_unique<OgreEntityRendererResourceListener>(*this, &mActiveAnimation)),
+		mSkeletonListener(std::make_unique<OgreEntityRendererResourceListener>(*this, &mActiveAnimation)),
 		mShowSkeleton(false) {
 }
 
@@ -123,7 +125,7 @@ void OgreEntityRenderer::setEntity(Ogre::Entity* entity) {
 		if (entity->hasSkeleton()) {
 			entity->getSkeleton()->addListener(mSkeletonListener.get());
 			if (mShowSkeleton) {
-				mSkeletonDisplay.reset(new SkeletonDisplay(*entity));
+				mSkeletonDisplay = std::make_unique<SkeletonDisplay>(*entity);
 			}
 		}
 	}
@@ -205,7 +207,7 @@ void OgreEntityRenderer::setShowSkeleton(bool showSkeleton) {
 		mSkeletonDisplay.reset();
 	} else {
 		if (mEntity) {
-			mSkeletonDisplay.reset(new SkeletonDisplay(*mEntity));
+			mSkeletonDisplay = std::make_unique<SkeletonDisplay>(*mEntity);
 		}
 	}
 

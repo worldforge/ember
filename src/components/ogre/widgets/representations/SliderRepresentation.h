@@ -76,7 +76,7 @@ SliderRepresentation<ValueType>::SliderRepresentation(const ValueType& value, fl
 	mSlider = static_cast<CEGUI::Slider*>(mLayout->getChild(mPrefix + "Slider"));
 	mSlider->setMaxValue(max);
 
-	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, float>(value, mSlider, "CurrentValue", CEGUI::Slider::EventValueChanged));
+	this->setAdapter(std::make_unique<Adapters::GenericPropertyAdapter<ValueType, float>>(value, mSlider, "CurrentValue", CEGUI::Slider::EventValueChanged));
 
 	mText = mLayout->getChild(mPrefix + "Text");
 

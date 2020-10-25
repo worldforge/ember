@@ -26,8 +26,11 @@
 #ifdef UNWIND_ENABLED
 
 #define UNW_LOCAL_ONLY
+
 #include <libunwind.h>
 #include <cxxabi.h>
+
+#include <memory>
 
 #endif
 
@@ -144,7 +147,7 @@ public:
 
 	explicit StackCheckerInstance(std::chrono::milliseconds maxFrameDuration)
 			: hasReportedThisFrame(false),
-			  activeMarker(new bool(true)) {
+			  activeMarker(std::make_shared<bool>(true)) {
 		//Store the main thread id.
 		auto nativeThread = pthread_self();
 		installSignalHandler();
@@ -221,7 +224,7 @@ void StackChecker::printBacktraces() {
 
 void StackChecker::start(std::chrono::milliseconds maxFrameDuration) {
 	stop();
-	sInstance.reset(new StackCheckerInstance(maxFrameDuration));
+	sInstance = std::make_unique<StackCheckerInstance>(maxFrameDuration);
 }
 
 void StackChecker::stop() {

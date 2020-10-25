@@ -203,15 +203,19 @@ void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, cons
 }
 
 void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
-	Terrain::TerrainArea* terrainArea;
+	Terrain::TerrainArea* terrainArea = nullptr;
 	auto I = mAreas.find(&entity);
 	if (I == mAreas.end()) {
-		terrainArea = new Terrain::TerrainArea(entity);
-		auto listener = new TerrainEffectorListener(entity);
-		mAreas.insert(std::make_pair(&entity, std::make_pair(std::unique_ptr<Terrain::TerrainArea>(terrainArea), std::unique_ptr<TerrainEffectorListener>(listener))));
+		auto newTerrainArea = std::make_unique<Terrain::TerrainArea>(entity);
+		auto newTerrainAreaPtr = newTerrainArea.get();
+		auto listener = std::make_unique<TerrainEffectorListener>(entity);
 		listener->EventEntityBeingDeleted.connect([this, &entity]() { entityBeingDeleted(entity); });
-		listener->EventEntityMoved.connect([this, &entity, terrainArea]() { entityMoved(entity, *terrainArea); });
-		listener->EventEntityModeChanged.connect([this, &entity, terrainArea]() { entityModeChanged(entity, *terrainArea); });
+		listener->EventEntityMoved.connect([this, &entity, newTerrainAreaPtr]() { entityMoved(entity, *newTerrainAreaPtr); });
+		listener->EventEntityModeChanged.connect([this, &entity, newTerrainAreaPtr]() { entityModeChanged(entity, *newTerrainAreaPtr); });
+		auto result = mAreas.insert(std::make_pair(&entity, std::make_pair(std::move(newTerrainArea), std::move(listener))));
+		if (result.second) {
+			terrainArea = result.first->second.first.get();
+		}
 	} else {
 		terrainArea = I->second.first.get();
 	}

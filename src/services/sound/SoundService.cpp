@@ -198,9 +198,11 @@ BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& so
 	if (mResourceProvider) {
 		ResourceWrapper resWrapper = mResourceProvider->getResource(soundPath);
 		if (resWrapper.hasData()) {
-			auto* sample = new StaticSoundSample(resWrapper, false, 1.0);
-			mBaseSamples.emplace(soundPath, std::unique_ptr<BaseSoundSample>(sample));
-			return sample;
+			auto sample = std::make_unique<StaticSoundSample>(resWrapper, false, 1.0);
+			auto result = mBaseSamples.emplace(soundPath, std::move(sample));
+			if (result.second) {
+				return result.first->second.get();
+			}
 		}
 	}
 	return nullptr;
@@ -219,9 +221,9 @@ SoundInstance* SoundService::createInstance() {
 	if (!isEnabled()) {
 		return nullptr;
 	}
-	auto* instance = new SoundInstance();
-	mInstances.emplace_back(instance);
-	return instance;
+	auto instance = std::make_unique<SoundInstance>();
+	mInstances.emplace_back(std::move(instance));
+	return mInstances.back().get();
 }
 
 bool SoundService::destroyInstance(SoundInstance* instance) {

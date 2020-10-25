@@ -42,18 +42,18 @@ class StaticAdapter : public AdapterBase
 public:
     StaticAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* textWindow);
 
-    virtual ~StaticAdapter();
+    ~StaticAdapter() override;
     
 	/**
 	Updates the gui with new values.
 	*/
-	virtual void updateGui(const ::Atlas::Message::Element& element);
+	void updateGui(const ::Atlas::Message::Element& element) override;
 	
 protected:
 	CEGUI::Window* mTextWindow;
 	
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
+	void fillElementFromGui() override;
+	bool _hasChanges() override;
 
 };
 

@@ -55,8 +55,8 @@ struct ICompilerTechniqueProvider {
 	 * @param terrainPageSurfaces The surfaces attached to the geometry.
 	 * @param terrainPageShadow An optional shadow for the geometry.
 	 */
-	virtual TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry,
-																 const SurfaceLayerStore& terrainPageSurfaces) const = 0;
+	virtual std::unique_ptr<TerrainPageSurfaceCompilerTechnique> createTechnique(const TerrainPageGeometryPtr& geometry,
+																				 const SurfaceLayerStore& terrainPageSurfaces) const = 0;
 
 };
 

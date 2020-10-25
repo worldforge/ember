@@ -120,11 +120,7 @@ ConfigService::ConfigService(std::string prefix) :
 		mSharedDataDir(""),
 		mEtcDir(""),
 		mHomeDir(""),
-		mPrefix(std::move(prefix)),
-		mGlobalConfig(new varconf::Config()),
-		mUserConfig(new varconf::Config()),
-		mCommandLineConfig(new varconf::Config()),
-		mInstanceConfig(new varconf::Config()) {
+		mPrefix(std::move(prefix)){
 #ifdef _WIN32
 	char cwd[512];
 	//get the full path for the current executable
@@ -159,12 +155,12 @@ ConfigService::ConfigService(std::string prefix) :
 	}
 	S_LOG_INFO("Setting config directory to " << mEtcDir.string());
 #endif
-	mGlobalConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
-	mGlobalConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
-	mUserConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
-	mUserConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
-	mInstanceConfig->sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
-	mInstanceConfig->sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
+	mGlobalConfig.sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
+	mGlobalConfig.sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
+	mUserConfig.sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
+	mUserConfig.sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
+	mInstanceConfig.sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
+	mInstanceConfig.sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
 }
 
 ConfigService::~ConfigService() = default;
@@ -181,20 +177,20 @@ void ConfigService::setHomeDirectory(const std::string& path) {
 ConfigService::SectionMap ConfigService::getSection(const std::string& sectionName) {
 	SectionMap combinedSection;
 
-	if (mInstanceConfig->findSection(sectionName)) {
-		const SectionMap& section = mInstanceConfig->getSection(sectionName);
+	if (mInstanceConfig.findSection(sectionName)) {
+		const SectionMap& section = mInstanceConfig.getSection(sectionName);
 		combinedSection.insert(section.begin(), section.end());
 	}
-	if (mCommandLineConfig->findSection(sectionName)) {
-		const SectionMap& section = mCommandLineConfig->getSection(sectionName);
+	if (mCommandLineConfig.findSection(sectionName)) {
+		const SectionMap& section = mCommandLineConfig.getSection(sectionName);
 		combinedSection.insert(section.begin(), section.end());
 	}
-	if (mUserConfig->findSection(sectionName)) {
-		const SectionMap& section = mUserConfig->getSection(sectionName);
+	if (mUserConfig.findSection(sectionName)) {
+		const SectionMap& section = mUserConfig.getSection(sectionName);
 		combinedSection.insert(section.begin(), section.end());
 	}
-	if (mGlobalConfig->findSection(sectionName)) {
-		const SectionMap& section = mGlobalConfig->getSection(sectionName);
+	if (mGlobalConfig.findSection(sectionName)) {
+		const SectionMap& section = mGlobalConfig.getSection(sectionName);
 		combinedSection.insert(section.begin(), section.end());
 	}
 	return combinedSection;
@@ -202,33 +198,33 @@ ConfigService::SectionMap ConfigService::getSection(const std::string& sectionNa
 
 
 varconf::Variable ConfigService::getValue(const std::string& section, const std::string& key) const {
-	if (mInstanceConfig->findItem(section, key)) {
-		return mInstanceConfig->getItem(section, key);
+	if (mInstanceConfig.findItem(section, key)) {
+		return mInstanceConfig.getItem(section, key);
 	}
-	if (mCommandLineConfig->findItem(section, key)) {
-		return mCommandLineConfig->getItem(section, key);
+	if (mCommandLineConfig.findItem(section, key)) {
+		return mCommandLineConfig.getItem(section, key);
 	}
-	if (mUserConfig->findItem(section, key)) {
-		return mUserConfig->getItem(section, key);
+	if (mUserConfig.findItem(section, key)) {
+		return mUserConfig.getItem(section, key);
 	}
-	return mGlobalConfig->getItem(section, key);
+	return mGlobalConfig.getItem(section, key);
 }
 
 bool ConfigService::getValue(const std::string& section, const std::string& key, varconf::Variable& value) const {
-	if (mInstanceConfig->findItem(section, key)) {
-		value = mInstanceConfig->getItem(section, key);
+	if (mInstanceConfig.findItem(section, key)) {
+		value = mInstanceConfig.getItem(section, key);
 		return true;
 	}
-	if (mCommandLineConfig->findItem(section, key)) {
-		value = mCommandLineConfig->getItem(section, key);
+	if (mCommandLineConfig.findItem(section, key)) {
+		value = mCommandLineConfig.getItem(section, key);
 		return true;
 	}
-	if (mUserConfig->findItem(section, key)) {
-		value = mUserConfig->getItem(section, key);
+	if (mUserConfig.findItem(section, key)) {
+		value = mUserConfig.getItem(section, key);
 		return true;
 	}
-	if (mGlobalConfig->findItem(section, key)) {
-		value = mGlobalConfig->getItem(section, key);
+	if (mGlobalConfig.findItem(section, key)) {
+		value = mGlobalConfig.getItem(section, key);
 		return true;
 	}
 	return false;
@@ -239,13 +235,13 @@ void ConfigService::setValue(const std::string& section, const std::string& key,
 
 	switch (scope) {
 		case varconf::GLOBAL:
-			mGlobalConfig->setItem(section, key, value);
+			mGlobalConfig.setItem(section, key, value);
 			break;
 		case varconf::USER:
-			mUserConfig->setItem(section, key, value);
+			mUserConfig.setItem(section, key, value);
 			break;
 		case varconf::INSTANCE:
-			mInstanceConfig->setItem(section, key, value);
+			mInstanceConfig.setItem(section, key, value);
 			break;
 	}
 }
@@ -259,23 +255,23 @@ bool ConfigService::itemExists(const std::string& section, const std::string& ke
 }
 
 bool ConfigService::hasItem(const std::string& section, const std::string& key) const {
-	return mGlobalConfig->find(section, key) || mUserConfig->find(section, key) || mInstanceConfig->find(section, key) || mCommandLineConfig->find(section, key);
+	return mGlobalConfig.find(section, key) || mUserConfig.find(section, key) || mInstanceConfig.find(section, key) || mCommandLineConfig.find(section, key);
 }
 
 bool ConfigService::deleteItem(const std::string& section, const std::string& key) {
-	return mGlobalConfig->erase(section, key) | mUserConfig->erase(section, key) | mInstanceConfig->erase(section, key) | mCommandLineConfig->erase(section, key);
+	return mGlobalConfig.erase(section, key) | mUserConfig.erase(section, key) | mInstanceConfig.erase(section, key) | mCommandLineConfig.erase(section, key);
 }
 
 bool ConfigService::loadSavedConfig(const std::string& filename, const StringConfigMap& commandLineSettings) {
 	auto path = getSharedConfigDirectory() / filename;
 	S_LOG_INFO ("Loading shared config file from " << path.string() << ".");
-	bool success = mGlobalConfig->readFromFile(path.string(), varconf::GLOBAL);
+	bool success = mGlobalConfig.readFromFile(path.string(), varconf::GLOBAL);
 	auto userConfigPath = getHomeDirectory(BaseDirType_CONFIG) / filename;
 	std::ifstream file(userConfigPath.c_str());
 	if (!file.fail()) {
 		S_LOG_INFO ("Loading user config file from " << userConfigPath.string() << ".");
 		try {
-			mUserConfig->parseStream(file, varconf::USER);
+			mUserConfig.parseStream(file, varconf::USER);
 		}
 		catch (varconf::ParseError& p) {
 			S_LOG_FAILURE ("Error loading user config file: " << p);
@@ -289,7 +285,7 @@ bool ConfigService::loadSavedConfig(const std::string& filename, const StringCon
 	for (auto I = commandLineSettings.begin(); I != commandLineSettings.end(); ++I) {
 		for (auto J = I->second.begin(); J != I->second.end(); ++J) {
 			S_LOG_INFO("Setting command line config option " << I->first << ":" << J->first << " to " << J->second);
-			mCommandLineConfig->setItem(I->first, J->first, J->second);
+			mCommandLineConfig.setItem(I->first, J->first, J->second);
 			EventChangedConfigItem(I->first, J->first);
 		}
 	}
@@ -303,19 +299,19 @@ bool ConfigService::saveConfig(const boost::filesystem::path& filename, unsigned
 
 	//First get the instance values (i.e. those values which have been changed at runtime).
 	//But only get those that differs from the global config.
-	const varconf::conf_map& instanceSections = mInstanceConfig->getSections();
+	const varconf::conf_map& instanceSections = mInstanceConfig.getSections();
 	for (const auto& instanceSection : instanceSections) {
 		const varconf::sec_map& section = instanceSection.second;
 		for (const auto& J : section) {
 			//only set the value if it differs from the global one
-			if (mGlobalConfig->getItem(instanceSection.first, J.first) != J.second) {
+			if (mGlobalConfig.getItem(instanceSection.first, J.first) != J.second) {
 				exportConfig.setItem(instanceSection.first, J.first, J.second, varconf::INSTANCE);
 			}
 		}
 	}
 
 	//Then also add all user settings, i.e. those that already had been set in the user config file.
-	const varconf::conf_map& userSections = mUserConfig->getSections();
+	const varconf::conf_map& userSections = mUserConfig.getSections();
 	for (const auto& userSection : userSections) {
 		const varconf::sec_map& section = userSection.second;
 		for (const auto& J : section) {

@@ -23,7 +23,14 @@
 
 #include "ServerService.h"
 
+#include "LoggedInState.h"
 #include "NonConnectedState.h"
+#include "ConnectingState.h"
+#include "ConnectedState.h"
+#include "AccountAvailableState.h"
+#include "EnteredWorldState.h"
+#include "StateBase.h"
+
 #include "services/config/ConfigService.h"
 
 #include <Eris/Session.h>
@@ -46,7 +53,7 @@ ServerService::ServerService(Eris::Session& session) :
 		mAccount(nullptr),
 		mAvatar(nullptr),
 		mOOGChat(nullptr),
-		mNonConnectedState(new NonConnectedState(*this, session)) {
+		mNonConnectedState(std::make_unique<NonConnectedState>(*this, session)) {
 	GotAccount.connect(sigc::mem_fun(*this, &ServerService::gotAccount));
 	GotAvatar.connect(sigc::mem_fun(*this, &ServerService::gotAvatar));
 	GotConnection.connect(sigc::mem_fun(*this, &ServerService::gotConnection));

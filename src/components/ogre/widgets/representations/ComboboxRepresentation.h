@@ -69,7 +69,7 @@ ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(co
 		SingleAdapterRepresentationBase<ValueType>() {
 	mLayout = UniqueWindowPtr<CEGUI::Window>(LayoutHelper::loadLayout("representations/ComboboxRepresentation.layout", mPrefix));
 	mCombobox = static_cast<CEGUI::Combobox*>(mLayout->getChild(mPrefix + "String"));
-	this->setAdapter(new Adapters::ComboboxAdapter<ValueType, PropertyNativeType>(value, mCombobox));
+	this->setAdapter(std::make_unique<Adapters::ComboboxAdapter<ValueType, PropertyNativeType>>(value, mCombobox));
 
 	mCombobox->setReadOnly(suggestionOnly);
 }

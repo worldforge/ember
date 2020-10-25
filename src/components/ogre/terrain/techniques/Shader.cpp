@@ -274,25 +274,27 @@ bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<st
 }
 
 ShaderPass* Shader::addPass() {
-	auto shaderPass = new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition());
+	auto shaderPass = std::make_unique<ShaderPass>(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition());
 	if (mIncludeShadows) {
 		for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
 			shaderPass->addShadowLayer();
 		}
 	}
-	mPasses.push_back(std::unique_ptr<ShaderPass>(shaderPass));
-	return shaderPass;
+	auto ptr = shaderPass.get();
+	mPasses.emplace_back(std::move(shaderPass));
+	return ptr;
 }
 
 ShaderPass* Shader::addPassNormalMapped() {
-	auto shaderPass = new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition(), true);
+	auto shaderPass = std::make_unique<ShaderPass>(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition(), true);
 	if (mIncludeShadows) {
 		for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
 			shaderPass->addShadowLayer();
 		}
 	}
-	mPassesNormalMapped.push_back(std::unique_ptr<ShaderPass>(shaderPass));
-	return shaderPass;
+	auto ptr = shaderPass.get();
+	mPassesNormalMapped.push_back(std::move(shaderPass));
+	return ptr;
 }
 
 }

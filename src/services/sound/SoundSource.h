@@ -47,7 +47,13 @@ class SoundSource
 {
 friend class SoundInstance;
 public:
-	
+
+	/**
+	* @brief Ctor.
+	* At construction time the sound source will be created in OpenAL and initialized to default values.
+	*/
+	SoundSource();
+
 	/**
 	 * @brief Dtor.
 	 * When an instance is destroyed the OpenAL sound source will be released as well.
@@ -80,12 +86,7 @@ public:
 	
 protected:
 
-	/**
-	* @brief Ctor.
-	* At construction time the sound source will be created in OpenAL and initialized to default values.
-	* This is protected since we only want the SoundInstance class to be able to create new instances.
-	*/
-	SoundSource();
+
 
 	
 	/**

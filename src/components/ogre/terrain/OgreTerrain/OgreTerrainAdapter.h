@@ -125,7 +125,10 @@ private:
 	Ogre::TerrainPagedWorldSection* mTerrainPagedWorldSection;
 	OgreTerrainPageProvider mTerrainPageProvider;
 
-	std::unique_ptr<EmberTerrainGroup> mTerrainGroup;
+	/**
+	 * Ownership is passed to the Ogre terrain engine.
+	 */
+	EmberTerrainGroup* mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
 	std::unique_ptr<Ogre::TerrainMaterialGenerator::Profile> mMaterialProfile;

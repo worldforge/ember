@@ -100,8 +100,8 @@ Connector::Connector(sigc::signal<void>& signal) {
 	}
 }
 
-Connector::Connector(ConnectorBase* connector)
-		: mConnector(connector) {
+Connector::Connector(std::unique_ptr<ConnectorBase> connector)
+		: mConnector(std::move(connector)) {
 }
 
 Connector::Connector(const Connector& connector)

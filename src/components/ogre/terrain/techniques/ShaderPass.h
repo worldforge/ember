@@ -72,7 +72,7 @@ friend class ShaderPassBlendMapBatch;
 protected:
 
 	ShaderPassBlendMapBatch* getCurrentBatch();
-	virtual ShaderPassBlendMapBatch* createNewBatch();
+	virtual std::unique_ptr<ShaderPassBlendMapBatch> createNewBatch();
 
 	unsigned int getBlendMapPixelWidth() const;
 	Ogre::TexturePtr getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const;

@@ -62,6 +62,13 @@ class ActionBarIconSlot : public ActionBarIconDragDropTarget {
 	friend class ActionBarIcon;
 
 public:
+	/**
+	 * @brief Ctor.
+	 *
+	 * @param The main action bar icon manager.
+	 * @param container The CEGUI window which will be used by the slot. This can be any window, but should preferably be something which makes it clear that it's a slot onto which an icon can be dragged and dropped.
+	 */
+	explicit ActionBarIconSlot(UniqueWindowPtr<CEGUI::Window> container);
 
 	/**
 	 * @brief Dtor.
@@ -106,13 +113,7 @@ public:
 
 
 protected:
-	/**
-	 * @brief Ctor.
-	 *
-	 * @param The main action bar icon manager.
-	 * @param container The CEGUI window which will be used by the slot. This can be any window, but should preferably be something which makes it clear that it's a slot onto which an icon can be dragged and dropped.
-	 */
-	explicit ActionBarIconSlot(UniqueWindowPtr<CEGUI::Window> container);
+
 
 
 	/**

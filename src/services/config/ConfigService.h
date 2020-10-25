@@ -92,28 +92,28 @@ private:
 	 *
 	 * This contains values read in from either the global config.
 	 */
-	std::unique_ptr<varconf::Config> mGlobalConfig;
+	varconf::Config mGlobalConfig;
 
 	/**
 	 * @brief The user configuration store.
 	 *
 	 * This contains values read in from the user config file (for example ~/.config/ember/ember.conf).
 	 */
-	std::unique_ptr<varconf::Config> mUserConfig;
+	varconf::Config mUserConfig;
 
 	/**
 	 * @brief The command line configuration store.
 	 *
 	 * This contains values read from the command line. These should not factor in when saving the configuration.
 	 */
-	std::unique_ptr<varconf::Config> mCommandLineConfig;
+	varconf::Config mCommandLineConfig;
 
 	/**
 	 * @brief The instance configuration store.
 	 *
 	 * This contains values altered at run time.
 	 */
-	std::unique_ptr<varconf::Config> mInstanceConfig;
+	varconf::Config mInstanceConfig;
 
 
 protected:

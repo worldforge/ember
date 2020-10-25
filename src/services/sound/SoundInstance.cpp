@@ -31,7 +31,7 @@
 namespace Ember {
 
 SoundInstance::SoundInstance()
-		: mSource(new SoundSource()),
+		: mSource(std::make_unique<SoundSource>()),
 		  mMotionProvider(nullptr),
 		  mPreviousState(0) {
 }

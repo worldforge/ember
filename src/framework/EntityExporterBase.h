@@ -381,7 +381,6 @@ protected:
 	 */
 	void startRequestingEntities();
 
-	void dumpRule(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpMind(const std::string& entityId, const Operation & op);
 	void infoArrived(const Operation& op);
@@ -450,7 +449,7 @@ protected:
 	 * @param b A bridge.
 	 * @return A formatter instance. Ownership is transferred.
 	 */
-	virtual Atlas::Formatter* createMultiLineFormatter(std::iostream& s, Atlas::Bridge& b) = 0;
+	virtual std::unique_ptr<Atlas::Formatter> createMultiLineFormatter(std::iostream& s, Atlas::Bridge& b) = 0;
 
 	/**
 	 * @brief Fills the supplied map with server meta data.

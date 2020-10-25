@@ -64,6 +64,11 @@ class SoundInstance {
 	friend class SoundService;
 
 public:
+	/**
+	 * @brief Ctor.
+	 * An instance of SoundSource will automatically be created at construction.
+	 */
+	SoundInstance();
 
 	~SoundInstance();
 
@@ -144,11 +149,7 @@ public:
 
 
 protected:
-	/**
-	 * @brief Ctor. This is protected to allow only the SoundService to create instances.
-	 * An instance of SoundSource will automatically be created at construction.
-	 */
-	SoundInstance();
+
 
 	/**
 	 * @brief This is called each frame by the SoundService.

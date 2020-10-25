@@ -30,7 +30,7 @@ namespace Services {
 
 ServerSettings::ServerSettings() :
 		Service("Server settings"),
-		mConfig(new varconf::Config()) {
+		mConfig(std::make_unique<varconf::Config>()) {
 }
 
 ServerSettings::~ServerSettings() = default;

@@ -91,12 +91,12 @@ Services::ServerSettings& EmberServices::getServerSettingsService() {
 
 EmberServices::EmberServices(Eris::Session& session, ConfigService& configService)
 		: mConfigService(configService),
-		  mScriptingService(new ScriptingService()),
-		  mSoundService(new SoundService()),
-		  mServerService(new ServerService(session)),
-		  mMetaserverService(new MetaserverService(session)),
-		  mWfutService(new WfutService()),
-		  mServerSettingsService(new Services::ServerSettings()) {
+		  mScriptingService(std::make_unique<ScriptingService>()),
+		  mSoundService(std::make_unique<SoundService>()),
+		  mServerService(std::make_unique<ServerService>(session)),
+		  mMetaserverService(std::make_unique<MetaserverService>(session)),
+		  mWfutService(std::make_unique<WfutService>()),
+		  mServerSettingsService(std::make_unique<Services::ServerSettings>()) {
 }
 
 }

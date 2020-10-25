@@ -34,7 +34,7 @@
 namespace Ember {
 
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& attributeName)
-		: mDirectAttributeObserver(new DirectAttributeObserver(entity, EventChanged, attributeName)) {
+		: mDirectAttributeObserver(std::make_unique<DirectAttributeObserver>(entity, EventChanged, attributeName)) {
 }
 
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::vector<std::string>& attributePath)

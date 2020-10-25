@@ -41,7 +41,7 @@ const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
 
 
 ConsoleBackend::ConsoleBackend()
-		: mCommandHistory(new CommandHistory()) {
+		: mCommandHistory(std::make_unique<CommandHistory>()) {
 	// Register console commands
 	registerCommand(LIST_CONSOLE_COMMANDS, this);
 }

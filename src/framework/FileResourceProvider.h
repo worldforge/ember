@@ -41,8 +41,7 @@ public:
 
 private:
 
-	char* mBuffer;
-	size_t mSize;
+	std::vector<char> mBuffer;
 };
 
 /**

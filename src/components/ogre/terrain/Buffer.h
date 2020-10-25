@@ -20,8 +20,8 @@
 #ifndef EMBEROGRETERRAINBUFFER_H_
 #define EMBEROGRETERRAINBUFFER_H_
 
-#include <stdlib.h>
-#include <string.h>
+#include <string>
+#include <vector>
 
 namespace Ember {
 namespace OgreView {
@@ -42,22 +42,12 @@ public:
 	 * @param channels The number of channels.
 	 * @note By using this constructor a data structure owned by this instance will automatically be created.
 	 */
-	Buffer(unsigned int resolution, unsigned int channels);
-
-	/**
-	 * @brief Ctor.
-	 * @param resolution The size, in pixels, of one side of the square.
-	 * @param channels The number of channels.
-	 * @param data A precreated data segment. This must be at least the size of resolution * resolution * channels.
-	 * @param transferOwnership If true, the ownership of the data is transferred to this instance, so that it's deleted when the instance is destroyed.
-	 */
-	Buffer(unsigned int resolution, unsigned int channels, DataType* data, bool transferOwnership = false);
+	Buffer(unsigned int width, unsigned int channels);
 
 	/**
 	 * @brief Dtor.
-	 * If ownership of any data has been transferred to this instance, the data will be deleted too.
 	 */
-	virtual ~Buffer();
+	~Buffer();
 
 	/**
 	 * @brief Accessor for the underlying bitmap data.
@@ -119,44 +109,28 @@ protected:
 	 * @brief The underlying data which makes up the bitmap.
 	 * This can be owned by this instance and thus freed when the instance is destroyed.
 	 */
-	DataType* mData;
-
-	/**
-	 * @brief Whether the data is owned by this instance and thus destroyed when the instance is destroyed.
-	 */
-	bool mDataOwned;
+	std::vector<DataType> mData;
 
 };
 
 template<typename DataType>
 Buffer<DataType>::Buffer(unsigned int width, unsigned int channels) :
-		mResolution(width), mChannels(channels),
-		mData(new DataType[width * width * channels]),
-		mDataOwned(true) {
+		mResolution(width),
+		mChannels(channels),
+		mData(width * width * channels) {
 }
 
 template<typename DataType>
-Buffer<DataType>::Buffer(unsigned int width, unsigned int channels, DataType* data, bool transferOwnership) :
-		mResolution(width), mChannels(channels),
-		mData(data),
-		mDataOwned(transferOwnership) {
-}
-
-template<typename DataType>
-Buffer<DataType>::~Buffer() {
-	if (mDataOwned) {
-		delete[] mData;
-	}
-}
+Buffer<DataType>::~Buffer() = default;
 
 template<typename DataType>
 DataType* Buffer<DataType>::getData() {
-	return mData;
+	return mData.data();
 }
 
 template<typename DataType>
 const DataType* Buffer<DataType>::getData() const {
-	return mData;
+	return mData.data();
 }
 
 template<typename DataType>
@@ -171,7 +145,7 @@ unsigned int Buffer<DataType>::getChannels() const {
 
 template<typename DataType>
 size_t Buffer<DataType>::getSize() const {
-	return mResolution * mResolution * mChannels;
+	return mData.size();
 }
 
 template<typename DataType>

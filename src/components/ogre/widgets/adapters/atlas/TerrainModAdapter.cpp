@@ -25,6 +25,9 @@
 #endif
 
 #include "TerrainModAdapter.h"
+
+#include <memory>
+#include <utility>
 #include "PolygonAdapter.h"
 
 
@@ -41,8 +44,8 @@ namespace Atlas {
 
 
 
-TerrainModBase::TerrainModBase(const std::string& type)
-: mType(type)
+TerrainModBase::TerrainModBase(std::string  type)
+: mType(std::move(type))
 {
 }
 
@@ -62,8 +65,8 @@ AdjustTerrainMod::AdjustTerrainMod()
 }
 
 
-PositioningBase::PositioningBase(const std::string& type)
-: mType(type)
+PositioningBase::PositioningBase(std::string  type)
+: mType(std::move(type))
 {
 }
 
@@ -89,14 +92,14 @@ TerrainModAdapter::TerrainModAdapter(const ::Atlas::Message::Element& element, C
 	
 	if (element.isMap()) {
 		const ::Atlas::Message::MapType& areaData(element.asMap());
-		::Atlas::Message::MapType::const_iterator I = areaData.find("shape");
+		auto I = areaData.find("shape");
 		if (I != areaData.end()) {
-			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(I->second, showButton, entity));
+			mPolygonAdapter = std::make_unique<PolygonAdapter>(I->second, showButton, entity);
 		} else {
-			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::Element(), showButton, entity));
+			mPolygonAdapter = std::make_unique<PolygonAdapter>(::Atlas::Message::Element(), showButton, entity);
 		}
 	} else {
-		mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::Element(), showButton, entity));
+		mPolygonAdapter = std::make_unique<PolygonAdapter>(::Atlas::Message::Element(), showButton, entity);
 	}
 	
 	if (heightTextbox) {
@@ -112,9 +115,7 @@ TerrainModAdapter::TerrainModAdapter(const ::Atlas::Message::Element& element, C
 }
 
 
-TerrainModAdapter::~TerrainModAdapter()
-{
-}
+TerrainModAdapter::~TerrainModAdapter() = default;
 
 void TerrainModAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
@@ -122,7 +123,7 @@ void TerrainModAdapter::updateGui(const ::Atlas::Message::Element& element)
 	mTerrainModsBinder.sync();
 	if (element.isMap()) {
 		const ::Atlas::Message::MapType& mapElement = element.asMap();
-		::Atlas::Message::MapType::const_iterator I = mapElement.find("height");
+		auto I = mapElement.find("height");
 		float height = 0;
 		if (I != mapElement.end()) {
 			mPositioningsBinder.select("height");

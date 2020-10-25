@@ -50,7 +50,7 @@ namespace Icons {
 
 IconRenderer::IconRenderer(const std::string& prefix, int pixelWidth) :
 		mPixelWidth(pixelWidth),
-		mRenderContext(new SimpleRenderContext(prefix, pixelWidth, pixelWidth)),
+		mRenderContext(std::make_unique<SimpleRenderContext>(prefix, pixelWidth, pixelWidth)),
 		mWorker(nullptr),
 		mSceneNodeProvider(mRenderContext->getSceneNode(), nullptr, false) {
 	mRenderContext->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));

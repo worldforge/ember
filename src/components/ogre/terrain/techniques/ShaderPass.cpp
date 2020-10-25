@@ -86,15 +86,17 @@ void ShaderPass::setBaseLayer(const TerrainPageSurfaceLayer* layer) {
 ShaderPassBlendMapBatch* ShaderPass::getCurrentBatch() {
 	auto I = mBlendMapBatches.rbegin();
 	if (mBlendMapBatches.empty() || (*I)->getLayers().size() >= 4) {
-		ShaderPassBlendMapBatch* batch = createNewBatch();
-		mBlendMapBatches.emplace_back(std::unique_ptr<ShaderPassBlendMapBatch>(batch));
-		return batch;
+		auto batch = createNewBatch();
+		auto ptr = batch.get();
+		mBlendMapBatches.emplace_back(std::move(batch));
+		return ptr;
+	} else {
+		return I->get();
 	}
-	return I->get();
 }
 
-ShaderPassBlendMapBatch* ShaderPass::createNewBatch() {
-	return new ShaderPassBlendMapBatch(*this, getBlendMapPixelWidth());
+std::unique_ptr<ShaderPassBlendMapBatch> ShaderPass::createNewBatch() {
+	return std::make_unique<ShaderPassBlendMapBatch>(*this, getBlendMapPixelWidth());
 }
 
 void ShaderPass::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer) {

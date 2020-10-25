@@ -37,23 +37,23 @@ ConfigListener* ConfigListenerContainer::registerConfigListener(const std::strin
 																const std::string& key,
 																ConfigListener::SettingChangedSlot slot,
 																bool evaluateNow) {
-	auto* listener = new ConfigListener(section, key, std::move(slot));
-	mConfigListeners.emplace_back(listener);
+	auto listener = std::make_unique<ConfigListener>(section, key, std::move(slot));
 	if (evaluateNow) {
 		listener->evaluate();
 	}
-	return listener;
+	mConfigListeners.emplace_back(std::move(listener));
+	return mConfigListeners.back().get();
 }
 
 ConfigListener* ConfigListenerContainer::registerConfigListenerWithDefaults(const std::string& section,
 																			const std::string& key,
 																			ConfigListener::SettingChangedSlot slot,
 																			varconf::Variable defaultValue) {
-	auto* listener = new ConfigListener(section, key, std::move(slot));
-	mConfigListeners.emplace_back(listener);
+	auto listener = std::make_unique<ConfigListener>(section, key, std::move(slot));
 	if (!listener->evaluate()) {
 		listener->mSlot(section, key, defaultValue);
 	}
-	return listener;
+	mConfigListeners.emplace_back(std::move(listener));
+	return mConfigListeners.back().get();
 }
 }

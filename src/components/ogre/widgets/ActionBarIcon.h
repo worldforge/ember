@@ -93,6 +93,15 @@ class ActionBarIcon : public ActionBarIconDragDropTarget, public virtual sigc::t
 
 public:
 	/**
+	 * @brief Ctor. This is normally only called from the EntityIconManager.
+	 * @param manager The icon manager to which this entity belongs.
+	 * @param dragContainer The CEGUI drag container instance which provides drag and drop behavior for this entity icon. Ownership will not be transferred.
+	 * @param image The image which represents the entity. In many cases this will be the same image as provided by the icon parameter. Ownership is not transferred.
+	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
+	 */
+	ActionBarIcon(ActionBarIconManager& manager, UniqueWindowPtr <CEGUI::DragContainer> dragContainer, UniqueWindowPtr <CEGUI::Window> image, Gui::Icons::Icon* icon);
+
+	/**
 	 * @brief Dtor.
 	 *
 	 * If the ícon is attached to a slot it will be detached at destruction.
@@ -206,14 +215,6 @@ public:
 
 protected:
 
-	/**
-	 * @brief Ctor. This is normally only called from the EntityIconManager.
-	 * @param manager The icon manager to which this entity belongs.
-	 * @param dragContainer The CEGUI drag container instance which provides drag and drop behavior for this entity icon. Ownership will not be transferred.
-	 * @param image The image which represents the entity. In many cases this will be the same image as provided by the icon parameter. Ownership is not transferred.
-	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
-	 */
-	ActionBarIcon(ActionBarIconManager& manager, UniqueWindowPtr <CEGUI::DragContainer> dragContainer, UniqueWindowPtr <CEGUI::Window> image, Gui::Icons::Icon* icon);
 
 	/**
 	 * @brief The main entity icon manager.

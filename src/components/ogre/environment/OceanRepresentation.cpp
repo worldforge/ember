@@ -36,7 +36,7 @@ const std::string OceanRepresentation::sTypeName("OceanRepresentation");
 OceanRepresentation::OceanRepresentation(EmberEntity& entity, Environment& environment, Scene& scene) :
 		mEntity(entity),
 		mEnvironment(environment),
-		mBulletCollisionDetector(new BulletCollisionDetector(scene.getBulletWorld())) {
+		mBulletCollisionDetector(std::make_unique<BulletCollisionDetector>(scene.getBulletWorld())) {
 	mBulletCollisionDetector->collisionInfo = EntityCollisionInfo{&entity, true};
 	mEnvironment.setWaterEnabled(true);
 	if (mEnvironment.getWater()) {

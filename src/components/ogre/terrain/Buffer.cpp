@@ -18,33 +18,24 @@
 
 #include "Buffer.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 template<>
-void Buffer<unsigned char>::reset()
-{
-	memset(mData, '\0', getSize());
+void Buffer<unsigned char>::reset() {
+	mData.assign(mData.size(), '\0');
 }
 
 template<>
-void Buffer<unsigned int>::reset()
-{
-	memset(mData, '\0', getSize());
+void Buffer<unsigned int>::reset() {
+	mData.assign(mData.size(), '\0');
 }
 
 template<>
-void Buffer<float>::reset()
-{
-	size_t size = getSize();
-	for (size_t i = 0; i < size; ++i) {
-		mData[i] = 0;
-	}
+void Buffer<float>::reset() {
+	mData.assign(mData.size(), 0);
 }
 
 }

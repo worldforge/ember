@@ -35,7 +35,7 @@ ConnectedState::ConnectedState(IState& parentState, Eris::Connection& connection
 		mConnection(connection) {
 	mConnection.Disconnecting.connect(sigc::mem_fun(*this, &ConnectedState::disconnecting));
 	mConnection.Failure.connect(sigc::mem_fun(*this, &ConnectedState::gotFailure));
-	setChildState(new AccountAvailableState(*this, connection));
+	setChildState(std::make_unique<AccountAvailableState>(*this, connection));
 }
 
 void ConnectedState::disconnect() {

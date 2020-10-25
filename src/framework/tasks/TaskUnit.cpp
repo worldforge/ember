@@ -42,9 +42,9 @@ TaskUnit::TaskUnit(std::unique_ptr<ITask> task, ITaskExecutionListener* listener
 TaskUnit::~TaskUnit() = default;
 
 TaskUnit* TaskUnit::addSubtask(std::unique_ptr<ITask> task, ITaskExecutionListener* listener) {
-	auto* taskUnit = new TaskUnit(std::move(task), listener);
-	mSubtasks.emplace_back(std::unique_ptr<TaskUnit>(taskUnit));
-	return taskUnit;
+	auto taskUnit = std::make_unique<TaskUnit>(std::move(task), listener);
+	mSubtasks.emplace_back(std::move(taskUnit));
+	return mSubtasks.back().get();
 }
 
 const TaskUnit::SubtasksStore& TaskUnit::getSubtasks() const {

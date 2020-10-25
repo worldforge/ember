@@ -113,7 +113,7 @@ public:
 	 * @param technique The technique to use. Ownership is passed to this instance.
      * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
 	 */
-	TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique, std::set<std::string>& managedTextures);
+	TerrainPageSurfaceCompilationInstance(std::unique_ptr<TerrainPageSurfaceCompilerTechnique> technique, std::set<std::string>& managedTextures);
 
 	/**
 	 * @brief Dtor.

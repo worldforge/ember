@@ -21,9 +21,9 @@
 
 #include "IState.h"
 #include <sigc++/trackable.h>
+#include <memory>
 
-namespace Ember
-{
+namespace Ember {
 
 class ServerServiceSignals;
 
@@ -32,10 +32,10 @@ class ServerServiceSignals;
  *
  * This allows subclasses to rely on all methods being propagated upwards, unless they override on of the methods and provide their own implementation.
  */
-class StateBaseCore: public IState, public virtual sigc::trackable
-{
+class StateBaseCore : public IState, public virtual sigc::trackable {
 public:
 	explicit StateBaseCore(IState& parentState);
+
 	~StateBaseCore() override = default;
 
 	void disconnect() override;
@@ -64,12 +64,37 @@ private:
 	IState& mParentState;
 };
 
+template<typename TChildState>
+class StateBase;
+
+template<>
+class StateBase<void> : public StateBaseCore {
+public:
+	explicit StateBase(IState& parentState) : StateBaseCore(parentState) {}
+
+	~StateBase() override = default;
+
+	IState& getTopState() override {
+		return *this;
+	}
+
+protected:
+
+	virtual void setChildState(std::unique_ptr<void> childState) {}
+
+	void* getChildState() const { return nullptr; }
+
+	StateBaseCore* getCoreChildState() override { return this; }
+
+	void clearChildState() override {}
+
+};
+
 /**
  * @brief Base class for any states which will contain a parent state (which is pretty much each one).
  */
 template<typename TChildState>
-class StateBase: public StateBaseCore
-{
+class StateBase : public StateBaseCore {
 public:
 	explicit StateBase(IState& parentState);
 
@@ -79,7 +104,7 @@ public:
 
 protected:
 
-	virtual void setChildState(TChildState* childState);
+	virtual void setChildState(std::unique_ptr<TChildState> childState);
 
 	TChildState* getChildState() const;
 
@@ -89,45 +114,38 @@ protected:
 
 private:
 
-	TChildState* mChildState;
+	std::unique_ptr<TChildState> mChildState;
 };
 
 inline StateBaseCore::StateBaseCore(IState& parentState) :
-	mParentState(parentState)
-{
+		mParentState(parentState) {
 }
 
-inline IState& StateBaseCore::getParentState() const
-{
+inline IState& StateBaseCore::getParentState() const {
 	return mParentState;
 }
 
-inline ServerServiceSignals& StateBaseCore::getSignals() const
-{
+inline ServerServiceSignals& StateBaseCore::getSignals() const {
 	return mParentState.getSignals();
 }
-inline void StateBaseCore::disconnect()
-{
+
+inline void StateBaseCore::disconnect() {
 	mParentState.disconnect();
 }
 
-inline bool StateBaseCore::logout()
-{
+inline bool StateBaseCore::logout() {
 	return mParentState.logout();
 }
 
-inline void StateBaseCore::takeTransferredCharacter(const Eris::TransferInfo& transferInfo)
-{
+inline void StateBaseCore::takeTransferredCharacter(const Eris::TransferInfo& transferInfo) {
 	mParentState.takeTransferredCharacter(transferInfo);
 }
 
-inline void StateBaseCore::transfer(const Eris::TransferInfo& transferInfo)
-{
+inline void StateBaseCore::transfer(const Eris::TransferInfo& transferInfo) {
 	mParentState.transfer(transferInfo);
 }
 
-inline void StateBaseCore::destroyChildState()
-{
+inline void StateBaseCore::destroyChildState() {
 	auto child = getCoreChildState();
 	if (child) {
 		//Guard to allow this method to be called multiple times within the same stack.
@@ -137,77 +155,61 @@ inline void StateBaseCore::destroyChildState()
 	}
 }
 
-inline StateBaseCore* StateBaseCore::getCoreChildState()
-{
+inline StateBaseCore* StateBaseCore::getCoreChildState() {
 	return nullptr;
 }
 
-inline void StateBaseCore::clearChildState()
-{
+inline void StateBaseCore::clearChildState() {
 }
 
 template<typename TChildState>
 inline StateBase<TChildState>::StateBase(IState& parentState) :
-	StateBaseCore(parentState), mChildState(0)
-{
+		StateBaseCore(parentState) {
 }
 
 template<typename TChildState>
-inline StateBase<TChildState>::~StateBase()
-{
-	delete mChildState;
-}
+inline StateBase<TChildState>::~StateBase() = default;
 
-template<>
-inline StateBase<void>::~StateBase()
-{
-}
+//template<>
+//inline StateBase<void>::~StateBase() = default;
+//
+//template<>
+//inline StateBaseCore* StateBase<void>::getCoreChildState() {
+//	return nullptr;
+//}
 
-template<>
-inline StateBaseCore* StateBase<void>::getCoreChildState()
-{
-    return nullptr;
+template<typename TChildState>
+inline StateBaseCore* StateBase<TChildState>::getCoreChildState() {
+	return mChildState.get();
 }
 
 template<typename TChildState>
-inline StateBaseCore* StateBase<TChildState>::getCoreChildState()
-{
-    return mChildState;
+inline void StateBase<TChildState>::clearChildState() {
+	mChildState.reset();
+}
+
+//template<>
+//inline void StateBase<void>::setChildState(std::unique_ptr<void> childState) {
+//}
+
+template<typename TChildState>
+inline void StateBase<TChildState>::setChildState(std::unique_ptr<TChildState> childState) {
+	mChildState = std::move(childState);
 }
 
 template<typename TChildState>
-inline void StateBase<TChildState>::clearChildState()
-{
-	mChildState = nullptr;
-}
-
-template<>
-inline void StateBase<void>::setChildState(void* childState)
-{
-	mChildState = childState;
+inline TChildState* StateBase<TChildState>::getChildState() const {
+	return mChildState.get();
 }
 
 template<typename TChildState>
-inline void StateBase<TChildState>::setChildState(TChildState* childState)
-{
-	delete mChildState;
-	mChildState = childState;
-}
-
-template<typename TChildState>
-inline TChildState* StateBase<TChildState>::getChildState() const
-{
-	return mChildState;
-}
-
-template<typename TChildState>
-inline IState& StateBase<TChildState>::getTopState()
-{
+inline IState& StateBase<TChildState>::getTopState() {
 	if (mChildState) {
-		return ((IState*)(mChildState))->getTopState();
+		return ((IState*) (mChildState.get()))->getTopState();
 	}
 	return *this;
 }
+
 
 }
 

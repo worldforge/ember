@@ -41,8 +41,7 @@ namespace Representations {
  * You only have to construct and destruct the layout and specify which adapter to use.
  */
 template<typename ValueType>
-class SingleAdapterRepresentationBase : public RepresentationBase<ValueType>
-{
+class SingleAdapterRepresentationBase : public RepresentationBase<ValueType> {
 public:
 	/**
 	 * @brief Ctor
@@ -50,106 +49,89 @@ public:
 	 * @copydoc RepresentationBase::RepresentationBase
 	 */
 	SingleAdapterRepresentationBase();
-	
+
 	/**
 	 * @brief Dtor
 	 */
 	virtual ~SingleAdapterRepresentationBase();
-	
+
 	virtual void setEditedValue(const ValueType& v);
-	
+
 	virtual const ValueType& getEditedValue() const;
-	
+
 	virtual sigc::signal<void>& getEventValueChangedSignal();
-	
+
 	virtual const ValueType& getOriginalValue() const;
-	
+
 	virtual void applyChanges();
-	
+
 	virtual bool hasChanges() const;
-	
+
 	virtual bool isRemoved() const;
-	
+
 	virtual void addSuggestion(const std::string& suggestion);
-	
+
 protected:
-	Adapters::AdapterBase<ValueType>* mAdapter;
-	
+	std::unique_ptr<Adapters::AdapterBase<ValueType>> mAdapter;
+
 	/**
 	 * @brief sets the single adapter to use in this representation
 	 *  
 	 * @param adapter the single adapter we want to use (this class takes ownership of it and will delete it!)
 	 * @note You may only call this once in your inherited implementation (usually in the constructor)
 	 */
-	void setAdapter(Adapters::AdapterBase<ValueType>* adapter);
+	void setAdapter(std::unique_ptr<Adapters::AdapterBase<ValueType>> adapter);
 };
 
 template<typename ValueType>
-SingleAdapterRepresentationBase<ValueType>::SingleAdapterRepresentationBase():
-	mAdapter(0)
-{}
+SingleAdapterRepresentationBase<ValueType>::SingleAdapterRepresentationBase() {}
 
 template<typename ValueType>
-SingleAdapterRepresentationBase<ValueType>::~SingleAdapterRepresentationBase()
-{
-	delete mAdapter;
-}
+SingleAdapterRepresentationBase<ValueType>::~SingleAdapterRepresentationBase() = default;
 
 template<typename ValueType>
-void SingleAdapterRepresentationBase<ValueType>::setEditedValue(const ValueType& v)
-{
+void SingleAdapterRepresentationBase<ValueType>::setEditedValue(const ValueType& v) {
 	mAdapter->setValue(v);
 }
 
 template<typename ValueType>
-const ValueType& SingleAdapterRepresentationBase<ValueType>::getEditedValue() const
-{
+const ValueType& SingleAdapterRepresentationBase<ValueType>::getEditedValue() const {
 	return mAdapter->getValue();
 }
 
 template<typename ValueType>
-sigc::signal<void>& SingleAdapterRepresentationBase<ValueType>::getEventValueChangedSignal()
-{
+sigc::signal<void>& SingleAdapterRepresentationBase<ValueType>::getEventValueChangedSignal() {
 	return mAdapter->EventValueChanged;
 }
 
 template<typename ValueType>
-const ValueType& SingleAdapterRepresentationBase<ValueType>::getOriginalValue() const
-{
+const ValueType& SingleAdapterRepresentationBase<ValueType>::getOriginalValue() const {
 	return mAdapter->getOriginalValue();
 }
 
 template<typename ValueType>
-void SingleAdapterRepresentationBase<ValueType>::applyChanges()
-{
+void SingleAdapterRepresentationBase<ValueType>::applyChanges() {
 	mAdapter->applyChanges();
 }
 
 template<typename ValueType>
-bool SingleAdapterRepresentationBase<ValueType>::hasChanges() const
-{
+bool SingleAdapterRepresentationBase<ValueType>::hasChanges() const {
 	return mAdapter->hasChanges();
 }
 
 template<typename ValueType>
-bool SingleAdapterRepresentationBase<ValueType>::isRemoved() const
-{
+bool SingleAdapterRepresentationBase<ValueType>::isRemoved() const {
 	return mAdapter->isRemoved();
 }
 
 template<typename ValueType>
-void SingleAdapterRepresentationBase<ValueType>::addSuggestion(const std::string& suggestion)
-{
+void SingleAdapterRepresentationBase<ValueType>::addSuggestion(const std::string& suggestion) {
 	mAdapter->addSuggestion(suggestion);
 }
 
 template<typename ValueType>
-void SingleAdapterRepresentationBase<ValueType>::setAdapter(Adapters::AdapterBase<ValueType>* adapter)
-{
-	assert(!mAdapter);
-	assert(adapter);
-	
-	mAdapter = adapter;
+void SingleAdapterRepresentationBase<ValueType>::setAdapter(std::unique_ptr<Adapters::AdapterBase<ValueType>> adapter) {
+	mAdapter = std::move(adapter);
 }
 
 }

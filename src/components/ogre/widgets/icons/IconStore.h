@@ -50,7 +50,7 @@ public:
     ~IconStore();
     
     Icon* createIcon(const std::string& key);
-    Icon* createIcon(const std::string& key, Ogre::TexturePtr texPtr);
+    Icon* createIcon(const std::string& key, const Ogre::TexturePtr& texPtr);
     Icon* getIcon(const std::string& key);
     bool hasIcon(const std::string& key);
     void destroyIcon(Icon* icon);

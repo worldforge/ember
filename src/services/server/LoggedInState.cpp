@@ -130,7 +130,7 @@ void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar) {
 
 	avatar->TransferRequested.connect(sigc::bind(sigc::mem_fun(*this, &LoggedInState::avatar_transferRequest), avatar));
 
-	setChildState(new EnteredWorldState(*this, *avatar, mAccount));
+	setChildState(std::make_unique<EnteredWorldState>(*this, *avatar, mAccount));
 	mAccount.AvatarDeactivated.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarDeactivated));
 }
 

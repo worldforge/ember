@@ -40,7 +40,9 @@ namespace Terrain {
 
 namespace Techniques {
 CompilerTechniqueProvider::CompilerTechniqueProvider(ShaderManager& shaderManager, Ogre::SceneManager& sceneManager) :
-		mShaderManager(shaderManager), mSceneManager(sceneManager), mOnePixelMaterialGenerator(new OnePixelMaterialGenerator()) {
+		mShaderManager(shaderManager),
+		mSceneManager(sceneManager),
+		mOnePixelMaterialGenerator(std::make_unique<OnePixelMaterialGenerator>()) {
 	//Our shaders use the one pixel normal texture whenever there's no existing normal map, so we need to create it.
 	const std::string onePixelMaterialName("dynamic/onepixel");
 	if (Ogre::TextureManager::getSingleton().resourceExists(onePixelMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
@@ -62,7 +64,7 @@ CompilerTechniqueProvider::~CompilerTechniqueProvider() {
 	Ogre::TextureManager::getSingleton().remove("dynamic/onepixel", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
-TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces) const {
+std::unique_ptr<TerrainPageSurfaceCompilerTechnique> CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces) const {
 	std::string preferredTech;
 	if (EmberServices::getSingleton().getConfigService().itemExists("terrain", "preferredtechnique")) {
 		preferredTech = static_cast<std::string>(EmberServices::getSingleton().getConfigService().getValue("terrain", "preferredtechnique"));
@@ -73,10 +75,10 @@ TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(
 	bool useNormalMapping = (preferredTech == "ShaderNormalMapped");
 	if ((useNormalMapping || preferredTech == "Shader") && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		//Use shader tech with shadows
-		return new Techniques::Shader(true, geometry, terrainPageSurfaces, mSceneManager, useNormalMapping);
+		return std::make_unique<Techniques::Shader>(true, geometry, terrainPageSurfaces, mSceneManager, useNormalMapping);
 	}
 	//Use shader tech without shadows
-	return new Techniques::Shader(false, geometry, terrainPageSurfaces, mSceneManager, false);
+	return std::make_unique<Techniques::Shader>(false, geometry, terrainPageSurfaces, mSceneManager, false);
 }
 
 }

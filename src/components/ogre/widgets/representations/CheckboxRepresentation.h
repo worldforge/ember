@@ -66,7 +66,7 @@ CheckboxRepresentation<ValueType>::CheckboxRepresentation(const ValueType& value
 		SingleAdapterRepresentationBase<ValueType>() {
 	mLayout = UniqueWindowPtr<CEGUI::Window>(LayoutHelper::loadLayout("representations/CheckboxRepresentation.layout", mPrefix));
 
-	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, bool>(value, mLayout->getChild(mPrefix + "Checkbox"), "Selected", CEGUI::ToggleButton::EventSelectStateChanged));
+	this->setAdapter(std::make_unique<Adapters::GenericPropertyAdapter<ValueType, bool>>(value, mLayout->getChild(mPrefix + "Checkbox"), "Selected", CEGUI::ToggleButton::EventSelectStateChanged));
 }
 
 template<typename ValueType>

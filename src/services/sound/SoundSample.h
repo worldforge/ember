@@ -78,7 +78,7 @@ public:
 	 * @param source The sound source to which we should bind this sound sample.
 	 * @return A new sound binding instance.
 	 */
-	virtual SoundBinding* createBinding(SoundSource& source) = 0;
+	virtual std::unique_ptr<SoundBinding> createBinding(SoundSource& source) = 0;
 
 protected:
 
@@ -125,7 +125,7 @@ public:
 	/**
 	 * @copydoc BaseSoundSample::createBinding()
 	 */
-	SoundBinding* createBinding(SoundSource& source) override;
+	std::unique_ptr<SoundBinding> createBinding(SoundSource& source) override;
 
 	/**
 	 * @copydoc BaseSoundSample::getBuffers()

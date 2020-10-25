@@ -46,7 +46,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mTerrainPaging(std::make_unique<Ogre::TerrainPaging>(mPageManager.get())),
 		mPagedWorld(nullptr),
 		mTerrainPagedWorldSection(nullptr),
-		mTerrainGroup(std::make_unique<EmberTerrainGroup>(&sceneManager, terrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator)),
+		mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, terrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator)),
 		mPageDataProvider(nullptr),
 		mMaterialProfile(nullptr),
 		mPageStrategy(std::make_unique<CameraFocusedGrid2DPageStrategy>(mPageManager.get())),
@@ -133,7 +133,7 @@ void OgreTerrainAdapter::setCamera(Ogre::Camera* camera) {
 
 void OgreTerrainAdapter::loadScene() {
 	mPagedWorld = mPageManager->createWorld();
-	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup.get(), mLoadRadius, mHoldRadius,
+	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
 																   -EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE,
 																   EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE,
 																   "", 0);
@@ -146,7 +146,7 @@ void OgreTerrainAdapter::reset() {
 	if (mTerrainPagedWorldSection) {
 		mPagedWorld->destroySection(mTerrainPagedWorldSection);
 		mTerrainPagedWorldSection = nullptr;
-		mTerrainGroup = std::make_unique<EmberTerrainGroup>(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator);
+		mTerrainGroup = OGRE_NEW EmberTerrainGroup(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator);
 		setOgrePageSize(mTerrainPageSize);
 		mTerrainGroup->setPageDataProvider(mPageDataProvider);
 	}

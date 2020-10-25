@@ -75,7 +75,7 @@ void DelayedCompassRenderer::queueRendering() {
 }
 
 Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& terrainAdapter) :
-		mMap(new Map(sceneManager)),
+		mMap(std::make_unique<Map>(sceneManager)),
 		mCompassImpl(compassImpl),
 		mTerrainObserver(terrainAdapter.createObserver()),
 		mDelayedRenderer(*this) {

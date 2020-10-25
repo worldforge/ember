@@ -119,23 +119,26 @@ EntityIconSlot* ContainerView::addSlot() {
 	container->setSize(CEGUI::USize(CEGUI::UDim(0, 32), CEGUI::UDim(0, 32)));
 	mIconContainer.addChild(container.get());
 	layoutSlots();
-	auto iconSlot = new EntityIconSlot(std::move(container));
+	auto iconSlot = std::make_unique<EntityIconSlot>(std::move(container));
 
-	iconSlot->EventIconDropped.connect([this, iconSlot](EntityIcon* entityIcon) {
+	mSlots.emplace_back(std::move(iconSlot));
+
+	auto ptr = mSlots.back().get();
+
+	iconSlot->EventIconDropped.connect([this, ptr](EntityIcon* entityIcon) {
 		//If it's an icon that's already in the container, just add it. Otherwise emit a signal and let other code handle it.
 		if (std::find_if(mIcons.begin(), mIcons.end(), [entityIcon](const std::unique_ptr<EntityIcon>& entry) { return entry.get() == entityIcon; }) != mIcons.end()) {
 			auto oldSlot = entityIcon->getSlot();
-			iconSlot->addEntityIcon(entityIcon);
+			ptr->addEntityIcon(entityIcon);
 			if (oldSlot) {
 				oldSlot->notifyIconDraggedOff(entityIcon);
 			}
 		} else {
-			EventIconDropped.emit(entityIcon, iconSlot);
+			EventIconDropped.emit(entityIcon, ptr);
 		}
 	});
 
-	mSlots.emplace_back(std::unique_ptr<EntityIconSlot>(iconSlot));
-	return mSlots.back().get();
+	return ptr;
 }
 
 EntityIconSlot* ContainerView::getFreeSlot() {

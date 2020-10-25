@@ -24,6 +24,7 @@
 
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
+#include <memory>
 
 namespace Eris
 {
@@ -84,7 +85,7 @@ private:
 
 	Eris::Session& mSession;
 
-	ConnectingState* mChildState;
+	std::unique_ptr<ConnectingState> mChildState;
 
 	/**
 	 * @brief Track the Disconnected connection, so to sever it when aborting and thus avoiding infinite loops.

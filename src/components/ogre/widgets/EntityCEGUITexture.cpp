@@ -46,7 +46,8 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 		: mImage(nullptr),
 		  mWidth(width),
 		  mHeight(height),
-		  mRenderContext(new SimpleRenderContext(imageSetName, width, height)), mCeguiTexture(nullptr) {
+		  mRenderContext(std::make_unique<SimpleRenderContext>(imageSetName, width, height)),
+		  mCeguiTexture(nullptr) {
 	createImage(imageSetName);
 }
 

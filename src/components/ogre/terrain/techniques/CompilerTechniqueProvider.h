@@ -49,8 +49,8 @@ public:
 
 	~CompilerTechniqueProvider() override;
 
-	TerrainPageSurfaceCompilerTechnique* createTechnique(const TerrainPageGeometryPtr& geometry,
-														 const SurfaceLayerStore& terrainPageSurfaces) const override;
+	std::unique_ptr<TerrainPageSurfaceCompilerTechnique> createTechnique(const TerrainPageGeometryPtr& geometry,
+																		 const SurfaceLayerStore& terrainPageSurfaces) const override;
 
 protected:
 

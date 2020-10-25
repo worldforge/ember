@@ -49,7 +49,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~EntityExporter();
+	~EntityExporter() override;
 
 protected:
 
@@ -62,20 +62,20 @@ protected:
 	 * @brief Create a new unique serial number for operations.
 	 * @return A new serial number.
 	 */
-	virtual long int newSerialNumber();
+	long int newSerialNumber() override;
 
 	/**
 	 * @brief Send an object to the server.
 	 * @param op An object which is to be sent.
 	 */
-	virtual void send(const Atlas::Objects::Operation::RootOperation& op);
+	void send(const Atlas::Objects::Operation::RootOperation& op) override;
 
 	/**
 	 * @brief Send an object to the server and await a response.
 	 * @param op An object which is to be sent.
 	 * @param callback A callback, called when a response is received.
 	 */
-	virtual void sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback);
+	void sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback) override;
 
 	/**
 	 * @brief Creates a multi line formatter.
@@ -83,13 +83,13 @@ protected:
 	 * @param b A bridge.
 	 * @return A formatter instance. Ownership is transferred.
 	 */
-	virtual Atlas::Formatter* createMultiLineFormatter(std::iostream& s, Atlas::Bridge& b);
+	std::unique_ptr<Atlas::Formatter> createMultiLineFormatter(std::iostream& s, Atlas::Bridge& b) override;
 
 	/**
 	 * @brief Fills the supplied map with server meta data.
 	 * @param serverMap An empty map.
 	 */
-	virtual void fillWithServerData(Atlas::Message::MapType& serverMap);
+	void fillWithServerData(Atlas::Message::MapType& serverMap) override;
 
 	void operationResult(const Atlas::Objects::Operation::RootOperation& op);
 

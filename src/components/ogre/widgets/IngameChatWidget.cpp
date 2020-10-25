@@ -164,8 +164,10 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 		} else {
 			Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentation::getRepresentationForEntity(*entity);
 			if (modelRepresentation) {
-				observer = new EntityObserver(*this, *entity);
-				mEntityObservers.emplace(entity->getId(), std::unique_ptr<EntityObserver>(observer));
+				auto result = mEntityObservers.emplace(entity->getId(), std::make_unique<EntityObserver>(*this, *entity));
+				if (result.second) {
+					observer = result.first->second.get();
+				}
 			}
 		}
 		if (observer) {
@@ -536,7 +538,7 @@ IngameChatWidget::ChatText::ChatText(IngameChatWidget& chatWidget, CEGUI::Window
 
 		mResponseWidget(mAttachedWindow->getChild("ResponseContainer/ResponseList")),
 
-		mCommandHistory(new CommandHistory()),
+		mCommandHistory(std::make_unique<CommandHistory>()),
 
 		mElapsedTimeSinceLastUpdate(0.0f) {
 	mDetachedWindow->setVisible(false);

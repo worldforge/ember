@@ -41,8 +41,7 @@ void NonConnectedState::destroyChildState() {
 	mDisconnectedConnection.disconnect();
 	if (mChildState) {
 		mChildState->destroyChildState();
-		delete mChildState;
-		mChildState = nullptr;
+		mChildState.reset();
 	}
 }
 
@@ -59,7 +58,7 @@ IState& NonConnectedState::getTopState() {
 
 bool NonConnectedState::connect(const std::string& host, short port) {
 	destroyChildState();
-	mChildState = new ConnectingState(*this, mSession, host, port);
+	mChildState = std::make_unique<ConnectingState>(*this, mSession, host, port);
 	if (!mChildState->connect()) {
 		destroyChildState();
 	} else {
@@ -72,7 +71,7 @@ bool NonConnectedState::connect(const std::string& host, short port) {
 
 bool NonConnectedState::connectLocal(const std::string& socket) {
 	destroyChildState();
-	mChildState = new ConnectingState(*this, mSession, socket);
+	mChildState = std::make_unique<ConnectingState>(*this, mSession, socket);
 	if (!mChildState->connect()) {
 		destroyChildState();
 	} else {

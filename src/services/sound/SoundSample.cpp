@@ -71,8 +71,8 @@ std::vector<ALuint> StaticSoundSample::getBuffers() const {
 }
 
 
-SoundBinding* StaticSoundSample::createBinding(SoundSource& source) {
-	return new StaticSoundBinding(source, *this);
+std::unique_ptr<SoundBinding> StaticSoundSample::createBinding(SoundSource& source) {
+	return std::make_unique<StaticSoundBinding>(source, *this);
 }
 
 unsigned int StaticSoundSample::getNumberOfBuffers() const {

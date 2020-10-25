@@ -56,9 +56,9 @@ std::unique_ptr<TerrainPageSurfaceCompilationInstance> TerrainPageSurfaceCompile
 }
 
 TerrainPageSurfaceCompilationInstance::TerrainPageSurfaceCompilationInstance(
-		TerrainPageSurfaceCompilerTechnique* technique,
+		std::unique_ptr<TerrainPageSurfaceCompilerTechnique> technique,
 		std::set<std::string>& managedTextures) :
-		mTechnique(technique),
+		mTechnique(std::move(technique)),
 		mManagedTextures(managedTextures) {
 
 }

@@ -56,9 +56,9 @@ ActionBarIconSlot* ActionBarIconManager::createSlot(unsigned int pixelSize) {
 	//Make the slot more visible.
 	UniqueWindowPtr<CEGUI::Window> container(mGuiManager.createWindow("EmberLook/StaticImage", ss.str()));
 	container->setSize(CEGUI::USize(CEGUI::UDim(0.f, pixelSize), CEGUI::UDim(0.f, pixelSize)));
-	auto* slot = new ActionBarIconSlot(std::move(container));
-	mSlots.emplace_back(slot);
-	return slot;
+	auto slot = std::make_unique<ActionBarIconSlot>(std::move(container));
+	mSlots.emplace_back(std::move(slot));
+	return mSlots.back().get();
 }
 
 
@@ -85,9 +85,9 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned
 		iconWindow->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(icon->getImage()));
 		item->addChild(iconWindow.get());
 
-		auto* actionBarIcon = new ActionBarIcon(*this, std::move(item), std::move(iconWindow), icon);
-		mIcons.emplace_back(actionBarIcon);
-		return actionBarIcon;
+		auto actionBarIcon = std::make_unique<ActionBarIcon>(*this, std::move(item), std::move(iconWindow), icon);
+		mIcons.emplace_back(std::move(actionBarIcon));
+		return mIcons.back().get();
 	}
 	return nullptr;
 }

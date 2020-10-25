@@ -84,7 +84,7 @@ void ConnectingState::connected() {
 	S_LOG_INFO("Connected");
 	getSignals().GotConnection.emit(&mConnection);
 
-	setChildState(new ConnectedState(*this, mConnection));
+	setChildState(std::make_unique<ConnectedState>(*this, mConnection));
 	// Set up the player object
 	// Init OOGChat controller
 	//     mOOGChat = new OOGChat(mAccount);

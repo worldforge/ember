@@ -44,6 +44,7 @@ public:
 	using SettingChangedSlot = sigc::slot<void, const std::string&, const std::string&, varconf::Variable&>;
 
 	friend class ConfigListenerContainer;
+	ConfigListener(std::string section, std::string key, SettingChangedSlot slot);
 
 	~ConfigListener();
 
@@ -54,7 +55,6 @@ public:
 	bool evaluate();
 
 protected:
-	ConfigListener(std::string section, std::string key, SettingChangedSlot slot);
 
 	std::string mSection;
 	std::string mKey;

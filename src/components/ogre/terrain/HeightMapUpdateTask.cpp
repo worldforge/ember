@@ -30,6 +30,7 @@
 #include <Mercator/Segment.h>
 
 #include <utility>
+#include <cstring>
 
 namespace Ember {
 namespace OgreView {
@@ -55,7 +56,7 @@ bool HeightMapUpdateTask::executeTaskInMainThread() {
 
 void HeightMapUpdateTask::createHeightMapSegments() {
 	for (auto segment : mSegments) {
-			if (segment) {
+		if (segment) {
 			std::unique_ptr<IHeightMapSegment> heightMapSegment;
 			Mercator::Matrix<2, 2, Mercator::BasePoint>& basePoints(segment->getControlPoints());
 			//If all of the base points are on the same level, and there are no mods, we know that the segment is completely flat, and we can save some memory by using a HeightMapFlatSegment instance.
@@ -67,7 +68,7 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 			} else {
 				auto buffer = mProvider.checkout();
 				if (buffer) {
-					memcpy(buffer->getBuffer()->getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
+					std::memcpy(buffer->getBuffer()->getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
 					heightMapSegment = std::make_unique<HeightMapSegment>(std::move(buffer));
 				}
 			}

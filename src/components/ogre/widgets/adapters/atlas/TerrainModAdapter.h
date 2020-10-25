@@ -46,7 +46,7 @@ public:
 	const std::string& getType() const;
 
 protected:
-	TerrainModBase(const std::string& type);
+	TerrainModBase(std::string  type);
 	
 	std::string mType;
 };
@@ -70,7 +70,7 @@ public:
 	const std::string& getType() const;
 
 protected:
-	PositioningBase(const std::string& type);
+	PositioningBase(std::string  type);
 	
 	std::string mType;
 
@@ -112,12 +112,12 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~TerrainModAdapter();
+	~TerrainModAdapter() override;
 	
 	/**
 	 * @brief Updates the gui with new values.
 	 */
-	virtual void updateGui(const ::Atlas::Message::Element& element);
+	void updateGui(const ::Atlas::Message::Element& element) override;
 
 protected:
 	
@@ -141,8 +141,8 @@ protected:
 	
 	bool heightTextbox_TextChanged(const CEGUI::EventArgs& e);
 	
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
+	void fillElementFromGui() override;
+	bool _hasChanges() override;
 };
 
 }

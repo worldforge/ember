@@ -56,163 +56,137 @@ namespace Ember {
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
 
-class OOGChat : public ConsoleObject
-{
-    //======================================================================
-    // Inner Classes, Typedefs, and Enums
-    //======================================================================
-    public:
+class OOGChat : public ConsoleObject {
+	//======================================================================
+	// Inner Classes, Typedefs, and Enums
+	//======================================================================
+public:
 
 
-    //======================================================================
-    // Public Constants
-    //======================================================================
-    public:
+	//======================================================================
+	// Public Constants
+	//======================================================================
+public:
 
 
-    //======================================================================
-    // Private Constants
-    //======================================================================
-    private:
+	//======================================================================
+	// Private Constants
+	//======================================================================
+private:
 
-    // List of OOGChat's console commands
-    static const char * const CMD_TALK;
-    static const char * const CMD_EMOTE;
-    static const char * const CMD_ME;
-    static const char * const CMD_JOIN;
-    static const char * const CMD_PART;
-    static const char * const CMD_MSG;
+	// List of OOGChat's console commands
+	static const char* const CMD_TALK;
+	static const char* const CMD_EMOTE;
+	static const char* const CMD_ME;
+	static const char* const CMD_JOIN;
+	static const char* const CMD_PART;
+	static const char* const CMD_MSG;
 
-    //======================================================================
-    // Private Variables
-    //======================================================================/
-    private:
+	//======================================================================
+	// Private Variables
+	//======================================================================/
+private:
 
-    /**
-     * Holds the lobby of this server
-     */
-    Eris::Lobby* myLobby;
+	/**
+	 * Holds the lobby of this server
+	 */
+	std::unique_ptr<Eris::Lobby> myLobby;
 
-    //======================================================================
-    // Public Methods
-    //======================================================================
-    public:
+	//======================================================================
+	// Public Methods
+	//======================================================================
+public:
 
-    //----------------------------------------------------------------------
-    // Constructors
+	//----------------------------------------------------------------------
+	// Constructors
 
-    /**
-     * Creates a new OOGChat using default values.
-     */
-    explicit OOGChat(Eris::Account* account);
-
-    /**
-     * Copy constructor.
-     */
-    OOGChat( const OOGChat &source )
-    {
-        // Use assignment operator to do the copy
-        // NOTE: If you need to do custom initialization in the constructor this may not be enough.
-        *this = source;
-    }
+	/**
+	 * Creates a new OOGChat using default values.
+	 */
+	explicit OOGChat(Eris::Account* account);
 
 
-    /**
-     * Assignment operator.
-     */
-    OOGChat &operator= ( const OOGChat &source )
-    {
-        // Copy fields from source class to this class here.
-        myLobby = source.myLobby;
+	//----------------------------------------------------------------------
+	// Destructor
 
-        // Return this object with new value
-        return *this;
-    }
+	/**
+	 * Deletes a OOGChat instance.
+	 */
+	~OOGChat() override;
 
 
-    //----------------------------------------------------------------------
-    // Destructor
+	//----------------------------------------------------------------------
+	// Getters
 
-    /**
-     * Deletes a OOGChat instance.
-     */
-    ~OOGChat () override;
+	// Example of a getter method:
 
-
-    //----------------------------------------------------------------------
-    // Getters
-
-    // Example of a getter method:
-
-    /**
-     * Gets the value of Lobby of this OOGChat
-     */
-    Eris::Lobby* getLobby() const
-    {
-        return myLobby;
-    }
+	/**
+	 * Gets the value of Lobby of this OOGChat
+	 */
+	Eris::Lobby* getLobby() const {
+		return myLobby.get();
+	}
 
 
-    //----------------------------------------------------------------------
-    // Setters
+	//----------------------------------------------------------------------
+	// Setters
 
-    /**
-     * Sets the value of Lobby of this OOGChat
-     */
-    void setLobby( Eris::Lobby* lobby )
-    {
-        myLobby = lobby;
-    }
-
-
-    //----------------------------------------------------------------------
-    // Other public methods
-    // NOTE: Group related public methods together and crate a separator comment like above for them.
-    
-    //======================================================================
-    // Protected Methods
-    //======================================================================
-    protected:
-
-    /**
-     * Command handler for console backend.
-     */
-    void runCommand(const std::string &command, const std::string &args) override;
-
-    //----------------------------------------------------------------------
-    // Callbacks from Eris
-
-    // Lobby Callbacks
-
-    void sightPerson(Eris::Person*);
-
-    void privateTalk(Eris::Person* person, const std::string&); 
-
-    void loggedIn( const Atlas::Objects::Entity::Player& );
-
-    void entered(Eris::Room *room);
-
-    void talk(Eris::Room *room, Eris::Person* person, const std::string& msg);
-
-    void emote(Eris::Room *room, Eris::Person* person, const std::string& msg);
-
-    void appearance(Eris::Room *room,  Eris::Person* person);
-
-    void disappearance(Eris::Room *room,  Eris::Person* person);
-
-    void changed(const std::set<std::string>& sset, Eris::Room *room);
+	/**
+	 * Sets the value of Lobby of this OOGChat
+	 */
+	void setLobby(std::unique_ptr<Eris::Lobby> lobby) {
+		myLobby = std::move(lobby);
+	}
 
 
-    //======================================================================
-    // Private Methods
-    //======================================================================
-    private:
+	//----------------------------------------------------------------------
+	// Other public methods
+	// NOTE: Group related public methods together and crate a separator comment like above for them.
+
+	//======================================================================
+	// Protected Methods
+	//======================================================================
+protected:
+
+	/**
+	 * Command handler for console backend.
+	 */
+	void runCommand(const std::string& command, const std::string& args) override;
+
+	//----------------------------------------------------------------------
+	// Callbacks from Eris
+
+	// Lobby Callbacks
+
+	void sightPerson(Eris::Person*);
+
+	void privateTalk(Eris::Person* person, const std::string&);
+
+	void loggedIn(const Atlas::Objects::Entity::Player&);
+
+	void entered(Eris::Room* room);
+
+	void talk(Eris::Room* room, Eris::Person* person, const std::string& msg);
+
+	void emote(Eris::Room* room, Eris::Person* person, const std::string& msg);
+
+	void appearance(Eris::Room* room, Eris::Person* person);
+
+	void disappearance(Eris::Room* room, Eris::Person* person);
+
+	void changed(const std::set<std::string>& sset, Eris::Room* room);
 
 
-    //======================================================================
-    // Disabled constructors and operators
-    //======================================================================
-    private:
+	//======================================================================
+	// Private Methods
+	//======================================================================
+private:
+
+
+	//======================================================================
+	// Disabled constructors and operators
+	//======================================================================
+private:
 
 
 }; // End of OOGChat

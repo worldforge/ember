@@ -192,9 +192,9 @@ Application::Application(Input& input,
 						 ConfigService& configService) :
 		mInput(input),
 		mConfigService(configService),
-		mAtlasFactories(new Atlas::Objects::Factories()),
-		mSession(new Eris::Session()),
-		mFileSystemObserver(new FileSystemObserver(mSession->getIoService())),
+		mAtlasFactories(std::make_unique<Atlas::Objects::Factories>()),
+		mSession(std::make_unique<Eris::Session>()),
+		mFileSystemObserver(std::make_unique<FileSystemObserver>(mSession->getIoService())),
 		mShouldQuit(false),
 		mPollEris(true),
 		mMainLoopController(mShouldQuit, mPollEris, *mSession),
@@ -202,44 +202,43 @@ Application::Application(Input& input,
 		mHomeDir(std::move(homeDir)),
 		mWorldView(nullptr),
 		mConfigSettings(std::move(configSettings)),
-		mConsoleBackend(new ConsoleBackend()),
-		mConfigConsoleCommands(new ConfigConsoleCommands(mConfigService)),
-		mConsoleInputBinder(new ConsoleInputBinder(mInput, *mConsoleBackend)),
+		mConsoleBackend(std::make_unique<ConsoleBackend>()),
+		mConfigConsoleCommands(std::make_unique<ConfigConsoleCommands>(mConfigService)),
+		mConsoleInputBinder(std::make_unique<ConsoleInputBinder>(mInput, *mConsoleBackend)),
 		Quit("quit", this, "Quit Ember."),
-		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."),
-		mScriptingResourceProvider(nullptr) {
+		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.") {
 
 
-		// Change working directory
-		auto dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
+	// Change working directory
+	auto dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
 
-		if (!boost::filesystem::is_directory(dirName)) {
-			boost::filesystem::create_directories(dirName);
-		}
+	if (!boost::filesystem::is_directory(dirName)) {
+		boost::filesystem::create_directories(dirName);
+	}
 
-		int result = chdir(mConfigService.getHomeDirectory(BaseDirType_CONFIG).generic_string().c_str());
+	int result = chdir(mConfigService.getHomeDirectory(BaseDirType_CONFIG).generic_string().c_str());
 
-		if (result) {
-			S_LOG_WARNING("Could not change directory to '" << mConfigService.getHomeDirectory(BaseDirType_CONFIG).c_str() << "'.");
-		}
+	if (result) {
+		S_LOG_WARNING("Could not change directory to '" << mConfigService.getHomeDirectory(BaseDirType_CONFIG).c_str() << "'.");
+	}
 
-		//load the config file. Note that this will load the shared config file, and then the user config file if available.
-		mConfigService.loadSavedConfig("ember.conf", mConfigSettings);
+	//load the config file. Note that this will load the shared config file, and then the user config file if available.
+	mConfigService.loadSavedConfig("ember.conf", mConfigSettings);
 
-		//Check if there's a user specific ember.conf file. If not, create an empty template one.
-		auto userConfigFilePath = mConfigService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
-		if (!boost::filesystem::exists(userConfigFilePath)) {
-			//Create empty template file.
-			std::ofstream outstream(userConfigFilePath.c_str());
-			outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
-			S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath.string() << "'.");
-		}
+	//Check if there's a user specific ember.conf file. If not, create an empty template one.
+	auto userConfigFilePath = mConfigService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf";
+	if (!boost::filesystem::exists(userConfigFilePath)) {
+		//Create empty template file.
+		std::ofstream outstream(userConfigFilePath.c_str());
+		outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
+		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath.string() << "'.");
+	}
 
-		S_LOG_INFO("Using media from " << mConfigService.getEmberMediaDirectory().string());
+	S_LOG_INFO("Using media from " << mConfigService.getEmberMediaDirectory().string());
 
-		initializeServices();
+	initializeServices();
 
-		mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController, mSession->getEventService(), mInput, mServices->getServerService(), mServices->getSoundService());
+	mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController, mSession->getEventService(), mInput, mServices->getServerService(), mServices->getSoundService());
 
 }
 

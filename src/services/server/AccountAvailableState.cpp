@@ -63,7 +63,7 @@ void AccountAvailableState::loginFailure(const std::string& msg) {
 void AccountAvailableState::loginSuccess() {
 	S_LOG_INFO("Login Success.");
 	ConsoleBackend::getSingleton().pushMessage("Login Successful", "important");
-	setChildState(new LoggedInState(*this, mAccount));
+	setChildState(std::make_unique<LoggedInState>(*this, mAccount));
 	getSignals().LoginSuccess.emit(&mAccount);
 }
 

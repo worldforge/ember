@@ -26,38 +26,34 @@
 
 namespace Ember {
 
-FileResourceWrapper::FileResourceWrapper(std::ifstream& stream) :
-		mBuffer(nullptr),
-		mSize(0) {
+FileResourceWrapper::FileResourceWrapper(std::ifstream& stream) {
 	if (stream.is_open()) {
 
 		stream.seekg(0, std::ios::end);
-		mSize = stream.tellg();
+		auto size = stream.tellg();
 		stream.seekg(0, std::ios::beg);
 
-		mBuffer = new char[mSize];
+		mBuffer.resize(size);
 
-		stream.read(mBuffer, mSize);
+		stream.read(mBuffer.data(), size);
 		stream.close();
 
 	}
 
 }
 
-FileResourceWrapper::~FileResourceWrapper() {
-	delete[] mBuffer;
-}
+FileResourceWrapper::~FileResourceWrapper() = default;
 
 const char* FileResourceWrapper::getDataPtr() {
-	return mBuffer;
+	return mBuffer.data();
 }
 
 bool FileResourceWrapper::hasData() {
-	return mSize != 0;
+	return !mBuffer.empty();
 }
 
 size_t FileResourceWrapper::getSize() {
-	return mSize;
+	return mBuffer.size();
 }
 
 FileResourceProvider::FileResourceProvider(boost::filesystem::path baseDirectory) :

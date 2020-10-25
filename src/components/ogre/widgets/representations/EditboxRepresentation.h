@@ -66,7 +66,7 @@ EditboxRepresentation<ValueType, PropertyNativeType>::EditboxRepresentation(cons
 		SingleAdapterRepresentationBase<ValueType>() {
 	mLayout = UniqueWindowPtr<CEGUI::Window>(LayoutHelper::loadLayout("representations/EditboxRepresentation.layout", mPrefix));
 
-	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, PropertyNativeType>(value, mLayout->getChild(mPrefix + "String"), "Text", CEGUI::Window::EventTextChanged));
+	this->setAdapter(std::make_unique<Adapters::GenericPropertyAdapter<ValueType, PropertyNativeType>>(value, mLayout->getChild(mPrefix + "String"), "Text", CEGUI::Window::EventTextChanged));
 }
 
 template<typename ValueType, typename PropertyNativeType>

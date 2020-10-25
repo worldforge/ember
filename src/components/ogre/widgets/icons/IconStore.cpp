@@ -45,7 +45,7 @@ Icon* IconStore::createIcon(const std::string& key) {
 	return I.first->second.get();
 }
 
-Icon* IconStore::createIcon(const std::string& key, Ogre::TexturePtr texPtr) {
+Icon* IconStore::createIcon(const std::string& key, const Ogre::TexturePtr& texPtr) {
 	auto I = mPremadeIconImageStores.emplace(key, std::make_unique<IconImageStore>(key, texPtr));
 	IconImageStoreEntry* imageStoreEntry = I.first->second->claimImageEntry();
 
@@ -78,7 +78,7 @@ IconImageStoreEntry* IconStore::getImageStoreEntry() {
 	}
 	std::stringstream ss;
 	ss << "iconImageStore_" << mIconImageStores.size();
-	mIconImageStores.emplace_back(new IconImageStore(ss.str()));
+	mIconImageStores.emplace_back(std::make_unique<IconImageStore>(ss.str()));
 	return mIconImageStores.back()->claimImageEntry();
 }
 
