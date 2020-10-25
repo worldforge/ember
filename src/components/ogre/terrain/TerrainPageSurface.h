@@ -97,7 +97,7 @@ public:
 	 * @brief Recompiles the material.
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
 	 */
-	TerrainPageSurfaceCompilationInstance* createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const;
+	std::unique_ptr<TerrainPageSurfaceCompilationInstance> createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const;
 
 	const TerrainPageSurfaceLayerStore& getLayers() const;
 

@@ -36,26 +36,25 @@
 
 #include <memory>
 
-namespace Mercator
-{
+namespace Mercator {
 class TerrainMod;
 }
 
-namespace Ember
-{
-namespace Terrain
-{
+namespace Ember {
+namespace Terrain {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Handles translation of terrain mod data into Mercator::TerrainMod instances.
  *
  */
-class TerrainModTranslator
-{
+class TerrainModTranslator {
 public:
 
 	explicit TerrainModTranslator(const Atlas::Message::MapType& data);
+
+	TerrainModTranslator(const TerrainModTranslator& rhs);
+
 	~TerrainModTranslator() = default;
 
 	/**
@@ -64,7 +63,7 @@ public:
 	 * @param orientation
 	 * @return A terrain mod instance, or null if none could be created.
 	 */
-	std::unique_ptr<Mercator::TerrainMod> parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation);
+	std::unique_ptr<Mercator::TerrainMod> parseData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
 
 	/**
 	 * @brief True if there's a valid inner translator.
@@ -77,27 +76,28 @@ public:
 	 */
 	void reset();
 
-	static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
+	static float parsePosition(const WFMath::Point<3>& pos, const Atlas::Message::MapType& modElement);
 
 	/**
 	 * Interface for inner translator.
 	 *
 	 * Concrete templated subclasses are used for both shapes and mod types.
 	 */
-	class InnerTranslator
-	{
-	public:
-		explicit InnerTranslator(Atlas::Message::MapType );
+	struct InnerTranslator {
+		explicit InnerTranslator(Atlas::Message::MapType);
+
 		virtual std::unique_ptr<Mercator::TerrainMod> createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) = 0;
-	protected:
+
+		virtual std::unique_ptr<InnerTranslator> clone() const = 0;
+
 		const Atlas::Message::MapType mData;
 	};
-    
+
 protected:
 	template<template<int> class Shape>
-	InnerTranslator* buildTranslator(const Atlas::Message::MapType& modElement, const std::string & typeName, Shape<2> & shape, const Atlas::Message::Element & shapeElement);
+	std::unique_ptr<InnerTranslator> buildTranslator(const Atlas::Message::MapType& modElement, const std::string& typeName, Shape<2>& shape, const Atlas::Message::Element& shapeElement);
 
-	std::shared_ptr<TerrainModTranslator::InnerTranslator> mInnerTranslator;
+	std::unique_ptr<TerrainModTranslator::InnerTranslator> mInnerTranslator;
 };
 
 }

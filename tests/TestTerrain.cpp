@@ -10,7 +10,6 @@
 #include "components/ogre/terrain/Types.h"
 #include "components/ogre/terrain/TerrainDefPoint.h"
 #include "components/ogre/terrain/TerrainInfo.h"
-#include "components/ogre/terrain/TerrainMod.h"
 #include "components/ogre/terrain/TerrainPageSurfaceCompiler.h"
 #include "components/ogre/ILightning.h"
 

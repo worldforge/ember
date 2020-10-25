@@ -21,6 +21,7 @@
 
 #include "Types.h"
 #include "domain/IHeightProvider.h"
+#include "TerrainModTranslator.h"
 
 #include <wfmath/vector.h>
 
@@ -206,7 +207,7 @@ public:
 	 * @brief Updates a terrain mod.
 	 *
 	 */
-	void updateMod(TerrainMod* terrainMod);
+	void updateMod(const std::string& id, WFMath::Point<3> pos, WFMath::Quaternion orientation, std::unique_ptr<Ember::Terrain::TerrainModTranslator> translator);
 
 	/**
 	 * @brief Create and registers a new texture shader.
@@ -510,6 +511,8 @@ protected:
 	 */
 	std::unordered_map<std::string, long> mAreas;
 
+	std::unordered_map<std::string, long> mTerrainModsIndex;
+
 	/**
 	 * @brief The maximum height of the generated terrain. In world units.
 	 */
@@ -548,6 +551,8 @@ protected:
 	Eris::ActiveMarker mActiveMarker;
 
 	long mAreaCounter;
+
+	long mModCounter;
 
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.

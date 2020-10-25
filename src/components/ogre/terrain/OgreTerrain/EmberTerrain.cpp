@@ -21,6 +21,8 @@
 #endif
 
 #include <Ogre.h>
+
+#include <utility>
 #include "EmberTerrain.h"
 
 namespace Ember {
@@ -144,11 +146,11 @@ void EmberTerrain::regenerateMaterial() {
 	getMaterial();
 }
 
-void EmberTerrain::scheduleGeometryUpdate(std::shared_ptr<float> heightData) {
+void EmberTerrain::scheduleGeometryUpdate(std::shared_ptr<std::vector<float>> heightData) {
 
 	GeometryUpdateRequest req;
 	req.terrain = this;
-	req.heightData = heightData;
+	req.heightData = std::move(heightData);
 
 	Ogre::Root::getSingleton().getWorkQueue()->addRequest(
 			mWorkQueueChannel, WORKQUEUE_GEOMETRY_UPDATE_REQUEST,

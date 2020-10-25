@@ -40,16 +40,16 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mHoldRadius(mLoadRadius * 2),
 		mSceneManager(sceneManager),
 		mTerrainPageSize(terrainPageSize),
-		mMaterialGenerator(new OgreTerrainMaterialGeneratorEmber()),
-		mTerrainGlobalOptions(new Ogre::TerrainGlobalOptions()),
-		mPageManager(new Ogre::PageManager()),
-		mTerrainPaging(new Ogre::TerrainPaging(mPageManager.get())),
+		mMaterialGenerator(std::make_shared<OgreTerrainMaterialGeneratorEmber>()),
+		mTerrainGlobalOptions(std::make_unique<Ogre::TerrainGlobalOptions>()),
+		mPageManager(std::make_unique<Ogre::PageManager>()),
+		mTerrainPaging(std::make_unique<Ogre::TerrainPaging>(mPageManager.get())),
 		mPagedWorld(nullptr),
 		mTerrainPagedWorldSection(nullptr),
-		mTerrainGroup(new EmberTerrainGroup(&sceneManager, terrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator)),
+		mTerrainGroup(std::make_unique<EmberTerrainGroup>(&sceneManager, terrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator)),
 		mPageDataProvider(nullptr),
 		mMaterialProfile(nullptr),
-		mPageStrategy(new CameraFocusedGrid2DPageStrategy(mPageManager.get())),
+		mPageStrategy(std::make_unique<CameraFocusedGrid2DPageStrategy>(mPageManager.get())),
 		mEntity(nullptr) {
 
 	// Other params
@@ -133,7 +133,7 @@ void OgreTerrainAdapter::setCamera(Ogre::Camera* camera) {
 
 void OgreTerrainAdapter::loadScene() {
 	mPagedWorld = mPageManager->createWorld();
-	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
+	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup.get(), mLoadRadius, mHoldRadius,
 																   -EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE,
 																   EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE,
 																   "", 0);
@@ -146,7 +146,7 @@ void OgreTerrainAdapter::reset() {
 	if (mTerrainPagedWorldSection) {
 		mPagedWorld->destroySection(mTerrainPagedWorldSection);
 		mTerrainPagedWorldSection = nullptr;
-		mTerrainGroup = new EmberTerrainGroup(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator);
+		mTerrainGroup = std::make_unique<EmberTerrainGroup>(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator);
 		setOgrePageSize(mTerrainPageSize);
 		mTerrainGroup->setPageDataProvider(mPageDataProvider);
 	}

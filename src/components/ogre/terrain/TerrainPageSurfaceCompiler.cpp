@@ -46,10 +46,10 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler() {
 	}
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(
+std::unique_ptr<TerrainPageSurfaceCompilationInstance> TerrainPageSurfaceCompiler::createCompilationInstance(
 		const TerrainPageGeometryPtr& geometry,
 		const SurfaceLayerStore& terrainPageSurfaces) {
-	return new TerrainPageSurfaceCompilationInstance(
+	return std::make_unique<TerrainPageSurfaceCompilationInstance>(
 			mCompilerTechniqueProvider.createTechnique(geometry, terrainPageSurfaces),
 			mManagedTextures);
 
@@ -69,7 +69,7 @@ bool TerrainPageSurfaceCompilationInstance::prepare() {
 	return mTechnique->prepareMaterial();
 }
 
-bool TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material) {
+bool TerrainPageSurfaceCompilationInstance::compile(const Ogre::MaterialPtr& material) {
 	try {
 		bool result = mTechnique->compileMaterial(material, mManagedTextures);
 		if (!result) {
@@ -84,7 +84,7 @@ bool TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material) 
 	}
 }
 
-bool TerrainPageSurfaceCompilationInstance::compileCompositeMap(Ogre::MaterialPtr material) {
+bool TerrainPageSurfaceCompilationInstance::compileCompositeMap(const Ogre::MaterialPtr& material) {
 	try {
 		bool result = mTechnique->compileCompositeMapMaterial(material, mManagedTextures);
 		if (!result) {

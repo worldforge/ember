@@ -51,10 +51,10 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskEx
 	for (auto & geometry : mGeometry) {
 		geometry->repopulate();
 		TerrainPage& page = geometry->getPage();
-		TerrainPageSurfaceCompilationInstance* compilationInstance = page.getSurface()->createSurfaceCompilationInstance(geometry);
+		auto compilationInstance = page.getSurface()->createSurfaceCompilationInstance(geometry);
 
 		if (compilationInstance->prepare()) {
-			mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &geometry->getPage()));
+			mMaterialRecompilations.emplace_back(std::make_pair(std::move(compilationInstance), &geometry->getPage()));
 		}
 	}
 	//Release Segment references as soon as we can
@@ -65,14 +65,13 @@ bool TerrainMaterialCompilationTask::executeTaskInMainThread() {
 	TimedLog timedLog("TerrainMaterialCompilationTask::executeTaskInMainThread");
 	if (!mMaterialRecompilations.empty()) {
 		auto J = mMaterialRecompilations.begin();
-		auto compilationInstance = J->first;
+		auto& compilationInstance = J->first;
 		auto page = J->second;
 		compilationInstance->compile(page->getMaterial());
 		S_LOG_VERBOSE("Compiling terrain page composite map material");
 		compilationInstance->compileCompositeMap(page->getCompositeMapMaterial());
 		S_LOG_VERBOSE("Recompiled material for terrain page " << "[" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]");
 		mSignal(page); // Notify the terrain system of the material change
-		delete compilationInstance;
 		std::stringstream ss;
 		ss << "Compiled for page [" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]";
 		timedLog.report(ss.str());

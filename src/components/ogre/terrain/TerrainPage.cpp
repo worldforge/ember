@@ -51,7 +51,7 @@ TerrainPage::TerrainPage(const TerrainIndex& index, int pageSize, ICompilerTechn
 		mIndex(index),
 		mPageSize(pageSize),
 		mPosition(index.first, index.second),
-		mTerrainSurface(new TerrainPageSurface(*this, compilerTechniqueProvider)),
+		mTerrainSurface(std::make_unique<TerrainPageSurface>(*this, compilerTechniqueProvider)),
 		mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), -(mPosition.y() - 1) * (getPageSize() - 1)),
 				WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), -(mPosition.y()) * (getPageSize() - 1))) {
 

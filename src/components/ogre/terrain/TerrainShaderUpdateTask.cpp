@@ -21,6 +21,7 @@
 #include "TerrainPageGeometry.h"
 #include "TerrainPageSurface.h"
 #include "TerrainMaterialCompilationTask.h"
+#include "TerrainPageSurfaceCompiler.h"
 #include "framework/tasks/TaskExecutionContext.h"
 
 #include <wfmath/intersect.h>

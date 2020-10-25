@@ -39,7 +39,7 @@ namespace Terrain {
 
 TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider) :
 		mTerrainPage(terrainPage),
-		mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider)) {
+		mSurfaceCompiler(std::make_unique<TerrainPageSurfaceCompiler>(compilerTechniqueProvider)) {
 	//create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
 	std::stringstream materialNameSS;
@@ -92,7 +92,7 @@ Ogre::MaterialPtr TerrainPageSurface::getCompositeMapMaterial() const {
 	return mMaterialComposite;
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const {
+std::unique_ptr<TerrainPageSurfaceCompilationInstance> TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const {
 	//The compiler only works with const surfaces, so we need to create such a copy of our surface map.
 	//TODO: perhaps store surfaces as shared_ptr, so they can be shared?
 	SurfaceLayerStore constLayers;
@@ -103,10 +103,9 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 }
 
 void TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader) {
-	auto* terrainSurface = new TerrainPageSurfaceLayer(*this, definition, surfaceIndex, shader);
-	mLayers.emplace(surfaceIndex, std::unique_ptr<TerrainPageSurfaceLayer>(terrainSurface));
+	auto terrainSurface = std::make_unique<TerrainPageSurfaceLayer>(*this, definition, surfaceIndex, shader);
+	mLayers.emplace(surfaceIndex, std::move(terrainSurface));
 }
-
 
 
 }

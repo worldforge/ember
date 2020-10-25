@@ -18,35 +18,39 @@
 
 #ifndef TERRAINMODADDTASK_H_
 #define TERRAINMODADDTASK_H_
+
 #include "TerrainModTranslator.h"
 #include "framework/tasks/TemplateNamedTask.h"
 #include <Mercator/TerrainMod.h>
 #include <Atlas/Message/Element.h>
+#include <functional>
 
-namespace Mercator
-{
+namespace Mercator {
 class Terrain;
+
 class TerrainMod;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainHandler;
-class TerrainMod;
+
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Task for adding a new terrain mod.
  */
-class TerrainModUpdateTask: public Tasks::TemplateNamedTask<TerrainModUpdateTask>
-{
+class TerrainModUpdateTask : public Tasks::TemplateNamedTask<TerrainModUpdateTask> {
 public:
-	TerrainModUpdateTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler);
+	TerrainModUpdateTask(Mercator::Terrain& terrain,
+						 std::unique_ptr<Ember::Terrain::TerrainModTranslator> terrainModTranslator,
+						 long terrainModId,
+						 WFMath::Point<3> pos,
+						 WFMath::Quaternion orientation,
+						 std::function<void(const std::vector<WFMath::AxisBox<2>>&)> callback);
+
 	~TerrainModUpdateTask() override = default;
 
 	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
@@ -61,21 +65,16 @@ private:
 	Mercator::Terrain& mTerrain;
 
 	/**
-	 * @brief The terrain manager.
-	 */
-	TerrainHandler& mHandler;
-
-	/**
 	 * @brief A list of updates areas. Any geometry in these areas will need to be recalculated.
 	 */
 	std::vector<WFMath::AxisBox<2>> mUpdatedAreas;
 
 	long mId;
 
-	const WFMath::Point<3> mPosition;
-	const WFMath::Quaternion& mOrientation;
-	Ember::Terrain::TerrainModTranslator mTranslator;
-
+	WFMath::Point<3> mPosition;
+	WFMath::Quaternion mOrientation;
+	std::unique_ptr<Ember::Terrain::TerrainModTranslator> mTranslator;
+	std::function<void(std::vector<WFMath::AxisBox<2>>)> mCallback;
 };
 
 }

@@ -28,7 +28,6 @@
 #include "TerrainPage.h"
 #include "TerrainPageSurface.h"
 #include "TerrainPageGeometry.h"
-#include "TerrainMod.h"
 #include "TerrainInfo.h"
 #include "TerrainPageCreationTask.h"
 #include "TerrainPageDeletionTask.h"
@@ -164,7 +163,8 @@ TerrainHandler::TerrainHandler(int pageIndexSize,
 		mHasTerrainInfo(false),
 		mLightning(nullptr),
 		mTerrainEntity(nullptr),
-		mAreaCounter(0) {
+		mAreaCounter(0),
+		mModCounter(0) {
 	mSegmentManager->setEndlessWorldEnabled(true);
 	mSegmentManager->setDefaultHeight(getDefaultHeight());
 	//TODO: get these values from the server if possible
@@ -527,9 +527,34 @@ SegmentManager& TerrainHandler::getSegmentManager() {
 	return *mSegmentManager;
 }
 
-void TerrainHandler::updateMod(TerrainMod* terrainMod) {
-	if (terrainMod->getEntity().getPosition().isValid()) {
-		mTaskQueue->enqueueTask(std::make_unique<TerrainModUpdateTask>(*mTerrain, *terrainMod, *this));
+void TerrainHandler::updateMod(const std::string& id,
+							   WFMath::Point<3> pos,
+							   WFMath::Quaternion orientation,
+							   std::unique_ptr<Ember::Terrain::TerrainModTranslator> translator) {
+	long modId = 0;
+	auto I = mTerrainModsIndex.find(id);
+	if (I == mTerrainModsIndex.end()) {
+		//No existing mod, create one.
+		if (translator) {
+			modId = ++mModCounter;
+			mTerrainModsIndex.emplace(id, modId);
+		} else {
+			return;
+		}
+	} else {
+		modId = I->second;
+	}
+
+
+	if (pos.isValid() && orientation.isValid()) {
+		mTaskQueue->enqueueTask(std::make_unique<TerrainModUpdateTask>(*mTerrain,
+																	   std::move(translator),
+																	   modId,
+																	   std::move(pos),
+																	   std::move(orientation),
+																	   [=](const std::vector<WFMath::AxisBox<2>>& areas) {
+																		   reloadTerrain(areas);
+																	   }));
 	}
 }
 

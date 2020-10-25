@@ -82,7 +82,7 @@ public:
 	 * Schedule a geometry update, using background workers.
 	 * @param heightData
 	 */
-	void scheduleGeometryUpdate(std::shared_ptr<float> heightData);
+	void scheduleGeometryUpdate(std::shared_ptr<std::vector<float>> heightData);
 
 protected:
 
@@ -91,7 +91,7 @@ protected:
 	struct GeometryUpdateRequest
 	{
 		EmberTerrain* terrain;
-		std::shared_ptr<float> heightData;
+		std::shared_ptr<std::vector<float>> heightData;
 		//Rect dirtyRect;
 		friend std::ostream& operator<<(std::ostream& o, const GeometryUpdateRequest& r)
 		{ return o; }

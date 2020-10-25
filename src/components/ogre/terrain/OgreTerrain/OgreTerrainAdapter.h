@@ -125,7 +125,7 @@ private:
 	Ogre::TerrainPagedWorldSection* mTerrainPagedWorldSection;
 	OgreTerrainPageProvider mTerrainPageProvider;
 
-	EmberTerrainGroup* mTerrainGroup;
+	std::unique_ptr<EmberTerrainGroup> mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
 	std::unique_ptr<Ogre::TerrainMaterialGenerator::Profile> mMaterialProfile;

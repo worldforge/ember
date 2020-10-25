@@ -78,7 +78,7 @@ private:
 	 * We're using a shared_ptr to make sure that the data isn't deleted if different threads are accessing
 	 * updateTerrain() and terrainPageReady() at the same time (without having to use locks).
 	 */
-	std::shared_ptr<float> mHeightData;
+	std::shared_ptr<std::vector<float>> mHeightData;
 
 };
 

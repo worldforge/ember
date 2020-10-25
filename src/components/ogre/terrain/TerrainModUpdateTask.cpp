@@ -18,33 +18,32 @@
 
 #include "TerrainModUpdateTask.h"
 #include "TerrainHandler.h"
-#include "TerrainMod.h"
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-TerrainModUpdateTask::TerrainModUpdateTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler) :
+TerrainModUpdateTask::TerrainModUpdateTask(Mercator::Terrain& terrain,
+										   std::unique_ptr<Ember::Terrain::TerrainModTranslator> terrainModTranslator,
+										   long terrainModId,
+										   WFMath::Point<3> pos,
+										   WFMath::Quaternion orientation,
+										   std::function<void(const std::vector<WFMath::AxisBox<2>>&)> callback) :
 		mTerrain(terrain),
-		mHandler(handler),
-		mId(std::stol(terrainMod.getEntityId())),
-		mPosition(terrainMod.getEntity().getPosition()),
-		mOrientation(terrainMod.getEntity().getOrientation()),
-		mTranslator(terrainMod.getTranslator())
-{
+		mId(terrainModId),
+		mPosition(pos),
+		mOrientation(orientation),
+		mTranslator(std::move(terrainModTranslator)),
+		mCallback(std::move(callback)) {
 
 }
 
-void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
-{
+void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	std::unique_ptr<Mercator::TerrainMod> terrainMod;
-	if (mTranslator.isValid()) {
+	if (mTranslator->isValid()) {
 
 		Mercator::Segment* segment = mTerrain.getSegmentAtPos(mPosition.x(), mPosition.z());
 		if (segment) {
@@ -67,7 +66,7 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 			}
 			modPos.y() = height;
 
-			terrainMod = mTranslator.parseData(modPos, mOrientation);
+			terrainMod = mTranslator->parseData(modPos, mOrientation);
 		}
 
 	}
@@ -80,9 +79,10 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 	}
 }
 
-bool TerrainModUpdateTask::executeTaskInMainThread()
-{
-	mHandler.reloadTerrain(mUpdatedAreas);
+bool TerrainModUpdateTask::executeTaskInMainThread() {
+	if (mCallback) {
+		mCallback(mUpdatedAreas);
+	}
 	return true;
 }
 }

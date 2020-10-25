@@ -18,6 +18,7 @@
 
 #ifndef TERRAINENTITYMANAGER_H_
 #define TERRAINENTITYMANAGER_H_
+
 #include <Atlas/Message/Element.h>
 
 #include <sigc++/trackable.h>
@@ -26,42 +27,46 @@
 #include <unordered_map>
 #include <functional>
 #include <memory>
+#include <components/ogre/terrain/TerrainModTranslator.h>
 
-namespace Ogre
-{
+namespace Ogre {
 class SceneManager;
 }
 
-namespace Eris
-{
+namespace Eris {
 class Entity;
+
 class View;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
-namespace Terrain
-{
+namespace OgreView {
+namespace Terrain {
 class TerrainHandler;
+
 class TerrainMod;
+
 class TerrainArea;
+
 struct TerrainDefPoint;
 }
 
 struct TerrainEffectorListener;
 
-class TerrainEntityManager: public virtual sigc::trackable {
+class TerrainEntityManager : public virtual sigc::trackable {
 public:
 	TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager);
 
 	virtual ~TerrainEntityManager();
 
 private:
+	struct TerrainModEntry {
+		std::unique_ptr<TerrainEffectorListener> listener;
+		std::unique_ptr<Ember::Terrain::TerrainModTranslator> translator;
+	};
 
-	typedef std::unordered_map<EmberEntity*, std::pair<std::unique_ptr<Terrain::TerrainMod>, std::unique_ptr<TerrainEffectorListener>>> ModStore;
+	typedef std::unordered_map<EmberEntity*, TerrainModEntry> ModStore;
 	typedef std::unordered_map<EmberEntity*, std::pair<std::unique_ptr<Terrain::TerrainArea>, std::unique_ptr<TerrainEffectorListener>>> AreaStore;
 
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainListener;
@@ -93,7 +98,7 @@ private:
 
 	void entityModeChanged(EmberEntity& entity, Terrain::TerrainArea& terrainArea);
 
-	void entityModeChanged(EmberEntity& entity, Terrain::TerrainMod& terrainMod);
+	void entityModeChanged(EmberEntity& entity, const Ember::Terrain::TerrainModTranslator& translator);
 
 	void parseTerrainAttribute(EmberEntity& entity, const Atlas::Message::Element& value);
 

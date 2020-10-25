@@ -15,7 +15,6 @@ add_library(emberogre_terrain OBJECT
         TerrainManager.cpp
         TerrainInfo.cpp
         TerrainLayerDefinitionManager.cpp
-        TerrainMod.cpp
         TerrainPage.cpp
         TerrainPageGeometry.cpp
         TerrainPageSurface.cpp

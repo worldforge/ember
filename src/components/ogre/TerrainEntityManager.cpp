@@ -22,7 +22,6 @@
 
 #include "TerrainEntityManager.h"
 #include "terrain/TerrainHandler.h"
-#include "terrain/TerrainMod.h"
 #include "terrain/TerrainArea.h"
 
 #include "terrain/TerrainParser.h"
@@ -33,7 +32,6 @@
 #include "framework/LoggingInstance.h"
 
 #include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
 
 #include <Eris/View.h>
 #include <Eris/Avatar.h>
@@ -158,42 +156,49 @@ void TerrainEntityManager::entityTerrainPointsAttrChanged(EmberEntity& entity, c
 }
 
 void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, const Atlas::Message::Element& value) {
-	Terrain::TerrainMod* mod = nullptr;
+
+	TerrainModEntry* terrainModEntry = nullptr;
 	auto I = mTerrainMods.find(&entity);
 	if (mTerrainMods.find(&entity) == mTerrainMods.end()) {
 		if (value.isMap()) {
 			try {
-				//TODO: make TerrainEffectorListener own the terrain mod instead.
-				mod = new Terrain::TerrainMod(entity, value.Map());
+				auto translator = std::make_unique<Ember::Terrain::TerrainModTranslator>(value.Map());
+				auto translatorPtr = translator.get();
 				auto listener = std::make_unique<TerrainEffectorListener>(entity);
 
-				listener->EventEntityBeingDeleted.connect([this, &entity, mod]() {
-					mod->reset();
-					mTerrainHandler.updateMod(mod);
+				listener->EventEntityBeingDeleted.connect([this, &entity]() {
+					mTerrainHandler.updateMod(entity.getId(), {}, {}, nullptr);
 					mTerrainMods.erase(&entity);
 				});
-				listener->EventEntityMoved.connect([this, &entity, mod]() {
+				listener->EventEntityMoved.connect([this, &entity, translatorPtr]() {
 					if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-						mTerrainHandler.updateMod(mod);
+						mTerrainHandler.updateMod(entity.getId(), entity.getPosition(), entity.getOrientation(), std::make_unique<Ember::Terrain::TerrainModTranslator>(*translatorPtr));
 					}
 				});
-				listener->EventEntityModeChanged.connect([this, &entity, mod]() { entityModeChanged(entity, *mod); });
-				mTerrainMods.insert(std::make_pair(&entity, std::make_pair(std::unique_ptr<Terrain::TerrainMod>(mod), std::move(listener))));
+				listener->EventEntityModeChanged.connect([this, &entity, translatorPtr]() { entityModeChanged(entity, *translatorPtr); });
+				auto result = mTerrainMods.emplace(&entity, TerrainModEntry{std::move(listener), std::move(translator)});
+				if (result.second) {
+					terrainModEntry = &result.first->second;
+				}
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when paring terrain mod." << ex);
 			}
 		}
 	} else {
-		mod = I->second.first.get();
-		mod->parse(value);
+		terrainModEntry = &I->second;
+		if (value.isMap()) {
+			terrainModEntry->translator = std::make_unique<Ember::Terrain::TerrainModTranslator>(value.Map());
+		} else {
+			terrainModEntry->translator.reset();
+		}
 	}
 
-	if (mod) {
+	if (terrainModEntry) {
 		if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-			mTerrainHandler.updateMod(mod);
+			mTerrainHandler.updateMod(entity.getId(), entity.getPosition(), entity.getOrientation(), std::make_unique<Ember::Terrain::TerrainModTranslator>(*terrainModEntry->translator));
 		}
 	} else {
-		//TODO: add removal of mod
+		mTerrainHandler.updateMod(entity.getId(), {}, {}, nullptr);
 	}
 }
 
@@ -243,16 +248,12 @@ void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::Terra
 	}
 }
 
-void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::TerrainMod& terrainMod) {
+void TerrainEntityManager::entityModeChanged(EmberEntity& entity, const Ember::Terrain::TerrainModTranslator& translator) {
 	//If mode changes to "planted" we should add the mod, if moves to any other we should remove it.
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-		if (entity.hasProperty("terrainmod")) {
-			terrainMod.parse(entity.valueOfProperty("terrainmod"));
-			mTerrainHandler.updateMod(&terrainMod);
-		}
+		mTerrainHandler.updateMod(entity.getId(), entity.getPosition(), entity.getOrientation(), std::make_unique<Ember::Terrain::TerrainModTranslator>(translator));
 	} else {
-		terrainMod.reset();
-		mTerrainHandler.updateMod(&terrainMod);
+		mTerrainHandler.updateMod(entity.getId(), {}, {}, nullptr);
 	}
 }
 }

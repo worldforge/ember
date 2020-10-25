@@ -132,14 +132,14 @@ public:
      * @param material The material which will be used for the terrain geometry.
      * @return False if something went wrong during compilation.
 	 */
-	bool compile(Ogre::MaterialPtr material);
+	bool compile(const Ogre::MaterialPtr& material);
 
 	/**
 	 * @brief Compiles the surface composite map. This is called in the main thread.
 	 * @param material The material which will be used for the terrain geometry.
 	 * @return False if something went wrong during compilation or composite maps are not supported by the used technique.
 	 */
-	bool compileCompositeMap(Ogre::MaterialPtr material);
+	bool compileCompositeMap(const Ogre::MaterialPtr& material);
 
 private:
 
@@ -183,8 +183,8 @@ public:
 	 * @param terrainPageShadow An optional shadow.
 	 * @return A compilation instance.
 	 */
-	TerrainPageSurfaceCompilationInstance* createCompilationInstance(const TerrainPageGeometryPtr& geometry,
-																	 const SurfaceLayerStore& terrainPageSurfaces);
+	std::unique_ptr<TerrainPageSurfaceCompilationInstance> createCompilationInstance(const TerrainPageGeometryPtr& geometry,
+																					 const SurfaceLayerStore& terrainPageSurfaces);
 
 private:
 

@@ -49,8 +49,8 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 	auto heightData = mHeightData;
 
 	if (!heightData) {
-		heightData.reset(new float[mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize()], std::default_delete<float[]>());
-		geometry.updateOgreHeightData(heightData.get());
+		heightData = std::make_unique<std::vector<float>>(mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize());
+		geometry.updateOgreHeightData(heightData->data());
 	}
 	//If the mHeightData field has been reset by the terrainPageReady() method we'll now
 	mHeightData = heightData;
@@ -65,7 +65,7 @@ void OgreTerrainPageBridge::terrainPageReady()
 		if (terrain) {
 			terrain->scheduleGeometryUpdate(mHeightData);
 		} else {
-			mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData.get());
+			mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData->data());
 		}
 
 	}
