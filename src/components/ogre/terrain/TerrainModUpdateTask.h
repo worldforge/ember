@@ -47,11 +47,11 @@ class TerrainModUpdateTask: public Tasks::TemplateNamedTask<TerrainModUpdateTask
 {
 public:
 	TerrainModUpdateTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler);
-	virtual ~TerrainModUpdateTask() = default;
+	~TerrainModUpdateTask() override = default;
 
-	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override;
 
-	virtual bool executeTaskInMainThread();
+	bool executeTaskInMainThread() override;
 
 private:
 

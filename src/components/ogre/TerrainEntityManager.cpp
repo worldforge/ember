@@ -211,11 +211,10 @@ void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atla
 		terrainArea = I->second.first.get();
 	}
 
-	//Need to parse the area even if we don't place it.
 	auto area = terrainArea->parse(value);
 	//Only add area if we're planted
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-		mTerrainHandler.updateArea(entity.getId(), area.get());
+		mTerrainHandler.updateArea(entity.getId(), std::move(area));
 	}
 }
 
@@ -230,24 +229,17 @@ void TerrainEntityManager::entityMoved(EmberEntity& entity, Terrain::TerrainArea
 
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
 		auto area = terrainArea.updatePosition();
-		mTerrainHandler.updateArea(entity.getId(), area.get());
+		mTerrainHandler.updateArea(entity.getId(), std::move(area));
 	}
 }
 
 void TerrainEntityManager::entityModeChanged(EmberEntity& entity, Terrain::TerrainArea& terrainArea) {
 	//If mode changes to "planted" we should add the area, if moves to any other we should remove it.
-	auto I = mTerrainHandler.getAreas().find(entity.getId());
 	if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
-		if (I == mTerrainHandler.getAreas().end()) {
-			auto area = terrainArea.updatePosition();
-			if (area) {
-				mTerrainHandler.updateArea(entity.getId(), area.get());
-			}
-		}
+		auto area = terrainArea.updatePosition();
+		mTerrainHandler.updateArea(entity.getId(), std::move(area));
 	} else {
-		if (I != mTerrainHandler.getAreas().end()) {
-			mTerrainHandler.updateArea(entity.getId(), nullptr);
-		}
+		mTerrainHandler.updateArea(entity.getId(), nullptr);
 	}
 }
 

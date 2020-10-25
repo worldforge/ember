@@ -64,7 +64,7 @@ public:
 	 * @param orientation
 	 * @return A terrain mod instance, or null if none could be created.
 	 */
-	Mercator::TerrainMod* parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation);
+	std::unique_ptr<Mercator::TerrainMod> parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation);
 
 	/**
 	 * @brief True if there's a valid inner translator.
@@ -87,8 +87,8 @@ public:
 	class InnerTranslator
 	{
 	public:
-		InnerTranslator(const Atlas::Message::MapType &);
-		virtual Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) = 0;
+		explicit InnerTranslator(Atlas::Message::MapType );
+		virtual std::unique_ptr<Mercator::TerrainMod> createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) = 0;
 	protected:
 		const Atlas::Message::MapType mData;
 	};

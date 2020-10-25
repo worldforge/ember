@@ -19,12 +19,18 @@
 #ifndef EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_
 #define EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_
 
-#include "TerrainAreaTaskBase.h"
-
+#include "framework/tasks/TemplateNamedTask.h"
+#include "Types.h"
+#include "TerrainHandler.h"
+#include "TerrainLayerDefinitionManager.h"
 #include <Mercator/Area.h>
 
 #include <wfmath/point.h>
 #include <wfmath/axisbox.h>
+
+#include <sigc++/slot.h>
+#include <Mercator/Terrain.h>
+
 
 namespace Ember {
 namespace OgreView {
@@ -36,8 +42,9 @@ class TerrainShader;
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Updates terrain areas.
  */
-class TerrainAreaUpdateTask : public TerrainAreaTaskBase {
+class TerrainAreaUpdateTask : public Tasks::TemplateNamedTask<TerrainAreaUpdateTask> {
 public:
+	typedef sigc::slot<void, int, const WFMath::AxisBox<2>&> ShaderUpdateSlotType;
 
 	/**
 	 * @brief Ctor.
@@ -48,10 +55,9 @@ public:
 	 * @param oldShape The old shape, before the update.
 	 */
 	TerrainAreaUpdateTask(Mercator::Terrain& terrain,
-						  std::shared_ptr<Mercator::Area> area,
-						  Mercator::Area newArea,
-						  ShaderUpdateSlotType markForUpdateSlot,
-						  const TerrainShader* shader);
+						  long id,
+						  std::unique_ptr<Mercator::Area> area,
+						  ShaderUpdateSlotType markForUpdateSlot);
 
 	~TerrainAreaUpdateTask() override;
 
@@ -61,14 +67,24 @@ public:
 
 private:
 
-	const Mercator::Area mNewArea;
+	/**
+	 * @brief The terrain.
+	 */
+	Mercator::Terrain& mTerrain;
+
+	long mId;
 
 	/**
-	 * @brief The terrain shader affected.
+	 * @brief The terrain area.
 	 */
-	const TerrainShader* mShader;
+	std::unique_ptr<Mercator::Area> mArea;
+
+	ShaderUpdateSlotType mShaderUpdateSlot;
+
+	long mLayerId;
 
 	WFMath::AxisBox<2> mOldShape, mNewShape;
+
 
 };
 

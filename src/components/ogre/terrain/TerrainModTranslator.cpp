@@ -32,6 +32,8 @@
 
 #include <wfmath/atlasconv.h>
 
+#include <utility>
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -51,7 +53,7 @@ public:
 	InnerTranslatorImpl(const ShapeT<2>& shape, const Atlas::Message::MapType& data);
 	virtual ~InnerTranslatorImpl() = default;
 
-	virtual Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
+	std::unique_ptr<Mercator::TerrainMod> createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) override;
 
 	const ShapeT<2> mShape;
 };
@@ -66,7 +68,7 @@ public:
 	InnerTranslatorSlope(const ShapeT<2>& shape, const Atlas::Message::MapType& data, float dx, float dz);
 	virtual ~InnerTranslatorSlope() = default;
 
-	virtual Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
+	std::unique_ptr<Mercator::TerrainMod> createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) override;
 
 	const ShapeT<2> mShape;
 	float mDx;
@@ -86,7 +88,7 @@ InnerTranslatorSlope<ShapeT>::InnerTranslatorSlope(const ShapeT<2>& shape, const
 }
 
 template<template<template<int> class ShapeT> class ModT, template<int> class ShapeT>
-Mercator::TerrainMod* InnerTranslatorImpl<ModT, ShapeT>::createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
+std::unique_ptr<Mercator::TerrainMod> InnerTranslatorImpl<ModT, ShapeT>::createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
 {
 	ShapeT<2> shape = this->mShape;
 
@@ -104,11 +106,11 @@ Mercator::TerrainMod* InnerTranslatorImpl<ModT, ShapeT>::createInstance(const WF
 
 	shape.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 	float level = TerrainModTranslator::parsePosition(pos, this->mData);
-	return new ModT<ShapeT>(level, shape);
+	return std::make_unique<ModT<ShapeT>>(level, shape);
 }
 
 template<template<int> class ShapeT>
-Mercator::TerrainMod* InnerTranslatorSlope<ShapeT>::createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
+std::unique_ptr<Mercator::TerrainMod> InnerTranslatorSlope<ShapeT>::createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
 {
 	ShapeT<2> shape = this->mShape;
 
@@ -126,11 +128,11 @@ Mercator::TerrainMod* InnerTranslatorSlope<ShapeT>::createInstance(const WFMath:
 
 	shape.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 	float level = TerrainModTranslator::parsePosition(pos, this->mData);
-	return new Mercator::SlopeTerrainMod<ShapeT>(level, mDx, mDz, shape);
+	return std::make_unique<Mercator::SlopeTerrainMod<ShapeT>>(level, mDx, mDz, shape);
 }
 
-TerrainModTranslator::InnerTranslator::InnerTranslator(const Atlas::Message::MapType& data) :
-		mData(data)
+TerrainModTranslator::InnerTranslator::InnerTranslator(Atlas::Message::MapType  data) :
+		mData(std::move(data))
 {
 }
 
@@ -225,7 +227,7 @@ TerrainModTranslator::InnerTranslator* TerrainModTranslator::buildTranslator(con
 
 	if (typeName == "slopemod") {
 
-		MapType::const_iterator I = modElement.find("slopes");
+		auto I = modElement.find("slopes");
 		if (I == modElement.end()) {
 			S_LOG_WARNING("SlopeTerrainMod defined without slopes");
 			return nullptr;
@@ -262,7 +264,7 @@ TerrainModTranslator::InnerTranslator* TerrainModTranslator::buildTranslator(con
  * @param modElement Atlas data describing the mod
  * @return true if translation succeeds
  */
-Mercator::TerrainMod* TerrainModTranslator::parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation)
+std::unique_ptr<Mercator::TerrainMod> TerrainModTranslator::parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation)
 {
 	if (mInnerTranslator) {
 		return mInnerTranslator->createInstance(pos, orientation);

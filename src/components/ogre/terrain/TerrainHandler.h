@@ -189,7 +189,7 @@ public:
 	int getPageMetersSize() const;
 
 
-	const std::unordered_map<std::string, std::shared_ptr<Mercator::Area>>& getAreas() const;
+	const std::unordered_map<std::string, long>& getAreas() const;
 
 	/**
 	 * @brief Updates a terrain area.
@@ -200,7 +200,7 @@ public:
 	 * @param id The id of the entity to which the area belong.
 	 * @param terrainArea An updated area, or null if any existing area should be removed.
 	 */
-	void updateArea(const std::string& id, Mercator::Area* terrainArea);
+	void updateArea(const std::string& id, std::unique_ptr<Mercator::Area> terrainArea);
 
 	/**
 	 * @brief Updates a terrain mod.
@@ -506,8 +506,9 @@ protected:
 
 	/**
 	 * @brief A map of all terrain areas used by the handler.
+	 * Key is entity id and value is area id.
 	 */
-	AreaMap mAreas;
+	std::unordered_map<std::string, long> mAreas;
 
 	/**
 	 * @brief The maximum height of the generated terrain. In world units.
@@ -546,6 +547,8 @@ protected:
 
 	Eris::ActiveMarker mActiveMarker;
 
+	long mAreaCounter;
+
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
 	 *
@@ -553,7 +556,7 @@ protected:
 	 * @param shader The shader to update.
 	 * @param affectedArea The area affected.
 	 */
-	void markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea);
+	void markShaderForUpdate(int layer, const WFMath::AxisBox<2>& affectedArea);
 
 	/**
 	 * @brief Updates shaders needing updating.

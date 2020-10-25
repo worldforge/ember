@@ -17,6 +17,7 @@
  */
 
 #include "TerrainAreaUpdateTask.h"
+#include "TerrainLayerDefinition.h"
 #include <Mercator/Terrain.h>
 
 #include <utility>
@@ -26,34 +27,40 @@ namespace OgreView {
 
 namespace Terrain {
 TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain,
-											 std::shared_ptr<Mercator::Area> area,
-											 Mercator::Area newArea,
-											 ShaderUpdateSlotType markForUpdateSlot,
-											 const TerrainShader* shader) :
-		TerrainAreaTaskBase(terrain, std::move(area), std::move(markForUpdateSlot)),
-		mNewArea(std::move(newArea)),
-		mShader(shader) {
+											 long id,
+											 std::unique_ptr<Mercator::Area> area,
 
+											 ShaderUpdateSlotType markForUpdateSlot) :
+		mTerrain(terrain),
+		mId(id),
+		mArea(std::move(area)),
+		mShaderUpdateSlot(std::move(markForUpdateSlot)),
+		mLayerId(mArea ? mArea->getLayer() : 0) {
 }
 
 TerrainAreaUpdateTask::~TerrainAreaUpdateTask() = default;
 
 void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
-	mOldShape = mArea->bbox();
-	mArea->setShape(mNewArea.shape());
-	mNewShape = mArea->bbox();
-
-	mTerrain.updateArea(mArea.get());
+	if (mArea) {
+		mNewShape = mArea->bbox();
+	}
+	mOldShape = mTerrain.updateArea(mId, std::move(mArea));
 }
 
 bool TerrainAreaUpdateTask::executeTaskInMainThread() {
-	if (mShader) {
-		//mark the shader for update
-		//we'll not update immediately, we try to batch many area updates and then only update once per frame
-		mShaderUpdateSlot(mShader, mNewShape);
+	//Note that "layer" never gets updated, so it's ok to access that from the main thread.
+	if (mLayerId > 0) {
 
-		//Also mark the old shape, in case it resided on a different page.
-		mShaderUpdateSlot(mShader, mOldShape);
+		if (mNewShape.isValid()) {
+			//mark the shader for update
+			//we'll not update immediately, we try to batch many area updates and then only update once per frame
+			mShaderUpdateSlot(mLayerId, mNewShape);
+		}
+
+		if (mOldShape.isValid()) {
+			//Also mark the old shape, in case it resided on a different page.
+			mShaderUpdateSlot(mLayerId, mOldShape);
+		}
 	}
 	return true;
 }

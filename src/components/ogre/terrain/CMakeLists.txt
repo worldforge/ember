@@ -41,9 +41,6 @@ add_library(emberogre_terrain OBJECT
         HeightMapBuffer.cpp
         HeightMapBufferProvider.cpp
         HeightMapUpdateTask.cpp
-        TerrainAreaTaskBase.cpp
-        TerrainAreaAddTask.cpp
-        TerrainAreaRemoveTask.cpp
         TerrainModUpdateTask.cpp
         GeometryUpdateTask.cpp
         TerrainEditorOverlay.cpp

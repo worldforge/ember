@@ -34,8 +34,6 @@
 #include "TerrainPageDeletionTask.h"
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainAreaUpdateTask.h"
-#include "TerrainAreaAddTask.h"
-#include "TerrainAreaRemoveTask.h"
 #include <components/ogre/terrain/TerrainModUpdateTask.h>
 #include "TerrainUpdateTask.h"
 
@@ -59,6 +57,7 @@
 
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
+#include <Mercator/AreaShader.h>
 
 #include <sigc++/bind.h>
 
@@ -164,7 +163,8 @@ TerrainHandler::TerrainHandler(int pageIndexSize,
 		mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()),
 		mHasTerrainInfo(false),
 		mLightning(nullptr),
-		mTerrainEntity(nullptr) {
+		mTerrainEntity(nullptr),
+		mAreaCounter(0) {
 	mSegmentManager->setEndlessWorldEnabled(true);
 	mSegmentManager->setDefaultHeight(getDefaultHeight());
 	//TODO: get these values from the server if possible
@@ -212,13 +212,23 @@ TerrainShader* TerrainHandler::createShader(const TerrainLayerDefinition* layerD
 	}
 }
 
-void TerrainHandler::markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea) {
-	if (shader) {
-		ShaderUpdateRequest& updateRequest = mShadersToUpdate[shader];
-		updateRequest.Areas.push_back(affectedArea);
-		mEventService.runOnMainThread([&]() {
-			updateShaders();
-		}, mActiveMarker);
+void TerrainHandler::markShaderForUpdate(int layer, const WFMath::AxisBox<2>& affectedArea) {
+	if (layer > 0) {
+		auto I = mAreaShaders.find(layer);
+		if (I == mAreaShaders.end()) {
+			//Create new layer
+			const TerrainLayerDefinition* layerDef = TerrainLayerDefinitionManager::getSingleton().getDefinitionForArea(layer);
+			if (layerDef) {
+				TerrainShader* shader = createShader(layerDef, std::make_unique<Mercator::AreaShader>(layer));
+				mAreaShaders[layer] = shader;
+			}
+		} else {
+			ShaderUpdateRequest& updateRequest = mShadersToUpdate[I->second];
+			updateRequest.Areas.push_back(affectedArea);
+			mEventService.runOnMainThread([&]() {
+				updateShaders();
+			}, mActiveMarker);
+		}
 	}
 }
 
@@ -523,52 +533,36 @@ void TerrainHandler::updateMod(TerrainMod* terrainMod) {
 	}
 }
 
-const std::unordered_map<std::string, std::shared_ptr<Mercator::Area>>& TerrainHandler::getAreas() const {
+const std::unordered_map<std::string, long>& TerrainHandler::getAreas() const {
 	return mAreas;
 }
 
 
-void TerrainHandler::updateArea(const std::string& id, Mercator::Area* terrainArea) {
+void TerrainHandler::updateArea(const std::string& id, std::unique_ptr<Mercator::Area> terrainArea) {
 	auto I = mAreas.find(id);
 	if (I == mAreas.end()) {
 		if (terrainArea && terrainArea->getLayer() != 0 && terrainArea->shape().isValid()) {
 			//There's no existing area, we need to add a new one.
-			auto newArea = std::make_shared<Mercator::Area>(*terrainArea);
-			mAreas.emplace(id, newArea);
-
-			mTaskQueue->enqueueTask(std::make_unique<TerrainAreaAddTask>(*mTerrain, std::move(newArea), sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
+			auto areaId = mAreaCounter++;
+			mAreas.emplace(id, areaId);
+			mTaskQueue->enqueueTask(std::make_unique<TerrainAreaUpdateTask>(*mTerrain, areaId, std::move(terrainArea), sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate)));
 		}
 		//If there's no existing area, and no valid supplied one, just don't do anything.
 	} else {
-		auto existingArea = I->second;
+		auto existingAreaId = I->second;
 		if (!terrainArea || terrainArea->getLayer() == 0 || !terrainArea->shape().isValid()) {
 			//We should remove the area.
-			const TerrainShader* shader = nullptr;
-			if (mAreaShaders.count(existingArea->getLayer())) {
-				shader = mAreaShaders[existingArea->getLayer()];
-			}
 			mAreas.erase(I);
-			mTaskQueue->enqueueTask(std::make_unique<TerrainAreaRemoveTask>(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
+			mTaskQueue->enqueueTask(std::make_unique<TerrainAreaUpdateTask>(*mTerrain, existingAreaId, nullptr, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate)));
 		} else {
+			auto existingArea = mTerrain->getArea(existingAreaId);
 			//Check if we need to swap the area (if the layer has changed) or if we just can update the shape.
-			if (terrainArea->getLayer() != existingArea->getLayer()) {
-				const TerrainShader* shader = nullptr;
-				if (mAreaShaders.count(existingArea->getLayer())) {
-					shader = mAreaShaders[existingArea->getLayer()];
-				}
-
-				mAreas.erase(I);
-				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaRemoveTask>(*mTerrain, existingArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
-
-				auto newArea = std::make_shared<Mercator::Area>(*terrainArea);
-				mAreas.insert(AreaMap::value_type(id, newArea));
-				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaAddTask>(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
+			if (existingArea && terrainArea->getLayer() != existingArea->getLayer()) {
+				//Remove and add if we've switched layers.
+				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaUpdateTask>(*mTerrain, existingAreaId, nullptr, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate)));
+				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaUpdateTask>(*mTerrain, existingAreaId, std::move(terrainArea), sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate)));
 			} else {
-				const TerrainShader* shader = nullptr;
-				if (mAreaShaders.count(terrainArea->getLayer())) {
-					shader = mAreaShaders[terrainArea->getLayer()];
-				}
-				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaUpdateTask>(*mTerrain, existingArea, *terrainArea, sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate), shader));
+				mTaskQueue->enqueueTask(std::make_unique<TerrainAreaUpdateTask>(*mTerrain, existingAreaId, std::move(terrainArea), sigc::mem_fun(*this, &TerrainHandler::markShaderForUpdate)));
 			}
 		}
 	}

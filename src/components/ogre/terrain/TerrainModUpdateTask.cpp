@@ -43,8 +43,7 @@ TerrainModUpdateTask::TerrainModUpdateTask(Mercator::Terrain& terrain, const Ter
 
 void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
-	const Mercator::TerrainMod* existingMod = mTerrain.getMod(mId);
-	const Mercator::TerrainMod* terrainMod = nullptr;
+	std::unique_ptr<Mercator::TerrainMod> terrainMod;
 	if (mTranslator.isValid()) {
 
 		Mercator::Segment* segment = mTerrain.getSegmentAtPos(mPosition.x(), mPosition.z());
@@ -72,19 +71,13 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 		}
 
 	}
-
-	mTerrain.updateMod(mId, terrainMod);
 	if (terrainMod && terrainMod->bbox().isValid()) {
 		mUpdatedAreas.push_back(terrainMod->bbox());
 	}
-
-	if (existingMod) {
-		if (existingMod->bbox().isValid()) {
-			mUpdatedAreas.push_back(existingMod->bbox());
-		}
-		delete existingMod;
+	auto oldAreas = mTerrain.updateMod(mId, std::move(terrainMod));
+	if (oldAreas.isValid()) {
+		mUpdatedAreas.push_back(oldAreas);
 	}
-
 }
 
 bool TerrainModUpdateTask::executeTaskInMainThread()
