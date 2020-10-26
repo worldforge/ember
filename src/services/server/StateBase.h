@@ -84,7 +84,7 @@ protected:
 
 	void* getChildState() const { return nullptr; }
 
-	StateBaseCore* getCoreChildState() override { return this; }
+	StateBaseCore* getCoreChildState() override { return nullptr; }
 
 	void clearChildState() override {}
 
@@ -148,10 +148,8 @@ inline void StateBaseCore::transfer(const Eris::TransferInfo& transferInfo) {
 inline void StateBaseCore::destroyChildState() {
 	auto child = getCoreChildState();
 	if (child) {
-		//Guard to allow this method to be called multiple times within the same stack.
-		clearChildState();
 		child->destroyChildState();
-		delete child;
+		clearChildState();
 	}
 }
 
