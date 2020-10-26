@@ -80,16 +80,15 @@ bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, s
 			if (I != map.end()) {
 				if (I->second.isList()) {
 					Atlas::Message::ListType infos = I->second.asList();
-					for (Atlas::Message::ListType::const_iterator J = infos.begin(); J != infos.end(); ++J) {
-						Atlas::Message::Element infoElement = *J;
+					for (auto& infoElement : infos) {
 						if (infoElement.isMap()) {
 							Atlas::Message::MapType info = infoElement.asMap();
 							const std::string& host = info["host"].asString();
-							int port = info["port"].asInt();
+							auto port = info["port"].asInt();
 							const std::string& key = info["key"].asString();
 							const std::string& entityId = info["entityid"].asString();
 							const std::string& avatarName = info["avatarname"].asString();
-							long timestamp = info["timestamp"].asInt();
+							auto timestamp = info["timestamp"].asInt();
 							infoObjects.emplace_back(avatarName, WFMath::TimeStamp::epochStart() + WFMath::TimeDiff(timestamp), Eris::TransferInfo(host, port, key, entityId));
 						}
 					}

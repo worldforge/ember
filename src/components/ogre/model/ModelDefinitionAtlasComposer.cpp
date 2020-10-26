@@ -119,7 +119,7 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 																			   submesh->indexData->indexCount * sizeof(Ogre::uint16),
 																			   Ogre::HardwareBuffer::HBL_READ_ONLY));
 					for (size_t j = 0; j < submesh->indexData->indexCount; ++j) {
-						long index = static_cast<IntType>(pIndex[j] + offset);
+						auto index = static_cast<IntType>(pIndex[j] + offset);
 						indices.emplace_back(index);
 					}
 				} else {
@@ -127,7 +127,7 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 																			   submesh->indexData->indexCount * sizeof(Ogre::uint32),
 																			   Ogre::HardwareBuffer::HBL_READ_ONLY));
 					for (size_t j = 0; j < submesh->indexData->indexCount; ++j) {
-						long index = static_cast<IntType>(pIndex[j] + offset);
+						auto index = static_cast<IntType>(pIndex[j] + offset);
 						indices.emplace_back(index);
 					}
 				}

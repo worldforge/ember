@@ -46,7 +46,7 @@ StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool plays
 		: BaseSoundSample(SoundGeneral::SAMPLE_WAV),
 		  mBuffer(0),
 		  mResource(resource) {
-	mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), mResource.getSize());
+	mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), (ALsizei)mResource.getSize());
 
 	if (!SoundGeneral::checkAlError("Generated buffer for static sample.")) {
 		alDeleteBuffers(1, &mBuffer);

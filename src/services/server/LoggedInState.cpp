@@ -75,8 +75,7 @@ void LoggedInState::checkTransfer() {
 
 	mTransferInfos.clear();
 
-	for (TransferInfoStringSerializer::TransferInfoStore::const_iterator I = transferObjects.begin(); I != transferObjects.end(); ++I) {
-		const AvatarTransferInfo& avatarTransferInfo(*I);
+	for (const auto& avatarTransferInfo : transferObjects) {
 		const Eris::TransferInfo& transferInfo(avatarTransferInfo.getTransferInfo());
 		if (transferInfo.getHost() == mAccount.getConnection().getHost() && transferInfo.getPort() == mAccount.getConnection().getPort()) {
 			mTransferInfos.push_back(avatarTransferInfo);
