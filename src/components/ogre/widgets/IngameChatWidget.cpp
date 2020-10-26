@@ -209,8 +209,8 @@ WidgetPool<IngameChatWidget::ChatText>& IngameChatWidget::getChatTextPool() {
 //---------------------------------------------------
 
 void IngameChatWidget::frameStarted(float timeSinceLastFrame) {
-	for (auto& label : mLabelPool.getUsedWidgets()) {
-		label->frameStarted(timeSinceLastFrame);
+	for (auto& observer : mActiveObservers) {
+		observer->mLabel->frameStarted(timeSinceLastFrame);
 	}
 }
 
@@ -218,13 +218,14 @@ void IngameChatWidget::removeWidget(const std::string& windowName) {
 }
 
 void IngameChatWidget::cameraPreRenderScene(Ogre::Camera* cam) {
-	for (auto& label : mLabelPool.getUsedWidgets()) {
-		label->objectRendering(cam);
+	for (auto& observer : mActiveObservers) {
+		observer->mLabel->objectRendering(cam);
 	}
 }
 
 IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, EmberEntity& entity) :
-		mChatWidget(chatWidget), mEntity(entity), mLabel(nullptr) {
+		mChatWidget(chatWidget),
+		mEntity(entity) {
 	entity.VisibilityChanged.connect(sigc::mem_fun(*this, &EntityObserver::entity_VisibilityChanged));
 	entity.BeingDeleted.connect(sigc::mem_fun(*this, &EntityObserver::entity_BeingDeleted));
 	entity.Say.connect(sigc::mem_fun(*this, &EntityObserver::entity_Say));
@@ -301,6 +302,7 @@ void IngameChatWidget::EntityObserver::showLabel() {
 	if (!mLabel) {
 		mLabel = mChatWidget.getLabelPool().checkoutWidget();
 		mLabel->attachToEntity(&mEntity);
+		mChatWidget.mActiveObservers.emplace_back(this);
 	}
 }
 
@@ -308,8 +310,11 @@ void IngameChatWidget::EntityObserver::hideLabel() {
 	if (mLabel) {
 		mLabel->setActive(false);
 		mLabel->setVisible(false);
-		mChatWidget.getLabelPool().returnWidget(mLabel);
-		mLabel = nullptr;
+		mChatWidget.getLabelPool().returnWidget(std::move(mLabel));
+		auto I = std::find(mChatWidget.mActiveObservers.begin(), mChatWidget.mActiveObservers.end(), this);
+		if (I != mChatWidget.mActiveObservers.end()) {
+			mChatWidget.mActiveObservers.erase(I);
+		}
 	}
 }
 
@@ -414,8 +419,7 @@ void IngameChatWidget::Label::frameStarted(float timeSinceLastFrame) {
 void IngameChatWidget::Label::removeChatText() {
 	if (mChatText) {
 		mChatText->attachToLabel(nullptr);
-		mContainerWidget.getChatTextPool().returnWidget(mChatText);
-		mChatText = nullptr;
+		mContainerWidget.getChatTextPool().returnWidget(std::move(mChatText));
 	}
 }
 
@@ -484,21 +488,21 @@ Window* IngameChatWidget::Label::getWindow() {
 }
 
 void IngameChatWidget::Label::updateText(const std::string& line) {
-	getOrCreateChatText()->updateText(line);
+	getOrCreateChatText().updateText(line);
 	//mWindow->moveToFront();
 }
 
-IngameChatWidget::ChatText* IngameChatWidget::Label::getOrCreateChatText() {
+IngameChatWidget::ChatText& IngameChatWidget::Label::getOrCreateChatText() {
 	if (!mChatText) {
 		mChatText = mContainerWidget.getChatTextPool().checkoutWidget();
 		mChatText->attachToLabel(this);
 	}
-	return mChatText;
+	return *mChatText;
 }
 
 void IngameChatWidget::Label::showDetachedChatText() {
 	placeWindowOnEntity();
-	getOrCreateChatText()->switchToDetachedMode();
+	getOrCreateChatText().switchToDetachedMode();
 }
 
 IngameChatWidget::LabelCreator::LabelCreator(IngameChatWidget& ingameChatWidget) :

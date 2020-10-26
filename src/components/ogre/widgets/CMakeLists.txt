@@ -48,7 +48,6 @@ add_library(widgets OBJECT
         Vector3Adapter.cpp
         Widget.cpp
         WidgetDefinitions.cpp
-        WidgetPool.cpp
         AtlasHelper.cpp
         ModelEditHelper.cpp
         EntityTextureManipulator.cpp

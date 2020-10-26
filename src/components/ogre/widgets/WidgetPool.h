@@ -40,92 +40,58 @@ namespace Gui {
 template<typename T>
 class WidgetPool {
 public:
-	typedef std::vector<T*> WidgetStore;
-	typedef std::stack<T*> WidgetStack;
 
-	class WidgetCreator {
+	struct WidgetCreator {
 	public:
-		virtual ~WidgetCreator() {}
+		virtual ~WidgetCreator() = default;
 
 		virtual std::unique_ptr<T> createWidget(unsigned int currentPoolSize) = 0;
 	};
 
-	WidgetPool(WidgetCreator& creator) : mCreator(creator) {}
+	explicit WidgetPool(WidgetCreator& creator) :
+			mCreator(creator) {}
 
 	virtual ~WidgetPool();
 
-	T* checkoutWidget();
+	std::unique_ptr<T> checkoutWidget();
 
-	void returnWidget(T* widget);
+	void returnWidget(std::unique_ptr<T> widget);
 
-	void initializePool(unsigned int initialSize);
-
-	std::vector<T*>& getUsedWidgets();
-
-	std::vector<T*>& getWidgetPool();
-
-	std::stack<T*>& getUnusedWidgets();
+	void initializePool(size_t initialSize);
 
 protected:
 	WidgetCreator& mCreator;
 
-	WidgetStore mUsedWidgets;
-
 	std::vector<std::unique_ptr<T>> mWidgetsPool;
-	WidgetStack mUnusedWidgets;
 };
 
 template<typename T>
 WidgetPool<T>::~WidgetPool() = default;
 
 template<typename T>
-T* WidgetPool<T>::checkoutWidget() {
-	T* widget;
-	if (!mUnusedWidgets.size()) {
-		auto newWidget = mCreator.createWidget(mWidgetsPool.size());
-		widget = newWidget.get();
-		mWidgetsPool.push_back(std::move(newWidget));
+std::unique_ptr<T> WidgetPool<T>::checkoutWidget() {
+	if (!mWidgetsPool.size()) {
+		return mCreator.createWidget(mWidgetsPool.size());
 	} else {
-		widget = mUnusedWidgets.top();
-		mUnusedWidgets.pop();
-	}
-	mUsedWidgets.push_back(widget);
-	return widget;
-}
-
-template<typename T>
-void WidgetPool<T>::returnWidget(T* widget) {
-	mUnusedWidgets.push(widget);
-	typename std::vector<T*>::iterator I = std::find(mUsedWidgets.begin(), mUsedWidgets.end(), widget);
-	if (I != mUsedWidgets.end()) {
-		mUsedWidgets.erase(I);
+		auto widget = std::move(mWidgetsPool.back());
+		mWidgetsPool.pop_back();
+		return widget;
 	}
 }
 
 template<typename T>
-void WidgetPool<T>::initializePool(unsigned int initialSize) {
-	for (unsigned int i = 0; i < initialSize; ++i) {
+void WidgetPool<T>::returnWidget(std::unique_ptr<T> widget) {
+	mWidgetsPool.emplace_back(std::move(widget));
+}
+
+template<typename T>
+void WidgetPool<T>::initializePool(size_t initialSize) {
+	for (size_t i = 0; i < initialSize; ++i) {
 		auto newWidget = mCreator.createWidget(mWidgetsPool.size());
-		auto widget = newWidget.get();
-		mWidgetsPool.push_back(std::move(newWidget));
-		mUnusedWidgets.push(widget);
+		mWidgetsPool.emplace_back(std::move(newWidget));
 	}
 }
 
-template<class T>
-std::vector<T*>& WidgetPool<T>::getUsedWidgets() {
-	return mUsedWidgets;
-}
-
-template<typename T>
-std::vector<T*>& WidgetPool<T>::getWidgetPool() {
-	return mWidgetsPool;
-}
-
-template<typename T>
-std::stack<T*>& WidgetPool<T>::getUnusedWidgets() {
-	return mUnusedWidgets;
-}
 }
 
 }

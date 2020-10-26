@@ -80,12 +80,10 @@ class IngameChatWidget
 		: public ConfigListenerContainer,
 		  public Ogre::Camera::Listener,
 		  public virtual sigc::trackable {
-	class EntityObserver;
 
 	class Label;
 
-	class EntityObserver : public virtual sigc::trackable {
-	public:
+	struct EntityObserver : public virtual sigc::trackable {
 		EntityObserver(IngameChatWidget& chatWidget, EmberEntity& entity);
 
 		virtual ~EntityObserver();
@@ -103,10 +101,9 @@ class IngameChatWidget
 		 */
 		void showDetachedChat();
 
-	protected:
 		IngameChatWidget& mChatWidget;
 		EmberEntity& mEntity;
-		Label* mLabel;
+		std::unique_ptr<Label> mLabel;
 		Eris::Entity::PropertyChangedSlot mExternalSlot; //, mNameSlot;
 
 		void showLabel();
@@ -231,13 +228,13 @@ class IngameChatWidget
 		 * @brief If true, the label should be shown on the next frame rendering.
 		 */
 		bool mRenderNextFrame;
-		ChatText* mChatText;
+		std::unique_ptr<ChatText> mChatText;
 
 		/**
 		 * @brief Gets the attached chat text instance, or create a new one if needed.
 		 * @return A chat text instance.
 		 */
-		ChatText* getOrCreateChatText();
+		ChatText& getOrCreateChatText();
 	};
 
 	class LabelCreator : public WidgetPool<IngameChatWidget::Label>::WidgetCreator {
@@ -440,6 +437,8 @@ protected:
 	Widget* mWidget;
 
 	std::unordered_map<std::string, std::unique_ptr<EntityObserver>> mEntityObservers;
+
+	std::vector<EntityObserver*> mActiveObservers;
 
 };
 
