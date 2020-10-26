@@ -80,10 +80,6 @@ public:
 
 protected:
 
-	virtual void setChildState(std::unique_ptr<void> childState) {}
-
-	void* getChildState() const { return nullptr; }
-
 	StateBaseCore* getCoreChildState() override { return nullptr; }
 
 	void clearChildState() override {}
