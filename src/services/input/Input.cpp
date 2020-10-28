@@ -46,10 +46,7 @@
 #include <SDL.h>
 #include <SDL_syswm.h>
 
-#ifndef __APPLE__
-#ifndef _WIN32
-#endif
-#endif
+#include <sstream>
 
 namespace Ember {
 
