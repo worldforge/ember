@@ -28,9 +28,8 @@ namespace Ember
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Provides basic time services.
  */
-class TimeHelper
+struct TimeHelper
 {
-public:
 	/**
 	 * @brief Gets the local time of the client machine.
 	 *

@@ -37,9 +37,8 @@ const char* const OOGChat::CMD_JOIN = "join";
 const char* const OOGChat::CMD_PART = "part";
 const char* const OOGChat::CMD_MSG = "msg";
 
-OOGChat::OOGChat(Eris::Account* account) : myLobby(nullptr) {
+OOGChat::OOGChat(Eris::Account* account) : myLobby(std::make_unique<Eris::Lobby>(*account)) {
 	// Set up the lobby object
-	myLobby = std::make_unique<Eris::Lobby>(*account);
 
 	// Specfic to lobby Callbacks setup
 	myLobby->SightPerson.connect(sigc::mem_fun(*this, &OOGChat::sightPerson));
