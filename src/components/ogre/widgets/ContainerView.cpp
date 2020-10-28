@@ -125,7 +125,7 @@ EntityIconSlot* ContainerView::addSlot() {
 
 	auto ptr = mSlots.back().get();
 
-	iconSlot->EventIconDropped.connect([this, ptr](EntityIcon* entityIcon) {
+	ptr->EventIconDropped.connect([this, ptr](EntityIcon* entityIcon) {
 		//If it's an icon that's already in the container, just add it. Otherwise emit a signal and let other code handle it.
 		if (std::find_if(mIcons.begin(), mIcons.end(), [entityIcon](const std::unique_ptr<EntityIcon>& entry) { return entry.get() == entityIcon; }) != mIcons.end()) {
 			auto oldSlot = entityIcon->getSlot();
