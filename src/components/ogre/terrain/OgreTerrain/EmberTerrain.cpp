@@ -91,7 +91,7 @@ Ogre::WorkQueue::Response* EmberTerrain::handleRequest(const Ogre::WorkQueue::Re
 		GeometryUpdateRequest innerRequest = Ogre::any_cast<GeometryUpdateRequest>(req->getData());
 		float* heightData = getHeightData();
 		//Copy height data
-		memcpy(heightData, innerRequest.heightData.get(), sizeof(float) * getSize() * getSize());
+		std::memcpy(heightData, innerRequest.heightData->data(), sizeof(float) * getSize() * getSize());
 		innerRequest.heightData.reset(); //Free up memory as soon as possible
 		return new Ogre::WorkQueue::Response(req, true, Ogre::Any(innerRequest));
 	} else {
