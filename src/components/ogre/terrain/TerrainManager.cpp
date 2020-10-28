@@ -281,7 +281,7 @@ DelayedFoliageInitializer::DelayedFoliageInitializer(std::function<void()> callb
 		mView(view),
 		mIntervalMs(intervalMs),
 		mMaxTimeMs(maxTimeMs),
-		mTimeout(std::make_unique<Eris::TimedEvent>(view.getEventService(), boost::posix_time::milliseconds(intervalMs), [&]() { this->timout_Expired(); })),
+		mTimeout(std::make_unique<Eris::TimedEvent>(view.getEventService(), std::chrono::milliseconds(intervalMs), [&]() { this->timout_Expired(); })),
 		mTotalElapsedTime(0) {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload
@@ -297,7 +297,7 @@ void DelayedFoliageInitializer::timout_Expired() {
 		mCallback();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
-		mTimeout = std::make_unique<Eris::TimedEvent>(mView.getEventService(), boost::posix_time::milliseconds(mIntervalMs), [&]() { this->timout_Expired(); });
+		mTimeout = std::make_unique<Eris::TimedEvent>(mView.getEventService(), std::chrono::milliseconds(mIntervalMs), [&]() { this->timout_Expired(); });
 	}
 }
 

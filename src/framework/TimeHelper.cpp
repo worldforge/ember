@@ -74,7 +74,7 @@ std::string TimeHelper::getLocalTimeStr()
 
 long long TimeHelper::currentTimeMillis()
 {
-	// Determine miliseconds since epoch (1970.01.01) with C++11 chrono.
+	// Determine milliseconds since epoch (1970.01.01) with C++11 chrono.
 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 }

@@ -36,6 +36,7 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/MultiLineListFormatter.h>
+#include <sstream>
 
 namespace Ember {
 

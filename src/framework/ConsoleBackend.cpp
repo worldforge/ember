@@ -28,10 +28,11 @@
 
 #include "ConsoleBackend.h"
 
-#include <utility>
 #include "framework/LoggingInstance.h"
 #include "Tokeniser.h"
 #include "CommandHistory.h"
+#include <memory>
+#include <sstream>
 
 namespace Ember {
 

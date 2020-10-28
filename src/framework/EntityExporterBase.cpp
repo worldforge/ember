@@ -28,6 +28,7 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <algorithm>
+#include <sstream>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;

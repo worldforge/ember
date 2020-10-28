@@ -135,7 +135,7 @@ void EntityMoveManager::delayedUpdatePositionForEntity(std::string entityId) {
 				entity->getAttachment()->updatePosition();
 			}
 		}
-	}, boost::posix_time::seconds(1));
+	}, std::chrono::seconds(1));
 }
 
 

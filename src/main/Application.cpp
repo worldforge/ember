@@ -96,9 +96,6 @@ extern "C"
 sighandler_t oldSignals[NSIG];
 }
 
-using boost::posix_time::microsec_clock;
-using boost::posix_time::ptime;
-
 namespace Ember {
 
 /**
@@ -299,7 +296,7 @@ void Application::mainLoop() {
 
 	do {
 		try {
-			Log::sCurrentFrameStartMilliseconds = microsec_clock::local_time();
+			StreamLogObserver::sCurrentFrameStartMilliseconds = std::chrono::steady_clock::now();
 
 			StackChecker::resetCounter();
 

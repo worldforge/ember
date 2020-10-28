@@ -27,12 +27,8 @@
 #include "Log.h"
 #include "LogObserver.h"
 #include "LoggingInstance.h"
-
-#include <boost/date_time.hpp>
-
-//#include <stdio.h>
-
-
+#include <iostream>
+#include <algorithm>
 
 namespace Ember {
 
@@ -58,10 +54,6 @@ Log::ObserverList Log::sObserverList;
 int Log::sNumberOfExternalObservers = 0;
 
 StdOutLogObserver Log::sStdOutLogObserver;
-
-unsigned long Log::sCurrentFrame = 0;
-boost::posix_time::ptime Log::sCurrentFrameStartMilliseconds = boost::posix_time::microsec_clock::local_time();
-
 
 void Log::log(const char* message, ...) {
 	va_list vl;

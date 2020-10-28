@@ -33,7 +33,7 @@ namespace OgreView {
 namespace Authoring {
 EntityMoveAdjustmentInstance::EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity, Eris::EventService& eventService) :
 		mEntity(entity),
-		mTimeout(eventService, boost::posix_time::milliseconds(1500), [&]() { this->timout_Expired(); }),
+		mTimeout(eventService, std::chrono::milliseconds(1500), [&]() { this->timout_Expired(); }),
 		mMoveAdjuster(moveAdjuster) {
 }
 
@@ -43,7 +43,7 @@ void EntityMoveAdjustmentInstance::timout_Expired() {
 }
 
 EntityMoveAdjuster::EntityMoveAdjuster(EntityMoveManager* manager, Eris::EventService& eventService) :
-		mManager(manager), mEventService(eventService) {
+		mActiveEntity(nullptr), mManager(manager), mEventService(eventService) {
 	mManager->EventStartMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_StartMoving));
 	mManager->EventFinishedMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_FinishedMoving));
 	mManager->EventCancelledMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_CancelledMoving));

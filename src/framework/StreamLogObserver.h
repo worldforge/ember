@@ -19,16 +19,13 @@
 #ifndef STREAMLOGOBSERVER_H
 #define STREAMLOGOBSERVER_H
 
-// Included headers from the current project
 #include "Log.h"
 #include "LogObserver.h"
 
-// Included custom library headers
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-// Included system headers
 #include <iostream>
+#include <chrono>
 
+#include <boost/noncopyable.hpp>
 namespace Ember {
 
 /**
@@ -72,7 +69,7 @@ private:
 	 *
 	 * To be used when in detailed mode.
 	 */
-	boost::posix_time::ptime mStart;
+	std::chrono::steady_clock::time_point mStart;
 
 
 public:
@@ -95,6 +92,21 @@ public:
 	 * @param enabled True if enabled.
 	 */
 	void setDetailed(bool enabled);
+
+
+	/**
+	 * @brief Counter for the current frame.
+	 *
+	 * Used when providing detailed log output. This needs to be set from outside.
+	 */
+	static unsigned long sCurrentFrame;
+
+	/**
+	 * @brief Start time of the current frame.
+	 *
+	 * Used when providing detailed log output. This needs to be set from outside.
+	 */
+	static std::chrono::steady_clock::time_point sCurrentFrameStartMilliseconds;
 
 	//----------------------------------------------------------------------
 	// Disable Assignment operator

@@ -24,8 +24,10 @@
 #include <sstream>
 #include <thread>
 #include <atomic>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace Ember {
+
 
 /**
  * @brief Simple class used for giving a sequential identifier to threads.
@@ -44,11 +46,14 @@ public:
 
 std::atomic<int> ThreadIdentifier::sCounter;
 
+unsigned long StreamLogObserver::sCurrentFrame = 0;
+std::chrono::steady_clock::time_point StreamLogObserver::sCurrentFrameStartMilliseconds = std::chrono::steady_clock::now();
+
 
 StreamLogObserver::StreamLogObserver(std::ostream& out)
 		: myOut(out),
 		  mDetailed(false),
-		  mStart(boost::posix_time::microsec_clock::local_time()) {
+		  mStart(std::chrono::steady_clock::now()) {
 }
 
 
@@ -64,6 +69,8 @@ StreamLogObserver::~StreamLogObserver() {
  */
 void StreamLogObserver::onNewMessage(const std::string& message, const std::string& file, const int& line,
 									 const Log::MessageImportance& importance) {
+
+
 	boost::posix_time::ptime currentTime = boost::posix_time::microsec_clock::local_time();
 
 	myOut.fill('0');
@@ -79,7 +86,9 @@ void StreamLogObserver::onNewMessage(const std::string& message, const std::stri
 		static std::map<std::thread::id, ThreadIdentifier> threadIdentifiers;
 		myOut << "(";
 		myOut.width(8);
-		myOut << ((currentTime - mStart).total_microseconds()) << ":" << threadIdentifiers[std::this_thread::get_id()].id << ":" << Log::sCurrentFrame << ":" << (currentTime - Log::sCurrentFrameStartMilliseconds).total_milliseconds() << ")";
+		auto millisecondsIntoFrame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - sCurrentFrameStartMilliseconds);
+		auto microsecondsSinceStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - mStart);
+		myOut << microsecondsSinceStart.count() << ":" << threadIdentifiers[std::this_thread::get_id()].id << ":" << sCurrentFrame << ":" << millisecondsIntoFrame.count() << ")";
 	}
 	myOut << "] ";
 

@@ -93,7 +93,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 					}
 					mDirtyPluginPaths.clear();
 
-				}, boost::posix_time::seconds(2));
+				}, std::chrono::seconds(2));
 			}
 		}
 	});

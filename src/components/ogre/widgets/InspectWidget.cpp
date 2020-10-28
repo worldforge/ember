@@ -167,7 +167,7 @@ void InspectWidget::runCommand(const std::string& command, const std::string& ar
 				startInspecting(entity);
 			}
 		} else {
-			ConsoleBackend::getSingletonPtr()->pushMessage("You must specifify a valid entity id to inspect.", "error");
+			ConsoleBackend::getSingletonPtr()->pushMessage("You must specify a valid entity id to inspect.", "error");
 		}
 
 	} else {

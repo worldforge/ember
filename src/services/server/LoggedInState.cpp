@@ -184,7 +184,7 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	}
 	teleportsOutputFile.close();
 
-	mTransferEvent = std::make_unique<Eris::TimedEvent>(mAccount.getConnection().getEventService(), boost::posix_time::seconds(0), [=]() {
+	mTransferEvent = std::make_unique<Eris::TimedEvent>(mAccount.getConnection().getEventService(), std::chrono::seconds(0), [=]() {
 		this->transfer(transferInfo);
 	});
 }
