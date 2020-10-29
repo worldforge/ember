@@ -60,6 +60,15 @@ ListHolder::~ListHolder() {
 	resetList();
 }
 
+void ListHolder::addItem(std::unique_ptr<CEGUI::ListboxItem> item) {
+	item->setAutoDeleted(false);
+	if (isItemAllowed(item.get())) {
+		//TODO: the ListBox has horrible performance as the number of items increase. Look into how to fix it.
+		mListbox.addItem(item.get());
+	}
+	mItems.emplace_back(std::move(item));
+
+}
 
 void ListHolder::addItem(CEGUI::ListboxItem* item) {
 	item->setAutoDeleted(false);

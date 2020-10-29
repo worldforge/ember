@@ -26,52 +26,57 @@ namespace OgreView {
 namespace Gui {
 namespace Adapters {
 StringListAdapter::StringListAdapter(Ember::OgreView::Gui::ListHolder& listHolder)
-		: mListHolder(listHolder),
+		: mItemCreator([](const Entry& entry) { return std::make_unique<ColouredListItem>(entry.text); }),
+		  mListHolder(listHolder),
 		  mIndex(0),
 		  mIsPopulating(false) {
 
 	listHolder.EventSelected.connect([&](int index) {
-		if (index >= 0 && index < mEntries.size()) {
+		if (index >= 0 && index < (int) mEntries.size()) {
 			auto& entry = mEntries[index];
-			EventSelected(entry.first);
+			EventSelected(entry.key);
 		}
 	});
 
 }
 
-void StringListAdapter::add(std::string entry) {
-	add(entry, entry);
-}
-
-void StringListAdapter::add(std::string entry, std::string key) {
-	mEntries.emplace_back(std::make_pair(key, entry));
+void StringListAdapter::add(std::string entry, std::string key, CreatorFn creatorFn) {
+	mEntries.emplace_back(Entry{std::move(key), std::move(entry), std::move(creatorFn)});
 	if (!mIsPopulating) {
 		populate();
 	}
 }
 
-void StringListAdapter::add(const std::vector<std::string>& entries) {
-	mEntries.reserve(mEntries.size() + entries.size());
-	for (auto& entry : entries) {
-		add(entry);
+void StringListAdapter::add(Entry entry) {
+	mEntries.emplace_back(std::move(entry));
+	if (!mIsPopulating) {
+		populate();
 	}
 }
 
-void StringListAdapter::add(std::vector<std::pair<std::string, std::string>> entries) {
+
+void StringListAdapter::add(std::vector<Entry> entries) {
 	mEntries.reserve(mEntries.size() + entries.size());
 	for (auto& entry : entries) {
-		add(std::move(entry.second), std::move(entry.first)); //swapped key and name
+		mEntries.emplace_back(std::move(entry));
+	}
+	if (!mIsPopulating) {
+		populate();
 	}
 }
 
 void StringListAdapter::populate() {
 
 	auto& entry = mEntries.at(mIndex);
-	mListHolder.addItem(new ColouredListItem(entry.second, mIndex));
 
-	mIndex += 1;
+	auto item = entry.itemCreator ? entry.itemCreator(entry) : mItemCreator(entry);
+	item->setID(mIndex);
+	mListHolder.addItem(std::move(item));
+
+	mIndex++;
 
 	if (mIndex < mEntries.size()) {
+		mIsPopulating = true;
 		MainLoopController::getSingleton().getEventService().runOnMainThread([&]() {
 			populate();
 		}, mActiveMarker);

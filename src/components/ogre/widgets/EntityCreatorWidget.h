@@ -116,7 +116,10 @@ private:
 
 	void buildWidget();
 
-	void addRulesToList(const Authoring::RulesFetcher::RuleEntry& entry, int level);
+	void addRulesToList(const Authoring::RulesFetcher::RuleEntry& entry,
+						int level,
+						const Adapters::StringListAdapter::CreatorFn& creatorFn,
+						std::vector<Adapters::StringListAdapter::Entry>& entries);
 
 	void showRecipe(const std::shared_ptr<Authoring::EntityRecipe>& recipe);
 

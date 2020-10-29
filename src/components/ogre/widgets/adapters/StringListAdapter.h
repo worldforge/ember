@@ -25,6 +25,8 @@
 
 #include <Eris/ActiveMarker.h>
 #include <sigc++/signal.h>
+#include <CEGUI/widgets/ListboxItem.h>
+#include <functional>
 
 
 namespace Ember {
@@ -37,25 +39,39 @@ class ListHolder;
 namespace Adapters {
 class StringListAdapter {
 public:
+	struct Entry;
+	/**
+	 * List item creator function. A default one is provided, but a different one can be set.
+	 */
+	typedef std::function<std::unique_ptr<CEGUI::ListboxItem>(const Entry& entry)> CreatorFn;
+	struct Entry {
+		std::string key;
+		std::string text;
+		/**
+		 * A custom item creator function for this entry. This is optional; if none is set the default of the instance is used instead.
+		 */
+		CreatorFn itemCreator = nullptr;
+	};
+
 	explicit StringListAdapter(ListHolder& listHolder);
 
 	~StringListAdapter() = default;
 
-	void add(std::string entry);
+	void add(Entry entry);
 
-	void add(std::string entry, std::string key);
+	void add(std::string key, std::string entry, CreatorFn creatorFn = nullptr);
 
-	void add(const std::vector<std::string>& entries);
-
-	void add(std::vector<std::pair<std::string, std::string>> entries);
+	void add(std::vector<Entry> entries);
 
 	sigc::signal<void, std::string> EventSelected;
+
+	CreatorFn mItemCreator;
 
 private:
 
 	ListHolder& mListHolder;
 
-	std::vector<std::pair<std::string, std::string>> mEntries;
+	std::vector<Entry> mEntries;
 
 	unsigned int mIndex;
 	bool mIsPopulating;

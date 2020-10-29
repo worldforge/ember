@@ -26,11 +26,12 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "Widget.h"
 
-namespace CEGUI
-{
-	class ListboxItem;
-	class Listbox;
-	class Editbox;
+namespace CEGUI {
+class ListboxItem;
+
+class Listbox;
+
+class Editbox;
 }
 
 namespace Ember {
@@ -44,7 +45,7 @@ This is done by calling the facade methods of this class instead of directly cal
 
 @author Erik Ogenvik
 */
-class ListHolder{
+class ListHolder {
 public:
 
 	/**
@@ -54,31 +55,35 @@ public:
      */
 	explicit ListHolder(CEGUI::Listbox& listbox, CEGUI::Editbox* filterEditbox = nullptr);
 
-    virtual ~ListHolder();
-    
-    
+	virtual ~ListHolder();
+
+	void addItem(std::unique_ptr<CEGUI::ListboxItem> item);
+
 	/**
 	 *    Facade for CEGUI::Listbox::addItem(...)
-	 * @param item 
+	 * @param item
 	 */
 	void addItem(CEGUI::ListboxItem* item);
+
 	/**
 	 *    Facade for CEGUI::Listbox::insertItem(...)
 	 *    Not implemented yet. Calling this will throw an exception.
 	 * @param item 
 	 */
 	void insertItem(CEGUI::ListboxItem* item, const CEGUI::ListboxItem* position);
+
 	/**
 	 *    Facade for CEGUI::Listbox::removeItem(...)
 	 * @param item 
 	 */
 	void removeItem(const CEGUI::ListboxItem* item);
+
 	/**
 	 *    Filters and updates the items in the listbox. This will normally be called automatically.
 	 * @param item 
 	 */
 	void updateItems();
-	
+
 	/**
 	 *    Facade for CEGUI::Listbox::resetList(...)
 	 * @param item 
@@ -90,6 +95,7 @@ public:
 	CEGUI::Listbox& getListbox() {
 		return mListbox;
 	}
+
 protected:
 
 	/**
@@ -105,7 +111,7 @@ protected:
 	The editbox which contains the filter.
 	*/
 	CEGUI::Editbox* mFilterEditbox;
-	
+
 	/**
 	 *    Checks whether an item is allowed to be shown in the Listbox.
 	 * @param item 

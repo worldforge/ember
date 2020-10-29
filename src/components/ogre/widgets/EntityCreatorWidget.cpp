@@ -110,6 +110,7 @@ EntityCreatorWidget::EntityCreatorWidget(GUIManager& guiManager, World& world) :
 			mUnboundType = nullptr;
 		}
 	});
+
 }
 
 EntityCreatorWidget::~EntityCreatorWidget() {
@@ -356,32 +357,67 @@ void EntityCreatorWidget::buildWidget() {
 			}
 		});
 
-		std::vector<std::pair<std::string, std::string>> entries;
+		std::vector<Adapters::StringListAdapter::Entry> entries;
 		auto& recipes = Authoring::EntityRecipeManager::getSingleton().getEntries();
-		entries.reserve(recipes.size());
-		entries.emplace_back(std::make_pair("", "Recipes:"));
+		entries.reserve(recipes.size() + 2);
+		entries.emplace_back(Adapters::StringListAdapter::Entry{"", "Recipes:"});
 
 		for (auto& entry: recipes) {
-			entries.emplace_back(std::make_pair("recipe:" + entry.first, " " + entry.first));
+			entries.emplace_back(Adapters::StringListAdapter::Entry{"recipe:" + entry.first, " " + entry.first});
 		}
-		entries.emplace_back(std::make_pair("", "Types:"));
+		mListAdapter->add(std::move(entries));
 
 		mRulesFetcher.EventAllRulesReceived.connect([this] {
-			mRules = mRulesFetcher.getRules();
+			std::vector<Adapters::StringListAdapter::Entry> typeEntries;
+			mRules.insert(mRulesFetcher.getRules().begin(), mRulesFetcher.getRules().end());
+			typeEntries.emplace_back(Adapters::StringListAdapter::Entry{"", "Types:"});
 			auto I = mRules.find("game_entity");
 			if (I != mRules.end()) {
 				for (auto& child: I->second.children) {
 					auto childI = mRules.find(child);
 					if (childI != mRules.end()) {
-						addRulesToList(childI->second, 1);
+						addRulesToList(childI->second,
+									   1,
+									   [](const Adapters::StringListAdapter::Entry& entry) {
+										   auto item = std::make_unique<ColouredListItem>(entry.text);
+										   //Dark green
+										   item->setTextColours(CEGUI::Colour(0.07, 0.38, 0.12));
+										   item->setTooltipText("A type.");
+										   return item;
+									   },
+									   typeEntries
+						);
 					}
 				}
 			}
+
+			typeEntries.emplace_back(Adapters::StringListAdapter::Entry{"", "Archetypes:"});
+			I = mRules.find("archetype");
+			if (I != mRules.end()) {
+				for (auto& child: I->second.children) {
+					auto childI = mRules.find(child);
+					if (childI != mRules.end()) {
+						addRulesToList(childI->second,
+									   1,
+									   [](const Adapters::StringListAdapter::Entry& entry) {
+										   auto item = std::make_unique<ColouredListItem>(entry.text);
+										   //Dark red
+										   item->setTextColours(CEGUI::Colour(0.32, 0.117, 0.06));
+										   item->setTooltipText("An archetype.");
+										   return item;
+									   },
+									   typeEntries
+						);
+					}
+				}
+			}
+
+			mListAdapter->add(std::move(typeEntries));
+
 		});
-		mRulesFetcher.startFetching("game_entity");
+		mRulesFetcher.startFetching("root_entity");
 
 
-		mListAdapter->add(std::move(entries));
 	}
 }
 
@@ -405,15 +441,18 @@ void EntityCreatorWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity
 	}
 }
 
-void EntityCreatorWidget::addRulesToList(const Authoring::RulesFetcher::RuleEntry& entry, int level) {
+void EntityCreatorWidget::addRulesToList(const Authoring::RulesFetcher::RuleEntry& entry,
+										 int level,
+										 const Adapters::StringListAdapter::CreatorFn& creatorFn,
+										 std::vector<Adapters::StringListAdapter::Entry>& entries) {
 
 	auto& rule = entry.rule;
-	mListAdapter->add(std::string(level, ' ') + rule->getId(), "rule:" + rule->getId());
+	entries.emplace_back(Adapters::StringListAdapter::Entry{"rule:" + rule->getId(), std::string(level, ' ') + rule->getId(), creatorFn});
 
 	for (auto& child : entry.children) {
 		auto I = mRules.find(child);
 		if (I != mRules.end()) {
-			addRulesToList(I->second, level + 1);
+			addRulesToList(I->second, level + 1, creatorFn, entries);
 		}
 	}
 }
