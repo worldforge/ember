@@ -591,7 +591,7 @@ std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> EntityCreatorWidget::attachTo
 		if (guiAdapter.mType == "string") {
 			adapter->updateGui(Atlas::Message::Element(guiAdapter.mDefaultValue));
 		} else if (guiAdapter.mType == "number" || guiAdapter.mType == "number_range") {
-			adapter->updateGui(Atlas::Message::Element(atof(guiAdapter.mDefaultValue.c_str())));
+			adapter->updateGui(Atlas::Message::Element(std::stod(guiAdapter.mDefaultValue)));
 		}
 	}
 	return adapter;
