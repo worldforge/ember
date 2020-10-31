@@ -25,23 +25,18 @@
 #include <condition_variable>
 #include <thread>
 
-namespace Ogre
-{
+namespace Ogre {
 class TerrainGroup;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 /**
  * @brief Updates Ogre terrain rendering data based on Mercator-provided data.
  */
-class OgreTerrainPageBridge : public Ember::OgreView::Terrain::ITerrainPageBridge
-{
+class OgreTerrainPageBridge : public Ember::OgreView::Terrain::ITerrainPageBridge {
 public:
 	typedef std::pair<long, long> IndexType;
 

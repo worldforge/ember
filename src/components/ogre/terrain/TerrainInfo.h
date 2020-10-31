@@ -28,8 +28,7 @@
 #include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
-namespace Mercator
-{
+namespace Mercator {
 class BasePoint;
 }
 
@@ -41,8 +40,7 @@ namespace Terrain {
 	@author Erik Ogenvik <erik@ogenvik.org>
 	Class holding information about the terrain.
 */
-class TerrainInfo
-{
+class TerrainInfo {
 public:
 
 	/**
@@ -50,12 +48,19 @@ public:
 	 * @param pageIndicesSize The size of one page in indices.
 	 */
 	explicit TerrainInfo(int pageIndicesSize);
+
 	double getWorldSizeX() const;
+
 	double getWorldSizeY() const;
-	int getTotalNumberOfPagesX()  const;
+
+	int getTotalNumberOfPagesX() const;
+
 	int getTotalNumberOfPagesY() const;
+
 	int getPageOffsetX() const;
+
 	int getPageOffsetY() const;
+
 	void setPageIndicesSize(int size);
 
 /*	void setNewXMax(int xMax);
@@ -64,8 +69,11 @@ public:
 	void setNewYMin(int yMin);*/
 
 	void setBasePoint(const WFMath::Point<2>& position, const Mercator::BasePoint& basepoint);
+
 	const WFMath::AxisBox<2>& getWorldSizeInIndices() const;
+
 	const WFMath::AxisBox<2>& getWorldSizeInSegments() const;
+
 	const WFMath::AxisBox<2>& getWorldSizeInPages() const;
 
 private:

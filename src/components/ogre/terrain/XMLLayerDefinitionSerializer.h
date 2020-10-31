@@ -33,15 +33,15 @@ namespace OgreView {
 namespace Terrain {
 
 class TerrainLayerDefinitionManager;
+
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class XMLLayerDefinitionSerializer
-{
+class XMLLayerDefinitionSerializer {
 public:
-    XMLLayerDefinitionSerializer();
+	XMLLayerDefinitionSerializer();
 
-    ~XMLLayerDefinitionSerializer();
+	~XMLLayerDefinitionSerializer();
 
 	std::vector<TerrainLayerDefinition> parseScript(Ogre::DataStreamPtr& stream);
 

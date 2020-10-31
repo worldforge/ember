@@ -101,21 +101,18 @@ private:
 	std::unique_ptr<TerrainPageGeometry> mGeometry;
 	const std::vector<const TerrainShader*> mShaders;
 	const WFMath::AxisBox<2> mArea;
-	const WFMath::Vector<3> mMainLightDirection;
 
 public:
 	TerrainPageReloadTask(TerrainHandler& handler,
 						  ITerrainPageBridgePtr bridge,
 						  std::unique_ptr<TerrainPageGeometry> geometry,
 						  std::vector<const TerrainShader*> shaders,
-						  const WFMath::AxisBox<2>& area,
-						  const WFMath::Vector<3>& mainLightDirection) :
+						  const WFMath::AxisBox<2>& area) :
 			mHandler(handler),
 			mBridge(std::move(bridge)),
 			mGeometry(std::move(geometry)),
 			mShaders(std::move(shaders)),
-			mArea(area),
-			mMainLightDirection(mainLightDirection) {
+			mArea(area) {
 	}
 
 	~TerrainPageReloadTask() override = default;
@@ -133,8 +130,7 @@ public:
 																	  mShaders,
 																	  areas,
 																	  mHandler.EventLayerUpdated,
-																	  mHandler.EventTerrainMaterialRecompiled,
-																	  mMainLightDirection));
+																	  mHandler.EventTerrainMaterialRecompiled));
 	}
 
 	bool executeTaskInMainThread() override {
@@ -161,7 +157,6 @@ TerrainHandler::TerrainHandler(int pageIndexSize,
 		mTaskQueue(std::make_unique<Tasks::TaskQueue>(1, eventService)),
 		mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()),
 		mHasTerrainInfo(false),
-		mLightning(nullptr),
 		mTerrainEntity(nullptr),
 		mAreaCounter(0),
 		mModCounter(0) {
@@ -299,11 +294,7 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 	auto yIndex = static_cast<int>(std::floor(wfPos.y() / mTerrain->getResolution()));
 	SegmentRefPtr segmentRef = mSegmentManager->getSegmentReference(xIndex, yIndex);
 	if (segmentRef) {
-		Ogre::ColourValue defaultShadowColour;
-		if (mLightning) {
-			defaultShadowColour = mLightning->getAmbientLightColour();
-		}
-		mTaskQueue->enqueueTask(std::make_unique<PlantQueryTask>(segmentRef, populator, query, defaultShadowColour, std::move(asyncCallback)));
+		mTaskQueue->enqueueTask(std::make_unique<PlantQueryTask>(segmentRef, populator, query, std::move(asyncCallback)));
 
 	}
 }
@@ -336,8 +327,7 @@ void TerrainHandler::updateShaders() {
 																			  entry.first,
 																			  entry.second.Areas,
 																			  EventLayerUpdated,
-																			  EventTerrainMaterialRecompiled,
-																			  mLightning->getMainLightDirection())
+																			  EventTerrainMaterialRecompiled)
 			);
 		}
 		mShadersToUpdate.clear();
@@ -356,7 +346,12 @@ void TerrainHandler::updateAllPages() {
 
 	//Update all shaders on all pages
 	for (auto& entry : mShaderMap) {
-		mTaskQueue->enqueueTask(std::make_unique<TerrainShaderUpdateTask>(geometry, entry.second.get(), areas, EventLayerUpdated, EventTerrainMaterialRecompiled, mLightning->getMainLightDirection()), 0);
+		mTaskQueue->enqueueTask(std::make_unique<TerrainShaderUpdateTask>(geometry,
+																		  entry.second.get(),
+																		  areas,
+																		  EventLayerUpdated,
+																		  EventTerrainMaterialRecompiled),
+								0);
 	}
 }
 
@@ -409,11 +404,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 
 				S_LOG_VERBOSE("Adding terrain page to TerrainHandler: [" << index.first << "|" << index.second << "]");
 
-				WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, -1, 0);
-				if (mLightning) {
-					sunDirection = mLightning->getMainLightDirection();
-				}
-				if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageCreationTask>(*this, page.get(), bridge, *mHeightMapBufferProvider, *mHeightMap, sunDirection))) {
+				if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageCreationTask>(*this, page.get(), bridge, *mHeightMapBufferProvider, *mHeightMap))) {
 					//We need to alert the bridge since it's holding up a thread waiting for this call.
 					bridge->terrainPageReady();
 				}
@@ -430,7 +421,11 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 				shaders.push_back(entry.second.get());
 			}
 
-			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this, bridge, std::move(geometryInstance), std::move(shaders), page->getWorldExtent(), mLightning->getMainLightDirection()))) {
+			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this,
+																				 bridge,
+																				 std::move(geometryInstance),
+																				 std::move(shaders),
+																				 page->getWorldExtent()))) {
 				//We need to alert the bridge since it's holding up a thread waiting for this call.
 				bridge->terrainPageReady();
 			}
@@ -459,10 +454,6 @@ void TerrainHandler::blitHeights(int xMin, int xMax, int yMin, int yMax, std::ve
 	mHeightMap->blitHeights(xMin, xMax, yMin, yMax, heights);
 }
 
-
-void TerrainHandler::setLightning(ILightning* lightning) {
-	mLightning = lightning;
-}
 
 float TerrainHandler::getDefaultHeight() const {
 	return -12.f;
@@ -510,7 +501,12 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 			for (auto& entry : mShaderMap) {
 				shaders.push_back(entry.second.get());
 			}
-			mTaskQueue->enqueueTask(std::make_unique<GeometryUpdateTask>(geometryToUpdate, areas, *this, std::move(shaders), *mHeightMapBufferProvider, *mHeightMap, mLightning->getMainLightDirection()));
+			mTaskQueue->enqueueTask(std::make_unique<GeometryUpdateTask>(geometryToUpdate,
+																		 areas,
+																		 *this,
+																		 std::move(shaders),
+																		 *mHeightMapBufferProvider,
+																		 *mHeightMap));
 		}
 	}
 }

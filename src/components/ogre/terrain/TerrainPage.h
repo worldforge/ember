@@ -32,27 +32,28 @@
 #include <vector>
 #include <cmath>
 
-namespace WFMath
-{
-template<int> class Vector;
+namespace WFMath {
+template<int>
+class Vector;
 }
 
-namespace Mercator
-{
+namespace Mercator {
 class Segment;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 class TerrainShader;
+
 class TerrainPageSurface;
+
 class TerrainPage;
+
 class TerrainPageSurfaceLayer;
+
 class TerrainPageGeometry;
+
 struct ICompilerTechniqueProvider;
 
 /**
@@ -68,8 +69,7 @@ struct ICompilerTechniqueProvider;
 
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class TerrainPage
-{
+class TerrainPage {
 public:
 
 	/**
@@ -191,8 +191,7 @@ private:
 	unsigned int getBlendMapScale() const;
 };
 
-inline int TerrainPage::getBlendMapSize() const
-{
+inline int TerrainPage::getBlendMapSize() const {
 	//While the page size calculates the size in number of vertices, the blend map should use pixel size, which is one less.
 	return (getPageSize() - 1);
 }

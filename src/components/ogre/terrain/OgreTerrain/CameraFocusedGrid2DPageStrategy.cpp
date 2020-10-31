@@ -26,22 +26,17 @@
 
 using namespace Ogre;
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 CameraFocusedGrid2DPageStrategy::CameraFocusedGrid2DPageStrategy(Ogre::PageManager* manager)
-: Ogre::Grid2DPageStrategy(manager)
-{
+		: Ogre::Grid2DPageStrategy(manager) {
 }
 
 CameraFocusedGrid2DPageStrategy::~CameraFocusedGrid2DPageStrategy() = default;
 
-void CameraFocusedGrid2DPageStrategy::notifyCamera(Camera* cam, PagedWorldSection* section)
-{
+void CameraFocusedGrid2DPageStrategy::notifyCamera(Camera* cam, PagedWorldSection* section) {
 	auto* stratData = dynamic_cast<Grid2DPageStrategyData*>(section->getStrategyData());
 
 	const Vector3& pos = cam->getDerivedPosition();
@@ -55,10 +50,10 @@ void CameraFocusedGrid2DPageStrategy::notifyCamera(Camera* cam, PagedWorldSectio
 	Real loadRadius = stratData->getLoadRadiusInCells();
 	Real holdRadius = stratData->getHoldRadiusInCells();
 	// scan the whole Hold range
-	Real fxmin = (Real)x - holdRadius;
-	Real fxmax = (Real)x + holdRadius;
-	Real fymin = (Real)y - holdRadius;
-	Real fymax = (Real)y + holdRadius;
+	Real fxmin = (Real) x - holdRadius;
+	Real fxmax = (Real) x + holdRadius;
+	Real fymin = (Real) y - holdRadius;
+	Real fymax = (Real) y + holdRadius;
 
 	int32 xmin = stratData->getCellRangeMinX();
 	int32 xmax = stratData->getCellRangeMaxX();
@@ -66,33 +61,28 @@ void CameraFocusedGrid2DPageStrategy::notifyCamera(Camera* cam, PagedWorldSectio
 	int32 ymax = stratData->getCellRangeMaxY();
 
 	// Round UP max, round DOWN min
-	xmin = fxmin < xmin ? xmin : (int32)floor(fxmin);
-	xmax = fxmax > xmax ? xmax : (int32)ceil(fxmax);
-	ymin = fymin < ymin ? ymin : (int32)floor(fymin);
-	ymax = fymax > ymax ? ymax : (int32)ceil(fymax);
+	xmin = fxmin < xmin ? xmin : (int32) floor(fxmin);
+	xmax = fxmax > xmax ? xmax : (int32) ceil(fxmax);
+	ymin = fymin < ymin ? ymin : (int32) floor(fymin);
+	ymax = fymax > ymax ? ymax : (int32) ceil(fymax);
 	// the inner, active load range
-	fxmin = (Real)x - loadRadius;
-	fxmax = (Real)x + loadRadius;
-	fymin = (Real)y - loadRadius;
-	fymax = (Real)y + loadRadius;
+	fxmin = (Real) x - loadRadius;
+	fxmax = (Real) x + loadRadius;
+	fymin = (Real) y - loadRadius;
+	fymax = (Real) y + loadRadius;
 	// Round UP max, round DOWN min
-	int32 loadxmin = fxmin < xmin ? xmin : (int32)floor(fxmin);
-	int32 loadxmax = fxmax > xmax ? xmax : (int32)ceil(fxmax);
-	int32 loadymin = fymin < ymin ? ymin : (int32)floor(fymin);
-	int32 loadymax = fymax > ymax ? ymax : (int32)ceil(fymax);
+	int32 loadxmin = fxmin < xmin ? xmin : (int32) floor(fxmin);
+	int32 loadxmax = fxmax > xmax ? xmax : (int32) ceil(fxmax);
+	int32 loadymin = fymin < ymin ? ymin : (int32) floor(fymin);
+	int32 loadymax = fymax > ymax ? ymax : (int32) ceil(fymax);
 
-	for (int32 cy = ymin; cy <= ymax; ++cy)
-	{
-		for (int32 cx = xmin; cx <= xmax; ++cx)
-		{
+	for (int32 cy = ymin; cy <= ymax; ++cy) {
+		for (int32 cx = xmin; cx <= xmax; ++cx) {
 			PageID pageID = stratData->calculatePageID(cx, cy);
-			if (cx >= loadxmin && cx <= loadxmax && cy >= loadymin && cy <= loadymax)
-			{
+			if (cx >= loadxmin && cx <= loadxmax && cy >= loadymin && cy <= loadymax) {
 				// in the 'load' range, request it
 				section->loadPage(pageID);
-			}
-			else
-			{
+			} else {
 				// in the outer 'hold' range, keep it but don't actively load
 				section->holdPage(pageID);
 			}
@@ -101,12 +91,9 @@ void CameraFocusedGrid2DPageStrategy::notifyCamera(Camera* cam, PagedWorldSectio
 	}
 
 
-
-
 }
 
-void CameraFocusedGrid2DPageStrategy::loadNearestPages(const Vector2& gridpos, PagedWorldSection* section)
-{
+void CameraFocusedGrid2DPageStrategy::loadNearestPages(const Vector2& gridpos, PagedWorldSection* section) {
 	//Get all pages that are within 100 meters and load them instantly.
 	std::set<Ogre::PageID> pagesToLoad;
 

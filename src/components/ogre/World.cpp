@@ -116,7 +116,6 @@ World::World(Eris::View& view,
 
 	mScene->addRenderingTechnique("forest", std::make_unique<ForestRenderingTechnique>(*mEnvironment->getForest()));
 	mScene->addRenderingTechnique("projectile", std::make_unique<ProjectileRenderingTechnique>(mScene->getSceneManager()));
-	mTerrainManager->getHandler().setLightning(mEnvironment.get());
 
 	//set the background colour to black
 	mViewport->setBackgroundColour(Ogre::ColourValue(0, 0, 0));

@@ -23,18 +23,15 @@
 #include <memory>
 #include <unordered_map>
 
-namespace WFMath
-{
-	template<int> class Vector;
+namespace WFMath {
+template<int>
+class Vector;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 struct IHeightMapSegment;
 
@@ -44,25 +41,24 @@ struct IHeightMapSegment;
  * This class is safe for threading, in contrast to the Mercator::Terrain class which primarily provides height map features.
  * The whole reason for this class existing is basically Mercator not being thread safe. We want to be able to update the Mercator terrain in a background thread, but at the same time be able to provide real time height checking functionality for other subsystems in Ember which are running in the main thread.
  */
-class HeightMap
-{
+class HeightMap {
 public:
 
-    /**
-     * @brief STL map to store sparse array of Segment pointers.
-     */
-    typedef std::unordered_map<int, std::shared_ptr<IHeightMapSegment>> Segmentcolumn;
+	/**
+	 * @brief STL map to store sparse array of Segment pointers.
+	 */
+	typedef std::unordered_map<int, std::shared_ptr<IHeightMapSegment>> Segmentcolumn;
 
-    /**
-     * @brief STL map to store sparse array of Segment pointer columns.
-     */
-    typedef std::unordered_map<int, Segmentcolumn > Segmentstore;
+	/**
+	 * @brief STL map to store sparse array of Segment pointer columns.
+	 */
+	typedef std::unordered_map<int, Segmentcolumn> Segmentstore;
 
-    /**
-     * @Ctor.
-     * @param defaultLevel The default level of the terrain, if no valid segment can be found for a requested location.
-     * @param segmentResolution The resolution of one segment, in world units.
-     */
+	/**
+	 * @Ctor.
+	 * @param defaultLevel The default level of the terrain, if no valid segment can be found for a requested location.
+	 * @param segmentResolution The resolution of one segment, in world units.
+	 */
 	explicit HeightMap(float defaultLevel, int segmentResolution = 64);
 
 	/**
@@ -96,35 +92,35 @@ public:
 	 * @param y The y location, in world units.
 	 * @returns The height at the location.
 	 */
-    float getHeight(float x, float y) const;
+	float getHeight(float x, float y) const;
 
-    /**
-     * @brief Gets the height and normal at the location.
-     * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
+	/**
+	 * @brief Gets the height and normal at the location.
+	 * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
 	 * @param x The x location, in world units.
 	 * @param y The y location, in world units.
 	 * @param height The height will be stored here.
 	 * @param normal The normal will be stored here.
 	 * @returns True if a segment was found.
-     */
-    bool getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const;
+	 */
+	bool getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const;
 
-    /**
-     * @brief Performs a fast copy of the raw height data for the supplied area.
-     * @param xMin Minimum x coord of the area.
-     * @param xMax Maximum x coord of the area.
-     * @param yMin Minimum y coord of the area.
-     * @param yMax Maximum y coord of the area.
-     * @param heights A vector into which heigh data will be placed. This should preferably already have a capacity reserved.
-     */
-    void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
+	/**
+	 * @brief Performs a fast copy of the raw height data for the supplied area.
+	 * @param xMin Minimum x coord of the area.
+	 * @param xMax Maximum x coord of the area.
+	 * @param yMin Minimum y coord of the area.
+	 * @param yMax Maximum y coord of the area.
+	 * @param heights A vector into which heigh data will be placed. This should preferably already have a capacity reserved.
+	 */
+	void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
 
 
 private:
 
-    /**
-     * @brief A sparse map of height map segments.
-     */
+	/**
+	 * @brief A sparse map of height map segments.
+	 */
 	Segmentstore mSegments;
 
 	/**

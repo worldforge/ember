@@ -21,12 +21,9 @@
 
 #include <OgreGrid2DPageStrategy.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 /**
  * @brief Loads pages near the camera first.
@@ -35,25 +32,24 @@ namespace Terrain
  * with the only difference being that pages that are close to the camera are loaded
  * first (which is what you would want in most cases).
  */
-class CameraFocusedGrid2DPageStrategy : public Ogre::Grid2DPageStrategy
-{
+class CameraFocusedGrid2DPageStrategy : public Ogre::Grid2DPageStrategy {
 public:
 	explicit CameraFocusedGrid2DPageStrategy(Ogre::PageManager* manager);
 
 	~CameraFocusedGrid2DPageStrategy() override;
 
-    void notifyCamera(Ogre::Camera* cam, Ogre::PagedWorldSection* section) override;
+	void notifyCamera(Ogre::Camera* cam, Ogre::PagedWorldSection* section) override;
 
 protected:
 
-    /**
-     * @brief Loads the pages nearest to the camera.
-     *
-     * This is done by sampling the pages at the position of the camera as well as in 100 meters out.
-     * @param gridpos The grid position of the camera.
-     * @param section
-     */
-    void loadNearestPages(const Ogre::Vector2& gridpos, Ogre::PagedWorldSection* section);
+	/**
+	 * @brief Loads the pages nearest to the camera.
+	 *
+	 * This is done by sampling the pages at the position of the camera as well as in 100 meters out.
+	 * @param gridpos The grid position of the camera.
+	 * @param section
+	 */
+	void loadNearestPages(const Ogre::Vector2& gridpos, Ogre::PagedWorldSection* section);
 
 
 };

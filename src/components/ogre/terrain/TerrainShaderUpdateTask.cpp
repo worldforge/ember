@@ -37,13 +37,11 @@ TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
 												 const TerrainShader* shader,
 												 AreaStore areas,
 												 sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
-												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
-												 const WFMath::Vector<3>& lightDirection) :
+												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled) :
 		mGeometry(std::move(geometry)),
 		mAreas(std::move(areas)),
 		mSignal(signal),
-		mSignalMaterialRecompiled(signalMaterialRecompiled),
-		mLightDirection(lightDirection) {
+		mSignalMaterialRecompiled(signalMaterialRecompiled) {
 	mShaders.push_back(shader);
 }
 
@@ -51,14 +49,12 @@ TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
 												 std::vector<const TerrainShader*> shaders,
 												 AreaStore areas,
 												 sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
-												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
-												 const WFMath::Vector<3>& lightDirection) :
+												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled) :
 		mGeometry(std::move(geometry)),
 		mShaders(std::move(shaders)),
 		mAreas(std::move(areas)),
 		mSignal(signal),
-		mSignalMaterialRecompiled(signalMaterialRecompiled),
-		mLightDirection(lightDirection) {
+		mSignalMaterialRecompiled(signalMaterialRecompiled) {
 }
 
 TerrainShaderUpdateTask::~TerrainShaderUpdateTask() = default;
@@ -83,7 +79,7 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 		}
 	}
 
-	context.executeTask(std::make_unique<TerrainMaterialCompilationTask>(updatedPages, mSignalMaterialRecompiled, mLightDirection));
+	context.executeTask(std::make_unique<TerrainMaterialCompilationTask>(updatedPages, mSignalMaterialRecompiled));
 	//Release Segment references as soon as we can
 	mGeometry.clear();
 }

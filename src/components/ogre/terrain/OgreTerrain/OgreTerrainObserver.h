@@ -28,19 +28,15 @@
 #include <memory>
 
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 /**
  * @brief An ITerrainObserver implementation which can be used to observe the Ogre Terrain component.
  * Instances are managed by OgreTerrainAdapter.
  */
-class OgreTerrainObserver: public Ember::OgreView::Terrain::ITerrainObserver
-{
+class OgreTerrainObserver : public Ember::OgreView::Terrain::ITerrainObserver {
 public:
 	/**
 	 * @brief Usually you should call OgreTerrainAdapter::createObserver to create an instance of this observer.

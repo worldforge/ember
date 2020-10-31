@@ -22,20 +22,19 @@
 #include "Types.h"
 
 #include <Atlas/Message/Element.h>
-namespace WFMath
-{
-template<int> class Point;
+
+namespace WFMath {
+template<int>
+class Point;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainManager;
+
 struct TerrainDefPoint;
 
 /**
@@ -45,8 +44,7 @@ struct TerrainDefPoint;
  @author Erik Ogenvik <erik@worldforge.org>
 
  */
-struct TerrainParser
-{
+struct TerrainParser {
 
 	/**
 	 * @brief Extracts terrain updates from the element and updates the terrain.

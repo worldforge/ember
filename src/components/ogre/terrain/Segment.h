@@ -22,26 +22,21 @@
 #include <string>
 #include <functional>
 
-namespace Mercator
-{
+namespace Mercator {
 class Segment;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Represents a Mercator::Segment instance.
  * An instance of this wraps around a Mercator::Segment instance. It's main purpose is to provide an abstraction over the underlying Mercator::Segment instance, so that it easier can be handled by the SegmentManager.
  */
-class Segment
-{
+class Segment {
 public:
 
 	/**

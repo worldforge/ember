@@ -21,23 +21,20 @@
 
 #include "IHeightMapSegment.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  * @brief Represents one segment (mapped to a Mercator::Segment) in the height map which is completely flat.
  * To save space we only need one single height, and don't need to allocate memory for a height map buffer.
  */
-class HeightMapFlatSegment : public IHeightMapSegment
-{
+class HeightMapFlatSegment : public IHeightMapSegment {
 public:
 	explicit HeightMapFlatSegment(float height);
+
 	~HeightMapFlatSegment() override;
 
 	/**
@@ -50,14 +47,14 @@ public:
 	 */
 	float getHeight(int x, int y) const override;
 
-    /**
-     * @brief Gets the height and normal at the location.
-     * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
+	/**
+	 * @brief Gets the height and normal at the location.
+	 * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
 	 * @param x The x location, in world units.
 	 * @param y The y location, in world units.
 	 * @param height The height will be stored here.
 	 * @param normal The normal will be stored here.
-     */
+	 */
 	void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const override;
 
 

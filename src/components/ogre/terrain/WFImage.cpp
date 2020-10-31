@@ -20,29 +20,23 @@
 #include "WFImage.h"
 #include "OgreImage.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 WFImage::WFImage(std::unique_ptr<Image::ImageBuffer> buffer) :
-	Image(std::move(buffer))
-{
+		Image(std::move(buffer)) {
 
 }
 
 
-void WFImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset)
-{
+void WFImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset) {
 
 }
 
 
-void WFImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset)
-{
+void WFImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset) {
 
 }
 }

@@ -27,9 +27,8 @@
 #include <Eris/Entity.h>
 #include <wfmath/polygon.h>
 
-namespace Mercator
-{
-    class Area;
+namespace Mercator {
+class Area;
 }
 
 namespace Ember {
@@ -46,8 +45,7 @@ The areas are always attached to an entity, and when the entity moves the area m
 This class acts like a wrapper and controller, binding an instance of EmberEntity and Mercator::Area together. The actual application of the area to the terrain is handled by TerrainHandler, but the logic for parsing the terrain area data from Atlas is contained in this class.
 @author Erik Ogenvik
 */
-class TerrainArea : public virtual sigc::trackable
-{
+class TerrainArea : public virtual sigc::trackable {
 public:
 
 	/**

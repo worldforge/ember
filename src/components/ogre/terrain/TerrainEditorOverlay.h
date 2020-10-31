@@ -30,36 +30,36 @@
 #include <sigc++/trackable.h>
 #include <components/ogre/BulletCollisionDetector.h>
 
-namespace Mercator
-{
+namespace Mercator {
 class Terrain;
+
 class BasePoint;
 }
 
-namespace Ember
-{
+namespace Ember {
 class EmberEntity;
-namespace OgreView
-{
-namespace Camera
-{
+namespace OgreView {
+namespace Camera {
 class MainCamera;
 }
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainEditor;
+
 class TerrainManager;
+
 class BasePointUserObject;
+
 struct TerrainEditBasePointMovement;
+
 class TerrainEditorOverlay;
+
 class TerrainPage;
 
 /**
  * @brief Allows the user to pick base points.
  */
-class BasePointPickListener: public IWorldPickListener
-{
+class BasePointPickListener : public IWorldPickListener {
 public:
 	explicit BasePointPickListener(TerrainEditorOverlay& overlay);
 
@@ -76,8 +76,7 @@ private:
 	BasePointUserObject* mPickedUserObject;
 };
 
-class BasePointUserObject
-{
+class BasePointUserObject {
 public:
 	BasePointUserObject(TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint,
 						Ogre::SceneNode* basePointMarkerNode, BulletWorld& bulletWorld);
@@ -209,8 +208,7 @@ private:
 /**
  A single editing action. This can affect one or many base points, and can be reversed (uncommitted).
  */
-struct TerrainEditAction
-{
+struct TerrainEditAction {
 public:
 
 	typedef std::vector<TerrainEditBasePointMovement> MovementStore;
@@ -228,17 +226,16 @@ public:
 /**
  *A single height movement of a base point.
  */
-struct TerrainEditBasePointMovement
-{
+struct TerrainEditBasePointMovement {
 public:
 	Ogre::Real mVerticalMovement;
 	TerrainIndex mPosition;
 };
 
-class TerrainEditorOverlay: public IInputAdapter, public virtual sigc::trackable
-{
+class TerrainEditorOverlay : public IInputAdapter, public virtual sigc::trackable {
 public:
 	typedef std::map<int, std::map<int, Mercator::BasePoint>> BasePointStore;
+
 	TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager,
 						 Ogre::SceneNode& worldSceneNode, TerrainManager& manager,
 						 Camera::MainCamera& camera, BasePointStore& basePoints);
@@ -338,6 +335,7 @@ public:
 	bool injectKeyDown(const SDL_Scancode& key) override;
 
 	bool injectKeyUp(const SDL_Scancode& key) override;
+
 private:
 	typedef std::set<BasePointUserObject*> BasePointUserObjectSet;
 	typedef std::vector<Ogre::Entity*> EntityStore;

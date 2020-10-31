@@ -25,23 +25,18 @@
 #include <OgreTexture.h>
 #include <OgreDataStream.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
-namespace Techniques
-{
-void OnePixelMaterialGenerator::loadResource(Ogre::Resource* resource)
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
+namespace Techniques {
+void OnePixelMaterialGenerator::loadResource(Ogre::Resource* resource) {
 
 	auto* texture = static_cast<Ogre::Texture*>(resource);
 	static Ogre::uchar data[3] = {0xFF, 0x7F, 0x7F};
 
 	Ogre::DataStreamPtr stream(new Ogre::MemoryDataStream(&data, 3, false, true));
 	Ogre::Image image;
-	image.loadRawData(stream, 1,1,1, Ogre::PF_R8G8B8);
+	image.loadRawData(stream, 1, 1, 1, Ogre::PF_R8G8B8);
 	Ogre::ConstImagePtrList images({&image});
 
 	texture->_loadImages(images);

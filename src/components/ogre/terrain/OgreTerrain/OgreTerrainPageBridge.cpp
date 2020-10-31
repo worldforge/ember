@@ -26,23 +26,18 @@
 
 #include <utility>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 OgreTerrainPageBridge::OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, IndexType index) :
-		mTerrainGroup(terrainGroup), mIndex(std::move(index))
-{
+		mTerrainGroup(terrainGroup), mIndex(std::move(index)) {
 
 }
 
 OgreTerrainPageBridge::~OgreTerrainPageBridge() = default;
 
-void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
-{
+void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry) {
 	S_LOG_VERBOSE("Updating terrain page height data: [" << mIndex.first << "," << mIndex.second << "]");
 
 	//Make a copy of the shared ptr, making sure it can't be deleted by the terrainPageReady() method
@@ -57,8 +52,7 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 
 }
 
-void OgreTerrainPageBridge::terrainPageReady()
-{
+void OgreTerrainPageBridge::terrainPageReady() {
 	S_LOG_INFO("Finished loading or updating terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
 	if (mHeightData) {
 		auto terrain = dynamic_cast<EmberTerrain*>(mTerrainGroup.getTerrain(mIndex.first, mIndex.second));
@@ -76,8 +70,7 @@ void OgreTerrainPageBridge::terrainPageReady()
 	mConditionVariable.notify_all();
 }
 
-bool OgreTerrainPageBridge::isPageShown() const
-{
+bool OgreTerrainPageBridge::isPageShown() const {
 	auto terrain = mTerrainGroup.getTerrain(mIndex.first, mIndex.second);
 	return terrain != nullptr && terrain->isLoaded();
 }

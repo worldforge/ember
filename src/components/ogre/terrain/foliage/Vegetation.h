@@ -13,24 +13,20 @@
 #include <cstdlib>
 #include <map>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 struct TerrainFoliageDefinition;
 struct PlantAreaQueryResult;
 
 
-namespace Foliage
-{
+namespace Foliage {
 
-class Vegetation
-{
+class Vegetation {
 public:
 	Vegetation() = default;
+
 	virtual ~Vegetation();
 
 	void createPopulator(const TerrainFoliageDefinition& foliageDef, unsigned int surfaceLayerIndex);

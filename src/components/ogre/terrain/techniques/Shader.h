@@ -23,16 +23,12 @@
 #include "Base.h"
 #include "components/ogre/OgreIncludes.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-namespace Techniques
-{
+namespace Techniques {
 
 class ShaderPass;
 
@@ -44,8 +40,7 @@ class ShaderPass;
  * This technique will use shaders for drawing the terrain. The blend map for the different layers will be combined into one combined texture, where each channel represents one layer.
  *
 */
-class Shader : public Base
-{
+class Shader : public Base {
 public:
 
 	/**
@@ -58,24 +53,25 @@ public:
 	 */
 	static const std::string COMPOSITE_MAP_ALIAS;
 
-    /**
-     * @brief Ctor.
-     * @param includeShadows If true, shadows will be used.
-     * @param geometry The geometry to operate on.
-     * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
-     * @param terrainPageShadow An optional shadow.
-     * @param sceneManager The scene manager which will hold the terrain.
+	/**
+	 * @brief Ctor.
+	 * @param includeShadows If true, shadows will be used.
+	 * @param geometry The geometry to operate on.
+	 * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
+	 * @param terrainPageShadow An optional shadow.
+	 * @param sceneManager The scene manager which will hold the terrain.
 	 * @param useNormalMapping Whether to use normal mapping.
-     */
+	 */
 	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, Ogre::SceneManager& sceneManager, bool useNormalMapping = false);
 
 	/**
 	 * @brief Dtor.
 	 */
-    ~Shader() override;
+	~Shader() override;
 
-    bool prepareMaterial() override;
-    bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const override;
+	bool prepareMaterial() override;
+
+	bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const override;
 
 	bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const override;
 

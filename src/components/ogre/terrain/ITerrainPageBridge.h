@@ -28,6 +28,7 @@ namespace OgreView {
 namespace Terrain {
 
 class TerrainPage;
+
 class TerrainPageGeometry;
 
 /**
@@ -39,32 +40,33 @@ It's up to the scene manager specific adapter code to provide concrete instances
 
 @author Erik Ogenvik <erik@ogenvik.org>
 */
-class ITerrainPageBridge
-{
-friend class TerrainPage;
+class ITerrainPageBridge {
+	friend class TerrainPage;
+
 public:
 	/**
 	 *    @brief Ctor.
 	 */
 	ITerrainPageBridge() : mTerrainPage(nullptr) {}
+
 	/**
 	 *    @brief Dtor.
 	 */
 	virtual ~ITerrainPageBridge() = default;
-	
-	
+
+
 	/**
 	 *    @brief Updates the Ogre mesh after changes to the underlying heightdata.
 	 *
 	 * Call this when the heightdata has changed and you want the Ogre representation to be updated to reflect this.
 	 */
 	virtual void updateTerrain(TerrainPageGeometry& geometry) = 0;
-	
+
 	/**
 	 *    @brief Notifies class in the Ogre side about the page being ready (after being created or modified).
 	 */
 	virtual void terrainPageReady() = 0;
-	
+
 	/**
 	 * @brief Accessor to the terrain page this bridge is bound to.
 	 * @return A pointer to the terrain page, or null if no page yet has been bound.
@@ -82,7 +84,7 @@ public:
 	 * Call this when the TerrainPage to which this bridge is connected to is destroyed. If not, you run the risk of segfaults since the bridge will still keep a pointer to the now deleted TerrainPage.
 	 */
 	void unbindFromTerrainPage();
-	
+
 	/**
 	 * @brief Returns true if the page is shown.
 	 *
@@ -102,18 +104,15 @@ protected:
 };
 
 
-inline void ITerrainPageBridge::bindToTerrainPage(TerrainPage* terrainPage)
-{
+inline void ITerrainPageBridge::bindToTerrainPage(TerrainPage* terrainPage) {
 	mTerrainPage = terrainPage;
 }
 
-inline void ITerrainPageBridge::unbindFromTerrainPage()
-{
+inline void ITerrainPageBridge::unbindFromTerrainPage() {
 	mTerrainPage = nullptr;
 }
-	
-inline TerrainPage* ITerrainPageBridge::getTerrainPage() const
-{
+
+inline TerrainPage* ITerrainPageBridge::getTerrainPage() const {
 	return mTerrainPage;
 }
 

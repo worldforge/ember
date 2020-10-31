@@ -21,27 +21,26 @@
 
 #include <Paging/OgrePageManager.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 /**
  * @brief Provides a way for the Ogre paging component to request the loading of new terrain pages.
  * In this particular case, it only tells the Ogre terrain component that we generate pages procedurally, so it does not try to load them from the disk.
  */
-class OgreTerrainPageProvider: public Ogre::PageProvider
-{
+class OgreTerrainPageProvider : public Ogre::PageProvider {
 public:
 	OgreTerrainPageProvider();
 
 	~OgreTerrainPageProvider() override;
 
 	bool prepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section) override;
+
 	bool loadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section) override;
+
 	bool unloadProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section) override;
+
 	bool unprepareProceduralPage(Ogre::Page* page, Ogre::PagedWorldSection* section) override;
 
 };

@@ -28,86 +28,93 @@
 #include <memory>
 
 namespace Mercator {
-	class Area;
-	class Terrain;
-	class Shader;
-	class TerrainMod;
+class Area;
+
+class Terrain;
+
+class Shader;
+
+class TerrainMod;
 }
 
 namespace Eris {
-	class TerrainModTranslator;
+class TerrainModTranslator;
 }
 
-namespace WFMath
-{
-	template<int> class AxisBox;
+namespace WFMath {
+template<int>
+class AxisBox;
 }
 
 namespace Ember {
 namespace OgreView {
 
-	namespace Terrain {
+namespace Terrain {
 
-		class TerrainPage;
-		class TerrainShader;
-		class TerrainPageSurfaceLayer;
-		class TerrainPageGeometry;
-		class Segment;
-		class ITerrainPageBridge;
+class TerrainPage;
 
-		/**
-		 @brief Defines the height of a special "base point" in the terrain.
-		 These base points are then user by Mercator::Terrain for generating the actual terrain.
-		 */
-		struct TerrainDefPoint;
+class TerrainShader;
 
-		/**
-		 * @brief A type used for storing changes to areas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
-		 */
-		typedef std::vector<WFMath::AxisBox<2>> AreaStore;
+class TerrainPageSurfaceLayer;
 
-		/**
-		 * @brief A type used for storing the terrain definition points.
-		 */
-		typedef std::vector<TerrainDefPoint> TerrainDefPointStore;
+class TerrainPageGeometry;
+
+class Segment;
+
+class ITerrainPageBridge;
+
+/**
+ @brief Defines the height of a special "base point" in the terrain.
+ These base points are then user by Mercator::Terrain for generating the actual terrain.
+ */
+struct TerrainDefPoint;
+
+/**
+ * @brief A type used for storing changes to areas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
+ */
+typedef std::vector<WFMath::AxisBox<2>> AreaStore;
+
+/**
+ * @brief A type used for storing the terrain definition points.
+ */
+typedef std::vector<TerrainDefPoint> TerrainDefPointStore;
 
 
-		/**
-		 * @brief Encapsules a shader update request.
-		 */
-		struct ShaderUpdateRequest
-		{
-			/**
-			 * @brief A list of areas that have been changed.
-			 * Unless UpdateAll is true, this should be used for determining what geometry needs updating.
-			 */
-			AreaStore Areas;
-		};
+/**
+ * @brief Encapsules a shader update request.
+ */
+struct ShaderUpdateRequest {
+	/**
+	 * @brief A list of areas that have been changed.
+	 * Unless UpdateAll is true, this should be used for determining what geometry needs updating.
+	 */
+	AreaStore Areas;
+};
 
-		typedef std::shared_ptr<Segment> SegmentRefPtr;
+typedef std::shared_ptr<Segment> SegmentRefPtr;
 
-		typedef std::map<int, SegmentRefPtr> SegmentRefColumn;
+typedef std::map<int, SegmentRefPtr> SegmentRefColumn;
 
-		typedef std::map<int, SegmentRefColumn> SegmentRefStore;
+typedef std::map<int, SegmentRefColumn> SegmentRefStore;
 
-		typedef std::map<int, const TerrainShader*> AreaShaderstore;
+typedef std::map<int, const TerrainShader*> AreaShaderstore;
 
-		typedef std::map<const TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
+typedef std::map<const TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
 
-		typedef std::unordered_map<std::string, TerrainPage*> PageStore;
+typedef std::unordered_map<std::string, TerrainPage*> PageStore;
 
-		typedef std::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
+typedef std::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
 
-		typedef std::vector<TerrainPageGeometryPtr> GeometryPtrVector;
+typedef std::vector<TerrainPageGeometryPtr> GeometryPtrVector;
 
-		typedef std::shared_ptr<ITerrainPageBridge> ITerrainPageBridgePtr;
+typedef std::shared_ptr<ITerrainPageBridge> ITerrainPageBridgePtr;
 
-		typedef std::vector<std::pair<TerrainPageGeometryPtr, ITerrainPageBridgePtr>> BridgeBoundGeometryPtrVector;
+typedef std::vector<std::pair<TerrainPageGeometryPtr, ITerrainPageBridgePtr>> BridgeBoundGeometryPtrVector;
 
-		typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
+typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 
-		typedef std::map<const Mercator::Shader*, std::unique_ptr<const TerrainShader>> ShaderStore;
-	}
+typedef std::map<const Mercator::Shader*, std::unique_ptr<const TerrainShader>> ShaderStore;
+}
 }
 
 }

@@ -24,19 +24,16 @@
 #include <vector>
 #include <OgreTexture.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainPageGeometry;
+
 class TerrainPageSurfaceLayer;
 
-namespace Techniques
-{
+namespace Techniques {
 
 class ShaderPass;
 
@@ -46,10 +43,10 @@ typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
  * @brief A helper for the Shader technique. Combines several blend map textures into batches and sets the appropriate pass parameters.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class ShaderPassBlendMapBatch
-{
+class ShaderPassBlendMapBatch {
 public:
 	ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize);
+
 	virtual ~ShaderPassBlendMapBatch();
 
 	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -71,6 +68,7 @@ protected:
 	std::vector<std::string> mSyncedTextures;
 
 	void assignCombinedBlendMapTexture(Ogre::TexturePtr texture);
+
 	void addBlendMap(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel);
 
 };

@@ -29,16 +29,12 @@
 #include "framework/LoggingInstance.h"
 #include <wfmath/atlasconv.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
-bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMath::Polygon<2>& poly, int& layer)
-{
+bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMath::Polygon<2>& poly, int& layer) {
 
 	//Earlier versions of Cyphesis had all of the shape data directly in the area map attribute,
 	//whereas newer versions have it all stored in a "shape" subentity. We therefore need to check for both
@@ -77,8 +73,7 @@ bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMat
 	return true;
 }
 
-Atlas::Message::Element TerrainAreaParser::createElement(const WFMath::Polygon<2>& poly, int layer)
-{
+Atlas::Message::Element TerrainAreaParser::createElement(const WFMath::Polygon<2>& poly, int layer) {
 	Atlas::Message::MapType map;
 	if (poly.isValid()) {
 		Atlas::Message::Element shapeElement = poly.toAtlas();

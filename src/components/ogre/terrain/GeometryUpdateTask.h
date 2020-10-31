@@ -44,8 +44,7 @@ public:
 					   TerrainHandler& handler,
 					   std::vector<const Terrain::TerrainShader*> shaders,
 					   HeightMapBufferProvider& heightMapBufferProvider,
-					   HeightMap& heightMap,
-					   const WFMath::Vector<3>& lightDirection);
+					   HeightMap& heightMap);
 
 	~GeometryUpdateTask() override = default;
 
@@ -63,7 +62,6 @@ private:
 	HeightMap& mHeightMap;
 	std::set<TerrainPage*> mPages;
 	std::set<ITerrainPageBridgePtr> mBridgesToNotify;
-	const WFMath::Vector<3> mLightDirection;
 
 
 };

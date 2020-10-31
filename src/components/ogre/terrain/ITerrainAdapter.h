@@ -39,6 +39,7 @@ struct IPageDataProvider;
 namespace Terrain {
 
 class TerrainManager;
+
 struct ITerrainObserver;
 
 
@@ -49,8 +50,7 @@ Thus, if you have a feature which requires some kind of interfacing with the ter
 
 @author Erik Ogenvik
 */
-struct ITerrainAdapter
-{
+struct ITerrainAdapter {
 
 	virtual ~ITerrainAdapter() = default;
 
@@ -81,6 +81,7 @@ struct ITerrainAdapter
 	 * @return True if terrain exists at the position.
 	 */
 	virtual bool getHeightAt(Ogre::Real x, Ogre::Real z, float& height) = 0;
+
 	/**
 	 * @brief Sets the main camera used.
 	 *
@@ -95,7 +96,7 @@ struct ITerrainAdapter
 	 * Call this when the terrain has been set up and you want to show it.
 	 */
 	virtual void loadScene() = 0;
-	
+
 	/**
 	 * @brief Resets the whole terrain, removing any loaded pages.
 	 */

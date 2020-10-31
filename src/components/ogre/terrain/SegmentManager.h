@@ -26,19 +26,16 @@
 #include <string>
 #include <list>
 
-namespace Mercator
-{
+namespace Mercator {
 class Segment;
+
 class Terrain;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class SegmentHolder;
 
 /**
@@ -56,8 +53,7 @@ class SegmentHolder;
  * Whenever an external subsystem needs to access a segment it will need to call the getSegmentReference() method to obtain a reference instance. As long as the reference instance is alive the Segment is considered in use and will not be "collected".
  *
  */
-class SegmentManager
-{
+class SegmentManager {
 public:
 
 	typedef std::unordered_map<int, std::pair<int, int>> IndexColumn;

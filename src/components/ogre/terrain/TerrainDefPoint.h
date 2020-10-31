@@ -22,20 +22,16 @@
 #include <wfmath/point.h>
 #include "domain/Types.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 /**
 @brief Defines the height of a special "base point" in the terrain.
 These base points are then user by Mercator::Terrain for generating the actual terrain.
 */
-struct TerrainDefPoint
-{
+struct TerrainDefPoint {
 
 	/**
 	The position of the point, in world units.

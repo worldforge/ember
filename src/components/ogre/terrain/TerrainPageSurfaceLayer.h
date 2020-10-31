@@ -25,18 +25,17 @@
 
 #include "../EmberOgrePrerequisites.h"
 
-namespace Mercator
-{
+namespace Mercator {
 class Shader;
+
 class Surface;
+
 class Segment;
 }
 
-namespace Ogre
-{
+namespace Ogre {
 class Image;
 }
-
 
 
 namespace Ember {
@@ -44,8 +43,11 @@ namespace OgreView {
 namespace Terrain {
 
 class TerrainPageSurface;
+
 struct TerrainLayerDefinition;
+
 class TerrainPageGeometry;
+
 class Image;
 
 /**
@@ -55,20 +57,25 @@ class Image;
  *
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class TerrainPageSurfaceLayer{
+class TerrainPageSurfaceLayer {
 public:
-    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader);
+	TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader);
 
-    virtual ~TerrainPageSurfaceLayer();
+	virtual ~TerrainPageSurfaceLayer();
 
-    const std::string& getDiffuseTextureName() const;
-    void setDiffuseTextureName(const std::string& textureName);
-    const std::string& getSpecularTextureName() const;
-    void setSpecularTextureName(const std::string& textureName);
-    const std::string& getNormalTextureName() const;
-    void setNormalTextureName(const std::string& textureName);
+	const std::string& getDiffuseTextureName() const;
 
-    unsigned int getPixelWidth() const;
+	void setDiffuseTextureName(const std::string& textureName);
+
+	const std::string& getSpecularTextureName() const;
+
+	void setSpecularTextureName(const std::string& textureName);
+
+	const std::string& getNormalTextureName() const;
+
+	void setNormalTextureName(const std::string& textureName);
+
+	unsigned int getPixelWidth() const;
 
 	/**
 	 * @brief Checks whether this layer intersects the page to which it belongs.
@@ -79,9 +86,11 @@ public:
 	bool intersects(const TerrainPageGeometry& geometry) const;
 
 	int getSurfaceIndex() const;
+
 	Mercator::Surface* getSurfaceForSegment(const Mercator::Segment* segment) const;
 
 	float getScale() const;
+
 	void setScale(float scale);
 
 	const TerrainLayerDefinition& getDefinition() const;

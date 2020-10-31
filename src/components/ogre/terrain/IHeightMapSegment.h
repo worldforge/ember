@@ -21,9 +21,9 @@
 
 #include "Types.h"
 
-namespace WFMath
-{
-	template<int> class Vector;
+namespace WFMath {
+template<int>
+class Vector;
 }
 
 namespace Ember {
@@ -48,14 +48,14 @@ struct IHeightMapSegment {
 	 */
 	virtual float getHeight(int x, int y) const = 0;
 
-    /**
-     * @brief Gets the height and normal at the location.
-     * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
+	/**
+	 * @brief Gets the height and normal at the location.
+	 * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
 	 * @param x The x location, in world units.
 	 * @param y The y location, in world units.
 	 * @param height The height will be stored here.
 	 * @param normal The normal will be stored here.
-     */
+	 */
 	virtual void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const = 0;
 };
 }

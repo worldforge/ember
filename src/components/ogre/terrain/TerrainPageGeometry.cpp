@@ -130,7 +130,7 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 	float* dataEnd = ogreHeightData + ogreDataSize;
 
 	// copy points line-by line
-	float* destPtr = ogreHeightData + (pageWidth * ( pageWidth - startZ - 1)) + startX;
+	float* destPtr = ogreHeightData + (pageWidth * (pageWidth - startZ - 1)) + startX;
 
 
 	for (int i = 0; i < segmentWidth; ++i) {

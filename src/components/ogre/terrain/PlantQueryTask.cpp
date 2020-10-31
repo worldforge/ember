@@ -31,7 +31,6 @@ namespace Terrain {
 PlantQueryTask::PlantQueryTask(SegmentRefPtr segmentRef,
 							   Foliage::PlantPopulator& plantPopulator,
 							   PlantAreaQuery query,
-							   const Ogre::ColourValue& defaultShadowColour,
 							   sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
 		mSegmentRef(std::move(segmentRef)),
 		mPlantPopulator(plantPopulator),

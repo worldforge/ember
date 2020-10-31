@@ -22,28 +22,24 @@
 #include <OgreTerrainGroup.h>
 #include <sigc++/signal.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
 struct IPageDataProvider;
-namespace Terrain
-{
+namespace Terrain {
 
 /**
  * @brief Creates EmberTerrain instances instead of Ogre::Terrain.
  *
  * Make sure you call setPageDataProvider().
  */
-class EmberTerrainGroup: public Ogre::TerrainGroup
-{
+class EmberTerrainGroup : public Ogre::TerrainGroup {
 public:
 	EmberTerrainGroup(Ogre::SceneManager* sm,
-			Ogre::uint16 terrainSize,
+					  Ogre::uint16 terrainSize,
 					  sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainShownSignal,
 					  sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainAreaUpdatedSignal,
-			Ogre::TerrainMaterialGeneratorPtr materialGenerator);
+					  Ogre::TerrainMaterialGeneratorPtr materialGenerator);
 
 	~EmberTerrainGroup() override;
 
@@ -60,7 +56,6 @@ public:
 	void setPageDataProvider(IPageDataProvider* pageDataProvider);
 
 	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ) override;
-
 
 
 protected:

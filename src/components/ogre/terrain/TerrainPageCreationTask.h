@@ -44,8 +44,7 @@ public:
 	TerrainPageCreationTask(TerrainHandler& handler, TerrainPage* page,
 							std::shared_ptr<ITerrainPageBridge> bridge,
 							HeightMapBufferProvider& heightMapBufferProvider,
-							HeightMap& heightMap,
-							const WFMath::Vector<3>& mainLightDirection);
+							HeightMap& heightMap);
 
 	~TerrainPageCreationTask() override = default;
 
@@ -58,7 +57,6 @@ private:
 
 	TerrainPage* mPage;
 	std::shared_ptr<ITerrainPageBridge> mBridge;
-	WFMath::Vector<3> mMainLightDirection;
 
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;

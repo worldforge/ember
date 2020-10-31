@@ -22,12 +22,12 @@
 //
 #ifndef EMBEROGRETERRAINPAGEGEOMETRY_H
 #define EMBEROGRETERRAINPAGEGEOMETRY_H
+
 #include <wfmath/point.h>
 #include "Types.h"
 #include <vector>
 
-namespace Mercator
-{
+namespace Mercator {
 class Segment;
 }
 
@@ -38,8 +38,7 @@ namespace Terrain {
 /**
  * @brief Holds a Mercator::Segment instance as well as a index of this segment in local page coords.
  */
-struct PageSegment
-{
+struct PageSegment {
 	/**
 	 * @brief The index of this segment within the page.
 	 */
@@ -55,6 +54,7 @@ typedef std::vector<PageSegment> SegmentVector;
 
 
 class TerrainPage;
+
 class SegmentManager;
 
 /**
@@ -65,9 +65,9 @@ Each instance of TerrainPage is light weight, and doesn't hold any terrain data.
 Instead we use an instance of this each time we want to access terrain data. Each instance of this class is meant to be in use a very short time. As soon as it's destroyed the Segments used by it will be returned to the SegmentManager, and optionally have had their memory freed.
 
 */
-class TerrainPageGeometry
-{
-friend class TerrainPage;
+class TerrainPageGeometry {
+	friend class TerrainPage;
+
 public:
 
 	/**

@@ -31,27 +31,23 @@ template<typename>
 struct TRect;
 }
 
-namespace WFMath
-{
+namespace WFMath {
 template<int>
 class AxisBox;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 /**
  * Listener interface for an terrain observer, which is observes a particular terrain area.
  * @author Erik Ogenvik
  */
-struct ITerrainObserver
-{
+struct ITerrainObserver {
 
 	virtual ~ITerrainObserver() = default;
+
 	/**
 	 * @brief Instructs the observer to observe a certain area.
 	 * @param area The area to observe.

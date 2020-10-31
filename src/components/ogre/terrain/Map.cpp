@@ -117,7 +117,7 @@ void Map::setResolution(float metersPerPixel) {
 }
 
 float Map::getResolutionMeters() const {
-	return (float)mTexturePixelSize * mMetersPerPixel;
+	return (float) mTexturePixelSize * mMetersPerPixel;
 }
 
 MapView& Map::getView() {

@@ -309,13 +309,6 @@ public:
 	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&>& asyncCallback);
 
 	/**
-	 * @brief Sets the lightning instance to use.
-	 *
-	 * @param lightning The lightning instance to use, or null if none should be used.
-	 */
-	void setLightning(ILightning* lightning);
-
-	/**
 	 * @brief Place the plants for the supplied area in the supplied store.
 	 *
 	 * This method will perform the lookup in a background thread and return the results through an async callback.
@@ -527,13 +520,6 @@ protected:
 	 * @brief True if we have some kind of terrain info, i.e. if mX* and mY* are valid.
 	 */
 	bool mHasTerrainInfo;
-
-
-	/**
-	 * @brief Provides lightning information for the terrain.
-	 */
-	ILightning* mLightning;
-
 
 	/**
 	 * @brief A list of the shaders, which will all be used on all Pages.

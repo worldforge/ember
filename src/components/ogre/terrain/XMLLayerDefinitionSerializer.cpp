@@ -79,7 +79,7 @@ std::vector<TerrainLayerDefinition> XMLLayerDefinitionSerializer::parseScript(Og
 
 						definition.mName = smElem->Attribute("name");
 						definition.mDiffuseTextureName = smElem->Attribute("diffusetexture");
-						definition.mNormalMapTextureName  = smElem->Attribute("normalmaptexture");
+						definition.mNormalMapTextureName = smElem->Attribute("normalmaptexture");
 						float tileSize;
 						if (smElem->QueryFloatAttribute("tilesize", &tileSize) == TIXML_SUCCESS) {
 							definition.mTileSize = tileSize;

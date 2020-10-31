@@ -26,34 +26,36 @@
 #include <string>
 #include <set>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 class TerrainPage;
+
 class TerrainPageSurfaceLayer;
+
 class TerrainPageGeometry;
+
 class TerrainPageShadow;
 
-namespace Techniques
-{
+namespace Techniques {
 
 class ShaderPassBlendMapBatch;
 
 typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
 
-class ShaderPass
-{
+class ShaderPass {
 public:
-friend class ShaderPassBlendMapBatch;
+	friend class ShaderPassBlendMapBatch;
+
 	ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping = false);
+
 	virtual ~ShaderPass();
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
+
 	virtual void setBaseLayer(const TerrainPageSurfaceLayer* layer);
+
 	void addShadowLayer();
 
 	virtual bool hasRoomForLayer(const TerrainPageSurfaceLayer* layer);
@@ -72,9 +74,11 @@ friend class ShaderPassBlendMapBatch;
 protected:
 
 	ShaderPassBlendMapBatch* getCurrentBatch();
+
 	virtual std::unique_ptr<ShaderPassBlendMapBatch> createNewBatch();
 
 	unsigned int getBlendMapPixelWidth() const;
+
 	Ogre::TexturePtr getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const;
 
 	float mScales[16];

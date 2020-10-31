@@ -27,22 +27,21 @@
 #include <string>
 #include <sigc++/signal.h>
 
-namespace WFMath
-{
-template<int> class AxisBox;
+namespace WFMath {
+template<int>
+class AxisBox;
 }
 
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class TerrainShader;
+
 class TerrainPage;
+
 class TerrainPageSurfaceCompilationInstance;
 
 /**
@@ -50,8 +49,7 @@ class TerrainPageSurfaceCompilationInstance;
  * This will also recompile the terrain page material once the surface has been updated.
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class TerrainShaderUpdateTask : public Tasks::TemplateNamedTask<TerrainShaderUpdateTask>
-{
+class TerrainShaderUpdateTask : public Tasks::TemplateNamedTask<TerrainShaderUpdateTask> {
 public:
 
 	/**
@@ -64,11 +62,10 @@ public:
 	 * @param lightDirection The main light direction.
 	 */
 	TerrainShaderUpdateTask(GeometryPtrVector geometry,
-			const TerrainShader* shader,
-			AreaStore  areas,
-			sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
-			sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
-			const WFMath::Vector<3>& lightDirection);
+							const TerrainShader* shader,
+							AreaStore areas,
+							sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
+							sigc::signal<void, TerrainPage*>& signalMaterialRecompiled);
 
 	/**
 	 * @brief Ctor.
@@ -80,11 +77,10 @@ public:
 	 * @param lightDirection The main light direction.
 	 */
 	TerrainShaderUpdateTask(GeometryPtrVector geometry,
-			std::vector<const TerrainShader*>  shaders,
-			AreaStore  areas,
-			sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
-			sigc::signal<void, TerrainPage*>& signalMaterialRecompiled,
-			const WFMath::Vector<3>& lightDirection);
+							std::vector<const TerrainShader*> shaders,
+							AreaStore areas,
+							sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
+							sigc::signal<void, TerrainPage*>& signalMaterialRecompiled);
 
 	~TerrainShaderUpdateTask() override;
 
@@ -112,17 +108,12 @@ private:
 	/**
 	 * @brief A signal to emit once the update is done.
 	 */
-	sigc::signal<void, const TerrainShader*, const AreaStore& >& mSignal;
+	sigc::signal<void, const TerrainShader*, const AreaStore&>& mSignal;
 
 	/**
 	 * @brief A signal to pass on to the material recompilation task;
 	 */
 	sigc::signal<void, TerrainPage*>& mSignalMaterialRecompiled;
-
-	/**
-	 * @brief The main light direction.
-	 */
-	const WFMath::Vector<3> mLightDirection;
 
 };
 

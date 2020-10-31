@@ -21,26 +21,22 @@
 
 #include <OgreTerrainPagedWorldSection.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 struct IPageDataProvider;
 
-namespace Terrain
-{
+namespace Terrain {
 
 /**
  * @brief Upon request of the paging system, loads and defines terrain pages for subsequent rendering.
  */
-class OgreTerrainDefiner : public Ogre::TerrainPagedWorldSection::TerrainDefiner
-{
+class OgreTerrainDefiner : public Ogre::TerrainPagedWorldSection::TerrainDefiner {
 public:
 	explicit OgreTerrainDefiner(IPageDataProvider& provider);
 
 	~OgreTerrainDefiner() override = default;
 
-	void define(Ogre::TerrainGroup *terrainGroup, long x, long y) override;
+	void define(Ogre::TerrainGroup* terrainGroup, long x, long y) override;
 
 private:
 	IPageDataProvider& mProvider;

@@ -64,7 +64,7 @@ bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) co
 
 void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Image& image, unsigned int channel) const {
 	SegmentVector validSegments = geometry.getValidSegments();
-	for (const auto & validSegment : validSegments) {
+	for (const auto& validSegment : validSegments) {
 		Mercator::Segment* segment = validSegment.segment;
 		if (mShader.checkIntersect(*segment)) {
 			Mercator::Surface* surface = getSurfaceForSegment(segment);

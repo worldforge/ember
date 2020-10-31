@@ -30,36 +30,41 @@
 
 #include <map>
 
-namespace Mercator
-{
+namespace Mercator {
 class Shader;
+
 class Surface;
+
 class Segment;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Terrain
-{
+namespace Ember {
+namespace OgreView {
+namespace Terrain {
 
 class TerrainPageSurfaceLayer;
+
 class TerrainPage;
+
 class TerrainPageSurfaceCompiler;
+
 class TerrainPageShadow;
+
 class TerrainPageGeometry;
+
 struct TerrainLayerDefinition;
+
 class TerrainPageSurfaceCompilationInstance;
+
 struct ICompilerTechniqueProvider;
 
 /**
  @author Erik Ogenvik <erik@ogenvik.org>
  */
-class TerrainPageSurface
-{
+class TerrainPageSurface {
 public:
 	typedef std::map<int, std::unique_ptr<TerrainPageSurfaceLayer>> TerrainPageSurfaceLayerStore;
+
 	/**
 	 * @brief Ctor.
 	 *

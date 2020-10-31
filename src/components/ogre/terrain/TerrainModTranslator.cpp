@@ -54,9 +54,9 @@ public:
 
 	std::unique_ptr<Mercator::TerrainMod> createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) override;
 
-	 std::unique_ptr<InnerTranslator> clone() const override {
-	 	return std::make_unique<InnerTranslatorImpl>(*this);
-	 };
+	std::unique_ptr<InnerTranslator> clone() const override {
+		return std::make_unique<InnerTranslatorImpl>(*this);
+	};
 
 	const ShapeT<2> mShape;
 };

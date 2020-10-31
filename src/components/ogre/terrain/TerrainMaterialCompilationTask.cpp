@@ -32,23 +32,19 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(GeometryPtrVector geometry,
-															   sigc::signal<void, TerrainPage*>& signal,
-															   const WFMath::Vector<3>& lightDirection) :
+															   sigc::signal<void, TerrainPage*>& signal) :
 		mGeometry(std::move(geometry)),
-		mSignal(signal),
-		mLightDirection(lightDirection) {
+		mSignal(signal) {
 }
 
 TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry,
-															   sigc::signal<void, TerrainPage*>& signal,
-															   const WFMath::Vector<3>& lightDirection) :
-		mSignal(signal),
-		mLightDirection(lightDirection) {
+															   sigc::signal<void, TerrainPage*>& signal) :
+		mSignal(signal) {
 	mGeometry.push_back(std::move(geometry));
 }
 
 void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
-	for (auto & geometry : mGeometry) {
+	for (auto& geometry : mGeometry) {
 		geometry->repopulate();
 		TerrainPage& page = geometry->getPage();
 		auto compilationInstance = page.getSurface()->createSurfaceCompilationInstance(geometry);

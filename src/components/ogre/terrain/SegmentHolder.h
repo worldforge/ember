@@ -25,15 +25,13 @@
 #include <atomic>
 
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 class Segment;
+
 class SegmentManager;
 
 /**
@@ -43,9 +41,9 @@ class SegmentManager;
  * These references are counted, so that the holder instance knows how many currently are in use. This is of main use to allow for the SegmentManager to release data from Segments which aren't in use.
  * This class is internal to the SegmentManager system and shouldn't be used outside of it.
  */
-class SegmentHolder
-{
-friend class SegmentReference;
+class SegmentHolder {
+	friend class SegmentReference;
+
 public:
 
 	/**

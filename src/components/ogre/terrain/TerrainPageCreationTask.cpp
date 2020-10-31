@@ -36,14 +36,12 @@ namespace Terrain {
 
 TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler,
 												 TerrainPage* page,
-												 std::shared_ptr<ITerrainPageBridge>  bridge,
+												 std::shared_ptr<ITerrainPageBridge> bridge,
 												 HeightMapBufferProvider& heightMapBufferProvider,
-												 HeightMap& heightMap,
-												 const WFMath::Vector<3>& mainLightDirection) :
+												 HeightMap& heightMap) :
 		mTerrainHandler(handler),
 		mPage(page),
 		mBridge(std::move(bridge)),
-		mMainLightDirection(mainLightDirection),
 		mHeightMapBufferProvider(heightMapBufferProvider),
 		mHeightMap(heightMap) {
 
@@ -69,7 +67,7 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 	for (auto& entry : mTerrainHandler.getAllShaders()) {
 		shaders.push_back(entry.second.get());
 	}
-	context.executeTask(std::make_unique<GeometryUpdateTask>(std::move(geometry), areas, mTerrainHandler, std::move(shaders), mHeightMapBufferProvider, mHeightMap, mMainLightDirection));
+	context.executeTask(std::make_unique<GeometryUpdateTask>(std::move(geometry), areas, mTerrainHandler, std::move(shaders), mHeightMapBufferProvider, mHeightMap));
 
 }
 

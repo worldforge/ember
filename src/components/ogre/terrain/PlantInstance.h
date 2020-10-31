@@ -23,13 +23,10 @@
 #include <OgreVector.h>
 #include <OgreVector.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Terrain
-{
+namespace Terrain {
 
 
 /**
@@ -37,8 +34,7 @@ namespace Terrain
  * @brief A simple struct for representing one plant instance in a 2d space.
  * To save space some simplifications are made. The orientation is only stored as a rotation around the vertical axis, and the scale is only stored for a flat plant.
  */
-class Plant2DInstance
-{
+class Plant2DInstance {
 public:
 	/**
 	 * @brief Ctor.
@@ -46,8 +42,7 @@ public:
 	 * @param orientation The rotation around the vertical axis for the plant.
 	 * @param scale The scale of the plant in width and height.
 	 */
-	Plant2DInstance(const Ogre::Vector2& positionIn, float orientationIn, const Ogre::Vector2& scaleIn)
-	{
+	Plant2DInstance(const Ogre::Vector2& positionIn, float orientationIn, const Ogre::Vector2& scaleIn) {
 		this->position = positionIn;
 		this->orientation = orientationIn;
 		this->scale = scaleIn;
@@ -75,8 +70,7 @@ public:
  * @brief A simple struct for representing one plant instance in a 3d space.
  * To save space some simplifications are made. The orientation is only stored as a rotation around the vertical axis, and the scale is only stored for a flat plant.
  */
-struct PlantInstance
-{
+struct PlantInstance {
 
 	/**
 	 * @brief The position of the plant.

@@ -48,8 +48,7 @@ public:
 	 * @param lightDirection The main light direction.
 	 */
 	TerrainMaterialCompilationTask(GeometryPtrVector geometry,
-								   sigc::signal<void, TerrainPage*>& signal,
-								   const WFMath::Vector<3>& lightDirection);
+								   sigc::signal<void, TerrainPage*>& signal);
 
 	/**
 	 * @brief Ctor.
@@ -57,8 +56,7 @@ public:
 	 * @param lightDirection The main light direction.
 	 */
 	TerrainMaterialCompilationTask(TerrainPageGeometryPtr pageGeometry,
-								   sigc::signal<void, TerrainPage*>& signal,
-								   const WFMath::Vector<3>& lightDirection);
+								   sigc::signal<void, TerrainPage*>& signal);
 
 	/**
 	 * @brief Dtor.
@@ -91,11 +89,6 @@ private:
 	 * @brief A signal to emit once the update is done.
 	 */
 	sigc::signal<void, TerrainPage*>& mSignal;
-
-	/**
-	 * @brief The main light direction.
-	 */
-	const WFMath::Vector<3> mLightDirection;
 
 	/**
 	 * @brief This needs to be called after materials have changed to make sure that Ogre flushes it's material caches.

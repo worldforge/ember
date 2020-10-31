@@ -38,13 +38,13 @@ class BasePoint;
 namespace Ember {
 class EmberEntity;
 namespace OgreView {
-namespace Camera
-{
+namespace Camera {
 class MainCamera;
 }
 
 namespace Terrain {
 class TerrainManager;
+
 class TerrainEditorOverlay;
 
 /**
@@ -56,8 +56,7 @@ class TerrainEditorOverlay;
 	@note Inherits from sigc::trackable because we use an async callback when fetching base points.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class TerrainEditor : public virtual sigc::trackable
-{
+class TerrainEditor : public virtual sigc::trackable {
 public:
 
 	/**
@@ -66,22 +65,22 @@ public:
 	 * @param manager The main terrain manager instance.
 	 * @param camera The main camera used by Ember.
 	 */
-    TerrainEditor(TerrainManager& manager, Camera::MainCamera& camera);
+	TerrainEditor(TerrainManager& manager, Camera::MainCamera& camera);
 
-    /**
-     * @brief Dtor.
-     */
-    ~TerrainEditor();
+	/**
+	 * @brief Dtor.
+	 */
+	~TerrainEditor();
 
-    /**
-     * @brief Shows the overlay.
-     */
-    void showOverlay();
+	/**
+	 * @brief Shows the overlay.
+	 */
+	void showOverlay();
 
-    /**
-     * @brief Hides the overlay.
-     */
-    void hideOverlay();
+	/**
+	 * @brief Hides the overlay.
+	 */
+	void hideOverlay();
 
 	/**
 	 * @brief Returns true if the overlay is currently shown.
@@ -115,6 +114,7 @@ public:
 
 
 	float getFalloff() const;
+
 	void setFalloff(float falloff);
 
 private:
