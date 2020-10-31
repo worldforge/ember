@@ -37,6 +37,8 @@ class HeightMapBufferProvider;
 
 class HeightMap;
 
+class TerrainShader;
+
 class GeometryUpdateTask : public Tasks::TemplateNamedTask<GeometryUpdateTask> {
 public:
 	GeometryUpdateTask(BridgeBoundGeometryPtrVector geometry,

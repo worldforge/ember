@@ -70,8 +70,6 @@ class TerrainPage;
 
 class TerrainArea;
 
-class TerrainMod;
-
 struct TerrainLayerDefinition;
 
 class TerrainPageSurfaceLayer;
@@ -481,7 +479,7 @@ protected:
 	/**
 	 * @brief We use this to keep track on the terrain shaders used for areas, stored with the layer id as the key.
 	 */
-	AreaShaderstore mAreaShaders;
+	std::map<int, const TerrainShader*> mAreaShaders;
 
 	/**
 	 * @brief A store of terrain bridges, which acts as an interface to the Ogre representation of the terrain.
@@ -495,7 +493,7 @@ protected:
 	 * @see markShaderForUpdate
 	 * @see frameEnded
 	 */
-	ShaderUpdateSet mShadersToUpdate;
+	std::map<const TerrainShader*, ShaderUpdateRequest> mShadersToUpdate;
 
 
 	/**

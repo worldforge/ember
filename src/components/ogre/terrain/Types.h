@@ -53,8 +53,6 @@ namespace Terrain {
 
 class TerrainPage;
 
-class TerrainShader;
-
 class TerrainPageSurfaceLayer;
 
 class TerrainPageGeometry;
@@ -88,7 +86,7 @@ struct ShaderUpdateRequest {
 	 * @brief A list of areas that have been changed.
 	 * Unless UpdateAll is true, this should be used for determining what geometry needs updating.
 	 */
-	AreaStore Areas;
+	std::vector<WFMath::AxisBox<2>> Areas;
 };
 
 typedef std::shared_ptr<Segment> SegmentRefPtr;
@@ -96,12 +94,6 @@ typedef std::shared_ptr<Segment> SegmentRefPtr;
 typedef std::map<int, SegmentRefPtr> SegmentRefColumn;
 
 typedef std::map<int, SegmentRefColumn> SegmentRefStore;
-
-typedef std::map<int, const TerrainShader*> AreaShaderstore;
-
-typedef std::map<const TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
-
-typedef std::unordered_map<std::string, TerrainPage*> PageStore;
 
 typedef std::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
 
@@ -112,8 +104,6 @@ typedef std::shared_ptr<ITerrainPageBridge> ITerrainPageBridgePtr;
 typedef std::vector<std::pair<TerrainPageGeometryPtr, ITerrainPageBridgePtr>> BridgeBoundGeometryPtrVector;
 
 typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
-
-typedef std::map<const Mercator::Shader*, std::unique_ptr<const TerrainShader>> ShaderStore;
 }
 }
 

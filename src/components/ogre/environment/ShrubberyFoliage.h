@@ -38,8 +38,6 @@ struct TerrainFoliageDefinition;
 
 struct TerrainLayerDefinition;
 
-class TerrainShader;
-
 class TerrainArea;
 }
 

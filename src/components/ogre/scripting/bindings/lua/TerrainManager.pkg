@@ -21,7 +21,6 @@ namespace Ember {
 namespace OgreView {
 namespace Terrain {
 
-class TerrainShader;
 class TerrainPage;
 class TerrainMod;
 struct TerrainLayerDefinition;

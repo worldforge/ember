@@ -36,7 +36,6 @@ namespace Ember {
 namespace OgreView {
 
 namespace Terrain {
-class TerrainShader;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
