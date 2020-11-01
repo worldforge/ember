@@ -53,11 +53,6 @@ public:
 	 */
 	void createShaders(const Atlas::Message::ListType& surfaces);
 
-	/**
-	 * @brief A fall back method which will create default shaders. This is used only if no valid surface information could be found (for example if a very old version of the server is used).
-	 */
-	void createDefaultShaders();
-
 private:
 
 	/**

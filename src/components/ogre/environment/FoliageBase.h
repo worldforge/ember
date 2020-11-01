@@ -31,6 +31,7 @@
 #include <set>
 #include <vector>
 #include <components/ogre/terrain/TerrainLayerDefinition.h>
+#include <components/ogre/terrain/TerrainShader.h>
 
 
 namespace Forests {
@@ -86,7 +87,7 @@ public:
 	 * @param foliageDefinition The foliage definition which is to be used for generation of this layer. This should contain all info needed for properly setting up the layer.
 	 */
 	FoliageBase(Terrain::TerrainManager& terrainManager,
-				Terrain::TerrainLayerDefinition terrainLayerDefinition,
+				Terrain::TerrainLayer terrainLayer,
 				Terrain::TerrainFoliageDefinition foliageDefinition);
 
 	/**
@@ -122,7 +123,7 @@ protected:
 
 	Terrain::TerrainManager& mTerrainManager;
 
-	const Terrain::TerrainLayerDefinition mTerrainLayerDefinition;
+	const Terrain::TerrainLayer mTerrainLayer;
 	const Terrain::TerrainFoliageDefinition mFoliageDefinition;
 	std::unique_ptr<::Forests::PagedGeometry> mPagedGeometry;
 
@@ -134,7 +135,7 @@ protected:
 
 	void TerrainHandler_LayerUpdated(const Terrain::TerrainShader& shader, const Terrain::AreaStore& areas);
 
-	void TerrainHandler_EventShaderCreated(const Terrain::TerrainLayerDefinition&);
+	void TerrainHandler_EventShaderCreated(const Terrain::TerrainLayer&);
 
 	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages);
 

@@ -57,7 +57,6 @@ struct TerrainFoliageDefinition {
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
 struct TerrainLayerDefinition {
-	size_t index;
 	unsigned int mAreaId;
 	std::string mName;
 	std::string mDiffuseTextureName;

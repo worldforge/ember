@@ -73,7 +73,6 @@ std::vector<TerrainLayerDefinition> XMLLayerDefinitionSerializer::parseScript(Og
 					S_LOG_VERBOSE("Adding terrain layer definition for shader '" << shadername << "' and area index '" << areaId << "'.");
 					try {
 						TerrainLayerDefinition definition{};
-						definition.index = definitions.size();
 						definition.mShaderName = shadername;
 						definition.mAreaId = static_cast<unsigned int>(areaId);
 

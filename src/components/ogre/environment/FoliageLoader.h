@@ -25,6 +25,7 @@
 
 #include "pagedgeometry/include/PagedGeometry.h"
 #include <sigc++/trackable.h>
+#include <components/ogre/terrain/TerrainShader.h>
 
 namespace Ogre {
 class Entity;
@@ -54,7 +55,7 @@ class FoliageLoader : public ::Forests::PageLoader, public virtual sigc::trackab
 public:
 	FoliageLoader(Ogre::SceneManager& sceneMgr,
 				  Terrain::TerrainManager& terrainManager,
-				  const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+				  const Terrain::TerrainLayer& terrainLayer,
 				  const Terrain::TerrainFoliageDefinition& foliageDefinition,
 				  ::Forests::PagedGeometry& pagedGeometry);
 
@@ -77,7 +78,7 @@ public:
 
 protected:
 	Terrain::TerrainManager& mTerrainManager;
-	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
+	const Terrain::TerrainLayer& mTerrainLayer;
 	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;
 	::Forests::PagedGeometry& mPagedGeometry;
 

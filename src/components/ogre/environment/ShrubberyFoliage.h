@@ -51,7 +51,7 @@ class FoliageLoader;
 class ShrubberyFoliage : public FoliageBase {
 public:
 	ShrubberyFoliage(Terrain::TerrainManager& terrainManager,
-					 Terrain::TerrainLayerDefinition terrainLayerDefinition,
+					 Terrain::TerrainLayer terrainLayer,
 					 Terrain::TerrainFoliageDefinition foliageDefinition);
 
 	~ShrubberyFoliage() override;

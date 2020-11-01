@@ -44,7 +44,8 @@ namespace OgreView {
 namespace Environment {
 
 Foliage::Foliage(Terrain::TerrainManager& terrainManager) :
-		ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager) {
+		ReloadFoliage("reloadfoliage", this, ""),
+		mTerrainManager(terrainManager) {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
@@ -54,24 +55,21 @@ Foliage::~Foliage() {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-void Foliage::initialize() {
-	S_LOG_INFO("Initializing foliage system.");
-	for (auto& layerDef : TerrainLayerDefinitionManager::getSingleton().getDefinitions()) {
-		for (auto& foliage : layerDef.mFoliages) {
-			std::unique_ptr<FoliageBase> foliageBase;
-			try {
-				if (foliage.mRenderTechnique == "grass") {
-					foliageBase = std::make_unique<GrassFoliage>(mTerrainManager, layerDef, foliage);
-				} else if (foliage.mRenderTechnique == "shrubbery") {
-					foliageBase = std::make_unique<ShrubberyFoliage>(mTerrainManager, layerDef, foliage);
-				}
-				if (foliageBase) {
-					foliageBase->initialize();
-					mFoliages.emplace_back(std::move(foliageBase));
-				}
-			} catch (const std::exception& ex) {
-				S_LOG_FAILURE("Error when creating foliage." << ex);
+void Foliage::initializeLayer(const TerrainLayer& terrainLayer) {
+	for (auto& foliage : terrainLayer.layerDef.mFoliages) {
+		std::unique_ptr<FoliageBase> foliageBase;
+		try {
+			if (foliage.mRenderTechnique == "grass") {
+				foliageBase = std::make_unique<GrassFoliage>(mTerrainManager, terrainLayer, foliage);
+			} else if (foliage.mRenderTechnique == "shrubbery") {
+				foliageBase = std::make_unique<ShrubberyFoliage>(mTerrainManager, terrainLayer, foliage);
 			}
+			if (foliageBase) {
+				foliageBase->initialize();
+				mFoliages.emplace_back(std::move(foliageBase));
+			}
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when creating foliage." << ex);
 		}
 	}
 }

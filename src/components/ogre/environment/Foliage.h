@@ -28,6 +28,7 @@
 #include "framework/ConsoleCommandWrapper.h"
 
 #include <OgreFrameListener.h>
+#include <components/ogre/terrain/TerrainShader.h>
 
 namespace WFMath
 {
@@ -64,7 +65,7 @@ public:
 
 	~Foliage() override;
 	
-	void initialize();
+	void initializeLayer(const Terrain::TerrainLayer& terrainLayer);
 
 	bool frameStarted(const Ogre::FrameEvent& evt) override;
 

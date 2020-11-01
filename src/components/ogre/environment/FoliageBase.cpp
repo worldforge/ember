@@ -30,10 +30,8 @@
 #include "../terrain/TerrainArea.h"
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainHandler.h"
-#include "../terrain/TerrainShader.h"
 #include "../terrain/TerrainPageSurfaceLayer.h"
 #include "../terrain/TerrainPageSurface.h"
-#include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainLayerDefinitionManager.h"
 
 #include "pagedgeometry/include/PagedGeometry.h"
@@ -46,10 +44,10 @@ namespace OgreView {
 namespace Environment {
 
 FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager,
-						 Terrain::TerrainLayerDefinition terrainLayerDefinition,
+						 Terrain::TerrainLayer terrainLayer,
 						 Terrain::TerrainFoliageDefinition foliageDefinition)
 		: mTerrainManager(terrainManager),
-		  mTerrainLayerDefinition(std::move(terrainLayerDefinition)),
+		  mTerrainLayer(std::move(terrainLayer)),
 		  mFoliageDefinition(std::move(foliageDefinition)) {
 
 	mTerrainManager.getHandler().EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_LayerUpdated));
@@ -66,7 +64,7 @@ void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader& shad
 	if (mPagedGeometry) {
 		//check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
 		bool isRelevant = false;
-		if (shader.layer.layerDef.index >= mTerrainLayerDefinition.index) {
+		if (shader.layer.terrainIndex >= mTerrainLayer.terrainIndex) {
 			isRelevant = true;
 		}
 		if (isRelevant) {
@@ -78,7 +76,7 @@ void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader& shad
 	}
 }
 
-void FoliageBase::TerrainHandler_EventShaderCreated(const TerrainLayerDefinition&) {
+void FoliageBase::TerrainHandler_EventShaderCreated(const TerrainLayer&) {
 	//we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
 	if (mPagedGeometry) {
 		mPagedGeometry->reloadGeometry();

@@ -377,7 +377,7 @@ public:
 	 *
 	 * The shader paremeter is the newly created shader.
 	 */
-	sigc::signal<void, const TerrainLayerDefinition&> EventShaderCreated;
+	sigc::signal<void, const TerrainLayer&> EventShaderCreated;
 
 	/**
 	 * @brief Emitted when the terrain becomes enabled.

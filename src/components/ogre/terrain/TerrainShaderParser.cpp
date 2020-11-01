@@ -44,17 +44,6 @@ TerrainShaderParser::TerrainShaderParser(TerrainHandler& terrainHandler) :
 
 TerrainShaderParser::~TerrainShaderParser() = default;
 
-//namespace {
-//float extractFloat(const Atlas::Message::ListType& params, size_t position) {
-//	if (params.size() > position) {
-//		const Atlas::Message::Element& elem(params[position]);
-//		if (elem.isNum()) {
-//			return elem.asNum();
-//		}
-//	}
-//	return 0;
-//}
-//}
 
 void TerrainShaderParser::createShaders(const Atlas::Message::ListType& surfaces) {
 	//For now don't allow updating of shaders.
@@ -64,7 +53,6 @@ void TerrainShaderParser::createShaders(const Atlas::Message::ListType& surfaces
 	}
 
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
-	bool isValid = false;
 	for (const auto& surfaceElement : surfaces) {
 		if (surfaceElement.isMap()) {
 			auto& surfaceMap = surfaceElement.Map();
@@ -95,7 +83,6 @@ void TerrainShaderParser::createShaders(const Atlas::Message::ListType& surfaces
 								const std::string& pattern = patternElem.String();
 								auto shader = mTerrainHandler.mShaderFactories.newShader(pattern, params);
 								if (shader) {
-									isValid = true;
 									mTerrainHandler.createShader(def, std::move(shader));
 								}
 							}
@@ -104,26 +91,6 @@ void TerrainShaderParser::createShaders(const Atlas::Message::ListType& surfaces
 				}
 			}
 		}
-	}
-
-
-	if (!isValid) {
-		createDefaultShaders();
-	}
-}
-
-void TerrainShaderParser::createDefaultShaders() {
-	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
-	Terrain::TerrainLayerDefinition* def = nullptr;
-	if ((def = terrainManager.getDefinitionForShader("rock"))) {
-		mTerrainHandler.createShader(def, std::make_unique<Mercator::FillShader>());
-	}
-	if ((def = terrainManager.getDefinitionForShader("sand"))) {
-		mTerrainHandler.createShader(def, std::make_unique<Mercator::BandShader>(-2.f, 1.5f));
-	}
-
-	if ((def = terrainManager.getDefinitionForShader("grass"))) {
-		mTerrainHandler.createShader(def, std::make_unique<Mercator::GrassShader>(1.f, 80.f, .5f, 1.f));
 	}
 }
 

@@ -45,11 +45,11 @@ namespace Environment {
 
 FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr,
 							 Terrain::TerrainManager& terrainManager,
-							 const Terrain::TerrainLayerDefinition& terrainLayerDefinition,
+							 const Terrain::TerrainLayer& terrainLayer,
 							 const Terrain::TerrainFoliageDefinition& foliageDefinition,
 							 ::Forests::PagedGeometry& pagedGeometry) :
 		mTerrainManager(terrainManager),
-		mTerrainLayerDefinition(terrainLayerDefinition),
+		mTerrainLayer(terrainLayer),
 		mFoliageDefinition(foliageDefinition),
 		mPagedGeometry(pagedGeometry),
 		mMinScale(1),
@@ -74,7 +74,7 @@ bool FoliageLoader::preparePage(::Forests::PageInfo& page) {
 		WFMath::Equal(mLatestPlantsResult->mQuery.mCenter.y, page.centerPoint.z)) {
 		return true;
 	} else {
-		PlantAreaQuery query{mTerrainLayerDefinition, mFoliageDefinition.mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
+		PlantAreaQuery query{mTerrainLayer, mFoliageDefinition.mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLoader::plantQueryExecuted);
 
 		mTerrainManager.getPlantsForArea(query, slot);

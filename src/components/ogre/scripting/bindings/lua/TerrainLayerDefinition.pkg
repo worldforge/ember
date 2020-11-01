@@ -7,7 +7,6 @@ namespace Terrain {
 
 
 struct TerrainLayerDefinition {
-	size_t index;
 	unsigned int mAreaId;
 	std::string mName;
 	std::string mDiffuseTextureName;

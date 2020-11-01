@@ -49,13 +49,13 @@ namespace OgreView {
 namespace Environment {
 
 GrassFoliage::GrassFoliage(Terrain::TerrainManager& terrainManager,
-						   Terrain::TerrainLayerDefinition terrainLayerDefinition,
+						   Terrain::TerrainLayer terrainLayer,
 						   Terrain::TerrainFoliageDefinition foliageDefinition)
-		: FoliageBase(terrainManager, std::move(terrainLayerDefinition), std::move(foliageDefinition)),
-		mMinHeight(1.0f),
-		mMaxHeight(1.5f),
-		mMinWidth(1.0f),
-		mMaxWidth(1.5f) {
+		: FoliageBase(terrainManager, std::move(terrainLayer), std::move(foliageDefinition)),
+		  mMinHeight(1.0f),
+		  mMaxHeight(1.5f),
+		  mMinWidth(1.0f),
+		  mMaxWidth(1.5f) {
 	if (mFoliageDefinition.hasParameter("minHeight")) {
 		mMinHeight = atof(mFoliageDefinition.getParameter("minHeight").c_str());
 	}
@@ -90,7 +90,7 @@ void GrassFoliage::initialize() {
 	//Add some grass to the scene with GrassLoader::addLayer()
 	FoliageLayer* l = mGrassLoader->addLayer(mFoliageDefinition.getParameter("material"));
 
-	l->configure(&mTerrainManager, &mTerrainLayerDefinition, &mFoliageDefinition);
+	l->configure(&mTerrainManager, &mTerrainLayer, &mFoliageDefinition);
 	//Configure the grass layer properties (size, density, animation properties, fade settings, etc.)
 	l->setMinimumSize(mMinWidth, mMinHeight);
 	l->setMaximumSize(mMaxWidth, mMaxHeight);

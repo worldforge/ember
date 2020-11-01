@@ -49,9 +49,9 @@ namespace OgreView {
 namespace Environment {
 
 ShrubberyFoliage::ShrubberyFoliage(Terrain::TerrainManager& terrainManager,
-								   Terrain::TerrainLayerDefinition terrainLayerDefinition,
+								   Terrain::TerrainLayer terrainLayer,
 								   Terrain::TerrainFoliageDefinition foliageDefinition)
-		: FoliageBase(terrainManager, std::move(terrainLayerDefinition), std::move(foliageDefinition)) {
+		: FoliageBase(terrainManager, std::move(terrainLayer), std::move(foliageDefinition)) {
 }
 
 ShrubberyFoliage::~ShrubberyFoliage() = default;
@@ -66,7 +66,7 @@ void ShrubberyFoliage::initialize() {
 
 	mLoader = std::make_unique<FoliageLoader>(mTerrainManager.getScene().getSceneManager(),
 											  mTerrainManager,
-											  mTerrainLayerDefinition,
+											  mTerrainLayer,
 											  mFoliageDefinition,
 											  *mPagedGeometry);
 	mPagedGeometry->setPageLoader(mLoader.get());
@@ -83,7 +83,7 @@ void ShrubberyFoliage::frameStarted() {
 		try {
 			mPagedGeometry->update();
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayerDefinition.mName << " and areaId " << mTerrainLayerDefinition.mAreaId << ". Will disable shrubbery." << ex);
+			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayer.layerDef.mName << " and areaId " << mTerrainLayer.layerDef.mAreaId << ". Will disable shrubbery." << ex);
 			mPagedGeometry.reset();
 			mLoader.reset();
 		}

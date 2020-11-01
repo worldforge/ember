@@ -209,31 +209,29 @@ TerrainHandler::ShaderEntry* TerrainHandler::createShader(const TerrainLayerDefi
 
 			TerrainHandler& mTerrainHandler;
 			Mercator::Terrain& mTerrain;
-			const TerrainLayerDefinition* mLayerDef;
+			TerrainLayer mLayer;
 			Mercator::Shader* mShader;
-			size_t mIndex;
 
-			AddShaderTask(TerrainHandler& terrainHandler, Mercator::Terrain& terrain, Mercator::Shader* shader, const TerrainLayerDefinition* layerDef, size_t index) :
+			AddShaderTask(TerrainHandler& terrainHandler, Mercator::Terrain& terrain, Mercator::Shader* shader, TerrainLayer layer) :
 					mTerrainHandler(terrainHandler),
 					mTerrain(terrain),
-					mLayerDef(layerDef),
-					mShader(shader),
-					mIndex(index) {
+					mLayer(std::move(layer)),
+					mShader(shader) {
 			}
 
 			void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override {
-				mTerrain.addShader(mShader, mIndex);
+				mTerrain.addShader(mShader, mLayer.terrainIndex);
 			}
 
 			bool executeTaskInMainThread() override {
-				mTerrainHandler.EventShaderCreated.emit(*mLayerDef);
+				mTerrainHandler.EventShaderCreated.emit(mLayer);
 				return true;
 			};
 
 		};
 
 		//mBaseShaders.emplace_back(&result.first->second.terrainShader);
-		mTaskQueue->enqueueTask(std::make_unique<AddShaderTask>(*this, *mTerrain, result.first->second.shader.get(), layerDef, index));
+		mTaskQueue->enqueueTask(std::make_unique<AddShaderTask>(*this, *mTerrain, result.first->second.shader.get(), result.first->second.layer));
 
 
 		return &result.first->second;

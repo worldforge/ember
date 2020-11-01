@@ -205,11 +205,12 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 }
 
 
-void TerrainManager::terrainHandler_ShaderCreated(const TerrainLayerDefinition& layerDefinition) {
-	size_t index = mHandler->getAllShaders().size() - 1;
-
-	for (const auto& foliage : layerDefinition.mFoliages) {
-		mVegetation->createPopulator(foliage, index);
+void TerrainManager::terrainHandler_ShaderCreated(const TerrainLayer& layer) {
+	if (mFoliage) {
+		mFoliage->initializeLayer(layer);
+		for (const auto& foliage : layer.layerDef.mFoliages) {
+			mVegetation->createPopulator(foliage, layer.terrainIndex);
+		}
 	}
 }
 
@@ -249,7 +250,7 @@ Scene& TerrainManager::getScene() const {
 }
 
 
-void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager) {
+void TerrainManager::shaderManager_LevelChanged(ShaderManager*) {
 	mHandler->updateAllPages();
 }
 
@@ -269,7 +270,6 @@ void TerrainManager::adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect) {
 
 void TerrainManager::initializeFoliage() {
 	if (mFoliage) {
-		mFoliage->initialize();
 		mFoliageDetailManager = std::make_unique<Environment::FoliageDetailManager>(*mFoliage, mGraphicalChangeAdapter);
 		mFoliageDetailManager->initialize();
 	}

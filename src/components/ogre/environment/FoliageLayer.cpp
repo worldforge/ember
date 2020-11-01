@@ -45,7 +45,7 @@ namespace Environment {
 
 FoliageLayer::FoliageLayer(::Forests::PagedGeometry* geom, GrassLoader<FoliageLayer>* ldr) :
 		mTerrainManager(nullptr),
-		mTerrainLayerDefinition(nullptr),
+		mTerrainLayer(nullptr),
 		mFoliageDefinition(nullptr),
 		mDensity(1.0f),
 		mLatestPlantsResult(nullptr) {
@@ -70,9 +70,11 @@ FoliageLayer::FoliageLayer(::Forests::PagedGeometry* geom, GrassLoader<FoliageLa
 	shaderNeedsUpdate = true;
 }
 
-void FoliageLayer::configure(Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition) {
+void FoliageLayer::configure(Terrain::TerrainManager* terrainManager,
+							 const Terrain::TerrainLayer* terrainLayer,
+							 const Terrain::TerrainFoliageDefinition* foliageDefinition) {
 	mTerrainManager = terrainManager;
-	mTerrainLayerDefinition = terrainLayerDefinition;
+	mTerrainLayer = terrainLayer;
 	mFoliageDefinition = foliageDefinition;
 	mDensity = std::stof(foliageDefinition->getParameter("density"));
 }
@@ -82,7 +84,7 @@ unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float den
 		isAvailable = true;
 		return (unsigned int) (mLatestPlantsResult->mStore.size() * densityFactor);
 	} else {
-		PlantAreaQuery query{*mTerrainLayerDefinition, mFoliageDefinition->mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
+		PlantAreaQuery query{*mTerrainLayer, mFoliageDefinition->mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLayer::plantQueryExecuted);
 
 		mTerrainManager->getPlantsForArea(query, slot);

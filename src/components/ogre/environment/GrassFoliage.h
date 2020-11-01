@@ -52,7 +52,7 @@ class FoliageLayer;
 class GrassFoliage : public FoliageBase {
 public:
 	GrassFoliage(Terrain::TerrainManager& terrainManager,
-				 Terrain::TerrainLayerDefinition terrainLayerDefinition,
+				 Terrain::TerrainLayer terrainLayer,
 				 Terrain::TerrainFoliageDefinition foliageDefinition);
 
 	~GrassFoliage() override;

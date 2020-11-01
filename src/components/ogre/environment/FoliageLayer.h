@@ -26,24 +26,25 @@
 #include "pagedgeometry/include/GrassLoader.h"
 
 #include <sigc++/trackable.h>
+#include <components/ogre/terrain/TerrainShader.h>
 
-namespace Forests
-{
-	class PagedGeometry;
-	class ColorMap;
+namespace Forests {
+class PagedGeometry;
+
+class ColorMap;
 }
-
 
 
 namespace Ember {
 namespace OgreView {
 
-namespace Terrain
-{
-	struct TerrainFoliageDefinition;
-	struct TerrainLayerDefinition;
-	class TerrainManager;
-	struct PlantAreaQueryResult;
+namespace Terrain {
+struct TerrainFoliageDefinition;
+struct TerrainLayerDefinition;
+
+class TerrainManager;
+
+struct PlantAreaQueryResult;
 }
 
 namespace Environment {
@@ -51,18 +52,19 @@ namespace Environment {
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class FoliageLayer : public Forests::GrassLayerBase, public virtual sigc::trackable
-{
+class FoliageLayer : public Forests::GrassLayerBase, public virtual sigc::trackable {
 public:
-    FoliageLayer(Forests::PagedGeometry *geom, Forests::GrassLoader<FoliageLayer> *ldr);
+	FoliageLayer(Forests::PagedGeometry* geom, Forests::GrassLoader<FoliageLayer>* ldr);
 
 	virtual ~FoliageLayer() = default;
 
 	unsigned int prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume, bool& isAvailable) override;
-	
+
 	Ogre::uint32 getColorAt(float x, float z);
-	
-	void configure(Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition);
+
+	void configure(Terrain::TerrainManager* terrainManager,
+				   const Terrain::TerrainLayer* terrainLayer,
+				   const Terrain::TerrainFoliageDefinition* foliageDefinition);
 
 	bool isColoursEnabled() const override;
 
@@ -72,20 +74,22 @@ public:
 
 	bool isCastShadowsEnabled() const override;
 
-protected: 
+protected:
 	friend class Forests::GrassLoader<FoliageLayer>;
 
 	//Used by GrassLoader::loadPage() - populates an array with grass.
 	//Returns the final number of grasses, which will always be <= grassCount
-	unsigned int _populateGrassList(Forests::PageInfo page, float *posBuff, unsigned int grassCount) override;
-	Forests::GrassLoader<FoliageLayer> *parent;
-	
+	unsigned int _populateGrassList(Forests::PageInfo page, float* posBuff, unsigned int grassCount) override;
+
+	Forests::GrassLoader<FoliageLayer>* parent;
+
 	Terrain::TerrainManager* mTerrainManager;
-	const Terrain::TerrainLayerDefinition* mTerrainLayerDefinition;
+	const Terrain::TerrainLayer* mTerrainLayer;
 	const Terrain::TerrainFoliageDefinition* mFoliageDefinition;
 	float mDensity;
-	
+
 	const Terrain::PlantAreaQueryResult* mLatestPlantsResult;
+
 	void plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult);
 
 };

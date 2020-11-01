@@ -23,6 +23,7 @@
 #include "domain/IHeightProvider.h"
 #include "framework/ConsoleObject.h"
 #include "services/config/ConfigListenerContainer.h"
+#include "TerrainShader.h"
 
 #include <wfmath/point.h> //needed for the terrain position
 
@@ -334,7 +335,7 @@ protected:
 
 	void terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages);
 
-	void terrainHandler_ShaderCreated(const TerrainLayerDefinition& layerDefinition);
+	void terrainHandler_ShaderCreated(const Terrain::TerrainLayer& layer);
 
 	void terrainHandler_WorldSizeChanged();
 
