@@ -44,7 +44,6 @@ add_library(widgets OBJECT
         QuickHelpCursor.cpp
         HelpMessage.cpp
         WorldLoadingScreen.cpp
-        StackableContainer.cpp
         Vector3Adapter.cpp
         Widget.cpp
         WidgetDefinitions.cpp

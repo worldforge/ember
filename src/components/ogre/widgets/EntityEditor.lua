@@ -614,14 +614,6 @@ EntityEditor.prototypes =
 			return ownerElement == nil
 		end
 	},
-	style = {
-		adapter = EntityEditor.adapters.string,
-		suggestions = {
-			"gnarly",
-			"knotted",
-			"weathered"
-		}
-	},
 	terrain = {
 		--TODO: supply a terrain adapter which opens the terrain editor
 		adapter = EntityEditor.adapters.terrain,
@@ -634,14 +626,6 @@ EntityEditor.prototypes =
 	terrainmod = {
 		adapter = EntityEditor.adapters.terrainmod,
 		help = "Allows the entity to perform modifications to the terrain.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--only show on top level
-			return ownerElement == nil
-		end
-	},
-	stamina = {
-		adapter = EntityEditor.adapters.float,
-		help = "The current stamina of the entity. Only applicable to living things.",
 		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
@@ -666,16 +650,6 @@ EntityEditor.prototypes =
 	solid = {
 		adapter = EntityEditor.adapters.boolean,
 		help = "Determines if the entity is solid, i.e. reacts to collisions.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--only show on top level
-			return ownerElement == nil
-		end,
-		suggestions = {
-			0,1
-		}
-	},
-	simple = {
-		adapter = EntityEditor.adapters.boolean,
 		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
@@ -709,14 +683,6 @@ EntityEditor.prototypes =
 			"swimming"
 		}
 	},
-	statistics = {
-		adapter = EntityEditor.adapters.map,
-		help = "Allows for game rule specific values.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--only show on top level
-			return ownerElement == nil
-		end
-	},
 	biomass = {
 		adapter = EntityEditor.adapters.float,
 		shouldAddSuggestion = function(ownerElement, entity)
@@ -740,12 +706,10 @@ EntityEditor.prototypes =
 			return ownerElement == nil
 		end
 	},
-	food = {
+    _nutrients = {
 		adapter = EntityEditor.adapters.float,
 		help = "The current amount of food in the entities stomach. This interacts with metabolism and is only applicable to living entities.",
 		shouldAddSuggestion = function(ownerElement, entity)
-			--TODO: check that the entity is a living entity
-			--only show on top level
 			return ownerElement == nil
 		end
 	},
@@ -765,30 +729,19 @@ EntityEditor.prototypes =
 			return ownerElement == nil
 		end
 	},
-	spawn = {
-		--TODO: make spawn adapter
-		adapter = EntityEditor.adapters.map,
-		help = "Defines a new spawn point, in which new entities can be created.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--only show on top level
-			return ownerElement == nil
-		end
-	},
-	spawner = {
-		adapter = EntityEditor.adapters.map,
-		help = "Makes this entity automatically spawn other entities.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--only show on top level
-			return ownerElement == nil
-		end
-	},
 	visibility = {
-		adapter = EntityEditor.adapters.float,
-		help = "Allows overriding of visibility calculated by the 'bbox' property.",
+		adapter = EntityEditor.adapters.string,
+		help = "Determines what other entities are allowed to see this entity.",
 		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
-		end
+		end,
+        suggestions = {
+            " ",
+            "public",
+            "protected",
+            "private"
+        }
 	},
 	linked = {
 		adapter = EntityEditor.adapters.string,
@@ -798,63 +751,11 @@ EntityEditor.prototypes =
 			return ownerElement == nil
 		end
 	},
-	fruitChance = {
-		adapter = EntityEditor.adapters.float,
-		help = "Only applies to plants. Specifies the chance of a fruit being generated each tick. A value of 1.0 means that a fruit will be generated each tick, anything higher decreases the chance.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--Only apply to plants
-			local plantType = emberOgre:getWorld():getView():getAvatar():getConnection():getTypeService():getTypeByName("plant")
-			if plantType then
-				return entity:getType():isA(plantType)
-			end
-			return false
-		end
-	},
-	fruitName = {
-		adapter = EntityEditor.adapters.string,
-		help = "Only applies to plants. The type of fruits this plant generates.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--Only apply to plants
-			local plantType = emberOgre:getWorld():getView():getAvatar():getConnection():getTypeService():getTypeByName("plant")
-			if plantType then
-				return entity:getType():isA(plantType)
-			end
-			return false
-		end
-	},
-	fruits = {
-		adapter = EntityEditor.adapters.integer,
-		help = "Only applies to plants. The number of fruits currently on the plant.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--Only apply to plants
-			local plantType = emberOgre:getWorld():getView():getAvatar():getConnection():getTypeService():getTypeByName("plant")
-			if plantType then
-				return entity:getType():isA(plantType)
-			end
-			return false
-		end
-	},
-	sizeAdult = {
-		adapter = EntityEditor.adapters.float,
-		help = "Only applies to plants. Specifies the height when the plant is considered an adult, and can begin to create fruits.",
-		shouldAddSuggestion = function(ownerElement, entity)
-			--Only apply to plants
-			local plantType = emberOgre:getWorld():getView():getAvatar():getConnection():getTypeService():getTypeByName("plant")
-			if plantType then
-				return entity:getType():isA(plantType)
-			end
-			return false
-		end
-	},
-	--Ignore geometry for now, as it's often too large.
 	--TODO: implement geometry display
 	geometry = {
 		nodelete = true,
 		--    adapter = EntityEditor.adapters.static
 		adapter = nil
-	},
-	attached_hand_primary= {
-		adapter = EntityEditor.adapters.entityRef
 	}
 }
 EntityEditor.defaultPrototypes =
@@ -876,6 +777,7 @@ EntityEditor.defaultPrototypes =
 	}
 }
 
+--TODO: update all of these for the new goals
 EntityEditor.goalPrototypes = {
 	deeds = {
 		welcome = {

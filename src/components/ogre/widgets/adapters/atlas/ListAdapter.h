@@ -24,7 +24,6 @@
 #define EMBEROGRE_GUI_ADAPTERS_ATLASLISTADAPTER_H
 
 #include "AdapterBase.h"
-// #include "components/ogre/widgets/StackableContainer.h"
 
 
 namespace CEGUI {
@@ -59,7 +58,6 @@ public:
 	*/
 	void updateGui(const ::Atlas::Message::Element& element) override;
 
-//     void addAttributeAdapter(int index, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
 	void addAttributeAdapter(Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow);
 
 	void removeAdapters();
@@ -68,7 +66,6 @@ protected:
 	typedef std::vector<AdapterWrapper> AdapterStore;
 
 	CEGUI::Window* mChildContainer;
-// 	StackableContainer mStackableContainer;
 	const ::Atlas::Message::ListType& mAttributes;
 
 	AdapterStore mAdapters;

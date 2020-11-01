@@ -40,13 +40,13 @@ namespace Adapters {
 namespace Atlas {
 
 ListAdapter::ListAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer)
-		: AdapterBase(element), mChildContainer(childContainer), mAttributes(element.asList()) {
+		: AdapterBase(element),
+		  mChildContainer(childContainer),
+		  mAttributes(element.asList()) {
 }
 
 
-ListAdapter::~ListAdapter() {
-	removeAdapters();
-}
+ListAdapter::~ListAdapter() = default;
 
 size_t ListAdapter::getSize() {
 	return mAttributes.size();

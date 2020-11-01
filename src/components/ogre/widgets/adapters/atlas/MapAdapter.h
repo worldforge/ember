@@ -24,7 +24,6 @@
 #define EMBEROGRE_GUI_ADAPTERS_ATLASMAPADAPTER_H
 
 #include "AdapterBase.h"
-#include "components/ogre/widgets/StackableContainer.h"
 
 
 namespace CEGUI {
@@ -80,7 +79,6 @@ protected:
 	typedef std::map<std::string, AdapterWrapper> AdapterStore;
 
 	CEGUI::Window* mChildContainer;
-// 	StackableContainer mStackableContainer;
 	const ::Atlas::Message::MapType& mAttributes;
 
 	AdapterStore mAdapters;
