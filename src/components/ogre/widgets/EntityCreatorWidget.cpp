@@ -572,11 +572,26 @@ void EntityCreatorWidget::showType(const std::string& typeName) {
 	parentElement.InsertEndChild(TiXmlText(typeName));
 	xml->InsertEndChild(parentElement);
 
+	//Add a "scale" adapter to all type creations, since you often want to scale the entity.
+	TiXmlElement scaleElement("list");
+	scaleElement.SetAttribute("name", "scale");
+	scaleElement.SetAttribute("optional", "scale");
+	TiXmlElement floatElement("float");
+	floatElement.InsertEndChild(TiXmlText("$scale"));
+	scaleElement.InsertEndChild(floatElement);
+	xml->InsertEndChild(scaleElement);
+
+
 	std::vector<std::unique_ptr<TiXmlElement>> entities;
 	entities.emplace_back(std::move(xml));
 
-
-	showRecipe(std::make_shared<Authoring::EntityRecipe>(std::move(entities)));
+	auto recipe = std::make_shared<Authoring::EntityRecipe>(std::move(entities));
+	auto adapter = std::make_unique<Authoring::GUIAdapter>();
+	adapter->mType = "number_range";
+	adapter->mTitle = "Scale";
+	adapter->mAllowRandom = true;
+	recipe->addGUIAdapter("scale", std::move(adapter));
+	showRecipe(recipe);
 }
 
 std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> EntityCreatorWidget::attachToGuiAdapter(Authoring::GUIAdapter& guiAdapter, CEGUI::Window* window) {
