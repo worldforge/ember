@@ -88,6 +88,9 @@ void ListAdapter::addAttributeAdapter(Adapters::Atlas::AdapterBase* adapter, CEG
 	if (adapter) {
 		AdapterWrapper wrapper;
 		wrapper.Adapter.reset(adapter);
+		if (containerWindow) {
+			containerWindow->setDestroyedByParent(false);
+		}
 		wrapper.ContainerWindow.reset(containerWindow);
 		mAdapters.emplace_back(std::move(wrapper));
 	} else {

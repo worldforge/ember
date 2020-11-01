@@ -42,14 +42,13 @@ namespace Atlas {
 
 
 MapAdapter::MapAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* childContainer)
-		: AdapterBase(element), mChildContainer(childContainer),
+		: AdapterBase(element),
+		  mChildContainer(childContainer),
 		  mAttributes(element.asMap()) {
 }
 
 
-MapAdapter::~MapAdapter() {
-	removeAdapters();
-}
+MapAdapter::~MapAdapter() = default;
 
 const ::Atlas::Message::Element& MapAdapter::valueOfAttr(const std::string& attr) const {
 	static Element emptyElement;
@@ -70,7 +69,6 @@ void MapAdapter::updateGui(const ::Atlas::Message::Element& element) {
 
 
 void MapAdapter::fillElementFromGui() {
-
 }
 
 bool MapAdapter::_hasChanges() {
@@ -86,7 +84,7 @@ bool MapAdapter::_hasChanges() {
 std::vector<std::string> MapAdapter::getAttributeNames() {
 	std::vector<std::string> attributeNames;
 	for (const auto& attribute : mAttributes) {
-		attributeNames.push_back(attribute.first);
+		attributeNames.emplace_back(attribute.first);
 	}
 	return attributeNames;
 }
@@ -94,6 +92,9 @@ std::vector<std::string> MapAdapter::getAttributeNames() {
 void MapAdapter::addAttributeAdapter(const std::string& attributeName, Adapters::Atlas::AdapterBase* adapter, CEGUI::Window* containerWindow) {
 	AdapterWrapper wrapper;
 	wrapper.Adapter.reset(adapter);
+	if (containerWindow) {
+		containerWindow->setDestroyedByParent(false);
+	}
 	wrapper.ContainerWindow.reset(containerWindow);
 	mAdapters.emplace(attributeName, std::move(wrapper));
 }
@@ -107,7 +108,7 @@ void MapAdapter::removeAdapters() {
 	for (auto& item : mAdapters) {
 		auto& adapter = item.second.Adapter;
 		if (!adapter->isRemoved()) {
-			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(item.first, adapter->getChangedElement()));
+			attributes.emplace(item.first, adapter->getChangedElement());
 		}
 	}
 	return Element(attributes);
@@ -118,7 +119,7 @@ void MapAdapter::removeAdapters() {
 	for (auto& item : mAdapters) {
 		auto& adapter = item.second.Adapter;
 		if (adapter->hasChanges() && !adapter->isRemoved()) {
-			attributes.insert(std::map<std::string, ::Atlas::Message::Element>::value_type(item.first, adapter->getChangedElement()));
+			attributes.emplace(item.first, adapter->getChangedElement());
 		}
 	}
 	return Element(attributes);
