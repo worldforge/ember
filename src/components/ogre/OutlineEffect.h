@@ -77,11 +77,6 @@ protected:
 		 */
 		std::vector<std::uint8_t> originalRenderQueueGroups;
 
-		/**
-		 * The model representing the entity.
-		 */
-		Model::Model* model = nullptr;
-
 	};
 
 	/**

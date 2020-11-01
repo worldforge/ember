@@ -76,8 +76,6 @@ OutlineEffect::OutlineEffect(Scene& scene, EmberEntity& entity)
 	scene.getSceneManager().addRenderQueueListener(mStencilOpQueueListener.get());
 	auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(entity.getGraphicalRepresentation());
 	if (modelRep && modelRep->getModel().getNodeProvider()) {
-		mOutline.model = &modelRep->getModel();
-
 		if (modelRep->getModel().useInstancing()) {
 			modelRep->getModel().doWithMovables([](Ogre::MovableObject* movable, int index) {
 				if (movable->getMovableType() == "InstancedEntity") {
@@ -144,22 +142,20 @@ OutlineEffect::OutlineEffect(Scene& scene, EmberEntity& entity)
 
 OutlineEffect::~OutlineEffect() {
 	mScene.getSceneManager().removeRenderQueueListener(mStencilOpQueueListener.get());
-	for (auto& entity: mOutline.generatedEntities) {
-		if (mOutline.model && mOutline.model->getNodeProvider()) {
-			mOutline.model->getNodeProvider()->detachObject(entity);
-		}
-		mScene.getSceneManager().destroyMovableObject(entity);
-	}
-	for (auto& material: mOutline.generatedMaterials) {
-		material->getCreator()->remove(material);
-	}
 
 	if (mSelectedEntity) {
 		auto& oldEmberEntity = *mSelectedEntity;
 		auto* modelRep = dynamic_cast<Model::ModelRepresentation*>(oldEmberEntity.getGraphicalRepresentation());
 
 		if (modelRep) {
+
 			auto& model = modelRep->getModel();
+			for (auto& entity: mOutline.generatedEntities) {
+				if (model.getNodeProvider()) {
+					model.getNodeProvider()->detachObject(entity);
+				}
+			}
+
 			if (model.useInstancing()) {
 				model.doWithMovables([](Ogre::MovableObject* movable, int index) {
 					if (movable->getMovableType() == "InstancedEntity") {
@@ -183,6 +179,12 @@ OutlineEffect::~OutlineEffect() {
 				submodelI++;
 			}
 		}
+	}
+	for (auto& entity: mOutline.generatedEntities) {
+		mScene.getSceneManager().destroyMovableObject(entity);
+	}
+	for (auto& material: mOutline.generatedMaterials) {
+		material->getCreator()->remove(material);
 	}
 }
 }
