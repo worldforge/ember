@@ -19,9 +19,8 @@
 #ifndef TERRAINSHADER_H
 #define TERRAINSHADER_H
 
-#include <memory>
+#include "TerrainLayerDefinition.h"
 #include <Mercator/Shader.h>
-#include <Mercator/Terrain.h>
 
 namespace Ember {
 namespace OgreView {
@@ -29,36 +28,17 @@ namespace Terrain {
 
 struct TerrainLayerDefinition;
 
-class TerrainShader {
-public:
-
-	TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const TerrainLayerDefinition& layerDef, std::unique_ptr<Mercator::Shader> shader);
-
-	~TerrainShader();
-
-	const Mercator::Shader& getShader() const;
-
-	int getTerrainIndex() const;
-
-	/**
-	 * @brief Returns the Surface for the given segment.
-	 * @param segment
-	 * @return a surface, or null if no could be found
-	 */
-	Mercator::Surface* getSurfaceForSegment(Mercator::Segment& segment) const;
-
-	const TerrainLayerDefinition& getLayerDefinition() const;
-
-protected:
-	const TerrainLayerDefinition& mLayerDef;
-	std::unique_ptr<Mercator::Shader> mShader;
-	Mercator::Terrain& mTerrain;
-	int mTerrainIndex;
+struct TerrainLayer {
+	const TerrainLayerDefinition layerDef;
+	int terrainIndex;
 };
 
-inline int TerrainShader::getTerrainIndex() const {
-	return mTerrainIndex;
-}
+
+struct TerrainShader {
+	TerrainLayer layer;
+	Mercator::Shader& shader;
+};
+
 
 
 }

@@ -33,8 +33,7 @@ namespace Tasks {
  * @brief An utility subclass of ITask which will provide automatic templated typeinfo discovery for the ITask::getName method.
  */
 template<typename T>
-class TemplateNamedTask : public ITask {
-public:
+struct TemplateNamedTask : public ITask {
 
 	std::string getName() const override {
 		return typeid(T).name();

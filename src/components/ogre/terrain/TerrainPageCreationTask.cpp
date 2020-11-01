@@ -51,10 +51,15 @@ TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler,
 void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
-	auto& baseShaders = mTerrainHandler.getBaseShaders();
-	for (auto baseShader : baseShaders) {
-		mPage->addShader(baseShader);
+	std::vector<TerrainShader> shaders;
+	shaders.reserve(mTerrainHandler.getAllShaders().size());
+
+
+	for (auto& entry : mTerrainHandler.getAllShaders()) {
+		shaders.push_back(TerrainShader{entry.second.layer, *entry.second.shader});
+		mPage->addShader(entry.second.layer.layerDef, entry.second.layer.terrainIndex, *entry.second.shader);
 	}
+
 
 	auto geometryInstance = std::make_unique<TerrainPageGeometry>(*mPage, mTerrainHandler.getSegmentManager(), mTerrainHandler.getDefaultHeight());
 	BridgeBoundGeometryPtrVector geometry;
@@ -62,11 +67,6 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 	std::vector<WFMath::AxisBox<2>> areas;
 	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
-	std::vector<const TerrainShader*> shaders;
-	shaders.reserve(mTerrainHandler.getAllShaders().size());
-	for (auto& entry : mTerrainHandler.getAllShaders()) {
-		shaders.push_back(entry.second.get());
-	}
 	context.executeTask(std::make_unique<GeometryUpdateTask>(std::move(geometry), areas, mTerrainHandler, std::move(shaders), mHeightMapBufferProvider, mHeightMap));
 
 }

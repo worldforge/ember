@@ -32,13 +32,13 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(GeometryPtrVector geometry,
-															   sigc::signal<void, TerrainPage*>& signal) :
+															   sigc::signal<void, TerrainPage&>& signal) :
 		mGeometry(std::move(geometry)),
 		mSignal(signal) {
 }
 
 TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry,
-															   sigc::signal<void, TerrainPage*>& signal) :
+															   sigc::signal<void, TerrainPage&>& signal) :
 		mSignal(signal) {
 	mGeometry.push_back(std::move(geometry));
 }
@@ -67,7 +67,7 @@ bool TerrainMaterialCompilationTask::executeTaskInMainThread() {
 		S_LOG_VERBOSE("Compiling terrain page composite map material");
 		compilationInstance->compileCompositeMap(page->getCompositeMapMaterial());
 		S_LOG_VERBOSE("Recompiled material for terrain page " << "[" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]");
-		mSignal(page); // Notify the terrain system of the material change
+		mSignal(*page); // Notify the terrain system of the material change
 		std::stringstream ss;
 		ss << "Compiled for page [" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]";
 		timedLog.report(ss.str());

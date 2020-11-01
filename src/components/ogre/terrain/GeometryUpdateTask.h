@@ -37,14 +37,14 @@ class HeightMapBufferProvider;
 
 class HeightMap;
 
-class TerrainShader;
+struct TerrainShader;
 
 class GeometryUpdateTask : public Tasks::TemplateNamedTask<GeometryUpdateTask> {
 public:
 	GeometryUpdateTask(BridgeBoundGeometryPtrVector geometry,
 					   std::vector<WFMath::AxisBox<2>> areas,
 					   TerrainHandler& handler,
-					   std::vector<const Terrain::TerrainShader*> shaders,
+					   std::vector<Terrain::TerrainShader> shaders,
 					   HeightMapBufferProvider& heightMapBufferProvider,
 					   HeightMap& heightMap);
 
@@ -59,7 +59,7 @@ private:
 	BridgeBoundGeometryPtrVector mGeometry;
 	const std::vector<WFMath::AxisBox<2>> mAreas;
 	TerrainHandler& mHandler;
-	std::vector<const Terrain::TerrainShader*> mShaders;
+	std::vector<Terrain::TerrainShader> mShaders;
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;
 	std::set<TerrainPage*> mPages;

@@ -108,17 +108,16 @@ const TerrainPageSurface* TerrainPage::getSurface() const {
 	return mTerrainSurface.get();
 }
 
-void TerrainPage::addShader(const TerrainShader* shader) {
-	mTerrainSurface->createSurfaceLayer(shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());
-	auto I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
+void TerrainPage::addShader(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader) {
+	mTerrainSurface->createSurfaceLayer(definition, surfaceIndex, shader);
+	auto I = mTerrainSurface->getLayers().find(surfaceIndex);
 	if (I != mTerrainSurface->getLayers().end()) {
 		auto& layer = I->second;
-		auto& definition = shader->getLayerDefinition();
 
 		layer->setDiffuseTextureName(definition.mDiffuseTextureName);
 		layer->setNormalTextureName(definition.mNormalMapTextureName);
 		//get the scale by dividing the total size of the page with the size of each tile
-		float scale = getBlendMapSize() / definition.mTileSize;
+		float scale = (float) getBlendMapSize() / definition.mTileSize;
 		layer->setScale(scale);
 	}
 }
@@ -130,12 +129,16 @@ void TerrainPage::updateAllShaderTextures(TerrainPageGeometry& geometry, bool re
 	}
 }
 
-void TerrainPage::updateShaderTexture(const TerrainShader* shader, TerrainPageGeometry& geometry, bool repopulate) {
-	auto I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
+void TerrainPage::updateShaderTexture(const TerrainLayerDefinition& definition,
+									  int surfaceIndex,
+									  const Mercator::Shader& shader,
+									  TerrainPageGeometry& geometry,
+									  bool repopulate) {
+	auto I = mTerrainSurface->getLayers().find(surfaceIndex);
 	if (I == mTerrainSurface->getLayers().end()) {
-		addShader(shader);
+		addShader(definition, surfaceIndex, shader);
 	}
-	mTerrainSurface->updateLayer(geometry, shader->getTerrainIndex(), repopulate);
+	mTerrainSurface->updateLayer(geometry, surfaceIndex, repopulate);
 
 }
 

@@ -36,7 +36,7 @@ namespace Terrain {
 GeometryUpdateTask::GeometryUpdateTask(BridgeBoundGeometryPtrVector pages,
 									   std::vector<WFMath::AxisBox<2>> areas,
 									   TerrainHandler& handler,
-									   std::vector<const Terrain::TerrainShader*> shaders,
+									   std::vector<Terrain::TerrainShader> shaders,
 									   HeightMapBufferProvider& heightMapBufferProvider,
 									   HeightMap& heightMap) :
 		mGeometry(std::move(pages)),
@@ -62,7 +62,11 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
 
-		context.executeTask(std::make_unique<TerrainShaderUpdateTask>(geometries, mShaders, mAreas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled));
+		context.executeTask(std::make_unique<TerrainShaderUpdateTask>(geometries,
+																	  mShaders,
+																	  mAreas,
+																	  mHandler.EventLayerUpdated,
+																	  mHandler.EventTerrainMaterialRecompiled));
 	}
 	context.executeTask(std::make_unique<HeightMapUpdateTask>(mHeightMapBufferProvider, mHeightMap, segments));
 

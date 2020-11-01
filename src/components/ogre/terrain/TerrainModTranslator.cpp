@@ -163,7 +163,7 @@ float TerrainModTranslator::parsePosition(const WFMath::Point<3>& pos, const Map
 		if (I != modElement.end()) {
 			const Element& modHeightElem = I->second;
 			if (modHeightElem.isNum()) {
-				float heightoffset = modHeightElem.asNum();
+				auto heightoffset = modHeightElem.asNum();
 				return pos.y() + heightoffset;
 			}
 		}

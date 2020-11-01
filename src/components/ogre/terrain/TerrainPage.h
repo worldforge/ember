@@ -39,12 +39,14 @@ class Vector;
 
 namespace Mercator {
 class Segment;
+
+class Shader;
 }
 
 namespace Ember {
 namespace OgreView {
 namespace Terrain {
-class TerrainShader;
+struct TerrainShader;
 
 class TerrainPageSurface;
 
@@ -55,6 +57,8 @@ class TerrainPageSurfaceLayer;
 class TerrainPageGeometry;
 
 struct ICompilerTechniqueProvider;
+
+struct TerrainLayerDefinition;
 
 /**
 
@@ -124,15 +128,18 @@ public:
 
 	/**
 	 * @brief Adds a shader to the page, meaning that it will be used in rendering.
-	 * @param shader The new shader to add.
 	 */
-	void addShader(const TerrainShader* shader);
+	void addShader(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader);
 
 	/**
 	 * @brief Updates the shader texture for the specific shader.
 	 * @param shader The shader to update.
 	 */
-	void updateShaderTexture(const TerrainShader* shader, TerrainPageGeometry& geometry, bool repopulate = true);
+	void updateShaderTexture(const TerrainLayerDefinition& definition,
+							 int surfaceIndex,
+							 const Mercator::Shader& shader,
+							 TerrainPageGeometry& geometry,
+							 bool repopulate = true);
 
 	/**
 	 * @brief Updates all the shader textures of the page.

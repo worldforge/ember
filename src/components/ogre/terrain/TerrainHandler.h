@@ -22,6 +22,7 @@
 #include "Types.h"
 #include "domain/IHeightProvider.h"
 #include "TerrainModTranslator.h"
+#include "TerrainShader.h"
 
 #include <wfmath/vector.h>
 
@@ -62,7 +63,7 @@ struct ILightning;
 
 namespace Terrain {
 
-class TerrainShader;
+struct TerrainShader;
 
 class TerrainInfo;
 
@@ -107,6 +108,10 @@ class PlantPopulator;
  */
 class TerrainHandler : public virtual sigc::trackable, public Ember::IHeightProvider {
 public:
+	struct ShaderEntry {
+		TerrainLayer layer;
+		std::unique_ptr<Mercator::Shader> shader;
+	};
 
 	/**
 	 * @brief Ctor.
@@ -214,7 +219,7 @@ public:
 	 * @param mercatorShader The Mercator::Shader to use.
 	 * @return
 	 */
-	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, std::unique_ptr<Mercator::Shader> mercatorShader);
+	TerrainHandler::ShaderEntry* createShader(const TerrainLayerDefinition* layerDef, std::unique_ptr<Mercator::Shader> mercatorShader);
 
 	/**
 	 * @brief Sets up a TerrainPage.
@@ -321,7 +326,7 @@ public:
 	 *
 	 * @returns A store of all the shaders registered with the manager.
 	 */
-	const std::map<const Mercator::Shader*, std::unique_ptr<TerrainShader>>& getAllShaders() const;
+	const std::map<size_t, ShaderEntry>& getAllShaders() const;
 
 	/**
 	 * @brief Gets the default height of any uninitialized or undefined terrain.
@@ -365,14 +370,14 @@ public:
 	 *
 	 * The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	 */
-	sigc::signal<void, const TerrainShader*, const AreaStore&> EventLayerUpdated;
+	sigc::signal<void, const TerrainShader&, const AreaStore&> EventLayerUpdated;
 
 	/**
 	 * @brief Emitted when a new shader is created.
 	 *
 	 * The shader paremeter is the newly created shader.
 	 */
-	sigc::signal<void, const TerrainShader&> EventShaderCreated;
+	sigc::signal<void, const TerrainLayerDefinition&> EventShaderCreated;
 
 	/**
 	 * @brief Emitted when the terrain becomes enabled.
@@ -412,7 +417,7 @@ public:
 	/**
 	 * @brief Emitted after a terrain material has been recompiled.
 	 */
-	sigc::signal<void, TerrainPage*> EventTerrainMaterialRecompiled;
+	sigc::signal<void, TerrainPage&> EventTerrainMaterialRecompiled;
 
 protected:
 
@@ -462,7 +467,7 @@ protected:
 	/**
 	 * @brief Holds a map of the TerrainShaders.
 	 */
-	std::map<const Mercator::Shader*, std::unique_ptr<TerrainShader>> mShaderMap;
+	std::map<size_t, ShaderEntry> mShaderMap;
 
 	/**
 	 * @brief A collection of all the pages used by the handler.
@@ -479,7 +484,7 @@ protected:
 	/**
 	 * @brief We use this to keep track on the terrain shaders used for areas, stored with the layer id as the key.
 	 */
-	std::map<int, const TerrainShader*> mAreaShaders;
+	std::map<int, const ShaderEntry*> mAreaShaders;
 
 	/**
 	 * @brief A store of terrain bridges, which acts as an interface to the Ogre representation of the terrain.
@@ -493,7 +498,7 @@ protected:
 	 * @see markShaderForUpdate
 	 * @see frameEnded
 	 */
-	std::map<const TerrainShader*, ShaderUpdateRequest> mShadersToUpdate;
+	std::map<int, ShaderUpdateRequest> mShadersToUpdate;
 
 
 	/**

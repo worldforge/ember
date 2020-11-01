@@ -33,7 +33,7 @@
 #include "TerrainPageDeletionTask.h"
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainAreaUpdateTask.h"
-#include <components/ogre/terrain/TerrainModUpdateTask.h>
+#include "TerrainModUpdateTask.h"
 #include "TerrainUpdateTask.h"
 
 #include "TerrainLayerDefinitionManager.h"
@@ -99,14 +99,14 @@ private:
 	TerrainHandler& mHandler;
 	ITerrainPageBridgePtr mBridge;
 	std::unique_ptr<TerrainPageGeometry> mGeometry;
-	const std::vector<const TerrainShader*> mShaders;
+	const std::vector<TerrainShader> mShaders;
 	const WFMath::AxisBox<2> mArea;
 
 public:
 	TerrainPageReloadTask(TerrainHandler& handler,
 						  ITerrainPageBridgePtr bridge,
 						  std::unique_ptr<TerrainPageGeometry> geometry,
-						  std::vector<const TerrainShader*> shaders,
+						  std::vector<TerrainShader> shaders,
 						  const WFMath::AxisBox<2>& area) :
 			mHandler(handler),
 			mBridge(std::move(bridge)),
@@ -191,17 +191,52 @@ void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstor
 	mTaskQueue->enqueueTask(std::make_unique<BasePointRetrieveTask>(*mTerrain, asyncCallback));
 }
 
-TerrainShader* TerrainHandler::createShader(const TerrainLayerDefinition* layerDef, std::unique_ptr<Mercator::Shader> mercatorShader) {
+TerrainHandler::ShaderEntry* TerrainHandler::createShader(const TerrainLayerDefinition* layerDef, std::unique_ptr<Mercator::Shader> mercatorShader) {
 	size_t index = mShaderMap.size();
 	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->mShaderName << " with index " << index);
-	auto shader = std::make_unique<TerrainShader>(*mTerrain, index, *layerDef, std::move(mercatorShader));
 
-	auto result = mShaderMap.emplace(&shader->getShader(), std::move(shader));
+	ShaderEntry entry{
+			TerrainLayer{*layerDef, (int) index},
+			std::move(mercatorShader)
+	};
 
+	auto result = mShaderMap.emplace(index, std::move(entry));
+
+	//TODO: should we instead do this in the task on the main thread? What are the consequences?
 	if (result.second) {
-		mBaseShaders.emplace_back(result.first->second.get());
-		EventShaderCreated.emit(*result.first->second);
-		return result.first->second.get();
+
+		struct AddShaderTask : public Tasks::TemplateNamedTask<AddShaderTask> {
+
+			TerrainHandler& mTerrainHandler;
+			Mercator::Terrain& mTerrain;
+			const TerrainLayerDefinition* mLayerDef;
+			Mercator::Shader* mShader;
+			size_t mIndex;
+
+			AddShaderTask(TerrainHandler& terrainHandler, Mercator::Terrain& terrain, Mercator::Shader* shader, const TerrainLayerDefinition* layerDef, size_t index) :
+					mTerrainHandler(terrainHandler),
+					mTerrain(terrain),
+					mLayerDef(layerDef),
+					mShader(shader),
+					mIndex(index) {
+			}
+
+			void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) override {
+				mTerrain.addShader(mShader, mIndex);
+			}
+
+			bool executeTaskInMainThread() override {
+				mTerrainHandler.EventShaderCreated.emit(*mLayerDef);
+				return true;
+			};
+
+		};
+
+		//mBaseShaders.emplace_back(&result.first->second.terrainShader);
+		mTaskQueue->enqueueTask(std::make_unique<AddShaderTask>(*this, *mTerrain, result.first->second.shader.get(), layerDef, index));
+
+
+		return &result.first->second;
 	} else {
 		return nullptr;
 	}
@@ -214,11 +249,11 @@ void TerrainHandler::markShaderForUpdate(int layer, const WFMath::AxisBox<2>& af
 			//Create new layer
 			const TerrainLayerDefinition* layerDef = TerrainLayerDefinitionManager::getSingleton().getDefinitionForArea(layer);
 			if (layerDef) {
-				TerrainShader* shader = createShader(layerDef, std::make_unique<Mercator::AreaShader>(layer));
-				mAreaShaders[layer] = shader;
+				auto entry = createShader(layerDef, std::make_unique<Mercator::AreaShader>(layer));
+				mAreaShaders[layer] = entry;
 			}
 		} else {
-			ShaderUpdateRequest& updateRequest = mShadersToUpdate[I->second];
+			ShaderUpdateRequest& updateRequest = mShadersToUpdate[I->second->layer.terrainIndex];
 			updateRequest.Areas.push_back(affectedArea);
 			mEventService.runOnMainThread([&]() {
 				updateShaders();
@@ -227,7 +262,7 @@ void TerrainHandler::markShaderForUpdate(int layer, const WFMath::AxisBox<2>& af
 	}
 }
 
-const std::map<const Mercator::Shader*, std::unique_ptr<TerrainShader>>& TerrainHandler::getAllShaders() const {
+const std::map<size_t, TerrainHandler::ShaderEntry>& TerrainHandler::getAllShaders() const {
 	return mShaderMap;
 }
 
@@ -273,8 +308,8 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 
 	TerrainPosition wfPos(Convert::toWF(query.mCenter));
 
-	TerrainIndex index(static_cast<int>(std::floor(query.mCenter.x / (mPageIndexSize - 1))),
-					   static_cast<int>(-std::floor(query.mCenter.y / (mPageIndexSize - 1))));
+	TerrainIndex index(static_cast<int>(std::floor(query.mCenter.x / ((float) mPageIndexSize - 1.0f))),
+					   static_cast<int>(-std::floor(query.mCenter.y / ((float) mPageIndexSize - 1.0f))));
 
 	//If there's either no terrain page created, or it's not shown, we shouldn't create any foliage at this moment.
 	//Later on when the terrain page actually is shown, the TerrainManager::EventTerrainShown signal will be emitted
@@ -323,12 +358,16 @@ void TerrainHandler::updateShaders() {
 		}
 		//use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
 		for (auto& entry : mShadersToUpdate) {
-			mTaskQueue->enqueueTask(std::make_unique<TerrainShaderUpdateTask>(geometry,
-																			  entry.first,
-																			  entry.second.Areas,
-																			  EventLayerUpdated,
-																			  EventTerrainMaterialRecompiled)
-			);
+			auto I = mShaderMap.find(entry.first);
+			if (I != mShaderMap.end()) {
+				std::vector<TerrainShader> shaders{TerrainShader{I->second.layer, *I->second.shader}};
+				mTaskQueue->enqueueTask(std::make_unique<TerrainShaderUpdateTask>(geometry,
+																				  std::move(shaders),
+																				  entry.second.Areas,
+																				  EventLayerUpdated,
+																				  EventTerrainMaterialRecompiled)
+				);
+			}
 		}
 		mShadersToUpdate.clear();
 	}
@@ -346,12 +385,12 @@ void TerrainHandler::updateAllPages() {
 
 	//Update all shaders on all pages
 	for (auto& entry : mShaderMap) {
+		std::vector<TerrainShader> shaders{TerrainShader{entry.second.layer, *entry.second.shader}};
 		mTaskQueue->enqueueTask(std::make_unique<TerrainShaderUpdateTask>(geometry,
-																		  entry.second.get(),
+																		  std::move(shaders),
 																		  areas,
 																		  EventLayerUpdated,
-																		  EventTerrainMaterialRecompiled),
-								0);
+																		  EventTerrainMaterialRecompiled));
 	}
 }
 
@@ -415,10 +454,10 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 			auto& page = I->second;
 			auto geometryInstance = std::make_unique<TerrainPageGeometry>(*page, getSegmentManager(), getDefaultHeight());
 
-			std::vector<const TerrainShader*> shaders;
+			std::vector<TerrainShader> shaders;
 			shaders.reserve(mShaderMap.size());
 			for (auto& entry : mShaderMap) {
-				shaders.push_back(entry.second.get());
+				shaders.push_back(TerrainShader{entry.second.layer, *entry.second.shader});
 			}
 
 			if (!mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this,
@@ -496,10 +535,10 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 				bridgePtr = J->second;
 			}
 			geometryToUpdate.emplace_back(std::make_shared<TerrainPageGeometry>(*page, *mSegmentManager, getDefaultHeight()), bridgePtr);
-			std::vector<const TerrainShader*> shaders;
+			std::vector<TerrainShader> shaders;
 			shaders.reserve(mShaderMap.size());
 			for (auto& entry : mShaderMap) {
-				shaders.push_back(entry.second.get());
+				shaders.push_back(TerrainShader{entry.second.layer, *entry.second.shader});
 			}
 			mTaskQueue->enqueueTask(std::make_unique<GeometryUpdateTask>(geometryToUpdate,
 																		 areas,
@@ -546,8 +585,8 @@ void TerrainHandler::updateMod(const std::string& id,
 		mTaskQueue->enqueueTask(std::make_unique<TerrainModUpdateTask>(*mTerrain,
 																	   std::move(translator),
 																	   modId,
-																	   std::move(pos),
-																	   std::move(orientation),
+																	   pos,
+																	   orientation,
 																	   [=](const std::vector<WFMath::AxisBox<2>>& areas) {
 																		   reloadTerrain(areas);
 																	   }));

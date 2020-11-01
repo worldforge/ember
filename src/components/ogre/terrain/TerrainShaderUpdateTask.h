@@ -38,7 +38,7 @@ namespace OgreView {
 
 namespace Terrain {
 
-class TerrainShader;
+struct TerrainShader;
 
 class TerrainPage;
 
@@ -55,21 +55,6 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param geometry The geometry which needs the surfaces updated.
-	 * @param shader The shader which for each page will be be applied.
-	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
-	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
-	 * @param signalMaterialRecompiled A signal which will be passed on and emitted once a material for a terrain page has been recompiled.
-	 * @param lightDirection The main light direction.
-	 */
-	TerrainShaderUpdateTask(GeometryPtrVector geometry,
-							const TerrainShader* shader,
-							AreaStore areas,
-							sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
-							sigc::signal<void, TerrainPage*>& signalMaterialRecompiled);
-
-	/**
-	 * @brief Ctor.
-	 * @param geometry The geometry which needs the surfaces updated.
 	 * @param shaders The shaders which for each page will be be applied.
 	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
@@ -77,10 +62,10 @@ public:
 	 * @param lightDirection The main light direction.
 	 */
 	TerrainShaderUpdateTask(GeometryPtrVector geometry,
-							std::vector<const TerrainShader*> shaders,
+							std::vector<TerrainShader> shaders,
 							AreaStore areas,
-							sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
-							sigc::signal<void, TerrainPage*>& signalMaterialRecompiled);
+							sigc::signal<void, const TerrainShader&, const AreaStore&>& signal,
+							sigc::signal<void, TerrainPage&>& signalMaterialRecompiled);
 
 	~TerrainShaderUpdateTask() override;
 
@@ -98,7 +83,7 @@ private:
 	/**
 	 * @brief The shader which will be applied.
 	 */
-	std::vector<const TerrainShader*> mShaders;
+	std::vector<TerrainShader> mShaders;
 
 	/**
 	 * @brief Only the pages affected by the areas will be updated.
@@ -108,12 +93,12 @@ private:
 	/**
 	 * @brief A signal to emit once the update is done.
 	 */
-	sigc::signal<void, const TerrainShader*, const AreaStore&>& mSignal;
+	sigc::signal<void, const TerrainShader&, const AreaStore&>& mSignal;
 
 	/**
 	 * @brief A signal to pass on to the material recompilation task;
 	 */
-	sigc::signal<void, TerrainPage*>& mSignalMaterialRecompiled;
+	sigc::signal<void, TerrainPage&>& mSignalMaterialRecompiled;
 
 };
 

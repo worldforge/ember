@@ -20,6 +20,7 @@
 #include "TerrainPage.h"
 #include "TerrainPageGeometry.h"
 #include "TerrainPageSurface.h"
+#include "TerrainShader.h"
 #include "TerrainMaterialCompilationTask.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "framework/tasks/TaskExecutionContext.h"
@@ -34,22 +35,10 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
-												 const TerrainShader* shader,
+												 std::vector<TerrainShader> shaders,
 												 AreaStore areas,
-												 sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
-												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled) :
-		mGeometry(std::move(geometry)),
-		mAreas(std::move(areas)),
-		mSignal(signal),
-		mSignalMaterialRecompiled(signalMaterialRecompiled) {
-	mShaders.push_back(shader);
-}
-
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
-												 std::vector<const TerrainShader*> shaders,
-												 AreaStore areas,
-												 sigc::signal<void, const TerrainShader*, const AreaStore&>& signal,
-												 sigc::signal<void, TerrainPage*>& signalMaterialRecompiled) :
+												 sigc::signal<void, const TerrainShader&, const AreaStore&>& signal,
+												 sigc::signal<void, TerrainPage&>& signalMaterialRecompiled) :
 		mGeometry(std::move(geometry)),
 		mShaders(std::move(shaders)),
 		mAreas(std::move(areas)),
@@ -71,9 +60,9 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 			}
 		}
 		if (shouldUpdate) {
-			for (auto shader : mShaders) {
+			for (auto& shader : mShaders) {
 				//repopulate the layer
-				page.updateShaderTexture(shader, *geometry, true);
+				page.updateShaderTexture(shader.layer.layerDef, shader.layer.terrainIndex, shader.shader, *geometry, true);
 			}
 			updatedPages.push_back(geometry);
 		}
@@ -85,7 +74,7 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 }
 
 bool TerrainShaderUpdateTask::executeTaskInMainThread() {
-	for (auto shader : mShaders) {
+	for (auto& shader : mShaders) {
 		mSignal(shader, mAreas);
 	}
 	return true;

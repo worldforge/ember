@@ -49,7 +49,7 @@ struct TerrainLayerDefinition;
 
 class TerrainPage;
 
-class TerrainShader;
+struct TerrainShader;
 
 class TerrainManager;
 }
@@ -132,9 +132,9 @@ protected:
 	 */
 	std::list<DistanceStore> mDistanceStore;
 
-	void TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const Terrain::AreaStore& areas);
+	void TerrainHandler_LayerUpdated(const Terrain::TerrainShader& shader, const Terrain::AreaStore& areas);
 
-	void TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader);
+	void TerrainHandler_EventShaderCreated(const Terrain::TerrainLayerDefinition&);
 
 	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages);
 

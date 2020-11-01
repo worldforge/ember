@@ -85,13 +85,11 @@ class FoliageDetailManager;
  */
 namespace Terrain {
 
-class TerrainShader;
+struct TerrainShader;
 
 class TerrainInfo;
 
 class TerrainPage;
-
-class TerrainMod;
 
 struct TerrainLayerDefinition;
 
@@ -336,11 +334,11 @@ protected:
 
 	void terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages);
 
-	void terrainHandler_ShaderCreated(const TerrainShader& shader);
+	void terrainHandler_ShaderCreated(const TerrainLayerDefinition& layerDefinition);
 
 	void terrainHandler_WorldSizeChanged();
 
-	void terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* page);
+	void terrainHandler_TerrainPageMaterialRecompiled(TerrainPage& page);
 
 	/**
 	 * @brief Listen to graphic level updates and ask the pages to regenerate their materials (since they will use different materials depending on the level chosen).

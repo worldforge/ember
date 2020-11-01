@@ -205,11 +205,10 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 }
 
 
-void TerrainManager::terrainHandler_ShaderCreated(const TerrainShader& shader) {
+void TerrainManager::terrainHandler_ShaderCreated(const TerrainLayerDefinition& layerDefinition) {
 	size_t index = mHandler->getAllShaders().size() - 1;
 
-	const TerrainLayerDefinition& layerDef = shader.getLayerDefinition();
-	for (const auto& foliage : layerDef.mFoliages) {
+	for (const auto& foliage : layerDefinition.mFoliages) {
 		mVegetation->createPopulator(foliage, index);
 	}
 }
@@ -223,9 +222,9 @@ void TerrainManager::terrainHandler_WorldSizeChanged() {
 
 }
 
-void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* page) {
+void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage& page) {
 	if (mTerrainAdapter) {
-		mTerrainAdapter->reloadPageMaterial(page->getWFIndex());
+		mTerrainAdapter->reloadPageMaterial(page.getWFIndex());
 	}
 }
 
