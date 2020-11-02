@@ -35,7 +35,9 @@ HeightMapBufferProvider::HeightMapBufferProvider(unsigned int bufferResolution, 
 HeightMapBufferProvider::~HeightMapBufferProvider() = default;
 
 void HeightMapBufferProvider::checkin(std::unique_ptr<Buffer<float>> buffer) {
-	mPrimitiveBuffers.push_back(std::move(buffer));
+	if (buffer && mPrimitiveBuffers.size() < mDesiredBuffers + mDesiredBuffersTolerance) {
+		mPrimitiveBuffers.emplace_back(std::move(buffer));
+	}
 }
 
 std::unique_ptr<HeightMapBuffer> HeightMapBufferProvider::checkout() {
