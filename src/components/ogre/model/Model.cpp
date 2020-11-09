@@ -330,9 +330,9 @@ void Model::createActions() {
 
 	for (auto& actionDef : mDefinition->getActionDefinitions()) {
 		Action action;
-		action.mActivations = actionDef.getActivationDefinitions();
-		action.setName(actionDef.name);
-		action.getAnimations().setSpeed(actionDef.animationSpeed);
+		action.activations = actionDef.getActivationDefinitions();
+		action.name = actionDef.name;
+		action.animations.setSpeed(actionDef.animationSpeed);
 
 		if (getSkeleton() && getAllAnimationStates()) {
 
@@ -364,7 +364,7 @@ void Model::createActions() {
 							}
 						}
 					}
-					action.getAnimations().addAnimation(animation);
+					action.animations.addAnimation(animation);
 				}
 			}
 		}
@@ -635,7 +635,7 @@ Action* Model::getAction(const std::string& name) {
 Action* Model::getAction(ActivationDefinition::Type type, const std::string& trigger) {
 	for (auto& entry : mActions) {
 		Action& action = entry.second;
-		for (auto& activationDefinition : action.mActivations) {
+		for (auto& activationDefinition : action.activations) {
 			if (type == activationDefinition.type && trigger == activationDefinition.trigger) {
 				//FIXME: Should keep actions as pointers
 				return &action;

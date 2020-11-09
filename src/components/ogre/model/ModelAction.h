@@ -22,7 +22,9 @@
 //
 #ifndef EMBEROGREACTION_H
 #define EMBEROGREACTION_H
+
 #include "AnimationSet.h"
+
 namespace Ember {
 namespace OgreView {
 namespace Model {
@@ -30,24 +32,15 @@ namespace Model {
 /**
 @author Erik Ogenvik
 */
-class Action
-{
-public:
-	AnimationSet& getAnimations();
-	void setName(const std::string& name);
-	const std::string& getName();
+struct Action {
+	std::string name;
+	AnimationSet animations;
 
-	std::vector<ActivationDefinition> mActivations;
+	std::vector<ActivationDefinition> activations;
 
-
-protected:
-	std::string mName;
-	AnimationSet mAnimations;
 };
 
-inline AnimationSet& Action::getAnimations() { return mAnimations; }
-inline void Action::setName(const std::string& name) { mName = name; }
-inline const std::string& Action::getName() { return mName; }
+
 }
 }
 }

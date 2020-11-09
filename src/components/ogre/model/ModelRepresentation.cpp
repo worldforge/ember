@@ -201,7 +201,7 @@ void ModelRepresentation::initFromModel() {
 	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similar entities with synchronized animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */
 	Action* idleaction = mModel->getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	if (idleaction) {
-		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
+		idleaction->animations.addTime(Ogre::Math::RangeRandom(0, 15));
 	}
 
 	//If there are particles, update the bindings.
@@ -380,33 +380,33 @@ void ModelRepresentation::updateAnimation(float timeSlice) {
 	const WFMath::Vector<3>& velocity = mEntity.getPredictedVelocity();
 	if (mCurrentMovementAction && velocity.isValid() && velocity.mag() > 0.01f) {
 		bool continuePlay = false;
-		mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
+		mCurrentMovementAction->animations.addTime(timeSlice, continuePlay);
 	} else if (mActiveAction) {
 		bool continuePlay = false;
-		mActiveAction->getAnimations().addTime(timeSlice, continuePlay);
+		mActiveAction->animations.addTime(timeSlice, continuePlay);
 		if (!continuePlay) {
-			mActiveAction->getAnimations().reset();
+			mActiveAction->animations.reset();
 			mActiveAction = nullptr;
 		}
 	} else if (mTaskAction) {
 		//Ignore the "continuePlay" for tasks.
 		bool continuePlay = false;
-		mTaskAction->getAnimations().addTime(timeSlice, continuePlay);
+		mTaskAction->animations.addTime(timeSlice, continuePlay);
 	} else if (mCurrentMovementAction) {
 		bool continuePlay = false;
-		mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
+		mCurrentMovementAction->animations.addTime(timeSlice, continuePlay);
 	}
 }
 
 void ModelRepresentation::resetAnimations() {
 	if (mCurrentMovementAction) {
-		mCurrentMovementAction->getAnimations().reset();
+		mCurrentMovementAction->animations.reset();
 	}
 	if (mActiveAction) {
-		mActiveAction->getAnimations().reset();
+		mActiveAction->animations.reset();
 	}
 	if (mTaskAction) {
-		mTaskAction->getAnimations().reset();
+		mTaskAction->animations.reset();
 	}
 }
 
@@ -447,7 +447,7 @@ void ModelRepresentation::createActionForTask(const Eris::Task& task) {
 
 void ModelRepresentation::entity_TaskRemoved(const std::string& id, Eris::Task*) {
 	if (mTaskAction) {
-		mTaskAction->getAnimations().reset();
+		mTaskAction->animations.reset();
 		mTaskAction = nullptr;
 	}
 }

@@ -57,7 +57,7 @@ namespace Model
 struct ActionDefinition;
 struct SoundDefinition;
 class Model;
-class Action;
+struct Action;
 class ModelMount;
 
 typedef std::list<Action*> ActionStore;

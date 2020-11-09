@@ -127,16 +127,16 @@ void Animation::setTime(Ogre::Real time) {
 }
 
 void Animation::setEnabled(bool enabled) {
-	for (AnimationPartSet::const_iterator I = mAnimationParts.begin(); I != mAnimationParts.end(); ++I) {
+	for (const auto & animationPart : mAnimationParts) {
 		//we'll get an assert error if we try to enable an animation with zero length
-		Ogre::AnimationState* state = I->state;
+		Ogre::AnimationState* state = animationPart.state;
 		if (state->getLength() != 0) {
 			if (state->getEnabled() != enabled) {
 				state->setEnabled(enabled);
 				state->destroyBlendMask();
 				if (enabled) {
-					const std::vector<BoneGroupRef>& boneGroupRefs = I->boneGroupRefs;
-					for (auto boneGroupRef : boneGroupRefs) {
+					const std::vector<BoneGroupRef>& boneGroupRefs = animationPart.boneGroupRefs;
+					for (const auto& boneGroupRef : boneGroupRefs) {
 						auto& boneGroupDef = boneGroupRef.boneGroupDefinition;
 						if (!state->hasBlendMask()) {
 							state->createBlendMask(mBoneNumber, 0.0f);

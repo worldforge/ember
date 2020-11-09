@@ -1279,7 +1279,7 @@ function ModelEdit:buildWidget()
 						if model then
 							local modelAction = model:getAction(actionName)
 							if modelAction then
-								modelAction:getAnimations():addTime(timeslice)
+								modelAction.animations:addTime(timeslice)
 							end
 						end
 					end)
@@ -1291,7 +1291,7 @@ function ModelEdit:buildWidget()
 						if model then
 							local modelAction = model:getAction(actionName)
 							if modelAction then
-								modelAction:getAnimations():reset()
+								modelAction.animations:reset()
 							end
 						end
 						self.widget:getWindow("PlayAction"):setText("Play")

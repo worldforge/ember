@@ -32,12 +32,10 @@ class AnimationSet
 };
 
 
-class Action
+struct Action
 {
-	Ember::OgreView::Model::AnimationSet& getAnimations();
-	void setName(const std::string& name);
-	const std::string& getName();
-
+	std::string name;
+	Ember::OgreView::Model::AnimationSet animations;
 };
 
 class Model

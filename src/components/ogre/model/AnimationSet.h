@@ -22,6 +22,7 @@
 //
 #ifndef EMBEROGREANIMATIONSET_H
 #define EMBEROGREANIMATIONSET_H
+
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 #include <vector>
@@ -32,14 +33,12 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
-struct BoneGroupRef
-{
+struct BoneGroupRef {
 	BoneGroupDefinition boneGroupDefinition;
 	Ogre::Real weight;
 };
 
-struct AnimationPart
-{
+struct AnimationPart {
 	Ogre::AnimationState* state;
 	std::vector<BoneGroupRef> boneGroupRefs;
 };
@@ -52,20 +51,24 @@ typedef std::vector<Animation> AnimationStore;
 /**
 @author Erik Ogenvik
 */
-class Animation
-{
+class Animation {
 public:
 	Animation(int iterations, size_t boneNumber);
+
 	void addAnimationPart(const AnimationPart& part);
+
 	void setEnabled(bool state);
 
 	void addTime(Ogre::Real timeSlice);
+
 	void setTime(Ogre::Real time);
 
 	int getIterations() const;
+
 	Ogre::Real getLengthOfOneIteration() const;
 
 	AnimationPartSet& getAnimationParts();
+
 protected:
 	AnimationPartSet mAnimationParts;
 	Ogre::Real mIterationLength;
@@ -73,8 +76,7 @@ protected:
 	size_t mBoneNumber;
 };
 
-class AnimationSet
-{
+class AnimationSet {
 public:
 	AnimationSet();
 
@@ -110,9 +112,11 @@ public:
 // 	bool hasCompleted() const;
 
 	void setSpeed(Ogre::Real speed);
+
 	Ogre::Real getSpeed() const;
 
 	const AnimationStore& getAnimations() const;
+
 	AnimationStore& getAnimations();
 
 
@@ -123,17 +127,16 @@ protected:
 	Ogre::Real mSpeed;
 };
 
-inline void AnimationSet::setSpeed(Ogre::Real speed) { mSpeed = speed;}
+inline void AnimationSet::setSpeed(Ogre::Real speed) { mSpeed = speed; }
+
 inline Ogre::Real AnimationSet::getSpeed() const { return mSpeed; }
 
 
-inline Ogre::Real Animation::getLengthOfOneIteration() const
-{
+inline Ogre::Real Animation::getLengthOfOneIteration() const {
 	return mIterationLength;
 }
 
-inline int Animation::getIterations() const
-{
+inline int Animation::getIterations() const {
 	return mIterations;
 }
 

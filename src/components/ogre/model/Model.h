@@ -56,7 +56,7 @@ class ParticleSystemBinding;
 
 class ParticleSystem;
 
-class Action;
+struct Action;
 
 class ModelPart;
 

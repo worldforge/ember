@@ -31,7 +31,7 @@ add_library(emberogre OBJECT
 
         mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp mapping/ModelActionCreator.cpp mapping/ModelActionCreator.h
 
-        model/ModelAction.cpp model/AnimationSet.cpp model/Model.cpp
+        model/AnimationSet.cpp model/Model.cpp
         model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp
         model/ModelDefinitionManager.cpp model/ModelPart.cpp model/ParticleSystem.cpp model/ParticleSystemBinding.cpp model/SubModel.cpp
         model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp
