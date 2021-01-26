@@ -124,7 +124,7 @@ std::string Screen::_takeScreenshot() {
 	}
 	filename << sec << ".jpg";
 
-	auto dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "screenshots";
+	auto dir = ConfigService::getSingleton().getHomeDirectory(BaseDirType_DATA) / "screenshots";
 	try {
 		//make sure the directory exists
 

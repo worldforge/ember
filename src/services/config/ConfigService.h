@@ -21,9 +21,9 @@
 #ifndef CONFIGSERVICE_H
 #define CONFIGSERVICE_H
 
-#include <varconf/varconf.h>
 
-#include "../EmberServices.h"
+#include "framework/Singleton.h"
+#include <varconf/varconf.h>
 
 #include <boost/filesystem/path.hpp>
 #include <string>
@@ -55,7 +55,7 @@ enum BaseDirType {
 * @see Ember::Service
 * @see varconf
 */
-class ConfigService {
+class ConfigService : public Singleton<ConfigService> {
 private:
 	//----------------------------------------------------------------------
 	// Class Variables
@@ -138,7 +138,7 @@ public:
 	 * Dtor for Ember::service::ConfigService.
 	 *
 	 */
-	~ConfigService();
+	~ConfigService() override;
 
 
 	//----------------------------------------------------------------------

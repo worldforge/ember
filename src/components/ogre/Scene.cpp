@@ -92,7 +92,7 @@ std::unique_ptr<ISceneRenderingTechnique> Scene::removeRenderingTechnique(const 
 }
 
 std::unique_ptr<Terrain::ITerrainAdapter> Scene::createTerrainAdapter() {
-	ConfigService& configService = EmberServices::getSingleton().getConfigService();
+	ConfigService& configService = ConfigService::getSingleton();
 	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
 
 	if (pageSize <= 0) {

@@ -62,16 +62,6 @@ public:
 	~ServerSettings() override;
 
 	/**
-	 * @copydoc Service::start()
-	 */
-	bool start() override;
-
-	/**
-	 * @copydoc Service::stop()
-	 */
-	void stop() override;
-
-	/**
 	 * @brief Checks for the existence of a specific key.
 	 *
 	 * @param credentials The server credentials.

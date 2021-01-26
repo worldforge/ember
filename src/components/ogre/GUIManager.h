@@ -414,16 +414,6 @@ protected:
 
 	void entity_Emote(const std::string& description, EmberEntity* entity);
 
-
-
-	/**
-	 * @brief Stops the CEGUI scripting service.
-	 * Be sure to call this when the gui system is shutting down in order to clean up the lua environment.
-	 */
-	void scriptingServiceStopping();
-
-
-
 };
 
 }

@@ -40,7 +40,7 @@ namespace Cegui {
 
 
 CEGUI::OgreRenderer& CEGUISetup::createRenderer(Ogre::RenderWindow* renderWindow) {
-	auto& configService = EmberServices::getSingleton().getConfigService();
+	auto& configService = ConfigService::getSingleton();
 	if (!configService.getPrefix().empty()) {
 
 #ifndef _WIN32

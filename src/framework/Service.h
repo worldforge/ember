@@ -57,42 +57,6 @@ public:
 	 */
 	virtual ~Service();
 
-	/** Returns true if the service is currently running. */
-	virtual bool isRunning() const;
-
-	/**
-	 * This method is used to start the service.
-	 * It should take care of acquiring needed resources, initializing
-	 * data structures, and so on. <p>
-	 *
-	 * If the initialization succeeds, it should also call setRunning( true )
-	 * to indicate that the service is running.  <p>
-	 *
-	 * This method must be implemented by all inheriting classes.  <p>
-	 *
-	 *
-	 * @returns true if successful
-	 */
-	virtual bool start() = 0;
-
-	/**
-	 * This method stops the service, and frees any used resources.
-	 * If the service has no special resources that need to be freed,
-	 * or de-initialization to be done, this
-	 * method can be left to the default implementation (which just sets the
-	 * running state to false).  <p>
-	 *
-	 * Otherwise this method should be overridden, and setRunning( false )
-	 * should be called if the service was stopped.  <p>
-	 *
-	 */
-	virtual void stop();
-
-	/**
-	 * Emitted when the server has stopped.
-	 */
-	sigc::signal<void> EventStopping;
-
 protected:
 
 

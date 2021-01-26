@@ -134,7 +134,7 @@ void OgreResourceLoader::initialize() {
 
 	Ogre::ResourceGroupManager::getSingleton().setLoadingListener(mLoadingListener.get());
 
-	auto& configSrv = EmberServices::getSingleton().getConfigService();
+	auto& configSrv = ConfigService::getSingleton();
 
 	if (configSrv.itemExists("media", "extraresourcelocations")) {
 		varconf::Variable resourceConfigFilesVar = configSrv.getValue("media", "extraresourcelocations");
@@ -160,7 +160,7 @@ void OgreResourceLoader::unloadUnusedResources() {
 }
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section) {
-	auto sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
+	auto sharedMediaPath = ConfigService::getSingleton().getSharedDataDirectory();
 	return addResourceDirectory(sharedMediaPath / path, type, section, OnFailure::Throw);
 }
 
@@ -200,8 +200,8 @@ bool OgreResourceLoader::addSourceRepoMedia(const std::string& path, const std::
 
 
 bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section) {
-	auto userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
-	auto emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
+	auto userMediaPath = ConfigService::getSingleton().getUserMediaDirectory();
+	auto emberMediaPath = ConfigService::getSingleton().getEmberMediaDirectory();
 
 	bool foundDir = addResourceDirectory(emberMediaPath / path, type, section, OnFailure::Ignore);
 

@@ -66,7 +66,7 @@ OgrePluginLoader::OgrePluginLoader() {
 	mPlugins.insert(PluginInstanceMap::value_type("Plugin_ParticleFX", OGRE_NEW Ogre::ParticleFXPlugin()));
 #endif
 #else // ifndef OGRE_STATIC_LIB
-	ConfigService& configSrv(EmberServices::getSingleton().getConfigService());
+	auto& configSrv = ConfigService::getSingleton();
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 	//on windows we'll bundle the dll files in the same directory as the executable
 	mPluginDirs.push_back(".");

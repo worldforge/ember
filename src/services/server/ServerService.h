@@ -85,10 +85,6 @@ public:
 
 	void setupLocalServerObservation(ConfigService& configService);
 
-	bool start() override;
-
-	void stop() override;
-
 	/**
 	 * @brief Connects to a remote host.
 	 * @param host The hostname of the remote host.

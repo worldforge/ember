@@ -35,15 +35,6 @@ Service::~Service() {
 	assert(!mRunning); //Make sure that stop() is called before the destruction of the service.
 }
 
-bool Service::isRunning() const {
-	return mRunning;
-}
-
-void Service::stop() {
-	EventStopping.emit();
-	setRunning(false);
-}
-
 void Service::setRunning(bool running) {
 	if (mRunning && !running) {
 		S_LOG_INFO("Service '" << mName << "' stopped.");

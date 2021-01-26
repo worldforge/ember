@@ -59,7 +59,7 @@ InputCommandMapper::~InputCommandMapper() {
 void InputCommandMapper::readFromConfigSection(const std::string& sectionName) {
 
 	//get the mappings from the config service
-	ConfigService::SectionMap section = EmberServices::getSingleton().getConfigService().getSection(sectionName);
+	ConfigService::SectionMap section = ConfigService::getSingleton().getSection(sectionName);
 
 	for (ConfigService::SectionMap::const_iterator I = section.begin(); I != section.end(); ++I) {
 		bindCommand(std::string(I->first), std::string(I->second));

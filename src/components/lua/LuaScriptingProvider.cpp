@@ -72,8 +72,8 @@ void LuaScriptingProvider::initialize() {
 
 void LuaScriptingProvider::createState() {
 	bool loadDebugLib = true;
-	if (EmberServices::getSingleton().getConfigService().itemExists("lua", "debug")) {
-		loadDebugLib = static_cast<bool>(EmberServices::getSingleton().getConfigService().getValue("lua", "debug"));
+	if (ConfigService::getSingleton().itemExists("lua", "debug")) {
+		loadDebugLib = static_cast<bool>(ConfigService::getSingleton().getValue("lua", "debug"));
 	}
 
 	static const luaL_Reg lualibs[] = {

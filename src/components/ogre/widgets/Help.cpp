@@ -62,7 +62,7 @@ Help::Help(GUIManager& guiManager)
 
 	enableCloseButton();
 
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = ConfigService::getSingleton();
 
 	if (configSrv.itemExists("general", "startuphelp") && ((bool) configSrv.getValue("general", "startuphelp"))) {
 		show();

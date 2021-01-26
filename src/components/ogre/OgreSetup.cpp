@@ -175,7 +175,7 @@ OgreSetup::~OgreSetup() {
 
 		if (Ogre::GpuProgramManager::getSingletonPtr()) {
 			try {
-				auto cachePath = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" EMBER_VERSION ".cache");
+				auto cachePath = ConfigService::getSingleton().getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" EMBER_VERSION ".cache");
 				auto cacheStream = Ogre::Root::createFileStream(cachePath.string());
 				if (cacheStream) {
 					Ogre::GpuProgramManager::getSingleton().saveMicrocodeCache(cacheStream);
@@ -213,7 +213,7 @@ void OgreSetup::saveConfig() {
 			auto configOptions = mRoot->getRenderSystem()->getConfigOptions();
 			for (const auto& configOption : configOptions) {
 				//Keys in varconf are mangled, so we store the entry with a ":" delimiter.
-				EmberServices::getSingleton().getConfigService().setValue("renderer", configOption.second.name, configOption.second.name + ":" + configOption.second.currentValue);
+				ConfigService::getSingleton().setValue("renderer", configOption.second.name, configOption.second.name + ":" + configOption.second.currentValue);
 			}
 		}
 	}

@@ -42,6 +42,7 @@
 #include "services/config/ConfigService.h"
 #include "services/serversettings/ServerSettings.h"
 #include "services/serversettings/ServerSettingsCredentials.h"
+#include "services/EmberServices.h"
 
 #include <Eris/SpawnPoint.h>
 #include <Eris/TypeService.h>

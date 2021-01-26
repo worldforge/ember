@@ -265,8 +265,8 @@ void ConsoleDevTools::performBenchmark() {
 			std::shared_ptr<StaticCameraMount> cameraMount;
 
 			BenchmarkFrameListener() {
-				originalFps = (double) EmberServices::getSingleton().getConfigService().getValue("general", "desiredfps");
-				EmberServices::getSingleton().getConfigService().setValue("general", "desiredfps", 0);
+				originalFps = (double) ConfigService::getSingleton().getValue("general", "desiredfps");
+				ConfigService::getSingleton().setValue("general", "desiredfps", 0);
 
 			}
 
@@ -280,7 +280,7 @@ void ConsoleDevTools::performBenchmark() {
 
 					if (positionsAndDirections.empty()) {
 						Ogre::Root::getSingleton().removeFrameListener(this);
-						EmberServices::getSingleton().getConfigService().setValue("general", "desiredfps", originalFps);
+						ConfigService::getSingleton().setValue("general", "desiredfps", originalFps);
 						EmberOgre::getSingleton().getWorld()->getMovementController()->setCameraFreeFlying(EmberOgre::getSingleton().getWorld()->getMovementController()->isCameraFreeFlying());
 
 						//Report results

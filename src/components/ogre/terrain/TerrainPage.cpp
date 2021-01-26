@@ -90,7 +90,7 @@ Ogre::MaterialPtr TerrainPage::getCompositeMapMaterial() const {
 }
 
 unsigned int TerrainPage::getBlendMapScale() const {
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = ConfigService::getSingleton();
 	if (configSrv.itemExists("terrain", "scalealphamap")) {
 		int value = (int) configSrv.getValue("terrain", "scalealphamap");
 		//make sure it can't go below 1

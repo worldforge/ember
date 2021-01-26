@@ -66,8 +66,8 @@ CompilerTechniqueProvider::~CompilerTechniqueProvider() {
 
 std::unique_ptr<TerrainPageSurfaceCompilerTechnique> CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces) const {
 	std::string preferredTech;
-	if (EmberServices::getSingleton().getConfigService().itemExists("terrain", "preferredtechnique")) {
-		preferredTech = static_cast<std::string>(EmberServices::getSingleton().getConfigService().getValue("terrain", "preferredtechnique"));
+	if (ConfigService::getSingleton().itemExists("terrain", "preferredtechnique")) {
+		preferredTech = static_cast<std::string>(ConfigService::getSingleton().getValue("terrain", "preferredtechnique"));
 	}
 
 	ShaderManager::GraphicsLevel graphicsLevel = mShaderManager.getGraphicsLevel();

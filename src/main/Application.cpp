@@ -249,8 +249,9 @@ Application::~Application() {
 	ConfigService& configService = mServices->getConfigService();
 	configService.saveConfig(configService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf", varconf::USER);
 
-	mServices->getServerService().stop();
-	mServices->getMetaserverService().stop();
+	if (mServices) {
+		mServices->getServerService().disconnect();
+	}
 
 	mSession->getEventService().processAllHandlers();
 	mSession->getIoService().stop();
@@ -389,31 +390,8 @@ void Application::initializeServices() {
 
 	mServices = std::make_unique<EmberServices>(*mSession, mConfigService);
 
-	// Initialize the Sound Service
-	S_LOG_INFO("Initializing sound service");
-	mServices->getSoundService().start();
-
-	// Initialize and start the Metaserver Service.
-	S_LOG_INFO("Initializing metaserver service");
-
-	mServices->getMetaserverService().start();
-	//hoho, we get linking errors if we don't do some calls to the service
-	mServices->getMetaserverService().getMetaServer();
-
-	// Initialize the Server Service
-	S_LOG_INFO("Initializing server service");
-	mServices->getServerService().start();
-
 	mInput.setMainLoopController(&mMainLoopController);
 
-	S_LOG_INFO("Initializing scripting service");
-	mServices->getScriptingService().start();
-
-	S_LOG_INFO("Initializing wfut service");
-	mServices->getWfutService().start();
-
-	S_LOG_INFO("Initializing server settings service");
-	mServices->getServerSettingsService().start();
 
 	mServices->getServerService().GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
 	mServices->getServerService().DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));

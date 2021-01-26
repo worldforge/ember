@@ -35,6 +35,7 @@ struct Session;
 
 namespace Ember {
 
+class ConfigService;
 /**
  * Ember Metaserver Service
  *
@@ -68,23 +69,14 @@ private:
 public:
 
 	/** Creates a new ConfigService using default values. */
-	explicit MetaserverService(Eris::Session& session);
+	explicit MetaserverService(Eris::Session& session, ConfigService& configSrv);
 
 
 	/** Deletes a ConfigService instance. */
 	~MetaserverService() override;
 
-	//----------------------------------------------------------------------
-	// Getters & Setters
 
 	Eris::Meta& getMetaServer() const;
-
-	//----------------------------------------------------------------------
-	// Methods
-
-	bool start() override;
-
-	void stop() override;
 
 	void gotFailure(const std::string& msg);
 

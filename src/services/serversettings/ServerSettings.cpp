@@ -31,18 +31,11 @@ namespace Services {
 ServerSettings::ServerSettings() :
 		Service("Server settings"),
 		mConfig(std::make_unique<varconf::Config>()) {
-}
-
-ServerSettings::~ServerSettings() = default;
-
-bool ServerSettings::start() {
 	readFromDisk();
-	setRunning(true);
-	return true;
+
 }
 
-void ServerSettings::stop() {
-	Service::stop();
+ServerSettings::~ServerSettings() {
 	writeToDisk();
 }
 
@@ -109,7 +102,7 @@ const varconf::sec_map& ServerSettings::getServerSettings(const ServerSettingsCr
 }
 
 boost::filesystem::path ServerSettings::getFullConfigFilePath() const {
-	ConfigService& cfgService = EmberServices::getSingleton().getConfigService();
+	ConfigService& cfgService = ConfigService::getSingleton();
 	// fetch the configuration file
 	if (cfgService.hasItem("general", "serversettings")) {
 		auto value = cfgService.getValue("general", "serversettings");

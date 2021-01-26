@@ -192,7 +192,7 @@ std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std:
 			auto cleanedDir = boost::filesystem::path(typeName).remove_filename();
 
 			//make sure the directory exists
-			auto filename = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "typeexport" / cleanedDir / (cleanedTypename.string() + ".xml");
+			auto filename = ConfigService::getSingleton().getHomeDirectory(BaseDirType_DATA) / "typeexport" / cleanedDir / (cleanedTypename.string() + ".xml");
 			auto dir = filename;
 			dir.remove_filename();
 

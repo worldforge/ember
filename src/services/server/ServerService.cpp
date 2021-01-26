@@ -62,26 +62,13 @@ ServerService::ServerService(Eris::Session& session) :
 	DestroyedAvatar.connect(sigc::mem_fun(*this, &ServerService::destroyedAvatar));
 }
 
-ServerService::~ServerService() = default;
+ServerService::~ServerService() {
+	auto directory = boost::filesystem::path(mLocalSocketPath).remove_filename().string();
+	Ember::FileSystemObserver::getSingleton().remove_directory(directory);
 
-/* Method for starting this service 	*/
-bool ServerService::start() {
-	setRunning(true);
-
-	return true;
-
+	disconnect();
 }
 
-/* Interface method for stopping this service 	*/
-void ServerService::stop() {
-	if (isRunning()) {
-		auto directory = boost::filesystem::path(mLocalSocketPath).remove_filename().string();
-		Ember::FileSystemObserver::getSingleton().remove_directory(directory);
-
-		disconnect();
-	}
-	Service::stop();
-}
 
 void ServerService::gotConnection(Eris::Connection* connection) {
 	mConnection = connection;

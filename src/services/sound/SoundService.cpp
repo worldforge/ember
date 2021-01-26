@@ -36,24 +36,18 @@
 
 namespace Ember {
 /* Constructor */
-SoundService::SoundService()
+SoundService::SoundService(ConfigService& configService)
 		: Service("Sound")
 #ifdef _MSC_VER
-		, mContext(0), mDevice(0), mResourceProvider(0)
+		, mContext(nullptr), mDevice(nullptr), mResourceProvider(nullptr)
 #else
 		, mResourceProvider(nullptr)
 #endif
 		, mEnabled(false) {
-}
-
-SoundService::~SoundService() = default;
-
-/* Method for starting this service */
-bool SoundService::start() {
 	S_LOG_INFO("Sound Service starting");
 
-	if (EmberServices::getSingleton().getConfigService().hasItem("audio", "enabled")
-		&& !static_cast<bool>(EmberServices::getSingleton().getConfigService().getValue("audio", "enabled"))) {
+	if (configService.hasItem("audio", "enabled")
+		&& !static_cast<bool>(configService.getValue("audio", "enabled"))) {
 		S_LOG_INFO("Sound disabled.");
 	} else {
 
@@ -65,13 +59,13 @@ bool SoundService::start() {
 			mEnabled = alutInit(nullptr, nullptr) == ALC_TRUE;
 #else
 			mDevice = alcOpenDevice("DirectSound3D");
-	
+
 			if (!mDevice) {
 				mEnabled = false;
 				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
 				return false;
 			}
-	
+
 			mContext = alcCreateContext(mDevice, nullptr);
 			if (!mContext) {
 				mEnabled = false;
@@ -84,13 +78,9 @@ bool SoundService::start() {
 			SoundGeneral::checkAlError();
 		}
 	}
-
-	setRunning(true);
-	return true;
 }
 
-/* Interface method for stopping this service */
-void SoundService::stop() {
+SoundService::~SoundService() {
 	if (!mInstances.empty()) {
 		S_LOG_WARNING("Found a still registered SoundInstance when shutting down sound service. This shouldn't normally happen, since all instances should be handled by their proper owners and removed well in advance of the SoundService shutting down. We'll now delete the instance, which might lead to a segfault or similar problem as the instance owner might still expect it to be existing.");
 	}
@@ -109,9 +99,8 @@ void SoundService::stop() {
 		mContext = 0;
 #endif
 	}
-	mEnabled = false;
-	Service::stop();
 }
+
 
 bool SoundService::isEnabled() const {
 	return mEnabled;

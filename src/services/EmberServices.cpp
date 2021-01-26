@@ -34,32 +34,7 @@
 namespace Ember {
 
 
-EmberServices::~EmberServices() {
-	if (mWfutService) {
-		mWfutService->stop();
-		mWfutService.reset();
-	}
-	if (mServerSettingsService) {
-		mServerSettingsService->stop();
-		mServerSettingsService.reset();
-	}
-	if (mMetaserverService) {
-		mMetaserverService->stop();
-		mMetaserverService.reset();
-	}
-	if (mScriptingService) {
-		mScriptingService->stop();
-		mScriptingService.reset();
-	}
-	if (mSoundService) {
-		mSoundService->stop();
-		mSoundService.reset();
-	}
-	if (mServerService) {
-		mServerService->stop();
-		mServerService.reset();
-	}
-}
+EmberServices::~EmberServices() = default;
 
 ConfigService& EmberServices::getConfigService() {
 	return mConfigService;
@@ -92,9 +67,9 @@ Services::ServerSettings& EmberServices::getServerSettingsService() {
 EmberServices::EmberServices(Eris::Session& session, ConfigService& configService)
 		: mConfigService(configService),
 		  mScriptingService(std::make_unique<ScriptingService>()),
-		  mSoundService(std::make_unique<SoundService>()),
+		  mSoundService(std::make_unique<SoundService>(configService)),
 		  mServerService(std::make_unique<ServerService>(session)),
-		  mMetaserverService(std::make_unique<MetaserverService>(session)),
+		  mMetaserverService(std::make_unique<MetaserverService>(session, configService)),
 		  mWfutService(std::make_unique<WfutService>()),
 		  mServerSettingsService(std::make_unique<Services::ServerSettings>()) {
 }

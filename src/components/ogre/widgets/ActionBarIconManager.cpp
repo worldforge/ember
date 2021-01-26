@@ -25,6 +25,7 @@
 #endif
 
 #include "ActionBarIconManager.h"
+#include "services/EmberServices.h"
 #include "../GUIManager.h"
 #include "ActionBarIcon.h"
 

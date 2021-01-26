@@ -41,18 +41,10 @@ ScriptingService::ScriptingService()
 }
 
 
-ScriptingService::~ScriptingService() = default;
-
-void ScriptingService::stop() {
-	Service::stop();
+ScriptingService::~ScriptingService() {
 	for (auto& entry: mProviders) {
 		entry.second->stop();
 	}
-}
-
-bool ScriptingService::start() {
-	setRunning(true);
-	return true;
 }
 
 void ScriptingService::loadScript(const std::string& script) {

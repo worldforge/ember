@@ -147,7 +147,7 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 	soundService.setResourceProvider(mSoundResourceProvider.get());
 
 
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = ConfigService::getSingleton();
 
 	mOgreSetup->configure();
 
@@ -267,7 +267,7 @@ void EmberOgre::shutdownGui() {
 bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService& eventService) {
 
 
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = ConfigService::getSingleton();
 	//check if we should preload the media
 	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool) configSrv.getValue("media", "preloadmedia");
 	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool) configSrv.getValue("wfut", "enabled");
@@ -355,7 +355,7 @@ Screen& EmberOgre::getScreen() const {
 void EmberOgre::preloadMedia() {
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = ConfigService::getSingleton();
 
 	std::vector<std::string> shaderTextures;
 

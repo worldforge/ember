@@ -35,6 +35,8 @@
 #endif
 namespace Ember {
 
+class ConfigService;
+
 struct IResourceProvider;
 
 class StreamedSoundSample;
@@ -57,19 +59,9 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	SoundService();
+	explicit SoundService(ConfigService& configService);
 
 	~SoundService() override;
-
-	/**
-	 * @copydoc Service::start()
-	 */
-	bool start() override;
-
-	/**
-	 * @copydoc Service::stop()
-	 */
-	void stop() override;
 
 	/**
 	 * @copydoc ConsoleObject::runCommand()

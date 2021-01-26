@@ -45,9 +45,7 @@ public:
     WfutService();
 
     ~WfutService() override;
-    
-    bool start() override;
-    
+
     
     void startUpdate(const std::string &serverRoot,
 		const std::string &channelName,
@@ -93,7 +91,6 @@ public:
 	sigc::signal<void, size_t> UpdatesCalculated;
 
 protected:
-	std::unique_ptr<WfutSession> mSession;
 
 	void wfutSession_DownloadComplete(const std::string &url, const std::string &filename);
 	void wfutSession_DownloadFailed(const std::string &url, const std::string &filename, const std::string &reason);
@@ -103,6 +100,8 @@ protected:
 	sigc::slot<void, const std::string&, const std::string&, const std::string&> mDownloadFailureSlot;
 	sigc::slot<void, const std::string&> mServerListDownloadingSlot;
 	sigc::slot<void, size_t> mUpdatesCalculatedSlot;
+
+	std::unique_ptr<WfutSession> mSession;
 };
 
 }

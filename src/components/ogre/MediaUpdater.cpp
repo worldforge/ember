@@ -38,7 +38,7 @@ MediaUpdater::MediaUpdater() = default;
 MediaUpdater::~MediaUpdater() = default;
 
 void MediaUpdater::performUpdate() {
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = ConfigService::getSingleton();
 	WfutService& wfutSrv = EmberServices::getSingleton().getWfutService();
 
 	if (configSrv.itemExists("wfut", "server")) {

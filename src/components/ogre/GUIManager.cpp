@@ -130,8 +130,6 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 				// the error function to be registered.
 			}
 			mCeguiSetup.getSystem().setScriptingModule(mLuaScriptModule);
-
-			EmberServices::getSingleton().getScriptingService().EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		}
 
 		mCeguiSetup.getSystem().getClipboard()->setNativeProvider(mNativeClipboardProvider.get());
@@ -192,6 +190,10 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 GUIManager::~GUIManager() {
 	S_LOG_INFO("Shutting down GUI manager.");
 	mCeguiSetup.getSystem().setDefaultCustomRenderedStringParser(nullptr);
+	mCeguiSetup.getSystem().setScriptingModule(nullptr);
+	if (mLuaScriptModule) {
+		LuaScriptModule::destroy(*mLuaScriptModule);
+	}
 	mWorldLoadingScreen.reset();
 	if (mCEGUIAdapter) {
 		getInput().removeAdapter(mCEGUIAdapter.get());
@@ -202,6 +204,8 @@ GUIManager::~GUIManager() {
 	EntityTooltip::deregisterFactory();
 
 	Ogre::Root::getSingleton().removeFrameListener(this);
+
+
 }
 
 void GUIManager::render() {
@@ -235,14 +239,6 @@ void GUIManager::entity_Emote(const std::string& description, EmberEntity* entit
 	} else {
 		AppendAvatarImaginary(entity->getName() + " " + description);
 	}
-}
-
-void GUIManager::scriptingServiceStopping() {
-	mCeguiSetup.getSystem().setScriptingModule(nullptr);
-	if (mLuaScriptModule) {
-		LuaScriptModule::destroy(*mLuaScriptModule);
-	}
-	mLuaScriptModule = nullptr;
 }
 
 void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity) {
@@ -391,7 +387,7 @@ void GUIManager::runCommand(const std::string& command, const std::string& args)
 void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity) {
 	//switch to movement mode, since it appears most people don't know how to change from gui mode
 	varconf::Variable var;
-	if (!EmberServices::getSingleton().getConfigService().getValue("input", "automovementmode", var)
+	if (!ConfigService::getSingleton().getValue("input", "automovementmode", var)
 		|| (var.is_bool() && (bool) var)) {
 		getInput().setInputMode(Input::IM_MOVEMENT);
 	}

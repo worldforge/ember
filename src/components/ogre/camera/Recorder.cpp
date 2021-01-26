@@ -48,7 +48,7 @@ bool Recorder::frameStarted(const Ogre::FrameEvent& event) {
 		mAccruedTime = 0.0f;
 		std::stringstream filename;
 		filename << "screenshot_" << mSequence++ << ".tga";
-		auto dir = EmberServices::getSingleton().getConfigService().getHomeDirectory(BaseDirType_DATA) / "recordings";
+		auto dir = ConfigService::getSingleton().getHomeDirectory(BaseDirType_DATA) / "recordings";
 		try {
 			//make sure the directory exists
 

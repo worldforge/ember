@@ -85,7 +85,7 @@ bool HydraxWater::initialize()
 //		// All parameters can be set/updated directly by code(Like previous versions),
 //		// but due to the high number of customizable parameters, Hydrax 0.4 allows save/load config files.
 //
-//		std::string configFilename(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "hydrax.cfg");
+//		std::string configFilename(ConfigService::getSingleton().getSharedConfigDirectory() + "hydrax.cfg");
 //
 //		struct stat theStat;
 //		int ret = stat(configFilename.c_str(), &theStat);

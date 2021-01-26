@@ -37,45 +37,32 @@ using namespace WFUT;
 namespace Ember {
 
 
-
 WfutService::WfutService()
-: Service("Update")
-{
-	mDownloadCompleteSlot = sigc::mem_fun(this, &WfutService::wfutSession_DownloadComplete);
-	mDownloadFailureSlot = sigc::mem_fun(this, &WfutService::wfutSession_DownloadFailed);
-	mServerListDownloadingSlot = sigc::mem_fun(this, &WfutService::wfutSession_ServerListDownloading);
-	mUpdatesCalculatedSlot = sigc::mem_fun(this, &WfutService::wfutSession_UpdatesCalculated);
-	
-	mSession = std::make_unique<WfutSession>(mDownloadCompleteSlot, mDownloadFailureSlot, mServerListDownloadingSlot, mUpdatesCalculatedSlot);
+		: Service("Update"),
+		  mDownloadCompleteSlot(sigc::mem_fun(this, &WfutService::wfutSession_DownloadComplete)),
+		  mDownloadFailureSlot(sigc::mem_fun(this, &WfutService::wfutSession_DownloadFailed)),
+		  mServerListDownloadingSlot(sigc::mem_fun(this, &WfutService::wfutSession_ServerListDownloading)),
+		  mUpdatesCalculatedSlot(sigc::mem_fun(this, &WfutService::wfutSession_UpdatesCalculated)),
+		  mSession(std::make_unique<WfutSession>(mDownloadCompleteSlot, mDownloadFailureSlot, mServerListDownloadingSlot, mUpdatesCalculatedSlot)) {
+
+	mSession->init();
 }
 
 
 WfutService::~WfutService() = default;
 
-bool WfutService::start()
-{
-	mSession->init();
-	setRunning(true);
-	return true;
-}
 
-// void WfutService::stop(int code)
-// {
-// 	Service::stop(code);
-// }
 
-void WfutService::startUpdate(const std::string &serverRoot,
-const std::string &channelName,
-const std::string &localPath,
-const std::string &systemPath
-)
-{
+void WfutService::startUpdate(const std::string& serverRoot,
+							  const std::string& channelName,
+							  const std::string& localPath,
+							  const std::string& systemPath
+) {
 	mSession->startUpdate(serverRoot, channelName, localPath, systemPath);
-	
+
 }
 
-int WfutService::poll()
-{
+int WfutService::poll() {
 	int result = mSession->poll();
 	if (!result) {
 		AllDownloadsComplete.emit();
@@ -83,27 +70,23 @@ int WfutService::poll()
 	return result;
 }
 
-void WfutService::wfutSession_DownloadComplete(const std::string &url, const std::string &filename)
-{
-	S_LOG_INFO("Wfut download of " << filename << " from " << url <<" complete.");
+void WfutService::wfutSession_DownloadComplete(const std::string& url, const std::string& filename) {
+	S_LOG_INFO("Wfut download of " << filename << " from " << url << " complete.");
 	DownloadComplete.emit(url, filename);
 }
 
-void WfutService::wfutSession_DownloadFailed(const std::string &url, const std::string &filename, const std::string &reason)
-{
-	S_LOG_WARNING("Wfut download of " << filename << " from " << url <<" failed with reason " << reason << ".");
+void WfutService::wfutSession_DownloadFailed(const std::string& url, const std::string& filename, const std::string& reason) {
+	S_LOG_WARNING("Wfut download of " << filename << " from " << url << " failed with reason " << reason << ".");
 	DownloadFailed.emit(url, filename, reason);
 }
 
-void WfutService::wfutSession_ServerListDownloading(const std::string &url)
-{
-	S_LOG_INFO("Wfut downloading of server list from " << url <<".");
+void WfutService::wfutSession_ServerListDownloading(const std::string& url) {
+	S_LOG_INFO("Wfut downloading of server list from " << url << ".");
 	DownloadingServerList.emit(url);
 }
 
-void WfutService::wfutSession_UpdatesCalculated(size_t numberOfFilesToUpdate)
-{
-	S_LOG_INFO("Wfut needs to download " << numberOfFilesToUpdate <<" updates.");
+void WfutService::wfutSession_UpdatesCalculated(size_t numberOfFilesToUpdate) {
+	S_LOG_INFO("Wfut needs to download " << numberOfFilesToUpdate << " updates.");
 	UpdatesCalculated.emit(numberOfFilesToUpdate);
 }
 

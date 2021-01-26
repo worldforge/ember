@@ -41,26 +41,13 @@ using namespace std;
 
 namespace Ember {
 
-typedef std::list<Eris::ServerInfo> svrl;
-
-MetaserverService::MetaserverService(Eris::Session& session) :
+MetaserverService::MetaserverService(Eris::Session& session, ConfigService& configSrv) :
 		Service("Metaserver"),
 		mSession(session),
 		MetaRefresh("meta_refresh", this, "Refresh the meta server listing."),
 		MetaAbort("meta_abort", this, "Abort the meta server update process.")
 //   , MetaList("meta_list", this, "List all servers.")
 {
-	S_LOG_INFO("Metaserver Service created");
-}
-
-MetaserverService::~MetaserverService() = default;
-
-/* Method for starting this service 	*/
-bool MetaserverService::start() {
-	setRunning(true);
-
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
-
 	std::string metaserverHostname;
 	if (configSrv.itemExists("metaserver", "server")) {
 		metaserverHostname = std::string(configSrv.getValue("metaserver", "server"));
@@ -74,21 +61,10 @@ bool MetaserverService::start() {
 	mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
 	mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));
 
-	//     std::string metaserver = "metaserver.worldforge.org";
-	//
-	//     msrv = new Eris::Meta(metaserver, 10);
-	//     msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
-	//     msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
-	//     msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
-	//     listed = false;
-
-
-	return true;
 }
 
-void MetaserverService::stop() {
+MetaserverService::~MetaserverService() {
 	mMetaserver->cancel();
-	Service::stop();
 }
 
 

@@ -32,7 +32,6 @@ namespace Ember
 {
 
 // some forward declarations before we start
-class LoggingService;
 class ConfigService;
 class MetaserverService;
 class ServerService;

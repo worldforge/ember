@@ -55,7 +55,7 @@ namespace Gui {
 WidgetDefinitions::WidgetDefinitions() = default;
 
 WidgetDefinitions::~WidgetDefinitions() {
-	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
+	auto pluginDirPath = ConfigService::getSingleton().getPluginDirectory();
 	Ember::FileSystemObserver::getSingleton().remove_directory(pluginDirPath);
 }
 
@@ -72,7 +72,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	mPlugins.emplace("IngameChatWidget", PluginEntry{IngameChatWidget::registerWidget(guiManager)});
 	mPlugins.emplace("EntityCreatorWidget", PluginEntry{EntityCreatorWidget::registerWidget(guiManager)});
 #else
-	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
+	auto pluginDirPath = ConfigService::getSingleton().getPluginDirectory();
 	Ember::FileSystemObserver::getSingleton().add_directory(pluginDirPath, [&](const Ember::FileSystemObserver::FileSystemEvent& event) {
 		if (event.ev.type == boost::asio::dir_monitor_event::added || event.ev.type == boost::asio::dir_monitor_event::modified) {
 			auto I = mPlugins.find(event.ev.path);
@@ -111,7 +111,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 }
 
 void WidgetDefinitions::registerPluginWithName(GUIManager& guiManager, const std::string& pluginName) {
-	auto pluginDirPath = EmberServices::getSingleton().getConfigService().getPluginDirectory();
+	auto pluginDirPath = ConfigService::getSingleton().getPluginDirectory();
 
 	auto pluginPath = pluginDirPath / (std::string(PLUGIN_PREFIX) + pluginName + std::string(PLUGIN_SUFFIX));
 

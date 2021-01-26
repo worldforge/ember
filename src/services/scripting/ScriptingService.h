@@ -54,10 +54,6 @@ public:
 
 	~ScriptingService() override;
 
-	bool start() override;
-
-	void stop() override;
-
 	/**
 	Console command for loading scripts.
 	*/
