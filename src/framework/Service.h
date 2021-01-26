@@ -19,11 +19,7 @@
 #ifndef SERVICE_H
 #define SERVICE_H
 
-// Include other headers of the current program here
-
-// Include library headers here
-
-// Include system headers here
+#include <boost/noncopyable.hpp>
 #include <string>
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
@@ -33,35 +29,20 @@ namespace Ember {
 /**
  * @author Miguel Guzman Miranda
  */
-class Service : public virtual sigc::trackable {
+class Service : public virtual sigc::trackable, public boost::noncopyable {
 private:
 
 	/** Stores the unique name of the service */
 	const std::string mName;
-
-	/** Tells if the service is running or not */
-	bool mRunning;
-
-	/** Don't allow copy constructor. */
-	Service(const Service& source);
 
 public:
 
 	/** Creates a new Service using default values. */
 	explicit Service(std::string name);
 
-	/**
-	 * @brief Dtor.
-	 *
-	 * If the service is running when being deleted it will first be stopped. Prevent this by calling stop() yourself.
-	 */
-	virtual ~Service();
-
-protected:
+	virtual ~Service() = default;
 
 
-	/** Specifies whether this service is currently running or not. */
-	virtual void setRunning(bool running);
 
 }; // Service
 

@@ -21,25 +21,12 @@
 #endif
 
 #include "Service.h"
-#include "LoggingInstance.h"
-#include <cassert>
 
 namespace Ember {
 
 Service::Service(std::string name) :
-		mName(std::move(name)),
-		mRunning(false) {
+		mName(std::move(name)) {
 }
 
-Service::~Service() {
-	assert(!mRunning); //Make sure that stop() is called before the destruction of the service.
-}
-
-void Service::setRunning(bool running) {
-	if (mRunning && !running) {
-		S_LOG_INFO("Service '" << mName << "' stopped.");
-	}
-	mRunning = running;
-}
 
 }
