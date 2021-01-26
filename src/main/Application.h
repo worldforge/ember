@@ -18,7 +18,7 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/MainLoopController.h"
 
-#include <sigc++/signal.h>
+#include <Atlas/Objects/Factories.h>
 
 #include <list>
 #include <string>
@@ -123,7 +123,7 @@ class ConsoleInputBinder;
  *
  * start();
  */
-class Application : public ConsoleObject, public Singleton<Application>, public virtual sigc::trackable {
+class Application : public ConsoleObject, public virtual sigc::trackable {
 public:
 	typedef std::unordered_map<std::string, std::map<std::string, std::string>> ConfigMap;
 
@@ -134,8 +134,6 @@ public:
 	 * @param configSettings Command line configuration settings.
 	 */
 	Application(Input& input,
-				std::string prefix,
-				std::string homeDir,
 				ConfigMap configSettings,
 				ConfigService& configService);
 
@@ -170,19 +168,9 @@ public:
 	void start();
 
 	/**
-	 @brief Emitted when all services have been initialized.
-	 */
-	sigc::signal<void> EventServicesInitialized;
-
-	/**
 	 * @brief Callback for running Console Commands
 	 */
 	void runCommand(const std::string& command, const std::string& args) override;
-
-	/**
-	 * @brief Accessor for the main eris world view, if any.
-	 */
-	Eris::View* getMainView();
 
 private:
 
@@ -190,7 +178,7 @@ private:
 
 	ConfigService& mConfigService;
 
-	std::unique_ptr<Atlas::Objects::Factories> mAtlasFactories;
+	Atlas::Objects::Factories mAtlasFactories;
 
 	std::unique_ptr<Eris::Session> mSession;
 
@@ -218,17 +206,6 @@ private:
 	MainLoopController mMainLoopController;
 
 	/**
-	 * @brief The file system prefix to where Ember has been installed.
-	 */
-	const std::string mPrefix;
-
-	/**
-	 * @brief The path to the Ember home directory, where all settings and data will be stored.
-	 * On Linux this defaults to following the XDG Base Directory Specification. On an English Windows it's C:\Document and Settings\USERNAME\Application Data\Ember.
-	 */
-	const std::string mHomeDir;
-
-	/**
 	 * @brief The main services object.
 	 */
 	std::unique_ptr<EmberServices> mServices;
@@ -237,11 +214,6 @@ private:
 	 * @brief Once connected to a world, this will hold the main world view.
 	 */
 	Eris::View* mWorldView;
-
-	/**
-	 * @brief We hold a pointer to the stream to which all logging messages are written.
-	 */
-	std::unique_ptr<std::ofstream> mLogOutStream;
 
 	/**
 	 * @brief The main log observer used for all logging.

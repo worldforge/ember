@@ -44,7 +44,6 @@
 #include "components/lua/embertolua++.h"
 #include "services/config/ConfigConsoleCommands.h"
 #include "ConsoleInputBinder.h"
-#include <Atlas/Objects/Factories.h>
 
 TOLUA_API int tolua_Ogre_open(lua_State* tolua_S);
 
@@ -183,20 +182,15 @@ public:
 };
 
 Application::Application(Input& input,
-						 std::string prefix,
-						 std::string homeDir,
 						 ConfigMap configSettings,
 						 ConfigService& configService) :
 		mInput(input),
 		mConfigService(configService),
-		mAtlasFactories(std::make_unique<Atlas::Objects::Factories>()),
 		mSession(std::make_unique<Eris::Session>()),
 		mFileSystemObserver(std::make_unique<FileSystemObserver>(mSession->getIoService())),
 		mShouldQuit(false),
 		mPollEris(true),
 		mMainLoopController(mShouldQuit, mPollEris, *mSession),
-		mPrefix(std::move(prefix)),
-		mHomeDir(std::move(homeDir)),
 		mWorldView(nullptr),
 		mConfigSettings(std::move(configSettings)),
 		mConsoleBackend(std::make_unique<ConsoleBackend>()),
@@ -430,7 +424,6 @@ void Application::initializeServices() {
 	oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
 #endif
 
-	EventServicesInitialized.emit();
 }
 
 void Application::Server_GotView(Eris::View* view) {
@@ -439,10 +432,6 @@ void Application::Server_GotView(Eris::View* view) {
 
 void Application::Server_DestroyedView() {
 	mWorldView = nullptr;
-}
-
-Eris::View* Application::getMainView() {
-	return mWorldView;
 }
 
 void Application::startScripting() {

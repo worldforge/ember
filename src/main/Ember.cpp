@@ -165,7 +165,7 @@ int main(int argc, char** argv) {
 			Ember::Input input;
 
 			// Create application object
-			Ember::Application app(input, prefix, homeDir, configMap, configService);
+			Ember::Application app(input, configMap, configService);
 
 			app.start();
 		}
