@@ -262,7 +262,7 @@ Application::~Application() {
 	mScriptingResourceProvider.reset();
 	mFileSystemObserver.reset();
 	mSession.reset();
-	S_LOG_INFO("Ember shut down normally.");
+
 	Log::removeObserver(mLogObserver.get());
 }
 

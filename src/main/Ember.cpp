@@ -105,11 +105,9 @@ int main(int argc, char** argv) {
 		}
 	}
 
-#if !defined(__WIN32__) && !defined(__APPLE__)
 	if (exit_program) {
 		return 0;
 	}
-#endif
 
 #ifdef ENABLE_BINRELOC
 	if (prefix == "")
@@ -132,27 +130,26 @@ int main(int argc, char** argv) {
 
 #endif
 
-	try {
-		//put the application object in its own scope so it gets destroyed before we signal all clear
+	//put the application object in its own scope so it gets destroyed before we signal all clear
+	{
+		if (prefix.empty()) {
+			std::cout << "Starting Ember version " EMBER_VERSION "." << std::endl;
+		} else {
+			std::cout << "Starting Ember version " EMBER_VERSION " with prefix '" << prefix << "'." << std::endl;
+		}
+
+		Ember::ConfigService configService(prefix);
+
+		if (!homeDir.empty()) {
+			configService.setHomeDirectory(homeDir);
+			std::cout << "Setting home directory to " << homeDir << std::endl;
+		}
+
+		//output all logging to ember.log
+		auto filename = configService.getHomeDirectory(Ember::BaseDirType_DATA) / "ember.log";
+		std::cout << "Writing logs to " << filename.string() << std::endl;
+		std::ofstream logOutStream(filename.string());
 		{
-			if (prefix.empty()) {
-				std::cout << "Starting Ember version " EMBER_VERSION "." << std::endl;
-			} else {
-				std::cout << "Starting Ember version " EMBER_VERSION " with prefix '" << prefix << "'." << std::endl;
-			}
-
-			Ember::ConfigService configService(prefix);
-
-			if (!homeDir.empty()) {
-				configService.setHomeDirectory(homeDir);
-				std::cout << "Setting home directory to " << homeDir << std::endl;
-			}
-
-			//output all logging to ember.log
-			auto filename = configService.getHomeDirectory(Ember::BaseDirType_DATA) / "ember.log";
-			std::cout << "Writing logs to " << filename.string() << std::endl;
-			std::ofstream logOutStream(filename.string());
-
 			//write to the log the version number
 			logOutStream << "Ember version " EMBER_VERSION << std::endl;
 
@@ -172,11 +169,8 @@ int main(int argc, char** argv) {
 
 			app.start();
 		}
-	} catch (const std::exception& ex) {
-		std::cerr << "Unexpected error, aborting.\n\r\t" << ex.what() << std::endl;
-		return 1;
+		logOutStream << "Ember shut down normally." << std::endl;
 	}
-	std::cout << "Ember shut down successfully." << std::endl;
 
 	return 0;
 }
