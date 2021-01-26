@@ -18,7 +18,6 @@ include(FindPkgConfig)
 include(CMakeDependentOption)
 
 # Version setup. Figure out the version from 'git describe' if VERSION isn't set externally.
-message(${PROJECT_SOURCE_DIR})
 execute_process(COMMAND git -C ${PROJECT_SOURCE_DIR} describe
         OUTPUT_VARIABLE GIT_REPO_VERSION)
 string(REGEX REPLACE "\n$" "" GIT_REPO_VERSION "${GIT_REPO_VERSION}")
