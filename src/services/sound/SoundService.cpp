@@ -63,16 +63,17 @@ SoundService::SoundService(ConfigService& configService)
 			if (!mDevice) {
 				mEnabled = false;
 				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
-				return false;
+			} else {
+
+				mContext = alcCreateContext(mDevice, nullptr);
+				if (!mContext) {
+					mEnabled = false;
+					S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
+				} else {
+					mEnabled = alcMakeContextCurrent(mContext) == ALC_TRUE;
+				}
 			}
 
-			mContext = alcCreateContext(mDevice, nullptr);
-			if (!mContext) {
-				mEnabled = false;
-				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
-				return false;
-			}
-			mEnabled = alcMakeContextCurrent(mContext) == ALC_TRUE;
 #endif
 
 			SoundGeneral::checkAlError();
