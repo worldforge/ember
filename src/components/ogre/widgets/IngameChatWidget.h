@@ -361,7 +361,7 @@ class IngameChatWidget
 		UniqueWindowPtr<CEGUI::Window> mDetachedLayout;
 	};
 
-	friend class IngameChatWidget::EntityObserver;
+	friend struct IngameChatWidget::EntityObserver;
 
 public:
 	static WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
