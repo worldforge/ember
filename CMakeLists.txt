@@ -211,7 +211,7 @@ else ()
 
     link_directories(${Boost_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${Boost_LIBRARIES})
-    include_directories(${Boost_INCLUDE_DIRS})
+    include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
     #Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.
     #This allows for a developer to get some insight into why some frames take too long.
@@ -220,7 +220,7 @@ else ()
         message(STATUS "Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
         link_directories(${UNWIND_LIBRARY_DIRS})
         list(APPEND WF_LIBRARIES ${UNWIND_LIBRARIES})
-        include_directories(${UNWIND_INCLUDE_DIR})
+        include_directories(SYSTEM ${UNWIND_INCLUDE_DIR})
         add_definitions(-DUNWIND_ENABLED)
     endif (UNWIND_FOUND)
 
@@ -229,7 +229,7 @@ else ()
     find_package(ZLIB REQUIRED)
 
     find_package(SDL2 REQUIRED)
-    include_directories(${SDL2_INCLUDE_DIR})
+    include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
     link_directories(${SDL2_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${SDL2_LIBRARIES})
 
@@ -282,14 +282,14 @@ else ()
     list(APPEND WF_LIBRARY_DIRS ${wfut_LIBRARY_DIR})
 
     link_directories(${WF_LIBRARY_DIRS})
-    include_directories(${WF_INCLUDE_DIRS})
+    include_directories(SYSTEM ${WF_INCLUDE_DIRS})
 
     set(OGREVER 1.12.11)
     set(OGRE_DIR /home/erik/opt/ogre_debug/lib/cmake)
     find_package(OGRE ${OGREVER} REQUIRED)
     link_directories(${OGRE_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${OGRE_LIBRARIES})
-    include_directories(${OGRE_INCLUDE_DIRS})
+    include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
     if (APPLE)
         if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
             MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
@@ -324,7 +324,7 @@ else ()
     #Get all include directories from INTERFACE_INCLUDE_DIRECTORIES and add them, since we won't link directly to the targets here.
     foreach (var Terrain Paging Overlay MeshLodGenerator RTShaderSystem)
         get_target_property(INC_DIR Ogre${var} INTERFACE_INCLUDE_DIRECTORIES)
-        include_directories(${INC_DIR})
+        include_directories(SYSTEM ${INC_DIR})
     endforeach ()
 
 
@@ -336,7 +336,7 @@ else ()
     find_package(Tolua++ REQUIRED)
     link_directories(${TOLUA++_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${TOLUA++_LIBRARY})
-    include_directories(${TOLUA++_INCLUDE_DIR})
+    include_directories(SYSTEM ${TOLUA++_INCLUDE_DIR})
 
     #Allow Lua version to be set from outside, since some system might have CEGUI and tolua++ compiled to 5.2 or 5.3
     if (NOT LUA_VERSION)
@@ -349,48 +349,48 @@ else ()
     endif (NOT LUA_FOUND)
     link_directories(${LUA_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${LUA_LIBRARIES})
-    include_directories(${LUA_INCLUDE_DIR})
+    include_directories(SYSTEM ${LUA_INCLUDE_DIR})
 
 
     find_package(CEGUI 0.8.7 REQUIRED)
     link_directories(${CEGUI_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${CEGUI_LIBRARIES})
-    include_directories(${CEGUI_INCLUDE_DIRS})
+    include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
 
     if (NOT CEGUI_LuaScriptModule_FOUND)
         MESSAGE(FATAL_ERROR "Could not find CEGUI Lua component. Make sure you've built CEGUI with Lua support.")
     endif (NOT CEGUI_LuaScriptModule_FOUND)
     list(APPEND WF_LIBRARIES ${CEGUI_LuaScriptModule_LIBRARIES})
-    include_directories(${CEGUI_LuaScriptModule_INCLUDE_DIRS})
+    include_directories(SYSTEM ${CEGUI_LuaScriptModule_INCLUDE_DIRS})
 
     find_package(SDL2 REQUIRED)
     list(APPEND WF_LIBRARIES ${SDL2_LIBRARY})
     list(APPEND WF_LIBRARIES ${SDL2_LIBRARIES})
-    include_directories(${SDL2_INCLUDE_DIR})
+    include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
 
     find_package(ALUT REQUIRED)
     link_directories(${ALUT_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${ALUT_LIBRARIES})
-    include_directories(${ALUT_INCLUDE_DIRS})
+    include_directories(SYSTEM ${ALUT_INCLUDE_DIRS})
 
     find_package(OpenAL REQUIRED)
     list(APPEND WF_LIBRARIES ${OPENAL_LIBRARY})
     list(APPEND WF_LIBRARIES ${OPENAL_LIBRARIES})
-    include_directories(${OPENAL_INCLUDE_DIR})
+    include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
 
     if (NOT WIN32)
         find_package(XDGBaseDir REQUIRED 1.0.0)
         list(APPEND WF_LIBRARIES ${XDGBaseDir_LIBRARIES})
-        include_directories(${XDGBaseDir_INLUDE_DIR})
+        include_directories(SYSTEM ${XDGBaseDir_INLUDE_DIR})
     endif ()
 
     find_package(OpenGL)
     link_directories(${OPENGL_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${OPENGL_LIBRARIES})
-    include_directories(${OPENGL_INCLUDE_DIR})
+    include_directories(SYSTEM ${OPENGL_INCLUDE_DIR})
 
     find_package(Bullet 2.81 REQUIRED)
-    include_directories(${BULLET_INCLUDE_DIRS})
+    include_directories(SYSTEM ${BULLET_INCLUDE_DIRS})
 
     find_package(cppunit 1.8.0)
 
