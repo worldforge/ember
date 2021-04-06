@@ -1044,10 +1044,11 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *
 	Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
 	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
 
+	auto logLevel = LogManager::getSingleton().getDefaultLog()->getLogDetail();
 	LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
 	mesh->setAutoBuildEdgeLists(autoEdgeBuildEnabled);
 	mesh->load();
-	LogManager::getSingleton().setLogDetail(LL_NORMAL);
+	LogManager::getSingleton().setLogDetail(logLevel);
 
 	//Apply grass material to mesh
 	subMesh->setMaterialName(layer->material->getName());
@@ -1301,10 +1302,11 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 	Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
 	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
 
+	auto logLevel = LogManager::getSingleton().getDefaultLog()->getLogDetail();
 	LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
 	mesh->setAutoBuildEdgeLists(autoEdgeBuildEnabled);
 	mesh->load();
-	LogManager::getSingleton().setLogDetail(LL_NORMAL);
+	LogManager::getSingleton().setLogDetail(logLevel);
 
 	//Apply grass material to mesh
 	subMesh->setMaterialName(layer->material->getName());
@@ -1478,10 +1480,11 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer
 	Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
 	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
 
+	auto logLevel = LogManager::getSingleton().getDefaultLog()->getLogDetail();
 	LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
 	mesh->setAutoBuildEdgeLists(autoEdgeBuildEnabled);
 	mesh->load();
-	LogManager::getSingleton().setLogDetail(LL_NORMAL);
+	LogManager::getSingleton().setLogDetail(logLevel);
 
 	//Apply grass material to mesh
 	subMesh->setMaterialName(layer->material->getName());

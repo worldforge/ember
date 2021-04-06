@@ -608,9 +608,10 @@ void StaticBillboardSet::build()
 		Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
 		mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
 
+		auto logLevel = LogManager::getSingleton().getDefaultLog()->getLogDetail();
 		LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
 		mesh->load();
-		LogManager::getSingleton().setLogDetail(LL_NORMAL);
+		LogManager::getSingleton().setLogDetail(logLevel);
 
 		//Empty the billboardBuffer now, because all billboards have been built
 		billboardBuffer.clear();
