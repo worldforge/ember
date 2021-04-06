@@ -190,6 +190,9 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 }
 
 EmberOgre::~EmberOgre() {
+
+	destroyWorld();
+
 	// Deregister the overlay system before deleting it in OgreSetup.
 	if (mSceneManagerOutOfWorld && mOgreSetup) {
 		mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
@@ -221,8 +224,6 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 //			log.report("_updateAllRenderTargets");
 			mWindow->update(false);
 //			log.report("update");
-			//Do input and render the UI at the last moment, to make sure that the UI is responsive.
-			mInput.processInput();
 //			log.report("processInput");
 			mGUIManager->render();
 //			log.report("render");
@@ -395,13 +396,16 @@ void EmberOgre::Server_GotView(Eris::View* view) {
 }
 
 void EmberOgre::destroyWorld() {
-	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
-	EventWorldBeingDestroyed.emit();
-	mWorld.reset();
-	EventWorldDestroyed.emit();
-	mWindow->removeAllViewports();
-	mWindow->addViewport(mCameraOutOfWorld);
-
+	if (mWorld) {
+		mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
+		EventWorldBeingDestroyed.emit();
+		mWorld.reset();
+		EventWorldDestroyed.emit();
+	}
+	if (mWindow) {
+		mWindow->removeAllViewports();
+		mWindow->addViewport(mCameraOutOfWorld);
+	}
 	//This is an excellent place to force garbage collection of all scripting environments.
 	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();
 	const std::vector<std::string> providerNames = scriptingService.getProviderNames();

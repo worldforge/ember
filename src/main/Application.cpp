@@ -287,7 +287,6 @@ void Application::registerComponents() {
 void Application::mainLoop() {
 	DesiredFpsListener desiredFpsListener;
 	Eris::EventService& eventService = mSession->getEventService();
-	Input& input(Input::getSingleton());
 
 	do {
 		try {
@@ -299,13 +298,17 @@ void Application::mainLoop() {
 			auto timePerFrame = desiredFpsListener.getTimePerFrame();
 			TimeFrame timeFrame(timePerFrame);
 
+			mInput.processInput();
+			frameActionMask |= MainLoopController::FA_INPUT;
+
+			//mShouldQuit is sometimes set by IO, so we might exit here already
+			if (mShouldQuit) {
+				return;
+			}
+
 			bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
 			if (updatedRendering) {
 				frameActionMask |= MainLoopController::FA_GRAPHICS;
-				frameActionMask |= MainLoopController::FA_INPUT;
-			} else {
-				input.processInput();
-				frameActionMask |= MainLoopController::FA_INPUT;
 			}
 
 			mServices->getSoundService().cycle();
