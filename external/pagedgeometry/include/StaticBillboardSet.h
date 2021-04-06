@@ -104,18 +104,18 @@ public:
 	inline void createBillboard(const Ogre::Vector3 &position, float xScale = 1.0f, float yScale = 1.0f, const Ogre::ColourValue &color = Ogre::ColourValue::White, Ogre::uint16 texcoordIndexU = 0, Ogre::uint16 texcoordIndexV = 0)
 	{
 		if (renderMethod == BB_METHOD_ACCELERATED){
-			StaticBillboard *bb = new StaticBillboard;
-			billboardBuffer.push_back(bb);
+			StaticBillboard bb;
 
-			bb->position = position;
-			bb->xScale = xScale;
-			bb->yScale = yScale;
-			bb->texcoordIndexU = texcoordIndexU;
-			bb->texcoordIndexV = texcoordIndexV;
+			bb.position = position;
+			bb.xScale = xScale;
+			bb.yScale = yScale;
+			bb.texcoordIndexU = texcoordIndexU;
+			bb.texcoordIndexV = texcoordIndexV;
 
 			Ogre::uint32 packedColor;
 			Ogre::Root::getSingleton().getRenderSystem()->convertColourValue(color, &packedColor);
-			bb->color = packedColor;
+			bb.color = packedColor;
+			billboardBuffer.emplace_back(bb);
 		} else {
 			Ogre::Billboard *bb = fallbackSet->createBillboard(position);
 			bb->setDimensions(xScale, yScale);
@@ -254,7 +254,7 @@ private:
 	Ogre::MaterialPtr materialPtr, fadeMaterialPtr;
 	float uFactor, vFactor;
 
-	std::vector<StaticBillboard*> billboardBuffer;
+	std::vector<StaticBillboard> billboardBuffer;
 
 	BillboardMethod renderMethod;
 	Ogre::BillboardSet *fallbackSet;

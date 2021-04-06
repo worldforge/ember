@@ -436,14 +436,6 @@ void StaticBillboardSet::clear()
 		}
 
 		//Remove any billboard data which might be left over if the user forgot to call build()
-		std::vector<StaticBillboard*>::iterator i1, i2;
-		i1 = billboardBuffer.begin();
-		i2 = billboardBuffer.end();
-		while (i1 != i2)
-		{
-			delete (*i1);
-			++i1;
-		}
 		billboardBuffer.clear();
 	} else {
 		fallbackSet->clear();
@@ -501,80 +493,79 @@ void StaticBillboardSet::build()
 		float minX = Math::POS_INFINITY, minY = Math::POS_INFINITY, minZ = Math::POS_INFINITY;
 		float maxX = Math::NEG_INFINITY, maxY = Math::NEG_INFINITY, maxZ = Math::NEG_INFINITY;
 
-		std::vector<StaticBillboard*>::iterator i1, i2;
+		std::vector<StaticBillboard>::iterator i1, i2;
 		i1 = billboardBuffer.begin();
 		i2 = billboardBuffer.end();
 		while (i1 != i2)
 		{
-			StaticBillboard *bb = (*i1);
-			float halfXScale = bb->xScale * 0.5f;
-			float halfYScale = bb->yScale * 0.5f;
+			StaticBillboard& bb = (*i1);
+			float halfXScale = bb.xScale * 0.5f;
+			float halfYScale = bb.yScale * 0.5f;
 			
 			// position
-			*pReal++ = bb->position.x;
-			*pReal++ = bb->position.y;
-			*pReal++ = bb->position.z;
+			*pReal++ = bb.position.x;
+			*pReal++ = bb.position.y;
+			*pReal++ = bb.position.z;
 			// normals (actually used as scale / translate info for vertex shader)
 			*pReal++ = halfXScale;
 			*pReal++ = halfYScale;
 			*pReal++ = 0.0f;
 			// color
-			*((uint32*)pReal++) = bb->color;
+			*((uint32*)pReal++) = bb.color;
 			// uv
-			*pReal++ = (bb->texcoordIndexU * uFactor);
-			*pReal++ = (bb->texcoordIndexV * vFactor);
+			*pReal++ = (bb.texcoordIndexU * uFactor);
+			*pReal++ = (bb.texcoordIndexV * vFactor);
 			
 			// position
-			*pReal++ = bb->position.x;
-			*pReal++ = bb->position.y;
-			*pReal++ = bb->position.z;
+			*pReal++ = bb.position.x;
+			*pReal++ = bb.position.y;
+			*pReal++ = bb.position.z;
 			// normals (actually used as scale / translate info for vertex shader)
 			*pReal++ = halfXScale;
 			*pReal++ = halfYScale;
 			*pReal++ = 1.0f;
 			// color
-			*((uint32*)pReal++) = bb->color;
+			*((uint32*)pReal++) = bb.color;
 			// uv
-			*pReal++ = ((bb->texcoordIndexU + 1) * uFactor);
-			*pReal++ = (bb->texcoordIndexV * vFactor);
+			*pReal++ = ((bb.texcoordIndexU + 1) * uFactor);
+			*pReal++ = (bb.texcoordIndexV * vFactor);
 
 			// position
-			*pReal++ = bb->position.x;
-			*pReal++ = bb->position.y;
-			*pReal++ = bb->position.z;
+			*pReal++ = bb.position.x;
+			*pReal++ = bb.position.y;
+			*pReal++ = bb.position.z;
 			// normals (actually used as scale / translate info for vertex shader)
 			*pReal++ = halfXScale;
 			*pReal++ = halfYScale;
 			*pReal++ = 2.0f;
 			// color
-			*((uint32*)pReal++) = bb->color;
+			*((uint32*)pReal++) = bb.color;
 			// uv
-			*pReal++ = (bb->texcoordIndexU * uFactor);
-			*pReal++ = ((bb->texcoordIndexV + 1) * vFactor);
+			*pReal++ = (bb.texcoordIndexU * uFactor);
+			*pReal++ = ((bb.texcoordIndexV + 1) * vFactor);
 
 			// position
-			*pReal++ = bb->position.x;
-			*pReal++ = bb->position.y;
-			*pReal++ = bb->position.z;
+			*pReal++ = bb.position.x;
+			*pReal++ = bb.position.y;
+			*pReal++ = bb.position.z;
 			// normals (actually used as scale / translate info for vertex shader)
 			*pReal++ = halfXScale;
 			*pReal++ = halfYScale;
 			*pReal++ = 3.0f;
 			// color
-			*((uint32*)pReal++) = bb->color;
+			*((uint32*)pReal++) = bb.color;
 			// uv
-			*pReal++ = ((bb->texcoordIndexU + 1) * uFactor);
-			*pReal++ = ((bb->texcoordIndexV + 1) * vFactor);
+			*pReal++ = ((bb.texcoordIndexU + 1) * uFactor);
+			*pReal++ = ((bb.texcoordIndexV + 1) * vFactor);
 			
 			//Update bounding box
-			if (bb->position.x - halfXScale < minX) minX = bb->position.x - halfXScale;
-			if (bb->position.x + halfXScale > maxX) maxX = bb->position.x + halfXScale;
-			if (bb->position.y - halfYScale < minY) minY = bb->position.y - halfYScale;
-			if (bb->position.y + halfYScale > maxY) maxY = bb->position.y + halfYScale;
-			if (bb->position.z - halfXScale < minZ) minZ = bb->position.z - halfXScale;
-			if (bb->position.z + halfXScale > maxZ) maxZ = bb->position.z + halfXScale;
+			if (bb.position.x - halfXScale < minX) minX = bb.position.x - halfXScale;
+			if (bb.position.x + halfXScale > maxX) maxX = bb.position.x + halfXScale;
+			if (bb.position.y - halfYScale < minY) minY = bb.position.y - halfYScale;
+			if (bb.position.y + halfYScale > maxY) maxY = bb.position.y + halfYScale;
+			if (bb.position.z - halfXScale < minZ) minZ = bb.position.z - halfXScale;
+			if (bb.position.z + halfXScale > maxZ) maxZ = bb.position.z + halfXScale;
 			
-			delete bb;
 			++i1;
 		}
 		AxisAlignedBox bounds(minX, minY, minZ, maxX, maxY, maxZ);
