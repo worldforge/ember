@@ -109,12 +109,12 @@ Connector::Connector(const Connector& connector)
 }
 
 
-Connector Connector::createConnector(sigc::signal<void>* signal) {
-	return Connector(*signal);
+Connector* Connector::createConnector(sigc::signal<void>* signal) {
+	return new Connector(*signal);
 }
 
-Connector Connector::createConnector(sigc::signal<void>& signal) {
-	return Connector(signal);
+Connector* Connector::createConnector(sigc::signal<void>& signal) {
+	return new Connector(signal);
 }
 
 }

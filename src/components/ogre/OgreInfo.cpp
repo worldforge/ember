@@ -133,10 +133,9 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 
 	size_t resourceMemoryUsage = 0;
 	outputStream << "Resource Managers:" << std::endl;
-	Ogre::ResourceGroupManager::ResourceManagerIterator I = Ogre::ResourceGroupManager::getSingleton().getResourceManagerIterator();
-	while (I.hasMoreElements()) {
-		std::string name = I.peekNextKey();
-		Ogre::ResourceManager* manager = I.getNext();
+	for (auto& entry : Ogre::ResourceGroupManager::getSingleton().getResourceManagers()) {
+		auto& name = entry.first;
+		Ogre::ResourceManager* manager = entry.second;
 		outputStream << " Resource Manager: " << name << std::endl;
 		if (manager->getMemoryBudget() == std::numeric_limits<size_t>::max()) {
 			outputStream << "  Memory budget: not set" << std::endl;

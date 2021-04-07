@@ -106,7 +106,7 @@ namespace Caelum
             gradientsTus->setTextureName (gradients, Ogre::TEX_TYPE_2D, -1, true);
         #else
             gradientsTus->setTextureName (gradients, Ogre::TEX_TYPE_2D);
-            gradientsTus->setIsAlpha (true);
+            gradientsTus->setDesiredFormat(Ogre::PF_A8);
         #endif
     }
 

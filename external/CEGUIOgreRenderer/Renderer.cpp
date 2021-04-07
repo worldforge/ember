@@ -47,6 +47,8 @@
 #include <OgreFrameListener.h>
 #include <OgreViewport.h>
 #include <OgreCamera.h>
+#include <OgreTextureManager.h>
+#include <OgreTextureUnitState.h>
 
 #ifdef CEGUI_USE_OGRE_COMPOSITOR2
 #include <Compositor/OgreCompositorManager2.h>
@@ -259,6 +261,7 @@ struct OgreRenderer_impl :
         // TODO: should be set to correct value
         d_maxTextureSize(2048),
         d_ogreRoot(Ogre::Root::getSingletonPtr()),
+        d_ogreSampler(d_ogreRoot->getTextureManager()->createSampler("CEGUI")),
 #if !defined(CEGUI_USE_OGRE_COMPOSITOR2)
         d_previousVP(0),
 #endif
@@ -278,7 +281,12 @@ struct OgreRenderer_impl :
         d_projectionMatrix(Ogre::Matrix4::IDENTITY),
         d_worldViewProjMatrix(Ogre::Matrix4::IDENTITY),
         d_combinedMatrixValid(true)
-        {}
+        {
+			d_ogreSampler->setFiltering(Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT);
+			d_ogreSampler->setAddressingMode(Ogre::TextureUnitState::TAM_CLAMP,
+											 Ogre::TextureUnitState::TAM_CLAMP,
+											 Ogre::TextureUnitState::TAM_CLAMP);
+        }
 
     //! String holding the renderer identification text.
     static String d_rendererID;
@@ -298,6 +306,7 @@ struct OgreRenderer_impl :
     uint d_maxTextureSize;
     //! OGRE root object ptr
     Ogre::Root* d_ogreRoot;
+    Ogre::SamplerPtr d_ogreSampler;
     //! Pointer to the render system for Ogre.
     Ogre::RenderSystem* d_renderSystem;
 #if !defined(CEGUI_USE_OGRE_COMPOSITOR2)
@@ -676,12 +685,14 @@ void OgreRenderer::endRendering()
 
             if ( d_pimpl->d_previousVP->getCamera() )
             {
-                d_pimpl->d_renderSystem->_setProjectionMatrix(
-                    d_pimpl->d_previousProjMatrix);
-                d_pimpl->d_renderSystem->_setViewMatrix(
-                    d_pimpl->d_previousVP->getCamera()->getViewMatrix());
+            	auto fixedFunctionParams = d_pimpl->d_renderSystem->getFixedFunctionParams(Ogre::TrackVertexColourEnum::TVC_NONE, Ogre::FogMode::FOG_NONE);
+            	if (fixedFunctionParams) {
+					fixedFunctionParams->setConstant(4, d_pimpl->d_previousVP->getCamera()->getViewMatrix());// the "magic" 4 is defined in getFixedFunctionParams
+					fixedFunctionParams->setConstant(8, d_pimpl->d_previousProjMatrix); // the "magic" 8 is defined in getFixedFunctionParams
+					d_pimpl->d_renderSystem->applyFixedFunctionParams(fixedFunctionParams, Ogre::GPV_GLOBAL);
+				}
             }
-            d_pimpl->d_previousVP = 0;
+            d_pimpl->d_previousVP = nullptr;
             d_pimpl->d_previousProjMatrix = Ogre::Matrix4::IDENTITY;
         }
     #endif    
@@ -708,8 +719,13 @@ uint OgreRenderer::getMaxTextureSize() const
 //----------------------------------------------------------------------------//
 const String& OgreRenderer::getIdentifierString() const
 {
-    return d_pimpl->d_rendererID;
+    return CEGUI::OgreRenderer_impl::d_rendererID;
 }
+
+Ogre::Sampler& OgreRenderer::getSampler() const {
+	return *d_pimpl->d_ogreSampler;
+}
+
 
 //----------------------------------------------------------------------------//
 #if !defined(CEGUI_USE_OGRE_COMPOSITOR2)
@@ -1087,8 +1103,14 @@ void OgreRenderer::initialiseRenderStateSettings()
     d_pimpl->d_renderSystem->_setDepthBufferParams(false, false);
     d_pimpl->d_renderSystem->_setDepthBias(0, 0);
     d_pimpl->d_renderSystem->_setCullingMode(CULL_NONE);
-    d_pimpl->d_renderSystem->_setFog(FOG_NONE);
-    d_pimpl->d_renderSystem->_setColourBufferWriteEnabled(true, true, true, true);
+  //  d_pimpl->d_renderSystem->_setFog(FOG_NONE);
+    Ogre::ColourBlendState blendState;
+	blendState.writeA = true;
+	blendState.writeR = true;
+	blendState.writeG = true;
+	blendState.writeB = true;
+	d_pimpl->d_renderSystem->setColourBlendState(blendState);
+//    d_pimpl->d_renderSystem->_setColourBufferWriteEnabled(true, true, true, true);
     d_pimpl->d_renderSystem->setShadingType(SO_GOURAUD);
     d_pimpl->d_renderSystem->_setPolygonMode(PM_SOLID);
 #endif

@@ -561,7 +561,7 @@ void ImpostorTexture::renderTextures(bool force)
 	sceneMgr->setAmbientLight(ColourValue::White);
 
 	std::vector<Ogre::MovableObject*> lightStore;
-	auto lights = sceneMgr->getMovableObjects(Ogre::LightFactory::FACTORY_TYPE_NAME);
+	auto& lights = sceneMgr->getMovableObjects(Ogre::LightFactory::FACTORY_TYPE_NAME);
 	for (auto& entry : lights) {
 		Ogre::MovableObject* light = entry.second;
 		if (light) {

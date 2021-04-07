@@ -70,16 +70,6 @@ static const Ogre::LayerBlendModeEx S_alphaBlendMode =
 };
 
 //----------------------------------------------------------------------------//
-#ifndef CEGUI_USE_OGRE_HLMS
-static const Ogre::TextureUnitState::UVWAddressingMode S_textureAddressMode =
-{
-    Ogre::TextureUnitState::TAM_CLAMP,
-    Ogre::TextureUnitState::TAM_CLAMP,
-    Ogre::TextureUnitState::TAM_CLAMP
-};
-#endif
-
-//----------------------------------------------------------------------------//
 // Helper to allocate a vertex buffer and initialse a Ogre::RenderOperation
 static void initialiseRenderOp(
 #ifdef CEGUI_USE_OGRE_HLMS
@@ -217,8 +207,8 @@ void OgreGeometryBuffer::draw() const
             d_renderSystem._setViewport(currentViewport);
 #else
             d_renderSystem.setScissorTest(
-                i->clip, d_clipRect.left(), d_clipRect.top(),
-                         d_clipRect.right(), d_clipRect.bottom());
+                i->clip, Ogre::Rect(d_clipRect.left(), d_clipRect.top(),
+                         d_clipRect.right(), d_clipRect.bottom()));
 #endif
 
             d_renderOp.vertexData->vertexStart = pos;
@@ -459,8 +449,7 @@ void OgreGeometryBuffer::initialiseTextureStates() const
 
     d_renderSystem._setHlmsSamplerblock(0, d_owner.getHlmsSamplerblock());
 #else
-    d_renderSystem._setTextureUnitFiltering(0, FO_LINEAR, FO_LINEAR, FO_POINT);
-    d_renderSystem._setTextureAddressingMode(0, S_textureAddressMode);
+    d_renderSystem._setSampler(0, d_owner.getSampler());
     d_renderSystem._setTextureMatrix(0, Matrix4::IDENTITY);
     d_renderSystem._setAlphaRejectSettings(CMPF_ALWAYS_PASS, 0, false);
     d_renderSystem._setTextureBlendMode(0, S_colourBlendMode);

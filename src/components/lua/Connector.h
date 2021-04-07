@@ -142,46 +142,46 @@ public:
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	static Connector createConnector(sigc::signal<void>* signal);
+	static Connector* createConnector(sigc::signal<void>* signal);
 
 	/**
 	 * @brief Creates a new connector.
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	static Connector createConnector(sigc::signal<void>& signal);
+	static Connector* createConnector(sigc::signal<void>& signal);
 
 	/**
 	 * @brief Creates a new connector.
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	template<typename TAdapter0, typename TSignal>
-	static Connector createConnector(TSignal* signal);
+	template <typename TAdapter0, typename TSignal>
+	static Connector* createConnector(TSignal* signal);
 
 	/**
 	 * @brief Creates a new connector.
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	template<typename TAdapter0, typename TSignal>
-	static Connector createConnector(TSignal& signal);
+	template <typename TAdapter0, typename TSignal>
+	static Connector* createConnector(TSignal& signal);
 
 	/**
 	 * @brief Creates a new connector.
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	template<typename TAdapter0, typename TAdapter1, typename TSignal>
-	static Connector createConnector(TSignal* signal);
+	template <typename TAdapter0, typename TAdapter1, typename TSignal>
+	static Connector* createConnector(TSignal* signal);
 
 	/**
 	 * @brief Creates a new connector.
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	template<typename TAdapter0, typename TAdapter1, typename TSignal>
-	static Connector createConnector(TSignal& signal);
+	template <typename TAdapter0, typename TAdapter1, typename TSignal>
+	static Connector* createConnector(TSignal& signal);
 
 private:
 
@@ -256,25 +256,28 @@ Connector::Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1)
 }
 
 
-template<typename TAdapter0, typename TSignal>
-Connector Connector::createConnector(TSignal* signal) {
-	return Connector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(*signal, TAdapter0()));
+template <typename TAdapter0, typename TSignal>
+Connector* Connector::createConnector(TSignal* signal)
+{
+	return new Connector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(*signal, TAdapter0()));
 }
 
-template<typename TAdapter0, typename TSignal>
-Connector Connector::createConnector(TSignal& signal) {
-	return Connector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(signal, TAdapter0()));
+template <typename TAdapter0, typename TSignal>
+Connector* Connector::createConnector(TSignal& signal)
+{
+	return new Connector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(signal, TAdapter0()));
 }
 
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-Connector Connector::createConnector(TSignal* signal) {
-	return Connector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(*signal, TAdapter0(), TAdapter1()));
+template <typename TAdapter0, typename TAdapter1, typename TSignal>
+Connector* Connector::createConnector(TSignal* signal)
+{
+	return new Connector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(*signal, TAdapter0(), TAdapter1()));
 }
 
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-Connector Connector::createConnector(TSignal& signal) {
-	return Connector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>
-							 (signal, TAdapter0(), TAdapter1()));
+template <typename TAdapter0, typename TAdapter1, typename TSignal>
+Connector* Connector::createConnector(TSignal& signal)
+{
+	return new Connector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(signal, TAdapter0(), TAdapter1()));
 }
 
 }

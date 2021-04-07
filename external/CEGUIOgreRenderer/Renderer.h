@@ -51,6 +51,7 @@ template<typename T> class SharedPtr;
 class Texture;
 typedef SharedPtr<Texture> TexturePtr;
 class Matrix4;
+class Sampler;
 }
 
 //#if (CEGUI_OGRE_VERSION >= (2 << 16))
@@ -402,6 +403,8 @@ public:
     const Vector2f& getDisplayDPI() const;
     uint getMaxTextureSize() const;
     const String& getIdentifierString() const;
+
+    Ogre::Sampler& getSampler() const;
 
 protected:
     //! default constructor.
