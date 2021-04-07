@@ -21,6 +21,7 @@
 
 #include "dir_monitor/include/dir_monitor/dir_monitor.hpp"
 #include "Singleton.h"
+#include <Eris/ActiveMarker.h>
 
 #include <boost/asio/io_service.hpp>
 #include <memory>
@@ -69,6 +70,11 @@ private:
 	std::unique_ptr<boost::asio::dir_monitor> mDirectoryMonitor;
 
 	std::map<boost::filesystem::path, std::function<void(const FileSystemEvent&)>> mCallBacks;
+
+	/**
+	 * Use a marker to prevent processing of event after this has been deleted.
+	 */
+	Eris::ActiveMarker mActiveMarker;
 
 	void observe();
 };
