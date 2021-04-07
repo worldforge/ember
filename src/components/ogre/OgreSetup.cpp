@@ -193,6 +193,9 @@ OgreSetup::~OgreSetup() {
 			mRenderWindow = nullptr;
 		}
 
+		//Clean up, else it seems we can get error referencing gpu programs that are destroyed.
+		Ogre::RTShader::ShaderGenerator::destroy();
+
 	}
 }
 

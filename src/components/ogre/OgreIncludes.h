@@ -142,7 +142,6 @@ class ParticleEmitterFactory;
 class ParticleSystem;
 class ParticleSystemManager;
 class ParticleSystemRenderer;
-class ParticleSystemRendererFactory;
 class ParticleVisualData;
 class Pass;
 class PatchMesh;
