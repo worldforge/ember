@@ -675,6 +675,9 @@ void OgreRenderer::beginRendering()
 //----------------------------------------------------------------------------//
 void OgreRenderer::endRendering()
 {
+	//Seems that it's important to reset the scissor test setting after rendering, otherwise it might mess with the Ogre rendering.
+	//On 1.12.6 we get this issue, but only if we're not rendering the cursor (since the cursor is rendered last, and sets the scissor test to cover the whole screen).
+	d_pimpl->d_renderSystem->setScissorTest(false);
     if (d_pimpl->d_makeFrameControlCalls)
         d_pimpl->d_renderSystem->_endFrame();
 
@@ -1110,7 +1113,6 @@ void OgreRenderer::initialiseRenderStateSettings()
 	blendState.writeG = true;
 	blendState.writeB = true;
 	d_pimpl->d_renderSystem->setColourBlendState(blendState);
-//    d_pimpl->d_renderSystem->_setColourBufferWriteEnabled(true, true, true, true);
     d_pimpl->d_renderSystem->setShadingType(SO_GOURAUD);
     d_pimpl->d_renderSystem->_setPolygonMode(PM_SOLID);
 #endif
