@@ -1,0 +1,102 @@
+name: CMake
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+  # This makes it correctly use C++11 API on GCC by default.
+  CONAN_V2_MODE: 1
+  CONAN_REVISIONS_ENABLED: 1
+  CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+  CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, windows-2019, macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install Conan
+      shell: bash
+      run: |
+            export PATH=~/.local/bin:$PATH
+            if [[ "$ImageOS" == "ubuntu16" ]]; then
+              #The pip and setuptools packages are broken in ubuntu16 so we need to use a virtual environment and specify specific versions.
+              sudo apt-get install python-virtualenv
+              virtualenv -p /usr/bin/python3 ~/venv/py3 --verbose --no-download && . ~/venv/py3/bin/activate && python3 -m pip install --upgrade 'setuptools; python_version >= "3.6"' 'setuptools<51.3.0; python_version < "3.6" and python_version >= "3.0"' "pip<20" wheel conan && python3 -m pip list
+            else
+              pip3 install --upgrade pip wheel setuptools
+              pip3 install --upgrade conan
+            fi
+            conan --version
+            conan user
+            conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
+            conan profile new default --detect
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Have Conan install packages
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      run: |
+            export PATH=~/.local/bin:$PATH
+            if [[ "$ImageOS" == "ubuntu16" ]]; then
+              . ~/venv/py3/bin/activate
+            fi
+            conan install .. -pr default --build=missing --update
+
+    - name: Configure CMake
+      # Use a bash shell so we can use the same syntax for environment variable
+      # access regardless of the host operating system
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      # Note the current convention is to use the -S and -B options here to specify source 
+      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+      run: |
+          mkdir -p ~/install/usr
+          cmake $GITHUB_WORKSPACE -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      # Execute the build.  You can specify a specific target with "--target <NAME>"
+      run: cmake --build . --config $BUILD_TYPE
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      # Execute tests defined by the CMake configuration.  
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -C $BUILD_TYPE
+
+    - name: Install
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      run: cmake --build . --config $BUILD_TYPE --target install
+
+
+#    - name: Upload artifacts
+#      working-directory: ${{github.workspace}}/build
+#      shell: bash
+#      run: |
+#          export PATH=~/.local/bin:$PATH
+#          if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
+#            echo "Creating and uploading Conan artifacts"
+#            export CONAN_SCM_TO_CONANDATA=1
+#            if [[ "$ImageOS" == "ubuntu16" ]]; then
+#              . ~/venv/py3/bin/activate
+#            fi
+#            conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
+#            conan create ../tools/conan worldforge/testing -pr default
+#            conan upload "varconf/*@worldforge/testing" -r worldforge -c --all
+#          fi
