@@ -31,6 +31,13 @@ jobs:
           ${{github.workspace}}/build/media-0.8.0
         key: dev-media
 
+    - name: Install autotools
+      shell: bash
+      run: |
+        if [[ "$ImageOS" == "macos1015" ]]; then
+          brew install autoconf automake
+        fi
+
     - name: Install Conan
       shell: bash
       run: |
