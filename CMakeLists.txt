@@ -80,6 +80,9 @@ endif (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 # crashes
 add_definitions(-DBOOST_ASIO_DISABLE_SMALL_BLOCK_RECYCLING)
 
+# On Windows there are some headers that define "min" and "max" as preprocessor macros, which messes up compilation. This tells them to stop.
+add_definitions(-DNOMINMAX)
+
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${PROJECT_BINARY_DIR}/generated)
 
 enable_testing()

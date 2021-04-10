@@ -207,8 +207,8 @@ void OgreGeometryBuffer::draw() const
             d_renderSystem._setViewport(currentViewport);
 #else
             d_renderSystem.setScissorTest(
-                i->clip, Ogre::Rect(d_clipRect.left(), d_clipRect.top(),
-                         d_clipRect.right(), d_clipRect.bottom()));
+                i->clip, Ogre::Rect((long)d_clipRect.left(), (long)d_clipRect.top(),
+									(long)d_clipRect.right(), (long)d_clipRect.bottom()));
 #endif
 
             d_renderOp.vertexData->vertexStart = pos;
