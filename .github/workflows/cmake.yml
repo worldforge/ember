@@ -13,6 +13,7 @@ env:
   CONAN_REVISIONS_ENABLED: 1
   CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
   CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+  VERBOSE: 1
 
 jobs:
   build:
