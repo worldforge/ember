@@ -11,6 +11,7 @@ env:
   # This makes it correctly use C++11 API on GCC by default.
   CONAN_V2_MODE: 1
   CONAN_REVISIONS_ENABLED: 1
+  CONAN_SCM_TO_CONANDATA: 1
   CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
   CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
   VERBOSE: 1
