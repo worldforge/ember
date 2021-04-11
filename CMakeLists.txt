@@ -83,6 +83,11 @@ add_definitions(-DBOOST_ASIO_DISABLE_SMALL_BLOCK_RECYCLING)
 # On Windows there are some headers that define "min" and "max" as preprocessor macros, which messes up compilation. This tells them to stop.
 add_definitions(-DNOMINMAX)
 
+if (APPLE)
+    #On Mac we're having trouble with "iconv" not being linked properly, so we'll do it here.
+    link_libraries(iconv)
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${PROJECT_BINARY_DIR}/generated)
 
 enable_testing()
