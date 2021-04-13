@@ -33,6 +33,16 @@ jobs:
             ${{github.workspace}}/build/media-0.8.0
           key: dev-media
 
+      - name: Setup environment
+        shell: bash
+        run: |
+          if [[ "$ImageOS" == "ubuntu20" ]]; then
+            echo "BUILD_SNAP=true" >> $GITHUB_ENV
+          fi
+          if [[ "$ImageOS" == "ubuntu16" ]]; then
+            echo "BUILD_APPIMAGE=true" >> $GITHUB_ENV
+          fi
+
       - name: Install autotools
         shell: bash
         if: runner.os == 'macOS'
@@ -40,7 +50,7 @@ jobs:
           brew install autoconf automake
 
       - name: Install Snapcraft
-        if: env.ImageOS == 'ubuntu20'
+        if: env.BUILD_SNAP == 'true'
         uses: samuelmeuli/action-snapcraft@v1.2.0
 
       - name: Install Conan
@@ -114,7 +124,7 @@ jobs:
         run: cmake --build . --config $BUILD_TYPE --target install
 
       - name: Build Snap
-        if: env.ImageOS == 'ubuntu20'
+        if: env.BUILD_SNAP == 'true'
         working-directory: ${{github.workspace}}/build
         shell: bash
         run: |
@@ -123,7 +133,7 @@ jobs:
           cd ~/install/usr/ && snapcraft --destructive-mode
 
       - name: Store Snap
-        if: env.ImageOS == 'ubuntu20'
+        if: env.BUILD_SNAP == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: snap
