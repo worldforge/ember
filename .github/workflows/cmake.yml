@@ -36,10 +36,9 @@ jobs:
 
     - name: Install autotools
       shell: bash
+      if: ${{ runner.os == 'macOS' }}
       run: |
-        if [[ "$ImageOS" == "macos1015" ]]; then
-          brew install autoconf automake
-        fi
+        brew install autoconf automake
 
     - name: Install Conan
       shell: bash
@@ -110,6 +109,25 @@ jobs:
       shell: bash
       run: cmake --build . --config $BUILD_TYPE --target install
 
+    - name: Install Snapcraft
+      if: ${{ runner.os == 'Linux' && env.ImageOS == 'ubuntu20' }}
+      uses: samuelmeuli/action-snapcraft@v1.2.0
+
+    - name: Build Snap
+      if: ${{ runner.os == 'Linux' && env.ImageOS == 'ubuntu20' }}
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      run: |
+        echo "Building Snap"
+        cp snap/snapcraft.yaml ~/install/usr/
+        cd ~/install/usr/ && snapcraft --destructive-mode
+
+    - name: Store Snap
+      if: ${{ runner.os == 'Linux' && env.ImageOS == 'ubuntu20' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: snap
+        path: ~/install/usr/*.snap
 
 #    - name: Upload artifacts
 #      working-directory: ${{github.workspace}}/build
