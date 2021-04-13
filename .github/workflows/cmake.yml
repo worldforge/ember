@@ -15,120 +15,119 @@ env:
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
   CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
-  VERBOSE: 1
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, windows-2019, macos-10.15]
+        os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, windows-2019, macos-10.15 ]
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Cache media
-      uses: actions/cache@v2
-      with:
-        path: |
-          ${{github.workspace}}/build/media-0.8.0
-        key: dev-media
+      - name: Cache media
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{github.workspace}}/build/media-0.8.0
+          key: dev-media
 
-    - name: Install autotools
-      shell: bash
-      if: ${{ runner.os == 'macOS' }}
-      run: |
-        brew install autoconf automake
+      - name: Install autotools
+        shell: bash
+        if: runner.os == 'macOS'
+        run: |
+          brew install autoconf automake
 
-    - name: Install Conan
-      shell: bash
-      run: |
-            env
-            export PATH=~/.local/bin:$PATH
-            if [[ "$ImageOS" == "ubuntu16" ]]; then
-              #The pip and setuptools packages are broken in ubuntu16 so we need to use a virtual environment and specify specific versions.
-              sudo apt-get install python-virtualenv
-              virtualenv -p /usr/bin/python3 ~/venv/py3 --verbose --no-download && . ~/venv/py3/bin/activate && python3 -m pip install --upgrade 'setuptools; python_version >= "3.6"' 'setuptools<51.3.0; python_version < "3.6" and python_version >= "3.0"' "pip<20" wheel conan && python3 -m pip list
-            else
-              pip3 install --upgrade pip wheel setuptools
-              pip3 install --upgrade conan
-            fi
-            conan --version
-            conan user
-            conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-            conan profile new default --detect
+      - name: Install Snapcraft
+        if: env.ImageOS == 'ubuntu20'
+        uses: samuelmeuli/action-snapcraft@v1.2.0
 
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{github.workspace}}/build
+      - name: Install Conan
+        shell: bash
+        run: |
+          env
+          export PATH=~/.local/bin:$PATH
+          if [[ "$ImageOS" == "ubuntu16" ]]; then
+            #The pip and setuptools packages are broken in ubuntu16 so we need to use a virtual environment and specify specific versions.
+            sudo apt-get install python-virtualenv
+            virtualenv -p /usr/bin/python3 ~/venv/py3 --verbose --no-download && . ~/venv/py3/bin/activate && python3 -m pip install --upgrade 'setuptools; python_version >= "3.6"' 'setuptools<51.3.0; python_version < "3.6" and python_version >= "3.0"' "pip<20" wheel conan && python3 -m pip list
+          else
+            pip3 install --upgrade pip wheel setuptools
+            pip3 install --upgrade conan
+          fi
+          conan --version
+          conan user
+          conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
+          conan profile new default --detect
 
-    - name: Have Conan install packages
-      working-directory: ${{github.workspace}}/build
-      shell: bash
-      run: |
-            export PATH=~/.local/bin:$PATH
-            if [[ "$ImageOS" == "ubuntu16" ]]; then
-              . ~/venv/py3/bin/activate
-            fi
-            conan install .. -pr default --build=missing --update
-            if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
-              conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
-              conan upload "*" -r worldforge -c --all
-            fi
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{github.workspace}}/build
 
-    - name: Configure CMake
-      # Use a bash shell so we can use the same syntax for environment variable
-      # access regardless of the host operating system
-      shell: bash
-      working-directory: ${{github.workspace}}/build
-      # Note the current convention is to use the -S and -B options here to specify source 
-      # and build directories, but this is only available with CMake 3.13 and higher.  
-      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
-      run: |
+      - name: Have Conan install packages
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        run: |
+          export PATH=~/.local/bin:$PATH
+          if [[ "$ImageOS" == "ubuntu16" ]]; then
+            . ~/venv/py3/bin/activate
+          fi
+          conan install .. -pr default --build=missing --update
+          if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
+            conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
+            conan upload "*" -r worldforge -c --all
+          fi
+
+      - name: Configure CMake
+        # Use a bash shell so we can use the same syntax for environment variable
+        # access regardless of the host operating system
+        shell: bash
+        working-directory: ${{github.workspace}}/build
+        # Note the current convention is to use the -S and -B options here to specify source
+        # and build directories, but this is only available with CMake 3.13 and higher.
+        # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+        run: |
           mkdir -p ~/install/usr
           cmake $GITHUB_WORKSPACE -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
-    - name: Download media
-      working-directory: ${{github.workspace}}/build
-      shell: bash
-      run: cmake --build . --config $BUILD_TYPE --target media-download
+      - name: Download media
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        run: cmake --build . --config $BUILD_TYPE --target media-download
 
-    - name: Build
-      working-directory: ${{github.workspace}}/build
-      shell: bash
-      # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config $BUILD_TYPE
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        # Execute the build.  You can specify a specific target with "--target <NAME>"
+        run: cmake --build . --config $BUILD_TYPE
 
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      shell: bash
-      # Execute tests defined by the CMake configuration.  
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C $BUILD_TYPE
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -C $BUILD_TYPE
 
-    - name: Install
-      working-directory: ${{github.workspace}}/build
-      shell: bash
-      run: cmake --build . --config $BUILD_TYPE --target install
+      - name: Install
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        run: cmake --build . --config $BUILD_TYPE --target install
 
-    - name: Install Snapcraft
-      if: ${{env.ImageOS == 'ubuntu20' }}
-      uses: samuelmeuli/action-snapcraft@v1.2.0
+      - name: Build Snap
+        if: env.ImageOS == 'ubuntu20'
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        run: |
+          echo "Building Snap"
+          cp snap/snapcraft.yaml ~/install/usr/
+          cd ~/install/usr/ && snapcraft --destructive-mode
 
-    - name: Build Snap
-      if: ${{ env.ImageOS == 'ubuntu20' }}
-      working-directory: ${{github.workspace}}/build
-      shell: bash
-      run: |
-        echo "Building Snap"
-        cp snap/snapcraft.yaml ~/install/usr/
-        cd ~/install/usr/ && snapcraft --destructive-mode
-
-    - name: Store Snap
-      if: ${{ env.ImageOS == 'ubuntu20' }}
-      uses: actions/upload-artifact@v2
-      with:
-        name: snap
-        path: ~/install/usr/*.snap
+      - name: Store Snap
+        if: env.ImageOS == 'ubuntu20'
+        uses: actions/upload-artifact@v2
+        with:
+          name: snap
+          path: ~/install/usr/*.snap
 
 #    - name: Upload artifacts
 #      working-directory: ${{github.workspace}}/build
