@@ -43,6 +43,7 @@ jobs:
     - name: Install Conan
       shell: bash
       run: |
+            env
             export PATH=~/.local/bin:$PATH
             if [[ "$ImageOS" == "ubuntu16" ]]; then
               #The pip and setuptools packages are broken in ubuntu16 so we need to use a virtual environment and specify specific versions.
@@ -110,11 +111,11 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE --target install
 
     - name: Install Snapcraft
-      if: ${{ runner.os == 'Linux' && env.ImageOS == 'ubuntu20' }}
+      if: ${{env.ImageOS == 'ubuntu20' }}
       uses: samuelmeuli/action-snapcraft@v1.2.0
 
     - name: Build Snap
-      if: ${{ runner.os == 'Linux' && env.ImageOS == 'ubuntu20' }}
+      if: ${{ env.ImageOS == 'ubuntu20' }}
       working-directory: ${{github.workspace}}/build
       shell: bash
       run: |
@@ -123,7 +124,7 @@ jobs:
         cd ~/install/usr/ && snapcraft --destructive-mode
 
     - name: Store Snap
-      if: ${{ runner.os == 'Linux' && env.ImageOS == 'ubuntu20' }}
+      if: ${{ env.ImageOS == 'ubuntu20' }}
       uses: actions/upload-artifact@v2
       with:
         name: snap
