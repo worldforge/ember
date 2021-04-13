@@ -1,7 +1,7 @@
 [requires]
 cegui/0.8.7@worldforge/stable
 ogre/1.12.11@worldforge/stable
-sdl2/2.0.10@worldforge/stable
+sdl2/2.0.14@worldforge/stable
 boost/1.72.0
 bullet3/2.89@worldforge/stable
 alut/1.1.0@worldforge/stable
@@ -14,7 +14,6 @@ varconf/1.0.3@worldforge/testing
 tolua++/1.0.93@worldforge/stable
 zlib/1.2.11
 bzip2/1.0.8
-libiconv/1.16
 
 [generators]
 cmake
