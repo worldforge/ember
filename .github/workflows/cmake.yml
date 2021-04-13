@@ -42,6 +42,9 @@ jobs:
           if [[ "$ImageOS" == "ubuntu16" ]]; then
             echo "BUILD_APPIMAGE=true" >> $GITHUB_ENV
           fi
+          if [[ "$ImageOS" == "win19" ]]; then
+            echo "BUILD_NSIS=true" >> $GITHUB_ENV
+          fi
 
       - name: Install autotools
         shell: bash
@@ -52,11 +55,12 @@ jobs:
       - name: Install Snapcraft
         if: env.BUILD_SNAP == 'true'
         uses: samuelmeuli/action-snapcraft@v1.2.0
+        with:
+          snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
 
       - name: Install Conan
         shell: bash
         run: |
-          env
           export PATH=~/.local/bin:$PATH
           if [[ "$ImageOS" == "ubuntu16" ]]; then
             #The pip and setuptools packages are broken in ubuntu16 so we need to use a virtual environment and specify specific versions.
@@ -130,7 +134,10 @@ jobs:
         run: |
           echo "Building Snap"
           cp snap/snapcraft.yaml ~/install/usr/
-          cd ~/install/usr/ && snapcraft --destructive-mode
+          cd ~/install/usr/
+          snapcraft --destructive-mode
+          echo "Uploading Snap"
+          snapcraft upload ~/install/usr/*.snap --release edge
 
       - name: Store Snap
         if: env.BUILD_SNAP == 'true'
@@ -139,18 +146,37 @@ jobs:
           name: snap
           path: ~/install/usr/*.snap
 
-#    - name: Upload artifacts
-#      working-directory: ${{github.workspace}}/build
-#      shell: bash
-#      run: |
-#          export PATH=~/.local/bin:$PATH
-#          if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
-#            echo "Creating and uploading Conan artifacts"
-#            export CONAN_SCM_TO_CONANDATA=1
-#            if [[ "$ImageOS" == "ubuntu16" ]]; then
-#              . ~/venv/py3/bin/activate
-#            fi
-#            conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
-#            conan create ../tools/conan worldforge/testing -pr default
-#            conan upload "varconf/*@worldforge/testing" -r worldforge -c --all
-#          fi
+      - name: Build AppImage
+        if: env.BUILD_APPIMAGE == 'true'
+        working-directory: ${{github.workspace}}/build
+        run: |
+          echo "Building AppImage"
+          ln -s ./usr/share/icons/hicolor/64x64/apps/ember.png ~/install/
+          ln -s ./usr/share/applications/org.worldforge.ember.desktop ~/install/
+          ln -s ember.png ~/install/.DirIcon
+          curl -L https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-x86_64 > ~/install/AppRun
+          chmod a+x ~/install/AppRun
+          curl -L https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage > appimagetool-x86_64.AppImage
+          chmod a+x appimagetool-x86_64.AppImage
+          ./appimagetool-x86_64.AppImage -n ~/install
+
+      - name: Store AppImage
+        if: env.BUILD_APPIMAGE == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: AppImage
+          path: ${{github.workspace}}/build/*.AppImage
+
+      - name: Build NSIS
+        if: env.BUILD_NSIS == 'true'
+        working-directory: ${{github.workspace}}/build
+        run: |
+          echo "Building NSIS"
+          makensis Ember.nsi
+
+      - name: Store NSIS
+        if: env.BUILD_NSIS == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: NSIS
+          path: ${{github.workspace}}/build/*.exe
