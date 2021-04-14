@@ -165,7 +165,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: AppImage
-          path: ${{github.workspace}}/build/*.AppImage
+          path: ${{github.workspace}}/build/Ember-x86_64.AppImage
 
       - name: Build NSIS
         if: env.BUILD_NSIS == 'true'
