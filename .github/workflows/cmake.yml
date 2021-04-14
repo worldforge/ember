@@ -108,7 +108,7 @@ jobs:
         # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
         run: |
           mkdir -p ~/install/usr
-          cmake $GITHUB_WORKSPACE -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          cmake $GITHUB_WORKSPACE -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DWF_USE_WIDGET_PLUGINS=OFF
 
       - name: Download media
         if: runner.os != 'Windows'
@@ -116,11 +116,11 @@ jobs:
         shell: bash
         run: cmake --build . --config $BUILD_TYPE --target media-download
 
-      - name: Download media on Windows
-        if: runner.os == 'Windows'
-        working-directory: ${{github.workspace}}/build
-        shell: cmd
-        run: cmake --build . --config $BUILD_TYPE --target media-download
+#      - name: Download media on Windows
+#        if: runner.os == 'Windows'
+#        working-directory: ${{github.workspace}}/build
+#        shell: bash
+#        run: cmake --build . --config $BUILD_TYPE --target media-download
 
       - name: Build
         working-directory: ${{github.workspace}}/build
