@@ -52,6 +52,11 @@ jobs:
         run: |
           brew install autoconf automake
 
+      - name: Install Rsync
+        shell: bash
+        if: runner.os == 'Windows'
+        run: choco install rsync
+
       - name: Install Snapcraft
         if: env.BUILD_SNAP == 'true'
         uses: samuelmeuli/action-snapcraft@v1.2.0
