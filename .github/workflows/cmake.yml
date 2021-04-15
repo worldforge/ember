@@ -1,4 +1,4 @@
-name: CMake
+name: Build with CMake
 
 on:
   push:
@@ -17,11 +17,12 @@ env:
   CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
 
 jobs:
-  build:
+  build_unix:
+    name: Build on *NIX
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, windows-2019, macos-10.15 ]
+        os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, macos-10.15 ]
 
     steps:
       - uses: actions/checkout@v2
@@ -51,12 +52,6 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install autoconf automake
-
-      - name: Install Rsync
-        shell: bash
-        if: runner.os == 'Windows'
-        run: |
-          choco install rsync -y
 
       - name: Install Snapcraft
         if: env.BUILD_SNAP == 'true'
@@ -116,12 +111,6 @@ jobs:
         shell: bash
         run: cmake --build . --config $BUILD_TYPE --target media-download
 
-#      - name: Download media on Windows
-#        if: runner.os == 'Windows'
-#        working-directory: ${{github.workspace}}/build
-#        shell: bash
-#        run: cmake --build . --config $BUILD_TYPE --target media-download
-
       - name: Build
         working-directory: ${{github.workspace}}/build
         shell: bash
@@ -180,15 +169,103 @@ jobs:
           name: AppImage
           path: ${{github.workspace}}/build/Ember-x86_64.AppImage
 
-      - name: Build NSIS
-        if: env.BUILD_NSIS == 'true'
-        working-directory: ${{github.workspace}}/build
+  build_windows:
+    name: Build on Windows
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-2019 ]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache media
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{github.workspace}}/build/media-0.8.0
+          key: dev-media
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+
+      #      - name: Install Conan
+      #        shell: bash
+      #        run: |
+      #          export PATH=~/.local/bin:$PATH
+      #          if [[ "$ImageOS" == "ubuntu16" ]]; then
+      #            #The pip and setuptools packages are broken in ubuntu16 so we need to use a virtual environment and specify specific versions.
+      #            sudo apt-get install python-virtualenv
+      #            virtualenv -p /usr/bin/python3 ~/venv/py3 --verbose --no-download && . ~/venv/py3/bin/activate && python3 -m pip install --upgrade 'setuptools; python_version >= "3.6"' 'setuptools<51.3.0; python_version < "3.6" and python_version >= "3.0"' "pip<20" wheel conan && python3 -m pip list
+      #          else
+      #            pip3 install --upgrade pip wheel setuptools
+      #            pip3 install --upgrade conan
+      #          fi
+      #          conan --version
+      #          conan user
+      #          conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
+      #          conan profile new default --detect
+
+      - name: Set up Cygwin
+        uses: egor-tensin/setup-cygwin@v3
+        with:
+          platform: x64
+          packages: rsync
+
+      - name: Create Build Environment
+        shell: cmd
         run: |
-          echo "Building NSIS"
-          makensis Ember.nsi
+          rsync --version
+          conan --version
+          conan user
+          conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
+          conan profile new default --detect
+          cmake -E make_directory ${{github.workspace}}/build
+          conan user -p %CONAN_PASSWORD% -r worldforge %CONAN_LOGIN_USERNAME%
+
+      - name: Have Conan install packages
+        working-directory: ${{github.workspace}}/build
+        shell: cmd
+        run: |
+          conan install .. -pr default --build=missing --update
+          conan upload "*" -r worldforge -c --all
+
+      - name: Configure CMake
+        shell: cmd
+        working-directory: ${{github.workspace}}/build
+        # Note the current convention is to use the -S and -B options here to specify source
+        # and build directories, but this is only available with CMake 3.13 and higher.
+        # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+        run: |
+          cmake %GITHUB_WORKSPACE% -DCMAKE_INSTALL_PREFIX=%USERPROFILE%\install -DVERSION_PACKAGE=latest -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DWF_USE_WIDGET_PLUGINS=OFF
+
+      - name: Download media
+        working-directory: ${{github.workspace}}/build
+        shell: cmd
+        run: cmake --build . --config %BUILD_TYPE% --target media-download
+
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        shell: cmd
+        run: cmake --build . --config %BUILD_TYPE% --parallel -- /m
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        shell: cmd
+        run: ctest -C %BUILD_TYPE%
+
+      - name: Install
+        working-directory: ${{github.workspace}}/build
+        shell: cmd
+        run: cmake --build . --config %BUILD_TYPE% --target install
+
+      - name: Build NSIS
+        working-directory: ${{github.workspace}}/build
+        shell: cmd
+        run: makensis Ember.nsi
 
       - name: Store NSIS
-        if: env.BUILD_NSIS == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: NSIS
