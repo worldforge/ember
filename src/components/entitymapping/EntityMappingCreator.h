@@ -40,7 +40,7 @@ namespace Ember {
 namespace EntityMapping {
 
 namespace Definitions {
-class EntityMappingDefinition;
+struct EntityMappingDefinition;
 }
 
 namespace Matches {
