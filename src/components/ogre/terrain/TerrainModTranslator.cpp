@@ -156,7 +156,7 @@ float TerrainModTranslator::parsePosition(const WFMath::Point<3>& pos, const Map
 	if (I != modElement.end()) {
 		const Element& modHeightElem = I->second;
 		if (modHeightElem.isNum()) {
-			return modHeightElem.asNum();
+			return static_cast<float>(modHeightElem.asNum());
 		}
 	} else {
 		I = modElement.find("heightoffset");
@@ -164,11 +164,11 @@ float TerrainModTranslator::parsePosition(const WFMath::Point<3>& pos, const Map
 			const Element& modHeightElem = I->second;
 			if (modHeightElem.isNum()) {
 				auto heightoffset = modHeightElem.asNum();
-				return pos.y() + heightoffset;
+				return static_cast<float>(pos.y() + heightoffset);
 			}
 		}
 	}
-	return pos.y();
+	return static_cast<float>(pos.y());
 }
 
 /**
@@ -245,8 +245,8 @@ std::unique_ptr<TerrainModTranslator::InnerTranslator> TerrainModTranslator::bui
 			S_LOG_WARNING("SlopeTerrainMod defined without slopes");
 			return nullptr;
 		}
-		const float dx = slopes[0].asNum();
-		const float dz = slopes[1].asNum();
+		auto dx = static_cast<float>(slopes[0].asNum());
+		auto dz = static_cast<float>(slopes[1].asNum());
 
 		return std::make_unique<InnerTranslatorSlope<Shape>>(shape, modElement, dx, dz);
 //		return createInstance<Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);

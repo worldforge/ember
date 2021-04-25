@@ -65,21 +65,23 @@ void CaelumSky::Config_CloudSpeed(const std::string&, const std::string&, varcon
 	if (variable.is_string() && mCaelumSystem->getCloudSystem()) {
 		Ogre::Vector2 vector;
 		Tokeniser tokeniser(variable.as_string());
-		vector.x = atof(tokeniser.nextToken().c_str());
-		vector.y = atof(tokeniser.nextToken().c_str());
+		vector.x = std::stof(tokeniser.nextToken());
+		vector.y = std::stof(tokeniser.nextToken());
 		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudSpeed(vector);
 	}
 }
 
 void CaelumSky::Config_CloudBlendTime(const std::string&, const std::string&, varconf::Variable& variable) {
 	if (variable.is_double() && mCaelumSystem->getCloudSystem()) {
-		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudBlendTime(static_cast<double> (variable));
+		auto aFloat = static_cast<float>(static_cast<double>(variable));
+		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudBlendTime(aFloat);
 	}
 }
 
 void CaelumSky::Config_CloudCover(const std::string&, const std::string&, varconf::Variable& variable) {
 	if (variable.is_double() && mCaelumSystem->getCloudSystem()) {
-		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudCover(static_cast<double> (variable));
+		auto aFloat = static_cast<float>(static_cast<double>(variable));
+		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudCover(aFloat);
 	}
 }
 
