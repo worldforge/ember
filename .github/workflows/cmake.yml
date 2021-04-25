@@ -15,6 +15,7 @@ env:
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
   CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+  RSYNC_PASSWORD: ${{ secrets.RSYNC_PASSWORD }}
 
 jobs:
   build_unix:
@@ -169,6 +170,12 @@ jobs:
           name: AppImage
           path: ${{github.workspace}}/build/Ember-x86_64.AppImage
 
+      - name: Upload AppImage to amber
+        if: env.BUILD_APPIMAGE == 'true'
+        working-directory: ${{github.workspace}}/build
+        run: rsync -uavzcP ${{github.workspace}}/build/Ember-x86_64.AppImage ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
+
+
   build_windows:
     name: Build on Windows
     runs-on: ${{ matrix.os }}
@@ -189,23 +196,6 @@ jobs:
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
-
-      #      - name: Install Conan
-      #        shell: bash
-      #        run: |
-      #          export PATH=~/.local/bin:$PATH
-      #          if [[ "$ImageOS" == "ubuntu16" ]]; then
-      #            #The pip and setuptools packages are broken in ubuntu16 so we need to use a virtual environment and specify specific versions.
-      #            sudo apt-get install python-virtualenv
-      #            virtualenv -p /usr/bin/python3 ~/venv/py3 --verbose --no-download && . ~/venv/py3/bin/activate && python3 -m pip install --upgrade 'setuptools; python_version >= "3.6"' 'setuptools<51.3.0; python_version < "3.6" and python_version >= "3.0"' "pip<20" wheel conan && python3 -m pip list
-      #          else
-      #            pip3 install --upgrade pip wheel setuptools
-      #            pip3 install --upgrade conan
-      #          fi
-      #          conan --version
-      #          conan user
-      #          conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-      #          conan profile new default --detect
 
       - name: Set up Cygwin
         uses: egor-tensin/setup-cygwin@v3
@@ -270,3 +260,8 @@ jobs:
         with:
           name: NSIS
           path: ${{github.workspace}}/build/*.exe
+
+      - name: Upload exe to amber
+        working-directory: ${{github.workspace}}/build
+        shell: cmd
+        run: rsync -uavzcP  ${{github.workspace}}/build/*.exe ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
