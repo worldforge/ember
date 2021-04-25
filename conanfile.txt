@@ -3,7 +3,7 @@ cegui/0.8.7@worldforge/stable
 ogre/1.12.11@worldforge/stable
 sdl2/2.0.14@worldforge/stable
 boost/1.75.0
-bullet3/2.89@worldforge/stable
+bullet3/2.89
 alut/1.1.0@worldforge/stable
 libxdg-basedir/1.2.0@worldforge/stable
 atlas/0.7.0@worldforge/testing
