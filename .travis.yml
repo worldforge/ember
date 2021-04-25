@@ -44,9 +44,10 @@ git:
   depth: false # We want the complete depth to be able to do "git describe" to get version numbers.
 
 env:
-  - CONAN_V2_MODE=1
-  - CONAN_REVISIONS_ENABLED=1
-  - CONAN_SCM_TO_CONANDATA=1
+  global:
+    - CONAN_V2_MODE=1
+    - CONAN_REVISIONS_ENABLED=1
+    - CONAN_SCM_TO_CONANDATA=1
 
 cache:
   - pip
