@@ -1,18 +1,18 @@
 language: cpp
 jobs:
   include:
-    - os: linux
-      dist: bionic
-      compiler: clang
+#    - os: linux
+#      dist: bionic
+#      compiler: clang
     - os: linux #This one builds the AppImage and Snap (though not currently, as we've disabled it since it's done on Github Actions)
       dist: bionic
       compiler: gcc
       env:
         - BUILD_APPIMAGE=0 #Disabled here since we build it on Github Actions
         - BUILD_SNAP=0 #Disabled here since we build it on Github Actions
-    - os: linux
-      dist: focal
-      compiler: clang
+#    - os: linux
+#      dist: focal
+#      compiler: clang
     - os: linux
       dist: focal
       compiler: gcc
