@@ -64,7 +64,7 @@ Services::ServerSettings& EmberServices::getServerSettingsService() {
 	return *mServerSettingsService;
 }
 
-EmberServices::EmberServices(Eris::Session& session, ConfigService& configService)
+EmberServices::EmberServices(Session& session, ConfigService& configService)
 		: mConfigService(configService),
 		  mScriptingService(std::make_unique<ScriptingService>()),
 		  mSoundService(std::make_unique<SoundService>(configService)),

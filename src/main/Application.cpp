@@ -186,8 +186,8 @@ Application::Application(Input& input,
 						 ConfigService& configService) :
 		mInput(input),
 		mConfigService(configService),
-		mSession(std::make_unique<Eris::Session>()),
-		mFileSystemObserver(std::make_unique<FileSystemObserver>(mSession->getIoService())),
+		mSession(std::make_unique<Session>()),
+		mFileSystemObserver(std::make_unique<FileSystemObserver>(mSession->m_io_service)),
 		mShouldQuit(false),
 		mPollEris(true),
 		mMainLoopController(mShouldQuit, mPollEris, *mSession),
@@ -229,7 +229,7 @@ Application::Application(Input& input,
 
 	initializeServices();
 
-	mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController, mSession->getEventService(), mInput, mServices->getServerService(), mServices->getSoundService());
+	mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController, mSession->m_event_service, mInput, mServices->getServerService(), mServices->getSoundService());
 
 }
 
@@ -247,9 +247,9 @@ Application::~Application() {
 		mServices->getServerService().disconnect();
 	}
 
-	mSession->getEventService().processAllHandlers();
-	mSession->getIoService().stop();
-	mSession->getIoService().reset();
+	mSession->m_event_service.processAllHandlers();
+	mSession->m_io_service.stop();
+	mSession->m_io_service.reset();
 
 	mOgreView.reset();
 
@@ -286,7 +286,7 @@ void Application::registerComponents() {
 
 void Application::mainLoop() {
 	DesiredFpsListener desiredFpsListener;
-	Eris::EventService& eventService = mSession->getEventService();
+	Eris::EventService& eventService = mSession->m_event_service;
 
 	do {
 		try {
@@ -317,7 +317,7 @@ void Application::mainLoop() {
 			//Execute IO handlers for two milliseconds, if there are any.
 			auto end = std::chrono::steady_clock::now() + std::chrono::milliseconds(2);
 			while (std::chrono::steady_clock::now() < end) {
-				auto executedHandlers = mSession->getIoService().poll_one();
+				auto executedHandlers = mSession->m_io_service.poll_one();
 				if (executedHandlers == 0) {
 					break;
 				}
@@ -334,7 +334,7 @@ void Application::mainLoop() {
 			if (timeFrame.isTimeLeft()) {
 				size_t handersRun = 0;
 				do {
-					handersRun = mSession->getIoService().poll_one();
+					handersRun = mSession->m_io_service.poll_one();
 				} while (handersRun != 0 && timeFrame.isTimeLeft());
 			}
 
@@ -348,14 +348,14 @@ void Application::mainLoop() {
 
 			//And if there's yet still time left this frame, wait until time is up, and do io in the meantime.
 			if (timeFrame.isTimeLeft()) {
-				boost::asio::steady_timer deadlineTimer(mSession->getIoService());
+				boost::asio::steady_timer deadlineTimer(mSession->m_io_service);
 				deadlineTimer.expires_at(std::chrono::steady_clock::now() + timeFrame.getRemainingTime());
 
 				deadlineTimer.async_wait([&](boost::system::error_code ec) {
 				});
 
 				while (timeFrame.isTimeLeft()) {
-					mSession->getIoService().run_one();
+					mSession->m_io_service.run_one();
 				}
 			}
 
@@ -495,7 +495,7 @@ void Application::startScripting() {
 void Application::start() {
 
 	try {
-		if (!mOgreView->setup(mMainLoopController, mSession->getEventService())) {
+		if (!mOgreView->setup(mMainLoopController, mSession->m_event_service)) {
 			//The setup was cancelled, return.
 			return;
 		}

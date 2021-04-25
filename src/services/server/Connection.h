@@ -21,13 +21,9 @@
 
 #include <Eris/Connection.h>
 
-namespace Eris
-{
-struct Session;
-}
-
 namespace Ember
 {
+struct Session;
 
 struct IConnectionListener;
 
@@ -47,7 +43,7 @@ public:
 	 * @param debug Whether we should connect in debug mode.
 	 * @param listener An optional listener. Ownership will be transferred to this instance.
 	 */
-	Connection(Eris::Session& session, const std::string &clientName, const std::string& host, short port, std::unique_ptr<IConnectionListener> listener);
+	Connection(Session& session, const std::string &clientName, const std::string& host, short port, std::unique_ptr<IConnectionListener> listener);
 
 	/**
 	 * @brief Ctor. for connecting to a local socket.
@@ -56,7 +52,7 @@ public:
 	 * @param debug Whether we should connect in debug mode.
 	 * @param listener An optional listener. Ownership will be transferred to this instance.
 	 */
-	Connection(Eris::Session& session, const std::string &clientName, const std::string& socket, std::unique_ptr<IConnectionListener> listener);
+	Connection(Session& session, const std::string &clientName, const std::string& socket, std::unique_ptr<IConnectionListener> listener);
 
 	~Connection() override;
 

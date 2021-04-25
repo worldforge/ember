@@ -31,7 +31,7 @@
 #include <Eris/Exceptions.h>
 
 namespace Ember {
-ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, const std::string& host, short port) :
+ConnectingState::ConnectingState(IState& parentState, Session& session, const std::string& host, short port) :
 		StateBase<ConnectedState>::StateBase(parentState),
 		mConnection(session, "Ember " EMBER_VERSION, host, port, std::make_unique<ServerServiceConnectionListener>(getSignals())),
 		mHasSignalledDisconnected(false) {
@@ -43,7 +43,7 @@ ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, co
 	//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 }
 
-ConnectingState::ConnectingState(IState& parentState, Eris::Session& session, const std::string& socket) :
+ConnectingState::ConnectingState(IState& parentState, Session& session, const std::string& socket) :
 		StateBase<ConnectedState>::StateBase(parentState),
 		mConnection(session, "Ember " EMBER_VERSION, socket, std::make_unique<ServerServiceConnectionListener>(getSignals())),
 		mHasSignalledDisconnected(false) {

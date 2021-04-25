@@ -29,7 +29,7 @@
 
 namespace Ember {
 
-NonConnectedState::NonConnectedState(ServerServiceSignals& signals, Eris::Session& session) :
+NonConnectedState::NonConnectedState(ServerServiceSignals& signals, Session& session) :
 		Connect("connect", this, "Connect to a server."),
 		mSignals(signals),
 		mSession(session),

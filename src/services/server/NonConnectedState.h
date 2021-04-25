@@ -26,13 +26,9 @@
 #include <sigc++/trackable.h>
 #include <memory>
 
-namespace Eris
-{
-struct Session;
-}
-
 namespace Ember
 {
+struct Session;
 
 class ConnectingState;
 
@@ -42,7 +38,7 @@ class ConnectingState;
 class NonConnectedState: public virtual sigc::trackable, public IState, public ConsoleObject
 {
 public:
-	NonConnectedState(ServerServiceSignals& signals, Eris::Session& session);
+	NonConnectedState(ServerServiceSignals& signals, Session& session);
 
 	~NonConnectedState() override = default;
 
@@ -83,7 +79,7 @@ private:
 
 	ServerServiceSignals& mSignals;
 
-	Eris::Session& mSession;
+	Session& mSession;
 
 	std::unique_ptr<ConnectingState> mChildState;
 

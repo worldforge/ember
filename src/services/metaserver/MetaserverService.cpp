@@ -24,24 +24,19 @@
 
 #include "MetaserverService.h"
 
-// Current project
 #include "services/config/ConfigService.h"
 #include "framework/LoggingInstance.h"
 #include "framework/Tokeniser.h"
 
 
-#include <Eris/Session.h>
-
-// System headers
-
-// Libraries we are using
+#include "framework/Session.h"
 
 
 using namespace std;
 
 namespace Ember {
 
-MetaserverService::MetaserverService(Eris::Session& session, ConfigService& configSrv) :
+MetaserverService::MetaserverService(Session& session, ConfigService& configSrv) :
 		Service("Metaserver"),
 		mSession(session),
 		MetaRefresh("meta_refresh", this, "Refresh the meta server listing."),
@@ -56,7 +51,7 @@ MetaserverService::MetaserverService(Eris::Session& session, ConfigService& conf
 	}
 
 	S_LOG_INFO("Connecting to meta server at address " << metaserverHostname << ".");
-	mMetaserver = std::make_unique<Eris::Meta>(mSession.getIoService(), mSession.getEventService(), metaserverHostname, 20);
+	mMetaserver = std::make_unique<Eris::Meta>(mSession.m_io_service, mSession.m_event_service, metaserverHostname, 20);
 	mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
 	mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
 	mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));

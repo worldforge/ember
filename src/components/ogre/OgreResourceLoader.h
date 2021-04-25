@@ -28,7 +28,7 @@
 #include "framework/ConsoleCommandWrapper.h"
 #include <OgreConfigFile.h>
 #include <map>
-#include <Eris/Session.h>
+#include "framework/Session.h"
 #include <boost/filesystem/path.hpp>
 
 namespace Ember {

@@ -33,7 +33,7 @@
 
 #include "services/config/ConfigService.h"
 
-#include <Eris/Session.h>
+#include "framework/Session.h"
 #include <framework/LoggingInstance.h>
 
 //Needed for the "access" function.
@@ -46,7 +46,7 @@
 
 namespace Ember {
 
-ServerService::ServerService(Eris::Session& session) :
+ServerService::ServerService(Session& session) :
 		Service("Server"),
 		mSession(session),
 		mConnection(nullptr),
@@ -123,7 +123,7 @@ bool ServerService::hasLocalSocket() {
 	}
 
 	try {
-		boost::asio::local::stream_protocol::socket socket(mSession.getIoService());
+		boost::asio::local::stream_protocol::socket socket(mSession.m_io_service);
 		socket.connect(boost::asio::local::stream_protocol::endpoint(mLocalSocketPath.string()));
 		return socket.is_open();
 	} catch (...) {

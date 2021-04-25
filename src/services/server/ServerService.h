@@ -48,10 +48,11 @@ class Entity;
 
 class TransferInfo;
 
-struct Session;
 }
 
 namespace Ember {
+
+struct Session;
 
 class ConfigService;
 
@@ -76,7 +77,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	explicit ServerService(Eris::Session& session);
+	explicit ServerService(Session& session);
 
 	/**
 	 * @brief Dtor.
@@ -148,7 +149,7 @@ private:
 
 	void destroyedAvatar();
 
-	Eris::Session& mSession;
+	Session& mSession;
 
 	Eris::Connection* mConnection;
 	Eris::Account* mAccount;

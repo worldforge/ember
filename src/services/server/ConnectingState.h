@@ -24,11 +24,8 @@
 #include "Connection.h"
 #include "ConnectedState.h"
 
-namespace Eris {
-struct Session;
-}
-
 namespace Ember {
+struct Session;
 
 class DestroyChildStateEvent;
 
@@ -45,14 +42,14 @@ public:
 	 * @param host The hostname of the remote host.
 	 * @param port The port on the remote host.
 	 */
-	ConnectingState(IState& parentState, Eris::Session& session, const std::string& host, short port);
+	ConnectingState(IState& parentState, Session& session, const std::string& host, short port);
 
 	/**
 	 * @brief Ctor. for connecting to a local socket.
 	 * @param parent State The parent state.
 	 * @param socket The path to the local socket.
 	 */
-	ConnectingState(IState& parentState, Eris::Session& session, const std::string& socket);
+	ConnectingState(IState& parentState, Session& session, const std::string& socket);
 
 	~ConnectingState() override;
 

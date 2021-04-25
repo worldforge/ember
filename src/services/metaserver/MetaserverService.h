@@ -29,11 +29,8 @@
 
 #include <string>
 
-namespace Eris {
-struct Session;
-}
-
 namespace Ember {
+struct Session;
 
 class ConfigService;
 /**
@@ -47,32 +44,19 @@ class ConfigService;
  */
 class MetaserverService : public Service,
 						  public ConsoleObject {
-	//======================================================================
-	// Private Variables
-	//======================================================================
 private:
 
-	Eris::Session& mSession;
+	Session& mSession;
 	std::unique_ptr<Eris::Meta> mMetaserver;
-//     Eris::ServerList serverlist;
-//     bool listed;
-//     //StringProvider * myStateDMP;
 	const ConsoleCommandWrapper MetaRefresh;
 	const ConsoleCommandWrapper MetaAbort;
-// 	const ConsoleCommandWrapper MetaList;
 
 
-
-	//----------------------------------------------------------------------
-	// Constructors & Destructor
 
 public:
 
-	/** Creates a new ConfigService using default values. */
-	explicit MetaserverService(Eris::Session& session, ConfigService& configSrv);
+	explicit MetaserverService(Session& session, ConfigService& configSrv);
 
-
-	/** Deletes a ConfigService instance. */
 	~MetaserverService() override;
 
 

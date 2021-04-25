@@ -23,13 +23,9 @@
 #include <memory>
 #include "framework/Singleton.h"
 
-namespace Eris
-{
-struct Session;
-}
-
 namespace Ember
 {
+struct Session;
 
 // some forward declarations before we start
 class ConfigService;
@@ -69,7 +65,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	explicit EmberServices(Eris::Session& session, ConfigService& configService);
+	explicit EmberServices(Session& session, ConfigService& configService);
 
 	/**
 	 * @brief Dtor.

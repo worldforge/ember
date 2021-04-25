@@ -78,8 +78,6 @@ class Factories;
 }
 
 namespace Eris {
-struct Session;
-
 class View;
 }
 
@@ -88,6 +86,7 @@ class View;
  *
  */
 namespace Ember {
+struct Session;
 
 class Input;
 /**
@@ -180,7 +179,7 @@ private:
 
 	Atlas::Objects::Factories mAtlasFactories;
 
-	std::unique_ptr<Eris::Session> mSession;
+	std::unique_ptr<Session> mSession;
 
 	std::unique_ptr<FileSystemObserver> mFileSystemObserver;
 

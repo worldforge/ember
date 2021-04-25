@@ -20,7 +20,7 @@
 #define MAINLOOPCONTROLLER_H_
 
 #include "Singleton.h"
-#include <Eris/Session.h>
+#include "framework/Session.h"
 #include <Eris/EventService.h>
 #include <sigc++/signal.h>
 
@@ -70,7 +70,7 @@ public:
 	 * @param shouldQuit A reference to a boolean which represents whether the application should quit.
 	 * @param pollEris Whether Eris should be polled each frame.
 	 */
-	MainLoopController(bool& shouldQuit, bool& pollEris, Eris::Session& session);
+	MainLoopController(bool& shouldQuit, bool& pollEris, Session& session);
 
 	/**
 	 * @brief Return true if application has received an "exit" command else false.
@@ -143,7 +143,7 @@ private:
 	 */
 	bool& mPollEris;
 
-	Eris::Session& mSession;
+	Session& mSession;
 
 };
 

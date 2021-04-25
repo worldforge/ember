@@ -20,12 +20,12 @@
 #include "config.h"
 #endif
 
-#include <Eris/Session.h>
+#include "framework/Session.h"
 #include "MainLoopController.h"
 
 namespace Ember {
 
-MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris, Eris::Session& session) :
+MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris, Session& session) :
 		mShouldQuit(shouldQuit), mPollEris(pollEris), mSession(session) {
 }
 
@@ -57,11 +57,11 @@ bool MainLoopController::getErisPolling() const {
 }
 
 Eris::EventService& MainLoopController::getEventService() {
-	return mSession.getEventService();
+	return mSession.m_event_service;
 }
 
 boost::asio::io_service& MainLoopController::getIoService() {
-	return mSession.getIoService();
+	return mSession.m_io_service;
 }
 
 
