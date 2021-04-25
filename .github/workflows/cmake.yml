@@ -264,4 +264,4 @@ jobs:
       - name: Upload exe to amber
         working-directory: ${{github.workspace}}/build
         shell: cmd
-        run: rsync -uavzcP  ${{github.workspace}}/build/*.exe ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
+        run: rsync -uavzcP  ${{github.workspace}}\build\*.exe ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
