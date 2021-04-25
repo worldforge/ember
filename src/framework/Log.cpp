@@ -102,7 +102,7 @@ void Log::log(const char* file, int line, MessageImportance importance, const ch
 
 void Log::logVarParam(const char* file, int line, MessageImportance importance, const char* message, va_list argptr) {
 	char Buffer[MESSAGE_BUFFER_SIZE];
-	vsprintf((char*) Buffer, message, argptr);
+	std::snprintf((char*) Buffer, MESSAGE_BUFFER_SIZE, message, argptr);
 	sendMessage(std::string((char*) Buffer), file, line, importance);
 }
 
