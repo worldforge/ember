@@ -3,6 +3,7 @@
 [![Join us on Gitter!](https://badges.gitter.im/Worldforge.svg)](https://gitter.im/Worldforge/Lobby)
 [![Appveyor build status](https://ci.appveyor.com/api/projects/status/github/worldforge/ember?branch=master&svg=true)](https://ci.appveyor.com/project/erikogenvik/ember)
 [![Travis build Status](https://travis-ci.com/worldforge/ember.svg?branch=master)](https://travis-ci.com/worldforge/ember)
+[![Build with CMake](https://github.com/worldforge/ember/actions/workflows/cmake.yml/badge.svg)](https://github.com/worldforge/ember/actions/workflows/cmake.yml)
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/ember)
 
@@ -20,7 +21,7 @@ To learn more about Worldforge visit our [website](http://worldforge.org/ "The m
 The simplest way to install all required dependencies is by using [Conan](https://www.conan.io).
 
 ```bash
-conan remote add worldforge https://api.bintray.com/conan/worldforge/worldforge-conan
+conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
 mkdir build && cd build
 conan install .. --build missing
 cmake ..
