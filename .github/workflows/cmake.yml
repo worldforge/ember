@@ -38,7 +38,7 @@ jobs:
       - name: Setup environment
         shell: bash
         run: |
-          if [[ "$ImageOS" == "ubuntu20" ]]; then
+          if [[ "$ImageOS" == "ubuntu18" ]]; then
             echo "BUILD_SNAP=true" >> $GITHUB_ENV
           fi
           if [[ "$ImageOS" == "ubuntu16" ]]; then
