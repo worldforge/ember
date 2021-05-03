@@ -268,10 +268,18 @@ bool SubModelPart::createInstancedEntities() {
 			auto bestTech = subEntity->getMaterial()->getBestTechnique();
 			if (!bestTech->getPasses().empty() && bestTech->getPass(0)->hasVertexProgram()) {
 				auto& meshName = entity->getMesh()->getName();
+				auto instancedMeshName = meshName + "/Instanced";
+				//Use a copy of the original mesh, since the InstanceManager in its current iteration performs alterations to the original mesh.
+				if (!Ogre::MeshManager::getSingleton().resourceExists(instancedMeshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+					auto meshCopy = entity->getMesh()->clone(instancedMeshName);
+					meshCopy->freeEdgeList();
+					meshCopy->removeLodLevels();
+				}
 
 				try {
 					Ogre::InstanceManager* instanceManager = sceneManager->createInstanceManager(instanceName,
-																								 meshName,
+																								 instancedMeshName,
+																								 //meshName,
 																								 entity->getMesh()->getGroup(),
 																								 instancedTechnique,
 																								 50, Ogre::IM_USEALL, entry.subEntityIndex);
@@ -279,7 +287,7 @@ bool SubModelPart::createInstancedEntities() {
 
 					managersAndMaterials.emplace_back(std::make_pair(instanceManager, instancedMaterialName));
 				} catch (const std::exception& e) {
-					S_LOG_FAILURE("Could not create instanced versions of mesh " << meshName);
+					S_LOG_FAILURE("Could not create instanced versions of mesh " << meshName << " (as " << instancedMeshName << ")." << e);
 				}
 
 			} else {
