@@ -289,7 +289,7 @@ else ()
     link_directories(${WF_LIBRARY_DIRS})
     include_directories(SYSTEM ${WF_INCLUDE_DIRS})
 
-    set(OGREVER 1.12.11)
+    set(OGREVER 1.12.12)
     set(OGRE_DIR /home/erik/opt/ogre_debug/lib/cmake)
     find_package(OGRE ${OGREVER} REQUIRED)
     link_directories(${OGRE_LIBRARY_DIRS})
