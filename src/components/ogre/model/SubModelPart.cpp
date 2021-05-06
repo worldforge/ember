@@ -186,132 +186,139 @@ void SubModelPart::showSubEntities() {
 }
 
 bool SubModelPart::createInstancedEntities() {
-	std::vector<std::pair<Ogre::InstanceManager*, std::string>> managersAndMaterials;
 
-	//We would like to use the HW based technique, but as of 1.10.9 that causes corruption with the PSSM shadows.
-	//Until that's fixed we instead use the Shader based technique, which performs worse.
-	//The HW based technique uses the suffix "/Instanced/HW".
-	static std::string instancedSuffix = "/Instanced/Shader";
-	static Ogre::InstanceManager::InstancingTechnique instancedTechnique = Ogre::InstanceManager::ShaderBased;
+	try {
+		std::vector<std::pair<Ogre::InstanceManager*, std::string>> managersAndMaterials;
 
-	for (auto& entry : mSubEntities) {
-		Ogre::SubEntity* subEntity = entry.SubEntity;
-		Ogre::Entity* entity = subEntity->getParent();
-		Ogre::SceneManager* sceneManager = entity->_getManager();
-		std::string instanceName = entity->getMesh()->getName() + "/" + std::to_string(entry.subEntityIndex);
+		//We would like to use the HW based technique, but as of 1.10.9 that causes corruption with the PSSM shadows.
+		//Until that's fixed we instead use the Shader based technique, which performs worse.
+		//The HW based technique uses the suffix "/Instanced/HW".
+		static std::string instancedSuffix = "/Instanced/Shader";
+		static Ogre::InstanceManager::InstancingTechnique instancedTechnique = Ogre::InstanceManager::ShaderBased;
+
+		for (auto& entry : mSubEntities) {
+			Ogre::SubEntity* subEntity = entry.SubEntity;
+			Ogre::Entity* entity = subEntity->getParent();
+			Ogre::SceneManager* sceneManager = entity->_getManager();
+			std::string instanceName = entity->getMesh()->getName() + "/" + std::to_string(entry.subEntityIndex);
 
 
-		std::string materialName;
-		if (entry.Definition && !entry.Definition->materialName.empty()) {
-			materialName = entry.Definition->materialName;
-		} else {
-			//if no material name is set in the ModelDefinition, use the default one from the mesh
-			materialName = entry.SubEntity->getSubMesh()->getMaterialName();
-		}
+			std::string materialName;
+			if (entry.Definition && !entry.Definition->materialName.empty()) {
+				materialName = entry.Definition->materialName;
+			} else {
+				//if no material name is set in the ModelDefinition, use the default one from the mesh
+				materialName = entry.SubEntity->getSubMesh()->getMaterialName();
+			}
 
-		std::string instancedMaterialName = materialName;
+			std::string instancedMaterialName = materialName;
 
-		//Check if the material is "instanced", i.e. has the suffix as specified in "instancedSuffix".
-		//If not, we'll create a new material by cloning the original and replacing the vertex shader with
-		//one with the correct suffix, if such one is available and supported.
-		if (!boost::algorithm::ends_with(materialName, instancedSuffix)) {
+			//Check if the material is "instanced", i.e. has the suffix as specified in "instancedSuffix".
+			//If not, we'll create a new material by cloning the original and replacing the vertex shader with
+			//one with the correct suffix, if such one is available and supported.
+			if (!boost::algorithm::ends_with(materialName, instancedSuffix)) {
 
-			instancedMaterialName += instancedSuffix;
-			auto& materialMgr = Ogre::MaterialManager::getSingleton();
+				instancedMaterialName += instancedSuffix;
+				auto& materialMgr = Ogre::MaterialManager::getSingleton();
 
-			if (!materialMgr.resourceExists(instancedMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-				auto originalMaterial = materialMgr.getByName(materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-				if (originalMaterial) {
-					originalMaterial->load();
-					auto material = originalMaterial->clone(instancedMaterialName);
-					material->load();
-					for (auto* tech : material->getTechniques()) {
-						auto pass = tech->getPass(0);
-						if (pass->hasVertexProgram()) {
-							std::string vertexProgramName = pass->getVertexProgram()->getName() + instancedSuffix;
-							if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-								pass->setVertexProgram(vertexProgramName);
+				if (!materialMgr.resourceExists(instancedMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+					auto originalMaterial = materialMgr.getByName(materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					if (originalMaterial) {
+						originalMaterial->load();
+						auto material = originalMaterial->clone(instancedMaterialName);
+						material->load();
+						for (auto* tech : material->getTechniques()) {
+							auto pass = tech->getPass(0);
+							if (pass->hasVertexProgram()) {
+								std::string vertexProgramName = pass->getVertexProgram()->getName() + instancedSuffix;
+								if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+									pass->setVertexProgram(vertexProgramName);
+								}
 							}
-						}
 
-						auto shadowCasterMat = tech->getShadowCasterMaterial();
-						if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), instancedSuffix)) {
-							std::string instancedShadowCasterMatName = shadowCasterMat->getName() + instancedSuffix;
-							auto shadowCasterMatInstanced = materialMgr.getByName(instancedShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-							if (!shadowCasterMatInstanced) {
-								shadowCasterMat->load();
-								shadowCasterMatInstanced = shadowCasterMat->clone(instancedShadowCasterMatName);
-								for (auto* shadowCasterTech : shadowCasterMatInstanced->getTechniques()) {
-									auto shadowCasterPass = shadowCasterTech->getPass(0);
-									if (shadowCasterPass->hasVertexProgram()) {
-										std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + instancedSuffix;
-										if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-											shadowCasterPass->setVertexProgram(vertexProgramName);
+							auto shadowCasterMat = tech->getShadowCasterMaterial();
+							if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), instancedSuffix)) {
+								std::string instancedShadowCasterMatName = shadowCasterMat->getName() + instancedSuffix;
+								auto shadowCasterMatInstanced = materialMgr.getByName(instancedShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+								if (!shadowCasterMatInstanced) {
+									shadowCasterMat->load();
+									shadowCasterMatInstanced = shadowCasterMat->clone(instancedShadowCasterMatName);
+									for (auto* shadowCasterTech : shadowCasterMatInstanced->getTechniques()) {
+										auto shadowCasterPass = shadowCasterTech->getPass(0);
+										if (shadowCasterPass->hasVertexProgram()) {
+											std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + instancedSuffix;
+											if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+												shadowCasterPass->setVertexProgram(vertexProgramName);
+											}
 										}
 									}
 								}
+								shadowCasterMatInstanced->load();
+								tech->setShadowCasterMaterial(shadowCasterMatInstanced);
 							}
-							shadowCasterMatInstanced->load();
-							tech->setShadowCasterMaterial(shadowCasterMatInstanced);
 						}
+					} else {
+						S_LOG_WARNING("The material '" << materialName << "' used by a submesh of the mesh '" << entity->getMesh()->getName() << "' could not be found. The submesh will be hidden.");
+						continue;
 					}
+				}
+			}
+
+			if (sceneManager->hasInstanceManager(instanceName)) {
+				managersAndMaterials.emplace_back(std::make_pair(sceneManager->getInstanceManager(instanceName), instancedMaterialName));
+			} else {
+				auto bestTech = subEntity->getMaterial()->getBestTechnique();
+				if (!bestTech->getPasses().empty() && bestTech->getPass(0)->hasVertexProgram()) {
+					auto& meshName = entity->getMesh()->getName();
+					auto instancedMeshName = meshName + "/Instanced";
+					//Use a copy of the original mesh, since the InstanceManager in its current iteration performs alterations to the original mesh.
+					if (!Ogre::MeshManager::getSingleton().resourceExists(instancedMeshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+						auto meshCopy = entity->getMesh()->clone(instancedMeshName);
+						meshCopy->freeEdgeList();
+						meshCopy->removeLodLevels();
+					}
+
+					try {
+						Ogre::InstanceManager* instanceManager = sceneManager->createInstanceManager(instanceName,
+																									 instancedMeshName,
+								//meshName,
+																									 entity->getMesh()->getGroup(),
+																									 instancedTechnique,
+																									 50, Ogre::IM_USEALL, entry.subEntityIndex);
+						instanceManager->setBatchesAsStaticAndUpdate(true);
+
+						managersAndMaterials.emplace_back(std::make_pair(instanceManager, instancedMaterialName));
+					} catch (const std::exception& e) {
+						S_LOG_FAILURE("Could not create instanced versions of mesh " << meshName << " (as " << instancedMeshName << ")." << e);
+						throw;
+					}
+
 				} else {
-					S_LOG_WARNING("The material '" << materialName << "' used by a submesh of the mesh '" << entity->getMesh()->getName() << "' could not be found. The submesh will be hidden.");
-					continue;
+					//Could not make into instanced.
+					S_LOG_WARNING("Could not create instanced version of subentity with index " << entry.subEntityIndex << " of entity " << entity->getName());
 				}
 			}
 		}
 
-		if (sceneManager->hasInstanceManager(instanceName)) {
-			managersAndMaterials.emplace_back(std::make_pair(sceneManager->getInstanceManager(instanceName), instancedMaterialName));
-		} else {
-			auto bestTech = subEntity->getMaterial()->getBestTechnique();
-			if (!bestTech->getPasses().empty() && bestTech->getPass(0)->hasVertexProgram()) {
-				auto& meshName = entity->getMesh()->getName();
-				auto instancedMeshName = meshName + "/Instanced";
-				//Use a copy of the original mesh, since the InstanceManager in its current iteration performs alterations to the original mesh.
-				if (!Ogre::MeshManager::getSingleton().resourceExists(instancedMeshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-					auto meshCopy = entity->getMesh()->clone(instancedMeshName);
-					meshCopy->freeEdgeList();
-					meshCopy->removeLodLevels();
+		for (auto& entry : managersAndMaterials) {
+			try {
+				auto instancedEntity = entry.first->createInstancedEntity(entry.second);
+				if (instancedEntity) {
+					mInstancedEntities.push_back(instancedEntity);
+					mSubModel.mModel.addMovable(instancedEntity);
+					::Ember::OgreView::Model::Model::sInstancedEntities[entry.first->getSceneManager()][instancedEntity] = &mSubModel.mModel;
+				} else {
+					S_LOG_FAILURE("Could not create instanced entity " << entry.first->getName());
 				}
-
-				try {
-					Ogre::InstanceManager* instanceManager = sceneManager->createInstanceManager(instanceName,
-																								 instancedMeshName,
-																								 //meshName,
-																								 entity->getMesh()->getGroup(),
-																								 instancedTechnique,
-																								 50, Ogre::IM_USEALL, entry.subEntityIndex);
-					instanceManager->setBatchesAsStaticAndUpdate(true);
-
-					managersAndMaterials.emplace_back(std::make_pair(instanceManager, instancedMaterialName));
-				} catch (const std::exception& e) {
-					S_LOG_FAILURE("Could not create instanced versions of mesh " << meshName << " (as " << instancedMeshName << ")." << e);
-				}
-
-			} else {
-				//Could not make into instanced.
-				S_LOG_WARNING("Could not create instanced version of subentity with index " << entry.subEntityIndex << " of entity " << entity->getName());
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Could not create instanced entity " << entry.first->getName() << ex);
 			}
 		}
+		return true;
+	} catch (const std::exception& e) {
+		S_LOG_FAILURE("Error when trying to create instanced mesh for " << mName << "." << e);
+		return false;
 	}
-
-	for (auto& entry : managersAndMaterials) {
-		try {
-			auto instancedEntity = entry.first->createInstancedEntity(entry.second);
-			if (instancedEntity) {
-				mInstancedEntities.push_back(instancedEntity);
-				mSubModel.mModel.addMovable(instancedEntity);
-				::Ember::OgreView::Model::Model::sInstancedEntities[entry.first->getSceneManager()][instancedEntity] = &mSubModel.mModel;
-			} else {
-				S_LOG_FAILURE("Could not create instanced entity " << entry.first->getName());
-			}
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Could not create instanced entity " << entry.first->getName() << ex);
-		}
-	}
-	return true;
 }
 
 
