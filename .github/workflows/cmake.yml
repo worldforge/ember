@@ -104,7 +104,7 @@ jobs:
         # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
         run: |
           mkdir -p ~/install/usr
-          cmake $GITHUB_WORKSPACE -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DWF_USE_WIDGET_PLUGINS=OFF
+          cmake $GITHUB_WORKSPACE -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
       - name: Download media
         if: runner.os != 'Windows'

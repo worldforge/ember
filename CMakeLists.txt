@@ -95,11 +95,6 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 
 #On Unix we'll automatically build all widgets as reloadable modules, but not on Windows or OSX (since we couldn't get it to work as we would like).
 cmake_dependent_option(WF_USE_WIDGET_PLUGINS "Build widgets as reloadable plugins." 1 "UNIX AND NOT APPLE" 0)
-if (WF_USE_WIDGET_PLUGINS)
-    # This is needed to make Widget Plugins work.
-    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-    add_definitions(-DWF_USE_WIDGET_PLUGINS)
-endif ()
 
 #Needs to declare a GLOBAL variable to pass plugin list down to the src/main/CMakeFile.
 define_property(GLOBAL PROPERTY PLUGIN_LIBS_LIST
@@ -207,6 +202,9 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
             set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/share/OGRE/Media)
         endif ()
     endif ()
+
+    #Building with Conan we'll use static linking, so we'll disable the widget plugins as they won't work with static code.
+    set(WF_USE_WIDGET_PLUGINS 0)
 
 else ()
     find_package(Boost
@@ -399,6 +397,12 @@ else ()
 
     find_package(cppunit 1.8.0)
 
+endif ()
+
+if (WF_USE_WIDGET_PLUGINS)
+    # This is needed to make Widget Plugins work.
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+    add_definitions(-DWF_USE_WIDGET_PLUGINS)
 endif ()
 
 #We'll use xmllint for validating schemas of some of our xml files.
