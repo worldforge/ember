@@ -120,7 +120,7 @@ ConfigService::ConfigService(std::string prefix) :
 		mSharedDataDir(""),
 		mEtcDir(""),
 		mHomeDir(""),
-		mPrefix(std::move(prefix)){
+		mPrefix(std::move(prefix)) {
 #ifdef _WIN32
 	char cwd[512];
 	//get the full path for the current executable
@@ -354,32 +354,28 @@ boost::filesystem::path ConfigService::getHomeDirectory(BaseDirType baseDirType)
 #elif defined(__APPLE__)
 		return boost::filesystem::path(getAppSupportDirPath()) / "Ember";
 #else
-		xdgHandle baseDirHandle{};
 		boost::filesystem::path path;
-		if (!xdgInitHandle(&baseDirHandle)) {
-			path = (std::string(getenv("HOME")) + "/.ember/");
-		} else {
-			//Determine the directory type requested and ensure that it exists
-			switch (baseDirType) {
-				case BaseDirType_DATA:
-					path = std::string(xdgDataHome(&baseDirHandle)) + "/ember/";
-					break;
-				case BaseDirType_CONFIG:
-					path = std::string(xdgConfigHome(&baseDirHandle)) + "/ember/";
-					break;
-				case BaseDirType_CACHE:
-					path = std::string(xdgCacheHome(&baseDirHandle)) + "/ember/";
-					break;
-				case BaseDirType_RUNTIME:
-					path = std::string(xdgRuntimeDirectory(&baseDirHandle)) + "/ember/";
-					break;
-			}
 
-			if (!boost::filesystem::exists(path)) {
-				boost::filesystem::create_directories(path);
-			}
-			xdgWipeHandle(&baseDirHandle);
+		//Determine the directory type requested and ensure that it exists
+		switch (baseDirType) {
+			case BaseDirType_DATA:
+				path = std::string(xdgDataHome(nullptr)) + "/ember/";
+				break;
+			case BaseDirType_CONFIG:
+				path = std::string(xdgConfigHome(nullptr)) + "/ember/";
+				break;
+			case BaseDirType_CACHE:
+				path = std::string(xdgCacheHome(nullptr)) + "/ember/";
+				break;
+			case BaseDirType_RUNTIME:
+				path = std::string(xdgRuntimeDirectory(nullptr)) + "/ember/";
+				break;
 		}
+
+		if (!boost::filesystem::exists(path)) {
+			boost::filesystem::create_directories(path);
+		}
+
 		return path;
 #endif
 	}
