@@ -193,6 +193,10 @@ EmberOgre::~EmberOgre() {
 
 	destroyWorld();
 
+	if (mSceneManagerOutOfWorld) {
+		Ogre::RTShader::ShaderGenerator::getSingleton().removeSceneManager(mSceneManagerOutOfWorld);
+	}
+
 	// Deregister the overlay system before deleting it in OgreSetup.
 	if (mSceneManagerOutOfWorld && mOgreSetup) {
 		mSceneManagerOutOfWorld->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
@@ -397,6 +401,7 @@ void EmberOgre::Server_GotView(Eris::View* view) {
 
 void EmberOgre::destroyWorld() {
 	if (mWorld) {
+		Ogre::RTShader::ShaderGenerator::getSingleton().removeSceneManager(&mWorld->getSceneManager());
 		mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
 		EventWorldBeingDestroyed.emit();
 		mWorld.reset();
