@@ -24,8 +24,6 @@
 
 #include "ConfigService.h"
 #include "framework/LoggingInstance.h"
-// #include "framework/binreloc.h"
-
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
@@ -37,14 +35,11 @@
 #include <Shlobj.h>
 #endif
 
-// #include <iostream>
 #include <fstream>
-
-#if !defined(__APPLE__) && !defined(_WIN32)
-
-#include <basedir.h>
 #include <boost/filesystem.hpp>
 
+#if !defined(__APPLE__) && !defined(_WIN32)
+#include <basedir.h>
 #endif
 
 // From sear
@@ -117,6 +112,7 @@ std::string getAppSupportDirPath()
 namespace Ember {
 
 ConfigService::ConfigService(std::string prefix) :
+		mBaseDirHandle{},
 		mSharedDataDir(""),
 		mEtcDir(""),
 		mHomeDir(""),
@@ -153,6 +149,7 @@ ConfigService::ConfigService(std::string prefix) :
 		auto libdirectory = *boost::filesystem::path(EMBER_LIBDIR).rbegin();
 		mPluginDir = boost::filesystem::path(mPrefix) / libdirectory / "ember" / "widgets";
 	}
+	xdgInitHandle(&mBaseDirHandle);
 	S_LOG_INFO("Setting config directory to " << mEtcDir.string());
 #endif
 	mGlobalConfig.sige.connect(sigc::mem_fun(*this, &ConfigService::configError));
@@ -163,7 +160,9 @@ ConfigService::ConfigService(std::string prefix) :
 	mInstanceConfig.sigv.connect(sigc::mem_fun(*this, &ConfigService::updatedConfig));
 }
 
-ConfigService::~ConfigService() = default;
+ConfigService::~ConfigService() {
+	xdgWipeHandle(&mBaseDirHandle);
+}
 
 const std::string& ConfigService::getPrefix() const {
 	return mPrefix;
@@ -358,17 +357,18 @@ boost::filesystem::path ConfigService::getHomeDirectory(BaseDirType baseDirType)
 
 		//Determine the directory type requested and ensure that it exists
 		switch (baseDirType) {
-			case BaseDirType_DATA:
-				path = std::string(xdgDataHome(nullptr)) + "/ember/";
+			case BaseDirType_DATA: {
+				path = boost::filesystem::path(xdgDataHome(&mBaseDirHandle)) / "ember";
 				break;
+			}
 			case BaseDirType_CONFIG:
-				path = std::string(xdgConfigHome(nullptr)) + "/ember/";
+				path = boost::filesystem::path(xdgConfigHome(&mBaseDirHandle)) / "ember";
 				break;
 			case BaseDirType_CACHE:
-				path = std::string(xdgCacheHome(nullptr)) + "/ember/";
+				path = boost::filesystem::path(xdgCacheHome(&mBaseDirHandle)) / "ember";
 				break;
 			case BaseDirType_RUNTIME:
-				path = std::string(xdgRuntimeDirectory(nullptr)) + "/ember/";
+				path = boost::filesystem::path(xdgRuntimeDirectory(&mBaseDirHandle)) / "ember";
 				break;
 		}
 

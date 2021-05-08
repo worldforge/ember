@@ -26,6 +26,10 @@
 #include <varconf/varconf.h>
 
 #include <boost/filesystem/path.hpp>
+#if !defined(__APPLE__) && !defined(_WIN32)
+#include <basedir.h>
+#endif
+
 #include <string>
 #include <unordered_map>
 
@@ -39,6 +43,7 @@ namespace Ember {
 enum BaseDirType {
 	BaseDirType_DATA, BaseDirType_CONFIG, BaseDirType_CACHE, BaseDirType_RUNTIME
 };
+
 
 /**
 * @brief Ember Configuration Service.
@@ -62,6 +67,10 @@ private:
 	//----------------------------------------------------------------------
 #ifdef __WIN32__
 	boost::filesystem::path baseDir;
+#elif defined(__APPLE__)
+	return boost::filesystem::path(getAppSupportDirPath()) / "Ember";
+#else
+	mutable xdgHandle mBaseDirHandle;
 #endif
 
 	boost::filesystem::path mSharedDataDir;
