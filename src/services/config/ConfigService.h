@@ -65,7 +65,7 @@ private:
 	//----------------------------------------------------------------------
 	// Class Variables
 	//----------------------------------------------------------------------
-#ifdef __WIN32__
+#ifdef _WIN32
 	boost::filesystem::path baseDir;
 #elif defined(__APPLE__)
 #else
