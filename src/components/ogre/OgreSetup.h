@@ -109,6 +109,8 @@ private:
 	 */
 	OgrePluginLoader mPluginLoader;
 
+	std::vector<std::unique_ptr<Ogre::Plugin>> mPlugins;
+
 	/**
 	 * @brief Holds the Ogre root object.
 	 */

@@ -71,9 +71,11 @@
 #include <OgreLodStrategyManager.h>
 
 #ifdef OGRE_STATIC_LIB
+
 #include <Plugins/FreeImageCodec/OgreFreeImageCodec.h>
 #include <Plugins/ParticleFX/OgreParticleFXPlugin.h>
 #include <RenderSystems/GL3Plus/OgreGL3PlusPlugin.h>
+
 #endif
 
 #include <SDL.h>
@@ -138,9 +140,12 @@ OgreSetup::OgreSetup() :
 	mRoot->setWorkQueue(OGRE_NEW EmberWorkQueue(MainLoopController::getSingleton().getEventService()));
 
 #ifdef OGRE_STATIC_LIB
-	mRoot->installPlugin(OGRE_NEW Ogre::FreeImagePlugin());
-	mRoot->installPlugin(OGRE_NEW Ogre::GL3PlusPlugin());
-	mRoot->installPlugin(OGRE_NEW Ogre::ParticleFXPlugin());
+	mPlugins.emplace_back(std::make_unique<Ogre::FreeImagePlugin>());
+	mPlugins.emplace_back(std::make_unique<Ogre::GL3PlusPlugin>());
+	mPlugins.emplace_back(std::make_unique<Ogre::ParticleFXPlugin>());
+	for (auto& plugin: mPlugins) {
+		mRoot->installPlugin(plugin.get());
+	}
 #else
 	mPluginLoader.loadPlugin("Codec_FreeImage");
 	mPluginLoader.loadPlugin("Plugin_ParticleFX");
@@ -173,6 +178,7 @@ OgreSetup::~OgreSetup() {
 	S_LOG_INFO("Shutting down Ogre.");
 	if (mRoot) {
 
+
 		if (Ogre::GpuProgramManager::getSingletonPtr()) {
 			try {
 				auto cachePath = ConfigService::getSingleton().getHomeDirectory(BaseDirType_CACHE) / ("/gpu-" EMBER_VERSION ".cache");
@@ -195,7 +201,6 @@ OgreSetup::~OgreSetup() {
 
 		//Clean up, else it seems we can get error referencing gpu programs that are destroyed.
 		Ogre::RTShader::ShaderGenerator::destroy();
-
 	}
 }
 
