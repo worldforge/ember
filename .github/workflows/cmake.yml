@@ -23,7 +23,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04, macos-10.15 ]
+        os: [ ubuntu-18.04, ubuntu-20.04, macos-10.15 ]
 
     steps:
       - uses: actions/checkout@v2
@@ -41,11 +41,8 @@ jobs:
           if [[ "$ImageOS" == "ubuntu18" ]]; then
             echo "BUILD_SNAP=true" >> $GITHUB_ENV
           fi
-          if [[ "$ImageOS" == "ubuntu16" ]]; then
+          if [[ "$ImageOS" == "ubuntu18" ]]; then
             echo "BUILD_APPIMAGE=true" >> $GITHUB_ENV
-          fi
-          if [[ "$ImageOS" == "win19" ]]; then
-            echo "BUILD_NSIS=true" >> $GITHUB_ENV
           fi
 
       - name: Install autotools
@@ -64,14 +61,8 @@ jobs:
         shell: bash
         run: |
           export PATH=~/.local/bin:$PATH
-          if [[ "$ImageOS" == "ubuntu16" ]]; then
-            #The pip and setuptools packages are broken in ubuntu16 so we need to use a virtual environment and specify specific versions.
-            sudo apt-get install python-virtualenv
-            virtualenv -p /usr/bin/python3 ~/venv/py3 --verbose --no-download && . ~/venv/py3/bin/activate && python3 -m pip install --upgrade 'setuptools; python_version >= "3.6"' 'setuptools<51.3.0; python_version < "3.6" and python_version >= "3.0"' "pip<20" wheel conan && python3 -m pip list
-          else
-            pip3 install --upgrade pip wheel setuptools
-            pip3 install --upgrade conan
-          fi
+          pip3 install --upgrade pip wheel setuptools
+          pip3 install --upgrade conan
           conan --version
           conan user
           conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
@@ -85,9 +76,6 @@ jobs:
         shell: bash
         run: |
           export PATH=~/.local/bin:$PATH
-          if [[ "$ImageOS" == "ubuntu16" ]]; then
-            . ~/venv/py3/bin/activate
-          fi
           conan install .. -pr default --build=missing --update
           if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
             conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
