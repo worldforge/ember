@@ -243,7 +243,7 @@ class IngameChatWidget
 
 		~LabelCreator() override;
 
-		std::unique_ptr<IngameChatWidget::Label> createWidget(unsigned int currentPoolSize) override;
+		std::unique_ptr<IngameChatWidget::Label> createWidget(size_t currentPoolSize) override;
 
 	protected:
 		IngameChatWidget& mIngameChatWidget;
@@ -353,7 +353,7 @@ class IngameChatWidget
 
 		~ChatTextCreator() override;
 
-		std::unique_ptr<IngameChatWidget::ChatText> createWidget(unsigned int currentPoolSize) override;
+		std::unique_ptr<IngameChatWidget::ChatText> createWidget(size_t currentPoolSize) override;
 
 	protected:
 		IngameChatWidget& mIngameChatWidget;

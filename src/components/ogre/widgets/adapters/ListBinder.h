@@ -142,7 +142,7 @@ template<typename T, typename WidgetT>
 void ListBinder<T, WidgetT>::sync() {
 	mListbox->resetList();
 	for (typename TypeStore::iterator I = mTypes.begin(); I != mTypes.end(); ++I) {
-		CEGUI::ListboxItem* item = new ColouredListItem(I->second.DisplayName, mListbox->getItemCount());
+		CEGUI::ListboxItem* item = new ColouredListItem(I->second.DisplayName, (unsigned int)mListbox->getItemCount());
 		mListbox->addItem(item);
 		I->second.ListIndex = item->getID();
 	}

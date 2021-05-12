@@ -187,6 +187,24 @@ struct ValueTypeHelper<float, ::Atlas::Message::Element>
 };
 
 template<>
+struct ValueTypeHelper< ::Atlas::Message::Element, double>
+{
+	static double convert(const ::Atlas::Message::Element& v)
+	{
+		return v.asFloat();
+	}
+};
+
+template<>
+struct ValueTypeHelper<double, ::Atlas::Message::Element>
+{
+	static ::Atlas::Message::Element convert(double f)
+	{
+		return ::Atlas::Message::Element(f);
+	}
+};
+
+template<>
 struct ValueTypeHelper< ::varconf::Variable, std::string>
 {
 	static std::string convert(const ::varconf::Variable& v)

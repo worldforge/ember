@@ -71,13 +71,13 @@ struct ITerrainAdapter;
 		 * @brief Gets the minimum time, in milliseconds, that must elapse before a new raycheck is carried out if only the camera has changed.
 		 * @return
 		 */
-		unsigned int getThreshold();
+		int getThreshold() const;
 
 		/**
 		 * @brief Sets the minimum time, in milliseconds, that must elapse before a new raycheck is carried out if only the camera has changed.
 		 * @param newThreshold The time, in milliseconds.
 		 */
-		unsigned int setThreshold(unsigned int newThreshold);
+		int setThreshold(int newThreshold);
 
 		/**
 		 *       @brief Gets the position of the terrain currently under the mouse cursor.
@@ -92,7 +92,7 @@ struct ITerrainAdapter;
 		@brief The last time that the ray was updated.
 		This is used to determine it a new ray check should be executed in those instances where only the camera has moved.
 		*/
-		long mLastUpdated;
+		long long mLastUpdated;
 
 		/**
 		@brief The last known intersection with the terrain.
@@ -118,7 +118,7 @@ struct ITerrainAdapter;
 		/**
 		@brief Threshold for updates in milliseconds.
 		*/
-		unsigned int mUpdatePositionThreshold;
+		int mUpdatePositionThreshold;
 
 		/**
 		@brief The last known camera position.

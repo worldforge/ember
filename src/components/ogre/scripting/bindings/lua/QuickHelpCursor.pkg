@@ -54,8 +54,8 @@ public:
 	QuickHelpCursor();
 	void nextMessage();
 	void previousMessage();
-	int getSize() const;
-	int getCursorLocation() const;
+	size_t getSize() const;
+	size_t getCursorLocation() const;
 
 	sigc::signal <void,const Ember::OgreView::Gui::HelpMessage&> EventUpdateText;
 };

@@ -55,15 +55,9 @@ public:
      * @brief Dtor.
      * This will actually not reset the shadows.
      */
-    virtual ~ShadowCameraSetup();
+    ~ShadowCameraSetup() override;
 
 protected:
-    /**
-     * @brief Sets up the shadows.
-     * A couple of settings are however omitted in this method as they are instead set in the Config_* methods.
-     * @return
-     */
-    virtual bool setup();
 
     /**
      * @brief The scene manager which we want to apply our shadow camera to.

@@ -76,7 +76,7 @@ void QuickHelp::updateText(const HelpMessage& message) {
 	EventHelpMessageAdded.emit(messagePosition(message));
 }
 
-int QuickHelp::getSize() const {
+size_t QuickHelp::getSize() const {
 	return mTutorialText.size();
 }
 

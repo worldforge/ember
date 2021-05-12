@@ -71,13 +71,13 @@ void PositionAdapter::updateGui(const ::Atlas::Message::Element& element)
 	WFMath::Vector<3> vector(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
-		mXWindow->setText(ValueTypeHelper<float, std::string>::convert(vector.x())); 
+		mXWindow->setText(ValueTypeHelper<double, std::string>::convert(vector.x()));
 	}
 	if (mYWindow) {
-		mYWindow->setText(ValueTypeHelper<float, std::string>::convert(vector.y())); 
+		mYWindow->setText(ValueTypeHelper<double, std::string>::convert(vector.y()));
 	}
 	if (mZWindow) {
-		mZWindow->setText(ValueTypeHelper<float, std::string>::convert(vector.z())); 
+		mZWindow->setText(ValueTypeHelper<double, std::string>::convert(vector.z()));
 	}
 }
 

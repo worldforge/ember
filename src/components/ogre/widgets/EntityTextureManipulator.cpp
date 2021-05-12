@@ -94,11 +94,11 @@ void EntityTextureManipulator::releaseInput()
 
 bool EntityTextureManipulator::image_MouseWheel(const CEGUI::EventArgs& args)
 {
-	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+	const auto& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 
 	if (mouseArgs.wheelChange != 0.0f) {
 		float distance = mTexture.getRenderContext()->getCameraDistance();
-		distance -= (mouseArgs.wheelChange * 0.1);
+		distance -= (mouseArgs.wheelChange * 0.1f);
 		mTexture.getRenderContext()->setCameraDistance(mTexture.getRenderContext()->getDefaultCameraDistance() * distance);
 	}
 
@@ -107,7 +107,7 @@ bool EntityTextureManipulator::image_MouseWheel(const CEGUI::EventArgs& args)
 
 bool EntityTextureManipulator::image_MouseButtonDown(const CEGUI::EventArgs& args)
 {
-	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+	const auto& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 	handleMouseButtonDown(mouseArgs);
 	return true;
 }

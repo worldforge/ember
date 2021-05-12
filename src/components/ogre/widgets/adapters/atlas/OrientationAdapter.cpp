@@ -67,16 +67,16 @@ void OrientationAdapter::updateGui(const ::Atlas::Message::Element& element)
 	WFMath::Quaternion orientation(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
-		mXWindow->setText(ValueTypeHelper<float, std::string>::convert(orientation.vector().x())); 
+		mXWindow->setText(ValueTypeHelper<double, std::string>::convert(orientation.vector().x()));
 	}
 	if (mYWindow) {
-		mYWindow->setText(ValueTypeHelper<float, std::string>::convert(orientation.vector().y())); 
+		mYWindow->setText(ValueTypeHelper<double, std::string>::convert(orientation.vector().y()));
 	}
 	if (mZWindow) {
-		mZWindow->setText(ValueTypeHelper<float, std::string>::convert(orientation.vector().z())); 
+		mZWindow->setText(ValueTypeHelper<double, std::string>::convert(orientation.vector().z()));
 	}
 	if (mScalarWindow) {
-		mScalarWindow->setText(ValueTypeHelper<float, std::string>::convert(orientation.scalar())); 
+		mScalarWindow->setText(ValueTypeHelper<double, std::string>::convert(orientation.scalar()));
 	}
 
 }
@@ -91,18 +91,18 @@ bool OrientationAdapter::window_TextChanged(const CEGUI::EventArgs& e)
 
 void OrientationAdapter::fillElementFromGui()
 {
-	float x(0), y(0), z(0), scalar(0);
+	double x(0), y(0), z(0), scalar(0);
 	if (mXWindow) {
-		x = atof(mXWindow->getText().c_str()); 
+		x = std::stod(mXWindow->getText().c_str());
 	}
 	if (mYWindow) {
-		y = atof(mYWindow->getText().c_str()); 
+		y = std::stod(mYWindow->getText().c_str());
 	}
 	if (mZWindow) {
-		z = atof(mZWindow->getText().c_str()); 
+		z = std::stod(mZWindow->getText().c_str());
 	}
 	if (mScalarWindow) {
-		scalar = atof(mScalarWindow->getText().c_str()); 
+		scalar = std::stod(mScalarWindow->getText().c_str());
 	}
 	WFMath::Quaternion orientation(scalar, x, y, z);
 	mEditedValue = orientation.toAtlas();

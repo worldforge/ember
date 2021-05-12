@@ -42,22 +42,7 @@ ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, GraphicalChan
 		mSceneMgr(sceneMgr),
 		mShadowDetailManager(std::make_unique<ShadowDetailManager>(graphicalChangeAdapter, sceneMgr))
 {
-	setup();
-	registerConfigListenerWithDefaults("shadows", "texturesize", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowTextureSize), 1024);
-	registerConfigListenerWithDefaults("shadows", "splitpoints", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPoints), "1 15 50 200");
-	registerConfigListenerWithDefaults("shadows", "splitpadding", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPadding), 10.0);
-	registerConfigListenerWithDefaults("shadows", "optimaladjustfactors", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowOptimalAdjustFactors), "1 1 1");
-	registerConfigListenerWithDefaults("shadows", "useaggressivefocusregion", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion), true);
-	registerConfigListenerWithDefaults("shadows", "fardistance", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowFarDistance), 200.0);
-	registerConfigListenerWithDefaults("shadows", "renderbackfaces", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowRenderBackfaces), true);
-
-}
-
-ShadowCameraSetup::~ShadowCameraSetup() = default;
-
-bool ShadowCameraSetup::setup()
-{
-//	// Need to detect D3D or GL for best depth shadowmapping
+	//	// Need to detect D3D or GL for best depth shadowmapping
 //	bool isOpenGL;
 //	if (Ogre::Root::getSingleton().getRenderSystem()->getName().find("GL") != Ogre::String::npos) {
 //		isOpenGL = true;
@@ -81,16 +66,24 @@ bool ShadowCameraSetup::setup()
 	//	// D3D is the opposite - if you ask for PF_FLOAT16_R you
 	//	// get an integer format instead! You can ask for PF_FLOAT16_GR
 	//	// but the precision doesn't work well
-		mSceneMgr.setShadowTexturePixelFormat(Ogre::PF_FLOAT32_R);
+	mSceneMgr.setShadowTexturePixelFormat(Ogre::PF_FLOAT32_R);
 	//}
 
 	mPssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 	mSharedCameraPtr = Ogre::ShadowCameraSetupPtr(mPssmSetup);
 	mSceneMgr.setShadowCameraSetup(mSharedCameraPtr);
 
+	registerConfigListenerWithDefaults("shadows", "texturesize", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowTextureSize), 1024);
+	registerConfigListenerWithDefaults("shadows", "splitpoints", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPoints), "1 15 50 200");
+	registerConfigListenerWithDefaults("shadows", "splitpadding", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPadding), 10.0);
+	registerConfigListenerWithDefaults("shadows", "optimaladjustfactors", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowOptimalAdjustFactors), "1 1 1");
+	registerConfigListenerWithDefaults("shadows", "useaggressivefocusregion", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion), true);
+	registerConfigListenerWithDefaults("shadows", "fardistance", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowFarDistance), 200.0);
+	registerConfigListenerWithDefaults("shadows", "renderbackfaces", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowRenderBackfaces), true);
 
-	return true;
 }
+
+ShadowCameraSetup::~ShadowCameraSetup() = default;
 
 void ShadowCameraSetup::Config_ShadowTextureSize(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
@@ -109,10 +102,10 @@ void ShadowCameraSetup::Config_ShadowSplitPoints(const std::string& section, con
 		if (variable.is_string()) {
 			Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = mPssmSetup->getSplitPoints();
 			Tokeniser tokeniser(variable.as_string());
-			splitPointList[0] = atof(tokeniser.nextToken().c_str());
-			splitPointList[1] = atof(tokeniser.nextToken().c_str());
-			splitPointList[2] = atof(tokeniser.nextToken().c_str());
-			splitPointList[3] = atof(tokeniser.nextToken().c_str());
+			splitPointList[0] = std::stof(tokeniser.nextToken());
+			splitPointList[1] = std::stof(tokeniser.nextToken());
+			splitPointList[2] = std::stof(tokeniser.nextToken());
+			splitPointList[3] = std::stof(tokeniser.nextToken());
 			S_LOG_VERBOSE("Setting shadow split points: " << splitPointList[0] << " " << splitPointList[1] << " " << splitPointList[2] << " " << splitPointList[3]);
 			mPssmSetup->setSplitPoints(splitPointList);
 		}
@@ -125,7 +118,7 @@ void ShadowCameraSetup::Config_ShadowSplitPadding(const std::string& section, co
 	try {
 		if (variable.is_double()) {
 			S_LOG_VERBOSE("Setting shadow split padding: " << static_cast<double>(variable));
-			mPssmSetup->setSplitPadding(static_cast<double>(variable));
+			mPssmSetup->setSplitPadding((float)static_cast<double>(variable));
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting shadow split padding." << ex);
@@ -138,9 +131,9 @@ void ShadowCameraSetup::Config_ShadowOptimalAdjustFactors(const std::string& sec
 		if (variable.is_string()) {
 			S_LOG_VERBOSE("Setting shadow optimal adjust factor: " << static_cast<std::string>(variable));
 			Tokeniser tokeniser(variable.as_string());
-			mPssmSetup->setOptimalAdjustFactor(0, atof(tokeniser.nextToken().c_str()));
-			mPssmSetup->setOptimalAdjustFactor(1, atof(tokeniser.nextToken().c_str()));
-			mPssmSetup->setOptimalAdjustFactor(2, atof(tokeniser.nextToken().c_str()));
+			mPssmSetup->setOptimalAdjustFactor(0, std::stof(tokeniser.nextToken()));
+			mPssmSetup->setOptimalAdjustFactor(1, std::stof(tokeniser.nextToken()));
+			mPssmSetup->setOptimalAdjustFactor(2, std::stof(tokeniser.nextToken()));
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting shadow optimal adjust factors." << ex);
@@ -164,7 +157,7 @@ void ShadowCameraSetup::Config_ShadowFarDistance(const std::string& section, con
 	try {
 		if (variable.is_double()) {
 			S_LOG_VERBOSE("Setting shadow far distance: " << static_cast<double>(variable));
-			mSceneMgr.setShadowFarDistance(static_cast<double>(variable));
+			mSceneMgr.setShadowFarDistance((float)static_cast<double>(variable));
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting shadow far distance." << ex);

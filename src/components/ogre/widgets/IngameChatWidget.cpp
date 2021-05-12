@@ -512,7 +512,7 @@ IngameChatWidget::LabelCreator::LabelCreator(IngameChatWidget& ingameChatWidget)
 
 IngameChatWidget::LabelCreator::~LabelCreator() = default;
 
-std::unique_ptr<IngameChatWidget::Label> IngameChatWidget::LabelCreator::createWidget(unsigned int currentPoolSize) {
+std::unique_ptr<IngameChatWidget::Label> IngameChatWidget::LabelCreator::createWidget(size_t currentPoolSize) {
 	//there is no chat window for this entity, let's create one from the loaded layout (by cloning)
 	std::stringstream ss;
 	ss << "Label/" << currentPoolSize << "/";
@@ -814,7 +814,7 @@ IngameChatWidget::ChatTextCreator::ChatTextCreator(IngameChatWidget& ingameChatW
 
 IngameChatWidget::ChatTextCreator::~ChatTextCreator() = default;
 
-std::unique_ptr<IngameChatWidget::ChatText> IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize) {
+std::unique_ptr<IngameChatWidget::ChatText> IngameChatWidget::ChatTextCreator::createWidget(size_t currentPoolSize) {
 	//there is no chat window for this entity, let's create one by cloning the existing layout
 	auto newAttached = mAttachedLayout->clone();
 	newAttached->setName("MainWindow/Attached");

@@ -94,22 +94,22 @@ void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 		axisBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, -0.5, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5));
 	}
 	if (mWidgets.lowerXWindow) {
-		mWidgets.lowerXWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().x()));
+		mWidgets.lowerXWindow->setText(ValueTypeHelper<double, std::string>::convert(axisBox.lowCorner().x()));
 	}
 	if (mWidgets.lowerYWindow) {
-		mWidgets.lowerYWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().y()));
+		mWidgets.lowerYWindow->setText(ValueTypeHelper<double, std::string>::convert(axisBox.lowCorner().y()));
 	}
 	if (mWidgets.lowerZWindow) {
-		mWidgets.lowerZWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().z()));
+		mWidgets.lowerZWindow->setText(ValueTypeHelper<double, std::string>::convert(axisBox.lowCorner().z()));
 	}
 	if (mWidgets.upperXWindow) {
-		mWidgets.upperXWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().x()));
+		mWidgets.upperXWindow->setText(ValueTypeHelper<double, std::string>::convert(axisBox.highCorner().x()));
 	}
 	if (mWidgets.upperYWindow) {
-		mWidgets.upperYWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().y()));
+		mWidgets.upperYWindow->setText(ValueTypeHelper<double, std::string>::convert(axisBox.highCorner().y()));
 	}
 	if (mWidgets.upperZWindow) {
-		mWidgets.upperZWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().z()));
+		mWidgets.upperZWindow->setText(ValueTypeHelper<double, std::string>::convert(axisBox.highCorner().z()));
 	}
 
 	updateInfo();
@@ -165,22 +165,22 @@ void SizeAdapter::fillElementFromGui()
 	WFMath::Point<3> lowerPoint = axisBox.lowCorner();
 	WFMath::Point<3> upperPoint = axisBox.highCorner();
 	if (mWidgets.lowerXWindow) {
-		lowerPoint.x() = atof(mWidgets.lowerXWindow->getText().c_str());
+		lowerPoint.x() = std::stod(mWidgets.lowerXWindow->getText().c_str());
 	}
 	if (mWidgets.lowerYWindow) {
-		lowerPoint.y() = atof(mWidgets.lowerYWindow->getText().c_str());
+		lowerPoint.y() = std::stod(mWidgets.lowerYWindow->getText().c_str());
 	}
 	if (mWidgets.lowerZWindow) {
-		lowerPoint.z() = atof(mWidgets.lowerZWindow->getText().c_str());
+		lowerPoint.z() = std::stod(mWidgets.lowerZWindow->getText().c_str());
 	}
 	if (mWidgets.upperXWindow) {
-		upperPoint.x() = atof(mWidgets.upperXWindow->getText().c_str());
+		upperPoint.x() = std::stod(mWidgets.upperXWindow->getText().c_str());
 	}
 	if (mWidgets.upperYWindow) {
-		upperPoint.y() = atof(mWidgets.upperYWindow->getText().c_str());
+		upperPoint.y() = std::stod(mWidgets.upperYWindow->getText().c_str());
 	}
 	if (mWidgets.upperZWindow) {
-		upperPoint.z() = atof(mWidgets.upperZWindow->getText().c_str());
+		upperPoint.z() = std::stod(mWidgets.upperZWindow->getText().c_str());
 	}
 	axisBox.setCorners(lowerPoint, upperPoint);
 	mEditedValue = axisBox.toAtlas();

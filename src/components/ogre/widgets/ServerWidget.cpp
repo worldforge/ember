@@ -358,7 +358,7 @@ void ServerWidget::loginSuccess(Eris::Account* account) {
 
 void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg) {
 	auto helpText = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/HelpText");
-	helpText->setYPosition(UDim(0.6, 0));
+	helpText->setYPosition(UDim(0.6f, 0));
 
 	auto loginFailure = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/LoginFailure");
 	loginFailure->setText(msg);
@@ -367,7 +367,7 @@ void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg) {
 
 bool ServerWidget::hideLoginFailure() {
 	auto helpText = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/HelpText");
-	helpText->setYPosition(UDim(0.55, 0));
+	helpText->setYPosition(UDim(0.55f, 0));
 
 	auto loginFailure = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/LoginFailure");
 	loginFailure->setVisible(false);
@@ -523,7 +523,7 @@ void ServerWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entit
 		mModelPreviewRenderer->showModel(model);
 		//mModelPreviewRenderer->showFull();
 		//we want to zoom in a little
-		mModelPreviewRenderer->setCameraDistance(0.7);
+		mModelPreviewRenderer->setCameraDistance(0.7f);
 	}, [&](const std::string& part) {
 		if (mModelPreviewRenderer->getModel()) {
 			mModelPreviewRenderer->getModel()->showPart(part);

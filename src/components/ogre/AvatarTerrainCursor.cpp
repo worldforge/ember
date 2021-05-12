@@ -50,11 +50,11 @@ AvatarTerrainCursor::AvatarTerrainCursor(Ogre::Camera& camera, Terrain::ITerrain
 
 AvatarTerrainCursor::~AvatarTerrainCursor() = default;
 
-unsigned int AvatarTerrainCursor::getThreshold() {
+int AvatarTerrainCursor::getThreshold() const {
 	return (mUpdatePositionThreshold);
 }
 
-unsigned int AvatarTerrainCursor::setThreshold(unsigned int newThreshold) {
+int AvatarTerrainCursor::setThreshold(int newThreshold) {
 	mUpdatePositionThreshold = newThreshold;
 	return (mUpdatePositionThreshold);
 }
@@ -72,8 +72,8 @@ bool AvatarTerrainCursor::getTerrainCursorPosition(const Ogre::Vector3** positio
 		//the mouse hasn't moved, perhaps the camera has?
 		if (mLastCameraPosition != mCamera.getDerivedPosition() || mLastCameraOrientation != mCamera.getDerivedOrientation()) {
 			//ok, the camera has moved, but has enough time elapsed since our last update to warrant a new update?
-			long long now = TimeHelper::currentTimeMillis();
-			long long delta = now - mLastUpdated;
+			auto now = TimeHelper::currentTimeMillis();
+			auto delta = now - mLastUpdated;
 
 			// if enough time has lapsed, we'll update, otherwise we return the last known position
 			if (delta > mUpdatePositionThreshold) {
@@ -106,7 +106,7 @@ bool AvatarTerrainCursor::getTerrainCursorPosition(const Ogre::Vector3** positio
 
 void AvatarTerrainCursor::Config_TerrainCheckInterval(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_int()) {
-		mUpdatePositionThreshold = static_cast<unsigned int>(static_cast<int>(variable));
+		mUpdatePositionThreshold = static_cast<int>(variable);
 	}
 }
 

@@ -59,10 +59,10 @@ void Position2DAdapter::updateGui(const ::Atlas::Message::Element& element)
 	WFMath::Vector<2> vector(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
-		mXWindow->setText(ValueTypeHelper<float, std::string>::convert(vector.x())); 
+		mXWindow->setText(ValueTypeHelper<double, std::string>::convert(vector.x()));
 	}
 	if (mYWindow) {
-		mYWindow->setText(ValueTypeHelper<float, std::string>::convert(vector.y())); 
+		mYWindow->setText(ValueTypeHelper<double, std::string>::convert(vector.y()));
 	}
 }
 

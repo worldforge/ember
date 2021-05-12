@@ -45,7 +45,7 @@ public:
 	public:
 		virtual ~WidgetCreator() = default;
 
-		virtual std::unique_ptr<T> createWidget(unsigned int currentPoolSize) = 0;
+		virtual std::unique_ptr<T> createWidget(size_t currentPoolSize) = 0;
 	};
 
 	explicit WidgetPool(WidgetCreator& creator) :
@@ -70,7 +70,7 @@ WidgetPool<T>::~WidgetPool() = default;
 
 template<typename T>
 std::unique_ptr<T> WidgetPool<T>::checkoutWidget() {
-	if (!mWidgetsPool.size()) {
+	if (mWidgetsPool.empty()) {
 		return mCreator.createWidget(mWidgetsPool.size());
 	} else {
 		auto widget = std::move(mWidgetsPool.back());

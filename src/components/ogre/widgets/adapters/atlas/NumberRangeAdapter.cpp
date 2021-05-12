@@ -17,9 +17,7 @@
  */
 
 #include "NumberRangeAdapter.h"
-#include "../../ColouredListItem.h"
 
-#include <wfmath/const.h>
 #include <wfmath/MersenneTwister.h>
 
 namespace Ember {

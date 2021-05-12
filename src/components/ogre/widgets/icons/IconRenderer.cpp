@@ -33,9 +33,7 @@
 #include "../../SimpleRenderContext.h"
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreRenderTexture.h>
-#include <OgreSceneManager.h>
 #include <OgreRoot.h>
-#include <OgreSceneNode.h>
 #include <OgreViewport.h>
 #include <sigc++/bind.h>
 
@@ -53,7 +51,7 @@ IconRenderer::IconRenderer(const std::string& prefix, int pixelWidth) :
 		mRenderContext(std::make_unique<SimpleRenderContext>(prefix, pixelWidth, pixelWidth)),
 		mWorker(nullptr),
 		mSceneNodeProvider(mRenderContext->getSceneNode(), nullptr, false) {
-	mRenderContext->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
+	mRenderContext->getSceneManager()->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
 	mRenderContext->setBackgroundColour(Ogre::ColourValue::ZERO);
 
 }
@@ -101,7 +99,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon*) {
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
 			mRenderContext->showFull(model->getCombinedBoundingRadius());
-			if (I->second.Distance) {
+			if (I->second.Distance != 0) {
 				mRenderContext->setCameraDistance(I->second.Distance);
 			}
 			mRenderContext->getCameraRootNode()->setOrientation(I->second.Rotation);
@@ -121,7 +119,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon*) {
 			mRenderContext->resetCameraOrientation();
 			mRenderContext->repositionCamera();
 			mRenderContext->showFull(radius);
-			mRenderContext->setCameraDistance(mRenderContext->getDefaultCameraDistance() * 0.75);
+			mRenderContext->setCameraDistance(mRenderContext->getDefaultCameraDistance() * 0.75f);
 		}
 
 		if (mRenderContext->getViewport()) {

@@ -55,16 +55,16 @@ void IconImageStoreEntry::createImage() {
 
 	mImage = &CEGUI::ImageManager::getSingleton().create("BasicImage", mImageName);
 
-	auto area = CEGUI::Rectf(mPixelPosInImageset.first,
-							 mPixelPosInImageset.second,
-							 mPixelPosInImageset.first + mIconImageStore.mIconSize,
-							 mPixelPosInImageset.second + mIconImageStore.mIconSize);
-	auto basicImage = static_cast<CEGUI::BasicImage*>(mImage);
+	auto area = CEGUI::Rectf((float) mPixelPosInImageset.first,
+							 (float) mPixelPosInImageset.second,
+							 (float) (mPixelPosInImageset.first + mIconImageStore.mIconSize),
+							 (float) (mPixelPosInImageset.second + mIconImageStore.mIconSize));
+	auto basicImage = dynamic_cast<CEGUI::BasicImage*>(mImage);
 	basicImage->setTexture(mIconImageStore.mCeguiTexture);
-	basicImage->setArea(CEGUI::Rectf(mPixelPosInImageset.first,
-									 mPixelPosInImageset.second,
-									 mPixelPosInImageset.first + mIconImageStore.mIconSize,
-									 mPixelPosInImageset.second + mIconImageStore.mIconSize));
+	basicImage->setArea(CEGUI::Rectf((float) mPixelPosInImageset.first,
+									 (float) mPixelPosInImageset.second,
+									 (float) (mPixelPosInImageset.first + mIconImageStore.mIconSize),
+									 (float) (mPixelPosInImageset.second + mIconImageStore.mIconSize)));
 	basicImage->setNativeResolution(area.getSize());
 	basicImage->setAutoScaled(CEGUI::ASM_Both);
 }
@@ -95,14 +95,14 @@ Ogre::TexturePtr IconImageStoreEntry::getTexture() {
 //}
 
 
-Ogre::Box IconImageStoreEntry::getBox() {
-	return Ogre::Box(mPixelPosInImageset.first,
-					 mPixelPosInImageset.second,
-					 mPixelPosInImageset.first + mIconImageStore.mIconSize,
-					 mPixelPosInImageset.second + mIconImageStore.mIconSize);
+Ogre::Box IconImageStoreEntry::getBox() const {
+	return {(uint32_t) mPixelPosInImageset.first,
+			(uint32_t) mPixelPosInImageset.second,
+			(uint32_t) (mPixelPosInImageset.first + mIconImageStore.mIconSize),
+			(uint32_t) (mPixelPosInImageset.second + mIconImageStore.mIconSize)};
 }
 
-Ogre::TRect<float> IconImageStoreEntry::getRelativeBox() {
+Ogre::TRect<float> IconImageStoreEntry::getRelativeBox() const {
 /*	float width(mIconImageStore.getImage()->getWidth());
 	float height(mIconImageStore.getImage()->getHeight());*/
 
@@ -139,7 +139,7 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 
 	//we'll assume that height and width are the same
 	mImageSize = mTexPtr->getWidth();
-	mIconSize = mImageSize;
+	mIconSize = (int)mImageSize;
 
 	//this will only create one entry
 	createEntries();

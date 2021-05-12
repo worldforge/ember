@@ -40,7 +40,7 @@ ShadowDetailManager::ShadowDetailManager(GraphicalChangeAdapter& graphicalChange
         mShadowCameraLodBias(1.0f),
         mMaxShadowCameraLodBias(1.0f),
         mMinShadowCameraLodBias(0.1f),
-        mDefaultShadowLodStep(0.3),
+        mDefaultShadowLodStep(0.3f),
         mSceneManager(sceneManager),
         mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()) {
     mChangeRequiredConnection = graphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShadowDetailManager::changeLevel));

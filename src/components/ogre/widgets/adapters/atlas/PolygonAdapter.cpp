@@ -112,7 +112,7 @@ void PolygonAdapter::toggleDisplayOfPolygon() {
 				try {
 					WFMath::Polygon<2> poly(areaElem);
 					createNewPolygon(&poly);
-				} catch (const WFMath::_AtlasBadParse& ex) {
+				} catch (const WFMath::_AtlasBadParse&) {
 					createNewPolygon(nullptr);
 				}
 			} else {
@@ -127,13 +127,13 @@ void PolygonAdapter::toggleDisplayOfPolygon() {
 			try {
 				mPickListener.reset();
 			} catch (const std::exception& ex) {
-				S_LOG_FAILURE("Error when deleting polygon point pick listener.");
+				S_LOG_FAILURE("Error when deleting polygon point pick listener." << ex);
 			}
 		}
 		try {
 			mPolygon.reset();
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when deleting polygon.");
+			S_LOG_FAILURE("Error when deleting polygon." << ex);
 		}
 	}
 }

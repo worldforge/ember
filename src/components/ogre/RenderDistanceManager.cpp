@@ -64,8 +64,8 @@ void RenderDistanceManager::setCompensatedFarRenderDistance(float factor) {
     mFarRenderDistance = factor * mDefaultFarRenderDistance;
     mMainCamera.setFarClipDistance(mFarRenderDistance);
     float fogDensity = mMaxFarRenderDistanceFactor - factor;
-    if (factor > 0.3) {
-        fogDensity = 0.3;
+    if (factor > 0.3f) {
+        fogDensity = 0.3f;
     }
     mFog.setDensity(fogDensity);
 }

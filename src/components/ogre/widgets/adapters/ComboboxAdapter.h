@@ -93,7 +93,7 @@ void ComboboxAdapter<ValueType, PropertyNativeType>::randomize() {
 	if (mCombobox) {
 		if (mCombobox->getItemCount()) {
 			WFMath::MTRand rand;
-			auto index = rand.randInt(mCombobox->getItemCount() - 1);
+			auto index = rand.randInt((uint32_t) (mCombobox->getItemCount() - 1));
 			mCombobox->setItemSelectState(index, true);
 		}
 	}

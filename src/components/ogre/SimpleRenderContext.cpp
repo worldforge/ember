@@ -134,16 +134,16 @@ void SimpleRenderContext::setupScene(const std::string& prefix) {
     mCameraDistanceNode = mCameraPitchNode->createChildSceneNode();
 
     createCamera(prefix);
-    Ogre::ColourValue colour(0.7, 0.7, 0.7);
+    Ogre::ColourValue colour(0.7f, 0.7f, 0.7f);
     mMainLight = mSceneManager->createLight("MainLight");
     mRootNode->createChildSceneNode()->attachObject(mMainLight);
     mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
-    mMainLight->getParentSceneNode()->setDirection(Ogre::Vector3(-1, 0, 0), Ogre::Node::TS_WORLD);
+    mMainLight->getParentSceneNode()->setDirection(Ogre::Vector3(-1.0f, 0, 0), Ogre::Node::TS_WORLD);
     mMainLight->setDiffuseColour(colour);
     mMainLight->setSpecularColour(colour);
     mMainLight->setVisible(true);
 
-    mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    mSceneManager->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
 
     resetCameraOrientation();
 }

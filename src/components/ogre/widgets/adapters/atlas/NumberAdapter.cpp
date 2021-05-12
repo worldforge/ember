@@ -77,9 +77,9 @@ bool NumberAdapter::window_TextChanged(const CEGUI::EventArgs& e)
 void NumberAdapter::fillElementFromGui()
 {
 	if (mOriginalValue.isInt()) {
-		mEditedValue = ::Atlas::Message::Element(atoi(mTextWindow->getText().c_str()));
+		mEditedValue = ::Atlas::Message::Element(std::stoi(mTextWindow->getText().c_str()));
 	} else {
-		mEditedValue = ::Atlas::Message::Element(atof(mTextWindow->getText().c_str()));
+		mEditedValue = ::Atlas::Message::Element(std::stod(mTextWindow->getText().c_str()));
 	}
 }
 

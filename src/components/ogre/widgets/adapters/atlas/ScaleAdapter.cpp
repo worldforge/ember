@@ -87,9 +87,9 @@ void ScaleAdapter::updateGui(const ::Atlas::Message::Element& element) {
 	} else {
 		scale.fromAtlas(element);
 	}
-	mWidgets.x->setText(ValueTypeHelper<float, std::string>::convert(scale.x()));
-	mWidgets.y->setText(ValueTypeHelper<float, std::string>::convert(scale.y()));
-	mWidgets.z->setText(ValueTypeHelper<float, std::string>::convert(scale.z()));
+	mWidgets.x->setText(ValueTypeHelper<double, std::string>::convert(scale.x()));
+	mWidgets.y->setText(ValueTypeHelper<double, std::string>::convert(scale.y()));
+	mWidgets.z->setText(ValueTypeHelper<double, std::string>::convert(scale.z()));
 
 }
 

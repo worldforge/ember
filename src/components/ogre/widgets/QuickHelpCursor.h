@@ -66,11 +66,11 @@ public:
 	 */
 	sigc::signal <void,const HelpMessage&> EventUpdateText;
 
-	int getSize() const;
+	size_t getSize() const;
 
-	int getCursorLocation() const;
+	size_t getCursorLocation() const;
 
-	void setCursorLocation(int cursorLocation);
+	void setCursorLocation(size_t cursorLocation);
 private:
 
 	/**
@@ -90,7 +90,7 @@ private:
 
 	QuickHelp& mQuickHelp;
 
-	int mCursorLocation;
+	size_t mCursorLocation;
 
 };
 

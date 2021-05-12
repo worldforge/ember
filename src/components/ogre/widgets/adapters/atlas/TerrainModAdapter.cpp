@@ -124,7 +124,7 @@ void TerrainModAdapter::updateGui(const ::Atlas::Message::Element& element)
 	if (element.isMap()) {
 		const ::Atlas::Message::MapType& mapElement = element.asMap();
 		auto I = mapElement.find("height");
-		float height = 0;
+		double height = 0;
 		if (I != mapElement.end()) {
 			mPositioningsBinder.select("height");
 			if (I->second.isNum()) {
@@ -166,7 +166,7 @@ void TerrainModAdapter::fillElementFromGui()
 	
 	std::pair<const std::string, PositioningBase*> positioning = mPositioningsBinder.getCurrentSelected();
 	if (positioning.second) {
-		mapElement[positioning.first] = ::Atlas::Message::Element(atof(mHeightTextbox->getText().c_str()));
+		mapElement[positioning.first] = ::Atlas::Message::Element(std::stod(mHeightTextbox->getText().c_str()));
 	}
 	std::pair<const std::string, TerrainModBase*> modType = mTerrainModsBinder.getCurrentSelected();
 	if (modType.second) {

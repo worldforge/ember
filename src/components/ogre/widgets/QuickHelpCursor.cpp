@@ -84,17 +84,17 @@ void QuickHelpCursor::previousMessage()
 	}
 }
 
-int QuickHelpCursor::getSize() const
+size_t QuickHelpCursor::getSize() const
 {
 	return mQuickHelp.getSize();
 }
 
-int QuickHelpCursor::getCursorLocation() const
+size_t QuickHelpCursor::getCursorLocation() const
 {
 	return mCursorLocation;
 }
 
-void QuickHelpCursor::setCursorLocation(int cursorLocation)
+void QuickHelpCursor::setCursorLocation(size_t cursorLocation)
 {
 	mCursorLocation = cursorLocation;
 }

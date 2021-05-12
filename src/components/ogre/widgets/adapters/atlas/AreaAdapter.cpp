@@ -33,38 +33,38 @@
 
 #include <wfmath/atlasconv.h>
 
-namespace Ember
-{
-namespace OgreView
-{
+#include <memory>
 
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Adapters
-{
+namespace Gui {
 
-namespace Atlas
-{
+namespace Adapters {
+
+namespace Atlas {
 
 AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, CEGUI::Combobox* layerWindow, EmberEntity* entity) :
-		AdapterBase(element), mLayer(0), mLayerWindow(layerWindow), mEntity(entity), mPolygonAdapter(nullptr)
-{
+		AdapterBase(element),
+		mLayer(0),
+		mLayerWindow(layerWindow),
+		mEntity(entity),
+		mPolygonAdapter(nullptr) {
 	if (element.isMap()) {
 		const ::Atlas::Message::MapType& areaData(element.asMap());
-		::Atlas::Message::MapType::const_iterator shapeI = areaData.find("shape");
+		auto shapeI = areaData.find("shape");
 		if (shapeI != areaData.end()) {
-			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(shapeI->second, showButton, entity));
+			mPolygonAdapter = std::make_unique<PolygonAdapter>(shapeI->second, showButton, entity);
 		} else {
 			::Atlas::Message::MapType defaultShape;
 
-			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(getDefaultPolygon().toAtlas(), showButton, entity));
+			mPolygonAdapter = std::make_unique<PolygonAdapter>(getDefaultPolygon().toAtlas(), showButton, entity);
 		}
 		WFMath::Polygon<2> poly;
 		Terrain::TerrainAreaParser parser;
 		parser.parseArea(areaData, poly, mLayer);
 	} else {
-		mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(getDefaultPolygon().toAtlas(), showButton, entity));
+		mPolygonAdapter = std::make_unique<PolygonAdapter>(getDefaultPolygon().toAtlas(), showButton, entity);
 	}
 
 	if (mLayerWindow) {
@@ -75,8 +75,7 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 }
 
 
-WFMath::Polygon<2> AreaAdapter::getDefaultPolygon() const
-{
+WFMath::Polygon<2> AreaAdapter::getDefaultPolygon() const {
 	WFMath::Polygon<2> poly;
 	poly.addCorner(0, WFMath::Point<2>(-1, -1));
 	poly.addCorner(1, WFMath::Point<2>(-1, 1));
@@ -85,24 +84,21 @@ WFMath::Polygon<2> AreaAdapter::getDefaultPolygon() const
 	return poly;
 }
 
-void AreaAdapter::updateGui(const ::Atlas::Message::Element& element)
-{
+void AreaAdapter::updateGui(const ::Atlas::Message::Element& element) {
 }
 
-bool AreaAdapter::layerWindow_TextChanged(const CEGUI::EventArgs& e)
-{
+bool AreaAdapter::layerWindow_TextChanged(const CEGUI::EventArgs& e) {
 	if (!mSelfUpdate) {
-		mLayer = atoi(mLayerWindow->getText().c_str());
+		mLayer = std::stoi(mLayerWindow->getText().c_str());
 		EventValueChanged.emit();
 	}
 	return true;
 }
 
-bool AreaAdapter::layerWindow_ListSelectionChanged(const CEGUI::EventArgs& e)
-{
+bool AreaAdapter::layerWindow_ListSelectionChanged(const CEGUI::EventArgs& e) {
 	if (!mSelfUpdate) {
 		if (mLayerWindow->getSelectedItem()) {
-			mLayer = mLayerWindow->getSelectedItem()->getID();
+			mLayer = (int) mLayerWindow->getSelectedItem()->getID();
 		} else {
 			mLayer = 0;
 		}
@@ -111,36 +107,31 @@ bool AreaAdapter::layerWindow_ListSelectionChanged(const CEGUI::EventArgs& e)
 	return true;
 }
 
-void AreaAdapter::toggleDisplayOfPolygon()
-{
+void AreaAdapter::toggleDisplayOfPolygon() {
 	mPolygonAdapter->toggleDisplayOfPolygon();
 }
 
-void AreaAdapter::createNewPolygon()
-{
+void AreaAdapter::createNewPolygon() {
 	mPolygonAdapter->createNewPolygon();
 }
 
-void AreaAdapter::fillElementFromGui()
-{
+void AreaAdapter::fillElementFromGui() {
 	//Start by using the shape element from the polygon adapter
 	mEditedValue = ::Atlas::Message::MapType();
 	CEGUI::ListboxItem* item = mLayerWindow->getSelectedItem();
 	if (item) {
-		mLayer = item->getID();
+		mLayer = (int) item->getID();
 	}
 	Terrain::TerrainAreaParser parser;
 	mEditedValue = parser.createElement(mPolygonAdapter->getShape(), mLayer);
 }
 
-bool AreaAdapter::_hasChanges()
-{
+bool AreaAdapter::_hasChanges() {
 	return mOriginalValue != getChangedElement();
 }
 
-void AreaAdapter::addAreaSuggestion(int id, const std::string& name)
-{
-	ColouredListItem* item = new ColouredListItem(name, id);
+void AreaAdapter::addAreaSuggestion(int id, const std::string& name) {
+	auto* item = new ColouredListItem(name, id);
 	mLayerWindow->addItem(item);
 	if (id == mLayer) {
 		item->setSelected(true);
@@ -148,8 +139,7 @@ void AreaAdapter::addAreaSuggestion(int id, const std::string& name)
 	}
 }
 
-void AreaAdapter::clearAreaSuggestions()
-{
+void AreaAdapter::clearAreaSuggestions() {
 	mLayerWindow->resetList();
 	mLayerWindow->setText("");
 }

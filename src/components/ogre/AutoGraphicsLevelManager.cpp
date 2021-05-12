@@ -87,7 +87,7 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps) {
 
 void AutomaticGraphicsLevelManager::averageTimePerFrameUpdated(std::chrono::nanoseconds timePerFrame) {
 	//Convert microseconds per frame to fps.
-	checkFps(1000000000.0f / timePerFrame.count());
+	checkFps(1000000000.0f / (float) timePerFrame.count());
 }
 
 void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequired) {
@@ -119,7 +119,7 @@ void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section
 		if (fps == 0.0f) {
 			fps = 60.0f;
 		}
-		mDefaultFps = fps;
+		mDefaultFps = (float) fps;
 	}
 }
 

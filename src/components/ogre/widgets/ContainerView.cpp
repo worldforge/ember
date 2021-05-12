@@ -183,14 +183,14 @@ void ContainerView::clearShownContent() {
 }
 
 void ContainerView::layoutSlots() {
-	int columns = std::floor(mIconContainer.getPixelSize().d_width / mSlotSize);
+	auto columns = (size_t) (std::floor(mIconContainer.getPixelSize().d_width / (float) mSlotSize));
 
 	for (size_t i = 0; i < mSlots.size(); ++i) {
 		auto& slot = mSlots[i];
 		int yPosition = std::floor(i / columns);
-		int xPosition = i % columns;
-		slot->getWindow()->setPosition({{0, xPosition * 32.f},
-										{0, yPosition * 32.f}});
+		auto xPosition = i % columns;
+		slot->getWindow()->setPosition({{0, (float) (xPosition * 32)},
+										{0, (float) (yPosition * 32)}});
 
 	}
 }

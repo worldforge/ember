@@ -107,7 +107,7 @@ bool HitDisplayer::frameStarted(const Ogre::FrameEvent& evt) {
 void HitDisplayer::createHit(const Ogre::Vector3& pos, const std::string& text) {
 	auto sceneNode = mSceneManager.getRootSceneNode()->createChildSceneNode(pos);
 
-	auto x = WFMath::MTRand::instance.rand() - 0.5f;
+	auto x = WFMath::MTRand::instance.rand<float>() - 0.5f;
 
 	Ogre::Vector2 direction(x * 0.01f, -0.1f);
 
