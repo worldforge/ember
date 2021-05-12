@@ -39,7 +39,9 @@
 #include <boost/filesystem.hpp>
 
 #if !defined(__APPLE__) && !defined(_WIN32)
+
 #include <basedir.h>
+
 #endif
 
 // From sear
@@ -161,7 +163,9 @@ ConfigService::ConfigService(std::string prefix) :
 }
 
 ConfigService::~ConfigService() {
+#if !defined(__APPLE__) && !defined(_WIN32)
 	xdgWipeHandle(&mBaseDirHandle);
+#endif
 }
 
 const std::string& ConfigService::getPrefix() const {
