@@ -68,8 +68,8 @@ private:
 #ifdef __WIN32__
 	boost::filesystem::path baseDir;
 #elif defined(__APPLE__)
-	return boost::filesystem::path(getAppSupportDirPath()) / "Ember";
 #else
+	//Marked "mutable" due to caching in the xdg-basedir lib.
 	mutable xdgHandle mBaseDirHandle;
 #endif
 
