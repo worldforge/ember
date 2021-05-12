@@ -552,6 +552,16 @@ function SettingsWidget:buildSettingsUi()
 					suggestions = {"insane", "informative", "standard", "warnings", "errors"}
 				},
 				{
+					label = "OGRE Logging level",
+					helpString = "",
+
+					section = "ogre",
+					key = "loglevel",
+
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
+					suggestions = {"trivial", "normal", "warning", "critical"}
+				},
+				{
 					label = "Enable Lua debugging",
 					helpString = "",
 					

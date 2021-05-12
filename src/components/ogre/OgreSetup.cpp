@@ -251,12 +251,14 @@ void OgreSetup::configure() {
 	mConfigListenerContainer->registerConfigListener("ogre", "loglevel", [](const std::string& section, const std::string& key, varconf::Variable& variable) {
 		if (variable.is_string()) {
 			auto string = variable.as_string();
-			if (string == "low") {
-				Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_LOW);
+			if (string == "trivial") {
+				Ogre::LogManager::getSingleton().getDefaultLog()->setMinLogLevel(Ogre::LML_TRIVIAL);
 			} else if (string == "normal") {
-				Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_NORMAL);
-			} else if (string == "boreme") {
-				Ogre::LogManager::getSingleton().getDefaultLog()->setLogDetail(Ogre::LL_BOREME);
+				Ogre::LogManager::getSingleton().getDefaultLog()->setMinLogLevel(Ogre::LML_NORMAL);
+			} else if (string == "warning") {
+				Ogre::LogManager::getSingleton().getDefaultLog()->setMinLogLevel(Ogre::LML_WARNING);
+			} else if (string == "critical") {
+				Ogre::LogManager::getSingleton().getDefaultLog()->setMinLogLevel(Ogre::LML_CRITICAL);
 			}
 		}
 	}, true);
