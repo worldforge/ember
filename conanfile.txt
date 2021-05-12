@@ -5,7 +5,7 @@ sdl2/2.0.14@worldforge/stable
 boost/1.75.0
 bullet3/2.89
 alut/1.1.0@worldforge/stable
-libxdg-basedir/1.2.0@worldforge/stable
+libxdg-basedir/1.2.3@worldforge/stable
 atlas/0.7.0@worldforge/testing
 eris/1.4.0@worldforge/testing
 mercator/0.4.0@worldforge/testing
