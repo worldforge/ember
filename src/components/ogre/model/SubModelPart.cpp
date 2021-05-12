@@ -272,9 +272,16 @@ bool SubModelPart::createInstancedEntities() {
 					auto& meshName = entity->getMesh()->getName();
 					auto instancedMeshName = meshName + "/Instanced";
 					//Use a copy of the original mesh, since the InstanceManager in its current iteration performs alterations to the original mesh.
-					if (!Ogre::MeshManager::getSingleton().resourceExists(instancedMeshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-						auto meshCopy = entity->getMesh()->clone(instancedMeshName);
+					auto meshCopy = Ogre::MeshManager::getSingleton().getByName(instancedMeshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					if (!meshCopy || !meshCopy->isLoaded()) {
+						if (meshCopy) {
+							//If the mesh existed but was unloaded we'll remove the unloaded version and just make a copy of the original again.
+							//If we don't do this the instance manager will segfault later on since it's referring to submeshes that don't exist.
+							Ogre::MeshManager::getSingleton().remove(meshCopy);
+						}
+						meshCopy = entity->getMesh()->clone(instancedMeshName);
 						meshCopy->freeEdgeList();
+						//We need to remove lod levels in order to not trigger a bug in 1.12.12. This might be removed when 1.12.13 is released.
 						meshCopy->removeLodLevels();
 					}
 
