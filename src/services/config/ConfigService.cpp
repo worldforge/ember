@@ -114,7 +114,9 @@ std::string getAppSupportDirPath()
 namespace Ember {
 
 ConfigService::ConfigService(std::string prefix) :
+#if !defined(__APPLE__) && !defined(_WIN32)
 		mBaseDirHandle{},
+#endif
 		mSharedDataDir(""),
 		mEtcDir(""),
 		mHomeDir(""),
