@@ -387,8 +387,6 @@ protected:
 
 	PartGroupStore mGroupsToPartMap;
 
-	Ogre::SkeletonInstance* mSkeletonInstance;
-
 	/**
 	 how much the model should be rotated around the Y-axis from it's initial position
 	 */

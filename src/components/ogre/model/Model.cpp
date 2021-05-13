@@ -61,7 +61,6 @@ Model::Model(Ogre::SceneManager& manager, const ModelDefinitionPtr& definition, 
 		mParentNodeProvider(nullptr),
 		mName(std::move(name)),
 		mSkeletonOwnerEntity(nullptr),
-		mSkeletonInstance(nullptr),
 		mRotation(Ogre::Quaternion::IDENTITY),
 		mAnimationStateSet(nullptr),
 		mVisible(true),
@@ -97,7 +96,6 @@ void Model::reset() {
 	resetParticles();
 	resetLights();
 	mRotation = Ogre::Quaternion::IDENTITY;
-	mSkeletonInstance = nullptr;
 	// , mAnimationStateSet(0)
 	mSkeletonOwnerEntity = nullptr;
 	mAttachPoints.reset();
