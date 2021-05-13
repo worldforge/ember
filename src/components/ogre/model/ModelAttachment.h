@@ -60,9 +60,11 @@ class ModelRepresentation;
  */
 class ModelAttachment : public NodeAttachment, public virtual sigc::trackable {
 public:
-	typedef std::unordered_map<std::string, ModelFitting> ModelFittingStore;
 
-	ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<ModelRepresentation> modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose = "");
+	ModelAttachment(EmberEntity& parentEntity,
+					std::unique_ptr<ModelRepresentation> modelRepresentation,
+					std::unique_ptr<INodeProvider> nodeProvider,
+					std::string pose = "");
 
 	~ModelAttachment() override;
 
@@ -121,7 +123,7 @@ protected:
 	/**
 	 * @brief The fittings, i.e. the connections to child entities which are connected to bones on the Model which this attachment belongs to.
 	 */
-	ModelFittingStore mFittings;
+	std::unordered_map<std::string, ModelFitting> mFittings;
 
 	/**
 	 * @brief A collection of observers to observe entity attribute changes and attach and detach ModelFittings accordingly.

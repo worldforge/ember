@@ -22,7 +22,6 @@
 #include "components/ogre/HiddenAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/Convert.h"
-#include "components/ogre/OgreInfo.h"
 #include "framework/AttributeObserver.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelMount.h"
@@ -111,10 +110,13 @@ struct ModelContainedActionCreator : public EntityMapping::IActionCreator {
 };
 
 
-ModelAttachment::ModelAttachment(EmberEntity& parentEntity, std::unique_ptr<ModelRepresentation> modelRepresentation, std::unique_ptr<INodeProvider> nodeProvider, const std::string& pose) :
+ModelAttachment::ModelAttachment(EmberEntity& parentEntity,
+								 std::unique_ptr<ModelRepresentation> modelRepresentation,
+								 std::unique_ptr<INodeProvider> nodeProvider,
+								 std::string pose) :
 		NodeAttachment(parentEntity, modelRepresentation->getEntity(), *nodeProvider),
 		mModelRepresentation(std::move(modelRepresentation)),
-		mPose(pose),
+		mPose(std::move(pose)),
 		mModelMount(std::make_unique<ModelMount>(mModelRepresentation->getModel(), std::move(nodeProvider), mPose)) {
 	mModelMount->reset();
 	setupFittings();
@@ -330,10 +332,10 @@ bool ModelAttachment::getVisualize(const std::string& visualization) const {
 }
 
 void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity) {
-		NodeAttachment::setPosition(position, orientation, velocity);
+	NodeAttachment::setPosition(position, orientation, velocity);
 
-		mModelRepresentation->setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
-		mModelRepresentation->notifyTransformsChanged();
+	mModelRepresentation->setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
+	mModelRepresentation->notifyTransformsChanged();
 
 
 }
