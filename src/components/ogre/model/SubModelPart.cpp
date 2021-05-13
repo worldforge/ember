@@ -190,11 +190,8 @@ bool SubModelPart::createInstancedEntities() {
 	try {
 		std::vector<std::pair<Ogre::InstanceManager*, std::string>> managersAndMaterials;
 
-		//We would like to use the HW based technique, but as of 1.10.9 that causes corruption with the PSSM shadows.
-		//Until that's fixed we instead use the Shader based technique, which performs worse.
-		//The HW based technique uses the suffix "/Instanced/HW".
-		static std::string instancedSuffix = "/Instanced/Shader";
-		static Ogre::InstanceManager::InstancingTechnique instancedTechnique = Ogre::InstanceManager::ShaderBased;
+		static std::string instancedSuffix = "/Instanced/HW";
+		static Ogre::InstanceManager::InstancingTechnique instancedTechnique = Ogre::InstanceManager::HWInstancingBasic;
 
 		for (auto& entry : mSubEntities) {
 			Ogre::SubEntity* subEntity = entry.SubEntity;
@@ -203,6 +200,7 @@ bool SubModelPart::createInstancedEntities() {
 			std::string instanceName = entity->getMesh()->getName() + "/" + std::to_string(entry.subEntityIndex);
 
 
+			auto subMeshInstanceSuffix = instancedSuffix;
 			std::string materialName;
 			if (entry.Definition && !entry.Definition->materialName.empty()) {
 				materialName = entry.Definition->materialName;
@@ -210,15 +208,21 @@ bool SubModelPart::createInstancedEntities() {
 				//if no material name is set in the ModelDefinition, use the default one from the mesh
 				materialName = entry.SubEntity->getSubMesh()->getMaterialName();
 			}
+			auto subMesh = subEntity->getSubMesh();
+			if (subMesh->useSharedVertices) {
+				subMeshInstanceSuffix += "/" + std::to_string(subMesh->parent->sharedVertexData->vertexDeclaration->getNextFreeTextureCoordinate());
+			} else {
+				subMeshInstanceSuffix += "/" + std::to_string(subMesh->vertexData->vertexDeclaration->getNextFreeTextureCoordinate());
+			}
 
 			std::string instancedMaterialName = materialName;
 
-			//Check if the material is "instanced", i.e. has the suffix as specified in "instancedSuffix".
+			//Check if the material is "instanced", i.e. has the suffix as specified in "subMeshInstanceSuffix".
 			//If not, we'll create a new material by cloning the original and replacing the vertex shader with
 			//one with the correct suffix, if such one is available and supported.
-			if (!boost::algorithm::ends_with(materialName, instancedSuffix)) {
+			if (!boost::algorithm::ends_with(materialName, subMeshInstanceSuffix)) {
 
-				instancedMaterialName += instancedSuffix;
+				instancedMaterialName += subMeshInstanceSuffix;
 				auto& materialMgr = Ogre::MaterialManager::getSingleton();
 
 				if (!materialMgr.resourceExists(instancedMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
@@ -230,15 +234,17 @@ bool SubModelPart::createInstancedEntities() {
 						for (auto* tech : material->getTechniques()) {
 							auto pass = tech->getPass(0);
 							if (pass->hasVertexProgram()) {
-								std::string vertexProgramName = pass->getVertexProgram()->getName() + instancedSuffix;
+								std::string vertexProgramName = pass->getVertexProgram()->getName() + subMeshInstanceSuffix;
 								if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 									pass->setVertexProgram(vertexProgramName);
+								} else {
+									S_LOG_WARNING("The model '" << mSubModel.mModel.getName() << "' is set to use instancing, but the required vertex program '" << vertexProgramName << "' couldn't be found.");
 								}
 							}
 
 							auto shadowCasterMat = tech->getShadowCasterMaterial();
-							if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), instancedSuffix)) {
-								std::string instancedShadowCasterMatName = shadowCasterMat->getName() + instancedSuffix;
+							if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), subMeshInstanceSuffix)) {
+								std::string instancedShadowCasterMatName = shadowCasterMat->getName() + subMeshInstanceSuffix;
 								auto shadowCasterMatInstanced = materialMgr.getByName(instancedShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 								if (!shadowCasterMatInstanced) {
 									shadowCasterMat->load();
@@ -246,9 +252,11 @@ bool SubModelPart::createInstancedEntities() {
 									for (auto* shadowCasterTech : shadowCasterMatInstanced->getTechniques()) {
 										auto shadowCasterPass = shadowCasterTech->getPass(0);
 										if (shadowCasterPass->hasVertexProgram()) {
-											std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + instancedSuffix;
+											std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + subMeshInstanceSuffix;
 											if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
 												shadowCasterPass->setVertexProgram(vertexProgramName);
+											} else {
+												S_LOG_WARNING("The model '" << mSubModel.mModel.getName() << "' is set to use instancing, but the required shadow caster vertex program '" << vertexProgramName << "' couldn't be found.");
 											}
 										}
 									}
@@ -288,7 +296,6 @@ bool SubModelPart::createInstancedEntities() {
 					try {
 						Ogre::InstanceManager* instanceManager = sceneManager->createInstanceManager(instanceName,
 																									 instancedMeshName,
-								//meshName,
 																									 entity->getMesh()->getGroup(),
 																									 instancedTechnique,
 																									 50, Ogre::IM_USEALL, entry.subEntityIndex);
