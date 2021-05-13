@@ -260,7 +260,7 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer) {
 	}
 
 
-	return (numberOfTextureUnitsOnCard - projectedTakenUnits) >= 0;
+	return numberOfTextureUnitsOnCard > projectedTakenUnits;
 }
 
 void ShaderPass::addShadowLayer() {
