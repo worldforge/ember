@@ -29,17 +29,9 @@
 #include "SegmentManager.h"
 
 #include "TerrainPage.h"
-#include "components/ogre/Convert.h"
 #include <Mercator/Segment.h>
 #include <wfmath/stream.h>
 
-//MSVC 11.0 doesn't support std::lround so we'll use boost. When MSVC gains support for std::lround this could be removed.
-#ifdef _MSC_VER
-#include <boost/math/special_functions/round.hpp>
-#define I_ROUND(_x) (boost::math::lround(_x))
-#else
-#define I_ROUND(_x) (std::lround(_x))
-#endif
 
 namespace Ember {
 namespace OgreView {
@@ -145,8 +137,8 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 }
 
 Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos) const {
-	int ix = I_ROUND(std::floor(pos.x() / 64));
-	int iz = I_ROUND(std::floor(pos.y() / 64));
+	int ix = std::lround(std::floor(pos.x() / 64));
+	int iz = std::lround(std::floor(pos.y() / 64));
 
 	auto I = mLocalSegments.find(ix);
 	if (I == mLocalSegments.end()) {
@@ -160,8 +152,8 @@ Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainP
 }
 
 Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const {
-	int ix = I_ROUND(std::floor(pos.x() / 64));
-	int iz = I_ROUND(std::floor(pos.y() / 64));
+	int ix = std::lround(std::floor(pos.x() / 64));
+	int iz = std::lround(std::floor(pos.y() / 64));
 
 	localPositionInSegment.x() = pos.x() - (ix * 64);
 	localPositionInSegment.y() = pos.y() - (iz * 64);
@@ -197,8 +189,8 @@ bool TerrainPageGeometry::getNormal(const TerrainPosition& localPosition, WFMath
 	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));
 	if (segment && segment->getNormals()) {
 		int resolution = segment->getResolution();
-		size_t xPos = localPosition.x() - (I_ROUND(std::floor(localPosition.x() / resolution)) * resolution);
-		size_t zPos = localPosition.y() - (I_ROUND(std::floor(localPosition.y() / resolution)) * resolution);
+		size_t xPos = localPosition.x() - (std::lround(std::floor(localPosition.x() / resolution)) * resolution);
+		size_t zPos = localPosition.y() - (std::lround(std::floor(localPosition.y() / resolution)) * resolution);
 		size_t normalPos = (zPos * segment->getSize() * 3) + (xPos * 3);
 		normal = WFMath::Vector<3>(segment->getNormals()[normalPos], segment->getNormals()[normalPos + 1], segment->getNormals()[normalPos] + 2);
 		return true;

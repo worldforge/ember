@@ -32,7 +32,6 @@
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 #include <Eris/Connection.h>
-#include <sigc++/bind.h>
 
 namespace Ember {
 namespace OgreView {
@@ -114,7 +113,7 @@ void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity) {
 		std::unique_ptr<SimpleEntityVisualization> vis;
 		try {
 			vis = std::make_unique<SimpleEntityVisualization>(entity, node);
-		} catch (const std::exception& ex) {
+		} catch (const std::exception&) {
 			//just delete the node and return
 			node->getCreator()->destroySceneNode(node);
 			return;

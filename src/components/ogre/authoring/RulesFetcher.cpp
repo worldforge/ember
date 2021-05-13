@@ -36,31 +36,24 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Authoring
-{
+namespace Ember {
+namespace OgreView {
+namespace Authoring {
 
 RulesFetcher::RulesFetcher(Eris::Connection& connection, std::string mindId) :
-		mConnection(connection), mMindId(std::move(mindId))
-{
+		mConnection(connection), mMindId(std::move(mindId)) {
 }
 
-const std::unordered_map<std::string, RulesFetcher::RuleEntry>& RulesFetcher::getRules() const
-{
+const std::unordered_map<std::string, RulesFetcher::RuleEntry>& RulesFetcher::getRules() const {
 	return mRules;
 }
 
-void RulesFetcher::startFetching(const std::string& rootRule)
-{
+void RulesFetcher::startFetching(const std::string& rootRule) {
 	mRootRule = rootRule;
 	fetchRule(rootRule);
 }
 
-void RulesFetcher::fetchRule(const std::string& id)
-{
+void RulesFetcher::fetchRule(const std::string& id) {
 	Get get;
 	Anonymous arg;
 	arg->setId(id);
@@ -74,8 +67,7 @@ void RulesFetcher::fetchRule(const std::string& id)
 
 }
 
-void RulesFetcher::operationGetRuleResult(const Atlas::Objects::Operation::RootOperation& op)
-{
+void RulesFetcher::operationGetRuleResult(const Atlas::Objects::Operation::RootOperation& op) {
 	if (op->getArgs().empty()) {
 		S_LOG_WARNING("Got response to GET for rule with no args.");
 		return;
@@ -101,7 +93,7 @@ void RulesFetcher::operationGetRuleResult(const Atlas::Objects::Operation::RootO
 	}
 
 	mRules.insert(std::make_pair(arg->getId(), RuleEntry{arg, children}));
-	EventNewRuleReceived.emit(mRules.size());
+	EventNewRuleReceived.emit((int) mRules.size());
 
 	if (!children.empty()) {
 		mRulesStack.push_back(StackEntry({arg->getId(), children, children.front()}));
@@ -126,8 +118,7 @@ void RulesFetcher::operationGetRuleResult(const Atlas::Objects::Operation::RootO
 
 }
 
-const std::string& RulesFetcher::getRootRule() const
-{
+const std::string& RulesFetcher::getRootRule() const {
 	return mRootRule;
 }
 

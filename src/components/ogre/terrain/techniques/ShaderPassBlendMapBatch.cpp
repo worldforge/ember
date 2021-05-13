@@ -43,7 +43,7 @@ ShaderPassBlendMapBatch::ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigne
 ShaderPassBlendMapBatch::~ShaderPassBlendMapBatch() = default;
 
 void ShaderPassBlendMapBatch::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer) {
-	addBlendMap(geometry, layer, mLayers.size());
+	addBlendMap(geometry, layer, (unsigned int) mLayers.size());
 	mLayers.push_back(layer);
 }
 

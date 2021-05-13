@@ -56,7 +56,7 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 #ifndef _WIN32
 	flags |= Ogre::TU_AUTOMIPMAP;
 #endif // ifndef _WIN32
-	combinedBlendMapTexture = textureMgr->createManual(combinedBlendMapName, "General", Ogre::TEX_TYPE_2D, mBlendMapPixelWidth, mBlendMapPixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
+	combinedBlendMapTexture = textureMgr->createManual(combinedBlendMapName, "General", Ogre::TEX_TYPE_2D, mBlendMapPixelWidth, mBlendMapPixelWidth, (int)textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
 	managedTextures.insert(combinedBlendMapName);
 	combinedBlendMapTexture->createInternalResources();
 	return combinedBlendMapTexture;
@@ -239,7 +239,7 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer) {
 
 	//We'll project the number of taken units if we should add another pass.
 	//Later on we'll compare this with the actual number it texture units available.
-	int projectedTakenUnits = 1; // One unit is always used by the global normal texture
+	size_t projectedTakenUnits = 1; // One unit is always used by the global normal texture
 	projectedTakenUnits += mShadowLayers; // Shadow textures
 	// A blend map texture for every 4 layers
 	// Make sure to always have 1 for 1 layer, 2 for 5 layers etc.

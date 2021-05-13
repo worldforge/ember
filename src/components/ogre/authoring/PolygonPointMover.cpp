@@ -52,6 +52,7 @@ PolygonPointMover::PolygonPointMover(Polygon& polygon, PolygonPoint& point, IMov
 
 PolygonPointMover::~PolygonPointMover() {
 	if (mDeleted) {
+		//TODO: don't do this
 		delete &mPoint;
 	}
 }
@@ -148,13 +149,13 @@ void PolygonPointMover::switchToNewPointMode() {
 			PolygonPoint* point1 = mPolygon.getPointAfter(mPoint);
 			PolygonPoint* point2 = mPolygon.getPointBefore(mPoint);
 			if (point1 && point2) {
-				float initialDistance1 = WFMath::Distance(mInitialPosition, point1->getLocalPosition());
-				float initialDistance2 = WFMath::Distance(mInitialPosition, point2->getLocalPosition());
-				float currentDistance1 = WFMath::Distance(mPoint.getLocalPosition(), point1->getLocalPosition());
-				float currentDistance2 = WFMath::Distance(mPoint.getLocalPosition(), point2->getLocalPosition());
+				auto initialDistance1 = WFMath::Distance(mInitialPosition, point1->getLocalPosition());
+				auto initialDistance2 = WFMath::Distance(mInitialPosition, point2->getLocalPosition());
+				auto currentDistance1 = WFMath::Distance(mPoint.getLocalPosition(), point1->getLocalPosition());
+				auto currentDistance2 = WFMath::Distance(mPoint.getLocalPosition(), point2->getLocalPosition());
 
-				float distanceDiff1 = initialDistance1 - currentDistance1;
-				float distanceDiff2 = initialDistance2 - currentDistance2;
+				auto distanceDiff1 = initialDistance1 - currentDistance1;
+				auto distanceDiff2 = initialDistance2 - currentDistance2;
 				if (distanceDiff1 < distanceDiff2) {
 					mNewPoint = mPolygon.insertPointBefore(mPoint);
 				} else {

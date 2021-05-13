@@ -23,10 +23,10 @@
 
 namespace {
 int _Entity_getTasksSize(Eris::Entity* entity) {
-	return entity->getTasks().size();
+	return (int)entity->getTasks().size();
 }
 
-Eris::Task* _Entity_getTask(Eris::Entity* entity, std::string name) {
+Eris::Task* _Entity_getTask(Eris::Entity* entity, const std::string& name) {
 	auto I = entity->getTasks().find(name);
 	if (I != entity->getTasks().end()) {
 		return I->second.get();

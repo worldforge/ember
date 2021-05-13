@@ -21,7 +21,6 @@
 
 #include "TerrainParser.h"
 
-#include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/TerrainDefPoint.h"
 #include "components/ogre/Convert.h"
 #include "framework/LoggingInstance.h"
@@ -50,16 +49,16 @@ TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::MapType& 
 		defPoint.position = WFMath::Point<2>(static_cast<int>(point[0].asNum() + offset.x()), static_cast<int>(point[1].asNum() + offset.z()));
 		defPoint.height = static_cast<float>(point[2].asNum() + offset.y());
 		if (point.size() > 3) {
-			defPoint.roughness = point[3].asNum();
+			defPoint.roughness = (float)point[3].asNum();
 		} else {
 			defPoint.roughness = Mercator::BasePoint::ROUGHNESS;
 		}
 		if (point.size() > 4) {
-			defPoint.falloff = point[4].asNum();
+			defPoint.falloff = (float)point[4].asNum();
 		} else {
 			defPoint.falloff = Mercator::BasePoint::FALLOFF;
 		}
-		pointStore.emplace_back(std::move(defPoint));
+		pointStore.emplace_back(defPoint);
 
 	};
 
