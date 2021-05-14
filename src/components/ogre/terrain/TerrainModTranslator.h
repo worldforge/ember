@@ -86,6 +86,8 @@ public:
 	struct InnerTranslator {
 		explicit InnerTranslator(Atlas::Message::MapType);
 
+		virtual ~InnerTranslator() = default;
+
 		virtual std::unique_ptr<Mercator::TerrainMod> createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) = 0;
 
 		virtual std::unique_ptr<InnerTranslator> clone() const = 0;
