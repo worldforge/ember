@@ -178,7 +178,7 @@ OPTIONS
     shutil.copy(os.path.join(src_media_dir, "COPYING.txt"), dest_media_dir)
 
     # Now walk through all files in assets looking for references to textures etc.
-    re_texture_alias = re.compile(r"^[^/].*set_texture_alias [\w]* (.*)")
+    re_set_texture_variable = re.compile(r"^[^/].*set\s\$.*map[\w]* (.*)")
     re_texture = re.compile(r"^[^\w]*texture (.*)")
     re_particle_image = re.compile(r".*image\s*(.*)")
     re_icon = re.compile(r'.*icon=\"([^\"]*)\"')
@@ -200,7 +200,7 @@ OPTIONS
             assets.add(os.path.relpath(filepath, src_assets_dir))
             file = open(filepath)
             for line in file:
-                a_match = re_texture_alias.match(line)
+                a_match = re_set_texture_variable.match(line)
                 if a_match:
                     assets.add(a_match.group(1))
                     continue
