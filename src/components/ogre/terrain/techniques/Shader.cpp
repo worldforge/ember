@@ -213,8 +213,8 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 
 		try {
 			Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-			float scales[1] = {1.0f};
-			fpParams->setNamedConstant("scales", scales, 1); // The composite map spreads over the entire terrain, no uv scaling needed
+			float scales = 1.0f;
+			fpParams->setNamedConstant("scales", scales); // The composite map spreads over the entire terrain, no uv scaling needed
 			if (mIncludeShadows) {
 				auto* pssmSetup = dynamic_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
 				if (pssmSetup) {
