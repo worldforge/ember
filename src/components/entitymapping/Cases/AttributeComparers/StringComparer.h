@@ -40,6 +40,8 @@ namespace AttributeComparers {
 */
 struct StringComparer {
 
+	virtual ~StringComparer() = default;
+
 	/**
 	Returns true if the supplied value equals the stored value. The comparison is case sensitive.
 	@param value
