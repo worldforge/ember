@@ -340,7 +340,7 @@ protected:
 	 * The movement mode is determined mainly from whether the entity is moving or not. The speed of the movement also affects the mode.
 	 * @param velocity The velocity of the entity.
 	 */
-	virtual void parseMovementMode(const WFMath::Vector<3>& velocity);
+	void parseMovementMode(const WFMath::Vector<3>& velocity);
 
 	/**
 	 * @brief Reactivate all previously activated parts for the model.
