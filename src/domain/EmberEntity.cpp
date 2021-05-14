@@ -389,6 +389,8 @@ IGraphicalRepresentation* EmberEntity::getGraphicalRepresentation() const {
 }
 
 void EmberEntity::setAttachment(std::unique_ptr<IEntityAttachment> attachment) {
+	//Make sure that the old attachment is destroyed after "reattachedChildren" is called, since they might call into it when detaching.
+	auto oldAttachment = std::move(mAttachment);
 	mAttachment = std::move(attachment);
 	EventChangedGraphicalRepresentation();
 	EventAttachmentChanged();
