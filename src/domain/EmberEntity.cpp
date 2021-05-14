@@ -88,7 +88,7 @@ EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View& vw) :
 		mHeightProvider(nullptr) {
 }
 
-EmberEntity::~EmberEntity()  {
+EmberEntity::~EmberEntity() {
 	shutdown();
 }
 
@@ -138,7 +138,7 @@ void EmberEntity::setHeightProvider(IHeightProvider* heightProvider) {
 	mHeightProvider = heightProvider;
 }
 
-float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const {
+double EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const {
 
 	if (mHeightProvider) {
 		float height = 0;
@@ -211,7 +211,7 @@ IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const {
 }
 
 void EmberEntity::onLocationChanged(Eris::Entity* oldLocation) {
-	auto emberEntityOldLocation = static_cast<EmberEntity*>(oldLocation);
+	auto emberEntityOldLocation = dynamic_cast<EmberEntity*>(oldLocation);
 	if (emberEntityOldLocation && emberEntityOldLocation->getAttachment()) {
 		emberEntityOldLocation->getAttachment()->detachEntity(*this);
 	}

@@ -25,7 +25,6 @@
 #endif
 
 #include "PolygonPoint.h"
-#include "PolygonPointMover.h"
 #include "Polygon.h"
 #include "IPolygonPositionProvider.h"
 
@@ -41,13 +40,10 @@
 
 #include <memory>
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember {
+namespace OgreView {
 
-namespace Authoring
-{
+namespace Authoring {
 
 unsigned int PolygonPoint::sPointCounter = 0;
 
@@ -56,11 +52,10 @@ PolygonPoint::PolygonPoint(Ogre::SceneNode& baseNode, IPolygonPositionProvider* 
 		mPositionProvider(positionProvider),
 		mUserObject(*this),
 		mNode(nullptr),
-		mEntity(nullptr)
-{
+		mEntity(nullptr) {
 	Ogre::Vector3 nodePosition = Convert::toOgre<Ogre::Vector3>(localPosition);
 	if (mPositionProvider) {
-		nodePosition.y = mPositionProvider->getHeightForPosition(localPosition);
+		nodePosition.y = (Ogre::Real)mPositionProvider->getHeightForPosition(localPosition);
 	}
 	mNode = mBaseNode.createChildSceneNode(nodePosition);
 	mNode->setScale(scale, scale, scale);
@@ -89,8 +84,7 @@ PolygonPoint::PolygonPoint(Ogre::SceneNode& baseNode, IPolygonPositionProvider* 
 	mNode->attachObject(mEntity);
 }
 
-PolygonPoint::~PolygonPoint()
-{
+PolygonPoint::~PolygonPoint() {
 	try {
 		if (mNode) {
 			mBaseNode.removeAndDestroyChild(mNode);
@@ -103,33 +97,28 @@ PolygonPoint::~PolygonPoint()
 	}
 }
 
-Ogre::SceneNode* PolygonPoint::getNode()
-{
+Ogre::SceneNode* PolygonPoint::getNode() {
 	return mNode;
 }
 
-Ogre::SceneNode* PolygonPoint::getNode() const
-{
+Ogre::SceneNode* PolygonPoint::getNode() const {
 	return mNode;
 }
 
-WFMath::Point<2> PolygonPoint::getLocalPosition() const
-{
+WFMath::Point<2> PolygonPoint::getLocalPosition() const {
 	return WFMath::Point<2>(mNode->getPosition().x, mNode->getPosition().z);
 }
 
-void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position)
-{
-	mNode->setPosition(position.x(), mNode->getPosition().y, position.y());
+void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position) {
+	mNode->setPosition((Ogre::Real) position.x(), mNode->getPosition().y, (Ogre::Real) position.y());
 	if (mPositionProvider) {
 		Ogre::Vector3 pos = getNode()->getPosition();
-		pos.y = mPositionProvider->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
+		pos.y = (Ogre::Real) mPositionProvider->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
 		getNode()->setPosition(pos);
 	}
 }
 
-void PolygonPoint::setLocalPosition(const WFMath::Point<3>& position)
-{
+void PolygonPoint::setLocalPosition(const WFMath::Point<3>& position) {
 	mNode->setPosition(Convert::toOgre(position));
 }
 
@@ -151,13 +140,12 @@ void PolygonPoint::setLocalPosition(const WFMath::Point<3>& position)
 //
 // }
 
-void PolygonPoint::translate(const WFMath::Vector<2>& translation)
-{
+void PolygonPoint::translate(const WFMath::Vector<2>& translation) {
 	Ogre::Vector2 ogrePos = Convert::toOgre(translation);
 	getNode()->translate(Ogre::Vector3(ogrePos.x, 0, ogrePos.y));
 	if (mPositionProvider) {
 		Ogre::Vector3 pos = getNode()->getPosition();
-		pos.y = mPositionProvider->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
+		pos.y = (Ogre::Real)mPositionProvider->getHeightForPosition(Convert::toWF<WFMath::Point<2>>(pos));
 		getNode()->setPosition(pos);
 	}
 	if (mCollisionDetector) {
@@ -165,15 +153,13 @@ void PolygonPoint::translate(const WFMath::Vector<2>& translation)
 	}
 }
 
-void PolygonPoint::setVisible(bool visibility)
-{
+void PolygonPoint::setVisible(bool visibility) {
 	if (mEntity) {
 		mEntity->setVisible(visibility);
 	}
 }
 
-bool PolygonPoint::getVisible() const
-{
+bool PolygonPoint::getVisible() const {
 	if (mEntity) {
 		return mEntity->getVisible();
 	}

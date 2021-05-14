@@ -29,18 +29,17 @@
 
 #include <functional>
 
-namespace Eris
-{
+namespace Eris {
 class View;
 }
 
-namespace Ember
-{
+namespace Ember {
 struct IGraphicalRepresentation;
 struct IEntityAttachment;
 struct IEntityControlDelegate;
 struct IEntityVisitor;
 struct IHeightProvider;
+
 class EntityTalk;
 
 
@@ -51,17 +50,14 @@ class EntityTalk;
  * This is the base class for any entities in the world. It's therefore safe to case any instance of Eris::Entity into this class.
  * Any entity which has a graphical representation in the world, and under normal circumstances that's the most of them, will have mGraphicalRepresentation set to a subclass of IGraphicalRepresentation.
  */
-class EmberEntity: public Eris::ViewEntity, public IVisualizable
-
-{
+class EmberEntity : public Eris::ViewEntity, public IVisualizable {
 public:
 
 	/**
 	 * @brief The different positioning modes the entity can be in.
 	 * The positioning mode determines how the entity can be adjusted in the world.
 	 */
-	enum class PositioningMode
-	{
+	enum class PositioningMode {
 		/**
 		 * @brief The default mode, where the entity is affected by physics.
 		 */
@@ -98,8 +94,7 @@ public:
 	 * Some entities can be "composition" entities. That means that they and their children make up one single conceptual entity.
 	 * An example might be a table, where each table leg is a separate entity. Each leg is then part of the "table composition".
 	 */
-	enum CompositionMode
-	{
+	enum CompositionMode {
 		CM_DISABLED, //!< CM_DISABLED No composition is used. This should be the default.
 		CM_COMPOSITION, //!< CM_COMPOSITION The entity is an composite. That means that when interacting with a child entity the user should also be given the option to interact with the parent composite entity.
 		CM_COMPOSITION_EXCLUSIVE //!< CM_COMPOSITION_EXCLUSIVE The entity is an exclusive composite. That means that when interacting with a child entity the user should only be presented with the parent composite entity (and should not be able to interact with the child entity).
@@ -156,14 +151,6 @@ public:
 	 * @return A pointer to a contained entity.
 	 */
 	EmberEntity* getEmberContained(size_t index) const;
-
-	/**
-	 * @brief Returns true if init(...) has been called and the entity been set up.
-	 * This can be useful when handling the entity, and not knowing whether it has been properly initialized yet. After the entity has been created, there's a small delay until init() is called. During this time the entity is in an incomplete state, and code that accesses it during that time might instead want to wait until it has been properly initialized.
-	 * @see init()
-	 * @return True if init() already has been called, else false.
-	 */
-	bool isInitialized() const;
 
 	/**
 	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
@@ -271,16 +258,19 @@ public:
 	 * @param localPosition A position local to the entity.
 	 * @return The height at the location.
 	 */
-	virtual float getHeight(const WFMath::Point<2>& localPosition) const;
+	double getHeight(const WFMath::Point<2>& localPosition) const;
+
 
 	std::string getNameOrType() const;
 
 	void setHeightProvider(IHeightProvider* heightProvider);
 
 	const std::map<std::string, Eris::Usage>& getUsages() const;
+
 	const std::map<std::string, Eris::Usage>& getUsagesProtected() const;
 
 	CompositionMode getCompositionMode() const;
+
 	void setCompositionMode(CompositionMode mode);
 
 	sigc::signal<void, const EntityTalk&> EventTalk;
@@ -360,18 +350,22 @@ protected:
 	 *    @copydoc Eris::Entity::onTalk()
 	 */
 	void onTalk(const Atlas::Objects::Operation::RootOperation& talk) override;
+
 	/**
 	 *    @copydoc Eris::Entity::onLocationChanged()
 	 */
-	void onLocationChanged(Eris::Entity *oldLocation) override;
+	void onLocationChanged(Eris::Entity* oldLocation) override;
+
 	/**
 	 *    @copydoc Eris::Entity::onAction()
 	 */
 	void onAction(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo) override;
+
 	/**
 	 *    @copydoc Eris::Entity::onHit()
 	 */
 	void onHit(const Atlas::Objects::Operation::Hit& hit, const Eris::TypeInfo& typeInfo) override;
+
 	/**
 	 *    @copydoc Eris::Entity::onSoundAction()
 	 */
@@ -399,7 +393,7 @@ protected:
 	 * @param ge The root entity which contains all atlas data that define this entity.
 	 * @param fromCreateOp
 	 */
-	void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp) override;
+	void init(const Atlas::Objects::Entity::RootEntity& ge, bool fromCreateOp) override;
 
 	/**
 	 * @brief Parses the current positioning mode from the submitted element, which should be taken from the "mode" attribute.
@@ -420,16 +414,11 @@ protected:
 	 */
 	void updateAttachment();
 
-	void parseUsages(std::map<std::string, Eris::Usage>& map, const Atlas::Message::Element& element);
+	static void parseUsages(std::map<std::string, Eris::Usage>& map, const Atlas::Message::Element& element);
 };
 
-inline bool EmberEntity::isInitialized() const
-{
-	return mIsInitialized;
-}
 
-inline EmberEntity::PositioningMode EmberEntity::getPositioningMode() const
-{
+inline EmberEntity::PositioningMode EmberEntity::getPositioningMode() const {
 	return mPositioningMode;
 }
 

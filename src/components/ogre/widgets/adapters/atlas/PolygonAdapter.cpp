@@ -52,7 +52,7 @@ EntityPolygonPositionProvider::EntityPolygonPositionProvider(EmberEntity& entity
 		mEntity(entity) {
 }
 
-float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>& localPosition) const {
+double EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>& localPosition) const {
 	return mEntity.getHeight(localPosition);
 }
 

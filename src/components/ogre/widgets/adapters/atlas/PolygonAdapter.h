@@ -78,7 +78,7 @@ public:
 	 * @param localPosition The local position.
 	 * @return A height.
 	 */
-	float getHeightForPosition(const WFMath::Point<2>& localPosition) const override;
+	double getHeightForPosition(const WFMath::Point<2>& localPosition) const override;
 
 protected:
 	/**
