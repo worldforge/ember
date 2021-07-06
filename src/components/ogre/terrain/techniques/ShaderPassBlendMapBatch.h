@@ -53,7 +53,7 @@ public:
 
 	std::vector<const TerrainPageSurfaceLayer*>& getLayers();
 
-	virtual void finalize(Ogre::Pass& pass, Ogre::TexturePtr texture, bool useNormalMapping);
+	virtual void finalize(Ogre::Pass& pass, const Ogre::TexturePtr& texture, bool useNormalMapping);
 
 protected:
 

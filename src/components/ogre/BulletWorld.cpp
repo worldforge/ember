@@ -28,15 +28,17 @@
 namespace Ember {
 namespace OgreView {
 
-BulletWorld::BulletWorld() {
+BulletWorld::BulletWorld() :
+		mConfig(std::make_unique<btDefaultCollisionConfiguration>()),
+		mDispatcher(std::make_unique<btCollisionDispatcher>(mConfig.get())),
+		mBroadphase(std::make_unique<btAxisSweep3>(btVector3(-1024, -128, -1024), btVector3(1024, 128, 1024))),
+		mCollisionWorld(std::make_unique<btCollisionWorld>(mDispatcher.get(), mBroadphase.get(), mConfig.get())) {
 
-	auto config = std::make_shared<btDefaultCollisionConfiguration>();
-	auto dispatcher = std::make_shared<btCollisionDispatcher>(config.get());
-	auto broadPhase = std::make_shared<btAxisSweep3>(btVector3(-1024, -128, -1024), btVector3(1024, 128, 1024));
-	mCollisionWorld = std::shared_ptr<btCollisionWorld>(new btCollisionWorld(dispatcher.get(), broadPhase.get(), config.get()),
-														[config, dispatcher, broadPhase](btCollisionWorld* p) { delete p; });
 
 }
+
+BulletWorld::~BulletWorld() = default;
+
 
 std::shared_ptr<btScaledBvhTriangleMeshShape> BulletWorld::createMeshShape(const Ogre::MeshPtr& meshPtr) {
 

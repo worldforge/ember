@@ -170,19 +170,19 @@ void OgreTexture::loadFromMemory(const void* buffer, const Sizef& buffer_size,
 {
     using namespace Ogre;
 
-    if (!isPixelFormatSupported(pixel_format))
-        CEGUI_THROW(InvalidRequestException(
-            "Data was supplied in an unsupported pixel format."));
+	if (!isPixelFormatSupported(pixel_format))
+		CEGUI_THROW(InvalidRequestException(
+							"Data was supplied in an unsupported pixel format."));
 
 	Ogre::PixelBox pixelBox(buffer_size.d_width, buffer_size.d_height,
-							1, toOgrePixelFormat(pixel_format), (char*)buffer);
-    createEmptyOgreTexture(pixel_format);
-    d_texture->freeInternalResources();
-    d_texture->setWidth(buffer_size.d_width);
-    d_texture->setHeight(buffer_size.d_height);
-    d_texture->setDepth(1);
-    d_texture->createInternalResources();
-    d_texture->getBuffer(0,0).get()->blitFromMemory(pixelBox);
+							1, toOgrePixelFormat(pixel_format), (char*) buffer);
+	createEmptyOgreTexture(pixel_format);
+	d_texture->freeInternalResources();
+	d_texture->setWidth(buffer_size.d_width);
+	d_texture->setHeight(buffer_size.d_height);
+	d_texture->setDepth(1);
+	d_texture->createInternalResources();
+	d_texture->getBuffer(0, 0).get()->blitFromMemory(pixelBox);
 
     // throw exception if no texture was able to be created
     if (OGRE_ISNULL(d_texture))

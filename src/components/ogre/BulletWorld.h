@@ -26,6 +26,10 @@
 #include <unordered_map>
 #include <memory>
 
+class btDefaultCollisionConfiguration;
+
+class btAxisSweep3;
+
 namespace Ember {
 namespace OgreView {
 
@@ -38,6 +42,7 @@ class BulletWorld {
 
 public:
 	BulletWorld();
+	~BulletWorld();
 
 	std::shared_ptr<btScaledBvhTriangleMeshShape> createMeshShape(const Ogre::MeshPtr& meshPtr);
 
@@ -45,7 +50,12 @@ public:
 
 private:
 
-	std::shared_ptr<btCollisionWorld> mCollisionWorld;
+
+	std::unique_ptr<btDefaultCollisionConfiguration> mConfig;
+	std::unique_ptr<btCollisionDispatcher> mDispatcher;
+	std::unique_ptr<btAxisSweep3> mBroadphase;
+
+	std::unique_ptr<btCollisionWorld> mCollisionWorld;
 
 	/**
 	 * A cache of mesh shapes. This allows us to reuse a mesh shape multiple times.
@@ -55,8 +65,8 @@ private:
 	std::shared_ptr<btBvhTriangleMeshShape> buildTriangleMeshShape(const Ogre::MeshPtr& sharedPtr);
 
 	static void getMeshInformation(const Ogre::MeshPtr& mesh,
-								   std::vector<float> &vertices,
-								   std::vector<unsigned int> &indices);
+								   std::vector<float>& vertices,
+								   std::vector<unsigned int>& indices);
 };
 
 }

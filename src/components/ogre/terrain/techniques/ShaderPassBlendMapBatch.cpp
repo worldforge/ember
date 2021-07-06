@@ -78,10 +78,10 @@ void ShaderPassBlendMapBatch::assignCombinedBlendMapTexture(Ogre::TexturePtr tex
 	}
 }
 
-void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture, bool useNormalMapping) {
+void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, const Ogre::TexturePtr& texture, bool useNormalMapping) {
 	//add our blend map textures first
 	assignCombinedBlendMapTexture(texture);
-	Ogre::TextureUnitState* blendMapTUS = pass.createTextureUnitState();
+	auto* blendMapTUS = pass.createTextureUnitState();
 	blendMapTUS->setTextureScale(1, 1);
 	blendMapTUS->setTextureName(texture->getName());
 	blendMapTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
@@ -89,7 +89,7 @@ void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr textur
 	for (auto& layer : mLayers) {
 		//add the layer textures
 		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
-		Ogre::TextureUnitState* diffuseTUS = pass.createTextureUnitState();
+		auto* diffuseTUS = pass.createTextureUnitState();
 		//textureUnitState->setTextureScale(0.025, 0.025);
 		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
 		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);

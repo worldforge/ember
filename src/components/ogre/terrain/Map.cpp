@@ -328,8 +328,8 @@ MapCameraLightningInstance::MapCameraLightningInstance(MapCameraLightning& light
 }
 
 MapCameraLightningInstance::~MapCameraLightningInstance() {
-	for (LightStore::const_iterator I = mVisibleLights.begin(); I != mVisibleLights.end(); ++I) {
-		(*I)->setVisible(true);
+	for (auto light : mVisibleLights) {
+		light->setVisible(true);
 	}
 	mLightning.getLight()->setVisible(false);
 	mLightning.getSceneManager().setAmbientLight(mAmbientColour);
