@@ -37,7 +37,7 @@ namespace Gui {
 	Responsible for deactivating the current input focused window when we switch to movement mode, and returning it when we switch back to gui mode.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class ActiveWidgetHandler {
+class ActiveWidgetHandler : public virtual sigc::trackable {
 public:
 	explicit ActiveWidgetHandler(GUIManager& guiManager);
 
