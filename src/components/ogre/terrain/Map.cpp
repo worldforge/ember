@@ -154,9 +154,6 @@ bool MapView::reposition(const Ogre::Vector2& pos) {
 
 }
 
-const Ogre::TRect<float>& MapView::getRelativeViewBounds() const {
-	return mVisibleRelativeBounds;
-}
 
 const Ogre::Vector2& MapView::getRelativeViewPosition() const {
 	return mRelativeViewPosition;
@@ -171,14 +168,10 @@ void MapView::recalculateBounds() {
 	Ogre::Vector2 pos(mMapCamera.getPosition());
 	mFullBounds.left = static_cast<int>(pos.x - (mMap.getResolutionMeters() / 2));
 	mFullBounds.right = static_cast<int>(pos.x + (mMap.getResolutionMeters() / 2));
-	mFullBounds.bottom = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
-	mFullBounds.top = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
+	mFullBounds.top = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
+	mFullBounds.bottom = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
 
 
-	mVisibleRelativeBounds.left = 0.5f - (mViewSize / 2);
-	mVisibleRelativeBounds.right = 0.5f + (mViewSize / 2);
-	mVisibleRelativeBounds.bottom = 0.5f - mViewSize / 2;
-	mVisibleRelativeBounds.top = 0.5f + (mViewSize / 2);
 	mRelativeViewPosition.x = 0.5f;
 	mRelativeViewPosition.y = 0.5f;
 	EventBoundsChanged();

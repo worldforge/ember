@@ -80,8 +80,6 @@ class MapView
 public:
 
 	bool reposition(Ogre::Vector2 pos);
-	
-	const Ogre::TRect<float>& getRelativeViewBounds() const;
 
 };
 

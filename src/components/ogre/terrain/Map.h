@@ -187,12 +187,6 @@ public:
 	bool reposition(const Ogre::Vector2& pos);
 
 	/**
-	 * @brief Gets the relative bounds of the subview within the complete map.
-	 * The bounds are expressed as 0..1.
-	 */
-	const Ogre::TRect<float>& getRelativeViewBounds() const;
-
-	/**
 	 * @brief Gets the relative center position of the subview within the complete map.
 	 * The position is expressed as 0..1.
 	 */
