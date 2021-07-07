@@ -47,7 +47,7 @@ scriptingService = emberServices:getScriptingService()
 --The console can be used for debug output.
 console = Ember.ConsoleBackend:getSingleton()
 
---Global list of connectors, mainly used for the bootrapping of widgets 
+--Global list of connectors, mainly used for the boottrapping of widgets
 connectors = {}
 
 --loads a lua script
@@ -65,13 +65,20 @@ function debugObject(object)
 	console:pushMessage(tostring(object), "info")
 end
 
+function createConnector(event)
+	local connector = _createConnector(event)
+	tolua.takeownership(connector)
+	return connector
+end
+
 --creates a connection between the supplied event and a function, stores the connection object in the supplied table and returns it
 function connect(connectorTable, event, functionName, selfRef)
 	local connector = createConnector(event)
-	tolua.takeownership(connector)
 	connector:connect(functionName, selfRef)
 	if connectorTable then
 		table.insert(connectorTable, connector)
+	else
+		log.warning("No connector table supplied when creating connector.")
 	end
 	return connector
 end
