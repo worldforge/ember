@@ -67,6 +67,7 @@ Connector* Connector::connect(lua_Object /*luaMethod */, lua_Object selfIndex) {
 void Connector::disconnect() {
 	if (mConnector) {
 		mConnector->disconnect();
+		mConnector.reset();
 	}
 }
 
