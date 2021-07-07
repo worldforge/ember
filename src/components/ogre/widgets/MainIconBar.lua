@@ -9,7 +9,7 @@ This class is also responsible for changing the look of the mouse pointer betwee
 ]]--
 
 
-MainIconBar = {singletonInstance = nil}
+MainIconBar = { singletonInstance = nil }
 
 function MainIconBar.addExternalIcon(iconName, foregroundImage, tooltipText)
 	if MainIconBar.singletonInstance then
@@ -50,80 +50,78 @@ function MainIconBar:buildWidget()
 
 	self.iconBar = Ember.OgreView.Gui.IconBar:new("mainIcons")
 	guiManager:getMainSheet():addChild(self.iconBar:getWindow())
-	
+
 	--we'll use the same backgrounds for all icons
 	self.images.background = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "background_A")
 	self.images.borderactive = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "ring_over")
 	self.images.borderinactive = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "ring")
 	local foreground = nil
-	
+
 	local helpIconBase = nil
-	
+
 	--start with the close icon
 	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "close2")
 	helpIconBase = self:addIcon("close2", foreground, "Click here to exit Ember.")
 	helpIconBase:getButton():subscribeEvent("Clicked", self.close_Clicked, self)
-	
+
 	--then the help icon
 	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "question")
 	helpIconBase = self:addIcon("help", foreground, "Click here to access the help.")
 	helpIconBase:getButton():subscribeEvent("Clicked", self.help_Clicked, self)
-	
+
 	--and the the movement icon
-	
+
 	--we need to dynamically switch the icon depending on the current movement mode, so let's load all of the movement status images
-	self.movementImage_walk	= Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "walk")
-	self.movementImage_run	= Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "run")
-	self.movementImage_gui	= Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "abc")
-	
+	self.movementImage_walk = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "walk")
+	self.movementImage_run = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "run")
+	self.movementImage_gui = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "abc")
+
 	self.movementModeIcon = self:addIcon("movementmode", self.movementImage_gui, "This shows your current input mode.\nUse the right mouse button for movement mode.\nDouble click also switches modes. Press and hold shift to run.")
 	--start out with the movement mode icon hidden, only show it when the user has an avatar
 	self.movementModeIcon:getContainer():setVisible(false)
-	
+
 	self.movementModeIcon:getButton():subscribeEvent("Clicked", self.movement_Clicked, self)
-	
+
 	connect(self.connectors, Ember.Input:getSingleton().EventChangedInputMode, self.Input_InputModeChanged, self)
-	
+
 	--position it in the lower left of the screen
 	local height = self.iconBar:getAbsoluteHeight()
-	self.iconBar:getWindow():setPosition(CEGUI.UVector2:new_local(CEGUI.UDim(0,0), CEGUI.UDim(1, -height)))
-	
+	self.iconBar:getWindow():setPosition(CEGUI.UVector2:new_local(CEGUI.UDim(0, 0), CEGUI.UDim(1, -height)))
+
 	--and settings toggle icon
 	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "settings")
 	self.settingsIcon = self:addIcon("settings", foreground, "Toggles visibility of the settings window")
 	self.settingsIcon:getButton():subscribeEvent("Clicked", self.settings_Clicked, self)
-	
+
 	--and inventory toggle icon
 	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "inventory")
 	self.inventoryIcon = self:addIcon("inventory", foreground, "Toggles visibility of the inventory")
 	--start out with the inventory icon hidden, only show it when the user has an avatar
 	self.inventoryIcon:getContainer():setVisible(false)
 	self.inventoryIcon:getButton():subscribeEvent("Clicked", self.inventory_Clicked, self)
-	
-	
+
 	connect(self.connectors, emberOgre.EventMovementControllerCreated, function()
 		--Only show the movement and inventory icons when we've actually connected to a server; it makes no sense before that
-			self.movementModeIcon:getContainer():setVisible(true)
-			connect(self.connectors, emberOgre:getWorld():getMovementController().EventMovementModeChanged, 
+		self.movementModeIcon:getContainer():setVisible(true)
+		connect(self.connectors, emberOgre:getWorld():getMovementController().EventMovementModeChanged,
 				function(mode)
 					--When the movement mode is changed (i.e. walking or running) we need to update the images on the movement mode icon as well as the cursor image
 					if self.currentMode == Ember.Input.IM_MOVEMENT then
 						self:checkMovementMode()
 					end
 				end)
-			
-			--Don't show the inventory for the admin avatar	
-			if emberOgre:getWorld():getAvatar():isAdmin() == false then	
-				self.inventoryIcon:getContainer():setVisible(true)
-			end
-		end)
-	
+
+		--Don't show the inventory for the admin avatar
+		if emberOgre:getWorld():getAvatar():isAdmin() == false then
+			self.inventoryIcon:getContainer():setVisible(true)
+		end
+	end)
+
 	connect(self.connectors, emberOgre.EventMovementControllerDestroyed, function()
-			self.movementModeIcon:getContainer():setVisible(false)
-			self.inventoryIcon:getContainer():setVisible(false)
-		end)
-	
-	
+		self.movementModeIcon:getContainer():setVisible(false)
+		self.inventoryIcon:getContainer():setVisible(false)
+	end)
+
 	MainIconBar.singletonInstance = self
 end
 
@@ -165,7 +163,7 @@ function MainIconBar:Input_InputModeChanged(inputMode)
 	if inputMode == Ember.Input.IM_GUI then
 		self.crossHair:setVisible(false)
 		CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setVisible(true)
-        self.movementModeIcon:setForeground(self.movementImage_gui)
+		self.movementModeIcon:setForeground(self.movementImage_gui)
 	else
 		self.crossHair:setVisible(true)
 		CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setVisible(false)
@@ -186,7 +184,6 @@ function MainIconBar:checkMovementMode()
 	end
 end
 
-
 function MainIconBar:shutdown()
 	MainIconBar.singletonInstance = nil
 	disconnectAll(self.connectors)
@@ -194,19 +191,18 @@ function MainIconBar:shutdown()
 	guiManager:getMainSheet():removeChild(self.iconBar:getWindow())
 
 	self.iconBar:delete()
-	
+
 end
 
-
 local mainIconBarInit = function()
-	local mainIconBar = {connectors={}, images={}}
-	setmetatable(mainIconBar, {__index = MainIconBar})
-	mainIconBar:buildWidget()
-	
+	local mainIconBar = { connectors = {}, images = {} }
+	setmetatable(mainIconBar, { __index = MainIconBar })
+
 	connect(mainIconBar.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
 		mainIconBar:shutdown()
 		mainIconBar = nil
 	end)
+	mainIconBar:buildWidget()
 end
 mainIconBarInit()
 

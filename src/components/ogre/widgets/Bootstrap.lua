@@ -22,7 +22,7 @@ emberOgre.doWithEntity = function(this, entityId, doIfEntityFound, doIfEntityNot
 		local entity = this:getWorld():getEmberEntity(entityId)
 		if entity then
 			doIfEntityFound(entity)
-		else 
+		else
 			if doIfEntityNotFound then
 				doIfEntityNotFound(entityId)
 			end
@@ -55,7 +55,7 @@ function loadScript(scriptname)
 	--load all lua files
 	--they all reside in the same directory
 	local dirPrefix = "lua/"
-	
+
 	scriptingService:loadScript(dirPrefix .. scriptname)
 
 end
@@ -67,7 +67,9 @@ end
 
 --creates a connection between the supplied event and a function, stores the connection object in the supplied table and returns it
 function connect(connectorTable, event, functionName, selfRef)
-	local connector = tolua.takeownership(createConnector(event):connect(functionName, selfRef))
+	local connector = createConnector(event)
+	tolua.takeownership(connector)
+	connector:connect(functionName, selfRef)
 	if connectorTable then
 		table.insert(connectorTable, connector)
 	end
@@ -76,7 +78,7 @@ end
 
 --Iterates through all entries in a table of connectors (for example used in the connect(...) function) and disconnects them
 function disconnectAll(connectorTable)
-	for key,value in pairs(connectorTable) do
+	for _, value in pairs(connectorTable) do
 		value:disconnect()
 	end
 end
@@ -96,20 +98,25 @@ end
 function escapeForCEGUI(message)
 	--Only the starting [ character needs to be escaped for CEGUI, escaping ] will cause CEGUI to show \]
 	--Note that we need to put the result of gsub into a local variable, because we want to throw away the second return value (which is a number).
-	local escapedMessage = string.gsub(message, "%[", "\\%[") 
+	local escapedMessage = string.gsub(message, "%[", "\\%[")
 	return escapedMessage
 end
 
 --Iterates over a table alphabetically
 function pairsByKeys (t, f)
 	local a = {}
-	for n in pairs(t) do table.insert(a, n) end
+	for n in pairs(t) do
+		table.insert(a, n)
+	end
 	table.sort(a, f)
 	local i = 0      -- iterator variable
-	local iter = function ()   -- iterator function
+	local iter = function()
+		-- iterator function
 		i = i + 1
-		if a[i] == nil then return nil
-		else return a[i], t[a[i]]
+		if a[i] == nil then
+			return nil
+		else
+			return a[i], t[a[i]]
 		end
 	end
 	return iter
