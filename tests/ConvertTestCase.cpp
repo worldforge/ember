@@ -59,6 +59,11 @@ void ConvertTestCase::testWFMathToOgre()
 
 	WFMath::AxisBox<2> wfAxisBox2(Point<2>(1,2), Point<2>(10, 20));
 	CPPUNIT_ASSERT(wfAxisBox2 == Convert::toWF(Convert::toOgre(wfAxisBox2)));
+	//TRect has bottom >= top
+	CPPUNIT_ASSERT(Convert::toOgre(wfAxisBox2).bottom > Convert::toOgre(wfAxisBox2).top);
+	CPPUNIT_ASSERT(Convert::toOgre(wfAxisBox2).right > Convert::toOgre(wfAxisBox2).left);
+
+
 
 }
 }
