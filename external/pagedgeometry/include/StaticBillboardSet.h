@@ -112,8 +112,7 @@ public:
 			bb.texcoordIndexU = texcoordIndexU;
 			bb.texcoordIndexV = texcoordIndexV;
 
-			Ogre::uint32 packedColor;
-			Ogre::Root::getSingleton().getRenderSystem()->convertColourValue(color, &packedColor);
+			Ogre::uint32 packedColor = color.getAsBYTE();
 			bb.color = packedColor;
 			billboardBuffer.emplace_back(bb);
 		} else {
