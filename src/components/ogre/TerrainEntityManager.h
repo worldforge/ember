@@ -62,12 +62,9 @@ public:
 
 private:
 	struct TerrainModEntry {
-		std::unique_ptr<TerrainEffectorListener> listener;
 		std::unique_ptr<Ember::Terrain::TerrainModTranslator> translator;
+		std::unique_ptr<TerrainEffectorListener> listener;
 	};
-
-	typedef std::unordered_map<EmberEntity*, TerrainModEntry> ModStore;
-	typedef std::unordered_map<EmberEntity*, std::pair<std::unique_ptr<Terrain::TerrainArea>, std::unique_ptr<TerrainEffectorListener>>> AreaStore;
 
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainListener;
 	std::function<void(EmberEntity&, const Atlas::Message::Element&)> mTerrainPointsListener;
@@ -78,8 +75,8 @@ private:
 	Terrain::TerrainHandler& mTerrainHandler;
 	Ogre::SceneManager& mSceneManager;
 
-	ModStore mTerrainMods;
-	AreaStore mAreas;
+	std::unordered_map<EmberEntity*, TerrainModEntry> mTerrainMods;
+	std::unordered_map<EmberEntity*, std::pair<std::unique_ptr<Terrain::TerrainArea>, std::unique_ptr<TerrainEffectorListener>>> mAreas;
 
 	sigc::connection mTerrainEntityDeleteConnection;
 	sigc::connection mTerrainEntityVisibilityConnection;

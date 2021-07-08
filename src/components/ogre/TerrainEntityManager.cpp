@@ -46,27 +46,35 @@ namespace OgreView {
 /**
  * Listens to entity signal which is of interest to terrain mods and areas.
  */
-struct TerrainEffectorListener : public sigc::trackable {
+struct TerrainEffectorListener {
 
 	/**
 	 * @brief Emitted when the entity has moved.
 	 */
-	sigc::signal<void> EventEntityMoved;
+	std::function<void()> EventEntityMoved;
 
 	/**
 	 * @brief Emitted when the entity is being deleted.
 	 */
-	sigc::signal<void> EventEntityBeingDeleted;
+	std::function<void()> EventEntityBeingDeleted;
 
 	/**
 	 * @brief Emitted when the entity is being deleted.
 	 */
-	sigc::signal<void> EventEntityModeChanged;
+	std::function<void()> EventEntityModeChanged;
+
+	std::vector<sigc::connection> connections;
 
 	explicit TerrainEffectorListener(Ember::EmberEntity& entity) {
-		entity.Moved.connect([this]() { EventEntityMoved.emit(); });
-		entity.BeingDeleted.connect([this]() { EventEntityBeingDeleted.emit(); });
-		entity.observe("mode", [&](const Atlas::Message::Element&) { EventEntityModeChanged.emit(); }, false);
+		connections.emplace_back(entity.Moved.connect([this]() { if (EventEntityMoved) { EventEntityMoved(); }}));
+		connections.emplace_back(entity.BeingDeleted.connect([this]() { if (EventEntityBeingDeleted) { EventEntityBeingDeleted(); }}));
+		connections.emplace_back(entity.observe("mode", [this](const Atlas::Message::Element&) { if (EventEntityModeChanged) { EventEntityModeChanged(); }}, false));
+	}
+
+	~TerrainEffectorListener() {
+		for (auto& conn : connections) {
+			conn.disconnect();
+		}
 	}
 };
 
@@ -159,24 +167,24 @@ void TerrainEntityManager::entityTerrainModAttrChanged(EmberEntity& entity, cons
 
 	TerrainModEntry* terrainModEntry = nullptr;
 	auto I = mTerrainMods.find(&entity);
-	if (mTerrainMods.find(&entity) == mTerrainMods.end()) {
+	if (I == mTerrainMods.end()) {
 		if (value.isMap()) {
 			try {
 				auto translator = std::make_unique<Ember::Terrain::TerrainModTranslator>(value.Map());
 				auto translatorPtr = translator.get();
 				auto listener = std::make_unique<TerrainEffectorListener>(entity);
 
-				listener->EventEntityBeingDeleted.connect([this, &entity]() {
+				listener->EventEntityBeingDeleted = [this, &entity]() {
 					mTerrainHandler.updateMod(entity.getId(), {}, {}, nullptr);
 					mTerrainMods.erase(&entity);
-				});
-				listener->EventEntityMoved.connect([this, &entity, translatorPtr]() {
+				};
+				listener->EventEntityMoved = [this, &entity, translatorPtr]() {
 					if (entity.getPositioningMode() == EmberEntity::PositioningMode::PLANTED) {
 						mTerrainHandler.updateMod(entity.getId(), entity.getPosition(), entity.getOrientation(), std::make_unique<Ember::Terrain::TerrainModTranslator>(*translatorPtr));
 					}
-				});
-				listener->EventEntityModeChanged.connect([this, &entity, translatorPtr]() { entityModeChanged(entity, *translatorPtr); });
-				auto result = mTerrainMods.emplace(&entity, TerrainModEntry{std::move(listener), std::move(translator)});
+				};
+				listener->EventEntityModeChanged = [this, &entity, translatorPtr]() { entityModeChanged(entity, *translatorPtr); };
+				auto result = mTerrainMods.emplace(&entity, TerrainModEntry{std::move(translator), std::move(listener)});
 				if (result.second) {
 					terrainModEntry = &result.first->second;
 				}
@@ -209,12 +217,14 @@ void TerrainEntityManager::entityAreaAttrChanged(EmberEntity& entity, const Atla
 		auto newTerrainArea = std::make_unique<Terrain::TerrainArea>(entity);
 		auto newTerrainAreaPtr = newTerrainArea.get();
 		auto listener = std::make_unique<TerrainEffectorListener>(entity);
-		listener->EventEntityBeingDeleted.connect([this, &entity]() { entityBeingDeleted(entity); });
-		listener->EventEntityMoved.connect([this, &entity, newTerrainAreaPtr]() { entityMoved(entity, *newTerrainAreaPtr); });
-		listener->EventEntityModeChanged.connect([this, &entity, newTerrainAreaPtr]() { entityModeChanged(entity, *newTerrainAreaPtr); });
-		auto result = mAreas.insert(std::make_pair(&entity, std::make_pair(std::move(newTerrainArea), std::move(listener))));
+		listener->EventEntityBeingDeleted = [this, &entity]() { entityBeingDeleted(entity); };
+		listener->EventEntityMoved = [this, &entity, newTerrainAreaPtr]() { entityMoved(entity, *newTerrainAreaPtr); };
+		listener->EventEntityModeChanged = [this, &entity, newTerrainAreaPtr]() { entityModeChanged(entity, *newTerrainAreaPtr); };
+		auto result = mAreas.emplace(&entity, std::make_pair(std::move(newTerrainArea), std::move(listener)));
 		if (result.second) {
 			terrainArea = result.first->second.first.get();
+		} else {
+			return;
 		}
 	} else {
 		terrainArea = I->second.first.get();
