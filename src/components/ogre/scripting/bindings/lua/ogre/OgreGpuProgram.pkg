@@ -144,15 +144,6 @@ namespace Ogre {
 		*/
 		virtual bool isVertexTextureFetchRequired(void) const;
 
-		/** Sets whether this geometry program requires adjacency information
-			from the input primitives.
-		*/
-		virtual void setAdjacencyInfoRequired(bool r);
-		/** Returns whether this geometry program requires adjacency information 
-			from the input primitives.
-		*/
-		virtual bool isAdjacencyInfoRequired(void) const;
-		
 		/** Get a reference to the default parameters which are to be used for all
 			uses of this program.
 		@remarks
