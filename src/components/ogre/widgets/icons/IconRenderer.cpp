@@ -38,6 +38,7 @@
 #include <sigc++/bind.h>
 
 #include <utility>
+#include <sigc++/connection.h>
 
 namespace Ember {
 namespace OgreView {
@@ -70,21 +71,18 @@ void IconRenderer::render(const std::string& modelName, Icon* icon) {
 		model->setUseInstancing(false);
 		model->load();
 		if (model->isLoaded()) {
-			render(model, icon);
+			mWorker->render(model, icon, icon->getImageStoreEntry());
 		} else {
+			auto connection = std::make_shared<sigc::connection>();
 			//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
-			model->Reloaded.connect([=] { renderDelayed(model, icon); });
+			*connection = model->Reloaded.connect([=] {
+				mWorker->render(model, icon, icon->getImageStoreEntry());
+				connection->disconnect();
+			});
 		}
 	}
 }
 
-void IconRenderer::render(const std::shared_ptr<Model::Model>& model, Icon* icon) {
-	mWorker->render(model, icon, icon->getImageStoreEntry());
-}
-
-void IconRenderer::renderDelayed(const std::shared_ptr<Model::Model>& model, Icon* icon) {
-	render(model, icon);
-}
 
 void IconRenderer::performRendering(Model::Model* model, Icon*) {
 

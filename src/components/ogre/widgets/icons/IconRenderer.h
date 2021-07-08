@@ -203,14 +203,6 @@ public:
      */
     void render(const std::string& modelName, Icon* icon);
 
-	/**
-	* Renders the Model onto the Icon. Note that depending on the IconRenderWorker used this might not occur on the same frame.
-	* Make sure to call setWorker before calling this method.
-	* @param model The Model to render. Note that after calling this ownership of the Model is transferred to this instance, which takes care of the proper destruction of it.
-	* @param icon The icon to render to.
-	*/
-	void render(const std::shared_ptr<Model::Model>& model, Icon* icon);
-
     /**
      * Gets the SimpleRenderContext used for the rendering.
      * @return
@@ -246,12 +238,6 @@ protected:
 	std::unique_ptr<IconRenderWorker> mWorker;
 	SceneNodeProvider mSceneNodeProvider;
 
-	/**
-	 * @brief Call this when the model is being rendered in a backround thread, and we want to render it to the icon once it's done.
-	 * @param model The model.
-	 * @param icon The icon.
-	 */
-	void renderDelayed(const std::shared_ptr<Model::Model>& model, Icon* icon);
 };
 
 }

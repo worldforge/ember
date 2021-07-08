@@ -100,7 +100,10 @@ void ModelDefinition::reloadModels() {
 		auto I = mLoadingListeners.begin();
 		Model* model = *I;
 		if (model->loadAssets()) {
-			mLoadingListeners.erase(I);
+			//The model might have been removed already as a result of emitting Reloaded, so we need to check for that.
+			if (I == mLoadingListeners.begin()) {
+				mLoadingListeners.erase(I);
+			}
 		}
 		if (!mLoadingListeners.empty()) {
 			MainLoopController::getSingleton().getEventService().runOnMainThread([this]() {
