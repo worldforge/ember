@@ -141,18 +141,23 @@ void OgreTerrainAdapter::loadScene() {
 }
 
 void OgreTerrainAdapter::reset() {
-	mTerrainGroup->removeAllTerrains();
+	if (mTerrainGroup) {
+		mTerrainGroup->removeAllTerrains();
 
-	//If we've created a world section we've moved ownership of the terrain group there.
-	if (mTerrainPagedWorldSection) {
-		mPagedWorld->destroySection(mTerrainPagedWorldSection);
-		mTerrainPagedWorldSection = nullptr;
-		mTerrainGroup = OGRE_NEW EmberTerrainGroup(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator);
-		setOgrePageSize(mTerrainPageSize);
-		mTerrainGroup->setPageDataProvider(mPageDataProvider);
-	} else {
-		OGRE_DELETE mTerrainGroup;
+		//If we've created a world section we've moved ownership of the terrain group there.
+		if (mTerrainPagedWorldSection) {
+			mPagedWorld->destroySection(mTerrainPagedWorldSection);
+			mTerrainPagedWorldSection = nullptr;
+		} else {
+			OGRE_DELETE mTerrainGroup;
+		}
+		mTerrainGroup = nullptr;
 	}
+//	mTerrainGroup = OGRE_NEW EmberTerrainGroup(&mSceneManager, mTerrainPageSize, mTerrainShownSignal, mTerrainAreaUpdated, mMaterialGenerator);
+//	setOgrePageSize(mTerrainPageSize);
+//	mTerrainGroup->setPageDataProvider(mPageDataProvider);
+
+
 //	if (mPagedWorld) {
 //		mPageManager->destroyWorld(mPagedWorld);
 //		mPagedWorld = nullptr;

@@ -63,7 +63,7 @@ void TerrainShaderParser::createShaders(const Atlas::Message::ListType& surfaces
 				if (paramsElem.isMap()) {
 					for (const auto& param : paramsElem.asMap()) {
 						if (param.second.isNum()) {
-							params[param.first] = param.second.asNum();
+							params[param.first] = (float)param.second.asNum();
 						}
 					}
 				}

@@ -45,7 +45,7 @@ public:
 	 */
 	explicit TerrainShaderParser(TerrainHandler& terrainHandler);
 
-	virtual ~TerrainShaderParser();
+	~TerrainShaderParser();
 
 	/**
 	 * @brief Parses surface data and creates appropriate Mercator::Shader instances.
