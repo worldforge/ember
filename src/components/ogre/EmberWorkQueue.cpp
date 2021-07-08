@@ -67,6 +67,7 @@ void EmberWorkQueue::processResponses() {
 			//We'll have to take this into account and process all terrain handlers directly.
 			if (mTerrainChannels.find(response->getRequest()->getChannel()) != mTerrainChannels.end()) {
 				processResponse(response);
+				OGRE_DELETE response;
 			} else {
 				mEventService.runOnMainThread([=] {
 					processResponse(response);

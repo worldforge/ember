@@ -427,7 +427,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, std::sha
 		int y = index.second;
 
 		//Add to our store of page bridges
-		mPageBridges.insert(PageBridgeStore::value_type(index, bridge));
+		mPageBridges.emplace(index, bridge);
 
 		S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 		auto I = mPages.find(index);
@@ -484,7 +484,7 @@ TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) co
 bool TerrainHandler::getHeight(const TerrainPosition& point, float& height) const {
 	WFMath::Vector<3> vector;
 
-	return mHeightMap->getHeightAndNormal(point.x(), point.y(), height, vector);
+	return mHeightMap->getHeightAndNormal((float)point.x(), (float)point.y(), height, vector);
 }
 
 void TerrainHandler::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const {
