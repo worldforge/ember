@@ -122,20 +122,23 @@ function Tasks.buildWidget()
 
     Tasks.buttonsWindow = Tasks.widget:getWindow("Buttons")
 
-    connect(connectors, emberOgre.EventWorldCreated, function(world)
-        createConnector(world.EventGotAvatar):connect(function()
-            Tasks.avatar = world:getAvatar()
-            local avatarEntity = Tasks.avatar:getEmberEntity()
-            connect(Tasks.connectors, avatarEntity.TaskAdded, "Tasks.TaskAdded")
-            connect(Tasks.connectors, avatarEntity.TaskRemoved, "Tasks.TaskRemoved")
-            --If there are already tasks, show the first one
-            if avatarEntity:getTasksSize() > 0 then
-                Tasks.SetCurrentTask(avatarEntity:getTaskIdFirst(), avatarEntity:getTaskFirst())
-            end
+	local con
+	connect(connectors, emberOgre.EventWorldCreated, function(world)
+		con = createConnector(world.EventGotAvatar):connect(function()
+			Tasks.avatar = world:getAvatar()
+			local avatarEntity = Tasks.avatar:getEmberEntity()
+			connect(Tasks.connectors, avatarEntity.TaskAdded, "Tasks.TaskAdded")
+			connect(Tasks.connectors, avatarEntity.TaskRemoved, "Tasks.TaskRemoved")
+			--If there are already tasks, show the first one
+			if avatarEntity:getTasksSize() > 0 then
+				Tasks.SetCurrentTask(avatarEntity:getTaskIdFirst(), avatarEntity:getTaskFirst())
+			end
 
-        end)
+		end)
     end)
-
+	connect(connectors, emberOgre.EventWorldDestroyed, function()
+		con = null
+	end)
     --	createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 
     -- Start with 6 buttons

@@ -47,7 +47,7 @@ scriptingService = emberServices:getScriptingService()
 --The console can be used for debug output.
 console = Ember.ConsoleBackend:getSingleton()
 
---Global list of connectors, mainly used for the boottrapping of widgets
+--Global list of connectors, mainly used for the bootstrapping of widgets
 connectors = {}
 
 --loads a lua script

@@ -1214,7 +1214,7 @@ function EntityEditor:editEntity(entity)
 	self:knowledgeRefresh()
 
 
-	local goalInfoConnector = createConnector(self.instance.helper.EventGotGoalInfo):connect(function(element)
+	self.instance.goalInfoConnector = createConnector(self.instance.helper.EventGotGoalInfo):connect(function(element)
 		if element:isMap() then
 			local goalMap = element:asMap()
 			local reportElem = goalMap:get("report")
@@ -1843,6 +1843,7 @@ function EntityEditor:buildWidget()
 			self.widget:getWindow("DumpWorld"):subscribeEvent("Clicked", function(args)
 
 				local filename = self.exportFilenameWindow:getText()
+				local connectors = {}
 
 				if filename ~= "" then
 					local worldDumper = Ember.EntityExporter:new(emberServices:getServerService():getAccount())
@@ -1861,14 +1862,16 @@ function EntityEditor:buildWidget()
 							return stats.entitiesReceived .. " entities, " .. stats.mindsReceived .. " minds dumped."
 						end
 					end
-					createConnector(worldDumper.EventCompleted):connect(function()
+					connect(connectors, worldDumper.EventCompleted, function()
 
 						self.widget:getWindow("DumpStatus"):setText("Done dumping.\n" .. authorDumpInfo())
 						cancelButton.method = nil
 						worldDumper:delete()
 						enableOk()
+						connectors = {}
 					end)
-					createConnector(worldDumper.EventProgress):connect(function()
+
+					connect(connectors, worldDumper.EventProgress, function()
 						self.widget:getWindow("DumpStatus"):setText("Dumping...\n" .. authorDumpInfo())
 					end)
 					cancelButton.method = function()
@@ -1877,6 +1880,7 @@ function EntityEditor:buildWidget()
 						enableOk()
 						cancelButton.method = nil
 						worldDumper:delete()
+						connectors = {}
 					end
 					exportsOverlay:setVisible(true)
 					worldDumper:start(emberServices:getConfigService():getHomeDirectory(Ember.BaseDirType_DATA) .. "/entityexport/" .. filename, self.instance.entity:getId())

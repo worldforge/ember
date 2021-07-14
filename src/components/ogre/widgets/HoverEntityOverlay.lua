@@ -9,7 +9,7 @@ function HoverEntityOverlay:buildWidget(world)
 
 	local entityPickListener = world:getEntityPickListener()
  	connect(self.connectors, entityPickListener.EventPickedEntity, self.pickedEntity, self)
-    
+
 	self.widget:loadMainSheet("HoverEntityOverlay.layout", "HoverEntityOverlay")
 	self.mainView = self.widget:getMainWindow()
 	self.entityName = self.widget:getWindow("EntityName")
@@ -29,7 +29,7 @@ function HoverEntityOverlay:pickedEntity(results, args)
 		local entity = results[0].entity
 		self.widget:show()
 		self.overlayShown = true
-		
+
 		local name
 		--if the entity has a name, use it, else use the type name
 		--perhaps we should prefix the type name with an "a" or "an"?
@@ -41,13 +41,13 @@ function HoverEntityOverlay:pickedEntity(results, args)
 			end
 		else
 			name = entity:getType():getName()
-		end	
+		end
 		self.entityName:setText(name)
-		
-		
+
+
 		localPosition.x = localPosition.x - self.widget:getMainWindow():getPixelSize().width * 0.5
 		localPosition.y = localPosition.y - self.widget:getMainWindow():getPixelSize().height - 5
-		
+
 		--Make sure the menu is fully contained within the main window
 		if localPosition.x < 0 then
 			localPosition.x = 0
@@ -55,7 +55,7 @@ function HoverEntityOverlay:pickedEntity(results, args)
 		if localPosition.y < 0 then
 			localPosition.y = 0
 		end
-	
+
 --[[		local mainWindowSize = root:getPixelSize()
 		if localPosition.x + width > mainWindowSize.width then
 			localPosition.x = mainWindowSize.width - width
@@ -63,17 +63,17 @@ function HoverEntityOverlay:pickedEntity(results, args)
 		if localPosition.y + height > mainWindowSize.height then
 			localPosition.y = mainWindowSize.height - height
 		end
-	--]]	
-		
+	--]]
+
 		local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,localPosition.x), CEGUI.UDim(0,localPosition.y))
 		self.widget:getMainWindow():setPosition(uPosition)
-		
+
 		if entity:hasProperty("message") then
 			local messageElement = entity:valueOfProperty("message")
 			if messageElement:isString() and messageElement:asString() ~= "" then
 				self.messageText:setVisible(true)
 				self.messageText:setText(messageElement:asString())
-				
+
 				local verticalExtent = Ember.Cegui.Helper:calculateRenderedCentredStringVerticalExtent(self.messageText)
 				--padding
 				verticalExtent = verticalExtent + 4
@@ -85,7 +85,7 @@ function HoverEntityOverlay:pickedEntity(results, args)
 		else
 			self.messageText:setVisible(false)
 		end
-		
+
 	end
 end
 
@@ -109,19 +109,22 @@ function HoverEntityOverlay:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
+local con
 connect(connectors, emberOgre.EventWorldCreated, function(world)
-	createConnector(world.EventGotAvatar):connect(function()
-		hoverEntityOverlay = {connectors={}, overlayShown=false}
-		setmetatable(hoverEntityOverlay, {__index = HoverEntityOverlay})
-		
+	con = createConnector(world.EventGotAvatar):connect(function()
+		hoverEntityOverlay = { connectors = {}, overlayShown = false }
+		setmetatable(hoverEntityOverlay, { __index = HoverEntityOverlay })
+
 		hoverEntityOverlay:buildWidget(world)
 		connect(hoverEntityOverlay.connectors, emberOgre.EventWorldDestroyed, function()
-				hoverEntityOverlay:shutdown()
-				hoverEntityOverlay = nil
-			end
+			hoverEntityOverlay:shutdown()
+			hoverEntityOverlay = nil
+		end
 		)
-	end
-	)
-end
-)
+	end)
 
+end)
+
+connect(connectors, emberOgre.EventWorldDestroyed, function()
+	con = null
+end)
