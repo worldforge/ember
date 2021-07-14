@@ -1,0 +1,28 @@
+$#include <wfmath/point.h>
+
+
+namespace WFMath {
+    class Point<T> {
+        TEMPLATE_BIND(T, 2, 3)
+        ~Point();
+    }
+    class Vector<T> {
+        TEMPLATE_BIND(T, 2, 3)
+        ~Vector();
+    }
+    class AxisBox<T> {
+        TEMPLATE_BIND(T, 2, 3)
+        ~AxisBox();
+    }
+    class Polygon<T> {
+        TEMPLATE_BIND(T, 2, 3)
+        ~Polygon();
+    }
+     class RotBox<T> {
+         TEMPLATE_BIND(T, 2, 3)
+         ~RotBox();
+     }
+     class Quaternion {
+        ~Quaternion();
+    }
+}

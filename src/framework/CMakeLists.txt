@@ -17,5 +17,6 @@ wf_generate_lua_bindings(bindings/lua/Framework)
 wf_generate_lua_bindings(bindings/lua/atlas/Atlas)
 wf_generate_lua_bindings(bindings/lua/eris/Eris)
 wf_generate_lua_bindings(bindings/lua/varconf/Varconf)
+wf_generate_lua_bindings(bindings/lua/wfmath/WFMath)
 
 

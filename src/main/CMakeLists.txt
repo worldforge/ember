@@ -20,6 +20,7 @@ set(SCRIPT_LIBRARIES
         $<TARGET_OBJECTS:Representations_bindings_lua>
         $<TARGET_OBJECTS:Ogre_bindings_lua>
         $<TARGET_OBJECTS:Helpers_bindings_lua>
+        $<TARGET_OBJECTS:WFMath_bindings_lua>
         )
 
 set(APP_LIBRARIES

@@ -67,6 +67,8 @@ TOLUA_API int tolua_Atlas_open(lua_State* tolua_S);
 
 TOLUA_API int tolua_Varconf_open(lua_State* tolua_S);
 
+TOLUA_API int tolua_WFMath_open(lua_State* tolua_S);
+
 TOLUA_API int tolua_Lua_open(lua_State* tolua_S);
 
 TOLUA_API int tolua_ConnectorDefinitions_open(lua_State* tolua_S);
@@ -401,6 +403,7 @@ void Application::initializeServices() {
 	tolua_Lua_open(luaProvider->getLuaState());
 	tolua_Framework_open(luaProvider->getLuaState());
 	tolua_EmberOgre_open(luaProvider->getLuaState());
+	tolua_WFMath_open(luaProvider->getLuaState());
 	tolua_Eris_open(luaProvider->getLuaState());
 	tolua_EmberServices_open(luaProvider->getLuaState());
 	tolua_Helpers_open(luaProvider->getLuaState());

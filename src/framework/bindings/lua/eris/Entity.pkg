@@ -18,7 +18,7 @@ class Entity {
 
     /** setup an observer so that the specified slot is fired when the
     named attribue's value changes */
-    sigc::connection observe(const std::string& attr, const PropertyChangedSlot& aslot, bool evaluateNow);
+//    sigc::connection observe(const std::string& attr, const PropertyChangedSlot& aslot, bool evaluateNow);
 
 // accesors
     /// retrieve the unique entity ID
@@ -38,7 +38,8 @@ class Entity {
     const Atlas::Message::MapType& getProperties() const;
     
     bool isMoving() const;
-        
+
+/**
     WFMath::Point<3> getPredictedPos() const;
     
     WFMath::Vector<3> getPredictedVelocity() const;   
@@ -46,7 +47,7 @@ class Entity {
 	const WFMath::Vector<3> & getVelocity(void) const;
 	
 	const WFMath::Quaternion & getOrientation(void) const;
-	
+*/
 	const WFMath::AxisBox<3> & getBBox(void) const;
 
     bool hasBBox() const;
