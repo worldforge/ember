@@ -85,6 +85,7 @@ InspectWidget::InspectWidget(GUIManager& guiManager) :
 		mInfo(nullptr),
 		mCurrentEntity(nullptr),
 		mChangedThisFrame(false) {
+	guiManager.EventFrameStarted.connect(sigc::mem_fun(this, &InspectWidget::frameStarted));
 	loadMainSheet("InspectWidget.layout", "InspectWidget/");
 	mMainWindow->setVisible(false);
 
@@ -210,7 +211,7 @@ void InspectWidget::startInspecting(EmberEntity* entity) {
 
 }
 
-void InspectWidget::frameStarted(const Ogre::FrameEvent& evt) {
+void InspectWidget::frameStarted(float timeSinceLastFrame) {
 	if (mMainWindow->isVisible() && mCurrentEntity && mChangedThisFrame) {
 		showEntityInfo(mCurrentEntity);
 	}

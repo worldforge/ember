@@ -48,7 +48,7 @@ public:
 
 	~InspectWidget() override;
 
-	void frameStarted(const Ogre::FrameEvent& evt) override;
+	void frameStarted(float timeSinceLastFrame);
 
 	const ConsoleCommandWrapper Inspect;
 

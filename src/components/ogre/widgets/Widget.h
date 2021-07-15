@@ -101,7 +101,7 @@ public:
 	 *    Called each frame.
 	 * @param evt 
 	 */
-	virtual void frameStarted(const Ogre::FrameEvent& evt);
+	void frameStarted(const Ogre::FrameEvent& evt);
 
 
 	/**

@@ -108,8 +108,6 @@ class GUIManager: public Singleton<GUIManager>, Ogre::FrameListener, public virt
 {
 public:
 
-	typedef std::vector<std::unique_ptr<Gui::Widget>> WidgetStore;
-
 	static const std::string SCREENSHOT;
 	static const std::string TOGGLEINPUTMODE;
 
@@ -343,7 +341,7 @@ protected:
 	/**
 	 all loaded widgets are stored here
 	 */
-	WidgetStore mWidgets;
+	std::vector<std::unique_ptr<Gui::Widget>> mWidgets;
 
 	/**
 	 * @brief An instance of our own CEGUI RenderedStringParser which will better handle coloured strings.
