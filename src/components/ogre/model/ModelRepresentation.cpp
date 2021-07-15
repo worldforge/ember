@@ -29,7 +29,6 @@
 #include "components/ogre/sound/SoundEntity.h"
 
 #include "components/ogre/MousePicker.h"
-#include "components/ogre/EmberEntityFactory.h"
 #include "components/ogre/MotionManager.h"
 #include "components/ogre/Scene.h"
 #include "components/ogre/Convert.h"
@@ -71,23 +70,20 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, std::unique_ptr<Mo
 		mMapping(mapping),
 		mCurrentMovementAction(nullptr),
 		mActiveAction(nullptr),
-		mTaskAction(nullptr),
 		mSoundEntity(nullptr),
 		mUserObject(std::make_shared<EmberEntityUserObject>(EmberEntityUserObject{entity})),
 		mBulletCollisionDetector(std::make_unique<BulletCollisionDetector>(scene.getBulletWorld())) {
 	mBulletCollisionDetector->collisionInfo = EntityCollisionInfo{&entity, false};
 	//Only connect if we have actions to act on
 	if (!mModel->getDefinition()->getActionDefinitions().empty()) {
-		mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
-		mEntity.TaskAdded.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskAdded));
-		mEntity.TaskRemoved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskRemoved));
+		mEntity.EventActionsChanged.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_ActionsChanged));
 	}
 	//Only connect if we have particles
 	if (mModel->hasParticles()) {
 		mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
 	}
 
-//listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
+	//listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
 	mModel->Resetting.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Resetting));
 	mEntity.EventPositioningModeChanged.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_PositioningModeChanged));
@@ -231,7 +227,7 @@ void ModelRepresentation::model_Reloaded() {
 	//Check if there's any ongoing tasks which we should create an action for.
 	if (!mEntity.getTasks().empty()) {
 		//select the first available task
-		createActionForTask(*mEntity.getTasks().begin()->second);
+//		createActionForTask(*mEntity.getTasks().begin()->second);
 	}
 	//Retrigger a movement change so that animations can be stopped and started now that the model has changed.
 	parseMovementMode(mEntity.getPredictedVelocity());
@@ -245,7 +241,6 @@ void ModelRepresentation::model_Resetting() {
 	}
 	mActiveAction = nullptr;
 	mCurrentMovementAction = nullptr;
-	mTaskAction = nullptr;
 }
 
 void ModelRepresentation::entity_Changed(const std::set<std::string>& attributeIds) {
@@ -270,20 +265,20 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 }
 
 Action* ModelRepresentation::getActionForMovement(const WFMath::Vector<3>& velocity) const {
-	float mag = 0;
+	double mag = 0;
 	if (velocity.isValid()) {
 		mag = velocity.mag();
 	}
 
 	if (mEntity.getPositioningMode() == EmberEntity::PositioningMode::SUBMERGED || mEntity.getPositioningMode() == EmberEntity::PositioningMode::FLOATING) {
-		if (mag < 0.01f) {
+		if (mag < 0.01) {
 			return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_TREAD_WATER, ACTION_SWIM, ACTION_WALK});
 		} else {
 			return getFirstAvailableAction(ActivationDefinition::MOVEMENT, {ACTION_SWIM, ACTION_TREAD_WATER, ACTION_WALK});
 		}
 	} else {
 
-		if (mag < 0.01f) {
+		if (mag < 0.01) {
 			return mModel->getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 		} else {
 
@@ -384,14 +379,10 @@ void ModelRepresentation::updateAnimation(float timeSlice) {
 	} else if (mActiveAction) {
 		bool continuePlay = false;
 		mActiveAction->animations.addTime(timeSlice, continuePlay);
-		if (!continuePlay) {
-			mActiveAction->animations.reset();
-			mActiveAction = nullptr;
-		}
-	} else if (mTaskAction) {
-		//Ignore the "continuePlay" for tasks.
-		bool continuePlay = false;
-		mTaskAction->animations.addTime(timeSlice, continuePlay);
+//		if (!continuePlay) {
+//			mActiveAction->animations.reset();
+//			mActiveAction = nullptr;
+//		}
 	} else if (mCurrentMovementAction) {
 		bool continuePlay = false;
 		mCurrentMovementAction->animations.addTime(timeSlice, continuePlay);
@@ -405,52 +396,61 @@ void ModelRepresentation::resetAnimations() {
 	if (mActiveAction) {
 		mActiveAction->animations.reset();
 	}
-	if (mTaskAction) {
-		mTaskAction->animations.reset();
-	}
 }
 
-void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo) {
-	const std::string& name = act->getParent();
+void ModelRepresentation::entity_ActionsChanged(const std::vector<ActionChange>& actionChanges) {
+	for (auto& change : actionChanges) {
+		if (change.changeType == ActionChange::ChangeType::Removed) {
+			if (mActiveAction) {
+				mActiveAction->animations.reset();
+				mActiveAction = nullptr;
+			}
+		}
+	}
+	for (auto& change : actionChanges) {
+		if (change.changeType == ActionChange::ChangeType::Added) {
+			//TODO: handle transitions
+			if (mActiveAction) {
+				continue;
+			}
+			auto& name = change.entry.actionName;
 
-	// If there is a sound entity, ask it to play this action
-	if (mSoundEntity) {
-		mSoundEntity->playAction(name);
+			// If there is a sound entity, ask it to play this action
+			if (mSoundEntity) {
+				mSoundEntity->playAction(name);
+			}
+
+			Action* newAction = mModel->getAction(ActivationDefinition::ACTION, name);
+			if (!newAction) {
+				newAction = mModel->getAction(ActivationDefinition::TASK, name);
+			}
+
+			//If there's no action found, try to see if we have a "default action" defined to play instead.
+			if (!newAction) {
+				newAction = mModel->getAction(ActivationDefinition::ACTION, "default_action");
+			}
+
+			if (newAction) {
+				MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
+				mActiveAction = newAction;
+				resetAnimations();
+			}
+		}
 	}
 
-	Action* newAction = mModel->getAction(ActivationDefinition::ACTION, name);
-
-	//If there's no action found, try to see if we have a "default action" defined to play instead.
-	if (!newAction) {
-		newAction = mModel->getAction(ActivationDefinition::ACTION, "default_action");
-	}
-
-	if (newAction) {
-		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
-		mActiveAction = newAction;
-		resetAnimations();
-	}
 }
 
-void ModelRepresentation::entity_TaskAdded(const std::string& id, Eris::Task* task) {
-	createActionForTask(*task);
-}
 
-void ModelRepresentation::createActionForTask(const Eris::Task& task) {
-	Action* newAction = mModel->getAction(ActivationDefinition::TASK, task.name());
-	if (newAction) {
-		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
-		mTaskAction = newAction;
-		resetAnimations();
-	}
-}
+//
+//void ModelRepresentation::createActionForTask(const Eris::Task& task) {
+//	Action* newAction = mModel->getAction(ActivationDefinition::TASK, task.name());
+//	if (newAction) {
+//		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
+//		mTaskAction = newAction;
+//		resetAnimations();
+//	}
+//}
 
-void ModelRepresentation::entity_TaskRemoved(const std::string& id, Eris::Task*) {
-	if (mTaskAction) {
-		mTaskAction->animations.reset();
-		mTaskAction = nullptr;
-	}
-}
 
 void ModelRepresentation::entity_PositioningModeChanged(EmberEntity::PositioningMode newMode) {
 	if (newMode == EmberEntity::PositioningMode::PROJECTILE) {

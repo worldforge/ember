@@ -28,6 +28,7 @@
 #include <Eris/Usage.h>
 
 #include <functional>
+#include <memory>
 
 namespace Eris {
 class View;
@@ -41,6 +42,31 @@ struct IEntityVisitor;
 struct IHeightProvider;
 
 class EntityTalk;
+
+struct ActionEntry {
+	ActionEntry(std::string actionName,
+				double startTime,
+				boost::optional<double> endTime)
+			: actionName(std::move(actionName)), startTime(startTime), endTime(endTime) {}
+
+	std::string actionName;
+	double startTime;
+	boost::optional<double> endTime;
+};
+
+
+struct ActionChange {
+	enum class ChangeType {
+		Added, Removed, Updated
+	};
+
+	ActionChange(ChangeType changeType, ActionEntry entry)
+			: changeType(changeType), entry(std::move(entry)) {}
+
+	ChangeType changeType;
+	ActionEntry entry;
+	//const Atlas::Message::MapType& attributes;
+};
 
 
 /**
@@ -273,6 +299,8 @@ public:
 
 	void setCompositionMode(CompositionMode mode);
 
+	std::vector<ActionChange> processActionsChange(const Atlas::Message::Element& v);
+
 	sigc::signal<void, const EntityTalk&> EventTalk;
 
 	/**
@@ -281,6 +309,8 @@ public:
 	sigc::signal<void> EventChangedGraphicalRepresentation;
 
 	sigc::signal<void> EventAttachmentChanged;
+
+	sigc::signal<void, const std::vector<ActionChange>&> EventActionsChanged;
 
 	/**
 	 * Registers a global attribute change listener.
@@ -345,6 +375,8 @@ protected:
 	 * @brief An optional height provider attached to this entity.
 	 */
 	IHeightProvider* mHeightProvider;
+
+	Atlas::Message::MapType mActionsData;
 
 	/**
 	 *    @copydoc Eris::Entity::onTalk()

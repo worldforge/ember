@@ -37,6 +37,7 @@
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/MultiLineListFormatter.h>
 #include <sstream>
+#include <iostream>
 
 namespace Ember {
 
@@ -303,6 +304,24 @@ void EmberEntity::onPropertyChanged(const std::string& str, const Atlas::Message
 		parseUsages(mUsages, v);
 	} else if (str == "_usages") {
 		parseUsages(mUsagesProtected, v);
+	} else if (str == "actions") {
+		auto changes = processActionsChange(v);
+		if (!changes.empty()) {
+			for (auto& entry : changes) {
+				switch (entry.changeType) {
+					case ActionChange::ChangeType::Added:
+						std::cout << "Action " << entry.entry.actionName << " added." << std::endl;
+						break;
+					case ActionChange::ChangeType::Removed:
+						std::cout << "Action " << entry.entry.actionName << " removed." << std::endl;
+						break;
+					case ActionChange::ChangeType::Updated:
+						std::cout << "Action " << entry.entry.actionName << " updated." << std::endl;
+						break;
+				}
+			}
+			EventActionsChanged.emit(changes);
+		}
 	}
 
 	//Dispatch attribute changes to any global listeners.
@@ -311,6 +330,53 @@ void EmberEntity::onPropertyChanged(const std::string& str, const Atlas::Message
 	Entity::onPropertyChanged(str, v);
 
 }
+
+std::vector<ActionChange> EmberEntity::processActionsChange(const Atlas::Message::Element& v) {
+	std::vector<ActionChange> actionChanges;
+	if (!v.isMap()) {
+		//Remove all existing actions
+		for (auto& entry : mActionsData) {
+			actionChanges.emplace_back(ActionChange{ActionChange::ChangeType::Removed, ActionEntry{entry.first, 0, 0}});
+		}
+		mActionsData.clear();
+	} else if (mActionsData.empty()) {
+		auto& newMap = v.Map();
+		//All new actions
+		for (auto& newEntry: newMap) {
+			AtlasQuery::find<Atlas::Message::FloatType>(newEntry.second, "start_time", [&](const auto& startTime) {
+				ActionEntry actionEntry{newEntry.first, startTime, 0};
+				actionChanges.emplace_back(ActionChange{ActionChange::ChangeType::Added, std::move(actionEntry)});
+			});
+		}
+		mActionsData = newMap;
+	} else {
+		auto& newMap = v.Map();
+		auto existingMap = mActionsData;
+		for (auto& newEntry: newMap) {
+			auto existingI = existingMap.find(newEntry.first);
+			if (existingI == existingMap.end()) {
+				AtlasQuery::find<Atlas::Message::FloatType>(newEntry.second, "start_time", [&](const auto& startTime) {
+					ActionEntry actionEntry{newEntry.first, startTime, 0};
+					actionChanges.emplace_back(ActionChange{ActionChange::ChangeType::Added, std::move(actionEntry)});
+				});
+			} else {
+				AtlasQuery::find<Atlas::Message::FloatType>(newEntry.second, "start_time", [&](const auto& startTime) {
+					ActionEntry actionEntry{newEntry.first, startTime, 0};
+					actionChanges.emplace_back(ActionChange{ActionChange::ChangeType::Updated, std::move(actionEntry)});
+				});
+				existingMap.erase(existingI);
+			}
+		}
+		for (auto& entry: existingMap) {
+			actionChanges.emplace_back(ActionChange{ActionChange::ChangeType::Removed, ActionEntry{entry.first, 0, 0}});
+		}
+		mActionsData = newMap;
+	}
+
+	return actionChanges;
+
+}
+
 
 void EmberEntity::parsePositioningModeChange(const std::string& mode) {
 	PositioningMode newMode;
