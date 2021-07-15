@@ -1,4 +1,9 @@
 $#include <wfmath/point.h>
+$#include <wfmath/vector.h>
+$#include <wfmath/axisbox.h>
+$#include <wfmath/polygon.h>
+$#include <wfmath/rotbox.h>
+$#include <wfmath/quaternion.h>
 
 
 namespace WFMath {
