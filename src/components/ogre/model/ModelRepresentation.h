@@ -60,10 +60,6 @@ class Model;
 struct Action;
 class ModelMount;
 
-typedef std::list<Action*> ActionStore;
-typedef std::vector<ActionDefinition> ActionDefinitionsStore;
-typedef std::vector<SoundDefinition> SoundDefinitionsStore;
-typedef std::vector<Ogre::SceneNode*> SceneNodeStore;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -262,13 +258,13 @@ protected:
 	 These actions will be updated each frame.
 	 NOTE: we currently don't allow for multiple actions playing at the same time
 	 */
-	//ActionStore mActiveActions;
+	//std::list<Action*> mActiveActions;
 	Action* mActiveAction;
 
 	/**
 	 * @brief Active action being played as a result of a task being carried out.
 	 */
-	Action* mTaskAction;
+	//Action* mTaskAction;
 
 	/**
 	 * @brief The sound entity this entity is connected to.
@@ -302,8 +298,8 @@ protected:
 
 	void entity_Changed(const std::set<std::string>& attributeIds);
 
-	void entity_TaskAdded(const std::string& id, Eris::Task* task);
-	void entity_TaskRemoved(const std::string& id, Eris::Task* task);
+//	void entity_TaskAdded(const std::string& id, Eris::Task* task);
+//	void entity_TaskRemoved(const std::string& id, Eris::Task* task);
 
 	void entity_PositioningModeChanged(EmberEntity::PositioningMode newMode);
 
@@ -323,7 +319,9 @@ protected:
 	 *    Overridden from Eris::Entity
 	 * @param act
 	 */
-	void entity_Acted(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo);
+//	void entity_Acted(const Atlas::Objects::Operation::RootOperation& act, const Eris::TypeInfo& typeInfo);
+
+	void entity_ActionsChanged(const std::vector<ActionChange>& actionChanges);
 
 	/**
 	 * @brief When the Model is reloaded we need to update with the new values.
