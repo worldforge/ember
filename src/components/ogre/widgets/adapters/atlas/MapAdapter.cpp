@@ -118,7 +118,7 @@ void MapAdapter::removeAdapters() {
 	::Atlas::Message::MapType attributes;
 	for (auto& item : mAdapters) {
 		auto& adapter = item.second.Adapter;
-		if (adapter->hasChanges() && !adapter->isRemoved()) {
+		if (adapter && adapter->hasChanges() && !adapter->isRemoved()) {
 			attributes.emplace(item.first, adapter->getChangedElement());
 		}
 	}
