@@ -307,19 +307,6 @@ void EmberEntity::onPropertyChanged(const std::string& str, const Atlas::Message
 	} else if (str == "actions") {
 		auto changes = processActionsChange(v);
 		if (!changes.empty()) {
-			for (auto& entry : changes) {
-				switch (entry.changeType) {
-					case ActionChange::ChangeType::Added:
-						std::cout << "Action " << entry.entry.actionName << " added." << std::endl;
-						break;
-					case ActionChange::ChangeType::Removed:
-						std::cout << "Action " << entry.entry.actionName << " removed." << std::endl;
-						break;
-					case ActionChange::ChangeType::Updated:
-						std::cout << "Action " << entry.entry.actionName << " updated." << std::endl;
-						break;
-				}
-			}
 			EventActionsChanged.emit(changes);
 		}
 	}

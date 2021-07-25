@@ -225,10 +225,11 @@ void ModelRepresentation::model_Reloaded() {
 	initFromModel();
 	reactivatePartActions();
 	//Check if there's any ongoing tasks which we should create an action for.
-	if (!mEntity.getTasks().empty()) {
-		//select the first available task
-//		createActionForTask(*mEntity.getTasks().begin()->second);
-	}
+	//TODO: look for any ongoing "actions" and create actions for them.
+//	if (!mEntity.getTasks().empty()) {
+//		//select the first available task
+////		createActionForTask(*mEntity.getTasks().begin()->second);
+//	}
 	//Retrigger a movement change so that animations can be stopped and started now that the model has changed.
 	parseMovementMode(mEntity.getPredictedVelocity());
 	updateCollisionDetection();
