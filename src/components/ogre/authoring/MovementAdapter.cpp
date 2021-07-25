@@ -30,7 +30,6 @@
 #include "../AvatarTerrainCursor.h"
 #include "../Convert.h"
 #include <OgreRoot.h>
-#include <OgreCamera.h>
 
 #include <utility>
 

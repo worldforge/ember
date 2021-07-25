@@ -61,6 +61,8 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 
 	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseEntersSurface, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseEnters, this)));
 	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseLeavesSurface, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseLeaves, this)));
+	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventDragDropItemEnters, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseEnters, this)));
+	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventDragDropItemLeaves, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseLeaves, this)));
 
 	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseButtonDown, this)));
 	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonUp, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseButtonUp, this)));
@@ -122,9 +124,11 @@ void CursorWorldListener::afterEventProcessing(float timeslice) {
 }
 
 bool CursorWorldListener::windowMouseEnters(const CEGUI::EventArgs& args) {
-	mMouseMovesConnection = mMainWindow.subscribeEvent(CEGUI::Window::EventMouseMove, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseMoves, this));
-	mHoverEventSent = false;
-	mIsCursorInWorld = true;
+	if (!mIsCursorInWorld) {
+		mMouseMovesConnection = mMainWindow.subscribeEvent(CEGUI::Window::EventMouseMove, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseMoves, this));
+		mHoverEventSent = false;
+		mIsCursorInWorld = true;
+	}
 	return true;
 }
 
