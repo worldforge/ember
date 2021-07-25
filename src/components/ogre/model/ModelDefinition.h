@@ -304,17 +304,12 @@ struct ActivationDefinition {
 		/**
 		 * @brief Activation through change of movement type.
 		 */
-				MOVEMENT,
+		MOVEMENT,
 
 		/**
 		 * @brief Activation through an entity action.
 		 */
-				ACTION,
-
-		/**
-		 * @brief Activation through a task being carried out.
-		 */
-				TASK
+		ACTION
 	};
 
 	/**
@@ -396,31 +391,31 @@ public:
 		/**
 		 * @brief Scale in all sizes, so that the bounding box of the model exactly matches the entity bounding box.
 		 */
-				MODEL_ALL,
+		MODEL_ALL,
 
 		/**
 		 * @brief Perform no scaling of the model.
 		 */
-				MODEL_NONE,
+		MODEL_NONE,
 
 		/**
 		 * @brief Scale the model so that it matches the width of the entity bounding box.
 		 */
-				MODEL_WIDTH,
+		MODEL_WIDTH,
 
 		/**
 		 * @brief Scale the model so that it matches the depth of the entity bounding box.
 		 */
-				MODEL_DEPTH,
+		MODEL_DEPTH,
 
 		/**
 		 * @brief Scale the model so that it matches the height of the entity bounding box.
 		 */
-				MODEL_HEIGHT,
+		MODEL_HEIGHT,
 		/**
 		 * @brief Scale the model so that it matches all axis, and also translate the model so that it perfectly fits the entity bbox.
 		 */
-				MODEL_FIT
+		MODEL_FIT
 	};
 
 	ModelDefinition();

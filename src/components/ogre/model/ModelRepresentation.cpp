@@ -422,9 +422,6 @@ void ModelRepresentation::entity_ActionsChanged(const std::vector<ActionChange>&
 			}
 
 			Action* newAction = mModel->getAction(ActivationDefinition::ACTION, name);
-			if (!newAction) {
-				newAction = mModel->getAction(ActivationDefinition::TASK, name);
-			}
 
 			//If there's no action found, try to see if we have a "default action" defined to play instead.
 			if (!newAction) {

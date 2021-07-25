@@ -422,8 +422,6 @@ void XMLModelDefinitionSerializer::readActivations(TiXmlElement* activationsNode
 				def.type = ActivationDefinition::MOVEMENT;
 			} else if (typeString == "action") {
 				def.type = ActivationDefinition::ACTION;
-			} else if (typeString == "task") {
-				def.type = ActivationDefinition::TASK;
 			} else {
 				S_LOG_WARNING("No recognized activation type: " << typeString);
 				continue;
@@ -1015,9 +1013,6 @@ void XMLModelDefinitionSerializer::exportActions(const ModelDefinitionPtr& model
 					break;
 				case ActivationDefinition::ACTION:
 					type = "action";
-					break;
-				case ActivationDefinition::TASK:
-					type = "task";
 					break;
 			}
 			activationElem.SetAttribute("type", type);
