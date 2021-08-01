@@ -58,7 +58,7 @@ public:
 
 private:
 
-    void objectArrived(const Atlas::Objects::Root& obj) override;
+    void objectArrived(Atlas::Objects::Root obj) override;
 
     /**
      * @brief Retain a copy of the last decoded object.

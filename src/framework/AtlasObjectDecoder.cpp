@@ -34,10 +34,10 @@ Atlas::Objects::Root AtlasObjectDecoder::getLastObject()
 	return mLastObject;
 }
 
-void AtlasObjectDecoder::objectArrived(const Atlas::Objects::Root& obj)
+void AtlasObjectDecoder::objectArrived(Atlas::Objects::Root obj)
 {
 	EventObjectArrived(obj);
-	mLastObject = obj;
+	mLastObject = std::move(obj);
 }
 
 

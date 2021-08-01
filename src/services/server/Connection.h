@@ -58,7 +58,7 @@ public:
 
 	void send(const Atlas::Objects::Root &obj) override;
 protected:
-	void objectArrived(const Atlas::Objects::Root& obj) override;
+	void objectArrived(Atlas::Objects::Root obj) override;
 
 	/**
 	 * @brief An optional listener.

@@ -49,7 +49,7 @@ private:
 	 *
 	 * @param obj
 	 */
-	void objectArrived(const Atlas::Objects::Root & obj) override;
+	void objectArrived(Atlas::Objects::Root obj) override;
 public:
 
 	/**

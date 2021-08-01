@@ -49,7 +49,7 @@ void Connection::send(const Atlas::Objects::Root &obj)
 	Eris::Connection::send(obj);
 }
 
-void Connection::objectArrived(const Atlas::Objects::Root& obj)
+void Connection::objectArrived(Atlas::Objects::Root obj)
 {
 	if (mListener) {
 		try {
@@ -58,7 +58,7 @@ void Connection::objectArrived(const Atlas::Objects::Root& obj)
 			S_LOG_WARNING("Error when logging receiving of object."<< ex);
 		}
 	}
-	Eris::Connection::objectArrived(obj);
+	Eris::Connection::objectArrived(std::move(obj));
 }
 
 }

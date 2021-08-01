@@ -36,7 +36,7 @@ AtlasMessageLoader::AtlasMessageLoader(const Atlas::Objects::Factories& factorie
 
 AtlasMessageLoader::~AtlasMessageLoader() = default;
 
-void AtlasMessageLoader::objectArrived(const Root & obj)
+void AtlasMessageLoader::objectArrived(Root obj)
 {
 	if (obj->isDefaultId()) {
 		S_LOG_WARNING("Object without ID read from file.");
@@ -46,7 +46,7 @@ void AtlasMessageLoader::objectArrived(const Root & obj)
 	if (mMessages.find(id) != mMessages.end()) {
 		S_LOG_WARNING("Duplicate object ID '"<< id << "' loaded.");
 	}
-	mMessages[id] = obj;
+	mMessages[id] = std::move(obj);
 	++mCount;
 }
 int AtlasMessageLoader::count()
