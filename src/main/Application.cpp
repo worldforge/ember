@@ -363,7 +363,8 @@ void Application::mainLoop() {
 
 			mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 
-			if (updatedRendering && timeFrame.getElapsedTime().count() > (timePerFrame.count() * 1.4f)) {
+			//Check if it took more than 140% of the allotted time (but avoid floats when doing the comparisons).
+			if (updatedRendering && (timeFrame.getElapsedTime().count() * 1000000) > (timePerFrame.count() * 1400000)) {
 				S_LOG_VERBOSE("Frame took too long.");
 			}
 
@@ -515,7 +516,7 @@ void Application::start() {
 		S_LOG_CRITICAL("Unknown fatal error during startup.");
 		return;
 	}
-	Input::getSingleton().startInteraction();
+	mInput.startInteraction();
 
 	startScripting();
 
