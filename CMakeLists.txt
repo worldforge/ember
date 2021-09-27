@@ -74,12 +74,6 @@ if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     add_definitions(-DEMBER_PROCESSEDMEDIAREPODIR="${CMAKE_BINARY_DIR}/ember-media-${MEDIA_VERSION}/media")
 endif (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 
-
-# We've been getting issues with memory corruption in boost when building with GCC -O2 flags, and it
-# seems to be related to the asio small memory block recycling code. We'll thus disable it to avoid the
-# crashes
-add_definitions(-DBOOST_ASIO_DISABLE_SMALL_BLOCK_RECYCLING)
-
 # On Windows there are some headers that define "min" and "max" as preprocessor macros, which messes up compilation. This tells them to stop.
 add_definitions(-DNOMINMAX)
 
