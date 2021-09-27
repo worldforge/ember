@@ -86,7 +86,7 @@ add_definitions(-DNOMINMAX)
 if (APPLE)
     #On Mac we're having trouble with "iconv" not being linked properly, so we'll do it here.
     link_libraries(iconv)
-endif()
+endif ()
 
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${PROJECT_BINARY_DIR}/generated)
 
@@ -419,6 +419,14 @@ install(DIRECTORY "${OGRE_MEDIA_DIR}/RTShaderLib" DESTINATION "${LOCAL_OGRE_MEDI
 install(DIRECTORY "${OGRE_MEDIA_DIR}/ShadowVolume" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
 
 add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR}")
+
+#It would be better if Bullet provided a header which specified how it was built...
+OPTION(BT_USE_DOUBLE_PRECISION "Using double precision with Bullet. This should match what Bullet has been compiled with." OFF)
+
+if (BT_USE_DOUBLE_PRECISION)
+    message(STATUS "Using double precision with Bullet. Make sure that Bullet is compiled with this too.")
+    add_definitions(-DBT_USE_DOUBLE_PRECISION=1)
+endif ()
 
 
 add_subdirectory(external)
