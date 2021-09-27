@@ -51,9 +51,9 @@ std::shared_ptr<btScaledBvhTriangleMeshShape> BulletWorld::createMeshShape(const
 		shape = buildTriangleMeshShape(meshPtr);
 	}
 
-	return std::shared_ptr<btScaledBvhTriangleMeshShape>(new btScaledBvhTriangleMeshShape(shape.get(), btVector3(1, 1, 1)), [shape](btScaledBvhTriangleMeshShape* p) {
+	return {new btScaledBvhTriangleMeshShape(shape.get(), btVector3(1, 1, 1)), [shape](btScaledBvhTriangleMeshShape* p) {
 		delete p;
-	});
+	}};
 
 
 }
@@ -82,6 +82,7 @@ std::shared_ptr<btBvhTriangleMeshShape> BulletWorld::buildTriangleMeshShape(cons
 	mesh.m_triangleIndexStride = indexStride;
 	mesh.m_numVertices = static_cast<int>(vertices->size() / 3);
 	mesh.m_vertexBase = reinterpret_cast<const unsigned char*>(vertices->data());
+	mesh.m_vertexType = PHY_FLOAT; //Force single precision.
 	mesh.m_vertexStride = vertStride;
 
 	triangleVertexArray->addIndexedMesh(mesh, PHY_INTEGER);
