@@ -26,6 +26,7 @@
 
 #include "Input.h"
 #include <SDL_scancode.h>
+#include <utility>
 #include <vector>
 #include <map>
 
@@ -44,7 +45,6 @@ class InputCommandMapper : public virtual sigc::trackable {
 public:
 	typedef std::multimap<std::string, std::string> KeyCommandStore;
 	typedef std::map<SDL_Scancode, std::string> KeyMapStore;
-	typedef std::vector<Input::InputMode> InputModeStore;
 	typedef std::vector<std::string> StringStore;
 
 	/**
@@ -119,7 +119,7 @@ public:
 	 * @brief Sets which modes this instance should be restricted to. An empty list will make it listen for all modes.
 	 * @param modes A collection of modes.
 	 */
-	void restrictToInputModes(InputModeStore modes);
+	void restrictToInputModes(std::vector<Input::InputMode> modes);
 
 	/**
 	 * @brief Sets which mode this instance should be restricted to.
@@ -178,7 +178,7 @@ protected:
 	/**
 	Stores the InputModes that this instance is restricted to listen to, if any.
 	*/
-	InputModeStore mInputModesRestriction;
+	std::vector<Input::InputMode> mInputModesRestriction;
 
 	/**
 	 *    Returns true if this instance is active for the current input mode.
@@ -205,12 +205,12 @@ inline bool InputCommandMapper::getEnabled() const {
 	return mEnabled;
 }
 
-inline void InputCommandMapper::restrictToInputModes(InputModeStore modes) {
-	mInputModesRestriction = modes;
+inline void InputCommandMapper::restrictToInputModes(std::vector<Input::InputMode> modes) {
+	mInputModesRestriction = std::move(modes);
 }
 
 inline void InputCommandMapper::restrictToInputMode(Input::InputMode mode) {
-	InputModeStore modes;
+	std::vector<Input::InputMode> modes;
 	modes.push_back(mode);
 	restrictToInputModes(modes);
 }

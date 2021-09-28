@@ -31,6 +31,7 @@
 #include "framework/LoggingInstance.h"
 
 #include <SDL_keyboard.h>
+#include <algorithm>
 
 namespace Ember {
 

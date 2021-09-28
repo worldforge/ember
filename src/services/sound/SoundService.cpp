@@ -33,6 +33,7 @@
 #include <cstring>
 
 #include <AL/alut.h>
+#include <algorithm>
 
 namespace Ember {
 /* Constructor */
