@@ -90,7 +90,7 @@ void OceanRepresentation::updateWaterPosition() {
 }
 
 void OceanRepresentation::createCollisionGeometry() {
-	auto planeShape = std::make_shared<btStaticPlaneShape>(btVector3(0, 1, 0), 0);
+	auto planeShape = std::make_shared<btStaticPlaneShape>(btVector3(0, 1, 0), (btScalar) 0);
 	mBulletCollisionDetector->addCollisionShape(std::move(planeShape));
 }
 
