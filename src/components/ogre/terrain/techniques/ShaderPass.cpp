@@ -118,7 +118,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 
 		// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
 		// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
-		normalMapTextureUnitState->setTextureNameAlias(Techniques::Shader::NORMAL_TEXTURE_ALIAS);
+		normalMapTextureUnitState->setName(Techniques::Shader::NORMAL_TEXTURE_ALIAS);
 		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	}
 

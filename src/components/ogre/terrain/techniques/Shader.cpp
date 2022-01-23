@@ -117,8 +117,8 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	for (auto* tech : material->getTechniques()) {
 		for (auto* pass : tech->getPasses()) {
 			for (auto* tus : pass->getTextureUnitStates()) {
-				if (!tus->getTextureNameAlias().empty() && !tus->getTextureName().empty()) {
-					aliases[tus->getTextureNameAlias()] = tus->getTextureName();
+				if (!tus->getName().empty() && !tus->getName().empty()) {
+					aliases[tus->getName()] = tus->getTextureName();
 				}
 			}
 		}
@@ -195,7 +195,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 
 		// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
 		// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
-		normalMapTextureUnitState->setTextureNameAlias(NORMAL_TEXTURE_ALIAS);
+		normalMapTextureUnitState->setName(NORMAL_TEXTURE_ALIAS);
 		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
 		if (mIncludeShadows) {
@@ -208,7 +208,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 		}
 
 		Ogre::TextureUnitState* compositeMapTus = pass->createTextureUnitState();
-		compositeMapTus->setTextureNameAlias(COMPOSITE_MAP_ALIAS);
+		compositeMapTus->setName(COMPOSITE_MAP_ALIAS);
 		compositeMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
 		try {
@@ -243,8 +243,6 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 		}
 	}
 
-	// Reapply the saved texture name aliases
-	material->applyTextureAliases(aliases);
 	// Apply the LOD levels
 	material->setLodLevels(lodList);
 	//we need to load it before we can see how many techniques are supported
