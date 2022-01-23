@@ -46,12 +46,13 @@ namespace Forests {
 //-------------------------------------------------------------------------------------
 
 BatchedGeometry::BatchedGeometry(SceneManager *mgr, SceneNode *rootSceneNode)
- :	boundsUndefined(true),
+ :
 	sceneMgr(mgr),
-	sceneNode(NULL),
+	sceneNode(nullptr),
 	parentSceneNode(rootSceneNode),
 	minDistanceSquared(0),
-	withinFarDistance(0),
+	withinFarDistance(false),
+	boundsUndefined(true),
 	built(false)
 {
 	clear();

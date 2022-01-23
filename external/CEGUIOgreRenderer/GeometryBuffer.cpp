@@ -358,15 +358,10 @@ RenderEffect* OgreGeometryBuffer::getRenderEffect()
 //----------------------------------------------------------------------------//
 Ogre::RGBA OgreGeometryBuffer::colourToOgre(const Colour& col) const
 {
-    Ogre::ColourValue ocv(col.getRed(),
+    return Ogre::ColourValue(col.getRed(),
                           col.getGreen(),
                           col.getBlue(),
-                          col.getAlpha());
-
-    uint32 final;
-    d_renderSystem.convertColourValue(ocv, &final);
-
-    return final;
+                          col.getAlpha()).getAsBYTE();
 }
 
 //----------------------------------------------------------------------------//

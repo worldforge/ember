@@ -892,10 +892,7 @@ void OgreRenderer::initialiseShaders()
     Ogre::String shaderLanguage;
     if(d_pimpl->d_useGLSL)
     {
-        if(d_pimpl->d_useGLSLCore)
-            shaderLanguage = "glsl";
-        else
-            shaderLanguage = "glsl";
+		shaderLanguage = "glsl";
     }
     else
         shaderLanguage = "hlsl";
@@ -1062,15 +1059,23 @@ void OgreRenderer::setupRenderingBlendMode(const BlendMode mode,
     // Apply the HLMS blend block to the render system
     d_pimpl->d_renderSystem->_setHlmsBlendblock(d_pimpl->d_hlmsBlendblock);
 #else
-    if (d_pimpl->d_activeBlendMode == BM_RTT_PREMULTIPLIED)
-        d_pimpl->d_renderSystem->_setSceneBlending(SBF_ONE,
-                                                    SBF_ONE_MINUS_SOURCE_ALPHA);
-    else
-        d_pimpl->d_renderSystem->
-            _setSeparateSceneBlending(SBF_SOURCE_ALPHA,
-                                      SBF_ONE_MINUS_SOURCE_ALPHA,
-                                      SBF_ONE_MINUS_DEST_ALPHA,
-                                      SBF_ONE);
+	Ogre::ColourBlendState blendState;
+	if (d_pimpl->d_activeBlendMode == BM_RTT_PREMULTIPLIED) {
+		blendState.sourceFactor = SBF_ONE;
+		blendState.destFactor = SBF_ONE;
+		blendState.sourceFactorAlpha = SBF_ONE;
+		blendState.destFactorAlpha = SBF_ONE;
+		blendState.operation = SBO_ADD;
+		blendState.alphaOperation = SBO_ADD;
+	} else {
+		blendState.sourceFactor = SBF_SOURCE_ALPHA;
+		blendState.destFactor = SBF_ONE_MINUS_SOURCE_ALPHA;
+		blendState.sourceFactorAlpha = SBF_ONE_MINUS_DEST_ALPHA;
+		blendState.destFactorAlpha = SBF_ONE;
+		blendState.operation = SBO_ADD;
+		blendState.alphaOperation = SBO_ADD;
+	}
+	d_pimpl->d_renderSystem->setColourBlendState(blendState);
 #endif
 }
 
