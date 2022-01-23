@@ -69,8 +69,6 @@ public:
 	 */
 	bool finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows = true, const std::string& shaderSuffix = "") const;
 
-	LayerStore& getLayers();
-
 protected:
 
 	ShaderPassBlendMapBatch* getCurrentBatch();

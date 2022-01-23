@@ -86,10 +86,8 @@ void ShaderPass::setBaseLayer(const TerrainPageSurfaceLayer* layer) {
 ShaderPassBlendMapBatch* ShaderPass::getCurrentBatch() {
 	auto I = mBlendMapBatches.rbegin();
 	if (mBlendMapBatches.empty() || (*I)->getLayers().size() >= 4) {
-		auto batch = createNewBatch();
-		auto ptr = batch.get();
-		mBlendMapBatches.emplace_back(std::move(batch));
-		return ptr;
+		mBlendMapBatches.emplace_back(createNewBatch());
+		return mBlendMapBatches.back().get();
 	} else {
 		return I->get();
 	}
@@ -104,10 +102,6 @@ void ShaderPass::addLayer(const TerrainPageGeometry& geometry, const TerrainPage
 
 	mScales[mLayers.size()] = layer->getScale();
 	mLayers.push_back(layer);
-}
-
-LayerStore& ShaderPass::getLayers() {
-	return mLayers;
 }
 
 bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows, const std::string& shaderSuffix) const {
