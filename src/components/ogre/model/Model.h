@@ -33,6 +33,7 @@
 #include <components/ogre/EmberEntityUserObject.h>
 #include <stack>
 #include <map>
+#include <functional>
 
 namespace Eris {
 class EventService;

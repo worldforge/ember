@@ -113,10 +113,6 @@ public:
 
 	void resourceLoadEnded() override;
 
-	void worldGeometryStageStarted(const Ogre::String& description) override {}
-
-	void worldGeometryStageEnded() override {}
-
 	void resourceGroupLoadEnded(const Ogre::String& groupName) override;
 
 private:

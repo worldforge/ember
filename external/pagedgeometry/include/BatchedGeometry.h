@@ -42,10 +42,8 @@ public:
 	Ogre::Real getBoundingRadius(void) const { return radius; }
 	const Ogre::String &getMovableType(void) const { static Ogre::String t = "BatchedGeometry"; return t; }
 
-	#if OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR > 4
-	//Shaggoth compatibility
+
 	void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables) {}
-	#endif
 
 	class SubBatch: public Ogre::Renderable
 	{

@@ -17,11 +17,21 @@
  */
 
 #include "OgreTerrainMaterialGeneratorEmber.h"
-#include "EmberTerrain.h"
+#include "components/ogre/TerrainPageDataProvider.h"
 #include "../techniques/Shader.h"
 #include <OgreMaterialManager.h>
+#include <OgreTerrainGroup.h>
+#include <OgreTechnique.h>
 
 using namespace Ogre;
+
+namespace {
+Ember::OgreView::IPageDataProvider::OgreIndex calculateTerrainIndex(const Terrain& terrain,
+																	const TerrainGroup& terrainGroup) {
+	auto position = (terrain.getPosition() - terrainGroup.getOrigin()) / (Ogre::Real) terrain.getWorldSize();
+	return {position.x, -position.z};
+}
+}
 
 namespace Ember {
 namespace OgreView {
@@ -29,8 +39,14 @@ namespace Terrain {
 const std::string EmberTerrainProfile::ERROR_MATERIAL = "/common/primitives/texture/error";
 
 
-EmberTerrainProfile::EmberTerrainProfile(IPageDataProvider& dataProvider, TerrainMaterialGenerator* parent) :
-		Ogre::TerrainMaterialGenerator::Profile(parent, "Ember", "Ember specific profile"), mDataProvider(dataProvider) {
+EmberTerrainProfile::EmberTerrainProfile(IPageDataProvider& dataProvider,
+										 const TerrainGroup& terrainGroup,
+										 TerrainMaterialGenerator* parent,
+										 sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainShownSignal) :
+		Ogre::TerrainMaterialGenerator::Profile(parent, "Ember", "Ember specific profile"),
+		mDataProvider(dataProvider),
+		mTerrainGroup(terrainGroup),
+		mTerrainShownSignal(terrainShownSignal) {
 	//Check that our error material exists
 	mErrorMaterialTemplate = Ogre::MaterialManager::getSingleton().getByName(ERROR_MATERIAL);
 	assert(mErrorMaterialTemplate);
@@ -41,10 +57,9 @@ void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain) {
 	terrain->_setNormalMapRequired(true);
 	terrain->_setLightMapRequired(false, false);
 
-	auto* emberTerrain = dynamic_cast<EmberTerrain*>(terrain);
-
+	auto terrainIndex = calculateTerrainIndex(*terrain, mTerrainGroup);
 	// Allocate in main thread so no race conditions
-	std::unique_ptr<IPageData> pageData = mDataProvider.getPageData(emberTerrain->getIndex());
+	std::unique_ptr<IPageData> pageData = mDataProvider.getPageData(terrainIndex);
 	if (!pageData || !pageData->getCompositeMapMaterial() || pageData->getCompositeMapMaterial()->getTechniques().empty()) {
 		terrain->_setCompositeMapRequired(false);
 	} else {
@@ -53,14 +68,13 @@ void EmberTerrainProfile::requestOptions(Ogre::Terrain* terrain) {
 }
 
 Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain) {
-	const auto* emberTerrain = dynamic_cast<const EmberTerrain*>(terrain);
 
-	if (!emberTerrain) {
+	if (!terrain) {
 		//This could happen if the terrain is shutting down.
 		return mErrorMaterialTemplate;
 	}
 
-	const auto& index = emberTerrain->getIndex();
+	auto index = calculateTerrainIndex(*terrain, mTerrainGroup);
 
 	std::unique_ptr<IPageData> pageData = mDataProvider.getPageData(index);
 
@@ -71,32 +85,42 @@ Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain) {
 
 	S_LOG_INFO("Loading material for terrain page: " << "[" << index.first << "|" << index.second << "]");
 
-	Ogre::MaterialPtr mat = pageData->getMaterial();
+	auto mat = pageData->getMaterial();
 
 	if (!mat) {
 		S_LOG_WARNING("Terrain material was not found.");
 		return getOrCreateMaterialClone(mErrorMaterialTemplate, terrain->getMaterialName());
 	}
 
-	Ogre::AliasTextureNamePairList aliases;
-	aliases[Techniques::Shader::NORMAL_TEXTURE_ALIAS] = terrain->getTerrainNormalMap()->getName();
 	auto compositeMap = terrain->getCompositeMap();
-	if (compositeMap) {
-		aliases[Techniques::Shader::COMPOSITE_MAP_ALIAS] = compositeMap->getName();
+	auto normalMap = terrain->getTerrainNormalMap();
+
+	for (auto technique: mat->getTechniques()) {
+		for (auto pass: technique->getPasses()) {
+			for (auto tus: pass->getTextureUnitStates()) {
+				if (tus->getName() == Techniques::Shader::NORMAL_TEXTURE_ALIAS) {
+					tus->setTexture(normalMap);
+				} else if (tus->getName() == Techniques::Shader::COMPOSITE_MAP_ALIAS) {
+					if (!compositeMap) {
+						S_LOG_WARNING("A composite map was required for for terrain page: " << "[" << index.first << "|" << index.second << "] but could not be found.");
+					} else {
+						tus->setTexture(compositeMap);
+					}
+				}
+			}
+		}
 	}
 
-	bool success = mat->applyTextureAliases(aliases);
-	if (!success) {
-		S_LOG_WARNING("Could not apply alias for normal map and/or composite map for terrain material \"" << mat->getName() << "\"");
-	}
+	auto bbox = terrain->getWorldAABB();
+	Ogre::TRect<Ogre::Real> rect(bbox.getMinimum().x, bbox.getMinimum().z, bbox.getMaximum().x, bbox.getMaximum().z);
+	mTerrainShownSignal(rect);
 
 	return mat;
 }
 
 Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terrain* terrain) {
-	const auto* emberTerrain = static_cast<const EmberTerrain*>(terrain);
 
-	const auto& index = emberTerrain->getIndex();
+	auto index = calculateTerrainIndex(*terrain, mTerrainGroup);
 
 	S_LOG_VERBOSE("Loading composite map material for terrain page: " << "[" << index.first << "|" << index.second << "]");
 
@@ -116,7 +140,7 @@ Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terra
 	}
 }
 
-Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(Ogre::MaterialPtr templateMaterial, const std::string& suffix) {
+Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(const Ogre::MaterialPtr& templateMaterial, const std::string& suffix) {
 	std::string name = templateMaterial->getName() + suffix;
 
 	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(name);

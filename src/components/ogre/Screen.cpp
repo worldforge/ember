@@ -72,17 +72,11 @@ void Screen::toggleRenderMode() {
 		mPolygonMode = Ogre::PM_SOLID;
 	}
 
-	Ogre::RenderSystem::RenderTargetIterator renderTargetI = Ogre::Root::getSingleton().getRenderSystem()->getRenderTargetIterator();
-
-	for (Ogre::RenderSystem::RenderTargetIterator::iterator I = renderTargetI.begin(); I != renderTargetI.end(); ++I) {
-		Ogre::RenderTarget* renderTarget = I->second;
-		for (unsigned short i = 0; i < renderTarget->getNumViewports(); ++i) {
-			Ogre::Camera* camera = renderTarget->getViewport(i)->getCamera();
-			if (camera) {
-				camera->setPolygonMode(mPolygonMode);
-			}
+	for (unsigned short i = 0; i < mWindow.getNumViewports(); ++i) {
+		Ogre::Camera* camera = mWindow.getViewport(i)->getCamera();
+		if (camera) {
+			camera->setPolygonMode(mPolygonMode);
 		}
-
 	}
 
 }
@@ -160,20 +154,13 @@ void Screen::takeScreenshot() {
 
 const Ogre::RenderTarget::FrameStats& Screen::getFrameStats() {
 	mFrameStats = Ogre::RenderTarget::FrameStats();
-	Ogre::RenderSystem::RenderTargetIterator renderTargetI = Ogre::Root::getSingleton().getRenderSystem()->getRenderTargetIterator();
-
-	for (auto& renderTarget : renderTargetI) {
-		if (renderTarget.second->isActive()) {
-			const Ogre::RenderTarget::FrameStats& targetStats = renderTarget.second->getStatistics();
-			mFrameStats.triangleCount += targetStats.triangleCount;
-			mFrameStats.batchCount += targetStats.batchCount;
-			if (renderTarget.first == mWindow.getName()) {
-				mFrameStats.avgFPS = targetStats.avgFPS;
-				mFrameStats.bestFPS = targetStats.bestFPS;
-				mFrameStats.worstFPS = targetStats.worstFPS;
-			}
-		}
-	}
+	//TODO: see if we can get the combined triangle and batch count from all targets, as the previous API has been deprecated
+	const Ogre::RenderTarget::FrameStats& targetStats = mWindow.getStatistics();
+	mFrameStats.triangleCount += targetStats.triangleCount;
+	mFrameStats.batchCount += targetStats.batchCount;
+	mFrameStats.avgFPS = targetStats.avgFPS;
+	mFrameStats.bestFPS = targetStats.bestFPS;
+	mFrameStats.worstFPS = targetStats.worstFPS;
 	return mFrameStats;
 }
 

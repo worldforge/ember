@@ -1,6 +1,6 @@
 [requires]
 cegui/0.8.7@worldforge/stable
-ogre/1.12.12@worldforge/stable
+ogre/13.3.2@worldforge/stable
 sdl2/2.0.14@worldforge/stable
 boost/1.75.0
 bullet3/2.89

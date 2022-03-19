@@ -31,7 +31,7 @@
 #include "TerrainPage.h"
 #include <Mercator/Segment.h>
 #include <wfmath/stream.h>
-
+#include <sstream>
 
 namespace Ember {
 namespace OgreView {

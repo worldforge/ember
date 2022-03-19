@@ -27,6 +27,7 @@
 #include <Eris/Avatar.h>
 #include <boost/algorithm/string.hpp>
 #include <components/ogre/Avatar.h>
+#include <sstream>
 
 namespace Ember {
 namespace OgreView {

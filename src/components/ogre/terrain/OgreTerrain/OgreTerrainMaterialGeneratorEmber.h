@@ -22,6 +22,9 @@
 #include <OgreTerrainMaterialGenerator.h>
 #include <sigc++/signal.h>
 
+namespace Ogre {
+class TerrainGroup;
+}
 namespace Ember {
 namespace OgreView {
 struct IPageDataProvider;
@@ -54,7 +57,10 @@ class EmberTerrainProfile : public Ogre::TerrainMaterialGenerator::Profile {
 public:
 	const static std::string ERROR_MATERIAL;
 
-	EmberTerrainProfile(IPageDataProvider& dataProvider, Ogre::TerrainMaterialGenerator* parent);
+	EmberTerrainProfile(IPageDataProvider& dataProvider,
+						const Ogre::TerrainGroup& terrainGroup,
+						Ogre::TerrainMaterialGenerator* parent,
+						sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainShownSignal);
 
 	~EmberTerrainProfile() override = default;
 
@@ -109,6 +115,8 @@ public:
 protected:
 	IPageDataProvider& mDataProvider;
 
+	const Ogre::TerrainGroup& mTerrainGroup;
+
 	/**
 	 * @brief A template material to use whenever an error material is needed.
 	 *
@@ -122,7 +130,9 @@ protected:
 	 * @param suffix A suffix used together with the name of the template material.
 	 * @return A valid material pointer.
 	 */
-	Ogre::MaterialPtr getOrCreateMaterialClone(Ogre::MaterialPtr templateMaterial, const std::string& suffix);
+	static Ogre::MaterialPtr getOrCreateMaterialClone(const Ogre::MaterialPtr& templateMaterial, const std::string& suffix);
+
+	sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& mTerrainShownSignal;
 
 };
 } /* Terrain */

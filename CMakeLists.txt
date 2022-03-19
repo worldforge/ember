@@ -281,7 +281,7 @@ else ()
     link_directories(${WF_LIBRARY_DIRS})
     include_directories(SYSTEM ${WF_INCLUDE_DIRS})
 
-    set(OGREVER 1.12.12)
+    set(OGREVER 13.3.2)
     set(OGRE_DIR /home/erik/opt/ogre_debug/lib/cmake)
     find_package(OGRE ${OGREVER} REQUIRED)
     link_directories(${OGRE_LIBRARY_DIRS})
@@ -410,7 +410,7 @@ endif (NOT TOLUA++_APP)
 set(LOCAL_OGRE_MEDIA_DIR ${CMAKE_INSTALL_FULL_DATADIR}/ember/OGRE/Media)
 message(STATUS "Copying OGRE media (from ${OGRE_MEDIA_DIR}) to our own installation directory (${LOCAL_OGRE_MEDIA_DIR}).")
 install(DIRECTORY "${OGRE_MEDIA_DIR}/RTShaderLib" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
-install(DIRECTORY "${OGRE_MEDIA_DIR}/ShadowVolume" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
+install(DIRECTORY "${OGRE_MEDIA_DIR}/Main" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
 
 add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR}")
 

@@ -27,7 +27,7 @@
 #include "IconStore.h"
 #include "IconImageStore.h"
 #include "Icon.h"
-
+#include <sstream>
 
 namespace Ember {
 namespace OgreView {

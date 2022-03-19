@@ -22,6 +22,7 @@
 
 #include <OgreRoot.h>
 #include <OgreBuildSettings.h>
+#include <fstream>
 
 #ifdef OGRE_STATIC_LIB
 

@@ -85,9 +85,9 @@ void XMLSoundDefParser::readBuffer(SoundGroupDefinition* grp, TiXmlElement* objN
 // 		playsReal = PLAY_WORLD;
 
 	SoundGeneral::SoundSampleType type = SoundGeneral::SAMPLE_PCM;
-	if (!stricmp(format, "wav") || !stricmp(format, "pcm")) {
+	if (!strncmp(format, "wav", 3) || !strncmp(format, "pcm", 3)) {
 		type = SoundGeneral::SAMPLE_WAV;
-	} else if (!stricmp(format, "ogg")) {
+	} else if (!strncmp(format, "ogg", 3)) {
 		type = SoundGeneral::SAMPLE_OGG;
 	}
 

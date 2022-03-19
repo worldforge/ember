@@ -20,7 +20,6 @@
 
 #include "../TerrainPageGeometry.h"
 #include "framework/LoggingInstance.h"
-#include "EmberTerrain.h"
 
 #include <Terrain/OgreTerrainGroup.h>
 
@@ -55,9 +54,12 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry) {
 void OgreTerrainPageBridge::terrainPageReady() {
 	S_LOG_INFO("Finished loading or updating terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
 	if (mHeightData) {
-		auto terrain = dynamic_cast<EmberTerrain*>(mTerrainGroup.getTerrain(mIndex.first, mIndex.second));
+		auto terrain = mTerrainGroup.getTerrain(mIndex.first, mIndex.second);
 		if (terrain) {
-			terrain->scheduleGeometryUpdate(mHeightData);
+			auto* heightData = terrain->getHeightData();
+			//Copy height data
+			std::memcpy(heightData, mHeightData->data(), sizeof(float) * terrain->getSize() * terrain->getSize());
+			terrain->dirty();
 		} else {
 			mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData->data());
 		}

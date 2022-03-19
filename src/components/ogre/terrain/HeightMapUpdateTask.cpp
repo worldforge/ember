@@ -67,7 +67,7 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 				heightMapSegment = std::make_unique<HeightMapFlatSegment>(basePoints[0].height());
 			} else {
 				auto buffer = mProvider.checkout();
-				if (buffer) {
+				if (buffer && buffer->getBuffer()) {
 					std::memcpy(buffer->getBuffer()->getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
 					heightMapSegment = std::make_unique<HeightMapSegment>(std::move(buffer));
 				}

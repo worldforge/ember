@@ -97,8 +97,6 @@ class HardwareOcclusionQuery;
 class HardwareVertexBuffer;
 class HardwarePixelBuffer;
 class HighLevelGpuProgram;
-class HighLevelGpuProgramManager;
-class HighLevelGpuProgramFactory;
 class IndexData;
 class InstanceBatch;
 class InstanceBatchHW;
@@ -248,7 +246,6 @@ template<typename T>
 class SharedPtr;
 typedef SharedPtr<Compositor> CompositorPtr;
 typedef SharedPtr<GpuProgram> GpuProgramPtr;
-typedef SharedPtr<HighLevelGpuProgram> HighLevelGpuProgramPtr;
 typedef SharedPtr<Material> MaterialPtr;
 typedef SharedPtr<Mesh> MeshPtr;
 typedef SharedPtr<PatchMesh> PatchMeshPtr;

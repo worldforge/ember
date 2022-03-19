@@ -102,7 +102,7 @@ std::unique_ptr<Terrain::ITerrainAdapter> Scene::createTerrainAdapter() {
 
 	assert(mSceneManager);
 	assert(mMainCamera);
-	return std::make_unique<Terrain::OgreTerrainAdapter>(*mSceneManager, mMainCamera, pageSize);
+	return std::make_unique<Terrain::OgreTerrainAdapter>(*mSceneManager, pageSize);
 }
 
 Ogre::Camera& Scene::getMainCamera() const {

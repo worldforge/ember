@@ -112,18 +112,6 @@ void Shader::buildPasses(bool normalMapped) {
 bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures) const {
 	S_LOG_VERBOSE("Compiling terrain page material " << material->getName());
 
-	// Preserve any texture name aliases that may have been set
-	Ogre::AliasTextureNamePairList aliases;
-	for (auto* tech : material->getTechniques()) {
-		for (auto* pass : tech->getPasses()) {
-			for (auto* tus : pass->getTextureUnitStates()) {
-				if (!tus->getName().empty() && !tus->getName().empty()) {
-					aliases[tus->getName()] = tus->getTextureName();
-				}
-			}
-		}
-	}
-
 	//The normal, shadowed, shaders have clones with the suffix "/NoShadows" which will skip the shadows.
 	std::string materialSuffix;
 	if (!mIncludeShadows) {
@@ -278,9 +266,8 @@ ShaderPass* Shader::addPass() {
 			shaderPass->addShadowLayer();
 		}
 	}
-	auto ptr = shaderPass.get();
 	mPasses.emplace_back(std::move(shaderPass));
-	return ptr;
+	return mPasses.back().get();
 }
 
 ShaderPass* Shader::addPassNormalMapped() {
@@ -290,9 +277,8 @@ ShaderPass* Shader::addPassNormalMapped() {
 			shaderPass->addShadowLayer();
 		}
 	}
-	auto ptr = shaderPass.get();
-	mPassesNormalMapped.push_back(std::move(shaderPass));
-	return ptr;
+	mPassesNormalMapped.emplace_back(std::move(shaderPass));
+	return mPassesNormalMapped.back().get();
 }
 
 }

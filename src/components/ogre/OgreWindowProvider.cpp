@@ -50,9 +50,8 @@ void OgreWindowProvider::processInput() {
 }
 
 void OgreWindowProvider::getWindowSize(unsigned int& width, unsigned int& height) {
-	unsigned int depth;
 	int left, top;
-	mWindow.getMetrics(width, height, depth, left, top);
+	mWindow.getMetrics(width, height, left, top);
 }
 
 }

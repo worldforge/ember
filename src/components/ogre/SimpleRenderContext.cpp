@@ -46,7 +46,7 @@ SimpleRenderContextResourceLoader::SimpleRenderContextResourceLoader(SimpleRende
 }
 
 void SimpleRenderContextResourceLoader::loadResource(Ogre::Resource* resource) {
-    if (resource->getLoadingState() == Ogre::Resource::LOADSTATE_UNLOADED) {
+    if (resource->getLoadingState() == Ogre::Resource::LOADSTATE_UNLOADED && mRenderContext.getRenderTexture()) {
         try {
             mRenderContext.getRenderTexture()->update();
         } catch (const std::exception& ex) {

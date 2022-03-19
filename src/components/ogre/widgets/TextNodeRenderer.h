@@ -23,6 +23,7 @@
 
 #include <Ogre.h>
 #include <boost/noncopyable.hpp>
+#include <functional>
 
 namespace Ember {
 namespace OgreView {

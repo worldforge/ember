@@ -252,9 +252,8 @@ void OgreResourceLoader::loadBootstrap() {
 	//Add the "assets" directory, which contains most of the assets
 	addMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-	addSharedMedia("OGRE/Media/RTShaderLib/materials", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	addSharedMedia("OGRE/Media/Main", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	addSharedMedia("OGRE/Media/RTShaderLib/GLSL", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	addSharedMedia("OGRE/Media/ShadowVolume", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 	addUserMedia("media/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }

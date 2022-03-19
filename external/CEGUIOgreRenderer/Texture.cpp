@@ -31,6 +31,7 @@
 #include "ImageCodec.h"
 #include <OgreTextureManager.h>
 #include <OgreHardwarePixelBuffer.h>
+#include <sstream>
 
 // Start of CEGUI namespace section
 namespace CEGUI

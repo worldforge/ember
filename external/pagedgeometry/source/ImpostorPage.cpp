@@ -354,7 +354,7 @@ ImpostorTextureResourceLoader::ImpostorTextureResourceLoader(ImpostorTexture& im
 
 void ImpostorTextureResourceLoader::loadResource (Ogre::Resource *resource)
 {
-	if (resource->getLoadingState() == Ogre::Resource::LOADSTATE_UNLOADED) {
+	if (resource->getLoadingState() == Ogre::Resource::LOADSTATE_UNLOADED && texture.texture) {
 		texture.regenerate();
 	}
 }

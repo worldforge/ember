@@ -58,7 +58,7 @@ class CameraFocusedGrid2DPageStrategy;
  */
 class OgreTerrainAdapter : public ITerrainAdapter, public boost::noncopyable {
 public:
-	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, int terrainPageSize = 257);
+	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, int terrainPageSize);
 
 	~OgreTerrainAdapter() override;
 
@@ -101,10 +101,6 @@ private:
 	Ogre::Real mLoadRadius;
 	Ogre::Real mHoldRadius;
 
-	Ogre::SceneManager& mSceneManager;
-
-	int mTerrainPageSize;
-
 	/**
 	 * @brief Signal emitted when a page has been shown for the first time.
 	 * The argument is the area (in world coordinates) that was shown.
@@ -128,7 +124,7 @@ private:
 	/**
 	 * Ownership is passed to the Ogre terrain engine.
 	 */
-	EmberTerrainGroup* mTerrainGroup;
+	Ogre::TerrainGroup* mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
 	std::unique_ptr<Ogre::TerrainMaterialGenerator::Profile> mMaterialProfile;
