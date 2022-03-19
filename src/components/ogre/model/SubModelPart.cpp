@@ -41,7 +41,6 @@
 #include <OgreInstanceManager.h>
 #include <OgreInstancedEntity.h>
 #include <OgreTechnique.h>
-#include <OgrePass.h>
 #include <OgreHighLevelGpuProgramManager.h>
 #include <OgreHighLevelGpuProgram.h>
 #include <OgreInstanceBatch.h>
@@ -289,8 +288,6 @@ bool SubModelPart::createInstancedEntities() {
 						}
 						meshCopy = entity->getMesh()->clone(instancedMeshName);
 						meshCopy->freeEdgeList();
-						//We need to remove lod levels in order to not trigger a bug in 1.12.12. This might be removed when 1.12.13 is released.
-						meshCopy->removeLodLevels();
 					}
 
 					try {

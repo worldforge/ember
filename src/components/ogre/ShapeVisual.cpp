@@ -35,7 +35,7 @@ namespace OgreView
 {
 
 ShapeVisual::ShapeVisual(Ogre::SceneNode& baseNode, bool closed) :
-		mBaseNode(baseNode), mClosed(closed), mManualObject(0)
+		mBaseNode(baseNode), mClosed(closed), mManualObject(nullptr)
 {
 	mManualObject = mBaseNode.getCreator()->createManualObject();
 	mManualObject->setDynamic(true); //We'll be updating this a lot if the user alters the polygon
