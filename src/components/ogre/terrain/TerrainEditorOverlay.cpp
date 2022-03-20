@@ -197,7 +197,7 @@ TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneMan
 }
 
 TerrainEditorOverlay::~TerrainEditorOverlay() {
-	for (auto entity : mEntities) {
+	for (auto entity: mEntities) {
 		entity->detachFromParent();
 		mSceneManager.destroyEntity(entity);
 	}
@@ -221,7 +221,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 	int x, y;
 	for (Mercator::Terrain::Pointstore::const_iterator I = basePoints.begin(); I != basePoints.end(); ++I) {
 		x = I->first;
-		for (auto entry : I->second) {
+		for (auto entry: I->second) {
 			y = entry.first;
 			std::stringstream ss;
 			ss << "basepointmarker" << x << "_" << y;
@@ -315,7 +315,7 @@ bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& free
 	//should we also translate secondary objects?
 	if (mEditor.getRadius() > 1.0f) {
 		// 		float squaredMovementRadius = mMovementRadiusInMeters * mMovementRadiusInMeters;
-		for (auto& basePointUserObject : mBasePointUserObjects) {
+		for (auto& basePointUserObject: mBasePointUserObjects) {
 			if (basePointUserObject.second.get() != mCurrentUserObject) {
 				auto distance = WFMath::SquaredDistance<2>((basePointUserObject.second)->getPosition(), mCurrentUserObject->getPosition()) * 64;
 				if (distance <= mEditor.getRadius()) {
@@ -381,7 +381,7 @@ void TerrainEditorOverlay::createAction(bool alsoCommit) {
 			TerrainEditBasePointMovement movement = {distance, std::make_pair((int) mCurrentUserObject->getPosition().x(), (int) mCurrentUserObject->getPosition().y())};
 			action.mMovements.push_back(movement);
 
-			for (auto secondaryUserObject : mSecondaryUserObjects) {
+			for (auto secondaryUserObject: mSecondaryUserObjects) {
 				distance = secondaryUserObject->getBasePointMarkerNode()->getPosition().y - secondaryUserObject->getBasePoint().height();
 				if (!WFMath::Equal(distance, .0f)) {
 					TerrainEditBasePointMovement newMovement = {distance, std::make_pair((int) secondaryUserObject->getPosition().x(), (int) secondaryUserObject->getPosition().y())};
@@ -423,104 +423,101 @@ void TerrainEditorOverlay::sendChangesToServer() {
 }
 
 void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints) {
+	EmberEntity* terrainEntity = mManager.getHandler().getTerrainHoldingEntity();
+	if (terrainEntity) {
+		try {
+			std::set<TerrainIndex> updatedPositions;
+			std::set<TerrainIndex> updatedRoughnesses;
+			std::set<TerrainIndex> updatedFalloffs;
 
-	try {
-		std::set<TerrainIndex> updatedPositions;
-		std::set<TerrainIndex> updatedRoughnesses;
-		std::set<TerrainIndex> updatedFalloffs;
-
-		std::map<std::pair<int, int>, TerrainPosition> positions;
-		std::map<std::pair<int, int>, float> roughnesses;
-		std::map<std::pair<int, int>, float> falloffs;
-		for (const auto& action : mActions) {
-			for (const auto& movement : action.mMovements) {
-				updatedPositions.insert(movement.mPosition);
+			std::map<std::pair<int, int>, TerrainPosition> positions;
+			std::map<std::pair<int, int>, float> roughnesses;
+			std::map<std::pair<int, int>, float> falloffs;
+			for (const auto& action: mActions) {
+				for (const auto& movement: action.mMovements) {
+					updatedPositions.insert(movement.mPosition);
+				}
+				for (const auto& roughness: action.mRoughnesses) {
+					updatedRoughnesses.insert(roughness.first);
+				}
+				for (const auto& falloff: action.mFalloffs) {
+					updatedFalloffs.insert(falloff.first);
+				}
 			}
-			for (const auto& roughness : action.mRoughnesses) {
-				updatedRoughnesses.insert(roughness.first);
-			}
-			for (const auto& falloff : action.mFalloffs) {
-				updatedFalloffs.insert(falloff.first);
-			}
-		}
 
-		Atlas::Objects::Operation::Set s;
+			Atlas::Objects::Operation::Set s;
 
-		Atlas::Message::MapType sarg;
-		EmberEntity* terrainEntity = mManager.getHandler().getTerrainHoldingEntity();
-		if (terrainEntity) {
+			Atlas::Message::MapType sarg;
 			sarg["id"] = terrainEntity->getId();
-		} else {
-			sarg["id"] = "0";
-		}
 
-		Atlas::Message::MapType& pointMap = (sarg["terrain_points!append"] = Atlas::Message::MapType()).asMap();
+			Atlas::Message::MapType& pointMap = (sarg["terrain_points!append"] = Atlas::Message::MapType()).asMap();
 
-		auto createPointElementFn = [&](const Mercator::BasePoint& bp, int x, int y, const std::string& key) {
-			Atlas::Message::ListType& point = (pointMap[key] = Atlas::Message::ListType(5)).asList();
-			point[0] = (Atlas::Message::FloatType) (x);
-			point[1] = (Atlas::Message::FloatType) (y);
-			point[2] = (Atlas::Message::FloatType) (bp.height());
-			point[3] = (Atlas::Message::FloatType) (bp.roughness());
-			point[4] = (Atlas::Message::FloatType) (bp.falloff());
-		};
+			auto createPointElementFn = [&](const Mercator::BasePoint& bp, int x, int y, const std::string& key) {
+				Atlas::Message::ListType& point = (pointMap[key] = Atlas::Message::ListType(5)).asList();
+				point[0] = (Atlas::Message::FloatType) (x);
+				point[1] = (Atlas::Message::FloatType) (y);
+				point[2] = (Atlas::Message::FloatType) (bp.height());
+				point[3] = (Atlas::Message::FloatType) (bp.roughness());
+				point[4] = (Atlas::Message::FloatType) (bp.falloff());
+			};
 
-		for (const auto& entry : updatedPositions) {
+			for (const auto& entry: updatedPositions) {
 
-			Mercator::BasePoint bp;
-			getBasePoint(basePoints, entry.first, entry.second, bp);
-			std::stringstream key;
-			key << entry.first << "x" << entry.second;
+				Mercator::BasePoint bp;
+				getBasePoint(basePoints, entry.first, entry.second, bp);
+				std::stringstream key;
+				key << entry.first << "x" << entry.second;
 
-			createPointElementFn(bp, entry.first, entry.second, key.str());
-		}
-
-		for (const auto& entry : updatedRoughnesses) {
-			Mercator::BasePoint bp;
-			getBasePoint(basePoints, entry.first, entry.second, bp);
-
-			std::stringstream key;
-			key << entry.first << "x" << entry.second;
-			auto I = pointMap.find(key.str());
-			if (I != pointMap.end()) {
-				I->second.List()[3] = entry.second;
-			} else {
 				createPointElementFn(bp, entry.first, entry.second, key.str());
 			}
-		}
 
-		for (const auto& entry : updatedFalloffs) {
-			Mercator::BasePoint bp;
-			getBasePoint(basePoints, entry.first, entry.second, bp);
+			for (const auto& entry: updatedRoughnesses) {
+				Mercator::BasePoint bp;
+				getBasePoint(basePoints, entry.first, entry.second, bp);
 
-			std::stringstream key;
-			key << entry.first << "x" << entry.second;
-			auto I = pointMap.find(key.str());
-			if (I != pointMap.end()) {
-				I->second.List()[4] = entry.second;
-			} else {
-				createPointElementFn(bp, entry.first, entry.second, key.str());
+				std::stringstream key;
+				key << entry.first << "x" << entry.second;
+				auto I = pointMap.find(key.str());
+				if (I != pointMap.end()) {
+					I->second.List()[3] = entry.second;
+				} else {
+					createPointElementFn(bp, entry.first, entry.second, key.str());
+				}
 			}
+
+			for (const auto& entry: updatedFalloffs) {
+				Mercator::BasePoint bp;
+				getBasePoint(basePoints, entry.first, entry.second, bp);
+
+				std::stringstream key;
+				key << entry.first << "x" << entry.second;
+				auto I = pointMap.find(key.str());
+				if (I != pointMap.end()) {
+					I->second.List()[4] = entry.second;
+				} else {
+					createPointElementFn(bp, entry.first, entry.second, key.str());
+				}
+			}
+
+			auto connection = EmberServices::getSingleton().getServerService().getConnection();
+			Atlas::Message::ListType sargsList(1, sarg);
+			s->setArgsAsList(sargsList, &connection->getFactories());
+			s->setFrom(EmberOgre::getSingleton().getWorld()->getAvatar()->getErisAvatar().getId());
+			s->setTo(terrainEntity->getId());
+
+			connection->send(s);
+			S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
+
+			//also reset the marking for the base points
+			for (const auto& entry: mBasePointUserObjects) {
+				entry.second->resetMarking();
+			}
+			//clear all actions
+			mActions.clear();
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Could not send terrain to server." << ex);
 		}
-
-		auto connection = EmberServices::getSingleton().getServerService().getConnection();
-		Atlas::Message::ListType sargsList(1, sarg);
-		s->setArgsAsList(sargsList, &connection->getFactories());
-		s->setFrom(EmberOgre::getSingleton().getWorld()->getAvatar()->getErisAvatar().getId());
-
-		connection->send(s);
-		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
-
-		//also reset the marking for the base points
-		for (const auto& entry : mBasePointUserObjects) {
-			entry.second->resetMarking();
-		}
-		//clear all actions
-		mActions.clear();
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Could not send terrain to server." << ex);
 	}
-
 }
 
 void TerrainEditorOverlay::setVisible(bool visible) {
@@ -578,7 +575,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 	std::set<TerrainPage*> pagesToUpdate;
 	std::map<std::pair<int, int>, TerrainDefPoint> newPoints;
 
-	for (const auto& movement : action.mMovements) {
+	for (const auto& movement: action.mMovements) {
 		Mercator::BasePoint bp;
 		int basepointX = movement.mPosition.first;
 		int basepointY = movement.mPosition.second;
@@ -595,7 +592,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 		newPoints[std::make_pair(basepointX, basepointY)] = defPoint;
 	}
 
-	for (const auto& roughness : action.mRoughnesses) {
+	for (const auto& roughness: action.mRoughnesses) {
 		Mercator::BasePoint bp;
 		int basepointX = std::get<0>(roughness).first;
 		int basepointY = std::get<0>(roughness).second;
@@ -614,7 +611,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 		}
 	}
 
-	for (const auto& falloff : action.mFalloffs) {
+	for (const auto& falloff: action.mFalloffs) {
 		Mercator::BasePoint bp;
 		int basepointX = std::get<0>(falloff).first;
 		int basepointY = std::get<0>(falloff).second;
@@ -633,7 +630,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 		}
 	}
 
-	for (const auto& entry : newPoints) {
+	for (const auto& entry: newPoints) {
 		pointStore.push_back(entry.second);
 
 		TerrainPosition worldPosition(entry.first.first * 64, entry.first.second * 64);
