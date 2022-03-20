@@ -36,7 +36,7 @@ HeightMapSegment::HeightMapSegment(std::unique_ptr<HeightMapBuffer> buffer) :
 HeightMapSegment::~HeightMapSegment() = default;
 
 float HeightMapSegment::getHeight(int x, int y) const {
-	return mBuffer->getBuffer()->getData()[y * (mBuffer->getResolution()) + x];
+	return mBuffer->getBuffer().getData()[y * (mBuffer->getResolution()) + x];
 }
 
 /// \brief Get an accurate height and normal vector at a given coordinate

@@ -19,8 +19,10 @@
 #ifndef HEIGHTMAPBUFFERPROVIDER_H_
 #define HEIGHTMAPBUFFERPROVIDER_H_
 
+#include "HeightMapBuffer.h"
 #include <vector>
 #include <memory>
+#include <mutex>
 
 namespace Ember {
 namespace OgreView {
@@ -29,8 +31,6 @@ namespace Terrain {
 
 template<typename>
 class Buffer;
-
-class HeightMapBuffer;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -69,7 +69,7 @@ private:
 	/**
 	 * @brief The pool of unused Buffer instances.
 	 */
-	std::vector<std::unique_ptr<Buffer<float>>> mPrimitiveBuffers;
+	std::vector<std::unique_ptr<HeightMapBuffer::BufferType>> mPrimitiveBuffers;
 
 	/**
 	 * @brief The resolution of one buffer. This is normally the size of one terrain segment plus one (to match Mercator::Segment).
@@ -91,12 +91,14 @@ private:
 	 * This will return the Buffer instance to the pool.
 	 * @param buffer The height buffer to return to the pool.
 	 */
-	void checkin(std::unique_ptr<Buffer<float>> buffer);
+	void checkin(std::unique_ptr<HeightMapBuffer::BufferType> buffer);
 
 	/**
 	 * @brief Makes sure that the pool contains the desired amount of buffers.
 	 */
 	void maintainPool();
+
+	std::mutex mMutex;
 };
 
 }

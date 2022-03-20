@@ -26,15 +26,16 @@ namespace OgreView {
 namespace Terrain {
 
 HeightMapBuffer::HeightMapBuffer(HeightMapBufferProvider& provider, std::unique_ptr<BufferType> buffer) :
-		mProvider(provider), mBuffer(std::move(buffer)) {
+		mProvider(provider),
+		mBuffer(std::move(buffer)) {
 }
 
 HeightMapBuffer::~HeightMapBuffer() {
 	mProvider.checkin(std::move(this->mBuffer));
 }
 
-HeightMapBuffer::BufferType* HeightMapBuffer::getBuffer() {
-	return mBuffer.get();
+HeightMapBuffer::BufferType& HeightMapBuffer::getBuffer() {
+	return *mBuffer;
 }
 
 unsigned int HeightMapBuffer::getResolution() const {

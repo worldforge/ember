@@ -55,7 +55,7 @@ bool HeightMapUpdateTask::executeTaskInMainThread() {
 }
 
 void HeightMapUpdateTask::createHeightMapSegments() {
-	for (auto segment : mSegments) {
+	for (auto segment: mSegments) {
 		if (segment) {
 			std::unique_ptr<IHeightMapSegment> heightMapSegment;
 			Mercator::Matrix<2, 2, Mercator::BasePoint>& basePoints(segment->getControlPoints());
@@ -67,14 +67,14 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 				heightMapSegment = std::make_unique<HeightMapFlatSegment>(basePoints[0].height());
 			} else {
 				auto buffer = mProvider.checkout();
-				if (buffer && buffer->getBuffer()) {
-					std::memcpy(buffer->getBuffer()->getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
+				if (buffer) {
+					std::memcpy(buffer->getBuffer().getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
 					heightMapSegment = std::make_unique<HeightMapSegment>(std::move(buffer));
 				}
 			}
 			if (heightMapSegment) {
-				mHeightMapSegments.emplace_back(WFMath::Point<2>(segment->getXRef() / segment->getResolution(),
-																 segment->getZRef() / segment->getResolution()),
+				mHeightMapSegments.emplace_back(WFMath::Point<2>((WFMath::CoordType) segment->getXRef() / segment->getResolution(),
+																 (WFMath::CoordType) segment->getZRef() / segment->getResolution()),
 												std::move(heightMapSegment));
 			}
 		}
@@ -83,9 +83,9 @@ void HeightMapUpdateTask::createHeightMapSegments() {
 }
 
 void HeightMapUpdateTask::injectHeightMapSegmentsIntoHeightMap() {
-	for (auto& entry : mHeightMapSegments) {
+	for (auto& entry: mHeightMapSegments) {
 		const WFMath::Point<2>& position = entry.first;
-		mHeightMap.insert(position.x(), position.y(), std::move(entry.second));
+		mHeightMap.insert((int) position.x(), (int) position.y(), std::move(entry.second));
 	}
 
 }

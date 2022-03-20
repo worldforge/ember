@@ -25,25 +25,31 @@ namespace OgreView {
 
 namespace Terrain {
 
-HeightMapBufferProvider::HeightMapBufferProvider(unsigned int bufferResolution, unsigned int desiredBuffers, unsigned int desiredBuffersTolerance) :
-		mBufferResolution(bufferResolution), mDesiredBuffers(desiredBuffers), mDesiredBuffersTolerance(desiredBuffersTolerance) {
+HeightMapBufferProvider::HeightMapBufferProvider(unsigned int bufferResolution,
+												 unsigned int desiredBuffers,
+												 unsigned int desiredBuffersTolerance) :
+		mBufferResolution(bufferResolution),
+		mDesiredBuffers(desiredBuffers),
+		mDesiredBuffersTolerance(desiredBuffersTolerance) {
 	while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-		mPrimitiveBuffers.emplace_back(std::make_unique<Buffer<float>>(mBufferResolution, 1));
+		mPrimitiveBuffers.emplace_back(std::make_unique<HeightMapBuffer::BufferType>(mBufferResolution, 1));
 	}
 }
 
 HeightMapBufferProvider::~HeightMapBufferProvider() = default;
 
-void HeightMapBufferProvider::checkin(std::unique_ptr<Buffer<float>> buffer) {
+void HeightMapBufferProvider::checkin(std::unique_ptr<HeightMapBuffer::BufferType> buffer) {
+	std::unique_lock<std::mutex> lock(mMutex);
 	if (buffer && mPrimitiveBuffers.size() < mDesiredBuffers + mDesiredBuffersTolerance) {
 		mPrimitiveBuffers.emplace_back(std::move(buffer));
 	}
 }
 
 std::unique_ptr<HeightMapBuffer> HeightMapBufferProvider::checkout() {
+	std::unique_lock<std::mutex> lock(mMutex);
 	if (mPrimitiveBuffers.empty()) {
 		while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-			mPrimitiveBuffers.emplace_back(std::make_unique<Buffer<float>>(mBufferResolution, 1));
+			mPrimitiveBuffers.emplace_back(std::make_unique<HeightMapBuffer::BufferType>(mBufferResolution, 1));
 		}
 	}
 	auto buffer = std::move(mPrimitiveBuffers.back());
@@ -52,10 +58,11 @@ std::unique_ptr<HeightMapBuffer> HeightMapBufferProvider::checkout() {
 }
 
 void HeightMapBufferProvider::maintainPool() {
+	std::unique_lock<std::mutex> lock(mMutex);
 
 	if (mPrimitiveBuffers.size() <= mDesiredBuffers - mDesiredBuffersTolerance) {
 		while (mPrimitiveBuffers.size() < mDesiredBuffers) {
-			mPrimitiveBuffers.emplace_back(std::make_unique<Buffer<float>>(mBufferResolution, 1));
+			mPrimitiveBuffers.emplace_back(std::make_unique<HeightMapBuffer::BufferType>(mBufferResolution, 1));
 		}
 	}
 

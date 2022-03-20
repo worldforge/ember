@@ -64,7 +64,7 @@ public:
 	 * @brief Gets the underlying buffer instance.
 	 * @returns The underlying buffer instance.
 	 */
-	BufferType* getBuffer();
+	BufferType& getBuffer();
 
 	/**
 	 * @brief Gets the resolution of the buffer, i.e. the size of one side of the buffer.
