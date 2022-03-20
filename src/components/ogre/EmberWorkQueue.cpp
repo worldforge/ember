@@ -50,9 +50,9 @@ Ogre::uint16 EmberWorkQueue::getChannel(const Ogre::String& channelName) {
 
 void EmberWorkQueue::processResponses() {
 	while (true) {
-		Ogre::WorkQueue::Response* response = nullptr;
+		Ogre::WorkQueue::Response* response;
 		{
-			OGRE_LOCK_MUTEX(mResponseMutex);
+			OGRE_WQ_LOCK_MUTEX(mResponseMutex);
 
 			if (mResponseQueue.empty()) {
 				break;
@@ -63,7 +63,7 @@ void EmberWorkQueue::processResponses() {
 		}
 
 		if (response) {
-			//The Ogre Terrain components rely on it's handlers always being executed on the main thread directly when processResponses() is called.
+			//The Ogre Terrain components rely on its handlers always being executed on the main thread directly when processResponses() is called.
 			//We'll have to take this into account and process all terrain handlers directly.
 			if (mTerrainChannels.find(response->getRequest()->getChannel()) != mTerrainChannels.end()) {
 				processResponse(response);
