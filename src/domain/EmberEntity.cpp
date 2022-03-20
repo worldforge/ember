@@ -83,7 +83,6 @@ EmberEntity::EmberEntity(std::string id, Eris::TypeInfo* ty, Eris::View& vw) :
 		Eris::ViewEntity(std::move(id), ty, vw),
 		mIsInitialized(false),
 		mPositioningMode(PositioningMode::FREE),
-		mCompositionMode(CM_DISABLED),
 		mAttachment(nullptr),
 		mAttachmentControlDelegate(nullptr),
 		mHeightProvider(nullptr) {
@@ -511,14 +510,6 @@ void EmberEntity::accept(std::function<bool(const EmberEntity&)>& visitor) const
 			}
 		}
 	}
-}
-
-EmberEntity::CompositionMode EmberEntity::getCompositionMode() const {
-	return mCompositionMode;
-}
-
-void EmberEntity::setCompositionMode(EmberEntity::CompositionMode mode) {
-	mCompositionMode = mode;
 }
 
 void EmberEntity::parseUsages(std::map<std::string, Eris::Usage>& map, const Atlas::Message::Element& element) {

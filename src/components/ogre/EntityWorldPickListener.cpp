@@ -114,7 +114,7 @@ void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePick
 
 		if (mousePickerArgs.pickType != MPT_HOVER) {
 			mPersistedResult.reserve(mResult.size());
-			for (auto& resultEntry : mResult) {
+			for (auto& resultEntry: mResult) {
 				PersistentEntityPickResult persistedEntry;
 				persistedEntry.entityRef = EmberEntityRef(resultEntry.entity);
 				persistedEntry.distance = resultEntry.distance;
@@ -140,26 +140,10 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, PickResul
 			}
 		}
 
-		//handle composed entities
 
-		std::list<EmberEntity*> entities;
-		entities.push_front(entityCollisionInfo.entity);
-		EmberEntity* entity = entityCollisionInfo.entity->getEmberLocation();
-		while (entity) {
-			if (entity->getCompositionMode() == EmberEntity::CM_COMPOSITION) {
-				entities.push_front(entity);
-			} else if (entity->getCompositionMode() == EmberEntity::CM_COMPOSITION_EXCLUSIVE) {
-				entities.clear();
-				entities.push_front(entity);
-			}
-			entity = entity->getEmberLocation();
-		}
-
-		for (auto& pickedEntity: entities) {
-			mResult.emplace_back(EntityPickResult{pickedEntity, Convert::toOgre(result.point), result.distance, entityCollisionInfo.isTransparent});
-			if (!entityCollisionInfo.isTransparent) {
-				mContinuePickingThisContext = false;
-			}
+		mResult.emplace_back(EntityPickResult{entityCollisionInfo.entity, Convert::toOgre(result.point), result.distance, entityCollisionInfo.isTransparent});
+		if (!entityCollisionInfo.isTransparent) {
+			mContinuePickingThisContext = false;
 		}
 	}
 }
@@ -168,7 +152,7 @@ void EntityWorldPickListener::processDelayedPick(const MousePickerArgs& mousePic
 	if (!mPersistedResult.empty()) {
 		std::vector<EntityPickResult> resolvedResult;
 
-		for (auto& persistedEntry : mPersistedResult) {
+		for (auto& persistedEntry: mPersistedResult) {
 			if (persistedEntry.entityRef) {
 				EntityPickResult entry;
 				entry.entity = persistedEntry.entityRef.get();

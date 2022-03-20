@@ -28,7 +28,6 @@
 #include "EmberEntityModelAction.h"
 #include "EmberEntityHideModelAction.h"
 #include "EmberEntityPartAction.h"
-#include "CompositionAction.h"
 #include "components/ogre/environment/OceanAction.h"
 #include "components/ogre/widgets/LabelAction.h"
 #include "PresentAction.h"
@@ -60,8 +59,6 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 			aCase.addAction(std::make_unique<Gui::LabelAction>(mEntity));
 		} else if (actionDef.Type == "display-ocean") {
 			aCase.addAction(std::make_unique<Environment::OceanAction>(mOceanAttachmentFunction));
-		} else if (actionDef.Type == "enable-composition") {
-			aCase.addAction(std::make_unique<CompositionAction>(mEntity, actionDef.Value));
 		} else if (actionDef.Type == "present") {
 			aCase.addAction(std::make_unique<PresentAction>(mEntity, mScene, modelMapping, mAttachmentFunction));
 //		} else if (actionDef.Type == "show-effect") {

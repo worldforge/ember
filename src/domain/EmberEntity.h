@@ -115,16 +115,6 @@ public:
 		PROJECTILE
 	};
 
-	/**
-	 * @brief The different composition modes available.
-	 * Some entities can be "composition" entities. That means that they and their children make up one single conceptual entity.
-	 * An example might be a table, where each table leg is a separate entity. Each leg is then part of the "table composition".
-	 */
-	enum CompositionMode {
-		CM_DISABLED, //!< CM_DISABLED No composition is used. This should be the default.
-		CM_COMPOSITION, //!< CM_COMPOSITION The entity is an composite. That means that when interacting with a child entity the user should also be given the option to interact with the parent composite entity.
-		CM_COMPOSITION_EXCLUSIVE //!< CM_COMPOSITION_EXCLUSIVE The entity is an exclusive composite. That means that when interacting with a child entity the user should only be presented with the parent composite entity (and should not be able to interact with the child entity).
-	};
 
 	/**
 	 * @brief Ctor.
@@ -295,10 +285,6 @@ public:
 
 	const std::map<std::string, Eris::Usage>& getUsagesProtected() const;
 
-	CompositionMode getCompositionMode() const;
-
-	void setCompositionMode(CompositionMode mode);
-
 	std::vector<ActionChange> processActionsChange(const Atlas::Message::Element& v);
 
 	sigc::signal<void, const EntityTalk&> EventTalk;
@@ -349,13 +335,6 @@ protected:
 	 * @brief The positioning mode the entity is in, like gravity affected, fixed or floating.
 	 */
 	PositioningMode mPositioningMode;
-
-	/**
-	 * @brief The composition mode for the entity.
-	 *
-	 * Is "none" (CM_DISABLED) by default.
-	 */
-	CompositionMode mCompositionMode;
 
 	/**
 	 * @brief The attachment for this entity.
