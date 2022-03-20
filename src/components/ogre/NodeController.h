@@ -46,14 +46,14 @@ public:
 	 * @brief Ctor.
 	 * @param The attachment which will be controlled.
 	 */
-	NodeController(NodeAttachment& attachment);
+	explicit NodeController(NodeAttachment& attachment);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~NodeController();
+	~NodeController() override;
 
-	virtual void updateMotion(float timeSlice);
+	void updateMotion(float timeSlice) override;
 
 	void forceMovementUpdate();
 

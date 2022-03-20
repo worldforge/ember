@@ -90,9 +90,6 @@ Ogre::Node* NodeAttachment::getNode() const {
 }
 
 void NodeAttachment::updatePosition() {
-	if (mAttachmentController) {
-		mAttachmentController->forceMovementUpdate();
-	}
 }
 
 void NodeAttachment::setVisualize(const std::string& visualization, bool visualize) {

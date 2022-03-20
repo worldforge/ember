@@ -132,8 +132,6 @@ public:
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
-	 * This is most often done by making a call to the containing node's adjustPositionForContainedNode method.
-	 * @see adjustPositionForContainedNode()
 	 */
 	void adjustPosition();
 
