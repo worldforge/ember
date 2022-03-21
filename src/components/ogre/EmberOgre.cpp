@@ -104,13 +104,38 @@ using namespace Ember;
 namespace Ember {
 namespace OgreView {
 
+
+struct OgreLogRouter {
+	/**
+	 * @brief We hold a reference to our own Ogre log manager, thus making sure that Ogre doesn't create one itself.
+	 *
+	 * Since we do this we can better steer how Ogre log messages are handled.
+	 * This needs to be created before OgreSetup (and Ogre::Root) is created.
+	 */
+	std::unique_ptr<Ogre::LogManager> mOgreLogManager;
+
+	/**
+	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
+	 * We don't deregister this from Ogre, so that all Ogre messages are sure to flow through it as it gets destroyed.
+	 */
+	std::unique_ptr<OgreLogObserver> mLogObserver;
+
+	OgreLogRouter() :
+	//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
+			mOgreLogManager(std::make_unique<Ogre::LogManager>()),
+			mLogObserver(std::make_unique<OgreLogObserver>())
+	{
+		mOgreLogManager->createLog("Ogre", true, false, true);
+		mOgreLogManager->getDefaultLog()->addListener(mLogObserver.get());
+
+	}
+};
+
 EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService& eventService, Input& input, ServerService& serverService, SoundService& soundService) :
 		mInput(input),
 		mServerService(serverService),
-		//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
-		mOgreLogManager(std::make_unique<Ogre::LogManager>()),
+		mOgreLogRouter(std::make_unique<OgreLogRouter>()),
 		mResourceLoader(std::make_unique<OgreResourceLoader>()),
-		mLogObserver(std::make_unique<OgreLogObserver>()),
 		mOgreSetup(std::make_unique<OgreSetup>()),
 		mRoot(Ogre::Root::getSingletonPtr()),
 		// Create the scene manager used for the main menu and load screen. Get the most simple one.
@@ -136,8 +161,6 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService&
 		mConsoleDevTools(std::make_unique<ConsoleDevTools>()),
 		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>()) {
 
-	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
-	Ogre::LogManager::getSingleton().getDefaultLog()->addListener(mLogObserver.get());
 
 	serverService.GotAccount.connect([this](Eris::Account* account) {
 		account->AvatarDeactivated.connect([this](const std::string& avatarId) { destroyWorld(); });
@@ -254,7 +277,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 
 void EmberOgre::clearDirtyPassLists() {
 	if (!Ogre::Pass::getDirtyHashList().empty() || !Ogre::Pass::getPassGraveyard().empty()) {
-		for (const auto& entry : Ogre::Root::getSingleton().getSceneManagers()) {
+		for (const auto& entry: Ogre::Root::getSingleton().getSceneManagers()) {
 			Ogre::SceneManager* pScene = entry.second;
 			pScene->getRenderQueue()->clear();
 		}
@@ -368,7 +391,7 @@ void EmberOgre::preloadMedia() {
 	shaderTextures.emplace_back(configSrv.getValue("shadertextures", "sand"));
 	shaderTextures.emplace_back(configSrv.getValue("shadertextures", "grass"));
 
-	for (auto& shaderTexture : shaderTextures) {
+	for (auto& shaderTexture: shaderTextures) {
 		try {
 			Ogre::TextureManager::getSingleton().load(shaderTexture, "General");
 		} catch (const std::exception& e) {
@@ -414,7 +437,7 @@ void EmberOgre::destroyWorld() {
 	//This is an excellent place to force garbage collection of all scripting environments.
 	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();
 	const std::vector<std::string> providerNames = scriptingService.getProviderNames();
-	for (const auto& providerName : providerNames) {
+	for (const auto& providerName: providerNames) {
 		scriptingService.getProviderFor(providerName)->forceGC();
 	}
 

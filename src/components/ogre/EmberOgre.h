@@ -137,6 +137,8 @@ class World;
 
 class Screen;
 
+struct OgreLogRouter;
+
 /**
  @brief The main class of the Ogre rendering component. This functions as a hub for almost all subsystems used when rendering the world.
 
@@ -240,13 +242,8 @@ protected:
 	Ember::ServerService& mServerService;
 
 
-	/**
-	 * @brief We hold a reference to our own Ogre log manager, thus making sure that Ogre doesn't create one itself.
-	 *
-	 * Since we do this we can better steer how Ogre log messages are handled.
-	 * This needs to be created before OgreSetup (and Ogre::Root) is created.
-	 */
-	std::unique_ptr<Ogre::LogManager> mOgreLogManager;
+	std::unique_ptr<OgreLogRouter> mOgreLogRouter;
+
 
 	/**
 	* @brief Handles loading of resources.
@@ -255,13 +252,6 @@ protected:
 	 * so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
 	*/
 	std::unique_ptr<OgreResourceLoader> mResourceLoader;
-
-
-	/**
-	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
-	 * We don't deregister this from Ogre, so that all Ogre messages are sure to flow through it as it gets destroyed.
-	 */
-	std::unique_ptr<OgreLogObserver> mLogObserver;
 
 	/**
 	 * @brief Utility object for setting up and tearing down ogre
