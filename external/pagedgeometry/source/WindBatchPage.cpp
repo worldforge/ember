@@ -122,7 +122,6 @@ void WindBatchPage::_updateShaders()
 		//If the shader hasn't been created yet, create it
 		if (!HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME))
 		{
-			Pass *pass = mat->getTechnique(0)->getPass(0);
 			String vertexProgSource;
 
 			if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))

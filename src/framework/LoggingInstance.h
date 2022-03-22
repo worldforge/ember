@@ -25,11 +25,11 @@
 
 #include "Log.h"
 
-#define S_LOG_VERBOSE(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::VERBOSE) << message << ENDM)
-#define S_LOG_INFO(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::INFO) << message << ENDM)
-#define S_LOG_WARNING(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::WARNING) << message << ENDM)
-#define S_LOG_FAILURE(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::FAILURE) << message << ENDM)
-#define S_LOG_CRITICAL(message) (Ember::Log::slog(__FILE__, __LINE__, Ember::Log::CRITICAL) << message << ENDM)
+#define S_LOG_VERBOSE(message) (Ember::LoggingInstance(__FILE__, __LINE__, Ember::Log::MessageImportance::VERBOSE) << message)
+#define S_LOG_INFO(message) (Ember::LoggingInstance(__FILE__, __LINE__, Ember::Log::MessageImportance::INFO) << message)
+#define S_LOG_WARNING(message) (Ember::LoggingInstance(__FILE__, __LINE__, Ember::Log::MessageImportance::WARNING) << message)
+#define S_LOG_FAILURE(message) (Ember::LoggingInstance(__FILE__, __LINE__, Ember::Log::MessageImportance::FAILURE) << message)
+#define S_LOG_CRITICAL(message) (Ember::LoggingInstance(__FILE__, __LINE__, Ember::Log::MessageImportance::CRITICAL) << message)
 
 namespace Atlas {
 namespace Message {
@@ -93,12 +93,6 @@ public:
 	 * @brief At destruction the message will be written, if not already done.
 	 */
 	~LoggingInstance();
-
-	/**
-	* By streaming in END_MESSAGE (equally to ENDM-macro) you finish the message and start
-	* sending it.
-	*/
-	void operator<<(Log::EndMessageEnum endMessage);
 
 private:
 

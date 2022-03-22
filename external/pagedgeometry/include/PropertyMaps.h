@@ -189,7 +189,7 @@ public:
 			c = _getColorAt_Bilinear(x, z, mapBounds);
 		
 		Ogre::Real r, g, b, a;
-		static Ogre::VertexElementType format = Ogre::Root::getSingleton().getRenderSystem()->getColourVertexElementType();
+		static Ogre::VertexElementType format = Ogre::VET_UBYTE4_NORM;
 		if (format == Ogre::VET_COLOUR_ARGB){
 			b = ((c) & 0xFF) / 255.0f;
 			g = ((c >> 8) & 0xFF) / 255.0f;

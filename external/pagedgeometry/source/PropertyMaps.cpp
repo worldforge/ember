@@ -263,7 +263,7 @@ ColorMap::ColorMap(TexturePtr map, MapChannel channel)
 	HardwarePixelBufferSharedPtr buff = map->getBuffer();
 
 	//Prepare a PixelBox (24-bit RGB) to receive the color values
-	VertexElementType format = Root::getSingleton().getRenderSystem()->getColourVertexElementType();
+	VertexElementType format = VET_UBYTE4_NORM;
 	switch (format){
 		case VET_UBYTE4_NORM:
 			//OpenGL
@@ -274,7 +274,6 @@ ColorMap::ColorMap(TexturePtr map, MapChannel channel)
 			break;
 		default:
 			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Unknown RenderSystem color format", "GrassLayer::setColorMap()");
-			break;
 	}
 
 	pixels->data = new uint8[pixels->getConsecutiveSize()];

@@ -31,23 +31,19 @@
 // Short type macros
 //======================================================================
 
-#define ENDM (Ember::Log::END_MESSAGE)
-#define HEX_NUM(number) (Ember::Log::hexNumber(number))
-
-namespace Ember
-{
+namespace Ember {
 
 class LoggingInstance;
+
 class LogObserver;
+
 /**
  * @brief Easy-to-deal-with logging class.
  *
  * This service class should make adding and observing logging messages more easy. This
- * can be done using printf-like log method or just streaming operator << in
- * cout-like way.
+ * can be done using streaming operator << in cout-like way.
  *
- * The cout-like way always needs a LoggingService::END_MESSAGE to be streamed-in
- * last (use ENDM* macro). To specify formats like hexadecimal printing static functions
+ * To specify formats like hexadecimal printing static functions
  * are available for conversion (use the HEX_NUM* macro).
  *
  *
@@ -68,20 +64,12 @@ class LogObserver;
  * written/passed by the callback to an observer.
  *
  *
- * HINT: Names marked with * were chosen this short, because they are intentended to be used very
- * frequently.
  *
  * SAMPLE:
  * using namespace Ember::services;
  * LoggingService * logger;
  * //service is assumed to be started; observers are added
  *
- * //do you prefer this way?
- * logger->log(__FILE__, __LINE__, LoggingService::WARNING,
- *      "Player %s (ID: %x) is already dead (but used in %d new messages).",
- *		player->getName(), player->getID(), player->getMessages()->getCount());
- *
- * //or this?
  * logger->slog(__FILE__, __LINE__, LoggingService::WARNING) << "Player: " << player->getName()
  *		<<"(ID: " << HEX_NUM(player->getID()) << "is already dead (but used in " <<
  *      player->getMessages()->getCount() << " new messages)." << ENDM;
@@ -92,16 +80,15 @@ class LogObserver;
 
 class StdOutLogObserver;
 
-class Log
-{
+class Log {
 	friend class StdOutLogObserver;
+
 private:
 
 	/**
 	 * pseudo-type used for multiple overriding with the same type of the operator<<
 	 */
-	struct HexNumber
-	{
+	struct HexNumber {
 		int myNumber;
 	};
 
@@ -109,7 +96,6 @@ public:
 	friend class LoggingInstance;
 
 	static const int NUMBER_BUFFER_SIZE = 24;
-	static const int MESSAGE_BUFFER_SIZE = 4096;
 
 public:
 
@@ -122,22 +108,13 @@ public:
 	 * -FAILURE messages appear when something failed, and the failure resulted in some process not being able to complete with a noticable result to the user. After a failure there's always a risk that the application will end up in an invalid state.
 	 * -CRITICAL messages should be read always and contain fatal errors. These error are guaranteed to break the application, and it should in most cases exit afterwards.
 	 */
-	enum MessageImportance
-	{
+	enum MessageImportance {
 		VERBOSE = 0, INFO = 1, WARNING = 2, FAILURE = 3, CRITICAL = 4
 	};
 
-	/**
-	 * Pseudo-enum necessary to make the END_MESSAGE constant not be mixed with ints
-	 */
-	enum EndMessageEnum
-	{
-		END_MESSAGE = 0
-	};
-
 
 	/**
-	 * @brief Adds a message presented by various options, a format string and variable params like in printf using also the same format specifications.
+	 * @brief Adds a message.
 	 *
 	 * @param file The source code file the message was initiated.
 	 * @param line The source code line the message was initiated.
@@ -145,51 +122,16 @@ public:
 	 * @param message The message format string.
 	 *
 	 */
-	static void log(const char *message, ...);
+	static void log(const char* message);
 
-	static void log(const char *file, const char *message, ...);
-
-	static void log(const char *file, int line, const char *message, ...);
-
-	static void log(MessageImportance importance, const char *message, ...);
-
-	static void log(const char *file, MessageImportance importance, const char *message, ...);
-
-	static void log(const char *file, int line, MessageImportance importance, const char *message, ...);
-
-	/**
-	 * @brief Is actually used in all cases of log. (Generates the message and then uses sendMessage.)
-	 * @see log
-	 */
-	static void logVarParam(const char *file, int line, MessageImportance importance, const char *message, va_list argptr);
-
-	/**
-	 * @brief Gives the possibility to specify options when using the streaming method << for messages.
-	 *
-	 * @param file The source code file the message was initiated.
-	 * @param line The source code line the message was initiated.
-	 * @param importance The level of importance (see MessageImportance enum)
-	 *
-	 * @return This function always returns a reference to a LoggingInstance object. You
-	 * can thus easily apply the shifting operator to it.
-	 */
-
-	static LoggingInstance slog(std::string file, int line, MessageImportance importance);
-
-	static LoggingInstance slog(MessageImportance importance);
-
-	static LoggingInstance slog(std::string file, MessageImportance importance);
-
-	static LoggingInstance slog(std::string file, int line);
-
-	static LoggingInstance slog(std::string file);
+	static void log(MessageImportance importance, const char* message);
 
 	/**
 	 * @brief Adds an observer to the list.
 	 *
 	 * @param observer Pointer to an object with an Observer interface to be added to the list.
 	 */
-	static void addObserver(LogObserver * observer);
+	static void addObserver(LogObserver* observer);
 
 	/**
 	 * @brief Removes an observer from the list.
@@ -197,7 +139,7 @@ public:
 	 * @param observer The pointer previously added the the observer list via addObserver.
 	 * @return 0 if the observer was found and removed, <> 0 otherwise
 	 */
-	static int removeObserver(LogObserver * observer);
+	static int removeObserver(LogObserver* observer);
 
 	/**
 	 * @brief Converts a normal int to a hexadecimal int that can be streamed into the LoggingService object. (use HEX_NUM macro if you want)
@@ -207,7 +149,7 @@ public:
 	/**
 	 * Unifies the sending mechanism for streaming- and formatting-input
 	 */
-	static void sendMessage(const std::string & message, const std::string & file, int line, MessageImportance importance);
+	static void sendMessage(const std::string& message, const std::string& file, int line, MessageImportance importance);
 
 private:
 

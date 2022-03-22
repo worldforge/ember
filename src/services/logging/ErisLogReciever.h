@@ -31,7 +31,7 @@ namespace Ember {
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-class ErisLogReciever{
+class ErisLogReciever : public virtual sigc::trackable {
 public:
     ErisLogReciever();
 

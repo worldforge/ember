@@ -40,7 +40,7 @@ LoggingInstance::LoggingInstance(std::string file, int line, Log::MessageImporta
 }
 
 LoggingInstance::LoggingInstance(Log::MessageImportance importance)
-: mFile(""), mLine(-1), mImportance(importance)
+: mLine(-1), mImportance(importance)
 {
 	mMessage.reserve(256);
 }
@@ -52,13 +52,13 @@ LoggingInstance::LoggingInstance(std::string file, Log::MessageImportance import
 }
 
 LoggingInstance::LoggingInstance(std::string file, int line)
-: mFile(std::move(file)), mLine(line), mImportance(Log::INFO)
+: mFile(std::move(file)), mLine(line), mImportance(Log::MessageImportance::INFO)
 {
 	mMessage.reserve(256);
 }
 
 LoggingInstance::LoggingInstance(std::string file)
-: mFile(std::move(file)), mLine(-1), mImportance(Log::INFO)
+: mFile(std::move(file)), mLine(-1), mImportance(Log::MessageImportance::INFO)
 {
 	mMessage.reserve(256);
 }
@@ -134,14 +134,6 @@ LoggingInstance& LoggingInstance::operator<< (unsigned long long ulongLongToAdd)
 {
 	mMessage += std::to_string(ulongLongToAdd);
 	return *this;
-}
-
-
-
-void LoggingInstance::operator<< (Log::EndMessageEnum endMessage)
-{
-	Log::sendMessage(mMessage, mFile, mLine, mImportance);
-	mMessage = "";
 }
 
 LoggingInstance& LoggingInstance::operator<< (const std::exception& exception)

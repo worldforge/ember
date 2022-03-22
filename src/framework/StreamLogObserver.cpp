@@ -92,13 +92,13 @@ void StreamLogObserver::onNewMessage(const std::string& message, const std::stri
 	}
 	myOut << "] ";
 
-	if (importance == Log::CRITICAL) {
+	if (importance == Log::MessageImportance::CRITICAL) {
 		myOut << "CRITICAL";
-	} else if (importance == Log::FAILURE) {
+	} else if (importance == Log::MessageImportance::FAILURE) {
 		myOut << "FAILURE";
-	} else if (importance == Log::WARNING) {
+	} else if (importance == Log::MessageImportance::WARNING) {
 		myOut << "WARNING";
-	} else if (importance == Log::INFO) {
+	} else if (importance == Log::MessageImportance::INFO) {
 		myOut << "INFO";
 	} else {
 		myOut << "VERBOSE";

@@ -55,78 +55,13 @@ int Log::sNumberOfExternalObservers = 0;
 
 StdOutLogObserver Log::sStdOutLogObserver;
 
-void Log::log(const char* message, ...) {
-	va_list vl;
-	va_start(vl, message);
-	logVarParam("", -1, INFO, message, vl);
-	va_end(vl);
+void Log::log(const char* message) {
+	sendMessage(std::string(message), "", -1, MessageImportance::INFO);
 }
 
-
-void Log::log(const char* file, const char* message, ...) {
-	va_list vl;
-	va_start(vl, message);
-	logVarParam(file, -1, INFO, message, vl);
-	va_end(vl);
+void Log::log(MessageImportance importance, const char* message) {
+	sendMessage(std::string(message), "", -1, importance);
 }
-
-
-void Log::log(const char* file, int line, const char* message, ...) {
-	va_list vl;
-	va_start(vl, message);
-	logVarParam(file, line, INFO, message, vl);
-	va_end(vl);
-}
-
-
-void Log::log(const MessageImportance importance, const char* message, ...) {
-	va_list vl;
-	va_start(vl, message);
-	logVarParam("", -1, importance, message, vl);
-	va_end(vl);
-}
-
-void Log::log(const char* file, MessageImportance importance, const char* message, ...) {
-	va_list vl;
-	va_start(vl, message);
-	logVarParam(file, -1, importance, message, vl);
-	va_end(vl);
-}
-
-void Log::log(const char* file, int line, MessageImportance importance, const char* message, ...) {
-	va_list vl;
-	va_start(vl, message);
-	logVarParam(file, line, importance, message, vl);
-	va_end(vl);
-}
-
-void Log::logVarParam(const char* file, int line, MessageImportance importance, const char* message, va_list argptr) {
-	char Buffer[MESSAGE_BUFFER_SIZE];
-	std::snprintf((char*) Buffer, MESSAGE_BUFFER_SIZE, message, argptr);
-	sendMessage(std::string((char*) Buffer), file, line, importance);
-}
-
-
-LoggingInstance Log::slog(std::string file, int line, MessageImportance importance) {
-	return LoggingInstance(std::move(file), line, importance);
-}
-
-LoggingInstance Log::slog(const MessageImportance importance) {
-	return LoggingInstance(importance);
-}
-
-LoggingInstance Log::slog(std::string file, MessageImportance importance) {
-	return LoggingInstance(std::move(file), importance);
-}
-
-LoggingInstance Log::slog(std::string file, int line) {
-	return LoggingInstance(std::move(file), line);
-}
-
-LoggingInstance Log::slog(std::string file) {
-	return LoggingInstance(std::move(file));
-}
-
 
 void Log::addObserver(LogObserver* observer) {
 	//test on already existing observer

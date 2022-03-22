@@ -113,11 +113,11 @@ void BatchPage::build()
 		//This is done because the default shader applied by BatchPage
 		//doesn't support specular, and fixed-function needs to look
 		//the same as the shader (for computers with no shader support)
-		for (int t = 0; t < mat->getNumTechniques(); ++t){
+		for (size_t t = 0; t < mat->getNumTechniques(); ++t){
 			Technique *tech = mat->getTechnique(t);
 			for (int p = 0; p < tech->getNumPasses(); ++p){
 				Pass *pass = tech->getPass(p);
-				if (pass->getVertexProgramName() == "")
+				if (pass->getVertexProgramName().empty())
 					pass->setSpecular(0, 0, 0, 1);
 			}
 		}

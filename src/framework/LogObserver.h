@@ -29,17 +29,14 @@ namespace Ember {
 
 /**
 	@author Erik Ogenvik <erik@ogenvik.org>
-	Abstract base class (=interface) for all observers
+	Abstract base class for all observers
 */
-class LogObserver
-{
+class LogObserver {
 public:
 
-	LogObserver()
-	{
-		mFilter = Log::INFO;        //No filtering assumed
+	LogObserver() : mFilter(Log::MessageImportance::INFO) {
 	}
-	
+
 	virtual ~LogObserver() = default;
 
 	/**
@@ -50,25 +47,23 @@ public:
 	* @param line The source code line the message was initiated or -1 if not specified.
 	* @param importance The level of importance (see MessageImportance enum)
 	*/
-	virtual void onNewMessage (const std::string & message,
-							const std::string & file,
-							const int &line,
-							const Log::MessageImportance & importance) = 0;
+	virtual void onNewMessage(const std::string& message,
+							  const std::string& file,
+							  const int& line,
+							  const Log::MessageImportance& importance) = 0;
 
-	Log::MessageImportance getFilter ()
-	{
+	Log::MessageImportance getFilter() {
 		return mFilter;
 	}
 
-	void setFilter (Log::MessageImportance filter)
-	{
+	void setFilter(Log::MessageImportance filter) {
 		mFilter = filter;
 	}
 
 private:
 
 	/**
-	* A filter used by the LoggingService to determine wether the message should be send
+	* A filter used by the LoggingService to determine whether the message should be send
 	* to onNewMessage. This happens only if the message is at least as important as
 	* the filter value.
 	*/

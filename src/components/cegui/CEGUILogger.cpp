@@ -47,19 +47,17 @@ void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel lev
 	if (d_level >= level) {
 		switch (level) {
 			case CEGUI::Insane:
-				Log::slog("CEGUI", Log::VERBOSE) << cegui << message.c_str() << Log::END_MESSAGE;
-				break;
 			case CEGUI::Informative:
-				Log::slog("CEGUI", Log::VERBOSE) << cegui << message.c_str() << Log::END_MESSAGE;
+				LoggingInstance("CEGUI", Log::MessageImportance::VERBOSE) << cegui << message.c_str();
 				break;
 			case CEGUI::Standard:
-				Log::slog("CEGUI", Log::INFO) << cegui << message.c_str() << Log::END_MESSAGE;
+				LoggingInstance("CEGUI", Log::MessageImportance::INFO) << cegui << message.c_str();
 				break;
 			case CEGUI::Warnings:
-				Log::slog("CEGUI", Log::WARNING) << cegui << message.c_str() << Log::END_MESSAGE;
+				LoggingInstance("CEGUI", Log::MessageImportance::WARNING) << cegui << message.c_str();
 				break;
 			case CEGUI::Errors:
-				Log::slog("CEGUI", Log::FAILURE) << cegui << message.c_str() << Log::END_MESSAGE;
+				LoggingInstance("CEGUI", Log::MessageImportance::FAILURE) << cegui << message.c_str();
 				break;
 		}
 	}

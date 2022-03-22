@@ -101,15 +101,6 @@ public:
 	};
 
 
-	/**
-	* Pseudo-enum necessary to make the END_MESSAGE constant not be mixed with ints
-	*/
-	enum EndMessageEnum
-	{
-		END_MESSAGE = 0
-	};	
-	
-
     /**
      * Adds a message presented by various options, a format string and variable params like
      * in printf using also the same format specifications.
