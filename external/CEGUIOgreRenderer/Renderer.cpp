@@ -1062,7 +1062,7 @@ void OgreRenderer::setupRenderingBlendMode(const BlendMode mode,
 	Ogre::ColourBlendState blendState;
 	if (d_pimpl->d_activeBlendMode == BM_RTT_PREMULTIPLIED) {
 		blendState.sourceFactor = SBF_ONE;
-		blendState.destFactor = SBF_ONE;
+		blendState.destFactor = SBF_ONE_MINUS_SOURCE_ALPHA;
 		blendState.sourceFactorAlpha = SBF_ONE;
 		blendState.destFactorAlpha = SBF_ONE;
 		blendState.operation = SBO_ADD;
