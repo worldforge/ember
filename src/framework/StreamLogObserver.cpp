@@ -88,7 +88,14 @@ void StreamLogObserver::onNewMessage(const std::string& message, const std::stri
 		myOut.width(8);
 		auto millisecondsIntoFrame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - sCurrentFrameStartMilliseconds);
 		auto microsecondsSinceStart = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - mStart);
-		myOut << microsecondsSinceStart.count() << ":" << threadIdentifiers[std::this_thread::get_id()].id << ":" << sCurrentFrame << ":" << millisecondsIntoFrame.count() << ")";
+		auto threadId = threadIdentifiers[std::this_thread::get_id()].id;
+		myOut << microsecondsSinceStart.count() << ":" << threadId << ":" << sCurrentFrame << ":";
+		//Only print out how far into the frame we are if we're the main thread, since it's only there that it's worth knowing. This avoids confusion.
+		if (threadId == "0") {
+			myOut << millisecondsIntoFrame.count() << ")";
+		} else {
+			myOut << ":-)";
+		}
 	}
 	myOut << "] ";
 
