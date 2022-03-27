@@ -1270,17 +1270,20 @@ void OgreRenderer::setWorldMatrix(const Ogre::Matrix4& m)
 {
     d_pimpl->d_renderSystem->_setWorldMatrix(m);
 
-    d_pimpl->d_worldMatrix = m;
-    d_pimpl->d_combinedMatrixValid = false;
+	if (m != d_pimpl->d_worldMatrix) {
+		d_pimpl->d_worldMatrix = m;
+		d_pimpl->d_combinedMatrixValid = false;
+	}
 }
 
 //----------------------------------------------------------------------------//
-void OgreRenderer::setViewMatrix(const Ogre::Matrix4& m)
-{
-    d_pimpl->d_renderSystem->_setViewMatrix(m);
+void OgreRenderer::setViewMatrix(const Ogre::Matrix4& m) {
+	d_pimpl->d_renderSystem->_setViewMatrix(m);
 
-    d_pimpl->d_viewMatrix = m;
-    d_pimpl->d_combinedMatrixValid = false;
+	if (m != d_pimpl->d_viewMatrix) {
+		d_pimpl->d_viewMatrix = m;
+		d_pimpl->d_combinedMatrixValid = false;
+	}
 }
 
 //----------------------------------------------------------------------------//
@@ -1288,8 +1291,10 @@ void OgreRenderer::setProjectionMatrix(const Ogre::Matrix4& m)
 {
     d_pimpl->d_renderSystem->_setProjectionMatrix(m);
 
-    d_pimpl->d_projectionMatrix = m;
-    d_pimpl->d_combinedMatrixValid = false;
+	if (m != d_pimpl->d_projectionMatrix) {
+		d_pimpl->d_projectionMatrix = m;
+		d_pimpl->d_combinedMatrixValid = false;
+	}
 }
 
 //----------------------------------------------------------------------------//
