@@ -72,7 +72,7 @@ private:
 	/**
 	 * @brief A store of terrain page surface compilation instances, and the page to which they belong.
 	 */
-	typedef std::vector<std::pair<std::unique_ptr<TerrainPageSurfaceCompilationInstance>, TerrainPage*>> CompilationInstanceStore;
+	typedef std::vector<std::pair<std::unique_ptr<TerrainPageSurfaceCompilationInstance>, std::shared_ptr<Terrain::TerrainPage>>> CompilationInstanceStore;
 
 	/**
 	 * @brief The pages which needs recompilation.

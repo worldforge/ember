@@ -31,8 +31,7 @@ namespace Techniques {
 Base::Base(const TerrainPageGeometryPtr& geometry,
 		   SurfaceLayerStore terrainPageSurfaces)
 		: mGeometry(geometry),
-		  mTerrainPageSurfaces(std::move(terrainPageSurfaces)),
-		  mPage(geometry->getPage()) {
+		  mTerrainPageSurfaces(std::move(terrainPageSurfaces)) {
 }
 
 Base::~Base() = default;

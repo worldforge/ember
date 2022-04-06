@@ -70,6 +70,8 @@ namespace Terrain {
 class TerrainManager;
 
 class TerrainPage;
+
+class TerrainPageGeometry;
 }
 
 namespace Camera {
@@ -395,10 +397,9 @@ protected:
 
     /**
 	 * @brief Listens to updates to the terrain and makes sure that entities are adjusted.
-	 * @param areas The areas that were changed.
-	 * @param pages The pages that were changed.
 	 */
-    void terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages);
+    void terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas,
+										   const std::vector<std::shared_ptr<Terrain::TerrainPageGeometry>>&);
 
     /**
      * @brief Sent from the view when an avatar entity has been created.

@@ -37,7 +37,7 @@ void OgreTerrainObserver::observeArea(const WFMath::AxisBox<2>& area) {
 }
 
 void OgreTerrainObserver::observeArea(const Ogre::TRect<int>& area) {
-	mObservedArea = Ogre::TRect<Ogre::Real>(area.left, area.top, area.right, area.bottom);
+	mObservedArea = Ogre::TRect<Ogre::Real>((Ogre::Real) area.left, (Ogre::Real) area.top, (Ogre::Real) area.right, (Ogre::Real) area.bottom);
 }
 
 void OgreTerrainObserver::terrainUpdated(const Ogre::TRect<Ogre::Real>& updatedArea) {

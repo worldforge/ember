@@ -137,7 +137,8 @@ protected:
 
 	void TerrainHandler_EventShaderCreated(const Terrain::TerrainLayer&);
 
-	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages);
+	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas,
+										   const std::vector<std::shared_ptr<Terrain::TerrainPageGeometry>>& pages);
 
 	void TerrainManager_TerrainShown(const std::vector<Ogre::TRect<Ogre::Real>>& areas);
 

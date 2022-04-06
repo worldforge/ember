@@ -38,7 +38,11 @@ struct IPageDataProvider;
 
 namespace Terrain {
 
+class TerrainPage;
+
 class TerrainManager;
+
+class TerrainPageGeometry;
 
 struct ITerrainObserver;
 
@@ -117,6 +121,9 @@ struct ITerrainAdapter {
 	 */
 	virtual void reloadPage(const TerrainIndex& index) = 0;
 
+	virtual void showPage(std::shared_ptr<TerrainPageGeometry> geometry) = 0;
+
+	virtual void removePage(const TerrainIndex& index) = 0;
 	/**
 	 * @brief Reloads the material of a single page.
 	 *

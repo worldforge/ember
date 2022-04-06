@@ -62,7 +62,11 @@ public:
 	 * @param sceneManager The scene manager which will hold the terrain.
 	 * @param useNormalMapping Whether to use normal mapping.
 	 */
-	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, Ogre::SceneManager& sceneManager, bool useNormalMapping = false);
+	Shader(bool includeShadows,
+		   const TerrainPageGeometryPtr& geometry,
+		   const SurfaceLayerStore& terrainPageSurfaces,
+		   Ogre::SceneManager& sceneManager,
+		   bool useNormalMapping = false);
 
 	/**
 	 * @brief Dtor.

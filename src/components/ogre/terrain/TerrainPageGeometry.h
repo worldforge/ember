@@ -76,7 +76,7 @@ public:
 	 * @param segmentManager The segment manager from which we'll obtain SegmentReferences.
 	 * @param defaultHeight The default height of any parts of the terrain where no segment has been initialized.
 	 */
-	TerrainPageGeometry(TerrainPage& page, SegmentManager& segmentManager, float defaultHeight);
+	TerrainPageGeometry(std::shared_ptr<Terrain::TerrainPage> page, SegmentManager& segmentManager, float defaultHeight);
 
 	/**
 	 * @brief Dtor.
@@ -134,14 +134,17 @@ public:
 	 * @brief Gets the page to which this geometry belongs.
 	 * @returns The page to which the geometry belongs.
 	 */
-	TerrainPage& getPage();
+	std::shared_ptr<Terrain::TerrainPage> getPage() { return mPage; }
 
+	const TerrainIndex mPageIndex;
+	const int mVerticesCount;
+	const int mPageWidth;
 private:
 
 	/**
 	 * @brief The page to which this geometry belongs.
 	 */
-	TerrainPage& mPage;
+	std::shared_ptr<Terrain::TerrainPage> mPage;
 
 	/**
 	 * @brief A store of all the SegmentReferences which make up this geometry. These are indexed using local coords.

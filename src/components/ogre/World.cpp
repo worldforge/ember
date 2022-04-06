@@ -265,7 +265,7 @@ Eris::Calendar& World::getCalendar() const {
 	return *mCalendar;
 }
 
-void World::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages) {
+void World::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::vector<std::shared_ptr<Terrain::TerrainPageGeometry>>&) {
 	auto* emberEntity = static_cast<EmberEntity*>(mView.getTopLevel());
 	if (emberEntity) {
 		updateEntityPosition(emberEntity, areas);

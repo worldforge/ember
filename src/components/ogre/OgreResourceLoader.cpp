@@ -102,9 +102,13 @@ struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
 
 			MainLoopController::getSingleton().getEventService().runOnMainThread([=]() {
 				Ogre::MaterialPtr oldMat = existingMaterial;
-				Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(resource->getName(), resource->getGroup());
-				mat->copyDetailsTo(oldMat);
-				oldMat->load();
+				Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(existingMaterial->getName(), existingMaterial->getGroup());
+				if (mat) {
+					mat->copyDetailsTo(oldMat);
+					oldMat->load();
+				} else {
+					S_LOG_WARNING("Material '" << existingMaterial->getName() << "' does not exist anymore in group '" << existingMaterial->getGroup() << "'.");
+				}
 			});
 		}
 
@@ -122,7 +126,7 @@ OgreResourceLoader::OgreResourceLoader() :
 OgreResourceLoader::~OgreResourceLoader() {
 	//Don't deregister mLoadingListener, since this destructor needs to be called after OGRE has been shut down, and there won't be any ResourceGroupManager
 	//available by then.
-	for (auto& path : mResourceRootPaths) {
+	for (auto& path: mResourceRootPaths) {
 		Ember::FileSystemObserver::getSingleton().remove_directory(path);
 	}
 }
@@ -154,7 +158,7 @@ void OgreResourceLoader::unloadUnusedResources() {
 	Ogre::ResourceGroupManager& resourceGroupManager(Ogre::ResourceGroupManager::getSingleton());
 
 	Ogre::StringVector resourceGroups = resourceGroupManager.getResourceGroups();
-	for (const auto& resourceGroup : resourceGroups) {
+	for (const auto& resourceGroup: resourceGroups) {
 		resourceGroupManager.unloadUnreferencedResourcesInGroup(resourceGroup, false);
 	}
 }
@@ -283,7 +287,7 @@ void OgreResourceLoader::loadGeneral() {
 	addUserMedia("entityrecipes", "EmberFileSystem", "EntityRecipes");
 
 	//End with adding any extra defined locations.
-	for (auto& location : mExtraResourceLocations) {
+	for (auto& location: mExtraResourceLocations) {
 		addResourceDirectory(location, "EmberFileSystem", "Extra", OnFailure::Report);
 	}
 }
@@ -292,7 +296,7 @@ void OgreResourceLoader::preloadMedia() {
 	// resource groups to be loaded
 	const char* resourceGroup[] = {"General", "Data"};
 
-	for (auto& group : resourceGroup) {
+	for (auto& group: resourceGroup) {
 		try {
 			Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(group);
 		} catch (const std::exception& ex) {
@@ -324,7 +328,7 @@ void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 
 
 			auto resourceGroups = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
-			for (auto& group : resourceGroups) {
+			for (auto& group: resourceGroups) {
 
 				auto reloadResource = [&](Ogre::ResourceManager& resourceManager, const std::string& resourceName) {
 					if (resourceManager.resourceExists(resourceName, group)) {
@@ -355,7 +359,7 @@ void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 				};
 
 				auto locations = Ogre::ResourceGroupManager::getSingleton().listResourceLocations(group);
-				for (auto& location : *locations) {
+				for (auto& location: *locations) {
 					boost::filesystem::path locationDirectory(location);
 					if (startsWith(locationDirectory, ev.path)) {
 						auto relative = relativeTo(locationDirectory, ev.path);

@@ -24,7 +24,6 @@
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainPageGeometry.h"
 #include "HeightMapUpdateTask.h"
-#include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
 
@@ -33,13 +32,13 @@ namespace OgreView {
 
 namespace Terrain {
 
-GeometryUpdateTask::GeometryUpdateTask(BridgeBoundGeometryPtrVector pages,
+GeometryUpdateTask::GeometryUpdateTask(std::vector<TerrainPageGeometryPtr> geometry,
 									   std::vector<WFMath::AxisBox<2>> areas,
 									   TerrainHandler& handler,
 									   std::vector<Terrain::TerrainShader> shaders,
 									   HeightMapBufferProvider& heightMapBufferProvider,
 									   HeightMap& heightMap) :
-		mGeometry(std::move(pages)),
+		mGeometry(std::move(geometry)),
 		mAreas(std::move(areas)),
 		mHandler(handler),
 		mShaders(std::move(shaders)),
@@ -52,8 +51,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 	std::vector<Mercator::Segment*> segments;
 
 	//first populate the geometry for all pages, and then regenerate the shaders
-	for (const auto& geometryEntry : mGeometry) {
-		auto& geometry = geometryEntry.first;
+	for (const auto& geometry : mGeometry) {
 		geometry->repopulate();
 		const SegmentVector& segmentVector = geometry->getValidSegments();
 		for (const auto& entry : segmentVector) {
@@ -70,31 +68,11 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 	}
 	context.executeTask(std::make_unique<HeightMapUpdateTask>(mHeightMapBufferProvider, mHeightMap, segments));
 
-	for (const auto& geometryEntry : mGeometry) {
-		const TerrainPageGeometryPtr& geometry = geometryEntry.first;
-		const ITerrainPageBridgePtr& bridge = geometryEntry.second;
-		if (bridge) {
-			bridge->updateTerrain(*geometry);
-			mBridgesToNotify.insert(bridge);
-		}
-	}
-	for (const auto& geometryEntry : mGeometry) {
-		TerrainPage* page = &(geometryEntry.first)->getPage();
-		mPages.insert(page);
-	}
-
-	//Release Segment references as soon as we can
-	mGeometry.clear();
 }
 
 bool GeometryUpdateTask::executeTaskInMainThread() {
-	if (!mBridgesToNotify.empty()) {
-		auto I = mBridgesToNotify.begin();
-		(*I)->terrainPageReady();
-		mBridgesToNotify.erase(I);
-		return false;
-	}
-	mHandler.EventAfterTerrainUpdate(mAreas, mPages);
+
+	mHandler.EventAfterTerrainUpdate(mAreas, mGeometry);
 	return true;
 }
 }

@@ -83,7 +83,8 @@ void FoliageBase::TerrainHandler_EventShaderCreated(const TerrainLayer&) {
 	}
 }
 
-void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>&) {
+void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas,
+													const std::vector<std::shared_ptr<Terrain::TerrainPageGeometry>>&) {
 	if (mPagedGeometry) {
 		for (const auto& area : areas) {
 			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(area));

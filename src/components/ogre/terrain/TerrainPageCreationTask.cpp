@@ -25,7 +25,6 @@
 #include "TerrainShader.h"
 #include "TerrainPageGeometry.h"
 #include "GeometryUpdateTask.h"
-#include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
 
@@ -35,16 +34,13 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler,
-												 TerrainPage* page,
-												 std::shared_ptr<ITerrainPageBridge> bridge,
+												 std::shared_ptr<Terrain::TerrainPage> page,
 												 HeightMapBufferProvider& heightMapBufferProvider,
 												 HeightMap& heightMap) :
 		mTerrainHandler(handler),
-		mPage(page),
-		mBridge(std::move(bridge)),
+		mPage(std::move(page)),
 		mHeightMapBufferProvider(heightMapBufferProvider),
 		mHeightMap(heightMap) {
-
 }
 
 
@@ -52,22 +48,30 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
 	std::vector<TerrainShader> shaders;
+	//TODO: race condition...
 	shaders.reserve(mTerrainHandler.getAllShaders().size());
 
 
-	for (auto& entry : mTerrainHandler.getAllShaders()) {
+	for (auto& entry: mTerrainHandler.getAllShaders()) {
 		shaders.push_back(TerrainShader{entry.second.layer, *entry.second.shader});
 		mPage->addShader(entry.second.layer.layerDef, entry.second.layer.terrainIndex, *entry.second.shader);
 	}
 
 
-	auto geometryInstance = std::make_unique<TerrainPageGeometry>(*mPage, mTerrainHandler.getSegmentManager(), mTerrainHandler.getDefaultHeight());
-	BridgeBoundGeometryPtrVector geometry;
-	geometry.emplace_back(std::move(geometryInstance), mBridge);
+	auto geometryInstance = std::make_unique<TerrainPageGeometry>(mPage,
+																  mTerrainHandler.getSegmentManager(),
+																  mTerrainHandler.getDefaultHeight());
+	std::vector<TerrainPageGeometryPtr> geometry;
+	geometry.emplace_back(std::move(geometryInstance));
 	std::vector<WFMath::AxisBox<2>> areas;
 	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
-	context.executeTask(std::make_unique<GeometryUpdateTask>(std::move(geometry), areas, mTerrainHandler, std::move(shaders), mHeightMapBufferProvider, mHeightMap));
+	context.executeTask(std::make_unique<GeometryUpdateTask>(std::move(geometry),
+															 areas,
+															 mTerrainHandler,
+															 std::move(shaders),
+															 mHeightMapBufferProvider,
+															 mHeightMap));
 
 }
 

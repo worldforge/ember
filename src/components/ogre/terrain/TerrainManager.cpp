@@ -26,6 +26,7 @@
 #include "TerrainInfo.h"
 #include "TerrainShader.h"
 #include "TerrainPage.h"
+#include "TerrainPageGeometry.h"
 
 #include "ITerrainAdapter.h"
 
@@ -40,26 +41,20 @@
 
 #include "../ShaderManager.h"
 #include "../Scene.h"
-#include "../Convert.h"
 
 #include "components/ogre/environment/Foliage.h"
 #include "components/ogre/environment/FoliageDetailManager.h"
+
+#include "framework/MainLoopController.h"
 
 #include <Eris/View.h>
 
 #include <OgreRoot.h>
 #include <OgreGpuProgramManager.h>
 
-#ifdef WIN32
-#include <tchar.h>
-#include <io.h> // for _access, Win32 version of stat()
-#include <direct.h> // for _mkdir
-#endif
-
 #include <sigc++/bind.h>
 
 #include <utility>
-#include <framework/MainLoopController.h>
 
 using namespace Ogre;
 namespace Ember {
@@ -74,9 +69,10 @@ TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter,
 							   Eris::EventService& eventService,
 							   GraphicalChangeAdapter& graphicalChangeAdapter) :
 		mCompilerTechniqueProvider(std::make_unique<Techniques::CompilerTechniqueProvider>(shaderManager, scene.getSceneManager())),
-		mHandler(std::make_unique<TerrainHandler>(adapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
-		mIsFoliageShown(false),
 		mTerrainAdapter(std::move(adapter)),
+		mHandler(std::make_unique<TerrainHandler>(*mTerrainAdapter, mTerrainAdapter->getPageSize(), *mCompilerTechniqueProvider, eventService)),
+		mLoadRadius(512.0),
+		mIsFoliageShown(false),
 		mFoliageBatchSize(32),
 		mVegetation(std::make_unique<Foliage::Vegetation>()),
 		mScene(scene),
@@ -121,8 +117,8 @@ TerrainManager::~TerrainManager() {
 }
 
 void TerrainManager::startPaging() {
-	//Setting the camera will start the paging system
-	mTerrainAdapter->setCamera(&getScene().getMainCamera());
+	mFrameListener = std::make_unique<Ember::OgreView::Terrain::TerrainManager::FrameListener>(*this);
+	Ogre::Root::getSingleton().addFrameListener(mFrameListener.get());
 }
 
 bool TerrainManager::getHeight(const TerrainPosition& atPosition, float& height) const {
@@ -179,7 +175,7 @@ void TerrainManager::config_TerrainTechnique(const std::string& section, const s
 
 void TerrainManager::config_TerrainPageSize(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_int()) {
-		auto size = static_cast<unsigned int>(static_cast<int>(variable));
+		auto size = static_cast<int>(variable);
 		mTerrainAdapter->setPageSize(size);
 		mHandler->setPageSize(size);
 		mHandler->updateAllPages();
@@ -188,19 +184,27 @@ void TerrainManager::config_TerrainPageSize(const std::string& section, const st
 
 void TerrainManager::config_TerrainLoadRadius(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_int()) {
-		auto radius = static_cast<unsigned int>(static_cast<int>(variable));
-		mTerrainAdapter->setLoadRadius(Ogre::Real(radius));
+		mLoadRadius = static_cast<float>(static_cast<int>(variable));
+		mTerrainAdapter->setLoadRadius(Ogre::Real(mLoadRadius));
 	}
 }
 
-void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages) {
+void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas,
+													   const std::vector<std::shared_ptr<Terrain::TerrainPageGeometry>>& geometries) {
 
-	for (auto page : pages) {
-		const TerrainIndex& index = page->getWFIndex();
+	for (auto& geometry: geometries) {
+		MainLoopController::getSingleton().getEventService().runOnMainThread([&, geometry]() {
+			auto page = geometry->getPage();
+			auto pageI = mHandler->getPages().find(page->getWFIndex());
+			if (pageI != mHandler->getPages().end() && pageI->second == page) {
+				//Only insert page if the page is still marked for being shown.
+				const TerrainIndex& index = page->getWFIndex();
 
-		S_LOG_VERBOSE("Updating terrain page [" << index.first << "|" << index.second << "]");
-		mTerrainAdapter->reloadPage(index);
-		EventTerrainPageGeometryUpdated.emit(*page);
+				S_LOG_VERBOSE("Updating terrain page [" << index.first << "|" << index.second << "]");
+				mTerrainAdapter->showPage(geometry);
+				EventTerrainPageGeometryUpdated.emit(*page);
+			}
+		}, mActiveMarker);
 	}
 }
 
@@ -208,7 +212,7 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 void TerrainManager::terrainHandler_ShaderCreated(const TerrainLayer& layer) {
 	if (mFoliage) {
 		mFoliage->initializeLayer(layer);
-		for (const auto& foliage : layer.layerDef.mFoliages) {
+		for (const auto& foliage: layer.layerDef.mFoliages) {
 			mVegetation->createPopulator(foliage, layer.terrainIndex);
 		}
 	}
@@ -301,6 +305,23 @@ void DelayedFoliageInitializer::timout_Expired() {
 }
 
 
+TerrainManager::FrameListener::~FrameListener() {
+	Ogre::Root::getSingleton().removeFrameListener(this);
+}
+
+bool TerrainManager::FrameListener::frameStarted(const FrameEvent& evt) {
+	auto cameraPosition = parent.getScene().getMainCamera().getDerivedPosition();
+
+	WFMath::AxisBox<2> cameraArea({cameraPosition.x - parent.mLoadRadius,
+								   cameraPosition.z - parent.mLoadRadius},
+								  {cameraPosition.x + parent.mLoadRadius,
+								   cameraPosition.z + parent.mLoadRadius});
+
+
+	parent.mHandler->showTerrain(cameraArea);
+
+	return true;
+}
 }
 }
 }

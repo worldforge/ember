@@ -118,7 +118,8 @@ public:
 	 * @param pageIndexSize The size of one side of a page, in indices.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-	TerrainHandler(int pageIndexSize,
+	TerrainHandler(ITerrainAdapter& terrainAdapter,
+				   int pageIndexSize,
 				   ICompilerTechniqueProvider& compilerTechniqueProvider,
 				   Eris::EventService& eventService);
 
@@ -134,6 +135,8 @@ public:
 	 * it to complete.
 	 */
 	void shutdown();
+
+	void showTerrain(const WFMath::AxisBox<2>& interactingArea);
 
 	/**
 	 * @brief Sets the size of the width of one page. This must be a power of two and at least 64.
@@ -228,14 +231,7 @@ public:
 	 * @param index The index to create the new page on.
 	 * @param bridge The bridge to which will bind the page to a graphical representation. Ownership of this will be transferred.
 	 */
-	void setUpTerrainPageAtIndex(const TerrainIndex& index, std::shared_ptr<Terrain::ITerrainPageBridge> bridge);
-
-	/**
-	 * @brief Removes an already registered bridge at the specified index.
-	 *
-	 * @param index The index of the bridge.
-	 */
-	void removeBridge(const TerrainIndex& index);
+	void setUpTerrainPageAtIndex(const TerrainIndex& index);
 
 	/**
 	 * @brief Returns a TerrainPage.
@@ -243,7 +239,7 @@ public:
 	 * @param convertToWFTerrainIndex The index for which we want to get a page for.
 	 * @return An instance of terrain page, or null if there was no existing one.
 	 */
-	TerrainPage* getTerrainPageAtIndex(const TerrainIndex& index) const;
+	std::shared_ptr<Terrain::TerrainPage> getTerrainPageAtIndex(const TerrainIndex& index) const;
 
 	/**
 	 * @brief Gets the page at the specified position in the world. If no page can be found, a null pointer is returned.
@@ -251,7 +247,7 @@ public:
 	 * @param worldPosition The position in world space to get the terrain page for.
 	 * @return An terrain page, or null of no page can be found at the specified position.
 	 */
-	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition) const;
+	std::shared_ptr<Terrain::TerrainPage> getTerrainPageAtPosition(const TerrainPosition& worldPosition) const;
 
 	/**
 	 * @brief Accessor for the main terrain info instance.
@@ -273,12 +269,19 @@ public:
 	 */
 	int getPageIndexSize() const;
 
+	const std::map<TerrainIndex, std::shared_ptr<TerrainPage>>& getPages() const {
+		return mPages;
+	}
+
 //	/**
 //	 * @brief Adds a new page to the handler.
 //	 *
 //	 * @param page A terrain page instance.
 //	 */
 //	void addPage(TerrainPage* page);
+
+	void destroyPage(const TerrainIndex& index);
+
 
 	/**
 	 * @brief Destroys a page, removing it from the handler and deleting the instance.
@@ -398,7 +401,7 @@ public:
 	 * The first parameter is the areas which are affected by the change.
 	 * The second parameter is the pages that will be updated.
 	 */
-	sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
+	sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::set<std::shared_ptr<Terrain::TerrainPage>>&> EventBeforeTerrainUpdate;
 
 	/**
 	 * @brief Emitted after the terrain geometry has changed.
@@ -407,7 +410,7 @@ public:
 	 * The first parameter is the areas which are affected by the change.
 	 * The second parameter is the pages that were updated.
 	 */
-	sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::set<TerrainPage*>&> EventAfterTerrainUpdate;
+	sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::vector<std::shared_ptr<TerrainPageGeometry>>&> EventAfterTerrainUpdate;
 
 	/**
 	 * @brief Emitted when the size of the world has changed.
@@ -422,7 +425,7 @@ public:
 protected:
 
 	typedef std::map<TerrainIndex, std::shared_ptr<ITerrainPageBridge>> PageBridgeStore;
-
+	ITerrainAdapter& mTerrainAdapter;
 	/**
 	 * @brief The size in indices of one side of a page.
 	 */
@@ -474,7 +477,7 @@ protected:
 	 * This is the canonical collection of pages.
 	 * @see mTerrainPages
 	 */
-	std::map<TerrainIndex, std::unique_ptr<TerrainPage>> mPages;
+	std::map<TerrainIndex, std::shared_ptr<TerrainPage>> mPages;
 
 	/**
 	 * @brief The task queue we'll use for all background terrain updates.

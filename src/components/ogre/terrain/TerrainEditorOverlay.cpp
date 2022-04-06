@@ -572,7 +572,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 
 	TerrainDefPointStore pointStore;
 
-	std::set<TerrainPage*> pagesToUpdate;
+	std::set<std::shared_ptr<Terrain::TerrainPage>> pagesToUpdate;
 	std::map<std::pair<int, int>, TerrainDefPoint> newPoints;
 
 	for (const auto& movement: action.mMovements) {
@@ -634,7 +634,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 		pointStore.push_back(entry.second);
 
 		TerrainPosition worldPosition(entry.first.first * 64, entry.first.second * 64);
-		TerrainPage* page;
+		std::shared_ptr<Terrain::TerrainPage> page;
 		//make sure we sample pages from all four points around the base point, in case the base point is on a page border
 		for (int i = -65; i < 66; i += 64) {
 			for (int j = -65; j < 66; j += 64) {

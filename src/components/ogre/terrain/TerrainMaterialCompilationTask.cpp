@@ -46,11 +46,11 @@ TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeomet
 void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context) {
 	for (auto& geometry : mGeometry) {
 		geometry->repopulate();
-		TerrainPage& page = geometry->getPage();
-		auto compilationInstance = page.getSurface()->createSurfaceCompilationInstance(geometry);
+		auto page = geometry->getPage();
+		auto compilationInstance = page->getSurface()->createSurfaceCompilationInstance(geometry);
 
 		if (compilationInstance->prepare()) {
-			mMaterialRecompilations.emplace_back(std::make_pair(std::move(compilationInstance), &geometry->getPage()));
+			mMaterialRecompilations.emplace_back(std::make_pair(std::move(compilationInstance), page));
 		}
 	}
 	//Release Segment references as soon as we can

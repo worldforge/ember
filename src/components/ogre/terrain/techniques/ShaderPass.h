@@ -21,6 +21,7 @@
 #define EMBEROGRETERRAINTECHNIQUESSHADERPASS_H_
 
 #include "components/ogre/OgreIncludes.h"
+#include "domain/Types.h"
 #include <wfmath/point.h>
 #include <vector>
 #include <string>
@@ -48,7 +49,10 @@ class ShaderPass {
 public:
 	friend class ShaderPassBlendMapBatch;
 
-	ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping = false);
+	ShaderPass(Ogre::SceneManager& sceneManager,
+			   int blendMapPixelWidth,
+			   TerrainIndex  position,
+			   bool useNormalMapping = false);
 
 	virtual ~ShaderPass();
 
@@ -85,7 +89,7 @@ protected:
 	const TerrainPageSurfaceLayer* mBaseLayer;
 	Ogre::SceneManager& mSceneManager;
 	int mBlendMapPixelWidth;
-	WFMath::Point<2> mPosition;
+	TerrainIndex mPosition;
 
 	int mShadowLayers;
 

@@ -20,9 +20,8 @@
 #define OGRETERRAINADAPTER_H_
 
 #include "../ITerrainAdapter.h"
-#include "OgreTerrainPageProvider.h"
 
-#include <OgreTerrainPagedWorldSection.h>
+#include <OgreTerrainMaterialGenerator.h>
 
 #include <sigc++/signal.h>
 #include <memory>
@@ -32,22 +31,12 @@ namespace Ogre {
 class TerrainGlobalOptions;
 
 class TerrainGroup;
-
-class TerrainPaging;
-
-class PageManager;
-
-class PagedWorld;
 }
 
 namespace Ember {
 class EmberEntity;
 namespace OgreView {
 namespace Terrain {
-
-class EmberTerrainGroup;
-
-class FlatTerrainDefiner;
 
 class OgreTerrainMaterialGeneratorEmber;
 
@@ -80,6 +69,10 @@ public:
 
 	void reloadPage(const TerrainIndex& index) override;
 
+	void showPage(std::shared_ptr<TerrainPageGeometry> geometry) override;
+
+	void removePage(const TerrainIndex& index) override;
+
 	void reloadPageMaterial(const TerrainIndex& index) override;
 
 	std::string getDebugInfo() override;
@@ -98,6 +91,7 @@ public:
 	void setTerrainEntity(EmberEntity* entity) override;
 
 private:
+
 	Ogre::Real mLoadRadius;
 	Ogre::Real mHoldRadius;
 
@@ -115,24 +109,16 @@ private:
 
 	Ogre::TerrainMaterialGeneratorPtr mMaterialGenerator;
 	std::unique_ptr<Ogre::TerrainGlobalOptions> mTerrainGlobalOptions;
-	std::unique_ptr<Ogre::PageManager> mPageManager;
-	std::unique_ptr<Ogre::TerrainPaging> mTerrainPaging;
-	Ogre::PagedWorld* mPagedWorld;
-	Ogre::TerrainPagedWorldSection* mTerrainPagedWorldSection;
-	OgreTerrainPageProvider mTerrainPageProvider;
 
-	/**
-	 * Ownership is passed to the Ogre terrain engine.
-	 */
-	Ogre::TerrainGroup* mTerrainGroup;
+	std::unique_ptr<Ogre::TerrainGroup> mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
 	std::unique_ptr<Ogre::TerrainMaterialGenerator::Profile> mMaterialProfile;
-	std::unique_ptr<CameraFocusedGrid2DPageStrategy> mPageStrategy;
 	EmberEntity* mEntity;
 
 
 	void setOgrePageSize(int pageSize);
+
 };
 
 } /* namespace Terrain */

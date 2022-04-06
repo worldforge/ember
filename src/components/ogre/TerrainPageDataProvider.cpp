@@ -24,7 +24,7 @@
 
 namespace Ember {
 namespace OgreView {
-TerrainPageData::TerrainPageData(Terrain::TerrainPage* page) :
+TerrainPageData::TerrainPageData(std::shared_ptr<Terrain::TerrainPage> page) :
 		mPage(page) {
 }
 
@@ -32,14 +32,14 @@ Ogre::MaterialPtr TerrainPageData::getMaterial() {
 	if (mPage) {
 		return mPage->getMaterial();
 	}
-	return Ogre::MaterialPtr();
+	return {};
 }
 
 Ogre::MaterialPtr TerrainPageData::getCompositeMapMaterial() {
 	if (mPage) {
 		return mPage->getCompositeMapMaterial();
 	}
-	return Ogre::MaterialPtr();
+	return {};
 }
 
 TerrainPageDataProvider::TerrainPageDataProvider(Terrain::TerrainHandler& handler) :
@@ -51,17 +51,6 @@ std::unique_ptr<IPageData> TerrainPageDataProvider::getPageData(const OgreIndex&
 	return std::make_unique<TerrainPageData>(mHandler.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition)));
 }
 
-int TerrainPageDataProvider::getPageIndexSize() const {
-	return mHandler.getPageIndexSize();
-}
-
-void TerrainPageDataProvider::setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, std::shared_ptr<Terrain::ITerrainPageBridge> bridge) {
-	mHandler.setUpTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition), std::move(bridge));
-}
-
-void TerrainPageDataProvider::removeBridge(const OgreIndex& ogreIndexPosition) {
-	mHandler.removeBridge(convertToWFTerrainIndex(ogreIndexPosition));
-}
 
 TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition) {
 	return {ogreIndexPosition.first, ogreIndexPosition.second};

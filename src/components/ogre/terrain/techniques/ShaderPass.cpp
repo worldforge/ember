@@ -26,6 +26,8 @@
 #include <OgreShadowCameraSetupPSSM.h>
 #include <OgreTextureManager.h>
 
+#include <utility>
+
 namespace Ember {
 namespace OgreView {
 
@@ -37,7 +39,7 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 	// we need an unique name for our alpha texture
 	std::stringstream combinedBlendMapTextureNameSS;
 
-	combinedBlendMapTextureNameSS << "terrain_" << mPosition.x() << "_" << mPosition.y() << "_combinedBlendMap_" << passIndex << "_" << batchIndex << "_" << mBlendMapPixelWidth;
+	combinedBlendMapTextureNameSS << "terrain_" << mPosition.first << "_" << mPosition.second << "_combinedBlendMap_" << passIndex << "_" << batchIndex << "_" << mBlendMapPixelWidth;
 	const Ogre::String combinedBlendMapName(combinedBlendMapTextureNameSS.str());
 	Ogre::TexturePtr combinedBlendMapTexture;
 	Ogre::TextureManager* textureMgr = Ogre::Root::getSingletonPtr()->getTextureManager();
@@ -56,21 +58,21 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 #ifndef _WIN32
 	flags |= Ogre::TU_AUTOMIPMAP;
 #endif // ifndef _WIN32
-	combinedBlendMapTexture = textureMgr->createManual(combinedBlendMapName, "General", Ogre::TEX_TYPE_2D, mBlendMapPixelWidth, mBlendMapPixelWidth, (int)textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
+	combinedBlendMapTexture = textureMgr->createManual(combinedBlendMapName, "General", Ogre::TEX_TYPE_2D, mBlendMapPixelWidth, mBlendMapPixelWidth, (int) textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
 	managedTextures.insert(combinedBlendMapName);
 	combinedBlendMapTexture->createInternalResources();
 	return combinedBlendMapTexture;
 }
 
-ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping) :
+ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, TerrainIndex position, bool useNormalMapping) :
 		mScales{},
 		mBaseLayer(nullptr),
 		mSceneManager(sceneManager),
 		mBlendMapPixelWidth(blendMapPixelWidth),
-		mPosition(position),
+		mPosition(std::move(position)),
 		mShadowLayers(0),
 		mUseNormalMapping(useNormalMapping) {
-	for (float& scale : mScales) {
+	for (float& scale: mScales) {
 		scale = 0.0;
 	}
 }
@@ -150,7 +152,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 
 	size_t i = 0;
 	// add our blendMap textures first
-	for (auto& batch : mBlendMapBatches) {
+	for (auto& batch: mBlendMapBatches) {
 		batch->finalize(pass, getCombinedBlendMapTexture(pass.getIndex(), i++, managedTextures), mUseNormalMapping);
 	}
 

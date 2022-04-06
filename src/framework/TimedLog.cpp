@@ -21,13 +21,15 @@
 
 #include "TimedLog.h"
 
+#include <utility>
+
 #include "LoggingInstance.h"
 
 namespace Ember
 {
 #if ENABLE_TIMED_LOG==1
-TimedLog::TimedLog(const std::string& logName, bool reportStart) :
-	mLogName(logName), mStart(std::chrono::steady_clock::now())
+TimedLog::TimedLog(std::string logName, bool reportStart) :
+	mLogName(std::move(logName)), mStart(std::chrono::steady_clock::now())
 {
 	if (reportStart) {
 		S_LOG_VERBOSE("Started task '" << mLogName << "'.");

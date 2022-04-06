@@ -306,11 +306,6 @@ else ()
     endif (NOT OGRE_Terrain_FOUND)
     list(APPEND WF_LIBRARIES ${OGRE_Terrain_LIBRARIES})
 
-    if (NOT OGRE_Paging_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre Paging component. Make sure you've built Ogre with Paging support.")
-    endif (NOT OGRE_Paging_FOUND)
-    list(APPEND WF_LIBRARIES ${OGRE_Paging_LIBRARIES})
-
     if (NOT OGRE_Overlay_FOUND)
         MESSAGE(FATAL_ERROR "Could not find Ogre Overlay component. Make sure you've built Ogre with Overlay support.")
     endif (NOT OGRE_Overlay_FOUND)
@@ -327,7 +322,7 @@ else ()
     list(APPEND WF_LIBRARIES ${OGRE_RTShaderSystem_LIBRARIES})
 
     #Get all include directories from INTERFACE_INCLUDE_DIRECTORIES and add them, since we won't link directly to the targets here.
-    foreach (var Terrain Paging Overlay MeshLodGenerator RTShaderSystem)
+    foreach (var Terrain Overlay MeshLodGenerator RTShaderSystem)
         get_target_property(INC_DIR Ogre${var} INTERFACE_INCLUDE_DIRECTORIES)
         include_directories(SYSTEM ${INC_DIR})
     endforeach ()

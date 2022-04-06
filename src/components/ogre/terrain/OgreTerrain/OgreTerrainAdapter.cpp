@@ -19,15 +19,14 @@
 #include "OgreTerrainAdapter.h"
 
 #include "OgreTerrainObserver.h"
-#include "OgreTerrainDefiner.h"
+#include "components/ogre/terrain/TerrainPageGeometry.h"
+#include "components/ogre/terrain/TerrainPage.h"
 #include "components/ogre/TerrainPageDataProvider.h"
 #include "OgreTerrainMaterialGeneratorEmber.h"
-#include "CameraFocusedGrid2DPageStrategy.h"
+#include "framework/TimedLog.h"
 
-#include <OgreTerrainPaging.h>
-#include <OgrePagedWorld.h>
+#include <OgreTerrainGroup.h>
 
-#define EMBER_OGRE_TERRAIN_HALF_RANGE 0x7FFF
 
 namespace Ember {
 namespace OgreView {
@@ -38,17 +37,12 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, int ter
 		mHoldRadius(mLoadRadius * 2),
 		mMaterialGenerator(std::make_shared<OgreTerrainMaterialGeneratorEmber>()),
 		mTerrainGlobalOptions(std::make_unique<Ogre::TerrainGlobalOptions>()),
-		mPageManager(std::make_unique<Ogre::PageManager>()),
-		mTerrainPaging(std::make_unique<Ogre::TerrainPaging>(mPageManager.get())),
-		mPagedWorld(nullptr),
-		mTerrainPagedWorldSection(nullptr),
 		mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager,
 												  Ogre::Terrain::ALIGN_X_Z,
 												  terrainPageSize + 1,
 												  (Ogre::Real) terrainPageSize)),
 		mPageDataProvider(nullptr),
 		mMaterialProfile(nullptr),
-		mPageStrategy(std::make_unique<CameraFocusedGrid2DPageStrategy>(mPageManager.get())),
 		mEntity(nullptr) {
 
 	// Other params
@@ -60,20 +54,11 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, int ter
 
 	setOgrePageSize(terrainPageSize);
 
-	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
-	mPageManager->setPageProvider(&mTerrainPageProvider);
-
-	//This will overwrite the default 2Dgrid strategy with our own, which loads pages close to the camera first.
-	mPageManager->addStrategy(mPageStrategy.get());
 
 }
 
 OgreTerrainAdapter::~OgreTerrainAdapter() {
-	//Need to remove all cameras, since this isn't done by the PageManager itself.
-	for (auto currentCamera: mPageManager->getCameraList()) {
-		mPageManager->removeCamera(currentCamera);
-	}
-	mPageManager->destroyWorld(mPagedWorld);
+
 }
 
 int OgreTerrainAdapter::getPageSize() {
@@ -81,9 +66,6 @@ int OgreTerrainAdapter::getPageSize() {
 }
 
 void OgreTerrainAdapter::setOgrePageSize(int pageSize) {
-	if (mTerrainPagedWorldSection) {
-		mTerrainPagedWorldSection->removeAllPages();
-	}
 	mTerrainGroup->removeAllTerrains();
 	mTerrainGroup->setTerrainSize(static_cast<Ogre::uint16>(pageSize + 1));
 	mTerrainGroup->setTerrainWorldSize((Ogre::Real) pageSize);
@@ -93,10 +75,6 @@ void OgreTerrainAdapter::setOgrePageSize(int pageSize) {
 	origin.y = 0;
 	mTerrainGroup->setOrigin(origin);
 
-	if (mTerrainPagedWorldSection) {
-		mTerrainPagedWorldSection->getGridStrategyData()->setOrigin(mTerrainGroup->getOrigin());
-		mTerrainPagedWorldSection->getGridStrategyData()->setCellSize(mTerrainGroup->getTerrainWorldSize());
-	}
 }
 
 
@@ -108,10 +86,6 @@ void OgreTerrainAdapter::setPageSize(int pageSize) {
 void OgreTerrainAdapter::setLoadRadius(Ogre::Real loadRadius) {
 	mLoadRadius = loadRadius;
 	mHoldRadius = mLoadRadius * 2;
-	if (mTerrainPagedWorldSection) {
-		mTerrainPagedWorldSection->setLoadRadius(mLoadRadius);
-		mTerrainPagedWorldSection->setHoldRadius(mHoldRadius);
-	}
 }
 
 bool OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z, float& height) {
@@ -121,53 +95,59 @@ bool OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z, float& height) 
 }
 
 void OgreTerrainAdapter::setCamera(Ogre::Camera* camera) {
-	if (!mPageManager->hasCamera(camera)) {
-		// For now, we want only one camera to affect paging
-		for (auto currentCamera: mPageManager->getCameraList()) {
-			mPageManager->removeCamera(currentCamera);
-		}
-		mPageManager->addCamera(camera);
-	}
+
 }
 
 void OgreTerrainAdapter::loadScene() {
-	mPagedWorld = mPageManager->createWorld();
-	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
-																   -EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE,
-																   EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE,
-																   "", 0);
-	mTerrainPagedWorldSection->setDefiner(OGRE_NEW OgreTerrainDefiner(*mPageDataProvider)); //ownership is passed
+
 }
 
 void OgreTerrainAdapter::reset() {
 	if (mTerrainGroup) {
 		mTerrainGroup->removeAllTerrains();
-
-		//If we've created a world section we've moved ownership of the terrain group there.
-		if (mTerrainPagedWorldSection) {
-			mPagedWorld->destroySection(mTerrainPagedWorldSection);
-			mTerrainPagedWorldSection = nullptr;
-		} else {
-			OGRE_DELETE mTerrainGroup;
-		}
 		mTerrainGroup = nullptr;
 	}
 }
 
 
 void OgreTerrainAdapter::reloadAllPages() {
-	if (mTerrainPagedWorldSection) {
-		mTerrainPagedWorldSection->removeAllPages();
-	}
+//	if (mTerrainPagedWorldSection) {
+//		mTerrainPagedWorldSection->removeAllPages();
+//	}
 }
 
+void OgreTerrainAdapter::showPage(std::shared_ptr<TerrainPageGeometry> geometry) {
+	TimedLog log("showPage");
+	std::vector<float> heightData(mTerrainGroup->getTerrainSize() * mTerrainGroup->getTerrainSize());
+	geometry->updateOgreHeightData(heightData.data());
+	log.report("updated ogre data");
+	auto terrain = mTerrainGroup->getTerrain(geometry->getPage()->getWFIndex().first, geometry->getPage()->getWFIndex().second);
+	if (terrain) {
+		//Copy height data
+		std::memcpy(terrain->getHeightData(), heightData.data(), sizeof(float) * terrain->getSize() * terrain->getSize());
+		terrain->dirty();
+		terrain->update(false);
+	} else {
+		Ogre::Terrain::LayerInstanceList layers;
+		mTerrainGroup->defineTerrain(geometry->getPage()->getWFIndex().first, geometry->getPage()->getWFIndex().second, heightData.data(), &layers);
+		log.report("defined terrain");
+		mTerrainGroup->loadTerrain(geometry->getPage()->getWFIndex().first, geometry->getPage()->getWFIndex().second, false);
+		log.report("loaded terrain");
+	}
+
+}
+
+void OgreTerrainAdapter::removePage(const TerrainIndex& index) {
+	mTerrainGroup->removeTerrain(index.first, index.second);
+}
+
+
+
 void OgreTerrainAdapter::reloadPage(const TerrainIndex& index) {
-	if (mTerrainPagedWorldSection) {
-		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
-		if (page && page->isLoaded() && !page->isDerivedDataUpdateInProgress()) {
-			page->dirty();
-			page->update();
-		}
+	Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
+	if (page && page->isLoaded() && !page->isDerivedDataUpdateInProgress()) {
+		page->dirty();
+		page->update(false);
 	}
 }
 
@@ -211,7 +191,6 @@ sigc::connection OgreTerrainAdapter::bindTerrainShown(sigc::slot<void, const Ogr
 void OgreTerrainAdapter::setTerrainEntity(EmberEntity* entity) {
 	mEntity = entity;
 }
-
 
 } /* namespace Terrain */
 } /* namespace OgreView */

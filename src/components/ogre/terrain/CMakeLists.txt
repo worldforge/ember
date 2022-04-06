@@ -1,11 +1,7 @@
 add_library(emberogre_terrain OBJECT
         OgreTerrain/OgreTerrainMaterialGeneratorEmber.cpp
-        OgreTerrain/OgreTerrainDefiner.cpp
         OgreTerrain/OgreTerrainAdapter.cpp
         OgreTerrain/OgreTerrainObserver.cpp
-        OgreTerrain/OgreTerrainPageBridge.cpp
-        OgreTerrain/OgreTerrainPageProvider.cpp
-        OgreTerrain/CameraFocusedGrid2DPageStrategy.cpp
         Map.cpp
         TerrainArea.cpp
         TerrainAreaParser.cpp

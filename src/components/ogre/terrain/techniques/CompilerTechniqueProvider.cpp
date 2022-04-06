@@ -64,7 +64,9 @@ CompilerTechniqueProvider::~CompilerTechniqueProvider() {
 	Ogre::TextureManager::getSingleton().remove("dynamic/onepixel", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
-std::unique_ptr<TerrainPageSurfaceCompilerTechnique> CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces) const {
+std::unique_ptr<TerrainPageSurfaceCompilerTechnique> CompilerTechniqueProvider::createTechnique(
+		const TerrainPageGeometryPtr& geometry,
+		const SurfaceLayerStore& terrainPageSurfaces) const {
 	std::string preferredTech;
 	if (ConfigService::getSingleton().itemExists("terrain", "preferredtechnique")) {
 		preferredTech = static_cast<std::string>(ConfigService::getSingleton().getValue("terrain", "preferredtechnique"));

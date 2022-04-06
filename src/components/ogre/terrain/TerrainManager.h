@@ -25,6 +25,8 @@
 #include "services/config/ConfigListenerContainer.h"
 #include "TerrainShader.h"
 
+#include <Eris/ActiveMarker.h>
+
 #include <wfmath/point.h> //needed for the terrain position
 
 #include <sigc++/trackable.h>
@@ -33,6 +35,7 @@
 
 #include <OgrePrerequisites.h>
 #include <OgreCommon.h>
+#include <OgreFrameListener.h>
 
 #include <memory>
 
@@ -87,6 +90,8 @@ class FoliageDetailManager;
 namespace Terrain {
 
 struct TerrainShader;
+
+class TerrainPageGeometry;
 
 class TerrainInfo;
 
@@ -268,26 +273,42 @@ public:
 
 protected:
 
+	struct FrameListener : Ogre::FrameListener {
+		explicit FrameListener(TerrainManager& _parent) : parent(_parent) {}
+
+		~FrameListener() override;
+
+		TerrainManager& parent;
+
+		bool frameStarted(const Ogre::FrameEvent& evt) override;
+	};
+
+	std::unique_ptr<FrameListener> mFrameListener;
+
 	/**
 	 * @brief Compiler technique provider.
 	 */
 	std::unique_ptr<Techniques::CompilerTechniqueProvider> mCompilerTechniqueProvider;
 
 	/**
+	 * @brief The adapter acts as a bridge between the manager and the terrain rendering component,
+	 * 		  allowing a certain degree of decoupling.
+	 */
+	std::unique_ptr<ITerrainAdapter> mTerrainAdapter;
+
+	/**
 	 * @brief The terrain handler, which handles the underlying Mercator terrain.
 	 */
 	std::unique_ptr<TerrainHandler> mHandler;
+
+	float mLoadRadius;
 
 	/**
 	 * @brief True if foliage should be shown.
 	 */
 	bool mIsFoliageShown;
 
-	/**
-	 * @brief The adapter acts as a bridge between the manager and the terrain rendering component,
-	 * 		  allowing a certain degree of decoupling.
-	 */
-	std::unique_ptr<ITerrainAdapter> mTerrainAdapter;
+
 
 	unsigned int mFoliageBatchSize;
 
@@ -300,6 +321,8 @@ protected:
 
 	GraphicalChangeAdapter& mGraphicalChangeAdapter;
 	Eris::View& mView;
+
+	Eris::ActiveMarker mActiveMarker;
 
 	bool mIsInitialized;
 
@@ -333,7 +356,8 @@ protected:
 
 	void config_TerrainLoadRadius(const std::string& section, const std::string& key, varconf::Variable& variable);
 
-	void terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages);
+	void terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas,
+										   const std::vector<std::shared_ptr<Terrain::TerrainPageGeometry>>& geometries);
 
 	void terrainHandler_ShaderCreated(const Terrain::TerrainLayer& layer);
 

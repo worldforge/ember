@@ -37,17 +37,6 @@ EmberWorkQueue::EmberWorkQueue(Eris::EventService& eventService)
 	}
 }
 
-Ogre::uint16 EmberWorkQueue::getChannel(const Ogre::String& channelName) {
-	auto channelId = Ogre::DefaultWorkQueue::getChannel(channelName);
-	//The Ogre Terrain components rely on it's handlers always being executed on the main thread directly when processResponses() is called.
-	//We'll have to take this into account and keep track of the terrain channels.
-	if (Ogre::StringUtil::startsWith(channelName, "Ogre/Terrain", false)) {
-		mTerrainChannels.insert(channelId);
-	}
-	return channelId;
-}
-
-
 void EmberWorkQueue::processResponses() {
 	while (true) {
 		Ogre::WorkQueue::Response* response;
@@ -63,17 +52,10 @@ void EmberWorkQueue::processResponses() {
 		}
 
 		if (response) {
-			//The Ogre Terrain components rely on its handlers always being executed on the main thread directly when processResponses() is called.
-			//We'll have to take this into account and process all terrain handlers directly.
-			if (mTerrainChannels.find(response->getRequest()->getChannel()) != mTerrainChannels.end()) {
+			mEventService.runOnMainThread([=] {
 				processResponse(response);
 				OGRE_DELETE response;
-			} else {
-				mEventService.runOnMainThread([=] {
-					processResponse(response);
-					OGRE_DELETE response;
-				});
-			}
+			});
 		}
 	}
 }

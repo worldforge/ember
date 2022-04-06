@@ -133,7 +133,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 		// Use normal mapping for everything nearer than 50 units
 		lodList.push_back(50);
 
-		for (auto& shaderPass : mPassesNormalMapped) {
+		for (auto& shaderPass: mPassesNormalMapped) {
 			Ogre::Pass* pass = technique->createPass();
 			if (!shaderPass->finalize(*pass, managedTextures, mIncludeShadows, materialSuffix)) {
 				return false;
@@ -149,7 +149,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	technique = material->createTechnique();
 	technique->setLodIndex(currentLodIndex++);
 	technique->setShadowCasterMaterial(shadowCasterMaterial);
-	for (auto& shaderPass : mPasses) {
+	for (auto& shaderPass: mPasses) {
 		Ogre::Pass* pass = technique->createPass();
 		if (!shaderPass->finalize(*pass, managedTextures, mIncludeShadows, materialSuffix)) {
 			return false;
@@ -224,7 +224,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	technique->setLodIndex(currentLodIndex++);
 	technique->setSchemeName("Low");
 
-	for (auto& shaderPass : mPasses) {
+	for (auto& shaderPass: mPasses) {
 		Ogre::Pass* pass = technique->createPass();
 		if (!shaderPass->finalize(*pass, managedTextures, false, "/Simple")) {
 			return false;
@@ -249,7 +249,7 @@ bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<st
 		Ogre::Technique* technique = material->createTechnique();
 
 		std::string materialSuffix = "/NoLighting";
-		for (auto& shaderPass : mPasses) {
+		for (auto& shaderPass: mPasses) {
 			Ogre::Pass* pass = technique->createPass();
 			if (!shaderPass->finalize(*pass, managedTextures, false, materialSuffix)) {
 				return false;
@@ -260,7 +260,10 @@ bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<st
 }
 
 ShaderPass* Shader::addPass() {
-	auto shaderPass = std::make_unique<ShaderPass>(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition());
+	auto shaderPass = std::make_unique<ShaderPass>(mSceneManager,
+												   mGeometry->mPageWidth - 1,
+												   mGeometry->mPageIndex,
+												   false);
 	if (mIncludeShadows) {
 		for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
 			shaderPass->addShadowLayer();
@@ -271,7 +274,10 @@ ShaderPass* Shader::addPass() {
 }
 
 ShaderPass* Shader::addPassNormalMapped() {
-	auto shaderPass = std::make_unique<ShaderPass>(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition(), true);
+	auto shaderPass = std::make_unique<ShaderPass>(mSceneManager,
+												   mGeometry->mPageWidth - 1,
+												   mGeometry->mPageIndex,
+												   true);
 	if (mIncludeShadows) {
 		for (size_t i = 0; i < mSceneManager.getShadowTextureConfigList().size(); ++i) {
 			shaderPass->addShadowLayer();

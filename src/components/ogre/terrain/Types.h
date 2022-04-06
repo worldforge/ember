@@ -99,10 +99,6 @@ typedef std::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
 
 typedef std::vector<TerrainPageGeometryPtr> GeometryPtrVector;
 
-typedef std::shared_ptr<ITerrainPageBridge> ITerrainPageBridgePtr;
-
-typedef std::vector<std::pair<TerrainPageGeometryPtr, ITerrainPageBridgePtr>> BridgeBoundGeometryPtrVector;
-
 typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 }
 }

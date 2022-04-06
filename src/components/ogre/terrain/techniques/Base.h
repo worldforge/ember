@@ -62,12 +62,6 @@ protected:
 	 */
 	const SurfaceLayerStore mTerrainPageSurfaces;
 
-	/**
-	 * @brief The affected page.
-	 * @note This can be obtained through mGeometry, but we'll keep a copy for the case that the mGeometry pointer is cleared.
-	 */
-	const TerrainPage& mPage;
-
 };
 
 }

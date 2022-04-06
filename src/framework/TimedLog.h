@@ -21,7 +21,7 @@
 
 #include <string>
 #ifndef ENABLE_TIMED_LOG
-#define ENABLE_TIMED_LOG 0
+#define ENABLE_TIMED_LOG 1
 #endif
 
 #if ENABLE_TIMED_LOG==1
@@ -45,7 +45,7 @@ public:
 	 * @param logName The name of the log.
 	 * @param reportStart Whether to also log the start of the task.
 	 */
-	explicit TimedLog(const std::string& logName, bool reportStart = false);
+	explicit TimedLog(std::string  logName, bool reportStart = false);
 
 	/**
 	 * @brief Dtor.

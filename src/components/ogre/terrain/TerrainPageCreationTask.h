@@ -41,8 +41,8 @@ class HeightMap;
 
 class TerrainPageCreationTask : public Tasks::TemplateNamedTask<TerrainPageCreationTask> {
 public:
-	TerrainPageCreationTask(TerrainHandler& handler, TerrainPage* page,
-							std::shared_ptr<ITerrainPageBridge> bridge,
+	TerrainPageCreationTask(TerrainHandler& handler,
+							std::shared_ptr<Terrain::TerrainPage> page,
 							HeightMapBufferProvider& heightMapBufferProvider,
 							HeightMap& heightMap);
 
@@ -55,8 +55,7 @@ public:
 private:
 	TerrainHandler& mTerrainHandler;
 
-	TerrainPage* mPage;
-	std::shared_ptr<ITerrainPageBridge> mBridge;
+	std::shared_ptr<Terrain::TerrainPage> mPage;
 
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;
