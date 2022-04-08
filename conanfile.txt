@@ -12,7 +12,7 @@ mercator/0.4.0@worldforge/testing
 libwfut/0.2.4@worldforge/testing
 varconf/1.0.3@worldforge/testing
 tolua++/1.0.93@worldforge/stable
-zlib/1.2.11
+zlib/1.2.12
 bzip2/1.0.8
 openssl/1.1.1m
 
@@ -20,7 +20,7 @@ openssl/1.1.1m
 cmake
 
 [options]
-sdl:libunwind=False
+#sdl:libunwind=False
 
 [imports]
 bin, *.dll -> ./bin
