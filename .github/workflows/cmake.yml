@@ -162,7 +162,7 @@ jobs:
       - name: Upload AppImage to amber
         if: env.BUILD_APPIMAGE == 'true'
         working-directory: ${{github.workspace}}/build
-        run: rsync -uavzcP ${{github.workspace}}/build/Ember-x86_64.AppImage ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
+        run: rsync -uavzcP --no-p ${{github.workspace}}/build/Ember-x86_64.AppImage ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
 
 
   build_windows:
@@ -253,4 +253,4 @@ jobs:
       - name: Upload exe to amber
         working-directory: ${{github.workspace}}/build
         shell: cmd
-        run: rsync -uavzcP *.exe ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
+        run: rsync -uavzcP --no-p *.exe ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
