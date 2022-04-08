@@ -30,6 +30,8 @@
 #include <Eris/View.h>
 #include <OgreSceneNode.h>
 
+#include <sstream>
+
 namespace Ember {
 namespace OgreView {
 
