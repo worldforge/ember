@@ -48,6 +48,7 @@ Ogre::uint16 EmberWorkQueue::getChannel(const Ogre::String& channelName) {
 }
 
 void EmberWorkQueue::processResponses() {
+	auto msStart = Ogre::Root::getSingleton().getTimer()->getMilliseconds();
 	while (true) {
 		Ogre::WorkQueue::Response* response;
 		{
@@ -73,6 +74,13 @@ void EmberWorkQueue::processResponses() {
 					processResponse(response);
 					OGRE_DELETE response;
 				});
+			}
+		}
+
+		if (mResposeTimeLimitMS) {
+			auto msCurrent = Ogre::Root::getSingleton().getTimer()->getMilliseconds();
+			if (msCurrent - msStart > mResposeTimeLimitMS) {
+				break;
 			}
 		}
 	}
