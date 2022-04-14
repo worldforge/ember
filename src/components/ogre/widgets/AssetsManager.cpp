@@ -131,6 +131,7 @@ std::string AssetsManager::materialAsText(const Ogre::MaterialPtr& material) {
 		return "";
 	}
 	Ogre::MaterialSerializer serializer;
+	material->compile();
 	serializer.queueForExport(material, true, false);
 	return serializer.getQueuedAsString();
 }
