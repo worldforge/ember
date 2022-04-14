@@ -286,8 +286,7 @@ bool SubModelPart::createInstancedEntities() {
 							//If we don't do this the instance manager will segfault later on since it's referring to submeshes that don't exist.
 							Ogre::MeshManager::getSingleton().remove(meshCopy);
 						}
-						meshCopy = entity->getMesh()->clone(instancedMeshName);
-						meshCopy->freeEdgeList();
+						entity->getMesh()->clone(instancedMeshName);
 					}
 
 					try {
