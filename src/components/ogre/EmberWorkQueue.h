@@ -41,9 +41,16 @@ public:
 
 	void processResponses() override;
 
+	Ogre::uint16 getChannel(const Ogre::String& channelName) override;
+
 private:
 	Eris::EventService& mEventService;
 
+	/**
+	 * The Ogre Terrain components rely on it's handlers always being executed on the main thread directly when processResponses() is called.
+	 * We'll have to take this into account and keep track of the terrain channels.
+	 */
+	std::set<Ogre::uint16> mTerrainChannels;
 };
 
 }
