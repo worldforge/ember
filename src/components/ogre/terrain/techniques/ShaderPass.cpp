@@ -178,6 +178,11 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 		pass.setMaxSimultaneousLights(3);
 	}
 
+	//If there are no valid layers we'll just use a simple white colour. This should normally not happen.
+	if (mLayers.empty()) {
+		fragmentProgramName = "SimpleWhiteFp";
+	}
+
 	try {
 		S_LOG_VERBOSE("Using fragment program " << fragmentProgramName << " for terrain page.");
 		pass.setFragmentProgram(fragmentProgramName);
