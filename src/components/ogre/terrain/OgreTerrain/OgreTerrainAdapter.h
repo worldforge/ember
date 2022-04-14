@@ -21,6 +21,8 @@
 
 #include "../ITerrainAdapter.h"
 
+#include <Eris/ActiveMarker.h>
+
 #include <OgreTerrainMaterialGenerator.h>
 
 #include <sigc++/signal.h>
@@ -116,8 +118,21 @@ private:
 	std::unique_ptr<Ogre::TerrainMaterialGenerator::Profile> mMaterialProfile;
 	EmberEntity* mEntity;
 
+	Eris::ActiveMarker mActiveMarker;
+
 
 	void setOgrePageSize(int pageSize);
+
+	/**
+	 * Will try to update the terrain page, unless it's being worked on in a background thread.
+	 * If that's the case it will schedule a future attempt.
+	 * @param terrainPtr
+	 * @param index
+	 * @param heightData
+	 */
+	void updateExistingTerrain(const Ogre::Terrain* terrainPtr,
+							   const TerrainIndex& index,
+							   std::vector<float> heightData);
 
 };
 

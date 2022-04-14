@@ -24,6 +24,7 @@
 #include "components/ogre/TerrainPageDataProvider.h"
 #include "OgreTerrainMaterialGeneratorEmber.h"
 #include "framework/TimedLog.h"
+#include "framework/MainLoopController.h"
 
 #include <OgreTerrainGroup.h>
 
@@ -57,9 +58,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, int ter
 
 }
 
-OgreTerrainAdapter::~OgreTerrainAdapter() {
-
-}
+OgreTerrainAdapter::~OgreTerrainAdapter() = default;
 
 int OgreTerrainAdapter::getPageSize() {
 	return mTerrainGroup->getTerrainSize();
@@ -116,17 +115,34 @@ void OgreTerrainAdapter::reloadAllPages() {
 //	}
 }
 
+void OgreTerrainAdapter::updateExistingTerrain(const Ogre::Terrain* terrainPtr, const TerrainIndex& index, std::vector<float> heightData) {
+	//Note! We don't access the instance through the "terrainPtr", that's only here to check that the instance hasn't changed in the terrainGroup.
+	auto terrain = mTerrainGroup->getTerrain(index.first, index.second);
+	//Check that the terrain still exists and it's the same instance as previously (i.e. it hasn't been removed and loaded again).
+	if (terrain && terrain == terrainPtr) {
+		//Check that there's no background process or that it's being prepared for creation.
+		if (terrain->isDerivedDataUpdateInProgress() || !terrain->isLoaded()) {
+			MainLoopController::getSingleton().getEventService().runOnMainThreadDelayed(
+					[=, heightData = std::move(heightData)] { updateExistingTerrain(terrainPtr, index, heightData); },
+					std::chrono::milliseconds(1),
+					mActiveMarker);
+		} else {
+			//Copy height data
+			std::memcpy(terrain->getHeightData(), heightData.data(), sizeof(float) * terrain->getSize() * terrain->getSize());
+			terrain->dirty();
+			terrain->update(false);
+		}
+	}
+}
+
 void OgreTerrainAdapter::showPage(std::shared_ptr<TerrainPageGeometry> geometry) {
-	TimedLog log("showPage");
+	TimedLog log("showPage " + std::to_string(geometry->mPageIndex.first) + ":" + std::to_string(geometry->mPageIndex.second));
 	std::vector<float> heightData(mTerrainGroup->getTerrainSize() * mTerrainGroup->getTerrainSize());
 	geometry->updateOgreHeightData(heightData.data());
 	log.report("updated ogre data");
 	auto terrain = mTerrainGroup->getTerrain(geometry->getPage()->getWFIndex().first, geometry->getPage()->getWFIndex().second);
 	if (terrain) {
-		//Copy height data
-		std::memcpy(terrain->getHeightData(), heightData.data(), sizeof(float) * terrain->getSize() * terrain->getSize());
-		terrain->dirty();
-		terrain->update(false);
+		updateExistingTerrain(terrain, geometry->getPage()->getWFIndex(), std::move(heightData));
 	} else {
 		Ogre::Terrain::LayerInstanceList layers;
 		mTerrainGroup->defineTerrain(geometry->getPage()->getWFIndex().first, geometry->getPage()->getWFIndex().second, heightData.data(), &layers);
@@ -138,9 +154,19 @@ void OgreTerrainAdapter::showPage(std::shared_ptr<TerrainPageGeometry> geometry)
 }
 
 void OgreTerrainAdapter::removePage(const TerrainIndex& index) {
-	mTerrainGroup->removeTerrain(index.first, index.second);
+	S_LOG_VERBOSE("removing page " << index.first << ":" << index.second);
+	auto terrain = mTerrainGroup->getTerrain(index.first, index.second);
+	//We can't delete the page if it's either 1) not yet fully created 2) being altered in a background thread.
+	//So we check for both of these, and if that's the case we'll delay removal.
+	if ((terrain && (terrain->isDerivedDataUpdateInProgress() || !terrain->isLoaded()))) {
+		MainLoopController::getSingleton().getEventService().runOnMainThreadDelayed(
+				[=] { removePage(index); },
+				std::chrono::milliseconds(1),
+				mActiveMarker);
+	} else {
+		mTerrainGroup->removeTerrain(index.first, index.second);
+	}
 }
-
 
 
 void OgreTerrainAdapter::reloadPage(const TerrainIndex& index) {

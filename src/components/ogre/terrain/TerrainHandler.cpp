@@ -324,6 +324,7 @@ const std::map<size_t, TerrainHandler::ShaderEntry>& TerrainHandler::getAllShade
 void TerrainHandler::destroyPage(const TerrainIndex& index) {
 	auto I = mPages.find(index);
 	if (I != mPages.end()) {
+		S_LOG_VERBOSE("Destroying page at index [" << index.first << "," << index.second << "]");
 		mTerrainAdapter.removePage(I->second->getWFIndex());
 		mPages.erase(I);
 	}
@@ -474,6 +475,8 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index) {
 			S_LOG_WARNING("Could not insert terrain page at [" << index.first << "|" << index.second << "]");
 		}
 	} else {
+		S_LOG_VERBOSE("Reloading terrain page at: [" << index.first << "|" << index.second << "]");
+
 		auto page = I->second;
 		auto geometryInstance = std::make_unique<TerrainPageGeometry>(page, getSegmentManager(), getDefaultHeight());
 
