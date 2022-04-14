@@ -122,12 +122,13 @@ bool ServerService::hasLocalSocket() {
 		return false;
 	}
 
-	try {
-		boost::asio::local::stream_protocol::socket socket(mSession.m_io_service);
-		socket.connect(boost::asio::local::stream_protocol::endpoint(mLocalSocketPath.string()));
-		return socket.is_open();
-	} catch (...) {
+	boost::asio::local::stream_protocol::socket socket(mSession.m_io_service);
+	boost::system::error_code ec;
+	socket.connect(boost::asio::local::stream_protocol::endpoint(mLocalSocketPath.string()), ec);
+	if (ec) {
 		return false;
+	} else {
+		return socket.is_open();
 	}
 #endif
 }
