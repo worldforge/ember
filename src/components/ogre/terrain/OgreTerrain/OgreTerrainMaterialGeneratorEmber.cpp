@@ -92,10 +92,12 @@ Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain) {
 		return getOrCreateMaterialClone(mErrorMaterialTemplate, terrain->getMaterialName());
 	}
 
+	auto newMaterial = getOrCreateMaterialClone(mat, terrain->getMaterialName());
+
 	auto compositeMap = terrain->getCompositeMap();
 	auto normalMap = terrain->getTerrainNormalMap();
 
-	for (auto technique: mat->getTechniques()) {
+	for (auto technique: newMaterial->getTechniques()) {
 		for (auto pass: technique->getPasses()) {
 			for (auto tus: pass->getTextureUnitStates()) {
 				if (tus->getName() == Techniques::Shader::NORMAL_TEXTURE_ALIAS) {
@@ -115,11 +117,12 @@ Ogre::MaterialPtr EmberTerrainProfile::generate(const Ogre::Terrain* terrain) {
 	Ogre::TRect<Ogre::Real> rect(bbox.getMinimum().x, bbox.getMinimum().z, bbox.getMaximum().x, bbox.getMaximum().z);
 	mTerrainShownSignal(rect);
 
-	return mat;
+	return newMaterial;
 }
 
 Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terrain* terrain) {
 
+	auto materialName = terrain->getMaterialName() + "_comp";
 	auto index = calculateTerrainIndex(*terrain, mTerrainGroup);
 
 	S_LOG_VERBOSE("Loading composite map material for terrain page: " << "[" << index.first << "|" << index.second << "]");
@@ -127,16 +130,16 @@ Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terra
 	std::unique_ptr<IPageData> pageData(mDataProvider.getPageData(index));
 	if (!pageData) {
 		S_LOG_WARNING("Could not find corresponding page data for OgreTerrain at " << "[" << index.first << "|" << index.second << "]");
-		return getOrCreateMaterialClone(mErrorMaterialTemplate, terrain->getMaterialName() + "_comp");
+		return getOrCreateMaterialClone(mErrorMaterialTemplate, materialName);
 	}
 
 	Ogre::MaterialPtr mat = pageData->getCompositeMapMaterial();
 
 	if (mat) {
-		return mat;
+		return getOrCreateMaterialClone(mat, materialName);
 	} else {
 		S_LOG_WARNING("Composite map material was not found. This might happen if the page is currently being unloaded.");
-		return getOrCreateMaterialClone(mErrorMaterialTemplate, terrain->getMaterialName() + "_comp");
+		return getOrCreateMaterialClone(mErrorMaterialTemplate, materialName);
 	}
 }
 
