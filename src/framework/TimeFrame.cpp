@@ -27,8 +27,7 @@
 namespace Ember {
 TimeFrame::TimeFrame(std::chrono::steady_clock::duration timeSlice) :
 		mStartTime(std::chrono::steady_clock::now()),
-		mEndTime(mStartTime + timeSlice),
-		mTimeSlice(timeSlice) {
+		mEndTime(mStartTime + timeSlice) {
 }
 
 bool TimeFrame::isTimeLeft() const {

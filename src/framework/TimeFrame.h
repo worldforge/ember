@@ -65,11 +65,6 @@ private:
 	const std::chrono::steady_clock::time_point mStartTime;
 
 	const std::chrono::steady_clock::time_point mEndTime;
-
-	/**
-	 * @brief The slice of time for this time frame.
-	 */
-	const std::chrono::steady_clock::duration mTimeSlice;
 };
 
 }

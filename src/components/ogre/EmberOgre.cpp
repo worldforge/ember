@@ -123,8 +123,7 @@ struct OgreLogRouter {
 	OgreLogRouter() :
 	//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
 			mOgreLogManager(std::make_unique<Ogre::LogManager>()),
-			mLogObserver(std::make_unique<OgreLogObserver>())
-	{
+			mLogObserver(std::make_unique<OgreLogObserver>()) {
 		mOgreLogManager->createLog("Ogre", true, false, true);
 		mOgreLogManager->getDefaultLog()->addListener(mLogObserver.get());
 
@@ -257,9 +256,9 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 
 			mWindow->swapBuffers();
 //			log.report("swapBuffers");
-			long remainingTime = timeFrame.getRemainingTime().count();
-			remainingTime = std::max(1L, remainingTime);
-			mRoot->getWorkQueue()->setResponseProcessingTimeLimit(remainingTime / 1000L);
+			long remainingTimeMs = timeFrame.getRemainingTime().count() / 1000000L; //remainingTime is in nano, the method expects milli
+			remainingTimeMs = std::max(1L, remainingTimeMs); //Make sure we at least process one millisecond, otherwise we'll never do any background processing
+			mRoot->getWorkQueue()->setResponseProcessingTimeLimit(remainingTimeMs);
 			mRoot->_fireFrameEnded();
 //			log.report("_fireFrameEnded");
 
