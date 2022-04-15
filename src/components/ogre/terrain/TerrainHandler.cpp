@@ -204,10 +204,16 @@ void TerrainHandler::showTerrain(const WFMath::AxisBox<2>& interactingArea) {
 		}
 	}
 
+	//Don't unload pages as soon as they move out of range, since that might lead to a lot of churn when the camera is moved.
+	auto center = interactingArea.getCenter();
+	auto holdRadius = interactingArea.boundingSphereSloppy().radius() * 1.5;
 	std::vector<TerrainIndex> pagesToDestroy;
 	for (auto& entry: mPages) {
 		if (visiblePages.count(entry.first) == 0) {
-			pagesToDestroy.emplace_back(entry.first);
+			auto distanceToPage = WFMath::Distance(entry.second->getWorldExtent().getCenter(), center) - (entry.second->getPageSize() * 0.5);
+			if (distanceToPage > holdRadius) {
+				pagesToDestroy.emplace_back(entry.first);
+			}
 		}
 	}
 
@@ -360,16 +366,10 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 	//The main reasons for this are twofold:
 	//1) Calculating foliage occupies the task queue at the expense of creating terrain page data. We much rather would want the pages to be created before foliage is handled.
 	//2) If foliage is shown before the page is shown it just looks strange, with foliage levitating in the empty air.
-	//TODO: ask the ITerrainAdapter or the page store directly, and do away with TerrainBridge
 
-	return;
-//	auto bridgeI = mPageBridges.find(index);
-//	if (bridgeI == mPageBridges.end()) {
-//		return;
-//	}
-//	if (!bridgeI->second->isPageShown()) {
-//		return;
-//	}
+	if (!mTerrainAdapter.isPageShown(index)) {
+		return;
+	}
 
 	auto xIndex = static_cast<int>(std::floor(wfPos.x() / mTerrain->getResolution()));
 	auto yIndex = static_cast<int>(std::floor(wfPos.y() / mTerrain->getResolution()));
@@ -474,22 +474,6 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index) {
 		} else {
 			S_LOG_WARNING("Could not insert terrain page at [" << index.first << "|" << index.second << "]");
 		}
-	} else {
-		S_LOG_VERBOSE("Reloading terrain page at: [" << index.first << "|" << index.second << "]");
-
-		auto page = I->second;
-		auto geometryInstance = std::make_unique<TerrainPageGeometry>(page, getSegmentManager(), getDefaultHeight());
-
-		std::vector<TerrainShader> shaders;
-		shaders.reserve(mShaderMap.size());
-		for (auto& entry: mShaderMap) {
-			shaders.push_back(TerrainShader{entry.second.layer, *entry.second.shader});
-		}
-
-		mTaskQueue->enqueueTask(std::make_unique<TerrainPageReloadTask>(*this,
-																		std::move(geometryInstance),
-																		std::move(shaders),
-																		page->getWorldExtent()));
 	}
 
 }

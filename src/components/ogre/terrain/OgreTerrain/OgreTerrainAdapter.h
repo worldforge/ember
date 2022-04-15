@@ -73,6 +73,8 @@ public:
 
 	void showPage(std::shared_ptr<TerrainPageGeometry> geometry) override;
 
+	bool isPageShown(const TerrainIndex& index) override;
+
 	void removePage(const TerrainIndex& index) override;
 
 	void reloadPageMaterial(const TerrainIndex& index) override;

@@ -249,6 +249,12 @@ void OgreTerrainAdapter::showPage(std::shared_ptr<TerrainPageGeometry> geometry)
 
 }
 
+bool OgreTerrainAdapter::isPageShown(const TerrainIndex& index) {
+	auto terrain = mTerrainGroup->getTerrain(index.first, index.second);
+	return !terrain || !terrain->isLoaded();
+}
+
+
 void OgreTerrainAdapter::removePage(const TerrainIndex& index) {
 	S_LOG_VERBOSE("removing page " << index.first << ":" << index.second);
 	auto terrain = mTerrainGroup->getTerrain(index.first, index.second);

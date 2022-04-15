@@ -37,7 +37,7 @@ namespace OgreView {
 
 
 Scene::Scene() :
-		//The default scene manager actually provides better performance in our benchmarks than the Octree SceneManager
+//The default scene manager actually provides better performance in our benchmarks than the Octree SceneManager
 		mSceneManager(Ogre::Root::getSingleton().createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "World")),
 		//create the main camera, we will of course have a couple of different cameras, but this will be the main one
 		mMainCamera(mSceneManager->createCamera("MainCamera")),
@@ -102,7 +102,9 @@ std::unique_ptr<Terrain::ITerrainAdapter> Scene::createTerrainAdapter() {
 
 	assert(mSceneManager);
 	assert(mMainCamera);
-	return std::make_unique<Terrain::OgreTerrainAdapter>(*mSceneManager, pageSize);
+	auto adapter = std::make_unique<Terrain::OgreTerrainAdapter>(*mSceneManager, pageSize);
+	adapter->setCamera(mMainCamera);
+	return adapter;
 }
 
 Ogre::Camera& Scene::getMainCamera() const {

@@ -123,6 +123,8 @@ struct ITerrainAdapter {
 
 	virtual void showPage(std::shared_ptr<TerrainPageGeometry> geometry) = 0;
 
+	virtual bool isPageShown(const TerrainIndex& index) = 0;
+
 	virtual void removePage(const TerrainIndex& index) = 0;
 	/**
 	 * @brief Reloads the material of a single page.
