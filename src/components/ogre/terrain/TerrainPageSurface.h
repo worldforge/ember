@@ -63,34 +63,21 @@ struct ICompilerTechniqueProvider;
  */
 class TerrainPageSurface {
 public:
-	typedef std::map<int, std::unique_ptr<TerrainPageSurfaceLayer>> TerrainPageSurfaceLayerStore;
+	typedef std::map<int, TerrainPageSurfaceLayer> TerrainPageSurfaceLayerStore;
 
 	/**
 	 * @brief Ctor.
 	 *
-	 * @param terrainPage The terrain page to which this surface belongs.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-	TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider);
+	TerrainPageSurface(const TerrainPosition& terrainPosition,
+					   ICompilerTechniqueProvider& compilerTechniqueProvider);
 
 	/**
 	 * @brief Dtor.
 	 */
 	virtual ~TerrainPageSurface();
 
-	unsigned int getPixelWidth() const;
-
-	/**
-	 * @brief The position of the page in Worldforge space
-	 * @return
-	 */
-	const TerrainPosition& getWFPosition() const;
-
-	/**
-	 * @brief The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
-	 * @return
-	 */
-	int getNumberOfSegmentsPerAxis() const;
 
 	void createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader);
 
@@ -106,13 +93,16 @@ public:
 
 	const TerrainPageSurfaceLayerStore& getLayers() const;
 
+	TerrainPageSurfaceLayerStore& getLayers() {
+		return mLayers;
+	}
+
 	void updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate);
 
 
 protected:
 
 	std::string mMaterialName;
-	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::unique_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
 	Ogre::MaterialPtr mMaterial;

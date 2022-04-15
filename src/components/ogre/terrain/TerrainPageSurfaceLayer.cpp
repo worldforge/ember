@@ -63,6 +63,7 @@ bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) co
 }
 
 void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Image& image, unsigned int channel) const {
+	int segmentsPerAxis = geometry.getPage()->getNumberOfSegmentsPerAxis();
 	SegmentVector validSegments = geometry.getValidSegments();
 	for (const auto& validSegment : validSegments) {
 		Mercator::Segment* segment = validSegment.segment;
@@ -81,14 +82,10 @@ void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Ima
 					}
 				}
 
-				image.blit(sourceImage, channel, ((int) validSegment.index.x() * segment->getResolution()), ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int) validSegment.index.y() - 1) * segment->getResolution()));
+				image.blit(sourceImage, channel, ((int) validSegment.index.x() * segment->getResolution()), ((segmentsPerAxis - (int) validSegment.index.y() - 1) * segment->getResolution()));
 			}
 		}
 	}
-}
-
-unsigned int TerrainPageSurfaceLayer::getPixelWidth() const {
-	return mTerrainPageSurface.getPixelWidth();
 }
 
 float TerrainPageSurfaceLayer::getScale() const {

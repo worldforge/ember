@@ -134,7 +134,7 @@ public:
 	 * @brief Gets the page to which this geometry belongs.
 	 * @returns The page to which the geometry belongs.
 	 */
-	std::shared_ptr<Terrain::TerrainPage> getPage() { return mPage; }
+	const std::shared_ptr<Terrain::TerrainPage>& getPage() const { return mPage; }
 
 	const TerrainIndex mPageIndex;
 	const int mVerticesCount;

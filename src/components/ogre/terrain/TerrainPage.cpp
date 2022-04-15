@@ -29,10 +29,8 @@
 #include "TerrainPage.h"
 
 #include "TerrainPageGeometry.h"
-#include "TerrainShader.h"
 #include "TerrainPageSurfaceLayer.h"
 
-#include "../EmberOgre.h"
 #include "../Convert.h"
 
 #include "TerrainPageSurface.h"
@@ -51,7 +49,7 @@ TerrainPage::TerrainPage(const TerrainIndex& index, int pageSize, ICompilerTechn
 		mIndex(index),
 		mPageSize(pageSize),
 		mPosition(index.first, index.second),
-		mTerrainSurface(std::make_unique<TerrainPageSurface>(*this, compilerTechniqueProvider)),
+		mTerrainSurface(std::make_unique<TerrainPageSurface>(mPosition, compilerTechniqueProvider)),
 		mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), -(mPosition.y() - 1) * (getPageSize() - 1)),
 				WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), -(mPosition.y()) * (getPageSize() - 1))) {
 
@@ -114,18 +112,18 @@ void TerrainPage::addShader(const TerrainLayerDefinition& definition, int surfac
 	if (I != mTerrainSurface->getLayers().end()) {
 		auto& layer = I->second;
 
-		layer->setDiffuseTextureName(definition.mDiffuseTextureName);
-		layer->setNormalTextureName(definition.mNormalMapTextureName);
+		layer.setDiffuseTextureName(definition.mDiffuseTextureName);
+		layer.setNormalTextureName(definition.mNormalMapTextureName);
 		//get the scale by dividing the total size of the page with the size of each tile
 		float scale = (float) getBlendMapSize() / definition.mTileSize;
-		layer->setScale(scale);
+		layer.setScale(scale);
 	}
 }
 
 void TerrainPage::updateAllShaderTextures(TerrainPageGeometry& geometry, bool repopulate) {
 	auto I = mTerrainSurface->getLayers().begin();
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
-		mTerrainSurface->updateLayer(geometry, I->second->getSurfaceIndex(), repopulate);
+		mTerrainSurface->updateLayer(geometry, I->second.getSurfaceIndex(), repopulate);
 	}
 }
 

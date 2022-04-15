@@ -37,14 +37,14 @@ namespace Ember {
 namespace OgreView {
 namespace Terrain {
 
-TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-		mTerrainPage(terrainPage),
+TerrainPageSurface::TerrainPageSurface(const TerrainPosition& terrainPosition,
+									   ICompilerTechniqueProvider& compilerTechniqueProvider) :
 		mSurfaceCompiler(std::make_unique<TerrainPageSurfaceCompiler>(compilerTechniqueProvider)) {
 	//create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
 	std::stringstream materialNameSS;
 	materialNameSS << "EmberTerrain_Segment";
-	materialNameSS << "_" << terrainPage.getWFPosition().x() << "_" << terrainPage.getWFPosition().y();
+	materialNameSS << "_" << terrainPosition.x() << "_" << terrainPosition.y();
 	mMaterialName = materialNameSS.str();
 
 	mMaterial = Ogre::MaterialManager::getSingleton().create(mMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -66,22 +66,10 @@ void TerrainPageSurface::updateLayer(TerrainPageGeometry& geometry, int layerInd
 	auto I = mLayers.find(layerIndex);
 	if (I != mLayers.end()) {
 		if (repopulate) {
-			I->second->populate(geometry);
+			I->second.populate(geometry);
 		}
 		//		I->second->updateCoverageImage(geometry);
 	}
-}
-
-const TerrainPosition& TerrainPageSurface::getWFPosition() const {
-	return mTerrainPage.getWFPosition();
-}
-
-int TerrainPageSurface::getNumberOfSegmentsPerAxis() const {
-	return mTerrainPage.getNumberOfSegmentsPerAxis();
-}
-
-unsigned int TerrainPageSurface::getPixelWidth() const {
-	return mTerrainPage.getBlendMapSize();
 }
 
 Ogre::MaterialPtr TerrainPageSurface::getMaterial() const {
@@ -96,15 +84,14 @@ std::unique_ptr<TerrainPageSurfaceCompilationInstance> TerrainPageSurface::creat
 	//The compiler only works with const surfaces, so we need to create such a copy of our surface map.
 	//TODO: perhaps store surfaces as shared_ptr, so they can be shared?
 	SurfaceLayerStore constLayers;
-	for (auto& entry : mLayers) {
-		constLayers.emplace(entry.first, entry.second.get());
+	for (auto& entry: mLayers) {
+		constLayers.emplace(entry.first, &entry.second);
 	}
 	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers);
 }
 
 void TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader) {
-	auto terrainSurface = std::make_unique<TerrainPageSurfaceLayer>(*this, definition, surfaceIndex, shader);
-	mLayers.emplace(surfaceIndex, std::move(terrainSurface));
+	mLayers.emplace(surfaceIndex, TerrainPageSurfaceLayer(*this, definition, surfaceIndex, shader));
 }
 
 

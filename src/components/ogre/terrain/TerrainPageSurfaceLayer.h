@@ -75,8 +75,6 @@ public:
 
 	void setNormalTextureName(const std::string& textureName);
 
-	unsigned int getPixelWidth() const;
-
 	/**
 	 * @brief Checks whether this layer intersects the page to which it belongs.
 	 *
