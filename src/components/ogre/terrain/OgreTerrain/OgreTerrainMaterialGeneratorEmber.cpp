@@ -143,17 +143,16 @@ Ogre::MaterialPtr EmberTerrainProfile::generateForCompositeMap(const Ogre::Terra
 	}
 }
 
-Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(const Ogre::MaterialPtr& templateMaterial, const std::string& suffix) {
-	std::string name = templateMaterial->getName() + suffix;
+Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(const Ogre::MaterialPtr& templateMaterial, const std::string& materialName) {
 
-	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(name);
+	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(materialName);
 	if (mat) {
 		//If the material copy already existed, make sure it's updated to the latest version of the template material.
 		*mat = *templateMaterial;
 		return mat;
 	}
 
-	return templateMaterial->clone(name);
+	return templateMaterial->clone(materialName);
 }
 
 
