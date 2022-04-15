@@ -148,6 +148,8 @@ Ogre::MaterialPtr EmberTerrainProfile::getOrCreateMaterialClone(const Ogre::Mate
 
 	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName(name);
 	if (mat) {
+		//If the material copy already existed, make sure it's updated to the latest version of the template material.
+		*mat = *templateMaterial;
 		return mat;
 	}
 
