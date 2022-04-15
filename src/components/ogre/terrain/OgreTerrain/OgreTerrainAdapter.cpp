@@ -27,7 +27,70 @@
 #include "framework/MainLoopController.h"
 
 #include <OgreTerrainGroup.h>
+#include <OgreTerrainAutoUpdateLod.h>
+#include <OgreViewport.h>
+#include <OgreTerrainQuadTreeNode.h>
 
+namespace {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-no-recursion"
+
+/**
+ * This function is copied from Ogre and licensed under the MIT license.
+ * Copyright (c) 2000-2014 Torus Knot Software Ltd
+ */
+int traverseTreeByDistance(Ogre::TerrainQuadTreeNode* node,
+						   const Ogre::Camera* cam,
+						   Ogre::Real cFactor,
+						   const Ogre::Real holdDistance) {
+	if (!node->isLeaf()) {
+		int tmp = -1;
+		for (int i = 0; i < 4; ++i) {
+			int ret = traverseTreeByDistance(node->getChild(i), cam, cFactor, holdDistance);
+			if (ret != -1) {
+				if (tmp == -1 || ret < tmp)
+					tmp = ret;
+			}
+		}
+
+		if (tmp != -1)
+			return tmp;
+	}
+
+	auto localPos = cam->getDerivedPosition() - node->getLocalCentre() - node->getTerrain()->getPosition();
+	// distance to tile centre
+	auto dist = localPos.length();
+	// deduct half the radius of the box, assume that on average the
+	// worst case is best approximated by this
+	dist -= (node->getBoundingRadius() * 0.5f);
+
+	// For each LOD, the distance at which the LOD will transition *downwards*
+	// is given by
+	// distTransition = maxDelta * cFactor;
+	for (std::uint16_t lodLevel = 0; lodLevel < node->getLodCount(); ++lodLevel) {
+		// If we have no parent, and this is the lowest LOD, we always render
+		// this is the 'last resort' so to speak, we always enoucnter this last
+		if (lodLevel + 1 == node->getLodCount() && !node->getParent())
+			return lodLevel + node->getBaseLod();
+		else {
+			// Calculate or reuse transition distance
+			Ogre::Real distTransition;
+			if (Ogre::Math::RealEqual(cFactor, node->getLodLevel(lodLevel)->lastCFactor))
+				distTransition = node->getLodLevel(lodLevel)->lastTransitionDist;
+			else
+				distTransition = node->getLodLevel(lodLevel)->maxHeightDelta * cFactor;
+
+			if ((dist - holdDistance) < distTransition)
+				return lodLevel + node->getBaseLod();
+		}
+	}
+
+	return -1;
+}
+
+#pragma clang diagnostic pop
+
+}
 
 namespace Ember {
 namespace OgreView {
@@ -36,6 +99,7 @@ namespace Terrain {
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, int terrainPageSize) :
 		mLoadRadius(300),
 		mHoldRadius(mLoadRadius * 2),
+		mCamera(nullptr),
 		mMaterialGenerator(std::make_shared<OgreTerrainMaterialGeneratorEmber>()),
 		mTerrainGlobalOptions(std::make_unique<Ogre::TerrainGlobalOptions>()),
 		mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager,
@@ -45,6 +109,10 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, int ter
 		mPageDataProvider(nullptr),
 		mMaterialProfile(nullptr),
 		mEntity(nullptr) {
+
+	//Set an auto update lod instance just to make the terrain engine not do LOD calculations on the main thread.
+	//We'll do that ourselves in the "updateLods()" method.
+	mTerrainGroup->setAutoUpdateLod(Ogre::TerrainAutoUpdateLodFactory::getAutoUpdateLod(Ogre::BY_DISTANCE));
 
 	// Other params
 	mTerrainGlobalOptions->setSkirtSize(1.0f);
@@ -59,6 +127,34 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, int ter
 }
 
 OgreTerrainAdapter::~OgreTerrainAdapter() = default;
+
+bool OgreTerrainAdapter::frameRenderingQueued(const Ogre::FrameEvent& evt) {
+	updateLods();
+	return true;
+}
+
+void OgreTerrainAdapter::updateLods() {
+	if (mCamera && mCamera->getViewport()) {
+
+
+		auto A = 1.0f / Ogre::Math::Tan(mCamera->getFOVy() * 0.5f);
+		auto pixelError = 3.0 * mCamera->_getLodBiasInverse();
+		auto T = 2.0f * pixelError / (Ogre::Real) mCamera->getViewport()->getActualHeight();
+
+		auto cFactor = Ogre::Real(A / T);
+
+
+		for (auto terrainSlot: mTerrainGroup->getTerrainSlots()) {
+			auto terrain = terrainSlot.second->instance;
+			if (terrain && terrain->isLoaded() && !terrain->isDerivedDataUpdateInProgress()) {
+				int maxLod = traverseTreeByDistance(terrain->getQuadTree(), mCamera, cFactor, 1000.0f);
+				if (maxLod >= 0)
+					terrain->load(maxLod, false);
+			}
+		}
+	}
+}
+
 
 int OgreTerrainAdapter::getPageSize() {
 	return mTerrainGroup->getTerrainSize();
@@ -94,7 +190,7 @@ bool OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z, float& height) 
 }
 
 void OgreTerrainAdapter::setCamera(Ogre::Camera* camera) {
-
+	mCamera = camera;
 }
 
 void OgreTerrainAdapter::loadScene() {

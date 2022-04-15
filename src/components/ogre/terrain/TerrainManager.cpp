@@ -275,7 +275,6 @@ void TerrainManager::adapter_terrainShown(const Ogre::TRect<Ogre::Real>& rect) {
 void TerrainManager::initializeFoliage() {
 	if (mFoliage) {
 		mFoliageDetailManager = std::make_unique<Environment::FoliageDetailManager>(*mFoliage, mGraphicalChangeAdapter);
-		mFoliageDetailManager->initialize();
 	}
 }
 
@@ -295,7 +294,7 @@ DelayedFoliageInitializer::DelayedFoliageInitializer(std::function<void()> callb
 DelayedFoliageInitializer::~DelayedFoliageInitializer() = default;
 
 void DelayedFoliageInitializer::timout_Expired() {
-	//load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
+	//load the foliage if either all queued entities have been loaded, or 15 seconds has elapsed
 	if (mView.lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
 		mCallback();
 	} else {

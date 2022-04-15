@@ -20,6 +20,7 @@
 #define OGRETERRAINADAPTER_H_
 
 #include "../ITerrainAdapter.h"
+#include "../../FrameListener.h"
 
 #include <Eris/ActiveMarker.h>
 
@@ -42,12 +43,11 @@ namespace Terrain {
 
 class OgreTerrainMaterialGeneratorEmber;
 
-class CameraFocusedGrid2DPageStrategy;
 
 /**
  * @brief A ITerrainAdapter implementation which connects to and sets up the Ogre Terrain component.
  */
-class OgreTerrainAdapter : public ITerrainAdapter, public boost::noncopyable {
+class OgreTerrainAdapter : public ITerrainAdapter, public boost::noncopyable, public FrameListener {
 public:
 	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, int terrainPageSize);
 
@@ -92,10 +92,14 @@ public:
 
 	void setTerrainEntity(EmberEntity* entity) override;
 
+	bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
+
 private:
 
 	Ogre::Real mLoadRadius;
 	Ogre::Real mHoldRadius;
+
+	Ogre::Camera* mCamera;
 
 	/**
 	 * @brief Signal emitted when a page has been shown for the first time.
@@ -133,6 +137,8 @@ private:
 	void updateExistingTerrain(const Ogre::Terrain* terrainPtr,
 							   const TerrainIndex& index,
 							   std::vector<float> heightData);
+
+	void updateLods();
 
 };
 

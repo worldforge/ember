@@ -66,6 +66,8 @@ add_library(emberogre OBJECT
         ProjectileRenderingTechnique.cpp
         EmptyNodeAttachment.cpp
         OutlineEffect.cpp
+
+        FrameListener.cpp
         )
 
 
