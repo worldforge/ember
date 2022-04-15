@@ -59,12 +59,6 @@ public:
 	~FoliageDetailManager();
 
 	/**
-	 * @brief Initializes the foliage detail manager.
-	 * The manager starts listening for graphics detail change required signals and acting on them.
-	 */
-	void initialize();
-
-	/**
 	 * @brief Signal sent out when this component makes a change in the detail level of foliage.
 	 */
 	sigc::signal<void, int> EventFoliageLevelChanged;
@@ -180,14 +174,14 @@ protected:
 	float mMinFarDistance;
 
 	/**
-	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class or to pause the functioning of this component.
-	 */
-	sigc::connection mChangeRequiredConnection;
-
-	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
 	GraphicalChangeAdapter& mGraphicalChangeAdapter;
+
+	/**
+	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class or to pause the functioning of this component.
+	 */
+	sigc::connection mChangeRequiredConnection;
 
 	/**
 	 * @brief Used to listen for configuration changes.

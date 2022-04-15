@@ -41,20 +41,16 @@ FoliageDetailManager::FoliageDetailManager(Foliage& foliage, GraphicalChangeAdap
 		mMaxFarDistance(2.0f),
 		mMinFarDistance(0.3f),
 		mGraphicalChangeAdapter(graphicalChangeAdapter),
+		mChangeRequiredConnection(mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &FoliageDetailManager::changeLevel))),
 		mConfigListenerContainer(std::make_unique<ConfigListenerContainer>())
 {
+	mConfigListenerContainer->registerConfigListener("graphics", "foliagedensity", sigc::mem_fun(*this, &FoliageDetailManager::Config_FoliageDensity));
+	mConfigListenerContainer->registerConfigListener("graphics", "foliagefardistance", sigc::mem_fun(*this, &FoliageDetailManager::Config_FoliageFarDistance));
 }
 
 FoliageDetailManager::~FoliageDetailManager()
 {
 	mChangeRequiredConnection.disconnect();
-}
-
-void FoliageDetailManager::initialize()
-{
-	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &FoliageDetailManager::changeLevel));
-	mConfigListenerContainer->registerConfigListener("graphics", "foliagedensity", sigc::mem_fun(*this, &FoliageDetailManager::Config_FoliageDensity));
-	mConfigListenerContainer->registerConfigListener("graphics", "foliagefardistance", sigc::mem_fun(*this, &FoliageDetailManager::Config_FoliageFarDistance));
 }
 
 bool FoliageDetailManager::changeLevel(float level)
