@@ -95,13 +95,11 @@ public:
 	 * }
 	 * @endcode
 	 */
-	class SelfUpdateContext {
-	public:
-		SelfUpdateContext(AdapterBase& adapter);
+	struct SelfUpdateContext {
+		explicit SelfUpdateContext(AdapterBase& adapter);
 
 		~SelfUpdateContext();
 
-	private:
 		AdapterBase& mAdapter;
 	};
 
@@ -111,7 +109,7 @@ public:
 	 * Creates a new adapter and intializes it with the supplied value.
 	 * @param element The original value.
 	 */
-	AdapterBase(const ValueType& value);
+	explicit AdapterBase(const ValueType& value);
 
 	/**
 	 * @brief Dtor
@@ -319,8 +317,7 @@ AdapterBase<ValueType>::AdapterBase(const ValueType& value):
 		mRemoved(false) {}
 
 template<typename ValueType>
-AdapterBase<ValueType>::~AdapterBase()
-{
+AdapterBase<ValueType>::~AdapterBase() {
 	disconnectAllGuiEventConnections();
 }
 
@@ -408,19 +405,16 @@ ValueType AdapterBase<ValueType>::_getChangedElement() {
 }
 
 template<typename ValueType>
-void AdapterBase<ValueType>::addGuiEventConnection(CEGUI::Event::Connection connection)
-{
-	mGuiEventConnections.push_back(connection);
+void AdapterBase<ValueType>::addGuiEventConnection(CEGUI::Event::Connection connection) {
+	mGuiEventConnections.emplace_back(std::move(connection));
 }
 
 template<typename ValueType>
-void AdapterBase<ValueType>::disconnectAllGuiEventConnections()
-{
-	for (std::vector<CEGUI::Event::Connection>::iterator I = mGuiEventConnections.begin(); I != mGuiEventConnections.end(); ++I)
-	{
-		(*I)->disconnect();
+void AdapterBase<ValueType>::disconnectAllGuiEventConnections() {
+	for (auto& connection: mGuiEventConnections) {
+		connection->disconnect();
 	}
-	
+
 	mGuiEventConnections.clear();
 }
 

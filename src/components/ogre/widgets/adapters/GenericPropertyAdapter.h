@@ -72,7 +72,7 @@ GenericPropertyAdapter<ValueType, PropertyNativeType>::GenericPropertyAdapter(co
 }
 
 template<typename ValueType, typename PropertyNativeType>
-GenericPropertyAdapter<ValueType, PropertyNativeType>::~GenericPropertyAdapter() {}
+GenericPropertyAdapter<ValueType, PropertyNativeType>::~GenericPropertyAdapter() = default;
 
 template<typename ValueType, typename PropertyNativeType>
 void GenericPropertyAdapter<ValueType, PropertyNativeType>::updateGui(const ValueType& element) {

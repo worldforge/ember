@@ -42,15 +42,15 @@ class SizeAdapter : public AdapterBase
 public:
 
 	struct Widgets {
-		CEGUI::Window* lowerXWindow;
-		CEGUI::Window* lowerYWindow;
-		CEGUI::Window* lowerZWindow;
-		CEGUI::Window* upperXWindow;
-		CEGUI::Window* upperYWindow;
-		CEGUI::Window* upperZWindow;
-		CEGUI::Slider* scaler;
-		CEGUI::Window* infoWindow;
-		CEGUI::ToggleButton* editable;
+		CEGUI::Window& lowerXWindow;
+		CEGUI::Window& lowerYWindow;
+		CEGUI::Window& lowerZWindow;
+		CEGUI::Window& upperXWindow;
+		CEGUI::Window& upperYWindow;
+		CEGUI::Window& upperZWindow;
+		CEGUI::Slider& scaler;
+		CEGUI::Window& infoWindow;
+		CEGUI::ToggleButton& editable;
 	};
 
     SizeAdapter(const ::Atlas::Message::Element& element, const Widgets& widgets);

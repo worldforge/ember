@@ -75,7 +75,7 @@ ComboboxAdapter<ValueType, PropertyNativeType>::ComboboxAdapter(const ValueType&
 }
 
 template<typename ValueType, typename PropertyNativeType>
-ComboboxAdapter<ValueType, PropertyNativeType>::~ComboboxAdapter() {}
+ComboboxAdapter<ValueType, PropertyNativeType>::~ComboboxAdapter() = default;
 
 template<typename ValueType, typename PropertyNativeType>
 void ComboboxAdapter<ValueType, PropertyNativeType>::addSuggestion(const std::string& suggestedValue) {
