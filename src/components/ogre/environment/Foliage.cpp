@@ -76,11 +76,15 @@ void Foliage::initializeLayer(const TerrainLayer& terrainLayer) {
 
 void Foliage::runCommand(const std::string& command, const std::string& args) {
 	if (ReloadFoliage == command) {
-		Tokeniser tokeniser(args);
-		std::string xString = tokeniser.nextToken();
-		std::string yString = tokeniser.nextToken();
+		try {
+			Tokeniser tokeniser(args);
+			auto x = std::stof(tokeniser.nextToken());
+			auto y = std::stof(tokeniser.nextToken());
 
-		reloadAtPosition(WFMath::Point<2>(std::stof(xString), std::stof(yString)));
+			reloadAtPosition(WFMath::Point<2>(x, y));
+		} catch (const std::invalid_argument&) {
+			//just ignore
+		}
 	}
 }
 
