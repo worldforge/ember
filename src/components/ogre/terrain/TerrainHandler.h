@@ -475,7 +475,6 @@ protected:
 	/**
 	 * @brief A collection of all the pages used by the handler.
 	 * This is the canonical collection of pages.
-	 * @see mTerrainPages
 	 */
 	std::map<TerrainIndex, std::shared_ptr<TerrainPage>> mPages;
 

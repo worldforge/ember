@@ -311,27 +311,11 @@ const std::map<size_t, TerrainHandler::ShaderEntry>& TerrainHandler::getAllShade
 	return mShaderMap;
 }
 
-//void TerrainHandler::addPage(TerrainPage* page) {
-//	const TerrainPosition& pos = page->getWFPosition();
-//
-//	auto oldPage = mTerrainPages[pos.x()][pos.y()];
-//	if (oldPage) {
-//		destroyPage(oldPage);
-//	}
-//
-//	mTerrainPages[pos.x()][pos.y()] = page;
-//	mPages.push_back(page);
-//
-//	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
-//	std::set<TerrainPage*> pagesToUpdate;
-//	pagesToUpdate.insert(page);
-//}
-
 void TerrainHandler::destroyPage(const TerrainIndex& index) {
 	auto I = mPages.find(index);
 	if (I != mPages.end()) {
 		S_LOG_VERBOSE("Destroying page at index [" << index.first << "," << index.second << "]");
-		mTerrainAdapter.removePage(I->second->getWFIndex());
+		mTerrainAdapter.removePage(index);
 		mPages.erase(I);
 	}
 }
@@ -340,7 +324,7 @@ void TerrainHandler::destroyPage(TerrainPage* page) {
 	const auto& index = page->getWFIndex();
 	auto I = mPages.find(index);
 	if (I != mPages.end()) {
-		mTerrainAdapter.removePage(I->second->getWFIndex());
+		mTerrainAdapter.removePage(index);
 		mPages.erase(I);
 	}
 }
@@ -360,14 +344,15 @@ void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantA
 	TerrainIndex index(static_cast<int>(std::floor(query.mCenter.x / ((float) mPageIndexSize - 1.0f))),
 					   static_cast<int>(-std::floor(query.mCenter.y / ((float) mPageIndexSize - 1.0f))));
 
-	//If there's either no terrain page created, or it's not shown, we shouldn't create any foliage at this moment.
+	//If there's no terrain page created we shouldn't create any foliage at this moment.
 	//Later on when the terrain page actually is shown, the TerrainManager::EventTerrainShown signal will be emitted
 	//and the foliage reloaded.
 	//The main reasons for this are twofold:
 	//1) Calculating foliage occupies the task queue at the expense of creating terrain page data. We much rather would want the pages to be created before foliage is handled.
 	//2) If foliage is shown before the page is shown it just looks strange, with foliage levitating in the empty air.
 
-	if (!mTerrainAdapter.isPageShown(index)) {
+	auto pageI = mPages.find(index);
+	if (pageI == mPages.end()) {
 		return;
 	}
 
