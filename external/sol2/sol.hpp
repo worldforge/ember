@@ -404,6 +404,7 @@ namespace sol {
 
 #include <stdexcept>
 #include <string>
+#include <limits>
 
 namespace sol {
 	namespace detail {
